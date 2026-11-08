@@ -17,6 +17,9 @@ Left alone, most agent sessions forget everything between runs, call work done w
 
 > **Want a ready-made version today?** [agent-harness](https://github.com/fainir/agent-harness) packages the operating rules this prompt asks your agent to build (done means verified with evidence, ledgers that keep long work going, one owner action at a time) as installable skills and hooks for Claude Code and Codex. Use this prompt to have your agent build its own system; use agent-harness to start from a working one.
 
+**Try a working example:** [Apps and starter projects](https://nirfeinste.in/?utm_source=github&utm_medium=readme&utm_campaign=mcasp-portfolio#projects) · [Full portfolio and concepts](https://nirfeinste.in/?utm_source=github&utm_medium=readme&utm_campaign=mcasp-portfolio#portfolio) · [Open-source tools](https://nirfeinste.in/?utm_source=github&utm_medium=readme&utm_campaign=mcasp-portfolio#open-source).
+For AI and ML news, [read MyFeed's public topic feed](https://myfeed.space/ai?utm_source=github&utm_medium=readme&utm_campaign=mcasp-ai-feed) or [add it to your RSS reader](https://myfeed.space/ai/rss.xml?utm_source=github&utm_medium=readme&utm_campaign=mcasp-ai-feed).
+
 ## Contents
 
 - [Quick start](#quick-start)
@@ -2741,10 +2744,4 @@ OPEN SOURCE ARCHITECTURE REFERENCES
   - Source: https://github.com/microsoft/autogen
 
 - Microsoft Agent Framework
-  - Learn from its explicit separation between agents and workflows, its type-safe routing, checkpointing, session state, middleware, and human-in-the-loop support.
-  - Steal the idea that open-ended agent behavior and explicit graph workflows should coexist in one platform, with workflows handling the parts where determinism matters.
-  - Source: https://learn.microsoft.com/en-us/agent-framework/overview/
-
-- Semantic Kernel
-  - Learn from its plugin ecosystem, process framework for business workflows, model flexibility, enterprise-grade posture, multimodal support, and multi-language SDK approach.
-  - Steal the idea that enterprise agent systems need first-class process modeling and co
+  - Learn from 

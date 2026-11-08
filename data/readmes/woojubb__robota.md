@@ -219,7 +219,7 @@ agent-core                             ← Foundation: ConversationAgent engine,
 
 ## Packages
 
-Every package below is published on npm under `@robota-sdk/`, and all of them share one version.
+Every package below is published on npm under `@robota-sdk/` and has its own version.
 The [packages index](https://docs.robota.io/en/packages/) on the docs site covers each one.
 
 **Start here (embedding):**
@@ -328,7 +328,7 @@ The `/workflows` command uses a separately maintained workflow library bundled i
 
 Some workspace packages are **private** and never published to npm on their own:
 
-- The **GUI** packages (`agent-ui-web`, `agent-gui-web`, `agent-transport-webrtc-web`) behind the
+- The **GUI** packages (`agent-ui-web`, `agent-gui-web`) behind the
   desktop app, `robota --serve --open`, and the browser remote client.
 - `agent-provider-replay`, a provider that replays a recorded session for offline tests.
 

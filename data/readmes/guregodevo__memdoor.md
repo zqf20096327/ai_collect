@@ -1,7 +1,7 @@
 <div align="center">
   <img src="web/public/icon-512.png" alt="" width="72" height="72">
   <h1>Memdoor</h1>
-  <p><strong>The workflow harness that makes a small model beat a frontier one, on your machine.</strong><br>Five Qwen3.8-27B agents beat Fable 5 on LiveCodeBench Hard, every run published. Ollama, llama.cpp, or any key. One binary, no account.</p>
+  <p><strong>The workflow harness that makes a team of cheap model beat a frontier one.</strong><br>Five Qwen3.8-27B agents beat Fable 5 on LiveCodeBench Hard, every run published. Ollama, llama.cpp, or any key. One binary, no account.</p>
   <p>
     <a href="https://news.ycombinator.com/item?id=50320995"><img alt="Hacker News" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fhacker-news.firebaseio.com%2Fv0%2Fitem%2F50320995.json&query=%24.score&label=Hacker%20News&suffix=%20points&logo=ycombinator&logoColor=white&color=ff6600"></a>
     <a href="LICENSE"><img alt="Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-blue"></a>
@@ -37,6 +37,8 @@ curl -fsSL https://memdoor.ai/install.sh | bash
 export OPENROUTER_API_KEY=sk-or-...    # or ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, …
 # or no key: memdoor connect local    # janis and an open-weight model on this machine — https://memdoor.ai/docs/open-weight
 cd your-project && memdoor             # the first run sets the machine up
+memdoor workflow try                   # two minutes: the team on a sample problem, ending in a verdict
+memdoor cron add --workflow team-backlog "0 2 * * *"   # one open issue a night, a pull request when its Check passed
 ```
 
 The install or the first run did not finish: [open an Install issue](https://github.com/guregodevo/memdoor/issues/new?template=install.md).
@@ -171,6 +173,7 @@ Built in:
 - **`fix-tests`**: finds the test command, fixes the code until the tests pass, leaves the fix in the working tree.
 - **`release-notes`**: commits since the last tag as Added / Changed / Fixed.
 - **`team-solve`**: the task a prompt defines (`memdoor workflow run team-solve "<the task>"`), done by a team of fresh contexts, GVS5H's method on any task and any model: changes across a repository checked by its own tests, a program by its samples, a document by a fresh judge. Its prompts differ from the published steps', so the 9.8 above is theirs, not the built-in's.
+- **`team-backlog`**: the repository's open issues, unattended: the next issue nobody is on, team-solve on it in a branch, a pull request when the Check passed, a comment on the issue when it did not; one issue a run, on a cron (`memdoor cron add --workflow team-backlog "0 2 * * *"`).
 
 `local-model: Qwen3-8B-4bit` in place of the key: the model runs inside the
 runner ([janis](https://github.com/guregodevo/janis), one file, cached), one

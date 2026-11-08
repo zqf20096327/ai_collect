@@ -1,5 +1,7 @@
 # Codex-style Computer Use
 
+[![开放插件市场](https://img.shields.io/endpoint?url=https%3A%2F%2Fdshopen.org%2Fbadge%2Fdsh-codex-style-computer-use.json)](https://dshopen.org/zh/plugins/dsh-codex-style-computer-use/)
+
 **The most precise way to drive Windows from DeepSeek Harness — and the cheapest per task.**
 
 Describe the goal. Your agent reads exact control identities, acts through the controls themselves, verifies the result — and finishes a known sequence in one model round trip instead of ten.
@@ -187,6 +189,7 @@ fields are detected through UI Automation's `IsPassword` and refused by default.
 ## Safety model
 
 - **Shared input** — ordinary user activity is allowed while the agent is thinking, observing or preparing. During actual actuation, typing, scrolling and buttons yield immediately; pointer movement has a 16-pixel displacement tolerance. Continued input or a held key/button for 2 seconds enters automatic waiting. After release and 3 quiet seconds, the agent must inspect the current target and continue the original task, without blindly replaying partial writes. A gentle pale-yellow edge gradient shows human ownership.
+- **Release by desktop block, not by every call** — one cycle covers one continuous desktop block, not the whole task. When you leave that block for publish, upload, install, build, test, network, a file write, analysis or chat, call `computer_ctrl {action:"release"}` first. Keep the cycle only while the next call is still in the same block, including one quick readback you type straight back. An artifact in hand (token, clipboard text, value, path, screenshot) is a signal that the block may be ending, not an automatic release point. Do not hold "in case I need the desktop later"; reacquiring the lease is cheap, while a lit border and an exclusive lease during a long command are not. `hold` is only for position-sensitive readback inside the block, never across a build/publish/upload or long command; `free` then `release`. A deterministic **100-second leave backstop** (`leaveDesktopGraceMs`; 0 disables) releases the lease if no `computer_*` call starts within the grace after a non-desktop tool; it is owner-scoped, cancelled by an actual computer start, never releases a newer cycle, and `hold` does not extend it.
 - **Manual pause** — only physical `Ctrl+Esc` raises a persistent input brake; `Ctrl+Alt+R` resumes. Ordinary Esc, typing, scrolling, pointer distance/frequency and the screen corner do not create this pause. Explicit question/diagnostic holds remain separate.
 - **Exit** — `Ctrl+Alt+Q` ends the session: the overlay goes away, its listeners are torn down, and
   further actuation is refused until a later turn opens a new one.
@@ -215,6 +218,7 @@ fields are detected through UI Automation's `IsPassword` and refused by default.
 | `actionFeedbackDetail` | `compact` | `compact`, `full` or `none`; a call's `feedback` overrides this default; uncached evidence falls back to full inline output |
 | `dryRun` | `false` | simulate actuations, log only |
 | `maxActionsPerMinute` | `60` | core-level actuation rate limit |
+| `leaveDesktopGraceMs` | `100000` | grace after leaving the desktop for another tool; automatic lease expiry, `0` disables |
 | `annotateMarks` | `true` | draw Set-of-Marks boxes on screenshots |
 | `workerExe` | `""` | explicit worker path; empty = autodiscover or compile |
 | `snapshotDir` | `""` | screenshot directory; empty = `$DSH_HOME/data/computer-use/shots` |

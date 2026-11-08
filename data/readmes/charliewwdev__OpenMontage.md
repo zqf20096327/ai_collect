@@ -10,14 +10,20 @@
 </p>
 
 <p align="center">
-  <a href="https://openmontage.dtok.io/"><img src="https://img.shields.io/badge/Live_demo-openmontage.dtok.io-E11D48?style=flat-square" alt="Live demo"/></a>
-  <a href="https://github.com/charliewwdev/OpenMontage/stargazers"><img src="https://img.shields.io/github/stars/charliewwdev/OpenMontage?style=flat-square" alt="GitHub stars"/></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPLv3-334155?style=flat-square" alt="License: AGPL-3.0"/></a>
-  <a href="https://github.com/charliewwdev/OpenMontage/releases"><img src="https://img.shields.io/github/v/release/charliewwdev/OpenMontage?style=flat-square" alt="Release"/></a>
-  <img src="https://img.shields.io/badge/Stack-React%20%2B%20FastAPI%20%2B%20Postgres-0F172A?style=flat-square" alt="Stack"/>
-  <img src="https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker Compose"/>
-  <img src="https://img.shields.io/github/last-commit/charliewwdev/OpenMontage?style=flat-square" alt="Last commit"/>
+  <a href="https://openmontage.dtok.io/"><img src="assets/badges/live-demo.svg" alt="Live demo" height="20"/></a>
+  <a href="https://github.com/charliewwdev/OpenMontage/stargazers"><img src="assets/badges/stars.svg" alt="GitHub stars" height="20"/></a>
+  <a href="LICENSE"><img src="assets/badges/license.svg" alt="License: AGPL-3.0" height="20"/></a>
+  <a href="https://github.com/charliewwdev/OpenMontage/releases"><img src="assets/badges/release.svg" alt="Release" height="20"/></a>
+  <img src="assets/badges/stack.svg" alt="Stack" height="20"/>
+  <img src="assets/badges/docker.svg" alt="Docker Compose" height="20"/>
 </p>
+
+<p align="center">
+  <a href="https://www.heroku.com/deploy?template=https://github.com/charliewwdev/OpenMontage"><img src="assets/deploy-heroku.svg" alt="Deploy to Heroku" height="40" width="220"/></a>
+  &nbsp;&nbsp;
+  <a href="https://cloud.digitalocean.com/apps/new?repo=https://github.com/charliewwdev/OpenMontage/tree/main"><img src="assets/deploy-digitalocean.svg" alt="Deploy to DigitalOcean" height="40" width="220"/></a>
+</p>
+<p align="center"><sub>One-click deploy · after boot open the app → <b>Demo</b> · paste model keys in <i>Model settings</i> · <a href="docs/SELF_HOSTING.md#one-click-heroku--digitalocean">notes</a></sub></p>
 
 <p align="center">⭐ If this is useful, a star helps others find it.</p>
 
@@ -66,7 +72,7 @@ become reference images that feed the video shots, so you can redo a single char
 - **Step by step or one click.** Run each stage yourself, or let the agent run the whole pipeline in the background
   and then re-run any stage or swap a version.
 
-Try the hosted instance: **[openmontage.dtok.io](https://openmontage.dtok.io/)** · Starter prompts: [`docs/examples.md`](docs/examples.md) · Free GPU quotas: [`docs/FREE_GPU.md`](docs/FREE_GPU.md) · Studio docs: [`studio/README.en.md`](studio/README.en.md)
+Try the hosted instance: **[openmontage.dtok.io](https://openmontage.dtok.io/)** · Starter prompts: [`docs/examples.md`](docs/examples.md) · Free GPU quotas: [`docs/FREE_GPU.md`](docs/FREE_GPU.md) · Colab Comfy playbook: [`docs/COMFY_COLAB.md`](docs/COMFY_COLAB.md) · Studio docs: [`studio/README.en.md`](studio/README.en.md)
 
 ## The 7-stage workshop
 
@@ -179,6 +185,10 @@ The hosted instance has a credits / top-up page. Self-hosted, you pay your model
 
 ## Quick start
 
+One-click buttons are at the **top of this README** (Heroku / DigitalOcean). Details: [`docs/SELF_HOSTING.md`](docs/SELF_HOSTING.md#one-click-heroku--digitalocean).
+
+### Docker Compose (local / VPS)
+
 Docker — one shot (Postgres + Redis + MinIO + Studio):
 
 ```bash
@@ -188,7 +198,6 @@ docker compose -f docker-compose.studio.yml up --build
 # health: GET http://localhost:8787/api/health
 # MinIO console: http://localhost:9001 (minioadmin / minioadmin)
 ```
-
 
 Local development:
 

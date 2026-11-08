@@ -14,7 +14,7 @@
 
 **Platform status:** Windows is the currently tested setup. Linux and macOS support has not yet been validated. Contributions and testing reports for additional platforms are welcome. See [Contributing](CONTRIBUTING.md).
 
-Use ChatGPT to work with your local environment: search files, understand and edit code, run commands and tests, automate Chrome, and interact with your Windows desktop. The bridge exposes these capabilities as MCP tools and can also discover other eligible tools in your current OpenClaw runtime.
+ChatGPT can read and edit local files, run commands and tests, automate Chrome and Windows desktop applications, and discover other eligible tools in your OpenClaw runtime.
 
 Rather than routing every operation through the OpenClaw Main Agent, ChatGPT can call the bridge's tools directly. Native actions are forwarded through supported OpenClaw interfaces, so OpenClaw permissions, approvals, and policies remain authoritative.
 
@@ -26,22 +26,21 @@ Rather than routing every operation through the OpenClaw Main Agent, ChatGPT can
 
 | Capability | Public tools | What ChatGPT can do |
 |---|---|---|
-| Conversation setup | `start_here` | Load tool-routing and safety instructions once at the start of a ChatGPT conversation. |
-| Browser automation | `openclaw_browser` | Work with Chrome tabs and pages, take screenshots, interact with page elements, manage downloads/uploads and inspect browser diagnostics. |
-| Desktop automation | `openclaw_computer` | Inspect the Windows screen, use the mouse and keyboard, operate windows/apps, and run bounded action batches. |
-| File operations | `openclaw_ls`, `openclaw_read`, `openclaw_edit`, `openclaw_write`, `openclaw_apply_patch` | List, read, edit, create/replace, and patch local files through OpenClaw's native file tools. Listing and reading support batches. |
-| Local project search | `openclaw_glob`, `openclaw_grep` | Find project paths and search file contents without using a shell for the search itself. |
-| Runtime operations | `openclaw_exec`, `openclaw_process` | Run commands and inspect or control processes started through the runtime wrapper. |
-| Screenshot presentation | `openclaw_image_render` | Display a recent desktop screenshot directly in the ChatGPT conversation using a short-lived reference. |
-| Dynamic tool discovery | `openclaw_tool_search`, `openclaw_tool_describe`, `openclaw_dispatch_action` | Find other eligible tools in the current OpenClaw runtime, inspect their actual schemas, and invoke them when no dedicated bridge wrapper exists. |
+| Conversation setup | `start_here` | Set up a conversation and reload bridge instructions after reconnecting when needed. |
+| Bridge recovery | `openclaw_bridge_restart` | Restart the local bridge from ChatGPT without restarting your Gateway or Tunnel. |
+| Browser automation | `openclaw_browser` | Explore websites, fill forms, handle uploads and downloads, and see where ChatGPT clicks. |
+| Desktop automation | `openclaw_computer` | Work with Windows apps using the screen, mouse, and keyboard. |
+| File operations | `openclaw_ls`, `openclaw_read`, `openclaw_edit`, `openclaw_write`, `openclaw_apply_patch` | Explore, read, create, and update local files. |
+| Local project search | `openclaw_glob`, `openclaw_grep` | Find files and locate text across your projects. |
+| Runtime operations | `openclaw_exec`, `openclaw_process` | Run commands and tests, and follow longer-running tasks. |
+| Screenshot presentation | `openclaw_image_render` | View screenshots of your desktop directly in ChatGPT. |
+| Additional OpenClaw tools | `openclaw_tool_search`, `openclaw_tool_describe`, `openclaw_dispatch_action` | Discover and use other available tools in your OpenClaw setup. |
 
-This is the bridge's public interface, not a promise that every native OpenClaw capability is available in every installation. Availability depends on the runtime version, installed plugins, node hardware, pairing approvals, Gateway policy, and operating-system permissions.
+See [Browser capabilities](docs/BROWSER_CAPABILITIES.md) for browser actions and feedback controls, and [Desktop visual feedback](docs/CUA_CURSOR_EFFECTS.md) for Windows cursor and screen-border setup.
 
-## Quick Start
+Tool availability depends on the OpenClaw runtime version, installed plugins, paired devices, Gateway policy, and operating-system permissions.
 
-> **Note:** The steps below are for Windows; Linux and macOS have not yet been validated.
-
-The shortest path to trying the bridge:
+## Quick Start (Windows)
 
 1. **Prepare OpenClaw and the tunnel.** Make sure OpenClaw is installed and configured. Create an OpenAI Secure MCP Tunnel, associate it with your target ChatGPT workspace, and have a Platform API key with **Tunnels Read + Use** permission ready. See [Prepare the OpenAI tunnel](#prepare-the-openai-tunnel) for details.
 2. **Clone and configure** in Windows PowerShell:
@@ -99,11 +98,11 @@ For implementation guidance, see [Tool Exposure Guide](docs/TOOL_EXPOSURE_GUIDE.
 
 ### Requirements
 
-- Current setup and lifecycle scripts are written for **Windows/PowerShell**. The MCP server is built with Node.js, but setup and lifecycle support on other operating systems has not yet been validated.
+- Setup and lifecycle scripts currently require **Windows and PowerShell**; Linux and macOS have not been validated.
 - Node.js **22.17 or later** and npm.
 - `rg.exe` (ripgrep) on `PATH`, or set `OPENCLAW_RIPGREP_PATH` to its executable path.
 - An installed and configured OpenClaw runtime and Gateway.
-- An OpenAI Secure MCP Tunnel created in Platform and an **OpenAI Platform API key for `tunnel-client`** with Tunnels Read + Use permission. You also need a ChatGPT account/workspace that can add a custom MCP server. The project maintainer has verified that this bridge connects successfully on a **ChatGPT Free** account.
+- An OpenAI Secure MCP Tunnel created in Platform, an **OpenAI Platform API key for `tunnel-client`** with Tunnels Read + Use permission, and a ChatGPT account/workspace that supports custom MCP servers.
 
 ### Prepare the OpenAI tunnel
 
@@ -129,7 +128,7 @@ The default local application directory is:
 %LOCALAPPDATA%\OpenClawChatGPTBridge\
 ```
 
-It contains the generated configuration, tunnel profile, and runtime logs. The tunnel runtime API key is stored in Windows Credential Manager and is not written to a plaintext key file by the current setup flow. Keep generated configuration, profiles, and logs out of version control.
+It contains the generated configuration, tunnel profile, and runtime logs. Keep these files out of version control.
 
 On existing installations, rerun `npm run setup` once to migrate the old key file. Setup verifies the Credential Manager entry before removing that file. Normal file deletion cannot guarantee secure erasure of historical disk copies; rotate the key if you suspect prior exposure.
 
@@ -158,9 +157,9 @@ The autostart installer creates one Startup-folder shortcut named **OpenClaw Dir
 1. In ChatGPT on the web, open **Plugins**, select **+**, then choose **Add custom MCP server**.
 2. Enter a name and optional description. Under **Connection**, choose **Tunnel**, then select the same Secure MCP Tunnel created earlier (or enter its `tunnel_id` if prompted). Do not paste the local `http://127.0.0.1:19002/mcp` address into **Server URL** when using the tunnel connection.
 3. Configure authentication if the connection form requires it, review the risk warning, acknowledge it, and choose **Create as a plugin**.
-4. Review the discovered tool list and metadata. Install the resulting plugin, start a new conversation, type `@`, select the plugin, and test a low-risk operation.
+4. Review the available tools. Install the plugin, start a new conversation, type `@`, select the plugin, and test a low-risk operation.
 
-Adding the plugin is separate from running the local bridge and tunnel client. If the tunnel is not listed, verify that it is associated with the target ChatGPT workspace and that your Platform account has Tunnels Read + Use. The project maintainer has successfully connected this bridge using ChatGPT Free. See the [ChatGPT custom MCP server guide](https://help.openai.com/en/articles/12584461-connecting-custom-mcp-servers-in-chatgpt) for details.
+Adding the plugin does not start the local bridge or tunnel client. After an update adds new tools, refresh the plugin in ChatGPT. If the tunnel is not listed, check its ChatGPT workspace association and your Platform account's Tunnels Read + Use permission. See the [ChatGPT custom MCP server guide](https://help.openai.com/en/articles/12584461-connecting-custom-mcp-servers-in-chatgpt) for details.
 
 ## Tool behavior and boundaries
 
@@ -205,7 +204,7 @@ A successful snapshot also registers a short-lived screenshot reference. Call `o
 
 ### Files and local search
 
-The five file tools wrap OpenClaw's native `ls`, `read`, `edit`, `write`, and `apply_patch` tools. `openclaw_edit` is for targeted text replacements; `openclaw_write` intentionally replaces an entire file; `openclaw_apply_patch` uses OpenClaw's patch format. `openclaw_ls` and `openclaw_read` support batches of one to five paths. Read the current file before editing it and inspect the result afterward.
+The five file tools wrap OpenClaw's native `ls`, `read`, `edit`, `write`, and `apply_patch` tools. `openclaw_edit` makes targeted replacements, `openclaw_write` replaces entire files, and `openclaw_apply_patch` applies patches. `openclaw_ls` and `openclaw_read` support batches of one to five paths.
 
 **Path scope:** for this bridge instance, the five file tools disable OpenClaw's required-workspace-only guard. They can use absolute paths on drives accessible to the current Windows account, subject to normal filesystem permissions. `OPENCLAW_WORKSPACE_DIR` sets the base for relative paths; the Windows launcher sets it to the configured OpenClaw state directory's `workspace` folder. This wider path scope applies only to the five bridge file tools. It does not widen Browser/Computer permissions or grant additional `openclaw_exec` access. Treat writes and patches as consequential and use trusted paths.
 
@@ -229,7 +228,7 @@ The bridge refreshes effective tool availability before dispatch. OpenClaw remai
 
 <p><img src="https://raw.githubusercontent.com/Snoozemage/openclaw-direct-tools-for-chatgpt/main/docs/images/monitor-overview.png" alt="Local call monitor overview showing active sessions, tool-call history, and invocation details" width="100%"></p>
 
-The monitor is intended for local development and troubleshooting. It shows running, completed, and failed calls; arguments and output; duration; and diagnostics when available. It supports status filtering, copying a session or individual call as JSON, clearing in-memory history, and removing retained sessions. It retains at most the 200 newest events in memory.
+The monitor helps you follow what ChatGPT is doing and investigate failed calls. It shows running, completed, and failed operations, their duration, and details when available. You can filter calls, copy results, and clear the in-memory history (up to 200 recent events). It reconnects and refreshes automatically after the bridge restarts.
 
 Open it at `http://127.0.0.1:19002/monitor` (the port may differ if reconfigured). The server also provides `/healthz`, `/api/events`, `/api/sessions`, `/api/events/export`, and the `/events` SSE stream. Keep the monitor and bridge local; do not expose them to untrusted networks. Call arguments and results can contain private data, and redaction is best-effort.
 
@@ -291,7 +290,7 @@ Static checks cover JavaScript and PowerShell syntax plus selected architecture/
 
 ## Related projects and approaches
 
-These projects overlap with this bridge's ecosystem, but they are not dependencies of this repository. The links are included to clarify neighboring approaches, not to imply that the implementations are interchangeable.
+Related integrations and alternatives (none are dependencies of this project):
 
 - **[OpenClaw MCP Relay](https://docs.openclaw.ai/plugins/mcp-relay)** - OpenClaw's bundled relay for connecting ChatGPT, Codex, and Claude to a Gateway, including its Control UI and authorized conversation operations. It is the official Gateway-level integration path; this repository instead exposes a separately defined MCP tool surface through OpenAI Secure MCP Tunnel and direct bridge handlers.
 - **[chatgpt-web-agent](https://github.com/AxelHu/chatgpt-web-agent)** - The closest technical neighbor: a local MCP layer using OpenAI Secure MCP Tunnel and OpenClaw-backed tools. Its public surface and architecture differ, including a separate persistent execution runtime and optional Skills, Google Drive, and Feishu integrations; this repository focuses on direct Browser/Computer/Files/runtime wrappers plus bridge-native search, screenshot rendering, and dynamic tool discovery.

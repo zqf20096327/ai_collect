@@ -524,7 +524,7 @@ Lazy Predict helps build a lot of basic models without much code and helps under
 - [Learning Machine: An Interactive Book of Machine Learning](https://rentruewang.github.io/learning-machine/intro.html)
 - [Machine Learning Bookcamp](https://www.manning.com/books/machine-learning-bookcamp)
 - [Probabilistic Machine Learning: Advanced Topics (Kevin Murphy)](https://probml.github.io/pml-book/book2)
-- [Probabilistic Machine Learning: An Introduction (Kevin Murphy)](https://probml.github.io/pml-book/book1.html)
+- [Probabilistic Machine Learning: An Introduction (Kevin Murphy)](https://probml.github.io/pml-book/book1.html) <!--- comment -->
 
 <!-- omit in toc -->
 ### Cheetsheets
@@ -942,7 +942,7 @@ I prefer going through this book using [Amazon SageMaker](https://d2l.ai/chapter
 - [Исчерпывающий гайд по опенсорсным языковым моделям](https://skillbox.ru/media/code/ischerpyvayushchiy-gayd-po-opensorsnym-yazykovym-modelyam/#stk-8)
 - [Open-Source AI Cookbook](https://huggingface.co/learn/cookbook/index)
 - [Building LLM applications for production](https://huyenchip.com/2023/04/11/llm-engineering.html)
-- [LLM Visualization](https://bbycroft.net/llm)
+- [LLM Visualization](https://bbycroft.net/llm) <!--- comment -->
 - [The Illustrated Transformer by Jay Alammar](https://jalammar.github.io/illustrated-transformer/)
 - [The Annotated Transformer](https://github.com/harvardnlp/annotated-transformer/blob/master/AnnotatedTransformer.ipynb) + [Neural networks by 3Blue1Brown](https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
 - [Elicit Machine Learning Reading List](https://github.com/elicit/machine-learning-list)
@@ -1241,4 +1241,4 @@ Every LLM is implemented from scratch with no abstractions and full control, mak
 - [System Design by Karan Pratap Singh](https://github.com/karanpratapsingh/system-design) <!--- comment -->
 - [System Design 101](https://github.com/ByteByteGoHq/system-design-101)
 - [Systems Design Interview Guide](http://patrickhalina.com/posts/systems-design-interview-guide/)
-- [Designing Distributed Systems](https://azure.microsoft.com/en-us/resources/designing-distribute
+- [Designing Distributed Systems](https://azure.microsoft.com/

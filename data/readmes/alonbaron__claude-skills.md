@@ -10,7 +10,7 @@
   <img alt="Claude Code plugin marketplace" src="https://img.shields.io/badge/Claude_Code-2_plugins-125190?style=flat-square&labelColor=0E1024">&nbsp;
   <img alt="6 skills + 1 workflow" src="https://img.shields.io/badge/skills-6_+_1_workflow-4174A6?style=flat-square&labelColor=0E1024">&nbsp;
   <img alt="alon-skills v3.2.2" src="https://img.shields.io/badge/alon--skills-v3.2.2-125190?style=flat-square&labelColor=0E1024">&nbsp;
-  <img alt="workflow-watch 0.4.2" src="https://img.shields.io/badge/workflow--watch-0.4.2-4174A6?style=flat-square&labelColor=0E1024">&nbsp;
+  <img alt="workflow-watch 0.11.6" src="https://img.shields.io/badge/workflow--watch-0.11.6-4174A6?style=flat-square&labelColor=0E1024">&nbsp;
   <a href="#-evals"><img alt="evals: 19/19 passing" src="https://img.shields.io/badge/evals-19%2F19_passing-067647?style=flat-square&labelColor=0E1024"></a>&nbsp;
   <img alt="MIT license" src="https://img.shields.io/badge/license-MIT-067647?style=flat-square&labelColor=0E1024">&nbsp;
   <a href="https://github.com/alonbaron"><img alt="by alonbaron" src="https://img.shields.io/badge/by-alonbaron-125190?style=flat-square&labelColor=0E1024&logo=github&logoColor=white"></a>
@@ -141,20 +141,20 @@ The skills and build-loop run on auto. They approve their own actions and don't 
 
 ## ◢ Watching a session or a run
 
-<p align="center"><img alt="The Tracker pane in its dark and light themes during a review: Minimize, theme and Hide buttons, a header with the session name, 13 done, 0 failed, 4 running and 113.2k output tokens, a timeline of the last ten items, then the review-swarm cards newest first, three verifiers running with an amber outline above the finished tests lens" src="assets/workflow-watch.png" width="880"></p>
+<p align="center"><img alt="The Tracker pane in its dark and light themes during a run: Minimize, theme, Auto-open and Hide buttons, then the console. SESSION is one rule with the session name, 8 done, 2 live and the clock. NOW shows the live turn, its tool and the agent's plan with two steps done, one under way and one to go. DECISIONS lists an answered question, a refused git push --force and the question the last turn left. CHANGES shows 66 tests passing where 61 did, the four files edited most, the last commit and 15 commands. QUALITY is folded to its button with its count. USAGE has three meters for the context window and the 5-hour and 7-day limits with a pace notch each, then cost, tokens and cache share. TURNS lists three entries newest first: a running turn with a live verifier agent, a review turn with the review-swarm skill, three agents and a commit on a tree, and the first turn with the ponytail skill." src="assets/workflow-watch.png" width="880"></p>
 <p align="center"><sub>Drawn by the pane's own card code from a real session's timings, models and item kinds. The session id, labels and results are made up.</sub></p>
 
 The tracker follows any open session, not only Workflow runs, and shows everything that happens while an agent builds: main-thread turns (`TURN`), skills fired (`SKILL`), spawned subagents (`AGENT`, such as parallel review-swarm lenses and verifiers or council advisors), git commits (`COMMIT`), and Workflow stages (`STAGE`). Above, review-swarm is late in a branch review. All six lenses are done, and three verifiers are still checking their findings. A header card holds the counts and output tokens, a timeline plots the last ten items on a shared clock, and every item then gets a rounded card, newest first, under a pill naming its phase (`Turn N`, `Skill · <name>`, or the Workflow phase). `scripts/tracker.mjs` draws the same feed as an HTML page, in run order: a header KPI strip, a **Timeline Waterfall** colored by model tier and outcome, and a card per item with metric pills (duration, tool calls, output tokens) and a fold that reveals the span bar, the tool call trail (`Bash`, `Read`, `Grep`, etc.) and the full output. Only running items start open. Three ways to get it:
 
 - **`scripts/tracker.mjs`**, from any shell: `node <plugin-root>/scripts/tracker.mjs [--session <id> | --run <dir|wf_id>] [--out tracker.html] [--png tracker.png] [--watch]`. With no flags it picks the newest Claude Code session (CLI or VS Code extension) under `~/.claude/projects/<project>/`. `--session <id>` (or an id prefix) renders that session's full activity feed: `<session>.jsonl`, `<session>/subagents/agent-*` and any `workflows/<run>/journal.jsonl`. `--run` renders a single workflow run, by directory or by its `wf_…` name. `--png` adds a screenshot via Playwright (`--playwright <path>` when not in default module resolution). `--watch` re-renders every five seconds, until the last stage ends for a workflow run, or until Ctrl+C for a session.
 - **In VS Code** (the Claude Code extension): run `node scripts/tracker.mjs --watch` in the integrated terminal and open `tracker.html` with **Simple Browser** or **Live Preview**. With `--watch` the page reloads itself every five seconds and keeps your scroll position and open folds.
-- **`mods/workflow-watch`** (0.4.2), inside Claude Code: a mod (a plugin of function hooks) that opens on `session.start` and follows the active session and its workflows live in the `Tracker` pane beside the chat. It draws nothing else, so the chat gets no band above the prompt, status line entry or toasts. In VS Code the pane is drawn as rounded cards, newest first, with a dark/light toggle and a timeline you can fold. `/plugin install workflow-watch@alonbaron`, or `claude --plugin-dir mods/workflow-watch` for one session; `/tracker` (or `/workflow-watch`) opens the pane and prints the report as text. On Windows it finds the home directory from `USERPROFILE` when `HOME` is unset, as in the VS Code extension host.
+- **`mods/workflow-watch`** (0.11.6), inside Claude Code: a mod (a plugin of function hooks) that opens on `session.start` (unless you turn auto-open off) and follows the active session and its workflows live in the `Tracker` pane beside the chat. It draws nothing else, so the chat gets no band above the prompt, status line entry or toasts. In VS Code the pane is drawn as rounded cards, newest first, with a dark/light toggle and a timeline you can fold. `/plugin install workflow-watch@alonbaron`, or `claude --plugin-dir mods/workflow-watch` for one session; `/tracker` (or `/workflow-watch`) opens the pane and prints the report as text. On Windows it finds the home directory from `USERPROFILE` when `HOME` is unset, as in the VS Code extension host.
 
 ### Minimize and hide
 
-<p align="center"><img alt="The pane minimized to one strip, twice: on the left in dark mode mid-run, showing the session name, 13 done and 4 running, and the running verifier with its time; on the right in light mode after the session went idle, showing 6 done and 0 running, and turn 2 as the last item done" src="assets/workflow-watch-minimized.png" width="880"></p>
+<p align="center"><img alt="The pane minimized to one strip, twice: on the left in dark mode mid-run, the NOW card with the live turn, its tool and the plan with the step under way; on the right in light mode after the session went idle, the finished turn's closing line, every plan step done, and a DECISIONS card with the one question waiting for an answer." src="assets/workflow-watch-minimized.png" width="880"></p>
 
-The pane sizes itself to what the session is doing. While anything runs you get every card. After 20 seconds with nothing running it folds down to one strip: the session name, its counts, and the item that finished last. **− Minimize** and **+ Expand** override that until the session next starts or stops working, and then the pane goes back to sizing itself. **✕ Hide** closes the pane. It opens again when the next turn starts, or when you type `/tracker`, which always opens it at full size. The terminal folds the same way, without the buttons.
+The pane sizes itself to what the session is doing. While anything runs you get every card. After 20 seconds with nothing running it folds down to one strip: the session name, its counts, and the item that finished last. **− Minimize** and **+ Expand** override that until the session next starts or stops working, and then the pane goes back to sizing itself. **✕ Hide** closes the pane for the rest of the session. Only `/tracker`, which always opens it at full size, or a new session brings it back. The **Auto-open** button beside it is the same setting as a row under `/config` and decides whether the pane opens by itself at all. It is on by default, so the pane opens when a session starts and when work resumes after a quiet spell. Turn it off and only `/tracker` opens the pane. The terminal folds the same way, without the buttons.
 
 ---
 
@@ -217,6 +217,62 @@ Not shipped here and not mine. Two third-party skills the hand-offs above are wr
 One catch worth knowing about humanizer: as of v2.9.1 the plugin puts `SKILL.md` at its root instead of `skills/humanizer/SKILL.md`. Claude Code installs it, reports it enabled, and never loads it. Copy `SKILL.md` out of `~/.claude/plugins/cache/humanizer/humanizer/<version>/` into `~/.claude/skills/humanizer/` and it works.
 
 ---
+
+## ◢ What's new in workflow-watch 0.11.6
+
+- A sentence wraps onto further rows instead of being cut at the card's edge: the NOW title and its live line, the plan's steps, the DECISIONS, CHANGES and QUALITY lines, a turn's title, prompt, result and digest, and the USAGE readings and figures, each card growing by the rows it needs (four at most per line); a turn's title now runs to 100 characters of the prompt's first sentence.
+
+## ◢ What's new in workflow-watch 0.11.5
+
+- The cards are laid out at the pane's own width, read from the columns the surface reports, so the text keeps its size in a narrow pane and lines are cut to fit instead of the whole card shrinking or running off the side; the README pictures are drawn again from the 0.11 console.
+
+## ◢ What's new in workflow-watch 0.11.4
+
+- The cards stop shrinking at about their 440-pixel grid (55 columns), so a narrow pane overflows sideways instead of making the text small; a wide pane still fills.
+
+## ◢ What's new in workflow-watch 0.11.3
+
+- The rows of buttons wrap to the pane's width, so a narrow pane stacks them instead of cutting Minimize and the theme button off at the left; the panels keep scaling to the same width.
+
+## ◢ What's new in workflow-watch 0.11.2
+
+- The panels scale to the pane's width, so they and the button row above them span the same width whatever size or side the pane has, minimized or not.
+
+## ◢ What's new in workflow-watch 0.11.1
+
+- The Auto-open button now keeps its choice where the engine refuses a plugin's `/config` write (the desktop app's relayed session); a rule's caps are held to the width they cover, so a long right label no longer spills onto the hairline; one unit of air sits between the console's rows; a folded section's SVG is not built; a turn's children come from one pass over the stages; and `tsconfig.json` ships with the mod.
+
+## ◢ What's new in workflow-watch 0.11.0
+
+- Every section after NOW folds to its button: `− Changes` open, `+ Changes · 4` folded, the number being what the fold hides. The set you folded is kept between sessions, as the theme is. TURNS shows the last eight entries and its rule reads `LAST 8 OF 23`; `Show all 23` beside the fold lists every entry for the rest of the session. SESSION and NOW never fold; the minimized pane and the terminal are unchanged.
+
+## ◢ What's new in workflow-watch 0.10.0
+
+- The desktop and VS Code pane is now an oversight console rather than a stack of cards: one monospace grid with six sections. SESSION, NOW (the live turn and the agent's plan with the step it is on), DECISIONS, CHANGES, QUALITY, USAGE with twenty-cell meters and a pace notch, and TURNS, where each turn is one entry with the skills, subagents and commits that ran inside it on a thin tree. Idle, the pane folds to NOW plus any question waiting for you. The timeline card is gone from the desktop; the terminal keeps its text timeline.
+
+## ◢ What's new in workflow-watch 0.9.0
+
+- The text report (`/tracker`, the terminal pane, the mobile app) now carries four oversight sections read off the session log: **NOW**, the plan the agent declared and the step it is on; **DECISIONS**, the question it left you, what you answered, and what the host refused; **CHANGES**, the last test run against the one before, the files it keeps editing, its commits and command count; **QUALITY**, the review findings and what became of them, subagent verdicts, and skills fired. The desktop drawing of these panels is the next release.
+
+## ◢ What's new in workflow-watch 0.8.1
+
+- The buttons are readable again in the desktop app. The host draws them in its own theme, and the pane used to paint a light background under them, which hid their white labels. The pane no longer paints a background; the cards carry the theme.
+
+## ◢ What's new in workflow-watch 0.8.0
+
+- Two actions in the pane. **Copy prompt** under a turn card puts that turn's prompt on your clipboard. **Compact now** appears in its own row when the context window is 80% full and nothing is running; it takes a second press before it runs the same compaction as `/compact`, and it forgets the first press as soon as work starts. No Stop button, since the plugin API has none for subagents and Escape already stops the main turn.
+
+## ◢ What's new in workflow-watch 0.7.0
+
+- Turn cards now say what the turn was and did. The label carries a title taken from your prompt's first sentence, the result line is the first sentence of Claude's closing text instead of a trailing fragment, and a digest line counts the files edited, commands run, commits, agents and skills of that turn. A **+ more** button under a card opens the whole prompt and answer and the last eight tool calls.
+
+## ◢ What's new in workflow-watch 0.6.0
+
+- A usage card under the header, fed by the engine's own figures: context fill, the 5-hour and 7-day rate limits with a pace tick and reset countdown, the session's cost in dollars, input and output tokens, the prompt cache hit share, and a cache clock. Nothing the engine has not reported is shown as 0. Each finished card also shows its input tokens and cache share. A **Prompt cache lifetime** row under `/config` sets the cache clock, 5 minutes by default.
+
+## ◢ What's new in workflow-watch 0.5.0
+
+- **✕ Hide** now holds for the whole session. Your next message no longer brings the pane back. A new **Auto-open** setting, a button in the pane and a row under `/config`, turns the automatic open off altogether, so only `/tracker` opens the pane. See [Minimize and hide](#minimize-and-hide).
 
 ## ◢ What's new in workflow-watch 0.4.2
 

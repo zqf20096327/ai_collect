@@ -1,0 +1,164 @@
+<div align="center">
+
+# BBAIGC MiniMax H3 小陈工作台
+
+### 一张参考图＋自由剧本，AI 全自动完成本地视频制作
+
+![版本](https://img.shields.io/badge/版本-V1.3.4-1677ff?style=flat-square)
+![ComfyUI](https://img.shields.io/badge/ComfyUI-视频工作流-18181b?style=flat-square)
+![MiniMax](https://img.shields.io/badge/MiniMax-H3-f59e0b?style=flat-square)
+![Ollama](https://img.shields.io/badge/Ollama-分镜规划-7c3aed?style=flat-square)
+![Qwen](https://img.shields.io/badge/Qwen_Image-2.1-16a34a?style=flat-square)
+![本地运行](https://img.shields.io/badge/视频-H3本地运行-15803d?style=flat-square)
+![长视频](https://img.shields.io/badge/单任务-最多100镜头_%2F_25分钟-0369a1?style=flat-square)
+
+[使用说明](docs/WORKBENCH_GUIDE.md) · [快速安装](#智能体开箱即用--复制即装) · [模型下载](MODELS.md) · [安装提示词](AGENT_INSTALL.md) · [版本清单](release.json)
+
+</div>
+
+**放一张参考图，写一句话、一段故事或完整剧本，把从想法到成片的流程交给工作台。** 配置好模型，开启“AI 分镜”和“生图后生成视频”，点击运行，工作台会规划镜头、分配时长、生成分镜图、逐镜生成视频，最后合成完整成片。文字规划与图片生成可以分别选择本地或自己的API服务；视频由本地H3生成。
+
+> [!TIP]
+> **一键串起：参考图＋剧本 → AI 自动分镜与时长分配 → 分镜生图 → 视频生成 → 完整成片。**
+>
+> **视频由本地 H3 生成。文字规划与图片生成可分别选择本地模型或自己的 API 配置。** 启用云端路线时，在主面板选择已保存的模型服务；本地路线不需要该服务的 API Key。
+
+## 最值得用它的四个理由
+
+| 你需要做的 | 工作台替你完成的 |
+|---|---|
+| 给参考图，讲清楚故事 | 支持一句话、自由剧本或完整原稿，本地 AI 拆分镜头、分配时长并整理逐镜提示词 |
+| 一次安排一整段视频 | 单任务最多 **100 个镜头**，每镜 **1～15 秒**，目标总时长最高 **25 分钟**；按顺序生成并合成 |
+| 中途暂停，随后接着做 | 保留分镜计划和已有结果，续跑时复用可用进度，按需重做指定镜头 |
+| 某一张分镜不满意 | 直接上传、拖入或粘贴替换图片，保留剧本和计划，再继续制作视频 |
+
+原始剧本框内有麦克风入口，支持连续语音识别、在光标处插入及替换选中文字。也能使用自己的分镜图，从外部生图工具接着完成视频制作。
+
+## 作者设备上的耗时参考
+
+**RTX 5060 Ti 16GB · Intel i7-12700KF · 64GB 内存**
+
+| 成片时长 | 生成方案 | 作者提供的等待时间参考 |
+|---|---|---|
+| **1 分钟视频** | 常规方案 | **约 1 小时** |
+| **1 分钟视频** | 开启加速节点／加速方案 | **约半小时，约 30～35 分钟** |
+| **15 秒视频** | 常规方案 | **十多分钟，约 13 分钟** |
+
+以上为使用经验参考，各方案参数不同，不能作为同条件性能对比。加速方案用于缩短等待，实际耗时取决于分辨率、镜头数、步数、声音设置和内存卸载。这里的“一小时”是生成等待时间；当前单任务的成片时长上限见上表。
+
+![BBAIGC MiniMax H3 小陈工作台总览](docs/assets/workspace.jpg)
+
+> 当前截图展示工作流与操作布局，不代表特定题材的生成效果。
+
+## 一条流程完成哪些事
+
+| 环节 | 工作台能力 |
+|---|---|
+| 视频输入 | 滑动切换图生视频／文生视频；文生可先生成分镜提示词，单镜上传图片后自动转为首帧图生视频 |
+| 故事与分镜 | 本地语言模型规划镜头、分配内容，保留可编辑分镜计划 |
+| 提示词 | 按模型规则优化视频提示词，支持前置规则与逐镜调整 |
+| 参考图 | 多图集中上传；图1、参考图2、image 3、ref 1等自动绑定，也支持@；首帧/尾帧与镜头关联 |
+| 分镜生图 | Qwen Image 2.1 普通版/Turbo 与采样参数直接可调；分镜原图默认长边 2K，视频再按比例和 480P/720P 等档位适配 |
+| 独立种子 | 分镜与视频各有固定/随机切换，默认随机；固定视频种子后关闭加速，可保留计划和分镜重跑视频 |
+| 工作流恢复 | 新 PNG、单镜 MP4 与合片保存执行时工作流；任务目录另存可导入 JSON，旧无元数据文件不会自动补成当前参数 |
+| 连续生成 | 顺序处理镜头与衔接，减少并行加载带来的资源压力 |
+| 音轨与字幕 | 可选配音、音色分配与字幕处理；按启用能力准备相应依赖 |
+| 复用与重做 | 导入已有分镜计划、针对镜头修改或重新生成；随机模式重做仅为本镜换视频种子，固定模式沿用原种子 |
+| 语音直接写剧本 | 输入框内点麦克风即可录入；也保留可复制到其他工作流的独立语音节点 |
+
+面板支持拖放参考图与 **Ctrl＋滚轮** 缩放；只安装一份共享节点，图片工作台可共同使用。
+
+文生视频可选择基础模型搭配独立加速、已有RefDelta融合权重，或Pika H3 Flex专用六步路线。普通H3的4/8步是快捷预设，实际可输入1～100步，权重档位独立保存；Pika保留其固定日程。切换图生/文生不会暗换模型。文生任务可在同一计划中给指定镜头补图，无需在原剧本补写图片引用。连续衔接默认承接上一镜真实末帧，可手动关闭。
+
+V1.3新增视频/图片独立多LoRA槽、文字/图片API设置、可选视频二采和跟踪脸修，均可单独开关。修正Nodes 2.0节点四角缩放、分镜/成片分隔拖动和工作台打开定位。参数、使用步骤与真实限制见[完整使用说明](docs/WORKBENCH_GUIDE.md)。
+
+本次样片使用RTX 5060 Ti 16GB与64GB内存，640×480、两镜各8秒、融合8步：文生视频流程约379秒；图生流程包含文字规划约71秒、两张低档1K分镜API图约64秒、本地视频约377秒，合计约511秒。单次样本不是速度保证，分辨率、场景、模型和显存预算都会改变时间。
+
+字幕优先按语音识别的词级时间戳显示，长句按约 10 个汉字、标点或完整英语单词分段，空档不显示首条字幕。缺少词级时间时只能在识别区间内估算分段时间；识别准确度仍取决于本地 Whisper。未编辑的旧自动字幕缓存会重新识别一次，手动编辑的时间与文本保留。
+
+## 五种镜头组织方式
+
+| 模式 | 适合场景 |
+|---|---|
+| 逐镜参考图 | 每个镜头有明确的画面设计 |
+| 上一镜末帧 | 需要承接前一镜最后画面的连续镜头 |
+| AI 生成分镜 | 从想法或剧本出发，减少手工准备图片 |
+| 手动分镜图 | 已在其他工具绘制或生成分镜 |
+| 末帧高清续接 | 以高清处理后的末帧继续后续镜头 |
+
+“一句话自动生成”需要准备好语言模型、图像模型与视频模型，并开启“AI 分镜”和“生图后生成视频”。只想先检查分镜图时，关闭后一个开关，工作台会先完成备图，确认后再继续视频生成。
+
+## 智能体开箱即用 · 复制即装
+
+支持 **Codex、Claude Code、Cursor、Windsurf、Trae、通义灵码、CodeBuddy** 等具备本地工具权限的智能体。直接复制下面完整代码块，粘贴到智能体输入框。GitHub 的复制按钮在代码块右上角，移入代码块即可看到。智能体会识别环境、检查硬件、准备依赖与所选模型，并完成部署检查。
+
+```text
+请在我的电脑上安装 BBAIGC「MiniMax H3 小陈工作台」。
+仓库：https://github.com/BBAIGC/ComfyUI-BBAIGC-MiniMax-H3
+
+先读取仓库的 README.md、MODELS.md、AGENT_INSTALL.md 和 release.json，再按照 AGENT_INSTALL.md 的完整步骤直接完成部署。自动找到我实际使用的 ComfyUI、Python 环境、模型与用户目录，保留现有模型、提示词、密钥和输出。复用已安装的共享节点，避免重复注册；按 MODELS.md 的来源、精确文件名、大小和位置下载真正需要的模型。不要盲目重装或降级已可工作的 PyTorch，不要把私有密钥写入工作流或上传仓库。
+如果尚未指定模型方案，先检查显存和内存，再一次性让我选择：A作者同款Qwen图片组合＋有公开下载来源的H3基础模型与官方8步LoRA；B适配本机的同架构量化；C高配更高精度；D同款加一个适配档。说明下载体积和兼容性后再下载，已有选择就直接执行。
+我的目标是一张参考图加自由剧本，全程用本地模型自动生成完整视频。请配齐本地语言规划、分镜生图、H3视频、语音识别与合成所需组件，并检查“AI分镜”和“生图后生成视频”的设置。只做加载检查，先不启动推理。完成后告诉我实际路径、版本、模型和入口。需要登录、验证码或接受模型许可时再让我操作；其他可自动完成的部分直接继续。
+```
+
+[完整安装提示词与细节 →](AGENT_INSTALL.md)
+
+
+也可手动安装：先阅读 [模型与节点清单](MODELS.md)，将节点仓库安装到当前 ComfyUI 的 `custom_nodes`，在对应 Python 环境安装 `requirements.txt`，把公开工作流导入 `user/default/workflows/BBAIGC`，随后重启并检查是否缺失节点。图片工作流仓库是工作流包，实际共享运行节点来自 H3 仓库。
+
+## 命令安装
+
+推荐先使用上面的智能体安装提示词。以下 PowerShell 示例需将三个路径改成当前实例的真实位置：`ComfyCore` 含 `folder_paths.py`，`ComfyBase` 含实例的 `custom_nodes/models/user`，`ComfyPython` 是运行它的 Python。Desktop、便携版与手工安装不能混用环境。
+
+```powershell
+$ComfyCore = 'C:\ComfyUI\ComfyUI'
+$ComfyBase = 'C:\ComfyUI'
+$ComfyPython = 'C:\ComfyUI\.venv\Scripts\python.exe'
+git clone https://github.com/BBAIGC/ComfyUI-BBAIGC-MiniMax-H3
+& $ComfyPython ".\ComfyUI-BBAIGC-MiniMax-H3\install.py" --comfy-root $ComfyCore --base-dir $ComfyBase --download-models h3 --with-speech
+```
+
+安装器保留已有用户工作流与密钥，复用同一来源的节点，先检查已有 PyTorch 栈再安装依赖。首次没有选定量化时先读 [模型档位](MODELS.md)，不要直接下载所有模型。将 `--download-models` 改为 `none` 可只装节点与工作流；`speech`、`qwen-turbo`、`krea`、`h3` 是相应模型组合，`--with-speech` 额外补齐语音四文件。下载组合只决定文件下载，不会擅自改动现有工作流的模型选择；打开后按所选模型切换路线并检查文件名。
+
+`h3` 组合不包含图片生成三件套与 Ollama。要使用自动分镜生图，再按 [MODELS.md](MODELS.md) 安装作者同款图片模型或选定的量化方案；已有参考图片的视频路线可跳过本地分镜生图模型。
+
+## 模型与环境
+
+作者设备：**RTX 5060 Ti 16GB · i7-12700KF · 64GB 内存**。H3 官方基础四件套约 **40.07 GB**，加一份官方加速 LoRA 约 **42.03 GB**。这是磁盘占用，模型通过内存卸载运行，不能把文件总大小当作显存要求。完整 AI 分镜另需 Qwen 图片三件套与 Ollama；语音模型另选。详细文件、量化档位、目录与下载命令见 [MODELS.md](MODELS.md)。
+
+公开默认采用有明确下载来源的官方基础模型与加速 LoRA。稀疏注意力、分块低显存、参考视频与本地配音均为按需组件，使用对应功能前需安装相应可选插件。
+
+耗时参考已列在本页前部的“作者设备上的耗时参考”。模型体积表示磁盘下载量，显存适配和量化选择详见模型清单。
+
+## 上游与依赖
+
+| 组件 | 来源 | 是否必需 |
+|---|---|---|
+| MiniMax H3 原生模型与节点 | [ComfyUI](https://github.com/Comfy-Org/ComfyUI) · [MiniMaxAI](https://huggingface.co/MiniMaxAI/MiniMax-H3) | 视频生成需要 |
+| Ollama | [ollama.com](https://ollama.com) | 使用本地 AI 分镜/提示词规划时需要；云端文字服务可选 |
+| GGUF 加载 | [city96/ComfyUI-GGUF](https://github.com/city96/ComfyUI-GGUF) | 使用 GGUF 图片模型时需要 |
+| 分块低显存节点 | [kijai/ComfyUI-KJNodes](https://github.com/kijai/ComfyUI-KJNodes) | 启用对应策略时需要 |
+| H3 稀疏注意力 | [ethanfel/ComfyUI-PlagueKind-Nodes-only-sparse](https://github.com/ethanfel/ComfyUI-PlagueKind-Nodes-only-sparse) | 可选加速 |
+| AI-Toolkit 参考视频预处理 | [ostris/ComfyUI-AIToolkit-MiniMaxH3](https://github.com/ostris/ComfyUI-AIToolkit-MiniMaxH3) | 参考视频扩展路线可选，当前主工作流未直接引用该节点 |
+| Qwen 本地配音 | [flybirdxx/ComfyUI-Qwen-TTS](https://github.com/flybirdxx/ComfyUI-Qwen-TTS) | 可选 |
+
+AI-Toolkit 组件用于与训练时的参考视频预处理对齐，包括 24fps 采样与模型帧网格；它不替代 H3 模型。保留所有上游组件的许可与署名。
+
+## 更新
+
+工作台版本与发布下载入口见 [release.json](release.json)。更新共享节点时，图片与视频工作台会同时使用更新后的核心；请保留自己的 JSON 与本机配置。模型权重需按[模型清单](MODELS.md)单独准备。
+
+## 联系与支持
+
+有问题可通过 [Issues](https://github.com/BBAIGC/ComfyUI-BBAIGC-MiniMax-H3/issues) 反馈，附工作流版本、模型名称和脱敏后的错误信息。
+
+<table>
+<tr><th>联系作者</th><th>微信支持</th><th>支付宝支持</th></tr>
+<tr>
+<td align="center"><img src="docs/assets/wechat-contact.png" width="200" alt="作者微信二维码"></td>
+<td align="center"><img src="docs/assets/wechat-support.jpg" width="200" alt="微信自愿打赏二维码"></td>
+<td align="center"><img src="docs/assets/alipay-support.jpg" width="200" alt="支付宝自愿打赏二维码"></td>
+</tr>
+</table>
+
+模型、依赖插件与本项目各自遵循其许可证。BBAIGC 提供工作台与流程整合，上游模型及节点作者保留各自署名。

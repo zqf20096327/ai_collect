@@ -2,9 +2,9 @@
 
 # Gabby
 
-### A stateless agent execution runtime
+### An Agent Runtime and Governance Framework
 
-Gabby executes configured AI agents within explicit runtime boundaries. It manages model calls, skills, tools, knowledge retrieval, verification, and policies for each request, then returns a result without owning the consuming application's conversation history or durable user state.
+Gabby helps developers define what an AI agent can do, govern how it uses tools, and execute each request within explicit limits. It combines reusable agent and skill definitions with policy checks, optional approvals and verification, bounded tool execution, and traceable results. Gabby is stateless between runs: the consuming application owns conversation history and durable user state.
 
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
@@ -19,9 +19,13 @@ Gabby executes configured AI agents within explicit runtime boundaries. It manag
 
 ## About
 
-Gabby is for developers who need a reusable runtime boundary around agent execution. A host application supplies the request and any context or memory it wants the agent to use. Gabby runs the configured agent, enforces its runtime contracts, and returns the output and optional trace. Execution state is temporary; persistence remains with the host by default.
+Gabby is for developers who need a consistent way to configure agent capabilities, govern tool access, and execute agent work. A host application supplies a request and any context or memory it wants the agent to use. Gabby validates the agent definition, applies its configured runtime contracts, executes model and tool calls within the configured bounds, and returns the output and optional trace. Execution state is temporary; persistence remains with the host by default.
+
+Gabby is complementary to agent orchestration frameworks such as LangChain, CrewAI, and IBM BeeAI. Those frameworks help developers compose agents and workflows; Gabby focuses on the runtime boundary for a configured agent: enforcing tool permissions and policies, applying approvals and verification, bounding execution, and returning traceable results. Gabby does not aim to replace an application's orchestration layer. It can serve as the governed execution runtime for an agent or workflow selected and coordinated by the host application.
 
 The runtime is asynchronous first, with synchronous convenience methods and a FastAPI service. The same agent definition can be used from Python, through the versioned HTTP API, or as a local MCP server. Model providers, tools, retrieval, policy engines, verification, and tracing are replaceable through Python interfaces.
+
+Gabby governs agent execution inside the runtime. It is not a hosted multi-tenant control plane, an identity-management system, or the owner of application conversations and durable memory. Host applications remain responsible for caller identity, long-term state, and deployment-level isolation. See the [architecture](docs/ARCHITECTURE.md) and [threat model](docs/THREAT_MODEL.md) for these boundaries.
 
 ## Architecture
 
@@ -30,16 +34,17 @@ Host application
   ├── owns conversation history and durable state
   └── sends request + selected context
         ↓
-Gabby stateless execution runtime
+Gabby governance and execution runtime
   ├── resolved agent definition and skills
   ├── model provider and knowledge retrieval
-  ├── policy checks, tool execution, verification
+  ├── policy checks and bounded tool execution
+  ├── optional approvals and verification
   └── bounded result and optional trace
         ↓
 Host application
 ```
 
-An agent definition composes a model, environment, skills, tools, knowledge sources, instructions, policies, and verification. At construction, Gabby validates and resolves configuration into an immutable execution plan. Each run receives its own transient state and ends with a result; it does not implicitly create a chat session or persistent memory.
+An agent definition composes a model, environment, skills, tools, knowledge sources, instructions, policies, and verification. At construction, Gabby validates and resolves configuration into an immutable execution plan. Each run receives its own transient state and ends with a result; it does not implicitly create a chat session or persistent memory. Stateless execution is the runtime's state-ownership model; governance and controlled tool execution are the product's central purpose.
 
 ## Runtime capabilities
 
@@ -61,7 +66,7 @@ Gabby’s controls are not all enabled by default. Skill signing is optional, sa
 Clone the repository, then sync the locked development environment:
 
 ```sh
-git clone https://github.com/orbit-projects/gabby.git
+git clone https://github.com/undreamt-oss/gabby.git
 cd gabby
 uv sync --frozen --group dev --extra server --extra auth
 ```
@@ -88,6 +93,6 @@ Gabby is pre-1.0 alpha software. Public extension APIs may change before v1.0. L
 
 ## Open source and contributing
 
-Gabby is maintained as part of the [Undreamt](https://github.com/undreamt-hq) open-source community and follows the shared OSS maintenance baseline used by Orbit Core. Contributions are welcome across runtime behavior, providers, documentation, examples, accessibility, security, and developer experience.
+Gabby is maintained in the [undreamt-oss](https://github.com/undreamt-oss) organization. Contributions are welcome across runtime behavior, providers, documentation, examples, accessibility, security, and developer experience.
 
 Before contributing, read the [contributing guide](CONTRIBUTING.md), [governance](GOVERNANCE.md), and [security policy](SECURITY.md). See the [documentation index](docs/index.md) for architecture, extension contracts, operations, and release guidance.

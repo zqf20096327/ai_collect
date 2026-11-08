@@ -143,14 +143,26 @@ neurobrix run --model TinyLlama-1.1B-Chat-v1.0 \
 `neurobrix import <org>/<name>` installs the model under `~/.neurobrix/cache/<name>`, and
 `--model` takes that `<name>`.
 
-To keep a model loaded between requests, start the serving daemon:
+A run prints its result on stdout (the generated text, the transcript, or `SAVED: <path>` for a file) and a few
+status lines on stderr: the engine in use and the run time, and on the very first run a line saying the machine is
+being measured once for its hardware profile, with the time it expects. `-v` adds the engine's developer lines — the
+plan, the loaders, the kernel directory, the timings — `-vv` the traceback of an error, and `NBX_LOG=debug` in the
+environment both.
+
+### Serve and chat
+
+`neurobrix serve` keeps a model loaded in a background daemon between requests; `chat` talks to a language model
+through it, and `run` uses it when it serves the same model:
 
 ```bash
 neurobrix serve --model TinyLlama-1.1B-Chat-v1.0
-neurobrix chat                       # interactive multi-turn chat
+neurobrix chat                       # interactive multi-turn chat (/new, /context, /status, /quit)
 neurobrix run --prompt "Hello"       # --model can be omitted while a daemon is running
 neurobrix stop                       # stop the daemon and free GPU memory
 ```
+
+Whether the weights stay on the device between requests (warm) depends on the plan Prism chooses for the machine;
+`serve` says which. Details, including how a conversation and its KV cache behave today: [Serving and chat](docs/serving.md).
 
 ---
 
@@ -311,6 +323,7 @@ not filed as public issues.
   [GitLab](https://gitlab.com/neurobrix/neurobrix)
 - Model hub: [neurobrix.es/models](https://neurobrix.es/models)
 - Documentation: [docs.neurobrix.es](https://docs.neurobrix.es) and the [docs/](./docs) directory
+- Building applications and coding agents: [docs/BUILD_WITH_AGENTS.md](./docs/BUILD_WITH_AGENTS.md)
 - Roadmap: [docs/roadmap.md](./docs/roadmap.md)
 - Changes: [CHANGELOG.md](./CHANGELOG.md)
 
@@ -331,5 +344,6 @@ respect your license, open an issue on this repository.
 The NeuroBrix engine, CLI, runtime and container tooling are released under the
 [Apache License 2.0](./LICENSE). The license does not cover model weights.
 
-Copyright 2025-2026 Hocine Benkelaya. Managed by [WizWorks OÜ](https://wizworks.io/), a
-property of [NEURAL NETWORK HOLDING LTD](https://neuralnetworkholding.com/).
+© 2025–2026 Hocine Benkelaya. NeuroBrix engine released under the Apache License 2.0.
+
+Developed by Hocine Benkelaya · Supported and funded by [Neural Network Holding Ltd](https://neuralnetworkholding.com) · Commercial distribution by [WizWorks OÜ](https://wizworks.io).

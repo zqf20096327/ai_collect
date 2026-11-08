@@ -26,23 +26,6 @@
 
 ---
 
-### Kartr
-
-**[Kartr](https://www.ix-infra.com)** is an agent platform built on the same memory
-engine we use for Ix, extended to the sources a codebase does not contain: docs and
-files, email and calendar, meetings and notes, and team chat. Agents carry context
-across all of them.
-
-Kartr is in alpha and onboarding early users.
-
-<p align="center">
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSdh5IXVGW9mNBUtyBAsP_uysS38GgilpTNMbKRAVQf1FZ1eBg/viewform?usp=pp_url&amp;entry.2087374943=ix_github" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.shields.io/badge/Sign%20up%20for%20the%20Kartr%20alpha-%E2%86%92-8A2BE2?style=for-the-badge" alt="Sign up for the Kartr alpha" />
-  </a>
-</p>
-
----
-
 ### Try Ix
 
 ```bash
@@ -152,8 +135,14 @@ codex mcp add ix-memory -- ix mcp
 that reads `~/.agents/skills` all load the same tree from their own skills directory.
 
 ```bash
-bash scripts/install-skill.sh   # deploy to every harness found (--dry-run to preview)
+ix install                      # menu: pick harnesses, preview or apply, confirm before writing
+bash scripts/install-skill.sh   # the same installer, no menu (--dry-run to preview, --json for a report)
 ```
+
+`ix install` is a menu over `scripts/install-skill.sh`, run from an Ix checkout. Its rows come
+from the script's own `--dry-run --json` preview, and it writes nothing until you confirm. Off a
+terminal it prints a hint instead; `ix install --dry-run` and `ix install --yes` run the script
+with the same options. It installs the skill only: MCP registration stays in `ix mcp install`.
 
 Then ask your agent: *"Set up Ix and map this repo."*
 

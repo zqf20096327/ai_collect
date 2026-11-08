@@ -14,8 +14,13 @@ keyboard, mouse, gamepad and eyes:
   named pipe. Input is delivered *inside* that process on every channel games read; frames are captured from the
   game's own swapchain.
 - **MCP server** (`mcp/`) - wraps the CLI as [Model Context Protocol](https://modelcontextprotocol.io) tools
-  (62 tools: `launch`, `capture`, `click_text`, `key`, `pad`, `key_sequence`, `move_until_stuck`, `turn`,
-  `click_many`, ...), so Claude or any MCP client can look at a game and act on it.
+  (108 tools: `launch`, `capture`, `click_text`, `key`, `pad`, `key_sequence`, `move_until_stuck`, `turn`,
+  `click_many`, `nav_go`, `scene`, `aim_shoot`, ...), so Claude or any MCP client can look at a game and act on it.
+- **Navigation profiles** (`mcp/nav/builtin/`) - one JSON file per game for the closed-loop walk / drive / ride tools.
+  15 builtin profiles in 0.4.8: GTA V, GTA IV, GTA San Andreas DE (2), GTA Vice City DE, GTA III DE, Sleeping Dogs (2),
+  Watch_Dogs (2), Red Dead Redemption (2), Far Cry 3, Far Cry 5 and Dishonored. The list is in
+  [mcp/README.md](mcp/README.md#navigation-profiles-nav_go-and-the-plugin-system-v040); a new game needs a profile,
+  not code.
 
 ## Why it is different
 

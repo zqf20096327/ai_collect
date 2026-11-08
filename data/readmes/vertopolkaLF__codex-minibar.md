@@ -260,7 +260,7 @@ Codex Minibar also runs on Linux desktops under Wayland and X11. Download from t
 [latest release](https://github.com/vertopolkaLF/codex-minibar/releases/latest):
 
 - **Debian/Ubuntu:** `sudo apt install ./codex-minibar_<version>_amd64.deb`
-- **Any distribution, no install:** make `codex-minibar-<version>-linux-x64.AppImage` executable
+- **Any distribution, no install:** make `codex-minibar-<version>-x86_64.AppImage` executable
   and run it. If FUSE mounting is unavailable, add `--appimage-extract-and-run`;
   generated launchers and autostart entries preserve that mode, as does updating.
   Managed launches use separate temporary extraction directories, so opening the
@@ -269,7 +269,7 @@ Codex Minibar also runs on Linux desktops under Wayland and X11. Download from t
   (or `sudo zypper install ...`).
 - **Arch Linux:** build the `PKGBUILD` attached to each release with `makepkg -si`
   (it packages the release tarball as `codex-minibar-bin`).
-- **Other distributions:** extract `codex-minibar-<version>-linux-x64.tar.gz` and run
+- **Other distributions:** extract `codex-minibar-<version>-x86_64.tar.gz` and run
   `./install.sh` to install into `~/.local`, or run `bin/codex-minibar` in place.
 
 Portable AppImage and tarball installs also need `xdg-utils` for opening links
@@ -454,14 +454,14 @@ cargo test --all-targets --all-features --locked
 
 Every window is rendered with [GPUI](https://gpui.rs) on one dedicated UI thread: the tray
 popup, the Settings window and the first-launch onboarding. Settings controls (toggles,
-dropdowns, sliders, text inputs, dialogs) live in `src/settings_window/kit.rs` and
-`src/settings_window/input.rs`. No UI framework runtime is redistributed; the release
+dropdowns, sliders, text inputs, dialogs) live in `src/ui/gui/kit.rs` and
+`src/ui/gui/input.rs`. No UI framework runtime is redistributed; the release
 package is the executable plus its `assets` folder.
 CI checks formatting, lints, and tests on Windows and Linux. Linux desktop integration
 (tray, notifications, portal settings, keyring, autostart, single instance, the D-Bus status
-service) lives in `src/linux/`. `codex-minibar status` is `src/status.rs`; it and the D-Bus
+service) lives in `src/platform/linux/`. `codex-minibar status` is `src/surfaces/status.rs`; it and the D-Bus
 service share one report, served to the CLI over the same loopback bridge as Stream Deck
-(`src/streamdeck.rs`). The GNOME Shell extension and Plasma widget live in `integrations/`.
+(`src/surfaces/streamdeck.rs`). The GNOME Shell extension and Plasma widget live in `integrations/`.
 
 ### Stream Deck companion
 

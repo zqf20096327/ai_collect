@@ -203,7 +203,10 @@ What's being worked on and what comes next is on the [roadmap](https://github.co
 and each release gathers its work in a [milestone](https://github.com/zzunkie/yardlet/milestones).
 Report bugs and ideas in [issues](https://github.com/zzunkie/yardlet/issues/new/choose), ask questions in
 [Discussions](https://github.com/zzunkie/yardlet/discussions), and see [CONTRIBUTING.md](CONTRIBUTING.md)
-to send a pull request.
+to send a pull request. **Help > Report a Problem…**, and the same item in an error's details, opens the bug
+report form in your browser with the Yardlet, macOS and agent CLI versions filled in, and an error's
+message with your home folder, user name and email addresses taken out. Nothing is sent until you submit
+the form on GitHub. **Help > Show Diagnostic Logs** opens Yardlet's log folders for you to choose what to attach.
 
 ## License
 
@@ -226,7 +229,8 @@ is not installed; `--build-system native` builds without it. `scripts/test-fast.
 except renders, QA fixtures and performance runs, as CI does for each pull request that changes more
 than documents;
 `scripts/test-fast.sh --excluded` runs only those, as CI does every night on `main`, and
-`swift test --build-system native` runs them all.
+`swift test --build-system native` runs them all. A drop test among the excluded ones reads Yardlet's
+task type, which Launch Services knows once a Yardlet app has been opened on the Mac.
 
 For a normal registered macOS application bundle during development:
 

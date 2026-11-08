@@ -33,23 +33,25 @@ picture is any good. YASDIG turns that round:
 - **Generate small and fast.** Run a batch, or let it loop while you watch. Every
   image lands in the work-item grid with everything that made it, so any one can be
   reopened and taken further later.
-- **Escalate only the keepers**, from the buttons beside the result and the Refine
-  dialog:
+- **Escalate only the keepers**, in the **Refine & adjust** dialog (a click on the
+  picture opens it):
   - **Hi-res** makes it bigger and adds the detail a plain upscale can't invent.
   - **Refine** goes over the whole picture lightly, or **paint an area** to redraw
     just that part: a hand, a face, a sign.
   - **Edit** changes it by instruction ("make it night", "remove the hat"), with
-    Flux.2 Klein.
+    Flux.2 or FLUX.3 Klein.
   - **Extend** grows the canvas and draws what lies beyond the edges, with FLUX.1 Fill.
   - **Upscale** enlarges it with AMD FSR or an upscaler model, drawing nothing new.
 - **Any pass can use a different model.** Draft on a fast Turbo model, finish on a
   detailed one.
 - **Every pass is a step in the picture's history.** Go back with Ctrl+Z, or compare
   two steps side by side with a split you drag.
-- **Colour and sharpness are live and lossless.** Ten sliders (sharpness, clarity and
-  eight colour controls) work on the untouched original, so you can change your mind
-  as often as you like, and nothing is ever redrawn over pixels that were already
-  sharpened.
+- **Colour and sharpness are live and lossless.** Eleven sliders (tone, colour, clarity
+  and sharpness) work on the untouched original, so you can change your mind as often
+  as you like, and nothing is ever redrawn over pixels that were already sharpened.
+- **Touch up by hand.** Brushes (Dodge, Burn, Blur and more, plus Restore, which paints
+  an earlier step back in), a selection by shape and colour with a look of its own,
+  crop, and text drawn onto the picture.
 
 ## Install
 
@@ -68,8 +70,9 @@ no macOS version.
    certificate, so choose *More info → Run anyway*. (Started from inside the zip
    without extracting, it stops and says so: it would be running from a temporary
    folder Windows deletes.)
-4. **Your browser opens on the app.** Open the **Get models** tab and download a model
-   — one click, with progress. The table below helps you choose.
+4. **Your browser opens on the app.** Open the **Models** tab and download a model
+   — one click, with progress in the top bar's **Downloads**. The table below helps
+   you choose.
 5. **Back on the Image tab**, type a prompt and press **Generate**.
 
 To stop it, close its console window or press **Close server** on the page. To update,
@@ -98,7 +101,7 @@ Vulkan GPUs and Windows should work; reports are welcome.
 
 **Everything stays on your computer.** Your prompts, pictures and settings never
 leave it: there is no account, no telemetry and no update check. The only time YASDIG
-goes online is when you press download on the **Get models** tab, and then it fetches
+goes online is when you press download on the **Models** tab, and then it fetches
 that model from Hugging Face, from addresses built into the program.
 
 **The page is for this computer only.** The app is a small web server that listens on
@@ -147,7 +150,7 @@ vulnerability*) rather than in a public issue.
 
 ## What's supported
 
-**Model families.** Each but SD 1.x/2.x has a one-click card on the Get models tab.
+**Model families.** Each but SD 1.x/2.x has a one-click card on the Models tab.
 Not sure where to start? The ones marked *Recommended* there and in the model list
 (FLUX.3 Klein, MOSS-Image and Krea 2, or Iris-3B on a GPU under 12 GB) fit your GPU.
 
@@ -165,15 +168,17 @@ Not sure where to start? The ones marked *Recommended* there and in the model li
 | MOSS-Image | layout and lettering; 50 steps at real CFG, so not fast | about 16 GB (INT8) / 21 GB (BF16) |
 | FLUX.1 Fill | powers **Extend**; not used for generating | about 18.5 GB |
 
-**Video.** Wan 2.2 (TI2V-5B and the I2V-A14B pair), Wan 2.1 VACE and dense models, and
-MiniMax H3 with sound — text or a first frame to video, LoRAs, a live preview, and
+**Video.** Wan 2.2 (TI2V-5B and the I2V-A14B pair), Wan 2.1 VACE and dense models,
+MiniMax H3 with sound, and LTX-2.3 and LTX-2.5 with sound (distilled, 8 steps, with
+LTX's own ×2 hi-res in the same run) — text or a first frame to video, LoRAs, a live preview, and
 long clips made a shot at a time from each shot's last frame. Clips enlarge (FSR, no
 flicker) and save to Outputs as video files.
 
 **Model files** can be `.safetensors`, `.gguf` or `.ckpt`, and are recognised by what
-is inside them, so file names and folders don't matter. The Get models tab fetches the
+is inside them, so file names and folders don't matter. The Models tab fetches the
 parts a model needs beside it (text encoder, VAE); your own downloads can go anywhere
-under `models/`.
+under `models/`. The tab's **Installed** lists every file you have with the families
+it serves; delete from there, and keep a note on any model behind its blue *i*.
 
 **Also in the box:**
 - **Image to image:** start from your own picture (upload, drop or paste) instead of
@@ -187,11 +192,18 @@ under `models/`.
   word for each image of a batch.
 - **Outputs and favourites:** a gallery of what you saved, with the same sliders, and
   favourites that *Delete all* can't touch.
-- **Convert:** shrink a model to GGUF (q8, q4 and others) so it fits your card.
+- **Convert** (on the Models tab): shrink a model to GGUF (q8, q4 and others) so it
+  fits your card.
+- **Cast:** characters, places and props saved under a name, with their look in words,
+  a picture (a turnaround sheet for a character) and a voice. Name them in a prompt, a
+  clip's shots or a film.
+- **Enhance:** one press writes your few words out in full for the model you picked —
+  a picture's look and light, a shot's action, camera and sound.
 - **Assistant:** a local agent in the Image and Video tabs that writes prompts,
   describes a picture as a prompt, runs a few rounds of draw → judge → adjust towards a
-  goal on the Image tab's own settings (changing only the ones you allow), and writes
-  storyboards for short films. It runs on your GPU too, from about 4 GB.
+  goal on the Image tab's own settings (changing only the ones you allow), makes cast
+  members, and writes short films as storyboards that become the Video tab's shots.
+  It runs on your GPU too, from about 4 GB.
 - **Settings and per-model defaults:** steps, CFG and the rest, saved once per model.
 
 The app's **Help** tab explains all of it, and every control has an ⓘ.
@@ -211,7 +223,7 @@ YASDIG is licensed under the [Apache License 2.0](LICENSE). It is powered by
 built into the program; its notices and those of everything else inside are in
 [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) and in the app under Help → *About &
 licences*. **Models are not part of YASDIG.** Every model has its own licence, set by
-the people who made it, and some forbid commercial use: check the page each Get models
+the people who made it, and some forbid commercial use: check the page each Models tab
 card links before using what you make.
 
 ## Support

@@ -137,11 +137,15 @@ _Zero-config onboarding on Windows — NekoAI auto-detects Ollama and walks you 
 
 Go to [Releases](https://github.com/nucket/nekoai/releases) and grab the latest installer for your OS.
 
-| Platform | File                          |
-| -------- | ----------------------------- |
-| Windows  | `NekoAI_x.x.x_x64.msi`        |
-| macOS    | `NekoAI_x.x.x_aarch64.dmg`    |
-| Linux    | `NekoAI_x.x.x_amd64.AppImage` |
+| Platform | File                                                                         |
+| -------- | ---------------------------------------------------------------------------- |
+| Windows  | `nekoai_x.x.x_x64-setup.exe` (or the `.msi`, or the portable `.zip`)         |
+| macOS    | `nekoai_x.x.x_aarch64.dmg` (Apple Silicon) or `nekoai_x.x.x_x64.dmg` (Intel) |
+| Linux    | `nekoai_x.x.x_amd64.AppImage` (or the `.deb` / `.rpm`)                       |
+
+> **First launch on Windows and macOS:** the installers are not code-signed yet, so Windows SmartScreen and macOS
+> Gatekeeper warn the first time you open NekoAI. [Opening an unsigned build](docs/code-signing.md#opening-an-unsigned-build)
+> shows how to get past the warning, and the [code signing policy](docs/code-signing.md) explains how releases are built.
 
 > **Linux note:** The `.AppImage` needs no installation — `chmod +x` it and run it
 > directly. If you prefer the `.deb`, install it from a terminal with
@@ -161,6 +165,8 @@ Go to [Releases](https://github.com/nucket/nekoai/releases) and grab the latest 
 > Without this NekoAI still runs — it switches to **wanderer mode** and roams on
 > its own, and tells you so once. Xorg sessions need no setup. See
 > [Cursor Tracking on Wayland](#cursor-tracking-on-wayland-linux) for the details.
+
+**Updates.** NekoAI checks for a new release when it starts. When there is one, the pet offers it in its bubble, and nothing is downloaded until you accept. Installers on Windows and macOS, and the Linux AppImage, update themselves and restart. The portable build and `.deb` / `.rpm` installs link to the download page instead. You can turn the check off in **Settings**.
 
 ### Option B — Build from source
 
@@ -192,7 +198,7 @@ Configuration is auto-created on first run:
 # Linux: ~/.config/nekoai · Windows: %APPDATA%\nekoai · macOS: ~/Library/Application Support/nekoai
 
 provider  = "gemini"            # "anthropic" | "openai" | "gemini" | "nvidia" | "ollama"
-model     = "gemini-2.5-flash"
+model     = "gemini-3.5-flash-lite"
 petSize   = 64                  # pixels (32, 64, 96, or 128)
 maxTokens = 512                 # 256 (Short) | 512 (Medium, default) | 1024 (Long) | 32–4096 (Custom)
 language  = "es"                # UI language: "en" | "es" (omit to follow the system language)
@@ -229,13 +235,17 @@ sqlite3 ~/.local/share/nekoai/memory.db "SELECT * FROM user_facts;"   # Linux pa
 
 ### Supported AI providers
 
-| Provider       | Models                                     | Requires                                                                        |
-| -------------- | ------------------------------------------ | ------------------------------------------------------------------------------- |
-| **Anthropic**  | Claude Haiku, Sonnet                       | API Key                                                                         |
-| **OpenAI**     | GPT-4o mini, GPT-4o                        | API Key                                                                         |
-| **Google**     | Gemini 2.5 Flash _(default)_, 2.0 Flash... | Free API Key ([Google AI Studio](https://aistudio.google.com)) — no credit card |
-| **NVIDIA NIM** | Llama 3.1, Mistral, Nemotron, MiniMax...   | API Key ([build.nvidia.com](https://build.nvidia.com)) — free tier available    |
-| **Ollama**     | Llama 3, Mistral, Phi-3...                 | [Ollama](https://ollama.ai) running locally                                     |
+| Provider       | Default model                           | Requires                                                                        |
+| -------------- | --------------------------------------- | ------------------------------------------------------------------------------- |
+| **Google**     | `gemini-3.5-flash-lite` _(default)_     | Free API Key ([Google AI Studio](https://aistudio.google.com)) — no credit card |
+| **Anthropic**  | `claude-haiku-5-5`                      | API Key                                                                         |
+| **OpenAI**     | `gpt-6-luna`                            | API Key                                                                         |
+| **NVIDIA NIM** | `nvidia/nemotron-3.5-lightning-30b-a3b` | API Key ([build.nvidia.com](https://build.nvidia.com)) — free tier available    |
+| **Ollama**     | `llama3`, or a model you have installed | [Ollama](https://ollama.ai) running locally                                     |
+
+Any model your provider offers works: type its ID in **Settings → Model**. When a
+provider retires the default model, NekoAI moves configs that still use it to the new
+default on the next launch; models you typed yourself are never changed.
 
 > 💡 **For full privacy**: Use Ollama — 100% local, no API costs, no data leaves your machine.
 > 🟢 **Free models**: NVIDIA NIM offers a generous free tier with 40+ open-source models at [build.nvidia.com](https://build.nvidia.com).

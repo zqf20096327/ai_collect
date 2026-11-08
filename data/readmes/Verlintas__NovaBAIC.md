@@ -35,9 +35,9 @@ BetterAIChat2 是 [BetterAIChat](https://github.com/Verlintas/BetterAIChat) 的�
 - **后台屏预热与保活**：App 启动时若已有可用传输，会提前启动虚拟屏 helper；默认 10 分钟无活动自动回收。设置 → 权限可开启「后台虚拟屏保活」：开启后关闭空闲回收并每 4 分钟检查一次，Wi-Fi/ADB 断开后已启动的会话仍可截图/操作（常驻通知，耗电略增；重启后仍需先恢复 shell）
 - **跨语言界面**：App 内搜索优先按资源 id/控件结构识别，不依赖“搜索/搜寻/discover”这类按钮文案；本地化词表只是兜底
 - **不锁定模型**：DeepSeek / OpenAI / Claude / Gemini / Kimi / Qwen / GLM / MiniMax / Ollama / 任意兼容网关，随时切换
-- **四种模式**：从纯聊天到逐项确认，再到带预算约束的自主运行
+- **可管理的运行模式**：Chat / Chat+ / Act / Max 四种 stock 模式，也可新建、编辑、删除和恢复；可配置工具权限、逐次确认、运行预算、长任务和附加 prompt
 - **无人值守**：定时任务、前台服务、子代理、MCP 远程工具、Skills 技能
-- **要求**：Android 8.0（API 26）及以上；无 GMS 依赖，不包含统计 SDK，明文 HTTP 仅放行环回地址
+- **要求**：Android 8.0（API 26）及以上；无 GMS 依赖，不包含统计 SDK；明文 HTTP 仅放行环回 / 私有局域网地址
 
 > 与旧版 BetterAIChat 分属不同应用（包名不同、数据不互通），可并存安装。
 
@@ -110,6 +110,8 @@ Agent = 服务商 + Key + 模型 + 温度 / 上限 / 深度思考 + 系统提示
 | `Act` | 执行工具，逐项确认 |
 | `Max` | 自主运行：持久化 Run、预算约束（60 轮 / 160 次工具调用 / 60 分钟）、可后台 |
 
+四种 stock 模式都可以在 **设置 → 模式** 中新建、编辑、删除或恢复；自定义模式可配置工具权限、逐次确认、运行预算、长任务和附加 prompt。模式删除后，历史运行仍保留在任务列表。
+
 ### AI × 设备（58 个内置工具）
 
 **看屏与操作（无障碍 + 视觉）**
@@ -124,7 +126,7 @@ Agent = 服务商 + Key + 模型 + 温度 / 上限 / 深度思考 + 系统提示
 
 **内容与网络**
 
-`files`（浏览 / 搜索 / 读取，含 `grep` 全文搜索）· `file_write` · `download_file` · `web_search`（多引擎并发，支持 `freshness` / `engines`）· `web_read`（正文提取 + 分页）· `app_research`（只读 App 内检索，按资源 id 识别搜索入口并记住已学到的结构，支持 `open` / `open_top` 直接读详情，并可用 `session` 复用已打开的搜索页（换 query 时优先在原结果页重设搜索框，必要时在同一虚拟屏上重启目标 App）；输出 `Search state: results / empty / not-found / not-submitted`，用户安装的 App 优先 OCR、系统 App 优先无障碍树；无 Shizuku/root 时走前台无障碍，有则后台虚拟屏）· `web_research`（通用只读浏览器代理：open / snapshot / read / click / type / press / select / check / scroll / wait / back / forward / reload / network；支持开放 shadow DOM 与同源 iframe，操作后自动等待 DOM 稳定，输出登录/验证码/同意/拦截状态；登录/验证码可交给前台 show_to_user（使用用户自己的账号，不保存密码）；默认只读，是否点击发送/发布/关注等状态变更控件由模型根据用户意图判断，端侧不做正则硬拦；密码 handoff、文件上传/下载不支持；空闲 5 分钟自动释放，设置 → 存储可清除网页数据；平台支持因站点而异，不依赖无障碍、Shizuku 或 ADB）· `fetch_rss` · `get_weather` · `generate_qr` / `decode_qr` · `ocr_file`
+`files`（浏览 / 搜索 / 读取，含 `grep` 全文搜索）· `file_write` · `download_file` · `web_search`（多引擎并发，支持 `freshness` / `engines`）· `web_read`（正文提取 + 分页）· `app_research`（只读 App 内检索，按资源 id 识别搜索入口并记住已学到的结构，支持 `open` / `open_top` 直接读详情，并可用 `session` 复用已打开的搜索页（换 query 时优先在原结果页重设搜索框，必要时在同一虚拟屏上重启目标 App）；输出 `Search state: results / empty / not-found / not-submitted`，用户安装的 App 优先 OCR、系统 App 优先无障碍树；无 Shizuku/root 时走前台无障碍，有则后台虚拟屏）· `web_research`（通用浏览器代理（默认只读）：open / snapshot / read / click / type / press / select / check / scroll / wait / back / forward / reload / network；支持开放 shadow DOM 与同源 iframe，操作后自动等待 DOM 稳定，输出登录/验证码/同意/拦截状态；登录/验证码可交给前台 show_to_user（使用用户自己的账号，不保存密码）；默认只读，是否点击发送/发布/关注等状态变更控件由模型根据用户意图判断，端侧不做正则硬拦；密码 handoff、文件上传/下载不支持；空闲 5 分钟自动释放，设置 → 存储可清除网页数据；平台支持因站点而异，不依赖无障碍、Shizuku 或 ADB）· `fetch_rss` · `get_weather` · `generate_qr` / `decode_qr` · `ocr_file`
 
 **个人助理**
 
@@ -266,7 +268,7 @@ adb reverse tcp:8765 tcp:8765
 - **已完成 · v0.3.x Agent 效率**：计划一次执行（snapshot / ref / sequence / assert）、后台虚拟屏预热 / 复用 / 保活、内置无线 ADB、自动保存技能、CHAT+ 并行研究子代理
 - **已完成 · v0.4.0 稳定性**：虚拟屏与无线 ADB 独立实现、`app_research` 真机搜索/session 复用、附件生命周期与截图保留、自动保存技能参数化、开机/更新保活
 - **已完成 · v0.4.1 补丁**：修复 release 包 ML Kit OCR 组件注册导致的第三方 App 裸崩溃；`app_research` 增加语义化 `Search state`、OCR-first 第三方 App 路径和搜索入口上半屏过滤；新增俄语与局域网 HTTP（仅私有地址）
-- **进行中 · v0.5.0 Web research**：应用自有虚拟屏 + WebView 的 `web_research` 已升级为通用只读浏览器代理（shadow DOM / 同源 iframe / press / select / check / 前进后退 / network / 状态提示），登录 handoff、会话回收与清除、SPA `wait` 已验证；下一步 HN / Reddit 真站回归与 0.5.0 收版
+- **已完成 · v0.5.0**：`web_research` 升级为通用浏览器代理（应用自有虚拟屏 + WebView，默认只读，状态变更由模型判断；shadow DOM / 同源 iframe / press / select / check / 前进后退 / network / 状态提示），登录 handoff、会话回收与清除、SPA `wait`、HN / 新版 Reddit 真机验证；新增用户可管理的对话模式与 MCP 端点策略
 - **进行中**：OEM 矩阵扩展与重启 / 断网恢复验证、Shizuku / 语音 / 录屏全量验收、UI 细节与评测场景扩充
 - **计划中**：更丰富的设备能力与技能生态、更多模型协议跟进
 

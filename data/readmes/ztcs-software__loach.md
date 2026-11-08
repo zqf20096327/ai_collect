@@ -1,0 +1,252 @@
+<div align="center">
+
+# Loach
+
+**A native, local-first AI workspace for desktops**
+
+Run local LLMs with [Ollama](https://ollama.com) or connect any OpenAI-compatible API endpoint side-by-side, with a focused UX, local-first design, native apps for Windows, Linux and macOS, and simple yet powerful features out of the box.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+[![Latest release](https://img.shields.io/github/v/release/ztcs-software/loach?label=release)](https://github.com/ztcs-software/loach/releases)
+[![Release build](https://github.com/ztcs-software/loach/actions/workflows/release.yml/badge.svg)](https://github.com/ztcs-software/loach/actions/workflows/release.yml)
+
+![Tauri 2](https://img.shields.io/badge/Tauri-2-FFC131?logo=tauri&logoColor=white)
+![React 19](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![Rust 1.90+](https://img.shields.io/badge/Rust-1.90+-000000?logo=rust&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38BDF8?logo=tailwindcss&logoColor=white)
+![Ollama](https://img.shields.io/badge/Ollama-compatible-000000?logo=ollama&logoColor=white)
+
+</div>
+
+---
+
+## 🔭 Overview
+
+Loach is an all-in-one desktop AI workspace built around a single idea: talking to an LLM should feel effortless. Simple from the first click and ready to grow with you as your needs do. It talks to a local Ollama server and accepts any OpenAI-compatible endpoint as a provider, including llama.cpp, LM Studio, vLLM and LiteLLM.
+
+With local models, including Qwen, Gemma, DeepSeek, GPT-OSS and Mistral, all your data stays safe and private. There is no telemetry, no required network access, no paid subscriptions or usage limits. An optional OpenAI-compatible API key lives in your OS credential manager. 
+
+Behind a calm, beautifully crafted UI sits a rich feature set - ready when you need it, out of the way when you don't. 
+
+![Loach UI: a new chat explains a concept, calls the calculator tool, writes TypeScript and summarizes a PDF](docs/images/loach-demo.webp)
+
+---
+
+## ✨ Features
+
+#### Providers & models
+- **Provider selection** - switch between Ollama local models and any OpenAI-compatible endpoint (OpenAI API, llama.cpp, LM Studio etc.) from the chat header.
+- **Local model management** - pull, copy, customize and delete local models from inside the app. 
+- **Start Ollama from Loach** - launch the Ollama server from the model picker when it isn't running, or have Loach start it for you at launch (opt-in).
+- **Default model selector** - pick the model new chats open with - a specific one, or whichever you used last (overall or per provider) - no need to re-select on each fresh conversation.
+- **Model preloading** - optionally warm your default local model into VRAM at launch so the first message streams faster. 
+- **Per-chat parameters** - set temperature, top_k, top_p, min_p, max tokens, context length, per-chat system prompts and more. Layered over Modelfile and per-model defaults.
+- **Low VRAM mode** - global or per-chat toggle that sends Ollama's `low_vram` flag to every request. Useful on lower-spec devices. 
+
+#### Organizing chats & content
+- **Spaces** - group chats around a project, with shared instructions, reference sources and memory. 
+- **Library** - keep texts, files (PDF, Word, code, images) and web links in one place, group them into datasets, and attach them to any chat (`+` → From Library, or `#`) or Space. Small sources go to the model in full; big ones are searched, and only the most relevant passages are sent - by keyword out of the box, and by meaning with an optional embedding model. Each reply shows which sources it used.
+- **Global memories** - opt-in (**Settings → Features**): after each reply outside a Space, Loach notes lasting facts about you and updates or retires ones that changed, with an Undo on every change; the facts go with you into every chat, Spaces included. Space memory works the same way, and both have a searchable editor that links each fact back to the chat it came from.
+- **Chat folders** - drag one chat onto another in the sidebar to group them into a named folder.
+- **Chat labels** - tag a chat with a colour from any chat menu; it shows as a dot next to the chat in the sidebar and Space view.
+- **Snippets** - save reusable prompts with an optional pinned model and click `Run` to start a fresh chat pre-filled and ready to send.
+- **Custom snippet variables** - parameterize snippets with static globals and prompt-on-use placeholders that fill in when you run them.
+- **Fork chats** - branch any conversation into a new copy that links back to its source.
+- **Pinned responses** - pin any reply and jump straight back to it from a bar under the chat header.
+- **Private chats** - an ephemeral chat that writes nothing to disk and wipes its transcript the moment you close it; open it from the ghost icon in the title bar.
+- **Chat archive** - move chats out of the sidebar without deleting them, with an inline Undo if you mis-clicked; restore or delete them from dedicated archive view.
+- **Search** - search across chats, message content, spaces, snippets and the Library, narrowed with a scope picker or an `in:` filter (`in:library` for Library items and datasets), plus a browser-style in-chat finder with phrase highlighting.
+
+#### Composing & steering a chat
+- **Slash commands** - type `/` in the composer for a command palette: `/fork`, `/regenerate`, `/compact`, `/private`, `/model`, `/persona`, `/snippet`, `/remember` and more.
+- **Personas and Tones** - pick a role (Code Reviewer, Translator, ELI5...) and delivery style (Formal, Casual, Direct, Detailed...).
+- **Context management** - a live bar under the composer shows how full the context window is; click it for a breakdown and to compact older turns into a summary that frees space.
+- **Import / export context** - copy a chat's context as Markdown, optionally summarized to compact it, and paste it - or any text - back into any chat's context.
+- **LaTeX math** - replies typeset with KaTeX: `$$…$$`, `$…$`, `\(…\)`, `\[…\]` and ` ```math ` fences render out of the box. `$` doubles as a currency sign, so `$…$` only typesets when the span actually reads as math - "it costs $5 and $10" stays prose. KaTeX ships inside the app (no network access) and is only read from disk the first time a reply contains math.
+
+#### Model tools & capabilities
+- **Tools** - let models call local tools including calculate, date/time, count, hash, UUID, base64, JSON, unit convert, text diff, sort, IP math and PDF generation. 
+- **PDF generation** - the built-in pdf tool turns a model's structured spec (headings, lists, tables, page breaks) into a real PDF attached to the reply.
+- **Work in folders** - add a folder to a chat from the composer's **+** menu and the model can list, find, read, search and edit the files in it - sandboxed to that folder, with no shell - showing you the change and asking before it writes, edits, moves or deletes anything unless you allow that tool for the chat. A `LOACHFILE.md` at the folder root adds the project's own instructions to every turn ([sample](docs/LOACHFILE.md.sample)). With a cloud provider, files the model reads are sent to it like any other message.
+- **MCP support** - register Model Context Protocol servers over Streamable HTTP or as local stdio processes (`npx`, `uvx`, …; a native dialog asks before any local program starts), test the handshake, inspect the tools they provide, and approve each tool call in the chat before it runs - or mark trusted tools as Always allow. 
+- **Web fetch** - opt-in: add URLs to messages (up to 5) and they will be fetched, sanitized and inlined to context. 
+- **Temporal awareness** - inject current date, weekday and timezone into the system prompt so models can answer to "what day is it today?".
+
+#### Viewing content
+- **Code canvas** - open any code block in a wider view that's resizable and updates live as the model streams, with copy, export and Open in VS Code actions. HTML renders as a live page in an offline sandbox.
+- **Attachment previews** - click an attachment to open the right viewer: image lightbox, multi-page PDF preview, code canvas, or a file-info card with Save.
+- **Share a message** - copy any message as text or as a rendered chat-bubble image, save the image as a PNG, or open a pre-filled post on Facebook, X, Reddit or LinkedIn.
+
+#### App, data & updates 
+- **Data management** - make backups of your content to JSON file (MCP headers, environment variables and chats' workspace folders are left out), restore data or permanently delete it with a few clicks, with a storage breakdown showing what your chats, attachments, Spaces and Library actually weigh on disk. 
+- **App lock** - optional PIN, password or PIN + password gate at launch, with opt-in auto-lock after inactivity or on minimize and a lock-now shortcut; credentials are hashed and stored in OS credential manager.
+- **Themes** - glassy, gradient Aurora or flat Solid, both available in Dark and Light variants.
+- **OTA updates** - get new features, bug fixes, performance improvements and security patches directly from the app, with an opt-in check at launch that tells you when a new version is out.
+
+...and more! 
+
+We are working on extending the list above, including new agentic features. 
+
+---
+
+## 💾 Install Loach
+
+![Windows](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)
+![macOS](https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white)
+
+Loach can be installed from a pre-built package (Windows, Linux, macOS) or built from source.
+
+### Install from a pre-built package
+
+With each stable release we publish pre-built `.exe`, `.deb`, `.rpm`, `.AppImage` or `.dmg` packages ready to be downloaded and installed according to your operating system.
+
+[![Latest release](https://img.shields.io/github/v/release/ztcs-software/loach?include_prereleases&label=release)](https://github.com/ztcs-software/loach/releases)
+
+**👉 Download a pre-built package from the [latest stable release](https://github.com/ztcs-software/loach/releases/latest)**
+
+> [!NOTE]
+>For local models make sure [Ollama](https://ollama.com) is up and running (`ollama serve`). If you don't have any models pulled yet, Loach will offer to install one during onboarding, sized against your GPU's VRAM (or system RAM when there's no discrete GPU) so the suggestion actually runs well on your machine. 
+
+### Install on Linux
+
+From the folder you downloaded the package to:
+
+- **Debian / Ubuntu (`.deb`)**: `sudo apt install ./Loach_*_amd64.deb`
+- **Fedora / RHEL / openSUSE (`.rpm`)**: `sudo dnf install ./Loach-*.x86_64.rpm` (or `sudo zypper install ./Loach-*.x86_64.rpm`)
+- **Any distro (`.AppImage`)**: `chmod +x Loach_*_amd64.AppImage && ./Loach_*_amd64.AppImage`
+
+Builds target **glibc 2.35**, which makes **Ubuntu 22.04** and **Debian 12** the oldest supported distributions.
+
+### Install on macOS
+
+The macOS build is **Apple Silicon (M-series CPUs) only** and is currently not notarized in the Apple Developer Program. On first launch macOS will block the app with a *"Loach is damaged and can't be opened"* or *"Apple cannot verify..."* warning. Bypass it once and the app runs normally:
+
+- For *"Apple cannot verify..."*: on macOS 14 and earlier, **right-click** `Loach.app` in **Applications** → **Open** → click **Open** in the prompt; on macOS 15 and later, try to open it once, then click **Open Anyway** in **System Settings → Privacy & Security**. Or, for either warning:
+- Open **Terminal** and run:
+  ```bash
+  xattr -cr /Applications/Loach.app
+  ```
+  then launch the app normally.
+
+Auto-updates are delivered through Loach's own signed updater (independent of Apple), so you only need to do this once on install. If a future update is blocked the same way, the same workaround applies.
+
+### Build from source
+
+#### Prerequisites
+
+- **Node.js 22.13+** (or 24 / 26+) and **npm** — the locked pdfjs-dist 6 needs 22.13, and Vitest 5 runs only on Node 22, 24 and 26+.
+- **Rust 1.90+** via [`rustup`](https://rustup.rs) — the dependency tree's minimum; CI builds on 1.90.0
+- Platform build tooling — install once via the official Tauri prerequisites guide: <https://tauri.app/start/prerequisites/>
+  - **Windows**: Microsoft Visual Studio Build Tools, WebView2 runtime (preinstalled on Windows 11)
+  - **Linux**: `libwebkit2gtk-4.1-dev`, `libappindicator3-dev` (or `libayatana-appindicator3-dev`), `librsvg2-dev`, `build-essential`, `libssl-dev`, `pkg-config`; bundling `.AppImage` / `.rpm` installers also needs `patchelf`, `rpm`, `file`, `wget` and `desktop-file-utils`. No Secret Service headers are needed — the keyring backend is pure Rust.
+  - **macOS**: Xcode Command Line Tools (`xcode-select --install`)
+
+#### Clone and install
+
+```bash
+git clone https://github.com/ztcs-software/loach.git
+cd loach
+npm install
+```
+
+#### Run in development
+
+```bash
+npm run tauri dev
+```
+
+The Vite dev server runs on `http://localhost:1420` and the Tauri shell embeds it. 
+
+#### Build production installers
+
+```bash
+npm run tauri -- build --no-sign
+```
+
+`--no-sign` skips the signed updater artifacts, which need the release signing key (`TAURI_SIGNING_PRIVATE_KEY`); without it the build fails after bundling. Outputs land in `src-tauri/target/release/bundle/`:
+
+- **Windows**: `.exe` (NSIS)
+- **Linux**: `.deb`, `.rpm` and `.AppImage`
+- **macOS**: `.dmg` and `.app` (Apple Silicon)
+
+---
+
+## 🚀 Getting started
+
+Loach doesn't provide built-in models, therefore it requires a provider choice - Ollama or OpenAI-compatible endpoint (OpenAI API, llama.cpp, LM Studio etc.)
+
+### Using with Ollama
+
+```bash
+ollama serve
+ollama pull gemma4:e4b      # or any other tag
+```
+
+Loach probes `http://localhost:11434` on launch. Pulled models appear in the chat header dropdown automatically; the **Models** library tab also lets you pull new tags and customise existing ones from inside the app.
+
+You don't have to run `ollama serve` yourself either - when nothing is answering, the model picker offers a **Start Ollama** button, and **Settings → Providers** can start it automatically every time Loach opens (when Ollama is installed on this computer).
+
+### Using with OpenAI-compatible endpoints
+
+Open **Settings → Providers**, paste your API key (stored safely in your OS credential manager), and point the base URL to any compatible endpoint:
+
+| Provider | Base URL |
+|---|---|
+| OpenAI | `https://api.openai.com/v1` *(default)* |
+| vLLM | `http://localhost:8000/v1` |
+| LM Studio | `http://localhost:1234/v1` |
+| LiteLLM | `http://localhost:4000` |
+| llama.cpp `llama-server` | `http://localhost:8080/v1` |
+| Groq, OpenRouter, Together, Fireworks, Mistral | per their docs |
+
+Only one OpenAI-compatible endpoint is active at a time — switch the base URL in Settings whenever you want to point to a different provider.
+
+---
+
+## 🛠️ Tech stack
+
+| Layer | Choice |
+|---|---|
+| Desktop shell | Tauri 2.x (Rust) |
+| Frontend | React 19 + Vite 8 + TypeScript |
+| Styling | Tailwind CSS + shadcn/ui (Radix primitives) + `tailwindcss-animate` + `@tailwindcss/typography` |
+| Icons | `lucide-react` |
+| State | Zustand (in-memory; backed by SQLite for persistence where appropriate) |
+| Storage | SQLite via `rusqlite` (bundled feature — no system dependency) |
+| Library search | SQLite FTS5 keyword index + optional embeddings (Ollama or OpenAI-compatible), merged by reciprocal-rank fusion |
+| Secrets | `keyring` crate → Windows Credential Manager / Linux Secret Service / macOS Keychain |
+| Argon2id | `argon2` (for app-lock hashing) |
+| HTTP | `reqwest` with streaming + `rustls-tls` |
+| Markdown | `react-markdown` + `remark-gfm` + `rehype-highlight` (highlight.js) |
+| Math | `remark-math` + `rehype-katex` + KaTeX, lazy-loaded from the bundle on first use |
+| Document parsing | `pdfjs-dist` (PDF) + `mammoth` (DOCX) |
+| PDF generation | `printpdf` 0.12 with bundled Liberation Sans fonts, subset at render time (Latin-script text; other characters print as `?`) |
+| Workspace files | `walkdir` + `glob` + `regex` (no backtracking), `encoding_rs` + `chardetng` to edit non-UTF-8 files in their own encoding |
+| System tray | Tauri 2 built-in (`tray-icon` feature) |
+| Bundle targets | `.exe` (NSIS) on Windows; `.deb` / `.rpm` / `.AppImage` on Linux; `.dmg` + `.app` on macOS (Apple Silicon) |
+
+---
+
+## 🔒 Storage and privacy
+
+| What | Where |
+|---|---|
+| Chats, messages, folders, spaces (instructions, reference sources, memories), the Library (texts, files, links, datasets and their search index), global memories, snippets, snippet variables and saved fill-ins, MCP servers (including their headers and environment variables, in plain text), app settings | SQLite at `<app-data-dir>/loach.db` |
+| OpenAI API key | OS credential manager (Windows Credential Manager / Linux Secret Service / macOS Keychain) |
+| App-lock hash + hint | OS credential manager — same store, separate entry |
+| App-lock marker (whether a lock is set, its method, PIN length and whether it has a hint — no hashes) and failed-unlock count | `app_lock.json` and `app_lock_attempts.json` next to `loach.db` |
+| Attached files (images, text, PDF, DOCX) and PDFs the pdf tool generates | Stored with their message in `loach.db`; no separate file store |
+| App data dir on Windows | `%APPDATA%\dev.loach.app\` |
+| App data dir on Linux | `~/.local/share/dev.loach.app/` |
+| App data dir on macOS | `~/Library/Application Support/dev.loach.app/` |
+
+Loach launches and works completely offline as long as you stick to local providers. The **Models** library, **Spaces**, the **Library**, **Snippets**, search, parameter sidebar, app lock, and chat history are all available without network access. Only chat generations against remote endpoints (OpenAI, Groq, OpenRouter, …), model pulls, web fetch and Library links, embeddings from a remote endpoint, remote MCP servers (and the first launch of an `npx`/`uvx` one, which downloads its package) and update checks require internet connection.
+
+---
+
+## 📜 License
+
+[MIT](LICENSE) © ZTCS

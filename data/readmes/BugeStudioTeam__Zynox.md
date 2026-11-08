@@ -22,7 +22,7 @@
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [What is ZynoxAI?](#-what-is-zynoxai)
 - [Features](#-features)
@@ -43,7 +43,7 @@
 
 ---
 
-## 🤖 What is ZynoxAI?
+## What is ZynoxAI?
 
 ZynoxAI is a command-line tool that leverages artificial intelligence to create files and folders based on natural language descriptions. Instead of manually typing `mkdir`, `touch`, and writing file contents, you can simply describe what you want in plain English, and ZynoxAI will:
 
@@ -64,32 +64,32 @@ ZynoxAI is a command-line tool that leverages artificial intelligence to create 
 
 ---
 
-## ✨ Features
+## Features
 
 ### Core Features
-- 🤖 **Multi-AI Support** - Switch between OpenAI GPT, Google Gemini, Grok (xAI), and DeepSeek
-- 🌐 **Natural Language** - Describe what you want in plain English
-- 📁 **Batch Operations** - Create multiple files/folders in one command
-- 🎨 **Nested Structures** - Automatically creates parent directories
-- 🎯 **Smart File Detection** - AI understands file types and extensions
-- 📝 **Code Generation** - Creates meaningful code content automatically
-- 🎨 **Color Output** - Beautiful terminal interface with colored logs
-- 💾 **Persistent Config** - Saves API keys and preferences locally
-- 🧠 **Memory System** - Remembers previous conversations and context
-- 💬 **Telegram Bot** - Control ZynoxAI remotely via Telegram
-- 🔧 **Smart Installation** - Auto-detects and installs missing packages
+- **Multi-AI Support** - Switch between OpenAI GPT, Google Gemini, Grok (xAI), and DeepSeek
+- **Natural Language** - Describe what you want in plain English
+- **Batch Operations** - Create multiple files/folders in one command
+- **Nested Structures** - Automatically creates parent directories
+- **Smart File Detection** - AI understands file types and extensions
+- **Code Generation** - Creates meaningful code content automatically
+- **Color Output** - Beautiful terminal interface with colored logs
+- **Persistent Config** - Saves API keys and preferences locally
+- **Memory System** - Remembers previous conversations and context
+- **Telegram Bot** - Control ZynoxAI remotely via Telegram
+- **Smart Installation** - Auto-detects and installs missing packages
 
 ### Technical Features
-- ✅ **Zero Dependencies** - Only requires Python and `requests`
-- 🔄 **Retry Logic** - Automatic retry on network failures
-- ⏱️ **Configurable Timeout** - Handles slow connections gracefully
-- 🔐 **Secure** - API keys stored locally, never transmitted elsewhere
-- 📱 **Termux Optimized** - Works perfectly on Android devices
-- 🌍 **Cross-Platform** - Works on Termux, Linux, macOS, Windows
+- **Zero Dependencies** - Only requires Python and `requests`
+- **Retry Logic** - Automatic retry on network failures
+- **Configurable Timeout** - Handles slow connections gracefully
+- **Secure** - API keys stored locally, never transmitted elsewhere
+- **Termux Optimized** - Works perfectly on Android devices
+- **Cross-Platform** - Works on Termux, Linux, macOS, Windows
 
 ---
 
-## 🧠 Supported AI Providers
+## Supported AI Providers
 
 | Provider | Models | Best For | Token Limit |
 |----------|--------|----------|-------------|
@@ -100,7 +100,7 @@ ZynoxAI is a command-line tool that leverages artificial intelligence to create 
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### Prerequisites
 - Python 3.7 or higher
@@ -164,7 +164,7 @@ zynox --about
 
 ---
 
-## 🔧 Configuration
+## Configuration
 
 Setting API Keys
 
@@ -237,7 +237,7 @@ Example config.json:
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 Basic Usage
 
@@ -286,7 +286,7 @@ zynox -d /sdcard/Documents "create notes.txt"
 
 ---
 
-## 📚 Usage Guide
+## Usage Guide
 
 Command Structure
 
@@ -352,7 +352,7 @@ Go to your browser and visit: http://127.0.0.1:5000/
 
 ---
 
-## 💡 Examples
+## Examples
 
 Web Development Projects
 
@@ -409,7 +409,7 @@ zynox "create a zip file with all python files"
 
 ---
 
-## 📖 Commands Reference
+## Commands Reference
 
 Configuration Commands
 
@@ -485,7 +485,7 @@ zynox -p openai -d ./api "create a REST API with Flask"
 
 ---
 
-## 💬 Telegram Bot
+## Telegram Bot
 
 What is the Telegram Bot?
 
@@ -558,7 +558,7 @@ Security
 
 ---
 
-## 🔧 Smart Installation
+## Smart Installation
 
 Automatic Package Detection
 
@@ -601,7 +601,7 @@ If automatic installation fails, ZynoxAI provides manual instructions:
 
 ---
 
-## 🧠 Memory & Sessions
+## Memory & Sessions
 
 How Memory Works
 
@@ -649,7 +649,7 @@ Sessions are stored in ~/.zynoxai/memories/ as JSON files. Each session contains
 
 ---
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 Common Issues and Solutions
 
@@ -756,7 +756,7 @@ python ~/ZynoxAI/zynox.py "test" 2>&1
 
 ---
 
-## 🔑 API Keys
+## API Keys
 
 Where to Get API Keys
 
@@ -774,18 +774,9 @@ Setting Up API Keys
 4. Copy the key (starts with sk- typically for OpenAI/DeepSeek)
 5. Set it in ZynoxAI: zynox --set-key PROVIDER --key YOUR_KEY
 
-Security Best Practices
-
-· ✅ Store keys only in local config file
-· ✅ Never commit config.json to git
-· ✅ Use environment variables for CI/CD
-· ✅ Rotate keys periodically
-· ❌ Don't share your keys publicly
-· ❌ Don't hardcode keys in scripts
-
 ---
 
-## 🤝 Contributing
+## Contributing
 
 How to Contribute
 
@@ -836,13 +827,13 @@ Feature Ideas
 
 ---
 
-📄 License
+## License
 
-MIT License
+**MIT License**
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 · OpenAI for GPT models
 · Google for Gemini models

@@ -91,7 +91,7 @@ heuristic and offline; the mutation still requires a narrow policy and your
 explicit approval.
 
 ```bash
-kprompt demo              # prints prerequisites + exact walkthrough commands
+kprompt demo              # prints prerequisites + exact magic-moment commands
 kprompt demo --check      # verify required tools are on PATH
 ```
 
@@ -105,9 +105,9 @@ git clone https://github.com/kprompt/kprompt-examples.git
 cd kprompt-examples && make magic-moment
 ```
 
-For the advanced all-scenarios Observe demo, run `make walkthrough`.
+Primary try path is **magic-moment** (IC-001). For the advanced all-scenarios Observe demo, run `make walkthrough`.
 
-![Observe agent: watch → Incident → gated proposal — never silent mutate](./.github/assets/kprompt-observe-demo.gif)
+![Experimental: magic moment — failed rollout → PlanResult proposal → approve → verify → Learn (heuristic, $0)](./.github/assets/kprompt-magic-moment.gif)
 
 ---
 
@@ -254,6 +254,17 @@ kprompt "add HPA for redis"
 
 Run `kprompt doctor` anytime to verify kubeconfig, provider setup, integrations, and optional Team enrollment. See [docs/init.md](./docs/init.md) and [docs/providers.md](./docs/providers.md).
 
+**5. Day-2 habit (laptop AI-native)** — local only, no daemon ([ADR-0022](https://github.com/kprompt/kprompt-architecture/blob/main/decisions/ADR-0022-laptop-ai-native.md)):
+
+```bash
+kprompt watch -n payments --once   # suggest investigate/why — never applies
+kprompt remember "payment ns = Team A"   # sticky facts for the next plan
+kprompt session                    # today's digest from local history
+kprompt history                    # recent prompts/plans (~/.kprompt/history.jsonl)
+```
+
+Guides: [watch](./docs/watch.md) · [remember](./docs/remember.md) · [session](./docs/session.md) · [history](./docs/history.md). Always-on cluster watching stays [`kprompt agent`](./docs/agent.md) / Helm — laptop `watch` is a foreground scan.
+
 ---
 
 ## Usage
@@ -305,13 +316,12 @@ kprompt "cleanup unused resources" -n payments
 kprompt "why is my api slow?" -n production
 kprompt "show service dependency graph"
 kprompt "why is api slow then scale api to 4"  # multi-tool chain, one approval
-kprompt watch -n payments --once
-kprompt remember "payment ns = Team A"
-kprompt session
 kprompt login
 ```
 
 </details>
+
+Laptop habit commands (`watch` / `remember` / `session` / `history`) live in [Quick start §5](#quick-start) so they are not buried here.
 
 Generic get/list works for discoverable built-ins and CRDs (Node, ConfigMap, Secret, …) — see [docs/kubernetes-reads.md](./docs/kubernetes-reads.md).
 
@@ -347,6 +357,8 @@ Deploy in-cluster via Helm: [`charts/kprompt-agent`](./charts/kprompt-agent) · 
 
 ## History & sessions
 
+Quick start already surfaces the day-2 habit trio (`watch` · `remember` · `session`). This section is the `history` detail surface:
+
 ```bash
 kprompt history                          # last 20 prompts/plans (~/.kprompt/history.jsonl)
 kprompt history --namespace payments     # filter by namespace
@@ -355,6 +367,7 @@ kprompt history rerun                     # replay newest prompt
 kprompt history rerun 3 --approve
 kprompt history show 1                    # inspect one entry
 kprompt history clear                     # clear with confirmation (--approve to skip)
+kprompt session                          # day digest from the same JSONL (no second LLM)
 ```
 
 History stores prompt, kind, summary, and action refs — **never manifests or API keys**. Filters are case-insensitive exact matches and can be combined.
@@ -372,6 +385,17 @@ kprompt dash                                   # local read-only cluster UI (nee
 
 ---
 
+## MCP (IDE read / plan)
+
+Editors that speak MCP can call `kprompt mcp serve` for **read and plan only**. The assistant gets the same typed `PlanResult`; **apply stays in your terminal** (`kprompt "…" --approve`). There is no apply tool and no `--approve` over MCP — [docs/mcp.md](./docs/mcp.md) (bridge story) · [ADR-0024](https://github.com/kprompt/kprompt-architecture/blob/main/decisions/ADR-0024-mcp-interop.md).
+
+```bash
+# ~/.cursor/mcp.json
+# { "mcpServers": { "kprompt": { "command": "kprompt", "args": ["mcp", "serve"] } } }
+```
+
+---
+
 ## CI & PlanResult JSON
 
 Use `--output json` for a versioned `PlanResult` suitable for `jq` gates — no cluster apply required.
@@ -379,6 +403,8 @@ Use `--output json` for a versioned `PlanResult` suitable for `jq` gates — no 
 ```bash
 kprompt "scale api to 3" -n payments --output json | jq '.risk'
 ```
+
+**Cookbook (example only):** copy-paste GitHub Action that installs kprompt, emits a plan-only `PlanResult`, and fails on `jq` gates — [docs/ci-cookbook.md](./docs/ci-cookbook.md) · [`examples/github-actions/planresult-gate.yml`](./examples/github-actions/planresult-gate.yml).
 
 Multi-context reads and optimizes emit a `MultiContextResult`. Cluster/kubeconfig failures print short, actionable hints (missing config, bad context, RBAC deny, unreachable API).
 
@@ -454,13 +480,13 @@ Full docs live at [kprompt.ai/docs](https://kprompt.ai/docs). Source guides in t
 
 | Area | Guides |
 |------|--------|
-| **Getting started** | [adopt](./docs/adopt.md) · [setup](./docs/setup.md) · [init](./docs/init.md) · [demo](./docs/demo.md) · [doctor](./docs/doctor.md) · [providers](./docs/providers.md) · [tools](./docs/tools.md) |
+| **Getting started** | [adopt](./docs/adopt.md) · [daily-driver](./docs/daily-driver.md) · [setup](./docs/setup.md) · [init](./docs/init.md) · [demo](./docs/demo.md) · [doctor](./docs/doctor.md) · [providers](./docs/providers.md) · [tools](./docs/tools.md) |
 | **Investigate & RCA** | [investigate](./docs/investigate.md) · [investigation-graph](./docs/investigation-graph.md) · [why](./docs/why.md) · [timeline](./docs/timeline.md) · [impact](./docs/impact.md) · [reality-anchors](./docs/reality-anchors.md) |
 | **Knowledge & analysis** | [graph](./docs/graph.md) · [simulation](./docs/simulation.md) · [search](./docs/search.md) · [score](./docs/score.md) · [architecture](./docs/architecture.md) |
 | **Hygiene & day-2** | [audit](./docs/audit.md) · [cleanup](./docs/cleanup.md) · [optimize](./docs/optimize.md) · [drift](./docs/drift.md) · [gitops-pr](./docs/gitops-pr.md) · [recipes](./docs/recipes.md) |
 | **Workflow** | [approval](./docs/approval.md) · [history](./docs/history.md) · [watch](./docs/watch.md) · [remember](./docs/remember.md) · [session](./docs/session.md) · [learn](./docs/learn.md) · [ide](./docs/ide.md) · [mcp](./docs/mcp.md) |
 | **Observe agent** | [agent](./docs/agent.md) · [namespace-agent](./docs/namespace-agent.md) · [agent-ops](./docs/agent-ops.md) · [coordinator-knowledge](./docs/coordinator-knowledge.md) |
-| **Fleet & CI** | [ci](./docs/ci.md) · [multi-cluster](./docs/multi-cluster.md) · [runs](./docs/runs.md) · [kubernetes-reads](./docs/kubernetes-reads.md) |
+| **Fleet & CI** | [assurance](./docs/assurance.md) · [ci](./docs/ci.md) · [e2e](./docs/e2e.md) · [multi-cluster](./docs/multi-cluster.md) · [runs](./docs/runs.md) · [kubernetes-reads](./docs/kubernetes-reads.md) |
 
 ---
 

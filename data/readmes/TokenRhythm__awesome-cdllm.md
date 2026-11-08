@@ -13,13 +13,13 @@
   <a href="https://awesome.re"><img src="https://awesome.re/badge.svg" alt="Awesome"></a>
   <a href="paper/CDLLM_Survey.pdf"><img src="https://img.shields.io/badge/Survey-PDF-b31b1b?logo=adobeacrobatreader&logoColor=white" alt="Survey PDF"></a>
   <a href="#citation"><img src="https://img.shields.io/badge/arXiv-coming_soon-lightgrey?logo=arxiv&logoColor=white" alt="arXiv: coming soon"></a>
-  <a href="#contents"><img src="https://img.shields.io/badge/papers-346-2F5D8A" alt="346 papers"></a>
+  <a href="#contents"><img src="https://img.shields.io/badge/papers-349-2F5D8A" alt="349 papers"></a>
   <a href="https://github.com/TokenRhythm/awesome-cdllm/commits/main"><img src="https://img.shields.io/github/last-commit/TokenRhythm/awesome-cdllm?color=2E6B3A" alt="Last commit"></a>
   <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-E9A23B" alt="PRs welcome"></a>
 </p>
 
 <p align="center">
-  <b><a href="paper/CDLLM_Survey.pdf">📄 Read the survey</a></b> · <b><a href="#contents">📚 Browse 346 papers</a></b> · <b><a href="docs/core-systems.md">🗺️ Compare core systems</a></b> · <b><a href="#citation">📝 Cite</a></b>
+  <b><a href="paper/CDLLM_Survey.pdf">📄 Read the survey</a></b> · <b><a href="#contents">📚 Browse 349 papers</a></b> · <b><a href="docs/core-systems.md">🗺️ Compare core systems</a></b> · <b><a href="#citation">📝 Cite</a></b>
 </p>
 
 <p align="center">
@@ -29,6 +29,7 @@
 
 ## 📢 News
 
+- **[2026-11]** 📌 The paper list now extends past the survey's 24 October cutoff and tracks literature through 8 November 2026, with new papers and the public versions of earlier anonymous submissions.
 - **[2026-10]** 🎉 Our survey **Continuous-Space Diffusion and Flow Language Models: A Survey** is out ([PDF](paper/CDLLM_Survey.pdf)), together with this paper list, which tracks literature through 24 October 2026. The arXiv version is coming soon.
 
 ## 📖 About the Survey
@@ -59,8 +60,8 @@
   - [Compressed Latent Codes](#state-compressed) (13)
   - [Sentence and Segment Vectors](#state-sentence) (8)
   - [Hybrid Continuous–Discrete States (Boundary)](#state-hybrid) (11)
-- [⚙️ The Transition: Learning the Denoiser](#transition) (36)
-  - [Prediction Targets and Objectives](#train-objective) (13)
+- [⚙️ The Transition: Learning the Denoiser](#transition) (37)
+  - [Prediction Targets and Objectives](#train-objective) (14)
   - [Training Stages and Module Adaptation](#train-recipe) (7)
   - [Noise Schedules and Self-Conditioning](#train-schedule) (16)
 - [🚀 Sampling, the Text Interface, and Generation Order](#sampling) (64)
@@ -68,15 +69,15 @@
   - [From States to Tokens](#decode-readout) (6)
   - [Generation Order and Length](#decode-order) (11)
   - [Conditioning and Guidance](#sample-guidance) (10)
-- [🎯 Tasks and Applications](#tasks) (135)
-  - [Controllable Generation and Editing](#task-control) (22)
+- [🎯 Tasks and Applications](#tasks) (136)
+  - [Controllable Generation and Editing](#task-control) (23)
   - [Sequence-to-Sequence Generation](#task-seq2seq) (15)
   - [Captioning and Multimodal Generation](#task-multimodal) (51)
   - [Dialogue and Discourse Planning](#task-dialogue) (7)
   - [Code, Structured Outputs, and Synthetic Data](#task-code) (10)
   - [Reasoning, Knowledge, and Instruction Following](#task-reasoning) (23)
   - [Scientific and Domain Applications](#task-domain) (7)
-- [📊 Evaluation, Analysis, and Theory](#evaluation) (13)
+- [📊 Evaluation, Analysis, and Theory](#evaluation) (14)
 - [🗺️ Core Systems at a Glance](#core-systems)
 - [🔗 Related Awesome Lists](#related)
 - [📝 Citation](#citation)
@@ -330,6 +331,7 @@ The survey organizes the literature around **three coupled design dimensions**:
 
 | Model | Paper | Venue | Date | Code |
 | :-- | :-- | :--: | :--: | :--: |
+| **TIBF** | [Continued Training of Continuous Language Flows with Token Identity Squared Supervision](https://arxiv.org/abs/2611.07721)<br>Continues pretrained language flows with Brier supervision of token-identity probabilities over frozen embeddings, lowering generative perplexity on OWT and LM1B below continuous-MSE and cross-entropy continuation at every tested sampling budget. | arXiv | 2026.11 | — |
 | **ConvergeFlow** [◆](docs/core-systems.md#system-li2026convergeflow "Core system in the survey's lookup table (Appendix F)") | [ConvergeFlow: Language Flow with Provable Convergence to Token Embeddings](https://arxiv.org/abs/2608.23551)<br>Constrains the flow's endpoint predictor to barycenters of vocabulary embeddings, trains with flow-matching squared error alone, and proves sampling converges to valid token embeddings without a cross-entropy decoder. | arXiv | 2026.08 | [![GitHub stars](https://img.shields.io/github/stars/Na-Li66/ConvergeFlow?style=flat&logo=github&label=&color=2F5D8A)](https://github.com/Na-Li66/ConvergeFlow) |
 | **GEXIT** | [Conservation Laws for Diffusion Models](https://openreview.net/forum?id=RxdFtImvkv)<br>Derives GEXIT-based conservation laws expressing data-model cross-entropy as an integral along the noise path, unifying discrete and continuous diffusion likelihoods and recovering I-MMSE in the Gaussian case. | NeurIPS 2026 | 2026.07 | [![GitHub stars](https://img.shields.io/github/stars/zivaharoni/conservation-laws-diffusion-models?style=flat&logo=github&label=&color=2F5D8A)](https://github.com/zivaharoni/conservation-laws-diffusion-models) |
 | **RePlaid** [◆](docs/core-systems.md#system-yang2026continuous "Core system in the survey's lookup table (Appendix F)") | [Continuous Diffusion Scales Competitively with Discrete Diffusion for Language](https://arxiv.org/abs/2605.18530)<br>Aligns Plaid with discrete-diffusion baselines for compute-matched comparison, reporting a 22.1 OpenWebText perplexity bound and an estimated 20× training-compute multiple to match autoregressive NLL. | NeurIPS 2026 | 2026.05 | [Project](https://zhihanyang.com/replaid/) |
@@ -407,6 +409,7 @@ The survey organizes the literature around **three coupled design dimensions**:
 | **Seq-Drifting** [◆](docs/core-systems.md#system-liu2026one "Core system in the survey's lookup table (Appendix F)") | [One-Step Text Generation by Seq-Drifting](https://arxiv.org/abs/2610.12879)<br>Maps Gaussian noise to continuous token embeddings in one pass, training the generator on a drift field that attracts outputs toward contextually plausible tokens and repels collapse and repetition. | arXiv | 2026.10 | [![GitHub stars](https://img.shields.io/github/stars/jyliu-ai/Seq-Drifting?style=flat&logo=github&label=&color=2F5D8A)](https://github.com/jyliu-ai/Seq-Drifting) |
 | **GSF** [◆](docs/core-systems.md#system-kim2026gumbel "Core system in the survey's lookup table (Appendix F)") | [Gumbel Straight Flow: Distilling Autoregressive Models into One-step Flow Maps](https://arxiv.org/abs/2610.00497)<br>Pairs Gumbel noise with sequences from a pretrained autoregressive teacher along non-intersecting straight paths, supervising a one-step flow map whose longer intervals are trained by a semigroup loss. | arXiv | 2026.10 | — |
 | **BCT** [◆](docs/core-systems.md#system-oba2026bct "Core system in the survey's lookup table (Appendix F)") | [BCT: Bayes-Consistent Tempering for Flow Language Models](https://arxiv.org/abs/2610.27641)<br>Makes temperature consistent across the endpoint, bridge, and velocity of posterior-induced flow language models, substantially improving S-FLM's low-temperature math reasoning accuracy over standard tempering and narrowing the gap to discrete diffusion. | arXiv | 2026.10 | — |
+| **aFMLM** | [Asynchronous Flow Map Language Models](https://arxiv.org/abs/2610.42018)<br>Distills asynchronous flows with prescribed or learned tokenwise schedules into flow maps that internalize prediction order in one forward pass, reporting state-of-the-art one-step Sudoku and GSM8K code-generation accuracy. | arXiv | 2026.10 | — |
 | — | [Adaptive Second-Order Solvers for Fast Stochastic Diffusion Sampling](https://arxiv.org/abs/2610.03034)<br>Controls step sizes of second-order stochastic diffusion solvers with a proportional-integral rule on noise-normalized error, and aggregates per-sample trajectories into a fixed schedule for image and language data. | arXiv | 2026.10 | [![GitHub stars](https://img.shields.io/github/stars/ellakemperman/adaptive-second-order-diffusion-solvers?style=flat&logo=github&label=&color=2F5D8A)](https://github.com/ellakemperman/adaptive-second-order-diffusion-solvers) |
 | **StepTune** [◆](docs/core-systems.md#system-zheng2026step "Core system in the survey's lookup table (Appendix F)") | [A Step in the Right Place: Understanding and Optimizing Timestep Placement in Continuous Diffusion Language Models](https://arxiv.org/abs/2610.15527)<br>Searches timestep grids for frozen ELF models using terminal-latent error and decoder KL against finer trajectories, with a 16-step grid matching or exceeding the native 64-step grid on summarization and translation at a fraction of the batch-1 latency. | arXiv | 2026.10 | [![GitHub stars](https://img.shields.io/github/stars/collapsar-z/StepTune-reproducibility?style=flat&logo=github&label=&color=2F5D8A)](https://github.com/collapsar-z/StepTune-reproducibility) |
 | **Simplex-DMD / Reinforced-DMD** [◆](docs/core-systems.md#system-kiem2026distribution "Core system in the survey's lookup table (Appendix F)") | [Distribution Matching Distillation for Continuous Diffusion Language Models](https://arxiv.org/abs/2609.40235)<br>Distills continuous diffusion language models into few-step students by reverse-KL distribution matching, using simplex relaxations with pathwise gradients or categorical draws with REINFORCE and a density ratio. | arXiv | 2026.09 | — |
@@ -428,7 +431,6 @@ The survey organizes the literature around **three coupled design dimensions**:
 | — | [Latent Space Co-training for Few-Step Text Generation](https://openreview.net/forum?id=vqMoJMqAbO)<br>Distills a two-time flow map in a compressed latent diffusion space while briefly co-training the latent encoder with a tracking teacher and an encoder anchor, improving few-step OpenWebText generation and GSM8K Python-solution accuracy over prior flow-map baselines. | NeurIPS 2026 Workshop | 2026 | — |
 | **INCO** [◆](docs/core-systems.md#system-rekesh2026inverse "Core system in the survey's lookup table (Appendix F)") | [Inverse-Confidence Sampling for Continuous Diffusion Language Models](https://openreview.net/forum?id=TzA1wJpzHB)<br>Modifies only the sampler of continuous diffusion language models with inverse-confidence sampling, cutting LangFlow's 1024-step OpenWebText GenPPL from 36.7 to 28.1 as entropy shifts from 5.25 to 5.18. | ICML 2026 Workshop | 2026 | — |
 | — | [How to Train Your Latent Flow Map for Few-Step Text Generation](https://openreview.net/forum?id=bPRgkZ2qJC)<br>Studies how to train latent flow maps for few-step text generation, comparing a frozen encoder and teacher (LDLM-FM) with jointly adapting both (LDLM-FM-A), which can improve multi-sample coverage without improving single-sample accuracy. | ICLR 2027 submission | 2026 | — |
-| — | [Asynchronous Flow Maps for Flow Language Models](https://openreview.net/forum?id=GpVgI7Kpu4)<br>Introduces asynchronous flow maps for flow language models, extending finite-interval flow-map transport for few-step text generation. | ICLR 2027 submission | 2026 | — |
 | **DLM-One** [◆](docs/core-systems.md#system-chen2025dlm "Core system in the survey's lookup table (Appendix F)") | [DLM-One: Diffusion Language Models for One-Step Sequence Generation](https://arxiv.org/abs/2506.00290)<br>Compresses a pretrained continuous diffusion language model into a one-step generator by Score identity Distillation in embedding or logit space, reporting up to about 2000× fewer sampling steps. | arXiv | 2025.06 | — |
 | **Logit-KL FM** | [Logit-KL Flow Matching: Non-Autoregressive Text Generation via Sampling-Hybrid Inference](https://openreview.net/forum?id=scgtQSpROE)<br>Formulates flow matching for non-autoregressive text in logit space and compares deterministic, re-noised, and mixed sampling updates within one unified logit framework. | ICLR 2026 | 2024.11 | — |
 | **LanguageFlow** [◆](docs/core-systems.md#system-zhang2024languageflow "Core system in the survey's lookup table (Appendix F)") | [LanguageFlow: Advancing Diffusion Language Generation with Probabilistic Flows](https://aclanthology.org/2024.naacl-long.215/)<br>Learns few-step source-to-target flow-matching transport in a VAE latent space, using ten Euler updates followed by autoregressive decoding of the transported codes for sentiment transfer. | NAACL 2024 | 2024.06 | — |
@@ -448,6 +450,4 @@ The survey organizes the literature around **three coupled design dimensions**:
 
 | Model | Paper | Venue | Date | Code |
 | :-- | :-- | :--: | :--: | :--: |
-| **HC-DLM** [◆](docs/core-systems.md#system-ren2026hierarchical "Core system in the survey's lookup table (Appendix F)") | [Hierarchical Continuous Diffusion Language Models](https://arxiv.org/abs/2610.02193)<br>Carries only a continuous latent between flow-matching steps, conditioning each update on a re-noised argmax token scaffold whose removal sharply degrades combinatorial puzzle accuracy. | arXiv | 2026.10 | [![GitHub stars](https://img.shields.io/github/stars/rhfeiyang/HC-DLM?style=flat&logo=github&label=&color=2F5D8A)](https://github.com/rhfeiyang/HC-DLM) |
-| **GRAFT** [◆](docs/core-systems.md#system-yang2026graft "Core system in the survey's lookup table (Appendix F)") | [GRAFT: Restoring the Missing Sampling Interface in Continuous Diffusion Language Models](https://arxiv.org/abs/2610.29136)<br>Holds mid-sampling rare-word candidates from frozen ELF and LangFlow vocabulary heads as conditions and restarts from the same noise, restoring rare-word frequencies to near-human rates. | arXiv | 2026.10 | — |
-| **Po
+| **HC-DLM** [◆](docs/core-systems.md#system-ren2026hierarchical "Core system in the survey's lookup table (Appendix F)") | [Hierarchical Continuous Diffusion Language Models](https://arxiv.org/abs/2610.02193)<br>Carries only a continuous latent between flow-matching steps, conditioning each update on a re-noised argmax token scaffold whose removal sharp

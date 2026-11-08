@@ -25,7 +25,7 @@
 
 **Ready-to-use hardware and model libraries:**
 
-- **403 models**: Dense and MoE architectures, from SmolLM 135M to DeepSeek V3 671B, organized in 6 parameter tiers
+- **414 models**: Dense and MoE architectures, from SmolLM 135M to Kimi K3.1 Pro 2.8T, organized in 6 parameter tiers
 - **110+ NVIDIA GPUs**: Datacenter (H100/H200/B200/GB200), DGX, GTX 9/10/16, RTX 20/30/40/50, and full Pro lineup
 - **5 KV cache variants**: Standard MHA/GQA, MLA (DeepSeek V3), Linear Attention (Qwen3-Next), SSM/Mamba (Jamba), Sliding Window (Gemma 3)
 - **Interconnect presets**: NVLink 3/4/5, PCIe, InfiniBand NDR/X800, Spectrum-X Ethernet
@@ -38,7 +38,7 @@
 
 **Full parallelism support + automatic solver:**
 
-- **TP / PP / EP / DP / PD disaggregation**: Unified "shard + communicate" model, explicit TP×EP interaction rules (preventing common double-sharding bugs)
+- **TP / PP / EP / DP / PD disaggregation**: Unified "shard + communicate" model, shared TP/EP stage ranks (GPUs = TP×PP×DP, expert TP = TP/EP), with standard replicated-input/all-reduce MoE communication
 - **Automatic layout solver**: Given GPU count, enumerates TP→PP, prioritizing VRAM feasibility
 - **Speculative Decoding**: Draft model acceleration with draft/main KV coexistence memory calculation, supports automatic draft model recommendation
 
@@ -69,6 +69,14 @@ Open your browser, select a model (e.g. Llama 3.1 70B), GPUs (e.g. 4×H100), qua
 
 - ✅ VRAM feasibility (if infeasible, the maximum batch size is computed)
 - 📊 TTFT (time to first token), TPOT (time per output token), end-to-end latency, system throughput
+
+---
+
+## Updates
+
+- **2026-11-08**: Add or improve support for DeepSeek V4.1 Flash, Qwen 3.8, Kimi K3.1, GLM-5.3-Flash, Mistral Large 4, etc.
+- **2026-08-29**: Support Qwen3.8-Flash-Next, Qwen 3.8, Kimi K3, GLM-5.3-Flash, Hy4 Preview, etc.
+- **2026-08-23**: Expand the model catalog with DeepSeek V4, Qwen 3.5, Kimi K2.6, GLM-5.2, etc.
 
 ---
 
@@ -154,7 +162,7 @@ src/
     metrics.ts       # evaluate(): single public entry, returns Result<EvaluationResult>
     solver.ts        # solveParallelLayout(): auto-solve TP/PP
   data/
-    models/          # 403 models (6B/24B/32B/128B/500B/5000B tiers)
+    models/          # 414 models (6B/24B/32B/128B/500B/5000B tiers)
     gpus/nvidia/     # 110+ GPUs (10 generations)
     network/         # Intra-node / inter-node interconnect presets
   ui/                # Vite + React 18 + Recharts

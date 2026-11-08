@@ -5,7 +5,7 @@
 **一个让 AI Agent（Kilo）真正"会逆向"的完整技能系统** —— 不只是 Frida 脚本，而是覆盖静态分析、动态分析、脱壳、反检测、Native 逆向、安全合规的完整逆向工作流。
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-v0.7.0-2ea44f?style=flat-square)](https://github.com/index-login/MobileRE-Skill/releases)
+[![Version](https://img.shields.io/badge/Version-v0.8.0-2ea44f?style=flat-square)](https://github.com/index-login/MobileRE-Skill/releases)
 [![Android](https://img.shields.io/badge/Android-3DDC84?style=flat-square&logo=android&logoColor=white)](https://developer.android.com/)
 [![Frida](https://img.shields.io/badge/Frida-FF6B57?style=flat-square&logo=frida&logoColor=white)](https://frida.re/)
 [![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
@@ -47,7 +47,7 @@
 
 - 🧠 **Agent 大脑**（`.kilo/agent/reverser.md`）— 逆向分析角色定义，按决策树自动选模块
 - 📚 **领域知识**（`references/` 项目级 wiki + `.kilo/skill/`）— 9 大技巧域手册（全量索引 `_index.md`）+ 动态分析总控 + Native 深度能力（符号/结构恢复、离线模拟执行、内存 DEX 脱壳）
-- 🔧 **能力单元**（`scripts/`）— 25 个 Frida 模块（monitors 15 + bypass 10）+ 22 个独立工具 + 检测清单
+- 🔧 **能力单元**（`scripts/`）— 31 个 Frida 模块（monitors 19 + bypass 12）+ 26 个独立工具 + 检测清单
 - 🛠️ **合规检测** — 注入、调试、WebView SSL、APK 元数据/签名
 - 🔌 **MCP 集成**（`kilo.json`）— jadx-mcp（Java 反编译）+ ghidra-mcp（二进制分析）
 
@@ -74,13 +74,14 @@
 │  feedback/FEEDBACK.md     — agent 级反馈闭环（项目根）       │
 ├────────────────────────────────────────────────────────────┤
 │               Frida 动态 Hook 模块（skill scripts/）        │
-│  monitors/ (15 个) — 纯观察，不修改行为                     │
-│  bypass/   (10 个) — 主动干预，修改 app 行为                │
+│  monitors/ (19 个) — 纯观察，不修改行为                     │
+│  bypass/   (12 个) — 主动干预，修改 app 行为                │
 │  utils/            — 内存 dump / 运行时 JS 工具             │
 ├────────────────────────────────────────────────────────────┤
 │               独立工具（项目根 tools/）                      │
 │  so.py · unpack · dex_* · frida_run · device_ui             │
-│  emu_run · trace_recon · cipher_lab · fsmon_run · 检测      │
+│  emu_run · vmp · so_ledger · ptr_table · probe_layout       │
+│  trace_recon · cipher_lab · fsmon_run · 检测                │
 ├────────────────────────────────────────────────────────────┤
 │               MCP 集成（kilo.json 配置）                    │
 │  jadx-mcp  — AI 直接读 Java 源码反编译                      │
@@ -105,17 +106,15 @@
 
 ```
 MobileRE-Skill/
-├── references/                      # 技巧手册 wiki（项目级，索引见 _index.md）
+├── references/                      # 技巧手册 wiki（18 份，全量索引见 _index.md）
 │   ├── _index.md                    # 索引：作用 / 何时读 / 是否常驻
-│   ├── unpacking.md                 # 脱壳
-│   ├── anti-detection.md            # 环境对抗
-│   ├── crypto-hook.md               # 加密/功能 hook
-│   ├── behavior-analysis.md         # 行为分析
-│   ├── static-analysis.md           # 静态攻击面
-│   ├── native-analysis.md           # SO 层分析
-│   ├── troubleshooting.md           # 故障诊断
-│   ├── api-reference.md             # Frida API 参考
-│   ├── articles.md                  # 参考文章索引
+│   ├── unpacking.md · anti-detection.md · crypto-hook.md
+│   ├── behavior-analysis.md · static-analysis.md
+│   ├── native-analysis.md · native-audit.md · so-function-recovery.md
+│   ├── so-analysis-pipeline.md · so-func-naming.md · so-emulation.md
+│   ├── android-internals.md · cross-platform.md
+│   ├── troubleshooting.md · api-reference.md · articles.md
+│   ├── android-headers/             # ART 头文件（不入库，按需 fetch_android_headers.py 拉）
 │   └── smoke-test.md                # 冒烟自检（回归清单，其它资料）
 ├── .kilo/
 │   ├── agent/
@@ -125,14 +124,15 @@ MobileRE-Skill/
 │       │   ├── SKILL.md             # 总控：任务路由 + 决策树 + 模块目录
 │       │   └── scripts/             # Frida JS 模块（由 frida -l 加载）
 │       │       ├── core/utils.js        # 公共工具（始终首个加载）
-│       │       ├── monitors/            # 15 个监控模块（纯观察）
-│       │       ├── bypass/              # 10 个干预模块（反检测等）
+│       │       ├── monitors/            # 19 个监控模块（纯观察）
+│       │       ├── bypass/              # 12 个干预模块（反检测等）
 │       │       ├── utils/               # 内存 dump JS（so_dump / dex_* / codeitem）
 │       │       ├── checklist/           # 检测清单脚本
 │       │       └── templates/           # 模板（analysis.py / custom_hook.js）
 │       ├── func-naming/             # 无符号函数命名（符号表/魔数/调用模式）
-│       ├── rev-struct/              # 结构体恢复（偏移访问聚合）
-│       ├── rev-unicorn-debug/       # Unicorn 模拟调试（工具在 tools/）
+│       ├── so-emulate/              # 单函数离线仿真（Unicorn，工具在 tools/）
+│       ├── so-function-recovery/    # 大型 SO 函数级还原流水线（台账/边界/VM 编码）
+│       ├── vmp-analysis/            # VM/VMP 逆向 8 步流水线（profile 驱动）
 │       ├── dex-mem-dump/            # 运行时 DEX 脱壳（panda + mem，ptrace-free）
 │       └── karpathy-guidelines/     # 编码准则（开发辅助）
 ├── tools/                           # 独立工具（py/bat/jar，无 Frida 依赖）
@@ -143,6 +143,14 @@ MobileRE-Skill/
 │   ├── frida_run.py                 # 非交互 Frida 运行（无人值守）
 │   ├── device_ui.py                 # 设备交互（元素树/点击/输入/截图）
 │   ├── emu_run.py / uniharness.py   # Unicorn 离线仿真（含 --watch-* 观测层）
+│   ├── emu_setup.py / emu_setup_template.py  # 仿真 setup 助手库 / --setup 脚本骨架
+│   ├── vmp.py                       # 字节码 VM/VMP 逆向（profile 驱动：disasm/verify/trace/model）
+│   ├── vmp_profiles/                # VM 编码模型（换壳只换 JSON）
+│   ├── so_ledger.py / ptr_table.py  # 函数台账→工作队列 / 指针表枚举与分类
+│   ├── probe_layout.py              # 动态结构体布局探测（--at/--hook/--multi-hook）
+│   ├── check_registry.py            # 工具/模块/手册登记漂移自检
+│   ├── fetch_android_headers.py     # 按 AOSP tag 拉 ART 头文件（头文件不入库）
+│   ├── ghidra/ ida/                 # 批量脚本（索引 tools/ghidra/README.md）
 │   ├── trace_recon.py / cipher_lab.py  # 观测日志→状态重建 / 密码结构判定（层/表/编排）
 │   ├── fsmon_run.py                 # 设备侧内核文件事件采集与分析（fsmon inotify 后端；落盘件 pull）
 │   ├── check-anti-inject.py / check-janus.bat / debug-gdb.py / janus_check.py  # 检测项

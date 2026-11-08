@@ -622,5 +622,4 @@ Also, a leaderboard should be included if only:
 
 | Name | Description |
 | ---- | ----------- |
-| [AI-Trader](https://hkuds.github.io/AI-Trader) | AI-Trader is a fully autonomous trading benchmark to compare the performance of different AI models in trading NASDAQ 100 stocks. |
-| [Aiera Leaderboard](https://huggingface.co/spaces/Aiera/aiera-finance-leaderboard) | Aiera Leaderboard evaluates LLM performance on financial intelligence 
+| [AI Stock-Picking League](https://www.alphabazaar.ai/league) | AI Stock-Picking League is a daily paper-trading benchmark in which Google's Gemini and Gemma models each make one US stock trade or a pass every weekday from the same candidates and data, scored against SPY and ranked with no-AI baselines (a random pick, SPY buy-and-hold an

@@ -27,7 +27,7 @@ https://t.me/+A5X3Mxzs-Cg3NjYx
 | Windows 10 / 11 · 免安装 | [AndroidAdCleaner-0.4.0-windows-portable.zip](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.0/AndroidAdCleaner-0.4.0-windows-portable.zip) | 解压后双击 `AndroidAdCleaner.exe`；不会替换、也不会卸载已安装的旧版 |
 | 安卓手机 · 手机版（安卓 11 及以上） | [AndroidAdCleaner-0.4.0-android-arm64.apk](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.0/AndroidAdCleaner-0.4.0-android-arm64.apk) | 不用连电脑，安装和授权见[手机版教程](docs/手机版教程/README.md) |
 
-不知道 Mac 是哪种芯片：左上角苹果图标 → 关于本机，「芯片」写 Apple M 开头的选 Apple 芯片。所有版本：[Releases](https://github.com/rddmwmddr/android-ad-cleaner/releases)；国内下载走 [Gitee](https://gitee.com/rddmw/android-ad-cleaner/releases)，不用登录（Windows 安装版只在 GitHub 上）。国内走 Gitee 时拿到的是 Windows 免安装版，它不会替换已安装的旧版：要顶掉旧版，用安装版覆盖安装，或先在 Windows「设置」的应用列表里卸载旧的「安卓去广告」（0.3.2 及更早版本装的名字）再删掉旧快捷方式；卸载只删程序目录，数据与备份保留。用法：[docs/08-桌面客户端.md](docs/08-桌面客户端.md)。
+不知道 Mac 是哪种芯片：左上角苹果图标 → 关于本机，「芯片」写 Apple M 开头的选 Apple 芯片。所有版本：[Releases](https://github.com/rddmwmddr/android-ad-cleaner/releases)；国内下载走 [Gitee](https://gitee.com/rddmw/android-ad-cleaner/releases)，不用登录（Windows 安装版只在 GitHub 上）。国内走 Gitee 时拿到的是 Windows 免安装版，它不会替换已安装的旧版：要顶掉旧版，用安装版覆盖安装，或先在 Windows「设置」的应用列表里卸载旧的「安卓去广告」（0.3.2 及更早版本装的名字）再删掉旧快捷方式；卸载只删程序目录，数据与备份保留；免安装版启动时若发现旧版还在，也会在界面里提示一次。用法：[docs/08-桌面客户端.md](docs/08-桌面客户端.md)。
 
 > 手机版是不用连电脑的安卓 App（见下面[用法五](#五种用法)）：安装包在上面的表里，安装、授权与还原步骤见[手机版教程](docs/手机版教程/README.md)；想自己构建看 [android/](android/README.md)。
 
@@ -104,6 +104,7 @@ https://t.me/+A5X3Mxzs-Cg3NjYx
 | 荣耀 | PNM-AN10 | MagicOS 10 | ✅ 实测通过，重跑 4 分钟 | ✅ | ✅ 26 个渠道 |
 | 荣耀 | WKL-AN20 | MagicOS 11.0.0.111 / Android 17 | ⚠️ 2026-10-28 路径逐项实测，新脚本整轮待复测、用时未测；音乐需手动开页，见[说明](recipes/honor-WKL-AN20/README.md) | ✅ | ✅ 人工关闭 13 个渠道，其他渠道和总开关未变 |
 | 荣耀 | Magic V Flip2（CLE-AN00） | MagicOS 10.0.0.175 / Android 16 | ✅ 2026-11-07 电脑整轮 325 秒、13 段 12 段完成（主题未同意协议跳过）；手机版 2 分 20 秒，负一屏在后台屏上进不去，也跳过 | ✅ | ✅ 关 3 个渠道，复查仍开着 0 个 |
+| 一加 | 15T（PLZ110） | ColorOS 17.0.0.107 / Android 17 | ⚠️ 2026-11-08 贡献者真机七段分段核对；专用脚本整轮未验证，商店标题匹配待 #861 | 部分，见清单 | ✅ 本轮人工确认清单，其他渠道及总开关未变 |
 | 一加 | Ace 2 Pro（PJA110） | ColorOS 14.0.0.812 / Android 14 | 源码新增：3 项个性化 + 6 项商店推广位关闭并回读 | 部分，见实测记录 | ✅ 23 个，总开关不变；天气提醒差异见实测 |
 | 一加 | 13T（PKX110） | ColorOS 16.0.10.500 / Android 16 | ✅ 2026-10-28 实测：广告跟踪 76 项、商店两段、小布建议；浏览器/下拉搜索/负一屏见清单差异 | ✅ | ✅ 17 个渠道 |
 | 一加 | Ace 6T（PLR110） | ColorOS 17.0.0.101 / Android 17 | ✅ 2026-10-31 贡献者真机九段全跑 224 秒；本仓库无该机型，未复测，见[清单差异](docs/清单/OPPO-ColorOS.md) | ✅ | —（未测） |
@@ -126,6 +127,7 @@ https://t.me/+A5X3Mxzs-Cg3NjYx
 | 小米 | 15（24129PN74C） | HyperOS OS3.0.307.0.WOCCNXM / Android 16 | ⚠️ 10-29 路径逐项实测、开关已实际关闭；新脚本整轮待复测、用时未测，底包同 K80 但浏览器/商店入口不同 | ✅ | ✅ 17 个渠道，全部关闭 |
 | 小米 | REDMI K90 Pro Max（25102RKBEC） | HyperOS OS4.0.2.0.XPMCNXM / Android 17 | ✅ 10-27 九段实测通过，重跑 169 秒 | ✅ | ✅ 26 个渠道 |
 | 小米 | REDMI K90 Ultra（M332BF） | HyperOS OS4.0.4.0.XHPCNXM / Android 17 | ⚠️ 10-31 社区实测：@Sin1ery 本机九段跑通、复跑 179 秒、0 调整；按他的实测规格重写、本仓库未复跑，待其复测，见[实测记录](docs/16-红米K90至尊实测.md) | ✅ 见[清单](docs/清单/小米-HyperOS.md) | ✅ 19 个渠道（21 候选，剔除 2 条服务类） |
+| 小米 | MIX Flip 2（2505APX7BC） | HyperOS / Android 16（底包 BP2A.250605.031.A3） | ⚠️ 11-05 社区实测（合盖外屏）：该机借同底包参考脚本跑通六段，主题 / 浏览器 / 天气 / 日历四处入口不同；专用脚本按该机实测路径写成、本仓库未复跑、用时未测，待其复测，见[说明](recipes/xiaomi-2505APX7BC/README.md) | ✅ 见[清单](docs/清单/小米-HyperOS.md) | ✅ 关闭 22 个渠道，复查仍开着 0 个 |
 | 小米 | REDMI K80 Pro（24122RKC7C） | HyperOS OS3.0.304.0.WOMCNXM / Android 16 | ✅ 10-29 九段实测，首轮关 20 项，复跑 172 秒；[实测记录](docs/15-红米K80Pro实测.md) | ✅ | ✅ 48 个渠道（54 候选） |
 | 小米 | Redmi Note 14 Pro（24090RA29C） | HyperOS 3.0.309.0 / Android 16 | ✅ 10-26 八段实测通过，整轮约 5 分钟 | ✅ | ✅ 11 个渠道 |
 | 小米 | Redmi Note 14 5G（24094RAD4C） | HyperOS OS3.0.306.0.WOQCNXM / Android 16 | ✅ 10-30 八段实测：20 项新关闭（记账修复前统计，不含普通点击关掉的 4 项），复跑 291 秒、21 项回读、调整 0 项 | ✅ | ✅ 3 个渠道，全部关闭 |
@@ -184,7 +186,7 @@ python3 tool/run.py -s <序列号> dev-off --yes  # 从电脑关闭开发者模�
 ## 仓库结构
 
 ```text
-AGENTS.md            给 AI 智能体读的操作规范
+AGENTS.md            给用户侧 AI 智能体的操作手册（产品契约）
 CHANGELOG.md         本版起的变更记录（一条一行）；详细历史见 docs/归档/
 docs/
   00-打开开发者模式.md 带截图的分步教程

@@ -2,19 +2,28 @@
 
 <h1 align="center">Xolotl</h1>
 
-<p align="center"><b>DeepSeek-V4.1-Flash - all 552 billion parameters - on one gaming PC, at 33 tok/s on real agent tasks (41 in fast mode).</b><br>
-Plus GLM-5.3-Flash, Qwen3.8-Flash-Next, Qwen3.8-27B and LFM3-Omni: one engine, one OpenAI / Anthropic-compatible server.<br>
-Built on <a href="https://github.com/Niko1221/Strata">Strata</a> and heavily extended · Linux · NVIDIA · MIT</p>
+<p align="center"><b>DeepSeek-V4.1-Flash, all 552 billion parameters, on one gaming PC at 33 tok/s on real agent tasks (41 in fast mode)</b>, alongside GLM-5.3-Flash, Qwen3.8-Flash-Next, Qwen3.8-27B and LFM3-Omni, all behind one OpenAI- and Anthropic-compatible server. Built on <a href="https://github.com/Niko1221/Strata">Strata</a> and heavily extended. Linux · NVIDIA · MIT.</p>
 
-> **A Strata fork.** Xolotl keeps [Strata](https://github.com/Niko1221/Strata)'s engine, server and kernels at its
-> core (merged at 0.1.44.1) and adds ~71,000 lines on top: the DeepSeek-V4.1 and V4-Flash engines, the GLM-5.3-Flash
-> engine and the Qwen3.8-27B dense port, each with its own quantisation and expert-tiering work.
+> **Built from [Strata](https://github.com/Niko1221/Strata), and grown a long way past it.** Niko1221's engine,
+> server and core kernels are still at the heart of it (merged at 0.1.44.1), but Xolotl adds more than 70,000 lines
+> on top: its own DeepSeek-V4.1, V4-Flash and GLM-5.3-Flash engines, the Qwen3.8-27B dense engine (grown from Mirko
+> Perrone's port), the LFM3-Omni engine, fast mode, Xolotl Direct, and the quantisation, expert-tiering and serving
+> work behind every model here.
 
 ## Latest
 
-- **8 Nov** - [Gauntlet v3](#what-one-pc-can-do) is the main table: every model on the same 6 hard agentic tasks.
+- **8 Nov** - Short agent turns (a tool result on a long conversation) are faster on DeepSeek-V4.1 (4.40 -> 3.83 s for
+  161 tokens) and GLM-5.3-Flash (5.47 -> 4.63 s for 246 tokens): the CPU computes some of the experts while the card
+  runs the rest, and the CPU's i-quant kernels now decode an expert once for all its tokens (-32 % at 4-8 tokens).
+  GLM-5.3-Flash decode is 28.5-29 tok/s since the RAM upgrade. Default on; numbers in the
+  [CHANGELOG](docs/xolotl/CHANGELOG.md#cpu-i-quant-down-rows-one-decode-for-every-token-8-nov).
+- **8 Nov** - Qwen3.8-27B decode: MTP now stays on with thinking off (52 -> 111 tok/s), one-pass verify attention
+  (+7-10 %) and an n-gram draft chain (`--ngram-chain`: 137 -> 173 tok/s when rewriting a file). Same text, bit for bit.
+- **8 Nov** - [Gauntlet v3](#what-one-pc-can-do) is the main table: every model on the same 6 hard agentic tasks. Our DeepSeek-V4.1 and Qwen3.8-Flash-Next builds score at or above their own full-precision APIs on it.
+- **8 Nov** - The Qwen3.8-27B dense engine is `xolotl-dense` now (built on Mirko Perrone's dense port); `strata-dense`
+  stays as a symlink, so nothing breaks.
 - **7 Nov** - [DeepSeek-V4.1 fast mode](#fast-mode-deepseek-v41) (opt-in): 41 tok/s on real agent tasks against 32.6,
-  the same tasks solved.
+  the same Gauntlet score.
 - **7 Nov** - [Xolotl Direct](docs/XOLOTL_DIRECT.md) (Linux, experimental): the NVMe drive writes experts straight into
   a GeForce card's VRAM, 3.1 ms per expert instead of 11.
 - **7 Nov** - DeepSeek-V4.1 loads in 44 s instead of 96, same output.
@@ -31,10 +40,10 @@ DeepSeek-V4.1's decode speed is set by how many expert bytes cross the RAM bus a
 keeps a 2-bit (Q2_K) copy of the two biggest expert formats (about half of those bytes) in a ~40 GB sidecar file and
 reads that instead. The model file is not changed; turning it off is unsetting one variable.
 
-| DeepSeek-V4.1 V4, RTX 4090 |    Decode, agent tasks |      Decode, 8K prompt | Gauntlet v3-small | Next-token agreement |
-| -------------------------- | ---------------------: | ---------------------: | :---------------: | :------------------: |
-| normal                     |             32.6 tok/s |             26.1 tok/s |       8 / 12      |        87.0 %        |
-| **fast mode**              | **41.1 tok/s (+26 %)** | **33.0 tok/s (+27 %)** |     **8 / 12**    |      **86.2 %**      |
+| DeepSeek-V4.1 V4, RTX 4090 | Decode, agent tasks (tok/s) | Decode, 8K prompt (tok/s) | Gauntlet score | Next-token agreement |
+| -------------------------- | --------------------------: | ------------------------: | :------------: | :------------------: |
+| normal                     |                        32.6 |                      26.1 |      4.99      |        87.0 %        |
+| **fast mode**              |            **41.1 (+26 %)** |          **33.0 (+27 %)** |    **4.99**    |      **86.2 %**      |
 
 ```bash
 build-xolotl/ds41_generate -m V41-XQ-1017-v4.gguf --build-shadow /nvme/V4.fast.x41s   # once, ~30 min CPU (or download v4-fast/ from the model's HF page)
@@ -50,19 +59,25 @@ is compress-then-correct from [PROMETHEVS](https://github.com/Magnvs7/Promethevs
 **One RTX 4090 (24 GB) · Ryzen 7 5700X · 110 GB DDR4 · one NVMe drive.** Every number is measured on that machine,
 through the real server, while the model works through the [Gauntlet](tools/gauntlet/README.md) v3-small: 6 hard
 agentic coding tasks graded by hidden tests, 10 turns each, thinking on (32K-token budget), each model as it is
-served, 2 runs per model. Decode is the generation speed during those tasks.
+served. Decode is the generation speed during those tasks.
 
-| Model                                                                                                             | Size      |  Solved | Score |     Decode |           Prefill | Context | Full-precision API, same tasks |
-| ----------------------------------------------------------------------------------------------------------------- | --------- | :-----: | :---: | ---------: | ----------------: | :-----: | :----------------------------: |
-| **[DeepSeek-V4.1-Flash-1017 V4](https://huggingface.co/IndrasMirror/DeepSeek-V4.1-Flash-1017-XQ-Uncensored)**     | 552B MoE  |  8 / 12 |  4.99 | 32.6 tok/s |     289-409 tok/s |   512K  |            running             |
-| **DeepSeek-V4.1 V4, [fast mode](#fast-mode-deepseek-v41)**                                                        | 552B MoE  |  8 / 12 |  4.99 | 41.1 tok/s |         measuring |   512K  |               -                |
-| **GLM-5.3-Flash**                                                                                                 | 320B MoE  | running |   -   |          - |     290-375 tok/s |   512K  |            running             |
-| **[Qwen3.8-Flash-Next XQ 45 GB](https://huggingface.co/IndrasMirror/Qwen3.8-Flash-Next-Swift-1.5-XQ-Uncensored)** | 125B MoE  |  7 / 12 |  4.49 |  157 tok/s | 3,800-4,070 tok/s |   200K  |            running             |
-| **Qwen3.8-27B**                                                                                                   | 27B dense | running |   -   |          - | 1,240-1,390 tok/s |   200K  |            running             |
+| Model                                                                                                             | Size      | Score (of 6) | Decode (tok/s) | Prefill (tok/s) | Context | API score |
+| ----------------------------------------------------------------------------------------------------------------- | --------- | :----------: | :------------: | :-------------: | :-----: | :-------: |
+| **[DeepSeek-V4.1-Flash-1017 V4](https://huggingface.co/IndrasMirror/DeepSeek-V4.1-Flash-1017-XQ-Uncensored)**     | 552B MoE  |     4.99     |      32.6      |     289-409     |   512K  |    4.49   |
+| **DeepSeek-V4.1 V4, [fast mode](#fast-mode-deepseek-v41)**                                                        | 552B MoE  |     4.99     |      41.1      |     258-439     |   512K  |     -     |
+| **GLM-5.3-Flash**                                                                                                 | 320B MoE  |   to come    |     28.5-29    |     312-450     |   512K  |    5.87   |
+| **[Qwen3.8-Flash-Next XQ 45 GB](https://huggingface.co/IndrasMirror/Qwen3.8-Flash-Next-Swift-1.5-XQ-Uncensored)** | 125B MoE  |     4.49     |      157       |   3,800-4,070   |   200K  |    3.90   |
+| **Qwen3.8-27B**                                                                                                   | 27B dense |     5.50     |      105       |   1,420-1,630   |   200K  |    4.47   |
 
-<sub>Score (of 6) = each task's progress summed (1 per solve, partial credit from the hidden tests), averaged over the 2 runs.
-Prefill = a fresh 6K-17K-token prompt (`tools/throughput.py`). DeepSeek-V4.1 runs here with its dense half at Q6_K, as
-it is served. More numbers, the Q8_0 references, the speed log and the older HumanEval table (every model 19-21/21
+<sub>Score (of 6) = each task's progress summed (1 per solve, partial credit from the hidden tests), averaged over the runs.
+API score = each model's own full-precision API through OpenRouter (DeepSeek-V4.1-Flash-1017, GLM-5.3-Flash, Qwen3.8-Flash,
+Qwen3.8-27B), the same tasks and turns, reasoning on (8 Nov).
+Qwen3.8-27B: one run on 8 Nov after that day's decode fixes (MTP with thinking off, one-pass verify attention,
+`--ngram-chain`); before them it scored 4.47 twice at 89 tok/s. GLM-5.3-Flash: no Gauntlet run yet (score to come); its decode is from an agent replay on 8 Nov (a 25K-token
+conversation with tool-output turns, Maya 512K as served; since the RAM upgrade every expert sits in RAM, 23 tok/s before it),
+prefill 454 tok/s on a fresh 25K prompt.
+Prefill = a fresh 6K-17K-token prompt (`tools/throughput.py`), DeepSeek-V4.1's with its dense half at Q8_0. In the
+Gauntlet DeepSeek-V4.1 runs with its dense half at Q6_K, as it is served. More numbers, the Q8_0 references, the speed log and the older HumanEval table (every model 19-21/21
 there, so it no longer separates them): [docs/xolotl/BENCHMARKS.md](docs/xolotl/BENCHMARKS.md).</sub>
 
 **Smaller cards.** The engine fits the work to the card, and what doesn't fit lives in RAM and on the SSD, so RAM
@@ -80,7 +95,7 @@ bash tools/xolotl/fetch-llama.sh   # llama.cpp at the pinned commit + tools/xolo
 cmake -S . -B build-xolotl -G Ninja -DCMAKE_BUILD_TYPE=Release -DSTRATA_ENABLE_CUDA=ON -DSTRATA_GGML_CUDA=ON \
   -DSTRATA_MMQ_KQUANTS=ON -DCMAKE_CUDA_ARCHITECTURES=89 -DSTRATA_GGML_DIR=$PWD/third_party/llama.cpp -DSTRATA_DSV41_FQ_OP=ON \
   -DSTRATA_DSV41_HC_MIX=ON
-ninja -C build-xolotl      # strata, strata-dense, glm_generate, ds41_generate, ds4_generate
+ninja -C build-xolotl      # strata, xolotl-dense, glm_generate, ds41_generate, ds4_generate
 ```
 
 Get a model:
@@ -92,6 +107,8 @@ Get a model:
   [fast-mode](#fast-mode-deepseek-v41) sidecar (~40 GB), built once with `ds41_generate --build-shadow`.
 - **Qwen3.8-Flash-Next:** **[XQ 45 GB](https://huggingface.co/IndrasMirror/Qwen3.8-Flash-Next-Swift-1.5-XQ-Uncensored)**
   (the two `.gguf` shards plus `pack-qfn45/`).
+- **Qwen3.8-27B:** any dense Qwen3.8-27B GGUF. `python tools/dense_setup.py --download UD-Q4_K_M --build --arch 89` fetches
+  one and writes its run config; add `--mtp --ngram-chain` to its engine args for the fast (still exact) decode.
 
 Then serve it (edit the model paths in the DeepSeek and GLM configs first):
 
@@ -100,7 +117,7 @@ python3 tools/v41/serve/serve_ds41.py --engine strata --config tools/v41/serve/s
 XOLOTL_SHADOW=$(cat /nvme/V4.fast.x41s.list) python3 tools/v41/serve/serve_ds41.py ...                                # the same in fast mode (V4)
 python3 tools/glm/serve/serve_glm.py  --engine strata --config tools/glm/serve/strata-glm-maya-abl-512k.json --port 8144  # GLM-5.3-Flash
 ./scripts/xol-qfn.sh --serve-only --model <shard 1 .gguf> --pack <pack-qfn45>                                       # Qwen3.8-Flash-Next (port 8099)
-python3 -m serve.server --engine strata --config <your-27b.json> --port 8090                                          # Qwen3.8-27B (exe: build-xolotl/strata-dense)
+python3 -m serve.server --engine strata --config <your-27b.json> --port 8090                                          # Qwen3.8-27B (exe: build-xolotl/xolotl-dense)
 ```
 
 Then point any OpenAI- or Anthropic-compatible client at `http://127.0.0.1:<port>/v1`.
@@ -128,7 +145,10 @@ pruning; the Qwen models get MTP speculative decoding. **[Read the full write-up
 | [DeepSeek-V4.1 on Windows](docs/WINDOWS.md)        | native MSVC + CUDA build, configs, RTX 50 notes                                   |
 | [GLM-5.3-Flash engine](docs/glm)                   | KDA + MLA attention, the LoRA on routed experts, soft pruning                     |
 | [LFM3-Omni engine](docs/LFM3.md)                   | pictures, audio, video and speech on a 2B model, park/unpark beside a big one     |
+| [Qwen3.8-27B dense howto](docs/dense/HOWTO.md)     | dense vs MoE paths, binaries, configs, MTP (by Mirko Perrone, also in Italian)    |
+| [Setting up with an agent](AGENTS.md)              | the build-and-serve steps for an AI agent (or a person) setting Xolotl up         |
 | [Qwen3.8 / upstream Strata](README.strata.md)      | the Strata engine this grew from                                                  |
+| [History](docs/history/README.md)                  | earlier session notes, kept as written                                            |
 | [Brand kit](docs/brand/XOLOTL_BRAND.md)            | logo, banner, palette                                                             |
 
 ## Credits
@@ -148,3 +168,5 @@ from RAM and NVMe. Research code from one developer, measured on one PC; reports
 
 If Xolotl's been useful to you and you want to help support what I do, you can shout me a coffee on
 [Ko-fi](https://ko-fi.com/indrasmirror). Every bit helps keep this going :)
+
+Write-ups, benchmarks and news about Xolotl: **[indrasmirror.au](https://indrasmirror.au/blog-xolotl-frontier-models-one-gaming-pc)**.

@@ -27,6 +27,10 @@ Every new feature has its own switch in Settings.
 
 ## What it does today
 
+- **Device results and cautious recovery (optional, off by default).** Name partial guarded outcomes, check fresh states after “that did not work”, and offer only never-dispatched actions with a new confirmation. Successful and uncertain actions are not replayed. [Setup and limits](docs/ACTION_RECOVERY.md).
+
+- **Specific device and value questions (optional, off by default).** Offer numbered real-device choices, understand exact short answers and temperatures, retain the original request, and stop repeated clarification loops. Selection is never action approval. [Setup and limits](docs/SPECIFIC_CLARIFICATION.md).
+
 - **Conversation reliability (0.92.0).** Optional saved generic language phrases avoid preparing them again after restart. Identical translations share work; failed translations have a short cooldown. Optional content-free voice timings show where agent work took time, and expanded live checks inspect final translated replies. [Setup and limits](docs/CONVERSATION_RELIABILITY.md).
 
 - **Optional update checker.** Check stable Sentient releases every six hours, inspect loaded/latest versions and refresh the sidebar after upgrading. Installation and restarts stay manual. [Setup and behaviour](docs/UPDATES.md).
@@ -174,3 +178,11 @@ Every service is also listed, with its fields, under Developer tools → Actions
 ## Roadmap
 
 See [docs/ROADMAP.md](docs/ROADMAP.md).
+
+Speaker delivery diagnostics show per-speaker service stages and timings, with an optional failure notification. See [voice delivery diagnostics](docs/VOICE_DELIVERY.md).
+
+Optional [short follow-ups after a fresh wake word](docs/RECENT_FOLLOWUPS.md) retain a recently completed subject without restoring permission or listening.
+
+Optional [behaviour explanations](docs/BEHAVIOUR_EXPLANATIONS.md) answer short listening/action questions from recorded evidence without another model call.
+
+Optional [current house context](docs/CURRENT_HOUSE_CONTEXT.md) connects relevant live reports, recent changes and the current unfinished task in conversations. A separate optional heating update can speak once when a confirmed requested temperature is reported as reached.

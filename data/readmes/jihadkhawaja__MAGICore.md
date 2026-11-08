@@ -1,8 +1,8 @@
 <div align="center">
-    <img src="assets/readme-header.svg" alt="MagiCore semantic, temporal, and spatial memory systems online" width="100%" />
+    <img src="assets/readme-header.png" alt="A layered memory core with connected nodes, a timeline, and spatial contours" width="100%" />
 </div>
 
-<h1 align="center">MagiCore</h1>
+<h1 align="center">MAGICore</h1>
 
 <p align="center"><strong>Long-term memory infrastructure for AI applications and agents in .NET.</strong></p>
 

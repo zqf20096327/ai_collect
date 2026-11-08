@@ -1,0 +1,172 @@
+# chessformer_lens
+
+#### A Library for Mechanistic Interpretability of Transformer-Based Chess Models. 
+Created by [David Litman](https://davidlitman.com).
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21877655.svg)](https://doi.org/10.5281/zenodo.21877655)
+
+#### **Try the app in your browser, no install needed $\longrightarrow$** <a href="https://colab.research.google.com/github/chessformer-lens/chessformer_lens/blob/main/notebooks/app_quickstart.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" width="140"></a>
+
+
+
+![The app](https://raw.githubusercontent.com/chessformer-lens/chessformer_lens/main/Screenshots/MainShot.png)
+
+---
+
+**Paper:** [Increasing Skill Level Recruits Deeper Attention Layers in a Frozen Chess Transformer](https://arxiv.org/abs/2609.23917) (Litman, 2026). Every figure and most of the analysis in this paper was made with this library. 
+
+---
+
+Pip install:
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install chessformer_lens
+# for Maia-3 models, first: pip install https://github.com/CSSLab/maia3/archive/1e13597c42d4858b7cfd7cfdae01e297263364b2.zip
+# Leela's BT4 net downloads itself on first use
+# for DeepMind's searchless models, first: pip install tensorstore (reads their checkpoints, once)
+```
+or Clone if you want to edit the code:
+```bash
+git clone https://github.com/chessformer-lens/chessformer_lens
+cd chessformer_lens
+pip install -r requirements.txt
+```
+---
+## Demo Notebook: <a href="https://colab.research.google.com/github/chessformer-lens/chessformer_lens/blob/main/notebooks/demo.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" width="200"></a>
+
+---
+
+![A knight-fork position's move report](https://raw.githubusercontent.com/chessformer-lens/chessformer_lens/main/Screenshots/Screenshot10.png)
+---
+
+There is wonderful prior chess-interp work, for instance: [McGrath et al.](https://www.pnas.org/doi/10.1073/pnas.2206625119) on AlphaZero concepts, [Jenner et al.](https://arxiv.org/abs/2406.00877) on lookahead in Leela, [Karvonen](https://arxiv.org/abs/2403.15498) on chess-GPT, but there is no general infrastructure for rigorous interpretability work or interactive visualization for these models.
+ 
+Chessformer_lens is built to do both, especially inspired by Neel Nanda's [transformer_lens](https://github.com/TransformerLensOrg/TransformerLens) library.
+
+Chess is unusually suited for AI interpretability because it requires complex and structured reasoning in a compact domain, and it has a hierarchy of human concepts (squares -> threats -> tactics -> strategy) which can provide deep insight into how AI carves features.
+
+Transformer based chess models ("chessformer") are a good lens for studying LLMs because outputs have a clear ground source for the evaluation of a move and so avoid the vagueness of language, because attention functions with clearly interpretable roles on a chess board, and because informative chessformer results are straightforward to scale and investigate in LLMs.
+
+---
+
+This repo's core is **one engine** with **three frontends**:
+`engine.py` is the interp core (model + hooks + logit lens + head ablation + list of values through depth). It does all of the analysis for:
+- `app.py`
+- `interp_plot.py`
+- `interp_widget.py`
+
+Users are encouraged to read the user guides for each of these modules which can be found at the top of the respective scripts.
+![Image from paper produced with the library](https://raw.githubusercontent.com/chessformer-lens/chessformer_lens/main/Screenshots/paper_image.png)
+*Image from paper produced with chessformer_lens*
+
+---
+## Leela Chess Zero
+
+This is an extremely strong engine that has many many more layers and parameters but the same square-token design as others like Maia-3.
+
+**Weights:** `bt4` (the base BT4 net) or `bt4-332` (its policytune-332 fine-tune) download from [lczero.org](https://lczero.org) on first use into `~/.cache/chessformer_lens`. A path to any lc0 `.pb.gz` works too.
+
+**Load.** One alias table covers every family; none is a default.
+```python
+from chessformer_lens import LeelaEngine, load_engine
+eng = LeelaEngine("bt4")
+```
+---
+## Quickstart in notebook:
+
+Recall that FEN is the modern notation for a chess position
+```python
+!pip install -q https://github.com/CSSLab/maia3/archive/1e13597c42d4858b7cfd7cfdae01e297263364b2.zip
+!pip install -q "chessformer_lens>=3.0"
+
+import chess
+from chessformer_lens import MaiaEngine
+import chessformer_lens.interp_widget as iw
+
+eng = MaiaEngine()          
+# Opera Game FEN right at legendary queen sacrifice 
+fen = "4kb1r/p2n1ppp/4q3/4p1B1/4P3/1Q6/PPP2PPP/2KR4 w k - 0 16" 
+# [or insert another FEN string]
+
+try:
+    board = chess.Board(fen)
+except ValueError as e:
+    print(f"Invalid FEN: {e}")   
+
+#Interact with the attention widget
+#click between different layers and heads in the widget
+iw.attention_widget(eng, board, 1500,layer=4,head=3) 
+```
+
+---
+## The app
+
+
+
+To me, the app is the pièce de résistance and usage should be rather intuitive, nonetheless, a detailed guide can be found in [`chessformer_lens/app_guide.md`](https://github.com/chessformer-lens/chessformer_lens/blob/main/chessformer_lens/app_guide.md).
+
+
+Play a transformer-based chess bot ("chessformer") and watch
+its move policy, its attention (both semantic QKᵀ and unique geometric GAB), and — for any move you
+click — its logit through depth, the heads that carry it, and the neurons that carry it. The model loads on a background thread so the window opens instantly.
+
+
+```bash
+#Various ways to launch, note that higher parameter models have 16 and 32 heads per layer, and 512 and 1024 dim of the model (d_model):
+chessformer_lens                    # no model named: opens a model picker
+chessformer_lens --list             # print every engine and its aliases
+chessformer_lens 23m               
+chessformer_lens --model maia3-79m 
+CHESSFORMER_MODEL=5m chessformer_lens
+chessformer_lens bt4                # Leela Chess Zero BT4 — see above   
+chessformer_lens searchless-9m      # DeepMind's searchless chess, 9M (also 136m, 270m)
+chessformer_lens --web              # the same app in your web browser
+chessformer_lens maia3-5m --simple  # load app in simple mode; no interpretability
+```
+
+
+
+---
+
+
+### Code layout: all found within the chessformer_lens package
+- `__init__.py` — the package surface: `MaiaEngine`, `LeelaEngine`, `SearchlessEngine`, `load_engine`, `build_cfg`, `pick_device`, `Conditioning`, `ModelAdapter`, `register_adapter`, `available_models`, `attention_widget`, `gab_widget`, `__version__`.
+- `engine.py` — the interp core (model + hooks + logit lens + head ablation + list of values through depth): `ChessformerEngine` holds every method and works on any model a `ModelAdapter` describes; `MaiaEngine`, `LeelaEngine` and `SearchlessEngine` are thin wrappers. No UI deps; imports cleanly in a notebook.
+- `core.py` — the model-agnostic layer: `ModelAdapter`, the adapter registry, and the types the engine speaks in (`Conditioning`, `TokenLayout`, `ValueEstimate`, …).
+- `adapters/` — one adapter per model family: `lc0.py` (Leela BT4, no maia3 needed), `maia3.py` (Maia-3), `searchless.py` (DeepMind's searchless chess), `smolgen.py` (the smolgen/GAB attention the first two use).
+- `interp_plot.py` — matplotlib figures that the app uses
+- `interp_widget.py` — the app's two interactive panels as a self-contained notebook cell or standalone HTML page
+- `piece_art.py` — the cburnett pieces as PNGs, for the matplotlib figures
+- `bridge.py` — the game state + the JSON API the UI calls (`LensApi`).
+- `ui.py` — the whole interface (HTML/CSS/JS) as one string including guide to change template.
+- `app.py` — app launcher (native window via pywebview); the `chessformer_lens` command is its `main()`.
+- `web.py` — the same app served to a web browser (`chessformer_lens --web`, or `web.serve()` in a notebook).
+
+These come with concise but detailed docstrings.
+
+---
+### General color guide
+
+
+**Blue and orange** is used for diverging signed values; negative is blue, positive is orange. **Viridis** is used for magnitudes like attention weights. **Green** has to do with a specific chess move. **Red** has to do with undesirable things. The **black and white** halo lens denotes a query square. 
+ 
+---
+### Notes
+Created by David Litman
+
+Maia-3 comes from:
+Chessformer / Maia-3 (Monroe et al., ICLR 2026).
+
+BT4 comes from the Leela Chess Zero project (lczero.org); the smolgen / attention-body design it uses is described in the Chessformer paper and in lc0's own writeups.
+
+The searchless models come from DeepMind: Ruoss, Delétang, Medapati, Grau-Moya, Wenliang, Catt, Reid, Lewis, Veness, Genewein (2024), "Amortized Planning with Large-Scale Transformers: A Case Study on Chess", arXiv:2402.04494. Their weights are CC-BY 4.0; their tokenizer and move list are ported from the Apache-2.0 code.
+
+
+Maia-3, Leela BT4 and DeepMind's searchless models are supported. The first two treat each square as a token—which allows for beautiful board readable attention patterns. The searchless models output one move's win probability per sequence and have no policy head, so the logit lens (and the depth curves built on it) does not apply to them. The core works through model adapters, so other models can plug in; for models whose stream isn't the 64 squares alone, the board views show a "not available yet" notice for now.
+
+
+Please don't hesitate to give me feedback or thoughts by email found at [my personal website](https://davidlitman.com). I hope for this to be a useful and intuitive tool for the community.
+
+---
+### Citing
+If `chessformer_lens` contributes to published work, a citation is very appreciated and helps others find it! Use GitHub's "Cite this repository" button, or DOI [10.5281/zenodo.21877655](https://doi.org/10.5281/zenodo.21877655).

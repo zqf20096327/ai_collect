@@ -13,9 +13,9 @@
 
 ## What is vindex?
 
-`vindex` is a local-first, open-source Python SDK and REST API that processes any video file through a modular multi-modal extraction pipeline and produces **stable, typed, versioned output artifacts** — structured JSON and human-readable Markdown — that any downstream system (AI agent, RAG pipeline, search index, video editor) can consume without ever touching the raw video again.
+`vindex` is a local-first, open-source Python SDK, CLI, and REST API that processes any video file through a modular multi-modal extraction pipeline and produces **stable, typed, versioned output artifacts** — structured JSON and human-readable Markdown — that any downstream system (AI agent, RAG pipeline, search index, video editor) can consume without ever touching the raw video again.
 
-It is a **compiler**, not an assistant. It produces **facts**, not opinions. It runs **entirely on your machine** with no cloud account, no API key, and no data leaving your device.
+It is a **compiler**, not an assistant. It produces **facts**, not opinions. It runs **entirely on your machine** with **zero API keys, no paid subscriptions, no cloud dependencies, and zero data leaving your device** — 100% free and open-source under the MIT license.
 
 Think of it as [Tesseract](https://github.com/tesseract-ocr/tesseract) — but for everything a video contains, not just the text in it.
 
@@ -50,6 +50,23 @@ A single `vindex compile video.mp4` run produces:
 | `ocr.json` | All on-screen text, timestamped and spatially positioned |
 
 All JSON artifacts are validated against **versioned Pydantic schemas**. Schema version is embedded in every artifact. Output is byte-reproducible for the same video, config, and model versions.
+
+---
+
+## Live Demo & Compiled Knowledge Preview
+
+The repository includes an interactive live demo video ([`website/demo.mp4`](website/demo.mp4), 10.03s, 1280×720):
+> *"Stop making AI watch the same video twice. Vindex compiles it into reusable knowledge."*
+
+Compiling this demo video via `vindex compile website/demo.mp4` yields a deterministic 3-scene timeline:
+
+| Scene | Timecode | VLM Visual Caption | Spoken Audio (ASR) | Extracted Text (OCR) |
+|---|---|---|---|---|
+| **Scene 1** (`sc001`) | `00:00.00 – 00:03.20` | Robotic manipulator arms spotlighting sensor hardware in a dark research lab | *"Stop making AI watch the same video twice."* (100% confidence) | `LAB STAGE 01` (bbox: `[110, 80, 240, 110]`) |
+| **Scene 2** (`sc002`) | `00:03.20 – 00:07.50` | 3D isometric perception pipeline with glass timeline layers, waveform telemetry & HUD | *"Vindex compiles it into reusable knowledge."* (99% confidence) | `"scenes": [...]`, `"ocr"`, `00:00:00`, `00:04:05` |
+| **Scene 3** (`sc003`) | `00:07.50 – 00:10.03` | Monolithic architectural brand lockup against textured dark panelling | *(None)* | `VINDEX` (0.99), `Open-source video knowledge compiler.` (0.99) |
+
+You can explore this video, its synchronized timeline, and raw Pydantic JSON in the **interactive Web Studio** (`uv run uvicorn vindex.api.app:app`) by clicking **"Load Live Demo"** in the navigation bar.
 
 ---
 
@@ -152,16 +169,17 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full pipeline design.
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/vindex.git
+git clone https://github.com/vaibhav-space/vindex.git
 cd vindex
 
 # Install with uv (recommended)
-pip install uv
 uv sync
 
-# Or install directly via pip
-pip install vindex
+# Or install editable via pip
+pip install -e .
 ```
+
+> **PyPI Distribution Note:** The verified distribution name is `vindex-video` (preserving the Python import namespace `import vindex`). For source installation, use `uv sync` or `pip install -e .`.
 
 ### 2. Install ffmpeg (required system dependency)
 
@@ -173,11 +191,23 @@ brew install ffmpeg
 sudo apt install ffmpeg
 ```
 
-### 3. Download model weights (one-time, ~3.5 GB)
+### 3. Model weights setup
+
+Model weights are stored locally in `~/.vindex/models` (or customized via `VINDEX_MODELS_DIR`).
 
 ```bash
+# Dry-run inspection of required model weights (no network download)
+uv run python scripts/download_weights.py --dry-run
+
+# Download all required weights (one-time setup, ~3.5 GB)
 uv run python scripts/download_weights.py
+
+# Or download individual models (e.g. whisper only)
+uv run python scripts/download_weights.py --model whisper
 ```
+
+> **Model-free compilation:** You can compile videos or test the pipeline offline without downloading models by providing a pre-existing Whisper transcript:
+> `vindex compile lecture.mp4 --stages scene --transcript-path custom_transcript.json`
 
 ### 4. Start the API server and web UI
 
@@ -190,19 +220,26 @@ Open **`http://localhost:8000`** in your browser to use the built-in web UI — 
 ### 5. Compile a video via CLI
 
 ```bash
-vindex compile lecture.mp4
+# Compile full video to structured JSON and Markdown (defaults to ./dist)
+vindex compile lecture.mp4 -o ./dist
+
+# Inspect compiled visual memory index directly in your terminal
+vindex inspect ./dist/visual_memory.json
+
+# Validate artifact integrity against versioned Pydantic v2 schemas
+vindex validate ./dist/visual_memory.json -t VisualMemory
 ```
 
-Output artifacts appear alongside the video:
+Output artifacts appear in your target directory:
 
 ```
-lecture/
-├── visual_memory.json   ← primary compiled index
-├── visual_memory.md     ← human-readable narration
-├── timeline.json
-├── scene_index.json
-├── asr.json
-└── ocr.json
+dist/
+├── visual_memory.json   ← primary compiled index (scenes, shots, events)
+├── visual_memory.md     ← human-readable grounded narration
+├── timeline.json        ← temporal spine and boundary metadata
+├── scene_index.json     ← semantic scene groupings
+├── asr.json             ← word-level transcription & confidence
+└── ocr.json             ← spatially positioned on-screen text
 ```
 
 ### 6. Use the Python SDK
@@ -210,10 +247,14 @@ lecture/
 ```python
 from vindex import compile_video
 
-index = compile_video("lecture.mp4")
+# Compiles video once; returns a typed VisualMemory model
+memory = compile_video("lecture.mp4", output_dir="./dist")
 
-for scene in index.timeline.scenes:
-    print(scene.id, scene.caption, scene.start_ms, scene.end_ms)
+# Query deterministic scenes, shots, and events
+for scene in memory.timeline.scenes:
+    print(f"Scene {scene.scene_id}: {scene.dominant_caption} [{scene.start_ms}ms - {scene.end_ms}ms]")
+    for shot in scene.shots:
+        print(f"  Shot {shot.shot_id}: {len(shot.ocr)} OCR items, {len(shot.asr_words)} spoken words")
 ```
 
 ### 7. Use the REST API from any coding agent
@@ -260,19 +301,19 @@ The REST API is fully documented via the auto-generated OpenAPI spec at `http://
 
 ## Project status
 
-**Active development — v0.1.0 (pre-release).**
+**Active development — v0.2.0.**
 
 | Phase | Description | Status |
 |---|---|---|
-| 0 | Foundation — schemas, interfaces, CI | ✅ Complete |
+| 0 | Foundation — schemas, interfaces, CI test automation | ✅ Complete |
 | 1 | Extractor layer — ASR, OCR, VLM, scene detection, frame extraction | ✅ Complete |
-| 2 | Compiler — shot assembly, scene grouping, timeline construction | 🔄 In progress |
+| 2 | Compiler — shot assembly, scene grouping, timeline construction, relationship resolver | ✅ Complete |
 | 3 | Narration layer — LLM-grounded Markdown generation | ✅ Complete |
-| 4 | CLI and Python SDK | 🔄 In progress |
-| 5 | Plugin system and documentation | 🔄 In progress |
-| 6 | Evaluation harness | ✅ Complete |
+| 4 | CLI and Python SDK — `compile`, `inspect`, `validate`, `eval`, and SDK interface | ✅ Complete |
+| 5 | Plugin system and documentation — entry_points plugin loader & architecture specs | ✅ Complete |
+| 6 | Evaluation harness — golden fixture benchmark scoring (`vindex eval`) | ✅ Complete |
 
-See [docs/PROJECT_STATE.md](docs/PROJECT_STATE.md) for detailed status and known gaps.
+See [docs/PROJECT_STATE.md](docs/PROJECT_STATE.md) for detailed status and remaining limitations.
 
 ---
 
@@ -280,6 +321,7 @@ See [docs/PROJECT_STATE.md](docs/PROJECT_STATE.md) for detailed status and known
 
 | Document | Purpose |
 |---|---|
+| [CHANGELOG.md](CHANGELOG.md) | Release history, version notes, and breaking change log |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Pipeline design, plugin system, canonical terminology |
 | [docs/TECH_STACK.md](docs/TECH_STACK.md) | Every technology decision with full rationale and trade-offs |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Phased implementation plan with milestones and dependencies |

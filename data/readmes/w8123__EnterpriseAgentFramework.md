@@ -22,6 +22,23 @@
   </a>
 </p>
 
+## 官网与在线体验
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <h3>了解 ReachAI</h3>
+      <p>了解产品功能、应用场景和接入方式。</p>
+      <p><a href="https://reachai.w8123.com:9443/" target="_blank" rel="noopener noreferrer"><strong>访问 ReachAI 官网 →</strong></a></p>
+    </td>
+    <td width="50%" align="center">
+      <h3>体验 ReachAI 工作台</h3>
+      <p>进入工作台，探索平台功能。</p>
+      <p><a href="https://reachaiconsole.w8123.com:9443/" target="_blank" rel="noopener noreferrer"><strong>打开在线体验工作台 →</strong></a></p>
+    </td>
+  </tr>
+</table>
+
 ## 改造完成后，业务系统能做什么
 
 ReachAI 将 AI 助手嵌入 OA、eHR、采购、CRM 等现有业务页面。员工无需切换系统，即可通过自然语言查询数据、填写表单、办理业务：
@@ -430,7 +447,7 @@ curl -fsSL https://raw.githubusercontent.com/w8123/EnterpriseAgentFramework-dev/
 irm https://raw.githubusercontent.com/w8123/EnterpriseAgentFramework-dev/dev/deploy/install.ps1 | iex
 ```
 
-装好后用 `reachai status / doctor / logs / backup / upgrade` 管理。配置域名和 HTTPS、备份恢复、升级和常见问题见 [部署与运维手册](docs/部署与运维手册.md)。
+装好后用 `reachai status / doctor / logs / backup / upgrade` 管理。配置域名和 HTTPS 见 [安装 ReachAI](docs/admin/install.md)，备份恢复和升级见 [日常运维](docs/admin/operations.md)，常见问题见 [平台常见问题和排查](docs/admin/troubleshooting.md)。
 
 ### 10 分钟一键体验（Docker）
 
@@ -486,7 +503,7 @@ reachai-control-service    18603
 
 Codex、Trae、Cursor、Claude Code 等工具进入仓库后，请按以下顺序读取事实源：
 
-帮用户部署或排障时，只按 [部署与运维手册](docs/部署与运维手册.md#给-ai-编程工具的部署说明) 的命令操作（`deploy/install.sh`、`reachai doctor` 等），不自己改编排文件。开发时：
+帮用户部署或排障时，只按 [安装 ReachAI](docs/admin/install.md#让-ai-编程工具帮你部署) 的命令操作（`deploy/install.sh`、`reachai doctor` 等），不自己改编排文件。开发时：
 
 1. [AGENTS.md](AGENTS.md)：项目规则、模块边界、SQL 和验证要求。
 2. [docs/README.md](docs/README.md)：当前五服务拓扑与权威文档导航。

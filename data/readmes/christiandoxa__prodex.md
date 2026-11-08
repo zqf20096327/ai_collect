@@ -199,7 +199,7 @@ The four installed, compatible coding tools are selected automatically; Presidio
 <details>
 <summary>Install and verify the Super tools</summary>
 
-RTK (latest stable `1.1.0`, externally managed):
+RTK (latest stable `1.2.0`, externally managed):
 
 ```bash
 brew install rtk
@@ -207,9 +207,9 @@ brew install rtk
 rtk_dir="$(mktemp -d)"
 trap 'rm -rf "$rtk_dir"' EXIT
 curl -fsSLo "$rtk_dir/checksums.txt" \
-  https://github.com/rtk-ai/rtk/releases/download/v1.1.0/checksums.txt
+  https://github.com/rtk-ai/rtk/releases/download/v1.2.0/checksums.txt
 curl -fsSLo "$rtk_dir/rtk-x86_64-unknown-linux-musl.tar.gz" \
-  https://github.com/rtk-ai/rtk/releases/download/v1.1.0/rtk-x86_64-unknown-linux-musl.tar.gz
+  https://github.com/rtk-ai/rtk/releases/download/v1.2.0/rtk-x86_64-unknown-linux-musl.tar.gz
 (cd "$rtk_dir" && grep '  rtk-x86_64-unknown-linux-musl.tar.gz$' checksums.txt | sha256sum --check)
 tar -xzf "$rtk_dir/rtk-x86_64-unknown-linux-musl.tar.gz" -C "$rtk_dir"
 install -m 0755 "$rtk_dir/rtk" "$HOME/.local/bin/rtk"
@@ -221,7 +221,7 @@ prodex doctor --install
 
 The full RTK distribution includes a BUSL-1.1 engine; the separately published
 `rtk-oss` edition is Apache-2.0-only. Choose the distribution deliberately.
-Use the matching archive and checksum row from the official v1.1.0 release on
+Use the matching archive and checksum row from the official v1.2.0 release on
 other architectures. Finish any process using the old executable before an
 explicit upgrade; Prodex never replaces RTK during startup.
 
@@ -1107,6 +1107,8 @@ prodex super --url http://127.0.0.1:8131 --model local/qwen
 
 Use `--context-window` and `--auto-compact-token-limit` if your local server is configured with a larger context window.
 
+The `offrail-27b` and `bonsai-2-27b` aliases from the gaming-GPU launcher use an automatic Chat Completions tool adapter, with `medium` reasoning by default. Explicit model and context choices are preserved. See [the Offrail/Bonsai profile](./LOCAL.md#offrail--bonsai-gaming-gpu-launcher) for the complete command.
+
 See [LOCAL.md](./LOCAL.md) for self-hosted model setup and testing.
 
 </details>
@@ -1228,7 +1230,10 @@ localhost
 ::1
 ```
 
-This prevents a user proxy from intercepting the local runtime proxy.
+This keeps the local runtime connection direct. Automatic bypass entries inferred
+from Codex backend URL overrides are limited to loopback hosts. External backend
+origins use the upstream proxy settings inherited from the shell. Prodex merges
+explicit local-provider hosts with user-supplied `NO_PROXY` entries.
 
 Use `--no-proxy` on `prodex run` or `prodex super` when you want Prodex upstream requests to bypass proxy settings.
 

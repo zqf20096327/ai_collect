@@ -18,6 +18,11 @@ loading work, while the performance-sensitive runtime path uses Rust/CUDA
 orchestration, CUDA kernels, cached quantized weights, and measured VRAM
 budgeting.
 
+The development branch also provides [bounded Qwen3.5-27B text and images](QWEN35.md),
+with native INT4 streaming, approximately 16–20 GiB serving RAM, and demonstrated
+text/vision operation under 4/6/8 GiB A6000 allowances. This experimental profile
+retains numerical qualification caveats; actual small-card hardware is untested.
+
 ## Install
 
 The current release is

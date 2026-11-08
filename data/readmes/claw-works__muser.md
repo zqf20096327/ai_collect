@@ -38,6 +38,10 @@ You don't need to know how to program. If you use an AI agent that can run comma
 
 > Open it in `muser view` so I can adjust the volumes myself.
 
+Or have it play live and steer it as you listen:
+
+> Start a muser live session with the electronic template and keep developing it for 5 minutes; I'll tell you what to change.
+
 **4. Take it with you**:
 
 > Export it as a WAV file and a MIDI file.
@@ -51,10 +55,10 @@ muser is open source and free. Every piece of the *Electric Sheep* suite was mad
 ## Features
 
 - Multi-track arrangement: drums + synths + bass, multiple clips and notes
-- 115 built-in instruments: 10 drum kits, 68 synth presets, plus guitars, basses, organs, mallets (marimba etc.), strings, winds and choirs — all synthesized by manguebyte in real time, no system MIDI synth needed; each one is tweakable via `instrument_params`
+- 100+ built-in instruments: about ten drum kits, dozens of synth presets, plus guitars, basses, organs, mallets (marimba etc.), strings, winds and choirs — all synthesized by manguebyte in real time, no system MIDI synth needed; each one is tweakable via `instrument_params`
 - **Audio tracks**: put recordings, samples, loops and sound effects straight on a track (`"instrument": "audio"`) — WAV, AIFF, FLAC, Ogg Vorbis, Opus, MP3 (plus AAC/ALAC on macOS and Windows); they go through effects, buses, sends and sidechains like any track
 - Built-in SFZ sampler: `sfz:/path/to.sfz` (or a path relative to a sound-library folder on `MUSER_SFZ_PATH`) loads SFZ libraries directly
-- Effect chains on tracks, buses or the master bus: reverb, delay, compressor, multiband compressor, chorus, eq, limiter, phaser, flanger, tremolo, auto-pan, stereo widener, transient shaper, tape saturation, bitcrusher, ring modulator, frequency shifter, formant filter, granular delay and a vocoder (modulated by another track)
+- Effect chains on tracks, buses or the master bus: reverb, delay, compressor, multiband compressor, chorus, eq, limiter, phaser, flanger, tremolo, auto-pan, stereo widener, transient shaper, distortion (with cabinet simulation), tape saturation, bitcrusher, ring modulator, frequency shifter, formant filter, granular delay and a vocoder (modulated by another track)
 - Mix routing: bus groups, sends to shared reverbs/delays, nested buses, compressor sidechains (kick pumping the bass), automatic latency compensation
 - Automation: instrument parameters, effect parameters, gain, pan and send levels over time (point curves / LFO / seeded random walk)
 - Third-party CLAP/VST3/LV2 plugins as effects (VST) or instruments (VSTi): scan installed plugins, set parameters by name and display text, automate them
@@ -67,18 +71,19 @@ muser is open source and free. Every piece of the *Electric Sheep* suite was mad
   Add `--device` to play through this machine's sound card, with volume/mute/solo taking effect instantly (when working remotely over an SSH port forward, use the default in-browser playback)
 - `muser loop edit` motif & loop editor: draw a motif in a piano roll (or hum it into the microphone — it is transcribed to notes without AI) or a beat in a step grid, preview it with muser's instruments, and save it to the project's `loops/` or share it to your global library — agents then continue, develop or reuse these snippets (`muser loop show <name> [--abc]`)
 - `muser poly edit` sound editor: design poly-synth sounds (oscillators, filters, envelopes, LFOs, modulation matrix) in a local web page with instant previews, and save them to your sound library; agents put them into projects with `muser poly show <name>`
-- Shorthand notes for agents: melodies in **ABC notation** (`"abc"`), step patterns (`"grid"`), a **loop library** of 17 common grooves (`muser loop`), and a **generative drummer** that varies each bar and plays fills — a few lines of JSON instead of long note lists
+- Shorthand notes for agents: melodies in **ABC notation** (`"abc"`), step patterns (`"grid"`), a **loop library** of common grooves (`muser loop`), and a **generative drummer** that varies each bar and plays fills — a few lines of JSON instead of long note lists
 - **Humanize**: timing drift, velocity and length variation, swing and push/lay-back per track or clip; a seed keeps a take you like, a new seed plays it again differently
 - **Arrangement layer for agents**: define `sections` once (bars + chord progression), order them in a `form` (with per-pass transpose / mute / seed), and give each track `parts` per section; `chordal` patterns (`"1 . 5 . 8 . 5 3"`, `"c - - -"`) follow the chords with automatic voice leading, `end` swaps in a fill, and `transform` adds transpose / reverse / invert / stretch / shift / every-N / seeded variation. A full song takes about 40 lines
 - **`muser analyze`**: a listening report for agents that cannot hear — per-section density, registers, harmonic rhythm, repetition, avoid notes and minor-second clashes, optional loudness and brightness, an energy curve, checks for "AI tells" (energy that never drops, instrumentation that never changes, one chord loop, fills every 4 bars, everything on the grid, identical choruses), and plain-language suggestions ("the chorus doesn't lift", "two tracks mask each other")
 - **MIDI export**: `muser midi song.muser.json` writes a standard MIDI file (one track per instrument track, drums on channel 10) with exactly the notes muser plays — humanize, legato, ABC/grid/drummer expanded, sustain pedal as CC64 — for opening in a DAW or analysis tools
 - **ABC export**: `muser abc song.muser.json` writes the score as standard multi-voice ABC 2.1 for models and notation tools that read ABC; `--yue2` writes the native score dialect of [YuE2](https://github.com/multimodal-art-projection/YuE) (Vocal/Ins melodies with chord symbols) for its `full` / `melody` modes. The key is taken from the clips' ABC or estimated, and chord symbols are estimated from the accompaniment
 - **Choosing sounds without ears**: `muser sounds list` lists every sound on this machine (built-in, SFZ on `MUSER_SFZ_PATH`, instrument plugins); `muser sounds describe` renders probe notes and writes a text card (brightness, attack, sustain, release, range, velocity response, stereo width, pitch), cached locally; `--keys` maps a loop kit or drum kit key by key (which keys sound, loop length in bars, density). SKILLS.md teaches agents to keep what they hear in the user's own skill
-- **Plugin sounds and a local sound library**: `muser sounds presets` lists a plugin's built-in sounds — VST3 `.vstpreset`s, Surge XT patches (loaded directly), Kontakt instruments with library / category / tags; sounds that only load in the plugin's own window are captured once (by a person, or an agent with computer use) into `~/.config/muser/sound-library` and used by name from then on (`sounds state` / `capture` / `save` / `identify`)
+- **Plugin sounds and a local sound library**: `muser sounds presets` lists a plugin's built-in sounds — VST3 `.vstpreset`s, Surge XT patches, Serum 2 presets and Serum 2 FX effect chains, factory or from installed sound packs (loaded directly), Kontakt instruments with library / category / tags; sounds that only load in the plugin's own window are captured once (by a person, or an agent with computer use) into `~/.config/muser/sound-library` and used by name from then on (`sounds state` / `capture` / `save` / `identify`)
 - **Plugin windows (macOS)**: `muser plugin edit` opens a plugin's own editor with live audio; in `muser view`, 🎛 opens a sound drawer — built-in instruments and SFZ (searchable, one click), plugins with their usable sounds, or load a new one in the plugin's window, audition the track and sync the state into the project. Kontakt loop kits follow the project tempo, so tempo-locked loops work at any speed
 - **Per-note pitch bend** (`"bend"`: guitar bends, scoops, falls, on their own MIDI channel) and **effect bypass** (`"bypass": true`, toggled by clicking the effect in `muser view`)
 - `muser play`: play a project through the sound card and exit — quick listening for the sketch-first workflow
 - Two AI interfaces: **CLI** (shell calls) and **MCP server** (direct tool calls from the agent)
+- **Live performance** (`muser live`): the agent writes the music a section at a time while muser plays it through this machine's sound card and never stops — when nothing new has arrived, the last section loops. Each section has its own length and time signature and can bring in new tracks, effects and automation without a gap (reverb tails carry on); you steer it in the conversation, a page shows what is playing and what is queued, and the whole session is saved as a project you can render or edit. Templates in `samples/live/`
 - **Record your own voice** in `muser view`: record a phrase or a loop range over the backing (count-in, latency measurement), keep every take, swap takes, cut clips with scissors, drag and nudge them; the project's lyrics run as karaoke at the bottom of the screen. `muser takes --timing` tells an agent which phrase is early or late
 - **Hum lyrics**: notes on `choir.*` can carry syllables (`"lyric"`, or ABC `w:` lines); the voice sings their vowels
 - **Change key in one place**: `"transpose": 3` (or the Key − / + control in `muser view`) moves every pitched track without touching the notes
@@ -186,7 +191,7 @@ git submodule update --init --recursive
 
 #### 2. Build
 
-Requires Rust 1.85+ (edition 2024).
+Requires Rust 1.89+ (edition 2024; the newest dependencies need it).
 
 ```bash
 cargo build --release
@@ -285,7 +290,7 @@ and the agent can arrange music with tools like `create_project / add_track / ad
 
 ## External sounds and plugins (optional)
 
-The 115 built-in instruments need no downloads (most samples, such as `samples/songs/dnb-liquid-skyline`, use only built-in sounds).
+The built-in instruments need no downloads (most samples, such as `samples/songs/dnb-liquid-skyline`, use only built-in sounds).
 The free / open-source sound libraries and plugins below are optional: `skills/` and some `samples/` use them; once installed they work by name, alias or preset.
 
 ### SFZ sample libraries

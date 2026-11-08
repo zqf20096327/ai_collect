@@ -41,6 +41,7 @@
 - **[美图设计室](https://www.designkit.com/)** — 美图旗下电商设计工具,商品图、海报、抠图一站式,中文场景模板丰富。
 - **[稿定设计](https://www.gaoding.com/)** — 模板驱动的电商视觉工具,主图 / 详情页 / 促销海报模板量大。
 - **[创客贴](https://www.chuangkit.com/)** — 在线平面设计工具,含大量电商主图模板。
+- **[Dondo](https://www.dondo.com/)** — 从现有图片生成棚拍和生活场景商品图草稿，同时提供商品 SEO 和 AI 搜索准备度检查。商家先审核草稿，再发布或导出；可用选项因平台而异。
 
 ## 场景图与背景替换
 
@@ -53,6 +54,7 @@
 - **[Flair AI](https://flair.ai/)** — 设计感强,支持自定义构图与道具摆放,适合品牌调性要求高的场景。
 - **[Claid.ai](https://claid.ai/)** — 面向电商平台与规模化卖家的图片增强与场景生成 API。
 - **[堆友 AI](https://d.design/)** — 阿里旗下设计资源平台,含 AI 商品场景图能力。
+- **[AdVariq](https://advariq.com/)** — AI 广告创意与商品视觉生成工具，支持爆款广告复刻、商品图智能编辑与场景背景替换。
 
 ## 模特试穿与服装展示
 
@@ -69,6 +71,7 @@
 - **[PixGT](https://www.pixgt.cn)** — 白底图直接生成带货短视频,与商品套图同一套工作流。
 - **[即梦 AI](https://jimeng.jianying.com/)** — 字节旗下,图生视频能力强,与抖音生态衔接顺畅。
 - **[Vizgo](https://vizgo.ai/)** — AI 视频生成工具,支持商品素材成片。
+- **[Wizmade](https://wizmade.si/)** — 多模型 AI 视频与生图平台，集成 Kling、Veo、Seedance 与特效成片。
 
 ## 基础图片处理
 
@@ -103,6 +106,7 @@
 - **[文心一格](https://yige.baidu.com/)** — 百度生图模型,中文场景适配好。
 - **[Stable Diffusion](https://github.com/Stability-AI/stablediffusion)** — 开源模型,可本地部署与深度定制,需技术能力。
 - **[Pixonara](https://pixonara.com)** — 浏览器端 AI 生图与生视频工具,附带可浏览的提示词库,可参考提示词写法,偏通用创作而非电商专用工作流。
+- **[Clout](https://tryclout.ai/)** — 浏览器端 AI 角色、图片与视频创作套件，可用于品牌和社交内容构思；不是专用商品套图工作流。
 
 ---
 

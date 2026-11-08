@@ -1,16 +1,22 @@
 # servicenow-mcp-ai — ServiceNow MCP Server
 
-| [![npm version](https://img.shields.io/npm/v/servicenow-mcp-ai?style=flat-square&logo=npm&logoColor=white&label=npm)](https://www.npmjs.com/package/servicenow-mcp-ai) | [![npm downloads](https://img.shields.io/npm/dm/servicenow-mcp-ai?style=flat-square&logo=npm&logoColor=white&label=downloads)](https://www.npmjs.com/package/servicenow-mcp-ai) | [![node](https://img.shields.io/node/v/servicenow-mcp-ai?style=flat-square&logo=nodedotjs&logoColor=white&label=node)](https://www.npmjs.com/package/servicenow-mcp-ai) | [![tools](https://img.shields.io/badge/tools-100-blue?style=flat-square)](https://github.com/IvanBBaev/servicenow-mcp-ai#tools) | [![License: GPL-3.0](https://img.shields.io/npm/l/servicenow-mcp-ai?style=flat-square&color=blue&label=license)](LICENSE) |
+| [![npm version](https://img.shields.io/npm/v/servicenow-mcp-ai?style=flat-square&logo=npm&logoColor=white&label=npm)](https://www.npmjs.com/package/servicenow-mcp-ai) | [![npm downloads](https://img.shields.io/npm/dm/servicenow-mcp-ai?style=flat-square&logo=npm&logoColor=white&label=downloads)](https://www.npmjs.com/package/servicenow-mcp-ai) | [![node](https://img.shields.io/node/v/servicenow-mcp-ai?style=flat-square&logo=nodedotjs&logoColor=white&label=node)](https://www.npmjs.com/package/servicenow-mcp-ai) | [![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/ivanbbaev/servicenow-mcp-ai) | [![License: GPL-3.0](https://img.shields.io/npm/l/servicenow-mcp-ai?style=flat-square&color=blue&label=license)](LICENSE) |
 | :--: | :--: | :--: | :--: | :--: |
 | [![CI](https://img.shields.io/github/actions/workflow/status/IvanBBaev/servicenow-mcp-ai/ci.yml?branch=main&style=flat-square&logo=githubactions&logoColor=white&label=CI)](https://github.com/IvanBBaev/servicenow-mcp-ai/actions/workflows/ci.yml) | [![coverage](https://img.shields.io/codecov/c/github/IvanBBaev/servicenow-mcp-ai/main?style=flat-square&logo=codecov&logoColor=white&label=coverage)](https://codecov.io/gh/IvanBBaev/servicenow-mcp-ai) | [![last commit](https://img.shields.io/github/last-commit/IvanBBaev/servicenow-mcp-ai?style=flat-square&logo=git&logoColor=white&label=last%20commit)](https://github.com/IvanBBaev/servicenow-mcp-ai/commits/main) | [![MCP](https://img.shields.io/badge/MCP-server-orange?style=flat-square)](https://modelcontextprotocol.io) | [![Known Vulnerabilities](https://snyk.io/test/npm/servicenow-mcp-ai/badge.svg)](https://snyk.io/test/npm/servicenow-mcp-ai) |
-| [![GitHub stars](https://img.shields.io/github/stars/IvanBBaev/servicenow-mcp-ai?style=flat-square&logo=github&logoColor=white&label=stars)](https://github.com/IvanBBaev/servicenow-mcp-ai/stargazers) | [![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/ivanbbaev.servicenow-mcp-ai?style=flat-square&logo=visualstudiocode&logoColor=white&label=VS%20Code)](https://marketplace.visualstudio.com/items?itemName=ivanbbaev.servicenow-mcp-ai) | [![VS Code installs](https://img.shields.io/visual-studio-marketplace/i/ivanbbaev.servicenow-mcp-ai?style=flat-square&logo=visualstudiocode&logoColor=white&label=installs)](https://marketplace.visualstudio.com/items?itemName=ivanbbaev.servicenow-mcp-ai) | [![VS Code rating](https://img.shields.io/visual-studio-marketplace/r/ivanbbaev.servicenow-mcp-ai?style=flat-square&logo=visualstudiocode&logoColor=white&label=rating)](https://marketplace.visualstudio.com/items?itemName=ivanbbaev.servicenow-mcp-ai&ssr=false#review-details) | [![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/ivanbbaev/servicenow-mcp-ai) |
+| [![GitHub stars](https://img.shields.io/github/stars/IvanBBaev/servicenow-mcp-ai?style=flat-square&logo=github&logoColor=white&label=stars)](https://github.com/IvanBBaev/servicenow-mcp-ai/stargazers) | [![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/ivanbbaev.servicenow-mcp-ai?style=flat-square&logo=visualstudiocode&logoColor=white&label=VS%20Code)](https://marketplace.visualstudio.com/items?itemName=ivanbbaev.servicenow-mcp-ai) | [![VS Code installs](https://img.shields.io/visual-studio-marketplace/i/ivanbbaev.servicenow-mcp-ai?style=flat-square&logo=visualstudiocode&logoColor=white&label=installs)](https://marketplace.visualstudio.com/items?itemName=ivanbbaev.servicenow-mcp-ai) | [![VS Code rating](https://img.shields.io/visual-studio-marketplace/r/ivanbbaev.servicenow-mcp-ai?style=flat-square&logo=visualstudiocode&logoColor=white&label=rating)](https://marketplace.visualstudio.com/items?itemName=ivanbbaev.servicenow-mcp-ai&ssr=false#review-details) |
 
 📖 **[Documentation site →](https://ivanbbaev.github.io/servicenow-mcp-ai/)**
 
-A [Model Context Protocol](https://modelcontextprotocol.io) server that lets an
-MCP client (VS Code, Claude Desktop, etc.) run commands against a **ServiceNow**
-instance through its REST APIs — Table, Aggregate, Attachment, Import Set, Batch
-and CMDB, plus the Service Catalog, Change Management and Knowledge plugin APIs.
+<!-- positioning:start (generated from docs/positioning.json: npm run docs:sync) -->
+**Safe AI writes for ServiceNow.** An MCP server that connects any MCP client — Claude Desktop, Claude Code, VS Code Copilot Chat, Cursor — to a ServiceNow instance over its REST APIs.
+Every write is previewed first, a destructive one needs a single-use plan token, and record writes are journaled and can be reverted. Alongside that comes IDE-grade code intelligence: find usages, what runs on save, and drift between instances. Free and local, and it works on your PDI.
+
+100 tools in 28 packages: 20 load by default and SN_TOOL_PACKAGES adds the rest, so the tool list stays small in tokens.
+<!-- positioning:end -->
+
+Its tools cover the Table, Aggregate, Attachment, Import Set, Batch and CMDB APIs,
+plus the Service Catalog, Change Management and Knowledge plugin APIs
+([what is MCP?](https://modelcontextprotocol.io)).
 Credentials are kept in a local env file and can be updated at runtime through a tool.
 
 > **Upgrading from 2.x?** 3.0 has breaking defaults (plan tokens for destructive applies,
@@ -38,10 +44,26 @@ Full [Support](#support) options are near the end._
 
 ## Quick demo
 
-Three things the platform makes hard, one call each. Point your MCP client at an
-instance ([Setup](#setup)) and ask:
+A safe write and three things the platform makes hard, one call each. Point your
+MCP client at an instance ([Setup](#setup)) and ask:
 
-**1. "Where is this field actually used?"** — every script, business rule, client
+**1. "Reassign this incident — show me first."** — a write tool called without
+`apply` returns a before/after preview and changes nothing. The same call with
+`"apply": true` runs it after you agree; a destructive apply (delete, writing
+batch, revert…) also needs the preview's single-use `plan_token`, and every record
+write lands in a local journal that `servicenow_revert_write` can undo:
+
+```jsonc
+// servicenow_update_record
+{
+  "table": "incident",
+  "sys_id": "<incident sys_id>",
+  "values": { "assignment_group": "<group sys_id>" },
+  // add "apply": true once the preview looks right
+}
+```
+
+**2. "Where is this field actually used?"** — every script, business rule, client
 script, UI policy/action and ACL that touches it, as JSON or a Mermaid graph. The
 IDE-grade _find usages_ ServiceNow has no button for:
 
@@ -54,7 +76,7 @@ IDE-grade _find usages_ ServiceNow has no button for:
 }
 ```
 
-**2. "What runs when I save this record?"** — the full automation chain in
+**3. "What runs when I save this record?"** — the full automation chain in
 execution order (display → before → after → async business rules, then flows,
 workflows and notifications), each with its condition — a logical test that runs
 **nothing**:
@@ -67,7 +89,7 @@ workflows and notifications), each with its condition — a logical test that ru
 }
 ```
 
-**3. "What drifted between dev and prod?"** — a Markdown diff of tables, columns,
+**4. "What drifted between dev and prod?"** — a Markdown diff of tables, columns,
 scripts (matched by sys_id then name, with a unified diff of every changed script)
 and plugins between two configured profiles — plus, on request, properties, choices,
 ACLs, notifications, flows, catalog items and roles — with a CI-friendly exit code
@@ -77,7 +99,7 @@ so a pipeline can block a risky deploy:
 servicenow-mcp-ai drift dev prod   # report on stdout; exit 1 on drift, 0 if clean
 ```
 
-All three are **read-only** and work against any instance — including a free PDI —
+Demos 2–4 are **read-only**; all four work against any instance — including a free PDI —
 with the model and client of your choice.
 
 ## Features
@@ -697,6 +719,7 @@ Container secrets (D-5): <KEY>_FILE=/path loads <KEY> from that file at startup 
 | `SN_BEARER_TOKEN_FILE` | no | — | next | D-5: read `SN_BEARER_TOKEN` from this file (Docker / Kubernetes secrets). Read once at startup (`SN_TOKEN_FILE`, re-read on a 401, still wins). |
 | `SN_OAUTH_CLIENT_SECRET_FILE` | no | — | next | D-5: read `SN_OAUTH_CLIENT_SECRET` from this file (Docker / Kubernetes secrets). |
 | `SN_OAUTH_REFRESH_TOKEN_FILE` | no | — | next | D-5: read `SN_OAUTH_REFRESH_TOKEN` from this file (Docker / Kubernetes secrets). A rotated refresh token is then kept in memory only (update the file yourself). |
+| `SN_JOURNAL_KEY_FILE` | no | — | next | D-5: read `SN_JOURNAL_KEY` from this file (Docker / Kubernetes secrets). |
 | `SN_HTTP_TOKEN_FILE` | no | — | next | D-5: read `SN_HTTP_TOKEN` from this file (Docker / Kubernetes secrets). |
 | `SN_HTTP_OAUTH_INTROSPECTION_SECRET_FILE` | no | — | next | D-5: read `SN_HTTP_OAUTH_INTROSPECTION_SECRET` from this file (Docker / Kubernetes secrets). |
 | `SN_HTTP_OAUTH_TOKEN_KEY_FILE` | no | — | next | D-5: read `SN_HTTP_OAUTH_TOKEN_KEY` from this file (Docker / Kubernetes secrets). |
@@ -717,8 +740,9 @@ Timeouts, retries, the host allow-list, the outbound proxy, mutual TLS and the p
 
 | Variable | Required | Default | Since | Description |
 | -------- | :------: | ------- | ----- | ----------- |
-| `SN_TIMEOUT_MS` | no | `30000` | 1.1.0 | Per-request timeout in milliseconds. |
-| `SN_MAX_RETRIES` | no | `2` | 1.1.0 | Retries for transient failures (429/5xx, network errors). Non-idempotent writes are only retried on connect errors. |
+| `SN_TIMEOUT_MS` | no | `30000` | 1.1.0 | Per-request timeout in milliseconds. Keep it below the instance's REST Table API transaction quota (60 s by default, reported): the instance cancels a transaction at that quota, and aborting the socket here does not cancel it sooner. |
+| `SN_MAX_RETRIES` | no | `2` | 1.1.0 | Retries for transient failures (429/5xx, network errors). A timed-out attempt is not retried unless `SN_RETRY_ON_TIMEOUT` is on. Non-idempotent writes are only retried on connect errors. |
+| `SN_RETRY_ON_TIMEOUT` | no | `false` | next | `true` retries an idempotent request whose attempt hit `SN_TIMEOUT_MS`. Off by default: the first transaction keeps running on the instance after the abort, so each retry adds another copy of a slow query. |
 | `SN_RETRY_AFTER_MAX_MS` | no | `60000` | next | Upper bound honoured for a `Retry-After` header on 429/503; a larger value is clamped so a misbehaving upstream cannot park the client for minutes. |
 | `SN_DEADLINE_MS` | no | max(120000, 2 × `SN_TIMEOUT_MS`) | next | Total wall-clock budget for one logical request across retries, backoff, queue wait and OAuth re-auth. A retry that cannot fit into the remaining budget is not attempted — the call fails with code `DEADLINE_EXCEEDED`. |
 | `SN_ALLOWED_HOSTS` | no | — | 1.1.0 | Comma-separated allow-list of permitted hosts (for custom or sovereign-cloud domains). When set, only matching hosts are contacted. When unset, only `*.service-now.com` instances are allowed and internal/loopback hosts are blocked (SSRF guard). An entry may carry a port (`host:8443`) or be a bracketed IPv6 literal (`[2001:db8::1]`); an explicit non-443 port or an IPv6 literal in the instance value is accepted only when such an entry matches it — never under the default policy. |
@@ -760,6 +784,7 @@ Least-privilege table policy, plan-and-apply writes, destructive-write confirmat
 | -------- | :------: | ------- | ----- | ----------- |
 | `SN_TABLES_ALLOW` | no | — | 1.1.0 | Comma-separated table allowlist; when set, only these tables are reachable. |
 | `SN_TABLES_DENY` | no | — | 1.1.0 | Comma-separated table denylist; always wins over the allowlist. |
+| `SN_MANAGED_POLICY_FILE` | no | — | next | N-108: an extra managed policy file (JSON) with floors the user can only tighten, read in addition to the OS path (`/etc/servicenow-mcp-ai/policy.json`, `/Library/Application Support/servicenow-mcp-ai/policy.json`, `%ProgramData%\servicenow-mcp-ai\policy.json`). Meant for containers, where the image owner sets the environment; on a workstation use the OS path, which the user cannot change. A file that exists but is invalid stops startup. Read once per process — restart after a change. See SECURITY.md → Managed policy. |
 | `SN_READONLY` | no | `false` | 1.1.0 | When truthy, refuse every create/update/delete. |
 | `SN_WRITE_MODE` | no | `plan` | 2.0.0 | `plan` (default) previews a write as a before/after diff without mutating; `apply` executes; passing `apply:true` forces a single call. |
 | `SN_COMPAT` | no | `3` | next | Upgrade bridge (owner, 2026-10-14): `2` keeps the 2.x defaults for every one of these settings left unset — `SN_PROTECTED_TABLES_WRITE=allow`, `SN_DESTRUCTIVE_CONFIRM=off`, `SN_BATCH_UNMAPPED=allow`, `SN_LEGACY_TOOL_NAMES=1` and `SN_TOOL_PACKAGES=core` (discovery plus `attachment`) — and an invalid value warns and keeps its default instead of stopping the server (`SN_STRICT_SETTINGS=0`). A setting you set yourself always wins. `servicenow-mcp-ai migrate` adds it when it converts a 2.x env file. `3` (the default) uses the 3.0 defaults. Meant for the migration, not as a permanent setting. |
@@ -789,6 +814,7 @@ Result size budgets, output shaping, redaction of record values, the write journ
 | Variable | Required | Default | Since | Description |
 | -------- | :------: | ------- | ----- | ----------- |
 | `SN_MAX_RECORDS` | no | `10000` | 1.1.0 | Hard cap on records returned by a `fetchAll` query. |
+| `SN_DATA_HEALTH_MAX_ROWS` | no | `250000` | next | N-104: `check_data_health` refuses a run with no `query` on a table above this many rows, because each reference check is a dot-walked join over the whole table. A `query` narrows the run instead. Per profile: `SN_PROFILE_<NAME>_DATA_HEALTH_MAX_ROWS`. |
 | `SN_MAX_RESULT_CHARS` | no | `48000` | 1.1.0 | Character budget for a tool result (48,000 since O-21 (b), under Claude Code's 50,000 threshold). A larger result goes to a file while `SN_OVERSIZE_TO_FILE` is on; otherwise it is shrunk with a note naming `format:"file"`, and a snapshot, compare or diagram result is returned in full with a `note`. |
 | `SN_OVERSIZE_TO_FILE` | no | `true` | next | S-11 / N-61 (default on since O-21 (b)): write a `query_table` (JSON lines), snapshot, compare or diagram result over `SN_MAX_RESULT_CHARS` to a file under `SN_DOCS_DIR` (`<profile>/exports/`, `<profile>/diagrams/`) and return `{path, bytes, preview}` instead. |
 | `SN_RESULT_SIZE_HINTS` | no | `true` | next | N-65 (default on, O-21 (c)): the large readers (`document_*`, `snapshot_instance`, `compare_*`, `get_script`) carry `_meta["anthropic/maxResultSizeChars"]` = `SN_MAX_RESULT_CHARS` in `tools/list`. Set `false` to drop the hints. |
@@ -798,6 +824,9 @@ Result size budgets, output shaping, redaction of record values, the write journ
 | `SN_REDACT_FIELDS` | no | — | 2.0.0 | DF-5: mask these field values before records reach the model (comma/space-separated). |
 | `SN_REDACT_PII` | no | `false` | 2.0.0 | DF-5: also mask email/phone/national-id patterns inside string values. Since H-5 both redaction settings apply deeply to every tool result (success and error) and to the write journal. |
 | `SN_JOURNAL_MAX_BYTES` | no | `20971520` | next | H-5: size (bytes, default 20 MiB) at which `write-journal.jsonl` rotates to `write-journal.<ISO-time>.jsonl`; the hash chain continues across files. |
+| `SN_JOURNAL_KEEP` | no | `0` | next | N-109: how many rotated `write-journal.<ISO-time>.jsonl` files to keep per profile (`0`, the default, keeps all). Older files are removed after a rotation; the hash of their last line goes to `write-journal.anchor`, so the chain still verifies, and the removal is an `audit` log event. |
+| `SN_JOURNAL_REQUIRED` | no | `false` | next | N-109: fail closed. Before an instance write is sent, check that the profile's journal directory and files are writable; if they are not, refuse the apply with `JOURNAL_UNAVAILABLE` and send nothing. A journal append that fails after the write is logged at `error` level. |
+| `SN_JOURNAL_KEY` | no | — | next | N-109: key for a keyed (HMAC-SHA256) journal chain. Every line also carries `prev_mac` and the head gets `write-journal.head.mac`, so a user without the key cannot edit a line and re-chain the journal unnoticed. Keep it outside the docs directory (e.g. `SN_JOURNAL_KEY_FILE`). |
 | `SN_CSV_FORMULA_GUARD` | no | `true` | next | H-5: prefix CSV text cells that start with `=`, `+`, `-`, `@`, tab or CR with `'` so spreadsheets never evaluate them (a text `-5` exports as `'-5`). `0` opts out. |
 | `SN_CSV_BOM` | no | `true` | next | H-5: prepend a UTF-8 BOM to `format:"csv"` exports so Excel decodes non-ASCII text. `0` opts out. |
 
@@ -1245,7 +1274,8 @@ separated list of profiles or package names:
 - Individual packages: `table`, `schema`, `aggregate`, `attachment`,
   `importset`, `batch`, `catalog`, `change`, `knowledge`, `cmdb`, `scripts`,
   `flows`, `codecheck`, `docs`, `instance`, `email`, `atf`, `revert`,
-  `artifacts`, `updatesets`, `ops`, `history`, `properties`, `directory`, `ui`.
+  `artifacts`, `updatesets`, `ops`, `history`, `properties`, `directory`, `ui`,
+  `cicd`, `access`.
 
 The admin tools (`servicenow_set_credentials`, `servicenow_get_status`,
 `servicenow_enable_package` and the rest of the admin package) are always
@@ -1253,68 +1283,4 @@ registered, regardless of the active packages. Unknown names are ignored.
 `servicenow_get_status` reports the resolved `enabledPackages`.
 
 ```dotenv
-# Only table + batch tools (plus the always-on admin tools)
-SN_TOOL_PACKAGES=table,batch
-```
-
-#### Presets
-
-If you would rather not curate the list yourself, three named presets cover the
-common roles. The admin tools are always on, so they are not listed. Each preset
-also has a one-word alias — `SN_TOOL_PACKAGES=reader|developer|admin` — that
-expands to the same package set.
-
-| Preset      | `SN_TOOL_PACKAGES=…`                                   | For whom                                                        |
-| ----------- | ----------------------------------------------------- | -------------------------------------------------------------- |
-| `reader`    | `table,schema,aggregate`                              | First contact, analysts, a PDI play — read and query only.     |
-| `developer` | `table,schema,aggregate,scripts,flows,codecheck,docs` | The core segment: script intelligence, flow tracing, linting, docs and diagrams. |
-| `admin`     | `all`                                                 | Everything, including the plugin and write-heavy packages.     |
-
-The `developer` preset builds on the `reader` set; the `docs` package includes the
-Mermaid diagram generators. Use the alias for brevity or spell the packages out to
-add or drop one.
-
-#### Switching packages at runtime
-
-A client can widen or narrow its surface without a restart:
-`servicenow_list_packages` shows every package with its state for this
-session (enabled, configured, denied, read-only, tool count), and
-`servicenow_enable_package` / `servicenow_disable_package` toggle one. The
-server announces the change with `notifications/tools/list_changed` (and the
-prompts / resources equivalents when those change too), one per list per toggle.
-A toggle never exceeds the policy axes: a package in `SN_PACKAGES_DENY` is
-refused (`PACKAGE_DENIED`), a package in `SN_PACKAGES_READONLY` brings only its
-read tools, and the admin tools cannot be disabled. Toggles last for the
-session; an HTTP session that closes returns to `SN_TOOL_PACKAGES`. Nothing
-changes unless a client calls these tools.
-
-The server also declares `resources.subscribe`: after `servicenow_use_instance`
-or `servicenow_set_credentials` it sends `notifications/resources/list_changed`
-and, to subscribers, `notifications/resources/updated` for
-`servicenow://status`.
-
-### Upsert by key
-
-`servicenow_upsert_record({table, key, fields})` creates or updates one record
-matched by `key`, an exact match on one or more field/value pairs (for example
-`{"u_external_id": "A-17"}`; an empty string matches an empty field). No match
-creates a record with the key and the fields, exactly one match updates it, and
-more than one match is refused with `AMBIGUOUS_KEY` — so is a match the user
-cannot read, since creating another would duplicate it.
-
-The action is decided in the plan: without `apply:true` the tool returns
-`create` or `update` (with the `sys_id` and the `before` values) plus
-`apply_with: {expected_action, expected_sys_id}`. Pass those back with
-`apply:true`; if the key now resolves differently (the record appeared, went
-away or is another one) the call fails with `STALE_RECORD` and writes nothing.
-The applied write is journaled as a create or an update, so
-`servicenow_revert_write` undoes it like a direct `create_record` /
-`update_record`.
-
-### Undo a write (journal-based revert)
-
-Every applied write is recorded in the local, hash-chained write journal
-(`<SN_DOCS_DIR>/<profile>/write-journal.jsonl`). The opt-in `revert` package
-turns it into an undo:
-
-- `servicenow_list_writes` — the journal newest first, fil
+# 

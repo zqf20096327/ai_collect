@@ -4,6 +4,8 @@
 
 This repository curates research papers, agent benchmarks, and open-source systems for medical imaging agents. It focuses on tool use, retrieval-augmented generation, multi-agent collaboration, planning, segmentation, report generation, clinical reasoning, safety, and evaluation across CT, MRI, chest X-ray, ultrasound, pathology, endoscopy, ophthalmology, PET, and other imaging modalities.
 
+For broader medical AI research beyond agentic systems, see the companion list [Awesome Medical AI Papers](https://github.com/Nanboy-Ronan/awesome-medical-ai-papers), organized by CS/AI conference and publication year across medical imaging, computational pathology, foundation models, clinical NLP, and healthcare AI.
+
 ## Contents
 
 - [Taxonomy](#taxonomy)
@@ -350,5 +352,4 @@ Agents that plan, prompt, refine, or evaluate segmentation and annotation workfl
 - [Incentivizing Tool-augmented Thinking with Images for Medical Image Analysis](http://arxiv.org/abs/2512.14157v1) - Adds vision-tool reward shaping so agents decide when to call segmentation, detection, or retrieval modules (arXiv, 2025).
 - [Policy to Assist Iteratively Local Segmentation: Optimising Modality and Location Selection for Prostate Cancer Localisation](https://arxiv.org/abs/2508.03953) - Policy network agent iteratively recommends optimal imaging modalities and anatomical regions of interest to progressively localize prostate cancer in multiparametric MRI (arXiv, 2025).
 - [Towards User-Centered Interactive Medical Image Segmentation in VR with an Assistive AI Agent](https://arxiv.org/abs/2505.07214) - SAMIRA is a conversational VR agent that assists radiologists with localizing, segmenting, and visualizing 3D medical image structures through speech and multimodal interaction (arXiv, 2025).
-- [Optimizing Efficiency and Effectiveness in Sequential Prompt Strategy for SAM using Reinforcement Learning](https://papers.miccai.org/miccai-2024/579-Paper1442.html) - AIES trains a deep Q-network to recommend point or box interactions and decide when to stop prompting SAM, balancing segmentation accuracy against interaction costs on three medical datasets while clinicians still supply prompt locations (MICCAI 2024, 2024).
-- [Iteratively-Refined Interactive 3D Medical Image Segmentation with Multi-Agent Reinforcement Learning](https://arxiv.org/abs/1911.10334) - Foundational paper modelling iter
+- [Optimizing Efficiency and Effectiveness in Sequential Prompt Strategy for SAM using Reinforcement Learning](https://papers.miccai.org/miccai-2024/579-Paper1442.html) - AIES trains a deep Q-network to recommend point or box interactions and decide when to stop prompting SAM, balanci

@@ -20,7 +20,7 @@ campaigns can only be switched on in the Google Ads UI.
 > change journal with before/after lift. See [ROADMAP.md](./ROADMAP.md) for what's shipped
 > and what's planned next.
 
-## What you can do with it
+## Use cases
 
 Once Adwarp is connected, you talk to your assistant in plain language. Real requests it
 handles today, roughly in the order a campaign comes together:
@@ -110,33 +110,33 @@ UI and quietly waste B2B budget:
 
 ### Setup
 
-Google Ads needs two things LinkedIn does not:
+Google Ads needs a Google Cloud project with Google Ads API access and an OAuth
+client. **You don't need a developer token.** Google sunset developer tokens on
+September 9, 2026, and access now belongs to the Cloud project that owns your
+OAuth client. Adwarp doesn't send one.
 
-1. **A developer token**, from a Google Ads **manager (MCC)** account at
-   [ads.google.com/aw/apicenter](https://ads.google.com/aw/apicenter). A plain
-   client account cannot issue one. Approval usually lands on **Explorer** access
-   automatically (2,880 production ops/day).
+1. **API access.** Enable the Google Ads API in a Cloud project with billing set
+   up (that's Test access), then apply for **Explorer** under Upgrade access level
+   on the Google Ads API Overview page. Most applications are approved
+   automatically. Explorer allows 2,880 production operations a day, which covers
+   campaign creation and reporting.
 
    **Explorer is not enough for `adwarp google keywords`.** Explorer blocks
-   KeywordPlanService, so keyword research needs **Basic** access (15,000
-   ops/day), which is a separate application on the same screen. Campaign
-   creation and reporting work fine on Explorer.
-2. **An OAuth client**, from a Google Cloud project with the Google Ads API
-   enabled. Use the "Desktop app" type, which accepts any `localhost` redirect.
+   KeywordPlanIdeaService, so keyword research needs **Basic** access (15,000
+   operations a day), which needs brand verification first.
+2. **An OAuth client** in the same project. Use the "Desktop app" type, which
+   accepts any `localhost` redirect.
 
    For the consent screen, **do not leave it in "Testing"**. That status issues
-   refresh tokens that stop working after 7 days. Beyond that it is a trade:
+   refresh tokens that stop working after 7 days. For Basic access, set it to
+   **External + In production** and complete brand verification: Google's brand
+   verification guide requires that for Basic, even where other Google docs say
+   Internal apps skip verification. For Explorer only, **Internal** (Workspace
+   orgs) also works.
 
-   - **Internal** (Workspace orgs only) is what Google's OAuth docs recommend for
-     a single-company tool. Simplest, no verification, no 7-day expiry.
-   - **External + In production** is the precondition for *brand verification*,
-     the pilot that cuts Basic Access review from days to hours. The cost is that
-     `auth/adwords` is a **sensitive** scope, so a published external app can
-     require full OAuth app verification, potentially slower than the wait it
-     saves.
-
-   Internal is the better default for an internal tool. Choose External only if
-   the fast track is worth the verification risk.
+If you set Adwarp up before the sunset, your token's access level moved to the
+Cloud projects that used it in the 90 days before, and Adwarp now ignores
+`developerToken` in `google.json`.
 
 Then write `~/.adwarp/google.json`:
 
@@ -144,7 +144,6 @@ Then write `~/.adwarp/google.json`:
 {
   "clientId": "....apps.googleusercontent.com",
   "clientSecret": "...",
-  "developerToken": "...",
   "loginCustomerId": "1234567890",
   "defaultCustomerId": "0987654321",
   "defaultConversionActionNames": ["Demo Booked"]
@@ -479,10 +478,13 @@ whether it works on the hosted endpoint.
 - **Conversions:** `list_conversions` (select an existing insight-tag conversion to track).
   `create_campaign` and `launch_from_brief` accept `conversionIds` or `conversionName`, and
   fall back to `defaultConversionName` from config.
-- **Campaigns:** `create_campaign_group`, `create_campaign`, `create_text_ad`, `create_image_ad`;
+- **Campaigns:** `create_campaign_group`, `create_campaign`, `create_text_ad`, `create_image_ad`,
+  `create_post_ad` (sponsors an existing post as a draft ad, such as a member's post for a thought
+  leader ad once the member approves the request in Campaign Manager);
   `list_campaigns` (the account structure: campaign groups and their ad groups, **drafts
   included**, unlike reporting which only shows entities with spend), `list_ads`, `delete_ad`
-  (removes the creative and best-effort its Direct Sponsored Content post), `update_ad`
+  (removes the creative and best-effort its Direct Sponsored Content post, never a post it only
+  references), `update_ad`
   (pause, resume, or archive a single ad; `ACTIVE` starts spend, so it is set only on an
   explicit request). LinkedIn's editor ignores post edits on a live ad, so to change copy you
   recreate: `delete_ad` + `create_image_ad`.
@@ -559,7 +561,7 @@ Periods: `last_7_days`, `last_30_days`, `last_90_days`, `month_to_date`, `last_m
 Adwarp keeps an append-only journal of every change made to an ad entity so you can measure the
 **lift** of a change: how performance differed in the window before it versus after.
 
-- **Where it lives:** `~/.adwarp/changelog.jsonl` (one JSON object per line). A plain local
+- **Location:** `~/.adwarp/changelog.jsonl` (one JSON object per line). A plain local
   file with nothing to set up. Override the path with `ADWARP_CHANGELOG_PATH`.
 - **Auto-capture:** every create/update Adwarp makes to a campaign group, campaign, or creative is
   journaled automatically (captured at the one HTTP chokepoint, so it can't be forgotten).

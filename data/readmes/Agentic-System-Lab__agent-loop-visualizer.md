@@ -62,6 +62,10 @@ Your browser opens http://localhost:8501; loading Gemma takes about 10–20 seco
 | [Tests](docs/testing.md) | The commands, the fakes, and what each test file covers |
 | [Known limitations](docs/limitations.md) | Measured speeds, what the small models get wrong, and the limits of each backend and harness |
 
+## Contributing
+
+Questions, bug reports, translations and code are welcome, in English or in Chinese: [Contributing](CONTRIBUTING.md) says how to report a problem, set up, check a change and send a pull request.
+
 ## License
 
 This project's code is licensed under the [Apache License 2.0](LICENSE). The Gemma 4 weights and its MTP drafter are released by Google under Apache 2.0 (see the [model card](https://huggingface.co/google/gemma-4-E2B-it) and the [drafter's card](https://huggingface.co/google/gemma-4-E2B-it-assistant)), and the Qwen3.5 weights by Alibaba's Qwen team under Apache 2.0 (see the [model card](https://huggingface.co/Qwen/Qwen3.5-0.8B)); none of them are included in this project. `app/assets/examples/speech.flac` is utterance 1272-128104-0000 of the [LibriSpeech ASR corpus](https://www.openslr.org/12) (Panayotov et al., 2015), read from LibriVox, under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); the other example files (`receipt.png`, `ball.mp4`, `sales.csv`) and the logo were made for this project.

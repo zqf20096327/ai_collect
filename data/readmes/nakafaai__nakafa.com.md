@@ -18,11 +18,13 @@ authored content source or publication path.
 
 `package.json` is the toolchain source of truth:
 
-- Node.js 24
+- Node.js 26.13.0, and the Node major that `packages/backend/convex.json` names
+  for Convex "use node" actions, installed with `brew install node@<major>`. The
+  local acceptance backend finds it through Homebrew, so no shell puts it first.
 - Bun 1.4.4
 - Turborepo
 - TanStack Start and React 19
-- Native TypeScript 7
+- tsrs, the Rust port of the TypeScript 7.1 compiler
 - Convex
 - Vitest
 - Biome through Ultracite
@@ -111,6 +113,23 @@ Run the browser suites from the repository root in a second terminal:
 
 ```sh
 bun --filter www test:browser
+```
+
+That runs every project at once, which suits one file or folder. A whole run
+selects each suite in turn with `PLAYWRIGHT_SUITE`: the parallel suites
+`runtime`, `learner`, `chat`, `visual` and `browsers` first, then the one-worker
+suites `timing` and `browser-timing`, whose specs measure latency and paint
+(`apps/www/playwright.config.ts`). A test records a trace and a video, kept
+when it fails, only with `PLAYWRIGHT_RECORD=1`, as a rerun of a failure asks.
+
+A browser test seeds its learners, schools and rows in its own process, through
+the local backend's admin HTTP API (`LocalConvex` in
+`packages/backend/scripts/content/acceptance/convex.ts`), so a fixture costs one
+call and no process. A person gets the same fixtures from the command line, for
+example a signed-in learner's cookie for a browser of their own:
+
+```sh
+bun run --cwd packages/backend acceptance learner /tmp/learner-cookie.json
 ```
 
 Each checkout prepares its own runtime, and its backend takes free ports. To

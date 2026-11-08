@@ -35,7 +35,7 @@ cp server/.env.example server/.env && ./server/run.sh     # API on :8000
 cd web && npm install && npm run dev                      # UI on :5173
 ```
 
-**On a server.** Add an account first (`python -m app.auth add <username>`); from then on the page asks for a sign-in and the API refuses requests without one. [`docs/deploy`](docs/deploy) has the full setup behind Caddy and Cloudflare, with example service files.
+**On a server.** Set `TEXDECK_REGISTRATION=true` and sign up first with the invite code `hi_my_texdeck`; that account is the admin and hands out one-use invite codes, and every account connects its own ChatGPT, Claude or API key. Or add accounts on the server (`python -m app.auth add <username>`). Either way the page then asks for a sign-in and the API refuses requests without one. [`docs/deploy`](docs/deploy) has the full setup behind Caddy and Cloudflare, with example service files.
 
 ## Pick a model
 
@@ -58,6 +58,8 @@ The choice and any API key entered there are saved next to the other app data. `
 </p>
 
 The bundle has seven templates: Academic, Emerald, Graphite, Navy, Scholar, SimplePlus and Execushares. All of them handle Chinese. Licenses are listed in [NOTICE](NOTICE).
+
+To restyle one without touching LaTeX, click New template (or the palette icon on Academic, Emerald, Graphite, Navy or Scholar). The editor shows the sample deck recompiled as you change it. Pick the colours, upload a logo, and place any picture as the title-page background: move, scale, stretch and rotate it on the 16:9 page, with a blurred copy, a colour or the original background behind it. Saved templates are per account and only store the changes; the layout still comes from the built-in template.
 
 There is no prompt library. Each template's `main.tex` is a complete example deck, and the model copies it. To make your own, copy `templates/academic`, change `key` and `name` in `template.json`, and edit `main.tex`. Real charts in the example mean real charts in the output.
 

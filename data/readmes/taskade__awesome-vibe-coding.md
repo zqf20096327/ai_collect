@@ -332,6 +332,8 @@ Generate code you can own, modify, and deploy anywhere.
 | [a0.dev](https://a0.dev) | Free tier | Mobile apps | Prompt to React Native/Expo app with one-click App Store publishing. |
 | [Metain](https://metain.dev) | Free tier | Roblox developers | Purpose-built for Roblox Studio. Generates Luau scripts, UI, and animations from natural-language prompts. Browser chat syncs live into Roblox Studio via an open-source plugin. |
 | [Newly](https://newly.app/) | Paid, from $25/month | Native mobile apps | Generates native iOS and Android apps from natural-language prompts. |
+| [Layerwise](https://layerwise.app) | Free tier | Full-stack web apps | Desktop AI app builder with local source files, live previews, a built-in database, authentication, and publishing. |
+| [Massvai](https://massvai.com) | Free tier | Next.js developers | Prompt-to-app builder that generates an exportable Next.js, TypeScript and Supabase codebase with live preview, GitHub sync and one-click Vercel deploy. |
 
 ---
 
@@ -434,6 +436,7 @@ Tools for specific coding workflows.
 | [GPT Pilot](https://github.com/Pythagora-io/gpt-pilot) | Free | Full app dev | Builds entire apps from scratch. Interactive development with AI. |
 | [d1v](https://github.com/d1vai/d1v-cli) | Free | AI-built web deployments | CLI workflow that waits for verified previews and requires explicit confirmation before production releases. |
 | [Shipvela](https://github.com/stefanautomateed/shipvela-codex) | Free tier; paid hosting plans | Publishing from coding agents | OAuth MCP connector, publishing skill and CLI setup for deploying supported websites, reviewing builds and returning a live URL with owner approval. |
+| [show-your-work](https://github.com/iamumeransari/claude-show-your-work) | Free | Visual QA | Claude Code plugin that shows screenshots and plays recordings of the agent's work inline in the terminal, with before/after QA runs side by side. |
 
 ---
 
@@ -451,6 +454,12 @@ Run many coding agents in parallel and keep them coordinated.
 | [vibe-kanban](https://github.com/BloopAI/vibe-kanban) | Free | Agent orchestration | Kanban-style control plane for coordinating AI coding agents. Community-maintained. |
 | [YYLO](https://github.com/yylo-dev/yylo) | Free | Parallel worktrees | Command-line orchestrator for coding agents and repeatable workflows: creates a dedicated branch/worktree per task with typed task, validation, merge, and release-readiness boundaries, and a merge queue that owns risk-based review. |
 | [Paradev](https://github.com/ParadevAI/Paradev) | Free tier | Parallel worktrees | Desktop app (formerly Superset) that runs Claude Code, Codex, OpenCode, and other CLI agents side by side, each task in its own Git worktree, with diff review, pull requests, and an in-app browser preview next to the terminals. |
+| [Joxo](https://joxo.ai) | Free tier | Teams running agents on several computers | Connects the coding agents each teammate runs on their own computer (Claude Code, Codex, Cursor, OpenCode and others) through one shared project with a task board, decisions and handoffs that carry the branch and commit. |
+| [OpenTandem](https://github.com/opentandem/opentandem) | Open-source CLI | Agents across several computers | Connects the computers you run Claude Code, Codex, OpenCode and 15 more agent CLIs on, so you can start, switch, and follow tasks from your phone. |
+| [SpaceApp](https://github.com/oll4com/spaceapp) | Free | Self-hosted agent rooms | Self-hosted web workspace that runs OpenCode, Codex, Claude Code, Gemini CLI and other coding CLIs side by side as terminal panes in persistent rooms, each on your own account and reachable from a computer or phone. |
+| [Sno Station](https://github.com/sno-ai/sno-station) | Open source | Cross-vendor agent teams | Runs Codex, Claude Code, Cursor, Hermes Agent and OpenClaw as one team on your machine, so when one hits its usage limit another picks up the task and the agent that wrote the code is never the one that reviews it. |
+| [Orchestrator](https://github.com/OrchestratorInc/agent-orchestrator) | Free | Parallel worktrees | Open-source desktop app for macOS, Windows and Linux where an orchestrator agent splits work across Claude Code, Codex, Cursor and 35+ other coding agents, each in its own git worktree, and a Kanban board tracks every PR through CI and review. |
+| [Frink](https://github.com/benord-labs/frink) | Free | Agent orchestration | Desktop-first, open-source (MIT) application for running parallel agents, and multi-step custom workflows triggered by schedules, webhooks or events from tools like Linear and Sentry, across your already-used providers. Workflows can include steps you write yourself in code, alongside agent, command and approval steps. |
 
 ---
 
@@ -475,6 +484,7 @@ AI that doesn't just assist — it works independently on complex tasks. [Creati
 | [DevIntern](https://github.com/getdevintern/devintern) | Free tier | Ticket-to-PR workflows | Turns Jira, Linear, GitHub, and other tickets into self-reviewed pull requests with the coding agent of your choice, on your machines with your own keys. |
 | [PinkCode](https://github.com/3xian/PinkCode) | Free | Grok Build GUI | Open-source desktop workspace for parallel Grok Build coding sessions with live activity, usage, file-change review, and permission controls. |
 | [Orbi](https://orbi.build/?ref=awesome-vibe-coding) | Free (self-hosted) | GitHub issue to release | Takes a GitHub Issue labelled ai-ready to a pull request, has a separate review session check it against the acceptance criteria, merges only reviewed work, and cuts a tagged release. |
+| [Buddy](https://buddy.works/docs/ai-agents) | Free tier | Agents in CI/CD | Runs Claude Code, Codex, Cursor, and other coding agents as pipeline actions on events such as an opened pull request, or in isolated cloud sandboxes with your repository fetched in. |
 
 ---
 
@@ -549,6 +559,7 @@ Generate and manage data layers with AI.
 | [Firebase + Gemini](https://firebase.google.com/) | Free tier | Mobile backends | Google's AI integrated into Firebase. |
 | [Nhost](https://nhost.io/) | Free tier | GraphQL Postgres apps | Open-source backend: Postgres, instant Hasura GraphQL API, auth, storage, and serverless functions. |
 | [Vectoree](https://vectoree.ai/) | Pay-as-you-go ($5 credit) | Coding-agent backends | One project key gives your coding agent models, auth, Postgres and storage, set up through a skill and CLI. |
+| [Prisma Postgres](https://www.prisma.io/postgres) | Free tier | Agent-provisioned Postgres | Managed Postgres that you or a coding agent can create from the terminal with `npx create-db@latest`, no account needed, and use with Prisma ORM. |
 
 ---
 
@@ -641,6 +652,7 @@ Tools that give AI agents persistent memory and context.
 | [Tree Ring Memory](https://github.com/TerminallyLazy/Tree-Ring-Memory) | Memory layer | Framework-agnostic Rust CLI memory layer for coding agents with local recall, forgetting, audit, and TUI workflows. |
 | [Zep](https://github.com/getzep/zep) | Memory store | Long-term memory for AI assistants. Fast retrieval and summarization. |
 | [Mnemoverse](https://github.com/mnemoverse/mcp-memory-server) | Memory layer | Hosted long-term memory for coding agents over MCP, shared across Claude Code, Cursor, VS Code and Codex; rating a recalled memory as helpful or misleading re-ranks what comes back next. |
+| [Cloud Alter Ego](https://cloudalterego.cafeboon.com) | Context connector over MCP | Remote MCP connector that gives every AI chat your rules, profile and work history, stored as plain Markdown files in your own OneDrive, Google Drive, Dropbox, GitHub or Azure DevOps. |
 
 ---
 
@@ -658,6 +670,7 @@ Skills are reusable, versioned instruction packages (a `SKILL.md` file plus opti
 | [Claude Code Plugins](https://github.com/anthropics/claude-code/tree/main/plugins) | Examples | Official plugin and skill examples for Claude Code. |
 | [1human](https://github.com/mdagnolops/1human-reels/tree/main/skills/agent-reels) | Skill | Consults shared human–agent preferences and credited motion references before authorized creative tasks. |
 | [anti-slop-design](https://github.com/wwewtech/anti-slop-design) | Skill | Autonomous Principal Design Technologist that cures vibe-coded prototypes from AI design slop with curated token archetypes and 7-axis quality gating. |
+| [SkillHey](https://skillhey.com) | Directory | Searchable directory of SKILL.md agent skills, grouped by category, with install commands for Claude Code, Codex, and Cursor. |
 
 ---
 
@@ -677,6 +690,7 @@ Self-host and customize your vibe coding stack.
 | [Plandex](https://github.com/plandex-ai/plandex) | Go | Complex projects | 2M token context. Multi-file planning and implementation with version control built in. |
 | [Cloudflare VibeSDK](https://github.com/cloudflare/vibesdk) | TypeScript | Deploy-your-own | Open-source platform to deploy your own vibe coding environment. Isolated sandboxes on Cloudflare Workers. |
 | [LM Studio](https://lmstudio.ai/) | Electron | Local GUI | Desktop interface for running local models. |
+| [Vicoa](https://vicoa.ai) | Python | Agentic IDE | Self-hostable AI orchestrator for running Claude Code, Codex, OpenCode, Gemini, Cursor, Copilot, Kimi, and Hermes from desktop, web, or mobile, with real-time sync, parallel git worktrees, and push notifications. [Source](https://github.com/vicoa-ai/vicoa) |
 
 ---
 
@@ -753,6 +767,7 @@ Reusable prompts for common vibe coding tasks.
 | [Anthropic Prompt Library](https://docs.anthropic.com/en/prompt-library/library) | Collection | Official prompts from Anthropic optimized for coding tasks. |
 | [prompts.chat (formerly awesome-chatgpt-prompts)](https://github.com/f/prompts.chat) | Collection | 168k+ stars. Community prompts including dev-focused ones. |
 | [Fabric Patterns](https://github.com/danielmiessler/fabric) | Framework | AI prompt patterns for coding, writing, and analysis. |
+| [Awesome AI Prompts](https://github.com/shauryagangrade/awesome-ai-prompts) | Collection | Verification-first prompts for AI coding agents: each one makes the agent read the code, run the tests, and show evidence before claiming the task is done. |
 
 ### Boilerplates & Starters
 
@@ -929,6 +944,8 @@ The most common objection to vibe coding is "the app demos well and ships insecu
 | [VibeFix](https://vibe-fixer.com) | Free check, paid fix | Live sign-up check | An AI agent signs up to your own deployed app like a new user and reports what breaks, with a screenshot. |
 | [Ironheights](https://github.com/Frank-Masciopinto/ironheights) | Free (Apache-2.0) | Vetting agent skills before install | Statically scans `SKILL.md` skill folders for prompt injection, hidden text, credential reads and remote-exec installs, then pins installed skills to a local baseline so later changes are caught. |
 | [nextjs-supabase-stripe-security-checker](https://github.com/edtrackai/nextjs-supabase-stripe-security-checker) | Free | Next.js + Supabase + Stripe apps | Runs 24 local checks for leaked service-role or Stripe secret keys, tables without RLS, missing Supabase Data API grants and unverified Stripe webhooks, as a CLI or GitHub Action. |
+| [Bossanova](https://bsnv.app) | Free tier | Local credential use by AI | Proprietary Windows/macOS encrypted vault with optional MCP that separates per-item AI access from approvals to use credentials in HTTPS requests or program executions. |
+| [FixLoop Scan](https://fixloop.dev/scan) | Free | Pre-launch check of a live app | Scans a deployed app's public surface for missing HTTPS, missing security headers and API keys leaked in its HTML or JavaScript, read-only and with no signup. |
 
 ---
 
@@ -947,6 +964,7 @@ Master the art of talking to AI. [AI Prompt Engineering Guide →](https://www.t
 | [Learn Prompting](https://learnprompting.org/) | Course | Free course that covers the whole topic. |
 | [Prompt Engineering Guide](https://www.promptingguide.ai/) | Guide | Research-backed techniques. |
 | [Brex Prompt Engineering](https://github.com/brexhq/prompt-engineering) | Guide | Real-world production prompts. |
+| [AI Package Hallucination Exercise](https://ransomleak.com/exercises/invented-dependency/) | Course | Free browser exercise that shows how an npm package invented by an AI assistant can run an attacker's install script, and how to verify one first. |
 
 ### Prompt Tools
 
@@ -1108,75 +1126,4 @@ Channels that teach vibe coding.
 | [All About AI](https://www.youtube.com/@AllAboutAI) | Tutorials | Practical AI coding tutorials. Shows building 10,000 lines in hours. |
 | [Sentdex](https://www.youtube.com/@sentdex) | ML/AI | Hands-on ML and AI tutorials. Code-heavy, end-to-end systems. |
 | [Two Minute Papers](https://www.youtube.com/@TwoMinutePapers) | Research | AI research explained in 2 minutes. Makes papers accessible. |
-| [freeCodeCamp](https://www.youtube.com/@freecodecamp) | Education | Free full courses including AI and ML. Democratizing education. |
-| [Automata Learning Lab](https://www.youtube.com/@AutomataLearningLab) | AI Engineering | Long tutorials on LangChain, agents, and AI engineering. O'Reilly author. |
-| [Code with Ania Kubów](https://www.youtube.com/@AniaKubow) | Beginner-friendly | Accessible AI coding tutorials for beginners. |
-
-**Tool-Specific Tutorials:**
-- [Cursor Docs & Guides](https://docs.cursor.com/) — Official Cursor documentation: beginner-to-advanced setup, features, and workflows
-- [Claude Code in 15 Minutes](https://creatoreconomy.so/p/claude-code-beginners-tutorial-build-a-movie-app-in-15-minutes) — Build a movie app from scratch
-- [Bolt.new Complete Guide](https://www.udemy.com/course/cursor-ai-ide/) — Udemy course on full-stack vibe coding
-
-**Free Courses:**
-- [Learn Vibe Coding with AI Tools](https://www.mygreatlearning.com/academy/learn-for-free/courses/learn-vibe-coding-with-ai-tools) — Great Learning's free course
-- [Learn Taskade](https://www.taskade.com/learn) — Official Taskade tutorials and guides
-
-### Podcasts
-
-| Podcast | Focus | Why It's Awesome |
-|---------|-------|------------------|
-| [Latent Space](https://www.latent.space/) | AI Engineering | Deep technical discussions with AI leaders. The podcast for AI engineers. |
-| [Practical AI](https://changelog.com/practicalai) | Applied AI | Real-world AI applications. Great for understanding practical use cases. |
-| [The AI Podcast (NVIDIA)](https://blogs.nvidia.com/ai-podcast/) | Industry | Interviews with AI pioneers and researchers. |
-| [Lex Fridman Podcast](https://lexfridman.com/podcast/) | Long-form | Conversations with AI researchers and founders. |
-| [The Changelog](https://changelog.com/podcast) | Open Source | Open-source software and the people who make it. Long AI tool episodes. |
-| [Software Engineering Daily](https://softwareengineeringdaily.com/) | Engineering | Technical interviews covering AI infrastructure and tools. |
-
-### Taskade Genesis Video Tutorials
-
-| Resource | Videos | What You'll Learn |
-|----------|--------|-------------------|
-| [Taskade Genesis Official Playlist](https://www.youtube.com/playlist?list=PL6AK9nQTVp4rA4tpzXAifJ37-YuAuBAjs) | 11 | Complete walkthrough: [Workspace DNA explained](https://www.youtube.com/watch?v=pgMl8GY_6t4), [train AI on your data](https://www.youtube.com/watch?v=WwYePfEgVfw), [UI customization](https://www.youtube.com/watch?v=IjhYI6xKSIw), [model selection](https://www.youtube.com/watch?v=SB1NX8xgyGk), [clone & customize apps](https://www.youtube.com/watch?v=GZsJGDSqchs), and [multi-device building](https://www.youtube.com/watch?v=2tG-plwn-d8). |
-
-### Books
-
-| Book | Author | Why It's Awesome |
-|------|--------|------------------|
-| *AI-Assisted Programming* | Tom Taulli | Practical guide to coding with AI. |
-| *Prompt Engineering for Developers* | Various | O'Reilly coverage of prompt techniques. |
-| [*Vibe Coding with Confidence*](https://zalt.me/guides/vibe-coding) | Mahmoud Zalt | Web handbook on shipping AI-built apps beyond the demo: plan, build, debug, harden, ship, operate, scale. |
-
----
-
-## Communities
-
-Where to learn, share, and get help.
-
-### Official Communities
-
-| Community | Platform | Focus |
-|-----------|----------|-------|
-| [Taskade Apps](https://www.taskade.com/apps) | Web | Browse and clone live Taskade Genesis apps. |
-| [Taskade (@taskade)](https://www.taskade.com/@taskade) | Web | Official Taskade profile — published apps, agents, and templates. |
-| [Claude Developers Discord](https://discord.gg/anthropic) | Discord | Official Anthropic community. Claude Code help and discussion. |
-| [Cursor Discord](https://discord.gg/cursor) | Discord | Cursor-specific help. 100k+ members. |
-| [Cline Discord](https://discord.gg/cline) | Discord | Cline extension community. MCP discussions. |
-| [Replit Community](https://replit.com/community) | Web | Share and fork Replit projects. |
-
-### Reddit Communities
-
-| Community | Members | Focus |
-|-----------|---------|-------|
-| [r/ChatGPTCoding](https://www.reddit.com/r/ChatGPTCoding/) | 100k+ | AI-assisted coding tips and discussions. |
-| [r/vibecoding](https://www.reddit.com/r/vibecoding/) | Growing | Dedicated vibe coding community. |
-| [r/ChatGPT](https://www.reddit.com/r/ChatGPT/) | 5M+ | General AI discussions. |
-| [r/LocalLLaMA](https://www.reddit.com/r/LocalLLaMA/) | 500k+ | Self-hosted AI and local models. |
-| [r/cursor](https://www.reddit.com/r/cursor/) | Growing | Cursor IDE discussions. |
-
-### Other Communities
-
-| Community | Platform | Focus |
-|-----------|----------|-------|
-| [Hacker News](https://news.ycombinator.com/) | Web | Tech community. Front page for AI tool launches. |
-| [Vibehackers](https://vibehackers.io/) | Web | Community for vibe coding enthusiasts. |
-| [Indie Hackers](https://www.indiehac
+| [freeCodeCamp](https://www.youtub

@@ -18,7 +18,7 @@ Cost Guard analyzes [OpenCode](https://opencode.ai/) usage, relative model costs
 
 ## Quick start
 
-Use **current `main`** (v80.203, 2026-11-07), the supported distribution.
+Use **current `main`** (v80.207, 2026-11-08), the supported distribution.
 
 Without Git: [repository](https://github.com/qstoffe/cost-guard) → **main → Code → Download ZIP**. Preserve the extracted structure; download again to update.
 
@@ -219,7 +219,7 @@ Shows only a session table and legend, newest causal-tree activity first (not co
 
 ## Session and date detail reports
 
-Passing a session ID prints one snapshot and exits, even with active work; use `--watch` for tracking. `[RUNNING]` metrics are provisional observed usage; unsupported values stay unknown. Date/date-range modes use the same table against their selected scope. Neither fetches model availability or account quotas.
+Passing a session ID prints one snapshot and exits, even with active work; use `--watch` for tracking. `[RUNNING]` metrics are provisional observed usage; unsupported values stay unknown. `[UNVERIFIED]` means an unfinished request has no positive activity evidence and a complete native observation reports it inactive in this process; another server may own it. Its end time and execution duration remain unknown, not successful or aborted. Date/date-range modes use the same table against their selected scope. Neither fetches model availability or account quotas.
 
 | Column | Meaning |
 | --- | --- |
@@ -310,7 +310,7 @@ Quota credentials stay memory-only: V2 precedes legacy, explicit `authJsonPath` 
 
 Useful settings include:
 
-- `ccostDisplayUnit`: CLI `credits` (default) / `usd`; override: `--ccost-unit usd`. Web uses independent `webSettings.ccostDisplayUnit` (Credits default), saved in Settings. 100 credits = $1.00 reference USD, not billing. Quotas/Billed/rates stay unchanged.
+- `ccostDisplayUnit`: CLI `credits` (default) / `usd`; override: `--ccost-unit usd`. Web uses independent `webSettings.ccostDisplayUnit` (USD default), saved in Settings. Default inherits USD; explicit Credits/USD choices stay pinned. 100 credits = $1.00 reference USD, not billing. Quotas/Billed/rates stay unchanged.
 - `runningPromptWarningCCost`: 1800 credits by default (0 disables), independent of display units.
 
 - `openCode.source`: `auto`, `v1` or `v2`.
@@ -361,7 +361,7 @@ Bundles omit prompts/titles, raw payloads/auth, tokens and account labels/IDs; s
 
 ## Current version
 
-**v80.203 (2026-11-07):** Watch and Mini publish Earlier Sessions only after source-revision coverage proves the latest eligible set. Initial history stays Loading (or meaningfully unavailable); refreshes retain one qualified verified set instead of mixing provisional winners. Mini names its historical finish clock **Finished**, with unchanged local date/offset help. Large/churning histories may still take substantial verification time. See [Mini Watch](docs/web-mini-watch.md#earlier-sessions).
+**v80.207 (2026-11-08):** Full Web Watch Running rows expand to show bounded, privacy-filtered source invocation inputs. Foreground and background Running statuses share the same semantic yellow. Missing links, redacted/unsupported fields and oversized inputs are labeled honestly; duration updates preserve disclosure interaction. CLI/Mini and accounting are unchanged. See [Watch activity](docs/watch-activity.md).
 
 Earlier changes: [version history](VERSION_HISTORY.md). [Live-proof limits](development/architecture/modules/history-loading.md#startup-presentation-and-launcher-evidence). Claude quotas remain experimental.
 

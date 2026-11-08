@@ -1,6 +1,6 @@
 # Paperclip Kubernetes Operator
 
-[![CI](https://github.com/paperclipinc/paperclip-operator/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/paperclipinc/paperclip-operator/actions/workflows/ci.yaml?query=branch%3Amain)
+[![CI](https://github.com/stubbi/paperclip-operator/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/stubbi/paperclip-operator/actions/workflows/ci.yaml?query=branch%3Amain)
 [![Go Report Card](https://goreportcard.com/badge/github.com/paperclipinc/paperclip-operator)](https://goreportcard.com/report/github.com/paperclipinc/paperclip-operator)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-1.28%2B-326CE5?logo=kubernetes&logoColor=white)](https://kubernetes.io)
@@ -525,7 +525,7 @@ spec:
     endpoint: ""           # required for MinIO/R2
     credentialsSecretRef:
       name: paperclip-s3
-      # Secret must contain S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY
+      # Secret must contain AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
 ```
 
 > **Horizontal scaling:** Paperclip does not use Redis. Scaling out relies on a shared PostgreSQL database, shared object storage (S3/MinIO/R2) for files, and pod-0 heartbeat gating so only one replica runs the scheduler. Configure `database.mode: external` and `objectStorage` when running multiple replicas. The in-process rate limiter is per-pod by design.
@@ -1273,7 +1273,7 @@ See [config/samples/](config/samples/) for additional examples.
 ### Build and run locally
 
 ```bash
-git clone https://github.com/paperclipinc/paperclip-operator.git
+git clone https://github.com/stubbi/paperclip-operator.git
 cd paperclip-operator
 go mod download
 

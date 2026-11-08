@@ -244,6 +244,12 @@ godot-cli build ./MyGodotProject
 
 The installer adds only the extension package; install a required third-party addon into the project yourself.
 
+The **Extensions** section of the dock has **Install All**. **Update All** appears only when the catalog pins a newer
+version than the project has; catalog entries float (`Version="*"`) today, so it stays hidden. `godot-cli update` updates the
+addon and re-resolves floating extensions to their latest versions with a forced `dotnet restore`; an
+extension you pinned to a concrete version is kept. If an extension needs a newer McpPlugin than the addon pins, that
+restore fails with `NU1605` and the project will not build until you update the addon or pin the extension.
+
 ![AI Game Developer — Godot MCP](https://github.com/IvanMurzak/Godot-MCP/blob/main/docs/img/promo/hazzard-divider.svg?raw=true)
 
 # Requirements
@@ -336,7 +342,7 @@ package assemblies are not copied next to the game assembly):
 ```xml
 <ItemGroup>
   <PackageReference Include="com.IvanMurzak.ReflectorNet" Version="5.5.1" />
-  <PackageReference Include="com.IvanMurzak.McpPlugin"   Version="8.19.1" />
+  <PackageReference Include="com.IvanMurzak.McpPlugin"   Version="8.19.2" />
 </ItemGroup>
 
 <!-- Editor-only: exported games (ExportDebug / ExportRelease) ship no RQL and no Roslyn. -->
@@ -356,7 +362,7 @@ package assemblies are not copied next to the game assembly):
 | Package | Version | Role |
 | --- | --- | --- |
 | [`com.IvanMurzak.ReflectorNet`](https://www.nuget.org/packages/com.IvanMurzak.ReflectorNet) | `5.5.1` | Reflection / serialization core |
-| [`com.IvanMurzak.McpPlugin`](https://www.nuget.org/packages/com.IvanMurzak.McpPlugin) | `8.19.1` | MCP plugin client (transitively pulls `McpPlugin.Common` + `ReflectorNet`; carries the shared `AgentConfig` module) |
+| [`com.IvanMurzak.McpPlugin`](https://www.nuget.org/packages/com.IvanMurzak.McpPlugin) | `8.19.2` | MCP plugin client (transitively pulls `McpPlugin.Common` + `ReflectorNet`; carries the shared `AgentConfig` module) |
 | [`com.IvanMurzak.Rql`](https://www.nuget.org/packages/com.IvanMurzak.Rql) | `0.3.0` | RQL, the editor tools' data layer (licensed separately under PolyForm Shield — see [License](#license)) |
 | [`com.IvanMurzak.CodeExec`](https://www.nuget.org/packages/com.IvanMurzak.CodeExec) | `0.4.1` | Code-Exec runtime behind `script-execute` (PolyForm Shield) |
 | [`com.IvanMurzak.CodeExec.Roslyn`](https://www.nuget.org/packages/com.IvanMurzak.CodeExec.Roslyn) | `0.4.1` | Code-Exec's Roslyn adapter, shipped as source (PolyForm Shield) |

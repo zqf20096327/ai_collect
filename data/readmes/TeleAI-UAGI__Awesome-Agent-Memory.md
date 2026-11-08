@@ -44,6 +44,7 @@
 <details open>
   <summary>📰 <b>In the News</b></summary>
 
+- 📰 [[Anthropic (2026-11-06)] The components of agent memory](https://www.anthropic.com/research/components-of-agent-memory)
 - 📰 [[Meta (2026-10-12)] Muse Wonder introduces "Active Memory": carrying context about the user across conversations and actively retrieving the details relevant to the task at hand](https://research.meta.ai/blog/muse-wonder)
 - 📰 [[AI Weekly (2026-10-09)] Memento 3 Posts 100.0 RHAE on ARC-AGI-3 With Frozen LLM Rulebook](https://aiweekly.co/alerts/memento-3-posts-1000-rhae-on-arc-agi-3-with-frozen-llm-rulebook)
 - 📰 [[NVIDIA (2026-08-21)] AVO reaches 100% on ARC-AGI-3, crediting persistent memory across context resets and a supervisor that redirects a stalled agent](https://developer.nvidia.com/blog/nvidia-avo-reaches-100-on-arc-agi-3-demonstrating-a-frontier-level-general-purpose-architecture-for-long-horizon-autonomous-agents/)
@@ -398,15 +399,15 @@ _Ordered by the number of GitHub stars. Products with fewer than 100 stars conti
       [[code](https://github.com/tinqiao-oss/engramory)]
       _General-purpose long-term memory layer for AI agents: one markdown file per memory, a size-capped pointer index read every session, and a read-only validator._
 
-47. **[Memov](https://www.memov.ai/)**
-      ![Star](https://img.shields.io/github/stars/memovai/memov.svg?style=social&label=Star)
-      [[code](https://github.com/memovai/memov)]
-      _Git-based, traceable memory layer for Claude Code._
-
-48. **[MemoSync](https://baiqiaozhang.cc/memosync/)**
+47. **[MemoSync](https://baiqiaozhang.cc/memosync/)**
       ![Star](https://img.shields.io/github/stars/SLEEPYBQ/MemoSync.svg?style=social&label=Star)
       [[code](https://github.com/SLEEPYBQ/MemoSync)]
       _Local workbench for Claude Code, Codex, Pi and OpenCode where the user reviews memory changes, picks each turn's memory, and checks citations and compliance._
+
+48. **[Memov](https://www.memov.ai/)**
+      ![Star](https://img.shields.io/github/stars/memovai/memov.svg?style=social&label=Star)
+      [[code](https://github.com/memovai/memov)]
+      _Git-based, traceable memory layer for Claude Code._
 
 49. **[Mnemosyne (by 28naem-del)](https://mnemosy.ai)**
       ![Star](https://img.shields.io/github/stars/28naem-del/mnemosyne.svg?style=social&label=Star)
@@ -497,17 +498,17 @@ _Ordered by the number of GitHub stars. Products with fewer than 100 stars conti
       [[code](https://github.com/knaisoma/data-olympus)]
       _Governed project memory for AI coding agents: agents propose learnings, humans promote them, and MCP retrieval serves only in-force knowledge after validity and supersession checks._
 
-64. **[Mnemoverse](https://mnemoverse.com)**
-      ![Star](https://img.shields.io/github/stars/mnemoverse/mcp-memory-server.svg?style=social&label=Star)
-      [[code](https://github.com/mnemoverse/mcp-memory-server)]
-      [[docs](https://mnemoverse.com/docs/)]
-      _Hosted long-term memory for agents over MCP and REST; rating a recalled memory as helpful or misleading re-ranks what comes back next; MIT-licensed MCP server._
-
-65. **[ZenBrain](https://zensation.ai/en)**
+64. **[ZenBrain](https://zensation.ai/en)**
       ![Star](https://img.shields.io/github/stars/zensation-ai/zenbrain.svg?style=social&label=Star)
       [[code](https://github.com/zensation-ai/zenbrain)]
       [[paper](https://arxiv.org/abs/2604.23878)]
       _Neuroscience-inspired 7-layer memory architecture for autonomous agents in zero-dependency TypeScript, with FSRS spaced repetition, Hebbian learning, and sleep-cycle consolidation._
+
+65. **[Mnemoverse](https://mnemoverse.com)**
+      ![Star](https://img.shields.io/github/stars/mnemoverse/mcp-memory-server.svg?style=social&label=Star)
+      [[code](https://github.com/mnemoverse/mcp-memory-server)]
+      [[docs](https://mnemoverse.com/docs/)]
+      _Hosted long-term memory for agents over MCP and REST; rating a recalled memory as helpful or misleading re-ranks what comes back next; MIT-licensed MCP server._
 
 66. **[InvMem](https://github.com/wenxiaof345-ctrl/vanilla-rag-memory)**
       ![Star](https://img.shields.io/github/stars/wenxiaof345-ctrl/vanilla-rag-memory.svg?style=social&label=Star)
@@ -655,27 +656,27 @@ _Ordered by the number of GitHub stars. Products with fewer than 100 stars conti
       [[code](https://github.com/anshulyadav1976/synapse)]
       _Zero-dependency Markdown memory vault with ChatGPT/Claude imports, SQLite keyword and optional semantic search, linked wiki pages, MCP retrieval, and human-approved agent notes._
 
-93. **[ActiveMemoryIndex](https://github.com/linxuhao/ActiveMemoryIndex)**
+93. **[Counterparts](https://github.com/mlapeter/counterparts)**
+      ![Star](https://img.shields.io/github/stars/mlapeter/counterparts.svg?style=social&label=Star)
+      [[code](https://github.com/mlapeter/counterparts)]
+      _Long-term memory for Claude Code: Claude writes its own memories each session, unused ones fade, and everything stays in local SQLite._
+
+94. **[ActiveMemoryIndex](https://github.com/linxuhao/ActiveMemoryIndex)**
       ![Star](https://img.shields.io/github/stars/linxuhao/ActiveMemoryIndex.svg?style=social&label=Star)
       [[code](https://github.com/linxuhao/ActiveMemoryIndex)]
       _Dual store of verbatim timestamped turns and atomic first-person facts, retrieved in the same register; #3, Agent Memory Leaderboard (academic textual, 2026-08)._
 
-94. **[inspeximus (formerly mnemo)](https://dancenitra.github.io/inspeximus/)**
+95. **[inspeximus (formerly mnemo)](https://dancenitra.github.io/inspeximus/)**
       ![Star](https://img.shields.io/github/stars/DanceNitra/inspeximus.svg?style=social&label=Star)
       [[code](https://github.com/DanceNitra/inspeximus)]
       _Zero-dependency memory layer and MCP server with value-ranked recall, per-type decay, keyed supersession, revert-based correction, signed provenance, tamper-evident receipts, and cross-store erasure._
 
-95. **[Fraise](https://getfraise.dev)**
+96. **[Fraise](https://getfraise.dev)**
       ![Star](https://img.shields.io/github/stars/FraiseHQ/fraise.svg?style=social&label=Star)
       [[code](https://github.com/FraiseHQ/fraise)]
       [[docs](https://docs.getfraise.dev/docs)]
       [[eval](https://github.com/RonsenbergVI/agent-memory-benchmarks/blob/main/RESULTS.md)]
       _In-memory temporal graph database for agents, queried with remember/recall verbs over HTTP or MCP; hybrid text, graph and optional vector retrieval; no persistence yet (2026-10)._
-
-96. **[Counterparts](https://github.com/mlapeter/counterparts)**
-      ![Star](https://img.shields.io/github/stars/mlapeter/counterparts.svg?style=social&label=Star)
-      [[code](https://github.com/mlapeter/counterparts)]
-      _Long-term memory for Claude Code: Claude writes its own memories each session, unused ones fade, and everything stays in local SQLite._
 
 97. **[kgai](https://kgai.dev)**
       ![Star](https://img.shields.io/github/stars/kgaidev/kgai.svg?style=social&label=Star)
@@ -897,7 +898,7 @@ _Ordered by the number of GitHub stars. Products with fewer than 100 stars conti
 -  [Remio](https://remio.ai/)
    _Local-first personal knowledge base that indexes files, webpages, recordings, notes, emails, and messages for agent retrieval via search and RAG._
 
--  [AccInt](https://accint.xyz)
+-  [AccInt](https://github.com/maxbaluev/accreted-intelligence)
    [[partial-code](https://github.com/maxbaluev/accreted-intelligence)]
    _Local-first MCP Work Model for coding agents that retrieves scored memory, records actions, and credits real outcomes; engine is a closed-source binary._
 
@@ -1320,6 +1321,9 @@ _Projects that are inactive or whose claims have been disputed by third parties.
 
 #### 🗓️ 2026
 
+- **[Continual Learning Bench: Evaluating Frontier AI Systems in Real-World Stateful Environments](https://arxiv.org/abs/2606.05661)**
+    [[code](https://github.com/pgasawa/continual-learning-bench)]
+
 - **[Why Bother Me Again? Benchmarking Personal Agent Memory for Interaction Preferences](https://arxiv.org/abs/2610.30485)**
     (The MemPABench Paper)
     [[code](https://github.com/mempabench/mempabench)]
@@ -1569,11 +1573,4 @@ _Projects that are inactive or whose claims have been disputed by third parties.
 - **[SE-GA: Memory-Augmented Self-Evolution for GUI Agents](https://arxiv.org/abs/2605.16883)**
     [[code](https://github.com/jinshilong-dev/SE-GA)]
 
-- **[Visual Agentic Memory: Enabling Online Long Video Understanding via Online Indexing, Hierarchical Memory, and Agentic Retrieval](https://arxiv.org/abs/2605.16481)**
-    [[code](https://github.com/yiliu-li/Visual-Agentic-Memory)]
-
-- **[PersonaVLM: Long-Term Personalized Multimodal LLMs](https://arxiv.org/abs/2604.13074)**
-    [[code](https://github.com/MiG-NJU/PersonaVLM)]
-    [[proj](https://PersonaVLM.github.io)]
-
-- **[Omni-SimpleMem: Autoresearch-Guided Disc
+- **[Visual Agentic Memory: Enabling Online Long Video Understanding via Online Indexing, Hierarchical Memory,

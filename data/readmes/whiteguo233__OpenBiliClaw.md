@@ -38,11 +38,11 @@
 >
 > 📱 想要原生 App？Flutter 移动端客户端（Android / iOS / Web / 桌面）在独立仓库 [`OpenBiliClaw-mobile`](https://github.com/whiteguo233/OpenBiliClaw-mobile)：推荐、对话、画像、收藏 / 稍后再看 / 30 天历史一应俱全，连接同一本地后端。
 
-> 🇨🇳 **国内源**：[Gitee v0.3.233 源码](https://gitee.com/whiteguo233/openbiliclaw/tree/openbiliclaw-v0.3.233)为历史源码快照。安装包请从 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.234) 获取；[123 云盘](https://4001474255.share.123pan.cn/123pan/IxbZMh-90KO3)仍保留 v0.3.213 历史文件，最新版国内安装包镜像待更新。
+> 🇨🇳 **国内源**：[Gitee v0.3.235 源码](https://gitee.com/whiteguo233/openbiliclaw/tree/openbiliclaw-v0.3.235)已同步本版源码。安装包请从 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.235) 获取；[123 云盘](https://4001474255.share.123pan.cn/123pan/IxbZMh-90KO3)仍保留 v0.3.213 历史文件，最新版国内安装包镜像待更新。
 
 ## 10 秒看懂 OpenBiliClaw
 
-一个纯本地、私有、开源的自进化跨平台内容发现 Agent：从你的跨平台使用、反馈和对话中持续深化心理画像，带着对你的理解主动去 B 站、小红书、抖音、YouTube、TikTok、X、知乎、Reddit、Linux.do、Bangumi、V2EX、微博、GitHub、Instagram 与开放 Web 找内容。
+一个纯本地、私有、开源的自进化跨平台内容发现 Agent：从你的跨平台使用、反馈和对话中持续深化心理画像，带着对你的理解主动去 B 站、小红书、抖音、YouTube、TikTok、X、知乎、Reddit、Linux.do、Bangumi、V2EX、微博、GitHub、Instagram 与自定义网站、RSS 来源找内容。
 
 | 跨平台 | 本地优先 | 可调教 |
 |---|---|---|
@@ -67,7 +67,7 @@
 普通用户只需四步；Firefox、Docker、脚本和手动部署等备用路径都在 [安装与部署详情](#安装与部署详情)。
 
 1. **装插件** —— [Chrome 应用商店一键安装](https://chromewebstore.google.com/detail/cdfjfkdjjhdaccbldipkjhpibnfbiamg)（自动更新），或从 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 下载 zip 手动安装（最新功能先到，商店版可能滞后几天）。
-2. **装后端** —— 从同一个 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 下载桌面安装包（macOS `.dmg` / Windows `.exe`，开箱即用、常驻菜单栏/托盘）。每个平台有两种安装包:**精简版**(默认,首启自动下载向量模型 bge-m3)与 **`-with-embedding` 完整版**(已内置 bge-m3 ~1.1GB,离线开箱即用)——网络差 / 想离线的选完整版,其余选精简版。**Gitee 源码已同步至 v0.3.233，最新版安装包见 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.234)。123 云盘当前仍是 v0.3.213 历史文件。** 想改源码或深度定制,就把下面这句话粘给 Claude Code / Codex CLI / Cursor 等 AI 编程助手：
+2. **装后端** —— 从同一个 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 下载桌面安装包（macOS `.dmg` / Windows `.exe`，开箱即用、常驻菜单栏/托盘）。Apple Silicon 与 Windows 提供**精简版**和 **`-with-embedding` 版**（预置本地 BGE-M3，约 1.1GB）；Intel Mac 提供精简版。免费云端向量无需下载本地模型，选择本地向量时再按需下载，或使用预置模型的安装包。**Gitee 源码已同步至 v0.3.235，最新版安装包见 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.235)。123 云盘当前仍是 v0.3.213 历史文件。** 想改源码或深度定制,就把下面这句话粘给 Claude Code / Codex CLI / Cursor 等 AI 编程助手：
 
    ```text
 trusted local UI → private API; remote UI → password setup → authenticated HTTP / WS
@@ -125,7 +125,7 @@ query inspiration → configured provider chain
 
 而且每个平台都是一座孤岛。你在 B 站看了三年机械键盘，小红书完全不知道；你在小红书种草的咖啡器具，B 站从来不会推给你。你的兴趣被割裂在不同平台的数据库里，没有人帮你把它们连起来。
 
-**OpenBiliClaw 反过来。** 它是一个本地运行的 AI Agent——先深度理解你，再根据对你的理解**跨平台**主动搜寻你会喜欢的内容。项目从 B 站起步，现已覆盖小红书、抖音、YouTube、TikTok、X（Twitter）、知乎、Reddit、Linux.do、Bangumi、V2EX、微博、GitHub、Instagram 和开放 Web：
+**OpenBiliClaw 反过来。** 它是一个本地运行的 AI Agent——先深度理解你，再根据对你的理解**跨平台**主动搜寻你会喜欢的内容。项目从 B 站起步，现已覆盖小红书、抖音、YouTube、TikTok、X（Twitter）、知乎、Reddit、Linux.do、Bangumi、V2EX、微博、GitHub、Instagram 和自定义网站发现流程：
 
 ### 🧠 先懂你，再找内容
 
@@ -152,7 +152,7 @@ query inspiration → configured provider chain
 
 ## 📸 功能预览
 
-核心入口现在有五个：浏览器插件负责平台内交互和登录会话，桌面端 Web（`/web`）提供大屏推荐首页，移动端 Web（`/m`）适合手机使用，另有独立仓库的原生 Flutter 客户端（[OpenBiliClaw-mobile](https://github.com/whiteguo233/OpenBiliClaw-mobile)）覆盖 Android / iOS / Web / 桌面，以及把同一套面板搬进 DSH Web 界面的 [DSH 客户端插件](https://github.com/whiteguo233/dsh-openbiliclaw)（第四栏 + 22 个 Agent Bridge 工具）。桌面端、移动端 Web、原生客户端和 DSH 插件都只调用本地 API，Cookie 同步和平台任务仍由插件承担。
+核心入口现在有五个：浏览器插件负责平台内交互和登录会话，桌面端 Web（`/web`）提供大屏推荐首页，移动端 Web（`/m`）适合手机使用，另有独立仓库的原生 Flutter 客户端（[OpenBiliClaw-mobile](https://github.com/whiteguo233/OpenBiliClaw-mobile)）覆盖 Android / iOS / Web / 桌面，以及把同一套面板搬进 DSH Web 界面的 [DSH 客户端插件](https://github.com/whiteguo233/dsh-openbiliclaw)（第四栏 + 22 个 Agent Bridge 工具）。桌面端、移动端 Web、原生客户端和 DSH 插件都只调用本地 API，内置平台的 Cookie 同步和扩展任务仍由插件承担；动态网站的受控浏览器流程在后端执行，登录由用户在接管页完成。
 
 <table>
   <tr>
@@ -257,11 +257,11 @@ query inspiration → configured provider chain
 
 ## 最近更新
 
-📌 最新版本：**v0.3.234（2026-11-06）**
+📌 最新版本：**v0.3.235（2026-11-08）**
 
-- **免费模型开箱可选**：初始化和设置共用 Qwen3-8B / Qwen3.5-4B，文本向量可选云端 BGE-M3 或本地 Ollama。
-- **远程访问先认证**：关闭密码时只允许可信本机访问，并提示远程设备完成设置。
-- **评估保留来源事实**：补齐平台原生互动、GitHub 仓库属性和小红书已有正文，长批次超限时有界拆分。
+- **免费模型融入调用链**：两个只读千问实例可直接选择、排序，BGE-M3 在原有向量设置中选择。
+- **聊天添加网站与 RSS**：先试跑再确认，来源频率、占比和异常提醒统一管理。
+- **网站采集按需运行**：macOS 自动准备 Ego，后台无界面采集，空闲后释放资源。
 
 完整变更详见 [docs/changelog.md](docs/changelog.md)。
 
@@ -329,7 +329,7 @@ npm run package:firefox        # 额外打成未签名 openbiliclaw-extension-v*
 
 到 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 的 `openbiliclaw-v*` 聚合发布页下载对应系统的安装包。这个聚合页会同步展示：
 
-> 🇨🇳 **国内源**：[Gitee v0.3.233 源码](https://gitee.com/whiteguo233/openbiliclaw/tree/openbiliclaw-v0.3.233)为历史源码快照。安装包请从 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.234) 获取；[123 云盘](https://4001474255.share.123pan.cn/123pan/IxbZMh-90KO3)仍保留 v0.3.213 历史文件，最新版国内安装包镜像待更新。
+> 🇨🇳 **国内源**：[Gitee v0.3.235 源码](https://gitee.com/whiteguo233/openbiliclaw/tree/openbiliclaw-v0.3.235)已同步本版源码。安装包请从 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.235) 获取；[123 云盘](https://4001474255.share.123pan.cn/123pan/IxbZMh-90KO3)仍保留 v0.3.213 历史文件，最新版国内安装包镜像待更新。
 
 - 当前后端源码 tag：`backend-v*`
 - 当前插件 release：`extension-v*`，并附 `openbiliclaw-extension-v*.zip` / `openbiliclaw-extension-v*-firefox.zip`（Firefox 临时调试）；启用 AMO signing 时还会附 `openbiliclaw-extension-v*-firefox.xpi`（Firefox 正式安装）
@@ -341,7 +341,7 @@ npm run package:firefox        # 额外打成未签名 openbiliclaw-extension-v*
 macOS 主应用继续以 10.15+ 为兼容目标；只有 Go 1.26.6 构建的可选 Tailnet helper 实测要求
 macOS 12+。10.15 / 11 会只降级远程 Tailnet，本机应用功能仍照常。
 
-安装包自带本地 Ollama + `bge-m3` embedding，开箱即用；也内置默认内容源依赖，包括 X 的 `twitter-cli`、Reddit 的 `rdt-cli`，以及默认关闭的应用内 Tailnet helper。后者让电脑端应用自己加入用户的 tailnet，不安装系统 Tailscale。请在电脑本机的桌面 Web 或浏览器插件「设置 → 通用」中开启 Tailnet，选择网页登录、Auth Key 或 OAuth Client Secret 入网并完整重启；OAuth 方式还需填写该 OAuth Client 已获准使用的设备 tag。Reddit rdt 命令后端会优先使用已连接插件同步的 `reddit_session`，插件不可用时可手动运行 `rdt login`，未登录会 fallback 插件。启动后常驻 **macOS 菜单栏 / Windows 系统托盘**，右键可「打开 Web 界面 / 查看运行日志 / 退出」。数据与 AI / 脚本安装复用同一个目录：`~/OpenBiliClaw`（macOS / Linux）/ `%USERPROFILE%\OpenBiliClaw`（Windows），升级或卸载不会动它；旧安装包曾写入的 `~/Library/Application Support/OpenBiliClaw` / `%LOCALAPPDATA%\OpenBiliClaw` 会在新版本首次启动时非覆盖拷贝回来。若 `config.toml` / `config.local.toml` 损坏导致启动失败，桌面包会把坏文件备份为 `*.invalid` 并重新生成默认配置，随后打开 `/setup/` 重新初始化；`data/` 不会被删除。
+安装包自带本地 Ollama + `bge-m3` embedding，开箱即用；也内置默认内容源依赖，包括 X 的 `twitter-cli`、Reddit 的 `rdt-cli`、Web 安全传输使用的受限 `httpx` / 直接 `httpcore` socket backend，以及默认关闭的应用内 Tailnet helper。后者让电脑端应用自己加入用户的 tailnet，不安装系统 Tailscale。请在电脑本机的桌面 Web 或浏览器插件「设置 → 通用」中开启 Tailnet，选择网页登录、Auth Key 或 OAuth Client Secret 入网并完整重启；OAuth 方式还需填写该 OAuth Client 已获准使用的设备 tag。Reddit rdt 命令后端会优先使用已连接插件同步的 `reddit_session`，插件不可用时可手动运行 `rdt login`，未登录会 fallback 插件。启动后常驻 **macOS 菜单栏 / Windows 系统托盘**，右键可「打开 Web 界面 / 查看运行日志 / 退出」。数据与 AI / 脚本安装复用同一个目录：`~/OpenBiliClaw`（macOS / Linux）/ `%USERPROFILE%\OpenBiliClaw`（Windows），升级或卸载不会动它；旧安装包曾写入的 `~/Library/Application Support/OpenBiliClaw` / `%LOCALAPPDATA%\OpenBiliClaw` 会在新版本首次启动时非覆盖拷贝回来。若 `config.toml` / `config.local.toml` 损坏导致启动失败，桌面包会把坏文件备份为 `*.invalid` 并重新生成默认配置，随后打开 `/setup/` 重新初始化；`data/` 不会被删除。
 
 > **macOS 签名与公证**：GitHub Actions 强制执行 Developer ID 签名和 Apple 公证，验证失败不产出实验包。首次启动可能出现正常的互联网下载确认；升级前先退出旧版。详见 [签名公证说明](docs/modules/packaging.md)。
 >
@@ -371,7 +371,7 @@ Chrome Web Store / AMO 发布包默认只声明本机后端权限。让插件连
 
 ### 4. 打开桌面端或移动端 Web
 
-后端启动后会同时托管桌面端和移动端 Web，都只调用本地 API，不做 Cookie 同步或平台登录。
+后端启动后会同时托管桌面端和移动端 Web，两者通过本地 API 工作，不执行扩展的 Cookie 同步；自定义网站需要登录时，由独立接管页提供人工操作入口。
 
 ```bash
 openbiliclaw start
@@ -404,7 +404,7 @@ Windows 原生（PowerShell，不需要 Docker / WSL2）：
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12; iwr https://raw.githubusercontent.com/whiteguo233/OpenBiliClaw/main/scripts/install.ps1 -UseBasicParsing | iex
 ```
 
-脚本依赖 `git` 和 Python 3.11+。它会自动克隆仓库，然后先在终端向导里收集首选 LLM 实例、embedding、B 站 Cookie，以及小红书 / 抖音 / YouTube 的 opt-in 决策，再安装依赖、启动后端和健康检查；确认齐全后会先验证全局 LLM 实例链和 embedding 服务都能真实响应，再自动运行 init，完成画像生成和首轮发现。X / 知乎 / Reddit / Linux.do / Bangumi / V2EX / 微博 / GitHub 可在启动后的 `/setup/` 或设置页显式开启；Linux.do、Bangumi、V2EX、微博与 GitHub 的公开 discovery 无需登录，微博个人初始化需要已登录微博浏览器和扩展，Bangumi / GitHub 个人初始化可填写公开用户名，GitHub PAT 仍为可选。不确定的选项直接回车或选默认。
+脚本依赖 `git` 和 Python 3.11+。它会自动克隆仓库，然后先在终端向导里收集首选 LLM 实例、embedding、B 站 Cookie，以及小红书 / 抖音 / YouTube 的 opt-in 决策，再安装依赖（macOS 本机部署同时自动准备私有 Ego Lite）、启动后端和健康检查；确认齐全后会先验证全局 LLM 实例链和 embedding 服务都能真实响应，再自动运行 init，完成画像生成和首轮发现。X / 知乎 / Reddit / Linux.do / Bangumi / V2EX / 微博 / GitHub 可在启动后的 `/setup/` 或设置页显式开启；Linux.do、Bangumi、V2EX、微博与 GitHub 的公开 discovery 无需登录，微博个人初始化需要已登录微博浏览器和扩展，Bangumi / GitHub 个人初始化可填写公开用户名，GitHub PAT 仍为可选。不确定的选项直接回车或选默认。
 
 </details>
 
@@ -453,8 +453,9 @@ OpenBiliClaw 不保存你的平台密码，也不替你绕过登录。需登录�
 | **GitHub** | 无需登录；可选填公开用户名读取公开 starred repositories，PAT 只用于提额和 `/user` 身份核验 | 未填身份时仍可匿名 search / ranked / latest discovery，但不能把 GitHub 作为唯一画像初始化来源；不读取浏览器 Cookie |
 | **TikTok（正式可用）** | 公开发现无需登录；关键词搜索需已登录浏览器插件同步凭据 | 默认关闭；非空账号画像及站内收藏尚未完整验收 |
 | **Instagram** | 显式启用来源；插件默认包含站点访问权限，个人初始化需在同一浏览器登录 | 匿名公开页可用性受站点限制；未登录不能导入本人点赞/收藏/关注；需要可访问海外站点的浏览器网络 |
+| **自定义网站与 RSS / Web** | 在聊一聊提供网站或 RSS/Atom/JSON Feed 网址和内容意图；需要登录时进入后端接管页手动登录并继续试跑，成功后审批启用 | 桌面、插件 popup、移动 Web 均可单独管理名称、份额、间隔与启停；macOS 部署时自动准备私有 Ego Lite，RSS/Atom/JSON Feed 使用 HTTP，无需浏览器；旧公开 recipe 兼容保留，不保证任意网站成功 |
 
-小红书、抖音、YouTube、知乎和 Linux.do 走 Chrome 插件任务链路，Reddit 日常 discovery 默认走随后端安装的 rdt-cli、初始化信号仍走插件，X 的 discovery 走服务端 cookie 重放；GitHub 则始终由后端官方 REST client 只读公开 repository，不进入插件任务。Linux.do 上游请求全部在真实站点 tab 内以同源 GET 执行，`_t` 只作登录布尔，Cookie 值和原始响应不会上传。Reddit/X、YouTube、小红书、抖音与知乎原生保存 executor 已 6/6 接入并通过 fixture 测试；2026-07-14 的真实账号回归中，六平台 favorite 与 watch-later/fallback 均得到 `synced/already_synced`。当前知乎收藏页已使用全局 `收藏 / 已收藏` 切换，目标文案为 `知乎收藏`；已收藏初始态和二次验证都严格只读，扩展不会重复点击保存。Linux.do 与 GitHub 不提供任何站内写回。`[sources.browser].cdp_url` 只保留给通用 Web / 自定义网页源的浏览器抓取场景。
+小红书、抖音、YouTube、知乎和 Linux.do 走 Chrome 插件任务链路，Reddit 日常 discovery 默认走随后端安装的 rdt-cli、初始化信号仍走插件，X 的 discovery 走服务端 cookie 重放；GitHub 则始终由后端官方 REST client 只读公开 repository，不进入插件任务。Linux.do 上游请求全部在真实站点 tab 内以同源 GET 执行，`_t` 只作登录布尔，Cookie 值和原始响应不会上传。Reddit/X、YouTube、小红书、抖音与知乎原生保存 executor 已 6/6 接入并通过 fixture 测试；2026-07-14 的真实账号回归中，六平台 favorite 与 watch-later/fallback 均得到 `synced/already_synced`。当前知乎收藏页已使用全局 `收藏 / 已收藏` 切换，目标文案为 `知乎收藏`；已收藏初始态和二次验证都严格只读，扩展不会重复点击保存。Linux.do 与 GitHub 不提供任何站内写回。`[sources.browser].cdp_url` 只服务历史 `web_extract` 浏览器实验；旧版公开 Web recipe 使用匿名有界 HTTP，不使用 CDP，也不会在失败时隐式回退到浏览器；动态网站另走经试跑和确认的 Ego Lite workflow，订阅源使用 HTTP。
 
 </details>
 
@@ -639,7 +640,7 @@ OpenClaw 收到 `interest.probe` 事件（或主动拉取 `next-probe`），发�
 - 🧠 **五层灵魂画像** — 事件→偏好→觉察→洞察→灵魂，推断 MBTI、认知风格和深层需求（[详解](docs/modules/soul.md)）
 - 🔮 **兴趣探针** — 基于心理学桥接主动猜测你可能喜欢的未知领域，猜对升级为正式兴趣，猜错安静退出
 - 🧭 **避雷探针** — 主动确认你想避开的内容形态和风格边界，确认后才写入过滤偏好
-- 🌐 **跨平台内容源** — B 站 / 小红书 / 抖音 / YouTube / TikTok / X / 知乎 / Reddit / Linux.do / Bangumi / V2EX / 微博 / GitHub / Instagram / 通用 Web，兴趣不再被单一平台割裂（[详解](docs/modules/discovery.md)）
+- 🌐 **跨平台内容源** — B 站 / 小红书 / 抖音 / YouTube / TikTok / X / 知乎 / Reddit / Linux.do / Bangumi / V2EX / 微博 / GitHub / Instagram / 自定义网站发现流程，兴趣不再被单一平台割裂（[详解](docs/modules/discovery.md)）
 - 🎯 **智能多样性** — 主题配额 + 跨平台混排 + 小源保护，告别「一刷都是 AI」
 - ⚡ **「换一批」瞬间响应且默认去重** — reshuffle ~0.6s；当前卡、推荐历史和持久化已看账本三层排除，连续刷不卡顿也不靠“忽略当前”开关
 - 💬 **有温度的推荐理由** — 像朋友一样解释为什么你会喜欢，而不是「因为你看过类似视频」
@@ -657,6 +658,8 @@ OpenClaw 收到 `interest.probe` 事件（或主动拉取 `next-probe`），发�
 - 🔧 **完全可控** — 同类型 LLM 可配置多个独立渠道，拖拽全局 / 模块故障切换链；也可直接编辑画像、写自定义 Skill
 
 ## 🏛️ 架构概览
+
+公开订阅网络：`[network] direct/system/custom → 本机 DNS 或代理 DoH → 公共 IP 固定 / Host 与 TLS 身份 → robots → Feed`；文章引用最多 128 域，不授权额外网络请求。
 
 硅基流动作为预置 LLM 实例：在现有实例列表选择8B/4B，默认链和模块链决定调用顺序；Embedding 独立选择云端 BGE-M3 或本地 Ollama。本次统一入口改动待随应用发布。[结构与验收](docs/testing/2026-11-06-unified-providers.md)。
 
@@ -744,6 +747,34 @@ Jev 是可在三端设置切换的文本实验模式，主题/IP 用受控词表
 
 远程 Android / iOS App：`App（内嵌 tsnet）→ 用户 tailnet → 电脑端 Go tsnet helper → 127.0.0.1:<有效 server port> → FastAPI`；入网控制流为 `本机设置页 → PUT /api/config（凭据只写）→ 私有单次暂存 → stdin → helper`。有效端口通常为 `[api].port`，也跟随启动参数 / 桌面 `OPENBILICLAW_PORT` 覆盖；入口默认关闭，电脑无需系统 Tailscale，无 Funnel/Serve，节点身份和暂存凭据都不进入迁移包。
 
+动态网站与 RSS / Atom / JSON Feed：`部署自动准备 Ego（macOS 网页）/ Feed 匿名 HTTP → 用户原话上限 + 聊一聊草稿与试跑 → 实际预算审批启用 → 独立 source_id / 份额 / 间隔 → 版本化 workflow 定期发现 → 普通候选评估 → 推荐池`；需要登录时由用户在接管页登录并 `resume`，三端设置按网站平级管理。推荐保留 `source_platform=web`，用 `source_name` 显示网站名称。
+
+来源验证提醒：`登录失效／网站安全验证 → 持久暂停 → Web／原生 App 消息铃铛与来源设置 → 人工处理 → 成功试采后恢复`；来源份额与策略保留，重启不丢失提醒。
+
+持续采集故障：`worker 连续失败 3 次／立即人工处理 → SQLite 异常转移记录 → API 转发 diagnostics.alert → 既有异常事件流 + Web／原生 App 提醒`；成功后清除当前提醒并保留恢复历史。
+
+人工接管：`自有 iframe → 恢复前安装内容／登录域守卫 → 共享请求与流量预算`；弹窗与 worker 仍拒绝。编制使用同一容器多条记录的共享结构证据，避免固定某条内容编号，原过滤条件、试跑与审批保留。
+
+验证域授权：`明确验证页的被拒 iframe → 有界域名选项 → 网页／原生 App 逐域确认 → 人工会话权限`；普通广告不产生授权提示，允许验证域不等于网站验证成功。
+
+原生开页初始化超时：`释放失败会话 → 无其他租约时重启托管宿主 → 原身份重试一次`，沿用总预算。
+
+显式域名路由：`GET/PUT executors/ego/network → 私有 network.json → 每次冷启动保留当前系统手动代理 + 精确域名直连`。默认空列表；有活跃会话时拒绝变更，PAC/WPAD 无法合并时明确报告。
+
+Ego 草稿试采失败可走 `固定 DOM href 证据／原范围结构候选 → 一次修正重试 → 结构修正审核实际样例 → 验证后保存`；入口、范围、预算与审批不变，已发布采集不自动改策略。
+
+公开 Web / Ego 网络预检：`系统 DNS 全部为代理合成地址 → 固定 DoH 验证 → 仅接受公共 IP`；HTTP 固定已验证地址，Ego 仍由宿主连接，网站代理／精确域名直连规则保持。私网、混合答案或验证失败仍拒绝。
+
+编制观察：`用户明确的空值链接模板 → 页面内路径／参数存在布尔证据 → 脱敏后编制`，查询值和其他参数名不输出。托管 Ego 初始只读打开超时走 `清理 → 同任务身份重试一次`，仍受原总预算约束。
+
+独立新来源：`新 source_id → 独立 task space 会话 → 同一 Ego profile Cookie`；追加已有来源或显式选择同站会话仍复用，避免新建默认继承失效的旧空间。
+
+托管宿主：`准备完成 / 最后一个会话结束 → 默认保温 120 秒 → 无活跃会话则退出`；源码准备命令退出时清理闲置宿主，实际网页任务再按需启动。
+
+macOS 网页环境：`源码安装 / 桌面首启 / 实际服务启动 → 自动补齐未完成的 Ego 环境 → 官方下载 / 签名校验 → 当前数据库目录 ego-managed 内安装及私有 profile 初始化 → 无调试端口的原生握手`；服务后台准备不阻塞 HTTP/UI；API、桌面和 CLI 服务启动检查会跳过已安装且 ready 的环境，不唤醒离线宿主。源码安装重跑则仍显式准备并验证握手，必要时会启动宿主，实际网页任务也可按需启动。暂时失败在同次准备内有限恢复，最多三次尝试、安装预算 20 分钟、首次连接独立预算 5 分钟；真实信任拒绝仍失败。状态 GET 只读。初始化不导入日常浏览数据、不设默认浏览器、不添加 Dock、不启用崩溃报告，也不代登录网站。
+
+旧版 `probe_web_source/create_source` 与公开 Feed/Sitemap/listing recipe 继续使用匿名 HTTP；其不支持登录和 JavaScript 的限制只属于兼容路径。新网页通过官方 Ego Lite 宿主执行；自动准备失败或环境不支持时明确报告原因，不改用 Playwright。已有旧版 Playwright 流程保留兼容。
+
 > 📖 [架构总览图](docs/architecture-overview.md)
 
 ### 可选视觉与弹幕预热
@@ -788,7 +819,17 @@ Jev 是可在三端设置切换的文本实验模式，主题/IP 用受控词表
 | **V2EX** | 搜索 · Node · Tab · 热门 · 最新 | 官方匿名 API / JSON Feed；PAT 可选增强 API 2.0，Topic 为无封面文字卡 |
 | **GitHub** | starred repositories 初始化 · 搜索 · 排名 · 最新 | 官方 REST API；匿名可用、PAT 可选，强制只读公开 repository，无封面文字卡 |
 | **Instagram** | topic / creator 发现 · 点赞 / 收藏 / 关注初始化 | v0.3.227 起提供、默认关闭；同一浏览器登录后有界导入本人信号，Cookie 不出浏览器；推荐卡收藏仅本地保存。[实测范围](docs/platform-source-acceptance.instagram.md) |
-| **通用 Web** | 浏览器 + LLM 抽取 | 适配任意网页 |
+| **自定义网站与 RSS / Web** | 聊天描述目标 · 试跑样例 · 人工登录接管 · 审批启用 · 定期发现 | 每站独立份额，同站可有多个版本化 HTTP Feed / Ego Lite workflow；复用普通候选评估与推荐池，旧 Feed/Sitemap/listing recipe 继续兼容（[边界](docs/modules/web.md)） |
+
+在「聊一聊」中提供网站或 RSS/Atom/JSON Feed 网址与想看的内容，`prepare_discovery_source/trial_discovery_source` 建立持久草稿并试跑；`activate_discovery_source/manage_discovery_source` 通过确认卡后才启用或修改。需要登录时在独立接管页操作，不向聊天或设置粘贴密码、Cookie。桌面、popup、移动 Web 的来源卡可直接保存用户修改、启停、重新登录和查看运行；每站份额与内置平台平级，不再从旧 Web 份额二次分摊。
+
+HTTP / Ego Lite 能力受运行环境、网站登录和页面结构约束。网页发现限定批准范围；订阅请求域与文章链接域分别确认，Feed 不自动抓取链接的文章页；页面中观察到的公共静态资源 origin 可单独放行，跨站登录 origin 则须用户在接管页明确选择，仅在人工登录期间允许，不扩大内容发现范围。不能承诺任意网站成功。
+
+macOS 托管 Ego 的首次设置和日常采集均在无界面模式下运行，不弹出本机浏览器窗口；需要登录或验证时，由用户打开应用内接管页操作。宿主按需启动，空闲后自动退出。
+
+Ego 托管准备与原生执行当前仅支持 macOS，准备时机已提前到部署阶段：源码安装在依赖安装后执行，桌面包在安装后首次打开时执行，实际 `start` / `serve-api` 启动也会在后台补齐未完成环境。DMG 拖拽没有安装脚本，复制应用本身不会执行准备。无需等首次聊天或新增配置开关；API、桌面和 CLI 服务启动检查遇到已安装且 ready 的环境不重下、不唤醒离线宿主；源码安装重跑仍执行显式准备和握手验证，可能启动宿主。下载／安全系统命令和首次设置的暂时超时会在同次准备内有限恢复，无需用户重启。预算耗尽或明确失败后可点击「准备 Ego Lite」或运行 `openbiliclaw sources prepare-ego` 重试，聊天仍可补救。RSS 无需 Ego。显式设置任一 `OPENBILICLAW_EGO_BROWSER`、`OPENBILICLAW_EGO_SERVER_NAME`、`OPENBILICLAW_EGO_PROFILE` 则退出托管，不自动改动外部宿主。Linux/Docker、Windows 暂无此原生能力，不会自动改用其他浏览器。
+
+自动化与隔离页面测试不等于所有平台或网站的真实验收，详见[动态网站验收记录](docs/platform-source-acceptance.dynamic-web.md)。
 
 发现之后的统一流程：
 
@@ -837,11 +878,14 @@ OpenBiliClaw/
 │   │   ├── zhihu_tasks        # 知乎插件任务队列 / bootstrap_events + search/hot/feed/creator/related
 │   │   ├── reddit_tasks       # Reddit bootstrap 插件任务 / extension fallback discovery / rdt 默认 discovery helpers
 │   │   ├── linuxdo_tasks      # Linux.do 同源只读 bootstrap / 五路 discovery 任务
-│   │   └── web_adapter        # 通用 Web (Playwright + LLM)
+│   │   ├── web_probe          # 用户触发的 exact-origin URL 探测 / recipe 草稿
+│   │   ├── web_recipe         # Web typed recipe compiler / 权限计划
+│   │   ├── web_public         # 匿名安全 HTTP + feed/sitemap/listing parser
+│   │   └── web_adapter        # canonical Web 候选归一化
 │   ├── youtube/               # YouTube Takeout 离线导入解析
 │   ├── api/                   # 本地 FastAPI (配置回滚 / 降级模式 / popup API)
 │   ├── tls_proxy.py           # 默认关闭的 LAN/self-managed HTTPS 入口
-│   ├── runtime/               # 后台刷新、feedback 合并、presence gate、CLI/桌面共享 autostart 对账、Ollama、降级 RuntimeContext
+│   ├── runtime/               # 后台刷新、Web producer、feedback 合并、presence gate、CLI/桌面共享 autostart 对账、Ollama、降级 RuntimeContext
 │   ├── bilibili/              # B 站接入层 (WBI 签名 · 速率控制)
 │   ├── llm/                   # 多模型 LLM 适配 + 结构化 JSON 容错
 │   ├── i18n/                  # 多语言 locale 契约 / UI 与语义目录 / 模型输出语言指令

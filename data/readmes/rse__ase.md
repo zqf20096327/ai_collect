@@ -38,6 +38,10 @@ author, [*Dr. Ralf S. Engelschall*](https://ase.tools/#author):
 > reasonable methodology and automation aspects while keeping the
 > developers in the driver's seat to ensure stable result quality."
 
+![ASE](docs/presentation-1.png)
+![ASE](docs/presentation-2.png)
+![ASE](docs/presentation-3.png)
+
 Notices
 -------
 
@@ -452,6 +456,13 @@ see whether **ASE** is right for you:
   short description?
   &rarr; [`/ase-meta-mint`](plugin/skills/ase-meta-mint/help.md)
   `-t name a background service bridged into the agent tool`
+
+- **Skill Command Aliases**:
+  You regularly run a skill with the same options and want a short
+  command, a short option, or default options for it, shared with your
+  team through the repository?
+  &rarr; [`/ase-meta-alias`](plugin/skills/ase-meta-alias/help.md)
+  `set lint-sec /ase-code-lint --include=A05,A06 -S HIGH`
 
 - **Harness Compatibility Self-Test**:
   You want to check how faithfully your current LLM and its agent harness

@@ -35,6 +35,9 @@ From a consumer's manifest:
 # default: sp, dp, qp -- nothing to write
 fortran-lapack = { git = "https://github.com/perazz/fortran-lapack" }
 
+# pin the 2.0.0 release
+fortran-lapack = { git = "https://github.com/perazz/fortran-lapack", tag = "2.0.0" }
+
 # sp and dp only
 fortran-lapack = { git = "https://github.com/perazz/fortran-lapack", profile = "lean" }
 
@@ -2108,5 +2111,4 @@ written out once per kind, goes inside `#ifdef LA_WITH_QP` or `#ifdef LA_WITH_XD
 generic interfaces they publish are data tables under `include/`, regenerated with `python3 scripts/templatize.py
 --blas-interfaces` and `python3 scripts/templatize.py --lapack-interfaces`.
 Two further scripts support that layout:
-`scripts/templatize.py` converts per-kind Fortran into one template per topic, driven by `scripts/la_modules.tsv`,
-and `scripts/chec
+`scripts/templatize.py

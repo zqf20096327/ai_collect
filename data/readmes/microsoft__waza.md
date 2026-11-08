@@ -701,7 +701,14 @@ The `run` command uses exit codes to enable CI/CD integration:
 |-----------|-----------|-------------|
 | `0` | Success | All tests passed |
 | `1` | Test failure | One or more tests failed validation |
-| `2` | Configuration error | Invalid spec, missing files, or runtime error |
+| `2` | Configuration or runtime error | Invalid spec, missing files, or operational execution/grader error |
+
+An operational trial error makes its task `error` and increments
+`summary.errors`, even if another trial passed or failed. Completed negative
+judgments remain `failed` and use exit `1`. Requested completed result artifacts
+are saved before runtime exit `2`, which also takes precedence in baseline and
+multi-model/multi-skill runs. See the [trial status matrix](docs/COMPATIBILITY.md#operational-trial-errors)
+for skipped trials, retries, cache reuse, and regrading.
 
 Example CI usage:
 
@@ -1846,21 +1853,4 @@ Shutdown-usage fallback is excluded for session IDs with an in-progress disconne
 
 Outcome publication applies permissions through the owned temporary-file handle, so replacement of its pathname cannot redirect that permission change to another file. Existing regular-file permissions and the creation umask remain respected. Use output directories and ancestors that untrusted users cannot modify: publication and temporary-path cleanup still use pathnames and do not provide an attacker-writable-namespace confinement guarantee.
 
-Completed startup keeps its lifetime context alive through graceful SDK cleanup. Authentication failure immediately cleans up an owned client and retains any cleanup error; later engine shutdown still performs final SDK cleanup. Shared clients remain the top-level owner's responsibility. Partial-startup cleanup remains once-only.
-
-```yaml
-# tasks/publish.yaml
-id: publish
-name: Publish when the user confirms
-inputs:
-  prompt: Publish the reviewed version.
-mcp_mocks:
-  - name: host # replaces the eval-level "host" mock for this task
-    tools:
-      ask_user:
-        responses:
-          - match_schema:
-              type: object
-              required: [choices]
-              properties:
-                choices: { type: array, contains: { const: Publish this ve
+Completed startup keeps its lifetime context alive through graceful SDK cleanup. Authentication failure immediately cleans up an owned client and retains any cleanup error; later engine shutdown still performs final SDK cleanup. Shared clients remain the top-level owner

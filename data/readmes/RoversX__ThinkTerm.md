@@ -1,6 +1,6 @@
 # ThinkTerm
 
-**English** · [简体中文](readme-i18n/README.zh-CN.md) · [日本語](readme-i18n/README.ja-JP.md) · [Français](readme-i18n/README.fr-FR.md) · [Deutsch](readme-i18n/README.de-DE.md)
+**English** · [简体中文](readme-i18n/README.zh-CN.md) · [日本語](readme-i18n/README.ja-JP.md) · [Français](readme-i18n/README.fr-FR.md) · [Deutsch](readme-i18n/README.de-DE.md) · [Русский](readme-i18n/README.ru-RU.md)
 
 ## 📥 Download
 
@@ -48,30 +48,6 @@ https://github.com/user-attachments/assets/7317e369-db86-463f-9379-a8a2ed4b602b
   </tr>
 </table>
 
-## A multiplexer at the core
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/architecture-dark.svg">
-    <img src="assets/architecture-light.svg" alt="ThinkTerm simplified architecture: the desktop app, TUI and CLI, browser, and phone apps attach to a mux server on each machine; machines can reach each other, and the desktop app also reaches plain SSH and Mosh hosts" width="100%">
-  </picture>
-</p>
-
-A terminal multiplexer manages multiple terminal sessions and lets clients attach to them. In ThinkTerm, **the mux server owns the sessions, tabs, and split panes**. The client displays them and sends your input.
-
-- **Detach and return.** Disconnecting a client leaves its server-held sessions running. Reconnect later to continue the same shell, build, or agent task. Explicitly closing a pane is a separate action.
-- **Access the same sessions from different clients.** Use the desktop, `thinkterm tui`, or the browser to connect to the server. Multiple clients can be attached at once; each offers its own interface to the shared sessions.
-- **Work across machines.** Each host runs its own mux server. ThinkTerm Connect brings those remote workspaces into the desktop alongside local work, so you can switch machines from the sidebar. Processes continue to run on their original host.
-- **Update without dropping sessions.** When the desktop updates ThinkTerm on a server, the running mux server hands its sessions to the new version, so shells, builds, and agents keep running.
-
-Session persistence depends on the mux server and its host remaining available; it does not restore running processes after a server restart or host reboot.
-
-## Why ThinkTerm
-
-Running several agents across different projects quickly turns a tab bar into a guessing game: which session is working, which needs input, and where did that build finish? ThinkTerm puts the project structure and work status beside the terminal, with local and remote work visible together.
-
-Rust powers ThinkTerm's terminal core, mux server, desktop client, and TUI. The desktop renders through the GPU without Electron or an embedded web view. GPUI, Zed's UI framework, does not meet ThinkTerm's performance requirements for terminal rendering. Built on WezTerm, this native foundation supports workspace organization, persistent remote sessions, and tools for working alongside agents.
-
 ## Performance
 
 Throughput compared with WezTerm, measured with kitty's `kitten __benchmark__` on the same Mac (MB/s, higher is better).
@@ -81,21 +57,21 @@ ThinkTerm was measured with its local mux: the shell runs in the mux server, and
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/performance-dark.svg">
-    <img src="assets/performance-light.svg" alt="ThinkTerm throughput compared with WezTerm in six kitten benchmark workloads: ThinkTerm is faster in five, from 1.4× to 9.4×, and level on images (1.0×)" width="100%">
+    <img src="assets/performance-light.svg" alt="ThinkTerm throughput compared with WezTerm in six kitten benchmark workloads: ThinkTerm is faster in all six, from 1.1× to 9.8×" width="100%">
   </picture>
 </p>
 
 <details>
 <summary>Table data</summary>
 
-| Workload | ThinkTerm 0.4.3<br>2026-11-06 | WezTerm 20260117-154428-05343b38<br>2026-09-23 | Ratio |
+| Workload | ThinkTerm 0.4.7<br>2026-11-08 | WezTerm 20260117-154428-05343b38<br>2026-09-23 | Ratio |
 | --- | ---: | ---: | ---: |
-| Only ASCII chars | **221.4** | 23.6 | 9.4× |
-| Unicode chars | **193.2** | 46.7 | 4.1× |
-| Unique multi-codepoint Unicode cells | **285.3** | 49.3 | 5.8× |
-| CSI codes with few chars | **89.9** | 15.6 | 5.8× |
-| Long escape codes | **278.6** | 194.9 | 1.4× |
-| Images | **278.4** | 270.5 | 1.0× |
+| Only ASCII chars | **231.2** | 23.6 | 9.8× |
+| Unicode chars | **207.5** | 46.7 | 4.4× |
+| Unique multi-codepoint Unicode cells | **307.2** | 49.3 | 6.2× |
+| CSI codes with few chars | **89.6** | 15.6 | 5.7× |
+| Long escape codes | **317.9** | 194.9 | 1.6× |
+| Images | **305.8** | 270.5 | 1.1× |
 
 </details>
 
@@ -166,6 +142,30 @@ Progress across versions on the same Linux setup. Ratio compares 0.4.2 with 143b
 
 </details>
 
+## Why ThinkTerm
+
+Running several agents across different projects quickly turns a tab bar into a guessing game: which session is working, which needs input, and where did that build finish? ThinkTerm puts the project structure and work status beside the terminal, with local and remote work visible together.
+
+Rust powers ThinkTerm's terminal core, mux server, desktop client, and TUI. The desktop renders through the GPU without Electron or an embedded web view. GPUI, Zed's UI framework, does not meet ThinkTerm's performance requirements for terminal rendering. Built on WezTerm, this native foundation supports workspace organization, persistent remote sessions, and tools for working alongside agents.
+
+## A multiplexer at the core
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/architecture-dark.svg">
+    <img src="assets/architecture-light.svg" alt="ThinkTerm simplified architecture: the desktop app, TUI and CLI, browser, and phone apps attach to a mux server on each machine; machines can reach each other, and the desktop app also reaches plain SSH and Mosh hosts" width="100%">
+  </picture>
+</p>
+
+A terminal multiplexer manages multiple terminal sessions and lets clients attach to them. In ThinkTerm, **the mux server owns the sessions, tabs, and split panes**. The client displays them and sends your input.
+
+- **Detach and return.** Disconnecting a client leaves its server-held sessions running. Reconnect later to continue the same shell, build, or agent task. Explicitly closing a pane is a separate action.
+- **Access the same sessions from different clients.** Use the desktop, `thinkterm tui`, or the browser to connect to the server. Multiple clients can be attached at once; each offers its own interface to the shared sessions.
+- **Work across machines.** Each host runs its own mux server. ThinkTerm Connect brings those remote workspaces into the desktop alongside local work, so you can switch machines from the sidebar. Processes continue to run on their original host.
+- **Update without dropping sessions.** When the desktop updates ThinkTerm on a server, the running mux server hands its sessions to the new version, so shells, builds, and agents keep running.
+
+Session persistence depends on the mux server and its host remaining available; it does not restore running processes after a server restart or host reboot.
+
 ## Workspaces that follow your work
 
 | Layer | Purpose |
@@ -187,7 +187,7 @@ Local and remote workspaces share the sidebar. Thread status helps distinguish r
 - **Snippets and plugins.** Snippets is built in. Plugins can add sidebar panels to the desktop and browser; the repository includes a [Diff plugin](plugins/diff) for inspecting the adjacent terminal's Git changes. Build your own plugins in Rust with the [ThinkTerm SDK](docs/thinkterm/plugins.md#rust-sdk). Find plugins others share under the GitHub topic [`thinkterm-plugin`](https://github.com/topics/thinkterm-plugin). See the [plugin guide](docs/thinkterm/plugins.md) for setup and development.
 - **A capable terminal core.** Ligatures, color emoji, true color, hyperlinks, inline images, copy mode, and shell integration come from WezTerm. See the [WezTerm feature reference](https://wezterm.org/features.html) for more terminal capabilities.
 - **Native desktop settings.** Adjust themes, UI font sizes, terminal options, and the renderer. Both the main window and settings support WebGPU and OpenGL, with an OpenGL fallback if WebGPU initialization fails.
-- **Five interface languages.** English, 简体中文, 日本語, Français, and Deutsch.
+- **Six interface languages.** English, 简体中文, 日本語, Français, Deutsch, and Русский.
 
 The CLI also exposes panes to automation: `thinkterm cli send-text` sends input, `send-key` presses keys, `get-text` reads terminal output, and `wait` and `events` report when a command finishes or something happens in a pane. Label a pane with `set-pane-label` to address it by name. Agents can use these commands to interact through their terminals. The [collaboration notes](docs/thinkterm/agent-collaboration.md) describe the demonstrated workflow and the limits of terminal input as a messaging mechanism.
 

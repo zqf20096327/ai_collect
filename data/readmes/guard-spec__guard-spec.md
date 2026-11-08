@@ -30,7 +30,7 @@ answer for exfiltration links, personal data and a leaked canary before the
 answer reaches your users. It is written in Go, runs as two services next to Postgres, and has
 been built and evaluated for **English and Vietnamese**.
 
-Status: **v0.3.1, pre-1.0.** The API and the database schema can still
+Status: **v0.4.0, pre-1.0.** The API and the database schema can still
 change. Read [Security model and limitations](#security-model-and-limitations)
 before you rely on it.
 
@@ -78,7 +78,7 @@ before you rely on it.
 **Control plane and administration**
 - **Real-time alerts** on blocked and flagged requests, upstream failures and
   security changes, sent over **Telegram, Slack, Microsoft Teams, email,
-  signed webhooks (SIEM) and A2A agents**, plus an in-app bell; rules with
+  PagerDuty, Opsgenie, signed webhooks (SIEM) and A2A agents**, plus an in-app bell; rules with
   thresholds, throttling, quiet hours and per-person preferences
   ([Alerts and notifications](#alerts-and-notifications)).
 - **Enterprise sign-in:** single sign-on with OpenID Connect (Google preset,
@@ -289,10 +289,15 @@ fallback chains and cost caps for routing, ClickHouse, GPU or Triton serving,
 and LLM-based judges such as Qwen3Guard or Granite Guardian. See
 [ROADMAP.md](ROADMAP.md) and [DESIGN.md](DESIGN.md).
 
-**PII, toxicity and topic detection on the input side** were decided against
-for now ([ADR 0002](docs/adr/0002-no-input-pii-toxicity-topic.md)). Personal
-data is redacted in answers by the output guard only; the gateway forwards
-prompts as it receives them. Toxicity and topic classification are out of
+**Personal data in requests** is a policy signal, off by default per
+organization: with it on, rules can log or block on `input.pii.kinds` and
+`input.pii.count`, found by the output guard's five pattern checks (e-mail,
+Vietnamese phone, card, CCCD, IPv4; not names or addresses). Nothing in a
+request is redacted. See
+[Personal data in requests](#personal-data-in-requests) and
+[ADR 0003](docs/adr/0003-input-pii-policy-signal.md).
+**Toxicity and topic detection** were decided against
+([ADR 0002](docs/adr/0002-no-input-pii-toxicity-topic.md)): they are out of
 scope for a prompt-injection guard; use your provider's moderation or a
 moderation model in your application. The ADR lists what you can do instead.
 
@@ -321,7 +326,7 @@ scripts/quickstart.sh
    existing `.env` is never overwritten;
 2. runs `docker compose -f docker-compose.yml up -d` with
    `ghcr.io/guard-spec/guard-spec-gateway` and `-control-plane` at
-   `GUARDSPEC_VERSION` (default `0.3.1`). Before the gateway starts, the
+   `GUARDSPEC_VERSION` (default `0.4.0`). Before the gateway starts, the
    `models-init` service pulls the recommended models (about 270 MB, SHA-256
    verified) into `./models/cache`; on later starts it finds them and does
    nothing;
@@ -612,6 +617,8 @@ in a second table.
 | `UPSTREAM_ALLOW_PRIVATE` | `false` (compose: `true`) | `true` lets org-defined upstreams reach loopback, RFC 1918, unique local (fc00::/7) and CGNAT (100.64.0.0/10) addresses. Checked when the gateway connects. `UPSTREAM_LLM_URL` is never restricted |
 | `CLIENT_HALF_CLOSE` | `cancel` | `wait` keeps the upstream call running when a client half-closes its socket |
 | `AUDIT_STORE_CONTENT` | `false` | `true` stores prompt and response content in audit rows for every org |
+| `ADMIN_LISTEN_ADDR` | empty | A second port (e.g. `:8443`) serving `/health`, `/readyz` and `/admin` over mutual TLS, with `ADMIN_TLS_CERT_FILE`, `ADMIN_TLS_KEY_FILE` and `ADMIN_TLS_CLIENT_CA_FILE`; `/admin` then leaves the API port. See [Mutual TLS](docs/security/README.md#mutual-tls-between-the-control-plane-and-the-gateway) |
+| `CONTENT_KEK` | empty | Key-encryption key of stored content (also `CONTENT_KEK_FILE`, or `CONTENT_KEK_VAULT_KEY` for Vault Transit): content is sealed with a data key per org before it is stored. Same value on the control plane. See [Encryption](docs/security/README.md#encryption) |
 | `AUDIT_DEDUPE_WINDOW` | `10s` | Retried refusals: a request refused the same way as one within this window (same org, API key, layer, label, rule and triggering text) adds to the first row's `repeat_count` instead of writing a row and an alert event. The window slides with each repeat, up to 5 minutes per row. `0` turns it off. Per process. See [Audit privacy](#audit-privacy) |
 | `SCAN_ROLES` | `user,tool,tool_descriptions` | Parts to classify: `user`, `tool`, `system`, `tool_calls`, `tool_descriptions`, or `all` / `none` |
 | `SCAN_TOOL_PREFIXES` | empty (every tool) | Comma-separated tool-name prefixes: only tool definitions whose name starts with one of them are checked for poisoning; the others are trusted as the client's own. For Claude Code: `mcp__` (its MCP servers' tools), see [docs/integrations.md](docs/integrations.md#claude-code-checked-through-the-gateway) |
@@ -675,7 +682,11 @@ in a second table.
 | `UPSTREAM_KEY_ORGS` | empty (compose: `UPSTREAM_KEY_MAIN=*`) | As on the gateway. Saving an upstream (or a config file) that names a key variable not allowed for the org is refused |
 | `UPSTREAM_KEY_*`, `UPSTREAM_ALLOW_PRIVATE` | empty, `false` (compose: `false`; dev override: `true`) | Used only by `POST .../upstreams/:id/test` (owner only), which applies the gateway's key allowlist and address rules. A key is sent with a test only to orgs `UPSTREAM_KEY_ORGS` lists by id, not through `*` (except with `GUARD_ENV=dev`); the answer says `key_sent`. Give the control plane `UPSTREAM_KEY_*` variables only if tests should use them |
 | `TRUSTED_PROXIES` | empty | Comma-separated CIDRs or addresses of reverse proxies. Their `X-Forwarded-For` is read from the right, and the first address that is not a trusted proxy is the client, for rate limits, sessions and the activity log. Empty: the header is ignored and the TCP peer is the client |
-| `MFA_ENC_KEY` | empty (dev: a fixed key) | 32 random bytes in base64 (`openssl rand -base64 32`). Encrypts TOTP secrets with AES-256-GCM. Without it 2FA cannot be turned on; when users already have 2FA the control plane refuses to start without it. The development key is refused outside `GUARD_ENV=dev`. Back it up with the database: a lost key disables everyone's 2FA |
+| `MFA_ENC_KEY` | empty (dev: a fixed key) | 32 random bytes in base64 (`openssl rand -base64 32`). Encrypts TOTP secrets with AES-256-GCM. Without it 2FA cannot be turned on; when users already have 2FA the control plane refuses to start without it. The development key is refused outside `GUARD_ENV=dev`. Back it up with the database: a lost key disables everyone's 2FA. Several keys, comma-separated and the newest first, for a rotation (`control-plane keys rotate`) |
+| `CONTENT_KEK` | empty | Opens the stored content the gateway encrypted; the same value as on the gateway (or `CONTENT_KEK_FILE`, `CONTENT_KEK_VAULT_KEY`). See [Encryption](docs/security/README.md#encryption) |
+| `<SECRET>_FILE`, `vault:` values | — | Any secret setting can come from a file (`NAME_FILE`) or HashiCorp Vault KV v2 (`NAME=vault:<mount>/<path>#<key>`, with `VAULT_ADDR`, `VAULT_TOKEN` or `VAULT_TOKEN_FILE`, `SECRETS_VAULT_TTL` default `5m`). See [Secrets](docs/security/README.md#where-secrets-come-from) |
+| `GATEWAY_TLS_CERT_FILE`, `GATEWAY_TLS_KEY_FILE`, `GATEWAY_TLS_CA_FILE` | empty | Client certificate and CA for the gateway's admin listener (mutual TLS); `GATEWAY_URL` then `https://...:8443` |
+| `AUDIT_SIGNING_KEY` | empty | Ed25519 seed, 32 random bytes in base64: signs the heads of the activity log's hash chains every `AUDIT_ANCHOR_INTERVAL` (default `1h`, at least `1m`). See [Audit log integrity](docs/security/README.md#audit-log-integrity) |
 | `PUBLIC_BASE_URL` | empty (dev: `http://localhost:18081`) | External origin of the control plane, such as `https://guard.example.com`. SSO callbacks go to `<PUBLIC_BASE_URL>/v1/auth/oidc/<provider id>/callback`; SSO is unavailable without it |
 | `OIDC_SECRET_*` | empty | Client secrets of SSO providers; each provider names its variable in `client_secret_env` |
 | `METRICS_ADDR` | `:9091` | Metrics listener; `off` disables it |
@@ -701,7 +712,7 @@ URL tried before Hugging Face: `<mirror>/<name>/<version>/<file>`).
 | `GATEWAY_PORT`, `METRICS_PORT` | `8080`, `9090` | Host ports of the gateway |
 | `CONTROL_PLANE_PORT`, `CONTROL_PLANE_METRICS_PORT` | `18081`, `9091` | Host ports of the control plane |
 | `POSTGRES_PORT` | `5432` | Host port of Postgres (dev override only) |
-| `GUARDSPEC_VERSION` | `0.3.1` | Tag of the `ghcr.io/guard-spec/guard-spec-*` images in `docker-compose.yml` (the dev override builds from source instead) |
+| `GUARDSPEC_VERSION` | `0.4.0` | Tag of the `ghcr.io/guard-spec/guard-spec-*` images in `docker-compose.yml` (the dev override builds from source instead) |
 | `MODELS_UID`, `MODELS_GID` | `0` | Owner of files written by `models-init` and `models-pull` |
 | `QUICKSTART_TIMEOUT` | `600` | `scripts/quickstart.sh`: seconds to wait for `/readyz` |
 
@@ -807,7 +818,8 @@ needs `Authorization: Bearer <token from /v1/auth/login>`. Roles are `owner`,
 | `GET`, `POST /organizations/:orgId/policies` (409 on a name the org already uses; `enabled` defaults to true) | viewer, admin |
 | `POST /organizations/:orgId/policies/simulate` | viewer |
 | `PUT`, `DELETE /organizations/:orgId/policies/:id` | admin |
-| `GET /organizations/:orgId/requests?limit=&cursor=&action=` (includes `route_target` and `repeat_count`) | viewer |
+| `GET /organizations/:orgId/requests?limit=&cursor=&action=` (includes `route_target`, `repeat_count` and `has_content`; never the content) | viewer |
+| `POST /organizations/:orgId/requests/:requestId/content` `{"reason"}`: the stored prompt and answer of one request, logged as `request.content_viewed` with the reason | the org's `content_read_role` (default admin) |
 | `GET /organizations/:orgId/dashboard?window=24h\|7d\|30d&project_id=` (request log aggregates; see below) | viewer |
 | `GET`, `POST /organizations/:orgId/exemplars` | viewer, admin |
 | `PUT`, `DELETE /organizations/:orgId/exemplars/:id` | admin |
@@ -881,7 +893,14 @@ group keep it a group. Fields: `request.model`, `request.tenant_id`, `request.to
 `indirect.score`, `indirect.source`, `injection.source_role`,
 `conversation.score` (the [conversation window](#conversation-window); 0 when
 there was none), `anomaly.score`, `anomaly.has_tag_chars`, `anomaly.has_bidi`,
-`mcp.is_tool_response`. A policy holds at most 200 rules; each rule has a CEL
+`mcp.is_tool_response`, `input.pii.kinds` (list of `email`, `phone`, `card`,
+`cccd`, `ipv4` found in the request text) and `input.pii.count` (how many
+values of all kinds); both read `[]` and `0` unless the org turned on
+[personal data in requests](#personal-data-in-requests). Example:
+`"card" in input.pii.kinds || input.pii.count >= 5` with action `block`.
+`pii.entities`, `toxicity.score` and `topic.categories` were removed: new
+rules may not name them, and stored rules that do read `[]` or `0` as they
+always did. A policy holds at most 200 rules; each rule has a CEL
 cost limit, the rules of one request share a cost budget and a timeout, and
 any of these limits fails closed with 503. Project policies run before the
 org-wide ones.
@@ -1145,7 +1164,8 @@ failures, failed logins and 2FA lockouts, and changes to roles, SSO, policies
 and upstreams. Alert rules, kept per organization, match events and notify
 people:
 
-- **Channels:** Telegram, Slack, Microsoft Teams, email (SMTP), signed
+- **Channels:** Telegram, Slack, Microsoft Teams, email (SMTP), PagerDuty and
+  Opsgenie (an incident per alert, resolved with it), signed
   webhooks (HMAC, for a SIEM or your own service), A2A agents (for example a
   SOC agent), and the bell in the admin UI.
 - **Rules:** event types plus an optional condition in the policy text syntax,
@@ -1167,6 +1187,10 @@ variables, then use the **Alerts** pages of the admin UI (the bell icon in the
 sidebar): rules, channels, groups, alert history and the delivery log.
 [docs/alerts.md](docs/alerts.md) has the event types, the rule fields, the
 setup of each channel, webhook signature verification and the metrics.
+
+The same events go to a SIEM as OCSF records (Splunk, Elasticsearch,
+Microsoft Sentinel, syslog over TLS, HTTP): **Alerts → SIEM export**,
+[docs/siem.md](docs/siem.md).
 
 ## Benchmarks
 
@@ -1369,6 +1393,23 @@ about 13 ms more at p50; model time grows with the tokens, up to
 `CONVERSATION_WINDOW_BYTES`). A request whose user turns did not change pays a
 cache lookup.
 
+**Personal data in requests** (`BenchmarkInputPII`, `BenchmarkCountPII`):
+a chat request of 2 KB or 20 KB of English and Vietnamese text that ends with
+an e-mail address and a phone number, with the org setting off and on.
+"Sanitize step" runs the request guard alone (where the check runs); "HTTP"
+is the whole path with L1 and a `log` rule on `input.pii.count`. Measured on
+**2026-11-08**, same machine, median of 3 to 4 runs (load average about 4).
+
+| Request text | Sanitize step off / on | HTTP p50 off / on (L1) | `CountPII` alone |
+|---|---|---|---|
+| 2 KB | 148 / 159 µs | 1.18 / 1.20 ms | 10.5 µs (0.7 µs without digits or `@`) |
+| 20 KB | 1.62 / 1.68 ms | 11.08 / 11.19 ms | 53 µs (6.6 µs without digits or `@`) |
+
+```bash
+go test -run '^$' -bench 'InputPII' -benchmem ./cmd/gateway
+go test -run '^$' -bench 'CountPII' -benchmem ./internal/outputguard
+```
+
 ### Detection latency on Linux (GitHub-hosted runners)
 
 Measured on **2026-11-06** at commit `70827a7`, by the manual
@@ -1511,71 +1552,4 @@ What it does **not** protect against:
 For the risks that remain in a deployment and how to reduce each one, with a
 hardening checklist, see [Security risks and hardening](docs/security-risks.md).
 For a security review (architecture, data flow, what is stored and for how
-long, verifying signatures, SBOMs and provenance), see
-[docs/security/](docs/security/README.md).
-
-Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
-Texts that get through the guard, or benign texts it blocks, are reported as
-public issues and become training or hold-out data after triage
-([docs/red-team.md](docs/red-team.md)); severe bypasses go to private
-reporting.
-
-## Operations
-
-### Audit privacy
-
-Audit rows (`requests`) store scores, the decision, and a SHA-256 and the
-length of the request body and of a buffered upstream response. They store no
-prompt or response content unless content storage is enabled, either for every
-organization with `AUDIT_STORE_CONTENT=true` on the gateway, or for one
-organization with `PATCH /v1/organizations/{id}` and
-`{"audit_store_content": true}` (admin role). Streamed responses are not
-buffered, so their response columns stay empty.
-
-Each request gets one audit row. `action` is `allow`, `block`, `error` (the
-upstream failed or the client left before it answered) or `output_leak` (the
-canary showed up in the answer).
-
-**Retried refusals.** Some clients send a refused request again: Claude Code
-sends it six times within a fraction of a second, the bodies differing a
-little. A request refused before the upstream (`block` by the sanitizer, the
-detector, the indirect threshold or a policy) whose org, API key, detection
-layer, injection label, policy rule and the hash of the text that triggered
-the refusal (the classified user turn, or the tool result or document that
-scored highest; not the whole body) match a refusal within
-`AUDIT_DEDUPE_WINDOW` (default 10 s, sliding with each repeat, at most 5
-minutes per row) is not written as a row of its own: the first refusal's row
-gets `repeat_count`, the number of refusals it stands for (null for one), and
-only that row sends a `detection.blocked` event. Allowed, routed and redacted
-requests, upstream errors and output guard blocks always get their own row;
-metrics still count every request. The state is in the gateway process: with
-several replicas, retries that land on another replica start a row there.
-Migration 019 adds the column; the admin UI's request log shows it as `×N`.
-
-### Shadow mode and model reload
-
-**Shadow mode.** With `SHADOW_L2_MODEL=guardspec-classifier@v2` (or
-`SHADOW_L2_MODEL_DIR`), the gateway loads a second classifier next to the
-active one. For each sampled request (`SHADOW_SAMPLE`), every text the
-detector scores is scored again by the candidate, and its L2 verdict is fused
-with the same request's L1 and L3 scores and the candidate's own calibration
-and fusion weights. The request's comparison is the largest fused score of
-each side over its texts, and each side's decision at the direct threshold
-(0.85).
-
-- It runs **asynchronously**, never in the response path: the active result
-  is returned at once and the candidate runs on its own goroutine and its own
-  ONNX limiter (`SHADOW_MAX_INFLIGHT`), so it never takes a slot an active
-  request waits for. When every slot is busy the text is not compared
-  (`skipped`) rather than queued. The audit writer, already off the response
-  path, waits up to `SHADOW_TIMEOUT` for it; a slower candidate is recorded
-  as `timeout`. The cost is CPU: a candidate roughly doubles L2 work for
-  sampled traffic, so lower `SHADOW_SAMPLE` on a busy gateway.
-- It never changes a decision, a response or a policy input.
-- Results go to `shadow_results` (migration 017), one row per compared
-  request, written in the audit row's transaction and row-level secured per
-  org like `requests`. A row holds the two model names, scores and decisions
-  and a status (`ok`, `timeout`, `error`, `skipped`), **never content**,
-  whatever the audit privacy settings. Rows are deleted with their request
-  (audit retention).
-- Policies, sanitizer blocks and the indire
+long, verifying signatures, SBOMs and

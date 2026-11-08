@@ -1,22 +1,37 @@
-# Fedora 44 KDE — Full Setup Guide
+# Fedora 45 KDE — Full Setup Guide
 
 [![ShellCheck](https://github.com/26zl/fedora-kde-setup/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/26zl/fedora-kde-setup/actions/workflows/shellcheck.yml)
 [![Secret Scan](https://github.com/26zl/fedora-kde-setup/actions/workflows/secret-scan.yml/badge.svg)](https://github.com/26zl/fedora-kde-setup/actions/workflows/secret-scan.yml)
 [![Trivy](https://github.com/26zl/fedora-kde-setup/actions/workflows/trivy.yml/badge.svg)](https://github.com/26zl/fedora-kde-setup/actions/workflows/trivy.yml)
 [![Validate](https://github.com/26zl/fedora-kde-setup/actions/workflows/validate.yml/badge.svg)](https://github.com/26zl/fedora-kde-setup/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-teal.svg)](LICENSE)
-[![Fedora](https://img.shields.io/badge/Fedora-44-blue?logo=fedora&logoColor=white)](https://fedoraproject.org/)
+[![Fedora](https://img.shields.io/badge/Fedora-45-blue?logo=fedora&logoColor=white)](https://fedoraproject.org/)
 [![KDE Plasma](https://img.shields.io/badge/KDE-Plasma%206-1d99f3?logo=kde&logoColor=white)](https://kde.org/)
 [![Wayland](https://img.shields.io/badge/Wayland-native-orange?logo=wayland&logoColor=white)](https://wayland.freedesktop.org/)
 
-Post-installation guide, config files, and scripts for Fedora 44 KDE Plasma 6 on Wayland. Focused on low-latency gaming and a clean rice.
+Post-installation guide, config files, and scripts for Fedora 45 KDE Plasma 6 on Wayland. Focused on low-latency gaming and a clean rice.
 
-The automated fresh-install setup supports Fedora 44 on x86_64 and refuses other releases
+The automated fresh-install setup supports Fedora 45 on x86_64 and refuses other releases
 and architectures before making changes. Its pre-install recovery requires a Btrfs root
 and `/home` on the same Btrfs filesystem, with no separate system-data mounts or nested
 home subvolumes outside the supported layout. On other layouts it asks whether to continue
 without that restore point; with `--yes` it stops. Other hardware paths have fixture coverage;
 the complete setup still needs validation on each target machine.
+
+## Requirements
+
+Check these before running anything, so no script stops halfway:
+
+| For | You need |
+| --- | --- |
+| Everything | Fedora 45 with KDE Plasma 6 on x86_64, in Plasma's default Wayland session: the KDE Edition or another Fedora 45 install with Plasma. Fedora Kinoite and the other atomic variants have no `dnf` and are not supported. A regular user in the `wheel` group (the scripts call `sudo` themselves and refuse to run as root) and an internet connection. |
+| `fedora-setup.sh` | A fully updated system after a reboot ([Quick Setup](#quick-setup-new-machine) step 1) and at least 20 GB free on `/`. For the pre-install restore point: a Btrfs root with `/home` on the same filesystem, Fedora's default layout. On another layout it asks whether to go on without one. |
+| An NVIDIA card with Secure Boot on | Being at the machine for the next boot: the akmods signing key is enrolled at the blue MOK Manager screen, with a one-time password you choose. A later BIOS update clears that enrollment; `scripts/mok-reenroll.sh` restores it. |
+| `fedora-upgrade.sh` | At least 10 GB free on `/` and 200 MB on `/boot`; the script checks both before it changes anything. |
+| `strata-setup.sh` | An NVIDIA card, Turing or newer (tested with 12 GB of VRAM). About 86 GB for the model files on a disk outside `/home`, 5 GB for the CUDA toolkit and 1 GB for the checkout. At least 30 GB of RAM: the Coder model holds about 20 GB while loaded, and from 40 GB of RAM the script picks the full model, which needs about 48 GB. |
+| `ollama-setup.sh` | An NVIDIA card and about 14 GB of disk: Ollama 2.5 GB, the model 8.7 GB, the Alpaca app 2.3 GB. With 12 GB of VRAM the model runs almost entirely on the GPU; a smaller card runs part of it on the CPU. |
+| `emulation-setup.sh` | About 1.7 GB of disk for ES-DE and the emulators: 0.4 GB of AppImages, 1.3 GB of Flatpaks (RetroArch alone 0.8 GB). On a machine without Flatpak apps, up to 6 GB more for the runtimes they share: KDE 6.10 and 6.11 and Freedesktop 26.08 with their GL drivers. Your own BIOS, firmware and game dumps: the script installs the emulators and nothing else. Optionally a second disk for the ROMs. |
+| `windows-vm-setup.sh` | Virtualization switched on in the firmware setup (AMD SVM or Intel VT-x), at least 16 GB of RAM (the VM gets 8 GiB from 24 GB, else 4 GiB), room on `/` for a VM disk that grows up to 128 GiB, a Windows 11 x64 ISO from Microsoft and a Windows license. |
 
 ## Hardware Support
 
@@ -43,11 +58,11 @@ Developed and verified on an AMD desktop with a discrete NVIDIA card next to the
 ## Repository Structure
 
 ```text
-├── .github/                    # CI workflows (shellcheck, validate, gitleaks, trivy), Dependabot, PR template
+├── .github/                    # CI workflows (shellcheck, validate, gitleaks, trivy), Dependabot, PR and issue templates
 ├── configs/
 │   ├── conky/conky.conf        # Desktop system stats widget
 │   ├── fastfetch/config.jsonc  # fastfetch module layout
-│   ├── es-de/es_systems.xml    # ~/ES-DE/custom_systems/ — standalone emulator defaults
+│   ├── es-de/es_systems.xml    # ~/ES-DE/custom_systems/ — the installed emulator as each system's default
 │   ├── es-de/es_find_rules.xml # ~/ES-DE/custom_systems/ — DuckStation resolves to the pinned AppImage
 │   ├── fish/
 │   │   ├── config.fish         # Fish shell config (aliases, zoxide, starship)
@@ -64,10 +79,11 @@ Developed and verified on an AMD desktop with a discrete NVIDIA card next to the
 │   │       └── 50-audio.conf   # Opt-in (AUDIO_TRIM): hide onboard AMD, iGPU HDMI and webcam audio
 │   ├── systemd/
 │   │   └── conky.service       # ~/.config/systemd/user/ — Conky autostart service
-│   └── bashrc                  # ~/.bashrc additions (ble.sh, zoxide, aliases)
+│   └── bashrc                  # ~/.bashrc additions (zoxide, aliases, mise, starship); the setup adds the ble.sh lines
 ├── system/
 │   ├── nvidia-wayland.conf     # /etc/environment.d/ — NVIDIA Wayland env vars (NVIDIA only, not on hybrid laptops)
 │   ├── nvidia-performance.conf # /etc/modprobe.d/ — NVIDIA kernel options (NVIDIA only)
+│   ├── nvidia-580xx-storage.conf # /etc/modprobe.d/ — 580xx: video memory saved to /var/tmp, not /tmp
 │   ├── nvidia-vram-check.sh    # /usr/local/bin/ — read-only NVIDIA suspend storage check
 │   ├── nvidia-vram-check.service # /etc/systemd/system/ — require sufficient storage before sleep
 │   ├── 99-tweaks.conf          # /etc/sysctl.d/ — performance tweaks
@@ -86,7 +102,7 @@ Developed and verified on an AMD desktop with a discrete NVIDIA card next to the
 │   ├── 70-ntsync.rules         # /etc/udev/rules.d/ — ntsync user access
 │   ├── 70-lamzu.rules          # /etc/udev/rules.d/ — LAMZU mouse configurator access (by USB ID)
 │   ├── 99-dualsense.rules      # /etc/udev/rules.d/ — DualSense touchpad/motion noise fix
-│   ├── 99-disable-wakeup.rules # /etc/udev/rules.d/ — LAMZU dongles must not wake the system
+│   ├── 99-disable-wakeup.rules # /etc/udev/rules.d/ — no LAMZU USB device may wake the system
 │   ├── libinput-overrides.quirks # /etc/libinput/ — no mouse debouncing for LAMZU mice
 │   ├── hugepages.conf          # /etc/tmpfiles.d/ — transparent hugepages
 │   ├── kwin-display-fix.sh     # /usr/lib/systemd/system-sleep/ — USB suspend/resume quirks
@@ -100,9 +116,10 @@ Developed and verified on an AMD desktop with a discrete NVIDIA card next to the
 │   ├── lib/restore.sh          # Pre-install root/home snapshots and verified boot/EFI archives
 │   ├── fedora-setup.sh         # Automated post-upgrade setup (run after the initial system upgrade + reboot)
 │   ├── apply-system.sh         # Deploy system/ files to their system paths
-│   ├── emulation-setup.sh      # ES-DE + standalone emulators (PS1/2/3, Wii)
+│   ├── emulation-setup.sh      # ES-DE + one emulator per system, 14 systems — opt-in, ~1.7 GB
 │   ├── strata-setup.sh         # Local LLM (Strata) on the NVIDIA card — opt-in, 85 GB+
 │   ├── ollama-setup.sh         # Local LLM (Ollama) + Alpaca chat GUI — opt-in, ~9 GB
+│   ├── windows-vm-setup.sh     # Windows 11 VM on KVM/libvirt (Secure Boot, TPM, virtio) — opt-in
 │   ├── setup-github.sh         # GitHub CLI login + git identity/defaults
 │   ├── rice-start.sh           # Restart Conky
 │   ├── sysinfo.sh              # System health overview in terminal
@@ -115,18 +132,24 @@ Developed and verified on an AMD desktop with a discrete NVIDIA card next to the
 ├── tests/
 │   ├── hw-detect.sh            # Detection and hwstat tests against fixture sysfs trees
 │   ├── verify-setup.sh         # Read-only verification failure paths with command stubs
+│   ├── fedora-setup.sh         # The setup run end to end with every system change stubbed
+│   ├── ollama-setup.sh         # Ollama install, hardening drop-in and model tuning with stubs
 │   ├── helper-scripts.sh       # Maintenance command failures and upgrade safeguards
 │   ├── setup-configs.sh        # Numbered user config backups and repeat installs
 │   ├── sleep-hooks.sh          # Display lifecycle, USB quirks and systemd unit ordering
 │   ├── nvidia-vram.sh          # GPU capacity, disk storage and failure paths
 │   ├── emulation-setup.sh      # Pinned AppImage downloads and ES-DE selection
 │   ├── setup-restore.sh        # Recovery gates and boot/EFI archive round trips
+│   ├── windows-vm.sh           # Windows VM setup: input checks before sudo, the VM definition
 │   ├── fresh-install.sh        # CI: apply-system.sh and the README's copy steps on a fresh Fedora
 │   └── check-packages.sh       # CI: literal package names resolve in the scoped repos
 ├── setup.conf.example          # Per-machine overrides; copy to setup.conf
+├── README.md                   # This guide
 ├── CONTRIBUTING.md             # Checks to run, conventions, repository settings
 ├── AGENTS.md                   # Boundaries for AI coding agents
 ├── SECURITY.md                 # How to report a vulnerability
+├── LICENSE                     # MIT
+├── .editorconfig, .gitattributes, .gitignore, .mailmap   # Editor, line-ending, ignore and author settings
 └── wallpaper/
     └── wallpaper.jpg           # Darth Vader — dark, teal glow, red lightsaber (5120x2880)
 ```
@@ -178,7 +201,7 @@ Do this before the NVIDIA driver, or with Secure Boot on run `sudo bash scripts/
 sudo cp system/dnf.conf /etc/dnf/dnf.conf
 ```
 
-Key settings: `installonly_limit=2` (max 2 kernels), `max_parallel_downloads=10`, `fastestmirror=True`
+Key settings: `installonly_limit=2` (max 2 kernels), `max_parallel_downloads=10`, `fastestmirror=True`, and `skip_if_unavailable=False`, Fedora's default: a repo dnf cannot reach stops the run instead of silently going without its updates. `--setopt=<repo-id>.skip_if_unavailable=True` gets past an outage of one repo
 
 ### 3. RPM Fusion
 
@@ -244,12 +267,17 @@ sudo systemctl daemon-reload
 sudo systemctl enable nvidia-vram-check.service
 ```
 
-On suspend the driver saves the video memory to `/tmp`, the tmpfs default. The read-only
-capacity check runs before sleep and the NVIDIA sleep services: it needs room for the sum
-of all GPU memory plus 5%, following
+On suspend the driver saves the video memory. The open kernel module of the current branch
+(615.71.09 and later) keeps it in RAM unless `NVreg_TemporaryFilePath` names a directory;
+the 580xx branch writes it to `/tmp`, a tmpfs of half the RAM, which cannot hold a card with
+more than about 47% of the RAM. On 580xx, `apply-system.sh` therefore also deploys
+`nvidia-580xx-storage.conf`, which moves the file to `/var/tmp` on disk (copy it to
+`/etc/modprobe.d/` by hand on such a machine). The read-only capacity check runs before
+sleep and the NVIDIA sleep services: it needs room for the sum of all GPU memory plus 5%,
+following
 [NVIDIA's sizing guidance](https://download.nvidia.com/XFree86/Linux-x86_64/580.105.08/README/powermanagement.html),
-and on a RAM-backed store it counts `MemAvailable`, so a suspend with a loaded model
-filling the RAM is refused with a message instead of failing halfway. Inspect refusals
+and for a store in RAM or on a tmpfs it counts `MemAvailable`, so a suspend with a loaded
+model filling the RAM is refused with a message instead of failing halfway. Inspect refusals
 with `journalctl -u nvidia-vram-check.service`.
 
 `kde-display-sleep.service` captures enabled, connected external displays before
@@ -337,11 +365,31 @@ sudo sysctl --system
 | Key | Value | Purpose |
 | --- | --- | --- |
 | `vm.swappiness` | `180` | Favour ZRAM over disk swap |
+| `vm.page-cluster` | `0` | No swap readahead; zram reads one page at a time |
 | `vm.max_map_count` | `2147483642` | Required for some games (Steam/Proton) |
-| `net.core.rmem_max` | `16777216` | Better network throughput |
-| `net.core.wmem_max` | `16777216` | Better network throughput |
+| `net.core.rmem_max`, `net.core.wmem_max` | `16777216` | Better network throughput |
 | `vm.compaction_proactiveness` | `0` | Disable proactive memory compaction — reduces jitter |
 | `vm.page_lock_unfairness` | `1` | Lower page lock contention |
+| `fs.inotify.max_user_instances` | `512` | File watchers in editors and Steam |
+| `kernel.kptr_restrict` | `1` | Kernel addresses hidden from users; perf and BPF under sudo still resolve symbols |
+| `kernel.dmesg_restrict` | `1` | Kernel log for root only |
+| `net.core.bpf_jit_harden` | `2` | Hardened BPF JIT |
+| `kernel.unprivileged_bpf_disabled` | `1` | No BPF for unprivileged users; **stays on until reboot** |
+| `kernel.yama.ptrace_scope` | `1` | ptrace only on own child processes (see Upgrading Fedora) |
+| `kernel.kexec_load_disabled` | `1` | No runtime kernel replacement, which also disables kexec reboots and kdump; **stays on until reboot** |
+| `kernel.oops_limit` | `100` | Panic after 100 oopses instead of letting an exploit retry |
+| `vm.mmap_rnd_bits` | `32` | Maximum ASLR entropy for 64-bit programs; 32-bit games keep the default |
+| `fs.protected_fifos`, `fs.protected_regular` | `2` | No writing to other users' FIFOs and files in sticky directories |
+| `fs.protected_symlinks`, `fs.protected_hardlinks` | `1` | Link attacks in shared directories blocked |
+| `fs.suid_dumpable` | `0` | No core dumps of setuid programs |
+| `dev.tty.ldisc_autoload` | `0` | Users cannot load TTY line disciplines |
+| `net.ipv4.tcp_syncookies` | `1` | SYN flood protection |
+| `net.ipv4.tcp_rfc1337` | `1` | Drop TIME-WAIT assassination packets |
+| `net.ipv4.conf.{all,default}.{accept,secure,send}_redirects`, `net.ipv6.conf.{all,default}.accept_redirects` | `0` | No ICMP redirects on a workstation |
+| `net.ipv4.conf.all.accept_source_route`, `net.ipv6.conf.all.accept_source_route` | `0` | No source routing |
+| `net.ipv6.conf.{all,default}.use_tempaddr` | `2` | Outgoing IPv6 connections use privacy addresses |
+| `net.ipv4.conf.{all,default}.log_martians` | `1` | Log packets with impossible source addresses |
+| `net.ipv4.conf.{all,default}.rp_filter` | `2` | Loose reverse-path filter; strict breaks Mullvad's and containers' asymmetric routes |
 
 Transparent hugepages are configured via `system/hugepages.conf` (deployed to `/etc/tmpfiles.d/`):
 
@@ -656,12 +704,12 @@ In KDE: **System Settings → Fonts → Fixed width** → `JetBrainsMono Nerd Fo
 
 ### Starship Prompt
 
-Packaged in the Terra repo, which `fedora-setup.sh` adds and restricts with `includepkgs` (see Emulation):
+Packaged in the Terra repo, which `fedora-setup.sh` adds and restricts with `includepkgs` to starship:
 
 ```bash
 sudo dnf install -y --repofrompath "terra,https://repos.fyralabs.com/terra$(rpm -E %fedora)" \
   --setopt="terra.gpgkey=https://repos.fyralabs.com/terra$(rpm -E %fedora)/key.asc" terra-release
-sudo dnf config-manager setopt 'terra.includepkgs=terra-release,terra-gpg-keys,starship,emulationstation-de*'
+sudo dnf config-manager setopt 'terra.includepkgs=terra-release,terra-gpg-keys,starship'
 sudo dnf install -y starship
 cp configs/starship/starship.toml ~/.config/starship.toml
 ```
@@ -677,13 +725,15 @@ cp configs/fish/config.fish ~/.config/fish/config.fish
 cp configs/fish/functions/ya.fish ~/.config/fish/functions/ya.fish
 ```
 
+Put your own additions in `~/.config/fish/local.fish`, not in `config.fish`: running `fedora-setup.sh` again replaces `config.fish` (the old one is kept as a numbered backup), while `local.fish` stays. `config.fish` sources it last, after `mise activate`, so a version manager initialised there, such as `rbenv init - fish | source`, keeps its shims ahead of the PATH mise rebuilds.
+
 ### Shell Tools
 
 ```bash
 sudo dnf install -y zoxide fzf ripgrep fd-find bat eza git-delta
 ```
 
-lazygit is not in the Fedora repos and the `atim/lazygit` COPR stopped at 0.47, so `fedora-setup.sh` installs the pinned upstream release (v0.66.2, SHA-256 checked) to `/usr/local/bin`.
+lazygit is not in the Fedora repos and the `atim/lazygit` COPR stopped at 0.47, so `fedora-setup.sh` installs the pinned upstream release (v0.66.3, SHA-256 checked) to `/usr/local/bin`.
 
 ### ble.sh (bash syntax highlighting)
 
@@ -694,7 +744,7 @@ Pinned to a master commit; `origin` must exist because `.gitmodules` uses a rela
 ```bash
 git init -q /tmp/ble.sh && cd /tmp/ble.sh
 git remote add origin https://github.com/akinomyoga/ble.sh.git
-git fetch -q --depth 1 origin d81fd54feb0d996fdff20dca27eaf0201f7015cc && git checkout -q FETCH_HEAD
+git fetch -q --depth 1 origin 152942758f567e51fd17bdc7b3783d27b3c476aa && git checkout -q FETCH_HEAD
 git submodule update -q --init --recursive --depth 1
 make install PREFIX=~/.local
 ```
@@ -909,7 +959,7 @@ Verify the compositor actually runs at the panel's refresh rate with `qdbus-qt6 
 
 ## Emulation
 
-Retro frontend (ES-DE) + standalone emulators. Install with:
+ES-DE as the frontend and one emulator per system, each one ES-DE's default for its system. Install with:
 
 ```bash
 bash scripts/emulation-setup.sh
@@ -917,42 +967,53 @@ bash scripts/emulation-setup.sh
 
 | System | Emulator | Source |
 |---|---|---|
-| PS1 | DuckStation | Official AppImage, pinned version and SHA-256 |
-| PS2 | PCSX2 | Flatpak |
-| PS3 | RPCS3 | Flatpak |
-| SNES / N64 | RetroArch (snes9x / Mupen64Plus-Next cores) | Flatpak |
-| Wii | Dolphin | Flatpak |
-| Frontend | ES-DE (EmulationStation Desktop Edition) | Terra repo |
+| PS1 | DuckStation | Official AppImage |
+| PS2 | PCSX2 | Flathub |
+| PS3 | RPCS3 | Official AppImage |
+| PS4 | shadPS4, SDL build | Official release zip |
+| PSP | PPSSPP | Flathub |
+| SNES | RetroArch with the Snes9x core | Flathub |
+| N64 | RMG (Rosalie's Mupen GUI) | Flathub |
+| DS | melonDS | Flathub |
+| 3DS | Azahar | Flathub |
+| GameCube / Wii | Dolphin | The Dolphin team's Flatpak repository |
+| Wii U | Cemu | Flathub |
+| Dreamcast | Flycast | Flathub |
+| Xbox 360 | Xenia Edge | Official AppImage |
+| Frontend | ES-DE (EmulationStation Desktop Edition) | Official AppImage |
 
-`fedora-setup.sh` adds Terra and limits it with `includepkgs` to `terra-release`, `terra-gpg-keys`, `starship` and `emulationstation-de`; unrestricted, its steam, scx-scheds and lact builds would shadow the RPM Fusion and COPR ones. `emulation-setup.sh` stops if Terra is missing. Terra builds ES-DE for a new Fedora release some time after it ships; until then the script skips ES-DE with a warning and installs the emulators, and the AppImage from [es-de.org](https://es-de.org/) works in the meantime.
+Every AppImage and the shadPS4 zip is pinned by version and SHA-256 and checked before anything is installed; nothing downloaded runs during setup. They go to `~/Applications`, where ES-DE's own find rules look for them, and ES-DE and RPCS3 get a menu entry under Games. ES-DE comes from [es-de.org](https://es-de.org/)'s own Linux build: the Terra RPM it replaced arrived weeks after each new Fedora release, and Fedora 45 had none. The built-in updaters of ES-DE, DuckStation and RPCS3 can move them to newer builds; running the script again puts the pinned ones back. Xenia Edge has no stable channel, only a release per commit, so its pin is one commit's build. Vita3K (PS Vita) is left out: it publishes only a `continuous` build that is replaced in place, which no hash can pin. Disk space is in [Requirements](#requirements).
 
-### Default emulators (standalone, not libretro)
+### Default emulators
 
-ES-DE defaults each system to a libretro core, but only the standalone emulators are installed — launching a game otherwise errors with `couldn't find emulator core file <x>_libretro.so`. `configs/es-de/es_systems.xml` (deployed to `~/ES-DE/custom_systems/`) overrides the default to the standalone emulator per system (psx → DuckStation, ps2 → PCSX2, ps3 → RPCS3, wii → Dolphin). A custom `es_find_rules.xml` resolves `%EMULATOR_DUCKSTATION%` to `~/Applications/DuckStation-x64.AppImage` alone, so an old Flatpak on the PATH cannot take precedence. Existing custom XML is kept as a numbered backup.
+ES-DE starts most of these systems in a RetroArch core unless told otherwise, and only the emulators above are installed: a game would fail with `couldn't find emulator core file <x>_libretro.so`. `configs/es-de/es_systems.xml` (deployed to `~/ES-DE/custom_systems/`) holds ES-DE 3.5.0's own entries for psx, ps2, ps3, psp, n64, nds, n3ds, gc, wii, dreamcast and xbox360 with the installed emulator moved first, so the file extensions and the alternative emulators stay ES-DE's. ps3 starts game folders (`RPCS3 Directory`) instead of ES-DE's per-game shortcut files, and xbox360 starts Xenia Edge instead of ES-DE's default, Xenia Canary. snes, wiiu and ps4 keep ES-DE's own defaults: the Snes9x core, Cemu, and a shortcut file per PS4 game. A custom `es_find_rules.xml` resolves `%EMULATOR_DUCKSTATION%` to `~/Applications/DuckStation-x64.AppImage` alone: ES-DE's bundled rule looks for `duckstation`, `duckstation-qt` and `org.duckstation.DuckStation` on the PATH before any AppImage, so a distro package or an old Flatpak there would win. Existing custom XML is kept as a numbered backup.
+
+Coming from the earlier PCSX2/RPCS3/Dolphin/RetroArch setup or the EOL DuckStation Flatpak, the script also:
+
+- **RPCS3**: moves the Flatpak's data (`~/.var/app/net.rpcs3.RPCS3/config/rpcs3`: firmware, installed games, saves) to `~/.config/rpcs3`, where the AppImage keeps it, then removes the Flatpak. It moves only by renaming within one filesystem, only while `~/.config/rpcs3` is absent and only with the Flatpak closed; otherwise it says why and leaves the Flatpak installed. The uninstall keeps the rest of `~/.var/app/net.rpcs3.RPCS3`, the shader cache among it.
+- **DuckStation**: copies the Flatpak's data (`~/.var/app/org.duckstation.DuckStation/config/duckstation`: BIOS, memory cards, save states, settings) to `~/.local/share/duckstation`, where the AppImage keeps it (`$XDG_CONFIG_HOME/duckstation` when that variable is set), also when the Flatpak is already uninstalled. It copies only while that folder is absent and the Flatpak closed, into a temporary folder renamed into place, so an interrupted copy leaves nothing behind; the originals stay. If the folder already exists, it copies nothing and says how many of the Flatpak's files are missing there. The Flatpak stays installed: once DuckStation shows your saves, run `flatpak uninstall org.duckstation.DuckStation` without `--delete-data`.
+- **Dolphin**: reinstalls a Flathub Dolphin from Dolphin's own repository. The app ID is the same, so settings and saves in `~/.var/app/org.DolphinEmu.dolphin-emu` stay.
+- **RetroArch**: removes the Mupen64Plus-Next core, which these steps used to name for N64.
 
 ### BIOS / firmware / ROMs (user-provided)
 
-Not shipped — provide your own:
+Not shipped — provide your own dumps:
 
-- **ROMs** → `~/Emulation/roms/<system>/` (`psx`, `ps2`, `ps3`, `snes`, `n64`, `wii`). Set ES-DE's ROM directory here.
-- **PS1 BIOS** → `${XDG_DATA_HOME:-$HOME/.local/share}/duckstation/bios`.
+- **ROMs** → `~/Emulation/roms/<system>/` (`psx`, `ps2`, `ps3`, `ps4`, `psp`, `snes`, `n64`, `nds`, `n3ds`, `gc`, `wii`, `wiiu`, `dreamcast`, `xbox360`). Set ES-DE's ROM directory here.
+- **PS1 BIOS** → `~/.local/share/duckstation/bios`, or `$XDG_CONFIG_HOME/duckstation/bios` when that variable is set.
 - **PS2 BIOS** → PCSX2's `bios/` folder under `~/.var/app/net.pcsx2.PCSX2/`.
-- **PS3 firmware** → RPCS3 → File → Install Firmware (`PS3UPDAT.PUP` from Sony).
-- **SNES/N64 cores** → RetroArch → Online Updater → Update Installed Cores.
+- **PS3 firmware** → RPCS3 (in the menu) → File → Install Firmware (`PS3UPDAT.PUP` from Sony).
+- **PS4 games** → keep the game folders outside `~/Emulation/roms` and put one `.desktop` shortcut per game in `roms/ps4`: `[Desktop Entry]`, `Type=Application`, `Name=<game>` and `Exec="/home/<you>/Applications/Shadps4-sdl.AppImage" "/path/to/<game>/eboot.bin"`. The SDL build has no game list to make shortcuts from; [ES-DE's user guide](https://gitlab.com/es-de/emulationstation-de/-/blob/v3.5.0/USERGUIDE.md#sony-playstation-4) describes this and the two other ways.
+- **Wii U games** → install them in Cemu with their updates, then Tools → Title Manager → right-click a game → Convert to compressed Wii U archive (.wua), saved to `roms/wiiu`.
+- **SNES core** → RetroArch → Online Updater → Core Downloader → Nintendo - SNES / SFC (Snes9x - Current).
 
-> ROMs on a separate disk: move `~/Emulation/roms` to the disk and symlink it back, then grant the emulator Flatpaks access to that path (`flatpak override --user --filesystem=<path> <id>`).
+> ROMs on a separate disk: move `~/Emulation/roms` to the disk and symlink it back, then run the script again. It grants the emulator Flatpaks the link's target as well as `~/Emulation`.
 
-DuckStation uses the unmodified official `v0.1-11894` AppImage. Both the executable and
+DuckStation uses the unmodified official `v0.1-12442` AppImage. Both the executable and
 the license are checked against pinned SHA-256 values before replacement. Its separate
-[CC BY-NC-ND 4.0 license](https://github.com/stenzek/duckstation/blob/c66b2694da65cece8886ed3d4a069098831f8358/LICENSE)
+[CC BY-NC-ND 4.0 license](https://github.com/stenzek/duckstation/blob/dd4a0eb779296a525f8b10b6d9a45911ad6d088f/LICENSE)
 includes noncommercial and no-derivatives conditions; this repository's MIT license
 does not relicense DuckStation. License and source notices are installed alongside it.
-
-An existing EOL DuckStation Flatpak and its data are retained. Close both versions and
-copy its `~/.var/app/org.duckstation.DuckStation/config/duckstation` directory to the
-native data location only if that destination is absent, then re-add game directories.
-Check saves before uninstalling the old Flatpak, and keep its data by omitting
-`--delete-data`. The installer prints these steps and always selects the new AppImage.
 
 ### Controller (DualSense)
 
@@ -971,7 +1032,7 @@ Check saves before uninstalling the old Flatpak, and keep its data by omitting
 bash scripts/strata-setup.sh
 ```
 
-Strata 0.2 is a desktop app, a Terminal and an engine, with Linux AppImages and ready-made engines; the ready-made engine is checked only against a hash fetched from the same GitHub release, so the script keeps compiling the engine from the pinned commit (`--build`) and adds NVIDIA's CUDA repo for `cuda-toolkit-13-4`, with NVIDIA's own driver packages excluded as [RPM Fusion recommends](https://rpmfusion.org/Howto/CUDA): they replace RPM Fusion's driver or collide with its files, and the next driver update then fails. It clones Strata pinned to v0.2.3.1 into `~/Prosjekter/Strata` and puts the model files on `/mnt/data/Strata-data` — not under `/home`, which snapper snapshots. `STRATA_DIR` and `STRATA_DATA` override both paths. An existing checkout must match the pinned commit and have no tracked edits; move an older one with `git fetch`, `git merge --ff-only <commit>` and `rm -rf build` in it first; a build folder left from the old source makes the compile a no-op and setup stops.
+Strata 0.2 is a desktop app, a Terminal and an engine, with Linux AppImages and ready-made engines; the ready-made engine is checked only against a hash fetched from the same GitHub release, so the script keeps compiling the engine from the pinned commit (`--build`) and adds NVIDIA's CUDA repo for `cuda-toolkit-13-4`, with NVIDIA's own driver packages excluded as [RPM Fusion recommends](https://rpmfusion.org/Howto/CUDA): they replace RPM Fusion's driver or collide with its files, and the next driver update then fails. It clones Strata pinned to v0.2.12 into `~/Prosjekter/Strata` and puts the model files on `/mnt/data/Strata-data` — not under `/home`, which snapper snapshots. `STRATA_DIR`, `STRATA_DATA` and `STRATA_REV`, in the environment or in `setup.conf`, override both paths and the commit; `STRATA_REV=latest` follows Strata's newest release instead, upstream code this repo has not tested, and `verify-setup.sh` then says when a newer one is out. Run the script again to update: it fast-forwards a checkout without tracked edits (one with commits of its own is left for review), removes the build folder of the old source, which would turn the compile into a no-op, and rebuilds; sudo is needed only while the CUDA toolkit or its repo is missing. On a card with 12 GB or less it asks for a 64K context instead of Strata's 128K default: with the 3 GiB reserve, 128K leaves the expert cache no room on an RTX 5070, while 64K still holds a coding agent's 36K prompt.
 
 - **Model by RAM**: under 40 GiB the Coder (IQ1_M, half the experts — strong at code, answers Norwegian prompts mostly in English); otherwise the full model at the size Strata recommends.
 - **Text only**: `--vision no --images no` keep 0.2's picture reader and image model off, so the Coder stays a text model with nothing new in VRAM; `./setup.sh --setup` in the checkout turns them on.
@@ -993,19 +1054,39 @@ sudo bash scripts/ollama-setup.sh
 ```
 
 - **Upstream build**: Fedora's `ollama` links ROCm and pulls ~4 GiB of AMD libraries that are useless next to an NVIDIA card, so the script installs the CUDA build from Ollama's GitHub release, pinned by version and SHA-256. Re-run it after a version bump.
-- **Hardened unit**: a drop-in applies the directives the nixpkgs module uses (`systemd-analyze security` 9.2 → 2.2) — it resets the `$PATH` the installer bakes into the unit and allows only the accelerator devices.
+- **CUDA, not Vulkan**: `nvidia_uvm` is often loaded only when the first desktop program asks for CUDA, after the service has started, and the hardened unit cannot load it itself. A second drop-in loads it and creates `/dev/nvidia-uvm` before the service starts; without it Ollama quietly runs on Vulkan. `ollama-setup.sh test` and `verify-setup.sh` report the backend, and an install without it gets it by running the script again.
+- **Hardened unit**: a drop-in applies the nixpkgs module's sandbox directives (`systemd-analyze security` 9.2 → 2.2 before `PrivateTmp`, `PrivateUsers`, `RestrictAddressFamilies` and `UMask` joined them) — it resets the `$PATH` the installer bakes into the unit and allows only the accelerator devices. An `ollama` user that upstream's `install.sh` created keeps its home, `/usr/share/ollama`, which the drop-in makes writable.
 - **VRAM cap**: the card also drives the desktop, and a full load leaves under 1 GB free, which freezes the lock screen on wake (the same failure as Strata's, above). `OLLAMA_GPU_OVERHEAD` sets a 3 GiB floor, but only a baked `num_gpu` holds the headroom, so the script sweeps GPU layer counts and bakes the largest that still leaves about 3 GB free at `num_ctx 8192`. Every Ollama version fits the layers differently, which is why a re-run re-tunes.
 - **Running it**: `ollama run gemma4-12b-heretic`, or pick the model in Alpaca. In Alpaca, add an Ollama instance at `http://127.0.0.1:11434` and leave **Override Parameters** off — on, it sends its own `num_ctx` and overrides the baked cap that holds the VRAM margin.
 
 ---
 
+## Windows VM
+
+A Windows 11 virtual machine on KVM/libvirt, for Windows-only programs without a reboot. Games whose anti-cheat runs in the kernel refuse virtual machines too, so those stay on the Windows install. Opt-in:
+
+```bash
+bash scripts/windows-vm-setup.sh                   # libvirt, VM storage and virtio drivers; no VM yet
+bash scripts/windows-vm-setup.sh <Win11 ISO>       # the same, then creates the VM and opens its console
+bash scripts/windows-vm-setup.sh --find-iso        # the same with the newest finished Windows 11 ISO in ~/Downloads
+```
+
+- **The VM**: UEFI with Secure Boot and Microsoft's keys enrolled, an emulated TPM 2.0 (`swtpm`), the host's CPU model, a virtio disk and network card, a SPICE display with 64 MiB of QXL video memory (Windows can then fill a 4K or ultrawide window; the default 16 MiB leaves black bars), a channel for the QEMU guest agent that `virtio-win-guest-tools.exe` installs, and the Hyper-V enlightenments `virt-install --osinfo win11` adds. It gets 8 GiB of RAM on a machine with 24 GB or more (4 GiB below), half the CPU threads up to 8, and a 128 GiB sparse qcow2 disk; `VM_NAME`, `VM_RAM_MIB`, `VM_CPUS` and `VM_DISK_GIB` override them. With the guest tools installed, virt-manager's View → Scale Display → Auto resize VM with window makes Windows follow the window size.
+- **Password prompts**: virt-manager asks for your password to manage the VM. `VM_LIBVIRT_GROUP=yes` adds you to the `libvirt` group instead, which polkit lets manage `qemu:///system` without a password; that is root-equivalent, so it stays opt-in.
+- **Storage**: on btrfs the script turns an empty `/var/lib/libvirt/images` into its own subvolume without copy-on-write, so snapper's root snapshots never hold on to a changing VM disk (see [Backup — Snapper](#13-backup--snapper-btrfs-snapshots)); `fedora-setup.sh`'s restore point leaves it out for the same reason. The Windows ISO is copied there, because qemu cannot read files under `/home` and libvirt cannot label files on NTFS.
+- **Drivers**: the Windows installer has no virtio drivers, so the script downloads the [virtio-win](https://github.com/virtio-win/virtio-win-pkg-scripts) ISO, pinned by version and SHA-256, and attaches it as a second CD.
+- **Windows Setup stays manual**: press a key at "Press any key to boot from CD or DVD"; at "Where do you want to install Windows?" choose **Load driver** and browse the virtio-win CD for `viostor\w11\amd64` (disk), then choose **Load driver** again for `NetKVM\w11\amd64` (network): without the network driver, Windows' first-run setup cannot get online. Missed it: at the network screen press Shift+F10 and run `pnputil /add-driver E:\NetKVM\w11\amd64\netkvm.inf /install`, where `E:` is the virtio-win CD (`dir E:\` lists `NetKVM`). After the first login, run `virtio-win-guest-tools.exe` from the same CD for the display, clipboard and memory balloon drivers.
+- **The ISO** is "Download Windows 11 Disk Image (ISO)" at [microsoft.com/software-download/windows11](https://www.microsoft.com/software-download/windows11).
+
+---
+
 ## Scripts
 
-`--help` on the setup and maintenance scripts prints their header and exits without changing anything, and output is plain text when piped or with `NO_COLOR` set. `fedora-setup.sh` and `apply-system.sh` print what they will change and ask once, `fedora-upgrade.sh` asks before passing `--allowerasing` and `disk-cleanup.sh` before trimming snapshots; `--yes` answers those with yes, and without a terminal the first two refuse to run while the last two take the no. `ollama-setup.sh test` verifies an install, and `hwstat.sh` takes the reading to print. Any other argument prints the header and exits 2.
+`--help` on the setup and maintenance scripts prints their header and exits without changing anything, and output is plain text when piped or with `NO_COLOR` set. `fedora-setup.sh`, `apply-system.sh` and `windows-vm-setup.sh` print what they will change and ask once, `fedora-upgrade.sh` asks before passing `--allowerasing` and `disk-cleanup.sh` before trimming snapshots; `--yes` answers those with yes, and without a terminal the first three refuse to run while the last two take the no. `ollama-setup.sh test` verifies an install, and `hwstat.sh` takes the reading to print. Any other argument prints the header and exits 2.
 
 ### `scripts/fedora-setup.sh`
 
-Automated setup for a fresh Fedora 44 KDE install. Run after the initial system upgrade + reboot. It prints the detected hardware first, creates a verified recovery point before its first package or configuration change, installs the matching GPU drivers, deploys the `system/` files via `apply-system.sh`, and adds the [Darth Vader look](#desktop-rice-darth-vader-theme) unless `setup.conf` sets `RICE=no`. Close applications and other package managers first. Secure Boot MOK enrollment and BIOS settings stay manual (see the guide).
+Automated setup for a fresh Fedora 45 KDE install. Run after the initial system upgrade + reboot. It prints the detected hardware first, creates a verified recovery point before its first package or configuration change, installs the matching GPU drivers, deploys the `system/` files via `apply-system.sh`, and adds the [Darth Vader look](#desktop-rice-darth-vader-theme) unless `setup.conf` sets `RICE=no`. Close applications and other package managers first. Secure Boot MOK enrollment and BIOS settings stay manual (see the guide).
 
 ### `scripts/apply-system.sh`
 
@@ -1021,15 +1102,19 @@ GitHub CLI login and a git identity derived from it: installs `gh`, logs in thro
 
 ### `scripts/emulation-setup.sh`
 
-Retro emulation setup — installs ES-DE (Terra repo) and the standalone emulators (PS1/PS2/PS3, Wii), grants Flatpak ROM access, and deploys the standalone-emulator defaults. BIOS/firmware/ROMs are user-provided (see the printed manual steps).
+Retro emulation setup — installs ES-DE and one emulator per system (pinned official AppImages, Flathub, and Dolphin's own Flatpak repository), moves an RPCS3 Flatpak's data and copies a DuckStation Flatpak's data to their AppImages, grants the Flatpaks ROM access, and makes each emulator ES-DE's default for its system. BIOS/firmware/ROMs are user-provided (see the printed manual steps). See [Emulation](#emulation).
 
 ### `scripts/strata-setup.sh`
 
-Local LLM setup — CUDA toolkit from NVIDIA's repo, Strata pinned to a release, the model picked by RAM, a 3 GiB VRAM reserve for the desktop, Strata's refusal vector, idle unload and DuckDuckGo web search. See [Local LLM (Strata)](#local-llm-strata).
+Local LLM setup — CUDA toolkit from NVIDIA's repo, Strata pinned to a release or following the newest, the model picked by RAM, a 3 GiB VRAM reserve for the desktop, Strata's refusal vector and, for the Coder, idle unload and DuckDuckGo web search. See [Local LLM (Strata)](#local-llm-strata).
 
 ### `scripts/ollama-setup.sh`
 
 Local LLM via Ollama — the upstream CUDA build with a hardened unit, the uncensored Gemma model tuned to leave the desktop about 3 GB of VRAM, and Alpaca as the GUI. Opt-in; re-run to update Ollama and re-tune. See [Local LLM (Ollama)](#local-llm-ollama).
+
+### `scripts/windows-vm-setup.sh`
+
+Windows 11 VM on KVM/libvirt — packages, libvirt sockets, VM storage outside snapper's snapshots, the pinned virtio-win drivers, and with an ISO the VM itself. `--find-iso` takes the newest Windows 11 ISO (`Win11*.iso` or `Windows11*.iso`) in the download folder or in `VM_ISO_DIR` from `setup.conf`, and refuses one the browser is still downloading. Opt-in. See [Windows VM](#windows-vm).
 
 ### `scripts/sysinfo.sh` — alias: `sysinfo`
 
@@ -1041,13 +1126,13 @@ One reading per call — `cpu-temp`, `gpu-name`, `gpu-temp`, `gpu-load`, `gpu-vr
 
 ### `scripts/deep-health.sh`
 
-Hardware audit: BIOS version and POST time, Secure Boot and MOK state, machine check counters, per-DIMM memory speed, temperatures, every physical NVMe/SATA disk's SMART data and supported short self-test, btrfs error counters and scrub, NTFS state, GPU, failed units. It preserves running self-tests, skips unsupported tests, and continues to later disks after a device failure. USB bridges and virtual disks are outside SMART discovery. Install the documented health-tool prerequisites before running it; missing `smartctl` is reported as a failure. `sysinfo.sh` is the glance; this is the check after a BIOS flash or when boot feels wrong. A single-disk audit takes around six minutes; each short test waits at most 450 seconds and btrfs scrub time depends on data size. Failed or unreadable health checks exit nonzero.
+Hardware audit: BIOS version and POST time, Secure Boot and MOK state, machine check counters, per-DIMM memory speed, temperatures, every physical NVMe/SATA disk's SMART data and supported short self-test, btrfs error counters and scrub, NTFS state, GPU, failed units. It preserves running self-tests, skips unsupported tests, and continues to later disks after a device failure. USB bridges and virtual disks are outside SMART discovery. Install its tools first (`sudo dnf install smartmontools ntfsprogs dmidecode lm_sensors`); missing `smartctl` is reported as a failure. `sysinfo.sh` is the glance; this is the check after a BIOS flash or when boot feels wrong. A single-disk audit takes around six minutes; each short test waits at most 450 seconds and btrfs scrub time depends on data size. Failed or unreadable health checks exit nonzero.
 
 Firmware time far above normal (25 s or more on a desktop board) can mean the embedded controller is wedged. A reboot and Load Optimized Defaults do not clear it; only a full standby power drain does — PSU switch off, hold the case power button 30 seconds.
 
 ### `scripts/disk-cleanup.sh`
 
-Space back from what grows unnoticed: snapper's snapshot timeline (listed first, trimmed only after a y/N), unused flatpak runtimes, PackageKit's and dnf's package caches, docker's unused images and build cache (volumes stay) and the calling user's unused podman images. Installed to `~/scripts/` by the setup; run with sudo. It waits for btrfs to release the deleted snapshots, which takes minutes after a big trim.
+Space back from what grows unnoticed: snapper's snapshot timeline (listed first, trimmed only after a y/N), unused flatpak runtimes, PackageKit's and dnf's package caches and, after a y/N of its own, docker's unused images and build cache (volumes stay) and the calling user's unused podman images, locally built ones included. Restore points and container images go only after an interactive yes, and `--dry-run` lists everything it would remove without changing anything. Installed to `~/scripts/` by the setup; run with sudo. It waits for btrfs to release the deleted snapshots, which takes minutes after a big trim.
 
 ### `scripts/mok-reenroll.sh`
 
@@ -1059,7 +1144,7 @@ Upgrades to the next Fedora release; see [Upgrading Fedora](#upgrading-fedora). 
 
 ### `scripts/verify-setup.sh`
 
-Checks the live system against what the setup configures: failed units, kernel arguments, auditd, zram, the sched_ext scheduler, tuned, the NVIDIA driver and suspend backing capacity, sleep services, gamescope's capability, NTSync, the firewall, SELinux, every deployed `system/` file, pending `.rpmnew` files and, when installed, ES-DE and the CUDA repo exclude. Run it after `fedora-setup.sh` and on the first boot of a new Fedora release. It changes nothing and exits 1 when a check fails.
+Checks the live system against what the setup configures: failed units, kernel arguments, auditd, zram, the sched_ext scheduler, tuned, the NVIDIA driver and suspend backing capacity, sleep services, gamescope's capability, NTSync, the firewall, SELinux, every deployed `system/` file and the RPM language list, unmounted fstab entries, the filesystem drivers and NVIDIA module of a newly installed kernel before it boots, the RPM Fusion release packages, pending `.rpmnew` files and, when set up, the ES-DE AppImage, the CUDA repo exclude and the GPU backend a running Ollama found. Run it after `fedora-setup.sh` and on the first boot of a new Fedora release. It changes nothing and exits 1 when a check fails.
 
 ### `scripts/rice-start.sh` — alias: `rice`
 
@@ -1120,30 +1205,34 @@ pgrep conky && echo "Conky running"
 
 ## Undoing Changes
 
+Run in a terminal, the scripts that change the system leave their ✓ and ! lines in the journal, so `journalctl -t fedora-kde-setup` shows what ran and when.
+
 - **Pre-install recovery**: before package or configuration changes, `fedora-setup.sh` creates private read-only root and separate home snapshots plus verified `/boot` and EFI archives under `/.fedora-kde-setup-backups/run-*`. A `READY` marker identifies a completed backup; `RECOVERY.txt`, `layout.txt` and `mounts.txt` record recovery instructions, original layout and RTC policy. Recover from a Fedora live USB after saving newer work elsewhere. A later run reuses a completed restore point instead of adding one; Snapper does not manage them, and `scripts/disk-cleanup.sh` lists them and removes them on request. They protect the supported root/home/boot layout; external disks, firmware and EFI NVRAM are outside their scope. Filesystem snapshots on the same disk are not protection against disk loss or an atomic application transaction.
 - **Later system deployments**: `apply-system.sh` separately takes a Snapper root snapshot and prints its number. `sudo snapper -c root status <n>..0` lists what changed since, and `sudo snapper -c root undochange <n>..0 <path>` reverts a file. Its root snapshot excludes `/boot`; use the original pre-install archives when reverting that install, or remove later kernel arguments with `sudo grubby --update-kernel=ALL --remove-args="<args>"`.
-- **System files**: every target listed under Repository Structure is a file the setup adds, so deleting it undoes it, except `/etc/dnf/dnf.conf` and `/etc/tuned/ppd.conf`, which replace package defaults. Delete those and run `sudo dnf reinstall <package>` (`rpm -qf <file>` names it); a reinstall alone keeps the edited file because it is `%config(noreplace)`. The login screen wallpaper is one key in `/etc/plasmalogin.conf`; `apply-system.sh` with `RICE=no` removes it.
+- **System files**: every target listed under Repository Structure is a file the setup adds, so deleting it undoes it once its units are off: run `sudo systemctl disable --now nvidia-vram-check.service kde-display-sleep.service usb-autosuspend.service` first, because a deleted unit that `sleep.target` still requires stops every suspend, and `sudo systemctl daemon-reload` after. The exceptions are `/etc/dnf/dnf.conf` and `/etc/tuned/ppd.conf`, which replace package defaults. Delete those and run `sudo dnf reinstall <package>` (`rpm -qf <file>` names it); a reinstall alone keeps the edited file because it is `%config(noreplace)`. The login screen wallpaper is one key in `/etc/plasmalogin.conf`; `apply-system.sh` with `RICE=no` removes it. `kernel.kexec_load_disabled` and `kernel.unprivileged_bpf_disabled` stay set until the next boot after `/etc/sysctl.d/99-tweaks.conf` is gone.
 - **Services, firewall, KDE settings**: the commands in the guide above are the record; `systemctl unmask`, `firewall-cmd --permanent --add-service=<name>` and `kwriteconfig6` with the old value reverse them.
+- **Changes with no file to delete**: `fedora-setup.sh` swaps `glibc-all-langpacks` for your languages' langpacks and limits RPM translations to them in `/etc/rpm/macros.image-language-conf`, which `apply-system.sh` rewrites on every run (reinstall `glibc-all-langpacks`, delete the file and stop running `apply-system.sh` to undo it). It disables ABRT (`sudo systemctl enable --now abrtd`), removes Fedora's Flatpak remote when nothing uses it, and writes these KDE keys with `kwriteconfig6`: KWin `LatencyPolicy`, the gamepad, zoom, shake-cursor and blur plugins, the Meta-only launcher shortcut, launch feedback, the splash screen, `loginMode`, `AnimationDurationFactor`, Baloo indexing and the lock-screen wallpaper.
 - **User configs**: `fedora-setup.sh` keeps replaced config files, including files within theme directories, the Conky unit, optional audio rules and helper scripts, as `<file>.~N~` next to each file. It preserves unrelated files inside copied theme directories. KDE settings written through `kwriteconfig6` need their own reversal.
 - **GRUB default**: `/etc/default/grub.orig` is the file before the setup edited it; copy it back and run `sudo grub2-mkconfig -o /boot/grub2/grub.cfg`.
 - **Terminal extras**: `fedora-setup.sh` installs lazygit to `/usr/local/bin`, ble.sh to `~/.local/share/blesh`, the JetBrains Mono Nerd Font to `~/.local/share/fonts/JetBrainsMono`, and the helper scripts to `~/scripts`; remove those, then delete the two blocks between the `# >>> fedora-kde-setup` and `# <<< fedora-kde-setup` markers from `~/.bashrc`, or restore `~/.bashrc.orig`.
 - **Ollama** (`scripts/ollama-setup.sh`): `sudo systemctl disable --now ollama`, then remove `/etc/systemd/system/ollama.service` and its `.d` drop-ins, `/usr/local/bin/ollama`, `/usr/local/lib/ollama`, `/var/lib/ollama`, the `ollama` user and group, and the GUI with `flatpak uninstall com.jeffser.Alpaca`.
-- **Strata** (`scripts/strata-setup.sh`): remove the checkout (`~/Prosjekter/Strata`), the model files (`/mnt/data/Strata-data`), the CUDA repo `/etc/yum.repos.d/cuda-fedora44.repo`, and `sudo dnf remove cuda-toolkit-13-4`.
-- **Emulation** (`scripts/emulation-setup.sh`): `flatpak uninstall` the Flatpak emulators, `sudo dnf remove emulationstation-de`, and remove `~/Applications/DuckStation-x64.AppImage` plus its license/source sidecars. Restore the numbered backups of `~/ES-DE/custom_systems/es_systems.xml` and `es_find_rules.xml` if present. ROMs, BIOS files and saves are left alone.
+- **Strata** (`scripts/strata-setup.sh`): remove the checkout (`~/Prosjekter/Strata`), the model files (`/mnt/data/Strata-data` or your `STRATA_DATA`), the CUDA repo `/etc/yum.repos.d/cuda-fedora44.repo`, and `sudo dnf remove cuda-toolkit-13-4`.
+- **Emulation** (`scripts/emulation-setup.sh`): `flatpak uninstall` the Flatpak emulators and `flatpak remote-delete dolphin`; remove `ES-DE_x64.AppImage`, `DuckStation-x64.AppImage` plus its license/source sidecars, `rpcs3_linux64.AppImage`, `Shadps4-sdl.AppImage` and `xenia_edge_linux.AppImage` from `~/Applications`, and `es-de.desktop` and `rpcs3.desktop` from `~/.local/share/applications` (`sudo dnf remove emulationstation-de` for an ES-DE from Terra). Restore the numbered backups of `~/ES-DE/custom_systems/es_systems.xml` and `es_find_rules.xml` if present. ROMs, BIOS files and saves are left alone: RPCS3's data stays in `~/.config/rpcs3` and DuckStation's in `~/.local/share/duckstation`.
+- **Windows VM** (`scripts/windows-vm-setup.sh`): `sudo virsh undefine win11 --nvram --tpm --storage vda` removes the VM with its disk, NVRAM and TPM state; delete the ISOs from `/var/lib/libvirt/images` yourself. With `VM_LIBVIRT_GROUP=yes`, leave the group with `sudo gpasswd -d $USER libvirt`. The libvirt packages and the `/var/lib/libvirt/images` subvolume stay, since other VMs may use them.
 
 ---
 
 ## Upgrading Fedora
 
 ```bash
-bash scripts/fedora-upgrade.sh     # to the next release, e.g. 44 -> 45; downloads, does not reboot
+bash scripts/fedora-upgrade.sh     # to the next release, e.g. 45 -> 46; downloads, does not reboot
 sudo dnf system-upgrade reboot     # runs the upgrade offline and boots into the new release
 bash scripts/verify-setup.sh       # on the first boot of the new release
 ```
 
-`fedora-upgrade.sh` stops until the new release is out (its directory on dl.fedoraproject.org goes live on release day), brings the current release up to date and asks for a reboot if that installed a newer kernel. It refuses to start with less than 10 GB free on `/` or 200 MB on `/boot`, or on an NVIDIA machine whose driver is not loaded or whose akmods key is not enrolled under Secure Boot. Then it takes a snapper snapshot of `/` and downloads the upgrade.
+`fedora-upgrade.sh` stops until the new release is out (its directory on dl.fedoraproject.org goes live on release day), refuses to start with less than 10 GB free on `/` or 200 MB on `/boot`, or on an NVIDIA machine whose driver is not loaded or whose akmods key is not enrolled under Secure Boot, then brings the current release up to date and asks for a reboot if that installed a newer kernel. Then it takes a snapper snapshot of `/`, and stops if snapper has a root config but cannot take it, and downloads the upgrade.
 
-`skip_if_unavailable=True` in `dnf.conf` keeps a third-party repo that has no build for the new release from stopping the download. A package built against libraries the new release replaced does stop it: the script names it and asks before passing `--allowerasing`, which removes it; reinstall it once its repo catches up. For Fedora 45 that is `emulationstation-de` from Terra, linked against FFmpeg 8 while Fedora 45 moves to FFmpeg 9. akmods rebuilds the NVIDIA module for the new kernel, at the latest on the first boot before the login screen. Fedora 45's mandatory RPM signatures do not stop it, because akmods installs its local build through `dnf --nogpgcheck`.
+The download runs with `skip_if_unavailable=True`, so a third-party repo that has no build for the new release does not stop it; `dnf.conf` keeps Fedora's `False` for everything else. When dnf cannot resolve the upgrade, the script reads dnf's own report before it asks once. It loads the filelists metadata only when dnf asks for it. A package with no build for the new release yet, typically one linked against a library the release replaced, is removed by `--allowerasing`. A package whose new build cannot be installed because that build's own requirements are unmet is `--exclude`d, so `--allowerasing` drops the installed copy instead of failing on the new one. When that package is a repository's `*-release` package, the repository's `.repo` files go with it: the script says so, prints the commands that reinstall everything it removed, and `verify-setup.sh` fails until both RPM Fusion release packages match the running release. When every repository is ready on release day, none of this runs. In the first days after a release, RPM Fusion's updates can run ahead of or behind Fedora's; `dnf upgrade --exclude=<name>` bridges those days. akmods rebuilds the NVIDIA module for the new kernel, at the latest on the first boot before the login screen. Fedora 45's mandatory RPM signatures do not stop it, because akmods installs its local build through `dnf --nogpgcheck`.
 
 `/etc/dnf/dnf.conf` and `/etc/tuned/ppd.conf` are the package-owned files this setup replaces. When `verify-setup.sh` reports `.rpmnew` versions of them or other drift, review the package defaults for required upstream changes before re-running `scripts/apply-system.sh`. Reapplying overwrites those paths with this repository's versions.
 
@@ -1153,8 +1242,12 @@ What Fedora 45 changes for this setup (from its [ChangeSet](https://fedoraprojec
 - **ptrace**: debuggers (`gdb`, `strace`, `ltrace`, `elfutils`, `systemtap`) now pull in `yama-ptrace-enable`, which sets `kernel.yama.ptrace_scope=0`. `99-tweaks.conf` keeps it at 1.
 - **RPM signatures are mandatory**: `rpm -i` refuses an unsigned package or one whose key is not imported. Install local RPMs with `dnf install ./file.rpm`, which is also how akmods installs its NVIDIA build.
 - **Repo files move to `/usr/share/dnf5/repos.d`.** The `includepkgs` and `exclude` limits the scripts set live in `/etc/dnf/repos.override.d` and keep applying. An edited packaged repo file comes back as `.rpmsave`.
+- **Conky 1.24** takes the background's transparency from `own_window_colour` and ignores the old ARGB settings, so a Conky config from before the upgrade draws an opaque black box. Copy `configs/conky/conky.conf` to `~/.config/conky/` again and restart the `conky` user service.
 - **Lua 5.5**: Conky is rebuilt against it, and `configs/conky/conky.conf` parses and runs unchanged.
 - **Kernel crypto userspace API (AF_ALG) gets restricted.** bluetoothd uses it, so pair a Bluetooth device once after the upgrade; `verify-setup.sh` checks that the service still runs.
+- **GCC 16**: CUDA 13.4's `nvcc` accepts it, so `strata-setup.sh` still builds Strata's engine.
+- **Python 3.15**: tools that uv or pipx installed for 3.14 stop starting until they are reinstalled (`uv tool install --reinstall <tool>`, `pipx reinstall-all`); the scripts here use only the standard library.
+- **Kernel 7.3** arrives as an update. Fedora still builds `ntfs3`, and since 7.3 it reads a file name with `:` on an NTFS disk as an alternate data stream (the new `ads` option, on by default). Do not add `ads=0` to fstab while a 7.2 kernel is the fallback: 7.2 rejects the option and `nofail` hides the failed mount. `verify-setup.sh` checks the new kernel's filesystem drivers and NVIDIA module before you boot it.
 
 ---
 

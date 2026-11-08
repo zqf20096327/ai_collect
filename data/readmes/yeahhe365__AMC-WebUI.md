@@ -254,6 +254,7 @@ docker compose up -d --build
 
 - Docker 默认是 BYOK 自用模式：启动后在 **设置 -> 第三方服务商 (Third-Party Providers)** 填入 Gemini API Key 即可使用普通聊天、Live API 与第三方兼容接口，不需要在 `.env` 或 `docker-compose.yml` 里配置 `GEMINI_API_KEY` 或 `THIRD_PARTY_ROUTES`。服务端 Key 仅在浏览器未携带 Key 时兜底。
 - `web` 镜像默认直接打包宿主机已生成的 `dist/`，不再在容器内执行前端生产构建。
+- `api` 镜像使用固定版本 pnpm，通过 frozen `pnpm deploy --prod` 从仓库锁文件与安全 overrides 提取 API 运行依赖；构建和运行阶段均无需安装前端依赖。
 - 修改前端或后端 API 代码后，请先重新执行 `pnpm run build:docker`，再执行 `docker compose up -d --build`。
 
 > ⚠️ 安全边界说明
@@ -293,15 +294,18 @@ docker compose up -d --build
 
 - 上述 `RUNTIME_*` 会在容器启动时写入 `runtime-config.js`，可被浏览器读取，因此只能放“可公开”信息。
 - public/runtime-config.js 模板用于纯静态构建，默认不启用自定义 API 配置或代理；Docker 部署会由 `docker/web-server.js` 在容器启动时按上表默认值覆盖该文件。
-- Pyodide 产物会在生产构建时复制到 `dist/pyodide/`，运行时默认从同源 `/pyodide/` 加载；如需改用 CDN 或独立静态域，可将 `RUNTIME_PYODIDE_BASE_URL` 设置为完整目录 URL，例如 `https://cdn.jsdelivr.net/pyodide/v0.27.7/full/`。
+- 默认生产构建将 Pyodide 核心和科学计算包复制到 `dist/pyodide/`，运行时从同源 `/pyodide/` 按需加载。首次构建按运行时清单下载包并校验 SHA-256，后续复用本地缓存。若部署独立版本化资源源，可执行 `PYODIDE_ASSETS_EXTERNAL=true pnpm run build` 省略这些资源，并将 `RUNTIME_PYODIDE_BASE_URL` 设置为与安装版本匹配的完整目录 URL，例如 `https://cdn.jsdelivr.net/pyodide/v0.27.7/full/`；纯静态部署需在 `runtime-config.js` 设置对应值。
 - PWA 预缓存默认排除 `pyodide/` 大体积产物，首次执行本地 Python 时仍会按上述地址按需加载。
 - 默认 BYOK 模式只需要在设置界面填写 API Key：普通 Gemini 代理会使用浏览器请求携带的 key；Live API 走 `/api/live` 的 WebSocket 全代理，由 `api` 容器桥接到官方 `wss://generativelanguage…/BidiGenerateContent`，浏览器 Key 存在时优先透传（BYOK 兜底），否则回落服务端 `LIVE_GEMINI_API_KEY` 或 `GEMINI_API_KEY`。
 - 如需服务端统一托管普通 Gemini 请求的 key，可配置 `GEMINI_API_KEY` 并将 `RUNTIME_SERVER_MANAGED_API=true`；Live API 与第三方接口同样遵循「浏览器 Key 优先·服务端兜底」（除非显式设 `SERVER_KEY_PRIORITY=true`）。
+- 服务端普通 Gemini Key 始终发往管理员配置的 `GEMINI_API_BASE`；浏览器自定义地址只与浏览器 BYOK Key 一起生效。管理员地址属于受信任配置，可指向本地反代。
 - MCP 的 `stdio` 与内网/本机 HTTP 访问默认关闭；仅在可信自托管环境中按需设置 `ENABLE_MCP_STDIO=true` 或 `ENABLE_MCP_PRIVATE_HTTP=true`。
 - 第三方兼容接口（OpenAI / DeepSeek / Anthropic / OpenRouter / Qwen / Kimi / GLM / Custom）经 `/api/openai/*` 转发，按请求头 `x-third-party-provider` 在 `THIRD_PARTY_ROUTES` 路由表中查上游，仅接受 https、非私网 host；浏览器 Key 优先、缺失时回落路由表里的服务端 Key。静态部署（Pages）不注入 `RUNTIME_THIRD_PARTY_PROXY_URL`，前端自动回退浏览器直连 provider。
 - 浏览器本地 key 适合自用/可信部署。它不会因为“保存在本地”而变成服务器密钥，同一浏览器上下文中的脚本、扩展、XSS 或设备风险仍可能读取它。
 - 前端在 Docker 部署时依赖后端端点：`/api/gemini/*`、`/api/openai/*`、`/api/live`（WS）；静态部署（Pages）不注入这些 runtime 地址，前端自动回退浏览器直连官方 Live/第三方上游。
 - 全部新行为由 env 门控：置 `ENABLE_LIVE_WS_PROXY=false` 并清空 `RUNTIME_LIVE_API_BASE_URL` 即恢复 Live 浏览器直连；清空 `THIRD_PARTY_ROUTES` 与 `RUNTIME_THIRD_PARTY_PROXY_URL` 即恢复第三方直连，无需改代码重构建。
+
+流式任务的容量、超时、续传 `409` 和可选资源构建方式见 [优化与运维说明](docs/optimization-2026-10-23.md)。
 
 ### 方式三：Cloudflare Pages（静态前端）+ 独立 API 服务
 
@@ -333,19 +337,23 @@ RUNTIME_API_PROXY_URL=https://your-api.example.com/api/gemini
 - `server/` 当前承载的是 Gemini 原生代理链路；OpenAI 兼容模式默认不会经过这个 Node API 服务
 - 如果你希望 OpenAI 兼容模式也走自建网关，请把该网关的兼容 Base URL 直接填到前端设置中
 
-#### 可选：使用 AIStudioToAPI 作为 Gemini 兼容后端
+#### 可选：使用 AIStudio2API 作为 Gemini 兼容后端
 
-如果你希望通过 Google AI Studio 网页端账号提供 API 来源，也可以尝试将 [AIStudioToAPI](https://github.com/iBUHub/AIStudioToAPI) 部署为第三方 Gemini 兼容后端。它提供 Gemini Native API 格式的 `/v1beta/*` 接口，可作为 AMC WebUI 的自定义 API 代理地址。
+如果你希望通过 Google AI Studio 网页端账号提供 API 来源，推荐将 [AIStudio2API](https://github.com/Mag1cFall/AIStudio2API) 部署为第三方 Gemini 兼容后端。它是 Go 编写的单文件服务，用多个 Google 账号提供 Gemini Native API 格式的 `/v1beta/*` 接口（同时兼容 OpenAI Chat Completions、Responses 与 Anthropic Messages），原生流式输出，并支持图片 / 视频生成、TTS、Live 与文件上传。
 
 示例：
 
 ```text
-RUNTIME_API_PROXY_URL=https://your-aistudio-to-api.example.com/v1beta
+RUNTIME_API_PROXY_URL=https://your-aistudio2api.example.com/v1beta
 ```
 
-在界面中也可以进入 **设置 -> 第三方服务商 (Third-Party Providers)**（或 API 配置），启用“自定义 API 配置 / API 代理”，并填入 AIStudioToAPI 的 Gemini 兼容 Base URL（例如 `http://localhost:7860/v1beta`）。AMC WebUI 中填写的 API Key 应与 AIStudioToAPI 部署时配置的 `API_KEYS` 对应。
+在界面中也可以进入 **设置 -> 第三方服务商 (Third-Party Providers)**（或 API 配置），启用“自定义 API 配置 / API 代理”，并填入 AIStudio2API 的 Gemini 兼容 Base URL（例如 `http://localhost:2048/v1beta`）。AMC WebUI 中填写的 API Key 应与 AIStudio2API 部署时配置的 `PROXY_API_KEY` 对应。
 
-注意：AIStudioToAPI 属于第三方项目，请自行评估账号登录、鉴权、限流与公网暴露风险；它可替代普通 Gemini API 代理来源。静态部署下 AMC WebUI 的 Live API 采用浏览器直连官方 Live 服务。
+文件附件建议开启上文的 Files API：AIStudio2API 会把附件上传到生成账号的 Google Drive 再按文件引用，省去把大文件内联进请求体的开销；该账号需在 AI Studio 里授权过 Drive，未授权时服务会自动回退为内联 Base64 发送。
+
+注意：AIStudio2API 属于第三方项目，请自行评估账号登录、鉴权、限流与公网暴露风险；它可替代普通 Gemini API 代理来源。静态部署下 AMC WebUI 的 Live API 采用浏览器直连官方 Live 服务。
+
+备选：[AIStudioToAPI](https://github.com/iBUHub/AIStudioToAPI)（Node 实现）同样提供 `/v1beta/*` 接口，但它依赖的 AI Studio「Build」通道已被上游停用，需要自行打补丁才能正常生成，建议优先使用 AIStudio2API。
 
 ### 构建与预览
 
@@ -501,11 +509,12 @@ OpenAI 兼容模式使用独立模型列表，可在设置中手动维护或从�
 
 | 类型                | 模型                                                                                                                                                                     |
 | :------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Gemini 3.x**      | gemini-3.8-flash, gemini-3.7-flash, gemini-3.5-flash-lite, gemini-3.8-live, gemini-3.8-live-extended-thinking, gemini-3.5-live-translate-preview |
+| **Gemini 4**        | gemini-4-argon                                                                                                                                                           |
+| **Gemini 3.x**      | gemini-3.8-flash, gemini-3.7-flash, gemini-3.5-flash-lite, gemini-3.1-pro-preview, gemini-3.8-live, gemini-3.8-live-extended-thinking, gemini-3.5-live-translate-preview |
 | **Robotics**        | gemini-robotics-er-2-preview                                                                                                                                             |
 | **Gemma 4**         | gemma-4-31b-it, gemma-4-26b-a4b-it                                                                                                                                       |
-| **图片生成**        | gemini-3-pro-image, gemini-3.1-flash-image, gemini-3.1-flash-lite-image                                                                                                  |
-| **TTS**             | gemini-3.8-flash-tts (默认，30 种语音)；gemini-3.1-flash-tts-preview 为旧 ID，会自动迁移至前者                                                                           |
+| **图片生成**        | gemini-nano-banana-2.1, gemini-3-pro-image, gemini-3.1-flash-image, gemini-3.1-flash-lite-image                                                                          |
+| **TTS**             | gemini-3.8-flash-tts (默认，30 种语音), gemini-3.8-flash-lite-tts                                                                                                        |
 | **转写 / 实时转写** | gemini-3.5-transcribe, gemini-3.5-transcribe-live                                                                                                                        |
 
 ---

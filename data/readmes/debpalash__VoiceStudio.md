@@ -38,7 +38,7 @@
     <a href="https://github.com/debpalash/Opal?utm_source=voicestudio&utm_medium=sponsor&utm_campaign=strategic-sponsor&utm_content=readme-logo"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/opal-dark.svg" /><img src="docs/sponsors/opal.svg" alt="Opal" height="32" align="middle" /></picture></a>
     <a href="https://github.com/velixio/supermetry?utm_source=voicestudio&utm_medium=sponsor&utm_campaign=strategic-sponsor&utm_content=readme-logo"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/supermetry-dark.svg" /><img src="docs/sponsors/supermetry.svg" alt="Supermetry" height="32" align="middle" /></picture></a>
       ·   <sub>Special sponsor</sub> 
-    <a href="https://app.spicrawl.com/signup?utm_source=voicestudio&amp;utm_medium=github_readme&amp;utm_campaign=special_sponsor&amp;utm_content=logo"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/spicrawl-dark.svg" /><img src="docs/sponsors/spicrawl.svg" alt="Spicrawl" height="32" align="middle" /></picture></a>
+    <a href="https://spicrawl.com?utm_source=voicestudio&amp;utm_medium=github_readme&amp;utm_campaign=special_sponsor&amp;utm_content=logo"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/spicrawl-dark.svg" /><img src="docs/sponsors/spicrawl.svg" alt="Spicrawl" height="32" align="middle" /></picture></a>
   </p>
 </div>
 
@@ -145,6 +145,8 @@ Everything above is free, runs on your own hardware and needs no account. Pro an
 ## Platforms
 
 Choose your system, then expand an installation method.
+
+Native GGUF engines additionally support engine-specific Vulkan acceleration on AMD, Intel and NVIDIA GPUs ([OmniVoice](docs/engines/omnivoice-gguf.md#vulkan-acceleration), [CosyVoice](docs/engines/cosyvoice-gguf.md)). OmniVoice GGUF selects its GPU and model size automatically on Windows and Linux. Vulkan discovery retries a stalled hidden probe with a native summary; Windows and Linux desktop builds fail rather than silently ship without their Vulkan module.
 
 <a id="install-macos"></a>
 

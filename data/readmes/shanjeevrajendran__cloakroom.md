@@ -39,6 +39,8 @@ The full guide, settings and FAQ live at **[cloakroom.sh](https://cloakroom.sh)*
 
 ## Install
 
+<a id="get-started"></a>
+
 **Claude Code** (Mac, Windows, Linux). Inside Claude Code, one line at a time, then restart it:
 
 ```
@@ -48,6 +50,8 @@ The full guide, settings and FAQ live at **[cloakroom.sh](https://cloakroom.sh)*
 
 The plugin installs the `cloakroom` program on first start. Until it is ready, the agent's file reads and commands
 wait instead of passing unchecked.
+
+<a id="codex"></a><a id="gemini-cli"></a><a id="cursor"></a>
 
 **Codex, Gemini CLI, Cursor** (Mac, Linux):
 
@@ -70,7 +74,8 @@ Step-by-step guide, updates and uninstall: [cloakroom.sh/install](https://cloakr
 Cloakroom runs as hooks: checks the agent calls before and after each tool call. On the way in, pattern rules plus a
 small local detection model find secrets and personal data, and each value is swapped for a placeholder such as
 `PII_SECRET_1` that stays the same for the session. The pairs live in an encrypted vault on your machine, its key in
-the OS keystore (Keychain, Credential Manager, Secret Service). On the way out, placeholders in writes and commands
+the OS keystore (Keychain, Credential Manager, Secret Service). On a Mac there is no Keychain password prompt on
+first run or after a Python update, and the agent can't read the key. On the way out, placeholders in writes and commands
 get their real values back just before they run.
 
 ```
@@ -82,6 +87,11 @@ your disk gets the real value ◄── Cloakroom (local) ◄────┘ age
 Nothing leaves the machine except the one-time model download. If Cloakroom can't check something, it holds it
 instead of letting it through. More: [cloakroom.sh/how-it-works](https://cloakroom.sh/how-it-works) ·
 [docs-HOW-IT-WORKS.md](docs-HOW-IT-WORKS.md).
+
+New in 1.4:
+
+- **Personal data in old chats, for every agent:** `cloakroom exposure --personal` also finds personal data you typed in old Codex, Cursor and Gemini CLI chats, not only Claude Code ([details](#commands-youll-use)).
+- **No Keychain password prompt on a Mac:** none on first run or after a Python update, and an agent can't read the vault key ([details](#how-it-works)).
 
 ## What works where
 
@@ -107,12 +117,13 @@ text than secret-only scanners. Method and raw numbers: [bench/RESULTS.md](bench
 
 ## Recent releases
 
+- **1.4.0**: `cloakroom exposure --personal` also finds personal data you typed in old Codex, Cursor and Gemini CLI
+  chats ([details](#commands-youll-use)). On a Mac there is no Keychain password prompt on first run or after a Python
+  update, and an agent can't read the vault key ([details](#how-it-works)).
 - **1.3.0**: an agent can't approve its own held call or switch Cloakroom off, and a hook or MCP server it writes
   into agent config is held until you type `cr: allow`.
 - **1.2.0**: Cursor's editor is checked with Cloakroom (Tab completion isn't covered). Codex signed in with ChatGPT is
   masked through `cloakroom proxy`. Fewer false alarms on Codex's plugin list.
-- **1.1.0**: Cursor's command-line agent (`cloakroom install cursor`), and `cloakroom allow` lets a held command run
-  once.
 
 All releases: [cloakroom.sh/releases](https://cloakroom.sh/releases) · [CHANGELOG.md](CHANGELOG.md).
 
@@ -123,6 +134,8 @@ All releases: [cloakroom.sh/releases](https://cloakroom.sh/releases) · [CHANGEL
 - **Not everything has a hook.** Cursor's Tab completion and the vendors' own server-side web search aren't seen.
 - **Typed prompts are stopped, not rewritten.** Agents let a hook block a prompt but not reliably change it.
 
+<a id="ways-to-run"></a>
+
 ## Commands you'll use
 
 | Command | What it does |
@@ -130,7 +143,7 @@ All releases: [cloakroom.sh/releases](https://cloakroom.sh/releases) · [CHANGEL
 | `cloakroom doctor` | Health check, versions, per-check timing |
 | `cloakroom dashboard` | Alerts in the browser: when it masks something harmless (a false alarm), mark it once in the dashboard and a rule stops it next time. |
 | `cloakroom check FILE` · `explain FILE` · `mask FILE` | Preview what would be masked, and why |
-| `cloakroom exposure` | It lists the keys and passwords your coding agents saw, so you know what to rotate. Hints only, never the key. |
+| `cloakroom exposure` | It lists the keys and passwords your coding agents saw, so you know what to rotate. Hints only, never the key. `--personal` also finds personal data you typed in old chats with Claude Code, Codex, Cursor or Gemini CLI. |
 | `cloakroom scan` | Commands a repo's agent and editor config would run |
 | `cloakroom give NAME` | When the agent needs a key (a Stripe key, a database password), don't paste it into a prompt. This asks for it in a hidden prompt and gives you a placeholder to paste. |
 | `cloakroom proxy` | Local masking proxy for tools that let you set their API address |

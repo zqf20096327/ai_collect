@@ -247,12 +247,53 @@ Set `token.source: file` and `token.file:
 token read-only into the unit's private credentials directory for the lifetime of
 the process.
 
+## Repository layout
+
+Three components share this repository:
+
+| Component | Path | What it is |
+|---|---|---|
+| postern | repository root | The Go backend: the `postern` binary, its container image and its installer. |
+| site | `web/site/` | The marketing landing page served at https://postern.dev (Astro + Tailwind). |
+| app | `web/app/` (reserved) | The postern app web frontend. |
+
+The backend stays at the root in one Go module; web frontends are self-contained npm projects under `web/`.
+[web/README.md](web/README.md) lists the web components and the rules for adding one.
+
+### Site
+
+Like everything else in the repository, the site is built through the devcontainer:
+
+```sh
+make site-install   # install dependencies from the lockfile
+make site-dev       # Astro dev server on http://localhost:4321
+make site-build     # static build into web/site/dist/
+make site-ci        # clean install and build, the way CI does it
+```
+
 ## Documentation
 
 - [Architecture](docs/architecture.md) — request lifecycle, trust boundary, components.
 - [Security model](docs/security.md) — fail-closed semantics, logging, threat model, key handling.
 - [Configuration](docs/configuration.md) — the full YAML reference.
 - [Providers](docs/providers.md) — the credential-vendor plugin contract (1Password, Bitwarden) and the OAuth2 short-lived-token provider.
+- [Agent skill](skills/postern/SKILL.md): the setup runbook agents load.
+
+### Agent skill
+
+`skills/postern/SKILL.md` is an Agent Skills package that walks an agent through a complete setup: install, CA trust, credential source, rules, starting the proxy, wiring the calling agent, and end-to-end verification.
+It links two references for depth: the full rule and credstore grammar, and failure diagnosis.
+
+Agents discover it automatically through the linked conventional roots (`.claude/skills/`, `.agents/skills/`).
+A harness with skill commands can invoke it explicitly (`/skill:postern`); otherwise the agent loads it on demand from a matching request.
+
+To use it outside this repository, copy the canonical directory into that tool's user skill root:
+
+```sh
+mkdir -p ~/.claude/skills ~/.agents/skills
+cp -r skills/postern/. ~/.claude/skills/postern/    # Claude Code
+cp -r skills/postern/. ~/.agents/skills/postern/    # Agent Skills convention
+```
 
 ## Developing postern
 

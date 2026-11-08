@@ -8,13 +8,13 @@ A Stand Alone App with AI prompt, Semi-auto Tag Complete and ComfyUI/Forge Neo(W
 > Create your own thumbList with [SAA Thumb Generator](https://github.com/mirabarukaso/character_select_stand_alone_app/blob/main/scripts/python/thumb-generator/README.md)
 
 > [!TIP]
-> FP16 Compute and Sage Attention are for Turing GPUs (RTX 20 series) only. Newer cards can keep using bf16 or fp8. See [Turing FP16](#turing-fp16-rtx-20-series).
+> FP16 Compute, Sage Attention, and [Override VAE are for Turing/Pascal GPUs](https://github.com/Comfy-Org/ComfyUI/issues/17612). Newer cards can leave them off. See [Turing FP16](#turing-fp16-rtx-20-series).       
 
 <img src="https://github.com/mirabarukaso/character_select_stand_alone_app/blob/main/examples/overall01.png" width=45%><img src="https://github.com/mirabarukaso/character_select_stand_alone_app/blob/main/examples/overall03.png" width=45%>
 
 | Verified | [ComfyUI](https://github.com/comfyanonymous/ComfyUI)  | [Forge Neo](https://github.com/Haoming02/sd-webui-forge-classic/tree/neo) |
 | --- | --- | --- | 
-| Release | 0.42.3 | 2.31.0 |
+| Release | 0.44.0 | 2.31.0 |
 | Refiner (SDXL) | Yes | Yes |
 | Image Color Transfer (ALL) | Yes | No |
 | Regional Condition / Couple (SDXL/Anima) | Yes | Yes |
@@ -96,10 +96,15 @@ npm install
 ```
 ------
 # Highlights
+## Gallery A|B Compare
+Compare two gallery images (or up to two from Image Info) with a slider wipe (left/right or top/bottom via `↔` / `↕`), same-spot A/B toggle, shared pan/zoom, and optional in-app fullscreen. Pin with the side `+A` / `+B` button, right-click, or Image Info; exit with `✕A|B`. `<>` switches slider wipe vs toggle while comparing. While comparing, Hires Fix stays off and new generations still join the queue without jumping the view.     
+
+<img src="https://github.com/mirabarukaso/character_select_stand_alone_app/blob/main/examples/galleryCompare.png" width=45%>
+
 ## AI Prompt
 Write or polish a prompt in the AI Prompt panel, then put the result into a prompt box yourself. Image generation does not call the language model.     
 
-<img src="https://github.com/mirabarukaso/character_select_stand_alone_app/blob/main/examples/aiPrompt.png" width=45%>
+<img src="https://github.com/mirabarukaso/character_select_stand_alone_app/blob/main/examples/aiPrompt.png" width=30%>
 
 <details>
 <summary>More about AI Prompt</summary>
@@ -298,18 +303,24 @@ Options:
 Model Name  >>>  General Threshold(CL/WD/Camie)  >>>  Character Threshold(CL/WD)  >>> Categories(CL/Camie) or mCut(WD)      
 ```
 
-The Image Tagger running on Node.JS with `onnxruntime-node`. *It DOES NOT require any backend support* But, GPU acceleration seems not working      
-The `Generate Speed` is about 3 times slower than `Python` with `onnxruntime` in CPU mode, and 12 times slower than `onnxruntime-gpu`         
+The Image Tagger runs on Node.JS with `onnxruntime-node`. *It DOES NOT require any backend support.*      
+**Idle:** prefers **DirectML** / CUDA for the **currently selected** tagger only (one GPU-resident model). Falls back to CPU if GPU init fails; promoting a model to GPU drops its CPU copy.      
+**Generating:** prefers CPU so diffusion keeps VRAM. Closing Image Info, or starting **Generate** / **ControlNet**, releases any GPU tagger session into the CPU cache when possible. GPU-resident models unused for **~2 minutes** are released (into CPU cache when possible) even without Generate. CPU keeps up to the **last 3** used ONNX models; unused CPU entries expire after **~5 minutes**.      
+
+
+DirectML is still slower than Python `onnxruntime-gpu` (CUDA), but steady GPU runs are much closer to usable speed than the old per-request CPU path.      
 
 In other words with my i9-9960x with Titan RTX    
-The good news is, you can run `Image tagger` during gegenerate       
+The good news is, you can run `Image tagger` during generate (uses CPU while generating, then can return to GPU when idle)       
+
+
 | Device | Avg Tagging Time | Model | Platform | Resolution | Recommend Value |
 | --- | --- | --- | --- | --- | --- | 
 | onnxruntime | 1.053s | cl_tagger_1_02 | Python | 448 | 0.55/0.60 |
 | onnxruntime-gpu | 0.297s | cl_tagger_1_02 | Python | 448 | 0.55/0.60 |
-| onnxruntime-node | 3.185s | cl_tagger_1_02 | Electron(NodeJS@CPU) | 448 | 0.55/0.60 |
-| onnxruntime-node | 2.917s | wd-eva02-large-tagger-v3 | Electron(NodeJS@CPU) | 448 | 0.35/0.85 |
-| onnxruntime-node | 2.113s | camie-tagger-v2 | Electron(NodeJS@CPU) | 512 |  0.50/(NOT USE) |
+| onnxruntime-node | ~0.12s (steady) | cl_tagger_1_02 | Electron(NodeJS@DirectML) | 448 | 0.55/0.60 |
+| onnxruntime-node | ~1.0s (steady) | cl_tagger_1_02 | Electron(NodeJS@CPU) | 448 | 0.55/0.60 |
+| onnxruntime-node | (first load slower) | wd / camie | Electron(NodeJS@DirectML) | 448 / 512 | 0.35/0.85 / 0.50 |
 </details>
 
 ## ControlNet / IP Adapter
@@ -521,14 +532,15 @@ Right click on `Common` and `Positive` to send text form LoRA to LoRA Slot.
 </details>
 
 ## Turing FP16 (RTX 20 series)
-Turing cards (RTX 20 series) cannot run bf16. These two switches keep that generation on fp16. Newer cards can leave both off and use bf16 or fp8.
+Turing cards (RTX 20 series) cannot run bf16. `FP16 Compute` / `Sage Attention` keep that generation on fp16. Newer cards can leave them off and use bf16 or fp8. `Override VAE` is separate and only needed on ComfyUI when Flux2 VAEDecode crashes on Turing/Pascal.
 
 `FP16 Compute` casts the loaded UNet compute to fp16. Weight storage stays as it is.      
 `Sage Attention` casts attention q/k/v to fp16 and casts them back. It does not turn compute fp16 on by itself. SageAttention 1.0.6 or 2.2 still has to be installed for that path.      
+`Override VAE` (ComfyUI, under FP16 switches) swaps stock VAEEncode/VAEDecode for MiraSubPack so the fused Flux2 VAE path is avoided. Turn it on for Moss / Flux2 Klein (or other Flux2-VAE models) that die at VAEDecode with CUTLASS / CUDA 719. SDXL / Anima / Qwen Image usually do not need it.
 
-The two switches are independent. Turning either one on keeps UNet storage at `Automatic`.      
+The FP16 Compute / Sage Attention switches are independent. Turning either one on keeps UNet storage at `Automatic`.      
 
-*ComfyUI* inserts the switch with [ComfyUI_MiraSubPack](https://github.com/mirabarukaso/ComfyUI_MiraSubPack).      
+*ComfyUI* inserts the FP16 switch with [ComfyUI_MiraSubPack](https://github.com/mirabarukaso/ComfyUI_MiraSubPack). Override VAE also needs that pack.      
 *Forge Neo* sends `forge_compute_fp16` and `forge_sage_fp16_cast` with [forge-turing-fp16](https://github.com/mirabarukaso/forge-turing-fp16). Before the next txt2img, SAA unloads the resident UNet, text encoder, and VAE when either switch turns off, or when the checkpoint or additional modules change. That frees the previous weights. A later float32 load can still offload part of a large UNet.      
 
 ------
@@ -659,4 +671,10 @@ Upscale Model list is `None` (ComfyUI)
 
 ComfyUI/WebUI is busy, cannot run new generation, please try again later.       
 Refer to 5, 6 in [README_SAAC.md](https://github.com/mirabarukaso/character_select_stand_alone_app/blob/main/README_SAAC.md)     
+
+VAEDecode crashes on Moss / Flux2 Klein (CUTLASS `Mma<16,8,16>` / CUDA 719)      
+1. Turing (RTX 20) / Pascal (GTX 10) only. Newer cards are fine.      
+2. ComfyUI 0.43+ fused Flux2 VAE path is the trigger. SDXL / Anima / Qwen Image 2.1 are usually unaffected.      
+3. Enable `Override VAE` under the FP16 switches in the Model panel (needs latest [ComfyUI_MiraSubPack](https://github.com/mirabarukaso/ComfyUI_MiraSubPack)).      
+4. See [Turing FP16](#turing-fp16-rtx-20-series).     
 

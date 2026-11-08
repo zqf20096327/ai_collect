@@ -10,7 +10,7 @@
 
 > A database is something you load your data *into*. csvql is a query you run on the data where it already lives.
 
-csvql runs `SELECT` on CSV files where they sit: no import, no ingest, no server. It ships as an [MCP](https://modelcontextprotocol.io/) server, so an agent can ask a question of a gigabyte file and get back a few hundred tokens instead of the file. Safe by construction, not by configuration: the SQL has no write statements and the binary has no network code. It is about as fast as DuckDB and polars on raw CSV and uses 3 to 11x less memory.
+csvql (published as `csvql-query` on npm and PyPI, `csvql` on Homebrew) runs `SELECT` on CSV files where they sit: no import, no ingest, no server. It ships as an [MCP](https://modelcontextprotocol.io/) server, so an agent can ask a question of a gigabyte file and get back a few hundred tokens instead of the file. Safe by construction, not by configuration: the SQL has no write statements and the binary has no network code. It is about as fast as DuckDB and polars on raw CSV and uses 3 to 11x less memory.
 
 ```bash
 $ csvql "SELECT cab_type, COUNT(*) FROM 'trips.csv' GROUP BY cab_type"
@@ -44,7 +44,7 @@ Full posture, including two known gaps on macOS and Windows: [SECURITY.md](SECUR
 - **Excel files are read, not streamed.** `FROM 'sales.xlsx'` queries the first sheet (dates come out as `YYYY-MM-DD`, formulas as their saved value), but the sheet is unpacked in memory first: a 9 MB, 300k row workbook takes about 230 MB and 0.6 s. Other sheets, `.xls` and `.xlsb` are not supported.
 - **Quoted CSV is about 3x slower** than unquoted. Quotes disable the 16-byte skip the scanner relies on.
 - **`MEDIAN` buffers every value in a group**, so on 20M rows it is 5x slower than DuckDB ([#205](https://github.com/melihbirim/csvql/issues/205)). High-cardinality `GROUP BY` (millions of groups) is also slower.
-- **CSV only.** JSON and JSONL are output formats, not input formats.
+- **Input is CSV, TSV or `.xlsx`.** No Parquet, no JSON or JSONL input; JSON and JSONL are output formats only.
 
 Full list with tracking issues: [SQL_REFERENCE.md#known-limitations](SQL_REFERENCE.md#known-limitations).
 

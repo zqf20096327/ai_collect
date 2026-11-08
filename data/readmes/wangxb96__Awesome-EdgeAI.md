@@ -4,13 +4,15 @@
 *Curated resources on data, model, system optimization + Large Models (LLMs/VLMs), Agents & On-Device AI (2016–2026)*
 
 **Maintainers / Survey Authors**
-- [Xubin Wang](https://github.com/wangxb96)<sup>1,2,3</sup>
-- [Weijia Jia](https://scholar.google.com/citations?user=jtvFB20AAAAJ&hl=zh-CN&oi=ao)<sup>2,3*</sup>
+- [Xubin Wang](https://github.com/wangxb96)<sup>1</sup>
+- [Qing Li](https://scholar.google.com/citations?user=D1LEg-YAAAAJ&hl=zh-CN)<sup>2</sup>
+- [Weijia Jia](https://scholar.google.com/citations?user=jtvFB20AAAAJ&hl=zh-CN&oi=ao)<sup>3,4</sup>
 
-<sup>1</sup> Hong Kong Baptist University  
-<sup>2</sup> Beijing Normal University  
-<sup>3</sup> Beijing Normal-Hong Kong Baptist University  
-<sup>*</sup> Corresponding author
+<sup>1</sup> East China University of Science and Technology
+<sup>2</sup> The Hong Kong Polytechnic University
+<sup>3</sup> Beijing Normal University  
+<sup>4</sup> Beijing Normal-Hong Kong Baptist University  
+
 
 ![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)
 ![Stars](https://img.shields.io/github/stars/wangxb96/Awesome-EdgeAI?style=social)
@@ -733,6 +735,7 @@ Selected papers & systems (2023–2026):
 - [llama.cpp](https://github.com/ggerganov/llama.cpp) + mobile ports — GGUF quantized inference on CPU/NPU, widely used on Android/iOS.
 - [ExecuTorch (PyTorch Edge)](https://github.com/pytorch/executorch) — end-to-end on-device inference including LLMs.
 - [MLX (Apple)](https://github.com/ml-explore/mlx) — Apple Silicon optimized LLM training & inference (unified memory).
+- [Kapitsa](https://github.com/nace-ai/kapitsa) — native C++ LLM inference engine for Apple Silicon Macs (Metal kernels + Neural Engine), with OpenAI- and Anthropic-compatible APIs.
 - [MCUNetV3 / TinyEngine](https://github.com/mit-han-lab/tinyengine) — extreme tiny LLM/VLM deployment on microcontrollers.
 - [MobileLLM (Meta)](https://arxiv.org/abs/2402.14905) (2024) — sub-billion parameter models optimized for on-device.
 - [Phi-3 Technical Report (Microsoft)](https://arxiv.org/abs/2404.14219) — strong 3.8B model runnable on phones.
@@ -789,6 +792,4 @@ Key works & projects:
 - [MemGPT on edge](https://arxiv.org/abs/2310.08560) adaptations.
 - [ReAct + Toolformer edge variants](https://arxiv.org/abs/2210.03629).
 - [Edge Agent benchmarks](https://arxiv.org/abs/2405.XXXX) (emerging 2024-2025).
-- [Local Agent frameworks](https://github.com/abi/screenshot-to-code) style on-device demos.
-- [Beyond Self-Talk: A Communication-Centric Survey of LLM-based Multi-Agent Systems](https://arxiv.org/abs/2502.14321) (arXiv 2025) — communication cost & topology for edge feasibility.
-- [Small Language Models are the Future of Agentic AI](htt
+- [Local Agent frameworks](https://git

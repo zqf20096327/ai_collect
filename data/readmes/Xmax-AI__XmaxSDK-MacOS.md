@@ -186,7 +186,7 @@ use_frameworks! :linkage => :static
 target 'YourApp' do
   pod 'XmaxSDK',
       :git => 'https://github.com/Xmax-AI/XmaxSDK-MacOS.git',
-      :tag => '1.1.1'
+      :tag => '1.1.2'
 end
 
 post_install do |installer|
@@ -207,7 +207,7 @@ pod install --repo-update
 ### Manual
 
 Download
-[`XmaxSDK-1.1.1.xcframework.zip`](https://github.com/Xmax-AI/XmaxSDK-MacOS/releases/download/1.1.1/XmaxSDK-1.1.1.xcframework.zip)
+[`XmaxSDK-1.1.2.xcframework.zip`](https://github.com/Xmax-AI/XmaxSDK-MacOS/releases/download/1.1.2/XmaxSDK-1.1.2.xcframework.zip)
 and add the SDK and its required dependencies to your Xcode target.
 
 <br>
@@ -237,9 +237,9 @@ view.addSubview(videoView)
 // Create a camera stream and bind the preview
 let localStream = try await realtime.createLocalCameraStream(
     videoFormat: RealtimeVideoFormat(width: 1920, height: 1080, fps: 30),
-    deviceID: nil,
-    mirror: false,
-    microphone: .disabled
+    camera: .systemDefault,
+    microphone: .disabled,
+    mirror: false
 )
 videoView.localTrack = localStream.videoTrack
 
@@ -274,6 +274,15 @@ assistance and technical support, contact us at [sdk@xmax.ai](mailto:sdk@xmax.ai
 
 <br>
 
+## Responsible Use
+
+Use XmaxSDK in compliance with applicable laws and respect the rights of others.
+Do not use the SDK to facilitate fraud, unlawful impersonation, harassment,
+privacy violations, or other unlawful activity.
+
+<br>
+
 ## License
 
-XmaxSDK is available under the terms of the [MIT License](LICENSE).
+XmaxSDK is licensed under the [MIT License](LICENSE). Use of Xmax-hosted
+services is governed by the applicable terms of service.

@@ -1,15 +1,52 @@
 # Wav2Aug: A Drop-In Speech Augmentation Policy
 
-A minimalistic PyTorch-based augmentation library for speech augmentation. The goal of this library is to provide a drop-in speech augmentation policy that can be used on any task and perform reasonably well without having to tune augmentation hyperparameters. Just install, and start augmenting. Applies two random augmentations per call. Just install and start augmenting!
+Wav2Aug is a PyTorch waveform augmentation policy with settings calibrated once
+and reused across speech tasks. [Read the paper](https://arxiv.org/abs/2610.38656).
 
-Our experiments show that Wav2Aug performs comparably to SpecAugment on ASR and better on average across the evaluated non-ASR tasks. See our [paper](https://arxiv.org/abs/2610.38656) for details.
+## Quick Start
+
+Requires Python 3.10+ and [FFmpeg shared libraries](#ffmpeg).
+
+```bash
+pip install wav2aug
+```
+
+Or use `uv add wav2aug`.
+
+The default configuration matches the paper's top-6 policy.
+
+```python
+import torch
+from wav2aug.gpu import Wav2Aug
+
+# Initialize the paper's top-6 policy once
+augmenter = Wav2Aug(sample_rate=16000)
+
+# In the training forward pass
+wavs = torch.randn(3, 50000)
+lens = torch.ones(wavs.size(0))
+aug_wavs, aug_lens = augmenter(wavs, lens)
+
+# Or omit lengths if they are not needed
+aug_wavs = augmenter(wavs)
+```
+
+## Results
+
+Across ten speech benchmarks, Wav2Aug remains competitive with SpecAugment on ASR.
+Its top-6 configuration achieves a **12.8% average relative error reduction** over
+the strongest compatible SpecAugment baseline across five non-ASR tasks. See the
+paper's [ASR results](https://arxiv.org/html/2610.38656v1#S3.T2) and
+[non-ASR results](https://arxiv.org/html/2610.38656v1#S3.T3) for the full comparison.
 
 ![Diagram](https://raw.githubusercontent.com/gfdb/wav2aug/main/wav2aug.png)
 
-## Installation
+## Setup and Configuration
 
-Requires Python 3.10+ and FFmpeg shared libraries for TorchCodec audio decoding.
-Install FFmpeg before running the quick start:
+### FFmpeg
+
+TorchCodec requires FFmpeg shared libraries for audio decoding. Install FFmpeg
+before running the quick start:
 
 ```bash
 # macOS (Homebrew)
@@ -24,44 +61,7 @@ For Windows and other platforms, follow the
 If installing into an existing PyTorch environment, check TorchCodec's compatibility
 table for your PyTorch version.
 
-### pip
-
-```bash
-pip install wav2aug
-```
-
-### uv
-
-```bash
-uv add wav2aug
-```
-
-## Quick Start
-
-```python
-import torch
-from wav2aug.gpu import Wav2Aug
-
-# Initialize the augmenter once
-augmenter = Wav2Aug(sample_rate=16000)
-
-# in the forward pass
-wavs = torch.randn(3, 50000)
-lens = torch.ones((wavs.size(0)))
-
-aug_wavs, aug_lens = augmenter(wavs, lens)
-
-# or just
-
-aug_wavs = augmenter(wavs)
-```
-
-That's it!
-
-By default, each call samples two augmentations with replacement from the top six
-(`top_k=6`) and applies them sequentially. The same operation can be selected twice,
-with random parameters sampled independently for each application. Set `top_k=9`
-to sample from all nine augmentations, or `top_k=1` to apply noise addition once.
+### Noise Download and Memory
 
 The first initialization downloads a roughly 569 MB noise archive from Hugging Face
 and preloads the decoded audio into RAM. Later initializations reuse the downloaded
@@ -71,6 +71,23 @@ files. Set `WAV2AUG_DATA_DIR` before importing wav2aug to change the cache locat
 ```python
 augmenter = Wav2Aug(sample_rate=16000, noise_dir="/path/to/noise")
 ```
+
+Noise is stored in FP32 by default. Set `noise_dtype=torch.float16` to halve the
+noise bank's RAM usage. In our testing, FP16 works very well, with less than 0.1
+percentage points of WER degradation.
+
+### Augmentation Pool
+
+The default top-6 pool contains noise addition, frequency dropout, time dropout,
+speed perturbation, amplitude clipping, and chunk swapping. Each call samples two
+augmentations with replacement and applies them sequentially. Parameters are
+sampled independently for each application, including when the same augmentation
+is selected twice.
+
+Set `top_k=9` to sample from all nine augmentations, or `top_k=1` to apply noise
+addition once. Top-9 can outperform top-6 on some tasks, including language
+identification and emotion recognition, as shown in
+[Table III of the paper](https://arxiv.org/html/2610.38656v1#S3.T3).
 
 ## Augmentation Types
 
@@ -83,7 +100,7 @@ augmenter = Wav2Aug(sample_rate=16000, noise_dir="/path/to/noise")
 * **Time Dropout**: Random silence insertion
 * **Babble Noise**: Multi-speaker background (auto-enabled with sufficient buffer)
 
-**Randomness**: all stochastic ops use PyTorch RNGs. Set a single seed and be done, e.g. torch.manual_seed(0); torch.cuda.manual_seed_all(0)
+**Randomness**: all stochastic ops use PyTorch RNGs. Set a single seed and be done, e.g. `torch.manual_seed(0)`, `torch.cuda.manual_seed_all(0)`
 
 
 ## Development Installation
@@ -142,4 +159,6 @@ pytest -q tests/
 
 * Feel free to open a PR!
 
-* Bug reports: please open an issue with a minimal repro (env, dep versions, code snippet, expected vs. actual, traceback, etc.)
+* Bug reports: please open an issue with a minimal repro (env, dep versions, code snippet, expected vs. actual, traceback, etc.) ty :)
+
+* Feature requests: please [open an issue](https://github.com/gfdb/wav2aug/issues) describing what you'd like and your use case. If it's not already in the library and fits its scope, I'd be happy to add it!

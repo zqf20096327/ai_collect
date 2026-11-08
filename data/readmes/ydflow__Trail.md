@@ -13,7 +13,7 @@
 </p>
 <p align="center">
   <a href="https://github.com/ydflow/Trail/actions/workflows/pr.yml"><img src="https://github.com/ydflow/Trail/actions/workflows/pr.yml/badge.svg?branch=main" alt="Main checks" /></a>
-  <img src="https://img.shields.io/badge/channel-0.4.0--beta.2-0f5749" alt="0.4.0-beta.2 source channel" />
+  <img src="https://img.shields.io/badge/channel-0.4.0--beta.2-0f5749" alt="0.4.0-beta.3 source channel" />
   <img src="https://img.shields.io/badge/Electron-React%20%2B%20TypeScript-477b74" alt="Electron, React and TypeScript" />
 </p>
 
@@ -29,6 +29,12 @@
 
 ## 产品预览
 
+### 产品介绍视频
+
+<p align="center"><a href="docs/media/trail-introduction.mp4"><img src="docs/media/trail-introduction-poster.png" alt="点击观看 Trail · 研迹产品介绍视频" width="1000" /></a></p>
+
+<p align="center"><a href="docs/media/trail-introduction.mp4">▶ 观看产品介绍视频</a> · 1 分钟</p>
+
 ### 深度研究：行情、证据与判断，在同一工作区
 
 <p align="center"><img src="docs/screenshots/ui-2026-10-16/research.png" alt="新版深度研究工作区：NVDA K线、依据表与判断侧栏" width="1200" /></p>
@@ -37,7 +43,7 @@
 
 ### 证券工作台与 AI 副驾驶
 
-<p align="center"><img src="docs/screenshots/ui-2026-10-16/workspace.png" alt="长桥真实行情和K线，右侧DeepSeek助手回答并附来源入口" width="1200" /></p>
+<p align="center"><img src="docs/screenshots/readme-2026-11-08/workspace.png" alt="长桥真实行情和K线，右侧DeepSeek助手回答并附来源入口" width="1200" /></p>
 
 自选、报价、财务、新闻与图表共享当前证券上下文。右侧助手可以读取结构化数据，以流式回答补充解释；来源入口保留在回答旁边。
 
@@ -46,6 +52,14 @@
 <p align="center"><img src="docs/screenshots/ui-2026-10-16/sources.png" alt="来源检查器：金融数值、提供商、获取时间、规范化链路与快照哈希" width="1000" /></p>
 
 从引用进入来源检查器，查看数值、提供商、获取时间、规范化链路与快照哈希。价格时间缺失、来源过期与数据不可用会保留在可见状态中。
+
+### 独立的投研助手界面
+
+<p align="center"><img src="docs/screenshots/readme-2026-11-08/assistant.png" alt="独立投研助手界面设计预览：历史会话、集中输入框与研究建议" width="1200" /></p>
+
+独立的专注会话空间，将历史会话、研究输入与模型选项集中呈现；支持从工作台进入助手，围绕当前研究上下文持续追问。
+
+> 本图为界面设计预览，不属于下方“截图说明”中的实机截图。
 
 ### 更多工作区
 
@@ -164,13 +178,13 @@ flowchart TB
 
 ### Windows 下载
 
-下载 **v0.4.0-beta.2**：[安装版](https://github.com/ydflow/Trail/releases/download/v0.4.0-beta.2/Trail-0.4.0-beta.2-windows-x64-setup.exe) · [便携版](https://github.com/ydflow/Trail/releases/download/v0.4.0-beta.2/Trail-0.4.0-beta.2-windows-x64-portable.exe) · [发布说明与 SHA-256](https://github.com/ydflow/Trail/releases/tag/v0.4.0-beta.2)。
+下载 **v0.4.0-beta.3**：[安装版](https://github.com/ydflow/Trail/releases/download/v0.4.0-beta.3-windows/Trail-0.4.0-beta.3-windows-x64-setup.exe) · [便携版](https://github.com/ydflow/Trail/releases/download/v0.4.0-beta.3-windows/Trail-0.4.0-beta.3-windows-x64-portable.exe) · [发布说明与 SHA-256](https://github.com/ydflow/Trail/releases/tag/v0.4.0-beta.3-windows)。
 
-安装包尚未进行 Windows 数字签名，系统可能显示发布者未知。AI 功能需安装 [Bun](https://bun.sh) 并配置模型；行情需另行安装和授权 Longbridge CLI。桌面程序、13 个技能及 Pi 扩展已打包，首次启动 Pi 可能需要联网下载运行时。详见 [Windows 发布记录](docs/releases/v0.4.0-beta.2-windows.md)。
+安装包尚未进行 Windows 数字签名，系统可能显示发布者未知。AI 功能需安装 [Bun](https://bun.sh) 并配置模型；行情需另行安装和授权 Longbridge CLI。桌面程序、13 个技能及 Pi 扩展已打包，首次启动 Pi 可能需要联网下载运行时。详见 [Windows 发布记录](docs/releases/v0.4.0-beta.3-windows.md)。
 
 ### 从源码启动
 
-需要 Git、[Bun](https://bun.sh) 和 Node.js（Electron E2E 脚本使用 Node）。当前版本为 `0.4.0-beta.2`；源码运行与安装包均可使用。
+需要 Git、[Bun](https://bun.sh) 和 Node.js（Electron E2E 脚本使用 Node）。当前版本为 `0.4.0-beta.3`；源码运行与安装包均可使用。
 
 ```bash
 git clone https://github.com/ydflow/Trail.git
@@ -236,7 +250,7 @@ start-trail.cmd
 - **可恢复执行：** checkpoint 校验和、原子写入、已完成依据复用、配置身份检查及持久预算。远端读取可能重试，不承诺 exactly-once 或所有断电场景的数据恢复。
 - **可观察、可导出：** 流式工具状态、来源检查器、报告导出与可选追踪；追踪默认关闭，隐私级别和密钥单独配置。
 - **诚实的缺口：** 真实研究可能生成部分报告；盘前/延迟/无时间戳报价应结合来源状态理解，不能一概称为实时成交价。模型结构化输出偶尔会触发文本降级，报告语言也受模型输出影响。
-- **交付范围：** 已提供 Windows x64 Beta 安装版与便携版，并完成独立目录安装、真实模型行情回答及持久记录检查，见 [Windows 发布记录](docs/releases/v0.4.0-beta.2-windows.md)。Windows 包未签名；macOS arm64 仍为打包配置，未提供本版已验收安装包。产品截图证据见[验证记录](docs/screenshots/README.md)。
+- **交付范围：** 已提供 Windows x64 Beta 安装版与便携版，并完成独立目录安装、本地运行时问答、旧会话读取与便携版重启验证，见 [Windows 发布记录](docs/releases/v0.4.0-beta.3-windows.md)。Windows 包未签名；macOS arm64 仍为打包配置，未提供本版已验收安装包。产品截图证据见[验证记录](docs/screenshots/README.md)。
 
 ## 文档与贡献
 
@@ -250,8 +264,31 @@ start-trail.cmd
 | [Langfuse 追踪](docs/langfuse-tracing.zh-CN.md) | 可选追踪接线与隐私边界 |
 | [发布门槛](docs/release-gates.zh-CN.md) · [提供商覆盖](docs/provider-b-decision.zh-CN.md) | 发布检查与已知限制 |
 | [贡献指南](CONTRIBUTING.md) | 提交规范、测试报告与截图要求 |
+| [Personal Agent 路线图](docs/ROADMAP.zh-CN.md) | 持久执行、Checkpoint × Memory、个人工作流与 Harness² × RSI 研究 |
 
-欢迎围绕提供商适配、研究质量、来源核验、桌面体验和可复现回归用例提交 Issue 或 PR。后续重点是更完整的提供商覆盖、研究报告阅读与比较、模型输出契约稳定性，以及跨平台分发。
+欢迎围绕提供商适配、研究质量、来源核验、桌面体验和可复现回归用例提交 Issue 或 PR。长期方向是从投研工作台走向 Personal Agent，阶段目标与验收任务见 [Roadmap](https://github.com/ydflow/Trail/issues/8)。
+
+## 社区交流
+
+[社区导航](https://github.com/ydflow/Trail/discussions/38) · [项目愿景](https://github.com/ydflow/Trail/discussions/39) · [使用问答](https://github.com/ydflow/Trail/discussions/categories/q-a) · [需求与产品构想](https://github.com/ydflow/Trail/discussions/44) · [成果展示](https://github.com/ydflow/Trail/discussions/45)
+
+在 [Discussions](https://github.com/ydflow/Trail/discussions) 交流场景、技术方案和实验经验；可复现缺陷、明确功能任务与开发进度在 [Issues](https://github.com/ydflow/Trail/issues) 跟踪。研究讨论已覆盖 [Pi Durable](https://github.com/ydflow/Trail/discussions/40)、[Checkpoint × Memory](https://github.com/ydflow/Trail/discussions/41)、[Harness² × RSI](https://github.com/ydflow/Trail/discussions/42) 和 [组合评分与协方差适应](https://github.com/ydflow/Trail/discussions/43)，均明确标注规划与验证边界。
+
+## 贡献者
+
+感谢每一位为 Trail · 研迹贡献代码、文档、测试与反馈的参与者。
+
+<p>
+  <a href="https://github.com/ydflow"><img src="https://avatars.githubusercontent.com/u/314143294?s=128&amp;v=4" width="64" height="64" alt="ydflow" title="ydflow" /></a>
+  <a href="https://github.com/kbkb628"><img src="https://avatars.githubusercontent.com/u/278338969?s=128&amp;v=4" width="64" height="64" alt="kbkb628" title="kbkb628" /></a>
+  <a href="https://github.com/yu1128-L"><img src="https://avatars.githubusercontent.com/u/296164533?s=128&amp;v=4" width="64" height="64" alt="yu1128-L" title="yu1128-L" /></a>
+  <a href="https://github.com/yjg-djb"><img src="https://avatars.githubusercontent.com/u/189134749?s=128&amp;v=4" width="64" height="64" alt="yjg-djb" title="yjg-djb" /></a>
+  <a href="https://github.com/daifu1016"><img src="https://avatars.githubusercontent.com/u/154257270?s=128&amp;v=4" width="64" height="64" alt="daifu1016" title="daifu1016" /></a>
+  <a href="https://github.com/cursoragent"><img src="https://avatars.githubusercontent.com/u/199161495?s=128&amp;v=4" width="64" height="64" alt="cursoragent" title="cursoragent" /></a>
+  <a href="https://github.com/qxr666-sga"><img src="https://avatars.githubusercontent.com/u/201861063?s=128&amp;v=4" width="64" height="64" alt="qxr666-sga" title="qxr666-sga" /></a>
+</p>
+
+[查看完整贡献记录](https://github.com/ydflow/Trail/graphs/contributors) · 名单依据 GitHub 仓库侧栏的 Contributors 展示维护，包含自动化账号。
 
 ---
 

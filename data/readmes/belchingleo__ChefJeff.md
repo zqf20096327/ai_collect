@@ -13,7 +13,7 @@ ChefJeff is a real-time cooking game in which a person and an AI cook together, 
 
 Where to start: [play online](#play-online) · [run it locally](#run-it-locally) · [connect your own model](#jeff-and-model-integration) · [change the configuration](#five-data-models) · [the environment and benchmark](#building-a-humanai-collaboration-environment-and-benchmark)
 
-> Current version: **0.7.0-beta.1**, the third public test release. You need your own model API, and interfaces and analysis rules may still change. We suggest starting with Jev models: they don't play especially well, but they are cheap. Results from other models are welcome.
+> Current version: **0.8.0-beta.1**, the fourth public test release. You need your own model API, and interfaces and analysis rules may still change. We suggest starting with Jev models: they don't play especially well, but they are cheap. Results from other models are welcome.
 
 ---
 
@@ -68,6 +68,7 @@ A round lasts 180 seconds. As in Overcooked 2, two orders wait from the start, a
 | Level 1 · Steak | Steak ¥50 | Practice level: learn to chop, fry, plate and serve | ¥200 |
 | Level 2 · Burger | Burger ¥80 | A long counter splits the kitchen in two, so a lot has to be passed across it | ¥200 |
 | Level 3 · Steak and burger | Steak, burger | Two stoves and three frying pans; both dishes at once | ¥160 |
+| Level 4 · Across the counter | Steak, burger | A row of counters runs from wall to wall: one side has the ingredients, stoves and serving window, the other the boards and sink, so every dish needs both chefs | ¥100 |
 
 Working together, you chop, cook, plate and serve between you. Along the way Jeff may pass you dishes, or chop, pass and wash up alongside you. He may also bump you aside to handle something himself, and you can do the same to him.
 If the model isn't doing what you want, press 1–6 to tell Jeff what kind of work you'd like to do, or that he just made a mistake.
@@ -217,11 +218,13 @@ Overcooked-AI (Carroll et al., 2019) used an Overcooked-style environment to stu
 
 Each scenario is a single map:
 
-- **Scenario**: one frozen five-model configuration, with its configuration hash, random seeds and the reference scores from the baseline ladder. The baseline ladder runs scripted chefs in three setups: one chef alone, one chef plus a partner who wanders at random, and two scripted chefs working together. The target revenue is half of what the scripted pair earns, and the solo script must fall short of it, except on Level 1 (the practice level) and Level 3, which one chef can finish for now; two are faster. This only shows that the scripts can't reach the target alone; the real difficulty still has to be checked with people and other agents.
+- **Scenario**: one frozen five-model configuration, with its configuration hash, random seeds and the reference scores from the baseline ladder. The baseline ladder runs scripted chefs in three setups: one chef alone, one chef plus a partner who wanders at random, and two scripted chefs working together. The target revenue is half of what the scripted pair earns. Only Level 4 requires a pair: there one scripted chef alone serves nothing on any of the 21 calibration seeds, and a test checks this against the committed calibration report (`docs/architecture/reports/calibration.json`) and fails when the report is out of date. On Levels 1–3 one scripted chef can also reach the target (on Level 1 on every seed, earning more than the scripted pair; on Level 2 on 10 of 21 seeds; on Level 3 on 19 of 21), so these levels show how two chefs play together rather than force them to; use Level 4 to test cooperation. Round statistics report a cooperation gain, a round's net revenue minus the solo script's median on the same level configuration, labelled relative to the solo script baseline. This only shows what the scripts can do; the real difficulty still has to be checked with people and other agents.
 - **Participants and interface conditions**: people, models or scripted chefs, and how much each can observe and communicate.
 - **Records**: replayable event streams and item histories.
 - **Metrics**: outcomes (net revenue, level cleared) and process (division of labour, contribution, delay, idle time, how many decisions were accepted and completed, response time), reported separately.
 - **Round collection**: rounds contributed by the community, with different players, models, maps and team setups.
+
+**Benchmark v1 runs now.** It freezes levels 1–3, the scripted `assembler` partner, 12 rounds per level and the environment interface any agent plays through ([env-v1](docs/architecture/environment-api.md)). `python3 scripts/benchmark.py run --agent jeff` runs it with your model, or `--agent module:Class` with your own agent; every result reports its 95% intervals, and `verify` checks that a result counts. See [benchmark/README.md](benchmark/README.md). Level 4 joins in v1.1.
 
 ### Creative workshop (the level editor is here; the rest is planned)
 
@@ -244,6 +247,7 @@ All three produce the same data, and every imported level goes through the same 
 - **0.6.0-beta.1** (2026-10-01): the first public test release. Now driven by five data models, with one set of rules for all three levels (180-second rounds, judged on net revenue at closing); the old rules are gone. Adds round records and replay, behaviour fingerprints, collaboration analysis and the round record, along with reworked controls, music and sound effects.
 - **0.6.0-beta.2** (2026-10-20): controls and rules aligned with Overcooked 2 for the public test: dash and knockback, quicker chopping, standing at the counter line, aimed throws that land on boards and in pans, fire that spreads to every neighbour, sounds only for actions that happen. Jeff now has exactly the player's abilities. Maps are built from station coordinates alone; consent to share data comes before the first round.
 - **0.7.0-beta.1** (2026-11-06): the third public test release. A level editor for building and playing your own kitchens; rounds rated in one to three stars; timings, station choice, orders and fire follow Overcooked 2, with orders that keep coming and expired orders that start again; a rebuilt harness for Jeff: his whole input is assembled in `harness.py` and guarded by payload fingerprints, `features.json` switches harness features (one-press options released, plan modes on trial) and every round records which were on; new contribution terms (v8, kept for at most two years), and free models need consent to contribute.
+- **0.8.0-beta.1** (2026-11-08): the fourth public test release. Level 4, Across the counter: counters split the kitchen in two, so the dishes need both chefs. Jeff's two-step intent is on in every round (he says what each step is for and what comes next, shown in the communication bar), and the plan switches are gone from Settings. A server can now switch Jeff's features from the command line, without a new release, and each round records which were set that way. Online, Jeff's requests reach the page sooner (long poll), and the English page has the server's messages in English. The local game can use a decision model served on the same computer, such as StartLux 2B. For research: an environment interface and Benchmark v1, replays with the code of the release that recorded a round, and re-ask checks with intervals on every share.
 
 See the [changelog](CHANGELOG.md) for everything.
 

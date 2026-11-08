@@ -4,13 +4,12 @@
 > to be called done.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-black)](LICENSE)
-[![Site](https://img.shields.io/badge/site-mint.area--51.cloud-1f6f5c)](https://mint.area-51.cloud)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-support-ff5e5b?logo=kofi&logoColor=white)](https://ko-fi.com/3li7alaki)
 
 An agent will report success. That report is a sentence, not evidence, and
 nothing in the loop was ever asked to tell the two apart. mint is a small CLI
-that holds the completion floor: declared gates, independent review, and an
-immutable receipt bound to the exact source it verified.
+that holds the completion floor: declared gates, an independent check that mint
+itself runs, and a receipt bound to the exact source it verified.
 
 It owns only that. Your driver keeps projects, tickets, terminals, agents,
 worktrees, retries, Git and deployment.
@@ -21,68 +20,92 @@ worktrees, retries, Git and deployment.
 curl -fsSL https://raw.githubusercontent.com/3li7alaki/mint/main/install.sh | sh
 ```
 
-One static binary. It creates no `.mint` directory in your repo and never edits
-your `.gitignore`. State lives under `$XDG_STATE_HOME/mint`, keyed by repository
-and isolated per worktree. Set `MINT_STATE_HOME` to override it for tests.
+One static binary for macOS and Linux. It creates no `.mint` directory in your
+repo and never edits your `.gitignore`. State lives under `$XDG_STATE_HOME/mint`,
+keyed by repository and isolated per worktree. Set `MINT_STATE_HOME` to move it.
 
 ## What a run looks like
 
-Real output, with state paths abbreviated.
+Real output from [`docs/examples.sh`](docs/examples.sh), which runs this walkthrough
+and its failure cases against the current build. State paths are shortened to `...`.
+
+Define the unit: one goal, a scope, acceptance in EARS form, the gates to run and
+the reviews it needs.
 
 ```console
 $ mint spec new "expose service health" --slug health-check \
     --goal "Expose service health" --scope "src/**" \
     --acceptance "WHEN the health endpoint is called, THE service SHALL return its status" \
-    --gate "tests: bun test" --reviews quality
+    --gate "tests: test -f src/app.go" --reviews adversarial
 {
   "schemaVersion": 1,
   "specPath": ".../units/health-check/001/spec.xml",
   "slug": "health-check",
-  "id": "001"
+  "id": "001",
+  "target": "main"
 }
+```
 
+Start an attempt and say who is doing the work. The baseline is the point where
+the lane branched off its target, like a pull request's diff, so work committed
+before this command and uncommitted work are both inside what gets checked.
+
+```console
 $ mint exec init health-check 001 --attempt maker-1 \
-    --executor codex --vendor openai --model gpt-5 \
-    --locality remote --execution-ref driver-run-42
+    --executor codex --vendor openai --model gpt-6.1-sol \
+    --locality local --execution-ref run-42
+{
+  ...
+  "baseCommit": "2f6c2a36f46c1b42a02f01ba68ca554cc5d6299c",
+  "target": "main"
+}
 
 $ mint verify health-check 001 --attempt maker-1
   tier: full - ok tests
+```
 
-$ mint done health-check 001 --attempt maker-1 --verdict verdict.json
-  FAIL - floor not clean (failed clauses: 1, 3)
-    fail clause 1: verifiable-completion
+Finish it with a checker that mint launches. Here it is a script; in real use it
+is a model from a different vendor than the maker. Keep the checker outside the
+repository, or it becomes an out-of-scope file in the lane's own diff. Its `ATTEST adversarial` line
+meets the review the unit asked for.
+
+```console
+$ mint done health-check 001 --attempt maker-1 --checker ~/checkers/health.sh \
+    --checker-executor claude-code --checker-vendor anthropic \
+    --checker-model opus-5.5 --checker-locality local --checker-execution-ref check-7
+  PASS - floor clean, done
+    ok clause 1: verifiable-completion
     ok clause 2: maker-not-checker
-    fail clause 3: safety-carve-out
+    ok clause 3: safety-carve-out
     ok clause 4: anti-gaming
     ok clause 5: scope-respected
     ok clause 6: bounded-terminating
     ok clause 7: floor-gated-action
+  receipt: .../receipts/health-check/001/20261108T100002-798365000Z-dc4920fc8464.json
+
+$ mint receipt verify .../20261108T100002-798365000Z-dc4920fc8464.json
+current sha256:b1880752f133393741d71a07702f7533c0ebe1e715a214feedca7b3693f204c7
 ```
 
-It classified the diff into the safety tier itself and refuses to issue a
-receipt until an independent adversarial and safety check are attested in the
-verdict. Attach them and re-run:
+Change one line of source, then ask again:
 
 ```console
-$ mint done health-check 001 --attempt maker-1 --verdict verdict.json
-  PASS - floor clean, done
-    ok clause 1: verifiable-completion
-    ...
-  receipt: .../receipts/health-check/001/20260726T120221Z-2169e1977a45.json
-
-$ mint receipt verify .../20260726T120221Z-2169e1977a45.json
-  current sha256:3118a072308ac4a7f0e5b9ef13394b505c7aebdb0a93fcc7a1aa9fc4d2337248
-```
-
-Change one file inside the unit's declared scope, then ask again:
-
-```console
-$ mint receipt verify .../20260726T120221Z-2169e1977a45.json
-  stale sha256:3118a072308ac4a7f0e5b9ef13394b505c7aebdb0a93fcc7a1aa9fc4d2337248 - source snapshot changed after receipt issuance
+$ mint receipt verify .../20261108T100002-798365000Z-dc4920fc8464.json
+stale sha256:b1880752f133393741d71a07702f7533c0ebe1e715a214feedca7b3693f204c7 - source snapshot changed after receipt issuance
 ```
 
 That is the whole product. A claim that outlives the code it described is not a
 claim any more, and now you can ask.
+
+It also holds when a lane commits a file outside its scope before the attempt
+even starts:
+
+```console
+$ mint done sneaky 001 --attempt maker-2 --checker ~/checkers/health.sh ...
+  FAIL - floor not clean (failed clauses: 5)
+    ...
+    fail clause 5: scope-respected - out-of-lane file(s): README.md, allowed: src/**
+```
 
 ## The floor
 
@@ -90,76 +113,68 @@ Seven fixed clauses, the same for a typo and for an auth rewrite: verifiable
 completion, maker and checker independence, the safety carve-out, anti-gaming,
 scope, bounded terminal state, and floor-gated consequential action.
 
-An optional top-level `<protected>` block adds paths whose edits the anti-gaming
-clause flags, even when scope allows them. Use `<path>` children or a comma-separated
-list, or pass `--protected <paths>` to `mint spec new` or `mint spec set`. Defaults
-always protect CI workflows and hook configuration; an empty block keeps those
-defaults. Flagged edits require `tamperingReviewed: true` and a substantive
-`tamperingReason` in the independent verdict.
+**What gets checked.** The diff runs from the merge-base of the lane with the
+spec's target branch, recorded when the spec is created and printed by
+`spec new` (`--target`, or a default chosen from `origin/HEAD`'s branch, `main`
+and `master`; [AGENTS.md](AGENTS.md) gives the exact rule). Check the printed
+target. After a rebase, start a new attempt; the spec stays.
+Each attempt is graded against the exact spec it started with, and the spec cannot
+be edited while an attempt runs, so a lane cannot widen its own scope to pass.
+(Attempts begun by a mint older than this rule are not checked.)
 
-Gates run in a clean replay worktree when the attempt has a baseline.
-Replay worktrees are locked with the owning pid, removed on SIGINT/SIGTERM, and any
-left by a killed process are removed at the start of the next verify in that repo.
-Protected paths are restored to their baseline content there. Ignored files are absent;
-use an optional top-level `<prepare>` shell command (or `--prepare` on `mint spec
-new` and `mint spec set`) for dependencies and local environment files. The command
-runs before gates with `MINT_SOURCE_ROOT` pointing to the live worktree, for example
-`cp "$MINT_SOURCE_ROOT/.env" .`.
+**Gates** are the commands the spec declares, nothing guessed. They run in a clean
+replay worktree whenever the attempt has a baseline, which every attempt started
+by current mint does. Regular files under `<protected>`, plus CI workflows and hook config by
+default, are restored there to their baseline bytes, and mint hashes them on disk
+to prove it. A spec that declares gates gets them even for a docs-only change. If
+the source changes while the gates run, `done` and `run-review` refuse to grade it.
 
-Gate and prepare output is saved in
-`<state>/attempts/<slug>/<spec>/<attempt>.logs/`. Each full verify run replaces
-these logs, and `mint verify` prints the last 20 lines for each gate that did not
-pass. If prepare fails, it prints the prepare log tail and marks gates as not run.
-Only one verify runs per attempt at a time; a second is refused with the holder's
-pid. The lock is held by the OS for the run, released on exit or kill.
-A gate is inconclusive if prepare failed, its command could not start, it exited
-126 or 127, or it was killed directly by a signal. Inconclusive never counts as pass.
+**Reviews** count only when mint saw them happen: a checker mint launched
+attested the lens, or `mint exec run-review` ran the reviewer itself. A review
+typed in with `mint exec record-review` is stored as declared and never meets a
+required lens.
 
-Independence is structural. Normal work may be checked by the same vendor only
-from a distinct execution reference; a different executor under the same vendor
-does not establish it. Safety reviews and safety-tier acceptance require a
-different vendor from the maker.
+**Independence** is structural. The checker must come from a different execution
+than the maker. Safety work, which the floor detects from the diff or a spec
+declares with `<risk>safety</risk>`, needs a different model vendor, and so does
+any safety review lens a spec asks for, such as `security`. A box with one vendor
+can finish a safety tier the floor only inferred, when a checker mint ran attests
+`vendorDiversity`; the receipt then says `vendorDiverse: false`. That waiver never
+covers a declared tier or a declared safety lens.
 
-A spec that declares `<risk>safety</risk>` means that absolutely. Where the floor
-inferred the tier by reading the diff instead, a single-vendor box is not locked
-out: the checker attests `vendorDiversityWaived` and a substantive
-`vendorDiversityReason` in the verdict, the unit drops to normal independence
-rather than none, and the receipt carries `vendorDiverse: false` so the weaker
-evidence is visible rather than hidden.
+**Verdict files** (`--verdict`) still work for checkers mint cannot launch. They
+default to `declared`, cannot claim to be the checker, and cannot waive
+vendor diversity.
 
 Provenance is a declared record. `executor`, `vendor`, `model`, `locality` and
-`executionRef` are opaque attributable claims. mint stores them and owns no
-executor registry or binary adapters. It does not pretend to authenticate an
-identity it cannot see.
+`executionRef` are attributable claims mint stores; it does not pretend to
+authenticate an identity it cannot see.
 
-Dispatchers should prefer `mint done --checker '<shell command>'` with
-`--checker-executor`, `--checker-vendor`, `--checker-model`, `--checker-locality`,
-and `--checker-execution-ref` so the verdict comes from a process mint launched.
-The checker receives the spec, changed files, patch, and gate results as JSON on
-stdin after gates run. Its first non-empty stdout line must be `ALLOW: <reason>`
-or `BLOCK: <reason>`; later `ATTEST adversarial: <reason>`, `ATTEST safety: <reason>`,
-`ATTEST tampering: <reason>`, or `ATTEST vendorDiversity: <reason>` lines supply
-attestations. `--checker-timeout` defaults to `15m`; timeout, process failure, or
-malformed output rejects completion. `--checker` and `--verdict` are mutually
-exclusive. Receipts record `verdictSource: "checker"` for launched checks;
-a verdict file defaults to `"declared"`, which is weaker evidence because any
-process with file access can write it. Provenance remains a declared claim.
+## What it does not stop
+
+mint runs as you, and so do the agents it checks. An agent that can write your
+`.git` directory or mint's state directory can still fake evidence there. mint
+closes the known tricks (replaced objects, grafts, forged history files, filters
+that rewrite protected files) but cannot fence off the same user. That boundary
+needs isolation: gates and checkers in a separate machine or VM with a read-only
+copy of the repository. It is planned, not built.
 
 ## Commands
 
 | command | does |
 |---|---|
 | `mint spec` | define, edit, validate and inspect an atomic unit |
-| `mint exec` | initialize an attempt and record gate, review and terminal evidence |
-| `mint verify` | run the unit's declared deterministic gates |
+| `mint exec` | start an attempt, run observed reviews, record gate and terminal evidence |
+| `mint verify` | run the unit's declared gates in a clean replay |
 | `mint review` | print a review lens prompt. It never launches a model |
 | `mint done` | evaluate the floor and issue an immutable receipt |
 | `mint status` | report units, attempts, missing evidence and freshness |
 | `mint receipt` | show or verify a receipt |
-| `mint note` | retain unit and floor reasoning |
-| `mint clean` | report or remove orphanable locks and incomplete receipt claims |
+| `mint note` | keep unit and floor reasoning |
+| `mint clean` | report or remove leftover locks, baseline refs and incomplete receipt claims |
 
-Every command takes `--json`. Human output is never the integration protocol.
+`verify`, `done`, `status` and `receipt` take `--json`, and `spec new` and `exec`
+always answer in JSON. Integrate against the JSON, never the human output.
 
 ## What it is not
 
@@ -171,7 +186,7 @@ Every command takes `--json`. Human output is never the integration protocol.
 
 - [AGENTS.md](AGENTS.md) is the exact operating contract for agents working through mint.
 - [docs/principles.md](docs/principles.md) covers the product boundaries.
-- [mint.area-51.cloud](https://mint.area-51.cloud) is the overview, with the rest of the lab at [area-51.cloud](https://area-51.cloud).
+- [formats/](formats/README.md) holds the draft (v0) formats for signed, portable receipts.
 
 ## Support
 

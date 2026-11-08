@@ -101,10 +101,12 @@ reports are very welcome (open an issue with the device and the version).
 | <img src="docs/screenshots/assistant-rule.jpg" alt="Assistant: a recording rule from a sentence"> | <img src="docs/screenshots/assistant-settings.jpg" alt="Assistant settings"> |
 | Assistant: a recording rule from a sentence, checked before saving | Assistant settings: built in, online service or your own server |
 
-<sub>Screenshots use demo data: invented channels and guide, and the titles
-of the Blender Studio open movies with generated artwork. The interface is in
-Italian and English (chosen per device; new languages are one dictionary file
-each).</sub>
+<sub>Screenshots use demo data: invented channels and guide, the Blender Studio open
+movies (CC BY) and a few invented titles illustrated with public-domain photos.
+The title logos are wordmarks drawn for the demo, not the films' logos. Artwork
+credits: [docs/screenshots/CREDITS.md](docs/screenshots/CREDITS.md). The interface is in
+Italian, English, Spanish, French, German and Polish (chosen per device; new
+languages are one dictionary file each).</sub>
 
 ## Install
 
@@ -152,7 +154,7 @@ Build from source: [docs/sviluppo.md](docs/sviluppo.md) and
 
 1. Open `http://<server>:8095` and paste the admin token from
    `/var/lib/vodmax/admin.token` (with Docker:
-   `docker exec vodmax cat /var/lib/vodmax/admin.token`). The language (Italian or English) follows
+   `docker exec vodmax cat /var/lib/vodmax/admin.token`). The language follows
    the device and can be changed in **Settings → Language**. VodMax then
    asks where you watch from, with flags: it keeps your country's channels,
    films and series and leaves out the others.
@@ -204,9 +206,9 @@ This product uses the TMDB API but is not endorsed or certified by
 
 Issues and pull requests are welcome: read [CONTRIBUTING.md](CONTRIBUTING.md)
 (contributions are accepted under a contributor license agreement) and
-[SECURITY.md](SECURITY.md) for vulnerabilities. VodMax speaks Italian and
-English; new languages are plain JSON files, ready for Weblate (see
-[Translations](CONTRIBUTING.md#translations)).
+[SECURITY.md](SECURITY.md) for vulnerabilities. VodMax speaks Italian,
+English, Spanish, French, German and Polish; new languages are plain JSON
+files, ready for Weblate (see [Translations](CONTRIBUTING.md#translations)).
 
 ## License
 

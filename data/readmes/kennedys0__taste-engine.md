@@ -56,7 +56,7 @@ The chosen style must be unmistakable in the finished UI. Every style pack in Ta
 
 Most AI-generated interfaces look familiar because the agent chooses a visual direction without asking. Taste Engine changes the order of operations: **discover the user's preference, load exactly the relevant design guidance, implement, and review.**
 
-**No house aesthetic. No default purple gradient. No mandatory framework.** Claymorphism, brutalism, minimalism, glassmorphism, and other styles are equal first-class choices.
+**No house aesthetic. No default purple gradient. No mandatory framework.** Claymorphism, brutalism, minimalism, swiss-editorial, and other canonical styles are equal first-class choices; legacy `glassmorphism`/`skeuomorphism` requests resolve to Frutiger Aero variants.
 
 ## Install
 

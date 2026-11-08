@@ -203,6 +203,8 @@ If you want AI to complete work—not merely respond—within an environment you
 
 Manage sessions, tools, schedules, and memory from a browser. The dashboard ships inside the binary — start the daemon and open http://127.0.0.1:17989. It is served by your own machine, so nothing leaves your device.
 
+See the [Web UI comparison (old / new, light / dark)](doc/diff/README.md) for the v1.3.4 interface refresh.
+
 <p align="center">
   <a href="https://youtu.be/oaXxrTNvLaU">
     <img src="https://img.youtube.com/vi/oaXxrTNvLaU/maxresdefault.jpg" alt="Agenvoy Web Dashboard demo" width="640">
@@ -288,6 +290,7 @@ A cost-effective model setup to get started:
 | Live command output  | Stream `run_command` progress to the TUI and Web dashboard               |
 | Rich chat rendering  | Web chat renders charts, Mermaid diagrams, math, and highlighted code    |
 | Secure file boundary | Confirm sensitive paths and out-of-home access before granting them      |
+| Explained prompts    | Command confirmations state in one sentence what the call will do        |
 | MCP OAuth            | Log in to HTTP MCP servers and persist tokens in the OS keychain         |
 | Transcription        | Audio and video to text                                                  |
 | Self-improvement     | Auto-fixes after execution failures                                      |

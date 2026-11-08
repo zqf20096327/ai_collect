@@ -8,8 +8,8 @@ that speaks OpenAI.
 
 Real llama.cpp means real features: full CUDA, tensor-split across GPUs,
 spec decoding, KV-cache options, 128k+ contexts — the raw llama-server
-features, wired together across machines for you, instead of fighting SSH
-and hand-rolled startup scripts.
+features, wired together across machines for you, instead of hand-rolled
+startup scripts.
 
 **Nothing outside this folder is ever modified.** Your existing
 `llama.cpp/`, `llama-swap/` configs, and scripts stay untouched.
@@ -59,6 +59,10 @@ That's the entire setup path — the full walkthrough (vault, machines,
 stores, llama.cpp build, llama-swap, gateway, client config) is in
 **[docs/setup.md](docs/setup.md)**.
 
+Windows SmartScreen warning on the unsigned installer? See
+**[docs/windows-signing.md](docs/windows-signing.md)** for the safe
+"More info → Run anyway" steps and how to sign future builds.
+
 ### Try it with your AI agent in one prompt
 
 This repo ships an agent playbook (`AGENTS.md`), so any coding agent that
@@ -106,8 +110,9 @@ curl http://<master-ip>:8090/v1/models -H "Authorization: Bearer sk-farm-XXXX"
 ```
 
 Admins manage it all from the UI — create/revoke keys, edit who sees
-what, and watch per-key usage. Keys are never stored in plaintext in
-configs (the vault holds them; details in
+what, and watch per-key usage. Access keys live in the per-install,
+git-ignored `config/settings.yaml` (never in git); agent tokens and the
+HF token live only in the encrypted vault (details in
 [docs/secrets.md](docs/secrets.md)).
 
 ## Test every model type before it matters
@@ -217,7 +222,7 @@ llama.cpp, llama-swap, and every other wrapped tool:
 
 ## Status
 
-v0.01. llama.cpp RPC + llama-swap is the supported engine.
+v1.0.0. llama.cpp RPC + llama-swap is the supported engine.
 
 Licensed under **Apache-2.0** (this project's own code; download engines
 llama.cpp and llama-swap remain MIT under their own terms) — free for

@@ -1,7 +1,6 @@
 # Pyminion
 
 [![tests](https://github.com/evanofslack/pyminion/actions/workflows/python-app.yml/badge.svg)](https://github.com/evanofslack/pyminion/actions/workflows/python-app.yml)
-[![codecov](https://codecov.io/gh/evanofslack/pyminion/branch/master/graph/badge.svg?token=5GW65KFEL5)](https://codecov.io/gh/evanofslack/pyminion)
 
 <img width="800" alt="pyminion-logo" src="https://github.com/evanofslack/pyminion/assets/51209817/85e6ed9f-8cbf-4781-9c0b-f29c1d0a2162">
 <br></br>
@@ -20,7 +19,7 @@ games through the command line and simulation of games between bots.
 
 ## Installation
 
-Pyminion requires at least Python 3.10 and can easily be installed through pypi
+Pyminion requires at least Python 3.12 and can easily be installed through pypi
 
 ```bash
 python3 -m pip install pyminion
@@ -94,7 +93,7 @@ class BigMoneySmithy(Bot):
         super().__init__(decider=BigMoneySmithyDecider(), player_id=player_id)
 ```
 
-To see other bot implementations with more advanced decision trees, see [/bots](https://github.com/evanofslack/pyminion/tree/master/pyminion/bots)
+To see other bot implementations with more advanced decision trees, see [/bots](https://github.com/evanofslack/pyminion/tree/main/pyminion/bots)
 
 ### Running Simulations
 
@@ -126,7 +125,7 @@ big_money won 110, lost 676, tied 214
 big_money_smithy won 676, lost 110, tied 214
 ```
 
-Please see [/examples](https://github.com/evanofslack/pyminion/tree/master/examples) to see demo scripts.
+Please see [/examples](https://github.com/evanofslack/pyminion/tree/main/examples) to see demo scripts.
 
 ## Support
 
@@ -140,3 +139,19 @@ learning to determine optimal play.
 
 If you would like to contribute, please create a branch, add commits, and
 [open a pull request](https://github.com/evanofslack/pyminion/pulls).
+
+### Development
+
+Pyminion uses [uv](https://docs.astral.sh/uv/) for development.
+
+```bash
+uv sync                 # create the environment and install dev tools
+uv run pytest           # run the tests
+uv run mypy pyminion    # type check
+```
+
+### Releasing
+
+Bump the version with `uv version <new-version>` and merge it to main,
+then publish a GitHub release tagged `v<new-version>`. The release
+workflow builds the package and uploads it to PyPI.

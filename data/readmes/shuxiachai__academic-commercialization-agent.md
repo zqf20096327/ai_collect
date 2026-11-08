@@ -20,16 +20,16 @@ included.
 
 | Way in | What you need | |
 |---|---|---|
-| **Read sample reports** | Nothing. Five finished assessments, one in Chinese; opening one makes no model or search request | [Open samples](https://academic-commercialization-agent.up.railway.app/samples) |
-| **Run a new analysis online** | An account (sign-up is by invite code from the operator) with your own LLM API key and model plus a Tavily or Serper search key, which your runs are billed to; or an operator-issued access code. Incurs provider usage | [Open the app](https://academic-commercialization-agent.up.railway.app) |
+| **Read sample reports** | Nothing. Six finished assessments, one in Chinese; opening one makes no model or search request | [Open samples](https://academic-commercialization-agent.up.railway.app/samples) |
+| **Run a new analysis online** | A free account (email and password; sign-up is open) with your own LLM API key and model plus a Tavily or Serper search key, which your runs are billed to. Incurs provider usage | [Open the app](https://academic-commercialization-agent.up.railway.app) |
 | **Run it on your machine** | Python 3.11 or 3.12, [uv](https://docs.astral.sh/uv/) and your own keys | [Quick start](#quick-start) |
 
-The samples are also in [examples/](examples/README.md): two runs from
-2026-10-21, such as [Hyperloop](examples/hyperloop.md), and three from July, such as
-[Solid-state batteries for electric vehicles](examples/solid-state-batteries-ev.md)
-([frozen 2026-07-19 version, 9673a83](https://github.com/shuxiachai/academic-commercialization-agent/blob/9673a8346c15f11b989ce8fd2d85be484d1c27b3/examples/solid-state-batteries-ev.md)).
-The screenshot and samples come from past runs; none of them measures current
-model accuracy or is an up-to-date market assessment.
+The samples are also in [examples/](examples/README.md): five runs of
+2026-11-08 on the current pipeline with `deepseek-v4-pro`, such as
+[Continuous glucose monitoring for diabetes](examples/continuous-glucose-monitoring.md)
+and the Chinese [特高压直流输电](examples/uhvdc-transmission-zh.md), and the
+[Hyperloop](examples/hyperloop.md) production run of 2026-10-21. Three July
+reports stay in the folder for the frozen comparisons that read them.
 
 ## What makes it different
 
@@ -246,8 +246,10 @@ daily and keeps the newest fourteen copies, and can tell a
 fails, the maintenance loop stops, or the deployment's own key, quota or
 billing makes runs fail. With an email service set up
 ([Resend](docs/operating-guide.md#email-verification)), a new account proves
-its address through a one-time link before it can start paid work. There is
-no self-service password reset yet; the operator resets passwords.
+its address through a one-time link before it can start paid work, and a
+forgotten password is reset by a link sent to the same address, and an
+account can ask to be emailed when an assessment of its ends. Without an
+email service the operator resets passwords.
 
 Run URLs carry **128 bits of randomness** and act as read capabilities:
 anyone with the full URL can read that run until retention removes it.

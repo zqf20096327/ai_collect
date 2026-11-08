@@ -28,14 +28,14 @@ No config files. No boilerplate. Just `npx` and go.
 AI agents and developers need browser control that **just works**:
 
 - **Zero config** — `npx cdpilot launch` starts an isolated browser session
-- **Zero dependency** — No Puppeteer, no Playwright, no Selenium. Pure CDP over HTTP
+- **Zero npm dependencies** — No Puppeteer, no Playwright, no Selenium. Pure CDP over HTTP/WebSocket; the Python side needs one package, `websockets` (the setup wizard installs it)
 - **70+ commands** — Navigate, click, type, screenshot, network, console, accessibility, video understanding, progressive anti-bot resilience, and more
 - **AI-agent friendly** — Designed for Claude, GPT, Gemini, and any LLM tool-use workflow
 - **Isolated sessions** — Your personal browser stays untouched. cdpilot runs in its own profile
 - **Visual feedback** — Green glow overlay, cursor visualization, click ripples, and keystroke display keep you informed during automation
 - **Multi-project isolation** — Each project gets its own browser instance and port automatically, no conflicts
 - **AI control warning** — Red toast notification appears when you hover during active automation
-- **Privacy-first** — Everything runs locally. No data leaves your machine
+- **Privacy-first** — Everything runs locally; nothing leaves your machine unless you opt in (CAPTCHA solver keys, `tls-check`, proxies)
 
 ### Browser Selection (Workload-Aware Auto-Pick)
 
@@ -140,6 +140,15 @@ This registers the `cdpilot` MCP server (`npx cdpilot mcp`) and a short skill
 that teaches Claude Code when and how to reach for cdpilot's commands. See
 [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) and
 [`plugins/cdpilot/`](plugins/cdpilot/).
+
+### Smaller MCP tool list
+
+`cdpilot mcp --tools core` (or `CDPILOT_MCP_TOOLS=core`; the flag wins) lists 10 core
+tools (navigate, click, fill, content, screenshot, eval, wait_for, assert, tabs, connect)
+plus `browser_tools`. The agent calls `browser_tools` with `list` to see the other
+tools, or `enable` to add some (the server sends `tools/list_changed`). `--tools a,b,c`
+picks tools by name; `all` (default) is unchanged. Schema size of `tools/list`
+(tiktoken `o200k_base`): 45 tools = 5,769 tokens, `core` = 11 tools = 1,342 tokens.
 
 ### MCP Bundle (.mcpb)
 
@@ -248,11 +257,19 @@ cdpilot frame eval --frame "#card" "document.title"       # runs in the frame's 
   inside it and says so on stderr:
   `note: '#card-element' is not an iframe; using the iframe inside it`.
 - Selectors and texts that already contain `>>>` keep working: when the part
-  before the first `>>>` finds no iframe in the page, or a segment is empty
+  before the first `>>>` finds no iframe or shadow host in the page, or a segment is empty
   (`click "Next >>>"`), the whole string is used as written, exactly as
   before. If that fails too, one stderr line explains:
-  `note: 'Home' matched no iframe; used the selector as written`.
+  `note: 'Home' matched no iframe or shadow host; used the selector as written`.
   `--frame` never falls back: a frame it cannot find is an error (exit 1).
+- **Shadow DOM support**: `>>>` hops also pierce open shadow roots (`host.shadowRoot.querySelector(next)`).
+  Chains mix freely with iframes: `cdpilot click "iframe#pay >>> my-card >>> button.inner"` or
+  `cdpilot click "my-app >>> my-panel >>> input"`. A closed shadow root is unreachable by design
+  and fails with `'X' has a closed shadow root; cdpilot cannot reach inside it`.
+  When a plain CSS selector matches nothing at document level, cdpilot automatically falls back
+  to a depth-first search across all open shadow roots, printing one stderr note:
+  `note: '<sel>' found inside the shadow root of <host tag#id>`. Explicit `>>>` hops do not print this note.
+  `wait` and `wait-for` poll shadow roots every 200 ms alongside the document MutationObserver.
 - For `smart-click` / `smart-fill` / `smart-select` the part before the first
   `>>>` is a frame only if it looks like a selector (it has `#`, `.` or `[`,
   or starts with an `iframe`/`frame` tag) or is `url=…`; words stay text.
@@ -298,13 +315,21 @@ cdpilot frame eval --frame "#card" "document.title"       # runs in the frame's 
 ### Debugging
 
 ```bash
-cdpilot console [url]         # Capture console logs
-cdpilot network [url]         # Monitor network requests
-cdpilot debug [url]           # Full diagnostic (console+network+perf+shot)
-cdpilot perf                  # Performance metrics
-cdpilot eval <js>             # Execute JavaScript
-cdpilot eval-batch <json>     # Run N JS expressions in 1 roundtrip (5-30x faster)
+cdpilot console [url]                 # Capture console logs
+cdpilot network [url]                 # Monitor network requests
+cdpilot network <url> --har trace.har # Export navigation traffic as HAR 1.2 JSON (--har - for stdout)
+cdpilot debug [url]                   # Full diagnostic (console+network+perf+shot)
+cdpilot perf                          # Performance metrics
+cdpilot eval <js>                     # Execute JavaScript
+cdpilot eval-batch <json>             # Run N JS expressions in 1 roundtrip (5-30x faster)
 ```
+
+#### Network monitoring & HAR export
+
+`cdpilot network <url> --har <file>` exports all HTTP requests of a navigation as standard HAR 1.2 JSON (`--har -` writes to stdout).
+- **Included:** URLs, methods, headers, status codes, query strings, and CDP timing breakdowns (DNS, connect, SSL, send, wait, receive).
+- **Omitted:** Response bodies are not fetched or stored (avoids memory bloat and round-trip overhead); content.size reflects transfer length; bodySize is -1.
+- **Masking:** Sensitive header values matching security patterns (`Cookie`, `Set-Cookie`, `Authorization`, `X-Api-Key`, token, secret) are replaced with `"«masked»"`. URLs are masked the same way as the session log: userinfo passwords and query/fragment parameters named like secrets (`token`, `key`, `code`, `session`, …) in `request.url`, `queryString`, `redirectURL` and URL-bearing header values (`Location`, `Referer`, `Link`); a `data:` URL keeps only its media type.
 
 ```bash
 # Example: read 4 DOM values in a single CDP roundtrip instead of 4
@@ -427,6 +452,25 @@ cdpilot a11y                  # Full accessibility tree
 cdpilot a11y summary          # Quick summary
 cdpilot a11y find <role>      # Find elements by ARIA role
 ```
+
+### Agent mode: numbered refs and diffs (token budget)
+
+```bash
+cdpilot agent observe                 # {url, title, actions:[{ref:"@1", role, name, value?}], text, token_estimate}
+cdpilot agent act --ref @3 --action click
+cdpilot agent act --ref @4 --action fill --text "cdpilot"
+cdpilot agent act --url https://example.com/   # navigates silently, prints the diff
+cdpilot agent observe --diff          # only what changed since the last observe/act
+cdpilot agent stats | agent reset
+```
+
+`observe` turns the accessibility tree into a numbered list of things an agent can act on (buttons, links,
+fields with their current value, unique text anchors) plus a short text summary; no screenshot, no HTML.
+Every `act` and `observe --diff` returns only the change: `changed.added` (full descriptors, so the agent can act
+on a new element without another observe), `changed.removed` (refs), `changed.value_changed`, and `text` only
+when it changed (`text_changed`). Refs are stable while the element exists (keyed by the DOM node, not by
+position); a navigation starts a new set. `token_estimate` is `len(json)/4`; `saved_vs_full` compares the diff
+with a full observe of the same page. State lives in `~/.cdpilot/projects/<id>/agent-state.json`.
 
 ### Session Management
 
@@ -709,7 +753,7 @@ is dropped, never signalled.
 
 **Idle close** still works while the signer runs: the signer is attached to every page, so instead
 of "a page is attached" cdpilot counts the CDP clients other than the signer (by socket owner:
-`netstat` on macOS and Windows, `ss` on Linux), and a `watch` daemon or a Playwright session keeps
+`netstat` with an `lsof` fallback on macOS, `netstat` on Windows, `ss` on Linux), and a `watch` daemon or a Playwright session keeps
 the browser open. On Linux, `ss -tnp` shows only your own processes' sockets, so a client running
 as another user is not counted and idle close may close the browser under it.
 
@@ -921,6 +965,43 @@ CDPILOT_TIMEOUT=60 cdpilot run flow.cdp   # default for every command (and each 
 For `mcp` and `serve` the value is not applied to the long-running server
 itself; it is passed on to every tool call / request it runs.
 
+### Warm process (`CDPILOT_DAEMON=1`)
+
+Every cdpilot call is a fresh process: node starts (~0.1 s), Python imports the
+core (~0.15 s) and a CDP session is set up (~0.5 s) before the command itself
+runs — a browser paints a page in 20 ms, `cdpilot go` took about a second
+(measurements: `.claude/docs/perf-taban-2026-11-08.md`). With
+`CDPILOT_DAEMON=1` the launcher keeps one warm Python process per project and
+environment and hands page commands to it over a Unix socket; the process keeps
+the module and its event loop between calls, so the second and later calls skip
+the start-up cost.
+
+```bash
+export CDPILOT_DAEMON=1
+cdpilot go https://example.com      # first call: fresh process, starts the daemon
+cdpilot content                     # served warm
+cdpilot daemon status               # pid, requests served, uptime, socket
+cdpilot daemon stop                 # stop every running daemon (they also leave after 30 min idle)
+```
+
+Output, exit codes, the session log and recordings are the same either way:
+each request runs as its own process would (the caller's argv, cwd,
+environment and stdin; module state reset between requests; exit-time hooks
+run at request end; the CDP connections a command opened are closed at request
+end, as a process exit closed them, so no viewport, throttle or event state
+leaks into the next command). Closing the client (Ctrl+C) cancels the running
+command. The launcher runs a fresh process instead whenever the daemon is
+missing, busy with another call, of another version (that one is asked to
+leave), set up for a port or profile the registry no longer names, or the
+command is not a page command: `launch`, `stop`, `connect`, `mcp`, `serve`,
+`watch`, `replay`, `run`, `captcha-wait` and the other lifecycle commands, and
+anything with `--timeout`. Nothing is ever executed twice. POSIX only for now;
+the socket lives in `$CDPILOT_HOME/daemon/` (or `$XDG_RUNTIME_DIR` / a private
+temp directory when that path is too long for a Unix socket), 0600, and is used
+only when it and its directory belong to you. `CDPILOT_DAEMON_IDLE=<seconds>`
+sets the idle exit (default 1800). Opt-in in this release; the default may
+change once two weeks of use show no difference in error rates.
+
 ### Session log
 
 Every command (and every MCP tool call) appends one JSON line to a local,
@@ -950,6 +1031,23 @@ over 40 chars cut and secret-looking ones replaced. Logging is best effort: it
 never changes a command's output or exit code, and a failed write costs one
 stderr line. `CDPILOT_LOG=0` turns it off; `CDPILOT_LOG_DAYS` (default 14)
 sets how many days are kept. The MCP server exposes it as `browser_log`.
+
+### Record & replay
+
+Record sequences of CLI commands into a portable flow JSON file and replay them with variable substitution:
+
+```bash
+cdpilot record start [--name <n>]
+cdpilot record status
+cdpilot record cancel
+cdpilot go https://example.com
+cdpilot click "#login"
+cdpilot fill "#email" test@test.com
+cdpilot record stop [--save login-flow.json]
+cdpilot replay login-flow.json [--var k=v ...] [--delay real|none|<ms>] [--dry-run] [--continue]
+```
+
+Commands that run while recording is active are appended to `$CDPILOT_HOME/record/active.json`; secrets are replaced by `{{name}}` placeholders before a step is written to active.json. `CDPILOT_LOG=0` does not turn recording off, and steps run by `replay` are not recorded. Failed steps (`exit != 0`) are dropped at `record stop`. A value becomes a placeholder `{{name}}` cataloged under `vars` if the selector/label is secret-shaped (`#password`, `input[type=password]`, API key), or the value matches a token/bearer pattern or secret URL parameter. Other typed values (emails, search terms, anything the rules do not recognise) are stored verbatim, so review a flow before sharing it; `--save` files are created with mode 0600. In `replay`, `--delay real` reproduces recorded inter-step timing (capped at 10 s per gap), while `--delay none` or a fixed millisecond delay skips waiting. Variables are supplied via `--var k=v` or `CDPILOT_VAR_<NAME>`; missing variables halt replay before any step runs.
 
 ### Use your own browser (human-in-the-loop)
 
@@ -1082,7 +1180,9 @@ cdpilot launch --no-webmcp     # turn it off again (applies at the next start)
   Chrome reads feature flags only at startup: a browser that is already running
   keeps its flags until `cdpilot stop`.
 - `tools list` shows the tools of the page and of its same-origin iframes
-  (with the frame URL), marks form tools and whether the form submits itself
+  (with the frame URL; every readable frame is asked for its own tools, so a
+  frame tool missing from the top document's `getTools()` is still listed and
+  runs in its frame), marks form tools and whether the form submits itself
   (`toolautosubmit`), and shows `title` and the `readOnlyHint` /
   `consequentialHint` / `untrustedContentHint` annotations. Nothing is injected
   into the page: the list is the browser's registry at that moment, so it
@@ -1230,9 +1330,9 @@ print(result.stdout)
 | v0.6.0 | + captcha solver + cookies-auto (regression) | 15 / 80 | 18.75% |
 | **v0.8.0** | **Full — cookies safe-host scoped + per-task wipe (no proxy, no TLS fork)** | **29 / 80** | **36.25%** |
 | v0.7.0 (slot) | + named proxy pools | _depends on user proxy_ | — |
-| v0.8.0 (slot) | + TLS-aware launcher (camoufox/undetected-chrome) | _depends on browser choice_ | — |
+| v0.8.0 (slot) | TLS-aware launcher — withdrawn: camoufox / undetected-chrome do not speak CDP (CHANGELOG 0.8.0) | — | — |
 
-**What cdpilot does not do:** `cdpilot` is an avoidance engine, not a CAPTCHA solver. We prioritize structural stealth (JS fingerprinting, behavioral entropy) to prevent challenges from appearing. When a CAPTCHA blocks progress and cannot be bypassed, the task fails — that is the honest definition of our success rate. PerimeterX (2/18), GeeTest (0/4) and Akamai (1/6) are known weaknesses; v0.7+ (residential proxy) and v0.8+ (TLS fingerprint correction via camoufox) target these directly.
+**What cdpilot does not do:** `cdpilot` is an avoidance engine first; the solver plugins above (`cdpilot captcha`, bring your own key, off by default) are a fallback, not the strategy. We prioritize structural stealth (JS fingerprinting, behavioral entropy) to prevent challenges from appearing. When a CAPTCHA blocks progress and cannot be avoided, the task fails — that is the honest definition of our success rate. PerimeterX (2/18), GeeTest (0/4) and Akamai (1/6) are known weaknesses; named proxy pools (v0.7) help where the block is IP-based, while TLS-level fingerprinting cannot be fixed from inside a CDP-driven browser and remains open.
 
 ## Recommended Configuration
 
@@ -1271,7 +1371,7 @@ Future paid offerings:
 - **No arbitrary file access** — MCP screenshot filenames are sanitized and restricted to the screenshots directory. Path traversal is blocked.
 - **Safe CSS selectors** — All selectors passed to `querySelector` are JSON-escaped to prevent injection.
 - **No network exposure** — CDP listens on `127.0.0.1` only. Remote connections are not possible by default.
-- **No dependencies** — Zero npm/Python runtime dependencies means zero supply-chain attack surface.
+- **One dependency** — zero npm packages; the Python side needs only `websockets`. A one-package supply chain is small enough to audit.
 
 Found a vulnerability? Please email the maintainer directly instead of opening a public issue.
 
@@ -1309,13 +1409,13 @@ The only browser MCP with built-in test assertions. Here's what we've shipped an
 - [x] **10 built-in test assertions** — assert, assert-url, assert-title, assert-count, assert-value, assert-attr, assert-visible/hidden, wait-for, check (batch), screenshot-diff
 - [x] **`test` runner + `trace` viewer** — `cdpilot test [--watch]` runs `*.cdpt.js` files; `cdpilot trace open <run>` opens a time-travel trace viewer for a run
 - [x] **Accessibility tree snapshot** (`a11y-snapshot`) — structured text with @ref handles the agent can act on directly, no vision model needed; 1.4–42× smaller than the page's raw HTML on the four pages we measured (2026-09-27). Not always cheaper than a screenshot: link-heavy pages produce more text than a small screenshot costs
-- [x] **Token-efficient screenshots** — element-level crop (13x smaller), JPEG quality control, format selection
+- [x] **Token-efficient screenshots** — element-level crop, JPEG quality control, format selection
 - [x] **Vision fallback** (`describe`) — a11y + screenshot + text in one call
 - [x] **Annotated screenshots** — @N badge overlays on interactive elements
 - [x] **Auto-wait** — MutationObserver-based, 5s automatic element waiting
 - [x] **`wait-for-text`** — adaptive text-based waiting (subtree + characterData) for streaming AI responses, async toasts, and selector-less synchronization
 - [x] **`eval-batch`** — run N JS expressions in 1 CDP roundtrip (5-30x speedup vs sequential `eval`)
-- [x] **`block`** — request blocking via `Network.setBlockedURLs` with built-in presets (images/fonts/ads/media), 3-10x faster page loads on opt-in
+- [x] **`block`** — request blocking via `Network.setBlockedURLs` with built-in presets (images/fonts/ads/media); fewer bytes and faster loads on opt-in (measure on your own pages)
 - [x] **`dismiss`** — heuristic auto-click for LLM chat sign-up walls (EN+TR pattern library, destructive-action guards)
 - [x] **`adaptive`** — auto-escalate to stealth on CAPTCHA-protected hosts, persistent per-host memory ("run fast, climb walls")
 - [x] **`cookies save/load`** — export/import cookies as JSON (replay CF/DataDome clearance across runs)

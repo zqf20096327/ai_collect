@@ -280,6 +280,8 @@ fences, including unclosed fences, in complete and streamed replies.
 
    Jina, Browserless, and InfoQuest web fetches resolve relative links and image sources using the requested page URL (or a usable HTML base URL), so returned Markdown includes complete destinations. Link resolution preserves the surrounding HTML source, including malformed-page formatting.
 
+   Direct Python calls to `web_fetch_tool` return `(content, artifact)` so Browserless can keep the target page's HTTP status out of page prose. Callers that previously expected a string should unpack the tuple; Agent tool calls continue to expose content and artifact through LangChain's tool result.
+
    Self-hosted Browserless, Crawl4AI, Firecrawl, and fastCRW fetch backends require outbound isolation from private, loopback, link-local, and cloud-metadata networks before setting `network_isolation_confirmed: true` on each tool. DeerFlow rejects private or unverifiable backends by default because those services handle redirects, DNS resolution, and subresources themselves. `allow_private_addresses` permits intentional internal target URLs and does not bypass the backend check. See [delegated fetch deployment](backend/docs/CONFIGURATION.md#delegated-fetch-backend-isolation); `make doctor` reports backend configurations that would be refused.
 
    Jina fetches support opt-in bounded retries via `max_retries` (default `0`) and `retry_budget_seconds` (default `30`) in the tool configuration. Valid `Retry-After` hints set a minimum wait for HTTP 429/503; 429 without a valid hint stays terminal. Hints that cannot fit the remaining budget stop retries. Local backoff remains randomized. Retries may increase upstream requests and cost; see [Jina fetch retries](backend/docs/CONFIGURATION.md#jina-fetch-retries).
@@ -335,7 +337,7 @@ fences, including unclosed fences, in complete and streamed replies.
    Administrators can open **Settings → Models** to select a provider and enter
    only its **API Key** and **model ID**. Endpoints, authentication and adapters are
    backend presets for OpenAI, Anthropic, DeepSeek, Alibaba Cloud Bailian/Qwen,
-   Volcengine/Doubao, Moonshot/Kimi, Zhipu/Z.AI and MiniMax. Region and plan-specific
+   Volcengine/Doubao, Moonshot/Kimi, Zhipu/Z.AI, MiniMax and StepFun. Region and plan-specific
    entries are explicitly distinguished. Arbitrary model IDs are accepted; internal
    names are generated automatically and remain stable when a model ID changes.
    Newly saved models are enabled and immediately refresh existing chat and Agent
@@ -710,6 +712,19 @@ If the Gateway does not become healthy within the startup window, deployment
 exits non-zero and prints the container status plus recent Gateway logs. The
 production image starts from its already-built environment and never resolves
 or installs Python dependencies at container startup.
+
+Images built from a checkout never contain its local configuration:
+`.dockerignore` keeps `config.yaml`, `config.yaml.bak`, `extensions_config.json`
+and `mcp_config.json` (at the root or in the legacy `backend/` location), `.env`
+and `.env*.local` files, local HTTPS keys (`frontend/*.pem`), and the credential
+files the extension manager refuses inside `backend/extensions/sources/` out of
+the build context. Compose mounts the config and passes the environment at
+runtime, so pushing or sharing an image does not publish those credentials.
+A locally built frontend image therefore no longer picks up `NEXT_PUBLIC_*`
+values from `frontend/.env.local`: `next build` inlines them into the client
+bundle, Compose's environment reaches only `next start`, and `frontend/Dockerfile`
+takes no build arguments for them. The Docker stack serves the frontend and
+Gateway from one nginx origin and needs none of them.
 
 If `make up` reports an unwritable runtime home or an unreadable persisted secret
 after `make docker-start`, run the printed `sudo chown -R <uid>:<gid> '<home>'`
@@ -1196,22 +1211,4 @@ MCP tool names are prefixed with `<server_name>_` by default to prevent collisio
 Signed-in users' notification toggle, default model, conversation mode, and reasoning effort are saved to their account and restored on other browsers or after clearing browser storage. Browser notification permission still needs to be granted on each device. Changes retry after network failures; unsent changes survive a reload in the same tab. Concurrent edits to different fields are preserved; for the same field, the last server write wins. Existing unscoped browser preferences are not uploaded automatically because they have no account owner; reselect those settings once after upgrading. Static demos and auth-disabled development keep browser-local settings. Thread-specific model overrides and other display preferences remain local.
 
 In a new chat, the submitted question stays above its streamed reasoning and
-tool steps while the server creates the conversation and confirms the message.
-
-While a Web task is running, choose **Queue** to send text for the next turn or
-**Steer** to update the current work. Native subagents pause at a safe boundary
-while the main Agent handles the update; active tool calls finish first. Stop
-keeps the Goal, while explicitly replacing the work can clear it. Unapplied
-messages survive database-backed Gateway restarts and require **Send again**;
-interrupted child side effects are not replayed automatically. Existing execution
-limits still apply. Busy input currently accepts text only.
-If a run rejects an update because it has finished, retrying the retained draft
-during the next run targets that run. Uncertain network failures retain the
-original submission identity so retries can reconcile the same accepted input.
-
-Markdown and JSON conversation exports from the chat header or sidebar read all
-persisted history pages, including earlier turns outside the loaded view or
-compacted model context. A failed history read stops the export instead of
-downloading a partial transcript. Public demos export their bundled messages.
-
-Capability Center groups plugins by office collaboration, documents and knowledge, search and research, business and
+tool steps while the server creates the conversation an

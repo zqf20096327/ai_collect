@@ -238,6 +238,7 @@
     - [Cohere <sub>F, $</sub>](https://cohere.com) - 기업용 LLM API 및 임베딩 모델
     - [AI Router <sub>KR, $</sub>](https://ai-router.dev/ko) - 제3자가 운영하는 OpenAI 호환 API 게이트웨이. 키의 종류와 데이터 처리 정책은 사용 전 별도 확인 필요
     - [PlaceCall <sub>EN, $</sub>](https://voygr.tech/placecall/) - AI 에이전트가 미국 업체에 실제 전화를 걸어 예약·문의·견적을 처리하고 통화 결과와 녹취록을 돌려받는 REST API·원격 MCP 서버. 계정 필요(API 키 또는 MCP OAuth 로그인), 미국 번호만 지원, 통화 녹음·녹취록은 제공사 서버에 저장됨
+    - [Jvlang AI (巨浪 AI) <sub>F, $</sub>](https://jvlangai.com/) - 중국어 사용자를 위한 LLM API 공개 견적 조회. 제공사별 그룹·과금 단위·수집 시각·원문 링크를 확인할 때 사용. 조회는 로그인·API 키 없이 무료이며 비공개 소스의 웹 서비스로, 별도 후원·충전 상담은 유료. 수집 가격은 실제 호출 검증이나 제공사 신뢰도 보증이 아님. 제작자 기여.
 
   - <span id="ai-agent">에이전트 & 프레임워크</span>
     - [LangChain <sub>F, O</sub>](https://www.langchain.com) - LLM 애플리케이션 개발 프레임워크
@@ -572,6 +573,7 @@
     - [deed.page <sub>EN, F, $</sub>](https://deed.page) - HTML 파일이나 정적 사이트 폴더를 PUT 요청 한 번으로 고정 HTTPS 주소(`이름.deed.page`)에 게시하는 정적 호스팅 API. 원격 MCP 서버로 코딩 에이전트에서도 사용 가능. 첫 게시는 계정·API 키 없이 가능하고 응답으로 받은 토큰으로 같은 주소를 갱신. 무료 플랜은 사이트 25개·사이트당 25MB, 서버 측 코드·DB는 지원하지 않음
     - [npmscan <sub>EN, F, O</sub>](https://npmscan.com/) - npm 패키지의 알려진 취약점·악성 패키지 정보와 신뢰 신호를 조회하는 원격 API·MCP 서비스. 계정·API 키 없이 사용 가능하며 MCP는 IP당 분당 30회 제한. MIT 라이선스 클라이언트 플러그인 제공
     - [SiftingIO <sub>EN, F, $</sub>](https://sifting.io/docs) - 미국 주식·ETF, 외환, 원자재·암호화폐의 실시간 데이터를 REST·WebSocket으로, 과거 데이터를 REST로 조회하는 시장 데이터 API. 계정·API 키 필요. 내부·비상업적 평가용 한도형 무료 플랜과 유료 플랜 제공
+    - [LogBrew <sub>EN, F, $</sub>](https://logbrew.co/en) - 오류 추적·로그·트레이스·메트릭을 한곳에서 보는 호스팅 모니터링 서비스. OpenTelemetry 데이터를 받으며, 원격 MCP 서버로 코딩 에이전트가 승인한 프로젝트의 이슈와 로그를 읽음(쓰기는 허용한 경우에만). 계정 필요(GitHub·GitLab·Bitbucket·Google 로그인), 무료 플랜은 카드 없이 월 오류 10만 건·로그 50GB·스팬 5천만 개, 보존 기간 30일. 데이터는 제공사 서버에 저장됨
 
   - <span id="online-utilities">Online Utilities</span>
     - [All Tools Verse <sub>EN, F</sub>](https://alltoolsverse.com/) - 파일·이미지·텍스트·데이터 변환 등 브라우저 도구 모음
@@ -579,6 +581,7 @@
     - [Stayput <sub>EN, F, O</sub>](https://stayput.dev) - 이미지·PDF·오디오·영상 파일을 브라우저에서 처리하는 무료 도구 모음. 파일을 업로드하지 않고 계정이 필요 없으며, 코드는 MIT 라이선스로 공개
     - [Nutilz <sub>EN, F</sub>](https://nutilz.com/) - 정규식 테스트·JSON 포맷 등 개발 보조 유틸리티. 도구에 따라 서버 처리가 포함되므로 업로드 여부 확인 필요
     - [imgmov Last Frame Extractor <sub>EN, F</sub>](https://imgmov.com/extract-last-frame-from-video) - Browser tool for saving a video's ending frame as a PNG for demo references or bug reports. No account or video upload; clips up to 512 MB and two minutes, subject to browser codec support.
+    - [cv.cm JWT Decoder <sub>KR, EN, F, O</sub>](https://cv.cm/ko/jwt/) - 인증 디버깅 때 JWT의 헤더와 페이로드를 브라우저 안에서 읽는 무료 도구. 계정이 필요 없고 토큰을 전송하지 않음. 서명은 검증하지 않으며 페이지에 Google Analytics가 있음
 
   - <span id="search-tool">Search</span>
     - [Google](https://www.google.com/) - 검색 엔진

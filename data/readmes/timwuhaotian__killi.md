@@ -19,7 +19,7 @@ the same way every time, so the provider's prompt cache keeps hitting. It is the
 [Kiled](https://github.com/timwuhaotian/kiled) editor.
 
 <p align="center">
-  <img src="docs/screenshot.svg" width="960" alt="killi's banner, then killi fixing a failing Rust test: it reads the project, runs the tests, thinks, edits src/lib.rs with a numbered line diff, reruns the tests and explains the fix; the status line shows the model, thinking effort, a context gauge, tokens with 80% cached and the git branch">
+  <img src="docs/screenshot.svg" width="960" alt="killi on the iced-coffee theme fixing a failing slugify test: the blue-to-coral banner, a read and the failing test run, a thought, an edit to slug.py with added and removed line stripes, the passing run and the explanation; below, the model's suggested next prompt sits in the empty prompt and the status line shows the model, swarm mode, a context gauge, tokens 83% cached and the git branch">
 </p>
 
 <p align="center">
@@ -69,7 +69,10 @@ How these were measured: [Size and memory](#size-and-memory) · [Capability test
   `AGENTS.md` (or `CLAUDE.md`) files, including ones in subfolders.
 - **Every session on disk**, exactly as sent, so `killi -c` continues where you left off with
   the cache still warm.
-- **Updates itself.** `killi update` installs the latest release after checking its checksum.
+- **Updates itself.** `killi update` installs the latest release after checking its checksum,
+  and a session that finds a newer release (at start and every six hours) prints what changed
+  since your version and asks whether to install it now. `KILLI_NO_UPDATE_CHECK=1` turns the
+  check off.
 
 ## Size and memory
 
@@ -102,7 +105,7 @@ other two; tokens and memory are not affected by load.
 ## Install
 
 ```sh
-curl -fsSL https://github.com/timwuhaotian/killi/raw/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/timwuhaotian/killi/main/install.sh | sh
 ```
 
 This puts `killi` in `~/.local/bin` after checking its SHA-256 against
@@ -225,14 +228,14 @@ killi -p "..." --json        # one JSON summary: tokens, cache hits, time
 | drag a file in | an image is attached as `[Image #1]`; any other file is named as `@path` |
 | Ctrl+O | the last tool output or thought in full |
 | ↑ ↓ | history |
-| Tab, → | in an empty prompt, put the suggested next prompt there |
+| Tab, → | at the end of the prompt, take the faint suggestion after it |
 | Shift+arrows, Shift+Home/End | select in the prompt, by words with Alt; typing replaces the selection, Ctrl+C copies it; in fullscreen mode a drag, double- or triple-click selects too |
 
 <p align="center">
-  <img src="docs/menu.svg" width="960" alt="The slash menu after typing /re: resume, reload and the refactor skill first, then the other commands and skills whose descriptions match, each with its description">
+  <img src="docs/menu.svg" width="960" alt="The slash menu narrowed by /re on the iced-coffee theme: resume, recap, reload and the refactor and code-review skills first, then the other commands whose descriptions match, each with its description">
 </p>
 
-Commands: `/provider [name]` (add a provider from a pasted key), `/model [alias]`,
+Commands: `/provider [name]` (add a provider from a pasted key), `/model [alias]`, `/theme [name]` (color theme),
 `/backup-model [alias]` (the fallback when the primary keeps failing), `/mcp [server]`
 (turn servers on or off), `/web-search-config`, `/effort [level]` (thinking effort),
 `/new` (or `/clear`), `/resume`, `/btw <question>` (a side question, never kept),
@@ -247,14 +250,24 @@ later in this folder), `/prune [keep]`
 `/<skill-name> [request]` for any skill. The menu matches loosely, the way Kimi Code's does:
 `/cr` finds `code-review`.
 
+Ten color themes: `/theme` previews each one live — its banner gradient, diff stripes and
+status colors — as the selection moves, before you pick. The screenshots here wear
+`iced-coffee` (sky blue, coral and amber on dark), the palette the icon is drawn from.
+
+<p align="center">
+  <img src="docs/theme.svg" width="960" alt="/theme previewing iced-coffee: a specimen with the banner in its blue-to-coral gradient, a swatch for every color's job, sample tool rows, a working row and a diff, above the prompt and the list of ten themes with iced-coffee current">
+</p>
+
 After a turn that used tools, killi prints a recap of the session in 100 characters or fewer
 under the turn's totals; `/recap` asks for one at any time, and `[ui] recap = false` turns the
 automatic one off. A recap is a side request like `/btw`: it is never kept in the conversation
 and the cached prefix still hits.
 
 After a turn ends, the model suggests what to ask next: the empty prompt shows the suggestion
-as its placeholder, and Tab or → puts it in the prompt. It is a side request like `/btw`, so it
-is never kept in the conversation and the cached prefix still hits.
+as its placeholder, and Tab or → puts it in the prompt. Once you take it, or pause for a second
+while typing a prompt, the model guesses how the prompt goes on and shows that faint after the
+cursor; Tab or → takes it and asks for more, and typing along it keeps it. Each is a side request
+like `/btw`, so it is never kept in the conversation and the cached prefix still hits.
 
 killi runs commands and edits files without asking; `/undo` is the safety net.
 

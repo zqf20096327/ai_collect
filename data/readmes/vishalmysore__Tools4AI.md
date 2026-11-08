@@ -349,7 +349,7 @@ Or use as maven dependency
 <dependency>
     <groupId>io.github.vishalmysore</groupId>
     <artifactId>tools4ai</artifactId>
-    <version>0.9.6</version>
+    <version>1.3.0</version>
 </dependency>
 
 ```
@@ -379,8 +379,8 @@ You can run Tools4AI fully offline against models served by [Ollama](https://oll
 **OpenAI-compatible API**, so there is no separate processor to configure — just point `OpenAiActionProcessor`
 at the local endpoint.
 
-> Note: `LocalAIActionProcessor` is currently a stub (its methods return `null`). Use the OpenAI-compatible
-> route below instead.
+**Fastest start:** [examples/ollama-quickstart](examples/ollama-quickstart) is a ready-to-run project.
+Run `ollama pull qwen2.5:3b`, then `mvn -q compile exec:java` in that folder.
 
 **1. Pull and run a model**
 

@@ -5,12 +5,45 @@
   </picture>
 </h1>
 
-**Find out what your prompt costs on every major AI model, and exactly which changes make it cheaper.**
+**Same prompt, different bill: tokensaver shows what your prompt costs on 20 models, in any language, and exactly which changes make it cheaper.**
 
 [![CI](https://github.com/behrouzbk/tokensaver/actions/workflows/ci.yml/badge.svg)](https://github.com/behrouzbk/tokensaver/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/prompt-tokensaver.svg)](https://pypi.org/project/prompt-tokensaver/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/behrouzbk/tokensaver/blob/main/LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+
+<a href="https://github.com/behrouzbk/tokensaver/tree/main/examples/calibration">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/behrouzbk/tokensaver@main/assets/language-tax-dark.svg">
+    <img alt="Tokens per GPT-4o token for the same prompt in 12 languages: Claude uses up to 3.9x (Punjabi), Gemini stays between 0.8x and 1.25x" src="https://cdn.jsdelivr.net/gh/behrouzbk/tokensaver@main/assets/language-tax-light.svg">
+  </picture>
+</a>
+
+The same support-bot system prompt is 393 tokens in English and 2,565 in Punjabi on Claude
+Sonnet 5.5, counted with Anthropic's own token counter: 6.5× the cost for the same text. On
+Gemini 3.8 Flash it is 286 and 717. The same prompt can cost very different amounts
+depending on the language and the provider, and tokensaver shows you how much before you
+pay for it.
+
+### Try it in 30 seconds
+
+```bash
+pip install prompt-tokensaver
+tokensaver compare "ਮੇਰਾ ਆਰਡਰ ਕਿੱਥੇ ਹੈ?" --models gpt-4o,claude-sonnet-5-5,gemini-3.8-flash
+```
+
+```text
+| Model             | Provider  | Tokens | Count     |    $/call | $/1k calls |
+|-------------------+-----------+--------+-----------+-----------+------------|
+| gemini-3.8-flash  | Google    |    ~13 | estimated |  $0.00001 |   $0.00975 |
+| gpt-4o            | OpenAI    |     12 | exact     |  $0.00003 |    $0.0300 |
+| claude-sonnet-5-5 | Anthropic |    ~47 | estimated | $0.000094 |    $0.0940 |
+```
+
+**Measured, not guessed.** Claude and Gemini estimates are calibrated against Anthropic's
+and Google's own token counters ([calibration](https://github.com/behrouzbk/tokensaver/tree/main/examples/calibration)),
+and the optimized example prompt passes the same 45 behaviour tests on a real model as the
+original ([behaviour test](https://github.com/behrouzbk/tokensaver/tree/main/examples/behaviour-test)).
 
 Most token counters stop at a number. tokensaver tells you **what to change**: every
 suggestion comes with a reason, the tokens it saves, and what that is worth in dollars.
@@ -124,6 +157,9 @@ tokensaver scan prompts/
 # 6. How much of each request is the system prompt and tools, sent on every call?
 tokensaver request --system system.md --tools tools.json --user "Where is my order?"
 
+# 7. Do my requests start with the same bytes, so prompt caching can reuse them?
+tokensaver cache-check request1.json request2.json
+
 # Pipe text in with "-", list models and prices
 cat prompt.txt | tokensaver count -        # PowerShell: Get-Content prompt.txt | tokensaver count -
 tokensaver models
@@ -187,8 +223,22 @@ total.
 | `--output FILE`, `-o FILE` | Saves the optimized prompt to `FILE`. Without it, nothing is written. The input file is **never** overwritten. |
 | `--force` | Lets `--output` replace a file that already exists. It still refuses to overwrite the input file. |
 | `--no-diff` | Hides the before/after diff (it is shown by default). |
+| `--cache-hit-rate R` | Also shows what the saving is worth with prompt caching, at a share `R` (0 to 1) of calls that read the prompt from the cache. Off by default. |
+| `--tools FILE` | With `--cache-hit-rate`: tool schemas sent with this prompt, so the caching saving covers the whole fixed part. |
 | `--prices FILE` | Use your own `prices.json`. |
 | `--json` | Prints JSON instead of tables, for scripts and CI (see [JSON output](#json-output)). |
+
+**Savings with prompt caching.** The dollar savings above are at the normal input price.
+If this prompt is the cached fixed part of every request, a saved token is worth less on
+cached calls: 50% of the input price on `gpt-4o`, 10% on most newer models, 2.5% on Claude
+Fable 5.1. `--cache-hit-rate` adds a second summary with the saving per 1,000 calls with
+no caching, on the first call (cache write), on a cached call and on average. It warns
+when the prompt is too short to be cached at all, and when optimizing would push it
+below the minimum, so cached calls would get more expensive.
+
+```bash
+tokensaver optimize system.md --apply all --cache-hit-rate 0.9 --tools tools.json
+```
 
 Common combinations:
 
@@ -235,11 +285,30 @@ tokensaver request --system system.md --tools tools.json \
 You get one table for the fixed part (each part's tokens and cost, and the total) and one
 row per user message with the full request size and the fixed part's share of it.
 
+**With prompt caching.** The fixed part comes first in every request and is the same each
+time, so providers can cache it. A third table shows what the fixed part costs per call:
+
+- with no caching
+- on the first call, which writes it to the cache (1.25× on GPT-6 and Claude, the normal
+  price elsewhere)
+- on later calls, which read it from the cache (from 2.5% of the input price on Claude
+  Fable 5.1 to 50% on `gpt-4o`)
+- on average, if you pass `--cache-hit-rate` (for example `0.9` for 9 cached calls in 10)
+
+If the fixed part is shorter than the model's minimum cacheable length, the table is
+replaced by a note: that prefix is never cached, so every call pays full price. The
+user message is always billed at the normal input price.
+
+```bash
+tokensaver request --system system.md --tools tools.json -m claude-sonnet-5-5 --cache-hit-rate 0.9
+```
+
 | Option | What it does |
 |---|---|
 | `--system` | System prompt: a file, `-` for stdin, or the text itself. |
 | `--tools` | Tool schemas as JSON: a file or `-`. Accepts a list of tools (OpenAI or Anthropic format), a single tool, or a whole request body with a `tools` key. |
 | `--user` | A user message: a file, `-` or the text itself. Repeat it to compare several. Optional. |
+| `--cache-hit-rate` | Share of calls that read the fixed part from the prompt cache, from 0 to 1. Adds the average cost per call. Optional. |
 | `--model`, `-m` | Model to measure on. Default: `gpt-4o`. |
 | `--prices FILE` | Use your own `prices.json`. |
 | `--json` | Prints JSON instead of tables, for scripts and CI (see [JSON output](#json-output)). |
@@ -252,6 +321,50 @@ Tip: keep the system prompt, tool schemas and format rules in one language (usua
 English) and translate only what the user sees. A translated system prompt pays the
 language gap on every call, and gives each language its own prompt prefix, so prompt
 caching can no longer share it.
+
+### `tokensaver cache-check REQUEST...`
+
+Prompt caching only helps when the start of a request is **byte-identical** to an earlier
+one. Providers cache tools first, then the system prompt, then the messages, so one value
+that changes on every call (a timestamp, a session ID, the user's tier) near the top of
+the system prompt means nothing after it is ever reused, and every call pays full price.
+
+`cache-check` compares two or more requests and shows:
+
+- how many tokens all of them share from the start (the most the cache could reuse)
+- where each request leaves that shared prefix: the part (`tools`, `system`,
+  `messages[0] (system)`, ...), line and column, and the text there
+- whether the difference is in the **fixed part** (tools or system prompt), or only in
+  the conversation, which is expected
+- what the differing value looks like (date/time, UUID, hex ID, long number), with a tip
+  to move it after the static part
+- a warning when the shared prefix is below the minimum cacheable length
+
+```bash
+# Two real request bodies, as logged by your app
+tokensaver cache-check request1.json request2.json
+
+# One system prompt per language, with the same tools in front
+tokensaver cache-check system.en.md system.de.md system.it.md --tools tools.json
+```
+
+Each input is a file or `-` (stdin, at most once). A JSON object with `tools`, `system`,
+`instructions`, `messages` or `input` is read as a request body (OpenAI Chat Completions,
+OpenAI Responses or Anthropic Messages). Anything else is read as a plain-text system
+prompt. JSON whitespace and indentation don't matter; content and key order do.
+
+| Option | What it does |
+|---|---|
+| `--tools` | Tool schemas (JSON file or `-`) to put in front of plain-text prompts. Request bodies use their own `tools`. |
+| `--min-tokens N` | Warn when the shared prefix is shorter than this. Default: 1,024, OpenAI's minimum for GPT-5.6 and later. Earlier models and other providers differ, so check their docs. `0` turns the warning off. |
+| `--model`, `-m` | Model to count tokens with. Default: `gpt-4o`. |
+| `--prices FILE` | Use your own `prices.json`. |
+| `--json` | Prints JSON instead of tables, for scripts and CI (see [JSON output](#json-output)). |
+
+The shared prefix is an upper bound. Providers cache up to set points (for example the
+end of a message), so the part actually cached can be shorter. See your provider's
+prompt-caching docs, for example
+[OpenAI's](https://developers.openai.com/api/docs/guides/prompt-caching).
 
 ### JSON output
 
@@ -268,7 +381,7 @@ tokensaver optimize prompt.txt --json
   "source": "prompt.txt",
   "model": "gpt-4o",
   "exact": true,
-  "prices_last_updated": "2026-10-26",
+  "prices_last_updated": "2026-11-07",
   "tokens_before": 834,
   "tokens_after": 772,
   "tokens_saved": 62,
@@ -291,6 +404,12 @@ For example, to fail a CI job when the safe fixes alone would save more than 50 
 ```bash
 saved=$(tokensaver optimize prompts/system.txt --json | jq .tokens_saved)
 [ "$saved" -le 50 ] || { echo "Prompt has $saved tokens of easy savings"; exit 1; }
+```
+
+Or to fail when two logged requests no longer share their fixed part:
+
+```bash
+tokensaver cache-check req1.json req2.json --json | jq -e '.fixed_part_differs | not'
 ```
 
 ### `tokensaver models` and `tokensaver version`
@@ -321,32 +440,42 @@ line.)
 
 ## Supported models
 
-Prices are USD per 1M tokens, standard tier, as of **2026-10-26**. They live in
+Prices are USD per 1M tokens, standard tier, as of **2026-11-07**. They live in
 [`src/tokensaver/data/prices.json`](https://github.com/behrouzbk/tokensaver/blob/main/src/tokensaver/data/prices.json) with a source URL for
 each model. Edit that file, or pass your own with `--prices my_prices.json`.
 
-| Model | Provider | Input / 1M | Output / 1M | Token count |
-|---|---|---:|---:|---|
-| gpt-6-astra | OpenAI | $10.00 | $50.00 | estimated |
-| gpt-6.1-sol | OpenAI | $2.00 | $10.00 | estimated |
-| gpt-6-luna | OpenAI | $0.10 | $0.50 | estimated |
-| gpt-5.5 | OpenAI | $5.00 | $30.00 | **exact** |
-| gpt-5.4-mini | OpenAI | $0.75 | $4.50 | **exact** |
-| gpt-5-mini | OpenAI | $0.25 | $2.00 | **exact** |
-| gpt-4.1 | OpenAI | $2.00 | $8.00 | **exact** |
-| gpt-4.1-mini | OpenAI | $0.40 | $1.60 | **exact** |
-| gpt-4o | OpenAI | $2.50 | $10.00 | **exact** |
-| gpt-4o-mini | OpenAI | $0.15 | $0.60 | **exact** |
-| claude-fable-5-1 | Anthropic | $10.00 | $50.00 | estimated |
-| claude-opus-5-5 | Anthropic | $4.00 | $20.00 | estimated |
-| claude-sonnet-5-5 | Anthropic | $2.00 | $10.00 | estimated |
-| claude-haiku-5-5 | Anthropic | $0.10 | $0.50 | estimated |
-| claude-haiku-4-5 | Anthropic | $1.00 | $5.00 | estimated |
-| gemini-4-argon | Google | $2.00 | $10.00 | estimated |
-| gemini-3.8-flash | Google | $0.75 | $3.75 | estimated |
-| gemini-3.1-pro-preview | Google | $2.00 | $12.00 | estimated |
-| gemini-2.5-flash | Google | $0.30 | $2.50 | estimated |
-| gemini-2.5-flash-lite | Google | $0.10 | $0.40 | estimated |
+**Cached input** is what a token read from the prompt cache costs. **Min. cacheable** is the
+shortest prefix the provider caches; `-` means it isn't published (on OpenAI models before
+GPT-5.6 it depends on the request settings). Writing to the cache costs 1.25× the input price
+on GPT-6 and Claude models (the default, shortest cache) and the normal input price
+elsewhere: `cache_write_per_1m` in `prices.json`.
+
+| Model | Provider | Input / 1M | Output / 1M | Cached input / 1M | Min. cacheable | Token count |
+|---|---|---:|---:|---:|---:|---|
+| gpt-6-astra | OpenAI | $10.00 | $50.00 | $1.00 | 1,024 | estimated |
+| gpt-6.1-sol | OpenAI | $2.00 | $10.00 | $0.10 | 1,024 | estimated |
+| gpt-6-luna | OpenAI | $0.10 | $0.50 | $0.01 | 1,024 | estimated |
+| gpt-5.5 | OpenAI | $5.00 | $30.00 | $0.50 | - | **exact** |
+| gpt-5.4-mini | OpenAI | $0.75 | $4.50 | $0.075 | - | **exact** |
+| gpt-5-mini | OpenAI | $0.25 | $2.00 | $0.025 | - | **exact** |
+| gpt-4.1 | OpenAI | $2.00 | $8.00 | $0.50 | - | **exact** |
+| gpt-4.1-mini | OpenAI | $0.40 | $1.60 | $0.10 | - | **exact** |
+| gpt-4o | OpenAI | $2.50 | $10.00 | $1.25 | - | **exact** |
+| gpt-4o-mini | OpenAI | $0.15 | $0.60 | $0.075 | - | **exact** |
+| claude-fable-5-1 | Anthropic | $10.00 | $50.00 | $0.25 | 512 | estimated |
+| claude-opus-5-5 | Anthropic | $4.00 | $20.00 | $0.20 | 512 | estimated |
+| claude-sonnet-5-5 | Anthropic | $2.00 | $10.00 | $0.10 | 512 | estimated |
+| claude-haiku-5-5 | Anthropic | $0.10 | $0.50 | $0.01 | 512 | estimated |
+| claude-haiku-4-5 | Anthropic | $1.00 | $5.00 | $0.10 | 4,096 | estimated |
+| gemini-4-argon | Google | $2.00 | $10.00 | $0.10 | 4,096 | estimated |
+| gemini-3.8-flash | Google | $0.75 | $3.75 | $0.075 | 4,096 | estimated |
+| gemini-3.1-pro-preview | Google | $2.00 | $12.00 | $0.20 | 4,096 | estimated |
+| gemini-2.5-flash | Google | $0.30 | $2.50 | $0.03 | 2,048 | estimated |
+| gemini-2.5-flash-lite | Google | $0.10 | $0.40 | $0.01 | - | estimated |
+
+`gemini-2.5-flash` and `gemini-2.5-flash-lite` are closed to new API users (Google
+returns "no longer available to new users"), so they could not be calibrated and use
+Gemini 3.8 Flash's factors. They stay in the list for existing users.
 
 Run `tokensaver models` to see the list for your installed version.
 
@@ -357,20 +486,34 @@ Please read this before relying on the numbers.
 - **Exact vs estimated.** Counts are exact only for OpenAI models that `tiktoken` maps to a
   tokenizer (shown as "exact"). Claude, Gemini and GPT-6 have no offline tokenizer, so
   tokensaver counts with OpenAI's `o200k_base` and multiplies by a per-model factor from
-  `prices.json`. These are always shown with `~` and labelled "estimated". The factors are
-  rough heuristics, not measurements; real counts can differ by 10–20% or more,
-  especially for code and non-English text. For exact counts, use the provider's own
-  token-counting API.
+  `prices.json`. These are always shown with `~` and labelled "estimated". For Claude and
+  Gemini the factors are **measured** against the providers' own token counters
+  ([calibration](https://github.com/behrouzbk/tokensaver/blob/main/examples/calibration)),
+  with separate factors for Arabic, Hebrew, Devanagari, Gurmukhi, Thai, Hangul, Cyrillic,
+  Chinese and Japanese text. Claude uses up to 3.9× as many tokens as `o200k` (on
+  Punjabi); Gemini stays between 0.7× and 1.25× in every script. English prose is within
+  about 5% on both. Code and JSON are about 7–10% low on Gemini, because one factor
+  covers all Latin-script text. Other Latin-script languages use the English factor and
+  are undercounted on Claude, about 16% for French and 30% for German. GPT-6 factors are
+  still a rough guess (there is no counting endpoint to check them). For exact counts,
+  use the provider's own token-counting API.
 - **Input cost only.** `count`, `compare`, `optimize`, `scan` and `request` price the
-  prompt you send. Output
-  tokens, cached-input discounts, batch discounts and long-context surcharges (for example
+  prompt you send. Output tokens, batch discounts and long-context surcharges (for example
   above 200K tokens on Gemini 3.1 Pro or 100K on Claude Haiku 5.5) are not included.
+  Prompt-caching prices are used only by `request` and `optimize --cache-hit-rate`,
+  and only for the fixed part.
+- **Caching estimates are estimates.** They assume the whole fixed part is cached and use
+  the default (shortest) cache: 5 minutes on Claude, 30 minutes on GPT-6. Longer caches cost
+  more to write, Gemini's explicit caching adds a storage fee, and whether a call actually
+  hits the cache depends on traffic, routing and expiry. Use `tokensaver cache-check` to
+  make sure the fixed part is identical between calls.
 - **Prices go stale.** Check the `last_updated` date in the output. Some listed prices are
   scheduled to change (see the `notes` field in `prices.json`).
 - **Languages.** Token counting and the `json`, `whitespace` and `duplicates` rules work
   in every language (tested on 55, see above). The `filler` rule understands English and
   Persian; `repeated-instructions` and "Example 1:" detection, currently English only.
-  Estimates for Claude and Gemini are less reliable for non-English text.
+  Claude and Gemini estimates for scripts without a measured factor (for example Bengali,
+  Greek, Khmer, Tamil) are less reliable.
 - **Message overhead is not counted.** Chat APIs add a few tokens per message for roles
   and formatting. tokensaver counts the text you give it.
 - **Rules are heuristics.** Review suggestions can be wrong: a repeated sentence can be
@@ -381,9 +524,13 @@ Please read this before relying on the numbers.
 
 ## Roadmap
 
-- [ ] Calibrate the Claude and Gemini estimate factors against official token counters
+- [x] Calibrate the Claude and Gemini estimate factors against official token counters
+- [ ] Measured factors for more scripts (Bengali, Greek, Tamil, ...) and for Latin-script
+  languages other than English on Claude
 - [x] `--json` output for CI pipelines and scripts
-- [ ] Output-token and prompt-caching cost estimates
+- [x] Check that requests share a cacheable prefix (`tokensaver cache-check`)
+- [x] Prompt-caching cost estimates for the fixed part (`tokensaver request`)
+- [ ] Output-token cost estimates
 - [x] Directory mode: scan all prompts in a project (`tokensaver scan`)
 - [ ] More rules: verbose markdown, long URLs, unused template variables
 - [ ] GitHub Action that comments token savings on pull requests

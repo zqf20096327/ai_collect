@@ -68,9 +68,9 @@ Why use our gallery?
 
 | Metric | Count |
 |--------|-------|
-| 📝 Total Prompts | **3354** |
+| 📝 Total Prompts | **3357** |
 | ⭐ Featured Prompts | **3** |
-| 🔄 Last Updated | **2026-11-07** |
+| 🔄 Last Updated | **2026-11-08** |
 
 ---
 
@@ -189,6 +189,25 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 
 > 📝 Sorted by publish date (newest first)
 
+### Neon Martial Arts Swordswoman Prompt
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A prompt for Grok Imagine to change clothing colors and hair color while adding martial arts sword moves.
+
+#### 📝 Prompt
+
+```
+Turn her clothes neon yellow, turn hair green, make her do a few martial art moves with her sword.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2119231907724394497/img/wfoT3GsatWtlsjAW.jpg" width="600" alt="Neon Martial Arts Swordswoman Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13673)**
+
+**Author:** [Herbert Krspyleg75 Joseph](https://x.com/Herbertkrspyleg) | **Source:** [Link](https://x.com/Herbertkrspyleg/status/2119232026230305214) | **Published:** Nov 8, 2026
+
+---
 ### Wind Blown Yellow Ribbon Video
 
 ![English](https://img.shields.io/badge/lang-English-blue)
@@ -208,11 +227,60 @@ bright blue sky, grass with flowers, yellow ribbon caught in grass blowing in th
 **Author:** [Lindy Hawkinson](https://x.com/HawkinsonLindy) | **Source:** [Link](https://x.com/HawkinsonLindy/status/2118934426633785350) | **Published:** Nov 7, 2026
 
 ---
-### Female Optimus Cyberpunk Rain Scene
+### SpaceX Beyond Earth Montage
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A Grok Imagine prompt for a cinematic cyberpunk scene featuring a female Optimus Prime walking through rain-soaked streets with neon reflections.
+> A documentary-style prompt for a SpaceX montage featuring orbital outposts, deep-space craft, and inspiring narration about living among the stars.
+
+#### 📝 Prompt
+
+```
+SpaceX – Beyond Earth
+A visionary montage of SpaceX technologies and human explorers working beyond Earth, from orbital outposts and deep-space craft to the first permanent footholds among the stars.
+The visuals present a cinematic, high-tech documentary style: sleek metallic hardware, Earthrise and starfields, clean white and black SpaceX design language, soft volumetric light, and a sense of quiet determination and awe.
+The camera moves with sweeping orbital tracking shots, slow dolly pushes across habitats and vehicles, and gentle aerial perspectives that emphasize scale and progress.
+The sound includes a calm, inspiring narration speaking the lines “Humanity isn't just reaching for the stars anymore. We're building the technology to live among them,” layered over deep ambient engine hums, soft thruster bursts, and a subtle, uplifting orchestral score.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2118871611386515456/img/Tfb-eyjZPPKC0JK4.jpg" width="600" alt="SpaceX Beyond Earth Montage">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13675)**
+
+**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2118871728680272112) | **Published:** Nov 7, 2026
+
+---
+### Optimus Rising from Ocean
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A cinematic prompt describing Optimus Prime emerging from a stormy ocean, with water cascading off his armor and lightning illuminating the scene.
+
+#### 📝 Prompt
+
+```
+[Generation Goal]
+Generate a continuous video of an enormous metallic silhouette rising from a deep ocean during a violent thunderstorm: water cascades from Optimus Prime’s armor as he fully emerges and stands above the waves.
+
+[Event Script]
+At the start: only the dark ocean surface and heavy storm are visible, with rain and lightning flashing across a black, churning sea. Principal event: an enormous metallic silhouette breaks the surface, rising steadily; water cascades in heavy sheets from every joint and plate of Optimus Prime’s armor. He continues climbing until his full upper body and then his complete towering form stand clear above the waves. At the end: Optimus Prime stands fully emerged and upright above the storm-tossed ocean, armor still streaming with water under the lightning-lit sky.
+
+[Maintain Consistency]
+Keep Optimus Prime’s identity, metallic armored form, and single continuous rising motion stable; maintain the deep-ocean setting, violent thunderstorm, cascading water, and dark storm atmosphere throughout.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2118761821905584128/img/JMEVDEMR_5inYpJO.jpg" width="600" alt="Optimus Rising from Ocean">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13674)**
+
+**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2118762128475635964) | **Published:** Nov 6, 2026
+
+---
+### Female Optimus Cyberpunk City
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A prompt for a cyberpunk-style video featuring a female Optimus walking through a rainy futuristic metropolis with neon reflections and robotic vehicles watching.
 
 #### 📝 Prompt
 
@@ -226,18 +294,18 @@ The camera uses a low-angle tracking shot that slowly follows her from behind, t
 The sound includes heavy rain on metal, the low mechanical hum of her footsteps, distant traffic fading into silence, and a deep resonant ambient score.
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118657831540838400/img/mE7DDYE04fJ9p1Ox.jpg" width="600" alt="Female Optimus Cyberpunk Rain Scene">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2118657831540838400/img/mE7DDYE04fJ9p1Ox.jpg" width="600" alt="Female Optimus Cyberpunk City">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13645)**
 
 **Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2118658346840416611) | **Published:** Nov 6, 2026
 
 ---
-### Grok Imagine Prompt: Truck Transformation
+### Truck to Robot Transformation
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> Detailed structured prompt for Grok Imagine video generation involving a futuristic truck transforming into an Optimus-style warrior using reference images.
+> A complex prompt for generating a continuous video where a futuristic heavy-duty truck races on a mountain highway and transforms into a towering Optimus-style warrior, including reference asset instructions.
 
 #### 📝 Prompt
 
@@ -259,22 +327,20 @@ At the end: the giant warrior stands tall and stable on the highway facing the v
 
 [Maintain Consistency]
 Keep the exact red-and-blue color scheme, flame/graffiti markings, chrome details, and mechanical aesthetics continuous from truck to robot. Preserve the single-entity identity so the warrior is unmistakably the transformed truck. Maintain the mountain highway environment, golden-hour lighting, dramatic cloudy sky, and realistic scale of the transformation. All mechanical movements remain precise, heavy, and physically believable with no abrupt jumps or missing parts.
-
-Disclaimer: This video is an AI-generated fictional sci-fi concept created for entertainment purposes only.
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118521388332150784/img/F14J6-9cAMYnqKLX.jpg" width="600" alt="Grok Imagine Prompt: Truck Transformation">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2118521388332150784/img/F14J6-9cAMYnqKLX.jpg" width="600" alt="Truck to Robot Transformation">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13600)**
 
 **Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2118521533421457741) | **Published:** Nov 6, 2026
 
 ---
-### Optimus Robot Descent Cinematic Video
+### Optimus Robot Descent
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A detailed video generation prompt describing a massive Optimus-like robot descending from clouds into a futuristic city with cinematic camera movements and sound design.
+> A detailed cinematic prompt for generating a video of a massive Optimus robot descending into a futuristic city with shockwaves and dynamic camera movements.
 
 #### 📝 Prompt
 
@@ -288,7 +354,7 @@ The camera uses a dynamic circling orbit around the giant robot, starting wide t
 The sound includes deep booming impacts from the landing, spreading shockwave rumble, metallic resonance, and low ambient city hum under the drama.
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118386448382459904/img/YBy0vRRPGCaswKYq.jpg" width="600" alt="Optimus Robot Descent Cinematic Video">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2118386448382459904/img/YBy0vRRPGCaswKYq.jpg" width="600" alt="Optimus Robot Descent">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13601)**
 
@@ -377,11 +443,11 @@ Scene 4 (12-15s): Close-up (Last Scene)
 **Author:** [はる](https://x.com/HaluAIArt) | **Source:** [Link](https://x.com/HaluAIArt/status/2118285947921989988) | **Published:** Nov 5, 2026
 
 ---
-### Optimus Prime Cinematic Transformation
+### Cinematic Sci-Fi Optimus Prime Transformation Video Prompt
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> Generates a high-end cinematic Sci-Fi video of Optimus Prime undergoing complex mechanical transformations.
+> A detailed prompt for generating a high-end cinematic video of Optimus Prime undergoing complex mechanical transformations in a futuristic industrial setting, emphasizing photorealistic physics and dynamic camera movements.
 
 #### 📝 Prompt
 
@@ -394,11 +460,9 @@ At the start, Optimus stands fully formed as a humanoid robot in a futuristic in
 
 [Maintain Consistency]
 Keep Optimus as the sole central subject with consistent next-level Sci-Fi design language, photorealistic metal textures, lighting continuity, and transformation causality throughout. The visuals present photorealistic cinematic Sci-Fi realism with high-fidelity materials, subsurface lighting on energy elements, and atmospheric depth. The camera uses dynamic cinematic tracking: beginning in a heroic medium shot, circling with smooth dolly and crane movements to follow key mechanical articulations, then pushing into detailed close-ups of transforming components before pulling back to a wide establishing view of the completed form. The sound includes deep metallic grinding and hydraulic servo whirs, layered with electronic energy surges, resonant bass impacts, and a rising cinematic orchestral Sci-Fi score that builds intensity through the conversion.
-
-Disclaimer: This video is an AI-generated fictional sci-fi concept created for entertainment purposes only.
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118282841377345537/img/9CGR1l58Ow2LJFkx.jpg" width="600" alt="Optimus Prime Cinematic Transformation">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2118282841377345537/img/9CGR1l58Ow2LJFkx.jpg" width="600" alt="Cinematic Sci-Fi Optimus Prime Transformation Video Prompt">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13602)**
 
@@ -739,11 +803,11 @@ Keep the single woman as the only subject. The bag is the exclusive source of th
 **Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2117832838594896196) | **Published:** Nov 4, 2026
 
 ---
-### Bag Transforms Into Woman as Optimus
+### Woman Bag to Optimus
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A Grok Imagine video prompt where a woman drops her bag, which transforms into a metallic Optimus Prime version of herself.
+> A prompt for a transformation video where a woman drops her bag, which instantly transforms into an armored Optimus version of herself.
 
 #### 📝 Prompt
 
@@ -756,11 +820,9 @@ At the start she stands holding the bag, then deliberately drops it onto the gro
 
 [Maintain Consistency]
 She and her Optimus form remain the same single character throughout; the bag is the sole source of the transformation and completely becomes her Optimus self with no extra objects or characters remaining.
-
-Disclaimer: This video is an AI-generated fictional sci-fi concept created for entertainment purposes only.
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2117796038522396672/img/dXvU0eXEhlJxm8Kg.jpg" width="600" alt="Bag Transforms Into Woman as Optimus">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2117796038522396672/img/dXvU0eXEhlJxm8Kg.jpg" width="600" alt="Woman Bag to Optimus">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13521)**
 
@@ -828,7 +890,7 @@ Integrate this picture into the scene prompt run together previous videos and in
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A video generation prompt for Grok Imagine that creates a continuous, floating scene of Elon Musk suspended in water matching his body color. The prompt specifies slow, natural motion with no surface breaks and consistent identity preservation.
+> A prompt for generating a continuous video of Elon Musk floating weightlessly in water that matches his color scheme, creating a surreal, monochromatic visual effect with gentle motion.
 
 #### 📝 Prompt
 
@@ -889,11 +951,11 @@ Preserve the single continuous transformation of one train into one complete rob
 **Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2117622653720707335) | **Published:** Nov 3, 2026
 
 ---
-### Grok Ball Drop Terafab Video
+### Terafab Ball Drop Transformation Prompt
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A prompt for generating a video where a woman drops a ball that explodes and transforms into a complete Terafab structure.
+> A structured prompt for Grok Imagine to generate a video where a woman drops a ball that explodes into a Terafab factory, maintaining character consistency.
 
 #### 📝 Prompt
 
@@ -910,18 +972,18 @@ At the end: The original ball is gone, the blast fully fades, and a fully formed
 Keep the woman’s identity, appearance, clothing, and count unchanged throughout. Keep exactly one ball that is dropped and destroyed in the blast. Keep the resulting single complete Terafab as the only final object on the ground. Preserve the open ground space and the clear cause-and-effect sequence of drop → impact blast → Terafab formation.
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2117553831756308480/img/Xk-uMqzsAOvGo7bA.jpg" width="600" alt="Grok Ball Drop Terafab Video">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2117553831756308480/img/Xk-uMqzsAOvGo7bA.jpg" width="600" alt="Terafab Ball Drop Transformation Prompt">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13522)**
 
 **Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2117553931559825645) | **Published:** Nov 3, 2026
 
 ---
-### Paper to SpaceX Rocket Transformation
+### Paper to SpaceX Rocket Transformation Video Prompt
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A detailed Grok Imagine prompt describing a continuous transformation sequence where a sheet of paper folds into origami and evolves into a launching SpaceX Falcon 9 rocket.
+> A creative prompt for generating a video where a single sheet of paper morphs into a full-scale SpaceX Falcon 9 rocket, detailing the origami-like folding, material hardening, and launch sequence.
 
 #### 📝 Prompt
 
@@ -938,7 +1000,7 @@ At the end: the fully transformed SpaceX rocket accelerates upward into a star-f
 Keep exactly one continuous object throughout the transformation—from the initial paper sheet to the final SpaceX rocket—with no additional objects or copies appearing. Preserve clean white-to-black SpaceX color scheme, accurate Falcon 9 silhouette, and smooth, high-fidelity material metamorphosis without breaking the single-object identity.
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2117514318187044864/img/DZcYFvnzswmnQrId.jpg" width="600" alt="Paper to SpaceX Rocket Transformation">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2117514318187044864/img/DZcYFvnzswmnQrId.jpg" width="600" alt="Paper to SpaceX Rocket Transformation Video Prompt">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13471)**
 
@@ -1227,11 +1289,11 @@ Make the steering wheel a racing one and race down the interstate with a bounce 
 **Author:** [Robert Jurgesen](https://x.com/jurgesen_robert) | **Source:** [Link](https://x.com/jurgesen_robert/status/2117081951379038234) | **Published:** Nov 2, 2026
 
 ---
-### Bag to Tesla Motorbike Transformation
+### Tesla Motorbike Bag Transformation Prompt
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A detailed video prompt for Grok Imagine describing a woman dropping her bag which transforms into a heavy Tesla Motorbike she then rides away on.
+> A structured prompt for Grok Imagine to generate a video where a woman's bag transforms into a Tesla motorbike which she then rides away.
 
 #### 📝 Prompt
 
@@ -1246,11 +1308,9 @@ At the end: The woman is riding the heavy Tesla Motorbike away, bag completely g
 
 [Maintain Consistency]
 Keep the woman’s identity, appearance, and clothing stable throughout. Maintain a single bag that fully becomes the only heavy Tesla Motorbike. Ensure continuous spatial relationships and clear transformation sequence from bag drop to bike formation to ride-away. No other objects or characters appear.
-Disclaimer: 
-This video is an AI-generated fictional sci-fi concept created for entertainment purposes only. The futuristic transformations, special effects are imaginary and do not represent real technology or events.
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2117079154629689344/img/j9x56KuU5jABSSZz.jpg" width="600" alt="Bag to Tesla Motorbike Transformation">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2117079154629689344/img/j9x56KuU5jABSSZz.jpg" width="600" alt="Tesla Motorbike Bag Transformation Prompt">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13412)**
 
@@ -1317,11 +1377,11 @@ Ultra-realistic 9:16 candid airport video, filmed from a considerable distance b
 **Author:** [Realishai](https://x.com/NatureLove216) | **Source:** [Link](https://x.com/NatureLove216/status/2116971011501412751) | **Published:** Nov 1, 2026
 
 ---
-### Grok Cyberpunk Combat Warrior
+### Cyberpunk Warrior Combat Transformation Video Prompt
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A detailed prompt for generating a video of a cyberpunk warrior engaging in intense combat with sequential armor and weapon transformations in a neon-lit alley.
+> An extensive prompt for generating a cyberpunk action video featuring a warrior in powered exoskeleton armor engaging in combat while undergoing sequential mechanical transformations, with detailed audio and visual style instructions.
 
 #### 📝 Prompt
 
@@ -1349,7 +1409,7 @@ Dynamic combat cinematography: starts in medium shot establishing the full comba
 Immersive full-combat audio: deep hydraulic and met
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2116947344814145536/img/1GrU3LE_wII7c0bJ.jpg" width="600" alt="Grok Cyberpunk Combat Warrior">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2116947344814145536/img/1GrU3LE_wII7c0bJ.jpg" width="600" alt="Cyberpunk Warrior Combat Transformation Video Prompt">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13523)**
 
@@ -1708,29 +1768,4 @@ Subject:
 Interior night view through single-pane glass: Dense wet cold frost crystals naturally form a vague silhouette of a herd of horses (approx. several, not clearly countable individually) — still real frost crystal luster, not sticker horses or carved horse shapes. Starts fully unmelted; first frame is pure frost without showing the radiator top edge. Overall readable as a horse silhouette tendency, but edges are all fern-like/branch-like crystal fuzz, not aiming for 'clearly counting seven horses'. After about two seconds, the top edge of the radiator appears at the bottom of the screen; heat wave dust rises from the lower edge, driving a continuous viscous melt: the same organic front line climbs frame-by-frame from bottom to top, the front is the same jagged tooth tip climbing, tooth spacing changes continuously, absolutely not a bright edge sweeping across the picture; behind it leaves a readable wet mirror-like water film, followed by clear nearly round water droplets sliding down the same glass due to gravity. Where the frost retreats, a shield of sodium-yellow warm street light outside the window shines through. No human hands, maple leaves, mallets, idols, or figures; no brass valves or pipe fittings close-ups.
 
 Environment:
-9:16 extreme macro locked onto a piece of glass, slightly overhead, coaxial throughout. When frost is complete, outside is cold blue night; warm yellow seeps near the radiator top edge; after frost retreats, warm street lights shine through wet glass. Do not cut to another window.
-
-Mood:
-Heating decompression legato — cold flash, breath holding, one creamy melt push, smooth water droplets, quiet warmth settling.
-
-Sound: Say once for the whole segment — frost surface hiss, heater hum, melt hiss, water drop tap, quiet room noise; no music, no dialogue.
-
-Timeline:
-0:00-0:02: Locked extreme close-up, coaxial. Wet cold frost crystals immediately fill the screen, vaguely reading as horse silhouettes against deep blue; no radiator at the bottom yet. Only motion: wet cold glow slowly crawling along crystal edges — crystals remain solid; silhouette tendency does not drift or morph into other animals, but don't require individual clarity. No dripping, no heat, no radiator top edge shown.
-SFX: Faint ice frost hiss
-
-0:02-0:04: Coaxial, same layer of frost. Top edge of radiator now visible at bottom; warm yellow dust particles and heat wave ribbons rise continuously from that edge. Heat rises, upper horse frost shadows remain complete — no melt front, no dripping, no valve pipes. Short breath hold at end of shot.
-SFX: Soft heater hum
-
-0:04-0:07: Coaxial lock. Bottom edge first reads an organic melt front, then climbs continuously like sticky cream — front tip truly displaces frame-by-frame, same jagged tooth tip climbing continuously, absolutely not horizontal step-wise block melting, absolutely not instant light dissipation, absolutely not a bright edge sweep wipe; horse shapes dissolve naturally as frost thins, absolutely not keeping horse shape unmelted separately or whole block vanishing instantly. Under the front, wet bright glass expands, trailing water film highlights. Radiator top edge stays only as a warm metal strip at the bottom edge, outline fades as wet glass readability decreases — absolutely not deforming, glowing into a lamp, or turning into beads. At end of this shot, same glass has water film and formed droplets.
-SFX: Soft melt hiss; early water drop taps
-
-0:07-0:09: Same continuous wet glass, same light. Clear nearly round water droplets form thin streams sliding down due to gravity, or tremble lightly before sliding — path is continuous, absolutely not entire water trail appearing instantly. Mirror highlights roll with water flow. Momentum settles into extremely slow slide + highlight micro-roll; front tip almost stops but still has sub-pixel creep — prohibit freezing into static feel throughout. No new melting, no refreezing.
-SFX: Water drop tap -> short silence
-
-0:09-0:10: Same continuous wet glass. Optical slight push no more than 8% bites into transparent area; frost leaves irregular organic residual tips and hard wet edges crossing lower half — absolutely not neat wide horizontal band, absolutely not elliptical peephole, absolutely not remaining complete horse shape sticker; residual frost no longer readable as complete horse shape. Sodium-yellow warm street light clearly readable through water vapor; stop upon seeing warmth.
-SFX: Quiet room noise
-
-Style: Realistic macro decompression, wet glass physics, cold-warm confrontation, one take; horse group only as natural frost crystal silhouette feeling, do not pursue countable seven horses.
-
-Negative: Do not melt before heating starts; no horizontal step-wise melting; no bright edge sweep wipe; no instant light dissipation; no instant appearance of droplets/water trails; no dry matte glass after melting; no near-static freeze in final segment; no axis jumping; no second window; no elliptical peephole; no neat wide residual band; no brass valv
+9:16 extreme macro locked onto a piece

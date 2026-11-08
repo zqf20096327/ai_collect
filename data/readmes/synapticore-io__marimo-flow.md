@@ -155,6 +155,36 @@ endpoint). Copy [`config.yaml.example`](config.yaml.example) to
 `config.yaml` to point any role at OpenAI, Anthropic, Groq, … — auth
 comes from each provider's standard env var.
 
+#### One provider per role
+
+Each of the 10 roles (`route`, `triage`, `notebook`, `problem`, `model`,
+`solver`, `training`, `validation`, `mlflow`, `lead`) takes a
+`"<provider>:<model>"` string, resolved by pydantic-ai's `infer_model`.
+Precedence: `MARIMO_FLOW_MODEL_<ROLE>` env var > `config.yaml` > built-in
+default. Roles you do not set keep their default.
+
+```yaml
+# config.yaml
+models:
+  lead:       openai:gpt-5                          # needs OPENAI_API_KEY
+  validation: openrouter:anthropic/claude-sonnet-4.6  # needs OPENROUTER_API_KEY
+  # every other role stays on its Ollama default
+```
+
+```bash
+MARIMO_FLOW_MODEL_SOLVER=openai:gpt-5 uv run marimo-flow solve "..."
+uv run marimo-flow config-show   # check what each role resolved to
+```
+
+The base install ships only the OpenAI SDK, which covers `openai:`,
+`ollama:`, `openrouter:`, `deepseek:`, `together:`, `fireworks:` and other
+OpenAI-compatible providers. The `providers` extra adds the native SDKs for
+`anthropic:`, `google:`, `groq:`, `mistral:` and `xai:`:
+
+```bash
+pip install "marimo-flow[providers]"     # or: uv add "marimo-flow[providers]"
+```
+
 Prefer a terminal? The CLI runs the same graph:
 
 ```bash
@@ -204,13 +234,21 @@ to running notebook.
 All notebooks live in `examples/` and open with
 `uv run marimo edit examples/<file>.py`.
 
+01, 03 and 04 train with their defaults on load, so they also run headless
+(`marimo export html`, `python examples/<file>.py`). Settings sit in a form;
+**Train** reruns with new values. Trained weights are cached on disk via
+`mo.persistent_cache` (`examples/__marimo__/cache/`), so re-opening a notebook
+or returning to an earlier configuration skips training. Shrink a run without
+editing code: `marimo export html examples/03_navier_stokes_3d_cavity.py -- --max-epochs 50 --lbfgs-epochs 2 --fd-grid 16`
+(01: `--epochs`, `--trials`, `--trial-epochs`; 04: `--max-epochs`).
+
 | Notebook | What it does |
 |---|---|
-| **`01_pina_poisson_solver.py`** | Poisson PDE with baseline PINN or Walrus foundation model. MLflow + Optuna sweep analytics. Uses `marimo_flow.core` directly. |
+| **`01_pina_poisson_solver.py`** | Poisson / heat / wave PDE with baseline PINN or Walrus foundation model; solution plot and, for Poisson, the error against the exact solution. MLflow + Optuna sweep analytics. Uses `marimo_flow.core` directly. |
 | **`02_provenance_dashboard.py`** | DuckDB review surface over the agent provenance store. Five tables (tasks, experiments, decisions, validation, handoffs) + 3D preset preview. |
-| **`03_navier_stokes_3d_cavity.py`** | 3D lid-driven cavity composed end-to-end from a declarative `ProblemSpec`. No hardcoded NS factory. Plotly mid-plane velocity slice. |
+| **`03_navier_stokes_3d_cavity.py`** | Steady incompressible Navier–Stokes in a 3D lid-driven cavity (three momentum equations + continuity, smooth lid), composed from a declarative `ProblemSpec`. Walls and lid are hard constraints of the network; Adam + L-BFGS. Validated against an independent finite-difference solver (`marimo_flow.core.cavity_reference`): 1.9 % relative L2 error at Re = 10, about 25 min CPU training. Also shows PDE residuals, centerline profiles and the mid-plane flow. |
 | **`04_mpc_heat_rod.py`** | Closed-loop MPC on a 1D heat-rod PINN surrogate. Trains the surrogate, then drives a rolling-horizon scipy-SLSQP MPC loop toward a temperature setpoint. |
-| **`lab.py`** | Multi-agent PINA team chat demo (requires Ollama running locally). |
+| **`lab.py`** | Multi-agent PINA team chat demo. Uses the models from `config.yaml` / `MARIMO_FLOW_MODEL_<ROLE>` and names any role whose provider credentials are missing. |
 
 ## Project Structure 📁
 

@@ -131,15 +131,16 @@ To continue a Claude Code conversation (say it stopped on a usage limit), run `a
 | Azure OpenAI | `azure` | `AZURE_API_KEY` + `AZURE_RESOURCE_NAME` (or `autopilot auth azure --resource <name>`) | v1 API over Responses; model ids are your deployment names, discovered from the resource. Entra ID sign-in isn't supported yet — use a key |
 | Ollama (local) | `ollama` | none | installed models are discovered; `providers.ollama.baseUrl` for another host |
 | LM Studio (local) | `lmstudio` | none | |
+| vLLM (local) | `vllm` | none | your own GPUs; `vllm serve` with `--enable-auto-tool-choice --tool-call-parser <name>` for tool calls |
 | Requesty | `requesty` | `REQUESTY_API_KEY` | |
 | Any OpenAI-compatible endpoint | `custom` | `AUTOPILOT_API_KEY` (optional) | `AUTOPILOT_BASE_URL` — LiteLLM, vLLM, llama.cpp, a company gateway |
 
 - **First run** asks "How should it think?" — Free (sign in with GitHub) or your own key, which opens the provider picker. A provider with a key already in your environment skips the question and is used without saving the key.
 - **Switch any time** with `/provider <id> [key]` (`/provider` lists them and where each key comes from), or from the CLI: `autopilot auth <id>` (saves a key and makes it active), `autopilot auth use <id>`, `autopilot auth status`. For one run, set `AUTOPILOT_PROVIDER=<id>`.
 - **`autopilot connect`** runs the first-run screens on their own — the searchable provider list, key entry checked with the provider, then its live model list — and saves the choice, so a plain `autopilot` uses it. Installers and scripts can hand setup to it instead of asking for a key themselves: `--state-file <path>` writes the result (`provider`, `name`, `baseUrl`, `apiKey`, `apiKeyEnv`, `keyRequired`, `model`, `authHeader`, `authFormat`) as JSON readable by you only, and hides providers a plain key gateway cannot proxy (Copilot, ChatGPT, Vertex, Bedrock, Azure, Workers AI). `--model-only` keeps the active provider and only changes the model. Exits 0 when saved, 1 when cancelled, 2 on a usage error.
-- **Everything follows the provider**: chat, compaction and memory side-calls, memory/skill embeddings, the model picker (each provider's own catalog — models.dev for hosted providers, live discovery for Ollama and LM Studio), pricing, error messages and the status page link. Nothing is sent to OpenRouter while another provider is active.
+- **Everything follows the provider**: chat, compaction and memory side-calls, memory/skill embeddings, the model picker (each provider's own catalog — models.dev for hosted providers, live discovery for Ollama, LM Studio and vLLM), pricing, error messages and the status page link. Nothing is sent to OpenRouter while another provider is active.
 - **OpenRouter-only features** switch off on other providers: billed-cost confirmation (elsewhere `/cost` shows estimates from the provider's published prices), Hotcell subagents, and the Jev completion/triage checks.
-- **Embeddings**: providers without an embeddings API (Anthropic, DeepSeek, Moonshot, Kimi Code, the Coding Plan, LM Studio) keep memory working through text and topic-key recall. To keep vector recall, set `"embeddingProvider": "openai"` (or `AUTOPILOT_EMBEDDING_PROVIDER`) with that provider's key, or `memoryEmbeddingModel`.
+- **Embeddings**: providers without an embeddings API (Anthropic, DeepSeek, Moonshot, Kimi Code, the Coding Plan, LM Studio, vLLM) keep memory working through text and topic-key recall. To keep vector recall, set `"embeddingProvider": "openai"` (or `AUTOPILOT_EMBEDDING_PROVIDER`) with that provider's key, or `memoryEmbeddingModel`.
 
 Config file shape (keys can live here instead of the environment):
 
@@ -871,6 +872,33 @@ SDK consumers opt in to hooks with `enableHooks: true` on
 `createAgentSession`. Default is off because the SDK is a primitive,
 not the TUI. SDK sessions fire SessionEnd on `dispose()`, or when the
 process exits without it (see [Ending a session](#ending-a-session)).
+
+## MCP servers
+
+Add servers to `~/.config/autopilot/config.json` (or `$XDG_CONFIG_HOME/autopilot/config.json`) under `mcpServers`. There is no interactive add wizard: `/mcp list` shows what is connected and `/mcp reload` reconnects after an edit.
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
+    },
+    "linear": { "type": "remote", "url": "https://mcp.linear.app/sse" },
+    "meta-ads": {
+      "type": "http",
+      "url": "https://mcp.facebook.com/ads",
+      "headers": { "Authorization": "Bearer ${META_ADS_ACCESS_TOKEN}" }
+    }
+  }
+}
+```
+
+- `local` runs a command over stdio.
+- `remote` uses the legacy SSE transport.
+- `http` uses the MCP Streamable HTTP transport (POST plus an optional SSE stream), which most hosted servers use. `${VAR}` in `url`, `env` and `headers` is expanded from the environment, so a token can stay out of the file.
+
+Servers configured in Claude Code, Cursor and OpenCode are also picked up automatically; they stay off until a task needs one. Hosted servers that require OAuth (rather than a bearer token) are not supported yet — use a user or system-user access token in `headers` instead.
 
 ## Development
 

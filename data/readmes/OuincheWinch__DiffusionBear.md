@@ -1,15 +1,16 @@
 <p align="center">
-  <a href="https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.4.4">
-    <img src="docs/screenshots/0.4.4/annonce_044.png" alt="DiffusionBear v0.4.4 — Local AI Image Studio for Apple Silicon" width="100%">
+  <a href="https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.4.5">
+    <img src="docs/screenshots/0.4.5/annonce_045.webp" alt="DiffusionBear v0.4.5 — Local AI Image Studio for Apple Silicon" width="100%">
   </a>
 </p>
 
 <h1 align="center">DiffusionBear</h1>
 
-<p align="center"><strong>v0.4.4</strong> &nbsp;·&nbsp; a local-first image generation studio for Apple Silicon</p>
+<p align="center"><strong>v0.4.5</strong> &nbsp;·&nbsp; a local-first image generation studio for Apple Silicon</p>
 
 <p align="center">
   <a href="https://www.diffusionbear.com"><strong>Website</strong></a> &nbsp;·&nbsp;
+  <a href="https://www.youtube.com/watch?v=D6Nq4XPxHf8&t=1s"><strong>Video tutorial</strong></a> &nbsp;·&nbsp;
   <a href="https://x.com/DiffusionBear"><strong>x.com/DiffusionBear</strong></a> &nbsp;·&nbsp;
   <a href="https://diffusionbear.com/discord"><strong>Discord</strong></a>
 </p>
@@ -30,14 +31,28 @@ Made by **[Ouinche](https://www.ouinche.com)** — follow on X:
 
 ---
 
+## What's new in v0.4.5 (beta)
+
+- **Native MLX SDXL engine — rewritten from scratch:** the `mlx_diffuser` dependency is gone. We now own the MLX UNet, dual CLIP encoders, VAE decoder, schedulers, LoRA stack, 4/8-bit quantization, resident text encoders and TAESD. Removing the second `venv-sdxl` runtime cut the app bundle from **1.7 GB to 1.3 GB** and the release zip from **510 MB to 385 MB**.
+- **Long prompts and mandatory adapters:** SDXL/Pony prompts are split across 77-token CLIP windows instead of silently truncated; Qwen DMD2 and MOSS DMD adapters auto-restore when missing; Qwen 2.1 reference images now warn to use Qwen-Image Edit for instruction edits.
+- **Qwen base self-healing:** the base pack now supplies its own tokenizer/scheduler/model_index instead of borrowing another Qwen install; incomplete component weights fail with a clear re-download error instead of rendering a texture.
+- **Licence display and validation reviewed.**
+- **LoRA management polished, including the Krea 2 Turbo LoRA recipe.**
+- **MOSS-Image batching fixed:** the second image in a cached batch no longer fails during VAE decode.
+- **MOSS LoRAs fixed:** detected/registered as MOSS, selectable in the architecture dropdown, and the real tensor layout now overrides Civitai metadata.
+- **Pony Diffusion V6 XL:** corrected to a working Diffusers download source.
+- **Z-Image / FLUX samplers:** Euler now maps to the flow-match scheduler instead of the Krea 2 scheduler.
+- **French model sizes:** shown as `GB` instead of `Go`.
+- **Qwen-Image integration refined.**
+- **Minor bug fixes.**
+
 ## What's new in v0.4.4 (beta)
 
-- **Qwen-Image-2.1 Edit support:**
-- **Qwen-Image-2.1, KREA 2 Turbo:** HugginFace depot repackaging
-- **Linoy Tsaban 2-step DMD2 Distill LoRA for Qwen-Image 2.1:** High-speed 2-step image generation (~33s–50s per image after initial compile) with automatic step clamping, locked CFG 1.0, and auto-selected linear sampler. < HUGE 
-- **Gallery Reference Image Filtering:** Direct filter toggle (`gallery-ref-filter-btn`) to isolate and review generations using visual reference conditioning across all 9 supported languages.
-- **Website & Documentation Upgrades:** Typography fixes, unified navigation bars, ...
-- **Minors bugs fixes:**
+- **Qwen-Image-2.1 Edit support**, with Qwen-VL reference conditioning and the Edit-specific prompt path.
+- **Qwen-Image-2.1 and Krea 2 Turbo:** Hugging Face depot repackaging.
+- **Linoy Tsaban 2-step DMD2 Distill LoRA for Qwen-Image 2.1:** high-speed 2-step generation (~33–50s after initial compile) with automatic 2-step/CFG-1 tuning.
+- **Gallery Reference Image Filtering:** isolate generations made with visual reference conditioning.
+- **Website and documentation upgrades**, typography fixes, unified navigation, and minor bug fixes.
 
 ## What's new in v0.4.3 (beta)
 
@@ -70,15 +85,17 @@ Made by **[Ouinche](https://www.ouinche.com)** — follow on X:
 
 ## Install the App & First-Launch Gatekeeper Guide
 
-`DiffusionBear.app` is a self-contained macOS application: it bundles the backend, two relocatable Python/MLX runtimes, and the studio interface inside one `.app`. **You do not need to install Python, Node, Xcode, or Homebrew.**
+`DiffusionBear.app` is a self-contained macOS application: it bundles the backend, one relocatable Python/MLX runtime, and the studio interface inside one `.app`. **You do not need to install Python, Node, Xcode, or Homebrew.**
 
-**[⬇ Download DiffusionBear v0.4.4 for macOS (Apple Silicon)](https://github.com/OuincheWinch/DiffusionBear/releases/download/v0.4.4/DiffusionBear-0.4.4-arm64.zip)** &nbsp;·&nbsp; [v0.4.4 Release Notes & Checksums](https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.4.4)
+**[⬇ Download DiffusionBear for macOS (Apple Silicon)](https://github.com/OuincheWinch/DiffusionBear/releases/download/v0.4.5/DiffusionBear-0.4.5-arm64.zip)** &nbsp;·&nbsp; [v0.4.5 Release Notes & Checksums](https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.4.5)
 
 | | Detail |
 |---|---|
 | **Requires** | An Apple Silicon Mac (M1 / M2 / M3 / M4 / M5 / M6), **macOS 26.2 or later**, 16 GB unified memory recommended. |
 | **Your files** | Settings, gallery, LoRA registry, and model store live in `~/Library/Application Support/DiffusionBear`. To put the store on an external drive, write an absolute path into `~/Library/Application Support/DiffusionBear/store_path`. |
 | **Model weights** | Downloaded on first use from Hugging Face or [Civitai](https://civitai.com/?ref_code=88C8VEBA) into your local store. After that, the app works 100% offline. |
+
+**0.4.5 package SHA-256:** `196afeb2c43c8622ca13b9779e4c76ee619a333f475c1f3a678d863b041cb330`
 
 ### 🍎 How to Open on First Launch (macOS Gatekeeper Bypass)
 
@@ -92,7 +109,7 @@ Because DiffusionBear is a free, open-source project signed ad-hoc (without a pa
 
 **Follow this one-time 60-second procedure:**
 
-1. **Unzip and move to `/Applications`:** Unzip `DiffusionBear-0.4.4-arm64.zip` and drag **`DiffusionBear.app`** into your **/Applications** folder *(do not launch it from `~/Downloads` or inside the zip)*.
+1. **Unzip and move to `/Applications`:** Unzip `DiffusionBear-0.4.5-arm64.zip` and drag **`DiffusionBear.app`** into your **/Applications** folder *(do not launch it from `~/Downloads` or inside the zip)*.
 2. **Bypass Gatekeeper (choose Option A or Option B):**
    * **Option A — Fastest (Terminal 1-Liner):** Open **Terminal.app**, paste this command, and press Return:
      ```bash
@@ -134,7 +151,7 @@ Once authorized, macOS remembers your choice and **never shows the alert again**
 
 ---
 
-## Screenshots & MOSS-Image Showcase Gallery (v0.4.4)
+## Screenshots & MOSS-Image Showcase Gallery
 
 All images below were generated locally in DiffusionBear on an **Apple MacBook Pro M1 with 16 GB of RAM**.
 
@@ -178,27 +195,27 @@ The following original images demonstrate the versatility of **MOSS-Image SFT 5B
 
 ---
 
-### 🖥️ Studio Interface Screenshots (v0.4.4)
+### 🖥️ Studio Interface Screenshots
 
 | Studio Generation (Dark Mode) | Studio Generation (Light Mode) |
 |---|---|
-| ![DiffusionBear v0.4.4 Studio generation interface in dark mode](docs/screenshots/0.4.4/1-generate-dark.png) | ![DiffusionBear v0.4.4 Studio generation interface in light mode](docs/screenshots/0.4.4/2-generate-light.png) |
+| ![DiffusionBear Studio generation interface in dark mode](docs/screenshots/0.4.5/045_en_screenshot_generate_dark.png) | ![DiffusionBear Studio generation interface in light mode](docs/screenshots/0.4.5/045_en_screenshot_generate_light.png) |
 
 | Gallery / Browser (Dark Mode) | Gallery / Browser (Light Mode) |
 |---|---|
-| ![DiffusionBear v0.4.4 Gallery with search and favorites in dark mode](docs/screenshots/0.4.4/3-browser-dark.png) | ![DiffusionBear v0.4.4 Gallery with search and favorites in light mode](docs/screenshots/0.4.4/4-browser-light.png) |
+| ![DiffusionBear Gallery with search and favorites in dark mode](docs/screenshots/0.4.5/045_en_screenshot_browser_dark.png) | ![DiffusionBear Gallery with search and favorites in light mode](docs/screenshots/0.4.5/045_en_screenshot_browser_light.png) |
 
 | Models: Installed & Manage | Models: Hugging Face Browser |
 |---|---|
-| ![DiffusionBear v0.4.4 Models tab and installed model management](docs/screenshots/0.4.4/5-models-dark.png) | ![DiffusionBear v0.4.4 Hugging Face model browser](docs/screenshots/0.4.4/6-models-browse-light.png) |
+| ![DiffusionBear Models tab and installed model management](docs/screenshots/0.4.5/045_en_screenshot_models_installed_dark.png) | ![DiffusionBear Hugging Face model browser](docs/screenshots/0.4.5/045_en_screenshot_models_browse_light.png) |
 
 | Parameters: Engine, GPU Memory & Model Defaults | Parameters: Language & System Preferences |
 |---|---|
-| ![DiffusionBear v0.4.4 Parameters tab with GPU memory and custom model defaults](docs/screenshots/0.4.4/7-parameters-dark.png) | ![DiffusionBear v0.4.4 Parameters preferences in light mode](docs/screenshots/0.4.4/8-parameters-light.png) |
+| ![DiffusionBear Parameters tab with GPU memory and custom model defaults](docs/screenshots/0.4.5/045_en_screenshot_parameters_preferences_dark.png) | ![DiffusionBear Parameters preferences in light mode](docs/screenshots/0.4.5/045_en_screenshot_parameters_preferences_light.png) |
 
-| Gallery: Generation Parameters & Metadata | Prompt Enhancer: FIBO 2.0 Engine Guidance |
+| Models: Detected on Disk | Models: Import from Draw Things / DiffusionBee |
 |---|---|
-| ![DiffusionBear v0.4.4 gallery detail card with model, seed, size, steps, guidance, sampler and generation time](docs/screenshots/0.4.4/9-gallery-detail-dark.png) | ![DiffusionBear v0.4.4 prompt enhancer configured for the FIBO 2.0 Edit Turbo engine](docs/screenshots/0.4.4/10-fibo-prompt-enhancer-dark.png) |
+| ![DiffusionBear models detected on disk](docs/screenshots/0.4.5/045_en_screenshot_models_detected_dark.png) | ![DiffusionBear import from Draw Things and DiffusionBee](docs/screenshots/0.4.5/045_en_screenshot_models_import_dark.png) |
 
 ---
 
@@ -288,23 +305,25 @@ exactly what MLX is built to exploit.
 
 ---
 
-## Benchmarks (v0.4.4)
+## Benchmarks
 
-Measured on a **2021 MacBook Pro M1 (16 GB)** — the reference machine this project is tuned for. Comprehensive **v0.4.4 snapshot** (198 timed studio generations across 18 model configurations at 512×768 resolution):
+Measured on a **2021 MacBook Pro M1 (16 GB)** — the reference machine this project is tuned for. Comprehensive **snapshot** (198 timed studio generations across 18 model configurations at 512×768 resolution), plus the latest RealVisXL Lightning and Qwen-Image 2-step runs:
 
 | Model | Steps | Median | Range | Family / Notes |
 |---|---|---|---|---|
-| **Juggernaut XL Lightning** | 4 | **9.2 s** | 6.4 – 10.6 s | SDXL · 4.25x faster (+76.5%), TAESD fast VAE |
-| **Juggernaut XI v11** | 8 | **42.5 s** | 29.7 – 46.9 s | SDXL · Hyper-SD 8-step, 2.15x faster |
-| **RealVisXL V5.0** | 8 | **43.3 s** | 27.6 – 50.0 s | SDXL · Hyper-SD 8-step, 3.63x faster |
+| **RealVisXL V5.0 Lightning** | 4 | **9.3 s** | 6.4 – 19.5 s | SDXL · 4-step Lightning, native MLX |
+| **Juggernaut XL Lightning** | 4 | **9.4 s** | 7.8 – 20.8 s | SDXL · native MLX engine, TAESD fast VAE |
+| **Juggernaut XI v11** | 8 | **40.8 s** | 26.9 – 61.4 s | SDXL · Hyper-SD 8-step, native MLX |
+| **RealVisXL V5.0** | 8 | **40.7 s** | 27.1 – 60.8 s | SDXL · Hyper-SD 8-step, native MLX |
 | **FLUX.2-klein 4B** | 4 | **48.3 s** | 35.1 – 49.2 s | FLUX.2 · Compact 4B rectified flow |
 | **FLUX.3-klein 5.6B** | 4 | **54.8 s** | 35.5 – 56.8 s | FLUX.3 · 5.6B flow-matching + Virtual Boxes |
+| **Qwen-Image 2.1 2-step** | 2 | **1:15 min** | 53.7 – 79.1 s | Qwen-Image · 7B DiT + DMD2; latest 512×768 run **68.7 s** |
 | **FLUX.1-schnell** | 4 | **1:20 min** | 55.8 – 82.4 s | FLUX.1 · Classic 4-step rectified flow |
 | **Bria FIBO 2.0 Edit Turbo** | 4 | **1:29 min** | 1:05 – 2:12 min | FIBO 2.0 · 4-step DiT (4.2B) + Qwen3-VL 4B, 1–4 ref images |
 | **FLUX.2-klein 4B (8s)** | 8 | **1:36 min** | 70.8 – 96.6 s | FLUX.2 · High-detail 8-step mode |
 | **FLUX.2-klein 9B** | 4 | **1:45 min** | 76.8 – 116.8 s | FLUX.2 · Flagship 9B rectified flow |
 | **FLUX.3-klein 5.6B (8s)** | 8 | **1:46 min** | 70.6 – 110.5 s | FLUX.3 · High-detail 8-step mode |
-| **Pony Diffusion V6 XL** | 25 | **1:50 min** | 1:08 – 1:59 min | SDXL · Full 25-step anime/illustrative |
+| **Pony Diffusion V6 XL** | 25 | **1:47 min** | 1:12 – 1:54 min | SDXL · Full 25-step anime/illustrative, native MLX |
 | **Z-Image Turbo 6B** | 8 | **2:04 min** | 1:17 – 2:07 min | Z-Image · Sharp geometry 8-step |
 | **Krea 2 Turbo 13B** | 4 | **2:55 min** | 2:33 – 3:16 min | Krea 2 · 13B photorealistic (Distilled) |
 | **Qwen-Image 2.1 Turbo** | 8 | **3:20 min** | 2:24 – 3:47 min | Qwen-Image · 8-step distilled 7B DiT |
@@ -359,7 +378,7 @@ Everything above is the app; this section is the minimum needed to clone, build
 and run it from source.
 
 **Requirements:** an Apple Silicon Mac, macOS 26.2 or later, Python 3.10 (main
-runtime) and Python 3.14 (SDXL runtime), and Node.js 18 or later. Git and
+runtime, used by every engine including SDXL), and Node.js 18 or later. Git and
 Homebrew are only needed to install those prerequisites.
 
 **Clone the repository:**
@@ -369,13 +388,12 @@ git clone https://github.com/OuincheWinch/DiffusionBear.git
 cd DiffusionBear
 ```
 
-**Build the standalone app** (recommended — downloads self-contained Python
-runtimes, so no local Python setup is needed). Run the three scripts in order;
-the result lands in `packaging/dist/DiffusionBear.app`:
+**Build the standalone app** (recommended — downloads a self-contained Python
+runtime, so no local Python setup is needed). Run the two scripts in order; the
+result lands in `packaging/dist/DiffusionBear.app`:
 
 ```bash
-packaging/build_runtime_venv.sh   # main runtime: Python 3.10 + mflux
-packaging/build_sdxl_venv.sh      # SDXL engine runtime: Python 3.14 + mlx_diffuser
+packaging/build_runtime_venv.sh   # runtime: Python 3.10 + mflux + transformers/tokenizers
 INSTALL_APP=1 packaging/build_app.sh   # assembles, signs and installs to /Applications
 ```
 
@@ -388,10 +406,8 @@ credential-shaped files. Always use the build script's install step — a hand
 
 ```bash
 python3.10 -m venv venv
-python3.14 -m venv venv-sdxl
 ./venv/bin/python -m pip install -r backend/requirements.txt
 ./venv/bin/python -m pip install --no-deps --force-reinstall ./packaging/vendor/mflux-src
-./venv-sdxl/bin/python -m pip install -r backend/requirements-sdxl.txt
 cd frontend && npm install && cd ..
 ./run.sh        # backend on 8001, Vite on 5174, opens the UI
 ```
@@ -413,7 +429,8 @@ credential-shaped files and weights, and refuses to ship anything unsafe;
 - [CHANGELOG.md](CHANGELOG.md) — what changed in each release
 - [RELEASE_NOTES.md](RELEASE_NOTES.md) — release notes and the Gatekeeper guide
 - [CONTRIBUTING.md](CONTRIBUTING.md) — how to build, verify and propose a change
-- [SECURITY.md](SECURITY.md) — privacy posture and vulnerability reporting
+- [SECURITY.md](SECURITY.md) — security policy and vulnerability reporting
+- [PRIVACY.md](PRIVACY.md) — when the app goes online and what stays local
 - [USER_GUIDE.md](USER_GUIDE.md) — full usage guide
 - [docs/VirtualBox.md](docs/VirtualBox.md) — How Virtual Boxes work
 
@@ -433,7 +450,7 @@ large share of the writing. That is a deliberate choice, not an accident.
 Please **do not open a public issue** for a security problem. Use GitHub's
 [private vulnerability report](https://github.com/OuincheWinch/DiffusionBear/security/advisories/new),
 or email the author -hello -at- -DiffusionBear-.-com- with the subject `[DiffusionBear security]`.
-Scope and the privacy posture are in [SECURITY.md](SECURITY.md).
+Scope is in [SECURITY.md](SECURITY.md). Network behaviour and local data are in [PRIVACY.md](PRIVACY.md).
 
 ## License
 

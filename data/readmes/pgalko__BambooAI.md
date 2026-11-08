@@ -320,9 +320,15 @@ columns mean in practice, what to watch for, and what worked. It is stored in
 
 A finished analysis can be kept as a method and run again on other data of the same shape. *Save as
 routine* (the save menu on a chain) hands the chain to the `Promoter` seat, which reads it once and
-names the constants that would have to change for other data - a boundary date, an identifier, a
-threshold - as inputs, at most five; everything else stays as written. The routine is stored only
-once a *run zero* on the original data reproduces every RESULT line the chain recorded.
+names the constants that would have to change for other data - a boundary date, a threshold, a
+band - as inputs, at most five; identifiers of this data are never inputs. The routine is stored
+only once a *run zero* on the original data reproduces every RESULT line the chain recorded. Then
+the script is condensed from the code itself, without a model: the cells nothing rests on and the
+prints go, and the condensed code replaces the chain's only when it reproduces run zero's lines
+and figures on the same data; otherwise the script stays as written, and the routine's Summary
+says which. A slow method is also rewritten once by the `Condenser` seat - vectorised, computed
+once - under the same checks, and the rewrite stays provisional until the routine's first run on
+new data has run the old method beside it and found them to agree.
 
 A run is then a dialog with the inputs and the load, and no model: the data is loaded the way the
 original was (a window from Intervals.icu for the athlete picked in the dialog - a coach's athletes
@@ -412,6 +418,7 @@ The available roles:
 | `Reader` | Reads relevant document or context passages for the Analyst through `READ`. Called once per read; suitable for a cheaper model. |
 | `Coder` | Reads the words loaded beside Intervals.icu data once, in batches, and writes the codes table against the codebook; renders passages not in English. Falls back to the Reader when absent. |
 | `Promoter` | Handles *Save as routine*: reads a finished chain once and identifies its inputs as find/replace edits in a JSON reply. Falls back to the Analyst when absent. |
+| `Condenser` | After a routine's run zero and the pruning, rewrites the method once as lean code when the method takes 15 s or more; the rewrite is kept only when it reproduces run zero's lines and figures, and stays provisional until the first run on new data confirms it against the method it replaced. The template puts it on the Analyst's model at medium effort. No fallback: remove the entry and the step does not run. |
 | `Knowledge Distiller` | Writes the memory card when a run is saved. |
 | `Google Search Executor` | Performs the grounded search, using a Gemini model. |
 | `Google Search Summarizer` | Condenses search results into a digest with citations. |
@@ -718,8 +725,10 @@ over the store: the window's activity list is fetched, the activities the store 
 changed) are downloaded, the rest are assembled from disk, and the chats and laps of activities older
 than sixty days are reused; the wellness and calendar of the window come down and are merged, so the
 span held is the union of every load. *Everything again* in the load dialog fetches the whole window
-again. Activities fall out of the store after 400 days unless a load used them in the last thirty; the
-window files a load writes leave after a month.
+again. A load covers at most a year at a time and reaches back four years (three months and a year on
+the free tier, six months and two years on the cost tier); activities fall out of the store once older
+than the plan's reach unless a load used them in the last thirty days; the window files a load writes
+leave after a month.
 
 The store and the loaded files live in the Docker volume `bambooai-datasets`, which outlives the
 container and its image: an upgrade keeps them. `docker volume rm bambooai-datasets` starts the

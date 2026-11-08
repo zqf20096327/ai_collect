@@ -43,6 +43,7 @@
 | **Codebase Digest**| `python scripts/update_knowledge_base.py --digest`| Read-only; one line per module in at most 100 lines, shared code first; a cut is stated|
 | **Verify AST Map Freshness**| `python scripts/update_knowledge_base.py --check`| Read-only; exits 1 on a stale codebase map, README drift (PRINCIPLE-005), a `python <path>.py` naming a missing file, an ADR ID out of order, unfinished code (PRINCIPLE-007 R3) or a code-structure violation (PRINCIPLE-009 to PRINCIPLE-011)|
 | **Classify Lifecycle Track**| `python scripts/disruption_recovery.py --track`| Prints Track A/B/C of current changes (PRINCIPLE-002 R3)|
+| **Inspect State Machines**| `python scripts/state_machines.py --list`| Read-only declarations: `--json`, `--machine`, `--from/--to`, `--check-status`; 19 machines, one source (ADR-388, ADR-389)|
 | **Audit Disruption Recovery**| `python scripts/disruption_recovery.py --audit`| Clean status check; detects surviving uncommitted files|
 | **Resume Interrupted Task**| `python scripts/disruption_recovery.py --resume`| Cold-start command: every `--audit` finding, then the interrupted task, its plan and resumption phase|
 | **Record Task Checkpoint**| `python scripts/disruption_recovery.py --checkpoint <task_id> --phase-num <1-5> --desc <text>`| Appends a checkpoint (PRINCIPLE-002 R4); exits 2 when a task's first plan lacks `--why --benefits --risks --mitigation`, and warns when a task reaches Phase 3 with none (PRINCIPLE-007 R1, R6); exits 1 on credential-shaped text, or records `[REDACTED]` with `--redact` (PRINCIPLE-019 R3); `--handoff "next: ...; state: ...; failed: ...; open: ..."` records the packet `--resume` prints (PRINCIPLE-004 R2); `--agent <name>` and `--take-over` per PRINCIPLE-006 R7|
@@ -128,6 +129,7 @@ portable_agent_kit/
 │   ├── sync_licenses.py          <- Pinned license/catalog sync and drift check
 │   ├── disruption_recovery.py    <- audit, checkpointing and ledger CLI
 │   ├── disruption_help.py        <- generated help for the recovery fast path
+│   ├── state_machines.py         <- Explicit lifecycle machines (read-only registry, ADR-388)
 │   ├── update_knowledge_base.py  <- Codebase AST symbol extractor & validator
 │   ├── dogfood.py                <- Dogfood runner (sandbox jail + chaos tracks)
 │   ├── check_reachability.py     <- reachability shield (anti-dead-capability)
@@ -144,6 +146,7 @@ portable_agent_kit/
 │   ├── aikit_help.py             <- Generated top-level help for the --help fast path
 │   ├── subagent_delegate.py      <- Bounded OpenCode sub-agent runs
 │   ├── project_publish.py        <- Uploads a project to its own GitHub repo
+│   ├── git_guard.py              <- pre-push guard: raw push is refused (ADR-341)
 │   ├── project_archive.py        <- Retires a project to projects/archive/ and archives GitHub
 │   ├── dossier_sync.py           <- Publish-time AegeanWorks catalogue sync (ADR-308)
 │   ├── project_ui.py             <- Durable has_ui/ui_kind identifier (ADR-233)
@@ -161,7 +164,6 @@ portable_agent_kit/
 │   ├── proof_gate.py             <- Fail-to-pass proof gate (IDEA-956)
 │   ├── project_compat.py         <- AI-compat scaffold + proof (inventory/deltas/screenshots)
 │   └── verify_commit.py          <- Verifies a commit alone in a throwaway worktree
-├── projects/                   <- Built software (each subfolder its own repo)
 ├── reports/                    <- Local-only research inbox (PRINCIPLE-016 R7; only README.md tracked)
 │   └── README.md               <- Inbox lifecycle: triage into the register, then delete
 ├── tests/
@@ -174,6 +176,8 @@ portable_agent_kit/
     ├── services.md               <- Core services and API contracts
     ├── data_models.md            <- Data structures, schemas, and persistence models
     ├── state_and_ui.md           <- Presentation layer, UI state, and event loops
+    ├── state_machines.md         <- Verified inventory of implicit lifecycle machines (ADR-388)
+    ├── state_machine_proposals.md  <- State-machine fix proposals and verdicts (ADR-388)
     ├── decisions.md              <- Architectural Decision Records (ADRs)
     ├── codebase_map.md           <- Auto-generated AST catalog of classes and functions
     ├── model_benchmarks.md       <- Subagent model benchmarks & selection tree
@@ -194,6 +198,7 @@ python aikit.py attach ../existing  # register an existing folder; adds .aikit/,
 python aikit.py list                # every project, its stack and test command
 python aikit.py status my-app       # task, changes, decision; --exit-code fails when dirty, --json for CI
 python aikit.py check my-app        # tests, checks, hygiene, guidelines, secrets; --push pushes (exit 1 if blocked)
+python aikit.py push my-app          # every gate, then push to origin (alias for check --push; never forced)
 python aikit.py check my-app --strict  # delivery gate: clean tree, map, no conflicts, no open UI task
 python aikit.py ui init my-app        # React/Vite pilot: write a conservative .aikit/ui.json
 python aikit.py ui init my-app --fast "npm run test" --paths "src/**"  # other stacks
@@ -203,11 +208,11 @@ python aikit.py ui allow my-app "Btn*" --reason "<why>"  # intended inventory re
 python aikit.py ui finish my-app --reviewed  # close after review; a guideline can waive the human
 python aikit.py fix my-app          # restore memory/README, adopt UI, refresh map, then check
 python aikit.py guideline my-app "money is integer cents" --source user  # project rule
-python aikit.py publish my-app [--owner ORG] [--license auto]  # repo, description, recorded AI topics
+python aikit.py publish my-app [--owner ORG] [--license auto]  # pre-push guard, repo, description, recorded AI topics
 python aikit.py archive my-app --reason "superseded by X" [--offline]  # move to projects/archive/, archive GitHub repo
 python aikit.py license my-app [--suggest|--set game|--restrict]  # AL-1.1, AGL-1.1 (DRM-free games) or ASL-1.1 (science)
 ```
-A project's memory is `.aikit/`; ledger commands take `--workspace projects/<name>`. `publish` needs a 10-350 char README description; `license` picks AL-1.1, AGL-1.1 or ASL-1.1. `check` wants `checklists: passed`; deliberate hygiene findings need `hygiene: allow <reason>`. `ui` is opt-in (`.aikit/ui.json`); `finish` needs `--reviewed` (ADR-160..166). `check`/`fix`/`publish` run project commands unsandboxed: attach trusted repositories only.
+A project's memory is `.aikit/`; ledger commands take `--workspace projects/<name>`. `publish` installs a pre-push guard at `.git/hooks` or the repository's `core.hooksPath`: a raw `git push` is refused until the project is uploaded through AIKit (ADR-341, ADR-342); `push`, `check --push` and the online `archive` path use the same authorized push (ADR-343). Publishing also needs a 10-350 char README description; `license` picks AL-1.1, AGL-1.1 or ASL-1.1. `check` wants `checklists: passed`; deliberate hygiene findings need `hygiene: allow <reason>`. `ui` is opt-in (`.aikit/ui.json`); `finish` needs `--reviewed` (ADR-160..166). `check`/`fix`/`publish` run project commands unsandboxed: attach trusted repositories only.
 
 ## 🔁 Aegean Reforge: Host Review & Safe Repair
 

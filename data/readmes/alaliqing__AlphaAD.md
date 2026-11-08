@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--07-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1420-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--08-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1409-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1420 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1409 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 224 | 2026-11-05 | [View papers](#category-perception-sensor-fusion) |
-| Prediction & World Models | 112 | 2026-11-05 | [View papers](#category-prediction-world-models) |
+| Perception & Sensor Fusion | 222 | 2026-11-05 | [View papers](#category-perception-sensor-fusion) |
+| Prediction & World Models | 110 | 2026-11-05 | [View papers](#category-prediction-world-models) |
 | Planning & Decision-Making | 98 | 2026-11-04 | [View papers](#category-planning-decision-making) |
 | Control & Vehicle Dynamics | 59 | 2026-11-05 | [View papers](#category-control-vehicle-dynamics) |
-| Mapping & Localization | 53 | 2026-10-29 | [View papers](#category-mapping-localization) |
+| Mapping & Localization | 52 | 2026-10-29 | [View papers](#category-mapping-localization) |
 | End-to-End & VLA | 158 | 2026-11-05 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 216 | 2026-11-05 | [View papers](#category-safety-security-verification) |
+| Safety, Security & Verification | 214 | 2026-11-05 | [View papers](#category-safety-security-verification) |
 | Systems, Deployment & Connectivity | 158 | 2026-11-05 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 28 | 2026-11-04 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 314 | 2026-11-05 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 310 | 2026-11-05 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -47,7 +47,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 |:--|--:|:--|
 | Dataset | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
 | Benchmark | 96 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 194 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Simulation | 193 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 36 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
 | Cooperative / V2X | 112 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
 | VLA | 86 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
@@ -56,14 +56,14 @@ Each paper has one primary topic and may carry several method or resource tags. 
 | Imitation Learning | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
-| Explainability | 114 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
+| Explainability | 113 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
 | Human Interaction | 17 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 224 papers
+## Perception & Sensor Fusion · 222 papers
 
 <a id="paper-2611-07613"></a>
 
@@ -514,7 +514,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-12266"></a>
 
-### DVD: Dynamic Vector Decoding for Efficient MLLM-based Perception ![Recent](https://img.shields.io/badge/Recent-orange)
+### DVD: Dynamic Vector Decoding for Efficient MLLM-based Perception ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Jinghua Hou, Zhe Liu, Hengshuang Zhao<br>
 **Published:** 2026-10-08<br>
@@ -525,7 +525,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-12149"></a>
 
-### Reliability Characterization for N-version Object Detection ![Recent](https://img.shields.io/badge/Recent-orange)
+### Reliability Characterization for N-version Object Detection ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Shunsuke Nagao, Fumio Machida<br>
 **Published:** 2026-10-08<br>
@@ -536,7 +536,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-11577"></a>
 
-### CoCam4D: Geometry-Aware Cooperative 4D Perception for Camera-Only Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
+### CoCam4D: Geometry-Aware Cooperative 4D Perception for Camera-Only Autonomous Driving ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Soham Pahari, Sudip Das, Arindam Das, Ujjwal Bhattacharya<br>
 **Published:** 2026-10-08<br>
@@ -547,7 +547,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-11504"></a>
 
-### The Operator Mismatch Problem: Deploying BEV Perception with Portable GPU Compute ![Recent](https://img.shields.io/badge/Recent-orange)
+### The Operator Mismatch Problem: Deploying BEV Perception with Portable GPU Compute ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Rohit Verma, Anand V Bodas<br>
 **Published:** 2026-10-08<br>
@@ -1190,7 +1190,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-08701"></a>
 
-### Anchor-Based AI Approach for Pre-Crash Object Detection Utilizing Micro-Doppler Signatures in Automotive Radar ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### Anchor-Based AI Approach for Pre-Crash Object Detection Utilizing Micro-Doppler Signatures in Automotive Radar
 
 **Authors:** Patrick Zaumseil, Rainer Engert, Dagmar Steinhauser, Jonathan Wache, Soumya Dewangan, et al.<br>
 **Published:** 2026-08-09<br>
@@ -1659,4 +1659,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 **Abstract:** Vision-radar fusion is central to robust autonomous driving, combining dense visual semantics with precise range and velocity measurements from radar. However, real-world fusion quality is...
 
-<a id="paper-26
+<a id="paper-2606-31834"></a>
+
+### Real-Time Source-Free Object Detection
+

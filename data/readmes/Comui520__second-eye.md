@@ -23,16 +23,32 @@
 - Web 设置页、任务队列、运行日志和 SQLite 持久化
 - 可选 Jev 类型化判断层：逐件评估、置信度裁决和低置信度回落
 - Docker 镜像、noVNC 登录模式和 GitHub Actions CI
+- 按平台发布时间搜索、最近十分钟发布筛选，以及 Windows 独立启动器
 
 ## 支持的平台与部署方式
 
 | 方式 | Windows | macOS | Linux / NAS | 推荐场景 |
 | --- | --- | --- | --- | --- |
+| Windows 安装包 / 便携版 | Windows 11 x64 实测 | — | — | 双击启动，无需另装 Python 或 Docker |
 | Docker Compose | 支持 Docker Desktop | 支持 Docker Desktop | 支持 Docker Engine + Compose | 最可复现的部署方式 |
 | uv 本地运行 | 支持 | 支持 | 支持 | 开发、调试、需要本机浏览器登录 |
 | Conda 本地运行 | 支持 | 理论上支持 | 理论上支持 | 已经使用 Conda 的环境 |
 
 Docker 是推荐的通用部署方式：应用、Python 依赖、Chromium 和 noVNC 都封装在镜像中，Windows、macOS、Linux 和 NAS 使用同一套 Compose 配置。
+
+## 快速开始：Windows
+
+从 [v0.3.0 Release](https://github.com/Comui520/second-eye/releases/tag/v0.3.0) 下载 `SecondEye-v0.3.0-windows-x64-setup.exe` 安装，或解压同页的便携 ZIP，双击其中的 `SecondEye.exe`。启动器会打开本机管理页面，在设置中填写模型并登录闲鱼即可使用。关闭启动器或点“退出”会停止后台任务，关闭网页后启动器仍可继续运行。
+
+安装包自带 Python、Chromium 和应用依赖，不要求 Docker。数据统一保存在 `%LOCALAPPDATA%\SecondEye`，升级与卸载保留数据。已有源码或 Docker 用户请参阅 [Windows 使用说明](docs/windows.md) 后迁移。安装包未进行代码签名，实测系统为 Windows 11 x64。
+
+Windows 首版支持图片分析，视频抽帧需要另装 FFmpeg。可把 `ffmpeg.exe`、`ffprobe.exe` 及对应 DLL 放入 `%LOCALAPPDATA%\SecondEye\media-tools\bin` 后重启。Docker 镜像仍内置 FFmpeg。
+
+## 搜索时效
+
+默认通过已登录的 HTTP 搜索接口按“新发布”顺序查询，必要时兼容浏览器搜索；详情和卖家信息仍通过浏览器获取。接口访问同样需要有效 Cookie。新建任务默认每 5 分钟执行，默认抖动为 0，已有任务的周期不会自动修改。商品页可按“最新发布”排序并筛选“最近十分钟发布”，未知发布时间不会混入该筛选。
+
+平台索引、分页上限、抓取周期和分析队列都会影响时效，无法保证每件商品发布十分钟内被发现或通知。具体调查和开源项目对比见 [抓取与时效调查](docs/research/2026-11-08-xianyu-search.md)。
 
 ## 快速开始：Docker Compose
 

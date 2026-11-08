@@ -1,9 +1,9 @@
 # ColliePWA
 
 <p align="center">
-  <!-- Baked by collie-brand's logo-ship.ts (collie-social-card-dark.png) and copied in whole, the
+  <!-- Baked by collie-brand's link-card.ts (assets/collie-link-card.png) and copied in whole, the
        same file colliepwa.dev serves as its social card. Do not retouch it here: regenerate it there. -->
-  <img src="assets/social-card.png" alt="The Collie mark beside the ColliePWA wordmark and the line: your agent herd, from your phone." width="640">
+  <img src="assets/social-card.png" alt="ColliePWA: your terminal agents, on your phone. Two phones show the dashboard and a chat with a coding agent, beside the logos of the agents and multiplexers it works with." width="640">
 </p>
 
 <p align="center">
@@ -79,7 +79,7 @@ Prefer to have your agent do it? Ask it to run `collie skill` and follow the bri
 - **Twelve UI languages** and a per-device typeface setting
 - **Herdr session switching** managed from the web interface
 - **PWA support** running locally on loopback with no external accounts or cloud dependencies
-- **Telemetry**: new in 1.27.0 and on by default; before that Collie sent nothing. Once a day each bridge (one instance with its own state folder) sends a random ID, the version, the OS, the CPU, the install kind and the release line and, when a trouble card showed, the agent program's name and version and the multiplexer, as a count. No usage, no content. Turn it off on each machine in Settings, with `COLLIE_TELEMETRY=0` (in the instance's `.env` for a service), `telemetry = false` or `DO_NOT_TRACK=1` ([details](./docs/security.md#what-leaves-your-machine))
+- **Telemetry**: new in 1.27.0 and on by default; before that Collie sent nothing. Once a day each bridge (one instance with its own state folder) sends a random ID, the version, the OS, the CPU, the install kind and the release line and, when a trouble card showed, the agent program's name and version, the multiplexer and, for a dialog, a short hash of its key-hint row, as a count. No usage, no content. Turn it off on each machine in Settings, with `COLLIE_TELEMETRY=0` (in the instance's `.env` for a service), `telemetry = false` or `DO_NOT_TRACK=1` ([details](./docs/security.md#what-leaves-your-machine))
 
 ## Demo
 

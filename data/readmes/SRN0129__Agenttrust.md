@@ -6,10 +6,10 @@
 
 ### **Enterprise Zero-Trust AI Security & Governance Gateway: Real-Time Prompt Injection Defense, Action Scoping, Human-in-the-Loop Gate, Post-Quantum Merkle Audit & EU AI Act Compliance for Autonomous Agent Swarms.**
 
-[![AgentTrust Core v2.0.0](https://img.shields.io/badge/AgentTrust-v2.0.0-blue.svg)](https://github.com/SRN0129/Agenttrust/releases/tag/v2.0.0)
+[![AgentTrust Core v2.1.0](https://img.shields.io/badge/AgentTrust-v2.1.0-blue.svg)](https://github.com/SRN0129/Agenttrust/releases/tag/v2.1.0)
 [![Live Interactive Demo](https://img.shields.io/badge/Live%20Demo-Try%20Interactive%20SOC%20Dashboard-06B6D4?style=flat&logo=safari&logoColor=white)](https://srn0129.github.io/Agenttrust/)
 [![CI Build Status](https://github.com/SRN0129/Agenttrust/actions/workflows/ci.yml/badge.svg)](https://github.com/SRN0129/Agenttrust/actions/workflows/ci.yml)
-[![Automated Security Battery](https://img.shields.io/badge/Security%20Tests-133%2F133%20Passing%20(100%25)-brightgreen.svg)](tests)
+[![Automated Security Battery](https://img.shields.io/badge/Security%20Tests-148%2F148%20Passing%20(100%25)-brightgreen.svg)](tests)
 [![CodeQL Security Scan](https://github.com/SRN0129/Agenttrust/actions/workflows/codeql.yml/badge.svg)](https://github.com/SRN0129/Agenttrust/actions/workflows/codeql.yml)
 [![Post-Quantum FIPS 204](https://img.shields.io/badge/Post--Quantum-NIST%20FIPS%20204%20(ML--DSA)-8B5CF6.svg)](server/services/pqcAttestation.ts)
 [![Compliance: EU AI Act](https://img.shields.io/badge/Compliance-EU%20AI%20Act%20Art.%2012%20%26%2014-059669.svg)](server/services/compliance.ts)
@@ -158,11 +158,11 @@ AgentTrust is architected as an **open, modular ecosystem**. You can consume any
 
 | Package | Version | Scope & Defense Mechanism | Install Command | Links |
 | :--- | :--- | :--- | :--- | :--- |
-| **`@srn0129/agenttrust-orbital-notary`** | `v1.0.0` | Keplerian orbit propagation, relativistic time dilation ($\gamma$), and NIST FIPS 204 (ML-DSA) receipt verification engine | `npm i @srn0129/agenttrust-orbital-notary` | [Code](packages/orbital-notary) • [Release](https://github.com/SRN0129/Agenttrust/releases/tag/orbital-notary-v1.0.0) |
-| **`@srn0129/agenttrust-space-killswitch`** | `v1.0.0` | Asymmetric cryptographic dead man's switch & emergency quarantine freeze modeled for out-of-band broadcast channels | `npm i @srn0129/agenttrust-space-killswitch` | [Code](packages/space-killswitch) • [Release](https://github.com/SRN0129/Agenttrust/releases/tag/space-killswitch-v1.0.0) |
-| **`@srn0129/agenttrust-doppler-ephemeris`** | `v1.0.0` | Relativistic time dilation ($\gamma = 1 / \sqrt{1 - v^2/c^2}$) & RF carrier Doppler S-curve Proof-of-Space engine | `npm i @srn0129/agenttrust-doppler-ephemeris` | [Code](packages/doppler-ephemeris) • [Release](https://github.com/SRN0129/Agenttrust/releases/tag/doppler-ephemeris-v1.0.0) |
-| **`@srn0129/agenttrust-qkd-witness`** | `v1.0.0` | Quantum Key Distribution (QKD) physics model, Bell CHSH inequality ($S > 2.0$), and QBER eavesdropping detection | `npm i @srn0129/agenttrust-qkd-witness` | [Code](packages/qkd-witness) • [Release](https://github.com/SRN0129/Agenttrust/releases/tag/qkd-witness-v1.0.0) |
-| **`@srn0129/agenttrust` (Core Gateway)** | `v2.0.0` | Unified zero-trust control plane, cognitive CoT black box, and post-quantum policy gateway | `npm i @srn0129/agenttrust` | [Code](.) • [Release](https://github.com/SRN0129/Agenttrust/releases/tag/v2.0.0) |
+| **`@srn0129/agenttrust-orbital-notary`** | `v2.1.0` | Keplerian orbit propagation, relativistic time dilation ($\gamma$), and NIST FIPS 204 (ML-DSA) receipt verification engine | `npm i @srn0129/agenttrust-orbital-notary` | [Code](packages/orbital-notary) • [Release](https://github.com/SRN0129/Agenttrust/releases/tag/orbital-notary-v2.1.0) |
+| **`@srn0129/agenttrust-space-killswitch`** | `v2.1.0` | Asymmetric cryptographic dead man's switch & emergency quarantine freeze modeled for out-of-band broadcast channels | `npm i @srn0129/agenttrust-space-killswitch` | [Code](packages/space-killswitch) • [Release](https://github.com/SRN0129/Agenttrust/releases/tag/space-killswitch-v2.1.0) |
+| **`@srn0129/agenttrust-doppler-ephemeris`** | `v2.1.0` | Relativistic time dilation ($\gamma = 1 / \sqrt{1 - v^2/c^2}$) & RF carrier Doppler S-curve Proof-of-Space engine | `npm i @srn0129/agenttrust-doppler-ephemeris` | [Code](packages/doppler-ephemeris) • [Release](https://github.com/SRN0129/Agenttrust/releases/tag/doppler-ephemeris-v2.1.0) |
+| **`@srn0129/agenttrust-qkd-witness`** | `v2.1.0` | Quantum Key Distribution (QKD) physics model, Bell CHSH inequality ($S > 2.0$), and QBER eavesdropping detection | `npm i @srn0129/agenttrust-qkd-witness` | [Code](packages/qkd-witness) • [Release](https://github.com/SRN0129/Agenttrust/releases/tag/qkd-witness-v2.1.0) |
+| **`@srn0129/agenttrust` (Core Gateway)** | `v2.1.0` | Unified zero-trust control plane, cognitive CoT black box, and post-quantum policy gateway | `npm i @srn0129/agenttrust` | [Code](.) • [Release](https://github.com/SRN0129/Agenttrust/releases/tag/v2.1.0) |
 
 ---
 
@@ -245,30 +245,32 @@ Logs *why* the agent decided to act, not just the button it pressed:
 
 ## 🧪 Automated Test Verification
 
-AgentTrust enforces 100% automated regression defense with **133 passing enterprise security tests across 17 test suites**:
+AgentTrust enforces 100% automated regression defense with **148 passing enterprise security tests across 19 test suites**:
 
 ```text
- ✓ tests/quantum_trust.test.ts (8 tests)
- ✓ tests/mathematical_algorithms_and_sca.test.ts (13 tests)
- ✓ tests/e2e_user_journey.test.ts (1 test)
- ✓ tests/authorization.test.ts (6 tests)
- ✓ tests/scoping_cognitive_runtime_visibility.test.ts (10 tests)
- ✓ tests/most_powerful_innovations.test.ts (12 tests)
  ✓ tests/approvals.test.ts (4 tests)
+ ✓ tests/mathematical_algorithms_and_sca.test.ts (13 tests)
+ ✓ tests/scoping_cognitive_runtime_visibility.test.ts (10 tests)
  ✓ tests/bugfixes_and_self_healing.test.ts (11 tests)
- ✓ tests/orbital_spacemesh_and_qkd.test.ts (18 tests)
+ ✓ tests/most_powerful_innovations.test.ts (12 tests)
  ✓ tests/enterprise_features.test.ts (9 tests)
  ✓ tests/advanced_enterprise_services.test.ts (10 tests)
- ✓ tests/pqc_mldsa_fips204.test.ts (8 tests)
+ ✓ tests/e2e_user_journey.test.ts (1 test)
+ ✓ tests/authorization.test.ts (6 tests)
+ ✓ tests/orbital_spacemesh_and_qkd.test.ts (18 tests)
+ ✓ tests/pqc_mldsa_fips204.test.ts (10 tests)
+ ✓ tests/concurrency_write_queue.test.ts (1 test)
+ ✓ tests/defensive_sandbox.test.ts (8 tests)
+ ✓ tests/adversarial_fuzzing.test.ts (9 tests)
  ✓ tests/audit_integrity.test.ts (4 tests)
- ✓ tests/revocation.test.ts (4 tests)
  ✓ tests/rate_limits_spend.test.ts (2 tests)
- ✓ tests/defensive_sandbox.test.ts (6 tests)
- ✓ tests/enterprise_defenses_v2.test.ts (7 tests)
+ ✓ tests/quantum_trust.test.ts (8 tests)
+ ✓ tests/revocation.test.ts (4 tests)
+ ✓ tests/enterprise_defenses_v2.test.ts (8 tests)
 
- Test Files  17 passed (17)
-      Tests  133 passed (133)
-   Duration  4.03s
+ Test Files  19 passed (19)
+      Tests  148 passed (148)
+   Duration  4.73s
 ```
 
 Run test battery locally:

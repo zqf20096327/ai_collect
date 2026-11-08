@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://www.clutchbox.dev">
-    <img src="brand/readme-demo.gif" alt="An agent asked to catch up on X, an Amazon cart and GitHub reviews opens each site already signed in, using example data." width="100%">
+    <img src="brand/readme-demo.gif" alt="An agent asked to reply to X mentions and save last month's invoices opens X already signed in, posts the replies, and fills a folder with the invoices, using example data." width="100%">
   </a>
 
   <p>
@@ -22,7 +22,7 @@
   </p>
 </div>
 
-**Your agents, already signed in.** You choose the sites, and every agent session opens signed in as you: no passwords typed, no 2FA prompts, no cookie files going stale.
+**Your agent's computer, already signed in as you.** You choose the sites; the extension keeps them signed in on your agent's computer: no passwords typed, no 2FA prompts, no cookie files going stale.
 
 A Chrome extension keeps the sign-ins for the sites you pick in sync, one way, to where your agents run: a hosted computer with Chrome, or your own Playwright, browser-use, Stagehand, or any Chrome over CDP. All of it is open source under Apache-2.0, and you can run the whole product yourself.
 
@@ -115,6 +115,7 @@ Then sign in at <http://localhost:3000>, with the link from Mailpit at <http://l
 | [`packages/playwright`](packages/playwright) | Applies a capture to a Playwright browser context, a persistent context, or a Chrome attached over CDP. |
 | [`packages/apply`](packages/apply) | Works out what a capture changes since the last one applied, and applies it to any Chrome over CDP. |
 | [`packages/runtime-e2b`](packages/runtime-e2b), [`runtime-instabox`](packages/runtime-instabox), [`runtime-boat`](packages/runtime-boat) | Runtime adapters: apply a member's latest capture to Chrome in your own E2B, Instabox, or Boat sandbox, through the sandbox's command API. |
+| [`packages/recipes`](packages/recipes) | [Recipes](recipes) for agents on a computer signed in as you, and [which sites work](sites/compatibility.json) with a synced sign-in. |
 | [`packages/capture`](packages/capture) | The capture format and sync contract: cookies with full metadata, sites, exclusions, and settings. |
 | [`packages/computer`](packages/computer) | The interface a computer provider implements: create, pause, resume, screenshot, act, exec, and CDP. |
 | [`packages/e2b`](packages/e2b) | Computers for agents on [E2B](https://e2b.dev): a Linux desktop sandbox with Chrome, kept signed in. |

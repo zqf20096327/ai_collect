@@ -5,8 +5,7 @@
   <img src="brand/assets/coop-lockup-light.svg" alt="co:op" width="420">
 </picture>
 
-Run coding agents with their permission prompts off, in a sandbox that holds only your project.
-Then give them a task queue and let them work through it overnight.
+Run your AI agents in a sandbox, with your secrets, API keys and untrusted websites out of reach. Then give them a task queue, and let them work through it overnight.
 
 [![CI](https://github.com/AndrewDryga/coop/actions/workflows/ci.yml/badge.svg)](https://github.com/AndrewDryga/coop/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/AndrewDryga/coop?sort=semver)](https://github.com/AndrewDryga/coop/releases/latest)
@@ -16,9 +15,10 @@ Then give them a task queue and let them work through it overnight.
 </div>
 
 Coding agents do their best work unleashed, but that's a gamble with your secrets and your code.
-co:op runs the agent in a container that sees one folder: your project, at its real path. Your SSH
-keys, cloud logins and other repos aren't in it. The same box runs Claude Code, Codex, Gemini CLI
-and Grok.
+co:op runs the agent in a sandbox (aka box) so it sees one folder: your project. The folder
+keeps its real path, so the agent works well with your
+[editor](#editors-mcp-and-your-own-platform). Your SSH keys, cloud logins and other repos aren't in
+the box, and its network is restricted. co:op supports Claude Code, Codex, Gemini CLI and Grok.
 
 ```bash
 cd ~/code/your-repo && coop claude
@@ -29,13 +29,19 @@ The [website](https://coop.dryga.com) shows how it works, and the
 
 ## Why a box
 
-Agents do what they read in code, docs and issues, even when an attacker wrote it. A comment hidden
-in a README can tell your agent to post your SSH key in an issue. In the box there is no key to
-post. A package the agent installs can try to send your `.env` to a stranger's server. In the box
-`.env` cannot be read, and with filtered networking, the default, that server can't be reached.
+Agents do what they read in code, docs and issues, even when an attacker wrote it:
 
-Sometimes the agent just gets it wrong. An agent cleaning up can run `rm -rf tests/ plan/ ~/`. In
-the box, that `~/` isn't your home folder, and your files aren't there.
+- A comment hidden in a README can tell your agent to post your SSH key in an issue. In the sandbox
+  there is no key to post.
+- A package the agent installs can try to send your `.env` to a stranger's server. In the sandbox
+  `.env` cannot be read, and with filtered networking, the default, that server can't be reached.
+
+And sometimes the agent just gets it wrong. An agent cleaning up can run `rm -rf tests/ plan/ ~/`. With the sandbox, that doesn't cause damage any more.
+
+Supply chain attacks are common too. The sandbox keeps the agent from installing anything on your
+computer or reading anything outside your project, and the filtered network keeps it from reaching
+servers you haven't approved. Your Anthropic API keys, for example, are never mounted into the
+sandbox, so they stay safe.
 
 ## Install
 
@@ -44,60 +50,24 @@ curl -fsSL https://coop.dryga.com/install.sh | sh
 ```
 
 The script downloads the `coop` binary for your system into `~/.local/bin`. It needs `curl`, `tar`,
-and `sha256sum` or `shasum`. If Docker is available, it also builds the box image and
-runs `coop doctor`. If not, install it and then run:
+and `sha256sum` or `shasum`. If Docker is available, it also builds the box image and runs
+`coop doctor`. If not, install Docker and then run:
 
 ```bash
 coop build --egress open && coop doctor
 ```
 
-co:op runs on macOS and Linux with Docker. Online provider runs use Docker's private network
-namespace to keep credentials outside the box. Apple's
-[`container`](https://github.com/apple/container) remains available for raw workloads run with
-`--egress open` or `--egress offline`, not provider-brokered or filtered runs. co:op prefers Docker
-when both are present. The `coop` binary is static.
+co:op runs on macOS and Linux with Docker. The `coop` binary is static.
 
-`coop update` updates the binary, then uses the installed version to prepare the image for this
-project's network mode. Filtered projects rebuild the files you approved with `coop build` on the
-pinned client base; open and offline images refresh their base components. If a filtered project's
-build files are new or changed, an interactive provider launch can offer Build and continue.
-Review the saved snapshot before approving; unattended runs wait for `coop build` on the host, and
-an editor connects and holds your messages until it finishes. Each release carries pinned agent
-CLIs and ACP adapters. To build from source, run `git clone https://github.com/AndrewDryga/coop && cd coop && make install`.
+To build from source, run `git clone https://github.com/AndrewDryga/coop && cd coop && make install`.
 
 <a name="verifying-a-download"></a>
-<details><summary>Verifying a download</summary>
+To check a download yourself, follow [Verifying a download](https://coop.dryga.com/install.html#verifying-a-download).
 
-The one-line command runs `install.sh` from the `main` branch, served by GitHub Pages at
-coop.dryga.com. That trusts GitHub, the domain, and the current `main` branch. To trust GitHub
-alone, fetch the same script from `https://raw.githubusercontent.com/AndrewDryga/coop/main/install.sh`.
+## Updating
 
-The script then needs the release's `checksums.txt`, and checks the downloaded archive against it
-with `sha256sum` or `shasum`. It stops if the checksum file or the tool is missing. When
-[cosign](https://github.com/sigstore/cosign) is installed, the script also proves the checksum file
-came from the release workflow for the exact tag you asked for. Every release since v2.2.2 ships
-that signature bundle, so a missing bundle stops the install instead of falling back to the
-checksum alone. Without cosign, the script says the signature wasn't checked.
-
-To verify before you run any project code, download the release files by hand. Set `VER` and
-`ASSET` for your platform, for example `VER=v8.1.0 ASSET=coop_8.1.0_darwin_arm64.tar.gz`:
-
-```bash
-base="https://github.com/AndrewDryga/coop/releases/download/$VER"
-curl -fsSLO "$base/$ASSET"
-curl -fsSLO "$base/checksums.txt"
-curl -fsSLO "$base/checksums.txt.bundle"
-
-# 1. checksums.txt is signed by the release workflow (keyless Sigstore):
-cosign verify-blob checksums.txt \
-  --bundle checksums.txt.bundle \
-  --certificate-identity "https://github.com/AndrewDryga/coop/.github/workflows/release.yml@refs/tags/$VER" \
-  --certificate-oidc-issuer https://token.actions.githubusercontent.com
-
-# 2. the archive matches the now-trusted checksum (Linux: sha256sum -c -):
-awk -v f="$ASSET" '$2==f{print $1"  "f}' checksums.txt | shasum -a 256 -c -
-```
-</details>
+We ship updates frequently. `coop update` updates the binary, then uses the installed version to prepare the image for this
+project's network mode.
 
 ## Quickstart
 
@@ -109,15 +79,20 @@ coop claude                # 4. start the agent in the box
 ```
 
 `coop init` sets up the task queue, hooks, shared instructions and skills, and the
-selected [agent directories](docs/agents.md#instructions). It configures the agents you're signed
+selected [agent directories](https://coop.dryga.com/agents.html#instructions). It configures the agents you're signed
 in to, so sign in first.
 
 Each agent starts with its own "don't stop to ask" flag on (`--dangerously-skip-permissions`,
 `--dangerously-bypass-approvals-and-sandbox`, `--yolo`, `--permission-mode bypassPermissions`).
-An agent that goes off the rails works on the repo you gave it, which you can restore from Git,
-and the rest of your computer stays out of reach. Arguments after the agent's name go to the
-agent, so `coop claude --continue` resumes Claude's last session in the box. Codex is the
-exception: its `-p` picks a profile, so run a one-shot prompt with `coop codex exec "…"`.
+
+An agent that goes off the rails works on the repo you gave it, which you can restore from Git. The
+rest of your computer stays out of reach. You can also use `coop fork` to give the agent its own
+copy of your repo, so you can keep working in yours without risking your local changes. See
+[forks](https://coop.dryga.com/forks.html).
+
+Arguments after the agent's name go to the agent, so `coop claude --continue` resumes Claude's last
+session in the box. When Claude exits, co:op prints the command that resumes that session, such as
+`coop claude --resume <id>`. On every agent, `-p "…"` runs one prompt and exits.
 
 co:op answers `--help`, `-h` and a leading `help` or `login` itself, and takes its own options
 such as `--peer` and `--egress`. Put `--` before them to pass them to the agent, as in
@@ -140,16 +115,16 @@ coop run -- npm test                          # any command in the box
   `coop check-secrets` finds secrets inside your other files, and `.coopignore` hides more paths.
 - Networking is filtered by default: the box reaches your AI provider and the domains you approve.
   Everything else is blocked, so your code can't go anywhere you haven't approved.
-- Native history and settings belong to the current repository; other projects' conversations stay
-  outside its provider homes. Provider credentials stay in host-only storage and a run-local broker.
+- Each repository has its own agent history and settings, so the box can't see your other projects'
+  conversations. Provider credentials stay outside the box.
 - There are no Git credentials inside. The agent commits in your name, and you decide what leaves
   your computer.
 
 `coop doctor` checks secret hiding, host access, credential isolation and offline networking
 against the real box on your computer. `coop net setup` checks that this computer can enforce
 filtered networking, and the first filtered run does that check for you. Read more in
-[the guide](https://coop.dryga.com/docs.html#sandbox), [the box](docs/box.md) and
-[networking](docs/networking.md).
+[the guide](https://coop.dryga.com/docs.html#sandbox), [the box](https://coop.dryga.com/box.html) and
+[networking](https://coop.dryga.com/networking.html).
 
 ## Hand off the work
 
@@ -168,7 +143,7 @@ coop tasks add "Add a /health endpoint" \
 coop loop claude
 ```
 
-See [the loop](docs/loop.md).
+See [the loop](https://coop.dryga.com/loop.html).
 
 ### Forks
 
@@ -182,7 +157,7 @@ coop fork review api --stat       # its commits and changed files
 coop fork merge api               # rebase, run your checks, merge
 ```
 
-See [forks](docs/forks.md).
+See [forks](https://coop.dryga.com/forks.html).
 
 ### Accounts, models and presets
 
@@ -193,10 +168,10 @@ in the target, as in `coop claude:opus/xhigh@work`.
 A preset is a team of models in one file: a lead, its fallbacks, and the roles it consults or hands
 work to. `coop presets init` writes a starter team you can change, and `coop loop frontier` runs it.
 
-See [agents, accounts and presets](docs/agents.md).
+See [agents, accounts and presets](https://coop.dryga.com/agents.html).
 
-`coop usage` shows account limits and estimates recorded activity from Coop and native CLIs on
-this computer. Optional [provider reports](docs/usage-reports.md) show API spend separately.
+`coop usage` shows your account limits and estimates your usage from activity on this computer.
+Optional [provider reports](https://coop.dryga.com/usage-reports.html) show API spend separately.
 
 ## Your project's tools and services
 
@@ -207,7 +182,7 @@ the box, each in its own container. With filtered networking they share a privat
 no direct internet. `coop up` starts them, `coop down` stops them and keeps their data, and
 `coop down --delete-volumes` also deletes their data.
 
-See [the box](docs/box.md).
+See [the box](https://coop.dryga.com/box.html).
 
 ## Editors, MCP and your own platform
 
@@ -216,7 +191,7 @@ Define MCP servers once, outside your repo, and co:op makes them available to ev
 agent. You can also connect co:op workers to your own platform, which hands out the jobs. Models
 never see your GitHub credentials.
 
-See [editors, MCP and controllers](docs/integrations.md) and the [session API](docs/session-api.md).
+See [editors, MCP and controllers](https://coop.dryga.com/integrations.html) and the [session API](https://coop.dryga.com/session-api.html).
 
 ## Evaluations
 
@@ -228,17 +203,28 @@ which starts no container and spends nothing:
 coop eval run core codex --timeout 35m --dry-run
 ```
 
-See [evaluations](docs/evals.md).
+See [evaluations](https://coop.dryga.com/evals.html).
 
 ## Documentation
 
-- [The guide](https://coop.dryga.com/docs.html) covers every feature, start to finish.
-- Reference pages: [the box](docs/box.md), [agents, accounts and presets](docs/agents.md),
-  [forks](docs/forks.md), [the loop](docs/loop.md),
-  [editors, MCP and controllers](docs/integrations.md), [evaluations](docs/evals.md),
-  [configuration](docs/configuration.md), [networking](docs/networking.md),
-  [the session API](docs/session-api.md), and [every command](docs/cli.md).
-- Upgrading? Read [MIGRATING.md](MIGRATING.md) and the [changelog](CHANGELOG.md).
+[The docs](https://coop.dryga.com/docs.html) have a menu and search, and they cover every feature:
+
+- Get started: [overview](https://coop.dryga.com/docs.html), [install](https://coop.dryga.com/install.html),
+  [first sandbox run](https://coop.dryga.com/sandbox-guide.html) and
+  [first overnight run](https://coop.dryga.com/overnight-guide.html).
+- Sandbox: [files, images and services](https://coop.dryga.com/box.html) and
+  [networking](https://coop.dryga.com/networking.html).
+- Agents: [accounts, models and presets](https://coop.dryga.com/agents.html),
+  [editors and MCP](https://coop.dryga.com/integrations.html) and
+  [usage and billing](https://coop.dryga.com/usage-reports.html).
+- Hand off work: [task queues and loops](https://coop.dryga.com/loop.html),
+  [forks and review](https://coop.dryga.com/forks.html) and
+  [evaluations](https://coop.dryga.com/evals.html).
+- Reference: [commands](https://coop.dryga.com/cli.html),
+  [configuration](https://coop.dryga.com/configuration.html),
+  [the worker API](https://coop.dryga.com/session-api.html) and
+  [upgrading](https://coop.dryga.com/migrating.html).
+- What changed: [the changelog](CHANGELOG.md).
 - The background, in two write-ups:
   [Running an AI coding agent you can't trust](https://dryga.com/blog/untrusted-ai-coding-agent/)
   (the sandbox) and [One brain, two agents](https://dryga.com/blog/os-for-coding-agents/) (the

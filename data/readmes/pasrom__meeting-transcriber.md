@@ -249,12 +249,21 @@ Open Settings via the menu bar item or ⌘,.
 
 | Tab | What's in it |
 |---|---|
-| **General** | Record-only mode, apps to watch (Teams/Zoom/Webex/Browser/WeChat/Tencent Meeting/FaceTime/WhatsApp/Slack), detection timing, update checks |
+| **General** | Startup (launch at login, start watching on open), record-only mode, apps to watch (Teams/Zoom/Webex/Browser/WeChat/Tencent Meeting/FaceTime/WhatsApp/Slack), detection timing, update checks |
 | **Audio** | Microphone device, voice activity detection (VAD), per-channel silence indicator, echo cancellation (off by default) |
 | **Transcribe** | ASR engine (WhisperKit / Parakeet) and per-engine options (model incl. a custom WhisperKit model, language, custom vocabulary), terminology normalization rules, live caption overlay (PoC) |
 | **Speakers** | Diarization, mic speaker name, known voices, recognition stats |
 | **Output** | LLM provider (Claude CLI / OpenAI-compatible / none), transcript-retention options, notes language, output folder, custom prompt |
 | **Advanced** | Permissions status, diagnostics, version info |
+
+### Start at login
+
+Settings → General → Startup has two independent switches:
+
+- **Launch at login** registers the app as a macOS login item. The switch shows what macOS reports, read again whenever the app comes to the front. While macOS reports the item as waiting for your approval, which can also be what it reports after you switch the app off under System Settings → General → Login Items, the switch stays on and points you to Login Items. Turning it off here removes the item.
+- **Start watching when the app opens** begins meeting detection a few seconds after launch, the same as pressing Start in the menu. It is only read when the app launches, so switching it in a running app changes nothing until the next launch.
+
+With both on, the app starts when you log in and watches for meetings without a click. It only starts silently once its permissions are granted: on a fresh install, macOS asks for microphone and Screen Recording access when watching starts, a few seconds after that first launch.
 
 ### Custom WhisperKit models
 
@@ -345,7 +354,7 @@ Meeting Transcriber is built with help from many people: code, bug reports, test
 <a href="https://github.com/DevUrandomFoo"><img src="https://avatars.githubusercontent.com/u/15967780?v=4&amp;s=80" width="40" height="40" alt="Manuel J." title="Manuel J."/></a>
 <a href="https://github.com/nsanitas"><img src="https://avatars.githubusercontent.com/u/909637?v=4&amp;s=80" width="40" height="40" alt="Nicolas Sanitas" title="Nicolas Sanitas"/></a>
 
-And [37 more](<CONTRIBUTORS.md>), credited in full there.
+And [38 more](<CONTRIBUTORS.md>), credited in full there.
 <!-- CONTRIBUTORS-PREVIEW:END -->
 
 [CONTRIBUTING.md](CONTRIBUTING.md) explains how to join them.

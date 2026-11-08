@@ -15,7 +15,9 @@
 ![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-blue)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23125082.svg)](https://doi.org/10.5281/zenodo.23125082)
 
-**Site oficial:** [ayorinha.github.io/ayorai-opensearch](https://ayorinha.github.io/ayorai-opensearch/) · [Guia de auditoria de inteligência artificial](https://ayorinha.github.io/ayorai-opensearch/auditoria-de-inteligencia-artificial/)
+**Versão:** `0.7.0` · [DOI desta versão](https://doi.org/10.5281/zenodo.24045951) · [DOI de conceito](https://doi.org/10.5281/zenodo.23125082)
+
+**Site oficial:** [ayorinha.github.io/ayorai-opensearch](https://ayorinha.github.io/ayorai-opensearch/) · [Guia de auditoria de inteligência artificial](https://ayorinha.github.io/ayorai-opensearch/auditoria-de-inteligencia-artificial/) · [Como detectar alucinações de IA](https://ayorinha.github.io/ayorai-opensearch/alucinacao-de-ia/)
 
 [Entenda o projeto](#o-que-é) · [Como funciona](#como-funciona) · [Estado e limites](#o-que-está-comprovado-hoje) · [Documentação](docs/INDEX.md) · [Instalação](#começar)
 
@@ -71,13 +73,35 @@ Esses princípios podem apoiar pesquisas e projetos que necessitam avaliar respo
 
 ## O que está comprovado hoje
 
-O repositório contém implementação de verificação, contrato do Judge 2.0, testes de regressão e conjuntos sintéticos de avaliação. Há resultados históricos documentados para Golden v0 e Golden v0.1, produzidos em inglês e voltados ao desenvolvimento do sistema.
+O repositório reúne implementação de verificação, contrato do Judge 2.0, testes de regressão e avaliações documentadas. Há resultados históricos documentados para Golden v0 e Golden v0.1, produzidos em inglês e voltados ao desenvolvimento do sistema. Os resultados devem ser interpretados sempre dentro da partição, protocolo e revisão de código indicados no relatório correspondente.
 
-**Ainda não há resultado de benchmark em português.** O protocolo RGC permanece em desenvolvimento e não está congelado. Resultados sintéticos não demonstram desempenho em produção nem generalização para documentos jurídicos brasileiros.
+### Atualização de benchmark — Calibration V2 (DEV, 7 nov. 2026)
+
+A primeira execução completa da avaliação Calibration V2 no conjunto **LLM-AggreFact (30.420 exemplos, 11 coortes)** foi concluída e documentada. O experimento foi dividido entre **DEV-A** (seleção e métricas probabilísticas cross-fitted) e **DEV-B** (análise LTT), com três modelos avaliados: FactCG, MiniCheck e mDeBERTa.
+
+| Resultado | Observação |
+|---|---|
+| **FactCG selecionado** | BA cross-fitted de **74,68%** em DEV-A, pela média macro simples por dataset e conforme a regra de seleção registrada. |
+| **Métricas probabilísticas de FactCG** | AUROC **0,8650** · AUPRC **0,9454** · Brier **0,1168** · ECE (15 bins) **0,0054**. |
+| **Camada LTT em DEV-B** | **0/11 coortes certificadas** pela regra originalmente registrada. |
+| **Curva de cobertura** | Análise **descritiva, não certificada**. Não substitui o resultado da regra original. |
+
+FactCG, MiniCheck e mDeBERTa são modelos de terceiros (licença MIT), usados sem modificação dos pesos; o AYORAI contribui com o pipeline de avaliação, a calibração, o pré-registro e a infraestrutura. Créditos em [Componentes de terceiros](reports/benchmarks/2026-11-07-dev-calibration-v2/README.md#componentes-de-terceiros).
+
+**Como interpretar:** estes são resultados de **DEV**, não de TEST, produção ou ranking. A BA de 74,68% é uma métrica cross-fitted de desenvolvimento, não uma estimativa de desempenho externo. A regra LTT original interrompeu a sequência no primeiro limiar inelegível (n inferior a 25); essa limitação metodológica está explicitada no relatório. A curva descritiva não deve ser divulgada como certificação. Como referência (não comparação direta, por ser outra partição): a linha de base por regras registrou BA de 49,2% no TEST.
+
+A Emenda 2 ao pré-registro foi integrada na PR #488: limiares com menos de 25 respostas aceitas são pulados, sem serem tratados como rejeição ou não rejeição; o primeiro limiar elegível é testado e a sequência para na primeira não rejeição. A reaggregação dos mesmos artefatos DEV sob essa regra, registrada em 8 nov. 2026, é **exploratória e pós-hoc**: quatro coortes passaram pelo procedimento (RAGTruth, ClaimVerify, Lfqa e Reveal), enquanto sete não rejeitaram a hipótese nula no primeiro limiar testado. O resultado oficial da v0.7.0 permanece 0/11 pela regra original; nenhum resultado da reaggregação é certificação confirmatória. Consulte o [relatório exploratório e análise de poder LTT](reports/benchmarks/2026-11-08-phase1b-amendment-2-exploratory/README.md).
+
+- [Relatório completo Calibration V2 — resultados e limitações](reports/benchmarks/2026-11-07-dev-calibration-v2/README.md)
+- [Proveniência, execuções e hashes](reports/benchmarks/2026-11-07-dev-calibration-v2/PROVENANCE.md)
+- [Relatório exploratório Amendment 2 — DEV e análise de poder LTT](reports/benchmarks/2026-11-08-phase1b-amendment-2-exploratory/README.md)
+- [Status técnico atualizado](docs/STATUS.md)
+
+**Ainda não há resultado de benchmark em português.** O conjunto LLM-AggreFact usado nesta avaliação é em inglês. O protocolo RGC permanece em desenvolvimento e não está congelado; resultados deste benchmark não demonstram generalização para documentos jurídicos brasileiros.
 
 O projeto **não é apresentado como certificado**, não garante a detecção de toda alucinação e não comprova conformidade regulatória por si só. Hashes ajudam a verificar a integridade de artefatos; não provam a veracidade de seu conteúdo.
 
-Para saber o estado mais recente, consulte o [Status técnico](docs/STATUS.md). Ele é a referência para entregas, verificações e limitações atuais; relatórios antigos descrevem somente a revisão e o commit a que se referem.
+O [Status técnico](docs/STATUS.md) é a referência para entregas, verificações e limitações atuais; relatórios antigos descrevem somente a revisão e o commit a que se referem.
 
 ## Começar
 

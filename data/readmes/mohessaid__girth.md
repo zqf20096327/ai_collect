@@ -24,7 +24,7 @@ Distil only the slice your project needs from the skills you already have — 38
   <a href="examples/portability/RESULTS.md"><img alt="Works with GitHub Copilot CLI" src="https://img.shields.io/badge/works%20with-Copilot%20CLI-24292f?logo=githubcopilot"></a>
   <a href="examples/portability/RESULTS.md"><img alt="Works with OpenCode" src="https://img.shields.io/badge/works%20with-OpenCode-111111"></a>
   <a href="examples/portability/RESULTS.md"><img alt="Works with Antigravity CLI" src="https://img.shields.io/badge/works%20with-Antigravity%20CLI-4285f4?logo=google"></a>
-  <a href="#every-harness"><img alt="Finds skills for 79 harnesses" src="https://img.shields.io/badge/skill%20folders-79%20harnesses-6e7781"></a>
+  <a href="#every-harness"><img alt="Finds skills for 80 harnesses" src="https://img.shields.io/badge/skill%20folders-80%20harnesses-6e7781"></a>
 </p>
 
 <a href="#install">Install</a> · <a href="#how-it-works">How it works</a> · <a href="examples/studio/RESULTS.md">Results</a> · <a href="CONTRIBUTING.md">Contributing</a>
@@ -135,13 +135,14 @@ The plugin registers a `PostToolUse` hook on skill loads (about 1 ms) and, on Cl
 
 Girth's core is a plain binary and an [Agent Skills](https://agentskills.io/specification) skill, so it is not tied to Claude Code:
 
-- **Finds skills wherever your harnesses keep them.** It searches each skill folder that exists, for all 79 harnesses in the [`skills` CLI's table](https://github.com/vercel-labs/skills/blob/main/docs/agents.md), plus folders their own docs name (`~/.codex/skills`, `.cursor/skills`, `.github/skills`, `.opencode/skills`, `.gemini/skills`).
+- **Finds skills wherever your harnesses keep them.** It searches each skill folder that exists, for all 79 harnesses in the [`skills` CLI's table](https://github.com/vercel-labs/skills/blob/main/docs/agents.md), plus folders their own docs name (`~/.codex/skills`, `.cursor/skills`, `.github/skills`, `.opencode/skills`, `.gemini/skills`), plus DeepSeek Harness, which the table doesn't list yet (`.dsh/skills`, `~/.dsh/skills`).
 - **Writes crafted skills where your harness reads them:** `.agents/skills`, which Codex, Cursor, Copilot, Gemini CLI, Antigravity, OpenCode, Cline, Amp and most others read. Under Claude Code it writes `.claude/skills` instead. `girth validate` then links each crafted skill into the other folder, so a skill crafted in one harness loads in all of them, and the project cache keeps compounding when you switch harnesses.
-- **Counts what other harnesses spend.** `girth import` reads the local session logs of Codex, GitHub Copilot CLI, OpenCode and Gemini CLI. `girth advise --harness codex` (or `copilot`, `opencode`, `gemini`) ranks them with that harness's own fixes. On the author's machine, each total matched an independent sum to the cent:
+- **Counts what other harnesses spend.** `girth import` reads the local session logs of Codex, GitHub Copilot CLI, OpenCode, Gemini CLI and Antigravity CLI. `girth advise --harness codex` (or `copilot`, `opencode`, `gemini`, `antigravity`) ranks them with that harness's own fixes. On the author's machine, each total matched an independent sum to the cent:
   - 140 Codex turns, $173.00 at OpenAI list prices;
   - 103 Copilot turns, $618.16 at list prices (one per prompt where Copilot 1.0.95+ logs each request, otherwise one per session stretch);
   - 11 OpenCode turns, $0.28 by OpenCode's own per-request cost;
   - 45 Gemini CLI turns, $1.55 at Google list prices (13 turns on `gemini-3-pro-preview`, which Google no longer prices, are labelled unpriced).
+  - 16 Antigravity CLI turns, $0.23 at Google list prices. On one conversation, the imported tokens matched agy's own `--output-format json` usage exactly. 11 turns had no model, because Google refused those requests, and are labelled unpriced.
 
   Copilot bills premium requests, not tokens, so `advise` reports those beside the list-price figure (611 here).
 
@@ -151,7 +152,7 @@ Girth's core is a plain binary and an [Agent Skills](https://agentskills.io/spec
 | Codex CLI 0.164 | ✓ | `.agents/skills` | ✓ `girth import` | ✓ |
 | GitHub Copilot CLI 1.0.106 | ✓ | `.agents/skills` | ✓ `girth import` (per prompt on 1.0.95+, else per session stretch; with premium requests) | ✓ |
 | OpenCode 1.17 | ✓ | `.agents/skills` | ✓ `girth import` (through `opencode db`, with its own costs) | ✓ |
-| Antigravity CLI 1.5 | ✓ | `.agents/skills` | — (logs are opaque) | ✓ |
+| Antigravity CLI 1.5 | ✓ | `.agents/skills` | ✓ `girth import` (through `sqlite3`) | ✓ |
 | Gemini CLI 0.65 | ✓ | `.agents/skills` | ✓ `girth import` | not yet (its free tier moved to Antigravity) |
 | Cursor, Amp, Goose | ✓ | `.agents/skills` | — (no usable token data on disk) | not yet |
 | The other 70 or so harnesses in the `skills` table | ✓ | per their table row | — | not yet |
@@ -193,7 +194,11 @@ You don't need Rust. The first time the skill runs, it downloads (one time, abou
 **Meter** records each turn's real token usage in your local ledger (numbers and a model id only). Run `/girth-meter` or `girth stats --meter` to see:
 - your usage for the project;
 - an estimated cost;
-- how much Lens kept out of the prompt.
+- how much Lens kept out of the prompt;
+- **side queries,** the requests Claude Code sends outside the conversation:
+  - background agents' progress summaries (`agent_summary`), sent about every 30 s with none of their input cached
+  - prompt suggestions, session titles, compaction
+  - The mod reads Claude Code's own records of these requests, which plugins receive even with telemetry off. It keeps the counts, the model and the source name, never your account details. `girth advise` names the summaries' share and the variable that turns them off: `CLAUDE_CODE_DISABLE_AGENT_PROGRESS_SUMMARIES=1` (`examples/sidequery/RESULTS.md`).
 
 **Cost per outcome:** Meter also counts what the money bought. For each Bash call Claude runs, Girth works out whether it was a test run (and whether it passed), a commit or a pull request. `/girth-meter` then adds a line such as `meter: outcomes: 12 commits · ≈ $3.40 per commit · ≈ $1.20 since the last commit · test runs: 20 passed, 8 failed, 2 no verdict`.
 - **Test verdicts come from the runner's own summary** (`test result: FAILED`, `3 failed`, `12 tests, 1 failure`, …), not the exit status. Claude almost always pipes test output through `tail` or `grep`, so the exit status is the filter's. On the author's history, exit status called 99% of runs green; the summaries said 35% failed.

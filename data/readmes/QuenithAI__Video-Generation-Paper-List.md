@@ -36,6 +36,7 @@
 <details>
 <summary><strong>⚡ Latest Updates</strong></summary>
 
+- **(Nov 8th, 2026)**: We have updated all accepted papers in **ECCV 2026**.
 - **(Nov 4th, 2026)**: We have updated all accepted papers in **ICML 2026**.
 - **(Oct 31st, 2026)**: We have updated all accepted papers in **ACL 2026**.
 - **(Oct 27th, 2026)**: We have updated all accepted papers in **ICLR 2026**.
@@ -156,6 +157,138 @@
 * **[CVPR 2026 Findings]** *BrandFusion: A Multi-Agent Framework for Seamless Brand Integration in Text-to-Video Generation*<br>
 [![Paper](https://img.shields.io/badge/Paper-arXiv-D15E5E?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2603.02816)
 
+* **[ECCV 2026]** *MagicPrompt: Ultra-Lightweight Prompt Tuning for Video Generation*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/4689.pdf)
+
+* **[ECCV 2026]** *EraseSAE: Surgical Concept Erasure in Text-to-Video Diffusion Models via Sparse Autoencoders*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/12474.pdf) [![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github)](https://github.com/HiDream-ai/EraseSAE)
+
+* **[ECCV 2026]** *NoisEasier: Test-Time Noise Optimization for Text-to-Video Generation*<br>
+[![Paper](https://img.shields.io/badge/Paper-arXiv-D15E5E?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2608.30194) [![Paper](https://img.shields.io/badge/Paper-OpenReview-D15E5E?style=for-the-badge&logo=open-collective)](https://openreview.net/forum?id=hSUlL8K1Ec) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://yujiangpu20.github.io/noiseasier/)
+
+* **[ECCV 2026]** *MoGAN: Improving Motion Quality in Video Diffusion via Few-Step Motion Adversarial Post-Training*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/3892.pdf)
+
+* **[ECCV 2026]** *ViBe: Ultra-High-Resolution Video Synthesis Born from Pure Images*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/2032.pdf)
+
+* **[ECCV 2026]** *PhysAlign: Learning Physical Priors for Dynamical Event-Driven Video Generation via Representation Alignment*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/876.pdf) [![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github)](https://github.com/FanQi-AI/PhysAlign)
+
+* **[ECCV 2026]** *Spotlight: Identifying and Localizing Video Generation Errors Using VLMs*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/8243.pdf) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://spotlight-video.github.io)
+
+* **[ECCV 2026]** *Event-Driven Video Generation*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/8879.pdf) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://evd-project-website.pages.dev/)
+
+* **[ECCV 2026]** *Test-Time Noise Guided Adaptation for Realistic Autoregressive Video Generation*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/12607.pdf) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://mever-team.github.io/tango/)
+
+* **[ECCV 2026]** *MemoBench: Benchmarking World Modeling in Dynamically Changing Environments*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/2122.pdf) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://memobench-team.github.io/)
+
+* **[ECCV 2026]** *A Physics-Grounded Benchmark for Multi-Agent Dynamics in World Models*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/2473.pdf)
+
+* **[ECCV 2026]** *MemRoPE: Training-Free Infinite Video Generation via Evolving Memory Tokens*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/405.pdf)
+
+* **[ECCV 2026]** *PhyDetEx: Detecting and Explaining the Physical Plausibility of T2V Models*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/1505.pdf)
+
+* **[ECCV 2026]** *Learning to Generate Rigid Body Interactions with Video Diffusion Models*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/2645.pdf)
+
+* **[ECCV 2026]** *Inference-time Motion Calibration for Video Generation*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/3531.pdf)
+
+* **[ECCV 2026]** *Nexus-Vid: Efficient Frequency Bridging with Homogeneous Latent Space for Video Unified Models*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/8809.pdf)
+
+* **[ECCV 2026]** *Out of Sight, Out of Mind? Evaluating State Evolution in Video World Models*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/8307.pdf)
+
+* **[ECCV 2026]** *Cycle-World: Mitigating Error Accumulation in Long-term Video World Models via Reverse-Prediction Cycle Consistency*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/10081.pdf)
+
+* **[ECCV 2026]** *PhysRAG: Enhancing Physics-Awareness in Video Generation via Retrieval-Augmented Generation*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/8966.pdf)
+
+* **[ECCV 2026]** *GeCo: Evaluating Geometric Consistency for Video Generation via Motion and Structure*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/4377.pdf) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://geco-geoconsistency.github.io/)
+
+* **[ECCV 2026]** *Target-Bench: Can Video World Models Achieve Mapless Path Planning with Semantic Targets?*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/9345.pdf)
+
+* **[ECCV 2026]** *SIFT: Self-Imagination Fine-Tuning for Physically Plausible Motion in Video Diffusion Models*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/9231.pdf)
+
+* **[ECCV 2026]** *Generative Action Tell-Tales: Assessing Human Motion in Synthesized Videos*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/5055.pdf)
+
+* **[ECCV 2026]** *Physics Question Scene Graph: Fine-grained Evaluation of Physical Plausibility in Text-to-Video Generation*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/11022.pdf) [![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github)](https://github.com/atinpothiraj/pqsg)
+
+* **[ECCV 2026]** *Predictive Structure Improves Video Diffusion Dynamics*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/1475.pdf)
+
+* **[ECCV 2026]** *Measuring 3D Spatial Geometric Consistency in Dynamic Video Generation*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/1960.pdf)
+
+* **[ECCV 2026]** *VC-VAE: Leveraging Video Codecs for Training-Efficient and High-Fidelity Video VAE*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/7146.pdf)
+
+* **[ECCV 2026]** *Recurrent Autoregressive Diffusion: Global Memory Meets Local Attention*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/7377.pdf)
+
+* **[ECCV 2026]** *Better Call CineCrew: Consistent Ultra-Long Narrative-to-Film Generation*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/2445.pdf)
+
+* **[ECCV 2026]** *Surprise Forcing: What to Remember, When to Skip in Long Video Generation*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/1864.pdf)
+
+* **[ECCV 2026]** *OneVAE: Joint Discrete and Continuous Optimization Helps Discrete Video VAE Train Better*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/3707.pdf)
+
+* **[ECCV 2026]** *From Evaluation to Enhancement: Benchmarking and Improving Think-with-Video Reasoning for Video Generative Models*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/5598.pdf)
+
+* **[ECCV 2026]** *ShotStream: Streaming Multi-Shot Video Generation for Interactive Storytelling*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/470.pdf)
+
+* **[ECCV 2026]** *Keep-or-Drop? Adaptive Tokenizer for Compact Video Representation*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/9045.pdf)
+
+* **[ECCV 2026]** *Delving into Latent Spectral Biasing of Video VAEs for Superior Diffusability*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/7577.pdf) [![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github)](https://github.com/zai-org/SSVAE)
+
+* **[ECCV 2026]** *TinyHistory: Lightweight Video History Embeddings via Two-Stage Context Learning*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/4052.pdf)
+
+* **[ECCV 2026]** *Benchmarking Scientific Understanding and Reasoning for Video Generation using VideoScience-Bench*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/11226.pdf)
+
+* **[ECCV 2026]** *End-to-End Training for Autoregressive Video Diffusion via Self-Resampling*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/4802.pdf)
+
+* **[ECCV 2026]** *Pathwise Test-Time Correction for Autoregressive Long Video Generation*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/5748.pdf)
+
+* **[ECCV 2026]** *DeRA: Decoupled Representation Alignment for Video Tokenization*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/3794.pdf)
+
+* **[ECCV 2026]** *Gen2Balance: Generative Balancing for Long-Tailed Video Action Recognition*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/805.pdf) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://prajwalgatti.github.io/gen2balance/)
+
+* **[ECCV 2026]** *Ring Forcing: Towards Precise Long-Term Memory for Autoregressive Video Diffusion*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/132.pdf) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://ringforcing.com/)
+
+* **[ECCV 2026]** *Anchor Forcing: Anchor Memory and Tri-Region RoPE for Interactive Streaming Video Diffusion*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/319.pdf) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://vivocameraresearch.github.io/anchorforcing/)
+
+* **[ECCV 2026]** *Evaluating Reasoning Coherence in Video Generative Models with Text and Visual Hints*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://media.eventhosts.cc/Conferences/ECCV2026/pdfs/9137.pdf)
+
 * **[ICLR 2026]** *Improving Dynamic Object Interactions in Text-to-Video Generation with AI Feedback*<br> [![Paper](https://img.shields.io/badge/Paper-OpenReview-D15E5E?style=for-the-badge&logo=open-collective)](https://openreview.net/forum?id=1FpXsGaYas)
 
 * **[ICLR 2026]** ***VideoRepair:*** *Self-Correcting Text-to-Video Generation with Misalignment Detection and Localized Refinement*<br> [![Paper](https://img.shields.io/badge/Paper-OpenReview-D15E5E?style=for-the-badge&logo=open-collective)](https://openreview.net/forum?id=05pfP2khzx) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://video-repair.github.io/) [![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github)](https://github.com/daeunni/VideoRepair)
@@ -167,8 +300,6 @@
 * **[ICLR 2026]** *Generating Human Motion Videos using a Cascaded Text-to-Video Framework*<br> [![Paper](https://img.shields.io/badge/Paper-OpenReview-D15E5E?style=for-the-badge&logo=open-collective)](https://openreview.net/forum?id=XwHQMNUSZP)
   
 * **[ICLR 2026]** ***TGT:*** *Text-Grounded Trajectories for Locally Controlled Video Generation*<br> [![Paper](https://img.shields.io/badge/Paper-OpenReview-D15E5E?style=for-the-badge&logo=open-collective)](https://openreview.net/forum?id=qUwOlwao20) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://textgroundedtraj.github.io/)
-
-* **[ICLR 2026]** ***NoisEasier:*** *Boosting Text-to-Video Generation with Direct Noise Optimization*<br> [![Paper](https://img.shields.io/badge/Paper-OpenReview-D15E5E?style=for-the-badge&logo=open-collective)](https://openreview.net/forum?id=hSUlL8K1Ec) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://yujiangpu20.github.io/noiseasier/)
 
 * **[ICLR 2026]** ***Video-MSG:*** *Training-free Guidance in Text-to-Video Generation via Multimodal Planning and Structured Noise Initialization*<br> [![Paper](https://img.shields.io/badge/Paper-OpenReview-D15E5E?style=for-the-badge&logo=open-collective)](https://openreview.net/forum?id=1sNhPjqGub) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://video-msg.github.io/) [![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github)](https://github.com/jialuli-luka/Video-MSG)
 
@@ -452,7 +583,6 @@
 - [SynMotion: Semantic-Visual Adaptation for Motion Customized Video Generation](http://arxiv.org/abs/2506.23690v1)
 - [Radial Attention: $O(n\log n)$ Sparse Attention with Energy Decay for Long Video Generation](http://arxiv.org/abs/2506.19852v1)
 - [GenHSI: Controllable Generation of Human-Scene Interaction Videos](http://arxiv.org/abs/2506.19840v1)
-- [Training-Free Motion Customization for Distilled Video Generators with Adaptive Test-Time Distillation](http://arxiv.org/abs/2506.19348v1)
 - [VMem: Consistent Interactive Video Scene Generation with Surfel-Indexed View Memory](http://arxiv.org/abs/2506.18903v2) [![GitHub Stars](https://img.shields.io/github/stars/runjiali-rl/vmem?style=social)](https://github.com/runjiali-rl/vmem)   [![Project Page](https://img.shields.io/badge/Project-Page-blue?logo=website)](https://v-mem.github.io/)   [![Huggingface Face](https://img.shields.io/badge/Hugging-Face-orange?logo=website)](https://huggingface.co/liguang0115/vmem)
 - [RDPO: Real Data Preference Optimization for Physics Consistency Video Generation](http://arxiv.org/abs/2506.18655v1)   [![Project Page](https://img.shields.io/badge/Project-Page-blue?logo=website)](https://wwenxu.github.io/RDPO)
 - [Emergent Temporal Correspondences from Video Diffusion Transformers](http://arxiv.org/abs/2506.17220v2) [![GitHub Stars](https://img.shields.io/github/stars/cvlab-kaist/DiffTrack?style=social)](https://github.com/cvlab-kaist/DiffTrack)   [![Project Page](https://img.shields.io/badge/Project-Page-blue?logo=website)](https://cvlab-kaist.github.io/DiffTrack/)
@@ -675,124 +805,4 @@
 - [GVDIFF: Grounded Text-to-Video Generation with Diffusion Models](http://arxiv.org/abs/2407.01921v2)
 - [Evaluation of Text-to-Video Generation Models: A Dynamics Perspective](http://arxiv.org/abs/2407.01094v1) [![Huggingface Face](https://img.shields.io/badge/Hugging-Face-orange?logo=website)](https://huggingface.co/Video-Bench/Video-Bench)
 - [Text-Animator: Controllable Visual Text Video Generation](http://arxiv.org/abs/2406.17777v1)
-- [MotionBooth: Motion-Aware Customized Text-to-Video Generation](http://arxiv.org/abs/2406.17758v3) [![GitHub Stars](https://img.shields.io/github/stars/jianzongwu/MotionBooth?style=social)](https://github.com/jianzongwu/MotionBooth) [![Project Page](https://img.shields.io/badge/Project-Page-blue?logo=website)](https://jianzongwu.github.io/projects/motionbooth) [![Huggingface Face](https://img.shields.io/badge/Hugging-Face-orange?logo=website)](https://huggingface.co/jianzongwu/MotionBooth)
-- [Hierarchical Patch Diffusion Models for High-Resolution Video Generation](http://arxiv.org/abs/2406.07792v1) [![Project Page](https://img.shields.io/badge/Project-Page-blue?logo=website)](https://snap-research.github.io/hpdm/)
-- [Compositional Video Generation as Flow Equalization](http://arxiv.org/abs/2407.06182v1)
-- [MotionClone: Training-Free Motion Cloning for Controllable Video Generation](http://arxiv.org/abs/2406.05338v6) [![GitHub Stars](https://img.shields.io/github/stars/LPengYang/MotionClone?style=social)](https://github.com/LPengYang/MotionClone) [![Project Page](https://img.shields.io/badge/Project-Page-blue?logo=website)](https://bujiazi.github.io/motionclone.github.io)
-- [VideoTetris: Towards Compositional Text-To-Video Generation](http://arxiv.org/abs/2406.04277v2) [![GitHub Stars](https://img.shields.io/github/stars/YangLing0818/VideoTetris?style=social)](https://github.com/YangLing0818/VideoTetris) [![Project Page](https://img.shields.io/badge/Project-Page-blue?logo=website)](https://videotetris.github.io)
-- [VideoPhy: Evaluating Physical Commonsense for Video Generation](http://arxiv.org/abs/2406.03520v2)
-- [I4VGen: Image as Free Stepping Stone for Text-to-Video Generation](http://arxiv.org/abs/2406.02230v2) [![GitHub Stars](https://img.shields.io/github/stars/xiefan-guo/i4vgen?style=social)](https://github.com/xiefan-guo/i4vgen) [![Project Page](https://img.shields.io/badge/Project-Page-blue?logo=website)](https://xiefan-guo.github.io/i4vgen)
-- [DisenStudio: Customized Multi-subject Text-to-Video Generation with Disentangled Spatial Control](http://arxiv.org/abs/2405.12796v1)
-- [The Lost Melody: Empirical Observations on Text-to-Video Generation From A Storytelling Perspective](http://arxiv.org/abs/2405.08720v1)
-- [TALC: Time-Aligned Captions for Multi-Scene Text-to-Video Generation](http://arxiv.org/abs/2405.04682v4)
-- [MotionMaster: Training-free Camera Motion Transfer For Video Generation](http://arxiv.org/abs/2404.15789v2)
-- [ConCLVD: Controllable Chinese Landscape Video Generation via Diffusion Model](http://arxiv.org/abs/2404.12903v1)
-- [MagicTime: Time-lapse Video Generation Models as Metamorphic Simulators](http://arxiv.org/abs/2404.05014v2) [![GitHub Stars](https://img.shields.io/github/stars/PKU-YuanGroup/MagicTime?style=social)](https://github.com/PKU-YuanGroup/MagicTime) [![Project Page](https://img.shields.io/badge/Project-Page-blue?logo=website)](https://pku-yuangroup.github.io/MagicTime/) [![Huggingface Face](https://img.shields.io/badge/Hugging-Face-orange?logo=website)](https://huggingface.co/BestWishYsh/MagicTime)
-- [CameraCtrl: Enabling Camera Control for Text-to-Video Generation](http://arxiv.org/abs/2404.02101v2)
-- [Grid Diffusion Models for Text-to-Video Generation](http://arxiv.org/abs/2404.00234v2)
-- [StreamingT2V: Consistent, Dynamic, and Extendable Long Video Generation from Text](http://arxiv.org/abs/2403.14773v2)
-- [S2DM: Sector-Shaped Diffusion Models for Video Generation](http://arxiv.org/abs/2403.13408v2)
-- [Mora: Enabling Generalist Video Generation via A Multi-Agent Framework](http://arxiv.org/abs/2403.13248v3)
-
-
-
-</details>
-
-
-</details>
-
-
-<details>
-<summary><h4>✨ 2023</h4></summary>
-
-<details>
-<summary><h4>✅ Published Papers</h4></summary>
-
-*   **[CVPR 2023]** ***Align your Latents:*** *High-resolution Video Synthesis with Latent Diffusion Models*<br>
-    [![ArXiv](https://img.shields.io/badge/arXiv-PDF-b31b1b?style=for-the-badge&logo=arxiv)](https://arxiv.org/pdf/2304.08818.pdf)
-    [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://research.nvidia.com/labs/toronto-ai/VideoLDM/)
-    [![GitHub](https://img.shields.io/badge/Reproduced-Code-green?style=for-the-badge&logo=github)](https://github.com/srpkdyy/VideoLDM)
-
-*   **[CVPR 2023]** ***Text2Video-Zero:*** *Text-to-image Diffusion Models are Zero-shot Video Generators*<br>
-     [![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://openaccess.thecvf.com/content/ICCV2023/papers/Khachatryan_Text2Video-Zero_Text-to-Image_Diffusion_Models_are_Zero-Shot_Video_Generators_ICCV_2023_paper.pdf)
-    [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://text2video-zero.github.io/)
-    [![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github)](https://github.com/Picsart-AI-Research/Text2Video-Zero)
-    [![Demo](https://img.shields.io/badge/Hugging_Face-Demo-yellow?style=for-the-badge)](https://huggingface.co/spaces/PAIR/Text2Video-Zero)
-
-*   **[CVPR 2023]** *Video Probabilistic Diffusion Models in Projected Latent Space*<br>
-     [![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://openaccess.thecvf.com/content/CVPR2023/papers/Yu_Video_Probabilistic_Diffusion_Models_in_Projected_Latent_Space_CVPR_2023_paper.pdf)
-    [![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github)](https://github.com/sihyun-yu/PVDM)
-
-*   **[ICCV 2023]** ***PYOCO:*** *Preserve Your Own Correlation: A Noise Prior for Video Diffusion Models*<br>
-     [![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://openaccess.thecvf.com/content/ICCV2023/papers/Ge_Preserve_Your_Own_Correlation_A_Noise_Prior_for_Video_Diffusion_ICCV_2023_paper.pdf)
-    [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://research.nvidia.com/labs/dir/pyoco/)
-
-*   **[ICCV 2023]** ***Gen-1:*** *Structure and Content-guided Video Synthesis with Diffusion Models*<br>
-     [![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://openaccess.thecvf.com/content/ICCV2023/papers/Esser_Structure_and_Content-Guided_Video_Synthesis_with_Diffusion_Models_ICCV_2023_paper.pdf)
-    [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://research.runwayml.com/gen1)
-
-*   **[NeurIPS 2023]** *Video Diffusion Models*<br>
-    [![ArXiv](https://img.shields.io/badge/arXiv-PDF-b31b1b?style=for-the-badge&logo=arxiv)](https://arxiv.org/pdf/2204.03458.pdf)
-    [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://video-diffusion.github.io/)
-
-*   **[NeurIPS 2023]** ***UniPi:*** *Learning Universal Policies via Text-Guided Video Generation*<br>
-     [![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://papers.nips.cc/paper_files/paper/2023/file/1d5b9233ad716a43be5c0d3023cb82d0-Paper-Conference.pdf)
-    [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://universal-policy.github.io/unipi/)
-    [![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github)](https://github.com/flow-diffusion/AVDC)
-
-*   **[NeurIPS 2023]** ***VideoComposer:*** *Compositional Video Synthesis with Motion Controllability*<br>
-    [![ArXiv](https://img.shields.io/badge/arXiv-PDF-b31b1b?style=for-the-badge&logo=arxiv)](https://arxiv.org/pdf/2306.02018.pdf)
-    [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://videocomposer.github.io/)
-    [![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github)](https://github.com/ali-vilab/videocomposer)
-
-*   **[ICLR 2023]** ***CogVideo:*** *Large-scale Pretraining for Text-to-video Generation via Transformers*<br>
-    [![Paper](https://img.shields.io/badge/Paper-OpenReview-D15E5E?style=for-the-badge&logo=open-collective)](https://openreview.net/pdf?id=rB6TpjAuSRy)
-    [![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github)](https://github.com/THUDM/CogVideo)
-    [![Demo](https://img.shields.io/badge/Video-Demo-orange?style=for-the-badge&logo=youtube)](https://models.aminer.cn/cogvideo/)
-
-*   **[ICLR 2023]** ***Make-A-Video:*** *Text-to-video Generation without Text-video Data*<br>
-    [![ArXiv](https://img.shields.io/badge/arXiv-PDF-b31b1b?style=for-the-badge&logo=arxiv)](https://arxiv.org/pdf/2209.14792.pdf)
-    [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://makeavideo.studio/)
-    [![GitHub](https://img.shields.io/badge/Reproduced-Code-green?style=for-the-badge&logo=github)](https://github.com/lucidrains/make-a-video-pytorch)
-
-*   **[ICLR 2023]** ***Phenaki:*** *Variable Length Video Generation From Open Domain Textual Description*<br>
-    [![Paper](https://img.shields.io/badge/Paper-OpenReview-D15E5E?style=for-the-badge&logo=open-collective)](https://openreview.net/pdf/fe8e106a2746992c9c2e658bdc8cb9c89cc5a39a.pdf)
-    [![GitHub](https://img.shields.io/badge/Reproduced-Code-green?style=for-the-badge&logo=github)](https://github.com/lucidrains/phenaki-pytorch)
-
-
-
-</details>
-
-
-
-
-<details>
-<summary><h4>💡 Pre-Print Papers</h4></summary>
-
-- [StreamDiT: Real-Time Streaming Text-to-Video Generation](https://arxiv.org/abs/2507.03745) [![Project Page](https://img.shields.io/badge/Project-Page-blue?logo=website)](https://cumulo-autumn.github.io/StreamDiT/)
-- [FlashVideo: A Framework for Swift Inference in Text-to-Video Generation](http://arxiv.org/abs/2401.00869v1)
-- [A Recipe for Scaling up Text-to-Video Generation with Text-free Videos](http://arxiv.org/abs/2312.15770v1)
-- [Photorealistic Video Generation with Diffusion Models](http://arxiv.org/abs/2312.06662v1)
-- [GenTron: Diffusion Transformers for Image and Video Generation](http://arxiv.org/abs/2312.04557v2)
-- [Hierarchical Spatio-temporal Decoupling for Text-to-Video Generation](http://arxiv.org/abs/2312.04483v1)
-- [StyleCrafter: Enhancing Stylized Text-to-Video Generation with Style Adapter](http://arxiv.org/abs/2312.00330v2)
-- [ART$\boldsymbol{\cdot}$V: Auto-Regressive Text-to-Video Generation with Diffusion Models](http://arxiv.org/abs/2311.18834v1)
-- [MotionZero: Exploiting Motion Priors for Zero-shot Text-to-Video Generation](http://arxiv.org/abs/2311.16635v1)
-- [FusionFrames: Efficient Architectural Aspects for Text-to-Video Generation Pipeline](http://arxiv.org/abs/2311.13073v2)
-- [GPT4Motion: Scripting Physical Motions in Text-to-Video Generation via Blender-Oriented GPT Planning](http://arxiv.org/abs/2311.12631v3)
-- [Make Pixels Dance: High-Dynamic Video Generation](http://arxiv.org/abs/2311.10982v1)
-- [VideoDreamer: Customized Multi-Subject Text-to-Video Generation with Disen-Mix Finetuning on Language-Video Foundation Models](http://arxiv.org/abs/2311.00990v2)
-- [POS: A Prompts Optimization Suite for Augmenting Text-to-Video Generation](http://arxiv.org/abs/2311.00949v3)
-- [VideoCrafter1: Open Diffusion Models for High-Quality Video Generation](http://arxiv.org/abs/2310.19512v1)
-- [LAMP: Learn A Motion Pattern for Few-Shot-Based Video Generation](http://arxiv.org/abs/2310.10769v1)
-- [Diverse and Aligned Audio-to-Video Generation via Text-to-Video Model Adaptation](http://arxiv.org/abs/2309.16429v1)
-- [Show-1: Marrying Pixel and Latent Diffusion Models for Text-to-Video Generation](http://arxiv.org/abs/2309.15818v3)
-- [LAVIE: High-Quality Video Generation with Cascaded Latent Diffusion Models](http://arxiv.org/abs/2309.15103v2)
-- [VideoDirectorGPT: Consistent Multi-scene Video Generation via LLM-Guided Planning](http://arxiv.org/abs/2309.15091v2)
-- [Reuse and Diffuse: Iterative Denoising for Text-to-Video Generation](http://arxiv.org/abs/2309.03549v1)
-- [VideoGen: A Reference-Guided Latent Diffusion Approach for High Definition Text-to-Video Generation](http://arxiv.org/abs/2309.00398v2)
-- [Dual-Stream Diffusion Net for Text-to-Video Generation](http://arxiv.org/abs/2308.08316v3)
-- [Animate-A-Story: Storytelling with Retrieval-Augmented Video Generation](http://arxiv.org/abs/2307.06940v1)
-- [Make-Your-Video: Customized Video Generation Using Textual and Structural Guidance](http://arxiv.org/abs/2306.00943v1)
-- [DirecT2V: Large Language Models are Frame-Level Directors for Zero-Shot Text-to-Video Generation](http://arxiv.org/abs/2305.14330v3)
-- [ControlVideo: Training-free Controllable Text-to-Video Generation](http://arxiv.o
+- [MotionBooth: Motion-Aware Customized Text-to-Video Generation](http://arxiv.org/abs/2406.17758v3) [![GitHub Stars](https://img.shields.io/github/stars/jianzongwu/MotionBooth?style=social)](https://github.com/jianzongwu/MotionBooth) [![Project Page](https://img.shields.io/badge/Project-Page-blue?logo=website)](https://jianzongwu.github.io/projects/motionbooth) [![Huggingface Face](https://img.shields.io/badge/Hugging-Face-orange?logo=website)](https://huggingface.co/ji

@@ -75,9 +75,9 @@ It takes about a minute to try: [quick start](#quick-start).
   <a href="docs/community-results.md">Community results</a>
 </p>
 
-> **Published release: 1.14.0.** The [latest release](https://github.com/Joakimpalm-Zen/xyntetik-runner/releases/latest) makes DeepSeek-V2's absorbed form the fast one on CUDA: its cache is half the size and its decode and prefill now beat the naive form (measured on one file on one MIG slice; Metal still runs `deepseek2` on the CPU); writes `q5_k`, `q5_1` and `iq4_nl` with `--rewrite` and `--type-plan`, without an importance matrix, and one such Mellum 2.1 file under 9 GB passes the bar against the publisher; adds rows for Ornith-1.5-35B-A3B (its own Q8_0, which passes the bar by a hair, text path only), Nemotron 3 Nano 30B-A3B (ggml-org's Q4_K_M, CPU only: CUDA refuses its router) and two DeepSeek-V2-Lite-Chat files, and a CUDA cell for Qwen3.6-35B-A3B; and fixes `-v` crashing on any file whose first block is Mamba-2 ([changelog](CHANGELOG.md)). Its Linux asset keeps the GLIBC 2.38 ceiling and starts on Ubuntu 24.04 ([how that is held](docs/linux-1.6.1-candidate.md)).
+> **Published release: 1.15.0.** The [latest release](https://github.com/Joakimpalm-Zen/xyntetik-runner/releases/latest) is a fixes release, not a speed one: a client that stops reading no longer freezes the other slots of a GPU server with speculation on (measured on Windows and Metal; Linux already dropped such a client at 30 s), a context released while its request waits for the GPU no longer hangs the server, a stop no longer waits on removing the instance record, Metal gives its memory back on `/unload`, stored response ids can no longer be guessed, and a chat template option Runner cannot honour is refused rather than dropped, a new 400 where the file's template reads it. It adds rows for Sage-A1.5, MiniCPM-V-4.7-35B-A3B and Qwen3.8-35B-A3B-Distill, lists occamy-1.0 as Upcoming because no file passes the bar, and makes the model support page one list. Validation runs when the project chooses, not with every release.
 
-> **Version `1.14.0`.** The command line, the HTTP API, the record formats and
+> **Version `1.15.0`.** The command line, the HTTP API, the record formats and
 > the model files that load stay compatible across 1.x
 > ([versioning policy](docs/versioning.md)). This page is the short version;
 > every flag, endpoint, limit and measurement is in the [manual](MANUAL.md).
@@ -210,6 +210,10 @@ how far it drifted from the publisher's model, and writes the numbers into the f
 what the file is not for and its weakest number, then whether it passes the bar.
 
 **How.** One command, from a parent file and a target size:
+
+`--imatrix` calibrates rounding for `q3_k`, `q4_0`, `q4_k`, `q5_k`, `q6_k`, `q5_1` and `iq4_nl`
+using ggml's type-specific weighted writers. The five added formats match pinned ggml bytes on a real tensor
+slice and deterministic boundary rows; [the fixture records the inputs and reference build](tests/fixtures/quant-golden/README.md).
 
 ```sh
 # hf:DIR is a local download of Qwen/Qwen3-30B-A3B (huggingface-cli download Qwen/Qwen3-30B-A3B --local-dir Qwen3-30B-A3B)
@@ -492,7 +496,7 @@ passing evaluation made for those exact bytes.
 git clone https://github.com/Joakimpalm-Zen/xyntetik-runner
 cd xyntetik-runner
 make
-./runner --version   # -> runner 1.14.0
+./runner --version   # -> runner 1.15.0
 ```
 
 Linux, macOS and Windows. NVIDIA GPUs need a driver with CUDA 13.0 support

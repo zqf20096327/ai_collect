@@ -207,6 +207,7 @@ AutoRAG Agent orchestrates five integrated subsystems:
    - **Jikji Find-First Discovery:** Local CLI-backed fast discovery answer packs.
    - **Everything File-Name Search (Windows):** The bundled [voidtools Everything](https://www.voidtools.com/) indexes file and folder names under your search roots so the agent finds files by name, extension, path, size, or date instantly (`everything_search`).
    - **FSearch File-Name Search (macOS/Linux):** [fsearch-cli](https://github.com/NomaDamas/fsearch-mac) (FSearch) keeps a live, per-workspace name index of your search roots so the agent finds files by name, extension, path, size, or date instantly (`fsearch_search`); without fsearch-cli installed it degrades to a slow filesystem walk.
+   - **Calculator:** Exact decimal arithmetic (40 significant digits, no floating-point drift) plus calendar and clock math — days between dates, date offsets with month-end clamping, weekdays, ISO weeks, business days with holidays, the current time, and DST-aware time zone conversion — through the `calculator` tool. The system prompt, including the fast-answer phase, orders the model to compute every number and date with it instead of in its head. It runs in-process, reads no files, and needs no configuration.
    - **Datasource Skills:** Federated retrieval across every configured external datasource.
 3. **Result Merger & Scope Narrowing:** Cross-method deduplication, score normalization, and ordinary query-scope narrowing.
 4. **Direct Evidence Reading (`bash`):** The agent directly opens and inspects promising files with `cat`, `grep`, or `find` to verify facts against ground truth.
@@ -285,6 +286,20 @@ autorag refresh
 # Check indexing health
 autorag status
 ```
+
+### Indexing only when you want it (power and time schedule)
+
+Background indexing (`autorag watch`, auto-refresh, the fs watcher) can be limited by power source and local time. An explicit `autorag refresh` is never gated.
+
+```jsonc
+// ~/.autorag/config.json
+{ "refresh": { "schedule": { "power": "ac", "windows": ["22:00-07:00"], "days": ["mon","tue","wed","thu","fri"] } } }
+```
+
+- `power`: `any` (default) or `ac` (index only while plugged in; pauses on battery). An unknown power source (desktop, probe failure) counts as plugged in.
+- `windows`: local `HH:MM-HH:MM`, start inclusive, end exclusive; `22:00-07:00` wraps midnight and belongs to the day it starts on.
+- `days`: `sun`..`sat`. Omit for every day.
+- `autorag watch --power ac --window 22:00-07:00 --days mon,tue` overrides the config. `--once` while closed prints `skipped` and exits 0; a long-running watcher defers changes and indexes once the schedule opens.
 
 ### Excluding files and folders
 

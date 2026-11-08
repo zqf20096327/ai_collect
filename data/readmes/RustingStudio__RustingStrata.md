@@ -55,9 +55,9 @@ IQ3_XXS, IQ3_S, IQ4_XS, IQ4_NL.
 ## Build
 
 Needs Rust (2024 edition) and either an NVIDIA driver with the CUDA 13 NVRTC library (loaded at run time) or a
-Vulkan 1.3 driver with shaderFloat64, int8/16/64 and subgroup size 32 (tested only on an RTX 3060; Intel Arc lacks
-shaderFloat64, pre-RDNA AMD lacks subgroup size 32). The CUDA kernels need Ampere or newer (compute capability 8.0,
-for `cp.async` and int8 tensor cores); on Pascal, Turing or Volta use `--backend vulkan`. `--gpu` picks CUDA when it
+Vulkan 1.3 driver with shaderFloat64, int8/16/64 and subgroup size 32 or a fixed size 64 (tested on RTX 3060 and
+Radeon VII; Intel Arc lacks shaderFloat64). The CUDA kernels need Ampere or newer (compute capability 8.0, for
+`cp.async` and int8 tensor cores); on Pascal, Turing or Volta use `--backend vulkan`. `--gpu` picks CUDA when it
 loads, else Vulkan; `--backend` chooses. The first CUDA run compiles the kernels (~15 s) and caches them. AMD GPUs:
 see [docs/AMD.md](docs/AMD.md) for known issues and what to send in a report.
 
@@ -120,6 +120,8 @@ head; greedy tokens stay the same, sampling keeps its distribution), `--chunk`, 
 GPU that drives no display, `--vram-margin 256` keeps more experts resident (+1-2% prefill); 128 runs out of
 memory. `--kv q8` halves the KV cache (345 instead of 650 MB at 32K) at about 6% slower 32K decode and 14% slower
 32K prefill. Without `--gpu` everything runs on the CPU reference, which is slow and meant for checking.
+If you reach `serve` through a LAN name while it is bound to `0.0.0.0`, allow that name with
+`--allowed-hosts ai-server.lan` (or `STRATA_ALLOWED_HOSTS=ai-server.lan`).
 
 Several GPUs: `--device 0,1` splits the layers over the cards in proportion to their free VRAM, so more experts stay
 resident. The cards run one after the other, so one request gets more memory, not twice the speed of one card. MTP

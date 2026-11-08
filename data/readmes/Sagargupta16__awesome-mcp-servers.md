@@ -168,6 +168,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Appwrite MCP](https://github.com/appwrite/mcp)                                          | Official Appwrite databases, auth, storage, and functions                  | Python     |
 | [AWS MCP Servers](https://github.com/awslabs/mcp)                                        | Official AWS MCP servers (S3, Lambda, CDK, Bedrock, etc.)                  | Multiple   |
 | [Azure MCP](https://github.com/microsoft/mcp)                                            | Official Azure cloud services                                              | C#         |
+| [BrewPage](https://github.com/kochetkov-ma/brewpage-openapi)                             | Publish HTML, Markdown, JSON, KV and files to shareable links, no signup   | TypeScript |
 | [Cloudflare MCP](https://github.com/cloudflare/mcp-server-cloudflare)                    | Cloudflare Workers, KV, R2, D1                                             | TypeScript |
 | [deed.page](https://deed.page/docs)                                                      | Publish static HTML or folders to permanent subdomain URLs with no account | Remote     |
 | [DigitalOcean MCP](https://github.com/digitalocean-labs/mcp-digitalocean)                | Official DO droplets, apps, databases                                      | Go         |
@@ -199,6 +200,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Asana MCP](https://github.com/roychri/mcp-server-asana)                                                         | Asana tasks, projects, workspaces                                              | TypeScript |
 | [CareClinic](https://careclinic.io/careclinic-mcp/)                                                              | Read medication schedules, symptoms and moods, and save confirmed check-ins    | Remote     |
 | [Clera](https://www.getclera.com/mcp)                                                                            | Search vetted startup candidates, review role matches and request intros       | Remote     |
+| [depot.fitness](https://depot.fitness/connect)                                                                   | Search 101 written-out strength programs and 539 exercises, save to your library | Remote     |
 | [Excel MCP](https://github.com/haris-musa/excel-mcp-server)                                                      | Read, write and format Excel workbooks without Excel installed                 | Python     |
 | [fitlog-mcp](https://github.com/hahahahahahahahah6/fitlog-mcp)                                                   | Self-hosted MCP server giving Alexa+ a memory for training                     | Python     |
 | [Google Calendar MCP](https://github.com/nspady/google-calendar-mcp)                                             | Google Calendar management                                                     | TypeScript |
@@ -487,6 +489,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Google Maps MCP](https://github.com/cablate/mcp-google-map)                   | Google Maps API with LLM processing                                             | TypeScript |
 | [kosmos.info.pl](https://kosmos.info.pl/en/for-ai)                             | Skywatching in Poland: clouds, ISS passes, aurora, planets, meteors, APOD       | Remote     |
 | [Lake Level MCP](https://github.com/theluckystrike/lake-level-mcp)             | Live US lake and reservoir levels from USGS, USACE, CDEC, USBR and TWDB gauges  | TypeScript |
+| [Latino Events](https://events.lat/llms.txt)                                   | Concerts, festivals and cultural events across Latin America, with ticket links | Remote     |
 | [Mapbox MCP](https://github.com/mapbox/mcp-server)                             | Official Mapbox geocoding, POI search, directions, and isochrones               | TypeScript |
 | [MAQAMI Travel](https://github.com/negm17111995/mcp-server)                    | Search 3M+ hotels and flights with live rates, then check out on book.maqami.co | JavaScript |
 | [Orizn Visa](https://github.com/MattJeff/orizn-mcp-server)                     | Visa and entry rules for 49,750 passport-destination pairs, official sources    | TypeScript |
@@ -637,7 +640,4 @@ but not all of resources and prompts.
 | [Cherry Studio](https://github.com/CherryHQ/cherry-studio)                                    | Cross-platform desktop LLM client                                          | Standard          |
 | [Claude Code](https://docs.anthropic.com/en/docs/claude-code)                                 | Anthropic's CLI coding agent                                               | Full              |
 | [Claude Desktop](https://claude.ai/download)                                                  | Anthropic's desktop app                                                    | Standard          |
-| [Claude Web](https://claude.ai)                                                               | Claude in the browser                                                      | Standard          |
-| [Cline](https://github.com/cline/cline)                                                       | Autonomous coding agent extension for VS Code                              | Tools + resources |
-| [Continue](https://continue.dev/)                                                             | Open-source AI code assistant for VS Code and JetBrains                    | Standard          |
-| [Cursor](https://cursor.com/)                        
+| [Claude Web](https://claude.ai)                                 

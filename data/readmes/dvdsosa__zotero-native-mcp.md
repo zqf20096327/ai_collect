@@ -194,7 +194,7 @@ suite, and the scripts that exercise every tool against a live Zotero.
 
 ## License
 
-MIT © David Sosa
+MIT © David Sosa-Trejo
 
 ---
 

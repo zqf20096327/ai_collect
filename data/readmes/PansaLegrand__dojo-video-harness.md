@@ -10,6 +10,8 @@ or through chat, see changes directly, and export through [Dojo Video Engine](ht
 The agent is intentionally understandable: a model adapter, typed function calls,
 a tool registry, Markdown skills, bounded execution, and explicit user decisions.
 The difficult video-specific rules live in the tested document and command kernel.
+The shared loop **0.1.1** supports durable checkpoints and deterministic context
+pruning; the local host owns which interrupted boundaries can safely resume.
 
 ![The local editor with a structured pending question](docs/assets/editor-question.png)
 
@@ -32,7 +34,7 @@ npm run launch
 overwriting an existing file, checks the local environment, and starts the editor.
 It opens the browser automatically from an interactive terminal. Otherwise open
 **http://127.0.0.1:4310**. The engine is installed automatically from the public
-`@dojo-video-engine/*` npm packages, pinned to **1.2.1**; no separate engine clone
+`@dojo-video-engine/*` npm packages, pinned to **1.2.2**; no separate engine clone
 or pnpm installation is needed. Node 22 is pinned in `.nvmrc`.
 
 Create a project and import media. Manual editing, subtitle import, preview,
@@ -72,7 +74,12 @@ saved in the app override its provider values and are stored in the private loca
 data directory as `provider-settings.json`. Keep that directory private and out
 of Git when changing `DATA_DIR`.
 
-Shared editor and chat components can be synced from the product when useful. The harness has its own smaller scope; full product parity is not a goal. Local persistence, provider keys, and usage copy live in host adapters. See [syncing the product UI](docs/syncing-product-ui.md).
+DojoClip is the reference for shared editor and chat UI. The open-source engine
+and harness are the starting point for rendering and agent runtime changes;
+DojoClip consumes them through commercial adapters. Local persistence, provider
+keys, and usage copy stay in this harness's host adapters. See
+[synchronization and readiness](docs/synchronization-readiness-2026-11-08.md) and
+[syncing the product UI](docs/syncing-product-ui.md).
 
 The agent and caption translation support **GPT models through the Responses API**.
 Vercel AI Gateway is the documented, live-tested example for GPT-6:
@@ -129,12 +136,20 @@ npm start
   revisions, conflict detection, operation receipts, and history.
 - A framework-independent agent loop using real function calls. Inspect a project,
   read a skill, search transcript evidence, propose an edit, or ask a question.
+- Durable local model/tool checkpoints, with cumulative budgets and frozen request,
+  source, tool/skill and provider bindings. A restart can continue a saved model
+  response or completed tool boundary without requesting that response again.
+  Uncertain model or external-tool submissions stop for manual reconciliation.
 - Desktop chat resizes from its left edge, up to half the window width; the left
   panel toggle stays at the bottom of the tool rail. Narrow screens retain the chat drawer.
 - Instruct and edit: ordinary local chat edits apply automatically, with selective
   Undo and optional before/after comparison. Structured questions resolve missing
   information; cancellation and the product’s quick-edit controls remain available. Tool events remain available through the local API.
 - Provider-backed captions and translation, with persisted source-bound receipts.
+- Speech-dependent chat pauses for explicit source/provider consent when genuine
+  transcript evidence is missing, then resumes the original instruction after
+  the source-bound receipt is available. Later styling, translation and graphic
+  steps can use that evidence in the same bounded model/tool run.
 - Readable title, lower-third and supplied-text caption preparation with explicit
   bounds and responsive defaults; chat applies them without a confirmation click.
   See [layout checks](docs/readable-overlays-2026-11-03.md) and
@@ -151,9 +166,11 @@ npm start
 This is a standalone extraction, not a claim of complete hosted-product parity.
 DojoClip billing, accounts, collaboration, hosted asset galleries, and production
 worker infrastructure are outside this local application. Image/video generation
-jobs are an extension point, not a shipped provider integration. The combined
-editing workflow can prepare new transcription after explicit source/provider
-consent; standalone caption controls remain available.
+jobs are an extension point, not a shipped provider integration. Both ordinary
+speech-dependent chat and the combined editing workflow can prepare transcription
+after explicit source/provider consent; standalone caption controls remain available.
+This is a tested extension base, not an autonomous render/inspect/revise agent or
+a guarantee that every long instruction produces a correct, attractive video.
 
 ## Basic workflows and background music
 
@@ -216,11 +233,19 @@ adapter can be added without giving it authority over document commits.
 
 The harness packages are source workspaces in this repository. They are not
 published npm packages. The engine is consumed from the public
-`@dojo-video-engine/*` packages at exact version 1.2.1. There is no runtime dependency on a sibling checkout. Development
+`@dojo-video-engine/*` packages at exact version 1.2.2. There is no runtime dependency on a sibling checkout. Development
 uses the product’s Next.js 15.5 family, React 18.3, Tailwind 3.4, and shared TypeScript aliases; independently packaged
 embeddable SDK distributions are a subsequent release step.
 
 ## Verification
+
+The current loop 0.1.1/local-checkpoint candidate passed **464 tests**. Its host
+regressions cover saved-response/tool/terminal recovery, uncertain paid outcomes,
+cumulative and unknown usage, request/source/provider/tool drift, cancellation,
+ASR receipt reuse and fresh clarification-child budgets. The host retains original
+instructions and source evidence while pruning only eligible older read context;
+it does not call an LLM to summarize the conversation. See
+[the agent system map](docs/agent-system.md) for the recovery limits.
 
 The [earlier release checks](https://github.com/PansaLegrand/dojo-video-harness/actions/runs/41330893940)
 passed on **2026-11-02**: 228 tests, production build, 25 browser editing/export

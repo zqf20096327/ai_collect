@@ -3,7 +3,7 @@
 [![Website: vchord.pgsty.com](https://img.shields.io/badge/Website-vchord.pgsty.com-slategray?style=flat&logo=cilium&logoColor=white)](https://vchord.pgsty.com/)
 [![Docs: vchord](https://img.shields.io/badge/Docs-vchord-slategray?style=flat)](https://vchord.pgsty.com/docs/vchord/)
 [![Catalog: vchord](https://img.shields.io/badge/Catalog-vchord-%233E668F?style=flat&logo=postgresql&logoColor=white&labelColor=3E668F)](https://pgext.cloud/ext/vchord)
-[![Version: v1.2.0](https://img.shields.io/badge/Version-v1.2.0-slategray?style=flat)](https://github.com/pgsty/vchord/releases)
+[![Version: v1.3.0](https://img.shields.io/badge/Version-v1.3.0-slategray?style=flat)](https://github.com/pgsty/vchord/releases)
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-slategray?style=flat&logo=gnu&logoColor=white)](https://github.com/pgsty/vchord/blob/main/LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/pgsty/vchord?style=flat&logo=github&logoColor=black&color=slategray)](https://star-history.com/#pgsty/vchord&Date)
 [![PostgreSQL: 14-19](https://img.shields.io/badge/PostgreSQL-14--19-%233E668F?style=flat&logo=postgresql&logoColor=white&labelColor=3E668F)](https://pgext.cloud/ext/vchord)
@@ -39,6 +39,8 @@ To store vectors compactly while preserving recall, `vchord` combines **RaBitQ**
 - **Bounded Memory Growth**: Control index build memory via [dimensionality reduction and sampling](https://vchord.pgsty.com/docs/vchord/usage/partitioning-tuning/#reduce-sampling-factor)[^5], enabling billion-scale index builds on 128 GB RAM nodes.
 - **Drop-In `pgvector` Compatibility**: Directly indexes [`pgvector`](https://vchord.pgsty.com/docs/vector/) data types (`vector`, `halfvec`) and supports standard distance operators (`<->`, `<#>`, `<=>`) alongside multi-vector MaxSim (`@#`) retrieval.
 - **Native Low-Bit Quantization Types**: Provides [native 4-bit (`rabitq4`) and 8-bit (`rabitq8`) vector types](https://vchord.pgsty.com/docs/vchord/usage/quantization-types/) with <1% recall loss on `rabitq8`.
+
+ANN routing can trade small distance errors for speed. On ARM CPUs with FP16 and FHM, `halfvec` L2 centroid selection and graph pruning round differences to `f16` and accumulate in `f32`, retrying in `f32` if a difference overflows. Final reranking, sphere predicates, and the residual-quantization lower bounds that decide reranking order keep `f32` differences and accumulation. Tune probes and search breadth against recall on your own data.
 
 [^2]: See [Store 400k Vectors for $1 in PostgreSQL](https://vchord.pgsty.com/blog/post/vectorchord-store-400k-vectors-for-1-in-postgresql/).
 [^3]: See [Scaling Vector Search to 1 Billion on PostgreSQL](https://vchord.pgsty.com/blog/post/scaling-vector-search-to-1-billion-on-postgresql/).
@@ -121,6 +123,21 @@ and spaces inside a value are invalid, and one trailing comma is ignored for
 compatibility with 1.1.1. An empty string is valid for `lists = []`.
 For `vchordg`, `alpha` must contain 1–8 ascending values starting with `1.0`,
 all below `2.0`.
+
+### Graph maintenance in the planned 1.3.0 release
+
+The default `vchordrq.epsilon` increases from `1.9` to `2.5` in 1.3.0 to improve
+recall and reduce distance-order inversions, at the cost of more reranking.
+Explicit session settings and per-index fallback values still take precedence.
+
+`VACUUM` repairs `vchordg` locally and reuses deleted space. It follows deleted
+bridges when a neighbour list has spare capacity, with bounded expansion and
+the existing pruning strategy. Arbitrary deletion patterns can still reduce
+ANN recall. Keep autovacuum enabled, measure recall after large deletes, and
+use `REINDEX INDEX CONCURRENTLY index_name` to rebuild from the table when
+needed. Concurrent rebuilding allows reads and writes but needs extra disk
+space and build resources; run it outside a transaction block. See
+[Graph maintenance](https://vchord.pgsty.com/docs/vchord/usage/graph-index/#maintenance).
 
 ### PostgreSQL 19 RC1 validation
 

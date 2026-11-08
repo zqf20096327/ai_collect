@@ -28,18 +28,11 @@ Give it your resume. The job search finds the postings that fit, you pick, and i
 | Step | What happens |
 |---|---|
 | **1. Reads your resume** | Turns it into a search: the titles, the skills and the places that fit you. |
-| **2. Searches** | 10 million postings from 24 public sources, rebuilt every five hours, searched on your computer. |
-| **3. Scores** | Reads 100 postings at a time against your resume, scores from 1 to 5 with the gaps and the reasons, and keeps 50 scored ahead of where you are reading. |
+| **2. Searches** | 10 million postings from 37 public sources, rebuilt every five hours, searched on your computer. |
+| **3. Scores** | Asks of every posting, against your resume, one question: is it in line with you? How sure the answer is makes the score, from 1 to 5. 50 jobs to a page, the next one ready while you read this one. |
 | **4. You pick** | Select the jobs you want and say yes once. |
 | **5. Applies** | A real Firefox opens the company's form, fills every required field, attaches your CV and sends. |
 | **6. Keeps the answer** | What each page said, with a screenshot, for every application. |
-
-## Why AIHawk
-
-- **The company's own form.** No LinkedIn account and no Easy Apply: it applies where the company takes applications.
-- **Every posting is tried.** There is no list of sites it refuses, and a site can be taught in one Markdown file: [what has been confirmed](docs/sites.md).
-- **A browser built to look like yours.** [invisible-playwright-mcp](https://github.com/feder-cr/invisible_playwright_mcp) is a real Firefox with a person's hands, in a window you can watch.
-- **One command.** It installs what it needs, and everything else happens on the screen.
 
 ---
 

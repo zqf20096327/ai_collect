@@ -19,9 +19,12 @@ Most recon tools hand you a raw list of hostnames. Monomi collects a domain's pu
   - crt.sh's public certificate database (same data as the website, queried directly over PostgreSQL; often answers when the website is slow or down)
   - [Cert Spotter](https://sslmate.com/certspotter/) (currently valid certificates, more reliable; waits and retries when rate-limited)
 - **Automatic fallback:** if a source is down, the scan continues with the others. A scan is only left out of history when both crt.sh sources fail, since crt.sh is the only one with full certificate history
+- **Saved source copies:** every good answer from a source is saved per domain (`scans/<domain>/sources/`). If that source fails on a later run, Monomi uses the saved copy (up to 30 days old) and labels it `from_saved` with its original collection time, so an outage only costs fresh data, not the hosts found before
+- **Shared pacing:** crt.sh (5 requests a minute) and Cert Spotter's free tier are paced across every run and domain, so multi-domain sweeps stay under their limits. After Cert Spotter rate-limits, it is skipped for the rest of the cooldown instead of failing on every domain
+- **Honest source status:** when the crt.sh database answers with 0 certificates while another source found some, crt.sh is reported as **behind** (it can take days to index new certificates), not as failed
 - **Merged, de-duplicated results**
-- **Hosting enrichment (`--enrich`):** resolves each host to its IP and looks up the network owner (ASN), provider, and country via Team Cymru's free IP-to-ASN service. Shows a host table, a hosting breakdown chart, and flags hosts that point to private/internal IPs in public DNS. Hosts with no IPv4 address get a second DNS look that says why: **no_such_host** (the name doesn't exist, double-checked over DNS-over-HTTPS), **dangling_cname** (a CNAME pointing to a deleted name), **ipv6_only**, **no_address** (the name exists but has no address, often a retired host), **conflicting** (system DNS and DNS-over-HTTPS disagree, so it's unknown) or **lookup_failed**. Every check uses the same DNS helper and the same status words
-- **Open ports and CVEs (`--ports`):** looks up each IP in [Shodan InternetDB](https://internetdb.shodan.io/) (free, no key, passive: Shodan's existing data, no traffic to the target). Flags risky internet-facing services (RDP, SMB, databases, Docker API), counts known CVEs, and separates shared CDN edge IPs (Cloudflare, Fastly, Akamai, Imperva, and AWS CloudFront, detected from [Amazon's published IP ranges](https://ip-ranges.amazonaws.com/ip-ranges.json)) so their ports aren't blamed on the target. Edge IPs are also caught from Shodan's service fingerprints (CPEs), which finds Cloudflare and Okta on IP ranges they don't own, and each one says why it was flagged (`edge_reason`). A hostname whose CNAME points to an edge service (CloudFront, Okta, Fastly, Akamai, Cloudflare, Imperva, Azure Front Door) also marks its IPs as edge. Only IPs that matter get a row
+- **Hosting enrichment (`--enrich`):** resolves each host to its IP and looks up the network owner (ASN), provider, and country via Team Cymru's free IP-to-ASN service. Shows a host table, a hosting breakdown chart, and flags hosts that point to private/internal IPs in public DNS. Hosts with no IPv4 address get a second DNS look that says why: **no_such_host** (the name doesn't exist, double-checked with two DNS-over-HTTPS servers, Cloudflare and Google), **dangling_cname** (a CNAME pointing to a deleted name), **ipv6_only**, **no_address** (the name exists but has no address, often a retired host), **conflicting** (system DNS and DNS-over-HTTPS disagree, so it's unknown), **servfail** (the DNS servers tried but couldn't get an answer, even after a retry: often a broken zone or a rate limit) or **lookup_failed**. Every check uses the same DNS helper and the same status words
+- **Open ports and CVEs (`--ports`):** looks up each IP in [Shodan InternetDB](https://internetdb.shodan.io/) (free, no key, passive: Shodan's existing data, no traffic to the target). Flags risky internet-facing services (RDP, SMB, databases, Docker API), counts known CVEs, and separates shared CDN edge IPs (Cloudflare, Fastly, Akamai, Imperva, Vercel, and AWS CloudFront, detected from [Amazon's published IP ranges](https://ip-ranges.amazonaws.com/ip-ranges.json)) so their ports aren't blamed on the target. Edge IPs are also caught from Shodan's service fingerprints (CPEs), which finds Cloudflare and Okta on IP ranges they don't own, and each one says why it was flagged (`edge_reason`). A hostname whose CNAME points to an edge service (CloudFront, Okta, Fastly, Akamai, Cloudflare, Imperva, Azure Front Door, Vercel) also marks its IPs as edge. Only IPs that matter get a row
 - **Hand-off to [kaidøku](https://github.com/0x41io/kaidoku) (`--cves FILE`):** saves every CVE found, ready for `python kaidoku.py --file FILE`
 - **Web tech + security headers (`--fingerprint`, active):** one homepage request per live host reads headers like Server and X-Powered-By to spot web servers, frameworks and exposed versions, and checks the same response for missing or weak security headers (HSTS, CSP, X-Frame-Options / frame-ancestors, X-Content-Type-Options, Referrer-Policy). Hosts that redirect aren't judged, and the header check makes no extra requests
 - **Email spoofing check (`--email`):** looks up the domain's SPF, DMARC and DKIM records (DNS lookups only, nothing sent to the target's servers) and gives one verdict: **protected**, **partial** or **spoofable**. DMARC decides the verdict, so an SPF `~all` softfail isn't flagged when DMARC enforces. DKIM is checked under common selector names, and a key that isn't found is reported as "not confirmed", never "missing". If the system's DNS can't answer (WSL's DNS relay often times out on TXT lookups), Monomi retries with public DNS (Cloudflare, then Google)
@@ -36,8 +39,11 @@ Most recon tools hand you a raw list of hostnames. Monomi collects a domain's pu
 - **Known hostnames (`--hosts FILE`):** check hostnames you already know alongside the ones from certificate logs, one per line. Only the target domain and its subdomains are kept, so a file can't point Monomi outside the scan, and the file's hosts stay out of scan history
 - **Formatted terminal reports:** the AI report renders in the terminal with colored headings, real tables, and High / Medium / Low badges (via [rich](https://github.com/Textualize/rich); plain Markdown if rich isn't installed or `--no-color` is set)
 - **Saved reports:** each AI analysis is written to `reports/<domain>_<timestamp>.md`
+- **Report exports (`--export`):** the scan as Markdown, a self-contained HTML page and a findings CSV for ticketing, built by code with or without `--ai` (see [Exporting reports](#exporting-reports))
 - **JSON export** for use in other tools
-- **MCP server mode (passive-only):** run Monomi as an MCP server so AI agents can call its checks directly. Seven tools cover subdomain discovery with hostname categories, host enrichment, ports/CVEs, email spoofing, takeover checks, and suspicious-IP investigation. `find_subdomains` labels each hostname with a category (non-production, legacy, access, iot-ot, partner-portal, internal-tools and more), and `check_ports` starts with a summary: CDN edge vs origin IPs, CVEs and risky ports on origin IPs only, hostnames that don't resolve, and IPs Shodan has no data on. Findings carry their owners, and inputs that aren't hostnames (pasted links, URLs, wildcards) come back in `rejected` with the reason.
+- **Setup check (`python monomi.py doctor`):** checks Python, packages, the API key, DNS and every data source in about 10 seconds, and gives a one-line fix for anything that's wrong (see [Check your setup](#check-your-setup))
+- **One-command MCP setup (`python monomi.py mcp setup`):** adds Monomi to the Claude desktop app's config, changing only Monomi's entry and backing up the old file first (see [MCP server mode](#mcp-server-mode))
+- **MCP server mode (passive-only):** run Monomi as an MCP server so AI agents can call its checks directly. Seven tools cover subdomain discovery with hostname categories, host enrichment, ports/CVEs, email spoofing, takeover checks, and suspicious-IP investigation. `find_subdomains` labels each hostname with a category (non-production, legacy, access, iot-ot, partner-portal, internal-tools and more), and `check_ports` starts with a summary: CDN edge vs origin IPs, CVEs and risky ports on origin IPs only, hostnames that don't resolve, and IPs Shodan has no data on. Findings carry their owners, and inputs that aren't hostnames (pasted links, URLs, wildcards) come back in `rejected` with the reason. Replies are short summaries by default, with the full result saved to a file, and tools pass hosts to each other as files instead of long hostname lists, so big scans don't fill the agent's context.
 
 ## Installation
 
@@ -49,7 +55,29 @@ cd monomi
 python3 -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
+python monomi.py doctor         # check the setup
+python monomi.py mcp setup      # optional: add Monomi to the Claude app
 ```
+
+### Installing on Windows
+
+Monomi runs on Windows without WSL. In PowerShell:
+
+```powershell
+python --version                # must be 3.10 or newer
+git clone https://github.com/0x41io/monomi.git
+cd monomi
+python -m venv venv
+venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python monomi.py doctor         # check the setup
+python monomi.py mcp setup      # optional: add Monomi to the Claude app
+```
+
+If something goes wrong:
+- **`python` isn't found, or opens the Microsoft Store:** install Python from python.org (tick **"Add python.exe to PATH"**). If `python` still opens the Store or runs an old version, open **Settings > Apps > Advanced app settings > App execution aliases**, turn off the "App Installer" and older Python entries for `python.exe` / `python3.exe`, and turn on the new ones. Then open a new PowerShell window.
+- **"running scripts is disabled on this system"** when activating: run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, then activate again.
+- **The prompt shows `(venv)` but the command isn't found:** another venv is active. Run `deactivate`, then activate the one inside the `monomi` folder.
 
 ### API key (only for `--ai`)
 
@@ -59,6 +87,8 @@ The AI analysis uses the Claude API. Get a key at [console.anthropic.com](https:
 export ANTHROPIC_API_KEY="your-key-here"
 ```
 
+On Windows (PowerShell): `$env:ANTHROPIC_API_KEY = "your-key-here"` (for the current window only).
+
 Never commit your key. The tool reads it from the environment only.
 
 By default the tool uses the newest Claude Sonnet model available to your key. To choose a specific model:
@@ -66,6 +96,53 @@ By default the tool uses the newest Claude Sonnet model available to your key. T
 ```bash
 export CLAUDE_MODEL="model-id-here"
 ```
+
+### Check your setup
+
+Run this after installing, and whenever a scan looks off:
+
+```bash
+python monomi.py doctor
+```
+
+It checks, in about 10 seconds:
+- **Setup:** the Python version, every package in `requirements.txt` (installed and new enough), and that `scans/`, `reports/` and `cache/` can be written to
+- **Claude API:** whether `ANTHROPIC_API_KEY` is set (only its first 7 characters are ever shown), whether the API accepts it (one free call that lists models, no tokens used), and which model `--ai` would use
+- **DNS:** system DNS and public DNS on port 53, and DNS-over-HTTPS (Cloudflare and Google). A VPN's DNS can drop lookups under load, and doctor says so when port 53 fails
+- **Sources:** crt.sh (website and database), Cert Spotter (how much of the free hourly quota is used, or when a cooldown ends), Shodan InternetDB, Amazon's IP range list and the Tor exit list
+- **MCP:** whether the Claude desktop app's config has Monomi in it and points at this copy of Monomi (read-only; `python monomi.py mcp setup` fixes it)
+
+```
+Setup
+  [+] Python 3.14.4
+  [+] packages: requests, anthropic, rich, dnspython, mcp, psycopg
+  [+] scans/, reports/, cache/ writable
+
+Claude API
+  [+] ANTHROPIC_API_KEY set (sk-ant-…, 106 chars)
+  [+] key accepted · --ai would use claude-sonnet-5-5
+
+DNS
+  [+] system DNS (port 53) answered
+  [+] public DNS on port 53 (1.1.1.1, 8.8.8.8) answered
+  [+] DNS-over-HTTPS: Cloudflare, Google
+
+Sources
+  [!] crt.sh website: timed out after 10s
+      fix: it's often overloaded; scans still use the other sources
+  [+] crt.sh database reachable
+  [+] Cert Spotter reachable · 10 of 90 free queries used this hour
+  [+] Shodan InternetDB reachable
+  [+] AWS IP ranges (cached 16h ago)
+  [+] Tor exit list reachable (for --investigate-ip)
+
+MCP
+  [+] Claude app config points at this Monomi
+
+14 ok · 1 warning · 0 problems: ready to scan
+```
+
+Each line is `[+]` ok, `[!]` a warning (a feature is weaker or off, but scans still work) or `[x]` a problem, and every warning or problem comes with a one-line fix. The exit code is 1 if anything failed, so scripts can check it. Doctor sends one request to each source, through the same rate-limit pacing scans use, and nothing to any scan target.
 
 ## Usage
 
@@ -109,9 +186,32 @@ python monomi.py --import spiderfoot.csv --ports --ai
 # Save raw results as JSON
 python monomi.py example.com --json results.json
 
+# Export the report as Markdown, HTML and a findings CSV (see below)
+python monomi.py example.com --email --takeover --export all
+
 # Plain output, no colors (also honors the NO_COLOR env var)
 python monomi.py example.com --no-color
 ```
+
+### Exporting reports
+
+`--export` saves the scan as files in `reports/`: `md` (the full report as Markdown), `html` (one self-contained page that opens offline; print it to get a PDF) and `csv` (one row per finding, for ticketing systems and spreadsheets). Use `all`, or pick some with commas:
+
+```bash
+python monomi.py example.com --email --takeover --export all
+python monomi.py example.com --ports --export html,csv
+```
+
+Exports are built by code, so they don't need `--ai`. Each has the summary, "fix this first", the findings (every fact with an owner, worst attack path first), the attack paths and the evidence they cite. A finding's severity is the worst attack path it's part of; findings in no path have none. With `--ai`, Claude's summary goes at the top, labeled as AI-written.
+
+To export a scan again later without scanning, save it with `--json` and use the `report` command. It uses the evidence saved in the file, so the IDs an AI summary cites still match:
+
+```bash
+python monomi.py example.com --takeover --json scans/example.json
+python monomi.py report scans/example.json --format html
+```
+
+Everything from the scanned domain is escaped in the HTML, which also carries a strict Content-Security-Policy (no scripts, nothing loaded from outside), and CSV cells starting with `=`, `+`, `-` or `@` get a `'` in front so spreadsheets can't run them as formulas.
 
 ### Example output
 
@@ -165,7 +265,30 @@ Tools: `ping`, `find_subdomains` (with hostname categories), `enrich_hosts`, `ch
 
 Every call is built to fit the Claude app's 60-second tool limit: `find_subdomains` gives its sources 45 seconds in total, returns whatever finished, and lists skipped sources in `errors`.
 
-Add Monomi to your MCP client's config:
+**Summary replies (v1.9).** `find_subdomains`, `check_takeover`, `enrich_hosts` and `check_ports` take `detail="summary"` (the default) or `detail="full"`. A summary gives the counts plus the hosts that matter (risky categories, takeover leads and stale records, dangling CNAMEs, origin IPs), and saves the full result to `scans/mcp/` as `full_results_file`. Use `detail="full"` to get everything in the reply.
+
+**Passing hosts as a file.** Instead of copying hostnames into the next tool, pass `find_subdomains`' `full_results_file` (or a `.txt` list, one host per line) as `hosts_file` to `check_takeover`, `enrich_hosts` or `check_ports`. Only files inside Monomi's `scans/` folder are accepted, so an agent can't point a tool at other files on your machine. Big files are checked in batches (200 hosts, 100 for `check_ports`): call again with `start` set to the reply's `batch.next_start` until it is `null`.
+
+```
+find_subdomains(domain="example.com")
+  -> full_results_file: ".../scans/mcp/..._find_subdomains.json"
+check_takeover(hosts_file="<that file>", domain="example.com")
+check_ports(hosts_file="<that file>")
+```
+
+### Setting it up
+
+For the Claude desktop app, one command does it:
+
+```bash
+python monomi.py mcp setup
+```
+
+It shows the change and asks before writing (`--yes` skips the question). Only the `monomi` entry is added or updated: other MCP servers and settings stay as they are, the old config is backed up next to it (`claude_desktop_config.json.bak-<date>-<time>`), and a config that isn't valid JSON is never overwritten. On Windows it updates every copy of the config the app may read. Run from WSL, it sets the app up to start Monomi inside your WSL distro (`wsl.exe -d <distro> -e ...`).
+
+Then fully quit the Claude app, not just its window (Windows: right-click its tray icon > Quit; macOS: Cmd+Q), open it again, and ask Claude to run Monomi's `ping` tool. `python monomi.py doctor` also checks the entry. Run setup again after moving the Monomi folder or rebuilding the venv.
+
+**Other MCP clients:** `python monomi.py mcp setup --print` prints the entry for this machine. It looks like this:
 
 ```json
 {
@@ -197,6 +320,7 @@ Certificate Transparency (CT) is a public log of every TLS certificate issued by
 ```
 monomi/
 ├── monomi.py             # CLI entry point
+├── doctor.py             # setup check: packages, API key, DNS, sources, MCP (monomi.py doctor)
 ├── analysis.py           # Claude analysis layer
 ├── enrich.py             # DNS + ASN/provider enrichment
 ├── internetdb.py         # Shodan InternetDB: open ports + CVEs per IP
@@ -204,12 +328,14 @@ monomi/
 ├── headers.py            # security headers check (reads the --fingerprint response)
 ├── categorize.py         # rule-based hostname categories
 ├── mcp_server.py         # MCP server mode (7 passive tools)
+├── mcp_setup.py          # adds Monomi to the Claude app's MCP config (monomi.py mcp setup)
 ├── emailauth.py          # email spoofing check: SPF, DMARC, DKIM + verdict (--email)
 ├── takeover.py           # dangling CNAME / subdomain takeover check (--takeover)
 ├── threatintel.py        # IP threat-intel: Tor list, ASN, reverse DNS, Shodan, labels (--investigate-ip)
 ├── aws_ranges.py         # AWS CloudFront detection (Amazon's IP range list, cached daily)
 ├── evidence.py           # evidence list, owners, citation check, Evidence section
 ├── paths.py              # attack paths built from the evidence, "fix this first"
+├── report.py             # report exports: Markdown, HTML, findings CSV (--export, monomi.py report)
 ├── dnscheck.py           # shared DNS helper: status words, DNS-over-HTTPS double-check
 ├── history.py            # scan history + change detection
 ├── ui.py                 # colored banner + terminal output
@@ -217,7 +343,9 @@ monomi/
 ├── collectors/
 │   ├── crtsh.py          # crt.sh collector (with retries)
 │   ├── crtsh_db.py       # crt.sh database collector (PostgreSQL)
-│   └── certspotter.py    # Cert Spotter collector (pagination, rate-limit retry)
+│   ├── certspotter.py    # Cert Spotter collector (pagination, rate-limit retry)
+│   ├── pacing.py         # shared request pacing for crt.sh and Cert Spotter
+│   └── saved.py          # saved per-domain copies of each source, used when a source fails
 ├── importers/
 │   └── spiderfoot.py     # SpiderFoot CSV export parser
 ├── scans/                # saved scans per domain (git-ignored)
@@ -240,7 +368,9 @@ monomi/
 - `--takeover` only catches services where a deleted resource's name stops resolving in DNS. Services that answer for every name (GitHub Pages, S3, Heroku, Netlify) need an HTTP check to spot a takeover, and aren't covered yet.
 - A takeover `no_cname` status only means DNS returned no CNAME record. Some DNS providers (e.g. Cloudflare) answer the same way for names that don't exist, so it doesn't prove a host is live.
 - `--investigate-ip` only uses free public sources. The Tor exit list is authoritative, but VPN and proxy labels come from reverse DNS names and Shodan tags, so many commercial VPNs won't be caught; "no anonymizer found" doesn't prove there isn't one. A country is where the network is registered, never where the person using the IP is.
-- crt.sh (website and database) and Cert Spotter are free services and are sometimes slow or rate-limited. Over MCP, sources still running after 45 seconds are skipped so the call fits the Claude app's tool limit.
+- crt.sh (website and database) and Cert Spotter are free services and are sometimes slow or rate-limited. Over MCP, sources still running after 45 seconds are skipped so the call fits the Claude app's tool limit. Pacing keeps sweeps under the limits, so a big multi-domain sweep runs slower on purpose.
+- crt.sh can fall days behind the CT logs, so a new domain may show 0 crt.sh results while Cert Spotter finds certificates. Monomi reports this as **behind** and doesn't save a history baseline until crt.sh catches up, so hosts aren't later flagged as new by mistake.
+- A saved source copy is only used when the live source fails, and it can be up to 30 days old: hosts added or removed since then won't show.
 - Some DNS providers (Cloudflare among them) never say a name doesn't exist, so a retired hostname on those zones shows as **no_address**, not **no_such_host**.
 - DNS answers are cached. Right after a DNS change, a name that was looked up before it existed can still read as **no_such_host** until the zone's negative-cache time runs out (often up to 30 minutes), and a deleted record can keep resolving until its TTL runs out.
 - Attack paths come from fixed rules applied to what the scan saw. A path shows how an attack would most likely go, not proof that it works, and "no attack path found" means no rule matched, not that the target is safe. Paths are only as complete as the checks that ran.
@@ -254,7 +384,7 @@ pip install -r requirements-dev.txt
 pytest
 ```
 
-The tests cover hostname filtering, domain cleaning, evidence citation checks, change detection, the email check, the takeover check (using fake DNS records), the IP threat-intel labels, owners and the attack-path rules.
+The tests cover hostname filtering, domain cleaning, evidence citation checks, change detection, the email check, the takeover check (using fake DNS records), the IP threat-intel labels, owners, the attack-path rules (including golden-file tests: saved and planted scans in `tests/golden/` whose evidence and attack paths must not change by accident), the doctor checks (with fake network calls), the report exports (HTML escaping, CSV formula guard) and MCP setup (with fake config files, never your real one).
 
 ## Roadmap
 
@@ -278,9 +408,13 @@ The tests cover hostname filtering, domain cleaning, evidence citation checks, c
 
 - [x] v1.8: attack paths built by code (every step evidence-cited and labeled), `owner` roles on every finding and "fix this first", `--hosts FILE`, DNS reliability (shared DNS helper, DNS-over-HTTPS double-check, one set of status words), MCP input cleanup
 - [x] v1.8.1: fixes from a 2,000+ host field test: newer AWS load balancer names (region after `elb`) marked `stale`, dangling CNAMEs under a cloud provider domain get a "check it" label instead of an expired-name path, side doors skip private IPs, load balancers and shared front doors, and side-door wording follows the host category
+- [x] v1.9: MCP summary replies with full results saved to a file, `hosts_file` input and batches, shared crt.sh / Cert Spotter pacing, saved per-domain source copies as a fallback, crt.sh "behind" status, Google as a second DNS-over-HTTPS server with one retry and a `servfail` status, Vercel counted as shared edge
+
+- [x] v1.9.1: runs on Windows without WSL (Windows file locking for pacing, install guide), email check falls back to DNS-over-HTTPS when port 53 fails
+- [x] v1.9.2: report exports (`--export`: Markdown, HTML, findings CSV; `monomi.py report` for saved scans), setup check (`monomi.py doctor`), one-command MCP setup (`monomi.py mcp setup`)
 
 **Next**
-- [ ] v1.9: report exports (Markdown, HTML, findings CSV), `monomi doctor`, next-check suggestions, a second DNS-over-HTTPS resolver, a "go around the CDN" attack path, crt.sh rate-limit handling
+- [ ] v1.10: finds more: subfinder import and a free passive DNS source for subdomain breadth, a "go around the CDN" attack path, next-check suggestions, security header and exposed API spec checks over MCP
 - [ ] Rule-based checks before the AI step
 - [ ] Scheduled monitoring with alerts on new hostnames
 - [ ] IP / IP-range input (`--ip`)

@@ -17,7 +17,7 @@
 </p>
 <p align="center"><b>Built and maintained with a lot of agent tokens and hours. If it saves you time, <a href="https://github.com/sponsors/avifenesh">sponsoring</a> helps keep it going.</b></p>
 
-<p align="center">Catch broken agent configs before your AI tools silently ignore them.<br>758 rules across Claude Code, Codex CLI, OpenCode, Cursor, Copilot, and more -<br>validating CLAUDE.md, SKILL.md, hooks, MCP configs, and other agent files.</p>
+<p align="center">Catch broken agent configs before your AI tools silently ignore them.<br>760 rules across Claude Code, Codex CLI, OpenCode, Cursor, Copilot, and more -<br>validating CLAUDE.md, SKILL.md, hooks, MCP configs, and other agent files.</p>
 
 <p align="center"><strong>Auto-fix</strong> | <strong><a href="https://github.com/marketplace/actions/agnix-ci">GitHub Action</a></strong> | <strong><a href="https://marketplace.visualstudio.com/items?itemName=avifenesh.agnix">VS Code</a> + <a href="https://plugins.jetbrains.com/plugin/30087-agnix">JetBrains</a> + <a href="https://github.com/agent-sh/agnix/tree/main/editors/neovim">Neovim</a> + <a href="https://zed.dev/extensions?query=agnix">Zed</a></strong></p>
 
@@ -42,7 +42,7 @@
 
 **Bad patterns get amplified.** AI assistants don't ignore wrong configs - they [learn from them](https://www.augmentcode.com/guides/enterprise-coding-standards-12-rules-for-ai-ready-teams).
 
-agnix validates all of it - 758 rules sourced from official specs, academic research, and real-world breakage patterns. Auto-fix included.
+agnix validates all of it - 760 rules sourced from official specs, academic research, and real-world breakage patterns. Auto-fix included.
 
 > **Want to try it first?** [Open the playground](https://agent-sh.github.io/agnix/playground) - paste any agent config, see diagnostics instantly. No install, runs in your browser.
 
@@ -149,8 +149,8 @@ Implemented validators:
 | [GitHub Copilot](https://docs.github.com/en/copilot) | COP-\*, CP-SK-\* | 35 | .github/copilot-instructions.md, .github/instructions/\*.instructions.md, .github/agents/, .github/prompts/, .github/hooks/\*.json, copilot-setup-steps.yml, plugin.json, .github/skills/ |
 | [Cursor](https://cursor.com) | CUR-\*, CR-SK-\* | 40 | .cursor/rules/\*.mdc, .cursorrules, .cursor/hooks.json, .cursor/agents/, .cursor/environment.json, .cursor/cli.json, permissions.json, .cursor-plugin/, .cursorignore, .cursor/skills/ |
 | [Codex CLI](https://developers.openai.com/codex) | CDX-\*, CX-SK-\* | 89 | AGENTS.md, .codex/config.toml, .codex/hooks.json, .codex/agents/\*.toml, .codex/rules/\*.rules, requirements.toml, .codex-plugin/plugin.json, .agents/skills/ |
-| [OpenCode](https://opencode.ai) | OC-\* | 67 | opencode.json(c), .opencode/agents/, .opencode/commands/, .opencode/tools/, .opencode/plugins/, .opencode/skills/ |
-| [Kiro](https://kiro.dev) | KIRO-\*, KR-SK-\*, KR-AG-\*, KR-HK-\*, KR-PW-\*, KR-MCP-\*, KR-SET-\*, KR-PM-\*, KR-WF-\*, KR-IGN-\* | 142 | .kiro/steering/\*\*/\*.md, .kiro/skills/\*\*/SKILL.md, .kiro/agents/\*\*/\*.{json,md}, .kiro/hooks/\*.kiro.hook, .kiro/hooks/\*.json, .kiro/settings/mcp.json, .kiro/settings/cli.json, .kiro/settings/permissions.yaml (or .json), .kiro/powers/\*/POWER.md and published POWER.md, power plugin.json and mcp.json, .kiro/workflows/\*.workflow.{json,yaml,yml}, .kiroignore |
+| [OpenCode](https://opencode.ai) | OC-\* | 68 | opencode.json(c), .opencode/agents/, .opencode/commands/, .opencode/tools/, .opencode/plugins/, .opencode/skills/ |
+| [Kiro](https://kiro.dev) | KIRO-\*, KR-SK-\*, KR-AG-\*, KR-HK-\*, KR-PW-\*, KR-MCP-\*, KR-SET-\*, KR-PM-\*, KR-WF-\*, KR-IGN-\* | 143 | .kiro/steering/\*\*/\*.md, .kiro/skills/\*\*/SKILL.md, .kiro/agents/\*\*/\*.{json,md}, .kiro/hooks/\*.kiro.hook, .kiro/hooks/\*.json, .kiro/settings/mcp.json, .kiro/settings/cli.json, .kiro/settings/permissions.yaml (or .json), .kiro/powers/\*/POWER.md and published POWER.md, power plugin.json and mcp.json, .kiro/workflows/\*.workflow.{json,yaml,yml}, .kiroignore |
 | [MCP](https://modelcontextprotocol.io) | MCP-\* | 30 | .mcp.json and the MCP server blocks of client configs |
 | [AGENTS.md](https://agents.md) | AGM-\*, XP-\* | 13 | AGENTS.md, AGENTS.local.md, AGENTS.override.md |
 | [Cline](https://docs.cline.bot) | CLN-\*, CL-SK-\* | 16 | .clinerules/, .cline/rules/, .cline/workflows/, .cline/hooks/, .clineignore, cline_mcp_settings.json, .cline/skills/ |

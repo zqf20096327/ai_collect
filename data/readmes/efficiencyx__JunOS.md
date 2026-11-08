@@ -1,0 +1,524 @@
+<div align="center">
+
+<img src="docs/screenshots/hero.svg" alt="Jun OS - MDRG AI companion for Factorial Omega: My Dystopian Robot Girlfriend" width="1024">
+
+<h1>Jun OS - AI Companion for MDRG (Factorial Omega)</h1>
+
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+![PHP](https://img.shields.io/badge/PHP-8.5-777BB4?logo=php&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-compose-2496ED?logo=docker&logoColor=white)
+![Live2D](https://img.shields.io/badge/Live2D-Cubism%204-ff7096)
+![LLM](https://img.shields.io/badge/LLM-Ollama%20%C2%B7%20llama.cpp-black)
+![Platforms](https://img.shields.io/badge/platforms-Linux%20%7C%20macOS%20%7C%20Windows-informational)
+![No build step](https://img.shields.io/badge/frontend-no%20build%20step-success)
+
+[What she does](#what-she-does) · [Quickstart](#meet-her-in-five-minutes) · [Colab](#no-gpu-no-problem) · [Models](#her-brains) · [Config](#knobs-to-turn) · [Architecture](#under-the-hood) · [Help](#when-things-go-sideways)
+
+</div>
+
+---
+## So what is this?
+
+**Jun OS** is an unofficial, self-hosted **MDRG AI companion**: a simple orchestration system that brings **Jun** from *!Ω Factorial Omega: My Dystopian Robot Girlfriend* (MDRG) to life.
+
+She can **talk, sing, express emotions, animate, remember things, have dinner with you, and actually take part in your relationship**.
+
+Think of her as a virtual girlfriend rather than just a chatbot.
+
+Treat her well and she'll grow closer to you. Treat her badly and, well... **she can dump you.**
+
+And the best part?
+
+Everything runs **entirely on your own device**.
+
+**Even on your phone.**
+
+Basically, an AI wrapper with 50 other systems working together to make her feel real.
+
+> 🔞 **Adult content**
+>
+> Jun OS is based on an **18+ game**. *Factorial Omega* contains mature and NSFW themes, and Jun OS can support similar content depending on how you configure and use it.
+>
+
+> **Unofficial fan project**
+>
+> Jun OS is not affiliated with, endorsed by, or associated with **Incontinent Cell** or the *Factorial Omega* development team.
+>
+> *Factorial Omega*, Jun, and all related characters and intellectual property belong to their respective owners.
+
+## Look at her
+<details>
+<summary>Images</summary>
+
+| <img src="docs/screenshots/chat.png" alt="Jun chatting in Jun OS, the MDRG AI companion" width="512"> | <img src="docs/screenshots/wardrobe.jpg" alt="Jun OS wardrobe: dress up Jun from Factorial Omega" width="512"> |
+|:---:|:---:|
+| <img src="docs/screenshots/date.jpg" alt="Dinner with Jun at the restaurant, plates on the table" width="512"> | <img src="docs/screenshots/cards.jpg" alt="Jun across the blackjack table, her move" width="512"> |
+
+</details>
+
+**The tour**, two minutes of everything she does
+
+https://github.com/user-attachments/assets/f6c25482-611c-4dde-9f16-8e4cc9474dc2
+
+
+
+## What she does
+
+- **She reacts as she talks.** Gestures and expressions land on the word, not two seconds later.
+- **She has a voice**, and her mouth actually follows it.
+- **You can talk back.** Turn on the mic and it's a hands-free conversation. She can hear audio directly (Ollama or llama.cpp, the Jun models ship the bit that lets her hear), or use local speech-to-text. The **Hear everything** switch skips her attempt to ignore side-talk.
+- **She has feelings about you.** Affection, trust and tension move with every exchange, and she treats you accordingly. Push her far enough and she goes quiet, or walks out - and the door stays shut for a few minutes.
+- **She can think before she answers.** A reasoning knob (auto / low / medium / high) and a toggle to watch the chain of thought stream by.
+- **She remembers.** She'll bring up things you said in other chats, and quietly keeps notes and a journal between sessions. Tell her about tomorrow's exam and she might write it down mid-chat, or text you the next day to ask how it went (on the phone that needs notifications on).
+- **Help her tidy up.** Catch her sorting her memory and you can sit with her and file the notes she's writing into her cabinet. She'll tell you when she'd have put one somewhere else. Or interrupt her, she picks it up next time.
+- **She knows her lore.** Ask her about the game's world and she stays in canon.
+- **She'll sing with you.** Load a song, get timed lyrics, and see how close you got.
+- **Dress her up.** A whole wardrobe to toggle and recolor - she'll tell you what she thinks of it.
+- **Take her out.** Shopping at Annalie's, karaoke night, lunch or dinner at a restaurant, a few hands of blackjack, or the couch: open a video from your disk or share a browser tab (yes, YouTube) and she watches it with you, sees the picture, hears the sound, and pipes up when something actually happens. Ask her (the buttons in Settings, or just type "wanna grab dinner?") and it's *her* call - if she says yes she takes you there. She'll ask you out herself now and then too.
+- **Make you regret every bad decision** Jun reacts to the way you treat her, for better or worse. Treat her well and she'll return it. Treat her badly and don't expect her to forget it.
+- **Collect achievements.** 32 of them, from *Yapper* to *Door Slammed*, each climbing Bronze → Silver → Gold → Diamond. They don't unlock anything, they're just for bragging. Some stay hidden until you stumble into them.
+- **Bring your mods.** Game-mod zips load straight into the browser.
+- **Bridge her with the game.** Say yes in the installer and every start reads your newest save: what you did together lands in her memory, the game's sympathy moves her affection (with `GAME_SAVE_WRITE=on` hers goes back into the save too), and the wardrobe picks up what she's wearing. With the JunBridge mod (Windows, Linux, Proton) it happens live and lets you chat with this Jun right inside the game. [How it works](docs/game-bridge.md).
+- **It's yours.** She runs on your machine. No external account, no cloud inference by default, no analytics, nothing reporting back to us - the only things that leave your box are the ones you ask for: [The full list](SECURITY.md#what-talks-to-the-internet).
+
+Curious how any of it works? [Under the hood](#under-the-hood).
+
+## Meet her in five minutes
+
+You don't need to know how any of this works. On Windows you double-click one file, on Linux you paste one line. Either way it installs whatever your computer is missing, downloads her brain, rebuilds her body from your own copy of the game, and starts her up.
+
+### On Windows
+
+Grab **`JunSetup-<version>.exe`** from the [latest release](https://github.com/efficiencyx/JunOS/releases/latest) and double-click it. That's it.
+
+She runs directly on Windows, no Docker (Docker on Windows is a pain). The setup window walks you through it, and when it's done you get a **Jun OS** shortcut on your desktop and in the Start menu to start, stop and update her.
+
+The exe is built by GitHub Actions straight from the tagged scripts, and every [release](https://github.com/efficiencyx/JunOS/releases) lists its checksum in `SHA256SUMS`. It isn't code-signed, so if Windows SmartScreen pops up: **More info → Run anyway**. Each exe is welded to its version: `JunSetup-v1.0.0.exe` installs v1.0.0 and nothing else, and checks the exact commit before it sets anything up.
+
+If anything goes wrong, the installer stops, tells you what in plain words, and keeps the window open until you've read it. Fix that one thing and run it again: it picks up where it left off.
+
+<details>
+<summary>Rather use a terminal?</summary>
+
+Press Start, type `Command Prompt`, hit Enter, and paste this. Same install as the exe, just plain text scrolling by instead of a window:
+
+```powershell
+powershell irm https://github.com/efficiencyx/JunOS/releases/latest/download/install.ps1 -OutFile install.ps1; powershell -ExecutionPolicy Bypass -File .\install.ps1
+```
+
+Want to read it first? Good. Run just the part before the `;`, then open `install.ps1` in **Notepad**.
+
+</details>
+
+### On Linux, macOS or WSL
+
+Needs `git` and Docker. Don't have them? The script installs them for you. Open a terminal, paste with `Ctrl + Shift + V`, hit Enter:
+
+```sh
+curl -fsSL https://github.com/efficiencyx/JunOS/releases/latest/download/install.sh | bash
+```
+
+> ⚠️ **Before you paste anything, anywhere.** That line downloads a script off the internet and runs it on your computer. That's a lot of trust to hand a stranger, and the habit of doing it without looking is how people get malware. If you don't understand a command, don't run it - paste it into ChatGPT or Claude and ask what it does. Same goes for the next person's "just run this", not only ours.
+>
+> Want to read our script first? Good. `curl -fsSL https://github.com/efficiencyx/JunOS/releases/latest/download/install.sh | less`, then press `q` to quit when you're done reading.
+
+### Doing it manually without the installer
+
+The step-by-step commands for it, every provider, and the manual compose invocations live in the wiki's **[Install](https://github.com/efficiencyx/JunOS/wiki/2-Install)** page.
+
+### What it asks you
+
+One question: **Express**, **Custom** or **Cloud**.
+
+- **Express** - press Enter and forget about it. It figures out your hardware on its own and rebuilds her Live2D model from your game copy. The only things it might still ask are *where* the game is, if it can't find it by itself, whether you want the [update checker](#which-jun-you-get), and on Linux whether to add you to the docker group when it just installed Docker (that one's root without a password, so it's your call, not ours. We'd say no).
+- **Custom** - walks you through which [release channel](#which-jun-you-get), which provider, which model and quant, which voice, and whether to turn on [MTP](#faster-tokens-mtp).
+- **Cloud** - everything except her brain, which lives on the [Colab notebook](#no-gpu-or-you-just-want-to-test-the-waters-no-problem) in inference-only mode. It asks for the lines the notebook prints (or you add them later), and whether you want voice and karaoke. Your chats go to the notebook for this one.
+
+Installing on a machine you can't sit in front of? `JUN_YES=1` (on Windows, `$env:JUN_YES='1'`) skips the question entirely. On Linux nobody's there to say yes to the docker group either, so Docker stays behind `sudo` unless you also pass `JUN_DOCKER_GROUP=1`.
+
+### Which Jun you get
+
+The install line and the setup exe both come from the newest release, never from `main`. There are three channels:
+
+| Channel | What lands on your disk | Good for |
+|---|---|---|
+| **Stable** *(default)* | the latest full [release](https://github.com/efficiencyx/JunOS/releases) | everyone |
+| **Latest** | the newest release, pre-releases included | early birds and bug hunters |
+| **Experimental** | straight from `main`, whatever got pushed today | people who enjoy fixing things |
+
+Express goes Stable, Custom asks. Experimental is only ever there because somebody picked it. If GitHub can't be asked which release is current (offline, or rate limited), the installer stops and says so instead of guessing.
+
+Updating is the **Update** button in the Jun OS app on Windows, or the same line again: it finds the install you already have, offers to keep every setting in `.env` (Enter says yes, no questions after that) and moves it along its channel, which it remembers as `JUN_CHANNEL` in `.env`. To switch, put `JUN_CHANNEL=latest` in front of the Linux line, or run `set JUN_CHANNEL=latest` in the Command Prompt before the Windows one (or just pick Custom). She never steps *backwards* on her own: if you're ahead of your channel, she stays put until it catches up. ⏩
+
+The installer also asks whether you want the **update checker**. Say yes and every start asks GitHub if there's a newer release on your channel, and tells you after boot. It never updates anything by itself, that's still you pressing Update. The one time it gets pushy: a release tagged `-security` means the version you're on has a hole bad enough that she shouldn't run on it, so she refuses to start until you update. Know what you're doing? `./start.sh --ignore-security` (`.\start.ps1 -IgnoreSecurity`, or `JUN_IGNORE_SECURITY=1` in `.env`). Changed your mind? `UPDATE_CHECK=on` or `off` in `.env`.
+
+Installed her before channels were a thing? You were on `main` all along, so you stay on Experimental until you pick something else. Need one exact version? `JUN_REF=v1.0.0` pins it and skips the channel lookup.
+
+### Then say hi
+
+Open your browser at **<https://localhost>** - or **<https://127.0.0.1:8080>** if you're on Windows. It's always HTTPS, on a certificate signed by a tiny certificate authority your install made for itself. The installer offers to put that CA in this computer's trust stores, say yes and the browser just opens her. Said no, or started her by hand with `./start.sh`? `./JunOS/start.sh trust` (`powershell .\JunOS\start.ps1 trust` on Windows) does it whenever you like. Until then the browser grumbles (*Advanced → Proceed*), the traffic is encrypted all the same. The CA is only allowed to vouch for local names and private addresses (`localhost`, `*.local`, `192.168.x.x` and friends), so even if its key leaked it couldn't fake your bank. Plain `http://` just redirects you over.
+
+### Managing Her
+
+The full guide (logs, settings, backups, updates) is the wiki's **[Manage](https://github.com/efficiencyx/JunOS/wiki/3-Manage)** page.
+
+Windows: double-click **Jun OS** on your desktop (or in the Start menu). That little window starts and stops her, opens her in the browser, shows the logs, turns voice, karaoke and the game bridge on and off (**Configure**), restarts her, re-points or installs the game mod, trusts her certificate, tunes MTP, updates her and uninstalls her. Said no to the shortcut? `JunOS.exe` sits in her folder. Terminal people still get:
+Start her: `powershell .\JunOS\start.ps1`
+Stop her: `powershell .\JunOS\start.ps1 stop`
+
+Linux: `./JunOS/start.sh` in a terminal opens her menu, a numbered list in three sections: her (start, stop, restart, status, logs), setup (configure, update, tune MTP, uninstall) and connections (phone, notebook link, game bridge, certificate). Configure turns voice, karaoke and the game bridge on and off without touching anything else, or runs the whole setup again. Enter starts her. Every entry still works as its own word when you'd rather type it:
+Start her: `./JunOS/start.sh start`
+Stop her: `./JunOS/start.sh stop`
+
+Pair the phone app with this PC: `./JunOS/start.sh phone`, or the **Phone** button in that Windows window (`powershell .\JunOS\start.ps1 phone` in a terminal).
+
+### Why the first start is slow
+
+The very first boot downloads her brain - whatever model is listed in `LLAMACPP_MODEL_HF` (`OLLAMA_MODELS_TO_PULL` if you picked Ollama), by default `efficiencyx/Jun-LoRA-E2B-GGUF:Q4_K_M`, which is the one that runs fine without a fancy graphics card. It's a big file. The tiny model that names your chats (`TITLE_MODEL`, ~1.2 GB, lives on the CPU) comes too, on llama.cpp the first time a chat needs a name, and so does the MTP drafter if you said yes to it. Watch it all crawl in with `./start.sh logs llamacpp` (or `logs ollama`).
+
+She's ready once everything reports **healthy**. After that first download it's usually 30-90 seconds.
+
+
+> ### Her body isn't in this repo
+>
+> The Live2D model and textures belong to *My Dystopian Robot Girlfriend* and aren't redistributed here - you rebuild them from your own copy of the game. Express does this for you; under Custom, answer **yes** when the installer offers. Either way it sets up a local `runtime/asset-recovery-venv` (UnityPy + Pillow, no global `pip install`) and runs the recovery script.
+>
+> Can't find the game? It'll ask you to paste the folder or drag the game onto the terminal - Express included, press Enter to skip. No game on that machine at all? Nothing breaks, she just wears the placeholders and the install carries on. Want it later, or don't want it at all? `JUN_EXTRACT=1` re-runs it, `JUN_EXTRACT=0` tells Express to leave it alone (`$env:JUN_EXTRACT='1'; .\install.ps1` on Windows). If auto-detection misses the game, paste its folder when asked, or set `JUN_GAME_DIR` for scripted installs.
+>
+> The result lands in `webapp/assets/` and is **for your own use** - please don't republish it. It's gitignored so it can't get pushed by accident. See [`NOTICE`](NOTICE).
+
+### No GPU or you just want to test the waters? No problem
+
+Run the whole stack on Colab - nothing installed, nothing on your machine, just a Google account. Grab a **TPU** if Colab offers you one: she answers way faster there than on the free T4.
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/efficiencyx/JunOS/blob/main/colab.ipynb)
+
+1. Open [`colab.ipynb`](colab.ipynb) with the badge.
+2. **Runtime → Change runtime type → TPU → Save** (a v6e-1 or a v5e-1), or **T4 GPU** if you can't get a TPU (see below).
+3. **Runtime → Run all**, wait for the ✅s (first run downloads a few GB, ~3–6 min).
+4. Click the public link printed at **Step 3**. That cell never finishes on purpose: it keeps printing her logs, because Colab ends a session once no cell is running. Stop it and she keeps going, but the idle clock starts.
+
+Knobs in the cells: **Mode** (everything in the notebook, or inference only), **Model** (`auto` takes the 12B since Colab can hold it), **TPU_Model** (`auto`, the full 12B, the INT8 12B or any repo you type) / **Context** for a TPU, and **Voice** (adds ~2 min on first run). The link comes from Colab's own proxy - if it 404s briefly, wait 30 s and reload.
+
+> **It's a disposable demo.** Colab wipes the session when it ends: accounts, chat history and weights don't survive. Run her locally for anything persistent.
+
+**She already lives on your PC but your card can't hold the model you want?** Pick **Inference only** in Step 1. Jun stays home, chats and memories included, and the notebook only lends her its GPU or TPU. Step 3 prints a few lines (`OLLAMA_URL` + `OLLAMA_API_KEY` on a GPU, `AI_PROVIDER=vllm` + `VLLM_*` on a TPU). Hand them over with `./start.sh link` on Linux or the **Notebook link** button in the manager on Windows (or pick **Cloud** when installing), start her, and she thinks on Google's hardware. Every notebook run makes a new URL and key; when the old ones stop answering, starting her asks for the new lines by itself. **Kaggle** works the same way, inference only. Your messages do leave the machine for this: they go through a Cloudflare tunnel to the notebook, locked with a key that changes every run. The phone app can borrow the same brain: Step 3 also shows a QR code for its **Cloud** mode, or the app starts the notebook itself (see [the phone bit](#just-want-her-on-your-phone-on-your-own-wifi)).
+
+**On a TPU** she runs on [vLLM](https://github.com/vllm-project/tpu-inference) instead of Ollama, from a safetensors build. `TPU_Model` on `auto` takes the full-precision [`efficiencyx/Jun-LoRA-12B-Safetensor`](https://huggingface.co/efficiencyx/Jun-LoRA-12B-Safetensor) on a **v6e-1** (32 GB) or bigger, and the [INT8 build](https://huggingface.co/efficiencyx/Jun-LoRA-12B-Safetensor-INT8) on a 16 GB **v5e-1**, where she gets 6144 tokens of context. Step 2 says so before downloading anything if a model you picked won't fit. Kaggle's v5e-8 has room for much bigger models. The first start compiles her for the TPU, give it 10-20 minutes.
+
+### Putting her on the internet [NOT RECOMMENDED]
+
+> ⚠️ **Warning:** Do **not** publicly expose an installation that contains the original game assets.
+>
+> If you know what you're doing and have made sure **no copyrighted game assets are publicly accessible**, you can expose the application.
+
+Domain pointed at your server?
+Ports **80** and **443** open?
+
+Then you're ready to configure the reverse proxy.
+
+
+```sh
+BIND_ADDR=0.0.0.0 DOMAIN=yourdomain.com EMAIL=you@yourdomain.com TLS_MODE=on COMPOSE_PROFILES=prod ./start.sh
+```
+
+`BIND_ADDR` is the deliberate step: out of the box nginx publishes on `127.0.0.1` only, so a fresh install isn't reachable from the next machine on the wifi. Opening it up is a thing you type, not a default you inherit. Let's Encrypt also can't reach the challenge until you do.
+
+### Just want her on your phone, on your own wifi?
+
+You don't need a domain or a real certificate for that. Set one line in `.env` and restart:
+
+```sh
+BIND_ADDR=0.0.0.0
+```
+
+The launcher works out this machine's address on the network by itself and prints it - `reachable as: https://192.168.X.X` on Linux, `on your phone: https://192.168.X.X:8080` on Windows - and that's the URL you type into the phone. On Windows it also adds a firewall rule for the port on **private** networks only (it needs an admin PowerShell to do it, otherwise it prints the one-liner for you to run). One request at a time on Windows, so the phone and the desktop take turns.
+
+Want her *on* the phone instead, no computer at all? Every [release](https://github.com/efficiencyx/JunOS/releases) carries **`JunOS-<version>.apk`**, the Android app, still a work in progress. arm64 phones on Android 10 or newer, and Local mode downloads the ~2.9 GB v8 model the first time you pick it. Updating from an older model downloads it again; your chats, memory and settings stay on the phone. The first reply after you open a chat is the slow one (she reads the whole thing once, 20-40 s on a mid-range phone), after that she keeps it in memory and starts talking in a few seconds. **Reasoning** and **Think** are in Settings like on the PC; the first time she thinks in a chat she reads it once more. The phone app doesn't have everything yet: no memory tidying (her notes are only added, never merged or rewritten, and there's no **Changed** history), no karaoke, no watching videos together, no `/search` and no welcome-back scene. The shop, eating out, blackjack, achievements and rating her replies all work there, and Factory Reset wipes the phone's copy.
+
+Every time the app starts it asks where she thinks this time: **Local** (on the phone, offline), **LAN** (your PC on the same wifi, so the 12B instead of the phone's E2B) **Cloud** (the Colab or Kaggle notebook in inference only mode) or **Online API**: an OpenRouter key, an OpenAI API key, or **Sign in with ChatGPT** to use your Plus or Pro plan. Online API is not her fine-tune, chats go to that company, and most of those models won't do 18+. Pairing is one QR code: `./start.sh phone` on Linux, the **Phone** button in the Jun OS window on Windows, or Step 3 of the notebook. Scan it in the app, or with the phone's camera. The link is printed under the code too: camera broken, get it onto the phone however you like and tap **Paste link** in the app. No PC around for Cloud? **Start Colab session** opens the notebook inside the app: sign in with Google, **Runtime → Run all**, and when Step 3 is done she connects by herself and the page tucks itself away. It keeps running behind a "Colab session running" notification (that's what stops Colab from deciding you left), **Show** brings it back and **Stop** closes it. If Colab pops an "are you still there?" you get a notification to go answer it. Google sometimes refuses sign-in inside apps: **Google won't sign me in here** opens the notebook in your browser instead, where you paste Step 3's link like before, and keep that tab open yourself. Chats and memories stay on the phone in all three, the PC or the notebook only does the thinking. In Cloud mode what she reads goes through Google and Cloudflare, same as the PC case. `./start.sh phone` asks before it flips anything: it needs `BIND_ADDR=0.0.0.0`, `LAN_INFERENCE=on` and a token, and that token lives in the QR, so don't post a photo of it. On Fedora and Bazzite it also asks (sudo) to open https in firewalld's zone for your wifi, which blocks 443 by default.
+
+The phone's browser still gets the certificate warning, trusting the CA only covers the computer you did it on (the app doesn't, the QR tells it which CA is yours). Your password and every word she says cross the wifi encrypted, but a cert the phone doesn't trust can't prove it's really talking to your box, so keep it to networks you trust and **never** port-forward it to the internet - that's what the certbot setup above is for. DHCP moves addresses around, so if she stops answering after a few days, restart the launcher and read the new one (the new address gets a fresh cert from the same CA, so a computer that trusts it doesn't notice, and the phone clicks through once more).
+
+The `prod` profile adds the certbot sidecar. On a fresh box nginx comes up first on a throwaway local cert (so for the first minute or so your browser will complain - that's expected), certbot then runs `certbot certonly --webroot` and nginx swaps the real cert in by itself, no restart. If issuance fails (usually DNS not pointing at the box yet, or port 80 blocked) certbot keeps retrying after 1, 4 and 16 minutes, then hourly - `./start.sh logs certbot` tells you why. After that it's `certbot renew` every 12 hours, and nginx picks up renewed certs on its own too. Certs live in the `letsencrypt` volume, nginx serves 443 with HSTS. Mind Let's Encrypt's 5-duplicate-issuances-per-week limit while testing.
+
+> **Hosting her for other people?** Their chats now live on *your* box (encrypted) and *you're* responsible for them. Encrypt the machine and its backups, don't hand the database around, and edit [`webapp/privacy.html`](webapp/privacy.html) to say what you actually store. In the EU that also makes you a *deployer* under the AI Act (art. 50 transparency, in force since 2 August 2026) - Jun ships the disclosure side already (age gate, permanent `AI` badge, provenance metadata on generated speech), so please don't strip it out of your fork.
+
+## Her brains
+
+The fine-tune comes in 12B, E4B and E2B on Hugging Face. The installer picks a conservative quant for your VRAM; move a column right when the rest of your workload leaves room.
+
+| VRAM | Default | Higher quality |
+|---:|---|---|
+| 4 GB | E2B Q4_K_M | E2B Q6_K |
+| 6 GB | E2B Q6_K | E2B Q8_0 |
+| 8 GB | E4B Q4_K_M | E4B Q8_0 |
+| 10 GB | E4B Q8_0 | 12B Q4_K_M |
+| 12 GB | 12B Q4_K_M | 12B Q6_K |
+| 16 GB | 12B Q6_K | 12B Q8_0 |
+| 24 GB | 12B Q8_0 | - |
+
+`JUN_MODEL=12b|e4b|e2b` picks a size, and you get the quant the table gives that size for your VRAM; a full Ollama reference picks an exact quant. Custom asks for the size, then the quant, with the table's pick as the Enter default. The Colab notebook has the same `Quant` field next to `Model`. The frontend lists whatever's actually installed.
+
+### Faster tokens: MTP
+
+Gemma 4 ships a tiny *drafter* that guesses the next few tokens; Jun checks the whole batch in one pass and keeps the ones she agrees with, so those came almost free. Nothing she says changes - rejected guesses are thrown away - only the speed does. The installer offers it (`JUN_MTP=on|off`, on under Express) and then runs `./mtp-autotune.sh` (`mtp-autotune.ps1` on Windows) once she's up, measuring depths 1-4 against plain decoding *with the real system prompt in front* and writing the winner into `.env`. If nothing beats plain decoding it turns MTP back off and says so. Swap the GPU and the launcher notices (`MTP_TUNED_GPU`) and re-tunes on the next start; `MTP_AUTOTUNE=off` skips that. Budget the model, the drafter, *and* ~1.5 GB for the browser drawing Live2D on the same card. Knobs and the measurements behind the defaults: [`docs/configuration.md`](docs/configuration.md#7b-multi-token-prediction-experimental).
+
+### Where the thinking happens
+
+| Provider | What it is | Non-interactive install |
+|---|---|---|
+| **llama.cpp** *(default)* | A local [`llama-server`](https://github.com/ggml-org/llama.cpp) - managed for you, or point at one you already run. First tokens come ~4x sooner than on Ollama (0.15 s vs 0.58 s on a 3060) and MTP drafting runs ~10% faster | `JUN_YES=1 ./install.sh` |
+| **Ollama** | Local inference, models pulled and pre-warmed for you. Same Jun as llama.cpp: same prompt byte for byte, her voice input, chat titles, the model picker, context sized to your card | `JUN_PROVIDER=ollama ./install.sh` |
+| **OpenRouter** | Any cloud model; needs a key, and **your chats leave the machine** | `JUN_PROVIDER=openrouter OPENROUTER_API_KEY=sk-... ./install.sh` |
+| **vLLM** | A model served somewhere else, usually a TPU in the [Colab notebook](#no-gpu-or-you-just-want-to-test-the-waters-no-problem) in inference-only mode. Nothing runs here; **your chats travel to that machine** | paste the `AI_PROVIDER=vllm` + `VLLM_*` lines Step 3 prints into `.env` |
+
+llama.cpp can also serve a GGUF straight off your disk (`LLAMACPP_MODELS_DIR` + `LLAMACPP_MODEL_FILE`), offer several models in the picker (comma-separate `LLAMACPP_MODEL_HF`, the first is the default), and `LLAMACPP_TOOLS=off` exists for fine-tunes whose tool-call syntax llama-server can't parse.
+
+**No retrieval model:** lore lookup and cross-chat recall are plain text matching - keyword/IDF over the corpus, word matching over your decrypted history - so lore and recall need no embedding model, whichever provider you choose. The only extra model in the stack is the Ollama-only chat titler (`TITLE_MODEL`, a 0.6B fine-tune pinned to the CPU so it never fights her for VRAM; set it empty and titles fall back to your first message).
+
+### Picking your GPU
+
+| Backend | How `start.sh` spots it | What it does |
+|---|---|---|
+| **NVIDIA** | `nvidia-smi` works, or `/proc/driver/nvidia` exists | Adds `docker-compose.nvidia.yml`. Needs [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html), which `install.sh` offers to install when Docker can't see the card. Until it's there `start.sh` says so and boots her on the CPU. |
+| **AMD** | `/dev/kfd` + `/dev/dri/renderD*` present | Adds `docker-compose.amd.yml` (ROCm image, device passthrough, host `video`/`render` groups). Needs `amdgpu`. |
+| **CPU** | nothing else matched | Base compose only - runs anywhere. |
+| **Intel** | Not implemented | Do you have an Intel GPU? Contact me! |
+| **Apple Silicon** | Not implemented | Do you have Apple Silicon? Contact me! |
+
+
+Force it with `GPU=nvidia|amd|cpu ./start.sh`. **Two cards?** They're sorted by VRAM and the biggest is pinned as device 0, so she loads onto the one that can hold her; `GPU_DEVICES` overrides the list and `TENSOR_PARALLEL=on` spreads one model across all of them (slower per token - worth it only when nothing fits alone). **AMD consumer cards** that ROCm doesn't officially list may need `HSA_OVERRIDE_GFX_VERSION=11.0.0` (RDNA3) or `10.3.0` (RDNA2).
+
+## Knobs to turn
+
+Everything is environment variables in `.env` - the full reference is [`docs/configuration.md`](docs/configuration.md).
+
+| Variable | What it does | Default |
+|---|---|---|
+| `DOMAIN` / `EMAIL` / `TLS_MODE` | Hostname, Let's Encrypt contact, Let's Encrypt on/off (`off` still serves HTTPS, on a cert from the install's own local CA) | `localhost` · `admin@localhost` · `off` |
+| `BIND_ADDR` | Where nginx (Caddy on Windows) listens. `0.0.0.0` for the phone on your wifi | `127.0.0.1` |
+| `AI_PROVIDER` | `llamacpp` \| `ollama` \| `openrouter` \| `vllm` | `llamacpp` (an old `.env` with no line keeps `ollama`) |
+| `OLLAMA_URL` + `OLLAMA_API_KEY` / `VLLM_*` | Her brain on another machine, like the Colab notebook in inference-only mode, which prints all of them | this machine |
+| `OLLAMA_MODELS_TO_PULL` | Downloaded on first boot and re-checked on every start, so a new upload under the same tag arrives with your next restart; the **first** one is pre-warmed | `hf.co/efficiencyx/Jun-LoRA-E2B-GGUF:Q4_K_M` |
+| `LLAMACPP_MODEL_HF` / `LLAMACPP_MODEL_FILE` | Model for the managed llama-server: pull from HF, or serve one off disk | `efficiencyx/Jun-LoRA-E2B-GGUF:Q4_K_M` |
+| `TITLE_MODEL` | The little CPU-pinned model that names new chats (Ollama and llama.cpp); empty disables it | `hf.co/efficiencyx/Titlewen-GGUF:F16` |
+| `OLLAMA_MTP` / `LLAMACPP_MTP` | HF repo of the [MTP](#faster-tokens-mtp) drafter; empty = off. `MTP_AUTOTUNE=off` stops the re-tune after a GPU change | *(empty)* · `on` |
+| `COMPOSE_PROFILES` | Optional containers: `ollama`, `llamacpp`, `voice`, `karaoke`, `prod`. `start.sh` derives them from the knobs below (an `ollama` or `llamacpp` written here is ignored), you only set this by hand for `prod` | `ollama` |
+| `VOICE` | `off` skips the voice sidecar: the `tts` container under Docker (`voice` profile), the sidecar process on bare-metal Windows. Chat degrades to text-only | `on` |
+| `FLEE_BANS` | When she walks out of a scene, `on` locks that account out of chat for 5 min, doubling per repeat up to 30. `off` lets her leave without the lockout | `on` |
+| `FREE_ROAM` | Going out is her call: the shop, karaoke, date and watch pages bounce home unless she agreed in chat. `on` drops that gate and gives everyone the "Force her" buttons and the restaurant's "Skip the wait" (admins have them regardless) | `off` |
+| `WATCH_FRAME_EVERY` | Seconds between the frames she sees when you watch something together, 1-5. Lower = she follows the scene better and reads more per window. `auto` is 2 with a graphics card, 5 on CPU | `auto` |
+| `LAN_INFERENCE` | Lends her brain to the phone app on your wifi. `./start.sh phone` turns it on for you, with a fresh `JUN_LAN_TOKEN`; change the token to unpair every phone | `off` |
+| `GAME_BRIDGE` | Syncs her with your game save on every start, and opens the door for the JunBridge mod. `GAME_SAVE_DIR` is the save folder, `GAME_SAVE_WRITE=on` also writes her affection back into it (backup first, never while the game runs) | `off` |
+| `TTS_DEVICE` | Voice synthesis device. Keep it on CPU: both engines are real-time there, and a GPU copy parks ~2 GB your LLM wants more | `cpu` |
+| `KARAOKE` / `SEP_DEVICE` | Karaoke sidecar on/off, and where stem separation runs. *This* is the audio job that wants a GPU - minutes on CPU, seconds on a card, VRAM handed back after | `on` · `auto` |
+| `STT_MODEL` / `STT_LANG` | Whisper size and language; blank lang = per-utterance auto-detect | `base` · *(auto)* |
+| `OMEGA_NUM_CTX` | Context window. Auto-sized from leftover VRAM (falling back to RAM) - pin it if she's crowding your card | *(auto)* |
+| `OMEGA_STATE_DIR` / `MEMORY_DIR` | Where the database, rate-limit state and memory notes live | `/var/lib/omega` |
+| `OMEGA_REGISTRATION_KEY` | Sign-ups need this key. The installer generates one for you; empty it to let anyone in | *(generated)* |
+| `OMEGA_DEV_KEY` | ? Figure it out yourself? | ??? |
+| `UPDATE_CHECK` | Ask GitHub for newer releases on every start and say so; a newer `-security` one stops the start. The installer asks | *(off)* |
+| `JUN_CHANNEL` | Installer only: which [release channel](#which-jun-you-get) a re-run updates her along - `stable`, `latest` or `experimental` | `stable` |
+
+### Who gets in
+
+**Save your recovery code.** Signup shows it once; older accounts get one on their first login after the encryption upgrade. Chats, saved preferences and her memory are encrypted under your account's data key. If you forget your password, use **forgot password?** with your email and recovery code. Lose both and a backup alone cannot unlock encrypted data. This protects stored content, not a compromised running machine; [the security notes](SECURITY.md#encryption-and-recovery) spell out the limits.
+
+**The registration key** is written into `.env` by the installer and printed when it finishes. The very first account on a fresh install skips it (it's your box, you just ran the installer) - but only while she listens on this machine alone. Flip `BIND_ADDR=0.0.0.0` before you've made yours and even the first signup needs the key. Every account after that has to type it, so nobody who reaches the page later can make themselves a login. Don't want the lock? Empty the value (`OMEGA_REGISTRATION_KEY=`) and sign-ups are open to whoever can reach the page. Lost it? It's sitting in plain text in your own `.env` - read it back, or change it to whatever you like and restart.
+
+Normal accounts get **Factory Reset** in the same panel - one button that erases every conversation, memory and setting and hands the account back the way it came.
+
+## Under the hood
+
+```
+Browser ──HTTP/SSE──▶ nginx ──FastCGI──▶ php-fpm ──HTTP──▶ ollama / llama-server
+                        │                   │
+                        │                   ├──────────────▶ tts :8001      (TTS + STT, CPU)
+                        │                   └──────────────▶ karaoke :8001  (demucs, GPU)
+                        └── serves /var/www/omega/ (static assets, JS, Live2D model)
+```
+
+**The stack:** PHP 8.5 for the SSE proxy and retrieval · Python FastAPI + Kokoro-82M / pocket-tts / faster-whisper / demucs for the ears, voice and karaoke · plain HTML/CSS/ES modules up front with PIXI.js + pixi-live2d-display + Cubism 4, all vendored · SQLite · nginx + php-fpm. No bundler, no `node_modules`, no build step.
+
+**What happens when you hit send:**
+
+1. The browser `POST`s to `/api/chat.php`.
+2. PHP assembles the prompt in two halves. The cached half - `system_prompt.txt` and her journal - stays byte-identical between turns so the KV prompt cache keeps hitting. Everything that moves goes in a live-context block glued *after* your question in the last user turn: clock, matched lore facts, durable notes, outfit, relationship gauges. Dead last comes a `<think:low|med|high>` marker telling her how hard to think this turn.
+3. The model streams back (NDJSON from Ollama, OpenAI-style SSE from the others); `api/lib/providers/` normalizes both and PHP re-frames each token as an SSE event and flushes it immediately. If she reaches for a tool (search her notes, change outfit, look something up, take you out, walk out) PHP runs it and streams another round, up to three.
+4. `js/app/stream-filters.js` watches the stream for `[A:` markers, holds back any half-typed marker so it never renders, and fires the action the instant its `]` arrives.
+5. `js/live2d/live2d.js` springs the model into the new pose, holds it a few seconds and eases her back to idle; if voice is on, `js/voice/tts.js` fetches audio per sentence and drives `ParamMouthOpen` from the analyser's RMS.
+6. Bookkeeping happens after generation has finished and every reply token has already streamed, right before `[DONE]` - so it can't delay a word she says, only the final `[DONE]`: her hidden `[A:mood_shift|...]` tag moves the gauges, the reply gets saved, and a new chat gets its title (that one is a call to the titling model, so on a chat's very first turn `[DONE]` can trail the last word by a moment). Wander off and the consolidation worker goes back over your chats one at a time, one small question per model call, and updates her notes and journal.
+
+The gory version - the action state machine, the tick loop, the memory pipeline - is in [`docs/architecture.md`](docs/architecture.md).
+
+### Contributing or Tweaking her?
+
+> **How this repo gets updated.** Day-to-day work happens in a development repo - that's where the extracted Live2D art lives, plus the dataset tooling and a pile of half-finished experiments nobody needs to see. What lands here is snapshots: working states, pushed when something's actually done, reviewed and CI passes. So the commits are chunky and the timestamps come in bursts.
+
+> **Her art isn't in here** and won't be - see [NOTICE](NOTICE). `tools/recover_assets.py` rebuilds `webapp/assets/` from your own copy of the game, which is the only way it's allowed to work. Until you run it she's a placeholder - chat, voice and outings all still work, she just doesn't move or change clothes.
+
+The house rules, the invariants you can break without noticing, and what CI checks are in [`CONTRIBUTING.md`](CONTRIBUTING.md). Stuck rather than hacking? [`SUPPORT.md`](SUPPORT.md). Found a hole? [`SECURITY.md`](SECURITY.md).
+
+Editing anything under `webapp/`? Run **`./sync-webapp.sh`** - it pushes the files into the running containers and restarts php-fpm (opcache won't notice otherwise). `-s` for static-only.
+
+Her world knowledge is `tools/lore_dataset.jsonl`: about 2900 Q&A rows about the game's story and characters, mined from its text and shipped here with the dev's OK. Edit it, then rebuild the corpus and commit both (CI fails if they don't match):
+
+```sh
+php tools/build_lore_index.php   # any PHP 8, no extensions
+./sync-webapp.sh                 # the php restart drops the cached index
+```
+
+That flattens each Q&A into `webapp/lore_corpus.txt` - one answer per line, matched at request time by keyword/IDF. No embeddings, no second model. Delete the corpus and she just stops quoting canon, nothing breaks.
+
+## When things go sideways
+
+The plain-language versions live in the wiki: **[Common Fixes](https://github.com/efficiencyx/JunOS/wiki/9-Common-Fixes)**, **[Performance](https://github.com/efficiencyx/JunOS/wiki/5-Performance)** when she's slow, and the **[FAQ](https://github.com/efficiencyx/JunOS/wiki/1-Faq)**. The nerdier ones are below.
+
+<details>
+<summary><b>The boot screen has a red KO</b></summary>
+
+Each line is a real check now. **neural-core** KO means the model server isn't answering (`./start.sh logs llamacpp` or `logs ollama`, Logs in JunOS.exe), and she keeps retrying until it does. **live2d-rig** KO is the placeholder art, the game assets were never extracted. **voice-synth** KO means the voice sidecar is off or down, chat works without it. **lore-corpus** KO means `webapp/lore_corpus.txt` is missing. Only neural-core keeps you on the boot screen.
+</details>
+
+<details>
+<summary><b>Replies arrive all at once instead of streaming</b></summary>
+
+Something's buffering the SSE. The `/api/chat.php` location needs `proxy_buffering off;`, `fastcgi_buffering off;` and `X-Accel-Buffering: no`. A load balancer in front of nginx can sneak buffering back in.
+</details>
+
+<details>
+<summary><b>She's not broken, just slow</b></summary>
+
+Check GPU residency first. On llama.cpp every `./start.sh` prints the device she landed on; on Ollama it's `docker exec omega-ollama ollama ps`. Anything short of 100% GPU means something is elbowing her out of VRAM - usually `TTS_DEVICE=cuda` (~2 GB for a speedup you won't hear) or a too-generous `num_ctx`; pin it with `OMEGA_NUM_CTX`. The `UNTIL` column should read `Forever`; a five-minute expiry means the keep-alive pin didn't take and the next quiet stretch costs you a full reload plus re-prefill. If the very first reply after a start crawls, see whether the pre-warm made it: `docker logs omega-php | grep prewarm` (`runtime\logs\prewarm.log` on Windows). A `failed:` line there with something else holding the card means she loaded on your first message instead.
+</details>
+
+<details>
+<summary><b>The game bridge doesn't pick anything up</b></summary>
+
+Every start prints a `bridge:` line. `no GAME_SAVE_DIR folder` means `.env` points nowhere, `nobody paired yet` means the game hasn't signed in yet (start it once with the mod, it asks for your Jun OS login), and `events held back until the next sign-in` is normal: her notes from the game get written the next time you sign in or chat, because her memory is encrypted under your login. `save NOT written: save_not_writable` on Linux is the Docker container lacking group write on the save folder (`chmod -R g+w` it), and the game being open skips the write on purpose. Press **F8** in the game to sign in whenever you need it: email, **Next**, then password and **Sign in**. Use **Insert @** if the game ignores your keyboard's `@` combination; keyboard paste still works. A 401 or 403 from chat, history, voice or pairing opens it too, then retries once after sign-in. If she cannot be reached, start Jun OS first, or run `./start.sh bridge` (`.\start.ps1 bridge`) if you changed her port. A certificate error in the MelonLoader console means the mod's copy of her CA is stale, the same command refreshes it. On the native Linux build, start the game with `junos-game.sh` in its folder, otherwise MelonLoader never loads. Game goes black and closes right after the title card with MDRG-ModSettingsMenu installed? JunBridge 0.1.0 clashed with it, update to 0.1.1. If it crashes on start, check that `Plugins/JunBridge.LinuxFix.dll` is there. LinuxFix 0.2 also handles the intermittent startup crash, where the mod loader could overwrite .NET memory. Close the game and replace that DLL with the new one, or rerun the bridge installer after updating to a release carrying it. It works with stock MelonLoader 0.7.3; the DLL supplies its native helper automatically. Keep the failed launch's `MelonLoader/Latest.log` if it still crashes; see the [bridge docs](docs/game-bridge.md#native-linux). Want to check what the sync sees? `docker exec omega-php php /var/www/omega/api/bridge-sync.php --dry-run` lists what it would add, and which game events it doesn't know yet.
+</details>
+
+<details>
+<summary><b>Her brain is on Colab and she stopped answering</b></summary>
+
+The notebook's tunnel URL and key are new every time Step 3 runs, and the session itself ends when Colab decides you're idle (Kaggle after its time limit). Leave Step 3 running, that's what keeps it busy. Re-run Step 3, paste the fresh lines over the old ones in `.env`, restart her. A `401` in `docker logs omega-php` (`runtime\logs` on Windows) means the key is stale, a timeout means the session is gone.
+
+On the phone, a session started from the app lives as long as its "Colab session running" notification: swipe it away with **Stop** and Colab ends the runtime soon after. Battery savers that kill background apps (some Xiaomi, Samsung and OnePlus builds) can take it down too, set Jun OS to unrestricted battery use. Free Colab still stops any session after about 12 hours.
+</details>
+
+<details>
+<summary><b>The phone app can't reach your PC</b></summary>
+
+Same wifi first, and Jun OS has to be running on the PC. Then read what the start screen says. *LAN mode is off*: run `./start.sh phone` there (the **Phone** button on Windows). *Doesn't know this phone anymore* or *has a new certificate*: the token or her local CA changed, scan a fresh code. Just *can't reach*: the PC's address moved (DHCP), a VPN on the phone is eating local traffic, or the firewall drops her port (the Windows rule, or firewalld on Fedora/Bazzite, which blocks 443 out of the box). Run `./start.sh phone` again: it offers to open https in firewalld and prints the command if it couldn't. Cloud is the same story as above: every Step 3 run is a new code.
+</details>
+
+<details>
+<summary><b>Jun shows "Placeholder" / "404 Assets not extracted"</b></summary>
+
+That's the placeholder - the server couldn't find her rig. It wants all four of `webapp/assets/interaction_model.moc3` and `texture_00.png`..`texture_02.png`; one missing and you get the stand-in. Run the extraction (see [her body isn't in this repo](#her-body-isnt-in-this-repo)), then reload.
+</details>
+
+<details>
+<summary><b>Jun is invisible</b></summary>
+
+Not even the placeholder? Open the console. Confirm nginx's root points at `/var/www/omega/` and that `/api/assets.php?probe` answers while you're logged in.
+</details>
+
+<details>
+<summary><b>No voice</b></summary>
+
+First check `VOICE` in `.env` - `off` means the `tts` container was never started (`./start.sh` lists the compose profiles it resolved). Then `./start.sh logs tts`. The first run downloads ~300 MB of weights. From inside the stack, `docker compose exec nginx wget -qO- http://tts:8001/health` should return `{"ok":true}` - the sidecar's port is deliberately not published to the host, and everything but `/health` wants the `X-Sidecar-Secret` header PHP adds (as long as `SIDECAR_SECRET` is set, which the launchers do for you).
+</details>
+
+<details>
+<summary><b>She walked out and now every message is refused</b></summary>
+
+That's the flee lockout, not a bug: the stream answers `user_fled` with a countdown, and the chat UI shows it. 5 minutes the first time, doubling per repeat up to 30, reset after a day of good behaviour. `FLEE_BANS=off` in `.env` lets her leave a scene without locking the account. A referee pass has to agree she could physically leave and had a reason, so "I told her to test the flee tool" doesn't count.
+</details>
+
+<details>
+<summary><b>The karaoke button is greyed out</b></summary>
+
+Karaoke is its own container, so it needs `KARAOKE=on` in `.env` (`./start.sh` prints `karaoke: off` when it isn't). Check `./start.sh logs karaoke` and `docker compose exec nginx wget -qO- http://karaoke:8001/health` - `"sep":true` means separation is ready and `"device"` says whether it got the GPU.
+</details>
+
+<details>
+<summary><b>Getting 429s while chatting</b></summary>
+
+The rate limiter tripped, and there are two layers: `limit_req` / `limit_conn` per location in the nginx template (`/api/chat.php` allows 2 open streams per IP) and `rate_limit('chat', 90, 60)` in `webapp/api/chat.php`. The stricter one wins, so raise both.
+</details>
+
+<details>
+<summary><b>CSP violations in the console</b></summary>
+
+Everything ships from her own origin, so a clean install produces none - if you see them, something you added is reaching for a third-party host. Whitelist that specific origin in `docker/nginx/templates/omega.conf.template`, never `*`. Nginx templates are baked into the image, so this needs `./start.sh --build`; `sync-webapp.sh` won't pick it up.
+</details>
+
+<details>
+<summary><b>Running compose by hand and nothing starts</b></summary>
+
+The model-server and voice containers are profile-gated. `./start.sh` derives `COMPOSE_PROFILES` from your `.env`; a bare `docker compose up -d` needs `COMPOSE_PROFILES=llamacpp,voice` (or `ollama,voice`, plus `karaoke` if you want it) set in `.env` or the shell.
+</details>
+
+<details>
+<summary><b>She won't start: "SECURITY: ... is out"</b></summary>
+
+The update checker found a release tagged `-security`, newer than yours. It fixes something serious, the link it prints says what. Update (the **Update** button on Windows, the install line again on Linux) and start her again. If she was already running from before, she still is: `./start.sh stop` until you've updated. Can't update right now and you know she's only on this machine? `./start.sh --ignore-security` (`.\start.ps1 -IgnoreSecurity`) starts her anyway, at your own risk.
+</details>
+
+<details>
+<summary><b>Re-running the installer didn't update her</b></summary>
+
+Read the line under **existing install**, it says which of these it was:
+
+- *"files were changed by hand"* - you edited something tracked by git, so the installer leaves the code alone rather than stomp on it. `git status` in her folder shows what; `git stash` (or undo it) and run again.
+- *"newer than stable ... staying until it catches up"* - you're on a newer release than your channel points at, usually from trying **Latest** and switching back. Working as intended, she doesn't downgrade herself.
+- *"couldn't ask GitHub which release is current"* - offline, most likely. When GitHub's API hits its 60-requests-an-hour limit the installer already asks the website instead, so both said no. Wait a bit and run again. On a fresh install this stops the installer: it won't fall back to `main` behind your back.
+- Still on `main` after picking Stable? Check `JUN_CHANNEL` in `.env`, that's what a re-run follows.
+</details>
+
+## Where everything lives
+
+```
+.
+├── docker/           Dockerfiles, nginx templates + security-headers snippet, entrypoints
+├── tts/              Audio sidecar: TTS + STT + karaoke separation (FastAPI, server.py + sidecar/)
+├── tools/            Lore builder, critical-CSS inliner, asset recovery, the bare-metal php router, the notebook's inference gate, the pairing QR encoder
+├── docs/             architecture.md, configuration.md, screenshots/ (the user guide is the GitHub wiki)
+├── android/          Same webapp on a phone: Ktor server + LiteRT-LM on-device (or a paired PC/notebook), its own Gradle project
+├── webapp/           Everything nginx and php-fpm serve
+│   ├── api/          chat.php, auth.php, memory.php, outfit.php, karaoke.php, trip.php, migrations/, …
+│   │   └── lib/      the shared stuff: bootstrap, db, crypto, memory, providers/, chat/, consolidation/ (never served)
+│   ├── js/           one entry per page (app.js is just the login gate) + the folders they share:
+│   │                 core/, app/, live2d/, outfit/, wardrobe/, mods/, voice/, karaoke/, trip/, watch/, achievements/
+│   ├── css/          base, shell, chat, stage, sidebar, settings, widgets, welcome, voice-karaoke, cards, cabinet, achievements, subpage, responsive
+│   │   ├── boot.css  Critical CSS, inlined into index.html at sync time
+│   │   └── pages/    one sheet each for the date, wardrobe, karaoke, watch and privacy pages
+│   ├── scene/        The rooms she goes out to (shop, karaoke lounge, restaurants, card table) as SVG
+│   ├── vendor/       PIXI, Cubism core, pixi-live2d-display, marked, DOMPurify (no CDN)
+│   ├── assets/       Live2D model files - you generate these, gitignored
+│   ├── wardrobe.html · karaoke.html · date.html · watch.html   The outing pages
+│   └── system_prompt.txt
+├── install.sh · install.ps1     One-line bootstrap (Docker · bare metal)
+├── installer-gui.ps1            The Windows click-through window (ships as JunSetup-<version>.exe)
+├── uninstall.sh · uninstall.ps1 Takes her off the box again
+├── start.sh · start.ps1         Launchers, and the stop/status/logs control panel
+├── jun-manager.ps1              The Windows start/stop/update window (ships as JunOS.exe, the desktop shortcut)
+├── mtp-autotune.sh · .ps1       Measures the MTP draft depth and writes the winner to .env
+├── sync-webapp.sh               The dev loop
+├── colab.ipynb                  The Colab/Kaggle notebook (GPU or TPU, whole app or just her brain)
+├── .github/workflows/           CI (syntax, stream-buffer tests, a chat turn against a fake Ollama) + the draft release with JunSetup-<version>.exe, JunOS.exe and JunOS-<version>.apk
+└── docker-compose*.yml          Base (CPU) + nvidia / amd overlays, llamacpp-local add-on
+```
+
+## Standing on the shoulders of
+
+[PIXI.js](https://pixijs.com/) · [pixi-live2d-display](https://github.com/guansss/pixi-live2d-display) · [Live2D Cubism SDK](https://www.live2d.com/en/sdk/about/) · [Ollama](https://ollama.com/) · [llama.cpp](https://github.com/ggml-org/llama.cpp) · [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) · [pocket-tts](https://github.com/kyutai-labs/pocket-tts) · [faster-whisper](https://github.com/SYSTRAN/faster-whisper) · [demucs](https://github.com/adefossez/demucs) · [marked](https://github.com/markedjs/marked) + [DOMPurify](https://github.com/cure53/DOMPurify)
+
+And of course [**Incontinent Cell**](https://itch.io/profile/incontinentcell), creator of *Factorial Omega* (MDRG), for giving us Jun in the first place.
+
+## License
+
+Apache-2.0 - see [LICENSE](LICENSE) and [NOTICE](NOTICE). Unofficial, non-commercial fan project; all *Factorial Omega* rights belong to their respective owners.

@@ -29,7 +29,7 @@
   <tr>
     <td align="center"><b>~170-370 tok/s</b><br><sub>one lane, free prose to coding prompts</sub></td>
     <td align="center"><b>1,065 tok/s</b><br><sub>eight lanes, aggregate</sub></td>
-    <td align="center"><b>~9,700 tok/s</b><br><sub>cold prefill, 46K prompt</sub></td>
+    <td align="center"><b>~11,300 tok/s</b><br><sub>cold prefill, 46K prompt</sub></td>
     <td align="center"><b>~100 tok/s</b><br><sub>Flash-Next 125B MoE, one lane</sub></td>
     <td align="center"><b>7.11x</b><br><sub>KV capacity of BF16</sub></td>
     <td align="center"><b>~36 ms</b><br><sub>a decision, zero tokens decoded</sub></td>
@@ -92,7 +92,9 @@ non-commercial use only.
 **What it runs on.** The RTX 5090 and the RTX PRO 6000 run every model, and
 the 16 GB RTX 50 cards the 16 GB entries. The **RTX 3090 and 3090 Ti** are
 supported, on the 27B's 16 GB entries; the **RTX 4090** and the 16 GB RTX 40
-cards are expected to work, and reports are welcome. An RTX 30 or RTX 40 card
+cards are verified for correctness: the release's sm_86 gate passed on an Ada
+Lovelace card (sm_89)
+([the finding](docs/findings/2026-11-07-sm86-gate-passes-on-sm89.md)). An RTX 30 or RTX 40 card
 needs release 0.10.0 or the development build: the 0.9 releases are built for
 Blackwell alone. The NVFP4 builds, Flash-Next
 and the image model load on Blackwell alone, on a card of 32 GB or more
@@ -186,14 +188,19 @@ Those rows are other people's runs: their prompts, their drafters, their
 context lengths. They are not a same-session benchmark, so read them as an order
 of magnitude, not a ratio. **Prefill was where ignis trailed; 0.7.3 made it
 30-53% faster on long prompts.**
-- **ignis**, measured cold: **9,717 tok/s on a 46K prompt, 7,865 on a 105K one**.
-  The prefill attention now reads the compressed KV directly, instead of
+- **ignis**, measured cold: **11,344 tok/s on a 46K prompt, 9,008 on a 105K one**
+  ([the GDN prefill on Blackwell](docs/findings/2026-11-08-blackwell-gdn-prefill-on-ignis-kernels.md)).
+  Since 0.7.3 the prefill attention reads the compressed KV directly, instead of
   expanding it into BF16 planes first: +30% at 46K and +53% at 105K against
   0.7.2's kernels in one A/B session
   ([no prompt planes](docs/findings/2026-10-21-prefill-attention-without-prompt-planes.md)).
   A 2,048-token prefill chunk adds 2% more
   ([the 2,048 chunk](docs/findings/2026-10-21-the-27b-prefill-chunk-at-2048.md)).
-  Decode is unchanged, and the KL divergence from BF16 is lower.
+  Decode is unchanged, and the KL divergence from BF16 is lower. ignis's own
+  gated delta net prefill kernels, Blackwell's route since they measured
+  faster there, add 4.8% at 46K and 3.9% at 105K against the vendored ones in
+  one session; the rest of the move from the 9,717 and 7,865 measured with
+  0.7.3 came from changes since, not measured apart.
 - **One same-session bench, someone else's**
   ([mkyt/qwen3-27b-5090](https://github.com/mkyt/qwen3-27b-5090), a 5090 at a
   400 W limit, 2026-10-11), cold 73K prompt:
@@ -779,9 +786,12 @@ original engine). The `.ninfer` model artifact is still NInfer's format.
 
 The vendored kernels are a starting point, not a destination: one at a time,
 where measurement shows one is the bottleneck, it is rewritten. The latest is
-the 27B's prefill attention, which no longer expands the compressed KV history
-into BF16 planes before attending: up to 1.02 GB of device memory freed and
-cold prefill up to 53% faster. The kernels added for Flash-Next and the image
+the 27B's gated delta net prefill, which now runs on ignis's own kernels on
+every card, the RTX 5090 included, where it is 2.4-2.6x faster with the KLD
+unmoved ([the finding](docs/findings/2026-11-08-blackwell-gdn-prefill-on-ignis-kernels.md)).
+An earlier one is the 27B's prefill attention, which no longer expands the
+compressed KV history into BF16 planes before attending: up to 1.02 GB of
+device memory freed and cold prefill up to 53% faster. The kernels added for Flash-Next and the image
 model, which have no NInfer reference, are our own, or adapted or vendored from
 a named, permissively licensed source recorded in `kernel/NOTICE`.
 

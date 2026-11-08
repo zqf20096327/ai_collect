@@ -2,16 +2,16 @@
 
 Custom node for [ComfyUI](https://github.com/comfyanonymous/ComfyUI) providing easy resolution and empty latent selection for image generation workflows.
 
-![Node Preview](node_preview.png)
+![Resolution Selector Plus node](node_preview.png)
 
 ## Features
 
-### Resolution Selector
-- **Model-optimised resolution presets** (portrait, landscape, square)
-- **Empty latent output** for direct KSampler connection, with the correct latent channel count per model (4 for SD 1.5 / SDXL, 16 for Flux / Qwen Image / Z-Image)
-- **Custom width/height inputs** with **independent multiplier and latent**
-
-Note: with model set to "All" the latent uses 4 channels. Pick the specific model (Flux, Qwen Image, Z-Image) to get a 16-channel latent for that model's sampler.
+- **Resolution Selector Plus:** pick a named aspect ratio and megapixels, then choose from matching resolutions.
+- **Up to four resolution slots:** each active slot has width, height, and empty latent outputs.
+- **Shared batch size:** one `batch_size` input (1 to 64, default 1) sets the batch of every slot's latent.
+- **Per-slot model and rounding multiple:** choose a discovered ComfyUI image model and pixel multiple independently for each slot.
+- **Optional KJNodes Set nodes:** when [ComfyUI-KJNodes](https://github.com/kijai/ComfyUI-KJNodes) is installed, the node can create and sync a Set node for each output, so Get nodes can reach `res1_width`, `res1_latent` and the rest anywhere in the workflow.
+- **Resolution Selector Plus (Legacy):** existing model presets and custom dimensions remain available for saved workflows.
 
 ## Installation
 
@@ -40,8 +40,130 @@ git clone https://github.com/bradsec/ComfyUI_ResolutionSelectorPlus.git
 
 **Add Node:** `Add Node > utils > Resolution Selector Plus`
 
+The internal node IDs remain `ResolutionSelectorPlusV2` and `ResolutionSelectorPlus` for saved workflow compatibility.
+
+Each slot has these controls. Slot 1 is required; slots 2 through 4 appear as you activate preceding slots.
+The node displays names such as "Res 1 model" and "Res 2 aspect ratio"; workflow input IDs remain `resN_model` and `resN_aspect_ratio`.
+Resolution labels are compact, for example `1280x704 (16:9)`, with no orientation text.
+
+| Input | Choices and default | Meaning |
+| --- | --- | --- |
+| `res1_model` through `res4_model` | Image models discovered from installed ComfyUI; default SDXL | Sets each slot's latent channels, spatial downscale, and tensor shape. Released model labels remain valid in saved workflows. |
+| `res1_aspect_ratio` through `res4_aspect_ratio` | 1:1 (Square), 5:4 (Large Format), 4:3 (Standard), 3:4 (Portrait Standard), 3:2 (Photo), 2:3 (Portrait Photo), 16:10 (Widescreen Monitor), 5:8 (Portrait Widescreen Monitor), 16:9 (Widescreen), 9:16 (Portrait Widescreen), 2:1 (Univisium), 1:2 (Portrait Univisium), 21:9 (Ultrawide), 12:5 (Cinemascope), 5:12 (Portrait Cinemascope), 3:1 (Panorama), 1:3 (Portrait Panorama); default 1:1 (Square) | Filters each slot's resolution list. |
+| `res1_megapixels` through `res4_megapixels` | 0.25, 0.5, 1.0, 1.5, 2.0, 4.0; default 1.0 | Filters each slot's resolution list. |
+| `res1_resolution` through `res4_resolution` | Up to three base candidates near 90%, 100%, and 110% of target area. Each target snaps to 64 pixels; if its result has a different labeled ratio, it retries at 32, 16, then 8 pixels. Duplicate candidates appear once. Slot 1 defaults to the first 1:1, 1.0 MP candidate; later slots default to `none`. | Selects a base resolution. |
+| `res1_multiple` through `res4_multiple` | 8, 16, 32, 64; default 8 | Rounds that slot's width and height to the nearest multiple, with half values rounded up and a minimum of one multiple. |
+| `batch_size` | Integer 1 to 64; default 1 | Sets the batch dimension of every active slot's latent. Width and height outputs stay the same. |
+
+The dropdown reads `comfy.supported_models.models` at startup. A bundled ComfyUI v0.44.0 snapshot supplies choices when ComfyUI cannot be imported. Changing a slot's `resN_model` sets its `resN_multiple` to the best multiple below. You can change it afterward; saved overrides remain on reload. If it is smaller than that model's latent downscale, latent dimensions use integer division and the node logs a note.
+
+| Model | Channels | Downscale | Best multiple |
+| --- | ---: | ---: | ---: |
+| SD 1.5 | 4 | 8 | 8 |
+| SDXL | 4 | 8 | 8 |
+| SD3 | 16 | 8 | 16 |
+| Flux.1 | 16 | 8 | 16 |
+| Flux.2 | 128 | 16 | 16 |
+| Chroma | 16 | 8 | 16 |
+| Z-Image | 16 | 8 | 16 |
+| Qwen-Image | 16 | 8 | 16 |
+| Qwen-Image 2.1 | 64 | 16 | 16† |
+| HiDream | 16 | 8 | 16 |
+| HunyuanImage 2.1 | 64 | 32 | 32† |
+| Flux.3 | 128 | 16 | 16† |
+| MOSS-Image | 128 | 16 | 16† |
+| Ideogram 4 | 128 | 16 | 16† |
+| Krea 2 | 16 | 8 | 16 |
+| Anima | 16 | 8 | 16 |
+| JoyImage | 16 | 8 | 16 |
+| AuraFlow | 4 | 8 | 16 |
+| Boogu | 16 | 8 | 16† |
+| Chroma Radiance | 3 | 1 | 16† |
+| Cosmos Predict2 | 16 | 8 | 16 |
+| ERNIE-Image | 128 | 16 | 16† |
+| FIBO 2 | 128 | 16 | 16† |
+| Flux.1 Schnell | 16 | 8 | 16 |
+| HiDream-O1 | 3 | 1 | 32 |
+| Hunyuan-DiT | 4 | 8 | 16 |
+| Kandinsky 5 Image | 16 | 8 | 16† |
+| Lens | 128 | 16 | 16† |
+| LongCat-Image | 16 | 8 | 16 |
+| Lumina Image 2.0 | 16 | 8 | 16 |
+| Mage Flow | 128 | 16 | 16 |
+| Ming-Image | 16 | 8 | 16† |
+| OmniGen2 | 16 | 8 | 16 |
+| PixArt-Alpha | 4 | 8 | 16 |
+| PixArt-Sigma | 4 | 8 | 16 |
+| PixelDiT | 3 | 1 | 16 |
+| SenseNova U1.5 | 3 | 1 | 32 |
+| KOALA | 4 | 8 | 8 |
+| SD 2.x | 4 | 8 | 8 |
+| SSD-1B | 4 | 8 | 8 |
+| Segmind Vega | 4 | 8 | 8 |
+| Other (4ch /8) | 4 | 8 | 8 |
+
+† Medium confidence from ComfyUI source; checkpoint patch sizes may vary. Models not in this table use the smallest of 8, 16, 32 or 64 that is at least their latent downscale.
+
+Maintenance: a model is listed when its ComfyUI class has a 2D latent, or is in the 3D image allowlist (`INCLUDE_3D` in `model_discovery.py`), and is not in `EXCLUDE`. After a ComfyUI update, review new classes in `comfy.supported_models` and add non-image ones to `EXCLUDE`, 3D image models to `INCLUDE_3D`. Every label in this table stays selectable even if the installed ComfyUI no longer has its class (filled from `model_snapshot.json`), so saved values do not vanish. Unknown classes use their raw class name as the label.
+
+Set `res2_resolution` beyond `none` to reveal its output triple and the next selector. Repeat through res4. Setting an earlier slot to `none` clears later slots and their links. Saved workflows retain active slot selections and links.
+Older workflows with bare aspect ratios migrate to named values on load. If saved widget values are invalid or shifted, the frontend restores defaults and warns once. API prompts with bare ratios such as `16:9` also validate. Python still rejects unknown ratios.
+
+| Slot | Outputs |
+| --- | --- |
+| 1 | `res1_width` (INT), `res1_height` (INT), `res1_latent` (LATENT) |
+| 2 | `res2_width` (INT), `res2_height` (INT), `res2_latent` (LATENT) |
+| 3 | `res3_width` (INT), `res3_height` (INT), `res3_latent` (LATENT) |
+| 4 | `res4_width` (INT), `res4_height` (INT), `res4_latent` (LATENT) |
+
+Outputs are named `res1_width`, `res1_height`, `res1_latent`, through `res4_latent`.
+
+### Auto Set nodes (KJNodes)
+
+![Resolution Selector Plus with Auto Set nodes and two Get nodes](set_nodes_preview.png)
+
+Requires [ComfyUI-KJNodes](https://github.com/kijai/ComfyUI-KJNodes). Without it, the menu items below do not appear and the node behaves as before. The setting is off by default.
+
+How Set and Get nodes work: KJNodes Set and Get nodes exist only in the ComfyUI frontend and are not sent to the server. A Set node takes a value and gives it a name. A Get node with the same name outputs that value. When you queue a prompt, each Get node is replaced by a direct link to whatever feeds the matching Set node. Width, height, and latent values therefore reach their targets exactly as if you had drawn the links yourself, with no extra execution step. Set and Get nodes avoid long links across a large workflow.
+
+1. Right-click Resolution Selector Plus and select **Auto Set nodes (KJNodes): Off**. The label changes to **On**.
+2. The node adds one collapsed Set node beside each active output, named after the output: `res1_width`, `res1_height`, `res1_latent`, and so on.
+3. Add a KJNodes **Get** node anywhere in the workflow and pick a name, for example `res1_latent`, to use that value without a link.
+
+Behavior:
+
+- Activating a slot adds its three Set nodes. Setting a slot to `none` removes them.
+- Selecting **Auto Set nodes (KJNodes): On** turns the setting off and removes every Set node this node created. Set nodes you added yourself are never touched.
+- **Set node prefix...** adds a prefix to the names, with an underscore inserted when needed. For example, `portrait` gives `portrait_res1_width`. Use a different prefix on each selector node when a workflow has more than one.
+- If another Set node already uses a name, the new one gets a numeric suffix, for example `res1_width_0`, and the browser console shows a warning.
+- The setting, prefix, and managed Set node IDs save with the workflow, so reloading does not create duplicates.
+- Set nodes are KJNodes nodes. A workflow saved with them shows missing nodes if KJNodes is later uninstalled.
+
+**Examples:**
+
+```text
+Resolution Selector Plus (res1_model: SD3, res1_aspect_ratio: "16:9 (Widescreen)", res1_megapixels: 1.0,
+  res1_resolution: "1344x768 (16:9)", batch_size: 4)
+  -> res1_latent -> KSampler
+
+Resolution Selector Plus (res1_model: SDXL, res1_aspect_ratio: "1:1 (Square)", res1_megapixels: 1.0,
+  res1_resolution: "1024x1024 (1:1)", res2_model: Qwen-Image 2.1,
+  res2_aspect_ratio: "9:16 (Portrait Widescreen)", res2_megapixels: 0.5,
+  res2_resolution: "512x896 (9:16)")
+  -> res1_width / res1_height / res1_latent for the square branch
+  -> res2_width / res2_height / res2_latent for the portrait branch
+```
+
+## Resolution Selector Plus (Legacy)
+
+![Resolution Selector Plus (Legacy) node](node_preview_v1.png)
+
+The legacy node remains available for saved workflows. Its inputs and six outputs work as before. Use Resolution Selector Plus for new workflows.
+
+**Add Node:** `Add Node > utils > Resolution Selector Plus (Legacy)`
+
 **Inputs:**
-- `model` (dropdown) - Select your image generation model or "All" for all resolutions
+- `model` (dropdown) - Select an installed image model or "All" for all resolutions. Existing names and presets remain; newly discovered models list the All presets that their best multiple divides.
 - `resolution` (dropdown) - Choose from model-optimized presets with aspect ratios (e.g., "1920x1080 (16:9 Landscape)")
 - `resolution_multiplier` (dropdown) - Multiply preset resolution (1x, 2x, 3x, 4x)
 - `batch_size` (number) - Number of latent samples to generate (1-64, default: 1)
@@ -62,22 +184,22 @@ git clone https://github.com/bradsec/ComfyUI_ResolutionSelectorPlus.git
 
 **Basic preset with multiplier:**
 ```
-Resolution Selector Plus (model: SDXL, resolution: "1024x1024 (1:1 Square)", multiplier: 2x)
+Resolution Selector Plus (Legacy) (model: SDXL, resolution: "1024x1024    (1:1 Square)", resolution_multiplier: 2x)
   -> width: 2048, height: 2048
   -> latent -> KSampler
 ```
 
 **Custom dimensions with independent multiplier:**
 ```
-Resolution Selector Plus (custom_width: 1024, custom_height: 768, custom_multiplier: 2x)
+Resolution Selector Plus (Legacy) (custom_width: 1024, custom_height: 768, custom_multiplier: 2x)
   -> custom_width: 2048, custom_height: 1536
   -> custom_latent -> KSampler
 ```
 
 **Using "All" model option:**
 ```
-Resolution Selector Plus (model: All, resolution: "1920x1080 (16:9 Landscape)")
-  -> Shows all 74 unique resolutions from all models
+Resolution Selector Plus (Legacy) (model: All, resolution: "1920x1080    (16:9 Landscape)")
+  -> Shows all 76 unique resolutions from all models
 ```
 
 ---

@@ -2,7 +2,7 @@
 
 <h1 align="center">Kuvo Code</h1>
 
-<p align="center"><strong>Any model. One native harness.</strong></p>
+<p align="center"><strong>Your bots. Your computers. Any model.</strong></p>
 
 <p align="center">
   <a href="https://github.com/serhatandic/kuvo-code/actions/workflows/ci.yml"><img src="https://github.com/serhatandic/kuvo-code/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
@@ -35,7 +35,7 @@ or start with free models that need no account.
 - **Bots.** AI teammates with a name, a look and one job each, like keeping
   the build green or sending a morning standup. They remember what they
   learn, wake themselves up on a schedule, and talk things through in group
-  chats. Put one on your own Linux server and it keeps working while your Mac
+  chats. Put one on your own server or another Mac and it keeps working while your Mac
   is off: a free, self-hosted
   [alternative to Grok Bot](https://kuvo.run/code/grok-bot-alternative/).
 - **Any model.** Claude, GPT, Gemini, open models through OpenRouter,
@@ -51,8 +51,8 @@ or start with free models that need no account.
 - **Browsing for the agent, with any model.** The agent opens pages in the
   panel's browser, reads them, clicks, types and scrolls, and you see every
   step.
-- **Sessions on your servers.** Open projects on a Linux machine you reach
-  with SSH, like a home server or a VPS, next to your Mac's. Their sessions,
+- **Sessions on your servers.** Open projects on another Mac or a Linux machine
+  you reach with SSH, like a Mac mini or a VPS, next to your Mac's. Their sessions,
   changes, files, terminals and the agent's browser run there, and the panel
   shows that browser live.
 - **Attach anything.** Drop, paste or pick files of any kind.
@@ -84,9 +84,13 @@ side panel and the usage menu.
   binary, unmodified. Kuvo Code downloads the version it's written against,
   checks its checksum and its code signature, and keeps it in
   `~/Library/Application Support/run.kuvo.code/engine`.
-- **Each launch runs a private server**, `opencode serve --stdio --port 0`
-  with a random password, which exits when the app does. The app talks to its
-  HTTP API and follows its event stream to show live transcripts.
+- **A private server runs in the background**, `opencode serve --stdio --port 0`
+  with a random password. Kuvo Code's own executable, started by launchd with
+  `--box` (`KuvoCode/Keeper`), keeps it, the coding agents' bridge and this
+  Mac's box running when you quit the app, as a machine's keeper does there,
+  and records where each answers in the box's `run` folder. The app follows
+  those records, talks to the engine's HTTP API and follows its event stream to
+  show live transcripts.
 - **Its data is kept apart** from any opencode you've installed. Sessions,
   accounts and settings live in
   `~/Library/Application Support/run.kuvo.code/opencode`. The commands the
@@ -107,7 +111,7 @@ side panel and the usage menu.
   (in `~/.kuvo-code/agents`), and there it also runs the group chats whose bots
   all live on that machine (in `~/.kuvo-code/groups`).
 - **On a machine you add**, Kuvo Code reaches it with `ssh` and your keys. It
-  sends the same engine version's Linux build, downloaded and checked on the
+  sends the same engine version's build for it, downloaded and checked on the
   Mac, to `~/.kuvo-code` there, runs it on the machine's localhost only, and
   talks to it through an SSH tunnel, which closes with the app however it ends.
   The engine runs on its own, with or without
@@ -123,8 +127,8 @@ side panel and the usage menu.
   [browser-use](https://github.com/browser-use/browser-use) does, as numbered
   interactive elements, and every step happens in the browser you see.
 - **On a machine, the browser** is Chrome for Testing, run headless,
-  sent from the Mac to `~/.kuvo-code/browser` with every library and font it
-  needs (Enterprise Linux 8 builds, pinned with their checksums by
+  sent from the Mac to `~/.kuvo-code/browser`, on Linux with every library and
+  font it needs (Enterprise Linux 8 builds, pinned with their checksums by
   `scripts/browser-runtime.py`), so nothing is installed on the system. A
   helper the engine's own runtime runs (`kuvo-browser.js`) keeps it going,
   drives it over a pipe rather than a port, gives the engine the same tools,

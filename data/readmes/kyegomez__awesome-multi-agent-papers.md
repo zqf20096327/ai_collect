@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/banner.png" alt="Awesome Multi-Agent" width="100%">
+</p>
+
 <div align="left">
   <a href="https://swarms.world">
     <h1>Awesome Multi-Agent Papers</h1>
@@ -52,7 +56,7 @@
 
 ## Format
 
-- [Paper Name] [Description] [Link] 
+- **[Paper Title](https://arxiv.org/abs/XXXX.XXXXX)** 
 
 ----
 
@@ -128,6 +132,8 @@
 - **[Agensh: Scaling Organizational Intelligence to 1,024 Agents](https://huggingface.co/papers/2609.26781)**
 - **[Self-Organizing Agent Teams Learn to Reason Together](https://www.alphaxiv.org/abs/2609.22682)**
 - **[Agent Sociodrama: Social-Dynamics-Guided Persona Recasting for LLM Agent Teams](https://arxiv.org/pdf/2610.15788)**
+- **[Multi-Agent Relay Thinking](https://arxiv.org/abs/2610.35219)**
+- **[EvoTeam: Multi-Agent Collaboration via Evolving Teams](https://arxiv.org/abs/2610.39813)** [GitHub](https://github.com/DEEP-JLU/EvoTeam)
 
 ## Multi-Agent Frameworks & Benchmarks
 
@@ -150,6 +156,7 @@
 - **[The Vision Wormhole: Latent-Space Communication in Heterogeneous Multi-Agent Systems](https://huggingface.co/papers/2602.15382)**
 - **[EvoSkill: Automated Skill Discovery for Multi-Agent Systems](https://arxiv.org/pdf/2603.02766)**
 - **[Measuring AI Agents as Teammates with Collaborative Intelligence](https://arxiv.org/abs/2611.02633)** [GitHub](https://github.com/zou-group/collaborative-intelligence)
+- **[MAServeBench: Benchmarking Multi-Agent LLM Serving Systems with Hierarchical Collaboration Workloads](https://arxiv.org/abs/2610.40293)** [GitHub](https://github.com/ShengxuanQiu/MAServeBench)
 
 ## Application-Specific Multi-Agent Systems
 
@@ -350,6 +357,7 @@
 - **[Many Heads Are Better Than One: Improved Scientific Idea Generation by A LLM-Based Multi-Agent System](https://api.semanticscholar.org/CorpusId:273346445)**
 - **[PlotGen: Multi-Agent LLM-based Scientific Data Visualization via Multimodal Feedback](https://arxiv.org/pdf/2502.00988.pdf)**
 - **[Enhancing Anomaly Detection in Financial Markets with an LLM-based Multi-Agent Framework](https://arxiv.org/pdf/2403.19735.pdf)**
+- **[CEPO: A General Framework for Improving Prompt Optimization in Multi-Agent Systems](https://arxiv.org/abs/2610.34722)**
 
 ## Science
 
@@ -444,7 +452,7 @@ For questions or collaborations, contact: [kye@swarms.world](mailto:kye@swarms.w
 
 # Contributing
 
-Have a multi-agent paper that isn’t on the list? We welcome your contributions! Please open a Pull Request (PR) to add new papers and help us maintain this comprehensive and up-to-date resource for the multi-agent research community. By contributing, you enable others—especially newcomers—to access the latest research in a single, centralized repository. Thank you for helping the community grow!
+Have a multi-agent paper that isn't on the list? We welcome your contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on format, section placement, and what qualifies.
 
 # License
 

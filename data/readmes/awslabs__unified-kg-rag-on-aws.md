@@ -12,7 +12,7 @@ Unified Knowledge Graph RAG on AWS turns a large, multilingual document collecti
 
 **For** teams who want graph RAG (retrieval-augmented generation over a knowledge graph) in their own AWS account and need to pick a method, measure it and keep the index current as documents change.
 
-<img src="./assets/console-demo.gif" alt="Console demo: a question answered with the auto strategy cites its sources as [n] markers; following a citation opens its provenance trail to the source passage and its place in the knowledge graph; then a strategy comparison with paired intervals, and the dashboard of time, tokens and cost per strategy." width="800">
+<img src="./assets/console-demo.gif" alt="Console demo: a question answered with the auto strategy cites its source as an [n] marker, shown as a chip with the PDF file and its page; opening a source shows its provenance trail to the passages that state it; the trail leads into a force-directed graph with the traced entity ringed and its neighbours labelled; then a strategy comparison with paired intervals, and the dashboard of time, tokens and cost per strategy." width="800">
 
 ## Why this framework
 
@@ -32,12 +32,12 @@ How this compares with the papers and with Amazon Bedrock Knowledge Bases GraphR
 
 This runs everything on one machine: embedded SQLite stores and [Ollama](https://ollama.com) models. You need Python 3.11–3.12, [uv](https://docs.astral.sh/uv/) and Ollama.
 
-**1. Install** (the `local` extra adds the Ollama and OpenAI-compatible clients, no PyTorch; the cross-encoder reranker is the `cross-encoder` extra: [Getting started locally](./docs/getting-started/local.md#install)):
+**1. Install** (the `local` extra adds the Ollama and OpenAI-compatible clients, no PyTorch; the cross-encoder reranker is the `cross-encoder` extra: [Getting started locally](./docs/getting-started/local.md#install); `--no-dev` leaves out the contributors' test and lint tools, which `uv run` without it would install):
 
 ```bash
 git clone https://github.com/awslabs/unified-kg-rag-on-aws.git
 cd unified-kg-rag-on-aws
-uv sync --extra local
+uv sync --no-dev --extra local
 ```
 
 **2. Pull the two default models:**
@@ -67,13 +67,13 @@ EOF
 **4. Build the knowledge graph:**
 
 ```bash
-UKR__LOGGING__LEVEL=WARNING uv run run-ingestion --backend local --source-directory ./sample-corpus
+UKR__LOGGING__LEVEL=WARNING uv run --no-dev run-ingestion --backend local --source-directory ./sample-corpus
 ```
 
 **5. Ask a question** (the answer cites its sources as `[n]`, and `--verbose` lists every source with its score; without the `cross-encoder` extra the query runs with reranking off, logged once):
 
 ```bash
-UKR__LOGGING__LEVEL=WARNING uv run run-rag --backend local --search-strategy mix --verbose \
+UKR__LOGGING__LEVEL=WARNING uv run --no-dev run-rag --backend local --search-strategy mix --verbose \
   --query "How are Acme Robotics and Globex Sensors related?"
 ```
 
@@ -104,7 +104,7 @@ Ingestion is a resumable 13-stage pipeline: parse, chunk, extract entities and r
 
 `structured` (opt-in, not one of the papers' methods) answers counts, rankings, lists and paths from a checked, read-only graph query on any namespace that holds the graph, and falls back to `local` without one ([Structured queries](./docs/guides/structured-queries.md)). `iterative` wraps `mix` or `local` with bounded follow-up rounds on the bridge entities of a multi-hop question. `auto`, the default, lets an LLM router pick one of `search.auto_routable_strategies` per query (default `local`, `mix`, `global`, `iterative`). [Retrieval](./docs/concepts/retrieval.md#search-strategies--when-to-use-which) explains when to use which strategy, and the [Design Doc](./docs/design.md) the layers, algorithms and data model.
 
-To do all of this in a browser on your machine, start the local [console](./docs/guides/console.md) (`run-console`; `uv run python console/demo/demo.py --models fake` tries it on a synthetic corpus).
+To do all of this in a browser on your machine, start the local [console](./docs/guides/console.md) (`run-console`; `uv run --no-dev --extra console --extra local python console/demo/demo.py --models fake` tries it on a synthetic corpus).
 
 ## Deploy on AWS (optional)
 
@@ -122,7 +122,7 @@ Start at the [documentation hub](./docs/index.md) ([한국어](./docs/index.ko.m
 | **Builder on AWS** | [Getting started on AWS](./docs/getting-started/aws.md), then [Configuration](./docs/guides/configure.md), [Ingestion](./docs/guides/ingest.md) and [Querying](./docs/guides/query.md), or [`iac/README.md`](./iac/README.md) for the CDK stack |
 | **Operator** | The [Operator Runbook](./docs/operations.md) and [`iac/README.md`](./iac/README.md) |
 | **Evaluator or researcher** | [Evaluation](./docs/guides/evaluate.md), [Defaults and evidence](./docs/concepts/defaults-and-evidence.md) and [Beyond the papers](./docs/concepts/overview.md#beyond-the-papers) |
-| **Extender** | The [Design Doc](./docs/design.md) and its [Extension Guide](./docs/design.md#15-extension-guide) |
+| **Extender** | The [Design Doc](./docs/design.md) and its [Extension Guide](./docs/guides/extend.md#15-extension-guide) |
 | **Contributor** | [CONTRIBUTING.md](./CONTRIBUTING.md) |
 
 Every flag is in the [CLI Reference](./docs/reference/cli.md), every configuration key in the [Configuration Reference](./docs/reference/configuration.md), and the supported models in the [Model Catalog](./docs/reference/models.md). Release notes: [CHANGELOG.md](./CHANGELOG.md). The [AWS Open Source Blog post](https://aws.amazon.com/blogs/opensource/unified-knowledge-graph-rag-on-aws-graphrag-and-lightrag-on-one-stack/) introduced the first release, GraphRAG and LightRAG on one stack.
@@ -138,7 +138,7 @@ This project is a **reference framework provided for educational and illustrativ
 
 ## Contributing
 
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, tests and the pull-request workflow, and [Design Doc §15](./docs/design.md#15-extension-guide) for extension recipes; most extensions are a registry registration and need no dispatch-code edits.
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, tests and the pull-request workflow, and [Design Doc §15](./docs/guides/extend.md#15-extension-guide) for extension recipes; most extensions are a registry registration and need no dispatch-code edits.
 
 ## License
 

@@ -221,8 +221,10 @@ sequenceDiagram
 - [Flisk](https://github.com/flisk-sh/flisk) — Agent-first local environment generator and CLI that automatically configures Docker Compose, Tilt, and Traefik stacks from an empty directory so coding agents can focus on application code.
 - [Gemini CLI](https://github.com/google-gemini/gemini-cli) — Google's command-line agent utilizing 1M+ token context windows to ingest entire repositories for refactoring and debugging.
 - [Goose](https://github.com/block/goose) — Open-source, extensible AI agent by Block that automates engineering tasks, script execution, and multi-tool workflows directly from the terminal.
+- [Imagera Code](https://imagera.ai/code) — Paid terminal coding agent (CLI, built on OpenCode) that reads and edits a project, runs commands and tests, and works headless or through ACP and MCP; one plan covers Claude, GPT, Gemini and other models.
 - [Kilo Code](https://github.com/kilo-code/kilo) — Open-source terminal-based developer coding assistant engineered for low latency workflows.
 - [Mentat](https://mentat.ai/) — Open-source AI tool capable of coordinating complex git workflows directly in the terminal with repo-wide context.
+- [OMK](https://github.com/dmae97/omk) — Open-source multi-agent coding CLI for the terminal (TypeScript, MIT). Switch models mid-session; finish goals only when your test passes.
 - [OpenCode](https://github.com/opencode-ai/opencode) — Provider-agnostic open-source terminal coding agent harness supporting custom agent loops, local model routing, and unified diff execution.
 - [Roo Code (formerly Roo Cline)](https://github.com/RooVetGit/Roo-Code) — Community-driven autonomous coding assistant extension for VS Code featuring custom agent modes and MCP server connectivity.
 - [Xenon](https://github.com/xianyu-sheng/Xenon) — CLI coding agent that records every session event in an append-only hash chain verifiable on demand via `/evidence`, enforces deterministic hollow-answer checks, and exports manual verification checklists with multi-model and MCP client support.
@@ -237,6 +239,7 @@ Control planes, terminal managers, and orchestrators that run multiple coding ag
 - [MulmoTerminal](https://github.com/receptron/mulmoterminal) — Browser-based terminal grid running parallel coding agent sessions with dedicated git worktrees per cell, backed by tmux.
 - [Orkas](https://github.com/Orkas-AI/Orkas) — Local-first desktop AI workforce coordinating specialist agents and external coding CLIs (Claude Code, Codex, OpenCode) with custom model endpoints.
 - [Orca](https://github.com/stablyai/orca) — Autonomous development environment built to orchestrate and execute a fleet of parallel coding agents.
+- [Sqwakie](https://sqwakie.si/?utm_source=awesome-ai-coding-tools-ms&utm_medium=listing) — Live dashboard and peer-to-peer CLI/MCP messaging for Claude Code and Codex agents across a team's machines, with project kanbans agents can start, review, and finish. Free for 2 people; FSL-1.1-ALv2 (source-available).
 - [Vibe Kanban](https://github.com/BloopAI/vibe-kanban) — Kanban board dashboard to plan, dispatch, monitor, and review tasks across multiple agent CLIs.
 
 ### 🔌 Model Context Protocol (MCP) Servers for Coding
@@ -248,6 +251,7 @@ Open standard protocol connecting coding agents to local developer environments,
 - [GitHub MCP Server](https://github.com/modelcontextprotocol/servers/tree/main/src/github) — Integrates GitHub issues, pull requests, repository searches, and commit reviews directly into agent reasoning loops.
 - [Postgres MCP](https://github.com/modelcontextprotocol/servers/tree/main/src/postgres) — Read-only schema inspector and query execution bridge enabling coding agents to validate database migrations and models.
 - [ReMCP](https://github.com/getremcp/remcp) — Hosted OAuth MCP for terminal, file, and browser actions on explicitly paired computers; actions may change device state.
+- [sqlite-graph-memory](https://github.com/tonydzi/sqlite-graph-memory) — Local stdio MCP server and CLI that lets Claude Code, Cursor or Codex recall from a markdown or Obsidian notes folder, combining vector search with hops along `[[wikilinks]]` in a single SQLite file; embeddings run locally via ONNX. MIT.
 
 <details>
 <summary>📦 <b>Click to Copy: Ready-to-Use mcp.json Stack (GitHub + Context7 + Postgres + Playwright)</b></summary>

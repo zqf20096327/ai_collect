@@ -644,7 +644,9 @@ Barnett, Simon, and John D. Chodera.
 
 
 
-
+* **Multiscale Interpretable Deep-Learning Framework for the Identification and Visualization of Deformation Stages in Molecular Dynamics Trajectory** [2026]  
+Zhengwu Long, Xinyu Wang, Lingyun You.  
+[J. Chem. Inf. Model. (2026)](https://doi.org/10.1021/acs.jcim.6c01426)  
 
 * **Pharmacon: A Molecular Dynamics Simulation Analysis Toolkit** [2026]  
 Kyriakos Georgiou and Antonios Kolocouris.  
@@ -836,7 +838,9 @@ Kevin V. Bigting, Shubhadeep Nag, Yaxin An.
 
 
 
-
+* **AdaptivePy: A Unified Python Framework for Adaptive Sampling in Molecular Dynamics** [2026]  
+Hassan Nadeem, Diego E. Kleiman, Diwakar Shukla.  
+[J. Chem. Theory Comput. (2026)](https://doi.org/10.1021/acs.jctc.6c01596)  
 
 * **DIME: Dynamics Inferred from Monte Carlo Ensembles via Continuous-Time Markov Chains** [2026]  
 Krishna Praneet Mulukutla, Marimuthu Krishnan.  
@@ -1074,7 +1078,9 @@ Wang, Han, Linfeng Zhang, Jiequn Han, and E. Weinan.
 
 
 
-
+* **Energetically Anchored Machine-Learning Interatomic Potential Embeddings for Reliable Hydrogen Evolution Electrocatalyst Prediction** [2026]  
+Ching Lin, Po-Wen Chen, Tien-Hsiang Hsueh.  
+  [J. Chem. Inf. Model.(2026)](https://doi.org/10.1021/acs.jcim.6c01720)  
 
 * **Unconstrained learning of equivariant atomistic properties** [2026]  
 Joseph W. Abbott, Paolo Pegolo, Pol Febrer, Michelangelo Domina, Sandra Saade, Matthias Kellner, Filippo Bigi, Philip Loche, Michele Ceriotti.  
@@ -1514,12 +1520,4 @@ Whitter, Caitlin, Alex Pothen, and Aurora Clark.
 
 * **Performance of universal machine-learned potentials with explicit long-range interactions in biomolecular simulations** [2025]  
 Viktor Zaverkin, Matheus Ferraz, Francesco Alesiani, Mathias Niepert.  
-[arXiv:2508.10841 (2025)](https://doi.org/10.48550/arXiv.2508.10841) | [code](https://github.com/nec-research/ictp)  
-
-* **chemtrain-deploy: A parallel and scalable framework for machine learning potentials in million-atom MD simulations** [2025]  
-Paul Fuchs, Weilong Chen, Stephan Thaler, Julija Zavadlav.  
-[J. Chem. Theory Comput. (2025)](https://doi.org/10.1021/acs.jctc.5c00996) | [arXiv:2506.04055 (2025)](https://doi.org/10.48550/arXiv.2506.04055) | [data](https://github.com/tummfm/chemtrain)  
-
-* **Augmenting Molecular Graphs with Geometries via Machine Learning Interatomic Potentials** [2025]  
-Fu, Cong, Yuchao Lin, Zachary Krueger, Haiyang Yu, Maho Nakata, Jianwen Xie, Emine Kucukbenli, Xiaofeng Qian, and Shuiwang Ji.  
-[arXiv:2507.00407 (2025)](https:
+[arX

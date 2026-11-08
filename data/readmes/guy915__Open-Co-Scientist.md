@@ -68,10 +68,11 @@ so a run survives restarts and resumes where it stopped.
   Ling 3.1 Flash, with free Nemotron fallbacks. They are slower and weaker
   than frontier models, their zero price is the provider's decision and can
   end, and results depend heavily on the model.
-- **Capacity.** Without your own key, each browser gets three Express runs a
-  day by default, behind per-network and global daily caps. The free routes
+- **Capacity.** Without your own key, each browser gets 11 free credits a day
+  by default (Express 2, Standard 3, Extended 5, Ultra 7),
+  behind per-network and global daily caps. The free routes
   are rate-limited for the whole deployment, so a busy day can park runs until
-  the daily reset. Larger run sizes need your own key. Runs take from tens of
+  the daily reset. Runs take from tens of
   minutes to several hours, depending on size and provider speed.
 - **One server.** The API is a single process on SQLite. It favors durability
   and simplicity over scale.
@@ -175,6 +176,13 @@ This project builds on Google's AI co-scientist research:
 
 - Gottweis et al., [Towards an AI co-scientist](https://arxiv.org/abs/2502.18864), 2025.
 - [Accelerating scientific discovery with Co-Scientist](https://doi.org/10.1038/s41586-026-10644-y), *Nature*, 2026.
+
+Much of the web app's interface is modelled on Google's
+[Idea Generation agent](https://cloud.google.com/blog/products/ai-machine-learning/google-agentspace-enables-the-agent-driven-enterprise)
+in Google Agentspace, now the
+[Co-Scientist agent](https://docs.cloud.google.com/gemini/enterprise/docs/co-scientist-and-alphaevolve)
+in Gemini Enterprise. The layout, flow and visual style follow that product;
+the code is independent work.
 
 It also draws on [Science Skills](https://github.com/google-deepmind/science-skills)
 (vendored under `vendor/`), [Jataware's open-coscientist](https://github.com/jataware/open-coscientist),

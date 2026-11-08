@@ -17,27 +17,22 @@ Each major subsystem, including activations, weight initialization, loss functio
 ### Neural networks
 - Configurable fully connected architectures
 - Forward propagation & backpropagation
-- Activation functions: `ReLU`, `LeakyReLU`, `GELU`
-- Inverted Dropout regularization with train/eval mode toggle
+- Activation functions: ReLU, Leaky ReLU
 - Softmax output layer
 
 ### Training
-- Mini-batch stochastic gradient descent (`SGD`) and adaptive moment estimation (`Adam`)
-- Cross-entropy loss & MSE with L2 weight decay regularization
-- Pluggable Learning Rate Schedulers (`StepLR`, `ExponentialLR`, `CosineAnnealingLR`, `ReduceLROnPlateau`)
-- High-level `Model::train`, `Model::evaluate`, and `Model::predict` API
-- Per-epoch dataset shuffling & deterministic seeding
-- Early stopping with patience and min delta
+- Mini-batch stochastic gradient descent (SGD)
+- Cross-entropy loss
+- Early stopping with patience
 - Best-model checkpoint restoration
-- Train / Validation / Test evaluation
+- Train / Validation evaluation
+- Official MNIST test-set evaluation
 
 ### Framework architecture
-- **Activation abstraction**: pluggable nonlinearities (`ReLU`, `LeakyReLU`, `GELU`)
+- **Activation abstraction**: pluggable nonlinearities (`ReLU`, `LeakyReLU`)
 - **Initializer abstraction**: Gaussian, `HeInitializer`, `XavierInitializer`, `LeCunInitializer`
-- **Optimizer abstraction**: extensible stateful optimizers (`SGD`, `Adam`)
-- **Scheduler abstraction**: dynamic learning rate schedules (`StepLR`, `ExponentialLR`, `CosineAnnealingLR`, `ReduceLROnPlateau`)
-- **Regularization**: L2 weight decay and Inverted Dropout
-- **High-level Model API**: encapsulated training loop with early stopping and evaluation
+- **Optimizer abstraction**: extensible optimizer interface (`SGD`)
+- **Modular layer design**: decoupled layer forward/backward passes
 - **Timestamped experiment logging**: per-run isolated artifact directories
 - **CSV training metrics**: epoch-by-epoch loss, accuracy, learning rate, and timings
 - **JSON sidecar run configs**: fully reproducible experiment metadata
@@ -58,10 +53,8 @@ Aurelius separates each major training component behind a common interface:
 - **Activation functions** (`Activation.h` / `Activation.cpp`)
 - **Weight initializers** (`Initializer.h` / `Initializer.cpp`)
 - **Optimizers** (`Optimizer.h` / `Optimizer.cpp`)
-- **Learning rate schedulers** (`Scheduler.h` / `Scheduler.cpp`)
 - **Loss functions** (`Loss.h` / `Loss.cpp`)
 - **Layers** (`DenseLayer.h` / `DenseLayer.cpp`)
-- **High-level Model & Trainer** (`Model.h` / `Model.cpp`)
 - **Experiment Logger** (`Logger.h` / `Logger.cpp`)
 
 This design allows components to be swapped independently while keeping the core training pipeline unchanged.
@@ -75,14 +68,12 @@ Current benchmark on MNIST:
 | Metric | Value |
 |--------|------:|
 | Architecture | 784 → 128 → 64 → 10 |
-| Optimizer | Adam |
-| Activation | GELU |
+| Optimizer | SGD |
+| Activation | LeakyReLU |
 | Initializer | He |
-| Scheduler | CosineAnnealingLR |
-| Dropout | 0.1 |
-| L2 Lambda | 1e-4 |
 | Batch Size | 64 |
-| Test Accuracy | 98.13% |
+| Learning Rate | 0.1 |
+| Test Accuracy | 97.82% |
 
 ### Loss Curves (Train vs. Validation)
 Tracks loss trajectories across training epochs, illustrating convergence and the overfitting threshold where early stopping checkpoints the optimal model state:
@@ -95,7 +86,7 @@ Displays learning progress and peak validation accuracy:
 ![Accuracy Curves](assets/accuracy_curve.png)
 
 ### Multi-Run Comparison
-Overlays arbitrary $N$ runs on a single axis using metadata from JSON sidecars to highlight convergence-speed deltas (e.g. He initialization vs. alternative initializations, Adam vs. SGD):
+Overlays arbitrary $N$ runs on a single axis using metadata from JSON sidecars to highlight convergence-speed deltas (e.g. He initialization vs. alternative initializations):
 
 ![Multi-Run Overlay](assets/multi_run_overlay.png)
 
@@ -115,8 +106,7 @@ Aurelius/
 │   ├── Loss.h
 │   ├── Model.h
 │   ├── Optimizer.h
-│   ├── RunConfig.h
-│   └── Scheduler.h
+│   └── RunConfig.h
 │
 ├── src/
 │   ├── Activation.cpp
@@ -127,7 +117,6 @@ Aurelius/
 │   ├── Loss.cpp
 │   ├── Model.cpp
 │   ├── Optimizer.cpp
-│   ├── Scheduler.cpp
 │   └── main.cpp
 │
 ├── data/
@@ -183,7 +172,7 @@ pip install -r requirements.txt
 python scripts/plot.py
 
 # Plot a specific run
-python scripts/plot.py logs/20260826_164908
+python scripts/plot.py logs/20260813_141514
 
 # Compare multiple specific runs
 python scripts/plot.py logs/run1 logs/run2 --output-dir assets/
@@ -194,14 +183,11 @@ python scripts/plot.py logs/run1 logs/run2 --output-dir assets/
 ## Roadmap
 
 ### v0.3
-- [x] Optimizer abstraction & Adam Optimizer (#4)
-- [x] L2 regularization (#5)
-- [x] Learning rate scheduling (#6)
-- [x] Dropout regularization (#7)
-- [x] GELU activation (#8)
-- [x] Abstract training loop into Model::train (#9)
+- [x] Optimizer abstraction
 - [x] JSON experiment metadata sidecars
 - [x] Training metric visualization pipeline
+- [ ] L2 regularization
+- [ ] Dropout
 
 ### v0.4
 - [ ] Automatic differentiation

@@ -1,442 +1,532 @@
-# ⚔️ Athena AI
+# ⚔️ ATHENA AI
 
 ### Your AI. Your Workspace. Your Intelligence.
 
-Athena AI is an AI-powered desktop assistant designed to bring intelligent conversations, hands-free voice interaction, screen-aware assistance and local AI capabilities into a single, modern application.
+Athena AI is a cross-platform AI-powered personal assistant designed to bring intelligent conversations, voice interaction, screen-aware assistance and local AI capabilities into one unified application.
 
-With a sleek interface, customizable appearance, flexible AI model integrations and a dedicated Screen Assistant overlay, Athena aims to make AI accessible wherever you work.
+Built with **Tauri, Rust, React and TypeScript**, Athena combines the flexibility of modern AI models with a powerful, customizable interface.
 
-Choose between cloud-based AI providers and locally running models, interact with Athena using your voice, and access AI assistance without constantly switching between applications.
+Whether you're using Windows, macOS, Linux or Android, Athena aims to provide an intelligent workspace that adapts to your device.
 
-This repository contains the official downloadable builds of Athena AI. The application's source code is maintained separately and is not included in this repository.
-
----
-
-## Downloads
-
-**[Download the Latest Release](https://github.com/lord-kirby-kirk69/Athena-Ai-Downloads/releases/latest)**
-
-Choose the installer compatible with your operating system and processor.
-
-| Operating System | Installer Format |
-|---|---|
-| Windows | `.exe` or `.msi`, depending on the release |
-| Linux | `.AppImage` or `.deb`, depending on the release |
-| macOS | `.dmg`, depending on the release |
-| Android | `.apk`, if available in the release |
-
-Available platforms and processor architectures depend on the published release. Check the release notes before downloading.
+Choose between cloud-based AI providers and locally running models, interact with Athena using your voice, manage conversations, and access AI assistance without constantly switching between applications.
 
 ---
 
-## Features
+## 🚀 Platform Support
+
+Athena is designed to support four major platforms.
+
+| Platform | Architecture | Distribution |
+|---|---|---|
+| Windows | Desktop | `.exe`, `.msi` |
+| macOS | Desktop | `.dmg` |
+| Linux | Desktop | `.AppImage`, `.deb` |
+| Android | Mobile | `.apk`, `.aab` |
+
+Platform availability and feature compatibility depend on the published release.
+
+### Windows
+Full desktop-oriented Athena experience, including the main chat interface, desktop integrations, voice assistant and supported overlay functionality.
+
+### macOS
+Desktop experience adapted for macOS, with platform-specific application and permission handling.
+
+### Linux
+Desktop experience with Linux-compatible application packaging and supported integrations.
+
+### Android
+A dedicated mobile experience designed around touch interaction, responsive layouts, Android permissions and mobile lifecycle management.
+
+Android functionality is developed separately where desktop APIs are unavailable.
+
+---
+
+## 📱 ATHENA MOBILE
+
+Athena is being adapted into a dedicated Android application rather than simply shrinking the desktop interface.
+
+### Mobile Interface
+
+- Dedicated mobile chat interface.
+- Responsive layouts for phones and tablets.
+- Mobile-friendly navigation.
+- Touch-optimised controls.
+- Adaptive message input.
+- Conversation history.
+- Model selection.
+- Provider configuration.
+- Mobile settings.
+- Android back-button support.
+- Portrait and landscape compatibility.
+
+### Mobile AI Assistant
+
+- AI conversations.
+- Streaming responses where supported.
+- Model switching.
+- Conversation persistence.
+- File attachments where supported.
+- Voice interaction.
+- Read-aloud functionality.
+- Provider-specific request handling.
+
+### Android Screen Assistant
+
+The mobile Screen Assistant is designed around Android's screen-capture permissions rather than desktop floating-window APIs.
+
+Planned capabilities include:
+
+- User-authorised screen capture.
+- Screenshot previews.
+- Asking questions about captured content.
+- Vision-capable AI integration.
+- Screenshot region selection or cropping.
+- Temporary screenshot management.
+
+Screen capture must use Android-supported permissions and APIs. Availability depends on the Android build and implementation.
+
+### Mobile Local AI
+
+Athena Local is being evaluated for Android-compatible inference.
+
+Potential capabilities include:
+
+- Compatible GGUF models.
+- llama.cpp-based inference.
+- Model importing.
+- Model downloading.
+- Model management.
+- Memory compatibility checks.
+- CPU inference.
+- Supported hardware acceleration.
+
+Local model support depends on device hardware, memory, runtime compatibility and the available Android implementation.
+
+---
+
+## 🧠 CORE FEATURES
 
 ### 🎙️ Voice Assistant
 
 Interact with Athena naturally using your voice instead of typing every prompt.
 
-- **Wake Word Activation:** Activate Athena using its configured wake phrase.
-- **Hands-Free Interaction:** Speak to Athena without manually entering messages.
-- **Voice Responses:** Listen to AI-generated responses through text-to-speech.
-- **ElevenLabs Integration:** Support for configurable ElevenLabs voice synthesis.
-- **Custom Voice Settings:** Configure available voice and speech options.
-- **Stop Phrase:** Stop the current interaction without completely disabling the voice assistant.
-- **Kill Phrase:** Completely deactivate the voice assistant until manually enabled again.
-- **Listening Controls:** Manage voice activation, listening and playback.
-- **Voice Feedback:** Receive spoken responses from supported AI providers.
+- Wake Word Activation.
+- Hands-Free Interaction.
+- Voice Responses.
+- ElevenLabs Integration.
+- Custom Voice Settings.
+- Stop Phrase.
+- Kill Phrase.
+- Listening Controls.
+- Voice Feedback.
 
-The voice assistant is designed to make Athena feel more like a personal desktop assistant rather than just another chatbot.
+Voice functionality depends on the installed build, configuration and platform permissions.
 
-*Voice features and wake-word functionality depend on the installed build, configuration and platform.*
+### 🖥️ Screen Assistant
 
-### 🖥️ Screen Assistant Overlay
+Access AI assistance through a dedicated on-screen interface.
 
-Access AI assistance through a dedicated on-screen overlay without constantly switching back to the main Athena window.
+- Quick Access.
+- Screen-Aware Assistance.
+- Screenshot Capture.
+- Contextual Help.
+- Screenshot Previews.
+- Vision Model Integration.
 
-The Screen Assistant is designed to make context-aware assistance more convenient while you work.
-
-Depending on the implemented functionality and platform support, the overlay can provide:
-
-- **Quick Access:** Open the Screen Assistant using its configured keyboard shortcut.
-- **Screen-Aware Assistance:** Capture or use screen content to help answer questions about what you're viewing.
-- **Dedicated Overlay Interface:** Access the assistant through a compact floating panel.
-- **Contextual Help:** Get assistance understanding information displayed on your screen.
-- **Workspace Integration:** Access AI assistance while working in other applications.
-
-**Screen Assistant availability:** The feature is experimental and may not be available on every platform or build. Screen capture, permissions, keyboard shortcuts and other functionality may vary. Consult the release notes for known limitations.
+Screen Assistant functionality varies by operating system. Desktop overlay functionality and Android screen capture use different platform-specific implementations.
 
 ### 🧠 Athena Local
 
-Run compatible AI models directly on your computer using local inference.
+Run compatible AI models locally.
 
-Athena Local provides a dedicated interface for discovering, downloading and managing supported local AI models.
-
-Features include:
-
-- **llama.cpp Integration:** Run compatible GGUF models through the llama.cpp inference runtime.
-- **GGUF Model Support:** Work with supported quantized language models.
-- **Model Discovery:** Explore supported model repositories.
-- **Hugging Face Integration:** Discover models and inspect repository contents.
-- **Repository Inspection:** View available files before downloading.
-- **Selective Downloads:** Download specific model files instead of entire repositories.
-- **Model Management:** Import, organise and manage compatible downloaded models.
-- **Runtime Management:** Install and manage the supported local inference runtime.
-- **Inference Configuration:** Configure supported model parameters and runtime settings.
-- **Offline Inference:** Use compatible local models without sending prompts to a cloud AI provider.
-
-Local inference performance depends on the model size, quantization, available memory, processor and graphics hardware.
-
-*Local model support and runtime availability vary by operating system and release.*
+- llama.cpp Integration.
+- GGUF Model Support.
+- Model Discovery.
+- Hugging Face Integration.
+- Repository Inspection.
+- Selective Downloads.
+- Model Management.
+- Runtime Management.
+- Inference Configuration.
+- Offline Inference.
 
 ### 💬 AI Conversations
 
-Interact with supported AI models through Athena's dedicated chat interface.
-
-- Dedicated AI conversation workspace.
 - Multiple conversations.
 - Persistent conversation history.
-- Streaming responses where supported.
-- Markdown response rendering.
+- Streaming responses.
+- Markdown rendering.
 - Model selection.
-- Conversation context and memory support.
-- File and attachment support where supported by the selected provider.
+- Conversation context.
+- Memory support.
+- File attachments where supported.
 - Agent and Chat interaction modes.
 
 ### ⚡ Multiple AI Providers
 
-Configure different AI providers and switch between supported models.
+Athena supports integrations with multiple AI providers.
 
 - OpenAI-compatible API providers.
-- Google Gemini integration.
-- Groq integration.
-- Ollama support.
-- Local GGUF models through llama.cpp.
-- Custom AI endpoints where supported.
-- Configurable API credentials.
-- Provider and model selection.
+- Google Gemini.
+- Groq.
+- Anthropic, where supported by the build.
+- Ollama.
+- llama.cpp.
+- Custom AI endpoints.
 
-Provider availability depends on the configured integration, model and application version.
+Provider availability depends on the configured integration and model.
 
 ### 📊 Token Usage Estimation
 
-Get an approximate idea of prompt size before sending a message.
+- Input token estimation.
+- Live updates.
+- Model-aware estimation where supported.
+- Context awareness.
+- Optional display through Settings.
+- Local token estimation.
 
-- **Input Token Estimation:** Display an approximate token count for the current request.
-- **Live Updates:** Update the estimate as you compose messages.
-- **Model-Aware Estimation:** Use model-specific tokenization where supported.
-- **Context Awareness:** Help understand how much of a model's context window is being used where supported.
-- **Optional Display:** Enable or disable the counter through Settings → General.
-- **Local Processing:** Token estimation does not require sending chat content to an external counting service.
-
-*Estimated token counts are not guaranteed to match provider billing or actual usage. Actual usage is displayed when supported by the provider.*
+Estimated token counts may differ from actual provider usage.
 
 ### 🔊 Text-to-Speech
 
-Listen to AI responses instead of reading every message.
-
 - Read-aloud functionality.
-- ElevenLabs voice integration.
-- Configurable voice settings.
+- ElevenLabs integration.
+- Configurable voices.
 - Playback controls.
-- Stop speech playback when required.
+- Interruptible playback where supported.
 
 ### 🧩 Tools & Integrations
 
-Extend Athena beyond ordinary AI conversations.
-
-- Integrated tool and plugin architecture.
+- Integrated plugin architecture.
 - Tool-assisted AI workflows.
 - Configurable integrations.
-- Voice and screen assistant integration.
-- Support for compatible external services.
+- Voice and Screen Assistant integration.
+- External service support.
 
-### 🎨 Modern & Customizable Interface
+### 🎨 Customisable Interface
 
-Use a desktop application with a modern interface designed for convenient AI interaction.
-
-- Customizable application themes.
+- Custom themes.
 - Obsidian Waves theme.
-- Appearance settings.
-- Background customisation where supported.
+- Liquid Glass appearance.
+- Custom backgrounds where supported.
 - Configurable assistant behaviour.
-- Dedicated settings and guides.
-- Responsive interface layouts.
-
-### 🔐 Privacy & Security
-
-Athena provides different ways to configure how AI requests are processed.
-
-- Local inference through supported runtimes.
-- Configurable cloud AI providers.
-- Application-managed settings and storage.
-- User-controlled provider credentials.
-- Local processing for supported local models.
-
-**Important:** Using a desktop application does not automatically mean all data stays on your device. Cloud AI providers may process messages sent to them. Review the selected provider's data-handling policies.
-
-Features may vary between versions and operating systems.
+- Responsive layouts.
+- Dedicated Settings and Guides.
 
 ---
 
-## Installation
+## 🏗️ TECHNOLOGY STACK
 
-### Windows
+Athena uses a combination of modern web technologies and native application components.
 
-1. Visit the [Latest Releases](https://github.com/lord-kirby-kirk69/Athena-Ai-Downloads/releases/latest) page.
-2. Download the available Windows installer.
-3. Open the downloaded installer and follow the instructions.
-4. Launch Athena AI from the Start menu or desktop shortcut, if provided.
+| Technology | Purpose |
+|---|---|
+| React | User interface |
+| TypeScript | Frontend architecture |
+| Rust | Native backend |
+| Tauri 2 | Desktop and Android application framework |
+| Vite | Frontend development and bundling |
+| Android SDK | Android application development |
+| Gradle | Android build system |
+| llama.cpp | Local AI inference |
+| GGUF | Local model format |
 
-If Windows displays a security warning, verify that the installer came from the official release repository before proceeding.
+The application uses shared frontend and backend components where practical, with platform-specific implementations for operating-system-dependent functionality.
 
-### Linux
+---
 
-1. Download the available `.AppImage` or `.deb` package.
-2. For an AppImage, open a terminal in the download directory and run:
+## 🔐 SECURITY & PRIVACY
+
+Athena is designed with user-controlled AI provider configuration and local inference capabilities.
+
+Security considerations include:
+
+- Secure handling of provider credentials.
+- Platform-specific credential storage where supported.
+- Production build optimisation.
+- Restricted application permissions.
+- Input validation.
+- Application integrity considerations.
+- Platform-native signing support.
+- Local model inference.
+- User-controlled provider selection.
+
+**Privacy note:** Cloud AI providers may process prompts and attachments sent to their services. Local inference can keep supported model processing on-device. Review the selected provider's data-handling policies before sending sensitive information.
+
+No desktop or mobile application can be made completely immune to reverse engineering.
+
+---
+
+## 📥 DOWNLOADS
+
+**[Download the Latest Athena AI Release](https://github.com/lord-kirby-kirk69/Athena-Ai-Downloads/releases/latest)**
+
+Choose the installer compatible with your operating system and processor.
+
+| Operating System | Format |
+|---|---|
+| Windows | `.exe` / `.msi` |
+| Linux | `.AppImage` / `.deb` |
+| macOS | `.dmg` |
+| Android | `.apk`, if published |
+
+Check release notes for available architectures and platform-specific limitations.
+
+---
+
+## 🛠️ BUILDING ATHENA FROM SOURCE
+
+The following instructions are intended for developers with access to the Athena source repository.
+
+### Prerequisites
+
+- Node.js and npm.
+- Rust toolchain.
+- Tauri CLI.
+- Git.
+- Android Studio for Android development.
+- Android SDK.
+- Android NDK.
+- Java JDK compatible with the Android Gradle configuration.
+
+### Desktop Development
+
+Install dependencies:
 
 ```bash
-chmod +x Athena*.AppImage
+npm install
 ```
 
-3. Run the AppImage, or install the `.deb` package using your distribution's package manager.
+Start Athena on desktop:
 
-**Note:** Screen Assistant is not currently supported in the Linux build described by the project's development configuration.
+```bash
+npm run tauri dev
+```
 
-### macOS
+Create a desktop production build:
 
-1. Download the compatible `.dmg` file, if available.
-2. Open the disk image.
-3. Follow the installation instructions.
-4. Launch Athena AI.
+```bash
+npm run tauri build
+```
 
-Check the release notes for Intel or Apple Silicon compatibility. Screen Assistant support on macOS may be experimental and should be verified against the specific release.
+### Android Development
 
-### Android
+Configure the Android development environment and install the required Rust Android targets.
 
-1. Visit the [Latest Releases](https://github.com/lord-kirby-kirk69/Athena-Ai-Downloads/releases/latest) page.
-2. Download the Android APK if one is published.
-3. Install the APK using Android's installation process.
-4. Grant permissions when required.
-5. Launch Athena AI.
+For the Android emulator, launch your virtual device through Android Studio.
 
-Android feature availability differs from desktop versions. Desktop-specific functionality such as the Screen Assistant overlay and desktop automation is not supported by the current implementation.
+Check connected devices:
+
+```bash
+adb devices
+```
+
+Start Android development:
+
+```bash
+npm run tauri android dev
+```
+
+### Android Production Build
+
+Generate an Android package:
+
+```bash
+npm run tauri android build
+```
+
+To request an APK where supported by the configured Tauri CLI:
+
+```bash
+npm run tauri android build -- --apk
+```
+
+Android build outputs are generally located under:
+
+```text
+src-tauri/gen/android/app/build/outputs/
+```
+
+The exact output directory depends on the selected build variant.
+
+### Android Architecture
+
+Athena's Android build uses Tauri's Android integration.
+
+Platform-specific Rust code must be isolated appropriately to prevent desktop-only APIs from breaking Android compilation.
+
+Desktop and Android builds should be tested independently.
 
 ---
 
-## Getting Started
+## ⚙️ GETTING STARTED
 
-1. Install and launch Athena AI.
-2. Complete the initial setup, if required.
-3. Open the model or provider settings.
-4. Configure a supported AI provider or local model.
-5. Enter any required API credentials.
-6. Save your settings and start chatting.
+1. Download the latest compatible Athena release.
+2. Install and launch the application.
+3. Complete initial setup.
+4. Open provider or model settings.
+5. Configure an AI provider or compatible local model.
+6. Enter the required API credentials.
+7. Save your settings.
+8. Start chatting with Athena.
 
-Some AI providers require an API key, an internet connection or a separate account. Usage limits and pricing depend on the provider.
+Some providers require an API key, internet access or a separate account.
 
 For local inference, install the supported runtime and download or import a compatible GGUF model.
 
 ---
 
-## Using the Voice Assistant
+## 🎙️ VOICE ASSISTANT SETUP
 
-The Voice Assistant is designed to provide hands-free access to Athena.
+1. Open Athena.
+2. Navigate to Voice Assistant settings.
+3. Configure available voice options.
+4. Grant microphone permission when requested.
+5. Enable the assistant.
+6. Use the configured wake phrase.
+7. Speak your request.
 
-### How to use it
-
-1. Launch Athena AI.
-2. Open the voice assistant settings.
-3. Configure the available voice and wake-word options.
-4. Enable the voice assistant.
-5. Use the configured wake phrase to initiate an interaction.
-6. Speak your request and listen to Athena's response.
-
-### Voice controls
-
-- Use the configured stop phrase to stop the current interaction.
-- Use the configured kill phrase to disable the voice assistant.
-- Manually enable the assistant again when needed.
-- Configure supported speech and playback settings.
-
-Voice recognition and speech synthesis may require an internet connection depending on the selected implementation.
+Speech recognition and synthesis availability depend on the selected implementation and platform.
 
 ---
 
-## Using the Screen Assistant Overlay
+## 🖥️ SCREEN ASSISTANT SETUP
 
-The Screen Assistant is designed to provide faster access to Athena while you are working in other applications.
+1. Launch Athena.
+2. Open Settings.
+3. Navigate to Screen Assistant.
+4. Configure the available controls.
+5. Grant required permissions.
+6. Open the assistant using its configured shortcut or supported mobile interface.
 
-### How to use it
-
-1. Launch Athena AI.
-2. Open **Settings → Screen Assistant**.
-3. Check the configured keyboard shortcut.
-4. Press the shortcut to open the overlay.
-5. If screen-aware features are available, test them with content that you are comfortable sharing with your configured AI provider.
-
-The overlay is intended to remain accessible without requiring you to return to the main Athena chat window every time.
-
-### Troubleshooting the overlay
-
-**The Screen Assistant setting says the feature is unavailable**
-
-You may be using a build that does not include the feature. Check the release notes and download the appropriate supported build.
-
-**The keyboard shortcut does not work**
-
-- Check the shortcut shown in Settings.
-- Confirm that another application is not intercepting the same shortcut.
-- Restart Athena and try again.
-
-**The overlay opens but does not capture the screen**
-
-- Check whether screen capture is supported by your operating system and build.
-- Review any relevant operating-system permissions.
-- Remember that the feature is experimental and may have limitations.
-
-**The overlay is positioned incorrectly**
-
-Check for application updates and try restarting Athena. If the problem persists, report the operating system, Athena version, screen resolution and steps that reproduce the issue.
-
-### Platform support
-
-- **Windows:** Intended target for the current Screen Assistant implementation.
-- **macOS:** Support may be experimental and requires verification against the published build.
-- **Linux:** Screen Assistant is excluded from the described Linux build.
-- **Android:** Not supported by the current Screen Assistant implementation.
-
-Platform support may change in future releases.
+Screen capture functionality differs between desktop and Android.
 
 ---
 
-## Using Athena Local
+## 🧠 ATHENA LOCAL SETUP
 
-Athena Local allows you to run compatible AI models using your computer's available hardware.
+1. Open Model Hub or Athena Local.
+2. Install the supported inference runtime.
+3. Browse available model repositories.
+4. Inspect model files.
+5. Select a compatible GGUF model.
+6. Download or import it.
+7. Configure inference settings.
+8. Load the model.
+9. Start a local conversation.
 
-### Basic setup
+Model performance depends on available RAM, CPU, GPU, quantization and model size.
 
-1. Launch Athena AI.
-2. Open the Model Hub or Athena Local section.
-3. Install the supported llama.cpp runtime if it is not already available.
-4. Browse supported model repositories.
-5. Inspect the repository and select a compatible GGUF file.
-6. Download the model.
-7. Import or register the downloaded model.
-8. Configure the supported inference settings.
-9. Load the model and start a conversation.
-
-### Important notes
-
-- GGUF models can vary significantly in size.
-- Larger models require more memory.
-- Quantized models can reduce memory requirements.
-- GPU acceleration depends on hardware and runtime compatibility.
-- Local inference does not require a cloud AI API key, but model downloads require internet access.
+Do not automatically load models that exceed device memory.
 
 ---
 
-## Getting a Free Google Gemini API Key
+## 🔑 GOOGLE GEMINI API KEY
 
-Athena AI can use Google's Gemini models when the relevant integration is available in your version.
+Athena supports Google Gemini where the integration is available.
 
 1. Visit [Google AI Studio](https://aistudio.google.com/apikey).
-2. Sign in with your Google account.
-3. Open the API Keys section.
-4. Create an API key and select an appropriate Google Cloud project.
-5. Copy the key.
-6. Open Athena AI and navigate to its model or provider settings.
-7. Select Google Gemini, enter your API key and save your settings.
+2. Sign in.
+3. Create an API key.
+4. Open Athena provider settings.
+5. Select Google Gemini.
+6. Enter your API key.
+7. Save the configuration.
 
-### Important notes
-
-- Google offers free usage tiers for eligible Gemini models, subject to current quotas, eligibility and terms.
-- Free usage is not unlimited. Some models or usage levels may require billing.
-- Keep your API key private. Never publish it in a repository or share it with others.
-- Usage is subject to Google's current pricing and rate limits.
+Google's free usage tiers are subject to current quotas, eligibility and terms.
 
 Official documentation: [Gemini API Key Guide](https://ai.google.dev/gemini-api/docs/api-key)
 
 ---
 
-## Privacy and Security
+## 🛡️ PRIVACY & DATA HANDLING
 
-Athena AI's data handling depends on the features you use and the providers you configure.
-
-- Messages sent to external AI providers may be processed by those providers.
-- Screen Assistant functionality may involve capturing screen content.
-- Treat screenshots and visible information as potentially sensitive.
-- Avoid exposing passwords, banking details, confidential documents or private messages to screen-aware features.
-- Review your selected provider's data-handling policies.
-- Keep API keys and other credentials private.
-- Local model inference can process prompts on your device when a compatible local model is selected.
-
-A desktop application does not automatically mean all data stays on your device. Review the application's available privacy information before using it with sensitive material.
+- Cloud provider requests may leave your device.
+- Screen captures may contain sensitive information.
+- Local inference can process supported prompts without a cloud provider.
+- API credentials should remain private.
+- Avoid sending passwords, banking information or confidential documents to external AI services.
+- Review provider policies before using sensitive information.
 
 ---
 
-## Troubleshooting
+## 🧰 TROUBLESHOOTING
 
-### The installer will not open
+### Athena does not launch
 
-- Confirm that you downloaded the correct installer for your operating system and processor.
-- Download the file again if it appears incomplete.
-- Check whether your operating system is blocking an unsigned or unnotarized application.
+- Check that you downloaded the correct installer.
+- Verify system compatibility.
+- Reinstall the application if necessary.
+- Check release notes for known issues.
 
-### The AI is not responding
+### AI responses are not working
 
-- Check your internet connection when using an online provider.
-- Verify your model and provider settings.
-- Check your API credentials, account limits and provider availability.
-- If using a local model, verify that the local inference runtime is available and the model has loaded successfully.
+- Verify internet connectivity.
+- Check provider configuration.
+- Verify API credentials.
+- Check model availability and provider limits.
 
-### Voice Assistant is not responding
+### Android build fails
 
-- Check whether the voice assistant is enabled.
-- Verify microphone permissions.
-- Check the configured wake phrase.
-- Verify your selected speech provider and connection.
-- Restart the voice assistant if necessary.
+- Verify Android SDK installation.
+- Verify Android NDK installation.
+- Check Java compatibility.
+- Check installed Rust Android targets.
+- Confirm that the emulator is running.
+- Review Rust and Gradle compilation errors.
 
-### A feature is unavailable
+### Voice assistant does not work
 
-- Check your Athena version.
-- Review the release notes for platform and feature limitations.
-- Confirm that the feature is included in the build you installed.
+- Check microphone permissions.
+- Verify the selected speech provider.
+- Check wake-word configuration.
+- Restart the voice assistant.
 
-### The application is incompatible
+### Screen Assistant does not work
 
-Check the installer filename and architecture, then download a compatible release if one is available.
-
----
-
-## Updates
-
-New versions, installers and fixes are published in the [Athena AI Downloads Releases](https://github.com/lord-kirby-kirk69/Athena-Ai-Downloads/releases) section.
-
-Check the release notes before updating. Back up important local data before installing a new version.
+- Verify platform support.
+- Check operating-system permissions.
+- Check the configured shortcut.
+- Review release notes for known limitations.
 
 ---
 
-## Legal and Usage
+## 🔄 UPDATES
 
-Athena AI is distributed as a compiled desktop application. Downloading the application does not transfer ownership of its intellectual property.
+New releases, installers and fixes are published here:
 
-Third-party components may be subject to their own licences. Applicable third-party notices should accompany the relevant distribution where required.
+[**Athena AI Releases**](https://github.com/lord-kirby-kirk69/Athena-Ai-Downloads/releases)
+
+Check release notes before updating. Back up important local data before installing a new version.
+
+---
+
+## ⚖️ LEGAL & USAGE
+
+Athena AI is distributed as compiled application software. Downloading the application does not transfer ownership of its intellectual property.
+
+Third-party components may be subject to their respective licences.
 
 AI-generated responses may be inaccurate or incomplete. Verify important information independently before relying on it.
 
 ---
 
-## Source Code
+## 📂 SOURCE CODE
 
-This repository is dedicated to distributing Athena AI installers and release information. The application's source code is maintained separately and is not provided here.
+This repository is dedicated to distributing Athena AI installers and release information.
+
+The application's source code is maintained separately and is not included in this downloads repository.
 
 ---
 
 <p align="center">
 
-**Athena AI**
+# ⚔️ ATHENA AI
+
+**Your AI. Your Workspace. Your Intelligence.**
 
 *Intelligence, shaped around your workspace.*
+
+© 2026 N Nishchith Sharma. All rights reserved.
 
 </p>

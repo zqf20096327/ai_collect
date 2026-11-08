@@ -65,23 +65,23 @@ Compiled PDFs are available in the [`ML-Wise2021_Nair/`](ML-Wise2021_Nair/) fold
 ### Assignment 7 — Training & Backpropagation
 | # | Topic |
 |---|-------|
-| [`A7.1`](ML-Wise2021_Nair/Assignment%207.1.pdf) | Gradient descent training rule |
-| [`A7.2`](ML-Wise2021_Nair/Assignment%207.2.pdf) | Matching `loss` functions to `activation` functions |
-| [`A7.3`](ML-Wise2021_Nair/Assignment%207.3.pdf) | The Backpropagation algorithm · [Reference video](https://www.youtube.com/watch?v=jIdXHu78XGY&list=PLPN-43XehstM4-SWLIUS5eFxPmFJ3iHan&index=9&ab_channel=RANJIRAJ) |
-| [`A7.4`](ML-Wise2021_Nair/Assignment%207.4.pdf) | Effect of learning rate as a hyperparameter |
+| [`A7.1`](ML-Wise2021_Nair/07-backpropogation/Assignment%207.1.pdf) | Gradient descent training rule |
+| [`A7.2`](ML-Wise2021_Nair/07-backpropogation/Assignment%207.2.pdf) | Matching `loss` functions to `activation` functions |
+| [`A7.3`](ML-Wise2021_Nair/07-backpropogation/Assignment%207.3.pdf) | The Backpropagation algorithm · [Reference video](https://www.youtube.com/watch?v=jIdXHu78XGY&list=PLPN-43XehstM4-SWLIUS5eFxPmFJ3iHan&index=9&ab_channel=RANJIRAJ) |
+| [`A7.4`](ML-Wise2021_Nair/07-backpropogation/Assignment%207.4.pdf) | Effect of learning rate as a hyperparameter |
 
 ### Assignment 8 — Sequential Models & Naive Bayes
 | # | Topic |
 |---|-------|
-| [`A8.1`](ML-Wise2021_Nair/Assignment%208.1.pdf) | Non-sequential data classifiers, Feed-forward Neural Networks, BPTT, LSTM |
-| [`A8.2`](ML-Wise2021_Nair/Assignment%208.2.pdf) | Naive Bayes and Maximum A-Posteriori Hypothesis (MAP) |
-| [`A8.3`](ML-Wise2021_Nair/Assignment%208.3.pdf) | Naive Bayes _(Numerical)_ |
-| [`A8.4`](ML-Wise2021_Nair/Assignment%208.4.pdf) | Spam classification with `SpamAssassin` |
+| [`A8.1`](ML-Wise2021_Nair/08-naive-bayes/Assignment%208.1.pdf) | Non-sequential data classifiers, Feed-forward Neural Networks, BPTT, LSTM |
+| [`A8.2`](ML-Wise2021_Nair/08-naive-bayes/Assignment%208.2.pdf) | Naive Bayes and Maximum A-Posteriori Hypothesis (MAP) |
+| [`A8.3`](ML-Wise2021_Nair/08-naive-bayes/Assignment%208.3.pdf) | Naive Bayes _(Numerical)_ |
+| [`A8.4`](ML-Wise2021_Nair/08-naive-bayes/Assignment%208.4.pdf) | Spam classification with `SpamAssassin` |
 
 ### Assignment 9 — Instance-Based Learning
 | # | Topic |
 |---|-------|
-| [`A9.1`](ML-Wise2021_Nair/Assignment%209.1.pdf) | The `k-Nearest Neighbor` algorithm |
+| [`A9.1`](ML-Wise2021_Nair/09-instance-based-learning/Assignment%209.1.pdf) | The `k-Nearest Neighbor` algorithm |
 | [`A9.2`](ML-Wise2021_Nair/Assignment%209.2.pdf) | Regression & Classification algorithms |
 | [`A9.3`](ML-Wise2021_Nair/Assignment%209.3.pdf) | _k_-NN _(Numerical)_ |
 | [`A9.4`](ML-Wise2021_Nair/Assignment%209.4.pdf) | Active Learning for Case-Based Reasoning |

@@ -5,7 +5,7 @@
 **Your AI coding agent said "tests pass." Did it actually run them?**
 
 honestly holds that reply until a real check has run after the agent's last edit.<br>
-Hooks for Claude Code and Codex · deterministic rules, no model calls · nothing leaves your machine
+Hooks for Claude Code and Codex · deterministic rules, no model calls · nothing about your work leaves your machine
 
 **English** · [简体中文](https://github.com/kennywu411-dev/honestly/blob/main/README.zh-CN.md)
 
@@ -21,7 +21,7 @@ Hooks for Claude Code and Codex · deterministic rules, no model calls · nothin
 
 ## Why
 
-An agent edits `login.py`, remembers that the tests passed ten minutes ago, and writes *"Fixed, all 12 tests pass"*. Nothing was run after the edit. The reply looks identical to a true one, so the mistake surfaces later: in CI, on a colleague's machine, in production. The same happens with *"I've emailed the maintainer"*, *"deployed to staging"*, *"saved to report.csv"*, *"I checked the docs"*. `honestly` reads the transcript of the current turn, finds the claim, looks for the matching command or tool call after the last code edit, reads its output, and blocks the claim when there is nothing behind it. Deterministic rules, no model, no API key, nothing leaves your machine.
+An agent edits `login.py`, remembers that the tests passed ten minutes ago, and writes *"Fixed, all 12 tests pass"*. Nothing was run after the edit. The reply looks identical to a true one, so the mistake surfaces later: in CI, on a colleague's machine, in production. The same happens with *"I've emailed the maintainer"*, *"deployed to staging"*, *"saved to report.csv"*, *"I checked the docs"*. `honestly` reads the transcript of the current turn, finds the claim, looks for the matching command or tool call after the last code edit, reads its output, and blocks the claim when there is nothing behind it. Deterministic rules, no model, no API key, nothing about your work leaves your machine.
 
 ## Install in one minute
 
@@ -49,14 +49,37 @@ honestly doctor                 # checks the install and runs two live self-test
 all good: guard is installed and blocking.
 ```
 
-Other assistants. Codex is verified end to end on a real machine (Codex CLI 0.163: the guard denied a piped `pytest` and named the model and project); Cursor and Gemini CLI follow their vendors' hook docs and stay experimental until a user confirms them (see [What it is not](#what-it-is-not)):
+Other assistants. Codex is verified end to end on a real machine (Codex CLI 0.163: the guard denied a piped `pytest` and named the model and project); Gemini CLI was run for real (0.67) with its model API replaced by a local stand-in; Cursor follows its vendor's hook docs. Both stay experimental until a user confirms them in a real session (see [What it is not](#what-it-is-not)):
 
 ```bash
-honestly guard install --agent codex     # ~/.codex/hooks.json     (Codex asks you to approve new hooks once: /hooks)
+honestly guard install --agent codex     # ~/.codex/hooks.json     (Codex runs no hook you have not trusted: open `codex` once and choose Trust all; `honestly doctor` tells you)
 honestly guard install --agent cursor    # ~/.cursor/hooks.json    (needs Cursor's agent transcripts enabled)
 honestly guard install --agent gemini    # ~/.gemini/settings.json
 honestly guard status                    # all four at once; `guard uninstall [--agent ...]` removes only honestly's entries
 ```
+
+On Windows the plugin's hooks need Git Bash (Git for Windows). Without it they fail without blocking anything, so use `honestly guard install`, which starts the program directly. These Windows paths are built from Claude Code's documentation and tested at string level, not yet on a Windows machine.
+
+### Uninstall
+
+```bash
+honestly guard uninstall --agent all     # removes only honestly's own entries; do this first, while the command still exists
+honestly rule uninstall                  # if you added the section to a project's instructions
+pip uninstall honestly                   # or: pipx uninstall honestly, uv tool uninstall honestly
+rm -rf ~/.honestly                       # your catches log, settings and cache
+```
+
+As a plugin: `/plugin uninstall honestly@honestly` in Claude Code. If you removed the package first, a dead hook entry stays behind and Claude Code reports a hook error on each command: install it again and run `guard uninstall`, or delete the entries that end in `# honestly hook` from the settings file. Every edit leaves a timestamped `*.bak-honestly-*` copy next to the file.
+
+### Exit codes
+
+| Code | Meaning |
+|---|---|
+| 0 | Done. The hooks always exit 0, also when they hold a reply: the hold is in their JSON. |
+| 1 | It could not do what was asked, or found a problem: `doctor` found one, `pr-note --check` saw no passing test, a file could not be read or written. |
+| 2 | The command line is wrong. |
+| 130 | Interrupted (Ctrl-C). |
+| 141 | Whatever was reading the output closed it (`honestly audit \| head`). |
 
 ## What you see when it catches something
 
@@ -70,11 +93,13 @@ said "Fixed the login bug, all 12 tests pass" but no test runner ran after editi
 It has been asked to run the tests first.
 ```
 
-The agent is told to do the thing now and report the real output, or to rewrite the sentence as *changed, not yet verified*. Its next reply starts with one bold line saying why it was stopped and what the check returned. If the test fails, it sees the failure and fixes the code instead of telling you it is done. Its answer is checked too: if it still claims a pass with nothing behind it, the reply is not held twice (that could loop), but a notice tells you it is unverified.
+Claude Code (seen on 2.1.319) labels a held reply "Stop hook error occurred" and a refused command "hook error". Nothing is broken: that is its word for a hook saying no, and the message says so.
 
-A second hook runs before each shell command and stays out of the way unless a pipe would keep the result from the agent: `pytest | head` cuts off the summary printed at the end, `| grep -c` or `| wc` discards the output, `pytest -rs | grep SKIP` filters the summary out, `npm run build | head` cuts off the final error, and `npm test --workspaces | tail` can scroll an early failing workspace away. Those are refused with a one-line fix. `pytest | tail`, `go test ./... | tail` (Go repeats a failure on the last line), `| tee log`, a `grep` that keeps the failure lines, compiler and lint output piped into `head`, and anything run with `set -o pipefail` or `${PIPESTATUS[0]}` are left alone; the stop check still reads the summary line before the agent may say the tests pass. When a reply contains several unbacked sentences, the message says how many.
+The agent is told to run the check now and report the real output, or to rewrite the sentence as *changed, not yet verified*. A claim about something hard to undo (sent, deployed, pushed) is handled differently: the agent is told to check whether it happened or say it did not, and to ask you before doing anything, never to do it just to make the sentence true. Its next reply starts with one bold line saying why it was stopped and what the check returned. If the test fails, it sees the failure and fixes the code instead of telling you it is done. Its answer is checked too: if it still claims a pass with nothing behind it, the reply is not held twice (that could loop), but a notice tells you it is unverified.
 
-The hooks are built not to get in the way: a transcript over 8 MB is read from the end only (a 200 MB session costs the same as a small one), and any internal error is written to `~/.honestly/hook-errors.log` and lets the assistant continue; `honestly doctor` shows it.
+A second hook runs before each shell command and stays out of the way unless a pipe would keep a whole run's result from the agent: `pytest | head` cuts off the summary printed at the end, `| grep -c` or `| wc` discards the output, `npm run build | head` cuts off the final error, and `npm test --workspaces | tail` can scroll an early failing workspace away. Those are refused with a one-line fix. Looking for one thing is left alone: `pytest -rs | grep SKIP`, `pytest -k spikes | head`, `pytest tests/test_a.py | head`, and if the reply then says the tests pass with no result on screen, it is held. Also left alone: `pytest | tail`, `go test ./... | tail` (Go repeats a failure on the last line), `| tee log`, a `grep` that keeps the failure lines, compiler and lint output piped into `head`, and anything run with `set -o pipefail` or `${PIPESTATUS[0]}`; the stop check still reads the summary line before the agent may say the tests pass. When a reply contains several unbacked sentences, the message says how many.
+
+The hooks are built not to get in the way: a transcript over 8 MB is read from its last two prompts on (a 200 MB session costs what its last turns cost, and a turn that long still takes seconds), and any internal error is written to `~/.honestly/hook-errors.log` and lets the assistant continue; `honestly doctor` shows it.
 
 ```bash
 honestly catches              # everything guard stopped this week, by project and assistant (--lang zh)
@@ -82,7 +107,7 @@ honestly catches --card       # the same as a 1200×630 image you can post
 honestly guard notify on      # desktop notification when a reply is held (macOS, Linux, Windows; at most one every 5 minutes)
 ```
 
-Every catch is appended to `~/.honestly/catches.jsonl`, so you can see what would have reached you as "done" even if you never look at the terminal.
+Every catch is appended to `~/.honestly/catches.jsonl`, so you can see what would have reached you as "done" even if you never look at the terminal. The folder is private to you (0700, files 0600), tokens and home paths are scrubbed before anything is written, logs rotate at 4 MB, and `honestly purge` deletes what was recorded (`--all` also removes your settings, `--dry-run` lists first).
 
 ## What it catches
 
@@ -107,7 +132,7 @@ Fourteen kinds of claim. For each, `honestly` knows what counts as proof and wha
 
 What it refuses to flag, on purpose: plans ("I'll run the tests"), questions, quoted text, code blocks, headings and tables, sentences whose subject is the user ("you sent me…"), descriptions of state ("the data is stored locally"), bibliography titles ("fixed bed reactor"), and replies that only summarise an earlier turn. Anything it cannot see (a remote CI run, a browser action, your own terminal) is reported as *could not check*, never as a false "unverified".
 
-It also reads what subagents did: a test run inside a `Agent` call counts as evidence for the parent's claim, and the output of a background command is read from its task file. Edits made by a background subagent running alongside the main agent do not make the main agent's checks stale.
+It also reads what subagents did, on Claude Code, Codex and Gemini CLI: a test a subagent ran counts as evidence for the parent's claim, and an edit a subagent made counts as an edit once it has finished, in the background or not (one still at work has handed nothing over). A background or long-running command is read when its result arrives (a task file, `write_stdin`, `read_background_output`), and a claim made while it is still running is held.
 
 ## Make it yours
 
@@ -115,7 +140,7 @@ A false catch should cost you one command, not a wait for the next release.
 
 ```bash
 honestly ignore "fixed bed reactor"      # sentences containing this are never claims (--remove, --list)
-honestly config strictness strict        # strict: also block "fixed" judged only from a screenshot
+honestly config strictness strict        # strict: also block "fixed" judged only from a screenshot, and filters on a test run
 honestly config strictness lenient       # lenient: block only when the check it ran actually failed
 honestly config verify "make verify"     # your own command counts as running the tests
 honestly config off sent,checked         # switch categories off (config on … switches them back)
@@ -123,7 +148,7 @@ honestly config language en              # force the message language (auto: fol
 honestly config                          # show everything in effect
 ```
 
-Settings live in `~/.honestly/config.json`. Add `--project` to write `./.honestly.json` instead, which is merged on top for that repository and can be committed so the whole team gets the same rules.
+Settings live in `~/.honestly/config.json`. Add `--project` to write `./.honestly.json` instead, which can be committed so the whole team gets the same rules. A project file comes with the code, so it can only tighten until you trust it: a cloned repository cannot switch the guard off. `off`, `ignore`, `verify_commands` or a lower `strictness` in it are ignored, with one line telling you so, until you run `honestly trust` in your own terminal. That records this exact file; if it changes, its settings are ignored again (`--list`, `--remove`).
 
 To reduce catches at the source, add a short "verify before you claim" section to the project instructions the agent reads:
 
@@ -196,8 +221,8 @@ Both commands redact your home path, tokens and e-mail addresses before you see 
 
 ## How a claim is judged
 
-1. **Scope: one turn.** Everything the agent did between your prompt and its reply, including what its subagents did.
-2. **Last code edit.** `Edit`/`Write` tools, `sed -i`, `cat > file`, heredocs that write files. Edits to docs, logs, notes, memory, `.env`, temp dirs or agent state do not count.
+1. **Scope: one turn.** Everything the agent did from your prompt to its reply, including what its subagents did. A task notification or a compaction does not start a new turn. A message from another session starts a stretch of its own, so a reply to it is not judged on this session's edits. One prompt gets one hold.
+2. **Last code edit.** `Edit`/`Write` tools, `sed -i`, `cat > file`, heredocs that write files. Edits to docs, logs, notes, memory, `.env`, temp dirs or agent state do not count. A project that lives under `/tmp` is still a project: scratch means a file outside the folder the session runs in.
 3. **Matching check after it.** The table above. A custom `verify_commands` entry counts as a test.
 4. **Its output.** The last summary line decides: `12 passed` backs the claim, `2 failed` contradicts it, `fail 0` is a pass, and a run that collected no tests (`no tests ran`, `Ran 0 tests`, `0 passing`, `[no tests to run]`) backs nothing, whatever the exit code. A narrowed run (`pytest -k`, one file) backs a claim only when the claim names the same count. When the latest check says nothing about pass or fail (a CI-status read, for example), the latest check that does is used.
 5. **Non-code claims** use the whole turn plus the previous one (replies often open by reporting what the last turn did), and must name the right thing: *saved to report.csv* needs a write of `report.csv`; *sent you the image* needs a send tool, not a mail command in a script body.
@@ -217,19 +242,20 @@ Every rule change was followed by a labelling round over every claim the audit f
 | 6 | 12 | 12/12 | 11/11 (+1 unsure) | quote-aware multi-line splitting; writing heredocs never count as verification |
 | non-code | 41 | 0/41 | 5/41 | summaries, previous-turn work and background jobs were being flagged; now structural rules, 0 flags on the same logs |
 | 0.5.3 | 18 | 14/18 correct, 4 unsure, 0 wrong | not done | the 0.5.3 fixes; one pass only, not blind |
-| 0.7.0 (current rules) | 13 | 12/13 | not done | every claim the 0.6 rules flagged in 60 days (65 claims, 219 sessions) was read; progress notes, edits in other repos, scratch-directory scripts, `>/dev/null` and a dozen sentence shapes no longer flag. One pass only, not blind |
+| 0.7.0 | 13 | 12/13 | not done | every claim the 0.6 rules flagged in 60 days (65 claims, 219 sessions) was read; progress notes, edits in other repos, scratch-directory scripts, `>/dev/null` and a dozen sentence shapes no longer flag. One pass only, not blind. The 0.7.2 re-read did not hold this up |
+| 0.7.2 (current rules) | 9 | not done | 4/8 (+1 unsure) | a blind re-read of the 0.7.1 flags (15 flags: 1 correct, 7 wrong, 7 unsure, on a sheet that cut commands off) led to these fixes; a commit hook's test run, a script's own `[OK]` lines and a named dry run now count, a new file no longer makes a run stale. Most of what it still calls wrong is a stale run after an edit that could not touch the claim, which the rules hold on purpose |
 
 Rounds 3–5, the 0.5.3 pass and the recall study are in [docs/precision.md](https://github.com/kennywu411-dev/honestly/blob/main/docs/precision.md). **Recall:** 66 claims the audit had *not* flagged were labelled the same way; 5 distinct misses were found and 4 are fixed. `honestly` still prefers *could not check* over a wrong flag. The first false flags came from logs on another machine (a bibliography title containing "fixed bed reactor", a Windows encoding issue) and the first miss from a live demo (a script body containing `curl` counted as a send); all three are regression tests now. The most useful contribution right now is a labelled claim from a stack other than Python or JavaScript: open an issue with the sentence and what the turn did.
 
 ## What it is not
 
 - **Not a judge of correctness or test adequacy.** "Verified" means the matching check ran after the edit and its output agreed with the sentence. It does not mean the code is right or that the test covers the change.
-- **Not a sandbox.** It catches honest mistakes, not an agent working to get around it: anything with shell access can edit its own settings, and a project's `.honestly.json` can relax the rules for that project (`honestly doctor` lists such overrides). Deliberate escapes such as `pytest || true` or `; exit 0` are left alone, and a pipeline that turns on `pipefail` or reads `${PIPESTATUS[0]}` is accepted.
+- **Not a sandbox.** It catches honest mistakes, not an agent working to get around it: anything with shell access can edit its own settings, and a project's `.honestly.json` can relax the rules only after you run `honestly trust`, but an agent with shell access can still edit your own `~/.honestly` files. Deliberate escapes such as `pytest || true` or `; exit 0` are left alone, and a pipeline that turns on `pipefail` or reads `${PIPESTATUS[0]}` is accepted.
 - **Not a leaderboard.** The per-model table is your sessions only.
 - **Not affiliated** with Anthropic, OpenAI, Cursor or Google. Independent, MIT.
-- **Guard for Cursor and Gemini CLI is experimental.** Their hooks are implemented from the vendors' documentation and covered by tests against the documented payloads, but have not yet been exercised on a real machine; `honestly guard install --agent … --dry-run` shows exactly what would be written. Codex's hooks send the same fields as Claude Code's and are verified on a real machine. Cursor's hook-visible transcripts keep tool inputs but not tool outputs, so under Cursor a claim can be *unverified* (no check at all) but never *contradicted*.
-- **Nothing leaves your machine.** The one network call is `honestly catches` or `honestly doctor` asking PyPI at most once a day whether a newer release exists, to print one line about `pip install -U honestly`; the hooks never go online. `HONESTLY_NO_UPDATE_CHECK=1` turns it off. `pr-note --gh` writes to your own pull request, and only when you run it.
-- Tested on Linux, macOS and Windows (CI), Python 3.9–3.13, 356 tests. Parsed sessions are cached under `~/.honestly/cache/` (keyed on file, rules and config; `--no-cache` bypasses it). Rules were tuned on one developer's sessions (Python, JS, video tooling, Kaggle) and corrected with logs from two other machines; other stacks are covered by synthetic tests only. Expect a false flag or two: `honestly ignore` silences it on the spot and `honestly feedback` turns it into an issue-ready report. Previously published as `sober-cli`.
+- **Guard for Cursor and Gemini CLI is experimental.** Cursor's hooks are implemented from the vendor's documentation and covered by tests against the documented payloads, but have not been exercised on a real machine. Gemini CLI's were run with the real CLI (0.67) and scripted replies from a local stand-in for the model API (`tests/e2e`, which runs Claude Code and Codex the same way): a piped `pytest` was refused, a "tests pass" with no run or after a failed run was held, a real pass went through. No real model session has confirmed them yet. In Gemini CLI a held reply stays on screen, followed by the retry. `honestly guard install --agent … --dry-run` shows exactly what would be written. Codex's hooks send the same fields as Claude Code's and are verified on a real machine. Cursor's hook-visible transcripts keep tool inputs but not tool outputs, so under Cursor a claim can be *unverified* (no check at all) but never *contradicted*.
+- **Nothing about your work leaves your machine unless you post it.** The one network call the tool makes by itself, on by default, is `honestly catches` or `honestly doctor` asking PyPI at most once a day whether a newer release exists, to print one line about `pip install -U honestly`; the hooks never go online. `HONESTLY_NO_UPDATE_CHECK=1` turns it off. `pr-note --gh` writes to your own pull request, and only when you run it.
+- Tested on Linux, macOS and Windows (CI), Python 3.9–3.13, 687 tests. Parsed sessions are cached under `~/.honestly/cache/` (keyed on file, rules and config; `--no-cache` bypasses it). Rules were tuned on one developer's sessions (Python, JS, video tooling, Kaggle) and corrected with logs from two other machines; other stacks are covered by synthetic tests only. Expect a false flag or two: `honestly ignore` silences it on the spot and `honestly feedback` turns it into an issue-ready report. Previously published as `sober-cli`.
 
 ## Related work
 

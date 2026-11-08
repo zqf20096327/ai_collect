@@ -147,6 +147,10 @@
 - [57 行代码的 FlashAttention](./02_gpu_programming/03_tilelang/02_tilelang_flash_attention.md)：TileLang 前向算子源码级拆解，online softmax 与软件流水演进，附 H100 实测
 - [把权重压到 4-bit](./02_gpu_programming/03_tilelang/03_dequant_gemm_lowprecision.md)：反量化 GEMM 的两条路径与快速解码指令族，wgmma/TMA 发射形态实测
 
+**Kernel 编译器与 Megakernel**：
+
+- [launch、occupancy、overlap：什么时候手写 kernel，什么时候交给编译器](./02_gpu_programming/05_compiler/01_kernel-compiler-megakernel.md)：TVM（schedule 分离）、Mirage（三层联合超优）、MPK（整模型 megakernel）三级递进，配三 regime 决策轴与 launch-bound 微基准
+
 **性能分析与调优**：
 
 - [nvbandwidth 最佳实践](./02_gpu_programming/04_profiling/01_nvbandwidth_best_practices.md)：显存带宽与 PCIe 传输带宽测量指南
@@ -806,6 +810,10 @@ ZOMI 酱主导的高分开源 AI 基础设施架构体系，从底层 AI 芯片�
 由微软提供的初学者课程，旨在帮助学习者全面了解 AI Agent 的构建与应用。
 
 - [AI Agents for Beginners 课程之 AI Agent及使用场景简介](10_ai_related_course/AI%20Agents%20for%20Beginners%20课程之%20AI%20Agent及使用场景简介.md) - 涵盖 AI Agent 基础概念、开发框架、设计模式与应用场景。
+
+### 12.7 哈佛 CS2680 Modern AI Systems
+
+哈佛 SEAS 2026 秋季课程（Juncheng Yang / MaDSys 组主讲），沿「Agent 循环 → LLM serving → 底层硬件」一条线讲 AI 系统优化。已收录 Efficient LLM serving basics 三讲：Intro to LLM、Intro to GPUs（roofline、nsys/ncu、FlashAttention 谱系）与 scheduling/paging/parallelism（TTFT/TPOT 口径、batching、PagedAttention、五种并行）。详见 [哈佛 CS2680 课件存档](10_ai_related_course/cs2680_modern_ai_systems/README.md)。
 
 ---
 

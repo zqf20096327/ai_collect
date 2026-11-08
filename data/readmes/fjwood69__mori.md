@@ -259,6 +259,15 @@ to canon. A **trusted dreamer** — a human — reviews candidates and promotes 
 load-bearing ones; every promotion is versioned and `write_audit`-logged. Agents
 *read* canon; they never silently write it.
 
+**The canon lock (v2.3.16).** In api mode, a canonical row changes only when a dreamer key
+writes it or approves a proposal. Everything else that would create, change, roll back or delete
+canon — another key, the dream pipeline, ingestion, an import — is stored as a proposal, with a
+diff, and the row is unchanged until a person approves it. The exceptions: operator tooling run
+directly against the database, `MORI_LOCAL_FULL_ACCESS=true`, and the standards import. Host mode
+(`MORI_TD_MODE` unset) is for **one user on one machine**: changes are still queued, but with role
+checks off any local caller can approve, so it is not the same lock — and a server with API keys
+configured refuses to start in host mode.
+
 Underneath, **every** write — the dreamer's included — passes one audited authorization
 chokepoint: a structured provenance lands a `write_audit` row in the same transaction as the
 write, and tier-capability + anatomy enforcement gate *who* may write *what* (both ship
@@ -441,7 +450,7 @@ Key environment variables:
 | `MORI_MODEL` | `moonshotai/kimi-k2.6` | Advisor + consult model |
 | `MORI_DREAM_MODEL` | falls back to `MORI_MODEL` | Dream + ingest distillation model |
 | `MORI_FAST_MODEL` | `deepseek/deepseek-v4-flash` | Contradiction scan + freshness checks |
-| `MORI_API_KEYS` | — | Named client API keys: `name:secret,name:secret,...` — see [Authentication](docs/reference/configuration.md#authentication) |
+| `MORI_API_KEYS` | — | Named client API keys: `name:secret,...`, or hashed `name:sha256:<hex>` (v2.3.17, recommended for production; the first entry stays plain) — see [Authentication](docs/reference/configuration.md#authentication) |
 | `MORI_BRIEF_SCOPE` | `safe` | `safe` = provenance-routed brief (cross-project origin-bound canon withheld; explicit `scope:global` only); `all` = legacy, no scoping |
 | `MORI_TRUSTED_DREAMERS` | — | Comma-separated trusted hostnames |
 | `MORI_DREAM_INTERVAL` | `60` | Dream cron interval (minutes) |
@@ -449,7 +458,7 @@ Key environment variables:
 | `MORI_MSG_HEADLESS_ENABLED` | `false` | Spawn headless Claude for incoming tasks |
 | `MORI_MSG_HEADLESS_TRUSTED` | — | Comma-separated hostnames allowed to trigger headless CC |
 
-**Authentication:** Set `MORI_API_KEYS` to give each client a named key. Without it the server starts in open mode (fine for private Tailscale networks; always set keys for shared or internet-accessible deployments). Generate secrets with `python3 -c "import secrets; print(secrets.token_hex(32))"`. Full details: [docs/reference/configuration.md → Authentication](docs/reference/configuration.md#authentication).
+**Authentication:** Set `MORI_API_KEYS` to give each client a named key. Without it the server starts in open mode (fine for private Tailscale networks; always set keys for shared or internet-accessible deployments). Generate a secret with `python3 -c "import secrets; print(secrets.token_hex(32))"`, or add a key with `scripts/mori-key-add.sh`, which stores only its SHA-256 hash (hashed entries are recommended for production deployments; plain entries are accepted; the **first** entry stays plain — it is the deploy check's identity). Full details: [docs/reference/configuration.md → Authentication](docs/reference/configuration.md#authentication).
 
 ---
 

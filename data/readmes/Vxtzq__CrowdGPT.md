@@ -23,7 +23,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white">
   <img src="https://img.shields.io/badge/License-GPL--3.0-green?style=for-the-badge">
-  <img src="https://img.shields.io/badge/Version-v1.9-green?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Version-v3.0-green?style=for-the-badge">
   <a href="https://discord.gg/2Shwqj3Xpx"><img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"></a>
   <img src="https://img.shields.io/endpoint?style=for-the-badge&url=https%3A%2F%2Fhuggingface.co%2FVxtzq%2FCrowd-v1%2Fraw%2Fmain%2Fbadge_tokens.json" alt="Tokens Processed">
 </p>
@@ -32,12 +32,10 @@
   <strong>The best 0$ AI.</strong>
 </p>
 
-# CrowdGPT v2.9 changelog
-- False flags should now be much rarer
-- Fixed UI bugs
-- Fixed XPU backend issues
-- Clarifier auto-login logic between updates
-- Removed redundant weight downloads
+# CrowdGPT v3.1 changelog
+- Allowed training and uploading at the same time
+- Enhanced CLI client version
+- Reduced weight decay and increased learning rate on server
  
 ## What is CrowdGPT?
 
@@ -82,6 +80,18 @@ For Windows
 cmd /c "curl.exe -fsSL -o install.bat https://raw.githubusercontent.com/Vxtzq/CrowdGPT/main/install.bat && install.bat"
 ```
 
+### 🐳 Docker (Linux — NVIDIA, AMD ROCm, Intel Arc, CPU)
+
+```bash
+git clone https://github.com/Vxtzq/CrowdGPT.git
+cd CrowdGPT
+./docker/run.sh auto build
+./docker/run.sh auto up -d
+./docker/run.sh auto logs -f
+```
+
+`./docker/run.sh` auto-detects NVIDIA CUDA, AMD ROCm, Intel XPU, or CPU and persists checkpoints and downloaded weights in a `/data` volume across image rebuilds. See [DOCKER.md](./DOCKER.md) for account configuration, non-toolkit NVIDIA hosts, and backend overrides.
+
 
 ## ▶️ Running
 
@@ -96,17 +106,67 @@ crowdgpt --headless --anon               # train without an account
 crowdgpt --headless --rounds 5           # stop after 5 rounds
 ```
 
+Create an account without opening the desktop app:
+
+```bash
+crowdgpt --register --user NAME --email you@example.com
+# prompts for the password without echoing it
+
+crowdgpt --register --user NAME --email you@example.com --password '...'
+```
+
+Prefer the hidden prompt. Passing `--password` is intended for automation and may
+leave the value in shell history or the process list. Registration saves the session
+token in `checkpoints/auth_token.json`, so the next `crowdgpt --headless` run can
+reuse it. Registration exits without training.
+
+### Diagnostics
+
+Before reporting a launch or training problem, run the read-only environment check:
+
+```bash
+crowdgpt --doctor
+crowdgpt --doctor --json > doctor.json
+```
+
+It checks the client version and paths, OS/Python/architecture, CPU/RAM/disk and
+checkpoint writability, Python package versions, available and requested backends,
+GPU names/VRAM/architecture compatibility, the memory/batch/optimizer plan, whether a
+saved session is present, the signed update manifest, Hugging Face and coordinator
+reachability, and a tiny device matmul. Tokens and passwords are never printed.
+`--doctor` does not apply updates or start training. It exits `1` only for blocking
+failures; warnings are reported without failing the command. `--server`, `--backend`,
+and `--vram-gb` are honored for the checks.
 `crowdgpt --help` lists all options. A few settings can also be set through environment variables:
 
 | Variable | Description |
 |---|---|
 | `CROWDGPT_TOKEN` / `CROWDGPT_PASSWORD` | Credentials for headless runs |
+| `CROWDGPT_EMAIL` | Email for `--register` |
 | `CROWDGPT_VRAM_GB` | Same as `--vram-gb` |
 | `CROWDGPT_ENGRAM=0` | Don't train the engram table (same as `--no-engram`) |
+
+The headless client opens a full-screen terminal dashboard on a TTY. It shows the same
+training metrics as the desktop app: round, step progress, loss graph, tokens/sec, ETA,
+download/upload state, recent model predictions, and an activity log. Use `--no-tui`
+for plain log lines, or `--tui` to force the dashboard.
+
+While the dashboard is running:
+
+- `s` stops training at the next safe step; press `s` again to start a new round.
+- `q` or `Ctrl+C` quits.
+- The layout reflows when the terminal is resized. `s` and `q` are ordinary characters,
+  so they do not conflict with `tmux`/`screen` prefix bindings.
+- The dashboard needs a normal UTF-8 terminal. It falls back to plain logs on
+  `TERM=dumb`/`unknown` and on legacy Windows consoles without VT support; use
+  `--tui` to override the auto-fallback. Modern Windows Terminal is the
+  recommended Windows host.
 
 ### Updates
 
 The client checks for updates on start and between rounds. An update is only installed if its manifest is signed with the maintainer's key, so a compromised repository or account can't push code to clients. `--no-update` skips the check. Details in [SECURITY.md](./SECURITY.md).
+
+When releasing a client change, bump `CLIENT_VERSION` in `client.py` to a strictly newer value and re-sign `docs/version.txt` (the client fetches `docs/version.txt.sig`). Clients ignore a version they already run, so re-signing the same version will not reach anyone.
 
 
 ## 🔧 Troubleshooting

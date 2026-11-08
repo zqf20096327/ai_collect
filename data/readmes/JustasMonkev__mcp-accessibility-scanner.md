@@ -189,6 +189,7 @@ Interactive mode. Type "<tool-name> <json>" to call a tool. Ctrl+D to exit.
 Each line is `<tool-name> <json-arguments>`. Omit the JSON to pass `{}`.
 Global browser connection flags still apply here, for example `npx --allow-scripts=re2 mcp-accessibility-scanner --headless interactive`.
 Use `--mobile` or `PLAYWRIGHT_MCP_MOBILE=1` to emulate a generic mobile device (`Pixel 10` for Chromium, `iPhone 17` for WebKit). It cannot be combined with `--device`, CDP attach/launch modes, remote browser endpoints, or `--extension`.
+Device names supplied through `--device` or `PLAYWRIGHT_MCP_DEVICE` must match a Playwright device descriptor; unknown names fail at startup. An explicit `--device` overrides `PLAYWRIGHT_MCP_DEVICE`.
 
 ### Browser extension mode
 
@@ -799,6 +800,11 @@ Handshake-free HTTP clients must first call `browser_session_open`, then pass it
 
 #### `browser_evaluate`
 Evaluate a JavaScript expression on the page, or on a specific element when a `ref` is provided. The function's return value is serialized back as the result.
+
+JSON-compatible values are returned as pretty-printed JSON, including objects that share references without forming a cycle. Values that JSON cannot faithfully represent, such as `undefined`, `NaN`, `Infinity`, `-0`, `BigInt`, dates, or cyclic objects, use readable JavaScript inspection text instead. This formatting applies to the value transferred by Playwright; it does not add support for transferring other browser-side types.
+
+Inspection text is **not JSON**. Clients must not assume every result can be passed to `JSON.parse`; return JSON-compatible values explicitly when machine-readable JSON is required.
+
 - Parameters: `function` (e.g., `() => document.title` or `(element) => element.textContent`), `element` (optional), `ref` (optional)
 - `element` and `ref` must be supplied together, or not at all; supplying one without the other is rejected.
 - A bare expression is also accepted and is wrapped automatically: `document.title` behaves like `() => document.title`, and, when `element` and `ref` are both given, `element.textContent` behaves like `(element) => element.textContent`. The parameter is always named `element`.
@@ -885,16 +891,3 @@ If a pending download fails while a session closes, the response includes the do
 
 Sessions that stay idle expire automatically after 30 minutes; the timer is refreshed on every use and while a tool is running in the session (overlapping calls each count, so the session survives until the last one finishes), so a long `audit_site` crawl is never expired mid-run. Set `PLAYWRIGHT_MCP_BROWSER_SESSION_TTL_MS` to override the idle TTL in milliseconds (`0` or a negative value disables expiry). Passing an unknown or expired handle produces a tool error pointing back to `browser_session_open`; the error deliberately does not list other open sessions' handles, since handles are bearer tokens that route tool calls into their sessions. With `--save-session`, logged tool calls record the `browserSessionId` they were routed with (`webmcp_*` calls, routed by request metadata, record it in a separate `Metadata` block so page arguments stay unchanged), and recorded user actions from an explicit session carry the same `browserSessionId` in their logged args, so entries from different sessions stay distinguishable (default-session entries stay untagged). Because handles are bearer tokens, the log records each one as a stable `bs_redacted_<8 hex>` label derived from it, never the live handle, including in `browser_session_open`'s logged result.
 
-### Information & Monitoring Tools
-
-#### `browser_console_messages`
-Returns all console messages from the page.
-Large `data:` URL payloads in console messages are truncated to their media type prefix.
-
-#### `browser_network_requests`
-Returns the current request list, numbered so a single request can be inspected with `browser_network_request`. Set `all: true` to include up to 200 retained requests from earlier explicit `browser_navigate` calls, alongside all current requests.
-Large `data:` URL payloads in request URLs are truncated to their media type prefix.
-When there is at least one request, a closing line points at `browser_network_request`.
-
-#### `browser_network_request`
-Returns credential-redacted request/response headers and body metadata for one request from the `browser_network_requests` listing.

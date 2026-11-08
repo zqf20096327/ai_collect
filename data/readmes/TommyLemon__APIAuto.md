@@ -124,8 +124,9 @@ Bilibili：https://search.bilibili.com/all?keyword=APIAuto
 [APIAuto: 最先进的 HTTP 接口工具](https://blog.csdn.net/Nifc666/article/details/141966487) <br />
 [APIAuto 开源项目教程](https://blog.csdn.net/gitblog_00138/article/details/142802330) <br />
 [Github 2.2k Star！一款开源的机器学习 HTTP 接口工具！](https://mp.weixin.qq.com/s/4ZS80QP-WN-holFQkrxK-w)  <br />
-[APIAuto：机器学习驱动的零代码HTTP接口智能测试平台深度解析](https://blog.csdn.net/weixin_33940469/article/details/162085502)
-[APIAuto：零代码接口测试与文档管理一体化平台实战指南](https://blog.csdn.net/weixin_31061699/article/details/162536896)
+[APIAuto：机器学习驱动的零代码HTTP接口智能测试平台深度解析](https://blog.csdn.net/weixin_33940469/article/details/162085502) <br />
+[APIAuto：零代码接口测试与文档管理一体化平台实战指南](https://blog.csdn.net/weixin_31061699/article/details/162536896) <br />
+[腾讯、华为、工商银行都在用的接口工具长什么样](https://www.pomoai.com/hubs/TommyLemon/APIAuto) <br />
 [APIAuto: an HTTP interface tool that treats test cases as a database-backed workflow](https://hysenlabs.com/projects/tommylemon-apiauto)
 
 ### 百度、搜狗、抖音公网接口调用演示 <br />
@@ -186,7 +187,7 @@ https://github.com/APIJSON/APIJSON-Demo/tree/main/APIJSON-Java-Server
 #### 3.调用 /delegate 代理接口来录制请求的方法、参数、Header、响应等信息
 https://github.com/APIJSON/APIJSON-Demo/tree/main/APIJSON-Java-Server/APIJSONBoot-MultiDataSource#%E4%BB%A3%E7%90%86%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%BD%95%E5%88%B6%E6%B5%81%E9%87%8F
 
-#### 4.打开分享链接来自动填充 URL、参数 JSON、请求头、参数注入配置、设置项 等
+#### 4.打开分享链接来自动填充 URL、参数 JSON、请求头、参数规则配置、设置项 等
 例如：
 http://apijson.cn/api/?send=true&type=JSON&url=http%3A%2F%2Fapijson.cn%3A8080%2Fget&json={%22[]%22:{%22Comment%22:{},%22User%22:{%22id@%22:%22%2FComment%2FuserId%22}}}
 

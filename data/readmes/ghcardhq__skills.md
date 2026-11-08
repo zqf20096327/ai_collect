@@ -19,8 +19,10 @@ It has two parts:
   edit a layout, how to place it in a README, and what to do for each error code.
   It drives the [`ghcard` CLI](https://github.com/ghcardhq/ghcard), run through
   `npx` when it is not installed.
-- **MCP server**: the hosted GitHubCard server at `https://githubcard.com/mcp`,
-  so Claude can call the same tools without a shell.
+- **MCP server**: a local stdio server from `@ghcardhq/ghcard`, so Claude can
+  call the same tools without a remote runtime dependency. For a hosted server,
+  configure [`githubcard-mcp`](https://github.com/ghcardhq/githubcard-mcp)
+  separately.
 
 ## Install
 
@@ -32,10 +34,10 @@ claude plugin install githubcard@githubcard
 Or inside Claude Code: `/plugin marketplace add ghcardhq/skills`, then
 `/plugin install githubcard@githubcard`.
 
-Claude Code asks for a **GitHubCard API key** when the plugin is enabled. Create
-a free one at [githubcard.com/dashboard](https://githubcard.com/dashboard). It is
+If you configure a **GitHubCard API key** when enabling the plugin, create a
+free one at [githubcard.com/dashboard](https://githubcard.com/dashboard). It is
 stored as a secret and sent only to `githubcard.com`. You can skip it and still
-browse templates and palettes. Card creation needs the key.
+browse templates, palettes, and components. Card creation needs the key.
 
 Then ask Claude things like:
 
@@ -54,8 +56,8 @@ git clone --depth 1 https://github.com/ghcardhq/skills /tmp/ghcard-skills
 mkdir -p ~/.claude/skills && rsync -a /tmp/ghcard-skills/plugins/githubcard/skills/githubcard ~/.claude/skills/
 ```
 
-For MCP setup in Cursor, VS Code, Windsurf, Codex and other clients, see
-[ghcardhq/githubcard-mcp](https://github.com/ghcardhq/githubcard-mcp).
+For hosted or local MCP setup in Cursor, VS Code, Windsurf, Codex and other
+clients, see [ghcardhq/githubcard-mcp](https://github.com/ghcardhq/githubcard-mcp).
 
 ## Privacy
 

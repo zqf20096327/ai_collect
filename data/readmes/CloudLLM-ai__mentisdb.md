@@ -114,7 +114,7 @@ chmod +x mentisdb && ./mentisdb --help
 
 Release images are published to GitHub Container Registry for `linux/amd64` and
 `linux/arm64` (first published with 0.10.10.55). Tags: the release tag (for example
-`0.12.0.57`), the crate version (`0.12.0`, moves with each release of that version)
+`0.12.1.58`), the crate version (`0.12.1`, moves with each release of that version)
 and `latest`. This is also the way to get full features, including local embeddings,
 on Linux distros older than glibc 2.39 (see [Prebuilt binaries](#prebuilt-binaries)).
 
@@ -302,6 +302,7 @@ make clippy         # cargo fmt + clippy --all-targets -D warnings
 make test           # cargo test
 make bench          # Criterion benchmarks, output tee'd to /tmp/mentisdb_bench_results.txt
 make doc            # cargo doc --all-features
+make coverage       # tests under instrumentation: functions, branches, regions, lines (pinned nightly)
 make install        # cargo install --path . --locked --features local-embeddings
 make publish        # cargo publish
 make publish-dry-run
@@ -354,6 +355,77 @@ Run rustdoc tests:
 ```bash
 cargo test --doc
 ```
+
+---
+
+## Coverage
+
+`.github/workflows/coverage.yml`, `scripts/coverage_gate.py`, `make coverage`.
+
+Every CI run writes a coverage table into the run's job summary (the "Summary"
+page of the `Coverage` workflow run), with **functions, branches, regions and
+lines** as percentages with covered/total counts, a goal column (90%, with a
+check mark or a cross per dimension) and the gate result. The HTML report and
+`summary.json` are uploaded as the `coverage-report` artifact.
+
+Run it locally, identically to CI:
+
+```bash
+cargo install cargo-llvm-cov --version 0.9.1 --locked
+rustup toolchain install nightly-2026-10-01 --profile minimal --component llvm-tools-preview
+make coverage          # table on stdout and in target/coverage/summary.md
+make coverage-open     # same, then open target/coverage/html/index.html (macOS)
+```
+
+**One nightly run reports everything.** Branch coverage only exists on nightly
+(`cargo +nightly llvm-cov --branch`, the unstable `-Z coverage-options=branch`),
+and nightly's region and line numbers differ a little from stable's. Mixing a
+stable run with a nightly run in one table would put numbers from two different
+instrumentations side by side, so the whole suite runs once, on a nightly pinned
+by date (`COVERAGE_NIGHTLY` in the `Makefile`, the same date in `coverage.yml`),
+and all four dimensions come from that one profile. The table names the
+toolchain. Pinning means a nightly that changes the flag cannot break CI; bump
+the date deliberately, in its own commit, and re-measure. The run uses
+`--all-features`, like the `Tests` workflow, and covers integration and unit
+tests (not doctests). There is no `lcov.info`: this nightly's lcov exporter crashes on branch
+data, so the artifact is the HTML report and `summary.json`.
+
+**Nothing is excluded.** The measurement covers all of `src/`, including the
+terminal UI and the daemon binary. The numbers below are low partly because
+those are big and lightly tested; they are listed as gaps, not hidden.
+
+**Goal and floor.** The goal is 90% on every dimension. Measured on
+2026-11-08 (`nightly-2026-10-01`, `--all-features`), none meets it yet, so the
+gate is a floor at each measured value rounded down, so coverage cannot regress:
+
+| Dimension | Measured | Covered / total | Floor |
+|---|---:|---:|---:|
+| Functions | 73.54% | 3,689 / 5,016 | 73% |
+| Branches | 64.30% | 4,007 / 6,232 | 64% |
+| Regions | 72.07% | 33,505 / 46,490 | 72% |
+| Lines | 74.24% | 33,933 / 45,710 | 74% |
+
+The floors are `COVERAGE_FLOOR_*` in the `Makefile`. **They ratchet up toward
+90 and are never lowered to land a change**: when a change raises a dimension,
+raise its floor to the new value rounded down in the same commit; a dimension
+that reaches 90 is gated at 90. A change that adds untested code fails the job;
+the fix is a test, not a lower floor.
+
+**Biggest uncovered areas** (uncovered regions, the roadmap to 90%):
+
+| File | Uncovered regions | Regions covered |
+|---|---:|---:|
+| `src/dashboard.rs` | 2,524 | 9.5% |
+| `src/bin/mentisdb.rs` | 2,083 | 14.7% |
+| `src/lib.rs` | 1,878 | 78.8% |
+| `src/tui.rs` | 1,165 | 2.2% |
+| `src/server.rs` | 1,070 | 85.0% |
+| `src/search/lemmas.rs` | 291 | 52.2% |
+| `src/cli/mod.rs`, `src/cli/wizard.rs`, `src/cli/setup.rs`, `src/cli/args.rs` | 912 together | 35% to 65% |
+
+The first four files hold about 7,650 of the 12,985 uncovered regions
+(59%); testing the dashboard handlers, the daemon's `main` path as a process
+and the terminal views against a test buffer is most of the way to 90%.
 
 ---
 
@@ -481,7 +553,7 @@ dashboard action to its command.
 | `webhook` | `list`, `register`, `delete` |
 | `vectors` | `enable`, `disable`, `sync`, `rebuild` |
 | `daemon` | `health`, `version`, `flush`, `restart`, `settings list`, `settings set` |
-| local | `setup`, `wizard`, `add`, `backup`, `restore`, `bearertoken`, `cert`, `key generate\|show` |
+| local | `setup`, `wizard`, `add`, `backup`, `restore`, `bearertoken`, `cert`, `key generate\|show` (plus operator `agent key generate`) |
 
 ```bash
 mentisdb chain bootstrap "Project Atlas memory" --chain atlas
@@ -1402,6 +1474,29 @@ When to use it: routine recall and scanning many hits, where the content, tags, 
 
 Measured on a copy of a working MentisDB with 11 chains (12 ranked, graph and federated searches, 10 hits each), responses were 23.7% smaller (353,071 B to 269,335 B); on a generated corpus of 66 queries they were 34.2% smaller. `cargo bench --bench search_compact` shows the same request time with and without `compact` (about 25% fewer bytes). Contributed by Austin Faulkner-Pearce.
 
+### Lean MCP output
+
+Agents read MCP tool results with their context window, so the streamable-HTTP MCP surface (JSON-RPC `tools/call`) is leaner than REST:
+
+- Results are **minified JSON text**, with no indentation and no second `structuredContent` copy of the same object. (No tool declares an `outputSchema`, so clients read the text.) REST and `POST /tools/execute` still return the object.
+- `mentisdb_ranked_search`, `mentisdb_federated_search`, `mentisdb_lexical_search` and `mentisdb_context_bundles` are **compact by default**; pass `"compact": false` for the full record. A lean thought leaves out what is default, so an absent field means its default: no `provenance` is a public, unsigned thought (a private segment, a signature or a `verified_agent` is always listed), no `role` is `Memory`, no `importance` is `0.5`, no `chain_key` is the chain you searched. Floats are rounded, timestamps keep full precision (so they round-trip through `as_of` and `since`), `successor_of` is an older version that matched the query and that the hit replaces, with a `superseded_versions` count that is a lower bound (not the whole lineage), and `version_status`, `successors` and `current_version` still say when a memory is contested or superseded.
+- `mentisdb_standing_context` returns the rendered `prompt` once. Its `entries` array repeats the same memories, so it needs `include_entries: true`.
+
+Measured with `cargo run --release --example token_diet` (a generated 3,500-thought chain with superseded lineages and weak-link corrections, 10 hits, characters of the text the model reads):
+
+| Tool call | Before | After |
+|---|---:|---:|
+| `mentisdb_ranked_search` (default) | 23,657 | 5,948 |
+| `mentisdb_ranked_search` `compact: true` | 12,699 | 5,948 |
+| `mentisdb_ranked_search` `compact: false` | 23,657 | 16,696 |
+| `mentisdb_lexical_search` | 18,743 | 6,341 |
+| `mentisdb_federated_search` | 23,511 | 6,025 |
+| `mentisdb_context_bundles` (5 bundles) | 9,993 | 3,562 |
+| `mentisdb_standing_context` | 36,191 | 13,050 |
+| `mentisdb_recent_context` (20 thoughts) | 6,936 | 6,931 |
+
+The rules are in the `mentisdb::server_lean` rustdoc.
+
 ### Search Scoring (0.8.1)
 
 Starting in 0.8.1, ranked search uses six key improvements:
@@ -1694,13 +1789,27 @@ unauthorized reader sees only the public segments, on every read surface
 ```bash
 # operator (dashboard PIN, or --offline on the host that holds the data directory)
 mentisdb chain access set private --chain vault --pin 123456
-mentisdb agent key add builder --key-id builder-1 --public-key-hex <64 hex> --chain vault --pin 123456
+mentisdb agent key generate builder --key-id builder-1 --chain vault --pin 123456   # makes the pair, registers the public key
+# (or register a key made elsewhere:)
+# mentisdb agent key add builder --key-id builder-1 --public-key-hex <64 hex> --chain vault --pin 123456
 mentisdb chain access allow builder builder-1 <64 hex> --chain vault --pin 123456
 
 # an authorized client signs every request locally; the key never leaves it
 mentisdb search "launch plan" --chain vault --read-key-file builder.key --read-agent builder --read-key-id builder-1
 MENTISDB_READ_KEY_FILE=builder.key MENTISDB_READ_AGENT_ID=builder MENTISDB_READ_KEY_ID=builder-1 mentisdb --mode stdio
 ```
+
+`agent key generate` creates the Ed25519 pair on the machine you run it on,
+saves the private seed (64 hex characters) to an owner-only file (`--out FILE`,
+else `$MENTISDB_KEY_DIR/<public key prefix>.key`, default `~/.mentisdb/keys`;
+`--force` to overwrite), and registers only the public key. The private key is
+never printed, logged or sent, and that file is its only copy: MentisDB cannot
+recover it, so back it up, and never paste it into a chat or give it to an AI
+agent. If the registration fails after the file was written the file is kept and
+the error prints the `agent key add ... --public-key-hex` command that registers
+it later. The dashboard offers the same on the agent page ("Generate key pair"),
+generated in the browser with WebCrypto, so the private key never reaches the
+server. Use the file with `--private-key-file` / `--read-key-file`.
 
 Only the operator can add or remove keys; REST and MCP cannot. Every
 returned thought carries a `provenance` object (segment, signature, verified
@@ -1787,113 +1896,4 @@ Dashboard API rules (0.10.9):
 
 - **Host allowlist (DNS-rebinding defence).** Every dashboard route, including `GET` pages
   and `/dashboard/login`, rejects a request with `403` unless its `Host` header names this
-  daemon: `localhost`, `127.0.0.1`, `[::1]`, `my.mentisdb.com` (the dashboard is HTTPS-only),
-  the configured `MENTISDB_BIND_HOST`, the machine's own interface IPs when bound to `0.0.0.0` or `::`,
-  or an entry of `MENTISDB_DASHBOARD_ALLOWED_HOSTS` (comma-separated; set via environment
-  or `.env`, not from the dashboard). Reverse proxies must preserve the original `Host`
-  header, or forward a name listed in `MENTISDB_DASHBOARD_ALLOWED_HOSTS`.
-- **CSRF protection.** `POST`, `PATCH` and `DELETE` calls under `/dashboard/api/`, and the
-  `POST /dashboard/login` form, must come from the dashboard's own origin. The first signal
-  present decides: an `Origin` header whose host matches the request host (`Origin: null` is
-  treated as absent), else `Sec-Fetch-Site: same-origin` (set by browsers, not by pages), else
-  a `Referer` whose host matches. Scripts and CLI clients that send none of these must add
-  `X-MentisDB-Dashboard: 1`; anything else gets `403`. Dashboard responses carry
-  `Referrer-Policy: same-origin`, so browsers keep the real `Origin` on the dashboard's own
-  requests and send no referrer to other sites.
-- **Private chains need the PIN, consistently.** With no `MENTISDB_DASHBOARD_PIN` the
-  dashboard cannot tell the operator from anyone else, so it refuses (`403`) to show, change
-  or **delete** a chain with private segments, and, while the daemon holds any private chain,
-  to change settings, create, revoke or delete bearer tokens, or restart the daemon. Set a
-  PIN and sign in to do any of it. A daemon with no private chain behaves as before.
-- **PIN brute-force limiting** covers the login form and the `Authorization: Bearer <pin>`
-  path alike, in three layers. (1) Per client: 5 failures in 5 minutes block that client; an
-  IPv6 client is one client per `/64` (a single customer owns a whole `/64`, so rotating
-  addresses inside it does not reset the count), an IPv4-mapped address counts as the IPv4
-  one. One client's failures do not lock out others, except behind a NAT or reverse proxy,
-  where everyone shares one address and one bucket (`X-Forwarded-For` is ignored, it is
-  spoofable). (2) At most 4096 clients are remembered; expired entries, then the oldest, make
-  room. (3) A global budget: more than 50 failures from all clients together in 5 minutes
-  lock **every** PIN attempt, a correct PIN included, for 60 seconds, doubling on each repeat
-  up to one hour (forgiven after two quiet hours). That caps an attacker who rotates through
-  many addresses, at the cost that an attacker can make the owner wait; a signed-in session
-  (cookie) is unaffected. Refusals are `429` with `Retry-After`. These limits bound guessing
-  to at most about 600 tries an hour, which is not enough against a 4-digit PIN: **use a
-  long random PIN** (12+ characters) for any dashboard reachable beyond localhost.
-- **Chain keys** created from the dashboard (bootstrap, branch target, copy-to target) must
-  match `[A-Za-z0-9_-]` and be at most 128 characters, otherwise `400`.
-- **Paging** is clamped to `per_page` at most 500 and `page` at most 1000.
-- **PIN handling.** `GET` on the settings API never returns the PIN value (only whether one is
-  set). Saving settings with a blank PIN keeps the current PIN.
-- **`.env` permissions.** Settings saved from the dashboard are written to
-  `<MENTISDB_DIR>/.env` with mode `0600` (it may hold the PIN), tightening an existing file too.
-- **Errors.** Dashboard `500` responses carry only `"internal server error"`; details go to
-  the daemon log.
-
----
-
-## TLS Certificates
-
-The HTTPS MCP and REST servers and the web dashboard all serve a single
-self-signed certificate that the daemon auto-generates on first startup at
-`<MENTISDB_DIR>/tls/cert.pem` (and `key.pem`). The standard SAN set always
-includes `my.mentisdb.com` (DNS), `localhost` (DNS), `127.0.0.1` (IP), every
-unicast IP on every host interface, plus `MENTISDB_BIND_HOST` when it is a DNS
-name — that is enough for local-only use and for connecting to the daemon by
-its public DNS name.
-
-For remote / VPS / custom-hostname setups you may need to add a SAN that the
-daemon cannot infer on its own. The `mentisdb cert` subcommand mints a fresh
-self-signed certificate with an extra SAN of your choice, makes it the active
-cert on disk, and updates the local `.env` so the next daemon start serves the
-new cert automatically.
-
-```bash
-# 1. Standard cert into the default location
-#    (~/.cloudllm/mentisdb/tls/ and updates ./.env)
-mentisdb cert
-
-# 2. Add a public VPS IP as a SAN so the cert is valid for that IP
-mentisdb cert 192.0.2.10
-
-# 3. Add a custom DNS hostname
-mentisdb cert vps.example.com
-
-# 4. Regenerate an existing cert (e.g. after adding a new IP to the box)
-mentisdb cert 192.0.2.10 --force
-
-# 5. Reset to factory defaults: delete existing cert/key, then generate fresh
-mentisdb cert --reset
-
-# 6. Write to a non-default directory and update a custom .env file
-mentisdb cert 192.0.2.10 \
-    --out-dir /etc/mentisdb/tls \
-    --env-file /etc/mentisdb/mentisdb.env
-
-# 7. Print the values without touching any .env (for ephemeral hosts)
-mentisdb cert --no-env-update
-```
-
-### Options
-
-| Argument / Flag   | Description |
-|---|---|
-| `<ip-or-domain>`   | Optional IP literal or DNS hostname to add as a SAN. IPv4 and IPv6 literals become IP SANs; everything else becomes a DNS SAN. Omit to mint a cert with only the standard SAN set. |
-| `--force`          | Overwrite an existing `cert.pem` / `key.pem` on disk. Without this flag the command refuses to clobber a pre-existing cert so operators do not accidentally invalidate an already-trusted one. |
-| `--reset`          | Delete existing `cert.pem` / `key.pem` files first, then generate a fresh factory-default certificate. Implies `--force`. |
-| `--out-dir <path>` | Directory to write `cert.pem` and `key.pem` into. Defaults to the directory of `MENTISDB_TLS_CERT` (or `<MENTISDB_DIR>/tls/`). |
-| `--env-file <path>`| Path to the `.env` file to update with the new cert paths. Defaults to `./.env`. |
-| `--no-env-update`  | Skip updating the `.env` file. The cert is still minted, the SAN list and SHA-256 fingerprint are still printed, and the command prints the `export MENTISDB_TLS_CERT=...` lines for you to paste into a shell rc. |
-
-### When the new cert takes effect
-
-The new `cert.pem` and `key.pem` are written immediately and `MENTISDB_TLS_CERT` /
-`MENTISDB_TLS_KEY` are updated on disk. The running daemon keeps using the cert
-it loaded at startup, so **restart the daemon** (`Ctrl-C` in the TUI or stop
-the background process) for the new cert to be served on the next HTTPS
-request. Subsequent calls to `mentisdb cert` without `--force` reuse the
-existing cert so the in-flight HTTPS fingerprint stays stable across restarts.
-
-Cross-check the new cert from any machine with:
-
-```bash
-openssl s_client -connect <host>:9473 -showcerts </dev/null 2>/dev/n
+  daemon: `localhost`, `127.0.0.1`, `[::1]`, `my.mentisdb.com` (

@@ -34,7 +34,10 @@ are btop's. See [Credits](#credits).
 
 ## Changelog
 
-v0.1.1 - 2026-11-03 - Support for the later TensorFold build; PP counts only computed prompt tokens
+**v0.1.6 - 2026-11-08**
+
+- Release firmware is silent on serial; `SERIAL_LOG 1` in `config.h` turns the log back on for troubleshooting
+- Fix three compiler warnings
 
 All releases: [`CHANGELOG.md`](CHANGELOG.md)
 
@@ -91,6 +94,7 @@ Then edit `include/config.h`:
 #define WIFI_SSID   "your-2.4GHz-network"
 #define WIFI_PASS   "your-password"
 #define TZ_POSIX    "PST8PDT,M3.2.0,M11.1.0"   // your timezone as a POSIX TZ string
+#define HOSTNAME    "system-d-monitor"         // optional: the board's name on your network
 
 #define SERVERS {                                                          \
     {nullptr, "gpu-box.lan", 8000},    /* vLLM */                          \
@@ -98,11 +102,17 @@ Then edit `include/config.h`:
 }
 ```
 
+- Optional settings further down `config.h`: `ROTATE_S`, `POLL_MS`,
+  `BRIGHTNESS_PCT` and `SERIAL_LOG` (0 = silent, the default; 1 = serial log
+  for troubleshooting).
 - Each entry in `SERVERS` is `{label, host, port}`, and there can be 1–4.
   A `nullptr` label shows the host up to its first dot.
 - Use a host name your router's DNS resolves (`gpu-box.lan`) or an IP
   address. The ESP32 has no DNS search domain, so a bare `gpu-box` won't
   resolve.
+- `HOSTNAME` (optional, default `system-d-monitor`) is the name the board
+  gives your router. Many routers then resolve it, e.g. `system-d-monitor.lan`.
+  Up to 31 letters, digits or hyphens; anything else fails the build.
 - **Time zone:** the last line of `/usr/share/zoneinfo/<Area>/<City>` on
   macOS or Linux, or see this
   [list of POSIX TZ strings](https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv).
@@ -112,7 +122,7 @@ Then edit `include/config.h`:
 
 ```sh
 pio run -t upload           # builds, finds the serial port, flashes (~30 s)
-pio device monitor          # optional: serial log at 115200
+pio device monitor          # optional: serial log at 115200 (needs SERIAL_LOG 1)
 ```
 
 If it picks the wrong port, add `--upload-port <port>` (and `-p <port>` for
@@ -122,8 +132,10 @@ the monitor). Typical port names:
 - Linux: `/dev/ttyUSB0` (add yourself to the `dialout` group)
 - Windows: `COM3`
 
-**5. Done.** The board joins your Wi-Fi and starts polling. The serial log
-shows every poll:
+**5. Done.** The board joins your Wi-Fi and starts polling. The firmware is
+silent on serial by default. For troubleshooting, set `#define SERIAL_LOG 1`
+in `config.h` and flash again; the serial log then shows every poll, taps,
+server switches and a `mem` line every 10 s:
 
 ```
 [gpu-box] /metrics    ok, 67420 B, 198 ms, vLLM, 511 lines (19 used)
@@ -143,8 +155,15 @@ with Wi-Fi off) and shows `NO WIFI` with `no include/config.h`.
 | **hold 3 s** anywhere | screen off (the board keeps polling in the background) |
 | tap while off | screen back on |
 
-Theme, refresh rate, brightness, page and server survive a reboot. `ROTATE_S` in
+Theme, refresh rate, brightness, page and server survive a reboot (page and
+server are saved 9 s after you stop switching). `ROTATE_S` in
 `config.h` auto-advances between servers.
+
+Only the server on screen is polled; the others wait, so more servers don't
+add network load. Switching to one polls it at once: it shows `CONNECTING`
+for a moment, its graphs keep their history (with a gap for the time it was
+off screen), and live rates return within a poll or two. TG avg / max cover
+the time it was on screen. A server that's down is retried every 9 s at most.
 
 ![Settings](docs/images/settings.png)
 
@@ -154,7 +173,7 @@ Theme, refresh rate, brightness, page and server survive a reboot. `ROTATE_S` in
 |---|---|
 | **TG** / **PP** | decode (token generation) / prefill (prompt processing), in tokens per second. Always shown in two different colours |
 | **live** | tokens the server produced per real second, summed over every request running at once: throughput as seen from outside. Updates every poll |
-| **TG avg / max** | average and peak live TG since the monitor started (or the server restarted), counting only polls where it was generating |
+| **TG avg / max** | average and peak live TG since the monitor started (or the server restarted), counting only polls where it was generating and on screen |
 | **PP last** | prefill speed of the most recently finished request (prompt tokens ÷ its prefill seconds). Neither engine reports prefill progress live, so there's no live PP |
 | **prefilling Ns** | a request is running, no tokens have been generated yet and its KV cache is filling, so it's in prefill, N seconds so far |
 | **run x/max · wait n** | requests running (out of the batch limit; TensorFold only) and queued |
@@ -162,7 +181,7 @@ Theme, refresh rate, brightness, page and server survive a reboot. `ROTATE_S` in
 | **KV peak** | the highest KV reading in the recent history (the last 60 polls: 60 s at a 1 s refresh, 2 min at 2 s), so you can still see how full the cache got after a request finishes |
 | **Streams** | per-request slots (TensorFold). Columns read `no data` unless the server exports per-stream metrics (`SPEC.md`, Appendix A). When a request finishes, its row stays for **10 s** marked `done`, showing its final values, so you can still read it |
 | **TTFT · MTP · cache-hit** | mean time to first token · speculative-decoding acceptance (accepted ÷ drafted tokens) · prompt tokens served from the prefix cache |
-| **header** | `SYSTEM-D`, the date (MM-DD-YY) and time, and the board's Wi-Fi signal as braille bars `⣀⣤⣶⣿` (top right); then server name · IP with its state (`CONNECTING` just after boot, `OK IDLE`, `OK BUSY`, `STALE`, `DOWN`, `NO WIFI`, `UNKNOWN`); then engine · model |
+| **header** | `SYSTEM-D`, the date (MM-DD-YY) and time, and the board's Wi-Fi signal as braille bars `⣀⣤⣶⣿` (top right: green at 3–4 bars, orange at 2, red at 1); then server name · IP with its state, in the same colours in every theme: green `OK IDLE` / `OK BUSY` / `OK WARM`; orange `CONNECTING` (just after boot or a server switch), `OK RESTART`, `STALE`; red `DOWN`, `NO WIFI`, `UNKNOWN`; then engine · model |
 | **footer** | `≡` (settings), then `poll 2s · ok 0.4s ago`, or the problem (`timeout · retry 8s`, `dns gpu-box.lan`, `not TensorFold or vLLM`, …) |
 | **no data** | not exported, not received yet, or nothing happened in the window |
 
@@ -200,7 +219,8 @@ responses as a test fixture.
 ## How it works
 
 ```
-GPU server(s) ── HTTP /metrics every N s ──▶ one poller task per server (core 0)
+GPU server(s) ── HTTP /metrics every N s ──▶ one poller task per server (core 0, with
+                                               Wi-Fi; only the one on screen polls)
                                                streaming Prometheus parser,
                                                engine detection, rate derivation
                                                      │
@@ -212,6 +232,10 @@ GPU server(s) ── HTTP /metrics every N s ──▶ one poller task per serve
                                                               the PSRAM framebuffer
 ```
 
+- **Two cores:** networking (Wi-Fi and the pollers) runs on core 0, the
+  screen and touch on core 1, and they only meet at a small lock-protected
+  snapshot. A slow server can't freeze the screen. Details, shared
+  resources and a load estimate: SPEC.md §10 "Cores".
 - **Rates** come from the change in counters between polls. A counter that
   goes down means the server restarted, and rates start again from a new
   baseline.
@@ -233,6 +257,7 @@ GPU server(s) ── HTTP /metrics every N s ──▶ one poller task per serve
 pio test -e native                     # host tests: parser, derivation, layouts, touch hit-testing
 pio run                                # firmware build (no board needed)
 tools/render/screens.py                # re-render docs/images/*.png
+tools/render/social_preview.sh         # then refresh the screens in the social preview (ffmpeg)
 tools/update_golden.py                 # after an intentional layout change: refresh the test goldens
 tools/font/mkfont.py                   # regenerate the font from third_party/terminus/
 tools/themes/import_btop.py            # regenerate the themes from third_party/btop/
@@ -262,10 +287,18 @@ Board quirks to know before you change anything (details in
 - **Uploads:** use **460800** baud; 921600 corrupts over the CH340.
 - **Build flags:** build with **`-O2`**. This PlatformIO platform passes no
   optimisation flag, which means `-O0`.
-- **Bounce buffers:** use 2 × 20 lines, and no cache writeback after
-  drawing. Otherwise the screen flickers or glitches when Wi-Fi is busy.
-- **Start-up order:** start the panel **before** Wi-Fi, and never block
+- **Bounce buffers:** use 2 × 40 lines, and no cache writeback after
+  drawing. Otherwise the screen flickers or glitches when Wi-Fi is busy, or
+  now and then stays shifted until a reset.
+- **Start-up order:** start **Wi-Fi before the panel** (its start-up flash
+  work must be over before the display stream runs), and never block
   waiting for the connection.
+- **Flash writes:** keep them away from screen updates. A flash write
+  holds off the display's interrupts; page and server are saved 9 s after
+  the last switch.
+- **Memory:** about 101 KB of the 285 KB internal RAM stays free (lowest
+  95 KB), and 7.5 MB of the 8 MB PSRAM. With `SERIAL_LOG 1` the serial log
+  prints a `mem` line every 10 s; reference table in `docs/hardware-bringup.md` §1.
 
 ## Credits
 

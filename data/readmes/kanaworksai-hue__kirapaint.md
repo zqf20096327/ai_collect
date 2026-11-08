@@ -9,12 +9,13 @@
   <img alt="AI agent ready" src="https://img.shields.io/badge/AI_agent-ready-19b8d6?style=flat-square">
   <img alt="Free" src="https://img.shields.io/badge/price-free-2ea44f?style=flat-square">
   <a href="LICENSE"><img alt="License: GPL-3.0-or-later" src="https://img.shields.io/badge/license-GPL--3.0--or--later-6b4dff?style=flat-square"></a>
+  <a href="NOTICE.md"><img alt="Credit: KanaWorks_AI" src="https://img.shields.io/badge/credit-%40KanaWorks__AI-ff6aa2?style=flat-square"></a>
   <a href="https://github.com/kanaworksai-hue/kirapaint/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/kanaworksai-hue/kirapaint?style=flat-square&logo=github&label=stars&color=f5c518"></a>
 </p>
 
 <p><a href="https://github.com/kanaworksai-hue"><img src="docs/brand/kanaworks-mark.png" height="22" alt="" align="absmiddle"></a>&nbsp;<a href="https://github.com/kanaworksai-hue"><b>KanaWorks_AI のプロジェクト</b></a>&nbsp;·&nbsp;<a href="#-kanaworks-のアドオン">シリーズ一覧</a></p>
 
-**日本語** | [English](README.en.md) | [简体中文](README.zh-CN.md)
+**日本語** | [English](README.en.md) | [简体中文](README.zh-CN.md) | [한국어](README.ko.md) | [Português](README.pt-BR.md) | [Español](README.es.md)
 
 [🎨 ギャラリー](#-ギャラリー) · [🚀 はじめかた](#-はじめかた) · [🎛️ 調整できること](#️-調整できること) · [❓ FAQ](#-faq) · [⭐ Star で応援](#-star-で応援する)
 
@@ -26,7 +27,7 @@
 
 <p align="center">
   <img src="docs/hero.jpg" alt="同じモデルの適用前（左）と適用後（右）" width="820">
-  <br><sub>同じモデル、同じカメラ。左が普通のレンダリング、右が KiraPaint。</sub>
+  <br><sub>同じモデル、同じカメラ。左が通常のレンダー、右が KiraPaint。</sub>
 </p>
 
 ## ✨ 特長
@@ -40,9 +41,10 @@
 </tr>
 </table>
 
-- **元に戻せる：** マテリアルは置き換えません。**Remove** でマテリアル、ワールド、コンポジターが元どおりになります。
-- **大きさに合わせて自動調整：** 面の細かさと輪郭線の太さはモデルの大きさから、筆の大きさはレンダリング解像度から自動で決まります。
+- **元に戻せる：** マテリアルは置き換えません。「KiraPaint を解除」（Remove KiraPaint）でマテリアル、ワールド、コンポジターが元どおりになります。
+- **大きさに合わせて自動調整：** 面の細かさと輪郭線の太さはモデルの大きさから、筆の大きさはレンダー解像度から自動で決まります。
 - **写実 ↔ 2.5D を1本のスライダーで：** 「2.5D」の値をキーフレームにすれば、写実から絵画風に変わる演出がそのまま作れます。
+- **日本語の画面に対応：** Blender を日本語にしていれば、KiraPaint も自動で日本語になります。英語の Blender でも、パネル右上の🌐メニューで「日本語」を選べばパネルだけ日本語にできます。用語は Blender 公式の日本語訳（粗さ、薄膜、光沢、ブルーム、輪郭線の幅 など）に合わせています。
 - **背景は10種類：** 夜空パープル、星空ネイビー、さくらピンク、いちごミルク水玉、ミントソーダ、空色ソーダ、レモンクリーム、ピーチドリーム、マジックサンセット、ソフトスタジオ。パネルのサムネイルをクリックするだけで切り替わり、落書きの色も背景に合わせて変わります。
 - **ワンクリックのシーン設定：** EEVEE、照明一式（キーライト、リムライト、ツヤ専用の色つきライト5灯）、背景、コンポジターをまとめて設定します。
 - **チョークの落書き：** 星・ハート・うずまき・キラキラを、モデルに重ならない位置に自動で描きます。食べ物には湯気も。
@@ -81,7 +83,7 @@ flowchart LR
     C --> R["キラキラの 2.5D"]
 ```
 
-1. **KiraPaint Surface**（シェーダー）を、各マテリアルの Principled BSDF の前に差し込みます。ボロノイの面ごとに法線を傾けて表面を平らな小さな面に砕き、ツヤを上げ、薄膜の虹色を足します。
+1. **KiraPaint Surface**（シェーダー）を、各マテリアルの Principled BSDF の前に差し込みます。ボロノイの面ごとにノーマルを傾けて表面を平らな小さな面に砕き、ツヤを上げ、薄膜の虹色を足します。
 2. 小さな面がそれぞれ違う向きで、**色つきのライトと環境**を映します。これがダイヤを砕いたようなきらめきになります。
 3. **KiraPaint Comp**（コンポジター）が、ブルーム → シャープ → 異方性 Kuwahara 2種 → シャープ → ミックスで筆のタッチに塗り直し、いちばん明るい面に四方向の光を入れます。
 
@@ -114,9 +116,9 @@ Claude Code や Codex のような、パソコンを操作できる AI エージ
 
 1. モデルを選択（何も選ばなければシーンのすべてのメッシュ）
 2. スタイル（プリセット）と背景を選ぶ
-3. **Make It Kira**
-4. **2.5D** スライダーで写実と絵画風を行き来し、**Look** で微調整
-5. F12 でレンダリング（筆のタッチはコンポジターでかかるので、レンダー結果に出ます）
+3. **キラキラにする**（英語表示では **Make It Kira**）
+4. **2.5D** スライダーで写実と絵画風を行き来し、**ルック**（Look）で微調整
+5. F12 でレンダー（筆のタッチはコンポジターでかかるので、レンダー結果に出ます）
 
 <p align="center">
   <img src="docs/panel.png" alt="Blender の KiraPaint パネル" width="820">
@@ -125,21 +127,21 @@ Claude Code や Codex のような、パソコンを操作できる AI エージ
 ## 🎛️ 調整できること
 
 <details>
-<summary><b>Look パネルの項目</b></summary>
+<summary><b>「ルック」パネルの項目</b></summary>
 
 | 項目 | 内容 |
 |---|---|
-| 2.5D | 0 = 普通のレンダリング、1 = KiraPaint。キーフレームを打てます |
-| Stroke | 表面をどれだけ強く砕くか（法線のゆがみ） |
-| Facet Density | 面の細かさ。1 でモデル全体に約 6 個 |
-| Gloss | 面のツヤ（ラフネスを 0.06 に近づける量） |
-| Iridescence | 薄膜によるピンク・水色の虹色 |
-| Brush Size | 筆の大きさ（1080p でのピクセル数。解像度に合わせて自動換算） |
-| Sparkle | 星の光の強さと、ツヤ専用ライトの明るさ |
-| Bloom | ふんわりした光のにじみ |
-| Outline Width | 輪郭線の太さ（モデルの大きさに比例）。0 で無し |
-| Background | 10種類の背景（サムネイルから選択）か Keep Mine（自分のワールドを残す） |
-| Chalk Doodles / Steam | 落書きと湯気 |
+| 2.5D | 0 = 通常のレンダー、1 = KiraPaint。キーフレームを打てます |
+| 砕け具合（Stroke） | 表面を小さな面に砕く強さ（ノーマルのゆがみ） |
+| 面の細かさ（Facet Density） | 大きいほど面が細かくなります。1 でモデルの幅に約 6 個 |
+| 光沢（Gloss） | 面のツヤ（粗さを 0.06 に近づける量） |
+| 虹色（薄膜）（Iridescence） | 薄膜によるピンク・水色の虹色 |
+| ブラシサイズ（Brush Size） | 筆の大きさ（1080p でのピクセル数。解像度に合わせて自動換算） |
+| 星の光（Sparkle） | 星の光の強さと、ツヤ専用ライトの明るさ |
+| ブルーム（Bloom） | ふんわりした光のにじみ |
+| 輪郭線の幅（Outline Width） | 輪郭線の太さ（モデルの大きさに比例）。0 で無し |
+| 背景（Background） | 10種類の背景（サムネイルから選択）か「自分のワールドを使う」（Keep Mine） |
+| チョークの落書き・湯気（Chalk Doodles / Steam） | 落書きと湯気 |
 
 </details>
 
@@ -148,28 +150,36 @@ Claude Code や Codex のような、パソコンを操作できる AI エージ
 
 | プリセット | 雰囲気 |
 |---|---|
-| **Kira**（初期設定） | ツヤのある面と色つきの光、星のきらめき。砕いたダイヤの質感 |
-| **Soft Paint** | やわらかい油絵風。きらめきは控えめ |
-| **Bold Ink** | 太い輪郭線とくっきりしたタッチ |
-| **Dreamy** | 虹色と光のにじみが強い、ゆめかわいい仕上がり |
+| **キラ（砕いたダイヤ）**（Kira・初期設定） | ツヤのある面と色つきの光、星のきらめき。砕いたダイヤの質感 |
+| **ソフトペイント**（Soft Paint） | やわらかい油絵風。きらめきは控えめ |
+| **くっきりインク**（Bold Ink） | 太い輪郭線とくっきりしたタッチ |
+| **ゆめかわ**（Dreamy） | 虹色と光のにじみが強い、ゆめかわいい仕上がり |
 </details>
 
 <details>
 <summary><b>アニメーション</b></summary>
 
-**Scene & Animation** パネルから：
+「シーンとアニメーション」（Scene & Animation）パネルから：
 
-- **Add Reveal：** 今のフレームから「2.5D」を 0→1 にキーフレーム。写実から絵画風に変わります。
-- **Add Turntable：** モデルを中心の空のオブジェクトにまとめて回転。ライトとカメラは動かないので、ツヤの光が面の上を流れます。
-- **Re-aim Lights / Redraw Doodles：** カメラを動かしたあとに、ライトと落書きを置き直します。
+- **2.5D 切り替えを追加（Add Reveal）：** 今のフレームから「2.5D」を 0→1 にするキーフレームを挿入。写実から絵画風に変わります。
+- **ターンテーブルを追加（Add Turntable）：** モデルを中心の空のオブジェクトにまとめて回転。ライトとカメラは動かないので、ツヤの光が面の上を流れます。
+- **ライトを再配置・落書きを描き直す（Re-aim Lights / Redraw Doodles）：** カメラを動かしたあとに、ライトと落書きを置き直します。
 </details>
 
 ## ❓ FAQ
 
 <details>
+<summary><b>日本語で使えますか？</b></summary>
+
+はい。Blender の言語を日本語にしていれば（編集 → プリファレンス → インターフェイス → 翻訳）、パネル・ツールチップ・メッセージが自動で日本語になります。Blender は英語のまま使いたい場合は、KiraPaint パネル右上の🌐メニューで「日本語」を選んでください（アドオン設定からも変えられます）。
+
+<img src="docs/panel_languages.png" alt="日本語の Blender、英語の Blender でパネルだけ日本語、英語" width="820">
+</details>
+
+<details>
 <summary><b>Cycles でも使えますか？</b></summary>
 
-マテリアル部分は Cycles でも動きますが、筆のタッチと星の光はコンポジターでかけているので、仕上がりは EEVEE 前提で調整しています。**Make It Kira** を押すと EEVEE に切り替わります。
+マテリアル部分は Cycles でも動きますが、筆のタッチと星の光はコンポジターでかけているので、仕上がりは EEVEE 前提で調整しています。「キラキラにする」（Make It Kira）を押すと EEVEE に切り替わります。
 </details>
 
 <details>
@@ -187,14 +197,30 @@ Claude Code や Codex のような、パソコンを操作できる AI エージ
 <details>
 <summary><b>元のマテリアルはどうなりますか？</b></summary>
 
-置き換えません。各 Principled BSDF の前に「KiraPaint Surface」ノードを差し込み、元のつながりと値を覚えておきます。**Remove KiraPaint** で元どおりになります。Principled BSDF を使っていないマテリアル（MochiToon のトゥーンマテリアルや、エミッションだけのものなど）はスキップして、報告します。
+置き換えません。各プリンシプルBSDF の前に「KiraPaint Surface」ノードを差し込み、元のつながりと値を覚えておきます。「KiraPaint を解除」（Remove KiraPaint）で元どおりになります。プリンシプルBSDF を使っていないマテリアル（MochiToon のトゥーンマテリアルや、エミッションだけのものなど）はスキップして、報告します。
 </details>
 
 <details>
 <summary><b>作った画像や動画は商用で使えますか？</b></summary>
 
-はい。KiraPaint で作ったレンダリング画像や動画は、あなたの作品として自由に使えます。GPL が適用されるのはアドオン本体のコードで、それを使って作った作品には及びません（使ったモデルやテクスチャのライセンスには従ってください）。
+はい。KiraPaint で作ったレンダー画像や動画は、あなたの作品として自由に使えます。GPL が適用されるのはアドオン本体のコードで、それを使って作った作品には及びません（使ったモデルやテクスチャのライセンスには従ってください）。クレジットは必要ありませんが、`Made with KiraPaint by @KanaWorks_AI` と入れてもらえると嬉しいです。
 </details>
+
+## 📝 クレジット表記
+
+KiraPaint は無料で、商用でも使えます。
+
+**アドオンを再配布・改変・同梱するとき**（フォーク、改変版、移植版、パックや製品への同梱など。有償・無償を問いません）は、次の表記をアドオンの説明文とドキュメントにそのまま残すことが**必須**です（GPL-3.0 第7条(b)に基づく追加条項。詳しくは [NOTICE.md](NOTICE.md)）。
+
+```
+KiraPaint by KanaWorks_AI (@KanaWorks_AI) — https://github.com/kanaworksai-hue/kirapaint
+```
+
+**作った画像や動画**にはクレジットは必要ありません。よければ投稿文や概要欄に入れてもらえると嬉しいです。
+
+```
+Made with KiraPaint by @KanaWorks_AI
+```
 
 ## ⭐ Star で応援する
 
@@ -239,7 +265,7 @@ agent/kirapaint_agent.py  AI エージェント用のコマンドライン
 
 ## 📄 ライセンスとクレジット
 
-- **このアドオン：** Copyright © 2026 東京AI映像合同会社。[GPL-3.0-or-later](LICENSE) で公開しています。
+- **このアドオン：** Copyright © 2026 東京AI映像合同会社。[GPL-3.0-or-later](LICENSE) で公開しています（再配布時のクレジット表記を求める追加条項付き。[NOTICE.md](NOTICE.md)）。
 - **ブランド：** KanaWorks_AI の名称、ロゴ、キャラクター Kana の権利は東京AI映像合同会社に帰属し、GPL の対象**外**です。詳しくは [docs/brand](docs/brand/README.md) を見てください。
 - **サンプル画像のモデル：** 作者が用意したモデル、CC0 のモデル、Blender 標準の Suzanne です。
 - **しくみの元になった手法：** Kuwahara フィルターとノイズでゆがめた法線による絵画風の表現は、Blender コミュニティで広く共有されている手法です。

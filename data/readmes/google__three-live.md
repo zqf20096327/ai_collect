@@ -110,12 +110,18 @@ Render a 4-up orthographic/camera contact sheet (zero GPU required), run the
 spatial linter for JSON frustum/overlap telemetry, compile `scene.js` to `.glb`
 / `.usdz`, or attach `three-live-cli mcp` as a zero-dependency **Model Context
 Protocol (MCP)** stdio server (`three_live_validate`, `three_live_render`,
-`three_live_convert`, `three_live_sim`) in Claude Code, Cursor, Gemini CLI, or
-Windsurf:
+`three_live_convert`, `three_live_sim`, `three_live_link`) in Gemini CLI, Google
+Antigravity, Claude Code, or any MCP client. `three-live-cli link scene.js --qr`
+prints a playground link (and a terminal QR code) that opens the scene on a
+phone, one tap from AR. Building from a photo, mockup, sketch, or blueprint? Pass
+`--reference` (or `reference` in MCP) to get a side-by-side + aligned-overlay +
+silhouette-diff sheet with IoU and proportion guidance:
 
 ```bash
 $ npx three-live-cli render scene.js --view=quad --grid --annotations -o contact_sheet.png
+$ npx three-live-cli render scene.js --reference=blueprint.png --view=front -o compare.png
 $ npx three-live-cli validate scene.js --json
+$ npx three-live-cli link scene.js --qr
 $ npx three-live-cli convert scene.js -o model.usdz
 
 # Or register the built-in MCP server for closed-loop visual + spatial AI verification:
@@ -152,14 +158,14 @@ scene.add(mesh);
 
         ```kotlin
         dependencies {
-          implementation("com.github.google.three-live:compiler:v1.3.1")
+          implementation("com.github.google.three-live:compiler:v1.3.2")
           // Optional adapters: :filament, :firebase-ai, :detect-mlkit, :hands-androidxr, :hands-mediapipe
         }
         ```
     *   **GitHub Packages Maven
         (`https://maven.pkg.github.com/google/three-live`):** Configure the
         repository in `settings.gradle.kts` and add
-        `implementation("com.google.threelive:compiler:1.3.1")` (plus optional
+        `implementation("com.google.threelive:compiler:1.3.2")` (plus optional
         `:filament`, `:firebase-ai`, `:detect-mlkit`, `:hands-androidxr`,
         `:hands-mediapipe`).
     *   **Prebuilt AAR:** Download `three-live-compiler-release.aar` (includes
@@ -168,9 +174,9 @@ scene.add(mesh);
         **[GitHub Releases](https://github.com/google/three-live/releases)**
         into `app/libs/` and add
         `implementation(files("libs/three-live-compiler-release.aar"))`.
-    *   **Maven Local (`com.google.threelive:compiler:1.3.1`):** Run
+    *   **Maven Local (`com.google.threelive:compiler:1.3.2`):** Run
         `./gradlew :mobile:android:publishReleasePublicationToMavenLocal` and
-        add `implementation("com.google.threelive:compiler:1.3.1")`.
+        add `implementation("com.google.threelive:compiler:1.3.2")`.
     *   **From source:** Run `make android` (or
         `bash scripts/build_android_aar.sh`).
 *   **2. iOS, macOS, and visionOS (Swift Package Manager):**
@@ -259,7 +265,7 @@ The following table compares the two runtime tiers across Android, iOS, and Web:
 | **Three.js JIT compiler** | Yes (sandboxed Rust `Boa`/QuickJS VM on Android/iOS/CLI, Web Worker on Web) | Yes (inherits `three-author` JIT compiler plus `userData.xr` spatial traits) |
 | **Android & iOS runtime** | Google Filament (`FilamentHelper`), Apple RealityKit (`RealityKitHelper`), and `.glb`/`.usdz` export | Native Android (`Filament` + Jetpack XR `SceneCore` + `XRLiveRuntimeSession`) and native iOS/visionOS (`RealityKit` + `XRLiveRealityKitSession`) |
 | **Spatial interaction** | Orbit controls, mesh picking, 3D surface hotspots, `KHR_interactivity` | Declarative `userData.xr` traits (`grab`, `scale`, `billboard`, `anchor`, `handles`, `snapTo`, `gaze`, `explode`, `navigable`, `sync`, `audioEmitter`), 15 spatial plugins, 6 `xr-live-sim` simulation plugins, 25-joint hands, and `KHR_interactivity` |
-| **Web bundle budget** | **`< 30 KB gz`** (viewer), **`< 72 KB gz`** (`three-live.min.js`) | **`< 54 KB gz`** (viewer), **`< 84 KB gz`** (`xr-live.min.js`), **`< 209 KB gz`** (`xr-live-full.min.js`) |
+| **Web bundle budget** | **`< 30 KB gz`** (viewer), **`< 72 KB gz`** (`three-live.min.js`) | **`< 54 KB gz`** (viewer), **`< 84 KB gz`** (`xr-live.min.js`), **`< 239 KB gz`** (`xr-live-full.min.js`) |
 <!-- mdformat on -->
 
 ### HTML attribute compatibility with `<model-viewer>`
@@ -287,7 +293,7 @@ custom element name when `@google/model-viewer` is not loaded.
 | **Target platforms** | Web Custom Element (`<model-viewer>`). | Native **Android** SDK (`ThreeCompiler` JNI + Google Filament / Jetpack XR), native **iOS / visionOS** SDK (`ThreeCompiler` XCFramework + RealityKit), **Rust CLI / MCP server** (`three-live-cli`), and **Web** Custom Elements (`<three-live>`, `<xr-live>`). |
 | **Post-processing & effects** | Provided via the companion `@google/model-viewer-effects` package (`<effect-composer>`, `<bloom-effect>`, `<outline-effect>`). | Built-in HTML attributes (`bloom`, `bloom-threshold`, `bloom-radius`, `outline`, `outline-selected`, `outline-color`, `tone-mapping`) with no external effect dependencies. |
 | **Interactivity & simulation** | Camera orbit/pan/zoom, animation playback, material variants, hotspots, and scene-graph material API. | Includes the above plus glTF `KHR_interactivity` behavior graphs, declarative `userData.xr` spatial traits (`grab`, `scale`, `anchor`, `snapTo`), and 60 Hz deterministic simulation plugins (`rigid-body`, `character-controller`, `navigation`, `objectives`). |
-| **Web bundle size (gzipped)** | Full Three.js renderer + glTF pipeline (~250 KB gz). | Modular tiers: `< 30 KB gz` (`three-live-viewer`), `< 72 KB gz` (`three-live`), `< 113 KB gz` (`three-live-full`), `< 209 KB gz` (`xr-live-full`). |
+| **Web bundle size (gzipped)** | Full Three.js renderer + glTF pipeline (~250 KB gz). | Modular tiers: `< 30 KB gz` (`three-live-viewer`), `< 72 KB gz` (`three-live`), `< 140 KB gz` (`three-live-full`), `< 239 KB gz` (`xr-live-full`). |
 <!-- mdformat on -->
 
 ### Modular plugins across Android, iOS, and Web
@@ -300,10 +306,11 @@ live Three.js scenes:
     Three.js compiler in `three-live.min.js`), and the WebXR viewer
     (`xr-live-viewer.min.js`) is `< 54 KB gz` (`< 84 KB gz` with the live
     Three.js compiler in `xr-live.min.js`).
-*   **Core 3D, CAD, and animation plugins (`three-live`, 15 plugins):** Optional
+*   **Core 3D, CAD, procedural, and animation plugins (`three-live`, 16 plugins):** Optional
     domain bundles (`three-live-studio.min.js` at `< 29 KB gz`,
-    `three-live-cad.min.js` at `< 10 KB gz`, and `three-live-animation.min.js`
-    at `< 11 KB gz`, or `< 113 KB gz` combined in `three-live-full.min.js`) add
+    `three-live-cad.min.js` at `< 10 KB gz`, `three-live-procedural.min.js` at
+    `< 26 KB gz`, and `three-live-animation.min.js`
+    at `< 11 KB gz`, or `< 140 KB gz` combined in `three-live-full.min.js`) add
     `KHR_interactivity` behavior graphs, PBR Next materials,
     `KHR_materials_variants`, `EXT_meshopt_compression`, HDRI and
     spherical-harmonics lighting, contact shadows, 3D hotspots, post-processing
@@ -322,11 +329,12 @@ live Three.js scenes:
     (`~2 to 5 KB gz` each) with a matching native implementation in the Android
     and iOS SDKs.
 *   **Simulation and scenario plugins (`xr-live-sim.min.js`, 6 plugins,
-    `< 26 KB gz`):** Six plugins for games, training drills, and safety
+    `< 30 KB gz`):** Six plugins for games, training drills, and safety
     walkthroughs add a controllable character, autonomous steering agents,
-    deterministic 60 Hz rigid-body physics (`rigid-body`), integrity and trigger
-    zones, checklist objectives with scoring and timers, and procedural audio
-    cues across Android, iOS, and Web.
+    deterministic 60 Hz rigid-body physics and mechanical joints (`rigid-body` /
+    `joint`: `hinge`, `slider`, `spring`, `ball`), integrity and trigger zones,
+    checklist objectives with scoring and timers, and procedural audio cues
+    across Android, iOS, and Web.
 
 #### Core 3D, CAD, and animation plugins (`three-live`)
 
@@ -346,6 +354,7 @@ The following table lists the fifteen modular 3D, CAD, and animation plugins:
 | **`postprocessing`** | `bloom`, `outline`, `tone-mapping`, `xr.bloom`, `xr.outline` | Dual-Kawase mipmap bloom, selection/hover silhouette outlines, and `neutral`, `aces`, `agx`, `reinhard`, and `none` tone mapping. |
 | **`lod`** | `THREE.LOD`, `xr.lod`, `MSFT_lod` | Distance-based multi-tier Level-of-Detail switching with hysteresis, far-distance culling, automatic vertex-clustering mesh decimation (`decimateGeometry`), and `MSFT_lod` / `KHR_node_visibility` export. |
 | **`cad`** | `THREE.Shape`, `THREE.ExtrudeGeometry`, `THREE.CSG`, `THREE.TextGeometry` | 2D `Path`/`Shape` with ear-clipping hole triangulation, `ExtrudeGeometry` with beveling, 3D BSP `CSG` Booleans (`union`, `subtract`, `intersect`), and stroke-font `TextGeometry`. |
+| **`procedural`** | `THREE.Box3`, `THREE.Sphere`, `THREE.CanvasTexture`, `THREE.SimplexNoise`, `THREE.ImprovedNoise`, `THREE.Sprite`, `THREE.SplineCurve`, `THREE.GridHelper` | Extended 3D bounding-volume helpers (`Box3`, `Sphere`, `setFromObject`, `expandByObject`, `InstancedMesh` bounds), `CanvasTexture` with a zero-DOM headless 2D `<canvas>` rasterizer (`document.createElement('canvas').getContext('2d')`), deterministic `ImprovedNoise` and `SimplexNoise` heightmap/field generators, camera-facing `Sprite` / `SpriteMaterial` billboards, 2D curves (`LineCurve`, `QuadraticBezierCurve`, `CubicBezierCurve`, `SplineCurve`, `EllipseCurve`, `ArcCurve`, `CurvePath`), and exportable scene helpers (`GridHelper`, `AxesHelper`, `ArrowHelper`, `BoxHelper`, `Box3Helper`). |
 | **`skinning`** | `animation-name`, `autoplay` | 64-joint GPU vertex skinning and skeletal hierarchy evaluation. |
 | **`morph`** | `morphTargetInfluences` | GPU morph-target vertex displacement and weight blending. |
 | **`keyframes`** | `animationCrossfadeDuration` | Linear, step, and cubic-spline (`CUBICSPLINE`) TRS keyframe interpolation with smooth clip cross-fading. |
@@ -397,7 +406,7 @@ iOS RealityKit, and Web:
 | :--- | :--- | :--- |
 | **`character-controller`** | `character-controller`, `xr.character` | Capsule kinematics with floor and slope stepping, jump with coyote time, keyboard, gamepad, and touch-joystick input, and `third-person`, `first-person`, `top-down`, or `fixed-camera` rig follow. |
 | **`steering-agents`** | `steering-agents`, `xr.agent` | Autonomous kinematic agents (`patrol`, `chase`, `flee`, `follow`, and `wander`) with vision-cone target acquisition, obstacle avoidance, and `agentstatechange` and `agentreach` events. |
-| **`rigid-body`** | `xr.physics`, `xr.rigidBody` | Deterministic 60 Hz Sequential Impulse rigid-body solver (`dynamic`, `static`, `kinematic`; `box`, `sphere`, `cylinder`, `auto`; `mass`, `restitution`, `friction`, damping, sleeping, and `xrcollision` / `xrsleep` events) plus USDZ `PhysicsRigidBodyAPI` / `PhysicsMassAPI`. |
+| **`rigid-body`** | `xr.physics`, `xr.rigidBody`, `xr.joint` | Deterministic 60 Hz Sequential Impulse rigid-body solver (`dynamic`, `static`, `kinematic`; `box`, `sphere`, `cylinder`, `auto`; `mass`, `restitution`, `friction`, damping, sleeping, and `xrcollision` / `xrsleep` events), mechanical joint constraints (`hinge`, `slider`, `spring`, `ball` with limits, motors, and damped springs), and USDZ `PhysicsRigidBodyAPI` / `PhysicsMassAPI` / `Physics*Joint` export. |
 | **`hit-zones`** | `hit-zones`, `xr.integrity`, `xr.zone`, `xr.spawner` | Part and target `integrity` with world-space bars, hit flashes, `projectile`, `hitscan`, and `contact` interactions, burst fragments, colored trigger `zone` volumes, and timed template `spawner` pooling. |
 | **`objectives`** | `objectives`, `scenario-timer`, `target-score`, `attempts`, `xr.objective` | Ordered or unordered checklist objectives (`reach`, `clear`, `collect`, `activate`, and `hold`), score, attempt counter, countdown timer, HUD overlay (`sim-hud`), and `scenario-reset-key` resets. |
 | **`synth-audio`** | `synth-audio`, `synth-volume`, `xr.audioCues` | Zero-asset procedural audio synthesis (`beep`, `chime`, `buzz`, `thud`, `sweep`, `click`, `alarm`, and `whoosh`) bound to simulation events via Android `AudioTrack`, iOS `AVAudioEngine`, and Web Audio. |
@@ -415,14 +424,15 @@ Every web bundle targets `es2020`, strips full license blocks
 |  | **`three-live.min.js`** | **`< 72 KB gz`** | Standard `<three-live>` + **`three-author`** (live Three.js compiler, `InstancedMesh` GPU instancing, `KHR_interactivity` compiler, 5 tone-mapping modes, contact shadows) + AR packager. |
 |  | **`three-live-studio.min.js`** | **`< 29 KB gz`** | Add-on plugin: PBR Next extensions, HDRI and SH irradiance, `bloom`/`outline` post-processing, `KHR_materials_variants`, `EXT_meshopt_compression`, `KHR_interactivity` VM, `lod` (`THREE.LOD` / `MSFT_lod`), 3D hotspots, and WebXR AR. |
 |  | **`three-live-cad.min.js`** | **`< 10 KB gz`** | Add-on plugin: 2D `Path`/`Shape` with ear-clipping hole triangulation, `ExtrudeGeometry` with beveling, 3D `CSG` BSP Booleans (`union`, `subtract`, `intersect`), and 3D stroke-font `TextGeometry`. |
+|  | **`three-live-procedural.min.js`** | **`< 26 KB gz`** | Add-on plugin: `Box3` & `Sphere` bounding-volume helpers, `CanvasTexture` + headless 2D `<canvas>` rasterizer, `ImprovedNoise`, `SimplexNoise`, `MathUtils.seededRandom`, `Sprite` billboards, 2D curves (`SplineCurve`, `EllipseCurve`, `CurvePath`), and exportable scene helpers (`GridHelper`, `AxesHelper`, `ArrowHelper`, `BoxHelper`, `Box3Helper`). |
 |  | **`three-live-animation.min.js`** | **`< 11 KB gz`** | Add-on plugin: 64-joint GPU skeletal skinning, morph targets, animation cross-fading, and two-bone / FABRIK inverse kinematics (`ik` / `THREE.IKSolver`). |
-|  | **`three-live-full.min.js`** | **`< 113 KB gz`** | All-in-one 3D bundle (`three-live` + `studio` + `cad` + `animation`, all 15 plugins auto-registered). |
+|  | **`three-live-full.min.js`** | **`< 140 KB gz`** | All-in-one 3D bundle (`three-live` + `studio` + `cad` + `procedural` + `animation`, all 16 plugins auto-registered). |
 | **`xr-live`** | **`xr-live-viewer.min.js`** | **`< 54 KB gz`** | Lean `.glb` and `.usdz` WebXR viewer + spatial traits (`grab`, `scale`, `billboard`, `anchor`), `<div slot="spatial">`, and mobile AR bridge. |
 |  | **`xr-live.min.js`** | **`< 84 KB gz`** | Standard `<xr-live>` + **`three-author`** (live Three.js compiler) + runtime USDZ and GLB compiler. |
 |  | **`xr-live-sensors.min.js`** | **`< 10 KB gz`** | Add-on plugin: Hardware XR sensors (`XRDepthManager`, `XRHeightfieldPhysics`, 25-joint `XRHandGestureClassifier`), `XRDesktopSimulator`, Spatial Audio, Skybox, and WebMCP tools. |
 |  | **`xr-live-spatial.min.js`** | **`< 63 KB gz`** | Add-on plugin bundle registering all 15 spatial plugins (`head-follow`, `manipulation-handles`, `world-understanding`, `gemini-live`, `spatial-paint`, `depth-particles`, `splat-loader`, `spatial-measure`, `magnetic-snap`, `gaze-dwell`, `exploded-view`, `persistent-anchors`, `spatial-locomotion`, `shared-room`, `spatial-audio`). |
-|  | **`xr-live-sim.min.js`** | **`< 26 KB gz`** | Add-on simulation plugin bundle registering all six simulation plugins (`character-controller`, `steering-agents`, `rigid-body`, `hit-zones`, `objectives`, `synth-audio`). |
-|  | **`xr-live-full.min.js`** | **`< 209 KB gz`** | All-in-one 3D, XR, and simulation bundle (`three-live-full` + `xr-live` + `xr-live-sensors` + all 15 spatial plugins + all 6 simulation plugins). |
+|  | **`xr-live-sim.min.js`** | **`< 30 KB gz`** | Add-on simulation plugin bundle registering all six simulation plugins (`character-controller`, `steering-agents`, `rigid-body` + mechanical `joint` constraints, `hit-zones`, `objectives`, `synth-audio`). |
+|  | **`xr-live-full.min.js`** | **`< 239 KB gz`** | All-in-one 3D, XR, and simulation bundle (`three-live-full` + `xr-live` + `xr-live-sensors` + all 15 spatial plugins + all 6 simulation plugins). |
 <!-- mdformat on -->
 
 ### Safe execution for live, AI-generated Three.js

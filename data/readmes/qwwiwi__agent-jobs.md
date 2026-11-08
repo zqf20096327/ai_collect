@@ -1,15 +1,15 @@
-<p align="center"><img src="docs/images/banner.png" alt="Agent Jobs" width="100%"></p>
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/banner-dark.png"><source media="(prefers-color-scheme: light)" srcset="docs/images/banner-light.png"><img src="docs/images/banner-dark.png" alt="agent jobs" width="100%"></picture></p>
 
 # Agent Jobs
 
 > **Read in your language:** English (this page) · [**Русская версия →**](README.ru.md)
 
-[![Release](https://img.shields.io/github/v/release/qwwiwi/agent-jobs?include_prereleases&sort=semver)](https://github.com/qwwiwi/agent-jobs/releases)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Go 1.27](https://img.shields.io/badge/Go-1.27-00add8.svg)](go.mod)
-[![Claude Code](https://img.shields.io/badge/Claude_Code-claude_--p-d97757.svg)](https://code.claude.com/docs/en/headless)
-[![Platform: Linux | macOS](https://img.shields.io/badge/platform-Linux_%7C_macOS-555.svg)](#quick-start)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#license-and-author)
+[![Release](https://img.shields.io/github/v/release/qwwiwi/agent-jobs?include_prereleases&sort=semver&labelColor=1A1B18&color=696A61&style=flat-square)](https://github.com/qwwiwi/agent-jobs/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-696A61?labelColor=1A1B18&color=696A61&style=flat-square)](LICENSE)
+[![Go 1.27](https://img.shields.io/badge/Go-1.27-696A61?labelColor=1A1B18&color=696A61&style=flat-square)](go.mod)
+[![Claude Code](https://img.shields.io/badge/Claude_Code-claude_--p-696A61?labelColor=1A1B18&color=696A61&style=flat-square)](https://code.claude.com/docs/en/headless)
+[![Platform: Linux | macOS](https://img.shields.io/badge/platform-Linux_%7C_macOS-696A61?labelColor=1A1B18&color=696A61&style=flat-square)](#quick-start)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-696A61?labelColor=1A1B18&color=696A61&style=flat-square)](#license-and-author)
 
 ## One brief in. Finished work out.
 
@@ -77,7 +77,7 @@ Every job needs `--model` or `--complexity`. Full setup (all config keys, the sh
 
 **Each job runs on its own.** A job is a separate process with a full context of its own. It commits locally; in a Claude job the guard blocks pushes, releases, PR and issue writes and messages to other sessions (the direct spellings: the guard is [not a sandbox](docs/GUIDE.md#safety)). It survives a restart of the session or the daemon. A Claude job stopped at its turn limit or timeout is continued once automatically, with half of its first limits again, and a stopped Claude job can be resumed in the same session with new instructions. A Codex job has no guard (the codex sandbox contains it, read-only unless `codex_write_allowed`) and is neither continued nor resumed.
 
-<p align="center"><img src="docs/images/swarm.png" alt="The main session hands work to many jobs and gets a check mark back from each" width="100%"></p>
+<p align="center"><img src="docs/images/swarm-v2.png" alt="The main session hands work to many jobs and gets a check mark back from each" width="100%"></p>
 
 **The main session orchestrates.** It talks to the owner, writes a brief for each job (a job has none of the conversation), starts it and goes back to work. When a job ends, it reads the report («Not done / uncertain» first), checks the diff against the base commit, decides, and only then pushes, merges or deploys. It is the only part that goes outside. Day-to-day routing and the pipeline are in [docs/WORKFLOW.md](docs/WORKFLOW.md).
 
@@ -89,7 +89,7 @@ Every job needs `--model` or `--complexity`. Full setup (all config keys, the sh
 
 ## Large tasks: from one brief to a checked release
 
-<p align="center"><img src="docs/images/brief-flow.png" alt="Brief, checklist, jobs, self-check, release: one brief in, finished work out" width="100%"></p>
+<p align="center"><img src="docs/images/brief-flow-v2.png" alt="Brief, checklist, jobs, self-check, release: one brief in, finished work out" width="100%"></p>
 
 For a large task (a new project, or a feature with more than 5 requirements, several jobs or more than a day of work), the brief flow keeps the owner's words as the contract from start to finish. The session opts in with `checklist_init`; a `UserPromptSubmit` hook reminds it while a checklist decision is pending. A job's size is optional: `covers` imply `large`, otherwise `small` (config `size_required` makes every fix or general job declare it).
 
@@ -174,11 +174,11 @@ Details: [docs/GUIDE.md, Limits](docs/GUIDE.md#limits) (codex runner, commits an
 
 ## How it works
 
-<p align="center"><img src="docs/images/architecture.png" alt="Main session, daemon, job, job folder, owner and schedules" width="100%"></p>
+<p align="center"><img src="docs/images/architecture-v2.png" alt="Main session, daemon, job, job folder, owner and schedules" width="100%"></p>
 
 The **main session** starts jobs and reviews their work. The **daemon** ticks once a minute. It launches queued jobs, collects finished ones, delivers job-done lines and cleans up, and it keeps no state in memory. The **queue** is one SQLite table per agent. Each **job** runs `claude -p` in its own process group and git worktree, and its **job folder** keeps the brief, settings, event stream, report and patches. **Schedules** and **checks** run on the same tick.
 
-<p align="center"><img src="docs/images/lifecycle.png" alt="job_start, queued, running, report, job-done line, job_result, review and push, cleanup" width="100%"></p>
+<p align="center"><img src="docs/images/lifecycle-v2.png" alt="job_start, queued, running, report, job-done line, job_result, review and push, cleanup" width="100%"></p>
 
 `job_start` queues the job and returns its id at once. The daemon launches it when a slot is free, and the job writes `report.md`. The session receives one line:
 

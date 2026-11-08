@@ -9,12 +9,13 @@
 [![release](https://img.shields.io/github/v/release/raven-clown/transponder?style=for-the-badge&color=A855F7)](https://github.com/raven-clown/transponder/releases)
 [![Go Reference](https://img.shields.io/badge/go-reference-A855F7?style=for-the-badge&logo=go&logoColor=white)](https://pkg.go.dev/github.com/raven-clown/transponder)
 [![license](https://img.shields.io/badge/license-Apache--2.0-A855F7?style=for-the-badge)](LICENSE)
+[![openssf scorecard](https://img.shields.io/ossf-scorecard/github.com/raven-clown/transponder?style=for-the-badge&label=openssf%20scorecard)](https://scorecard.dev/viewer/?uri=github.com/raven-clown/transponder)
 
 </div>
 
 An LLM gateway that knows who is spending what. One Go binary in front of Anthropic, OpenAI, Gemini and Ollama, with fallback across providers, cost per user from your own identity provider, and budgets that hold across replicas. Every feature is free.
 
-> **Status: early, [v0.2.0](https://github.com/raven-clown/transponder/releases/tag/v0.2.0).** Milestones 1 to 3 are released: the binary starts with no config, prints an admin key, and serves chat completions (plain and streamed), embeddings and a model list from OpenAI, Ollama, OpenRouter, LiteLLM, Cloudflare AI Gateway or any OpenAI-compatible server, with token counts and cost on every response. The Anthropic API comes next. The design is settled in [docs/design.md](docs/design.md) and the work is tracked in [issues](https://github.com/raven-clown/transponder/issues). Star or watch the repository to follow along, and see [How to help](#how-to-help) if you want to build it with us.
+> **Status: early, [v0.2.2](https://github.com/raven-clown/transponder/releases/tag/v0.2.2).** Releases up to v0.2.2 are out: the binary starts with no config, prints an admin key, and serves chat completions (plain and streamed), embeddings and a model list from OpenAI, Ollama, OpenRouter, LiteLLM, Cloudflare AI Gateway or any OpenAI-compatible server, with token counts and cost on every response. Claude Code works through `/v1/messages`, and Anthropic and Gemini are providers. Budgets and limits come next. The design is settled in [docs/design.md](docs/design.md) and the work is tracked in [issues](https://github.com/raven-clown/transponder/issues). Star or watch the repository to follow along, and see [How to help](#how-to-help) if you want to build it with us.
 
 ## How it works
 
@@ -107,6 +108,12 @@ With no config every model is answered by `echo`, a built-in test provider. To u
 ```yaml
 # transponder.yaml
 providers:
+  - name: claude
+    type: anthropic       # https://api.anthropic.com/v1 unless base_url is set
+    api_key: ${ANTHROPIC_API_KEY}
+  - name: gemini
+    type: gemini          # Gemini API with an API key
+    api_key: ${GEMINI_API_KEY}
   - name: openai
     type: openai
     api_key: ${OPENAI_API_KEY}
@@ -124,6 +131,12 @@ providers:
     base_url: https://gateway.ai.cloudflare.com/v1/<account_id>/<gateway_id>/compat
     api_key: ${CLOUDFLARE_API_TOKEN}
 routes:
+  - match: "claude-*"
+    targets:
+      - provider: claude
+  - match: "gemini-*"
+    targets:
+      - provider: gemini
   - match: "gpt-*"
     targets:
       - provider: openai
@@ -141,19 +154,25 @@ transponder --config transponder.yaml
 ```
 
 ```shell
-curl localhost:8080/v1/chat/completions   -H "Authorization: Bearer $TRANSPONDER_KEY"   -d '{"model": "fast", "messages": [{"role": "user", "content": "hi"}]}' -i
+curl localhost:8080/v1/chat/completions \
+  -H "Authorization: Bearer $TRANSPONDER_KEY" \
+  -d '{"model": "fast", "messages": [{"role": "user", "content": "hi"}]}' -i
 # X-Usage-Input-Tokens, X-Usage-Output-Tokens and X-Usage-Cost-USD come back with the answer
 ```
 
-Routes are tried in order and the first match wins. Fallback to the next target, the admin API and the Anthropic API are on the roadmap below; these commands describe where it is going:
+Routes are tried in order and the first match wins.
+
+### Claude Code
+
+Point Claude Code at transponder with a transponder API key:
 
 ```shell
-curl -X POST localhost:8080/admin/v1/providers   -H "Authorization: Bearer $ADMIN_KEY"   -d '{"name": "anthropic", "type": "anthropic", "settings": {"api_key": "sk-ant-..."}}'
+ANTHROPIC_BASE_URL=http://localhost:8080 ANTHROPIC_AUTH_TOKEN=$TRANSPONDER_KEY claude
 ```
 
-```shell
-ANTHROPIC_BASE_URL=http://localhost:8080 ANTHROPIC_AUTH_TOKEN=$MY_KEY claude
-```
+`/v1/messages` sends the request to Anthropic as it came, with only the model changed, so thinking, prompt caching and beta features keep working, and usage and cost are recorded for the key. A route can also send Claude Code's requests to Gemini, OpenAI or a local model. Those are translated, tools included, though features only Anthropic has, such as its server tools and images, are refused on those routes.
+
+Fallback to the next target and the admin API are on the roadmap below.
 
 ## Roadmap
 
@@ -161,11 +180,12 @@ Each milestone ships as a release when it lands:
 
 1. Released in v0.1.0. Skeleton: config, SQLite store, API keys, a test provider, `/v1/chat/completions` with usage headers
 2. Released in v0.1.0. OpenAI and Ollama adapters, streaming, embeddings
-3. Anthropic API in and out, translation between the two, Claude Code working
-4. Fallback, cooldown, access per route, the Gemini adapter
-5. Budgets, `/v1/usage`, Postgres
-6. Admin API with OpenAPI, audit log, live reload, encrypted provider keys
-7. Metrics, tracing, a five-minute demo, release binaries and container image
+3. Released in v0.2.0. Provider registry, split timeouts, `GET /v1/models`
+4. Released in v0.2.2. Anthropic API in and out, the Gemini adapter, translation between dialects, Claude Code working
+5. Budgets, token limits and request rate limits (v0.2.3)
+6. Fallback with a cooldown, access per route (v0.2.4)
+7. OIDC and roles, the admin API with OpenAPI and an audit log, Postgres and several replicas
+8. Metrics, tracing and a five-minute demo
 
 After that: the OpenAI Responses API, per-user request rate limits, organisations, Bedrock and Vertex, and caching.
 
@@ -177,6 +197,12 @@ After that: the OpenAI Responses API, per-user request rate limits, organisation
 - Found a bug, or want something new? Open an issue with one of the [issue forms](https://github.com/raven-clown/transponder/issues/new/choose). Each one says what to include.
 - Pull requests come with a template that lists what reviewers check first in this project, so you know what to cover before you open one.
 - Ideas and questions are welcome too.
+
+## Contributors
+
+Thanks to everyone who has helped build transponder.
+
+<a href="https://github.com/raven-clown/transponder/graphs/contributors"><img src="https://contrib.rocks/image?repo=raven-clown/transponder" alt="Contributors to transponder"></a>
 
 ## License
 

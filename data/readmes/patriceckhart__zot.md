@@ -160,13 +160,71 @@ $ZOT_HOME/
 ├── models-cache.json   # live /v1/models discovery cache (6h ttl)
 ├── AGENTS.md           # optional: global instructions appended to the prompt
 ├── SYSTEM.md           # optional: replaces the default system prompt
+├── COMPACT.md          # optional: additional compaction instructions
 ├── skills/             # optional: user SKILL.md files
 ├── themes/             # optional: user theme JSON files
 ├── extensions/         # installed extensions, one dir per extension
+├── docs/               # bundled reference and website Markdown, start at index.md
 └── logs/               # app log files
 ```
 
 Drop a `SYSTEM.md` in `$ZOT_HOME` to replace the built-in identity and zot-docs guidance for every run. `--system-prompt` still wins per-invocation. Pass an empty value (`--system-prompt ""`) to intentionally omit the built-in identity. Custom prompts still receive appended instructions and generated context, including `AGENTS.md`, skills, auto-swarm guidance when enabled, and the date/cwd footer. Delete the file to revert to the default.
+
+### Offline documentation
+
+Zot installs its bundled Markdown into `$ZOT_HOME/docs` when configuring the agent.
+Start with `index.md` for a catalog of all installed pages, including quickstart,
+tools, settings, sessions, providers, RPC, and extension development. Documentation
+is embedded in the binary, so reading it requires no network access or checkout.
+Matching files are left untouched, outdated bundled files are refreshed, and
+unrelated files are retained.
+
+The bundle combines repository reference docs with a build-time snapshot of
+[zot.sh documentation](https://www.zot.sh/docs). Repository references win when
+filenames overlap. Website-only pages may describe features newer than the binary.
+`website-source.txt` records downloaded-content hashes and `website-license.txt`
+contains the website documentation license. Links to bundled documentation pages
+are rewritten to local Markdown paths during installation.
+
+Website pages are downloaded during builds, not maintained as a second copy in
+this repository. GitHub release binaries include them. Local `make build` and
+`make install` warn and fall back to a validated cache if the website is unreachable,
+or repository docs only if no cache exists. Plain `go build` and `go install`
+embed whatever docs are available locally without downloading. Go dependencies
+must still be available locally. Release builds require a successful docs download.
+
+### Compaction instructions
+
+Create `$ZOT_HOME/COMPACT.md` to add persistent guidance to manual (`/compact`)
+and automatic compaction. For per-run additions, use the repeatable flag:
+
+```sh
+zot --append-compaction-prompt "Reference Markdown documents by path instead of repeating their contents."
+```
+
+Instructions are appended to the built-in summary template in this order:
+`COMPACT.md`, then flag values in command-line order. They do not replace the
+summary template or the separate summarization system prompt. Missing or blank
+files add nothing. Other file-read failures stop startup with an error.
+Instructions are loaded when the agent is configured, so restart zot after
+editing the file. They also apply to resumed sessions, but are not stored as
+session settings. Normal system-prompt overrides and `AGENTS.md` do not configure
+this separate summarization request.
+
+For example, `COMPACT.md` could contain:
+
+```markdown
+Prioritize the current work, unresolved issues, key decisions, and next steps.
+Reference existing Markdown documents by exact path instead of repeating their
+contents. Preserve essential context that is not recorded in those documents.
+```
+
+The summarizer receives the transcript without tools. It cannot open referenced
+files or verify that their contents are sufficient for resuming work.
+The Go SDK exposes `Config.AppendCompactionPrompt`. Direct core users can set
+`Agent.CompactionInstructions` before use. Continuous-mode summaries use the same
+configured instructions, followed by any per-request `conversation.compact`
+instructions. No customization leaves the existing compaction behavior unchanged.
 
 ### Configuration files
 
@@ -304,6 +362,7 @@ Print-mode stats contain `provider`, `model`, `prompt_tokens`, `reasoning_tokens
 | `--insecure` | Skip TLS certificate verification for the explicit `--base-url` endpoint or a `baseUrl` defined for a user model in `models.json` (self-signed local/internal inference servers). Built-in providers, auth, and model discovery keep normal TLS verification. |
 | `--system-prompt <text>` | Replace the default system prompt for this run (also overrides `$ZOT_HOME/SYSTEM.md`; pass `""` for no built-in identity). |
 | `--append-system-prompt <text>` | Append text to the system prompt (repeatable). |
+| `--append-compaction-prompt <text>` | Append compaction instructions after `$ZOT_HOME/COMPACT.md` (repeatable). |
 | `--reasoning off\|minimum\|low\|medium\|high\|xhigh\|max` | Set the reasoning level on supported models (default: off). `max` is a separate opt-in tier above `xhigh`. |
 | `--show-reasoning` | Show live reasoning and retain a compact tail before each reply in interactive mode. Explicitly opt in to `reasoning_delta` events in JSON/RPC mode. Does not change reasoning effort. |
 | `--stats <path>` | With `-p`/`--print`, write generation statistics as JSON. |
@@ -333,6 +392,21 @@ Print-mode stats contain `provider`, `model`, `prompt_tokens`, `reasoning_tokens
 In the interactive UI on Unix, a leading `cd <cwd> &&` in a Bash command is shown in muted colors when its literal path exactly matches the call's working directory. Quoted paths are supported. Expansions and ambiguous shell syntax are left unchanged. This only changes presentation, not execution or saved tool output. Calls restored from a saved session keep their original styling because their call-time working directory is not recorded.
 
 When the sandbox is on (see `/jail`), filesystem tools refuse paths outside the session cwd, except that `read` and `glob` can access loaded extension directories. `bash` applies best-effort command checks. Jail mode is an accident-prevention guardrail, not a security boundary.
+
+### Bash startup file
+
+To customize the agent's Bash commands, create a `.bashrc` in zot's global state directory (the resolved zot home described above). This respects `ZOT_HOME`, then `XDG_STATE_HOME`, then the platform default. For example:
+
+```bash
+alias la='ls -la'
+export PAGER=cat
+```
+
+When Bash is available, zot sources this optional file before each command, with alias expansion enabled. Bash remains non-interactive and does not automatically read your usual `~/.bashrc`. An inherited `BASH_ENV` is still read first, so zot's file can override its definitions. Each call starts a fresh shell, so shell state does not persist between calls. Startup output is included in tool output. A missing file is ignored, while an unreadable or invalid file, or a nonzero return from sourcing it, prevents the requested command from running.
+
+This also applies to interactive `!` commands, .zot agent pre-hooks, and workers using the Bash tool. POSIX `sh`, Windows `cmd`, and the optional PowerShell tool are unchanged. zot never automatically sources a project-local startup file.
+
+Treat this file as trusted executable configuration. Anyone who can modify it can run code as your user. Aliases and functions can change the behavior of permission-checked commands, and jail mode remains a best-effort guardrail, not a security boundary.
 
 ### Codemode
 
@@ -641,13 +715,31 @@ Use `/login` to store API keys or subscription credentials. `/model` only shows 
 
 ## Models
 
-`--list-models` or the `/model` picker shows the full catalog across all built-in providers. Three sources:
+`--list-models` shows the catalog across providers. The `/model` picker and `--list-models-json` only list models from currently available providers. The filtering settings below apply to both listings and the pickers. Three sources:
 
 - **Catalog**: models baked into zot, covering Claude, GPT/Codex, Gemini/Gemma, Kimi/Moonshot, DeepSeek, Groq-hosted Llama/Gemma/Compound, OpenRouter-routed models, Bedrock model ids, Vertex model ids, Azure OpenAI deployments, Copilot models, and other provider-specific catalog entries.
 - **Live**: IDs discovered from the provider using your stored credentials — usually `GET /v1/models`, or provider-specific listing APIs for Amazon Bedrock (see [Amazon Bedrock](#amazon-bedrock)). Cached for 6h in `$ZOT_HOME/models-cache.json` and refreshed in the background on startup.
 - **Speculative**: IDs that appear in the upstream generator but aren't live on the public API yet. They'll 404 today and start working the moment the provider ships them.
 
 The context meter in the status line uses the model's advertised context window to show how much of it your last turn consumed.
+
+### Model visibility and disabled providers
+
+To reduce the model lists, add these optional settings to `$ZOT_HOME/config.json`:
+
+```json
+{
+  "disabled_providers": ["google-vertex"],
+  "hide_speculative_models": true
+}
+```
+
+Both default to off (an empty provider list and `false`). They apply to `/model`, the rescue picker, shortcut assignment, continuous-agent model discovery, `--list-models`, and `--list-models-json`.
+
+- `disabled_providers` blocks the named providers, including custom and local providers. zot skips their credential resolution and model discovery, even when credentials come from environment variables or external files such as gcloud ADC. Supported provider aliases are accepted. Explicit `--provider`, saved selections, and existing shortcuts cannot bypass the setting and return a clear error. Saved selections and credentials are not deleted. To use a disabled saved provider again, remove it from this list or select an enabled provider with `--provider`.
+- `hide_speculative_models` only hides entries still marked speculative after catalog merging. Explicit `--model`, saved selections, and existing shortcuts remain usable. A model confirmed by live discovery becomes visible again. The underlying catalog and model metadata are unchanged.
+
+These settings do not cancel an already running turn or revoke credentials held by an existing client. Restart zot after changing provider policy to ensure existing clients are replaced. There are no `/settings` controls or per-model hiding options yet.
 
 ### Model fallback (rescue)
 
@@ -883,9 +975,9 @@ On Amazon Bedrock, Claude Sonnet 5.5 (`anthropic.claude-sonnet-5-5`) has `us.`, 
 
 GPT-6 Sol and GPT-6 Luna are available through OpenAI API keys, OpenAI Codex subscriptions, and GitHub Copilot. Select `gpt-6-sol` or `gpt-6-luna` with `--provider openai`, `openai-responses`, `openai-codex`, or `github-copilot`. Both use the Responses API, support up to 128,000 output tokens, and expose `low` through `max` reasoning. OpenAI and Codex entries use a 272,000-token context window, while Copilot entries use 1,000,000 tokens. Access through subscription providers depends on account availability and organization policy.
 
-GPT-6.1 Sol (`gpt-6.1-sol`) is available with `--provider openai`, `openai-responses`, or `openai-codex`, subject to account access. It uses the Responses API and supports `low` through `max` reasoning. The context window is 272,000 tokens for API-key providers and 500,000 tokens for Codex, with a 128,000-token output limit. It is not included in the GitHub Copilot catalog.
+GPT-6.1 Sol (`gpt-6.1-sol`) is available with `--provider openai`, `openai-responses`, `openai-codex`, or `github-copilot`, subject to account access and Copilot model policy. It uses the Responses API and supports `low` through `max` reasoning. The context window is 272,000 tokens for API-key providers, 500,000 tokens for Codex, and 1,050,000 tokens for Copilot, with a 128,000-token output limit. Copilot's `/model` picker shows it only when the account's model listing enables it.
 
-GPT-6.1 Terra (`gpt-6.1-terra`) is available with `--provider openai`, `openai-responses`, `openai-codex`, or `azure-openai-responses`, subject to account and deployment access. It uses the Responses API with the same context and output limits as GPT-6.1 Sol. It supports `off` (sent as reasoning effort `none`) and `low` through `max`. Catalog prices per million tokens are $1 input, $5 output, $0.05 cache reads, and $1.25 cache writes. Above 272,000 input tokens, these rates become $2, $7.50, $0.10, and $2.50 respectively.
+GPT-6.1 Terra (`gpt-6.1-terra`) is available with `--provider openai`, `openai-responses`, `openai-codex`, `azure-openai-responses`, or `github-copilot`, subject to account, deployment, and Copilot model policy access. It uses the Responses API with a 272,000-token context window for API-key providers, 500,000 for Codex, and 1,050,000 for Copilot, and a 128,000-token output limit. Copilot's `/model` picker shows it only when enabled in the account's model listing. It supports `off` (sent as reasoning effort `none`) and `low` through `max`. Catalog prices per million tokens are $1 input, $5 output, $0.05 cache reads, and $1.25 cache writes. Above 272,000 input tokens, these rates become $2, $7.50, $0.10, and $2.50 respectively.
 
 GPT-5.6 catalog prices for OpenAI, Codex, and Azure are $0.20 input / $1.20 output for Luna, $4 / $20 for Sol, and $2 / $12 for Terra per million tokens. Cache-read and cache-write rates are respectively $0.02 / $0.25, $0.40 / $5, and $0.20 / $2.50. Above 272,000 input tokens, input and cache rates double and output rates increase by 50%. Subscription-provider costs are API-equivalent estimates, not invoices. Previously recorded session costs are not recalculated.
 
@@ -924,114 +1016,4 @@ If none of these are available, zot errors with `vertex: no auth — set GOOGLE_
 zot talks to Bedrock's Converse streaming API and supports two credential styles:
 
 - **Bedrock API key** (bearer token) via `AWS_BEARER_TOKEN_BEDROCK`. This is the simplest setup: a single opaque string, region-scoped to wherever it was minted. It requires only the `bedrock:CallWithBearerToken` permission.
-- **SigV4** via `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY` (plus optional `AWS_SESSION_TOKEN`), an `AWS_PROFILE`, or a default / SSO / assume-role / `credential_process` profile resolved through the AWS CLI. SigV4 (AWS Signature Version 4) is AWS's request-signing scheme: your secret key signs each request locally and only the signature travels over the wire. zot implements it directly so it does not depend on the AWS SDK.
-
-If both are present, the bearer token wins for inference, while live model discovery uses SigV4. The region defaults to `AWS_REGION` / `AWS_DEFAULT_REGION`, falling back to `us-east-1`. A `403` on a freshly-copied API key almost always means a region mismatch — set `AWS_REGION` to the region the key was created in, or pass `--base-url https://bedrock-runtime.<region>.amazonaws.com`.
-
-#### Catalog vs. live discovery
-
-Unlike most providers, Bedrock model **pricing, context windows, and capability flags are hand-maintained** in zot's baked-in catalog. AWS does not expose usable pricing programmatically for current models — its Price List API returns only stale, input-only rates for a few legacy models — so the catalog is authoritative for cost and metadata. This means:
-
-- **Bearer-token-only users** still get the full curated Bedrock model list with correct pricing from the catalog. No AWS API listing is attempted.
-- **Users with SigV4 credentials** additionally get **live model discovery**, even if inference uses a bearer token: on startup, zot lists the foundation models and cross-region inference profiles your account can actually use (via `ListFoundationModels` and `ListInferenceProfiles`) and merges them into the catalog. New Bedrock models therefore appear in `/model` without waiting for a zot release. Discovered IDs already known to the catalog keep their curated metadata. An inference profile the catalog doesn't list under that exact ID (for example `apac.` or `us-gov.` variants) inherits the limits, reasoning flags, and pricing of its base model. Models with no matching base catalog entry, including new Claude models, retain placeholder pricing and the client's 4096-token output fallback until their limits are verified and added to the catalog.
-
-Live discovery requires SigV4 because the listing APIs live on the Bedrock control plane, which rejects the runtime bearer token. It runs in the background at startup and is cached for 6h like other providers, so `/model` reflects the latest list without any manual refresh. If discovery fails (no SigV4 creds, expired SSO login, missing IAM permissions), zot silently falls back to the catalog. Discovery needs `bedrock:ListFoundationModels` and `bedrock:ListInferenceProfiles`.
-
-#### Cross-region pricing caveat
-
-Bedrock model IDs carry a routing prefix: `global.` (global cross-region inference), a geography such as `us.` / `eu.` / `apac.` / `au.` / `jp.` (geo cross-region inference), or none (in-region). zot's catalog prices **every** variant at the model's base (US) rate.
-
-AWS charges a surcharge for **geo cross-region inference** in some regions — for example, Anthropic models routed through the Asia Pacific (Melbourne) geo profile cost about 10% more than the base rate. zot does **not** yet capture these per-region uplifts, so if you use a geo-prefixed profile in a region that charges the surcharge, zot's reported cost may be **lower than your actual AWS bill**. Global cross-region and plain in-region usage match the base rate and are unaffected. The context/usage accounting is still correct; only the dollar figure can under-report in this edge case. If you need exact costs, check the per-region table on the [Amazon Bedrock pricing page](https://aws.amazon.com/bedrock/pricing/).
-
-### Local models with ollama
-
-zot works with [ollama](https://ollama.com) out of the box. Ollama serves an OpenAI-compatible API locally, so any model you have pulled works with zot.
-
-Quick start:
-
-```bash
-ollama pull qwen3.5:4b
-zot --provider ollama --model qwen3.5:4b
-```
-
-No login or API key is needed for local models. zot defaults to `http://localhost:11434`. The model ID must match a model installed on that Ollama server, including its tag. The server must already be running.
-
-#### Save a local default
-
-To start with just `zot`, create `$ZOT_HOME/config.json` with the following fields, or merge them into your existing configuration:
-
-```json
-{
-  "provider": "ollama",
-  "model": "qwen3.5:4b"
-}
-```
-
-A `models.json` file is not required for this setup. If you want explicit model metadata, add the following to `$ZOT_HOME/models.json`. This registers a model but does not change the default selection in `config.json`:
-
-```json
-{
-  "providers": {
-    "ollama": {
-      "models": [
-        {
-          "id": "qwen3.5:4b",
-          "name": "Qwen 3.5 4B",
-          "contextWindow": 32768,
-          "maxTokens": 8192
-        }
-      ]
-    }
-  }
-}
-```
-
-Set `contextWindow` and `maxTokens` to limits your model and server configuration actually support. These fields inform zot's context and output budgets. They do not configure Ollama's context size or install the model.
-
-#### Use a remote Ollama server
-
-For a single run, pass the endpoint explicitly:
-
-```bash
-zot --provider ollama --model qwen3.5:4b --base-url http://ollama-server:11434/v1
-```
-
-For an endpoint behind authentication, use HTTPS and pass `--api-key` with the token. The built-in `ollama` provider uses that flag or a placeholder credential. It does not load a saved Ollama key from `auth.json`.
-
-To persist a remote endpoint, keep the `config.json` selection above and add `baseUrl` to the model in `$ZOT_HOME/models.json`:
-
-```json
-{
-  "providers": {
-    "ollama": {
-      "models": [
-        {
-          "id": "qwen3.5:4b",
-          "baseUrl": "http://ollama-server:11434/v1",
-          "contextWindow": 32768,
-          "maxTokens": 8192
-        }
-      ]
-    }
-  }
-}
-```
-
-`--base-url` overrides the model's endpoint for that run. `baseUrl` is a `models.json` field, not a `config.json` field. Only connect to trusted servers and do not expose an unauthenticated Ollama endpoint to the public internet.
-
-#### Use the same model on two hosts
-
-Models are identified by the pair `(provider, model ID)`. Two entries with the same ID under `ollama` cannot represent independently selectable hosts. A different display `name` does not change that identity.
-
-Instead, define a custom provider for each host in `$ZOT_HOME/models.json`, keeping the actual Ollama model ID unchanged:
-
-```json
-{
-  "providers": {
-    "ollama-home": {
-      "baseUrl": "http://localhost:11434/v1",
-      "api": "openai",
-      "discover": true,
-      "models": [
-        { "id": "qwen3.5:4b", "contextWindow": 32768, "maxTokens": 8192 }
-      ]
+- **SigV4** via `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY` (plus optional `AWS_S

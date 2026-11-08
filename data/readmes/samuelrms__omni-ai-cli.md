@@ -147,7 +147,7 @@ O instalador:
 3. cria o comando `ai` em `~/.local/bin`;
 4. mostra as contas Claude configuradas.
 
-Requisitos: nenhum além de `curl` (macOS/Linux) ou PowerShell (Windows). Se não houver Python 3.11+, o instalador baixa um Python 3.12 só para o Omni AI, sem sudo e sem mexer no Python do sistema.
+Requisitos: nenhum além de `curl` (macOS/Linux) ou PowerShell (Windows). Se não houver Python 3.11+, o instalador baixa um Python 3.12 só para o Omni AI, sem sudo e sem mexer no Python do sistema. Instalado por npm, yarn, pnpm ou bun, o `ai` pergunta antes de baixar; sem terminal para perguntar, como na extensão, ele não baixa e mostra como instalar, a não ser que `SMART_AI_AUTO_PYTHON=1` esteja definida. Se a pasta de instalação (`SMART_AI_DIR`) já existir com outro conteúdo, o script para sem apagar nada.
 Codex (`codex`) e Antigravity (`agy`) são opcionais e entram na fila de alternativas quando estão instalados.
 
 Se `~/.local/bin` não estiver no `PATH`, adicione ao `~/.zshrc`:
@@ -214,6 +214,8 @@ code --install-extension samuelrms.omni-ai-cli
 Instalar pelo navegador: [Open VSX](https://open-vsx.org/extension/samuelrms/omni-ai-cli) · [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=samuelrms.omni-ai-cli)
 
 Na primeira execução a extensão instala o CLI `ai` por baixo se ele não existir e abre um tutorial de configuração.
+
+No Windows, o painel abre o `ai` instalado pelo npm sem passar pelo `cmd.exe`. O pedido vai num arquivo temporário que só o seu usuário lê, então não esbarra no limite da linha de comando. Isso é testado no CI em Windows, sem abrir o VS Code.
 
 ---
 
@@ -594,25 +596,25 @@ No primeiro início, o servidor cria uma chave e a mostra uma única vez. Só o 
 - `tools`/function calling só nos provedores de API (OpenRouter, DeepSeek e Grok via chave). As ferramentas nunca são executadas pelo servidor: a chamada volta para o seu código. Outros modelos retornam 400, porque os CLIs de agente não têm como devolver a chamada, a não ser com `--tool-emulation`. Com `omni-auto`, a ordem é OpenRouter, DeepSeek e Grok. No OpenRouter, sem `openrouter_paid`, só modelos gratuitos. Em streaming, a chamada chega de uma vez, ao final. Argumentos fora do schema fazem o servidor tentar o próximo provedor; só o núcleo do JSON Schema é checado (`type`, `required`, `enum`, `properties`, `items`, `additionalProperties`). `functions` (formato antigo) retorna 400.
 - **Experimental:** `ai serve --tool-emulation` (`SMART_AI_TOOL_EMULATION=1` no Docker) emula `tools` em Claude Code e Grok CLI, com as ferramentas próprias deles desligadas. O modelo escreve a chamada em JSON, o servidor valida e tenta de novo uma vez, o que gasta mais cota. Só entra quando não há provedor de API. Codex e Cursor ficam de fora, porque não dá para desligar as ferramentas deles. O modelo pode errar mais que no modo nativo, os dados pessoais não são mascarados, e o conteúdo do cliente pode imitar o formato.
 - Imagens retornam erro 400.
-- O prompt chega às ferramentas como argumento de linha de comando e fica visível na lista de processos da máquina. O limite é de 100 KB por pedido.
+- O prompt chega às ferramentas como argumento de linha de comando e fica visível na lista de processos da máquina. Quando não cabe na linha de comando (no Windows, cerca de 32 mil caracteres), Claude Code e Codex recebem pela entrada padrão; Antigravity, Cursor e Grok recusam, e o fallback segue. O limite é de 100 KB por pedido.
 - Perfis Claude legados, que trocam o arquivo de credenciais, limitam o servidor a um pedido por vez.
 
 ---
 
 ## Docker
 
-Imagem com o Omni e os CLIs em versões fixas, para rodar o `ai serve` em servidor próprio. Inclui Claude Code, Codex, Cursor e Grok. O Antigravity não está incluído, porque não tem instalação por comando.
+Imagem com o Omni e os CLIs em versões fixas, para rodar o `ai serve` em servidor próprio. Claude Code e Codex vêm do npm; Grok e Cursor são baixados e conferidos por hash SHA-256 antes de entrar na imagem. Inclui Claude Code, Codex, Cursor e Grok. O Antigravity não está incluído, porque não tem instalação por comando.
 
 ```bash
 git clone https://github.com/samuelrms/omni-ai-cli && cd omni-ai-cli
 docker compose up -d
-docker compose logs omni                       # chave gerada no primeiro início
+docker exec omni cat /home/omni/.config/smart-ai/server_key.txt   # chave gerada no primeiro início
 docker exec -it omni ai --account login primary
 ```
 
 - **Login:** veja [Login sem navegador](#login-sem-navegador). Chaves de provedores vão com `docker exec -it omni ai --key <ferramenta>`.
 - **Dados:** logins, chaves, configuração e cooldowns ficam no volume `omni-home`, que sobrevive à recriação do container. `docker compose down -v` apaga esse volume.
-- **Chave do servidor:** sem chave informada, uma é gerada e aparece uma única vez no log. Para definir a sua, use `SMART_AI_SERVER_KEY`, ou `SMART_AI_SERVER_KEY_FILE` com um Docker secret. O `docker-compose.yml` traz o exemplo.
+- **Chave do servidor:** sem chave informada, uma é gerada e gravada em `/home/omni/.config/smart-ai/server_key.txt`, que só o usuário do container lê. Ela não aparece no log. Depois de guardá-la, apague o arquivo com `docker exec omni rm /home/omni/.config/smart-ai/server_key.txt`. Para definir a sua, use `SMART_AI_SERVER_KEY`, ou `SMART_AI_SERVER_KEY_FILE` com um Docker secret. O `docker-compose.yml` traz o exemplo.
 - **Porta:** publicada só em `127.0.0.1`. `OMNI_PORT` muda a porta.
 - **Isolamento:** roda sem root, com sistema de arquivos somente leitura e sem capabilities.
 - **Modos:** `OMNI_MODE=plan|edits|auto|yolo docker compose up -d` (padrão: `plan`). As ferramentas trabalham em `/workspace`, no volume `omni-workspace`. Para usar uma pasta sua, defina `OMNI_WORKSPACE=/caminho`, com escrita liberada para o uid 10001.
@@ -785,6 +787,7 @@ guardar nem rotacionar.
 | `Not inside a trusted directory` (Codex) | Instalação antiga. Rode o instalador de novo. |
 | `Claude Code não instalado` | `./scripts/install.sh` (ou `scripts\install.ps1` no Windows) instala pelo instalador oficial. |
 | Windows: atalhos de skills falham | Ative o Modo de Desenvolvedor ou rode como administrador; sem isso o `ai` usa junções de pasta. |
+| `o pedido é longo demais para a linha de comando deste sistema` | Antigravity, Cursor e Grok só recebem o pedido pela linha de comando. O fallback segue para Claude Code e Codex, que recebem pedidos longos pela entrada padrão. |
 | Windows: `este pedido não pode ser passado com segurança` | A ferramenta foi instalada por um atalho `.cmd` que o `ai` não reconhece. Instale com o npm ou defina `<FERRAMENTA>_BIN` com o executável dela. |
 | `/model` não muda nada | Uma variável `SMART_AI_*_MODEL` está definida e tem precedência. |
 | `/key` não muda nada | A variável da ferramenta (`ANTHROPIC_API_KEY` etc.) está definida e tem precedência. |
@@ -802,7 +805,7 @@ guardar nem rotacionar.
   arquivos. Os agentes não editam o projeto ao mesmo tempo.
 - A classificação simples/complexa usa um modelo quando há chave de Groq, Cerebras, OpenRouter ou Grok. Sem nenhuma delas, ou se todas falharem, usa palavras-chave e tamanho. Ela pode errar nos dois casos.
 - Trocar de modelo não renova a cota da conta.
-- No Windows, o código usa os equivalentes nativos (grupo de processos e `taskkill`, `msvcrt`, junções de pasta), mas foi testado de verdade só no macOS. A exceção é a execução de ferramentas instaladas pelo npm, testada no CI em Windows.
+- No Windows, o código usa os equivalentes nativos (grupo de processos, Ctrl+Break e `taskkill`, `msvcrt`, junções de pasta), mas foi testado de verdade só no macOS. As exceções, testadas no CI em Windows, são: execução de ferramentas instaladas pelo npm, cancelamento, saída em pipe, pedidos longos e o `ai.cmd`.
 
 ---
 

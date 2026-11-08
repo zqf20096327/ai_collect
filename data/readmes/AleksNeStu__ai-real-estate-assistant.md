@@ -1,18 +1,19 @@
+<div align="center">
+  <img src="apps/web/public/logo.svg" width="96" alt="AI Real Estate Assistant" />
+</div>
+
 # AI Real Estate Assistant
 
 **Ask in natural language. Get matched listings.**
 
-An open-source conversational assistant for property search, financial analysis and market insight.
-Ask for *"2-bedroom apartment in Kraków under 500k"* and it answers from a semantic index over your
-own catalogue — with 16 LLM providers, a full toolbelt behind the chat (mortgage, comparison, ROI,
-valuation), and nine languages.
+An open-source conversational assistant for property search, financial analysis
+and market insight. Ask for *"2-bedroom apartment in Kraków under 500k"* and it
+answers from a semantic index over your own catalogue — with 16 LLM providers,
+a toolbelt behind the chat (mortgage, comparison, ROI, valuation) and nine
+languages.
 
-MIT licensed, no signup to look around, and it runs on your own server as happily as it runs on a
-managed platform.
-
-> **NestLab Tech** builds this in the gaps between client projects — a founder-led AI studio in
-> Poland (EU).
-> [Workflow automation, custom AI software and EU AI Act readiness](https://nestlab.tech/services?utm_source=github&utm_medium=referral&utm_campaign=product_showcase&utm_content=readme)
+MIT licensed, no signup to look around, and it runs on your own server as
+happily as it runs on a managed platform.
 
 [![Python](https://img.shields.io/badge/Python-3.12+-blue?style=flat&logo=python&logoColor=white)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/API-FastAPI-009688?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
@@ -20,48 +21,40 @@ managed platform.
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![CI](https://github.com/AleksNeStu/ai-real-estate-assistant/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/AleksNeStu/ai-real-estate-assistant/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Live Demo](https://img.shields.io/badge/Demo-Live-success?style=flat)](https://ai-real-estate-demo.devs-scaler.workers.dev/)
-[![Hosted Soon: PropVector AI](https://img.shields.io/badge/Hosted_Soon-PropVector_AI-6f42c1?style=flat)](https://propvectorai.com?utm_source=github&utm_medium=readme&utm_campaign=hosted-badge)
+[![Live Demo](https://img.shields.io/badge/Demo-Live-success?style=flat)](https://realty.kittray.com/)
 [![Latest Release](https://img.shields.io/github/v/release/AleksNeStu/ai-real-estate-assistant?style=flat&color=2ea44f)](https://github.com/AleksNeStu/ai-real-estate-assistant/releases)
 
 <!-- markdownlint-disable MD051 -->
 ## Table of Contents
 
-- [Live Demo](#live-demo)
+- [Live demo](#live-demo)
 - [Deploy it your way](#deploy-it-your-way)
-- [What's New in v5.1.7](#whats-new-in-v517)
-- [Local Demo Setup](#local-demo-setup)
-- [Deployment & Memory Notes](#deployment--memory-notes)
-- [Screenshots](#screenshots)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Growth](#project-growth)
-- [Releases](#releases)
+- [What's new](#whats-new)
+- [What it does](#what-it-does)
+- [Why developers pick this](#why-developers-pick-this)
+- [Tech stack](#tech-stack)
 - [Architecture](#architecture)
-- [Quick Start](#quick-start)
-- [Three Developer Differentiators](#three-developer-differentiators)
+- [Quick start](#quick-start)
 - [The hosted version, and what comes next](#the-hosted-version-and-what-comes-next)
-- [Project Structure](#project-structure)
-- [Testing](#testing)
+- [Questions people actually ask](#questions-people-actually-ask)
 - [Documentation](#documentation)
-- [Roadmap](#roadmap)
-- [Branches](#branches)
-- [Deployment](#deployment)
-- [Configuration](#configuration)
+- [Testing](#testing)
 - [Contributing](#contributing)
 - [License](#license)
-- [Contributors](#contributors)
 - [Support](#support)
+<!-- markdownlint-restore -->
 
-## Live Demo
+## Live demo
 
 <div align="center">
 
-### [**🚀 Try the Live Demo →**](https://ai-real-estate-demo.devs-scaler.workers.dev/)
+### [**Try the live demo →**](https://realty.kittray.com/)
 
 **No login required — explore in demo mode**
 
 </div>
+
+![The application at realty.kittray.com](docs/screenshots/home.png)
 
 Everything is live in demo mode — no signup, no keys, no setup:
 
@@ -71,32 +64,47 @@ Everything is live in demo mode — no signup, no keys, no setup:
 - **Nine languages** — English, Polish, Russian, German, Spanish, Italian, Portuguese, Turkish, Ukrainian
 - **Honest about its limits** — the demo answers with a local model so it costs nothing to explore; a real deployment uses the provider key you bring
 
+**Go straight to a part of it:**
+
+| | |
+|---|---|
+| [Search](https://realty.kittray.com/en/search) | Semantic search over the demo catalogue, with filters and a map |
+| [Assistant](https://realty.kittray.com/en/chat) | The chat and its tools — mortgage, ROI, comparison |
+| [City overview](https://realty.kittray.com/en/city-overview) | Per-city market analytics |
+| [Documents](https://realty.kittray.com/en/documents) | Upload and query your own files |
+| [Agents](https://realty.kittray.com/en/agents) | The agent directory and their listings |
+
 ## Deploy it your way
 
-Two supported paths, and the choice is yours. Both run the same images.
+There is a live deployment of this project — the demo above runs the release
+images, in demo mode, on a server its maintainer controls. You do not have to
+stop there: the same images are published on every release, and three ways to
+run them are supported today.
 
-| | Platform-hosted | Your own server |
-|---|---|---|
-| **What you need** | an account on the platform | a machine with Docker and a spare gigabyte of RAM |
-| **What you do** | one click, the platform builds and serves it | copy one compose file, `docker compose up -d` |
-| **Your data** | on the platform | on your disk, in your country |
-| **Who upgrades it** | the platform | you — or CI, on every release tag |
+| | A hosted platform | Your own VPS | The published images |
+|---|---|---|---|
+| **What you need** | an account on the platform | a machine with Docker and a spare gigabyte of RAM | a machine with Docker |
+| **What you do** | one click, the platform builds and serves it | copy one compose file, `docker compose up -d` | pull two images, point them at your own secrets |
+| **Who builds it** | the platform | you — or CI, on every release tag | you, or CI |
+| **Your data** | on the platform | on your disk, in your country | on your disk, in your country |
+| **Best for** | a demo, a trial, a first look | production, on your own terms | an existing setup that already runs containers |
 
-### Platform-hosted, one click
+### On a hosted platform, one click
 
 [![Deploy to Render](https://img.shields.io/badge/Deploy%20to%20Render-46b3a0?style=for-the-badge&logo=render&logoColor=white)](https://render.com/deploy?repo=https://github.com/AleksNeStu/ai-real-estate-assistant)
 
-The blueprint in [`render.yaml`](render.yaml) declares the web service and the API, the build steps and
-the health check. The platform builds the images, serves them and restarts them on every release.
+The blueprint in [`render.yaml`](render.yaml) declares the web service and the
+API, the build steps and the health check. The platform builds the images,
+serves them and restarts them on every release.
 
-### Your own server, with or without CI
+### On your own VPS server
 
-[`deploy/docker-compose.selfhosted.yml`](deploy/docker-compose.selfhosted.yml) is the whole stack:
-a FastAPI backend and a Next.js frontend, one persistent volume, one published port. It needs no
-paid model key to answer.
+[`deploy/docker-compose.selfhosted.yml`](deploy/docker-compose.selfhosted.yml)
+is the whole stack: a FastAPI backend and a Next.js frontend, one persistent
+volume, one published port. It needs no paid model key to answer.
 
 ```bash
-curl -O https://raw.githubusercontent.com/AleksNeStu/ai-real-estate-assistant/dev/deploy/docker-compose.selfhosted.yml
+curl -O https://raw.githubusercontent.com/AleksNeStu/ai-real-estate-assistant/main/deploy/docker-compose.selfhosted.yml
 cat > .env <<'ENV'
 API_ACCESS_KEY=change-me
 JWT_SECRET_KEY=change-me
@@ -105,30 +113,54 @@ ENV
 docker compose -f docker-compose.selfhosted.yml up -d
 ```
 
-Put a TLS terminator in front of it — a reverse proxy, a load balancer, a tunnel — and never expose
-the port raw.
+Put a TLS terminator in front of it — a reverse proxy, a load balancer, a
+tunnel — and never expose the port raw.
 
-**With CI instead of a terminal:** this repository also ships a
-[self-host deploy workflow](.github/workflows/deploy-selfhosted.yml). Give it a deploy key and the
-address of your server as repository secrets, and every release tag rolls your machine onto the new
-images by itself. Nothing about your host is stored in this repository — the host, the user, the
-port and the path are all secrets you set yourself.
+### With CI instead of a terminal
 
-## What's New in v5.1.7
+This repository also ships a
+[self-host deploy workflow](.github/workflows/deploy-selfhosted.yml). Give it a
+deploy key and the address of your server as repository secrets, and every
+release tag rolls your machine onto the new images by itself. Nothing about
+your host is stored in this repository — the host, the user, the port and the
+path are all secrets you set yourself.
 
-The current release. Everything here works in demo mode, without a paid
-external API.
+### Or just pull the images
 
-- **A second deployment target** — the release pipeline now rolls a server you
-  own, not only the managed platform. One compose file, one workflow, no
-  credentials in the tree.
-- **A request counter that cannot take a response down** — the metrics counter
-  was read without a guard, and a request that arrived before the first
-  measurement could be answered with a 500. It now heals itself instead.
+Every release publishes both images to GitHub Container Registry, multi-arch
+(amd64 and arm64):
+
+```bash
+docker pull ghcr.io/aleksnestu/ai-real-estate-assistant/backend:5.1.10
+docker pull ghcr.io/aleksnestu/ai-real-estate-assistant/frontend:5.1.10
+```
+
+The full guide — the memory footprint per setup, the published tags and the
+Kubernetes variant — is in the [deployment guide](docs/deployment/DEPLOYMENT.md).
+
+## What's new
+
+**v5.1.10** — the demo lives on a domain of its own.
+
+- **A public address that can be printed on a business card** — the demo moved
+  from a platform subdomain to `https://realty.kittray.com`, on a domain
+  delegated to Cloudflare. The Worker that fronts the deployment keeps its
+  custom domain, so the front door did not change — only the name on it.
+- **One address in the tree** — the README badge, the live-demo link, the
+  `package.json` homepage, `robots.txt`, the sitemap line, `llms.txt`, the
+  launch copy and the canonical URL all follow the same value. The public
+  address of a deployment is a build argument (`SITE_URL`), so changing it is
+  one setting and one release.
+- **A mark, a card and half the README** (v5.1.9) — the icon is now a roof
+  over a point, in the monochrome the design system asks for; the social
+  preview says what the project is; the README is the short version.
+- **A second deployment target** (v5.1.8) — the release pipeline now rolls a
+  server you own, not only the managed platform. One compose file, one
+  workflow, no credentials in the tree.
 - **AI property valuation** — paste a property id, get an estimate of the
   current value plus a projection for 1, 3, 5 and 10 years, with a confidence
   band and the key drivers. Try it at `/valuation`.
-- **An AI neighborhood summary** on every property page — what the district
+- **An AI neighbourhood summary** on every property page — what the district
   feels like, what is around it, how easy it is to move around. It falls back
   silently when the model is unavailable.
 - **The monthly payment on the card** — every listing shows its estimated
@@ -136,183 +168,50 @@ external API.
   not a lending offer).
 - **A first-visit tour** — five steps from the landing page to the features
   that matter, shown once and remembered locally.
-- **Input that is no longer mangled** — the control-character filter was
-  rewriting every character below `0x3E`, so `"2 bedroom under 500000 EUR"`
-  reached the model as `"2\x97bedroom\x82under…"`. It now removes exactly the
-  control characters it means to, and the fix is covered by tests.
-- **One layout contract** — sixteen wrapper variants, three pages running edge
-  to edge. Every route now uses the same container, and the hero, the chat
-  pane and the auth card keep the layouts they actually need.
 - **A citation layer for AI search** — an expanded `llms.txt`, a `robots.txt`
   that names the AI crawlers it wants, `FAQPage` JSON-LD next to the existing
   schemas, a social preview image, and complete metadata in nine locales.
 - **335 dependency alerts closed** — every critical and high advisory resolved,
-  the floors pinned in both the lock file and the project file, one accepted
-  LOW documented with its reason.
-- **Smaller page weight** — the charts bundle is loaded only when the charts
-  are on screen, which takes about 5 MB off the market-trends page.
+  the floors pinned in both the lock file and the project file.
 
-Full notes: [v5.1.7 release](https://github.com/AleksNeStu/ai-real-estate-assistant/releases/tag/v5.1.7) ·
+Full notes: [v5.1.10 release](https://github.com/AleksNeStu/ai-real-estate-assistant/releases/tag/v5.1.10) ·
 [changelog](CHANGELOG.md).
 
-## Local Demo Setup
+## What it does
 
-Run the full demo locally with comprehensive mock data in minutes:
+| | |
+|---|---|
+| **Conversational search** | Natural-language queries with automatic filter extraction; hybrid semantic + keyword retrieval over ChromaDB with MMR reranking |
+| **Financial tools** | Mortgage calculator, rent-vs-buy, ROI, TCO, comparative market analysis, AI valuation with a multi-year forecast |
+| **Neighbourhood one-liner** | An AI summary of a district's character, lifestyle and accessibility, on every property page |
+| **Maps** | Clustered markers, area comparisons, city-overview analytics |
+| **Localisation** | Nine languages with EU AI Act compliance labels on AI output |
+| **Security** | OWASP-hardened: rate limiting, audit logging, SSRF protection, dual-mode auth (API key + JWT), progressive security pipeline in CI |
 
-```powershell
-# Step 1: Launch Docker containers (5-8 min)
-.\scripts\demo\01-launch-docker.ps1
+## Why developers pick this
 
-# Step 2: Generate comprehensive demo data (2-3 min)
-.\scripts\demo\02-generate-data.ps1
+1. **Multi-provider LLM routing** — 16 providers with an automatic fallback
+   chain; a per-request provider selection by header or parameter, no code
+   change to switch models.
+2. **Hybrid RAG + vector search** — a query-complexity classifier routes
+   between RAG-only, hybrid RAG with enhancement, and agent-with-tools;
+   ChromaDB with MMR reranking for the retrieval.
+3. **A complete reference stack** — FastAPI + Next.js 16 + ChromaDB, Docker
+   Compose and Kubernetes, CI that ships the images, and a self-host deploy
+   path you can point at your own server.
 
-# Access the demo
-# Frontend: http://localhost:3082
-# Backend:  http://localhost:8082
-# API Docs: http://localhost:8082/docs
-```
-
-**Demo Data Includes:**
-
-- 🏠 250+ properties across 5 Polish cities (Kraków, Warsaw, Gdańsk, Wrocław, Poznań)
-- 👥 50 users with different roles
-- 🔍 100 saved searches with diverse filters
-- ⭐ 200 favorites across users
-- 🏢 15 real estate agent profiles
-- 📊 150 leads/inquiries
-- 📈 300 activity events
-- ⚙️ 40 preference profiles
-- 📋 20 CMA reports
-
-**Stop the demo:**
-
-```powershell
-.\scripts\demo\03-stop-docker.ps1
-```
-
-**[→ Demo Setup Documentation](scripts/demo/README.md)** — Complete guide with troubleshooting.
-
-## Deployment & Memory Notes
-
-The backend uses an **environment-conditional lazy provider load** (`apps/api/models/provider_factory.py`) so it can run on a memory-constrained host. This is **only triggered when the `RENDER` env var is set to `"true"`**.
-
-| Setup | `RENDER` set? | Provider loading | Memory baseline | Notes |
-|---|---|---|---|---|
-| **Memory-constrained host** | ✅ yes | Lazy — only the active `DEFAULT_PROVIDER` (`zai`) is imported at startup; the other 15 are loaded on first use | ~480 MB | Workaround for a small memory cap |
-| **VPS / bare metal** | ❌ no | Eager — all 16 providers imported at startup | ~530 MB | No memory constraint; full DX |
-| **Docker / docker-compose** (local or self-hosted) | ❌ no (unless you set it) | Eager — all 16 providers imported at startup | ~530 MB | Same as VPS |
-| **Other PaaS** | ❌ no | Eager — all 16 providers imported at startup | depends on instance type | Pick a plan with ≥1 GB RAM for safety |
-| **Local dev / CI** | ❌ no | Eager | ~530 MB | Tests assume this path |
-
-If you self-host on a VPS, Docker, or any platform with headroom, **you don't need to do anything** — the eager path gives you all 16 providers from the start with no artificial latency. The lazy path exists for small memory caps and is **not** a best practice for memory-constrained production deployments in general.
-
-To override the gate (e.g. force lazy loading on a different platform), set `RENDER=true` in the environment.
-
-
-
-## Screenshots
-
-<div align="center">
-
-<img src="docs/screenshots/demo-flow.gif" alt="App demo — Homepage · Search · Chat · Agents" width="640"/>
-
-*Homepage · Search · Chat · Agents · Analytics*
-
-</div>
-
-### What it looks like
-
-| Landing | AI Assistant | AI Agents |
-|---|---|---|
-| ![Home](assets/screenshots/home-dark.png) | ![Chat](assets/screenshots/chat-dark.png) | ![Agents](assets/screenshots/agents-dark.png) |
-| Analytics | Knowledge & RAG | City Overview |
-| ![Analytics](assets/screenshots/analytics-dark.png) | ![Knowledge](assets/screenshots/knowledge-dark.png) | ![City](assets/screenshots/city-overview-dark.png) |
-
-*All dark-theme desktop captures (1280x800). Working source files live in
-`assets/screenshots/*-dark.png`. Light-theme variants are available in
-`docs/screenshots/`.*
-
-## Features
-
-### Multi-Provider AI
-16 LLM providers with intelligent routing — OpenAI, Anthropic, Google, Grok, DeepSeek, OpenRouter, Together AI, Fireworks AI, HuggingFace, Groq, Mistral, Qwen, ZAI, Moonshot, OpenCode, and local Ollama. Automatic fallback chain ensures reliability.
-
-### Smart Property Search
-Natural language queries with automatic filter extraction. Hybrid semantic + keyword search powered by ChromaDB with MMR reranking for 30-40% better relevance.
-
-### Analytics & Financial Tools
-Mortgage calculator, rent-vs-buy comparison, investment ROI analysis, TCO calculator, Comparative Market Analysis (CMA) reports, and **AI price forecast with multi-year projection** (v5.1).
-
-### AI Neighborhood One-Liner (v5.1)
-Short 2-3 sentence AI summary of any neighborhood's character, lifestyle, and accessibility — appears on property detail pages.
-
-### Interactive Maps
-Mapbox/Leaflet maps with property clustering, area comparisons, and city-overview analytics.
-
-### 9 Languages
-English, Polish, Russian, German, Spanish, Italian, Portuguese, Turkish, and Ukrainian — with EU AI Act compliance labels.
-
-### Enterprise Security
-OWASP-hardened with rate limiting, audit logging, SSRF protection, and dual-mode auth (API Key + JWT). Progressive 5-stage security pipeline with full scanning on all branches.
-
-## Tech Stack
+## Tech stack
 
 | Layer | Technology |
-|-------|------------|
+|---|---|
 | Backend API | FastAPI (Python 3.12+) |
 | Frontend | Next.js 16 + React 19 |
 | Vector DB | ChromaDB (semantic search + MMR reranking) |
 | Relational DB | PostgreSQL / SQLite |
-| LLM Providers | OpenAI, Anthropic, Google, Grok, DeepSeek, OpenRouter, Together AI, Fireworks AI, HuggingFace, Groq, Mistral, Qwen, ZAI, Moonshot, OpenCode, local Ollama |
+| LLM providers | OpenAI, Anthropic, Google, Grok, DeepSeek, OpenRouter, Together AI, Fireworks AI, HuggingFace, Groq, Mistral, Qwen, ZAI, Moonshot, OpenCode, local Ollama |
 | Container | Docker / Docker Compose |
-| Hosting (demo) | Single host behind a reverse proxy |
-| CI/CD | GitHub Actions (CI + GHCR) |
+| CI/CD | GitHub Actions (CI, GHCR images, deploy) |
 | Monitoring | Uptime Kuma + structured logs |
-
-## Project Growth
-
-### GitHub Stats
-
-[![GitHub stars](https://img.shields.io/github/stars/AleksNeStu/ai-real-estate-assistant?style=social)](https://github.com/AleksNeStu/ai-real-estate-assistant)
-[![GitHub forks](https://img.shields.io/github/forks/AleksNeStu/ai-real-estate-assistant?style=social)](https://github.com/AleksNeStu/ai-real-estate-assistant)
-[![GitHub issues](https://img.shields.io/github/issues/AleksNeStu/ai-real-estate-assistant)](https://github.com/AleksNeStu/ai-real-estate-assistant/issues)
-
-### Star Growth
-
-<a href="https://www.star-history.com/?repos=AleksNeStu%2Fai-real-estate-assistant&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=AleksNeStu/ai-real-estate-assistant&type=date&theme=dark&legend=top-left&sealed_token=dLC4gJOVgeG09m7gDw6tGkSgeC4LuX04JcxV3JVmuT5WvbqKDcK2GqcNVEoOgCR4bdavGcnZ65FOoYtoD-H6ZLNYXi-fZ9OYJg40eYMSvPHzI7lF5AFGEEjzM4hW0Syw5w3k4z7WQxW_o2Ma9dQBt05krBqubuxW3x-IdcKs571mTRCs5pYchSXnspIC" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=AleksNeStu/ai-real-estate-assistant&type=date&legend=top-left&sealed_token=dLC4gJOVgeG09m7gDw6tGkSgeC4LuX04JcxV3JVmuT5WvbqKDcK2GqcNVEoOgCR4bdavGcnZ65FOoYtoD-H6ZLNYXi-fZ9OYJg40eYMSvPHzI7lF5AFGEEjzM4hW0Syw5w3k4z7WQxW_o2Ma9dQBt05krBqubuxW3x-IdcKs571mTRCs5pYchSXnspIC" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=AleksNeStu/ai-real-estate-assistant&type=date&legend=top-left&sealed_token=dLC4gJOVgeG09m7gDw6tGkSgeC4LuX04JcxV3JVmuT5WvbqKDcK2GqcNVEoOgCR4bdavGcnZ65FOoYtoD-H6ZLNYXi-fZ9OYJg40eYMSvPHzI7lF5AFGEEjzM4hW0Syw5w3k4z7WQxW_o2Ma9dQBt05krBqubuxW3x-IdcKs571mTRCs5pYchSXnspIC" />
- </picture>
-</a>
-
-### Key Metrics
-
-| Metric           | Value                                       |
-| ---------------- | ------------------------------------------- |
-| **Commits**      | 191                                         |
-| **Tests**        | 7,000+ (6,254 backend + 1,000 frontend)     |
-| **Lines of Code** | 60,000+ (27K Python + 34K TypeScript)      |
-| **Contributors** | 5 (+ 1 bot)                                 |
-| **Languages**    | 9 supported                                 |
-
-## Releases
-
-| Version | Date | Highlights |
-|---|---|---|
-| [v5.1.7](CHANGELOG.md#517---2026-11-07) | 2026-11-07 | Second deployment target (your own server, with or without CI), a request counter that cannot fail a request |
-| [v5.1.6](CHANGELOG.md#516---2026-11-06) | 2026-11-06 | 335 → 0 open Dependabot alerts, input-sanitization fix (#377), one page-container contract across all routes |
-| [v5.1.5.2](CHANGELOG.md#5152---2026-09-12) | 2026-09-12 | HIGH/CRITICAL CVE fix batch: Next.js RCE (CVSS 9.0), gitpython RCE (CVSS 9.8), sharp libheif, js-yaml CPU-DoS |
-| [v5.1.5](CHANGELOG.md#515---2026-09-06) | 2026-09-06 | Visibility/SEO/GEO surface, star-history hosted embed, Dependabot roll-up, CI hardening |
-| [v5.0.12](CHANGELOG.md#5012---2026-06-22) | 2026-06-22 | Flaky-test fix, deploy independence, release verification workflow |
-| [v5.0.11](CHANGELOG.md#5011---2026-06-22) | 2026-06-22 | `pydantic-settings` CVE, dependabot config fix, first GitHub Release page |
-| [v5.0.10](CHANGELOG.md#5010---2026-06-20) | 2026-06-20 | `aiohttp` 9 advisories, `fastapi` 4 advisories, starlette direct dep |
-
-See [GitHub Releases](https://github.com/AleksNeStu/ai-real-estate-assistant/releases)
-and [CHANGELOG.md](CHANGELOG.md) for the full version history. Going forward, each
-release ships with a themed name and a short narrative paragraph — see
-[`.github/RELEASE_TEMPLATE.md`](.github/RELEASE_TEMPLATE.md).
 
 ## Architecture
 
@@ -329,57 +228,23 @@ graph LR
     API --> DB[("PostgreSQL / SQLite")]
 ```
 
-See [docs/architecture/large-saas-overview.md](docs/architecture/large-saas-overview.md) for the full system design.
+Full system design: [docs/architecture/large-saas-overview.md](docs/architecture/large-saas-overview.md).
 
-## Quick Start
-
-### PowerShell Scripts (recommended for Windows)
-
-```powershell
-# Clone and start demo mode (no API keys required)
-git clone https://github.com/AleksNeStu/ai-real-estate-assistant.git
-cd ai-real-estate-assistant
-.\scripts\docker\start.ps1
-
-# Stop:  .\scripts\docker\stop.ps1
-# Logs:  .\scripts\docker\logs.ps1
-```
-
-### Docker (manual)
+## Quick start
 
 ```bash
 git clone https://github.com/AleksNeStu/ai-real-estate-assistant.git
 cd ai-real-estate-assistant
+
+# Docker, demo mode, no API keys required
 cp deploy/compose/.env.example deploy/compose/.env
-# Edit deploy/compose/.env — demo mode enabled by default
 docker compose -f deploy/compose/docker-compose.yml up --build
 # Frontend: http://localhost:3082 · API: http://localhost:8082/docs
 ```
 
-### Manual
-
-```bash
-# Backend
-cd apps/api && uv venv .venv && source .venv/bin/activate
-uv pip install -e ".[dev]" && python -m uvicorn api.main:app --reload --port 8000
-
-# Frontend
-cd apps/web && npm install && npm run dev
-# Frontend: http://localhost:3000 · API: http://localhost:8000
-```
-
-> **[5-Minute Quickstart →](docs/development/QUICKSTART_5MIN.md)** — Full setup with verification scripts.
-
-## Three Developer Differentiators
-
-### 1. Multi-Provider LLM Routing
-16 LLM providers with automatic fallback chain — OpenAI, Anthropic, Google, Grok, DeepSeek, OpenRouter, Together AI, Fireworks AI, HuggingFace, Groq, Mistral, Qwen, ZAI, Moonshot, OpenCode, and local Ollama. Per-request provider selection via header or request parameter; no code changes required to switch models.
-
-### 2. Hybrid RAG + ChromaDB Vector Search
-Query complexity classifier routes requests to RAG-only (simple), hybrid RAG+enhancement (medium), or agent+tools (complex). ChromaDB with MMR reranking provides semantic similarity search.
-
-### 3. 9-Language Localization
-English, Polish, Russian, German, Spanish, Italian, Portuguese, Turkish, and Ukrainian — with EU AI Act compliance labels on AI-generated outputs.
+On Windows, `.\scripts\docker\start.ps1` does the same thing with the ports
+assigned for you. For the manual path (uv + npm), the API reference and the
+verification scripts, see the [5-minute quickstart](docs/development/QUICKSTART_5MIN.md).
 
 <!-- HOSTED-FUNNEL-START -->
 ## The hosted version, and what comes next
@@ -401,15 +266,27 @@ roadmap:
 | Accounts, favourites, saved searches, alerts | — | Pro |
 | AI CRM (lead scoring, drip campaigns, pipeline) | — | Pro / Enterprise |
 | CRM connectors (HubSpot, Pipedrive), SSO, MFA | — | Enterprise |
-| White-label and self-host support contract | — | Enterprise (custom) |
+| White-label / self-host support contract | — | Enterprise (custom) |
 
 **Free $0** · **Pro $29/mo** · **Enterprise (custom)** — the tiers reflect the
 public roadmap and may move before launch.
 
-[PropVector AI](https://propvectorai.com) is launching soon; the landing page
-ships alongside billing. The fastest way to reach the maintainer today is to
-[open a Discussion](https://github.com/AleksNeStu/ai-real-estate-assistant/discussions)
+[PropVector AI](https://propvectorai.com) is launching soon; the landing
+page ships alongside billing. The fastest way to reach the maintainer today
+is to [open a Discussion](https://github.com/AleksNeStu/ai-real-estate-assistant/discussions)
 with the `[Commercial]` prefix.
+
+### More from the studio
+
+The same team builds these.
+
+| | |
+|---|---|
+| **[PropVector AI](https://propvectorai.com)** | The hosted version of this project — live data, accounts, AI CRM, enterprise tiers. |
+| **[EU AIGap](https://euaigap.co)** | EU AI Act self-assessment for teams that ship AI: classify a system, find the gaps, export the documents. |
+| **[NestLab Tech](https://nestlab.tech)** | The studio itself — workflow automation, custom AI software and EU AI Act readiness for clients. |
+| **[CheckCV](https://checkcv.co)** · **[TuneCV](https://tunecv.co)** | AI resume analysis and ATS optimisation. |
+| **[PoznajSiebie](https://poznajsiebie.pl)** | Self-knowledge through attachment styles — in Polish. |
 
 ### Ideas, forks, and other ways to work with us
 
@@ -429,151 +306,80 @@ it is welcome, and none of it needs to be filed as a formal proposal first.
   clients: [workflow automation, custom AI software, EU AI Act readiness](https://nestlab.tech/services?utm_source=github&utm_medium=referral&utm_campaign=product_showcase&utm_content=readme).
 <!-- HOSTED-FUNNEL-END -->
 
-## Project Structure
+## Questions people actually ask
 
-```text
-ai-real-estate-assistant/
-├── apps/
-│   ├── api/                    # FastAPI backend (Python 3.12+)
-│   │   ├── api/                # Routers, main.py, dependencies
-│   │   ├── agents/             # HybridAgent, QueryAnalyzer
-│   │   ├── tools/              # LangChain tools
-│   │   ├── models/             # LLM provider factory
-│   │   ├── db/                 # SQLAlchemy models, repositories
-│   │   ├── vector_store/       # ChromaDB integration
-│   │   └── tests/              # pytest unit/integration/e2e
-│   └── web/                    # Next.js 16 frontend (React 19)
-│       └── src/
-│           ├── app/            # App Router pages
-│           ├── components/     # UI components
-│           ├── contexts/       # React contexts
-│           └── lib/            # API client, utilities
-├── deploy/                     # Dockerfiles, compose files, k8s
-├── docs/                       # Architecture, API, guides
-├── scripts/                    # dev, demo, validation, setup
-└── .github/                    # CI/CD, FUNDING, issue templates
-```
+**Can I run it on my own server?**
+Yes — that is what the project is for. One compose file, or let this
+repository's CI do it: give the [self-host deploy workflow](.github/workflows/deploy-selfhosted.yml)
+a key and an address as repository secrets, and every release tag rolls your
+machine onto the new images. See [Deploy it your way](#deploy-it-your-way).
 
-## Testing
+**Do I need a paid API key?**
+Not to look around. The demo answers with a local model, so it costs nothing
+to explore. For real answers you bring your own key — any of 16 providers, or
+a local Ollama — and the app falls back to the next one when a provider fails.
 
-### Quick Commands
+**What is the difference to the hosted version?**
+The engine is the same. The hosted tier adds live data feeds, accounts, saved
+searches, alerts and an AI CRM — see [PropVector AI](https://propvectorai.com).
 
-**Windows:**
-```powershell
-.\scripts\testing\test-fast.ps1       # ⚡ Quick test (3-5 min) - during development
-.\scripts\testing\test-ci.ps1         # 🔍 Full CI (8-12 min) - before commit
-.\scripts\testing\test-all.ps1        # 🐛 See all failures - fixing multiple issues
-.\scripts\testing\test-coverage.ps1   # 📊 Coverage report - before PR
-```
+**Which languages?**
+Nine in the interface: English, Polish, Russian, German, Spanish, Italian,
+Portuguese, Turkish and Ukrainian. The documentation is English-first.
 
-**Linux/macOS:**
-```bash
-./scripts/testing/test-fast.sh        # ⚡ Quick test (3-5 min)
-./scripts/testing/test-ci.sh          # 🔍 Full CI (8-12 min)
-./scripts/testing/test-all.sh         # 🐛 See all failures
-./scripts/testing/test-coverage.sh    # 📊 Coverage report
-```
+**Is the data mine?**
+Yes, for anything you run yourself: SQLite plus a ChromaDB index on a volume
+you own, in your country, behind your own authentication.
 
-**See [Testing Guide](docs/testing/TESTING_GUIDE.md) for detailed usage.**
-
-### Test Coverage
-
-| Layer | Tests | Tools | Coverage |
-|-------|------:|-------|----------|
-| Backend | 6,254+ | pytest, mypy, ruff | 90%+ |
-| Frontend | 1,000+ | Jest, ESLint | 80%+ |
-| Security | 5 scanners | Gitleaks, Semgrep, Bandit, Trivy, CodeQL | - |
-| E2E | WCAG 2.1 AA | axe-core, Playwright | - |
-
-**Performance:** Tests run in parallel using pytest-xdist (local) and GitHub Actions matrix (CI).
+**Can I use it commercially?**
+MIT. Fork it, change it, ship it. The hosted version is the commercial path
+for teams that want the managed pieces instead of running the stack.
 
 ## Documentation
 
 | Doc | Description |
-|-----|-------------|
+|---|---|
+| [5-minute quickstart](docs/development/QUICKSTART_5MIN.md) | The shortest path from a clone to a running app |
+| [Deployment guide](docs/deployment/DEPLOYMENT.md) | Docker, Kubernetes, the self-host stack and the CI deploy |
 | [Architecture](docs/architecture/large-saas-overview.md) | System design, data flow, deployment |
-| [API Reference](docs/api/API_REFERENCE.md) | All endpoints with examples |
-| [User Guide](docs/user/USER_GUIDE.md) | How to use the assistant |
-| [Contributing](docs/development/CONTRIBUTING.md) | Development workflow |
-| [Testing Guide](docs/testing/TESTING_GUIDE.md) | Writing and running tests |
-| [CI/CD Pipeline](docs/guides/ci-cd.md) | Progressive security pipeline |
-| [Deployment](docs/deployment/DEPLOYMENT.md) | Docker & Kubernetes setup |
-| [Troubleshooting](docs/development/TROUBLESHOOTING.md) | Common issues |
-| [Project Review (2026-11-06)](docs/reviews/2026-11-06-ai-real-estate-assistant.md) | Full repo audit — findings and status |
+| [API reference](docs/api/API_REFERENCE.md) | All endpoints with examples |
+| [User guide](docs/user/USER_GUIDE.md) | How to use the assistant |
+| [Testing guide](docs/testing/TESTING_GUIDE.md) | Writing and running tests |
+| [Contributing](CONTRIBUTING.md) | Development workflow |
+| [Security policy](SECURITY.md) | Reporting and hardening |
 | [Changelog](CHANGELOG.md) | Version history |
 
-## Roadmap
+## Testing
 
-### Future Direction *(no committed timeline)*
-
-> The following items represent the project's aspirational direction. They are **not**
-> scheduled commits — see [GitHub Issues](https://github.com/AleksNeStu/ai-real-estate-assistant/issues)
-> for any active discussion or tracking. Items may or may not ship; current version is
-> frozen at the latest tagged release (see [Releases](#releases)).
-
-- **Multi-Tenant Architecture** — Complete data isolation with tenant-aware models and repositories
-- **Billing API** — Stripe integration for subscription management and usage-based pricing
-- **Market Analytics Dashboard** — Advanced charts and trends for real estate markets
-- **Mobile App** — React Native application for iOS and Android
-- **Property Comparison Tool** — Side-by-side property analysis
-- **Email Notifications** — Alerts for price drops, new listings, and market updates
-- **API Rate Limiting** — Per-user quotas and usage analytics
-
-## Branches
-
-| Branch                                                                              | Status    | Description                    |
-| ----------------------------------------------------------------------------------- | --------- | ------------------------------ |
-| [`dev`](https://github.com/AleksNeStu/ai-real-estate-assistant/tree/dev)            | 🔥 Active | Current development & staging  |
-| [`main`](https://github.com/AleksNeStu/ai-real-estate-assistant/tree/main)           | 🟢 Stable  | Stable releases                |
-
-## Deployment
-
-Three ways, one build. Pick the one that fits what you are trying to do.
-
-- **Look at it first** — the [live demo](https://ai-real-estate-demo.devs-scaler.workers.dev/) runs the same images on a shared host, answers without a paid model key, and is deliberately kept out of search indexes. It is a demo on a fixed memory budget, not a production SLA.
-- **Let a platform host it** — [one click on Render](https://render.com/deploy?repo=https://github.com/AleksNeStu/ai-real-estate-assistant) from the blueprint in [`render.yaml`](render.yaml).
-- **Run it yourself** — [`deploy/docker-compose.selfhosted.yml`](deploy/docker-compose.selfhosted.yml) on any Docker host, with or without the [self-host deploy workflow](.github/workflows/deploy-selfhosted.yml) rolling it forward on every release tag. See [Deploy it your way](#deploy-it-your-way) above, and the [Deployment Guide](docs/deployment/DEPLOYMENT.md) for Docker and Kubernetes.
-
-## Configuration
-
-```bash
-# Required — at least one LLM provider
-OPENAI_API_KEY="sk-..."
-ANTHROPIC_API_KEY="sk-ant-..."
-GOOGLE_API_KEY="AI..."
-
-# Backend
-ENVIRONMENT="local"
-CORS_ALLOW_ORIGINS="http://localhost:3000"
-
-# Optional
-OLLAMA_BASE_URL="http://localhost:11434"    # Local models
-ENABLE_JWT_AUTH="true"                      # User auth
-REDIS_URL="redis://localhost:6379"          # Caching
+```powershell
+.\scripts\testing\test-fast.ps1     # quick test (3-5 min), during development
+.\scripts\testing\test-ci.ps1       # full CI (8-12 min), before a commit
 ```
 
-See [.env.example](.env.example) for the full list.
+```bash
+./scripts/testing/test-fast.sh      # the same, on Linux and macOS
+./scripts/testing/test-ci.sh
+```
+
+Backend: pytest with xdist and a 90 % coverage gate. Frontend: Jest with an
+80 % gate. Security: Gitleaks, Semgrep, Bandit, Trivy, CodeQL. Full details
+in the [testing guide](docs/testing/TESTING_GUIDE.md).
 
 ## Contributing
 
-Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow.
-
-Please note that this project is released with a [Contributor Code of Conduct](.github/CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for the
+workflow, and the [code of conduct](.github/CODE_OF_CONDUCT.md) for the terms.
 
 1. Fork → `git checkout -b feature/short-description`
-2. Run checks locally (`make ci`)
+2. Run the checks locally (`make ci`)
 3. Commit: `type(scope): message`
 4. Open a PR against `dev`
 
+`dev` is the working branch, `main` is the stable one.
+
 ## License
 
-MIT License — see [LICENSE](LICENSE).
-
-## Contributors
-
-[![Contributors](https://contrib.nn.ci/api?repo=AleksNeStu/ai-real-estate-assistant)](https://github.com/AleksNeStu/ai-real-estate-assistant/graphs/contributors)
-
-Want to help shape the project? See [Contributing](#contributing) above.
+MIT — see [LICENSE](LICENSE).
 
 ## Support
 

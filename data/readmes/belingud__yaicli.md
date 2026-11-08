@@ -109,14 +109,22 @@ headless approval flags.
   `/undo` reverts the last change — see [Workspace Safety](docs/usage/workspace-safety.md)
 - **Guarded shell**: timeout, process-group kill, filtered environment (no API keys leaked to
   commands), workspace-confined `cwd`
+- **Secret redaction on disk**: API keys, tokens and private keys are replaced with `[redacted]`
+  before tool output is spilled or a session is saved (`REDACT_SECRETS`, on by default); the model
+  still sees the real content — see [Permissions & Safety](docs/usage/permissions.md#secret-redaction-on-disk)
 
 ### 📜 Headless & Scriptable
 
 - **`-p/--print`** for explicit one-shot runs, **`-q/--quiet`** for answer-only output
 - **`--output-format json|stream-json`** — one JSON object, or one NDJSON event per line
+- **Token/cost accounting** — the JSON `usage` object and stream-json `usage` event carry real
+  prompt/completion tokens, estimated USD cost, tool count/duration and `finish_reason`;
+  `SHOW_USAGE` adds a one-line summary after each interactive turn
 - **stdout only carries the result**; labels, warnings and errors go to stderr
 - **Deterministic exit codes** (`0/1/2/3/130/141`) and SIGINT/EPIPE handling
 - **Non-interactive approvals** with `--yes`, `--allowed-tools` and `--fail-on-tool-denied`
+- **Tool schema narrowing** with `--tools 'fs_*,web_search'` (or `ENABLED_TOOLS`) to cut the
+  per-request payload down to the tools a script actually needs
 
 ### 🧠 Context Economy
 
@@ -127,6 +135,8 @@ headless approval flags.
 - **Self-healing**: a provider `context_length` error is retried once after trimming instead of
   failing permanently
 - **`/context`** shows what occupies the window, **`/compact [keep_rounds]`** compresses it on demand
+- **`/cost`** reports the session's tokens, estimated USD cost, per-model breakdown and tool
+  time/size; truncated answers (`finish_reason=length`) print a warning instead of silently ending
 
 ### 🔄 Multiple Interaction Modes
 
@@ -137,6 +147,8 @@ headless approval flags.
 ### 💻 Enhanced Terminal Experience
 
 - **Real-time Streaming**: See responses as they're generated with cursor animation
+- **Agent-aware prompt**: shows the current model, role and context usage, with `/` command completion
+  and multi-line editing (Alt+Enter)
 - **Rich History Management**: Manage histories with 500 entries by default
 - **Syntax Highlighting**: Beautiful code formatting with customizable themes
 
@@ -274,7 +286,6 @@ can point it at any of these providers (or any OpenAI-compatible endpoint) by ch
 - Together
 - Vertex AI
 - xAI
-- Yi
 
 Any other OpenAI-compatible endpoint can be used with the `openai` or `openai-compatible`
 provider plus a custom `BASE_URL`. See the [provider overview](docs/providers/overview.md) for
@@ -319,6 +330,7 @@ The default configuration file is `config.ini` inside the config directory above
 | `EXTRA_HEADERS`        | Extra headers                               | -                        | `YAI_EXTRA_HEADERS`        |
 | `EXTRA_BODY`           | Extra body                                  | -                        | `YAI_EXTRA_BODY`           |
 | `REASONING_EFFORT`     | Reasoning effort                            | -                        | `YAI_REASONING_EFFORT`     |
+| `DISABLE_PARALLEL_TOOL_USE` | Anthropic: send `disable_parallel_tool_use` (`true` = one tool call per response; `false` = allow parallel calls) | `true` | `YAI_DISABLE_PARALLEL_TOOL_USE` |
 | `INTERACTIVE_ROUND`    | Chat turns kept in the REPL (×2 messages)   | `25`                     | `YAI_INTERACTIVE_ROUND`    |
 | `CODE_THEME`           | Syntax highlighting theme                   | `monokai`                | `YAI_CODE_THEME`           |
 | `TEMPERATURE`          | Response randomness                         | `0.3`                    | `YAI_TEMPERATURE`          |
@@ -334,12 +346,22 @@ The default configuration file is `config.ini` inside the config directory above
 | `ROLE_MODIFY_WARNING`  | Warn when modifying built-in roles          | `true`                   | `YAI_ROLE_MODIFY_WARNING`  |
 | `ENABLE_FUNCTIONS`     | Enable function calling                     | `true`                   | `YAI_ENABLE_FUNCTIONS`     |
 | `SHOW_FUNCTION_OUTPUT` | Show function output when calling function  | `true`                   | `YAI_SHOW_FUNCTION_OUTPUT` |
+| `ENABLED_TOOLS`        | Comma-separated tool-name globs offered to the model (`fnmatch`; MCP names keep the `_mcp__` prefix; empty = all tools) | - | `YAI_ENABLED_TOOLS` |
 | `ENABLE_MCP`           | Enable MCP tools                            | `false`                  | `YAI_ENABLE_MCP`           |
 | `SHOW_MCP_OUTPUT`      | Show MCP output when calling mcp            | `false`                  | `YAI_SHOW_MCP_OUTPUT`      |
+| `MCP_TIMEOUT`          | Seconds one MCP list/call operation may take (`0` = no timeout) | `30` | `YAI_MCP_TIMEOUT` |
+| `MCP_MAX_TOOLS`        | Max MCP tools offered to the model per request (`0` = unlimited) | `64` | `YAI_MCP_MAX_TOOLS` |
+| `SHOW_USAGE`           | Print one token/cost line after each interactive turn | `true`          | `YAI_SHOW_USAGE`           |
+| `MODEL_PRICING`        | JSON price overrides: `{"model-prefix": {"input": 2.5, "output": 10}}` (USD per 1M tokens) | - | `YAI_MODEL_PRICING` |
 | `MAX_TOOL_CALL_DEPTH`  | Max tool calls in one request               | `8`                      | `YAI_MAX_TOOL_CALL_DEPTH`  |
 | `TOOL_CONFIRM`         | Confirm each tool call before running it    | `true`                   | `YAI_TOOL_CONFIRM`         |
+| `TOOL_POLICY`          | Session-wide tool permission mode: `readonly`, `standard` or `trusted` | `standard` | `YAI_TOOL_POLICY` |
 | `TOOL_OUTPUT_MAX_CHARS` | Max characters of one tool result kept in context (`0` = unlimited) | `32000` | `YAI_TOOL_OUTPUT_MAX_CHARS` |
 | `TOOL_OUTPUT_DIR`      | Where full (untruncated) tool outputs are saved | `<tempdir>/yaicli/chats/tool-outputs` | `YAI_TOOL_OUTPUT_DIR` |
+| `REDACT_SECRETS`       | Redact known secret shapes before tool output/sessions are written to disk | `true` | `YAI_REDACT_SECRETS` |
+| `TOOL_DISPLAY_MAX_LINES` | Terminal preview: max lines of one tool result shown (`0` = unlimited) | `15` | `YAI_TOOL_DISPLAY_MAX_LINES` |
+| `TOOL_DISPLAY_MAX_CHARS` | Terminal preview: max characters shown; the model cap is `TOOL_OUTPUT_MAX_CHARS` | `4000` | `YAI_TOOL_DISPLAY_MAX_CHARS` |
+| `TOOL_CALL_PREVIEW_MAX_CHARS` | Max characters of the `@Function call:` argument line (`0` = raw) | `300` | `YAI_TOOL_CALL_PREVIEW_MAX_CHARS` |
 | `ENABLE_PROJECT_CONTEXT` | Auto-load project instruction files into the system prompt (`false` = no project-file reads) | `true` | `YAI_ENABLE_PROJECT_CONTEXT` |
 | `PROJECT_CONTEXT_MAX_CHARS` | Max characters of project context added to the system prompt (`0` = no cap) | `20000` | `YAI_PROJECT_CONTEXT_MAX_CHARS` |
 | `CONTEXT_BUDGET_TOKENS` | Token budget per request (`0` = 70% of the model window) | `0`         | `YAI_CONTEXT_BUDGET_TOKENS` |
@@ -349,6 +371,7 @@ The default configuration file is `config.ini` inside the config directory above
 | `RETRY_ENABLED`        | Retry retryable API failures (429/5xx/network/timeout) | `true`         | `YAI_RETRY_ENABLED`        |
 | `RETRY_MAX`            | Maximum retry attempts                      | `2`                      | `YAI_RETRY_MAX`            |
 | `RETRY_BASE_DELAY`     | Base backoff delay in seconds               | `1.0`                    | `YAI_RETRY_BASE_DELAY`     |
+| `RETRY_MAX_DELAY`      | Maximum backoff delay in seconds (cap)      | `8.0`                    | `YAI_RETRY_MAX_DELAY`      |
 | `EXIT_ON_DEPTH_LIMIT`  | Exit non-zero in one-shot mode when the tool-round limit is reached | `true` | `YAI_EXIT_ON_DEPTH_LIMIT` |
 | `TOOL_AUDIT`           | Write tool decisions to `tool_audit.jsonl`  | `true`                   | `YAI_TOOL_AUDIT`           |
 | `EXCLUDE_PARAMS`       | Comma-separated API parameters to omit       | -                        | `YAI_EXCLUDE_PARAMS`       |
@@ -704,14 +727,6 @@ API_KEY=
 MODEL=Qwen/Qwen3-32B
 ```
 
-#### Yi
-
-```ini
-PROVIDER=yi
-API_KEY=
-MODEL=yi-lightning
-```
-
 #### Cohere
 
 You have to install cohere dependencies, `pip install 'yaicli[cohere]'`
@@ -929,13 +944,18 @@ ai --verbose "Explain quantum computing"
 - `/mode chat|exec` - Switch modes
 - `/add <path>` - Add file/dir to context
 - `/context|/ctx` - Context usage and file context (list, add, remove, clear)
+- `/cost` - Session tokens, estimated USD cost, per-model breakdown and tool time/size
 - `/compact [keep_rounds]` - Compress the conversation, keeping the last N turns
 - `/permissions` - List/revoke tool approval rules
+- `/model [name]` - Show or switch the model for the current session
+- `/role [name]` - Show or switch the assistant role
+- `/retry` - Re-run the last user turn (e.g. after an API error)
 - `/show-output` - Open the full-screen tool-output viewer for this turn
 
 **Keyboard Shortcuts**
 
 - `Shift+Tab` - Toggle between Chat/Execute modes
+- `Alt+Enter` / `Ctrl+J` - Insert a newline (multi-line prompt without submitting)
 - `Ctrl+C` - Clear the current input (during generation: cancel the turn); press twice quickly to exit
 - `Ctrl+D` - Exit
 - `Ctrl+R` - Search history
@@ -1297,6 +1317,9 @@ work immediately with no `--install-functions` step:
   is only needed if you have exported copies in the functions directory.
 - Function calling is enabled by default (`ENABLE_FUNCTIONS`); use `--enable-functions` /
   `--disable-functions` to toggle it per run, and `--hide-function-output` to hide tool output.
+- Offer only the tools a task needs to shrink the per-request schema payload: `--tools
+  'fs_*,web_search'` (or the persistent `ENABLED_TOOLS` config key). MCP tools are matched with
+  their `_mcp__` prefix, e.g. `--tools '_mcp__github_*'`.
 
 Every tool call asks for confirmation by default (`TOOL_CONFIRM`; allow once, for the session,
 permanently, or deny); shell commands and writes get an extra risk check, and every decision is
@@ -1310,6 +1333,17 @@ command/flag reference and custom-function guide.
 Add your MCP config in `~/.config/yaicli/mcp.json` (`C:\Users\<user>\.config\yaicli\mcp.json` on Windows.).
 
 `--enable-mcp` option is corresponds to the configuration key `ENABLE_MCP`.
+
+MCP servers are external processes, so YAICLI treats them defensively:
+
+- a missing or malformed `mcp.json` (or a broken server) never aborts the turn — MCP tools are
+  skipped with one actionable stderr warning;
+- each list/call operation is bounded by `MCP_TIMEOUT` (default 30s) and at most `MCP_MAX_TOOLS`
+  (default 64) tools are injected per request;
+- tool descriptions are sanitized (control/ANSI stripped, length-capped) and labelled as coming
+  from an external server whose output is untrusted data, not instructions;
+- every content block of a result is returned (not just the first), and server-side errors are
+  marked `[MCP error]`.
 
 Example:
 

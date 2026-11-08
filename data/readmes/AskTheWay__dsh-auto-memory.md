@@ -27,6 +27,23 @@ open a brand-new session tomorrow, ask *"what do you know about me?"*, and it
 
 ## Highlights
 
+**1.6 — memory has a shelf life**: time-sensitive facts (plans, prices,
+versions) carry a `validUntil`; expired memories stop being injected, surface
+on the health board with one-click renew, and are marked as historical when
+recalled. High-recall memories now rank higher in the index (a gentle
+reads multiplier), and writes carrying secrets get an explicit "redacted"
+receipt instead of silent sanitization.
+
+**1.5 — a panel, not a wall**: tabbed UI (Memories first-class, Insights,
+Health, Settings), monochrome SVG iconography, color-blind-checked identity
+colors — and health rows jump straight to the memory card they're about.
+
+**1.4 — runtime settings + a recall funnel**: a Settings card (presets,
+sliders, per-field reset) changes the injection budget, value gate and
+eviction **at runtime — next request, no restart**; the recall funnel makes
+"injected but never actually read" visible and actionable (mute the budget
+hogs, pin the buried gems).
+
 **1.x — trustworthy memory + measured end-to-end**: consolidation products are
 born `candidate` with verbatim evidence quotes; only *you* can grant
 `verified`; disputed memories are never re-injected; every write passes an
@@ -52,6 +69,8 @@ amnesia by design.
 | Memories injected into **every** system prompt, automatically | ✗ | ✓ (zero tokens when empty) |
 | Typed memories: user / feedback / project / reference | ✗ | ✓ |
 | Workspace + user scope layers — no cross-project leakage | ✗ | ✓ |
+| **Trust machine**: candidate / verified / disputed / superseded + verbatim evidence | ✗ | ✓ |
+| **Auditability**: every injection logged, recall funnel, health board | — | ✓ |
 | Crash & concurrency safety (cross-process locks, orphan recovery) | — | ✓ |
 | External services / databases / embeddings required | ✓✓✓ | **none — just plain Markdown files** |
 
@@ -190,11 +209,13 @@ no LLM, fully reproducible:
   [methodology](evals/README.md)
 - **Eviction never misfires**: four-class mixed scenario — only
   stale-zero-read memories get hidden; zero files lost; one read revives.
-- **Known limitation, pinned as baseline**: budget truncation is currently
-  positional (index order), not relevance-ranked — probe retention under
-  half-budget pressure drops to ~38%→10% as N grows. **Pinning fixes it for
-  what matters**: pinned probes retain **≥80%** at the same budget (0.3.0);
-  full relevance ranking remains on the roadmap.
+- **Relevance-ranked truncation** (#18, 1.3.0): when the index exceeds budget,
+  entries are kept by relevance to the frozen per-session query profile —
+  KV-safe, re-evaluated per session. Honest boundary: in "inject before the
+  question is known" scenarios (like LongMemEval) there is no query signal at
+  truncation time — the needle probe in
+  [evals/README](evals/README.md) pins those coordinates instead of hiding
+  them.
 
 This evaluation layer already caught a real bug: the byte budget used to
 exclude the policy text, overshooting by ~800 bytes (fixed, regression-tested).
@@ -235,7 +256,28 @@ after a few sessions.
 
 ## Configuration
 
-Override in your profile's `cordis.patch.yml` (config replaces wholesale):
+Two layers, hottest knobs first:
+
+**Runtime settings (1.4.0)** — the panel's Settings card, no restart, no
+YAML. Focus/Companion presets, sliders for index budget / value gate /
+soft eviction, auto-consolidate toggle. Every field shows where its value
+comes from (`profile` or `your override`) and resets to the profile default
+with one ↺. Changes apply to the **next request** — the injection budget,
+consolidation gate and eviction read a live config object, not a frozen
+snapshot. Stored as overrides in the memory root's `settings.json`
+(whitelist + range validated; `memoryDir` deliberately not settable):
+
+| field | range | default | what it does |
+| --- | --- | --- | --- |
+| `maxBytes` | 1024–65536 | 4096 | per-request injection budget |
+| `minImportance` | 0–10 | 4 | consolidation value gate (0 = off) |
+| `staleAfterDays` | 0–3650 | 0 | soft-hide zero-read memories (0 = off) |
+| `autoSummarize` | on/off | false | consolidate durable facts on session end |
+| `autoSummarizeMaxMemories` | 1–20 | 5 | cap per consolidation |
+
+**Profile config** — override in your profile's `cordis.patch.yml` (config
+replaces wholesale). This is where `memoryDir` and `enableUserScope` live,
+and where the defaults the runtime layer falls back to come from:
 
 ```yaml
 - id: auto-memory
@@ -274,7 +316,8 @@ Deep dives: [design decisions](docs/design.md) ·
 - [x] P3 — update-replace semantics, matching core shared with the eval harness
 - [x] 0.8–1.0 — Claude Code import bridge (revocable), injection audit + stats, trustworthy memory (status / evidence / guard / health)
 - [x] 1.1–1.2 — L2 end-to-end + LongMemEval alignment, `memory_search`, import watcher, reverse AGENTS.md export
-- [ ] L2 refinements (relevance-ranked truncation), community-driven work
+- [x] 1.3–1.4 — consolidation value gate + chitchat suppressor, relevance-ranked truncation, memory evolution lineage, runtime settings center, injection→recall funnel
+- [ ] real-coding-session blind eval (#20), community-driven work
 
 ## Changelog
 

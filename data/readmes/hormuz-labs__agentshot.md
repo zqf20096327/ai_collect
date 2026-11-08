@@ -1,29 +1,27 @@
 <p align="center">
-  <img src="build/icons/256x256.png" width="88" alt="AgentShot">
-</p>
-
-<h1 align="center">AgentShot</h1>
-
-<p align="center">
-  <b>The video editor you talk to.</b><br>
-  Say what you want. Point at the frame. Keep the cut, or send it back.
+  <img src="docs/readme-banner.webp" alt="AgentShot. Give notes. Get cuts. The open-source video editor you talk to, no timeline required." width="100%">
 </p>
 
 <p align="center">
-  <a href="https://github.com/hormuz-labs/agentshot/releases/latest"><img alt="release" src="https://img.shields.io/github/v/release/hormuz-labs/agentshot?style=flat&color=262626&label=release"></a>
-  <a href="LICENSE"><img alt="GPL-3.0" src="https://img.shields.io/badge/license-GPL--3.0-262626?style=flat"></a>
-  <img alt="macOS · Windows · Linux · Android" src="https://img.shields.io/badge/macOS%20·%20Windows%20·%20Linux%20·%20Android-262626?style=flat">
+  <b>The video editor you talk to.</b> Say what you want. Point at the frame. Keep the cut, or send it back.
+</p>
+
+<p align="center">
+  <a href="https://github.com/hormuz-labs/agentshot/releases/latest"><img alt="release" src="https://img.shields.io/github/v/release/hormuz-labs/agentshot?style=for-the-badge&color=FFE01A&labelColor=17151D&label=release"></a>
+  <a href="LICENSE"><img alt="GPL-3.0" src="https://img.shields.io/badge/license-GPL--3.0-FF4FB0?style=for-the-badge&labelColor=17151D"></a>
+  <a href="#install"><img alt="macOS · Windows · Linux · Android" src="https://img.shields.io/badge/macOS%20·%20Windows%20·%20Linux%20·%20Android-4FC8FF?style=for-the-badge&labelColor=17151D"></a>
+  <a href="https://agentshot.si"><img alt="agentshot.si" src="https://img.shields.io/badge/agentshot.si-7B61FF?style=for-the-badge&labelColor=17151D"></a>
+</p>
+
+<p align="center">
+  <a href="https://agentshot.si/#get"><b>Download for Mac, Windows or Linux</b></a> · free and open source · your footage never leaves your computer
 </p>
 
 <p align="center">
   <img src="docs/readme-hero.webp" alt="AgentShot: the conversation on the left (“Cut the ums, then add a lower third…”, the steps it took, its reply) and the film on the right with the proposed cut, Before / After, Reject and Accept" width="100%">
 </p>
 
-```bash
-brew install hormuz-labs/tap/manul
-```
-
-<p align="center"><sub>macOS. <a href="#install">Windows, Linux and the phone app below.</a> Free and open source, and your footage never leaves your computer.</sub></p>
+<p align="center"><sub>On a Mac with Homebrew: <code>brew install hormuz-labs/tap/manul</code>. <a href="#install">Every other way to install, and the phone app, below.</a></sub></p>
 
 ---
 
@@ -32,6 +30,21 @@ Editing video is thousands of small decisions made with a mouse. AgentShot keeps
 https://github.com/user-attachments/assets/084276fb-6129-47e2-9cba-4724c1432990
 
 <p align="center"><sub>90 seconds of AgentShot, starring the grumpiest cat on Earth. Footage: BBC, <i>Frozen Planet II</i>.</sub></p>
+
+## What it makes
+
+<p align="center">
+  <img src="docs/readme-jobs.webp" alt="Four jobs: product demos, from a URL; Shorts and Reels, from any video; clean takes, from your footage; motion graphics, from nothing at all" width="100%">
+</p>
+
+Each one is a sentence, and the first three are one click on AgentShot's first screen:
+
+- **Product demos.** *“A walkthrough of app.example.com: sign up and make a first project.”* It tries your product first, shows a storyboard, then [films it in your own Chrome](#no-footage-two-other-ways-in) and cuts it like a person would.
+- **Shorts and Reels.** *“Find the 3 best moments and make each a vertical Short with captions.”* The crop follows whoever is talking, and the captions land word by word.
+- **Clean takes.** *“Cut the ums, false starts and long pauses.”* Each cut falls in the silence between words, and the sound is evened out.
+- **Motion graphics.** Describe it, or [start from one of 233 examples](#no-footage-two-other-ways-in) and say what yours is about.
+
+And when it's nearly there, [hand the cut to Premiere, Resolve or Final Cut](#things-you-can-just-say) with every cut still trimmable.
 
 ## A session
 
@@ -99,6 +112,7 @@ The agent is durable: it runs on a pi-durable harness backed by SQLite, so a con
 | “music under it, quieter when I talk” | the mix ducks under speech, and you hear it live before anything renders |
 | “sync the second camera” | audio cross-correlation (GCC-PHAT) with clock-drift fitting |
 | “captions are always yellow” | memory: said once, every later project knows |
+| “send this to Premiere” | the cut as FCPXML, Premiere XML and OpenTimelineIO, with its footage: every cut keeps its in and out points |
 | “put @logo.png bottom right” | <kbd>@</kbd> picks any file, kept version or title by name |
 
 It also knows how different films are cut: talking heads, tutorials, Shorts and Reels, promos, montages, motion graphics, cleanup and repair. These skills are plain files you can read and change.
@@ -155,7 +169,7 @@ The phone app doesn't edit anything itself. It's a remote for the editor on your
 
 | Platform | |
 | --- | --- |
-| **macOS** (Apple silicon and Intel) | `brew install hormuz-labs/tap/manul`, signed and notarized |
+| **macOS** (Apple silicon and Intel) | [Apple silicon `.dmg`](https://github.com/hormuz-labs/agentshot/releases/latest/download/AgentShot-arm64.dmg) · [Intel `.dmg`](https://github.com/hormuz-labs/agentshot/releases/latest/download/AgentShot-x64.dmg), signed and notarized. Or `brew install hormuz-labs/tap/manul` |
 | **Windows 10 (1903+) / 11, x64** | [`AgentShot-windows-x64-Setup.exe`](https://github.com/hormuz-labs/agentshot/releases/latest) |
 | **Debian / Ubuntu** | the signed apt repository, [below](#debian--ubuntu) |
 | **Other Linux** | AppImage from the [latest release](https://github.com/hormuz-labs/agentshot/releases/latest) |
@@ -221,7 +235,7 @@ Install AgentShot from https://github.com/hormuz-labs/agentshot. On macOS run `b
 
 Renders use your graphics chip when they can: Apple's on a Mac, NVIDIA, Intel or AMD on Windows, NVIDIA on Linux. Everything else falls back to the CPU. **Got a GPU we don't cover?** [Adding one is a small change](CONTRIBUTING.md#gpu-encoders), and we'd love the help.
 
-To run it from source, see **[CONTRIBUTING.md](CONTRIBUTING.md)**. For how the services are hosted, see [workspace and hosting](docs/workspace.md). For what's next (handing the cut to Premiere, Resolve or Final Cut, publishing to YouTube, notes from clients on the frame), see the **[roadmap](ROADMAP.md)**.
+To run it from source, see **[CONTRIBUTING.md](CONTRIBUTING.md)**. For how the services are hosted, see [workspace and hosting](docs/workspace.md). For what's next (publishing to YouTube, notes from clients on the frame, generated shots), see the **[roadmap](ROADMAP.md)**.
 
 ---
 

@@ -42,7 +42,7 @@
 <div align="center">
   <strong>⭐ If you find this catalog helpful, please consider giving it a star! ⭐</strong>
   <br><br>
-  <i>Last updated: November 1, 2026 | Next goal: 500 stars 🎯</i>
+  <i>Last updated: November 8, 2026 | Next goal: 500 stars 🎯</i>
   <br><br>
   <i>🤖 Thanks to Claude Sonnet 4 for write .sh files! </i>
 </div>
@@ -109,7 +109,7 @@ Welcome to the most comprehensive AI tools catalog! This repository contains **5
 ### 📊 Quick Stats
 - **Total Tools**: 500+
 - **Categories**: 40+
-- **Last Updated**: November 1, 2026
+- **Last Updated**: November 8, 2026
 - **Contributors**: Open for PRs!
 - **Next Goal**: ⭐️ 500 stars
 
@@ -167,11 +167,14 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Playground AI](https://playgroundai.com)** 🔄 - Creative AI with fine-tuning
 - **[Tensor Art](https://tensor.art)** 🔄 - Community-driven AI art platform
 - **[Visual Maker AI](https://visualmakerai.com)** 🆕🔄 - Workspace for AI images, image-to-video and script-to-scene films
+- **[MakeImg](https://makeimg.ai)** 🔄 - AI photo generator: text prompt or reference photo to image with 11 models and free daily credits
 
 #### 🆕 Specialized Tools
 - **[ArtImageHub](https://artimagehub.com/old-photo-restoration)** 🔄 - AI old photo restoration that fixes scratches, fading and water damage
 - **[APPLORE](https://applore.app/ai-app-icon-generator)** 🔄 - AI app icon generator for iOS and Android using App Store icons as style references
 - **[Cutout.Free](https://cutout.free/)** 🆓 - Free browser background remover that exports transparent PNG, no account needed
+- **[Stayput Background Remover](https://stayput.dev/tools/remove-background)** 🆓 - Open-source in-browser background remover; photos are not uploaded, saves a transparent PNG
+- **[AI Image to Image](https://aimagetoimage.com)** 🔄 - AI image-to-image editor: upload a photo, describe the edit, download with no watermark
 - **[Plykit](https://plykit.ai/kdp/coloring-book-maker)** 🔄 - Generate coloring pages and assemble KDP books with covers and PDF export
 - **[Recraft AI](https://app.recraft.ai)** 🔄 - Vector and brand-focused generation
 - **[Krea AI](https://krea.ai)** 🆕🔄 - Real-time image generation
@@ -183,6 +186,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[RestorePhoto](https://restorephoto.org/)** 🔄 - Restores facial clarity in old and blurry photos
 - **[UpRes](https://upres.ai)** 🆕🔄 - AI image and video upscaling to 4K/8K with 14 models, REST API, and CLI
 - **[FontVibe](https://fontvibe.ai)** 🔄 - Text effect and lettering designs for logos, posters and thumbnails
+- **[ThumbnailSnap](https://thumbnailsnap.com/youtube-thumbnail-maker)** 🆕🔄 - AI YouTube, Shorts and TikTok thumbnails with an editable text layer
 
 #### 📱 Browser/Extension Tools
 - **[Canva AI](https://canva.com)** 🔄 - Integrated design platform with Dream Lab
@@ -352,6 +356,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Asterix Writer](https://asterixwriter.com)** 🔄 - Fiction and story writing
 - **[ImagineYourBook](https://www.imagineyourbook.com/)** 💰 - Plans, drafts, and rewrites full-length books in your voice, with EPUB and Word export
 - **[CoverNice](https://covernice.com)** 🔄 - KDP-safe book covers: five directions, real spine width, print-ready wrap PDF
+- **[Doodara](https://www.doodara.com)** 🔄 - Turns a story idea or a child's photo into an illustrated kids' picture book
 
 #### 📝 Content Creation
 - **[CreatorSkills](https://creatorskills.co)** 💰 - Marketplace of downloadable AI skills for content creators (Claude & ChatGPT)
@@ -450,10 +455,15 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - [BuyWhere](https://buywhere.ai) - Real-time Singapore e-commerce pricing API and MCP server for AI agents
 - **[Latchkey](https://latchkey.dev)** 💰 - Self-healing GitHub Actions runners with AI diagnosis
 - **[deed.page](https://deed.page)** 🔄 - MCP server and API that let AI agents publish HTML to a permanent URL
+- **[Datacircle](https://api.datacircle.dev/v1)** 🆓 - API and MCP server that let AI agents find the best GTM APIs
 - **[UI Verify](https://uiverify.ai)** 🔄 - Visual regression testing with an AI judge that triages UI diffs
 - **[BetterToken](https://bettertoken.ai)** 💰 - LLM API gateway: one key for Claude, GPT, DeepSeek, Qwen, Kimi and GLM
 - **[Scalekit](https://scalekit.com)** 🔄 - AI agent integration platform: 600+ connectors, 35,000+ tools, per-user OAuth
 - **[Model Salt](https://modelsalt.com)** 🆓 - MCP server that gives a model outside random choices so one prompt gives varied answers
+- **[Keenable](https://keenable.ai)** 🔄 - Web search and page-fetch API and MCP server for AI agents, with a keyless free tier
+- **[UberLLM](https://uberllm.dev)** 💰 - One OpenAI/Anthropic-compatible API key for text, image, video, music and speech models
+- **[Atlas Cloud](https://www.atlascloud.ai)** 💰 - AI API gateway: one key for LLM, image, video and audio models
+- **[looot](https://looot.ai)** 💰 - Pay-per-call business data API and MCP server for AI agents
 
 
 
@@ -467,6 +477,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - MarsAi
 - Gooey.AI
 - GPTagent
+- **[IdeaMade](https://ideamade.ai/)** 🔄 - Build web apps with AI, editable product blueprints, live previews, and version history.
 - Tiledesl
 - softr Studio
 - Build AI
@@ -497,6 +508,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Adobe Podcast](https://podcast.adobe.com)** 🆓 - AI audio enhancement
 - **[Krisp](https://krisp.ai)** 🔄 - AI noise cancellation
 - **[Descript](https://descript.com)** 🔄 - AI-powered audio editing
+- **[Transcribe Video: To The Text](https://video2text.ttt.so)** 🆕🔄 - iOS video/YouTube/Vimeo/live-voice transcription with speaker split & Summarize
 - **[Cleanvoice](https://cleanvoice.ai)** 🔄 - Remove filler words automatically
 - **[VocalSeparator](https://vocalseparator.com/)** 🔄 - Separate vocals and stems, export WAV, and practice with loops, tempo and pitch
 
@@ -516,6 +528,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[RenderFlow AI](https://renderflowai.com)** 🆕🔄 - Multi-model platform with Kling, Veo3, Midjourney & more for AI video generation
 - **[Vivideo](https://vivideo.ai)** 🆕🔄 - Multi-model text-to-video & image-to-video with synced audio
 - **[Pixwit](https://pixwit.ai)** 🔄 - Multi-model text-to-video, image-to-video and image generation
+- **[Seedance Now](https://seedancenow.com)** 🔄 - Independent multi-model text and image to video studio with 1080p output
 
 #### 🎬 Content Creation
 - **[Synthesia](https://synthesia.io)** 💰 - AI avatar video generation
@@ -571,6 +584,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - [Spline 3D](https://spline.design)
 - [LeiaPix](https://convert.leiapix.com/?utm_source=futurepedia&utm_medium=marketplace&utm_campaign=futurepedia)
 - Alpha3D
+- **[objekto.io](https://objekto.io/en)** 🆕🔄 - Words, a photo or a sketch to a multi-part 3D-printable design, then printed and delivered
 
 ## Search Engines & Chatbot's
 > AI-powered search and conversational interfaces
@@ -719,6 +733,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[KidsFunLearnClub](https://kidsfunlearnclub.co)** 🆓 - Free AI education platform for kids aged 9–14
 - **[Learn Magic](https://learnmagic.ai)** 🆓 - Beginner course on building with Claude Code, for non-programmers
 - **[NoteGoblin](https://notegoblin-app.vercel.app)** 🔄 - AI study app that turns notes or lectures into flashcards and quizzes
+- **[soclever](https://soclever.io)** 🔄 - AI tutor that turns any topic into a short course with lessons, quizzes, comics and podcasts
 
 #### 📚 Research & Writing
 - **[Elicit](https://elicit.org)** 🔄 - AI research assistant
@@ -750,6 +765,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Manus AI](https://manus.ai)** 🆕🔄 - Cloud-based autonomous system
 - **[Drevon](https://www.drevon.dev)** 🆓 - Mac app that turns Claude Code or Codex into a go-to-market operator
 - **[Deacon](https://heydeacon.com)** 🆕🔄 - AI support agent for websites that answers from your own docs
+- **[SPIRITT](https://spiritt.ai)** 💰 - AI agent with its own cloud computer that codes, deploys apps and runs sales, ops and admin work
 
 #### 🆓 Open Source Agents
 - **[Orkas](https://github.com/Orkas-AI/Orkas)** 🆓 - Local-first desktop AI workforce coordinated by a Commander through one chat
@@ -758,6 +774,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[CrewAI](https://github.com/joaomdmoura/crewAI)** 🆕🆓 - Multi-agent orchestration
 - **[LangChain Agents](https://langchain.com)** 🆓 - LLM agent development framework
 - **[AgentGPT](https://agentgpt.reworkd.ai)** 🆓 - Browser-based autonomous agent
+- **[AnyModelBot](https://github.com/modelflare-ai/AnyModelBot)** 🆕🆓 - Open-source desktop assistant, first out-of-the-box DeepSeek Super Agent
 
 #### 🛠️ Agent Frameworks
 - **[LangGraph](https://langchain.com)** 🆕🆓 - Stateful agent workflows
@@ -768,9 +785,11 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 
 ## Photo Editing
 - [Clipdrop](https://clipdrop.co)
+- **[HumanizePhoto](https://humanizephoto.com/create-realistic-ai-images)** 🔄 - Refine plastic skin and artificial lighting in existing AI-generated photos
 - [insightface.ai](https://insightface.ai)
 - **[PixPurge](https://pixpurge.com)** 🔄 - AI text remover for images: erase text, watermarks, and date stamps automatically.
 - **[Klaruvo](https://www.powersoftware.app/en-US/product/detail/klaruvo)** 🔄 - Local offline AI image editor: watermark & object removal, cutout, upscaling
+- **[RoomLab.app](https://roomlab.app)** 🔄 - Virtual staging, decluttering and restyling for room and property photos
 
   
 ## Chrome AI Extensions
@@ -802,6 +821,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Originality.ai](https://originality.ai)** 💰 - AI content and plagiarism detector
 - **[Copyleaks](https://copyleaks.com)** 🔄 - AI content detection platform
 - **[Writer AI Detector](https://writer.com/ai-content-detector/)** 🆓 - Free AI content detector
+- **[Coda One](https://www.codaone.ai/)** 🔄 - Free unlimited AI detector, no signup; free daily uses on the writing tools
 
 #### 📊 Advanced Analysis
 - **[Turnitin](https://turnitin.com)** 💰 - Academic integrity solutions
@@ -818,6 +838,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Tableau Ask Data](https://tableau.com)** 💰 - Natural language data queries
 - **[Microsoft Copilot for Excel](https://microsoft.com)** 💰 - AI-powered spreadsheet analysis
 - **[Equibles](https://equibles.com)** 🔄 - MCP server with cited US stock data from SEC filings for ChatGPT and Claude
+- **[DisconfirmAI](https://disconfirmai.com/en)** 🔄 - Investment research platform that surfaces evidence that could overturn your thesis
 
 #### 🤖 Analytics Assistants
 - **[MonkeyLearn](https://monkeylearn.com)** 🔄 - No-code text analysis
@@ -866,6 +887,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Todoist](https://todoist.com)** 🔄 - Task management with AI assistance
 - **[Motion](https://usemotion.com)** 💰 - AI calendar and task planner
 - **[NeverApply](https://neverapply.co)** 🔄 - AI job-search agent: matches jobs, tailors resumes, and applies with your approval.
+- **[CookLLM](https://cookllm.com/en/jobs/match)** 💰 - AI job matcher: emails new AI jobs from 1,300+ companies, scored against your resume
 - **[Reclaim.ai](https://reclaim.ai)** 🔄 - AI calendar scheduling
 
 #### 📧 Communication

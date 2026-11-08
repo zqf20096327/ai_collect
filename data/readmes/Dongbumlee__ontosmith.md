@@ -233,14 +233,14 @@ over HTTP and needs the server, not the extra.)
 | Four domain packs + Core baseline | Domain ontologies as data — schema, definitions, boundary examples, thresholds, measured conformance record (below) |
 | Verification cores | `ontosmith verify` — raw *and* audit-corrected scoring, ceiling-adjusted recall, failure anatomy, counted cost projections |
 | Evidence appendix | The flagship record's adjudication samples and verdicts, shipped for replay (`benchmarks/appendix/`) |
-| Serving | Hybrid retrieval (vector + lexical + graph) via `ontosmith search` and a sample API — over the build's Neo4j store; the shipped demo's recorded artifacts also serve from files (lexical + graph arms only — no vector arm) |
+| Serving | Sentence-level evidence retrieval via `ontosmith search` (direct sentence index + graph pool + beam traversal channel, optional local rerank) and hybrid retrieval (vector + lexical + graph) via a sample API — over the build's Neo4j store; the shipped demo's recorded artifacts also serve from files (lexical + graph arms only — no vector arm) |
 | Demo + guide | A smoke corpus, a fetchable demo subset, and the hands-on guide that walks the whole loop in four tracks |
 
 ## Where do I start?
 
 | I want to… | Start here |
 |---|---|
-| Watch it run first | The three films, in order — [Demo](https://www.youtube.com/watch?v=qmCFIIOCCqA) · [Tutorial](https://www.youtube.com/watch?v=Vz2SIyquMXQ) · [Teardown](https://www.youtube.com/watch?v=PO6F9QdRxR8) (also collected on the [project site](https://dongbumlee.github.io/ontosmith/#watch)) |
+| Watch it run first | The three films, in order — [Demo](https://www.youtube.com/watch?v=rqmRABJTFk0) · [Tutorial](https://www.youtube.com/watch?v=un5ZtFq9ieQ) · [Teardown](https://www.youtube.com/watch?v=7vxcUyiZjTY) (also collected on the [project site](https://dongbumlee.github.io/ontosmith/#watch)) |
 | See if my corpus fits | Step 1 above — profile it; the census names the decision points |
 | Check the quality claims myself | Step 2 — the replay; the full record is the [whitepaper](docs/whitepaper.md) (§5) |
 | Build a graph from my documents | [Hands-on](docs/hands-on.md), Track 1 |
@@ -284,8 +284,11 @@ of each.
    tooling with the product: audit your own gold, score
    your own builds raw *and* corrected, with the failure
    anatomy attached.
-6. **Serve** — `ontosmith search` and the sample API
-   (`ontosmith serve`) answer hybrid retrieval
+6. **Serve** — `ontosmith search` answers with
+   sentence-level evidence (a direct sentence index,
+   the graph's evidence quotes, and a beam traversal
+   channel, filled under one token budget); the sample
+   API (`ontosmith serve`) answers hybrid retrieval
    (vector + lexical + graph) over chunks and triples.
    A build is served from its Neo4j store; the shipped
    demo's recorded artifacts also serve from files —
@@ -534,7 +537,7 @@ little before pinning it into a pack.
 | `ontology` | draft / validate / approve / emit a pack |
 | `identity-freeze` | freeze per-point identity-seat decisions into a global decisions file |
 | **Serve** | |
-| `search` | hybrid search over a built graph |
+| `search` | sentence-level evidence search over a built graph |
 | `serve` | sample HTTP API (search / entity / neighborhood / triple-with-evidence) + the demo app at / |
 | `quickstart` | first run: build a graph from one text file and serve it |
 
@@ -564,7 +567,7 @@ whose search runs the lexical and graph arms only
 
 ## Status
 
-Release 0.1.8, published on PyPI. The pipeline,
+Release 0.1.9, published on PyPI. The pipeline,
 profiler, ontology builder, inspect viewer,
 verification cores, packs, and the serving surface
 (search command + sample API) in this tree are

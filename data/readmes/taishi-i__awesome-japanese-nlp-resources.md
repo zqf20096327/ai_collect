@@ -5,6 +5,8 @@
 [![License: CC0-1.0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](http://creativecommons.org/publicdomain/zero/1.0/)
 [![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)
 
+<a href="https://trendshift.io/repositories/112745?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-112745" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/112745/weekly" alt="taishi-i%2Fawesome-japanese-nlp-resources | Trendshift" width="250" height="55"/></a>
+
 A curated list of resources dedicated to Python libraries, llms, dictionaries, and corpora of NLP for Japanese
 
 - Listed information on [895 GitHub repositories](https://github.com/taishi-i/awesome-japanese-nlp-resources/blob/main/docs/README.full.md)
@@ -1109,8 +1111,4 @@ Supplementary crates for Japanese text and IME processing
 | 🔗 [voicevox_core](https://github.com/VOICEVOX/voicevox_core) | - | - | ⭐ 1.1k | 🟢 yesterday|
 | 🔗 [akaza](https://github.com/akaza-im/akaza) | - | - | ⭐ 265 | 🟡 june|
 | 🔗 [Jotoba](https://github.com/WeDontPanic/Jotoba) | - | - | ⭐ 211 | 🔴 january 2024|
-| 🔗 [niinii](https://github.com/Netdex/niinii) | - | - | ⭐ 16 | 🟢 october|
-| 🔗 [cskk](https://github.com/naokiri/cskk) | - | - | ⭐ 85 | 🟢 october|
-| 🔗 [japanki](https://github.com/tysonwu/japanki) | - | - | ⭐ 4 | 🔴 october 2023|
-| 🔗 [jpreprocess](https://github.com/jpreprocess/jpreprocess) | - | - | ⭐ 60 | 🟡 june|
-| 🔗 [listup_precedent](https://github.com/japanese-law-analysis/listup_precedent) | - | - | ⭐ 7 | 🟡 july
+| 🔗 [niinii](https://github.com/Netdex/niinii) | - | - | ⭐ 16 |

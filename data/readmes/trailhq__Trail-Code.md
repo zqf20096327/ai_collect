@@ -112,6 +112,8 @@ trail init                      # in your repo: build the graft map, set up .tra
 
 That is the whole setup. `trail init` asks which of your coding agents to wire up, builds the graft map from your code, creates `.trail/` for the repo's learnings, and adds a statusline and hooks to Claude Code. It also reads your past Claude Code sessions in the repo, once, for what you told Claude more than once, and saves those as learnings. Your own Claude Code does that reading, in about a minute. Then work the way you always do. No daemon, no server, nothing to babysit: it is all files.
 
+On a repo whose team hasn't set up trail yet, `trail init` asks who it's for. My team, which enter picks, sets it up for you to commit once, as below. Just me keeps all of it out of git for your clone only (in `.git/info/exclude`) and your learnings in `~/.trail`, so there is nothing to commit and nothing asks you to share. Run `trail init --team` when you want your team on it.
+
 Commit the setup so your teammates get it too. The graft map itself, in `graft/`, is a local cache like `node_modules` and is added to `.gitignore`, so it stays out of the commit:
 
 ```bash
@@ -557,6 +559,8 @@ With no TTY to prompt on (CI, a Dockerfile, a piped shell), `init` writes **noth
 | `--agents <ids...>` | wire only these, no prompt; ids: `agents`, `adal`, `cursor`, `gemini`, `grok`, `hermes`, `antigravity`, `copilot`, `kiro`, `windsurf`, `claude` |
 | `--yes`, `-y` | skip the prompt and wire every **detected** agent |
 | `--dry-run` | print the agent wiring `init` would write, then exit without writing |
+| `--just-me` | trail just for you in this repo: git sees none of it and your learnings stay in `~/.trail` |
+| `--team` | share trail with your team: commit `.trail/` and `.claude/settings.json` once |
 | `--all-agents` | write instruction files for every known agent, detected or not |
 | `--no-agents` | Claude Code wiring only; skip other agents |
 | `--list-agents` | print the known agent ids and exit |
@@ -607,7 +611,7 @@ Where a CLI agent supports user-level `hooks.json`, as Codex does, `init` also i
 
 When Claude Code is selected (it is by default), it gets more than the skill file above. From then on, any Claude Code session opened in the repo gets:
 
-- **a live statusline**: the graft map's size, how many learnings the repo has, and a `⚠ N stale` warning when the code has moved ahead of the map
+- **a live statusline**: the folder you're in, the graft map's size, how many learnings the repo has, and a `⚠ N stale` warning when the code has moved ahead of the map
 - **auto-sync**: every query brings the graph up to date first, so an answer always describes the code as it is right now, uncommitted edits included. A query refreshes only what it reads; the markdown under `graft/` is refreshed by the background rebuild at the end of a turn that touched code. Both are structural and `$0`; auto-sync never calls the LLM on its own
 - **context on tap**: each prompt pulls in the matching nodes and the learnings left on that code; editing a file surfaces what depends on it ("blast radius"); new sessions start with the repo map and how many learnings there are
 - **learnings when you ask**: say "save this as a learning" and Claude saves one; it never asks to on its own
@@ -618,7 +622,7 @@ When Claude Code is selected (it is by default), it gets more than the skill fil
   <br/><sub>edit a file → blast radius appears inline → graph auto-resyncs → confirmed in the viewer</sub>
 </p>
 
-`trail init` is idempotent and never clobbers your existing `.claude/settings.json`: it merges its blocks and leaves the rest alone. A `statusLine` that is not Trail-code's is left untouched; re-running `init` refreshes Trail-code's own helper command if it is already installed. Pass `--no-statusline` (or `GRAFT_NO_STATUSLINE=1`) to skip installing one at all, since a project-level `statusLine` would otherwise hide a custom one in `~/.claude/settings.json`. Want the LLM summaries too? Run `trail build --deep` (with a key) whenever you like; auto-sync will never do it for you.
+`trail init` is idempotent and never clobbers your existing `.claude/settings.json`: it merges its blocks and leaves the rest alone. A `statusLine` that is not Trail-code's, in `~/.claude/settings.json` or the repo's own settings, is kept, and Trail-code adds its own only where you have none; re-running `init` refreshes Trail-code's own helper command if it is already installed. Pass `--no-statusline` (or `GRAFT_NO_STATUSLINE=1`) to skip installing one at all. Want the LLM summaries too? Run `trail build --deep` (with a key) whenever you like; auto-sync will never do it for you.
 
 ---
 
@@ -678,7 +682,7 @@ trail init --list-agents             # list known agent ids and exit
 trail build [dir]                    # build the graft map in graft/: wiring graph + per-file cards (no LLM, no key)
 trail build --deep                   # add the LLM layer: concept nodes + per-symbol summary/crux (cached)
 trail build --check                  # build nothing: fail (exit 1) if graft/ has drifted from the code, for CI
-trail build --deep -e .ts .py        # with --deep: only summarize these extensions
+trail build -e .ts .py               # only index these extensions (also limits --deep summaries)
 trail build --no-reuse               # re-parse every file instead of replaying unchanged ones from cache
 trail build --follow-submodules      # include initialized submodules; persist the choice for builds + MCP refresh
 trail build --no-follow-submodules   # exclude submodules again and persist that choice (the default)
@@ -713,6 +717,9 @@ trail mcp [dir]                      # run the MCP server by hand
 trail --dir <path>                   # use a context dir other than <repo>/graft
 trail --version, -v                  # print the installed version and exit
 ```
+
+Extension selections also apply to automatic refreshes. Run an explicit
+`trail build` without `-e` to index all supported extensions again.
 
 Method calls resolve through the receiver's type, using constructor assignments
 (`self.router = APIRouter()`) and type annotations, not just the call-site

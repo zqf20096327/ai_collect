@@ -59,7 +59,7 @@ llm-systems-admin-password reset
 ```
 </details>
 
-**Add more machines.** Run the same install command on each machine you want to watch and pick **mode 5 (agent)**, or copy the ready-made command from **Admin → Agents → Manage ▾ → Enrollment**. Then approve the machine in **Admin → Agents**. Homebrew and a standalone agent binary are also available: see [Installing agents](docs/DEPLOYMENT.md#installing-agents-on-remote-computers).
+**Add more machines.** Run the same install command on each machine you want to watch and pick **mode 5 (agent)**, or copy the ready-made command from **Admin → Agents → Manage ▾ → Enrollment**. Then approve the machine in **Admin → Agents**. Homebrew and a standalone agent binary are also available: see [Installing agents](docs/DEPLOYMENT.md#installing-agents-on-remote-computers). Already run a `llama-server` from a distro package or your own build? See [Using a llama-server you installed yourself](docs/DEPLOYMENT.md#using-a-llama-server-you-installed-yourself).
 
 **First sign-in.** Open `http://<this-host>:5000/` and sign in with the admin login the installer showed you.
 
@@ -90,7 +90,8 @@ Full list: [Features](docs/FEATURES.md).
 
 | Guide | What's in it |
 |---|---|
-| [Deployment](docs/DEPLOYMENT.md) | Every install method, multiple machines, offline installs, configuration, updating, troubleshooting, uninstalling |
+| [Deployment](docs/DEPLOYMENT.md) | Every install method, multiple machines, offline installs, configuration, updating, uninstalling |
+| [Troubleshooting](docs/TROUBLESHOOTING.md) | Common problems and their fixes, and what to include in a bug report |
 | [Features](docs/FEATURES.md) | Everything that ships, with screenshots |
 | [Architecture](docs/ARCHITECTURE.md) | How the manager, alarm engine and agents fit together, storage and security |
 | [API reference](docs/API_REFERENCE.md) | Every HTTP endpoint, including the OpenAI-compatible gateway |

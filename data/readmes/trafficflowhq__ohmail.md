@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/trafficflowhq/ohmail/stargazers"><img src="https://img.shields.io/github/stars/trafficflowhq/ohmail?style=flat&amp;label=%E2%98%85&amp;color=a3461c" alt="GitHub stars" /></a>
   <a href="https://github.com/trafficflowhq/ohmail/releases"><img src="https://img.shields.io/github/downloads/trafficflowhq/ohmail/total?style=flat&amp;color=a3461c" alt="Total downloads across all releases" /></a>
-  <a href="https://github.com/trafficflowhq/ohmail/releases/latest"><img src="https://img.shields.io/badge/download-v0.30.47-a3461c" alt="Latest release" /></a>
+  <a href="https://github.com/trafficflowhq/ohmail/releases/latest"><img src="https://img.shields.io/badge/download-v0.30.50-a3461c" alt="Latest release" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-a3461c?style=flat" alt="License: AGPL-3.0" /></a>
   <img src="https://img.shields.io/badge/macOS%20%7C%20Windows%20%7C%20Linux%20%7C%20Android-a3461c?style=flat" alt="Platforms: macOS, Windows, Linux and Android" />
 </p>
@@ -29,10 +29,8 @@
 
 <p align="center">
   <sub>Choose a face</sub><br/>
-  <a href="README.ohmarchy.md"><picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/toggle-paper-dark.svg">
-    <img src="docs/assets/readme/toggle-paper-light.svg" alt="paper / ohmarchy face switch — paper is active; opens this README in the ohmarchy face" width="178" height="40" />
-  </picture></a>
+  <a href="README.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/toggle-paper-on-dark.svg"><img src="docs/assets/readme/toggle-paper-on-light.svg" alt="paper, the face shown" width="77" height="40" /></picture></a><a
+    href="README.ohmarchy.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/toggle-ohmarchy-off-dark.svg"><img src="docs/assets/readme/toggle-ohmarchy-off-light.svg" alt="ohmarchy: open this README in the ohmarchy face" width="101" height="40" /></picture></a>
 </p>
 
 <p align="center">

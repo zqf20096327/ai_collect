@@ -12,7 +12,7 @@
   <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-111111?style=flat-square"></a>
   <a href="https://www.affectui.com/docs"><img alt="shadcn registry" src="https://img.shields.io/badge/shadcn-registry-111111?style=flat-square"></a>
   <img alt="React 19" src="https://img.shields.io/badge/React-19-111111?style=flat-square">
-  <img alt="40 free items" src="https://img.shields.io/badge/free%20items-40-2f6bff?style=flat-square">
+  <img alt="46 free items" src="https://img.shields.io/badge/free%20items-46-2f6bff?style=flat-square">
   <a href="https://github.com/flohoeller/affectui/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/flohoeller/affectui?style=flat-square&color=111111"></a>
 </p>
 
@@ -223,6 +223,7 @@ Other clients: add `{ "mcpServers": { "affectui": { "url": "https://www.affectui
 | --- | --- | --- |
 | [Button](https://www.affectui.com/components/button) | Primary, secondary, ghost and destructive buttons with icons, sizes and a shimmering loading state | `npx shadcn@latest add https://www.affectui.com/r/button-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/button.json`</sub> |
 | [Change Summary](https://www.affectui.com/components/change-summary) | What moved since last time | `npx shadcn@latest add https://www.affectui.com/r/change-summary-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/change-summary.json`</sub> |
+| [Checkbox](https://www.affectui.com/components/checkbox) | A real checkbox with a label and a second line, a some-of-them state for Select all, an error and a card row | `npx shadcn@latest add https://www.affectui.com/r/checkbox-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/checkbox.json`</sub> |
 | [Comment Thread](https://www.affectui.com/components/comment-thread) | One comment with replies | `npx shadcn@latest add https://www.affectui.com/r/comment-thread-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/comment-thread.json`</sub> |
 | [Decision Inbox](https://www.affectui.com/components/decision-inbox) | Open decisions with two quick answers each | `npx shadcn@latest add https://www.affectui.com/r/decision-inbox-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/decision-inbox.json`</sub> |
 | [Email Draft](https://www.affectui.com/components/email-draft) | Agent-written email for review | `npx shadcn@latest add https://www.affectui.com/r/email-draft-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/email-draft.json`</sub> |
@@ -234,7 +235,12 @@ Other clients: add `{ "mcpServers": { "affectui": { "url": "https://www.affectui
 | [Progress Tracker](https://www.affectui.com/components/progress-tracker) | Onboarding checklist with an animated progress bar, ticks that draw themselves and auto play | `npx shadcn@latest add https://www.affectui.com/r/progress-tracker-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/progress-tracker.json`</sub> |
 | [Reaction Bar](https://www.affectui.com/components/reaction-bar) | Like, comment, repost and share in one pill | `npx shadcn@latest add https://www.affectui.com/r/reaction-bar-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/reaction-bar.json`</sub> |
 | [Segmented Control](https://www.affectui.com/components/segmented-control) | Switch between two to six options | `npx shadcn@latest add https://www.affectui.com/r/segmented-control-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/segmented-control.json`</sub> |
+| [Select](https://www.affectui.com/components/select) | Pick one option in the Text Field's look | `npx shadcn@latest add https://www.affectui.com/r/select-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/select.json`</sub> |
 | [Smart Recommendation](https://www.affectui.com/components/smart-recommendation) | Suggestion card with a confidence signal, alternatives to switch to and accept with undo | `npx shadcn@latest add https://www.affectui.com/r/smart-recommendation-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/smart-recommendation.json`</sub> |
+| [Switch](https://www.affectui.com/components/switch) | On or off for things that apply right away | `npx shadcn@latest add https://www.affectui.com/r/switch-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/switch.json`</sub> |
+| [Tag Input](https://www.affectui.com/components/tag-input) | Several values in one field as chips | `npx shadcn@latest add https://www.affectui.com/r/tag-input-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/tag-input.json`</sub> |
+| [Text Area](https://www.affectui.com/components/text-area) | The multi-line twin of the Text Field | `npx shadcn@latest add https://www.affectui.com/r/text-area-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/text-area.json`</sub> |
+| [Text Field](https://www.affectui.com/components/text-field) | One input for every form | `npx shadcn@latest add https://www.affectui.com/r/text-field-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/text-field.json`</sub> |
 | [Thinking Loader](https://www.affectui.com/components/thinking-loader) | A small working pill for AI replies | `npx shadcn@latest add https://www.affectui.com/r/thinking-loader-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/thinking-loader.json`</sub> |
 | [Tips Panel](https://www.affectui.com/components/tips-panel) | Grid of short tips with one action each | `npx shadcn@latest add https://www.affectui.com/r/tips-panel-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/tips-panel.json`</sub> |
 | [Tool Call Card](https://www.affectui.com/components/tool-call-card) | An agent's tool call in one line | `npx shadcn@latest add https://www.affectui.com/r/tool-call-card-clean.json`<br><sub>Classic style: `npx shadcn@latest add https://www.affectui.com/r/tool-call-card.json`</sub> |
@@ -279,7 +285,7 @@ Other clients: add `{ "mcpServers": { "affectui": { "url": "https://www.affectui
 
 ## affectUI Pro
 
-119 more components, screens, blocks and illustrations, including the agent components above (Agent Tree, Agent Inbox, Trace Waterfall, Context Map, Agent Handoff and more), full app screens and blocks, are part of [affectUI Pro](https://www.affectui.com/pricing): a one-time purchase with lifetime updates. Their source is not in this repository.
+125 more components, screens, blocks and illustrations, including the agent components above (Agent Tree, Agent Inbox, Trace Waterfall, Context Map, Agent Handoff and more), full app screens and blocks, are part of [affectUI Pro](https://www.affectui.com/pricing): a one-time purchase with lifetime updates. Their source is not in this repository.
 
 ## Contributing
 

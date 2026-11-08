@@ -50,12 +50,29 @@ OR
 
 ### November 2026
 
+#### Applied AI 
+- [Petar Petrov — Eilla - AI Deployment Firms - November 2026](https://aideploymentfirms.com?utm_source=awesome-ai-market-maps)
+
+#### Biopharma AI
+- [Elicit - AI for Pharma - November 2026](https://elicit.com/ai-for-pharma?utm_source=awesome-ai-market-maps)
+
+#### AI Data
+- [AI Circle - AI Circle Human Data Landscape - November 2026](https://www.ai-circle.org/ai-circle-human-data-landscape?utm_source=awesome-ai-market-maps)
 
 #### Enterprise AI 
 - [Tim Tully & Joff Redfern & Deedy Das & Derek Xiao — Menlo Ventures - State of Enterprise AI - November 2026](https://menlovc.com/perspective/2026-the-state-of-enterprise-ai/?utm_source=awesome-ai-market-maps)
 
 #### AI Finance 
 - [The Private Markets Forum - AI in Private Markets Map - November 2026](https://lnkd.in/p/g26qddZW?utm_source=awesome-ai-market-maps)
+
+#### Legal AI
+- [Harshith Viswanath - Mapping the AI-Native Law Firm - November 2026](https://harshithviswanath.substack.com/p/mapping-the-ai-native-law-firm?utm_source=awesome-ai-market-maps)
+
+#### Physical AI
+- [Will Howard Davies - The 2026 Physical AI Market Map - November 2026](https://lnkd.in/p/gnJpnz5m?utm_source=awesome-ai-market-maps)
+
+#### Everything Else
+- [CB Insights - The Emerging AI 50 in NYC - November 2026](https://www.cbinsights.com/research/the-emerging-ai-50-in-nyc/?utm_source=awesome-ai-market-maps)
 
 
 ***
@@ -68,10 +85,16 @@ OR
 - [Zentor / Personal Agent Bench - Personal AI agents list: products and evidence - October 2026](https://personalagentbench.com/landscape/?utm_source=awesome-ai-market-maps)
 
 #### AI Chips
-- [Dealroom.co - AI-Native EDA Startups: who owns how much of the chip design stack - October 2026](https://dealroom.co/api/marketmap-render?slug=ai-native-eda-startups&theme=light?utm_source=awesome-ai-market-maps)
+- [Dealroom.co - AI-Native EDA Startups: who owns how much of the chip design stack - October 2026](https://dealroom.co/api/marketmap-render?slug=ai-native-eda-startups&theme=light&utm_source=awesome-ai-market-maps)
 
 #### European AI 
 - [N47 & Sifted - Celebrating the top 100 European AI startups in 2026 - October 2026](https://www.n47.com/insights/celebrating-the-top-100-european-ai-startups-in-2026?utm_source=awesome-ai-market-maps)
+
+#### Enterprise AI
+- [Murray Newlands — Open Future Forum - The AI Leaders Market Map - October 2026](https://openfutureforum.com/research/ai-leaders-market-map?utm_source=awesome-ai-market-maps)
+
+#### AI Data
+- [Cunyan Ma — Brown University CNTR - Mapping the Hidden Global Labor Powering AI - October 2026](https://www.ai-materiality-map.org/data-workers/?utm_source=awesome-ai-market-maps)
 
 #### AI Infrastructure
 - [AI-Driven Playbooks - I Mapped 103 Companies Across the Entire AI Supply Chain. Here Is Where the Money Still Has to Flow Through 2028. - October 2026](https://aidriventrading.substack.com/p/i-mapped-103-companies-across-the?utm_source=awesome-ai-market-maps)
@@ -102,7 +125,7 @@ OR
 - [Nathan Benaich — Air Street Capital - STATE OF AI REPORT - October 2026](https://www.stateof.ai/State-of-AI-Report-2026.pdf?utm_source=awesome-ai-market-maps)
 - [Air Street Capital & Dealroom.co - State of AI Report 2026: the funding data - October 2026](https://dealroom.co/airstreet/2026/?utm_source=awesome-ai-market-maps)
 - [Parvez Siddiqui - AI ROI, Measured - October 2026](https://lnkd.in/p/gcvHHpNX?utm_source=awesome-ai-market-maps)
-- [Various - The Trustworthy AI Map - October 2026](https://trustworthyaimap.org/map=awesome-ai-market-maps)
+- [Various - The Trustworthy AI Map - October 2026](https://trustworthyaimap.org/?utm_source=awesome-ai-market-maps)
 - [Cledara - The Real-Time AI Market Map: Tools & Startups - October 2026](https://data.cledara.com/ai-market-map?utm_source=awesome-ai-market-maps)
 - [Will Francis - Is there an AI bubble? The AI circular economy, mapped - October 2026](https://ai-circular-economy.com/?utm_source=awesome-ai-market-maps)
 - [Clement Vouillon — Axomap - Landscape Directory - October 2026](https://axomap.com/maps?utm_source=awesome-ai-market-maps)
@@ -1135,14 +1158,4 @@ OR
 - [IoT Analytics - The leading generative AI companies - March 2025](https://iot-analytics.com/leading-generative-ai-companies/?utm_source=awesome-ai-market-maps)
 
 #### AI Hardware
-- [SemiAnalysis - The GPU Cloud ClusterMAX™ Rating System | How to Rent GPUs - March 2025](https://semianalysis.com/2025/03/26/the-gpu-cloud-clustermax-rating-system-how-to-rent-gpus/?utm_source=awesome-ai-market-maps)
-- [AIMultiple Research - Top 20 AI Chip Makers: NVIDIA & Its Competitors in 2025 - March 2025](https://research.aimultiple.com/ai-chip-makers/?utm_source=awesome-ai-market-maps)
-- [Synaptic - Chipping Away: AI x Hardware - March 2025](https://synaptic.com/resources/chipping-away-ai-hardware/?utm_source=awesome-ai-market-maps)
-
-#### Healthtech AI
-- [Protege - Healthcare AI Market Map - March 2025](https://www.withprotege.ai/ai-market-map?utm_source=awesome-ai-market-maps)
-- [High Street Equity Partners - Health Tech Seed Landscape: Startups to Watch - March 2025](https://www.linkedin.com/posts/high-street-equity-partners_health-tech-seed-landscape-startups-to-watch-activity-7310328926164123651-caPk?utm_source=awesome-ai-market-maps)
-
-#### AI Infrastructure
-- [Headline VC - The Duality of Infrastructure Software Investing in an AI World - "Infra of AI" and "AI in Infra" Market Maps - March 2025](https://headline.com/blog-latest/article-latest/the-duality-of-infrastructure-software-investing-i?utm_source=awesome-ai-market-maps)
-- [Forum Ventures - AI Infrastructure Market Map - March 2025](https://airtable.com/appJKSyHsK9L7emVe/shrIaPop9BFkCdXx5/tblep1S6vE6nyvsJ3?utm_sour
+- [SemiAnalysis - The GPU Cloud C

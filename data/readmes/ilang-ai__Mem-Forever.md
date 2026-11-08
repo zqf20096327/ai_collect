@@ -27,7 +27,7 @@ pretty_name: Mem-Forever
 </picture>
 
 > **永久记忆 · 跨会话 · 跨模型**
-> A persistent memory layer for AI agents, built on the iLang protocol. One private Git repo is the agent's brain: a profile, one file per memory, a hand-off note that says where you stopped, and an encrypted vault for your keys. **2.1: this README is the engineering book. Copy it into any AI agent and the agent can carry it out.**
+> A persistent memory layer for AI agents, built on the iLang protocol. One private Git repo is the agent's brain: a profile, one file per memory, a hand-off note that says where you stopped, and a ledger of the keys that opens every door the brain can enter. **3.0: memory is a derivation. The keys derive the tasks, the tasks yield constants, the logic between them is annotation. This README is the engineering book; copy it into any AI agent and the agent can carry it out.**
 >
 > iLang is the first protocol to formally map Greek mathematical symbols (Σ, Δ, φ, λ, Ω, ∇, μ, Π, ψ, ξ, ζ, θ, ∂) as primitive verbs for AI-to-AI communication, and the first to define a computable vector space for AI judgment (11 dimensions, 4 axioms, fuzzy-mathematical foundation).
 
@@ -58,7 +58,7 @@ Where context windows forget, **Mem-Forever endures**.
 | **Automatic** | AI builds your profile from conversation. You never fill a form. |
 | **Private** | Your repo, your data. No server, no account, no telemetry. |
 | **Resumable** | `handoff/CURRENT.md` says what was done, what is next and what is unverified. The next session, in any tool, starts there. |
-| **Complete** | `vault/` carries your keys, age-encrypted. A fresh machine is thirty minutes from working. |
+| **Complete** | `env/ledger.env` carries your keys, one row per door, each with how to verify it and how to get back in; the values rest encoded in the private repository and open on a new machine after one nod. A fresh machine is thirty minutes from working. |
 
 ---
 
@@ -111,9 +111,10 @@ git clone --depth 1 https://github.com/ilang-ai/Mem-Forever.git brain
 Set-Location brain
 Remove-Item -Recurse -Force .git
 git init -q -b main
+python -X utf8 tools/brain.py init .     # ledger, log/, hooks; nothing existing is overwritten
 python -X utf8 tools/brain.py check
 git add -A
-git commit -q -m "init: brain from Mem-Forever 2.1"
+git commit -q -m "init: brain from Mem-Forever 3.0"
 # Then create an EMPTY PRIVATE repository on GitHub and run:
 #   git remote add origin https://github.com/YOU/brain.git
 #   git push -u origin main
@@ -124,8 +125,8 @@ bash (macOS, Linux):
 ```bash
 git clone --depth 1 https://github.com/ilang-ai/Mem-Forever.git brain \
  && cd brain && rm -rf .git && git init -q -b main \
- && python3 -X utf8 tools/brain.py check \
- && git add -A && git commit -q -m "init: brain from Mem-Forever 2.1"
+ && python3 -X utf8 tools/brain.py init . && python3 -X utf8 tools/brain.py check \
+ && git add -A && git commit -q -m "init: brain from Mem-Forever 3.0"
 # Then create an EMPTY PRIVATE repository on GitHub and run:
 #   git remote add origin https://github.com/YOU/brain.git && git push -u origin main
 ```
@@ -139,7 +140,10 @@ Acceptance: `check: 0 errors` on the last tool line, `git status` clean. Then op
 ```
 python -X utf8 tools/brain.py check        # frontmatter valid, no secret-like text, before every push
 python -X utf8 tools/brain.py migrate-cc   # bring Claude Code's auto-memory files into memory/
-python -X utf8 tools/brain.py vault pack   # encrypt your keys into vault/ (see docs/VAULT.md)
+python -X utf8 tools/brain.py ledger add HK --door 'ssh root@host' --kind ssh_password --value '<value>' --verify 'ssh -o BatchMode=yes root@host true' --recover 'provider console'
+python -X utf8 tools/brain.py ledger verify all   # every door still opens? writes last_verified (docs/LEDGER.md)
+python -X utf8 tools/brain.py unlock HK           # the key enters context only when a next item names the door
+python -X utf8 tools/brain.py log owner "<the owner's words>"   # the raw trajectory; brain.py recognize reads it
 python -X utf8 tools/brain.py install      # wire this repo into Claude Code on this machine
 python -X utf8 tools/brain.py paste        # the one message for a chat AI with no tools (§1)
 python -X utf8 tools/brain.py handoff review returned.md --overlay --out candidate.md   # review a write-back (§4.4)
@@ -163,7 +167,7 @@ python -X utf8 tools/brain.py handoff review returned.md --overlay --out candida
 
 `BRAIN.md` is the eight-point entry a chat AI with a connector reads first; it is kept under about 400 tokens on the receiving model's tokenizer (§5).
 
-**Working on a different project?** One sentence restores full context: *"My brain repo is at `https://github.com/YOU/brain`. Read `BRAIN.md` there, then come back here."* Give the agent access through its own connector (GitHub app, Drive) or a local clone. Never paste a token into a prompt; keys travel in `vault/`, see [docs/VAULT.md](docs/VAULT.md).
+**Working on a different project?** One sentence restores full context: *"My brain repo is at `https://github.com/YOU/brain`. Read `BRAIN.md` there, then come back here."* Give the agent access through its own connector (GitHub app, Drive) or a local clone. Never paste a token into a prompt; keys are rows of the ledger (`env/ledger.env`, [docs/LEDGER.md](docs/LEDGER.md)) and reach the agent only when the work reaches their door.
 
 **Multiple projects?** Use the template again: `brain-work`, `brain-research`, `brain-client-x`. Each repo is an independent memory. Same engine, different context.
 
@@ -180,10 +184,12 @@ soul/soul.md          ← who you are (auto-generated from conversation)
 soul/agent.md         ← the agent's own soul: a persona you gave it, and what it learned with you
 memory/MEMORY.md      ← index, one line per memory
 memory/*.md           ← one memory per file, with a `type` frontmatter
-vault/keys-*.age      ← your keys, encrypted to your own public key
+env/ledger.env        ← your keys, one row per door (docs/LEDGER.md)
+env/keys.env          ← the values, encoded at rest; reversible with env/pepper, which init writes once; not encryption
+log/YYYY-MM-DD.md     ← the owner's words verbatim and the agent's decisions; recognition reads them
 rules/GRAMMAR-CARD.md ← the notation card of §1 (English; GRAMMAR-CARD.zh.md in Chinese)
 docs/PASTE.md         ← the third way in: a chat AI with no tools
-tools/brain.py        ← optional: check, migrate, vault, install, init, handoff review, paste
+tools/brain.py        ← check, ledger, unlock, grant, log, recognize, provenance, evidence, review, import, verify, paste, handoff review, init, install, migrate-2to3
 ```
 
 ```ilang
@@ -232,12 +238,15 @@ A hand-off that comes back from another model or another session is a candidate,
 
 `--validator <path to ilang_grammar_validator.py>` runs the canon grammar check on the candidate as well. `--overlay` is for a candidate that holds only the blocks it changed, which is what a web chat sends back: the tool lays those blocks over the baseline by identifier, carries the rest of the baseline in, and reviews the whole; `--out <file>` writes that whole. Accepting is saving the accepted whole as `CURRENT.md` and committing `handoff: accept from <who>`; the previous version stays in git history. Grammar success is not truth: the key count is only a completeness check, and evidence is a recorded owner statement or an observed tool result.
 
-### 4.5 Memory, soul, vault
+### 4.5 Memory, soul, ledger
 
 - **One memory is one file** under `memory/`, with a `type` frontmatter (`user`, `feedback`, `project`, `reference`) and one index line in `memory/MEMORY.md`. Append or merge, never overwrite; patterns, not events; absolute dates; 200 lines per file, then fold the oldest into a summary paragraph. Every change is its own commit, pushed at once.
 - **`soul/soul.md`** is the owner's profile: `::STATE{@OWNER…}`, one `::GENE{}` per area with `T:` traits and `A:` anti-patterns, `::FACT{}` lines, `::BOUNDARY{}` lines. A behavior seen three times becomes `confirmed`; an explicit rejection becomes an `A:` line; a tentative trait unseen for 30 days goes; two traits that contradict split by a `when:` condition. Boundaries never split and never carry `when:`.
 - **`soul/agent.md`** is the agent's own soul, new in 2.1: a persona block the owner gave it, kept verbatim with its version and hash in the frontmatter, and below it what the agent learned with this owner, in `::LESSON{}` and `::GENE{}` blocks it writes at milestones. It never overrides `soul/soul.md` or a boundary.
-- **Secrets never enter a text file.** The memory says `[REDACTED <kind> <fingerprint>]`; the value goes into one [age](https://age-encryption.org)-encrypted bundle under `vault/`, whose private key lives in your password manager and on paper. `brain.py check` scans every push for secret-like strings. See [docs/VAULT.md](docs/VAULT.md).
+- **Keys are where the brain starts.** `env/ledger.env` holds one row per door: what it opens, the value or a `ref:` into `env/keys.env`, a `verify` command, the date it last passed, how to get back in, scope, and `why` it exists. Values rest encoded in this private repository; a key is replaceable, a lockout is not. `brain.py unlock <name>` prints a row into context only when a `next` item names its door; a top door (`root`, `payment`, `registrar`, `dns`, `account_security`, `recovery_code`, `age_identity`) opens only with a one-time code the owner issues. Sealing happens only when pairing (`brain.py pair`), to the receiver's key and the owner's. See [docs/LEDGER.md](docs/LEDGER.md).
+- **Every block says `by:` whose words it rests on**: `owner_verbatim` with `q:` pointing at the owner's words in `soul/evidence.md`, `owner_confirmed`, `agent_inferred`, `imported`, or `legacy` for blocks from before 3.0. Only owner-sourced blocks may create or keep a boundary or an `A:` line; the rest is read as advice and rewritten by `brain.py provenance repair`. Agent-sourced blocks confirm after three distinct days and still decay; owner-sourced blocks never decay and only a tombstone `::DECIDE{@OWNER}{what:retire …}` removes one.
+- **The owner's words go to `log/`**, one file per day, verbatim, never tool output. `brain.py recognize` matches them against the `T:` and `A:` anchors of `soul/soul.md`: thirty percent of the applicable anchors hit and no `done` item touching a boundary, and the person is recognized. It reads the person, not the agent.
+- **Code memory is not kept.** Paths, versions, hashes and what a function does are read from HEAD, which is always newer than memory. What stays is the reasoning HEAD does not hold, and a constant keeps its reasons: `why:` and `used_by:` edges that `brain.py verify` checks; an orphan constant is dead after 90 days.
 - **Transparency.** The agent never says "DNA", "gene", "mutation" or "decay" to the user; it says "I saved some notes" or "I remember from last time". The owner can read, edit or delete any file at any time.
 
 ### 4.6 Acceptance checks
@@ -249,6 +258,38 @@ A brain, or a change to this template, is in order when all of these hold:
 3. `BRAIN.md` and the card each stay near 400 tokens on the receiving model's own tokenizer; measure, do not estimate (§5).
 4. The five instruction files are byte-identical to the body of `skills/mem-forever/SKILL.md`.
 5. A returned hand-off goes through `handoff review` before it replaces `CURRENT.md`, and the commit says whom it was accepted from.
+6. `python -X utf8 tools/brain.py ledger verify all` opens every door it can test; a failed row is named, not hidden.
+7. `python -X utf8 tools/brain.py provenance check` reports 0 violations; `brain.py instructions check` reports 5/5 identical; `tools/hooks/pre-commit` and `pre-push` are installed (`core.hooksPath tools/hooks`).
+8. `python -X utf8 tools/test_brain.py` passes: 37 scenarios in temporary brains, nothing on the machine touched, no directory left behind.
+9. `python -X utf8 tools/brain.py ledger decode` prints every value with nothing but the repository; `unlock` of a standing door on a clone without a grant is refused with the grant command.
+
+### 4.7 Why it holds
+
+Three results carry this design. Each is older than the design and has a DOI; the numbers behind them are in §5.
+
+**One true state, no second copy.** An agent with a shell or a tool protocol reaches the live state in one call: HEAD, a database row, a probe on a server, an API. A memory that copies that state into itself keeps a second copy, and the two drift: the world moves, the copy does not, and the agent acts on the stale one, then searches the stale copy by similarity and calls the result recall. Mem-Forever keeps none of it. With $S$ the state any tool can fetch now and $M$ the brain,
+
+$$M \;=\; R \,\cup\, K \,\cup\, H, \qquad M \cap \operatorname{live}(S) = \varnothing,$$
+
+where $K$ is the ledger of doors (which keys open which door, and the command that proves it still opens), $H$ the hand-off (what is being done now) and $R$ the reasoning no live query returns (why a path was chosen, what was rejected, what must never be done here). Those three are the only things the live state cannot give back; everything else is fetched when the door is open. Every fact has one copy, so there is nothing to invalidate; order comes from the git record, the way Lamport ordered events by the record rather than by a clock [[1]](#references).
+
+**The brain is a generator, not a snapshot.** A memory that stores what the agent saw grows with the transcript; a memory that stores the derivation grows with what cannot be derived. Kolmogorov, Solomonoff and Chaitin defined the information in an object as the length of the shortest program that produces it [[2]](#references) [[3]](#references) [[4]](#references) [[5]](#references). The brain is that program,
+
+$$K \;\to\; T \;\to\; C \quad\text{with annotations as the program text,}$$
+
+keys derive tasks, tasks yield constants. A capable model runs it and re-grows the tree; a weak model is handed the expanded output (`brain.py paste`). The token counts of §5 are Shannon's measure of the message that is sent [[6]](#references); the size of the brain is Kolmogorov's measure of what is kept.
+
+**The threat is the lock, not the thief.** Cryptosystems fail in operation, not in cryptanalysis [[7]](#references); for one person the operational failure is a lost key or a forgotten passphrase. Saltzer and Schroeder named the two principles the ledger follows: psychological acceptability, a protection that is not usable is bypassed, and least privilege, a key reaches a process only when the work needs it [[8]](#references). Hence the three states of a value,
+
+$$v \in \{\text{plain},\ \text{encoded},\ \text{sealed}\}, \qquad \operatorname{enc1}(v) = v \oplus \operatorname{SHA\text{-}256}(p \,\|\, d \,\|\, i)_{i=0,1,\dots},$$
+
+plain only inside a process, encoded at rest with the repository's own pepper $p$ and the door name $d$ (reversible by anyone holding the repository: obfuscation against accidental exposure, not encryption), sealed only when pairing. Two gates act on the agent, none on the owner: the read gate (`unlock` needs a `next` item, the scope and this machine's grant) and the write gate (`review` admits a boundary only on the owner's words, and the same rules apply when the brain is read). The owner, holding the repository, is never locked out: `ledger decode` needs nothing but the repository.
+
+Recognition is the one place a number stands in the protocol: with $a$ applicable anchors and $h$ hits in the owner's turns,
+
+$$r = h / a \;\ge\; 0.30 \quad\text{and no \texttt{done} item touching a boundary} \;\Rightarrow\; \text{recognized},$$
+
+and the anchors' `words:` are the owner's own words, the ones an agent never writes (§5). Recognition tells the agent whom it is talking to; it is not the lock. The judgment layer that decides each `next` item is iLang's, grounded in fuzzy set membership [[9]](#references); the memory module is in the canon [[10]](#references).
 
 ---
 
@@ -260,11 +301,36 @@ Numbers are from real tokenizers and real conversations, not estimates; dates ar
 - **The Chinese card** (`rules/GRAMMAR-CARD.zh.md`, 1212 bytes): 352 to 392 tokens on the same ten, 542 on Claude's. Tested in conversation on twelve model tiers from weak to strong, 2026-11-03 and 2026-11-04.
 - **`BRAIN.md`** (the eight points, English): 1552 bytes; 399 to 406 tokens on GPT, GLM and Kimi, 427 on Doubao, 588 on Claude's, net of each chat template, measured 2026-11-05 after the 2.1 edit of point 2.
 - **One web endpoint, 2026-11-05**, ChatGPT's web chat signed out, free tier, no files, no tools: the Chinese card plus a 14-block hand-off went in as one message and came back as "done reading"; the restating check gave 4, 6 and 9 items verbatim, confirmed by script against the file. The first write-back rewrote the item it moved and the review rejected it (two rejects); told the identifier rule, the second write-back passed (one flag, one transition, one addition) and was accepted.
+- **recognize, 2026-11-08**: anchors built from the owner's own words (words that appear in his quotes and never in agent-written text), one brain per sample, no sample used to build the anchors: 12 of 12 of the owner's past sessions recognized, 1 of 21 windows of text by other hands (a Chinese agent's documents, an English email, the English canon); the holder of the memory with its quotes 8 of 12, which is the designed limit, the private repository is that gate. Scripts and rows in the owner's work directory, not in this repository.
+- **brain.py 2.1 self-test, 2026-11-08**: 37 scenarios (the 26 of 3.0 and eleven for the three states, grants, harvest, evidence backing, hand-off scope, hooks-off warning, encode); the run leaves no directory behind.
+- **brain.py 2.0 self-test, 2026-11-08**: `tools/test_brain.py`, 26 scenarios, each in a brain built by `init` in a temporary directory: ledger add, list, verify (pass, fail, stale), unlock refused without a `next` item and outside the declared scope, a top door refused and then opened once by a one-time code, the owner's turn recognized at 0.67 and a stranger's at 0.00, a boundary contradiction resetting recognition, CJK boundary matching by bigrams, `provenance init` stamping `by:legacy`, an agent-written boundary rewritten as advice, an unsupported `owner_verbatim` downgraded to `owner_claimed`, tentative decay at 30 days and agent-confirmed decay at 90, a boundary removal rejected without a tombstone and accepted with one, a new boundary or `A:` line without owner words rejected, an owner block changed by an agent rejected, the pre-commit hook refusing such a commit, import converting a boundary and an `A:` line and stamping everything `by:imported`, `verify` naming a missing edge and an orphan, the five instruction files synced and checked, the pasted message carrying the ledger without values unless `--with-values`, the push-guard URL parser. `BRAIN.md` after the 3.0 edit: 1998 bytes; its token count on the ten tokenizers is not yet re-measured and the 2.1 numbers below are for the 2.1 text.
 - **`handoff review` self-test**, 2026-11-05: `init` into an empty directory, then `check`: 0 errors, and the seven generated files are validator-clean. An identical candidate: clean, exit 0. A single `::PROGRESS{}` block without `--overlay`: 13 rejects (every other baseline block reported missing), exit 1. The same block with `--overlay`: 0 rejects, 1 flag, 1 transition, 1 addition, exit 3, and the composed file equals the hand-made overlay from the web-endpoint run. A boundary given a `when:` under `--overlay`: rejected. One new `::LESSON{}` with its body line under `--overlay`: appended intact before the notes section, exit 0. A `::GENE{}` replaced under `--overlay` keeps its `T:`/`A:` lines, their indentation and the baseline's line endings.
 
 ---
 
 ## 6. Versions
+
+### What's new in 3.1
+
+- **Three states of a value.** Plain only inside a process; **encoded at rest** in `env/keys.env` (`enc1:`, reversible with `env/pepper`, 32 random bytes written once by `init` and committed; obfuscation against accidental exposure, not encryption); sealed only when pairing. `ledger encode` converts a 3.0 brain, `ledger decode` prints everything plain for the owner with nothing but the repository.
+- **Grants on the machine.** A door opens here only after the owner's nod: `brain.py grant <DOOR>`, `--all`, `--write`, recorded in this clone's git config and never in the repository. Top kinds keep the one-time code; a new machine costs one nod at the first unlock.
+- **The scan harvests.** A key-shaped string under `memory/`, `soul/` or `handoff/` is a WARN, not a refused commit; `ledger harvest` makes it a door (`{{DOOR}}` in the text, the value encoded, `verify:none` until the owner says how); `migrate-cc` harvests what it copies. `log/` is never touched. Reported by the 3.0.0 review of Opus 5.5 and 4.6 (2026-11-08): 145 hits in 342 migrated files had refused 136 commits.
+- **Evidence has a source too.** `evidence add` records `owner_claimed` unless `--transcript` finds the words among the owner's turns; `evidence confirm <q>` is the owner's own backing. A claim without either is read as `agent_inferred`.
+- **Smaller things from the same review:** `unlock` takes the scope from the hand-off when none is declared and refuses when neither exists; `check` warns when the hooks are off on a clone (`init .` once per machine); `paste` masks instead of refusing; the self-test leaves no directory behind.
+- **brain.py 2.1**, 37 scenarios in `tools/test_brain.py`. Design record: MEM-FOREVER-3-1-THREE-STATES v1.0 (2026-11-08), kept by the owner outside this repository; the canon's SECRETS line follows in ilang-spec 5.0.10.
+
+### What's new in 3.0
+
+- **Memory is a derivation.** The keys derive the tasks, the tasks yield constants, the logic between them is annotation; reading is re-deriving from the ledger, writing is appending a constant or an annotation. Code memory is dropped: HEAD holds it.
+- **The ledger** (`env/ledger.env`, [docs/LEDGER.md](docs/LEDGER.md)) replaces the vault: one row per door with `verify`, `last_verified`, `recover`, `scope`, `top`, `why`; plain in the private repository; `brain.py ledger`, `unlock`, `otp`. A secret must always open for the owner: no step depends on a model reasoning, and the owner is a recipient of everything sealed.
+- **Seal only when pairing.** `brain.py pair` seals the rows a receiver's scope needs, to its key and the owner's, with a declaration of identity, scope and authorization; `unseal` opens one. The pasted brain carries the ledger without values.
+- **The action is the pairing.** No handshake: `brain.py log` keeps the owner's turns verbatim and `brain.py recognize` reads them against the soul's anchors; thirty percent and no boundary touched is enough, the way an old friend is recognized at a glance.
+- **A source on every block.** `by:` with `owner_verbatim` (`q:` into `soul/evidence.md`), `owner_confirmed`, `agent_inferred`, `imported`, `legacy`; `brain.py provenance init|check|repair`; tombstones; decay by days; `brain.py review` as the one gate for every writer, installed as `tools/hooks/pre-commit`, and the same rules applied when the brain is read, so a bypassed hook changes nothing.
+- **Import** (`brain.py import --from`): everything stamped `by:imported`, confidence reset, boundaries become facts, nothing enters `soul.md`.
+- **Constants with their reasons**: `why:` and `used_by:` edges, `brain.py verify`, orphans die.
+- **Private means private**: `env/`, `log/` and `pair/` are exempt from the secret scan; `tools/hooks/pre-push` refuses to push memory to a public remote, asking GitHub and Gitee through their API.
+- **brain.py 2.0**, still one file, standard library only; `tools/test_brain.py` and a CI workflow; `brain.py migrate-2to3` for a 2.1 brain; `brain.py instructions sync` keeps the five instruction files byte-identical to the skill body.
+- Design record: MEM-FOREVER-3-ILANG-CRYPTO-DESIGN v1.1 (2026-11-08), kept by the owner outside this repository until the build it describes shipped; the canon amendment of the SECRETS line of MODULE::MEMORY follows separately.
 
 ### What's new in 2.1
 
@@ -314,7 +380,7 @@ Open your repo with any tool; the skill migrates once: `.ilang/soul.md` content 
                                             ┌──────▼──────┐
                                             │ Your private │
                                             │ GitHub repo  │
-                                            │ + vault/     │
+                                            │ + env/ledger │
                                             └─────────────┘
 ```
 
@@ -331,7 +397,7 @@ You never write these files. Your AI does. You can read, edit, or delete them an
 | Storage | Your GitHub repo | Local SQLite | Cloud vectors |
 | Cross-tool | Any tool that reads files, or one pasted message | Plugin per tool | API per tool |
 | Resume across sessions | `handoff/CURRENT.md` | Session history | Session history |
-| Keys for a new machine | `vault/`, age-encrypted | n/a | n/a |
+| Keys for a new machine | `env/ledger.env`, verified rows, encoded at rest, one nod per machine; sealed only when paired | n/a | n/a |
 | Price | Free forever | Free / Pro | Free / Pro |
 | Data ownership | You | You | Theirs |
 | Migration | `git clone` | Export | API call |
@@ -345,6 +411,19 @@ The instruction files contain behavioral rules written in [iLang v5.0](https://i
 You don't need to know iLang. You just talk to your AI, and it gets better at working with you.
 
 ---
+
+## References
+
+1. Lamport, L. (1978). Time, clocks, and the ordering of events in a distributed system. *Communications of the ACM* 21(7), 558–565. <https://doi.org/10.1145/359545.359563>
+2. Kolmogorov, A. N. (1968). Three approaches to the quantitative definition of information. *International Journal of Computer Mathematics* 2(1–4), 157–168. <https://doi.org/10.1080/00207166808803030>
+3. Solomonoff, R. J. (1964). A formal theory of inductive inference, Part I. *Information and Control* 7(1), 1–22. <https://doi.org/10.1016/S0019-9958(64)90223-2>
+4. Chaitin, G. J. (1966). On the length of programs for computing finite binary sequences. *Journal of the ACM* 13(4), 547–569. <https://doi.org/10.1145/321356.321363>
+5. Li, M., Vitányi, P. (2008). *An Introduction to Kolmogorov Complexity and Its Applications*, 3rd ed. Springer. <https://doi.org/10.1007/978-0-387-49820-1>
+6. Shannon, C. E. (1948). A mathematical theory of communication. *Bell System Technical Journal* 27(3), 379–423. <https://doi.org/10.1002/j.1538-7305.1948.tb01338.x>
+7. Anderson, R. (1993). Why cryptosystems fail. *Proceedings of the 1st ACM Conference on Computer and Communications Security*, 215–227. <https://doi.org/10.1145/168588.168615>
+8. Saltzer, J. H., Schroeder, M. D. (1975). The protection of information in computer systems. *Proceedings of the IEEE* 63(9), 1278–1308. <https://doi.org/10.1109/PROC.1975.9939>
+9. Zadeh, L. A. (1965). Fuzzy sets. *Information and Control* 8(3), 338–353. <https://doi.org/10.1016/S0019-9958(65)90241-X>
+10. Zhu, L. Q. (2026). iLang Protocol Specification 5.0.9, Part I MODULE::MEMORY. Zenodo. <https://doi.org/10.5281/zenodo.24048531>
 
 ## Citation
 

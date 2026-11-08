@@ -43,6 +43,9 @@ metadata.
   API family used to execute that operation
 - Evaluation-only models use `capabilities.evaluate: true` and
   `execution.evaluate`. They do not need text or object generation support.
+- Rerank models use `capabilities.rerank: true` and `execution.rerank`.
+  The `cohere_rerank_compatible` family uses the `cohere_rerank` wire protocol,
+  while each provider or model can declare its own base URL and path.
 - `catalog_only: true` marks packaged entries that are intentionally
   non-executable
 
@@ -223,6 +226,7 @@ See the full function docs in [hexdocs](https://hexdocs.pm/llm_db).
   execution: %{
     text: %{supported: true, family: "openai_chat_compatible"},
     object: %{supported: true, family: "openai_chat_compatible"},
+    rerank: nil,
     embed: nil,
     image: nil,
     transcription: nil,
@@ -386,8 +390,6 @@ mix llm_db.build
 # Verify semantic reproducibility without changing the tracked snapshot
 mix catalog.verify
 
-# Install the packaged snapshot for local runtime/package validation
-mix llm_db.build --install
 ```
 
 Catalog pull requests commit mergeable inputs and tests, not

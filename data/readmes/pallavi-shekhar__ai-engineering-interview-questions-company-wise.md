@@ -364,7 +364,7 @@
   - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [How do you build a latency budget for a voice AI agent?](https://outcomeschool.com/blog/voice-agent-latency-budget), [How does the voice-to-voice latency of a voice agent get measured?](https://outcomeschool.com/blog/voice-to-voice-latency), [Why does the time-to-first-audio matter more than total response time?](https://outcomeschool.com/blog/time-to-first-audio), [How does speculative LLM generation start replying before the user finishes?](https://outcomeschool.com/blog/speculative-generation-in-voice-agents) and [How do filler phrases hide latency in a voice agent?](https://outcomeschool.com/blog/filler-phrases-in-voice-agents)
 - Design barge-in / interruption handling for a voice agent.
   - Asked at: [ElevenLabs](#elevenlabs)
-  - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [What is turn-taking in a voice AI agent?](https://outcomeschool.com/blog/what-is-turn-taking-in-a-voice-ai-agent), [What is barge-in in a voice AI agent?](https://outcomeschool.com/blog/what-is-barge-in-in-a-voice-ai-agent), [How does a voice agent tell a real interruption from a cough or background noise?](https://outcomeschool.com/blog/interruption-vs-background-noise) and [How does a voice agent stop speaking instantly when interrupted?](https://outcomeschool.com/blog/stopping-speech-on-interruption)
+  - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [What is turn-taking in a voice AI agent?](https://outcomeschool.com/blog/what-is-turn-taking-in-a-voice-ai-agent), [What is barge-in in a voice AI agent?](https://outcomeschool.com/blog/what-is-barge-in-in-a-voice-ai-agent), [How does a voice agent tell a real interruption from a cough or background noise?](https://outcomeschool.com/blog/interruption-vs-background-noise) , [How does a voice agent stop speaking instantly when interrupted?](https://outcomeschool.com/blog/stopping-speech-on-interruption) and [How does a voice agent truncate its memory to only what the user actually heard?](https://outcomeschool.com/blog/truncating-context-on-interruption)
 - Cascaded ASR+LLM+TTS versus native speech-to-speech: argue both sides.
   - Asked at: [ElevenLabs](#elevenlabs)
   - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent) and [Cascaded vs Speech-to-Speech: How to choose the right voice agent architecture?](https://outcomeschool.com/blog/cascaded-vs-speech-to-speech)
@@ -1319,6 +1319,4 @@
 - Design a content recommendation system for a streaming catalogue, including cold-start for new titles and new users.
 - Design “people you may know” / job-recommendation ranking at a professional network's scale.
 - Design dynamic pricing / surge for a two-sided marketplace and describe the feedback loops that can go wrong.
-- Design a visual search system: user uploads an image, you return visually similar in-catalogue items.
-  - Answer: [How do Image Embeddings work?](https://outcomeschool.com/blog/how-do-image-embeddings-work)
-- Des
+- Design a visual search system: user uploads an image, you re

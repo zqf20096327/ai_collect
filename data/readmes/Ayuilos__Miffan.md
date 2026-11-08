@@ -14,9 +14,9 @@
 
 <table>
   <tr>
-    <td align="center" valign="top"><img src="docs/img/v4/en/01-chats-light.webp" alt="Chats with partners, unread counts and typing indicators" width="260" /></td>
-    <td align="center" valign="top"><img src="docs/img/v4/en/03-parallel-light.webp" alt="Three questions at once, each reply quoting its question" width="260" /></td>
-    <td align="center" valign="top"><img src="docs/img/v4/en/05-self-config-light.webp" alt="A partner adjusting its own preferences with an undo notice" width="260" /></td>
+    <td align="center" valign="top"><img src="docs/img/v5/en/01-chats-light.webp" alt="Chats with partners, unread counts and typing indicators" width="260" /></td>
+    <td align="center" valign="top"><img src="docs/img/v5/en/03-parallel-light.webp" alt="Three questions at once, each reply quoting its question" width="260" /></td>
+    <td align="center" valign="top"><img src="docs/img/v5/en/05-approval-light.webp" alt="A partner asking before it adds an event to your calendar" width="260" /></td>
   </tr>
 </table>
 
@@ -34,6 +34,19 @@ Each AI partner is one ongoing chat. There's nothing to start and nothing you ha
 - **See what AI knows about you.** Each memory shows where it came from, and you can delete it at any time.
 - **Ask for a picture.** Pick a drawing model once and any partner can draw, or edit its last picture when you say "change it to…".
 - **Keep what matters.** Long-press a message to save it. The Discover tab gathers your saved messages and recent drawings, and lets you draw or translate without picking a partner.
+
+<table>
+  <tr>
+    <td align="center" valign="top"><img src="docs/img/v5/en/02-thread-light.webp" alt="A long reply with a table, and the day before one tap away" width="260" /></td>
+    <td align="center" valign="top"><img src="docs/img/v5/en/10-memory-light.webp" alt="Each memory shows which partner noted it and when" width="260" /></td>
+    <td align="center" valign="top"><img src="docs/img/v5/en/09-discover-light.webp" alt="Draw, translate, favorites and recent drawings" width="260" /></td>
+  </tr>
+  <tr>
+    <td align="center">Long chats stay one timeline</td>
+    <td align="center">See what it remembers</td>
+    <td align="center">The Discover tab</td>
+  </tr>
+</table>
 
 ## Partners that work together
 
@@ -59,14 +72,14 @@ Connect a Mac, Windows or Linux computer over SSH, including over Tailscale or, 
 
 <table>
   <tr>
-    <td align="center" valign="top"><img src="docs/img/v4/en/11-computer-screen-light.webp" alt="The partner typing into a note while you watch" width="260" /></td>
-    <td align="center" valign="top"><img src="docs/img/v4/en/12-computer-approval-light.webp" alt="The partner asking before it types" width="260" /></td>
-    <td align="center" valign="top"><img src="docs/img/v4/en/13-computer-setup-light.webp" alt="Guided setup with a live view of the desktop" width="260" /></td>
+    <td align="center" valign="top"><img src="docs/img/v5/en/11-screen-light.webp" alt="Miffan typing a note into Notepad while you watch the computer's screen" width="260" /></td>
+    <td align="center" valign="top"><img src="docs/img/v5/en/12-minibox-light.webp" alt="Miffan's own mini box on your computer, with its latest picture" width="260" /></td>
+    <td align="center" valign="top"><img src="docs/img/v5/en/13-away-light.webp" alt="Away from home through Miffan's free relay" width="260" /></td>
   </tr>
   <tr>
     <td align="center">Watch it work</td>
-    <td align="center">Approve each step</td>
-    <td align="center">Connect in a few steps</td>
+    <td align="center">A computer of its own</td>
+    <td align="center">Away from home too</td>
   </tr>
 </table>
 
@@ -130,6 +143,7 @@ Miffan started as a fork of [RikkaHub](https://github.com/rikkahub/rikkahub), an
 | Oct 2026 | 4.6 | A first run that is a chat with Miffan, choosing how long a partner thinks, and a computer status page. |
 | Oct 2026 | 4.7 | A partner's own mini box, and a redesigned screen view. |
 | Nov 2026 | 4.8 | Using your computer away from home through Miffan's relay, without Tailscale. |
+| Nov 2026 | 4.9 | A smoother, faster easy chat: long replies stay in view, tabs keep their place, and errors in plain words. |
 
 Miffan still takes in selected RikkaHub improvements. Each one is reviewed and listed separately in the release notes (see the [upstream sync policy](docs/upstream-sync.md)). Upstream copyright and attribution are kept as the license requires. Miffan is not an official RikkaHub release.
 

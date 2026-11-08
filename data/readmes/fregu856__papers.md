@@ -23,6 +23,15 @@ _In June 2023, I wrote the blog post [The How and Why of Reading 300 Papers in 5
 
 #### Papers Read in 2026:
 
+##### [26-11-08] [paper616]
+- Multi-Modal Foundation Model with Whole-Slide Attention Enables Transferrable Digital Pathology at Single-Cell Resolution
+ [[pdf]](https://www.biorxiv.org/content/10.64898/2026.07.31.741265v1) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Multi-Modal%20Foundation%20Model%20with%20Whole-Slide%20Attention%20Enables%20Transferrable%20Digital%20Pathology%20at%20Single-Cell%20Resolution.pdf)
+- `biorxiv, 2026-08`
+- [Computational Pathology]
+```
+Interesting, well-written and very solid paper, I enjoyed reading this. Scalable global / slide-level attention and a scalable contrastive loss, that's the core methodological contribution (check Figure S3 in the supplementary pdf, to see the difference in compute/memory compared to standard softmax attention and InfoNCE loss). Figure S7 is also interesting, comparing with TissueFormer-local that "replaces the global attention of TissueFormer with the local counterpart that only attends to neighboring cells", not exactly enormous gains, but consistently better. Figure 2.e as well, that they get pretty good performance on human data when training only on mouse data (they even beat all human data-trained baselines).
+```
+
 ##### [26-11-07] [paper615]
 - SPARC: A Mechanism-Aware Spatial Representation from Routine Histology Predicts Cancer Survival and Therapy Response
  [[pdf]](https://www.medrxiv.org/content/10.64898/2026.05.04.26352410v1) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/SPARC%20A%20Mechanism-Aware%20Spatial%20Representation%20from%20Routine%20Histology%20Predicts%20Cancer%20Survival%20and%20Therapy%20Response.pdf)
@@ -1061,18 +1070,4 @@ Well written and quite interesting paper. Everything is clearly explained, I qui
 ```
 
 ##### [25-08-05] [paper500]
-- LabTOP: A Unified Model for Lab Test Outcome Prediction on Electronic Health Records
- [[pdf]](https://arxiv.org/abs/2502.14259) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/LabTOP%20A%20Unified%20Model%20for%20Lab%20Test%20Outcome%20Prediction%20on%20Electronic%20Health%20Records.pdf)
-- `CHIL 2025`
-- [ML for Medicine/Healthcare], [EHRs] 
-```
-Well written and interesting paper, I enjoyed reading it. Novel and interesting approach (I've never seen anyone regressing continuous values in this way at least), sensible baselines, reasonable looking results, interesting ablations, everything just seems solid here.
-```
-
-##### [25-08-05] [paper499]
-- Zero Shot Health Trajectory Prediction Using Transformer
- [[pdf]](https://www.nature.com/articles/s41746-024-01235-0) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Zero%20Shot%20Health%20Trajectory%20Prediction%20Using%20Transformer.pdf)
-- `npj Digital Medicine, 2024`
-- [ML for Medicine/Healthcare], [EHRs]
-```
-Well written and interesting paper, I quite enjoyed reading it. All figures etc are really neat. The method is pretty cool, that you can get zero-shot predictions of different things by simulating multiple future patient timelines (albeit a somewhat computationally inefficient approach,
+- LabTOP: A Unified Model for Lab Test Outcome Prediction on Electronic Health Reco

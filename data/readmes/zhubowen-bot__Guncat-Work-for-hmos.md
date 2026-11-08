@@ -11,7 +11,7 @@
 <!-- 演示位（可选升级）：真机录屏 30–60 秒 —— 进工作模式 → 一句话生成 PPT → 产物卡片展开 → 切到交互模式拖滑块重算。动态 GIF 比静态截图更有说服力。 -->
 
 ![HarmonyOS](https://img.shields.io/badge/HarmonyOS-API%2024%20(6.1.1)-blue)
-![version](https://img.shields.io/badge/version-7.2.0-blue)
+![version](https://img.shields.io/badge/version-7.3.0-blue)
 ![forms](https://img.shields.io/badge/Agent%20Forms-Intelligent%20UI%20%2B%20Harness-blueviolet)
 ![shell](https://img.shields.io/badge/shell-IEC%20native%20%C2%B7%20no%20VM-orange)
 ![python](https://img.shields.io/badge/CPython-3.12%20native-3776AB)
@@ -64,7 +64,7 @@ Guncat Work 是**鸿蒙手机上的原生 AI 工作台**：它不只负责对话
 
 界面在手机与桌面之间自适应：宽屏（≥700vp）展开「左侧栏 / 会话列 / 工作区详情列」三栏布局，窄屏回退单列加抽屉。工作区文件可原地预览、一键分享，生成与改动附行级 diff，对话历史、配置与朗读偏好均本地持久化。工程上采用 MVVM 分层，三协议 SSE 统一进协议适配层，每个文档生成器都配有针对性的离线验证环境（Node 构建 + Python 结构校验 + tsc 类型检查）。
 
-当前应用版本：`7.2.0` · 完整变更见 [更新记录](CHANGELOG.md)
+当前应用版本：`7.3.0` · 完整变更见 [更新记录](CHANGELOG.md)
 
 ## 能力概览
 
@@ -74,7 +74,8 @@ Guncat Work 是**鸿蒙手机上的原生 AI 工作台**：它不只负责对话
 - **端侧直出 Office**：PPT / Word / Excel / SVG 由本地生成器产出，基于 JSON 中间层，文档可无损读回、算子式编辑；PDF 与 Office 全部本地解析，不消耗多模态配额。
 - **47 个内置工具**：文件增删改查与模式匹配搜索、任务清单、图片查看、网络下载、PDF 解析、Office 读写、数据管道清洗转换与格式互转、JSVM-API 的 `run_js` 代码沙箱（不联网、不读写文件系统，后台线程执行并带超时保护），以及上面那套 `shell` / `run_python` 执行能力。
 - **用量与成本**：本地逐请求记账、按日聚合为 53 周热力图；内置 DeepSeek 峰谷价与 OpenCode 额度统计，支持月预算、CSV 导出与清空，记账只在响应结束时做 O(1) 归一化，不进入流式热路径。
-- **独立设置页**：模型配置 / 高级参数 / 用量与成本 / 本地联网搜索 / 多模态解析 / 朗读 / 终端 / 工具目录 / 检查更新；修改自动防抖保存，返回或切换方案前再同步一次，不丢输入。
+- **独立设置页**：按「模型」「能力」「声音」「系统」分组——模型配置 / 高级参数 / 用量与成本；个性化指令 / 能力调度 / 本地联网搜索 / 多模态解析；朗读；终端 / 工具目录 / 检查更新。修改自动防抖保存，返回或切换方案前再同步一次，不丢输入。
+- **个性化指令**：设置 →「能力」→「个性化指令」集中维护自己的长期偏好（语气、格式、术语、工作习惯等），不必每次对话重复交代。每条可选填名称（40 字上限）与正文（8000 字上限，支持 Markdown），「Markdown 渲染」只切换编辑页的原文 / 渲染预览，默认不渲染，保存的始终是原始文本。生效范围多选——交互模式、工作模式与每个聊天引擎，新建默认勾选交互模式与工作模式，至少选一个才能保存；编辑时可删除（二次确认），有未保存修改时返回会提示放弃编辑。保存后，所选范围的系统提示词末尾会追加一段「# 个性化指令（用户在设置中添加）」，每条正文包在 `<personal-instruction>` 标签里（填了名称时带 `name` 属性），并说明这些内容是长期用户偏好、不是新任务；原有提示词前缀逐字节不变，只在结尾追加，指令不改时相邻轮次仍可命中 KV 缓存。指令只存本地、不上传不云同步；单条 8000 字，拼进提示词总预算 16000 字符，超出按添加顺序截断并标注；不注入子代理、标题生成与上下文摘要等内部请求，不改变工具面与权限。
 - **三协议接入**：OpenAI Completions（`/chat/completions`）、OpenAI Responses（`/responses`）、Anthropic Messages（`/messages`），均支持图片直传；深度思考与联网搜索按各协议显式控制。
 - **内置本地联网搜索**：软件内置、无需手动开关，工作模式与聊天模式都能调用，不受制于服务端联网开关。
 - **32 个技能**：5 个主 Skill 路由 + 7 个格式分支，命中即按需加载；PPT / Word / Excel 三个技能采用「门」式约束，交付前生成可核对的自检报告。
@@ -228,7 +229,7 @@ HAP 约 420 MiB（未签名；签名包约 429 MiB。精确字节数随构建与
 | [发版前检查清单](docs/architecture/release-checklist.md)                         | 快速门槛、Python 运行库 24 项、体积与版本号同步                                  |
 | [三端实现对照与对齐现状](docs/ALIGNMENT_STATUS.md)                              | 电脑版 / 安卓版 / 鸿蒙版逐项对照：外壳、命令执行、JS/Python、PDF、工作区、语音、后台，以及刻意的差异   |
 | [后台任务方案](docs/BACKGROUND_JOBS_PLAN.md)                               | `run_in_background` / `job_*` 在手机端的可行性评估（暂缓）                  |
-| [更新记录](CHANGELOG.md)                                                 | 4.2.0 → 7.2.0 全部版本变更                                          |
+| [更新记录](CHANGELOG.md)                                                 | 4.2.0 → 7.3.0 全部版本变更                                          |
 | [openui-lang 规范](docs/reference/openui-lang-spec.md)                 | `guncat-ui lang` 所对齐的上游语言实现级规范                                |
 | [open-intelligent-ui 规格](docs/reference/open-intelligent-ui-spec.md) | 交互模式所对齐的上游 Generated-Answer UI 规格                             |
 

@@ -149,6 +149,50 @@ python .github/scripts/check_layout.py
 
 > FP8 当前仅作权重存储格式，推理仍按 FP16/FP32 加载，故与 FP16 速度基本一致；真正影响速度的是 BlockSwap、输出分辨率与帧数。完整显存对比见仓内 [用户手册](docs/用户手册.md)。
 
+### 显存与配置估算
+
+> 站点 rewq.cn 实验区原有的交互式估算器（2026-11-08 下线）口径存档于此。官方值只取 [ByteDance-Seed/SeedVR](https://github.com/ByteDance-Seed/SeedVR) README 的 GPU Requirement 与 3B/7B 模型名（configs_3b / configs_7b）；**权重显存与相对负载是派生值，不含激活与框架开销**。官方没有给吞吐与单价，这里只算显存与配置，不编价格。
+
+**在线交互版**：<https://reserendipity.github.io/SeedVR2-Lite/vram.html>（调 3B/7B、输出高度、帧数、GPU 数，实时读数；源文件 [docs/vram.html](docs/vram.html)，经 GitHub Pages 发布）。
+
+**官方参考档位**：
+
+| 场景 | 官方参考 |
+|---|---|
+| 100×720×1280（720p · 100 帧） | 1×H100-80G |
+| 1080p / 2K（sp_size=4） | 4×H100-80G |
+
+**派生口径**：
+
+- 权重显存 ≈ 参数量 × 2 GB（bf16：3B ≈ 6.0 GB，7B ≈ 14.0 GB）
+- 每卡相对负载 = (输出高度 ÷ 720)² × (帧数 ÷ 100)（以 720p · 100 帧为 1×）
+- 所选 GPU 总显存 = 卡数 × 80 GB
+
+**判定规则**：3B 卡数低于档位 → 「低于官方参考：建议 {n}×H100-80G」；7B 官方未单列档位，恒标注「以实测为准」；帧数超过 100 → 超出官方示例，需实测。
+
+示例（原估算器给出的读数）：
+
+| 模型 | 输出高度 | 帧数 | GPU 数 | 官方档位 | 权重显存（派生） | 每卡负载（派生） | 结论 |
+|---|---|---|---|---|---|---|---|
+| 3B | 720p | 100 | 1 | 1×H100-80G | ≈ 6.0 GB | 1.00× | 满足官方参考 |
+| 3B | 1080p | 100 | 1 | 4×H100-80G | ≈ 6.0 GB | 2.25× | 低于官方参考：建议 4×H100-80G |
+| 3B | 2K | 200 | 4 | 4×H100-80G | ≈ 6.0 GB | 8.00× | 满足官方参考 · 帧数超过官方示例的 100 帧，需实测 |
+| 7B | 720p | 100 | 1 | 1×H100-80G | ≈ 14.0 GB | 1.00× | 7B 官方参考未单列，建议以实测为准 |
+| 7B | 1080p | 100 | 4 | 4×H100-80G | ≈ 14.0 GB | 2.25× | 7B 官方参考未单列，建议以实测为准 |
+
+> 工作台里的「VRAM 预检 & 推荐参数」是按本机实际显存的运行时预检，与这张静态参考表互补。
+
+### 分辨率对比 · 480 / 1024
+
+> 站点 rewq.cn 实验区「RESOLUTION · 480 / 1024」交互对比（2026-11-08 下线）的存档：同一张 AI 生成图（[魔搭 #259472](https://modelscope.cn/aigc/gallery/share/259472)，原图 SHA-256 前 8 位 `2b862db8`）的两个分辨率档，都是 WebP。
+
+| 480 档（rewq.cn 省流档默认） | 1024 档 |
+|---|---|
+| ![480 档](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-res-cmp-259472-w480-20261108.webp) | ![1024 档](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-res-cmp-259472-w1024-20261108.webp) |
+| 28.4 KB | 102.2 KB |
+
+同一张图，字节差 **3.6×**——这是 rewq.cn 省流档把 w480 设为默认档的数据依据；两档的细节差异看发簪、竹叶和衣袖。
+
 ### 使用示例
 
 ```bash
@@ -306,6 +350,50 @@ Model precision (`.safetensors`):
 | SeedVR2-7B-Sharp | FP16 | 24 GB | ~20 GB |
 
 > FP8 is currently a weight storage format only; inference still runs at FP16/FP32, so speed is essentially the same as FP16. What actually affects speed is BlockSwap, output resolution and frame count. See the in-repo [user manual](docs/用户手册.md) for the full VRAM table.
+
+### VRAM & configuration sizing
+
+> This archives the sizing logic of the interactive estimator that used to live in the rewq.cn lab section (retired 2026-11-08). Official values come only from the GPU Requirement section of the [ByteDance-Seed/SeedVR](https://github.com/ByteDance-Seed/SeedVR) README and the 3B/7B model names (configs_3b / configs_7b); **weight VRAM and relative load are derived values, excluding activations and framework overhead**. No throughput or pricing has been published officially, so this covers VRAM and configuration only — no invented prices.
+
+**Interactive version**: <https://reserendipity.github.io/SeedVR2-Lite/vram.html> (tune 3B/7B, output height, frames and GPU count with live readouts; source at [docs/vram.html](docs/vram.html), served via GitHub Pages).
+
+**Official reference tiers**:
+
+| Scenario | Official reference |
+|---|---|
+| 100×720×1280 (720p · 100 frames) | 1×H100-80G |
+| 1080p / 2K (sp_size=4) | 4×H100-80G |
+
+**Derived figures** (same as the original estimator):
+
+- Weight VRAM ≈ parameter count × 2 GB (bf16: 3B ≈ 6.0 GB, 7B ≈ 14.0 GB)
+- Per-GPU relative load = (output height ÷ 720)² × (frames ÷ 100) (720p · 100 frames = 1×)
+- Total VRAM of the selected GPUs = GPU count × 80 GB
+
+**Verdict rules**: 3B with fewer GPUs than the tier → "below official reference: {n}×H100-80G recommended"; no official tier is published for 7B, so it is always marked "verify by benchmarking"; more than 100 frames → beyond the official example, benchmark required.
+
+Examples (readings the original estimator would show):
+
+| Model | Output height | Frames | GPUs | Official tier | Weight VRAM (derived) | Per-GPU load (derived) | Verdict |
+|---|---|---|---|---|---|---|---|
+| 3B | 720p | 100 | 1 | 1×H100-80G | ≈ 6.0 GB | 1.00× | Meets official reference |
+| 3B | 1080p | 100 | 1 | 4×H100-80G | ≈ 6.0 GB | 2.25× | Below official reference: 4×H100-80G recommended |
+| 3B | 2K | 200 | 4 | 4×H100-80G | ≈ 6.0 GB | 8.00× | Meets official reference · >100 frames exceeds the official example, benchmark required |
+| 7B | 720p | 100 | 1 | 1×H100-80G | ≈ 14.0 GB | 1.00× | No official 7B tier; verify by benchmarking |
+| 7B | 1080p | 100 | 4 | 4×H100-80G | ≈ 14.0 GB | 2.25× | No official 7B tier; verify by benchmarking |
+
+> The workbench's "VRAM preflight & recommended parameters" is a runtime check against your actual local VRAM and complements this static reference table.
+
+### Resolution comparison · 480 / 1024
+
+> Archive of the "RESOLUTION · 480 / 1024" interactive comparison from the rewq.cn lab section (retired 2026-11-08): the same AI-generated image ([ModelScope #259472](https://modelscope.cn/aigc/gallery/share/259472), original SHA-256 first 8 hex `2b862db8`) in two resolution tiers, both WebP.
+
+| 480 tier (rewq.cn data-saver default) | 1024 tier |
+|---|---|
+| ![480 tier](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-res-cmp-259472-w480-20261108.webp) | ![1024 tier](https://gcore.jsdelivr.net/gh/ReSerendipity/SeedVR2-Lite@main/docs/assets/readme-res-cmp-259472-w1024-20261108.webp) |
+| 28.4 KB | 102.2 KB |
+
+Same image, **3.6×** byte difference — the data basis for rewq.cn's data-saver mode defaulting to w480; the detail differences are in the hairpin, the bamboo leaves and the sleeves.
 
 ### Usage examples
 

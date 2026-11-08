@@ -17,8 +17,29 @@
 
 </div>
 
+> [!IMPORTANT]
+> ## 🚀 Qwen 4 — ready to run on Intel Arc the day it is released
+>
+> **We will have Qwen 4 up on Mach X the same day it drops.** Qwen3.8-Flash-Next is the public preview of Qwen 4's architecture (`qwen4exp`: QSA sparse attention + Gated DeltaNet, a 512-expert MoE, hyper-connections, per-layer n-gram embeddings, an MTP draft head), and Mach X already runs it on Arc Pro B70 cards. In v0.2.36 and v0.2.37 we built ahead of time everything a Qwen 4 release is expected to ship with:
+>
+> - **Every community quant on its own kernels:** Q4_K, Q5_K, Q6_K, Q8_0, Q5_0 and Q4_0 expert banks stream as they lie on disk (no host F16 copy). Unsloth's UD-Q5_K_XL, UD-Q6_K_XL and Q8_0 Flash-Next builds were downloaded, loaded and checked against an fp64 reference, then perplexity, lossless speculation and speed.
+> - **The draft head and the config the way the converters write them:** the MTP head in llama.cpp's `nextn` layout (Unsloth's `MTP/*.gguf` or inside the model), the hyperparameters llama.cpp reads (per-block attention schedule, per-block arrays), and the `qwen35` pre-tokenizer (30 of 30 lines identical to the HF tokenizer).
+> - **Whatever shape Qwen 4 ships in:** a dense model with no experts, hidden size 5120, 4 KV heads, no sparse-attention indexer, fused gate/up expert banks, the `qwen4` / `qwen4moe` arch names. Each was built as a small random model from the Hugging Face reference code, written as a GGUF in llama.cpp's layout and run through the engine end to end: **15 shapes match the reference's output**. Four failed before v0.2.37 (hidden 5120 lost the GPU; dense and indexer-less files were refused) and are fixed.
+> - **Fast where it counts:** integer-dot and XMX (DPAS) kernels for the K-quant and Q8_0 banks, and a faster decode step (two cards 41.1 → 49.7 tok/s over v0.2.36 and v0.2.37, the long-context step 26.2 → 20.1 ms of GPU time), all with identical output.
+>
+> <table>
+> <tr><th align="left">Qwen 4 on Mach X</th><th align="left">Status</th></tr>
+> <tr><td>Weights released</td><td><i>waiting for Alibaba's release</i></td></tr>
+> <tr><td>Running in <code>ie serve</code></td><td><b>release day</b> — the model link, the files and the launch line go here</td></tr>
+> <tr><td>Decode / prompt reading, 1 and 2 × Arc Pro B70</td><td><b>release day</b> — measured, not estimated</td></tr>
+> </table>
+>
+> <sub>Placeholder: this box is replaced with the measured numbers the day Qwen 4 is out. If the release changes the preview architecture (other sizes, other head counts), the config reader already takes llama.cpp's hyperparameters, 15 such shapes already run against the reference, and anything the engine cannot run yet is refused by name instead of guessed.</sub>
+
 **Latest**
 
+- **v0.2.37, November 8 — Qwen 4's possible shapes tested before the weights exist, and Flash-Next decodes 12 % faster:** a new [mini end-to-end check](#new-in-v0237) builds small random models from the Hugging Face reference code in 15 shapes a Qwen 4 tier may take (dense, hidden 5120, 4 KV heads, no sparse-attention indexer, fused expert banks, …), writes them in llama.cpp's layout and compares the engine's output with the reference. It found that hidden 5120 lost the GPU and that dense and indexer-less files were refused; all fixed. Fused gate/up expert banks load. Flash-Next's hyper-connection mixing reads 8-bit and its expert routing runs on the GPU when that pays: two cards **44.4 → 49.7 tok/s**, the tokens unchanged. [Details](#new-in-v0237)
+- **v0.2.36, November 8 — Qwen 4 day-one readiness, Flash-Next decodes faster, and a request can no longer forge a control token:** every community quant of [Flash-Next](#new-in-v0236) (the Qwen 4 preview architecture) streams on its own kernels — Q8_0, Q5_K, Q6_K, Q5_0 and Q4_0 expert banks beside Q4_K — proven on Unsloth's UD-Q5_K_XL, UD-Q6_K_XL and Q8_0 builds; the MTP head loads in llama.cpp's layout; integer-dot and XMX kernels for the bigger quants (the Q8_0 build reads 87.4 → 103.9 tok/s on two cards). The decode step lost launches, a 3× faster sparse attention and a 4× faster router GEMV: two cards **41.1 → 44.4 tok/s**, the step at ~3K context 26.2 → 21.0 ms of GPU time, the output identical. Every chat renderer now keeps a control-token spelling inside a request's own text as text (a fetched page could open a turn or a tool call), a tool call whose JSON lost its last bracket is repaired, and DeepSeek-V4.1 serves with the expert ranking profiled on its own traffic (code-writing replies 7.8 → 12.8 tok/s). [Details](#new-in-v0236)
 - **v0.2.35, November 2 — Flash-Next on N cards, and community GGUFs read right:** `ie serve --gpus N` runs [Flash-Next](#new-in-v0235) as an N-stage layer split (stage s owns layers [s·48/N, (s+1)·48/N)), with the request lanes, the draft head's rounds, the prompt cache, the restart points and the pictures all going through one chain, so no path can skip a stage; on this two-card box the 4-stage chain was proven byte-identical to the 2-stage one by running two stages per card (`IE_Q4E_LOGICAL_CARDS=2`), the way DeepSeek-V4.1's 4-card split was. The per-layer-embedding table of a community Q8_0 / UD-Q6_K_XL GGUF was read with the converter's IQ4_NL layout (garbage replies); it is read by its dtype now, and anything else is refused by name. The P2P context takes every card. An opt-in pinned-memory path for the expert uploads is there for boxes whose copy engine faults on the file mapping; here it cost 14–23 % of decode and made the first token 47 % later, so it is off by default.
 - **v0.2.34, October 29 — Nanbeige4.3-33B, and the dense path three times faster with a prompt cache and prompt-lookup speculation:** [Nanbeige4.3-33B](https://huggingface.co/Nanbeige/Nanbeige4.3-33B) (a plain Llama-architecture dense model, Apache 2.0, 512K context, Qwen's ChatML `<think>` template) serves at **28.7 / 27.8 tok/s on two cards** at 0.9K / 5.3K of context in 65K (6.3 / 2.6 before the port), 19.3 on one card. The shared dense path (every K-quant `llama` / `qwen3` dense GGUF) got its Q6_K projections on the c32 int-dot kernel, the fa2 decode attention under tensor parallel, a prompt cache (turn 2 of a 5.4K-token conversation prefills in 1.7 s instead of 21.4, the reply byte-identical) and prompt-lookup `--spec` (a repeated passage at **78 tok/s** on two cards, 50 on one, the texts byte-identical to plain). The Nanbeige file is our own build from the authors' release. [Details](#new-in-v0234)
 - **v0.2.33, October 23 — Flash-Next's request lanes take pictures, wake on demand, and run the draft head with `--spec`:** at `ie serve --parallel 4` an image prompt was refused and the three idle lanes took 20 % of the expert cache at the load; now a request's images are staged on its lane (the replies byte-identical to one lane's, alone or in a decoding group), a lane's VRAM is allocated on its first request (**224 / 227** resident experts a layer on the cards with one conversation, were 179 / 193), and `--spec` — Dream's speculation toggle — runs the MTP draft head's rounds on a lane decoding alone. At `--ctx 262000 --parallel 4 --slot-ctx 75000`, temperature 1.0: a 9.8K-token conversation **27.3 / 26.1 / 25.4 → 28.3 / 27.2 / 26.5 tok/s** over three turns, with `--spec` **29.5 / 28.0 / 27.2**; a 17.3K document 26.3 → 26.9, with `--spec` **30.0**; the tokens the same. [Details](#new-in-v0233)
@@ -196,6 +217,75 @@ class ([New in v0.2.6](#new-in-v026)).
 
 ---
 
+<a id="new-in-v0237"></a>
+## 🆕 New in v0.2.37
+
+### Qwen 4, day one: the shapes it may ship in, tested before the weights exist
+
+Qwen 4's tiers are not out, and the rumoured ones differ from Flash-Next in size and layout. The new mini end-to-end check, [`scripts/qwen4exp_oracle/mini_gate.sh`](scripts/qwen4exp_oracle/README.md), builds a 4-block model with seeded random weights from the Hugging Face reference classes, writes it as a GGUF in llama.cpp's `qwen4exp` layout with every converter transform applied, runs the engine on it three ways (token-by-token decode, one prefill, a prefill split in two) and scores the logits against the reference's. It needs no download and takes about 30 s a shape. A negative control (one wrong norm transform in one block) must fail, and does.
+
+- **Found and fixed:** hidden 5120 lost the GPU (the per-layer-embedding kernels and the dense-matmul scratch were sized for Flash-Next's 2560); a file without the QSA indexer was refused (it now attends densely); a dense model (no experts, a SwiGLU FFN in every block) was refused and now runs through the int-dot GEMV, the batched rows and the s8 GEMM; the `qwen4` / `qwen4moe` arch names read with the file's own key prefix.
+- **15 shapes match the reference:** Flash-Next's own, 4 KV heads, no indexer, hidden 5120, dense at 2560 and at 5120 (with 4 KV heads and no indexer), head_dim 128, 32 Q / 8 KV heads, 64 experts top-8, 32 DeltaNet value heads, no per-layer embedding, 8 hyper-connection streams, low rank 512, a fused gate/up bank and the `qwen4` arch name. Decode rows and a prefill split in two reach cosine ≥ 0.999, a one-shot prefill ≥ 0.9998; rows where the reference's router scores nearly tie are held to 0.995, because F16 routing may pick the other expert there.
+- The dense and hidden-5120 shapes, given the real tokenizer, pass `ie preflight` and answer a chat through `ie serve` on one card and on a two-card split.
+- **Fused gate/up expert banks** (llama.cpp's `--fuse-gate-up-exps`, `ffn_gate_up_exps`) load, in the model and in an MTP head file: each expert's halves are split while the bank is copied to pinned host memory, so every kernel is unchanged, and the logits are byte-identical to the separate-bank file's. They were refused before.
+- **On four cards:** checked on a 4-stage chain, two stages per card here (`ie-qwen4exp-run2 <file> 4 2`, the `--gpus 4` split): the real Flash-Next file and 8-block mini models with Q8_0 expert banks (Flash-Next's shape, dense, hidden 5120, fused banks) give logits bit-identical to one card, and `ie serve` of the dense shape on four stages answers exactly as on one card and on two.
+- The real Flash-Next file's output is bit-identical before and after these changes.
+
+### Flash-Next decodes faster again, with the same tokens
+
+- **The hyper-connection mixing reads the file's 8-bit blocks** at decode and verify instead of F16 copies (half the bytes at 97 sites a step): the mixing 3.24 → 2.19 ms a step, two cards 44.3 → 47.2 tok/s. `IE_Q4E_HC_Q8=0` is the F16 path.
+- **Expert routing on the GPU when it pays:** while the decode miss rate stays at or below 2 %, a MoE layer routes on the device straight into the expert-job table, and a missed expert is read from pinned host memory in place. The host routes with the device's arithmetic bit for bit, so the side never changes a token. Two cards 47.1 → 49.7 tok/s; a cold one-card cache stays on the host. `IE_Q4E_DEV_ROUTE=0` is host routing.
+- **The QSA decode attention splits a head's keys into 64 tiles** (was 16): 131 → 44 µs a layer, the one-card step at ~3.1K context 21.0 → 20.1 ms of GPU time. `IE_Q4E_QSA_TILES=16` gives v0.2.36's sums bit for bit.
+- Two cards **44.4 → 49.7 tok/s** over v0.2.36 (`ie-prompt-bench`, UD-Q4_K_XL, measured at each step). Every step was checked with the batched-verify probe, lossless speculation and the greedy text.
+
+### EXL3: all three exllamav3 codebooks
+
+turboderp's Flash-Next EXL3 quants use the `mul1` codebook, and the EXL3 kernels decoded only the default one (3INST), so they would have read such tensors as wrong values without a word. The kernels now decode 3INST, mcg and mul1 (device == host on all 65,536 codes of each). The importer refuses an `.mcg` / `.mul1` tensor by name until the GGUF carries its codebook. Flash-Next itself has no EXL3 path yet.
+
+### What is still not checked
+- A dense model's MTP draft head is refused (serving uses lookup drafts), and a dense model's request lanes decode one at a time (no row batching).
+- A per-layer embedding on more than one block, or with a geometry other than Flash-Next's, is refused by name: no converter writes one yet.
+- Tensor names a release adds that nobody has published cannot be tested before the files exist.
+
+<a id="new-in-v0236"></a>
+## 🆕 New in v0.2.36
+
+### Qwen 4, day one: Flash-Next's every community quant streams natively
+
+Qwen3.8-Flash-Next (`qwen4exp`) is the preview of Qwen 4's architecture. The Unsloth UD-Q5_K_XL, UD-Q6_K_XL and Q8_0 builds — and the Qwen 4 builds that will follow the same recipe — carry Q8_0 down banks on every layer and Q5_K / Q6_K / Q8_0 gate/up banks; bartowski's carry Q5_0 down banks. The engine streamed only Q4_K gate/up and Q5_1 down banks raw and dequantised everything else at load to a pinned host F16 copy (2 bytes an element): the Q8_0 file needed about 225 GiB of RAM and ran at 0.7 tok/s for the [issue 3](https://github.com/Red-Weasel/machx-inference-engine/issues/3) reporter.
+
+- **New bank kernels** stream Q8_0, Q5_K, Q6_K, Q5_0 and Q4_0 banks as they lie on disk at every MoE site — decode, the speculative verify, the prefill tiles, the row batches — one column walk per type shared by every variant, so each is bit-identical to the solo kernel (`ie-qwen4-bank-test`, against an fp64 reference). On real banks the raw path is 4.5–4.8e-4 from fp64 where the old F16 copy was 1.0–1.8e-2. `IE_Q4E_RAW_KQ=0` is the old copy.
+- **Proven on the real files:** Unsloth's UD-Q6_K_XL and Q8_0 builds load with every bank streaming raw, score 5.470 and 5.473 perplexity on the same prose the Q4 file scores 5.491 on, and decode losslessly under speculation with either MTP head. Integer-dot Q5_K / Q6_K gate/up kernels (decode and prefill) run at 308–395 GB/s where the floating-point unpack ran ALU-bound at ~100 GB/s: on UD-Q5_K_XL two-card decode 32.3 → 34.1 tok/s and prefill 104 → 124 tok/s for 0.3 % perplexity, the same int8-activation trade the Q4_K path makes (`IE_Q4E_KQ_INTDOT=0` keeps the unpack). int8-DPAS gate/up tiles and exact-int f16-DPAS down tiles for the Q8_0 banks: the Q8_0 build's two-card prefill 87.4 → 103.9 tok/s, perplexity 5.473 → 5.443.
+- **The loader takes what the converters write:** llama.cpp's merged tensors (`attn_qkv_gate`, `ssm_beta_alpha`, `hc_*_down_inject`), every dtype with a reference dequant, the n-gram table in Q5_0 / Q5_1 / Q4_0 / F16 / BF16 / F32 beside IQ4_NL / Q8_0. A fused `ffn_gate_up_exps` bank is refused with the reason.
+- **The MTP draft head in llama.cpp's layout:** Unsloth's `MTP/mtp-Qwen3.8-Flash-Next-{Q8_0,shared-Q8_0}.gguf` (a 49th block, `blk.48.nextn.*`) or a main file converted with the head inside; found beside the model, in `../MTP/` or inside it, and `--spec-head` takes either. Unsloth's head is lossless against plain greedy decoding like ours.
+- **The config reader takes llama.cpp's hyperparameters:** a per-block `attention.recurrent_layers` schedule, `full_attention_interval` defaulting to 4, head counts and the expert FFN size as per-block arrays, the MTP blocks counted in `block_count`; where the kernels are fixed (a QSA compress ratio other than 4, a top-k not a multiple of 4) the load names the limit instead of selecting the wrong blocks. A `qwen35` pre-tokenizer matches the HF tokenizer on 30 of 30 golden lines.
+- **Found and fixed on the way:** the batched-verify probe had not been bit-identical to serial decode for batches above four rows since the hyper-connection mix got its small-batch grid (the two grids add the fp32 sums in a different order); the verify path runs the mix in four-row pieces now. The default speculative shape (four rows) never was affected.
+
+### Flash-Next decodes faster, with identical output
+
+Measured on the UD-Q4_K_XL file with `ie-prompt-bench` (two cards, 128 tokens × 3) and the kernel profiler at ~3K tokens of context on one card; every change was checked bit-identical (the batched-verify probe, lossless speculation, the greedy text byte for byte):
+
+- **Fewer launches a MoE layer:** SwiGLU fused into the grouped gate/up kernels, the ordered reduce + the shared expert's gated add + the cast in one launch, one pick-table copy a layer, the shared expert through the batched int-dot path (17 launches + 2 copies → 12 + 1 a layer); the hyper-connection combine fused with the next mix's norm; the shared expert queued behind the router read so the GPU works while the host routes.
+- **The QSA decode attention 3× faster:** the query row in registers, the next key's rows loaded before the current key's softmax chain, the per-lane arrays sized at compile time (a runtime trip count had sent them to private memory): 393 → 131 µs a layer.
+- **The router GEMV 4× faster:** the F16 rows kernel read each row's activation from global memory inside its loop; one row now runs the plain kernel and 2–8 rows stage their activations in shared local memory (the router 29 → ~7.7 µs a call; the speculative verify's four rows 37 → 12 µs).
+- Two cards **41.1 → 44.4 tok/s**; the step at ~3K context **26.2 → 21.0 ms** of GPU time (wall 33.2 → ~28 ms).
+
+### A request's own text can no longer forge a control token
+
+Every chat renderer built its prompt by joining the template's markers with the request's strings, and the serve tokenised the whole string with special-token matching on — so the spelling of a control token inside a user message, a tool result or a tool argument (a page a tool fetched, say) became that control token: it could open a turn, end the model's reasoning or open a tool-call block. Now only the markers the template itself inserted are control tokens, the rule the official DeepSeek API states: `Tokenizer::encode` takes the byte ranges of the request's text and keeps a spelling inside them as text, and every renderer records those ranges (DeepSeek-V4.1, ChatML / Qwen, GLM5, MiMo, Laguna, Inkling, Llama-3, Mistral, R1-distill, DeepSeek-V4, Granite, Gemma, gpt-oss). No request is refused for it and nothing changes for a request without a spelling in its text: the golden suites hold and 4,016 old-vs-new renders are byte for byte identical. The raw-prompt completion endpoint is the caller's own text and keeps specials on.
+
+### Also
+- **Tool calls whose JSON lost its last bracket are repaired:** the closers owed at the end of a parameter are added when every string is closed and nothing dangles after a comma or a colon; an unterminated string, a trailing comma or a missing value stay errors.
+- **DeepSeek-V4.1 serves with the expert ranking profiled on its own traffic** once the served profile holds 100K generated tokens (`IE_DS41_RANKING` overrides; the init line says which): on a code-writing reply 7.8 → 12.8 tok/s, the NVMe tier's share of selections 9 % → 1.6 %.
+- The V4.1 staging tier's huge-page warning names the pool, the free pages and the processes holding them.
+- `scripts/env.sh` pins the oneAPI compiler the build directories are configured with (`IE_ONEAPI_COMPILER`, default 2026.1): a newer oneAPI install linked 2026.1's SYCL runtime against the new loader and nothing linked.
+
+### What is still slow, and not checked
+- Speculation on Flash-Next at one card is not faster than plain decoding (36.1 vs 35.7 ms a token on the profile's text): the verify's four rows touch more experts than one.
+- Expert pinning from a usage histogram (`IE_Q4E_EXPERT_PINS`, `IE_Q4E_EXPERT_HIST`) is built and lossless but measured no gain here: within a sequence the cache already keeps the hot set. Opt-in.
+- A cold prefill chunk streams the experts that miss the VRAM cache over PCIe at link rate; the remaining prefill cost on the big quants is that upload, not a kernel.
+
+<a id="new-in-v0235"></a>
 ## 🆕 New in v0.2.35
 
 ### Flash-Next on N cards: the layer split as a chain, proven on two
@@ -225,6 +315,7 @@ The engine's own converter writes Flash-Next's `per_layer_token_embd.weight` as 
 
 ---
 
+<a id="new-in-v0234"></a>
 ## 🆕 New in v0.2.34
 
 ### Nanbeige4.3-33B, and the dense path three times faster: a prompt cache and prompt-lookup speculation for every dense GGUF
@@ -254,6 +345,7 @@ The Nanbeige file served here is our own build from the authors' release (the pe
 - The speculative decoding was checked on one card and two (the texts byte-identical to plain on every request, 515 of 539 drafts accepted) by its author only; a second, independent pass over it is still to come.
 - The abliterated file: 7 of 48 held-out harmful prompts still refuse with thinking off, about 37 % with thinking on; a wider layer window is the next iteration.
 
+<a id="new-in-v0233"></a>
 ## 🆕 New in v0.2.33
 
 ### Flash-Next's request lanes: pictures on every lane, lanes that wake on demand, and the draft head's rounds with `--spec`
@@ -282,7 +374,7 @@ Gates: the greedy texts with the rounds on and off are byte-identical on one lan
 
 Other models: their code did not change; the shared lanes module accepts a draft shorter than the round (the 27B always drafts the full round).
 
-<a id="new-in-v0229"></a>
+<a id="new-in-v0232"></a>
 ## 🆕 New in v0.2.32
 
 ### The XMX decode attention keeps its output in registers, with the same bits
@@ -307,6 +399,7 @@ The gain grows with context (+3 % at 10K, +7 % at 17K, +11 % at 32K); prompt rea
 - For one request the two cards still take turns (4.3 + 5.2 ms a token); expert-parallel across both is the larger lever.
 - The router's two kernels (1.3 ms a token on the 35B-A3B), the rows path's per-lane DeltaNet conv and recurrence launches, and this kernel's combine pass.
 
+<a id="new-in-v0231"></a>
 ## 🆕 New in v0.2.31
 
 ### Qwen3.8-35B-A3B decodes 5–6 % faster, byte-identically
@@ -335,6 +428,7 @@ Prompt reading is unchanged (the prefill path keeps every kernel: 2,465 / 2,677 
 - For one request the two cards still take turns (4.3 + 5.2 ms a token); expert-parallel across both is the larger lever.
 - `ie-attn-profile` gained `--mode xmx` (the 27B/35B decode kernel at head_dim 256); its partials scratch is now sized for that kernel — the old sizing overran under it and could take the card down at 32K.
 
+<a id="new-in-v0230"></a>
 ## 🆕 New in v0.2.30
 
 ### Flash-Next reads 35–45 % faster, byte-identically
@@ -365,6 +459,7 @@ At a launch like `--ctx 222222 --parallel 8 --slot-ctx 60000 --spec` on Q8_0, th
 - The 27B's two concurrent lanes with rounds decode 17.1 / 16.5 each at the launch above, not the `--parallel 2` figure of 53 together; the round checkpoints are sized for every lane (1.7 GiB for 8 at K = 3) where a pool for the two that draft at once would be 0.4 GiB.
 - None of the other models changed code; their tokens are v0.2.29's.
 
+<a id="new-in-v0229"></a>
 ## 🆕 New in v0.2.29
 
 Everything since [v0.2.28](https://github.com/Red-Weasel/machx-inference-engine/releases/tag/v0.2.28). Measured
@@ -779,247 +874,4 @@ expert code), `IE_MIMO26_FP8_LUT=1` (the FP8 projections).
 <a id="new-in-v0221"></a>
 ## 🆕 New in v0.2.21
 
-Everything since [v0.2.20](https://github.com/Red-Weasel/machx-inference-engine/releases/tag/v0.2.20). Every figure was
-measured on October 5, 2026, on two Arc Pro B70 cards, on community fine-tunes of the models, old path against new path on
-the same day; "serve" is `ie serve` with an OpenAI client, greedy unless a line says otherwise.
-
-### Flash-Next reads long image prompts with the image
-
-An image prompt of more than 2,048 tokens was answered by Flash-Next as if there were no image (v0.2.10 through v0.2.20). A
-picture of a green square was described correctly at 281 and 1,318 prompt tokens and as "a red circle" or "a blue circle" at
-2,199, 5,697 and 16,747. The pipelined prefill (the path for prompts over 2,048 tokens) resets both stages and did not stage
-the picture again afterwards, so the model saw image-pad embeddings at plain positions; `IE_Q4E_NO_PIPELINE=1` had been right
-before the fix, which is how it was isolated. Now both test images are right at all four lengths and in a two-picture
-conversation. The indexer's pooled block keys also take the picture's position streams, as its query already did
-(`IE_Q4E_QSA_MROPE_KEYS=0` reverts that part; the evidence for it is weak).
-
-### A conversation edited in the middle restarts from a saved point on Flash-Next, and image conversations keep theirs
-
-The restart points of v0.2.18 now cover Flash-Next at one request lane. Its recurrent state (DeltaNet state and conv, the PLE
-conv and history, the indexer's block count) is copied to pinned **host** memory, because the cards are full of expert cache,
-at the conversation boundary, at the reply's end and wherever a 2,048-token chunk of the pipelined prefill passes a multiple
-of the step; each stage takes its copy right after its own part of the chunk, so the pipeline is not cut. On a 15.7K-token
-prompt (`ie serve --ctx 65536`): one line changed two thirds in 28.5 → **18.4 s**, back to the first prompt 28.5 → 18.4 s, the
-edited prompt with another question 26.4 → 16.2 s; the first read costs nothing (29.1 s against 29.0). All six replies equal
-with the restart points on and off. `IE_DN_LADDER=0` turns them off.
-
-Image conversations keep their restart points too (27B and 35B-A3B splits, Flash-Next): the token record carries the picture's
-hash at every image position, so the same picture shares its start and a different picture of the same size ends the shared
-part where it starts. The second turn of a 16.7K-token image conversation:
-
-| second turn of a 16.7K-token image conversation | before | v0.2.21 |
-|---|---:|---:|
-| Qwen3.8-27B | 10.2 s | **4.5 s** |
-| 35B-A3B class | 7.2 s | **1.0 s** |
-| Flash-Next | 24.8 s | **3.0 s** |
-
-The 35B-A3B replies were byte-equal (five requests, two pictures) and so was Flash-Next's first conversation; Flash-Next's
-other follow-up was token-equal for 151 tokens of reasoning and then words its answer differently (the 32-token tail is read
-in another chunk shape). `IE_DN_LADDER_VISION=0` turns the image part off.
-
-### `--spec` is offered for the 35B-A3B class and Flash-Next
-
-`ie capabilities` reported `features.speculative` only for the dense 27B and Gemma-4, so a client's load screen had no switch
-for the other two even though `--spec` works there. It now reports it for the 35B-A3B class (lookup drafts across the request
-lanes) and Flash-Next (lookup drafts at one request lane: with `--parallel` above 1 they are off, and the load says so; they
-are not used on image requests). What the switch does is described in [New in v0.2.18](#new-in-v0218).
-
-### Flash-Next's MTP draft head: opt-in, and measured as not worth turning on
-
-`--spec --spec-head <mtp-head.gguf>` (or `IE_Q4E_MTP_HEAD`) at one request lane loads the model's multi-token-prediction head
-onto the tail stage (5.2 GB, a separate file taken from the base model's repository; it is not found by itself). Every committed
-forward is fed to it, and where there is no repeat to copy a round drafts three tokens and checks four rows with the exact
-verify kernels. The tokens are plain decoding's (800 greedy bench tokens and the restore / restart test equal); a draft of five
-gave different tokens and was slower, so it stays at three. Measured on the UD-Q4_K_XL file, both cards:
-
-| Flash-Next, MTP head on, against off | off | on |
-|---|---:|---:|
-| bench decode, greedy | 28.7 / 28.3 tok/s | **30.8 / 33.7** (2.7–3.0 tokens a round) |
-| bench decode at temperature 0.7 | | no gain |
-| prefill | 502 tok/s | 412 |
-| serve, two long reasoning replies | 36.5 / 36.0 s | 34.1 / 33.8 |
-| serve, an ordinary question at temperature 0.7 | 9.0 s | 9.4 |
-| serve, a 1,800-token file edit with `--spec` | 30.7 s | 33.5 |
-
-A four-row check costs two plain steps and the head takes about 4.7 GiB of expert cache, so it is a small greedy gain against
-a slower read; it is off unless a path is given. `IE_Q4E_MTP=0` keeps it off even with a path.
-
-### What is still slow, and not checked
-
-- **Re-checked for this release on October 7, on the build that was published:** Flash-Next with the vision tower answered both pictures correctly at 281, 1,318, 2,386, 6,617 and 16,747 prompt tokens (10 of 10); a 15.6K-token text prompt took 21.0 s to read and 12.4 s after one line changed two thirds in (a restart in place at token 8,192, 4.6 ms); `ie capabilities` reports `speculative` for Flash-Next; the capabilities, CLI-help and ChatML host tests pass. The 27B and 35B-A3B class were not loaded again: their figures above are the October 5 ones.
-- **The standalone runner's Flash-Next figures with the head** (37.1–38.2 chat and 44.4–44.6 code tok/s, September 27, greedy,
-  96 tokens, the base model) were not reproduced in `ie serve`. A side-by-side run of both on the same served file would say
-  why; until then the table above is what the server does.
-- **Flash-Next's restart points and lookup drafts are for one request lane**; the lanes do not have them. The MTP head is one
-  lane, greedy, and is not combined with images.
-- **Not covered:** a copy cursor or change list on the 27B and 35B-A3B class (small expected gain, skipped).
-- Everything listed under [New in v0.2.20](#new-in-v0220) still holds.
-
----
-
-<a id="new-in-v0220"></a>
-## 🆕 New in v0.2.20
-
-Everything since [v0.2.18](https://github.com/Red-Weasel/machx-inference-engine/releases/tag/v0.2.18). Every figure was
-measured on October 5, 2026, on Arc Pro B70 cards, on community fine-tunes of the models; "bench" is `ie-prompt-bench`
-(prompt cache off, greedy, prompts of 2,404 and 10,693 tokens), "serve" is `ie serve` with an OpenAI client.
-
-### One card
-
-Most people have one card. Until now `--gpus 1` put the Qwen models on older code: the 27B on an fp16 path, and the
-35B-A3B class on a loader that did not accept a Q5_K_M or Q6_K file at all (`token_embd: unsupported dtype`). A Q8_0,
-Q6_K or Q5_K file on one card now runs the two-card model's code on a single stage, so one card gets the same prefill and
-decode kernels, the prompt cache, `--spec` with its lookup drafts, the in-place restart points and the request lanes.
-
-| one Arc Pro B70 | prefill, tok/s (2.4K / 10.7K) | decode, tok/s | with `--spec` |
-|---|---:|---:|---|
-| Qwen3.8-27B Q6_K, before | 190 / 173 | 13.1 / 12.5 | |
-| Qwen3.8-27B Q6_K, now | **823 / 830** | **22.0 / 20.4** | 32.6 / 19.8 tok/s |
-| 35B-A3B class Q5_K_M, before | did not load | | |
-| 35B-A3B class Q5_K_M, now | **1,337 / 1,304** | **87.2 / 82.9** | a 1,800-token file edit 22.2 s → 9.4 s |
-
-- **Replies are the two-card ones**: three greedy file edits gave byte-equal replies on one card and on two, on both models.
-- **Several requests at once on one card.** The 35B-A3B class picks its request lanes by what the card has free: 3 with
-  the Q5_K_M file (four 1,800-token edits and a question at once: 64.9 s, 45.1 s with `--spec`). The 27B takes one lane
-  unless `--parallel N` says more.
-- **What fits one 32 GB card**: the model file plus the context. The 27B at Q6_K (22.4 GB) or Q5_K (19.5 GB) and the
-  35B-A3B class at Q5_K_M (25.3 GB) were run; the 27B at Q8_0 (29.0 GB) is tight and was not run; the 35B at Q8_0 (37.8 GB)
-  does not fit. Other files (Q4_K_M) keep the previous one-card path.
-- `IE_QWEN35_ONE_CARD_SPLIT=0` / `IE_Q35MOE_ONE_CARD_SPLIT=0` restore the previous one-card paths.
-
-### A load is tried as asked
-
-The engine no longer refuses a load from a memory estimate.
-
-- **Qwen3.8-27B**: its load-time memory check is gone. It loads at `--ctx 250000` with the prompt cache and `--spec` on.
-- **The prompt cache gets what is free.** On the 27B and the 35B-A3B class the cache's room is the VRAM each card reports
-  free after the model, the context and the lanes are allocated (less 2 GiB for the first request's working buffers):
-  6.1 GB a card on the 27B at `--ctx 200000`, 12.4 GB on the 35B-A3B class at one lane. `IE_PROMPT_CACHE_VRAM_MIB` sets it.
-- **Estimates warn.** A lane count the free-memory measure says is too large (27B, 35B-A3B class), Flash-Next's and GLM's
-  system-RAM checks, DeepSeek-V4.1's pinned-RAM floor and MiMo's free-memory reserve print a `WARNING` and the load goes
-  on. Pinned system RAM cannot be swapped: a model that pins more than the machine has can stall it, and an over-filled
-  card can take the display driver down. That choice is now the user's.
-- **What still stops a load**: an allocation that really fails, and the two minimums without which a step cannot run
-  (MiMo's smallest expert tier, DeepSeek-V4.1's stream partition).
-
-### Restart points on the lead lane
-
-With request lanes on the 35B-A3B class, the lane that holds the long conversation (lane 0, the one at `--ctx`) now keeps
-the in-place restart points of v0.2.18: after one line changed two thirds into a 29,300-token conversation the next
-request took 7.8 s instead of 10.8 s, and the edited prompt with another question 5.9 s instead of 9.0 s; all six
-replies byte-equal with them on and off. Sixteen busy lanes cost nothing measurable (56–58 s with, 55–58 s without).
-`IE_Q35MOE_LANE_LADDER=0` turns them off. A conversation short enough for a small lane (`--slot-ctx`) is served there,
-without them.
-
-### What is still slow, and not checked
-
-- **Not run on one card**: Flash-Next, the DeepSeek, GLM and MiMo models (they lean on two cards and a lot of RAM), the
-  27B at Q8_0, images.
-- **Not run**: a load that truly does not fit, and the warning paths themselves (they need a machine short of memory).
-- **An explicit `--parallel N` on one card** is tried even when it will not fit; the automatic count is the safe one.
-- Everything listed under [New in v0.2.18](#new-in-v0218) still holds.
-
----
-
-<a id="new-in-v0218"></a>
-## 🆕 New in v0.2.18
-
-Everything since [v0.2.13](https://github.com/Red-Weasel/machx-inference-engine/releases/tag/v0.2.13) (versions 0.2.14
-to 0.2.18). Every figure was measured on October 4–5, 2026, on two Arc Pro B70 cards, on community fine-tunes of the
-models, old path against new path on the same day; "bench" is `ie-prompt-bench` (prompt cache off, greedy), "serve" is
-`ie serve` with an OpenAI client.
-
-### Replies that copy are written several times faster (`--spec`)
-
-An agent's reply often repeats text that is already in the conversation: a file returned with one change, a quoted
-function, a tool result read back. With `--spec` the engine keeps an index of the conversation's tokens (built per
-request, in memory, discarded after). When the last tokens of the reply repeat an earlier span, the tokens that followed
-that span are taken as a draft and checked by the model in ONE forward; the reply follows the draft for as long as the
-model's own sampled token is the drafted one, and the rest is rolled back. The model still decides every token, with
-the request's sampler; nothing is added to the weights or the prompt.
-
-| a reply that returns a file with one identifier renamed (serve, temperature 0.7, 1,800 tokens) | plain | with `--spec` |
-|---|---:|---:|
-| Qwen3.8-27B Q8_0 | 108.5 s | **28.4 s** |
-| 35B-A3B class Q8_0, one request | 24.3 s | **7.1 s** |
-| Flash-Next UD-Q4_K_XL | 68.7 s | **30.7 s** |
-
-| bench, greedy | plain | with `--spec` |
-|---|---:|---:|
-| 27B, a file copied with comments added (400 tokens) | 16.9 tok/s | **146** (58–67 with exact rows only) |
-| 27B, a documentation page repeated with rewording | 17.0 | **37.3** |
-| 35B-A3B class, the same copy prompt | 78.4 | **281** |
-| 35B-A3B class, the reworded page | 84.4 | **118.7** |
-| Flash-Next, the copy prompt (600 tokens) | 26.9 | **40.7** |
-| ordinary prompts (2.4K / 10.7K tokens): 35B-A3B class | 78.2 / 72.5 | 78.1 / 74.8 |
-| ordinary prompts: Flash-Next | 28.7 / 28.2 | 28.7 / 28.2 |
-
-**On the 35B-A3B class it works across the request lanes** (`ie serve --parallel N --spec`): one lookup round runs at a
-time and the other lanes make two steps between rounds.
-
-| 35B-A3B class, `ie serve`, 1,800-token file edits at temperature 0.7 | plain | with `--spec` |
-|---|---:|---:|
-| 8 lanes: 4 edits and 1 ordinary question at once | 36.8 s (202 tok/s together) | **22.6 s** (330) |
-| ... the ordinary question beside them | 7.6 s | 10.4 s |
-| 16 lanes: 12 edits and 1 ordinary question at once | 74.3 s (294 tok/s together) | **53.6 s** (408) |
-| ... the ordinary question beside them | 15.7 s | 19.6 s |
-
-**What it changes in the text.** A long draft is checked through the prefill kernels (the ones that read every prompt),
-not the decode kernels, so a token at a near-tie can come out differently from plain decoding, and the text after it
-then differs. Measured: Flash-Next's greedy 900-token edit was byte-equal to plain decoding and the first 394 of 600
-tokens of its copy bench were equal; on the 35B-A3B class one of three greedy edits was byte-equal and the first
-different token of two copy benches came after 143 and 160 of 400 tokens. On the 27B, `IE_QWEN35_LOOKUP_FAST=0` keeps
-every row exact (text equal to plain decoding; 58 tok/s on the copy bench instead of 146). No task benchmark was run
-with the feature on against off.
-
-On Flash-Next a lookup round costs far more than on the other two (200 ms for 8 rows, about 2.3 s for 512, against
-35–42 ms for a plain token), so it waits for a repeat of 32 tokens and starts at 64 rows; a reply that picks up the
-copy again after a changed word resumes four tokens later, and a draft stops just before a word pair the reply has
-been changing.
-
-### `--spec` on the 27B's Q6_K and Q5_K files
-
-Three faults in the draft head off the Q8_0 path made `--spec` slower than plain decoding on these files (every draft
-was noise). Fixed; greedy text equal to plain decoding on both files.
-
-| Qwen3.8-27B, `--spec --spec-k 3`, bench (2.4K / 10.7K-token prompts) | plain | speculative |
-|---|---:|---:|
-| Q6_K | 21.5 / 19.8 tok/s | **26.9 / 21.6** |
-| Q5_K | 23.3 / 21.4 | **26.3 / 22.9** |
-| Q6_K, five short prompts (median) | | **33.2** |
-
-`--spec-k 3` measured best (Q8_0 / Q6_K, short prompts: K=3 29.7 / 33.2, K=4 29.3 / 32.4, K=5 28.6 / 28.5 tok/s).
-
-### A conversation edited in the middle restarts from a saved point
-
-These models keep a running state over everything they have read (the DeltaNet layers), which cannot be rewound, so a
-change in the middle of a context used to mean reading it again from the last saved prompt. On the Qwen3.8-27B and
-35B-A3B splits at one request lane, with the prompt cache on, the engine now keeps small copies of that state every
-8,192 tokens while a prompt is read (every 16,384 at `--ctx 200000`), one at the conversation boundary and one at the
-reply's end. A next prompt that shares its beginning with the live conversation restarts from the deepest copy before
-the change, in place: no KV rows are copied.
-
-| `ie serve --ctx 65536`, greedy, a 29,300-token prompt | before | now |
-|---|---:|---:|
-| 27B: one line changed two thirds in | 22.9 s | **17.5 s** (12,949 tokens read instead of 29,333) |
-| 35B-A3B class: the same | 15.2 s | **9.0 s** |
-| 27B: next turns of a conversation too large for the prompt cache | 22.9–23.0 s | **11.1–17.5 s** |
-
-Every reply was byte-equal with the copies on and off (six requests on each model). A copy is 73 MiB a card on the 27B
-and 30 MiB on the 35B-A3B class, allocated on first use.
-
-### The 27B loads at long context with the prompt cache on
-
-The 27B's load used to estimate memory and could refuse a long context although it fit. It no longer does (see
-[New in v0.2.20](#new-in-v0220)): the prompt cache gets the memory the cards have free, drops its oldest entries to stay
-inside it, and skips a snapshot that alone does not fit.
-
-### Switches
-
-On by default where a line says so; `=0` restores the previous path.
-
-| switch | applies to |
-|---|---|
-| `--spec` | turns the lookup drafts on (with the MTP draft head on the 27B); without it nothing here changes decoding |
-| `IE_QWEN35_LOOKUP`, `IE_QWEN35_LOOKUP_FAST` (`=0`: exact rows only), `IE_QWEN35_LOOKUP_MIN` (8) | Qwen3.8-27B split, one request lane |
-| `IE_Q35MOE_LOOKUP`
+Everything since [v0.2.20](https://github.com/Red-Weasel/machx-inference-eng

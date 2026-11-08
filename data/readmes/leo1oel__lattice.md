@@ -42,6 +42,7 @@ Dock any panel anywhere, keep Writing and Reading layouts, or save your own work
 
 Select text to **Proofread** or **Polish** it in place, with a reason for each edit.
 Annotate the source or the PDF, then revise from your annotations in rounds: the agent proposes an edit for each one and you accept or reject it in place.
+Annotations and Overleaf comments also line up in a column beside the PDF, each level with its mark on the page, where you read, reply to and resolve them.
 **Export review PDF** writes the annotations you tick into a copy of the compiled PDF as standard PDF comments, so collaborators can read them in Preview, Acrobat or Zotero.
 
 ### Bring your own agent
@@ -82,14 +83,16 @@ Slides are React decks powered by [Open Slide](https://github.com/open-slide/ope
 
 One timeline for saved versions, every edit from you or the agent, and Overleaf's history.
 Open any entry to see its diff and restore a file, or **Compare…** any two versions and export the PDF with the changes marked (via `latexdiff` from your TeX Live).
+**Track changes** turns on review mode: your edits since then are marked in the source as you type, the PDF can show them marked too, and you accept or reject each change, or all at once, without an Overleaf plan.
 The Git panel shows changes and pull requests when the project is a repository.
 
 ## Install
 
-Lattice runs on Apple Silicon Macs with macOS 14 or later, and builds with your own [MacTeX](https://tug.org/mactex/) or TeX Live.
+Lattice runs on Macs with macOS 14 or later, Apple silicon or Intel, and builds with your own [MacTeX](https://tug.org/mactex/) or TeX Live.
 No TeX yet? Lattice offers to install BasicTeX for you: it is the first step of the Get started checklist, and a build that finds no TeX offers it too.
 
 1. Download the `.dmg` from the [latest release](https://github.com/leo1oel/lattice/releases/latest) and drag Lattice into Applications.
+   On a Mac with an Intel processor, download the one ending in `_x64.dmg` (Apple menu → About This Mac shows **Chip** on Apple silicon and **Processor** on Intel).
 2. Open a folder, start from a template, or connect an Overleaf project.
    **Guided tutorial** in the project menu opens a sample paper beside Get started, a six-step checklist from building the PDF to letting the Agent revise a paragraph.
 
@@ -97,7 +100,7 @@ Official builds are signed, notarized by Apple, and update themselves.
 
 **Linux (experimental).** Releases that pass their Linux checks also carry an x86_64 `.AppImage`, for Ubuntu 22.04 or later, Fedora 45 and similar distributions.
 Make it executable (`chmod +x Lattice_*.AppImage`) and run it; it builds with the TeX Live from your distribution's packages.
-On Linux, Lattice does not update itself, so download each new release, and the built-in Agent is not available yet.
+On Linux, Lattice checks for new releases and links to GitHub Releases, but does not update itself; download each new release yourself. The built-in Agent is not available yet.
 
 ## Contributing
 

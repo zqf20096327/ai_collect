@@ -86,11 +86,11 @@ UV_PROJECT_ENVIRONMENT=.venv-evaluation uv sync --group evaluation
 Models are resolved from the local Hugging Face cache and are not downloaded automatically. For the default ASR route and the stable Gemma MT route:
 
 ```bash
-huggingface-cli download Qwen/Qwen3-ASR-1.7B --revision 7278e1e70fe206f11671096ffdd38061171dd6e5
+hf download Qwen/Qwen3-ASR-1.7B --revision 7278e1e70fe206f11671096ffdd38061171dd6e5
 
-huggingface-cli download Qwen/Qwen3-ForcedAligner-0.6B --revision c7cbfc2048c462b0d63a45797104fc9db3ad62b7
+hf download Qwen/Qwen3-ForcedAligner-0.6B --revision c7cbfc2048c462b0d63a45797104fc9db3ad62b7
 
-huggingface-cli download google/gemma-4-E4B-it --revision 83df0a889143b1dbfc61b591bbc639540fd9ce4c
+hf download google/gemma-4-E4B-it --revision 83df0a889143b1dbfc61b591bbc639540fd9ce4c
 ```
 
 ## See where Gemma listens

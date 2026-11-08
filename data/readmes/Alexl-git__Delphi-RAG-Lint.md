@@ -802,9 +802,9 @@ Or add it to your MCP config by hand (e.g. `~/.claude/claude_desktop_config.json
 }
 ```
 
-15 tools are then available to Claude: `find_symbol`, `find_callers`,
+17 tools are then available to Claude: `find_symbol`, `find_callers`,
 `get_symbol_doc`, `get_context_bundle`, `rename_symbol`, `run_compile_check`,
-and more (see [MCP tools](#mcp-tools-15) below).
+and more (see [MCP tools](#mcp-tools-17) below).
 
 ### Click-to-source links (draglint://)
 
@@ -853,16 +853,16 @@ be written and writes nothing. This verb replaces `Register-DragLintProtocol.ps1
 | Group | Features | Wiki |
 |---|---:|---|
 | [Indexing](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#indexing) | 11 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#indexing) |
-| [Search and navigation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#search-and-navigation) | 35 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#search-and-navigation) |
-| [Linting](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#linting) | 42 (+ 307 rules, 110 fixable) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#linting) |
-| [Documentation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#documentation) | 10 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#documentation) |
+| [Search and navigation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#search-and-navigation) | 36 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#search-and-navigation) |
+| [Linting](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#linting) | 44 (+ 314 rules, 110 fixable) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#linting) |
+| [Documentation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#documentation) | 11 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#documentation) |
 | [Refactoring and code generation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#refactoring-and-code-generation) | 18 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#refactoring-and-code-generation) |
-| [Component conversion](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#component-conversion) | 22 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#component-conversion) |
+| [Component conversion](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#component-conversion) | 25 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#component-conversion) |
 | [Graphs and reports](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#graphs-and-reports) | 23 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#graphs-and-reports) |
 | [Diagrams and charts](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#diagrams-and-charts) | 6 (+ 27 questions) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#diagrams-and-charts) |
 | [Compiler integration](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#compiler-integration) | 12 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#compiler-integration) |
 | [Database and Firebird](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#database-and-firebird) | 2 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#database-and-firebird) |
-| [Editor integration](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#editor-integration) | 26 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#editor-integration) |
+| [Editor integration](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#editor-integration) | 27 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#editor-integration) |
 | [Maintenance and diagnostics](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#maintenance-and-diagnostics) | 22 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#maintenance-and-diagnostics) |
 | [Uses and Dependencies](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#uses-and-dependencies) | 2 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#uses-and-dependencies) |
 <!-- dl:registry:end feature-summary -->
@@ -938,7 +938,10 @@ with `null` or `[]` gets drag-lint's locations instead (a non-empty answer is
 forwarded untouched); DelphiLSP's `initialize` reply gains `referencesProvider`
 and `workspaceSymbolProvider` when it lacks them (or sets them `false`), and the proxy then answers
 `textDocument/references` and `workspace/symbol` itself from the index --
-those requests never reach DelphiLSP.
+those requests never reach DelphiLSP. Add `--merge-navigation` and the type and
+call hierarchy, `textDocument/typeDefinition`, `documentHighlight` and
+`foldingRange` are answered the same way, one provider at a time: a provider
+DelphiLSP advertises stays DelphiLSP's.
 
 `drag-lint-switch --vscode --status|--on|--off` toggles the `delphi-lsp` entry in a workspace's `.vscode\mcp.json` (backup on `--off`, restore on `--on`; refuses while VS Code runs).
 
@@ -1002,6 +1005,8 @@ Win64 build.
 | [`query typecat`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/query-typecat) `--name <t>` | Resolve a type's category (class/interface/float/string/...) | |
 | `query hints` | List stored compiler hints/warnings | `--name <code>`, `--rule <severity>` |
 | [`usages`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/usages) `--name <n>` | Grouped usage report (backs the IDE Symbol Search dialog) | `--rw` (readers and writers of a member, Inc/Dec and var/out arguments of resolved calls included), `--in <file>` (no `--db`: finds its project and DB), `--width narrow\|wide\|very-wide`, `--depth N`, `--limit N` (JSON: first N rows per group, declarations included, plus `limit` and `totals`) |
+| [`exception-facts`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/exception-facts) `(--target <routine> | --name <Type>)` | Which routine raises and handles which exception type, one row per site; no ancestry, no callers | `--db`, `--json` |
+| [`bookmarks`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/bookmarks) `--in <file.pas|dir> [--name <code>] [--json]` | Lists or finds the `dl:bk` comment-anchor bookmarks in a unit or a folder; read-only |
 | [`outline`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/outline) `--in <f.pas>` | Unit outline (backs the IDE Structure form) | `--format text\|json`, `--kind <k[,k...]>` (only those kinds), `--no-locals` (drop `local_var` / `param`), `--limit N` (first N rows, and how many matched); a routine row carries its body span `[impl A-B]` and a `class` routine `[class]` (JSON `impl_start_line` / `impl_end_line` / `end_line` / `is_class_method`, 1.40) |
 | [`syntax-count`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/syntax-count) `--db <f> \| --in <p>` | Count modern syntax features in the parse of every unit, uncapped: `if-expr`, `is-not`, `not-in` (Delphi 13), `inline-var`, `inline-const`, `anon-method`, `multiline-string`; shapes, not text, so strings and comments never count (1.42) | `--feature <a,b>\|all`, `--per-file`, `--hits` (path:line:col), `--json` (exit 2 = no source / unknown feature, 3 = unknown flag) |
 | [`compare`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/compare) `--old <report\|csv\|bundle> [--command "<id> ..."]` / `--in <U.pas> --line <L>` | Rerun a saved report's question and show before / delta / after (exit 0 same, 1 differs, 2 setup, 3 stale index) | `--new <f>` (two saved outputs), `--question <id> --target <T>`, `--update-doc`, `--old-db`, `--db <f>`, `--auto`, `--save`, `--snapshot-dir <dir>`, `--show`, `--format text\|json\|html`, `--open` |
@@ -1022,7 +1027,7 @@ Win64 build.
 
 #### Lint
 
-**307 rules across 18 categories -- 214 built-in + 93 external `.scm`, 260
+**314 rules across 18 categories -- 220 built-in + 94 external `.scm`, 261
 enabled by default, 110 with an auto-fix.**
 
 | Command | What it does | Notable flags |
@@ -1034,7 +1039,7 @@ enabled by default, 110 with an auto-fix.**
 | `lint --in <f> --fix [--fix-line <L> --fix-rule <id>] [--fix-naming] [--apply [--no-backup]]` | **Autofix one file.** Without `--apply` it is a dry run: reports what it would change, writes no source file (and no index: a stale owning index is reported `index=stale`, not reindexed; `--apply` may reindex it first). `--fix-line`+`--fix-rule` narrow to one finding; omit both to apply every fixable finding. `--apply` leaves a `.bak` beside each file it writes; `--no-backup` skips it (use it under version control). Only rules with `"fixable": true` are ever applied. Every fix is ON by default (since 1.37.0), the naming renames (every owning project) included; `"autofix_off": [...]` in `drag-lint-lint.json` is the only brake, `--fix-naming` is a no-op kept for compatibility (it still prints `rename-local: <N>` on stderr). A rename the engine cannot prove complete is skipped and counted (`skipped (dfm-referenced): N` for a symbol a binary form file names, `skipped (dfm-unindexed): N` for one a text form beside the unit names that the index does not hold, `skipped (with-block): N` for a field read bare inside a `with`) | This is what the Structure form's right-click **Fix it** / **Fix all in unit** run |
 | `lint --project <dproj>` | One project-scoped rule (e.g. `unit-not-in-dpr`, or `unit-not-in-library` -- a used third-party unit that is neither a project member nor in the library). A plain `lint-all --db <db>` now evaluates that rule too, inferring the project file from the manifest section that owns the DB -- passing `--project` additionally *scopes* the report, which inference deliberately does not | `--rule` |
 | [`lint-project`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/lint-project) `--db <db>` | `--rule help` lists every rule id. Project-wide structural rules -- god-class, circular-uses, layering-violation, unused-public-symbol, and more | `--rule <id>`, `--layers <f.json>` |
-| `lint-all --db <db>` | Full project report. `--shared-db <db>` (repeatable) adds the other projects' indexes as evidence for a closure-dependent `dl:ok` on a `dl:shared` unit: it is called stale or unused only if NO given DB produces the finding. Each peer costs a full `lint-all`; without the flag those markers are skipped, not judged. A second `--db` stays the library slot. Since the per-file verb gained the store-backed project rules, what `lint-all` *uniquely* adds is narrower than it used to be: cross-file duplicate code, `interface-reference-cycle`, exception-class enrichment, and doc-drift/missing-doc across the whole project (`review-marker-unused` and `review-marker-malformed` moved to the per-file verb too, 2026-09-03) | `--project <.dproj>` (report only that project's compile closure), `--rule <id>` (report only that rule, and run only the checkers that can emit it; an OFF-by-default rule named here is opted in for the run, as with `lint`), `--output <file>` (alias `--out`; with `--json` or `--format sarif` it receives the JSON / SARIF document, with a note on stderr and nothing on stdout; `lint <path>` takes it the same way), `--json`, `--quiet` (no per-file progress lines on stderr), `--lint-third-party` (also lint roots outside the project's own -- set by `ownRoots`, minus `excludeRoots`, in `<project>\_D-RAG\drag-lint-project.json`), `--no-preprocess` (lint the raw bytes, including branches the compiler never sees -- the default now resolves conditionals the same way the indexer does) |
+| `lint-all --db <db>` | Full project report. `--shared-db <db>` (repeatable) adds the other projects' indexes as evidence for a closure-dependent `dl:ok` on a `dl:shared` unit: it is called stale or unused only if NO given DB produces the finding. Each peer costs a full `lint-all`; without the flag those markers are skipped, not judged. A second `--db` stays the library slot, and `--library-db <lib>` names it too: it wins over the second `--db` and the manifest, a missing file refuses (exit 2), `none` means no library. Since the per-file verb gained the store-backed project rules, what `lint-all` *uniquely* adds is narrower than it used to be: cross-file duplicate code, `interface-reference-cycle`, exception-class enrichment, and doc-drift/missing-doc across the whole project (`review-marker-unused` and `review-marker-malformed` moved to the per-file verb too, 2026-09-03) | `--project <.dproj>` (report only that project's compile closure), `--library-db <lib>|none`, `--rule <id>` (report only that rule, and run only the checkers that can emit it; an OFF-by-default rule named here is opted in for the run, as with `lint`), `--output <file>` (alias `--out`; with `--json` or `--format sarif` it receives the JSON / SARIF document, with a note on stderr and nothing on stdout; `lint <path>` takes it the same way), `--json`, `--quiet` (no per-file progress lines on stderr), `--lint-third-party` (also lint roots outside the project's own -- set by `ownRoots`, minus `excludeRoots`, in `<project>\_D-RAG\drag-lint-project.json`), `--no-preprocess` (lint the raw bytes, including branches the compiler never sees -- the default now resolves conditionals the same way the indexer does) |
 | `lint-all --fix [--apply]` | **Autofix every fixable finding across the whole project.** Dry run without `--apply` -- this is what "Fix all in project" runs; it can rewrite many files at once. `lint-all` refuses `--in`/`--in` (exit 2) -- for one unit use `lint <file> --db <db> --fix` | |
 | `lint-tree --unit <B.pas> --db <db>` | **Does an interface edit to `B.pas` reach any dependent?** Fingerprints the interface and diffs it against an edit-episode baseline, then reports the dependents whose references no longer resolve. Answers what `lint-all` cannot: removing an interface symbol dependents still use produces ZERO `lint-all` findings (measured 2026-09-10) -- the count actually goes DOWN. Exit 0 whether or not anything was found; 2 means it could not run. | `--write-baseline <f.json>` captures the OLD side once per edit episode, `--baseline <f.json>` diffs against it, `--buffer <f>` reads an UNSAVED buffer, `--compile` also compiles the dependents in a shadow dir, `--with-rules`, `--project`, `--platform`, `--format json` / `text` |
 | `exceptions-sync --db <db> [--apply] [--json]` | **Materialise the project's derived exception classes.** Harvests every bare `raise Exception.Create('literal')` in the project and declares ONE class per **distinct** message inside a `drag-lint:auto` managed block in the exceptions unit, creating that unit if it does not exist. Dry run without `--apply`. Opt in with an `"exceptions"` block in `drag-lint-lint.json` -- an empty one is enough. **The same-line `//` comment after each declaration is the KEY**, which is what lets you rename a mediocre generated class and keep its binding; edit the comment instead and the next run adds a second class for the old message. It is a verb rather than a `--fix` because its input is project-wide and its output is one file | `--config <lint.json>`, `--apply`, `--json` (one document on stdout, prose to stderr); config keys `unit` (default `uExceptionDefinitions`) and `root` (ancestor, default `Exception`) |
@@ -1145,14 +1150,4 @@ record when a human last re-read it:
 S := S + T; // dl:ok concat-in-loop@1a2b -- REVIEWED 2026-09-23 the loop is bounded
 ```
 
-The stamp lives in the comment, so adding or refreshing it never changes the
-hash. **`review-marker-reason-unreviewed`** (OFF by default -- every older marker
-would report; opt in per project with `"enabled"` or `--enable`) flags a
-reason with no stamp, an invalid or future date, or a stamp older than
-`max_age_days` (default 180; `"thresholds": {"review-marker-reason-unreviewed": N}`,
-`0` = presence only).
-#### Component conversion
-
-| Command | What it does | Notable flags |
-|---|---|---|
-| [`proptree`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/proptree) `--qname <T>` | Recursive deep-property enumerator (foundation for component conversion) | `--depth N` (else the `--rules <book>`'s `#depth N`, else 5), `--rules <book>`, `--no-to-persistent` (climb past the `TPersistent`/`TObject` stop), `--refs-as-leaves`, `--no-write-back` (read-only: types the ancestry-bridge recover
+The stamp lives in the comm

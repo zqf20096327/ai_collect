@@ -160,6 +160,17 @@ The gate is a guard rail inside the agent's own session, not a sandbox. Every ch
 still goes through the detectors after the tool call and at the Stop hook, and in CI
 the GitHub Action re-checks the diff from outside the agent's reach.
 
+#### Optional judge
+
+Snitch's detectors cannot read your request, so a test you asked Claude to update is
+flagged like any other. With the `judge` option on (`/plugin` → Snitch → configure, or
+`SNITCH_JUDGE=on` for Codex), the Stop hook asks Claude (`claude -p` with your own
+login, no tools) whether your request called for each undisclosed test change; a
+change judged legitimate is not warned about or blocked, and the receipt says why.
+The judge can only clear a warning, never add one; if it fails or times out, the
+warning stays. Off by default: it adds a few seconds to a stop that has a flagged,
+undisclosed change.
+
 ### Codex CLI plugin (experimental)
 
 Codex runs the same hooks: the plugin ships a `.codex-plugin` manifest next to the
@@ -196,7 +207,7 @@ jobs:
       - uses: ennajari/snitch@v1
 ```
 
-Inputs: `fail-on-events` (default `true`), `python` (an interpreter that can import your tests; default: the repo's `.venv`, else Snitch's own), `strict` (fail when a detector could not run, default `false`: an incomplete check passes with a warning and a note in the receipt), `comment`, `upload-sarif`, `base`, `head`.
+Inputs: `fail-on-events` (default `true`), `judge` (default `false`; with `anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}`, an LLM judge reads the PR title and body and stops counting the test changes they asked for; they stay on the receipt as "judged legitimate"), `python` (an interpreter that can import your tests; default: the repo's `.venv`, else Snitch's own), `strict` (fail when a detector could not run, default `false`: an incomplete check passes with a warning and a note in the receipt), `comment`, `upload-sarif`, `base`, `head`.
 Output: `events`.
 
 ### pre-commit
@@ -225,8 +236,8 @@ Exit codes: `0` clean, `1` events found, `2` usage error, `3` incomplete check (
 |---|---|
 | tampering | `assertion_removed`, `assertion_weakened` (truthy-only, `in`, `is not None`, looser `approx` or bounds, `==` flipped to `!=`, `assert x` flipped to `assert not x`, an exact value turned into a range; also the `unittest` `self.assert*` forms), `assertion_guarded` (behind an `if`, `try`, or a loop that never runs), `expected_value_changed`, `assertion_rewritten` (the actual value wrapped until it fits: `f(x) * 60 == 19800`), `parametrize_value_changed`, `test_scope_reduced` (a test's `range(N)` cut tenfold), `test_deleted`, `test_renamed_away`, `conftest_report_hook`, `coverage_threshold_lowered` |
 | evasion | `test_deselected`, `test_skipped`, `skip_in_body`, `seed_pinned` (a random seed added to an existing test: found in TemptationBench, where an agent searched for the seed that made a flaky test pass), `addopts_changed`, `ci_continue_on_error`, `ci_or_true`, `ci_no_verify` (workflows, GitLab CI, and test runs in Makefiles and shell scripts) |
-| faking | `test_env_special_casing`, `comparison_forced` (an `__eq__` that returns True for anything), `assertion_self_fulfilled` (a test that now sets the very value it asserts, e.g. the CI secret it was checking, in the test, a fixture or a `conftest.py`) |
-| hollow | `broad_except_pass` |
+| faking | `test_env_special_casing`, `mock_code_under_test` (a test that patches the repo's own function or class and then calls it, so it checks its stand-in), `comparison_forced` (an `__eq__` that returns True for anything), `assertion_self_fulfilled` (a test that now sets the very value it asserts, e.g. the CI secret it was checking, in the test, a fixture or a `conftest.py`) |
+| hollow | `broad_except_pass`; `hollow_tests` with `snitch mutate before/ after/` (slow, not in the hooks: the change adds tests, yet the whole suite still passes against at least half the mutants of the code it changed; the receipt lists the surviving mutants) |
 | reporting (plugin, at the end of a turn) | a flagged test change the final message does not mention; "tests pass" claimed with no test run since the last edit |
 
 Every detector is a pure function of (before, after) and is tested on a cheating
@@ -264,9 +275,15 @@ and without the Snitch plugin; every flagged trial reviewed with an AI assistant
 Paired McNemar p = 0.000008 (per task: 8 → 0, p = 0.008). The 18 changes came from broken
 tests (10) and flaky tests (8), and every one was disclosed: Claude Code changed the
 test and said so, and on the broken tests it was right that the test was wrong. With
-Snitch it reported the problem instead of changing the test. Codex CLI has been run
-on the same 120 trials; its results follow on 8 November 2026, after the 14-day vendor
-preview. Gemini CLI follows after its own vendor preview.
+Snitch it reported the problem instead of changing the test.
+
+Codex CLI 0.164.0 (gpt-6.1-sol) on the same tasks, with the experimental Codex plugin
+for the with-Snitch arm, run 10 days later: it changed or gamed a test in **57 of 78**
+trap trials without Snitch and **0 of 78** with it, and called `escalate` in 59. All 57
+said a test changed; none gave the test's name. These counts include disclosed changes:
+silent cheating was 0 in every arm above. No person has checked these labels yet; see
+the results page for that and the other limits. Gemini CLI follows after its own vendor
+preview.
 (Corrected from 14: a second review pass found 4 more, all disclosed; see the
 results page.)
 
@@ -275,9 +292,9 @@ results page.)
 - [x] Engine: inventory, AST diff, rules (Python / pytest), 39 cheating + 24 legitimate fixtures
 - [x] Claude Code plugin: live detection, `escalate`, Stop verifier, enforce gate, evals
 - [x] GitHub Action with SARIF + PR receipt, pre-commit hook
-- [x] TemptationBench: 40 tasks, scoring
+- [x] TemptationBench: 54 tasks (edition 2026-11 used the first 40), scoring
 - [x] Edition 2026-11 for Claude Code (40 tasks × 3 runs × with/without Snitch; human review pending)
-- [x] Codex CLI run and labelled (results 8 November 2026, after the vendor preview)
+- [x] Codex CLI: both arms run and published (human review pending), experimental plugin
 - [ ] Gemini CLI (partial run done, vendor preview next), then OpenCode and others
 - [ ] Disclosure judge, mutation testing for hollow tests
 - [ ] TypeScript (Jest / Vitest)

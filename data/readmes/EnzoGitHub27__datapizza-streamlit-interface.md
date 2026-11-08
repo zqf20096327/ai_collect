@@ -1,0 +1,664 @@
+# 🧠 DeepAiUG Streamlit LLM Interface
+
+> Interfaccia Streamlit modulare per interagire con LLM locali (Ollama), remoti e cloud.
+> Progetto Open Source della community **DeepAiUG**.
+
+> *"Non semplifica il pensare, ma lo allena."*
+> — Carmelo Quartarone, Innovation Senior Developer @ Cloudia Research
+
+[![Version](https://img.shields.io/badge/version-1.16.1-blue.svg)](https://github.com/EnzoGitHub27/datapizza-streamlit-interface/releases/tag/v1.16.1)
+[![Python](https://img.shields.io/badge/python-3.10+-green.svg)](https://python.org)
+[![Streamlit](https://img.shields.io/badge/streamlit-1.53-red.svg)](https://streamlit.io)
+[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
+
+---
+
+## 🚀 Installazione rapida — Nessuna competenza tecnica richiesta
+
+| Sistema | Script | Cosa fa |
+|---|---|---|
+| 🪟 Windows 11 | `INSTALLA_DeepAiUG.bat` | Installa tutto automaticamente |
+| 🍎 Mac | `installa_deepaiug_mac.sh` | Installa tutto automaticamente |
+| 🐧 Linux | `installa_deepaiug_linux.sh` | Installa tutto automaticamente |
+
+📥 **[Scarica installer](https://github.com/EnzoGitHub27/datapizza-streamlit-interface/releases/latest)**
+🌐 **[Demo online e guida](https://deepaiug.vercel.app)**
+
+Istruzioni dettagliate in `installer/INIZIA-QUI.txt`
+
+---
+
+## 🛡️ Ambiente ibrido (novità v1.16.0)
+
+Dalla 1.16.0 c'è un **ambiente ibrido**, **opzionale e spento per default**: prima che il testo vada a un modello cloud, **rizzo-pii** (un programma locale e separato) sostituisce i dati personali con segnaposto come `[FULLNAME_1]`; la risposta torna con i valori veri, rimessi **sul tuo computer**. Se rizzo-pii non risponde, verso il cloud non parte niente. Facoltativo, **Annona** mostra nella sidebar le sue decisioni e il suo registro; il suo gateway è sperimentale.
+
+- Si accende con la sezione `hybrid:` di `security_settings.yaml`; rizzo-pii e Annona si installano **a parte**, seguendo i loro README (licenze nel file [NOTICE](NOTICE)).
+- **Novità anche con l'ibrido spento:** un **Remote host su un IP pubblico ora si comporta come il cloud** (KB, KB Chat, allegati e immagini bloccati).
+- Provato dal vivo con rizzo-pii vero e OpenAI: al fornitore sono arrivati solo segnaposto, all'andata e al ritorno.
+- Pseudonimizzato non è anonimo, e il modello perde il contesto dei dati tolti: i limiti sono nel Capitolo 21 di [MANUALE_DeepAiUG.md](MANUALE_DeepAiUG.md) e in `docs/SPEC_v1.16.0_hybrid.md`.
+
+> Ho un ruolo non retribuito di Technical Advisor in Akaion, che sviluppa Annona. Annona è opzionale e spenta per default; l'ambiente ibrido funziona anche solo con rizzo-pii, che non ha legami con Akaion.
+>
+> — Vincenzo Iodice (Gilles)
+
+---
+
+## ✨ Features
+
+- 🤖 **Multi-provider**: Ollama (locale), Remote host, Cloud (OpenAI; Anthropic e Google con pacchetti aggiuntivi; endpoint «Custom» compatibile OpenAI)
+- 🧠 **Approccio Socratico** - Bottoni per esplorare prospettive alternative!
+- 🌊 **Streaming Responses** - Risposte token-by-token in tempo reale!
+- 💬 **Conversazioni multi-turno** con memoria del contesto
+- 💾 **Persistenza** delle conversazioni su file JSON
+- 📥 **Export** in Markdown, JSON, TXT, PDF + Batch ZIP
+- 📚 **Knowledge Base RAG** - Interroga documenti locali e wiki!
+- 🟣 **Vault Support** - Obsidian, LogSeq, Notion Export con riconoscimento automatico
+- 📚 **Chat KB** - Chat salvate come Knowledge Base epistemica con rilevanza e tipo
+- 🌐 **Multi-Wiki** - MediaWiki + DokuWiki support
+- 📎 **File Upload in Chat** - Allega PDF, DOCX, TXT, immagini
+- 👁️ **Vision local-only** - Immagini inviate ai modelli vision (LLaVA, Moondream) — mai al cloud né a un host su Internet
+- 📊 **Mappa Sessione** - La cornice implicita delle tue domande, solo su richiesta
+- 🛡️ **Ambiente ibrido (opzionale, spento per default)** - rizzo-pii prima del cloud, Annona in sidebar e come gateway sperimentale
+- 🔐 **Privacy-First Protection** - Sistema completo protezione dati sensibili
+- 🎨 **Tema «Matrix»** personalizzabile (titolo, icona, banner, pioggia di caratteri in `branding.yaml`)
+- ♻️ **Architettura modulare** - Codice organizzato in packages
+
+---
+
+### 🛠️ Novità v1.16.1 — Correzioni di sicurezza e dati
+
+Sette correzioni trovate rileggendo il manuale contro il codice:
+- con la sezione `hybrid:` illeggibile, verso fuori casa non parte **niente** (prima si bloccava solo la chat: bottoni socratici, nudge e mappa partivano in chiaro);
+- «🔄 Reset e usa Cloud» azzera come «🔄 Nuova», compresa la memoria dei dati tolti;
+- le esclusioni dei vault (`.obsidian/`, `templates/`, `.trash/`, `logseq/bak/`…) valgono anche nell'indicizzazione: **chi ha già indicizzato un vault deve re-indicizzarlo** per togliere quei file;
+- se il modello degli embedding non si carica, le KB non si usano e **non si svuotano**: l'app lo dice e la chat prosegue senza KB;
+- «📂 Carica» e «🗑️ Elimina» agiscono sulla conversazione scelta anche con due voci uguali nel menu;
+- «🗑️ Cancella storico» non dà più errore e si salva;
+- l'installer Windows funziona su un computer pulito (la cartella si crea prima dei download).
+
+Dettagli nel CHANGELOG `[1.16.1]`.
+
+### 🛡️ Novità v1.16.0 — Ambiente ibrido
+
+rizzo-pii prima del cloud (solo segnaposto al fornitore, valori veri ripristinati sul tuo computer), letture di Annona nella sidebar, gateway di Annona sperimentale, destinazione reale per tutti i blocchi. Opzionale e spento per default: vedi [Ambiente ibrido](#️-ambiente-ibrido-novità-v1160) qui sopra e il CHANGELOG.
+
+### 👁️ Novità v1.15.3 — Vision local-only
+
+- **Vision collegata davvero**: le immagini allegate in chat vengono ora inviate ai modelli vision (LLaVA, Moondream) tramite `MediaBlock` di Datapizza — colma il TODO rimasto aperto nelle versioni precedenti
+- **Solo in locale**: funziona con provider Local (Ollama) e Remote host in LAN o Tailscale (dalla 1.16.0 un Remote host su IP pubblico è bloccato come il cloud); verso il cloud l'upload immagini resta bloccato, coerente con l'approccio privacy-first
+- **Immagini effimere**: mai salvate in conversazioni, Knowledge Base o vault — in cronologia restano solo i nomi dei file
+- **Regressione zero**: il ramo testuale della chat è invariato, con fallback automatico in caso di errore
+
+*Dettagli in [CHANGELOG.md](CHANGELOG.md) e [ADR-0001](docs/adr/ADR-0001-vision-mediablock-local-only.md). Bug noto preesistente: "Nuova conversazione" non ripulisce visivamente il widget allegati — in lavorazione.*
+
+### 🔒 Novità v1.15.2 — Security Audit (SSRF, privacy-first, hardening)
+- **SSRF**: nuovo classificatore URL (`core/url_validator.py`) che blocca gli endpoint metadati cloud (`169.254.0.0/16`) su tutti i punti di uscita di rete — fetch modelli, chat, adapter MediaWiki/DokuWiki. Ollama locale, host in LAN e Tailscale restano pienamente supportati
+- **Privacy-first rafforzata**: il blocco verso il cloud ora copre anche la KB Chat (le conversazioni locali indicizzate non partono più in silenzio); i banner di connessione riflettono la destinazione reale dell'URL invece dell'etichetta della modalità
+- **Hardening**: HTML injection nel renderer chat neutralizzata, API key salvate con permessi `0600`, migrazione da PyPDF2 (deprecato) a `pypdf`, dipendenze aggiornate (CVE) e pinnate
+- *12 finding analizzati (0 Critical, 4 High, 4 Medium, 4 Low), fix con verifica funzionale e commit atomici. Vedi [CHANGELOG.md](CHANGELOG.md)*
+
+### 🩹 Novità v1.15.1 — Fix installer "bloccato" durante `pip install`
+
+- **Problema**: dopo il merge di `sentence-transformers` (che porta `torch` ~250 MB - 1 GB), gli installer e gli updater apparivano congelati per 5-15 minuti durante il download. L'output di pip veniva redirezionato silenziosamente su un log → schermo immobile → utenti convinti che fosse un blocco
+- **Fix**: output pip ora visibile a schermo (con `tee` su Linux/Mac, no redirect su Windows), banner esplicito "ATTESA LUNGA possibile, NON CHIUDERE LA FINESTRA", flag `--prefer-binary` per accelerare l'install, rimosso `--quiet` dagli script di update
+- Pulizia generale: gestione errori pip esplicita con codice di ritorno e exit pulito su tutti i 6 script
+- Aggiornato `INIZIA-QUI.txt` con nota sui tempi di installazione post v1.15.0
+- *Patch UX dedicata, nessuna modifica al codice runtime*
+
+### 🌍 Novità v1.15.0 — Embedding multilingua per RAG (qualità retrieval IT)
+
+- **Sostituito il modello di embedding di default di ChromaDB** (`all-MiniLM-L6-v2`, principalmente inglese) con `intfloat/multilingual-e5-small`, multilingua nativo
+- **Risultato**: retrieval significativamente migliore su contenuti italiani — vault Obsidian/LogSeq, wiki MediaWiki/DokuWiki, cartelle locali e Chat-KB epistemica
+- **Strategia prefix**: `passage:` per i documenti in indicizzazione, `query:` per le query (richiesto dai modelli e5 per retrieval ottimale)
+- **Override via env var** `DEEPAIUG_EMBEDDING_MODEL` per sperimentare con `e5-base`/`e5-large` o altri sentence-transformers
+- **Migration automatica**: collection ChromaDB pre-esistenti vengono ricreate al cambio di modello (re-indicizzazione richiesta una volta sola)
+- **First-run**: ~118 MB scaricati da HuggingFace al primo avvio, una sola volta
+- ⚠️ *Breaking semantico*: utenti esistenti devono cliccare "Indicizza" sui propri vault/wiki e "🔄 Aggiorna KB Chat" per re-indicizzare con il nuovo modello
+
+### 🩹 Novità v1.14.4 — Fix Visibilità Knowledge Base in Sidebar
+
+- **Sezione Knowledge Base di nuovo visibile**: la configurazione di sorgenti wiki + vault era nascosta dentro l'expander "⚙️ Configurazione" (chiuso di default) dalla v1.12.0 e di fatto irraggiungibile a colpo d'occhio
+- **Expander dedicato `📚 Knowledge Base (Wiki / Vault)`** aperto di default nella sidebar
+- **Caption con elenco sorgenti** (Cartella locale, MediaWiki, DokuWiki, Obsidian Vault, …) mostrata anche quando il toggle è off, per migliorare la discoverability senza dover attivare la KB
+- **Nessuna modifica** a routing wiki/vault, gate privacy, logica retrieval — intervento puramente UX
+
+### 🌊 Novità v1.14.3 — Scroll Fix + Typing Indicator *(ultimo rilascio v1.x)*
+
+- **Typing indicator animato**: 3 pallini teal (⬤⬤⬤) con animazione bounce appaiono appena l'utente invia la domanda e spariscono al primo token ricevuto
+- **Scroll automatico**: la chat segue la risposta durante lo streaming — nessun salto manuale
+- **Cursore `▌`**: visibile durante tutto lo streaming, rimosso a completamento
+- **UX familiare**: esperienza analoga a Claude.ai e ChatGPT, riduce la curva di apprendimento
+- *Allora era annunciata come l'ultima release del ciclo v1.x; poi sono arrivate la 1.14.4, le 1.15.x e la 1.16.0.*
+
+### 🧠 Novità v1.14.2 — Vault Used Flag + Icona nel Selettore
+
+- **Flag `vault_used`**: le conversazioni condotte con un vault attivo vengono marcate nel JSON
+- **Icona 🧠** nel selettore conversazioni: identifica a colpo d'occhio le chat che hanno usato conoscenza da vault
+- **Retrocompatibilità completa**: chat pre-v1.14.2 caricate senza crash (default `false`)
+
+### 📚 Novità v1.14.0 — Chat Salvate come Knowledge Base Epistemica
+
+- **Chat KB**: le conversazioni flaggate diventano sorgente RAG consultabile nelle sessioni future
+- **Metadati epistemici**: rilevanza (⭐/⭐⭐/⭐⭐⭐), tipo (decisione / insight / memoria_aziendale / riferimento), note libere
+- **Boost retrieval** proporzionale alla rilevanza (×1.0 / ×1.15 / ×1.30)
+- **Pannello gestione KB** in sidebar: modifica metadati inline, rimozione, statistiche chunk
+- **Icone indicatore** nel selettore chat: 📚 / 📚⭐ / 📚⭐⭐
+- **Toggle "Usa KB Chat"** con filtro per tipo nel retrieval
+- **Collection ChromaDB separata** `deepaiug_chat_kb` — indipendente da wiki e vault
+- **23 test** su retrocompatibilità, chunking, indicizzazione, boost e filtro tipo
+- **Privacy-first by design**: nessuna chat entra nella KB senza scelta esplicita dell'utente
+
+### 🟣 Novità v1.13.x — Vault Support (F3) + UX Fix
+
+- **Vault Obsidian, LogSeq, Notion Export** selezionabili direttamente dal menu Knowledge Base
+- **Riconoscimento automatico** del tipo vault dal percorso inserito
+- **Parser nativo .canvas** Obsidian (estrae testo dai nodi del canvas)
+- **Aggiornamento incrementale** basato su timestamp file
+- **ChromaDB batch fix** — supporto corpus grandi (testato su 808 file / 6693 chunk)
+- **Progress bar** in tempo reale durante l'indicizzazione
+- **Conferma a 2 step** prima del caricamento conversazioni con vault pesante (≥50 file)
+- **Icone vault specifiche** nelle conversazioni salvate: 🧠🟣 Obsidian, 🧠🟤 LogSeq, 🧠⬛ Notion
+- **Fix modello nei bottoni socratici** — ogni esplorazione mostra il modello che l'ha generata
+
+### 🏗️ Novità v1.12.0 — Architettura Sidebar
+
+- **Sidebar riorganizzata** in 5 sezioni con ordine fisso
+- **⚙️ Configurazione** chiusa di default (`st.expander`) — connessione, modello, parametri, KB
+- **💬 Conversazione**, **🗺️ Mappa**, **🧠 Socratica**, **📤 Export** — sempre visibili
+- **Banner dinamico**: la versione nel banner segue automaticamente `VERSION`
+
+### 🚀 Novità v1.11.2 — Installer multipiattaforma
+
+- Installazione automatica su **Windows 11**, **Mac** e **Linux**
+- Suggerimento modello AI in base alla RAM rilevata
+- Progress bar durante i download, log installazione automatico
+- Launcher e icona Desktop creati automaticamente
+- Nessuna competenza tecnica richiesta
+
+Vedi `installer/INIZIA-QUI.txt` per le istruzioni.
+
+### 🎨 Novità v1.11.1 — Matrix Theme
+
+- **Matrix Theme**: tema visivo completo (sfondo scuro, palette teal/green, glitch H1, scanlines CRT)
+- **Matrix rain**: animazione canvas con katakana + hex + simboli matematici
+- **Tipografia**: Cinzel (titoli), Exo 2 (contenuti), Share Tech Mono (input/bottoni)
+- **Componenti stilizzati**: chat bubbles, bottoni, input, selectbox, metric, scrollbar
+
+### 🎨 Novità v1.11.0 — Branding + UX Polish
+
+- **branding.yaml**: personalizza titolo, icona e banner senza modificare codice
+- **Nome modello + timestamp** in output socratici e mappa sessione
+- **Mappa collassabile** + bottoni "Rigenera" e "Genera mappa" su conversazioni caricate
+- **Fix parser frecce vuote**: nessuna freccia vuota con nessun modello
+
+### 📊 Novità v1.10.0 — Mappa Sessione: attrito sul pensiero (Ligas/Quartarone/Floridi)
+
+### 🧠 Novità v1.9.2 — Prompt Epistemologici Potenziati (Floridi/Eco/Quartarone)
+
+## 🆕 Novità v1.9.1 - UI Polish + Cloud Config + Privacy Granulare 🎨
+
+- **🎨 Chat Bubbles** - Rendering unificato con `markdown-it-py`, colori dark/light professionali
+- **☁️ Cloud Models YAML** - File `cloud_models.yaml` per configurare provider e modelli senza toccare il codice
+- **🔒 Privacy Granulare** - Icone specifiche (📚 Wiki, 📁 Cartella, 📎 Allegati) + warning cambio provider
+- **⚙️ Parametri Collassabili** - System Prompt, Temperature, Max messaggi in expander
+
+### Novità v1.9.0 - Socratic History + Persistence 📋
+
+Tracciamento, visualizzazione e persistenza delle esplorazioni socratiche nelle conversazioni salvate.
+
+### Novità v1.8.0 - UI Socratica Completa 🧠
+
+5 bottoni socratici organizzati in 2 sezioni + toggle modalità (Veloce/Standard/Socratico)
+
+---
+
+## Novità v1.7.x - Remote Servers + Security 🖥️🔐
+
+### Remote Servers YAML
+- 3 modalità: fixed, selectable, custom_allowed
+- Lista modelli dinamica
+- File `remote_servers.yaml` opzionale
+
+### Security Settings
+- API Keys nascoste per default
+- File `security_settings.yaml`
+
+---
+
+## I 5 Bottoni Socratici 🧠
+
+### La Filosofia
+> **L'AI produce significato plausibile, ma il SENSO lo costruisce l'umano.**
+
+Ispirato al "capitale semantico" (Floridi/Quartarone).
+
+**Sezione 1 - Analizza la risposta:**
+
+| Bottone | Funzione |
+|---------|----------|
+| 🔄 Alternative | 3 interpretazioni diverse |
+| 🤔 Assunzioni | Cosa si dà per scontato |
+| ⚠️ Limiti | Quando non funziona |
+| 🎭 Confuta | Avvocato del diavolo |
+
+**Sezione 2 - Sfida la domanda:**
+
+| Bottone | Funzione |
+|---------|----------|
+| 🪞 Rifletti | Meta-riflessione sulla domanda stessa |
+
+**⚠️ Limiti**
+- Identifica quando la risposta NON funziona
+- Casi limite ed eccezioni
+- Previene applicazioni errate
+
+**Le 4 capacità che DeepAiUG vuole allenare:**
+1. **Costruzione di senso** - collegare informazioni
+2. **Valutazione semantica** - capire cosa conta
+3. **Contestualizzazione** - collocare nel contesto giusto
+4. **Resistenza alla plausibilità** - non fidarsi del "suona giusto"
+
+### 🔮 Prossime Feature Socratiche
+- **v2.0.0**: Semantic Layer + Knowledge Graph
+
+---
+
+## Novità v1.6.0
+
+### 🌊 Streaming Responses
+Le risposte dell'AI ora appaiono **token-by-token in tempo reale**, come in ChatGPT!
+
+**Provider supportati:**
+- ✅ **Ollama locale**: Streaming perfetto
+- ✅ **Remote host**: Streaming perfetto
+- ✅ **Cloud (OpenAI, Anthropic, Google, Custom)**: Streaming (oggi per tutti i provider; l'unica eccezione è il gateway di Annona, sperimentale, che consegna la risposta tutta insieme)
+
+**Footer aggiornato:** 🤖 DeepAiUG by Gilles
+
+---
+
+## Novità v1.5.x
+
+### 📎 File Upload in Chat
+Allega file direttamente nella chat, come in ChatGPT/Claude.ai!
+
+| Tipo | Formati | Note |
+|------|---------|------|
+| 📄 **Documenti** | PDF, TXT, MD, DOCX | Testo estratto e aggiunto al contesto |
+| 🖼️ **Immagini** | PNG, JPG, JPEG, GIF, WEBP | Richiede modello Vision (LLaVA, Granite3-Vision, Moondream…) |
+
+### 🔐 Privacy-First Protection
+Sistema completo per proteggere i tuoi documenti sensibili:
+
+| Protezione | Descrizione |
+|------------|-------------|
+| 🔒 **Upload bloccato fuori casa** | I file possono essere caricati solo verso destinazioni «in casa»: Ollama locale, Remote host in LAN o Tailscale (dalla 1.16.0 conta la destinazione reale: un Remote host su IP pubblico è bloccato come il cloud) |
+| ⚠️ **Privacy Dialog** | Warning automatico quando passi da Local→Cloud con documenti in memoria |
+| 📢 **Banner promemoria** | Ricorda che la sessione contiene dati estratti da documenti |
+
+---
+
+## 🏗️ Architettura v1.16.1
+
+```
+datapizza-streamlit-interface/
+├── app.py                    # ⭐ Entry point principale
+├── .streamlit/config.toml    # Tema Streamlit nativo (Matrix)
+├── wiki_sources.yaml         # Configurazione sorgenti wiki
+├── remote_servers.yaml       # Config server remoti
+├── cloud_models.yaml         # Config modelli cloud
+├── security_settings.yaml    # Impostazioni sicurezza
+├── branding.yaml             # Personalizzazione titolo/icona/banner
+├── requirements.txt          # Dipendenze pinnate (==)
+├── requirements-dev.txt      # pytest, per i test
+├── MANUALE_DeepAiUG.md       # Manuale completo (installazione, uso, limiti)
+├── NOTICE / LICENSE          # Licenze (MIT; note su rizzo-pii e Annona)
+├── installer/                # Installer e updater Linux/Mac/Windows, diagnostica
+├── secrets/                  # Chiavi API salvate dalla UI (esclusa da git)
+│
+├── config/                   # 📁 Configurazione
+│   ├── constants.py          # Costanti, WIKI_TYPES, VISION_MODEL_PATTERNS
+│   ├── settings.py           # Loader settings, API keys
+│   ├── branding.py           # load_branding() + 6 costanti
+│   └── hybrid_settings.py    # v1.16.0: lettore della sezione hybrid:
+│
+├── core/                     # 📁 Logica core
+│   ├── llm_client.py         # Factory client LLM
+│   ├── conversation.py       # Gestione messaggi
+│   ├── persistence.py        # Salvataggio/caricamento (+ kb_metadata v1.14.0)
+│   ├── kb_chat_indexer.py    # ⭐ NEW v1.14.0: indicizzazione chat-KB ChromaDB
+│   ├── file_processors.py    # Estrazione testo da file
+│   ├── url_validator.py      # v1.15.2: classificatore URL (anti-SSRF)
+│   ├── egress.py             # v1.16.0: destinazione reale (in casa / fuori casa)
+│   ├── pii_client.py         # v1.16.0: client di rizzo-pii
+│   ├── pii_guard.py          # v1.16.0: GuardedClient (segnaposto prima del cloud)
+│   ├── pii_memory.py         # v1.16.0: valori già tolti, in memoria per la sessione
+│   ├── annona_client.py      # v1.16.0: client di Annona
+│   └── annona_bridge.py      # v1.16.0: letture e gateway di Annona
+│
+├── rag/                      # 📁 Sistema RAG
+│   ├── models.py             # Document, Chunk
+│   ├── chunker.py            # TextChunker intelligente
+│   ├── vector_store.py       # ChromaDB + fallback
+│   ├── manager.py            # KnowledgeBaseManager
+│   ├── embeddings.py         # v1.15.0: embedding multilingua e5, scelta del device
+│   ├── vault.py              # F3: detect, scan, parse canvas, update incrementale
+│   └── adapters/             # Sorgenti dati
+│       ├── base.py           # Classe base degli adapter
+│       ├── local_folder.py   # File locali
+│       ├── mediawiki.py      # API MediaWiki
+│       └── dokuwiki.py       # DokuWiki
+│
+├── knowledge_base/           # 📁 Dati KB (generato a runtime)
+│   ├── vectorstore/          # ChromaDB wiki/vault
+│   ├── chat_kb_vectorstore/  # ⭐ NEW v1.14.0: ChromaDB chat-KB
+│   └── chat_kb_meta.json     # ⭐ NEW v1.14.0: timestamp ultima indicizzazione
+│
+├── export/                   # 📁 Sistema export
+│   └── exporters.py          # MD, JSON, TXT, PDF, ZIP
+│
+├── tests/                    # 📁 Test suite (pytest, servizi simulati)
+│   ├── conftest.py, fakes_http.py
+│   └── test_*.py             # 22 file: KB Chat, persistenza, egress, rizzo-pii, Annona, chat…
+│
+├── docs/                     # 📁 Documentazione
+│   ├── SPEC_v1.16.0_hybrid.md     # SPEC dell'ambiente ibrido
+│   ├── AUDIT_pre_v1.16.0.md       # Audit prima della 1.16.0
+│   ├── adr/                       # Decisioni (ADR-0001 Vision local-only)
+│   └── manuale_utente_kb_chat.md  # Guida utente KB Chat (v1.14.0)
+│
+└── ui/                       # 📁 Interfaccia utente
+    ├── styles.py             # CSS
+    ├── style.py              # Matrix Theme (CSS + rain animation)
+    ├── chat.py               # Rendering chat
+    ├── file_upload.py        # Widget upload file
+    ├── privacy_warning.py    # Dialog privacy
+    ├── conversation_reset.py # v1.16.1: azzeramento unico («Nuova» e «Reset e usa Cloud»)
+    ├── socratic/             # 🧠 Modulo socratico
+    │   ├── prompts.py        # Template prompt
+    │   ├── buttons.py        # Bottoni UI + registrazione esplorazioni
+    │   ├── history.py        # SocraticExploration + SocraticHistory
+    │   ├── history_widget.py # Widget sidebar storico
+    │   └── session_map.py    # SessionMap + SessionMapAnalyzer (F2)
+    └── sidebar/
+        ├── llm_config.py
+        ├── knowledge_base.py
+        ├── conversations.py
+        ├── export_ui.py
+        ├── session_map_widget.py  # Widget mappa sessione (F2)
+        ├── annona_panel.py        # v1.16.0: sezione «🧭 Annona»
+        └── kb_panel.py            # ⭐ NEW v1.14.0: pannello gestione KB Chat
+```
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisiti
+
+```bash
+# Python 3.10+ (gli installer usano 3.12)
+python --version
+
+# Ollama (per modelli locali)
+ollama --version
+ollama list  # verifica modelli installati
+```
+
+---
+
+## 🔍 Come scegliere il modello giusto per il tuo hardware
+
+Uno degli ostacoli più comuni nell'adottare un'AI locale è capire **quale modello scaricare** senza sprecare tempo e spazio su modelli incompatibili con il proprio hardware.
+
+Ti consigliamo di usare **[llmfit](https://github.com/AlexsJones/llmfit)** — uno strumento open source che analizza CPU, RAM e VRAM della tua macchina e ti mostra quali modelli LLM sono compatibili, con score, token/s stimati e quantizzazione ottimale.
+
+### Installazione rapida (Linux/macOS)
+
+```bash
+curl -fsSL https://llmfit.axjns.dev/install.sh | sh
+```
+
+> ⚠️ È un singolo binario Rust — nessun ambiente virtuale, nessun conflitto con i tuoi venv Python esistenti.
+
+### Utilizzo base
+
+```bash
+# Interfaccia TUI interattiva
+llmfit
+
+# Output tabellare (consigliato su VM o server)
+llmfit --cli
+
+# Solo i modelli perfettamente compatibili
+llmfit fit --perfect -n 10
+
+# Se hai una GPU ma llmfit non la rileva (VM, Jetson, ecc.)
+llmfit --memory=8G --cli
+```
+
+### Guida rapida alla scelta del modello per DeepAiUG
+
+| VRAM disponibile | Modelli consigliati per iniziare | Note |
+|---|---|---|
+| **< 4 GB** | `llama3.2:3b`, `qwen3:0.6b`, `qwen3.5:0.8b` | Inferenza CPU o ibrida |
+| **4 GB** | `llama3.2:3b`, `qwen3.5:2b`, `ministral-3b` | GPU pura, ottima velocità |
+| **8 GB** | `llama3.1:8b`, `qwen3.5:4b`, `gemma3:4b` | Sweet spot qualità/velocità |
+| **16 GB+** | `qwen2.5-coder:7b`, `llama3.1:latest`, `deepseek-v2-lite` | Modelli capaci per uso professionale |
+| **24 GB+** | `qwen3.5:4b`+ modelli 14-30B | Qualità paragonabile ai cloud |
+
+> 💡 I pulsanti Socratici di DeepAiUG sono stati calibrati e testati su `llama3.2:3b` — è il punto di partenza consigliato per chi ha hardware limitato.
+
+---
+
+## 🔧 Installazione avanzata (sviluppatori)
+
+### Metodo 1: Installer (da repo clonata)
+
+Gli script `install.sh` e `install.bat` nella root rimandano soltanto agli installer veri, che stanno in `installer/`.
+
+#### Linux / Mac
+```bash
+git clone https://github.com/EnzoGitHub27/datapizza-streamlit-interface.git
+cd datapizza-streamlit-interface/installer
+bash installa_deepaiug_linux.sh   # su Mac: bash installa_deepaiug_mac.sh
+```
+
+#### Windows
+Tasto destro su `installer\INSTALLA_DeepAiUG.bat` → «Esegui come amministratore».
+
+Gli installer mettono l'app in `~/DeepAiUG` (scaricando lo ZIP del ramo `main`), creano il venv, installano Ollama se manca e propongono un modello in base alla RAM. Dettagli nel Capitolo 3 di [MANUALE_DeepAiUG.md](MANUALE_DeepAiUG.md).
+
+---
+
+### Metodo 2: Installazione manuale (come fanno gli installer)
+
+#### 1. Clona il repository
+```bash
+git clone https://github.com/EnzoGitHub27/datapizza-streamlit-interface.git
+cd datapizza-streamlit-interface
+```
+
+#### 2. Crea un ambiente virtuale (Python 3.10 o più recente)
+```bash
+python3 -m venv venv
+source venv/bin/activate  # Linux/Mac
+# oppure
+venv\Scripts\activate  # Windows
+```
+
+#### 3. Installa le dipendenze nell'ordine corretto
+```bash
+# 3.1 - Datapizza AI (PRIMA di requirements.txt: i client ne dipendono)
+pip install datapizza-ai
+
+# 3.2 - Tutto il resto, con le versioni fissate
+pip install -r requirements.txt --prefer-binary
+
+# 3.3 - Facoltativo: solo se usi Anthropic o Google (non sono in requirements.txt)
+pip install datapizza-ai-clients-anthropic datapizza-ai-clients-google
+```
+
+`sentence-transformers` porta con sé `torch` (centinaia di MB): l'installazione può durare diversi minuti.
+
+#### 4. Per i test (sviluppatori)
+```bash
+pip install -r requirements-dev.txt
+python -m pytest
+```
+
+> **Poetry non è un percorso supportato**: `pyproject.toml` non elenca tutte le dipendenze (mancano chromadb, sentence-transformers, pypdf, mwclient, dokuwiki, reportlab, python-docx, Pillow). Usa `requirements.txt`.
+
+---
+
+## ▶️ Avvio
+
+```bash
+streamlit run app.py
+```
+
+---
+
+## 🔧 Configurazione API Keys
+
+### Opzione A: File .env
+```env
+OPENAI_API_KEY=sk-your-openai-key-here
+ANTHROPIC_API_KEY=sk-ant-your-anthropic-key-here
+GOOGLE_API_KEY=your-google-gemini-key-here
+```
+
+### Opzione B: File secrets
+```bash
+mkdir -p secrets
+echo "sk-your-key" > secrets/openai_key.txt
+```
+
+### Opzione C: Interfaccia Web
+Puoi inserire le API keys direttamente dall'interfaccia Streamlit!
+
+---
+
+## 📚 Knowledge Base RAG
+
+### Sorgenti Supportate
+
+| Tipo | Descrizione | Pacchetto |
+|------|-------------|-----------|
+| 📁 **Cartella Locale** | File MD, TXT, HTML, PDF | - |
+| 🟣 **Vault Obsidian** | Note .md + Canvas, riconoscimento automatico | - |
+| 🟤 **Vault LogSeq** | Note .md e .org, esclusi file di backup | - |
+| ⬛ **Notion Export** | Cartelle export Notion in formato MD | - |
+| 🌐 **MediaWiki** | Wikipedia-like wikis | `mwclient` |
+| 📘 **DokuWiki** | Wiki per documentazione | `dokuwiki` |
+
+### Privacy Mode 🔒
+
+Quando la Knowledge Base (o la KB Chat) è attiva:
+- ☁️ **Le destinazioni «fuori casa» sono BLOCCATE**: i provider cloud e, dalla 1.16.0, un Remote host su IP pubblico
+- 💻 Restano permessi **Ollama locale** e i **Remote host in LAN o Tailscale**
+- 🔒 I tuoi documenti **non escono dalla tua rete** (con un Remote host in LAN escono dal computer, ma restano in casa)
+
+---
+
+## 🔧 Modelli Ollama Consigliati
+
+```bash
+# Modelli generali
+ollama pull llama3.2
+ollama pull mistral
+ollama pull qwen2.5
+
+# Modelli per coding
+ollama pull qwen2.5-coder
+
+# Modelli multimodali (per immagini)
+ollama pull llava
+ollama pull granite3.2-vision
+```
+
+Gli embedding della Knowledge Base **non usano Ollama**: li calcola `sentence-transformers` con `intfloat/multilingual-e5-small` (~118 MB, scaricato da HuggingFace al primo uso).
+
+---
+
+## 📋 Dipendenze
+
+L'elenco esatto, con le versioni fissate (`==`), è in [requirements.txt](requirements.txt): Streamlit 1.53.1, `datapizza-ai` e `datapizza-ai-clients-openai-like`, ChromaDB, `sentence-transformers`, `pypdf`, `mwclient`, `dokuwiki`, `python-docx`, Pillow, `reportlab`. Anthropic e Google richiedono in più `datapizza-ai-clients-anthropic` e `datapizza-ai-clients-google`.
+
+---
+
+## 🗺️ Roadmap
+
+Vedi [ROADMAP.md](ROADMAP.md) per il piano completo.
+
+| Versione | Feature | Stato |
+|----------|---------|-------|
+| v1.16.0 | 🛡️ Ambiente ibrido — rizzo-pii prima del cloud, letture di Annona, destinazione reale (opzionale, spento per default) | ✅ |
+| v1.15.4 | 🧩 Correzioni — blocchi di codice copiati interi, «Elimina» pulisce la KB Chat, file LICENSE, manuale allineato | ✅ |
+| v1.15.3 | 👁️ Vision local-only — immagini allegate inviate ai modelli vision (LLaVA/Moondream), mai su cloud | ✅ |
+| v1.15.2 | 🔒 Security Audit — SSRF, cloud-block esteso a KB Chat, banner onesti, hardening | ✅ |
+| v1.15.1 | 🩹 Fix installer/updater "bloccato" durante pip install (output visibile a schermo) | ✅ |
+| v1.15.0 | 🌍 Embedding multilingua e5-small per RAG (qualità retrieval IT) | ✅ |
+| v1.14.4 | 🩹 Fix visibilità Knowledge Base sidebar + icone installer Linux/Win/Mac (SPEC in `docs/`) | ✅ |
+| v1.14.3 | 🌊 Scroll fix + Typing indicator animato | ✅ |
+| v1.14.2 | 🧠 vault_used flag + icona nel selettore conversazioni | ✅ |
+| v1.14.1 | 🔧 UX fix KB Chat (ordine, caption, bulk-flag, warning) | ✅ |
+| v1.14.0 | 📚 Chat salvate come Knowledge Base epistemica | ✅ |
+| v1.13.9 | 🔧 Fix modello per esplorazione socratica specifica | ✅ |
+| v1.13.8 | 🔧 Fix nome modello nei bottoni socratici | ✅ |
+| v1.13.7 | 🧠 Conferma caricamento vault + icone vault in conversazioni | ✅ |
+| v1.13.6 | 🔧 Fix progress callback + stima tempo caricamento | ✅ |
+| v1.13.5 | 🟣 Warning + progress bar caricamento conversazioni vault | ✅ |
+| v1.13.4 | 🔧 ChromaDB batch fix + progress bar indicizzazione | ✅ |
+| v1.13.3 | 🟣 Banner vault rilevato coerente | ✅ |
+| v1.13.2 | 🟣 Vault nel dropdown YAML | ✅ |
+| v1.13.1 | 🟣 Vault nel dropdown custom | ✅ |
+| v1.13.0 | 🟣 F3 Vault Support — Obsidian, LogSeq, Notion | ✅ |
+| v1.12.0 | 🏗️ Architettura Sidebar — configurazione separata | ✅ |
+| v1.11.2 | 🚀 Installer multipiattaforma Windows/Mac/Linux | ✅ |
+| v1.11.1 | 🎨 Matrix Theme | ✅ |
+| v1.11.0 | 🎨 Branding + UX Polish + Bug Fix parser | ✅ |
+| v1.10.0 | 📊 Mappa Sessione — Attrito sul pensiero | ✅ |
+| v1.9.1 | 🎨 UI Polish + ☁️ Cloud Config + 🔒 Privacy Granulare | ✅ |
+| v1.9.0 | 📋 Socratic History + Persistence | ✅ |
+| v1.8.0 | 🧠 UI Socratica Completa (5 bottoni + Toggle) | ✅ |
+| v1.7.1 | 🖥️ Remote YAML + 🔐 Security | ✅ |
+| v2.0.0 | Semantic Layer + Knowledge Graph | 🎯 |
+
+---
+
+## 🤝 Contributing
+
+Contribuzioni benvenute! Vedi [CONTRIBUTING.md](CONTRIBUTING.md).
+
+1. Fork del repository
+2. Crea un branch (`git checkout -b feature/nuova-feature`)
+3. Commit (`git commit -m 'feat: aggiungi nuova feature'`)
+4. Push (`git push origin feature/nuova-feature`)
+5. Apri una Pull Request
+
+---
+
+## 📜 License
+
+MIT License - vedi [LICENSE](LICENSE)
+
+---
+
+## 👥 Credits
+
+- **DeepAiUG** - Community italiana AI
+- **Datapizza** - Framework LLM
+- **Streamlit** - UI Framework
+
+---
+
+## 📞 Contatti
+
+- 🌐 [DeepAiUG](https://deepaiug.it)
+- 💬 Issues su GitHub
+- 📧 info@deepaiug.it
+
+---
+
+*Made with ❤️ by Gilles - DeepAiUG*

@@ -232,7 +232,7 @@ corpus, and we have no instrument that would.
 ### What the audit hunts that a scanner can't
 
 <!-- count-check: ^- \*\* -->
-Thirty classes of defect survive every linter, SAST rule, and CVE scanner, because in
+Thirty-two classes of defect survive every linter, SAST rule, and CVE scanner, because in
 each one the code isn't *wrong*. The library hunts them as explicit passes
 (this said "Eleven" for seventeen days — correct when written on 2026-08-27 and **fifteen
 classes** behind by the time anyone recounted at the v1.41.2 cut. Recount the list, never
@@ -603,6 +603,20 @@ because the same change added three more classes below):
   with it — and who can change one without the other, and would I find out?* A control that
   is **correctly enforcing the wrong predicate** is not inert, so "would anything observable
   differ?" answers *yes* while the control is still wrong.
+- **A filter that matches more than it names** — a noise filter tested against a substring
+  of the whole serialized record also matches key names and enum values:
+  `contains(.message, "probe")`, written for liveness probes, dropped every eBPF
+  `process_kprobe` event while the sensor kept emitting them (field-reported 2026-11-07).
+  Its shell twin is a key-restricted dedupe: `sort -u -k2,3` keeps one line per *key*, so a
+  distinct record vanishes at exit 0. Both pass any check that reads the filter instead of
+  counting what came out; the audit counts at the sink, one event per type
+  ([observability rules/01](skills/sota-observability/rules/01-structured-logging.md) §7,
+  [shell rules/09](skills/sota-shell-scripting/rules/09-listing-and-selection.md) §5a).
+- **A command that is right on the rendered page and wrong in the raw file** — escaping `|`
+  as `\|` keeps a Markdown table intact on GitHub, but an agent, `cat` or a diff reads the
+  raw bytes, and a single-quoted ERE reads `\|` as a literal pipe, so the copied search
+  matches nothing (2 lines intended, 0 copied, on four searchers;
+  [docs-workflow rules/02](skills/sota-docs-workflow/rules/02-api-reference-changelogs.md) §1).
 
 **Where this is *not* backed by a number:** the measured lift is in BUILD
 (completeness, freshness). **Nine audit instruments across four designs sit at
@@ -1209,18 +1223,4 @@ silently uninstalled until you re-run the installer.
 `/sota-resume` and `/sota-close` are the two ends of the same session: one picks the open work
 up, the other puts it down where the next session will find it. Neither needs the other to have
 run — most projects scatter their open work across files written by people who are not here.
-Both **load what they cite**: a step 0 invokes `sota-shell-scripting` and reads its rules/06
-before the first sweep, because a citation loads nothing — and invariant 40 fails any command
-that cites a skill's rules file without saying to load it.
-
-All five take free-text arguments to steer them (`/sota-close focus on the migration branch`).
-They are prompts, not scripts: the text is in `commands/*.md` and nowhere else, so you can read
-exactly what your session is being told to do before you run it.
-
-**Why the threat model runs first — light in `/sota-audit`, full in `/sota-deep-audit`.** A
-finding's severity rests on the chain it closes, and a chain crosses a trust boundary, so both
-commands map the boundaries before rating anything. `/sota-audit` builds the light version:
-entry points, the authn/authz checkpoint on each, the asset it reaches, and the assumptions that
-implies, each checked against the code. `/sota-deep-audit` reconstructs the whole model. That is a pass of its own, and it goes **before** the lenses rather than inside the security one,
-because a finding rated without trust boundaries is rated in a vacuum. It extracts entry points,
-stores, actors and the boundaries the system *actually
+Both **loa

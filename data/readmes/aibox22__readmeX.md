@@ -1,427 +1,95 @@
+# readmex
 
-<a id="readme-top"></a>
+用创建、审查、优化三条流水线，把 README 写成能对照仓库核对的正文。对话里的 AI 读取 `skills/readmex` 后写作；扫描、机械检查和渲染由仓库里的脚本完成。
 
-<!-- LANGUAGE SWITCH -->
-<div align="center">
-  
-English | [简体中文](README_CN.md)
+<p align="center">
+  <img src="readme/assets/hero.gif" width="100%" alt="readmex：创建、审查、优化依次出现，放大镜移到文稿上">
+</p>
 
-</div>
+[静态头图](readme/assets/hero.svg) · [合成头图](readme/assets/hero.png)
 
-<!-- PROJECT POSTER -->
-<div align="center">
-  <img src="images/poster.png" alt="Poster" width="50%">
-</div>
+三条流水线可以分开用。快速创建只起稿；审查对照仓库核对主张；优化把需要保留的图做成静态 SVG。生图和 GIF 都要明确同意后才会做。
 
----
+## 先试一次
 
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <!-- <a href="https://github.com/aibox22/readmex">
-    <img src="images/logo.png" alt="Logo" height="100">
-  </a> -->
+在还没有 `README.md` 的项目里发送：
 
-<h3 align="center">readmex</h3>
+```text
+/readmex 快速写一份中文 README
+```
 
-  <p align="center">
-    🚀 AI-Powered README Generator: Automatically creates beautiful READMEs and interactive wikis for any repository! Can run all in local with your own models.
-    <br />
-    <a href="https://github.com/aibox22/readmex"><strong>Explore the docs »</strong></a>
-    <br />
-  </p>
+正文写到该项目根目录的 `README.md`。文件已经存在时，快速创建改为审查，先给出记分卡。只有明确要求重写，或走完整流程，才会改已有正文。
 
-  <!-- PROJECT SHIELDS -->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-<!-- [![Latest Release][release-shield]][release-url]
-![Release Date][release-date-shield] -->
-[![License][license-shield]][license-url]
+| 你想做什么 | 可以这样说 |
+| --- | --- |
+| 快速起稿 | `/readmex 快速写一份中文 README` |
+| 先看问题 | `/readmex 审查 README，先给记分卡` |
+| 整页美化 | `/readmex 美化 README，整页优化` |
+| 只做素材 | `/readmex 只制作架构图素材` |
+| 完整改写 | `/readmex 完整重写 README，执行全流程` |
 
-  <p align="center">
-    <a href="https://github.com/aibox22/readmex">View Demo</a>
-    &middot;
-    <a href="https://github.com/aibox22/readmex/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
-    &middot;
-    <a href="https://github.com/aibox22/readmex/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
-  </p>
-</div>
+> [!NOTE]
+> 只说「写个 README」时，技能会先问要快速简洁的，还是完整清晰并且有配图的。完整流程遇到已有 README 时从审查开始，然后继续优化。
 
+## 安装
 
-
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
-
-
-<!-- ABOUT THE PROJECT -->
-## 📖 About The Project
-
-[![Flow Chart](images/flow.png)](https://example.com)
-
-AI-Powered README Generator is an AI-powered tool that automatically generates comprehensive Markdown README files for your projects. It crafts well-structured documentation that includes project details, technology stack, setup instructions, usage examples, badges, logos, and more.
-
-### Key Features
-
-- 🤖 **AI-Powered READMEs**: Generate comprehensive Markdown READMEs instantly.
-- 🔗 **Auto Badges**: Creates and embeds relevant status badges (contributors, forks, stars, etc.).
-- 🖼️ **Smart Logo Design**: Crafts a unique project logo automatically.
-- 🧠 **Tech Stack Identification**: Automatically detects and includes the project's technology stack.
-- 🌐 **Context-Aware Intelligence**: Tailors content to your project's specific context and needs.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-### Built With
-
-- [![Python][Python]][Python-url]
-- [![OpenAI][OpenAI]][OpenAI-url]
-- [![Rich][Rich]][Rich-url]
-
-### Supported Programming Languages
-
-<details>
-<summary>Click to expand supported languages</summary>
-
-#### Web Development
-- **JavaScript**
-- **TypeScript**
-- **HTML**
-- **CSS**
-- **SCSS**
-- **Sass**
-- **Less**
-- **Stylus**
-- **Pug**
-- **Handlebars**
-- **Mustache**
-- **Twig**
-- **Smarty**
-- **Jinja**
-- **Vue**
-
-#### Programming Languages
-- **Python**
-- **Java**
-- **C**
-- **C++**
-- **C#**
-- **Go**
-- **Rust**
-- **PHP**
-- **Ruby**
-- **Swift**
-- **Kotlin**
-- **Scala**
-- **R**
-- **MATLAB**
-- **Perl**
-- **Lua**
-- **Dart**
-- **F#**
-- **Visual Basic**
-- **Assembly**
-- **Objective-C**
-- **Haskell**
-- **Erlang**
-- **Elixir**
-- **Clojure**
-- **CoffeeScript**
-- **PowerShell**
-- **Shell**
-- **Batch**
-- **Solidity**
-
-#### Build & Configuration
-- **Dockerfile**
-- **Makefile**
-- **CMake**
-- **Gradle**
-- **Maven**
-- **Nix**
-- **Terraform**
-
-#### Data & Documentation
-- **Jupyter**
-- **Protobuf**
-- **GraphQL**
-- **WebAssembly**
-
-#### Editor & IDE
-- **Vim**
-- **Emacs**
-
-</details>
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- GETTING STARTED -->
-## 🚀 Getting Started
-
-This is an example of how you may give instructions on setting up your project locally. To get a local copy up and running follow these simple steps.
-
-### Prerequisites
-
-- Python 3.7+
-
-### Installation
-
-1. Install the package using pip:
-   ```bash
-   pip install readmex
-   ```
-### Configuration
-
-`readmex` requires API keys for both the Language Model (for generating text) and the Text-to-Image model (for generating logos). You can configure these in one of two ways. Environment variables take precedence.
-
-#### 1. Environment Variables (Recommended for CI/CD)
-
-Set the following environment variables in your shell:
+需要能加载 Agent Skills 的工具。技能目录是 `skills/readmex`，安装时整目录复制。Cursor 的用户技能目录是 `~/.cursor/skills`：
 
 ```bash
-export LLM_API_KEY="your_llm_api_key"       # Required
-export T2I_API_KEY="your_t2i_api_key"       # Required
-
-# Optional: Specify custom API endpoints and models
-export LLM_BASE_URL="https://api.example.com/v1"
-export T2I_BASE_URL="https://api.example.com/v1"
-export LLM_MODEL_NAME="your-llm-model"
-export T2I_MODEL_NAME="your-t2i-model"
-
-# Optional: Embedding model configuration for RAG (Retrieval-Augmented Generation)
-export EMBEDDING_API_KEY="your_embedding_api_key"     # Optional, for web embedding models
-export EMBEDDING_BASE_URL="https://api.example.com/v1" # Optional, for web embedding models
-export EMBEDDING_MODEL_NAME="text-embedding-3-small"   # Optional, embedding model name
-export LOCAL_EMBEDDING="true"                         # Optional, use local embedding model (default: true)
-
-# Optional: Performance configuration
-export MAX_WORKERS="10"                               # Optional, max concurrent threads (default: 10)
+mkdir -p "$HOME/.cursor/skills"
+cp -R skills/readmex "$HOME/.cursor/skills/readmex"
 ```
 
-#### 2. Global Config File (Recommended for Local Use)
+目录已存在时，用新的 `skills/readmex` 整目录替换。其他工具把同一目录放到自己的技能目录。下一轮对话用 `/readmex` 调用。
 
-For convenience, you can create a global configuration file. The tool will automatically look for it.
+| 用途 | 要求 |
+| --- | --- |
+| 扫描、机械检查、GIF 脚本 | Python 3（标准库） |
+| 架构图、流程图 | Node.js 18 或更新版本，无需 `npm install` |
+| GIF（可选） | Pillow、ffmpeg，以及 `rsvg-convert` 或 macOS `sips` |
 
-1.  Create the directory: `mkdir -p ~/.readmex`
-2.  Create the config file: `~/.readmex/config.json`
-3.  Add your credentials and any optional settings. You can also include personal information, which will be used as defaults during interactive prompts:
+## 完整流程
 
-```json
-{
-  "LLM_API_KEY": "your_llm_api_key",
-  "T2I_API_KEY": "your_t2i_api_key",
-  "LLM_BASE_URL": "https://api.example.com/v1",
-  "T2I_BASE_URL": "https://api.example.com/v1",
-  "LLM_MODEL_NAME": "gpt-4",
-  "T2I_MODEL_NAME": "dall-e-3",
-  "EMBEDDING_API_KEY": "your_embedding_api_key",
-  "EMBEDDING_BASE_URL": "https://api.example.com/v1",
-  "EMBEDDING_MODEL_NAME": "text-embedding-3-small",
-  "LOCAL_EMBEDDING": "true",
-  "MAX_WORKERS": "10",
-  "github_username": "your_github_username",
-  "twitter_handle": "your_twitter_handle",
-  "linkedin_username": "your_linkedin_username",
-  "email": "your_email@example.com"
-}
+<p align="center">
+  <img src="readme/assets/workflow.gif" width="100%" alt="完整流程从创建到审查，再进入优化">
+</p>
+
+[静态流程图](readme/assets/workflow.svg)
+
+从左到右是合并执行的顺序：创建把 `README.md` 写到目标仓库，审查核对主张，优化把图换成静态 SVG。已有 README 时跳过创建。单独审查要等你同意后才改正文；完整流程写完记分卡后继续。通过条件见 [记分卡](skills/readmex/references/review-scorecard.md)：五项阻断全部通过，八项至少 14/16。机械脚本只报告事实，不打分。
+
+## 请求如何落到仓库
+
+<p align="center">
+  <img src="readme/assets/architecture.svg" width="100%" alt="对话进入技能，技能把 README 写进目标仓库">
+</p>
+
+作者在对话里提出请求，`SKILL.md` 选择一条流水线，正文写入目标仓库根目录的 `README.md`。图里的颜色只区分三个部分，正文是仓库里的文件。审查和优化需要时才调用扫描、机械检查和 `render-diagram.mjs`。
+
+```text
+<目标仓库>/
+├── README.md          # 最终正文
+├── readme/assets/     # 正文引用的图
+└── .readmex/          # 扫描、记分卡、图的源文件和预览
 ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- USAGE EXAMPLES -->
-## 💻 Usage
-
-Once installed, you can use the `readmex` package in the command line. To generate your README, run the following:
-
-### Method 1: Using the installed command (Recommended)
-```bash
-readmex
-```
-
-### Method 2: Running as a Python module
-```bash
-# Run the package directly
-python -m readmex
-
-# Or run the CLI module specifically
-python -m readmex.utils.cli
-```
-
-### Method 3: Development mode (for contributors)
-```bash
-# From the project root directory
-python src/readmex/utils/cli.py
-```
-
-### Command Line Options
-
-All methods support the same command line arguments:
+技能会在目标仓库的 `.gitignore` 里加入 `.readmex/`（若还没有这一行）。源码引用按当前文件和行号核对，核对失败就不发布那张图。
 
 ```bash
-# Interactive mode (default)
-readmex
-
-# Generate for current directory
-readmex .
-
-# Generate for specific directory
-readmex /path/to/your/project
-
-# Generate MkDocs website
-readmex --website
-
-# Generate website and serve locally
-readmex --website --serve
-
-# Deploy to GitHub Pages
-readmex --deploy
-
-# Enable debug mode (skip LLM calls for testing)
-readmex --debug
-
-# Enable silent mode (auto-generate without prompts)
-readmex --silent
-
-# Enable verbose mode (show detailed information)
-readmex --verbose
+python3 skills/readmex/scripts/scan.py <目标仓库> --output <目标仓库>/.readmex/scan.json
+python3 skills/readmex/scripts/readme_factor_audit.py <目标仓库>
+python3 skills/readmex/scripts/readme_view_audit.py <目标仓库>/README.md
+node skills/readmex/bin/render-diagram.mjs <图.json> --repo-root <目标仓库>
 ```
 
-This will:
-1. generate a `project_structure.txt` file, which contains the project structure.
-2. generate a `script_description.json` file, which contains the description of the scripts in the project.
-3. generate a `requirements.txt` file, which contains the requirements of the project.
-4. generate a `logo.png` file, which contains the logo of the project.
-5. generate a `README.md` file, which contains the README of the project.
+`diagram_type` 只能是 `architecture` 或 `workflow`。`--layout-json` 只输出布局，不写图片。
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+进一步阅读：[技能入口](skills/readmex/SKILL.md) · [审查尺度](skills/readmex/references/review-scorecard.md) · [图表写作与渲染](skills/readmex/references/renderer-authoring.md)。
 
+## 状态
 
+本文对应 `skill` 分支。该分支把三条流水线收进现在的技能目录；最近一次整合提交是 2026-11-05 的 `9dfde21`。技能用自然语言选择流水线，没有单独的版本化命令行接口。
 
-<!-- ROADMAP -->
-## 🗺️ Roadmap
+## 许可
 
-- [ ] Prompt Engineering for Logo Generation
-- [ ] Multi-language Support
-- [ ] Enhanced AI Descriptions for Project Features
-
-See the [open issues](https://github.com/aibox22/readmex/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTRIBUTING -->
-## 🤝 Contributing
-
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Top contributors:
-
-<a href="https://github.com/aibox22/readmex/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=aibox22/readmex" alt="contrib.rocks image" />
-</a>
-
-
-
-<!-- LICENSE -->
-## 🎗 License
-
-Copyright © 2024-2025 [readmex][readmex]. <br />
-Released under the [MIT][license-url] license.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTACT -->
-## 📧 Contact
-
-Email: lintaothu@foxmail.com
-
-Project Link: [https://github.com/aibox22/readmex](https://github.com/aibox22/readmex)
-
-QQ Group: 2161023585 (Welcome to join our QQ Group to discuss and get help!)
-
-<div align="center">
-  <img src="images/group_qr.png" alt="QQ Group QR Code" width="200">
-  <p><em>Scan QR code to join our QQ Group</em></p>
-</div>
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-<!-- REFERENCE LINKS -->
-[readmex]: https://github.com/aibox22/readmex
-
-<!-- MARKDOWN LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/github/contributors/aibox22/readmex.svg?style=flat-round
-[contributors-url]: https://github.com/aibox22/readmex/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/aibox22/readmex.svg?style=flat-round
-[forks-url]: https://github.com/aibox22/readmex/network/members
-[stars-shield]: https://img.shields.io/github/stars/aibox22/readmex.svg?style=flat-round
-[stars-url]: https://github.com/aibox22/readmex/stargazers
-[issues-shield]: https://img.shields.io/github/issues/aibox22/readmex.svg?style=flat-round
-[issues-url]: https://github.com/aibox22/readmex/issues
-[release-shield]: https://img.shields.io/github/v/release/aibox22/readmex?style=flat-round
-[release-url]: https://github.com/aibox22/readmex/releases
-[release-date-shield]: https://img.shields.io/github/release-date/aibox22/readmex?color=9cf&style=flat-round
-[license-shield]: https://img.shields.io/github/license/aibox22/readmex.svg?style=flat-round
-[license-url]: https://github.com/aibox22/readmex/blob/master/LICENSE.txt
-[Python]: https://img.shields.io/badge/Python-3776AB?style=flat-round&logo=python&logoColor=white
-[Python-url]: https://www.python.org/
-[OpenAI]: https://img.shields.io/badge/OpenAI-000000?style=flat-round&logo=openai&logoColor=white
-[OpenAI-url]: https://openai.com/
-[Flask]: https://img.shields.io/badge/Flask-000000?style=flat-round&logo=flask&logoColor=white
-[Flask-url]: https://flask.palletsprojects.com/
-[Rich]: https://img.shields.io/badge/Rich-000000?style=flat-round&logo=rich&logoColor=white
-[Rich-url]: https://rich.readthedocs.io/
-
-<!-- STAR HISTORY -->
-## ⭐ Star History
-
-<div align="center">
-  <a href="https://star-history.com/#aibox22/readmex&Date">
-    <img src="https://api.star-history.com/svg?repos=aibox22/readmex&type=Date" alt="Star History Chart" width="800">
-  </a>
-</div>
+[MIT 许可证](LICENSE.txt)。第三方材料见 [第三方许可通知](skills/readmex/THIRD_PARTY_NOTICES)：架构与流程渲染器改编自 [Archify](https://github.com/tt-a1i/archify)，快速创建说明改编自 [awesome-copilot](https://github.com/github/awesome-copilot)。

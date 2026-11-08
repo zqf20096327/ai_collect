@@ -44,7 +44,7 @@ flowchart LR
 - [**Pools and sessions**](docs/running.md#concepts): a pool runs agent sessions, each in its own worktree and [sandbox](docs/isolation.md).
 - [**Workflows and runs**](docs/packs.md#the-parts): a run is one ticket per step, each step in a pool, with retries and escalation.
 - [**GitHub and Linear intake**](docs/ingest.md): webhooks and polling turn issues and comments into tickets; PR review and merge steps ship in [`packs/github`](packs/github/README.md).
-- [**Triggers**](docs/notes/26-triggers.md): create tickets or start runs from counts, cron, shell checks or stall signals.
+- [**Triggers**](docs/notes/26-triggers.md): create tickets or start runs from counts, cron, events, Starlark handlers or scan signals.
 - [**Packs**](docs/packs.md): directories of pools, prompts, triggers and workflows you write.
 - [**Desk and A2A**](docs/notes/202-desk.md): a web UI and HTTP API over the admin socket, and an [A2A gateway](docs/notes/547-a2a-gateway.md) that hands escalations to another agent.
 
@@ -62,8 +62,8 @@ Shipped in [`packs/`](packs/):
   an issue starts a run. `implement` opens a PR, `review-merge` reviews and
   merges it, and a post-merge step checks the deploy. Failed steps retry,
   then escalate to a human.
-- **Stalled work** (`stall-check`): unclaimed tickets, silent sessions and
-  green PRs nobody merged each start a diagnose run that fixes what it can.
+- **Triage** (`triage`): scan findings (unclaimed tickets, silent sessions,
+  green PRs nobody merged) each start a diagnose run that fixes what it can.
 - **Red master** (`ci-repair`): a failing master SHA starts one repair run, keyed by the SHA.
 - **Linear intake** ([`packs/github`](packs/github/README.md#linear-instance)):
   an eligible Linear issue starts a run; comments flow back to the ticket.
@@ -74,9 +74,13 @@ Shipped in [`packs/`](packs/):
 ## Quick start
 Linux binaries are on [Releases](https://github.com/elee1766/jobshop/releases), or `nix run github:elee1766/jobshop/v<version>` ([notes](docs/notes/644-release.md)).
 ```
-go install github.com/elee1766/jobshop/cmd/jobshop@latest   # or: nix build github:elee1766/jobshop
-jobshop init ./root          # writes root/jobshop.yaml and root/pack.yaml
+nix profile add github:elee1766/jobshop
+jobshop init ./root
 ```
+
+This writes `root/jobshop.yaml` and `root/pack.yaml`. To install from source,
+follow [Develop](#develop). `go install ...@latest` alone cannot build the Desk
+assets, which are generated rather than stored in Git.
 
 `root/jobshop.yaml` selects the root pack with `pack: pack.yaml`.
 In `root/pack.yaml`, load one reusable pack ([`packs/agent`](packs/agent/pack.yaml)):
@@ -119,7 +123,18 @@ The rest is in [docs/running.md](docs/running.md).
 
 ## Develop
 
-`go build ./... && go vet ./... && go test ./... && golangci-lint run ./...`.
+Use Go and Node.js 22.12+ (or `nix develop`), then build the embedded frontend
+before Go:
+
+```sh
+npm --prefix ui ci
+npm --prefix ui run build
+go build ./... && go vet ./... && go test ./... && golangci-lint run ./...
+go install ./cmd/jobshop
+```
+
+Rebuild the frontend after UI changes. `pkg/desk/dist` is ignored build output.
+`nix build .#jobshop` builds both parts with a cached frontend derivation.
 Contributor rules for people and agents (plain SQL store queries, Desk `dist`, Nix
 `vendorHash`) are in [AGENTS.md](AGENTS.md); PR titles are conventional
 commits ([CONTRIBUTING.md](CONTRIBUTING.md)).

@@ -32,7 +32,10 @@ This plugin gives you control over where your text goes:
 - `translate_service = 'google'` or hosted `llm` providers: text is sent to the configured remote service.
 - `llm.provider = 'ollama'` with the default local endpoint keeps translation local; if `llm.endpoint` is set to a remote host, text is sent there.
 - API keys and source text/request bodies are passed to `curl` through stdin config, not through process arguments.
-- Cache is in-memory only and is not persisted to disk by this plugin.
+- Cache is in-memory only and is not persisted to disk by this plugin. Results are
+  separated by translation service and effective LLM provider, model, endpoint, and
+  system prompt. Changing these settings can cause a new request on the next
+  translation; returning to matching settings can reuse a cached result.
 
 For sensitive repositories, local Ollama models are the recommended setup.
 
@@ -86,6 +89,9 @@ If you already manage parsers through `nvim-treesitter`, you can keep doing so.
 
 ### Hover Translation
 
+Hover popups are positioned near the displayed cursor, including after scrolling.
+They may overlap neighboring splits when space is limited.
+
 ```lua
 vim.keymap.set('n', '<leader>th', '<cmd>CommentTranslateHover<CR>', { silent = true })
 ```
@@ -103,7 +109,9 @@ vim.keymap.set('n', '<leader>th', '<cmd>CommentTranslateHover<CR>', { silent = t
 ```
 
 Characterwise (`v`), linewise (`V`), and Visual Block (`Ctrl-V`) selections are
-supported. A block sends only the selected rectangle in one translation request.
+supported. Characterwise selections preserve UTF-8 character boundaries and
+respect the `selection` option (`inclusive`, `exclusive`, or `old`).
+A block sends only the selected rectangle in one translation request.
 Result lines replace the selected portions from top to bottom, preserving the
 text on either side. If the result has fewer lines, the remaining selected
 portions are removed; additional lines are inserted after the selected rows,

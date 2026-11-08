@@ -2,16 +2,18 @@
 
 [简体中文](README.md) | [English](README.en.md) · [Release](https://github.com/yiheng8023/antigravity-chinese/releases/latest) · [CI](https://github.com/yiheng8023/antigravity-chinese/actions/workflows/ci.yml)
 
-当前源码版本 **v3.3.38**，维护目标为 **Antigravity App 2.29.0 / VS Code 扩展 1.11.0**。这是社区开源项目，提供桌面客户端与 VS Code 扩展的本地中文补丁、备份还原，以及可选的中文交互插件。
+当前源码版本 **v3.3.39**，维护目标为 **Antigravity App 2.29.0 / VS Code 扩展 1.11.0**。这是社区开源项目，提供桌面客户端与 VS Code 扩展的本地中文补丁、备份还原，以及可选的中文交互插件。
 
-本次依据 [官方更新日志](https://antigravity.google/docs/changelog?tab=extensions&ide=vscode) 适配 VS Code 扩展 1.11.0，补齐命令范围、原生菜单和设置说明。扩展更新会覆盖本地汉化，更新后请重新执行 `node cli.js install:vscode`，再重新加载 VS Code 窗口。具体依据与验证见 [1.11.0 维护记录](docs/maintenance/vscode-1.11.0.md)；桌面端历史验证见 [2.29.0 维护记录](docs/maintenance/antigravity-2.29.0.md)。
+本版修复桌面和 VS Code Webview 共用运行时中的用户内容误译，保留消息正文、会话名称和文件名的原文，同时继续翻译界面操作。已安装旧版补丁的用户可重新运行 `node cli.js install`，再重新打开客户端。详见 [用户内容保护维护记录](docs/maintenance/user-content-boundaries.md)。
+
+VS Code 扩展更新会覆盖本地汉化。更新扩展后请重新执行 `node cli.js install:vscode`，再重新加载 VS Code 窗口。相关适配与验证见 [1.11.0 维护记录](docs/maintenance/vscode-1.11.0.md) 和 [桌面 2.29.0 维护记录](docs/maintenance/antigravity-2.29.0.md)。
 
 ## 支持与验证范围
 
 | 组件 | 实现 | 当前验证范围 |
 | --- | --- | --- |
-| Antigravity App | ASAR preload、原生菜单和弹窗文本补丁；版本备份与还原 | Windows 2.29.0 安装/还原副本，以及首页、版本菜单、自动化空状态、通用/外观/快捷键/项目设置、工作树与连接器弹层的指定文案检查 |
-| VS Code 扩展 | 清单与原生菜单翻译、Webview 本地代理、独立备份/还原 | 1.11.0 真实扩展副本安装/重复安装/字节一致还原、16 组菜单状态及渲染入口到代理/DOM 验证；实机结果见维护记录 |
+| Antigravity App | ASAR preload、原生菜单和弹窗文本补丁；版本备份与还原 | Windows 2.29.0 副本安装/还原、实机中文控件与正文和文件名保护的 DOM 样本；历史界面覆盖见桌面维护记录 |
+| VS Code 扩展 | 清单与原生菜单翻译、Webview 本地代理、独立备份/还原 | Windows 1.11.0 副本安装/重复安装/字节一致还原、16 组菜单状态及代理/DOM 验证；实机复核指定 Webview 中文控件 |
 | 社区中文插件 | 中文交互规则与维护诊断技能 | 可选安装；不代表 Google 官方插件 |
 | 独立 IDE、其他 IDE 扩展 | 尚无专用汉化安装器 | 不声明已适配 |
 | Antigravity CLI | 保留官方原生行为 | 不修改 CLI 二进制或终端界面 |
@@ -57,12 +59,14 @@ node cli.js install:vscode --path "<扩展目录>"
 
 ```bash
 npm run build:dict
-# 运行全套自动化测试（聚合 10 套测试入口）
+# 运行全套自动化测试（聚合 11 套测试入口）
 npm test
 npm run audit
 ```
 
-测试包括 DOM/代码保护、黄金语义、CDP、菜单、ASAR、路径探测、词库质检、VS Code 和边界回归。数量以当前脚本输出为准。CI 覆盖 Windows、macOS、Ubuntu × Node.js 18/20/22。
+测试包括 DOM/代码及用户内容保护、黄金语义、CDP、菜单、ASAR、路径探测、词库质检、VS Code 和边界回归。数量以当前脚本输出为准。CI 覆盖 Windows、macOS、Ubuntu × Node.js 18/20/22。
+
+内容保护按明确的界面边界保留消息正文、Markdown、文件树、路径导航、文件引用及项目/会话名称；同一区域的固定操作按钮继续翻译。修复依据与验证范围见[用户内容保护维护记录](docs/maintenance/user-content-boundaries.md)。
 
 提供明确来源的官方前端脚本后，可分析候选文本：
 
@@ -99,6 +103,8 @@ npm run scan:drift -- "<frontend-bundle.js>" --report "<report.json>"
 ## 👥 贡献者墙 (Contributors)
 
 诚挚感谢所有为本项目贡献代码、反馈 Bug、完善词库与文档的开发者们！
+
+- 感谢 **a705876883-arch** 提交用户内容保护修复方案，并提供误译复现与回归用例。 [PR #6](https://github.com/yiheng8023/antigravity-chinese/pull/6)
 
 <p align="center">
   <a href="https://github.com/yiheng8023/antigravity-chinese/graphs/contributors">

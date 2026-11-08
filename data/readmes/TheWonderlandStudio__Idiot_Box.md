@@ -23,6 +23,7 @@ Idiot Box is a modern, customizable desktop IDE designed to make development sim
 - **Debugger** — Node.js (inspector/CDP) and Python (debugpy/DAP) sessions with launch configurations, conditional breakpoints (gutter/`F9`), call stack, scopes/variables, watches, evaluate console and output.
 - **Editable Keybindings** — rebind any command from Settings with recording and conflict detection; overrides persist in `settings.json` and rebuild the native menu accelerators.
 - **Browser Panel** — webview-based tabs with port detection for your dev servers.
+- **Desktop Emulator** — QEMU desktop VMs in a panel: auto-detects `qemu-system-*`, create VMs (arch/RAM/CPU/disk/ISO), boot headless with the guest screen streamed into the panel (click + keyboard input), stop/delete, per-VM logs, and official ISO download links (Ubuntu, Debian, Fedora, Alpine, Arch, Kali, …). VMs live in `.appdata/qemu`.
 - **Project Panel** — grid/list file manager with native drag-and-drop, multi-select, clipboard operations, undo/redo, renaming, duplicate, context menus (open in new editor tab, open with, reveal, terminal here), and sidebar tree. Delete moves files to the OS Recycle Bin (`shell.trashItem`); permanent delete bypasses it. There is no app-internal trash folder — restore deleted files from your OS Recycle Bin.
 - **Media Viewer** — zoom / rotate / flip / pan for images and videos.
 - **Settings Window** — live-updating editor preferences (minimap, word wrap) via BroadcastChannel.
@@ -87,6 +88,12 @@ build/              esbuild configs + worker asset copy
 - Discord: https://discord.gg/Z9DynuSxRY
 
 Other sites offering "Idiot Box" for download are not official.
+
+## Sponsor
+
+[![Sponsor on GitHub Sponsors](https://img.shields.io/badge/Sponsor_on_GitHub_Sponsors-pink?style=flat-square&logo=githubsponsors)](https://github.com/sponsors/Jignesh1236)
+
+Idiot Box is free and open source. If it helps you, consider sponsoring its development via [GitHub Sponsors](https://github.com/sponsors/Jignesh1236).
 
 ## License
 

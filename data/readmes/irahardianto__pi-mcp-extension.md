@@ -325,7 +325,7 @@ The log is written to `<agent dir>/logs/pi-mcp.log` (JSON Lines, one event per l
 
 - **Off by default.** Without `PI_MCP_DEBUG=1` no log file is created.
 - **Private.** The directory is `0o700` and the file is `0o600`, like the OAuth credential files.
-- **Bounded.** The file is rotated to `pi-mcp.log.1` at ~2 MB; a single backup is kept.
+- **Bounded.** The file is rotated to `pi-mcp.log.1` at ~2 MB; a single backup is kept. Concurrent Pi processes share the log without locking: a rotation that loses that race is not an error (the entry is still appended), and re-checking the size before `rename` skips rotating when the file shrank or disappeared so a peer's freshly rotated backup is not overwritten while still rotating when a peer merely appended.
 - **Redacted.** Only allow-listed field names are recorded, and a delimiter-aware pass masks anything that looks like a credential:
   - OAuth tokens, authorization codes, and PKCE verifiers
   - API keys and other JSON or key/value secrets (`api_key`, `x-api-key`, `private_key`, `password`, `secret`, `token`, and prefixed forms such as `db_password` or `aws_secret_access_key`)
@@ -378,7 +378,7 @@ flowchart TD
 7. **AbortSignal** is wired through to `notifications/cancelled` for clean cancellation
 8. **Reconnection & recovery** uses a fixed delay schedule with configurable max retries on initial failure, health check failure, or unexpected transport close/error (`client.onclose` / `client.onerror`), while mid-session HTTP `401` / `403 insufficient_scope` invalidates stale tokens and surfaces a re-authorization hint
 9. **`list_changed` notifications** trigger re-discovery, deactivating stale tools automatically and invalidating the cached resource catalog
-10. **Session shutdown** cancels pending auth/connection flows, stops the callback server, deactivates all tools, flushes the debug log, and cleanly stops all servers (with process-tree `SIGTERM` → `SIGKILL` and pipe cleanup for `stdio` child processes)
+10. **Session shutdown** cancels pending auth/connection flows, stops the callback server, deactivates all tools, flushes the debug log, and cleanly stops all servers (with process-tree `SIGTERM` → `SIGKILL` — a PID the kernel refuses to signal is left alone instead of being polled — and pipe cleanup for `stdio` child processes)
 
 ## MCP Spec Compliance
 

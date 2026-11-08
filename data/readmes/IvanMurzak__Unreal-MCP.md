@@ -152,6 +152,9 @@ Updating in place must always leave you running the **new** code. The risk is UE
   node bin/unreal-mcp-cli.js update <YourProject>            # default: clean rebuild on version change
   node bin/unreal-mcp-cli.js update <YourProject> --force    # re-copy even when versions match
   node bin/unreal-mcp-cli.js update <YourProject> --no-clean # keep the existing build cache
+  node bin/unreal-mcp-cli.js update <YourProject> --no-extensions # leave the installed extensions as they are
+  node bin/unreal-mcp-cli.js update <YourProject> --no-self  # leave the CLI as it is
+  node bin/unreal-mcp-cli.js update <YourProject> --check    # only report; exit code 2 when something is outdated
   ```
 
 - **Manual copy → clear the cache yourself.** If you overwrite `<YourProject>/Plugins/UnrealMCP/` by hand, **close the editor first**, delete `<YourProject>/Plugins/UnrealMCP/Intermediate/` and the C++ `Binaries/` (keep `Binaries/ThirdParty/` if a bundled bridge is present), then relaunch so UE recompiles cleanly.
@@ -232,7 +235,10 @@ The `unreal-rql` skill (written by `unreal-skill-generate`) teaches the language
 | `console-run-command` | Run a console command / CVar |
 
 Logs, PIE state and the selection are RQL: `console | where Verbosity == "Error"`, `editor | set IsPlaying = true`,
-`editor | set Selection = [...]`.
+`editor | set Selection = [...]`. Play testing simulates the game inside the call (deterministic, independent of the
+editor ticking between calls): `editor | call StartPlay()`, `editor | call AdvancePlay(1.5, 0, "W, LeftShift")` (holds keys
+for 1.5 s, returns the pawn's location, velocity, how far the call moved it, movement mode and applied mapping contexts), `editor | call StopPlay()`;
+the Enhanced Input extension adds `enhancedInput | call InjectInput(action, value, seconds)` ([docs/rql.md](docs/rql.md#play-testing)).
 
 </details>
 
@@ -268,7 +274,7 @@ wiring is not exposed to Python: use the Blueprint tools for that.
 | `source-update` | Edit a source file |
 | `source-delete` | Delete a source file |
 | `source-list` | List module source files |
-| `source-compile` | Compile project C++ (Live Coding when active, else UBT) with a structured error report |
+| `source-compile` | Compile project C++ (Live Coding when active, else UBT) with a structured error report; new classes or changed reflected declarations (`restartRequired`) say how to rebuild and restart the editor |
 
 All file operations are jailed to `<Project>/Source/`.
 
@@ -318,10 +324,10 @@ Extensions are beta and need Unreal Engine 5.7+, Unreal MCP 0.26.0+ in the same 
 | --- | --- | --- |
 | **[AI ControlRig](extensions/UnrealAIControlRig/README.md)** | `com.ivanmurzak.unreal-ai-control-rig` | Create rigs with bones, controls and a two-bone IK solver; query Control Rig blueprints and components |
 | **[AI EnhancedInput](extensions/UnrealAIEnhancedInput/README.md)** | `com.ivanmurzak.unreal-ai-enhanced-input` | Query Input Actions and Mapping Contexts, create actions and contexts, map keys |
-| **[AI GAS](extensions/UnrealAIGAS/README.md)** | `com.ivanmurzak.unreal-ai-gas` | Gameplay Ability System: query ability, effect and attribute-set classes, grant abilities to actors |
-| **[AI Landscape](extensions/UnrealAILandscape/README.md)** | `com.ivanmurzak.unreal-ai-landscape` | Landscape and Water: create, sculpt and paint landscapes; query landscapes, water bodies and water zones |
+| **[AI GAS](extensions/UnrealAIGAS/README.md)** | `com.ivanmurzak.unreal-ai-gas` | Gameplay Ability System authoring without C++: effects (cost, cooldown, damage, regeneration), ability Blueprints, ability system components with a ready-made Health / Mana / Stamina attribute set, input bindings, Play In Editor checks |
+| **[AI Landscape](extensions/UnrealAILandscape/README.md)** | `com.ivanmurzak.unreal-ai-landscape` | Landscape and Water: create, sculpt and paint landscapes; create oceans, lakes and rivers; query landscapes, water bodies and water zones |
 | **[AI Niagara](extensions/UnrealAINiagara/README.md)** | `com.ivanmurzak.unreal-ai-niagara` | Niagara VFX: query systems and their emitters, place systems in the level |
-| **[AI PCG](extensions/UnrealAIPCG/README.md)** | `com.ivanmurzak.unreal-ai-pcg` | Procedural Content Generation: query graphs and PCG components, add components and run generation |
+| **[AI PCG](extensions/UnrealAIPCG/README.md)** | `com.ivanmurzak.unreal-ai-pcg` | Procedural Content Generation: author PCG graphs (nodes, connections, settings, parameters), place them on volumes, generate scatters (forests, rocks, props) and read the counts |
 
 ![AI Game Developer — Unreal MCP](https://github.com/IvanMurzak/Unreal-MCP/blob/main/docs/img/promo/hazzard-divider.svg?raw=true)
 
@@ -364,7 +370,7 @@ The full 18-command surface:
 | `run-tool` | Invoke an MCP tool via the project's local MCP server (HTTP) |
 | `run-system-tool` | Invoke a system tool via the project's local MCP server (HTTP) |
 | `bootstrap-local` | Build the bridge from source into `<project>/Intermediate/UnrealMCP` (the server is downloaded by `setup-mcp`, not built) |
-| `update` | Update the UnrealMCP plugin installed in a project from a local checkout or the version-matched GitHub source asset |
+| `update [path]` | Update everything: the project's UnrealMCP plugin and installed extensions to their latest versions (close the editor first), then `unreal-mcp-cli` itself. Outside a project it updates only the CLI. `--check` reports (exit 2 when something is outdated); `--no-self`, `--no-project`, `--no-extensions`, `--no-clean` skip a step |
 | `install-engine` | Detect installed Unreal engines; for a missing version, link to the Epic launcher |
 | `setup-skills` | Write a Claude-Code skill stub that drives this project's Unreal MCP server |
 

@@ -5,7 +5,7 @@ Text to image, image to image, inpainting, upscaling, image editing, text to vid
 the phone. No server, no account, no cloud.
 
 <p align="center">
-  <img src="media/workflows.png" alt="Text to image, image to image and image to video, each as a node graph on an Android phone">
+  <img src="media/screens.jpg" alt="Nine screens of the app on a phone: a picture from a text prompt, the node graph, a MiniMax H3 clip with sound, painting an inpaint mask, a render in progress, sending a picture to another flow, the Models and Flows pages, and Results">
 </p>
 
 **[Download the APK](https://github.com/AbrahamPaulJ/nightmare-mobile/releases/latest)** ·
@@ -16,7 +16,8 @@ the phone. No server, no account, no cloud.
 
 Android 12 or newer, arm64, a Snapdragon with a Hexagon NPU. Models are not in the APK: pick one
 and it downloads on first use; the app shows which ones your phone can run. On a phone without a
-Snapdragon (MediaTek Dimensity, Exynos, Google Tensor) the app says so and offers no models.
+Snapdragon (MediaTek Dimensity, Exynos, Google Tensor) the app says so and offers no downloads: Text to image and
+Image to image still run there with an imported SDXL MNN or SD 1.5 CPU model, on the GPU or CPU.
 
 | chip | runs |
 |---|---|

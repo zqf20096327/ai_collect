@@ -289,6 +289,13 @@ openai_api_key_cmd = "op read 'op://vault/OpenAI/key'"
 openai_provider_name = "openai"
 ```
 
+## Structured worker handoffs
+
+Managed tasks started with `--structured-report` use the validated `TaskReport`
+tool rather than JSON extracted from assistant prose. A valid handoff ends the
+worker turn; model readiness remains advisory, not proof that tests passed.
+See [structured task reports](docs/structured-task-reports.md).
+
 ## Experimental background tasks
 
 The [managed agent spike](docs/managed-agent-spike.md) adds `claux task` commands
@@ -317,9 +324,53 @@ claux -p "explain this error" --output-format json
 claux -p "repair the service" --output-format json \
   --transcript ./artifacts/claux-transcript.json
 
+# Persist a one-shot session; JSON output includes session_id.
+claux -p "inspect this repository" --persist-session --output-format json
+claux -p "continue the investigation" --resume SESSION_ID --output-format json
+
 # Resume a session
 claux --resume 20260401-143022
 ```
+
+Headless continuation uses the saved session's model binding and original
+working directory; it rejects an explicit `--model` override or a changed
+working directory. History is saved after each one-shot turn, including a
+failed turn when possible. A hard interruption before that save can leave the
+session behind the partial `--transcript` checkpoint; inspect the transcript
+and any tool effects before retrying. Do not run concurrent continuations of
+the same session: session writes are not coordinated across processes.
+
+For a supervised one-shot run, `--permission-gate /absolute/path/to/gate`
+requires an external decision for each otherwise-permitted tool call. Claux
+sends one JSON object on stdin containing `schema_version`, a unique
+`request_id`, `tool`, exact `input`, `cwd`, `read_only`, and
+`proposed_decision`. The executable must return exactly one JSON object such as
+`{"request_id":"<same id>","decision":"deny"}`; `allow` and `deny` are the
+only accepted decisions. A response applies only to that request. Missing,
+invalid, mismatched, oversized, failed, or timed-out responses deny the call.
+The gate has a 10-second deadline, receives an empty environment, and is a
+trusted operator-supplied executable. It does not bypass an existing deny rule
+or filesystem containment.
+
+Gate mode currently refuses plugins and configured MCP servers and blocks
+`Agent`, `TaskManage`, and `McpManage`: their nested execution is not yet
+wired through the gate. The gate is a synchronous decision interface, not a
+durable human approval queue, and it does not itself isolate network or host
+resources. Supervised deployments must enforce those boundaries separately.
+
+`--event-log FILE` adds a private, metadata-only JSON Lines lifecycle log to a
+one-shot run. The file must not already exist and must differ from the
+transcript. Records contain `schema_version`, a zero-based `sequence`,
+monotonic `elapsed_ms`, `event`, and event-specific `details`. Events cover
+turn start/finish, model requests and retries, and tool start/running/finish
+and result status. Prompts, model text, tool inputs and tool outputs are not
+included. Unknown tool names are reported as `other`.
+
+The log is flushed as events arrive but is not a transactional journal or a
+replacement for the transcript. A missing final event means the turn's
+outcome is unknown. If writing fails, Claux cancels the turn; a tool may
+already have changed state, so inspect the transcript and effects before
+retrying. The final event is emitted after session and transcript saves.
 
 JSON output has a versioned contract suitable for CI, agent evaluations, and
 other automation:
@@ -858,3 +909,10 @@ inactive log files and removes inactive logs older than seven days; live process
 are excluded. Platforms without process-liveness checks retain old runs for manual
 cleanup. Diagnostic events use a bounded queue; a full queue drops events rather
 than blocking the UI. File failures produce a warning and stop diagnostic writing.
+
+### Filesystem search limits
+
+Glob and Grep use bounded blocking workers with cancellation checks, a five-second
+cooperative budget, entry/result limits, and explicit partial-results notices.
+Grep also bounds file reads. See [filesystem search limits](docs/filesystem-search-limits.md)
+for defaults and filesystem I/O limitations.
