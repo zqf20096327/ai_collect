@@ -4024,13 +4024,16 @@
    "Python": 6,
    "Shell": 0
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261109",
   "dim_ts": {
    "release": "20261027",
    "security": "20261027",
    "contrib": "20261027",
-   "lang": "20261027"
-  }
+   "lang": "20261027",
+   "commit": "20261109"
+  },
+  "commit_90d": 432,
+  "commit_7d": 57
  },
  "ved-rl/pinnforge": {
   "rel_ver": null,

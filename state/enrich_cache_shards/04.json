@@ -289,8 +289,8 @@
   }
  },
  "VoltAgent/awesome-ai-agent-papers": {
-  "commit_7d": 4,
-  "commit_90d": 54,
+  "commit_7d": 1,
+  "commit_90d": 53,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -299,10 +299,10 @@
   "sec_ids": [],
   "contrib_n": 18,
   "lang": {},
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4137,6 +4137,45 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "zann06/AksesAI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 71,
+   "JavaScript": 15,
+   "PLpgSQL": 12,
+   "CSS": 1
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
+ },
+ "glassray/good-agent-tracing": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

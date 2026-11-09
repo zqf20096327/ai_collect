@@ -1,11 +1,11 @@
 {
  "hacksider/Deep-Live-Cam": {
-  "commit_7d": 2,
-  "commit_90d": 31,
+  "commit_7d": 1,
+  "commit_90d": 30,
   "rel_ver": "2.8",
   "rel_pub": "2026-10-22",
-  "rel_days": 8,
-  "rel_n90": 3,
+  "rel_days": 18,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -17,10 +17,10 @@
    "Python": 100,
    "Batchfile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

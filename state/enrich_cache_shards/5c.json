@@ -300,12 +300,12 @@
   }
  },
  "Source-Robotics/PAROL6-Desktop-robot-arm": {
-  "commit_7d": 14,
-  "commit_90d": 20,
-  "rel_ver": "V1",
-  "rel_pub": "2025-03-08",
-  "rel_days": 604,
-  "rel_n90": 0,
+  "commit_7d": 25,
+  "commit_90d": 44,
+  "rel_ver": "V1.1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 5,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -320,10 +320,10 @@
    "CSS": 1,
    "C": 0
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5372,6 +5372,27 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "kubet/mikroos": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 95,
+   "CSS": 5,
+   "HTML": 0
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

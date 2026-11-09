@@ -27,11 +27,11 @@
   }
  },
  "lucidrains/vit-pytorch": {
-  "commit_7d": 2,
-  "commit_90d": 16,
+  "commit_7d": 1,
+  "commit_90d": 17,
   "rel_ver": "1.17.8",
   "rel_pub": "2026-02-11",
-  "rel_days": 264,
+  "rel_days": 271,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -43,10 +43,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4413,6 +4413,62 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "jangviktor-web/nihaixia-app": {
+  "commit_90d": 270,
+  "commit_7d": 70,
+  "rel_ver": "v1.11.32",
+  "rel_pub": "2026-11-07",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Dart": 80,
+   "Python": 19,
+   "HTML": 1,
+   "Shell": 0,
+   "Kotlin": 0
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "commit": "20261109",
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
+ },
+ "circuitlab-app/circuitlab": {
+  "rel_ver": "v1.4.1",
+  "rel_pub": "2026-11-08",
+  "rel_days": 1,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 98,
+   "CSS": 1,
+   "HTML": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

@@ -5007,5 +5007,28 @@
    "contrib": "20261108",
    "lang": "20261108"
   }
+ },
+ "acowork/acowork": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 63,
+   "TypeScript": 34,
+   "Shell": 1,
+   "PowerShell": 1,
+   "Python": 1
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
  }
 }

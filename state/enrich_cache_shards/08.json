@@ -4441,5 +4441,54 @@
    "contrib": "20261108",
    "lang": "20261108"
   }
+ },
+ "076923/076923.github.io": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "SCSS": 57,
+   "HTML": 37,
+   "JavaScript": 5,
+   "Ruby": 1
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
+ },
+ "BugWhispererChen/AIYIchat": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 11,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 84,
+   "HTML": 8,
+   "JavaScript": 4,
+   "CSS": 3,
+   "Shell": 1
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
  }
 }

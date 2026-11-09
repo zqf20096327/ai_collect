@@ -4283,13 +4283,16 @@
    "PowerShell": 1,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261109",
   "dim_ts": {
    "release": "20261030",
    "security": "20261030",
    "contrib": "20261030",
-   "lang": "20261030"
-  }
+   "lang": "20261030",
+   "commit": "20261109"
+  },
+  "commit_90d": 27,
+  "commit_7d": 3
  },
  "ritrolabs/ritro": {
   "rel_ver": null,
@@ -4563,6 +4566,33 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "termilly/termilly": {
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 1,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 47,
+   "C#": 46,
+   "CSS": 5,
+   "HTML": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

@@ -4702,5 +4702,30 @@
    "contrib": "20261108",
    "lang": "20261108"
   }
+ },
+ "Iseenope/bilibili-mcp-server": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-07-18",
+  "rel_days": 114,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 2,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
  }
 }

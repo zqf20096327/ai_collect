@@ -308,11 +308,11 @@
   }
  },
  "InternScience/GraphGen": {
-  "commit_90d": 1,
-  "commit_7d": 0,
+  "commit_90d": 4,
+  "commit_7d": 3,
   "rel_ver": "v0.1.0.post20250930",
   "rel_pub": "2025-09-30",
-  "rel_days": 382,
+  "rel_days": 405,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -325,10 +325,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4600,6 +4600,31 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "EnzoGitHub27/datapizza-streamlit-interface": {
+  "rel_ver": "v1.16.1",
+  "rel_pub": "2026-11-08",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 90,
+   "Shell": 6,
+   "Batchfile": 3
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

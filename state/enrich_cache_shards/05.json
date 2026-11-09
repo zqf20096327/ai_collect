@@ -2599,13 +2599,16 @@
    "CSS": 6,
    "HTML": 6
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261109",
   "dim_ts": {
    "release": "20261022",
    "security": "20261022",
    "contrib": "20261022",
-   "lang": "20261022"
-  }
+   "lang": "20261022",
+   "commit": "20261109"
+  },
+  "commit_90d": 38,
+  "commit_7d": 3
  },
  "atfortes/LLMSymbolicReasoningBench": {
   "rel_ver": null,
@@ -4837,6 +4840,55 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "Master-Norna/yan": {
+  "rel_ver": "v1.2.5",
+  "rel_pub": "2026-11-08",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "JavaScript": 91,
+   "CSS": 8,
+   "HTML": 1,
+   "C#": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
+ },
+ "YeStarOne/feiyuos-stardew-ai-farmer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 92,
+   "Python": 4,
+   "C#": 3,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

@@ -135,11 +135,11 @@
   }
  },
  "jtablesaw/tablesaw": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 9,
+  "commit_7d": 9,
   "rel_ver": "v0.44.4",
   "rel_pub": "2026-01-09",
-  "rel_days": 280,
+  "rel_days": 304,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -153,10 +153,10 @@
    "HTML": 1,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4445,6 +4445,26 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "Levinna/DeCo-VTON": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "Shell": 4
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

@@ -87,12 +87,12 @@
   }
  },
  "Akegarasu/lora-scripts": {
-  "commit_7d": 0,
-  "commit_90d": 0,
-  "rel_ver": "v1.10.0",
-  "rel_pub": "2024-10-05",
-  "rel_days": 758,
-  "rel_n90": 0,
+  "commit_7d": 10,
+  "commit_90d": 23,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-03",
+  "rel_days": 6,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -107,10 +107,10 @@
    "Shell": 0,
    "Jupyter Notebook": 0
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

@@ -1329,11 +1329,11 @@
   }
  },
  "hanzohanzhe/Grandet": {
-  "commit_7d": 2,
-  "commit_90d": 114,
+  "commit_7d": 4,
+  "commit_90d": 119,
   "rel_ver": "skill-v0.3.0-build.20261018b",
   "rel_pub": "2026-10-18",
-  "rel_days": 13,
+  "rel_days": 22,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1347,10 +1347,10 @@
    "Python": 17,
    "HTML": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4991,6 +4991,27 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "eneskirca/raw-motion": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 67,
+   "Python": 29,
+   "HTML": 3
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

@@ -142,11 +142,11 @@
   }
  },
  "johannfaouzi/pyts": {
-  "commit_90d": 36,
-  "commit_7d": 1,
+  "commit_90d": 38,
+  "commit_7d": 2,
   "rel_ver": "0.14.1",
   "rel_pub": "2026-10-21",
-  "rel_days": 12,
+  "rel_days": 19,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -158,10 +158,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4198,6 +4198,77 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "DarkBytee/DuckAi": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 68,
+   "HTML": 31,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
+ },
+ "minanyang/token2agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Astro": 61,
+   "CSS": 13,
+   "JavaScript": 11,
+   "MDX": 10,
+   "TypeScript": 5
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
+ },
+ "Gourav2609/lipik": {
+  "rel_ver": "v0.1.14",
+  "rel_pub": "2026-11-02",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 176,
+  "lang": {
+   "Rust": 64,
+   "TypeScript": 18,
+   "HTML": 7,
+   "Python": 4,
+   "CSS": 3
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

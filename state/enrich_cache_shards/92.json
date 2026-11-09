@@ -4220,5 +4220,31 @@
    "contrib": "20261105",
    "lang": "20261105"
   }
+ },
+ "ssvxpipka-jpg/Lightman-AI-DMX": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 8,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 86,
+   "Shell": 9,
+   "Batchfile": 4,
+   "Inno Setup": 2
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
  }
 }

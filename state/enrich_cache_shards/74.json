@@ -91,12 +91,12 @@
   }
  },
  "assafelovic/gpt-researcher": {
-  "commit_7d": 7,
-  "commit_90d": 138,
+  "commit_7d": 3,
+  "commit_90d": 141,
   "rel_ver": "v3.7.0",
   "rel_pub": "2026-09-26",
-  "rel_days": 20,
-  "rel_n90": 3,
+  "rel_days": 44,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -111,10 +111,10 @@
    "CSS": 4,
    "HCL": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

@@ -1,10 +1,10 @@
 {
  "ultralytics/yolov5": {
-  "commit_7d": 5,
-  "commit_90d": 22,
+  "commit_7d": 4,
+  "commit_90d": 26,
   "rel_ver": "v7.0",
   "rel_pub": "2022-11-22",
-  "rel_days": 1441,
+  "rel_days": 1448,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -18,10 +18,10 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

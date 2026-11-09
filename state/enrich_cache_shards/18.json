@@ -4451,5 +4451,52 @@
    "contrib": "20261108",
    "lang": "20261108"
   }
+ },
+ "alchaincyf/karpathy-skill": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "commit": "20261109",
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
+ },
+ "Zentsy/MangAItranslator": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-10-25",
+  "rel_days": 15,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 60,
+   "HTML": 37,
+   "Rust": 1,
+   "CSS": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
  }
 }

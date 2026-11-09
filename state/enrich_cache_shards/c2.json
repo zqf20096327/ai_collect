@@ -205,12 +205,12 @@
   }
  },
  "opensolon/solon": {
-  "commit_90d": 158,
-  "commit_7d": 0,
+  "commit_90d": 128,
+  "commit_7d": 6,
   "rel_ver": "v4.1.1",
   "rel_pub": "2026-10-01",
-  "rel_days": 23,
-  "rel_n90": 5,
+  "rel_days": 39,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -227,10 +227,10 @@
    "FreeMarker": 0,
    "Kotlin": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

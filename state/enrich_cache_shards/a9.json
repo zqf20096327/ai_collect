@@ -115,7 +115,7 @@
   "commit_7d": 0,
   "rel_ver": "global-v0.1.0",
   "rel_pub": "2026-10-06",
-  "rel_days": 27,
+  "rel_days": 34,
   "rel_n90": 2,
   "rel_pre": true,
   "rel_none": false,
@@ -128,10 +128,10 @@
    "Kotlin": 96,
    "Python": 4
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

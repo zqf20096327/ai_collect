@@ -1317,12 +1317,12 @@
   }
  },
  "iFurySt/open-computer-use": {
-  "commit_90d": 79,
-  "commit_7d": 14,
-  "rel_ver": "v1.1.3",
-  "rel_pub": "2026-11-01",
-  "rel_days": 1,
-  "rel_n90": 11,
+  "commit_90d": 89,
+  "commit_7d": 11,
+  "rel_ver": "v1.1.4",
+  "rel_pub": "2026-11-07",
+  "rel_days": 2,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1337,10 +1337,10 @@
    "JavaScript": 8,
    "Shell": 4
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4545,6 +4545,29 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "MarwanAshraf22/stack-architect": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 9,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

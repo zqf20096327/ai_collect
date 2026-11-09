@@ -263,11 +263,11 @@
   }
  },
  "gfo-project/Gradient-Free-Optimizers": {
-  "commit_90d": 11,
-  "commit_7d": 0,
+  "commit_90d": 12,
+  "commit_7d": 1,
   "rel_ver": "v1.13.0",
   "rel_pub": "2026-05-15",
-  "rel_days": 171,
+  "rel_days": 178,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -281,10 +281,10 @@
    "Jupyter Notebook": 25,
    "Makefile": 0
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

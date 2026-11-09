@@ -4600,5 +4600,55 @@
    "contrib": "20261108",
    "lang": "20261108"
   }
+ },
+ "chaffybird56/PCBSolderRobot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C": 42,
+   "Python": 24,
+   "Linker Script": 12,
+   "Assembly": 10,
+   "C++": 7
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
+ },
+ "AcidGr/Acid-Browser": {
+  "rel_ver": "v0.5.2",
+  "rel_pub": "2026-11-06",
+  "rel_days": 3,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Java": 91,
+   "JavaScript": 5,
+   "HTML": 4,
+   "Shell": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
  }
 }

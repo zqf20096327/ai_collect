@@ -3866,13 +3866,16 @@
    "JavaScript": 2,
    "PowerShell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261109",
   "dim_ts": {
    "release": "20261024",
    "security": "20261024",
    "contrib": "20261024",
-   "lang": "20261024"
-  }
+   "lang": "20261024",
+   "commit": "20261109"
+  },
+  "commit_90d": 60,
+  "commit_7d": 0
  },
  "m-rui001/Persisto-Mate": {
   "rel_ver": "v1.5.3-mate",

@@ -112,11 +112,11 @@
   }
  },
  "ultralytics/yolov3": {
-  "commit_7d": 4,
-  "commit_90d": 18,
+  "commit_7d": 2,
+  "commit_90d": 20,
   "rel_ver": "v9.6.0",
   "rel_pub": "2021-11-14",
-  "rel_days": 1814,
+  "rel_days": 1821,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -131,10 +131,10 @@
    "Dockerfile": 1,
    "Shell": 1
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -693,7 +693,7 @@
   }
  },
  "Zefan-Cai/R-KV": {
-  "commit_90d": 20,
+  "commit_90d": 21,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -708,10 +708,10 @@
    "ANTLR": 1,
    "Jupyter Notebook": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4695,13 +4695,16 @@
    "Shell": 9,
    "Jinja": 1
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261109",
   "dim_ts": {
    "release": "20261103",
    "security": "20261103",
    "contrib": "20261103",
-   "lang": "20261103"
-  }
+   "lang": "20261103",
+   "commit": "20261109"
+  },
+  "commit_90d": 49,
+  "commit_7d": 47
  },
  "Dharshaneshwaran/hyperpod": {
   "rel_ver": null,
@@ -4794,6 +4797,54 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "arpittak027/OUTPOST": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 94,
+   "CSS": 4,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
+ },
+ "kami9811/plamo-local-translator-public": {
+  "rel_ver": "v0.1.5",
+  "rel_pub": "2026-11-06",
+  "rel_days": 3,
+  "rel_n90": 7,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 37,
+   "C#": 20,
+   "TypeScript": 16,
+   "Swift": 13,
+   "CSS": 5
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

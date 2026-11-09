@@ -1726,12 +1726,12 @@
   }
  },
  "Tencent-Hunyuan/Hy-Memory": {
-  "commit_7d": 155,
-  "commit_90d": 264,
-  "rel_ver": "v1.0.5",
-  "rel_pub": "2026-10-28",
-  "rel_days": 5,
-  "rel_n90": 5,
+  "commit_7d": 139,
+  "commit_90d": 404,
+  "rel_ver": "v1.0.6",
+  "rel_pub": "2026-11-06",
+  "rel_days": 3,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1746,10 +1746,10 @@
    "CSS": 2,
    "Shell": 0
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4413,6 +4413,45 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "tubeagentkit/youtube-transcript-hermes-plugin": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
+ },
+ "xdisform/Spider": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 58,
+   "JavaScript": 32,
+   "Shell": 10,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

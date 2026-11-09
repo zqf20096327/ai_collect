@@ -285,12 +285,12 @@
   }
  },
  "hydropix/TranslateBooksWithLLMs": {
-  "commit_90d": 82,
-  "commit_7d": 2,
-  "rel_ver": "v1.5.17",
-  "rel_pub": "2026-10-23",
-  "rel_days": 10,
-  "rel_n90": 11,
+  "commit_90d": 113,
+  "commit_7d": 39,
+  "rel_ver": "v1.5.22",
+  "rel_pub": "2026-11-07",
+  "rel_days": 2,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -305,10 +305,10 @@
    "CSS": 2,
    "Batchfile": 1
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4820,6 +4820,56 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "latenitefilms/CorridorKeyByLateNite": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 90,
+   "Metal": 4,
+   "Python": 4,
+   "Objective-C": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
+ },
+ "pentiumcoder/hy-rag": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 9,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 82,
+   "TypeScript": 15,
+   "HTML": 2,
+   "CSS": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

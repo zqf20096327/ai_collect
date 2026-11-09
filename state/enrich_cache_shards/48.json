@@ -130,12 +130,12 @@
   }
  },
  "yaojingang/GEOFlow": {
-  "commit_7d": 1,
-  "commit_90d": 138,
+  "commit_7d": 5,
+  "commit_90d": 135,
   "rel_ver": "v3.2.0-beta.1",
   "rel_pub": "2026-09-16",
-  "rel_days": 47,
-  "rel_n90": 4,
+  "rel_days": 54,
+  "rel_n90": 3,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -150,10 +150,10 @@
    "JavaScript": 5,
    "Python": 2
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1949,13 +1949,16 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261109",
   "dim_ts": {
    "release": "20261022",
    "security": "20261022",
    "contrib": "20261022",
-   "lang": "20261022"
-  }
+   "lang": "20261022",
+   "commit": "20261109"
+  },
+  "commit_90d": 324,
+  "commit_7d": 42
  },
  "AlexGoOn/ason": {
   "rel_ver": null,
@@ -4374,6 +4377,29 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "loki2046-mao/cola-skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 57,
+   "Python": 36,
+   "JavaScript": 6,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

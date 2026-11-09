@@ -149,12 +149,12 @@
   }
  },
  "aisingapore/TagUI": {
-  "commit_7d": 9,
-  "commit_90d": 10,
-  "rel_ver": "v6.110.0",
-  "rel_pub": "2022-06-20",
-  "rel_days": 1596,
-  "rel_n90": 0,
+  "commit_7d": 11,
+  "commit_90d": 21,
+  "rel_ver": "v7.0.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -169,10 +169,10 @@
    "Batchfile": 6,
    "Shell": 6
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

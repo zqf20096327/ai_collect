@@ -149,11 +149,11 @@
   }
  },
  "fairlearn/fairlearn": {
-  "commit_90d": 71,
+  "commit_90d": 72,
   "commit_7d": 1,
   "rel_ver": "v0.15.0",
   "rel_pub": "2026-10-12",
-  "rel_days": 19,
+  "rel_days": 28,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -168,10 +168,10 @@
    "PowerShell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4260,6 +4260,56 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "efficiencyx/JunOS": {
+  "rel_ver": "v1.3.2",
+  "rel_pub": "2026-11-07",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-21",
+  "sec_ids": [
+   "GHSA-3p7p-m86h-9j93(-,critical)"
+  ],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 29,
+   "PHP": 18,
+   "Kotlin": 14,
+   "PowerShell": 11,
+   "Shell": 7
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
+ },
+ "jongoh369/aurax-ucil": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 63,
+   "HTML": 36,
+   "Batchfile": 2
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

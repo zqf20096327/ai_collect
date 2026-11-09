@@ -4249,5 +4249,30 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "managedcode/MLXSharp": {
+  "rel_ver": "v0.0.1",
+  "rel_pub": "2025-10-05",
+  "rel_days": 400,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C#": 65,
+   "C++": 35,
+   "CMake": 1
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
  }
 }

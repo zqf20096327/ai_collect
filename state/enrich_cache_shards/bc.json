@@ -4284,10 +4284,10 @@
   }
  },
  "NeuralNomadsAI/CodeNomad": {
-  "commit_90d": 613,
-  "commit_7d": 105,
-  "rel_ver": "v1.0.1-dev-20261101-fb44655c",
-  "rel_pub": "2026-11-01",
+  "commit_90d": 706,
+  "commit_7d": 94,
+  "rel_ver": "v1.0.1-dev-20261108-175b1820",
+  "rel_pub": "2026-11-08",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
@@ -4304,10 +4304,10 @@
    "CSS": 2,
    "PowerShell": 0
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
@@ -4514,6 +4514,52 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "NaniToka/CloudPulse-AI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 57,
+   "TypeScript": 43,
+   "Dockerfile": 0,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
+ },
+ "x90d-dev/x90d-Demo-Version": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 93,
+   "CSS": 2,
+   "PowerShell": 1,
+   "HTML": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

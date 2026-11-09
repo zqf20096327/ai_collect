@@ -4508,5 +4508,26 @@
    "contrib": "20261108",
    "lang": "20261108"
   }
+ },
+ "SIMARSINGHRAYAT/LINUX-SHORTCUT-CENTER": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 94,
+   "CSS": 6,
+   "HTML": 1
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
  }
 }

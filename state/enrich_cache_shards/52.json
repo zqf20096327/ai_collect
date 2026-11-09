@@ -1399,11 +1399,11 @@
   }
  },
  "zereight/gitlab-mcp": {
-  "commit_7d": 107,
-  "commit_90d": 927,
-  "rel_ver": "v2.3.19",
-  "rel_pub": "2026-11-01",
-  "rel_days": 1,
+  "commit_7d": 43,
+  "commit_90d": 973,
+  "rel_ver": "v2.3.22",
+  "rel_pub": "2026-11-05",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1428,10 +1428,10 @@
    "Python": 0,
    "Nix": 0
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4748,6 +4748,84 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "basetenlabs/loops-cookbook": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
+ },
+ "Celvra/Focus": {
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2026-11-08",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 97,
+   "Rust": 3,
+   "Shell": 0,
+   "AIDL": 0
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
+ },
+ "Pingredsai/local-rag": {
+  "rel_ver": "v0.3.0-beta.1",
+  "rel_pub": "2026-10-21",
+  "rel_days": 19,
+  "rel_n90": 2,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 57,
+   "JavaScript": 27,
+   "CSS": 11,
+   "HTML": 4,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

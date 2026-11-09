@@ -116,11 +116,11 @@
   }
  },
  "getzep/zep": {
-  "commit_90d": 24,
-  "commit_7d": 2,
+  "commit_90d": 32,
+  "commit_7d": 10,
   "rel_ver": "zep-ingest-v0.4.0",
   "rel_pub": "2026-10-14",
-  "rel_days": 19,
+  "rel_days": 26,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -136,10 +136,10 @@
    "Makefile": 1,
    "Jupyter Notebook": 1
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

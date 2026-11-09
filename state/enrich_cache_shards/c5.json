@@ -4842,5 +4842,56 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "dotoridot/korean-humanizer": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-10-10",
+  "rel_days": 30,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 75,
+   "Shell": 25,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
+ },
+ "karefined-eng/information-is-beautiful-skill": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-10-25",
+  "rel_days": 15,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 93,
+   "HTML": 4,
+   "CSS": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
  }
 }

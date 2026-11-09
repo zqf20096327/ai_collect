@@ -378,12 +378,12 @@
   }
  },
  "CopilotKit/aimock": {
-  "commit_90d": 1057,
-  "commit_7d": 89,
+  "commit_90d": 970,
+  "commit_7d": 24,
   "rel_ver": "v1.47.0",
   "rel_pub": "2026-10-27",
-  "rel_days": 6,
-  "rel_n90": 12,
+  "rel_days": 13,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -398,10 +398,10 @@
    "Go Template": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4510,6 +4510,29 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "0717376/cowork_bench": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 85,
+   "TypeScript": 9,
+   "JavaScript": 3,
+   "HTML": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
   }
  }
 }

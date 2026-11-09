@@ -141,11 +141,11 @@
   }
  },
  "SSShooter/ebook-to-mindmap": {
-  "commit_7d": 2,
-  "commit_90d": 9,
+  "commit_7d": 1,
+  "commit_90d": 8,
   "rel_ver": "app-v0.1.3",
   "rel_pub": "2026-07-26",
-  "rel_days": 96,
+  "rel_days": 106,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -161,10 +161,10 @@
    "Rust": 0,
    "HTML": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

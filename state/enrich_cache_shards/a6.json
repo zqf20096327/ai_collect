@@ -167,10 +167,10 @@
  },
  "penecho/penecho": {
   "commit_7d": 0,
-  "commit_90d": 19,
+  "commit_90d": 16,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-10-07",
-  "rel_days": 26,
+  "rel_days": 33,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -186,10 +186,10 @@
    "TypeScript": 1,
    "Python": 0
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261109",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261109",
+   "release": "20261109",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

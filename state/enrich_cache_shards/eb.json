@@ -4180,13 +4180,16 @@
    "Python": 50,
    "JavaScript": 50
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261109",
   "dim_ts": {
    "release": "20261030",
    "security": "20261030",
    "contrib": "20261030",
-   "lang": "20261030"
-  }
+   "lang": "20261030",
+   "commit": "20261109"
+  },
+  "commit_90d": 18,
+  "commit_7d": 3
  },
  "thejanu-dileepa/wifi-human-detector-esp32": {
   "rel_ver": null,

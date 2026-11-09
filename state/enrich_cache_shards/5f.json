@@ -5022,5 +5022,25 @@
    "contrib": "20261108",
    "lang": "20261108"
   }
+ },
+ "Miyamoto-Renya/LaplacesScissors": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 98,
+   "Python": 2
+  },
+  "enriched_at": "20261109",
+  "dim_ts": {
+   "release": "20261109",
+   "security": "20261109",
+   "contrib": "20261109",
+   "lang": "20261109"
+  }
  }
 }
