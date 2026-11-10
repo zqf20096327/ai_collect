@@ -70,6 +70,7 @@ The `.env` file is organized into sections:
 
 **Common Variables:**
 - `AUTH_OIDC_ISSUER` - Your OIDC provider's issuer URL (e.g., `http://localhost:8080` for local mock)
+- `AUTH_OIDC_AUDIENCE` - The API audience (`aud`) the backend requires in access tokens (e.g., `svelte-langgraph-api`); the frontend also sends it as the `audience` authorization parameter
 
 **Backend Variables:**
 - `OPENAI_API_KEY` - Your OpenAI-compatible API key (e.g., OpenAI, OpenRouter)
@@ -80,10 +81,11 @@ The `.env` file is organized into sections:
 - `OTEL_TARGETS` - Optional OpenTelemetry tracing fan-out (e.g. `LANGFUSE`, with `LANGFUSE_*` keys)
 
 **Frontend Variables:**
-- `AUTH_TRUST_HOST` - Enable auth trust host (set to `true` for development)
+- `BETTER_AUTH_URL` - Frontend origin (`http://localhost:5173` for development; Compose uses `COMPOSE_BETTER_AUTH_URL` instead, see [Production](#production))
 - `AUTH_OIDC_CLIENT_ID` - Your OIDC client ID (e.g., `svelte-langgraph`)
 - `AUTH_OIDC_CLIENT_SECRET` - Your OIDC client secret
-- `AUTH_SECRET` - Random string for session encryption (generate with `npx auth secret`)
+- `BETTER_AUTH_SECRET` - Random session-encryption secret, at least 32 characters (`openssl rand -base64 32`)
+- `AUTH_OIDC_SCOPES` - Optional space-separated scopes; defaults to `openid profile email offline_access`
 - `PUBLIC_LANGGRAPH_API_URL` - URL of your Aegra server (typically `http://localhost:2026`)
 - `PUBLIC_SENTRY_DSN` - Public DSN for Sentry error tracking (optional)
 
@@ -183,16 +185,27 @@ CHAT_MODEL_KWARGS="{\"reasoning\": {\"effort\": \"medium\"}}"
    - **Backend** LangGraph server at `http://localhost:2024`
    - **OIDC mock provider** at `http://localhost:8080`
 
+### OIDC redirect URI
+
+The frontend authenticates with [Better Auth](https://www.better-auth.com) (stateless: sessions and the provider's tokens live in encrypted cookies, there is no auth database). Register `<BETTER_AUTH_URL>/api/auth/callback/oidc` as the redirect URI of your OIDC client (for development `http://localhost:5173/api/auth/callback/oidc`). A session lasts 30 days from sign-in; it is not extended by activity, because a stateless session cannot be renewed. The local mock provider accepts any redirect URI, so it needs no registration. The frontend fetches the provider's discovery document at startup; if the provider is down then, signed-in users appear signed out until the next sign-in, which retries discovery.
+
+### Authentication: the bearer is the access token
+
+The chat client sends the OIDC **access token** as `Authorization: Bearer ...` (not the ID token). The backend verifies it as a JWT against the issuer's JWKS and requires a matching issuer (`iss`), `aud` equal to `AUTH_OIDC_AUDIENCE`, plus `sub` and `exp`. Refreshing the token never needs an `id_token` in the provider's response.
+
+Your IdP must therefore issue **JWT access tokens whose audience is `AUTH_OIDC_AUDIENCE`** for this client, and the client needs the `offline_access` scope (a default) to get refresh tokens. How to get the audience in is provider-specific: define an API/resource server with that identifier (Auth0: an API with that Identifier; the frontend sends `AUTH_OIDC_AUDIENCE` as the `audience` authorization parameter automatically; Keycloak: an Audience mapper or client scope; Okta: set the authorization server's audience; Entra ID: expose an API and use its Application ID URI or client ID). Opaque (non-JWT) access tokens are rejected. The bundled mock provider issues API-audience JWTs by itself. The browser gets the access token from Better Auth's `/api/auth/get-access-token`, which refreshes it with the provider when fewer than 5 seconds remain.
+
 ### Local Development with OIDC Mock Provider
 
-For local development and testing, the project includes a mock OIDC provider using `oidc-provider-mock`. This lightweight Python-based mock server simulates a real OIDC provider, allowing you to develop and test authentication flows without needing to set up a full OAuth2/OIDC provider.
+For local development and testing, the project includes a mock OIDC provider (`e2e/mocks/oidc.ts`, built on [`oauth2-mock-server`](https://github.com/axa-group/oauth2-mock-server)). It simulates a real OIDC provider, so you can develop and test authentication flows without setting up a real one. The E2E suite signs in through the same mock.
 
-The OIDC mock is **not** started by `moon :dev` alone — include `:oidc-mock` (as above) or run `moon backend:oidc-mock` in a separate terminal alongside `moon :dev`.
+The OIDC mock is **not** started by `moon :dev` alone — include `:oidc-mock` (as above) or run `moon e2e:oidc-mock` in a separate terminal alongside `moon :dev`.
 
 **What it does:**
 - Provides a complete OIDC discovery endpoint (`.well-known/openid-configuration`)
-- Issues JWT tokens with configurable user claims
-- Supports the authorization code flow with PKCE
+- Shows a sign-in page with one button per subject (`test-user`, `other-user`)
+- Issues RS256 JWT access tokens for the `AUTH_OIDC_AUDIENCE` audience, and rotates refresh tokens without returning an `id_token` on refresh (as many real providers do)
+- Supports the authorization code flow and requires S256 PKCE
 - No client registration required - accepts any client ID/secret
 - Started alongside the other dev servers via the `:oidc-mock` target (see below)
 
@@ -200,7 +213,7 @@ The OIDC mock is **not** started by `moon :dev` alone — include `:oidc-mock` (
 - **Issuer**: `http://localhost:8080`
 - **Client ID**: Any value (e.g., `svelte-langgraph`)
 - **Client Secret**: Any value (e.g., `secret`)
-- **Test User**: `test-user` (subject claim in JWT)
+- **Test users**: `test-user` and `other-user` (the `sub` claim), picked on the sign-in page
 
 ### Start dev servers
 
@@ -308,6 +321,14 @@ The frontend container receives an allowlisted set of variables interpolated fro
 PUBLIC_LANGGRAPH_API_URL=https://backend.example.com docker compose up --build
 ```
 
+The frontend's origin comes from `COMPOSE_BETTER_AUTH_URL`, not `BETTER_AUTH_URL` (which the root `.env` sets to the development server). It defaults to `http://localhost:3000`, so register `http://localhost:3000/api/auth/callback/oidc` with your OIDC provider; set it to your public origin for any other setup:
+
+```
+COMPOSE_BETTER_AUTH_URL=https://app.example.com docker compose up --build
+```
+
+`BETTER_AUTH_SECRET` must be set in the root `.env` (generate one with `openssl rand -base64 32`), or the frontend container exits at startup.
+
 `DATABASE_URL` can be overridden the same way, to point the backend at an external or managed Postgres server instead of the bundled `postgres` service. It must be reachable _from inside the backend container_ — a `localhost` URL there means the container itself, not your host.
 
 A host-local Ollama (or other OpenAI-compatible provider bound to the Docker host) must be addressed as `OPENAI_BASE_URL=http://host.docker.internal:11434/v1`. Compose wires `extra_hosts: host.docker.internal:host-gateway`, so this resolves on Linux Docker Engine too (>= 20.10) — Docker Desktop provides it natively.
@@ -315,6 +336,10 @@ A host-local Ollama (or other OpenAI-compatible provider bound to the Docker hos
 **Caveat:** if your root `.env` already sets `DATABASE_URL=postgresql://postgres:postgres@localhost:5432/aegra` (the old shipped default), `docker compose up` now honors it instead of silently overriding it — and that `localhost` resolves to the container itself, not Postgres. Comment out the line, or change the host to `postgres`, to fix it.
 
 ### Security notes
+
+The frontend refuses to start without `BETTER_AUTH_SECRET`, so a missing secret can never fall back to Better Auth's public default. The Docker image sets `NODE_ENV=production`, which also turns on the rate limiter described below.
+
+The frontend runs Better Auth's default rate limiter in production (100 requests per 10 seconds per client IP, 3 per 10 seconds for sign-in; only E2E turns it off, with `AUTH_RATE_LIMIT=false`). It takes the client IP from `X-Forwarded-For` and trusts that header only when it holds a single address, so the reverse proxy in front of the frontend must overwrite it with the client's address (e.g. nginx `proxy_set_header X-Forwarded-For $remote_addr;`). If a chain of proxies appends to it instead, list them in `advanced.ipAddress.trustedProxies` in `apps/frontend/src/lib/auth/index.ts`. Without a usable client IP, all clients share one bucket. Behind a TLS-terminating proxy, also set adapter-node's `ORIGIN` (or `PROTOCOL_HEADER` and `HOST_HEADER`) so SvelteKit sees the public URL.
 
 The backend image bakes in `AUTH_TYPE=custom`, so it always requires OIDC bearer tokens — it cannot silently fall back to Aegra's unauthenticated `noop` mode. Because every request must carry an `Authorization` header (no cookies), the API serves wildcard CORS, the standard posture for token-authenticated APIs. Operators who additionally want to pin allowed origins can mount their own Aegra config and point `AEGRA_CONFIG` at it, e.g. `AEGRA_CONFIG=/etc/aegra/aegra.json` with a concrete `http.cors.allow_origins` list.
 

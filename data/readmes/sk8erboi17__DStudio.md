@@ -137,6 +137,22 @@ downloadable build; to use it today, [build from source](#build-from-source).
 
 **Recent changes**
 
+- **Learn workspace and messages during generation (November 10).** Learn
+  has one status panel with factual-check progress and a single *Resume draft*
+  action. It adds a stage map beside the curriculum, collapsible stages, and
+  quiet block rows whose actions appear on hover or focus. Write to the model
+  while a roadmap is generated: each message gets an answer at the next step
+  without restarting the roadmap, and agreed changes rewrite only the named
+  stages and are audited again. The first draft is readable as soon as its
+  structure is saved. Simulated UI checks plus one real-weight check of the
+  message phases; [scope and limits](docs/changes/2026-11-10.md).
+- **Learn evidence and final-project scope (November 6).** Saved source text
+  is selected across all items in an audit batch, with literal passages and
+  shared bounded capacity. Final projects are checked as whole-roadmap work;
+  needing later-stage skills is expected. Changed contracts retire dependent
+  audit receipts while preserving authored drafts. Newly authored text is
+  refused when overlong rather than silently clipped. Model-free checks only;
+  [scope and remaining gaps](docs/changes/2026-11-06.md).
 - **Selectable reasoning (November 5).** High is the default in Learn and
   guided analysis. Off/High/Max can be chosen where supported; GSA/RSA no
   longer override the level. Selecting Max warns about repetitive reasoning
@@ -1560,7 +1576,8 @@ keep their own licenses: see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## WIP checklist — November 4, 2026
 
-The macOS/Apple Silicon campaign is **incomplete and paused**. Implemented
+The macOS/Apple Silicon campaign is **incomplete**; the owner resumed it on
+November 10. Implemented
 features and scoped checks do not qualify every model or a release. Detailed
 unfinished requirements live in [PLAN.MD](PLAN.MD); the [short WIP](docs/WORK_IN_PROGRESS.md)
 is the navigation page. Historical results keep their original runtime revisions.
@@ -1586,9 +1603,14 @@ The former complete checkbox list is preserved as a [dated snapshot](docs/histor
   [matched agent comparisons](PLAN.MD#p9--complete-six-agent-comparisons),
   [profiling](PLAN.MD#p10--profile-and-retain-justified-optimizations) and
   [final publication](PLAN.MD#p11--qualify-the-final-build-and-reviewed-publication).
+- Last, [remove unnecessary complexity and really useless tests](PLAN.MD#p12--remove-unnecessary-complexity-and-prove-nothing-regressed),
+  with every usage case tested before and after.
 
 The [representative Qwen variant checks](PLAN.MD#qwen-variants) remain NOT RUN.
-V4.1 and GLM keep their open contributor gates and BLOCKED status; see
+Since November 10 DeepSeek V4.1 1017 Q2 is back in the maintainer's plan with
+expert SSD streaming only, and is not run yet
+([conditions](PLAN.MD#v41-ssd)). V4.1 Q4 and GLM keep their open contributor
+gates and BLOCKED status; see
 [the hardware/evidence contract](PLAN.MD#contributors). No unchecked requirement
 was closed by shortening this overview.
 

@@ -1,8 +1,5 @@
 # (NeurIPS'26) 🎲 EntroPE: Entropy-Guided Dynamic Patch Segmentation for Time Series Transformers
 
-> [!CAUTION]
-> **Note:** The arXiv version currently linked (arXiv:2509.26157) uses a different evaluation protocol from the one implemented here. The results in this repository follow the NeurIPS 2026 camera-ready protocol; the updated arXiv version will be uploaded soon.
-
 Reference implementation for the NeurIPS 2026 paper. EntroPE places patch
 boundaries at high-entropy positions using a frozen, pre-trained causal GPT
 entropy model, then forecasts with a patch encoder / global transformer /
@@ -22,6 +19,12 @@ pip install -r requirements.txt
 ```
 
 Tested with Python 3.10 and PyTorch 2.x (CUDA 12.x). A single GPU is enough.
+
+**Apple Silicon (MPS).** Evaluating the provided checkpoints also works on a Mac.
+When CUDA is not available, the code uses the Apple GPU (MPS) automatically
+(`--use_mps 0` forces CPU). The results match the CUDA runs to about 1e-4. On
+macOS 27, use Python ≥ 3.11 (e.g. `python=3.13`), because the Python 3.10
+SciPy wheel fails to load there.
 
 ## 2. Data and checkpoints
 

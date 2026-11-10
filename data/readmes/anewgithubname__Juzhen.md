@@ -16,6 +16,7 @@ Requires a C++20-capable compiler. Supports NVIDIA CUDA 12.x (with cuDNN), Apple
 - [Training checkpoints](docs/checkpoint-resume.md) restore model parameters, Adam state, training progress and the host RNG. CPU and AMD tests include restarting in a new process.
 - A [CPU linear assignment solver](docs/cpu-assignment.md) using the Hungarian shortest-augmenting-path algorithm, with rectangular and min/max matching support.
 - [Reproducible CPU/AMD benchmarks](docs/amd-cpu-benchmark.md), including CPU thread-count comparisons and numerical output checks.
+- A [TimesFM-style time-series foundation model](docs/tsfm.md) (CUDA), pretrained on public series and evaluated zero-shot on the Chronos benchmarks.
 
 ## Example
 
@@ -52,24 +53,6 @@ logM 2 by 2
 
 For AMD GPUs, use `Matrix<ROCMfloat>` in a ROCm build in the same way as
 `Matrix<CUDAfloat>` above. Use `.to_host()` when a CPU matrix is needed.
-
-### CPU linear assignment
-
-```c++
-#include "ml/assignment.hpp"
-
-int compute() {
-    Matrix<float> costs("costs", {{4, 1, 3}, {2, 0, 5}, {3, 2, 2}});
-    Juzhen::LinearAssignmentSolver solver; // reuse for subsequent problems
-    auto result = solver.solve(costs);
-    // result.row_to_col == {1, 0, 2}; result.cost == 5
-    return 0;
-}
-```
-
-The solver runs on CPU in every build. It accepts finite costs, supports
-`solve(costs, true)` for maximization, and marks unmatched rectangular entries
-with `-1`. Use a separate solver instance per concurrent thread.
 
 ## Prerequisites
 

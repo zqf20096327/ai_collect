@@ -75,6 +75,7 @@ flowchart TD
     PHOTO_PLANNER --> RESPONSE_COMPOSER
     EVIDENCE_QUALITY -->|usable| CANDIDATE_GENERATOR
     CANDIDATE_GENERATOR --> ATTACHMENT_AUTHORITY_GATE
+    CANDIDATE_GENERATOR -->|open world: nothing admitted| FINAL_DECISION
     ATTACHMENT_AUTHORITY_GATE --> BOTANICAL_REVIEWER
     ATTACHMENT_AUTHORITY_GATE --> CONFUSION_REVIEWER
     ATTACHMENT_AUTHORITY_GATE --> CONFIDENCE_REVIEWER
@@ -170,8 +171,8 @@ dendro eval --suite public                         # run the twenty-four public 
 pytest                                             # full test suite, offline
 ```
 
-Answers are in Ukrainian by default, as the domain prompt specifies. Add `--lang en` for
-English. You can state your own version and it will be ruled on rather than ignored:
+Answers are in English by default, as the domain prompt specifies. Add `--lang uk` for
+Ukrainian. You can state your own version and it will be ruled on rather than ignored:
 
 ```bash
 dendro inspect --image examples/trunk.jpg --claim "дуб" --field-context
@@ -215,7 +216,12 @@ DENDRO_ARBITER_PROVIDER=openai      # independently challenge escalated results
 
 `.env` is read at startup; anything already exported in the environment wins over it.
 
-Any role can use `openai`, `anthropic`, `gemini`, `nvidia`, `openrouter` or `ollama`.
+Any role can use `openai`, `anthropic`, `anthropic-sdk`, `gemini`, `nvidia`, `openrouter` or
+`ollama`. `anthropic-sdk` calls the Claude API directly (default model `claude-opus-5-5`)
+with native structured output, an explicit effort level (`ANTHROPIC_EFFORT`, default `high`)
+and server-side refusal fallback (`ANTHROPIC_FALLBACKS=off` to disable). Its key is
+`ANTHROPIC_SDK_API_KEY`, or `ANTHROPIC_API_KEY` when no bridge is configured. `anthropic` sends
+only what the agent-provider bridge understands, and is what bridge routes keep using.
 Every selected model must accept images. Hosted adapters read their own credential variable;
 OpenAI and Anthropic use optional SDK extras, Gemini and the OpenAI-compatible
 NVIDIA/OpenRouter adapters use direct HTTPS, and Ollama needs no key. Provider-specific
@@ -264,7 +270,16 @@ export DENDRO_PROMPT_MANIFEST_PATH=/path/to/your/versions.yaml
 ```
 
 The external manifest is an explicit compatibility attestation, not a mechanical proof that
-two natural-language prompts mean the same thing. A missing file, path mismatch, hash mismatch
+two natural-language prompts mean the same thing.
+
+The default domain prompt is `prompts/domain/system-prompt.en.md`, an English translation of
+the Ukrainian original that keeps it line for line, with every evidence token byte-identical.
+The original stays in the repository as the authoritative specification; to run with it:
+
+```bash
+export DENDRO_DOMAIN_PROMPT_PATH=prompts/domain/system-prompt.md
+export DENDRO_PROMPT_MANIFEST_PATH=prompts/versions.uk.yaml
+``` A missing file, path mismatch, hash mismatch
 or incompatible policy revision is a loud `PromptPolicyError`, never a silent default. Prompt
 and manifest hashes appear in every execution trace, tying an answer to the exact admitted
 bundle.

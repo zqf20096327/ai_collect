@@ -13,7 +13,6 @@
 [![React](https://img.shields.io/badge/React-19-61dafb.svg)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8-646cff.svg)](https://vite.dev/)
 [![npm](https://img.shields.io/npm/v/samosa-math.svg)](https://www.npmjs.com/package/samosa-math)
-[![Version](https://img.shields.io/badge/version-1.1.0-3b82f6.svg)](https://github.com/Hussain004/SAMOSA/releases)
 
 [**→ Live demo**](https://samosa-math.vercel.app/app) · [Report a bug](https://github.com/Hussain004/SAMOSA/issues) · [Request a feature](https://github.com/Hussain004/SAMOSA/issues)
 
@@ -178,19 +177,20 @@ The method, the correction and the full list of what stops the rest are in
 [docs/COVERAGE.md](docs/COVERAGE.md).
 
 <!-- gen:cookbook -->
-And the Cookbook: 48 identities in matrix algebra, calculus and stochastics,
+And the Cookbook: 94 identities in matrix algebra, calculus and stochastics,
 with the mistakes the catalog can make of them.
 
 | | |
 | --- | --- |
 | the false checkmarks | **0** |
-| the identities SAMOSA cannot check | **5** |
-| the caught mutants | **209 of 264 (79.2%)** |
-| the harmless mutants, where the mistake changes nothing | **33** |
+| the identities SAMOSA cannot check | **0** |
+| the mutation score | **343 of 343 (100.0%)** |
+| the harmless mutants, where the mistake changes nothing | **108** |
+| the raw rate | **343 of 451 (76.1%)** |
 
-The plan's gate asks for 95% of the bugs caught. The cookbook is at 79.2%,
-and every miss is a step the engine says it cannot decide, never one it
-calls right. The method, the misses and the 22 gaps the corpus found are
+The plan's gate asks for 95% of the bugs caught; the mutation score is 100.0%,
+and every mutant the engine calls right is confirmed harmless by the float64
+oracle. The method, the misses and the 0 gaps the corpus found are
 in [docs/COOKBOOK.md](docs/COOKBOOK.md).
 <!-- /gen:cookbook -->
 
@@ -251,10 +251,10 @@ Node, so the same code runs in the browser, in the CLI and in the MCP
 server. The rules it lives by: no model in the verdict path, never a
 checkmark without a guarantee, and nothing that leaves the machine.
 
-The bundle budget is 300 KB of gzipped initial JavaScript for the app and
+The bundle budget is 340 KB of gzipped initial JavaScript for the app and
 120 KB for the landing page, checked on every build by `pnpm check:bundle`.
-The app's limit moved from 250 KB to 300 KB, and the move is recorded in
-the plan and here.
+The app's limit moved from 250 KB to 300 KB, and from 300 KB to 340 KB,
+and both moves are recorded in the plan and here.
 
 ## Contributing
 

@@ -17,7 +17,7 @@ Any OpenAI, Ollama or MCP client, Claude Code included, can talk to it
 ([models and clients](#models-and-clients)).
 
 > **The names.** **babyseat** is the whole project: the seat, its web UI,
-> Blurp, the Home Assistant integration and the Docker image
+> Blurp (off in 0.7.5: `MEMBRANE_BLURP=1` turns it on), the Home Assistant integration and the Docker image
 > (`pip install babyseat`, `chedim/babyseat`). **membrane** is its memory and
 > proxy, so the `membrane` command, Python module, `MEMBRANE_*` variables and
 > `.membrane` folders keep that name. Why "membrane": a living boundary that
@@ -128,10 +128,10 @@ You get membrane home:
   and it will ask.
 
 Other devices on your network open `http://<this machine>:4096/`. They can
-read freely, and they ask once for the seat token before writing
-(`membrane token seat` prints it). Callers from outside your network are
+ask once for the seat token (`membrane token seat` prints it): reads need it
+too, not only writes. The page's cookie is minted only on this machine. Callers from outside your network are
 refused: [JWT mode](docs/auth.md) is on by default (turn it off with `MEMBRANE_JWT=0`);
-this machine itself needs no token. The microphone needs
+this machine needs the seat token too (the page served here carries it). The microphone needs
 `localhost` (a secure origin), and the first voice use downloads about 65 MB
 of speech models.
 
@@ -165,6 +165,11 @@ of speech models.
   ```
 
   Claude Code keeps its own model; membrane is its memory and its field.
+- **MCP servers, the other way round**: the seat is an MCP client too. A server is a `McpServer:<name>` entity
+  (`enabled`, `command`/`args` or `url`, secrets named in `env_from`, never stored); its tools, resources and
+  prompts appear as entities, a tool runs when `call:run` is written, and the enabled servers are the Claude
+  rung's own tools as well. `membrane::mcp.import = 'all'` brings in Claude Code's and opencode's servers,
+  disabled. The logic is a `.c1f` library (`membrane/packs/mcp.c1f`, docs/cliffhanger-fields.md §11).
 - **opencode**: `membrane opencode` attaches the opencode TUI to membrane's own
   serve surface ([First run in a project](#first-run-in-a-project)).
 
@@ -217,7 +222,7 @@ integration is then only its UI and agent).
 **Several seats, one house (the 🦠 zoo):** *Configure* → **Add a seat** (host,
 ports 4096 / 11500, its `membrane token seat`) adds a laptop or a phone; the
 house talks to one at a time — switch it from membrane home's 🦠 button (a
-card per seat, its Blurp's level and rung) or the `select.membrane_seat`
+card per seat; its Blurp's level and rung only when Blurp is on) or the `select.membrane_seat`
 entity ([docs/home-assistant.md](docs/home-assistant.md#the-zoo-several-seats)).
 
 ### The daily work: typed tools, guarded writes
@@ -227,7 +232,7 @@ the things it names. On later turns it sees only what changed since the last
 message: which entities moved, and whether the change came from the
 conversation, the code, another seat or a script.
 
-**The conversation block** (the default since #429's measurement;
+**The conversation block** (the default since #429's measurement; since 0.7.5 made by the `banner` pack, `Banner:<owner>:<chat>`, which each model can tune or replace for its own chats;
 `MEMBRANE_INJECTION=banner` restores the WHERE WE ARE banner) replaces that state with one small block about *this*
 chat, built from records only (no model call), at most 900 chars, sent every
 turn while it has content: `NOW`, `WORKING ON` (the person's latest earlier
@@ -238,18 +243,20 @@ it), `STABLE` (facts seen in 3 chats over 2 days, never contradicted),
 alerts and a pointer to `state(section=...)`. Each record line says its
 source and age, e.g. `(person · 2h ago)` ([details](docs/entity-field.md#this-conversation)).
 After it, a `RECALL` block (#668): the 12 best rows the field holds for your latest
-message, one fact line each, ordered by a scorer whose weights live in the field and are refit at night from the rows the model's own searches end up using. With the `rerank` extra (`pip install 'babyseat[rerank]'`), a reranker (bge-reranker-v2-m3) re-orders the scorer's top 20; the model's `query` tool reads the same ranking.
+message, one fact line each, ordered by a scorer whose weights live in the field and are refit at night from the rows the model's own searches end up using. With the `rerank` extra (`pip install 'babyseat[rerank]'`), a reranker (bge-reranker-v2-m3) re-orders the scorer's top 20 (on a CUDA GPU -- NVIDIA, or AMD through a ROCm build of PyTorch -- else Apple's MPS, else the CPU); the model's `query` tool reads the same ranking.
 
 **With tools,** the model gets membrane's MCP surface: `query` and `state` to
 read the field (`state(section=...)` pulls one part of the seat's WHERE WE ARE:
 tracks, commands, interfaces, classes, loops, timelines, frame, digest, or
 changes since the last message), `learn` to keep a lesson (with the same guards as any turn),
 `forget` to clean up its mistakes, and the entity tools
-(`entity_add/edit/remove/inherit`, `entity_query`, `entity_tracks`,
-`entities_related`, …), `code_run` and Cliffhanger's method tools (`method_define/call/each/inspect`). Code the model runs becomes a tree of entities in the field, linked to its executor, and each run ends on its own result entity ([the executor](docs/entity-field.md#the-executor-code-is-a-tree-in-the-field-614)); what it will do again it defines as a method on an entity, then calls ([program the field first](docs/cliffhanger.md#program-the-field-first-576-part-f)). Commands compose in **Cliffhanger**, membrane's command
+(`entity_add/edit/remove/inherit`, `entity_write` -- set one property, the way it acts: an adapter's effect runs and its receipt lands as `<prop>_result` --, `entity_query`, `entity_tracks`,
+`entities_related`, …), `pack` (list / show / load a `.c1f` pack: an entity's behaviour, its load error in the reply; [the language](docs/cliffhanger-fields.md)), `code_run` and Cliffhanger's method tools (`method_define/call/each/inspect`) for shell commands. Code the model runs becomes a tree of entities in the field, linked to its executor, and each run ends on its own result entity ([the executor](docs/entity-field.md#the-executor-code-is-a-tree-in-the-field-614)); what it will do again it defines as a method on an entity, then calls ([program the field first](docs/cliffhanger.md#program-the-field-first-576-part-f)). Commands compose in **Cliffhanger**, membrane's command
 language ([its spec](https://github.com/chedim/cliffhanger),
 [how membrane uses it](docs/cliffhanger.md)). Every write is audited with
-where it came from.
+where it came from. The VM's surface (writes, store, triggers, effects) and the replay test a
+native VM must pass are in [the VM's API](docs/vm-api.md) (#971). The field engine is native Rust (`native/`, the `membrane_vm` extension):
+build it with `native/build.sh` (there is no Python VM; a missing extension fails loudly at startup). Behaviour is written as `.c1f` packs -- getters, setters, `WHEN` arms and `FOR` blocks ([cliffhanger-fields.md](docs/cliffhanger-fields.md)); the seat's Python entity scripts are retired in 0.7.5 (the boot upgrade ports them to packs). The same engine runs in the browser (WebAssembly), with the page's DOM in the field and view packs drawing in it, such as the ⓘ About window.
 
 **Two advisory checks run on every turn:** the **gate** compares the answer
 with the nearest past one (shadow by default), and the **[membrane]
@@ -279,7 +286,11 @@ curl -fsSL https://raw.githubusercontent.com/chedim/membrane/main/install.sh | b
 Installs the `membrane` CLI globally, user-local (`~/.local/bin`):
 `uv tool install` if you have [uv](https://docs.astral.sh/uv/), otherwise a
 managed venv at `~/.membrane/venv` + a symlink on your PATH. Re-running it is
-safe (upgrade in place). To install from a local checkout instead (e.g. while
+safe (upgrade in place). It builds babyseat from source, including its native field
+engine (Rust): when there is no `cargo`, it installs a user-local Rust toolchain with
+rustup first (no sudo; a minute or two of compiling the first time). `pip install babyseat`
+needs none of that on macOS (Apple silicon, Intel) and Linux (x86_64, aarch64): the
+wheels there carry the engine compiled. To install from a local checkout instead (e.g. while
 hacking on membrane):
 
 ```bash
@@ -288,6 +299,8 @@ MEMBRANE_REPO=/path/to/membrane bash install.sh
 
 **Dependencies, honestly:**
 
+- **The native field engine** (`membrane.membrane_vm`, Rust) — inside the wheel on macOS and
+  Linux; built from source elsewhere (needs Rust; `native/build.sh` rebuilds it in a checkout).
 - **Python ≥ 3.10** + **numpy** — the only import-time dep (`couchbase`
   installed by default, imported lazily; a missing cluster degrades that
   feature, never the boot).
@@ -378,11 +391,12 @@ pass through to Ollama unchanged.
 | `membrane ingest` | cold start: absorb docs/README into the field (DOC events; a second ingest is a no-op) |
 | `membrane codegraph` | stdlib-AST call graph (stats / impact / callers / callees) |
 | `membrane doctor` | what's installed/running + the field's vitals |
-| `membrane token seat` | print the seat token (`--rotate` for a new one, `--path` for its file, `~/.membrane/seat-token`, 0600): from another machine, every write to either port needs it (Bearer, Basic's password, or the web UI's one-time prompt); reads and localhost need none; see [docs/auth.md](docs/auth.md) |
+| `membrane token seat` | print the seat token (`--rotate` for a new one, `--path` for its file, `~/.membrane/seat-token`, 0600): every request to either port needs it, localhost and reads included (Bearer, Basic's password, or the web UI's one-time prompt; only `GET /api/tags` is open); see [docs/auth.md](docs/auth.md) |
 | `membrane token mint` | `--sub ID [--name NAME] [--ttl 30d]`: a token for a seat running JWT mode (on by default; off with `MEMBRANE_JWT=0`); see [docs/auth.md](docs/auth.md) |
-| `membrane stats` | token/call accounting + the savings baseline (`--baseline` compares the bounded window against a naive full-history replay; reads the chat message store (`serve-msgs.json`, or the seat's Couchbase Lite store once it has migrated there), plus the background model calls from `bg-usage.json`; no model call) |
+| `membrane stats` | token/call accounting + the savings baseline (`--baseline` compares the bounded window against a naive full-history replay; reads the chat message store (`serve-msgs.json`, or the seat's store, SQLite or Couchbase Lite, once it has migrated there), plus the background model calls from `bg-usage.json`; no model call) |
+| `membrane store` | which store this seat uses (SQLite or Couchbase Lite) and what is in it; `membrane store migrate --to sqlite\|cbl` copies every collection into the other kind with the seat stopped, switches the seat, and keeps the old store as a backup |
 | `membrane shadow` | compile-first routing, shadow stage: how many person messages living language compiled, had gaps in (by type) or left to thinking, and whether the model then used tools (read-only, no model call). See [docs/cliffhanger.md](docs/cliffhanger.md#living-language-2026-11-01-on-by-default) |
-| `membrane toybox` | self's toys, the built-in kit (fast / slow / burst / drift / die / body / tower / ball, rung 7's turn toy): `list`, `add <kind> [--name N] [--param k=v]`, `remove`, `reset`, and `migrate --dry-run` / `--yes` to replace the model-written script toys, and `poke <toy> <action> [arg] [--as WHO]` to play with self (tower knock/rebuild, die roll, drift/burst nudge, ball roll -- roll it back to self, from either side; each change tagged by who made it; self acts on a toy by nudging it, #333); also the seat's `toybox` object and the 👶 panel's play buttons. Every kind can be added (#576 retired the unlocks with the ladder). See [docs/selfgrowth.md](docs/selfgrowth.md#toys) |
+| `membrane toybox` | (Blurp: off in 0.7.5) self's toys, the built-in kit (fast / slow / burst / drift / die / body / tower / ball, rung 7's turn toy): `list`, `add <kind> [--name N] [--param k=v]`, `remove`, `reset`, and `migrate --dry-run` / `--yes`, and `poke <toy> <action> [arg] [--as WHO]` to play with self (tower knock/rebuild, die roll, drift/burst nudge, ball roll -- roll it back to self, from either side; each change tagged by who made it; self acts on a toy by nudging it, #333); also the seat's `toybox` object and the 👶 panel's play buttons. Every kind can be added (#576 retired the unlocks with the ladder). See [docs/selfgrowth.md](docs/selfgrowth.md#toys) |
 | `membrane bench` | held-out recall benchmark (MRR + hit@k across the `worldline`/`mean`/`state` reads) — runs against a field **copy**, never the live store |
 
 `MEMBRANE_EFIELD` selects the field's mode: `on` (the default: capture,
@@ -402,8 +416,8 @@ appear to the client as ordinary tool parts riding `message.part.updated`
 (pending → completed), so you can watch what it's doing from the room.
 `--serve-port` (default 4096, walks up if busy) and `--listen` (the proxy,
 default 11500) are independent. The proxy binds all interfaces by default:
-reads are open on the LAN, and an off-box caller's writes (chat turns included)
-need the seat token; `--listen-host 127.0.0.1` (or
+only `GET /api/tags` is open; every other call (reads under `/v1/` and `/membrane/` included, chat turns included)
+needs the seat token; `--listen-host 127.0.0.1` (or
 `MEMBRANE_LISTEN_HOST=127.0.0.1`) keeps it on this machine. Exposure is LAN-only by design:
 reach the server only from a network you own; JWT mode is on by default (`MEMBRANE_JWT=0` turns it off),
 so hand each client a token ([docs/auth.md](docs/auth.md)).
@@ -425,11 +439,15 @@ Since the seat-first change, sharing comes in three layers: what each seat
 keeps, what it publishes, and an opt-in merged field.
 
 **1. Every seat is local-first.** A seat's entity field lives on its own
-disk, at `<project>/.membrane/field/` (or `.membrane/field.cblite` where
-the Couchbase Lite libraries are fetched with `scripts/fetch-cbl.sh`). Its
+disk, in a store under `<project>/.membrane/`. A new seat uses **SQLite**
+(`.membrane/field.sqlite`, the default); **Couchbase Lite** (`.membrane/field.cblite`, its
+libraries fetched with `scripts/fetch-cbl.sh`; Enterprise is free for development and evaluation
+only) is the other kind. A new seat started on a terminal asks which one; a Couchbase Lite seat
+from before that choice existed moves to SQLite by itself at its first start (the old store stays as
+a backup; a seat that chose Couchbase Lite keeps it, and a failed move leaves the seat where it was). Its
 events, entity states, claims, scripts and turn text stay there and
 survive restarts with no cluster at all. Nothing is copied to the bucket
-unless one of the layers below sends it. With Couchbase Lite the seat's
+unless one of the layers below sends it. In either store the seat's
 entities, its chat sessions and messages, and its small state files (the
 absorb watermark, the router's state, the watch board, the background-usage
 tally) live in that store too, one document each (#799); the first boot
@@ -442,7 +460,7 @@ MCP tool) calls `entity_edit` with `publish: true`. The entity goes to the
 bucket's `_default.entities` collection under a per-seat key,
 `pub:<origin>:<eid>`, so two seats publishing the same entity never
 overwrite each other. Only the entity's **state** travels: every
-`*_script` and the script bookkeeping are stripped on publish, and again
+`*_script` (retired in 0.7.5) and the script bookkeeping are stripped on publish, and again
 on import, so a teammate's code never runs on your seat. Publishing again
 bumps the version (`published_ver`); `unpublish: true` removes only your
 own key. Other seats pull published entities at boot and again about once
@@ -664,15 +682,17 @@ of the top 8.
 | [docs/auth.md](docs/auth.md) | **JWT mode (on by default; `MEMBRANE_JWT=0` turns it off).** Turning it off, minting tokens, giving a client its token, the cookie login, who-said-it from the token, the seat's internal token, rotation, the threat model |
 | [docs/home-assistant.md](docs/home-assistant.md) | **babyseat in Home Assistant** (HACS): setup, the UI takeover, the Assist agent and sensors, what the seat may do in the house |
 | [docs/entity-field.md](docs/entity-field.md) | **THE FIELD.** Events → entities → readers; the update rule; relations and claims; injection (full block / state diff); the gate + replay A/B; storage, sharing, the background mind; the operator/listener/plan tool lanes + the intent lane |
+| [doctrine.md](doctrine.md) + [membrane/help/](membrane/help/) | **What the model is told.** The doctrine is the short core every turn carries; the long forms (packs, exec, cliffhanger, goals, watches, browser, the in-page field engine, clock, voice, restarts, consequences) are help topics shipped as field entities `membrane::help:<topic>` (the `help` seed pack: a release updates them, a seat's edits are kept as overlays), read by `help(topic)` |
+| [docs/cliffhanger-fields.md](docs/cliffhanger-fields.md) | **The field engine and `.c1f` packs.** Getters, setters, arms, FOR, built-ins, the store/fs/proc drivers, the banner and MCP as packs, the engine in the browser |
 | [docs/cliffhanger.md](docs/cliffhanger.md) | **The command language.** Entities as objects, ISA parents as classes, methods and calls, `{{self.*}}`/`{{name}}` binding — the pointer to its own spec repo, and the LLM as a coprocessor (`MEMBRANE_COPROC=1`: decide / remember / intend parsed from a model's reply, person-traced or held as proposals) |
 | [docs/seat-first-2-tier.md](docs/seat-first-2-tier.md) | The seat-first two-tier field: local authoritative store, a published global tier on your terms |
 | [docs/shared-field-workflow.md](docs/shared-field-workflow.md) | **Team field: the process.** Day-one setup (publish, or the merged field with `MEMBRANE_FIELD_CLOUD=1`), the async loop, watches, operator rules, go-live checklist |
 | [docs/multi-dev-field.md](docs/multi-dev-field.md) | **Team field: the substrate.** The opt-in merged field: the origin axis, disjoint writers / merged reads, divergence conflicts, the commons |
 | [docs/global-field.md](docs/global-field.md) | The global commons: facts true beyond one repo; operator promotion and consensus (shared only on the merged field) |
-| [docs/background-mind.md](docs/background-mind.md) | **The background mind:** thinker + dreamer, the NightClock, entity scripts and tracks, the intent steering wheel, **the pause**, kill switches |
-| [docs/selfgrowth.md](docs/selfgrowth.md) | **Retired in #576 (D1): Blurp starts anew** -- the body stays (the ⏻ switch, energy and sleep, the record, the 👶 panel, rendering empty), the learner below is history until D2 plugs the new one into `self_loop.learn_step`. **Growing self (#161)**, named Blurp (#277; each seat names its own, #283). Switching it on (⏻ on/off) and accepting what it earns (#299: an earned achievement opens its children only once the operator accepts it), reading its exp bar, the 👶 panel as a character sheet (attributes: measured traits; the skills it is learning now; growth curve, working hours, toys, relationships, live activity) and the toy dock, the amoeba and the brain on the screen (what it looks at, its trail of looks, shift pulses, the caption; ◎ self framing and 👁 self's eyes), the skill tree (#295: achievements with real prerequisites, earned out of order) and their real pass tests, the nudge (#333: Blurp's one act on the things of its world, aimed mostly at things it can look at, tilted toward those whose nudge outcomes it is learning fastest; first reach (rung 13) passes when its nudges at one thing beat that thing's tempo and the changes were its own; it speaks by nudging chat:out, a draft whose line is the NNLS fit over sentences heard in its private chat; recognize itself rebuilt on its looks at the mirror (rows only at a look; opens with feel and first reach, no person needed); meet an other rebuilt on delayed contingency (the look 30 s after a nudge's check finds a change its tempo does not predict, and not its own; opens with look and first reach); toys unlock by skill in #337's order; time its turn and expect a reply rebuilt on meet's other (its nudges timed by a bandit over the other's age, and its own prediction of each follow-up; the model advisor out)), how to help it climb, troubleshooting |
+| [docs/background-mind.md](docs/background-mind.md) | **The background mind:** thinker + dreamer, the NightClock, tracks (entity scripts retired in 0.7.5: behaviour is a `.c1f` pack), the intent steering wheel, **the pause**, kill switches |
+| [docs/selfgrowth.md](docs/selfgrowth.md) | **Blurp is off in 0.7.5 (`MEMBRANE_BLURP=1`).** **Retired in #576 (D1): Blurp starts anew** -- the body stays (the ⏻ switch, energy and sleep, the record, the 👶 panel, rendering empty), the learner below is history until D2 plugs the new one into `self_loop.learn_step`. **Growing self (#161)**, named Blurp (#277; each seat names its own, #283). Switching it on (⏻ on/off) and accepting what it earns (#299: an earned achievement opens its children only once the operator accepts it), reading its exp bar, the 👶 panel as a character sheet (attributes: measured traits; the skills it is learning now; growth curve, working hours, toys, relationships, live activity) and the toy dock, the amoeba and the brain on the screen (what it looks at, its trail of looks, shift pulses, the caption; ◎ self framing and 👁 self's eyes), the skill tree (#295: achievements with real prerequisites, earned out of order) and their real pass tests, the nudge (#333: Blurp's one act on the things of its world, aimed mostly at things it can look at, tilted toward those whose nudge outcomes it is learning fastest; first reach (rung 13) passes when its nudges at one thing beat that thing's tempo and the changes were its own; it speaks by nudging chat:out, a draft whose line is the NNLS fit over sentences heard in its private chat; recognize itself rebuilt on its looks at the mirror (rows only at a look; opens with feel and first reach, no person needed); meet an other rebuilt on delayed contingency (the look 30 s after a nudge's check finds a change its tempo does not predict, and not its own; opens with look and first reach); toys unlock by skill in #337's order; time its turn and expect a reply rebuilt on meet's other (its nudges timed by a bandit over the other's age, and its own prediction of each follow-up; the model advisor out)), how to help it climb, troubleshooting |
 | [docs/patient-hm.md](docs/patient-hm.md) | Patient H.M., viewed from membrane: epilepsy as a loop that excites itself (the seat's brakes, a seizure's signature in the field, running out of energy as its end), and cutting sleep's consolidation as H.M.'s surgery, with the experiment that tests it |
-| [docs/sleep.md](docs/sleep.md) | Sleep, viewed from Blurp: its energy, sleep and wake (#345: the reserves, the sleep pull, what wakes it), consolidation (the day's raw record to dated archives, a summary of the birth, the accepts and the last lines, restart-safe), and the viewpoint from before it slept (one store, no open loops, windowed beliefs, per-thing models; its cycle pace against its record's growth) |
+| [docs/sleep.md](docs/sleep.md) | (Blurp: off in 0.7.5) Sleep, viewed from Blurp: its energy, sleep and wake (#345: the reserves, the sleep pull, what wakes it), consolidation (the day's raw record to dated archives, a summary of the birth, the accepts and the last lines, restart-safe), and the viewpoint from before it slept (one store, no open loops, windowed beliefs, per-thing models; its cycle pace against its record's growth) |
 | [docs/vsa-token-lane.md](docs/vsa-token-lane.md) | **Entity keys + relations (the VSA lane).** Canonical ids, key binding, the relations composites, structure-awareness numbers |
 | [docs/token-economics.md](docs/token-economics.md) | Where the savings come from + the router: the ladder, the ceiling, the outage fallback |
 | [docs/monologue.md](docs/monologue.md) | The `[membrane]` thinking-channel banner: every line explained, `/monologue` toggle |
@@ -704,7 +724,7 @@ python experiments/variety_toy.py        # the variety toy: the gate's calibrati
 
 A working lab, used every day to build itself: this repo's own field holds
 about 14,000 entities, and its background mind digests, dreams and talks
-about its own work. Version **0.7.4**; API and flag surfaces may still
+about its own work. Version **0.7.5**; API and flag surfaces may still
 move. Licensing: **MIT** from 0.7.3 (see [LICENSE](LICENSE)); releases up to
 0.7.2 stay under PolyForm Noncommercial 1.0.0.
 

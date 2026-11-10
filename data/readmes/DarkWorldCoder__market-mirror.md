@@ -19,7 +19,7 @@ English · [简体中文](README.zh-CN.md)
 
 Built on [MiroFish](https://github.com/666ghj/MiroFish) and CAMEL-AI's [OASIS](https://github.com/camel-ai/oasis) · listed in the official MCP Registry as `io.github.DarkWorldCoder/market-mirror`
 
-**[Open the live demo](https://darkworldcoder.github.io/market-mirror/demo/)**: the full dashboard from a 2,999-buyer simulated run, in your browser, no install. (Fitloop is an invented app; every number is simulated.)
+**[Open the live demo](https://darkworldcoder.github.io/market-mirror/demo/)**: the full dashboard from a 2,999-buyer simulated run, in your browser, no install. (Fitloop is an invented app; every number is simulated.) More finished examples: [the example gallery](https://darkworldcoder.github.io/market-mirror/gallery/).
 
 </div>
 
@@ -521,6 +521,8 @@ Inspect the generated files and profiles. To continue, retain the returned `simu
 ./mm cli market-test scenarios/acme/market_test.json
 ./mm live --run-dir mirofish_runs/acme
 ```
+
+To put a hard limit on spend, add `"max_spend_usd": 5` to the same file. The cost is estimated from token usage at list prices. Once the cap is reached, no new model call starts (calls already running finish, so the total can go slightly over), and the run keeps and shows what it already has. One capped run at a time per server; if a capped run was killed, lift its cap with `./mm cli spend-cap --clear`. `MM_MAX_SPEND_USD` sets the same kind of cap for each server process.
 
 The live viewer runs at [127.0.0.1:5050](http://127.0.0.1:5050), and its control room at [127.0.0.1:5050/live](http://127.0.0.1:5050/live) shows every stage, every simulated person lighting up as they act, what they post, and the progress log, updated every two seconds. Use the actual run directory printed by the pipeline if its name differs. The saved `dashboard.html` also opens directly without a server. To generate templates without preparing people, use `./mm cli quickstart --no-run`.
 

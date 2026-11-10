@@ -1,0 +1,119 @@
+# dsh-plugin-skills
+
+![Validate](https://img.shields.io/github/actions/workflow/status/Thatgfsj/dsh-plugin-skills/validate.yml?branch=master)
+![License](https://img.shields.io/badge/license-MIT-blue)
+![DSH](https://img.shields.io/badge/DSH-0.2.2--rc.1-blue)
+
+给 AI agent 用的 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（DSH）技能包：**怎么构建 DSH 插件**，以及**怎么写 DSH 技能**。
+
+> ⚠️ **时效性**：所有"已实测"结论基于 **`dsh --version = 0.2.2-rc.1`**（2026-11，npm `latest` / `next` 通道）。DSH 每个版本都会翻转一些行为，本仓库会跟着版本重验并在 [sources.md](0.2.2-rc.1/dsh-plugin-construction/references/sources.md) 里写明"这条适用于哪版"。**0.2.1 → 0.2.2 的破坏性变更**：补丁与 Include 的写入语义重写（`EntryTree.write()` 移除，运行期改动写回父 patch）、session projection 的帧与快照语义变化、`dsh.bundle` 新增 `platforms` / `listedByDefault`、客户端资源改走 `./assets/*`、文件工具策略默认关闭并新增 `apply_patch`。**0.2.0 → 0.2.1 的变更**（`engines.dsh` 强制且优先于 peer、子路径插件不再读 `package.json`、图标可用 `exports["./icon"]`、`dsh plugin --profile` 位置固定）记录在同目录 sources.md 的历史对照里。升级后第一件事是读 `docs/upgrade-guide/<版本>/`。
+
+## 版本目录
+
+按**适配的 dsh 版本**分目录，互不影响；`scripts/install.sh` 优先使用与本机 `dsh --version` 同名的目录，探测不到时回退到最高版本目录。
+
+| 目录 | 状态 | 说明 |
+|---|---|---|
+| [0.2.2-rc.1/](0.2.2-rc.1/) | ✅ 已实测 | **当前推荐**。本机安装版；事实表由安装产物生成（330 包 / 112 服务 / 102 事件 / 109 slot）。见 [STATUS](0.2.2-rc.1/STATUS.md) |
+| [0.2.1-rc.2/](0.2.1-rc.2/) | ✅ 已实测 | 旧版运行时核对；事实表由安装产物生成 |
+| [0.2.1-rc.3/](0.2.1-rc.3/) | 📐 静态分析 | 基于 tag 源码与文档差分。见 [STATUS](0.2.1-rc.3/STATUS.md) |
+| [0.2.1-rc.4/](0.2.1-rc.4/) | 📐 静态分析 | `docs/**` 与 rc.3 零差异。见 [STATUS](0.2.1-rc.4/STATUS.md) |
+| [0.2.1-rc.5/](0.2.1-rc.5/) | 📐 静态分析 | 插件作者六文件与 rc.4 零差异；新增 `reasoning-body-props` 升级指南。见 [STATUS](0.2.1-rc.5/STATUS.md) |
+
+选版本 = 选与你 `dsh --version` 一致的目录。跨版本结论不保证成立（本仓库已记录过多次行为翻转）。
+
+## 包含的技能
+
+| 技能 | 用途 |
+|---|---|
+| [dsh-plugin-construction](0.2.2-rc.1/dsh-plugin-construction/SKILL.md) | 构建/打包/安装/验证/排障 DSH 插件与 bundle：`package.json` 的 `dsh` 字段、`cordis.patch.yml`、Host 插件契约、Web UI 客户端插件、依赖解析与 profile 层序、静默失败排查 |
+| [dsh-skill-authoring](0.2.2-rc.1/dsh-skill-authoring/SKILL.md) | 编写/组织/验证 DSH 技能：发现根目录与优先级、frontmatter 校验规则、资源目录、调用策略、目录长度上限、"写完为什么没被加载" |
+| [dsh-plugin-construction/references/internals](0.2.2-rc.1/dsh-plugin-construction/references/internals/README.md) | **DSH 内部结构解构**：Cordis 基底、启动与组合、一次 turn 的运行时、服务地图、扩展缝阶梯、UI 半边、官方插件解剖与重构检查单 |
+
+`dsh-plugin-construction` 的参考文件：
+
+| 文件 | 内容 |
+|---|---|
+| [plugin-package.md](0.2.2-rc.1/dsh-plugin-construction/references/plugin-package.md) | `dsh` 字段与类型定义、bundle/profile 语义、加载层序、依赖解析、版本兼容门、分发形态 |
+| [host-plugin.md](0.2.2-rc.1/dsh-plugin-construction/references/host-plugin.md) | 插件三种导出形态、生命周期与清理、Config、服务与依赖、事件模型、`defineTool`、会话红线 |
+| [client-plugin.md](0.2.2-rc.1/dsh-plugin-construction/references/client-plugin.md) | `dsh.client`、`window.__ModuleLoader__`、slot 注册、主题与 locale、展示元数据、验证边界 |
+| [install-verify.md](0.2.2-rc.1/dsh-plugin-construction/references/install-verify.md) | `dsh plugin` 安装、三级验证阶梯、排障表、清理 |
+| [sources.md](0.2.2-rc.1/dsh-plugin-construction/references/sources.md) | 来源清单、版本差异对照、实测清单、**未验证项**、审查记录 |
+| [internals/](0.2.2-rc.1/dsh-plugin-construction/references/internals/README.md) | DSH 内部结构：基底、启动链路、运行时、服务地图、扩展缝、UI、官方插件解剖 |
+| [internals/generated/](0.2.2-rc.1/dsh-plugin-construction/references/internals/generated/README.md) | 机器生成：服务 / 事件 / slot / 包四张表（随 dsh 版本变化） |
+
+## 安装
+
+DSH 的文件系统技能提供方按 `<root>/<name>/SKILL.md` **一层深**发现技能，用户级根目录是 `$DSH_HOME/skills`（默认 `~/.dsh/skills`）。
+
+```sh
+git clone https://github.com/Thatgfsj/dsh-plugin-skills.git
+cd dsh-plugin-skills
+
+bash scripts/install.sh --dry-run              # 看会装哪个版本、装什么
+bash scripts/install.sh                        # 默认装与本机 `dsh --version` 同名的目录
+bash scripts/install.sh --version 0.2.2-rc.1   # 显式指定版本
+```
+
+也可以把某个版本目录加进配置的 `customSkillDirs`（rank 300），或手工把该版本下的技能目录拷进 `~/.dsh/skills/`。装完新开一个会话即可在技能目录里看到它们。
+
+## CI 策略
+
+**不在每次 PR / push 时构建和跑检查。** 这个仓库交付的是数据（Markdown 技能），不是要编译的代码；评审时本地跑两条命令即可：
+
+```sh
+node scripts/validate-skills.mjs      # 技能格式与相对链接
+node scripts/dsh-map.mjs --check      # 内部结构生成表是否过期
+```
+
+CI 只在**发布时**跑：打 `v*` tag、发布 release，或手动 `workflow_dispatch`。注意 drift 检查（`dsh-map.mjs --check`）需要本机安装 dsh，GitHub runner 上会被跳过，只跑技能格式与链接校验；发布前请在本地跑一遍。
+
+## 校验
+
+```sh
+node scripts/validate-skills.mjs
+```
+
+零依赖。**FAIL 集合只放 DSH 真会拒绝、导致技能被静默丢弃的问题**：bundle 形态、kebab-case 名、`name`/`description` 必填、调用布尔值合法、**旧的驼峰调用键**（`disableModelInvocation` 等，DSH 会直接报错丢弃）、相对 Markdown 链接失效。
+
+**WARN 集合放本仓库的风格规则**：description 超过 500 字符（DSH 是**截断**不是丢弃，模型只看得到前 500）、frontmatter `name` 与目录名不一致（DSH 允许，本仓库要求一致）。这两类问题在本地跑 `validate-skills.mjs` 就能发现；CI 只在发布时执行（见上文「CI 策略」）。
+
+## 维护：版本与元信息
+
+**版本号只写在会跟代码一起走的地方，升级 dsh 时必须同一次改完；会漂的元信息不写数字。**
+
+| 位置 | 写什么 | 升级 dsh 时 |
+|---|---|---|
+| README 顶部「时效性」段 | 基线版本 | 手工改 |
+| README 徽章 `DSH-<版本>` | 当前验证版本 | 手工改 |
+| `<版本>/dsh-plugin-construction/references/sources.md` | 版本差异表、实测清单 | 手工改（只改该版本目录） |
+| `<版本>/.../internals/README.md` | 版本基线 | 手工改 |
+| `<版本>/.../internals/generated/*` | 由 `dsh-map.mjs` 从本机生成 | **不要手改**，重跑生成器 |
+| `README.md` 的版本目录表 | 各目录的适配状态 | 手工改 |
+| 仓库 About / description | 只说"做什么" | **不写版本号、不写文档体量** |
+
+改完自检：
+
+```sh
+node scripts/validate-skills.mjs
+node scripts/dsh-map.mjs --check
+```
+
+## 证据纪律
+
+本仓库的写法是：**每条硬结论都标注来源与核实方式，并明确列出没验证到的部分**。
+
+这些技能由独立子代理做过只读事实审查（对照本机安装产物源码逐条核验），并**跟着 DSH 版本重验**：累计修掉 4 条阻断级与 17 条应修正问题，记录见 [sources.md](0.2.2-rc.1/dsh-plugin-construction/references/sources.md#审查与适配记录)。外部资料（官方文档、第三方技能、博客）一律按"**本机代码/产物 > 官方仓库对应 tag 的文档 > 第三方文档**"取舍，冲突处写明分歧。
+
+几个被实测推翻或补充的常见说法：
+
+- **`engines.dsh` 一旦声明就单独决定兼容性**，同一份清单里的 `peerDependencies` 会被忽略——实测：兼容的 `engines.dsh` + 不兼容的 peer 能装上，反过来的组合被拒。
+- 图形插件不声明 `peerDependencies` 时，`@deepseek-ai/*` import 会 `ERR_MODULE_NOT_FOUND`，插件行不加载且**很可能没有任何报错**。
+- 有 `exports` 却不导出 `./package.json` / `./locale/*.json`，图标与标题会**静默丢失**。
+- `ctx.get()` 不要求 `inject`，但默认只返回已激活的实现；返回 `undefined` 不等于服务不存在。
+- UI 半边不能靠 `--help` 冒烟验证——客户端组合其实会跑，但失败被降级成 `logger.warn`，看不到输出。
+- 第三方 `dsh-plugin-guide` 里"导出 `./icon`"一条在 0.2.0-rc.2 上**不成立**、到 0.2.1-rc.2 又**成立**——这类"今天对的明天错"正是本仓库坚持标版本号的原因。
+
+## License
+
+MIT

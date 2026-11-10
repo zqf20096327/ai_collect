@@ -260,6 +260,12 @@ local stdio MCP or a JSON CLI, with explicit permissions for check/build/test/pr
 UI inspection/actions. It requires an environment containing automation API v1 (0.6.3 or later),
 built from the sources or obtained from a verified published distribution.
 
+An agent finds what it may drive without being told: `webfront-agent --list` prints the sessions their owners shared
+(project, grants, process and endpoint, never the attachment capability), `webfront-agent --print-mcp-config --attach <dir>`
+prints a ready `.mcp.json`, and `webfront-agent --schema` / `--agent-help` describe the contract. Your own application opts in
+with `webfront::automation::enableAutomation(app, {.grants = {...}, .listen = dir})`, so that the agent drives *its* window
+and callbacks; see [automation of your own application](docs/AUTOMATION.md#automating-your-own-application).
+
 ### 5. Try the result
 
 ![Game of Life running in a native window](docs/images/life-preview.jpg)
@@ -299,13 +305,47 @@ Recompilation is explicit. The resulting application runs offline without the pr
 The examples' [LifeFrontend.hpp](examples/life/LifeFrontend.hpp) selects `NativeOrBrowserFrontend` for both stages: a native window when the engine is built and a session exists, the default browser otherwise.
 Your own application can select `webfront::NativeApp` or `webfront::NativeAppWithAssets` explicitly when it requires a native window.
 
+## Let an agent drive your application
+
+Your coding agent can type-check, build, preview, inspect and click the interface of **your own application**, in its own
+window and with its own C++ callbacks, while you keep the window and decide what the agent may do. Nothing is on by default.
+
+<img src="docs/images/automation-agent.svg" width="100%" alt="Animated transcript. On the left, an agent lists the shared session, checks, builds and previews the interface, clicks a button, calls the allow-listed C++ callback bf.render and is refused bf.secret. On the right, the application window shows the interface updating, and the C++ process logs only the callbacks that ran.">
+
+*Abridged transcript of the `AutomationConsumerWindow` regression test, which runs these steps against a real application.*
+
+One call in your C++ turns it on, and the grants are yours, fixed in native code:
+
+```cpp
+#include <webfront/automation/Enable.hpp>
+
+webfront::NativeApp app{project};
+app.bootstrap("developer");
+app.cppFunction("bf.render", render);                  // your callbacks stay yours
+auto automation = webfront::automation::enableAutomation(
+    app, {.grants    = {"check", "build", "preview", "inspect", "interact", "call"},
+          .callbacks = {"bf.render"},                  // the only callback an agent may call
+          .listen    = privateEndpointDirectory});
+app.show(automation->launchPage());
+automation->close();
+app.shutdown();
+```
+
+- **Visible to you.** The window's terminal prints the grants and how to attach, `wf help` says so, and the window title can carry a marker.
+- **Found without being told.** `webfront-agent --list` shows the sessions their owners shared (never the capability), and `webfront-agent --print-mcp-config --attach <dir>` writes the `.mcp.json` for Claude Code or any MCP client. `wf create` adds an `AGENTS.md` that tells the agent how to attach.
+- **Bounded.** Each operation is a separate grant; a callback is reachable only by an exact name you listed; a stuck renderer is stopped by native deadlines; project code still runs with your rights (this is not a sandbox).
+- **Optional.** It lives in a separate launcher and one header; applications that do not call `enableAutomation` register nothing. `webfront_add_agent()` builds and installs the launcher for `add_subdirectory` and `FetchContent` consumers.
+
+The [automation guide](docs/AUTOMATION.md#automating-your-own-application) covers grants, callbacks, discovery, deadlines and the MCP profile.
+
 ## What's new since 0.5.0
 
-The [changelog](docs/CHANGELOG.md) is exhaustive; the main additions are:
+The [changelog](docs/CHANGELOG.md) lists every version with its breaking changes; the main additions are:
 
 - **0.6.0.** `ui.document()` for [DOM islands from C++](docs/DOM.md); [forms and inspectors](docs/FORMS.md) generated from type descriptions (with an optional C++26 reflection layer); the [`@webfront/react` adapter](docs/REACT.md) with coalesced C++ stores and `Island`; `app.broadcast(...)` and `app.forEachUI(...)` to reach every browser from any thread; connection generations that reject a stale `UI`; local [automation](docs/AUTOMATION.md) (`webfront-agent`, stdio MCP and JSON CLI).
 - **0.7.0.** **Breaking:** test, fuzzing, coverage and sanitizer CMake options require the `WEBFRONT_` prefix (`WEBFRONT_ENABLE_TESTING`, ...); several agent shutdown fixes; faster pull-request CI.
 - **0.8.0.** Authorized native programs and private temporary files from [Jasmine specs](docs/CONSUMER_TESTING.md); PNG screenshots and image sequences of the web view (`webFrontCapture`); `webfront::embeddedFrontendAvailable` and `webfront::EmbeddedWebFront`; `init`, `create`, `install`, `restore` and `embed` available to automation.
+- **0.9.0.** The last minor revision before 1.0, with the developer environment at the same number. System services groundwork ([ADR-020](docs/adr/README.md)): writable storage confined to declared roots, typed access to the native window and an interface-thread executor for every frontend, dynamic and ranged HTTP routes, file inputs and downloads in the embedded frontends, automation of an application's own window, and the `@webfront/services` package skeleton. Developer environment 0.9.0 is the first published by the `release-developer` workflow.
 - **Developer distribution.** The developer environment is served from `dist.webfront.fr` ([ADR-021](docs/adr/README.md)). Libraries older than the sources' pin keep the former address, which no longer works for the developer bootstrap: rebuild against the current sources.
 
 ## Use WebFront in your project

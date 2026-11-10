@@ -7,6 +7,7 @@
 **Open-source mobile client for [Hermes Agent](https://github.com/NousResearch/hermes-agent) by Nous Research.**
 Chat with your self-hosted AI agent from your iPhone, iPad, Android phone, foldable or tablet.
 
+<a href="https://apps.apple.com/app/id6826160384"><img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" height="54"></a>
 <a href="https://play.google.com/store/apps/details?id=se.royan.pomelu"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80"></a>
 
 **Pomelu needs a running [Hermes Agent](https://hermes-agent.nousresearch.com/docs/getting-started/installation) 0.21.5 or newer.** Install Hermes Agent before you install the app.
@@ -55,14 +56,14 @@ them.
 
 ## Watch the film
 
-https://github.com/user-attachments/assets/d6deabe6-0c50-4f96-8567-aca11d544ada
+https://github.com/user-attachments/assets/3e20ae68-ab06-4e98-803f-13d1bd976505
 
 <details>
 <summary><b>Two short vertical cuts</b></summary>
 
-https://github.com/user-attachments/assets/936a13ac-f90e-48a5-9f6e-bdb6ef3d886a
+https://github.com/user-attachments/assets/cb499867-c611-4c44-b2fa-ab1b24c80976
 
-https://github.com/user-attachments/assets/37da4dae-1f24-4ed4-ac13-465b4d80dafe
+https://github.com/user-attachments/assets/26f26178-d87c-4ea2-8e9b-badebdbd9699
 
 </details>
 
@@ -123,7 +124,7 @@ Watch a bot work on its own Linux desktop, live in the app. When it needs you, t
 |---|---|
 | **Android** 10+ (phones, foldables, tablets) | **[Get it on Google Play](https://play.google.com/store/apps/details?id=se.royan.pomelu)** |
 | Android, from GitHub | [Download the signed APK](https://github.com/ateymoori/pomelu/releases/latest) (`arm64-v8a` for most phones, `universal` for the rest; SHA-256 sums on the release page), or [add it to Obtainium](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/ateymoori/pomelu) to follow the GitHub releases |
-| **iPhone and iPad** (iOS 15+) | Coming soon to the App Store. Until then, [build it from source](#build-from-source). |
+| **iPhone and iPad** (iOS 15+) | **[Download on the App Store](https://apps.apple.com/app/id6826160384)** |
 
 The GitHub APK has a different signature from the Google Play build, so
 Android will not update one over the other. To switch, uninstall the one you

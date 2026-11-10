@@ -6,8 +6,8 @@
 > two channels (stable and dev).
 
 <!-- versions:badges -->
-[![opentui-js](https://img.shields.io/badge/opentui--js-@androidtui%400.8.0-green.svg)](https://www.npmjs.com/package/@androidtui/core)
-[![opentui-so](https://img.shields.io/badge/libopentui.so-@androidtui%400.8.0-green.svg)](https://www.npmjs.com/package/@androidtui/core-android-arm64)
+[![opentui-js](https://img.shields.io/badge/opentui--js-@androidtui%400.8.3-green.svg)](https://www.npmjs.com/package/@androidtui/core)
+[![opentui-so](https://img.shields.io/badge/libopentui.so-@androidtui%400.8.3-green.svg)](https://www.npmjs.com/package/@androidtui/core-android-arm64)
 <!-- /versions:badges -->
 
 ## Screenshots
@@ -103,6 +103,18 @@ a PWA, so "Add to home screen" gives you an app icon. Embedding it costs about
 25 MB (binary 172 → 197 MB); the `dev` channel skips it to keep the hourly
 rolling downloads small.
 
+## Shared Termux packages
+
+This signed APT repository also provides **Camoufox** and **Obscura Termux**. After configuring it, run:
+
+```sh
+pkg update
+pkg install obscura
+# Or: pkg install camoufox
+```
+
+For setup instructions and adding future projects, see the [shared package repository guide](termux/repository/README.md). OpenCode channels remain available as before.
+
 ## How it compares
 
 [Hope2333/opencode-termux](https://github.com/Hope2333/opencode-termux) and
@@ -158,9 +170,9 @@ release. The other channel lives on its own branch
 <!-- versions:table -->
 | Component | Version |
 |---|---|
-| opencode (upstream) | `2.2.6` |
-| `@opentui/{core,keymap,solid}` (JS, via `@androidtui`) | `0.8.0` |
-| `@androidtui/core-android-arm64` (native `.so`) | `0.8.0` |
+| opencode (upstream) | `2.2.7` |
+| `@opentui/{core,keymap,solid}` (JS, via `@androidtui`) | `0.8.3` |
+| `@androidtui/core-android-arm64` (native `.so`) | `0.8.3` |
 | `bun-termux` runtime | `1.4.4-patched` ([bd-loser/bun-termux](https://github.com/bd-loser/bun-termux)) |
 | `bun-pty` (Bionic pty `.so`, embedded) | `0.4.11` ([release asset](https://github.com/bd-loser/bun-termux/releases/tag/bun-pty-v0.4.11)) |
 

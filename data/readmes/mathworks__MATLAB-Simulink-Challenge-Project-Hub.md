@@ -64,8 +64,20 @@ _After the remarkable success of our inaugural edition, we are delighted to anno
 _By participating, you have the opportunity to **win up to $1000**. Visit this **[page](https://www.mathworks.com/academia/student-challenge/sustainability-and-renewable-energy-challenge-2024.html)** to learn more about the challenge and how to participate._
 -->
 ## All projects :file_folder:
-*Updated: October 2, 2026*
+*Updated: November 9, 2026*
 <table><!---->
+<tbody>
+<td><img src="https://gist.githubusercontent.com/robertogl/e0115dc303472a9cfd52bbbc8edb7665/raw/carbon_capture.png"  width=500 /></td>
+<td><p><h2><a href="https://github.com/mathworks/MATLAB-Simulink-Challenge-Project-Hub/blob/main/projects/Post-Combustion%20Carbon%20Capture,%20Utilization,%20and%20Sequestration%20Modeling">Post-Combustion Carbon Capture, Utilization, and Sequestration Modeling</a></h2></p>
+<p>Design, cost, and optimize an MEA-based post-combustion CO₂ capture and compression plant by connecting CHEMCAD to MATLAB.</p>
+<p><strong>Impact</strong>: Reduce climate impact of CO2 by carbon capture, storage and utilization in other chemicals manufacturing.</p>
+<p><strong>Expertise gained</strong>: Sustainability and Renewable Energy, Modeling and Simulation, Optimization, Reaction kinetics</p>
+<span><strong>Industry partner:</strong></span><br><br>
+<a href="https://www.datacor.com/solutions/education" target="_blank">
+<img src="https://gist.githubusercontent.com/robertogl/e0115dc303472a9cfd52bbbc8edb7665/raw/datacor_logo.svg"  width=220><br></a><br>
+<a href="https://www.mathworks.com/academia/student-challenge/mathworks-excellence-in-innovation-signup.html?tfa_1=Post-Combustion%20Carbon%20Capture,%20Utilization,%20and%20Sequestration%20Modeling&tfa_2=261"><img src="https://gist.githubusercontent.com/robertogl/e0115dc303472a9cfd52bbbc8edb7665/raw/registerButton.png" alt="name" width="150"></a>&nbsp;&nbsp;<a href="https://www.mathworks.com/academia/student-challenge/mathworks-excellence-in-innovation-submission-form.html?tfa_1=Post-Combustion%20Carbon%20Capture,%20Utilization,%20and%20Sequestration%20Modeling&tfa_2=261"><img src="https://gist.githubusercontent.com/robertogl/e0115dc303472a9cfd52bbbc8edb7665/raw/submitButton.png" alt="name" width="150"></a>
+</td>
+</tbody>
 <tbody>
 <td><img src="https://gist.githubusercontent.com/robertogl/e0115dc303472a9cfd52bbbc8edb7665/raw/oil_gas_engineer.jpg"  width=500 /></td>
 <td><p><h2><a href="https://github.com/mathworks/MATLAB-Simulink-Challenge-Project-Hub/blob/main/projects/AI-Based%20Analysis%20of%20Oil%20and%20Gas%20Fatal%20Incident%20Reports">AI-Based Analysis of Oil and Gas Fatal Incident Reports</a></h2></p>
@@ -550,12 +562,4 @@ _By participating, you have the opportunity to **win up to $1000**. Visit this *
 <td><p><h2><a href="https://github.com/mathworks/MathWorks-Excellence-in-Innovation/tree/main/projects/Automatically%20Segment%20and%20Label%20Objects%20in%20Video">Automatically Segment and Label Objects in Video</a></h2></p>      <p>Implement algorithms to automatically label data for deep learning model training.</p>
 <p><strong>Impact:</strong> Accelerate the development of robust AI algorithms for self-driving vehicles.</p>
 <p><strong>Expertise gained:</strong> Artificial Intelligence, Computer Vision, Deep Learning, Machine Learning</p><a href="https://www.mathworks.com/academia/student-challenge/mathworks-excellence-in-innovation-signup.html?tfa_1=Automatically Segment and Label Objects in Video&tfa_2=203"><img src="https://gist.githubusercontent.com/robertogl/e0115dc303472a9cfd52bbbc8edb7665/raw/registerButton.png" alt="name" width="150"></a>&nbsp;&nbsp;<a href="https://www.mathworks.com/academia/student-challenge/mathworks-excellence-in-innovation-submission-form.html?tfa_1=Automatically Segment and Label Objects in Video&tfa_2=203"><img src="https://gist.githubusercontent.com/robertogl/e0115dc303472a9cfd52bbbc8edb7665/raw/submitButton.png" alt="name" width="150">
-    <p align="left" style="margin-top:6px;"><a href="projects/Automatically%20Segment%20and%20Label%20Objects%20in%20Video/submissions.md"><img src="https://img.shields.io/badge/View%20Submissions-2-%23137DAA?style=flat&labelColor=%23BD5013" alt="Submissions: 2"></a></p>
-</tbody>
-<tbody>
-<td><img src="https://gist.githubusercontent.com/robertogl/e0115dc303472a9cfd52bbbc8edb7665/raw/PLL_using_DL.png"  width=500 /></td>
-<td><p><h2><a href="https://github.com/mathworks/MathWorks-Excellence-in-Innovation/tree/main/projects/Behavioral%20Modelling%20of%20Phase-Locked%20Loop%20using%20Deep%20Learning%20Techniques">Behavioral Modelling of Phase-Locked Loop using Deep Learning Techniques</a></h2></p>      <p>Leverage a deep learning approach to extract behavioral models of mixed-signal systems from measurement data and circuit simulation.</p>
-<p><strong>Impact:</strong> Accelerate mixed-signal design and analysis thereby reducing Time-To-Market for semiconductor companies.</p>
-<p><strong>Expertise gained:</strong> Artificial Intelligence, Deep Learning, Machine Learning, Modeling and Simulation, Neural Networks, RF and Mixed Signal, Optimization, Signal Processing</p>
-<a href="https://www.mathworks.com/academia/student-challenge/mathworks-excellence-in-innovation-signup.html?tfa_1=Behavioral Modelling of Phase-Locked Loop using Deep Learning Techniques&tfa_2=202"><img src="https://gist.githubusercontent.com/robertogl/e0115dc303472a9cfd52bbbc8edb7665/raw/registerButton.png" alt="name" width="150"></a>&nbsp;&nbsp;<a href="https://www.mathworks.com/academia/student-challenge/mathworks-excellence-in-innovation-submission-form.html?tfa_1=Behavioral Modelling of Phase-Locked Loop using Deep Learning Techniques&tfa_2=202"><img src="https://gist.githubusercontent.com/robertogl/e0115dc303472a9cfd52bbbc8edb7665/raw/submitButton.png" alt="name" width="150">
-    <p align="left" style="margin-top:6px;"><a href="projects/Behavioral%20Modelling%20of%20Phase-Locked%20Loop%20using%20Deep%20Learning%2
+    <p align="left" style="margin-top:6px;"><a href="projects/Automatically%20Segment%20and%20Label%20Objects%20in%20Video/submissions.md"><img src="https://img.shields.io/badge/View%20Submiss

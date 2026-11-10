@@ -481,7 +481,9 @@ Or use `EvoSci config set` to persist keys in `~/.config/evoscientist/config.yam
 
 Every agent takes its keys from `config.yaml` or the environment. A project `.env` holds only settings of the `EvoSci` command started in that folder, such as `EVOSCIENTIST_DEFAULT_MODE` or `EVOSCIENTIST_UI_BACKEND`; `EvoSci` warns about, and ignores, any key or other setting EvoScientist reads in it. Other variables in it, such as `HF_TOKEN`, are ignored too: export them in your shell before starting EvoSci.
 
-The background server keeps the environment of the session that started it, for every project, until it is stopped: one project's exports (a conda environment, direnv, a per-project `AWS_PROFILE`) reach the agent's shell and `${VAR}` in `mcp.yaml` in every other project, and exports made later never reach it. Start it with `EvoSci service start --workdir <project>` from a shell that has what every project needs, and after changing that, run `EvoSci service stop` and start it again.
+The background server keeps the environment of the session that started it, for every project, until it is stopped: one project's exports (a conda environment, direnv, a per-project `AWS_PROFILE`) reach the agent's shell and `${VAR}` in `mcp.yaml` in every other project, and exports made later never reach it. Start it with `EvoSci server start --workdir <project>` from a shell that has what every project needs, and after changing that, run `EvoSci server stop` and start it again.
+
+A project's conversations, scheduled tasks, memory and AutoSkills proposals are kept outside its folder, under its path, so a folder you move or rename starts as a new, empty project (the memory of a git repository with a remote follows it anyway). Carry the project over with `EvoSci workspace move <old folder> <new folder>`: it moves no files, and refuses when the old folder still exists (a copy is a new project).
 
 </details>
 
@@ -508,6 +510,7 @@ EvoSci  # or EvoScientist — interactive mode (TUI by default)
 ```bash
 EvoSci                            # interactive mode (TUI by default)
 EvoSci -p "your question"        # single-shot mode
+EvoSci --prompt-file prompt.txt   # single-shot mode, query read from a file (for prompts too long for the command line)
 EvoSci --workdir /path/to/project # open in a specific directory
 EvoSci -m run                     # isolated per-session workspace
 EvoSci --ui cli                   # classic CLI (lightweight)
@@ -528,7 +531,7 @@ EvoSci -p "query" --rubric @criteria.md --auto-mode  # grade the work against a 
 <details>
 <summary>Desktop WebUI</summary>
 
-Set the UI backend to `webui` and a fresh `EvoSci` session launches a deploy-style LangGraph server **and** the [`@evoscientist/webui`](https://www.npmjs.com/package/@evoscientist/webui) front-end in one terminal. The server keeps running after the WebUI closes, for every EvoSci session, until `EvoSci service stop`; the WebUI shows every project registered with that server:
+Set the UI backend to `webui` and a fresh `EvoSci` session launches a deploy-style LangGraph server **and** the [`@evoscientist/webui`](https://www.npmjs.com/package/@evoscientist/webui) front-end in one terminal. The server keeps running after the WebUI closes, for every EvoSci session, until `EvoSci server stop`; the WebUI shows every project registered with that server:
 
 ```bash
 EvoSci config set ui_backend webui   # persist; or one-off with `EvoSci --ui webui`

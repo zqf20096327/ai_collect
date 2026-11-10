@@ -7,9 +7,9 @@ The private AI that lives on your computer and does real work, not just chat.
 <p align="center">
   <a href="#-skales-scout-beta-a-helper-that-keeps-working-while-you-do-something-else"><img width="960" alt="Skales Scout: runs on your desk, locked in its own virtual machine" src="docs/readme/scout-banner.webp" /></a>
 </p>
-<p><b>✨ New in 12.9.61 Polish:</b> plans before builds, games made in Flow, a phone that steers your computer's chats, code and scouts, chats shared as files and memory you can see and correct. <a href="https://github.com/skalesapp/skales/releases/latest">What's new →</a> · <a href="#-skales-scout-beta-a-helper-that-keeps-working-while-you-do-something-else">What a scout does →</a></p>
+<p><b>✨ New in 12.9.65 Close-Up:</b> scouts that keep working on their own, Flow that takes your files and zips, phone and computer in one conversation, errors that name their reason, and Skales free for freelancers and businesses of up to two people. <a href="https://github.com/skalesapp/skales/releases/latest">What's new →</a> · <a href="#-skales-scout-beta-a-helper-that-keeps-working-while-you-do-something-else">What a scout does →</a></p>
  <p>
-    <a href="https://github.com/skalesapp/skales/releases/latest"><img src="https://img.shields.io/badge/version-12.9.61-10b981?style=flat-square" alt="Version 12.9.61" /></a>
+    <a href="https://github.com/skalesapp/skales/releases/latest"><img src="https://img.shields.io/badge/version-12.9.65-10b981?style=flat-square" alt="Version 12.9.65" /></a>
     <a href="https://skales.app/licence"><img src="https://img.shields.io/badge/licence-proprietary-10b981?style=flat-square" alt="Licence" /></a>
     <a href="https://skales.app"><img src="https://img.shields.io/badge/Windows_+_macOS_+_Linux_+_Android_+_iOS-10b981?style=flat-square&logo=windows&logoColor=white" alt="Platform" /></a>
     <a href="https://github.com/skalesapp/skales/stargazers"><img src="https://img.shields.io/github/stars/skalesapp/skales?style=flat-square&color=10b981" alt="Stars" /></a>
@@ -403,14 +403,25 @@ Skales runs natively on Windows on Arm (Snapdragon and other Arm PCs) with its o
 
 ## 📜 License
 
-**Skales End User Licence Agreement**: proprietary software, licensed and not
-sold. Free for private and educational use, thirty days of evaluation for an
-organisation; company use, hosting, white-labelling and redistribution need a
-written commercial licence. Skales is not open source and will not become open
-source. See [LICENSE](./LICENSE) for the full terms, [TRADEMARK.md](./TRADEMARK.md)
-for the brand half and [COMMERCIAL-LICENSE.md](./COMMERCIAL-LICENSE.md) for the
-short reading. Every version is published at
-[skales.app/licence](https://skales.app/licence).
+**Skales End User Licence Agreement**, version 1.3: proprietary software,
+licensed and not sold.
+
+- **Free** for private use, for education, and for freelancers, the
+  self-employed and businesses of up to two people, including commercial use
+  and paid work for your own clients. What you create with Skales is yours.
+- **Ask first** (an email is enough) before you hand your own workflows,
+  plugins or automations to a client or set them up for one.
+- **Written commercial licence** for larger teams and companies (thirty days
+  of evaluation first), for hosting, and for white-labelling, reselling or
+  redistributing Skales or its plugins.
+
+The app shows the full text before first use and again whenever its terms
+change. Skales is not open source and
+will not become open source. See [LICENSE](./LICENSE) ([LICENSE.de](./LICENSE.de)
+in German) for the full terms, [TRADEMARK.md](./TRADEMARK.md) for the brand half
+and [COMMERCIAL-LICENSE.md](./COMMERCIAL-LICENSE.md) for the short reading.
+Every version is published at [skales.app/licence](https://skales.app/licence).
+Questions: request@skales.app.
 
 Releases up to and including 12.9.27 were supplied under the Business Source
 Licence 1.1, and a copy supplied under it keeps what that licence granted.
@@ -427,9 +438,10 @@ Licence 1.1, and a copy supplied under it keeps what that licence granted.
 > shipped application does not contain.
 >
 > With the same release Skales moved from the Business Source Licence 1.1 to
-> its own [End User Licence Agreement](https://skales.app/licence). For what
-> you may do, nothing changes: private use, study and teaching stay free of
-> charge, and commercial use needed a licence under the previous terms too.
+> its own [End User Licence Agreement](https://skales.app/licence). Private
+> use, study and teaching stayed free of charge, and commercial use needed a
+> licence under the previous terms too. Since version 1.3 of the agreement,
+> freelancers and businesses of up to two people use Skales free as well.
 > The step was taken deliberately, together with the removal above: a source
 > tree six months behind the product created more confusion than clarity, and
 > one agreement in plain language, shown once on first start, is easier to

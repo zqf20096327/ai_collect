@@ -275,7 +275,7 @@ You might encounter some bugs while using this app. You are more than welcome to
 Useful resources and dependencies that are used in quill.
 
 <!--- DEPENDENCIES_START --->
-- [@ai-sdk/openai](https://www.npmjs.com/package/@ai-sdk/openai): ^4.0.106
+- [@ai-sdk/openai](https://www.npmjs.com/package/@ai-sdk/openai): ^4.0.110
 - [@hookform/resolvers](https://www.npmjs.com/package/@hookform/resolvers): ^5.9.1
 - [@kinde-oss/kinde-auth-nextjs](https://www.npmjs.com/package/@kinde-oss/kinde-auth-nextjs): ^2.13.2
 - [@langchain/core](https://www.npmjs.com/package/@langchain/core): ^1.2.10
@@ -293,7 +293,7 @@ Useful resources and dependencies that are used in quill.
 - [@radix-ui/react-label](https://www.npmjs.com/package/@radix-ui/react-label): ^2.1.17
 - [@radix-ui/react-progress](https://www.npmjs.com/package/@radix-ui/react-progress): ^1.2.1
 - [@radix-ui/react-slot](https://www.npmjs.com/package/@radix-ui/react-slot): ^1.5.0
-- [@radix-ui/react-tooltip](https://www.npmjs.com/package/@radix-ui/react-tooltip): ^1.2.16
+- [@radix-ui/react-tooltip](https://www.npmjs.com/package/@radix-ui/react-tooltip): ^1.4.1
 - [@radix-ui/react-visually-hidden](https://www.npmjs.com/package/@radix-ui/react-visually-hidden): ^1.2.13
 - [@tailwindcss/postcss](https://www.npmjs.com/package/@tailwindcss/postcss): ^4.3.3
 - [@tailwindcss/typography](https://www.npmjs.com/package/@tailwindcss/typography): ^0.5.20
@@ -304,11 +304,11 @@ Useful resources and dependencies that are used in quill.
 - [@trpc/server](https://www.npmjs.com/package/@trpc/server): ^11.18.0
 - [@types/node](https://www.npmjs.com/package/@types/node): ^26.6.6
 - [@types/pg](https://www.npmjs.com/package/@types/pg): ^8.23.1
-- [@types/react](https://www.npmjs.com/package/@types/react): 19.3.0
-- [@types/react-dom](https://www.npmjs.com/package/@types/react-dom): 19.3.0
+- [@types/react](https://www.npmjs.com/package/@types/react): ^19
+- [@types/react-dom](https://www.npmjs.com/package/@types/react-dom): ^19
 - [@uploadthing/react](https://www.npmjs.com/package/@uploadthing/react): ^7.3.3
 - [@vercel/config](https://www.npmjs.com/package/@vercel/config): ^0.9.0
-- [ai](https://www.npmjs.com/package/ai): ^7.0.159
+- [ai](https://www.npmjs.com/package/ai): ^7.0.166
 - [class-variance-authority](https://www.npmjs.com/package/class-variance-authority): ^0.7.1
 - [clsx](https://www.npmjs.com/package/clsx): ^2.1.1
 - [date-fns](https://www.npmjs.com/package/date-fns): ^4.4.0
@@ -318,12 +318,12 @@ Useful resources and dependencies that are used in quill.
 - [lucide-react](https://www.npmjs.com/package/lucide-react): ^1.51.0
 - [next](https://www.npmjs.com/package/next): 16.4.3
 - [next-themes](https://www.npmjs.com/package/next-themes): ^0.4.6
-- [openai](https://www.npmjs.com/package/openai): ^7.47.0
+- [openai](https://www.npmjs.com/package/openai): ^7.53.0
 - [pdf-parse](https://www.npmjs.com/package/pdf-parse): ^2.4.5
 - [postcss](https://www.npmjs.com/package/postcss): ^8.5.29
 - [prisma](https://www.npmjs.com/package/prisma): ^7.10.0
-- [react](https://www.npmjs.com/package/react): 19.3.0
-- [react-dom](https://www.npmjs.com/package/react-dom): 19.3.0
+- [react](https://www.npmjs.com/package/react): 19.3.1
+- [react-dom](https://www.npmjs.com/package/react-dom): 19.3.1
 - [react-dropzone](https://www.npmjs.com/package/react-dropzone): ^20.1.4
 - [react-hook-form](https://www.npmjs.com/package/react-hook-form): ^7.89.0
 - [react-loading-skeleton](https://www.npmjs.com/package/react-loading-skeleton): ^3.5.0
@@ -334,7 +334,7 @@ Useful resources and dependencies that are used in quill.
 - [server-only](https://www.npmjs.com/package/server-only): ^0.0.1
 - [simplebar-react](https://www.npmjs.com/package/simplebar-react): ^3.3.2
 - [sonner](https://www.npmjs.com/package/sonner): ^2.0.8
-- [stripe](https://www.npmjs.com/package/stripe): ^23.0.1
+- [stripe](https://www.npmjs.com/package/stripe): ^23.1.0
 - [tailwind-merge](https://www.npmjs.com/package/tailwind-merge): ^3.6.0
 - [tailwindcss](https://www.npmjs.com/package/tailwindcss): ^4.3.3
 - [tailwindcss-animate](https://www.npmjs.com/package/tailwindcss-animate): ^1.0.7

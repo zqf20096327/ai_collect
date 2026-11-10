@@ -202,7 +202,8 @@ https://github.com/appodd/SecondPick 获取项目。
 新安装使用 Python 3.12 创建项目环境并安装应用，再运行 python scripts/setup_monitor.py，
 由统一程序准备固定版本引擎、独立依赖和浏览器；无需我手动获取或配置外部引擎。
 已有安装先按授权正常停止工作台，再在原项目环境运行同一准备命令。
-准备成功后在仓库根目录运行 shopping-agent-web，默认自动读取生成的本地配置；
+准备成功后在仓库根目录运行 shopping-agent-web start，并用 shopping-agent-web status 核对托管状态，
+避免让长期运行的工作台依赖临时命令会话；默认自动读取生成的本地配置。
 已有显式自定义配置的安装，先核对并保留原启动方式和数据位置。
 先问我只需基础监控采集，还是需要 AI 增强，再准备对应能力；基础采集不需要 Codex CLI，视觉模型可选。
 需要 AI 时先检查本机已有 Codex CLI 及授权能否被 SecondPick 服务使用，满足要求
@@ -254,6 +255,8 @@ shopping-agent-web
 应用登录浏览器与独立采集浏览器可能使用不同版本的 Playwright；统一程序会分别准备所需的 Chromium，无需用户单独安装。
 
 打开 [http://127.0.0.1:8765](http://127.0.0.1:8765)，进入使用引导。
+
+长期运行建议使用 `shopping-agent-web start`：工作台由当前用户的独立后台进程托管，关闭启动终端或网页不会停止服务。使用 `shopping-agent-web status` 查看状态，`shopping-agent-web stop` 正常关闭；原来的 `shopping-agent-web` 仍以前台方式运行。自定义配置须在这些命令中沿用同一 `--config`。日志及服务退出码持久保存在数据库旁的 `.workbench` 目录（默认 `data/shopping.workbench/`），详见[长期运行说明](docs/user-guide.md#工作台长期运行与关闭)。
 
 #### 2. 完成首次引导与闲鱼登录
 

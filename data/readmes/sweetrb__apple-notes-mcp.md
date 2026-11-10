@@ -19,7 +19,7 @@ Beyond creating and editing notes, it manages folders and accounts, native tags,
 
 ## Contents
 
-- [What is This?](#what-is-this) · [Setup on your Mac](#setup-on-your-mac) · [Requirements](#requirements) · [Features](#features)
+- [What is This?](#what-is-this) · [Setup on your Mac](#setup-on-your-mac) · [Requirements](#requirements) · [macOS compatibility](#macos-compatibility) · [Features](#features)
 - [Tool Reference](#tool-reference): [notes](#note-operations), [folders](#folder-operations), [accounts](#account-operations), [batch](#batch-operations), [export, attachments, and media](#export-operations), [diagnostics](#diagnostics), [native background operations](#native-background-operations), [private helper](#private-helper-opt-in-unsupported-apple-api)
 - [Usage Patterns](#usage-patterns) · [Installation choices and upgrades](#installation-choices-and-upgrades) · [Server settings](#server-settings) · [Full Disk Access](docs/FULL-DISK-ACCESS.md) · [Public native helper](#public-native-helper) · [Permission broker](#permission-broker-opt-in)
 - [Security and Privacy](#security-and-privacy) · [Known Limitations](#known-limitations) · [Troubleshooting](#troubleshooting) · [Recurring macOS permission prompts](#recurring-macos-permission-prompts) · [Development](#development)
@@ -55,7 +55,30 @@ Run each setup target separately and use the exact options shown. Version 2.15.1
 - A client that can launch a local stdio MCP server on this Mac. The configurations below cover Claude Code, Claude Desktop, Codex, Hermes, and Antigravity.
 - Automation permission to control Notes.app for AppleScript operations. Database-backed operations also need Full Disk Access for the process macOS holds responsible for the server.
 - Apple Shortcuts for native writes such as native tags, checklists, tables, pinning, and rich append. The optional native Markdown creation route needs macOS 26 or newer and an iCloud account.
-- An Apple developer toolchain only if you choose to build an optional native helper or permissions window. The public helper needs a current Swift toolchain and macOS SDK that expose the macOS 26 speech APIs; older SDK compatibility is unverified.
+- An Apple developer toolchain only if you choose to build an optional native helper or permissions window. The public helper builds with older SDKs too; only a macOS 26 or newer SDK compiles in its `SpeechAnalyzer` route (see [macOS compatibility](#macos-compatibility)).
+
+### macOS compatibility
+
+What works depends on the macOS release. `get-capabilities` reports this for the Mac it runs on (`features.<name>.minimumMacOSVersion`, `osSupported`, and a `reason` such as `requires_macos_13`), so check it there rather than relying on this table alone. The server is developed and tested on current macOS; rows for older releases come from each feature's declared minimum and Apple's API availability, not from testing on those releases.
+
+| Feature | macOS 12 | macOS 13–15 | macOS 26 and later |
+|---|---|---|---|
+| AppleScript core: create, read, search, update, move and delete notes and folders (`applescriptCore`) | Yes | Yes | Yes |
+| Notes database reads with Full Disk Access: queries, structure, checklist state, exports, attachments (`fullDiskAccessReads`) | Yes | Yes | Yes |
+| `get-note-link` without Full Disk Access | Yes, AppleScript fallback | Yes, AppleScript fallback | No, needs Full Disk Access |
+| Listing bridge Shortcuts (`doctor`, `setup --check`, `shortcutsBridges`) | Yes, by name (12's `shortcuts list` cannot show identifiers) | Yes | Yes |
+| Native Tags and Background Operations bridges: native tags, checklists, tables, pinning, note links, `append-native` (`nativeTagsBridge`, `backgroundOperationsBridge`) | No: they call Notes App Intents actions, which macOS 12 does not have | Minimum declared; untested | Yes |
+| Markdown note creation through the Markdown bridge (`markdownNoteBridge`) | No | No | Yes, iCloud account only |
+| Public native helper build (`setup --public-helper`) | Builds with the SDK that release's Xcode or Command Line Tools provide; not tested on macOS 12 itself | Builds | Builds |
+| Classic drawing decode (`get-note-drawings`, needs the helper and Full Disk Access) | Yes | Yes | Yes |
+| On-device transcription (`transcribe-note-audio`, needs the helper and Full Disk Access) | `SFSpeechRecognizer`: needs a Speech Recognition grant for the app that launches the server, and an on-device model for the locale | Same as macOS 12 | `SpeechAnalyzer`, no grant needed, when the helper was built with a macOS 26 or newer SDK; otherwise as on macOS 12 |
+| Stored audio transcripts (`get-audio-transcripts`) | With Full Disk Access | With Full Disk Access | With Full Disk Access |
+
+Before macOS 13, `setup` does not open the Tags or Background bridge for import, and `setup` and `setup --check` report both as skipped with `requires_macos_13`.
+
+The public helper compiles its `SpeechAnalyzer` route only when the SDK provides it. With an older SDK the same helper builds without it and transcribes through `SFSpeechRecognizer` on every release, even on macOS 26 and later. Node.js 20 or newer is required everywhere.
+
+On macOS 12 the privacy panes are under **System Preferences → Security & Privacy → Privacy**, not System Settings. macOS never prompts for Full Disk Access on any release: nothing will ask, and you add the app or executable yourself (see [which process needs it](#full-disk-access)).
 
 Python is **not** an Apple Notes MCP runtime dependency. The package includes its compiled JavaScript server and signed Shortcut files. Python is used by developer scripts that regenerate those workflows, not by normal installation or MCP tool calls.
 
@@ -195,11 +218,11 @@ In the configured client, ask it to run `get-capabilities` and then `doctor`. `g
 | Access or component | What it enables | How to complete it |
 |---|---|---|
 | Automation of Notes.app | AppleScript reads and writes | Allow the macOS prompt for the responsible app to control Notes. Inspect **Privacy & Security → Automation** if access was denied. |
-| Full Disk Access | Database reads, rich-content inspection and safety checks, query tools, native object reads, and database-backed exports | Add the responsible executable/app under **Privacy & Security → Full Disk Access**, fully quit and relaunch the host, then rerun `doctor`. |
+| Full Disk Access | Database reads, rich-content inspection and safety checks, query tools, native object reads, and database-backed exports | macOS never prompts for it. Add the responsible executable/app under **Privacy & Security → Full Disk Access** (macOS 12: **System Preferences → Security & Privacy → Privacy**), fully quit and relaunch the host, then rerun `doctor`. |
 | Shortcut installation and consent | Native tag, checklist, table, pin, link, and append routes | Import the bridges and complete their foreground consent steps below. |
 | Public helper and, where required, Speech Recognition | Classic drawing decoding and on-device audio transcription | Build the optional helper; follow the permission result from `doctor` or the tool. |
 
-**Which process needs Full Disk Access?** For a brokered session, grant the signed **Apple Notes MCP Broker.app** access; `doctor` reports whether that session uses it. Without the broker, Claude Desktop needs the exact **Node executable** printed by `doctor`; granting Claude.app alone does not reach the server in that launch path. For a terminal-launched client, the terminal app is normally the responsible app; for an editor-launched server, check that editor. Use the actual running client's diagnostics instead of assuming that all clients share grants.
+**Which process needs Full Disk Access?** macOS never shows a Full Disk Access prompt, so nothing will ask; you add the entry yourself. For a brokered session, grant the signed **Apple Notes MCP Broker.app** access; `doctor` reports whether that session uses it. Without the broker, Claude Desktop needs the exact **Node executable** printed by `doctor`; granting Claude.app alone does not reach the server in that launch path. Add that exact path: a Node found some other way (`which node` in a shell, another install, or a Homebrew symlink) can be a different binary. For a terminal-launched client, the terminal app is normally the responsible app; for an editor-launched server, check that editor. Most other desktop clients stay responsible for the servers they launch, so grant the client app itself (and the Node path from `doctor` if that alone does not work). Use the actual running client's diagnostics instead of assuming that all clients share grants.
 
 Client sandbox access is a separate boundary. A sandboxed client must be able to launch the executable and reach its files; a brokered client also needs access to the broker's local Unix socket. Full Disk Access and Automation grants do not expand the client's sandbox. Diagnose a launch or socket-access refusal in the client before changing macOS privacy permissions.
 
@@ -235,9 +258,15 @@ npx -y apple-notes-mcp@2.15.1 setup
 
 Approve **Add Shortcut** for the missing signed workflows that macOS opens:
 
-- `Apple Notes MCP - Native Tags`
-- `Apple Notes MCP - Background Operations v5`
-- `Apple Notes MCP - Create Markdown Note`, offered only on macOS 26 or newer and optional for native Markdown creation
+- `Notes MCP Tags`
+- `Notes MCP Background v6`
+- `Notes MCP Markdown`, offered only on macOS 26 or newer and optional for native Markdown creation
+
+Releases before 2.16.1 installed these as `Apple Notes MCP - Native Tags`,
+`Apple Notes MCP - Background Operations v6` and `Apple Notes MCP - Create Markdown Note`.
+Those still work. To switch to the short names, run `setup` after deleting the old ones
+in Shortcuts.app. Delete `Apple Notes MCP - Background Operations v5` in any case; the
+server no longer uses it.
 
 Then check installation:
 
@@ -253,7 +282,7 @@ An installed bridge is not proof of consent: `shortcuts list`, `setup --check`, 
 
 ### 4. Build optional helpers
 
-These commands are separate from registering the MCP client. If `xcrun swiftc` or `clang` is unavailable, install Apple's Command Line Tools with `xcode-select --install` before building a helper. The public helper's source references `SpeechAnalyzer` and `SpeechTranscriber`, so its build needs a current Swift toolchain and macOS SDK exposing those macOS 26 APIs. Runtime availability checks do not establish compatibility with an older SDK; builds with older SDKs are unverified.
+These commands are separate from registering the MCP client. If `xcrun swiftc` or `clang` is unavailable, install Apple's Command Line Tools with `xcode-select --install` before building a helper. The public helper compiles its macOS 26 `SpeechAnalyzer`/`SpeechTranscriber` route only when the SDK declares those APIs; with an older SDK it builds with the `SFSpeechRecognizer` route only. A build against the macOS 15.4 SDK targeting macOS 12 compiles; running it on macOS 12 itself is untested.
 
 #### Public native helper
 
@@ -479,7 +508,7 @@ Creates a new note in Apple Notes.
 
 `format: "markdown"` creates the note with Notes' own Markdown importer (the
 Create Note action's "Interpret as Markdown" option, macOS 26+), run through the
-packaged `Apple Notes MCP - Create Markdown Note` Shortcut. `#`, `##` and `###`
+packaged `Notes MCP Markdown` Shortcut. `#`, `##` and `###`
 become real Title, Heading and Subheading styles, and the note starts with the
 title line, with no seed line.
 
@@ -1619,35 +1648,4 @@ Lists all notes, optionally filtered by folder, date, and limit.
 }
 ```
 
-**Returns:** List of notes as `{title, id}` pairs — `notes: Array<{title, id}>`, plus `count`. The human-readable line is `  - <title> [id: <id>]`. Notes in Recently Deleted are left out by default and counted in `excludedRecentlyDeleted` (present only when nonzero); with `includeRecentlyDeleted: true` they are listed with `inRecentlyDeleted: true` and a `[RECENTLY DELETED]` marker. Notes.app's own listing includes them, so the Recently Deleted folder is recognised by its database id (with Full Disk Access) or by its English name. With Full Disk Access each entry also carries `identifier`, `folderIdentifier`, and `accountIdentifier` (see [Identifier forms](#identifier-forms)).
-
-Use the returned `id` for any follow-up read/update/move/delete rather than re-resolving the title: titles are not unique, and a by-title lookup resolves a duplicated title to the same one note every time, silently skipping the others.
-
-> **Changed in 2.7.0:** `notes` was previously `string[]` (titles only). Callers that treated the array as strings must now read `.title`.
-
-For date order, incremental sync cursors, Recently Deleted, or word counts, use [`list-recent-notes`](#list-recent-notes).
-
----
-
-#### `list-recent-notes`
-
-Lists notes from the NoteStore database (read-only) by stored modification time, with an exact cursor for incremental sync. With `since`, it pages through changes oldest first; without it, it shows the newest notes first. Unlike `list-notes`, it can include Recently Deleted and can count words.
-
-**Requires:** Full Disk Access for the MCP host process (see [Full Disk Access Setup](#full-disk-access)).
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `account` | string | No | Only this account (exact or unique-prefix name). Omit for every account |
-| `folder` | string | No | Only notes directly in this folder: a full path in `list-folders` syntax, or a unique folder name |
-| `since` | string | No | Return notes after this point, **oldest first**. A `modifiedCheckpoint` cursor (from a row or `nextSince`), or an ISO 8601 date (local midnight) or date-time (local time unless it carries `Z` or an offset), meaning modified strictly after it |
-| `limit` | number | No | Maximum rows, 1–1000 (default 50) |
-| `includeDeleted` | boolean | No | Also return notes in Recently Deleted, notes awaiting deletion, and folderless notes (default `false`) |
-| `wordCounts` | boolean | No | Decode each body and add `wordCount` and `charCount` (default `false`) |
-| `bodyPreview` | boolean | No | Add `bodyPreview` (up to 180 characters) and `textDecoded` (default `false`) |
-
-**Returns:** `notes`, each with `id`, `identifier`, `title`, `folder`, `account`, `created`, `modified`, `modifiedCheckpoint`, `pinned`, `locked`, `inRecentlyDeleted`, and `markedForDeletion`. Also `count`, `limit`, `order` (`oldest-first` or `newest-first`), `saturated`, and `nextSince`.
-
-- **Cursors.** `modifiedCheckpoint` is an opaque token (`cdts1:`, 16 hex digits, `:`, the note's database key). It carries the exact stored timestamp bits, so it never loses precision the way an ISO string can, and the key orders notes that share one timestamp. Pass it back as `since`.
-- **Syncing.** Call with `since`, store `nextSince`, and pass it as the next `since`. `nextSince` is the last returned row's cursor, or the incoming boundary when nothing matched, so every call advances. `saturated` is `true` when `count` equals `limit`: more changes may follow, so call again right away. When it is `false`, you are caught up. Notes that share a timestamp are split across pages by key, so none is skipped or repeated.
-- **First sync.** Start with `since: "1970-01-01"` and page the same way. A library larger than the 1000-row maximum is reached in full.
-- **Browsing.** Without `since`, rows come newest first. `nextSince` is then t
+**Re

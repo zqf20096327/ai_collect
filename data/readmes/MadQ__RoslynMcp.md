@@ -8,7 +8,7 @@
 **Give your AI agent a C# compiler instead of grep.**
 ([first battle-test results: 38-69% token savings, bugs found, lessons learned](docs/battle-test-results.md) · [shared workspace architecture](docs/plans/multi-instance-architecture.md) · [help wanted](#help-wanted))
 
-RoslynMcp is a [Model Context Protocol](https://modelcontextprotocol.io/) server that gives AI coding agents real Roslyn compiler semantics: type resolution, cross-file references, semantic rename, diagnostics, and 46 MCP tools (44 public + 2 debug-only). Not string matching. Not regex. Actual compiler-level understanding of your C# code.
+RoslynMcp is a [Model Context Protocol](https://modelcontextprotocol.io/) server that gives AI coding agents real Roslyn compiler semantics: type resolution, cross-file references, semantic rename, diagnostics, and 49 MCP tools (48 public + 1 debug-only). Not string matching. Not regex. Actual compiler-level understanding of your C# code.
 
 ```
 Agent: "Rename OrderStatus.Pending to OrderStatus.AwaitingApproval"
@@ -134,13 +134,17 @@ AI agents working on C# through file reads and regex have a structural problem: 
 
 **Rename with confidence.** `roslyn_preview_rename` + `roslyn_apply_rename` performs semantic rename across your entire solution. It knows that `order.Status` and `IOrder.Status` are the same symbol. Grep doesn't.
 
+**Refactor with the compiler, not by retyping.** `roslyn_list_refactorings` → `roslyn_preview_refactoring` → `roslyn_apply_refactoring` runs Roslyn's own refactorings headless: Move type to file, Extract method, Introduce local, Invert if, and the rest of Visual Studio's Ctrl+. menu. An agent that retypes a class into a new file can drop a line; Roslyn moves it with its trivia and makes the containing types partial. The diff is reviewed before anything is written.
+
+**Fix diagnostics with Roslyn's own fixers.** `roslyn_preview_code_fix` offers the fixers Roslyn ships and the ones in your analyzer packages for a diagnostic at a location — add the missing using, remove the unnecessary one, generate the missing member — and `roslyn_get_diagnostics` with `includeAnalyzers` surfaces the IDE0xxx findings they fix.
+
 **Build without leaving the process.** `roslyn_build_project` checks Roslyn diagnostics first — fast, in-process, no MSBuild spawn. If there are errors, it returns them instantly. Clean code triggers a real `dotnet build` for full validation.
 
 ---
 
 ## Tool Catalog
 
-46 total MCP tools: 44 public tools organized by what you need to do below, plus 2 debug-only tools: `roslyn_respawn` and `roslyn_debug_attach`. All tools work in-process using Roslyn APIs unless noted.
+49 total MCP tools: 48 public tools organized by what you need to do below, plus 1 debug-only tool: `roslyn_debug_attach`. All tools work in-process using Roslyn APIs unless noted.
 
 ### Discovery
 
@@ -201,8 +205,11 @@ AI agents working on C# through file reads and regex have a structural problem: 
 |------|--------------|
 | `roslyn_preview_rename` | Compute rename diff + confirmation token |
 | `roslyn_apply_rename` | Apply or reject a previewed rename |
-| `roslyn_preview_code_fix` | Preview a bundled Roslyn code fix and return a reviewed approval token |
+| `roslyn_preview_code_fix` | Preview a code fix for a diagnostic — Roslyn's own fixers, the project's analyzer packages, bundled and configured providers — and return a reviewed approval token |
 | `roslyn_apply_code_fix` | Apply or reject an approved code-fix preview using verified physical writes |
+| `roslyn_list_refactorings` | List the refactorings Roslyn offers at a caret or selection (Move type to file, Extract method, Introduce local, Invert if, …) |
+| `roslyn_preview_refactoring` | Compute one listed refactoring into a unified diff plus an approval token; names the files it creates or deletes |
+| `roslyn_apply_refactoring` | Apply or reject an approved refactoring preview using verified physical writes |
 | `roslyn_change_signature` | Add parameters with non-breaking forwarding overload |
 | `roslyn_apply_signature_change` | Apply or reject a previewed signature change |
 
@@ -220,6 +227,7 @@ AI agents working on C# through file reads and regex have a structural problem: 
 |------|--------------|
 | `roslyn_check_drift` | Workspace health probe on three axes: source drift (files changed without the workspace noticing), load health (projects that loaded with no metadata references, or with an MSBuild failure on their project file), and pending reload (a change not yet applied — the only signal that can account for a brand-new file) |
 | `roslyn_info` | Server version, PID, uptime, MSBuild discovery, log markers |
+| `roslyn_respawn` | Ends the server gracefully (exit code 0) so the client starts a fresh one — the remedy for a workspace that loaded badly and no reload repaired, and the way to load a new server build. The restart is the client's: Claude Code, Copilot CLI and VS Code restart a stdio server that exits |
 
 ---
 
@@ -249,6 +257,8 @@ ALWAYS prefer roslyn_* MCP tools over built-in tools when working with C#:
 - Use `roslyn_replace_in_code` for C# edits -- it validates syntax
 - Use `roslyn_search_files` or `roslyn_semantic_search` for code search -- not Grep
 - Use `roslyn_preview_rename` + `roslyn_apply_rename` for renames -- semantic, cross-project
+- Use `roslyn_list_refactorings` -> `roslyn_preview_refactoring` -> `roslyn_apply_refactoring` for structural changes (move a type to its own file, extract a method, introduce a local) -- not retyping code
+- Use `roslyn_preview_code_fix` + `roslyn_apply_code_fix` to clear a diagnostic -- Roslyn's own fixers, not hand edits
 - Use `roslyn_get_file_outline` to understand file structure -- not Read on the whole file
 ```
 
@@ -264,6 +274,8 @@ When working with C# code, prefer roslyn_* MCP tools:
 - `roslyn_replace_in_code` for C# edits (validates syntax, preserves formatting)
 - `roslyn_search_files` / `roslyn_semantic_search` for code discovery
 - `roslyn_preview_rename` + `roslyn_apply_rename` for semantic renames
+- `roslyn_list_refactorings` → `roslyn_preview_refactoring` → `roslyn_apply_refactoring` for structural changes (move type to file, extract method, …) instead of retyping code
+- `roslyn_preview_code_fix` + `roslyn_apply_code_fix` to clear a diagnostic with Roslyn's own fixers
 - `roslyn_get_file_outline` for file structure (don't read the whole file)
 - `roslyn_get_diagnostics` with `take: 0` for a fast error count check (no items), or `severity: "errors"` to page through individual errors
 ```

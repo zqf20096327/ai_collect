@@ -9,6 +9,8 @@
 <!-- Modified 2026-11-04: streamline setup and quick-start guidance. -->
 <!-- Modified 2026-11-05: install the complete skill including SDK scripts. -->
 <!-- Modified 2026-11-06: document CLI answers for paused node-test repairs. -->
+<!-- Modified 2026-11-09: link to the optional DeepSeek Harness plugin. -->
+<!-- Modified 2026-11-10: clarify the requested read-only Harness viewer. -->
 
 <p align="center">
   <img src="assets/flowx_log.png" alt="FlowX logo" width="180" />
@@ -54,6 +56,7 @@ FlowX remains Apache-2.0 licensed; compliant forks and reuse are welcome.
 <details>
 <summary>📣 News</summary>
 
+- **[2026.11.10]** 🔑 **Skill and plugin update.** The DeepSeek Harness plugin settings now accept `FLOWX_LLM_API_KEY` and no longer ask for a skill directory. The FlowX skill scripts reuse the plugin's saved Python, workspace, and API key.
 - **[2026.10.28]** 🧩 **Expanded node engine.** Each business node now runs a generation → audit → test → bounded repair chain before it is published.
 - **[2026.10.24]** ⚙️ **WorkflowEngine-native generation.** Graph, node, and entrypoint workflows are now `WorkflowEngine` subclasses.
 - **[2026.10.22]** 🚀 **Interactive runtime.** `run_service` returns a connectable `base_url`; MCP adds `run_step` and `reset_session`.
@@ -82,7 +85,7 @@ Turn an intent into an editable, reusable process instead of a one-off answer. C
 - 🚀 **Run locally** through MCP or the SDK; MCP also supports step inputs and session resets.
 - 🔌 **Choose an interface:** local stdio MCP, Python SDK, or non-streaming A2A.
 - 📦 **Reuse artifacts** stored under `workspace/workflows/<workflow_id>`.
-- 🧠 **Bring your own model and UI:** FlowX does not bundle a frontend.
+- 🧠 **Bring your own model and UI:** the optional [DeepSeek Harness plugin](plugins/deepseek-harness-flowx/README.md) is planned to provide a read-only workflow viewer; use the separate FlowX skill to create, evolve, and run workflows.
 
 <a name="setup"></a>
 ## ⚙️ Setup

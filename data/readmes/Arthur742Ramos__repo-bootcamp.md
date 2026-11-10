@@ -60,11 +60,13 @@ Most READMEs are outdated. Most wikis are incomplete. Most senior devs are too b
 
 **Repo Bootcamp** uses agentic AI to analyze repositories from GitHub, GitLab, or Bitbucket and generate comprehensive, actionable onboarding documentation in **under 60 seconds**.
 
+After installing a published release, analyze a repository:
+
 ```bash
-npx repo-bootcamp https://github.com/facebook/react
+bootcamp https://github.com/facebook/react
 ```
 
-That's it. You get 14+ interconnected markdown files covering everything a new contributor needs.
+You get 14+ interconnected markdown files covering everything a new contributor needs.
 
 <div align="center">
 
@@ -161,19 +163,18 @@ Onboarding Risk: 18/100 (A) 🟢
 | Metric              | Value                                  |
 | ------------------- | -------------------------------------- |
 | Generated files     | 14+                                    |
-| Unit configuration  | 3,201 passed, 8 skipped                |
-| Source files        | 90 TypeScript files                    |
-| Test files          | 137 unit / 51 CLI / 30 browser         |
-| Source lines        | 28,369, including comments and blanks  |
+| Automated checks    | 3,235 unit / 391 CLI / 414 browser     |
+| Source files        | 94 TypeScript files                    |
+| Source lines        | 29,387, including comments and blanks  |
 | Languages supported | 10+                                    |
 | Generation time     | Varies with repository, model and mode |
 
-Inventory measured on 2026-10-12 from tracked files in this campaign. The unit
-result is the complete local Windows run on Node 24; platform-dependent skips
-can differ in CI. The unit and CLI configurations both include `test/e2e.test.ts`,
-so their file counts overlap. Generation time has not been qualified with a fresh
-live-model benchmark. See [release qualification](docs/release-qualification.md)
-for the verification scope and the remaining release decisions.
+Inventory measured on 2026-11-10 from tracked files in the release baseline. The
+automated check counts come from the #231 release candidate validation and may
+include platform-dependent skips. Generation time has not been qualified with a
+fresh live-model benchmark. See
+[release qualification](docs/release-qualification.md) for the exact baseline,
+verification scope, and publication handoff.
 
 ## How It Uses the GitHub Copilot SDK
 
@@ -281,7 +282,7 @@ The Copilot SDK transforms what would be a simple template-filler into an intell
 - **Combined Scan Dashboard** - `bootcamp scan` reports health, metrics, security, and onboarding risk from a single clone, with a `--check` CI gate on the lowest score
 - **Module Coupling Map** - `bootcamp coupling` ranks modules by import coupling to reveal the load-bearing core, orchestrator hubs, and possibly-orphaned dead code
 - **Circular Dependency Detection** - `bootcamp cycles` finds circular import groups (Tarjan SCC) on the import graph, with a `--check` CI gate
-- **Machine Preflight** - `bootcamp preflight` checks your machine against the target repo's declared toolchain (Node, package manager, Python, Go) with a per-row remedy
+- **Machine Preflight** - `bootcamp preflight` checks your machine against the target repo's declared toolchain (Node, package manager, Python, Go, Rust, .NET) with a per-row remedy
 - **Ownership Map** - `bootcamp owners` parses `CODEOWNERS` to answer "who do I ask?" with default owners, per-area maintainers, and top committers
 - **Task Discovery** - `bootcamp tasks` answers "how do I build/test/run this?" deterministically across ecosystems (package.json scripts, Makefile, justfile, go-task Taskfile, docker-compose, pyproject/poetry, composer.json, qualifying Cargo manifests), grouped by category with a suggested getting-started sequence (`--json`, `--category`)
 - **Style Pack Explorer** - `bootcamp styles` lists the built-in style packs and the doc sections each one enables
@@ -425,6 +426,11 @@ generated Next Steps links include only documents in the assembled kit, includin
 output exclusions and formatter removals. Explicit repository or formatter text
 is preserved; a formatter that replaces the navigation owns its links.
 
+Suggested commands and starter tasks may include a source excerpt. The guides and
+manifest distinguish excerpts matched in the selected, loaded scan from
+unverified guidance. A text match locates the excerpt; it does not prove that a
+recommendation is correct or safe to run.
+
 The completion file list and `summary.json` inventory describe successful local
 writes from the current run, including converted or plugin-provided document
 names and run metadata. Existing unrelated files and external output-target
@@ -432,22 +438,40 @@ destinations are omitted. Quiet and JSON-only modes keep the detailed list hidde
 
 ## Quick Start
 
+Repo Bootcamp 2.0.0 requires Node.js 22.18+ on the 22.x line, or Node.js 24+.
+After the v2.0.0 npm publication is available:
+
 ```bash
-# Clone and install
-git clone https://github.com/your-username/repo-bootcamp.git
-cd repo-bootcamp
-npm install
+npx repo-bootcamp@2.0.0 https://github.com/sindresorhus/ky
+```
 
-# Build
-npm run build
+If npm publication is unavailable, install the independently built GitHub
+release archive after the v2.0.0 release assets exist:
 
-# Generate bootcamp for any repo
-node dist/cli.js https://github.com/sindresorhus/ky
+```bash
+curl -fLO https://github.com/Arthur742Ramos/repo-bootcamp/releases/download/v2.0.0/repo-bootcamp-2.0.0.tgz
+curl -fLO https://github.com/Arthur742Ramos/repo-bootcamp/releases/download/v2.0.0/SHA256SUMS
 
-# Or use with npx (after npm link)
-npm link
+# Linux; on macOS use: shasum -a 256 --check SHA256SUMS
+sha256sum --check SHA256SUMS
+
+npm install --global ./repo-bootcamp-2.0.0.tgz
 bootcamp https://github.com/sindresorhus/ky
 ```
+
+To work from source:
+
+```bash
+git clone https://github.com/Arthur742Ramos/repo-bootcamp.git
+cd repo-bootcamp
+npm install
+npm run build
+node dist/cli.js https://github.com/sindresorhus/ky
+```
+
+The versioned npm and GitHub archive commands are intentionally described as
+post-publication installation paths; this metadata commit does not create a tag
+or publish either artifact.
 
 ## Usage
 
@@ -616,7 +640,28 @@ This repository includes a ready-to-copy GitHub Actions workflow at
 `.github/workflows/onboarding-quality.yml`. It builds Repo Bootcamp, runs the
 deterministic `scan` dashboard on every push and pull request, fails when the
 minimum score is missed, and uploads the machine-readable report as an artifact.
-It does not require a Copilot token or make an AI call.
+For pull requests it also summarizes base-to-PR score and readiness-check
+changes in the Actions job summary, using the PR's analyzer for both revisions.
+The bounded scores are heuristics, not an audit. It does not require a Copilot
+token or make an AI call and needs no pull-request write permission.
+
+### Quality benchmark
+
+`npm run benchmark:quality -- --check` scans four pinned public repositories
+covering Node, Python, Rust and a scoped Go module. It shallow-fetches each
+revision into a temporary directory, compares discovered commands with the
+annotated expectations in `scripts/quality-benchmark.json`, prints JSON, and
+removes the checkouts. `--check` exits nonzero when an expected command is
+missing. This measures exact command/source recall for a small curated sample,
+not overall product quality or command precision.
+
+Add `--live` to evaluate generated guidance with the configured Copilot model;
+this sends the selected repositories' contents to Copilot and may consume model
+quota. Alternatively, `--responses <directory>` uses saved JSON model responses
+named after each case, without a model call. Generated results report exact
+command matches and the number of literal excerpts found in scanned sources;
+neither proves semantic correctness. `--manifest <file>` selects another version-1
+corpus, including absolute local Git repository paths and pinned commit SHAs.
 
 ### Publishing a Generated Kit
 
@@ -808,13 +853,19 @@ bootcamp preflight ./my-repo --check
 
 Reads the repo's declared toolchain — Node (`engines.node`, `.nvmrc`,
 `.node-version`), package manager (`packageManager` / Corepack), Python
-(`requires-python`, `.python-version`), and Go (`go.mod`) — and checks each
+(`requires-python`, `.python-version`), Go (`go.mod`), Rust
+(`rust-toolchain` / `rust-toolchain.toml`), and .NET (`global.json`) — and checks each
 against your local machine with a per-row remedy. Unlike `bootcamp doctor`
 (which checks whether _your_ machine can run bootcamp itself), `preflight`
 checks your machine against the _target_ repo's requirements. Version checks honor
 all whitespace- or comma-separated bounds (for example, `>=20 <23`) and
 `||` alternatives (for example, `^20.19.0 || ^22.12.0 || >=24.0.0`).
-Unsupported version syntax is reported as unknown.
+Rust checks look for the declared rustup toolchain without installing it;
+components, targets, and active overrides are not checked. .NET checks consider
+installed SDKs, roll-forward policies, and prerelease settings.
+Custom Rust toolchain paths and .NET SDK search paths are reported as unknown
+rather than executing repository-selected code. Unknown checks do not fail
+`--check`; verify them manually.
 
 ### Who Do I Ask? (Ownership Map)
 
@@ -857,6 +908,10 @@ bootcamp tasks ./my-repo --category test
 
 # Machine-readable output (grouped tasks + suggested getting-started sequence)
 bootcamp tasks ./my-repo --json
+
+# Opt in to a resumable checklist; mark a step only after completing it yourself
+bootcamp tasks ./my-repo --session
+bootcamp tasks ./my-repo --session --done 1
 ```
 
 Deterministically parses the task-definition files a repo already ships —
@@ -868,6 +923,11 @@ contained directory selection as onboarding; invalid or missing selections fail.
 Scoped JSON includes the selected `subdir`, while unscoped output retains its shape.
 Standalone discovery reads supported task-definition files directly and retains its
 own parser limits; onboarding `--exclude` and `--max-files` do not filter this report.
+The optional session stores only confirmed step numbers in your user state
+directory, separately by repository, branch and selected package. It never runs
+commands. If task definitions change, progress is retained but paused; use
+`--session --restart-session` to replace it with a fresh checklist. `--session
+--json` emits the steps and next pending number.
 Never invokes the
 LLM, so non-npm repos (Rust, Go, Python, PHP) finally surface runnable
 commands. Full onboarding scans use the same declared package manager and script
@@ -1139,6 +1199,12 @@ as legacy and regenerated on the next run.
 Repository scanning stops directory traversal and file metadata reads when `--max-files` is reached. Excluded dependency trees are pruned, and symbolic links and special filesystem entries are skipped. Exclude patterns support glob, extglob, and brace syntax. Expansion has a 10,000-alternative ceiling and a pattern-dependent memory budget; exceeding either produces an error instead of silently dropping exclusions.
 
 Use `--subdir packages/app` to analyze a package within a repository. Documentation, workflows, source evidence, dependencies, and runnable task definitions are read from that selected directory; reported file paths remain relative to it. AI file tools, extended analysis, plugins, interactive sessions, and watch regeneration use that directory too. The path must stay inside the repository.
+
+In the web demo, **Run options → Find packages** clones the selected repository
+and branch and lists directories containing supported package manifests. The
+search skips generated/dependency directories, examines at most 2,000 entries,
+and shows at most 100 directories; it may be incomplete. You can always enter
+a package path manually. The temporary checkout is removed after discovery.
 
 A manager-only exception applies when the explicitly supplied outer repository declares pnpm and its `pnpm-workspace.yaml` proves that the selected package is a member: default install and script commands use pnpm unless the child declares its own manager or lockfile (including npm locks). Only bounded root manager/membership metadata is considered; no parent sources or dependencies are imported. Empty, malformed, dynamic or unsupported declarations, excluded evidence, and nearer workspace boundaries leave selected detection unchanged. Qualification conservatively honors root-relative and absolute `--exclude` patterns; it never searches beyond the supplied repository. Literal paths and ordinary `*`/`**` workspace patterns, with exclusions, are supported. Packages under `node_modules` or `bower_components` remain excluded from inherited workspace context, as in native pnpm discovery, including contained aliases. Remote source links include the selected directory prefix.
 

@@ -11,6 +11,8 @@
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-16a34a)](LICENSE)
 [![Languages](https://img.shields.io/badge/languages-6-7c3aed)](#languages)
 
+<a href="https://apps.microsoft.com/detail/9PKMRQWBWHDM"><img src="https://get.microsoft.com/images/en-us%20dark.svg" alt="Get it from Microsoft" width="200"></a>
+
 </div>
 
 <p align="center"><img src="docs/media/hero-taskbar.png" alt="The AI Meter pill inside the Windows 11 taskbar, with its tooltip: Claude, ChatGPT, Antigravity and OpenRouter limits and a local model loaded in Ollama"></p>
@@ -59,13 +61,17 @@ Screenshots use sample data. Your archive starts from collection time; it cannot
 
 ## Install
 
+**From the Microsoft Store.** [AI Meter - Windows](https://apps.microsoft.com/detail/9PKMRQWBWHDM) is signed by Microsoft, so Smart App Control and SmartScreen trust it, and the Store keeps it updated with stable versions. Install it and the pill appears in your taskbar.
+
+**From GitHub.**
+
 1. Download **AIMeter-script.zip** from the [latest release](https://github.com/dichiara19/ai-meter/releases/latest) and unzip it anywhere.
 2. Run **`Start AI Meter.cmd`**. It works with Smart App Control on: Windows PowerShell, signed by Microsoft, compiles and runs the source you can read.
 3. The pill appears in your taskbar: AI Meter finds the services on your PC and starts with Windows. In Settings you can add a desktop widget or a compact overlay.
 
-Prefer a single executable? **AIMeter.zip** has `AIMeter.exe` (unsigned for now, see [Code signing policy](#code-signing-policy)). A Microsoft Store version is on the way.
+Prefer a single executable? **AIMeter.zip** has `AIMeter.exe` (unsigned for now, see [Code signing policy](#code-signing-policy)).
 
-**Updates.** Once a day AI Meter asks GitHub whether a newer stable version exists and, if so, shows a notice with a link to its release page. It never downloads or installs anything: to update, exit AI Meter, replace the files in its folder with those of the new zip and start it again (settings and history stay). Turn the check off, or opt in to betas and release candidates, in Settings → About.
+**Updates.** The Store version is updated by the Store. The GitHub versions check once a day: AI Meter asks GitHub whether a newer stable version exists and, if so, shows a notice with a link to its release page. It never downloads or installs anything: to update, exit AI Meter, replace the files in its folder with those of the new zip and start it again (settings and history stay). Turn the check off, or opt in to betas and release candidates, in Settings → About.
 
 <a id="languages"></a>Available in English, Italian, Spanish, French, German and Portuguese. It follows the Windows display language, or you can pick one in Settings. Translations live in `src/StringsTable.cs` and `src/StringsHistory.cs`: new languages are welcome.
 
@@ -153,7 +159,7 @@ From the [latest release](https://github.com/dichiara19/ai-meter/releases/latest
 
 Pre-releases (`vX.Y.Z-beta.N`, `vX.Y.Z-rc.N`) are on the [releases page](https://github.com/dichiara19/ai-meter/releases) for anyone who wants to test them; the latest release and the update notice only ever point to stable versions. How versions are cut: [docs/RELEASING.md](docs/RELEASING.md).
 
-A Microsoft Store version, signed by Microsoft and updated automatically by the Store with stable versions only, is in preparation: see [docs/STORE.md](docs/STORE.md).
+The [Microsoft Store version](https://apps.microsoft.com/detail/9PKMRQWBWHDM) is signed by Microsoft and updated automatically by the Store, with stable versions only. How it is built and submitted: [docs/STORE.md](docs/STORE.md).
 
 ## Build and install
 
@@ -214,6 +220,7 @@ plugins/ai-meter/      delegation plugin for Claude Code and Codex (Node, separa
 agents/*.json          built-in coding agent definitions: folders, keys and how delegation starts them
 src/AgentDefinitions.cs loads agents/*.json and %APPDATA%\AIMeter\agents
 tools/render-media.ps1 regenerates the README images (docs/media) from the real UI with demo data
+tools/render-store.ps1 renders the Microsoft Store screenshots in six languages (tools/StoreScreenshots.cs)
 src/Settings.cs        preferences and start with Windows
 src/PackageStartup.cs  start with Windows in the Microsoft Store package (StartupTask)
 src/UpdateCheck.cs     daily check for a newer GitHub release (zip and script builds) and SemVer comparison

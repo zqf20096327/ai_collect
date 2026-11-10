@@ -1,10 +1,16 @@
 # Astronomical
 
-<a href="https://discord.gg/dc4E6r4WD"><img src="site/assets/discord.svg" alt="Discord" width="162" height="34" style="vertical-align:middle"></a>
+<a href="https://github.com/aosama/astronomical/releases/latest"><img src="site/assets/download-for-mac.svg" alt="Download for Mac" width="170" height="34" style="vertical-align:middle"></a> <a href="https://discord.gg/dc4E6r4WD"><img src="site/assets/discord.svg" alt="Discord" width="162" height="34" style="vertical-align:middle"></a>
 
-**Run bigger local language and vision models on Apple Silicon without requiring every sparse expert to live in RAM.**
+**Astronomical is a local model runner for Apple silicon. You set one RAM ceiling; when a mixture-of-experts model does not fit, selected experts stream from SSD, and declared precision is preserved.**
 
-You set the model RAM your laptop can spare. Astronomical is a local model runner for Mac users who want serious models, private inference, and direct control over memory: it automatically balances hot expert weights, live context, runtime work, and solid-state-drive streaming under that ceiling.
+## Quick start
+
+1. **Download for Mac.** Install the signed, notarized disk image from the [latest release](https://github.com/aosama/astronomical/releases/latest). Astronomical runs on any Apple silicon M-series Mac with macOS 14 (Sonoma) or later.
+2. **Set your RAM ceiling and pick a model.** In Observatory, set **Maximum model RAM** on the Configuration page, then install a model from Models. The ceiling is the model memory this Mac can spare. On a 32 GB Mac, for example, a lower ceiling such as 16 GB can leave room for macOS and everyday applications.
+3. **Chat, or point a tool at the local API.** Talk in Thin Talk, the chat window, or send a chat from Observatory. The menu-bar companion stays up while you work. Stable serves OpenAI-compatible and Anthropic-compatible APIs at [http://127.0.0.1:6732/](http://127.0.0.1:6732/). `astronomical launch claude`, `astronomical launch codex`, or `astronomical launch opencode` starts that agent pointed at this Mac for one session. Client settings are on the [local API page](https://aosama.github.io/astronomical/local-api.html).
+
+Run bigger local language and vision models on Apple Silicon without requiring every sparse expert to live in RAM. You set the model RAM your laptop can spare. Astronomical is a local model runner for Mac users who want serious models, private inference, and direct control over memory: it automatically balances hot expert weights, live context, runtime work, and solid-state-drive streaming under that ceiling.
 
 Read the product story and public engineering reports at [aosama.github.io/astronomical](https://aosama.github.io/astronomical/).
 
@@ -72,7 +78,7 @@ Astronomical is experimental and deliberately focused:
 - macOS 14 (Sonoma) and later on any Apple silicon M-series Mac, declared best-effort. Capability probes and public MLX fallbacks protect correctness across the range; combinations outside the tested set are supported best-effort.
 - Validated Qwen3.5/Qwen3.6, Laguna, FLUX.2 Klein, and ModernBERT embedding artifacts supported by the repository.
 - One local user and one active generation at a time.
-- OpenAI-compatible chat completions, responses, embeddings, image generation, model discovery, and server-sent event streaming over loopback only.
+- OpenAI-compatible chat completions, responses, embeddings, image generation, and model discovery, Anthropic-compatible Messages, and server-sent event streaming over loopback only.
 
 A supported model runs on every Apple silicon M-series Mac that meets the operating-system floor. Measured custom Metal kernels keep capable GPUs on their fastest path; where a GPU cannot run one, the same request completes through public MLX APIs with the output precision the model artifact specifies. Throughput still depends on the GPU generation, the memory ceiling, the model, and storage speed.
 
@@ -91,7 +97,7 @@ Config, logs, prompt caches, daemon ownership, process locks, and loopback endpo
 
 Serving and acceptance tests read user-selected model locations and policy from Development only. Their mutable config, cache, and logging fixtures use temporary `.astronomical-dev` state and never `~/.astronomical`. Config boundary tests may construct temporary Stable fixtures solely to prove channel separation. Explicit app validation with `--real-model` uses the Development instance.
 
-On first launch each instance creates its own versioned `config.json` and adjacent local JSON Schema. Open Library in Observatory to install a curated model under that instance's automatic models directory. When an existing unversioned configuration can be migrated without changing its behavior, Astronomical preserves its exact bytes once as `config.legacy-v0.json` before atomically replacing `config.json`. An unsafe migration leaves the original configuration unchanged and creates no backup. Additional existing model locations remain available as recursive scan roots:
+On first launch each instance creates its own versioned `config.json` and adjacent local JSON Schema. Open Models in Observatory to install a curated model under that instance's automatic models directory. A model installed that way can be removed again with **Remove** on its line under On this Mac: its folder moves to the Trash, and copies you placed in other folders are never offered for removal. When an existing unversioned configuration can be migrated without changing its behavior, Astronomical preserves its exact bytes once as `config.legacy-v0.json` before atomically replacing `config.json`. An unsafe migration leaves the original configuration unchanged and creates no backup. Additional existing model locations remain available as recursive scan roots:
 
     {
       "$schema": "./astronomical-config.schema.json",
@@ -106,15 +112,19 @@ On first launch each instance creates its own versioned `config.json` and adjace
       }
     }
 
-The memory value uses the gigabyte Apple uses to market the Mac: 1 GB = 1,073,741,824 bytes (2³⁰). Remove `maximum_mlx_memory_gb` to use the Mac-reported MLX ceiling. Per-model entries are keyed by the model folder name or by its full Hugging Face ID, such as `organization/model`; models installed through the Library or `astronomical models download` record their full ID, so an entry for a different organisation's model of the same name does not apply to them, and an entry keyed by the folder name wins over one keyed by the full ID. Per-model entries can set a lower context ceiling, generation defaults, chunking overrides, and multi-token-prediction depth. Explicit request values override generation defaults. Overrides for temporarily absent models remain dormant and are reported as unmatched rather than preventing other models from serving. `astronomical validate config` says what each entry does against the models installed now: which model it is used for, why it is not used, or that it is waiting for a model you have not downloaded yet. Settings only change chat models. Global chunking controls remain available under `chunking`, and each model may override individual values. See the [version 1 configuration schema](https://aosama.github.io/astronomical/schemas/config/v1/astronomical-config.schema.json) for the complete contract.
+The memory value uses the gigabyte Apple uses to market the Mac: 1 GB = 1,073,741,824 bytes (2³⁰). Remove `maximum_mlx_memory_gb` to use the Mac-reported MLX ceiling. Per-model entries are keyed by the model folder name or by its full Hugging Face ID, such as `organization/model`; models installed through Observatory's Models page or `astronomical models download` record their full ID, so an entry for a different organisation's model of the same name does not apply to them, and an entry keyed by the folder name wins over one keyed by the full ID. Per-model entries can set a lower context ceiling, generation defaults, chunking overrides, and multi-token-prediction depth. Explicit request values override generation defaults. Overrides for temporarily absent models remain dormant and are reported as unmatched rather than preventing other models from serving. `astronomical validate config` says what each entry does against the models installed now: which model it is used for, why it is not used, or that it is waiting for a model you have not downloaded yet. Settings only change chat models. Global chunking controls remain available under `chunking`, and each model may override individual values. See the [version 1 configuration schema](https://aosama.github.io/astronomical/schemas/config/v1/astronomical-config.schema.json) for the complete contract.
 
 ## Edit the configuration
 
-Observatory's **Configuration** page edits every setting in that instance's `config.json`: set or change a value, remove it to return to its default, add settings for one model, or reset everything. The page is generated from the version 1 schema. Saving validates the whole document, refuses to overwrite a file that changed since the page loaded it, and reports whether the change applied, is waiting for a running request, or needs a restart. Reset keeps the old file beside the new one as `config.previous.json`.
+Observatory's **Configuration** page edits every setting in that instance's `config.json`: set or change a value, remove it to return to its default, add settings for one model, or reset everything. The page is generated from the version 1 schema. Saving validates the whole document, refuses to overwrite a file that changed since the page loaded it, and reports whether the change applied, is waiting for a running request, or needs a restart. Reset keeps the old file beside the new one as `config.previous.json`. Its **Maximum model RAM** control at the top applies the memory ceiling at once and writes `runtime.maximum_mlx_memory_gb`; the generic row for that setting is left out so there is one place to change it.
 
 ## Metal residency refresh
 
 macOS can release the Metal residency of wired memory while the GPU is idle, so model weights may have to be made resident again before the next prompt. Set `metal_residency_refresh_enabled` under `runtime`, or use the switch on Observatory's **Configuration** page, to have the inference worker re-request residency once per second. It is off by default, changing it restarts the worker, and the renewal can keep that memory wired through long idle periods.
+
+## Idle model unload
+
+A loaded model is unloaded after it has gone unused for `idle_model_unload_seconds` under `runtime` (60 by default), which frees its memory for the rest of the Mac; the next request loads it again. Set it to 0 to keep a model loaded until another one is requested. The change applies at once from Observatory's **Configuration** page.
 
 ## Neural Engine prefill (experimental)
 
@@ -173,9 +183,9 @@ To build only the optimized daemon and worker:
 
 ## Connect locally
 
-The daemon exposes its OpenAI-compatible API and embedded Observatory at the same loopback address. Stable uses [http://127.0.0.1:6732/](http://127.0.0.1:6732/) and Development uses [http://127.0.0.1:6733/](http://127.0.0.1:6733/). Astronomical refuses non-loopback bind addresses.
+The daemon exposes its OpenAI-compatible and Anthropic-compatible APIs and embedded Observatory at the same loopback address. Stable uses [http://127.0.0.1:6732/](http://127.0.0.1:6732/) and Development uses [http://127.0.0.1:6733/](http://127.0.0.1:6733/). Astronomical refuses non-loopback bind addresses.
 
-Point an OpenAI-compatible local client at that address, select a discovered model, and Astronomical loads or swaps the worker on demand.
+Point an OpenAI-compatible or Anthropic-compatible local client at that address, select a discovered model, and Astronomical loads or swaps the worker on demand. `astronomical launch claude`, `astronomical launch codex`, or `astronomical launch opencode` starts that agent pointed at the running app for one session. The manual settings for other clients are on the [local API page](https://aosama.github.io/astronomical/local-api.html).
 
 ## Verification
 

@@ -10,7 +10,7 @@
 
 <div align="center">
 
-[![Verified by M8ven](https://m8ven.ai/badge/mcp/fiangg20-superbase-1nmxtn)](https://m8ven.ai/verified?check=https%3A%2F%2Fgithub.com%2Ffiangg20%2Fsuperbase) [![Superbase MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/fiangg20/superbase/badges/score.svg)](https://glama.ai/mcp/servers/fiangg20/superbase) [![Support on Saweria](https://img.shields.io/badge/Support%20on-Saweria-F7A823?style=for-the-badge)](https://saweria.co/bases)
+[![Verified by M8ven](https://m8ven.ai/badge/mcp/fiangg20-superbase-1nmxtn)](https://m8ven.ai/verified?check=https%3A%2F%2Fgithub.com%2Ffiangg20%2Fsuperbase) [![Superbase MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/fiangg20/superbase/badges/score.svg)](https://glama.ai/mcp/servers/fiangg20/superbase) [![On MCP Radar](https://mcp.liqiwa.com/badge.svg)](https://mcp.liqiwa.com/s/fiangg20--superbase.html) [![Support on Saweria](https://img.shields.io/badge/Support%20on-Saweria-F7A823?style=for-the-badge)](https://saweria.co/bases)
 
 </div>
 
@@ -1489,5 +1489,4 @@ To add a tool that runs Lua in the game, put the code in `src/lua/<name>.lua` (i
 | The port is already in use | Pick another port: set `SUPERBASE_PORT` for the bridge and the MCP server, then use the loader the bridge prints. |
 | The tray icon does not appear | It only shows on Windows, for a bridge that runs in the background, and only with `"tray": true`. Look at the end of `.superbase/bridge.log` for a line that starts with `tray:` (for example PowerShell was blocked by a policy). Windows may also hide new icons under the `^` arrow of the taskbar. The bridge works without the icon. |
 | The AI says `bridge_offline` | The MCP server tries to start the bridge by itself, so the status line says why that failed (for example the port is used by another program, or the log has an error). Run `npm start` to see the message, or `npm run logs`. If you turned `autostart` off, start the bridge with `npm start` or `npm run start:bg`. |
-| The AI says `waiting_for_roblox` | The client stops when you leave or rejoin a game. Run the loader again, or put it in your executor's autoexec folder. After a teleport the client reconnects by itself within a few seconds. If it does not, either use the autoexec loader (then the executor runs it again in every place), or check that your executor has `queue_on_teleport` and that you used the loader from the bridge (see [The in-game client](#the-in-game-client)). |
-| The AI says `unresponsive` |
+| The AI says `waiting_for_roblox` | The client stops when you leave or rejoin a game. Run the loader again, or put it in your executor's autoexec folder. After a teleport the client reconnects by itself within a few seconds. If it does not, either use the autoexec loader (then the executor runs it again in every place), or check that your executor has `queue_on_teleport` and that you used the l

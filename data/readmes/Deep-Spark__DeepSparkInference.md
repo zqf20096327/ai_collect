@@ -60,7 +60,9 @@
 | MiniCPM-o-2                   | `vLLM`       | [✅](models/multimodal/vision_language_model/minicpm-o-2/vllm/)     | 4.3.0     |
 | MiniCPM-V-2                   | `vLLM`       | [✅](models/multimodal/vision_language_model/minicpm-v-2/vllm/)     | 4.3.0     |
 | MiniCPM-V-4                   | `vLLM`       | [✅](models/multimodal/vision_language_model/minicpm-v-4/vllm/)     | 5.0.0     |
+| Muse-Glimmer-30B              | `Transformers` | [✅](models/multimodal/vision_language_model/muse-glimmer-30b/transformers) | 5.0.0 |
 | NVLM                          | `vLLM`       | [✅](models/multimodal/vision_language_model/nvlm/vllm)             | 4.3.0     |
+| OvisOCR2                      | `vLLM`       | [✅](models/multimodal/vision_language_model/ovisocr2/vllm)         | 5.0.0     |
 | Phi3_v                        | `vLLM`       | [✅](models/multimodal/vision_language_model/phi3_v/vllm)           | 4.3.0     |
 | PaliGemma                     | `vLLM`       | [✅](models/multimodal/vision_language_model/paligemma/vllm)        | 4.3.0     |
 | PaddleOCR-VL                  | `Transformers` | [✅](models/multimodal/vision_language_model/paddleocr-vl-1.5/transformers)  | 4.4.0 |
@@ -277,7 +279,7 @@
 |            | INT8  | [✅](models/cv/object_detection/yolov12n/igie)     |                                                   | 4.3.0     |
 | YOLOv13n   | FP16  | [✅](models/cv/object_detection/yolov13n/igie)    | [✅](models/cv/object_detection/yolov13n/ixrt)    | 4.3.0     |
 |            | INT8  | [✅](models/cv/object_detection/yolov13n/igie)     |                                                   | 4.3.0     |
-| YOLO26n    | FP16  | [✅](models/cv/object_detection/yolo26n/igie)     |                                                   | 4.4.0     |
+| YOLO26n    | FP16  | [✅](models/cv/object_detection/yolo26n/igie)     | [✅](models/cv/object_detection/yolo26n/ixrt)     | 4.4.0     |
 | YOLOXm     | FP16  | [✅](models/cv/object_detection/yoloxm/igie)      | [✅](models/cv/object_detection/yoloxm/ixrt)      | 4.3.0     |
 |            | INT8  | [✅](models/cv/object_detection/yoloxm/igie)      | [✅](models/cv/object_detection/yoloxm/ixrt)      | 4.3.0     |
 
@@ -358,8 +360,10 @@
 | LLaVA               |   vLLM   | [✅](models/multimodal/vision_language_model/llava/vllm)               | 4.3.0     |
 | LLaVA-Next-Video-7B |   vLLM   | [✅](models/multimodal/vision_language_model/llava_next_video_7b/vllm) | 4.3.0     |
 | Llama-3.2           |   vLLM   | [✅](models/multimodal/vision_language_model/llama-3.2/vllm)           | 4.3.0     |
+| MOSS-Image          | ComfyUI  | [✅](models/multimodal/diffusion_model/moss-image/comfyui)             | 5.0.0     |
 | Pixtral             |   vLLM   | [✅](models/multimodal/vision_language_model/pixtral/vllm)             | 4.3.0     |
 | Qwen-Image          |   ComfyUI  | [✅](models/multimodal/vision_language_model/qwen-image/comfyui)     | 4.4.0     |
+| Qwen-Image-2.1      | Diffusers  | [✅](models/multimodal/diffusion_model/qwen-image-2.1/diffusers)     | 5.0.0     |
 | Stable Diffusion 1.5 | Diffusers   | [✅](models/multimodal/diffusion_model/stable-diffusion-1.5/diffusers)  | 4.3.0     |
 | Stable Diffusion 2.1 | ixRT   | [✅](models/multimodal/diffusion_model/stable-diffusion-2.1/ixrt)  | 4.4.0     |
 | Stable Diffusion 3 |   Diffusers   | [✅](models/multimodal/diffusion_model/stable-diffusion-3/diffusers)    | 5.0.0  |

@@ -151,11 +151,11 @@ Our mailing list is [agentic-ai-dev@eclipse.org](https://accounts.eclipse.org/ma
 
 ## Directories
 
-- [<b>api/</b>](api/): Jakarta Agentic AI API (source code)
-- [<b>spec/</b>](spec/): Specification (sources in AsciiDoc)
-- [<b>tck/</b>](tck/): Technology Compatibility Kit
-- [<b>tck-dist/</b>](tck-dist/): The certifiable TCK distribution (EFTL zip with the reference guide and a starter runner)
-- [<b>examples/</b>](examples/): Example applications and usage patterns
+- [<b>api/</b>](api/): The API that applications program against
+- [<b>spec/</b>](spec/): The specification document (AsciiDoc)
+- [<b>tck/</b>](tck/): The compatibility tests that implementations must pass
+- [<b>tck-dist/</b>](tck-dist/): The TCK download that implementations certify with
+- [<b>examples/</b>](examples/): Example applications built with the API
 
 ## Building
 
@@ -169,9 +169,9 @@ You can also build individual parts via Maven in their respective directories.
 
 ## Project Website
 
-The project website is at [jakartaee.github.io/agentic-ai](https://jakartaee.github.io/agentic-ai/), which also hosts an [interactive tutorial](https://jakartaee.github.io/agentic-ai/tutorial/).
+The project website is at [jakartaee.github.io/agentic-ai](https://jakartaee.github.io/agentic-ai/), which also hosts a [tutorial](https://jakartaee.github.io/agentic-ai/tutorial/).
 
-Its sources are on the `gh-pages` branch rather than `main`. Edit `content.html` for the home page body or `tutorial/index.html` for the tutorial. The published `index.html` is generated, not committed. On every push to that branch, CI fetches the current jakarta.ee page shell and wraps `content.html` in it.
+Its sources are on the `gh-pages` branch rather than `main`. Edit `content.html` for the home page body or `tutorial/index.html` for the tutorial.
 
 ## Contributing
 

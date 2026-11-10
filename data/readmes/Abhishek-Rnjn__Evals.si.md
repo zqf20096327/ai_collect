@@ -17,10 +17,16 @@ Agents, RAG pipelines, LLMs and models on one set of evaluators: sandboxed runs 
 [Quickstart](#quickstart) ·
 [Guides](#documentation) ·
 [Examples](examples/) ·
-[Product roadmap](docs/PRODUCT-ROADMAP.md) ·
-[Technical status](docs/LEFTOVERS.md)
+[Gate an agent in CI](docs/guides/gate-an-agent-in-ci.md) ·
+[Changelog](CHANGELOG.md)
 
 </div>
+
+<p align="center">
+  <img src="docs/img/demo.gif" width="760" alt="A terminal: pip install evalsi, evalsi init my-evals, then evalsi run passes its gates on run.yaml and fails one on regressed.yaml, exiting 3.">
+</p>
+
+<p align="center"><sub>Real output of the published package, recorded by <a href="scripts/make-demo-gif.mjs">scripts/make-demo-gif.mjs</a>: a starter, a passing gate, and a regression that fails the build with exit code 3.</sub></p>
 
 ---
 
@@ -126,6 +132,8 @@ For the setup commands (0.3.2) and maintained GitHub Action, see [guided setup](
 For dataset version review and digest-pinned runs, see [dataset snapshots](docs/guides/dataset-snapshots.md).
 Validate the evaluator itself with [judge calibration](docs/guides/judge-calibration.md): freeze human labels, select prompts/models/thresholds on tuning cases, then measure held-out validity and fresh-call repeatability. Try the [offline example](examples/judge-calibration/README.md).
 Turn production incidents into reviewed regression cases with the [failure inbox](docs/guides/failure-inbox.md), then share [approved immutable dataset versions](docs/guides/dataset-catalog.md) and pin them in server runs. Compare a candidate with a reviewed baseline using [enforced release decisions](docs/guides/release-decisions.md), or configure and investigate the check in the [browser release workbench](docs/guides/release-workbench.md). Start an agent suite from the [support and refund starter](docs/guides/support-refund-suite.md): synthetic tasks graded on the final state of a simulated shop.
+
+Compare two results files with `evalsi compare baseline.json candidate.json`, or gate inside your test suite with [`assert_eval`](docs/guides/onboarding.md#gates-inside-a-test-suite).
 
 Next: [gate an agent in CI](docs/guides/gate-an-agent-in-ci.md) (free and offline, with a failing gate and a GitHub Actions workflow), [evaluate a RAG pipeline](docs/guides/evaluate-rag.md), [run an agent on sandboxed tasks](docs/guides/agent-runs.md), [score live traces](docs/guides/trace-sources.md), [train with evaluators as rewards](docs/guides/fine-tuning.md), or [score plain model outputs](#quickstart). The docs are at [evalsi.dev](https://evalsi.dev/).
 

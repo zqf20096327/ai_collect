@@ -42,6 +42,7 @@
 - **[稿定设计](https://www.gaoding.com/)** — 模板驱动的电商视觉工具,主图 / 详情页 / 促销海报模板量大。
 - **[创客贴](https://www.chuangkit.com/)** — 在线平面设计工具,含大量电商主图模板。
 - **[Dondo](https://www.dondo.com/)** — 从现有图片生成棚拍和生活场景商品图草稿，同时提供商品 SEO 和 AI 搜索准备度检查。商家先审核草稿，再发布或导出；可用选项因平台而异。
+- **[Imagera](https://imagera.ai/image/product-photography)** — 上传一张商品图，生成棚拍、生活场景、海报和平台主图，并保持商品外观一致；同一商品还可做成带货短视频，付费订阅制。
 
 ## 场景图与背景替换
 
@@ -72,6 +73,7 @@
 - **[即梦 AI](https://jimeng.jianying.com/)** — 字节旗下,图生视频能力强,与抖音生态衔接顺畅。
 - **[Vizgo](https://vizgo.ai/)** — AI 视频生成工具,支持商品素材成片。
 - **[Wizmade](https://wizmade.si/)** — 多模型 AI 视频与生图平台，集成 Kling、Veo、Seedance 与特效成片。
+- **[AdMakeAI](https://admakeai.com)** — 面向 Facebook、Instagram 和 TikTok 投放的 AI 广告素材工具，一张商品图生成 Meta 各版位尺寸的广告图和 AI 数字人出镜的 UGC 风格竖版视频广告，也能查看竞品在 Meta 广告库里持续投放的广告，用自己的商品复刻同类形式。按点数计费，视频广告需付费套餐。
 
 ## 基础图片处理
 

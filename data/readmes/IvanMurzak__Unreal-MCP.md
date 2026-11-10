@@ -285,9 +285,9 @@ All file operations are jailed to `<Project>/Source/`.
 
 | Tool id | What it does |
 | --- | --- |
-| `screenshot-viewport` | Capture the active editor viewport |
-| `screenshot-game-view` | Capture the PIE / game view |
-| `screenshot-camera` | Render from a resolved camera actor via `USceneCaptureComponent2D` |
+| `screenshot-viewport` | Capture the active editor viewport; optional `savePath` also writes the PNG inside the project |
+| `screenshot-game-view` | Capture the PIE / game view; optional `savePath` as above |
+| `screenshot-camera` | Render from a resolved camera actor via `USceneCaptureComponent2D`; optional `savePath` as above |
 | `screenshot-isolated` | Render an actor in isolation (transient SceneCapture2D + show-only list) |
 
 Captures return a base64 **PNG as MCP image content** so the LLM can inspect the render directly. Each capture renders a new frame at call time, also while the editor window is in the background or minimized, and its text says whether the frame is fresh and whether effects and animation were ticking. While an AI agent is connected, the plugin keeps the editor ticking and rendering at full rate in the background (also when minimized) ("Use Less CPU when in Background" is overridden for that session only; your saved preference is unchanged). Dimensions are clamped (default 1024, hard cap 2048 per side). Pixel capture needs a GPU-backed editor; under headless `-nullrhi` these tools return a structured error.
@@ -365,10 +365,15 @@ The full 18-command surface:
 | `configure` | Write `UNREAL_MCP_*` values into `<project>/.env` and gitignore `.env` |
 | `setup-mcp` | Write an MCP client config snippet for an agent |
 | `login` | Authorize against ai-game.dev via the OAuth device-code flow |
-| `status` | Report package, project, plugin, and live connection status |
+| `status` | Report package, project, plugin, and live connection status (exit 18 while a modal dialog blocks the editor) |
+| `dialog` | List the modal dialogs blocking the editor (title, text, buttons), or answer one with `--press <button>` |
 | `wait-for-ready` | Block until the project's MCP server responds to a ping |
-| `run-tool` | Invoke an MCP tool via the project's local MCP server (HTTP) |
+| `run-tool` | Call one of the plugin's AI tools; starts a headless editor when none answers (`--once` closes it again) |
 | `run-system-tool` | Invoke a system tool via the project's local MCP server (HTTP) |
+| `tools` | List the AI tools (hidden ones too) with their inputs; cached, so it works while the editor is closed |
+| `compile` | Build the project's C++ with UnrealBuildTool (no editor) and print `file:line:col` errors |
+| `test` | Run Automation tests headless and report the verdict (JUnit / GitHub annotations optional) |
+| `commands` | A machine-readable manifest of every command and the exit codes (`--format json`) |
 | `bootstrap-local` | Build the bridge from source into `<project>/Intermediate/UnrealMCP` (the server is downloaded by `setup-mcp`, not built) |
 | `update [path]` | Update everything: the project's UnrealMCP plugin and installed extensions to their latest versions (close the editor first), then `unreal-mcp-cli` itself. Outside a project it updates only the CLI. `--check` reports (exit 2 when something is outdated); `--no-self`, `--no-project`, `--no-extensions`, `--no-clean` skip a step |
 | `install-engine` | Detect installed Unreal engines; for a missing version, link to the Epic launcher |

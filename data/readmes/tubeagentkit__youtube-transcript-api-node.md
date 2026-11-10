@@ -160,8 +160,10 @@ const { related } = await client.getRelatedVideos({ v: "dQw4w9WgXcQ" });
 // Estimated likes and dislikes (1 credit)
 const { likes, dislikes, estimated } = await client.getVideoDislikes({ v: "dQw4w9WgXcQ" });
 
-// Check remaining credits, plan, and rate limit (free)
-const { plan_credits_left, plan } = await client.getCredits();
+// Check remaining credits, plan, and rate limit (free). total_credits_left is
+// plan + top-up combined - use that, not plan_credits_left alone, to check
+// whether the key is actually out of credits.
+const { total_credits_left, plan } = await client.getCredits();
 ```
 
 Paginated endpoints (`search`, `getPlaylist`, `searchChannel`, `listChannelVideos`, `listChannelPlaylists`, `listChannelPosts`) return a continuation token you feed back in on the next call:

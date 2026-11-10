@@ -12,6 +12,22 @@
 
 ## Latest
 
+- **11 Nov** - Qwen3.8-27B reads prompts 19-29 % faster with its draft head on (30K prompt: 1,067 -> 1,394 tok/s):
+  a prompt token now leaves only its K/V rows in the draft block instead of running the whole block. Same text, bit for
+  bit; default on. [CHANGELOG](docs/xolotl/CHANGELOG.md#qwen38-27b-reads-prompts-19-29--faster-with-its-draft-head-on-11-nov).
+- **10-11 Nov** - Eleven fixes: a Pillow JPEG 2000 security hole closed for picture requests, two prompt-path faults
+  (`Xid 31` on long prompts, an expert read before its upload landed), NaN routers, misspelt tool-call openers, a hung
+  streaming client no longer blocking the queue, the sm_70 build.
+  [CHANGELOG](docs/xolotl/CHANGELOG.md#fixes-ported-10-11-nov-correctness-security-tool-calls).
+- **11 Nov** - Opt-in `"reasoning_loop_recovery": "wrap"`: thinking that repeats whole passages is closed and the
+  model answers, on any model (the older modes did nothing on DeepSeek-V4.1 or ended with no answer). Not yet measured
+  on a model.
+- **10 Nov** - `xolotl-dense` runs the gated residual (hyper-connections), the Qwen4 generation's replacement for every
+  layer norm - the piece the dense engine was missing for a Qwen4-27B dense file, built and checked before that file
+  exists. Same kernels the MoE path uses, plain-residual models untouched, and a file carrying a feature the engine
+  lacks (a QSA indexer, PLE) is refused by name. Bit-identical across batching on a synthetic model; parity against a
+  reference forward pass needs the weights, which do not exist yet.
+  [CHANGELOG](docs/xolotl/CHANGELOG.md#xolotl-dense-runs-the-gated-residual-hyper-connections-10-nov).
 - **8 Nov** - Short agent turns (a tool result on a long conversation) are faster on DeepSeek-V4.1 (4.40 -> 3.83 s for
   161 tokens) and GLM-5.3-Flash (5.47 -> 4.63 s for 246 tokens): the CPU computes some of the experts while the card
   runs the rest, and the CPU's i-quant kernels now decode an expert once for all its tokens (-32 % at 4-8 tokens).

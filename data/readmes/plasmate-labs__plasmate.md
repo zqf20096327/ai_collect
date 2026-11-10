@@ -242,20 +242,25 @@ Element selectors also accept common HTML tag aliases: `a`/`area`/`areas`/`ancho
 `p`/`s`/`ins`/`del`/`mark`/`paragraph`, and `ul`, `ol`, `dl`, or `menu`/`list`/`lists` (plus the explicit
 `unordered_list`, `ordered_list`, and `definition_list` forms).
 Structural aliases include `div`/`fieldset`/`fieldsets`/`group`/`groups`, `section`/`sections`, and ARIA group roles
-`figure`/`figures`/`radiogroup`/`radiogroups`/`progressbar`/`progressbars`/
+`figure`/`figures`/`radiogroup`/`radiogroups`/`radio_group`/`radio-group`/`radio group`/
+`progressbar`/`progressbars`/
 `meter`/`meters`/`output`/`outputs`, `hr`/`separator`,
 `details`/`summary`/`summaries`, and `iframe`; `img`/`image` and ARIA widget names such
-as `menuitem`/`menu items`, `option`, `tab`, `treeitem`/`tree items`, `switch`,
+as `menuitem`/`menu items`, `option`/`options`, `tab`/`tabs`,
+`treeitem`/`tree items`/`treeitems`, `switch`,
 `menuitemcheckbox`, and `menuitemradio` are also accepted. Region selectors accept ARIA landmark
 aliases such as `navigation`, `nav region`/`nav-region`/`nav regions`,
-`navigation region`/`navigation-region`/`navigation regions`, `search`/`search navigation`/`search navigations`, `banner`, `complementary`, and
+`navigation region`/`navigation-region`/`navigation regions`, `search`/`search navigation`/`search navigations`, `banner`/`banners`, `complementary`/`complementaries`, and
 `contentinfo`/`content_info`/`content-info`; `forms` and `dialogs` are plural aliases for `form` and
 `dialog`; `alertdialog`/`alertdialogs` (including `alert-dialog`/`alert-dialogs` and
 space-separated forms) target dialog regions; `content_region`/`content_regions` (and their hyphenated or
 space-separated forms) select content regions.
 Table selectors include `table`/`tables`, `data_table`/`data_tables`, and
-`grid`/`grids`/`data_grid`/`data_grids`/`treegrid`/`treegrids` (with
-hyphenated and space-separated forms accepted too).
+`grid`/`grids`/`data_grid`/`data_grids`/`datagrid`/`datagrids`/`data-grid`/`data-grids`,
+`table_grid`/`table_grids`/`tablegrid`/`tablegrids`/`table-grid`/`table-grids`,
+and `treegrid`/`treegrids`/`tree_grid`/`tree_grids`/`tree-grid`/`tree-grids`
+(with space-separated forms such as `data grid`, `table grid`, and `tree grid`
+accepted too).
 Use `selector="media"` to keep images and media-capable grouped elements
 such as audio, video, and canvas while removing unrelated page content.
 Source-specific media selectors are also available: `audio_item`/`audio-item`/
@@ -265,7 +270,7 @@ only the corresponding native media elements. Use
 `canvas` when you want every canvas element, or `canvas_item` when filtering a
 mixed media page down to canvas elements only.
 HTML text-input type names are also accepted as selectors, including
-`text`, `input`/`inputs`, `text_input`/`text_inputs`, `textbox`/`textboxes`/`text_box`/`text-box`/`text box` (and plural
+`text`, `input`/`inputs`, `text_input`/`text_inputs`, `textinput`/`textinputs`, `textbox`/`textboxes`/`text_box`/`text-box`/`text box` (and plural
 spaced or hyphenated forms), `search_input`/`search-input`, `search_control`/`search-control`,
 `search_field`/`search-field`, `search_box`/`search-box`, `query`,
 `query_input`/`query-input`, `query_field`/`query-field`,

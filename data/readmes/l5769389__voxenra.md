@@ -10,7 +10,7 @@
 
 面向 CT、MR 与 PET 的跨平台 DICOM 工作台，集阅片、三维重建、影像融合与测量分割于一体。支持 **基于 TotalSegmentator 的本地 AI 自动分割**，结果可直接查看、精修和保存。
 
-[macOS · Apple Silicon](https://github.com/l5769389/voxenra/releases/download/v2.4.0/Voxenra-2.4.0-macos-arm64.dmg) · [Windows · 安装版](https://github.com/l5769389/voxenra/releases/download/v2.4.0/Voxenra-2.4.0-windows-x64-setup.exe) · [Windows · 便携版](https://github.com/l5769389/voxenra/releases/download/v2.4.0/Voxenra-2.4.0-windows-x64-portable.exe) · [版本记录](https://github.com/l5769389/voxenra/releases)
+[macOS · Apple Silicon](https://github.com/l5769389/voxenra/releases/download/v2.5.0/Voxenra-2.5.0-macos-arm64.dmg) · [Windows · 安装版](https://github.com/l5769389/voxenra/releases/download/v2.5.0/Voxenra-2.5.0-windows-x64-setup.exe) · [Windows · 便携版](https://github.com/l5769389/voxenra/releases/download/v2.5.0/Voxenra-2.5.0-windows-x64-portable.exe) · [版本记录](https://github.com/l5769389/voxenra/releases)
 
 
 ## 贡献者与致谢
@@ -77,6 +77,10 @@
 ## 二维阅片与序列对比
 
 原始切片与轴位／冠状位／矢状位重建可在视口内切换，各自保留位置和显示状态。CT / MR 支持调窗与反白，PET 使用定量显示范围；布局支持序列拖放、最多 6 × 6 网格和双击放大。
+
+**双指缩放**适用于各类影像视图：触屏围绕双指中心，触控板围绕鼠标位置缩放，无需切换工具。选中序列后，按 **D / X / T / Y** 快速打开 2D / MPR / 3D / CPR；右键菜单显示可用快捷键。**A** 打开标注、**E** 打开导出；当前工具菜单、文本输入和弹窗优先处理自己的按键。**Q** 整体重置会清除当前视图相应的测量与标注，保留结果前请先保存工作区。
+
+[![序列右键菜单与视图快捷键](docs/screenshots/65-view-shortcuts-2.5.0.png)](https://l5769389.github.io/voxenra/zh/workspace.html#step-6)
 
 **2–4 序列对比**可逐项同步翻页、调窗、缩放等操作，重新开启同步时以当前选中视口为准。兼容的患者空间支持位置联动、定位线及 Alt＋单击定位；也可按相对进度比较不同层数。MR 默认独立调窗／反白。空间联动与进度对应均不执行自动配准。
 
@@ -148,7 +152,9 @@ CT、PET、融合切面与全体积 MIP 联动显示；可切换三向切面、�
 
 **自由形状测量**：逐点单击至少三个控制点，按 Enter 或双击完成平滑闭合轮廓并查看统计。双击只提交已有点。
 
-![测量工具与分组结果列表](docs/screenshots/63-measurement-2.4.0.png)
+未选中的 ROI 使用紧凑标签，选中后展开统计；点数不足时不显示指标。部分超出影像的 ROI 仅按有效像素计算灰度统计，面积和尺寸仍保留完整绘制范围。
+
+![测量工具与分组结果列表](docs/screenshots/63-measurement-2.5.0.png)
 
 **曲线测量**：逐点单击至少三个控制点，按 Enter 或双击完成，即可测量平滑路径的实际弧长。
 
@@ -168,12 +174,12 @@ CT、PET、融合切面与全体积 MIP 联动显示；可切换三向切面、�
 ### CT 质量分析
 
 - **QA**：水模 CT 值、噪声和均匀性；未识别到可用水模时提供五个可编辑圆形 ROI 及取样统计。初始 ROI 与副本均可移动、复制、删除、重新生成、撤销重做；仅在满足条件时显示水模五点汇总。
-- **MTF / FWHM**：点源 MTF 曲线与空间分辨率，斜坡线 FWHM 和层厚分析；正式结果、ROI 与参数可随工作区保存。
+- **MTF / FWHM**：点源 MTF 支持矩形选区、自动确定取样区域与边界显示，日常采用 110% 自适应积分范围；斜坡线 FWHM 和层厚独立分析。结果、ROI 与参数随工作区保存，旧结果仅在主动重新计算时更新。
 
 <table>
 <tr>
 <td width="50%"><b>CT 水模 QA</b><br><a href="docs/screenshots/19-water-qa-2.1.3.png"><img src="docs/screenshots/19-water-qa-2.1.3.png" alt="CT 值、噪声与均匀性分析" width="100%"></a></td>
-<td width="50%"><b>点源 MTF</b><br><a href="docs/screenshots/28-mtf-analysis.png"><img src="docs/screenshots/28-mtf-analysis.png" alt="独立的点源 MTF 曲线与空间分辨率分析" width="100%"></a></td>
+<td width="50%"><b>点源 MTF</b><br><a href="docs/screenshots/67-mtf-analysis-2.5.0.png"><img src="docs/screenshots/67-mtf-analysis-2.5.0.png" alt="独立的点源 MTF 曲线与空间分辨率分析" width="100%"></a></td>
 </tr>
 </table>
 
@@ -181,7 +187,7 @@ CT、PET、融合切面与全体积 MIP 联动显示；可切换三向切面、�
 
 左侧导入原始 DICOM 影像，右侧 **导入分割** 导入关联 SEG / NRRD 掩膜（v2.1.3 中名为“导入”）。源序列可导出 PNG 或 DICOM，当前视图可保存 PNG 截图；整序列导出与视口截图的内容范围不同，见 [导出说明](docs/export.md)。
 
-多页签可拖出成为独立窗口；工作区保存影像引用、布局、测量、分割掩膜与分析结果，并恢复之前选择的工具和精修参数。从序列列表打开影像会新建独立页签，点击原页签可继续阅片。误关时可在页签右键菜单、首页或工作区选择 **撤销关闭页签**，或按 Ctrl+Shift+T／⇧⌘T。会话保留最近关闭的 20 个已就绪且无编辑的阅片页签，已完成的编辑结果随工作区保存。工作区保存影像引用和结果，仍需保留原始文件；未完成草稿与撤销历史不保存。支持自动恢复、跟随系统或固定主题、本地 JSON 语言包与窗模板、离线手册、反馈和可关闭的启动更新检查。离线手册包含可播放、暂停和放大的操作动图。
+多页签可拖出成为独立窗口；工作区保存影像引用、布局、测量、分割掩膜与分析结果，并恢复之前选择的工具和精修参数。从序列列表打开影像时，若同一序列已有同类页签则直接切换并保留阅片状态，否则新建页签。误关时可在页签栏右键菜单选择 **撤销关闭页签**，或按 Ctrl+Shift+T／⇧⌘T。会话保留最近关闭的 20 个已就绪且无编辑的阅片页签，已完成的编辑结果随工作区保存。工作区保存影像引用和结果，仍需保留原始文件；未完成草稿与撤销历史不保存。支持自动恢复、跟随系统或固定主题、本地 JSON 语言包与窗模板、离线手册、反馈和可关闭的启动更新检查。离线手册包含可播放、暂停和放大的操作动图。
 
 ![离线操作手册与操作演示](docs/screenshots/50-offline-manual-2.1.2.png)
 
@@ -192,13 +198,13 @@ CT、PET、融合切面与全体积 MIP 联动显示；可切换三向切面、�
 </tr>
 <tr>
 <td><b>独立窗口</b><br><a href="docs/screenshots/13-detached-tabs.png"><img src="docs/screenshots/13-detached-tabs.png" alt="页签分离为独立窗口" width="100%"></a></td>
-<td><b>工作区恢复</b><br><a href="docs/screenshots/17-workspace-2.4.0.png"><img src="docs/screenshots/17-workspace-2.4.0.png" alt="新建、打开与保存工作区" width="100%"></a></td>
+<td><b>工作区恢复</b><br><a href="docs/screenshots/17-workspace-2.5.0.png"><img src="docs/screenshots/17-workspace-2.5.0.png" alt="新建、打开与保存工作区" width="100%"></a></td>
 </tr>
 </table>
 
-在打开影像窗口中收藏常用目录，点击顶部收藏卡片快速进入；激活项的 **×** 可取消收藏。在 **管理收藏** 中拖动排序或调整名称和路径，重启后保留。
+影像来源窗口左侧分区显示 **收藏目录** 与 **最近打开**，右侧浏览文件。路径栏的星标可收藏当前目录；最近记录单击打开，选中行末尾可清除单项，也可 **删除全部**。清除历史不删除文件或收藏。通过收藏标题旁的 **⋯** 管理名称、路径和顺序，重启后保留。
 
-![收藏目录快捷切换](docs/screenshots/57-directory-favorites-2.1.5.png)
+![收藏目录快捷切换](docs/screenshots/66-image-sources-2.5.0.png)
 
 ## 外观与操作偏好
 

@@ -150,7 +150,8 @@ Scan a code and an agent is on WhatsApp or Telegram, so you can text it from the
 - **Move agents.** Export an agent to a file and bring it in on another Hermes.
 - **More than one Hermes?** Keep one at home and another at work, and switch in one tap.
 - **Give it a goal** with `/goal`, and the agent keeps working until it's done. Ask a quick side question with `/btw` without interrupting it.
-- **Search every chat**, with a command palette and keyboard shortcuts on desktop.
+- **Search every chat**, or find a word inside one, with a command palette and keyboard shortcuts on desktop.
+- **Take a chat with you.** Copy it, share it, or download it as a Markdown file.
 - **Light and dark**, desktop notifications and a Dock badge, and fluid at every screen size.
 
 ## Get Murmur
@@ -185,10 +186,10 @@ docker compose up -d
 Or run Murmur alone and point it at your Hermes. [`docs/STANDALONE.md`](docs/STANDALONE.md) has every option.
 
 ```sh
-docker run -d -p 3000:3000 -v murmur:/data ghcr.io/getumbrel/murmur:0.11
+docker run -d -p 3000:3000 -v murmur:/data ghcr.io/getumbrel/murmur:0.13
 ```
 
-Murmur comes with **Hermes 0.22.5**, and works with any **Hermes Agent 0.21.4 or newer**. If yours is older, Murmur shows you how to update it.
+Murmur comes with **Hermes 0.23.1**, and works with any **Hermes Agent 0.21.4 or newer**. If yours is older, Murmur shows you how to update it.
 
 ## How it works
 

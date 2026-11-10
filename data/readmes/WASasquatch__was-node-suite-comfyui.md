@@ -7,7 +7,7 @@ first packs to put hundreds of nodes into users' hands. WAS-NS has over a millio
 and is used by thousands of users daily. It has been MIT since the first commit: use it, change it, 
 teach with it, or run it in paid services.
 
-The pack contains **687 nodes for ComfyUI**, across images, filters and colour, masking, 
+The pack contains **690 nodes for ComfyUI**, across images, filters and colour, masking, 
 text and prompts, logic and flow, numbers, latents and sampling, files, animation and video, 
 and Llama-Index in ComfyUI. 
 
@@ -28,7 +28,7 @@ without it the pack needs no packages. [What it covers](FEATURES.md#llama-index-
 # Installation
 
 > [!WARNING]
-> **WAS Node Suite v3** should not be installed through ComfyUI Manager. ComfyUI Manager is broken and will silently downgrade, and break your installation without warning. Either directly clone the repository or use the [Open Manager](https://github.com/WASasquatch/open-manager-comfyui).
+> **WAS Node Suite v3** should not be installed through ComfyUI Manager unless intalling a approved version, or it will silently downgrade your installation and may break things. Either directly clone the repository or use the [Open Manager](https://github.com/WASasquatch/open-manager-comfyui).
 
 ### Manually clone into `custom_nodes`:
 
@@ -66,7 +66,7 @@ group's keys, model folders and servers: [`docs/LLM.md`](docs/LLM.md).
 
 # What changed since v2
 
-687 nodes across a package of source files. The pack itself needs no packages, and nothing is
+690 nodes across a package of source files. The pack itself needs no packages, and nothing is
 fetched from a git URL. What it bundles ships in the repository with its licence beside it,
 listed in [`docs/THIRD_PARTY.md`](docs/THIRD_PARTY.md).
 
@@ -169,7 +169,7 @@ a core ComfyUI node. Only the label changed, and the old names still find them i
 
 # Nodes
 
-**687 nodes** across 67 categories. [`NODES.md`](NODES.md) carries every input, output and
+**690 nodes** across 67 categories. [`NODES.md`](NODES.md) carries every input, output and
 tooltip, and groups them by the `config.yaml` switch that gates them:
 [feature gates](NODES.md#feature-gates).
 

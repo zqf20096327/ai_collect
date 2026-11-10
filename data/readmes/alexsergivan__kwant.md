@@ -32,7 +32,7 @@
 
 <p align="center"><b>kwant has no token.</b> Official X account is <a href="https://x.com/kwantbot">@kwantbot</a>.</p>
 
-kwant gives you a team of bots that share chats, hand work to each other with an @mention and get it done on their own, on a schedule or while you're away. Each message goes to the bot that fits, and the reply says why. Work shows up as cards on a Mission board, and a task turns **Verified** only when kwant runs the check itself, never on a bot's word. Keep separate spaces for work and home, each with its own bots and accounts. Run it as an app on your Mac or Linux, or on a server, with the Claude, Codex or Grok CLI you already use, or your own API keys.
+kwant gives you a team of bots that share chats, hand work to each other with an @mention and get it done on their own, on a schedule or while you're away. Each message goes to the bot that fits, and the reply says why. Work shows up as cards on a Mission board, and a task turns **Verified** only when kwant runs the check itself, never on a bot's word. Keep separate spaces for work and home, each with its own bots and accounts. Run it as an app on your Mac, Linux or Windows (beta) PC, or on a server, with the Claude, Codex or Grok CLI you already use, or your own API keys.
 
 It's written in Rust (Tokio, Axum, SQLite) with a React web app embedded in the binary.
 
@@ -40,40 +40,18 @@ It's written in Rust (Tokio, Axum, SQLite) with a React web app embedded in the 
 
 ---
 
-## New in 0.7
+## New in 0.8
 
-- **Recipes you can cook from** (0.7.6). When a reply holds one recipe, with an ingredients list and the method, it shows as a recipe card. Change the servings (1 to 24) and every amount kwant can read rescales, in kitchen fractions such as ¼, ⅓ and ½, with each changed amount highlighted and a **Back to N** button. Oven temperatures, and anything it can't read, stay as written, and **Show as text** gives the reply back word for word. [Guide](https://kwant.si/docs/smart-results#recipes)
-- **Get started** (0.7.6). A new person's #general starts with one card in three steps: **Choose your AI** (Claude, ChatGPT, Grok or an API key), **Sign in**, and **Pick a team**. Choosing an AI installs it when it's missing. ChatGPT (Codex) and Grok sign in there with a short code you approve in your browser, with no Terminal; Claude signs in through claude.ai, as before. [Guide](https://kwant.si/docs/quickstart#get-started)
-- **A Linux server in one line** (0.7.6). `curl -fsSL https://kwant.si/install.sh | sh` installs kwant on Ubuntu 22.04+ or Debian 12+ (x86_64 or arm64), never with sudo. It checks the download's SHA-256 first, runs kwant as a user service or in the background, and ends with your sign-in link. Run it again to update; your data stays. Docker Compose now pulls the released image, `ghcr.io/alexsergivan/kwnt`. [Guide](https://kwant.si/docs/install#one-line)
-- **What's new, in the app** (0.7.6). After an update, a sheet shows what's new and what's fixed, once on each device. **See what's new** on the Updated banner opens it again, and **Settings › About** keeps every version's notes. Also: Codex and the bots' browser install without Node, and `kwnt --version` shows the real version. [Guide](https://kwant.si/docs/install#whats-new)
-- **This Mac and your servers, side by side** (0.7.5). The Mac and Linux app opens This Mac and every server you add, each in its own window, all at once. **Add a server…** in the menu bar takes an address or a sign-in link, and a server stays listed and signed in until you remove it. The list holds addresses only, never a token. [Guide](https://kwant.si/docs/install#side-by-side)
-- **Ready-made teams** (0.7.5). Create an Inbox, Sales or Coding team in one step: the preview shows who's in it, its skills, its routine (off until you turn it on) and what it will never do, and one Undo removes all of it. **Suggest members from the code** reads a team's repo and suggests 2 to 6 bots, each with a reason. [Guide](https://kwant.si/docs/bots-and-teams#ready-made)
-- **Work from Jira tickets** (0.7.5). Dev mode can connect Jira Cloud or Data Center (off by default). Tickets you hand over appear on the Dev desk's **Tickets** tab; a bot writes a brief with its sources, asks what's unclear, then builds, and the card shows **Matches the ticket** only when every done-when line is met. Bots never move or close tickets. [Guide](https://kwant.si/docs/dev-mode#jira)
-- **Telegram** (0.7.5). Pair one Telegram chat with a space (off by default): write to your bots from Telegram and get their replies, questions, approvals, human steps and stuck bots on your phone. With **Allow approvals from Telegram** on, some approvals get **Allow once** there; production, payments, human steps and Take over always open the app. The bot token stays in the vault. [Guide](https://kwant.si/docs/telegram)
-- **Show it once and Watch live** (0.7.5). Do a browser task once while kwant records the steps, with passwords, codes and card details kept as placeholders; the bot drafts a skill, and **Try it once** runs it before you approve it. A globe on a chat's row shows a bot is browsing, and one click watches the page live. [Guide](https://kwant.si/docs/browser#show-once)
-- **Install Claude Code in one click** (0.7.5). When Claude Code, Codex or Grok's CLI is missing and kwant can install it, the start picker and engine cards show **Install**, and sign-in follows straight away.
-- **Use kwant from your coding agent** (0.7.4). Claude Code, Codex, Cursor and other MCP clients can ask your bots for work and get the reply back. Each connection has its own token, reaches only the bots you pick, can't approve anything, and is revoked at once. [Guide](docs/agents-connect.md)
-- **A daily spending stop** (0.7.4). Settings → All spaces → Usage can cap what all bots use in a day, in fresh tokens or dollars. Past it, no new turn starts until tomorrow or until you press **Continue today**. [Guide](docs/mission-control.md)
-- **A new package asks first** (0.7.4). Under "Ask only when risky", adding a package the project doesn't list yet (`npm install <name>`, `cargo add`, `uv add`, …) asks before it runs. [Guide](docs/approvals.md)
-- **Dev mode** (0.7.0; every team's repo since 0.7.2). For spaces where bots write code. One press turns it on, and kwant finds and watches each team's repo, read only, up to 10 per space. A **Dev desk** at the top of the sidebar has two tabs. **What landed** has one plain-words card per merge, a *Since you last looked* roll-up and **Draft release notes**. **Reviews** has one card per open pull request. The **?** next to the switch says what Dev mode does. [Guide](docs/dev-mode.md)
-- **Dev mode reads any git repo** (0.7.3). Repos on GitLab, Gitea or any git server, and team folders with no remote, are watched with git, and every merge gets its card. Reviews and CI checks need GitHub, GitLab, Gitea or Forgejo (0.7.4); Post to GitHub is GitHub only. **Connect GitHub** opens right where you press it. [Guide](docs/dev-mode.md)
-- **Reviews on GitLab, Gitea and Forgejo** (0.7.4). Add the server in Loose ends with a read token, and its merge requests get review cards with their CI, like GitHub's. Codeberg works too. A repo with no forge gets a card for each pushed branch. GitHub Enterprise: paste your server's address as it is. [Guide](docs/dev-mode.md)
-- **Reviews by a bot that didn't write the code** (0.7.0). Each card shows a risk badge with its reasons, whether the pull request does what its task asked, and whether a test was weakened. Gitleaks and a registry check run on every pull request: a found secret or a made-up package always makes it High risk. Send a finding back with **Fix it** or **Dismiss** it. A merge gets the **Verified** sticker only when CI is green, another bot reviewed it, and every finding is fixed or dismissed.
-- **Post to GitHub** (0.7.1). One press puts a review card on its pull request as one GitHub review, posted as you, with findings on their lines. kwant never approves, requests changes or merges, a bot can't post, and secrets are never posted.
-- **The production floor** (0.7.0). In a Dev mode space, pushes to the watched or a protected branch, force pushes, deploys, destructive data commands and connections you marked production always ask first, with no "always allow". A step that can change production data waits until the space has a backup from the last 10 minutes. Dev mode cards run with no tools at all, so text in a pull request can't make a bot act.
-- **The Idea jar** (0.7.0). Drop an idea in from the sidebar's **+**, the phone's **Jar** tab or `/idea`. When a bot is free, it writes its take: a verdict, the effort, the risks and a short plan. **Do it** turns a take into a draft mission that still waits for your OK. [Guide](docs/idea-jar.md)
-- **Crypto sends and swaps always ask** (0.7.1). A tool whose arguments carry an amount and an address or a crypto asset counts as a payment, so it asks in every approval mode. [Guide](docs/payments.md)
-- **Videos in chat** (0.7.3). MP4, MOV and WebM files up to 100 MB can be attached and shared by bots, and they play right in the chat. A file kwant can't take is refused the moment it's dropped, and uploads retry by themselves.
-- **Saving a token is your choice** (0.7.3). When some bots don't ask before running commands, **Before you save the token** offers **Save it on this server**, **Use Bitwarden** or **Make every bot ask first**. Only you can choose to keep it on the server, once. [Guide](docs/saved-passwords.md)
+- **Drag and drop works again** (0.8.2). Files dragged in from Finder, Explorer or your desktop land in the chat again. In 0.8.0 and 0.8.1 the drop card showed, but letting go did nothing.
+- **Notifications open the right chat** (0.8.1). When a bot needs you, its notification opens the team chat, channel, thread or direct chat where it asked, and an approval scrolls to its card. A team chat also shows one line for each bot's newest pre-push check, and each bot now has the same avatar everywhere.
+- **Bots show what they did** (0.8.0). Ask to see something and the bot shares the screenshot in the chat as its own picture, under its reply, once. A change you can see, such as "the button isn't aligned", gets a before and an after picture. A reply that says it shared a picture but didn't gets the turn's last screenshot, or says plainly it has none. In a team chat, kwant works out what you expect back (a picture, a link, a file or an answer), checks the reply delivered it, and picks up a miss once on its own when your words asked for it.
+- **With approvals off, bots just do it** (0.8.0). The approvals setting now reaches every engine: Claude, Codex, Grok and API keys. With approvals off, bots do the work instead of offering it, look first instead of asking you what they can find, and ask one decision at a time. They still ask for sign-ins, keys, payments and anything that reaches other people or can't be undone. A short follow-up such as "show me" keeps the effort of the work it continues, and a second message to a busy bot waits its turn under the running reply. [Guide](docs/approvals.md)
+- **Drag files onto any chat** (0.8.0). Drop files from Finder, Explorer or your desktop anywhere on a chat, in the web app and the Mac, Linux and Windows apps. Before you let go, it says which bot gets them and what can't be sent.
+- **Bring your bots from more places** (0.8.0). Import reads OpenClaw and Hermes Agent workspaces, Codex's AGENTS.md, Paperclip companies and ai-employees. **Found on this computer** (desktop apps) lists what's in the usual folders by name and count only. **Folder** packs only the files an import reads, never sign-in or key files, and **GitHub link** imports a public repo and shows its licence first. Imported routines arrive paused, and the preview says what was left out. Secrets are never imported.
+- **Checked with fresh eyes** (0.8.0). Dev mode reviews and the Swarm Auditor run with no chat history and no reviewer memories. Before a bot's `git push` or a GitHub file write, a **pre-push card** checks for secrets, new packages and weakened tests, and lets the push go only when they're clear. **Push anyway** needs your reason and covers that one push. [Guide](docs/dev-mode.md)
+- **Claude kept away from your secrets on a Mac** (0.8.0). When Claude runs on the Mac itself, its tools are denied the Claude, Codex and Grok sign-in folders, the Keychain folder and kwant's own vault, token and database. `KWNT_MAC_SEATBELT=1` turns on a stricter sandbox. Also: a bot's Enter key now submits forms, kwant's own browser works on Windows and Linux ARM, and deleting a bot no longer fails.
 
-<table>
-  <tr>
-    <td width="50%"><img src="site/assets/media/v07-dev-review-1440.webp" alt="A Dev desk review card for pull request #24, Speed up cart totals, written by Ben on Claude Sonnet and reviewed by Cody on Codex, a different engine. It has a Medium risk badge because a test was loosened, two warnings that a test was made easier to pass with the lines that did it, and security checks showing no secrets found and all new packages real."><br><sub><b>Reviews</b>: a bot that didn't write the code checks the pull request, tests and secrets included.</sub></td>
-    <td width="50%"><img src="site/assets/media/v072-dev-repos-four-1440.webp" alt="The Dev desk watching 3 of 4 team repos: Shop, Storefront and Payments are watching, and Ops needs a GitHub connection, with a Connect GitHub button on its row. Below, What landed filters by repo and says 5 changes landed on main and 2 need you, grouped as Code, Account, Checkout and Cart, with Draft release notes."><br><sub><b>What landed</b>: every team's repo on one desk, in plain words.</sub></td>
-  </tr>
-</table>
-
-0.6 added picking the bot that fits each message (and saying why), rules per bot, one Inbox, the Linux app, Insights, Flight School and the Truth Ledger. Every change is in the [CHANGELOG](CHANGELOG.md).
+0.7 added Dev mode with reviews by a bot that didn't write the code, the production floor, ready-made teams, This Mac and your servers side by side, Telegram, Get started, recipes, the Windows app (beta) and running Claude inside the VM. Every change is in the [CHANGELOG](CHANGELOG.md).
 
 ---
 
@@ -124,7 +102,7 @@ Screenshots come from a demo space with sample data.
 
 ## Quickstart
 
-The quickest way is the app for Mac or Linux: download it, add an AI account you already have and ask your first question. There's nothing to build. On a server, see [Self-hosting on a VPS](#self-hosting-on-a-vps).
+The quickest way is the app for Mac, Linux or Windows (beta): download it, add an AI account you already have and ask your first question. There's nothing to build. On a server, see [Self-hosting on a VPS](#self-hosting-on-a-vps).
 
 ### What you need
 
@@ -150,7 +128,11 @@ The Linux app is for x86_64. Like the Mac app, it runs its own kwant, uses the s
 - **Ubuntu 22.04 or newer, Debian 12 or newer:** download [`kwant_amd64.deb`](https://github.com/alexsergivan/kwant/releases/latest/download/kwant_amd64.deb), then run `sudo apt install ./kwant_amd64.deb`.
 - **Other distributions:** download [`kwant_x86_64.AppImage`](https://github.com/alexsergivan/kwant/releases/latest/download/kwant_x86_64.AppImage), then `chmod +x kwant_x86_64.AppImage` and run it. It needs a normal GTK desktop and FUSE.
 
-Updates arrive in the app, which checks each one's signature before it installs it; with the `.deb`, your system asks for your password. `sudo apt remove kwant` removes the `.deb`, and your data in `~/.kwnt` stays. It's a beta: tested in containers on Ubuntu 22.04, Ubuntu 24.04 and Debian 12, not yet on real desktops, so the tray icon, Wayland and HiDPI may vary. There's no ARM Linux or Windows app yet.
+Updates arrive in the app, which checks each one's signature before it installs it; with the `.deb`, your system asks for your password. `sudo apt remove kwant` removes the `.deb`, and your data in `~/.kwnt` stays. It's a beta: tested in containers on Ubuntu 22.04, Ubuntu 24.04 and Debian 12, not yet on real desktops, so the tray icon, Wayland and HiDPI may vary. There's no ARM Linux app yet.
+
+### On Windows: the app (beta)
+
+Download `kwant_X.Y.Z_windows_x64_beta_setup.exe` from the [latest release](https://github.com/alexsergivan/kwant/releases/latest) (its SHA-256 is next to it) and run it. It's for 64-bit Windows, installs for your user only with no admin rights, and runs kwant on your PC with the same `.kwnt` data folder in your user folder as `kwnt serve`. The installer isn't code-signed yet, so the first time Windows SmartScreen warns about an unrecognized app: click **More info**, then **Run anyway**. In the beta, the app doesn't update itself (a new version is a new installer), and Grok, the VM and looking inside videos aren't available on Windows yet. In a folder OneDrive syncs with Files On-Demand, Dev mode asks before every push.
 
 ### Run from a fresh clone
 
@@ -302,7 +284,7 @@ The first start needs `huggingface.co`. Behind a proxy that blocks it, start kwa
 
 **Do I need an account with you?** No. There's no sign-up: you run kwant yourself and sign in only to the AI accounts you add.
 
-**Which computers can run it?** A Mac (Apple silicon or Intel), a Linux desktop (x86_64, beta) or a Linux server, with the binary or Docker Compose. There's no Windows app yet.
+**Which computers can run it?** A Mac (Apple silicon or Intel), a Linux desktop (x86_64, beta), a Windows PC (64-bit, beta) or a Linux server, with the binary or Docker Compose.
 
 **Can I run it on a free server?** Yes. [This guide](https://kwant.si/blog/self-host-grok-bot-alternative-free-oracle-cloud) sets kwant up on Oracle Cloud's free tier, step by step.
 

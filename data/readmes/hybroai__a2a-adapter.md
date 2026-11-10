@@ -92,6 +92,10 @@ client can make the server send requests.
 | Python callable | `CallableAdapter` | Optional | [quickstart.py](examples/quickstart.py) |
 | Custom class | `BaseA2AAdapter` | Optional | [custom_adapter.py](examples/custom_adapter.py) |
 
+`CrewAIAdapter` runs each request on its own copy of the crew, and falls back
+to one request at a time for crews that cannot be faithfully copied (a timed-out
+kickoff may still overlap the next request there).
+
 ## 2. Use It as a CLI
 
 Start a classic local agent (Claude Code, Codex, Pi, OpenClaw, or DeepSeek
@@ -133,10 +137,17 @@ a2a-adapter codex --port 9011 -- --model <model> --sandbox workspace-write
 a2a-adapter openclaw --port 9008 --agent-id main --thinking high
 ```
 
-The adapter sends each prompt to OpenClaw on stdin, so long prompts are not
-limited by the OS command-line length; OpenClaw itself rejects prompts over
+The adapters send each prompt to Codex and OpenClaw on stdin, so long prompts
+are not limited by the OS command-line length; OpenClaw itself rejects prompts over
 4 MiB. This needs an OpenClaw release that supports
 `openclaw agent --message-file`.
+
+Each A2A context gets its own OpenClaw session: `<session_id>-<context_id>` when
+the context id is valid as it is and the result fits in 64 characters, otherwise
+a readable head plus a digest. A saved session whose context id was altered by earlier releases
+(mixed case, punctuation, edge dashes) or did not fit (including UUIDs with a
+`--session-id` over 27 characters) starts fresh on its next message. The old
+history stays on disk, unused, because it may mix several conversations.
 
 | Server option | Default | Purpose |
 |---|---|---|
@@ -145,6 +156,7 @@ limited by the OS command-line length; OpenClaw itself rejects prompts over
 | `--auth-token` | none, or `$A2A_AUTH_TOKEN` | Require `Authorization: Bearer <token>` on every request except the Agent Card; prefer the variable, since argv is visible in `ps` |
 | `--push-notifications` | off | Accept push-notification configs and POST task updates to them |
 | `--allow-private-push-urls` | off | With `--push-notifications`, also allow receivers on localhost and private networks |
+| `--expose-error-details` | off | Send exception text to clients, for local debugging only |
 | `--name` | `<Agent> (<folder>)`, e.g. `Claude Code (my-app)` | Agent Card display name |
 | `--description` | `<Agent> agent working in <folder>` | Agent Card description |
 | `--skill` | one skill from the card name and description | Agent Card skill as JSON (`id`, `name`, `description`, at least one entry in `tags`, optional `examples`); repeatable |
@@ -157,6 +169,13 @@ immediately; SIGTERM lets in-flight requests finish (uvicorn's graceful
 timeout), then stops them.
 Agents run detached from the server's terminal, so a tool that prompts on
 `/dev/tty` (an SSH passphrase, a GPG pinentry) fails instead of prompting.
+
+**Errors.** When a task fails, the client gets a generic message with the task
+id, and the exception goes to the server log: exception text can hold URLs,
+paths and tokens. In your own adapter, raise `UserFacingError("...")` to show
+the client that message. `--expose-error-details` (`expose_error_details=True`
+on `to_a2a` / `serve_agent`) sends the raw text, for local debugging only. The
+CLI's failed row always shows the error; the traceback needs `--debug`.
 
 Pi source commands can be selected without a shell wrapper:
 

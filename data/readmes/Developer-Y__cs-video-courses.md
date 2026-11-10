@@ -128,6 +128,7 @@ Table of Contents
 - [CS2 - Data Structures and Algorithms Sim-Mautner - UNSW](https://www.youtube.com/playlist?list=PLsPlf0OhSLIqfpyxmomKcIcrht5K3IUOr)
 - [Data Structures - Pepperdine University](https://itunes.apple.com/us/course/data-structures/id546468797)
 - [CS 161 - Design and Analysis of Algorithms, Prof. Tim Roughgarden, Stanford University](http://openclassroom.stanford.edu/MainFolder/CoursePage.php?course=IntroToAlgorithms)
+- [COMP 3711H - Honors Design and Analysis of Algorithms - Spring 2024, HKUST](https://www.youtube.com/playlist?list=PLzZlJT-UOiwD1OSqOs00D0iW93BSJPjBR)
 - [6.046J - Introduction to Algorithms - Fall 2005, MIT OCW](https://ocw.mit.edu/courses/6-046j-introduction-to-algorithms-sma-5503-fall-2005/)
 - [Introduction to Algorithms (Spring 2020), MIT OCW](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-spring-2020/)
 - [6.046 - Design and Analysis of Algorithms, Spring 2015 - MIT OCW](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-046j-design-and-analysis-of-algorithms-spring-2015/lecture-videos/)
@@ -140,6 +141,7 @@ Table of Contents
 - [ECS 122A - Algorithm Design and Analysis, UC Davis](http://web.cs.ucdavis.edu/~gusfield/cs122f10/videolist.html)
 - [CSE 373 - Data Structures and Algorithms, Winter 2024 - University of Washington](https://courses.cs.washington.edu/courses/cse373/24wi/) ([Winter 2024, Youtube](https://www.youtube.com/playlist?list=PLEcoVsAaONjd5n69K84sSmAuvTrTQT_Nl)) ([Spring 2023, Notes](https://courses.cs.washington.edu/courses/cse373/23sp/)) ([Spring 2023, Youtube](https://www.youtube.com/playlist?list=PLEcoVsAaONjfHSAbP1AsVjAxIOFue6uWh))
 - [CSEP 521 - Applied Algorithms, Winter 2013 - University of Washington](https://courses.cs.washington.edu/courses/csep521/13wi/) ([Videos](https://courses.cs.washington.edu/courses/csep521/13wi/video/))
+- [Oxford Algorithms and Data Structures (ADS), Hilary 2026 - University of Oxford](https://www.youtube.com/playlist?list=PLzZlJT-UOiwDCw7TDmww4hk5waSTkjhDh)
 - [Data Structures And Algorithms - IIT Delhi](https://nptel.ac.in/courses/106102064/)
 - [Design and Analysis of Algorithms - IIT Bombay](https://nptel.ac.in/courses/106101060/)
 - [Programming, Data Structures and Algorithms - IIT Madras](https://nptel.ac.in/courses/106106127/)
@@ -152,6 +154,7 @@ Table of Contents
 - [COP 5536 Advanced Data Structures, Prof Sahni - UFL](http://www.cise.ufl.edu/~sahni/cop5536/index.html) ([Videos](http://www.cise.ufl.edu/academics/courses/preview/cop5536sahni/))
 - [CS 261 - A Second Course in Algorithms, Stanford University](http://theory.stanford.edu/~tim/w16/w16.html) ([Youtube](https://www.youtube.com/playlist?list=PLEGCF-WLh2RJh2yDxlJJjnKswWdoO8gAc))
 - [CS 224 - Advanced Algorithms, Harvard University](https://people.seas.harvard.edu/~cs224/fall14/index.html) ([Lecture Videos](https://people.seas.harvard.edu/~cs224/fall14/lec.html)) ([Youtube](https://www.youtube.com/playlist?list=PL2SOU6wwxB0uP4rJgf5ayhHWgw7akUWSf))
+- [COMP 526 - Applied Algorithmics (Spring 2022), Marburg University](https://www.youtube.com/playlist?list=PLzL0t_-LZiYlfCSNSGA9UDiIU2bSnbU8E)
 - [COMP 526 - Efficient Algorithms, Marburg University](https://www.wild-inter.net/teaching/comp526/) ([Videos - Fa 2023](https://www.youtube.com/playlist?list=PLzL0t_-LZiYlfukAfP8zNPb0SjO3bbULQ))
 - [CS 627 - Advanced Algorithms, Marburg University](https://www.wild-inter.net/teaching/advalg/) ([Videos - Su 2025](https://www.youtube.com/playlist?list=PLzL0t_-LZiYkkGbS_IB6Oz3CH2_5-FipK))
 - [CS 650 - Advanced Data Structures, Marburg University](https://www.wild-inter.net/teaching/advds/) ([Videos - Su 2026](https://www.youtube.com/playlist?list=PLzL0t_-LZiYkpmVM9MUPVUkAci2-YLqJP))
@@ -725,7 +728,4 @@ Table of Contents
   - [Stanford CS329A Self-Improving AI Agents 2025 - Stanford](https://cs329a.stanford.edu/#schedule) ([YouTube](https://www.youtube.com/playlist?list=PLangBM27OtEA))
   - [Stanford CS336 Language Modeling from Scratch I 2025 - Stanford](https://www.youtube.com/playlist?list=PLoROMvodv4rOY23Y0BoGoBGgQ1zmU_MT_) ([2026](https://www.youtube.com/playlist?list=PLoROMvodv4rMqXOcazWaTUHhq-yembLCV))
   - [Stanford CME295 Transformers & LLMs - Autumn 2025 - Stanford](https://www.youtube.com/playlist?list=PLoROMvodv4rObv1FMizXqumgVVdzX4_05)
-  - [Stanford CME296: Diffusion & Large Vision Models](https://www.youtube.com/playlist?list=PLoROMvodv4rNdy8rt2rZ4T2xM0OjADnfu)
-  - [Introduction to large language models - IIT Madras](https://www.youtube.com/playlist?list=PLZ2ps__7DhBbaMNZoyW2Hizl8DG6ikkjo)
-  - [Build a Large Language Model (From Scratch) by Sebastian Raschka](https://www.youtube.com/playlist?list=PLTKMiZHVd_2IIEsoJrWACkIxLRdfMlw11)
-  - [Reinforcement Learning of Large Language Models - UCLA](https://www.youtube.com/playlist?list=PLir0BWtR5vRp5dqaouy
+  - [Stanford CME296: Diffusion & Large Vision Models](https://www.yo

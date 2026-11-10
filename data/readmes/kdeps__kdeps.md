@@ -28,7 +28,7 @@ curl -LsSf https://raw.githubusercontent.com/kdeps/kdeps/main/install.sh | sh   
 irm https://raw.githubusercontent.com/kdeps/kdeps/main/install.ps1 | iex   # Windows PowerShell
 ```
 
-Other options: [installation guide](https://kdeps.com/start/installation).
+Other options: [installation guide](https://kdeps.com/start/installation). Coming from v2: [what changed](https://kdeps.com/start/installation#upgrading-from-v2).
 
 ## 1. Workflows
 
@@ -41,7 +41,7 @@ metadata:
   name: my-agent
   version: "1.0.0"
   targetActionId: response      # the resource whose output is returned
-settings:
+deploy:
   apiServer:
     portNum: 16395
     routes:
@@ -57,12 +57,15 @@ resources:
         code: 400
         message: "'q' is required"
     chat:
-      model: llama3.2:1b        # local model, no API key
-      prompt: "{{ get('q') }}"
-      timeout: 60s
+      model:
+        name: llama3.2:1b        # local model, no API key
+        timeout: 60s
+      context:
+        prompt: "{{ get('q') }}"
   - actionId: response
     name: Return the answer
-    requires: [llm]             # runs after llm
+    flow:
+      requires: [llm]             # runs after llm
     apiResponse:
       success: true
       response:
@@ -81,7 +84,7 @@ curl -s -X POST http://localhost:16395/api/v1/chat \
   -d '{"q": "Explain entropy in one sentence."}'
 ```
 
-Resources run in dependency order, independent ones in parallel, on the same scheduler as agent mode: the model's wording varies, the path does not. A chat's `judges:` (or a preset's, with `judgePreset:`) review and revise its answer, as agent mode's judge panel does. A chat lists agent mode's tools by name (`web_search`, `calculator`, `subagent`, ...). `kdeps test .` runs a workflow's `tests:` in-process, with no port bound.
+Resources run in dependency order, independent ones in parallel, on the same scheduler as agent mode: the model's wording varies, the path does not. A chat groups its keys as `model`, `context`, `harness`, `tools`, `rag` and `guardrails`: guardrail judges review and revise the answer as agent mode's judge panel does, harness sections, prompt refine and skills come from agent mode, and `tools.list` names agent mode's tools (`web_search`, `calculator`, `subagent`, ...). `kdeps test .` runs a workflow's `evals:` in-process: assertions, judges, and repeated runs against a pass-rate threshold.
 
 More: [workflow docs](https://kdeps.com/workflow/), [examples](https://kdeps.com/examples/), [agencies](https://kdeps.com/agencies/) (several agents as one system).
 

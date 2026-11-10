@@ -54,13 +54,19 @@
 
 ### 🎵 歌曲
 
-<!-- category-picks:songs -->
+每首歌选一条已收录且点赞最高的 B 站二创，按该视频的累计点赞排序（2026-11-08 北京时间快照）。
 
-- [人是猫](https://selinlee.github.io/ai-moe-atlas/zh/songs/#humans-are-cats) — 洛天依原唱与鲸鱼娘翻唱。
-- [Let Me Go · 大肥鱼摸鱼歌](https://selinlee.github.io/ai-moe-atlas/zh/songs/#let-me-go) — 星落落_oi 的初版、改编与歌词 MV。
-- [world.execute(me);](https://selinlee.github.io/ai-moe-atlas/zh/songs/#world-execute-me) — Mili 原曲与 Claude、鲸鱼娘、千问的同人 MV。
+| 曲目 | 原曲 / 原唱 | 二创代表 | B 站点赞 |
+| --- | --- | --- | ---: |
+| [人是猫](https://selinlee.github.io/ai-moe-atlas/zh/songs/#humans-are-cats) | 张卡斯 · 洛天依 | 大肥鱼翻唱 · 真完整版 | 435,034 |
+| [world.execute(me);](https://selinlee.github.io/ai-moe-atlas/zh/songs/#world-execute-me) | Mili | 鲸鱼娘聊天窗口 MV | 109,923 |
+| [Let Me Go · 大肥鱼摸鱼歌](https://selinlee.github.io/ai-moe-atlas/zh/songs/#let-me-go) | 星落落_oi | 双版本代码动画 | 6,229 |
+| [大鱼](https://selinlee.github.io/ai-moe-atlas/zh/songs/#big-fish) | 周深 · Zhou Shen | Claude × DeepSeek MV | 4,975 |
+| [雨爱](https://selinlee.github.io/ai-moe-atlas/zh/songs/#rainie-love) | 楊丞琳 · Rainie Yang | GLM 狐娘翻唱 | 148 |
+| [学猫叫](https://selinlee.github.io/ai-moe-atlas/zh/songs/#learn-to-meow) | 小潘潘 · 小峰峰 | Gemini 猫娘翻唱 | 54 |
+| [夜に駆ける](https://selinlee.github.io/ai-moe-atlas/zh/songs/#racing-into-the-night) | YOASOBI | GPT 龙娘混音 | 3 |
 
-[打开歌曲目录](https://selinlee.github.io/ai-moe-atlas/zh/songs/)
+[打开歌曲目录，查看全部版本](https://selinlee.github.io/ai-moe-atlas/zh/songs/) · [点赞核对记录](content/research/2026-11-08/bilibili-cumulative-likes-archive-and-lyric-pv.json)
 
 <a id="references"></a>
 
@@ -113,11 +119,25 @@
 
 ### 🐾 桌宠与交互项目
 
-<!-- category-picks:desktop-pets -->
+按 2026-11-09 核对的 GitHub Star 数展示前十。同分按仓库名排序。
 
-- [CrossPet · 跨 AI 桌宠](https://selinlee.github.io/ai-moe-atlas/zh/resources/?category=interactive#crosspet) — 随 AI 产品和工作状态切换角色与动作。
-- [Deep Whale Day & Night · 昼夜工坊](https://selinlee.github.io/ai-moe-atlas/zh/resources/?category=interactive#deep-whale-day-night) — 鲸鱼娘的昼夜场景与侧栏桌宠。
-- [WorkBuddy 鲸鱼娘桌宠](https://selinlee.github.io/ai-moe-atlas/zh/resources/?category=interactive#workbuddy-whale-pet) — 在 Windows 桌面查看 WorkBuddy 用量和余额。
+| 排名 | 项目 | GitHub Star |
+| ---: | --- | ---: |
+| 1 | [小鲸鱼 · DeepSeek 余额挂件](https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget/blob/5247dd6813d6e4430728f39ccc63d43cda046022/README.md) | [7,051](https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget) |
+| 2 | [Clawd on Desk · 鲸鱼娘主题](https://github.com/rullerzhou-afk/clawd-on-desk/blob/323da9f17a9872e1b1ceca6c9c9783e0eaa83a72/README.zh-CN.md) | [6,700](https://github.com/rullerzhou-afk/clawd-on-desk) |
+| 3 | [DSH Pet · 大肥鱼动画桌宠](https://github.com/PC2005-cloud/dsh-pet/blob/29a5af50f60a63caeeace66a514f47ed3198d0fa/README.md) | [5,917](https://github.com/PC2005-cloud/dsh-pet) |
+| 4 | [桌面大肥鱼 · dsh-pet-indesktop](https://github.com/MerZlin/dsh-pet-indesktop/blob/34d810b1eadd98d00e7cb9b3b51428a45b5bf03e/README.md) | [3,187](https://github.com/MerZlin/dsh-pet-indesktop) |
+| 5 | [Coopanion · 桌宠与形象包宿主](https://github.com/Pal-AI-Lab/Coopanion/blob/5ac91144b1f1d2aeca2f0a79972d65fa2d4f2c03/README_zh.md) | [2,988](https://github.com/Pal-AI-Lab/Coopanion) |
+| 6 | [CrossPet · 跨 AI 桌宠](https://github.com/lokicorvus/crosspet/blob/8954eb8f7f69fcfb8d35e9deceeb78e10c804402/README.md) | [435](https://github.com/lokicorvus/crosspet) |
+| 7 | [Whale Girl · 网页与桌面鲸鱼娘](https://github.com/vlln/whale-girl/blob/9c32d7a39a45148076f8ad2fdaad2dc2420eedb3/README.zh.md) | [405](https://github.com/vlln/whale-girl) |
+| 8 | [GPT 娘 · 用量挂件](https://github.com/T7moris/GPT-Niang/blob/43f20dee539b642902e56819747a605b3fdddf44/README.md) | [284](https://github.com/T7moris/GPT-Niang) |
+| 9 | [DSH Whale Musume · 鲸鱼娘桌宠](https://github.com/Sutera-Diffusus/dsh-whale-musume/blob/df31dd9c3e8cd8d7b371930deb928bba6b1988c6/README.md) | [209](https://github.com/Sutera-Diffusus/dsh-whale-musume) |
+| 10 | [大肥鱼表情包 · DSH 插件](https://github.com/Loping151/dsh-nekowhale-stickers/blob/b7b58c0ff347d639fabe87d90d6716c4b3cad185/README.md) | [169](https://github.com/Loping151/dsh-nekowhale-stickers) |
+
+[在线浏览全部桌宠与交互项目](https://selinlee.github.io/ai-moe-atlas/zh/resources/?category=interactive) · [Star 核对记录](content/research/2026-11-09/github-interactive-stars.json)
+
+<details>
+<summary>展开全部 58 个项目与出处</summary>
 
 | 项目 | 内容 | 发布者 |
 | --- | --- | --- |
@@ -182,6 +202,8 @@
 
 以上为来源索引；各项目美术按其原作条件核对，代码许可不自动覆盖角色图片。
 
+</details>
+
 <a id="sources"></a>
 
 ### 📚 作者作品与出处
@@ -193,6 +215,11 @@
 - [Small-tailqwq · 鲸鱼娘女仆素材](https://github.com/Small-tailqwq/dsh-deep-whale/tree/825d02b0e569c370ae15ceed12d9393559b3e4f4/maid-atelier) — 女仆造型的表情差分及原作者署名。
 
 另见 ZipZipPipe 的[来源与使用声明](https://t.bilibili.com/1231980045693616162)。
+
+[在线浏览全部作者作品与出处](https://selinlee.github.io/ai-moe-atlas/zh/resources/?category=sources)
+
+<details>
+<summary>展开补充出处与核验记录</summary>
 
 本次补充：
 
@@ -243,6 +270,8 @@
 - [小鱼的家 · 鲸鱼娘自画像](https://github.com/wenxiaoyufish/xiaoyu-home/blob/e034b959ba3c3350e3afe4c1769cb12938078b9c/README.md) · 仓库将画作与故事分开，发布两张鲸鱼娘自画像。已核对 600 × 1000 全身图和 640 × 800 半身图。原发布未列这两张图的独立再分发许可，收录原发布链接。
 - [GPT 龙娘与鲸鱼娘 · 精灵图来源](https://github.com/tqlearning/ai-girl-chatgpt-pets/blob/3afe14603b40e24c75e87e097cbfee1bfc10290d/README.md) · tqlearning 公开两套重制动作帧的整理和署名说明。WorkBuddy 桌宠把这套图集列为动画上游。MIT 适用于原创说明和布局元数据。项目未确认可覆盖这些角色图的开放许可。
 - [大肥鱼育成计划 · Live2D 署名](https://www.bilibili.com/video/BV1Kn4p6GE7d/) · 试玩演示的发布者把所用 Live2D 模型署名给神宫凉子与霓虹猫_NeonNeko。原投稿提供试玩获取方式。模型及拆分部件的单独再分发条件待核。
+
+</details>
 
 ## 收录时间线与待补项
 

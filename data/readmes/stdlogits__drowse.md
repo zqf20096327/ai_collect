@@ -109,8 +109,10 @@ assigns steering to roles; raw mode is one buffer for base models.
 
 In Drowse, you extract concepts as **manifolds** or **subspaces**.
 
-- A 1D flat subspace is just a steering vector.
-- A higher-rank flat subspace is a group of orthogonal steering vectors.
+- A 1D flat subspace is just a steering vector: the difference of the two
+  poles' means.
+- A higher-rank flat subspace is a group of steering vectors, orthogonal in
+  the model's Mahalanobis metric.
 - A curved manifold fits a nonlinear surface and lets you steer along it.
 
 ### Bundled concepts
@@ -162,14 +164,14 @@ across Python, YAML, OpenAI, Ollama, or the native API.
 | leading number | Steering coefficient; omitted terms default to `0.5` |
 | `~` | Keep the component shared with another direction (Mahalanobis) |
 | `\|` | Remove the component shared with another direction (Mahalanobis) |
-| `!` | Mean-ablate a direction or a unit; a bare `!x` ablates fully |
+| `!` | Ablate a direction toward neutral (LEACE: reads with the whitened covector, edits along the direction) or mean-ablate a unit; a bare `!x` ablates fully |
 | `%label` or `%x,y,…` | Choose a named node or coordinates on a manifold |
 | `{12-20}`, `{4-8,20}`, `{workspace}` | Act only at these layers (after the selector, before `@`) |
 | `@prompt`, `@response`, `@after`, `@thinking`, … | Restrict the token phase where a term applies |
 | `@first:N`, `@after:N` | Restrict a term to a counted decode window |
 | `@when:<probe><op><value>` | Apply a term only while a live probe gate is true |
-| `jlens/<word>`, `jlens/#<id>`, `sae/<id>` | Steer toward saying a token (its R-lens direction) or along an SAE decoder row |
-| `slens/<word>`, `slens/#<id>` | Steer toward having read a token: its S-lens footprint at each layer |
+| `jlens/<word>`, `jlens/#<id>`, `sae/<id>` | Steer toward saying a token (the whitener-raised vector of its R-lens read) or along an SAE decoder row |
+| `slens/<word>`, `slens/#<id>` | Steer toward having read a token: its S-lens footprint at each layer, raised to a vector |
 | `neuron/L8n344`, `head/L20h17` | A unit: push along a neuron's write, or mean-ablate a neuron or head (`!head/L20h17`) |
 
 A bare pole or node label such as `formal` or `pirate` resolves to its concept
@@ -204,7 +206,12 @@ Drowse first has the model answer a shared set of baseline prompts as each conce
 then it takes the resulting hidden states and fits them to either a curved manifold
 or a flat subspace.
 
-Layer allocation uses a Mahalanobis metric estimated from neutral activations.
+Fitting, layer allocation and reads use a Mahalanobis metric estimated from
+neutral activations. Each fitted frame keeps two row sets: write rows, the
+directions steering adds (for a two-pole concept, the difference of means),
+and read rows, the whitened covectors that measure a coordinate (the LDA
+direction). A full `!` ablation reads with one and edits along the other,
+which is LEACE.
 Discriminative layer selection removes flat axes that fail to straddle the neutral
 baseline across the fitted nodes.
 
@@ -623,8 +630,8 @@ conversations: the dashboard keeps its saved chats in the browser and as
 downloaded backup files, and Python saves a tree only to a `LoomTree.save()`
 path you choose.
 
-Manifold packs are folders with metadata, node corpora, integrity hashes, and
-optional fitted tensors. They can be installed from a local path or distributed as
+Manifold packs are folders with metadata, node corpora and optional fitted
+tensors. They can be installed from a local path or distributed as
 Hugging Face model repositories. A `.drowse` is the narrow ZIP transport for
 exactly one manifold closure and its referenced template, when present; export it
 with `drowse pack export archive` and install it with `drowse pack install`.
@@ -640,17 +647,19 @@ commit and records that commit as the manifold's source; the browser also checks
 that the archive's declared repository and revision match it.
 
 Treat model repositories and downloaded artifacts as executable or otherwise
-untrusted input. Drowse validates archive paths, declared structure, tensor
-headers, and hashes, but integrity is not publisher identity.
+untrusted input. Drowse bounds archive paths and sizes and checks tensor headers;
+it does not establish who published a pack.
 
-Drowse reads only its current artifact formats and does not migrate older ones.
+Drowse reads its current artifact formats, ignoring fields it doesn't use, and
+does not migrate older format versions.
 Releases through 5.3.0 were published as `saklas`, and drowse does not read a
 `~/.saklas` directory. Lens artifacts fitted or fetched before 5.4 must be
 converted once from a source checkout with
 `python scripts/migrate_lens_v7.py --home ~/.drowse` (try `--dry-run` first).
 6.0 recomputes its neutral statistics on first load and does not read 5.x
 saved conversations or transcripts; manifolds, templates, packs and lenses
-carry over unchanged.
+carry over unchanged. 6.1 changed the fitted frame (writes and reads are typed
+separately), so fitted manifolds refit the next time they are used.
 
 ## Development
 

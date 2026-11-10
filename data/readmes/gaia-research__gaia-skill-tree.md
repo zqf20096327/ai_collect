@@ -19,7 +19,7 @@ Gaia is not a marketplace of skills, or an installer of some sorts. What we do i
 [![Research](https://img.shields.io/badge/Research-research.gaiaskilltree.com-ec4899)](https://research.gaiaskilltree.com/)
 [![Skill Heaven Preview](https://img.shields.io/badge/Skill_Heaven_Preview-gaia--research.github.io%2Fgaia--skill--heaven-a58ae0)](https://gaia-research.github.io/gaia-skill-heaven/)
 
-👉 **Have an original skill? Send it to us.** Run 
+👉 **Have an original skill? Send it to us.** Run
 
 ```
 curl -fsSL https://gaiaskilltree.com/install.sh | sh
@@ -49,7 +49,7 @@ Truth is, Gaia will exist even without anyone sending their skills.
 
 I built this because skills should be attributed to the people who proved them. Permanently, not just until the repo goes private.
 
-So that means, its the developers who make skills maintaining this. I have a thorough curation process, and the dev community is evidence on why this works. As long as developers making skills exists, this registry will exist. This is open-source, so feel free to contribute! 
+So that means, its the developers who make skills maintaining this. I have a thorough curation process, and the dev community is evidence on why this works. As long as developers making skills exists, this registry will exist. This is open-source, so feel free to contribute!
 
 # The structure--literally a "tree" as you know it:
 
@@ -62,7 +62,7 @@ So that means, its the developers who make skills maintaining this. I have a tho
   │  │  ├─ ○ mattpocock/edit-article  [3★]
   │  │  └─ ○ /tool-use
   │  ├─ · mattpocock/diagnose  [3★]
-  │  │  ├─ ○ garrytan/design-html  [3★]
+  │  │  ├─ ○ emilkowalski/write-swift  [4★]
   │  │  ├─ ○ /code-execution
   │  │  └─ ○ garrytan/correction-pipeline  [2★]
   │  ├─ ○ ████████/zoom-out
@@ -73,26 +73,26 @@ So that means, its the developers who make skills maintaining this. I have a tho
 
 ◆ garrytan/gstack  [5★]
   ├─ ○ garrytan/office-hours  [3★]
-  ├─ ○ garrytan/benchmark  [3★]
+  ├─ ○ garrytan/benchmark  [2★]
   ├─ · garrytan/plan-eng-review  [3★]
-  │  ├─ ○ garrytan/design-html  [3★]
+  │  ├─ ○ emilkowalski/write-swift  [4★]
   │  ├─ ○ /diff-content
-  │  └─ ○ garrytan/benchmark  [3★]  (↑ see above)
+  │  └─ ○ garrytan/benchmark  [2★]  (↑ see above)
   ├─ ○ nextlevelbuilder/ui-ux-pro-max  [4★]
   ├─ · addy-osmani/planning-and-task-breakdown  [3★]
   │  ├─ ○ /plan-decompose
   │  └─ ○ garrytan/functional-area-resolver  [2★]
-  ├─ · garrytan/design-consultation  [3★]
+  ├─ · garrytan/design-consultation  [2★]
   │  ├─ · firecrawl/firecrawl-build  [2★]
   │  │  ├─ ○ firecrawl/firecrawl-build-search  [3★]
   │  │  └─ ○ /computer-use
 
 Uniques — Basic Skills that reached elite mastery (4★+) through depth alone, with no fusion path forward.
-  ◉ mvanhorn/last30days  [4★]
-    ├─ · garrytan/draft-in-voice  [2★]
-    │  ├─ · garrytan/data-research  [2★]
-    │  │  ├─ ○ firecrawl/firecrawl-build-search  [3★]
-    │  │  ├─ ○ /summarize
+  ◉ emilkowalski/animation-performance  [4★]
+    ├─ ○ addy-osmani/performance-optimization  [2★]
+    └─ ○ emilkowalski/animate  [4★]
+  ◉ cathrynlavery/diagram-design  [4★]
+    ├─ ○ /data-visualize
 
 (311 skills total — see docs/tree.md)
 ```
@@ -175,7 +175,7 @@ This is the evidence grade at the Skill level.
 **1. CLI**
 
 <!-- gaia:version-start -->
-Current Gaia CLI version: `9.3.0`.
+Current Gaia CLI version: `9.4.0`.
 
 ```bash
 curl -fsSL https://gaiaskilltree.com/install.sh | sh

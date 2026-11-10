@@ -11,12 +11,12 @@
 > **官方网站**: [www.nuphus.com](https://www.nuphus.com) — 产品介绍、下载安装包、更新日志与使用文档
 
 <p align="center">
-  <a href="https://www.nuphus.com/download.html"><img src="https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD-Windows%20%7C%20macOS%20%7C%20Linux-2563eb?style=for-the-badge&logo=windows&logoColor=white" alt="下载 Nuphus 1.3.0"></a>
+  <a href="https://www.nuphus.com/download.html"><img src="https://img.shields.io/badge/%E4%B8%8B%E8%BD%BD-Windows%20%7C%20macOS%20%7C%20Linux-2563eb?style=for-the-badge&logo=windows&logoColor=white" alt="下载 Nuphus 1.4.0"></a>
   &nbsp;
-  <a href="https://github.com/mrpulor-gh/nuphus/releases/latest"><img src="https://img.shields.io/badge/GitHub%20Release-v1.3.0-111827?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Release v1.3.0"></a>
+  <a href="https://github.com/mrpulor-gh/nuphus/releases/latest"><img src="https://img.shields.io/badge/GitHub%20Release-v1.4.0-111827?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Release v1.4.0"></a>
 </p>
 
-> **版本**: 1.3.0 · **状态**: Release（稳定版） · **平台**: Windows / macOS / Linux
+> **版本**: 1.4.0 · **状态**: Release（稳定版） · **平台**: Windows / macOS / Linux
 > **技术栈**: Tauri v2 · Rust · React 18 · TypeScript
 
 <p align="center">
@@ -329,25 +329,6 @@ Nuphus 是一个社区驱动的开源项目。除了代码贡献，你还可以�
 
 其余变更由维护者完成。
 
-### v1.2.0 贡献者
-
-本版本无社区 Pull Request，变更全部由维护者完成。
-
-### v1.1.4 贡献者
-
-本版本无社区 Pull Request，变更全部由维护者完成。
-
-
-### v1.1.3 贡献者
-
-本版本无社区 Pull Request，变更全部由维护者完成。
-
-
-### v1.1.2 贡献者
-
-本版本无社区 Pull Request，变更全部由维护者完成。
-
-
 ### v1.1.1 贡献者
 
 感谢本版本提交 Pull Request 的社区贡献者：
@@ -371,10 +352,6 @@ Nuphus 是一个社区驱动的开源项目。除了代码贡献，你还可以�
 
 其余变更由维护者完成。
 
-### v1.0.0 贡献者
-
-本版本未合并外部 Pull Request，全部变更由维护者完成。
-
 ### v0.2.31 贡献者
 
 感谢本版本提交 Pull Request 的社区贡献者：
@@ -383,10 +360,6 @@ Nuphus 是一个社区驱动的开源项目。除了代码贡献，你还可以�
 |--------|-----|------|
 | [@Steooenwolf-666](https://github.com/Steooenwolf-666) | [#107](https://github.com/mrpulor-gh/nuphus/pull/107) | ChatGPT 套餐登录与 Responses 推理：通用 OAuth、凭据安全存储、逐模型协议路由与请求约束 |
 | [@Steooenwolf-666](https://github.com/Steooenwolf-666) | [#108](https://github.com/mrpulor-gh/nuphus/pull/108) | 修复执行点评、内联配置与新会话的 IPC 参数（顶层统一 camelCase） |
-
-### v0.2.30 贡献者
-
-本版本未合并外部 Pull Request，全部变更由维护者完成。
 
 ### v0.2.29 贡献者
 

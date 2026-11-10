@@ -17,6 +17,10 @@
   <a href="#how-to-guide-page-by-page">How-to guide</a>
 </p>
 
+<p align="center">
+  <sub>Built by <a href="https://jonimms.com/">Jon Imms</a>, a WordPress developer in Omaha. <a href="https://jonimms.com/stratawp-seo/">Project page</a> · <a href="https://jonimms.com/services/custom-wordpress-development/">Custom WordPress development</a></sub>
+</p>
+
 ---
 
 **AI-powered SEO that knows your WordPress site — and knows how AI search works.** Generate site-aware blog posts, run your technical SEO (sitemaps, redirects, schema `@graph`, audits, a full site crawler), get *cited* by AI answer engines (AEO scoring, llms.txt, AI citation tracking, AI referral analytics), and let the automation layer watch your budget, your decaying posts, and your topic pipeline while you sleep.
@@ -1519,6 +1523,4 @@ SWPS_Image_Provider (abstract)
 
 - Generates `/sitemap_index.xml` and per-type sub-sitemaps (`{post_type}-sitemap.xml`, `{taxonomy}-sitemap.xml`, `author-sitemap.xml`).
 - Each sub-sitemap respects the `swps_sitemap_exclude_{key}` option.
-- `urls_per_page` setting controls split point (default 1000, max 50000).
-- Image sitemap entries built from post attachments.
-- **IndexNow integration** — handled by `SWPS_IndexNow`: auto-submits a URL to `api.indexnow.org` on post/term publish, update, or delete (60-second debounce), plus per-post and b
+- `urls_per_page`

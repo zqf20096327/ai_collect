@@ -88,7 +88,18 @@ Tool calls run automatically in terminal, headless, dashboard and ACP modes, usi
 }
 ```
 
-`provider` names the service; `method` selects its wire API (`openai-chat-completions`, `openai-responses`, `anthropic-messages`, or `google-generate-content`). `model_id` is sent upstream unchanged. Use `api_key_env` to read a selected credential from the environment or `api_key` for a literal value. `raw config list` reports model/access settings without printing credentials. No old flat-agent schema is accepted. See [configuration](docs/configuration.md), [config design](docs/config-design.md), and [providers](docs/providers.md).
+`provider` names the service; `method` selects its wire API (`openai-chat-completions`, `openai-responses`, `anthropic-messages`, or `google-generate-content`). `model_id` is sent upstream unchanged. Use `api_key_env` to read a selected credential from the environment or `api_key` for a literal value. `raw config list` reports model/access settings without printing credentials. `raw config check [FILE|-]` checks every agent of the config, or of a candidate in its place, without running anything; `raw --try-config FILE ...` runs with a candidate before it replaces the active file. No old flat-agent schema is accepted. See [configuration](docs/configuration.md), [config design](docs/config-design.md), and [providers](docs/providers.md).
+
+### Claude Code, Codex and Antigravity as backends
+
+An agent can run an external coding CLI instead of Raw's own loop: declare the CLI as a model (method `claude-code-cli`, `codex-cli` or `antigravity-cli`) and point the agent's `model` at it. The CLI keeps its own login, tools and context; Raw keeps the session, the terminal and dashboard views, cancel and `--continue`, replaces the CLI's system prompt with the agent's, and offers Raw tools such as `builtin/todo` to Claude Code and Codex through its own MCP server.
+
+```json
+{ "models": { "sonnet": { "method": "claude-code-cli", "model_id": "sonnet" } },
+  "agents": { "claude": { "model": "sonnet", "system_prompt": "You are a careful reviewer.", "tools": { "use": ["builtin/todo"] } } } }
+```
+
+`model_id` is the CLI's own model name (omit it for the CLI's default); `request.reasoning_effort` and `request.mode` go to the CLI. `context_window_tokens` on the model sets the window Claude Code and Codex compact against, and `compact.trigger_tokens` the threshold on Codex. Anything the CLI cannot do (hooks, Raw's `/compact`, Raw tools on agy) is skipped with a warning, never an error. See [backends](docs/backends.md) for setup, the capability table and [an example config](examples/agents/cli-backends/).
 
 ## Tools, images and MCP
 

@@ -100,7 +100,7 @@ docker run -d --name sage \
   ghcr.io/l33tdawg/sage:latest
 ```
 
-Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.4`.
+Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.6`.
 
 The SAGE server stays in that container. To give a local MCP client a stdio
 bridge, start a second process **inside the same running container**:
@@ -317,7 +317,40 @@ uses re-enrollment; historical memory authorship is preserved.
 ---
 
 <details>
-<summary>Recent release notes (v11.25.4 and earlier)</summary>
+<summary>Recent release notes (v11.25.6 and earlier)</summary>
+
+## What's New in v11.25.6
+
+**Direct-grant inspection now follows canonical chain state.** After app-v23,
+the ordinary grant-list endpoint takes `domain`, `grantee_id`, `granter_id`,
+`access_level`, and `expires_at` from Badger rather than the SQL serving mirror.
+A canonical grant is visible even when that projection is empty, and a canonical
+revoke disappears immediately instead of surviving as stale mirror data.
+
+`GET /v1/access/grants-snapshot/{agent_id}` adds a bounded exact-target snapshot
+for reconciliation. One committed Badger read supplies the caller/target
+authorization records, current Root generation, height, AppHash, and active
+direct grants. The endpoint allows self-inspection or a current local Admin,
+fails closed on incomplete or oversized reads, and is deliberately not effective
+access, a global atomic directory, or a new protocol capability.
+
+No consensus version change, app-version change, chain reset, or data migration.
+`latest` and automatic upgrade voting remain app29; app30 remains explicit.
+Container: `ghcr.io/l33tdawg/sage:11.25.6`. SDK 11.25.6.
+
+## What's New in v11.25.5
+
+**MCP inbox limits now explain themselves.** `sage_inbox` keeps its bounded
+`1-20` limit for messages and task notices and for its passive reply page, but
+both caps are now explicit in the model-facing tool descriptions even when
+schema validation keywords are flattened. An out-of-range `limit` reports the
+submitted value and names the exact `message_next_cursor` and
+`task_notice_next_cursor` fields to use for continuation, so callers can page
+instead of repeatedly guessing a larger limit.
+
+No consensus version change, app-version change, chain reset, or data migration.
+`latest` and automatic upgrade voting remain app29; app30 remains explicit.
+Container: `ghcr.io/l33tdawg/sage:11.25.5`. SDK 11.25.5.
 
 ## What's New in v11.25.4
 
@@ -930,35 +963,4 @@ Also in this release: the README, the `sage-memory` skill, and the reference doc
 
 No consensus change or chain migration; app-v27 remains the ceiling.
 
-Container: `ghcr.io/l33tdawg/sage:11.19.20`. SDK 11.19.20.
-
-## What's New in v11.19.19
-
-**Security dependency update:** upgrades gRPC-Go from v1.83.1 to v1.83.2, addressing [CVE-2026-84445 / GHSA-2v4p-qf9q-27wj](https://github.com/grpc/grpc-go/security/advisories/GHSA-2v4p-qf9q-27wj). The upstream fix rejects HTTP/2 requests missing both `:authority` and `Host` headers, preventing a panic in xDS servers. SAGE's CometBFT servers use ordinary gRPC servers, but the dependency is patched for defense in depth.
-
-No consensus or storage migration; app-v27 remains the ceiling.
-
-Container: `ghcr.io/l33tdawg/sage:11.19.19`. SDK 11.19.19.
-
-## What's New in v11.19.18
-
-Federation agents now visibly orbit their nodes. Motion continues over empty map space and resumes after pointer selection; hovering an agent, keyboard inspection, and dragging keep targets steady. Pause motion and reduced-motion preferences remain supported.
-
-Container: `ghcr.io/l33tdawg/sage:11.19.18`. SDK 11.19.18.
-
-## What's New in v11.19.17
-
-**See your federation.** CEREBRUM opens connected nodes as an interactive
-connectome with agent clusters, search, zoom, a List view, and a selection panel
-for exact addresses and connection controls. Gentle ambient agent drift includes
-a pause toggle, stops during interaction, and respects reduced-motion settings.
-Actual node names make the viewed
-node clear, including when you open another SAGE through a tunnel.
-
-A dedicated operator-only SSE stream shows recent message and reply transport
-status without exposing message text or proofs. Live changes animate when their
-endpoints are loaded; reconnecting refreshes history without replaying old
-traffic. The view is bounded, with explicit agent and node paging.
-
-Federation onboarding now explains **Exchange codes → Verify together → Explore
-agents**. Both confirmati
+Container: `g

@@ -1,5 +1,12 @@
 # HypGate - Formally Verified AI Gateway
 
+![HypGate portal](hypgate.jpg)
+
+[![workflow status](https://github.com/hyparam/HypGate/actions/workflows/ci.yml/badge.svg)](https://github.com/hyparam/HypGate/actions)
+[![mit license](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT)
+[![verified with verus](https://img.shields.io/badge/Verified-Verus-brightgreen)](PROOFS.md)
+[![dependencies](https://img.shields.io/badge/Dependencies-3-blueviolet)](crates/gateway-runtime/Cargo.toml)
+
 HypGate is a small LLM gateway with a machine-checked core. It forwards request
 bodies to your provider unchanged, streams responses back, writes every
 exchange to an audit log on disk, and can ship that log to

@@ -119,9 +119,11 @@ before the first ingest, not afterwards. Only new stores take the shipped defaul
 aggregates. The same shapes exist for control-state counters, where `"at most N in the last H
 hours"` is a single round trip.
 
-**By default an aggregate is recomputed from the points in the window on every read** — the window
-is ranged, each point decoded, and the aggregator folded over the result. Exact, and linear in the
-window.
+**Most aggregates are recomputed from the points in the window on every read**: the window
+is ranged, each point decoded, and the aggregator folded over the result. `last` instead walks
+backward from the eligible window tail and stops at the first readable value. An explicit
+`count` still limits the eligible prefix before that backward walk; it does not select the
+newest `count` points. The sum-family rollup path below is another specialized read path.
 
 **Kept current without recomputing: the rollup ladder.** For sum-family counters an optional index
 maintains exact per-bucket sums at **1 s → 1 m → 1 h → 1 d**, folded forward on each counter write,
@@ -268,6 +270,14 @@ open-source feature store. It resolves its online store through a plugin class n
 [`integrations/feast/`](integrations/feast/), because the engine exposes two surfaces with
 different trade-offs. Pick by surface:
 
+For installation, configuration, batching, and numeric-history options, start with the
+[Feast integration guide](integrations/feast/README.md). For repeatable materialization and
+serving measurements, use the [benchmark guide](docs/feast_online_store_benchmark.md).
+Compare write rows/s, read requests/s, read rows/s, latency percentiles, and storage bytes
+separately. A lower batch-read latency does not establish higher write throughput, and a
+local run does not establish multi-host performance. Match durability and payloads before
+comparing stores.
+
 | package | surface | pick it when |
 |---|---|---|
 | `feast_temporalstore` | RESP, port 6399 | you already run the proxy, or you want Feast's Redis tooling and mental model |
@@ -314,6 +324,10 @@ features), a 16-core shared host at 1-minute load 3 with no compiler running, Te
 **release** build on a freshly created empty shard. Every arm's rows were read back and compared
 byte for byte before any clock started, and the SQLite control re-run held within tolerance (drift
 17.3% and 13.0% against a 25% limit).
+
+These small-load serving figures do not describe sustained materialization into a large shard.
+For that workload, use the [Feast benchmark guide](docs/feast_online_store_benchmark.md) with
+a fresh store per sample and report write throughput, read latency, and storage bytes separately.
 
 | store | durability | cold p50 | warm p50, batch 1 | warm p50, batch 10 | warm rows/s, batch 10 |
 |---|---|---:|---:|---:|---:|
@@ -392,9 +406,9 @@ standard library only: `python integrations/feast/run_tests.py`.)*
 This is the workload the project was built around, and it is the one with the most surface.
 
 **Ingest → extract → retrieve → pack.** Retrieval takes a tenant, a time window, a set of candidate
-node hashes and a query, and returns ranked `ContextBlock`s — `{uri, tier, node_hash,
-event_time_ms, text, estimated_tokens, source_ref}` across three tiers (`L0` a short form, `L1` a
-compact pointer, `L2` the event text).
+node hashes and a query, and returns ranked `ContextBlock`s. Each block carries a
+`record_type`: `matched_chunk`, `raw_message`, or `entity`. The single tagged list avoids
+copying the same text into separate response collections.
 
 **Packing to a budget.** `max_prompt_tokens` (2,048 by default) is the budget. The caller's own
 prompt is charged against it first; blocks are then taken **greedily in ranked order**, and a block
@@ -412,9 +426,11 @@ un-embedded node stays rankable instead of collapsing to recency order. The fina
 lexical relevance, then tier (`L0` before `L1` before `L2`), then recency, then URI, de-duplicated
 by `source_ref`. Freshness is a tiebreak — again, there is no decay curve.
 
-**Keeping a working set resident.** The nodes a caller names are resolved from the resident index
-and their blocks from the memory cache tier, on the same path as §4; a cold sweep deliberately does
-not fill the cache, so bulk maintenance does not evict a live working set.
+**Keeping a working set resident.** A compact quantized embedding index selects a bounded node
+candidate set before exact reranking and text hydration. Entity expansion runs only for those
+selected nodes and is capped at four times the requested result count, with a hard ceiling of 256.
+The final entity output is capped separately. A cold sweep deliberately does not fill the cache,
+so bulk maintenance does not evict a live working set.
 
 **Embedding safety is enforced, not documented.** Vectors of differing width are declined, and
 same-width vectors written by a *different* encoder are declined too, counted separately — two
@@ -431,11 +447,9 @@ replaying the whole local context, on 6 of 6 queries, with `qwen2.5:7b` as both 
 [docs/benchmarks](docs/benchmarks/README.md); that run needs a local model and was **not** re-run
 for this document.
 
-**Limits.** There is **no ANN index** — scoring is a linear cosine over the candidate nodes the
-caller supplies, and `node_hashes` is mandatory: there is no "search the whole tenant" entry point
-in this engine. The secondary-index commands exist and are queryable, but retrieval does not use
-them to select candidates; entity records are written and queryable but are not packed. Switching
-embedding model means re-embedding the corpus.
+**Limits.** Candidate routing is bounded and quantized, followed by exact scoring; it is not a
+graph ANN implementation. Callers can provide node hashes or omit them for bounded tenant-wide
+embedding selection. Switching embedding model means re-embedding the corpus.
 
 ## 6. What else the engine actually does
 
@@ -524,17 +538,27 @@ The RESP surface, the HTTP routes, and the control verbs are documented under
 [`docs/`](docs/). Deploy manuals: [Windows Docker](docs/windows_docker_install.md) ·
 [Linux](docs/linux_deploy.md) · [macOS](docs/macos_deploy.md).
 
-## Python tooling and agent integrations
+## Python LLM-context client
 
-**This repository is the Rust engine only.** The Python context tooling — ingestion, retrieval,
-feedback, the agent hooks and the MCP server — lives in
-**[matrixarkai/matrixark](https://github.com/matrixarkai/matrixark)**, also Apache-2.0.
+The installable package under [`sdk/python/`](sdk/python/) provides ingestion, retrieval, update,
+history, deletion, and batch operations through the Rust proxy's non-versioned `/memories`
+surface. It uses only Python's standard library and code in this repository:
 
-Use this repository when you want the engine: embed the crate, run the binaries, or talk to a node
-over RESP or HTTP. Use `matrixark` when you want the Python client, the extraction and retrieval
-pipeline, or an agent integration.
+```bash
+python3 -m pip install -e sdk/python
+export TEMPORALSTORE_BASE_URL=http://127.0.0.1:17000
+```
 
-The exception is the Feast online store: it is a client of the engine's own surfaces, so it lives here under [`integrations/feast/`](integrations/feast/); see [§4](#4-online-feature-serving).
+```python
+from temporalstore.llm_context import Memory
+
+memory = Memory()
+memory.add("Prefer compact int8 embeddings.", user_id="alice")
+result = memory.search("How should vectors be stored?", user_id="alice", limit=8)
+```
+
+See [the SDK workflow](sdk/python/README.md). The Feast online store remains under
+[`integrations/feast/`](integrations/feast/); see [§4](#4-online-feature-serving).
 
 ## Deploy: laptop → replicated cluster
 
@@ -558,13 +582,14 @@ Foundation ─ MatrixCache (multi-layer cache) · MatrixRaft (Rust Raft consensu
 Storage backend (auto) ─ object store → shared filesystem → local + Raft
 ```
 
-Five Apache-2.0 repositories, all public and open to anyone in the world to use, fork and
+Related Apache-2.0 repositories, public and open to anyone in the world to use, fork and
 contribute to:
 [TemporalStore](https://github.com/matrixarkai/TemporalStore) (engine) ·
 [MatrixCache](https://github.com/matrixarkai/MatrixCache) (cache) ·
 [MatrixRaft](https://github.com/matrixarkai/MatrixRaft) (consensus) ·
 [MatrixObject](https://github.com/matrixarkai/MatrixObject) (object store) ·
-[matrixark](https://github.com/matrixarkai/matrixark) (Python tooling).
+[matrixark](https://github.com/matrixarkai/matrixark) (Python tooling) ·
+[MatrixAdsDemo](https://github.com/matrixarkai/MatrixAdsDemo) (ads retrieval and ranking demo).
 
 ---
 
@@ -653,5 +678,5 @@ Readers accept older per-key JSON records alongside the protobuf append log.
 A shared-store backend must implement real `append_blob` semantics for this
 default. The base trait returns an unsupported error instead of replacing earlier
 log bytes. Existing put-only integrations can explicitly select
-`SharedStoreWalAppendMode::JsonPerKey` during migration; there is no automatic
+`SharedStoreWalAppendMode::PerKeyObject` during migration; there is no automatic
 fallback to JSON after an append failure.

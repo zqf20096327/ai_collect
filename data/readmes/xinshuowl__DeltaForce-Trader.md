@@ -1,0 +1,370 @@
+# 三角洲行动 · 交易行自动上架 / 下架助手
+
+[![Build Windows Release](https://github.com/xinshuowl/DeltaForce-Trader/actions/workflows/build.yml/badge.svg)](https://github.com/xinshuowl/DeltaForce-Trader/actions/workflows/build.yml)
+[![Latest Release](https://img.shields.io/github/v/release/xinshuowl/DeltaForce-Trader?include_prereleases&label=release)](https://github.com/xinshuowl/DeltaForce-Trader/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)](https://github.com/xinshuowl/DeltaForce-Trader/releases)
+[![Python](https://img.shields.io/badge/python-3.11-3776ab?logo=python&logoColor=white)](https://www.python.org/)
+[![PyQt5](https://img.shields.io/badge/GUI-PyQt5-41cd52?logo=qt&logoColor=white)](https://riverbankcomputing.com/software/pyqt/)
+[![Stars](https://img.shields.io/github/stars/xinshuowl/DeltaForce-Trader?style=social)](https://github.com/xinshuowl/DeltaForce-Trader/stargazers)
+
+[中文](./README.md) · [English](./README_EN.md)
+
+> **手动上架一仓库要 30 分钟？这工具 3 分钟搞定。**
+> 一键把仓库里的非绑定道具批量挂上交易行，挂满 15 槽后自动等成交、下架、整理仓库、循环重启 — 全程无人值守。
+
+支持品质 / 分类精确筛选、ML 模型识别、多箱子轮询挂机。
+适合赚哈夫币挂机自动化、批量清仓、刷交易行手续费日活。
+
+[**下载预编译 exe**](https://github.com/xinshuowl/DeltaForce-Trader/releases/latest) · [**视频演示**](https://space.bilibili.com/13591468) · [**QQ 交流群: 290101314**](#反馈与交流)
+
+> 如果这个工具帮你省了时间，**请点右上角 ⭐ Star 支持一下** — 是作者持续更新的最大动力！
+
+---
+
+## 演示
+
+<p align="center">
+  <video src="https://github.com/user-attachments/assets/62b36629-35fc-45ed-bae7-3edd5480f533"
+         poster="docs/screenshots/demo_poster.jpg"
+         width="720"
+         controls
+         preload="metadata">
+    您的环境不支持嵌入视频, 可<a href="https://github.com/xinshuowl/DeltaForce-Trader/releases/download/v1.1.0/demo.mp4">点此下载查看</a>.
+  </video>
+  <br/>
+  <em>实际录屏画面 · 一键挂上整箱非绑定道具 · 收入自动累计 · 全程无人值守</em>
+</p>
+
+### 功能截图
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/main.png" alt="主界面" width="380"/><br/><em>主控制面板 · 一键启停 + 实时日志</em></td>
+    <td align="center"><img src="docs/screenshots/filter.png" alt="筛选设置" width="380"/><br/><em>品质 / 分类 / 箱子三轴筛选</em></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/calibrate.png" alt="坐标校准" width="380"/><br/><em>30+ 项坐标可视化校准</em></td>
+    <td align="center"><img src="docs/screenshots/review.png" alt="ML 标注审核" width="380"/><br/><em>ML 模型在线审核 + 一键重训</em></td>
+  </tr>
+</table>
+
+---
+
+## 为什么选择这个项目
+
+| 痛点 | 别的脚本 | 本项目 |
+|------|---------|---------|
+| 反复点同一把枪不同部位 | ❌ 常见 bug | ✅ 连通域合并彻底解决 |
+| 跨页跳过已处理物品 | ❌ 只看位置易出错 | ✅ 名字 + 图像指纹 + 位置三层兜底 |
+| 翻页过早漏扫物品 | ❌ 单次判定 | ✅ 双重底部确认 + 翻页前二次验证 |
+| 适配自己的分辨率 | ❌ 改代码 | ✅ GUI 30+ 项可视化校准 |
+| ML 不准了怎么办 | ❌ 重装/弃用 | ✅ 内置「审核标注」一键重训 |
+| 收入统计 | ❌ 没有 | ✅ 自动累计 + 扣手续费保证金 |
+
+> **快速下载 →** [前往最新 Release 下载预编译 exe](https://github.com/xinshuowl/DeltaForce-Trader/releases/latest)（每次推送 `vX.Y.Z` 标签时自动构建）
+
+---
+
+## 核心特性
+
+- **ML 道具检测** — RandomForest 模型 + HSV 规则双引擎，区分绑定 / 非绑定道具，可在 GUI 内审核标注后一键重训。
+- **连通域合并** — 一把裸枪占 4×2 共 8 格也只点 1 次；不会再反复点击同一道具的不同部位。
+- **三层去重 skip 机制** — 道具<b>名字</b> + <b>图像指纹 (dHash)</b> + <b>位置黑名单</b>，跨页保留。不符筛选的道具本箱内永不再点开。
+- **双重底部确认** — 翻到箱子底部需要连续两次确认才切换下一箱，杜绝早期页面漏扫。
+- **筛选系统** — 仓库箱子 / 品质颜色 / 多级道具分类三轴筛选，结合道具数据库 (OCR 自建) 精确控制要上架什么。
+- **挂机模式** — 上满 15 槽 → 等待若干分钟 → 自动下架已成交 → 整理仓库 → 重启循环，全程无人值守。
+- **坐标可视化校准** — 一键截图，下拉框选目标后<b>点击 (单点) 或拖框 (区域)</b>拾取，30+ 项坐标 / OCR 区都可调，永久保存到 `user_config.json`。
+- **自动最小化 / 恢复** — 启动后软件自动最小化让出焦点，结束后自动恢复显示。
+- **收入统计** — 完成后日志输出明细 + 总预期收入（已扣除手续费和保证金）。
+
+---
+
+## 运行环境
+
+| 项目 | 要求 |
+|------|------|
+| 操作系统 | Windows 10 / 11（64 位） |
+| Python | 3.10 及以上 |
+| 显示器分辨率 | **2560 × 1440** |
+| 系统缩放 | **150%**（推荐，与开发环境一致） |
+| 游戏显示模式 | **无边框窗口** |
+| 运行权限 | **以管理员身份运行**（必须） |
+
+---
+
+## 安装步骤
+
+### 1. 安装 Python 依赖
+
+```powershell
+pip install -r requirements.txt
+```
+
+依赖清单：`pyautogui`、`opencv-python`、`Pillow`、`keyboard`、`PyQt5`、`numpy`、`pytesseract`、`rapidocr`、`scikit-learn`、`joblib`。
+
+### 2. 安装 Tesseract-OCR
+
+Tesseract 用于识别上架数量、道具名称和预期收入金额。
+
+1. 下载 [tesseract-ocr-w64-setup-5.4.0.20240606.exe](https://digi.bib.uni-mannheim.de/tesseract/)
+2. 安装时展开 **Additional language data**，勾选 **Chinese - Simplified**
+3. 把安装路径 `C:\Program Files\Tesseract-OCR` 加到系统环境变量 `Path`
+4. 验证：打开新的 PowerShell，运行 `tesseract --version` 看到版本号即成功
+
+> 不装 Tesseract 也不影响上架 / 下架的核心功能，只是收入统计里的道具名称和预期金额会显示为空。
+
+### 3. 启动程序
+
+```powershell
+# 必须以管理员权限运行，否则热键和鼠标控制无效
+python main.py
+```
+
+---
+
+## 快速开始
+
+1. **右键** PowerShell → **以管理员身份运行**
+2. 进入项目目录执行 `python main.py`
+3. 切到 **「筛选设置」** 选项卡，勾选要参与上架的<b>仓库箱子</b>和<b>道具品质 / 分类</b>
+4. 进入游戏，打开 **交易行 → 出售** 界面
+5. 按 **Ctrl+1** 即可开始；启动后软件自动最小化，完成后自动恢复显示
+
+---
+
+## 热键说明
+
+| 热键 | 功能 | 说明 |
+|------|------|------|
+| **Ctrl+1** | 开始上架 | 弹出模式对话框（单次 / 挂机），开始遍历箱子并上架 |
+| **Ctrl+2** | 紧急停止 | 立即中断当前操作，任何阶段均可按 |
+| **Ctrl+3** | 一键下架 | 自动下架所有已上架道具并整理仓库 |
+| **Ctrl+4** | 调试截图 | 截取屏幕跑一遍道具检测，输出标注图 |
+| **Ctrl+Z** | 截图拾取坐标 | 自动最小化 → 截图 → 在图上点取 / 拖框拾取坐标 |
+
+---
+
+## 执行模式
+
+按下 **Ctrl+1** 后弹出模式对话框：
+
+| 模式 | 行为 |
+|------|------|
+| **单次上架** | 遍历勾选的所有箱子各一次，上完即停 |
+| **挂机模式** | 上满 15 槽 → 等待若干分钟 → 自动下架已成交 → 整理仓库 → 重启循环。可指定循环次数上限，全程无人值守 |
+
+挂机模式的等待时长和循环次数都可在对话框右侧 **「挂机模式设置」** 修改。
+
+---
+
+## 上架流程（Ctrl+1）
+
+```
+读取上架状态 (OCR x/15)
+        ↓
+整理仓库 (整理仓库 → 整理)
+        ↓
+遍历勾选的箱子
+   ├─→ 截图 + ML 识别非绑定道具
+   ├─→ 连通域合并 (多格大型道具折叠为 1 组)
+   ├─→ 过滤 (recently_listed / skip_positions / skip_fingerprints / skip_names)
+   ├─→ 点击 → 拉满数量 → OCR 名字+收入
+   │     ├─ 命中筛选 → 点击「上架」
+   │     └─ 不符筛选 → ESC，三层加入黑名单
+   ├─→ 翻页 (双重底部确认)
+   └─→ 下一箱
+        ↓
+收入统计输出到日志
+```
+
+输出示例：
+
+```
+========================================
+  上架收入统计
+========================================
+  1. 密令斜角握把       预期收入: 180,338
+  2. LA-3C             预期收入:  23,450
+  3. 战术前握把         预期收入:  12,800
+----------------------------------------
+  总计上架: 3 件道具
+  总预期收入: 216,588（已扣手续费+保证金）
+  弹窗截图保存在: listings/
+========================================
+```
+
+> 交易行槽位上限 **15 个**，达上限自动停止。挂机模式下会等几分钟回头扫已成交并下架腾位。
+
+---
+
+## 下架流程（Ctrl+3）
+
+1. OCR 读取当前已上架数量
+2. 反复点击列表第一项的「下架」按钮 → 确认下架，列表会自动上移
+3. 下架完成后自动整理仓库
+
+仓库空间不足时自动检测停止，避免道具丢失。
+
+---
+
+## 坐标校准
+
+坐标基于 **2560×1440 / 150% 缩放** 预设。如果点击偏移、OCR 区域错位，需要重新校准。
+
+### 拾取流程
+
+1. 切到 **「坐标校准」** 选项卡，点 **「截图拾取坐标」**（或按 **Ctrl+Z**）
+2. 软件自动最小化截取游戏画面
+3. 在下拉框选目标。目标分两类：
+   - **[点]** — 单击截图上的对应位置（如按钮中心）
+   - **[区域]** — 按住左键 **拖一个矩形框**（如 OCR 识别区）
+4. 点 **「完成」**，数值会回填到对应输入框
+5. 点 **「应用所有坐标修改（永久保存）」** 持久化到 `user_config.json`
+
+### 可校准目标（共 30+ 项）
+
+| 分组 | 包含项 |
+|------|--------|
+| 道具网格 | 左上角、右下角、滚动停鼠点 |
+| 上架弹窗按钮 | 数量 −/+、滑动条最右端、上架确认 |
+| 下架相关 | 下架按钮、确认按钮 |
+| 顶部标签页 | 交易行 tab、出售子 tab |
+| 仓库整理 | 整理仓库图标、整理按钮 |
+| 仓库箱子 | 箱子 1 ~ 10 的 Y 坐标（X 共用） |
+| OCR / 检测区域 | 道具名称、预期收入、上架数量、上架弹窗、页面跳转检测 ROI、出售页 tab ROI |
+
+点 **「撤销修改」** 可恢复到上次永久保存的值。
+
+### 调试截图（辅助校准）
+
+按 **Ctrl+4** 触发；查看：
+- `debug_4_annotated.png` — 绿框非绑定 / 红框绑定
+- `debug_2_v_heatmap.png` — HSV V 通道热力图
+- `debug_listing_count.png` — 上架数量 OCR 区裁切
+
+---
+
+## ML 模型与审核标注
+
+`ml_data/bound_model.joblib` 是 RandomForest 训练好的二分类模型（绑定 / 非绑定）。识别不准时可在 GUI 内微调：
+
+1. 游戏出售界面 → 主界面点 **「审核标注」**
+2. 软件截图并自动标注每格的绑定状态
+3. 逐个检查，错误标注手动修正
+4. 点 **「训练模型」** 用累积样本重训
+
+样本越多准确率越高，建议首次使用时多做几轮（覆盖不同种类的枪、配件、弹药、绑定箱）。
+
+---
+
+## 道具数据采集
+
+「道具采集」用来建立道具数据库，供「筛选设置」根据 OCR 识别的道具名匹配品质 / 分类。
+
+### 方式一：实时截取（推荐）
+
+1. 游戏内打开交易行 **购买** 页面，导航到要采集的分类
+2. 主界面点 **「道具采集」** 打开采集对话框
+3. 顶部下拉框选 **大类** 和 **子类**
+4. 点 **「截取游戏画面」**：对话框自动隐藏 → 截取全屏 → 恢复 → OCR 提取道具名
+5. 点 **「截取并翻页」** 可以截取后自动滚商店页面，连续采集多页
+6. 右侧表格内标注品质颜色，点 **「保存数据库」**
+
+### 方式二：本地截图
+
+把截图保存到 `Shop/大类/子类/`（如 `Shop/枪械/步枪/截图.png`），左侧目录树选子类加载，或点 **「批量提取全部」**。
+
+未在数据库中的道具默认允许上架，不会阻断流程。
+
+---
+
+## 项目结构
+
+```
+Autoshop/
+├── main.py                  # 程序入口，热键注册
+├── config.py                # 坐标配置、道具分类、时间参数
+├── requirements.txt         # Python 依赖清单
+├── user_config.json         # 用户自定义配置（坐标 / 筛选，自动生成）
+├── core/
+│   ├── screen.py            # 截图工具（PIL.ImageGrab）
+│   ├── detector.py          # 道具检测器（网格+OCR）
+│   ├── ml_detector.py       # ML 绑定检测器（RandomForest）
+│   ├── automation.py        # 鼠标键盘操作（pyautogui）
+│   ├── workflow.py          # 上架/下架业务流程引擎（含连通域合并、skip 机制）
+│   ├── item_database.py     # 道具数据库（品质 / 分类匹配）
+│   └── resolution.py        # 分辨率缩放（当前已禁用）
+├── gui/
+│   ├── main_window.py       # PyQt5 主控制面板
+│   ├── review_dialog.py     # ML 审核标注对话框
+│   ├── shop_collector.py    # 道具采集对话框
+│   └── theme.py             # 霓虹风样式表
+├── ml_data/                 # ML 训练数据和模型文件
+├── Shop/                    # 道具采集本地截图（按大类/子类分目录）
+├── listings/                # 上架弹窗截图（自动生成）
+├── logs/                    # 运行日志文件（自动生成）
+└── debug_*.png              # 调试截图（自动生成）
+```
+
+---
+
+## 关键配置说明
+
+所有坐标和参数都在 `config.py`，常用的几个：
+
+| 配置项 | 说明 |
+|--------|------|
+| `CELL_GRID` | 9 列网格的起点坐标和格子大小 |
+| `ORIGINAL_DEFAULT_COORDS` | 全部点击点和 OCR 区的默认值（GUI 校准会覆盖） |
+| `DETECTION_ROI` | 页面跳转检测、出售页 tab 检测的 ROI 区域 |
+| `LIST_DIALOG` | 上架弹窗各按钮坐标 |
+| `LISTING_SLOTS["counter_region"]` | 上架数量 OCR 截取区 |
+| `TIMING` | 操作之间的等待时间 |
+| `HOTKEYS` | 快捷键配置 |
+
+---
+
+## 常见问题
+
+| 问题 | 解决方案 |
+|------|----------|
+| 按热键无反应 | 确认是否以 **管理员权限** 运行 |
+| 点击位置偏移 | 用 **「坐标校准」** 重新拾取相关坐标 |
+| 反复点同一把枪 / 道具 | 多格大型道具占多格。本版本已用<b>连通域合并 + 名字 / 图像指纹去重</b>解决，若仍出现请用「审核标注」更新 ML 模型 |
+| 翻页没翻到底就跳箱子 | 本版本已用<b>双重底部确认 + 大滚动幅度</b>解决；如仍漏扫请检查「坐标校准」中 `page_change_*` 区域 |
+| 上架数量 OCR 识别错误 | 检查 `debug_listing_count.png`；微调「坐标校准」中 `counter_x1~y2` |
+| 非绑定道具识别不准 | 用 **「审核标注」** 修正错误样本并重新训练 |
+| 软件崩溃（0xC0000005） | 通常由截图冲突引起，关闭其他截图 / 录屏软件 |
+| 分辨率不是 2560×1440 | 当前版本仅适配此分辨率 + 150% 缩放 |
+| 提示 "No module named ..." | 执行 `pip install -r requirements.txt` |
+| 提示 "tesseract is not installed" | 安装 Tesseract-OCR 并加入系统 PATH |
+
+---
+
+## 注意事项
+
+- 脚本运行时 **不要动鼠标**，脚本会自动控制鼠标点击
+- 按 **Ctrl+2** 可以随时紧急停止
+- 鼠标移到屏幕左上角可触发 PyAutoGUI 故障安全机制强制停止
+- 上架槽位最多 15 个，超时未售出的道具需手动下架再重新上架
+- 启动后第一个选项卡「使用说明」内有更完整的图文帮助
+
+---
+
+## 反馈与交流
+
+| 渠道 | 地址 |
+|------|------|
+| 软件作者 | 熊猫不只黑白 |
+| B 站空间 | [https://space.bilibili.com/13591468](https://space.bilibili.com/13591468) |
+| QQ 交流群 | **290101314** |
+
+遇到 bug 请先看「运行日志」选项卡，把 `logs/autoshop_*.log` 贴到 QQ 群可以加速定位。
+
+---
+
+## 免责声明
+
+本项目仅供学习交流使用。使用者需自行承担因使用本工具导致的<b>任何账号风险或资产损失</b>。
+请遵守游戏服务条款，作者不对账号封禁、道具丢失等情况负责。

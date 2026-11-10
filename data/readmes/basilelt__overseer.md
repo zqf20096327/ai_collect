@@ -48,7 +48,10 @@ a minute. You can replay it any time from Settings → Help.
 
 ### Every agent in one window
 
-Workspaces group sessions by project. Each session opens in a tab with its live terminal, and
+Workspaces group sessions by project. Inside a workspace, subjects sort its sessions further: a
+subject covers a sub-folder or a git submodule (submodules show up on their own), sessions running
+there join it, and you can drag any session onto one or start a new one in it, at the workspace
+root if your agents read their instructions there. Each session opens in a tab with its live terminal, and
 the side panel shows what the agent is doing: last message, work log, todos, edited files and
 changes. Switch to **By status** to see at a glance who needs your input, who is running and who
 is done. Agent tabs also have a **Chat** view rebuilt live from the agent's session file.
@@ -74,7 +77,9 @@ Write a task, pick the agent, its model and reasoning effort, and start it: Over
 worktree on a new branch and types the task into the agent. Tasks in the **Auto** column start on
 their own, in order, within your concurrency limit. A new task can be filled from the project's
 GitHub or GitLab issues or Jira tickets, and agents can read and update tasks through the
-built-in MCP server.
+built-in MCP server. Finished work waits in **Review**; a task moves to **Merged** by itself once
+its branch lands in the default branch, **Closed** keeps the rest, and an agent moves its task
+back to In progress when work resumes.
 
 ![Tasks](app/docs/screenshots/kanban-dark.png)
 
@@ -89,7 +94,7 @@ built-in MCP server.
 
 A GitHub-style review of an agent's changes while it works. Comment on lines, suggest edits, and
 send the comments back to the agent; threads follow the code as it changes. Approve, reject or
-commit from the Kanban card when the task is in testing.
+commit from the Kanban card when the task is in Review.
 
 ![Live review](app/docs/screenshots/review-light.png)
 
@@ -136,6 +141,11 @@ on a TCP port on the server.
   mode** pill stays in the title bar; **Exit demo** returns to your own hosts and settings, untouched.
 - **Notifications** when an agent needs input or finishes, from agent hooks Overseer can
   install for you.
+- **Agent profiles**: save each CLI's supported model and effort choices, plus named subagent models
+  for Gemini CLI and Antigravity. Apply a profile to new work, scope it to a workspace, and choose
+  when to update the agent files.
+- **Auto-approve defaults per agent**: choose which CLIs Overseer starts in their native
+  auto-approval mode. The defaults are stored on each connected host and apply to new sessions.
 - **Skills and plugins in one click**: install RTK (trims shell output before the agent reads it),
   Caveman (terse replies) or Ponytail (simplest code that works) for Claude Code, Codex, Gemini CLI,
   opencode, Copilot CLI, Cursor Agent, Amp or Antigravity, from Settings → Agents or the command
@@ -163,8 +173,10 @@ brew install --formula basilelt/tap/overseer
 ```
 
 The full `basilelt/tap/...` name taps the repository and tells Homebrew to trust these packages,
-so no `brew trust` or `--trust` step is needed. Upgrade with
-`brew update && brew upgrade --cask basilelt/tap/overseer && brew upgrade --formula basilelt/tap/overseer`.
+so no `brew trust` or `--trust` step is needed. Homebrew is only the first install: the app
+updates itself afterwards (see [Updates](#updates)) and the cask declares `auto_updates true`, so
+`brew upgrade` leaves it alone. To upgrade the `overseer` CLI/daemon formula, run
+`brew update && brew upgrade --formula basilelt/tap/overseer`.
 
 The app is signed with a Developer ID and notarized by Apple, so macOS opens it without a
 warning. Each release asset carries a build provenance attestation:
@@ -177,7 +189,7 @@ Download from the latest release (`.AppImage`, `.deb` or `.rpm` on Linux x64 and
 `-setup.exe` or `.msix` on Windows x64 and arm64). The Linux builds need glibc 2.35 or newer
 (Ubuntu 22.04, Debian 12, Fedora 36 and later). The `.msix` is self-signed: import
 `overseer-msix.cer` from the release into Local Machine > Trusted People once, then open the
-`.msix`; it does not update itself, use the `-setup.exe` for in-app updates. For example:
+`.msix`. Every one of these installs updates itself from the app afterwards. For example:
 
 ```sh
 gh release download --repo basilelt/overseer --pattern '*.AppImage'
@@ -199,20 +211,27 @@ updater. iOS: [Overseer Agents on the App Store](https://apps.apple.com/us/app/o
 
 #### Google Play (closed testing)
 
-Overseer is in closed testing on Google Play before its public release. To install it from Play
-and get updates there:
+Overseer is in closed testing on Google Play before its public release. Testers get it for free
+with a promo code. To install it from Play and get updates there:
 
 1. With the Google account of your Android phone, join the
    [Overseer testers group](https://groups.google.com/g/overseer-testers) ("Join group").
 2. Open the [testing invitation](https://play.google.com/apps/testing/io.github.basilelt.overseer.pro)
    with the same account and tap **Become a tester**. If it says the app is not available, the
    group join has not reached Play yet: wait a few minutes and reload.
-3. Install Overseer from the
-   [Play Store page](https://play.google.com/store/apps/details?id=io.github.basilelt.overseer.pro)
-   (the link from the invitation page). Updates arrive through Play like any app.
-4. Stay in the group and keep the app installed: Play only opens the app to everyone after
+3. Get a free promo code: in the group, open the pinned **Free promo codes** post and its code
+   sheet, take the first code nobody has claimed and write your name next to it. Each code works
+   once.
+4. Redeem it with the same account: tap its redeem link, or in the Play Store app, your profile
+   picture > **Payments & subscriptions** > **Redeem code**. Overseer is then yours at no cost;
+   install it from the
+   [Play Store page](https://play.google.com/store/apps/details?id=io.github.basilelt.overseer.pro).
+   Updates arrive through Play like any app.
+5. Stay in the group and keep the app installed: Play only opens the app to everyone after
    testers have used it for 14 days. Send feedback from the app (More > Send feedback) or on the
    Play listing.
+
+No code left? Ask in the group.
 
 No server yet? Tap **Try the demo** on the first screen to explore the app with sample data.
 
@@ -232,11 +251,28 @@ Overseer for iPhone and iPad is in public beta on TestFlight before its App Stor
    updates on. Send feedback from the app (More > Send feedback) or with **Send Beta Feedback**
    in TestFlight.
 
+### Uninstall
+
+Before deleting the app, use **Settings, Connection, Remove Overseer from this computer**: it lists
+and removes the agent hooks, statusline, boot service and folders Overseer added (worktrees with
+uncommitted changes are kept). The Windows uninstaller and `brew uninstall --zap --cask overseer`
+do it for you; on a server run `overseer uninstall --apply`. See the
+[user guide](docs/user-guide.md#uninstall).
+
 ### Updates
 
-From 0.4.0 the app updates itself (AppImage and Windows installer) from the public GitHub
-releases; no token or sign-in is needed. Homebrew installs get an Update button that runs
-`brew upgrade` for you (the command stays copyable); `.deb`/`.rpm` installs link to the release.
+The desktop app updates itself from the public GitHub releases; no token or sign-in is needed,
+and it never runs Homebrew. Whatever way you installed it, one **Download & install** button
+fetches the update that matches that install and applies it:
+
+- **macOS** (from the `.dmg` or the Homebrew cask): the app is replaced in place, then **Restart
+  to finish**.
+- **Linux AppImage**: the AppImage is replaced in place.
+- **Linux `.deb` or `.rpm`**: the signed package of the release is downloaded and installed with
+  `dpkg -i` or `rpm -U` through `pkexec`, so the system asks for your password; then restart.
+- **Windows `-setup.exe`**: the signed installer runs in passive mode.
+- **Windows `.msix`**: the matching x64 or arm64 `.msix` is downloaded, checked against the
+  release `SHA256SUMS`, and Windows App Installer opens it; click **Update** there.
 
 ## Components
 

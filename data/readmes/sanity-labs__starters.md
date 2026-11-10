@@ -1,0 +1,45 @@
+# Sanity Starters
+
+Production-ready starter templates for building with Sanity.
+
+Each starter is a standalone project you can spin up with the Sanity CLI:
+
+```sh
+pnpm create sanity@latest --template sanity-labs/starters/<starter-name>
+```
+
+> Using npm? Run `npm create sanity@latest -- --template sanity-labs/starters/<starter-name>` (note the extra `--`).
+
+## Starters
+
+| Starter                                              | Description                                                                                    |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| [agentic-localization](./agentic-localization)       | AI translation with glossaries, style guides, quality evals, and a translations dashboard      |
+| [ai-shopping-assistant](./ai-shopping-assistant)     | Ecommerce storefront with a Claude chatbot powered by Context MCP                              |
+| [knowledge-base](./knowledge-base)                   | GROQ + Knowledge Base agents: structured lookup and grounded prose from one private dataset    |
+| [commerce-plp-management](./commerce-plp-management) | Editorial merchandising layer over Shopify PLPs — curation, badges, facets, custom collections |
+| [commerce-pdp-management](./commerce-pdp-management) | Editorial enrichment layer over Shopify PDPs — tag-matched attribute rules, control plane, SKU stories |
+| [analytics-content-ops](./analytics-content-ops)     | Analytics signal → Studio triage, GROQ intelligence rails, and Content Agent overnight         |
+
+## Repo structure
+
+This is a flat collection of independent projects — not a monorepo with shared dependencies. Each starter has its own `package.json`, workspace config, and CI workflows that work when cloned standalone.
+
+The root provides shared DX for maintainers:
+
+- **Husky** — formats and lint-fixes staged files on commit
+- **CI** — runs checks across all starters on push/PR
+- **`.gitignore`** — minimal root-level ignores; each starter manages its own
+
+## Development
+
+```sh
+pnpm install        # install root DX tools (husky, oxfmt, eslint)
+cd <starter-name>
+pnpm install        # install the starter's dependencies
+pnpm dev            # run the starter locally
+```
+
+## Creating a new starter
+
+Copy the [`_scaffold/`](./_scaffold/) template and customize it. See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full guide.

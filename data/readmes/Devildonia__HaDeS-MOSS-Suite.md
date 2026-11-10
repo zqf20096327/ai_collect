@@ -6,7 +6,7 @@ Claims about what layer groups do are measured with [`tools/moss_eval.py`](https
 
 **Turbo (0.2.0, Turbo 8-steps in 0.3.0):** few-step LoRAs we trained for MOSS-Image SFT, [HaDeS MOSS Turbo and Turbo Diverse](https://huggingface.co/DeVilDoNia/HaDeS-MOSS-Turbo) (4 steps at CFG 1, 3.4 MB each), joined by Turbo 8-steps v0.7 (8 steps), and a `turbo` input on `MOSS KSampler` that applies them with their settings. How they were trained and measured: [`tools/RESULTS.md`](tools/RESULTS.md), [`tools/moss_dmd_train.py`](https://github.com/Devildonia/HaDeS-MOSS-Suite/blob/main/tools/moss_dmd_train.py).
 
-**New in 0.4.0:** `MOSS Loader` (model, text encoder and VAE in one node), `MOSS Multi-LoRA` (any number of LoRAs, searchable picker, strength per layer group), `MOSS Prompt Enhancer` (writes a caption or a layout with MOSS-Image's own text encoder), `MOSS Layout Editor` (boxes edited on a canvas), a shared seed on `MOSS Latent` and stochastic rounding in `MOSS Model Saver`. **0.4.1:** `MOSS Image Saver` (PNG with A1111 metadata and hashes for Civitai).
+**New in 0.4.0:** `MOSS Loader` (model, text encoder and VAE in one node), `MOSS Multi-LoRA` (any number of LoRAs, searchable picker, strength per layer group), `MOSS Prompt Enhancer` (writes a caption or a layout with MOSS-Image's own text encoder), `MOSS Layout Editor` (boxes edited on a canvas), a shared seed on `MOSS Latent` and stochastic rounding in `MOSS Model Saver`. **0.4.1:** `MOSS Image Saver` (PNG with A1111 metadata and hashes for Civitai). **0.5.0:** `MOSS Metadata Reader` and model / LoRA recipes. **0.6.0:** `MOSS Control (color / depth)`. **0.6.1:** edit mode in `MOSS Prompt Enhancer` for MOSS-Image edit LoRAs.
 
 ## Installation
 
@@ -37,6 +37,7 @@ No extra dependencies. Needs a ComfyUI with MOSS-Image support (tested on 0.43.0
 - **fp16-fixed files:** some fp16 releases store the residual stream scaled down (measured: x 1/16 on `video_embedder`, the text embedder outputs and the modulation gates), which is the same model in another scale. The merger detects the scale and brings `model2` to `model1`'s before merging, and says so in `info`.
 - **Outputs:** `MODEL`, `info`.
 - **Memory:** the merge is a lazy patch computed when the model loads; no merged copy is kept in RAM.
+- **Recipe:** `info` keeps every layer / part ratio and the source recipes known to the Suite. Multi-Model Merger also records its weights and seed. Sources loaded outside the Suite are unidentified; file names are not guessed.
 
 ### `MOSS Multi-Model Merger` (`HaDeS/MOSS Mergers`)
 - **Class:** `HaDeSMossMultiModelMerger`
@@ -97,6 +98,7 @@ No extra dependencies. Needs a ComfyUI with MOSS-Image support (tested on 0.43.0
   - **Recipe:** for LoRAs made with the Suite's Merger, Resize or Extractor, the chain of sources from their `hades/*` keys, followed into the source files still in `models/loras` (a source moved to another subfolder is found by its file name when only one LoRA has it), with the weight of each original file in the result. For models saved by the MOSS Model Saver with a `recipe`, that text, with the model of a MOSS Loader info and the LoRAs of a Multi-LoRA or LoRA Block Weight info in it followed into their own recipes. A source replaced since under the same name is read as it is now.
 - **Inputs:** `lora_name` and `model_name` (each can be `(none)`), optional `sha256` (hashes the files, cached while unchanged and shared with the MOSS Image Saver; seconds on a 10 GB model).
 - **Outputs:** `info` (text plus HADES_META with the recipe; into a Save Text node it keeps the recipe on disk), `metadata_json`.
+- Nested merger recipes are followed too. The reader refreshes when referenced source files change or become available.
 
 ### `MOSS Model Saver` (`HaDeS/MOSS Mergers`)
 - **Class:** `HaDeSMossModelSaver`
@@ -110,6 +112,13 @@ No extra dependencies. Needs a ComfyUI with MOSS-Image support (tested on 0.43.0
 - **Outputs:** `model` (pass-through), `saved_path`, `info`.
 - **Measured** ([`tools/RESULTS.md`](tools/RESULTS.md), "Baking subtle LoRAs into bfloat16"): two LoRAs whose changes are smaller than a bfloat16 step, baked into a merge. Rounded to nearest the file kept about 80–85% of their effect (as the LoRAs loaded live, which round the same way); stochastic rounding kept all of it, and its renders sat as close to the float32 result as two stochastic files with different seeds sit to each other.
 - **Measured:** a live merge renders slightly differently from the same merge saved and reloaded (same subject and composition, small details change), in ComfyUI's own merger too; see [`tools/RESULTS.md`](tools/RESULTS.md).
+
+### `MOSS Control (color / depth)` (`HaDeS/MOSS Pipeline`)
+- **Class:** `HaDeSMossControl`
+- **Purpose:** color / depth control with a MOSS-Image control adapter loaded as a LoRA (e.g. `moss-color-depth-control`, trained on Base, which widens `video_embedder` to 384 input channels). Takes the Prompt Enhancer's positive and negative, resizes the maps in pixels to the latent before the VAE (the core node encodes them at their own size and the model then resizes the latents), and adds them as `concat_latent_image` in a start / end range.
+- **Inputs:** `positive`, `negative`, `vae`, `latent`; `color_mode`: `off (depth only)` (the adapter was trained depth-only 35% of the time, its file metadata: clothes and colors stay with the prompt), `flat regions` (a photo blurred and reduced to `colors` flat colors, so it guides palette and large areas without its texture), `as given` (a real segmentation map); `colors`, `blur`, `strength` (1.0 trained), `start_percent`, `end_percent`; optional `depth_map`, `color_map`.
+- **Outputs:** `positive`, `negative`, `maps` (what was encoded, to check), `info` (for Telemetry and the Image Saver).
+- **Note:** the adapter's strength in a LoRA loader scales only its LoRA layers: ComfyUI replaces the widened `video_embedder` at full strength whatever that value (a `set` patch), and at 0 the adapter is not applied at all, so the control conditioning then meets a 128-channel embedder. Use this node's `strength`. Not measured yet: quality on SFT against Base, and with the turbo LoRAs.
 
 ### `MOSS Latent` (`HaDeS/MOSS Pipeline`)
 - **Class:** `HaDeSMossLatent`
@@ -144,16 +153,18 @@ No extra dependencies. Needs a ComfyUI with MOSS-Image support (tested on 0.43.0
 - **Slow text generation on older PyTorch builds:** on PyTorch 2.8.0+cu129 (RTX 5090, comfy-kitchen 0.2.40) comfy-kitchen's GQA decode kernel refuses every input ("Unsupported Flash Attention tensor strides", checked with plain contiguous tensors of several shapes), so text generation stops, in the core `TextGenerate` node too; ComfyUI also warns at start that its optimized CUDA operations need PyTorch cu130 or newer. While this node generates, a refused call runs comfy-kitchen's own torch version of the same attention: about 13 tokens per second, 30–40 s per answer; `info` says when that happened. On PyTorch 2.9.1+cu130 (same GPU, comfy-kitchen 0.2.40) the native kernel runs and an answer takes 2–3 s (three captions and a poster layout).
 - **Tried, not measured** ([`tools/RESULTS.md`](tools/RESULTS.md)): one seed each, a caption and a poster layout rendered against the idea as written.
 
+- **Edit mode** (`edit_format`, `vae`, `edit_megapixels`): for an image-edit LoRA loaded in the Multi-LoRA, the image becomes the reference latent of both outputs, replacing two core `Text Encode MOSS-Image Edit` nodes with the same formats: `Moss-Image-Edit` (`MOSS-edit` / `Moss-Image-Edit`: use `as written` with a direct edit instruction, which also runs cleanly with `HaDeS MOSS Turbo 8-steps` on the KSampler's `turbo` input, or `caption` to have the model write the full target description from the image and the idea), `ai-toolkit` and `ai-toolkit (kv_cache off)` (LoRAs trained with ai-toolkit, e.g. the pose LoRA; the text encoder also sees the image). The reference is resized to `edit_megapixels` with its aspect kept (16 px grid), and `width` / `height` out are that size: link them to the MOSS Latent's `custom_width` / `custom_height` to generate at the reference's size.
+
 ### `MOSS KSampler` (`HaDeS/MOSS Samplers`)
 - **Class:** `HaDeSMossKSampler`
 - **Purpose:** KSampler with the official ComfyUI MOSS-Image template settings as defaults (25 steps, CFG 2.5, `er_sde` / `simple`, the model's shift 5.0), an optional flow shift, optional skip-layer guidance and optional decode. With the same settings it renders the same image as the stock graph (`KSampler`, `ModelSamplingAuraFlow`, `SkipLayerGuidanceDiTSimple`, `VAEDecode`).
-- **Inputs:** `model`, `positive`, `negative`, `latent_image`, `seed`, `steps`, `cfg`, `sampler_name`, `scheduler`, `denoise`, `flow_shift` (`0` keeps the model's 5.0), `slg` (`off`, `block 22, first half (Base template)`, `block 22, all steps`); optional `vae`, optional `turbo` (from `MOSS Turbo LoRA`: applies the LoRA and samples at CFG 1, euler / simple, SLG off and the turbo node's steps, whatever those widgets say).
+- **Inputs:** `model`, `positive`, `negative`, `latent_image`, `seed`, `steps`, `cfg`, `sampler_name`, `scheduler`, `denoise`, `flow_shift` (`0` keeps the model's 5.0), `slg` (`off`, `block 22, first half (Base template)`, `block 22, all steps`); optional `vae`, optional `turbo` (from `MOSS Turbo LoRA`: applies the LoRA and samples with SLG off and the turbo node's steps, CFG, sampler and scheduler, whatever those widgets say).
 - **Outputs:** `latent`, `image` (when a VAE is connected), `info` (the settings actually used).
 - **Measured** ([`tools/RESULTS.md`](tools/RESULTS.md)): shift 5.0 is clean from 768 to 2048 px; SLG on block 22 did not change text accuracy on SFT or Base (blocks 24 / 26 made the only errors, on Base), so it is off by default; with euler, 25 steps render nearly the 60-step image with any scheduler and euler / beta does so at 15.
 
 ### `MOSS Turbo LoRA` (`HaDeS/MOSS Samplers`)
 - **Class:** `HaDeSMossTurbo`
-- **Purpose:** picks a few-step LoRA for the `turbo` input of `MOSS KSampler`, which loads it the way the stock `LoraLoaderModelOnly` does and samples at CFG 1, euler / simple and its own `steps` widget, 4 by default (seed, denoise and flow shift still come from the KSampler). Measured counts: 4 for Turbo and Turbo Diverse, 8 for Turbo 8-steps; Turbo and Turbo Diverse give 6–10% less colour than SFT at 4 steps at 1024 (6–14% at 2048) and are back near it at 8 (only colour was measured for them at 8). Other counts run, their quality is untested. Checked in ComfyUI: it renders the stock `LoraLoaderModelOnly` + `KSampler` image pixel for pixel (both LoRAs, 8 images, with the KSampler's own widgets left at 25 steps, CFG 2.5, er_sde / beta and SLG on).
+- **Purpose:** picks a few-step LoRA for the `turbo` input of `MOSS KSampler`, which loads it the way the stock `LoraLoaderModelOnly` does and samples at its own `steps`, `cfg`, `sampler_name` and `scheduler` widgets: 4 steps, CFG 1, euler / simple by default, the settings the LoRAs were trained at (seed, denoise and flow shift still come from the KSampler). Above CFG 1 the negative prompt takes part and each step runs the model twice (about 1.9x the time); measured with one seed per prompt, Turbo 8-steps at CFG 1.5 rendered 10 hard prompts on SFT and Base without burning, and on a merge with a turbo baked in 1.25–1.5 brought back prompt details lost at CFG 1 while saturation rose with every step and 2.5 looked overdone; texture-heavy prompts looked better at 1.0–1.2 ([`tools/RESULTS.md`](tools/RESULTS.md), "Turbo LoRAs above CFG 1"). Measured counts: 4 for Turbo and Turbo Diverse, 8 for Turbo 8-steps; Turbo and Turbo Diverse give 6–10% less colour than SFT at 4 steps at 1024 (6–14% at 2048) and are back near it at 8 (only colour was measured for them at 8). Other counts run, their quality is untested. Checked in ComfyUI: it renders the stock `LoraLoaderModelOnly` + `KSampler` image pixel for pixel (both LoRAs, 8 images, with the KSampler's own widgets left at 25 steps, CFG 2.5, er_sde / beta and SLG on).
 - **Inputs:** `lora_name` (from `models/loras`), `strength` (default `1.0`, the only strength measured), `steps` (default `4`).
 - **The LoRAs:** HaDeS MOSS Turbo and Turbo Diverse v0.6 (for 4 steps) and Turbo 8-steps v0.7 (for 8 steps), 3.4 MB each, on [Hugging Face](https://huggingface.co/DeVilDoNia/HaDeS-MOSS-Turbo); put them in `models/loras`. Trained in this repository (`tools/moss_dmd_train.py`) from MOSS-Image SFT, which they are for.
 - **Measured** ([`tools/RESULTS.md`](tools/RESULTS.md), 1024 x 1024 against akhaliq's 4-step v2.0 LoRA at the same settings): Turbo spelled every test string right on signs and posters at 1024 x 1024, 6 / 6 on layout JSON and 3 / 3 on a 16:9 poster, while at 2048 x 2048 the sign's small line was right in 1 / 3 (akhaliq's 2 / 3); Turbo Diverse keeps SFT's spread of faces on an open prompt (about 10 East Asian women in 16 seeds, against about 15 for Turbo and akhaliq's LoRA). Turbo 8-steps at 8 steps, in blind pairs on 20 varied prompts: beat akhaliq's 4-step LoRA (full file) 18 to 5, and against lodestones' 8-step DMD2 LoRA for MOSS-Image Base / Kromoss run on SFT (full file) 10 to 7 at 1024 and 0 to 5 at 2048, where it has less colour; it is for up to 1024. lodestones' SFT 8-step LoRA was not compared. Turbo 8-steps at denoise 0.25 / 0.40 on a RealESRGAN x2-upscaled image: by eye it adds real texture (hair, pores) the upscaler smooths, as well as SFT at 25 steps in a fifth of the time. Not measured: other base models, other strengths or step counts, other img2img uses below denoise 1.0; they run (an int8 finetune as the base, img2img at denoise 0.6 were checked), their quality is untested, and Telemetry knows which model the KSampler got only from a MOSS Loader's `info`.
@@ -166,8 +177,8 @@ No extra dependencies. Needs a ComfyUI with MOSS-Image support (tested on 0.43.0
 - **Class:** `HaDeSMossSuiteTelemetry`
 - **Purpose:** reads the `info` outputs of up to 8 HaDeS MOSS nodes (their `HADES_META` trailer) and checks the pipeline against what was measured:
   - **error:** with a layout in the pipeline (Layout Editor, Layout Compiler or the Prompt Enhancer in `layout` mode), a latent or KSampler on another canvas (a layout prompt places its boxes on its own canvas); without a layout, different latent and KSampler sizes (img2img, an upscale pass) are not compared;
-  - **warning:** quantized models in a merge, TIES / DARE with a quantized model, LoRAs extracted / resized / merged below 97.9% energy (the lowest measured that stayed within the noise floor), a few-step LoRA in Multi-LoRA sampled at other steps or CFG than its file's metadata gives, or stacked with the KSampler's turbo input;
-  - **note:** an int8 model from the MOSS Loader (with its measured speed and VRAM) or one loaded with a `weight_dtype` conversion, KSampler size outside 768²–2048², shift other than 5.0, SLG on, turbo LoRA at a strength other than 1.0, at a step count other than 4 or 8 or at denoise below 1.0, fp16-fixed residual scale normalized, multi-line layout text with its box proportions.
+  - **warning:** quantized models in a merge, TIES / DARE with a quantized model, LoRAs extracted / resized / merged below 97.9% energy (the lowest measured that stayed within the noise floor), a few-step LoRA in Multi-LoRA sampled at other steps than its file's metadata gives or below CFG 1, or stacked with the KSampler's turbo input;
+  - **note:** an int8 model from the MOSS Loader (with its measured speed and VRAM) or one loaded with a `weight_dtype` conversion, KSampler size outside 768²–2048², shift other than 5.0, SLG on, turbo LoRA at a strength other than 1.0, at a step count other than 4 or 8, at denoise below 1.0, above CFG 1 (with what was measured there) or with a sampler other than euler / er_sde (simple), a few-step LoRA in Multi-LoRA above CFG 1, fp16-fixed residual scale normalized, multi-line layout text with its box proportions.
 - **Outputs:** `report` (Markdown), `json` (every node's settings, for the MOSS Image Saver), `summary` (one line).
 
 ### `MOSS Image Saver` (`HaDeS/MOSS Pipeline`)
@@ -175,6 +186,7 @@ No extra dependencies. Needs a ComfyUI with MOSS-Image support (tested on 0.43.0
 - **Purpose:** saves PNG images with the generation settings written as A1111 `parameters`, the text Civitai and most image browsers read: prompt, `Negative prompt:` and one line with steps, sampler, schedule type, CFG, seed, size, model and model hash, LoRA hashes, denoise (below 1.0), shift, VAE and text encoder. Also ComfyUI's own `prompt` / `workflow` chunks, so the image loads back into ComfyUI, and the Suite's settings as JSON (`hades_moss`).
 - **Inputs:** `images`, `metadata` (Suite Telemetry's `json` output, which gathers the Loader, Latent, KSampler, Multi-LoRA and Prompt Enhancer infos; one info output connected directly also works), `filename_prefix` (`%seed%`, `%model%`, `%steps%`, `%cfg%`, `%sampler%`, `%width%`, `%height%` from the metadata, `%date:...%` as in the core Save Image), `hashes`, `embed_workflow`; optional `positive` / `negative` text when the prompt does not come from a Prompt Enhancer.
 - **Hashes:** SHA256 of the model (from the MOSS Loader) and of every LoRA (Multi-LoRA rows, LoRA Block Weight, the KSampler's turbo input), first 10 characters (AutoV2), in `Model hash`, `Lora hashes` and `Hashes`. The first save with a 10 GB model reads the whole file once; later saves in the same session reuse the hash while the file is unchanged. Nothing is looked up online. How Civitai reads these fields was not checked from here.
+- ComfyUI's `--disable-metadata` suppresses all embedded metadata. The `parameters` output remains available as text.
 - **Outputs:** `parameters` (the text written into the images). The node shows the saved images like the core Save Image, and a note when the prompt or the sampling settings are missing from the metadata.
 
 ## Interface
@@ -184,7 +196,7 @@ The nodes draw their own moss-green rows on the canvas (the HaDeS Anima Suite wi
 - every widget becomes a styled row by type (combo, slider, number, toggle, text); the layout draft keeps ComfyUI's text editor;
 - tooltips are the node's own, with the measurements behind each value;
 - **Block Merger:** a bar chart of the 42 layers and 3 parts colored by depth group, each group labeled with the share of the SFT → Base change it carries, and buttons **M1**, **50/50**, **24–35 M2** (the groups that carry most of that change) and **M2**;
-- **LoRA Block Weight:** a bar per layer group; **Multi-LoRA:** one row per LoRA with a searchable picker and a status line (rows on, few-step LoRAs); **Layout Editor:** the draft's boxes on a canvas, edited with the mouse; **KSampler** and **Latent:** a status line with the settings or the final size. With the turbo input connected the KSampler's status reads TURBO and the rows it overrides (steps, cfg, sampler, scheduler, SLG) are drawn faded, still editable for when it is unplugged.
+- **LoRA Block Weight:** a bar per layer group; **Multi-LoRA:** one row per LoRA with a searchable picker and a status line (rows on, few-step LoRAs); **Layout Editor:** the draft's boxes on a canvas, edited with the mouse; **KSampler** and **Latent:** a status line with the settings or the final size. With the turbo input connected the KSampler's status reads TURBO with the turbo node's sampler, steps and CFG, and the rows it overrides (steps, cfg, sampler, scheduler, SLG) are drawn faded, still editable for when it is unplugged.
 
 *Settings → HaDeS MOSS Suite → Use standard ComfyUI widgets* (or *HaDeS MOSS Suite* in a node's right-click menu) switches to the plain widgets. It does not affect HaDeS Anima Suite nodes when both suites are installed.
 
@@ -200,6 +212,7 @@ Every example loads the three files with the **MOSS Loader**, writes and encodes
 - **Layout Editor:** the Layout Editor's draft through the Layout Compiler into the sampler, with a note on how to edit the boxes; a Load Image is the background (pick your picture there); a second Prompt Enhancer in `layout` mode (writes a draft to IMPORT) comes muted.
 - **Turbo:** MOSS Turbo LoRA into the MOSS KSampler's `turbo` input, 4 steps at CFG 1 on SFT; ComfyUI offers to download the LoRA from Hugging Face.
 - **Turbo 8 steps + Upscale x2:** Turbo 8-steps v0.7 at 8 steps, then two groups to switch on or off from the group's right-click menu: a 2x upscale with RealESRGAN x2 (on; pixels only, about a second) and, on top of it, a MOSS pass at 2048 with the same turbo and seed at denoise 0.25 (off; adds hair, pores and fine texture the upscaler smooths, about 16 s). A note in the workflow explains both.
+- **Control (color, depth):** a depth map into MOSS Control with a color / depth control adapter in the Multi-LoRA (kept at 1.0), on the Prompt Enhancer's conditioning, with a preview of the encoded maps and the control in Telemetry. Load your own depth map and adapter; a note explains the color modes.
 - **LoRA Toolkit:** a LoRA through the Multi-LoRA into the sampler (add rows for more LoRAs; each row's group button holds its strength per group of layers); LoRA Merger, LoRA Resize and LoRA Extractor (with a finetune loader) come muted, since they write files. Pick your own LoRA in the Multi-LoRA's row.
 
 Every example was run end to end in ComfyUI 0.43.0 (muted nodes left out). `tools/make_examples.py` regenerates them from the node definitions of a running ComfyUI.
@@ -211,6 +224,14 @@ Every example was run end to end in ComfyUI 0.43.0 (muted nodes left out). `tool
 ```bash
 python custom_nodes/HaDeS-MOSS-Suite/tests/test_moss_suite.py
 ```
+
+Frontend setting tests (Node.js, no extra packages):
+
+```bash
+node --test custom_nodes/HaDeS-MOSS-Suite/tests/test_moss_widgets.mjs
+```
+
+Set `HADES_MOSS_TEST_CUDA=1` to include the CUDA quantized-export checks; the default run uses CPU. CI tests ComfyUI v0.43.0 on Linux and Windows, and upstream master on Linux. These checks use small synthetic weights; they do not measure image quality or full-model VRAM. Audit-fix evidence: [`docs/AUDIT_0.6.1.md`](docs/AUDIT_0.6.1.md).
 
 ## Tools
 

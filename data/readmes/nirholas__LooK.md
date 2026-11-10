@@ -55,7 +55,7 @@ npm install -g look-demo
 ```
 
 **Requirements:**
-- Node.js 18+
+- Node.js 22.19+ (required by WebdriverIO 10)
 - FFmpeg: `brew install ffmpeg` (Mac) or `apt install ffmpeg` (Linux)
 - OpenAI API key: `export OPENAI_API_KEY=sk-...`
 
@@ -412,3 +412,13 @@ Coding agents and LLM tooling can read this repo directly: [AGENTS.md](./AGENTS.
 [![Contributors](https://contrib.rocks/image?repo=nirholas/LooK)](https://github.com/nirholas/LooK/graphs/contributors)
 
 <!-- /three.ws:growth -->
+
+<!-- nirholas:watermark -->
+
+---
+
+<p align="center">
+  Built by <a href="https://github.com/nirholas"><b>nirholas</b></a> · <a href="https://x.com/nichxbt">@nichxbt</a> · <a href="https://github.com/nirholas">github.com/nirholas</a>
+</p>
+
+<!-- /nirholas:watermark -->

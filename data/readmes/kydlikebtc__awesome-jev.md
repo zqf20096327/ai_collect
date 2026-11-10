@@ -12,7 +12,7 @@
   <source media="(max-width: 767px) and (prefers-color-scheme: light)" srcset="docs/assets/readme-cover-en-light-mobile.svg">
   <source media="(max-width: 767px)" srcset="docs/assets/readme-cover-en-dark-mobile.svg">
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme-cover-en-dark.svg">
-  <img src="docs/assets/readme-cover-en-light.svg" alt="awesome-jev — Jev Launches: 1,150 products built on Jev by 982 makers, with 1,234 call-site citation records. Counts describe saved records, not current link availability or passed runtime and performance tests." width="100%">
+  <img src="docs/assets/readme-cover-en-light.svg" alt="awesome-jev — Jev Launches: 1,186 products built on Jev by 1,015 makers, with 1,274 call-site citation records. Counts describe saved records, not current link availability or passed runtime and performance tests." width="100%">
 </picture>
 </a>
 
@@ -54,9 +54,9 @@
 
 ## This week's launches
 
-### Next week: 2026-W46
+### ▲ This week: 2026-W46
 
-Filed for next week, in no particular order. Their vote posts open on Monday 2026-11-09.
+In a shuffled order and without counts until the week closes, so nobody votes for whatever is on top.
 
 <table>
 <tr>
@@ -67,7 +67,7 @@ Filed for next week, in no particular order. Their vote posts open on Monday 202
 <sub>hunted by [kydlikebtc](https://github.com/kydlikebtc) · 👤 a person read the call site</sub>
 
 </td>
-<td align="center" width="80"><b>▲</b><br><sub>opens<br>11-09</sub></td>
+<td align="center" width="80"><a href="https://github.com/kydlikebtc/awesome-jev/discussions/107"><b>▲</b><br><sub>VOTE</sub></a></td>
 </tr>
 <tr>
 <td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/jeveryword.html"><img src="https://github.com/jkrup.png?size=96" width="48" height="48" alt="jeveryword"></a></td>
@@ -77,7 +77,7 @@ Filed for next week, in no particular order. Their vote posts open on Monday 202
 <sub>hunted by [kydlikebtc](https://github.com/kydlikebtc) · 👤 a person read the call site</sub>
 
 </td>
-<td align="center" width="80"><b>▲</b><br><sub>opens<br>11-09</sub></td>
+<td align="center" width="80"><a href="https://github.com/kydlikebtc/awesome-jev/discussions/108"><b>▲</b><br><sub>VOTE</sub></a></td>
 </tr>
 <tr>
 <td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/fastbrowse.html"><img src="https://github.com/agent-labs-dev.png?size=96" width="48" height="48" alt="fastbrowse"></a></td>
@@ -87,7 +87,7 @@ Filed for next week, in no particular order. Their vote posts open on Monday 202
 <sub>hunted by [kydlikebtc](https://github.com/kydlikebtc) · 🤖 a model read the call site, no person yet</sub>
 
 </td>
-<td align="center" width="80"><b>▲</b><br><sub>opens<br>11-09</sub></td>
+<td align="center" width="80"><a href="https://github.com/kydlikebtc/awesome-jev/discussions/109"><b>▲</b><br><sub>VOTE</sub></a></td>
 </tr>
 <tr>
 <td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/anydecisionmodel.html"><img src="https://github.com/mattt.png?size=96" width="48" height="48" alt="anydecisionmodel"></a></td>
@@ -97,7 +97,7 @@ Filed for next week, in no particular order. Their vote posts open on Monday 202
 <sub>hunted by [kydlikebtc](https://github.com/kydlikebtc) · 👤 a person read the call site</sub>
 
 </td>
-<td align="center" width="80"><b>▲</b><br><sub>opens<br>11-09</sub></td>
+<td align="center" width="80"><a href="https://github.com/kydlikebtc/awesome-jev/discussions/110"><b>▲</b><br><sub>VOTE</sub></a></td>
 </tr>
 <tr>
 <td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/jev-guard.html"><img src="https://github.com/leepokai.png?size=96" width="48" height="48" alt="jev-guard"></a></td>
@@ -107,68 +107,68 @@ Filed for next week, in no particular order. Their vote posts open on Monday 202
 <sub>hunted by [kydlikebtc](https://github.com/kydlikebtc) · 👤 a person read the call site</sub>
 
 </td>
-<td align="center" width="80"><b>▲</b><br><sub>opens<br>11-09</sub></td>
+<td align="center" width="80"><a href="https://github.com/kydlikebtc/awesome-jev/discussions/111"><b>▲</b><br><sub>VOTE</sub></a></td>
 </tr>
 </table>
 
 Products built on Jev, launched by their makers once a week, or hunted by anyone who found one. People vote with a thumbs-up on each launch's post in [Discussions](https://github.com/kydlikebtc/awesome-jev/discussions/categories/launches); the week closes on Sunday 23:59 UTC with a rank. Votes say how many people cared; the evidence beside each launch says who read the code that calls Jev. The two are never added together, and a rank is not this catalogue's recommendation. [The board](https://kydlikebtc.github.io/awesome-jev/launches.html) has every week, a page per product and per maker, and the rising list.
 
-### ★ Rising: 2026-10-28 to 2026-11-04
+### ★ Rising: 2026-11-04 to 2026-11-10
 
 <table>
 <tr>
-<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/jeveryword.html"><img src="https://github.com/jkrup.png?size=96" width="48" height="48" alt="jeveryword"></a></td>
+<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/kojev.html"><img src="https://github.com/ItisNoMatter.png?size=96" width="48" height="48" alt="kojev"></a></td>
 <td>
 
-**[jeveryword](https://kydlikebtc.github.io/awesome-jev/products/jeveryword.html)** — Text extraction with Jev: field extraction, PII detection and exact quotes, built on TypeSafe's Jev. <sub>(upstream description)</sub><br>
-<sub>5 → 40 stars (+700%) · 👤 a person read the call site · on the board in 2026-W46</sub>
+**[kojev](https://kydlikebtc.github.io/awesome-jev/products/kojev.html)** — Kotlin Multiplatform client for Jev that returns your own enum/sealed types instead of string keys. <sub>(upstream description)</sub><br>
+<sub>10 → 22 stars (+120%) · 👤 a person read the call site · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=kojev&title=Launch%3A%20kojev)</sub>
 
 </td>
-<td align="center" width="80"><b>★&nbsp;+35</b><br><sub>stars</sub></td>
+<td align="center" width="80"><b>★&nbsp;+12</b><br><sub>stars</sub></td>
 </tr>
 <tr>
 <td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/agent-desktop.html"><img src="https://github.com/vercel-labs.png?size=96" width="48" height="48" alt="agent-desktop"></a></td>
 <td>
 
 **[agent-desktop](https://kydlikebtc.github.io/awesome-jev/products/agent-desktop.html)** — Desktop automation that reads the system accessibility tree and decides which button, menu or field to act on next.<br>
-<sub>1,827 → 14,206 stars (+678%) · 👤 a person read the call site · on the board in 2026-W46</sub>
+<sub>14,206 → 20,568 stars (+45%) · 👤 a person read the call site · [Vote ↗](https://github.com/kydlikebtc/awesome-jev/discussions/107)</sub>
 
 </td>
-<td align="center" width="80"><b>★&nbsp;+12,379</b><br><sub>stars</sub></td>
+<td align="center" width="80"><b>★&nbsp;+6,362</b><br><sub>stars</sub></td>
 </tr>
 <tr>
-<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/anydecisionmodel.html"><img src="https://github.com/mattt.png?size=96" width="48" height="48" alt="anydecisionmodel"></a></td>
+<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/jevgraph.html"><img src="https://github.com/chenmingtang830.png?size=96" width="48" height="48" alt="jevgraph"></a></td>
 <td>
 
-**[anydecisionmodel](https://kydlikebtc.github.io/awesome-jev/products/anydecisionmodel.html)** — A Swift package for typed decisions from language models (probabilities, choices, and scores), with support for local MLX models and the TypeSafe Jev API. <sub>(upstream description)</sub><br>
-<sub>24 → 50 stars (+108%) · 👤 a person read the call site · on the board in 2026-W46</sub>
+**[jevgraph](https://kydlikebtc.github.io/awesome-jev/products/jevgraph.html)** — Evidence-backed knowledge graph construction with typed Jev relation decisions <sub>(upstream description)</sub><br>
+<sub>47 → 64 stars (+36%) · 👤 a person read the call site · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=jevgraph&title=Launch%3A%20jevgraph)</sub>
 
 </td>
-<td align="center" width="80"><b>★&nbsp;+26</b><br><sub>stars</sub></td>
+<td align="center" width="80"><b>★&nbsp;+17</b><br><sub>stars</sub></td>
 </tr>
 <tr>
 <td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/fastbrowse.html"><img src="https://github.com/agent-labs-dev.png?size=96" width="48" height="48" alt="fastbrowse"></a></td>
 <td>
 
 **[fastbrowse](https://kydlikebtc.github.io/awesome-jev/products/fastbrowse.html)** — Browser agent: each page is indexed into candidate controls and Jev chooses the next one, so it cannot click what is not there; a Gemini Flash LLM plans and reads, and answers cite the page. Its maintainer recorded 99.2% on 46 tasks against 97.8% for hosted Browser Use, at under a tenth of the cost. <sub>(written by a model)</sub><br>
-<sub>120 → 173 stars (+44%) · 🤖 a model read the call site, no person yet · on the board in 2026-W46</sub>
+<sub>173 → 220 stars (+27%) · 🤖 a model read the call site, no person yet · [Vote ↗](https://github.com/kydlikebtc/awesome-jev/discussions/109)</sub>
 
 </td>
-<td align="center" width="80"><b>★&nbsp;+53</b><br><sub>stars</sub></td>
+<td align="center" width="80"><b>★&nbsp;+47</b><br><sub>stars</sub></td>
 </tr>
 <tr>
-<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/jev-guard.html"><img src="https://github.com/leepokai.png?size=96" width="48" height="48" alt="jev-guard"></a></td>
+<td align="center" width="56"><a href="https://kydlikebtc.github.io/awesome-jev/products/vector-graph-rag.html"><img src="https://github.com/zilliztech.png?size=96" width="48" height="48" alt="vector-graph-rag"></a></td>
 <td>
 
-**[jev-guard](https://kydlikebtc.github.io/awesome-jev/products/jev-guard.html)** — Security hook for coding agents: before each tool call Jev judges how much harm it could do, whether the user asked for it and whether it follows untrusted text, and code denies, asks or allows; afterwards Jev scans the result for prompt injection. For Claude Code, Codex, Cursor and more. <sub>(written by a model)</sub><br>
-<sub>130 → 144 stars (+11%) · 👤 a person read the call site · on the board in 2026-W46</sub>
+**[vector-graph-rag](https://kydlikebtc.github.io/awesome-jev/products/vector-graph-rag.html)** — Graph RAG that stores entities and relations as vectors in Milvus, no graph database. Two-stage Jev reranking asks a noul per candidate relation against the query, then scores the passages of the top relations; by the author's run, 86.61% average Recall@5 on MuSiQue and 2Wiki, 1,000 questions each. <sub>(written by a model)</sub><br>
+<sub>263 → 294 stars (+12%) · 👤 a person read the call site · [Launch it ↗](https://github.com/kydlikebtc/awesome-jev/issues/new?template=launch.yml&product=vector-graph-rag&title=Launch%3A%20vector-graph-rag)</sub>
 
 </td>
-<td align="center" width="80"><b>★&nbsp;+14</b><br><sub>stars</sub></td>
+<td align="center" width="80"><b>★&nbsp;+31</b><br><sub>stars</sub></td>
 </tr>
 </table>
 
-<sub>The 10 products whose GitHub stars grew fastest between the two latest weekly refreshes, at least 10 stars gained, by the gain as a share of the stars before; the first 5 here. Stars are GitHub's count, a popularity signal, not a verdict, and nothing is awarded for rising. [All 10 on the board](https://kydlikebtc.github.io/awesome-jev/launches.html).</sub>
+<sub>The 10 products whose GitHub stars grew fastest between the two dates above (every product's stars are read each day, and the newest reading is compared with the one closest to a week before it), at least 10 stars gained, by the gain as a share of the stars before; the first 5 here. Stars are GitHub's count, a popularity signal, not a verdict, and nothing is awarded for rising. [All 10 on the board](https://kydlikebtc.github.io/awesome-jev/launches.html).</sub>
 
 ## Launch your product
 
@@ -179,7 +179,7 @@ Anything built on Jev with public code can launch: a project, plugin, SDK or int
   <source media="(max-width: 767px) and (prefers-color-scheme: light)" srcset="docs/assets/launch-week-en-light-mobile.svg">
   <source media="(max-width: 767px)" srcset="docs/assets/launch-week-en-dark-mobile.svg">
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/launch-week-en-dark.svg">
-  <img src="docs/assets/launch-week-en-light.svg" alt="How a launch week runs: launch by Thursday 23:59 UTC, filed on Friday, vote from Monday to Sunday, results the next Monday. Now: 2026-W46 FILED · OPENS MONDAY 2026-11-09." width="100%">
+  <img src="docs/assets/launch-week-en-light.svg" alt="How a launch week runs: launch by Thursday 23:59 UTC, filed on Friday, vote from Monday to Sunday, results the next Monday. Now: 2026-W46 · VOTES OPEN UNTIL SUNDAY 2026-11-15." width="100%">
 </picture>
 
 | Step | When | What happens |
@@ -274,15 +274,15 @@ All 18 patterns have at least one catalogue entry. Coverage does not imply runti
 
 | Decision pattern | Decision pattern |
 | :--- | :--- |
-| [Tool selection](#tool-selection) · **262** | [Intent routing](#intent-routing) · **57** |
-| [Context compaction](#context-compaction) · **42** | [Safety gating](#safety-gating) · **159** |
-| [Output validation](#output-validation) · **156** | [Retry control](#retry-control) · **8** |
-| [Human escalation](#human-escalation) · **81** | [Model routing](#model-routing) · **74** |
-| [Speculative fan-out](#speculative-fan-out) · **39** | [Search & ranking](#search--ranking) · **89** |
-| [Structured extraction](#structured-extraction) · **23** | [Classification](#classification) · **161** |
+| [Tool selection](#tool-selection) · **271** | [Intent routing](#intent-routing) · **58** |
+| [Context compaction](#context-compaction) · **47** | [Safety gating](#safety-gating) · **167** |
+| [Output validation](#output-validation) · **160** | [Retry control](#retry-control) · **8** |
+| [Human escalation](#human-escalation) · **87** | [Model routing](#model-routing) · **79** |
+| [Speculative fan-out](#speculative-fan-out) · **39** | [Search & ranking](#search--ranking) · **92** |
+| [Structured extraction](#structured-extraction) · **27** | [Classification](#classification) · **173** |
 | [ML feature extraction](#ml-feature-extraction) · **9** | [Document triage](#document-triage) · **22** |
-| [Support triage](#support-triage) · **13** | [Content scoring](#content-scoring) · **179** |
-| [Recommendation](#recommendation) · **3** | [Overview](#overview) · **509** |
+| [Support triage](#support-triage) · **13** | [Content scoring](#content-scoring) · **186** |
+| [Recommendation](#recommendation) · **3** | [Overview](#overview) · **522** |
 
 ## Measured, not claimed
 
@@ -360,7 +360,7 @@ Rows whose own author measured Jev for the use and concluded against it: a bench
   Biologically-inspired memory for AI agents. Decay, retrieval strengthening, consolidation. Zero runtime deps, SQLite, MCP. Benchmarked retrieval with an opt-in TypeSafe Jev reranker.<br>
   <sub>`Benchmark` · ★100+ · kitfunso · `TS` · [call site](https://github.com/kitfunso/hippo-memory/blob/HEAD/src/infra/rerankers/endpoint.ts), read by a model 2026-11-05 · author's conclusion: mixed (author-stated, not reproduced here)</sub>
 
-**10 of 87** shown: the negative results first, then the picks of the curated [independent reports](https://kydlikebtc.github.io/awesome-jev/?collection=measured&lang=en) path, in its order, then the first of the others in list order · [all 87 on one page, with every note →](docs/measured.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?indep=1&lang=en)
+**10 of 90** shown: the negative results first, then the picks of the curated [independent reports](https://kydlikebtc.github.io/awesome-jev/?collection=measured&lang=en) path, in its order, then the first of the others in list order · [all 90 on one page, with every note →](docs/measured.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?indep=1&lang=en)
 
 ## By decision pattern
 
@@ -421,7 +421,7 @@ _Which tool or action the agent should call next._
 
 </details>
 
-**10 of 262** shown · [all 262 on one page →](docs/by-pattern/tool-selection.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=tool-selection&lang=en)
+**10 of 271** shown · [all 271 on one page →](docs/by-pattern/tool-selection.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=tool-selection&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -474,7 +474,7 @@ _Classify what the user wants and send the request down the right branch._
 
 </details>
 
-**10 of 57** shown · [all 57 on one page →](docs/by-pattern/intent-routing.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=intent-routing&lang=en)
+**10 of 58** shown · [all 58 on one page →](docs/by-pattern/intent-routing.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=intent-routing&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -533,7 +533,7 @@ _Decide which tool calls and results still matter so stale context can be droppe
 
 </details>
 
-**10 of 42** shown · [all 42 on one page →](docs/by-pattern/context-compaction.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=context-compaction&lang=en)
+**10 of 47** shown · [all 47 on one page →](docs/by-pattern/context-compaction.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=context-compaction&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -586,7 +586,7 @@ _Decide whether an action is safe to run. Defence in depth, never a security bou
 
 </details>
 
-**10 of 159** shown · [all 159 on one page →](docs/by-pattern/safety-gating.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=safety-gating&lang=en)
+**10 of 167** shown · [all 167 on one page →](docs/by-pattern/safety-gating.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=safety-gating&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -639,7 +639,7 @@ _Check a model's output against a rubric before it reaches a user._
 
 </details>
 
-**10 of 156** shown · [all 156 on one page →](docs/by-pattern/output-validation.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=output-validation&lang=en)
+**10 of 160** shown · [all 160 on one page →](docs/by-pattern/output-validation.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=output-validation&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -749,7 +749,7 @@ _Use calibrated confidence to decide what a person must see._
 
 </details>
 
-**10 of 81** shown · [all 81 on one page →](docs/by-pattern/human-escalation.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=human-escalation&lang=en)
+**10 of 87** shown · [all 87 on one page →](docs/by-pattern/human-escalation.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=human-escalation&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -806,7 +806,7 @@ _Pick which downstream model or tier should handle a request._
 
 </details>
 
-**10 of 74** shown · [all 74 on one page →](docs/by-pattern/model-routing.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=model-routing&lang=en)
+**10 of 79** shown · [all 79 on one page →](docs/by-pattern/model-routing.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=model-routing&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -918,7 +918,7 @@ _Score or re-rank candidates from a cheaper retrieval step._
 
 </details>
 
-**10 of 89** shown · [all 89 on one page →](docs/by-pattern/search-ranking.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=search-ranking&lang=en)
+**10 of 92** shown · [all 92 on one page →](docs/by-pattern/search-ranking.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=search-ranking&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -977,7 +977,7 @@ _Pull typed fields out of messy text by choosing among candidates rather than ge
 
 </details>
 
-**10 of 23** shown · [all 23 on one page →](docs/by-pattern/data-extraction.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=data-extraction&lang=en)
+**10 of 27** shown · [all 27 on one page →](docs/by-pattern/data-extraction.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=data-extraction&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -1034,7 +1034,7 @@ _Put an item into a taxonomy, including deep hierarchies walked with probabiliti
 
 </details>
 
-**10 of 161** shown · [all 161 on one page →](docs/by-pattern/classification.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=classification&lang=en)
+**10 of 173** shown · [all 173 on one page →](docs/by-pattern/classification.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=classification&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -1179,16 +1179,4 @@ _Route support tickets and conversations by intent and urgency._
   A community Spring AI starter bringing typed decisions to Java, with a builder API over the three question types.<br>
   <sub>`Integration` · ★10+ · `Java` · `choice` · `score` · `noul` · [call site](https://github.com/spring-ai-community/spring-ai-typesafe/blob/HEAD/examples/src/main/java/org/springaicommunity/typesafe/demo/JevQuickstart.java), read 2026-09-22</sub>
 
-- **[Example: three primitives in one request](https://github.com/kydlikebtc/awesome-jev/blob/main/examples/01-three-primitives/main.py)**<br>
-  A minimal first call asking a choice, a score and a noul together, annotated with the asymmetries that catch people out.<br>
-  <sub>`Snippet` · `Py` · `choice` · `score` · `noul` · [call site](https://github.com/kydlikebtc/awesome-jev/blob/HEAD/examples/01-three-primitives/main.py), read 2026-09-22</sub>
-
-  **Caveats:** `code untested`
-
-- **[Jev AI Use Cases](https://medium.com/data-science-in-your-pocket/jev-ai-use-cases-9a87d57ac3b4)**<br>
-  Walks through use case after use case — agent routing, an in-agent decision layer, ticket triage — each with a concrete option set and a sample response.<br>
-  <sub>`Tutorial` · Mehul Gupta · `Py` · `choice`</sub>
-
-  **Caveats:** `paywall`
-
-- **[Jev on AI/ML API](https://docs.aimlapi.com/api-references/decision-models/
+- **[Example: three primitives in one request](https://github.com/kydlikebtc/awesome-jev/blob/main/examples/01-three-primitives/ma

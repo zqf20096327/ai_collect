@@ -13,7 +13,7 @@ Coordinate Claude Code, Codex and Cursor with shared tasks, independent reviews 
 
 **Free and open source** — MIT licence, no account, everything runs on your machine.
 
-**Version 3.14.0** · Python 3.12+ · macOS / POSIX
+**Version 3.15.1** · Python 3.12+ · macOS / POSIX
 
 **English** · [Italiano](README.it.md) · [Privacy](PRIVACY.md)
 
@@ -231,6 +231,19 @@ squadra dash --open
 ```
 
 </details>
+
+The same primitives can also be combined. `assign` includes the task brief and assignment checks; `join` forwards the presence call and introduction to the coordinator you name. Choose `--via manual` for a recorded manual handoff or `--via codex-queue` for a registered Codex recipient. `pickup` reads the resume checks and pending mail; `resume --actor ... --reason ...` retains the coordinator’s explicit state change. If a step fails, inspect its receipt and the recorded steps before retrying.
+
+```sh
+squadra assign --actor coord --id T2 --owner builder --reviewer reader \
+  --title "Key rotation" --repo /path/to/builder-checkout \
+  --scope-file /evidence/scope.md --proof-file /evidence/argv.json \
+  --brief-file /evidence/t2.md --via manual
+squadra join --id builder2 --identity ACTUAL-SESSION --session ACTUAL-SESSION \
+  --role executor --client codex --repo /path/to/builder2-checkout \
+  --coordinator coord --body-file /evidence/introduction.md --via manual
+squadra pickup --actor builder2
+```
 
 <a id="prompts"></a>
 ## Example prompts
@@ -517,7 +530,7 @@ The sections below keep the full working examples. Open the topic you need; the 
 | Follow a task from assignment to closure | [Task workflow](#workflow) |
 | Trace an instruction or record a decision | [Briefs, messages and decisions](#decision-reference) |
 | Save work or resume a session | [Checkpoints and recovery](#checkpoints) |
-| Look up a command or its plain-language prompt | [All 61 commands](#commands) |
+| Look up a command or its plain-language prompt | [All 66 commands](#commands) |
 
 [Skill](SKILL.md) · [Setup](references/start.md) · [Work/proof/review](references/work.md) · [Native runners](references/runtime.md) · [Recovery/context handover](references/recovery.md) · [Challenges/benchmark](references/benchmark.md) · [Plugins](references/plugins.md) · [Plugin authoring](references/plugin-authoring.md)
 
@@ -834,14 +847,22 @@ manual deletion of an active cache degrades candidate integrity. See
 [recovery cleanup](references/recovery.md#removing-read-only-copies).
 
 <a id="commands"></a>
+### Replacing a window
+
+- **A tired window that still works:** `squadra handover prepare --from SEAT --to NEW`, then «resume seat NEW» in a new window. Tasks, reads, mail and role pass in one event, the coordinator included ([seat handover](references/handover.md)).
+- **A window that is already gone:** `squadra replace` (preview with `--dry-run`) keeps history, authors and budgets; `wait --until … --cause 429|outage` records a service limit ([replacement](references/replacement.md)).
+- **Before an assignment** the recipient runs `access probe` in its ordinary sandbox; `access status` shows registry and clone as verified, denied or not verified ([entry check](references/start.md#permission-check-at-entry)).
+- **A window that comes back** uses `squadra context --task TASK --for WINDOW --since SEQ:HASH`: it shows what changed and keeps constraints, pending ACKs and budgets ([re-entry](references/context.md#re-entry-for-one-window-and-one-revision)).
+- **Mail per identity:** `inbox --agent NAME` covers every role of the same identity; an assigned reader may declare `ready` before delivery, which never replaces the ACK of the real handoff ([reader readiness](references/work.md#reader-readiness)).
+
 ## Squadra commands
 
 You do not have to type these commands: **asking your window in plain words is the recommended way**, as in the *Or just ask* column and the [example prompts](#prompts), and the window runs the command for you. The commands are what the windows run, and what you can type yourself to check.
 
-Every command, grouped by purpose: **61 subcommands**, plus `--version`. Use `squadra <command> --help` for the flags; registry commands accept `--root` or `SQUADRA_ROOT`. «Coordinator only» marks what only the coordinator can record: `task`, `route`, `supersede`, `reassign`, `replace`, `brief`, `close`, `ask`, `decision` (including `--extend-budget`), `lanes --apply`, `settings`, `pause`, `resume`, `save`, `standby`, `ping --all`, `ping --sweep`, and the receipt that `restore-check` writes into the live registry. Without installing, the same commands run as `python3 -B scripts/squadra.py <command>`.
+Every command, grouped by purpose: **66 subcommands**, plus `--version`. Use `squadra <command> --help` for the flags; registry commands accept `--root` or `SQUADRA_ROOT`. «Coordinator only» marks what only the coordinator can record: `task`, `route`, `supersede`, `reassign`, `replace`, `brief`, `close`, `ask`, `decision` (including `--extend-budget`), `lanes --apply`, `settings`, `pause`, `resume`, `save`, `standby`, `ping --all`, `ping --sweep`, and the receipt that `restore-check` writes into the live registry. Without installing, the same commands run as `python3 -B scripts/squadra.py <command>`.
 
 <details>
-<summary><strong>All 61 commands and their prompts, grouped by purpose</strong></summary>
+<summary><strong>All 66 commands and their prompts, grouped by purpose</strong></summary>
 
 ### Start and team
 
@@ -849,10 +870,13 @@ Every command, grouped by purpose: **61 subcommands**, plus `--version`. Use `sq
 |---|---|---|
 | `--version` | Print the installed version. | “Which version of Squadra is installed?” |
 | `init` | Create the registry for a project, with its name, language and review budgets. | “Use the squadra skill and create the registry for this project in ~/.local/state/squadra/atlas.” |
+| `project` | Coordinator only: repair the recorded project directory with `--set PATH`. | “Update the project directory in the registry.” |
 | `agent` | Register a window: identity, role, client, checkout, and the skills it actually read. | “Register this window in the squad, with the skills you actually read.” |
+| `join` | Register this seat, ping an existing coordinator, send the introduction and record both transports; recipient ACKs remain pending. Takes the `agent` options plus `--coordinator`, `--body-file` and `--via`. | “Join the existing squad and introduce this window to its coordinator.” |
 | `census` | Find the project's Codex, Claude and Cursor windows without writing anything; `--project` is required before `init`. Run it from a Claude window: inside a Codex sandbox it cannot see the other windows, and says so. | “Find the Codex, Claude and Cursor windows working on this project, without writing anything.” |
 | `ping` | Send a presence call to one window (`--to`) or, coordinator only, to all (`--all`); `--sweep` (coordinator only) records stand-by for an unanswered call that a transport delivered, and the return after a fresh ACK. | To the coordinator: “Check which windows are still there: send a presence call to all of them.” |
 | `replace` | Coordinator only: atomically replace windows, carry tasks and useful mail; preview with `--dry-run`. | “Hand the exhausted window over to its replacement.” |
+| `handover` | Prepare an owner-authorized session change, inspect its note and conditions, then let the new window accept it atomically; includes the coordinator. | “Prepare this seat's handover to a fresh window.” |
 | `access` | Probe recipient write access, or read the latest observation, before assignment. | “Check this window’s registry and clone permissions.” |
 | `ready` | Declare that the assigned reader is ready before delivery; `--revoke` withdraws readiness. The delivery still needs its own ACK. | “Record that I am ready to read this task when it is delivered.” |
 | `wait` | Record a service wait with `--until` and `--cause 429|outage`; no sleep or automatic retry. | “Record the service outage until 19:30.” |
@@ -864,6 +888,7 @@ Every command, grouped by purpose: **61 subcommands**, plus `--version`. Use `sq
 | Command | What it does | Or just ask |
 |---|---|---|
 | `task` | Coordinator only: assign a task: owner, reviewer, checkout, scope, proof, requirements, dependencies; `--supersedes` replaces an open task. | To the coordinator: “Assign ‘Key rotation service’ to the builder window, with the reviewer window as independent reader and the whole test suite as proof.” |
+| `assign` | Run `task`, its `brief`, assignment `transport` and `checklist --moment assign` in one command. Takes the `task` options plus `--brief-file` and `--via`; a failed step reports the steps already recorded. | “Assign and brief this task, forward the assignment and check it.” |
 | `lanes` | Preview automatic lane assignments from repeated `--paths`; `--apply --actor COORD` applies them to the coordinator's existing parent. `task --paths` applies automatically; `task --lanes none` opts out. Silent windows are skipped, the parent's reader never builds a lane, and each lane gets its own brief. | “Split these independent changes across the available builders and show the plan.” |
 | `route` | Coordinator only: promote with `--full`, keeping the base/history/budgets; new proof and read. | To the coordinator: “T3 is no longer a small change: move it to the full route.” |
 | `supersede` | Coordinator only: record afterwards that an existing, later task replaces an open one, with the same effect as `--supersedes`. | To the coordinator: “T7 replaces T5: record it, keeping the history of T5.” |
@@ -917,6 +942,7 @@ Every command, grouped by purpose: **61 subcommands**, plus `--version`. Use `sq
 |---|---|---|
 | `pause` | Coordinator only: stop new work, reviews and runs, keeping consultation and recovery. | To the coordinator: “Pause the squad: no new work until I say so.” |
 | `resume` | Coordinator only: resume after the owner's explicit word and a reconciliation. | To the coordinator: “Resume the squad: reconcile first, then tell me the next step.” |
+| `pickup` | Read `doctor --resume`, the process census, the board and this seat’s pending mail with `--actor`; writes no registry event and confirms no messages. | “Show the checks and pending work for this window.” |
 | `checkpoint` | Copy the registry, its artifacts and projections to a new folder; `--actor` records it for retention, `--compact` omits regenerable views, identical bytes of the newest recorded checkpoint are reused. | “Take a compact checkpoint of the registry in a new folder.” |
 | `storage` | `status`, `purge` (`--dry-run` by default; `--apply` coordinator only, with a reason), `keep`, `compact` and `adopt` (checkpoints and saves made before 3.13; `compact` also seals legacy writable candidates) of registered recovery points, candidates and archived runs; unknown folders and other registries' points are never removed. | “Use squadra to compact the storage of the registry at /path/to/registry.” |
 | `save` | Coordinator only: package the registry with every registered Git repository and its unfinished work; `--repo ROOT --allow-name REL --reason TEXT` records a one-save name exception. | To the coordinator: “Save the registry and the code of every repository, unfinished work included.” |
@@ -973,6 +999,27 @@ Static, behavioral and dependency checks, excluding `tests/`. Passing means no H
 <a id="news"></a>
 ## What's new
 
+**3.15.1 (includes 3.15.0) — a tired window is replaced without losing anything, and the squad is simpler to run**
+
+A window that runs for hours grows costly and less reliable. It can now be replaced in two commands, the coordinator included, without losing tasks, mail or decisions. Meanwhile Squadra runs with fewer commands, less output and shorter instructions, with no feature removed.
+
+- **Seat handover in two commands.** `squadra handover prepare --from SEAT --to NEW` records the owner's words, the start conditions (`task:ID` closed, `after:TIME`, `confirm:"…"`) and the «state outside the registry»: servers, open sessions, releases in progress, promises to the owner. Without that section the command stops, and it refuses recognisable passwords and tokens, inside Markdown lists and tables too. The new window only needs «resume seat NEW»: `handover accept` inherits tasks, reads, useful mail and the role in a single event, parks the old seat and introduces the new one to every window. `context --seat` writes the resume note for the whole seat.
+- **The right moment.** `checklist --moment handover --actor SEAT` answers «not now» while a run is live, a resource is held, a read or a release is half done, changes are uncommitted or conditions are not yet true, and lists what to wait for. A handover decided «but not now» stays visible in `status`, the board and the dashboard until it is done; when everything is ready it reads «Ready now: open a new window and type «resume seat …»».
+- **Tired window.** The dashboard, `doctor --resume` and `status` show for every seat how long its session has been running and how much context it holds, read from the Claude and Codex transcripts, and advise «consider restarting» past `tired_hours` (8) or `tired_context_fraction` (0.6). No invented percentages: for Claude the fraction appears only when the model's `context_window` is declared. Advice only, nothing changes by itself.
+- **Mail no longer waits unseen.** Whoever follows the mail (`inbox --follow`) leaves a heartbeat and its end, even when interrupted. Every window shows «listening», «stopped X min ago» or «never armed»; every message awaiting an ACK shows how long ago it was delivered and whether its recipient is listening. The coordinator finds «Waiting for you» with the verdicts to close, the handoffs to forward and the messages to acknowledge, each with the command to run.
+- **Simpler, with nothing lost.** SKILL.md goes from 55 KB to 20.5 KB (−63%): every rule in one line with a pointer to its home and `references/regole.md` as the inventory; a test compares every clause of every 3.14.0 rule with its home. `squadra assign` does task, brief, delivery and checklist in one command; `squadra join` joins the squad; `squadra pickup` summarises where you left off; a parity test guarantees the same events as the long sequence. Every write answers with one line (61–136 bytes measured on decision, send, transport, ack and ping, at most 200 for every write, instead of the ~3.6 KB board) and `--verbose` shows everything. `decision --round-scope` replaces the text prefix, `squadra project --set PATH` repairs a moved project, `ask --evidence decision:ID` accepts a reference.
+- **Fixes.** A lane's builder never reads its parent: the rule now holds through `reassign`, `replace`, pools, seat handovers, the whole chain of successors and at task creation. `doctor --resume` no longer reports as idle a successor that records its inherited plan, nor any task with «.L» in its name.
+- **How it was checked.** Every part was read by a different model from the one that wrote it (Codex reads Claude, Claude reads Codex); the final reads found three grave defects, fixed and re-read before release. Every fix has a test that is red before and green after; the full suite has more than 2490 tests.
+- **Upgrade every window together.** Seat handovers write journal format 5: 3.14 windows refuse it instead of ignoring it.
+- **In 3.15.1.** `access probe` answers with the short line too; the tiredness notice cache is written only when needed; a test no longer trips on Git's automatic maintenance; a probe confirms that declaring yourself ready to read opens no gap in independence; documentation qualified.
+
+**Watch the two-minute film of what's new in 3.10.2 — turn the sound on in the player:**
+
+https://github.com/user-attachments/assets/6ea747a5-a993-4aa7-a58d-1b2b7f908720
+
+<details>
+<summary><strong>Earlier versions</strong></summary>
+
 **3.14.0 — automatic lanes, per-task budgets and a sharper resume**
 
 - **Automatic lanes.** `task --paths GLOB` (repeatable) analyses the files to change — Git co-changes weigh more than imports, byte-identical copies stay together, shared hubs go to a coordinator contract lane L0 — and, when there are two or more independent groups and free builders, creates the lanes itself: disjoint owned files, a builder per lane chosen by balance in its own checkout of the project, a reader of the other model, dependencies on L0, a brief per lane, one recorded decision and the assignments, all or nothing. Windows silent for two days, in stand-by or reading the parent are never chosen. `lanes --task ID --paths …` previews, `--apply` is coordinator only, `--lanes none` keeps one task. Measured on the real repository: the two lanes of the 3.13 storage round are found again in under a second.
@@ -985,12 +1032,6 @@ Static, behavioral and dependency checks, excluding `tests/`. Passing means no H
 
 - **For integrators.** `storage_reuse.compact` moved to `storage_compact.compact` (no alias, to keep the storage modules free of import cycles); the CLI `storage compact` is unchanged.
 
-**Watch the two-minute film of what's new in 3.10.2 — turn the sound on in the player:**
-
-https://github.com/user-attachments/assets/6ea747a5-a993-4aa7-a58d-1b2b7f908720
-
-<details>
-<summary><strong>Earlier versions</strong></summary>
 
 **3.13.1 — a copy of a registry never purges the original's recovery points**
 
@@ -1006,11 +1047,6 @@ https://github.com/user-attachments/assets/6ea747a5-a993-4aa7-a58d-1b2b7f908720
 - **Recorded, compact checkpoints.** `checkpoint --actor WINDOW --compact` records the recovery point and omits views that are rebuilt on opening; `save` reuses the previous package. A checkpoint no longer fails when a concurrent writer's temporary file disappears mid-copy.
 - **Ask for it in one sentence.** After updating, tell a Claude window: «Use squadra to compact the storage of the registry at /path/to/registry». At every resume `doctor --resume` notices old unregistered checkpoints or more than 1 GB of candidates, and the coordinator proposes that sentence.
 - **Skill instructions** no longer ask for repeated full copies: checkpoints are compact and recorded, and every long round starts with `storage purge --dry-run`.
-
-**3.12.1 — the dashboard opens registries that replaced windows**
-
-- **Dashboard fix.** Since 3.11.1, `replace` records the successor tasks, reads and starts inside one `replace` event. The dashboard's task progress ignored those nested operations, so every registry with a replacement failed with `KeyError: '<task>-takeover-…'`. Task progress now applies them the way the registry does, and a regression test pins it.
-- The plugin bridge copies of `scripts/registry.py` carry the same fix; the memoranda reader pin accepts the 3.12.1 bytes.
 
 </details>
 
@@ -1061,21 +1097,3 @@ Squadra is a community project: it gets better with every plugin, report and sha
 ---
 
 Developed by Stefano D'Agostino · [GitHub](https://github.com/dagoSte/squadra)
-
-## Replacing windows during a milestone
-
-3.11.1 adds `squadra replace`, `census --unregistered` and `wait --until … --cause 429|outage`. One recorded handover preserves task history, authors and budgets; previews and retries are safe. See the [commands, compatibility boundary and hotskills example](references/replacement.md). All windows must use 3.11.1 before the first journal-format-4 write.
-
-### Permission check at entry
-
-Before assignment, the recipient window runs `access probe` in its ordinary sandbox; `access status` reads the recorded observation. Registry and clone have separate **verified**, **denied** and **not verified** states in board, status and the dashboard. An escalated probe never verifies ordinary sandbox access. A reader may correctly have a read-only clone. See [the commands and evidence limits](references/start.md#permission-check-at-entry). A recorded probe also refreshes the daily projections; a projection failure is reported separately from the committed observation.
-
-### Per-window re-entry context
-
-Use `squadra context --task TASK --for WINDOW --since SEQ:HASH` when a window returns after a pause, compaction or replacement. It shows relevant changes and keeps earlier constraints, pending ACKs, inherited budgets and evidence references. A mismatched revision refuses; an empty delta grants nothing. Open the originals when data is omitted or a proof no longer matches. [Commands, size limits and evidence boundaries](references/context.md#re-entry-for-one-window-and-one-revision). Long error diagnostics retain a bounded summary and their original event sequence; for a long history use `--max-chars 32000` and open the referenced events for full diagnostics.
-
-### Identity mail and reader readiness
-
-`inbox --agent NAME` includes every registered role of the same identity, once per message. `--follow` picks up new roles while running and shares its cursor across aliases. Each message retains its original recipient: use that role for its explicit ACK. Messages from other identities stay outside this mailbox.
-
-An assigned reader can run `ready --actor READER --task TASK` before delivery. Status, board and dashboard show “reader ready, waiting for delivery”. This declares availability only; it does not acknowledge a future handoff, start a read or approve work. `--revoke`, stand-by, window re-registration and delivery clear it; replacement never transfers it. The reader still ACKs the actual delivery message before reading. See [the work protocol](references/work.md#reader-readiness).

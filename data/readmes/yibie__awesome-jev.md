@@ -61,7 +61,7 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 
 ## Current coverage
 
-- [Classification & Routing](categories/classification-routing.md) — 77 entries
+- [Classification & Routing](categories/classification-routing.md) — 78 entries
 - [Adaptive & Realtime UI](categories/adaptive-realtime-ui.md) — 13 entries
 - [Verification & Guardrails](categories/verification-guardrails.md) — 64 entries
 - [Scoring & Ranking](categories/scoring-ranking.md) — 44 entries
@@ -69,12 +69,12 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 - [Data Labeling & Curation](categories/data-labeling-curation.md) — 12 entries
 - [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 50 entries
 - [Calibration & Research](categories/calibration-research.md) — 56 entries
-- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 125 entries
+- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 129 entries
 - [Game & Simulation](categories/game-simulation.md) — 29 entries
 - [Robotics & Physical](categories/robotics-physical.md) — 11 entries
 - [Finance & Trading](categories/finance-trading.md) — 10 entries
 - [Compliance & Legal](categories/compliance-legal.md) — 7 entries
-- [Content Moderation](categories/content-moderation.md) — 14 entries
+- [Content Moderation](categories/content-moderation.md) — 15 entries
 - [Related Practices / Discussions](categories/related-practices-discussions.md) — 108 entries
 
 ### Open categories still being seeded
@@ -197,6 +197,7 @@ Source file: [`categories/classification-routing.md`](categories/classification-
 - [X Reply Judge](https://github.com/liaocaoxuezhe/x-reply-judge-jev) ![stars](https://img.shields.io/github/stars/liaocaoxuezhe/x-reply-judge-jev?style=flat-square&label=%E2%98%85) - AI-text labelling: a Chrome extension that puts one badge on every X post showing the probability Jev assigns to the text being AI-written, with stated colour cutoffs at 70 and 31 and no explanation list at all.
 - [SpotAsk](https://github.com/shiquda/SpotAsk) ![stars](https://img.shields.io/github/stars/shiquda/SpotAsk?style=flat-square&label=%E2%98%85) - Query routing: a native macOS menu bar assistant that asks Jev a typed `Choice` over your configured channels to decide whether a question is answered in the app or sent to a web AI, desktop app, or CLI agent, with confirmation by default and optional auto-routing above a confidence threshold.
 - [Jev Router](https://github.com/AIAnytime/Jev-Router) ![stars](https://img.shields.io/github/stars/AIAnytime/Jev-Router?style=flat-square&label=%E2%98%85) - Model router: one OpenAI-compatible endpoint that sends each request to the right model, choosing with typed decisions that carry real probabilities.
+- [typesafe-cascade](https://github.com/monumei/typesafe-cascade) ![stars](https://img.shields.io/github/stars/monumei/typesafe-cascade?style=flat-square&label=%E2%98%85) - Cascade: sends every classification to a typed `Choice` first and only escalates to a reasoning model when Jev's confidence fails to clear a threshold, which is the pattern most projects here reimplement without naming it.
 
 ### Adaptive & Realtime UI
 
@@ -342,5 +343,4 @@ Source file: [`categories/agent-decisions.md`](categories/agent-decisions.md)
 - [Hermes JIT Context OS](https://github.com/wojciechwiesner/jit-context) ![stars](https://img.shields.io/github/stars/wojciechwiesner/jit-context?style=flat-square&label=%E2%98%85) - Coding agents: uses Jev as a sub-millisecond System 1 Epistemic Gate and Domain Router to score AST relevance, test proofs, and tool targets, cutting autonomous agent turns by 31.3% and blind file exploration by 52.6% on SWE-bench with fail-open circuit-breaker resilience.
 - [Jev by Example](https://github.com/ReallyArtificial/jev-by-example) ![stars](https://img.shields.io/github/stars/ReallyArtificial/jev-by-example?style=flat-square&label=%E2%98%85) - Agent development: runnable JavaScript lessons use Jev Choice, Score, and Noul judgments for memory reconciliation, recovery proposals, and handoff checks, with explicit application policies, offline fixtures, and opt-in live calls.
 - [jev-social](https://github.com/socai-io/jev-social) ![stars](https://img.shields.io/github/stars/socai-io/jev-social?style=flat-square&label=%E2%98%85) - Social media research: uses a Jev `Choice` at each step to select a concrete socai CLI operation and observed post or profile target on Instagram, TikTok, or LinkedIn, rejecting malformed or low-confidence decisions before execution.
-- [Jev Ultrafast](https://github.com/browser-use/jev-ultrafast) ![stars](https://img.shields.io/github/stars/browser-use/jev-ultrafast?style=flat-square&label=%E2%98%85) - Browser automation: browser-use's ultrafast agent where Jev decides each next action and element to click, calling a language model only when text must be typed.
-- [jev-agent-browser](https://github.com/forvela/jev-agent-browser) ![stars](https://img.shields.io/github/stars/forvela/jev-agent-browser?style=flat-square&label=%E2%98%85) - Browser agents: a parent agent delegates bounded tasks to a Jev loop th
+- [Jev Ultrafast](https://github.com/browser-use/jev-ultrafast) ![stars](https://img.shields.io/github/stars/browser-use/jev-ultrafast?style=flat-square&label=%E2%98%85) - Browser autom

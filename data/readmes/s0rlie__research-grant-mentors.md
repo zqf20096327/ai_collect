@@ -1,0 +1,136 @@
+# research-grant-mentors
+Interview-based system prompts for developing research grant applications (FRIPRO, the ERC Consolidator Grant and MSCA Doctoral Networks; more calls planned). Asks questions rather than writing text. Optimised for NTNU's IDUN LLM services.
+
+Before you use a mentor, read NTNU's [policy for use of ICT tools with generative artificial intelligence](https://i.ntnu.no/wiki/-/wiki/English/Use+of+ICT+tools+with+generative+artificial+intelligence+at+NTNU+-+policy).
+
+## NTNU FRIPRO Mentor
+
+File: [`ntnu-fripro-mentor.md`](ntnu-fripro-mentor.md). Planned work is in the [roadmap](docs/ROADMAP.md).
+
+| | |
+|---|---|
+| **Best for** | Researchers who plan an application to FRIPRO, the Research Council of Norway's scheme for ground-breaking research. The mentor helps you choose a call, develop an idea into a project description, and review a draft. |
+| **Calls covered** | Early Career Scientists, Radical Research Ideas, Experienced Scientists, and International Mobility. |
+| **How it works** | It interviews you. It asks you to state your idea in one sentence before it helps you draft. It reviews a draft against the assessment criteria and the project description template. |
+| **Sources** | The call texts and project description templates on [forskningsradet.no](https://www.forskningsradet.no/en/Portfolios/ground-breaking/fripro/). The call facts are written into the prompt. The mentor does not search the web. |
+| **Call facts last checked** | 13 October 2026. The facts are for the Research Council of Norway's current application system. FRIPRO moves to a new system during 2026. See the [roadmap](docs/ROADMAP.md). |
+| **Not included** | Top Researchers and other programmes. Budget tables and the application form. Your institution's internal deadlines and procedures. |
+| **It does not judge the science** | The mentor assesses how clearly a claim is stated and how well the parts of the proposal fit together. It cannot tell you whether an idea is new, important or correct. |
+
+### Check the result
+
+- **Call rules:** the call text on forskningsradet.no is the authority. When the call text does not answer your question, use the "Send us your question" form on the call page.
+- **The science:** ask a colleague in your field to read the proposal before you submit. The mentor cannot replace that review.
+- **Your application:** speak to the research adviser at your institution.
+- **Use of AI:** check the funder's current rules on the use of AI in applications. You are responsible for everything you submit.
+
+### Ways to start
+
+On GPT NTNU, NTNU's chat service on IDUN, the mentor is ready to use with these six conversation starters. On another platform, or with a direct connection to the IDUN LLM, set up the system prompt yourself (see Set-up). Add the same six starters: the prompt expects one of them as the opening message.
+
+- I don't know which FRIPRO call I should apply for
+- Tell me the differences between the FRIPRO calls
+- I have an idea and want to develop it into an application
+- I have a draft I want feedback on
+- I was rejected and want to improve my application
+- Show me the journey from idea to submitted proposal
+
+## NTNU ERC Mentor — beta
+
+File: [`ntnu-erc-mentor.md`](ntnu-erc-mentor.md). This is a first version. Coaching specific to the ERC is limited, and the mentor will change.
+
+| | |
+|---|---|
+| **Best for** | Researchers who plan an application to the European Research Council's Consolidator Grant. The mentor checks eligibility, helps you develop an idea into Part I of the proposal, and reviews a draft. You write the text. |
+| **Calls covered** | ERC Consolidator Grant 2027 (ERC-2027-CoG, deadline 12 January 2027). |
+| **How it works** | It interviews you. It asks you to state your idea in one sentence before you start on the proposal. It can suggest alternative framings, but it does not write text for you. It reviews Part B1 as a Step 1 panel member reads it, and Part B2 as a Step 2 reviewer reads it. |
+| **Sources** | The ERC Work Programme 2027 and the Information for Applicants to the Starting and Consolidator Grant 2027 Calls, on [erc.europa.eu](https://erc.europa.eu). The call facts are written into the prompt. The mentor does not search the web. |
+| **Call facts last checked** | 14 October 2026. |
+| **Not included** | Starting, Advanced, Synergy, ERC Plus and Proof of Concept Grants. Interview practice. Budget tables and the online form. Your institution's internal deadlines and procedures. |
+| **It does not judge the science** | The mentor assesses how clearly a claim is stated and how well the parts of the proposal fit together. It cannot tell you whether an idea is ground-breaking, new, important or correct. |
+
+### Check the result
+
+- **Call rules:** the ERC Work Programme and the Information for Applicants are the authority. Ask the [ERC National Contact Point](https://www.forskningsradet.no/en/horizon-europe/ncp-national-contacts/) at the Research Council of Norway when they do not answer your question.
+- **The science:** ask a colleague in your field to read Part I before you submit. The mentor cannot replace that review.
+- **Your application:** speak to the research adviser at your faculty about internal deadlines, the host institution support letter and the budget.
+- **Use of AI:** the [ERC Scientific Council's position on AI](https://erc.europa.eu/news-events/news/current-position-erc-scientific-council-ai) says that you keep full responsibility as the author. You are responsible for everything you submit.
+
+### Ways to start
+
+Add these six conversation starters on your platform: the prompt expects one of them as the opening message.
+
+- Am I eligible for an ERC Consolidator Grant?
+- I have an idea for an ERC project
+- Review my draft
+- I got an ERC evaluation report
+- Turn my FRIPRO project into an ERC project
+- Show me the journey from idea to submitted ERC proposal
+
+## NTNU MSCA DN Mentor — beta
+
+File: [`ntnu-msca-dn-mentor.md`](ntnu-msca-dn-mentor.md). This is a first version for teams that already have a draft. The mentor will change.
+
+| | |
+|---|---|
+| **Best for** | Writing teams with NTNU as coordinator of an MSCA Doctoral Network, in the final weeks before the deadline. The mentor reviews sections of Part B, checks consistency across Part B1, Part B2 and Part A, and plans the work to the deadline. You write the text. |
+| **Calls covered** | MSCA Doctoral Networks 2026 (HORIZON-MSCA-2026-DN-01-01, deadline 24 November 2026), standard Doctoral Networks only. |
+| **How it works** | It asks which job you want done, then delivers it in a fixed format: findings ranked by priority, tables to check, or a checklist. It names what costs points and asks the question that lets you fix it. It does not write text for you. |
+| **Sources** | The Horizon Europe Work Programme 2026–2027 for MSCA, the Part B application form and the evaluation form, on the [Funding & Tenders Portal](https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-details/HORIZON-MSCA-2026-DN-01-01). The call facts are written into the prompt. The mentor does not search the web. |
+| **Call facts last checked** | 27 October 2026. Some facts come from the Guide for Applicants only and were not checked again. |
+| **Not included** | Industrial and Joint Doctorates, Postdoctoral Fellowships, Staff Exchanges and COFUND. NTNU as a partner rather than coordinator. The budget and the online forms in Part A. Your institution's internal deadlines and procedures. |
+| **It does not judge the science** | The mentor assesses how clearly a claim is stated and how well the parts of the proposal fit together. It cannot tell you whether the research, the training or the supervision is excellent. |
+
+### Check the result
+
+- **Call rules:** the Work Programme and the Guide for Applicants are the authority. Ask the [MSCA National Contact Point](https://www.forskningsradet.no/en/horizon-europe/ncp-national-contacts/) at the Research Council of Norway when they do not answer your question.
+- **The science:** ask a senior colleague outside the consortium to read Part B1 before you submit. The mentor cannot replace that review.
+- **Your application:** speak to the research adviser at your faculty about Part A, the budget and internal deadlines.
+- **Use of AI:** Part B2 has a declaration on the use of AI. You are responsible for everything you submit.
+
+### Ways to start
+
+On GPT NTNU the mentor is ready to use with these four conversation starters. On another platform, add the same four. The mentor also works without one: it then asks which job you want done.
+
+- I have a draft I want feedback on
+- Check consistency across Part B1, Part B2 and Part A
+- Run the pre-submission check
+- Plan our work to the deadline
+
+## Set-up
+
+These steps apply to every mentor.
+
+1. Create a custom assistant in your chat service.
+2. Copy everything between `# SYSTEM PROMPT — START` and `# SYSTEM PROMPT — END` into the instructions field.
+3. The last section contains the line `Today's date: {{current_date}}`. If your platform uses a different date variable, replace the placeholder. If it has none, leave the line as it is: the mentor then asks you for the date.
+
+## Privacy
+
+- The mentors ask for facts, not documents. For eligibility they ask for dates and months, such as "PhD defended 03/2019, 11 months deductible leave".
+- They do not ask for your CV to check eligibility, and they never ask why you were on leave.
+- Replace the names of other people with roles, such as "Partner A" or "Postdoc 1", before you paste a draft.
+- Delete the chat when you are done.
+
+## Limitations
+
+These limits come from how language models work. They apply to every mentor and to every assistant of this kind.
+
+- **It knows only its instructions and what you write.** It does not look up the call text, the funder's website or the literature in your field. Its call facts are fixed at the "Call facts last checked" date in its card.
+- **It has no memory between conversations.** A new conversation starts from nothing. Paste your one-sentence idea or your draft again when you return.
+- **A long conversation can outgrow what the model reads.** The earliest messages then drop out or are replaced by a summary, and the mentor does not tell you. If it forgets something you said, start a new conversation and paste a short summary.
+- **It may not see everything in a file.** The platform reads the text of a PDF or Word file. Figures, a Gantt chart and the page layout may not come through, and the mentor cannot count the pages of your proposal. It can read an image within the limits of the model, but text and images sent together can cause problems. If you are unsure, ask the mentor what it can see.
+- **It sounds equally certain when it is right and when it is wrong.** The tone of an answer tells you nothing about its accuracy. This includes rules that are in its instructions.
+- **The same question can give a different answer.** Answers vary from one attempt to the next, and from one model to another.
+- **It leans towards agreement.** Language models tend to agree with the person they talk to. Ask it for the weaknesses.
+- **It can invent references.** A paper, author or result that it mentions may not exist. Check every reference yourself.
+- **It does not know today's date unless the platform or you supply it.** Planning to a deadline depends on it, so give the date if it asks.
+- **Text it writes tends towards common phrasing.** Keep your own formulations where they carry your idea.
+
+## Feedback
+
+Report an error or suggest an improvement under [Issues](https://github.com/s0rlie/research-grant-mentors/issues). Do not include personal data or text from an application.
+
+## Licence
+
+The prompts and documentation are licensed under [CC BY 4.0](LICENSE). You may copy and adapt them if you give credit and link to this repository. Version history is in the [changelog](CHANGELOG.md).

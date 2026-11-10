@@ -1,289 +1,220 @@
 <div align="center">
 
-<img src="extension/icons/icon-128.png" width="72" alt="Endoplexity">
+<img src="docs/hero.svg" width="100%" alt="Endoplexity: the browser agent you already pay for. Drives the Chrome you already use, through Claude, Cursor or Codex, with no API key and no screenshots.">
 
-# Endoplexity
+<br>
 
-**Agentic browser control, driven by the AI subscription you already pay for.**
-
-A Chrome side panel that reads and acts on the page you're actually looking at:
-click, type, fill forms, move between tabs, all through your existing `claude`
-or `cursor-agent` CLI instead of a metered API key.
-
+[![Release](https://img.shields.io/github/v/release/Endokelp/Endoplexity?color=1f6f4a&label=release)](https://github.com/Endokelp/Endoplexity/releases/latest)
 [![Licence](https://img.shields.io/badge/licence-Apache--2.0-1f6f4a)](LICENSE)
-[![Node](https://img.shields.io/badge/node-24%2B-1f6f4a)](package.json)
-[![Tests](https://img.shields.io/badge/tests-156%20passing-1f6f4a)](bridge/test)
-[![API key](https://img.shields.io/badge/API%20key-not%20required-1f6f4a)](#what-it-costs)
+[![Tests](https://img.shields.io/badge/tests-318%20passing-1f6f4a)](bridge/test)
+[![API key](https://img.shields.io/badge/API%20key-not%20required-1f6f4a)](#get-started)
+[![Screenshots to the model](https://img.shields.io/badge/screenshots%20to%20the%20model-0-1f6f4a)](#the-numbers)
 
-<img src="docs/demo.gif" width="100%" alt="Endoplexity opening three pricing pages in separate tabs and comparing their free tiers in one table">
+**[The numbers](#the-numbers)** · **[Versus the field](#versus-the-field)** · **[How it works](#how-it-works)** · **[Get started](#get-started)** · **[Guide](docs/guide.md)**
 
-<sub>Real time, no cuts beyond a trim and a speed-up · <a href="docs/demo.mp4">full-quality video</a></sub>
+<br>
+
+<a href="https://cdn.jsdelivr.net/gh/Endokelp/Endoplexity@382a10b9a946740410ea6cc473849d0512feee1b/docs/endoplexity.mp4"><img src="docs/film-poster.jpg" width="100%" alt="Play the 26-second film: Endoplexity drives your own Chrome on the plan you already pay for, reads pages as text instead of screenshots, and stops for you before anything irreversible."></a>
+
+<sub><b><a href="https://cdn.jsdelivr.net/gh/Endokelp/Endoplexity@382a10b9a946740410ea6cc473849d0512feee1b/docs/endoplexity.mp4">▶ Play the 26-second film, sound on</a></b> · every number in it is from <a href="#the-numbers">the benchmark below</a> · <a href="docs/demo.mp4">an unedited real run</a><br>Music: "Inspiring Progress" by Soundrider/Dope, <a href="https://www.jamendo.com/track/1670591">Jamendo</a>, <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></sub>
 
 </div>
 
----
+<br>
 
-## What you just watched
+## Why Endoplexity
 
-One instruction: *"Open the pricing pages for Vercel, Netlify and Cloudflare
-Pages in three tabs, then compare their free tiers in one table."*
+<table>
+<tr>
+<td width="50%" valign="top">
 
-It opened three tabs, read each pricing page, followed a plan link that
-actually lived on a different page, noticed when a link took it somewhere
-unexpected and recovered from it, then came back with a comparison table, the
-sources it used, and a takeaway naming the trade-off between Cloudflare's
-unlimited static bandwidth and Netlify's credit cap.
+**Your Chrome, not a new browser.**
+It works in the profile you already live in: your logins, extensions and
+password manager. Nothing to move into, nothing to sign in to again.
 
-That banner reading *"Endoplexity started debugging this browser"* is
-Chrome's own, and it stays up the whole time. This is your real browser, your
-real session, on the pages you already had open. Not a headless copy that
-has to log back in to everything.
+</td>
+<td width="50%" valign="top">
 
-## Why this exists
+**Your subscription, not an API key.**
+Tasks run through the `claude`, `cursor-agent` or `codex` CLI you already pay
+for. On top of that plan, a task costs $0.
 
-Most open-source "browser agent" projects need an API key and bill you per
-click. But if you already pay for Claude or Cursor, a tool-calling agent loop
-is sitting on your machine right now, fully paid for, doing nothing.
+</td>
+</tr>
+<tr>
+<td valign="top">
 
-The brain didn't need building. What was missing was **hands** (a browser it
-can actually touch) and a **face** (a panel that shows its work). That's the
-whole project: a tool server and a UI. The agent loop is the CLI you already
-have installed.
+**Text, never screenshots.**
+The model reads the page as a compact outline, then only what changed. In 108
+benchmark runs on three vendors' models, not one screenshot reached a model.
+
+</td>
+<td valign="top">
+
+**Brakes the model cannot release.**
+Irreversible clicks stop for you. A second model from a different company
+reads each one first. The rules live in local code, never in a prompt.
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+**Learn once, replay free.**
+Save a finished task as a skill and it runs again with no model at all:
+zero tokens, the same approval gate.
+
+</td>
+<td valign="top">
+
+**Reflexes that make it faster.**
+Small decision models answer routine questions in milliseconds, so the big
+model doesn't have to. Runs finish 25% faster with them on.
+
+</td>
+</tr>
+</table>
+
+## The numbers
+
+Thirty real tasks on thirty live websites from
+[Online-Mind2Web](https://github.com/OSU-NLP-Group/Online-Mind2Web), frozen
+before the first run and judged blind. Against Claude in Chrome, Anthropic's
+own extension, on the same model through the same CLI: only the browser tools
+differ.
+
+<table>
+<tr>
+<td align="center" width="33%"><h1>2.8×</h1><b>faster than Claude in Chrome</b><br><sub>task for task, same model</sub></td>
+<td align="center" width="33%"><h1>0</h1><b>screenshots sent to the model</b><br><sub>Claude in Chrome sent 287</sub></td>
+<td align="center" width="33%"><h1>24/30</h1><b>tasks finished on Codex</b><br><sub>on a ChatGPT plan, no API key</sub></td>
+</tr>
+</table>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/bench-dark.svg">
+  <img src="docs/bench-light.svg" width="100%" alt="Endoplexity against Claude in Chrome, both on Claude Sonnet 5.5. On the 20 tasks both finished: median time 31 s and 57 s, median tokens 239k and 283k, median API-equivalent cost $0.23 and $0.29.">
+</picture>
+
+<sub>On the 20 tasks both finished, Claude in Chrome took longer, read more and
+cost more at the median. Every row, the judging and
+what the numbers don't show: <a href="docs/benchmarks.md">docs/benchmarks.md</a>.
+Method and raw evidence: <a href="bench/METHOD.md">bench/METHOD.md</a>.</sub>
+
+## Versus the field
+
+| | **Endoplexity** | Perplexity Comet | Claude in Chrome | ChatGPT agent | Gemini in Chrome |
+|---|:---:|:---:|:---:|:---:|:---:|
+| Drives your own Chrome | **✓** | separate browser | ✓ | cloud browser | ✓ |
+| Model never sees a screenshot | **✓** | — | — | — | not published |
+| Your choice of model | **Claude, Cursor, Codex** | Perplexity's | Claude | OpenAI | Gemini |
+| Extra cost on your plan | **$0** | paid plans | paid Claude plan | Plus: 40 tasks/mo | AI Pro or Ultra, US |
+| Replays a task for free | **✓** | — | — | — | — |
+| Open source | **✓** Apache-2.0 | — | — | — | — |
+
+<sub>Checked 2026-11-07 from each vendor's pages and, for Comet and Claude in
+Chrome, their shipped extension code. Opera Neon, Browser Use and every source:
+<a href="docs/guide.md#the-full-comparison">the full comparison</a>.</sub>
+
+### Why not just use Comet?
+
+Comet asks you to move into a new browser, sends a JPEG of the page after
+every action to Perplexity's servers, and runs a model Perplexity picks.
+Endoplexity stays in your Chrome, sends text only to the model vendor you
+already use, and keeps its brakes in code on your machine. That last part
+matters: hidden text on a page has already walked Comet into reading a
+user's one-time password
+([Brave](https://brave.com/blog/comet-prompt-injection/)), and a single
+crafted link walked it into leaking email and calendar data
+([LayerX](https://thehackernews.com/2025/10/cometjacking-one-click-can-turn.html)).
+No agent is immune to what it reads, so Endoplexity's approvals never depend
+on the model behaving.
 
 ## How it works
 
-The extension never talks to a model directly. The CLI never talks to
-Chrome. Neither one holds the other's credentials.
+<img src="docs/flow.svg" width="100%" alt="The Chrome side panel talks to a local bridge over an origin-pinned WebSocket; the bridge serves 18 browser tools over token-gated MCP to the claude, cursor-agent or codex CLI, which runs the agent loop.">
 
-```
-┌──────────────────────┐   WebSocket    ┌──────────────┐    MCP/HTTP   ┌──────────────────┐
-│  Chrome side panel   │  origin-pinned │ local bridge │  token-gated  │  claude -p       │
-│  (MV3)               │◄──────────────►│  127.0.0.1   │◄─────────────►│  cursor-agent -p │
-│  owns chrome.debugger│                │  :8787       │               │  (the agent loop)│
-└──────────────────────┘                └──────────────┘               └──────────────────┘
-```
+The CLI you already have is the brain. Endoplexity adds the hands (a local
+bridge with 18 browser tools) and the face (a side panel that shows every
+step). The extension never talks to a model, the CLI never touches Chrome,
+and the safety gate sits in between, where nothing the model says can move it.
 
-The panel owns the CDP connection itself rather than handing it to the
-service worker, which sidesteps MV3's idle teardown. The bridge exposes 14
-browser tools over MCP, and it's where the safety policy actually lives.
-Never in a prompt, so nothing the model says can widen its own permissions.
+## Reflexes: Laya and Jev
 
-**Tools:** `snapshot` `navigate` `click` `type` `key` `upload` `read_file`
-`select` `scroll` `hover` `back` `forward` `tabs` `use_tab`
+Most of what an agent decides on a page is multiple choice: which element is
+the Apply button, is this click irreversible, is this a cookie wall or a
+login. Reflexes answer those with small decision models instead of a frontier
+model's turn.
 
-Two decisions do most of the work here:
+<table>
+<tr>
+<td width="50%" valign="top">
 
-- **Pages go to the model as an accessibility-tree snapshot, not raw HTML.**
-  It's what the model actually needs, at a fraction of the bytes.
-- **Actions return the page they produced**, so acting and re-reading happen
-  in one turn instead of two. After the first read, only the lines that
-  changed get sent again.
+**[Laya](https://huggingface.co/convaiinnovations/laya)**, local and free.
+Convai's open model, 421M parameters, on your own GPU at about 100 ms a
+decision. It learns from your runs: `npm run reflex:train` fine-tunes it on
+what the big model decided, and keeps the new weights only if they score
+better.
 
-`read_file` reads an attached document as text (PDF, DOCX, XLSX, PPTX, CSV,
-JSON, Markdown, or any text file), so the agent can answer questions *about* an
-attachment instead of only pushing it into a form field. You attach one by
-dropping it on the composer — see [Files](#6-files).
+</td>
+<td width="50%" valign="top">
 
-## Getting started
+**[Jev](https://typesafe.ai)**, hosted and sharp out of the box.
+TypeSafe AI's decision model, 75% right on our held-out decisions with no
+training, and it sees pixels: on a
+bare canvas it placed three shapes at p = 0.99 and clicked each one. About
+$0.0002 a decision, off by default, opt-in twice.
 
-This takes about five minutes. No API key, no billing page, no dashboard to
-configure. Just Node, Chrome, and a CLI you probably already have logged in.
+</td>
+</tr>
+</table>
 
-### 1. Check what you need first
+A reflex earns the right to act: Shadow first, Act only after 50 decisions at
+95% agreement. Any reflex may add an approval; none may remove one.
 
-- **Node 24 or newer.** The bridge runs TypeScript directly, no build step,
-  and that only works on 24+. Check with `node -v`.
-- **Chrome 114 or newer.** 135+ gets themed dropdowns; anything older just
-  falls back to the native picker, nothing breaks.
-- **The `claude` CLI, the `cursor-agent` CLI, or both**, already logged in to
-  a real subscription. A **Claude Pro** plan is enough (you don't need Max);
-  pick Sonnet in the model dropdown once you're running, since reading a page
-  and clicking things doesn't need a frontier reasoning model.
+## Get started
 
-### 2. Clone it and install
+You need Node 24+, Chrome 114+, and one of the `claude`, `cursor-agent` or
+`codex` CLIs, logged in. A Claude Pro plan is enough.
 
 ```bash
-git clone https://github.com/Endokelp/Endoplexity.git
-cd Endoplexity
+git clone https://github.com/Endokelp/Endoplexity.git && cd Endoplexity
 npm install
+npm run setup   # Windows: start the bridge at every login
+npm start       # or start it now, on any OS
 ```
 
-### 3. Start the bridge
+Then open `chrome://extensions`, turn on **Developer mode**, click **Load
+unpacked** and pick the `extension/` folder. Open the side panel, type what
+you want done, press **Run**.
 
-```bash
-npm run setup
-```
+Files, Cursor and Codex logins, parallel lanes, scheduled runs, the plan lock
+and the audit export are all in **[the guide](docs/guide.md)**.
 
-This writes a small launcher into your Windows Startup folder, so the bridge
-comes up automatically every time you log in. No console window stays open,
-no token to copy anywhere. If you'd rather run it by hand instead (or you're
-not on Windows), `npm start` runs it in the foreground so you can watch its
-log directly. If something ever seems stuck, `.endo-bridge.log` at the repo
-root is the first place to look.
+## Safety, in short
 
-### 4. Load the extension into Chrome
+- The bridge listens on `127.0.0.1` only, and only your extension's pinned
+  origin can connect.
+- The agent gets browser tools and nothing else: no shell, no web fetch, no
+  files beyond the ones you attach, verified by asking each CLI to reach past
+  its tools.
+- Submitting, paying and deleting stop for your approval. Silence denies.
+- Files go to a page by a key you configured, never by a path the model picks.
+- Nothing the model proposes (a site note, a changed skill) is saved until you
+  approve it.
 
-1. Open `chrome://extensions`
-2. Turn on **Developer mode** (top right)
-3. Click **Load unpacked**
-4. Select the `extension/` folder from this repo
-
-You'll see the Endoplexity icon appear in your toolbar.
-
-### 5. (Optional) Log in to Cursor too
-
-Only needed if you want to run tasks through Cursor's models as well as
-Claude's:
-
-```bash
-npm run cursor-login
-```
-
-This is a one-time login into a bridge-owned Cursor profile, kept separate
-from your normal `cursor-agent` login so the two never collide.
-
-### 6. Files
-
-Drag a file onto the composer, paste one, or use the paperclip. It shows up as
-a chip, and from then on the agent can read it (`read_file`) or put it into a
-form field (`upload`). Any file type — anything it can't turn into text, it
-says so rather than guessing.
-
-The bridge keeps its own copy and hands the model a **key** (`resume`), never a
-path. Attachments survive restarts, and the `×` on a chip deletes the copy.
-
-If you'd rather point at a file where it already lives, `.endo-files.json` still
-works and behaves identically:
-
-```bash
-cp .endo-files.example.json .endo-files.json
-```
-
-```json
-{
-  "resume": "C:\\Users\\you\\Documents\\resume.pdf"
-}
-```
-
-Both files are gitignored, and so is the attachment directory — everything
-stays on your machine.
-
-### 7. Run your first task
-
-Click the Endoplexity icon to open the side panel, type what you want, and
-hit **Run**. A couple of things worth knowing right away:
-
-- `Enter` starts a fresh task. `Ctrl`/`Cmd`+`Enter` replies inside the
-  current conversation instead of starting over.
-- Type `@` in the box to hand the agent another tab you have open.
-- A fresh Run always attaches to whichever tab you're currently looking at,
-  so open the page you want it working on *before* you press Run.
-
-Try something low-stakes first, like summarizing whatever page you're on
-before you point it at a form. For a deeper look at what each part of the
-panel shows and how the approval gate behaves, see
-[docs/handrun.md](docs/handrun.md).
-
-## The safety model
-
-This drives a browser that's logged into your real accounts, so the
-boundaries here are worth stating plainly, including where they stop.
-
-- **Loopback only.** The bridge binds `127.0.0.1`, never `0.0.0.0`.
-- **The panel is identified by origin, not a shared secret.** The extension
-  ID is pinned by an RSA `key` in the manifest, and the WebSocket upgrade has
-  to match that exact origin. Page script can't forge an `Origin` header.
-  The `/mcp` endpoint, which a CLI reaches with no origin at all, is gated
-  instead by a token in a `0600` gitignored file, never passed on a command
-  line.
-- **The agent gets browser tools and nothing else.** Claude runs with an
-  explicit allowlist plus `--strict-mcp-config --setting-sources ""`; Cursor
-  runs in an isolated profile with `Shell`, `Write`, `Read`, and `WebFetch`
-  all denied. Both were verified by actually trying to run a shell command,
-  not by reading the documentation and hoping.
-- **Irreversible actions stop for a human.** Submitting, deleting, and
-  purchasing all hit an approval gate that lives in the bridge. Silence
-  denies. A disconnected panel denies.
-  **Know exactly what that check is:** it matches the clicked element's
-  visible label against a list of English words (`submit`, `pay`, `delete`,
-  `confirm`, and a few more). It's a label heuristic, not real understanding
-  of the page. A button labelled in another language, worded unusually
-  ("Finish", "Yes, place it"), or carrying only an icon will **not** be
-  caught. Use `watch` mode where that matters.
-- **Three autonomy modes** (`watch` / `normal` / `trust`), chosen in the
-  panel and enforced in the bridge. An absent or unrecognised mode falls
-  back to `normal`, never `trust`, so it fails closed. `trust` disables the
-  gate entirely, which is why the panel shows it in red the whole time it's
-  set. *(The demo above runs in `trust` mode, which is why you never see the
-  gate fire.)*
-- **Files resolve a configured key, never a model-supplied path.**
-  `DOM.setFileInputFiles` runs in the browser process and can read almost
-  anything, so a model-chosen path would be an exfiltration primitive. Note
-  the asymmetry: `upload` hands a file to a page without the model ever
-  seeing its contents, but `read_file` puts those contents directly in the
-  model's context. That allow-list is the whole boundary, so only put in it
-  what you actually mean to share.
-
-Found a hole? See [SECURITY.md](SECURITY.md) and please report it privately.
-
-## What it costs
-
-A complete job application, filled agent-driven on a real Greenhouse form:
-
-| | |
-|---|---|
-| Cost | **$0.0959** |
-| Tokens | 112,064 |
-| Turns | 10 |
-| Wall clock | 42s |
-
-That dollar figure is what the CLI reports as *equivalent* API spend. On a
-subscription, it's already covered by what you're paying monthly, which is
-the entire point of this project.
-
-The same task measured flat against a 5-tool baseline, even while carrying
-about 18k tokens more of tool schema, so going from 5 tools to 13 cost
-nothing per run in practice. Page returns were later cut **3.8x** by sending
-a full page once and then only the lines that changed afterward: 119,856 →
-31,626 tokens on a ten-turn Hacker News task.
+The full model, including where it stops: [the guide](docs/guide.md#the-safety-model).
+Found a hole? [SECURITY.md](SECURITY.md).
 
 ## Status
 
-Early. `v0.0.1`, and honest about it. The tool layer, approval gate, session
-continuity, and panel are all built and tested: **156 unit tests**, plus an
-in-panel self-test that drives the real CDP layer against a cross-origin
-fixture (run `await endo.selftest()` in the panel's own console).
-
-Known gaps, stated rather than hidden:
-
-- **Windows-first.** `npm run setup` installs autostart via a Startup-folder
-  script. macOS and Linux autostart aren't implemented yet, though the
-  bridge itself is portable and `npm start` works anywhere.
-- **Sessions live in the bridge's memory.** Restarting it ends resumability
-  on purpose: resuming into a Chrome that's moved on would hand the agent a
-  transcript full of stale element references.
-- Real ATS comboboxes usually aren't `<select>` elements, so they need a
-  click-then-click flow rather than the `select` tool.
-- `chrome://` pages and the Web Store can't be driven, since Chrome refuses
-  the debugger there.
-- After a lot of navigation, dead out-of-process iframe sessions can leave a
-  stray line of noise in a snapshot.
-
-## Development
-
-```bash
-npm test     # 156 tests, node:test, no framework, no build step
-npm start    # run the bridge in the foreground to watch its log
-```
-
-There's no bundler and no framework here. The extension is plain HTML and
-JS, and the bridge is TypeScript run directly by Node 24.
-
-[docs/handrun.md](docs/handrun.md) is the manual verification checklist.
+`v0.2.0`. Windows-first (autostart), portable everywhere else with `npm start`.
+318 tests, no framework, no build step. Known gaps are listed in
+[the guide](docs/guide.md#status), not hidden.
 
 ## Licence
 
 [Apache-2.0](LICENSE). See [NOTICE](NOTICE) for trademark attribution.
 
-> Independent project. Not affiliated with, endorsed by, or sponsored by
-> Perplexity AI, Anthropic, or Anysphere.
+<sub>Independent project. Not affiliated with, endorsed by, or sponsored by
+Perplexity AI, Anthropic, Anysphere, OpenAI, Google, Convai or TypeSafe AI.</sub>

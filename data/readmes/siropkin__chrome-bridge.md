@@ -18,7 +18,7 @@ Use it to inspect a page, check a user flow, fill a form, or investigate network
 
 Needs macOS or Linux (Git Bash on Windows), Chrome ≥ 117 and Node ≥ 18.
 
-**Chrome Web Store (easiest).** Install the extension, click its toolbar button, choose **Copy setup prompt for your AI agent**, and paste the prompt to your agent (Claude Code, Cursor, …). The agent downloads the bridge, starts it, checks the connection and reports back. The popup shows ● bridge ready when it's done.
+**Chrome Web Store (easiest).** Install the extension, click its toolbar button, choose **Copy setup prompt**, and paste the prompt to your agent (Claude Code, Cursor, …). The agent downloads the bridge, starts it, checks the connection and reports back. When it's done, the popup's title has a green dot and reads **Ready for your AI agent**.
 
 **From source.** Tell your agent:
 
@@ -93,7 +93,7 @@ git clone https://github.com/siropkin/chrome-bridge && cd chrome-bridge && ./ins
 
 Load the `extension/` folder as described above, then connect your agent the way `install.sh` prints: link the skill (Claude Code, Copilot in VS Code), or point any other agent at [SKILL.md](.claude/skills/chrome-bridge/SKILL.md), the operating manual.
 
-Check that it worked: `node cli.mjs health` should print `{"ok":true,"extension":true}`. You won't see anything in Chrome until the agent sends its first command; that's normal. To point the agent at one exact tab, use **Copy tab reference** in the toolbar popup and paste what it gives you (`id:… --profile <name>`). The popup's **Profile:** line shows the name the agent uses for the Chrome profile you're in, so you can answer when it asks which profile to use.
+Check that it worked: `node cli.mjs health` should print `{"ok":true,"extension":true}`. You won't see anything in Chrome until the agent sends its first command; that's normal. To point the agent at one exact tab, use **Copy tab ID for my agent** in the toolbar popup and paste what it gives you (`id:… --profile <name>`). The popup's header (*Chrome Bridge · poplar profile*) shows the name the agent uses for the profile you're in, so you can answer when it asks which profile to use.
 
 If chrome-bridge works for you, a [★ rating on the Chrome Web Store](https://chromewebstore.google.com/detail/chrome-bridge/kmhjlnokjigmnimgjjmiahlinjbcebkg) helps other people find it.
 
@@ -121,7 +121,7 @@ table "1. Playa Phone (playaphone.com) 122 poin… hide | 41 comments" @e14
   link "41 comments" @e21
 ```
 
-Writing your own agent loop? Skip the CLI and send JSON to `POST http://127.0.0.1:9333/cmd`, for example `{"type": "snap", "urlMatch": "…"}`.
+Writing your own agent loop? Skip the CLI and send JSON to `POST http://127.0.0.1:9333/cmd`, for example `{"type": "snap", "urlMatch": "…"}`, signed with your account's local key (unsigned requests get `401`). From Node: `import { bridgeFetch } from '<repo>/localauth.mjs'`, then `bridgeFetch('http://127.0.0.1:9333', '/cmd', { method: 'POST', body: JSON.stringify({ type: 'snap', urlMatch: '…' }) })`. From another language, the two-step protocol is described at the top of [`localauth.mjs`](localauth.mjs).
 
 ## Example workflows
 
@@ -137,10 +137,29 @@ A real run, checked live on GitHub: [recipes/github.com.md](recipes/github.com.m
 
 - **Every tab the agent touches wears a 🟣 pill**, including tabs it only reads. The pill shows what's happening right now (`🟣 taking screenshot…`) and keeps a history of past actions. Driven tabs also join a 🟣 tab group, which a page can't fake.
 - **⏏ on the pill disconnects the agent from that tab.** The bridge refuses subsequent commands until an explicit `mark`; the agent is instructed to ask you before reclaiming it. An action already running may still finish. This is a workflow control, not a security boundary against a malicious local agent.
-- **The toolbar popup releases the current tab, or every agent tab at once.**
+- **The toolbar popup hands a tab back in one click**: while the agent works in the tab you're on, **⏏ Release this tab** gives it back — the same as the ⏏ on the page's pill, and it also works on pages that can't show the pill (chrome://, PDF, the Web Store).
+- **Switch a profile off for local agents**: popup → ⚙ → **Local AI agents** (on by default). Off, that Chrome profile disconnects from the helper on your computer — agents there can't see or use it, and any tab they were driving is handed back. Cloud AI apps aren't affected.
 - **`node cli.mjs watch`** prints every command live in your terminal.
 
 ![Actual on-page action history and release control, enlarged from a local test session](docs/store/screenshot-5-controls.png)
+
+## Cloud Bridge (preview)
+
+Cloud Bridge lets cloud AI apps (Claude.ai, ChatGPT, other remote-MCP clients) drive this Chrome through a hub you sign in to, while your local agent keeps working. It's off until you pair a profile:
+
+1. Toolbar popup → ⚙ → turn on **Cloud AI apps** → **Connect** (the public Cloud Bridge is filled in; **Use another Cloud Bridge address** if you run your own hub). A tab opens on the hub: sign in with GitHub and click **Connect** (the code on that page is also on the chrome-bridge toolbar icon while it waits: its first 4 characters).
+2. The page that confirms it says **Now add Cloud Bridge to your AI app**: copy the link, **Open Claude** or **Open ChatGPT**, and follow the two or three lines under it. Later, the popup's **Add to Claude** / **Add to ChatGPT** (⚙ Settings, under Cloud AI apps) copy the link and open the same steps. Claude asks before each action; reading tools (list tabs, read a page, screenshot) can be allowed once for good, and **Always allow** works for the others you trust.
+
+Turning **Cloud AI apps** off signs this browser out of Cloud Bridge at once: it forgets the token and the hub forgets this profile, so AI apps stop listing it. Turning it on again connects anew. A connector added before any Chrome is connected already has the Chrome tools; until one connects they answer with how to connect it. The public hub (`https://cloud-bridge.ivan-seredkin.workers.dev`, a preview of [siropkin/cloud-bridge](https://github.com/siropkin/cloud-bridge)) is run by the chrome-bridge developer; [PRIVACY.md](PRIVACY.md) says what it keeps. You can deploy your own instead (its README shows how).
+
+**Your Cloud Bridge page** (`<hub>/app`, signed in with GitHub) lists the Chrome profiles you connected and the AI apps you allowed: **Rename** a profile (AI apps then pick it by that name, in the tools' `profile` argument or `--profile` in a command line; chrome-bridge keeps its own name on your computer), **Disconnect** one (the popup then says Cloud Bridge disconnected it; turn Cloud AI apps on to connect again), **Remove** an AI app, or **Delete my data**.
+
+What agents see while two links are on:
+
+- **Each link owns the tabs it drives.** A tab driven through the other link is read-only from yours (`snap`, `shot`, `measure`, `console`, `ask`, `perf`, `net`). Actions on it are refused with the next step: open your own tab.
+- **`tabs`** marks a tab another link drives with `"link":"Cloud Bridge"` (or `"link":"local"`). **`close --all`** closes only your link's tabs and reports the rest as `skipped` with a `note`.
+- **Cloud AI apps get one tool per step, plus two for everything else**: `chrome_tabs`, `chrome_snap`, `chrome_shot`, `chrome_measure`, `chrome_wait`, `chrome_release` (marked read-only, so you can allow them once instead of on every call), and `chrome_open`, `chrome_nav`, `chrome_click`, `chrome_fill`, `chrome_press`, `chrome_upload`, `chrome_close` (these still ask, unless you choose **Always allow**). `chrome {command}` takes any browser command line, in the same syntax as the CLI, and `chrome_batch {lines}` runs several in one round trip. `shot` returns the image (no file name needed). `upload` takes a public `https://` link or the file's bytes (base64 or a `data:` URL), up to 10 MB; Cloud Bridge downloads the link itself (only public addresses, never your network), and nothing reads your disk. `fetch --out <name>` and `net --har <name>` save the file at Cloud Bridge instead of your disk and return a download link that works for an hour and opens only when you're signed in to Cloud Bridge (the AI app can read it back through its connection). Commands that read your disk or clipboard or manage the local install (`paste` without text, `start`, `extreload`…) are refused with what to do instead. With several profiles connected, every tool takes `profile`.
+- **Cloud AI apps stay on the public web**: through Cloud Bridge, `open`, `nav` and `fetch` refuse `localhost`, private and link-local addresses (your router, NAS, this bridge's own port), `*.local` names and `file:` / `data:` / `view-source:` pages, before anything runs, and a tab that ends up at such an address anyway (the page navigates itself, a link, a redirect) can't be read or acted on through the cloud: only sent back to a public page, released or closed (and `net` leaves out requests to such addresses). Your local agent keeps that reach. A public web name that points into your network isn't caught.
 
 ## How it compares
 
@@ -167,7 +186,7 @@ Since Chrome 136 (May 2025), Chrome ignores `--remote-debugging-port` on your de
 
 You're giving an agent your logged-in browser, so the design assumes you want to watch it work.
 
-- **Local only.** The server listens on `127.0.0.1` and rejects requests that come from web pages, so a site you visit can't drive it. **Any local process can**, though. Unload the extension at `chrome://extensions` when you're not using it.
+- **Local only.** The server listens on `127.0.0.1` and rejects requests that come from web pages, so a site you visit can't drive it. Commands must also be signed with a key only your user account can read, created automatically when the server first starts (see *Local key* under Install detail). So a program run by **another user account** on the same computer can't send commands, and the CLI won't send yours to a program on port 9333 that can't prove it holds the same key. The extension proves itself to the server with the same key on every connection, and only after the server proved it first, so another account can neither pose as the server to your extension nor as your extension to the server. Programs you run yourself can always drive the bridge. Extensions older than 1.34 can't prove themselves: they still connect, with a warning in `health`, until they update.
 - **Readable code.** The whole extension is one unminified file (`extension/background.js`) plus a manifest. The Web Store build is the same files.
 - **Page content is untrusted.** Anything the bridge returns may contain prompt injection; the rules agents follow are in [the skill](.claude/skills/chrome-bridge/SKILL.md). Be careful with `upload`: it reads any local file the agent names into the page. Never let a page decide what gets attached.
 - **Exported history leaves out secrets.** `history --batch` comments out typed and pasted text, dialog answers and upload paths.
@@ -192,7 +211,7 @@ Safety checks cover bulk close and queued `--diff` actions: a human-reclaimed ta
 
 `eval` syntax failures now include a local line/column hint when available, without echoing your code. Fix the JavaScript or shell quoting before retrying; pass complex snippets through stdin with `eval <match> -`. The check runs only after Chrome reports a syntax error, so newer browser syntax is not blocked by your Node version.
 
-For a later review of failures, retry loops, and missing features, open the extension popup's **Settings** and enable **Diagnostic logging**. It is **off by default**, local only, and shared across connected profiles. Choose a rolling size limit (1-100 MiB, default 10 MiB); view usage or delete the logs in the same panel.
+For a later review of failures, retry loops, and missing features, open the extension popup's ⚙ Settings and turn on **Diagnostic logs**. It is **off by default**, local only, and shared across connected profiles. Choose a rolling size limit (1-100 MiB, default 10 MiB); view usage or delete the logs in the same panel.
 
 The JSONL files in `.diagnostics/` record correlated command outcomes, timings, error categories, and privacy-preserving fingerprints, not raw page content, input values, or eval code. The existing `watch`/`history` feed stays in memory; command activity is no longer written to `server.log`. See [collection, privacy, and week-later analysis](docs/diagnostics.md).
 
@@ -216,6 +235,8 @@ node cli.mjs extreload   # unpacked install only, when health asks for it
 
 **Server stopped.** If the server dies or the machine reboots, the agent's health check fails and the agent restarts it with `node cli.mjs start`.
 
+**Local key.** The server creates a random key the first time it starts, readable only by your user account: `~/Library/Application Support/chrome-bridge/` on macOS, `~/.config/chrome-bridge/` on Linux (`$XDG_CONFIG_HOME` if set), `%LOCALAPPDATA%\chrome-bridge\` on Windows. The CLI signs every command with it, and you never handle it. A key other accounts could read is replaced on the next command, and a deleted one comes back. If a command says the server *predates local authentication* (you updated the checkout but the old server still runs) or *couldn't prove it is this OS user's chrome-bridge server*, run `node cli.mjs stop && node cli.mjs start`. `start` replaces an old server by itself. The extension reads the key through Chrome's native messaging: the server registers a small helper (`native-host.sh`, or `native-host.cmd` on Windows, in that folder) in each installed Chromium browser's folder (on Windows, in the registry) and in the `--user-data-dir` of running Chromes. The Web Store update to 1.34 asks you once to accept the new "communicate with cooperating native applications" permission; Chrome pauses the extension until you do. If the popup says this browser can't reach Chrome Bridge, its **Copy fix prompt** gives your agent the fix.
+
 **Port.** Everything uses `127.0.0.1:9333`. `BRIDGE_PORT` moves the server and CLI, but the extension always connects to 9333, so you'd have to edit `extension/background.js` too. If `server.log` shows `EADDRINUSE`, something else holds 9333: find it with `lsof -i :9333`. It's often an old server from another checkout; `node <that-repo>/cli.mjs stop` frees it.
 
 **Windows.** `install.sh` needs bash (Git Bash works). The bridge itself is plain Node, so `node server.mjs` and every `cli.mjs` command work anywhere.
@@ -225,6 +246,13 @@ node cli.mjs extreload   # unpacked install only, when health asks for it
 **AI features.** `ask`, `snap --find` and `console --ask` use Chrome's built-in Gemini Nano and need Chrome ≥ 138.
 
 </details>
+
+## Uninstall
+
+Toolbar popup → ⚙ → **Remove Chrome Bridge**:
+
+1. **Copy uninstall prompt** and paste it into your AI agent. It runs `node cli.mjs uninstall`, shows you what it would remove (the local server, the agent skill in `~/.claude/skills`, the bridge folder with its logs and settings, and the local key folder with Chrome's pointers to its helper unless another bridge folder still uses them), and removes it once you agree (`uninstall --yes`). Nothing of yours is deleted: a git checkout with local edits, untracked files, a stash, other worktrees or commits origin doesn't have (on any branch, tag or a detached HEAD) is kept and listed, and so is a bridge folder inside another git project or a submodule. From a download without git, your saved `recipes/` are moved next to it first.
+2. **Remove extension**: Chrome asks you to confirm. This also deletes everything the extension stored, including a Cloud Bridge sign-in.
 
 ## Development
 

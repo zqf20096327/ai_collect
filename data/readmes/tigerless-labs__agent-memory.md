@@ -238,7 +238,7 @@ tool_mode = "auto" # supported Hosts use native tools; use "text" for compatibil
 
 [executor.manage]
 reasoner = "host"
-host = "muse-code" # native Manage supports "codex", "hermes", and "muse-code"
+host = "muse-code" # native Manage supports "claude-code", "codex", "hermes", and "muse-code"
 tool_mode = "text" # set "native" for the experimental bounded Host reviewer
 timeout_seconds = 120
 
@@ -271,13 +271,14 @@ or gcloud authentication. `tool_mode = "text"` forces the compatibility protocol
 without an accepted submission writes nothing and leaves the backlog for retry.
 
 Manage keeps the text-verdict path by default. An explicit
-`[executor.manage] tool_mode = "native"` selects the experimental Codex, Hermes, or Muse reviewer.
+`[executor.manage] tool_mode = "native"` selects the experimental Claude Code, Codex, Hermes, or
+Muse reviewer.
 It starts one isolated Host process with only `list_proposals`, `read_evidence`, and
 `submit_verdicts`; proposal summaries arrive first and bodies are opened on demand. These tools
 cannot record, correct, supersede, merge, delete, or access arbitrary paths. A complete structured
 submission returns to the existing Manage cap, open-proposal, source-hash, `decide()`, Store,
 Ledger, and Dream Report path. Missing or stale submissions fail the run without a success report
-or transport fallback. Endpoint Manage and Claude Code remain on text mode. Review tool calls,
+or transport fallback. Endpoint Manage remains on text mode. Review tool calls,
 evidence reads, wall time, and Host token/cache totals (when its output supplies them) are
 recorded in the report. For Codex JSONL runs, wall time is also divided into startup (launch to
 the first lifecycle event), MCP call intervals, shutdown (completed turn to exit), and the
@@ -505,6 +506,30 @@ mem decide <id> --accept
 
 Manage borrows its reasoning from the host CLI you point it at, writes a dream report for the
 pass, and cannot delete anything unattended.
+
+## Write jobs
+
+A boundary distillation is a durable job, not a fire-and-forget process: the hook enqueues the
+job, then spawns a worker that runs exactly it, and a crash is recovered from the queue by the
+next lifecycle event.
+
+```bash
+mem jobs list                # queued, running, failed, dead jobs
+mem jobs show <id>           # one job with its lease, attempts and trace path
+mem jobs show <id> --trace   # that run's trace, bounded and redacted
+mem jobs retry <id>          # return a dead, failed or cancelled job to the queue
+mem jobs cancel <id>
+mem jobs gc                  # drop terminal jobs and expired traces
+mem distill --drain          # claim and run every due job
+```
+
+Each run appends a JSONL trace under the job's state directory: transport, batches, rounds,
+tool-call digests, applied and rejected operations, repair rounds, usage, and finish counts.
+Strings are redacted; bodies are recorded as digests unless `write.jobs.trace_bodies` is
+enabled. Knobs live under `[write.jobs]` in `config.toml`: `jobs_dirname`, `lease_seconds`,
+`heartbeat_seconds`, `max_attempts`, `backoff_base_seconds`, `backoff_max_seconds`,
+`backoff_jitter`, `retention_days`, `trace_enabled`, `trace_bodies`, `trace_max_bytes`, and
+`error_max_chars`.
 
 ## Develop
 

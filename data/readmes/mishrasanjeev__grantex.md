@@ -1,3 +1,16 @@
+> [!IMPORTANT]
+> **Commercial agreement required.** Any organisation must sign a commercial
+> agreement with Orchestrum Technologies LLP before using, evaluating,
+> self-hosting or deploying the Grantex platform (the auth service, developer
+> portal, specification text, documentation and website), or using the hosted
+> service commercially. Use without a signed agreement is not licensed under the
+> [Orchestrum Personal Use License 1.0](LICENSE): it infringes Orchestrum's
+> copyright, and your rights under the licence end under its section 5
+> (Termination). An individual's own personal use is free, and the SDKs and
+> client packages are open source under the Apache License 2.0. Contact
+> [sanjeev@orchestrum.in](mailto:sanjeev@orchestrum.in) and see
+> [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md).
+
 <div align="center">
 
 # Grantex
@@ -1992,23 +2005,4 @@ read_calendar = create_grantex_tool(
 from grantex_strands import create_grantex_tool
 
 read_calendar = create_grantex_tool(
-    name="read_calendar",
-    description="Read upcoming calendar events",
-    grant_token=grant_token,
-    required_scope="calendar:read",
-    func=get_calendar_events,
-)
-# Returns a Strands-compatible tool — pass into your Strands agent tools list
-```
-
-**CLI** (90+ commands, all support `--json` for AI agent / scripting use):
-
-```bash
-grantex config set --url https://api.grantex.dev --key YOUR_API_KEY
-grantex me                                            # check identity
-grantex agents register --name "Bot" --description "..." --scopes email:read
-grantex agents update ag_... --redirect-uri https://client.example/grants/callback
-grantex authorize --agent ag_... --principal user@example.com --scopes email:read
-grantex tokens exchange --code <code> --agent-id ag_...
-grantex tokens verify <jwt>
-grantex tokens refresh 
+    name="read_ca

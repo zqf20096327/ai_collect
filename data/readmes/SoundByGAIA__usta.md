@@ -14,6 +14,8 @@ kılan harness** (araç çağrısı, bağlam yönetimi, doğrulama döngüsü, d
 
 ## Hızlı başlangıç
 
+**Hiç kod bilmiyorsan, Windows kullanıyorsan ya da tabletten kullanmak istiyorsan:** [docs/baslangic.md](docs/baslangic.md) (adım adım, sade anlatım; `pip install usta` yeterli).
+
 PyPI'den: `uv tool install usta` (ya da `pip install usta`). Kaynaktan:
 
 ```bash
@@ -180,3 +182,7 @@ sunulur. Portal yalnız gözden geçirilmiş katalogdan ekler (her zaman konteyn
 ## Lisans
 
 Apache-2.0. Bkz. [LICENSE](LICENSE).
+
+## Emek verenler
+
+Ordis. Uğur Can Leba (Ordis mimarı, kurucu) ve Claude (Anthropic, Ordis mimarı, yapay zekâ ortak geliştirici); Berke Dündar (güvenlik ve geliştirme, CTO); Ceren Yıldız (başöğretmen ve yerelleştirme). Adlar [NOTICE](NOTICE) dosyasında yazılıdır; Apache-2.0 4(d) gereği türev çalışmalarda korunmalıdır.

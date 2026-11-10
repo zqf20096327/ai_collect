@@ -211,6 +211,30 @@ metadata:
 | `stacks-api.ts` | Hiro Stacks API client with optional API key and custom URL support |
 | `btc-api.ts` | Bitcoin API client: mempool.space (fees/UTXOs/broadcast) + Hiro Ordinals API |
 
+## Installation
+
+Every skill runs with [Bun](https://bun.sh), either installed on its own or from a full checkout.
+
+**One skill, on its own.** `npx skills add` copies the skill's folder, including a generated `package.json`. Run `bun install` in that folder once; it installs the skill's npm packages and, for skills that use the shared code in `src/lib/`, this repository straight from GitHub (no npm registry involved):
+
+```bash
+npx skills add aibtcdev/skills/x402      # or: npx skills add aibtcdev/skills --skill x402
+cd .agents/skills/x402                   # wherever your agent installed it (-g: ~/.agents/skills/x402)
+bun install
+bun run x402.ts list-endpoints           # read-only; no wallet needed
+```
+
+**Everything, from a checkout.** Clone the repo and install once; every skill runs from the repo root:
+
+```bash
+git clone https://github.com/aibtcdev/skills.git
+cd skills
+bun install
+bun run x402/x402.ts list-endpoints
+```
+
+Skills import shared code as `@aibtc/skills/...` (for example `@aibtc/skills/src/lib/utils/cli.js`). In a checkout, `tsconfig.json` maps that to the repo itself; in an installed skill folder it resolves to the copy `bun install` fetched. `skills.json` lists `"install": "bun install"` for every skill that needs that step. `bun run validate` fails a skill that imports anything outside its own folder or an npm package the root `package.json` doesn't declare, or whose generated `package.json` is stale, and CI installs every skill on its own and runs it (`bun run check:standalone`).
+
 ## Prerequisites
 
 ### Runtime

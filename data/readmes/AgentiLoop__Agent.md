@@ -345,7 +345,7 @@ Deleted scripts go to `~/Documents/AgentScript/agents/.Trash/` (`agent_script(ac
 - **Tunable cut-off.** Settings → LLM Common Settings → **Reject at … % destructive**, 0–100% in 10% steps. Default **70%**.
 - **Fail-open by design.** No API key, the **Consult Jev before tools** toggle off, or a TypeSafe outage means "no opinion" — the command proceeds and the failure is logged, never silently treated as a safe verdict. Cancelling a task during a Jev check stops the command.
 - **Visible.** Every check logs the destructive-risk percentage, the allowed/refused verdict, the answering model, and input/output token counts.
-- **Configuration.** API key (stored in the Keychain), model picker with catalog refresh, and the advisory toggle all live in LLM Common Settings. The client lives in the bundled `TypeSafeKit` / `TypeSafeMiddleware` Swift package.
+- **Configuration.** API key (stored in the Keychain), model picker with catalog refresh, and the advisory toggle all live in LLM Common Settings. The client lives in the [`TypeSafeKit` / `TypeSafeMiddleware`](https://github.com/AgentiLoop/TypeSafeKit) Swift package.
 
 ## Privacy & Safety
 
@@ -408,13 +408,11 @@ Agent! is the result of three years of building agentic AI apps — ANIE, Game C
 
 ## Reverse Engineering with Agent!
 
-![Agent! 1.1.95](docs/agent-1.1.95-screenshot.png)
-
 Agent! is also a reverse-engineering workbench. It reads disc images and ROMs, writes the extraction tools, studies the decompiled code, and rebuilds the game in the browser while checking its work against the original data. Four racing games and one fighting game were built this way:
 
 | Game | What Agent! did | Play |
 |---|---|---|
-| 🚕 [CrazyTaxi](https://github.com/AgentiLoop/CrazyTaxi) | Three.js rebuild of the Sega Dreamcast *Crazy Taxi* (USA). Python tools pull the courses, vehicles, characters, motions and audio from your own disc. Collision code is ported from the decomp and checked against the extracted course data | Bring your own disc |
+| 🚕 [CrazyTaxi](https://github.com/AgentiLoop/CrazyTaxi) | Three.js rebuild of the Sega Dreamcast *Crazy Taxi* (USA). Python tools pull the courses, vehicles, characters, motions and audio from your own disc. Collision code is ported from the decomp and checked against the extracted course data | [ct.gokart.games](https://ct.gokart.games) |
 | 🍄 [MarioKart64JS](https://github.com/AgentiLoop/MarioKart64JS) | Mario Kart 64 rebuilt in Three.js, not emulated. Courses, karts, music and voices come from the original N64 ROM, with all 16 courses, battle arenas, 15 items, HD textures and online play | [mk64js.gokart.games](https://mk64js.gokart.games/play) |
 | 🏎️ [F1](https://github.com/AgentiLoop/F1) | Open-wheel racer with an AI field on 18 real circuits. Layouts, elevation and banking are rebuilt from real car positions and telemetry from the OpenF1 API | [f1.gokart.games](https://f1.gokart.games) |
 | 🏁 [GoKart](https://github.com/AgentiLoop/GoKart) | Original Godot 4 kart racer that recreates Mario Kart 64's rules (slipstream, engine classes, Grand Prix scoring, menus, music cues) with everything generated from code, plus online multiplayer | [gokart.games](https://gokart.games) |

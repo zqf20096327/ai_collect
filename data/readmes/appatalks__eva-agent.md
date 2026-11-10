@@ -13,6 +13,23 @@ while keeping configuration, approvals, and personal data under your control.
 - **One intelligent gateway:** route work across OpenAI, GitHub Copilot ACP, the
   SI Harness for OpenAI-compatible endpoints, and MCP tools without changing the
   conversation model.
+- **Thinking control:** show or hide available model reasoning and request it
+  on or off; individual models and providers may ignore or reject the request.
+- **Operations visibility:** background jobs are grouped by purpose, activity
+  can be filtered, job settings persist across restarts, and scheduled-task
+  attempts show their outcome. Opt-in background ACP autonomy decides bounded
+  permissions without interrupting chat and reports blocked actions.
+- **Network research:** web fetch can access localhost and private networks,
+  including redirects from public sites. Untrusted pages may therefore cause
+  requests to local services, including endpoints that act on GET requests.
+  Explicitly named research skills can run a configured news search and
+  report the bounded retrieval outcome before synthesizing a response.
+  Active ACP lookups stay connected within a bounded time budget; timeouts
+  surface as errors instead of silently completing with a progress message.
+- **Opt-in goal work:** a local model can continue work in a retained, isolated
+  Eva Ready worktree per goal, one round at a time, with randomized delays.
+- **Advisory PR readiness:** repository automation posts commit-specific
+  GPT-6.1 Terra feedback without replacing required CI and security checks.
 - **Flexible SI Harness runtime:** keep the backward-compatible Eva Direct path,
   or run the same SI endpoint/model through an isolated Copilot CLI ACP session
   for unified tool-capable chat. SI-Copilot fails explicitly when its endpoint or
@@ -64,6 +81,8 @@ while keeping configuration, approvals, and personal data under your control.
   A local Mission log checklist preserves final debriefs across restarts before
   eligible finished crew are dismissed; active dependencies and a one-minute
   reuse window are protected.
+  The Captain's notepad records new workspace and background permission blocks
+  and supports confirmed deletion of individual entries or the entire log.
 - **Signal account linking:** Settings > Accounts provides a Link Signal button,
   an in-panel QR code, completion status, cancellation, and fresh codes after
   expiry. Existing recipients and prior local account files are preserved.
@@ -84,7 +103,7 @@ eva
 Eva is also added to the system application menu. On first launch, select **Eva (AIG)**
 for the integrated routing, memory, and tool experience.
 
-Current development version: **5.7.1** (`Eva Standalone-5.7.1.AppImage`, unreleased).
+Current development version: **5.7.3** (`Eva Standalone-5.7.3.AppImage`, unreleased).
 Latest published standalone release: `Eva Standalone-5.6.10.AppImage`.
 
 ## Preview

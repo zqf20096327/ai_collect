@@ -6,6 +6,8 @@
 
 This repository tracks papers and resources about large language models (LLMs) in the legal domain.
 
+> Daily update 2026-11-10 (cs.CL): scanned all 207 papers on the dated list; added 7 title-deduplicated papers on legal workflow evaluation, cross-jurisdiction patent drafting, Tajik legal retrieval, Vietnamese legal-citation provenance, and scraping compliance. Category increments: Applications +4, Legal Reasoning Models +0, Legal Agent +0, Legal Problems +1, Data Resources +4, Law LLMs +0, Evaluation +6. WorkflowArena has 22 legal tasks within a broader 145-task benchmark; the two embedders are not law-specific LLMs, and the ontology is included as a legal data resource. Website-policy compliance does not determine legality, retrieval scores do not certify legal answers, and reference similarity does not establish patent grantability. Generic moderation, privacy protection, clinical-design guidance, police-activity statistics, and non-legal uses of policy or contract were excluded. The archive date follows the dated cs.CL list, not the original submission date.
+
 > Daily update 2026-11-06 (cs.CL): scanned all 94 papers on the dated list; added 2 title-deduplicated papers on Arabic legal-model adaptation/compression and audits of rule-based benchmarks with explicit tax and statutory-exemption tasks. Category increments: Applications +0, Legal Reasoning Models +0, Legal Agent +0, Legal Problems +0, Data Resources +1, Law LLMs +1, Evaluation +2. Compression results are limited to Saudi Arabic legal tests; rescoring gains do not represent improved model responses, and BAR does not certify every revised legal target. Generic finance, social-engineering safety, training-data attribution, and non-legal uses of policy, judge or contract were excluded. The archive date follows the dated cs.CL list, not the original submission date.
 
 > Daily update 2026-11-05 (cs.CL): scanned all 90 papers on the dated list; added 5 title-deduplicated papers on rubric-evolving legal retrieval, banking conduct-rule testing, legislative-hearing parsing, contractual accountability for AI agents, and statutory AI-assurance duties. Category increments: Applications +1, Legal Reasoning Models +1, Legal Agent +1, Legal Problems +3, Data Resources +2, Law LLMs +0, Evaluation +3. Banking-manual violations are not necessarily violations of law. Grassroots Contracts is included for explicit accountability undertakings and proposed court recourse, not merely software contracts; the assurance paper is included for its substantive analysis of statutory testing, suspension and enforcement duties, not general policy-topic classification. Generic privacy, author impersonation without a concrete legal task, and non-judicial uses of judges or verdicts were excluded. The archive date follows the dated cs.CL list, not the original submission date.
@@ -58,6 +60,14 @@ This repository tracks papers and resources about large language models (LLMs) i
 - [Evaluation](#evaluation)
 
 ## Applications of Large Language Models in Legal Tasks
+
+- A Large-Scale Dataset for Cross-Lingual Multi-Jurisdiction Patent Drafting from Patent Cooperation Treaty Applications [paper](https://arxiv.org/abs/2611.11891) — Generates complete patent claim sets across Japanese/English, JPO/USPTO jurisdictions and prosecution stages. A shared QLoRA adapter is the strongest overall tested baseline; generated amendments still require supporting specifications and prosecution evidence.
+
+- Saidzoda-CA-EmbeddingGemma-300M: One Small Embedder for Tajik, Kazakh, Uzbek and Kyrgyz [paper](https://arxiv.org/abs/2611.11471) — Extends a Tajik embedder to four Central Asian languages and explicitly tests retention of Tajik law and tax retrieval. It is a general multilingual retriever, not a law-specific foundation model.
+
+- Saidzoda-Tajik-EmbeddingGemma-300M: Knowing Every Letter Is Not Reading Tajik [paper](https://arxiv.org/abs/2611.11243) — Fine-tunes a 300M embedder on generated question–passage pairs including laws and tax documents; tests retrieval on held-out laws, not legal advice or judicial decisions.
+
+- Cascading Circle Loss: Order-Preserving Contrastive Learning for Graded Legal Retrieval [paper](https://arxiv.org/abs/2611.10765) — Fine-tunes Qwen3-Embedding-0.6B with InfoNCE, graded-relevance ranking boundaries and negative-aware self-pacing for multilingual contractual-clause retrieval.
 
 - Discourse Analysis of Legislative Bill Discussions [paper](https://arxiv.org/abs/2611.05381) — Parses stages of California legislative bill hearings using discourse grammar, hand-crafted features, output masking and smoothing. The best tested classifier is logistic regression, not a generative legal LLM; language models assist annotation.
 
@@ -406,6 +416,8 @@ This repository tracks papers and resources about large language models (LLMs) i
 
 ## Legal Problems of Large Language Models
 
+- ScrapeBench: Evaluating Legal Compliance of AI Agents in Website Scraping [paper](https://arxiv.org/abs/2611.11306) — Studies agent adherence to website ToS and robots.txt in an explicit contractual/computer-security-law setting. The authors caution that these policy labels do not determine whether any particular action is legally permissible or unlawful.
+
 - The Harness Is the Model: Agent Scaffolding Changes a Fixed LLM's Compliance with Banking Conduct Rules, Unevenly Across Models [paper](https://arxiv.org/abs/2611.06116) — Separates executed actions from stated refusals under rules derived from EU consumer-credit, payments, investor-protection, data-protection and AML provisions. Some manual rules are stricter than the law, so the measured violations are not necessarily legal violations.
 - Corralling AI Risks with Grassroots Contracts [paper](https://arxiv.org/abs/2611.06374) — Proposes signed contractual undertakings allocating responsibility for AI-agent defects and reckless operation, with attribution records for court recourse. Protocol enforcement, attested evidence and external undertakings are distinct; jurisdiction-specific enforceability and successful legal remedies are not established.
 - Beyond accuracy: what AI assurance needs to establish in public services [paper](https://arxiv.org/abs/2611.06655) — Connects LLM reliability measurements to documentary analysis of statutory testing, oversight, suspension and enforcement duties, including EU AI Act provisions. Its 37-document sample mixes legal and non-binding material; it does not measure actual legal compliance or enforcement effectiveness.
@@ -511,6 +523,14 @@ This repository tracks papers and resources about large language models (LLMs) i
 
 ## Data Resources for Large Language Models in Law
 
+- WorkflowArena: Benchmarking Executable Workflow Orchestration in LLM-Based Multi-Agent Systems [paper](https://arxiv.org/abs/2611.12856) — Includes 13 merger-contract portfolio tasks and 9 multi-party adjudication tasks grounded in Chinese criminal judgments within a 145-task, eight-domain benchmark. It is not an exclusively legal dataset.
+
+- A Large-Scale Dataset for Cross-Lingual Multi-Jurisdiction Patent Drafting from Patent Cooperation Treaty Applications [paper](https://arxiv.org/abs/2611.11891) — Links 884,179 Japanese–English PCT-derived patent families into 4,067,168 directional claim-set instances across six configurations, with chronological, family-disjoint splits; four configurations form the core benchmark.
+
+- Vietnamese Legal Ontology: Every legal answer, traced to the article that grounds it [paper](https://arxiv.org/abs/2611.11426) — Integrates four open datasets into a provenance-bearing legal graph with 11.5 million nodes and 16.0 million edges. The abstract reports 61,487 version-resolved provisions out of 67,868 cited provisions, with 19,012 verbatim-confirmed; this is not complete legal-answer verification or a new LLM. Abstract-level verification only: HTML full text was unavailable.
+
+- ScrapeBench: Evaluating Legal Compliance of AI Agents in Website Scraping [paper](https://arxiv.org/abs/2611.11306) — Provides a snapshot of ToS/robots.txt annotations for 1,895 high-traffic, English, US-accessible websites: 1,626 prohibit scraping and 269 do not under the benchmark's labels. Terms can change, so future evaluations require revalidation.
+
 - Follow the Policy, Fail the Benchmark: Auditing and Revising Policy-Based Decision Benchmarks [paper](https://arxiv.org/abs/2611.07042) — BAR provides versioned audit evidence, 300 paired RuleArena Tax references, and revised scorers including LegalBench SARA; supported corrections are separated from conditional or unresolved targets, and not all nine audited benchmarks are legal.
 
 - The Harness Is the Model: Agent Scaffolding Changes a Fixed LLM's Compliance with Banking Conduct Rules, Unevenly Across Models [paper](https://arxiv.org/abs/2611.06116) — Releases a simulated banking-conduct test suite with 156 cases across 11 rule families and 3,120 two-turn episode traces; rules are paraphrases plus internal controls, not a verbatim statutory benchmark.
@@ -609,38 +629,4 @@ This repository tracks papers and resources about large language models (LLMs) i
 - ANNOTARES: A Dataset for Extracting Logical Structures from German Statutory Texts [paper](https://papers.cool/arxiv/2608.03898)
 - CrossLex: A Source-Grounded Benchmark for Cross-Jurisdictional Legal Reasoning in Large Language Models [paper](https://papers.cool/arxiv/2608.01292)
 - Credit Cards, Confusion, Computation, and Consequences: What Can We Uncover About Language Model Reasoning? [paper](https://papers.cool/arxiv/2607.26952)
-- CAIL2018: A Large-Scale Legal Dataset for Judgment Prediction
-- When does pretraining help? assessing self-supervised learning for law and the casehold dataset of 53,000+ legal holdings
-- LeCaRD: a legal case retrieval dataset for Chinese law system
-- LeXFiles and LegalLAMA: Facilitating English Multinational Legal Language Model Development
-- Legal Extractive Summarization of U.S. Court Opinions
-- Awesome Chinese Legal Resources [github](https://github.com/pengxiao-song/awesome-chinese-legal-resources)
-- MultiLegalPile: A 689GB Multilingual Legal Corpus [paper](https://arxiv.org/pdf/2306.02069v1.pdf)
-- The Cambridge Law Corpus: A Corpus for Legal AI Research
-- TransformLLM: Adapting Large Language Models via LLM-Transformed Reading Comprehension Text [paper](https://arxiv.org/abs/2410.21479)
-- Natural Language Processing for the Legal Domain: A Survey of Tasks, Datasets, Models, and Challenges [paper](https://arxiv.org/abs/2410.21306)
-- ChineseSafe: A Chinese Benchmark for Evaluating Safety in Large Language Models [paper](https://arxiv.org/abs/2410.18491)
-- Augmenting Legal Decision Support Systems with LLM-based NLI for Analyzing Social Media Evidence [paper](https://arxiv.org/abs/2410.15990)
-- CaseSumm: A Large-Scale Dataset for Long-Context Summarization from U.S. Supreme Court Opinions [paper](https://arxiv.org/abs/2501.00097)
-- From Answers to Guidance: A Proactive Dialogue System for Legal Documents [paper](https://papers.cool/arxiv/2510.19723)
-- A Greek Government Decisions Dataset for Public-Sector Analysis and Insight [paper](https://arxiv.org/abs/2512.05647
-- Data Augmented Pipeline for Legal Information Extraction and Reasoning [paper](https://papers.cool/arxiv/2601.05609)
-- Domain-Adaptation through Synthetic Data: Fine-Tuning Large Language Models for German Law [paper](https://papers.cool/arxiv/2601.14160)
-- Knowledge Augmented Entity and Relation Extraction for Legal Documents with Hypergraph Neural Network [paper](https://papers.cool/arxiv/2602.08289)
-- Quecto-V1: Empirical Analysis of 8-bit Quantized Small Language Models for On-Device Legal Retrieval [paper](https://papers.cool/arxiv/2602.16640)
-- SinhaLegal: A Benchmark Corpus for Information Extraction and Analysis in Sinhala Legislative Texts [paper](https://papers.cool/arxiv/2603.04854)
-- LAMUS: A Large-Scale Corpus for Legal Argument Mining from U.S. Caselaw using LLMs [paper](https://papers.cool/arxiv/2603.08286)
-- RoLegalGEC: Legal Domain Grammatical Error Detection and Correction Dataset for Romanian [paper](https://papers.cool/arxiv/2604.19593)
-- Automatic Construction of a Legal Citation Graph from 100 Million Ukrainian Court Decisions: Large-Scale Extraction, Topological Analysis, and Ontology-Driven Clustering [paper](https://papers.cool/arxiv/2605.15362)
-- Temporal Decay of Co-Citation Predictability: A 20-Year Statute Retrieval Benchmark from 396M Ukrainian Court Citations [paper](https://papers.cool/arxiv/2605.17639)
-- IMLJD: A Computational Dataset for Indian Matrimonial Litigation Analysis [paper](https://papers.cool/arxiv/2605.19346)
-- Fine-grained Claim-level RAG Benchmark for Law [paper](https://papers.cool/arxiv/2605.21071)
-- A Reproducible Universal Dependencies-Style Pipeline for Katharevousa Greek Parliamentary Text [paper](https://papers.cool/arxiv/2605.22978)
-- Temporal Concept Drift in Legal Judgment Prediction: Neural Baselines Across Three Epochs of Ukrainian Court Decisions [paper](https://papers.cool/arxiv/2605.24452)
-- Bundesrecht: An Open Library and Corpus for German Statutory Reference Processing [paper](https://papers.cool/arxiv/2605.31338)
-- CanLegalRAGBench: Evaluating Retrieval-Augmented Generation on Canadian Case Law [paper](https://papers.cool/arxiv/2605.30497)
-- Scaling Multi-Hop Training Data via Graph-Constrained Path Selection [paper](https://papers.cool/arxiv/2605.31238)
-- ImmigrationQA: A Source-Grounded Dataset and Small-Model Adaptation for U.S. Immigration Law [paper](https://papers.cool/arxiv/2605.30589)
-- Citation Grounding: Detecting and Reducing LLM Citation Hallucinations via Legal Citation Graphs [paper](https://papers.cool/arxiv/2606.00898)
-- Enhancing BiGRU with a KAN Block for Legal Document Classification and Summarization [paper](https://papers.cool/arxiv/2606.00116)
-- Digging Up Citations: FOSSIL, a Dataset 
+- CAIL2018: A Large-Scale Legal Dataset for

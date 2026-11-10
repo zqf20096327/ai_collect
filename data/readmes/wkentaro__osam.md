@@ -23,9 +23,8 @@ optional shared server, and its commands and HTTP API follow
 
 *Osam* provides:
 
-- **Promptable Vision Models** - Segment Anything Model (SAM), EfficientSAM, YOLO-World;
-- **Local APIs** - CLI & Python & HTTP interface;
-- **Customization** - Host custom vision models.
+- **Promptable Vision Models** - Segment Anything Model (SAM), SAM2, SAM3, EfficientSAM, YOLO-World;
+- **Local APIs** - CLI & Python & HTTP interface.
 
 ## Installation
 
@@ -197,7 +196,7 @@ osam run efficientsam --image examples/_images/dogs.jpg > output.png
 
 # Get a JSON output
 osam run efficientsam --image examples/_images/dogs.jpg --json
-# {"model": "efficientsam", "mask": "..."}
+# {"model": "efficientsam:latest", "annotations": [{"bounding_box": {...}, "text": null, "score": null, "mask": "..."}]}
 
 # Give a prompt
 # 1. point prompt (x,y[,label]: foreground=1 by default, background=0)
@@ -255,12 +254,12 @@ import osam
 
 image = np.asarray(Image.open("examples/_images/dogs.jpg"))
 with osam.Client() as client:
-    annotation, = client.segment(
+    (annotation,) = client.segment(
         "efficientsam", image, points=[[1439, 504], [1439, 1289]], point_labels=[1, 1]
     )
 mask = np.zeros(image.shape[:2], dtype=np.bool_)
 bbox = annotation.bounding_box
-mask[bbox.ymin:bbox.ymax + 1, bbox.xmin:bbox.xmax + 1] = annotation.mask
+mask[bbox.ymin : bbox.ymax + 1, bbox.xmin : bbox.xmax + 1] = annotation.mask
 Image.fromarray(mask).save("mask.png")
 ```
 
@@ -290,7 +289,8 @@ same minor version of osam. Errors from the server raise `osam.ResponseError`.
 a private server, so a hung model stops.
 `client.pull(model, progress=...)` calls `progress` with each line; raising
 from it, such as when the user cancels, stops the download. A download that
-fails raises `RuntimeError`.
+fails raises `RuntimeError`, from `pull` and from a `segment` or `load` that
+has to download the model first.
 
 `osam.Client(in_process=True)` runs models in your own process instead, with
 no server, and takes the same calls. `device`, `max_loaded_models` and
@@ -319,15 +319,20 @@ request. The server keeps one model loaded. An application using two passes
 server, so they don't reload in turn; a full server unloads the least recently
 used model first. It also keeps the
 embeddings of recent images, so further prompts on the same image skip the
-image encoder. A response to a request with an image includes its
-`image_hash`, which further requests can send in place of the image; the
-server answers 412 when it no longer has
-that image, and `osam.Client` then sends the image. A model unloads 5 minutes after its last request; `keep_alive` changes that,
+image encoder. A response gives its image's reference, `"sha256:<hex>"`,
+in `image`, which further requests can send as `image` in place of the file;
+the server answers 412 with `"code": "missing_images"` and the references in
+`images` when it no longer has that image, and `osam.Client` then sends the
+image. A model unloads 5 minutes after its last request; `keep_alive` changes that,
 in seconds or as a duration such as `"10m"`, with `-1` to keep it loaded and `0`
 to unload it now. `/api/ps` lists the loaded models and `/api/version` the
-server's version. Errors come back as `{"error": "..."}`. `/api/models`,
+server's version. Errors come back as `{"error": "...", "code": "..."}`,
+where `code`, such as `"model_not_found"` or `"missing_images"`, stays the same
+across releases, and `osam.ResponseError.code` holds it. `/api/models`,
 `/api/pull` and `DELETE /api/models/{name}` match `osam list`, `osam pull` and
-`osam rm`. `/api/pull` streams NDJSON lines such as
+`osam rm`; each model in `/api/models` also lists its `capabilities`, such as
+`"segment"`, and the `prompt_kinds` it takes, such as `"points"` and
+`"texts"`. `/api/pull` streams NDJSON lines such as
 `{"status": "pulling encoder.onnx", "completed": 524288, "total": 24799761}` and
-ends with `{"status": "success"}` or `{"error": "..."}`. The full schema is at
+ends with `{"status": "success"}` or `{"error": "...", "code": "pull_failed"}`. The full schema is at
 <http://127.0.0.1:11368/docs>.

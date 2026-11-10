@@ -61,8 +61,35 @@ Your AI assistant forgets everything when you start a new chat. You spend 10 min
 **1. Install:**
 
 ```bash
-pip install mcp-memory-service
+pip install "mcp-memory-service[sqlite]"
 ```
+
+The `[sqlite]` extra brings the local ONNX embedding model. Without it, semantic
+search falls back to hash embeddings.
+
+<details>
+<summary><strong>Using uv instead of pip</strong></summary>
+
+Install the `memory` command into its own environment:
+
+```bash
+uv tool install "mcp-memory-service[sqlite]"
+```
+
+Or skip the install and let your client start the server through `uvx`:
+
+```json
+{
+  "mcpServers": {
+    "memory": {
+      "command": "uvx",
+      "args": ["--from", "mcp-memory-service[sqlite]", "memory", "server"]
+    }
+  }
+}
+```
+
+</details>
 
 **2. Configure your AI client:**
 
@@ -291,7 +318,7 @@ Backends, embedding models, quality scoring and every environment variable:
 - **[Configuration Guide](https://github.com/doobidoo/mcp-memory-service/blob/main/docs/mastery/configuration-guide.md)** – Backend options and customization
 - **[Architecture Overview](https://github.com/doobidoo/mcp-memory-service/blob/main/docs/architecture.md)** – How it works under the hood
 - **[Knowledge Graph Dashboard](https://github.com/doobidoo/mcp-memory-service/blob/main/docs/features/knowledge-graph-dashboard.md)** – Interactive graph visualization
-- **[Benchmarks](https://github.com/doobidoo/mcp-memory-service/blob/main/docs/BENCHMARKS.md)** – LongMemEval, DevBench, LoCoMo, with run commands
+- **[Benchmarks](https://github.com/doobidoo/mcp-memory-service/blob/main/docs/BENCHMARKS.md)** – LongMemEval, DevBench, LoCoMo, xerj agent-memory, with run commands
 - **[Migration Guide](https://github.com/doobidoo/mcp-memory-service/blob/main/docs/MIGRATION.md)** – Upgrading between major versions
 - **[Troubleshooting](https://github.com/doobidoo/mcp-memory-service/tree/main/docs/troubleshooting)** – Common issues and solutions
 - **[Wiki](https://github.com/doobidoo/mcp-memory-service/wiki)** – Long-form guides and API reference

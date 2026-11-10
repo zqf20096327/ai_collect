@@ -43,6 +43,9 @@ server.
   step between siblings with `‹ n/N ›` instead of a linear log.
 - **Media attachments** — images, audio and text files, gated on the model's
   reported modalities.
+- **Reply prefill** — start the model's reply with your own text and let it
+  continue from there (works on llama.cpp; other endpoints may ignore or
+  reject it).
 - **Chat import / export** — per-chat, multi-file import, and backup-all via the
   Storage Access Framework, in the RN-compatible JSON format.
 - **LAN endpoint discovery** — scan your subnet (configurable port and prefix)
@@ -107,9 +110,10 @@ server.
     OAuth sign-in.
 - **Endpoint presets and a model-picker pill** for switching servers and models
   in a couple of taps.
-- **Personalisation** — AMOLED-true-black theme with a custom accent colour,
-  composer nameplate art (bundled or your own image), and custom user /
-  assistant display names and profile pictures.
+- **Personalisation** — AMOLED-true-black theme with a custom accent colour
+  (optionally tinting every surface), composer nameplate art (bundled or
+  your own image), and custom user / assistant display names and profile
+  pictures, sized 30–42 dp in the conversation or hidden altogether.
 - **English and Simplified Chinese** interface, switchable in Settings or the
   system's per-app language screen (Android 13+). The Chinese translation is
   based on [@billertwerson-gif](https://github.com/billertwerson-gif)'s work in
@@ -144,7 +148,7 @@ independently.
   point at a **JDK**, not a JRE — if `./gradlew` is invoked directly with a JRE
   on `PATH` the build fails; `build.sh` handles this for you.
 
-Gradle 9.8.2 is pinned by the wrapper in
+Gradle 9.9.0 is pinned by the wrapper in
 `gradle/wrapper/gradle-wrapper.properties`; the rest of the toolchain is pinned
 in `gradle/libs.versions.toml`: AGP 9.5.0, Kotlin 2.4.21, KSP 2.3.12, Compose
 BOM 2026.09.00. AGP 9 supplies

@@ -86,7 +86,7 @@ strict version                            version and build time of this strict
 
 Needed tools: `mlir-opt`, `mlir-translate`, `clang`, `opt` and `llc` of LLVM 22 (on Windows the msys2 ucrt64 `mlir` package and the LLVM release). When they are missing `strict` installs them (Windows: winget and pacman, Linux: the LLVM release into `Tools/`, macOS: conda-forge with micromamba into `Tools/`). A build reruns a crashed external tool once (`ToolRunner.Retried`).
 
-Bootstrap a fresh checkout from the checked-in seed with `Compiler\Bootstrap.cmd` (Windows) or `sh Compiler/bootstrap.sh` (Linux and macOS): it builds a temporary compiler from the seed, which then builds `strict`. After changing the compiler rebuild it with `strict build Strict.strict`; building twice gives identical output.
+Bootstrap a fresh checkout from the checked-in seed with `Compiler\Bootstrap.cmd` (Windows) or `sh Compiler/bootstrap.sh` (Linux and macOS): it builds a temporary compiler from the seed, which then builds a release `strict`. A long garbage collection only warns, so the first compiler still finishes on a tight machine. After changing the compiler rebuild it with `strict build Strict.strict`; building twice gives identical output.
 
 ## Unit and functional tests
 Unmarked inline tests are unit tests: each should take under 10 ms, the hard limit is 100 ms on the VM and natively (slow CI machines, parallel runs), including its leading local setup. Exceeding it fails with `TestDurationMustNotExceedHundredMilliseconds`, the expression and its source location; a watchdog stops tests that never return. Shared constants initialize on first use, once per run, and native libraries build on their first call: that time does not count for the test that first used them. The tests of the internal packages `Compiler`, `Runtime`, `Bytecode` and `Expressions` count as Slow: builds skip them, CI and explicit runs test them.
@@ -105,13 +105,15 @@ Builds, checks, folder tests on the VM, VS Code typing checks and value tracing 
 - `(x)` is a list with one element, brackets around operators only group: `(5 + 3) * 2 is 16`.
 - `and`, `or` and `xor` of Numbers are bitwise: `12 and 10 is 8`.
 - Keywords (`from`, `to`, `is`, `in`, `and`, `or`, `not`, `constant`, `mutable`, `let`, ...) can't be names, `value` and `index` can't be declared in a method with a loop and no member is named `value` (it is the instance in every method).
-- The innermost name wins: a method, member or variable named like a type hides it (also right of `is`), `outer.Marker` is the type. Inside a loop `outer` is the value outside the loop, `outer.Marker` there is reported as ambiguous.
+- The innermost name wins: a method, member or variable named like a type hides it (also right of `is`), `outer.Marker` is the type. Inside a loop `outer` is the value outside the loop, `outer.Marker` there is reported as ambiguous. A bare name in a loop body means the member of `value` when it has one, `Length` in a loop over numbers stays the own method: numbers have no `Length` of their own, only their `iterator` does.
 - Members don't repeat their type when the name says it: `has number`, not `has number Number`.
 - A member default is a literal, a constant, an empty `List(...)`/`Dictionary(...)` or a one-member type with literal arguments.
-- Test lines are Boolean comparisons at the start of each method, every method needs one. A failing test prints what it got as Strict code to paste as the expected value.
+- Test lines are Boolean comparisons at the start of each method, every method needs one. A failing test prints what it got as Strict code to paste as the expected value. A leading line with a Boolean value is always a test, any other line ends the tests: setup for a test is a test too (`Directory.Create(path) is not Error`).
+- Every value is used: a line in a method body that is not its last line must have no value (`ResultMustBeUsed` when it compiles), only `numbers.Add(5)` on a `mutable` list, a changing call and a call returning nothing are allowed. Any other result, also a Number like `numbers.Sum` or one that can be an Error, belongs in a condition, a comparison, an assignment, an argument, the result or a test line. A call returning nothing returns its Error to the caller, so it is not checked with `is Error` just to throw the result away.
+- A method either reads and returns data or writes (create, delete, change, save, send, close, ...) and returns nothing, a failure is an Error: `Directory.Create(path)`, then `Directory.Exists(path)` to know more. A creating method may return the owning type or a handle type whose name ends in Handle. `strict check` reports any other result, including Boolean, Number and Text, on a writing method in a type with native methods as `WriteMustReturnNothing`. `Socket.Connect`, `Socket.Accept` and `Http.Started` are reads, one result for each connection.
 - Other packages are named `Package/Type` only in declarations, method bodies use the plain type name.
 - `constant` for values computed from constants, `let` for everything else that doesn't change, `mutable` only when a value really changes.
-- An Error is handled where it shows up (returned, kept in a variable or checked with `is Error`), any other use returns it to the caller with one more stack trace line. See `Examples/ErrorHandling.strict`.
+- An Error is handled where it shows up (returned, kept in a variable or checked with `is Error`), any other use returns it to the caller with one more stack trace line. A check of a call that cannot return Error, such as `PseudoRandom.Next`, is `ErrorCheckCannotFail`. See `Examples/ErrorHandling.strict`.
 - A call of a method returning `Mutable(...)` as a statement (`numbers.Add(5)`) changes the `mutable` variable it is called on.
 - A method assigning a `mutable` member changes the instance it is called on, which has to be a `mutable` variable or member: `mutable ticker = Ticker(0)`, then `ticker.Next` twice gives 1 and 2 (`ChangingCallNeedsMutableVariable` otherwise).
 - A parameter whose type has changing methods is a reference: `ColorValue(random)` with `mutable random = PseudoRandom(7)` advances `random` itself (its `from(random PseudoRandom)` calls `random.Get(0, 1)` three times), a value that is no mutable variable is passed as a copy.
@@ -129,7 +131,7 @@ Builds, checks, folder tests on the VM, VS Code typing checks and value tracing 
 | `Runtime` | The Strict VM running those instructions (`strict test` and the VS Code extension) |
 | `Compiler` | Instructions to MLIR, the runtime in `NativeRuntime*.mlir`, GPU kernels, mlir-opt, mlir-translate and clang |
 
-Details are in the README of each package. Open work is in [improvements.md](improvements.md) in priority order, open performance work in [performance.md](performance.md).
+Details are in the README of each package. Open bugs and speed work go into `bugs.md` and `performance.md` while there are any, larger ideas are in [ideas.md](ideas.md).
 
 Design decisions: an immutable expression tree (static analysis only), validation before execution, tests that live with the code and disappear from the bytecode, strict rules first and then hardware speed. Only code that is actually called is parsed, validated, tested and executed, so millions of generated lines can be checked and discarded almost immediately.
 

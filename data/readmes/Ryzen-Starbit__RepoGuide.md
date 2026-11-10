@@ -73,8 +73,7 @@ Response to User
 ## ⚙ Installation: 
 
 1. Clone repository -
-git clone <your-repository-url>
-cd RepoGuide
+git clone https://github.com/Ryzen-Starbit/RepoGuide
 
 2. Create virtual environment -
 python -m venv venv

@@ -15,6 +15,7 @@
 [![Spec Kit Extension](https://img.shields.io/badge/Spec_Kit-Extension-blueviolet)](https://github.com/github/spec-kit)
 [![Glama](https://glama.ai/mcp/servers/raccioly/docguard/badges/score.svg)](https://glama.ai/mcp/servers/raccioly/docguard)
 [![MCP Registry](https://img.shields.io/badge/MCP_Registry-listed-0a7ea4)](https://registry.modelcontextprotocol.io/)
+[![mcp.market](https://mcp.market/badge/raccioly-docguard.svg)](https://mcp.market/server/raccioly-docguard)
 
 ---
 
@@ -164,7 +165,7 @@ The server is **read-only**: it only reads the mounted project.
   ```yaml
   repos:
     - repo: https://github.com/raccioly/docguard
-      rev: v0.46.0
+      rev: v0.47.0
       hooks: [{ id: docguard-guard }]   # docguard-guard-full for pre-push
   ```
 - **MCP** (Claude, Cursor, any MCP client) — `claude mcp add docguard -- npx -y docguard-cli mcp`; read-only tools to check docs (guard, score, diagnose, …) and to navigate them one bounded section at a time — the full list is in [docs/ai-integration.md](docs/ai-integration.md). Registry manifest ships in-repo (`server.json`, Smithery-ready).
@@ -780,7 +781,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
-      - uses: raccioly/docguard@v0.46.0
+      - uses: raccioly/docguard@v0.47.0
         with:
           command: guard
 ```
@@ -816,7 +817,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-      - uses: raccioly/docguard@v0.46.0
+      - uses: raccioly/docguard@v0.47.0
         with: { command: fix, auto-commit: 'true', comment-on-pr: 'true' }
 ```
 

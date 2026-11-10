@@ -82,33 +82,33 @@ Compiled PDFs are available in the [`ML-Wise2021_Nair/`](ML-Wise2021_Nair/) fold
 | # | Topic |
 |---|-------|
 | [`A9.1`](ML-Wise2021_Nair/09-instance-based-learning/Assignment%209.1.pdf) | The `k-Nearest Neighbor` algorithm |
-| [`A9.2`](ML-Wise2021_Nair/Assignment%209.2.pdf) | Regression & Classification algorithms |
-| [`A9.3`](ML-Wise2021_Nair/Assignment%209.3.pdf) | _k_-NN _(Numerical)_ |
-| [`A9.4`](ML-Wise2021_Nair/Assignment%209.4.pdf) | Active Learning for Case-Based Reasoning |
+| [`A9.2`](ML-Wise2021_Nair/09-instance-based-learning/Assignment%209.2.pdf) | Regression & Classification algorithms |
+| [`A9.3`](ML-Wise2021_Nair/09-instance-based-learning/Assignment%209.3.pdf) | _k_-NN _(Numerical)_ |
+| [`A9.4`](ML-Wise2021_Nair/09-instance-based-learning/Assignment%209.4.pdf) | Active Learning for Case-Based Reasoning |
 
 ### Assignment 10 — Clustering
 | # | Topic |
 |---|-------|
-| [`A10.1`](ML-Wise2021_Nair/Assignment%2010.1.pdf) | Supervised vs. Unsupervised learning |
-| [`A10.2`](ML-Wise2021_Nair/Assignment%2010.2.pdf) | _k_-Means algorithm in action |
-| [`A10.3`](ML-Wise2021_Nair/Assignment%2010.3.pdf) | Hierarchical Agglomerative Clustering |
-| [`A10.4`](ML-Wise2021_Nair/Assignment%2010.4.pdf) | Fuzzy C-Means algorithm |
+| [`A10.1`](ML-Wise2021_Nair/10-clustering/Assignment%2010.1.pdf) | Supervised vs. Unsupervised learning |
+| [`A10.2`](ML-Wise2021_Nair/10-clustering/Assignment%2010.2.pdf) | _k_-Means algorithm in action |
+| [`A10.3`](ML-Wise2021_Nair/10-clustering/Assignment%2010.3.pdf) | Hierarchical Agglomerative Clustering |
+| [`A10.4`](ML-Wise2021_Nair/10-clustering/Assignment%2010.4.pdf) | Fuzzy C-Means algorithm |
 
 ### Assignment 11 — LVQ & Reinforcement Learning
 | # | Topic |
 |---|-------|
-| [`A11.1`](ML-Wise2021_Nair/Assignment%2011.1.pdf) | `Learning Vector Quantization (LVQ)` algorithm |
-| [`A11.2`](ML-Wise2021_Nair/Assignment%2011.2.pdf) | Reinforcement Learning and its components |
-| [`A11.3`](ML-Wise2021_Nair/Assignment%2011.3.pdf) | The `Value-Iteration` algorithm |
-| [`A11.4`](ML-Wise2021_Nair/Assignment%2011.4.pdf) | The `Value-Iteration` algorithm _(Episodic process)_ |
+| [`A11.1`](ML-Wise2021_Nair/11-reinforcement-learning/Assignment%2011.1.pdf) | `Learning Vector Quantization (LVQ)` algorithm |
+| [`A11.2`](ML-Wise2021_Nair/11-reinforcement-learning/Assignment%2011.2.pdf) | Reinforcement Learning and its components |
+| [`A11.3`](ML-Wise2021_Nair/11-reinforcement-learning/Assignment%2011.3.pdf) | The `Value-Iteration` algorithm |
+| [`A11.4`](ML-Wise2021_Nair/11-reinforcement-learning/Assignment%2011.4.pdf) | The `Value-Iteration` algorithm _(Episodic process)_ |
 
 ### Assignment 12 — Association Rules
 | # | Topic |
 |---|-------|
-| [`A12.1`](ML-Wise2021_Nair/Assignment%2012.1.pdf) | Association rules |
-| [`A12.2`](ML-Wise2021_Nair/Assignment%2012.2.pdf) | Frequent Itemset Mining _(Exercise)_ |
-| [`A12.3`](ML-Wise2021_Nair/Assignment%2012.3.pdf) | Support and Confidence measures for association rules _(Numerical)_ |
-| [`A12.4`](ML-Wise2021_Nair/Assignment%2012.4.pdf) | Apriori vs. ECLAT |
+| [`A12.1`](ML-Wise2021_Nair/12-association-rules/Assignment%2012.1.pdf) | Association rules |
+| [`A12.2`](ML-Wise2021_Nair/12-association-rules/Assignment%2012.2.pdf) | Frequent Itemset Mining _(Exercise)_ |
+| [`A12.3`](ML-Wise2021_Nair/12-association-rules/Assignment%2012.3.pdf) | Support and Confidence measures for association rules _(Numerical)_ |
+| [`A12.4`](ML-Wise2021_Nair/12-association-rules/Assignment%2012.4.pdf) | Apriori vs. ECLAT |
 
 ## Related
 

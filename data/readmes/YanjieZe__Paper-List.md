@@ -46,6 +46,9 @@ Papers:
 
 
 # Recent Random Papers
+- [arXiv 2026.11](https://arxiv.org/abs/2611.09892), On Agentic Manipulation Policies
+- [arXiv 2026.11](https://arxiv.org/abs/2611.09030), A Controlled Study of Models, Skills, Feedback, and Curriculum in Agentic Robotics
+- [arXiv 2026.11](https://arxiv.org/abs/2611.09847), Computer-Use Agents Are Embodied Generalists
 - [arXiv 2026.11](https://arxiv.org/abs/2611.08156), La-JEPA: Compact Robot Policies with Latent World Modeling
 - [arXiv 2026.11](https://arxiv.org/abs/2611.08338), GPWM: Modeling the World as 3D Particle Motion
 - [arXiv 2026.11](https://arxiv.org/abs/2611.07229), Spatial-UMI-Dream: Scaling World Action Models with Metric Geometry for UMI Manipulation
@@ -758,6 +761,4 @@ Papers:
 - arXiv 2022.05, **FlashAttention**: Fast and Memory-Efficient Exact Attention with IO-Awareness, [arXiv](https://arxiv.org/abs/2205.14135) / [Github](https://github.com/HazyResearch/flash-attention)
 - CVPR 2023, **CLIP^2**: Contrastive Language-Image-Point Pretraining from Real-World Point Cloud Data, [arXiv](https://arxiv.org/abs/2303.12417)
 - CVPR 2023, **ULIP**: Learning a Unified Representation of Language, Images, and Point Clouds for 3D Understanding, [arXiv](https://arxiv.org/abs/2212.05171) / [Github](https://github.com/salesforce/ULIP)
-- CVPR 2023, Learning Video Representations from Large Language Models, [Website](https://facebookresearch.github.io/LaViLa/) / [Github](https://github.com/facebookresearch/LaViLa)
-- CVPR 2023, **PLA**: Language-Driven Open-Vocabulary 3D Scene Understanding, [Website](https://dingry.github.io/projects/PLA)
-- CVPR 2023, **PartSLIP**: Low-Shot Part Segmentation for 3D Point Clouds via Pretrained Image-Language Models, [arXiv](htt
+- CVPR 2023, Learning Video Representations from Large Language Models, [Website](https://facebookresearch.gith

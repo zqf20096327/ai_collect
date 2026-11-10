@@ -173,6 +173,8 @@ Cyrene 提供亮 / 暗两套界面主题，覆盖聊天、设置等主要界面�
 
 - **在 Work 基础上叠加代码专属工具** — 复用 [CyreneHarness](./src/main/orchestrator/harness/cyrene-harness.ts) 主循环，额外注册代码专用工具集（读写改、命令执行、LSP 查询等）；工具执行前由权限审批（checkPermission）过滤不安全调用，Execution Policy 决定是否需要用户二次确认。
 - **绑定可信工作目录** — 所有读写、命令执行与 LSP 查询必须落在用户预先绑定的目录内；模型无法指定或切换工作目录，越权访问（包括 `..` 与符号链接逃逸）会被直接拒绝。
+- **Git 写操作权限** — Agent 的初始化、提交、切换分支、推送和回退可能执行仓库 hooks/filters，无法仅用工作目录约束副作用，因此在「完全只读」「只读」「指定目录」档位下拒绝执行。需要 Agent 继续时，由用户切换为「每次审批」并逐次批准。Git 面板可用时，用户也可手动提交、切换/创建分支或推送；面板不提供初始化和 revert 的替代入口。
+- **Shell 沙箱要求** — 「完全只读」「只读」「指定目录」「每次审批」下，前后台所有 Shell 命令（包括只读命令）都要求沙箱可用且包装成功。`CYRENE_SRT=0/false` 或沙箱不可用时不会直接执行，单次批准不能绕过已禁用的沙箱；请优先使用专用读取/搜索工具，或由用户恢复沙箱。当前非 Windows 平台没有可用的这条沙箱路径，因此受限 Shell 同样拒绝执行。
 - **代码语义查询（LSP）** — Code 模式可在已绑定工作目录中查询定义、引用、悬停、符号与诊断；不会修改文件。
 - **外部服务由用户管理** — Cyrene 只提供 LSP 客户端，不随应用捆绑、下载、升级或静默安装语言服务器；请自行安装所需服务，也可以明确要求昔涟通过现有、受权限控制的工具协助安装。
 - **安全边界** — 语言服务进程以 `stdio: "pipe"` 启动，`shell: false`，`cwd` 强制为绑定工作目录；模型不能指定命令、服务 ID 或工作目录。
@@ -582,13 +584,13 @@ MIT 仅约束本仓库的源代码，不适用于角色、Live2D 模型与美术
 
 ## <img src="./docs/image/icons/hand-coins.svg" width="20" height="20" alt=""> 随缘支持
 
-本项目由个人独立开发，所有功能免费开放。
+本项目由Playa-Cyrene成员共同开发维护，所有功能免费开放。
 
 如果 Cyrene 陪伴你的日子还不错，可以扫码请作者喝杯咖啡 —— 完全随缘，不支持也完全不影响使用。
 
-你的支持会帮助我承担项目开发和维护中的一些开销（模型 API、测试、社群维护等），让 Cyrene 能够持续迭代。
+你的支持会帮助我们承担项目开发和维护中的一些开销（模型 API、测试、社群维护等），让 Cyrene 能够持续迭代。
 
-不方便扫码也没关系 —— 随手点一个 Star，或者把 Cyrene 分享给同样喜欢音游的朋友，就已经是很好的支持了。
+不方便扫码也没关系 —— 随手点一个 Star，或者把 Cyrene 分享给同样喜欢的朋友，就已经是很好的支持了。
 
 <table>
   <tr>
@@ -599,7 +601,7 @@ MIT 仅约束本仓库的源代码，不适用于角色、Live2D 模型与美术
 
 ---
 
-## <img src="./docs/image/icons/star.svg" width="20" height="20" alt=""> Star History
+## <img src="./docs/image/icons/star.svg" width="20" height="20" alt=""> Star History & Ranking
 
 <a href="https://www.star-history.com/?repos=playa-cyrene%2Fcyrene-agent&type=date&legend=bottom-right">
   <picture>
@@ -608,5 +610,8 @@ MIT 仅约束本仓库的源代码，不适用于角色、Live2D 模型与美术
     <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=playa-cyrene/cyrene-agent&type=date&legend=bottom-right" />
   </picture>
 </a>
+
+
+[![olud.ai](https://olud.ai/badge.php?tool=playa-cyrene-cyrene-agent)](https://olud.ai/project/playa-cyrene-cyrene-agent.html)
 
 <img src="./docs/image/icons/star.svg" width="18" height="18" alt=""> 如果你喜欢这个项目，欢迎点一个 Star。这会帮助更多喜欢昔涟的人发现它。

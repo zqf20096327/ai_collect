@@ -62,6 +62,7 @@ JevClient().use { jev ->
 |                                                               |                                                     |
 |---------------------------------------------------------------|-----------------------------------------------------|
 | [Documentation site](https://jev4k.com/)                      | Concepts, every question type, patterns, and guides |
+| [Ask a question](https://jev4k.com/)                          | The chat button on every page, powered by Context7  |
 | [Quick Start](https://jev4k.com/getting-started/quick-start/) | An API key and a first query in a few lines         |
 | [API reference (KDocs)](https://jev4k.com/kdocs/)             | Dokka-generated docs for every public type          |
 | [llms.txt](https://jev4k.com/llms.txt)                        | An index of the site for coding agents              |
@@ -81,7 +82,7 @@ artifact for each target, so a JVM project and a Kotlin Multiplatform project (i
 
 ```kotlin
 dependencies {
-    implementation("com.pambrose.jev4k:jev4k:0.4.0")
+    implementation("com.pambrose.jev4k:jev4k:0.4.1")
 }
 ```
 
@@ -91,7 +92,7 @@ Maven doesn't read Gradle's module metadata, so a Maven build depends on the JVM
 <dependency>
     <groupId>com.pambrose.jev4k</groupId>
     <artifactId>jev4k-jvm</artifactId>
-    <version>0.4.0</version>
+    <version>0.4.1</version>
 </dependency>
 ```
 
@@ -536,7 +537,7 @@ dropped:
 
 ```kotlin
 dependencies {
-    implementation("com.pambrose.jev4k:jev4k:0.4.0") {
+    implementation("com.pambrose.jev4k:jev4k:0.4.1") {
         exclude(group = "io.ktor", module = "ktor-client-cio-jvm")
     }
     implementation("io.ktor:ktor-client-okhttp:3.6.0")

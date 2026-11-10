@@ -4,8 +4,8 @@
 
 **The self-hosted workout tracker with an AI coach that actually knows your training.**
 
-Log every set, see what is working, and get weekly coaching from Claude or any
-OpenRouter model - on your own server, with your own key. Free, open source, no
+Log every set, see what is working, and get weekly coaching from Claude, any
+OpenRouter model or a local model - on your own server, with your own key. Free, open source, no
 subscription.
 
 [![GitHub stars](https://img.shields.io/github/stars/gymcoach-app/gymcoach?style=for-the-badge&logo=github&color=24292f)](https://github.com/gymcoach-app/gymcoach/stargazers)
@@ -77,7 +77,8 @@ docker compose up -d
 
 Open <http://localhost:3000> and create your account. To turn the coach on, add
 `ANTHROPIC_API_KEY=...` (or `LLM_PROVIDER=openrouter` with `OPENROUTER_API_KEY`
-and `OPENROUTER_MODEL`) to `.env` and run `docker compose up -d` again. Every
+and `OPENROUTER_MODEL`, or a
+[local model](docs/self-hosting.md#run-the-coach-on-a-local-model)) to `.env` and run `docker compose up -d` again. Every
 option is documented at the top of
 [`docker-compose.selfhost.yml`](docker-compose.selfhost.yml); reaching the app
 over plain HTTP from another machine needs `SESSION_COOKIE_SECURE=false` (Safari
@@ -131,12 +132,21 @@ on your own key - all self-hosted.
 
 ### Log and train
 
-- **Fast set logging** - sets, reps, RIR, warm-ups and drop sets, with shorthand
-  quick entry (`100x8@9`) and natural-language entry parsed by the AI.
+- **Fast set logging** - sets, reps, RIR (or RPE, a per-user setting), warm-ups
+  and drop sets, with shorthand quick entry (`100x8@9`) and natural-language
+  entry parsed by the AI.
 - **In-logger tools** - a rest timer, a plate-loading calculator that draws the
   per-side load on a barbell, and a warm-up ramp calculator, right where you log.
 - **Rest timer controls** - pause, -15/+15 s, and an optional screen flash when
   the rest ends.
+- **Switch exercises freely** - move to any exercise in the session at any
+  time, even while resting; each exercise keeps its own rest timer running in
+  the background, and the strip shows which ones are resting, in progress or
+  done.
+- **Free session** - start an empty session without a program and pick
+  exercises from your catalog as you train; the list stays with that session,
+  no saved program changes, and it counts in your history and records like any
+  other.
 - **A weight picker that knows your gym** - the weight and reps fields open a
   drum-style picker limited to the loads your equipment can actually make, with
   a barbell preview of the pending load; nothing changes until you press Apply,
@@ -178,7 +188,7 @@ on your own key - all self-hosted.
   machine's selectable weights can be corrected from the live session itself,
   without touching the item's name, type or exercise links.
 - **Quality-of-life** - kilograms or pounds per user, an interface in English,
-  French, Russian, German, Spanish, Portuguese, Italian, Dutch, Polish or Turkish (extensible message catalogs), multi-user with strict
+  French, Russian, German, Spanish, Portuguese, Italian, Dutch, Polish, Turkish or Simplified Chinese (extensible message catalogs), multi-user with strict
   per-user data isolation, and an installable PWA with offline logging. On a
   shared device, logging out or logging in clears the cached pages and API
   responses of the previous user, and a successful logout also deletes their
@@ -236,8 +246,10 @@ on your own key - all self-hosted.
   before saving.
 - **Explainable by design** - a "What your coach sees" card shows the exact
   structured context the AI receives.
-- **Your provider** - Anthropic SDK or any OpenRouter model. With no key set,
-  the app is still a clean, fast tracker.
+- **Your provider** - Anthropic SDK, any OpenRouter model, or any
+  OpenAI-compatible server such as a local Ollama, LM Studio or vLLM (the
+  OpenAI-compatible provider is tested against a stubbed server so far, not a
+  live one). With no key set, the app is still a clean, fast tracker.
 
 ### Programs and exercises
 
@@ -281,7 +293,7 @@ on your own key - all self-hosted.
 
 - Frontend: Next.js 15 (App Router), TypeScript strict, Tailwind CSS, Shadcn UI
 - Backend: Next.js API routes, Prisma ORM, PostgreSQL 16
-- AI: pluggable LLM provider (Anthropic SDK or OpenRouter)
+- AI: pluggable LLM provider (Anthropic SDK, OpenRouter, or any OpenAI-compatible server)
 - Infra: Docker and Docker Compose
 
 ## Principles
@@ -289,7 +301,7 @@ on your own key - all self-hosted.
 A few beliefs shaped GymCoach:
 
 - Your training data is yours. It lives in a Postgres database you control, not on someone else's servers. No ads, no tracking, no account you cannot delete.
-- AI should be optional and yours to pay for. The coach runs on your own Anthropic or OpenRouter key, so there is no subscription and no rate-limited "free tier". With no key set, the app is a clean, fast tracker.
+- AI should be optional and yours to pay for. The coach runs on your own Anthropic or OpenRouter key, or on a model you host, so there is no subscription and no rate-limited "free tier". With no key set, the app is a clean, fast tracker.
 - Coaching should be grounded in your numbers, not generic advice. The AI only ever sees a structured summary of your own sessions, program and progress.
 - Evidence over hype. Load progression uses double-progression logic, and the coach is prompted to reason from your data (and cite the usual names: Schoenfeld, Helms, Israetel) rather than invent.
 - Self-hosting should be boring: one Docker Compose file, one database, standard Next.js.
@@ -306,7 +318,7 @@ The app:
 
 The AI layer:
 
-- A single provider interface (`lib/llm`) sits in front of the Anthropic SDK, any OpenRouter model, or an OpenAI Responses-compatible `codex-lb` endpoint. You pick one with the `LLM_PROVIDER` env var; the rest of the app does not care which.
+- A single provider interface (`lib/llm`) sits in front of the Anthropic SDK, any OpenRouter model, any OpenAI Chat Completions-compatible server (`openai-compatible`: aimed at Ollama, LM Studio, vLLM; tested against a stubbed server only), or an OpenAI Responses-compatible `codex-lb` endpoint. You pick one with the `LLM_PROVIDER` env var; the rest of the app does not care which.
 - For every AI call the server builds a compact, structured payload (your profile + recent sessions + active program + per-exercise progression) instead of dumping raw rows, then:
   - Weekly debrief and program adjustments: one completion that returns markdown plus an optional structured block of suggested changes, validated with Zod before anything touches your program.
   - Chat coach: the same context plus your conversation, streamed back token by token.
@@ -328,7 +340,7 @@ The AI layer:
   </tr>
 </table>
 
-> These clips use the built-in `demo` provider (canned responses, no key). Point `LLM_PROVIDER` at Anthropic, OpenRouter, or `codex-lb` for the real thing.
+> These clips use the built-in `demo` provider (canned responses, no key). Point `LLM_PROVIDER` at Anthropic, OpenRouter, a local model or `codex-lb` for the real thing.
 
 ## Requirements
 
@@ -498,6 +510,7 @@ than CI reaching in to a small VPS.
 
 - [x] Single user MVP (logging, progress, weekly AI debrief, program adjustments)
 - [x] Pluggable LLM provider (Anthropic SDK or OpenRouter, switchable via env)
+- [x] Local models through any OpenAI-compatible server (Ollama, LM Studio, vLLM; tested against a stubbed server so far)
 - [x] Multi user support (registration, profiles, data isolation)
 - [x] AI program generation from a natural language goal
 - [x] Conversational AI coach (streaming chat with your training context)
@@ -509,7 +522,7 @@ than CI reaching in to a small VPS.
 - [x] Free-text (AI-parsed) set logging (opt-in "Parse with AI" fills the set
       form from plain language; you confirm before it logs)
 - [x] Progress photos (local-only upload with side-by-side compare)
-- [x] Interface localization (English, French, Russian, German, Spanish, Portuguese, Italian, Dutch, Polish and Turkish, extensible message
+- [x] Interface localization (English, French, Russian, German, Spanish, Portuguese, Italian, Dutch, Polish, Turkish and Simplified Chinese, extensible message
       catalogs)
 - [x] Muscle heat map (body silhouettes tinted by weekly volume vs MEV/MRV)
 - [x] Physical gym equipment inventory, with the equipment used recorded on
@@ -532,6 +545,9 @@ than CI reaching in to a small VPS.
       session
 - [x] Self-hosting guide (reverse proxies, HTTPS on a LAN, backups, upgrades)
       and an FAQ
+- [x] Free exercise switching in a live session with a rest timer per exercise
+- [x] RPE as an alternative effort scale to RIR
+- [x] Free session without a program
 
 ## Contributing
 
@@ -574,12 +590,23 @@ Notable changes are tracked in the [CHANGELOG](CHANGELOG.md).
   (#432). Then a weights-only save for a gym equipment item that leaves its
   name, type and exercise links alone (#470), and a per-block split of a
   repeated lift's sets in the in-session coach context (#488), and tests that
-  pin the eval harness's test-globals screen (#504).
+  pin the eval harness's test-globals screen (#504). Then a series that makes
+  the eval harness's graded-declaration self-check read code rather than text
+  (#523, #533, #547, #549).
 - [@f1dot4](https://github.com/f1dot4) - first contribution: updating the
   current bodyweight from an MCP client, through a user-properties tool built
   to take more properties later (#477). Then the German interface (#497),
   German exercise names (#499) and exercise ids in the coach and MCP week
-  summaries (#510).
+  summaries (#510). Then a fix for sets shown twice after a reload mid-workout
+  (#541), Podman support for the test database (#543), and free exercise
+  switching with a rest timer per exercise (#544).
+- [@sapatmohit](https://github.com/sapatmohit) - six interface languages in
+  three days: Spanish (#513), Portuguese (#516), Italian (#518), Dutch (#532),
+  Polish (#535) and Turkish (#537), each with its exercise names, plus the
+  decimal comma in the plate list (#522).
+- [@XiaoMingMingBai](https://github.com/XiaoMingMingBai) - the Simplified
+  Chinese interface (#545), with Chinese exercise and program names and
+  mobile layout fixes.
 - [@anhaoXie](https://github.com/anhaoXie) - wrote the self-hosting guide and
   the FAQ (#505): reverse proxies, HTTPS on a home network, backups, restores
   and upgrades. Reviewing it also surfaced two app fixes (#507, #508).

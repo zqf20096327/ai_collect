@@ -59,9 +59,10 @@ instead, see [Development](#development).
   pull requests, merge requests, review requests, and issues from
   GitHub, GitLab, and Bitbucket, with Enter opening each right where
   the work lives.
-- **A [GitHub Actions cockpit](#github-actions)**: runs, jobs, steps,
-  re-run / cancel / dispatch (from the run or a right-click on its row),
-  failed-step logs, and AI debugging.
+- **A [GitHub Actions cockpit](#github-actions)**: runs you can filter by
+  workflow, event, status, branch, or actor; their jobs and steps; re-run /
+  cancel / dispatch (from the run or a right-click on its row); failed-step
+  logs; and AI debugging.
 - **[Coding agents](#coding-agent-sessions) with guardrails**: hand tasks to
   Claude Code, Codex, Copilot, or opencode in isolated worktrees or
   containers, watch every edit, and keep the result as a branch or local PR.
@@ -135,8 +136,11 @@ context, image diffing with each side's dimensions and file size, and a size
 change shown for other binary files (`1.2 MB → 725 KB · 486 KB smaller (−40%)`),
 GitHub and Bitbucket pull requests included. A non-image binary file with
 unstaged changes (in your working copy or an agent session's) opens in its
-default program, or shows in Explorer, right from its diff; for a deleted
-file, Explorer opens the nearest folder that still exists.
+default program (a file your system would run instead is refused), or shows
+in Explorer, right from its diff; for a deleted file, Explorer opens the
+nearest folder that still exists.
+Hide whitespace changes in any local diff to read a re-indented file by the
+lines whose content changed.
 Filter the changes list by path or category, and read a file's `+added -deleted`
 line counts without opening it; a binary file that was only renamed or had its
 mode changed says so when Git can confirm its content is unchanged.
@@ -154,9 +158,12 @@ only part of a brand-new (untracked) file. Partial staging is for UTF-8 text,
 where a long diff opens with up to 1,000 lines and Show full diff loads the
 rest; other encodings stage and discard as a whole file. Stage or unstage a
 drag-made selection with `Ctrl`/`⌘`+`Shift`+`Enter`, without reaching for the
-button. Press `Space` on a focused file to stage or unstage it. Once the file
-you're viewing has nothing left to stage, whole or line by line, the next
-file in the list opens (the one above it, at the end of a section), and
+button. Press `Space` on a focused file to stage or unstage it.
+Double-click a file to open it in your external editor, or in its default
+program when none is set. A submodule opens as its own repository instead, and an
+untracked folder shows in your file manager.
+Once the file you're viewing has nothing left to stage, whole or line by line,
+the next file in the list opens (the one above it, at the end of a section), and
 unstaging works the same way in Staged. Stage, unstage, discard, stash,
 ignore, or untrack single files or a multi-selection from the context menu,
 each item counting the selected files it applies to (staging and unstaging a
@@ -243,16 +250,19 @@ default's name), and a PR badge.
   with are easy to spot. One-click jumps to the main workspace sit right in
   the branch switcher, where selecting a branch that's checked out elsewhere
   opens that folder straight away, that branch's context menu carries the
-  worktree actions, and a *Worktrees* row opens the full manager. A pull
-  request (GitHub, Bitbucket) or merge request (GitLab) can be checked out
-  in place or into its own worktree straight from its view; the worktree
-  route lets you review it without touching your current branch or
-  uncommitted files. The suggested folder,
-  `.gitdesktop/worktrees/pr-<number>`, sits inside the repository and is
-  kept out of `git status`. When the request already has a worktree, the
-  same menu offers **Open worktree** and an update to the request's latest
-  changes; a reset that would discard commits lists them and asks first, and
-  the success message opens the new worktree in one step.
+  worktree actions, and a *Worktrees* row opens the full manager. A
+  repository you left from a linked worktree reopens there from your recent
+  repositories, its row naming the worktree under the path; Shift-click or
+  Shift+Enter opens the main workspace instead. A pull request (GitHub,
+  Bitbucket) or merge request (GitLab) can be checked out in place or
+  into its own worktree straight from its view; the worktree route lets
+  you review it without touching your current branch or uncommitted
+  files. The suggested folder, `.gitdesktop/worktrees/pr-<number>`, sits
+  inside the repository and is kept out of `git status`. When the request
+  already has a worktree, the same menu offers **Open worktree** and an
+  update to the request's latest changes; a reset that would discard
+  commits lists them and asks first, and the success message opens the
+  new worktree in one step.
 - **Compare**: a tab with a three-dot diff, commits ahead/behind,
   merge/rebase, and jump-to-PR, against a local branch or any remote's
   branch (`upstream` listed first; fetched when you pick it, or compared at
@@ -279,7 +289,10 @@ terminal or a CI log finds its commit even when it isn't loaded. Per-file
 history and line blame are reachable from any file list (History, pull
 requests, Compare) or the command palette, pinned at that commit or branch
 where it applies; each blame line's commit gets a hover-card preview and a
-click to jump to it in History.
+click to jump to it in History. Commits are dated by when they were written
+(the author date), so a range you rebase or reword keeps its dates, and the
+commit detail names the committed date too when the two are a minute or more
+apart.
 
 - **Interactive rebase** ⭐: an *Edit history* editor to reword, squash,
   fixup, drop, or reorder unpushed commits behind an atomic replay engine
@@ -288,16 +301,26 @@ click to jump to it in History.
   stops at squashing and reordering, plus amending only the latest commit).
   The list reads newest or oldest first, and remembers which.
   Cherry-pick onto the current or another branch, too.
+- **Edit commit dates**: change a commit's author and committer dates from
+  History. *Edit dates…* on the latest commit opens a small dialog that
+  changes only its dates, with a force-push warning when that commit is
+  already on the branch's upstream. For older unpushed commits, each row in
+  *Edit history* shows its date and edits it in place, alongside reword,
+  squash and reorder, and selecting several rows sets one date on all of
+  them. Dates are typed (one pasted from `git log` works) or picked. A
+  commit's own date editor keeps its UTC offset unless you type another,
+  and one date set on several rows gives them all one offset. A commit
+  that would end up dated before its parent is flagged and confirmed first.
 - **Recover lost work** ⭐: a stash browser whose scan (via `git fsck`) finds
   orphaned and dangling stashes, uncommitted work a `git stash` saved but
   that fell out of `git stash list` (dropped, or abandoned by an interrupted
   operation), and restores any of them non-destructively to the working
   tree.
 - **Operation journal** ⭐: records the risky compound operations GitDesktop
-  runs (local PR merges, cherry-picks, history edits, rebases). If one is
-  interrupted by a crash or restart, a calm recovery notice names what was
-  interrupted and the exact branch + commit it started from, browsable any
-  time via the *Operation history* command.
+  runs (local PR merges and local PR branch updates, cherry-picks, history
+  edits, rebases). If one is interrupted by a crash or restart, a calm
+  recovery notice names what was interrupted and the exact branch + commit
+  it started from, browsable any time via the *Operation history* command.
 
 Plus tag management and releases: publish, edit, and delete them with asset
 uploads. When a **GitHub** release carries a `latest.json` updater manifest,
@@ -309,7 +332,10 @@ commit your repo records or to the tip of the branch each one tracks
 (recursing into nested submodules either way), edit a submodule's URL or
 tracked branch, and open one as its own repository. Adding, removing, and
 editing stage the change for you to commit, and the clone dialog can bring
-every submodule down with the repo.
+every submodule down with the repo. A changed submodule is tagged in Changes
+with what changed; selecting it lists the commits the submodule moved across,
+its unstaged row lists the uncommitted files inside, and **Open submodule** is
+one click away.
 
 ### Syncing and conflicts
 
@@ -404,7 +430,7 @@ in one click.
   chips (Jira tickets aren't closed from PR text). Editing a PR peels any
   trailing `Closes #N` / `Relates to #N` lines back into chips, so the chips
   stay the single editor for the ref block.
-- **Conflicts with the base**: every open PR keeps a one-line strip under its
+- **Conflicts with the base**: every open PR keeps a strip under its
   header, so you always know whether it merges into its base. It reads
   **Checking for conflicts…** while the answers load, and **No conflicts with
   `main`** once the forge or the local prediction finds none. When neither can
@@ -414,14 +440,16 @@ in one click.
   as such. A GitHub or GitLab answer that can't be read names the forge it
   couldn't reach, offers **Retry**, and falls back to that same prediction
   meanwhile. Open GitHub and GitLab rows in the list carry a **Conflicts**
-  chip too. **Resolve conflicts** merges the base into the PR's head in a
-  **hidden, isolated worktree** (your branch and working tree untouched),
-  hands you the conflicted files in the in-app conflict editor, and **Finish &
-  push** updates the PR's head branch, **never force-pushed**: a head that
-  moved meanwhile refuses the push and keeps your work. **Discard** drops the
-  worktree and nothing else, and an unfinished resolution is offered back from
-  any checkout of the repository as **Continue resolving**. Fork PRs are
-  excluded, since their head lives in another repository.
+  chip too. On a hosted PR, **Resolve conflicts** merges the base into the
+  PR's head in a **hidden, isolated worktree** (your branch and working tree
+  untouched), hands you the conflicted files in the in-app conflict editor,
+  and **Finish & push** updates the PR's head branch, **never force-pushed**:
+  a head that moved meanwhile refuses the push and keeps your work.
+  **Discard** drops the worktree and nothing else, and an unfinished
+  resolution is offered back from any checkout of the repository as
+  **Continue resolving**. Fork PRs are excluded, since their head lives in
+  another repository. A local PR resolves the same way without a push:
+  finishing moves the PR's local branch.
 - **Blocked by branch protection**: a PR that merges cleanly but whose rules
   refuse it gets its own strip line naming the reason. On **GitHub** that's
   the required checks still outstanding (four, then *and N more*) plus the
@@ -430,9 +458,18 @@ in one click.
   its detailed merge statuses. **Merge** stays available (whoever holds bypass
   permission can merge anyway), and a refused merge repeats the same line
   beside the forge's own message.
-- **Local PR merges**: a merge **pre-shows conflicts** and lets you resolve
-  them in the in-app editor, in an isolated worktree that never touches your
-  working tree, then **Finish** or **Abort**.
+- **Local PR merges**: an open local PR keeps a merge strip like hosted
+  PRs: whether merging will **conflict** (with the files that clash),
+  how far the branch is **behind its base** (with **Update branch** beside it
+  unless a conflict is predicted), or that there are no conflicts. **Approve**
+  sits beside **Merge** on every tab. A merge that does conflict is resolved
+  in the in-app editor, in an isolated worktree that never touches your
+  working tree, then **Finish** or **Abort**. A predicted conflict can be
+  resolved before the PR is approved: **Resolve conflicts** merges the base
+  into the PR's branch in an isolated worktree, and **Finish update** moves
+  the branch while the PR stays open. Unlike the hosted strip, this one
+  keeps a failed or unavailable check, a conflict it can't resolve here, and
+  a promotion gap on more than one line instead of cutting them short.
 - **Activity feed**: a PR's Conversation is a **date-sorted timeline** of
   reviews, comments, grouped **pushed commits** (each SHA clickable), and
   events, every entry carrying a relative **timestamp** (hover for the exact
@@ -795,7 +832,17 @@ list to re-run or cancel it, run its workflow again with the picker
 already on that workflow, open it on the forge, or copy its link; those
 actions are in the command palette too. The Run workflow picker marks
 the workflows that can't be started by hand on the chosen ref, so a
-dispatch that would be rejected is visible before you run it.
+dispatch that would be rejected is visible before you run it. Filter the
+run list by workflow (a Workflows section lists each workflow, with its
+latest run's status when that run is among the most recent), event,
+status, branch, or actor, as removable chips; GitLab and Bitbucket
+pipelines take the same event, status, branch, and actor filters. An
+Open on GitHub menu beside Refresh links to the repository's Actions
+caches, deployments, attestations, runners, and usage and performance
+metrics. The Run workflow dialog shows the workflow's inputs as typed
+fields (a picker for a choice, a checkbox for a boolean, a text field
+for the rest) with their defaults filled in and required ones marked,
+and takes anything else by name under Additional inputs.
 
 - **Debug failed CI with AI**: turn a failed job's logs into a streamed
   root-cause + fix, ending with a ready-to-paste prompt for a coding agent.
@@ -877,15 +924,16 @@ repos, with no token or rate limit, and without GitHub's 10k-commit chart
 degradation. Plus the at-a-glance overview (languages, contributors, sizes,
 branch-vs-default), a GitHub Actions success-rate / duration trend, a
 community-health card, 14-day **traffic** (views/clones/referrers/paths,
-with push access), a **dependencies** card, and quick links to the web-only
-GitHub insights (Pulse, network, dependents, Actions metrics, stars over
-time). A **Fork activity** card lists the repo's recently active direct
-forks on **GitHub, GitLab & Bitbucket** (up to ten, most recent first,
-each with its latest activity and stars where it has any), plus the total
-fork count and a link to the full list; on GitHub, a per-fork **Compare**
-fetches ahead/behind counts, so you can see which forks carry commits
-yours doesn't. Charts ship one-line captions, data-table fallbacks, and
-keyboard navigation.
+with push access), a **dependencies** card, a **star history** card
+(the repo's stars week by week, over the last 52 weeks or its whole life),
+quick links to the web-only GitHub insights (Pulse, network, dependents,
+Actions metrics), and a link to star-history.com. A **Fork activity**
+card lists the repo's recently active direct forks on **GitHub, GitLab &
+Bitbucket** (up to ten, most recent first, each with its latest activity
+and stars where it has any), plus the total fork count and a link to the
+full list; on GitHub, a per-fork **Compare** fetches ahead/behind counts,
+so you can see which forks carry commits yours doesn't. Charts ship
+one-line captions, data-table fallbacks, and keyboard navigation.
 
 ### Explore repositories
 
@@ -1160,7 +1208,8 @@ agents read this repo through GitDesktop.
   `~/.local/bin` symlink on macOS/Linux; reversible, no admin).
 - **An escalating write ladder**: each tier is a separate flag, off by
   default, so read-only stays the default (and agent-session branches are
-  refused by the branch-mutating tools):
+  refused by the branch-mutating tools, by push and force-push, and as a
+  pull request's head):
   - **`--allow-write`**: this repo's local PRs and issues (GitDesktop's own
     app-data artifacts; nothing is pushed)
   - **`--allow-remote-write`**: real forge writes under your identity (`gh`
@@ -1247,6 +1296,12 @@ review via its subscription login. The full list is under
 - **Themes**: System, Light, Dark, and a softer **Slate** (a cool, lifted
   blue-gray) that eases eye strain; switch in **Settings → Appearance** or
   cycle from the command palette.
+- **Interface zoom**: scale the whole app, diffs included, from 80% up to
+  200% (capped to what your display fits) with `Ctrl`/`⌘`+`=`/`-`,
+  `Ctrl`/`⌘`+scroll, or the stepper in **Settings → Appearance**;
+  `Ctrl`/`⌘`+`0` or **Reset** puts you back at 100%. Over the file, commit
+  and project lists, `Ctrl`/`⌘`+scroll scrolls instead, so a
+  `Ctrl`/`⌘`+click selection keeps going.
 - **Privacy-first**: API keys live in the OS keychain (never in app files),
   local models keep code on your machine, AI-ignore patterns keep sensitive
   files out of context unless you opt into repo-aware review, and a single
@@ -1318,12 +1373,12 @@ review via its subscription login. The full list is under
   needs it (git, or the GitHub CLI) gets a warning naming the feature and
   the version it wants, with an Update link. It also shows a live readout
   of the window's current position, size, and display (with copy-coords).
-- **Narrow windows and split-screen**: the window goes down to 640px wide,
-  so GitDesktop can sit beside your editor in a tiled layout. The
-  sidebar narrows with the window and collapses to an icon rail
-  (`Ctrl`/`⌘`+`Shift`+`B`), the file list beside a diff collapses on
-  demand or when its pane is tight, and the commit box pops out into a
-  roomier dialog reachable from any tab.
+- **Narrow windows and split-screen**: the window goes down to 640px wide
+  at 100% zoom (the minimum grows with your interface zoom), so GitDesktop
+  can sit beside your editor in a tiled layout. The sidebar narrows with
+  the window and collapses to an icon rail (`Ctrl`/`⌘`+`Shift`+`B`), the
+  file list beside a diff collapses on demand or when its pane is tight,
+  and the commit box pops out into a roomier dialog reachable from any tab.
 - **Window memory**: GitDesktop reopens at the size and position you left
   it, and maximized if it was, validated against your current monitors so
   an unplugged display can't strand it off-screen. Your layout is saved as

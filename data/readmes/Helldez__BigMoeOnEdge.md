@@ -33,9 +33,11 @@ the model needs them. Android, iOS, macOS, Windows and Linux, built on llama.cpp
 </tr>
 </table>
 
-<p align="center">▶ <a href="https://github.com/Helldez/BigMoeOnEdge/releases/download/v0.39.0/bigmoeonedge-0.39-tour.mp4"><b>Watch the tour</b></a> (2:38): models, the planner, chat, the agent on a folder, tasks and connected apps on a 16 GB Mac.</p>
-
 Qwen3.6-35B-A3B (21 GB) in real time on each device. The model is larger than each device's memory.
+
+**The tour** (2:38): models, the planner, chat, the agent on a folder, tasks and connected apps on a 16 GB Mac.
+
+https://github.com/user-attachments/assets/16371803-b96b-42a4-b147-cb1b7d515c73
 
 ## What it does
 
@@ -64,9 +66,13 @@ Qwen3.6-35B-A3B (21 GB) in real time on each device. The model is larger than ea
 | **Apple-silicon laptop** | 16 GB | Qwen3.8-Flash-Next 125B | 76 GB | flash | 7-9 |
 |  |  | Qwen3.6-35B-A3B | 21 GB | flash | 18-24 |
 | **Windows laptop** | 16 GB | Qwen3.6-35B-A3B | 21 GB | flash | 5 |
+| **Desktop GPU** (NVIDIA) | 12 GB + 128 GB RAM | Qwen3.8-Flash-Next 125B | 84 GB | RAM, GPU cache | 16-17 |
 | **Desktop GPU** (NVIDIA) | 16 GB + 32 GB RAM | Qwen3.8-Flash-Next 125B | 66 GB | flash, GPU cache | 19-21 |
 | **Desktop GPU** (NVIDIA) | 24 GB + 96 GB RAM | Qwen3.8-Flash-Next 125B | 66 GB | RAM, GPU cache | 70 |
 |  |  | Qwen3.6-35B-A3B | 21 GB | GPU | 217 |
+| **Desktop GPU** (NVIDIA) | 24 GB + 94 GB RAM | Qwen3.6-35B-A3B | 21 GB | GPU | 135 |
+|  | 12 GB of it free | Qwen3.6-35B-A3B | 21 GB | RAM, GPU cache | 75-81 |
+|  | 24 GB + 94 GB RAM | Gemma 4 26B-A4B | 17 GB | GPU | 107-115 |
 | **Datacenter GPU** (AMD, ROCm) | 192 GB | Qwen3.8-Flash-Next 125B | 66 GB | GPU | 53 |
 
 A range is the spread across runs. Method and every run:
@@ -132,6 +138,21 @@ print(reply.choices[0].message.content)
 opencode, 65536 for Claude Code
 ([sizing the context](docs/server-api.md#sizing-the-context-for-a-client)).
 
+```jsonc
+// opencode, ~/.config/opencode/opencode.json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "bmoe": {
+      "npm": "@ai-sdk/openai-compatible",
+      "options": { "baseURL": "http://127.0.0.1:8765/v1", "apiKey": "local" },
+      "models": { "<model id from /v1/models>": { "limit": { "context": 32768, "output": 8192 } } }
+    }
+  },
+  "model": "bmoe/<model id from /v1/models>"
+}
+```
+
 ```bash
 # Claude Code
 export ANTHROPIC_BASE_URL=http://127.0.0.1:8765
@@ -154,8 +175,7 @@ wire_api = "responses"
 env_key = "BMOE_API_KEY"   # export BMOE_API_KEY=local
 ```
 
-For opencode, add the server as an OpenAI-compatible provider at `http://127.0.0.1:8765/v1`. Under
-**Connect apps**, the app writes the settings for Codex CLI and opencode and shows the ones for
+Under **Connect apps**, the app writes the settings for opencode and Codex CLI and shows the ones for
 Claude Code.
 
 **The agent.** The desktop app has its own agent: it works in a folder you choose, reads and edits
@@ -219,7 +239,10 @@ Details: [docs/platforms.md](docs/platforms.md).
 | Configures itself | ✅ `--auto` | picks the model by memory | expert-cache budget | `coli tune` | ❌ |
 
 Where a model fits in a gaming GPU plus RAM, Strata is two to four times faster. Where it streams from
-flash, every engine is in single digits and the drive sets the pace. Speeds and sources:
+flash, every engine is in single digits and the drive sets the pace. On one 24 GB card against
+Lucebox, with the same file and prompts, this engine decoded Qwen3.6-35B-A3B faster (135 against 108
+tok/s) and reached a 28k-token prompt's first token in 5 s against 37; Lucebox's per-model drafter
+decoded Gemma 4's code more than twice as fast. Speeds and sources:
 [docs/comparison.md](docs/comparison.md).
 
 ## Build from source

@@ -2,11 +2,13 @@
 
 <!-- mcp-name: io.github.UpstageAI/korean-tax-calc-mcp -->
 
-![데모: 2025 사업연도 법인세 조정 통합 — 기업업무추진비·인정이자·지급이자·승용차·대손·기부금 → 과세표준 → 산출세액·최저한세](https://raw.githubusercontent.com/UpstageAI/korean-tax-calc-mcp/main/docs/demo.gif)
+![데모: 손익계산서·계정별 원장 엑셀 → 적격증빙 미수취 선별·비지정기부금 손금불산입 → 세무조정 → 별지 제3·15·23·29호 법정서식에 수식 연결](https://raw.githubusercontent.com/UpstageAI/korean-tax-calc-mcp/main/docs/demo.gif)
+
+<sub>영상: Claude 앱(코워크) + 이 서버. 손익계산서와 계정별 원장 엑셀을 주면 세무조정부터 법정서식 초안까지 한 번에 이어집니다(2026-11-08 공개, 회사·숫자는 가상 예시).</sub>
 
 [![PyPI](https://img.shields.io/pypi/v/korean-tax-calc-mcp)](https://pypi.org/project/korean-tax-calc-mcp/) [![MCP Registry](https://img.shields.io/badge/MCP%20Registry-korean--tax--calc--mcp-blue)](https://registry.modelcontextprotocol.io/v0/servers?search=korean-tax-calc-mcp) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) [![Built with Upstage Solar Pro 4](https://img.shields.io/badge/Built%20with-Upstage%20Solar%20Pro%204-7A3FF2)](https://www.upstage.ai/) · [English](README-EN.md)
 
-> **작성 주체(정확한 고지):** 0.3.0~0.12.2(2026-10-10~10-26)는 **Solar Pro 4**(Solar Work CLI)가 코드를 쓰고 CodeSolar가 리뷰, Claude가 테스트로 교차 검증했습니다(0.8.0 일부 문법 오류와 0.9.2는 Claude가 수정·작성). **0.13.0(2026-10-28)부터는 기존 계산기 뼈대는 Solar Pro 4 그대로이고, 새 도구·연도별 조문 대조·버그 수정은 Claude(Anthropic)가 작성**하며 CodeSolar가 리뷰합니다. 버전별 작성 주체는 [CHANGELOG](CHANGELOG.md) 각 절 머리에 적혀 있습니다. 도구 96개.
+> **작성 주체(정확한 고지):** 0.3.0부터 0.12.2까지(2026-10-10부터 10-26까지)는 **Solar Pro 4**(Solar Work CLI)가 코드를 쓰고 CodeSolar가 리뷰, Claude가 테스트로 교차 검증했습니다(0.8.0 일부 문법 오류와 0.9.2는 Claude가 수정·작성). **0.13.0(2026-10-28)부터는 기존 계산기 뼈대는 Solar Pro 4 그대로이고, 새 도구·연도별 조문 대조·버그 수정은 Claude(Anthropic)가 작성**하며 CodeSolar가 리뷰합니다. **0.26.0(2026-11-10)부터 새 도구는 Claude가 명세·정답 테스트를 먼저 쓰고 Solar Pro 4가 뼈대를 구현한 뒤 Claude가 검수·보완합니다**(커밋별 작성자 표기). 버전별 작성 주체는 [CHANGELOG](CHANGELOG.md) 각 절 머리에 적혀 있습니다. 도구 108개.
 
 **Korean tax calculations for AI agents — code, not guesses.** [English](README-EN.md)
 
@@ -26,11 +28,11 @@ flowchart LR
 ```
 
 1. **입력 확인** — 모르는 항목·빠진 값이 있으면 계산하지 않고 무엇이 필요한지 알려 줍니다.
-2. **그해 기준값** — 세율·한도는 코드 안 연도표(법인세·소득세 2016~2026, 부가세 2016년 1기~2026년 2기), 항목별 판단 기준은 `facts_vocab.json`(적용 기간·근거 조문 포함)에서 꺼냅니다.
+2. **그해 기준값** — 세율·한도는 코드 안 연도표(법인세·소득세 2016–2026, 부가세 2016년 1기–2026년 2기), 항목별 판단 기준은 `facts_vocab.json`(적용 기간·근거 조문 포함)에서 꺼냅니다.
 3. **계산** — 조문 순서대로 계산합니다. 예: 과세표준 → 그해 세율 구간 → 산출세액.
 4. **결과** — 세액·중간 계산·항목별 판단·세무조정(소득처분)·근거 조문을 함께 돌려줍니다.
 
-도구 96개 중 93개는 생성형 AI 없이 코드로 동작합니다(시세·공시가격 조회 2개는 KRX·브이월드 공개 데이터만 가져옵니다). PDF 도구 3개만 `UPSTAGE_API_KEY`가 있을 때 Upstage를 씁니다.
+도구 104개 중 101개는 생성형 AI 없이 코드로 동작합니다(시세·공시가격 조회 2개는 KRX·브이월드 공개 데이터만 가져옵니다). PDF 도구 3개만 `UPSTAGE_API_KEY`가 있을 때 Upstage를 씁니다.
 
 ### 법인세 세무조정이 이어지는 모양
 
@@ -74,7 +76,7 @@ claude mcp add korean-tax-calc -- uvx korean-tax-calc-mcp
 
 두 번째 줄의 [korean-tax-mcp](https://github.com/UpstageAI/korean-tax-mcp)는 조문·부칙·해석·판례를 찾는 짝 서버입니다. 같이 두면 **근거 찾기 → 계산 → 서식**이 한 대화에서 이어지고, 이 서버의 `find_tool`도 계산 도구가 없는 질문(월세·연금계좌 세액공제, 주식 양도 등)에 바로 부를 조문 호출값을 돌려줍니다. 계산만 쓰려면 첫 줄만 넣어도 됩니다.
 
-새 버전으로 바로 바꾸려면 `uvx --refresh korean-tax-calc-mcp`(uvx는 받은 버전을 캐시합니다). 특정 버전 고정은 `uvx korean-tax-calc-mcp@0.19.1`.
+새 버전으로 바로 바꾸려면 `uvx --refresh korean-tax-calc-mcp`(uvx는 받은 버전을 캐시합니다). 특정 버전 고정은 `uvx korean-tax-calc-mcp@0.28.1`.
 
 키 없이 동작합니다. 선택: `LAW_OC`(세무조사 판정 도구 2개의 법제처 조문 조회), `UPSTAGE_API_KEY`(PDF 표 추출).
 
@@ -91,12 +93,12 @@ AI가 도구를 언제 부르고, 도구의 답을 언제 믿을지 정해 주�
 5. 답이 두 개 나오면(안분 전후, 전체와 과세분 등) 질문이 묻는 하나만 답한다.
 ```
 
-## 도구 (96개)
+## 도구 (108개)
 
 묶음 이름을 누르면 도구 목록이 펼쳐집니다.
 
 <details>
-<summary><b>법인세</b> (18)</summary>
+<summary><b>법인세</b> (21)</summary>
 
 | 도구 | 하는 일 |
 |---|---|
@@ -111,10 +113,18 @@ AI가 도구를 언제 부르고, 도구의 답을 언제 믿을지 정해 주�
 | `nonbusiness_interest_disallowance` | 업무무관 지급이자(가지급금 제외 판정·적수·순위) |
 | `business_car_expense` | 업무용승용차 |
 | `donation_limit` | 기부금 한도 |
+| `nonprofit_reserve_limit` | 비영리내국법인 고유목적사업준비금 손금산입 한도(법 제29조) |
 | `bad_debt_allowance` | 대손충당금 한도 |
 | `thin_capitalization` | 과소자본 |
 | `missing_receipt_disallowance` | 적격증빙 미수취 |
 | `dividend_received_deduction` | 수입배당금 익금불산입 |
+| `foreign_subsidiary_dividend` | 외국자회사 수입배당금 익금불산입·외국납부세액공제 |
+| `expat_cost_recharge` | 해외 파견 인건비 청구액·정상가격·손금·비과세 |
+| `corporate_filing_obligations` | 외부감사·외부세무조정·국제거래 자료 제출 의무 판정 |
+| `foreign_exchange_reporting` | 해외직접투자 해당 여부·외국환 신고(사전/사후) 기한·기관·서류, 사후관리 보고서 일정, 청산, 해외직접투자명세 기한 |
+| `individual_foreign_tax_credit` | 거주자 외국납부세액공제 — 국가별 한도·조약 제한세율 상한·10년 이월·퇴직소득(소득세법 제57조) |
+| `overseas_account_reporting` | 해외금융계좌 신고의무(월말 잔액 5억 초과)·면제·신고기한·미신고 과태료·수정신고 감경·소명 불이행 과태료(국조법 제53조·제90조) |
+| `capital_gains_unfair_transaction` | 양도소득 부당행위계산 — 저가양도·고가취득 시가 재계산(3억·5% 기준), 증여 후 10년 내 양도 비교 판정(소득세법 제101조) |
 | `asset_grant_reserve` | 일시상각충당금 |
 | `corporate_deemed_rent_income` | 임대보증금 간주익금 |
 | `liquidation_income` | 청산소득 |
@@ -187,6 +197,9 @@ AI가 도구를 언제 부르고, 도구의 답을 언제 믿을지 정해 주�
 | `other_income_aggregate` | 기타소득 |
 | `earned_income_gross_pay` | 근로소득 총급여 |
 | `simplified_vat_return` | 간이과세 확정신고 |
+| `vat_return_general` | 일반과세자 부가가치세 신고서(별지 제21호서식) 집계 — 부품 도구 결과를 차가감 납부(환급)세액까지 합산 |
+| `vat_foreign_currency_base` | 외화 대가 부가가치세 과세표준 환산(시행령 제59조·제95조제3항) |
+| `vat_reverse_charge` | 국외사업자 용역등 대리납부(법 제52조) |
 | `common_input_tax` | 공통매입세액 정산 |
 | `input_tax_recalculation` | 매입세액 재계산 |
 | `bundled_supply_split` | 토지·건물 안분 |
@@ -265,14 +278,14 @@ AI가 도구를 언제 부르고, 도구의 답을 언제 믿을지 정해 주�
 - **계산 근거 엑셀**: `export_workbook`은 여러 도구 호출을 다시 실행해 법정서식 모양(별지 제3호·제4호·제8호(갑)·제15호·제21호·제23호(갑)(을)·제29호·제32호·제33호·제34호·제20호(1)·제16호의2·제26호(갑)(을)·제50호(을), 부가세 공제받지 못할 매입세액 명세서, 종합소득세 부속 명세서, 양도소득세 별지 제84호 신고서 세액 계산·부표1 양도소득금액 계산명세서 등)의 검토용 엑셀로 만듭니다. 금액 칸은 서식 산식 그대로의 수식이고 서식끼리 연결되며(모든 금액 칸이 '입력·가정' 이름이나 앞 칸을 가리키는 수식 — 도구 값을 숫자로 박지 않음), 도구 값과 대조하는 확인 칸이 붙습니다. 계산 과정을 보여 주는 참고 자료이며 세무조정계산서 작성·신고 대리가 아닙니다. 기업업무추진비는 `entertainment_limit` 도구로도 별지 제23호(갑)·(을)가 나옵니다.
 - **원장 그대로 입력**: 세무조정 도구는 장부 항목(이름·금액·증빙·성격)을 그대로 받아 항목 판단 → 세무조정 → 소득처분까지 돌려줍니다.
 - **쟁점 표시**: 비거주자 원천징수·과소자본 결과에는 다툼이 될 수 있는 지점과 확인할 자료를 함께 붙입니다(결론은 내리지 않음).
-- **지원 연도**: 법인세 2016~2026 사업연도, 소득세 2016~2026 귀속연도, 부가가치세 2016년 1기~2026년 2기, 가산세·제척기간은 현행 조문. 그 밖의 연도는 오류로 멈춥니다. 지방소득세는 별도입니다.
+- **지원 연도**: 법인세 2016–2026 사업연도, 소득세 2016–2026 귀속연도, 부가가치세 2016년 1기–2026년 2기, 가산세·제척기간은 현행 조문. 그 밖의 연도는 오류로 멈춥니다. 지방소득세는 별도입니다.
 
 ## 처리하지 않는 경우
 
 처리하지 못하는 경우에는 계산하지 않고 "입력 확인 필요"나 오류로 멈추거나, 결과의 `판단`에 "확인 필요"로 알립니다. 결과를 쓰기 전에 아래에 해당하는지 먼저 확인해 주세요.
 
 **공통**
-- 지원 연도 밖(법인세 2016~2026 사업연도, 소득세 2016~2026 귀속연도, 부가가치세 2016년 1기~2026년 2기)과 지방소득세
+- 지원 연도 밖(법인세 2016–2026 사업연도, 소득세 2016–2026 귀속연도, 부가가치세 2016년 1기–2026년 2기)과 지방소득세
 - 주택 수·특수관계·사업 관련성처럼 사실관계 판단이 먼저인 항목은 사용자가 판단해 넣은 값으로 계산합니다(도구가 판단하지 않음)
 - 합병·분할 세무조정 전용 도구는 없습니다
 
@@ -285,12 +298,12 @@ AI가 도구를 언제 부르고, 도구의 답을 언제 믿을지 정해 주�
 | `capital_gains_income`·`capital_gains_tax` | 분양권·조합원입주권·주식, 2018.4.1. 전 양도 지정지역 3주택 이상 가산, 주택 수 계산, 비과세 보유기간 예외, 주거용 전환, 고가주택 일부 양도 |
 | `stock_capital_gains_tax` | 2019년 이전 국외주식, 파생상품, 양도차손 통산 |
 | `housing_rental_income` | 겸용주택 주택 부분 판정, 공동소유 주택의 주택 수 판정(주택 수를 직접 넣으면 계산) |
-| `dividend_tax_credit` | 종합소득공제가 금융소득 외 소득보다 큰 경우, 조세특례제한법 제104조의27 배당(2016~2018), 다른 세액공제·감면 |
+| `dividend_tax_credit` | 종합소득공제가 금융소득 외 소득보다 큰 경우, 조세특례제한법 제104조의27 배당(2016–2018), 다른 세액공제·감면 |
 | `religious_income` | 근로소득 선택 경로, 간이세액표·연말정산 세액, 비과세 요건 판정, 다른 기타소득과의 300만 원 합산 판정 |
 | `gift_tax` | 상속세 및 증여세법 제58조제1항 단서(가산분 증여세가 제척기간 만료로 부과되지 않은 경우) |
 | `inheritance_gift_valuation` | 토지·건물 소유자가 다를 때 환산가액 안분, 공동저당 안분 |
 | `unlisted_stock_valuation` | 평가심의위원회, 자산별 시가의 평가기간 판정, 국외 비상장주식 |
-| `vat_supply_timing` | 상품권·가공·무인판매기·보세구역·위탁판매·간주공급, 선적일 외 수출, 부동산 임대·선불 연회비, 외국항행용역, 폐업일 의제, 공급시기 후 발급 가산세 |
+| `vat_supply_timing` | 상품권·가공·무인판매기·국내 위탁판매·간주공급, 부동산 임대·선불 연회비, 외국항행용역, 폐업일 의제, 공급시기 후 발급 가산세(수출은 직수출·중계무역·보세구역반출·위탁판매수출·외국인도수출·위탁가공무역·원료반출 지원) |
 | `vat_deemed_supply_items` | 2020년 제1기 이전 사용인 선물 한도 |
 | `refund_claim_deadline` | 2016년 전 사유·통지, 2015년 전 개정 경과조치, 후발적 사유 해당 여부 판정 |
 | `tax_priority_distribution` | 가압류채권 안분·흡수배당, 조세 상호간 흡수배당, 담보권 순환관계, 공과금, 납세담보 등(입력 확인 필요로 반환) |
@@ -305,7 +318,7 @@ AI가 도구를 언제 부르고, 도구의 답을 언제 믿을지 정해 주�
 
 - **면책:** 이 도구의 결과는 세무 자문이 아닙니다. 법령·해석을 바탕으로 계산·판정 과정을 보여 주는 참고 자료이며, 실제 신고·세무조사·불복 판단은 세무사·회계사·변호사 등 전문가에게 확인하세요. 근거 조문·판례는 원문으로 확인하세요.
 - **세무대리 아님:** 이 도구는 **세무사법 제2조의 세무대리**(세무조정계산서 작성, 신고 대리, 세무상담 등)를 수행하지 않으며, 그 업무는 세무사와 등록한 공인회계사·변호사만 할 수 있습니다(세무사법 제20조). 법령에 적힌 산식을 코드로 옮겨 입력값에 대한 계산 과정을 보여 주는 소프트웨어이고, 입력 사실관계의 확인과 최종 판단은 세무 전문가(세무사·회계사·변호사)와 함께 해 주세요.
-- **AI 사용 고지:** 계산·판정·조회 도구 92개는 코드로 동작하며 생성형 AI를 쓰지 않습니다. PDF 검토 도구 3개(`extract_relations`, `tunnelling_from_pdf`, `return_precheck_pdf`)는 UPSTAGE_API_KEY가 있으면 생성형 AI(Upstage Solar Pro 4)로 표를 추출하며 결과에 그 사실을 표시합니다. 키가 없으면 pypdf로 로컬 텍스트 추출(host_ai 모드) 후 정리 안내에 따라 다음 도구 입력으로 직접 정리할 수 있습니다.
+- **AI 사용 고지:** 계산·판정·조회 도구 101개는 코드로 동작하며 생성형 AI를 쓰지 않습니다. PDF 검토 도구 3개(`extract_relations`, `tunnelling_from_pdf`, `return_precheck_pdf`)는 UPSTAGE_API_KEY가 있으면 생성형 AI(Upstage Solar Pro 4)로 표를 추출하며 결과에 그 사실을 표시합니다. 키가 없으면 pypdf로 로컬 텍스트 추출(host_ai 모드) 후 정리 안내에 따라 다음 도구 입력으로 직접 정리할 수 있습니다.
 - **데이터 전송:** UPSTAGE_API_KEY를 설정해 PDF 도구를 사용할 때만 문서 내용이 Upstage API(api.upstage.ai)로 전송됩니다. 시세 조회(`stock_price_lookup`)는 KRX로 종목코드·날짜를, 공시가격 조회(`official_property_price`, VWORLD_KEY 필요)는 브이월드로 주소·필지번호·연도를 보냅니다. 키 없이 사용하면(pypdf 로컬 추출) 외부 전송이 없습니다. 민감정보가 담긴 문서는 API 전송 시 넣지 마세요.
 
 ## 라이선스

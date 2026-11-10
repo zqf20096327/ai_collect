@@ -612,7 +612,7 @@ docker exec omni cat /home/omni/.config/smart-ai/server_key.txt   # chave gerada
 docker exec -it omni ai --account login primary
 ```
 
-- **Login:** veja [Login sem navegador](#login-sem-navegador). Chaves de provedores vão com `docker exec -it omni ai --key <ferramenta>`.
+- **Login:** veja [Login sem navegador](#login-sem-navegador). Chaves de provedores vão com `docker exec -it omni ai --key <ferramenta>`. Para usar o Cursor no modo `plan`, confie uma vez na pasta de trabalho: `docker exec -it -w /workspace omni cursor-agent` e aceite.
 - **Dados:** logins, chaves, configuração e cooldowns ficam no volume `omni-home`, que sobrevive à recriação do container. `docker compose down -v` apaga esse volume.
 - **Chave do servidor:** sem chave informada, uma é gerada e gravada em `/home/omni/.config/smart-ai/server_key.txt`, que só o usuário do container lê. Ela não aparece no log. Depois de guardá-la, apague o arquivo com `docker exec omni rm /home/omni/.config/smart-ai/server_key.txt`. Para definir a sua, use `SMART_AI_SERVER_KEY`, ou `SMART_AI_SERVER_KEY_FILE` com um Docker secret. O `docker-compose.yml` traz o exemplo.
 - **Porta:** publicada só em `127.0.0.1`. `OMNI_PORT` muda a porta.
@@ -620,7 +620,7 @@ docker exec -it omni ai --account login primary
 - **Modos:** `OMNI_MODE=plan|edits|auto|yolo docker compose up -d` (padrão: `plan`). As ferramentas trabalham em `/workspace`, no volume `omni-workspace`. Para usar uma pasta sua, defina `OMNI_WORKSPACE=/caminho`, com escrita liberada para o uid 10001.
 - **Risco fora do `plan`:** os comandos rodam no mesmo usuário que guarda os logins em `omni-home`. Quem tem a chave pode ler esses logins, então use uma chave por pessoa de confiança e revogue sessões se ela vazar.
 - **Codex:** o sandbox dele não inicia no container, porque depende de recursos bloqueados pelo Docker e pelo kernel do host. Ele só usa ferramentas em `yolo`, com o container como isolamento. Em `plan`, `edits` e `auto`, ele apenas responde, sem ler nem alterar arquivos.
-- **Atualização:** `git pull && docker compose up -d --build`. `ai --update` não se aplica à imagem.
+- **Atualização:** `git pull && docker compose up -d --build`. Dentro do container, `ai --update` não troca a imagem: só mostra esses comandos. `ai --version` mostra a versão da imagem publicada.
 - **Imagem pronta:** `export OMNI_IMAGE=ghcr.io/samuelrms/omni-ai-cli:latest && docker compose pull omni && docker compose up -d --no-build`. Cada release publica a versão e `latest`, para amd64 e arm64. Para fixar uma versão, troque `latest` pelo número, como `1.23.0`. A imagem inclui CLIs de terceiros, sujeitos aos termos de cada um; o uso da sua conta também segue esses termos.
 
 Para expor em rede, use um proxy reverso com HTTPS, como o Caddy:
@@ -785,6 +785,7 @@ guardar nem rotacionar.
 | `You've hit your session limit` | Cota da conta. O `ai` passa para a próxima; adicione outra com `/account add` ou uma chave com `/key claude`. |
 | `Individual quota reached` (Antigravity) | Cota do Antigravity; ele é pulado até a renovação. |
 | `Not inside a trusted directory` (Codex) | Instalação antiga. Rode o instalador de novo. |
+| `Workspace Trust Required` (Cursor) | No modo `plan`, o Cursor só lê pastas em que você confiou. No terminal, o `ai` pergunta uma vez por pasta; no chat, no servidor e no editor, rode `cursor-agent` uma vez na pasta e aceite. Os outros modos não pedem isso. |
 | `Claude Code não instalado` | `./scripts/install.sh` (ou `scripts\install.ps1` no Windows) instala pelo instalador oficial. |
 | Windows: atalhos de skills falham | Ative o Modo de Desenvolvedor ou rode como administrador; sem isso o `ai` usa junções de pasta. |
 | `o pedido é longo demais para a linha de comando deste sistema` | Antigravity, Cursor e Grok só recebem o pedido pela linha de comando. O fallback segue para Claude Code e Codex, que recebem pedidos longos pela entrada padrão. |

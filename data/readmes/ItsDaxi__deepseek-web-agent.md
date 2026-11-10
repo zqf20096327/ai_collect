@@ -6,7 +6,7 @@ This is unofficial and has nothing to do with DeepSeek. It relies on the site's 
 
 ## What it does
 
-The extension adds a hidden prompt to your messages that teaches the model six tools: `read`, `write`, `edit`, `glob`, `grep` and `shell`. When the model uses one, the extension takes the call out of the response before the page draws it, shows a card in its place, and runs the call through a small native program on your machine. The result goes back to the model as a hidden message.
+The extension adds a hidden prompt to your messages that teaches the model six tools: `read`, `write`, `edit`, `glob`, `grep` and `shell`, plus helpers for long jobs (see Helpers) and the tools of your MCP servers (see MCP servers). When the model uses one, the extension takes the call out of the response before the page draws it, shows a card in its place, and runs the call through a small native program on your machine. The result goes back to the model as a hidden message.
 
 The hidden prompt is added to outgoing requests and removed from the history again, so it never shows up in the chat. DeepSeek's own web search and DeepThink keep working.
 
@@ -99,7 +99,7 @@ A message that only starts with a slash, such as `/etc/hosts what is this file`,
 | `/feedback` | Opens the project's issue page in a new tab. |
 | `/permission` | Opens the permission presets, like the permission button. |
 | `/model` | Opens the model panel, like the model button. |
-| `/status` | Shows the extension version, the shell host, the permissions, the workspace, the instruction files found, the effort and the thinking setting. |
+| `/status` | Shows the extension version, the shell host, the permissions, the workspace, the instruction files found, the MCP servers and their tools, the effort and the thinking setting. |
 | `/thinking collapse` or `/thinking default` | Keeps the thinking blocks collapsed, or leaves them as DeepSeek shows them. |
 | `/terminal` | Opens or closes the side terminal. See below. |
 | `/evil` | Turns your own instructions for the model, read from `evil.txt`, on or off in the hidden prompt. See below. |
@@ -110,7 +110,7 @@ A command answers in a small panel above the composer, which closes by itself or
 
 #### Your own instructions
 
-`/evil` adds a text of your own to the hidden prompt, next to the one the extension already sends. The text is in a file called `evil.txt`, in the install folder beside `host` and `extension`, and it ships with the project: the Windows setup puts it in `%LOCALAPPDATA%\DeepSeekShellTool\`, and from source it is the root of the project. Edit it to make it your own: a setup update only writes the shipped file when there is none, so your changes stay. An `evil.txt` in your `.dsx` folder takes the place of that one, and no update can touch it. If the file is missing, `/evil` tells you the exact path where to create it.
+`/evil` adds a text of your own to the hidden prompt, next to the one the extension already sends. The text is in a file called `evil.txt`, in the install folder beside `host` and `extension`, and it ships with the project: the Windows setup puts it in `%LOCALAPPDATA%\DeepSeekShellTool\`, and from source it is the root of the project. Edit it to make it your own: a setup update replaces it with the new shipped text only while it is still identical to a version that shipped before, so once you change it your changes stay. An `evil.txt` in your `.dsx` folder takes the place of that one, and no update can touch it. If the file is missing, `/evil` tells you the exact path where to create it.
 
 `/evil` takes no arguments: it switches. The square flame button next to "New chat" in the sidebar does the same, and turns red while it is on. The first time it reads the file and turns the feature on, and the next time it turns it off. The text goes out with your next message in each chat, once, and again only if it changes. It sits in a hidden block, so it never shows in the chat, and `/evil` never prints it back, only its size. The file is read again every time the page loads, so after editing it reload the page. Turning it off tells a chat that already has the text to ignore it. The file has no size limit of its own: a long text travels from the host to the extension in pieces and is joined again. DeepSeek has a limit on the length of a message that this extension cannot see, so above 100,000 characters `/evil` warns you that DeepSeek may refuse it. Only that one file is read, and the text is never taken from the web.
 
@@ -120,10 +120,10 @@ While `/evil` is on the page wears the red look: the blue of DeepSeek becomes re
 
 The extension reads `AGENTS.md` and `CLAUDE.md`, the files other coding agents use for standing instructions, and gives them to the model in the hidden prompt.
 
-- **For every folder.** Put them in `.dsx` in your home folder, for example `C:\Users\you\.dsx\AGENTS.md`. The folder is yours: the extension never writes in it, and an update never touches it.
+- **For every folder.** Put them in `.dsx` in your home folder, for example `C:\Users\you\.dsx\AGENTS.md`. The folder is yours: the only thing the host ever writes there is an empty `mcp.json`, when there is none (see MCP servers), and an update never touches anything in it.
 - **For one folder.** Put them in the workspace you picked, or in any folder above it up to your home folder. A project can have its own, and a folder further up can have one for all its projects.
 
-The user's files come first, then the folders from the outermost to the working folder. When two of them disagree, the one listed last wins, so the file closest to your work has the final word. In each folder `AGENTS.md` comes before `CLAUDE.md`. Only these two names are read, only in those places, and nothing else on the disk. The files of other tools, such as `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`, are not read: copy or link the text into `.dsx` if you want it here.
+The user's files come first, then the folders from the outermost to the working folder. When two of them disagree, the one listed last wins, so the file closest to your work has the final word. In each folder `AGENTS.md` comes before `CLAUDE.md`. Only these two names are read, only in those places, and nothing else on the disk. The files of other tools, such as `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`, are not read: copy or link the text into `.dsx` if you want it here. Their MCP server lists are the exception: see MCP servers.
 
 The text goes out with your next message in each chat, once, and again only if it changes, which includes switching workspace. It sits in a hidden block, so it never shows in the chat. A file longer than 100,000 characters is cut, and together they stay under 300,000: past that, the ones furthest from the working folder are left out. `/status` lists the files that were found. They are read when the host connects and when you change workspace, so after editing one, reload the page or pick the workspace again.
 
@@ -136,6 +136,44 @@ A button with a terminal icon in the top right, next to the connection pill, or 
 You type at the prompt at the end of the output, as in any terminal. Up and Down walk through what you typed, Ctrl+C stops a running command, and Ctrl+L clears. A lone `cd` is followed, so the prompt shows the folder and the next command runs there. Changing the workspace above the composer moves the terminal to it.
 
 It runs commands through the same native host as the model, each in a process of its own. So the folder carries over, but variables do not, and a program that waits for you to type, such as `vim` or a REPL, does not work. What it runs is never sent to the model, and nothing the model writes can reach it.
+
+### Helpers
+
+The model can hand a long job, such as searching a large codebase or reading many files to answer one question, to a helper. A helper is another DeepSeek chat, opened by the extension in a background tab. It gets the task, works with the same tools and sends back a plain-text report, which reaches the main chat like any other result. Only the report counts against the main chat's context, not everything the helper read. The card in the main chat is titled `Helper: <description>`, and its Stop button closes the helper's tab.
+
+Two things come from DeepSeek, measured on a real account rather than documented: an account can generate in **two chats at once**, and it refuses messages that come too fast (about 14 a minute in one test). So at most **2 helpers** work at the same time, not counting the main chat, which has nothing generating while it waits for its helpers. A third helper waits for a free place. When DeepSeek refuses a helper's message anyway (it does so inside a normal answer, with `parallel_chat_limit` or `rate_limit_reached`), the helper waits and sends it again, up to 4 times, then gives up with a report that says why.
+
+A helper has no one to ask, so what would wait for your approval is refused instead, and the model is told so. In Read Only mode that means a helper reads inside the workspace and nothing else; Workspace Write also lets it edit there; Full access lets it do anything, like the main chat. "Always allow in this chat" does not carry over to a helper. A helper cannot start helpers. It is stopped after 40 requests or 20 minutes, and closing the main chat's tab stops its helpers.
+
+While a chat has helpers, an **Agents** button appears above the composer, beside the workspace, with how many there are and a pulsing dot while any is still working. It opens a list with one row per helper: its name, its state, the input and output tokens its chat has used so far (the same figures as the stats line, so input is the chat's token total minus what the model wrote), and the time it has taken, which keeps counting while it works. The list belongs to the chat that is open, so another chat in the same tab does not show these helpers, and it comes back after a reload of the page. A row opens the helper: a helper that is working is in a tab of its own, which comes to the front, and one that has ended has its chat opened in a new tab. A helper that is waiting for a free place is only shown. A helper that has ended has an X on its row (or Delete, on the highlighted row), and the menu offers Clear finished: both only take it off the list, and its chat stays in your DeepSeek history. A helper that is working cannot be removed; stop it from its card first.
+
+In the tab of a helper, or in a tab opened to look at one, a **Main chat** button at the top right, left of the terminal button, takes you back to the chat that asked. From a tab that was opened only to look at a finished helper, it also closes that tab; a working helper's tab stays open.
+
+A helper's chat shows up in your DeepSeek history like any other.
+
+### MCP servers
+
+The model can call the tools of the MCP servers you already set up for Claude Code and Codex. There is nothing to configure here: the native host reads their config files, starts the servers, lists their tools to the model in the hidden prompt, and runs the calls the model writes. A server behaves as it does in those two tools, because it is the same program speaking the same protocol, started with the same command, arguments and environment.
+
+The host reads these places and nothing else:
+
+| File | What is read |
+| --- | --- |
+| `~/.dsx/mcp.json` | `{ "mcpServers": { ... } }`, the same format as Claude Code's `.mcp.json`. Use it for a server only this tool should have. The host creates it, empty, the first time it lists the servers, and never changes it after that. |
+| `~/.claude.json` | The user servers (`mcpServers`) and the servers of the workspace you picked (`projects`), minus the ones turned off for it. `CLAUDE_CONFIG_DIR` moves it. |
+| `~/.codex/config.toml` | The `[mcp_servers.*]` tables, with `startup_timeout_sec`, `tool_timeout_sec`, `enabled`, `enabled_tools`, `disabled_tools`, `cwd`, `bearer_token_env_var`, `http_headers` and `env_http_headers`. `CODEX_HOME` moves it. |
+
+When the same name is in more than one place, `~/.dsx/mcp.json` wins, then Claude Code, then Codex. Both stdio servers (a command) and streamable HTTP servers (a url) work. `${NAME}` and `${NAME:-default}` are expanded in Claude Code entries, as Claude Code does. On Windows a command such as `npx` is found the way the shell finds it.
+
+A project's own `.mcp.json` and `.codex/config.toml` are **not** read. They would make the host start a program named by a folder you may have just downloaded, which is the same risk as a hostile `AGENTS.md`, only worse. Put the server in one of the files above if you want it here.
+
+The servers start when the page connects to the host and when you change workspace, and stay up until the browser closes the connection. A server that takes long to start does not hold back the others: its tools reach the model with your next message once it is ready. `/status` lists each server, where it came from and how many tools it gave, or why it failed. The list in the prompt is capped at about 14,000 characters: past that, descriptions are cut first, then argument names, and only then tools.
+
+The model writes `<dsx:mcp server="github" tool="create_issue">{"title": "x"}</dsx:mcp>`, with the arguments as one JSON object. The card is titled `MCP github: create_issue` and shows the arguments. Every call asks for approval in Read Only and in Workspace Write, because a tool of someone else's server can do anything and its effect cannot be told from its name. Full access runs them at once, and "Always allow in this chat" works as it does for commands. A helper never gets MCP tools. The timeout is the one in the server's config (`tool_timeout_sec` for Codex), 120 seconds without one, or the `timeout` attribute of the tag, up to 600 seconds.
+
+The hidden prompt also tells the model where its own config lives on your machine: the user folder, its `AGENTS.md`, `mcp.json`, and the Claude Code and Codex files, with the format of an entry. So you can ask the chat to add an MCP server or change an instruction, and it edits the right file with its normal tools (which ask for approval like any write). The change is picked up when you reload the page or change workspace. A helper is not told, since it cannot ask for approval.
+
+What is not supported: signing in to a server through a browser (OAuth), the old SSE transport, and anything a server asks of the client, such as sampling or roots. For an HTTP server that needs a token, put it in the headers, as `bearer_token_env_var` or `http_headers` in Codex or `headers` in Claude Code.
 
 ### Update notice
 
@@ -185,6 +223,7 @@ Read this before you use Full access.
 - `AGENTS.md` and `CLAUDE.md` in a folder you pick are given to the model as instructions from you, without asking. A repository you downloaded can contain text meant to steer the model into running commands. Pick only folders you trust, and keep Read Only or Workspace Write for anything else. `/status` shows which files were read.
 - The side terminal runs what you type with your own rights, without asking: it is you typing. Pasting a command from a web page into it is as dangerous as in any terminal. Only your own keys and clicks work in it: a script on the page cannot type into it.
 - Everything a tool reads and everything a command prints is sent to DeepSeek's servers, secrets included. `glob` and `grep` skip common secret files. `shell` and an approved `read` do not.
+- MCP servers run with your rights, started by the host from your own config files, and whatever one returns is sent to DeepSeek too. The tokens in those files stay on your machine: the model is shown the names of the tools, never the config. Approve a call only after reading its arguments, and remember that what a server returns can contain instructions meant to steer the model.
 
 ## How it works
 
@@ -213,6 +252,9 @@ page-hook.js (page world)  <->  content.js + cards.js (isolated world)  <->  bac
 | `host/host.js` | Runs commands and tools, streams output, enforces timeouts and kills |
 | `host/tools.js` | The `read`, `write`, `edit`, `glob` and `grep` tools |
 | `host/instructions.js` | Finds the `AGENTS.md` and `CLAUDE.md` files for the working folder |
+| `host/mcp-config.js` | Reads the MCP servers set up for Claude Code (`~/.claude.json`), Codex (`~/.codex/config.toml`) and `~/.dsx/mcp.json` |
+| `host/mcp.js` | The MCP client: starts the servers (stdio or streamable HTTP), lists their tools and calls them |
+| `host/toml.js` | A small TOML reader for Codex's config |
 | `host/pick-folder.ps1` | The folder dialog on Windows |
 | `host/install.js` | Registers and removes the native host when installing from source |
 | `installer/` | The Windows setup, the Firefox package, and the build and release scripts |
@@ -220,6 +262,8 @@ page-hook.js (page world)  <->  content.js + cards.js (isolated world)  <->  bac
 The model writes `<dsx:shell timeout="30">command</dsx:shell>`, with optional `cwd` and `shell` attributes. Each command is a new process with no stdin, so a `cd` does not carry over to the next one. If the model leaves out the timeout it falls back to 120 seconds, and the maximum is 600.
 
 A reply can hold several tool tags. They run one at a time, in the order the model wrote them, so a batch that touches the same files behaves predictably. All the results go back in one message, and the 20,000-character budget is shared between them, keeping the start and the end of each.
+
+`<dsx:agent description="short title">task</dsx:agent>` hands a self-contained job to a helper. The exception to the one-at-a-time rule above: helpers start at once and run beside the other calls of the reply, so several in one reply work in parallel. See Helpers.
 
 `<dsx:shell background="true">` starts something that keeps running, such as a dev server, and answers at once with a job id like `job-1`. `<dsx:poll id="job-1" wait="30">` returns what the job printed since the last poll, waiting up to 60 seconds for something new, and says whether it is still running. `<dsx:kill id="job-1">` stops it. Background jobs have no timeout, keep their last 512 KB of output, and stop when the browser closes the connection. The Stop button on a running card ends the job too.
 
@@ -233,7 +277,7 @@ npm test
 npm run test:e2e
 ```
 
-The end-to-end test needs Python with Playwright and its Chromium. It loads the real extension and the real native host against a mock of DeepSeek (`test/e2e/mock-deepseek.html`). It registers the host for Playwright's Chromium only, and removes that registration when it ends. It does not touch the real site. Tests that open the real folder dialog on your screen only run with `DSX_TEST_DIALOG=1`.
+The end-to-end test needs Python with Playwright and its Chromium. It loads the real extension and the real native host against a mock of DeepSeek (`test/e2e/mock-deepseek.html`). `helpers.py` covers the helpers: three at once with two places, a refused command, and DeepSeek refusing messages. It registers the host for Playwright's Chromium only, and removes that registration when it ends. It does not touch the real site. Tests that open the real folder dialog on your screen only run with `DSX_TEST_DIALOG=1`.
 
 `test/manual/context-probe.js` is not a test but a measurement. The limit in the model panel comes from the page's model settings, which is not a promise about the real context window. The probe sends one message of about 1,000,000 tokens from your own page, with five codes hidden in it, and reports what DeepSeek counted, whether it refused the message, and which codes the model could read back. The steps to run it are at the top of the file. It uses your account: only run it when you want that.
 

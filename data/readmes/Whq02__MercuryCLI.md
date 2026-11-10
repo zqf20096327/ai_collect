@@ -80,7 +80,7 @@ See [docs/README.md](docs/README.md) for the full documentation catalogue ([docs
 
 ## Slash commands
 
-`/help` lists the available interactive commands and `/palette` searches them (`MERCURY_SAMPLES=1` adds `/samples` under `current work`, `MERCURY_DEV_SURFACES=1` adds `/showcase`):
+`/help` lists the available interactive commands and `/palette` searches them (`MERCURY_SAMPLES=1` adds `/samples` under `current work`):
 
 | Domain | Commands |
 | --- | --- |
@@ -105,7 +105,7 @@ See [docs/README.md](docs/README.md) for the full documentation catalogue ([docs
 
 ## Author
 
-Mercury CLI is designed, built and maintained by **Waleed Al Qusous** as its sole developer: seven months from the first line to this release, 52 public releases, 581,000 lines of TypeScript and 4,400 proofs, built with the AI agents it now runs. [GitHub](https://github.com/Whq02) · [X](https://x.com/dubsthedev) · [mercury-cli.ai](https://mercury-cli.ai)
+Mercury CLI is designed, built and maintained by **Waleed Al Qusous** as its sole developer: seven months from the first line to this release, 53 public releases, 580,000 lines of TypeScript and 4,400 proofs, built with the AI agents it now runs. [GitHub](https://github.com/Whq02) · [X](https://x.com/dubsthedev) · [mercury-cli.ai](https://mercury-cli.ai)
 
 ## Reporting a problem
 

@@ -7,17 +7,17 @@ The archive grows into a searchable record of what the field is publishing, plus
 ## Latest digest
 
 <!-- LATEST_DIGEST_START -->
-### 📅 2026-11-06
+### 📅 2026-11-10
 
-1. [Agent-R$^2$: Scaling Agents for Realistic Productivity Work via Real-Source Data Synthesis](https://arxiv.org/abs/2611.08219)
-2. [Terminal-style Mathematical Modeling Bench: The First Agentic and Verifiable Benchmark for Mathematical Modeling](https://arxiv.org/abs/2611.08237)
-3. [From Twisted Facts to Rogue Agents: Can LLMs Reliably Detect Multi-Dimensional Hallucinations?](https://arxiv.org/abs/2611.08231)
-4. [The Power of Meta Access in the Software of the Future --- Demonstrated on LLM Chat UIs and Chat AI](https://arxiv.org/abs/2611.08428)
-5. [RM-VLM: From Natural-Language Task Descriptions to Vision-Grounded Reward Machines](https://arxiv.org/abs/2611.08308)
+1. [Mitigating Agentic Deception via Evaluation-Side Partially Observable Games](https://arxiv.org/abs/2611.12835)
+2. [TRIAD: Multimodal Retrieval across Abstraction, Constraints, and State](https://arxiv.org/abs/2611.12364)
+3. [Reframe: Observation-Aligned Multi-Teacher On-Policy Distillation for Agentic Visual Reasoning](https://arxiv.org/abs/2611.12886)
+4. [WorkflowArena: Benchmarking Executable Workflow Orchestration in LLM-Based Multi-Agent Systems](https://arxiv.org/abs/2611.12856)
+5. [Say Shibboleth: Fingerprinting the LLMs and Harnesses Behind Agentic Attacks](https://arxiv.org/abs/2611.12386)
 
-➡️ 🇬🇧 [Read the full digest](digests/2026/11/2026-11-06.md) · 🇮🇩 [Baca digest lengkap](digests/2026/11/2026-11-06.id.md)
+➡️ 🇬🇧 [Read the full digest](digests/2026/11/2026-11-10.md) · 🇮🇩 [Baca digest lengkap](digests/2026/11/2026-11-10.id.md)
 
-**Stats:** 23 digests · 230 papers archived · last updated 2026-11-06
+**Stats:** 25 digests · 250 papers archived · last updated 2026-11-10
 <!-- LATEST_DIGEST_END -->
 
 ## How it works

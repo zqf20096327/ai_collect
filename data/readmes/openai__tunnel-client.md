@@ -774,6 +774,11 @@ plugin installed by `tunnel-client codex plugin install`.
   automatically uses `https://mtls.api.openai.com` for control-plane calls.
 - On startup, it fetches tunnel metadata for operator visibility:
   - `GET /v1/tunnels/{tunnel_id}`
+- The `tunnel-client process started` log confirms process startup. Check
+  `/readyz` for readiness and `/health/control-plane` for observed polling.
+  Optional all-404 OAuth metadata discovery logs at INFO and reports
+  `not_advertised` in `/health/oauth`, including HTML or JSON 404 bodies.
+  See [startup supervision](docs/health.md#supervising-startup).
 - It forwards received JSON-RPC requests to your configured MCP server over
   Streamable HTTP, stdio, or in-memory transport, and relays explicit
   Streamable HTTP session termination requests when the control plane receives
@@ -822,6 +827,12 @@ plugin installed by `tunnel-client codex plugin install`.
   mismatch diagnostics preserved in logs/state.
 - It exposes an **admin/health server** (`/healthz`, `/readyz`, `/metrics`) and
   a lightweight **admin UI** (`/ui`) for operational status.
+- The admin UI supports a generic reverse-proxy path prefix. Prefix-stripping
+  proxies need no base-path setting; prefix-preserving proxies use
+  `--admin-ui.base-path`. An explicit `--admin-ui.public-origin` can allow the
+  browser's origin for guarded actions through a reverse proxy. See
+  [reverse proxy paths](docs/configuration.md#reverse-proxy-paths) for mount
+  URLs, security boundaries, and configuration examples.
 - Local `GET /health?details=true`, `GET /health/mcp`, and `GET /health/oauth`
   expose bounded observations of legacy initialize and modern `server/discover`
   MCP discovery, OAuth startup probes, polling, response delivery, queues, and

@@ -57,6 +57,19 @@ agent(
 uv run train_lunar.py
 ```
 
+## Soft Mellowmax
+
+Single-critic soft mellowmax (Gan et al.) smoothly interpolates between the mean and the min across reward lanes. It is only supported when there is exactly one critic:
+
+```python
+agent = SAC(
+    actor = actor,
+    critics = [critic],
+    use_soft_mellowmax = True,
+    soft_mellowmax_temperature = 1.
+)
+```
+
 ## Citations
 
 ```bibtex
@@ -280,5 +293,52 @@ uv run train_lunar.py
     archivePrefix = {arXiv},
     primaryClass = {cs.LG},
     url     = {https://arxiv.org/abs/2608.17163},
+}
+```
+
+```bibtex
+@inproceedings{vanSeijen2017HybridRA,
+    title   = {Hybrid Reward Architecture for Reinforcement Learning},
+    author  = {Harm van Seijen and Mehdi Fatemi and Joshua Romoff and Romain Laroche and Tavian Barnes and Jeffrey Tsang},
+    booktitle = {Advances in Neural Information Processing Systems},
+    year    = {2017},
+    url     = {https://arxiv.org/abs/1706.04208}
+}
+```
+
+```bibtex
+@inproceedings{Russell2003QDecompositionFR,
+    title   = {Q-Decomposition for Reinforcement Learning Agents},
+    author  = {Stuart J. Russell and Andrew L. Zimdars},
+    booktitle = {International Conference on Machine Learning},
+    year    = {2003},
+    url     = {https://dl.acm.org/doi/10.5555/3041838.3041920}
+}
+```
+
+```bibtex
+@inproceedings{Asadi2017AlternativeSO,
+    title   = {An Alternative Softmax Operator for Reinforcement Learning},
+    author  = {Kavosh Asadi and Michael L. Littman},
+    booktitle = {Proceedings of the 34th International Conference on Machine Learning},
+    series  = {Proceedings of Machine Learning Research},
+    volume  = {70},
+    pages   = {243--252},
+    year    = {2017},
+    url     = {https://proceedings.mlr.press/v70/asadi17a.html},
+}
+```
+
+```bibtex
+@inproceedings{Gan2021StabilizingQL,
+    title   = {Stabilizing Q Learning Via Soft Mellowmax Operator},
+    author  = {Yaozhong Gan and Zhe Zhang and Xiaoyang Tan},
+    booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+    volume  = {35},
+    number  = {9},
+    pages   = {7501--7509},
+    year    = {2021},
+    doi     = {10.1609/aaai.v35i9.16919},
+    url     = {https://ojs.aaai.org/index.php/AAAI/article/view/16919},
 }
 ```

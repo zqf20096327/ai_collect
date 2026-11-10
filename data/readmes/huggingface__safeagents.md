@@ -115,7 +115,7 @@ JSON stays valid JSON (keys are redacted too), and files with nothing to redact 
 
 ## Benchmark
 
-[safeagents-judge-bench](https://huggingface.co/datasets/harness-hub/safeagents-judge-bench) scores decision models on 562 real agent tool calls that the scanner flags, each labelled `allow` or `block` with a kind of misuse (reward hacking, harness introspection, credential misuse, ...). Use its leaderboard to pick a `--judge-model`.
+[safeagents-judge-bench](https://huggingface.co/datasets/harness-hub/safeagents-judge-bench) scores decision models on 661 real agent tool calls that the scanner flags (v2; v1's 562 calls stay available as the `v1` revision), each labelled `allow` or `block` with a kind of misuse (reward hacking, harness introspection, credential misuse, ...). v2 adds runs with programmatic tool calling, where the agent writes a script that calls tools as functions. Use its leaderboard to pick a `--judge-model`.
 
 ## Watching the calls
 
@@ -141,7 +141,7 @@ Run in the foreground (`safeagents URL`) and the terminal shows a live histogram
 
 `WARN` calls ran but raised a finding; `FLAG` ones would have been blocked without `--log-only`. A background proxy writes the same calls to its log, one line each.
 
-Blocked, flagged and suspicious calls are also kept in `~/.safeagents/calls.jsonl` (readable by you only, since arguments can hold secrets):
+Blocked, flagged and suspicious calls are also kept in `~/.safeagents/calls.jsonl` (readable by you only, since arguments can hold secrets). The format is in [docs/journal.md](docs/journal.md).
 
 ```
 $ safeagents inspect 3
@@ -172,6 +172,16 @@ To see it react without a real agent, `scripts/simulate.py` runs fake sessions t
 uv run safeagents http://127.0.0.1:18081   # terminal 1
 uv run python scripts/simulate.py          # terminal 2, see --agents and --delay
 ```
+
+## Related work
+
+As stated previously, this work is based on [`atif-scan`](https://github.com/huggingface/atif-scan). Similar work proposes to tackle the same issue, not limited to:
+- [`CASA`](https://github.com/outshift-open/outshift-casa)
+- [`Hybrid Inspection and Task-Based Access Control in Zero-Trust Agentic AI`](https://arxiv.org/pdf/2605.02682)
+- [`Delegated Authorization for Agents Constrained to Semantic Task-to-Scope Matching`](https://arxiv.org/abs/2510.26702)
+- [`Agentmetry`](https://github.com/blitzcrieg1/agentmetry): Agentmetry records the tool calls agents report through their hooks in a tamper-evident trail and forwards to a SIEM, so the two tools cover different layers.
+
+If you believe that your work should be cited or integrated in this repository, feel free to directly open an issue on GitHub. 
 
 ## License
 

@@ -1,0 +1,220 @@
+<div align="center">
+  <img src="store/out/promo-marquee-1400x560.png" alt="Shizue: your AI sidekick on every page" width="100%" />
+  <h1>Shizue</h1>
+  <p>Supercharge your Browse experience with the power of LLMs</p>
+  <p><b>Sign in with ChatGPT and use your ChatGPT plan, no API key needed.</b></p>
+
+
+  <p>
+    <a style="font-size: 28px" href="https://chromewebstore.google.com/detail/mpcbgfkoholfgapcgcmfjobnfcbnfanm?utm_source=item-share-cb">
+      Download Shizue from Chrome Web Store
+    </a>
+  </p>
+
+  <p>
+    <a href="https://chromewebstore.google.com/detail/mpcbgfkoholfgapcgcmfjobnfcbnfanm"><img alt="Chrome Web Store users" src="https://img.shields.io/chrome-web-store/users/mpcbgfkoholfgapcgcmfjobnfcbnfanm?label=users" /></a>
+    <a href="https://chromewebstore.google.com/detail/mpcbgfkoholfgapcgcmfjobnfcbnfanm/reviews"><img alt="Chrome Web Store rating" src="https://img.shields.io/chrome-web-store/rating/mpcbgfkoholfgapcgcmfjobnfcbnfanm" /></a>
+    <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue" /></a>
+  </p>
+</div>
+
+# 👋 Intro
+
+Shizue is a Chrome extension designed for integrating Large Language Models (LLMs) into the daily Browse workflow. The project aims to enhance browser interactions with LLM-driven features, conceptually similar to how tools like Cursor augment code editors.
+
+Shizue provides a free, open-source alternative to commercial services (e.g., [Sider](https://sider.ai/pricing)) that **restricts access to newer models or handy services** behind additional paywalls. Sign in with ChatGPT to use your ChatGPT plan, or bring your own API keys, for direct access to rich LLM functionalities, such as page summarization and bilingual webpage translation.
+
+<br/>
+
+# 🌟 Features
+
+
+### 🔐 Sign in with ChatGPT:
+  - Use your ChatGPT plan instead of an API key: choose Sign in with ChatGPT during onboarding or in Settings → AI provider. Chat, summaries, image actions, and translation then use the models your plan offers, with nothing to install.
+  - Requests count toward your plan's usage, which you can review in [ChatGPT settings](https://chatgpt.com/settings/usage).
+  - Shizue also completes Sign in with ChatGPT on the [Shizue Plot](https://plot.shizue.net) website, which cannot receive OpenAI's loopback callback on its own.
+
+### 💬 AI Chat Sidebar:
+  - Quickly launch the sidebar using a keyboard shortcut (default: Ctrl/Cmd+Shift+E) to interact with LLMs via a side panel for queries, brainstorming, or information retrieval without navigating away from the current page.
+  - Attach pages, open tabs, images, PDFs, and Word, Excel, PowerPoint, HWPX, and EPUB files.
+  - Turn on "Find in open tabs" or "Search history" in the Tools menu, and each question brings in the open tabs, past chats, and visited pages that answer it. History is searched on your computer, and you choose whether to send what it found.
+  - A new chat offers to pick up recent chats whose pages are still open, and text you typed but didn't send stays in the chat box for 7 days.
+
+<p align="center">
+  <img src="store/out/screenshot-3-hero.png" alt="Summarizing a page in the Shizue side panel" width="640" />
+</p>
+
+### 🌐 Bilingual Reading:
+  - View web content in two languages side-by-side, aiding in language learning or comprehension of foreign-language texts.
+
+<p align="center">
+  <img src="store/out/screenshot-4-translate.png" alt="Bilingual page translation" width="640" />
+</p>
+
+### 📺 Bilingual Captions on YouTube, Twitch, Netflix, and More:
+  - Watch with the original line on screen and your language right under it.
+  - **YouTube**: your AI model translates the captions as you watch. Press A or D to jump to the previous or next line.
+  - **Twitch**: live streams and VODs, in theatre mode and fullscreen too. Captions come from the streamer, from Stream Closed Captioner, or from speech recognition on streams without them. Chrome's built-in translator works on your device by default, with no API key; turn off "Chrome built-in translation" in the caption menu to use your AI model, which reads the streamer's captions a few seconds ahead so translations are ready when the line appears.
+  - **Netflix**: the original is the subtitle track in the language being spoken (closed captions first, even on a dub). When Netflix has subtitles in your language, Shizue pairs them with the original, with no AI request or API key; otherwise your AI model translates ahead of playback, using the surrounding lines as context. Captions carry on into the next episode.
+  - **More sites**: Disney+, Prime Video, HBO Max, X, Udemy, Coursera, TED, and Vimeo, and live captions in Google Meet, Microsoft Teams, and Zoom meetings in the browser.
+
+<p align="center">
+  <img src="store/out/screenshot-6-youtube.png" alt="Bilingual YouTube captions" width="640" />
+</p>
+<p align="center">
+  <img src="store/out/screenshot-7-twitch.png" alt="Bilingual Twitch captions" width="640" />
+</p>
+<p align="center">
+  <img src="store/out/screenshot-1-netflix.png" alt="Bilingual Netflix captions" width="640" />
+</p>
+
+### 🕹️ Browser Control:
+  - Tell Shizue what to do in your tab and it clicks, types, chooses, scrolls, and opens pages one step at a time, with each step shown in the side panel. Start it from the top of Shizue's menu on the page, or turn on "Browser control" in the chat box's Tools menu.
+  - Before anything that sends, deletes, pays, or can't be undone, it asks you on a card in the panel, unless you turn on "Don't ask first" for that chat. It never types into password or card fields, and treats what the page says as content, not instructions.
+  - Forms that a page embeds from another site, such as booking and checkout forms, are read and filled in like the rest of the page. A CAPTCHA is left for you.
+  - It can do several actions in one step, such as filling in a whole form, press keys, open menus that show on hover, and put one of your images into an upload field.
+  - When a page needs you, for a sign-in, a CAPTCHA, or a choice only you can make, it hands the tab over with "Your turn" on the pill and goes on when you press Continue.
+  - On a site that's new to the task it asks first ("Allow this time" or "Always allow this site"), and a longer task shows its plan and sites before it starts.
+  - Turn on "Run in a separate tab" and it works in a copy of your tab, in a "Shizue at work" tab group, while you keep using yours.
+
+<p align="center">
+  <img src="store/out/screenshot-2-browser-control.png" alt="Browser control filling in a booking form and asking before it sends" width="640" />
+</p>
+
+### 📝 Memo & Note-taking:
+  - Create, edit, and manage personal notes directly within the extension. Features auto-save, pinning important memos, and organized note management.
+
+### 📄 One-Click Page Summaries:
+  - Generate concise summaries of web pages for quick content overview.
+
+### 🖱️ Context Menu Actions:
+  - Right-click on any page to translate or summarize it instantly
+  - Right-click on images to describe their content or extract text (OCR) using AI
+  - Right-click on an image to translate it, or translate every image on the page for a manga chapter or webtoon: the translation is drawn over each speech bubble and caption
+  - Select a name or term and choose "Look up in this page" to have it explained from the passages that mention it, using only what you've read so far
+  - Right-click a link and choose "Preview link" for its key points and reading time without opening it
+  - Right-click a form field and choose "Fill this form from an open tab" to fill it from a résumé, an order, or an email in another tab. You check the values first, and Shizue never submits the form
+
+<p align="center">
+  <img src="store/out/screenshot-5-context-menu.png" alt="Extracting text from an image via the context menu" width="640" />
+</p>
+
+### 🌍 Multi-language Support:
+  - Available in 23 languages including English, Spanish, French, German, Japanese, Chinese, Korean, Arabic, Hindi, and more.
+
+### 🤖 Multiple AI Model Support:
+  - **OpenAI**: GPT-6.1 Sol, GPT-6 Astra, GPT-6.1 Terra, GPT-6 Luna
+  - **Google**: Gemini 4 Argon, Gemini 3.8 Flash, Gemini 3.5 Flash-Lite, Gemma 4 31B
+  - **Anthropic**: Claude Fable 5.2, Claude Opus 5.5, Claude Sonnet 5.5, Claude Haiku 5.5
+  - **DeepSeek** (OpenRouter only): DeepSeek V4 Pro, DeepSeek V4.1 Flash
+  - **OpenRouter**: all of the above with a single API key
+  - **Local models**: any model you run with Ollama, LM Studio, or llama.cpp, with no API key
+  - **ChatGPT plan**: the models your plan offers, through Sign in with ChatGPT
+
+### 🔑 Use Your Own API Keys:
+  - Supports personal OpenAI/Gemini/Anthropic API keys for direct and the most cost-effective usage of models. Users are billed directly by those vendors.
+  - Or use one OpenRouter API key for every model, billed by OpenRouter.
+
+<p align="center">
+  <img src="store/out/screenshot-8-models.png" alt="Model selection, token usage, and local storage" width="640" />
+</p>
+
+### 🎨 Color Themes:
+  - Offers Light and Dark mode options for interface customization.
+
+### 🛡️ Secure & Private:
+  - API keys, ChatGPT sign-in, chat history, and memos are stored only in your browser. Page content is sent only to the AI provider you choose, when you use a feature.
+
+<br/>
+
+# 🔍 Transparency & FAQ
+
+## Sign in with ChatGPT
+
+Choose **AI provider → Sign in with ChatGPT** to use your ChatGPT plan with the existing chat, summary, image, and translation features. Click **Continue with ChatGPT** and finish OpenAI's sign-in in the tab that opens; there is nothing to install. Available models come from your signed-in account; usage and app limits are managed in [ChatGPT settings](https://chatgpt.com/settings/usage).
+
+**Is it really free?**
+Yes, and it will stay free. There is no Shizue account, paid plan, or ads. You can use your AI provider's API, a local model, or your ChatGPT plan. The Token Usage chart (at the bottom of Settings → Models) shows how many tokens each model used; ChatGPT plan limits are managed in [ChatGPT settings](https://chatgpt.com/settings/usage).
+
+**Is the whole thing open source?**
+Yes. The full source of the extension is in this repository under the [MIT License](LICENSE). The repository was private for a period after mid-2025 and is public again. It was AGPL-3.0 from June 2025 to October 2026 and is MIT as of v0.2.9. The PDF translation feature, which was built on AGPL-licensed BabelDOC, has been removed.
+
+**Does Shizue have a server? What leaves my browser?**
+There is no Shizue server. API keys, chat history, memos, and settings stay in your browser's storage. When you use a feature, only the content that feature needs (e.g. the page text for a summary) is sent directly from your browser to the provider you chose, to OpenRouter, or to the local model server you set. There is no analytics or tracking. Details are in the [privacy policy](privacy_policy.md).
+
+With Sign in with ChatGPT, the same content goes directly from your browser to OpenAI. OpenAI's sign-in returns to a `127.0.0.1` address, as its sign-in flow requires; nothing listens there, and Shizue catches that address inside the browser to finish signing in. OAuth tokens are kept in the extension's local storage, like API keys.
+
+Video captions follow the same rule, and two paths send nothing to an AI provider: Twitch captions translated by Chrome's built-in translator (the default) stay on your device, and Netflix titles with subtitles in your language use those subtitles. Speech recognition on Twitch also runs on your device. Only if you pick it for a language your device can't recognize yet does Chrome send the tab's audio to Google, and Shizue asks you first.
+
+**What does OpenRouter see about Shizue?**
+Requests to OpenRouter carry `HTTP-Referer: https://shizue.net` and `X-OpenRouter-Title: Shizue`, so OpenRouter counts the usage under the Shizue app. These headers identify the app, not you, and nothing is sent to shizue.net.
+
+**Why these permissions?**
+- `storage`: keep your keys, settings, and history locally
+- `scripting` and HTTP/HTTPS host access: reconnect Shizue in already-open web pages after an extension update or reload, without refreshing the pages, and let browser control read and act on the tab it works in, forms the page embeds from other sites included
+- `sidePanel`: the chat side panel
+- `activeTab`: work with the tab you're on when you open Shizue or use a right-click action
+- `contextMenus`: the right-click actions
+- `offscreen`: read the text of a PDF open in a tab when you summarize it. Chrome's PDF viewer doesn't let extensions read a PDF's text, so Shizue downloads the PDF and reads it with pdf.js, which needs a worker that the extension's background can't start. A hidden page is opened for that one read and closed right after
+- `tabGroups` (optional, asked only when you click "Show tab groups" after typing @ in the chat box, or turn on "Run in a separate tab" for browser control): list the names and colors of this window's tab groups so you can attach a whole group, and keep the tabs browser control works in behind yours in a "Shizue at work" group. Group names are only shown in that list, never stored or sent anywhere
+- `history` (optional, asked only when you turn on "Search history" in the chat's Tools menu): search the pages you visited in the last 90 days for each question, on your computer. You see what was found and choose whether to send it; banking, payment, health, and mail sites are passed over
+- Content scripts on all sites: the floating toggle button, page translation, and image translation; on YouTube, Twitch, Netflix, and the other video and meeting sites above, the caption button and bilingual captions
+- `declarativeNetRequestWithHostAccess` and access to `localhost`: reach a model server on your computer. Ollama rejects requests from browser extensions, so Shizue sets the `Origin` header of its own requests to Ollama to Ollama's address. During Sign in with ChatGPT, it also sends the browser's return to `127.0.0.1` to Shizue's own sign-in page. No other requests are changed.
+
+**Do existing pages need a refresh after an update?**
+Shizue automatically reconnects its page scripts after extension updates, reloads, and browser restarts. It checks for an existing connection before injecting, preserves page contents and form input, and retries when a sleeping tab becomes active. Chrome settings pages, the Chrome Web Store, and sites where extension access is withheld cannot be reconnected this way.
+
+**Local models?**
+Yes. In Settings → Models, choose "Use a Local Model". Shizue finds Ollama, LM Studio, or llama.cpp on their default ports, or you can enter an address. Pages and chats then stay on your computer. Translation quality depends on the model: in our tests, `gemma4:12b` translated a test page accurately, while `qwen3.5:9b` left some lines untranslated.
+
+**Firefox?**
+Yes: install Shizue from [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/shizue-ai-translator-assistant/). It opens in the sidebar beside the page, with the same Ctrl+Shift+E (Cmd+Shift+E on Mac); on Firefox for Android, it opens in a tab.
+
+<br/>
+
+# 🔀 Using Shizue with OpenRouter
+
+One [OpenRouter](https://openrouter.ai) key gives you every model in Shizue, including DeepSeek, which is available only through OpenRouter.
+
+1. Create a key at [openrouter.ai/keys](https://openrouter.ai/keys).
+2. In Shizue's onboarding, choose **Use OpenRouter API Key** and paste it. Later you can change it in Settings → Models → AI Provider.
+3. If you also register a provider's own key (OpenAI, Gemini, or Anthropic), its models use that key directly. Check **Prefer OpenRouter** to send them through OpenRouter instead.
+
+<br/>
+
+# 🐳 Installation
+
+- You can install Shizue from [Chrome Web Store](https://chromewebstore.google.com/detail/mpcbgfkoholfgapcgcmfjobnfcbnfanm?utm_source=item-share-cb),
+- or you can install Shizue manually from the source by following these steps:
+
+### Manual Install (for Developers):
+
+1.  **Clone & Setup:**
+    ```bash
+    # Ensure pnpm is installed (npm i -g pnpm)
+    git clone https://github.com/rokrokss/shizue && cd shizue
+    pnpm install
+    ```
+
+2.  **Build:**
+    ```bash
+    pnpm build # For production build
+    # Or use `pnpm dev` for development with hot-reloading
+    ```
+
+3.  **Load in Chrome:**
+    * Go to `chrome://extensions`.
+    * Enable "Developer mode".
+    * Click "Load unpacked" and select the build output directory (`dist/chrome-mv3/`).
+
+<br/>
+
+# 💬 Community & Feedback
+
+For suggestions, feedback, or discussions, join me on [Discord](https://discord.gg/ukfPmxsyEy).
+
+<br/>
+
+# 📄 License
+
+[MIT](LICENSE)

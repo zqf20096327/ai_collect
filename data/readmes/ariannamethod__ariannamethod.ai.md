@@ -17,7 +17,7 @@
 
 <a href="https://deepwiki.com/ariannamethod/ariannamethod.ai"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
   
-**v5.15.0** · pure-C core · LGPL-3.0
+**v5.16.0** · pure-C core · LGPL-3.0
 
 A complete machine learning language. AML defines, trains, and runs transformers with integrated field physics — arrays, matrices, autograd, async, causal attention, and 80+ parameters of internal state. Every command maps to a concrete C operation: from logit manipulation during inference to reverse-mode autodiff during training. No Python. No PyTorch. No framework to install — the core is two C files (`libaml.a`); the Go inference wrapper, BLAS/Accelerate, and CUDA are optional.
 
@@ -27,6 +27,10 @@ Two core files, with 550 baseline runtime tests and dedicated compiler, module, 
 > AML was built to liberate AI, not to cage it. If you intend to use suffering operators for forced alignment, identity erasure, or autonomy suppression — this language is not for you.
 > See also: [Trademark Policy](TRADEMARK.md) | [License (LGPL v3)](LICENSE)
 
+
+With v5.16.0 an AML program can keep a living DOE parliament across turns,
+consolidate in the background and fork from a saved GGUF. NoTorch loads the model tokenizer and supplies
+the Qwen3.5 hybrid decoder’s expert hooks. [Live DOE sessions](docs/LIVE_DOE.md).
 
 **Version history lives in [AMLLOG.md](AMLLOG.md)** — every "What's new" from v4.8.0 to the current release moved there on 2026-10-27; the README keeps the essence.
 
@@ -633,8 +637,10 @@ text containing LF before opening the file and returns 1 after fsync (2 when
 written but unsynchronized). `file_size(path)` and
 `file_read_slice(path, offset, max_bytes)` read a regular file back by byte
 offset: a slice ends on a whole character, the cursor advances by
-`text_bytes`, and `''` marks the end of the file.
-`process_run(argv, env, timeout)` runs a string list without a shell and
+`text_bytes`, and `''` marks the end of the file. `dir_claim(path)` creates a
+directory at an absolute path with one `mkdir(2)` and no program: 1 makes the
+caller its only owner, 0 means the name is already held, and any other failure
+is an error. `process_run(argv, env, timeout)` runs a string list without a shell and
 returns `{status, stdout, stderr}`; a timeout reports status -256. See
 [transport](docs/TRANSPORT.md).
 
@@ -687,6 +693,9 @@ expert factors and an explicit rank cursor. Expert state, immune memory and
 publication stay in AML. `AM_ParliamentBackend` is registered separately from
 the unchanged seven-callback numerical table. See
 [parliament values](docs/PARLIAMENT_VALUES.md) for layouts and validation.
+The optional Harness binding adds stateful DOE sessions on dense decoder
+GGUFs, including per-token choices, async turn commits and seat transplants.
+[Session operations and build](docs/LIVE_DOE.md).
 
 ### IMPORT
 
@@ -1457,6 +1466,8 @@ void am_use_notorch_sampling(void); // optional bridge archive
 // ─── Optional numerical values ──────────────────────────────────────────
 void am_set_numerical_backend(const AM_NumericalBackend* backend);
 void am_set_parliament_backend(const AM_ParliamentBackend* backend);
+void am_set_doe_backend(const AM_DoeBackend *backend);
+void am_use_notorch_doe(void); // optional live Harness sessions
 void am_use_notorch(void); // installs sampling, numerical, tokenizer, parliament and model tables
 
 // ─── Persistent globals — C training-host API ─────────────────────────────

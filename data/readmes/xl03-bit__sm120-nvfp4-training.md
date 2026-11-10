@@ -57,6 +57,59 @@ check_finite(model)
 
 Start with a fresh trainable FP32 model with ordinary `nn.Linear` layers on one device. The converter attaches the matching AdamW as `model.nvfp4_optimizer`. For fixed shapes, use `with capture_step(model, objective, x, y, steps=N) as graph:` and call `graph.step(next_x, next_y)` once per real update. An eager step can precede capture. After closing the graph, use `save_checkpoint(path, model)` and restore with `load_checkpoint(path, fresh_converted_model)`. Save the sampler position separately. Global gradient clipping, cross-step accumulation, distributed training and custom Linear subclasses need their own integration. The FP8-master profile requires one deferred weight-gradient contribution per compressed projection per backward.
 
+## LoRA and unchanged-precision adaptation
+
+`prepare_lora` trains both low-rank matrices while freezing the base. Choose
+`mode="preserve"` to retain the model's FP32, BF16 or FP16 weights unchanged, or
+`mode="nvfp4"` to prepack frozen projections for native FP4 GEMMs with SR and RHT.
+Both use FP32 adapters and ordinary AdamW. Optional block checkpointing reduces
+activation memory, and CUDA Graph replay reduces launch overhead for fixed shapes.
+
+For already quantized NVFP4 checkpoints, `mode="packed_nvfp4"` preserves the source
+weight payload and offers GPU recomputation or caching of the backward layout.
+See [packed NVFP4 LoRA](docs/PACKED_NVFP4.md) for formats, tested compatibility and
+memory choices. This new mode uses eager training; the existing modes keep their
+CUDA Graph support.
+
+```python
+from nvfp4_training import prepare_lora
+model, optimizer = prepare_lora(model, mode="preserve", rank=16, alpha=16)
+# Use the normal loss.backward() / optimizer.step() loop.
+```
+
+The unchanged-precision implementation is also available independently as
+`precision_lora`, with only PyTorch as a dependency. See the [LoRA API guide](docs/LORA.md)
+for target selection, save/load, merging, independent packaging and examples.
+The [LoRA measurements](results/lora/README.md) include three workload shapes and
+512 FineWeb updates of a real pretrained GPT-2, with matched data and loss curves.
+
+### Image-model LoRA on a 16 GB GPU
+
+**FLUX.2 Klein Base 4B completed 1,000 NVFP4 LoRA updates at 1024px.** In the matched
+40-update benchmark, native NVFP4 reduced full update time from **3.405 to 2.306 s**
+and peak allocated memory from **9.516 to 6.626 GiB**. The memory-saving recompute
+option took **2.360 s** and **4.669 GiB**—about half the BF16 training allocation.
+All modes used the same data, rank, optimizer, checkpointing and attention backend.
+
+**Training reference — one of the four photographs used to learn this toy:**
+
+<img src="results/lora-image/reference/monster-toy-00.jpg" alt="Original training photograph of the red monster toy, showing its raised eyes, yellow hair and belly, and four rope limbs" width="280">
+
+Photo by Varun Jampani, Google DreamBooth, CC BY 4.0.
+[Original image, source and license](results/lora-image/reference/README.md).
+
+**Generated beach scene after 100, 200, 300, 500 and 1000 updates:**
+
+![Subject learning after 100, 200, 300, 500 and 1000 updates](results/lora-image/beach-progress.png)
+
+See the [image/H3 experiment report](results/lora-image/README.md) for loss and memory
+curves, numerical checks, optimization history and the scope of the H3 tests.
+The [H3 single-frame example](examples/minimax_h3_single_frame/README.md) includes
+the scripts and recorded configuration of the completed 200-step LoRA experiment.
+The [FLUX.2 example](examples/flux2_klein/README.md) includes training, inference,
+adapter export and the matched benchmark. These additions leave the six
+full-parameter profiles and the existing frozen-weight interfaces unchanged.
+
 ## Measurements on one RTX 5060 Ti
 
 Complete forward, loss, backward and AdamW update, 12 warmup steps and five rounds of 30 synchronized steps. Peak memory is PyTorch allocated GiB, measured from initialization through training. The table uses the original, pre-fix implementation and disables transpose recomputation. Per-round timings and three recomputation variants are in [the results](results/benchmarks.json).

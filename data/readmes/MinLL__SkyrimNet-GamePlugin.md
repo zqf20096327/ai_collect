@@ -50,6 +50,7 @@ More on the [SkyrimNet YouTube channel](https://www.youtube.com/@SkyrimNet).
 - **Vanilla dialogue too.** Your dialogue-menu picks are spoken in your voice, and NPCs can use their original quest lines when it fits.
 - **Vision.** NPCs can see and comment on what you wear, carry and do.
 - **Bard songs.** Bards compose and perform new songs about your adventures.
+- **Subtitles.** Replacement subtitles you can place and style, optionally floating over NPCs' heads, with translations side by side and furigana or pinyin over the text (requires Magelight UI; not in VR).
 - **Built for modders.** Papyrus and C++ APIs, YAML triggers and actions, and editable prompt templates fed with live game data.
 
 Full tour: **[docs/FEATURES.md](docs/FEATURES.md)**.
@@ -106,6 +107,7 @@ Stuck? Ask on [Discord](https://discord.gg/gHHS7HpJS9).
 
 **Optional**
 - [UIExtensions](https://www.nexusmods.com/skyrimspecialedition/mods/17561), for the input wheel.
+- [Phantasm](https://www.nexusmods.com/skyrimspecialedition/mods/197470) 1.0 or later, for OmniSight to draw characters off screen and to describe items at all: item pictures come only from Phantasm. SeverActions ships an older copy; let Phantasm win that file conflict.
 - [CUDA Toolkit 12.x](https://developer.nvidia.com/cuda-12-9-1-download-archive) (**not** 13.x), to speed up speech recognition on NVIDIA GPUs. Restart your PC after installing it. The Speech-to-Text test on the Test & Easy Setup page shows whether CUDA is in use.
 
 **Skyrim SE without ESL support**

@@ -1,10 +1,14 @@
 # Pi GPUI
 
-A native Mac app for the [pi](https://github.com/earendil-works/pi) coding agent, written in Rust with [GPUI](https://www.gpui.rs), the UI framework behind Zed. No Electron, no webview. It runs the pi you already have over RPC, so your models, extensions, skills and sessions work as they do in the terminal.
+A native desktop app for the [pi](https://github.com/earendil-works/pi) coding agent, written in Rust with [GPUI](https://www.gpui.rs), the UI framework behind Zed. No Electron, no webview. It runs the pi you already have over RPC, with the same models, extensions, skills and sessions you use in the terminal. macOS for now; Linux is next.
+
+The app is 16 MB, its window is up in about 0.4 s, and it uses about 75 MB of memory at idle. Electron clients for pi take 0.5 to 1.1 s and 190 to 430 MB. Measured on an M1 Pro with no projects open, counting each app's own processes ([method and script](docs/BENCHMARKS.md)).
 
 [Website](https://pi-gpui.dev) · [Download](https://github.com/bytesbay/pi-gpui/releases/latest) · [Plugins](docs/PLUGINS.md) · [中文](docs/README.zh-CN.md)
 
-![Pi GPUI: projects and sessions in the sidebar, an extension question answered inline](docs/demo.gif)
+![Pi GPUI: sessions working in several projects, pi adding retries to a Rust client, and the change in the Changes panel](docs/demo.gif)
+
+<sub>Model replies in this recording are scripted so the take is repeatable. The app, the file edits and the `cargo test` run are real.</sub>
 
 ## Install
 
@@ -12,7 +16,9 @@ A native Mac app for the [pi](https://github.com/earendil-works/pi) coding agent
 brew install --cask bytesbay/tap/pi-gpui
 ```
 
-Or download `Pi-GPUI-*.zip` from [Releases](https://github.com/bytesbay/pi-gpui/releases) and move the app to Applications. Releases are signed and notarized by Apple. The app updates itself: when a new version is downloaded, "Restart to update" appears in the title bar. Apple Silicon, macOS 13 or newer.
+Or download `Pi-GPUI-*.zip` from [Releases](https://github.com/bytesbay/pi-gpui/releases) and move the app to Applications. Releases are signed with a Developer ID certificate and notarized by Apple. The app updates itself: when a new version is downloaded, "Restart to update" appears in the title bar. Apple Silicon, macOS 13 or newer.
+
+Linux and Windows aren't supported yet. Linux is planned: follow or 👍 [#5](https://github.com/bytesbay/pi-gpui/issues/5) to hear when it ships.
 
 Needs pi 1.4 or newer within pi 1.x. The app finds pi in `PI_EXECUTABLE`, `PATH` or your login shell (so nvm installs work).
 
@@ -34,6 +40,7 @@ Plugins can draw live views inside tool calls, in any language. [This one](examp
 
 - Projects and their pi sessions in a sidebar. Every open session runs its own pi, so switching never stops work.
 - Slash commands: pi's extension commands, prompt templates and skills, plus `/compact`, `/tree`, `/fork`, `/clone`, `/model`, `/new`, `/name`, `/session`, `/copy`, `/export`.
+- Side panels like Zed's docks: projects on the left; the project's files (colored by git status) and its git changes in a floating panel on the right. Right-click a panel's tab to move it to the other side; drag a panel's edge to resize it.
 - Session tree with keyboard navigation and branch summaries.
 - Paste or drop files and images into the message field. They show up as chips in the text (hover an image to preview it) and are sent as paths, like in pi's terminal: a pasted image is saved to `$TMPDIR/pi-clipboard-*.png`, a file gets a temporary link. Images in messages and tool results are shown in the transcript.
 - Fork from any message.
@@ -55,6 +62,8 @@ Plugins can draw live views inside tool calls, in any language. [This one](examp
 | `⌘,` | Settings |
 | `⌘O` | Add project |
 | `⌘1` … `⌘9` | Open the n-th session (hold `⌘` to see numbers) |
+| `⌘⇧R` | Reload all open sessions (fresh pi: picks up updated pi, extensions, skills and settings) |
+| `⌘B` / `⌘R` | Show or hide the left / right panel |
 | `⌘⇧T` | Session tree |
 | `⌘⇧M` | Model and thinking level |
 | `⌘⇧E` | Expand or collapse step details |
@@ -80,13 +89,14 @@ In the tree: `↑↓` move, `←→` jump between branches, `↩` go there, `⌥
 
 ## Compatibility
 
-The app has its own version and supports a range of pi versions (`MIN_PI` and `TESTED_PI` in `src/pi.rs`). pi minors newer than the tested one still run, marked "not tested yet". Each release publishes `pi-compat.json`, and the updater only offers releases that support your pi. The app never updates pi.
+The app has its own version and supports a range of pi versions (`MIN_PI` and `TESTED_PI` in `src/pi.rs`). pi minors newer than the tested one still run, marked "not tested yet". Each release publishes `pi-compat.json`, and the updater only offers releases that support your pi. The app updates pi only when you click.
 
 Tree navigation needs something pi's RPC lacks, so the app passes a small extension of its own (`extensions/pi-gpui-bridge.ts`) to the pi processes it starts. Nothing is installed.
 
 ## Known limits
 
 - A pi running in a terminal on the same session is not detected.
+- Extension status lines, widgets and window titles (`setStatus`, `setWidget`, `setTitle`) are not shown yet. Extension questions (`select`, `confirm`, `input`, `editor`) work.
 
 ## Development
 

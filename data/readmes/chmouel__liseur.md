@@ -50,7 +50,8 @@ An open-source ebook reader for Android, and a client for [calibre-web](https://
 
 Liseur renders EPUBs with the Readium engine, in open typefaces (Literata,
 Vollkorn, Atkinson Hyperlegible, Inter) or whatever the publisher shipped.
-Four reading themes: Light, Sepia, Dark, OLED Black. Margins, line spacing,
+Reading themes: Light, Sepia, Dark, OLED Black, and warm "Low light"
+pages in Amber, Night red and Charcoal. Margins, line spacing,
 brightness, and page-turn vs. continuous-scroll are adjustable per book or
 library-wide. Auto-scroll runs at a set pace and continues across chapter
 boundaries, with on-page controls to pause it, change the speed or stop.
@@ -79,9 +80,11 @@ The library is one shelf whatever the source: local folders, calibre-web,
 Komga, BookOrbit, liseur-sync, or any OPDS catalog. Series are grouped into stacks tracking
 reading order, progress, and missing volumes. "Download all books" fills the
 shelf from a connected server in one go. An empty library also offers
-free books from [Project Gutenberg](https://www.gutenberg.org): browse it
-by language and shelf, and download the books you want before there is
-anything to connect to.
+free books from public catalogs: [Project Gutenberg](https://www.gutenberg.org),
+[textos.info](https://www.textos.info), [ManyBooks](https://manybooks.net) and
+[Gallica](https://gallica.bnf.fr/opds). Pick one,
+browse it by language, shelf or section, and download the books you want
+before there is anything to connect to. No account is needed for any of them.
 
 Reading position syncs across devices through [calibre-web](https://github.com/janeczku/calibre-web), [Komga](https://komga.org/),
 [BookOrbit](https://bookorbit.app) or [liseur-sync](https://github.com/chmouel/liseur-sync),
@@ -95,7 +98,8 @@ library covers. Tap a cover to read. Neither needs configuration.
 
 Liseur has no ads or account, and its own code has no trackers or analytics.
 It connects to services you choose for book sync, speech, translation and the
-reading companion. Browsing Project Gutenberg and using an online dictionary
+reading companion. Browsing the free catalogs (Project Gutenberg,
+textos.info, ManyBooks, Gallica) and using an online dictionary
 also makes network requests. See the
 [privacy policy](https://chmouel.github.io/liseur/PRIVACY) for details.
 

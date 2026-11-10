@@ -41,6 +41,7 @@ Serial VTK XML readers (`.vtu`, `.vtp`, `.vts`, `.vtr`, `.vti`) accept multiple 
 > [DOLFINx VTX](https://docs.fenicsproject.org/dolfinx/main/python/generated/dolfinx.io.html) (`.bp`, an ADIOS2 directory, read and written; each step a mesh, with an optional ADIOS2 build or the `adios2` package),
 > [COMSOL](https://www.comsol.com) mesh (`.mphtxt` text and `.mphbin` binary; Selections as named regions, COMSOL's own node order),
 > [Exodus](https://nschloe.github.io/meshio/exodus.pdf) (`.e`, `.exo`),
+> [DXF](https://loumalouomega.github.io/meshioplusplus/formats/dxf) (`.dxf`; ASCII R2000: a line mesh as `LINE`s and a `fit_curves` sketch as `LINE`, `ARC` and `CIRCLE` entities, read back from `LINE`, `ARC`, `CIRCLE`, `LWPOLYLINE` and `SPLINE`),
 > [Elmer](https://www.elmerfem.org) mesh directory (`mesh.header`/`.nodes`/`.elements`/`.boundary`/`.names`, text or ElmerGrid's binary; bodies and boundaries as named regions, ElmerGrid partitions merged, `partition:part` written as `partitioning.N`, recognised by content),
 > [EnSight Gold](https://vis.lbl.gov/archive/NERSC/Software/ensight/doc/OnlineHelp/UM-C11.pdf) (geometry, `.case`/`.geo`; C and Fortran binary),
 > [FEBio](https://febio.org) input (`.feb`, spec 2.5/3.0/4.0 read, 4.0 written; sets and surfaces as named regions, MeshData read and written) and plot files (`.xplt`; every state is a step, remeshed runs included, surface variables on facet blocks),
@@ -75,7 +76,7 @@ Serial VTK XML readers (`.vtu`, `.vtp`, `.vts`, `.vtr`, `.vti`) accept multiple 
 > [glTF 2.0](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html) (read as a general glTF 2.0 reader; written as the surface with per-vertex normals, fields as `_NAME` attributes, `color_by` into `COLOR_0`) (`.glb`, `.gltf`),
 > [OBJ](https://en.wikipedia.org/wiki/Wavefront_.obj_file) (`.obj`),
 > [OFF](https://segeval.cs.princeton.edu/public/off_format.html) (`.off`),
-> [OpenFOAM polyMesh](https://www.openfoam.com/) (`.foam`),
+> [OpenFOAM polyMesh](https://www.openfoam.com/) (`.foam`; `writeCompression on` cases read and written),
 > [OpenUSD](https://openusd.org/) (`.usd`, `.usda`, `.usdc`),
 > [OpenRadioss](https://openradioss.org/) starter deck (`_0000.rad`; parts, subsets, groups, boxes and surfaces as named regions, units applied, `#include` followed; written with optional placeholder materials and properties), animation files (`<run>A001`…; one state per file, a run's files a transient sequence) and time-history files (`<run>T01`; each output a step of field data; written too, from the `radioss_th:*` field data),
 > [MSC Marc](https://hexagon.com/products/marc) input deck (`.dat`, written by name) and formatted post file (`.t19`; `DEFINE` sets as named regions, every increment is a step),
@@ -153,6 +154,7 @@ meshioplusplus transform  in.vtu out.vtu --translate 1,2,3   # affine transform
 meshioplusplus mirror     half.vtu whole.vtu --keep-original  # reflect, cells right side out
 meshioplusplus find-intersections skin.stl flags.vtu --segments cuts.vtu  # self-intersections
 meshioplusplus thickness  shell.stl measured.vtu --min 1.5   # wall thickness per facet
+meshioplusplus deviation  scan.ply nominal.stl dev.vtu --tolerance 0.05  # scan vs nominal
 meshioplusplus extrude    profile.vtu slab.vtu --num-layers 4  # sweep a surface into a volume
 meshioplusplus clean      in.vtu out.vtu --weld              # weld / prune / de-dup
 meshioplusplus crop       in.vtu out.vtu --bbox 0,0,0,1,1,1  # subset by region
@@ -373,6 +375,8 @@ annotated = meshioplusplus.attach_quality(mesh)   # metrics as cell_data
 
 `meshioplusplus.find_intersections(mesh)` finds where a surface intersects itself, or with a second surface where two parts interpenetrate, by exact triangle–triangle tests: the cell pairs, the crossing segments as a line mesh and `intersections:count` per cell; the `find-intersections` CLI verb exits 1 when anything intersects. `meshioplusplus.thickness(mesh)` measures the wall thickness (or, outward, the clearance to the same or a second part) at every facet by a ray along its normal, into `thickness:distance`. See `doc/find_intersections.md` and `doc/thickness.md`.
 
+`meshioplusplus.deviation(scan, reference)` measures a scan against its intended geometry: the signed distance of every scan point to a reference surface (positive outside it, excess material), with a far-side rule so a thin wall is not measured to its back face, or to a fitted primitive (`patch=` of a mesh `fit_primitives` wrote), and the report an inspection reads: min, max, mean, RMS, sigma, percentiles, a histogram, the share within a tolerance and a suggested colour range (`register=True` registers the scan first); `deviation_regions` turns the map into the connected regions of excess and missing material, with their areas and volumes, as named cell regions, `exaggerate` displaces the scan along its normals for a figure, and `colorize` bakes any field into PLY and glTF vertex colours, banded or continuous ([deviation](doc/deviation.md), [colorize](doc/colorize.md)).
+
 #### Reordering / renumbering
 
 `meshioplusplus.reorder` renumbers nodes and elements to reduce sparse-matrix bandwidth (Reverse Cuthill–McKee) or improve cache locality (Morton / Hilbert space-filling curves). It is a pure permutation — geometry and all data preserved — and returns the applied node/cell permutations so external arrays can be remapped. `compute_bandwidth` measures the before/after connectivity bandwidth. See `doc/reorder.md`.
@@ -425,6 +429,15 @@ fit.field_data["fit:patch_params"]   # per patch: point, axis, radii, half-angle
 meshioplusplus.write("part.step", fit)                      # analytic faces, no CAD kernel
 solid = meshioplusplus.fit_cad(fit, "part_cad.step")         # trimmed and checked (OpenCASCADE)
 meshioplusplus.fit_cad(meshioplusplus.read("bracket.stl"), "bracket.step")  # raw skin, one face per surface
+```
+
+**`meshioplusplus.face_support(solid, scan)`** says how much of each face of a fitted solid the scan supports (measured, partial or inferred, `repair`'s fills counting as unmeasured), **`fit_cad_iterate(scan)`** segments, fits and builds in rounds towards a target share within tolerance, re-segmenting the worst faces finer, and **`constrain_primitives(skin)`** relates fitted primitives under control (forced and forbidden relations, tolerances, a report of every relation with its residual). See [closing the CAD loop](doc/fit_cad_loop.md) and [constraining primitives](doc/constrain_primitives.md). **`profile_solid(sketch, features)`** extrudes or revolves a `fit_curves` sketch into a solid and fillets, chamfers or shells it, through OpenCASCADE, written as STEP ([profile solids](doc/profile_solid.md)).
+
+<!--pytest-codeblocks:skip-->
+
+```python
+solid, rounds = meshioplusplus.fit_cad_iterate(scan, "part.step", part_class="cast", return_report=True)
+marked, support = meshioplusplus.face_support(solid, scan, return_report=True)
 ```
 
 #### Isogeometric layer: evaluate, refine, sample NURBS models
@@ -723,15 +736,56 @@ out = meshioplusplus.convert_coordinates(rotor, "cylindrical", arrays=["U"])
 u_r, u_theta, u_z = out.point_data["U"].T
 ```
 
-#### Rigid registration (ICP)
+#### Sections to sketches
 
-**`meshioplusplus.register_rigid(source, target)`** finds the rotation and translation laying a scan onto its design (or one run's mesh onto another's) by iterative closest points, point-to-point or point-to-plane, and returns the 4 × 4 matrix `transform` applies. See [rigid registration](doc/registration.md).
+**`meshioplusplus.sections(scan, direction, offsets)`** cuts a surface at parallel planes and walks each section into ordered polylines (`slice(chain=True)` for one plane), and **`fit_curves`** turns them into lines, arcs and circles within a tolerance, in the section plane's 2-D frame, stored on the mesh as the `sketch:*` data a drawing or a CAD profile reads; the [DXF](doc/formats/dxf.md) writer emits that sketch as the entities every CAD sketcher, laser cutter and CNC post-processor imports. **`silhouette`** outlines a part along a direction, holes included, grown or shrunk by a clearance or extruded into a nest or a foam insert ([silhouette](doc/silhouette.md)). STEP takes a sketch as curves and **`write_step_elements`** writes fitted primitives as exact faces and solids a CAD user can snap to ([STEP](doc/formats/step.md#elements)). See [chained sections](doc/slice.md#chained-sections) and [fit curves](doc/fit_curves.md).
 
 <!--pytest-codeblocks:skip-->
 
 ```python
-matrix, report = meshioplusplus.register_rigid(scan, design, method="point_to_plane")
+profile = meshioplusplus.sections(scan, direction=(0, 0, 1), offsets=[2.0])
+sketch, report = meshioplusplus.fit_curves(profile, tolerance=0.01, return_report=True)
+meshioplusplus.write("profile.dxf", sketch)  # LINE, ARC and CIRCLE entities, 1:1
+
+nest = meshioplusplus.silhouette(scan, (0, 0, 1), clearance=0.5)  # the outline, 0.5 of play
+meshioplusplus.write("profile.step", sketch)  # the same pieces as STEP curves
+meshioplusplus.write_step_elements("datums.step", fitted)  # fitted planes, cylinders, ... as exact CAD
+```
+
+#### Measuring a scan: elements, dimensions and GD&T
+
+**`meshioplusplus.measure(scan, spec)`** fits the elements a drawing refers to (planes, bores, spheres, from cell regions or seed points), constructs lines and points from them, and reports distances, angles and the GD&T form, orientation and location tolerances against nominals and limits, PASS or FAIL; **`align_datums`** lays the part on its 3-2-1 datums and `deviation(element=...)` measures against any element. See [measure](doc/measure.md).
+
+<!--pytest-codeblocks:skip-->
+
+```python
+measured, report = meshioplusplus.measure(scan, "inspection.json")
+aligned, matrix = meshioplusplus.align_datums(measured, "A", "B", origin="C")
+```
+
+#### Scan editing: islands, normals and clipping
+
+**`meshioplusplus.remove_islands(scan)`** drops the crumbs a scanner leaves (the connected components whose diagonal, area or cell count is below a threshold, a fraction of the whole mesh's by default), **`flip_normals`** reverses the winding of every cell or a region's with no point moved, **`clip`** cuts a surface by a plane, keeps a side and caps the cut so a closed part stays closed, and **`offset_surface`**, **`thicken`** and **`hollow`** move a surface along its normals, turn it into a closed shell or give a solid an inner wall. See [remove islands](doc/remove_islands.md), [flip normals](doc/flip_normals.md), [clip](doc/clip.md) and [offset](doc/offset_surface.md).
+
+<!--pytest-codeblocks:skip-->
+
+```python
+clean = meshioplusplus.remove_islands(scan)
+lower = meshioplusplus.clip(clean, (0, 0, 10), (0, 0, 1))  # closed below z = 10
+shell = meshioplusplus.thicken(scan, 2.0)  # a closed shell, the scan outside
+```
+
+#### Rigid registration (ICP)
+
+**`meshioplusplus.register_rigid(source, target)`** finds the rotation and translation laying a scan onto its design (or one run's mesh onto another's) by iterative closest points, point-to-point or point-to-plane, and returns the 4 × 4 matrix `transform` applies. `initial="auto"` needs no start (the best of the 24 candidates laying the two principal frames onto each other), `source_region` keeps a fixture out of the fit and `adaptive_trim` drops far pairs. `register_landmarks` solves picked point pairs, `auto_align` poses a scan on its largest flat face or a cylinder on its axis without a nominal, and `find_symmetry_plane` finds the plane a part is symmetric about, which `mirror(plane="auto")` reflects across. See [rigid registration](doc/registration.md).
+
+<!--pytest-codeblocks:skip-->
+
+```python
+matrix, report = meshioplusplus.register_rigid(scan, design, method="point_to_plane", initial="auto")
 aligned = meshioplusplus.transform(scan, matrix=matrix)
+posed = meshioplusplus.auto_align(scan)
+plane = meshioplusplus.find_symmetry_plane(design)
 ```
 
 #### Point-cloud normals
@@ -933,49 +987,4 @@ meshioplusplus.write("shells.vtu", shells)                     # three tagged co
 
 #### Field derivatives (gradient / divergence / curl)
 
-**`meshioplusplus.gradient`** differentiates a `point_data` field: its gradient, divergence or curl. meshio++ could already transform, transfer, summarize and contour a field — this is what lets it *differentiate* one, which is the missing input for contouring a derived quantity (`|∇T|`, vorticity) and for the gradient-based error indicators that drive the selective `refine`. Two methods: **Green-Gauss** (the default) applies the divergence theorem over the cell, fanning each face into triangles about its corner average, which is **exact for a linear field on any cell** — planar faces or not, because the fan surface is closed; **least-squares** fits over the cells sharing a node and falls back to Green-Gauss (counted, never silently wrong) on a degenerate neighbourhood. An `nc`-component input yields `3·nc` gradient components laid out `[component][derivative]`, so a scalar gives `(n, 3)` and a 3-vector `(n, 9)`; divergence gives 1 and curl 3. Output is `Float64`, named `<input>:gradient` / `:divergence` / `:curl`, at either the cell (default) or point location. A `cell_data` input raises by name — a piecewise-constant field has no derivative — and cells that cannot be differentiated yield NaN and are counted rather than approximated. Geometry, regions and existing data pass through bit-identically; output is byte-identical across backends, thread counts and the C++/numpy boundary. See `doc/gradient.md`.
-
-<!--pytest-codeblocks:skip-->
-
-```python
-import numpy as np
-
-vol = meshioplusplus.read("solution.vtu")                      # carrying point_data["T"]
-g = meshioplusplus.gradient(vol, "T", location="point")        # point_data["T:gradient"], (n, 3)
-
-grad = np.asarray(g.point_data["T:gradient"])
-g.point_data["gradT"] = np.sqrt((grad**2).sum(axis=1))
-shells = meshioplusplus.isosurface(g, "gradT", [2.0])          # contour where T changes fastest
-```
-
-These operations are exposed across every binding surface (Python, C API, Fortran, WASM) and as the CLI verbs `meshioplusplus quality`, `meshioplusplus extract-surface`, `meshioplusplus reorder`, `meshioplusplus diff`, `meshioplusplus merge`, `meshioplusplus transform`, `meshioplusplus clean`, `meshioplusplus crop`, `meshioplusplus slice`, `meshioplusplus split`, `meshioplusplus stats`, `meshioplusplus convert-cells`, `meshioplusplus tessellate`, `meshioplusplus subdivide`, `meshioplusplus agglomerate`, `meshioplusplus refine`, `meshioplusplus undo-green`, `meshioplusplus partition`, `meshioplusplus remesh`, `meshioplusplus remesh-volume`, `meshioplusplus optimize-volume`, `meshioplusplus smooth`, `meshioplusplus interpolate`, `meshioplusplus conservative-interpolate`, `meshioplusplus isosurface`, `meshioplusplus curvature`, `meshioplusplus normals`, `meshioplusplus repair`, `meshioplusplus shrinkwrap` and `meshioplusplus sobolev-deform` (plus `meshioplusplus data gradient`, `meshioplusplus data hessian`, `meshioplusplus data estimate-error` and `meshioplusplus data integrate`, mesh operations grouped under `data` because that is where a user looks for them).
-
-#### Second derivatives (Hessian)
-
-**`meshioplusplus.hessian`** computes the Hessian (second derivative) of a **scalar** `point_data` field — `gradient`'s companion one order further, for curvature-based adaptive refinement. A **composition** of two `gradient` calls, not a new numerical kernel: the field is differentiated once (point location), then that `(n, 3)` gradient is differentiated again with the default gradient operator, producing `(n, 9)` — the flattened row-major 3x3 Hessian. `method` forwards to both internal passes. A field that is at most linear has an exactly zero Hessian everywhere — the one mesh-shape-independent guarantee; a genuinely quadratic field's composition is exact on a structured/symmetric mesh away from its own boundary and a good, standard, but genuinely approximate curvature estimate on an irregular mesh. Input must have exactly one component. A curvature-driven refinement indicator needs no new code: `data_calc`'s `norm(...)` on the 9-component output is exactly its Frobenius norm, ready for `refine`'s `where` selector. See `doc/hessian.md`.
-
-```python
-h = meshioplusplus.hessian(vol, "T")                            # cell_data["T:hessian"], (n, 9)
-curv = meshioplusplus.data_calc(h, "norm(`T:hessian`)", location="cell", output="curv")
-adapted = meshioplusplus.refine(curv, where="curv > 3.0")       # refine where curvature is largest
-```
-
-#### Error estimation (Zienkiewicz-Zhu recovery + marking)
-
-**`meshioplusplus.estimate_error`** estimates the per-cell recovered-gradient error of a `point_data` field, and can mark cells for refinement — the piece that closes the adaptive loop: `gradient` differentiates and selective `refine`'s `--where` consumes any scalar `cell_data` predicate; this produces one, so estimate → mark → refine is three verbs and no new numerical code. It is a **composition**, not a new kernel: `gradient` (Green-Gauss, cell location) → the measure-weighted point↔cell averaging round trip recovers a smoothed gradient, and `eta_K = sqrt(|measure| · sum((recovered − raw)²))` per cell is the standard ZZ indicator. `marking` turns it into a boolean `error:marked` array: `"absolute"` (threshold), `"fraction"` (top N by indicator), or `"dorfler"` (the smallest indicator-descending prefix covering a bulk fraction of the total — the usual AMR criterion). Cells that cannot be evaluated read NaN in the indicator and 0 (never NaN) in the marking array, counted and excluded from the global error. See `doc/error.md`.
-
-```python
-out, report = meshioplusplus.estimate_error(
-    vol, "T", marking="dorfler", marking_value=0.6, return_report=True,
-)
-print(report["global_error"], report["num_marked"])
-adapted = meshioplusplus.refine(out, where="error:marked > 0.5")
-```
-
-#### Field integration (total / mean, per-region)
-
-**`meshioplusplus.data_integrate`** computes a cell-measure-weighted total and mean of one or more `cell_data` arrays — `gradient`'s integration counterpart (`gradient` differentiates a field, this integrates one), for a density field's total mass, a heat-flux field's total power, or an occupied volume. Every sum is weighted by `|measure(cell)|` (the cell's own length/area/volume); a cell whose measure is not computable, or a component whose value is non-finite, is excluded from that component's numerator **and** denominator — never given a fallback weight of 1, unlike `cell_data_to_point_data`'s own measure weighting, since a silent unit-weight substitution would corrupt a physical total. Reported for the whole mesh and independently for every named `Cell` region — regions are **not a partition**, so a cell in two regions contributes fully to both. A `point_data`-only name raises by name, pointing at `point_data_to_cell_data`. The mesh is never modified; this is a read-only report, like `data_info` and `compute_stats`. See `doc/field_integration.md`.
-
-```python
-report = meshioplusplus.data_integrate(mesh, arrays=["density"])
-report[0]["domain"]["total_per_component"]   # sum(value * |measure|
+**`meshioplusplus.gradient`** differentiates a `point_data` field: its gradient, divergence or curl. meshio++ could already transform, transfer, summarize and contour a field — this is what lets it *differentiate* one, which is the missing input for contouring a derived quantity (`|∇T|`, vorticity) and for the gradient-based error indicators that drive the selective `refine`. Two methods: **Green-Gauss** (the default) applies the divergence theorem over the cell, fanning each face into triangles about its corner average, which is **exact for a linear field on any cell** — planar faces or not, because the fan surface is closed; **least-squares** fits over the cells sharing a node and falls back to Green-Gauss (counted, never silently wrong) on a degenerate neighbourhood. An `nc`-component input yields `3·nc` gradient components laid out `[component][derivative]`, so a scalar gives `(n, 3)` and a 3-vector `(n, 9)`; divergence gives 1 and curl 3. Output is `Float64`, name

@@ -2,7 +2,7 @@
 
 Normal V2 account linking needs no account-management upgrade. An older authority
 schema still needs the [explicit auth-schema cutover](docs/contracts/coordinator-auth-protocol.md#operator-cutover):
-`codemem coordinator upgrade-auth-schema --db-path coordinator.sqlite` upgrades an
+`codemem coordinator schema upgrade-auth --db-path coordinator.sqlite` upgrades an
 existing local coordinator file; `--export-sql` exports D1 SQL without applying it.
 Optional **Refresh profile**, **Unlink Google account**, and reconnect support instead
 require an intact V2 coordinator and the separate
@@ -29,7 +29,7 @@ codemem is persistent coding memory across sessions, machines, and teammates for
 - **Remote MCP access** — advanced single-user self-hosting can expose an OAuth-protected Streamable HTTP MCP endpoint to configured remote clients; keep the localhost viewer private ([guide](docs/remote-mcp-oauth.md))
 
 Team/add-device recipient invitations support a read-only CLI review:
-`codemem coordinator import-invite '<invite>' --review --json`. Inspect the access
+`codemem coordinator invitation accept '<invite>' --review --json`. Inspect the access
 details, then accept with `--reviewed-onboarding-digest '<digest>'` using the same
 device profile and device name. Review requires an initialized device and matching keys;
 it does not accept the invitation or change local state. See the
@@ -61,7 +61,9 @@ support is validated against the exact stable `@opencode/cli@2.0.24` and
 
 On OpenCode 2 the plugin captures user and assistant messages, terminal usage,
 tool results, and session lifecycle events, and exposes the same `mem-status`,
-`mem-recent`, and `mem-stats` tools. Automatic recall runs through
+`mem-recent`, and `mem-stats` tools. Captured V2 `shell` command results use the
+same observer filtering, privacy sanitization, and output limits as `bash` results.
+Automatic recall runs through
 `session.context`: the latest user-message ID is required, and a missing or blank
 ID skips recall safely. Each identified turn performs one fresh retrieval; retries
 and tool continuations replay retained context byte-for-byte. Compaction, title,
@@ -85,8 +87,8 @@ Setup writes the singular `plugin` key on purpose. OpenCode 1 requires that key,
 
 ```text
 # Works on fresh installs (no global codemem needed)
-npx -y codemem stats
-npx -y codemem db raw-events-status
+npx -y codemem memory stats
+npx -y codemem diagnostics capture status
 ```
 
 That's it. On either host, the plugin captures activity, builds memories, and injects relevant context from here on.
@@ -103,7 +105,7 @@ Verify the answer against the stored decision and the original task evidence. If
 
 ```text
 npx -y codemem status
-npx -y codemem db raw-events-status
+npx -y codemem diagnostics capture status
 ```
 
 ### Observer access and external-model costs
@@ -131,7 +133,9 @@ An npm-capable manager, such as pnpm or mise's `npm:codemem` backend, can also p
 
 Upgrade a durable CLI with the package manager that installed it, then rerun the corresponding setup command for an existing setup-managed integration. Setup replaces its old managed `npx -y codemem mcp` launcher and codemem MCP entries detected as UV/UVX-based so both packages share one runtime; other custom MCP commands remain unchanged. The host plugin is managed independently. Claude marketplace installs use the plugin's bundled MCP configuration and do not require a separate `setup --claude-only` step.
 
-Generated MCP configurations use the global `codemem` binary when available. Otherwise, setup-managed `npx` launchers request both packages in one temporary environment. Restart the updated host and any `codemem serve` process after an installation change. An already-running Claude or Codex MCP host keeps lexical-only recall until it restarts; restarting `codemem serve` does not restart that child.
+Upgrade the Codemem CLI and the OpenCode plugin or Pi extension together. These integrations call grouped CLI commands that older CLIs do not implement. Restart the host after updating.
+
+Generated MCP configurations use the global `codemem` binary when available. Otherwise, setup-managed `npx` launchers request both packages in one temporary environment. Restart the updated host and the local service with `codemem service restart` after an installation change. An already-running Claude or Codex MCP host keeps lexical-only recall until it restarts; restarting the local service does not restart that child.
 
 The semantic runtime is pinned to CPU inference on every platform. ONNX Runtime 1.24.3 does not ship a macOS x64 binary, so Intel Macs continue with FTS5 keyword retrieval when semantic runtime initialization fails.
 
@@ -267,13 +271,15 @@ Verify:
 
 ```text
 codemem status
-codemem stats
-codemem db raw-events-status
+codemem memory stats
+codemem diagnostics capture status
 ```
 
 The extension captures Pi activity, recalls into the latest user message of the request copy, attaches context after a successful built-in `read`, and registers 15 native `memory_*` tools by default, including `memory_session_search` over stored Pi conversation text, scoped to the current project unless explicitly overridden. MCP is not required. Observer setup can fill unset settings from Pi API-key providers only. Pi OAuth-only credentials cannot be auto-derived for the observer; configure an observer connection separately ([observer auth](docs/user-guide.md#observer-auth-configuration)).
 
-Pre-install Pi session history is not imported automatically. Backfill it with `codemem pi-import-sessions`, then search stored user/assistant text with `codemem pi-session-search <query>`.
+Pre-install Pi session history is not imported automatically. Backfill it with
+`codemem session import`, then search stored user/assistant text with
+`codemem session search <query>`.
 
 Add `--extract` to process the captured Pi backlog in batches of at most 100 events. Events arriving after the extraction snapshot wait for a later run or the Viewer.
 
@@ -312,11 +318,27 @@ PL->>OC: inject codemem context
 **Injection** happens automatically. The plugin builds a query from the current session context (first prompt, latest prompt, project, recently modified files), asks the long-lived local viewer to build the pack, and appends the result to the latest user message via `experimental.chat.messages.transform`. Before sending prompt-derived POST data, it performs a payload-free viewer/profile handshake and rejects redirects. Retryable viewer transport, version, database-target, effective identity/config-target, compression-setting, embedding-setting mismatch, or pre-handshake structured request failures fall back to the existing CLI path; structured request errors become terminal only after compatibility is established. Prior injected message blocks are replayed byte-for-byte on later turns so provider prompt caches can keep the stable prefix. Set `CODEMEM_INJECT_SURFACE=system` to use the legacy system-prompt surface. Raw-event capture uses a separate queue-first path: Viewer durably accepts the envelope before SQLite ingestion and returns `202`; if Viewer is unavailable, OpenCode saves the exact envelope to a private local spool and retries it over HTTP without launching a per-event CLI process. Bounded database, identity, contract, and connection notices omit target values, paths, payloads, subprocess output, and addresses. Each retrieval and current-request cache reuse is recorded through the viewer-backed local evidence ledger with bounded memory identities, machine-readable reason codes, delivery status, and safe repository-relative working-set paths; retryable ledger transport failures retain the CLI fallback. Repository-contained absolute tool paths are converted to repository-relative `/` paths before retrieval; outside-repository, traversing, blank, and overlong paths are omitted. Prompts, pack text, memory content, and absolute paths are not copied into the ledger, historical message reconstruction creates no new attempts, and recording failures never block injection. After a plugin restart, usable context also remains fail-open when fresh ledger-identity repair fails; fallback bytes are injected without attributing delivery to either the conflicted or failed attempt.
 
 Raw-event degradation logs identify the Viewer stage and safe cause without exposing endpoints, paths, payloads, or subprocess output. Successfully spooled events do not show a user-facing warning; persistence failures and capacity exhaustion still do.
-If the same raw event is captured again with only delivery-time timestamps changed, OpenCode reuses its existing durable spool entry; a genuinely different event with the same ID still fails rather than overwriting saved data. Keep OpenCode running after a memory-only warning until the event is delivered or saved for retry.
+OpenCode keeps the first durable serialization when a duplicate event differs only in delivery timestamps or valid runtime-local `cwd`, `project`, and `started_at` context. Later retries reuse those saved bytes and context. Payload, event identity, host generation, and `capture_context` differences still report a conflict, and the saved copy remains unchanged. Keep OpenCode running after a memory-only warning until the event is delivered or saved for retry.
 
-The spool storage API can retain rejected entries outside active delivery while preserving their exact bytes. These entries count toward the same capacity limit. Inspect their metadata with `codemem capture list-rejected --json` and `codemem capture show-rejected '<receipt>' --json`. Explicit `--raw` includes private event text as an escaped JSON string, limited to 16 MiB. Automatic rejection classification and operator retry remain pending.
+The spool storage API can retain rejected entries outside active delivery while preserving their exact bytes. These entries count toward the same capacity limit. Inspect their metadata with `codemem diagnostics capture list-rejected --json` and `codemem diagnostics capture show-rejected '<receipt>' --json`. Explicit `--raw` includes private event text as an escaped JSON string, limited to 16 MiB.
 
-Internal selected-entry recovery coordinates with retention through an ownership-checked lock and removes a retained copy only after a recognized acknowledgement and an unchanged-file check. The HTTP retry command is still pending.
+After inspection, retry one selected receipt against an explicit current target:
+
+```fish
+codemem diagnostics capture recover-rejected '<receipt>' --db-path '~/.codemem/mem.sqlite' -y
+```
+
+The retained event's original target provenance is unknown. `--db-path` and `-y` confirm delivery to the current database and runtime identity. The command verifies the loopback Viewer profile, database, runtime identity, and advertised ingest size before it sends the retained bytes in one HTTP request. It does not follow redirects or fall back to SQLite. It removes the receipt only after a recognized queued or ingested acknowledgement and an unchanged-file check. Use `--json` for machine-readable output.
+
+OpenCode automatically retains events rejected with a known payload-validation response or a verified oversized-request response. It preserves their saved bytes outside active retries so later healthy events can proceed. Each drain still processes at most 20 entries, so healthy events behind a full rejected batch wait for the next drain. Other failures keep their existing retry behavior. Retained receipts count toward the same spool capacity limit and require explicit operator recovery. If retention fails, automatic queue advancement is not guaranteed.
+
+Recovery coordinates with retention through an ownership-checked lock. A timeout, an unrecognized response, or another ambiguous result retains the receipt because the Viewer may have accepted it. If delivery was acknowledged but cleanup needs inspection, inspect the receipt and recovery status. Do not retry blindly.
+
+The Viewer acknowledges duplicate event IDs without comparing their content. If you suspect different content reused an ID, add `--keep-receipt` to preserve the original receipt after acknowledged delivery. The command reports success with `cleanup: "kept"`. Kept receipts still count toward the spool capacity limit. Without this option, a duplicate acknowledgement can remove the retained receipt.
+
+Native Claude, Codex, and Pi receipts use a separate format: `codemem diagnostics capture list-rejected --format native-hook-v1 --provider claude --json`. Use the same format and provider with `codemem diagnostics capture show-rejected '<receipt>'` or `codemem diagnostics capture recover-rejected '<receipt>'`. Replace `claude` with `codex` or `pi` as needed. Recovery also requires `--db-path` and `-y`, verifies the current Viewer target, and supports `--keep-receipt`. Pi receipts carrying saved extraction cutoffs are kept untouched without a POST. Ambiguous native skip responses also leave receipts intact. Inspection shows retained receipts rather than the active hook backlog, and native hook storage has no entry limit equivalent to OpenCode's spool limit.
+
+Native delivery automatically retains exact invalid-session rejections and verified oversized requests. Confirmed retention preserves the original bytes and allows later queue entries to proceed. Retention failures stop the drain and report that inspection is needed. Claude preserves the local fallback for the boundary event being ingested now. Older queued Claude boundaries can be retained and require explicit recovery, which requests a boundary flush. Pi keeps receipts with saved extraction cutoffs or pending boundary work retryable. A retained receipt has not been accepted by the Viewer. Oversized receipts may become recoverable after the configured target or body limit changes.
 
 When a retry spool write fails, the local plugin log also records a safe failure stage and category (for example, an existing-entry conflict versus a filesystem error) without recording the event ID or content. Conflict diagnostics identify the comparison branch and reason, plus changed field names from a fixed allowlist. Other differences produce only `other=true`. This diagnostic does not change retry behavior; keep OpenCode running if it warns an event remains only in memory.
 
@@ -358,23 +380,27 @@ Common starting points:
 
 ```text
 codemem status
-codemem recent
-codemem search "project decisions"
-codemem serve start
+codemem memory list
+codemem memory search "project decisions"
+codemem service start
 codemem update check
 ```
 
 See the [command reference](docs/cli-reference.md) for command groups, memory management, sync diagnostics, and adapter plumbing.
 
-Run `codemem --help` for the human-facing command list. Adapter plumbing commands (`claude-hook-*`, `codex-hook-*`, `pi-hook-*`, `enqueue-raw-event`, and `prompt-pack-ledger`) remain executable for packaged-plugin and stale-client compatibility but are hidden from help and shell completion. `show`, `forget`, and `remember` still work as hidden top-level aliases. `export-memories` and `import-memories` remain visible but are deprecated — they warn on stderr and will be hidden from help and completion in a future release; use `codemem memory export` / `codemem memory import`.
+Run `codemem --help` for the human-facing command list. Adapter plumbing commands (`claude-hook-*`, `codex-hook-*`, `pi-hook-*`, `enqueue-raw-event`, and `prompt-pack-ledger`) remain executable for packaged-plugin and stale-client compatibility but are hidden from help and shell completion. Root-level compatibility aliases and installed-integration commands remain hidden. Use `codemem memory export` and `codemem memory import` for transfers.
 
-Use `codemem status` to answer whether the local database, viewer, sync, maintenance,
+The local service runs the viewer, sync, raw-event ingestion, and maintenance. Use
+`codemem status` to answer whether the local database, viewer, sync, maintenance,
 semantic index, raw-event ingestion, and observer need attention. It is observational:
 it does not create a missing database, repair state, inspect credentials, or contact
 peers, coordinators, registries, or non-loopback hosts. Use `codemem status --json`
-for the stable machine-readable report. `codemem stats` remains the inventory and
-usage command; use `sync status`/`sync doctor`, `maintenance status`, and
-`db raw-events-status` for subsystem detail.
+for the stable machine-readable report. `codemem service status` returns the same
+report. `codemem memory stats` remains the inventory and usage command. `service status`
+replaces `sync status` for operational health. Use `sync peers` for peer health and
+per-scope received/pending work, `sync attempts` for recent passes, and `sync doctor`
+for configuration diagnostics. Use `maintenance status` for background jobs and
+`diagnostics capture status` for the ingestion backlog.
 
 `codemem update check` is read-only: it derives `alpha`, `beta`, `rc`, or `latest` from the
 installed version and reports the latest validated release on that same channel with
@@ -410,18 +436,25 @@ On Linux, plugin-owned auto-updates preserve the OpenCode environment and set
 `ONNXRUNTIME_NODE_INSTALL=skip` for the install to avoid the unused GPU-provider download.
 Docker guidance is always rebuild-and-restart guidance, never an in-container update.
 
-Pack rendering defaults to self-contained context. For token-constrained experiments, `codemem pack <context> --compact` renders an index plus top details. Near-related compression is controlled by `--compression-mode off|compact|ids` (or `CODEMEM_PACK_COMPRESSION`); MCP `memory_pack` exposes the same setting as `compression_mode`. Use `ids` only when the agent can follow up with `memory_get_observations`.
+Use `codemem memory context <task>` to print self-contained memory text for a task.
+Add `--json` when a script needs the structured pack response and its metrics. For
+token-constrained prompts, `--compact` renders an index plus top details.
+Near-related compression is controlled by `--compression-mode off|compact|ids` (or
+`CODEMEM_PACK_COMPRESSION`); MCP `memory_pack` exposes the same setting as
+`compression_mode`. Use `ids` only when the agent can follow up with
+`memory_get_observations`. `memory pack` remains a hidden compatibility entrypoint
+for installed integrations and Pi callers.
 
 ### Distill recurring lessons
 
-`codemem distill` finds repeated discoveries and decisions that may be worth promoting into project or user context.
+`codemem memory distill` finds repeated discoveries and decisions that may be worth promoting into project or user context.
 
 ```text
-codemem distill --explain               # ranked candidates + evidence
-codemem distill --all-projects --json   # machine-readable
-codemem distill --no-judge              # skip the observer-model worthiness judgment
-codemem distill --draft                 # draft an AGENTS.md rule for the top candidate and show a diff
-codemem distill --draft --apply         # write it after confirmation
+codemem memory distill --explain               # ranked candidates + evidence
+codemem memory distill --all-projects --json   # machine-readable
+codemem memory distill --no-judge              # skip the observer-model worthiness judgment
+codemem memory distill --draft                 # draft an AGENTS.md rule for the top candidate and show a diff
+codemem memory distill --draft --apply         # write it after confirmation
 ```
 
 Candidate mining is deterministic, and by default an observer-model worthiness pass then drops clusters of recurring routine activity (release/CI status, review passes with no findings, context lookups) that recurrence scoring cannot distinguish from real lessons. Without a configured observer model the command falls back to unjudged output with a warning; `--no-judge` opts out entirely. `--draft` uses your configured observer model to turn the top candidate into a single `AGENTS.md` rule and renders a unified diff; nothing is written. `--apply` writes that rule into a codemem-managed `## Distilled lessons` block (delimited by `<!-- codemem:distilled:begin/end -->` markers, so all distilled edits stay in one place) after prompting for confirmation.
@@ -517,7 +550,7 @@ codemem memory export project.json
 codemem memory import project.json --remap-project ~/workspace/myproject
 ```
 
-See `codemem memory export --help` and `codemem memory import --help` for full options. The legacy top-level `export-memories` / `import-memories` forms still work but emit a deprecation warning.
+See `codemem memory export --help` and `codemem memory import --help` for full options. Installed integrations may retain hidden compatibility entrypoints.
 
 ## Sharing and devices
 
@@ -536,7 +569,7 @@ For ongoing collaboration:
 
 Team onboarding links Identities and devices. The invitation does not assign Projects to the Team, but a new member inherits every current and future Project assigned to it. Review the Team's Projects before sending or accepting the invitation. Use **Share exact Projects** to send a separate direct Project invitation to one Identity. Team sharing must already be configured, but accepting the direct invitation does not add the recipient to the Team.
 
-For a legacy Team that needs setup, finish the reviewed setup on any upgraded device. The first valid finish becomes the Team's shared result; other upgraded devices apply it locally and stop showing that setup task. To finish setup, the device must list the Team's coordinator group in `sync_coordinator_groups`; scope-backed discovery can show a Team for review but cannot complete its setup. If a completed Team keeps asking for setup on one device, `codemem coordinator diagnose-team-setup` dry-runs the completion there and names the failing check. See [Set up an existing Team](docs/user-guide.md#set-up-an-existing-team) for recovery and compatibility details.
+For a legacy Team that needs setup, finish the reviewed setup on any upgraded device. The first valid finish becomes the Team's shared result; other upgraded devices apply it locally and stop showing that setup task. To finish setup, the device must list the Team's coordinator group in `sync_coordinator_groups`; scope-backed discovery can show a Team for review but cannot complete its setup. If a completed Team keeps asking for setup on one device, `codemem coordinator schema diagnose-team` dry-runs the completion there and names the failing check. See [Set up an existing Team](docs/user-guide.md#set-up-an-existing-team) for recovery and compatibility details.
 
 For a direct share, choose **Create an invitation → Share exact Projects**:
 
@@ -562,7 +595,7 @@ Disabling a device's enrollment for one coordinator group revokes future deliver
 - **Waiting** — acceptance, setup, or delivery is waiting; an offline device resumes on reconnect.
 - **Needs attention** — setup reached a terminal failure; use the displayed retry action.
 
-For a paired peer, the Sync column separately shows sync health, last sync, and operations received/sent in the past 24 hours (not bytes). Use **Sync this device** in that peer's action menu to run one targeted pass; local or unpaired devices do not offer that action. If sync status cannot refresh, counts are hidden rather than presented as current.
+For a paired peer, the Sync column separately shows sync health, last sync, and operations received/sent in the past 24 hours (not bytes). Use **Sync this device** in that peer's action menu to run one targeted pass; local or unpaired devices do not offer that action. If peer status cannot refresh, counts are hidden rather than presented as current.
 
 **Presence unavailable** means there is no current presence evidence, including when a coordinator announcement has expired; it does not mean the machine is powered off. A live paired connection or this viewer's local device is shown as **Available**, while an explicitly offline peer remains **Offline**. Devices without a known name appear as **Unnamed device**. Rename a configured device from its action menu; Advanced Sync retains deeper peer diagnostics.
 
@@ -593,16 +626,16 @@ Coordinator account linking is optional. On an active enrolled device whose curr
 Operators can separately preview legacy ownership or enrollment cases; `--json` is always preview-only:
 
 ```text
-codemem coordinator review-device-owner team-alpha --coordinator "https://coord.example.com" --json
+codemem coordinator owner review team-alpha --coordinator "https://coord.example.com" --json
 ```
 
 The review reads the existing local device database and current Identity without running maintenance, changing configuration or credentials, rotating keys, adopting an Identity, moving memories, or changing grants. Interactive review defaults to **No**; only an operator confirmation records ownership evidence, without changing device assignments or access. It requires the configured coordinator-admin credential.
 
-After confirmed review, operators can separately run `codemem coordinator grant-identity-group <attestation-id>` with the stored `controller-v1:` reference. It uses only the configured coordinator and existing admin credential; it accepts no Identity/group override. Interactive confirmation defaults to **No**; `--json` and noninteractive calls show only a local preview and send no request. This grants transport enrollment eligibility, not Team/Project access, and does not run Google sign-in or alter the local profile. See the [operator grant workflow](docs/user-guide.md#optional-coordinator-account-linking).
+After confirmed review, operators can separately run `codemem coordinator group grant-identity <attestation-id>` with the stored `controller-v1:` reference. It uses only the configured coordinator and existing admin credential; it accepts no Identity/group override. Interactive confirmation defaults to **No**; `--json` and noninteractive calls show only a local preview and send no request. This grants transport enrollment eligibility, not Team/Project access, and does not run Google sign-in or alter the local profile. See the [operator grant workflow](docs/user-guide.md#optional-coordinator-account-linking).
 
-`codemem coordinator qualify-owner <attestation-id>` previews a separate linked-account device-enrollment permission on the configured Worker with browser authentication and owner enrollment enabled. It requires a genuine operator review, the existing private admin credential, and complete current schemas, including migrations 0035 and 0036. Default/unconfigured Workers and local coordinator serving do not support issuance. Unlike the grant command, its preview contacts the configured coordinator; `--json` and noninteractive use never issue a qualification. The owner consumer accepts qualified links with an independently eligible transport-group grant; bare claims remain denied. No live configuration, migration, deployment or verified live two-device journey is included. See the [qualification contract](docs/contracts/coordinator-identity-group-grants.md#owner-qualification-api).
+`codemem coordinator owner qualify <attestation-id>` previews a separate linked-account device-enrollment permission on the configured Worker with browser authentication and owner enrollment enabled. It requires a genuine operator review, the existing private admin credential, and complete current schemas, including migrations 0035 and 0036. Default/unconfigured Workers and local coordinator serving do not support issuance. Unlike the grant command, its preview contacts the configured coordinator; `--json` and noninteractive use never issue a qualification. The owner consumer accepts qualified links with an independently eligible transport-group grant; bare claims remain denied. No live configuration, migration, deployment or verified live two-device journey is included. See the [qualification contract](docs/contracts/coordinator-identity-group-grants.md#owner-qualification-api).
 
-`codemem coordinator revoke-device <group> <device>` previews coordinator-wide device-ID **and** canonical-key revocation over the network. The group supplies evidence only: confirmation revokes that device ID with any key, and that key under any device ID, across **all groups**. Another device continues only if both its ID and key differ. Confirmation defaults to **No**; JSON and noninteractive calls never commit, and there is no `--yes`. It reads credentials only from saved operator configuration, not environment overrides. Configured operator-context runtimes support these endpoints; legacy/unconfigured Workers and default `coordinator serve` do not. The CLI cannot activate server routes. See [operator device revocation](docs/user-guide.md#operator-device-revocation).
+`codemem coordinator device revoke <group> <device>` previews coordinator-wide device-ID **and** canonical-key revocation over the network. The group supplies evidence only: confirmation revokes that device ID with any key, and that key under any device ID, across **all groups**. Another device continues only if both its ID and key differ. Confirmation defaults to **No**; JSON and noninteractive calls never commit, and there is no `--yes`. It reads credentials only from saved operator configuration, not environment overrides. Configured operator-context runtimes support these endpoints; legacy/unconfigured Workers and default `coordinator serve` do not. The CLI cannot activate server routes. See [operator device revocation](docs/user-guide.md#operator-device-revocation).
 
 Ambiguous ownership stops the review; ownership records disappearing or changing during confirmation require a fresh preview. The interactive link command resolves the current configuration or environment Identity and readiness automatically. See [coordinator-backed discovery](docs/coordinator-discovery.md#optional-account-linking).
 
@@ -614,14 +647,14 @@ An account-link conflict may involve the Google account or the coordinator Ident
 
 #### Optional coordinator owner enrollment
 
-The maintained `codemem coordinator enroll-owner` flow is for an operator-enabled coordinator owner enrollment. It does not configure Google or deploy a coordinator; see [Cloudflare coordinator deployment](docs/cloudflare-coordinator-deployment.md) for the operator setup.
+The maintained `codemem coordinator owner enroll` flow is for an operator-enabled coordinator owner enrollment. It does not configure Google or deploy a coordinator; see [Cloudflare coordinator deployment](docs/cloudflare-coordinator-deployment.md) for the operator setup.
 
 This enrollment flow currently requires POSIX private-file checks. Windows enrollment stops before changing the profile because Windows ACL verification is not implemented; do not copy signing keys to work around this limitation.
 
 Stop this profile's capture plugin, viewer, and sync daemon before preparing, and keep them stopped until the command reports `Verified coordinator Identity`:
 
 ```text
-codemem coordinator enroll-owner team-alpha --prepare --coordinator "https://coord.example.com"
+codemem coordinator owner enroll team-alpha --prepare --coordinator "https://coord.example.com"
 ```
 
 The review shows the current Identity, device, key, and memory-author counts. Existing keys, history, and authorship stay unchanged. The command does not create Team or Project grants, merge Identities, populate existing Identity devices or access authorities, or transfer legacy ownership. Bootstrap state is populated only after immutable creation proof. A conflict, legacy enrollment, or already-enrolled key stops the review for operator help.
@@ -629,7 +662,7 @@ The review shows the current Identity, device, key, and memory-author counts. Ex
 Preparation writes a private `capability-request.json` that includes the browser-start code. Submit that file unchanged through the operator's private process; never paste its contents into chat. After admission, resume with the review digest and capability using the same coordinator, configuration, database, and key selections:
 
 ```text
-codemem coordinator enroll-owner team-alpha --resume --review-digest '<review-digest>' --capability '<operator-provided-capability>' --coordinator "https://coord.example.com"
+codemem coordinator owner enroll team-alpha --resume --review-digest '<review-digest>' --capability '<operator-provided-capability>' --coordinator "https://coord.example.com"
 ```
 
 After an ambiguous failure with a retained final request, retry that exact request unchanged. If a start succeeded but no final request was saved, retain the old state and prepare a new attempt in a new `--state-dir`; do not delete or replace the earlier state. Google confirmation and a two-device workflow have not been verified live.
@@ -637,7 +670,7 @@ After an ambiguous failure with a retained final request, retry that exact reque
 Account admission is a separate, explicit opt-in on coordinators that serve the authenticated `/auth/owner/admit` page. After the same preparation and local review, use this instead of `--capability`:
 
 ```text
-codemem coordinator enroll-owner team-alpha --resume --account-admission --review-digest '<review-digest>' --coordinator "https://coord.example.com"
+codemem coordinator owner enroll team-alpha --resume --account-admission --review-digest '<review-digest>' --coordinator "https://coord.example.com"
 ```
 
 Open the displayed fixed HTTPS link manually while signed in to the intended account, upload the unchanged private `capability-request.json`, and compare the displayed local fingerprint. Keep the command running and capture stopped until `Verified coordinator Identity` appears. The client sends no initial operator start request and needs no operator capability; never combine the two admission modes. Preparation still supports `--json`; resume requires an interactive terminal.
@@ -653,7 +686,7 @@ The equivalent CLI-only flow remains available:
 ```text
 codemem sync enable        # generate device keys
 codemem sync pair          # generate pairing payload
-codemem serve start        # start it; use serve stop/restart for lifecycle management
+codemem service start      # start it; use service stop/restart for lifecycle management
 codemem sync once          # run one immediate sync pass
 ```
 
@@ -661,7 +694,7 @@ Legacy pairing and legacy coordinator invitations do not grant project access by
 
 For cross-network setups where peer addresses change frequently or mDNS does not cross VPN/network boundaries, codemem also supports optional coordinator-backed discovery with a self-hosted coordinator. The preferred deployment path is the built-in `codemem coordinator` service; see [docs/coordinator-discovery.md](docs/coordinator-discovery.md).
 
-When a coordinator's operator turns on relay, `codemem serve` also syncs with a peer through that coordinator's relay when direct sync fails and the two devices share a coordinator-managed Project. Relay is live only and end-to-end encrypted: both devices must be online, and the relay stores nothing and grants no access. Each device pins the relay key per coordinator group and pauses relay for a group when the key changes. `codemem sync relay-keys` lists the pins, and `codemem sync approve-relay-key <group> --key <candidate>` approves a change. Set `sync_relay_enabled` to `false` to turn relay off, then restart `codemem serve`, because the viewer reads the setting at startup. See [Relay](docs/relay.md) for status messages, privacy limits, and operator switches.
+When a coordinator's operator turns on relay, the local service also syncs with a peer through that coordinator's relay when direct sync fails and the two devices share a coordinator-managed Project. Relay is live only and end-to-end encrypted: both devices must be online, and the relay stores nothing and grants no access. Each device pins the relay key per coordinator group and pauses relay for a group when the key changes. `codemem sync relay-keys` lists the pins, and `codemem sync approve-relay-key <group> --key <candidate>` approves a change. Set `sync_relay_enabled` to `false` to turn relay off, then run `codemem service restart`, because the service reads the setting at startup. See [Relay](docs/relay.md) for status messages, privacy limits, and operator switches.
 
 ## Semantic recall
 
@@ -706,7 +739,7 @@ pnpm run codemem --help
 ### Via npx (no install)
 
 ```text
-npx -y codemem stats
+npx -y codemem memory stats
 ```
 
 ### Plugin for development
@@ -720,6 +753,8 @@ explicitly while testing unpublished changes.
 Contributor-only lint feedback covers Biome-included source files, including UI Playwright configs, visual tests, and visual scripts, and source-plugin testing is documented in [Contributing](CONTRIBUTING.md#repository-lint-feedback) and the [plugin reference](docs/plugin-reference.md#repository-only-lint-feedback); installing codemem does not enable checkout tooling.
 
 The repository lint ratchet matches include globs without regex backtracking, so repeated wildcards cannot trigger exponential matching work.
+
+For method-based warning identities inside named, zero-argument `create*Command(): Command` function declarations, the matcher includes the factory name so unrelated handlers do not share one identity.
 
 </details>
 

@@ -88,6 +88,28 @@ in Rust.
   says. A cross-encoder answers `/v1/rerank` through its rank head, and
   `/v1/score` takes either.
 
+## Performance
+
+`frink bench` runs llama-bench's workload (`pp512` prefill, `tg128`
+decode) on the same GGUF and machine as `llama-bench`, and every
+published number has a receipt. The full table is
+[`benchmarks/RESULTS.md`](benchmarks/RESULTS.md).
+
+- **Metal (Apple M2 Pro).** Level with llama.cpp on prefill and ahead
+  of it on decode across most of the suite.
+- **CUDA (NVIDIA L40S, 0.59.0, 2026-11-09).** Greedy tokens identical
+  to frink's CPU path on all ten models measured, and the first-token
+  distribution matching llama.cpp's on nine of them (gpt-oss drifts on
+  frink's CPU path as well). Not yet as fast. On the dense 3B to 12B
+  models decode is 1.2x to 1.4x slower and prefill 3x to 4x. Qwen3-30B-A3B,
+  whose expert layers now run on the GPU, is 2x behind on decode and
+  5.5x on prefill, and gpt-oss still runs on the host path
+  ([the L40S rows](benchmarks/RESULTS.md#amd-epyc-7r13-processor-4c-linux-612113-138209amzn2023x86_64--nvidia-l40s)).
+  Closing that is the top of the [roadmap](docs/plans/north-star.md)
+  (#133, #259).
+- **CPU.** Close to llama.cpp on decode and behind on some prefill. The
+  CPU rows predate the current code and are marked stale in the table.
+
 ## Install
 
 ```bash
@@ -95,7 +117,7 @@ curl -fsSL https://raw.githubusercontent.com/antonellof/frink/main/scripts/insta
 ```
 
 Installs `frink` and `frink-server` into `~/.local/bin` (override with
-`FRINK_INSTALL_DIR`, pin with `FRINK_VERSION=v0.58.0`). The downloaded
+`FRINK_INSTALL_DIR`, pin with `FRINK_VERSION=v0.61.0`). The downloaded
 `frink` is built with `serve`, so one binary runs completions and
 serves the API. `frink-server` ships alongside it so an existing one on
 your PATH keeps working. Prebuilts are macOS arm64 with Metal and Linux
@@ -236,7 +258,7 @@ belongs to an unrelated crate.
 
 ```toml
 [dependencies]
-frink-inference = "0.58"
+frink-inference = "0.61"
 ```
 
 ```rust

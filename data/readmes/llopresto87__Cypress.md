@@ -8,7 +8,7 @@ From then on, the method in those files asks each session to size its process to
 
 ## Who it is for and not for
 
-It is for developers who work in a code repository through a coding [harness](DOCUMENTATION.md#term-harness) the installer supports: Claude Code, Prime Agent, opencode, Codex or GitHub Copilot. Support is not the same on each: Claude Code and Prime Agent are first-class, opencode is supported, and Codex and GitHub Copilot are deprecated, installed only when you name them and given no new features. The [host capability matrix's support table](documentation/host-capability-matrix.md#support-tiers-adr-0009) and the [host support decision record](docs/decisions/adr-0009-host-support-tiers.md) say what each level means.
+It is for developers who work in a code repository through a coding [harness](DOCUMENTATION.md#term-harness) the installer supports: Claude Code, Prime Agent, opencode, Codex or GitHub Copilot. Support is not the same on each: Claude Code, opencode (OpenCode 2) and Prime Agent are first-class, and Codex and GitHub Copilot are deprecated, installed only when you name them and given no new features. The [host capability matrix's support table](documentation/host-capability-matrix.md#support-tiers-adr-0009) and the host support decision records ([tiers](docs/decisions/adr-0009-host-support-tiers.md), [opencode](docs/decisions/adr-0033-opencode-first-class-on-opencode-2.md)) say what each level means.
 
 The method assumes no language, framework or stack. The reference [corpora](DOCUMENTATION.md#term-corpus) that ship with it are narrower: the library notes lean toward .NET, Java and Node.js, and the legal citations cover one national jurisdiction. Both are placed in your project only when you ask: the library notes page by page, from a list the installer proposes, and the legal citations whole. The [corpora reference](documentation/corpora-and-integrations-reference.md) has the breakdown.
 
@@ -35,8 +35,8 @@ The install does not touch your application source, `.gitignore`, git history or
 
 | Figure | What it covers, and how it was obtained |
 |---|---|
-| 25 800 bytes | per session on Claude Code: the kernel plus the one-line description of every agent and skill, computed from the [seed](DOCUMENTATION.md#term-seed)'s files by this repository's test run; a lower bound, not a live reading |
-| 11% more tokens | per task, against a session with no method, on one small, well-specified task; measured once ([evidence record](docs/plans/grill-7.29.0-front-door/method-overhead-evidence.md)) |
+| 67 131 bytes | per session on Claude Code: the kernel, the one-line description of every agent and skill, and the orchestrator's charter with its always-loaded nodes, computed from the [seed](DOCUMENTATION.md#term-seed)'s files by this repository's test run; a lower bound, not a live reading |
+| 11% more tokens | per task, against a session with no method: 131 583 tokens against 118 973. The same run took 20% more tool calls (72 against 60) and 20% more wall-clock time (12 min 40 s against 10 min 32 s), and the run without the method found a defect that the run with the method missed. Measured once, on one small, well-specified task ([evidence record](docs/plans/grill-7.29.0-front-door/method-overhead-evidence.md)) |
 
 The always-loaded figure leaves out the notes a session opens on demand, each worker it starts, the text the hooks add to each prompt, and the one-time pass that builds the graph. The [host capability matrix](documentation/host-capability-matrix.md) gives the figure for each other harness. No money figure exists.
 

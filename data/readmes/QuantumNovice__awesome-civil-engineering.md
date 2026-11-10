@@ -295,6 +295,7 @@
 - [LAStools](https://rapidlasso.de/product-overview/) - Fast command-line tools for processing LiDAR point clouds.
 - [Polycam](https://poly.cam/) - Mobile LiDAR and photogrammetry scanning for phones and tablets.
 - [KIRI Engine](https://www.kiriengine.app/) - Mobile and web photogrammetry and 3D Gaussian splatting.
+- [Mini5Planner](https://www.anleggtech.no/en/mini5planner) - Photogrammetry flight planner for DJI Fly drones that exports WPML KMZ missions.
 
 ## Calculations
 
@@ -313,6 +314,7 @@
 - [TEDDS](https://www.tekla.com/products/tekla-tedds) - Productivity tool for repetitive structural calculations.
 - [SymPy](https://docs.sympy.org/latest/index.html) - Open-source Python library for symbolic algebra, equation solving, calculus, matrices, and engineering mathematics.
 - [Construction Takeoff Practice Plans](https://github.com/krflol/takeoff-field-tools-practice-plans) - Five free synthetic construction plan sets with answer schedules and a facilitator guide for practicing counts, lengths, areas, and volumes.
+- [Construction Charts](https://github.com/klm-labs/construction-charts) - CC BY 4.0 CSV and PDF tables: stair rise and run, roof pitch, board feet, concrete bags, crown angles.
 - [Jupyter](https://jupyter.org/) - Interactive notebooks combining code, equations, and results.
 - [Calcs.com](https://calcs.com/) - Cloud structural calculations for beams, columns, and connections, formerly ClearCalcs.
 - [CalcTree](https://www.calctree.com/) - Collaborative engineering calculation documents.
@@ -321,6 +323,7 @@
 
 - [ComplyOnSite](https://complyonsite.com/tools) - Free UK site tools: HAVS and noise calculators, RAMS builder, EWC code lookup.
 - [UnitConv](https://unitconv.online/) - Free engineering unit converter for length, area, pressure, energy and more.
+- [Calculation Hub Concrete Volume Calculator](https://calculation-hub.com/construction/concrete-volume) - Free concrete volume and waste estimates; not structural or mix-design advice.
 - [Concrete Calculator Hub](https://concreteestimatorhub.com/) - Concrete volume, bag count, slab, footing and material cost calculators.
 - [RoofingCalculatorHQ](https://roofingcalculatorhq.com) - Roof area, pitch, takeoff, snow/wind load and replacement cost calculators.
 - [Roof Cost Data](https://roofcostdata.com/roof-replacement-cost-calculator) - U.S. roof replacement cost estimator by size, material, tear-off and labor.
@@ -359,6 +362,8 @@
 - [ZWCAD](https://www.zwsoft.com/product/zwcad) - DWG-compatible CAD software.
 - [GstarCAD](https://www.gstarcad.net/) - DWG-compatible CAD software.
 - [progeCAD](https://www.progesoft.com/) - DWG-compatible CAD software.
+- [Horezmi](https://horezmi.com/) - Converts scans, PDFs, phone photos and hand sketches of floor plans into editable DWG and DXF, with walls, rooms and dimensions on layers.
+- [LinceCAD](https://www.lincecad.com/en/) - Commercial 2D and 3D CAD for Windows and Linux that opens and saves DWG and DXF files natively.
 
 ## 3D Modelling
 

@@ -118,7 +118,8 @@ builds plug extra connectors and MCP tools into.
 
 **Connectors (`ekos/plugins/`):** File, Git, GitHub issues/PRs (live-verified against a real
 repo, 1,600 real issues/PRs — RFC 0062), Confluence, local documents
-(PDF/DOCX/text/Markdown/HTML/email — text, tables, image OCR), Pentaho Kettle (`.ktr`/`.kjb` —
+(PDF/DOCX/text/Markdown/HTML/email, XLSX/CSV sheets, PPTX slides and notes, PNG/JPEG/TIFF/WebP
+images through local Tesseract OCR — text, tables, image OCR; RFC 0253), Pentaho Kettle (`.ktr`/`.kjb` —
 RFC 0027), Python/PySpark source (real AST parsing, DataFrame chains recovered into the
 Transformation IR — RFC 0038/0040), Rust source (real AST parsing, real function-call graph —
 RFC 0041), Elixir and JavaScript/TypeScript source (real AST + `Calls` recovery — RFC 0081/0082),
@@ -142,7 +143,7 @@ database's own object counts, behind the `oracle` build feature — RFC 0211), p
 proof-of-concept clients for Salesforce, SAP,
 Microsoft Fabric, and Snowflake (real API shapes, mock-tested — none yet exercised against a live
 account). SQL in the PostgreSQL, SQL Server (T-SQL), MySQL, Snowflake, Databricks and ClickHouse dialects is
-parsed from files (RFC 0031); live Oracle, PostgreSQL and ClickHouse catalogs are read through `[[databases]]` (RFC 0211, RFC 0235); a live SQL Server connector and a Jira connector remain planned.
+parsed from files (RFC 0031); live Oracle, PostgreSQL, ClickHouse, SQL Server and Informix catalogs are read through `[[databases]]` (RFC 0211, RFC 0235, RFC 0252 §3.5); a Jira connector remains planned.
 
 ## Installation
 
@@ -847,12 +848,49 @@ PostgreSQL and ClickHouse databases are declared the same way (RFC 0235): `kind 
 server's own counts; every ClickHouse catalog query carries `readonly=1`. Both probe a write that
 must be refused and compile to the same `origin: live` objects as Oracle — tables with keys and
 foreign keys, views, PL/pgSQL routines and triggers through the readers files use — and a dropped
-object leaves the model. Profiles and the application dictionary stay Oracle-only.
+object leaves the model. `profile = "p0" | "p1" | "p2"` works for every kind (RFC 0252): P0 reads the
+optimizer's statistics, P1 counts rows, P2 scans each table once for exact null counts, number and date
+bounds and text lengths — never a text value. ClickHouse scans only engines that store their own rows.
+The application dictionary stays Oracle-only.
 
 ```bash
 ekos database add shop --kind postgres --connect db.local:5432/shop --user shop_ro --password-env SHOP_PW --owner public
 ekos database add wh --kind clickhouse --connect https://ch.local:8443 --user ro --password-env WH_PW --owner analytics
+ekos database add erp --kind sqlserver --connect mssql.local:1433/erp --user ekos_ro --password-env ERP_PW --owner dbo
+ekos database add stores --kind informix --connect ifx.local:9088/stores@ol_ifx --user ekos_ro --password-env STORES_PW --owner informix
 ```
+
+SQL Server (RFC 0252 §3.5): `kind = "sqlserver"`, `connect = "host[:port]/database"` (port 1433 by
+default; append `?trust-server-certificate=true` only for a self-signed certificate — the connection
+is encrypted either way), `owners` the schemas. The catalog comes from the `sys.*` views — tables,
+columns, keys and unique indexes, checks, foreign keys, `MS_Description` comments, and view, routine
+and trigger text from `sys.sql_modules` — reconciled against `sys.objects`. SQL Server has no
+read-only session setting, so the session asks for read-only routing (`ApplicationIntent=ReadOnly`),
+runs every statement in a transaction that is always rolled back, with lock and command timeouts, and
+the write check reports the login's rights (`HAS_PERMS_BY_NAME`) rather than attempting a write. P0 is
+`sys.partitions`' approximate row counts (column statistics are histograms of values and are never
+read); P1/P2 as for the other kinds. T-SQL routines compile at *signature* fidelity — arguments,
+return type, description, and the tables they read and write from a real parse — with no
+per-statement objects yet. `ekos sql check --database <name>` probes it read-only too. The testbed is
+`docker-compose.sqlserver.yml` (`EKOS_SQLSERVER_LIVE=1` for the live suite).
+
+Informix (RFC 0252 §3.5): `kind = "informix"`, read over ODBC — build `ekos` with `--features informix`
+(it links unixODBC) and install an Informix ODBC driver (see the deployment guide). `connect` is
+`host[:port]/database@server` for the IBM Informix Client SDK (SQLI, port 9088 by default; `server` is
+the `INFORMIXSERVER` name) or `drda://host[:port]/database` for the IBM Data Server Driver (DRDA, port
+9089); `?driver=<name or library path>` and `?db-locale=<locale>` are optional. `owners` are table
+owners (`systables.owner`). The catalog comes from `systables`, `syscolumns` (types decoded from
+`coltype`/`collength`), `sysdefaults`, `sysconstraints`/`sysindexes`/`sysreferences`/`syschecks`,
+`sysviews`, `sysprocedures`/`sysprocbody` and `systriggers`/`systrigbody`, reconciled against its own
+counts. Every statement runs in a transaction that starts `SET TRANSACTION READ ONLY` and is always
+rolled back, under `COMMITTED READ LAST COMMITTED`; the write check reports the user's grants
+(`systabauth`, `syscolauth`, roles, `sysusers`). P0 is `systables.nrows` (the optimizer's `colmin`/
+`colmax` and distributions are values and are never read). SPL routines compile as `Procedure`
+objects **without IR** — there is no Informix SPL reader yet — with arguments, return types, the
+`DOCUMENT` text and the tables their SQL statements read and write; the recover summary counts them.
+Informix has no MD5, so its columns get no overlap signature (`ekos relationships`). The testbed is
+`docker-compose.informix.yml` + `deploy/fixtures/informix/load.sh` (`EKOS_INFORMIX_LIVE=1` for the live
+suite).
 ### Write behaviour: how each table is updated and deleted (RFC 0212)
 
 Before copying a table incrementally you need to know whether every change moves its timestamp
@@ -939,6 +977,60 @@ scripts/wiki-snapshot.py --xml export.xml --out ~/wiki-snapshot --licence "CC BY
 ekos source add wiki --path ~/wiki-snapshot
 ```
 
+### What the data says about the code (RFC 0252)
+
+After `ekos commit`, `ekos profile run` measures every `[[databases]]` entry with `profile = "p1"` or
+`"p2"` — counts only; the only values it ever handles are the literals code already names:
+
+```bash
+ekos profile run                       # code-value usage, first/last seen, implied nulls, keys, history
+ekos profile show account              # what was measured for one table
+ekos relationships discover --cross-database   # references the data shows, verified by inclusion
+ekos review relationships "invoice.parts_id → partstax.parts_id" --confirm --as ana
+```
+
+- Each `EnumMeaning` gains `data_usage` (rows, share, first/last month, `dead` after 24 months without
+  a row, `never_seen`) and `implies` (`status = 7 ⇒ cancelled_at IS NOT NULL`); a column holding values
+  no code names gets a `data_only_values` gap (counts, never the values); each table a `GrainCandidate`
+  (declared key or a levelwise key search); `WriteBehaviour` gains `data_history` (open validity
+  periods, set soft-delete flags). Re-profiling never stales a review.
+- `relationships discover` signs every comparable column with a salted MinHash **computed inside the
+  database**, proposes references to unique columns, adds every code join, and checks each with an
+  exact inclusion query: `FkCandidate`s with `seed: code | data | both` and a verdict, reviewed under
+  the optional subject `relationships`. Across databases, overlapping keys become `value_overlap` on a
+  `SameAs` candidate — never a merge.
+- MCP: `ekos_profile`, `ekos_relationships` (read-only). Works for Oracle, PostgreSQL, ClickHouse,
+  SQL Server and Informix (no signatures on Informix: no MD5 there).
+
+### Open questions, the inbox and testimony (RFC 0253 / 0254)
+
+What nobody can explain becomes a question for the person likely to know; what people answer is
+recorded as testimony — evidence with who, where and when, never a decision:
+
+```bash
+ekos questions list                     # derived at every commit; status computed on read
+ekos questions show e595d49f --reveal   # the unexplained values, live, for you only (never stored)
+ekos questions export --format md --out questionnaire.md
+ekos check code-vs-data                 # CASE without ELSE that misses values, dead branches, …
+ekos inbox add spec.pdf --as ivana      # files and links people send → the source `inbox`
+ekos testimony add --as ivana --text "Q is owner capital" \
+    --about "account.category = 'Q'" --meaning "owner capital" --answers e595d49f
+ekos probe --spec '{"database":"erp","table":"orders","template":"null_by","column":"cancelled_at","by":"status"}'
+```
+
+- Questions: `[[questions.owners]]` (`pattern`, `people`), `[questions] reviewers`,
+  `per-person-per-day`, `min-cell`; `reassign` / `decline` ("not me") / `mute`.
+- Inbox: originals stay outside the ledger (`<state>/inbox/`), pending until `ekos inbox accept`
+  when sent with `--pending` or under `[inbox] require-accept`; links are fetched once, never from a
+  private or loopback address unless in `[inbox] allow-hosts`; every text is scrubbed of secrets,
+  e-mail addresses and card numbers before it is compiled.
+- Testimony: a stated meaning is a meaning source `testimony`; one that disagrees with code is a
+  `testimony_mismatch` conflict. `testimony add`/`withdraw`, `inbox accept`/`purge` are human-only.
+- Probes (`[probe] mcp = true` to offer `ekos_probe` to agents): closed aggregate templates, personal
+  columns counted only, small cells hidden, budgeted, audited without results. The
+  `.claude/agents/source-explorer.md` agent works hypothesis → probe → proposals for a person.
+- MCP: `ekos_questions`, `ekos_testimony`, `ekos_probe` (opt-in) — all read-only.
+
 ### Review and sign-off (RFC 0213)
 
 Before a lakehouse is built from a source estate, a person agrees to its source model. `ekos review list` shows six
@@ -985,6 +1077,25 @@ profile contributes counts only, never a value, and text is used only from sourc
 a source's `LICENSE` file, or set in `[docs-estate] licences`; a database has none until you set one). On iDempiere:
 1,060 pages in 26 s — published with a walkthrough of the first three workflow steps at
 [alexeyban/ekos-lakehouse-oracle](https://github.com/alexeyban/ekos-lakehouse-oracle).
+
+Each table page is also the table's **source passport** (RFC 0254 §3.6, estate page format v2): what an analyst
+needs before building on it, each fact with its status (hypothesis, confirmed, …) and the evidence it rests on.
+Sections appear only when there is something to say:
+
+1. **What a row is** — the grain (`ekos profile run`'s `GrainCandidate`: declared key or a measured unique key) and
+   the row count.
+2. **Keys and references** — the declared foreign keys, then references inferred from code and data (`ekos
+   relationships discover`) with seed, verdict, how many values the target holds and the `relationships` review
+   decision.
+3. **Codes** — per coded column, every value code names with its meaning, where the meaning is stated, share of rows,
+   first and last seen, dead or never seen, and one counted row for values no code names. Never a data value.
+4. **How it changes** — write behaviour with its review status and the measured validity periods and soft-delete
+   flags.
+5. **What the code assumes** — `code_vs_data` findings (`ekos check code-vs-data`) and how they were decided; a
+   finding's measured minimum and maximum are never shown.
+6. **What people said** — testimony cited as "According to *author* (*channel*, *date*)" (withdrawn testimony left
+   out), and notes from people (RFC 0247).
+7. **Open questions** — the table's questions with their computed status and who they are with now.
 
 ### Oracle as a lakehouse source (RFC 0216)
 
@@ -1493,139 +1604,4 @@ the file is still recovered, and `ekos recover` says what was skipped:
 - `SQL005` — `<file>: 2 of 61 statements were not parsed and skipped`, with the line, the first
   words and the parser's error for each. A skipped `CREATE TABLE` is called out as a lost table.
 - `SQL001` — when a file states a `CREATE TABLE` and no table was recovered, the message names the
-  dialect it was parsed under and the first error, and points at `[[recover.sql.dialect-rules]]`.
-  A file with no `CREATE TABLE` keeps the plain `no tables found`.
-
-If `ekos ekl "FIND Object WHERE kind = 'Table' COUNT"` returns 0 for a repo that clearly has a
-schema, read those two warnings first. Foreign keys declared after the tables, as `pg_dump` writes
-them (`ALTER TABLE … ADD CONSTRAINT … FOREIGN KEY`), become `ForeignKey` edges too.
-
-**Hand-written schemas need more than the right dialect (RFC 0146).** Everything above was tuned
-against `pg_dump`, which emits a narrow, mechanical subset of PostgreSQL. A human-maintained schema
-does not: measured on LedgerSMB, a correctly-configured `dialect = "postgres"` still recovered
-**0 of 158 tables**, because the file's first `COMMENT ON TABLE … IS $$…$$` failed the whole-file
-parse and took every table with it. The `postgres` dialect now preprocesses `COMMENT ON`,
-`INHERITS`, `SECURITY DEFINER`, `RETURNS SETOF`, `:=` named arguments, `DO` blocks, `CREATE RULE`,
-psql meta-commands and `COPY … FROM stdin` payloads out of the way; the same file yields 158 tables
-and 214 foreign keys.
-
-`COMMENT ON TABLE` / `COMMENT ON COLUMN` text is no longer discarded either — it becomes an
-evidence-backed `description` on the `Table` object (and on the matching column), with the source
-line recorded. **Author-written text outranks the LLM's:** `description` is the schema's own words,
-the model's version is kept alongside as `llm_description`, and `sql_comment` marks the provenance.
-
-`[llm] max-tokens` caps compiler-pass LLM calls — distinct from `[ai] max-tokens`, which governs the
-read-side `ekos ask` runtime. Leave it unset and each file's budget is computed from its own schema
-size; a new `SQL004` diagnostic reports when enrichment named fewer tables than the file declares,
-and says so explicitly when the response hit its ceiling.
-
-Beyond raw SQL DDL, `ekos recover`'s Python analyzer recognizes a real SQLAlchemy declarative
-model (`__tablename__` present on a class) and compiles it into the same `Table` object shape as a
-`CREATE TABLE` statement — real column names, best-effort data-type hints, and `ForeignKey` edges
-resolved against other models in the same file — so a project whose entire schema is ORM-declared
-(the majority shape for a modern Python backend) still gets a real `## Data Architecture` and
-entity-relationship diagram instead of an empty section. The same analyzer also compiles real
-class inheritance (`class Document(Base):`) into `RelationshipKind::Extends` edges between the
-real `PythonSymbol` objects involved — visible on each class's own generated page and in its
-Mermaid diagram — resolved only when the base class is defined in the same file, never fabricated
-against an imported base EKOS can't see the definition of.
-
-### Document semantic memory (RFC 0025/0026)
-
-Beyond structural parsing, an opt-in pass reads local documents through an LLM to extract real
-entities (`Concept` objects) and the relationships between them — so the same concept mentioned
-across different documents becomes one findable, linkable thing instead of isolated text hits.
-Enable it in `ekos.toml`:
-
-```toml
-[llm]
-provider = "ollama"   # or omit for Anthropic via ANTHROPIC_API_KEY; any LlmProvider works
-
-[document-semantics]
-enabled = true
-```
-
-Then `ekos recover` runs `DocumentSemanticsAnalyzerPass` alongside the structural document pass,
-and the extracted `Concept` objects are queryable through the same MCP tools as everything else
-— `ekos_search`, `ekos_neighborhood`, `ekos_dependents`, `ekos ask`. No new tool, no new query
-surface — this is exactly the point: AI tools get real memory through the Runtime they already
-talk to. `ekos ask` honors `[llm] provider = "ollama"` the same way `ekos recover` does — both
-commands select the LLM provider through one shared function, so a workspace configured for local
-Ollama works identically for recovery and for querying.
-
-**Markdown is split by heading (RFC 0144).** Each heading becomes its own searchable `Section` named by
-its heading path (`docs/rfcs/0013-mcp-server.md § RFC 0013 — MCP Server › Motivation`) with a real
-line range, `doc_type` (`rfc`/`devlog`/`readme`/`claude_md`/`doc`) and, for RFCs, `rfc_number`/`rfc_status`.
-`compile` also links docs deterministically: an `RFC NNNN` mention becomes a `References` edge to that RFC,
-and a backticked identifier that names exactly one code symbol becomes an edge to it. `ekos ask "what does
-RFC 0013 …"` resolves the RFC by number. These edges show up in neighbourhoods but never count as
-dependents in `ekos_dependents`/`ekos_impact`.
-
-**Using a hosted OpenAI-compatible model (RFC 0145).** Any Chat Completions host works — OpenCode Zen,
-OpenRouter, DeepSeek, Groq, vLLM:
-
-```toml
-[llm]
-provider = "openai"
-base-url = "https://opencode.ai/zen/v1"
-model = "deepseek-v4-flash"
-api-key-env = "OPENCODE_API_KEY"
-
-[ai]
-max-tokens = 8192            # reasoning models spend hidden tokens; 1024/2048 truncate or empty answers
-```
-
-**A model per task (RFC 0197).** `provider = "zen"` reaches every OpenCode Zen model on its own wire
-format (Claude and Qwen Flash on Messages, GPT/Grok on Responses, the rest on Chat Completions), and
-`[llm.tasks.<task>]` routes one kind of call to its own model — tasks: `ask`, `doc-semantics`,
-`description`, `semantics`, `sql-naming`, `session-capture`, `architecture`, `reconstruct`,
-`nl-sql`, `docs-prose`, `marketing`, `translate` (Pentaho code steps, RFC 0200), `requirements` (a plain-language mart
-request drafted as mart metadata, RFC 0215). Measured on this repository (RFC 0197's tables):
-
-```toml
-[llm]
-provider = "zen"
-model = "claude-haiku-5-5"   # ask: 98/101 for $0.10 a full eval run
-api-key-env = "OPENCODE_API_KEY"
-budget-usd = 1.00            # refuse a call whose worst case could cross this, per command
-
-[llm.tasks.doc-semantics]
-model = "gpt-6-luna"         # 40/40 sections parsed; deepseek-v4.1-flash parsed 4/33 at the old cap
-max-tokens = 4096
-fallback = ["claude-haiku-5-5"]
-```
-
-Every call that reaches a host is priced and logged (metadata only) to `.ekos/llm-usage.jsonl`:
-`ekos llm usage` totals it, `ekos llm routes` shows each task's model and price, `ekos llm probe`
-sends a few-token request per model to show which ones a key can reach (access is per account on
-Zen). Models whose provider may keep requests are refused unless `[llm] allow-data-collection = true`;
-Zen's free models are not reachable outside OpenCode.
-
-For local Ollama, `[llm] context-window = 8192` (the default; also `OLLAMA_NUM_CTX`) is sent as `num_ctx` —
-without it Ollama silently truncated long prompts — and EKOS warns when a prompt fills the window.
-`ekos doctor` shows the effective window or custom endpoint. Hosted models bill per token; a full
-101-scenario `ekos eval run` on DeepSeek V4 Flash costs about $0.08. `ekos eval run --evidence-only`
-calls no model: it reports Recall@10 and whether each scenario's expected facts reach the evidence. DeepSeek V4 Flash is a reasoning model whose
-hidden reasoning counts against `max-tokens` — use `[ai] max-tokens = 8192` or some answers come back empty.
-
-### Documentation generation (RFC 0035/0037/0042/0090/0094/0095)
-
-`ekos docs generate` renders the compiled ledger straight into Markdown/HTML documentation —
-zero LLM calls, every claim traceable to real compiled evidence. Three layouts:
-
-```bash
-ekos docs generate                              # --layout objects (default): one page per
-                                                  # significant object, plus an index and ER diagram
-ekos docs generate --layout curated --output doc # README.md/Architecture.md/API.md/
-                                                  # SequenceDiagrams.md — the shape a developer
-                                                  # actually expects, plus one detail page per
-                                                  # crate/technology/pipeline/program-entity object
-ekos docs generate --layout solution-architect --output doc-sa
-                                                  # DependencyRiskReport.md/OnboardingGuide.md/
-                                                  # FindingsMemo.md — a team-handoff bundle: real
-                                                  # declared dependency versions and concentration
-                                                  # risk, a first-day repository-layout guide, and
-                                                  # an actionable findings list (unresolved
-                                                  # dependencies, undeclared crate versions, missing
-                                                  # doc-comment coverage). `--prose` layers an
-                                  
+  dialect it was parsed under and the first error, and points at `[[recov

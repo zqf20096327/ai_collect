@@ -30,13 +30,15 @@ credentials, irreversible actions and spending under the control of code.
   origin it was declared for, and models only see its name. Step, time and dollar limits are enforced in code.
 - **Any browser.** A Browser Use Cloud browser by default, local Chrome, or any Chromium browser or Electron app
   that is already running.
+- **Desktop apps too.** On Linux with Hyprland, `--desktop` drives a native app window through its accessibility
+  tree, in the background, with [deskpilot](https://github.com/cjber/deskpilot).
 - **One agent, every interface.** A CLI, a Python library, Node and Go SDKs that need no Python, an MCP
   server, and a skill for coding agents.
 
-![fastbrowse shopping a live store, adding a Raspberry Pi Pico 2 W and an in-stock BME280 sensor to the basket, filling in checkout without paying, and answering with every price cited](docs/assets/demo.gif)
+![fastbrowse signing in to Sauce Demo, adding a backpack and a bike light to the cart, checking out as Ada Lovelace, and answering with the order total cited to the page](docs/assets/demo.gif)
 
-Recorded on local Chrome against thepihut.com: 37 steps, about 4 minutes and $0.29 in model calls. Playback is sped
-up with pauses cut. The full-resolution recording is [docs/assets/demo.mp4](docs/assets/demo.mp4).
+Recorded on fastbrowse 0.10.0 and local Chrome against Sauce Demo, a public practice store: 16.4 seconds, 12 steps and
+$0.0149 in model calls. The full-resolution recording is [docs/assets/demo.mp4](docs/assets/demo.mp4).
 
 On 46 tasks run three times each against the hosted Browser Use agent, under the same limits on Browser Use
 Cloud browsers, fastbrowse passed 99.2% of runs to 96.3% and cost $0.0296 a run to $0.3180, 10.7x less. That
@@ -86,7 +88,7 @@ uvx fastbrowse "Log in as standard_user with the saved password and add the back
 ```
 
 The [command-line reference](docs/cli.md#flags) has every flag, signed-in profiles and Bitwarden logins, driving open
-windows and Electron apps, model and provider settings, and every status with its exit code.
+windows, Electron and [desktop apps](docs/cli.md#desktop-apps), model and provider settings, and every status with its exit code.
 
 ## How it compares
 
@@ -110,9 +112,10 @@ Benchmarking makes three comparisons:
   fastbrowse passed 99.3% at $0.0268 a run.
 - **C2, browser against browser:** the same fastbrowse build on its own browser pool and on a Browser Use Cloud
   browser. In an earlier record (release-0.5.25), not on the published page, the pool passed fewer tasks.
-- **C3, fastbrowse on its pool against `jev-ultrafast`,** over 47 tasks: not yet measured. Browser Use's own
-  Ultrafast is not measured by us either: its vendor-reported 22 seconds and $0.0064 a task cover the model and
-  the search only, with the browser and proxy billed separately, so they are not comparable with our figures.
+- **C3, fastbrowse on its pool against `jev-ultrafast`,** over the 6 navigation tasks, since `jev-ultrafast`
+  returns no answer: not yet measured. Browser Use's own Ultrafast is not measured by us either: its vendor-reported
+  22 seconds and $0.0064 a task cover the model and the search only, with the browser and proxy billed separately, so
+  they are not comparable with our figures.
 
 The [benchmark page](https://fastbrowse.ai/benchmarks) publishes campaign release-0.7.1 (agent commit `7b8b0e8f`,
 data sha256 `7d6ac26f23fa6d354128fa7e4bcc8190125c441f4f136dc39d0e3c35cec5d4e2`). 0.9.1 is the current release and
@@ -237,11 +240,12 @@ async def main() -> None:
   exception's type.
 
 **Citations.** `result.citations` holds a `Citation` per numbered link in `result.answer`: `id`, `text`,
-`url`, `quote` and `deep_link`. Counts, totals and superlatives cite every record they were
-derived from. A `quote` is the page's text, a table row as its cells separated by spaces. A `deep_link` is a [text fragment](https://wicg.github.io/scroll-to-text-fragment/#syntax) URL that
+`url`, `quote` and `deep_link`. Each claim cites the notes it states. A count, total, cheapest or largest
+value is worked out in code from every note read and cites each record it rests on. A `quote` is the page's text, a table row as its cells separated by spaces. A `deep_link` is a [text fragment](https://wicg.github.io/scroll-to-text-fragment/#syntax) URL that
 scrolls to the quote; it may not resolve on a page that changes or needs a session. Each page a quote was read from
 is kept as a `capture` artifact in `result.artifacts`, holding the masked page text, and the quote's `Evidence`
-names it in `capture_artifact`; `start` and `end` index into that text. Captures go where downloads go, so pass
+names it in `capture_artifact`; `start` and `end` index into that text. Its `links` lists each link inside the
+quote: the link's `text`, where that text sits as `start` and `end`, and the `href` it leads to. Captures go where downloads go, so pass
 `downloads` or `artifact_sink` to keep them past the run. A page fetched over HTTP keeps none.
 
 **Watching a run.**

@@ -103,7 +103,7 @@ Add this package to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/huggingface/AnyLanguageModel", from: "1.2.0")
+    .package(url: "https://github.com/huggingface/AnyLanguageModel", from: "1.3.0")
 ]
 ```
 
@@ -134,7 +134,7 @@ To enable specific traits, specify them in your package's dependencies:
 dependencies: [
     .package(
         url: "https://github.com/huggingface/AnyLanguageModel.git",
-        from: "1.2.0",
+        from: "1.3.0",
         traits: ["CoreML", "MLX"] // Enable CoreML and MLX support
     )
 ]
@@ -151,7 +151,7 @@ dependencies: [
 > dependencies: [
 >     .package(
 >         url: "https://github.com/huggingface/AnyLanguageModel.git",
->         from: "1.2.0",
+>         from: "1.3.0",
 >         traits: ["CoreML", "MLX", "Llama"]
 >     ),
 >     .package(url: "https://github.com/huggingface/swift-transformers", from: "1.0.0"),           // CoreML
@@ -1437,7 +1437,7 @@ Enable the trait in Package.swift:
 ```swift
 .package(
     url: "https://github.com/huggingface/AnyLanguageModel.git",
-    from: "1.2.0",
+    from: "1.3.0",
     traits: ["CoreML"]
 )
 ```
@@ -1534,7 +1534,7 @@ Enable the trait in Package.swift:
 ```swift
 .package(
     url: "https://github.com/huggingface/AnyLanguageModel.git",
-    from: "1.2.0",
+    from: "1.3.0",
     traits: ["MLX"]
 )
 ```
@@ -1558,7 +1558,7 @@ Enable the trait in Package.swift:
 ```swift
 .package(
     url: "https://github.com/huggingface/AnyLanguageModel.git",
-    from: "1.2.0",
+    from: "1.3.0",
     traits: ["Llama"]
 )
 ```
@@ -1599,6 +1599,10 @@ because its dependency could prevent builds even when the backend was disabled.
 See [upstream issue #2407](https://github.com/google-ai-edge/LiteRT-LM/issues/2407)
 for details.
 The `LiteRT` trait and `LiteRTLanguageModel` are no longer available.
+
+For LiteRT-LM models on iOS and macOS,
+[anylanguagemodel-litert-lm](https://github.com/john-rocky/anylanguagemodel-litert-lm)
+is a community package with a `LanguageModel` conformance.
 
 ### Ollama
 

@@ -8,7 +8,7 @@
 <p align="center">
   <a href="https://github.com/RobinBeraud/hermes-skills/stargazers"><img src="https://img.shields.io/github/stars/RobinBeraud/hermes-skills?style=flat-square" alt="Stars"></a>
   <a href="https://dev.to/robinberaud"><img src="https://img.shields.io/badge/Dev.to-articles-0a0a0a?style=flat-square&logo=devdotto" alt="Dev.to"></a>
-  <img src="https://img.shields.io/badge/skills-42-blue?style=flat-square" alt="Skills count">
+  <img src="https://img.shields.io/badge/skills-64-blue?style=flat-square" alt="Skills count">
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
 </p>
 
@@ -39,6 +39,8 @@ Skills are Markdown files that give Hermes contextual knowledge and reusable cod
 | Skill | Description | Added |
 |-------|-------------|-------|
 <!-- LATEST -->
+| [content-repurposer](content-creation/content-repurposer/SKILL.md) | Turns one article, transcribed video or podcast into several formats (LinkedIn post, carousel, thread, newsletter blurb, short-video script) | 2026-11-10 |
+| [dependency-update-watch](software-development/dependency-update-watch/SKILL.md) | Check a requirements.txt or package.json against PyPI and the npm registry and report which pinned dependencies have major, minor or patch u | 2026-11-09 |
 | [docker-compose-auditor](devops/docker-compose-auditor/SKILL.md) | Audit a docker-compose.yml for exposed databases, inline secrets, privileged containers, unpinned images, missing restart policies and healt | 2026-11-08 |
 | [server-health-report](devops/server-health-report/SKILL.md) | Produce a read-only health report for a Linux server (disk, inodes, memory, swap, load, failed systemd units, pending updates, reboot flag)  | 2026-11-07 |
 | [backup-verifier](devops/backup-verifier/SKILL.md) | Check that a backup file exists, is recent, is not suspiciously small, and actually decompresses, using one dependency-free Python script. U | 2026-11-06 |
@@ -54,6 +56,18 @@ Skills are Markdown files that give Hermes contextual knowledge and reusable cod
 | [listing-alert-triage](automation/listing-alert-triage/SKILL.md) | Parse real-estate listing alert e-mails (plain text, HTML or .eml), extract price, surface and city, compute price per m2, compare it to ref | 2026-10-27 |
 | [env-secrets-scanner](security/env-secrets-scanner/SKILL.md) | Scan a project folder or git-staged files for leaked secrets (.env files, API keys, private keys, passwords in URLs) before committing, with | 2026-10-26 |
 
+
+### 🤖 AI Workforce (new: 20 agent roles)
+Twenty roles for your Hermes agent, each with documented use cases and, for 13 of them, a tested stdlib script. See [ai-workforce/](ai-workforce/README.md).
+
+| Role | What it does |
+|------|--------------|
+| [Idea Generator](ai-workforce/idea-generator/SKILL.md) · [Design Prototyper](ai-workforce/design-prototyper/SKILL.md) · [Product Critic](ai-workforce/product-critic/SKILL.md) | Brainstorm, prototype and critique |
+| [Content Creator](ai-workforce/content-creator/SKILL.md) · [Content Transformer](ai-workforce/content-transformer/SKILL.md) · [Content Guardian](ai-workforce/content-guardian/SKILL.md) | Write, repurpose and screen content |
+| [Data Visualizer](ai-workforce/data-visualizer/SKILL.md) · [Data Synthesizer](ai-workforce/data-synthesizer/SKILL.md) · [Data Forecaster](ai-workforce/data-forecaster/SKILL.md) | Chart, generate and forecast data |
+| [Research Assistant](ai-workforce/research-assistant/SKILL.md) · [Trend Watcher](ai-workforce/trend-watcher/SKILL.md) · [Decision Optimizer](ai-workforce/decision-optimizer/SKILL.md) | Find evidence, spot trends, decide |
+| [Anomaly Detector](ai-workforce/anomaly-detector/SKILL.md) · [Digital Twin](ai-workforce/digital-twin/SKILL.md) · [Digital Simulation](ai-workforce/digital-simulation/SKILL.md) · [Workflow Automaton](ai-workforce/workflow-automaton/SKILL.md) | Watch systems, simulate, automate |
+| [Interactive Companion](ai-workforce/interactive-companion/SKILL.md) · [Journey Personalizer](ai-workforce/journey-personalizer/SKILL.md) · [Engagement Assessor](ai-workforce/engagement-assessor/SKILL.md) · [Engagement Booster](ai-workforce/engagement-booster/SKILL.md) | Guide, personalise and engage people |
 
 ### 🔬 Research
 | Skill | Description | Requires |

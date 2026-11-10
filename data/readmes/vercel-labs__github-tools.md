@@ -32,9 +32,9 @@ They all reach the GitHub API, but none of them were built as an agent's tool la
 | Scripts, chat backends, or an existing AI SDK app | Quick Start below |
 | A TanStack AI app | [TanStack AI](#tanstack-ai) |
 | Production agents that must survive restarts and timeouts | [Durable Agents](#durable-agents-vercel-workflow-sdk) |
-| A GitHub, Slack, or Discord bot | [Chat SDK docs](https://github-tools.com/frameworks/chat-sdk) |
+| A GitHub, Slack, or Discord bot | [Chat SDK docs](https://github-tools.com/integrations/chat-sdk) |
 
-84 tools cover repositories, branches, pull requests, issues, reactions, discussions, notifications, commits, releases, checks and statuses, search, gists, and workflows. See the full [Tools Catalog](https://github-tools.com/api/tools-catalog). Write operations support granular approval control out of the box.
+97 tools cover repositories, branches, pull requests, issues, reactions, discussions, notifications, commits, releases, checks and statuses, search, gists, and workflows. See the full [Tools Catalog](https://github-tools.com/reference/tools). Write operations support granular approval control out of the box.
 
 ## Installation
 
@@ -103,20 +103,20 @@ createGithubTools({ token, preset: ['code-review', 'issue-triage'] })
 
 | Preset | Tools included |
 |---|---|
-| `code-review` | `getPullRequest`, `listPullRequests`, `listPullRequestFiles`, `listPullRequestReviews`, `listPullRequestReviewThreads`, `getPullRequestContext`, `getCommit`, `getBlame`, `compareCommits`, `getRepository`, `getFileContent`, `getRepositoryTree`, `searchCode`, `listCommits`, `listBranches`, `listCheckRuns`, `getCombinedStatus`, `updatePullRequest`, `addPullRequestComment`, `updatePullRequestComment`, `deletePullRequestComment`, `createPullRequestReview`, `replyToReviewComment`, `resolveReviewThread`, `requestReviewers` |
-| `issue-triage` | `listIssues`, `getIssueContext`, `listIssueComments`, `createIssue`, `addIssueComment`, `updateIssueComment`, `deleteIssueComment`, `closeIssue`, `updateIssue`, `addLabels`, `removeLabel`, `createLabel`, `updateLabel`, `deleteLabel`, `addAssignees`, `removeAssignees`, `listIssueReactions`, `addIssueReaction`, `listCommentReactions`, `addCommentReaction`, `getRepository`, `getFileContent`, `getRepositoryTree`, `searchCode`, `listCommits`, `searchRepositories`, `searchIssues`, `getPullRequest` |
+| `code-review` | `getPullRequest`, `listPullRequests`, `listPullRequestFiles`, `listPullRequestReviews`, `listPullRequestReviewThreads`, `getPullRequestContext`, `getCommit`, `getBlame`, `compareCommits`, `getRepository`, `getFileContent`, `getRepositoryTree`, `searchCode`, `listCommits`, `listBranches`, `getBranchRules`, `getCollaboratorPermission`, `listCheckRuns`, `getCombinedStatus`, `updatePullRequest`, `addPullRequestComment`, `updatePullRequestComment`, `deletePullRequestComment`, `createPullRequestReview`, `replyToReviewComment`, `resolveReviewThread`, `requestReviewers`, `createCommitStatus` |
+| `issue-triage` | `listIssues`, `getIssueContext`, `listIssueComments`, `createIssue`, `addIssueComment`, `updateIssueComment`, `deleteIssueComment`, `closeIssue`, `updateIssue`, `addLabels`, `removeLabel`, `createLabel`, `updateLabel`, `deleteLabel`, `addAssignees`, `removeAssignees`, `listMilestones`, `listSubIssues`, `addSubIssue`, `listIssueReactions`, `addIssueReaction`, `listCommentReactions`, `addCommentReaction`, `getRepository`, `getFileContent`, `getRepositoryTree`, `searchCode`, `listCommits`, `searchRepositories`, `searchIssues`, `getPullRequest`, `getCollaboratorPermission` |
 | `repo-explorer` | All read-only tools including discussions, gists, workflows, checks/statuses, and releases (no write operations) |
-| `ci-ops` | `getRepository`, `getFileContent`, `getRepositoryTree`, `searchCode`, `listCommits`, `listBranches`, `getCommit`, `getPullRequest`, `listWorkflows`, `listWorkflowRuns`, `getWorkflowRun`, `listWorkflowJobs`, `getWorkflowJobLogs`, `listCheckRuns`, `getCombinedStatus`, `getCiFailureContext`, `triggerWorkflow`, `cancelWorkflowRun`, `rerunWorkflowRun` |
-| `security-audit` | Read-only exploration (`getFileContent`, `getRepositoryTree`, `searchCode`, `listCommits`, `getCommit`, `getBlame`, `compareCommits`), PR and CI visibility (including `getWorkflowJobLogs`), plus `createIssue`, `addIssueComment`, `addLabels` to report findings (no destructive writes) |
+| `ci-ops` | `getRepository`, `getFileContent`, `getRepositoryTree`, `searchCode`, `listCommits`, `listBranches`, `getBranchRules`, `getCommit`, `getPullRequest`, `listWorkflows`, `listWorkflowRuns`, `getWorkflowRun`, `listWorkflowJobs`, `getWorkflowJobLogs`, `listCheckRuns`, `getCombinedStatus`, `getCiFailureContext`, `triggerWorkflow`, `cancelWorkflowRun`, `rerunWorkflowRun`, `createCommitStatus` |
+| `security-audit` | Read-only exploration (`getFileContent`, `getRepositoryTree`, `searchCode`, `listCommits`, `getCommit`, `getBlame`, `compareCommits`), PR and CI visibility (including `getWorkflowJobLogs`), the repository's code scanning, Dependabot and secret scanning alerts, plus `createIssue`, `addIssueComment`, `addLabels` to report findings (no destructive writes) |
 | `release-manager` | `getRepository`, `getFileContent`, `getRepositoryTree`, `searchCode`, `listCommits`, `listBranches`, `getCommit`, `compareCommits`, `listReleases`, `getLatestRelease`, `getRelease`, `getReleaseContext`, `createRelease`, `updateRelease`, `deleteRelease`, `listWorkflows`, `listWorkflowRuns`, `getWorkflowRun`, `listWorkflowJobs`, `triggerWorkflow`, `getCombinedStatus`, `getCiFailureContext`, `listPullRequests`, `getPullRequest` |
 | `discussion-moderator` | `listDiscussions`, `getDiscussion`, `addDiscussionComment`, `getRepository`, `getFileContent`, `getRepositoryTree`, `searchCode`, `listCommits`, `searchIssues`, `getIssueContext`, `addIssueComment` |
 | `notification-inbox` | `listNotifications`, `markNotificationRead`, `getRepository`, `getFileContent`, `getRepositoryTree`, `searchCode`, `listCommits`, `getIssue`, `getIssueContext`, `getPullRequest`, `getDiscussion` (requires a Notifications PAT) |
-| `pr-author` | `getRepository`, `getFileContent`, `getRepositoryTree`, `searchCode`, `listCommits`, `listBranches`, `createBranch`, `deleteBranch`, `createOrUpdateFile`, `createPullRequest`, `updatePullRequest`, `listPullRequests`, `getPullRequest`, `listPullRequestFiles`, `listPullRequestReviewThreads`, `replyToReviewComment`, `resolveReviewThread`, `compareCommits`, `getCommit` |
-| `maintainer` | All 84 tools |
+| `pr-author` | `getRepository`, `getFileContent`, `getRepositoryTree`, `searchCode`, `listCommits`, `listBranches`, `getBranchRules`, `getCollaboratorPermission`, `createBranch`, `deleteBranch`, `createOrUpdateFile`, `editFiles`, `createPullRequest`, `updatePullRequest`, `updatePullRequestBranch`, `listPullRequests`, `getPullRequest`, `listPullRequestFiles`, `listPullRequestReviewThreads`, `replyToReviewComment`, `resolveReviewThread`, `compareCommits`, `getCommit` |
+| `maintainer` | All 97 tools |
 
-Start with the smallest preset that fits. Use `maintainer` or omit `preset` when you need the full catalog. Full breakdown: [Tools Catalog](https://github-tools.com/api/tools-catalog).
+Start with the smallest preset that fits. Use `maintainer` or omit `preset` when you need the full catalog. Full breakdown: [Tools Catalog](https://github-tools.com/reference/tools).
 
-For an agent that handles open-ended requests, `createGithubAgent({ model, preset: 'auto' })` picks presets per call from the latest user message. It narrows the tools the model sees to at most two presets and uses the matching system prompt. When no preset clearly matches, it uses read-only `repo-explorer`, so the full catalog is never exposed. This needs `ai` 7.0.105 or later.
+For an agent that handles open-ended requests, `createGithubAgent({ model, preset: 'auto' })` asks a fast evaluation model which tools the conversation's first request needs. It lists those and the core read tools for the whole conversation, and adds a `callGithubTool` tool the model can use to call any other GitHub tool without changing the tool list, so the provider's prompt cache holds. `evaluation: { selection: 'presets' }` routes each request to at most two presets instead and uses their system prompts. This needs `ai` 7.0.105 or later.
 
 ### Cherry-Picking Tools
 
@@ -137,7 +137,7 @@ Each tool factory accepts a `token` string. Tools use named module-level step fu
 
 ## Approval Control
 
-Write operations (creating issues, merging PRs, pushing files, …) require user approval by default. This is designed for human-in-the-loop agent workflows.
+Write operations (creating issues, merging PRs, pushing files, …) require user approval by default. This is designed for human-in-the-loop agent workflows. When the client sends the conversation back on each request, as with `useChat`, also pass `experimental_toolApprovalSecret` so a client can't forge an approval: see [Sign approvals](https://github-tools.com/approval#sign-approvals).
 
 ```ts
 // All writes need approval (default)
@@ -164,11 +164,35 @@ createGithubTools({
 })
 ```
 
-Write tools: `createBranch`, `deleteBranch`, `forkRepository`, `createRepository`, `createOrUpdateFile`, `createPullRequest`, `mergePullRequest`, `updatePullRequest`, `addPullRequestComment`, `updatePullRequestComment`, `deletePullRequestComment`, `createPullRequestReview`, `replyToReviewComment`, `resolveReviewThread`, `requestReviewers`, `createIssue`, `addIssueComment`, `updateIssueComment`, `deleteIssueComment`, `closeIssue`, `updateIssue`, `addLabels`, `removeLabel`, `createLabel`, `updateLabel`, `deleteLabel`, `addAssignees`, `removeAssignees`, `addIssueReaction`, `addCommentReaction`, `addDiscussionComment`, `markNotificationRead`, `createGist`, `updateGist`, `deleteGist`, `createGistComment`, `triggerWorkflow`, `cancelWorkflowRun`, `rerunWorkflowRun`, `createRelease`, `updateRelease`, `deleteRelease`.
+Write tools: `createBranch`, `deleteBranch`, `forkRepository`, `createRepository`, `createOrUpdateFile`, `editFiles`, `createPullRequest`, `mergePullRequest`, `enablePullRequestAutoMerge`, `disablePullRequestAutoMerge`, `updatePullRequest`, `updatePullRequestBranch`, `addPullRequestComment`, `updatePullRequestComment`, `deletePullRequestComment`, `createPullRequestReview`, `replyToReviewComment`, `resolveReviewThread`, `requestReviewers`, `createIssue`, `addIssueComment`, `updateIssueComment`, `deleteIssueComment`, `closeIssue`, `updateIssue`, `addLabels`, `removeLabel`, `createLabel`, `updateLabel`, `deleteLabel`, `addAssignees`, `removeAssignees`, `addSubIssue`, `addIssueReaction`, `addCommentReaction`, `addDiscussionComment`, `markNotificationRead`, `createGist`, `updateGist`, `deleteGist`, `createGistComment`, `triggerWorkflow`, `cancelWorkflowRun`, `rerunWorkflowRun`, `createCommitStatus`, `createRelease`, `updateRelease`, `deleteRelease`.
 
 All other tools are read-only and never require approval.
 
 With `'auto'`, a fast evaluation model checks each call to a low-risk write tool (`AUTO_APPROVAL_TOOLS`). It scores how costly the call would be if wrong, and whether the latest user message asked for it. The call runs without a prompt only when both checks pass. Other write tools keep requiring approval. Any tool can opt in per tool (`{ updateIssue: 'auto' }`). `'auto'` needs `ai` 7.0.105 or later and is not available on the durable agent. Tune it with `evaluation: { maxRisk, minIntent, model }`. The default model is TypeSafe's Jev.
+
+### Guardrails
+
+Approval decides whether a call runs. `guardrails` decide where any call may act, whoever approves it:
+
+```ts
+createGithubTools({
+  token,
+  guardrails: {
+    repositories: ['vercel-labs/*'], // 'owner/repo' or 'owner/*'; a call to any other repository fails
+    branches: ['agent/*'], // commits, branch creation and deletion, merges, and pull request branch updates must target a matching branch
+  },
+})
+```
+
+The checks run before any request reaches GitHub, and a blocked call fails with `github_tools.GUARDRAIL_BLOCKED` and a reason the model can act on. Even without `guardrails`, a call whose input contains what looks like a credential (a GitHub, npm, Slack, Stripe, Anthropic, OpenAI, Google or AWS key, or a private key) fails; set `guardrails: { secrets: 'allow' }` to turn that off. `createGithubAgent` denies a blocked write instead of asking for approval. Tools without a repository target (search, gists, notifications) aren't restricted. For tools built from individual factories, wrap the token with `withGithubGuardrails(token, guardrails)`. See [Guardrails](https://github-tools.com/approval#guardrails).
+
+### Shadow mode
+
+`dryRun: true` runs reads as usual, but no write reaches GitHub and nobody is asked to approve one. Each write goes through `guardrails`, then returns `{ dryRun: true, tool, input, approval, message }`, where `approval` says whether a person would have been asked. Use it to roll out a bot that runs on its own, test against real data, or compare models, before letting it write. It fits writes that stand on their own (labels, comments, reviews), not chains where a later step needs an earlier write's result. See [Shadow mode](https://github-tools.com/approval#shadow-mode).
+
+### Text from GitHub
+
+Tool results drop HTML comments and invisible Unicode characters from issue, pull request, comment, review, release and discussion bodies, since a rendered page hides them but a model reads them. The default agent prompts tell the model to treat GitHub text as data and act only on what the user asked. See [Text from GitHub](https://github-tools.com/approval#text-from-github).
 
 ### Tool overrides
 
@@ -212,11 +236,11 @@ Classifiable failures become structured [evlog](https://evlog.dev) catalog error
 
 Codes: `TOKEN_REQUIRED`, `OIDC_TOKEN_EXPIRED`, `CONNECT_NOT_AUTHORIZED`, `CONNECT_USER_NOT_CONNECTED`, `CONNECT_INSTALLATION_REQUIRED`, `SUBJECT_CONTEXT_REQUIRED`, `UNAUTHORIZED` (401), `FORBIDDEN` (403), `RATE_LIMITED` (403/429), `NOT_FOUND` (404), `VALIDATION_FAILED` (422). Unmapped statuses pass through unchanged; the original Octokit error stays reachable as `cause`.
 
-In the eve extension, a failing tool returns `{ error: { code, message, why, fix, link } }` to the model. With `generateText`/`streamText`, the framework forwards `error.message` (self-sufficient by design); use evlog's `parseError(error)` when you need the full structure. The catalog is exported as `githubToolsErrors`. See the [errors guide](https://github-tools.com/guide/errors).
+In the eve extension, a failing tool returns `{ error: { code, message, why, fix, link } }` to the model. With `generateText`/`streamText`, the framework forwards `error.message` (self-sufficient by design); use evlog's `parseError(error)` when you need the full structure. The catalog is exported as `githubToolsErrors`. See the [errors guide](https://github-tools.com/errors).
 
 ## Commit Attribution
 
-Control how commits are attributed when using `createOrUpdateFile` or `mergePullRequest`:
+Control how commits are attributed when using `createOrUpdateFile`, `editFiles` or `mergePullRequest`:
 
 ```ts
 import { createGithubTools } from '@github-tools/sdk'
@@ -379,7 +403,7 @@ const text = await agent.generate({ prompt: 'Summarize the open pull requests.' 
 
 Set `GITHUB_TOKEN` and Gateway authentication on the server. `generate()` returns a string and throws on approval interrupts; `stream()` returns TanStack's native event stream. Auto modes use TanStack `decide()` with Gateway Jev and the same approval and routing thresholds as the AI SDK integration. Supply `evaluation.adapter` to use another evaluator. Auto-preset continuations skip routing and expose `repo-explorer` plus pending GitHub tools.
 
-`createGithubTools()` returns an array for TanStack `chat({ tools })`. Direct tools with auto approval also need `createGithubApprovalMiddleware({ tools })` and the shared `githubToolApproval` interrupt from `@github-tools/sdk/tanstack/interrupts`. Register that definition on the client to handle human review. See the [TanStack AI guide](https://github-tools.com/frameworks/tanstack-ai) for tools, streaming, and approval continuation.
+`createGithubTools()` returns an array for TanStack `chat({ tools })`. Direct tools with auto approval also need `createGithubApprovalMiddleware({ tools })` and the shared `githubToolApproval` interrupt from `@github-tools/sdk/tanstack/interrupts`. Register that definition on the client to handle human review. See the [TanStack AI guide](https://github-tools.com/integrations/tanstack-ai) for tools, streaming, and approval continuation.
 
 ## eve
 
@@ -483,6 +507,7 @@ eve replays completed steps but re-runs steps interrupted mid-execution. Write t
 | Tool | Idempotency |
 |---|---|
 | `createOrUpdateFile` | Natural when content + `sha` unchanged (skips no-op updates) |
+| `editFiles` | Not idempotent: a re-run whose `find` text was already replaced fails with "not found" instead of committing twice |
 | `closeIssue` | Natural when already closed |
 | `createBranch` | Natural when branch exists at same SHA |
 | `removeAssignees` | Natural: removing an assignee that isn't assigned is a no-op on GitHub |
@@ -523,6 +548,8 @@ List tools return `{ items, hasMore, page, perPage, nextPage? }` (or add those f
 |---|---|
 | `getRepository` | Get repository metadata (stars, language, default branch, …) |
 | `listBranches` | List branches (`hasMore` / `nextPage` when there are more) |
+| `getBranchRules` | List a branch's required checks, required reviews and other protection rules |
+| `getCollaboratorPermission` | Get a user's permission and role on a repository, to check whether they may trigger the bot or approve an action |
 | `getFileContent` | Read a file or directory listing (prefer `startLine`/`endLine` or `maxLines` for large files) |
 | `getRepositoryTree` | List the file and directory structure at a given ref (prefer a `path` prefix over `recursive: true`) |
 | `createBranch` | Create a new branch from an existing branch or commit SHA |
@@ -530,6 +557,7 @@ List tools return `{ items, hasMore, page, perPage, nextPage? }` (or add those f
 | `forkRepository` | Fork a repository to a user or organization |
 | `createRepository` | Create a new repository for a user or organization |
 | `createOrUpdateFile` | Create or update a file and commit it |
+| `editFiles` | Edit files in one commit by exact text replacement or whole contents, create the branch if needed, and optionally open a pull request |
 
 ### Pull Requests
 
@@ -540,14 +568,17 @@ List tools return `{ items, hasMore, page, perPage, nextPage? }` (or add those f
 | `listPullRequestFiles` | List files changed in a PR (patches omitted by default; set `includePatch` / `filenames` for diffs) |
 | `listPullRequestReviews` | List reviews on a PR (approvals, change requests, comments) |
 | `listPullRequestReviewThreads` | List review threads with comments, resolution state, and reply/resolve IDs (unresolved only by default) |
-| `getPullRequestContext` | Fetch PR details plus files, reviews, and optional CI checks in one call |
+| `getPullRequestContext` | Fetch PR details plus files, reviews, optional CI checks, and optionally the issues it closes, in one call |
 | `createPullRequest` | Open a new PR |
 | `mergePullRequest` | Merge a PR (merge, squash, or rebase) |
+| `enablePullRequestAutoMerge` | Merge a PR automatically once its required checks and reviews pass |
+| `disablePullRequestAutoMerge` | Cancel a pending auto-merge |
 | `updatePullRequest` | Update a PR's title, body, state, base branch, or draft status |
+| `updatePullRequestBranch` | Bring a PR branch up to date by merging its base branch into it |
 | `addPullRequestComment` | Post a comment on a PR |
 | `updatePullRequestComment` | Edit the body of a PR comment |
 | `deletePullRequestComment` | Permanently delete a PR comment |
-| `createPullRequestReview` | Submit a formal review (approve, request changes, or comment) with inline comments |
+| `createPullRequestReview` | Submit a formal review (approve, request changes, or comment) with inline comments on a line or a range of lines, including suggested changes |
 | `replyToReviewComment` | Reply to a review comment in its thread |
 | `resolveReviewThread` | Mark a review thread as resolved |
 | `requestReviewers` | Request reviews from users or teams on a PR |
@@ -560,7 +591,7 @@ List tools return `{ items, hasMore, page, perPage, nextPage? }` (or add those f
 | `getIssue` | Get an issue's details (body truncated by default; set `detail: full` for complete text) |
 | `getIssueContext` | Fetch an issue plus label names and recent comments in one call |
 | `listIssueComments` | List comments on an issue (paginated; prefer `getIssueContext` for the first page) |
-| `createIssue` | Open a new issue |
+| `createIssue` | Open a new issue, optionally in a milestone |
 | `addIssueComment` | Post a comment on an issue |
 | `updateIssueComment` | Edit the body of an issue comment |
 | `deleteIssueComment` | Permanently delete an issue comment |
@@ -574,6 +605,9 @@ List tools return `{ items, hasMore, page, perPage, nextPage? }` (or add those f
 | `deleteLabel` | Delete a label from a repository permanently |
 | `addAssignees` | Assign users to an issue or pull request |
 | `removeAssignees` | Remove assignees from an issue or pull request |
+| `listMilestones` | List milestones with their due dates and open and closed issue counts |
+| `listSubIssues` | List the sub-issues of an issue |
+| `addSubIssue` | Add an existing issue as a sub-issue, from the same repository or another one with the same owner |
 
 ### Reactions
 
@@ -632,7 +666,8 @@ Pull request conversations share the issue numbering, so the issue-level tools w
 |---|---|
 | `listCheckRuns` | List check runs (Checks API: GitHub Actions and other CI providers) for a commit, branch, or tag |
 | `getCombinedStatus` | Get the combined commit status (Statuses API: legacy CI integrations) for a commit, branch, or tag |
-| `getCiFailureContext` | Diagnose CI failures for a ref — combined status, failing checks, and failed workflow jobs in one call |
+| `createCommitStatus` | Report a result on a commit as a commit status; works with a PAT or a GitHub App, unlike check runs |
+| `getCiFailureContext` | Diagnose CI failures for a ref or one workflow run: failing checks, failed jobs and steps, and the end of each failed job's log, in one call |
 
 ### Releases
 
@@ -640,8 +675,8 @@ Pull request conversations share the issue numbering, so the issue-level tools w
 |---|---|
 | `listReleases` | List releases, newest first (includes drafts and prereleases) |
 | `getLatestRelease` | Get the latest published release (body truncated by default; set `detail: full` for complete notes) |
-| `getRelease` | Get a specific release by ID, including its assets |
-| `getReleaseContext` | Fetch a release plus the previous release and tag comparison in one call |
+| `getRelease` | Get a specific release by ID or tag, including its assets |
+| `getReleaseContext` | Fetch a release (latest, by ID, or by tag) plus the release before it and their tag comparison in one call |
 | `createRelease` | Create a new release (and its tag if needed) |
 | `updateRelease` | Update a release's tag, target, title, notes, draft, or prerelease status |
 | `deleteRelease` | Permanently delete a release (does not delete the underlying git tag) |
@@ -663,6 +698,14 @@ Pull request conversations share the issue numbering, so the issue-level tools w
 | `searchRepositories` | Search repositories by keyword, topic, language, stars, … |
 | `searchIssues` | Search issues and pull requests using qualifiers like `is:open`, `type:pr`, or `label:bug` |
 
+### Security alerts
+
+| Tool | Description |
+|---|---|
+| `listCodeScanningAlerts` | List code scanning alerts with the rule, severity and location |
+| `listDependabotAlerts` | List Dependabot alerts with the advisory and first patched version (cursor pages: pass `nextCursor` as `after`) |
+| `listSecretScanningAlerts` | List secret scanning alerts; the secret itself is never returned |
+
 ## GitHub Token
 
 All tools authenticate with a GitHub personal access token (PAT).
@@ -673,14 +716,14 @@ Create one at **GitHub → Settings → Developer settings → Personal access t
 
 | Permission | Level | Required for |
 |---|---|---|
-| **Metadata** | Read-only | Always required (auto-included) |
-| **Contents** | Read-only | `getRepository`, `listBranches`, `getFileContent`, `getRepositoryTree`, `listCommits`, `getCommit`, `getBlame`, `compareCommits`, `listReleases`, `getLatestRelease`, `getRelease`, `getReleaseContext` |
-| **Contents** | Read and write | `createBranch`, `deleteBranch`, `createOrUpdateFile`, `createRelease`, `updateRelease`, `deleteRelease` |
+| **Metadata** | Read-only | Always required (auto-included); the only permission `getCollaboratorPermission` needs |
+| **Contents** | Read-only | `getRepository`, `listBranches`, `getBranchRules`, `getFileContent`, `getRepositoryTree`, `listCommits`, `getCommit`, `getBlame`, `compareCommits`, `listReleases`, `getLatestRelease`, `getRelease`, `getReleaseContext` |
+| **Contents** | Read and write | `createBranch`, `deleteBranch`, `createOrUpdateFile`, `editFiles`, `createRelease`, `updateRelease`, `deleteRelease` |
 | **Administration** | Read and write | `forkRepository`, `createRepository` |
 | **Pull requests** | Read-only | `listPullRequests`, `getPullRequest`, `listPullRequestFiles`, `listPullRequestReviews`, `listPullRequestReviewThreads`, `getPullRequestContext` |
-| **Pull requests** | Read and write | `createPullRequest`, `mergePullRequest`, `updatePullRequest`, `addPullRequestComment`, `updatePullRequestComment`, `deletePullRequestComment`, `createPullRequestReview`, `replyToReviewComment`, `resolveReviewThread`, `requestReviewers` |
-| **Issues** | Read-only | `listIssues`, `getIssue`, `getIssueContext`, `listIssueComments`, `listLabels`, `listIssueReactions`, `listCommentReactions` |
-| **Issues** | Read and write | `createIssue`, `addIssueComment`, `updateIssueComment`, `deleteIssueComment`, `closeIssue`, `updateIssue`, `addLabels`, `removeLabel`, `createLabel`, `updateLabel`, `deleteLabel`, `addAssignees`, `removeAssignees`, `addIssueReaction`, `addCommentReaction` |
+| **Pull requests** | Read and write | `createPullRequest`, `editFiles` (with `pullRequest`), `mergePullRequest`, `enablePullRequestAutoMerge`, `disablePullRequestAutoMerge`, `updatePullRequest`, `updatePullRequestBranch`, `addPullRequestComment`, `updatePullRequestComment`, `deletePullRequestComment`, `createPullRequestReview`, `replyToReviewComment`, `resolveReviewThread`, `requestReviewers` |
+| **Issues** | Read-only | `listIssues`, `getIssue`, `getIssueContext`, `listIssueComments`, `listLabels`, `listMilestones`, `listSubIssues`, `listIssueReactions`, `listCommentReactions` |
+| **Issues** | Read and write | `createIssue`, `addIssueComment`, `updateIssueComment`, `deleteIssueComment`, `closeIssue`, `updateIssue`, `addLabels`, `removeLabel`, `createLabel`, `updateLabel`, `deleteLabel`, `addAssignees`, `removeAssignees`, `addSubIssue`, `addIssueReaction`, `addCommentReaction` |
 | **Discussions** | Read-only | `listDiscussions`, `getDiscussion` |
 | **Discussions** | Read and write | `addDiscussionComment` |
 | **Gists** | Read-only | `listGists`, `getGist`, `listGistComments` |
@@ -690,6 +733,10 @@ Create one at **GitHub → Settings → Developer settings → Personal access t
 | **Actions** | Read and write | `triggerWorkflow`, `cancelWorkflowRun`, `rerunWorkflowRun` |
 | **Checks** | Read-only | `listCheckRuns`, `getCiFailureContext` |
 | **Commit statuses** | Read-only | `getCombinedStatus`, `getCiFailureContext` |
+| **Commit statuses** | Read and write | `createCommitStatus` |
+| **Code scanning alerts** | Read-only | `listCodeScanningAlerts` |
+| **Dependabot alerts** | Read-only | `listDependabotAlerts` |
+| **Secret scanning alerts** | Read-only | `listSecretScanningAlerts` |
 
 Search tools (`searchCode`, `searchRepositories`, `searchIssues`) work with any token.
 
@@ -698,7 +745,8 @@ Search tools (`searchCode`, `searchRepositories`, `searchIssues`) work with any 
 | Scope | Required for |
 |---|---|
 | `public_repo` | All tools on public repositories |
-| `repo` | All tools on public and private repositories |
+| `repo` | All tools on public and private repositories, except the security alert tools |
+| `security_events` | `listCodeScanningAlerts`, `listDependabotAlerts`, `listSecretScanningAlerts` |
 
 ## API
 
@@ -712,6 +760,8 @@ type GithubToolsOptions = {
   requireApproval?: boolean | Partial<Record<GithubWriteToolName, boolean>>
   preset?: GithubToolPreset | GithubToolPreset[]
   context?: GithubToolsContext // default owner / repo / PR / issue / ref
+  guardrails?: { repositories?: string[], branches?: string[] } // where any call may act
+  dryRun?: boolean // shadow mode: reads run, writes don't reach GitHub or ask anyone
 }
 
 type GithubTokenInput = string | (() => Promise<string>)
@@ -805,7 +855,24 @@ async function chatWorkflow(messages: ModelMessage[], token: string) {
 }
 ```
 
-#### Non-streaming (bot / background job, needs `"use step"`)
+#### Non-streaming (bot / background job)
+
+Call `.generate()` from the workflow function. Each model call and tool call is its own durable step. It needs `@ai-sdk/workflow` 2.0.59 or later. Return plain fields, since the result itself isn't serializable:
+
+```ts
+// review.workflow.ts
+import { createDurableGithubAgent } from '@github-tools/sdk/workflow'
+import type { ModelMessage } from 'ai'
+
+async function reviewWorkflow(messages: ModelMessage[], token: string) {
+  "use workflow"
+  const agent = createDurableGithubAgent({ model: 'anthropic/claude-opus-5.5', token, preset: 'code-review' })
+  const result = await agent.generate({ messages })
+  return { text: result.text, responseMessages: result.responseMessages }
+}
+```
+
+To run the whole loop as one step instead, call `createGithubAgent` inside a `"use step"` function:
 
 ```ts
 // agent-turn.step.ts

@@ -1,8 +1,8 @@
 # Vexa SCA: Enterprise-Grade Software Composition Analysis & Security Engine
 
-[![Release](https://img.shields.io/badge/Release-v1.2.0%20GA-brightgreen.svg?logo=github)](https://github.com/noviqtechnologies/vexa-sca/releases)
+[![Release](https://img.shields.io/badge/Release-v1.3.5%20Tier%201%20GA-brightgreen.svg?logo=github)](https://github.com/noviqtechnologies/vexa-sca/releases)
 [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg?logo=githubactions)](https://github.com/noviqtechnologies/vexa-sca/actions)
-[![Tests](https://img.shields.io/badge/Tests-177%20Passing-success.svg)](#automated-tests--verification)
+[![Tests](https://img.shields.io/badge/Tests-211%20Passing-success.svg)](#automated-tests--verification)
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 [![Rust Edition](https://img.shields.io/badge/Rust-2021%20%7C%20MSRV%201.99.1%2B-DEA584?logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![Platforms](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-brightgreen.svg)](#cross-platform-installation--setup)
@@ -45,7 +45,7 @@
 | 📈 [**EPSS Exploit Prediction**](#epss-exploit-prediction-likelihood) | Prioritizes CVEs by real-world 30-day exploit likelihood (FIRST.org EPSS) with fail-closed retention during upstream outages. | `vexa-sca scan --epss-threshold 0.50` |
 | 🚨 [**CISA KEV Integration**](#9-supply-chain-behavioral-analysis) | Flags CVEs confirmed exploited in the wild via the CISA Known Exploited Vulnerabilities catalog (cached, 24h TTL, +35 priority score boost). | `vexa-sca scan` |
 | 🔬 [**Supply Chain Behavioral Analysis**](#9-supply-chain-behavioral-analysis) | 15 static-analysis rules (SC-001–SC-015) detecting typosquatting, CI/CD poisoning, secrets, reverse shells, and MCP prompt-injection in manifests and workflows. | `vexa-sca scan` |
-| 🧪 [**Zero-Code-Sync CI SAST & Secret Detection**](#12-zero-code-sync-ci-sast--secret-detection) | Local AST & sink analysis (`CWE-78` OS Command Injection, `CWE-89` SQLi, `CWE-94` Eval, `CWE-502` Deserialization, etc.) + redacted Secret Scanning (`AKIA****`) + SARIF v2.1.0 ingestion, working even in lockfile-less repositories. | `npx vexa-sca scan --sast --secrets` |
+| 🧪 [**Zero-Code-Sync CI SAST & Secret Detection**](#12-zero-code-sync-ci-sast--secret-detection) | Local fast sink analysis (`CWE-78` OS Command Injection, `CWE-89` SQLi, `CWE-94` Eval, `CWE-502` Deserialization, etc.) + redacted Secret Scanning (`AKIA****`) + SARIF v2.1.0 ingestion, working even in lockfile-less repositories. | `npx vexa-sca scan --sast --secrets` |
 | 🔥 [**Package Manager Firewall (`wrap`)**](#10-package-manager-firewall-wrap) | Pre-installation zero-shell security gate for npm, pnpm, yarn, bun, pip, uv, and cargo. Blocks typosquatted packages, CISA KEV hits, and OSV advisories before install. | `vexa-sca wrap npm install lodash` |
 | 🤖 [**MCP Server (`mcp`)**](#11-mcp-server-integration-mcp) | JSON-RPC 2.0 MCP server exposing 4 tools to AI coding assistants (Cursor, Claude Code, Windsurf, GitHub Copilot). | `vexa-sca mcp` |
 | 📤 [**Zero-Code-Retention Facts Export (v2.0)**](#1-vexa-sca-scan) | Generates `.vexa.facts.json` (schema `2.0`) with dependency graph, AST reachability, and stripped SAST/Secret metadata (`file_path`, `line`, `cwe`, canonical `matched_sink` ≤64 chars)—**zero raw source code ever leaves your machine**. | `vexa-sca scan --upload-facts` |
@@ -60,7 +60,7 @@
 > ```bash
 > git clone https://github.com/noviqtechnologies/vexa-sca.git
 > cd vexa-sca
-> git checkout v1.2.0
+> git checkout v1.3.5
 > cargo build --locked --release
 > ```
 > 
@@ -217,23 +217,39 @@ Vexa SCA is fully cross-platform and operates identically on **Linux** (x86_64, 
 > [!NOTE]
 > **Zero External C / OpenSSL Dependencies**: Vexa SCA uses a pure Rust TLS implementation (`rustls-tls`) and pure Rust decompression (`miniz_oxide`). You do not need to install Perl, OpenSSL dev headers, or build tools solely for cryptographic handshakes or tarball unpacking.
 
-### Prerequisites by OS
+### Quick Install (Verified Precompiled Binaries)
 
-| Operating System | Recommended Rust Installation | Optional Node.js (for `npx` wrapper) |
-| :--- | :--- | :--- |
-| **Linux** (Ubuntu, Debian, Fedora, RHEL, Arch, Alpine) | `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \| sh` | `v16.0.0+` (via `nvm` or package manager) |
-| **macOS** (Apple Silicon M1-M4 & Intel) | `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \| sh` | `brew install node` |
-| **Windows** (10 / 11, Windows Server) | `winget install Rustlang.Rustup` or download [rustup-init.exe](https://rustup.rs) | `winget install OpenJS.NodeJS.LTS` |
+Install Vexa SCA with automatic architecture detection and cryptographic SHA-256 checksum verification:
+
+**Linux / macOS:**
+```bash
+curl -sSf https://raw.githubusercontent.com/noviqtechnologies/vexa-sca/main/install.sh | sh
+```
+
+**Windows (PowerShell):**
+```powershell
+irm https://raw.githubusercontent.com/noviqtechnologies/vexa-sca/main/install.ps1 | iex
+```
+
+**Via Cargo (Rust crates.io / Source):**
+```bash
+cargo install vexa-sca --locked
+```
+
+**Direct GitHub Releases:**
+Download prebuilt archives and cosign attestations directly from [GitHub Releases](https://github.com/noviqtechnologies/vexa-sca/releases/latest).
+
+---
 
 ### Building from Source
 
 ```bash
-# Clone the repository
-git clone https://github.com/noviqtechnologies/vexa-sca.git
+# Clone the repository at the v1.3.5 release tag
+git clone --branch v1.3.5 --depth 1 https://github.com/noviqtechnologies/vexa-sca.git
 cd vexa-sca
 
-# Compile release binaries (produces `vexa-sca`, `vexa`, and `sca`)
-cargo build --release
+# Compile release binaries with locked dependencies
+cargo build --locked --release
 ```
 
 Compiled binaries are located at:
@@ -242,9 +258,9 @@ Compiled binaries are located at:
 
 ### Running the CLI
 
-You can install the native binary to your user `PATH` using Cargo:
+Install the locally built binary to your user `PATH` using Cargo:
 ```bash
-cargo install --path .
+cargo install --path . --locked
 
 # Now available globally from any terminal or OS:
 vexa-sca --help
@@ -1030,9 +1046,14 @@ jobs:
 
 ---
 
-## 📈 EPSS Exploit Prediction Likelihood
+## 📈 EPSS & Multi-Source Exploit Weaponization Intelligence
 
-Standard CVSS scores reflect theoretical severity, not whether attackers are actively weaponizing a vulnerability in the wild. Vexa SCA integrates **FIRST.org EPSS (Exploit Prediction Scoring System)** probabilities directly into scan results:
+Standard CVSS scores reflect theoretical severity, not whether attackers are actively weaponizing a vulnerability in the wild. Vexa SCA synthesizes multi-layer threat intelligence directly into local scan results and pull request gates:
+
+1. **Google OSV & GHSA:** Maps dependency coordinates to CVE/GHSA IDs, patched versions, and CWE classifications.
+2. **NVD / CVSS v3.1:** Authoritative severity vectors and base metrics.
+3. **FIRST.org EPSS:** Batched 30-day statistical exploit prediction probabilities.
+4. **CISA KEV & Public PoC Tracking:** Flags vulnerabilities actively targeted in ransomware/campaigns (CISA KEV) and verifies whether functional exploit scripts exist on Exploit-DB, Packet Storm, or public PoC registries.
 
 ```bash
 # Prioritize vulnerabilities with a 20%+ probability of real-world exploitation

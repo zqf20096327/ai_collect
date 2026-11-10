@@ -5,12 +5,17 @@
   </picture>
 </h1>
 
-<h3 align="center">Your AI coding tool gets the right instructions for the job, and only those.</h3>
+<h3 align="center">Precise AI coding mastery, fast: the right skills for the job, and only those.</h3>
+
+<p align="center">
+  <b>Speed</b>: picks in 3 ms &nbsp;&middot;&nbsp; <b>Precision</b>: 0.0% junk &nbsp;&middot;&nbsp; <b>Context</b>: 96% saved &nbsp;&middot;&nbsp; <b>Trust</b>: 97% exam accuracy &nbsp;&middot;&nbsp; <b>Privacy</b>: runs on your machine
+</p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/sfp-hive"><img src="https://img.shields.io/npm/v/sfp-hive?style=flat-square&labelColor=3b4350&color=0f766e&label=npm" alt="npm version"></a>
   <img src="https://img.shields.io/badge/skills-1065-0f766e?style=flat-square&labelColor=3b4350" alt="1065 skills">
   <img src="https://img.shields.io/badge/categories-24-0f766e?style=flat-square&labelColor=3b4350" alt="24 categories">
+  <img src="https://img.shields.io/badge/bundles-121-0f766e?style=flat-square&labelColor=3b4350" alt="121 bundles">
   <img src="https://img.shields.io/badge/works_with-20_AI_tools-0f766e?style=flat-square&labelColor=3b4350" alt="Works with 20 AI coding tools">
   <img src="https://img.shields.io/badge/picks_skills-on_your_machine-0f766e?style=flat-square&labelColor=3b4350" alt="Picks skills on your machine">
   <img src="https://img.shields.io/badge/price-free_(MIT)-0f766e?style=flat-square&labelColor=3b4350" alt="Free, MIT license">
@@ -19,18 +24,12 @@
 <p align="center">
   <a href="#what-is-this"><b>What is this?</b></a> &middot;
   <a href="#start-here"><b>Start here</b></a> &middot;
+  <a href="#why-sfp-the-unfair-advantages"><b>Advantages</b></a> &middot;
   <a href="#see-it-choose"><b>See it choose</b></a> &middot;
-  <a href="#ui-design--front-end-skills"><b>UI &amp; design</b></a> &middot;
-  <a href="#business-marketing--growth-skills"><b>Business &amp; marketing</b></a> &middot;
+  <a href="#ui-design-and-front-end-skills"><b>UI &amp; design</b></a> &middot;
+  <a href="#business-marketing-and-growth-skills"><b>Business &amp; marketing</b></a> &middot;
   <a href="#the-proof"><b>The proof</b></a> &middot;
   <a href="#install"><b>Install</b></a>
-</p>
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.svg">
-    <img src="assets/hero-light.svg" alt="SFP shelf of 1065 skills in 24 categories: one animated line picks the exact skill stack for your task." width="100%">
-  </picture>
 </p>
 
 ---
@@ -39,14 +38,14 @@
 
 AI coding tools like Claude Code, Cursor and Copilot do better work when they are given **skills**: short written guides that teach one job well, such as "how to write good tests in Rust". Thousands exist, but your AI can only hold so much in mind at once. Load them all and there is little room left for your code.
 
-**SFP is a librarian for your AI.** It keeps 1065 skills on the shelf across 24 categories. For each task, it reads what you asked and what your project is, and hands your AI only the few that fit. It remembers what helped you, so its choices get better for you over time.
+**SFP is a librarian for your AI.** It curates 1065 skills across 24 categories and **121 bundles** (every skill belongs to one), reads your task and your project, and hands your AI only the few that fit. It remembers what helped you, so its choices improve over time.
 
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.svg">
-    <img src="assets/how-it-works-light.svg" alt="How SFP works: you ask, SFP reads your words and project, it picks a few skills, your AI follows them, you say if they helped, and it learns." width="100%">
-  </picture>
-</p>
+| | What you get |
+|---|---|
+| **Speed** | Skills chosen in about 3 ms, entirely on your machine |
+| **Precision** | 97% right skill on a 150-task blind-judged exam, 0.0% junk on negative tasks |
+| **Context** | 96% less for your AI to carry than loading every skill |
+| **Trust** | Free (MIT), no telemetry, works with 20 AI coding tools |
 
 <p align="center">
   <picture>
@@ -58,22 +57,46 @@ AI coding tools like Claude Code, Cursor and Copilot do better work when they ar
 <table align="center">
   <tr>
     <td align="center" valign="top" width="33%"><h3>97%</h3>right skill chosen on the 150-task blind-judged final exam (<b>93%</b> right first)</td>
-    <td align="center" valign="top" width="33%"><h3>95%</h3>less for your AI to carry than having every skill always on (4,268 vs 81,691 tokens)</td>
+    <td align="center" valign="top" width="33%"><h3>95%</h3>less for your AI to carry than having every skill always on (4,268 vs 81,690 tokens)</td>
     <td align="center" valign="top" width="33%"><h3>0</h3>words sent out by SFP when it picks: it runs on your machine</td>
   </tr>
 </table>
-
-<p align="center"><sub>On the 150-task final exam (<code>exam_plain</code> 80, <code>exam_project</code> 30, <code>exam_reworded</code> 40), blind pooled judging scores 97.3% chosen / 93.3% first (strict single-label 40.7% / 36.0%). On the 130-task frozen v2 held-out suites (commit <code>02b0485</code>), SFP 3.20 scores 95.4% words-only and 91.5% with LLM rerank, with <b>0.0%</b> junk rate. Method and limits are in <a href="#the-proof">The Proof</a>.</sub></p>
 
 ### Why Not Just Use Search, or Turn Everything On?
 
 | | Keyword search | Every skill always on | SFP |
 |---|---|---|---|
-| **What your AI carries** | Only what it finds | 81,691 tokens (41% of its memory) | About 4,000 tokens |
+| **What your AI carries** | Only what it finds | 81,690 tokens (41% of its memory) | About 4,000 tokens |
 | **Knows your project** | No | No | Yes: it reads your project files |
 | **Drops unrelated junk picks** | No (62.5% junk on negative/edge tasks) | No | Yes: **0.0% junk** on `precision_heldout` (87.5% hit / 76.5% precision) |
 | **Learns what you like** | No | No | Yes, from your feedback (80% to 100% format fit, 100% named-format override) |
 | **Time to choose** | Instant | Nothing to choose | ~3 ms words-only; ~360 ms typical with local models |
+
+---
+
+## Why SFP: The Unfair Advantages
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/advantages-dark.svg">
+    <img src="assets/advantages-light.svg" alt="Six unfair advantages of SFP: 96% less context, manifest stack fit, 0.0% junk rate, adaptive taste, 100% local and private execution, and 20 AI tools synced." width="100%">
+  </picture>
+</p>
+
+Most AI coding setups fail in one of two ways: **context bloat** (stuffing 50+ static rules into the system prompt until the model loses track of your code) or **context starvation** (leaving the model to guess framework conventions, accessibility rules, and security checks). SFP solves both at the root:
+
+1. **Surgical Context Budgeting**
+   Instead of burning 41% of a 200k window before you type a word, your agent carries a ~700-token router at rest and loads only the 1 to 3 specialist skills (~3,400 to 4,200 tokens) required for the current task.
+2. **Manifest-Driven Stack Isolation**
+   Before scoring candidates, the Hive inspects root manifests (`package.json`, `Cargo.toml`, `go.mod`, `pyproject.toml`, `pubspec.yaml`, `*.csproj`). A Rust workspace never receives Python or Next.js rules, eliminating cross-stack hallucination.
+3. **Confidence Gating Against Noise**
+   Single weak-word matches are rejected unless backed by multi-signal quorum or technology fit. Micro-edits (*"fix typo on line 42"*) and out-of-domain queries return an empty stack with **0.0% junk**.
+4. **30-Day Half-Life Taste & Autonomous Mentor**
+   Your `helped` / `unhelpful` feedback trains a local LinUCB model and tracks format preferences (code, prose, animation, video). When your work hits a topic the catalog covers thinly, `sfp mentor grow` synthesizes peer-reviewed papers from OpenAlex and arXiv into a draft skill for your approval.
+5. **Zero-Telemetry Local Execution**
+   Deterministic selection runs in ~3 ms using standard-library Python. Optional semantic search (`bge-m3`) and LLM reranking (`lfm2-24b-a2b`) run against your own local Ollama or LM Studio server.
+6. **One Brain Across 20 IDEs and CLIs**
+   Install once and keep skills, MCP tools, and `.agents/rules/sfp-active-skills.md` synchronized across Claude Code, Antigravity, Cursor, VS Code Copilot, Codex, Windsurf, Gemini CLI, and 13 more tools.
 
 <details>
 <summary><b>New to this? What the words mean</b></summary>
@@ -153,6 +176,13 @@ Using Claude Code? You can install SFP as a plugin instead: `/plugin marketplace
 
 The same words, *"write tests for the orders"*, in five different projects. The hive itself generates this table each time this page is built:
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/project-fit-dark.svg">
+    <img src="assets/project-fit-light.svg" alt="Same words across five projects: SFP inspects each project manifest and chooses Next.js, Rust, .NET, Flutter and Django testing skills with zero cross-contamination." width="100%">
+  </picture>
+</p>
+
 | Your project | The hive chooses |
 |---|---|
 | Next.js | `react-testing`, `playwright-cli` |
@@ -205,8 +235,8 @@ sfp taste --reset    # start again from neutral
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="bench/charts/taste-dark.svg">
-    <img src="bench/charts/taste-light.svg" alt="How often the first pick is in the format a person likes, before and after SFP learns their taste" width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/taste-dark.svg">
+    <img src="assets/taste-light.svg" alt="How SFP learns your taste across animation, reading, code and video, and drafts new skills from OpenAlex and arXiv papers." width="100%">
   </picture>
 </p>
 
@@ -229,8 +259,8 @@ SFP works with no model at all. Run a free local model and it also understands w
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="bench/charts/plain-words-dark.svg">
-    <img src="bench/charts/plain-words-light.svg" alt="How often the right skill is chosen for tasks in plain words, as meaning and a model check are added" width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/plain-words-dark.svg">
+    <img src="assets/plain-words-light.svg" alt="How adding bge-m3 meaning embeddings and a local model judge maps plain-English beginner prompts to specialist skills." width="100%">
   </picture>
 </p>
 
@@ -282,7 +312,7 @@ Install a set with `npx sfp-hive install --profile frontend-dev`. The hive can s
 
 ---
 
-## UI, Design & Front-End Skills
+## UI, Design and Front-End Skills
 
 SFP includes **155 UI, design-system, accessibility and motion skills** (`frontend` + `design-styles`) so your AI builds interfaces with intentional visual hierarchy, WCAG compliance, crisp microcopy and hardware-accelerated motion instead of generic templates.
 
@@ -300,6 +330,10 @@ SFP includes **155 UI, design-system, accessibility and motion skills** (`fronte
 | **Motion & Stress Testing** | `animate`, `motion-foundations`, `interaction-design`, `break-ui`, `design-critique` | Reduced-motion-safe transitions, layout stress testing, hierarchy critique |
 | **Design Systems & Aesthetics** | `design-system`, `shadcn`, `bento`, `glassmorphism`, `theme-factory`, `frontend-slides` | Tokenized components, modular bento grids, editorial and dark-mode palettes |
 
+**Prompts to try:**
+- *"Review this modal component with `frontend-a11y` and wire up keyboard traps and ARIA labels."*
+- *"Apply `design-taste-frontend` and `impeccable` to fix the typography scale and layout breathing room."*
+
 ```bash
 # Install the full frontend & design profile
 npx sfp-hive install --profile frontend-dev
@@ -307,9 +341,16 @@ npx sfp-hive install --profile frontend-dev
 
 ---
 
-## Business, Marketing & Growth Skills
+## Business, Marketing and Growth Skills
 
 For founders, product managers and growth teams, SFP ships **248 business and content skills** (`business-ops` + `content-media`) covering market research, fundraising, pricing, SEO and multi-channel publishing.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/growth-flow-dark.svg">
+    <img src="assets/growth-flow-light.svg" alt="Ordered business and marketing bundles: Fundraise & Positioning Pipeline (market-research -> price-framing -> investor-materials -> investor-outreach) and Publish & Growth Content Engine (brand-voice -> article-writing -> seo -> content-engine)." width="100%">
+  </picture>
+</p>
 
 | Area / Bundle | Skills Included | What It Solves |
 |---|---|---|
@@ -317,6 +358,10 @@ For founders, product managers and growth teams, SFP ships **248 business and co
 | **Publish Content Bundle** | `article-writing` -> `seo` -> `content-engine` | Long-form technical/product articles, search intent optimization, multi-channel repurposing |
 | **Positioning & Conversion** | `price-framing`, `persuasion-audit`, `dark-pattern-check`, `brand-voice`, `brand-guidelines` | Packaging & tier design, landing-page conversion audits, ethical UX checks |
 | **Product & GTM Operations** | `product-lens`, `marketing-campaign`, `lead-intelligence`, `competitive-report-structure`, `customer-billing-ops` | Go-to-market launches, competitive teardowns, lead enrichment, billing workflows |
+
+**Prompts to try:**
+- *"Run a `persuasion-audit` and `price-framing` check on this SaaS pricing page draft."*
+- *"Use `market-research` and `investor-materials` to outline a defensible seed pitch narrative."*
 
 ```bash
 # Install business-ops and content-media categories into your AI tools
@@ -333,13 +378,6 @@ Every number here can be reproduced. A task counts as right when the chosen skil
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/exam-dark.svg">
     <img src="assets/exam-light.svg" alt="Final exam on 150 new tasks: SFP 3.20 scores 93% right first (97% in stack) under the blind judge and 36% first (41% in stack) on strict original labels, beating keyword search and SFP 3.19." width="100%">
-  </picture>
-</p>
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="bench/charts/headline-dark.svg">
-    <img src="bench/charts/headline-light.svg" alt="How often the right skill is chosen across held-out suites" width="100%">
   </picture>
 </p>
 
@@ -403,31 +441,31 @@ Words only, recomputed from this repository each time this page is built, so it 
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="bench/charts/tokens-dark.svg">
-    <img src="bench/charts/tokens-light.svg" alt="Every skill always on costs 81,931 tokens; only what SFP picked costs about 5,000" width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/tokens-dark.svg">
+    <img src="assets/tokens-light.svg" alt="Context window cost and selection speed: every skill always on costs 81,691 tokens while SFP loads 3,383 tokens on average (96% less) in ~3 to 7 ms." width="100%">
   </picture>
 </p>
 
 | What you install | Skills your agent can use | Skill descriptions it carries each session | Share of a 200k-token window |
 |---|---:|---:|---:|
-| `sfp` and `sfp-hive` only (the rest on demand) | 2 + all 1063 through them | about 266 tokens | 0.1% |
-| `starter` preset | 174 | about 15,372 tokens | 7.7% |
-| `frontend-dev` preset | 225 | about 16,454 tokens | 8.2% |
-| `backend-dev` preset | 151 | about 13,407 tokens | 6.7% |
-| `mobile-dev` preset | 84 | about 6,893 tokens | 3.4% |
-| `agent-builder` preset | 309 | about 20,675 tokens | 10.3% |
-| `everything` | 1065 | about 81,691 tokens | 40.8% |
+| `sfp` and `sfp-hive` only (the rest on demand) | 2 + all 1063 through them | about 265 tokens | 0.1% |
+| `starter` preset | 174 | about 15,371 tokens | 7.7% |
+| `frontend-dev` preset | 225 | about 16,453 tokens | 8.2% |
+| `backend-dev` preset | 151 | about 13,406 tokens | 6.7% |
+| `mobile-dev` preset | 84 | about 6,892 tokens | 3.4% |
+| `agent-builder` preset | 309 | about 20,674 tokens | 10.3% |
+| `everything` | 1065 | about 81,690 tokens | 40.8% |
 
 **How fast is it?**
 
-Words only, a choice takes about 4 ms inside the host process. With meaning, about 0.2 s. When the local model is asked as well, up to about 1.7 s (slowest 5% of tasks). Search takes about 0.1 ms ([docs/HIVE.md](docs/HIVE.md#speed)).
+Words only, a choice takes about 5 ms inside the host process. With meaning, about 0.2 s. When the local model is asked as well, up to about 1.7 s (slowest 5% of tasks). Search takes about 0.1 ms ([docs/HIVE.md](docs/HIVE.md#speed)).
 
 ### Where It Still Fails
 
 We would rather you hear this from us. These are real results from version 3.20.0:
 
 - **Strict confidence gating trades recall on oblique paraphrases for 0% junk.** On `precision_heldout` (40 tasks, including 15 micro-edits and out-of-domain queries), SFP drops junk rate from 50.0% to **0.0%** (87.5% hit, 76.5% mean precision; 79.8% words-only). However, because single weak-token matches without technology or job corroboration are now rejected (`clears_confidence`), recall on the earlier `230cc07` held-out sets (`final_heldout_plain` 50.0%, `final_heldout_project` 63.3%, `final_heldout_reworded` 52.5%) and `plain_words_holdout2` (40.0%) remains below 80%.
-- **Multi-clause bundle stacking only fires when clauses match built-in bundle vocabularies.** While narrow tasks cleanly attach 0 bundles (**100.0%** on `bundle_multi_heldout` narrow tasks) and `--use-bundles` stacks any number of named bundles without duplicates, automatic multi-bundle attachment on `bundle_multi_heldout` multi-job tasks hits **26.7%** (4 of 15 attach $\ge 2$ bundles) because `bundles.json` only covers specific stacks (React, Flutter, Docker, security hardening, e2e).
+- **Multi-clause bundle stacking only fires when clauses match focused workflow bundles.** All 1,065 skills are organized across **121 bundles** in `bundles.json`. While narrow tasks cleanly attach 0 bundles (**100.0%** on `bundle_multi_heldout` narrow tasks) and `--use-bundles` stacks any number of named bundles without duplicates, automatic push only attaches focused workflow bundles (up to 6 skills) so broad domain collections stay suggested rather than flooding context.
 - **Secondary skills in multi-skill stacks still dilute mean precision.** Even when the lead skill is right and no `avoid` skill appears (0.0% junk), picking a 2nd or 3rd supporting skill that was not in the narrow human `expect` list brings mean precision on `precision_heldout` to **76.5%** (words-only **79.8%**), just shy of 80%.
 - **The model check has a latency and top-1 trade-off.** Asking `lfm2-24b-a2b` takes ~360 ms typical (up to ~1.7 s p95) and on the 91 tuned tasks "right skill first" is 80.2% vs 84.6% with embeddings alone.
 
@@ -704,8 +742,6 @@ Open the **SFP Hive** icon in the activity bar. It has three views: **SFP Hive**
 | **Choose** | Type a task; the hive picks a few skills and orders them. Click one to see why it was chosen, `+` to pin another, `x` to drop one |
 | **Library** | Browse all 1065 skills by area, goal, bundle and cluster; open a skill, pin it or add it to a bundle |
 | **Insights** | What the hive has learned from your feedback, and **Check connection** |
-
-![A bundle in the Skill Library](extensions/antigravity-hive/media/screenshot-bundle.png)
 
 There are three ways to get the skills to the agent:
 

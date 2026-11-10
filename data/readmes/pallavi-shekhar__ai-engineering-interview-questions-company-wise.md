@@ -184,7 +184,7 @@
   - Asked at: [Google DeepMind](#google-deepmind-and-google-ai), [Meta](#meta-superintelligence-labs-fair-llama), [Amazon](#amazon-aws), [NVIDIA](#nvidia)
 - Estimate the GPU memory needed to serve a 70B model: weights, KV cache, activations, fragmentation.
   - Asked at: [NVIDIA](#nvidia)
-  - Answer: [What is KV Cache in LLMs?](https://outcomeschool.com/blog/kv-cache-in-llms) and [Paged Attention in LLMs](https://outcomeschool.com/blog/paged-attention-in-llms)
+  - Answer: [What is KV Cache in LLMs?](https://outcomeschool.com/blog/kv-cache-in-llms) and [Paged Attention in LLMs](https://outcomeschool.com/blog/paged-attention-in-llms) and [How does an LLM use GPU memory?](https://outcomeschool.com/blog/llm-gpu-memory)
 - What are TTFT, TPOT, ITL and throughput, and how do they trade against each other?
   - Asked at: [Microsoft](#microsoft), [Apple](#apple), [Perplexity](#perplexity)
   - Answer: [Prefill vs Decode: LLM Inference Optimization](https://outcomeschool.com/blog/prefill-vs-decode-llm-inference-optimization) and [The First-Token Latency Problem in LLMs](https://www.youtube.com/watch?v=XD8DD4cEHu0)
@@ -364,7 +364,7 @@
   - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [How do you build a latency budget for a voice AI agent?](https://outcomeschool.com/blog/voice-agent-latency-budget), [How does the voice-to-voice latency of a voice agent get measured?](https://outcomeschool.com/blog/voice-to-voice-latency), [Why does the time-to-first-audio matter more than total response time?](https://outcomeschool.com/blog/time-to-first-audio), [How does speculative LLM generation start replying before the user finishes?](https://outcomeschool.com/blog/speculative-generation-in-voice-agents) and [How do filler phrases hide latency in a voice agent?](https://outcomeschool.com/blog/filler-phrases-in-voice-agents)
 - Design barge-in / interruption handling for a voice agent.
   - Asked at: [ElevenLabs](#elevenlabs)
-  - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [What is turn-taking in a voice AI agent?](https://outcomeschool.com/blog/what-is-turn-taking-in-a-voice-ai-agent), [What is barge-in in a voice AI agent?](https://outcomeschool.com/blog/what-is-barge-in-in-a-voice-ai-agent), [How does a voice agent tell a real interruption from a cough or background noise?](https://outcomeschool.com/blog/interruption-vs-background-noise) , [How does a voice agent stop speaking instantly when interrupted?](https://outcomeschool.com/blog/stopping-speech-on-interruption) and [How does a voice agent truncate its memory to only what the user actually heard?](https://outcomeschool.com/blog/truncating-context-on-interruption)
+  - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [What is turn-taking in a voice AI agent?](https://outcomeschool.com/blog/what-is-turn-taking-in-a-voice-ai-agent), [What is barge-in in a voice AI agent?](https://outcomeschool.com/blog/what-is-barge-in-in-a-voice-ai-agent), [How does a voice agent tell a real interruption from a cough or background noise?](https://outcomeschool.com/blog/interruption-vs-background-noise) , [How does a voice agent stop speaking instantly when interrupted?](https://outcomeschool.com/blog/stopping-speech-on-interruption), [How does a voice agent truncate its memory to only what the user actually heard?](https://outcomeschool.com/blog/truncating-context-on-interruption), [How does a voice agent recover from a false interruption?](https://outcomeschool.com/blog/false-interruption-recovery) and [How does a voice agent handle the user and agent talking at the same time?](https://outcomeschool.com/blog/overlapping-speech-in-voice-agents)
 - Cascaded ASR+LLM+TTS versus native speech-to-speech: argue both sides.
   - Asked at: [ElevenLabs](#elevenlabs)
   - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent) and [Cascaded vs Speech-to-Speech: How to choose the right voice agent architecture?](https://outcomeschool.com/blog/cascaded-vs-speech-to-speech)
@@ -625,6 +625,7 @@
 - Explain the SVD and give two places it shows up in modern deep learning.
 - On average, how many fair coin flips until you see two heads in a row? Walk me through it.
 - When would you choose Q-learning over policy gradients, and vice versa?
+  - Answer: [What is Policy Gradient? The REINFORCE Algorithm Explained](https://outcomeschool.com/blog/policy-gradient-reinforce)
 - You have a binary loan-approval classifier and limited access to feature weights. How do you explain a rejection?
 
 #### Fine-Tuning, Post-Training and Alignment
@@ -1237,7 +1238,7 @@
 #### Inference, Serving and GPU Performance
 
 - You want to serve a 70B-parameter model on a single 80 GB GPU. Walk me through whether it fits and what single-stream tokens/sec you'd expect.
-  - Answer: [How does Model Quantization work?](https://outcomeschool.com/blog/how-does-model-quantization-work) and [What is KV Cache in LLMs?](https://outcomeschool.com/blog/kv-cache-in-llms)
+  - Answer: [How does Model Quantization work?](https://outcomeschool.com/blog/how-does-model-quantization-work) and [What is KV Cache in LLMs?](https://outcomeschool.com/blog/kv-cache-in-llms) and [How does an LLM use GPU memory?](https://outcomeschool.com/blog/llm-gpu-memory)
 - What does TensorRT / TensorRT-LLM actually do to a model to make it faster, and when will it not help?
   - Answer: [How does TensorRT-LLM work?](https://outcomeschool.com/blog/how-does-tensorrt-llm-work)
 - Design the parallelism strategy for serving a 405B-parameter dense model. TP, PP, EP: what goes where and why?
@@ -1314,9 +1315,4 @@
 
 #### AI System Design
 
-- Design the ETA prediction system for a ride-hailing marketplace. What features, what model, how do you serve it in <100 ms?
-- Design a personalised feed ranking system with a two-stage candidate generation and ranking architecture.
-- Design a content recommendation system for a streaming catalogue, including cold-start for new titles and new users.
-- Design “people you may know” / job-recommendation ranking at a professional network's scale.
-- Design dynamic pricing / surge for a two-sided marketplace and describe the feedback loops that can go wrong.
-- Design a visual search system: user uploads an image, you re
+- Design the ETA prediction system for a ride-hailing m

@@ -1455,6 +1455,7 @@ or click one of the badges below.
   - Adjustable similarity thresholds and live category preview
   - Automatic indexing and offline search after downloading the models
   - People groups with names, face covers, matching thresholds, merging and photo exclusions
+  - OCR indexing to search text in images
 - AI Assistant
   - On-device answers grounded in Help & Tips, with tool navigation and contextual settings help
 - Emoji Kitchen
@@ -1660,6 +1661,47 @@ or click one of the badges below.
     - Squircle
     - Smooth
 - Main screen layout customization
+- 40 Mini-Games to play when waiting for result
+  - Dino
+  - Doodle Jump
+  - Flappy Bird
+  - Tower Builder
+  - Ping Pong
+  - 2048
+  - Snake
+  - Tetris
+  - Retro Racer
+  - Ricochet
+  - Asteroids
+  - Fruit Slice
+  - Knife Hit
+  - Missile Command
+  - River Hop
+  - Whack-a-Mole
+  - Simon Says
+  - Bubble Pop
+  - Fishing
+  - Super Hexagon
+  - Bomber
+  - Minesweeper
+  - Gravity Flip
+  - Maze Chaser
+  - ZigZag
+  - Timberman
+  - Orbit Survival
+  - Lunar Lander
+  - Brick Breaker
+  - Light Cycles
+  - Flight Control
+  - Basketball
+  - Laser Mirrors
+  - Flow Connect
+  - Balance Tower
+  - Temple Escape
+  - Spiral Shaft
+  - Tint Ascent
+  - Trace And Claim
+  - Orchard Pile
 
 (Yes, the app supports dynamic coloring based on wallpapers for every android version)
 

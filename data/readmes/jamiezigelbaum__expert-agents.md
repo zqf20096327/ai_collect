@@ -94,7 +94,7 @@ flowchart LR
 | --- | --- | --- |
 | **Plugin** | `src/` | Registers the tools with OpenClaw and forwards calls to the worker. |
 | **Worker** | `packages/runtime` | Plans, retrieves, cites, ingests and acquires. Runs as a systemd service or container. |
-| **Library** | `packages/library`, `packages/runtime` | Page units, local OCR and figure description, the page index, and ingest. (`packages/library-materializer` is the legacy Vertex import.) |
+| **Library** | `packages/library`, `packages/runtime` | Page units, local OCR and figure description, the page index, and ingest. |
 | **Factory** | `packages/provisioning` | Creates and resumes experts: repository, page library, bot and binding. |
 | **Skills** | `skills/` | Tenant-neutral operating instructions the agent follows when using the tools. |
 
@@ -102,7 +102,7 @@ flowchart LR
 
 **Requirements:** [Bun](https://bun.sh) 1.3+ to build. To run an expert you also
 need an OpenClaw installation, a GCS bucket for originals, Postgres with
-pgvector for the page index (`deploy/page-library/compose.yaml`), a Voyage API
+pgvector 0.8 or newer for the page index (`deploy/page-library/compose.yaml`), a Voyage API
 key, and a local model router serving DeepSeek-OCR and a vision profile.
 
 ```sh
@@ -212,7 +212,6 @@ Everything the agent can do, an operator can do from a shell with
 | `library-ingest` | Start, follow or list page-library ingest jobs. |
 | `search` | Find candidate books for a domain. |
 | `acquire` | Download an approved book and queue its ingest. |
-| `ingest` | Legacy owner lane: stage into the shared GCS library and materialize into a Vertex corpus. |
 
 `bun run library:pages` and `bun run library:index` build and index a whole
 library on the host that holds it ([page library](docs/page-library.md)).
@@ -229,7 +228,6 @@ reference.
 ├── packages/
 │   ├── runtime/                  domain-expert worker (HTTP server)
 │   ├── library/                  library model, page units, OCR and ingestion
-│   ├── library-materializer/     legacy: plan/execute import into Vertex corpora
 │   └── provisioning/             expert factory and agent-repository scaffolding
 ├── skills/                       OpenClaw operating skills
 ├── scripts/                      operator CLIs, packaging and verification gates

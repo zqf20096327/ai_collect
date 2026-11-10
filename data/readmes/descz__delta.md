@@ -8,18 +8,18 @@
 Delta executes it in your project, with the model you choose — and remembers the context next time.</p>
 
 <p>
-  <a href="https://github.com/descz/delta/releases/latest"><img alt="Download for your system" height="28" src="https://img.shields.io/badge/Download-for%20your%20system-ffffff?style=flat-square&amp;labelColor=000000"></a>
-  <a href="https://descz.github.io/delta/"><img alt="Site" height="28" src="https://img.shields.io/badge/Site-descz.github.io%2Fdelta-111111?style=flat-square&amp;labelColor=000000"></a>
-  <a href="https://github.com/descz/delta"><img alt="GitHub" height="28" src="https://img.shields.io/badge/GitHub-descz%2Fdelta-181717?style=flat-square&amp;logo=github&amp;logoColor=ffffff&amp;labelColor=000000"></a>
+  <a href="https://github.com/descz/delta/releases/latest"><img alt="Download for your system" height="28" src="assets/buttons/download.svg"></a>
+  <a href="https://descz.github.io/delta/"><img alt="Live site" height="28" src="assets/buttons/site.svg"></a>
+  <a href="https://github.com/descz/delta"><img alt="GitHub" height="28" src="assets/buttons/github.svg"></a>
 </p>
 
 <p><sub>Windows · Linux · macOS (source) — one file, no Node, no Python, no admin.</sub></p>
 
 <p>
-  <a href="https://github.com/descz/delta/releases/latest"><img alt="release" src="https://img.shields.io/github/v/release/descz/delta?style=flat-square&amp;color=white&amp;labelColor=black"></a>
-  <img alt="C11" src="https://img.shields.io/badge/C-11-white?style=flat-square&amp;labelColor=black">
-  <img alt="dependencies" src="https://img.shields.io/badge/dependencies-0-white?style=flat-square&amp;labelColor=black">
-  <a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-source--available%20%C2%B7%20noncommercial-white?style=flat-square&amp;labelColor=black"></a>
+  <a href="https://github.com/descz/delta/releases/latest"><img alt="release" height="28" src="assets/buttons/version.svg"></a>
+  <img alt="C11" height="28" src="assets/buttons/c11.svg">
+  <img alt="zero runtime dependencies" height="28" src="assets/buttons/deps.svg">
+  <a href="LICENSE"><img alt="license: source-available, noncommercial" height="28" src="assets/buttons/license.svg"></a>
 </p>
 
 </div>
@@ -29,12 +29,12 @@ Delta executes it in your project, with the model you choose — and remembers t
 > See [LICENSE](LICENSE).
 
 A **single executable written in C11, with no dependencies at all**: no Node, Python, npm, pip or
-framework installer. On Windows it is **805 KB** and about **1.7 MB of private memory**. It talks to
+framework installer. On Windows it is **829 KB** and about **1.7 MB of private memory**. It talks to
 the provider directly (WinHTTP on Windows, `curl` elsewhere) and keeps everything in one folder.
 
 | size | runtime dependencies | tool operations | installers |
 |:--:|:--:|:--:|:--:|
-| **805 KB** | **0** | **40+** | **3 systems** |
+| **829 KB** | **0** | **40+** | **3 systems** |
 
 ---
 
@@ -62,6 +62,8 @@ the provider directly (WinHTTP on Windows, `curl` elsewhere) and keeps everythin
 | **Git** | status, diff, log, commit and *checkpoint* before changing anything |
 | **Web** | downloads pages, extracts data, reads documentation — and speaks **MCP** over HTTP or stdio |
 | **Skills** | saved workflows in `SKILL.md` — **ten ship built in**: `deltamotion` (video as C → BMP → MP4), `3jsskill` (Three.js with no build step), code design, spreadsheets/PDF, docs, automation, verification, systematic debugging, security audit, web design. Indexed in the system prompt and read on demand |
+| **Extensions** | one manifest can carry several capabilities at once: `tools`, `commands` (prompt or an `exec` that runs and prints in the chat), `hooks`, `prompt` (appended to the system prompt) and `ui.status` (a third footer line). The agent can create a whole manifest itself with `extensions` op=bundle |
+| **Hooks** | change the harness, not your workflow: an extension of kind `hook` intercepts `tool_call` (block it, or rewrite the arguments), `tool_result` (rewrite the output the model sees) and `turn_end`, plus the context events `session_start`, `user_message` (can refuse the message) and `turn_start`. Payload arrives as JSON in a file (`argv[1]`), the reply is JSON on stdout; 5 s timeout and fail-open, so a broken hook never stops the agent. Quote paths with spaces in `arg` |
 | **Memory** | durable facts across sessions, searchable by text |
 | **Project graph** | indexes symbols and imports once, then answers without re-reading every file |
 | **Models** | [models.dev](https://models.dev) catalog with hundreds of models and providers |
@@ -94,7 +96,7 @@ Being explicit, because "compiles" is not "works":
 
 | platform | status |
 |---|---|
-| **Windows 10/11 x64** | **Tested** — the reference platform: 346 end-to-end checks (TUI, streaming, tools, installer, self-update), plus the installer and `delta update` exercised by hand. |
+| **Windows 10/11 x64** | **Tested** — the reference platform: 374 end-to-end checks (TUI, streaming, tools, installer, self-update), plus the installer and `delta update` exercised by hand. |
 | **Linux x86_64** | **Builds and runs** (gcc 13, WSL, 32 checks: build, core, replay, real streaming via curl, installer, self-update). **Not exercised on a desktop session**: `.desktop` entry, GNOME favorites and clipboard (`wl-copy`/`xclip`) are untested. |
 | **macOS 11+** | **Source only, and not tested** — I have no Mac. The release ships the source plus `INSTALAR-MAC.command`, which checks Xcode Command Line Tools and builds locally; the native layer (`osascript`, `.app`, Dock) was never executed. Treat it as a starting point, not as a supported binary. |
 
@@ -198,6 +200,7 @@ One folder, chosen at install time (default `C:\Users\<you>\.deltaCore`):
   skills/            <name>/SKILL.md
   mcps/              one .json per MCP server (url or command)
   extensions/        pluggable extensions
+  hooks/            payload temporario dos hooks (apagado a cada chamada)
   graphs/            project graph cache (symbols/imports)
   update.json        last release check (version, asset, timestamp)
   system/prompt.md   rules it must always follow
@@ -238,7 +241,17 @@ On macOS the Xcode Command Line Tools (`xcode-select --install`) are enough. At 
 Two suites, no framework:
 
 ```bash
-bash tests/run_all.sh     # Windows: 346 checks in 52 sections (TUI replay, provider mock, installer)
+bash tests/run_all.sh     # Windows: 374 checks in 58 sections (TUI replay, provider mock, installer)
+
+# programmatic surface (CI): one JSON event per line
+delta -p "review src/" --json | jq -c 'select(.type=="tool_result")'
+
+# the specification the binary carries
+delta docs
+
+# export the recent session of this folder (markdown or NDJSON)
+delta export > transcript.md
+delta export --json > transcript.jsonl
 bash tests/run_posix.sh   # Linux/macOS: build, core, replay, real streaming, installer, docs
 ```
 

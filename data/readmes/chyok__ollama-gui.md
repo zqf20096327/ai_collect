@@ -25,6 +25,11 @@ Provide you with the simplest possible visual Ollama interface.
 + 📝 Editable Conversation History.
 ### v1.2.2 
 + 💾 Save and Load Conversation History.
+### v1.3.1
++ 💭 Show the thinking of reasoning models, folded after the answer starts.
++ ⚠️ Show the error message returned by Ollama.
++ 🔄 Support the latest Ollama API.
++ 🧵 More stable UI, all widgets are updated in the main thread.
 
 ## 📎 Before Start
 
@@ -112,6 +117,3 @@ Refer to: https://stackoverflow.com/questions/25905540/importerror-no-module-nam
 
 This project is licensed under the [MIT License](LICENSE).
 
-## A Final Note
-
-This may be my last project written entirely by hand. Today, AI can build things far more complex in moments. So much has changed so quickly that writing code line by line already feels like a memory from another time. I’ll leave this project as it is, with no further updates, as a small keepsake. Thank you for the stars and for giving this little project your attention. It’s astonishing to witness a change like this, and I feel fortunate to have been here for it.

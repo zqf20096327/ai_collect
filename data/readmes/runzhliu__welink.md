@@ -42,7 +42,7 @@ WeLink 采用本地优先设计：聊天数据库由你自行部署和管理。�
 
 ---
 
-## v0.4.0 开发预览：让模型学会你的表达方式
+## v0.4.0：让模型学会你的表达方式
 
 新的 **SFT 工作台**将聊天记录整理、模型微调和试用连接起来。选择你愿意使用的私聊，审核数据后，在自己的 Mac 或 NVIDIA GPU 环境中训练 LoRA Adapter，再通过评测和试聊了解效果。
 
@@ -56,27 +56,29 @@ WeLink 采用本地优先设计：聊天数据库由你自行部署和管理。�
 
 SFT 侧重学习表达习惯，不保证记住或准确回答具体事实；涉及历史细节时仍可结合聊天检索。训练集和模型可能记住聊天内容：远程预检或训练会将选定样本发送到所选训练机，导出与分享前请确认隐私范围。
 
-> **开发预览**：v0.4.0 尚未通过完整发布验收。公开 Demo 仅展示训练流程，不支持上传训练数据或连接训练环境。CUDA L20 已用合成数据完成一次训练、评测和流式试聊验证；Mac MLX 与完整恢复等场景仍待验收。详见 [SFT 工作台指南](docs/sft.md) 和 [发布验收清单](docs/sft-release-checklist.md)。
+> **测试范围**：Mac MLX 和 CUDA L20 均已使用合成数据测试训练、评测与流式试聊，L20 还测试了中断恢复。测试结果取决于具体模型、数据与硬件。Demo 禁止上传训练数据或连接训练环境。详见 [SFT 工作台指南](docs/sft.md) 和 [测试记录](docs/sft-release-checklist.md)。
 
 ---
 
 ## 功能示例
 
-> 点击可放大查看
+以下浅色界面预览由操作前后的页面截图组成，使用项目内置的虚构演示数据；AI 回复为演示模式的预置内容。
 
 | AI 分身 | AI 分析 |
 |:---:|:---:|
-| [![AI 分身](pics/previews/1.webp)](pics/1-AI分身.mp4) | [![AI 分析](pics/previews/2.webp)](pics/2-AI分析.mp4) |
-| **AI 群聊** | **AI 首页** |
-| [![AI 群聊](pics/previews/3.webp)](pics/3-AI群聊.mp4) | [![AI 首页](pics/previews/4.webp)](pics/4-AI首页.mp4) |
+| ![AI 分身](pics/demos/ai-clone.gif) | ![AI 分析](pics/demos/ai-analysis.gif) |
+| **AI 群聊配置** | **AI 首页** |
+| ![AI 群聊配置](pics/demos/ai-groups.gif) | ![AI 首页](pics/demos/ai-home.gif) |
 | **快速入门引导** | **好友总览** |
-| [![快速入门引导](pics/previews/5.webp)](pics/5-快速入门引导.mp4) | [![好友总览](pics/previews/6.webp)](pics/6-好友总览.mp4) |
+| ![快速入门引导](pics/demos/onboarding.gif) | ![好友总览](pics/demos/contact.gif) |
 | **好友深度画像** | **群聊画像** |
-| [![好友深度画像](pics/previews/7.webp)](pics/7-好友深度画像.mp4) | [![群聊画像](pics/previews/8.webp)](pics/8-群聊画像.mp4) |
+| ![好友深度画像](pics/demos/portrait.gif) | ![群聊画像](pics/demos/groups.gif) |
 | **全局搜索** | **时间线** |
-| [![全局搜索](pics/previews/9.webp)](pics/9-全局搜索.mp4) | [![时间线](pics/previews/10.webp)](pics/10-时间线.mp4) |
+| ![全局搜索](pics/demos/search.gif) | ![时间线](pics/demos/timeline.gif) |
 | **时光机** | **纪念日** |
-| [![时光机](pics/previews/11.webp)](pics/11-时光机.mp4) | [![纪念日](pics/previews/12.webp)](pics/12-纪念日.mp4) |
+| ![时光机](pics/demos/calendar.gif) | ![纪念日](pics/demos/anniversary.gif) |
+| **私聊微信视图** | **SFT 工作台** |
+| ![私聊微信视图](pics/demos/wechat.gif) | ![SFT 工作台](pics/demos/sft.gif) |
 
 ---
 
@@ -129,6 +131,12 @@ SFT 侧重学习表达习惯，不保证记住或准确回答具体事实；涉�
 > 「哪些朋友经常提到加班？」→ AI 搜索关键词，按匹配频次排列
 
 技术原理：LLM Agent 模式——第一步 LLM 解析问题意图（提取关键词/时间范围），第二步自动调用搜索/日历 API 收集数据，第三步 LLM 基于真实数据生成回答。每次提问仅消耗 ~4000 token。
+
+回答下方列出实际提供给模型的聊天片段，可点击查看当天上下文；回答中的编号供核对参考，不能保证推断正确。搜索只提供有限候选，未找到并不代表聊天记录中一定不存在。对话历史会保存这些片段；使用云端模型时，问题和相关片段会发送给所选服务商。
+
+### 我的口吻回复助手
+
+在 AI 首页切换到「我的口吻回复」，粘贴对方消息、选择语气和模型，生成可编辑、复制的草稿。只会向所选模型发送手动输入的内容，不自动读取历史聊天、不保存或发送草稿。普通模型不会自动学习你的口吻；使用个人 SFT 模型前，请先在模型训练工作台完成部署并接入模型配置。
 
 ### 对话历史持久化
 
@@ -388,6 +396,12 @@ LLM 批量阅读聊天记录，自动提炼关键事实（人名、事件、情�
 WeLink 内置 [MCP（Model Context Protocol）](https://modelcontextprotocol.io/) 服务器，让你在 **Claude Code（CLI）** 里用自然语言查询微信数据，无需打开浏览器。
 
 完整配置见 [mcp-server/README.md](mcp-server/README.md)。
+
+使用 DeepSeek Harness 的用户也可以安装 [WeLink DSH 插件](plugins/dsh-welink/README.md)。插件默认不授权任何会话、不开放聊天原文；配置授权后可在 DSH 中按日期或关键词查询，支持私聊和群聊。该插件当前随源码提供，需要使用包含 Agent 查询接口的 WeLink 后端。
+
+![DSH 使用 WeLink 插件整理群聊待办的演示](pics/dsh-welink-demo.png)
+
+*演示使用虚构群聊数据：DSH 查询指定日期的消息，并整理出待办、负责人和待确认事项。*
 
 ---
 
@@ -702,7 +716,7 @@ LLM 会：
 | **AI 虚拟群聊** | 实验室 → 🎭 虚拟群聊 | 任意 2-8 个联系人组虚拟群，AI 用每个人的分身画像扮演；批量 N 轮 + 气泡 TTS + 会话持久化 |
 | **🎮 互动小说** | 联系人详情页头部 → 紫色 BookOpen 按钮 | 把 TA 当 NPC，写一段章节化、有选项、5 种结局的视觉小说；可读档回滚、Wrapped 风格回顾、长图导出 |
 | **移动端配对** | 设置 → 移动端配对（仅 PC 本机可开） | 生成 token + LAN IP → 手机 App 扫码验证；本机回环外只能 verify，不能改 token |
-| **SFT 工作台（v0.4.0 开发预览）** | AI 工作台 → 模型训练 | 准备与审核样本、连接 Mac / GPU Worker、预检训练、对比评测、导出 Adapter 和接入试聊 |
+| **SFT 工作台（v0.4.0）** | AI 工作台 → 模型训练 | 准备与审核样本、连接 Mac / GPU Worker、预检训练、对比评测、导出 Adapter 和接入试聊 |
 
 ---
 
@@ -710,13 +724,7 @@ LLM 会：
 
 ### 第一步：解密微信数据库
 
-把手机聊天记录同步到电脑后（微信 → 设置 → 通用 → 聊天记录迁移），使用 [wechat-decrypt](https://github.com/ylytdeng/wechat-decrypt) 解密：
-
-```bash
-git clone https://github.com/ylytdeng/wechat-decrypt
-cd wechat-decrypt
-sudo python3 main.py   # 选择 decrypt 模式
-```
+把手机聊天记录同步到电脑后（微信 → 设置 → 通用 → 聊天记录迁移），需要使用与系统和微信版本兼容的工具解密。原 `ylytdeng/wechat-decrypt` 仓库目前不可用；社区项目 [WeinanHu/wechat-decrypt](https://github.com/WeinanHu/wechat-decrypt) 可供参考，但其输出与 WeLink 的兼容性尚未验证，请先检查工具来源、权限和使用说明。
 
 解密后生成 `decrypted/` 目录（含 `contact/contact.db` 和 `message/message_N.db`）。
 
@@ -900,11 +908,11 @@ API 文档：启动后访问 [localhost:3418/swagger/](http://localhost:3418/swa
 
 ## 数据安全
 
-所有数据仅在本地处理，不会上传至任何服务器。请仅分析自己的聊天记录。
+基础分析在运行 WeLink 的设备上处理。使用云端 AI 或远程训练时，相关聊天片段或训练样本会发送到你选择的服务或训练环境；训练产物也可能记住私人内容。请仅处理有权使用的数据，并妥善保护数据库、密钥和模型。
 
 ## 感谢
 
-本项目依赖 [ylytdeng/wechat-decrypt](https://github.com/ylytdeng/wechat-decrypt) 实现微信数据库解密。微信数据库使用 SQLCipher 加密，该项目从进程内存中提取密钥，是 WeLink 的基础。
+感谢原 ylytdeng/wechat-decrypt 项目的开源贡献。微信数据库需要先通过兼容工具解密，WeLink 本身不提供自动解密。
 
 ## 开源协议
 

@@ -125,10 +125,14 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
     - Answer: [What is a Value Function? Q-Learning Explained Step by Step](https://outcomeschool.com/blog/value-function-and-q-learning)
 - What is Policy Gradient? Explain the REINFORCE algorithm.
     - Answer: [What is Policy Gradient? The REINFORCE Algorithm Explained](https://outcomeschool.com/blog/policy-gradient-reinforce)
+- What are Actor-Critic methods in Reinforcement Learning?
+    - Answer: [What is Actor-Critic in Reinforcement Learning? The Advantage Function Explained](https://outcomeschool.com/blog/actor-critic)
 - Explain the concept of exploration vs exploitation.
     - Answer: [What is Exploration vs Exploitation in Reinforcement Learning?](https://outcomeschool.com/blog/exploration-vs-exploitation)
 - Explain the curse of dimensionality and how to address it.
 - Explain Local Loss, Focal Loss, and Gradient Blending in the context of Multi-Task Learning.
+- What is Self-Supervised Learning?
+    - Answer: [How does Self-Supervised Learning work?](https://outcomeschool.com/blog/self-supervised-learning)
 - Explain Contrastive Learning
     - Answer: [Contrastive Learning](https://outcomeschool.com/blog/contrastive-learning)
 - What is Generative AI?
@@ -153,6 +157,7 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - How do you check for multicollinearity in regression models?
 - How does K-Nearest Neighbors (KNN) work?
 - Explain K-Means Clustering. How does it work? Limitations?
+    - Answer: [How does K-Means Clustering work?](https://outcomeschool.com/blog/k-means-clustering)
 - Explain Support Vector Machines (SVM). What is the kernel trick?
 - What is the decision boundary in classifiers?
 - Explain Naive Bayes.
@@ -432,6 +437,8 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
     - Answer: [Large Reasoning Models (LRMs)](https://outcomeschool.com/blog/large-reasoning-models)
 - Reinforcement Learning from Human Feedback (RLHF)
     - Answer: [Reinforcement Learning from Human Feedback (RLHF)](https://outcomeschool.com/blog/reinforcement-learning-from-human-feedback-rlhf)
+- What is a reward model, and how is it trained?
+    - Answer: [What is a Reward Model and How Is It Trained?](https://outcomeschool.com/blog/reward-model)
 - Proximal Policy Optimization (PPO)
     - Answer: [Proximal Policy Optimization (PPO)](https://outcomeschool.com/blog/proximal-policy-optimization-ppo)
 - Direct Preference Optimization (DPO)

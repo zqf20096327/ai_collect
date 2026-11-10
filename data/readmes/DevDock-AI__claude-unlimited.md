@@ -269,6 +269,21 @@ or paste.
 It logs in through an **isolated session**, so whatever is already signed into `claude` on
 your machine is never touched. Run it again for each additional account.
 
+### Or paste a long-lived token
+
+For a machine without a browser, run `claude setup-token` (on any machine logged into that
+account) and paste the `sk-ant-oat01-…` token it prints in the dashboard: **Add profile →
+Claude subscription → Paste a long-lived token**.
+
+These tokens are scoped for inference only, so they cannot look up their own account. Fill
+in the **Account UUID** too: it is `oauthAccount.accountUuid` in `~/.claude.json` on the
+machine where you ran `claude setup-token`. Pick the plan, or leave it on Auto.
+
+A setup-token token is valid for about a year and has no refresh token, so nothing can
+renew it. The profile card shows **Long-lived token · expires <date>**, turning amber in
+the last 30 days; paste a new token over it (same Account UUID) before then. Usage is
+learned from the account's own responses as it serves requests.
+
 ---
 
 ## Add a ChatGPT / Codex subscription
@@ -310,7 +325,7 @@ has to decide which GPT model actually answers — and how hard it thinks. That'
 
 | Claude model | Claude effort | Runs as (Codex) | Codex effort |
 |---|---|---|---|
-| Claude Fable 5.1 | Automatic | `gpt-6.1-sol` | medium |
+| Claude Fable 5.2 | Automatic | `gpt-6.1-sol` | medium |
 | Claude Opus 5.5 | Automatic | `gpt-6.1-terra` | high |
 | Claude Sonnet 5.5 | Automatic | `gpt-6.1-terra` | medium |
 | Claude Haiku 5.5 | Automatic | `gpt-6-luna` | low |
@@ -329,7 +344,7 @@ has to decide which GPT model actually answers — and how hard it thinks. That'
   never asked for. It's still in the dropdown — one edit away — just not a default.
 - **Dropdowns list the priciest/most-capable first**, drawn live from the model catalogue.
 - **Names and prices are live.** The lineup comes from the model catalogue refreshed at each
-  session launch, so `gpt-6-astra` / Fable 5.1 show up without a release.
+  session launch, so `gpt-6-astra` / Fable 5.2 show up without a release.
 
 **Effort is the expensive dial, not model size.** A Codex plan's quota is spent on
 reasoning tokens produced, multiplied by the model's tier. Turning a row up to `high` costs
@@ -493,7 +508,7 @@ route exactly as they always have.
 ### The 1M context window
 
 Several Claude models hold a million tokens: **Sonnet 5 / 5.5**, **Haiku 5.5**, **Opus 4.7 / 4.8 /
-5 / 5.5**, **Fable 5 and 5.1**, **Mythos 5 and 5.1**. Claude Code only uses that window when it is talking
+5 / 5.5**, **Fable 5, 5.1 and 5.2**, **Mythos 5, 5.1 and 5.2**. Claude Code only uses that window when it is talking
 straight to `api.anthropic.com`. Pointed anywhere else — including this daemon on your own
 machine — it falls back to **200K**, because it has no way to tell what is on the other end
 of that address.

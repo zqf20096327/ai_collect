@@ -80,7 +80,15 @@ atman run examples/agent.at --flow agent user_prompt="read Cargo.toml and list t
 
 A Session contains independently addressable Flow instances. Each instance retains its conversation, inbox, Goal, execution state, and resource bindings across turns. Returning a final answer finishes the current turn; it does not destroy the instance. Flows can exchange messages and watch public results, with explicit grants for cross-Session access and privileged controls.
 
-The main conversation and floating windows use the same Flow view. Selecting a different Flow changes the recipient of input and controls while retaining each view's draft and reading position. Closing a window does not stop execution. The default Flow is the Session's initial view, with no extra authority.
+The main conversation and floating windows use the same Flow view. New floating windows start near the upper left and cascade diagonally. Reopening the same Flow in the running TUI restores its window position, size, and maximized state. Selecting a different Flow changes the recipient of input and controls while retaining each view's draft and reading position. Closing a window does not stop execution. The default Flow is the Session's initial view, with no extra authority.
+
+The input floats independently of document width, with a square outline, terminal-default background, a 96-column width that adapts to the viewport, and three editable rows by default. Its position and size use spring motion when switching focus or resizing; dragging the focused window carries the input synchronously. Model, reasoning, and permission controls use the selected view's settings, along with its draft, quotes, attachments, and submission acknowledgements. The input itself cannot be dragged.
+
+Click **↓ N new** in the input border or press `Ctrl+End` to animate to the latest output and resume following it. Scrolling or selecting transcript text interrupts the transition. Main and floating conversations retain separate reading positions.
+
+Interrupted conversations retain pending input in Inbox and expose **Recover R** with mouse and keyboard controls. [Input queue and execution recovery](docs/input-queue.md) describes routing, insertion eligibility, cancellation, pauses, and recovery.
+
+Project Hub (`Ctrl+L`) and pinned-project session entries open the selected session's default conversation directly. Click a project to show its sessions, then activate a session with Enter or one click to close the Hub and open its conversation. Sidebar project actions occupy one compact row; recent sessions display their default Flow's output tail and mark the current view with an edge bar. Project names, sessions and supporting details use theme-defined grayscale levels, and the collapsed project tab has hover feedback. Narrow terminals use a drawer. Original history opens read-only; indexed history retains its recovery review.
 
 | Entry | Purpose |
 |---|---|
@@ -96,7 +104,29 @@ New execution records live under `runtime-v1/sessions/<session>/flows/<flow>/`. 
 
 Conversations retained only in project indexes appear as **Indexed history** in Switch Session and project session lists. Open a record to review its coverage and missing assets, then choose **Recover transcript** to create an independent history copy. Sending a message from that copy starts a new conversation with retained context. The source index stays unchanged; missing original logs and external files cannot be reconstructed from indexed text.
 
+Unbound legacy TUI views discover sessions in bounded background workers with the existing picker progress indicator. Filtering, scope changes, closing and resizing remain available. Browsing reads message counts without repairing caches, refresh retains the selected session, and obsolete scans cannot replace newer results.
+
 The right sidebar combines Goal / Plan / Todos and Context / MCP in Overview, with Tasks / Flow / History in Activity. Main and floating views share this layout. FlowHub, Links, WatchHub, Inbox History, Worktrees, Flow Workspace, and the management Session panel require the optional `atman-tui/extended-panels` Cargo feature. Runtime messaging, watchers, and storage remain active in default builds.
+
+The left sidebar shows globally pinned projects, their five most recent sessions and project-specific session creation. Pins persist across restarts; hiding the sidebar preserves them, and unpinning offers Undo. Use `:project-sidebar`, **Toggle Project Sidebar** in `Ctrl+P`, or the **P** tab to reopen it. Narrow terminals use a drawer. `Ctrl+L` opens the full project directory; **Sort** or `S` selects newest first, oldest first or name A–Z on both pages.
+
+Project directory refresh and history search display compact animated progress while waiting for their replies. Visible conversation windows share the animation clock; hidden or completed loading indicators stop requesting frames.
+
+Switching back to a healthy cached conversation restores its existing document immediately while incremental updates continue through its original reader. Each view retains its draft, quotes and input acknowledgements.
+
+Initial conversation history and document preparation run in bounded background workers. A compact loading view remains responsive to typing, window changes and resizing. Switching away retains the preparation; completion updates its original view without taking focus. Drafts remain editable while loading and can be sent once the conversation is ready.
+
+Settings panels read source-bound snapshots prepared in background workers, including authentication, model catalogs and local MCP configuration. Initial loading has compact animated feedback and keyboard/mouse Close and Retry controls; refresh preserves existing lists and drafts. Preference forms also load off the input path. Normal messages retain their draft until settings are ready, and saves keep their original persistence acknowledgement.
+
+Document rendering uses prepared content without acquiring the execution message lock, keeping display, copying and resizing independent of that lock.
+
+Live journal catch-up projects pages in bounded background workers. Slow refresh keeps the previous document visible with compact **Updating** feedback; switching views retains the read and its cursor, and completion does not change focus.
+
+View-bound host controls and panel services run outside input and rendering polls. Each view retains its command order and original reply destination; execution stop, permissions and form decisions have independent workers. Pending preference saves can be hidden with **Hide** or `Esc` and reopened without losing their receipt or draft. Normal exit shows **Finishing** and keeps input, view changes and resizing available until accepted durable controls settle.
+
+Suggestion generation and confirmation waiting do not delay exit. Installation admitted after acceptance finishes before cleanup; shutdown prevents an unstarted suggestion from publishing files.
+
+Text and rich clipboard copies use an ordered background queue. Conversion and native clipboard access leave input responsive, completion stays with its original view, and exit waits for accepted copies. Plain text retains OSC 52 support; terminal writes stay serialized with rendering.
 
 ## What is atman?
 
@@ -432,10 +462,13 @@ layout = "split"           # split | unified
 
 [render]
 # math = false             # Show formulas as raw Markdown text.
+# metrics_animation = false # Update workflow counters without easing.
 ```
 
 Formula rendering is enabled by default. Set `render.math = false` and restart Atman to display `$...$` and `$$...$$` as plain text.
 Ctrl+P → Formula Rendering, or `:formula`, changes the same setting from the TUI; restart Atman to apply it.
+
+Workflow headers and footers share compact usage and edit counters. Increases ease over 320 ms in fixed-width fields; Metrics shows exact values immediately. Set `render.metrics_animation = false` to disable counter easing.
 
 Tool calls from one assistant dispatch are grouped into an ordered `working · N` block. Each intent opens from a one-line summary to a bounded preview and then the complete auditable output. When a managed agent starts its final response, preceding thinking, tools, and workflow activity fold into a five-row `work` summary containing completed progress, edit metrics, and an activity description; click anywhere in the summary or press `Alt+O` to expand it with the same animation. Diff output uses a two-column layout by default, falls back to unified rendering in narrow inline views, and keeps the configured layout in larger views.
 
@@ -457,7 +490,7 @@ Model Manager groups models under provider headings with display names and model
 
 Alias model selection also groups models by provider and searches model names, API IDs, and provider names. `Tab` switches between the alias name and model list; `/` in the list focuses Search. Arrow buttons or `←` / `→` change the provider scope. Filtering preserves the bound target until a model is explicitly selected. `Ctrl+S` or Save commits the target; `Enter` in the model list selects its focused model and saves.
 
-The TUI imports a clipboard image with Cmd+V, Ctrl+V, or Alt+V. Pending images appear in a bar above the input and as stable `[image N]` references in the editor; deleting a reference removes that image, while Ctrl+U removes the latest image when no quote is pending. Images are copied into the session attachment store by content digest before the user turn is written. The effective reasoning depth appears at the input's top-right corner, and Ctrl+T selects the effort captured with the next submission. CLI and daemon runs accept repeatable `--image` arguments and the same `--reasoning` values. The selected value is invocation-local. `llm.call`, `llm.extract`, `llm.classify`, and `llm.generate_branches` consume it only when their own call explicitly passes `effort: env("effort")`; inheriting the invocation environment alone does not change a request. The managed agent's primary call opts in.
+The TUI imports a clipboard image with Cmd+V, Ctrl+V, or Alt+V. Pending images appear above the input and as stable `[image N]` references in the editor. Clipboard reading, PNG encoding and attachment storage run in bounded background workers; the input border shows progress while typing and window navigation remain available. Sending waits for the referenced images to finish and retains the draft. Completion stays with the original view and reference; deleting a reference cancels preparation, while Ctrl+U removes the latest image when no quote is pending. Images are copied into the session attachment store by content digest before the user turn is written. The lower input border shows the effective reasoning depth, and Ctrl+T selects the effort captured with the next submission. CLI and daemon runs accept repeatable `--image` arguments and the same `--reasoning` values. The selected value is invocation-local. `llm.call`, `llm.extract`, `llm.classify`, and `llm.generate_branches` consume it only when their own call explicitly passes `effort: env("effort")`; inheriting the invocation environment alone does not change a request. The managed agent's primary call opts in.
 Flows can also use a fixed selection with `llm.call(reasoning: "high@pro")` or
 `llm.call(reasoning_budget: 4096)`.
 

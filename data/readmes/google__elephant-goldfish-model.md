@@ -19,6 +19,8 @@ Develop ideas with context and review documents with fresh eyes. EGM is an open-
 
 The built-in draft and design-review workflow targets software specifications. For other documents, choose reviewers and standards with `/egm-review-loop`. Bootstrap and drift reporting apply to software codebases.
 
+https://github.com/user-attachments/assets/93c799a2-10a3-4266-af02-eb79dd33a9a2
+
 ## Install
 
 Choose your coding agent. Install the complete plugin so its skills can read the reviewer prompts and document standards.
@@ -50,6 +52,26 @@ codex plugin add egm@egm
 ```
 
 Start a new session after installation. For **Claude Cowork** and **ChatGPT Work**, see the [setup guide](docs/harnesses.md).
+
+## Try a 60-second review on existing code
+
+Review an existing design document, README, or PR plan against the live code. You do not need to write a new specification. The commands below use the `/egm:` prefix for Antigravity (agy CLI) and Claude Code. In Codex, select the corresponding EGM skill from the skill picker.
+
+<img src="skills/egm-review/assets/icon.svg" width="20" height="20" align="top" alt=""> **Review an existing document**
+
+```text
+/egm:egm-review docs/designs/webhooks.md
+```
+
+Use the path to your design doc, or to a PR plan saved as Markdown. Fresh reviewers check the design, its clarity, its fit with the code, and its implementation plan.
+
+<img src="skills/egm-drift-report/assets/icon.svg" width="20" height="20" align="top" alt=""> **Check for drift**
+
+```text
+/egm:egm-drift-report docs/designs/
+```
+
+The agent compares each document in the folder with the current source code and reports where they diverge. You decide whether to update the document or the code.
 
 ## Try your first design
 

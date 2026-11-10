@@ -25,12 +25,13 @@ Each example's README has a Quick Start with the exact install/run commands for 
 ---
 
 <details open>
-<summary><h2>Voice AI</h2> <em>(161 examples)</em></summary>
+<summary><h2>Voice AI</h2> <em>(162 examples)</em></summary>
 
 Build voice applications with [Telnyx Voice AI](https://telnyx.com/products/voice-ai-agents) - IVR menus, call recording, conferencing, WebRTC, and AI-powered call routing.
 
 | Example | Language | Description |
 |---------|----------|-------------|
+| [acp-business-line](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/acp-business-line/README.md) | Agent Control Plane | Declare a clinic appointment-intake agent in configuration — agent.json plus instructions.md, no application code — and answer calls and texts on one number with the Agent Control Plane. |
 | [ai-assistant-client-side-tools-nextjs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-assistant-client-side-tools-nextjs/README.md) | Node.js | Build a browser-based Next.js dashboard where a Telnyx AI Assistant invokes client-side JavaScript tools to navigate the UI, change theme, open a modal, and update React form state. |
 | [ai-assistant-multiparticipant-calling-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-assistant-multiparticipant-calling-nodejs/README.md) | Node.js | Build a Telnyx Voice AI assistant that answers an inbound call, uses a backend tool to dial a second participant, and joins them into the same live AI conversation with ai_assistant_join. |
 | [ai-billing-warm-transfer-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-billing-warm-transfer-python/README.md) | Python | --- |
@@ -375,7 +376,7 @@ Send and receive text messages with the [Telnyx SMS API](https://telnyx.com/prod
 | [verify-multi-channel-auth-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/verify-multi-channel-auth-python/README.md) | Python | Verify Multi-Channel Auth - multi-channel verification: SMS first, fallback to voice call, then WhatsApp. Cascading 2FA. |
 | [verify-phone-number-otp-flow-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/verify-phone-number-otp-flow-python/README.md) | Python | Verify Phone Number OTP Flow - Telnyx Verify API with SMS primary and voice call fallback. |
 | [whatsapp-order-tracking-notifications-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/whatsapp-order-tracking-notifications-python/README.md) | Python | WhatsApp Order Tracking Notifications - proactive shipping updates and AI-powered order inquiries. |
-| [whatsapp-restaurant-reservation-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/whatsapp-restaurant-reservation-nodejs/README.md) | Node.js | --- |
+| [whatsapp-restaurant-reservation-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/whatsapp-restaurant-reservation-nodejs/README.md) | Node.js | AI-powered restaurant reservations via WhatsApp with Node.js/Express, deployed on Telnyx Edge Compute. Browse restaurants, book tables through AI conversation, phone validation via Number Lookup API, and live dashboard. |
 | [whatsapp-restaurant-reservation-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/whatsapp-restaurant-reservation-python/README.md) | Python | Build a WhatsApp-powered restaurant reservation system with AI agent, interactive messages, and real-time dashboard using Telnyx WhatsApp Business API and AI Inference |
 | [whatsapp-sms-bridge-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/whatsapp-sms-bridge-python/README.md) | Python | WhatsApp-SMS Bridge - receive messages on WhatsApp and forward them via SMS, and vice versa. Bidirectional bridge between two messaging channels. |
 | [whatsapp-verify-otp-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/whatsapp-verify-otp-python/README.md) | Python | Send and verify one-time passwords via WhatsApp using the Telnyx Verify API. |
@@ -398,7 +399,8 @@ Send, track, and automate email workflows with the [Telnyx Email API](https://te
 </details>
 
 <details open>
-<summary><h2>AI Assistants</h2> <em>(175 examples)</em></summary>
+<summary><h2>AI Assistants</h2> <em>(177 examples)</em></summary>
+<summary><h2>AI Assistants</h2> <em>(176 examples)</em></summary>
 
 Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assistants) - LLM-powered agents for voice and messaging automation.
 
@@ -469,6 +471,4 @@ Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assis
 | [build-rag-with-telnyx-inference-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-rag-with-telnyx-inference-python/README.md) | Python | Build a retrieval-augmented generation API with Telnyx embeddings and chat completions. |
 | [build-voice-ai-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-voice-ai-agent-nodejs/README.md) | Node.js | Build a complete voice AI agent with Telnyx - answer inbound calls, transcribe speech, generate replies with Telnyx Inference, and speak them back via Call Control. |
 | [build-voice-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-voice-ai-agent-python/README.md) | Python | Build a complete voice AI agent with Telnyx - inbound call handling, AI conversation, and call control. |
-| [call-quality-monitor](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/call-quality-monitor/README.md) | Python | Monitor call quality metrics (MOS, jitter, latency) via Telnyx webhooks, store historical data in SQLite, and view live alerts on an SSE dashboard. |
-| [call-recording-ai-summarizer-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/call-recording-ai-summarizer-python/README.md) | Python | Call Recording AI Summarizer - record calls, then summarize and extract action items with AI. |
-| [call-recording-redactor-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/call-recording-redactor-python/README.md) | Python | AI Call Recording Re
+| [call-quality-monitor](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/call-quality-monitor/

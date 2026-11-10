@@ -15,8 +15,9 @@ it learned from**. Then it played itself and got stronger again.
 
 | Neural network vs hand-tuned evaluation | Result |
 |---|---|
-| Equal thinking time, 40 ms per move | **+174 ± 14 Elo** (73% of points, 3,000 games) |
-| Self-play, against the first network it improved on | **+83 ± 13 Elo** (3,000 games) |
+| Equal thinking time, 40 ms per move | **+163 ± 14 Elo** (72% of points, 3,000 games) |
+| Self-play, against the first network it improved on | **+83 ± 13**, then **+38 ± 12** more (3,000 games each) |
+| Against an open-source AlphaZero, 800 simulations per move | **+258 ± 62 Elo** (81.5% of points, 200 games, the AlphaZero thinking longer) |
 | Equal positions searched | **+141 ± 13 Elo** (3,000 games, 128 × 32 network) |
 
 ![The analysis board with the neural network's top three moves](docs/screenshot.png)
@@ -92,7 +93,8 @@ What made the difference, measured:
 | 64 × 16 at equal time, first version | +64 ± 13 |
 | 64 × 16 at equal time, 3× faster inference | +112 ± 13 |
 | + one generation of self-play | +148 ± 14 |
-| **+ a fine-tuned second self-play run** | **+174 ± 14**: the one that ships |
+| + a fine-tuned second self-play run | +174 ± 14 |
+| **+ a third run** | **+163 ± 14**, and +38 ± 12 head to head: the one that ships |
 | Target: search value only / outcome only | −127 / −84 (raw board) |
 
 Go and PyTorch, trained on the same data, reach the same validation error
@@ -133,6 +135,9 @@ ml/.venv/Scripts/python ml/train.py --data ml/data.csv --h1 64 --h2 16 --out net
   *Deal next round* at the end of a round, or edit in the real deal.
 - **Play vs engine**: take the side to move and the engine plays the other,
   scoring and dealing rounds as it goes.
+- **Puzzles**: positions from the engine's own games where one move beats every
+  other by at least 3 points, checked by searching the round to its end. The
+  analysis stays hidden until you move; a new puzzle of the day each day.
 - **Review game**: every move graded against the engine's choice (best, good,
   mistake, blunder) with each player's average points lost per move.
 - **Engine**: the top three moves with their points, floor penalties and bonuses.
@@ -170,6 +175,7 @@ Using an engine against people who don't know is cheating.
 | `azul train` | Train a network on that data. |
 | `azul selfplay` | Engine-vs-engine match (`-a-net`, `-b-net` for networks). |
 | `azul tune` | Tune the classic evaluation with SPSA. |
+| `azul puzzles` | Find puzzle positions in self-play games (the board's `puzzles.json`). |
 | `azul show`, `perft`, `random` | Print a board and its moves, count move sequences, play a random game. |
 
 ## HTTP API
@@ -210,6 +216,14 @@ search, an engine pool and per-visitor rate limits.
 
 ## Related work
 
+- [cestpasphoto/alpha-zero-general](https://github.com/cestpasphoto/alpha-zero-general):
+  AlphaZero for several board games, with a strong pretrained 2-player Azul
+  model. [ml/alphazero_match.py](ml/alphazero_match.py) plays this engine
+  against it in that project's simulator, each deal twice with the seats
+  swapped: 177–23 at its default 100 simulations per move (+355 ± 75 Elo), and
+  162–36 with 2 shared at 800 simulations, where it used 193 ms per move against
+  this engine's 131 (+258 ± 62).
+
 - Mateusz Rzepecki, [*Implementing superhuman AI for Azul board game with a
   variation of NNUE*](https://jakubkowalski.tech/Supervising/Rzepecki2025ImplementingSuperhuman.pdf),
   master's thesis, University of Wrocław, 2025. The same recipe in C++:
@@ -232,6 +246,7 @@ internal/
   eval/        the classic evaluation
   dataset/     features and self-play training data
   nn/          the network: inference, training, the shipped weights
+  puzzle/      finding puzzle positions
   selfplay/    matches and SPSA tuning
   api/         requests and responses, shared by server and browser
   server/      HTTP API and the web pages (server/ui)

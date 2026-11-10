@@ -55,7 +55,7 @@
 
 **🔧 数值与文本小工具**
 
-- [Element_ListGraph](#Element_ListGraph) · [Frame Calculator](#frame-calculator) · [ImageSize Div](#imagesize-div) · [Element_Prompt_Presets](#Element_Prompt_Presets) · [random_chars](#random_chars) · [text_line_break](#text_line_break)
+- [Element_ListGraph](#Element_ListGraph) · [Frame Calculator](#frame-calculator) · [ImageSize Div](#imagesize-div) · [Element_Prompt_Presets](#Element_Prompt_Presets) · [Element_random_value_remap](#Element_random_value_remap) · [random_chars](#random_chars) · [text_line_break](#text_line_break)
 
 ---
 ## bug修复与优化
@@ -321,15 +321,31 @@ mask 描边：内外描边宽度和模糊度单独控制，支持非描边区域
 <a id="Element_Prompt_Presets"></a>
 ## Element_Prompt_Presets
 
-<sub>v1.7.9 新增 · v1.8.0 增强 </sub>
+<sub>v1.7.9 新增 · v1.8.4 增强 </sub>
 
 详细说明：[中文](subMd/Element_prompt_presets_zh.md) | [English](subMd/Element_prompt_presets_en.md)</sub>
 
 - 提示词管理节点：按「分类 → 词条」点选提示词，直接在节点上编辑、新建、删除，并可导出 JSON 备份，支持导入 json、xlsx、csv 格式文件。
+- 支持在弹窗中多选词条：prompt_text 输出按 link 分隔符合并的单段文本，prompt_list 输出词条文本列表；选择状态随工作流保存，弹窗中也可直接删除词条 / 分类。
+- 词条可标记为 tags 或 Natural language：entry 选项在 tags 词条名后显示实心圆点（仅显示，不进入输出）；新建时勾选 tags，或用「修改标签」标记；多选弹窗可按两类过滤。
 - 整段/单行两种输出；开启 single_line 后按 seed 从整段文本中抽取一行，配合固定/增量/减量/随机四种 seed 模式，可随队列自动轮换不同句子。
 - 预设存储位置 ComfyUI\user\element_easy\promptPresets\prompts.json。
 
-<img width="1535" height="514" alt="image" src="https://github.com/user-attachments/assets/89d9aa52-131e-48f5-beea-0ab27e76e858" />
+<img width="1687" height="575" alt="image" src="https://github.com/user-attachments/assets/473d16e5-006f-43ad-96e5-14b566cb9a96" />
+
+---
+
+<a id="Element_random_value_remap"></a>
+## Element_random_value_remap
+
+<sub>v1.8.5 新增</sub>
+
+把输入的数值（最常见的是seed）稳定映射到 [min, max] 区间，输出 float 和 int 两个端口。
+
+- value 输入端口可选，同时接受 int 和 float，例如直接接 Seed 节点；不接输入时，每次执行也会在 min 和 max 之间随机输出；min 和 max 是浮点参数，可以为负数；
+- 同一个输入值每次得到同一个结果；不同 seed 在区间内散开，配合 seed 的固定 / 增量 / 减量 / 随机模式可随队列变化；
+
+<img width="1481" height="409" alt="image" src="https://github.com/user-attachments/assets/7bc360e3-daee-4a3b-911d-17d00fba14e1" />
 
 ---
 <a id="random_chars"></a>

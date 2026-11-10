@@ -420,8 +420,8 @@ syntax highlighting, diagnostics, outline, and go-to-definition. See
 ### Everything else
 
 `fslc` has commands not covered above — `version`, `lint`, `migrate`, `fmt`, `sweep`,
-`conformance`, `approval`, and `diff` among them. Run `fslc --help` or `fslc <command>
---help` for their current arguments, or see [`docs/README.md`](docs/README.md) for the
+`conformance`, `approval`, and `diff` among them. Run `fslc --help` or `fslc help <command>`
+(the same as `fslc <command> --help`) for their current arguments, or see [`docs/README.md`](docs/README.md) for the
 design document covering most of them (`sweep` has no entry there yet).
 
 `fslc` also has dialect-specific command groups — `ai` (AI hard-contract/agent-structure
@@ -498,7 +498,7 @@ fsl/
 ├── docs/                   # docs/README.md maps all of it; LANGUAGE.md is the language reference
 ├── specs/                  # sample specs (*.fsl); most carry a header comment naming the
 │                           #   language feature/idiom they exercise (not all do — browse the directory)
-├── examples/               # FSL corpus by audience and topic — pm/, consulting/, e2e/, gallery/, bank/,
+├── examples/               # FSL corpus by audience and topic — fsl5/, pm/, consulting/, e2e/, gallery/, bank/,
 │                           #   layers/, nfr/, domain/, db/, ai/, causal/, and more; see the directory itself
 ├── skills/                 # canonical Agent Skills; .claude/skills/fsl* and .agents/skills/fsl* symlink here
 └── tests/                  # Python-driven Rust contract, parity, and compatibility tests

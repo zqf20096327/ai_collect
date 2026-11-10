@@ -4,6 +4,14 @@
 
 *Inspiration: This project's concept and workflow were inspired by the excellent [AI Comic Factory](https://huggingface.co/spaces/jbilcke-hf/ai-comic-factory).*
 
+## From Idea to Page
+
+ComicStudio turns a short idea into an editable comic page through agent-led story planning, local panel generation, page composition, and visual quality checks.
+
+<p align="center">
+  <img src="images/Comic%20Studio_%20From%20Idea%20to%20Page.png" alt="ComicStudio workflow from a source idea to an editable comic page" width="900">
+</p>
+
 <p align="center">
   <img src="images/curated/gardener_sunflower_steps80.jpg" alt="Generated four-panel gardener comic" width="360">
   <img src="images/curated/baker_story_steps80.jpg" alt="Generated four-panel baker comic" width="360">

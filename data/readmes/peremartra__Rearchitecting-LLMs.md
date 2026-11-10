@@ -21,7 +21,7 @@ The industry is shifting away from generic, closed-source models toward open-sou
 
 The book teaches **optimization techniques** for transforming large pre-trained models into efficient Small Language Models (SLMs). These methodologies—including depth pruning, width pruning in GLU architectures, and knowledge distillation—are similar to approaches used by companies like [**Nvidia**](https://arxiv.org/abs/2407.14679) (Minitron family) and [**Mistral**](https://arxiv.org/abs/2601.08584) (Ministral family) to create production-ready model families.
 
-Beyond these foundational techniques, the book introduces **original methodologies** like Fair Pruning (bias-aware optimization) and Adaptive Attention Bypass (dynamic inference), combining industry best practices with cutting-edge research. You'll learn to apply all these techniques to open-source models like Llama, Gemma, and Qwen, with hands-on notebooks that run on Google Colab's free tier.
+Beyond these foundational techniques, the book introduces **original methodologies** like Fair Pruning (bias-aware optimization), combining industry best practices with cutting-edge research. You'll learn to apply all these techniques to open-source models like Llama, Gemma, and Qwen, with hands-on notebooks that most of them run on a free Colab; those that need a more powerful GPU say so in the chapter’s README.
 
 * Surgically optimize model architectures through depth and width pruning
 * Recover lost knowledge using targeted distillation techniques
@@ -49,8 +49,8 @@ Beyond these foundational techniques, the book introduces **original methodologi
 | ✅ | [9 · Dynamic routing with Mixture of Experts](CH09) | Mixture of Experts (MoE) adapted to SLMs.  |
 | **PART 3: BEYOND THE BLACK BOX** | | |
 | ✅ | [10 · Exploring the Trasformer Black Box](CH10) | Activation analysis and behavioral interpretability |
-| 🔜 | [11 · Precision pruning for bias](CH11) | Fair pruning: removing demographic bias at neuron level |
-| 🔜 | [12 · Case study — Replacing one agent call with a specialized SLM in production](CH12) | Replacing API calls with a specialized SLM |
+| ✅ | [11 · Precision pruning for bias](CH11) | Fair pruning: removing demographic bias at neuron level |
+| 🔜 | [12 · Case study — Replacing one agent call with a specialized SLM in production](CH12) by [Ishita Verma](https://www.linkedin.com/in/ishitaverma17)| Replacing API calls with a specialized SLM |
 | 🔜 | [13 · Capstone II — Creating a model family for agents](CH13)  | Create 3 different models from a base one |
 
 ## 🧠 Your Interactive Technical Companion: NotebookLM Space

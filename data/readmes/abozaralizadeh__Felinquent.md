@@ -1,16 +1,18 @@
 # Felinquent
 
+[![installs](https://img.shields.io/endpoint?url=https%3A%2F%2Ffelinquent-reports.felinquent-report-relay.workers.dev%2Fv1%2Fbadge%2Finstalls)](https://abozaralizadeh.github.io/Felinquent/#numbers) [![weekly users](https://img.shields.io/endpoint?url=https%3A%2F%2Ffelinquent-reports.felinquent-report-relay.workers.dev%2Fv1%2Fbadge%2Fweekly)](https://abozaralizadeh.github.io/Felinquent/#numbers) [![monthly users](https://img.shields.io/endpoint?url=https%3A%2F%2Ffelinquent-reports.felinquent-report-relay.workers.dev%2Fv1%2Fbadge%2Fmonthly)](https://abozaralizadeh.github.io/Felinquent/#numbers)
+
 A cat that lives on your desktop and does whatever it wants.
 
 ![Tabby walks along the top of a code window and lies down, gets petted, gets poked, then gets carried over to a video window](docs/assets/demo.gif)
 
-**Website: [abozaralizadeh.github.io/Felinquent](https://abozaralizadeh.github.io/Felinquent/)**. The clip above is the browser playground, which runs the same brain and animals as the Mac app on pretend windows.
+**Website: [abozaralizadeh.github.io/Felinquent](https://abozaralizadeh.github.io/Felinquent/)**. The clip above is the browser playground, which runs the same brain and animals as the Mac and Windows app on pretend windows.
 
 It walks along the tops of your windows, naps on the Dock, sits on the thing you're reading and ignores you when you call it. Pet it and it purrs, for a while. Poke it and it reacts like the animal it is. It's not useful, and that's the point.
 
 Turn the chaos level up and it gets worse. Mugs, plants and glasses show up on your windows and it pushes them off, slowly, while looking at you. They break into pieces on the floor. It claws title bars, chases flies, and at gremlin it runs laps across your windows and lands hard enough to crack one. Once in a while it has to go, so it pees or poops right there on your window, looks back at it, and (if it's a cat) turns round and covers it up. Click the mess to clean it, or wait and it dries up. Never at chill. None of it is real: the mess is drawn on the cat's own see-through layer, your windows are never touched, and Panic clears it all.
 
-Move your cursor close and it looks at it, its head following it all the way round, up, over its shoulder, and a tilt of the head when you stop. Lying down or sitting on a ledge it just turns its head. Sometimes it follows you around and pesters you, or decides the cursor is prey and pounces on it. At gremlin, move the cursor fast near it and it chases it across your windows. Each animal has its own toy: a red yarn ball, a catnip fish, a stolen sock, a tennis ball, a carrot, an acorn and so on. Grab the toy with the mouse and throw it (or pick "Throw its toy" in the menu) and the animal is after it right away: the puppy fetches it and drops it at your feet, the fox runs off with it, the squirrel buries it, a cat might just bat it about or ignore it. You can pick up the mugs and plants too. Give it a treat and one hangs at your pointer, its own kind (a fish biscuit for a cat, a bone biscuit for a dog, a strawberry for the rabbit, a peanut for the squirrel...). It comes and begs right under it until you click, then it eats it, bite by bite. Right-click the animal for a little menu of things to do to it: give it a treat, throw its toy, pet it, set off its zoomies, send it for a nap, switch the character or the chaos level, shoo it or hide it. They all happen at once, model or no model. Shoo it for an hour and it comes back in a huff. Come back after a while away and it comes over to say hi. Drag the window it's sitting on and it rides along; fling it and the animal (and the mug next to it) goes flying. Switch to another desktop and it stays behind, then wanders over a bit later from the side you came from, full-screen apps included (a treat from the menu calls it over right away).
+Move your cursor close and it looks at it, its head following it all the way round, up, over its shoulder, and a tilt of the head when you stop. Lying down or sitting on a ledge it just turns its head. Sometimes it follows you around and pesters you, or decides the cursor is prey and pounces on it. At gremlin, move the cursor fast near it and it chases it across your windows. Each animal has its own toy: a red yarn ball, a catnip fish, a stolen sock, a tennis ball, a carrot, an acorn and so on. Grab the toy with the mouse and throw it (or pick "Throw its toy" in the menu) and the animal is after it right away: the puppy fetches it and drops it at your feet, the fox runs off with it, the squirrel buries it, a cat might just bat it about or ignore it. You can pick up the mugs and plants too, and throw them: its eyes follow it through the air, and when it lands the animal jumps, bolts, goes over to sniff it or pretends it saw nothing, and the local model hears exactly what you threw and where it smashed. Give it a treat and one hangs at your pointer, its own kind (a fish biscuit for a cat, a bone biscuit for a dog, a strawberry for the rabbit, a peanut for the squirrel...). It comes and begs right under it until you click, then it eats it, bite by bite. Right-click the animal for a little menu of things to do to it: give it a treat, throw its toy, pet it, set off its zoomies, send it for a nap, switch the character or the chaos level, shoo it or hide it. They all happen at once, model or no model. Shoo it for an hour and it comes back in a huff. Come back after a while away and it comes over to say hi. Drag the window it's sitting on and it rides along; fling it and the animal (and the mug next to it) goes flying. Switch to another desktop and it stays behind, then wanders over a bit later from the side you came from, full-screen apps included (a treat from the menu calls it over right away). With two monitors on a Mac it goes by the one it's on: switch that one and it stays behind, switch the other and it doesn't care.
 
 <img src="docs/assets/pet-menu.png" width="320" alt="The menu you get when you right-click the animal, next to Biscuit the puppy: Give a treat, Throw its toy, Pet it, Zoomies!, Nap time, Character, Chaos level, Shoo for 1 hour, Panic: hide the cat">
 
@@ -22,7 +24,7 @@ There are nine characters: three cats (Tabby, Inky, Pearl), a fox (Mochi), a rac
 
 ![Eight moments of the walk cycle over the same patch of floor](docs/assets/rigged-walk-film.jpg)
 
-**Status: early.** The brain, rules, movement and animation are built and tested, and a browser playground runs all of it on pretend windows. The Mac app is a working prototype: a transparent overlay where the cat stands on your real windows. Windows support is written but has never been run.
+**Status: early.** The brain, rules, movement and animation are built and tested, and a browser playground runs all of it on pretend windows. The Mac and Windows app is a working prototype: a transparent overlay where the cat stands on your real windows.
 
 ## Install on a Mac
 
@@ -36,14 +38,28 @@ Or skip that step and paste this in Terminal. It downloads the same app, checks 
 curl -fsSL https://raw.githubusercontent.com/abozaralizadeh/Felinquent/main/scripts/get-mac.sh | bash
 ```
 
-After that it lives in the menu bar. Pick a character, set the chaos level, give it a treat, throw its toy, hide it, shoo it for an hour, turn the local model on or off, make it start at login. A tick shows what's on. From 0.1.10 it checks GitHub for a new version at launch and every 3 hours and updates itself when you leave the Mac alone for a couple of minutes (turn off "Update automatically" in the menu if you'd rather not; "Check for updates…" asks first). More in [docs/INSTALL.md](docs/INSTALL.md), including how to build it yourself.
+After that it lives in the menu bar. Pick a character, set the chaos level, give it a treat, throw its toy, pet it, set off the zoomies, send it for a nap, hide it, shoo it for an hour, turn the local model on or off and pick which Ollama model it uses (any you have pulled). It starts at login from the first run (untick Start at login to stop that). A tick shows what's on, and the version at the top opens a little About window. From 0.1.10 it checks GitHub for a new version at launch and every 3 hours and updates itself when you leave the Mac alone for a couple of minutes (turn off "Update automatically" in the menu if you'd rather not; "Check for updates…" asks first). More in [docs/INSTALL.md](docs/INSTALL.md), including how to build it yourself.
+
+## Install on Windows
+
+[Download Felinquent-setup.exe](https://github.com/abozaralizadeh/Felinquent/releases/latest/download/Felinquent-setup.exe) and open it. It needs Windows 10 or 11 (64-bit) and installs for you only, no admin. SmartScreen may say it protected your PC, because the installer isn't signed with a Windows certificate yet: click More info, then Run anyway. You only do this once.
+
+Or skip that and paste this in PowerShell. It downloads the same installer, checks it against the checksum on the release, installs it and starts it, with no SmartScreen question:
+
+```powershell
+irm https://raw.githubusercontent.com/abozaralizadeh/Felinquent/main/scripts/get-windows.ps1 | iex
+```
+
+The cat stands on your taskbar, and its menu is the icon by the clock: the same menu as on the Mac. Panic is Ctrl+Alt+Shift+P. It updates itself the same way too.
+
+Installing Felinquent, on either system, means you agree to its [terms](TERMS.md) and [privacy notice](PRIVACY.md). The short version is under [Privacy and terms](#privacy-and-terms).
 
 ## What it will and won't do
 
 - It can get in your way, on purpose. It never types, clicks, scrolls, moves your cursor, closes anything or sends anything. A check in CI fails the build if code that fakes input shows up.
 - No screenshots or screen capture, ever. It reads window positions, idle time and whether the camera or mic is on, nothing else.
 - It backs off in meetings, full-screen videos and presentations, and screen sharing, and there's a panic hotkey.
-- Everything runs locally. No accounts, no analytics, no cloud. The one thing it fetches on its own is the update check, a small file from GitHub with nothing about you in it, and you can turn it off. An optional small local model (through [Ollama](https://ollama.com)) plans what the cat does next and gives it thoughts in a little bubble. Turn it on in the menu and, if Ollama or the model is missing, the app offers to set them up (it asks first and shows the sizes). Without it a rules brain does the same job, and every move still happens: the toy, the chase, the potty, all of it.
+- Everything runs locally. No accounts, no cloud. On its own it fetches the update check, a small file from GitHub with nothing about you in it, and you can turn it off. Once a day it also sends an anonymous ping that only adds to the totals in the badges above (more below). If something breaks, it asks once whether it may send error reports (the version, your system and the end of its own log with your name taken out, never your screen). Say yes and they go by themselves, so problems get fixed without you writing anything. Turn it off in the menu any time. An optional small local model (through [Ollama](https://ollama.com)) plans what the cat does next and gives it thoughts in a little bubble. Turn it on in the menu and, if Ollama or the model is missing, the app offers to set them up (it asks first and shows the sizes). Without it a rules brain does the same job, and every move still happens: the toy, the chase, the potty, all of it.
 
 The full list is in [docs/safety-and-privacy.md](docs/safety-and-privacy.md).
 
@@ -89,11 +105,17 @@ The cat's day comes in bouts: a long rest, a stroll, some play, a visit to you, 
 | [docs/art-and-ux.md](docs/art-and-ux.md) | The look, the animation list, the art tools |
 | [docs/safety-and-privacy.md](docs/safety-and-privacy.md) | The hard lines and the data it touches |
 | [docs/spikes/](docs/spikes/README.md) | Notes from the prototype runs on a real Mac |
-| [docs/INSTALL.md](docs/INSTALL.md) | Install on a Mac, Windows (untested) or a Linux server for the demo |
+| [docs/INSTALL.md](docs/INSTALL.md) | Install on a Mac, on Windows or on a Linux server for the demo |
 
 ## Contributing
 
 Issues and pull requests are welcome. Keep the hard lines: no synthetic input, no screen capture, nothing destructive to other apps, and the governor approves every action. Run the checks above before you open a pull request. A new behavior needs a row in the behavior catalog and a test. The details, and what you agree to when you send code, are in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Privacy and terms
+
+Felinquent sends one small ping a day so the badges at the top can count installs and users. It holds the app version, Mac or Windows, which animal, the chaos level, whether the local model is on, and the date it was last counted. There's no ID in it, nothing about you, your screen, your windows or your files, and the relay only adds it to totals. Your IP address isn't stored. **Share usage counts** in the menu turns it off, and so does setting `DO_NOT_TRACK=1`. The totals are public on [the website](https://abozaralizadeh.github.io/Felinquent/#numbers).
+
+Error reports are separate and only go out after you say yes. Updates come from GitHub. The full list of what leaves your computer, and what never does, is in [PRIVACY.md](PRIVACY.md). By installing or using Felinquent you agree to [TERMS.md](TERMS.md) and to that notice.
 
 ## License
 

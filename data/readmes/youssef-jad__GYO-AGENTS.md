@@ -1,35 +1,86 @@
 [![MseeP.ai Security Assessment Badge](https://mseep.net/pr/youssef-jad-gyo-agents-badge.png)](https://mseep.ai/app/youssef-jad-gyo-agents)
 
-## 🚀 MCP Server: The Developer Digital Twin
+# GYO-AGENTS
 
-Instead of copy-pasting prompts, connect the **GYO-AGENTS MCP Server** to any AI tool (Cursor, Claude Code, Cline, Kiro, Windsurf) to instantly transform it into your **Digital Twin**. 
+Generate instructions for your coding agent, share project knowledge, enforce team conventions, and hand unfinished work from one agent to another with verification evidence tied to the code.
 
-The server provides a global, persistent memory (`~/.gyo-agents/twin-memory.json`) that lives outside of any single repository. AI agents can learn your preferences, save your recurring solutions, and avoid mistakes across all of your projects.
+Use the [standalone AGENTS.md prompt](#prompt-generate-your-own-agentsmd) in any coding agent, or connect the MCP server for shared memory, Guardrails, local task handoffs, and the full library of 11 client-specific templates.
+
+## Quick start
+
+Build the MCP server from a checkout with Git and Node.js 18 or newer.
 
 ```bash
-cd mcp-server && npm install && npm run build
+git clone https://github.com/youssef-jad/GYO-AGENTS.git
+cd GYO-AGENTS/mcp-server
+npm ci
+npm run build
 ```
 
-Add to your tool's MCP config (replace `/ABSOLUTE/PATH/TO/GYO-AGENTS`):
+Set `gyo_entry` to the built server's absolute path. Run the registration command for your client from the repository you want to work in.
 
-```json
-{
-  "mcpServers": {
-    "gyo-agents": {
-      "command": "node",
-      "args": ["/ABSOLUTE/PATH/TO/GYO-AGENTS/mcp-server/dist/index.js"]
-    }
-  }
-}
+```bash
+gyo_entry="/absolute/path/to/GYO-AGENTS/mcp-server/dist/index.js"
+
+# Claude Code
+claude mcp add --scope local gyo-agents -- node "$gyo_entry"
+
+# Codex
+codex mcp add gyo-agents -- node "$gyo_entry"
 ```
 
-**24 Tools Exposed:** 
-* **Prompt Tools (11):** Native prompt generators for every major AI coding agent.
-* **Digital Twin Memory (4):** `get_digital_twin_profile`, `memorize`, `forget_memory`, `search_memory` — Teach AI your global preferences.
-* **Intelligence & Validation (7):** `generate_full_agent_context`, `search_prompts`, `analyze_git_style_on_the_fly`, `get_domain_context`, `validate_api_response`, `check_cache_usage`.
-* **Living Config Auto-Updater (2):** `snapshot_config`, `sync_agent_config` — Keep agent configs in sync as your codebase evolves, with targeted per-section patch suggestions.
+Start a new session and ask for the client-specific setup prompt. Use `get_prompt_claudecode` in Claude Code or `get_prompt_codexcli` in Codex. For Cursor, Kiro, and other clients, see the [MCP setup guide](mcp-server/README.md#quick-start).
 
-📖 Full setup guide & tool details → [`mcp-server/README.md`](mcp-server/README.md) · Config snippets → [`examples/mcp-configs/`](examples/mcp-configs/)
+## GYO Guardrails
+
+Teach a convention in one agent, approve it once, and have another agent check its changes against the same rule. For example, ask Claude Code:
+
+> In this repo, use the `App\Support\CacheStore` wrapper in PHP services. Record that correction for this repository and propose a GYO Guardrail for `app/Services/**/*.php` that flags newly added lines containing `use Illuminate\Support\Facades\Cache;`. Leave the rule pending.
+
+From the target repository, review the proposed rule and approve its ID.
+
+```bash
+node "$gyo_entry" guardrail list
+node "$gyo_entry" guardrail approve RULE_ID
+```
+
+To run checks automatically, merge the [Stop hook example](examples/guardrails-hooks/stop-hook.json) into `.claude/settings.local.json` for Claude Code or `.codex/hooks.json` for Codex. If you built from a checkout, point the hook command to `node "/absolute/path/to/GYO-AGENTS/mcp-server/dist/index.js" guardrail hook`. In Codex, use `/hooks` to review and trust the hook.
+
+When the agent tries to finish, the hook checks staged and unstaged changes against `HEAD`, plus new, non-ignored files. A violation gives the agent one repair pass, followed by a recheck. Each rule checks for exact, case-sensitive text on added lines in matching files.
+
+### Team Guardrails
+
+Export approved rules to `.gyo/guardrails.json` and review them in a PR. After merge, the hook and CLI load the committed rules in every checkout. CI can check a PR against the rules from its trusted base commit. [Team setup and CI example](mcp-server/README.md#team-guardrails)
+
+To run the same local check as the hook, use `node "$gyo_entry" guardrail check --working-tree` from the target repo.
+
+**Verified in Claude Code and Codex.** In separate fresh clones with empty local rule stores, both agents received a prompt to run a PHP smoke test. Their Stop hooks read the team policy, caught the forbidden Cache facade import in an untracked service, and sent the agents back to fix it. Both checks then reported zero violations and both smoke tests passed. The file stayed untracked throughout.
+
+## GYO Relay (local preview)
+
+Let one agent checkpoint unfinished work and another continue it through GYO and the same local profile. Relay saves the objective, acceptance criteria, progress, next steps, and uncertainty. A temporary claim prevents two cooperating clients from owning the same handoff; after expiry, another client can reclaim it and the previous token can no longer submit.
+
+Verification runs checks defined in the project's committed `.gyo/relay.json`, plus GYO Guardrails. Evidence is tied to the commit, staged content, tracked and non-ignored untracked files, and policy. When these change, `get_handoff` and `claim_handoff` report stale evidence and the changed paths. An agent's summary alone never counts as verification.
+
+Start by reviewing and committing the project's allowed check commands, then ask an agent to create and claim a handoff. Both clients must use the same `GYO_AGENTS_DATA_DIR` and checkout. [Setup, tool workflow, limits, and live validation](mcp-server/RELAY.md)
+
+For example, ask the first agent:
+
+> Use GYO Relay to create and claim this task. Before stopping, verify the current work and checkpoint what is complete, what remains, and what is uncertain. Release the claim for the next agent.
+
+In a new session with the second agent:
+
+> Find and claim the unfinished GYO Relay handoff in this checkout. Inspect its checkpoint and evidence freshness, complete the remaining work, run verification, and submit the result. Keep changes local.
+
+The workflow uses `create_handoff`, `claim_handoff`, `checkpoint_handoff`, `verify_result`, and `submit_result`; `list_handoffs` and `get_handoff` let clients discover tasks and inspect their current state. Relay coordinates participating clients on one machine; it does not launch agents or transfer work between remote checkouts.
+
+**Verified with real Claude Code and Codex sessions.** Claude implemented part of a synthetic billing task, recorded passing tests and checkpointed before stopping. After deliberate changes to the code and an untracked file, a new Codex session reclaimed the expired handoff, identified stale evidence, repaired the regression, completed the remaining work and submitted fresh passing verification. The old claim token was rejected.
+
+## What else you can do
+
+- **Generate agent instructions.** Use the [11 client templates](mcp-server/README.md#prompt-tools-11) to build instructions from your repo structure, commands, and conventions.
+- **Share local memory.** Save preferences, corrections, and decisions for clients on the same machine. Use project scope for repo-specific knowledge and global scope for conventions you want across repos. [Memory setup](mcp-server/README.md#digital-twin-memory-global-persona)
+- **Keep instructions current.** Use `snapshot_config` and `sync_agent_config` to detect repo changes and see which instructions need updating. [Config freshness guide](mcp-server/README.md#keeping-configs-fresh)
 
 ---
 

@@ -250,6 +250,12 @@ converts it: the first line becomes the title, the rest the description, and
 the task lands in "To process". The note is archived, never lost. A note can
 also be edited, archived without follow-up, or deleted.
 
+- **GTD explained**: Kairos follows GTD (capture, clarify, organize, reflect,
+  engage). Each screen says which step it is, and "The GTD method" on Notes
+  explains the five steps, where they are in Kairos and what Kairos does
+  differently (it computes the order itself; Notes is also your "someday/maybe"
+  list).
+
 ### Tasks
 
 - **One-line capture**: the task lands in "To process", and the field stays
@@ -397,6 +403,10 @@ order (critical path). Cycles are refused.
   Timer and statistics, 0 = never), at that exact time, even with Kairos
   closed or the phone off. A banner or a notification says so. The task never
   gets a night of time nobody worked.
+- **Pomodoro bells** (Settings → Timer and statistics, off by default): one
+  light bell when it is time for a break, two when a timer has been forgotten,
+  one for going past the estimate or the automatic stop. You can tell them apart
+  without looking, on Android (even with the app closed), desktop and web.
 - **Reminders** (Settings, off by default): a notification a few minutes
   before a fixed-time task and, if you want, when the plan moves on to the
   next task. On Android even with Kairos closed (possibly a few minutes late
@@ -594,6 +604,9 @@ order (critical path). Cycles are refused.
   browser is). The "Dark theme" switch (Settings → General → Appearance) picks the
   other theme; switching it back follows the system again. Exported statistics
   images stay light.
+- **Text size**: a four-step zoom (100 %, 115 %, 130 %, 150 %) in Settings →
+  General → Appearance, for scaled desktop screens or just comfort. 100 % is the
+  default; on Android it adds to the system font size. Touch targets keep their size.
 - At launch, a **startup page** (Android, desktop, web): the sundial hand makes
   one turn and settles on the logo, then the app fades in. A tap skips it.
 
@@ -605,6 +618,7 @@ version that brought it and the platforms it exists on.
 | Chapter | Feature | Since | Platforms |
 |---|---|---|---|
 | First steps | Capture without thinking | 3.0.0 | All |
+| First steps | The GTD method in Kairos | 4.2.0 | All |
 | First steps | Keyboard shortcuts | 3.0.0 | Desktop, Web |
 | First steps | Qualify in one click | 3.0.0 | All |
 | First steps | Do things in order | 3.0.0 | All |
@@ -628,6 +642,7 @@ version that brought it and the platforms it exists on.
 | Follow | Track time | 3.0.0 | All |
 | Follow | Three timer alerts | 3.0.0 | All |
 | Follow | Timer guard | 4.1.0 | All |
+| Follow | Pomodoro bells | 4.2.0 | All |
 | Follow | Learned durations | 3.4.0 | All |
 | Follow | Machine-learning estimates | 4.0.0 | All |
 | Follow | When you work on each type | 3.5.0 | All |
@@ -668,6 +683,7 @@ version that brought it and the platforms it exists on.
 | Settings | Your day in one notification | 3.12.0 | All |
 | Settings | Theme color | 3.1.0 | All |
 | Settings | Dark theme | 3.7.0 | All |
+| Settings | Text size | 4.1.0 | All |
 | Settings | Languages | 3.11.0 | All |
 | Settings | Your data and your manager | 3.0.0 | All |
 | Settings | A copy of your data in a synced folder | 3.10.0 | All |
@@ -690,6 +706,7 @@ you press "Save").
 | General | Language | Interface language (System, Français, English, Español, Deutsch, Русский, Italiano) | System |
 | | Appearance | Theme color (suggested, free, or system on Android 12+) | ocean `#2F6FED` |
 | | Appearance | Dark theme (two-state switch) | follows the system |
+| | Appearance | Text size (100, 115, 130 or 150 %) | 100 % |
 | | Updates (desktop) | Check for new versions | on |
 | | Updates (Android, APK installed by hand) | Installed version, "See the latest version" | |
 | | Shortcut (desktop, portable version) | Create, update or remove the shortcut | offered at launch |
@@ -704,7 +721,7 @@ you press "Save").
 | | Safeguards | "Lingering" thresholds (overdue, undated), P0 overload | 7 d, 14 d, 5 |
 | | Priority score (WSJF), advanced | Value base, urgency horizon and weight, default points | 4, 14 d, 8, 3 |
 | | Afternoon dip, advanced | On/off, start, trough, end, strength | on, 1 pm – 3 pm – 4 pm, 1 |
-| Timer and statistics | Timer alerts | Forgotten timer, suggested break, fallback sound | 180 min, 50 min, off |
+| Timer and statistics | Timer alerts | Pomodoro break, forgotten timer, bells with alerts | 50 min, 180 min, off |
 | | Reminders | Fixed-time tasks and lead time, next task, daily summary and its time | off, 10 min, off, off, 08:30 |
 | | Statistics | Window of the indicators | 8 weeks |
 | Team | Team | Team management, then its thresholds, load and forecasts | off |

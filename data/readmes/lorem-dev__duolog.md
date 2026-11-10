@@ -12,131 +12,99 @@
 </p>
 
 <p align="center">
-duolog makes Claude Code and Codex work as a pair in one project. You choose
-which agent and model does each kind of work. The sessions talk through a
-small file bus, so they do not paste large context at each other.
+duolog pairs Claude Code and Codex in one project. Roles select the agent and
+model; sessions exchange short messages on a file bus.
+</p>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)"
+      srcset="/assets/how-duolog-works-dark.webp">
+    <img src="/assets/how-duolog-works-light.webp"
+      alt="The lead hands work to a worker, the planner or a live peer">
+  </picture>
+</p>
+
+<p align="center">
+The <a href="docs/glossary.md#gate">gate</a> checks every worker command
+against the project rules. The <a href="docs/glossary.md#bus">bus</a> in
+<code>.duolog/</code> carries messages, asks and results.
+In our November 2026 study, a lead that gave a whole feature to the
+<a href="docs/glossary.md#planner">planner</a> on Codex cost 38-45% less
+than one Opus session, with the same test results, on two tasks. See the
+<a href="docs/research/2026-11-10-hand-over-study.md">study</a>.
 </p>
 
 ---
 
-## How to install the binary
+## How to install
 
-On macOS and Linux:
+Run one line in your project folder. It gives Claude Code a short install
+prompt; Claude installs duolog and asks whether to set it up for this folder.
+
+On macOS, Linux or WSL:
 
 ```sh
-curl -fsSL https://github.com/lorem-dev/duolog/releases/latest/download/install.sh | sh
+claude "$(curl -fsSL https://github.com/lorem-dev/duolog/releases/latest/download/install-prompt.md)"
 ```
 
-On Windows, use Windows PowerShell 5.1 or PowerShell 7:
+In Windows PowerShell:
 
 ```powershell
-irm https://github.com/lorem-dev/duolog/releases/latest/download/install.ps1 | iex
+claude (irm https://github.com/lorem-dev/duolog/releases/latest/download/install-prompt.md)
 ```
 
-To build from source instead, use Go:
+To install with Codex, write `codex` in place of `claude`. Then start a new
+session in your project; that session is the lead. Local telemetry is on by
+default; turn it off with `duolog telemetry off`.
 
-```sh
-go install github.com/lorem-dev/duolog/cmd/duolog@latest
-```
-
-Both installers verify SHA-256 and select amd64 or arm64. Run the same command
-again to update. The default folder is `~/.local/bin` on macOS/Linux and
-`$env:LOCALAPPDATA\Programs\duolog` on Windows. The Windows installer adds that
-folder to your user PATH (not the machine PATH) when it is missing; set
-`DUOLOG_NO_PATH=1` to skip that. The macOS/Linux installer never edits PATH:
-add the printed directory yourself if needed. Open a new terminal afterwards.
-
-From the release after 1.4.0 on, the installer attached to a release installs
-that release: the `releases/download/v<version>/install.sh` and `install.ps1`
-files default to that version, and the `releases/latest/download` links give
-the newest release.
-
-To pin a different version on macOS/Linux, or on Windows:
-
-```sh
-curl -fsSL https://github.com/lorem-dev/duolog/releases/latest/download/install.sh | sh -s -- --version v1.6.0
-```
-
-```powershell
-$env:DUOLOG_VERSION = 'v1.6.0'
-irm https://github.com/lorem-dev/duolog/releases/latest/download/install.ps1 | iex
-```
-
-For custom install folders, plugin updates and shared setup, see
+To install by hand, from source or at a set version, see
 [Getting started](docs/getting-started.md).
 
-## How to install the plugins
+## How duolog keeps the context small
 
-The plugins call the binary, so install it first. In Claude Code, run:
+Each turn re-reads the whole context, so a long session costs more per turn.
+duolog makes Claude compact the lead and every Claude worker at a size set by
+your plan, instead of at Claude's own default, which on Opus can be the whole
+1M-token context.
 
-```sh
-claude plugin marketplace add lorem-dev/duolog
-claude plugin install duolog@duolog
-```
+| Compacts at | Set by duolog for | Opus cost per turn to re-read the context* |
+|---|---|---|
+| 250k tokens | Pro | 0.05 USD |
+| 500k tokens | Max, and Ultra while Claude reports it as Max | 0.10 USD |
+| 700k tokens | Ultra | 0.14 USD |
+| 1M tokens | (Claude's default on Opus) | 0.20 USD |
 
-In Codex, run:
-
-```sh
-codex plugin marketplace add lorem-dev/duolog
-codex plugin add duolog@duolog
-```
-
-## How to install the hooks and approve them
-
-Install hooks for one project or for all your projects:
-
-```sh
-duolog install --scope project
-duolog install --scope user
-```
-
-Codex needs this step because marketplace plugins do not install its hooks.
-It then needs one approval in `/hooks` (press `t`) and a trusted project
-folder. Claude needs this step only if its plugin is not enabled.
-
-After installing and approving the hooks, start a new Claude Code or Codex
-session in your project, so that the agent loads the plugin and the hooks.
-That session is the lead. Keep it open while you send tasks.
-
-## How to check the setup
-
-```sh
-duolog doctor
-```
-
-Follow the steps that doctor names. Local telemetry is on by default; turn it
-off with `duolog telemetry off` (see [Telemetry](docs/telemetry.md)).
+\* An estimate at the Opus cache price of 0.20 USD per million tokens, as of
+November 2026: near 1M tokens a turn costs about four times what it costs at
+250k. Our [November 2026 study](docs/research/2026-11-10-hand-over-study.md)
+measured what whole tasks cost. To change the size, see
+`workers.compact_window` in
+[Configuration](docs/configuration.md#what-workers-inherit).
 
 ## How to send the first task
 
 [Getting started](docs/getting-started.md#how-to-send-your-first-task) shows
-the task format and what the result line means. Write a task file, such as
-`.duolog/task.md`. Then, from the lead session, send it to a role:
+the task format. Write a task file, such as `.duolog/task.md`, and send it to
+a role from the lead session:
 
 ```sh
 duolog delegate review_intermediate --task .duolog/task.md
 ```
 
-## License
+## Which license applies
 
 duolog uses the [Apache License 2.0](LICENSE).
 
 ## Related pages
 
 - [Getting started](docs/getting-started.md): install, set up and send a task
+- [Glossary](docs/glossary.md): lead, worker, planner, peer and other words
+- [Hand-over study](docs/research/2026-11-10-hand-over-study.md): what each
+  way of handing work over cost
 - [Configuration](docs/configuration.md): roles, models, defaults and limits
-- [Learning mode](docs/learning.md): task classes and routing from local results
-- [Calibration](docs/calibration.md): a starting order from past work, on
-  request
-- [Sync](docs/sync.md): generate one agent's files from the other's
-- [Bus](docs/bus.md): messages and artifacts
 - [Permissions](docs/permissions.md): how duolog decides for a worker
 - [Rex](docs/rex.md): a live second session
 - [Budgets](docs/budgets.md): cost targets and what we measured
 - [Telemetry](docs/telemetry.md): the local history and how to turn it off
-- [Practices and models](docs/research/2026-10-30-practices-and-models.md): the
-  evidence behind the default rules
-- [Live verification](docs/research/2026-10-30-live-verification.md): which
-  agent behavior is OBSERVED and which is VERIFIED
-- [Architecture](docs/architecture.md): the code tiers and the layers test
-- [How to write the documentation](docs/contributing.md): the writing rules
+- [Contributing](docs/contributing.md): the writing rules

@@ -86,7 +86,18 @@ cat messages.json | mmx text chat --messages-file - --output json
 mmx image "A cat in a spacesuit"
 mmx image generate --prompt "A cat" --n 3 --aspect-ratio 16:9
 mmx image generate --prompt "Logo" --out-dir ./out/
+
+# MiniMax-H3-Image text-to-image
+mmx image generate --model MiniMax-H3-Image --prompt "An orange cat basking on a windowsill, warm afternoon light, film look" --aspect-ratio 16:9 --area 2K
+mmx image generate --model MiniMax-H3-Image --prompt "Minimal poster" --size 2720x1536 --output-format png --n 2
+
+# MiniMax-H3-Image image editing (1-16 reference images, numbered Picture 1, 2, ... in order)
+mmx image generate --model MiniMax-H3-Image --prompt "Replace the cat in Picture 1 with the Shiba Inu in Picture 2, keep the background" --image cat.jpg --image https://example.com/dog.png
 ```
+
+Without `--image`, MiniMax-H3-Image calls `/v1/images/generations` (text-to-image); with `--image` it calls `/v1/images/edits` (image editing). Choose one way to set the output size: `--size WIDTHxHEIGHT` (area 655,360–20,000,000 px, aspect ratio 1:3–3:1), or `--aspect-ratio` plus `--area 1K|2K|4K` (default 4K). `--no-prompt-enhance` turns off prompt enhancement for text-to-image and then requires `--size` or a concrete `--aspect-ratio`. A failed image (for example one that fails the content safety check) does not stop the others; files keep their original position in the name and failures are reported on stderr (even with `--quiet`). With `--response-format base64`, the total output area (`n` × width × height) is limited to 20,000,000 px for png and 80,000,000 px for jpg/webp; with `size auto` each image counts as its `--area` level (4K = 4096 × 4096). Requests over the limit are rejected locally.
+
+The H3-Image endpoints are not idempotent, so a retry after a timeout generates and bills again. The CLI never retries them automatically and raises the timeout for these requests to at least 600 seconds, matching the server. `--seed`, `--prompt-optimizer`, and `--subject-ref` apply only to image-01.
 
 ### `mmx video`
 
@@ -107,7 +118,7 @@ mmx video download --file-id 176844028768320 --out video.mp4
 
 For MiniMax-H3, local files and Base64 data URIs are preflight-checked against the documented limits: image 30 MB, reference video 50 MB, reference audio 15 MB, and total JSON request body 64 MB. The API validates dimensions, aspect ratio, duration, frame rate, and codecs for all media.
 
-`--region` is an existing global CLI option, not an H3 parameter. Normal video generation does not need it; the CLI uses the saved or automatically detected region. H3 defaults to 2K, 5 seconds, and 16:9 for text-to-video.
+`--region` is an existing global CLI option, not an H3 parameter. Normal video generation does not need it; the CLI uses the saved or automatically detected region. H3 defaults to 2K, 5 seconds, and 16:9 for text-to-video. Use `--resolution 768P` for 768P output.
 
 ### `mmx speech`
 

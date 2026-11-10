@@ -147,11 +147,13 @@ Tools that review pull requests, suggest improvements, or gate merges.
 
 - [Bubo](https://github.com/mountainowl/bubo) 🟢 🆓 🏠 — Self-hosted AI code reviewer for GitHub and GitLab that posts evidence-backed inline findings or LGTM and learns from repository feedback.
 - [CodeOtter](https://codeotter.io/) 🟢 🆓 🏠 — Self-hosted AI pull request reviewer for GitHub, Forgejo and Gitea that scores PRs, enforces merge gates and posts inline fixes using local GGUF models or your own API key.
+- [code-review-gate-skill](https://github.com/kyy-logs/code-review-gate-skill) 🟢 🆓 🏠 — Static-first code review skill for Claude Code and Codex with four evidence probes and a JSON-derived merge gate.
 - [CodeRabbit](https://www.coderabbit.ai/) 💰 🆓 — Line-by-line PR review. Most popular in this category.
 - [Qodo (Codium)](https://www.qodo.ai/) 💰 🆓 — PR-Agent + test generation. Open-source PR-Agent available.
 - [Greptile](https://www.greptile.com/) 💰 — Codebase-aware PR review.
 - [HeyDeer](https://heydeer.ai/) 💰 🆓 — AI code review for GitHub pull requests that verifies findings before posting them and creates separate fix PRs from selected findings.
 - [heygrc](https://heygrc.com) - GitHub App for compliance-focused PR review (ISO 27001, SOC 2, GDPR, EU AI Act, and more). Cites the control clause and says what to fix. Public repositories always free. By ISMS Copilot.
+- [IonWarp](https://ionwarp.com/) 💰 🆓 — AI code review for GitHub pull requests that adds specialist reviewers (security, docs, logs and errors) per diff and publishes an open benchmark of review apps and models.
 - [Bito](https://bito.ai/) 💰 🆓 — AI code review & chat.
 - [Ellipsis](https://www.ellipsis.dev/) 💰 — Async AI reviewer that fixes its own comments.
 - [Diamond by Graphite](https://graphite.dev/diamond) 💰 — PR review built into Graphite's stack.
@@ -240,7 +242,7 @@ Frontier and open-weight models with strong code performance.
 
 - **Closed:** [Claude Sonnet/Opus 4.x](https://www.anthropic.com/), [GPT-5 / o-series](https://openai.com/), [Gemini 2.5/3 Pro](https://ai.google.dev/)
 - **Open weights:** [Qwen2.5-Coder](https://github.com/QwenLM/Qwen2.5-Coder), [DeepSeek-Coder-V3](https://github.com/deepseek-ai/DeepSeek-Coder), [Codestral](https://mistral.ai/news/codestral/), [StarCoder2](https://github.com/bigcode-project/starcoder2)
-- **Gateways:** [Code By AI](https://www.codebyai.net) 💰 — Hosted API gateway that puts Claude, GPT/Codex and Gemini models behind one key and one prepaid balance, used from Claude Code, Codex CLI, Gemini CLI and Cline by changing the base URL; [CodeI Lab](https://www.codeilab.com) 💰 — Discounted GPT API credit for coding agents, covering GPT-6 Astra/Sol, GPT-6.1 Sol/Terra and GPT-5.6 Sol/Terra over OpenAI or Claude protocols, with one-command setup for Claude Code, Codex CLI or OpenCode; [UberLLM](https://uberllm.dev) 💰 — Pay-as-you-go OpenAI- and Anthropic-compatible API for Claude, GPT, Gemini, DeepSeek, GLM, Qwen and Kimi models from one prepaid balance, with setup guides for Claude Code, Codex CLI, Cline, Cursor, OpenCode and Aider; [XiuRouter](https://router.xiu.ai/) 💰 — Hosted multi-provider API gateway for Claude, GPT and Gemini, with setup guides for Codex, Claude Code, Cursor, OpenCode and Cline.
+- **Gateways:** [Code By AI](https://www.codebyai.net) 💰 — Hosted API gateway that puts Claude, GPT/Codex and Gemini models behind one key and one prepaid balance, used from Claude Code, Codex CLI, Gemini CLI and Cline by changing the base URL; [CodeI Lab](https://www.codeilab.com) 💰 — Discounted GPT API credit for coding agents, covering GPT-6 Astra/Sol, GPT-6.1 Sol/Terra and GPT-5.6 Sol/Terra over OpenAI or Claude protocols, with one-command setup for Claude Code, Codex CLI or OpenCode; [UberLLM](https://uberllm.dev) 💰 — Pay-as-you-go OpenAI- and Anthropic-compatible API for Claude, GPT, Gemini, DeepSeek, GLM, Qwen and Kimi models from one prepaid balance, with setup guides for Claude Code, Codex CLI, Cline, Cursor, OpenCode and Aider; [Vectoree](https://vectoree.ai) 💰 — Pay-as-you-go OpenAI-compatible gateway for coding agents with one project key for models from xAI, OpenAI, Google, Anthropic and DeepSeek, plus auth, Postgres and object storage, a CLI and agent skill, and a $5 welcome credit after CLI login and project link; [XiuRouter](https://router.xiu.ai/) 💰 — Hosted multi-provider API gateway for Claude, GPT and Gemini, with setup guides for Codex, Claude Code, Cursor, OpenCode and Cline.
 
 ## Prompt & Context Engineering
 

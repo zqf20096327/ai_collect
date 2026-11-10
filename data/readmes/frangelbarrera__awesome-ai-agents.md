@@ -98,6 +98,7 @@ Development, review, and scaling of source code managed by AI.
 | **YYLO** | Command-line orchestrator for coding agents, repeatable workflows, and receipt-backed repository changes. Each task freezes the protected target SHA and runs in a dedicated branch/worktree behind typed task, validation, merge, and release-readiness boundaries; the merge queue owns risk-based review. Installs via npm as @yylo/cli and orchestrates Pi and Codex subagents. | Python/TS | API-based | CLI | [Link](https://github.com/yylo-dev/yylo) |
 | **CodePilot** | Embeddable Python runtime for autonomous coding agent with ReAct execution, filesystem, terminal, MCP and Python tools. Uses text based code-as-interface protocol rather than native JSON tool calling. | Python | Hybrid | Library | [Link](https://github.com/Jahanzeb-git/codepilot) |
 | **Sillage** | Self-hosted mobile-first web UI that drives the native Claude Code and Codex CLIs on your own machine, with server-side session journals that outlive the client, full-text search across conversations, an IDE panel (files, editor, diffs, terminal), and a board the agents read through its own MCP server. Installable PWA with push. | TypeScript | Hybrid | Web UI / Docker | [Link](https://github.com/MarlBurroW/sillage) |
+| **Zaru** | Terminal agent that runs model-requested tool calls behind per-call permission prompts, re-runs project-declared validator commands until they pass, and logs every step to a JSONL transcript. Pre-alpha, Linux only. | Rust | Hybrid | CLI | [Link](https://github.com/100monkeys-ai/zaru-cli) |
 
 ---
 
@@ -310,6 +311,7 @@ Semantic hypervectorial storage persisting across context limitations.
 | **Graphiti** | Entity compilation into dynamic graph and relation meshes. | Python | API-based | Library | [Link](https://github.com/getzep/graphiti) |
 | **AgentMemory** | Indexable segmented vectors focused on code dependencies. | Python | Local Inference | CLI | [Link](https://github.com/rohitg00/agentmemory) |
 | **Tree Ring Memory** | Local-first memory lifecycle layer with scoped recall, forgetting, and consolidation. | Rust/SQLite | N/A | CLI | [Link](https://github.com/TerminallyLazy/Tree-Ring-Memory) |
+| **SoloPup Memory (public beta)** | DeepSeek Harness text-memory plugin with source references, project/global scope, conditions and correction history; lexical recall. | Node.js/JavaScript/SQLite | API-based | Library | [Link](https://github.com/OakcoderX/solopup-memory) |
 
 ---
 
@@ -323,6 +325,7 @@ Parameterized sets of cases for deterministic measurement.
 | **AgentBench** | Synthetic agent verification across 8 types of sandbox environments. | Python | N/A | CLI | [Link](https://github.com/THUDM/AgentBench) |
 | **WebArena** | Automated interactivity score across 4 cloned web microservices. | Docker/TS | N/A | CLI | [Link](https://github.com/web-arena-x/webarena) |
 | **ClawBench** | Live-site browser-agent benchmark with 283 V1/V2 tasks and five-layer execution traces. | Python/Docker | N/A | CLI | [Link](https://github.com/TIGER-AI-Lab/ClawBench) |
+| **WebsiteBench** | Benchmark for agents that reconstruct full-stack websites through browser exploration, evaluated on appearance and behavior. | Python/Harbor/Docker | N/A | CLI | [Link](https://github.com/TIGER-AI-Lab/WebsiteBench) |
 | **YYLO Benchmark** | Every candidate receives a dedicated fresh repository; evaluator profiles support deterministic commands and configurable LLM judges, and retained receipts, manifests, terminals, and evaluator provenance form one hash-verified evidence chain. | TypeScript/Node | N/A | CLI | [Link](https://github.com/yylo-dev/yylo-benchmark) |
 
 ---
@@ -350,6 +353,7 @@ Frameworks and pipelines designed to enforce policy constraints, prevent prompt 
 | **Garak** | Systematic vulnerability scanner probing for hallucination vectors and jailbreak surfaces in LLM agents. | Python | API-based | CLI | [Link](https://github.com/leondz/garak) |
 | **Lakera Guard** | Comprehensive API-based security middleware blocking active execution attacks on agentic APIs. | Python | API-based | API | [Link](https://github.com/lakeraai) |
 | **Ironheights** | Static pre-install scanner for agent skill folders (SKILL.md and bundled files) that flags prompt injection, hidden text, credential reads, remote-exec installs and persistence, with integrity baselines and SARIF output. Rules run offline; optional LLM review via Ollama or an OpenAI-compatible API. | TypeScript/Node.js | Hybrid | CLI | [Link](https://github.com/Frank-Masciopinto/ironheights) |
+| **HOL Guard** | Local-first policy and approval controls for AI coding agents, evaluating shell, secrets and MCP changes before execution. | Python | N/A | CLI | [Link](https://hol.org/guard) |
 
 ---
 

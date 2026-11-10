@@ -77,7 +77,7 @@ and run side by side.
 | Staleness | Unknown | Dates on every section; drift against the code it governs |
 | What it can't answer | Silently absent | Listed on the dashboard as a backlog |
 | Footprint | Runtime + engine + several ports | One static binary, one SQLite file, one port (or stdio) |
-| Tool surface | Dozens of tools, thousands of tokens per session | 7 tools, ~2.8k tokens per session |
+| Tool surface | Dozens of tools, thousands of tokens per session | 7 tools, ~2.8k tokens per session (+2 each if Jira or Confluence is configured) |
 
 Use a memory tool so your agent remembers what it tried last week. Use briefd so every agent on
 the team applies the same rules — and so someone notices when a rule falls behind the code.
@@ -165,6 +165,11 @@ inspectors launch it directly:
 }
 ```
 
+Every instance also serves **`/setup`**: a public page (no token needed, none shown) with
+copy-ready, per-tool steps for Claude Code, GitHub Copilot (VS Code, CLI, JetBrains, Visual
+Studio), Cursor, Codex, OpenCode, Gemini CLI, Windsurf / Devin and Claude Desktop, filled in
+with the server's own URL. Send your team the link instead of a wiki page.
+
 Use `serve` when a team shares one instance (dashboard, metrics, webhook, REST); use `mcp`
 when the agent runs on the machine that holds the checkout.
 
@@ -172,13 +177,15 @@ when the agent runs on the machine that holds the checkout.
 
 | Tool | What it does |
 |---|---|
-| `compile_bundle(task_description, max_tokens?, scopes?, paths?)` | One deduplicated context block within the budget, ordered domain → conventions → project, with a source line per section and a `bundle_id`. Deterministic and cached. |
+| `compile_bundle(task_description, max_tokens?, scopes?, paths?, issue?)` | One deduplicated context block within the budget, ordered domain → conventions → project, with a source line per section and a `bundle_id`. Deterministic and cached. With Jira configured, `issue: "PAY-123"` puts the ticket on top and lets its text choose the rules. |
 | `search_context(query, max_tokens?, scopes?, top_k?, paths?)` | Ranked sections that fit the budget, for inspection. `paths` (code paths being edited) pull the documents whose `refs` cover them to the top. |
 | `get_document(doc_path, scopes?)` | One document in full. |
 | `list_scopes()` | Scopes with document/section counts. |
 | `propose_update(doc_path, change_description, new_content)` | Creates branch `briefd/proposal-<id>` (+ pull request when configured). Never touches the index. |
 | `report_usage(bundle_id, useful_chunk_ids)` | Optional feedback: which sections helped. An empty list marks the question as a knowledge gap. |
 | `suggest_links(doc_path?, limit?)` | Links the knowledge base is missing (a document names another without linking it) and broken links — for an agent tidying the knowledge base via `propose_update`. |
+| `confluence_search(query, spaces?, limit?, max_tokens?)`, `confluence_page(id, max_tokens?)` | *Optional.* Live Confluence Cloud search and page reads, converted to compact Markdown within the budget. Listed only when Confluence is configured; see below. |
+| `jira_search(text?, projects?, status?, type?, assignee?, open_only?, limit?, max_tokens?)`, `jira_issue(key, comments?, max_tokens?)` | *Optional.* Live Jira Cloud issue search and issue reads (description, acceptance criteria, related issues, linked Confluence pages, comments) within the budget. Listed only when Jira is configured; see below. |
 
 The same operations are available over REST (`/api/search`, `POST /api/bundle`, `/api/docs/{path}`,
 `/api/scopes`, `POST /api/proposals`, `POST /api/usage`, `/api/gaps`, `/api/health`, `/api/stats`)
@@ -273,8 +280,51 @@ or `BRIEFD_*` environment variables; flags override both. The ones you will actu
 | `search.default_max_tokens` | `BRIEFD_DEFAULT_MAX_TOKENS` | `2000` | |
 | `query_log.retention_days` | `BRIEFD_QUERY_LOG_RETENTION_DAYS` | `30` | feeds the knowledge-gap report; `query_log.enabled: false` turns it off |
 | `code.repos` | — | *(none)* | code repositories (URL or path) compared against documents' `refs` for drift |
+| `confluence.base_url` | `BRIEFD_CONFLUENCE_*` | *(off)* | live Confluence Cloud search tools; see below |
+| `jira.base_url` | `BRIEFD_JIRA_*` | *(off)* | live Jira Cloud tools and issue bundles; see below |
 
 `briefd model pull` pre-fetches the embedding model for offline or image-build use.
+
+**Jira and Confluence (optional, live).** Agents can read the team's Atlassian Cloud site through
+the same MCP endpoint: Confluence pages ([ADR-0009](docs/adr/0009-live-confluence-tools.md)) and
+Jira issues ([ADR-0010](docs/adr/0010-live-jira-tools-and-issue-bundles.md)). Configure either or
+both:
+
+```yaml
+confluence:
+  base_url: https://your-site.atlassian.net   # BRIEFD_CONFLUENCE_BASE_URL
+  spaces: [ENG, PAY]                          # BRIEFD_CONFLUENCE_SPACES; empty = every space the account sees
+  email: ""                                   # BRIEFD_CONFLUENCE_EMAIL  ┐ optional service account
+  token: ""                                   # BRIEFD_CONFLUENCE_TOKEN  ┘ (Atlassian API token)
+  user_credentials: true                      # callers may send their own account in headers
+
+jira:
+  base_url: https://your-site.atlassian.net   # BRIEFD_JIRA_BASE_URL
+  projects: [PAY]                             # BRIEFD_JIRA_PROJECTS; empty = every project the account sees
+  fields: [customfield_10035]                 # BRIEFD_JIRA_FIELDS; extra fields to include, e.g. acceptance criteria
+  # email / token: optional service account; empty = the Confluence one (same Atlassian account)
+```
+
+Each person can use their own Atlassian account, so they only see what Jira and Confluence let them
+see. One Atlassian API token works for both:
+
+```sh
+claude mcp add --transport http briefd https://briefd.example.com/mcp \
+  --header "Authorization: Bearer $BRIEFD_API_TOKEN" \
+  --header "X-Atlassian-Email: you@example.com" --header "X-Atlassian-Token: $ATLASSIAN_TOKEN"
+```
+
+(The `X-Confluence-Email` / `X-Confluence-Token` headers from v0.7 still work, for Jira too.)
+
+With Jira configured, an agent can start a ticket with one call: `compile_bundle(issue: "PAY-123")`
+returns the issue (cut to at most a third of the budget) followed by the team rules its summary and
+description retrieve, within the same `max_tokens`. Find a custom field's id (such as
+"Acceptance criteria") in Jira under *Settings → Issues → Custom fields*, or from
+`/rest/api/3/field`.
+
+Results are read live with GET requests and never indexed or stored; the bundle cache and query log
+keep only the issue key. The reviewed knowledge base stays the source briefd compiles rules from.
+Data Center / Server are not supported yet.
 
 ## Dashboard and metrics
 
@@ -285,11 +335,15 @@ or `BRIEFD_*` environment variables; flags override both. The ones you will actu
 - **Overview** — requests, tokens served and saved, index and sync; the knowledge graph with the
   documents agents were served in the last 24 hours stamped on it; the circulation list; and
   **Needs attention**, one line per maintenance signal, worst first.
-- **Graph** — every document and link, zoom and pan (mouse or keyboard), scope filters, search;
-  select a document to see its links, backlinks and how often it was served
+- **Graph** — every document and link, zoom and pan (mouse or keyboard), search. Documents are
+  coloured and clustered by area — each folder under `domain/` or `conventions/` (e.g.
+  `domain/payments`, `domain/lending`), plus one for projects — with a filter per area (Alt-click
+  to show only one) and a switch between all links, links within areas and links between them.
+  Select a document to see its links, backlinks and how often it was served
   (`#graph=<doc path>` links straight to it).
 - **Maintenance** — proposals awaiting review, knowledge gaps, documents behind the code, the
-  oldest documents, links to fix and code coverage.
+  oldest documents, links to fix (broken, over-linked — more than 12 outgoing links, usually a
+  catch-all `related:` list — missing, orphans) and code coverage.
 - **Activity** — latency and volume per tool, the index by scope and the request log; counters
   persist across restarts and can be reset.
 - **Instance** — the running configuration (secrets shown only as set/unset), with Sync now and

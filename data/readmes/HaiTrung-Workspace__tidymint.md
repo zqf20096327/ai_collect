@@ -1,0 +1,138 @@
+# Tidymint
+
+[![Latest release](https://img.shields.io/github/v/release/HaiTrung-Workspace/tidymint?label=release&color=2FD39F)](https://github.com/HaiTrung-Workspace/tidymint/releases/latest) [![Downloads](https://img.shields.io/github/downloads/HaiTrung-Workspace/tidymint/total?color=2FD39F)](https://github.com/HaiTrung-Workspace/tidymint/releases) [![License: MIT](https://img.shields.io/github/license/HaiTrung-Workspace/tidymint?color=2FD39F)](LICENSE) ![macOS 14+](https://img.shields.io/badge/macOS-14%2B-2FD39F) [![Homebrew](https://img.shields.io/badge/Homebrew-tap-2FD39F)](#homebrew)
+
+<a href="https://macpip.com/apps/tidymint?ref=badge"><img src="docs/badge-macpip.svg" height="40" alt="#1 of the day on MacPip, Nov 6, 2026"></a> [![Mentioned in Awesome Mac](https://awesome.re/mentioned-badge.svg)](https://github.com/jaywcjlove/awesome-mac) [![As seen on Open Source Alternatives](https://www.opensourcealternatives.to/badge-osa.svg)](https://www.opensourcealternatives.to)
+
+**Keep your Mac in mint condition.** A free, open-source Mac cleaner, built for people who work with AI tools. A free alternative to CleanMyMac.
+
+AI work leaves a lot behind: model files, drafts, exported images, duplicate assets, caches from browsers and editors. Tidymint finds that clutter, shows exactly what it is, and moves only what you select to the Trash.
+
+> **Safety first.** Nothing is deleted permanently. Every action moves files to the Trash, and the Trash is only emptied when you click **Empty Trash** and confirm. Before removing duplicates, Tidymint checks your project folders and flags any file a script or skill still references, so a cleanup never breaks a project.
+
+![Clean Now results](docs/smart.jpg)
+
+## See it in action
+
+*Screenshots use sample data.*
+
+### 1. One scan, then you decide
+Clean Now finds the safe part (caches, logs, old installers), shows it by group with sizes, and cleans only when you click **Clean**. Everything goes to the Trash first, and **Undo** on the Trash page puts the last run back.
+
+### 2. Full control over every item
+Open **Review every item** to see each category, expand it, and tick or untick single items. Apps that are still running are flagged and left unticked.
+
+![Cleanup details](docs/cleanup.jpg)
+
+### 2b. Clean by app
+Zalo, Chrome, Edge, Cốc Cốc and CapCut each get their own page: caches are pre-selected, photos, videos and files are listed by month for you to pick, and messages, logins and projects are locked. Cleaning is refused while the app is open.
+
+![Clean by App](docs/byapp.jpg)
+
+### 3. Duplicates without the risk
+Identical files are grouped (SHA-256, any file name). The best copy is marked **Keep**, and one click selects every extra copy. Before deleting, the app checks your project folders: a file still used by a script or skill is flagged in red and unticked for you. Add your project folders once in **Settings**; without them the app reminds you before deleting.
+
+![Duplicates](docs/dupes.jpg)
+
+### 4. See where the space went
+Space Lens draws every folder as a bubble sized by real disk usage, with plain-language notes for common folders, including AI model folders like `.ollama`.
+
+![Space Lens](docs/lens.jpg)
+
+### 5. Uninstall apps completely
+Removing an app also finds its caches, preferences, logs and saved state. Leftovers from apps you already deleted and old installers have their own tabs.
+
+![Uninstaller](docs/apps.jpg)
+
+### 6. Large and old files, never pre-selected
+Files over 100 MB, sorted by size or by when you last opened them. You pick what goes.
+
+![Large files](docs/large.jpg)
+
+## Features
+
+| Area | What it does |
+|---|---|
+| **Clean Now** | One scan finds safe junk, shows it by group with sizes, cleans only when you press Clean |
+| **Clean by App** | Zalo, Telegram, WhatsApp, Slack, Chrome, Edge, Cốc Cốc, CapCut, VS Code, Outlook: caches pre-selected, chat photos in a weekly grid, files by month, messages and logins locked. Local AI models (Ollama, Hugging Face, LM Studio): one row per model, shared files go only when every model using them is selected, keys and tokens locked |
+| **Undo** | Every clean is journaled; the Trash page puts the last run back |
+| **Cleanup** | User caches, app caches (Chrome, Slack, Notion, VS Code...), logs, npm cache, downloaded aerial wallpapers, old Downloads, `_tmp` / `_to_delete` drafts in your project folders, libraries of projects left alone for 6 months (`node_modules`, Python environments, build folders) and Git working copies left behind (never pre-selected, checked again when you clean) |
+| **Uninstaller** | Search, then remove an app together with its leftovers, including its cache and temp folders in `/private/var/folders` (only bundle-id matches pre-selected, anything holding a database left to you); finds leftovers of apps already removed and old installers. Optional: a hint listing what an app left behind when you drag it to the Trash (off by default) |
+| **Large Files** | Files over 100 MB in your personal folders and on connected external drives, never pre-selected |
+| **Duplicates** | Finds identical files (SHA-256) on your Mac and on connected external drives, lets you pick the copy to keep, and before deleting can check whether a script or skill in your project folders still uses them |
+| **Space Lens** | Bubble map of what takes up space on your Mac or a connected external drive, with plain-language notes for common folders (AI model folders included) |
+| **Cloud Cleanup** | Shows how much of iCloud Drive, Google Drive, Dropbox... is stored locally |
+| **Startup Items** | Lists background helpers with who signed them, flags unusual locations or names and ones left by removed apps. Facts, not antivirus |
+| **Statistics** | Space freed over time and a full activity log |
+| **Menu bar** | A hard-drive indicator with free space inside, plus disk, RAM and Trash at a glance (can be hidden in Settings) |
+| **Contact** | Send feedback or bug reports from inside the app |
+
+Also: open any file from the lists (click or Space for Quick Look, double-click to open, right-click for Show in Finder), about 46 MB of memory in the background, English and Vietnamese, six colour themes (Mint, Night Sky, Burgundy, Golden Gate, Star White, Pride) with a matching app icon, an Ignore list, and alerts when disk space or memory runs low.
+
+## Install
+
+### Download
+
+> **Official site:** tidymint.app. Downloads come only from this GitHub repository. There is no other website and no paid version.
+
+1. Download **[Tidymint.zip](https://github.com/HaiTrung-Workspace/tidymint/releases/latest/download/Tidymint.zip)** (Apple silicon and Intel, macOS 14 or later), open it and drag **Tidymint** to Applications.
+2. Tidymint is not notarized yet, so macOS blocks the first launch. Click **Done**, open **System Settings > Privacy & Security**, scroll to the **Security** heading (under *Allow applications from*) and click **Open Anyway**, then **Open** ([Apple's guide](https://support.apple.com/102445)). The button only shows for a while after a blocked launch; if it is missing, double-click the app again and come back. Step-by-step guide with screenshots: [tidymint.app/install](https://tidymint.app/install/).
+
+### Homebrew
+
+```sh
+brew install --cask HaiTrung-Workspace/tidymint/tidymint
+```
+
+The cask in [homebrew-tidymint](https://github.com/HaiTrung-Workspace/homebrew-tidymint) is updated by the release workflow and installs the same `Tidymint.zip` as the download above, so the first-launch step in point 2 still applies.
+
+### Build from source
+
+Requirements: macOS 14 or later, Xcode Command Line Tools (`xcode-select --install`).
+
+```bash
+git clone https://github.com/HaiTrung-Workspace/tidymint.git
+cd tidymint
+./build.sh --install
+```
+
+### First launch
+
+1. Open **Tidymint** from Applications.
+2. Grant **Full Disk Access** in System Settings > Privacy & Security > Full Disk Access, so the app can measure every folder. Without it, some folders show as empty.
+3. Optional: in **Settings**, add your **project folders** (code, AI workspaces). Drafts are found there, duplicates there are never pre-selected, and links are checked there before deleting.
+
+## What it never touches
+
+Photos libraries, Mail, keychains and passwords, cloud storage roots, iCloud Drive internals, Apple system caches, logins, cookies and history in any browser profile, including antidetect browsers (only their cache folders are offered), and anything on your Ignore list. You can add more protected keywords:
+
+```bash
+defaults write com.haitrung.diskcleanup protectedKeywords -array "my-profile-folder"
+```
+
+## Where data is stored
+
+- Settings: `~/Library/Preferences/com.haitrung.diskcleanup.plist`
+- Activity log: `~/Library/Application Support/Tidymint/activity.log`
+
+Scanning and cleaning run on your Mac and work offline. The only automatic connection is a once-a-day check for a new version (update.tidymint.app, counted by app and macOS version only), which you can turn off in Settings. Anything else leaves your Mac only when you send it yourself (feedback, newsletter, the "Is Tidymint helping you?" card). See [PRIVACY.md](PRIVACY.md).
+
+## Feedback
+
+Use **Contact** inside the app (an email address is required so you can get a reply), email hello@tidymint.app, or open an issue on GitHub.
+
+Self-hosting the collector: `backend/Code.gs` is a Google Apps Script that appends submissions to a Google Sheet. Deploy it as a web app and put its URL in `Backend.endpoint`.
+
+## Support the project
+
+Tidymint is free and will stay free. If it saved you some space, you can [sponsor the project on GitHub](https://github.com/sponsors/HaiTrung-Workspace). Sponsorships go toward the Apple Developer account (so the app can be notarized and open without warnings) and time for new features.
+
+## License
+
+MIT. See [LICENSE](LICENSE). The software is provided "as is", without warranty of any kind. Review what you select before cleaning.
+
+---
+
+## Tiếng Việt
+
+**Tidymint** là app dọn ổ đĩa miễn phí, thay thế CleanMyMac mà không cần crack, mã nguồn mở cho macOS, dành cho người làm việc với AI. App chỉ chuyển file vào Thùng rác, không xoá vĩnh viễn. Tải về và hướng dẫn mở app bằng tiếng Việt: [tidymint.app/vi](https://tidymint.app/vi/). Sau khi mở, cấp quyền **Truy cập toàn bộ ổ đĩa**, rồi thêm **thư mục dự án** trong phần Cài đặt. Giao diện có tiếng Việt, tự chọn theo ngôn ngữ của máy.

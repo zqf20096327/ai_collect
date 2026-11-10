@@ -26,22 +26,40 @@ https://raw.githubusercontent.com/Natsubrei/dsh-comfyui-panel/main/market/index.
 
 Install the **ComfyUI Panel** card. The index pins one commit per version, so the install matches a tested release. The `plugin_market` tool reads this same index.
 
-| Other way | Command | Use it when |
-| --- | --- | --- |
-| CLI | `dsh plugin --profile <name> add 'git+https://github.com/Natsubrei/dsh-comfyui-panel.git#<commit>'` | You copy `<commit>` from the market card. An unpinned URL follows the default branch, which can be ahead of that release. |
-| npm | `dsh plugin --profile <name> add dsh-comfyui-panel` | The version does not matter. npm does not carry every indexed release. |
+From the command line:
+
+```bash
+dsh plugin --profile web add dsh-comfyui-panel
+```
 
 Restart DSH if it was already running. Hard-refresh the browser after a bundle change.
+
+The panel uses the ComfyUI already on this machine. If there is none, install
+one first — [docs.comfy.org/installation](https://docs.comfy.org/installation)
+covers the official options.
+
+Starting ComfyUI yourself is enough: the panel uses a server that answers on
+`upstream`. A portable build launched from its own `.bat` listens there already.
+A desktop install listens on its own port, so point `upstream` at that port
+first. When the panel cannot prove it may manage the process — always the case
+on Windows — the server stays `external`, and Stop is unavailable because the
+panel did not start it.
+
+To let the panel start it instead, name a checkout in **Settings**: a manual
+install whose folder holds `main.py` with a `.venv` beside it (`.venv/bin/python`
+on Unix, `.venv/Scripts/python.exe` on Windows), or the folder a portable Windows
+build was unzipped into, where the panel uses the `ComfyUI` and `python_embeded`
+inside.
 
 ## Use
 
 1. Click **ComfyUI** in the left sidebar. The editor fills the main column. An assistant sits on the right.
 2. The column on the right sends into that page's session. The model then uses the tools in the table below on the open canvas.
 3. Leave the server at `http://127.0.0.1:8188`, or set another address under [Configuration](#configuration).
-4. If nothing is running, open the chip at the bottom-left of the canvas. **Server settings** is where the folder that contains `main.py` is chosen; **Start** is on the chip. A common location is detected. **Start with DSH** is remembered. A server that is already running is adopted, not started twice.
-5. Wait until the chip says **Running**. Ask in the right column. The model uses this page's tools, including a run. A tool that needs the editor fails when you leave the page. **New** starts another session for this page; the previous one keeps its history. Collapsing the column leaves a tab on the right edge that opens it again.
+4. While the server is down, the canvas is a card that says so and names the folder. The bottom toolbar always shows the same three buttons — **Start**, **Stop**, and **Settings** — and the first two grey out when they do not apply. **Settings** is where the folder that contains `main.py` is chosen. If [comfy-cli](https://docs.comfy.org/comfy-cli/getting-started) has recorded a workspace, that folder is filled in; otherwise the field stays empty until you choose it. **Start with DSH** is remembered. A server that is already running is picked up, not started twice.
+5. Wait until the bar says **Running**. Ask in the right column. The model uses this page's tools, including a run. A tool that needs the editor fails when you leave the page. **New** starts another session for this page; the previous one keeps its history. Collapsing the column leaves a tab on the right edge that opens it again.
 
-No ComfyUI yet: `node test/mock-comfyui.mjs`, open **ComfyUI** in the sidebar, and wait until the chip says **Running**. The mock is a one-node graph, and `comfyui_run` returns `p1`. Stop the mock before a real ComfyUI uses port 8188.
+No ComfyUI yet: `node test/mock-comfyui.mjs`, open **ComfyUI** in the sidebar, and wait until the bar says **Running**. The mock is a one-node graph, and `comfyui_run` returns `p1`. Stop the mock before a real ComfyUI uses port 8188.
 
 Contributors run `npm test` and `npm run typecheck`. What those cover is in [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -60,7 +78,7 @@ Tools exist only on a session that has synced a workflow. After a Host restart, 
 | Digest | One line, for example `ComfyUI: rev 14 · "deepseek-chan-emoji" · 9 nodes · 9 links · selected 7 · panel open.` The name appears only when the graph has one. More than one open tab adds the count and the active tab. Zoom, pan, and resize do not advance `rev`. |
 | Name | Saving or loading a named workflow names the session, and the digest line includes that name. When `<name>.json` exists in ComfyUI's user data, the editor tab is renamed to match. |
 | Storage | Domain `dsh_comfyui`. A Host restart keeps the graph. The record is `sessionId -> { workflow, prompt, semantic, revision, name, nameSource }` for the 20 most recently updated sessions. `nameSource` is `file` or `tool`. The model sees the projection and its own edit results. A storage failure stays in memory and does not block the bridge. Named workflows live in the `workflows` table. |
-| Process | **Server** starts, stops, and restarts ComfyUI. The command comes from the checkout (`.venv/bin/python` on Unix, `.venv/Scripts/python.exe` on Windows, otherwise `python3` or `python`) and the upstream port. It is not an arbitrary command. The directory and **Start with DSH** are stored in `dsh_comfyui`, not in the DSH profile. |
+| Process | **Start** and **Stop** run ComfyUI. The command comes from the checkout (`.venv/bin/python` on Unix, `.venv/Scripts/python.exe` on Windows, `python_embeded/python.exe` beside a portable bundle, otherwise `python3` or `python`) and the upstream port. It is not an arbitrary command. The directory and **Start with DSH** are stored in `dsh_comfyui`, not in the DSH profile. |
 
 ### Model tools
 
@@ -106,12 +124,12 @@ Starting ComfyUI from the panel needs no profile configuration. A `supervise` bl
 - A ComfyUI whose frontend is the standard `comfyui-frontend-package` build (relative `./assets/...`, `api_base` derived from the path). The panel was last verified against frontend 1.57.1. Another reported version shows a notice and still loads. A server that omits the version is left alone.
 - The panel uses `window.comfyAPI.app.app`, a legacy shim, not a stable API. What it actually touches, and how to re-check it after an upgrade, is in [docs/comfyui-bridge.md](docs/comfyui-bridge.md).
 - The DSH Web profile has `storage`, `storage-json`, and `storage-domain` mounted. The default profile does. Without them, workflows stay in memory.
-- Adopting an already-running ComfyUI, so Stop and Restart still work after a reload, needs Linux `/proc` or `lsof`. Without either, that server stays external. Starting one from the panel needs neither. Adoption is retried when the panel or `comfyui_status` sees a healthy upstream. A listener whose working directory is not the configured checkout stays external, with its pid reported and Stop/Restart unavailable. Windows can start a checkout from the panel. An already-running server there stays external.
+- Adopting an already-running ComfyUI, so Stop still works after a reload, needs Linux `/proc` or `lsof`. Without either, that server stays external. Starting one from the panel needs neither. Adoption is retried when the panel or `comfyui_status` sees a healthy upstream. A listener whose working directory is not the configured checkout stays external, with its pid reported and Stop unavailable. Windows can start a checkout or a portable build from the panel. An already-running server there stays external.
 
 ## Limits
 
 - ComfyUI user workflows are read from `workflows/` through `/userdata`, one JSON file per load. A name is the path below `workflows/` without `.json`, so it is case-sensitive and a subfolder stays in the name. Only `.json` files are listed. The plugin never writes or moves those files. Loading one changes the panel canvas only.
-- Previews, per-node progress, elapsed time, and the chip's Cancel exist only while the panel is mounted. A run the Queue button started gets a `hostRun` watch from its first execution event. A run that started before this panel attached has no `hostRun` and no step progress. The Host stops watching after 30 minutes and reports `lost`, which means the end was not observed, not that the run failed.
+- Previews, per-node progress, elapsed time, and the bar's Cancel exist only while the panel is mounted. A run the Queue button started gets a `hostRun` watch from its first execution event. A run that started before this panel attached has no `hostRun` and no step progress. The Host stops watching after 30 minutes and reports `lost`, which means the end was not observed, not that the run failed.
 - A ComfyUI the plugin only adopted keeps running when the plugin unloads. The plugin did not start that process, and after a reload it cannot tell that process from one you started by hand. Stop it from the panel first if you want it gone. A child the plugin spawned is stopped on unload.
 - The process manager cannot tell a hung ComfyUI from a long generation that stops answering `/system_stats`. Tune health restarts per workload.
 

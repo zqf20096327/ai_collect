@@ -12,7 +12,7 @@
 > (REST + OpenAI-compatible + WebSocket + Web UI, port 8004) in **C++20 + ONNX Runtime** —
 > no Python at runtime. 27 voices, voice cloning, neural verbalization, stress (98.4%
 > vs the author's pipeline), multi-speaker dialogue and English transliteration;
-> multi-arch `linux/amd64` + `linux/arm64`. Current release: **0.8.3**.
+> multi-arch `linux/amd64` + `linux/arm64`. Current release: **0.8.7**.
 
 Нативне C++ ядро українського синтезу мовлення: один бінарник + ONNX Runtime, без Python
 у рантаймі. Перший запуск довантажує моделі (~0.8 ГБ, багатоетапний бандл
@@ -61,7 +61,7 @@ curl http://localhost:8004/healthz
 ```
 
 Ознака готовності:
-`{"status":"ok","engine":"holos-tts-core-native","version":"0.8.3","verbalizer":"neural+rule","stress":"dictionary-accentor","cloning":true,...}`.
+`{"status":"ok","engine":"holos-tts-core-native","version":"0.8.7","verbalizer":"neural+rule","stress":"dictionary-accentor","cloning":true,...}`.
 
 Потрібен Docker + Compose і ≥2 ГБ RAM (neural-дефолт тримає ~1.1 ГБ RSS; rule-only — ~468 МБ).
 Сервіс `downloader` завантажує лише відсутні файли, тож оновлення образу не тягне моделі заново.
@@ -79,10 +79,10 @@ curl -s -X POST http://localhost:8004/v1/audio/speech \
 
 Образ: [`morkon06/holostts-core`](https://hub.docker.com/r/morkon06/holostts-core) —
 multi-arch **linux/amd64 + linux/arm64**. Публікується лише з тегів `v*`:
-`0.8.3` (пін релізу) і `latest`. Тегів `sha-*` більше немає.
+`0.8.7` (пін релізу) і `latest`. Тегів `sha-*` більше немає.
 
 Образ **не містить моделей**. Найпростіше — compose з репозиторію: замініть у
-`docker-compose.yml` блок `build:` на `image: morkon06/holostts-core:0.8.3`, сервіс
+`docker-compose.yml` блок `build:` на `image: morkon06/holostts-core:0.8.7`, сервіс
 `downloader` довантажить моделі. Повний приклад, ліміти й альтернативи —
 [docs/CONFIGURATION.md](docs/CONFIGURATION.md#docker-hub).
 
@@ -111,9 +111,30 @@ python3 scripts/download_models.py --out models
 
 Склад, legacy M2M100 і примусове перезавантаження — [docs/MODELS.md](docs/MODELS.md).
 
+## Наголоси та паузи
+
+- **Автонаголос**: словник marisa-trie (2.9 млн форм) + accentor-lite для невідомих
+  слів — див. «Можливості» та docs/ARCHITECTURE.md.
+- **Ручний наголос у тексті**: поставте `+` після голосної, на якій має бути наголос:
+  `зам+ок` → `замóк`, `ка+ва` → `кáва`, `но+ги` → `нóги`. Працює і в звичайному
+  режимі, і в `raw_stress`. Якщо `+` стоїть не після голосної (`к+ава`), наголос
+  автоматично переноситься на наступну голосну.
+- **Словник користувача `stress_user.txt`** (у каталозі `models`, поряд зі
+  `stress.trie`): додайте слова у форматі `ка+ва` — ваші записи мають перевагу над
+  основним словником. Це дозволяє виправляти невірні наголоси без перезбірки.
+  **Редагувати зручніше у веб-інтерфейсі: вкладка «Наголоси»** (додавання,
+  видалення із підтвердженням, зміни застосовуються одразу). Файл можна правити
+  й вручну (у файлі є пояснення та приклади) — після перезапуску програми.
+  Інший шлях задається змінною `HOLOS_STRESS_USER`; в AppImage файл лежить у
+  `~/.local/share/holos-tts-core/stress_user.txt` (моделі в образі read-only).
+- **Паузи між реченнями**: текст ділиться по реченнях (після `.!? `), а між частинами
+  додається пауза 0.3 с — речення не злипаються. Довге речення, що перевищує ліміт
+  однієї генерації, розривається також на межі речення, а не посеред тексту.
+
 ## API
 
 `POST /api/synthesize`, `POST /api/synthesize_dialogue` (мульти-спікер), `POST /api/verbalize`, `GET /api/voices`, `POST/DELETE /api/voices`,
+`GET/POST /api/stress-user`, `DELETE /api/stress-user/{word}` (словник наголосів),
 `GET /healthz`, OpenAI-сумісний `POST /v1/audio/speech` і WebSocket `/api/ws/synthesize`.
 Автентифікації немає; докладно — [docs/API.md](docs/API.md).
 

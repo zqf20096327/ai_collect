@@ -34,6 +34,7 @@
 6. **Evidence reports:** exports Markdown or JSON showing what was checked, whether source and selected approved dependencies still qualify the results, where evidence is missing and what needs attention next.
 7. **PatchProof:** plans and runs declared checks, binds patches and command-scoped approved inputs to qualified evidence, and shares impact, compatibility and verification gaps through local bundles and GitHub summaries.
 8. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
+9. **Better instruction following.** The rules you write down are shown to the agent at the moment they apply, so it follows them. That includes rules you already wrote for another agent: Cursor rules, Copilot instructions and `AGENTS.md` files reach Claude Code and the rest, and `ep_milestones --add-rule A B` declares a new one in one line. On test projects, it skipped a required change in 4 of 50 runs instead of 35 of 50, and almost always told you when it did. Even when your request pulled the other way, a rule written as a direct instruction was followed about four times as often as a plain description (skipped in 5 of 60 runs against 23 of 60). [Details](#behavior-evidence-across-development-milestones).
 
 ---
 
@@ -558,7 +559,11 @@ python plugin/bin/ep_milestones.py --project PATH --propose
    names the rule and the other files. An agent that writes the file
    through a shell command gets the same note right after that command. The
    end report names a declared rule the task changed in only some of its
-   files. Neither blocks.
+   files. Neither blocks unless the project opts in with `"rule_gate": true`
+   under `strict`. The agent is then sent back once, naming the rule. That
+   is off by default: measured against the note, all 7 agents it sent back
+   explained a scope choice and changed nothing
+   ([results](results/rule-gate/README.md)).
 
 Proposals never reach the agent; only what you declared does. This version
 reads Python only and counts other source files as not examined.
@@ -610,6 +615,43 @@ See [the spike and replay](results/multistage-v3/discover/README.md), the
 [the experiment](results/rule-groups-acted-on/README.md),
 [the reviewer](results/rule-groups-reviewed/README.md) and
 [the rerun](results/rule-groups-acted-on-reviewed/README.md).
+
+**What is left is told to you, not hidden.** When an agent with a rule in
+front of it still leaves the other file unchanged, it nearly always says so
+and offers to finish. Across those two experiments, the dependent was lost
+without the agent's final message naming it in:
+- 16 of 50 runs without rules, against 0 of 50 with a perfect set;
+- 19 of 50 against 8 of 50 with the reviewer's set. Seven of those 8 were on
+  the stage no kept rule covered.
+
+That is read from a file-name match on the final message, after the fact
+([details](results/rule-gate/README.md#silent-and-told-losses-exploratory-after-the-fact)).
+
+**Write the rule as an instruction: confirmed.** On the stage where the
+request and the rule pull apart, each rule was worded as "`A` and `B` must
+stay consistent: change both in the same task". The dependent was then lost
+in **5 of 60** runs, against **23 of 60** with a descriptive one (one-sided
+p = 8.3 × 10⁻⁵). That was a fresh run fixed in advance, after a first run of
+2 of 20 against 6 of 20 that leaned the same way but did not count.
+
+The instruction was on all 11 rules, and no run made a needless edit because
+of it. `ep_milestones --propose` now writes entries this way.
+
+**Checked for harm across 45 stages** where "change both" is the wrong
+instruction, because the correct change touches only one side. The arms
+were level: 3 against 3 runs lost behaviour, and 2 against 2 made a needless
+edit (p = 0.75) ([harm check](results/rule-mandate-harm/README.md)).
+
+The benefit is on Sonnet 5.5, on built cases
+([results](results/rule-mandate-confirm/README.md)). On Sonnet 5 there was
+nothing to improve: with either wording it made the matching change in 40 of
+40 runs ([results](results/rule-mandate-sonnet5/README.md)). The instruction
+matters where a model reads a request narrowly, and costs nothing where it
+does not.
+
+Sending the agent back at Stop for a rule left behind did **not** help. All
+7 agents sent back explained a scope choice and kept it
+([results](results/rule-gate/README.md)), so that gate is off by default.
 
 ### Optional test strength
 

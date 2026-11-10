@@ -81,7 +81,7 @@ OpenRouter and more. Keys go into the system's credential store, never into a se
 
 Every feature is a command, and the commands are an MCP server: *Help › Copy MCP registration* (or, for Claude
 Desktop, the `.mcpb` file of every release, installed with one click), and Claude Code, Claude Desktop or any other
-MCP client gets 118 tools to open, select, generate, match and export, in the same window and with the same undo. (A built-in chat assistant on your own key is there too; see [The assistant](#the-assistant).)
+MCP client gets 119 tools to open, select, generate, match and export, in the same window and with the same undo. (A built-in chat assistant on your own key is there too; see [The assistant](#the-assistant).)
 
 ### Made for real files
 
@@ -213,8 +213,9 @@ routes, the assistant's model calls, the portable zip on a second PC, or the Lin
 - A depth map of the picture, computed in the app (Depth Anything V2 Small, *Selection › Depth*) and saved with the
   document: it selects, limits filter layers, and drives lens blur, haze and Relight.
 - Models: FLUX 3 Image, FLUX.2 (max, pro, flex, klein) and FLUX.1 Fill from Black Forest Labs; GPT Image 2.6 and 2.5
-  Flare / Sunburst and GPT Image 2; Nano Banana 2.1, 2, 2 Lite and Pro; Seedream 5 and 4.5; Qwen Image Edit and Qwen Image 2.1;
-  Ideogram 4 and 4.5; Grok Imagine, Krea 2, Recraft V4, Reve, Z-Image, HY Image 3.5 and P-H3-Image; Magnific's Mystic, Ideogram
+  Flare / Sunburst and GPT Image 2; Nano Banana 2.1, 2, 2 Lite and Pro; Seedream 5.5 (on BytePlus ModelArk, in early
+  access), 5 and 4.5; Qwen Image Edit and Qwen Image 2.1;
+  Ideogram 4 and 4.5; Grok Imagine, Krea 3 Edit and Krea 2, Recraft V4, Reve, Z-Image, HY Image 3.5, P-H3-Image and MiniMax-H3-Image (on MiniMax's own API, not run live yet); Magnific's Mystic, Ideogram
   inpainting and Image Expand outpainting. Each runs on the model's own API where Scumble
   has one, or through ToAPIs, fal.ai, Replicate, WaveSpeedAI, Comfy Cloud, Comfy Router, OpenRouter, Oxen.ai and
   Magnific. API runs go out at the size the provider really takes, with your reference layers.
@@ -224,9 +225,11 @@ routes, the assistant's model calls, the portable zip on a second PC, or the Lin
   own licence), Flux.2 Klein 4B / 9B, Qwen Image Edit 2.1 and its Turbo, MOSS-Image (ComfyUI 0.42 or
   newer; new pictures with *Generate new*, its JSON layout from your boxes; Apache-2.0), MOSS-Image Edit (ComfyUI 0.43
   or newer, also on Comfy Cloud; it edits by instruction with up to three more pictures, through the edit LoRA of
-  Comfy's own template), and P-H3-Image (ComfyUI 0.44 or newer, also on Comfy Cloud and WaveSpeedAI; edits with up
+  Comfy's own template), MiniMax-H3-Image (ComfyUI 0.45 or newer, not run yet), and P-H3-Image (ComfyUI 0.44 or newer, also on Comfy Cloud and WaveSpeedAI; edits with up
   to seven more pictures and new pictures, Pruna AI's prompt upsampler in front; powered by MiniMax H3, whose licence
-  does not cover the EU, the UK, South Korea or the US without a separate licence from MiniMax); the upscale, Realism
+  does not cover the EU, the UK, South Korea or the US without a separate licence from MiniMax), Fibo 2.0 Edit Turbo
+  (edits by instruction with up to three more pictures, Comfy's Prompt Enhancer in front; not run yet; Bria's weights
+  are CC BY-NC 4.0, non-commercial, commercial use needs an agreement with Bria); the upscale, Realism
   Pass and relight recipes are below.
 - LoRAs for every recipe on your own ComfyUI with one model loader: up to five per recipe in the *LoRAs* section of
   the Generate tab, each picked from your ComfyUI's list with a strength and an on / off tick, kept per recipe and
@@ -244,6 +247,9 @@ routes, the assistant's model calls, the portable zip on a second PC, or the Lin
   Cloud or Comfy Router job on Comfy's side, the status row's bar follows a Cloud run node by node, and a Cloud job
   still running when Scumble closes or crashes is asked for at the next start, its picture opening as a document of
   its own.
+- *Each area* beside Generate, shown while the selection holds two or more separate areas (people selected by text,
+  say): each area goes as its own crop and run with the same prompt, one after another, each result its own layer,
+  instead of one crop of all of them scaled down to the model's size. Up to 8 areas; before an API run Scumble asks.
 - *Generate new* makes the base picture from the prompt alone, locally or through a provider, and you edit it from
   there. *New* in the top bar can make the empty canvas for a model, in one of its own aspects and size classes (1k,
   2k, 4k), so boxes are drawn in the shape the picture will have; Generate new then opens on that choice.
@@ -272,6 +278,9 @@ routes, the assistant's model calls, the portable zip on a second PC, or the Lin
   the picture larger in the same step. It needs a ComfyUI on Windows with an RTX 30, 40 or 50 card and a community node
   pack with its runtime, which you install there; Scumble ships none of it, and there is no Comfy Cloud version. The
   [manual](docs/MANUAL.md)'s chapter of the same name has the steps.
+- *Image › Split into Layers...* takes one picture apart into a base and separate layers with Seedream's layer
+  decomposition on BytePlus ModelArk (up to 100 layers on Seedream 5.5): they land above your layers in one group, one
+  undo step.
 - *Image › Key Green / Blue Screen...* keys a subject shot on a green or blue screen (or generated on a flat green)
   with CorridorKey 2.0 by Corridor Digital, on your own ComfyUI through the community node pack ComfyUI-CorridorKey2.0.
   It needs an NVIDIA card of the RTX 30 generation or newer on that machine; the pack and its models, about 5.1 GB,
@@ -321,10 +330,11 @@ and what it costs: [docs/ASSISTANT.md](docs/ASSISTANT.md).
   in workers. PNGs beyond the browser's canvas limit (up to 65,535 px a side, about a gigapixel) open and save in
   strips.
 - JavaScript plugins (filters with GPU and processor paths, panels, menu actions, tools, commands) and a command core
-  with 118 documented commands, 98 core and 20 from the built-in plugins ([docs/COMMANDS.md](docs/COMMANDS.md),
+  with 119 documented commands, 99 core and 20 from the built-in plugins ([docs/COMMANDS.md](docs/COMMANDS.md),
   [docs/PLUGINS.md](docs/PLUGINS.md)).
-- MCP server for any MCP client (an `.mcpb` bundle for Claude Desktop with every release), plus `--headless` and
-  `--cmd` for scripts ([docs/MCP.md](docs/MCP.md)).
+- MCP server for any MCP client (an `.mcpb` bundle for Claude Desktop with every release), plus `--headless`,
+  `--cmd` for scripts and `--run` for batches: a list of commands in one call, once per file of a folder
+  ([docs/MCP.md](docs/MCP.md), examples in [docs/examples](docs/examples)).
 - A status line that shows errors in red, and a thin bar beside it that follows each run: the node and the sampler's
   steps on your ComfyUI, the node on Comfy Cloud, the seconds on other providers.
 - Tabs with session restore, a local file mirror (no server needed to reopen your work), a console and a log file,

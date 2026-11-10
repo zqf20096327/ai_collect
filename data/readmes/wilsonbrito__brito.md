@@ -10,6 +10,14 @@ Brito is an agent for software development. Use it in the terminal (`brito-cli` 
 
 *A real session on a small SvelteKit project: one question, two graph calls (0.1 s and 0.0 s), and an answer that already includes the `.svelte` components depending on the file. The status bar shows the real cost of the turn.*
 
+## What's new in 0.10
+
+- **Read your project inside the desktop app.** Open the **Files** panel → **Project** tab: folder tree plus a reader for Markdown (front matter, task lists, tables, Obsidian callouts, `[[wikilinks]]`), syntax-highlighted code, images, **PDF, Word (.docx) and PowerPoint (.pptx)**. ` ```mermaid ` blocks render as diagrams. Paths the agent mentions in the chat (`src/cli.ts:120`) are clickable. It is read-only, and it only reads inside the project folders you added.
+- **Bring your Claude Code setup.** Run `brito importar claude-code` to see what would come over (skills, subagents, `deny` rules). Nothing is written until you add `--aplicar`. Imported skills start "in trial" and go through the safety lint; `--desfazer` undoes it. Add `--incluir-allow` for `allow` rules and `--memoria` for the project memory. Credentials are never read.
+- **Know which model writes good skills.** Every automatic skill now records its author. `/skills stats` shows, per model (local SLM vs. Claude), created / promoted / archived skills and the promotion rate, so you can decide whether a cheaper model is good enough.
+
+Upgrading from 0.9: `npm i -g brito-cli@latest`, and update the desktop app to the same version (the app warns when it and the CLI are out of sync). Full details in the [CHANGELOG](CHANGELOG.md).
+
 ## Highlights
 
 > **Upgrading to 0.6:** the graph engine changed from Kùzu (discontinued) to LadybugDB. The graph is rebuilt automatically on first use; your old `.brito/graph.kuzu` is kept. Brito asks once whether to copy your notes (memory) to the new graph, or run `brito migrar-notas` any time. Tests run in CI on macOS, Linux and Windows (use 0.6.1 or later on Windows/Linux). See the [CHANGELOG](CHANGELOG.md).
@@ -22,6 +30,9 @@ Brito is an agent for software development. Use it in the terminal (`brito-cli` 
 - **Two backends, one interface.** Use an Anthropic API key, or your Claude Code subscription through the `claude` CLI. Brito never reads or sends your subscription token.
 - **Terminal or desktop app.** `npm i -g brito-cli` gives you the `brito` command; the desktop app is a native executable with a window (projects and sessions in a sidebar, chat, permission prompts), no Node or terminal needed. See [Install](#install).
 - **Images.** Drag an image file into the prompt (or paste its path) and it is attached to the turn: PNG, JPEG, GIF or WebP, up to 5 MB.
+- **File preview in the desktop app (read-only).** The Files panel has a "Project" tab: repository tree plus a reader for Markdown (front matter, nested lists, task lists, tables, Obsidian callouts and `[[wikilinks]]`), syntax-highlighted code and images. Mermaid blocks render as diagrams; file paths cited in the chat (`src/cli.ts:120`) open the preview.
+- **Import from Claude Code.** `brito importar claude-code` shows what it would bring (skills as "trial", subagents, `deny` rules; `--incluir-allow` and `--memoria` are opt-in) and writes only with `--aplicar`. `--desfazer` reverts. Credentials are never read.
+- **Measuring the reflection.** Each automatic skill records the model that wrote it; `/skills stats` shows the promotion rate per model (local SLM vs. Claude).
 - **Subagents.** `explore`, `plan` and `general` run in isolated contexts (read-only ones in parallel); add your own in `.brito/agents/*.md`.
 - **MCP server.** `brito mcp-serve` exposes the graph, memory and skills to other MCP clients such as Claude Code. The query tools are marked `alwaysLoad`, so they are not hidden behind tool search.
 
@@ -81,6 +92,8 @@ The lint **rejects** secrets/tokens, absolute user paths, credentials in URLs (`
 - **`digest` tool**: a scout and refiner for long texts. The local model picks the blocks most related to your objective and proposes excerpts; code then checks every quote against the source and drops what is not there, so the main model gets a small markdown draft with verified quotes and page numbers.
 
 - **Fallback when Claude runs out**: chain Claude → `qwen` profile → local SLM, with the full agent loop and tools (same permissions). It is temporary: after a window (the reset time reported by the error, else 10 min, or 60 min for quota/auth; `BRITO_FALLBACK_MINUTES` overrides) the next turn tries Claude again. `/fallback` shows when. A 4B model errs more with tools: use it to keep going, not for big tasks. `BRITO_SLM_FALLBACK=off` removes it from the chain; `BRITO_SLM_CTX` sets its context.
+- **Context compaction on the local SLM**: when the conversation is compacted, the middle is summarized by the local SLM (chunked map-reduce) instead of Claude, saving tokens; on any failure it falls back to Claude. `/context` shows compactions and estimated tokens saved. `BRITO_SLM_COMPACT=off` disables it.
+- **Route decider (shadow mode)**: the local SLM classifies each request as `claude`, `slm` or `tool` after the turn and logs it next to what the turn really needed; it changes nothing yet. `/route` (or `/route all`) shows how much it would delegate and its expensive errors. Logs in `~/.brito/routing/`; `BRITO_ROUTE=off` disables it.
 
 `BRITO_SLM=off` disables it; `BRITO_SLM_MODEL` points to another GGUF (`hf:` URI or file path).
 
@@ -264,6 +277,8 @@ With Claude as the main model (API or `claude` CLI), the `qwen` profile is the a
 ### Orchestrator mode: Claude plans, Qwen implements
 
 `/orquestrar on` keeps Claude as the main model but hands the implementation to an endpoint profile (`qwen` by default). Claude writes the spec and the task list to `spec/<feature>/spec.md` and `spec/<feature>/tasks.md` (`spec_save` tool), waits for your approval, and only then sends one task at a time to the `implement` tool, checking off in `tasks.md` the ones that pass its review. It loses its file-editing tools (`write_file`/`edit_file`, or `Edit`/`Write`/`MultiEdit`/`NotebookEdit` in `claude` CLI mode): its only write is `spec_save`, which can only write those two files. It keeps reading, the graph and `bash` to check the work.
+
+**Desktop app.** The selector next to the model chooses who writes the code: **Claude**, or the **local Qwen3-4B** (`brito slm pull` first; no tokens, but a 4B model is weaker on multi-step tasks, so Claude still reviews and the `verify` command runs). To use your own Qwen server, open **⚙ Configure → QWEN COM CHAVE**, fill in name, address, model and key, and click *Testar e salvar*: Brito tests the connection before saving, stores the key encrypted by the OS vault (never in `config.json`) and creates the `qwen` profile. Only `https://` addresses are accepted (`http://` for localhost and private networks). A `qwen` profile you wrote by hand is never overwritten.
 
 - The implementer runs in an isolated context (it does not see the conversation), with the graph of the symbols passed in `focus`. Its edits and commands follow the permission mode, and in `claude` CLI mode they are approved in the terminal just like Claude's.
 - When it finishes, the tool itself appends `git status --short`, `git diff --stat` and the output of the task's `verify` command, so Claude judges by what changed on disk, not by the implementer's report.

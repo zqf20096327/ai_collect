@@ -14,16 +14,20 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/mahirgul/AiPBX/releases/latest"><img src="https://img.shields.io/github/v/release/mahirgul/AiPBX?style=for-the-badge&logo=github&label=Release&color=2563EB&logoColor=white" alt="Latest release"></a>
-  <a href="https://play.google.com/store/apps/details?id=com.mhrgl.AiPBX"><img src="https://img.shields.io/badge/Google_Play-Download-01875F?style=for-the-badge&logo=googleplay&logoColor=white" alt="Google Play"></a>
-  <a href="https://github.com/sponsors/mahirgul"><img src="https://img.shields.io/badge/Sponsor-%E2%9D%A4%20GitHub-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub"></a>
-  <a href="https://signup.upcloud.com/?promo=affiliate-aipbx250&amp;utm_source=aipbx&amp;utm_medium=affiliate&amp;utm_campaign=affiliate-aipbx250"><img src="https://img.shields.io/badge/UpCloud-%24250_Credit-7B1FA2?style=for-the-badge&logo=upcloud&logoColor=white" alt="Deploy on UpCloud"></a>
+  <a href="https://github.com/mahirgul/AiPBX/releases/latest"><img src="https://img.shields.io/github/v/release/mahirgul/AiPBX?style=for-the-badge&logo=github&label=Release&color=2563EB&logoColor=white" alt="Latest release" height="32"></a>
+  <a href="https://play.google.com/store/apps/details?id=com.mhrgl.AiPBX"><img src="https://img.shields.io/badge/Google_Play-Download-01875F?style=for-the-badge&logo=googleplay&logoColor=white" alt="Get it on Google Play" height="32"></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/mahirgul/AiPBX/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
-  <img src="https://img.shields.io/badge/Asterisk-22-green" alt="Asterisk 22">
-  <img src="https://img.shields.io/badge/Linux-Ubuntu_%7C_Debian-E95420?logo=linux&logoColor=white" alt="Ubuntu & Debian">
+  <a href="https://github.com/sponsors/mahirgul"><img src="https://img.shields.io/badge/Sponsor-on_GitHub-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub" height="32"></a>
+  <a href="https://signup.upcloud.com/?promo=affiliate-aipbx250&amp;utm_source=aipbx&amp;utm_medium=affiliate&amp;utm_campaign=affiliate-aipbx250"><img src="https://img.shields.io/badge/UpCloud-%24250_credit-7B1FA2?style=for-the-badge&logo=upcloud&logoColor=white" alt="UpCloud: $250 credit" height="32"></a>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-2563EB?style=flat-square" alt="MIT License"></a>
+  <img src="https://img.shields.io/badge/Asterisk-22-F68F1E?style=flat-square&logo=asterisk&logoColor=white" alt="Asterisk 22">
+  <img src="https://img.shields.io/badge/PHP-8.4%2B-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP 8.4+">
+  <img src="https://img.shields.io/badge/Ubuntu_%7C_Debian-amd64_%7C_arm64-E95420?style=flat-square&logo=linux&logoColor=white" alt="Ubuntu and Debian, amd64 and arm64">
 </p>
 
 <p align="center">
@@ -266,7 +270,7 @@ release first; `aipbx-update` does both steps in one run. See [INSTALL.md](INSTA
 - **Stateless REST API (`/api/v1/*`) & OpenAPI 3.1** — 100+ endpoints covering extensions, trunks, inbound/outbound routes, queues, ring groups, IVRs, time conditions, conferences, dial permissions, call center, CDRs, recordings, voicemails, faxes, phones, sounds, AI, chat, system settings, and sync
 - **Scoped Bearer API Keys (`apbx_...`)** — per-token granular scopes (`extensions:read`, `calls:write`, `system:read`, …), IPv4/IPv6 CIDR allowlists, and per-minute sliding-window rate limits (`/api-keys`)
 - **Outbound Webhooks (`/webhooks`)** — real-time event subscriptions (`call.started`, `call.answered`, `call.ended`, `voicemail.received`, `fax.received`, `sync.applied`, …) with `X-AiPBX-Signature` (`HMAC-SHA256`), exponential retry worker (`aipbx-webhook-worker`), and DNS-pinned SSRF protection
-- **First-Class Plugin System (`/plugins`)** — zero-bloat modular integrations (`google-auth`, `ms-teams`, `web-widgets`, `auto-dialer`, `ai-cloud`, `ai-tts`, `ai-apps`, `ai-models`, `ai-voicemail`, `ai-assistant`), dedicated `plg_*` MySQL table sandbox (`schema.sql`), custom `.zip` plugin uploader, encrypted secret storage, pages for signed-in users as well as administrators (`user_page`, v1.71+), and **Safe Mode** circuit breaker (auto-disables any plugin after 5 consecutive runtime errors)
+- **First-Class Plugin System (`/plugins`)** — zero-bloat modular integrations (`google-auth`, `ms-teams`, `web-widgets`, `ai-cloud`, `ai-tts`, `ai-apps`, `ai-models`), dedicated `plg_*` MySQL table sandbox (`schema.sql`), custom `.zip` plugin uploader, encrypted secret storage, pages for signed-in users as well as administrators (`user_page`, v1.71+), and **Safe Mode** circuit breaker (auto-disables any plugin after 5 consecutive runtime errors)
 - **Auto Dialer & AMD Campaigns (`auto-dialer`)** — automated outbound calling campaigns with Asterisk Answering Machine Detection (`AMD()`), global & per-campaign AMD tuning, queue free-agent pacing, voicemail drop (`WaitForSilence`), and CSV call outcome export
 
 ### 🛡️ Global Privacy & Telecom Compliance (`/privacy`)

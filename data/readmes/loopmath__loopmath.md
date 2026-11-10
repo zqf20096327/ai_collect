@@ -74,6 +74,8 @@ Reading the history uses up to 8 worker processes (one per CPU, at most 8). Set 
 
 loopmath ships with a prior built from our own sweeps and experiments, so `recommend` gives an answer before you have any history. Your own runs then move it. Your store's overall pass rate is its own, with a wide prior that only your runs move: the shipped runs give their costs and gate rows but no success rows, and the public benchmarks say which models are stronger (`belief.level`, `store` by default; `loopmath config set belief.level shared`, then `loopmath fit`, gives 0.3.5's fit).
 
+In a workflow with several pieces, the piece that writes the change counts most in the predicted chance of success: its model, effort and harness count 1, the planner's 0.22 and the reviewers' 0.11 between them. These three weights are a placeholder from one experiment on 8 coding tasks; they are fixed, not learned from your runs, and will change. `loopmath config set belief.seat_weights average`, then `loopmath fit`, counts every piece the same, as 0.4.1 did.
+
 The prior ships inside the package: our runs, in the shared form (no titles, paths, commands or free text), and the published benchmark results. They are the same files we fit with, and each release updates them. `onboard` and the results page say in one line which prior they start from, and `loopmath prior show` lists it source by source.
 
 ## The loop
@@ -142,6 +144,7 @@ The workflow builder is the one page that is served: `loopmath builder --type bu
 | Plan | `task-types`, `workflows` (list, show, validate, diff), `recommend`, `builder` |
 | Record | `run` (start, record, import, attempt, artifact, finish, sessions), `outcome`, `budget`, `config` (get, set, unset) |
 | Flows | `flow` (init, show, export, import, plan, next, record, score, status, check) |
+| Frontier | `frontier` (init, next, record, report) (experimental) |
 | Learn | `fit`, `onboard`, `share`, `prior` |
 | View | `runs`, `posterior`, `status`, `report`, `doctor`, `verify-receipts`, `update` |
 | Harness testing | `check-change`, `gate` (experimental), `screen` (experimental) |
@@ -152,7 +155,7 @@ The workflow builder is the one page that is served: `loopmath builder --type bu
 | OCP | `ocp` (validate, migrate) |
 | Log analysis | `analyze`, `graph`, `adapt`, `prices`, `validate-prices` |
 
-These are experimental: `harness`, `gate`, `screen`, `tasks pick`, the harness-part estimates (`recommend --harness-variants` and `--harness`, `posterior --level harness` and its `factors`), `recommend --role`, `adapt harness2`, `adapt plugin-eval`, `adapt openevolve`, `adapt shinkaevolve` and the ADE adapters (`adapt NAME`). Each works and has tests, but has had little use on real work so far, and its output may change. Their help says so too. The gate at DSPy's GEPA and MIPROv2 accept step (`loopmath.integrations.dspy`, Python) is experimental too: it is tested against fakes written from their source, not yet with DSPy installed, and its guide says so. So is the opt-in cost model for arms that mix models, `loopmath.compare.model.COST_MODEL = "sw"`, a Python setting with no help of its own; the [changelog](CHANGELOG.md) describes it.
+These are experimental: `harness`, `gate`, `screen`, `tasks pick`, `frontier`, the harness-part estimates (`recommend --harness-variants` and `--harness`, `posterior --level harness` and its `factors`), `recommend --role`, `adapt harness2`, `adapt plugin-eval`, `adapt openevolve`, `adapt shinkaevolve` and the ADE adapters (`adapt NAME`). Each works and has tests, but has had little use on real work so far, and its output may change. Their help says so too. The gate at DSPy's GEPA and MIPROv2 accept step (`loopmath.integrations.dspy`, Python) is experimental too: it is tested against fakes written from their source, not yet with DSPy installed, and its guide says so. So is the opt-in cost model for arms that mix models, `loopmath.compare.model.COST_MODEL = "sw"`, a Python setting with no help of its own; the [changelog](CHANGELOG.md) describes it.
 
 Each command prints a short summary by default. With `--json`, it prints exactly one JSON object instead. One exception: `loopmath adapt harness2`, `adapt harness-runs`, `adapt plugin-eval`, `adapt openevolve` and `adapt shinkaevolve` without `--out` print the run documents on stdout, one per line, so their `--json` summary goes to stderr. Exit codes: 0 ok, 1 user error, 2 not found, 3 not implemented, 4 store locked, 5 no fit yet. For flags, `loopmath <command> --help` is the source of truth. Commands, pages and the `runs` table show times in your local time with the zone; the store and `--json` keep UTC. A cost under a cent shows one significant digit (`$0.004`), and an exact zero is `$0`.
 
@@ -281,6 +284,20 @@ loopmath gate --base arm:without --cand arm:with --runs rows.jsonl --rule accept
 ```
 
 Runs of one case are not new tasks: to learn whether the plugin helps on tasks like your cases, add cases rather than runs. With grades (`--outcome score`), `check-change from-runs` compares case by case. The import's summary prints the last two filled in for your suite. Which cases are compared, what the suite's one cost can and cannot say, how far the answer reaches and the provisional input layout are in [`docs/plugin-eval.md`](docs/plugin-eval.md).
+
+## Finding a cost and pass-rate frontier (experimental)
+
+`loopmath frontier` looks for the settings (model and effort) that give the best pass rate for their cost on your own tasks, by ask and tell: `next` says which setting to run on which task, `record` takes the result back, `report` shows each setting's pass rate, cost per run and P, the model's probability that it is on the frontier.
+
+```sh
+export LOOPMATH_HOME=$(mktemp -d)
+loopmath frontier init --tasks tasks.jsonl --settings settings.toml --budget 50
+loopmath frontier next --json
+loopmath frontier record TRL --passed PASSED --usd USD
+loopmath frontier report
+```
+
+`tasks.jsonl` holds one task per line (`{"id": "t1"}`); `settings.toml` holds `[[settings]]` blocks with `name`, `model` and `effort`. TRL is the trial id `next` gave, PASSED is 1 for a pass and 0 for a fail, and USD is what the run cost in dollars. It is experimental: on simulated fresh DeepSWE runs it found the right frontier in about a quarter of runs at a $8,000 budget, level with the study design it is ported from. P is not yet calibrated, so do not stop on it.
 
 ## The store and privacy
 

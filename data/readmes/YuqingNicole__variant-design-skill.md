@@ -10,9 +10,9 @@ The three directions share the same task, data and functions, and each states wh
 
 ## Interactive website
 
-**[Live website →](https://variant-design-skill.vercel.app/)** · [Website source](./website) · [Install the skill](#installation)
+**[Live website →](https://variantdesign.xyz/)** · [Website source](./website) · [Install the skill](#installation)
 
-Browse design references with sources and check dates, inspect [A/B/C cases](https://variant-design-skill.vercel.app/cases), and follow the [installation guide](https://variant-design-skill.vercel.app/docs) to use the skill in your own project. The website's [lab](https://variant-design-skill.vercel.app/lab) is a separate experiment; it is not a paid hosted plan. Pro and Team are proposals, not available subscriptions.
+Browse design references with sources and check dates, inspect [A/B/C cases](https://variantdesign.xyz/cases), and follow the [installation guide](https://variantdesign.xyz/docs) to use the skill in your own project. The website's [lab](https://variantdesign.xyz/lab) is a separate experiment; it is not a paid hosted plan. Pro and Team are proposals, not available subscriptions.
 
 Run the [React](https://react.dev/) + [Vite](https://vite.dev/) website locally:
 
@@ -199,10 +199,10 @@ reproduce the visual style of [site you described] — dark navy, monospace, swi
 
 ### Start from a direction card
 
-The [direction library](https://variant-design-skill.vercel.app/) publishes each entry as a card at `/d/<slug>.json`: one brief and its A/B/C directions with what each optimizes, trades off and fits. Point the skill at a card to make your own A/B/C from it:
+The [direction library](https://variantdesign.xyz/) publishes each entry as a card at `/d/<slug>.json`: one brief and its A/B/C directions with what each optimizes, trades off and fits. Point the skill at a card to make your own A/B/C from it:
 
 ```
-Use the variant-design skill with direction A from https://variant-design-skill.vercel.app/d/pulse.json.
+Use the variant-design skill with direction A from https://variantdesign.xyz/d/pulse.json.
 Make A/B/C for my weekly report page: A follows this direction, B and C are contrasts.
 ```
 
@@ -350,6 +350,7 @@ Design principles the routes load when a step needs them. Seven of these files a
 | `references/design-system/color-and-contrast.md` | OKLCH color space, tinted neutrals, 60-30-10 rule, dark mode, WCAG contrast |
 | `references/design-system/spatial-design.md` | 4pt grid, container queries, squint test, hierarchy through multiple dimensions |
 | `references/design-system/motion-design.md` | 100/300/500 rule, ease-out-expo, stagger, reduced motion, perceived performance |
+| `references/design-system/motion-rules.md` | Whether to animate by frequency, 300ms UI budget, press feedback, interruptible transitions, hover gating, reduced motion that keeps feedback |
 | `references/design-system/interaction-design.md` | 8 interactive states, focus-visible, forms, modals, keyboard navigation |
 | `references/design-system/responsive-design.md` | Mobile-first, content-driven breakpoints, input detection, safe areas |
 | `references/design-system/ux-writing.md` | Button labels, error formulas, empty states, voice vs tone, accessibility |
@@ -379,7 +380,7 @@ PRs welcome. Each domain reference file follows a consistent 5-section schema:
 4. Layout Patterns
 5. Signature Details
 
-Worked examples belong in the [direction library](https://variant-design-skill.vercel.app/), not in references: only our own runs or work its authors have licensed, never transcribed copy from other people's designs. `node --test scripts/skill-links.test.mjs` checks that every file the skill names exists and that every reference is reachable from `SKILL.md`.
+Worked examples belong in the [direction library](https://variantdesign.xyz/), not in references: only our own runs or work its authors have licensed, never transcribed copy from other people's designs. `node --test scripts/skill-links.test.mjs` checks that every file the skill names exists and that every reference is reachable from `SKILL.md`.
 
 Design system references give principles, code examples and anti-patterns.
 

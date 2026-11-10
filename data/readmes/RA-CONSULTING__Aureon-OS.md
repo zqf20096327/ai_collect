@@ -19,7 +19,7 @@ Trading research · autonomous operator · planetary/HNC research · a coding or
 
 ## Quick start in five minutes
 
-Start here. Clone `main`, leave exchange keys unset, and run the guarded smoke. Live trading stays off. The orange release-boundary badge above stays **HOLD**. Go-live stays **HOLD**.
+Start here. Clone `main`, leave exchange keys unset, and run the guarded smoke. That smoke keeps live trading off for that run. There is a live route: an `.env` with exchange keys boots live. The orange release-boundary badge above stays **HOLD**. Go-live stays **HOLD**.
 
 Python 3.11 or newer, and Node.js 20 or newer, with `python3`, `node`, and `npm` on `PATH`. On Debian or Ubuntu, install `python3-venv` first. `./install.sh` checks that Python is 3.11 or newer and that `node` and `npm` exist. The clean-checkout workflow uses Node 20. A `.env` file is not required. `./install.sh` does not read `.env`.
 
@@ -44,13 +44,25 @@ The smoke sets `AUREON_AUTONOMY_MODE=guarded`, `AUREON_LIVE_TRADING=0`, `AUREON_
 
 On Linux the guarded smoke is `./install.sh --smoke` from the checkout. The script is bash.
 
+### Windows guarded smoke
+
+On Windows, from the same clone, in Command Prompt or PowerShell:
+
+```bat
+install.cmd --smoke
+```
+
+`install.cmd` runs `install.ps1`. It creates `.venv`, installs the pinned `requirements-plug.lock`, installs the dashboard with `npm ci --ignore-scripts --prefix frontend` when `frontend\node_modules\vite\bin\vite.js` is absent, and starts the same supervisor. `.env` stays unread. The guarded smoke keeps `AUREON_LIVE_TRADING=0`. `install.cmd --stop` stops the stack. `install.cmd` with no flags leaves the stack up. Python 3.11 or newer and Node.js 20 or newer must already be on `PATH`. Supported go-live stays **HOLD**. The procedure is [`docs/windows/GUARDED_SMOKE.md`](docs/windows/GUARDED_SMOKE.md) and [`PORTABILITY.md`](PORTABILITY.md). `production\Install-AUREON.ps1` is the organism installer, a separate command.
+
+No Windows run of `install.cmd --smoke` has been measured yet.
+
 `scripts/linux/install-linux.sh` execs `scripts/bootstrap/protected_bootstrap_v05.py --target-id linux-supervisor`. That entry is outside this smoke. Go-live stays **HOLD**. See [`docs/runbooks/GO_LIVE_HARDENING.md`](docs/runbooks/GO_LIVE_HARDENING.md).
 
 **Warning.** `scripts/linux/aureon-up.sh` can boot live trading when a full exchange key group is present in `.env`. When `.venv/bin/python` is missing, that script runs `production/install.sh`, which calls `scripts/launch/aureon-master.sh`. With autonomy left at the public default, that boot reports `trading_mode=live (exchange keys present)`. When `.venv/bin/python` is already present, `aureon-up.sh` runs `python -m aureon.autonomous.aureon_master_launcher --preflight` and sets `AUREON_LIVE_TRADING=0`. Go-live stays **HOLD**. The start-here command stays `./install.sh --smoke`.
 
 ### What the guarded smoke covers
 
-`./install.sh --smoke` is the start-here check. Live trading stays off. Exchange keys stay unset. No order is placed. QGITA detection rate on that smoke stays **HOLD**. Go-live stays **HOLD**.
+`./install.sh --smoke` is the start-here check. That smoke keeps live trading off for that run. Exchange keys stay unset. No order is placed. QGITA detection rate on that smoke stays **HOLD**. Go-live stays **HOLD**. The master launcher is a separate entry: it overrides the disabled and dry-run lines when autonomy is full and a complete key group is present. There is no track record.
 
 ### What stays HOLD
 
@@ -139,6 +151,8 @@ pytest tests/test_operator_server.py tests/test_connectome.py tests/test_quickst
 python -c "from aureon.evaluation.brain_proof import evaluate_brain, render_brain_markdown; print(render_brain_markdown(evaluate_brain()))"
 ```
 
+That Windows block is the offline pytest path. The guarded stack smoke is `install.cmd --smoke` in the quick start above. Supported go-live stays **HOLD**.
+
 The measurement below is from a run of that command with no keys. The HNC figures are the committed formula path (`reports/measured/brain.json`). Auris uses the public series in `reports/measured/market_series.json` when that pack is loaded. Trade readiness is a measured **fail** on 166 paper next-bar labels. Every stored public spread print is after the last labelled decision close, so Deer has no reading and those bars stay `no_data`. The window call that includes the later spread print is still coherence break at `0.5023340603593964`. A sweep of the existing formulas, 6977 calls, highest coherence `0.8851989477106523`, emitted the ready mark 0 times. Filled outcomes stay 0. The release boundary stays **HOLD**.
 
 ```text
@@ -151,9 +165,9 @@ HNC formula path, multiverse off: state `coherent`, coherence `0.773919110312190
 Multiverse extension: **measured**. project_to_3d sets noise to 0 when no observed residual is supplied. TranslationMap.noise_level is stored and is not read by that method. Three constructions of the default HarmonicRealityField returned the same series.
 Auris coherence `0.5023340603593964` with status `⛔ COHERENCE BREAK - Do not trade`. Zero-input nodes without a reading: none. Window nodes without a reading: none. The window is one call on the whole pack and includes the latest spread print, even when that print is after the OHLC bars. Labelled bars are a separate clock: a spread print counts only at or before the decision close.
 Trade readiness: **fail**. paper trade-outcome labels: 166 next-bar close-to-close returns from public:kraken XBTUSD; the prices are measured and the outcomes are paper; filled outcomes: 0; Clownfish readings 166 of 166; Owl readings 166 of 166; nodes without a reading on a labelled bar: Deer; ready-to-trade paper entries: 0; entries with a higher next close: 0; entries without a higher next close: 0; a spread print is used only when its time is at or before the decision close; spread prints at or before a labelled decision close: 0; first spread print is 6084 seconds after the last labelled decision close; labelled bars with a numeric coherence: 0; labelled bars returned no_data: 166; window call status: ⛔ COHERENCE BREAK - Do not trade; window coherence 0.5023340603593964 does not contain the ready mark; formula sweep highest coherence 0.8851989477106523; ready marks 0 of 6977; cited status compares in order: coherence >= 0.938 (ready mark), coherence >= 0.8, coherence >= 0.6, coherence > 0.934; the window coherence matches none of them, so the final else is the branch that ran; a later compare sits under a lower band and does not run, and this window figure is below that lower band, so the order is not what keeps this window off the ready mark; next stage needs a public bid/ask history whose print times are at or before the labelled decision closes, so Deer can be scored on those bars without using a later print; the ready mark stays off on this sweep of the existing formulas, including volatility 0, volume 1, and spread 1; this stage does not change the node formulas or the ready mark, does not copy a later spread print onto an earlier bar, and does not invent outcome labels; measured fail: get_auris_coherence did not mark any labelled bar ready to trade; release boundary stays HOLD
-QGITA on the derived series `data/de440_timeseries.csv` (cited-unverified): status `complete`, FTCP count `0`, lighthouse events `0`. Detection rate **HOLD**. Clock: sample index. analyze_price_stream uses range(len(prices)) when no timestamps are passed
-QGITA on the formula series: FTCP count `0`, lighthouse events `0`. Detection rate **HOLD**. Clock: step index times HarmonicRealityField.dt
-QGITA on the public series `XBTUSD` (measured, key group `public:kraken`): status `complete`, FTCP count `0`, lighthouse events `0`. Detection rate **HOLD**. Clock: venue bar open time in unix seconds; price is the bar close
+QGITA on the derived series `data/de440_timeseries.csv` (cited-unverified): status `complete`, FTCP count `0`, lighthouse events `0`. Detection rate **HOLD**. Missing ingredient: exogenous signal-present versus noise-only labels on held-out trials. Clock: sample index. analyze_price_stream uses range(len(prices)) when no timestamps are passed
+QGITA on the formula series: FTCP count `0`, lighthouse events `0`. Detection rate **HOLD**. Missing ingredient: exogenous signal-present versus noise-only labels on held-out trials. Clock: step index times HarmonicRealityField.dt
+QGITA on the public series `XBTUSD` (measured, key group `public:kraken`): status `complete`, FTCP count `0`, lighthouse events `0`. Detection rate **HOLD**. Missing ingredient: exogenous signal-present versus noise-only labels on held-out trials. Clock: venue bar open time in unix seconds; price is the bar close
 Auris joined to Λ(t): **HOLD**. HarmonicRealityField.step Λ(t) was passed into get_auris_coherence under the keys lambda, lambda_t, lambda_current. Each only-lambda call returned coherence null and status 'no_data', the same as get_auris_coherence(None). Beside the loaded market texture, coherence stayed 0.5023340603593964 with status '⛔ COHERENCE BREAK - Do not trade' for all 100 formula-series samples under those keys (300 calls). Cited from _auris_role_value, the keys read are momentum, spread, volatility, volume. Neither _auris_role_value nor get_auris_coherence names lambda. On this formula series the coherence figure was unchanged by those keys. No join contract was found. reconcile_gamma does not name lambda and its docstring returns the caller figure. AurisEngine.calculate_coherence does not name lambda. Its source comment claims a Master Equation Λ(t) bias, and the executed branch multiplies coherence by 1.1 when snapshot.momentum > 0.0 and snapshot.volume > 0.5. MarketSnapshot fields are symbol, price, volume, volatility, momentum, spread, timestamp. That comment was not copied into get_auris_coherence. The TypeScript MarketSnapshot fields are price, volume, volatility, momentum, spread, timestamp. That snapshot does not name lambda. HOLD remains because the coherence formula does not consume lambda. This item does not clear the release boundary. No formula was added. No order was placed. Go-live stays HOLD.
 ```
 
@@ -169,9 +183,9 @@ python -m pip install 'aureon[operator] @ git+https://github.com/RA-CONSULTING/A
 
 That command does not upload anything. Public PyPI is refused. The console scripts from the wheel return a HOLD receipt and do not start a listener or place an order. Go-live stays HOLD.
 
-## Public MCP (stages 1 and 2 of 4)
+## Public MCP
 
-[`mcp/aureon_public/README.md`](mcp/aureon_public/README.md) is the public MCP surface. It is read-only. Stages 1 and 2 of 4 are open. `OPEN_PLAN_THROUGH` is 2. Stages 3 and 4 stay closed until the pull requests that open them land.
+[`mcp/aureon_public/README.md`](mcp/aureon_public/README.md) is the public MCP surface. It is read-only. Stages 1 and 2 are open. `OPEN_PLAN_THROUGH` is 2. Miner and queen are open only on a read gate. Exchange `body_call` stays refused. Orders and key values stay closed. Go-live stays HOLD.
 
 ---
 
@@ -268,7 +282,7 @@ exchange, model, hosting, and deployment credentials out of this check. The isol
 operator bootstrap, containers, and supervisor entrypoints stay on **HOLD**.
 Go-live stays **HOLD**.
 
-The clone command is `./install.sh --smoke` in the quick start above. Go-live stays **HOLD**.
+The clone command is `./install.sh --smoke` on Linux and macOS, and `install.cmd --smoke` on Windows. `.env` stays unread. The guarded smoke keeps `AUREON_LIVE_TRADING=0`. Go-live stays **HOLD**.
 
 The shell is `http://127.0.0.1:5173/`. Dashboard and Command Center are tabs of
 the local console at `http://127.0.0.1:5173/console/local`. Every other
@@ -438,11 +452,16 @@ Open-source repository traffic to date (verifiable in the repo's GitHub **Insigh
 
 ---
 
+## Public front door
+
+Strangers can open [`site/index.html`](site/index.html). That reading copy matches this file. There is a live route. An `.env` with exchange keys boots live. The master launcher overrides the disabled and dry-run lines when autonomy is full and a complete key group is present in `.env`, the inherited shell, or `aureon_radar/.env`, as [`docs/PUBLIC_ENV.md`](docs/PUBLIC_ENV.md) documents. There is no track record. The live routes are active. With exchange keys in `.env`, the launcher boots into live trading. There is no verified live track record. The start-here command on that page is `./install.sh --smoke`, which leaves keys unset and keeps live trading off for that run. Go-live stays HOLD. This checkout is research-stage software. It is not a release, and go-live is on HOLD. GitHub Pages is off. [`.github/workflows/pages-gated.yml`](.github/workflows/pages-gated.yml) is dispatch-gated behind `GARY-YES-DEPLOY-PAGES` and does not deploy. The applicant is R&A Consulting and Brokerage Services Ltd, company no. NI696693, trading as Aureon Zorza Technologies. The company homepage is [aureonzorzatechnologies.pl](https://aureonzorzatechnologies.pl).
+
 ## Where to go next
 
 | You are… | Start here |
 |---|---|
 | **Cloning the repo** | The quick start at the top of this file — `./install.sh --smoke` only, live trading off, go-live HOLD |
+| **Opening the public front door** | [`site/index.html`](site/index.html) — a live route, `.env` keys boot live, the master launcher overrides disable and dry-run lines on a full+keyed boot, no track record. Guarded smoke `./install.sh --smoke`. Go-live HOLD. GitHub Pages is off. |
 | **Working on Aureon OS** | [`docs/AUREON_RULES.md`](docs/AUREON_RULES.md) — the shared rulebook |
 | **An investor or funder** | [`docs/investor/README.md`](docs/investor/README.md) — diligence path, capability categories, and claim discipline |
 | **A developer** | [`docs/INDEX.md`](docs/INDEX.md) · [`docs/PUBLIC_ENV.md`](docs/PUBLIC_ENV.md) · [`CAPABILITIES.md`](CAPABILITIES.md) · [`docs/SAAS_PLATFORM.md`](docs/SAAS_PLATFORM.md) |

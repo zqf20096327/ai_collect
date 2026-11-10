@@ -230,14 +230,93 @@ What the capabilities reach today is deliberately narrow:
 
 The language itself is a restricted Python subset, so this suits calculations
 over data the model writes into the program -- not editing files or running
-your tests. A consent-gated workspace mode for that kind of work is the
-project's stated direction, and it is not built yet.
+your tests. The consent-gated desktop Project workspace now supports bounded
+repository research, reviewed edits, approved checks, and explicit recovery.
+Ordinary chat does not silently acquire those privileges.
+
+### Experimental local coding workspace (desktop)
+
+**Project workspace** in the desktop sidebar is an opt-in coding mode, separate
+from ordinary chat. Choose a local project with the native folder picker or
+enter its absolute path, then explicitly approve indexing its eligible source
+files. Cortex creates an **in-memory, owner-scoped, expiring snapshot** (up to
+2048 small UTF-8 files and 16 MiB, valid for 15 minutes). Secret files,
+dependencies, symlinks and binary files are excluded. Search/read and the model
+research loop use that copy, not arbitrary paths from the model.
+
+The selected **Ollama** model can investigate a problem and optionally stage
+exact, hash-checked text replacements as a **review-only unified diff**. The
+model cannot apply the patch. Review the proposed changes, then choose **Review
+& apply patch** and confirm a separate write grant. Cortex checks every
+original source hash, file identity and linked directory before installing the
+edited contents with temporary sibling files. **Undo applied patch** restores
+the captured original bytes only if the edited files are unchanged. The undo
+checkpoint is retained through separately approved edits and a session refresh.
+Before ANY approved file edit, Cortex also writes a **durable local recovery
+checkpoint** to its private data directory, in
+`workspace_checkpoints.sqlite`. It records the first original file bytes and
+the expected before/after hashes before writing the checkout. If Cortex stops
+mid-edit, the checkpoint remains in the database (with a pending state) and can
+be restored manually after restarting the app. Checkpoints are separate from
+chat, model history and temporary workspace snapshots.
+
+The desktop **Saved recovery checkpoints** panel lists only paths and status,
+never backed-up contents. Select **Restore originals** and explicitly confirm:
+Cortex first verifies the project root and every current file against its
+recorded original, pre-write or proposed hashes, and refuses the entire
+restore if any file has changed unexpectedly. An interrupted restore can be
+explicitly retried; it never restores files automatically. **Discard backup**
+deletes the saved originals without touching your checkout. These source
+copies are stored as **unencrypted SQLite blobs** in the existing
+per-user-protected Cortex data directory, so protect and back up that data
+directory appropriately. The bounded journal stores up to 32 files per
+checkpoint and 64 MiB of original data across all checkpoints. When full,
+edits fail closed until older checkpoints are explicitly restored or discarded.
+Nothing here replaces Git or a separate backup; Windows file permissions and
+metadata beyond the original source bytes are not guaranteed to be preserved.
+
+A multi-file write or restore failure may still require manual recovery,
+and Cortex refuses to overwrite intervening external changes. Saved recovery
+records remain available after a crash, reload, session expiry or normal
+workspace close, but only within the same installation's private data
+directory.
+
+The check controls offer only **Python pytest**, **npm test**, and **npm
+build**, and require another explicit confirmation each time. A project test
+or build script executes code with your Windows account privileges; Windows
+job objects bound its process lifetime, memory and number of descendants
+but **do not sandbox filesystem or network access**. Use this mode only on
+trusted repositories.
+
+**Continue after a failed check:** select *Refresh source & investigate
+failure* to explicitly recapture eligible files into the same temporary
+workspace, then review the test output loaded into the next model question.
+The refresh is a new consented read; it never runs the model, applies code or
+executes another check on its own. It extends that session's 15-minute lease,
+preserves its original-file undo checkpoint and invalidates any old unapplied
+preview. Cortex refuses refresh if any previously applied source file has
+changed outside the approved edit, preventing silent loss of undo. Several
+separately approved patches can now be applied to the same or different files,
+and **Undo applied patch** restores the pre-first-edit bytes across all of
+them, only when all current file hashes still match. The **temporary source snapshot** remains in memory, but the approved
+original-byte recovery checkpoint is persisted in the private SQLite journal
+until restored or explicitly discarded.
+
+Unattended edit/test/repair loops and arbitrary shell commands remain
+unsupported: each iteration requires a deliberate user-initiated refresh,
+model prompt, reviewed patch approval and separate command confirmation.
+
+The UI's native folder chooser is only a convenience: it never grants read,
+write or command authority by itself. The REST endpoints require Cortex's
+existing local bearer session. No project grant persists when Cortex closes.
+This is an **unreleased experimental feature** on the development branch, not
+a published desktop release.
 
 ### Experimental read-only repository research (CLI)
 
 The first **read-only** slice of that workspace direction is available to
-developers through a separate terminal command, not through ordinary chat or
-the desktop UI. Pass an absolute local repository path and the explicit
+developers through a separate terminal command, independent of ordinary chat
+and the desktop Project workspace. Pass an absolute local repository path and the explicit
 `--allow-read-only` consent flag. Cortex copies eligible small UTF-8 source
 files into a bounded, short-lived **in-memory snapshot**, then searches and
 reads from the snapshot instead of returning to the working tree.
@@ -266,14 +345,15 @@ stages the replacement **in memory only**, checks for ambiguity, stale hashes
 and size limits, and returns a unified diff for inspection. The original
 checkout is never edited. A preview is not an applied patch and no tests run.
 
-**Limitations:** This is a developer-facing backend/CLI capability, not yet a
-complete UI-integrated coding agent. It is not an OS sandbox: concurrent
+**Limitations:** This developer-facing backend/CLI command remains read-only
+and independent of the desktop coding-agent workflow. It is not an OS sandbox: concurrent
 hostile filesystem mutation during snapshot capture can still create path
 races, and code files themselves may contain sensitive text. Grant access
 only to a repository you trust to share with the chosen local model. Model
 answers and file citations remain unverified until checked against source.
-Applying changes, executing tests, rollback/checkpoint persistence and any
-automatic repair loop are **not** part of this release slice.
+Applying changes, executing tests, persistent recovery and automatic repair
+are **not** part of the CLI command; the desktop workspace handles approved
+patches and recovery separately.
 
 ## Architecture
 
@@ -310,7 +390,7 @@ Cortex does not pull an embedding model at startup and has no semantic retrieval
 ## Requirements
 
 - Windows 10 or later
-- Python 3.10 or later
+- Python 3.11 or later
 - At least one local model, from either runtime:
   - Ollama installed and running at `http://127.0.0.1:11434`, or
   - a `.gguf` file in the local models folder, served by the managed llama.cpp
@@ -418,6 +498,14 @@ Build the one-folder package with:
 ```powershell
 powershell -ExecutionPolicy Bypass -File packaging/build_windows.ps1
 ```
+
+By default, packaging requires Python 3.11 and installs the same hash-locked
+runtime dependencies as release CI (`requirements.lock.txt`). Run from a fresh
+Python environment for the closest parity with release artifacts. An explicitly
+unlocked development package may be built with `-UnlockedDependencies`;
+`-SkipDependencyInstall` uses the existing environment and is not release-equivalent.
+The script checks the packaged executable's loopback health endpoint before
+reporting a successful build.
 
 The result is written to `dist/Cortex/Cortex.exe`. The package contains the
 frontend, prompt assets, Python runtime, pywebview bridge, and the signed

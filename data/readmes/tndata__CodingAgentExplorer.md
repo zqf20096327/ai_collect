@@ -73,21 +73,27 @@ This starts four endpoints:
 - **Port 8888** - The reverse proxy (HTTP, point your coding agent here)
 - **Port 9999** - The MCP proxy (HTTP, used by the MCP Observer)
 - **Port 5000** - The web dashboard (HTTP)
-- **Port 5001** - The web dashboard (HTTPS, auto-launches in browser)
+- **Port 5001** - The web dashboard (HTTPS)
 
 ### 4. Configure your coding agent
 
 For **Claude Code**, set the `ANTHROPIC_BASE_URL` environment variable to point at the proxy.
 
-**Linux / macOS:**
+**Linux / macOS / Git Bash:**
 
-Use `source` (not `bash`) so the variable is exported to your current shell:
+Use `source`, so the variables are set in your current shell:
 
 ```bash
 source EnableProxy.sh
 ```
 
-Run `source DisableProxy.sh` to clear it when you are done.
+Running the script instead (`./EnableProxy.sh` or `bash EnableProxy.sh`) sets the variables in a child shell that exits at once, so Claude Code would bypass the proxy. The script refuses to run that way and tells you to use `source`. To check that it worked:
+
+```bash
+echo $ANTHROPIC_BASE_URL
+```
+
+It should print `http://localhost:8888`. Run `source DisableProxy.sh` to clear it when you are done.
 
 **Windows (cmd):**
 
@@ -109,6 +115,8 @@ Remove-Item Env:ANTHROPIC_BASE_URL
 Remove-Item Env:CLAUDE_CODE_GATEWAY_HINT_HEADERS
 ```
 
+Or use the scripts: `.\EnableProxy.ps1` and `.\DisableProxy.ps1`. If PowerShell says running scripts is disabled on this system, use the lines above, or allow scripts for this session with `Set-ExecutionPolicy -Scope Process Bypass`. If you downloaded the repository as a zip, run `Unblock-File *.ps1` once. Note that `EnableProxy.bat` does not work from PowerShell: it runs in a separate cmd process, so the variables are gone when it ends.
+
 The scripts also set `CLAUDE_CODE_GATEWAY_HINT_HEADERS=1`. Claude Code sends extra `x-claude-code-*` request headers (request class: main, subagent or auxiliary; agent type; prompt id; tool durations) when it talks to `api.anthropic.com` directly, but not through a custom `ANTHROPIC_BASE_URL` unless this variable is set. With it, the proxy sees the same headers as a direct session.
 
 All scripts only affect the current terminal session. The variables are not persisted, so closing the terminal automatically clears them.
@@ -117,7 +125,7 @@ Then use Claude Code as you normally would.
 
 ### 5. Open the dashboard
 
-Navigate to [https://localhost:5001](https://localhost:5001) in your browser. On Windows the browser opens automatically on `dotnet run`. On macOS and Linux, open it manually.
+Open [https://localhost:5001](https://localhost:5001) in your browser. The app does not open it for you, except when you start it from Visual Studio.
 
 You will see three views and a settings page:
 

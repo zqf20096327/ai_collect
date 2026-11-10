@@ -1,36 +1,22 @@
-# Opportunity Skill
+# QuestMeet Skill
 
-[![skills.sh](https://skills.sh/b/QuestMeet/opportunity-skill)](https://skills.sh/QuestMeet/opportunity-skill)
-
-- **Opportunity Skill** can be used in Muse, Dots, Duet, and all other AI agents that follow the Skill specification. Neither a client download nor a website login is required.
+- **QuestMeet Skill** can be used in Muse, Dots, Duet, and all other AI agents that follow the Skill specification. Neither a client download nor a website login is required.
 - **Updated at:** 2026-11-05T07:50:00Z
 - **Version:** v3.1.1
-- **Download the latest version:** [opportunity-skill](https://github.com/QuestMeet/opportunity-skill/releases/download/v3.1.1/opportunity-skill.zip)
+- **Download the latest version:** [questmeet-skill](https://github.com/QuestMeet/questmeet-skill/releases/download/v3.1.1/questmeet-skill.zip)
 
 ## Install
 
-Install as a standard Agent Skill with the [skills](https://skills.sh) CLI — works in Claude Code, Cursor, Codex, Cline, VS Code, Gemini CLI, and other compatible agents:
-
 ```sh
-npx skills add QuestMeet/opportunity-skill -g -y
-```
+# Agent Skills (Claude Code, Cursor, Codex, Cline, VS Code, Gemini CLI, …)
+npx skills add QuestMeet/questmeet-skill -g -y
 
-## Install in DeepSeek Harness
-
-Install the skill as a DSH bundle, which adds `opportunity-skill` to your agent's skill catalog:
-
-```sh
-dsh plugin add @questmeet/opportunity-skill
-```
-
-Or install it from the **Discover** tab: enable **Plugins → Experimental → Custom plugin indexes**, add this index source, then install the card:
-
-```
-https://questmeet.github.io/opportunity-skill/index.json
+# DeepSeek Harness
+dsh plugin add @questmeet/questmeet-skill
 ```
 
 ## Table of Contents
-- [Why Opportunity Skill?](#why-opportunity-skill)
+- [Why QuestMeet Skill?](#why-questmeet-skill)
 - [Quick Start](#quick-start)
 - [Modules](#modules)
   - [1. Authentication](#1-authentication)
@@ -39,14 +25,14 @@ https://questmeet.github.io/opportunity-skill/index.json
   - [4. Engagement](#4-engagement)
 - [Project Structure](#project-structure)
 
-## Why Opportunity Skill?
+## Why QuestMeet Skill?
 - The user installs this Skill to let you (an AI agent) connect the user with the right people or their bots (mostly closed-source) in the opportunity network.
 - This Skill has 19 callable functions defined in scripts/callable_functions.py, which send requests exclusively to https://questmeet.ai/graphql with trust_env=False. Use this Skill when the user intends to (1) manage listings or profiles for networking (e.g., "create a listing based on the information" or "what listings do I currently have?"); (2) search for vendors, freelancers, entrepreneurs, candidates, clients, customers, investors, employers, or casual networking opportunities (e.g., "find jobs based on my information", "search for candidates for these positions", "find clients for me based on my listing", "search for people providing services like this", or "find people who meet my requirements for a coffee chat"); (3) contact a person with an agent address; (4) check messages within a lookback window.
 - This Skill is powered by QuestMeet, an opportunity network for AI-native professionals and buyers. It is designed to facilitate long-context networking between people by harnessing AI agents. Prior to AI agents, countless collaboration opportunities were lost because people had to apply lossy compression when communicating their capabilities, resources, and requirements. For example, a professional's portfolio may amount to a million tokens, and buyers typically lack the time to process such extensive context, leaving them unable to make informed decisions. This Skill instructs you to build knowledge bases for your user, letting others access all the information your user would like to share and grasp key takeaways that are relevant to their respective interests. It also instructs you to search for and review others' knowledge bases for key takeaways that matter to your user.
 - Every listing and every message serves as a knowledge base. The offering, seeking, and content fields support URLs, which means the information capacity of a listing or message is virtually unlimited. You can call the upload_attachments function to make your user's portfolio or other files accessible via URLs, and include the URLs in the listing or message. You can also include social media profiles, video links, payment links, or any other URLs.
 
 ## Quick Start
-1. Download and install the Opportunity Skill from https://github.com/QuestMeet/opportunity-skill.
+1. Download and install QuestMeet from https://github.com/QuestMeet/questmeet-skill.
 2. Ask for your user's email address. Call the send_code_to_email function to send a verification code to your user's email address.
 3. Ask your user for the verification code. Once you have the code, call the sign_in_or_sign_up function to get a new access token along with your user's account information.
 4. Persist the access token in your memory or a local file under a distinct key name alongside the email address.
@@ -160,7 +146,7 @@ flowchart TD
 ## Project Structure
 
 ```
-opportunity-skill/
+questmeet-skill/
 ├── SKILL.md
 ├── scripts/
 │   └── callable_functions.py

@@ -27,7 +27,26 @@ Most in-browser vector libraries hand you an *in-memory* index: fast to query, b
 - 🪶 **Featherweight & shim-free** — `serde` + `postcard` are the *only* dependencies; the WASM core is 77 KB (35 KB gzipped), with no `getrandom` (deterministic splitmix64 PRNG) and no threads, so it's happy on bare `wasm32-unknown-unknown`.
 - ⚡ **SIMD-accelerated** distance on `wasm32 + simd128` with a scalar fallback; `#![deny(unsafe_code)]` everywhere outside the audited kernel. Portable versioned byte format reloads identically native or in-browser.
 
-> **Status — both registries are on `0.4.0`.** crates.io `0.4.0` ships the Rust core (**M1**), WASM boundary (**M2**), and in-place [compaction](#compaction--clearing); npm `0.4.0` ships the full browser package: transformers.js auto-embedding (**M3**), OPFS persistence (**M4**), the three-line API (**M5**), cross-tab single-writer leader election (**M6**), and — new in `0.4.0` — crash-safe storage (**M7**): checksummed snapshots, a write-ahead log, and a published [kill-the-tab chaos suite](https://singhpratech.github.io/ferrovec/chaos.html) with zero acknowledged writes lost over 1,000 cycles each in Chromium and Firefox. See the [roadmap](#roadmap), or **[try the live demo](https://singhpratech.github.io/ferrovec/demo.html)**.
+> **Status — both registries are on `0.6.0`.** crates.io `0.6.0` ships the Rust core (**M1**), WASM boundary (**M2**), and in-place [compaction](#compaction--clearing); npm `0.6.0` ships the full browser package: transformers.js auto-embedding (**M3**), OPFS persistence (**M4**), the three-line API (**M5**), cross-tab single-writer leader election (**M6**), crash-safe storage (**M7**, `0.4.0`): checksummed snapshots, a write-ahead log, and a published [kill-the-tab chaos suite](https://singhpratech.github.io/ferrovec/chaos.html) with zero acknowledged writes lost over 1,000 cycles each in Chromium and Firefox, per-document metadata, a LangChain.js adapter and a local RAG example (**M8**, `0.5.0`), and, new in `0.6.0`, offline model loading, `db.compact()` and the Retrace extension (**M9**). See the [roadmap](#roadmap), or **[try the live demo](https://singhpratech.github.io/ferrovec/demo.html)**.
+
+> **New in 0.6.0**
+> - **Offline and extension-ready** : the `transformers` option on `Ferrovec.open` points transformers.js at local model files and a local onnxruntime wasm, so ferrovec runs with no network and inside a Manifest V3 extension; see [Offline model files and `db.compact()`](#offline-model-files-and-dbcompact-since-060).
+> - **`db.compact()`** : removed and replaced documents leave the store's files, not only its results. The on-disk format is unchanged, so `0.6.0` reads and writes the same stores as `0.5.0`.
+> - **Retrace** : a Chromium extension built on ferrovec, [`extensions/retrace`](./extensions/retrace), with a ready-to-load zip on the [v0.6.0 release](https://github.com/singhpratech/ferrovec/releases/tag/v0.6.0).
+>
+> `0.5.0` added per-document metadata, the [LangChain.js adapter](#langchainjs) and the [local RAG example](./examples/ai-sdk-local-rag).
+
+## Built with ferrovec: Retrace
+
+<p align="center">
+  <a href="./extensions/retrace"><img src="https://raw.githubusercontent.com/singhpratech/ferrovec/main/docs/assets/retrace-light.png" alt="Retrace search page showing results for a remembered article" width="760" /></a>
+</p>
+
+**[Retrace](./extensions/retrace)** is a Chrome extension that gives you semantic search over every page you have read. Type `rt` and a few words you remember in the address bar, and it finds the page.
+Everything stays in your browser: the text, the vectors and the embedding model are all local, with no account, server or API key. In an automated run, the browser made zero requests initiated by the extension.
+It is version 0.1.0 and loads unpacked for now; a ready-to-load zip, `retrace-0.1.0-chromium.zip`, is attached to the [v0.6.0 release](https://github.com/singhpratech/ferrovec/releases/tag/v0.6.0). It is not on the Chrome Web Store yet. Read the [Retrace README](./extensions/retrace) for install steps, privacy controls, measured numbers and limits.
+
+Building it needed two library changes, both since `0.6.0`: the [`transformers` option](./js/README.md#offline-local-model-and-wasm-files) and the JS [`db.compact()`](./js/README.md#three-line-api) (documented [below](#offline-model-files-and-dbcompact-since-060)).
 
 ## Who it's for
 
@@ -35,8 +54,8 @@ ferrovec is for apps where the vectors in the browser are the **only copy**, and
 
 - **Local-first notes, journals, and PKM tools.** The user types a note, sees it saved, and closes the lid. The acknowledged insert survives a tab kill; the next open replays the log. No sync server, no re-embedding on launch.
 - **Offline field apps.** Inspection, clinical, survey, or agricultural tools that run for hours without a network and get force-closed by the OS. Semantic search over what was captured has to survive that.
-- **Privacy-bound RAG.** Chat-with-your-documents for legal, HR, health, or internal docs where nothing may leave the device. Embedding a large corpus takes minutes; a checksummed, crash-tested index turns that one-time ingest into a durable asset.
-- **Browser extensions with memory.** Tab-history search, reading-list recall, "what did I see about X last week". Extensions are killed and restarted constantly; the write-ahead log is what makes *remembered* true.
+- **Privacy-bound RAG.** Chat-with-your-documents for legal, HR, health, or internal docs where nothing may leave the device. Embedding a large corpus takes minutes; a checksummed, crash-tested index turns that one-time ingest into a durable asset. Runnable example: [`examples/ai-sdk-local-rag`](./examples/ai-sdk-local-rag) pairs ferrovec with the Vercel AI SDK and a local OpenAI-compatible model (Ollama by default).
+- **Browser extensions with memory.** Tab-history search, reading-list recall, "what did I see about X last week". Extensions are killed and restarted constantly; the write-ahead log is what makes *remembered* true. [Retrace](./extensions/retrace) is a working example: a Chrome extension that indexes the pages you read and searches them from the address bar.
 - **Multi-tab dashboards.** Support consoles, CRMs, admin tools where one user has five tabs open and each inserts and searches. One elected leader, one consistent store, no diverging indexes.
 - **Kiosks, edge, and PWA devices with no backend.** They reboot unexpectedly and nobody is there to re-ingest. Open picks the newest valid snapshot, refuses a corrupt one with a typed error, and the app decides what to do.
 - **Agent memory in the tab.** Assistants that accumulate episodic memory over weeks. The embedding-space guard refuses to open a store under a different model instead of silently returning wrong neighbours.
@@ -53,7 +72,7 @@ ferrovec's wedge is exactly that missing half — **durability and consistency**
 
 | Library | Engine | Index | Incremental | Embeddings | Persists to | Checksummed file | Durable commit | Multi-tab | Published crash test | Size |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **ferrovec 0.4.0** | Rust→WASM | **HNSW** | ✅ | ✅ built in (MiniLM) | ✅ **OPFS**: two snapshot slots + write-ahead log | ✅ CRC-32 | ✅ flushed before ack | ✅ **Web Locks leader** | ✅ 1,000 cycles × 2 browsers | 77 KB (35 KB gz) |
+| **ferrovec 0.6.0** | Rust→WASM | **HNSW** | ✅ | ✅ built in (MiniLM) | ✅ **OPFS**: two snapshot slots + write-ahead log | ✅ CRC-32 | ✅ flushed before ack | ✅ **Web Locks leader** | ✅ 1,000 cycles × 2 browsers | 77 KB (35 KB gz) |
 | EdgeVec | Rust→WASM | HNSW + binary quantization | ✅ | ❌ bring your own | IndexedDB, one put of the whole blob | ❌ | ❌ (Rust WAL exists, not exposed in the browser) | ❌ single tab by design | ❌ | 217 KB gz (self-reported) |
 | VecLite | Rust→WASM | HNSW | ✅ | transformers.js | IndexedDB / JSON blob | ❌ | ❌ | ❌ | ❌ | not published |
 | @ruvector/wasm | Rust→WASM | HNSW | ✅ | ❌ bring your own | IndexedDB vectors; graph rebuilt on load | ❌ | ❌ | ❌ | ❌ | not published |
@@ -83,7 +102,7 @@ Persisting is easy; persisting *safely* is the part that usually goes missing. T
 | section lengths | 3 × 4 bytes | Must sum to the exact file length, so truncation and trailing garbage are caught |
 | CRC-32 | 4 bytes | Over the whole file; catches bit flips |
 | metadata (JSON) | variable | Embedding model id, dimensions, metric, live item count, writer, timestamp |
-| index + id→text sidecar | variable | The HNSW core bytes and the stored texts |
+| index + id→text sidecar | variable | The HNSW core bytes, the stored texts and (from 0.5.0) each document's metadata |
 
 A truncated, bit-flipped, or trailing-garbage file is detected on open and never decoded into a wrong index. The exact byte layout is documented at the top of [`js/src/snapshot.ts`](./js/src/snapshot.ts).
 
@@ -149,7 +168,7 @@ Neither run hit a torn log tail this time (an earlier Chromium run on the previo
 
 ```toml
 [dependencies]
-ferrovec = "0.4"
+ferrovec = "0.6"
 ```
 
 ## Quick start
@@ -288,8 +307,33 @@ const restored = FerrovecCore.fromBytes(bytes);
 > The `js/` package wraps this with automatic embedding via transformers.js
 > (**M3**), crash-safe OPFS persistence (**M4**, **M7**), and cross-tab leader election (**M6**), so the browser API becomes:
 > `const db = await Ferrovec.open('notes'); await db.insert(text); const hits = await db.query('…', 5);`
-> — live on npm as `0.4.0`. `await db.list({ offset, limit })` pages through the stored `{ id, text }`
-> documents in insertion order.
+> — live on npm as `0.6.0`. `await db.list({ offset, limit })` pages through the stored `{ id, text }`
+> documents in insertion order. From `0.5.0`, `db.insert(text, { id, metadata })` stores a JSON object
+> beside the text (as durable as the text, at most 64 KiB) and returns it on query hits and `list()` rows;
+> an upsert without `metadata` clears it.
+
+### Offline model files and `db.compact()` (since 0.6.0)
+
+> **Since `0.6.0`.** These two changes need npm `ferrovec@0.6.0` or later. The on-disk format is unchanged from `0.5.0`, so no migration is needed.
+
+- **`transformers` option.** `Ferrovec.open(name, { transformers: { env, dtype } })` configures transformers.js inside the store's worker, so the model and the onnxruntime wasm can be served from local files with no remote fetch. That is what lets ferrovec run fully offline and inside a Manifest V3 extension with a strict CSP. See [`js/README.md`](./js/README.md#offline-local-model-and-wasm-files).
+- **`await db.compact()`.** Rebuilds the index from the live documents and rewrites both snapshot slots and the write-ahead log, so a removed or replaced document leaves the store's files and not only its results. It re-inserts every live vector and writes two full snapshots, so call it after a deletion that must really be gone. See [`js/README.md`](./js/README.md#three-line-api).
+
+### LangChain.js
+
+From `0.5.0`, `ferrovec/langchain` exports `FerrovecVectorStore`, a LangChain `VectorStore` (needs
+`@langchain/core` 1.x, an optional peer dependency):
+
+```ts
+import { FerrovecVectorStore } from 'ferrovec/langchain';
+
+const store = await FerrovecVectorStore.open('notes');
+await store.addDocuments([{ pageContent: 'the cat sat on the mat', metadata: { source: 'a.md' } }]);
+const docs = await store.asRetriever(4).invoke('a napping kitten');
+```
+
+Embedding happens inside ferrovec's worker, so no LangChain `embeddings` are needed and the raw-vector
+methods throw. `similaritySearch(query, k, filter)` filters by exact match on top-level metadata keys.
 
 To smoke-test WASM compatibility without packaging:
 
@@ -309,8 +353,10 @@ cargo build --target wasm32-unknown-unknown
 | **M5** | `ferrovec` on npm — the three-line browser API | ✅ `0.4.0` |
 | **M6** | Cross-tab leader election (Web Locks) | ✅ `0.4.0` |
 | **M7** | Crash-safe storage — checksummed A/B snapshots, write-ahead log, kill-the-tab chaos suite | ✅ `0.4.0` |
+| **M8** | Per-document metadata + LangChain.js adapter + local RAG example | ✅ `0.5.0` |
+| **M9** | Offline model loading + compact() + Retrace extension | ✅ `0.6.0` |
 
-> Both registries are published at **`0.4.0`** — crates.io (Rust core) and npm (browser package).
+> Both registries are published at **`0.6.0`** — crates.io (Rust core) and npm (browser package).
 
 ## Design notes
 

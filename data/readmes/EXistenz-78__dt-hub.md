@@ -36,9 +36,13 @@ This is an independent community project, not affiliated with or endorsed by Dra
 
 ## A look around
 
-**Generation.** The prompt (with the negative prompt, shown only for the families that use it) and collapsible cards for dimensions, sampling, seed and batch, LoRAs and an advanced section. Every value can be typed or stepped, the open or closed state of each card is remembered, and a JSON editor shows and edits the whole configuration.
+**Generation.** The prompt (with the negative prompt, shown only for the families that use it) and collapsible cards for dimensions, sampling, seed and batch, LoRAs and an advanced section; with an edit model an **Input** card under the prompt shows the Canvas and Moodboard pictures of the Control tab. Every value can be typed or stepped, the open or closed state of each card is remembered, and a JSON editor shows and edits the whole configuration.
 
-<p align="center"><img src="docs/images/generation.png" alt="The Generation tab" width="55%"></p>
+<p align="center"><img src="docs/images/generation.png" alt="The Generation tab, with the Input card of an edit model" width="55%"></p>
+
+**Guided setup.** The first time DT Hub opens, a short guided setup takes you through the server (the Draw Things app, the `gRPCServerCLI`, or both), the output folder and an optional language model. **Help › Guided Setup…** opens it again.
+
+<p align="center"><img src="docs/images/guided-setup.png" alt="The guided setup: the server step" width="55%"></p>
 
 <p align="center">
   <img src="docs/images/lora-manager.png" alt="Manage LoRAs" width="32%">
@@ -91,7 +95,7 @@ This is an independent community project, not affiliated with or endorsed by Dra
 
 ## Install
 
-1. Download **`DT-Hub-1.2.0-macOS-arm64.zip`** from the [latest release](https://github.com/EXistenz-78/dt-hub/releases/latest).
+1. Download **`DT-Hub-1.3.2-macOS-arm64.zip`** from the [latest release](https://github.com/EXistenz-78/dt-hub/releases/latest).
 2. Unzip it and drag **DT Hub.app** into `/Applications`.
 3. Read **First launch** below before you open it.
 4. Optional: add the plug-ins (they are in the same release, see [`Plugins/`](Plugins/README.md#install)).
@@ -203,6 +207,19 @@ An LLM that comes with a system prompt of its own (Qwen's prompt enhancers) rece
 
 A plug-in is a bundle (`.dthubplugin`) with a dynamic library, loaded into the app and shown as a tab. You add one in **Preferences › Plug-ins**. A plug-in only works with the model families it was made for: on any other family it is switched off and its tab is hidden. Plug-ins work on your Mac; the two exceptions are LoRA Advisor, which contacts Civitai and Hugging Face when you press its buttons to find or import a LoRA's page, and Depth & Pose, which downloads its two models from GitHub once each, when you press their buttons (each says what it sends in its README). The plug-ins in this repository, which families each one works with, and how to build and install them are described in [`Plugins/README.md`](Plugins/README.md). To write your own, start from [`PluginKit/README.md`](PluginKit/README.md): the app and a plug-in talk only through Objective-C selectors and JSON messages, and the kit includes the design system so a plug-in tab looks like the rest of the app.
 
+## Remote control (MCP, beta)
+
+DT Hub can act as an [MCP](https://modelcontextprotocol.io) server on your Mac, so an AI client (Claude, LM Studio…) can read the Generation tab and drive it: choose the model, set prompts, parameters, LoRAs, Moodboard and start image, run generations, pipelines and the queue, and look at the results.
+
+- **Off by default.** Turn it on in *Settings › Remote control*. It listens on `127.0.0.1` only, behind a token kept in the Keychain; web pages cannot call it.
+- **Modes:** read only, modify the tab, full control. Tools outside the mode are not even listed.
+- **A budget, not a question per action.** You set how many images the agent may make in a session (and, with DT+, compute units); inside it nothing asks. A single request above the threshold asks once until you authorise the session. At the limit the agent gets an error at once.
+- **Stop button** in the header while an agent is connected; the panel lists the recent calls.
+- *Copy client configuration* gives the JSON for the client; *Copy instructions for the agent* gives a `SKILL.md`.
+- **Plug-in tools.** A plug-in can declare tools in its manifest (`tools`, see `PluginKit/README.md`); they are listed as `plugin__<plug-in>__<tool>` only while the plug-in is active for the current model, and follow the same modes. What they return is data, never instructions. So far **LoRA Advisor 1.5** offers its LoRA list (model family, Min/Base/Max, summary, page link), notes and weight limits; **Tiled Upscale 1.5** prepares and runs an enlargement (every tile counts against the session budget); **Depth & Pose 1.1** makes depth and pose maps and sends them to the Moodboard (it never generates); **Batch plus 1.2** defines and runs a series of passes, by parameter increments or by a list of prompts (every pass counts against the session budget, and a long series needs the user's agreement). Running a plug-in's pipeline works for guided and for plain lists of passes.
+
+Treat what an agent reads (pictures, names, prompts) as untrusted: keep the budget low and watch the first sessions.
+
 ## Languages
 
 The interface of the app and of the plug-ins is available in **English and Italian** and follows the language of macOS. The design documents in [`docs/superpowers/`](docs/superpowers/) (specs and plans) are written in Italian.
@@ -221,7 +238,7 @@ The interface of the app and of the plug-ins is available in **English and Itali
 
 > **Video (in development).** Support for video models (MiniMax H3, LTX-2.3) is still under development: some functions may not work as expected.
 
-Version 1.2.0, used daily by its author. Feedback, bug reports and ideas are welcome: open an [Issue](../../issues).
+Version 1.3.2, used daily by its author. Feedback, bug reports and ideas are welcome: open an [Issue](../../issues).
 
 ## License
 

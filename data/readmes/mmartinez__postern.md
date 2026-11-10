@@ -67,10 +67,11 @@ the credential, and forwards the request. The full request lifecycle and trust
 boundary are in [docs/architecture.md](docs/architecture.md).
 
 The matched rule's secret reference (`op://…` or `bw://…` for a vault,
-`oauth2://…` for a minted token, optionally credstore-qualified as
-`op+name://…` when several accounts of one vendor are configured) resolves from
-the configured provider; adding a new provider is a single package plus one
-import. See [docs/providers.md](docs/providers.md).
+`keychain://…` for the OS secret store, `oauth2://…` for a minted token,
+optionally credstore-qualified as `op+name://…` when several accounts of one
+vendor are configured) resolves from the configured provider; adding a new
+provider is a single package plus one import. See
+[docs/providers.md](docs/providers.md).
 
 > **Status:** early development. The proxy works end-to-end, and the release
 > pipeline (checksum-verified binaries, SBOMs, and a signed multi-arch container
@@ -128,20 +129,27 @@ postern token set --stdin # store your 1Password service-account token (legacy s
 # edit ~/.postern/config.yaml to add rules for the APIs your agent calls, then:
 postern server            # run the proxy
 
-# in the agent's shell, wire HTTPS_PROXY + CA trust in one step:
+# in another terminal, configure your existing client shell:
 eval "$(postern bootstrap)"
+YOUR_AGENT
 ```
 
-Node-based agents need two more variables, `NODE_USE_ENV_PROXY=1` and
-`NODE_EXTRA_CA_CERTS`; see [Node-based agents](docs/security.md#key-and-token-handling).
+Client authentication is opt-in: new and existing configs keep it off. To use
+named identities, set `proxy.client_auth: required`, restart the server, then run
+`postern agent add worker --ca "$HOME/.postern/ca.pem" --exec YOUR_AGENT`.
+The launcher confirms the server accepts the new key before starting the client,
+keeps the key in memory and passes proxy/trust settings only to the selected child.
+Use `agent rotate` to replace a key and `agent remove` to revoke live access.
+See [Agent enrollment](docs/agents.md) for enrollment, supported clients and TLS.
+`bootstrap` remains available for plaintext configurations with authentication off.
 
 On macOS, `postern ca install` triggers an authorization prompt and trusts the
 CA in your user login keychain — no `sudo`. `postern ca uninstall` revokes the
 trust settings (the certificate entry stays in the keychain, untrusted).
 
 On Linux, `postern ca install` does not make the CA trusted system-wide.
-`postern bootstrap` sets `SSL_CERT_FILE` for the agent's shell; for clients
-that ignore it, see the per-distribution steps in
+The launcher's `--ca` sets the child's public CA bundle; for client-specific
+trust settings, see the per-distribution steps in
 [Local CA](docs/security.md#key-and-token-handling).
 
 `postern config validate` checks a config with line-numbered errors, and
@@ -190,6 +198,9 @@ secret and the CA mounted read-only. It expects two files alongside it:
     file: /run/secrets/op_token
   proxy:
     listen: 0.0.0.0:1701
+    client_auth: required
+    tls:
+      names: [proxy.example.test]
     admin_listen: 127.0.0.1:1702   # loopback-only inside the container; probed by the compose healthcheck
     cache_ttl: 5m
   rules:
@@ -217,13 +228,14 @@ docker compose run --rm bootstrap                      # one-time: generate the 
 docker compose up -d                                   # run the proxy
 ```
 
-Distribute `./postern-ca/.postern/ca.pem` to your agents, point them at the
-proxy, and have them trust the CA:
+Distribute only `./postern-ca/.postern/ca.pem` to trusted client launchers, use the
+configured proxy hostname, and install each hash-only enrollment entry through
+the protected operator configuration workflow:
 
 ```sh
-export HTTPS_PROXY=http://localhost:1701
-export SSL_CERT_FILE=/path/to/ca.pem
-export NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/path/to/ca.pem   # Node-based agents
+postern agent add worker --enrollment-out ./worker-enrollment.yaml \
+  --proxy https://proxy.example.test:1701 --ca /path/to/ca.pem \
+  --exec YOUR_AGENT
 ```
 
 Rotating the CA (at its ~10-year expiry, or on key compromise) means deleting
@@ -276,7 +288,7 @@ make site-ci        # clean install and build, the way CI does it
 - [Architecture](docs/architecture.md) — request lifecycle, trust boundary, components.
 - [Security model](docs/security.md) — fail-closed semantics, logging, threat model, key handling.
 - [Configuration](docs/configuration.md) — the full YAML reference.
-- [Providers](docs/providers.md) — the credential-vendor plugin contract (1Password, Bitwarden) and the OAuth2 short-lived-token provider.
+- [Providers](docs/providers.md) — the credential-vendor plugin contract (1Password, Bitwarden, the OS secret store) and the OAuth2 short-lived-token provider.
 - [Agent skill](skills/postern/SKILL.md): the setup runbook agents load.
 
 ### Agent skill

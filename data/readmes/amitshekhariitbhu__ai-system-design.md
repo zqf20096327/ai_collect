@@ -895,7 +895,7 @@ To put this into perspective with real numbers - if the model is generating 100 
 
 We cache only the Keys and Values, not the Queries. During autoregressive generation, the Query is only needed for the **current token** being generated. Once the prediction is done, that Query is no longer needed. But the Key and Value of every past token are needed at **every future step**.
 
-KV Cache makes generation much faster, but it has to sit in memory the entire time the conversation is active. A long conversation can use gigabytes of KV cache. This is why we cannot serve too many long conversations at the same time on the same machine.
+KV Cache makes generation much faster, but it has to sit in memory the entire time the conversation is active. A long conversation can use gigabytes of KV cache. This is why we cannot serve too many long conversations at the same time on the same machine. We have a detailed blog on [How does an LLM use GPU memory?](https://outcomeschool.com/blog/llm-gpu-memory) that explains how the weights, the KV cache, and the overhead add up to the total GPU memory.
 
 To manage the KV Cache memory more efficiently, modern inference servers use **[Paged Attention](https://outcomeschool.com/blog/paged-attention-in-llms)** - the same idea operating systems use to manage memory. Instead of reserving one big block of memory upfront for each request (which wastes a lot of memory because we do not know in advance how long the response will be), Paged Attention allocates small fixed-size **pages** of KV cache as the response grows.
 
@@ -1141,6 +1141,8 @@ To solve this, we use **RAG (Retrieval Augmented Generation)**.
 1. **Retrieval:** Find the relevant pieces of our private data using a vector search.
 2. **Augmented:** Add those pieces into the prompt as context.
 3. **Generation:** Let the LLM generate the answer using that context.
+
+We have a detailed blog on [How does RAG work?](https://outcomeschool.com/blog/retrieval-augmented-generation-rag) that explains the full flow step by step.
 
 Let's see the flow.
 
@@ -1539,6 +1541,4 @@ But there is a deeper problem. The maximum context window is the size we are _al
 
 As we fill the context with more tokens, three things happen, and they all hurt quality.
 
-**1. Context Rot.** As the number of tokens in the context grows, the model's ability to recall information from anywhere in that context drops. Long-context evaluations (such as **Needle-in-a-Haystack** style tests and the more recent RULER and LongBench benchmarks) show that even models that advertise very long context windows start losing accuracy well before they hit that limit. So a large advertised context does not mean an equally large effective context.
-
-**2. [Lost in the Middle](https://outcomeschool.com/blog/lost-in-the-middle-problem-in-llms).** Research by Liu et al. (2023) showed that models pay the most attention to the start and the end of the context, and the least attention to the middle. If we plot accuracy against the position of the fact, we g
+**1. Context Rot.** As the number of tokens in the context grows, the model's ability to recall information from anywhere in that context drops. Long-context evaluations (such as **Needle-in-a-Haystack** style tests and the more recent RULER and LongBench benchmarks) show that even models that advertise very long context windows start losing accuracy well before they hit that limit. So a large advertised conte

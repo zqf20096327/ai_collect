@@ -1,98 +1,68 @@
-# TextTools
+﻿# TextTools
 
-**Язык:** Русский | [English](README.en.md)
+Tray application for the selected text. A hotkey runs an LLM action and pastes the result back, or shows it in a window. Capture and paste into other windows are implemented for Windows. The Linux and macOS builds open the tray.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![AutoHotkey](https://img.shields.io/badge/AutoHotkey-v2-blue.svg)](https://www.autohotkey.com/)
-[![Site](https://img.shields.io/badge/site-belyaevad.github.io-0f8f73.svg)](https://belyaevad.github.io/TextTools/)
+Kotlin and Compose Desktop, version 1.1. The last AutoHotkey release is tag `v0.3.1` on branch `archive/ahk`. What changed is in `CHANGELOG.md`.
 
-Небольшой скрипт на AutoHotkey v2. Выделяешь текст в любом окне Windows, жмёшь хоткей и выбираешь, что сделать через LLM: вычитать, переписать, сжать, собрать таблицу, разобрать кусок кода и т.д. Результат либо встаёт вместо выделения, либо открывается в отдельном окне.
+Ctrl+Alt+Space opens the action grid when text is selected. The grid opens on the window that held the selection. Shift on an action shows the result in a window instead of replacing the selection. Ctrl+Shift+Space repeats the last action. Fifteen factory actions ship with the app, and the instruction field runs a free-form one. While a request runs, the progress window shows an estimated token count and cost, then the figures reported by the provider. Quick refinements are buttons in that result window.
 
-**Сайт:** [belyaevad.github.io/TextTools](https://belyaevad.github.io/TextTools/) · [English](https://belyaevad.github.io/TextTools/en/)
+![Action menu](docs/assets/screenshots/en/menu.png)
 
-## Скриншоты
+The tray menu opens the last result, history, statistics, the action editor and settings.
 
-| Меню действий | Настройки API |
-|---|---|
-| ![Сетка действий](docs/assets/screenshots/ru/01-action-menu.png) | ![Настройки API](docs/assets/screenshots/ru/02-settings-api.png) |
+![Tray menu](docs/assets/screenshots/en/tray-menu.png)
 
-| Редактор действий | Редактор промпта |
-|---|---|
-| ![Редактор действий](docs/assets/screenshots/ru/04-actions-editor.png) | ![Редактор промпта](docs/assets/screenshots/ru/05-prompt-editor.png) |
+Settings has three tabs. The API tab is the OpenAI-compatible address, the key, an optional proxy, the default model, and the model list with context and price per million tokens. The key and the proxy stay in the operating-system secret store.
 
-| Интерфейс | Окно результата |
-|---|---|
-| ![Настройки UI](docs/assets/screenshots/ru/03-settings-ui.png) | ![Результат](docs/assets/screenshots/ru/06-result-window.png) |
+![API settings](docs/assets/screenshots/en/settings-api.png)
 
-| Клавиша занята |
-|---|
-| ![Конфликт клавиши](docs/assets/screenshots/ru/07-key-conflict.png) |
+Checked output languages appear on an action. A language can be added by hand.
 
-HTTP к API идёт через системный `curl.exe` — так стабильнее, чем COM/WinHTTP внутри процесса AHK.
+![Output languages](docs/assets/screenshots/en/settings-languages.png)
 
-## Что умеет
+The interface language is the bundled English or Russian translation. INI language packs are not loaded. This tab also has the hotkeys, Markdown in the result window, start with Windows, app profiling, and the two error-report switches, which start off.
 
-- Сетка действий с горячими клавишами и полем для своей инструкции
-- Повтор последнего действия (`Ctrl+Shift+Space` по умолчанию)
-- Редактор кнопок и промптов, профили «откуда текст»; занятую клавишу действия можно **обменять** или **забрать**
-- Любой OpenAI-совместимый endpoint (OpenRouter, OpenAI, прокси Anthropic, локальный Ollama…)
-- Опциональный HTTP/HTTPS/SOCKS-прокси (галочка на вкладке API; `http://user:pass@host:port` или `socks5h://…`)
-- Модель по умолчанию и отдельно на действие
-- Язык ответа на действие: 18 языков в списке, отмеченные попадают в карточку действия
-- История последних 20 операций, последний результат и отчёт по расходу — из трея
-- Учёт токенов и оценка стоимости: токены точные (API возвращает их в `usage`), а цены берутся из каталога OpenRouter даже когда провайдер другой — поэтому деньги это оценка, а не биллинг
-- Язык интерфейса через `lang/*.ini` (русский встроен в код, `ru.ini` не нужен)
+![Interface settings](docs/assets/screenshots/en/settings-interface.png)
 
-## Требования
+The result window copies the text or pastes it back into the source window.
 
-- Windows 10/11
-- [AutoHotkey v2](https://www.autohotkey.com/download/) (проверял на 2.0.26)
-- Системный `curl.exe`
-- API-ключ провайдера (или локальный Ollama). Адрес выбирается из выпадающего списка восьми провайдеров либо вписывается свой
+![Last result](docs/assets/screenshots/en/result.png)
 
-## Установка
+## Windows installer
 
-```powershell
-winget install -e --id AutoHotkey.AutoHotkey
-git clone https://github.com/BelyaevAD/TextTools.git
-cd TextTools
-powershell -ExecutionPolicy Bypass -File .\install.ps1
+The installer follows the Windows language for English, German, Japanese, Simplified Chinese and Russian. It shows the MIT license from this repository and links to https://github.com/BelyaevAD/TextTools. You can choose a desktop shortcut, a Start menu shortcut, start with Windows, and launch TextTools when setup finishes. Capture into other windows works on Windows. The key stays in the system secret store.
+
+## Requirements
+
+JDK 21.
+
+## Check and run
+
+On Windows, use `gradlew.bat` instead of `./gradlew`.
+
+```text
+./gradlew check
+./gradlew :app:run
 ```
 
-Или скачай source zip с [Releases](https://github.com/BelyaevAD/TextTools/releases), распакуй и запусти `install.ps1`.
+## Installers
 
-Скрипт копирует файлы в `%LOCALAPPDATA%\Scripts\TextTools\`, вешает автозапуск и стартует приложение. В трее открой **Настройки**, укажи Base URL и API key (шаблон — [`TextTools.ini.example`](TextTools.ini.example)).
+Each installer is built on its own OS and is not stored in git.
 
-Без install: дважды щёлкни `TextTools.ahk`, если AHK v2 уже стоит (состояние всё равно пишется рядом со скриптом).
+```text
+./gradlew :app:packageMsi
+./gradlew :app:packageDmg
+./gradlew :app:packageDeb
+```
 
-Удалить: `powershell -ExecutionPolicy Bypass -File .\uninstall.ps1` — снимает автозапуск и удаляет `%LOCALAPPDATA%\Scripts\TextTools` целиком, вместе с настройками, историей и логом. Сам AutoHotkey остаётся.
+The check workflow can build the same packages when started by hand. On a Mac, `sh packaging/macos/package-dmg.sh` from the repository root builds the DMG.
 
-## Использование
+## Configuration
 
-| Действие | По умолчанию |
-|---|---|
-| Меню действий | `Ctrl+Alt+Space` |
-| Повтор последнего | `Ctrl+Shift+Space` |
-| Результат в окне (без вставки) | **Shift** + клик / клавиша действия |
+The API key and the proxy URL stay in the operating-system secret store. They are not written to the repository or to SQLite.
 
-Хоткеи меняются в настройках. `Ctrl+Space` часто уже занят IME или другими хуками — поэтому по умолчанию `Ctrl+Alt+Space`.
+Error reports are off until both a DSN and a settings switch are present. Copy `config/sentry.properties.example` to `config/sentry.properties` (or to `%LOCALAPPDATA%\TextTools\sentry.properties`) and fill the DSN there. Do not commit that copy. Both Sentry switches start off.
 
-Подробнее: [docs/USER_GUIDE.md](docs/USER_GUIDE.md). Типичные сбои: [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
+## Docs and license
 
-## Конфиденциальность
-
-- API-ключ только локально в `TextTools.ini` (файл в `.gitignore`)
-- URL прокси с логином/паролем — тот же секрет, что и ключ; не коммитить
-- Текст уходит к выбранному провайдеру, когда ты запускаешь действие
-- Профилирование новых приложений (имя exe и заголовок окна) **выключено по умолчанию**. Если включить галочку в настройках, перед отправкой показывается, что уйдёт к модели
-- История на диске хранит обработанные тексты — не коммить её; из трея можно очистить историю и лог. Последний результат лежит ещё и в `TextTools_last.txt`, его «Очистить историю» не удаляет
-
-## Credits
-
-Идея системной LLM-обработки выделенного текста навеяна [Writing Tools](https://github.com/theJayTea/WritingTools) (theJayTea). Код и тексты промптов в этом репозитории — свои.
-
-Runtime: [AutoHotkey](https://www.autohotkey.com/) (Lexikos и сообщество).
-
-## Лицензия
-
-[MIT](LICENSE) — Copyright (c) 2026 BelyaevAD
+Module notes start at `docs/README.md`. The license is MIT.

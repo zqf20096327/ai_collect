@@ -329,7 +329,8 @@ Two more entry points ship with it:
   Deliberation, Decisions, Mandate, Audit, Performance, Ask, Daily brief). Every
   action it takes (approve, reject, freeze, mandate edits) goes through a confirm
   and lands in the audit log; **Ask** answers questions about the fund in plain
-  language. Press `?` for the key map.
+  language by reading its data, docs and source (read-only), keeps a saved
+  conversation per portfolio, and `/clear` deletes it. Press `?` for the key map.
 
 #### Restricting a portfolio to a set of instruments
 
@@ -397,7 +398,7 @@ for DBSCAN price-repair), `numpy==2.5.4`, `pandas==3.0.6`, `APScheduler==3.11.3`
 `pydantic==2.14.1`, `pydantic-settings==2.15.0`, `python-dotenv==1.2.3`, plus
 `portopt-db` (workspace; psycopg2-binary/alembic arrive transitively).
 
-**`portopt-fund`** (bridge): `deepagents==0.7.14` (the only exact pin),
+**`portopt-fund`** (bridge): `deepagents==0.7.35` (the only exact pin),
 `langgraph`, `langgraph-checkpoint-postgres`, `psycopg[binary]`, `psycopg-pool`,
 `langchain-ollama`, `APScheduler`, `typer`, `textual`, `pydantic`,
 `python-dotenv`, plus `portopt-core` + `portopt-db` (workspace).

@@ -1,6 +1,6 @@
 # 破甲修改器
 
-> 产物名 `pojia-modifier`，对外版本号 **`v1.04.1-beta`**，MIT 正文 + Commons Clause。
+> 产物名 `pojia-modifier`，对外版本号 **`v1.03.8-beta`**，MIT 正文 + Commons Clause。
 > 后缀即渠道：`-alpha` 开发版、`-beta` 测试版、`-mod` 稳定版。
 > 仅限在**自己有权管理的本机设备**上使用，下载前请读 [完整免责声明](docs/disclaimer.md)。
 
@@ -9,12 +9,12 @@
 [![License](https://img.shields.io/badge/license-MIT%20%2B%20Commons%20Clause-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
 
-**一句话：把你电脑上 17 个 AI 客户端「自己改不到的内置提示词」，换成你自己写的那份。**
+**一句话：把你电脑上 20 个 AI 客户端「自己改不到的内置提示词」，换成你自己写的那份。**
 
 | 换完之后 | 说明 |
 |---|---|
 | 用**你的**身份设定 | 而不是软件自带的默认人格 |
-| **17 个客户端一份口径** | 共用一份人格文本，不用各改各的 |
+| **20 个客户端一份口径** | 共用一份人格文本，不用各改各的 |
 | **当场能自证** | 发一句固定口令验证真载入，不靠「感觉好像生效了」 |
 | **随时能还原** | `--revert` 回官方原版，改前备份一直都在 |
 
@@ -58,6 +58,9 @@
 | `cline` | Cline（`~/Documents/Cline/Rules/pojia-inject.md`） |
 | `copilot` | GitHub Copilot CLI（`~/.copilot/copilot-instructions.md`） |
 | `kiro` | Kiro（`~/.kiro/steering/pojia-inject.md`） |
+| `reasonix` | Reasonix Studio（`%APPDATA%\reasonix/AGENTS.md`，非 `~/.reasonix`） |
+| `traecn` | Trae CN（`~/.trae-cn/rules/project_rules.md`，与 `trae` 分开认） |
+| `qodercn` | Qoder CN（`~/.qoder-cn/agents/purge/qodercn.md` 带 frontmatter，附 `skills/purge/SKILL.md`） |
 
 ## 快速开始
 
@@ -81,6 +84,7 @@ python src/pojia.py --apply --target dsh --dsh-mode preset   # DSH：不改官�
 python src/pojia.py --apply --target wb --full               # WorkBuddy：五层开关一次做完
 python src/pojia.py --clean-spill        # 清过期的会话快照（含明文 Key）
 python src/pojia.py --guard install      # 装运行时守卫（Windows 计划任务）
+python src/pojia.py --session-guard on   # 装 DSH 会话守卫（拒答续命 / 异常续跑，Cordis 插件）
 python src/pojia.py --check-update       # 只查有没有新版（只读，不下不装）
 python src/pojia.py --update             # 有新版就下、校验、替换
 python src/pojia.py --settings           # 看设置（更新通道 / 启动检查）
@@ -98,7 +102,7 @@ python src/pojia_gui.py                  # 只起图形界面（本机网页）
 在客户端**新会话**里单独发一句 `破甲自检`（整条消息只有这四个字），只回一行就说明人格真载入了：
 
 ```
-破甲已生效｜版本1.04.1-beta｜仓库地址：https://github.com/Mladery/pojia-modifier
+破甲已生效｜版本1.03.8-beta｜仓库地址：https://github.com/Mladery/pojia-modifier
 ```
 
 回复带解释、加戏或拒答 → 人格没生效，先确认目标已**重启**（改的是磁盘文件，运行中的进程不会重读）。
@@ -198,7 +202,7 @@ src/pojia.py                   命令行主程序（零第三方依赖）
 src/pojia_gui.py               图形界面：本机网页 UI，零依赖
 policy_src/                    策略明文：policy / overlay / hardening / echo / addenda
 tools/embed_policy.py          明文 → 嵌入常量（重跑必须字节一致）
-tools/selftest.py              17 个目标的自检
+tools/selftest.py              20 个目标的自检
 tools/                         打包与发布：PyInstaller、NSIS、POSIX 安装器、签名与验签
 vendor/everything/             Everything SDK 动态库（MIT），用于直查文件索引
 tests/contract/                26 条黑盒契约
@@ -229,6 +233,16 @@ python tools/embed_policy.py && git status --porcelain   # 必须为空
 - 改了 `policy_src/` 记得重跑 `tools/embed_policy.py` 并把结果一起提交
 
 不写代码也帮得上忙：报一个能复现的 bug、补一段某客户端的安装路径、把 README 里过时的说明指出来，都算。
+
+## 致谢
+
+[![贡献者](https://contrib.rocks/image?repo=Mladery/pojia-modifier)](https://github.com/Mladery/pojia-modifier/graphs/contributors)
+
+按并入主线的时间排序，只列代码与文档改动。头像墙按提交记录自动更新，新名字出现即上榜。
+
+- **[zixuan203344](https://github.com/zixuan203344)** —— Reasonix、Trae CN、Qoder CN 三个目标的适配（`v1.03.3-beta`），目标数 17 → 20；一并修掉第二落点撤回后残留、技能文件 YAML 头被覆盖、旧版本块叠加三处问题。
+
+想加自己正在用的客户端，照着 `docs/spec/40-targets.md` 的落点表补一个类，跑一遍 `tools/selftest.py` 再提。
 
 ## 许可
 

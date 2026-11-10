@@ -1,4 +1,4 @@
-<p align="center"><img src="gallery/OpenCircleCoverIMG.png" alt="OpenCircle: circle anything on your screen to search, read, translate or ask AI" width="100%"></p>
+<p align="center"><img src="docs/gallery/OpenCircleCoverIMG.png" alt="OpenCircle: circle anything on your screen to search, read, translate or ask AI" width="100%"></p>
 
 <h1 align="center">OpenCircle</h1>
 
@@ -15,7 +15,7 @@ in your own browser, only when you choose them, and translation runs on your PC
 by default. It is free, MIT licensed, and has no account and no telemetry.
 
 <p align="center">
-  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-7a6cf0"></a>
+  <a href="LICENSE.md"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-7a6cf0"></a>
   <img alt="Platforms: Windows and Linux" src="https://img.shields.io/badge/platforms-Windows%20%7C%20Linux-4fc9e0">
 </p>
 
@@ -37,9 +37,9 @@ by default. It is free, MIT licensed, and has no account and no telemetry.
   <img src="docs/images/translate-before-after.png" alt="Translate in place: a page in English, then the same page in Arabic." width="49%">
 </p>
 
-More in the [gallery](gallery/README.md) and the [feature guides](docs/features/README.md).
+More in the [gallery](docs/gallery/README.md) and the [feature guides](docs/features/README.md).
 The clips are short recordings of the real app; third-party material in them is
-credited in `NOTICE` and in Settings > About.
+credited in [NOTICE](docs/NOTICE.md) and in Settings > About.
 
 ## What works by default
 
@@ -59,33 +59,36 @@ credited in `NOTICE` and in Settings > About.
   matching colour and size; browser address bars and file names are left alone,
   and big outlined subtitles are erased and redrawn at their size. It runs
   offline by default after a one-time model download (49 direct models, and
-  other pairs go through English); Arabic is the default target. Direct models
-  into and out of Arabic make it faster. See [Translate](docs/translate.md).
+  other pairs go through English); the target is the language you pick at the
+  first start. Direct models into and out of Arabic make it faster. See [Translate](docs/translate.md).
 - **Snip and annotate.** Press `Alt+A`: the screen freezes, hover a window and
-  click it, or drag an area (`Enter` takes the full screen). The pick is already
-  on the clipboard at its original size, with one grouped toolbar beside it:
-  shapes, arrows, text, callouts, numbered steps, spotlight, magnifier, Blur (a
+  click it (OpenCircle's own widgets too), or drag an area (`Enter` takes the
+  full screen); `Ctrl+C` copies it at its original size. One grouped toolbar
+  sits beside it: shapes, arrows, text, callouts, numbered steps, spotlight, magnifier, Blur (a
   fine pixel mosaic that hides text for good) and a solid Redact. **Long
   capture**: scroll the page yourself and OpenCircle stitches it. **Steps** keeps
   several snips on a slim strip and copies them as one numbered image. Also a
-  colour picker, a screen ruler, Pin and Share. Details:
+  colour picker, a screen ruler, Pin and Share. Snip also takes a translated
+  page as you see it (the translate pill's Snip button). Details:
   [Snip and annotate](docs/snip-and-annotate.md).
 - **One bottom bar.** Ask OpenCircle AI about your screen, then Search in
   browser, Copy text, Translate and Snip. `Ctrl+C` copies the selection as an
   image (or the picked words as text), `Ctrl+S` saves it; a small pill confirms.
-  Drag the bar to any of six spots.
-- **Ask AI about your selection.** No key needed: the question opens in Google
-  AI Mode in your browser. Or add your own key for a chat inside OpenCircle
+  Drag the bar to any of six spots, on any screen.
+- **Ask AI about your selection.** No key needed: the question and the circled picture
+  open in Google in your browser (Lens, then AI Mode). Or add your own key for a chat inside OpenCircle
   with markdown and follow-ups: OpenRouter, OpenAI, Anthropic, Gemini, Groq,
-  Mistral, DeepSeek, xAI, a local Ollama or LM Studio, or your own server. A
-  follow-up pins the chat so it stays above other apps. History is text only
-  and stays on this PC.
+  Mistral, DeepSeek, xAI, a local Ollama or LM Studio, or your own server, each
+  with a list of its current models (OpenRouter's free router is the default).
+  A follow-up pins the chat so it stays above other apps. Errors say plainly
+  what went wrong and offer one fix. History is text only and stays on this PC.
 - **Shortcuts for everything.** Give any action its own key and skip the bar.
 - **12 themes and Active Look.** Pick a card in Settings > Appearance (light and
   dark; until you do, it follows the system). Sapphire Glow, a soft glow round
   the screen edge, is the default look; its colours also outline the snip area.
-- **Updates that check a signature.** Quiet, opt-in on first run, with release
-  notes after each update.
+- **Updates that check a signature.** Opt-in on first run. A new version
+  downloads in the background and waits: a small pill above the tray offers
+  **Restart now**, and What's new shows after the restart.
 
 <p align="center">
   <img src="docs/images/settings-appearance.png" alt="Settings > Appearance: 12 themes and the Active Look borders, with Sapphire Glow as the default." width="70%">
@@ -197,9 +200,11 @@ Settings. Full list and details: [Shortcuts](docs/shortcuts.md).
 ## Platforms
 
 - **Windows 10 and 11:** the full feature set.
-- **Linux:** X11 and Wayland. On Wayland the desktop owns the keys and
-  the screen capture; picking a window and long capture are not offered, and
-  Share is Windows only. See [Linux notes](docs/linux-notes.md).
+- **Linux:** X11 and Wayland. On Wayland the desktop owns the keys and the
+  screen capture (GNOME asks once); shortcuts work on GNOME with or without the
+  shortcut portal, long capture shows its progress in a small pop-up, picking a
+  window is not offered (a click takes the screen), and Share is Windows only.
+  See [Linux notes](docs/linux-notes.md).
 
 Games must run in borderless or windowed mode for live translate (Labs,
 unfinished). Linux text reading is slower than Windows OCR; on Wayland the
@@ -228,7 +233,7 @@ Linux build dependencies (Debian/Ubuntu):
 sudo apt-get install libxkbcommon-dev libwayland-dev libxcb1-dev libxrandr-dev libdbus-1-dev libpipewire-0.3-dev libgtk-3-dev libxdo-dev
 ```
 
-[ARCHITECTURE.md](ARCHITECTURE.md) describes how the code is organised.
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) describes how the code is organised.
 
 ## Guides
 
@@ -237,7 +242,7 @@ sudo apt-get install libxkbcommon-dev libwayland-dev libxcb1-dev libxrandr-dev l
 [Translate](docs/translate.md) ·
 [Snip and annotate](docs/snip-and-annotate.md) ·
 [Feature guides](docs/features/README.md) ·
-[Gallery](gallery/README.md) ·
+[Gallery](docs/gallery/README.md) ·
 [AI setup](docs/ai-setup.md) ·
 [Song search (Labs)](docs/song-search.md) ·
 [Privacy](docs/privacy.md) ·
@@ -248,7 +253,7 @@ sudo apt-get install libxkbcommon-dev libwayland-dev libxcb1-dev libxrandr-dev l
 
 Settings > About lists the project, the licence, and every component OpenCircle
 uses that is made by others, with its licence. Text-reading and translation
-models are downloaded on first use under their own licences; see `NOTICE`.
+models are downloaded on first use under their own licences; see [NOTICE](docs/NOTICE.md).
 The translation models come from Hugging Face (Xenova's ONNX exports of the
 Helsinki-NLP OPUS-MT models) and, for the five direct Arabic models we
 converted ourselves, from
@@ -264,12 +269,12 @@ cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE.md)
 
 Media exception: the preview clips (`assets/previews`: the stills bundled in the
 app, the full clips downloaded when you play a preview) show
 third-party material under its own terms, which the app's MIT licence does not
-relicense. Each clip's credit and licence is listed in `NOTICE` and in
+relicense. Each clip's credit and licence is listed in [NOTICE](docs/NOTICE.md) and in
 Settings > About.
 
 OpenCircle is an independent project and is not affiliated with or endorsed

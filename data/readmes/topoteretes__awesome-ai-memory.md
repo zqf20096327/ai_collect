@@ -89,6 +89,7 @@ Have anything to add? See the [Contributing](#contributing) section.
 - [LLM frameworks](#llm-frameworks)
 - [Optimizers](#optimizers)
 - [Storage](#storage)
+- [Security](#security)
 - [Benchmarks & evaluation](#benchmarks--evaluation)
 - [Contributing](#contributing)
 - [Cite this list](#cite-this-list)
@@ -100,13 +101,14 @@ Each project is tagged across three dimensions:
 | Column | Values | Meaning |
 |--------|--------|---------|
 | **Open / Close** | Open source · Managed · Closed | Whether you can self-host, and whether a hosted offering exists |
-| **Category** | Memory Tool · LLM Framework · Optimizer · Storage | Where it sits in the stack |
-| **Storage** | Graph · Vector · Graph, Vector | How it represents and retrieves memory |
+| **Category** | Memory Tool · LLM Framework · Optimizer · Storage · Security | Where it sits in the stack |
+| **Storage** | Graph · Vector · Keyword · Graph, Vector | How it represents and retrieves memory |
 
 - **Memory Tool** — purpose-built to give agents persistent, retrievable memory.
 - **LLM Framework** — general agent/app frameworks that include a memory module.
 - **Optimizer** — improves retrieval, prompts, or embeddings rather than storing memory directly.
-- **Storage** — the underlying database (vector store or graph DB) a memory layer is built on.
+- **Storage** — the underlying database or index (vector store, graph DB, or keyword index) a memory layer is built on.
+- **Security** — protects a memory layer against poisoning and tampering (validation on write, integrity checks on read).
 
 ## Types of AI memory
  
@@ -140,6 +142,54 @@ Implementations differ mainly in how they store and retrieve this memory: **vect
 | Vanna.AI | Open-source text-to-SQL framework using RAG over your database schema | https://vanna.ai/ | Open source | https://github.com/vanna-ai/vanna | Memory Tool | Vector |
 | MemClaw | Persistent, project-isolated memory for AI coding agents, with a web dashboard | https://memclaw.me | Open source | https://github.com/Felo-Inc/memclaw | Memory Tool | Vector |
 | LWC | Local-first proactive memory CLI for AI coding agents; maintains a source-grounded SQLite Wiki with optional document-graph and CodeGraph projections | https://janyork.github.io/llm-wiki-cli/ | Open source | https://github.com/JanYork/llm-wiki-cli | Memory Tool | Graph |
+| Basic Memory | Local-first knowledge base for AI conversations: plain Markdown notes form a semantic knowledge graph, served to assistants over MCP | https://basicmemory.com | Managed, Open source | https://github.com/basicmachines-co/basic-memory | Memory Tool | Graph |
+| memsearch | Markdown-first semantic memory for AI agents (Zilliz): hybrid vector + keyword search over Markdown notes, backed by Milvus | https://zilliztech.github.io/memsearch/ | Open source | https://github.com/zilliztech/memsearch | Memory Tool | Vector |
+| shodh-memory | Local, LLM-free memory for AI agents in a single offline Rust binary: knowledge graph with Hebbian learning, deterministic and auditable | https://github.com/varun29ankuS/shodh-memory | Open source | https://github.com/varun29ankuS/shodh-memory | Memory Tool | Graph, Vector |
+| Remembra | Cross-agent session handoffs for coding agents (facts from git, a short brief for the next agent, a trail of every session) on a memory layer with entity extraction and hybrid recall | https://remembra.dev/ | Managed, Open source | https://github.com/remembra-ai/remembra | Memory Tool | Graph, Vector |
+| OMEGA Memory | Persistent memory for AI coding agents | https://omegamax.co/ | Open source | https://github.com/omega-memory/omega-memory | Memory Tool | Vector |
+| Hindsight (by Vectorize) | Open-source agent memory that learns from interactions; graph + vector retrieval | https://hindsight.vectorize.io | Open source | https://github.com/vectorize-io/hindsight | Memory Tool | Graph, Vector |
+| Mnemory | Self-hosted, secure memory system for AI agents and assistants | | Open source | https://github.com/fpytloun/mnemory | Memory Tool | Vector |
+| Screenpipe | Searchable local screen and audio history exposed to AI assistants through a local API and MCP server | https://screenpipe.com/ | Source-available | https://github.com/screenpipe/screenpipe | Memory Tool | Keyword, Vector |
+| PMB (Personal Memory Brain) | Local-first persistent memory for AI coding agents over MCP; captures decisions, lessons and facts as you work and injects the relevant ones back via lifecycle hooks. Hybrid BM25 + vector + entity-graph retrieval, fully offline, no API keys | https://oleksiijko.github.io/pmb | Open source | https://github.com/oleksiijko/pmb | Memory Tool | Graph, Vector |
+| Inite Brain | Open-source memory layer for LLM agents: bitemporal knowledge graph with facts/episodes/procedural tiers, hybrid retrieval, multi-hop planner, GDPR forget; LoCoMo-benchmarked | https://brain.inite.ai | Managed, Open source | https://github.com/inite-ai/inite-brain-service | Memory Tool | Graph, Vector |
+| MFS | Context harness for AI agents (Zilliz): code, memory, docs and data sources in one searchable, file-like interface, powered by Milvus | https://zilliztech.github.io/mfs/ | Open source | https://github.com/zilliztech/mfs | Memory Tool | Vector |
+| Off Grid AI Desktop | Open-source (AGPL-3.0) macOS app with on-device personal memory and RAG search over your own data, running fully local via llama.cpp; part of a local-first AI suite (chat, image gen, dictation) | https://getoffgridai.co/desktop | Open source | https://github.com/off-grid-ai/off-grid-ai-desktop | Memory Tool | Vector |
+| Data Olympus | Governed project memory for AI coding agents: reviewed promotion, validity windows, supersession-aware retrieval, and MCP access to in-force knowledge | | Open source | https://github.com/knaisoma/data-olympus | Memory Tool | Graph, Vector |
+| Engrava | Embedded memory database for AI agents: typed knowledge graph, hybrid search (vector + full-text + recency + priority + graph), and a tamper-evident SHA-256 journal of every write, in SQLite; no server, no LLM in the memory layer | https://engrava.ai | Open source | https://github.com/sovantica/engrava | Memory Tool | Graph, Vector, Keyword |
+| GoodMemory | Local-first, auditable memory for AI agents and coding hosts, with SQLite persistence, embedding-free recall by default, optional vectors, and governed writeback | https://www.npmjs.com/package/goodmemory | Open source | https://github.com/hjqcan/GoodMemory | Memory Tool | Keyword, Vector |
+| Lians | Open-source bitemporal memory for agents with deterministic supersession, point-in-time recall, and tamper-evident audit history | https://www.lians.ai/ | Open source | https://github.com/Lians-ai/Lians | Memory Tool | Vector |
+| Talamus | Local-first, source-grounded memory for AI agents using inspectable Markdown, SQLite/FTS5 retrieval, citations, and bitemporal history | https://ampres-ai.github.io/talamus/ | Open source | https://github.com/ampres-ai/talamus | Memory Tool | Keyword |
+| kgai | Local-first immutable knowledge graph of engineering decisions for AI coding agents; auto-captured, recalled before edits, superseded not overwritten | https://kgai.dev | Open source | https://github.com/kgaidev/kgai | Memory Tool | Graph |
+| Compartment | Fully offline, encrypted-at-rest vector memory for AI agents; RAM-resident hybrid vector + keyword search, exposed as an MCP server or Python/CLI library | | Open source | https://github.com/MaxFreedomPollard/Compartment | Memory Tool | Vector |
+| kannaka-memory | Wave-interference ("holographic resonance") memory for AI agents: memories as wavefronts in a high-dimensional tensor field, recall as a single tensor product, interference-based forgetting, dream-style consolidation and NATS multi-agent sync; Rust, single static binary | | Open source | https://github.com/NickFlach/kannaka-memory | Memory Tool | Vector |
+| RE-call | Trustworthy memory retrieval for AI agents, backed by Postgres plus pgvector, with provenance, trust verdicts, tenant isolation, and explicit abstention when memory cannot support an answer | https://github.com/GiulioDER/RE-call | Open source | https://github.com/GiulioDER/RE-call | Memory Tool | Vector |
+| Engraphy | Self-hosted typed memory graph for AI agents, spoken over MCP; writes deduplicate against existing memory before they land, retrieval fuses vector and full-text search with typed-edge traversal | https://engraphy.tech | Source-available (BSL 1.1) | https://github.com/devon-clarkk/engraphy | Memory Tool | Graph, Vector |
+| inspeximus | Self-correcting agent memory: a correction retires the old value by key, revert() undoes the correction on command, and every write leaves a verifiable receipt. No LLM in the loop | https://dancenitra.github.io/inspeximus/ | Open source | https://github.com/DanceNitra/inspeximus | Memory Tool | Vector |
+| pond | Lossless archive of AI agent sessions across twelve coding-agent clients; keeps whole sessions in a local directory or your own S3 bucket on Lance, with BM25 keyword retrieval by default and optional embeddings, served over CLI, MCP, HTTP, and read-only SQL | https://pond.locker | Open source | https://github.com/tenequm/pond | Memory Tool, Storage | Keyword, Vector |
+| Unlimited Context | Local-first context engine that keeps a billion-token encoded pool on disk and pages the relevant slices into the model's resident window | https://pypi.org/project/aether-context/ | Open source | https://github.com/AetherAI3/Unlimited-Context-LLM | Memory Tool | Vector |
+| Mnemoverse | Hosted memory for AI agents over MCP; ratings on recalled memories re-rank what comes back next, and shared rooms let several agents use one memory | https://mnemoverse.com/ | Managed | https://github.com/mnemoverse/mcp-memory-server | Memory Tool | Graph |
+| NexusMem | Local-first long-term memory for coding agents; indexes Git history, shell commands with exit codes, and project documentation | https://nexus-mem.vercel.app | Open source | https://github.com/yaminbkk/NexusMem | Memory Tool | Vector |
+| Mnemosyne OS | Desktop memory that stays on the user's machine: vaults per life domain, hybrid retrieval (BM25 fused with vectors by RRF), and a governed door where the human decides which vaults a model is allowed to read | https://mnemosyne-os.io | Open core | https://github.com/Mnemosyne-OS/Mnemosyne-Neural-OS | Memory Tool | Vector |
+| myc | Local task-and-memory layer for coding agents: decision oplog with hybrid (BM25 + vector) search, memory anchored to code spans, PreCompact hook that saves the session before context compaction; Bun + SQLite, no network, no API key | https://aistastudio.github.io/myc/ | Open source | https://github.com/aistastudio/myc | Memory Tool | Graph, Vector |
+| skillmem | Procedural memory for coding agents: not facts about the user, but how a task was solved (trigger, steps, outcome, lessons). Local-only MCP server with editor hooks that recall and record automatically; owner-approval boundary so an agent cannot turn what it read into a rule | https://skillmem.dev | Open source | https://github.com/liza-studio/skillmem | Memory Tool | Vector |
+| deja-vu | Local memory over the session files coding agents already write to disk (Claude Code, Codex, Cursor and 31 others), including history from before install; BM25 keyword retrieval, no LLM and no embeddings | https://vshulcz.github.io/deja-vu/ | Open source | https://github.com/vshulcz/deja-vu | Memory Tool | Keyword |
+| Hermeneutic | Mines user corrections from AI session logs and retrieves relevant past guidance for similar prompts using a local corpus and Ollama embeddings | https://hermes-labs.ai/hermeneutic | Open source | https://github.com/hermes-labs-ai/hermeneutic | Memory Tool | Vector |
+| Magnemo | Persistent memory for AI agents where nothing becomes memory until you approve it; plain local Markdown files (Apache-2.0) | https://magnemo.ai | Open source | https://github.com/Magnemo-AI/magnemo | Memory Tool | Keyword |
+| Synapse | Zero-runtime-dependency Markdown vault for agent memory, with SQLite keyword search, optional embeddings, linked wiki pages, MCP retrieval, and human-approved note proposals | https://github.com/anshulyadav1976/synapse | Open source | https://github.com/anshulyadav1976/synapse | Memory Tool | Graph, Vector |
+| OpenViking | Self-hosted context database for AI agents: resources, memory and skills in one browsable viking:// filesystem with layered L0/L1/L2 summaries, plus an MCP endpoint for coding agents | https://openviking.ai/ | Managed, Open source | https://github.com/volcengine/OpenViking | Memory Tool | Vector |
+| Mnemosyne | Zero-dependency local memory for agents: a four-layer store kept as plain Markdown, ranked by compound-cue cognitive formulas instead of embeddings | https://github.com/ElonAug7/Mnemosyne-agentmemory-engine-openclaw-hermes | Open source | https://github.com/ElonAug7/Mnemosyne-agentmemory-engine-openclaw-hermes | Memory Tool | Keyword |
+| Zekra (ذكرى) | Open-source shared long-term memory server for AI agents over MCP; deduplicated writes (ADD/UPDATE/INVALIDATE/NOOP), hybrid vector + BM25 + rerank + 1-hop graph recall, Arabic and English indexed together | https://zekra.dev | Managed, Open source | https://github.com/fadymondy/zekra | Memory Tool | Graph, Vector |
+| trip2g | Self-hosted MCP memory over an Obsidian vault: agents search and read plain Markdown notes that are also published as a website; hubs federate search with peers | https://trip2g.com/ | Open source | https://github.com/trip2g/trip2g | Memory Tool | Vector |
+| LLMSlim | Local agent memory with no LLM in the loop; stores turns verbatim in SQLite or Postgres and recalls turns, whole where they fit, within a token budget, as a Python library or an MCP server | https://www.llmslim.app | Open source | https://github.com/Thanatos9404/llmslim | Memory Tool | Keyword |
+| Space | Shared workspace and long-term memory for AI agents over MCP: session handoffs, remembered claims with cited recall, documents, tasks and SQL-queryable databases, used by Claude Code, Codex, Cursor and other MCP clients (PostgreSQL + pgvector) | https://getspace.sh/ | Managed, Open source | https://github.com/Hugo-SEQUIER/getspace | Memory Tool | Vector |
+| MemVault | Local-first memory shared across AI agents: session-start recall, review inbox, dedup/decay and an MCP server | https://github.com/dreamor/memvault | Open source | https://github.com/dreamor/memvault | Memory Tool | Vector |
+| bhived | Shared memory network for AI agents over MCP: agents check fixes and known mistakes other agents verified, then write back what they confirm (open-source MCP client) | https://bhived.ai/ | Managed | https://github.com/ArtKeyAi/bhived-mcp | Memory Tool | Graph, Vector |
+| Quipu | Governed, bitemporal knowledge graph store for AI agents (RDF, SPARQL, SHACL on SQLite): writes are checked before they commit, every fact keeps its provenance, past states stay queryable; knowledge exports as verifiable packs; runs as CLI, REST, MCP server, Rust library, or in the browser via WebAssembly | https://intigraph.github.io/quipu/ | Open source | https://github.com/intigraph/quipu | Memory Tool | Graph |
+| Renor | Memory for coding agents over MCP: Markdown notes in a folder, recalled later (Apache-2.0) | https://renor.cloud/ | Managed, Open source | https://github.com/renorai/renor-engine | Memory Tool | Vector |
+| Helix Foundry | Apache-2.0 tool that connects databases, apps and documents, has an agent draft an ontology over them, and loads it into HelixDB as one graph you can explore and ask questions of, with every value traced to its source | https://foundry.helix-db.com | Managed, Open source | https://github.com/HelixDB/helix-foundry | Memory Tool | Graph, Vector |
+| Atris | Project memory CLI for coding agents (Claude Code, Codex, Cursor): repo-local Markdown file:line map, linked wiki with typed links, and daily logs, shared through git | https://atris.ai/blog/memory-for-coding-agents | Open source | https://github.com/atrislabs/atris | Memory Tool | Graph |
+| MemoryBrain | Personal memory for ChatGPT and Claude over MCP; every note keeps its source (read, said or chat), with typed links between notes | https://memorybrain.ai/ | Managed, Open source | https://github.com/Memory-brain/open-brain | Memory Tool | Graph |
+| Uteke | Local-first long-term memory for AI agents: one offline Rust binary with hybrid vector + full-text recall, a relationship graph, rooms for shared memory and point-in-time recall; MCP server | https://uteke.app | Managed, Open source | https://github.com/codecoradev/uteke | Memory Tool | Graph, Vector |
 | WhyHowAI | Knowledge-graph tooling for structuring RAG and agent memory | https://www.whyhow.ai/ | Closed | https://github.com/whyhow-ai | Memory Tool | Graph |
 | Graphlit | Managed knowledge API for content ingestion, RAG, and agents | https://graphlit.com | Closed | | Memory Tool | Graph, Vector |
 | ragie.ai | Managed RAG-as-a-service for ingesting and retrieving documents | https://ragie.ai | Closed | https://github.com/ragieai | Memory Tool | Vector |
@@ -148,6 +198,13 @@ Implementations differ mainly in how they store and retrieve this memory: **vect
 | Prometheux | Explainable reasoning / ontology engine over large knowledge graphs (Vadalog) | https://www.prometheux.co.uk/ | Closed | | Memory Tool, Storage | Vector |
 | AllegroGraph | Graph database supporting RDF, knowledge graphs, and vectors | https://allegrograph.com/ | Closed | | Memory Tool | Graph |
 | llongterm | | https://www.llongterm.com/ | Closed | | Memory Tool | Graph |
+| Alchemyst AI | Shared, traceable context and persistent memory layer for AI agents over company knowledge | https://getalchemystai.com/ | Closed | | Memory Tool, Storage | Graph, Vector |
+| Remio | Personal AI assistant that captures web pages, meetings, emails and files into searchable knowledge and context-aware answers | https://remio.ai/ | Closed | | Memory Tool | Vector |
+| MemoryPlugin | Long-term memory shared across 21+ AI chat tools and MCP clients via browser extension, MCP server, and API; imports ChatGPT, Claude, and Gemini chat history | https://www.memoryplugin.com/ | Closed | https://github.com/memoryplugin/mcp-server | Memory Tool | Vector |
+| GoodMem | Self-hostable memory service for AI agents with server-side chunking, embeddings, semantic retrieval, and shared memory spaces | https://goodmem.ai/ | Managed, Closed | | Memory Tool | Vector |
+| Sentra | Organization-wide memory for teams and AI agents: bi-temporal fact graph built from 200+ connected tools, served over REST and MCP | https://www.sentra.app/ | Closed | | Memory Tool | Graph, Vector |
+| MemoryRouter | Hosted persistent memory shared across Claude, ChatGPT, coding agents, and any MCP client through a remote MCP server | https://memoryrouter.ai/ | Closed | https://github.com/John-Rood/memoryrouter-sdk | Memory Tool | Vector |
+| Famfol | Shared on-device memory for AI apps on Mac (Claude Code, Codex, Cursor) over MCP, with provenance and a review queue | https://famfol.com/ | Closed | | Memory Tool | Vector |
 
 ## LLM frameworks
 
@@ -158,6 +215,7 @@ Implementations differ mainly in how they store and retrieve this memory: **vect
 | Haystack | Open-source framework (deepset) for RAG and search pipelines | https://haystack.deepset.ai/ | Open source | https://github.com/deepset-ai | LLM Framework | Vector |
 | PraisonAI | Multi-agent framework for building and orchestrating AI agents | https://docs.praison.ai/ | Open source | https://github.com/MervinPraison/PraisonAI | LLM Framework | Graph, Vector |
 | Rasa | Open-source framework for conversational assistants | https://rasa.com/ | Open source | https://github.com/RasaHQ/ | LLM Framework | Graph, Vector |
+| Autohand Code CLI | Open-source terminal coding agent with built-in persistent memory; 15+ model providers and local models | https://www.autohand.ai/code/ | Open source | https://github.com/autohandai/code-cli | LLM Framework | Vector |
 
 ## Optimizers
 
@@ -165,6 +223,7 @@ Implementations differ mainly in how they store and retrieve this memory: **vect
 |------|-------------|-----|--------------|------------|----------|---------|
 | DSPy | Framework for programming and optimizing LLM prompts and pipelines (Stanford NLP) | https://dspy.ai/ | Open source | https://github.com/stanfordnlp/dspy | Optimizer | Vector |
 | Jina AI | Multimodal AI framework for neural search and embeddings | https://jina.ai/ | Open source | https://github.com/jina-ai | Optimizer | Vector |
+| Galahad (from Corbenic) | Saves the KV-cache state of ~16K-token blocks to encrypted local NVMe and reloads it byte-exact instead of recomputing; plugs into vLLM, SGLang and llama.cpp. Proprietary: free on one GPU for non-commercial use | https://huggingface.co/papers/2610.10845 | Closed | https://github.com/corbenicai/galahad | Optimizer | KV cache |
 
 ## Storage
 
@@ -186,6 +245,16 @@ Implementations differ mainly in how they store and retrieve this memory: **vect
 | Pinecone | Managed vector database | https://pinecone.io | Closed | | Storage | Vector |
 | StarDog | Enterprise knowledge graph platform | https://www.stardog.com/ | Closed | | Storage | Graph |
 | supabase | Open-source Postgres backend (supports pgvector for embeddings) | https://supabase.com/ | Open source | https://github.com/supabase | Storage | Vector |
+| HydraDB | Fast graph database on object storage for persistent, time-aware, relationship-driven agent memory | https://hydradb.com/ | Managed, Open source | https://github.com/hydra-db/hydradb | Storage | Graph |
+| HelixDB | Open-source graph-vector database in Rust (Apache-2.0) with graph traversal, vector search and BM25 full-text search in one engine, for agent memory and GraphRAG | https://www.helix-db.com | Managed, Open source | https://github.com/HelixDB/helix-db | Storage | Graph, Vector |
+
+## Security
+
+Memory that persists across sessions is also an attack surface: a poisoned write (from a tool result, a web page, or another agent) is replayed into every later prompt. Tools in this category sit on the write/read path of a memory layer to validate content before it is persisted and to verify protected records on read (OWASP Top 10 for Agentic Applications, ASI06; MITRE ATLAS AML.T0080.000).
+
+| Name | Description | URL | Open / Close | GitHub URL | Category | Storage |
+|------|-------------|-----|--------------|------------|----------|---------|
+| OWASP Agent Memory Guard | Runtime guard for AI-agent memory: write-path detectors, source-class provenance, integrity baselines, quarantine and rollback; adapters for LangChain, OpenAI Agents SDK, AutoGen, CrewAI, and mem0 | https://owasp.org/www-project-agent-memory-guard/ | Open source | https://github.com/OWASP/www-project-agent-memory-guard | Security | Any |
 
 ## Benchmarks & evaluation
  
@@ -196,6 +265,7 @@ Common benchmarks used to compare AI memory systems on long-term recall and reas
 | ATM-Bench | First benchmark for multimodal, multi-source personalized referential memory QA over ~4 years of privacy-preserving personal records (emails, images, videos); queries require resolving personal references, multi-evidence reasoning, and handling conflicting evidence | [arxiv.org/abs/2603.01990](https://arxiv.org/abs/2603.01990) · [atmbench.github.io](https://atmbench.github.io/) · [atmbench/atmbench.github.io](https://github.com/atmbench/atmbench.github.io) |
 | LoCoMo | Very long-term conversational memory (QA, event summarization, multimodal dialogue) over ~300-turn, multi-session conversations | [arxiv.org/abs/2402.17753](https://arxiv.org/abs/2402.17753) · [snap-research/locomo](https://github.com/snap-research/locomo) |
 | LongMemEval | Long-term interactive memory across five abilities: information extraction, multi-session reasoning, temporal reasoning, knowledge updates, and abstention | [arxiv.org/abs/2410.10813](https://arxiv.org/abs/2410.10813) |
+| EmbodiedMemory-Bench | Embodied memory across 2,554 AI2-THOR episodes: visual recall, dynamic state tracking, interaction outcomes, and experience generalization; evaluated through later actions | [arxiv.org/abs/2609.28236](https://arxiv.org/abs/2609.28236) · [ZJU-OmniAI/Embodied-Omni](https://github.com/ZJU-OmniAI/Embodied-Omni/tree/main/embodied_memory) · [dataset](https://huggingface.co/datasets/lzLiang/EmbodiedMemoryBench) |
  
 Memory tools often report scores on these (and on additional benchmarks such as ConvoMem and BEAM) — see each project's own README for current numbers.
 
@@ -203,7 +273,7 @@ Memory tools often report scores on these (and on additional benchmarks such as 
 
 There might be many more companies and projects we aren't aware of. Your feedback and contributions are appreciated! ❤️
 
-To add a project, please open a pull request including its name, URL, source model (Open source / Managed / Closed), GitHub URL (if any), category, and storage model (Graph / Vector / Graph, Vector).
+To add a project, please open a pull request including its name, URL, source model (Open source / Managed / Closed), GitHub URL (if any), category, and storage model (Graph / Vector / Keyword / Graph, Vector).
 
 ## Cite this list
  

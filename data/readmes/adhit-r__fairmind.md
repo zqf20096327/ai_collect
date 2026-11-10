@@ -10,9 +10,11 @@
 
 **Open-source agentic AI governance. Agents do the governance work; a person decides at every gate.**
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License: AGPL-3.0 / Apache-2.0](https://img.shields.io/badge/license-AGPL--3.0%20%2F%20Apache--2.0-blue.svg)](LICENSING.md)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23982915.svg)](https://doi.org/10.5281/zenodo.23982915)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/16369/badge)](https://www.bestpractices.dev/projects/16369)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/adhit-r/fairmind/badge)](https://scorecard.dev/viewer/?uri=github.com/adhit-r/fairmind)
+[![PyPI](https://img.shields.io/pypi/v/fairmind-mcp?label=PyPI)](https://pypi.org/project/fairmind-mcp/)
 [![Software Heritage](https://archive.softwareheritage.org/badge/origin/https://github.com/adhit-r/fairmind/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/adhit-r/fairmind)
 [![OECD.AI Catalogue](https://img.shields.io/badge/OECD.AI-Catalogue%20of%20Tools%20%26%20Metrics-1f4e79)](https://oecd.ai/en/catalogue/tools/adhit-rfairmind)
 [![Mentioned in Awesome AI Regulation, Principles & Guidelines](https://awesome.re/mentioned-badge.svg)](https://github.com/EthicalML/awesome-artificial-intelligence-regulation#interactive-and-practical-tools)
@@ -133,7 +135,7 @@ A framework mapping organises evidence. It is not legal advice or a conformity d
 Mint an API key at `POST /api/v1/auth/api-keys`.
 
 ```bash
-pipx install ./apps/cli
+pipx install fairmind-cli
 export FAIRMIND_API_URL=https://your-fairmind-host
 export FAIRMIND_API_KEY=...
 
@@ -151,7 +153,7 @@ fairmind verify pack.json        # offline, no network
     api-key: ${{ secrets.FAIRMIND_API_KEY }}
 ```
 
-The [Python SDK](apps/sdk/README.md) wraps the same calls, and the [MCP server](apps/mcp/README.md) gives Claude Code and other MCP clients nine tools: `list_systems`, `release_gate`, `clause_map`, `run_fairness_test`, `record_monitoring_snapshot`, `attest_check`, `list_evaluations`, `describe_evaluation` and `run_evaluation`. Guides: [release gate in CI](apps/docs/content/docs/workflows/release-gate-in-ci.mdx), [SDK and MCP](apps/docs/content/docs/workflows/sdk-and-mcp.mdx), [inspection packs](apps/docs/content/docs/workflows/inspection-packs.mdx).
+The [Python SDK](apps/sdk/README.md) (`pip install fairmind`) wraps the same calls, and the [MCP server](apps/mcp/README.md) (`pip install fairmind-mcp`, listed in the official MCP Registry as `io.github.adhit-r/fairmind`) gives Claude Code and other MCP clients nine tools: `list_systems`, `release_gate`, `clause_map`, `run_fairness_test`, `record_monitoring_snapshot`, `attest_check`, `list_evaluations`, `describe_evaluation` and `run_evaluation`. Guides: [release gate in CI](apps/docs/content/docs/workflows/release-gate-in-ci.mdx), [SDK and MCP](apps/docs/content/docs/workflows/sdk-and-mcp.mdx), [inspection packs](apps/docs/content/docs/workflows/inspection-packs.mdx).
 
 ---
 
@@ -232,4 +234,4 @@ Metadata is in [CITATION.cff](CITATION.cff). Concept DOI: [10.5281/zenodo.239829
 
 ## License
 
-Created and maintained by [Axonome](https://www.fairmind.xyz/about). MIT licence; see [LICENSE](LICENSE).
+Created and maintained by [Axonome](https://www.fairmind.xyz/about). The platform is under the [AGPL-3.0](LICENSE); the Python SDK, CLI and MCP server are under [Apache-2.0](apps/sdk/LICENSE). A commercial license is available. See [LICENSING.md](LICENSING.md). Releases up to `v0.3.1-alpha` were MIT.

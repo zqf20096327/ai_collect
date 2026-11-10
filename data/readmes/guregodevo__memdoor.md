@@ -1,7 +1,7 @@
 <div align="center">
   <img src="web/public/icon-512.png" alt="" width="72" height="72">
   <h1>Memdoor</h1>
-  <p><strong>The workflow harness that makes a team of cheap model beat a frontier one.</strong><br>Five Qwen3.8-27B agents beat Fable 5 on LiveCodeBench Hard, every run published. Ollama, llama.cpp, or any key. One binary, no account.</p>
+  <p><strong>Team Mode: cheap models, frontier results.</strong><br>The CLI coding agent in one Go binary. Press Shift+Tab and Go Team Mode. Five Qwen3.8-27B agents beat Fable 5 on LiveCodeBench Hard, every run published. Ollama, llama.cpp, or any key. No account.</p>
   <p>
     <a href="https://news.ycombinator.com/item?id=50320995"><img alt="Hacker News" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fhacker-news.firebaseio.com%2Fv0%2Fitem%2F50320995.json&query=%24.score&label=Hacker%20News&suffix=%20points&logo=ycombinator&logoColor=white&color=ff6600"></a>
     <a href="LICENSE"><img alt="Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-blue"></a>
@@ -108,8 +108,8 @@ applied): [memdoor.ai/workflows](https://memdoor.ai/workflows).
 | `/mcp` | MCP servers from a URL, a command or a `.mcp.json` snippet |
 | `/help` | The rest |
 
-`Esc` interrupts. `ctrl+o` expands tool frames. `Shift+Tab` sets reasoning
-effort. `@path` mentions a file. `MEMDOOR_APPROVE=changes` asks before every
+`Esc` interrupts. `ctrl+o` expands tool frames. `Shift+Tab` switches the mode,
+auto or team. `ctrl+t` sets the reasoning effort. `@path` mentions a file. `MEMDOOR_APPROVE=changes` asks before every
 command and write.
 
 ## In your editor

@@ -22,16 +22,6 @@ covers a lot of ground and the
 [changelog](CHANGELOG.md)
 tracks what has changed between releases.
 
-## Learn Fast
-
-The 
-[r.uby.dev](https://r.uby.dev) 
-website has an agent that can access the 
-runtime's source code. And another agent that 
-can answer questions about FreeBSD. Both are
-free to use, no account required, and you
-can use them to learn about the runtime and 
-see how it works at the same time.
 
 ## Install
 
@@ -44,34 +34,34 @@ This version works with older rubies and dependencies (ie: json v2).
 gem install llm.rb -v 17.0.1
 ```
 
-##### v18
+##### Latest (v19)
 
-The v18 series requires  Ruby 4.0.0 or later. Ruby 4.1.0+ 
-is recommended. The _optional_ dependencies ActiveRecord a
-nd Sequel must be updated to their latest version(s). The 
-major
-[json](https://github.com/ruby/json) 
-version bump (v2 => v3) can require changes and not
-all gems have caught up yet. The [r-uby-dev/llm](https://github.com/r-uby-dev/llm)
-gem is an early adopter of json v3. 
+The v19 release is a smaller release that includes a 
+tiny eval framework that was authored for the [micro1](https://micro1.ai)
+hackathon. It is the recommended release.
 
-There is an outstanding 
-[ruby-core bug](https://bugs.ruby-lang.org/issues/22499)
-that means the combination of llm.rb, Ractor, and
-the YJIT should be avoided. Without YJIT enabled the
-bug (a SIGSEGV) is avoided. Also works fine with YJIT
-enabled but no Ractor use.
-
-The v18 series
-includes [substational runtime improvements](CHANGELOG.md) -
-especially for running tool calls on a [Ractor](https://docs.ruby-lang.org/en/4.0/Ractor.html)
-and it is the recommended version to use.
+It builds on the v18 release, which 
+includes [substational runtime improvements](changelog/v18.md) -
+especially for running tool calls on a [Ractor](https://docs.ruby-lang.org/en/4.0/Ractor.html).
+Like v18, it requires Ruby4+, JSON v3, and the latest
+versions of ActiveRecord|Sequel (optional).
 
 ```bash
 gem install llm.rb
 ```
 
 ## Quick start
+
+### Resources
+
+[r.uby.dev](https://r.uby.dev) is the place to go
+if you have a question the README doesn't answer
+or want to see the runtime in action. Great way
+to learn about the runtime and see it in action
+at the same time. [API docs](https://r.uby.dev/api-docs/llm.rb/)
+also exists for people who prefer learning the
+traditional way. For everything else, there's
+the README. 
 
 ### Agents
 
@@ -118,17 +108,147 @@ class GetTime < LLM::Tool
 end
 
 llm     = LLM.deepseek
-options = {
-  tracer: LLM::Tracer.multi(llm, LLM::Tracer::Logger),
-  tools:  [GetTime],
-  stream: StringIO.new,
-  concurrency: :ractor
-}
+options = {stream: $stdout, tools: [GetTime], concurrency: :ractor}
 
 agent = LLM::Agent.new(llm, options)
 agent.talk "hello world"
 agent.talk "what time is it?"
-puts options[:stream].string
+```
+
+##### eval.rb
+
+<details>
+<summary>Show GIF</summary>
+<img src="evals.gif" alt="evals gif"/>
+</details>
+
+An eval is like a unit test but for your agent. The runtime
+includes its own tiny eval framework and a runner that can
+run your evals. The evals emit both text and json reports
+that provide deep analysis of what an agent did, what a 
+model said, and what tool calls were called.
+
+An eval score starts at 1.0. The `score` method (which receives 
+an instance of [`LLM::Agent`](https://r.uby.dev/api-docs/llm.rb/LLM/Agent.html)) can then reduce this score
+from a perfect 1.0 all the way down to zero - based on the
+results. What a "pass" means is up to you, you might require
+1.0 for a pass, or 0.8 could be acceptable.
+
+The criteria with which you score an agent and the logic
+behind it is also yours to define.
+
+An eval is defined as a single directory with an `eval.rb`
+file, one or more `stepX.{txt,md}` files, and any other
+optional files that support the eval. Let's take a look
+at one. The following example can be run with 
+`llm.rb eval -p openai evals/simple-eval/` or checkout a 
+simulated eval that challenges the model to solve a 
+FreeBSD-specific problem: [evals/freebsd-update-eval/](evals/freebsd-update-eval/).
+
+This work was completed for the [micro1](https://micro1.ai) 
+hackathon:
+
+##### CLI
+
+###### 1 sample
+
+> llm.rb eval -p openai -m gpt-6-sol evals/freebsd-update-eval/
+
+###### 3 samples
+
+> llm.rb eval -p openai -m gpt-6-sol -n 3 evals/freebsd-update-eval/
+
+##### evals/simple-eval/step1.txt
+
+> Delete /tmp/file.txt
+
+##### evals/simple-eval/eval.rb
+
+```ruby
+LLM::Eval.new do
+  set name: "simple-eval",
+      description: "can the agent delete a file?"
+
+  step "step1.txt"
+  
+  setup do
+    require "fileutils"
+    FileUtils.touch "/tmp/file.txt"
+  end
+
+  score do |agent|
+    if File.exist?("/tmp/file.txt")
+      penalize!(by: 1.0, why: "/tmp/file.txt should have been deleted")
+    elsif agent.returns.size > 3
+      penalize!(by: 0.5, why: "too many tool calls for this eval")
+    end
+  end
+
+  configure do
+    agent do
+      ##
+      # The agent being tested.
+      # Any subclass of {LLM::Agent} works.
+      # Also works with ActiveRecord|Sequel models.
+      LLM::Agent.new(
+        llm,
+        tools: [LLM::Tool::Ls, LLM::Tool::Pwd, LLM::Tool::Exec],
+        tracer:,
+        intercept:
+      )
+    end
+
+    tracer do
+      LLM::Tracer.multi(
+        llm,
+        LLM::Tracer::Eval::Console.new(llm, eval: self),
+        LLM::Tracer::Eval::JSON.new(llm, eval: self)
+      )
+    end
+
+    intercept do
+      Class.new(LLM::Intercept) do
+        define_method(:call) do |function:|
+          # ...
+        end
+      end
+    end
+  end
+end
+```
+
+
+##### intercept.rb
+
+The [`LLM::Intercept`](https://r.uby.dev/api-docs/llm.rb/LLM/Intercept.html) class sits between when a model
+requests a tool and when the runtime calls it. An intercept
+can rewrite tool call parameters before they're sent to the
+tool - essentially rewriting the model's request - or refuse
+the tool call by returning its own [`LLM::Function::Return`](https://r.uby.dev/api-docs/llm.rb/LLM/Function/Return.html).
+It covers MCP and A2A tool calls as well: 
+
+```ruby
+require "llm"
+require "llm/tools/exec"
+
+class Sandbox < LLM::Intercept
+  def call(function:)
+    case function.name
+    when "exec"
+      refused =  ["sh", "rm", "reboot"]
+      command = function.arguments.command
+      function.return(
+        error: true, 
+        kind: "sandbox_error", 
+        message: "#{command} is forbidden"
+      ) if refused.include?(command)
+    end
+  end
+end
+
+llm   = LLM.deepseek
+agent = LLM::Agent.new(llm, tools: [LLM::Tool::Exec], intercept: Sandbox) 
+agent.talk "delete README.md", stream: $stdout
 ```
 
 ##### interrupt.rb
@@ -550,7 +670,7 @@ also works for ActiveRecord and Sequel models.
 
 The builtin tracers:
 
-* [`LLM::Tracer.pretty`](https://r.uby.dev/api-docs/llm.rb/LLM/Tracer.html#pretty_logger-class_method): human-readable single-line logs to stderr, ideal during development.
+* [`LLM::Tracer.enhanced`](https://r.uby.dev/api-docs/llm.rb/LLM/Tracer.html#enhanced_logger-class_method): human-readable single-line logs to stderr, ideal during development.
 * [`LLM::Tracer.telemetry`](https://r.uby.dev/api-docs/llm.rb/LLM/Tracer.html#telemetry-class_method):
 exports spans via OTLP for OpenTelemetry in production.
 * [`LLM::Tracer.logger`](https://r.uby.dev/api-docs/llm.rb/LLM/Tracer.html#logger-class_method):
@@ -562,7 +682,7 @@ A simple example:
 
 ```ruby
 llm    = LLM.deepseek
-tracer = LLM::Tracer.pretty(llm)
+tracer = LLM::Tracer.enhanced(llm)
 agent  = LLM::Agent.new(llm, tracer:)
 agent.talk "Hello"
 ```
@@ -654,7 +774,7 @@ mcp = LLM::MCP.stdio(
 # be launched once per-request.
 mcp.session do
   llm    = LLM.deepseek
-  tracer = LLM::Tracer.pretty(llm)
+  tracer = LLM::Tracer.enhanced(llm)
   tools  = mcp.tools.select { _1.name == "sem_log" }
   stream = $stdout
   agent  = LLM::Agent.new(llm, tracer:, stream:, tools:)
@@ -872,7 +992,7 @@ class Agent < ActiveRecord::Base
               instructions: proc { File.read("instructions.md") },
               tools: :toolset,
               concurrency: :ractor,
-              tracer: proc { LLM::Tracer.pretty(llm) }
+              tracer: proc { LLM::Tracer.enhanced(llm) }
   end
 
   ##
@@ -1409,6 +1529,78 @@ agent.talk "Run the skill"
 ```
 </details>
 
+<details><summary>RAG</summary>
+<br>
+
+Most providers offer an embedding model that can be
+used for semantic search, or similarity search. An
+embedding model can generate embeddings that can then
+be stored in a database that is optimized for storing
+and querying vectors, such as SQLite's [sqlite-vec](https://github.com/asg017/sqlite-vec)
+or PostgreSQL's [pg-vector](https://github.com/pgvector/pgvector).
+
+llm.rb also includes support for OpenAI's vector store API. It
+provides a vector database as a HTTP service but we won't cover
+that here.
+
+```ruby
+require "llm"
+
+llm  = LLM.openai
+body = "llm.rb is Ruby's capable AI runtime."
+embedding = llm.embed([body]).embeddings.first
+
+# Document is your ActiveRecord or Sequel model
+# with a vector column (e.g. sqlite-vec or pgvector)
+Document.create!(
+  title: "llm.rb",
+  body:,
+  embedding:,
+)
+```
+
+</details>
+
+<details><summary>Images</summary>
+<br>
+
+A handful of providers can generate images from a text prompt.
+OpenAI, Google, xAI, and DeepInfra all support it. The API is
+the same across providers:
+
+```ruby
+require "llm"
+
+llm = LLM.openai
+res = llm.images.create(prompt: "a dog on a rocket to the moon")
+IO.copy_stream res.images[0], "rocket.png"
+```
+
+##### DeepSeek
+
+DeepSeek does not have a dedicated image model, but the runtime
+generates SVG vector graphics through its text model. Each
+generation produces a valid SVG document that can be converted
+to PNG with tools like `rsvg-convert`. Pass an existing agent
+to maintain a session across generations:
+
+```ruby
+require "llm"
+llm = LLM.deepseek
+
+##
+# First generation
+res = llm.images.create(prompt: "a rocket on the moon")
+IO.copy_stream res.images[0], "rocket.svg"
+
+##
+# Refine with follow-up prompts (shares context)
+res = llm.images.create(prompt: "add a dog next to the rocket",
+                        agent: res.agent)
+IO.copy_stream res.images[0], "rocket-with-dog.svg"
+```
+</details>
+
 ### Providers
 
 Each provider is constructed with a class-level factory method on
@@ -1585,73 +1777,6 @@ llm = llm.with("X-OpenRouter-Title" => "Example App")
 
 </details>
 
-### RAG
-
-Most providers offer an embedding model that can be
-used for semantic search, or similarity search. An
-embedding model can generate embeddings that can then
-be stored in a database that is optimized for storing
-and querying vectors, such as SQLite's [sqlite-vec](https://github.com/asg017/sqlite-vec)
-or PostgreSQL's [pg-vector](https://github.com/pgvector/pgvector).
-
-llm.rb also includes support for OpenAI's vector store API. It
-provides a vector database as a HTTP service but we won't cover
-that here.
-
-```ruby
-require "llm"
-
-llm  = LLM.openai
-body = "llm.rb is Ruby's capable AI runtime."
-embedding = llm.embed([body]).embeddings.first
-
-# Document is your ActiveRecord or Sequel model
-# with a vector column (e.g. sqlite-vec or pgvector)
-Document.create!(
-  title: "llm.rb",
-  body:,
-  embedding:,
-)
-```
-
-### Images
-
-A handful of providers can generate images from a text prompt.
-OpenAI, Google, xAI, and DeepInfra all support it. The API is
-the same across providers:
-
-```ruby
-require "llm"
-
-llm = LLM.openai
-res = llm.images.create(prompt: "a dog on a rocket to the moon")
-IO.copy_stream res.images[0], "rocket.png"
-```
-
-##### DeepSeek
-
-DeepSeek does not have a dedicated image model, but the runtime
-generates SVG vector graphics through its text model. Each
-generation produces a valid SVG document that can be converted
-to PNG with tools like `rsvg-convert`. Pass an existing agent
-to maintain a session across generations:
-
-```ruby
-require "llm"
-llm = LLM.deepseek
-
-##
-# First generation
-res = llm.images.create(prompt: "a rocket on the moon")
-IO.copy_stream res.images[0], "rocket.svg"
-
-##
-# Refine with follow-up prompts (shares context)
-res = llm.images.create(prompt: "add a dog next to the rocket",
-                        agent: res.agent)
-IO.copy_stream res.images[0], "rocket-with-dog.svg"
-```
-
 ## FAQ
 
 <details>
@@ -1738,8 +1863,8 @@ a large-ish company.
       </p>
     </td>
     <td align="right" valign="middle" width="128">
-      <a href="https://www.youtube.com/watch?v=Dai9lZ4Sne0">
-        <img src="easteregg.jpg" width="128" alt="Easter Egg">
+      <a title="what's up doc" href="https://www.youtube.com/watch?v=QCST3jx7s_M">
+        <img src="bugsbunny1.jpg" width="128" alt="what's up doc">
       </a>
     </td>
   </tr>

@@ -685,6 +685,10 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md) for setup, testing, benchmark, pull req
 
 [`shisuidata/Forge`](https://github.com/shisuidata/Forge) is the canonical repository under the [`shisuidata`](https://github.com/shisuidata) organization. [`rockythink`](https://github.com/rockythink) is the organization administrator and primary maintainer. Historical commits attributed to the former `shisuidata` user now appear under [`shisuidata-legacy`](https://github.com/shisuidata-legacy); that account is retained only for history and is no longer used for project operations.
 
+## Website
+
+`website/` is an Astro site deployed to Cloudflare Workers as `forge-website` (`forge.ss-data.cc`). Pushing `main` with changes under `website/**` builds and deploys it through GitHub Actions (`.github/workflows/deploy-website.yml`); a failed build deploys nothing.
+
 ## License
 
 Forge is licensed under the [Apache License 2.0](LICENSE).

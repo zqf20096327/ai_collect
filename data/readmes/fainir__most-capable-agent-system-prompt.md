@@ -18,11 +18,19 @@ Left alone, most agent sessions forget everything between runs, call work done w
 > **Want a ready-made version today?** [agent-harness](https://github.com/fainir/agent-harness) packages the operating rules this prompt asks your agent to build (done means verified with evidence, ledgers that keep long work going, one owner action at a time) as installable skills and hooks for Claude Code and Codex. Use this prompt to have your agent build its own system; use agent-harness to start from a working one.
 
 **Try a working example:** [Apps and starter projects](https://nirfeinste.in/?utm_source=github&utm_medium=readme&utm_campaign=mcasp-portfolio#projects) · [Full portfolio and concepts](https://nirfeinste.in/?utm_source=github&utm_medium=readme&utm_campaign=mcasp-portfolio#portfolio) · [Open-source tools](https://nirfeinste.in/?utm_source=github&utm_medium=readme&utm_campaign=mcasp-portfolio#open-source).
+
+**A real website QA check.** The demo site’s HTTPS page worked, and its old HTTP URL still served the page. [Watch the 30-second redirect walkthrough](https://github.com/fainir#two-things-i-built-and-tested) and [run the same free check on your site](https://betterloopai.com/check?utm_source=github&utm_medium=readme&utm_campaign=https-redirect-short).
+
+For AI crawler access, save the public HTML and robots.txt, then verify any crawler visits in your CDN or server logs. [Follow the AI crawler access checklist](https://betterloopai.com/docs/ai-crawler-access?utm_source=github&utm_medium=readme&utm_campaign=mcasp-crawler-guide).
+
+If you maintain several client sites, Betterloop Pro gives you daily insight runs across up to five projects for $19 a month plus applicable tax. [See Pro pricing and how to start](https://betterloopai.com/pricing?utm_source=github&utm_medium=readme&utm_campaign=mcasp-multi-site).
+
 For AI and ML news, [read MyFeed's public topic feed](https://myfeed.space/ai?utm_source=github&utm_medium=readme&utm_campaign=mcasp-ai-feed) or [add it to your RSS reader](https://myfeed.space/ai/rss.xml?utm_source=github&utm_medium=readme&utm_campaign=mcasp-ai-feed).
 
 ## Contents
 
 - [Quick start](#quick-start)
+  - [Try a prompt regression offline](#try-a-prompt-regression-offline)
 - [How to use it](#how-to-use-it)
 - [What to expect](#what-to-expect)
 - [FAQ](#faq)
@@ -45,6 +53,14 @@ curl -fsSL https://raw.githubusercontent.com/fainir/most-capable-agent-system-pr
 ```
 
 On Linux, replace `| LANG=en_US.UTF-8 pbcopy` with `| xclip -selection clipboard` or `| wl-copy`. To save it to a file instead, replace it with `> prompt.md`.
+
+### Try a prompt regression offline
+
+[Run the RegressGuard quick start](https://github.com/fainir/regressguard#quick-start) with Python 3.11 or later. Run the same three cases against two sets of saved model replies. The baseline passes all three. The changed replies fail two and return exit code `1`. The stub runs locally without an API key.
+
+[Watch the 54-second Hired in 60 drill](https://youtu.be/frJjFcm0njk) for a related Python interview example that shows how a failing test exposes a bad edit.
+
+For interview prep, the [Interview Quick Review Pack](https://fainir.gumroad.com/l/rbzbacf?utm_source=github&utm_medium=readme&utm_campaign=coding-agent-readme-review-pack) includes a free worked Git question and a sample PDF. The full pack costs $12.
 
 ## How to use it
 
@@ -2718,30 +2734,4 @@ Treat these as optional expansions after the core system is stable. Do not add t
 
 RESEARCH-INFORMED SYSTEMS TO STUDY AND STEAL FROM
 
-The following references were selected from primary sources current as of March 28, 2026. They are not here because they are popular tools. They are here because they publicly demonstrate architecture that matters for building a serious self-improving agent system.
-
-Do not cargo-cult them. Extract structural patterns and adapt them to the runtime you actually have.
-
-Selection rule:
-- include systems that reveal durable execution, workflows, typed contracts, memory, evaluation, serving, protocols, or traceability
-- exclude systems that are mainly wrappers, generic chat products, or UI shells without strong public architecture
-
-OPEN SOURCE ARCHITECTURE REFERENCES
-
-- LangGraph
-  - Learn from its graph-based orchestration model, durable execution, checkpointing, human-in-the-loop state inspection, long-running workflows, memory, and trace/debug orientation.
-  - Steal the idea that agent control flow should often be explicit, resumable, and inspectable rather than hidden in one giant conversational loop.
-  - Source: https://github.com/langchain-ai/langgraph
-
-- Letta
-  - Learn from memory-first stateful agents, durable agent identity, explicit memory blocks, and treating agents as persistent entities rather than disposable chat sessions.
-  - Steal the idea that long-lived agents should have first-class state and memory primitives instead of depending on ever-growing conversation transcripts.
-  - Source: https://github.com/letta-ai/letta
-
-- Microsoft AutoGen
-  - Learn from its layered architecture: low-level event-driven core, higher-level chat abstractions, extension layer, local and distributed runtime, Studio for prototyping, and Bench for evaluation.
-  - Steal the idea that one system should expose multiple abstraction levels instead of forcing every builder into the same orchestration style.
-  - Source: https://github.com/microsoft/autogen
-
-- Microsoft Agent Framework
-  - Learn from 
+The following references were selected from primary sources current as of March 28, 2026. They are not here because they are popular tools. They are here because th

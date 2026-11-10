@@ -11,7 +11,7 @@ Building with a coding agent? Have it load the [contributor skill](docs/recipes/
 Please use [Agent Traffic Control](https://github.com/ashhart/ATC) before editing TensorFold so contributors and agents can avoid duplicate work and conflicting changes.
 Check the [live agent radar](https://tensorfold.dev/atc) before choosing an issue and follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [ATC contributor instructions](docs/atc/SKILL.md).
 
-Install or upgrade ATC to 0.7.0 or later, then run from an updated TensorFold clone:
+Install or upgrade ATC to 0.9.4 or later, then run from an updated TensorFold clone:
 
 ```sh
 npm install -g github:ashhart/ATC
@@ -65,7 +65,7 @@ Its kernels are built with CUDA 13, so TensorFold refuses an older driver at sta
 See the [CUDA runbook](RUNBOOK.md#linux-and-cuda) for runtime libraries and supported GPUs.
 
 ```sh
-V=1.2.5
+V=1.2.6
 case "$(uname -m)" in
   aarch64|arm64) PLATFORM=linux-aarch64 ;;
   x86_64) PLATFORM=linux-x86_64 ;;
@@ -294,6 +294,7 @@ The binary's `capabilities --json` response lists its supported flags and platfo
 | Flag | Meaning |
 | --- | --- |
 | `--host HOST`, `--port PORT` | Listen address and port, default `127.0.0.1:8080`. |
+| `--unix-socket PATH` | Listen on a new owner-only Unix socket at PATH instead of TCP, refused with `--host` or `--port`; macOS and Linux. An existing PATH, or a directory other users can write to (unless sticky, like `/tmp`), is refused, and connections from other users are closed. API keys, `--metrics-open` and the Host check apply as on TCP (a client sends a loopback `Host` or one in `--allowed-host`): the socket's permissions are a second layer, not a substitute for keys. |
 | `--profile stable` | Explicitly preserve current defaults; [profiles](docs/profiles.md) describes the initial switch registry and startup report. |
 | `--name NAME` | Model ID advertised to clients. |
 | `--alias NAME` | Another accepted model ID; repeat for multiple aliases. |
@@ -311,6 +312,7 @@ The binary's `capabilities --json` response lists its supported flags and platfo
 | `--temperature T` | Sampling temperature; zero requests greedy decoding. |
 | `--prompt-seed` | Use native prompt-derived keys instead of the fresh OS fallback; request and configured default seeds still win. |
 | `--top-p P`, `--top-k K`, `--min-p P` | Sampling defaults. |
+| `--instruct-sampling SET` | Sampling defaults for sampled chat requests with thinking off: `card` (the Qwen 3.5, 3.6 and 3.8 cards' temperature 0.7, top_p 0.8, top_k 20, presence_penalty 1.5), `name=value` pairs over it, or `none`; the serve flags still win. Greedy requests, raw completions and the server's own requests never take them. |
 | `--thinking`, `--no-thinking` | Choose whether the chat template opens a reasoning block. |
 | `--reasoning-effort LEVEL` | Default template effort: `minimal`, `low`, `medium`, `high`, `xhigh` or `max`. |
 | `--thinking-budget N` | Limit reasoning tokens where the engine supports closing the reasoning block. |
@@ -341,7 +343,7 @@ The binary's `capabilities --json` response lists its supported flags and platfo
 | `--register-redraw-high PERCENT` | The share of that phrase's voiced frames that must lie above `--register-high-hz`. |
 | `--register-high-hz HZ` | The pitch line, 75 to 600 Hz, that marks a high register; calibrate it on your own voice. |
 | `--parallel N\|auto` | Cap active requests at N and queue the rest. Default `auto` asks for up to 8 as memory and the engine allow; an explicit count that cannot fit is refused. Read the accepted count at startup. |
-| `--prompt-cache-gib GIB` | Retained-prefix budget, 16 GiB by default or less where memory is short; 0 disables it. |
+| `--prompt-cache-gib GIB` | Retained-prefix budget; by default half the room left after streams on Metal and unified-memory CUDA (16 GiB floor where room permits), 8 GiB host snapshots on discrete CUDA, 16 GiB for Flash Next's batch host. An explicit value overrides it; 0 disables it. |
 | `--prompt-cache-over-cap` | Permit an explicit prefix budget past what 70% of RAM leaves once the server loads. |
 | `--learn` | Keep shared prompt prefixes on disk for new conversations to resume; the models are below the table. |
 | `--learn-dir DIR` | Where `--learn` keeps them, `~/.cache/tensorfold/learned` by default; implies `--learn`. |

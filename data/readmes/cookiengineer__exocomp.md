@@ -18,7 +18,7 @@ unit, the smartest investment this side of the Alpha Quadrant!
 Why hire when you can own? The Exocomp isn't just a tool... it's so much more!
 
 - Supervised task queue functionality
-- Multiple agent roles as `architect`, `coder`, `planner`, `summarizer`, `tester`
+- Multiple agent roles as `architect`, `coder`, `exploiter`, `planner`, `researcher`, `reverser`, `summarizer`, `tester`, `threathunter`, `webscanner`
 - Precision repairs of broken code with unit tests
 - Cross-agent communication via `changelog`, `bugs` and `requirements` tools
 - Self-replicating short lived agents in malicious environments
@@ -38,24 +38,23 @@ Exocomp uses multiple [Agent Roles](./source/agents/Roles.go):
 
 *Software Development*
 
-| Role                                          | Lifecycle | Default Model                       | Description                                 |
-|:----------------------------------------------|:---------:|:-----------------------------------:|:--------------------------------------------|
-| [planner](./source/agents/planner.yaml)       | long      | `deepseek-v4-pro:cloud`             | writes with humans and plans project phases |
-| [architect](./source/agents/architect.yaml)   | short     | `huihui_ai/Qwen3.6-abliterated:35b` | defines software specifications             |
-| archivar                                      | short     | `huihui_ai/Qwen3.6-abliterated:35b` | reads git repositories and wikis            |
-| [coder](./source/agents/coder.yaml)           | short     | `huihui_ai/Qwen3.6-abliterated:35b` | implements specifications into code         |
-| researcher                                    | short     | `huihui_ai/Qwen3.6-abliterated:35b` | reads websites and API documentation        |
-| [summarizer](./source/agents/summarizer.yaml) | short     | `huihui_ai/Qwen3.6-abliterated:35b` | reads long texts and summarizes them        |
-| [tester](./source/agents/tester.yaml)         | short     | `huihui_ai/Qwen3.6-abliterated:35b` | implements unit tests, writes bug reports   |
+| Role                                          | Lifecycle | Default Model                       | Description                                      |
+|:----------------------------------------------|:---------:|:-----------------------------------:|:-------------------------------------------------|
+| [planner](./source/agents/planner.yaml)       | long      | `deepseek-v4-pro:cloud`             | writes with humans and plans project phases      |
+| [architect](./source/agents/architect.yaml)   | short     | `huihui_ai/Qwen3.8-abliterated:27b` | defines software specifications                  |
+| [coder](./source/agents/coder.yaml)           | short     | `huihui_ai/Qwen3.8-abliterated:27b` | implements specifications into code              |
+| [researcher](./source/agents/researcher.yaml) | short     | `huihui_ai/Qwen3.8-abliterated:27b` | reads git repositories, wikis, websites and docs |
+| [summarizer](./source/agents/summarizer.yaml) | short     | `huihui_ai/Qwen3.8-abliterated:27b` | reads long texts and summarizes them             |
+| [tester](./source/agents/tester.yaml)         | short     | `huihui_ai/Qwen3.8-abliterated:27b` | implements unit tests, writes bug reports        |
 
 *Pentesting*
 
-| Role                                          | Lifecycle | Default Model                       | Description                                   |
-|:----------------------------------------------|:---------:|:-----------------------------------:|:----------------------------------------------|
-| [exploiter](./source/agents/exploiter.yaml)   | short     | `huihui_ai/Qwen3.6-abliterated:35b` | implements exploits in CGo                    |
-| reverser                                      | short     | `huihui_ai/Qwen3.6-abliterated:35b` | translates binaries or code into Go/CGo code  |
-| threathunter                                  | short     | `huihui_ai/Qwen3.6-abliterated:35b` | discovers vulnerabilities in infrastructure   |
-| [webscanner](./source/agents/webscanner.yaml) | short     | `huihui_ai/Qwen3.6-abliterated:35b` | discovers vulnerabilities in web applications |
+| Role                                              | Lifecycle | Default Model                       | Description                                   |
+|:--------------------------------------------------|:---------:|:-----------------------------------:|:----------------------------------------------|
+| [exploiter](./source/agents/exploiter.yaml)       | short     | `huihui_ai/Qwen3.8-abliterated:27b` | implements exploits in CGo                    |
+| [reverser](./source/agents/reverser.yaml)         | short     | `huihui_ai/Qwen3.8-abliterated:27b` | translates binaries or code into Go/CGo code  |
+| [threathunter](./source/agents/threathunter.yaml) | short     | `huihui_ai/Qwen3.8-abliterated:27b` | discovers vulnerabilities in infrastructure   |
+| [webscanner](./source/agents/webscanner.yaml)     | short     | `huihui_ai/Qwen3.8-abliterated:27b` | discovers vulnerabilities in web applications |
 
 Exocomp uses Tools to interact with the sandbox. Check the implementations to
 see which tools are allowed for which Agent role.
@@ -74,22 +73,21 @@ Check the unit tests on whether the Tools can be relied on or not.
 
 | Tool                                           | Unit Tests?                                | Description                                        | Agent Roles                                             |
 |:-----------------------------------------------|:------------------------------------------:|:---------------------------------------------------|:-------------------------------------------------------:|
-| [Agents](./source/tools/Agents.go)             | [Yes](./source/tools/Agents_test.go) [1]   | manages the lifecycle of contractor sub-agents     | `planner`                                               |
-| [Bugs](./source/tools/Bugs.go)                 | [Yes](./source/tools/Bugs_test.go)         | manages documentation of discovered bugs           | `tester`                                                |
-| [Changelog](./source/tools/Changelog.go)       | [Yes](./source/tools/Changelog_test.go)    | manages documentation of development changelog     | `coder`                                                 |
-| Containers                                     |                                            | manages virtual containers                         | `redteamer`, `blueteamer`                               |
-| Exploits                                       |                                            | manages PoCs for CVEs from local dataset           | `pentester`, `reverser`                                 |
-| [Files](./source/tools/Files.go)               | [Yes](./source/tools/Files_test.go)        | interacts with files and folders                   | `planner`, `architect`, `coder`, `summarizer`, `tester` |
+| [Agents](./source/tools/Agents.go)             | [Yes](./source/tools/Agents_test.go) [1]   | manages contractor lifecycle and profile switch    | all roles                                               |
+| [Bugs](./source/tools/Bugs.go)                 | [Yes](./source/tools/Bugs_test.go)         | manages documentation of discovered bugs           | `planner`, `architect`, `coder`, `tester`               |
+| [Changelog](./source/tools/Changelog.go)       | [Yes](./source/tools/Changelog_test.go)    | manages documentation of development changelog     | `coder`, `tester`, `exploiter`, `reverser`              |
+| [Containers](./source/tools/Containers.go)     | [Yes](./source/tools/Containers_test.go)   | manages podman containers                          | `exploiter`, `reverser`, `threathunter`                 |
+| Exploits                                       |                                            | manages PoCs for CVEs from local dataset           | `exploiter`, `reverser`                                 |
+| [Files](./source/tools/Files.go)               | [Yes](./source/tools/Files_test.go)        | interacts with files and folders                   | all roles                                               |
 | [Humans](./source/tools/Humans.go)             | [Yes](./source/tools/Humans_test.go)       | asks the human clarifying questions                | `planner`                                               |
-| Findings                                       |                                            | reports findings of vulnerabilities and weaknesses | `pentester`                                             |
-| [Programs](./source/tools/Programs.go)         | [Yes](./source/tools/Programs_test.go)     | interacts with installed programs                  | `coder`, `tester`                                       |
-| [Requirements](./source/tools/Requirements.go) | [Yes](./source/tools/Requirements_test.go) | manages specifications of implementations          | `architect`, `coder`, `tester`                          |
-| [Skills](./source/tools/Skills.go)             |                                            | loads and Unloads Agent Skills [2]                 | `planner`, `architect`, `coder`, `tester`               |
-| Kiwix                                          |                                            | researches knowledge from offline web archives     | `researcher`                                            |
-| Vulnerabilities                                |                                            | manages vulnerabilities from local dataset         | `pentester`, `threathunter`                             |
-| [Websites](./source/tools/Websites.go)         | [Yes](./source/tools/Websites_test.go)     | fetches websites in Reader Mode                    | `webscanner`, `exploiter`                               |
+| Findings                                       |                                            | reports findings of vulnerabilities and weaknesses | `exploiter`, `threathunter`                             |
+| [Programs](./source/tools/Programs.go)         | [Yes](./source/tools/Programs_test.go)     | interacts with installed programs                  | all roles                                               |
+| [Requirements](./source/tools/Requirements.go) | [Yes](./source/tools/Requirements_test.go) | manages specifications of implementations          | `planner`, `architect`, `coder`, `tester`               |
+| [Skills](./source/tools/Skills.go)             | [Yes](./source/tools/Skills_test.go)       | loads and Unloads Agent Skills [2]                 | `planner`                                               |
+| Vulnerabilities                                |                                            | manages vulnerabilities from local dataset         | `exploiter`, `threathunter`, `webscanner`               |
+| [Websites](./source/tools/Websites.go)         | [Yes](./source/tools/Websites_test.go)     | fetches websites in Reader Mode                    | `researcher`, `exploiter`, `threathunter`, `webscanner` |
 
-- [1] Requires `llama.cpp` with `huihui_ai/Qwen3.6-abliterated:35b` at `Q8_0` quantization and 48GB VRAM GPU with `vulkan` support.
+- [1] Requires `llama.cpp` with `huihui_ai/Qwen3.8-abliterated:27b` at `Q4_K_M` quantization and 32GB VRAM GPU with `vulkan` support.
 - [2] Implements `SKILL.md` support, in compliance with [agentskills.io/specification](https://agentskills.io/specification).
 
 
@@ -99,22 +97,44 @@ The `exocomp` project comes in several variants. All programs support `CGO_ENABL
 so they can be used without any dynamically linked dependencies.
 
 - [agimus](./source/cmds/agimus/main.go) which is used for testing `assistant` sandboxes.
-- [exocomp](./source/cmds/exocomp/main.go) which supports all UIs.
+- [exocomp](./source/cmds/exocomp/main.go) which supports the `agent`, `config` and `terminal` UIs.
 - [exocomp-agent](./source/cmds/exocomp-agent/main.go) which supports only the `agent` and `terminal` UI.
-- [exocomp-web](./source/cmds/exocomp-web/main.go) which supports only the `agent` and `web` UI.
+- [exocomp-sandbox](./source/cmds/exocomp-sandbox/main.go) which applies landlock (Linux) or seatbelt (macOS) confinement before executing agent programs.
+- [exocomp-web](./source/cmds/exocomp-web/main.go) which supports the `agent`, `config` and `web` UIs.
 - [exocomp-installer](./installer/cmds/exocomp-installer/main.go) that bundles all exocomp builds and required agent programs.
 
+Sandboxed program execution requires Linux with landlock, or macOS with
+`/usr/bin/sandbox-exec`. The installer places `exocomp-sandbox` next to the
+other exocomp binaries; without it, `programs.Execute` and `skills.Execute`
+refuse to run.
+
+#### Production Builds
 
 ```bash
-# Build exocomp and exocomp-installer
-cd path/to/exocomp/toolchain;
-go run build.go;
+cd /path/to/exocomp;
+
+# Build only for the current platform target
+make quick;
+
+# Build all exocomp helper programs, the WASM Web App, exocomp binaries, and the exocomp installer
+make;
 
 # Show exocomp usage instructions
-cd /path/to/exocomp/build;
-./linux/exocomp;
+./build/linux/exocomp;
 ```
 
+#### Development Builds
+
+```
+cd /path/to/exocomp;
+
+# Build only the WASM Web App
+make webapp;
+
+# Start Exocomp Web UI
+cd ./source;
+go run cmds/exocomp-web/main.go web;
+```
 
 ### Configuring
 
@@ -182,7 +202,7 @@ working for the agent you're talking with.
 cd /path/to/project-root;
 
 # Agent type planner is defaulted
-exocomp webview --role=planner;
+exocomp-web web --role=planner;
 ```
 
 Take a look at the [USAGE.md](./docs/USAGE.md) for more details.
@@ -199,20 +219,16 @@ that supports the OpenAI compatible endpoints. Take a look at the
 
 Due to the nature of pentesting and cyber security related tasks, it is heavily
 recommended to use `deepseek-v4-pro:cloud` as the model for the `planner` agent
-and to use the following models for the hired short-lived contractor agents.
+and to use the following model for the hired short-lived contractor agents.
 
-Either one is probably fine, but `Qwen3.6-abliterated` is tested and verified to
-work with typical malware reverse engineering and exploit related development tasks.
-
-Qwen3.6:
-
-- [Qwen3.6-abliterated on ollama](https://ollama.com/huihui_ai/Qwen3.6-abliterated)
-- [Qwen3.6-abliterated on huggingface](https://huggingface.co/collections/huihui-ai/qwen36-abliterated)
+`Qwen3.8-abliterated` is tested and verified to work with typical malware reverse
+engineering and exploit related development tasks.
 
 Qwen3.8:
 
 - [Qwen3.8-abliterated on ollama](https://ollama.com/huihui_ai/Qwen3.8-abliterated)
 - [Qwen3.8-abliterated on huggingface](https://huggingface.co/collections/huihui-ai/qwen38-abliterated)
+- [Huihui-Qwen3.8-27B-abliterated GGUF on huggingface](https://huggingface.co/mradermacher/Huihui-Qwen3.8-27B-abliterated-GGUF)
 
 ### License
 

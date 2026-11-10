@@ -250,6 +250,12 @@ Adversarial assumptions (expert stripping, framing) call for cryptographic
 design, which needs community co-building — our own capacity is limited, so
 join us; we may try to include it in a future release.
 
+## Community
+
+The author grew up in the [**LINUX DO**](https://linux.do) community — with thanks.
+
+[![LINUX DO](https://img.shields.io/badge/LINUX.DO-community-1E9FFF?style=flat-square)](https://linux.do)
+
 ## Star History
 
 <p align="center">

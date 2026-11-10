@@ -6,7 +6,33 @@ and hardened private OAuth setup output. Browser checks, TypeScript, publishing
 preflight and production build passed. Dependency advisories and incomplete
 audit coverage remain; these checks are not a whole-platform security clearance.
 
-## Current source release — R137.2+sec (November 4, 2026)
+## Current source release — R137.3 (November 8, 2026)
+
+- **Durable wake handoff:** event enqueue and schedule completion now commit
+  atomically. Pending events retain the existing recovery path; uncertain legacy
+  claims require review rather than automatic replay. Exactly-once downstream
+  delivery and completed customer outcomes are not claimed.
+- **Reliability reconciliation:** explicit account ownership covers insight
+  recovery, channel/thread writes, research projects, agent parent runs, wakes,
+  task forces and captured project assets. Provider-health diagnostics are
+  platform-admin-only, including cached Settings rendering.
+- **Usability and operational corrections:** repaired Settings model selection
+  and Memory navigation; private OAuth setup avoids credential output.
+  Engineering Q&A and current feature/navigation summaries retain their
+  owner/admin boundaries.
+- **Readiness follow-through:** cross-process storefront throttle initialization
+  is serialized; 15 isolated checkout regressions pass, including simultaneous
+  cold starts and restart durability. Review findings and overrides retain
+  their evidence rather than being silently discarded.
+- **Review scope and status:** [November review](docs/platform-update-2026-11-08.md)
+  records measured inventory and verification limits. Production investigation
+  observed an isolated release-boundary error without sampled recurrence.
+  Corrected resource queries found no sustained memory/disk pressure in that window.
+  The tenant audit remains incomplete, not whole-platform certification.
+- **Source map:** `client/src` contains the UI, `server` backend services and
+  tools, `shared` contracts, `scripts` operational tooling, and `docs` references.
+  This repository is a sanitized export: private operational records, credentials,
+  database contents and uploads are deliberately not included.
 
 - **Engineering Q&A:** owner-only sidebar reference with 19 original project
   comparisons drawn from 18 selected interview answers, searchable evidence,
@@ -38,7 +64,7 @@ audit coverage remain; these checks are not a whole-platform security clearance.
 
 **428 registered tools · 386 publicly documented tools · 18 personas · 68 platform
 skills · 146 active capabilities · 197 declared / 278 live development tables ·
-889 platform indexes · 91 curated models · 41 governance rules.**
+889 platform indexes · 93 curated models · 41 governance rules.**
 These are dated development measurements, not production telemetry.
 
 Recent source additions include an eight-document **AI Stack Decision Review**
@@ -109,7 +135,7 @@ Instead of a single chatbot, you get a full agent workforce. Give it a task. The
 
 **Earlier source update — R137+sec (October 19, 2026): Business pilots, company report packages and evidence-first operations.** Owner-only health/re-scan, release, governance and cost/routing pilots; read-only website readiness; sourced company reports with required audio; private alert logs; receipt-backed delivery checks, outcome-first briefings and video packaging. Private report packages are excluded from generic tenant file access. [Feature/access matrix](docs/platform-update-2026-10-19.md). Forks need their own credentials, entitlements and configuration. Focused live pilot verification is not universal certification; GitHub synchronization is not website publication.
 
-Roughly 320k lines of TypeScript across 1,100+ files. 40+ pages. **428 total registered tools · 386 public documented tools · 68 total skills · 146 active capabilities · 18 personas · 197 declared / 278 live development tables · 41 governance rules · 889 platform indexes · 91 curated AI models · 6 AI providers · 6 deployment targets.** These are a November 4 **development evidence snapshot**, not live production telemetry. The public tool index deliberately excludes trusted-persona-only tools. Current release facts: [`docs/release-facts.json`](docs/release-facts.json). Browsable indexes: [`docs/tools.md`](docs/tools.md) · [`docs/personas.md`](docs/personas.md).
+Roughly 320k lines of TypeScript across 1,100+ files. 40+ pages. **428 total registered tools · 386 public documented tools · 68 total skills · 146 active capabilities · 18 personas · 197 declared / 278 live development tables · 41 governance rules · 889 platform indexes · 93 curated AI models · 6 AI providers · 6 deployment targets.** These are a November 8 **development evidence snapshot**, not live production telemetry. The public tool index deliberately excludes trusted-persona-only tools. Current release facts: [`docs/release-facts.json`](docs/release-facts.json). Browsable indexes: [`docs/tools.md`](docs/tools.md) · [`docs/personas.md`](docs/personas.md).
 
 ### October 9–14 source updates
 
@@ -373,7 +399,7 @@ Real screenshots from the live instance at [agenticcorporation.net](https://agen
 | AI Agents (Personas) | 18 |
 | Tools (total registered) | 428 |
 | Tools (public documented) | 386 |
-| AI Models in Core Registry | 91 curated |
+| AI Models in Core Registry | 93 curated |
 | Daily Catalog Discovery | 1000+ models scanned on OpenRouter |
 | AI Providers | 6 (OpenAI, Anthropic, Google, xAI, OpenRouter, Perplexity) |
 | Governance Rules | 41 |
@@ -417,7 +443,7 @@ Real screenshots from the live instance at [agenticcorporation.net](https://agen
         ┌────────────┐   ┌────────────┐   ┌────────────┐
         │ PostgreSQL │   │ Google     │   │ 6 AI       │
         │ + pgvector │   │ Drive      │   │ providers  │
-        │ D197/L278  │   │ storage    │   │ 91 curated │
+        │ D197/L278  │   │ storage    │   │ 93 curated │
         └────────────┘   └────────────┘   └────────────┘
 ```
 
@@ -463,7 +489,7 @@ Every agent has a defined role, personality, skill set, and operating rules. The
 
 ### AI & Intelligence
 
-- **91 Curated AI Models in the Development Registry** with configured routing across supported providers. Bring your own provider credentials — availability and billing are governed by provider and account terms, not a promise of universally free inference.
+- **93 Curated AI Models in the Development Registry** with configured routing across supported providers. Bring your own provider credentials — availability and billing are governed by provider and account terms, not a promise of universally free inference.
 - **Adaptive Model Discovery (R73)** — a daily background task scans OpenRouter's full catalog of 1000+ models, tier-classifies each by completion price (reasoning / powerful / balanced / fast), probes the Replit gateway for new releases, and emails the owner a ranked digest of new models worth adding to the registry. Hard caps prevent inbox spam (10 alerts/run max), lifetime dedupe prevents re-alerts, and silent days mean nothing changed.
 - **Streaming Responses** via Server-Sent Events (SSE) — real-time token-by-token output
 - **Thinking Mode** — explainable reasoning with decision traces for complex problems
@@ -877,5 +903,4 @@ Brief one-liners. Full play-by-play in [REVISIONS.md](REVISIONS.md).
 | **R125+137.45 → +137.50** | 2026-07-20 | **The platform starts working ahead of you — Proactive Commitment Drafting turns approaching deadlines into ready-to-approve HITL draft cards (structurally send-incapable); a CRITICAL credential-file leak in the uploads sync is closed with a boot-time dotfile purge; all 10 maintenance crons are prebundled so production can never lose them; a 10-file god-file cleanup locks its ceilings DOWN; and an IdeaBrowser MASTER sweep simulates the best of the 256-idea scored archive (winner: AI-Native Readiness Audit, ~$38.9k probability-weighted expected profit).** 72h retrospective (3 architect passes over 80 files / 223 commits) closed 1 MEDIUM (per-tenant boot-backfill skip check) + 3 LOW. Gates: tsc 0, suite 147/147, seamtests 69/69, wiring CLEAN, preflight CLEAN. |
 | **R125+137.41 → +137.44** | 2026-07-19 | **The Simulation Sandbox becomes actionable — jury-vetted promotion of sandbox findings into a reviewed Improvement list (never auto-apply), TTL retention, and honest INCONCLUSIVE verdicts — plus a weekly IdeaBrowser money-scenario pipeline and a review/sync round with permanent race-regression pins.** **R125+137.41 (72h review, 2 HIGH + 1 MEDIUM):** an `INCONCLUSIVE` verdict added to BOTH sandbox report unions — a run with zero replays, zero graded results, or more errors than successes can never collapse to a reassuring NO_CHANGE (CRITICAL/DRIFT still win); grading failures emit `[sandbox-grade]` telemetry, failed-status UPDATE catches log loud, and a read-time `stale` marker (running >30 min) surfaces on the sandbox routes + an ecosystem-health `staleRunningCount`. **R125+137.42:** the IdeaBrowser weekly money-scenario pipeline — a Monday cron ingests 7 days of captured business ideas, scores them, runs per-idea scenario simulations producing `successProbabilityPct` + probability-weighted `expectedProfitUsd`, ranks the top 5, and delivers the report through the delivery pipeline + owner email (safe `--test` mode with zero side effects; live run verified). **R125+137.43:** a new `sandbox_promote` tool (trusted-personas-only, sensitive/HIGH fail-closed policy; tools 398 → 399) routes sandbox findings through the 3-frontier-model jury into a durable `sandbox_improvements` table — a `jury_pending` row is INSERTed BEFORE triage so a jury failure leaves an auditable record; ACCEPT/FIX → approved, REJECT → rejected, anything else escalates; nothing ever auto-applies. Plus admin GET/PATCH routes, an Improvement list card on `/admin/sandbox`, and weekly TTL retention (improvements survive run deletion via `ON DELETE SET NULL`). **R125+137.44:** permanent promote-race regression pins in the canonical suite (concurrent promotes of the same run can never double-insert or double-triage), the stale-string preflight gains a `scripts/` surface rule (stale counts in operator scripts now trip CI), and every marketing/dashboard/README surface resynced. Gates: tsc 0, seamtests 69/69, suite 146/146, wiring audit CLEAN, preflight CLEAN, architect PASS. |
 | **R125+137.30 → +137.40** | 2026-07-19 | **The Simulation Sandbox contract completes S1–S5 — the platform can replay its own past safety decisions and model choices offline, under a hard per-run spend cap, and report what WOULD have changed.** `sandbox_run`/`sandbox_report` registered as a born-migrated domain (fail-closed tool policies, trusted-personas-only; tools 396 → 398), sandbox tables extracted to `shared/models/sandbox.ts` (tables 213 → 215), a `/admin/sandbox` admin UI over admin-gated launch routes (5s-wait/202-detach with race-safe timer cleanup), Sandbox probe #16 on the ecosystem-health dashboard, and the model-swap helper's cap clamped to the shared `MAX_PER_RUN_CAP_USD = 5` (architect-caught drift from 50). E2E smoke replayed 5/5 live safety decisions with verdict NO_CHANGE. Also in the window: a metered escalation valve for the self-repair loop (exactly ONE frontier diagnostic turn on a prior-collapse stall — judgment only, fail-OPEN, never on the final attempt), two standing-registry model registrations (`meta/muse-spark-1.1` paid + `nvidia/nemotron-3-ultra-550b:free` — neither touches the jury pools or the frontier reserve), the weekly video recap made self-healing and incident-proof (explicit date-window extraction cures the wrong-week incident; labeled weight-fact extraction cures the wrong-numbers incident), and a Tool Reliability card (SQL-bounded worst/top-N with redacted failure reasons). Gates: tsc 0, seamtests 69/69, suite 146/146, sandbox tests 16/16, architect PASS. |
-| **R125+137.26 → +137.29-review** | 2026-07-17 | **An external frontier-model code review of this very repo, triaged end-to-end — the owner's email purged from every server runtime path, the changelog becomes data, the mirror gains a DDL schema snapshot + fail-closed stats refresh + tagged releases, an `: any` ratchet gate lands, Kimi-K3 joins as a frontier reserve, and a 72h review closes 3 MEDIUMs with permanent regression pins.** **R125+137.26:** `moonshotai/kimi-k3` (1M context) registered across all 5 model maps as a frontier RESERVE — never in the standing proposer set; a pure gate fires at most one backfill call, only when a main-round frontier proposer fails on the metered path (9/9 gate tests). **R125+137.27:** an external Kimi-K3 review ran against this public mirror; every finding was re-verified on main and the hardcoded owner email was removed from ALL server runtime paths — policy seeding, inbox-quarantine allowlist, ingest identity (new `GMAIL_INGEST_ADDRESS` env, fails closed loudly when unset), and the security.txt contact chain are now env-driven, with fail-closed refusal wherever the address is missing. **R125+137.28:** the mirror build refreshes the authoritative platform-totals doc BEFORE copying (fail-closed if still dirty — the count doc can no longer ship stale) and a ratchet-DOWN-only `: any`/`as any` budget gate (baseline 6,949) runs as weekly-maintenance Pass 14. **R125+137.29:** the 190-entry changelog extracted to data (`updates.json` + a 42-icon map), the mirror emits `docs/schema-snapshot.sql` via pg_dump so forkers can diff DDL between snapshots, and every mirror push is now stamped with a `r125.137.x` tag + GitHub Release. **72h review (2 architect rounds):** 3 MEDIUMs closed fail-closed — an api-v1 conversation-messages query re-anchored on a tenant-scoping JOIN + tenant filter, the tag-release CLI rejects unknown flags before any GitHub call, and the any-budget gate stops safely on an unreadable scan file with the baseline untouched — each pinned by a permanent regression test (suite 144/144). |
-| **R125+137.23 → +137.25-review** | 2026-07-16 | **The platform learns to retire its own dead tools and forge new ones from unmet demand, the tool-router gains a hard cap, the public API speaks the AG-UI protocol, and a 72h review closes 2 MEDIUMs.** **R125+137.23:** a Tool Eviction/Retirement loop — a flag-only classifier with human-in-the-loop approvals (exemptions fail CLOSED via strict parsing, a registry sanity guard, and a ≤10-candidates/run dedupe; 20 candidates queued across the first 2 runs) — plus Tool Forge Phase 2, which turns recorded unmet-capability demand into budget-claimed LLM module proposals (≤1/run, nothing ever auto-lands); both run as weekly heartbeat crons. **R125+137.23-fable:** external-review follow-ups — the admin PIN check consolidated onto the one canonical peppered hasher, curing a boot reconciler that had been silently re-downgrading the stored hash to a public static salt every boot; a static guard test pins the salt literal to its single legitimate home. **R125+137.24:** a verified external-review finding fixed — the tool router could exceed its own `maxTools` budget with no slice-back; 
+| **R125+137.26 → +137.29-review** | 2026-07-17 | **An external frontier-model code review of this very repo, triaged end-to-end — the owner's email purged from every server runtime path, the changelog becomes data, the mirror gains a DDL schema snapshot + fail-closed stats refresh + tagged releases, an `: any` ratchet gate lands, Kimi-K3 joins as a frontier reserve, and a 72h review closes 3 MEDIUMs with permanent regression pins.** **R125+137.26:** `moonshotai/kimi-k3` (1M context) registered across all 5 model maps as a frontier RESERVE — never in the standing proposer set; a pure gate fires at most one backfill call, only when a main-round frontier proposer fails on the metered path (9/9 gate tests). **R125+137.27:** an external Kimi-K3 review ran against this public mirror; every finding was re-verified on main and the hardcoded owner email was removed from ALL server runtime paths — policy seeding, inbox-quarantine allowlist, ingest identity (new `GMAIL_INGEST_ADDRESS` env, fails closed loudly when unset), and the security.txt contact chain are now env-driven, with fail-closed refusal wherever the address is missing. **R125+137.28:** the mirror build refreshes the authoritative platform-totals doc BEFORE copying (fail-closed if still dirty — the count doc can no longer ship stale) and a ratchet-DOWN-only `: any`/`as any` budget gate (baseline 6,949) run

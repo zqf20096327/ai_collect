@@ -74,7 +74,7 @@ sandboxd](docs/deploy.md) covers release binaries, the full config and systemd.
 - `sdk/langchain/` — `cocoonstack-sandbox-langchain`, a
   [LangChain toolkit](docs/langchain.md)
 - `protocol/wire/` — the frame vocabulary and `fixtures/`, the golden corpus the
-  Rust, Go and Python tests all round-trip, so wire drift fails CI
+  Rust, Go and Python tests check, so wire drift fails CI
 - `e2e/` — in-process full-stack tests (real pool/engine/relay/SDK, fake
   cocoon + guest) and the [bare-metal drivers](docs/deploy.md#acceptance-drivers)
 - `boot/kernel/` — kernel version pin (`VERSION` + matching tarball `SHA256`,
@@ -99,14 +99,13 @@ sandboxd](docs/deploy.md) covers release binaries, the full config and systemd.
   `boot/**`, `silkd/**`, or `os-image/**` it builds the
   changed carriers (via `build-boot.yml` / `build-silkd.yml`,
   `workflow_call`) then os-images, in order, so the chain is deterministic
-- `build-os-images.yml` — bakes base + flavors FROM the sha-pinned carriers
+- `build-os-images.yml` — bakes base + flavors FROM the carriers, sha-pinned
+  when rebuilt in the same run
 - `release.yml` — on a version tag, checks the tag against silkd's version,
   then builds the release binaries and archives
 - `publish-pypi.yml` — on an `sdk-*-v*` tag, builds and publishes the
   matching package via PyPI Trusted Publishing (OIDC, per-package
   environment)
-
-On a fresh repo run build-boot first — images build `FROM` the boot artifact.
 
 ## Boot chain
 

@@ -16,15 +16,20 @@ It reads RSS and Atom feeds and drafts an issue that a person reviews before it 
 4. The issue is rendered as Markdown and as an HTML email, with a run report: failed feeds, flagged and dropped claims, and each model call with its tokens and cost.
 5. A person reads the draft on the review page, edits it and approves it. Any edit clears the approval.
 
-The review page, showing a draft with its three flagged claims and its run report:
+The review page, showing a draft with its three flagged claims and its run report, in light and dark mode:
 
-![The review page: a draft's text, its flagged claims and its run report](docs/img/review-page.png)
+![The review page in light mode: a draft's text, its flagged claims and its run report](docs/img/review-page-light.png)
+![The review page in dark mode](docs/img/review-page-dark.png)
+
+At phone width (360 px) the page is one column:
+
+![The review page at 360 px wide](docs/img/review-page-phone.png)
 
 The same issue as the HTML email. The three claims the source does not support are flagged in red:
 
 ![An issue rendered as the HTML email, with flagged claims marked](docs/img/issue.png)
 
-Both screenshots show the `open-models-week` eval case below, replayed from recorded model answers. The browser test (`cd web && npm run test:e2e`) saves them to `docs/img/` against a fake API.
+All of these show the `open-models-week` eval case below, replayed from recorded model answers. The browser test (`cd web && npm run test:e2e`) saves them to `docs/img/` against a fake API. A real issue, with its email and archive page, is in [`docs/sample/`](docs/sample/).
 
 Grouping stories from several feeds is later work.
 
@@ -70,11 +75,11 @@ It is checked on load, and an error names the file and the field (exit 2). Feed 
 uv run newsletter archive --demo --site site --per-feed 5 https://example.com/feed.xml
 ```
 
-`newsletter archive` drafts a plain issue, one fast-model summary and one link per item, with `--topic` given to the model (in the writer's voice too, when `YOURVOICE_API_KEY` is set; the daily workflow sets none) and builds it into a static site in `--site`: an index and one page per issue. Only demo mode exists so far, so `--demo` is required. A demo issue is approved by a record marked `automated-demo` instead of a person's sha256 of the text; that record is valid for archive pages only and export refuses it. Every demo page carries a visible "Automated demo" label, and every summary is marked as unchecked.
+`newsletter archive` drafts a plain issue, one fast-model summary and one link per item, with `--topic` given to the model (in the writer's voice too, when `YOURVOICE_API_KEY` is set) and builds it into a static site in `--site`: an index and one page per issue. Only demo mode exists so far, so `--demo` is required. A demo issue is approved by a record marked `automated-demo` instead of a person's sha256 of the text; that record is valid for archive pages only and export refuses it. Every demo page carries a visible "Automated demo" label, and every summary is marked as unchecked. With `--markdown PATH` and `--html PATH`, the same draft is also written as Markdown and as an HTML email, with the same label and marks; like the site, their run report names feed hosts and counts only, never a feed URL, an error, a path or a model.
 
-### Daily archive
+### Archive in CI
 
-`.github/workflows/daily.yml` runs `newsletter archive --demo` every day (and by hand from the Actions tab) on five public AI news feeds, five items each, and uploads the site as the `archive-site` workflow artifact. It has no deploy step and never runs on pull requests. To turn it on, set the secret `NEWSLETTER_API_KEY` and the repository variable `NEWSLETTER_FAST_MODEL` (and `NEWSLETTER_BASE_URL` for a non-OpenAI endpoint).
+No workflow builds the archive on a schedule. Run `newsletter archive --demo --site DIR FEED_URL...` yourself with a model configured; `tests/test_daily.py` runs the same build offline with fake feeds and a fake model.
 
 ## Configuration
 
@@ -140,7 +145,7 @@ Every call but the health check needs `Authorization: Bearer $NEWSLETTER_API_TOK
 
 ### The review page
 
-`web/` is a page (React and Vite) for reviewing drafts. Paste the API token, pick a draft, and read its text with its flagged claims and its run report: failed feeds, dropped stories and claims, editor and voice problems, and each model call with its tokens and cost. Edit the text and save it, which clears any approval, then approve. Approve is off while an edit is unsaved. It sends the sha256 of the text you read, so if the draft changed since, the API refuses it and the page says so; Reload fetches the new text. The draft text is always shown as text, never as HTML, and only http and https sources are links. The token stays in the page's memory, so a reload asks for it again.
+`web/` is a page (React and Vite) for reviewing drafts. Paste the API token, pick a draft, and read its text with its flagged claims and its run report: failed feeds, dropped stories and claims, editor and voice problems, and each model call with its tokens and cost. Edit the text and save it, which clears any approval, then approve. Approve is off while an edit is unsaved. It sends the sha256 of the text you read, so if the draft changed since, the API refuses it and the page says so; Reload fetches the new text. The draft text is always shown as text, never as HTML, and only http and https sources are links. The token stays in the page's memory, so a reload asks for it again. While the draft list, a draft or its run report loads, the page says so; when there are no drafts yet, or a draft has no text or no run report, it says that; and when a load fails it shows the API's reason with a way to try again (Refresh list, Try again).
 
 ```bash
 export NEWSLETTER_API_TOKEN=$(openssl rand -hex 32)
@@ -164,14 +169,26 @@ Each connector is optional and is set up only when its key is set. Each makes on
 
 `NEWSLETTER_EXPORT_TIMEOUT` sets the seconds per request, default 30. The result lists each connector as exported, with its draft id, or failed, with the reason. An HTTP error, a timeout, a reply with no draft id or a reply with a status other than draft counts as failed, never as exported, and the others still run. There is no retry, since a repeated call could leave a second draft. A connector whose platform has no draft-only endpoint is dropped and listed. Keys are never logged or reported.
 
+### Try it
+
+No model key needed. On a fresh clone:
+
+```bash
+docker compose up --build --wait    # http://localhost:8080
+```
+
+Open http://localhost:8080 and paste the demo token `demo-token-change-me`. The page starts with no drafts, since no model has run. The sample issue lives in [`docs/sample/`](docs/sample/); its README records the model, the feeds and the command, and the issue, email and archive page land there with that one-off run. `docker compose down --volumes` stops it and clears the drafts.
+
+The demo token is the compose default and is safe only because the page is published on `127.0.0.1` alone. Set your own before exposing it.
+
 ### Docker
 
 ```bash
-export NEWSLETTER_API_TOKEN=$(openssl rand -hex 32)
-docker compose up --build    # http://localhost:8080
+docker compose up --build    # http://localhost:8080, token demo-token-change-me
+NEWSLETTER_API_TOKEN=$(openssl rand -hex 32) docker compose up --build    # your own token
 ```
 
-Two services: `api` (`newsletter serve`, drafts kept in the `drafts` volume) and `web` (the built review page behind nginx, which forwards `/api` to `api`). Only the page is published, on `127.0.0.1:8080` (`WEB_PORT` changes it); the API is not reachable from outside the compose network, and it allows writes only from the page's origin. `NEWSLETTER_API_TOKEN` is required. `NEWSLETTER_BASE_URL`, `NEWSLETTER_API_KEY`, `NEWSLETTER_FAST_MODEL`, `NEWSLETTER_REASONING_MODEL`, `NEWSLETTER_EMBEDDING_MODEL` and `YOURVOICE_API_KEY` are passed through from your shell when set. CI's `compose` job builds both images, starts them and checks the page, the proxied API and the token.
+Two services: `api` (`newsletter serve`, drafts kept in the `drafts` volume) and `web` (the built review page behind nginx, which forwards `/api` to `api`). Only the page is published, on `127.0.0.1:8080` (`WEB_PORT` changes it); the API is not reachable from outside the compose network, and it allows writes only from the page's origin. `NEWSLETTER_API_TOKEN` defaults to `demo-token-change-me`. `NEWSLETTER_BASE_URL`, `NEWSLETTER_API_KEY`, `NEWSLETTER_FAST_MODEL`, `NEWSLETTER_REASONING_MODEL`, `NEWSLETTER_EMBEDDING_MODEL` and `YOURVOICE_API_KEY` are passed through from your shell when set. CI's `compose` job builds both images, starts them and checks the page, the proxied API and the token, with no environment set.
 
 ## Eval
 

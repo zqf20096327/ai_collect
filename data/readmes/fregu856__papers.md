@@ -23,6 +23,33 @@ _In June 2023, I wrote the blog post [The How and Why of Reading 300 Papers in 5
 
 #### Papers Read in 2026:
 
+##### [26-11-10] [paper619]
+- Deep Learning-Based Modeling for Preclinical Drug Safety Assessment
+ [[pdf]](https://www.biorxiv.org/content/10.1101/2024.07.20.604430v1) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Deep%20Learning-Based%20Modeling%20for%20Preclinical%20Drug%20Safety%20Assessment.pdf)
+- `biorxiv, 2024-07`
+- [Computational Pathology]
+```
+Fairly interesting paper. It gives some pretty good background on the overall "computational pathology for preclinical / toxicological applications" domain, and having read this will probably help a bit when moving on to more recent papers. It does feel a bit dated (only comparing with Resnet-IN and CTransPath), but good to see what data they use and so on (ViT-base trained using iBOT, on 15 million tissue patches from 46k WSIs, kideny and liver, from the public TG-GATE dataset. Only rat data). The reader study comparing with pathologists is pretty neat as well.
+```
+
+##### [26-11-09] [paper618]
+- Towards Spatial Transcriptomics-Driven Pathology Foundation Models
+ [[pdf]](https://arxiv.org/abs/2602.14177) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Towards%20Spatial%20Transcriptomics-driven%20Pathology%20Foundation%20Models.pdf)
+- `arxiv, 2026-02`
+- [Computational Pathology]
+```
+Quite interesting paper. The overall approach makes sense, feels like it should help a bit to fine-tune patch-level PFMs on spatial transcriptomics data. The performance gains are not exactly huge, but consistent across five different PFMs. I'm still not 100% sure what data they train on though, but I ~think~ that they take basically all human Visium and Visium HD data from HEST-1k (HEST-1k contains basically 50/50 human/mouse data, and also some STv1 and Xenium data, but they don't use any of that here for training).
+```
+
+##### [26-11-09] [paper617]
+- Histopathology-Inferred Spatial Transcriptomics Characterizes the Tumor Microenvironment in 1,500 Head and Neck Tumors and Predicts Clinical Outcomes
+ [[pdf]](https://www.biorxiv.org/content/10.64898/2026.05.16.725687v1) [[annotated pdf]](https://drive.google.com/file/d/1maKUwW8OOxSplIXOMnHjaEUupdskxTXz/view?usp=sharing)
+- `biorxiv, 2026-05`
+- [Computational Pathology]
+```
+Quite interesting paper, well written and easy to follow basically everything. The ST prediction model is simple (Virchow2 patch-level features + MLP) and they don't use a lot of data to train it (10 patients/slides, 21.6k Visium spots in total). And then all downstream results are based on representing each WSI with an 11-dim feature vector, the proportions of 11 spatial clusters. So, everything is pretty simple, surprisingly simple even, but they still seem to get quite good/encouraging results.
+```
+
 ##### [26-11-08] [paper616]
 - Multi-Modal Foundation Model with Whole-Slide Attention Enables Transferrable Digital Pathology at Single-Cell Resolution
  [[pdf]](https://www.biorxiv.org/content/10.64898/2026.07.31.741265v1) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Multi-Modal%20Foundation%20Model%20with%20Whole-Slide%20Attention%20Enables%20Transferrable%20Digital%20Pathology%20at%20Single-Cell%20Resolution.pdf)
@@ -1039,35 +1066,4 @@ Well written and interesting paper. Everything is solid, I quite enjoyed reading
 - `CHIL 2025`
 - [ML for Medicine/Healthcare], [EHRs] 
 ```
-Quite interesting, well written and solid overall. 18k unique patients with both EHR and CXR data in the data they use. For "In-hospital mortality" in Table 3, CXR-only is quite a lot worse than EHR-only, but still EHR + CXR improves over EHR-only, which I find a bit interesting.
-```
-
-##### [25-08-07] [paper503]
-- Assessing the Importance of Primary Care Diagnoses in the UK Biobank
- [[pdf]](https://link.springer.com/article/10.1007/s10654-023-01095-0) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Assessing%20the%20Importance%20of%20Primary%20Care%20Diagnoses%20in%20the%20UK%20Biobank.pdf)
-- `European Journal of Epidemiology, 2024`
-- [Miscellaneous]
-```
-I read this just to get some additional background on the UK biobank study and data. Of course I'm not able to fully appreciate everything in an epidemiology paper like this, but still somewhat interesting.
-```
-
-##### [25-08-06] [paper502]
-- Foundation Model of Electronic Medical Records for Adaptive Risk Estimation
- [[pdf]](https://arxiv.org/abs/2502.06124) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Foundation%20Model%20of%20Electronic%20Medical%20Records%20for%20Adaptive%20Risk%20Estimation.pdf)
-- `GigaScience, 2025`
-- [ML for Medicine/Healthcare], [EHRs] 
-```
-Well written and quite interesting paper. Everything is clearly explained, I quite enjoyed reading this. Also provides a good summary of the ETHOS model, I think it helped me understand how that works a bit better. Simulating >= 100 future patient timelines and estimating probabilities for different critical events based on these is a quite intuitive approach, albeit somewhat computationally inefficient I suppose. Really neat that this can be done zero-shot without any re-training though.
-```
-
-##### [25-08-06] [paper501]
-- MOTOR: A Time-to-Event Foundation Model For Structured Medical Records
- [[pdf]](https://openreview.net/forum?id=NialiwI2V6) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/MOTOR%20A%20Time-to-Event%20Foundation%20Model%20For%20Structured%20Medical%20Records.pdf)
-- `ICLR 2024`
-- [ML for Medicine/Healthcare], [EHRs] 
-```
- Well written and quite interesting paper. Their approach turned out to be more similar to the other EHR-based FM papers I've read though, I think. I just expected this to stand out a bit more. Like for those other papers, I also feel like there's quite a lot of details which are still missing here. At least personally, I feel like I wouldn't know exactly how to apply this in practice just by reading the paper. Overall, it also feels like this paper is a bit too long for the 9 page conference format, they have to refer to the appendix quite a lot. But overall this seems like very solid work, definitely.
-```
-
-##### [25-08-05] [paper500]
-- LabTOP: A Unified Model for Lab Test Outcome Prediction on Electronic Health Reco
+Quite interesting, well written and solid overall. 18k unique patients with both EHR and CXR data in the data they use. For "In-hospital mortality" in T

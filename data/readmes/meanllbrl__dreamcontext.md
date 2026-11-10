@@ -615,7 +615,7 @@ The brain only acts while someone is in a session. **Automations** close that ga
 dreamcontext automations create eod-digest --title "End of day digest" --days daily --at 18:00
 # edit automations/eod-digest.md: fill in the ## Prompt section with what the run should do
 dreamcontext automations run eod-digest --force        # live-test it right now, before trusting the schedule
-dreamcontext automations install                       # turn on the dispatcher (ticks every 5 minutes)
+dreamcontext automations install                       # turn on the dispatcher (ticks every minute)
 dreamcontext automations approve <slug>                 # required again any time the prompt or timeout changes
 ```
 
@@ -627,7 +627,7 @@ dreamcontext automations approve <slug>                 # required again any tim
 
 - **A run that must ask, asks in the conversation you're already having.** When a run stops mid-flight for a human, the question arrives as a card in the chat stream and **replaces the composer** while it is open, so a bypass-permissions session can never be told to "just go ahead" with the question unresolved. Two kinds are answered differently on purpose: a stopped run takes free text and resumes on it, while a request to trust a changed manifest takes an explicit approve or reject in every channel, because someone typing "no, this looks wrong" must never be read as consent.
 
-- **The answer can come from your phone.** Connect a Telegram bot per automation and a completed run delivers its own result there (the success headline, the failure reason, or the fact that it needs your verdict), and the run itself is told the connection exists. One bot per automation rather than one for all of them, so a leaked token cannot answer a different automation's question, and the token stays machine-local and out of the prompt.
+- **The answer can come from your phone.** In the Mac app, each Super Agent and each AI Team member can get its own Telegram bot (you create the bots yourself with BotFather; one manager bot pairs them), and a member's runs and questions reach you there. One bot per member rather than one for all of them, so a leaked token cannot answer another member's question, and the token stays machine-local and out of the prompt.
 
 - **A fire that can't run is owed, not lost.** If a run is due while the previous one still holds the lock, it is queued rather than dropped (at most one per automation), and the next tick drains the queue before it evaluates what is due. Toggling an automation off for an hour re-parks its pending fire instead of destroying it.
 - **You can talk to any agent in Chat.** The composer's mode menu lists your agents under **Agents**, below the modes; pick one and the chat opens a new conversation with it, under its approved prompt and what it has learned. It is never the agent's thread, so nothing you say there is posted to its channel or seen by its runs. Every chat also knows your approved agents and can **call them as sub-agents**: "ask the funnel agent how signups look" and Claude dispatches it and relays its answer.
@@ -636,7 +636,7 @@ dreamcontext automations approve <slug>                 # required again any tim
 - **You can read what a run actually did.** `dreamcontext automations session <slug>` replays the headless session: every turn, every tool call and its argument, which ones failed, what it cost. The output document is the conclusion; this is the working. The dashboard has the same drill-in on every row of an automation's run history.
 - **Private to this machine by default.** A new automation, its run history, and its output all stay off your team's shared brain until you say otherwise with `dreamcontext automations share <slug>`. Sharing is easy to undo going forward, but not retroactive: anything already synced to your team stays in that history even after you unshare it, so `unshare` warns you plainly before doing it.
 - **A machine-local approval gates every run.** Because a scheduled run uses elevated permissions with nobody watching, an automation's prompt, timeout, model, reasoning effort, output directory, and whether it learns are hashed at approval time. A change to any of them (for example a synced edit from a teammate on a shared automation) blocks the automation from running here until it's reviewed again with `automations approve`. Approval never limits what a run is allowed to do once it starts, it only gates whether an unreviewed prompt gets to run at all, and it applies even to a private automation, since anyone with access to this machine could still edit it. Because approval is machine-local and shared automations have no cross-machine coordination, approving a shared one on a second machine would run it twice; every approval surface now says so first, reading the synced run history against this machine's own record to spot a run that happened somewhere else. It is advisory, never a block.
-- **A board agent acts only on its board.** An automation homed on a whiteboard (`--whiteboard <board>`, approval-hashed like the prompt) never gets elevated permissions: every run and every reply runs under Claude Code's own permission rules with an exact allowlist. It may read the brain, but it writes only to its own board, its own channel and its own output folder, never reads your credentials, and is refused, with the reason named, the moment anything about it stops matching what you approved.
+- **A home board shows an agent's work; it does not limit it.** An agent homed on a whiteboard (`--whiteboard <board>`, approval-hashed like the prompt) works by its autonomy level like any member, and never reads a `.env` with its Read tool. **A board-only agent acts only on its board.** Opt in with `--board-only` (`scope: board`, also approval-hashed) and every run and every reply runs under Claude Code's own permission rules with an exact allowlist: it may read the brain, but it writes only to its own board, its own channel and its own output folder, never reads your credentials, and is refused, with the reason named, the moment anything about it stops matching what you approved.
 - **A shared automation's output rides brain sync.** A shared run's result lands under `_dream_context/` like everything else, so it inherits the same secrets scrub that guards every commit and push (it blocks known credential shapes; it is not a general sensitive-data filter). Write automations whose output you'd be fine publishing to your team, or keep them private.
 - **Sleep reads new output and can fold real findings into your knowledge base.** During consolidation, the brain looks at what automations have written since the last cycle and, when something is genuinely new rather than a restatement of what it already knows, adds it to the right knowledge file. This applies even to private automations, since sleep is reading your own machine, not the shared brain. If that ever means a private automation's finding is about to become part of shared knowledge, consolidation pauses and asks you to look before it continues.
 - **No silent orphans.** If a run's process ever outlives the command that launched it (for instance the operator killed the wrong thing), the automation refuses to fire again until `dreamcontext automations kill <slug>` clears it, reported in the snapshot and in `show` so it is never invisible.
@@ -690,11 +690,12 @@ More skills install with the core (no pack needed) and run only when the moment 
 - **`dreamcontext-deep-research`** — the heavy, iterative counterpart to the fast `dreamcontext-explore` searcher, for **large / multi-project / federated** brains: fans out parallel searchers across the whole curated corpus **and connected peer vaults**, loops to close gaps, **adversarially verifies** load-bearing claims, and synthesizes a **cited** report — not raw hits. Read-only.
 - **`patterns`** — the drift-free bridge to your project's documented patterns (`_dream_context/knowledge/patterns/`): `/patterns` lists them, `/patterns <slug>` loads one — so the agent reaches for a documented pattern before rebuilding something the project already solved.
 - **`design`** — universal UI rules for any screen an agent builds: hierarchy, every state designed, measured contrast, a 4px grid, a screen that tells the truth. Sub-files for app screens (`product-ui`), frontend code, web, mobile and onboarding. It gives principles, never a look, and `/apps` builds on it. An installed copy you edited is kept on `update`, never overwritten.
+- **`draw`** — every drawing that is kept: Obsidian Excalidraw files (~45 deterministic builders: charts, wireframes, real-proportion device mockups, flows, with a render audit) and dreamcontext whiteboards (the same builders plus live widgets). A short router sends a plain file to the builders and a whiteboard to the kit; the prompt hook names it on any drawing request. Projects that had the old `excalidraw` pack keep their edits, and pipelines that require the old script path keep working.
 
 ```bash
 dreamcontext install-skill --packs                   # Browse and install interactively (terminal checkbox UI)
 dreamcontext install-skill --packs growth council    # Install specific packs directly
-dreamcontext install-skill --skill excalidraw        # Install a single sub-skill or standalone skill
+dreamcontext install-skill --skill video-watching    # Install a single sub-skill or standalone skill
 dreamcontext install-skill --list                     # See everything available
 ```
 
@@ -716,7 +717,6 @@ dreamcontext install-skill --list                     # See everything available
 | **business-idea-validation** | Demand testing via landing page + waitlist, quick validation loops |
 | **meta-marketing** | Meta / Facebook / Instagram ad campaigns end to end |
 | **system-prompts** | Prompt engineering, cognitive architecture, agent design |
-| **excalidraw** | ~44 deterministic builders — charts, wireframes, real-proportion device mockups — that turn data into valid Obsidian Excalidraw boards at near-zero token cost, with a 3-check render audit |
 | **video-watching** | Turn a video into a time-mapped transcript with on-screen visuals described inline, then reason about it |
 | **jev-verify** | Browser validation judged in plain language: Playwright drives the page, TypeSafe Jev (System One model via OpenRouter) answers acceptance criteria against the page's text in ~0.5 s for a fraction of a cent; `assert` / `walk` / `judge`. Needs `OPENROUTER_JEV_KEY` |
 
@@ -930,13 +930,4 @@ The README tells you what dreamcontext does. The deep dive tells you **why** —
 
 - **Why files, not a database** — what plain markdown buys you (auditability, git, ownership) that no store can.
 - **Why agents sleep** — the two-stage memory model borrowed from hippocampal research, and why consolidation beats logging.
-- **Why BM25, not a vector store** — when curated context makes embeddings the wrong default, and where the hybrid layer earns its keep.
-
-**[Read the full story &rarr;](https://github.com/meanllbrl/dreamcontext/wiki)**
-
-## License
-
-[Apache License 2.0](./LICENSE) — a permissive open-source license. You may use,
-modify, distribute, and sell the code, and build commercial products on it.
-Apache 2.0 also grants an explicit patent license and protects the project's
-trademarks (the **dreamcontext** name and brand are *not* part of the code grant
+- **Why BM25, not a vector store** — when curated context makes embeddings the wrong default, 

@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/trafficflowhq/ohmail/stargazers"><img src="https://img.shields.io/github/stars/trafficflowhq/ohmail?style=flat&amp;label=%E2%98%85&amp;color=a3461c" alt="GitHub stars" /></a>
   <a href="https://github.com/trafficflowhq/ohmail/releases"><img src="https://img.shields.io/github/downloads/trafficflowhq/ohmail/total?style=flat&amp;color=a3461c" alt="Total downloads across all releases" /></a>
-  <a href="https://github.com/trafficflowhq/ohmail/releases/latest"><img src="https://img.shields.io/badge/download-v0.30.50-a3461c" alt="Latest release" /></a>
+  <a href="https://github.com/trafficflowhq/ohmail/releases/latest"><img src="https://img.shields.io/badge/download-v1.0.8-a3461c" alt="Latest release" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-a3461c?style=flat" alt="License: AGPL-3.0" /></a>
   <img src="https://img.shields.io/badge/macOS%20%7C%20Windows%20%7C%20Linux%20%7C%20Android-a3461c?style=flat" alt="Platforms: macOS, Windows, Linux and Android" />
 </p>
@@ -127,7 +127,8 @@ Run the whole stack on your own box with Docker Compose and pair your phone from
 **Also in the box:**
 
 - **Rules you can read**: every decision is a rule under Settings → Rules that you can change or revoke, and moving a message yourself teaches the rule that filed it.
-- **AI only if you want it**: your own Anthropic, OpenAI or OpenCode Go key, or a local model through Ollama, suggests where a sender's mail goes and drafts a reply. Nothing is filed for you unless you switch that on, and one-time codes are stripped before a model sees the mail.
+- **AI only if you want it**: your own Anthropic, OpenAI or OpenCode Go key, or a local model through Ollama, suggests where a sender's mail goes and drafts a reply. The AI files nothing for you unless you switch that on, and one-time codes are stripped before a model sees the mail.
+- **Impersonations go to Spam**: a waiting letter that presents itself as a company it can't be from goes to Spam on its own, without AI and without a rule, and stays in ohmail's own Spam. The Screener lists each one with its reason and Put back, letters with a code in them stay where you see them, and you can switch it off.
 - **Answer Later, Park and Resurface**: queue the mail you owe a reply and answer it one at a time in the Reply Run, or put mail away until the day it should come back.
 - **History**: every message you own, newest first, with the months and years on the side to jump anywhere.
 - **Spam** goes to your provider's own Junk folder. ohmail deletes nothing on its own.

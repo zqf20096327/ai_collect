@@ -116,7 +116,7 @@ JWT_SECRET=请换成一串足够长的随机字符串
 
 #### 方式一：本地脚本（开发推荐）
 
-**Windows** — 双击 `start.bat`
+**Windows** — 双击 `start.bat`（它只负责转调 `start.ps1`，逻辑都在 PowerShell 里；也可以直接 `.\start.ps1` 运行）
 
 **macOS / Linux**
 
@@ -125,7 +125,9 @@ chmod +x start.sh
 ./start.sh
 ```
 
-脚本会自动完成：检查 Python / Node → 创建 `.env` → 安装依赖 → 初始化数据库 → （可选）配置语音 → 启动后端与前端 → 打开浏览器。启动后访问前端 <http://localhost:5173>，API 文档 <http://localhost:8000/docs>。
+脚本会自动完成：检查 Python / Node → **首次启动自动创建 `.venv` 虚拟环境并把依赖装进去** → 创建 `.env` → 初始化数据库 → （可选）配置语音 → 启动后端与前端 → 打开浏览器。启动后访问前端 <http://localhost:5173>，API 文档 <http://localhost:8000/docs>。
+
+> 需要 Python 3.11+。`requirements.txt` 没变化时会跳过安装，只有首次启动（或依赖清单更新后）才会联网安装。
 
 启动过程中会询问是否启用语音功能（默认 `n`）；选 `y` 后会继续询问 STT 推理设备（CPU / GPU）。
 
@@ -421,7 +423,7 @@ LLM usage | prompt=1504 (cache_hit=1408, cache_miss=96) | cache_hit_rate=93.6%  
 | `STT_ENABLED` | `false` | 语音识别（语音转文字） |
 | `TTS_ENABLED` | `false` | 语音合成（文字转语音） |
 | `STT_MODEL` | `base` | Whisper 模型：`tiny` / `base` / `small` / `medium` / `large-v3-turbo` |
-| `STT_DEVICE` | `cpu` | 推理设备：`cpu` / `cuda` |
+| `STT_DEVICE` | `cpu` | 推理设备：`cpu` / `cuda`（GPU 需 **CUDA 12**：cuBLAS 12 + cuDNN 9） |
 | `STT_COMPUTE_TYPE` | `int8` | 量化类型：`int8` / `float16` / `int8_float16`（留空按设备自动：GPU→float16，CPU→int8） |
 | `STT_SERVICE_URL` | `http://stt:8000` | STT 微服务地址（本地运行为 `http://localhost:8001`） |
 | `STT_WS_URL` | `ws://stt:8000/stream` | STT WebSocket 地址 |
@@ -830,7 +832,8 @@ pre-commit install          # 安装 git hook，之后每次 commit 自动检查
 
 - **三个开关默认全为 `false`**，未启用时接口不注册、依赖不加载，对系统零影响。
 - **本地运行时**，`STT_SERVICE_URL` / `TTS_SERVICE_URL` 需指向 `http://localhost:8001` / `http://localhost:8002`；Docker 内部网络则是 `http://stt:8000` / `http://tts:8000`。`start.bat` 会自动设置前者。
-- **`STT_DEVICE=cuda` 需要 CTranslate2 的 CUDA 运行库**（cuBLAS / cuDNN），与 `torch` 无关；缺少时会自动回退 CPU 并在日志中告警。
+- **`STT_DEVICE=cuda` 需要 CUDA 12**：`faster-whisper` 1.x 依赖 `ctranslate2` 4.x，其 wheel 只提供 CUDA 12 构建，因此需要 CUDA 12 的 **cuBLAS + cuDNN 9**（Windows 轮子里自带 `cudnn64_9.dll`），与 `torch` 无关。缺运行库时模型加载会直接失败（如 `CUDA failed with error ...` 或找不到 cuBLAS DLL），请把 `STT_DEVICE` 改回 `cpu`。
+- **想用 CUDA 11.8 跑 GPU**：只能整体降级到 `ctranslate2==3.24.0` + `faster-whisper==0.10.1`（Python ≤ 3.12，且 PyAV 10 没有 Windows wheel），不推荐；详见 `stt_service/requirements.txt` 顶部说明。
 - **Whisper 模型选择**：`tiny` / `base` 体积小但中文准确率偏低，建议使用 `large-v3-turbo`。
 - 首次转录时 STT 需要加载模型，因此心跳与连接超时设置得比较宽松，避免误报「连不上」。
 
@@ -844,9 +847,11 @@ pre-commit install          # 安装 git hook，之后每次 commit 自动检查
 
 ### 启动脚本
 
-- `start.bat` / `start.sh` **每次启动都会重装 Python 依赖**，每次都会联网耗时。
-- `start.bat` / `start.sh` 会**交互询问**是否启用语音；`start_app.bat` / `start_app.ps1` 则完全从 `.env` 读取，不提问。
-- 语音相关的安装与设备选择在 `start.bat` 中**只在当前窗口会话内生效，不会写回 `.env`**。想让配置长期生效，请手动写入 `.env`。
+- `start.bat`（转调 `start.ps1`）/ `start.sh` / `start_app.ps1` 首次启动会自动创建 `.venv` 虚拟环境，并把 `requirements.txt` 装进这个虚拟环境（不污染系统 Python）。依赖装好后会在 `.venv` 里写一个标记，`requirements.txt` 未变化时下次启动直接跳过安装。
+- 自动创建虚拟环境需要 **Python 3.11+**；Linux 上若报「创建虚拟环境失败」，先装 `python3-venv`（`sudo apt install python3-venv`）。
+- `start.bat` 现在只是一个转发器（和 `start_app.bat` 同一套路），实际逻辑在同目录的 `start.ps1`：`start.bat` 负责双击可用，`start.ps1` 负责干活。`start.ps1` 支持 `-SkipDeps`（跳过建虚拟环境 + 装依赖，依赖已就绪时可明显加快启动）。
+- `start.ps1` / `start.sh` 会**交互询问**是否启用语音；`start_app.bat` / `start_app.ps1` 则完全从 `.env` 读取，不提问。
+- 语音相关的安装与设备选择在 `start.ps1` 中**只在当前窗口会话内生效，不会写回 `.env`**。想让配置长期生效，请手动写入 `.env`。
 - 脚本只检查「是否安装了 Node」，并未校验版本。由于前端使用 Vite 8，建议使用 **Node 20+**。
 - `start_app.bat` 接受并透传任意参数给 `desktop.py`，例如 `start_app.bat --width 1600 --height 900 --no-topmost`。
 - `start_app.ps1` 是实际干活的启动器，`start_app.bat` 只是转发（因为双击 .bat 一定会先出现一个终端窗口）。常用开关：

@@ -42,7 +42,7 @@
 <div align="center">
   <strong>⭐ If you find this catalog helpful, please consider giving it a star! ⭐</strong>
   <br><br>
-  <i>Last updated: November 8, 2026 | Next goal: 500 stars 🎯</i>
+  <i>Last updated: November 9, 2026 | Next goal: 500 stars 🎯</i>
   <br><br>
   <i>🤖 Thanks to Claude Sonnet 4 for write .sh files! </i>
 </div>
@@ -109,7 +109,7 @@ Welcome to the most comprehensive AI tools catalog! This repository contains **5
 ### 📊 Quick Stats
 - **Total Tools**: 500+
 - **Categories**: 40+
-- **Last Updated**: November 8, 2026
+- **Last Updated**: November 9, 2026
 - **Contributors**: Open for PRs!
 - **Next Goal**: ⭐️ 500 stars
 
@@ -133,6 +133,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 > Transform your ideas into stunning visuals with AI-powered image generation
 
 #### 🔥 Premium/Professional
+- **[PicYep](https://picyep.com)** 🔄 - AI photo generator for realistic headshots, portraits, selfies and social photos
 - **[Lunalisa](https://luna-lisa.art)** 🔄 - Prompt-led workspace for AI images and short-form image-to-video
 - **[Raphael AI](https://raphael.app)** 🆓🔄 - Free unlimited AI image generator for product shots, ads, and brand visuals from text prompts
 - **[ChatGPT Images 2.0](https://chatgpt.com)** 🆕🔄 - OpenAI's gpt-image-2 with reasoning and 2K output (April 2026)
@@ -430,6 +431,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Supermaven](https://supermaven.com)** 🆕🔄 - Fast autocomplete with 300k context
 - **[Tabnine](https://tabnine.com)** 🔄 - AI assistant for software developers
 - **[Amazon Q Developer](https://aws.amazon.com/q/developer/)** 🆕🔄 - AWS coding companion
+- **[Imagera Code](https://imagera.ai/code)** 💰 - Terminal AI coding agent with Claude, GPT, Gemini and hundreds more models on one plan
 
 #### � Open Source Tools
 - **[Continue](https://continue.dev)** 🆕🆓 - Open-source VS Code/JetBrains assistant
@@ -464,8 +466,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[UberLLM](https://uberllm.dev)** 💰 - One OpenAI/Anthropic-compatible API key for text, image, video, music and speech models
 - **[Atlas Cloud](https://www.atlascloud.ai)** 💰 - AI API gateway: one key for LLM, image, video and audio models
 - **[looot](https://looot.ai)** 💰 - Pay-per-call business data API and MCP server for AI agents
-
-
+- **[OneTag AI](https://onetagai.com)** 🔄 - Add AI to any static site with one script tag, no backend
 
 ## Low Code - no code Tools
 - Magicform
@@ -529,6 +530,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Vivideo](https://vivideo.ai)** 🆕🔄 - Multi-model text-to-video & image-to-video with synced audio
 - **[Pixwit](https://pixwit.ai)** 🔄 - Multi-model text-to-video, image-to-video and image generation
 - **[Seedance Now](https://seedancenow.com)** 🔄 - Independent multi-model text and image to video studio with 1080p output
+- **[Imagera](https://imagera.ai)** 💰 - Multi-model AI video and image studio with Character IDs for consistent faces and products
 
 #### 🎬 Content Creation
 - **[Synthesia](https://synthesia.io)** 💰 - AI avatar video generation
@@ -545,6 +547,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[UGCFast](https://ugcfast.ai)** 💰 - Persona-matched AI UGC video ads for Meta and TikTok from a product URL
 - **[AI Baby Dance](https://aibabydance.com)** 🔄 - Turn baby photos into short AI dance videos
 - **[pitchboom.io](https://pitchboom.io)** 🆕🔄 - Turns a product URL or brief into motion-design video ads
+- **[Twistavo](https://twistavo.com)** 💰 - AI character swap: replace a person in a video from 1 to 4 photos
 
 #### 🆕 Emerging Platforms
 - **[Haiper AI](https://haiper.ai)** 🆕🔄 - Fast video generation
@@ -653,6 +656,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - Ludo
 - Hidden Door
 - AI puzzles
+- **[Couscous: Secret Word](https://couscous.ai)** 🆕🔄 - Yes-or-no word-guessing game; a language model judges every question
  
 ## Experiments
 - Auto GPT
@@ -775,6 +779,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[LangChain Agents](https://langchain.com)** 🆓 - LLM agent development framework
 - **[AgentGPT](https://agentgpt.reworkd.ai)** 🆓 - Browser-based autonomous agent
 - **[AnyModelBot](https://github.com/modelflare-ai/AnyModelBot)** 🆕🆓 - Open-source desktop assistant, first out-of-the-box DeepSeek Super Agent
+- **[kwant](https://github.com/alexsergivan/kwant)** 🆕🆓 - Self-hosted team of AI bots in one Rust binary with @mention handoffs, routines and approvals
 
 #### 🛠️ Agent Frameworks
 - **[LangGraph](https://langchain.com)** 🆕🆓 - Stateful agent workflows
@@ -839,6 +844,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Microsoft Copilot for Excel](https://microsoft.com)** 💰 - AI-powered spreadsheet analysis
 - **[Equibles](https://equibles.com)** 🔄 - MCP server with cited US stock data from SEC filings for ChatGPT and Claude
 - **[DisconfirmAI](https://disconfirmai.com/en)** 🔄 - Investment research platform that surfaces evidence that could overturn your thesis
+- **[Fair Value Calculator](https://www.fairvalue-calculator.com/)** 🔄 - Fair value for 40,000+ stocks from 26 valuation models, AI chat and hosted MCP
 
 #### 🤖 Analytics Assistants
 - **[MonkeyLearn](https://monkeylearn.com)** 🔄 - No-code text analysis

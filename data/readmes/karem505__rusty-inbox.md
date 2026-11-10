@@ -26,6 +26,8 @@ into people, notifications and newsletters. Every action works from the keyboard
 starts in a fraction of a second and stays light on memory, because the whole mail engine is
 native Rust and the interface is Qt Quick, not a browser shell.
 
+How it is built, and the decisions that keep it fast: [Rusty Inbox, a Rust email client: the build story](https://aboelmakarem.pro/blog/rusty-inbox-open-source-email-client-rust-qt). Project page: [aboelmakarem.pro/apps/rusty-inbox](https://aboelmakarem.pro/apps/rusty-inbox).
+
 ▶ **Watch on YouTube** (click an image): what's new in 0.2.0, the AI assistant (1:40), and the original launch video (0:53).
 
 <table>
@@ -110,7 +112,7 @@ Already installed? `flatpak update` brings the new version. Run it with
 |---|---|
 | **Linux (recommended)** | Flatpak, the command above (updates with `flatpak update`) |
 | **Linux (other options)** | AppImage, Flatpak bundle or tarball from [Releases](https://github.com/karem505/rusty-inbox/releases) |
-| **Arch Linux** | `makepkg -si` in [`packaging/aur/rusty-inbox`](packaging/aur/rusty-inbox) (from source) or [`rusty-inbox-bin`](packaging/aur/rusty-inbox-bin); AUR listing coming |
+| **Arch Linux** | `yay -S rusty-inbox` ([AUR](https://aur.archlinux.org/packages/rusty-inbox), community package, builds from source), or `makepkg -si` in [`packaging/aur/rusty-inbox-bin`](packaging/aur/rusty-inbox-bin) for the prebuilt binary |
 | **Windows 10/11** | Installer (`.exe`) or portable `.zip` from [Releases](https://github.com/karem505/rusty-inbox/releases) |
 | **macOS 12+** | `.dmg` (Apple Silicon and Intel) from [Releases](https://github.com/karem505/rusty-inbox/releases) |
 

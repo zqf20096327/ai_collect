@@ -4,6 +4,11 @@
 
 Successor to BiblioForge and ZotBiblioForge — no Python, no cloud required.
 
+Version 0.13 adds Inbox / Review / Library navigation, cited document questions,
+OCR recovery presets and reviewable extracted fields. See the
+[workflow guide](docs/library-workflows.md) for usage and the optional newer
+CrispEmbed service integrations.
+
 ---
 
 ## How it works
@@ -79,10 +84,10 @@ API keys you enter in the Settings tab are stored in the **OS keychain** (macOS 
 
 ## Features
 
-- **OCR document workspace** — multi-document projects with automatic recovery, page preparation, editable source regions, confidence review, batch pause/resume, structured field/table/formula extraction, and checked searchable/editable exports. See [the workspace guide](docs/ocr-workspace.md).
+- **OCR document workspace** — multi-document projects with automatic recovery, page preparation, confidence-colored word review, multiline editing and passage split/merge, previewed partial re-OCR, vocabulary and correction rules, logical document structure and per-passage formatting, saved whole-page text drafts with previewed changes, batch pause/resume, independently editable table/formula/field results with original-source inspection, previewed table row/column and cell repair, continuation-table joins with explicit mapping and preserved inputs, and checked searchable/editable exports. Structured Word export preserves reviewed headings, lists, styles, columns and pictures, with explicit table/formula selection and placement. Excel export creates explicitly selected, named and ordered worksheets with literal values and merged cells, including saved tables whose source is now historical. See [the workspace guide](docs/ocr-workspace.md) and the [scoped implementation roadmap](docs/ocr-roadmap.md) for current format limitations, remaining work, and acceptance gates.
 
 - **Four-tier OCR** (in quality order):
-  - **Tier 4 — CrispEmbed GGUF** (`--features crispembed`): Surya-OCR-2 text detection (91 languages) + Qwen2.5-VL recognition (German support) + DBNet/TrOCR lightweight alternative; all-GGUF, no ORT dependency
+  - **Tier 4 — CrispEmbed GGUF** (`--features crispembed`): DBNet/TrOCR printed-text recognition by default, with complete Qwen2.5-VL and other configurable OCR stages; all-GGUF, no ORT dependency
   - **Tier 3 — PaddleOCR** (`--features paddle-ocr`): multilingual incl. CJK, ONNXRuntime via the existing ort dep, ~60 MB models auto-download; CJK/Latin model selection per document
   - **Tier 2 — ocrs**: pure Rust, zero system install, Latin-script (EN/DE/FR/…)
   - **Tier 1 — Tesseract**: shell-out for users with the system install
@@ -226,10 +231,11 @@ crispsorter index stats                                # docs / chunks / fts-doc
 crispsorter ocr scan.pdf                               # plain text to stdout
 crispsorter ocr scan.png --engine tesseract --source-type scanned_doc \
     --denoise --punct-model fireredpunc                # cleanup+denoise → Tesseract-LSTM → punctuation restore
-crispsorter ocr paper.pdf --render hocr                # hOCR (XHTML + word boxes)
+crispsorter ocr paper.pdf --render hocr                # hOCR (XHTML + region geometry)
 crispsorter ocr paper.pdf --render alto --out paper.xml
 crispsorter ocr paper.pdf --render pdf  --out paper-searchable.pdf  # searchable PDF (binary → needs --out)
-crispsorter ocr paper.pdf --render pdf --pdfa --out paper-archival.pdf  # PDF/A-2b (archival: XMP + sRGB OutputIntent)
+# --pdfa currently fails explicitly: archival conformance has not been validated.
+# The separate PDF metadata helper does not make arbitrary PDFs PDF/A-conformant.
 crispsorter ocr photo.jpg --layout --drop-headers-footers          # layout-aware reading order
 crispsorter ocr lowres-scan.png --sr                               # super-resolve (PAN 4×) low-res pages before OCR
 crispsorter ocr blurry-scan.jpg --restore                          # Restormer denoise+deblur before OCR

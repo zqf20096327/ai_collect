@@ -83,6 +83,8 @@ Some models have detailed documentation with prompt formats, examples, and best 
 | Gemma 4 | [Docs](https://github.com/Neywa-Labs/mlx-vlm/blob/main/mlx_vlm/models/gemma4/README.md) |
 | Muse Spark Open | [Docs](mlx_vlm/models/muse_spark/README.md) |
 | MiniMax M3 / M3.1 Flash | [Docs](https://github.com/Neywa-Labs/mlx-vlm/blob/main/mlx_vlm/models/minimax_m3_vl/README.md) |
+| MiniMax-H3-Image | [Docs](mlx_vlm/models/minimax_h3_image/README.md) |
+| Ling 3.1 Flash | [Docs](mlx_vlm/models/bailing_hybrid/README.md) |
 | Falcon-OCR | [Docs](https://github.com/Neywa-Labs/mlx-vlm/blob/main/mlx_vlm/models/falcon_ocr/README.md) |
 | IndicOCR | [Docs](https://github.com/Neywa-Labs/mlx-vlm/blob/main/mlx_vlm/models/indic_ocr/README.md) |
 | PP-DocLayoutV3 | [Docs](https://github.com/Neywa-Labs/mlx-vlm/blob/main/mlx_vlm/models/pp_doclayout_v3/README.md) |
@@ -100,6 +102,7 @@ Some models have detailed documentation with prompt formats, examples, and best 
 | Spark-X2.5 | [Docs](https://github.com/Neywa-Labs/mlx-vlm/blob/main/mlx_vlm/models/spark2_5/README.md) |
 | Ternary Bonsai 2 | [Docs](mlx_vlm/models/prism_hadamard_qwen35/README.md) |
 | Flint | [Docs](mlx_vlm/models/flint/README.md) |
+| Ripple | [Docs](mlx_vlm/models/ricursive/README.md) |
 | Nemotron 3.5 Super VL / Bolt / Nano Omni | [Docs](mlx_vlm/models/nemotron_h_nano_omni/README.md) |
 | Idol (image to 3D Gaussian splats) | [Docs](mlx_vlm/models/idol/README.md) |
 

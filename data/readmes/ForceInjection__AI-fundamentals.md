@@ -386,11 +386,13 @@ SFT 之后把推理能力推上去要靠 RL，而 RL 的 rollout 由推理引擎
 剖析现代推理系统的底层架构创新，重点解构 Mooncake 等以 KV Cache 为中心的高效 LLM 调度系统设计模式与性能调优策略。
 
 - [手搓 KV Cache：从静态预留到 PagedAttention 的页表](09_inference_system/kv_cache/01_concepts/01_basic/03_hand_roll_kv_cache.md) - 可运行模拟器实测三种显存管理策略：碎片入住失败与 5 倍容量的数字来源。
+- [手搓 MLA：从 MHA 到 weight absorption](09_inference_system/kv_cache/01_concepts/01_basic/07_hand_roll_mla.md) - 四版注意力递进 + 真实权重验证吸收等价（fp32 逐位一致），KV 压缩三口径辨析。
+- [手搓系列导航](hand_roll_series.md) - 手搓系列 5 篇的阅读顺序与实测产出汇总。
 - [Mooncake 架构详解：以 KV Cache 为中心的高效 LLM 推理系统设计](09_inference_system/kv_cache/02_systems/04_mooncake/01_mooncake_architecture.md) - 新一代推理系统的架构创新与性能优化策略
 - [当 KV Cache 装不进内存：FAST'26 五篇论文给出的五个不同答案](09_inference_system/kv_cache/03_fast26/01_fast26-kv-storage-five-scenarios.md) - FAST'26「AI and LLMs」九篇论文中五篇精读的五象限汇总：端侧/智能体/对话/数据中心/冷启动各自的核心矛盾、招式与数字，共同支点是可复现的 I/O 特征；附 4 篇 Agent 精读报告
 - [当 KV 装不进显存：四篇论文的四种内存账，与一个「统一命名空间 + 成本旋钮」的设想](09_inference_system/kv_cache/04_memory_tiering/01_memory-tiering-overview.md) - DirectKV / NEO / eLLM / Strata 四篇论文内存层级路线的横切总纲：去搬运 / 挪计算 / 并账本 / 重排调度，附按条件选路的对号表与「数字怎么读」口径清单
 - [当 KV Cache 跨过信任边界：三篇论文给出的三种泄露面，与一个「共享层级 + 默认加密」的设想](09_inference_system/kv_cache/05_kv_security/01_kv-security-overview.md) - 读行为 / 读数据 / 读时延三种取证位置：PromptPeek / Shadow in the Cache / Auditing Prompt Caching，附按角色选路的对号表，以及取证距离与防御动作同轴的成本账
-- [当复用跨出同前缀与同模型：两篇论文给出的两条扩展路径](09_inference_system/kv_cache/06_kv_reuse/01_kv-reuse-overview.md) - KVLink（文档级预计算 + link token）与 DroidSpeak（跨微调变体共享 + 关键层重算）两条路径与「数字怎么读」口径清单
+- [当复用跨出同前缀与同模型：四条路线与四种对齐开销](09_inference_system/kv_cache/06_kv_reuse/01_kv-reuse-overview.md) - KVLink（文档级预计算 + link token）、DroidSpeak（跨微调变体共享 + 关键层重算）与 CacheBlend（免训练非前缀复用）四条路线与「数字怎么读」口径清单
 - [当压缩表示被继续使用：三篇论文给出的三种二次决策](09_inference_system/kv_cache/07_kv_compression/01_kv-compression-overview.md) - Self-Indexing KVCache / SALS / EchoKV 把压缩产物继续用作检索索引、token 选择场与重建素材
 - [TTFT 多了 15 毫秒之后：一套实证过的 KV Cache 性能分析方法论](09_inference_system/kv_cache/08_methodology/01_kv-cache-perf-methodology.md) - 真机排查总结的六件工具与六类问题：时钟链闭合、排除链判死、仪器纪律、native 对齐，配操作清单与脱敏后的实测数字
 - [当 Agent 流量成为推理系统的主要负载](09_inference_system/agent_serving/agent-workload-serving.md) - KV 生命周期错配、调度语义失真、会话粘性与容量公式失效：Agent 负载下的四连锁问题与两引擎源码级现状

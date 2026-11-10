@@ -41,6 +41,10 @@
 </p>
 
 <p align="center">
+  <sub>Built and maintained by <a href="https://kesha-antonov.com">Kesha Antonov</a>, React Native lead engineer. More libraries, apps and case studies on <a href="https://kesha-antonov.com">kesha-antonov.com</a>.</sub>
+</p>
+
+<p align="center">
   <sub>Using it in production? A ⭐ helps other developers find the library.</sub>
 </p>
 
@@ -1522,5 +1526,4 @@ interface MyMessage extends IMessage {
 `Chat` is assembled from exported parts, so you can reuse them in your own screens or render props:
 
 - **Rows and bubbles**: `Message`, `Bubble`, `MessageText`, `MessageImage`, `MessageVideo`, `MessageAudio`, `MessageFile`, `MessageLocation`, `MessageReply`, `SystemMessage`, `Day`, `Time`, `Avatar`, `ChatAvatar`, `UnreadSeparator`, `ChatEmpty`, `LinkPreviewCard`, `MediaCard`
-- **Composer**: `InputToolbar`, `Composer`, `Send`, `Actions`, `ReplyPreview`, `EmojiGrid`, `AttachmentMenu`, `AttachmentSheet`
-- **Voice and video**: `VoiceMessageInput`, `WaveformPlayer`, `VideoRecordButton`, `VideoNoteRecorder`, with `isVoiceRecordingAv
+- **Compose

@@ -30,6 +30,12 @@ any moment.
 
 ![Amigent with a Workbench screen and the keyboard panel](https://raw.githubusercontent.com/akustikrausch/amigent/main/docs/screenshots/viewer.png)
 
+Programs that open their own screen, such as SysInfo on the chipset next to a
+graphics-card Workbench, show up as they are. The list at the top brings any
+screen to the front, from the PC.
+
+![SysInfo on its own chipset screen in the remote desktop, with the screen list at the top](https://raw.githubusercontent.com/akustikrausch/amigent/main/docs/screenshots/screens.png)
+
 ## Installation
 
 ### On the Amiga
@@ -68,22 +74,30 @@ Without an AI agent: see the [manual installation](https://github.com/akustikrau
 
 ### Updating
 
+Amigent has two halves, amigentd on the Amiga and the program on your PC or
+Mac. Update both; either order works.
+
 Paste this into your AI agent:
 
-    Update Amigent for me: run "pipx upgrade amigent", then
-    "amigent-setup --update", which puts the new amigentd on my Amiga over
-    the network. Tell me if you need to be restarted.
+    Update Amigent for me, both halves: run "pipx upgrade amigent" on this
+    computer, then "amigent-setup --update" for the amigentd on my Amiga.
+    Then tell me to restart you, so you get the new tools.
 
 Or in a terminal:
 
     pipx upgrade amigent
     amigent-setup --update
 
-At the Amiga instead: unpack the new archive from the
+Then restart your AI app and the remote desktop, so they run the new version.
+
+Updated the Amiga first, at the Amiga? Unpack the new archive from the
 [releases](https://github.com/akustikrausch/amigent/releases) or Aminet and
-double-click *Amigent-Update* in its drawer. Key, encryption and the start
-line stay as they are. New features such as the screen pause need both sides
-updated; one side alone keeps working as before.
+double-click *Amigent-Update* in its drawer. Then give your agent the same
+prompt as above, or run `pipx upgrade amigent` on the PC and restart the AI app. From 1.3.0 on, the PC notices a newer
+amigentd and says so, in the agent's answers and in the remote desktop.
+
+Key, encryption and the start line stay as they are. One side alone keeps
+working as before; the new features need both.
 
 ## What you need
 
@@ -97,6 +111,8 @@ updated; one side alone keeps working as before.
     "Install the game from my Downloads folder and add it to the Games menu."
     "Copy the demo to the Amiga and start it."
     "Open the remote desktop."
+    "Install the newest HippoPlayer from Aminet, so I can take it back if it doesn't work."
+    "Build my program, run it on the Amiga and show me its debug output."
 
 ## Made for slow machines and slow wires
 
@@ -113,6 +129,13 @@ feel quick, for the AI agent and for you at the mouse:
   and costs the Amiga only a few percent of its CPU.
 - **Files go in one go.** Whole folders travel in a single stream, and files
   that are already there stay where they are.
+- **Text where text is enough.** The AI agent reads what programs write on
+  the screen as text, a few hundred bytes, and takes a picture only of the
+  part where it needs one. It waits on the Amiga itself for a window or a
+  line of text instead of looking again and again.
+- **Packed when the Amiga is fast.** With an accelerator behind a slow
+  network, replies, files and screen tiles travel packed; a slow CPU on a
+  fast network stays unpacked. Amigent measures both and decides.
 
 Measured with a 640×256 Workbench screen:
 
@@ -135,12 +158,21 @@ All numbers, how they were taken and how to repeat them are in
 - **New address after a restart?** Amigent finds the Amiga again by itself. It
   takes only the one that proves to be yours.
 - **Several Amigas?** `amigent-fleet` shows them side by side with a preview.
+- **Watching from the Amiga?** `amigent-monitor` in the Amigent folder opens a
+  window there that lists, line by line, what the agent is doing.
+- **Trying out software?** The agent can record an installation and take it
+  back completely, and fetch programs from Aminet straight from the PC.
+- **Developing for the Amiga?** The agent builds and runs your program and
+  reads its kprintf and Enforcer output, and keeps a copy of a growing log on
+  the PC that survives a crash.
 - **Running a test or a benchmark?** *Pause the picture* in the remote desktop
   (or `PAUSE` by ARexx) gives the Amiga's CPU back to it for a while; mouse,
   keys and files keep working.
 - **After a big OS update**, `amigent-repair` puts back what the update removed.
 - **Safe at home.** A key keeps other computers on the network out, and the
   connection can be encrypted. Don't open the Amiga to the internet.
+
+<p align="center"><img src="https://raw.githubusercontent.com/akustikrausch/amigent/main/docs/screenshots/monitor.png" width="772" alt="amigent-monitor on the Amiga: the agent's tool calls, commands and screen reads line by line, next to link, traffic and memory figures"></p>
 
 More in the [guide](https://github.com/akustikrausch/amigent/blob/main/docs/GUIDE.md) and the [FAQ](https://github.com/akustikrausch/amigent/blob/main/docs/FAQ.md).
 

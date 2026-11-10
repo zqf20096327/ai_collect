@@ -1,4 +1,4 @@
-## Updated on 2026.11.06
+## Updated on 2026.11.09
 > Usage instructions: [here](./docs/README.md#usage)
 
 <details>
@@ -238,7 +238,7 @@
 
 > Showing the latest 200 of 1459 papers, see the [archive](#archive) for all.
 
-<p align=right>(<a href=#updated-on-20261106>back to top</a>)</p>
+<p align=right>(<a href=#updated-on-20261109>back to top</a>)</p>
 
 ## SFM
 
@@ -447,7 +447,7 @@
 
 > Showing the latest 200 of 1082 papers, see the [archive](#archive) for all.
 
-<p align=right>(<a href=#updated-on-20261106>back to top</a>)</p>
+<p align=right>(<a href=#updated-on-20261109>back to top</a>)</p>
 
 ## Visual Localization
 

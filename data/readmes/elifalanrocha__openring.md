@@ -1,13 +1,15 @@
 <div align="center">
 
-<img src="docs/assets/logo.svg" width="88" height="88" alt="OpenRing logo">
+<img src="https://raw.githubusercontent.com/elifalanrocha/openring/main/docs/assets/logo.svg" width="88" height="88" alt="OpenRing logo">
 
 # OpenRing
 
-**Self-hosted voice AI agents with a Vapi-compatible API. No platform fee.**
+**The open-source, self-hosted Vapi alternative for voice AI agents. Vapi-compatible API, no platform fee.**
 
-AI phone agents and receptionists that answer and place calls over Twilio, Telnyx, Plivo, Vonage or any SIP trunk,
-with your own provider keys or a free, 100% local stack (Whisper, Ollama, Kokoro).
+OpenRing runs AI phone agents, voice AI agents and AI receptionists that answer and place calls over Twilio, Telnyx,
+Plivo, Vonage or any SIP trunk, with your own provider keys or a free, 100% local stack (Whisper, Ollama, Kokoro).
+
+<sub>Latest release 0.1.6 · README updated November 9, 2026</sub>
 
 [![CI](https://github.com/elifalanrocha/openring/actions/workflows/ci.yml/badge.svg)](https://github.com/elifalanrocha/openring/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/openring?color=e8590c&label=npm)](https://www.npmjs.com/package/openring)
@@ -18,7 +20,7 @@ with your own provider keys or a free, 100% local stack (Whisper, Ollama, Kokoro
 [![Run it in one command](https://img.shields.io/badge/⚡_Run_it-npx_openring-e8590c?style=for-the-badge)](#-quick-start)
 [![Move from Vapi](https://img.shields.io/badge/🔁_Move_from-Vapi-1c1917?style=for-the-badge)](#-moving-from-vapi)
 
-[Quick start](#-quick-start) · [How it works](#-how-it-works) · [Compare](#-how-it-compares) · [API guide](docs/api.md) · [Providers](#-providers) · [Roadmap](ROADMAP.md)
+[Quick start](#-quick-start) · [How it works](#-how-it-works) · [Compare](#-how-it-compares) · [API guide](docs/api.md) · [Providers](#-providers) · [Roadmap](ROADMAP.md) · [Discussions](https://github.com/elifalanrocha/openring/discussions)
 
 </div>
 
@@ -232,6 +234,10 @@ Small pull requests get merged fastest. Start with [CONTRIBUTING.md](CONTRIBUTIN
 [good first issues](https://github.com/elifalanrocha/openring/labels/good%20first%20issue); see
 [CHANGELOG.md](CHANGELOG.md) for what shipped.
 
+Questions, ideas and "look what I built" go to [Discussions](https://github.com/elifalanrocha/openring/discussions);
+bugs go to [issues](https://github.com/elifalanrocha/openring/issues/new/choose). If you have a phone provider account,
+[testing it on a real call](https://github.com/elifalanrocha/openring/labels/needs-testing) helps more than anything.
+
 ## 💛 Support the project
 
 OpenRing is free and has no platform fee, and it stays that way. If it saves you money, you can help keep it going on
@@ -259,8 +265,8 @@ vulnerability? Please report it privately: see [SECURITY.md](SECURITY.md).
 
 <a href="https://star-history.com/#elifalanrocha/openring&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=elifalanrocha/openring&type=Date&theme=dark&v=20261108">
-    <img alt="Star history chart" src="https://api.star-history.com/svg?repos=elifalanrocha/openring&type=Date&v=20261108">
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=elifalanrocha/openring&type=Date&theme=dark&v=20261109">
+    <img alt="Star history chart" src="https://api.star-history.com/svg?repos=elifalanrocha/openring&type=Date&v=20261109">
   </picture>
 </a>
 

@@ -55,6 +55,11 @@ without leaving the Claude you are in. Under **Shared usage**, add another of
 your Claudes or sign in to an account. Only the model's answers come from the
 other account; your chats, files and connectors stay where they are.
 
+Sharing sends that Claude's Claude Code through a small relay Graft runs. Before
+you remove Graft, take away the accounts each Claude borrows and close those
+Claudes once, which puts their Code settings back as they were. If Graft goes
+first, the relay puts each Claude back as it closes, then stops.
+
 ## A Claude for every account
 
 **New Shortcut** makes a small app that opens Claude on a profile of its own.
@@ -69,11 +74,14 @@ another Claude's chats is a choice you make.
 
 The menu bar says which Claude is in front, with its icon and its account's
 usage, and its name too if you like. While a Claude shares usage, the bar shows
-every account it draws on and lights the one answering right now; a
-conversation that has just begun runs across it for two minutes, so you see
-which account took it. The dropdown lists every account's five-hour and weekly
-usage, kept current while the Claudes are closed, and lets you pick which
-account answers each conversation.
+every account it draws on and rings the one answering right now in red, and the
+conversation on screen runs across it with that account's name, so you always
+know who is answering the chat in front of you. An older chat that no account
+has answered since you began sharing shows by its name alone. Archive or delete
+a conversation and it leaves the bar. The dropdown lists every account's
+five-hour and weekly usage, kept current while the Claudes are closed, and lets
+you pick which account answers each conversation, with a tick beside the one in
+force.
 
 <img src="docs/images/03-dropdown.png" width="346" alt="Graft's menu bar dropdown with each account's usage">
 

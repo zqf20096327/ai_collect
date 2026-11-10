@@ -12,8 +12,9 @@ People use MetaOS through its web front-end or from an AI assistant over MCP. Th
 own, which renders the pages anyone may see from MetaOS's API, so search engines and link previews get them whole, and
 Cloudflare caches them; the browser then carries on as a single-page app. Both sign in with [Keycloak], and MetaOS
 checks their tokens with Keycloak's keys. MetaOS keeps its data in Postgres, where every change is logged, and works
-with Google Drive, Koofr and Dropbox as Ogrodje's bot account. Postgres also tells MetaOS what changed, which it
-passes on to the open pages, so they show it without being reloaded. Pictures everyone may see, like episodes'
+with Google Drive, Koofr and Dropbox as Ogrodje's bot account. It also lists Slovenia's tech, developer and startup events,
+which it gets from [Goo](https://goo.ogrodje.si)'s public timeline, as ogrodje.si's Dogodki page did. Postgres also
+tells MetaOS what changed, which it passes on to the open pages, so they show it without being reloaded. Pictures everyone may see, like episodes'
 thumbnails from Dropbox and people's avatars from Hygraph, MetaOS copies to its public bucket in Google Cloud Storage,
 from which browsers load them at media.ogrodje.si, cached by Cloudflare; the team uploads an episode's artwork from
 its page straight to MetaOS's private bucket, and MetaOS publishes it from there. Its video and audio go there the
@@ -26,10 +27,13 @@ address, so that browser goes out through the pod's Tailscale container and low,
 API and the uploads go straight to Patreon. What takes long, like transcribing an episode, MetaOS does in durable
 workflows on Temporal, a server of its own in the cluster with its databases in the same Postgres and its UI on the
 tailnet only; MetaOS's pods are its workers, and hear episodes with Google's Speech-to-Text or Soniox, a few at a time,
-keeping each transcript in Postgres and the bucket. Everything runs on Ogrodje's Kubernetes cluster, behind Cloudflare.
+keeping each transcript in Postgres and the bucket. Changes can ship turned off, behind feature flags in Unleash, a
+server of its own beside them with its database in the same Postgres and its UI on the tailnet only: MetaOS reads them
+with Unleash's SDK, and the front-end's server for the browser, which never gets a token; while Unleash is down, each
+flag is as it was last, else its default. Everything runs on Ogrodje's Kubernetes cluster, behind Cloudflare.
 New Relic, in its EU region, gets MetaOS's and patreon-gateway's requests, errors and logs from its Java agent in each,
 and the pages' errors and load times from its agent in the browser, and checks from outside that the pages, MetaOS and
-Keycloak answer. The cluster's Prometheus scrapes MetaOS, patreon-gateway, Keycloak and Temporal, and passes a few of
+Keycloak answer. The cluster's Prometheus scrapes MetaOS, patreon-gateway, Keycloak, Temporal and Unleash, and passes a few of
 their metrics on to New Relic: MetaOS's outside connections, Keycloak's sign-ins, their pods' memory, restarts and
 readiness, and the node's memory and disk.
 

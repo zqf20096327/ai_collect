@@ -9,13 +9,15 @@
 一部安卓手机就够：全天收音 → 自动转写 → 认出谁在说 → AI 整理成待办、约定和记忆。<br>
 不用买硬件，不用注册账号，数据只在你自己手机里。
 
+🌐 官网：[www.taosheng.app](https://www.taosheng.app)，感谢 [@feitian124](https://github.com/feitian124) 帮忙制作，后续如考虑国际化或可能调整。
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](LICENSE)
 ![Platform](https://img.shields.io/badge/Android-10%2B-3DDC84?logo=android&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/Kotlin-Jetpack%20Compose-7F52FF?logo=kotlin&logoColor=white)
 ![On-device](https://img.shields.io/badge/声纹%20%2F%20人声检测-本机运行-F07B2E)
 [![Stars](https://img.shields.io/github/stars/0xCoach/TaoSheng?style=social)](https://github.com/0xCoach/TaoSheng/stargazers)
 
-[![下载 APK](https://img.shields.io/badge/下载安装包-v0.2.19-F07B2E?style=for-the-badge&logo=android&logoColor=white)](https://github.com/0xCoach/TaoSheng/releases/download/v0.2.19/TaoSheng-v0.2.19-arm64.apk)
+[![下载 APK](https://img.shields.io/badge/下载安装包-v0.2.22-F07B2E?style=for-the-badge&logo=android&logoColor=white)](https://github.com/0xCoach/TaoSheng/releases/download/v0.2.22/TaoSheng-v0.2.22-arm64.apk)
 
 简体中文 | [English](README_EN.md)
 
@@ -59,7 +61,7 @@
 
 ## ✨ 亮点
 
-1. **🎙 不用买任何硬件**：手机麦克风就够；也支持领夹麦、蓝牙耳机等外接设备，插上自动切换，拔掉自动切回。
+1. **🎙 不用买任何硬件**：手机麦克风就够；也支持领夹麦、蓝牙耳机等外接设备，插上自动切换，拔掉自动切回；还能接 Omi、声云录音卡等专用录音设备（试用，见下方第 31 条）。
 2. **📴 本地模型完全离线转写**：可选 SenseVoice 本地识别（骁龙 NPU 加速），声音不出手机、不花一分钱；也可用豆包云端或自定义转写服务（OpenAI 兼容接口，或填写完整请求地址）。
 3. **⏱ 自动转写 + 自动整理，时间自己定**：转写间隔可设 15～720 分钟，转完自动整理成事件；每日回顾时间、技能运行时间都可调。
 4. **🧑‍🤝‍🧑 声纹认人，分得清多个说话人**：本机声纹认出“我”和熟人，多人会议自动分段；在原话上长按选“这是谁”，指定一次就能学会这个人的声音；每个人的声纹样本都能回放、删除。
@@ -67,8 +69,8 @@
 6. **🃏 每天自动生成任务卡，技能随你定义**：会议速记、收工打卡、每周回顾、情绪日记开箱即用；写一份 JSON + 提示词就能加自己的技能。
 7. **💬 AI 问问，附原话出处**：哪天说过什么、答应过谁什么，直接打字问；每个答案都能点回当时的原话。
 8. **🤖 原话和整理结果自动推给你的 Agent**：每天的原话 + 整理后的文本（Markdown + JSON）自动推到 10 种通道，只推新增 / 修改 / 删除，随时给你的 Agent 调用。
-9. **☁️ 每天自动备份到坚果云和本机**：增量备份，只传变化；保留 3 / 7 / 30 天版本；可设口令加密；换手机一键恢复，设置和密钥一起回来。
-10. **🧠 整理模型随便换，可完全本地运行**：内置 DeepSeek、豆包、通义、Kimi、智谱等十多家服务商，点一下切换，能查余额的显示余额并低额提醒；也支持任何 OpenAI 兼容接口和局域网自建模型，转写 + 整理全程不出你自己的设备。
+9. **☁️ 每天自动备份到云端和本机**：云端可选坚果云、WebDAV（Nextcloud、群晖等）或 S3 兼容存储（阿里云、腾讯云、R2 等）；增量备份，只传变化；保留 3 / 7 / 30 天版本；可设口令加密；换手机一键恢复，设置和密钥一起回来。
+10. **🧠 整理模型随便换，可完全本地运行**：内置 DeepSeek、豆包、通义、Kimi、智谱等十多家服务商，点一下切换，能查余额的显示余额并低额提醒；也支持任何 OpenAI 兼容接口（可填自定义请求头，内置 OpenCode Go）和局域网自建模型，转写 + 整理全程不出你自己的设备。
 11. **🛟 主模型出问题自动换备用**：配了多个模型时，主模型断网、宕机、余额不足或密钥失效，自动按顺序换用备用模型，整理、回顾、问问都不中断（默认开启，可关）。
 12. **🔒 锁屏、后台一直在听**：前台服务 + 守护，被系统杀掉自动拉起；通知栏快捷开关一键暂停。
 13. **🔋 只录人声，安静不录**：本机人声检测（Silero VAD），实测自身耗电约 0.5%/小时。
@@ -77,17 +79,21 @@
 16. **🌙 每日 / 每周自动回顾**：一句话总结、要紧的事、待办、值得留意、灵感和心力，生成后推送给你。
 17. **🔁 重复的灵感自动合并**：反复提到的想法合成一条，显示“说过 N 次”，真正在意的事一眼看出来。
 18. **🔤 热词纠错**：人名、公司名、行业词设一次，转写更准。
-19. **📂 导入录音文件**：会议录音、语音备忘从别的应用“分享到涛声”，一样转写、认人、整理。
+19. **📂 导入录音文件**：会议录音、语音备忘从别的应用“分享到涛声”，一样转写、认人、整理；也可以选一个文件夹（比如录音笔 App 存录音的地方），新录音自动导入，原文件不动、不重复导入。
 20. **🗂 时间轴回看 + 重点标记**：拖一下回到当天任何时刻；左滑标 ★ 重点、右滑删除，可批量编辑。
 21. **🔐 隐私优先**：不用注册账号、没有我们的服务器；密钥存系统安全区；原录音默认保留 3 天后自动删（可设 1～365 天，标星的可保留）；“删除最近 N 分钟”“这段别记”一键彻底删除。
 22. **🔍 寻物**：“钥匙放哪了”“充电宝借给谁了”——说过的放置、带走、借出、归还自动记下，在“记忆 → 寻物”查看，也能直接问。
 23. **⏰ 像闹钟一样的待办强提醒**：打字或语音添加待办；到点持续响铃、锁屏整屏提醒，音量键稍后、电源键停止。
-24. **🎧 录音回放与导出**：歌词式字幕播放器（上一段 / 下一段、倍速）；多段录音合成一个 M4A，连同原话和字幕导出，先试听再保存。
+24. **🎧 录音回放与导出**：歌词式字幕播放器（上一段 / 下一段、倍速）；多段录音合成一个 M4A，连同原话和字幕导出，先试听再保存；也可只导出摘要、待办、原话，选 TXT 或 Markdown。
 25. **📝 导入录音自动出纪要**：分会议、培训、通话·访谈、普通四类，导入后自动转写、认人，按类型生成纪要。
 26. **🔊 环境音识别**：听出说话之外的声音（音乐、键盘声、雨、宠物、流水、家电、脚步、闹钟、车流 9 类），写进事件和周报的“声音印象”。
 27. **📋 日报周报一键复制**：全文复制、按模块多选复制或自由选字，格式和勾选状态都保留。
-28. **🏫 课堂模式与停录时段**：一个人主讲的上课、讲座可开课堂模式，不区分说话人、转写更快，到点自动恢复；设好时段自动停录，比如夜里不录。
-29. **⬆️ App 内检查更新**：优先下载几 MB 的差异包，国内走魔搭镜像，装前自动备份。
+28. **🎙️ 专题录音与停录时段**：会议、培训、通话、口播稿一键开始，可暂停、预约，结束后合成一件事出纪要（培训不区分说话人）；忘了开始可事后补；设好时段自动停录，比如夜里不录。
+29. **⬆️ App 内检查更新**：优先下载几 MB 的差异包，国内走魔搭镜像；下载完就在后台备份好，点安装直接弹出系统确认。
+30. **📍 足迹**：跟着录音一起记下每天去过哪，停留的地方显示地名、自动认出“家”；一天按地点分成时间轴，每个停留点下面列出当时发生的事；可每天推送“每日足迹”。定位只存在手机里。
+31. **📡 专用录音设备（试用）**：搜索、配对 Omi、声云录音卡、ADeus 开源吊坠等蓝牙录音设备，配对后在“录音输入”里选它就用它录；断开时自动换回手机麦克风，连回来把设备里存的那段补传进来。每种设备由一张“说明卡”描述，新设备不用发新版就能支持，下发的说明卡都带官方签名。
+32. **🧭 声音、位置、环境音联动**：事件上显示当时在哪（“📍 在公司”）；问问能按地点问——“上周在公司聊了什么”“昨天在家提到过哪些待办”；可选让整理参考当时的地点和环境音，分场景更准（默认关）。
+33. **🚀 三分钟上手**：第一次打开有开箱向导——先说明再要权限、后台自动准备本机转写、一键去 DeepSeek 获取密钥（回来自动识别剪贴板）、现场说一句话看到转写和整理结果；其余设置按需提示，不打扰。
 
 <table>
 <tr>
@@ -120,13 +126,13 @@
 </tr>
 <tr>
 <td><b>🌙 每天自动回顾</b><br>晚上 22:00 生成当天回顾：一句话总结、要紧的事、待办、值得留意、灵感和心力；周日再出一份周回顾。</td>
-<td><b>☁️ 每天自动备份</b><br>增量备份到本机 + 坚果云，保留 3 / 7 / 30 天版本；换手机一键全部恢复，连设置和密钥都在。</td>
+<td><b>☁️ 每天自动备份</b><br>增量备份到本机 + 坚果云 / WebDAV / S3，保留 3 / 7 / 30 天版本；换手机一键全部恢复，连设置和密钥都在。</td>
 </tr>
 </table>
 
 ### 支持的推送通道
 
-PushPlus · 企业微信机器人 · Server 酱 · 飞书 · 钉钉 · Telegram · 邮件 · Notion · 坚果云同步文件夹（可接 Obsidian） · 自定义 Webhook
+PushPlus · 企业微信机器人 · Server 酱 · 飞书 · 钉钉 · Telegram · 邮件 · Notion · 同步文件夹（坚果云 / WebDAV / S3，可接 Obsidian） · 自定义 Webhook
 
 可推：每日回顾、待办提醒、新整理的事、技能卡片、每日记忆文档（含原话）；格式可选纯文本 / Markdown / JSON。
 
@@ -139,13 +145,16 @@ PushPlus · 企业微信机器人 · Server 酱 · 飞书 · 钉钉 · Telegram 
 | 安卓手机 | Android 10 及以上，arm64 架构。开发和实测机型：小米 14 Pro（澎湃 OS 3） |
 | 转写服务 | 三选一：[豆包语音](https://www.volcengine.com/product/voice-tech) API Key；直接用**本地转写**（首次使用时在手机上下载模型）；或自定义转写服务 |
 | 大模型 | 任意 OpenAI 兼容接口的 API Key，默认 [DeepSeek](https://platform.deepseek.com/) |
-| 可选 | 坚果云账号（备份）、任一推送通道 |
+| 可选 | 坚果云、WebDAV 或 S3 存储（备份）、任一推送通道 |
 
 ### 下载安装（推荐）
 
 | 版本 | 发布日期 | 下载 | 说明 |
 | --- | --- | --- | --- |
-| **v0.2.19**（最新） | 2026-11-08 | [GitHub 安装包](https://github.com/0xCoach/TaoSheng/releases/download/v0.2.19/TaoSheng-v0.2.19-arm64.apk) · [魔搭国内下载](https://modelscope.cn/models/OpenRecode/TaoSheng-releases/resolve/master/TaoSheng-v0.2.19-arm64.apk) | 整理不再切碎；新增“整理前先思考”开关；多选合并几件事；重新整理显示分批进度，修复整天重新整理闪退。[详细更新日志](CHANGELOG.md#0219--2026-11-08) |
+| **v0.2.22**（最新） | 2026-11-11 | [GitHub 安装包](https://github.com/0xCoach/TaoSheng/releases/download/v0.2.22/TaoSheng-v0.2.22-arm64.apk) · [魔搭国内下载](https://modelscope.cn/models/OpenRecode/TaoSheng-releases/resolve/master/TaoSheng-v0.2.22-arm64.apk) | 新增专题录音（会议、培训、通话、口播稿，结束后合成一件事出纪要，可暂停、预约、事后补）；问问换模型也能用（Gemini 兼容、程序先查兜底）；整理被拒收不再卡住。数据库升级，不能直接降级。[详细更新日志](CHANGELOG.md#0222--2026-11-11) |
+| **v0.2.21** | 2026-11-10 | [GitHub 安装包](https://github.com/0xCoach/TaoSheng/releases/download/v0.2.21/TaoSheng-v0.2.21-arm64.apk) · [魔搭国内下载](https://modelscope.cn/models/OpenRecode/TaoSheng-releases/resolve/master/TaoSheng-v0.2.21-arm64.apk) | 新增足迹，并和声音、环境音联动（事件显示当时在哪、问问按地点问）；专用录音设备接入（试用）；开箱向导三分钟上手；锁屏本地转写更省电；更新前备份提前；问题记录含大模型诊断。数据库升级，不能直接降级。[详细更新日志](CHANGELOG.md#0221--2026-11-10) |
+| **v0.2.20** | 2026-11-10 | [GitHub 安装包](https://github.com/0xCoach/TaoSheng/releases/download/v0.2.20/TaoSheng-v0.2.20-arm64.apk) · [魔搭国内下载](https://modelscope.cn/models/OpenRecode/TaoSheng-releases/resolve/master/TaoSheng-v0.2.20-arm64.apk) | 修复麦克风“假运行”丢录音；蓝牙录音让出话筒给输入法；备份可选 WebDAV、S3；导出可只要文字、可选 Markdown；文件夹自动导入；推送换行；自定义请求头与 OpenCode Go。[详细更新日志](CHANGELOG.md#0220--2026-11-10) |
+| **v0.2.19** | 2026-11-08 | [GitHub 安装包](https://github.com/0xCoach/TaoSheng/releases/download/v0.2.19/TaoSheng-v0.2.19-arm64.apk) · [魔搭国内下载](https://modelscope.cn/models/OpenRecode/TaoSheng-releases/resolve/master/TaoSheng-v0.2.19-arm64.apk) | 整理不再切碎；新增“整理前先思考”开关；多选合并几件事；重新整理显示分批进度，修复整天重新整理闪退。[详细更新日志](CHANGELOG.md#0219--2026-11-08) |
 | **v0.2.18** | 2026-11-08 | [GitHub 安装包](https://github.com/0xCoach/TaoSheng/releases/download/v0.2.18/TaoSheng-v0.2.18-arm64.apk) · [魔搭国内下载](https://modelscope.cn/models/OpenRecode/TaoSheng-releases/resolve/master/TaoSheng-v0.2.18-arm64.apk) | 声纹样本管理：每个人的样本能回放、删除，样本声音可一键清除；自定义转写可填写完整请求地址。[详细更新日志](CHANGELOG.md#0218--2026-11-08) |
 | **v0.2.17** | 2026-11-07 | [GitHub 安装包](https://github.com/0xCoach/TaoSheng/releases/download/v0.2.17/TaoSheng-v0.2.17-arm64.apk) · [魔搭国内下载](https://modelscope.cn/models/OpenRecode/TaoSheng-releases/resolve/master/TaoSheng-v0.2.17-arm64.apk) | 主模型出问题自动换备用模型；修复内容多的日子生成回顾失败（按模型容量完整发送）；修复加密备份恢复没有口令框；兼容鸿蒙等系统的本机备份文件夹授权。[详细更新日志](CHANGELOG.md#0217--2026-11-07) |
 | **v0.2.16** | 2026-11-03 | [GitHub 安装包](https://github.com/0xCoach/TaoSheng/releases/download/v0.2.16/TaoSheng-v0.2.16-arm64.apk) · [魔搭国内下载](https://modelscope.cn/models/OpenRecode/TaoSheng-releases/resolve/master/TaoSheng-v0.2.16-arm64.apk) | 修复七天统计长事务导致的删除延迟；轻量快照与媒体匹配优化；删除阶段提示及防重复操作。手机性能测试与实际删除复测通过。[详细更新日志](CHANGELOG.md#0216--2026-11-03) |
@@ -164,7 +173,7 @@ PushPlus · 企业微信机器人 · Server 酱 · 飞书 · 钉钉 · Telegram 
 - 只支持 64 位安卓手机（arm64-v8a，近几年的手机基本都是），Android 10 及以上。
 - 手机上直接打开下载的 apk 安装；提示“未知来源”时按提示允许即可。
 - 历史版本和更新说明见 [Releases](https://github.com/0xCoach/TaoSheng/releases)。
-- 最新版文件校验（SHA-256）见 [正式版附件 SHA256SUMS](https://github.com/0xCoach/TaoSheng/releases/download/v0.2.19/SHA256SUMS)。
+- 最新版文件校验（SHA-256）见 [正式版附件 SHA256SUMS](https://github.com/0xCoach/TaoSheng/releases/download/v0.2.22/SHA256SUMS)。
 - 正式签名证书指纹（SHA-256）：`7c11f9afc2cdfc8ba334a7bba69b005aecc609d81fcd12d01bcec2752f496b07`。只认这个签名的安装包，别处下载的改装版可能被动过手脚。
 
 ### 从源码编译
@@ -173,26 +182,37 @@ PushPlus · 企业微信机器人 · Server 酱 · 飞书 · 钉钉 · Telegram 
 git clone https://github.com/0xCoach/TaoSheng.git
 cd TaoSheng
 
-# 需要 JDK 21 和 Android SDK（compileSdk 36）
-# gradle.properties 里的 org.gradle.java.home 改成你本机 JDK 21 的路径
+# 需要 JDK 21 和 Android SDK Platform 36；JAVA_HOME 指向本机 JDK 21
 echo "sdk.dir=/path/to/android-sdk" > local.properties
 
 ./gradlew assembleDebug
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
+Windows PowerShell：
+
+```powershell
+$env:JAVA_HOME = 'C:\Users\你的用户名\.jdks\你的JDK21目录'
+.\gradlew.bat assembleDebug
+```
+
+用 Android Studio 打开项目时，将 Gradle JDK 设为 **JDK 21**，并安装 Android SDK Platform 36。SDK 路径保存在被 Git 忽略的 `local.properties`；不要把本机 JDK 路径写进共享的 `gradle.properties`。
+
 > 也可以直接用 Android Studio 打开项目，点运行。
 >
 > **部分 Oryon 机型的闪退修复**：从 v0.2.7 起升级官方 `onnxruntime-android:1.25.1`，修复旧版在部分仅支持 SME1 的设备上错误派发 SME2 算子导致的 `SIGILL`。不再使用二进制补丁。基于相同依赖的测试版已获 OPPO Find N6 和小米 pandora（25098PN5AC）用户复测通过；其他机型仍欢迎反馈。
 
-### 第一次使用（约 5 分钟）
+### 第一次使用（约 3 分钟）
 
-1. **授权**：按引导打开麦克风、通知权限，把涛声加入电池白名单。小米 / 澎湃 OS 还要打开“自启动”并在多任务里锁定涛声——App 里有一步步的引导页。
-2. **填密钥**：设置 →「原话与转写」：选豆包并粘贴 API Key，或选“本地”下载模型；设置 →「整理模型」：选 DeepSeek 或自定义接口，填 API Key，点“拉取模型”。
-3. **录入声纹**：设置 →「声纹与人物」→ 我，照着屏幕朗读三段短文（每段 15 秒）。
-4. **开始聆听**：回到“今天”页打开收音，正常过你的一天。
-5. （可选）**备份**：设置 →「数据备份」，填坚果云 WebDAV 地址和应用密码，每天凌晨自动增量备份。
-6. （可选）**推送**：设置 →「推送通道」，添加一个通道，保存后会自动发一条测试消息。
+第一次打开涛声会有开箱向导，跟着点就行：
+
+1. **打开必要权限**：麦克风、通知、电池白名单，每项都先说明用途再弹系统确认；同时在后台自动下载本机转写模型（约 170～330 MB，用流量时会提醒）。
+2. **配置整理模型**：点“去 DeepSeek 获取密钥”，在网页里创建密钥并复制，回到涛声会自动识别并测试；也可以“以后再说”，或之后在 设置 →「整理模型」换成别家 / 自定义接口。
+3. **说句话试试**：模型装好后说一句话，当场看到转写和整理出的事件、待办。
+4. **其他设置（可选）**：向导最后会问要不要现在设置后台保活、备份、推送、足迹；小米 / 澎湃 OS 建议做一下后台保活（自启动、电池无限制）。
+5. （可选）**录入声纹**：设置 →「声纹与人物」→ 我，照着屏幕朗读三段短文，涛声就能认出哪句是你说的。
+
+换手机的老用户：在向导第一页点“换手机了？从备份恢复”。
 
 ### 日常怎么用
 
@@ -202,7 +222,7 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 | **问问** | 打字提问，“这周我答应了哪些事？”“老王的电话是多少？”，答案附原话 |
 | **记忆** | 按天的日记、关键信息、重点 ★、灵感，以及技能卡片 |
 | **待办** | 待确认 / 进行中 / 已完成；左滑标重点，右滑删除 |
-| **设置** | 录音与后台、原话与转写、整理模型、声纹与人物、整理技能、整理指令、每日回顾、推送通道、热词识别、环境音识别、数据备份、版本更新 |
+| **设置** | 录音与后台（含专用录音设备、文件夹自动导入）、原话与转写、整理模型、声纹与人物、整理技能、整理指令、每日回顾、推送通道、热词识别、环境音识别、足迹、数据备份、版本更新 |
 
 ### 自己写一个技能
 
@@ -225,7 +245,7 @@ flowchart LR
     F --> G[今天 / 问问 / 记忆 / 待办]
     F --> H[每日回顾 · 技能卡片]
     H --> I[推送 10 种通道<br>给你的 Agent]
-    F --> J[增量备份<br>本机 + 坚果云]
+    F --> J[增量备份<br>本机 + 云端]
 ```
 
 | 部分 | 技术 |
@@ -247,7 +267,7 @@ app/src/main/java/app/resound/
 ├── review/      每日 / 每周回顾
 ├── skills/      技能卡片框架
 ├── push/        十种推送通道
-├── backup/      增量备份与恢复（本机 + WebDAV）
+├── backup/      增量备份与恢复（本机 + WebDAV / S3）
 ├── privacy/     删除与隐私开关
 └── ui/          全部界面
 ```
@@ -260,17 +280,27 @@ app/src/main/java/app/resound/
 
 ## 🗺 路线图
 
+已完成：
+
 - [x] 全天收音、人声检测、后台保活
 - [x] 云端 / 本地转写、热词
 - [x] 本机声纹认人、多人分段
 - [x] AI 整理、问问、每日 / 每周回顾、技能卡片
-- [x] 十种推送通道、增量备份与恢复
+- [x] 十种推送通道、增量备份与恢复（坚果云 / WebDAV / S3）
 - [x] 语音输入记录（含微信截屏识字）
-- [ ] 陌生声音自动归组 + 人物档案 / 头像墙
-- [ ] 主动提醒三档（要紧 / 有用 / 参考）
-- [ ] 桌面小组件
-- [ ] 手机重启后自动恢复收音
-- [ ] iOS 版
+- [x] 足迹，以及声音、位置、环境音联动
+- [x] 专用录音设备接入（说明卡 + 文件插件，试用）
+- [x] 开箱向导，三分钟上手
+
+下一步：
+
+- [ ] 持续优化录音、转写和 AI 整理体验
+- [ ] 上线官网，完善新手引导和使用文档
+- [ ] 探索开箱即用、按量付费的 AI 服务
+- [ ] 逐步适配 ESP32 等录音设备，探索开放接入协议
+- [ ] 推进 Google Play 上架，探索 iOS 版本
+
+*具体进度和支持范围以实际开发和测试结果为准。*
 
 ## ⚠️ 使用须知
 
@@ -281,11 +311,16 @@ app/src/main/java/app/resound/
 
 ## 🙏 致谢
 
+- [@feitian124](https://github.com/feitian124)：感谢帮忙制作涛声官网。
 - [@ethansunqing](https://github.com/ethansunqing)：在 [PR #1](https://github.com/0xCoach/TaoSheng/pull/1) 中报告并定位 OPPO Find N6 的 SIGILL 闪退，提供初始二进制补丁方案，并完成 ONNX Runtime 1.25.1 升级后的真机复测。
 - [@brookDeng](https://github.com/brookDeng)：补充小米 pandora（25098PN5AC）的独立故障分析，以及升级测试版后的覆盖安装、数据保留和前后台聆听复测。
 - [@aadnapp](https://github.com/aadnapp)：在 [PR #7](https://github.com/0xCoach/TaoSheng/pull/7) 中提供 Android 9 兼容适配方案、手动让出麦克风的实现及真机测试反馈，为项目评估旧系统支持提供了参考。
 - [@JunWeiUp](https://github.com/JunWeiUp)：在 [PR #9](https://github.com/0xCoach/TaoSheng/pull/9) 中贡献本机声纹样本管理（样本回放、删除、样本声音清理与占用统计、备份排除），此前在 [PR #8](https://github.com/0xCoach/TaoSheng/pull/8) 提出了自建异步语音服务的对接方案。
 - [@SoukNow](https://github.com/SoukNow)：在 [PR #10](https://github.com/0xCoach/TaoSheng/pull/10) 中贡献自定义转写的完整请求地址写法。
+- [@JunWeiUp](https://github.com/JunWeiUp)：在 [PR #19](https://github.com/0xCoach/TaoSheng/pull/19) 中贡献**足迹**：全天定位记录、地名与“家”的识别、一天时间轴、手动改地点和每日足迹推送，并在真机上长期使用验证。
+- [@sheacoding](https://github.com/sheacoding)：在 [PR #14](https://github.com/0xCoach/TaoSheng/pull/14)～[#16](https://github.com/0xCoach/TaoSheng/pull/16) 中完整探索了声云录音卡的接入（实时收音、蓝牙文件导入、Wi-Fi 快传），促成了涛声通用的专用录音设备接入结构。
+- [@a327173196](https://github.com/a327173196)：在 [#20](https://github.com/0xCoach/TaoSheng/issues/20)、[#21](https://github.com/0xCoach/TaoSheng/issues/21)、[#25](https://github.com/0xCoach/TaoSheng/issues/25) 中细致排查鸿蒙兼容层的本机备份、后台转写问题，并提出问题记录补充大模型诊断。
+- [@BulbLi](https://github.com/BulbLi)：在 [#18](https://github.com/0xCoach/TaoSheng/issues/18) 中提出接入 OpenCode Go 与自定义请求头。
 
 - [Omi](https://github.com/BasedHardware/omi)——开源 AI 可穿戴设备，给了涛声最初的灵感
 - [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx)（Apache-2.0）——本地转写、分段与声纹的运行框架
@@ -303,5 +338,19 @@ app/src/main/java/app/resound/
 <div align="center">
 
 如果涛声对你有用，点个 ⭐ 让更多人看到。
+
+</div>
+
+## ⭐ Star 历史
+
+<div align="center">
+
+<a href="https://star-history.com/#0xCoach/TaoSheng&amp;Date">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=0xCoach/TaoSheng&amp;type=Date&amp;theme=dark">
+  <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=0xCoach/TaoSheng&amp;type=Date">
+  <img alt="Star 增长曲线" src="https://api.star-history.com/svg?repos=0xCoach/TaoSheng&amp;type=Date" width="720">
+</picture>
+</a>
 
 </div>

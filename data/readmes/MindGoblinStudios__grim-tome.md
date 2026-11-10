@@ -146,6 +146,7 @@ But it is mostly geared towards coding agent harnesses, and "AI super apps", lik
 - [bb](https://getbb.app)
 
 I currently recommend SpaceXAI/Cursor's Grok bots as the best starting point.  
+Public Grok Bot path: share the Grimoire template (see [Grok Bots (share template)](installGuide.md#grok-bots-share-template)). Clone this repo for the skills; the template does not replace the Tome.
 Or ChatGPT Desktop (aka Codex).  
 
 The prompts, and tools here have been primarily designed for & tested on these 2 apps, but any AI agent or harness should be able to run these patterns in at least some capacity.
@@ -2036,7 +2037,7 @@ For those who want the council running their day:
   - Revisit the last cleanup batch, then propose focused improvements to clarity and tidiness while preserving intended behavior.
 - **Monday morning**: The Weekly Council Meeting
   - Prep runs overnight first: Dream Sequence, then Cleo, then Abathur. The members provide updates, then discuss priorities and open decisions; Quill’s minutes close the meeting.
-  - Roger Roger opens with Gap Patrol: loose ends, dropped threads, and useful odd jobs nobody else is focusing on.
+  - Roger Roger opens with Gap Patrol: Mondays 7:00 AM PT, whole-council gap sweep, verify live before pinning, report to Roger Roger's 1:1.
   - Postmaster delivers the Weekly Inbox Review: keepers, what's waiting, and the proposed shred pile.
   - Farseer reviews last week and plans this one.
   - Relevant members give one-line transmissions: Cauldron on meals and groceries, Boulder on movement, Timekeeper on the calendar, Midas on money, and Helm on the top business priority. Skip members with nothing to report.
@@ -2636,4 +2637,4 @@ Every bit of support means more time & resources to create tools for you like th
 
 
 |                                                                                                           |                                                                                                            |                                                                                                      |                                                                                                                         |                                                                                                                                     |                                                                                                                                 |
-| --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------
+| --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------

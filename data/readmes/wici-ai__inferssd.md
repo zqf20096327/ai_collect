@@ -14,7 +14,7 @@
 </p>
 <p align="center">macOS / Metal &nbsp;·&nbsp; Linux / CUDA &nbsp;·&nbsp; Windows (in progress)</p>
 
-**Run models larger than your RAM or VRAM.** InferSSD builds on [llama.cpp](https://github.com/ggml-org/llama.cpp) to run large mixture-of-experts (MoE) models from SSD, using standard GGUF files, with browser chat and an OpenAI-compatible API. It currently supports **DeepSeek-V4.1-Flash-1017**, **Muse-Spark-Open** and **Qwen3.6-35B-A3B**, with more models coming.
+**Run models larger than your RAM or VRAM.** InferSSD builds on [llama.cpp](https://github.com/ggml-org/llama.cpp) to run large mixture-of-experts (MoE) models from SSD, using standard GGUF files, with browser chat and an OpenAI-compatible API. It supports **DeepSeek-V4.1-Flash-1017**, **Muse-Spark-Open**, **Qwen3.6-35B-A3B** and **Qwen3.8 Flash Next**, plus ordinary RAM inference for **Gemma4 E4B**.
 
 ## Models
 
@@ -25,6 +25,13 @@ These are the tested GGUF files, community conversions of the named model releas
 | DeepSeek-V4.1-Flash-1017 | 763B total / 8–16B active | [mrfakename · Q8_0](https://huggingface.co/mrfakename/DeepSeek-V4.1-Flash-1017-GGUF) |
 | Muse-Spark-Open | 816B total / 42B active | [Unsloth · UD-Q4_K_XL](https://huggingface.co/unsloth/Muse-Spark-Open-816B-A42B-GGUF) |
 | Qwen3.6-35B-A3B | 35B total / 3B active | [Unsloth · UD-Q4_K_XL](https://huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF) |
+| Qwen3.8 Flash Next | 177B total / A3B | [Bartowski · IQ4_XS](https://huggingface.co/bartowski/Qwen3.8-Flash-Next-GGUF) |
+| Gemma4 E4B | 7.46B total / E4B | [Google · QAT Q4_0](https://huggingface.co/google/gemma-4-E4B-it-qat-q4_0-gguf) |
+
+Gemma uses the ordinary native loader without SSD expert offload. Before loading, the shared
+launcher checks that weights, KV cache and working memory fit the live available RAM, the
+configured budget and headroom. An insufficient fit is rejected. macOS and Windows use the
+same model selection and launch entry points.
 
 ## Performance benchmarks
 
@@ -81,7 +88,7 @@ Install on Apple Silicon macOS or on Linux with an NVIDIA GPU:
 curl -fsSL https://github.com/wici-ai/inferssd/releases/latest/download/install.sh | sh
 ```
 
-A release's installer builds that release from source, so the engine is compiled for your machine's CPU and GPU. Building takes about 2 to 12 minutes, depending on the machine. On an Apple Silicon Mac with macOS 15 or later, the installer on `main` instead downloads a prebuilt package of `main`, about 30 MB, which needs no developer tools; see [the macOS package](docs/macos-package.md):
+Each numbered release includes checked prebuilt packages for Apple Silicon macOS 15 or later and Windows 11 x64, built from the same tagged commit. Its installers download that exact release without developer tools; see [the macOS package](docs/macos-package.md) and [Windows package](docs/windows-package.md). Linux builds that release from source for the machine's CPU and GPU, which takes about 2 to 12 minutes. The installer on `main` downloads the latest published package:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/wici-ai/inferssd/main/scripts/install.sh | sh
@@ -99,7 +106,7 @@ inferssd cli -hf mrfakename/DeepSeek-V4.1-Flash-1017-GGUF
 inferssd serve -hf mrfakename/DeepSeek-V4.1-Flash-1017-GGUF
 ```
 
-For Muse, use `unsloth/Muse-Spark-Open-816B-A42B-GGUF`; for Qwen3.6, `unsloth/Qwen3.6-35B-A3B-GGUF`. With `serve`, open `http://127.0.0.1:8080` in your browser, or point any OpenAI-compatible client at `http://127.0.0.1:8080/v1`.
+For Muse, use `unsloth/Muse-Spark-Open-816B-A42B-GGUF`; for Qwen3.6, `unsloth/Qwen3.6-35B-A3B-GGUF`; for Flash Next, `bartowski/Qwen3.8-Flash-Next-GGUF`; for Gemma, `google/gemma-4-E4B-it-qat-q4_0-gguf`. With `serve`, open `http://127.0.0.1:8080` in your browser, or point any OpenAI-compatible client at `http://127.0.0.1:8080/v1`. Add `--host 0.0.0.0` to reach it from other devices on your network; the API has no authentication, so anyone who can reach the port can use it.
 
 The first run downloads the model files (about 470 GiB for DeepSeek or Muse, 21 GiB for Qwen3.6) to `~/.local/share/inferssd/models` and measures your machine. Use `--model-dir /path/on/ssd` to choose the drive, or `-m /path/to/first-shard.gguf` for files you already have. There is no memory setting to choose: InferSSD uses the memory available. Stop with **Ctrl+C**, or `/exit` in chat.
 
@@ -107,21 +114,26 @@ See the [quick start](docs/quickstart.md#one-command-installation) for upgrades 
 
 ## Versions
 
-InferSSD has a release number, `0.1.3` in `framework/pyproject.toml`, and every build has a
+InferSSD has a release number, `0.1.4` in `framework/pyproject.toml`, and every build has a
 label of its own, `<yymmdd>.<build>.<commit>`: the day (UTC) of the commit it was built from, the
 branch's commit count up to that commit, and the commit. The installer records the three in
 `engine-resources.json` beside the build, from the clone's Git metadata, and so does a local
 build that runs `scripts/engine-resources.py`; a source archive has no Git metadata and records
-none. A [macOS package](docs/macos-package.md) carries those of the commit it was built from
-and is named by its label. `inferssd --version` prints the release and the label, `inferssd --version --json` every
+none. The [macOS](docs/macos-package.md) and [Windows](docs/windows-package.md) packages carry those of the same tagged commit in each numbered release
+and are named by that label. `inferssd --version` prints the release and the label, `inferssd --version --json` every
 field:
 
 ```sh
 $ inferssd --version
 inferssd 0.1.3 (261106.202.03af979)
 $ inferssd --version --json
-{"version": "0.1.3", "build": 202, "revision": "03af97…", "date": "2026-11-06", "branch": "main", "label": "261106.202.03af979"}
+{"version": "0.1.3", "build": 202, "revision": "03af97…", "date": "2026-11-06", "branch": "main", "label": "261106.202.03af979", "capabilities": {"model_profiles": […], "gpu_backends": ["Metal"]}}
 ```
+
+`capabilities` lists the model profiles the engine launches and, when the installer recorded them,
+the GPU backends it was built with (an empty list for a CPU-only build). The Windows packages are
+one per backend, so this is how something running the engine knows which one is installed, and
+so which package list names its updates.
 
 The engine only says what it is. Whether a build is one it can work with is for whatever runs
 the engine to decide; the WiCi AI desktop app, for one, installs `main`, offers its newer

@@ -1,6 +1,6 @@
 # X (Twitter) MCP 服务
 
-[![Version](https://img.shields.io/badge/version-v1.2.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v1.2.5-blue.svg)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-brightgreen.svg)](https://www.python.org/downloads/)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-purple.svg)](https://modelcontextprotocol.io)
@@ -8,7 +8,7 @@
 
 本项目是基于 [twikit](https://github.com/d60/twikit) 实现的 Model Context Protocol (MCP) 服务，专门为 AI 助手、大语言模型及各类 AI Agent 提供与 X (Twitter) 交互的能力。通过本服务，AI 能够自主调用工具完成状态感知、发推（含图片）、读写评论、收发私信、关注互动、趋势发现以及重点账号追踪等全流程操作。
 
-服务通过普通账号的浏览器 Cookie（`auth_token` 与 `ct0`）与 X 官方 Web 端通信。所有工具统一采用结构化 JSON 响应，确保状态判定与字段解析的稳定性。
+服务通过普通账号的浏览器 Cookie（`auth_token` 与 `ct0`）与 X 官方 Web 端通信。所有工具统一采用结构化 JSON 响应，确保状态判定与字段解析的稳定性。所有涉及 `tweet_id` 的工具均全面支持直接传入推文数字 ID 或完整推文网页链接（URL）。
 
 ---
 
@@ -128,6 +128,16 @@ git clone https://github.com/yxiy171866-boop/x-twikit-mcp.git
 cd x-twikit-mcp
 pip install -r requirements.txt
 ```
+
+> **提示（依赖兼容性与稳定性说明）**：
+> 官方 PyPI 上的 `d60/twikit 2.3.3` 由于上游未合并最新 PR，存在两大已知问题：
+> 1. X (Twitter) Webpack Chunk 拆分导致计算签名时抛出 `Couldn't get KEY_BYTE indices` 异常；
+> 2. X 用户资料缺少部分字段（如 `entities.description.urls`、`pinned_tweet_ids_str`）时导致 `KeyError` 崩溃。
+> 
+> 本项目已在 `server.py` 内置了运行时动态热补丁（双重兼容保障，无需手动改包），并在 `requirements.txt` 中直接引用了社区维护的修复分支 `unclecode/twikit`。若使用已有 Python 环境，可直接执行以下命令升级依赖：
+> ```bash
+> pip install --upgrade --force-reinstall git+https://github.com/unclecode/twikit.git
+> ```
 
 ### 2. 获取与配置 Cookie
 

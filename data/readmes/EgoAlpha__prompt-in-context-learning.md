@@ -101,59 +101,59 @@ In the future, there will likely be two types of people on Earth (perhaps even o
 
 
 
-### **[2026-11-08]**
+### **[2026-11-10]**
 
-[**VisSearch-Bench: Evaluating Long Horizon Visual Search in Multimodal Agents**](https://huggingface.co/papers/2611.04894) （**New**）
+[**Confucius4-R2T2: A Stable-Prefix Streaming ASR Model for Real Real-Time Transcription**](https://huggingface.co/papers/2611.06043) （**New**）
 
-*Published: 2026-11-03*
+*Published: 2026-11-04*
 
-<font color="gray">ZhengXian Wu, Qianhao Nie, Zhuohong Chen, Junjie Gao, Yuyao Zhang, Yunyao Yu, Hangrui Xu, Cheng Cheng, Guiyu Ma, Jin Zhang, Xingzhong Xu, Kai Yang, Haoqian Wang - [arXiv]</font>
+<font color="gray">Daniel Huang, Qi He, Shaoxiong Duan, Yingjie Li, Qiao Cheng, Yitao Duan - [arXiv]</font>
 
-[![](https://img.shields.io/badge/GitHub%20Stars-58-blue)](https://github.com/antins-labs/VisSearch-Bench-v1)
-
----
-
-
-[**Harness-S: Learning from Sibling Harnesses for Generalizable Agent Training**](https://huggingface.co/papers/2611.04277) （**New**）
-
-*Published: 2026-11-03*
-
-<font color="gray">Kangning Zhang, Wenxiang Jiao, Bowen Fang, Shuai Shao, Jiachen Zhu, Rong Shan, Shijian Wang, Hao Wang, Yuan Lu, Weiwen Liu, Weinan Zhang - [arXiv]</font>
-
-[![](https://img.shields.io/badge/GitHub%20Stars-55-blue)](https://github.com/DeepExperience/Harness-S)
+[![](https://img.shields.io/badge/GitHub%20Stars-873-blue)](https://github.com/netease-youdao/Confucius4-R2T2)
 
 ---
 
 
-[**PhotoGuider: Composition-Aware Cropping and 360$^{\circ}$ View Framing with Explainable Photographic Assessments**](https://huggingface.co/papers/2611.02897) （**New**）
+[**Beneath the Surface: What We Overlook When We Talk About Agent Evolution**](https://huggingface.co/papers/2611.07624) （**New**）
+
+*Published: 2026-11-05*
+
+<font color="gray">Xiaobo Wang, Zimu Wang, Siyu Ye, Jiaqi Li, Min Tang, Jun Bai, Yuling Shi, Ruobing Wang, Jingjing Zhang, Chaofan Wang, Kai Wu, Mengnan Qi, Kai Cai, Xiaodong Gu, Qi Liu, Zilong Zheng - [arXiv]</font>
+
+[![](https://img.shields.io/badge/GitHub%20Stars-349-blue)](https://github.com/simple-agent-lab/RSIHub)
+
+---
+
+
+[**AgentBaton: Efficient Model Collaboration in Agentic Tasks**](https://huggingface.co/papers/2610.35959) （**New**）
+
+*Published: 2026-10-25*
+
+<font color="gray">Junlong Li, Jindong Jiang, Yonggan Fu, Jiarui Yao, Hanrong Ye, Wonmin Byeon, Peter Belcak, Hao Zhang, Pavlo Molchanov - [arXiv]</font>
+
+[![](https://img.shields.io/badge/GitHub%20Stars-1,713-blue)](https://github.com/kyegomez/awesome-multi-agent-papers)
+
+---
+
+
+[**SplatAnything: Gaussian Spacing Normalization for Feed-forward 3DGS across Arbitrary Scenes**](https://huggingface.co/papers/2611.08264) （**New**）
+
+*Published: 2026-11-05*
+
+<font color="gray">Hao Yu, Zhenwei Wang, Yongzhen Hu, Yuning Gong, Junta Wu, Xiaowei Zhou, Hujun Bao, Tengfei Wang, Chunchao Guo, Sida Peng - [arXiv]</font>
+
+[![](https://img.shields.io/badge/GitHub%20Stars-93-blue)](https://github.com/zju3dv/SplatAnything)
+
+---
+
+
+[**TaoMate-FVSR:Audio-Guided Facial Video Restoration**](https://huggingface.co/papers/2611.03393) （**New**）
 
 *Published: 2026-11-02*
 
-<font color="gray">Yuan-Kang Lee, Kuan-Lin Chen, Chia-Che Chang, Yu-Lun Liu - [arXiv]</font>
+<font color="gray">Xinyang Li, Zeran Xu, Qijun Gan, Chenwei Zhang, Meiguang Jin, Junfeng Ma - [arXiv]</font>
 
-[![](https://img.shields.io/badge/GitHub%20Stars-54-blue)](https://github.com/NTUneillee/PhotoGuider)
-
----
-
-
-[**Proving and Improving the Platonic Representation Hypothesis with JEPAs**](https://huggingface.co/papers/2610.39302) （**New**）
-
-*Published: 2026-10-29*
-
-<font color="gray">Randall Balestriero, Yann LeCun - [arXiv]</font>
-
-[![](https://img.shields.io/badge/GitHub%20Stars-163-blue)](https://github.com/galilai-group/prh-proof)
-
----
-
-
-[**FLORA: An Open Model Suite for Scaling Robotics Data Engines**](https://huggingface.co/papers/2610.31779) （**New**）
-
-*Published: 2026-10-22*
-
-<font color="gray">Sicong Leng, Yunze Man, Zhiqi Li, Jing Wang, Yuhe Zhang, Ryan Punamiya, Siddharth Patki, Kaiyuan Zheng, Zi-ang Cao, Zhiding Yu, Sifei Liu, Danfei Xu, Ben Levin, Jan Kautz, Yuke Zhu, Johan Bjorck, Linx - [arXiv]</font>
-
-[![](https://img.shields.io/badge/GitHub%20Stars-92-blue)](https://github.com/NVIDIA/Flora)
+[![](https://img.shields.io/badge/GitHub%20Stars-56-blue)](https://github.com/TaoLiveAIGC/TaoMate-FVSR)
 
 ---
 

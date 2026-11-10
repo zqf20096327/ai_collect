@@ -16,6 +16,7 @@ with no external service.
 [![Security](https://github.com/bernardopg/AiOverviewControl/actions/workflows/security.yml/badge.svg)](https://github.com/bernardopg/AiOverviewControl/actions/workflows/security.yml)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/bernardopg/AiOverviewControl/badge)](https://scorecard.dev/viewer/?uri=github.com/bernardopg/AiOverviewControl)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15913/badge)](https://www.bestpractices.dev/projects/15913)
+[![coverage](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbernardopg%2FAiOverviewControl%2Fmain%2Fdocs%2Fbadges.json&query=%24.coverage&label=coverage&suffix=%25&color=22C55E)](./docs/development-gates.md#statement-coverage)
 [![providers](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbernardopg%2FAiOverviewControl%2Fmain%2Fdocs%2Fbadges.json&query=%24.providers&label=providers&color=8B5CF6)](./docs/providers.md)
 [![languages](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fbernardopg%2FAiOverviewControl%2Fmain%2Fdocs%2Fbadges.json&query=%24.languages&label=languages&color=00BFA5)](./docs/i18n-crowdin.md)
 [![Downloads](https://img.shields.io/github/downloads/bernardopg/AiOverviewControl/total?color=0EA5E9&label=downloads)](https://github.com/bernardopg/AiOverviewControl/releases)
@@ -57,15 +58,18 @@ invented percentages.
 
 **📊 One dashboard, 40+ providers**<br />
 Quota, balance, analytics, and auth status side by side, with a fleet overview
-of average load, hottest provider, and next reset.
+of average load, hottest provider, and next reset. 🔍 **Detect providers** finds
+the tools, sign-ins and API keys already on your computer and tracks them in
+one click.
 
 </td>
 <td width="50%" valign="top">
 
 **🎯 A pill that tells the truth**<br />
 Pick which quota window each provider shows in the bar, or follow the
-most-constrained one, as used or as remaining quota. Hover for the window
-and reset time. Crowded bar? Drop the names and tighten the spacing.
+most-constrained one, as used or as remaining quota. A weekly limit that runs
+out takes over the bar, and prepaid balances read as amounts (`¥9.34`). Settings
+preview every change live; hover the bar for each window and its reset.
 
 </td>
 </tr>
@@ -77,7 +81,9 @@ Claude, Codex, OpenCode, 9Router, pi, and Hermes add token, cost, model, and pro
 analytics with a seven-day chart — read from data already on your disk. Track
 several Claude accounts side by side, each from its own `CLAUDE_CONFIG_DIR`.
 Claude and Codex also show credits, extra usage and limit resets, and can
-redeem a held reset after a confirmation.
+redeem a held reset after a confirmation. An optional
+[status line bridge](./docs/configuration.md#claude-code-status-line-bridge)
+lets Claude Code hand over its own 5 hour and weekly usage as you work.
 
 </td>
 <td valign="top">
@@ -93,8 +99,9 @@ Dashboard card keeps the busiest providers in the overview.
 <td valign="top">
 
 **🛡️ Private and resilient**<br />
-Secrets are never shown. One failing provider never hides the healthy ones.
-No paid endpoints are called to test a key.
+Secrets are never shown, and API keys can stay in the desktop keyring. One
+failing provider never hides the healthy ones. No paid endpoints are called to
+test a key.
 
 </td>
 <td valign="top">
@@ -141,8 +148,10 @@ command -v bash jq curl codex claude gh
 codex login && claude auth status && gh auth status
 ```
 
-Open the ⚙ settings window to enable more providers — each one shows whether
-its CLI or credential is ready.
+Click 🔍 **Detect providers** in the dashboard header to find and track every
+provider already set up on this computer in one step, or open the ⚙ settings
+window to enable more by hand — each one shows whether its CLI or credential
+is ready.
 
 > [!TIP]
 > Bind the dashboard to a shortcut: `dms ipc call aiOverviewControl toggle`.
@@ -154,7 +163,7 @@ Prefer a release archive or a git checkout? See [Installation](./docs/installati
 
 | Coverage           | What you get                                              | Examples                                                               |
 | ------------------ | --------------------------------------------------------- | ---------------------------------------------------------------------- |
-| **Quota**          | Real usage % and reset time                               | Codex, Copilot, Cursor, Antigravity, OpenRouter, Z.ai, xAI, Gemini CLI |
+| **Quota**          | Real usage % and reset time                               | Codex, Copilot, Cursor, Antigravity, Grok Bot, OpenCode Go, Z.ai, xAI  |
 | **Balance**        | Remaining prepaid credit                                  | Kimi, DeepSeek, Neuralwatt, Cline, Ollama Cloud, Vercel AI Gateway     |
 | **Analytics**      | Tokens, cost, and models from local data or spend reports | Claude, 9Router, pi, Hermes, Cloudflare, Anthropic API, OpenAI API     |
 | **Authentication** | Credential check, no usage numbers                        | Mistral, Qwen, Groq, Cohere, NVIDIA                                    |
@@ -172,8 +181,13 @@ The full list, data sources, and credentials are in [Providers](./docs/providers
 
 ## 📚 Documentation
 
-New in 2.2: Anthropic API, OpenAI API, Ollama Cloud and Vercel AI Gateway, and
-Gemini CLI quota — see the [2.2.0 notes](./docs/releases/2.2.0.md). Since
+New in 2.4: 🔍 **Detect providers** tracks everything already set up on your
+computer in one click, every quota bar shows its pace, and an optional Claude Code
+status line bridge keeps the Claude cards current while you work — see the
+[2.4.0 notes](./docs/releases/2.4.0.md). The Grok Bot provider, API keys from
+the desktop keyring and the settings page with a live preview came in
+[2.3.0](./docs/releases/2.3.0.md). Spend providers and Gemini CLI quota
+arrived in [2.2.0](./docs/releases/2.2.0.md), and since
 [2.2.1](./docs/releases/2.2.1.md) the bar can show several quota windows of
 one provider at once (`Claude 5h 45% / 7d 80%`). Credits,
 limit resets and the Dashboard card came in [2.1.0](./docs/releases/2.1.0.md).
@@ -236,6 +250,9 @@ Found a bug or have an idea? [Open an issue](https://github.com/bernardopg/AiOve
 <a href="https://github.com/UN-9BOT" title="UN-9BOT"><img src="https://avatars.githubusercontent.com/u/111110804?v=4&s=112" width="56" height="56" alt="UN-9BOT" /></a>
 <a href="https://github.com/SkippySteve" title="SkippySteve"><img src="https://avatars.githubusercontent.com/u/69158610?v=4&s=112" width="56" height="56" alt="SkippySteve" /></a>
 <a href="https://github.com/ianptkcs" title="ianptkcs"><img src="https://avatars.githubusercontent.com/u/162713721?v=4&s=112" width="56" height="56" alt="ianptkcs" /></a>
+<a href="https://github.com/alvorithm" title="alvorithm"><img src="https://avatars.githubusercontent.com/u/807608?v=4&s=112" width="56" height="56" alt="alvorithm" /></a>
+<a href="https://github.com/DotRedstone" title="DotRedstone"><img src="https://avatars.githubusercontent.com/u/77906069?v=4&s=112" width="56" height="56" alt="DotRedstone" /></a>
+<a href="https://github.com/cauliyang" title="cauliyang"><img src="https://avatars.githubusercontent.com/u/38903141?v=4&s=112" width="56" height="56" alt="cauliyang" /></a>
 
 <!-- CONTRIBUTORS:END -->
 

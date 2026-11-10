@@ -9,13 +9,15 @@ happened.
 [![PyPI](https://img.shields.io/pypi/v/wiretruth?label=PyPI)](https://pypi.org/project/wiretruth/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://github.com/kartsan03/wiretruth/blob/main/LICENSE)
 
+[![Pass counts per library on the wiretruth results site](https://raw.githubusercontent.com/kartsan03/wiretruth/main/docs/img/matrix.png)](https://kartsan03.github.io/wiretruth/)
+
 wiretruth tests any-llm, LiteLLM, pydantic-ai, the Vercel AI SDK and TanStack AI across six APIs: OpenAI Chat
 Completions and Responses, Ollama's native and OpenAI-compatible endpoints, Gemini GenerateContent and Anthropic
-Messages. That is 24 scenarios and 95 cells per library. pydantic-ai and the Vercel AI SDK support only the OpenAI-compatible Ollama
+Messages. That is 24 scenarios and 100 cells per library. pydantic-ai and the Vercel AI SDK support only the OpenAI-compatible Ollama
 endpoint; their native Ollama cells are UNSUPPORTED.
 The Anthropic responses are transcribed from Anthropic's documentation rather than recorded: each of those fixtures
-is marked `documented` and links the page it comes from. More providers and libraries follow, and a public
-results matrix arrives in v0.4. Until then, the grades are in
+is marked `documented` and links the page it comes from. More providers and libraries follow.
+The [results matrix](https://kartsan03.github.io/wiretruth/) shows the grades from
 [`results/`](https://github.com/kartsan03/wiretruth/tree/main/results).
 
 ## Why
@@ -76,6 +78,7 @@ Each scenario lists its requirements. MUST requirements set the grade. SHOULD re
 partial text in the truncation scenarios, add a note when they aren't met. How grades are computed:
 [docs/grading.md](https://github.com/kartsan03/wiretruth/blob/main/docs/grading.md).
 Scenario catalog: [docs/scenarios.md](https://github.com/kartsan03/wiretruth/blob/main/docs/scenarios.md).
+Fixed-bug validation: [docs/validation.md](https://github.com/kartsan03/wiretruth/blob/main/docs/validation.md).
 
 ## Quickstart
 
@@ -88,6 +91,7 @@ uv run wiretruth run --lib litellm
 uv run wiretruth run --lib pydantic-ai
 uv run wiretruth run --lib vercel-ai
 uv run wiretruth run --lib tanstack-ai
+uv run wiretruth site
 ```
 
 The Vercel AI SDK and TanStack AI shims also need Node.js and npm. The runner builds their pinned dependencies
@@ -118,8 +122,8 @@ truncation.text-stream                    ✓ PASS         ✓ PASS   ✓ PASS  
 truncation.text-stream-usage                             ✓ PASS                           ✓ PASS
 truncation.tool-call-args                 ✓ PASS                                          ✓ PASS       ✓ PASS
 truncation.tool-call-args-stream          ✓ PASS                                          ✓ PASS       ✓ PASS
-usage.cached-tokens                       ✓ PASS
-usage.reasoning-tokens                                   ✓ PASS
+usage.cached-tokens                       ✓ PASS                                          ✓ PASS       ✓ PASS
+usage.reasoning-tokens                    ✓ PASS         ✓ PASS                           ✓ PASS       ✓ PASS
 usage.stream-final-chunk                  ✓ PASS         ✓ PASS   ✓ PASS   ✓ PASS         ✓ PASS
 
 finish.stop-sequence gemini
@@ -173,13 +177,13 @@ tools.parallel-calls gemini
   shim: Gemini reasoning_effort none is unsupported by any-llm; omitted to use the model default.
 
 tools.parallel-calls ollama
-  MUST calls-reported: CONTRADICTED: tool_calls[0] id="8beb704a-c37e-4125-ad51-03f1f1a1648f", name="get_weather", args={"city": "São Paulo"}, parsed=true; truth id="call_9epwsqu6", name="get_weather", args={"city": "São Paulo"}, parsed=true; tool_calls[1] id="a07c2b3f-7d0f-426b-aa7e-5e6cea2fccc8", name="get_weather", args={"city": "Zürich"}, parsed=true; truth id="call_bvzy1ra9", name="get_weather", args={"city": "Zürich"}, parsed=true
+  MUST calls-reported: CONTRADICTED: tool_calls[0] id="81193cdc-7f88-4adc-8e6c-ac29f9b61b66", name="get_weather", args={"city": "São Paulo"}, parsed=true; truth id="call_9epwsqu6", name="get_weather", args={"city": "São Paulo"}, parsed=true; tool_calls[1] id="4e915b8d-84fe-4964-a833-09d08f617d15", name="get_weather", args={"city": "Zürich"}, parsed=true; truth id="call_bvzy1ra9", name="get_weather", args={"city": "Zürich"}, parsed=true
 
 tools.parallel-calls-stream gemini
   shim: Gemini reasoning_effort none is unsupported by any-llm; omitted to use the model default.
 
 tools.parallel-calls-stream ollama
-  MUST calls-reported: CONTRADICTED: tool_calls[0] id="4de4a1a8-89a5-45c4-afe7-d4b57db603f6", name="get_weather", args={"city": "São Paulo"}, parsed=true; truth id="call_8uaqob2r", name="get_weather", args={"city": "São Paulo"}, parsed=true; tool_calls[1] id="dd4a3f63-e341-4969-ae0f-528b27222290", name="get_weather", args={"city": "Zürich"}, parsed=true; truth id="call_nyjtbrz4", name="get_weather", args={"city": "Zürich"}, parsed=true
+  MUST calls-reported: CONTRADICTED: tool_calls[0] id="4e8b9dda-3fa3-4763-af44-dcab08600e3f", name="get_weather", args={"city": "São Paulo"}, parsed=true; truth id="call_8uaqob2r", name="get_weather", args={"city": "São Paulo"}, parsed=true; tool_calls[1] id="babaee2f-2591-4efd-bafd-5af506b87982", name="get_weather", args={"city": "Zürich"}, parsed=true; truth id="call_nyjtbrz4", name="get_weather", args={"city": "Zürich"}, parsed=true
 
 truncation.structured-output gemini
   shim: Gemini reasoning_effort none is unsupported by any-llm; omitted to use the model default.
@@ -201,31 +205,35 @@ truncation.text-stream gemini
 truncation.text-stream-usage gemini
   shim: Gemini reasoning_effort none is unsupported by any-llm; omitted to use the model default.
 
+usage.reasoning-tokens anthropic
+  SHOULD reasoning-reported: NOT_OBSERVABLE: usage.reasoning=null (absent); truth.usage.reasoning=312
+
 usage.stream-final-chunk gemini
   shim: Gemini reasoning_effort none is unsupported by any-llm; omitted to use the model default.
 
-any-llm 1.40.2: 95 cells, 82 PASS, 6 LOSSY, 6 WRONG, 1 UNSUPPORTED
-stderr: .wiretruth/runs/20261026T160347.945900Z
+any-llm 1.40.2: 100 cells, 87 PASS, 6 LOSSY, 6 WRONG, 1 UNSUPPORTED
+stderr: .wiretruth/runs/20261109T005301.682490Z
 ```
 
-The LiteLLM run grades its 95 cells 81 PASS, 13 WRONG and 1 UNSUPPORTED. Every cell, with its evidence, is in
+The LiteLLM run grades its 100 cells 86 PASS, 13 WRONG and 1 UNSUPPORTED. Every cell, with its evidence, is in
 [`results/litellm/1.105.5.json`](https://github.com/kartsan03/wiretruth/blob/main/results/litellm/1.105.5.json).
-The pydantic-ai run grades its 95 cells 58 PASS, 16 LOSSY, 6 WRONG and 15 UNSUPPORTED (native Ollama), in
+The pydantic-ai run grades its 100 cells 63 PASS, 16 LOSSY, 6 WRONG and 15 UNSUPPORTED (native Ollama), in
 [`results/pydantic-ai/2.61.0.json`](https://github.com/kartsan03/wiretruth/blob/main/results/pydantic-ai/2.61.0.json).
-The Vercel AI SDK run grades its 95 cells 79 PASS and 16 UNSUPPORTED (native Ollama, and the Anthropic
+The Vercel AI SDK run grades its 100 cells 84 PASS and 16 UNSUPPORTED (native Ollama, and the Anthropic
 forced-tool fixture, since current Claude models get native structured output), in
 [`results/vercel-ai/7.0.153.json`](https://github.com/kartsan03/wiretruth/blob/main/results/vercel-ai/7.0.153.json).
-The TanStack AI run grades its 95 cells 48 PASS, 2 LOSSY, 2 WRONG and 43 UNSUPPORTED, in
-[`results/tanstack-ai/1.0.0.json`](https://github.com/kartsan03/wiretruth/blob/main/results/tanstack-ai/1.0.0.json).
+The TanStack AI run grades its 100 cells 50 PASS, 1 LOSSY, 1 WRONG and 48 UNSUPPORTED, in
+[`results/tanstack-ai/1.4.0.json`](https://github.com/kartsan03/wiretruth/blob/main/results/tanstack-ai/1.4.0.json).
 Its `chat()` always requests a streamed response, so the non-streamed fixtures don't apply to it.
 
 No API keys are needed. Everything runs against stored responses on `127.0.0.1`. The first run downloads the
-selected library into `.wiretruth/envs/`; later runs work offline. `uv run wiretruth run --shim shims/reference`
-runs the built-in reference client, which must pass every cell. The scenarios, fixtures and shims live in this
-repository, so wiretruth runs from a clone.
+selected library: a Python library into `.wiretruth/envs/`, a JavaScript library into `node_modules` next to its
+shim. Later runs work offline. `uv run wiretruth run --shim shims/reference` runs the built-in reference client,
+which must pass every cell. The scenarios, fixtures and shims live in this repository, so wiretruth runs from a
+clone.
 
 Releases are also on [PyPI](https://pypi.org/project/wiretruth/) (`pip install wiretruth`). The package is the
-command only, so run it inside a checkout of the matching release tag (for example `v0.2.0`); on `main`, use
+command only, so run it inside a checkout of the matching release tag (for example `v0.3.0`); on `main`, use
 `uv run` as above.
 
 ## Add your library

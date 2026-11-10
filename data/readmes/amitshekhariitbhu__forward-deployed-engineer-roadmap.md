@@ -185,6 +185,7 @@ In this step, we will learn how to make an LLM answer questions from the custome
 
 If you want a quick introduction to RAG before starting, watch: [AI Engineering Explained: LLM, RAG, MCP, Agent, Fine-Tuning, Quantization](https://www.youtube.com/watch?v=lnfWvX66FUk)
 
+- [How does RAG work?](https://outcomeschool.com/blog/retrieval-augmented-generation-rag)
 - [How does a Vector Database work?](https://outcomeschool.com/blog/how-does-a-vector-database-work)
 - [How does Approximate Nearest Neighbor (ANN) Search work?](https://outcomeschool.com/blog/how-does-approximate-nearest-neighbor-ann-search-work)
 - [How does Semantic Search work?](https://outcomeschool.com/blog/how-does-semantic-search-work)
@@ -263,6 +264,7 @@ In this step, we will learn how to make LLMs faster and cheaper to run. A demo t
 - [LLM Inference Optimization](https://www.youtube.com/watch?v=jV2sCj4lHYk) (Video)
 - [Prefill vs Decode: LLM Inference Optimization](https://outcomeschool.com/blog/prefill-vs-decode-llm-inference-optimization)
 - [The First-Token Latency Problem in LLMs](https://www.youtube.com/watch?v=XD8DD4cEHu0) (Video)
+- [How does an LLM use GPU memory?](https://outcomeschool.com/blog/llm-gpu-memory)
 - [What is KV Cache in LLMs?](https://outcomeschool.com/blog/kv-cache-in-llms)
 - [What is Paged Attention in LLMs?](https://outcomeschool.com/blog/paged-attention-in-llms)
 - [What is Continuous Batching in LLMs?](https://outcomeschool.com/blog/continuous-batching-in-llms)
@@ -320,6 +322,7 @@ In this step, we will see everything come together in one of the most requested 
 - [What are backchannels, and why should "mm-hmm" not stop the agent?](https://outcomeschool.com/blog/backchannels-in-voice-agents)
 - [How does a voice agent stop speaking instantly when interrupted?](https://outcomeschool.com/blog/stopping-speech-on-interruption)
 - [How does a voice agent truncate its memory to only what the user actually heard?](https://outcomeschool.com/blog/truncating-context-on-interruption)
+- [How does a voice agent recover from a false interruption?](https://outcomeschool.com/blog/false-interruption-recovery)
 - [How do you build a latency budget for a voice AI agent?](https://outcomeschool.com/blog/voice-agent-latency-budget)
 - [How does the voice-to-voice latency of a voice agent get measured?](https://outcomeschool.com/blog/voice-to-voice-latency)
 - [Why does the time-to-first-audio matter more than total response time?](https://outcomeschool.com/blog/time-to-first-audio)

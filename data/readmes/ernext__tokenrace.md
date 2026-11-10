@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/logo/tokenrace-mascot.svg" alt="TokenRace mascot: a running token" width="190"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/ernext/tokenrace/main/assets/logo/tokenrace-mascot.png" alt="TokenRace mascot: a running token" width="190"></p>
 
 # TokenRace — Local LLM Speed Test
 
@@ -17,7 +17,7 @@ Speed depends on the combination of model, inference server and hardware: there 
 A small [Streamlit](https://streamlit.io) app: pick a server and a model, start the test and watch TTFT, tokens per second, total time and RAM live, with a summary, a chart and CSV export.
 
 <p align="center">
-  <img src="docs/tokenrace-en.png" alt="TokenRace: LFM3 1.7B at 8-bit on Rapid-MLX, oMLX and Ollama, with streaming response, live metrics and summary" width="900">
+  <img src="https://raw.githubusercontent.com/ernext/tokenrace/main/docs/tokenrace-en.png" alt="TokenRace: LFM3 1.7B at 8-bit on Rapid-MLX, oMLX and Ollama, with streaming response, live metrics and summary" width="900">
 </p>
 <p align="center"><sub>LFM3 1.7B at 8-bit on Rapid-MLX and oMLX (same MLX weights) and on Ollama (mxfp8), "Short" prompt, no reasoning, 3 runs on one Mac. A single example, not a ranking.</sub></p>
 
@@ -36,15 +36,17 @@ A small [Streamlit](https://streamlit.io) app: pick a server and a model, start 
 
 LFM3 1.7B at 8-bit on an Apple M5 Pro (24 GB), "Short" prompt, 512 tokens, median of 3 warm runs. Effective speed in tok/s.
 
-| Server | IT, reasoning on | IT, no reasoning | EN, reasoning on | EN, no reasoning |
-|---|---:|---:|---:|---:|
-| oMLX | **131.8** | **129.1** | 123.1 | **117.2** |
-| Rapid-MLX | 128.8 | 126.8 | **127.0** | 103.2 |
-| Ollama (mxfp8) | 118.0 | 113.9 | 101.1 | 104.4 |
+| Server | IT, no reasoning | EN, no reasoning |
+|---|---:|---:|
+| oMLX | **129.1** | **117.2** |
+| Rapid-MLX | 126.8 | 103.2 |
+| Ollama (mxfp8) | 113.9 | 104.4 |
 
 - oMLX and Rapid-MLX use the same MLX weights (`LiquidAI/LFM3-1.7B-MLX-8bit`).
-- With reasoning on, oMLX and Ollama spend all 512 tokens reasoning, while Rapid-MLX does not reason with this model: those columns are not a like-for-like comparison.
+- When a request states no preference, Rapid-MLX turns reasoning off while Ollama and oMLX leave it on ([details](https://github.com/raullenchai/Rapid-MLX/issues/5691)). The "reasoning on" columns are removed until they are re-measured with every server in the same mode.
 - The same test can vary by 10–20% from one minute to the next on the same Mac: treat small gaps as a tie and run your own tests.
+
+Got different numbers on your hardware? **[Share your results](https://github.com/ernext/tokenrace/discussions/categories/share-your-results)**.
 
 ## Requirements
 
@@ -55,6 +57,16 @@ Built for Apple Silicon Macs, works on Linux and Windows too.
 
 ## Install
 
+The quickest way needs only [uv](https://docs.astral.sh/uv/getting-started/installation/) (macOS/Linux: `curl -LsSf https://astral.sh/uv/install.sh | sh`):
+
+```bash
+uvx tokenrace
+```
+
+The app opens at http://localhost:8501. Options: `uvx tokenrace --port 8600 --lang it`.
+
+Alternatively, from the source code:
+
 ```bash
 git clone https://github.com/ernext/tokenrace.git
 cd tokenrace
@@ -64,6 +76,8 @@ pip install -r requirements.txt
 ```
 
 ## Run
+
+If you installed from the source code:
 
 ```bash
 streamlit run app.py
@@ -121,10 +135,13 @@ The **No reasoning** switch sends a different parameter depending on the server 
 - Ollama: `reasoning_effort: "none"` ✅
 - LM Studio: `reasoning_effort: "none"` plus `chat_template_kwargs` ✅
 - oMLX: `chat_template_kwargs: {"enable_thinking": false}` ✅
+- Rapid-MLX: `chat_template_kwargs: {"enable_thinking": false}` ✅
 - text-generation-webui: `enable_thinking: false`
 - all others (llama.cpp, MLX, vLLM, SGLang…): `chat_template_kwargs: {"enable_thinking": false}`
 
 Some models reason anyway: the app shows a warning in that case.
+
+With the switch off, servers with a tested parameter are asked for reasoning explicitly (`enable_thinking: true`), so they all run in the same mode. Ollama needs no field because reasoning is its default; untested servers get no extra field.
 
 ## Project structure
 
@@ -132,6 +149,7 @@ Some models reason anyway: the app shows a warning in that case.
 app.py               Streamlit interface
 tokenrace/
   bench.py           measuring logic (streaming, timing, RAM, token counts), no Streamlit
+  cli.py             the `tokenrace` command
   config.py          reads the TOML files
   i18n.py            translations
 config/

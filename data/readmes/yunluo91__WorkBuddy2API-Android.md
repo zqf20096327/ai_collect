@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/yunluo91/WorkBuddy2API-Android/releases/latest"><img src="https://img.shields.io/badge/Release-1.10.9--app132-0DBD8B?style=flat-square" alt="Release"></a>
+  <a href="https://github.com/yunluo91/WorkBuddy2API-Android/releases/latest"><img src="https://img.shields.io/badge/Release-2.0.1--app191?style=flat-square" alt="Release"></a>
   <img src="https://img.shields.io/badge/Android-8.0+-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android">
   <img src="https://img.shields.io/badge/Kotlin-2.3-7F52FF?style=flat-square&logo=kotlin&logoColor=white" alt="Kotlin">
   <img src="https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
@@ -101,7 +101,7 @@ com.yunluo.wb2api
 
 四项统一，源码目录是 `java/com/yunluo/wb2api/`。
 
-**版本号约定**：`versionName` 形如 `1.10.9-app132`（跟内嵌网关版本走，后面是 App 构建号），`versionCode` **固定 100**。
+**版本号约定**：`versionName` 形如 `1.10.11-app134`（跟内嵌网关版本走，后面是 App 构建号），`versionCode` **固定 100**。
 这样任意历史版本之间都能互相覆盖安装，不会出现 `INSTALL_FAILED_VERSION_DOWNGRADE`。
 
 ---
@@ -110,7 +110,7 @@ com.yunluo.wb2api
 
 ### 1. 装 APK
 
-从 [Releases](https://github.com/yunluo91/WorkBuddy2API-Android/releases/latest) 下 `WorkBuddyAPI-1.10.9-app132.apk`。
+从 [Releases](https://github.com/yunluo91/WorkBuddy2API-Android/releases/latest) 下 `WorkBuddyAPI-1.10.11-app134.apk`。
 提示「未知来源」时允许即可。桌面图标叫 **WorkBuddy2API 2**。
 
 ### 2. 打开等网关起来
@@ -463,6 +463,86 @@ app/src/main/
 ---
 
 ## 十三、更新记录
+
+### 2.0.1-app191
+
+**修「思考档位」内嵌面板的白底与撞色。**
+
+- 那个区块是往智能体页注入的 iframe，指向控制台调试台（`?embed=1`）。
+  embed 模式原来只把 `body` 设成透明，`html` 没设 —— iframe 文档的默认白底透了出来，
+  浅灰字压在白底上几乎看不见。
+- 现在 `documentElement` 与 `body` 同时透明，并设 `colorScheme = 'dark'`；
+  `<iframe>` 标签也加 `color-scheme:dark`。
+- 调试台主色 `#0dbd8b`（亮绿）改为 `#8b7fd4`（紫，与看板一致），
+  绿色降为次要色，橙色警告改为柔和金 `#d9b25f`。
+
+### 1.10.11-app134
+
+**看板整份换成 1.10.11 版，再把自研的六个块贴回去。** 这次两边的东西全都要。
+
+从上游新界面拿到的：
+
+- **账号分组**：分组筛选下拉、点账号名旁的芯片改分组、「+ 分组」、按组批量启停/
+  刷新凭证/测试/补积分、导入时指定分组、API Key 按组选入移除
+- **账号列表分页**：第 X 页 / 共 Y 页 + 上一页下一页
+- **风控连坐暂停面板**：剩余秒数提示 + 立即解除 + 设置里改暂停时长
+- **API Key 配置示例**：Base URL 与 cURL 片段，一键复制
+- **代理槽下拉改进**：多出「自动（随机挑选未使用的代理槽）」，登录时也能选出口
+- **新设置项**：单请求体上限、出口级瞬时失败退避、用量聚合保留窗口、账号级并发上限
+- **导航布局切换**：新导航布局 / 返回传统布局
+
+保留的自研界面（逐个贴回，全部核对存在且只定义一次）：
+
+```
+标题署名（宽屏内联 + 窄屏单独一行）
+账号导出（弹窗，一行一个可复制）
+单账号导出（弹窗 + 软换行）
+粘贴导入（wbacc1: 解析 → dryRun 预览 → 确认导入）
+全局提示词「导入」按钮
+后台定时任务（签到/旅行/保活/猫猫 + 抖动）
+```
+
+```
+验证
+· dashboard JS node --check 通过（521,960 字节的脚本块）
+· 十个自研函数各定义 1 次，无重复
+· 沙箱用真网关渲染：页面 1,249,965 字节，
+  标题「综合API网关」、署名、定时任务、粘贴导入、分组、连坐暂停、API 示例 全部在
+· current_version = 1.10.11，启动日志零异常
+· 39 个 .py 语法全过
+```
+
+### 1.10.11-app133
+
+**网关升到 1.10.11。** 这次上游只改了 8 个文件，合并量很小，三方合并零冲突。
+
+拿到的修复：
+
+- **小账号池长会话不再每轮换号** —— 页大小覆盖整个 realm 时固定同一账号，
+  避免前缀缓存丢失、Token 消耗翻倍（对 4~6 个号的小池子最实在）
+- **恢复提示词改写** —— 两条脱敏规则退化成空操作的问题修好
+- **live 免费倍率不覆盖付费价** —— 远端目录返回 `x0.00` 时保留内置已知付费倍率
+- **413 不再被连接重置吞掉** —— 先回 413 再按 Content-Length 排空上传
+- **风控连坐暂停可配** —— 暂停时长进 settings，可看倒计时并提前解除
+  （以前只有环境变量 `WB_RESTRICTION_HOLD_SECONDS`）
+- CodeArts 参数错误不再冷却整个账号池、模型 ID 精确匹配
+
+保留的自研改动（全部核对过）：
+
+```
+realm 标记 / 失败原因字段 / 启动重算区域 / 关思考两条路径判定
+后台排程抖动 / 后台打乱账号顺序 / 定时任务界面 / 抖动设置项
+```
+
+```
+验证
+· 三方合并：wb_proxy / wb_accounts / wb_scheduler / wb_settings 全部零冲突
+· repair_realm 仍归属 class AccountPool（上次合并踩过的坑，这次专门核了）
+· 沙箱真跑：/health ok=true、/v1/models 200（19 个模型）、
+  current_version = 1.10.11、抖动设置 20 → 42 写入成功、
+  restriction_hold_seconds 已在 settings 里、启动日志零异常
+· 39 个 .py 语法全过
+```
 
 ### 1.10.9-app132
 

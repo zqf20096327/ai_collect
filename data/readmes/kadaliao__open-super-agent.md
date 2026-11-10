@@ -27,7 +27,7 @@
 - **连上你在用的应用**：应用市场收录了 40 个，Notion、Gmail、GitHub、飞书、钉钉、腾讯文档……登录或填 token 就能接，也能接任意 MCP。
 - **先问再做**：发邮件、提交表单这类操作先弹卡片问你；密钥加密存在保险库里，不进聊天记录。
 - **模型随便换，花多少看得到**：DeepSeek、Kimi、智谱、OpenAI、本机的 Ollama，任何兼容 OpenAI 的接口都行。按任务和天统计费用，有每日预算。
-- **教一遍就会**：点“演示一遍”，在电脑上亲手做一次，Bot 把操作整理成技能，以后输入 `/名字` 就能重做；说“每天 9 点帮我……”就建好定时任务。
+- **教一遍就会**：点“演示一遍”，在电脑上亲手做一次，Bot 把操作整理成[技能](docs/skills.md)，以后输入 `/名字` 就能重做；技能能带脚本和参考资料，也能从技能市场装现成的、导入 Claude 的 SKILL.md；说“每天 9 点帮我……”就建好定时任务。
 - **在国内好用**：在飞书、钉钉、企业微信里直接和 Bot 说话；默认配置不需要国外的付费服务；界面有中文和英文。
 - **数据在你手里**：跑在你自己的机器上；全部数据（连同密钥）能导出成一个加密文件，换台机器接着用。
 
@@ -37,7 +37,7 @@
 
 | 用法 | 说明 |
 |---|---|
-| 💻 **macOS 桌面 App** | 下载 dmg 打开就能用：约 45 MB，自带运行环境，不用装 Docker 和 Python，Bot 直接用这台电脑：浏览器，给了权限还有屏幕和鼠标键盘。关掉窗口后在菜单栏接着跑；也能连到你的服务器，让服务器上的 Bot 用这台 Mac。见 [桌面 App](docs/desktop.md) |
+| 💻 **macOS 桌面 App** | 下载 dmg 打开就能用：约 45 MB，自带运行环境，不用装 Docker 和 Python。Bot 默认直接用这台电脑：浏览器，给了权限还有屏幕和鼠标键盘；也能换成 Docker 沙盒或云电脑。关掉窗口后在菜单栏接着跑；也能连到你的服务器，让服务器上的 Bot 用这台 Mac。见 [桌面 App](docs/desktop.md) |
 | 🖥️ **服务器** | 一条 `docker compose up` 放到 VPS 或家里的机器上，一直开着；浏览器、桌面 App、手机、聊天软件都能连。见 [用 Docker Compose 部署](docs/docker.md) |
 | 📱 **iPhone App**（TestFlight 内测） | 用相机扫电脑上的二维码就连上；要你确认的事、做完的任务推送到手机，内容加密，锁屏上就能看。见 [iPhone App](docs/mobile.md) |
 | 💬 **聊天软件** | 在 Telegram、飞书、钉钉、企业微信、Discord 里直接和 Bot 说话，要你确认的操作变成消息里的按钮。见 [聊天软件](docs/channels.md) |
@@ -54,6 +54,24 @@
 <p align="center"><sub>上：macOS 桌面 App（<a href="docs/images/mac-control.mp4">看 Bot 操作整台 Mac 的录屏</a>）。下：iPhone App（TestFlight 内测），对话 · 后台任务 · 确认卡片 · 看 Bot 的电脑</sub></p>
 
 同类项目 OpenMausBot 的取舍不一样，见 [和 OpenMausBot 比](docs/comparison.md)。
+
+## 系统要求
+
+模型跑在模型服务那边，不需要显卡（用本机的 Ollama 跑模型另算）。要多少资源主要看 Bot 的电脑放在哪：
+
+| 怎么用 | 最低 | 建议 | 硬盘 |
+|---|---|---|---|
+| macOS 桌面 App，电脑用本机 | macOS 12，Apple 芯片或 Intel，8 GB 内存 | 16 GB 内存 | App 约 130 MB |
+| 服务器，电脑用云电脑（Instabox） | 1 核 1 GB | 2 核 2 GB | 5 GB |
+| 服务器，电脑用本地 Docker | 2 核 4 GB | 4 核 8 GB | 10 GB |
+
+- 服务本身约占 110–170 MB 内存，每个用 `npx` / `uvx` 跑的应用另占 20–60 MB；应用的 npm、uv 缓存会长到 1 GB 左右。
+- Docker 电脑：空桌面约 30 MB，开一个网页约 250 MB；三个窗口同时开着 B 站、淘宝这类页面约 0.9 GB 内存、半个 CPU 核；镜像约 1.2 GB。
+  机器小就把 设置 → 限制与预算 →“同时用电脑的任务”调成 1 或 2。
+- 云电脑跑在 Instabox 上，不占你的机器。作为参考：一台 2 核 2 GB 的 VPS 上，正式服务、演示服务和另外几个服务加起来用了约 1 GB 内存。
+- 桌面 App：Bot 的 Chrome 每个窗口 200–400 MB。在 App 里选“Docker 沙盒”还要装 Docker Desktop，这时建议 16 GB 内存。
+
+以上是 2026 年 11 月在 v0.12 上实测的数字。
 
 ## 快速开始
 
@@ -99,12 +117,13 @@ docker build --build-arg APT_MIRROR=mirrors.ustc.edu.cn -t osa-computer:1 osa/co
 | [功能一览](docs/features.md) | 全部功能，按主题分组 |
 | [用 Docker Compose 部署](docs/docker.md) | 一条命令跑起来、自动 HTTPS、数据和备份、国内网络 |
 | [配置](docs/configuration.md) | 模型服务和各项工作用的模型、限额与单价、电脑、应用、确认规则与保险库、定时任务、推送、远程访问 |
+| [事件](docs/events.md) | 某件事发生时让 Bot 处理：webhook、GitHub、订阅源、网页变化、邮件、日程、天气、地震、价格、公网 IP……；地址和安全、写一个新来源 |
 | [桌面 App](docs/desktop.md) | 在这台电脑上运行或连接服务器、让服务器上的 Bot 用这台 Mac、系统通知、菜单栏、自动更新 |
 | [iPhone App（内测）](docs/mobile.md) | 扫码连接、推送怎么送到手机、推送中转看得到什么、开发 |
 | [聊天软件](docs/channels.md) | 连接 Telegram、飞书、钉钉、企业微信、Discord，配对，权限和常见问题 |
 | [给应用市场加应用](docs/apps.md) | 应用清单的格式、图标、在本机试、提 PR |
 | [写一个 Bot 模板](docs/templates.md) | 模板的格式、从现有 Bot 导出、加进内置 |
-| [插件](docs/plugins.md) | 用 Python 给 Bot 加工具、订阅事件；安全说明和插件市场 |
+| [技能](docs/skills.md) | 技能的写法、带脚本和参考资料的技能包、导入导出和分享、技能市场、和 Claude SKILL.md 的兼容 |
 | [架构](docs/architecture.md) | 各组件如何协作、代码目录、设计约定 |
 | [开发](docs/development.md) | 本地开发、测试方法、调试技巧 |
 | [和 OpenMausBot 比](docs/comparison.md) | 两个开源 Grok Bot 替代品的取舍 |

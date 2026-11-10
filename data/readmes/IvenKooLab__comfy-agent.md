@@ -4,8 +4,6 @@
 
 **A local-first desktop studio for ComfyUI — pure-stdlib Python, vanilla JS, zero dependencies, one 10 MB exe**
 
-[![Gitee Stars](https://gitee.com/IvenKooLab/comfy-agent/badge/star.svg?theme=dark)](https://gitee.com/IvenKooLab/comfy-agent)
-
 [![Release](https://img.shields.io/github/v/release/IvenKooLab/comfy-agent)](https://github.com/IvenKooLab/comfy-agent/releases)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows-blue)](#quick-start)
@@ -33,7 +31,7 @@ One native window that runs your local ComfyUI end to end: prompt-to-image/video
 - 🔧 **Workflows** — SVG node editor (drag/link/snap/validation); built-in Flux + H3 workflows; import UI/API JSON or extract from PNG
 - 📋 **Runs** — queue, progress, ETA, one-click retry, GPU time ledger
 - 🎬 **Pipeline** — episodic script → shot list → batch queue → concat with BGM; shot-to-shot chaining (seamless long takes via last-frame continuation), priority queue, scene library, audio assets, subtitle burn-in, per-episode stats
-  - **Pre-flight gate** — first/last-frame anchoring (H3 FL2V, auto-selected per shot), seven-section prompt check, filmability lint, first/last frame size + SSIM checks; blockers stop the queue (force-submittable), plus an optional vision-model audit, a palette sheet with B&W value check, beat/BPM alignment from the original track, and a per-batch retrospective
+  - **Pre-flight gate** — first/last-frame anchoring (H3 FL2V, auto-selected per shot), seven-section prompt check, filmability lint, first/last frame size + SSIM checks; blockers stop the queue (force-submittable), plus an optional vision-model audit, a palette sheet with B&W value check, beat/BPM alignment from the original track, reference-to-video (9 images + 3 audio refs), 9:16 vertical short-drama output, SRT/edit-sheet export and a per-batch retrospective
 - ⬢ **Models** — preset suites (SCAIL-2, MiniMax H3, MOSS-Image, FLUX 3 Klein) with **one-click resumable downloads** and live progress; browse local model dirs by category with search; opening a template that needs missing models offers a one-jump download
 - 🚀 **Launcher** — start/stop/update ComfyUI, model inventory, custom nodes, environment diagnostics (torch/triton/sage), logs
 - 🗂️ **Knowledge** — Obsidian archiving, stats, graph view, full-text search
@@ -53,6 +51,8 @@ One native window that runs your local ComfyUI end to end: prompt-to-image/video
 To develop against a source checkout: `python server.py --open` (browser mode), `python app.py` (desktop shell), `bash build_exe.sh` (build). See [CHANGELOG.md](CHANGELOG.md) for the design and iteration history.
 
 ## Screenshots
+
+Captured with `python tools/capture_shots.py` (headless Edge/Chrome, zero extra dependencies; the script spins up a temporary instance with demo data so your own `data/` is untouched).
 
 **Setup Wizard**
 
@@ -118,6 +118,14 @@ A built-in zero-dependency MCP server (stdio + JSON-RPC 2.0) exposes ComfyAgent 
 ```
 
 (Requires ComfyAgent to be running.)
+
+## Credits
+
+The local H3 short-drama pipeline (v1.9.0: reference-to-video, dialogue tagging rules,
+reaction-shot checks, SRT/edit-sheet export) was inspired by **Miller ([@TuyetloanP81840](https://x.com/TuyetloanP81840))**'s
+hands-on guide *"Making an AI short drama alone with Claude + H3"* -
+[read the original article](https://x.com/TuyetloanP81840/status/2119326884505043274).
+Thank you for publishing the full workflow and the pitfall list.
 
 ## Contributing
 

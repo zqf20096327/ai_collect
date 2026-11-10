@@ -1,5 +1,7 @@
 # Cadence demos
 
+**Try them in your browser: [cadence.floatingpragma.io](https://cadence.floatingpragma.io/)**
+
 Small example applications for [Cadence](https://github.com/muellerberndt/cadence):
 brains that learn from experience through bounded patches, local relations,
 readback and settlement. Each demo demonstrates a specific mechanism and names
@@ -26,10 +28,8 @@ learning or can learn every human task. The demos expose parts of that goal:
   selected, so its size and shape are earned by what they cost and return.
 - **Answers that settle.** An action is the settled state of the whole brain,
   and a brain that does not settle refuses to answer.
-- **Declared learning mechanisms.** The equilibrium candidates repair from
-  local relations and measured outcomes. Amen retains a separate record-patch
-  engine with the adjoint learning rule disclosed in its README; its results
-  do not certify the common brain's learning rule.
+- **Declared learning mechanisms.** The brains repair from local relations
+  and measured outcomes, and each README states the learning rule it uses.
 
 ## The brain in Cadence
 
@@ -55,10 +55,6 @@ interventions, novel events and an explicit repair schedule control. Account
 for initial acquisition, memory, sensing, all solves, replay and refused work.
 Neither a small residual nor a demo's `pass` or `WIN` label proves correct
 behavior, low physical energy or a performance advantage.
-
-Beside the main `Brain.compose` interface, the library keeps advanced engines
-such as record patches and the population solver, where populations of patches
-settle one joint energy and observers read prediction errors.
 
 ## How a Cadence brain differs from a feed-forward network
 
@@ -90,116 +86,178 @@ settlement, and the learning stays local at every depth.
 | Depth | More layers in the forward and the backward pass | More patches in the same settlement |
 | Lifetime in this comparison | Independent inputs and explicit supervised updates | Bootstrap, continuing settled behavior and witnessed local repair |
 
-Rover Lab and Patch World draw the patches and their prediction errors while
-they settle, Atari Arcade shows the settled state behind every action, and Eyes
-shows the whole brain settling for one eye's stream. Amen
-runs a record patch, an advanced engine whose learning rule is stated in its
-section below. The library README has
+Tron and Connect Four draw every neuron of the settle sweep by sweep, Atari Arcade shows the
+settled state behind every action, and Eyes shows the whole brain settling for one eye's stream. The library README has
 [the full comparison](https://github.com/muellerberndt/cadence#how-a-cadence-brain-differs-from-a-feed-forward-network).
 
 ## The demos
 
+Every demo runs on `cadence-net` 0.95.2.
+
 | Demo | What it shows | Runs on |
 | --- | --- | --- |
-| [Rover Lab](rover-lab/) | A live body model that adapts from measured motion after a motor bootstrap | The population solver; in the browser, a JavaScript version of it |
-| [Patch World](patch-world/) | Brains that learn in the browser and evolve across generations | A JavaScript version of the population solver |
-| [Atari Arcade](atari-arcade/) | Brains that learn Atari games from pixels: a teacher first, then reward | `Brain.compose` (System 1); in the browser, a JavaScript version of it |
-| [Amen](amen/) | A record patch composing jungle tracks in the browser | A brain trained with `RecordPatchNet`; the page runs a JavaScript version of its forward pass |
-| [Eyes](eyes/) | One brain that follows every shape you drag with its own eye, from the page's pixels only | A hand-wired connectome run by `cadence.Brain`; in the browser, the released library itself, in Pyodide |
-| [Connectome](connectome/) | Teach a fish gaze circuit to hold, return and hold again on measured wiring; explore a larva with fixed connections | Cadence rate patches in JavaScript, with plastic fish connections and declared body models |
-| [Robot Arm](robot-arm/) | A Franka Panda that picks up a block and places it in the bin you choose, under contact physics; move the bin while it carries the block and it follows | A deep `Brain.compose` taught by a scripted teacher in MuJoCo; in the browser, MuJoCo as WebAssembly and the released library itself, in Pyodide |
+| [Tron](tron/) · [live](https://cadence.floatingpragma.io/demos/tron) | Ride a light cycle against a flat or a deep brain that sees the whole arena, and watch every neuron settle on its move | `Brain.compose`, flat (256) and deep (256-128-32); in the browser, the released library itself, in Pyodide |
+| [Connect Four](connect-four/) · [live](https://cadence.floatingpragma.io/demos/connect-four) | Play a deep brain that judges every position (loss, draw, win) beside its move, and teach it a column | A deep `Brain.compose` (1024, 1024) with a verdict slot; in the browser, the released library itself, in Pyodide |
+| [Castlevania](castlevania/) · [watch](https://cadence.floatingpragma.io/demos/castlevania) | A brain plays the NES game from what its eye sees on the screen, on your own copy of the game | A deep `Brain.compose` with recall, raised by a savestate teacher and search; a local server runs the emulator |
+| [Patch World](patch-world/) · [live](https://cadence.floatingpragma.io/demos/patch-world) | Creatures with Cadence brains forage, get poisoned when the season turns, relearn and evolve; click one to watch its brain | One continuing `Brain.live` brain per creature, bred by evolution; in the browser, the released library itself, in Pyodide |
+| [Atari Arcade](atari-arcade/) · [live](https://cadence.floatingpragma.io/demos/atari-arcade) | Brains that learn Atari games from pixels: a teacher first, then reward | `Brain.compose` (System 1); in the browser, the released library itself, in Pyodide |
+| [Robot Arena](robot-arena/) · [live](https://cadence.floatingpragma.io/demos/robot-arena) | Robots built from parts, one continuing brain per robot, raised in a nursery and fighting live in the browser with a brain inspector | `Brain.compose` with one motor slot per motor, learning through `Brain.live`; in the browser, in Pyodide |
+| [Robot Arm](robot-arm/) · [live](https://cadence.floatingpragma.io/demos/robot-arm) | A Franka Panda that picks up a block and places it in the bin you choose, under contact physics; move the bin while it carries the block and it follows | A deep `Brain.compose` taught by a scripted teacher in MuJoCo; in the browser, MuJoCo as WebAssembly and the library in Pyodide |
+| [Eyes](eyes/) · [live](https://cadence.floatingpragma.io/demos/eyes) | One brain that follows every shape you drag with its own eye, from the page's pixels only | A raised visual brain run by `cadence.Brain`; in the browser, the released library itself, in Pyodide |
+| [Connectome](connectome/) · [live](https://cadence.floatingpragma.io/demos/connectome) | Teach a fish gaze circuit to hold, return and hold again on measured wiring; explore a larva with fixed connections | Cadence rate patches in JavaScript, with plastic fish connections and declared body models |
 
-Rover Lab and Patch World run on the population solver, Atari Arcade and
-Robot Arm on `Brain.compose`, Amen on a record patch, and Eyes on a hand-wired
-connectome run by `cadence.Brain`. Each demo's README names the Cadence version it was
-built with.
+## Putting a demo on your own site
 
-## [Rover Lab](rover-lab/): a body model that keeps learning
+Each browser demo is a static folder: its page, its scripts and a `pack/` folder holding the
+released `cadence-net` wheel, the brain and a manifest of SHA-256 hashes, which the page's worker
+checks before it runs anything. Serve the folder unchanged (for example under `public/` of a
+site), and link to its page or embed it in an iframe. A site that builds a page into its own
+bundle names the pack's address in the host page's `<head>`:
 
-A simulated rover learns how its wheel commands turn into motion. Weaken its
-right wheel and watch a learning Cadence brain adjust its predictions and keep
-reaching targets, beside a frozen copy, an adaptive estimator and a small neural
-network. The brain is three small populations of patches that read the motor
-commands and one another's states and settle together. Error-reading observers
-are an optional extra arm. The whole lab also runs in the browser, on a
-JavaScript version of the same solver (`rover-lab/web/`).
-
-```sh
-cd rover-lab
-python3 -m venv .venv && .venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python server.py        # http://localhost:8670
-python3 -m http.server 8080 --directory web   # the browser edition at http://localhost:8080/
+```html
+<meta name="cadence-pack" content="/demos/connect-four/pack/">
 ```
 
-See the [Rover Lab README](rover-lab/README.md).
+Without the tag a page uses `pack/` beside itself (Robot Arena: `/pack/`). The pack must be served
+as files, not answered by a single-page app's fallback page. Pyodide and NumPy load from
+jsDelivr on the first visit.
 
-## [Patch World](patch-world/): evolution prices the brain
+## [Tron](tron/): light cycles against a brain that sees the whole field
 
-A conserved-mass world under a moving sun, in one page. Each creature inherits
-a body plan, develops a small settling brain from it, learns within one life,
-and pays mass for every patch, relation and repair sweep. The founders have no
-observers; mutation can add observer stages, and energy and death decide whether
-they stay. Click a creature to watch its brain settle.
+[Open it on the site](https://cadence.floatingpragma.io/demos/tron).
+
+Each move is one settle of the whole brain on the 24 × 24 arena, turned so that the rider's
+heading points up. Two brains are on the page, picked by a switch in the header: a flat brain of
+one region and a deep brain of three, whose deep layers decide three quarters of its moves. Both
+were raised by imitation of a search bot, selection under expert iteration and self-play; the
+deep one grew its layers from the flat one. The [Tron README](tron/README.md) has their
+readings, and [TRAINING.md](tron/TRAINING.md) raises both routes from scratch.
 
 ```sh
-cd patch-world
-python3 -m http.server 8080       # http://localhost:8080/
+python3 -m http.server 8831 --directory tron/web   # open http://localhost:8831/
+```
+
+## [Connect Four](connect-four/): a deep brain with a verdict
+
+[Open it on the site](https://cadence.floatingpragma.io/demos/connect-four).
+
+The brain sees its own stones, yours and the cells where a stone would land, and settles on
+seven column neurons and three more that judge the position for the side to move: loss, draw or
+win. The page draws the settle sweep by sweep, shows the replies it imagines for you, and lets
+you teach it a column with one lesson. The [Connect Four README](connect-four/README.md) has
+its readings against a perfect solver and how it was trained.
+
+```sh
+python3 -m http.server 8790 --directory connect-four/web   # open http://localhost:8790/
+```
+
+## [Castlevania](castlevania/): a brain on the NES
+
+[Open it on the site](https://cadence.floatingpragma.io/demos/castlevania).
+
+A brain plays Castlevania from a foveated eye on the screen around Simon, choosing the pad's
+buttons each decision, beside its settled state and its recall memory. It was raised by a
+teacher that searches ahead from emulator savestates. The game is not included: the demo runs
+on your own ROM, which `simon/rom.py` checks against the expected hash.
+
+```sh
+cd castlevania && python -m simon.rom ~/roms && python server.py   # opens http://localhost:8846/
+```
+
+See the [Castlevania README](castlevania/README.md).
+
+## [Patch World](patch-world/): creatures that learn the seasons
+
+[Open it on the site](https://cadence.floatingpragma.io/demos/patch-world).
+
+Berries nourish in summer and sicken in winter, and nothing a creature senses says which season it
+is. Each learner is one continuing Cadence brain that learns from what its own actions bring: a
+poisoning surprises it, and the surprise wakes its learning. Beside the learners live frozen twins
+(the same brains, never learning) and random walkers. Learners outlive their frozen twins (3,933
+against 284 moments on fresh seeds), stop eating berries within a winter, and learn the second
+winter faster than the first. A well-fed learner bears a child that inherits its brain and mutated
+genes, so evolution runs in the page. Click a creature to watch its brain settle, its dopamine
+and arousal, and the synapses a lesson changes.
+
+```sh
+python3 -m http.server 8793 --directory patch-world/web   # open http://localhost:8793/
 ```
 
 See the [Patch World README](patch-world/README.md).
 
 ## [Atari Arcade](atari-arcade/): learning Atari games
 
+[Open it on the site](https://cadence.floatingpragma.io/demos/atari-arcade).
+
 Brains born at server start learn Atari games from the raw screen while you
 watch. Each one is a System 1 brain built with `Brain.compose`. It watches a
 scripted teacher play, takes the controls once its own answers agree often
 enough, and then keeps learning from the reward of its own actions. The page
-shows the game beside the settled brain. Freeway and Atlantis
-also run entirely in the browser, on a JavaScript version of the same brain
-(`atari-arcade/web/`).
+shows the game beside the settled brain. Freeway and Atlantis also run entirely
+in the browser: an Atari core and the released Cadence wheel, in Pyodide, in
+web workers.
 
 ```sh
-cd atari-arcade
-python3 -m venv .venv && .venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python server.py        # http://localhost:8668
-python3 -m http.server 8080 --directory web   # the browser edition at http://localhost:8080/
+python3 -m http.server 8080 --directory atari-arcade/web   # the browser edition, http://localhost:8080/
 ```
 
-See the [Atari Arcade README](atari-arcade/README.md).
+See the [Atari Arcade README](atari-arcade/README.md) for the Python edition and the readings.
 
-## [Amen](amen/): a jungle composer in the browser
+## [Robot Arena](robot-arena/): the Cadence Showcase League
 
-One record patch learned jungle tracks as events per half-beat: a slice of a
-drum break, a sub-bass note, a change flag and a texture. Nothing on the page is
-recorded. Press the button and the brain computes a track from silence in the
-browser, hearing each half-beat it plays, then renders it through the
-instrument. The brain was trained from random parameters in 78 CPU minutes on a
-laptop. Its slow parameters learn by a gradient step over
-32 half-beats that is kept only when a replay confirms it, and its records are
-written in one shot.
+[Open it on the site](https://cadence.floatingpragma.io/demos/robot-arena).
+
+Robots are built from a parts catalogue: a chassis, wheels or legs, arms with a spike, a
+hammer or a spinner. Each robot is one continuing `Brain.compose` life whose motor cortex
+has one slot per motor, so every motor is commanded by the same settled state. A newborn is
+raised in a nursery against a dummy, passes a driving test, then fights six-robot royales in
+a ring that closes and keeps learning from every fight. The page runs the roster live in a
+web worker, saves each brain in the browser after every fight, and shows the selected
+robot's senses, settled state, motor slots and arousal.
 
 ```sh
-python -m http.server -d amen/web 8803   # open http://localhost:8803 and press CUT A DUB
+cd robot-arena/showcase-app && npm install && npm run build && npx vite preview --port 4173
 ```
 
-See the [Amen README](amen/README.md).
+See the [Robot Arena README](robot-arena/README.md) to raise a league and check the page.
+
+## [Robot Arm](robot-arm/): pick and place under contact physics
+
+[Open it on the site](https://cadence.floatingpragma.io/demos/robot-arm).
+
+A Franka Panda in MuJoCo picks up a block and places it in the bin that a lit lamp names. Its
+brain is one deep `Brain.compose` with three hidden regions and the apical compartment. It learned
+the job during its life by imitating a scripted teacher. A disclosed inverse-kinematics reflex
+turns its centimetre moves into joint targets. The page runs MuJoCo as WebAssembly and the trained
+brain in Pyodide, and draws every neuron after each decision. Drag the block and the bins, press
+Run, and move the bin while the arm carries the block.
+
+```sh
+python3 -m http.server 8830 --directory robot-arm/site   # open http://localhost:8830/
+```
+
+See the [Robot Arm README](robot-arm/README.md) to train the brain, read it and check the page.
 
 ## [Eyes](eyes/): one brain, an eye on every shape
+
+[Open it on the site](https://cadence.floatingpragma.io/demos/eyes).
 
 Shapes on a large surface, each followed by its own eye, by one Cadence brain
 that runs in the browser tab and sees only the page's pixels. Each eye sees
 sharply at its centre and coarsely around it, and sees what changed since the
 last frame, so when you drag a shape away one saccade can bring it back. When
 nothing moves, the brain settles nothing. The brain was raised offline and runs
-frozen in the page, on the released Cadence wheel in Pyodide.
+frozen in the page.
 
 ```sh
-python -m http.server -d eyes/web 8797   # open http://localhost:8797/
+python3 -m http.server 8797 --directory eyes/web   # open http://localhost:8797/
 ```
 
 See the [Eyes README](eyes/README.md).
 
 ## [Connectome](connectome/): teach a compiled circuit
+
+[Open it on the site](https://cadence.floatingpragma.io/demos/connectome).
 
 Measured animal wiring becomes a running Cadence patch net. Teach the fish **hold your
 gaze**, then **let it return**, then hold again on the same brain. Its connection strengths
@@ -212,50 +270,7 @@ with fixed weights. The two preprints behind the construction are
 [Cadence: Learning Through Local Patch Settlement](https://philpapers.org/rec/MUECAP-2).
 
 ```sh
-python -m http.server -d connectome/web 8800   # open http://localhost:8800/
+python3 -m http.server 8800 --directory connectome/web   # open http://localhost:8800/
 ```
 
 See the [Connectome README](connectome/README.md) to run, teach and check the demo.
-| [Robot Arena](robot-arena/) | Robots assembled from parts, each with one continuing brain wired to every motor, raised in a nursery, evolved on a big machine and fighting live in the browser with a brain inspector | `Brain.compose` with one motor slot per motor, learning through `Brain.live`; in the browser, the released library itself, in Pyodide |
-
-## [Robot Arena](robot-arena/): the Cadence Showcase League
-
-Robots are built from a parts catalogue: a chassis, wheels or legs, arms with a spike, a
-hammer or a spinner. Each robot is one continuing `Brain.compose` life whose motor cortex
-has one slot per motor, so every motor is commanded by the same settled state; nothing
-sits between the brain and the body. A newborn is raised in a nursery against a dummy
-(progress and damage pay, ramming and the burn hurt), then fights ranked royales in a ring
-that closes. Uniform random with the same body is the baseline of every count; a frozen
-newborn is the control for learning. The leagues in the folder were raised on a laptop and
-evolved for an hour on 192 vCPUs: lineages of mutants of the best bodies and genes, the
-weakest third retired each generation.
-
-The page (`robot-arena/showcase-app/`) runs the best six live in a web worker, the released
-library in Pyodide, saves each brain in the browser after every fight and restores it on
-the next visit; click a robot to watch its senses, its association cortex settling, the
-motor slots and the arousal law deciding between routine and learning. The limits are
-measured in `robot-arena/STATUS.md`: the brains learn to find and hit, the ranking moves
-with what they learn, and their tactics are coarse.
-
-See the [Robot Arena README](robot-arena/README.md) to run the league, the page and the
-scripted check of the page's promise.
-
-## [Robot Arm](robot-arm/): pick and place under contact physics
-
-A Franka Panda in MuJoCo picks up a block and places it in the bin that a lit lamp names. Its
-brain is one deep `Brain.compose` with three hidden regions and the apical compartment. It learned
-the job during its life by imitating a scripted teacher. A disclosed inverse-kinematics reflex
-turns its centimetre moves into joint targets. Read frozen on fresh trials, the page's brain places
-0.955 of the blocks under randomized physics. On the hardest held-out physics it places 0.465,
-where the teacher places 0.295. It also follows a target bin moved to places it never trained
-with.
-
-The page runs MuJoCo 3.17 as WebAssembly and the trained brain in Pyodide, and draws every neuron
-after each decision. Drag the block and the bins, press Run, and move the bin while the arm
-carries the block.
-
-```sh
-python -m http.server -d robot-arm/site 8830   # open http://localhost:8830/
-```
-
-See the [Robot Arm README](robot-arm/README.md) to train the brain, read it and check the page.

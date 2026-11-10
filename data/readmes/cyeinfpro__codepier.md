@@ -2,7 +2,7 @@
 
 让 ChatGPT 在你授权的电脑和服务器上读代码、改文件、跑测试，并拿到可核对的执行结果。
 
-[![Version](https://img.shields.io/badge/version-1.32.6-2563eb)](RELEASE.json)
+[![Version](https://img.shields.io/badge/version-1.33.10-2563eb)](RELEASE.json)
 [![License](https://img.shields.io/badge/license-MIT-16a34a)](LICENSE)
 
 CodePier 是自托管的 MCP 服务和开发面板。**Hub** 负责接入与管理，**Agent** 在 macOS、Windows 或 Linux 上运行本机工具。你也可以在网页里继续 Pi、Codex、Claude Code 会话，管理多台电脑和服务器。
@@ -21,10 +21,10 @@ CodePier 是自托管的 MCP 服务和开发面板。**Hub** 负责接入与管�
 
 ### 1. 安装 Hub
 
-服务器需准备 Git、Bash、Python 3.9+、Docker 和支持 `up --wait` 的 Docker Compose v2。以下安装本版本 **v1.32.6**，最新正式版本见 [Releases](https://github.com/cyeinfpro/codepier/releases/latest)：
+服务器需准备 Git、Bash、Python 3.9+、Docker 和支持 `up --wait` 的 Docker Compose v2。以下安装本版本 **v1.33.10**，最新正式版本见 [Releases](https://github.com/cyeinfpro/codepier/releases/latest)：
 
 ```bash
-git clone --branch v1.32.6 --depth 1 https://github.com/cyeinfpro/codepier.git
+git clone --branch v1.33.10 --depth 1 https://github.com/cyeinfpro/codepier.git
 cd codepier
 bash install.sh
 ```
@@ -63,6 +63,7 @@ https://你的域名/mcp
 
 | 场景 | 能做什么 |
 | --- | --- |
+| **项目知识地图** | 按当前源码 SHA 保存有界结构和摘要，读取文件及原生会话可自动参考；过期内容不作为当前结论，不自动调用模型或授予权限。[说明](docs/PROJECT_KNOWLEDGE.md) |
 | **真实项目开发** | 按授权目录搜索、读取、SHA 校验修改文件，审阅差异、运行命令与测试；需要时使用 worktree。 |
 | **原生 AI 编程会话** | 在网页继续 Pi、Codex、Claude Code 会话，查看历史、附件和审批；CLI 安装与登录留在 Agent 电脑。 |
 | **多电脑与 VPS** | 一台 Hub 接入多台 macOS、Windows、Linux Agent；通过项目访问已分配的 SSH 服务器。 |
@@ -76,6 +77,18 @@ CodePier **不提供模型服务**。只使用 MCP 文件与命令工具，不�
 清洁模式使用独立 HOME、缓存和非登录 Shell，并默认复用 Agent 执行账号已有的 GitHub CLI 登录、Git 全局配置和 SSH Agent。可在项目的 **执行环境 → 复用已有登录** 中逐项关闭。它**不是操作系统沙箱**：Shell 仍以本机 Agent 账号权限执行。依赖个人终端启动脚本、特殊签名或硬编码 HOME 的工具仍需配置。[项目运行时与边界](docs/PROJECT_RUNTIMES.md)
 
 ### 最近版本变化
+
+- **v1.33.10 — 微信收件恢复**：修复首次投递被误判为修订的问题，微信消息可正常进入 Dot 收件箱。
+- **v1.33.9 — 独立宿主连接**：支持跨房间复用、验证后换绑和全局撤销。新安装默认启用，已有部署在完成兼容检查与回填后自动启用。
+- **v1.33.8 — dot 连接验证恢复**：新绑定可查看验证状态，原生连接检查可自动或手动重投。
+- **v1.33.7 — 批量权限与项目暂停隔离**：可用项目继续保存，暂停项目逐项提示，保留已确认的保存结果。
+- **v1.33.6 — MCP 上下文与知识地图优化**：新增可选紧凑视图，改进大文件读取、目录发现、权限恢复和地图自动刷新。
+- **v1.33.5 — 协作房间与微信恢复完善**：统一输入权限与等待恢复，新增明确选择的任务续办、原连接托管续期及微信独立回复调度。
+- **v1.33.3 — 面板与协作流程优化**：简化电脑安装、项目授权、连接设置、CLI、VPS 和任务进度。房间默认按所选项目开放只读，微信配对可在一次范围确认后完成。
+
+- **v1.33.1 — 权限选择修复与知识地图维护**：房间及工作范围统一支持 128 个项目与环境，全选执行同时覆盖获准 VPS；补齐协议、部署入口索引，并在新的显式生成后按当前授权自动增量维护。
+
+- **v1.33.0 — 统一工具、项目知识与房间权限**：默认使用 query / act 精简工具目录，保留旧接口；新增有界项目知识地图及自动参考；房间权限统一配置，微信可跟随或使用更小范围。
 
 - **v1.32.6 — 房间项目保存反馈**：区分项目能力与成员实际权限；保存错误保持可见，成功回执不再被权限刷新或后续读取失败覆盖。
 
@@ -99,6 +112,8 @@ CodePier **不提供模型服务**。只使用 MCP 文件与命令工具，不�
 
 版本功能是否已经运行，取决于实际部署的 **Hub、Agent 和客户端工具目录**，不能仅凭仓库代码或版本说明判断。[完整更新记录](CHANGELOG.md)
 
+默认 MCP 目录为 `query`、`act` 和身份入口 `get_profile`；原工具名继续可调用，`?profile=core|full|coding` 保留原目录。原生附件上传和帮助入口仍沿用原权限校验。[统一工具说明](docs/UNIFIED_TOOLS.md)
+
 ## 使用示例
 
 在已连接 CodePier 且具有相应权限的 ChatGPT 对话里，可以这样说：
@@ -116,7 +131,7 @@ CodePier **不提供模型服务**。只使用 MCP 文件与命令工具，不�
 
 - **Shell 和原生 CLI 使用 Agent 运行账号的系统权限，不是项目目录沙箱。** 只授权必要目录；互不信任的用户应使用独立系统账号、容器或虚拟机。[安全说明](SECURITY.md)
 - 浏览器与桌面控制需另行配置和授权。桌面控制当前已验证 macOS，Windows / Linux 桌面后端尚未验证。[配置说明](docs/COMPUTER_USE.md)
-- 文件入站未配置时默认开启，显式关闭会保留；来源授权不会自动扩大。支持范围、大小限制和客户端验收状态见[文件入站指南](docs/FILE_IMPORT_INGRESS.md)。协作室默认关闭，启用前阅读[协作室指南](docs/COLLABORATION_CHATROOM.md)。
+- 文件入站未配置时默认开启，显式关闭会保留；来源授权不会自动扩大。支持范围、大小限制和客户端验收状态见[文件入站指南](docs/FILE_IMPORT_INGRESS.md)。协作中心默认关闭，启用前阅读[协作中心指南](docs/COLLABORATION_CHATROOM.md)。
 
 ## 遇到问题时
 
@@ -148,9 +163,9 @@ CodePier **不提供模型服务**。只使用 MCP 文件与命令工具，不�
 
 ## 版本与许可
 
-当前仓库的 `RELEASE.json` 标记为 **1.32.6 / prepared / source-and-image**；可下载版本以 [Releases](https://github.com/cyeinfpro/codepier/releases/latest) 为准，`main` 可能包含尚未发布的改动。
+当前仓库的 `RELEASE.json` 标记为 **1.33.10 / prepared / source-and-image**；可下载版本以 [Releases](https://github.com/cyeinfpro/codepier/releases/latest) 为准，`main` 可能包含尚未发布的改动。
 
-- **Version:** 1.32.6
+- **Version:** 1.33.10
 - **License:** [MIT](LICENSE)
 
 第三方依赖保留各自许可证，见 `web/vendor/` 与 [MCP Apps 声明](web/mcp-apps/THIRD_PARTY_NOTICES.txt)。

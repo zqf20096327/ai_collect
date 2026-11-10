@@ -68,6 +68,9 @@ v0.16.0 adds a to-do list, "tell me when" watchers, repeating reminders and remi
 | Learned risk model   | 25,200 training, 5,400 calibration, and 5,400 temporal-validation samples; 5/5 direction invariants | Covers 12 coarse disk/process action transitions; deterministic policy remains authoritative |
 | Async responsiveness | 65 heartbeats during a real one-second CPU monitor; 16.618 ms maximum heartbeat interval      | Windows timer granularity and host load apply; this is not UI or hardware-input latency        |
 | Assistance co-adaptation | 3/3 policy agency audits passed on two simulated tuning families, five simulated people per family | In-sample simulation only; the adaptive engine does not beat the plain interface for every family; no human accuracy claim |
+| Long-term memory | [Memory Bench](docs/MEMORY.md): 11/11 probes after weeks of scripted use, 0 stale facts, also with twice the filler at budgets of 1,500 to 4,000 tokens; 3 of the first 8 passed before the fixes (9 November 2026) | Checks what reaches the prompt, not how a model uses it; scripted sessions |
+| Live companion, own data | 29 sentences against a fixed week of calendar, to-dos and reminders: code alone 11/13 contradictions caught, 0 false alarms; with qwen3.5:4b in Ollama 12/13, 0 false alarms, 2.07 s median per model call on a laptop CPU (9 November 2026) | Authored sentences and one synthetic week; [raw results](docs/evidence/live-grounded-eval-2026-11-09.json) |
+| Live companion timing | [Live Bench](docs/LIVE_BENCH.md), three typing personas: personal timing 63/63 catches, 0 false alarms, 2 interruptions; fixed 1.2 s rules 63/63, 3 false alarms, 15 interruptions (9 November 2026) | 34 scripted scenarios and simulated people, not recordings of real sessions |
 | Plugins              | 6 manifests in the generated public catalog                                                   | Marketplace and local plugins remain capability-constrained                                    |
 | CI                   | Python, frontend, visual, Rust, marketplace, and installer gates                              | CI does not prove camera, microphone, speaker, EEG, or human accuracy                          |
 | Windows signing      | SignPath test-policy workflow signs and verifies EXE, MSI, and embedded application artifacts | The production certificate is pending; current public installers are not yet production-signed |
@@ -348,7 +351,9 @@ gaze_tracking_enabled = false
 enabled = false
 
 [voice]
-transcription_engine = "auto"
+transcription_engine = "auto"   # "streaming" decodes while you speak (English, live captions, instant text)
+turn_detection = "smart_turn"   # answers when your sentence sounds finished, waits when you pause to think
+turn_hold_ms = 2500
 whisper_model = "small"
 language = "auto"
 tts_engine = "kokoro_tts"
@@ -377,6 +382,16 @@ history = false              # remember recent copies in memory for "what did I 
 
 [suggestions]
 enabled = false              # offer one gentle, code-computed nudge now and then; never acts
+
+[live]
+enabled = false              # always-on companion: notices slips as you type or speak, says so at your pause
+level = "balanced"           # "quiet", "balanced" or "proactive"
+read_focused_text = true     # the field you're typing in (Windows); never password fields
+listen_to_speech = true      # check what you say to Heliox, too
+ocr_fallback = false         # read the screen for errors when no field is readable
+personal_timing = true       # learn how long you pause mid-sentence, so it waits for a real break
+grounded_checks = false      # check what you write against your own calendar, to-dos and reminders
+grounded_model = "qwen3.5:4b"  # the local Ollama model that links paraphrases; code does the rest
 
 [co_adaptation]
 enabled = false              # the selection study; also needs a consent record per participant
@@ -456,6 +471,9 @@ Open a [bug report](https://github.com/VyomKulshrestha/Heliox-OS/issues/new/choo
 - [Neural intent research controls](docs/NEURAL_INTENT.md)
 - [Intelligence evaluation and research map](docs/INTELLIGENCE_EVALUATION.md)
 - [Assistance co-adaptation: model, consent and evidence](docs/COADAPTATION.md)
+- [Heliox Live Bench: when the live companion speaks up, measured](docs/LIVE_BENCH.md)
+- [Memory and context: what reaches the model, measured with Heliox Memory Bench](docs/MEMORY.md)
+- [Catch packs: teach Heliox Live new slips, through a precision gate](docs/LIVE_CATCHES.md)
 - [Opt-in recorded workflows and local visual samples](docs/RECORDED_WORKFLOWS.md)
 - [Gnomon typed-decision model: training, gates and results](docs/GNOMON_TRAINING.md)
 - [Public decision-corpus adaptation log](docs/PUBLIC_CORPUS_ADAPTATION.md)

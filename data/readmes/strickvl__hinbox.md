@@ -25,7 +25,7 @@ through a simple configuration system.
 - **Parallel Pipeline**: Concurrent article extraction with LLM rate limiting and batched embedding computation
 - **Modular Engine**: `src/engine` coordinates article processing, extraction, merging, and profile versioning so new domains can reuse the same pipeline
 - **Privacy Mode**: `--local` flag enforces local-only embeddings and disables all LLM telemetry callbacks
-- **Web Interface**: FastHTML-based "Archival Elegance" UI with confidence badges, alias display, tag pills, and profile version navigation
+- **Web reader**: profiles with a contents list, every citation opening its source beside the sentence, and the grounding checker's doubts marked on the sentences themselves; source pages, search across all tables, and version history
 - **Easy Setup**: Simple configuration files, no Python coding required
 
 ## 📸 Screenshots
@@ -36,19 +36,21 @@ through a simple configuration system.
 </figure>
 
 <figure>
-  <img src="assets/frontpage.png" alt="Front page" width="800">
-  <figcaption><em>Main dashboard displaying research domains and extracted entity statistics</em></figcaption>
+  <img src="assets/reader-profile.png" alt="A profile in the web reader with a source open beside it" width="800">
+  <figcaption><em>A profile in the web reader. Clicking a citation opens its source beside the text, with the checker's verdict; sentences the checker doubted are underlined (amber: partly supported, red: not supported)</em></figcaption>
 </figure>
 
 <figure>
-  <img src="assets/organizations-view.png" alt="Organizations View" width="800">
-  <figcaption><em>Organizations listing with search and filtering capabilities for research analysis</em></figcaption>
+  <img src="assets/reader-home.png" alt="Reader home page" width="800">
+  <figcaption><em>Home page: search, the most-covered entries in each table, and pages that need attention</em></figcaption>
 </figure>
 
 <figure>
-  <img src="assets/organization-profile.png" alt="Sample Organization Profile" width="800">
-  <figcaption><em>Detailed organization profile showing extracted information, sources, and version history</em></figcaption>
+  <img src="assets/reader-source.png" alt="A source page" width="800">
+  <figcaption><em>A source page: the stored text, who it names, and every profile sentence that cites it</em></figcaption>
 </figure>
+
+The reader screenshots use a small made-up corpus (every name and article is invented). Run `just demo-reader` to open it yourself, or `just frontend` for your own run.
 
 ## 🚀 Quick Start
 
@@ -125,6 +127,8 @@ just frontend
    # Add to your shell profile or systemd unit for the Ollama server:
    export OLLAMA_CONTEXT_LENGTH=32768
    ```
+
+   If the model server runs on another machine on your network and you run Hinbox on a Mac, macOS's Local Network privacy setting can block Python from reaching it for minutes at a time ("No route to host") while `curl` still gets through. Allow your terminal app under System Settings → Privacy & Security → Local Network, or reach the server through an SSH tunnel: `ssh -N -L 18080:127.0.0.1:8080 <server>` and `OLLAMA_API_URL=http://127.0.0.1:18080/v1`. If every model call fails to connect, the run saves what it has and stops; run the same command again to continue.
 
    You can override the default models without editing code by setting
    environment variables in your `.env` file:
@@ -213,7 +217,13 @@ just process --domain afghanistan_1980s --force-reprocess
 ```bash
 just frontend
 ```
-Explore extracted entities at http://localhost:5001
+Read the profiles at http://localhost:5001. The server listens on 127.0.0.1 only, so a private corpus is not shared on your network; set `HINBOX_FRONTEND_HOST=0.0.0.0` to share it on purpose.
+
+On an entity page, a sentence the grounding checker did not fully confirm is underlined (amber: partly supported, red: not supported, grey dots: not checked), and the line above the profile counts them and names the checker with its known miss rate. Click a citation number to read that source beside the profile, with the words the checker quoted when it judged the sentence highlighted. A quote is only saved, and only highlighted, if it is found word for word in the article (case, spacing, curly quotes and dashes aside), so a misquote never shows as if the source said it. Runs made before passages were saved can get them without a model call: `just grounding-passages --entities <run> --articles <articles.parquet> --out <copy>` reads the quotes already in each stored verdict's reasoning and writes a copy of the tables. Point the reader at another run with `HINBOX_OUTPUT_DIR=<entities folder> just frontend`, or try it on a made-up corpus with `just demo-reader`.
+
+To correct what you read, click a citation number and choose "Correct this sentence" in the panel (strike it and optionally write the right sentence, overrule the checker's verdict, or say which heading it belongs under), or use "Correct this page" under the name (rename, wrong table, not an entity, some sources belong to someone else, same as another page). Corrections never edit the tables: each one is a line added to `data/<domain>/corrections/corrections.jsonl` (outside the run folder, so a fresh run still finds it; `HINBOX_CORRECTIONS_PATH` or `corrections.path` in the domain's `config.yaml` moves it), and the pages draw them on top: struck sentences struck through, your own sentences and verdicts marked as yours. The Corrections page lists every one with its state and a Withdraw button; withdrawing adds a line, nothing is deleted. Each pipeline run then carries out your strikes in the stored profiles: it cuts the struck sentence, puts your sentence with its citation in its place, stops the profile updater from writing the struck sentence again or rewording yours, and writes a report beside the corrections file (`last-run.json`) saying, for each correction, whether it was applied, held, re-applied (and what tried to undo it) or needs a look. Your verdicts stay in the file and show over the checker's on every run. Headings, names, tables, splits and joins are recorded for pipeline runs to carry out in a later step. The file quotes sentences written from your sources, so keep it as private as the run. Set `HINBOX_REVIEWER` to sign your corrections.
+
+To share a run without running a server, `just export-site <folder>` writes the reader as plain HTML files that you can open from disk, zip or put on any web host. Search works in the browser. The list filters are left out, and the side panel beside a profile works when the folder is served by a web server (even `python -m http.server`); opened straight from disk, browsers block it, so a citation opens the source page instead. On the 9 Nov 150-article run this took about 1.5 minutes and wrote 3,562 pages (122 MB, about half of it older profile versions). The folder holds the articles' text, so share it only where the articles may be shared.
 
 ### Traces of every model call
 Every run records each pipeline step and each model call (the prompt sent, the reply or tool-call arguments, any reasoning the model returned, token counts, finish reason) as OpenTelemetry spans. One trace per article: `article #3` → `extraction` → `extract.people` → `chat qwen3.6:35b`, and `merge.people` → `match_check` → `chat …`, with each NEW/MERGE/SKIP decision as an event on its merge step.
@@ -246,6 +256,7 @@ After merging, the grounding pass asks a model whether each cited article really
 
 - **Cloud runs**, which already send article text to a provider, use Claude Haiku 5.5 as the judge by default, whatever `HINBOX_CLOUD_MODEL` is. It is clearly the best option, so keep an `ANTHROPIC_API_KEY` in `.env` (and `uv sync --extra anthropic`). Set `HINBOX_GROUNDING_MODEL` to use another judge.
 - **Local runs** (`--local`) are for working with no internet connection at all, for data privacy: nothing leaves the machine, so a cloud judge is never an option there (a `--local` run with a cloud `HINBOX_GROUNDING_MODEL` stops at startup). For a better local judge, add `HINBOX_GROUNDING_REASONING_EFFORT=high`: only the grounding judge thinks (extraction, merging and profiles don't), with up to `HINBOX_GROUNDING_THINKING_MAX_TOKENS` (default 16384) tokens of reasoning per call. It makes grounding about 5.6x slower, so it suits a final pass over finished data more than everyday runs.
+- `HINBOX_GROUNDING_PASSAGE=on` also asks the judge to copy the passage its verdict rests on into a field of its own, after the verdict, so more sentences get a highlight. It is off by default: on the 64 hand-labelled claims it changed about a third of Haiku's verdicts (33 labels matched instead of 39) and made the local Qwen check about 70% slower without better verdicts (24 instead of 25), although it gave far more doubted sentences a highlight (`scripts/grounding_bench.py run --passage on|off`).
 - Switching the judge (or its thinking setting) makes the next run check every stored report again, because each report records which judge produced it.
 
 ### Evaluating Models
@@ -293,7 +304,9 @@ A key person's profile can grow one very long section: after 31 articles, Khalid
 
 Profiles also never change their top-level headings after the first draft, which makes them up from one article ("### Role in the Article"). For people, a profile that passes `HINBOX_SECTION_REORGANISE_CHARS` (default 8,000 characters) is moved once under the starter headings for its kind, listed by hand in the domain config under `profiles.starter_headings`: a detainee gets Background, Capture and CIA custody, Detention at Guantánamo, Military commission or legal case, Health and treatment, Release or transfer; other people, organizations, events and places have their own lists. The model sees the profile's cited sentences, numbered and grouped by paragraph, and the list, and only answers which heading each goes under. Pieces of one paragraph normally stay together, but a single sentence can leave: in one replay, Khalid Sheik Mohammed's capture and waterboarding were single sentences inside paragraphs that began with other things (who he is, where he was held), so when whole paragraphs were moved no "Capture and CIA custody" section was made, and every later capture fact was filed next to them under Background or Health. It may add up to two headings for topics nothing on the list fits, but not one that shares a word with another heading, so one story can't end up in two sections. Code moves the paragraphs word for word, with the same sentence check as the split, and the split then breaks up any section that is still too long. After that, two things keep the outline in shape as articles keep arriving. The edit model is shown the starter headings with what each is for, and asked to put each new fact under the heading it belongs to; if that heading isn't in the profile yet (a detainee with nothing about detention so far), code adds it in its place in the list. And a sub-section that grows too long is split again into headings at its own level, beside its sibling sub-sections, so the outline never goes deeper than one level under a starter heading. Last, the text above the first heading should only say who the person is. The edit model is told not to anchor new facts there, and if that opening still grows past `HINBOX_OPENING_SORT_CHARS` (default 2,000 characters), one call says which of its sentences belong under which heading, and code moves them, word for word, with the same check. In one local replay, Khalid Sheik Mohammed's opening had grown from 562 to 11,336 characters, holding his birthday, Camp 7 guard changes and a 9/11 case adjournment. `scripts/section_split_bench.py --reorganise` runs both on a finished run or the eval cases, and `scripts/section_placements.py` lists where each sentence a replayed update added ended up.
 
-All of this runs for people only by default. On the profile-update eval, reorganised person profiles scored slightly better than flat ones (87 of 96 passes against 42 of 48), while event profiles scored worse (75 of 96 against 43 of 48) and organizations a little worse, so `HINBOX_SECTION_REORGANISE` and `HINBOX_SECTION_SPLIT` default to `people`. Set either to `on` for every entity type, to a list such as `people,organizations`, or to `off`. `HINBOX_SECTION_ROUTING=off` keeps the starter headings but stops telling the edit model where new facts go. These steps make one extra model call each (the reorganise once per entity, a split only when a section passes its size, the opening sort only when the opening does), on the same model as the update. With a local model they are off unless you set the two variables: in a 150-article local run, Qwen put only 24 of 82 hand-checked sentences under the right heading (Luna 64 of 72), for example Spath's 2018 trial suspension under "Background" then "Post-military career". A flat profile is safer than one whose headings mislead. Set `HINBOX_SECTION_REORGANISE=people` and `HINBOX_SECTION_SPLIT=people` to try them on a local run anyway.
+Which heading each piece goes under is asked of a prompt that does only that: for each numbered sentence the model says in a few words what it tells about the person, then names one starter heading. On 204 sentences labelled by hand (`just eval placement`), it was right on 94% for both local Qwen and Luna, against 84-87% when the reorganise asked for all headings in one answer. The same prompt is asked about the new sentences of each later update, and a sentence the edit put under the wrong top-level heading is moved, word for word, to the right one. Inside a section that has sub-headings, each new sentence is then asked which sub-heading it belongs under (or the top of the section) and moved there word for word: in the 9 Nov local run most misplaced new sentences sat under the right top-level heading but the wrong sub-heading, and on 91 hand-checked ones this step would take the right count from 46 to 63-73 with Qwen and 66-70 with Luna.
+
+All of this runs for people only by default. On the profile-update eval, reorganised person profiles scored slightly better than flat ones (87 of 96 passes against 42 of 48), while event profiles scored worse (75 of 96 against 43 of 48) and organizations a little worse, so `HINBOX_SECTION_REORGANISE` and `HINBOX_SECTION_SPLIT` default to `people`. Set either to `on` for every entity type, to a list such as `people,organizations`, or to `off`. `HINBOX_SECTION_ROUTING=off` keeps the starter headings but stops telling the edit model where new facts go. These steps make one extra model call each (the reorganise once per entity, a split only when a section passes its size, the opening sort only when the opening does), on the same model as the update. They run with a local model too. In a 150-article local run, Qwen put 59 of 100 hand-checked sentences under the right heading and 93 of 100 under the right top-level heading (Luna 64 of 69); most of its misses are the right top-level heading but the wrong sub-heading, for example a sentence about Trump's executive order under Obama's "Cases and decisions" instead of "Guantánamo detention policy". The steps only ever move sentences word for word, so a wrong heading misfiles a sentence but never changes it. Set `HINBOX_SECTION_REORGANISE=off` and `HINBOX_SECTION_SPLIT=off` to keep a local run's profiles flat.
 
 Some entities, like the United States, are cited by dozens of articles and their profiles grow past 40,000 characters. The stored profile keeps everything, but the model doesn't see all of it: when a profile is longer than `HINBOX_PROFILE_VIEW_CHARS` (default 16,000 characters), the update call gets its opening, its section headings (as many as fit in a third of the budget), and the passages that share the most words, names and years with the new article, with a marker where text was left out. The model's edits are then applied to the full profile. The merge check does the same around the new article's evidence, with a budget of `HINBOX_MATCH_PROFILE_CHARS` (default 8,000). Set either to `0` to send whole profiles. No extra model calls are made, so this works the same offline with `--local`.
 
@@ -343,11 +356,13 @@ src/
 │   ├── merge_dispute_agent.py # Second-stage arbitration for gray-band matches
 │   ├── profiles.py            # VersionedProfile history management
 │   └── relevance.py           # Domain-specific relevance filtering
-├── frontend/               # FastHTML "Archival Elegance" UI
-│   ├── routes/             # Modular route handlers (home, people, orgs, locations, events)
-│   ├── components.py       # Reusable UI building blocks (badges, version selectors, tags)
-│   ├── data_access.py      # Centralised Parquet data loading
-│   └── static/styles.css   # CSS variables, fonts, layout
+├── frontend/               # Web reader (Starlette + Jinja2 templates)
+│   ├── app.py              # Routes: home, search, lists, entity, sources, source panel
+│   ├── views.py            # What each page shows
+│   ├── profile_render.py   # Citations, checker verdict marks, contents list
+│   ├── data_access.py      # Loads entity tables and sources; `TABLES`
+│   ├── templates/          # Jinja2 page templates
+│   └── static/             # styles.css, reader.js
 ├── utils/
 │   ├── embeddings/         # EmbeddingManager, cloud/local providers, similarity helpers
 │   ├── cache_utils.py      # Thread-safe LRU cache and stable hashing
@@ -377,7 +392,9 @@ tests/
 ├── test_name_variants.py               # Name normalisation, acronyms, equivalence groups
 ├── test_profile_grounding.py           # Citation extraction and grounding verification
 ├── test_profile_versioning.py          # Versioned profile regression tests
-└── test_frontend_versioning.py         # UI behaviour for profile history
+├── test_corrections.py                 # Corrections file and the reader's correction pages
+├── test_corrections_pass.py            # How a run carries out corrections, and its report
+└── test_frontend.py                    # Web reader on made-up tables
 
 data/
 ├── guantanamo/        # Default domain data directory (created locally)
@@ -451,7 +468,7 @@ Historical sources should be in Parquet format with columns:
 - **Smart Processing**: Automatic relevance filtering, caching, and multi-layer deduplication
 - **Profile Versioning**: Track entity profile changes over time with full version history
 - **Profile Grounding**: Citation-backed claim verification for generated profiles
-- **Modern Interface**: FastHTML "Archival Elegance" theme with confidence badges, aliases, tag pills, and version navigation
+- **Reader built for checking**: sources open beside the sentence, the checker's doubts are marked, stubs and link-only pages are labelled
 - **Robust Pipeline**: Structured `PhaseOutcome` error handling, quality controls, extraction retry, and progress tracking
 - **Structured Logging**: Colour-coded decision lines (`NEW`, `MERGE`, `SKIP`, `DISPUTE`, `DEFER`) for pipeline transparency
 
@@ -467,7 +484,7 @@ just test -k test_profile_versioning
 just test tests/test_entity_merger_similarity.py
 ```
 
-CI runs lint and tests automatically on every PR (`.github/workflows/test.yml`). The test suite covers embedding similarity, lexical blocking, per-type threshold resolution, entity merger behavior, merge dispute agent routing, extraction caching, extraction retry logic, canonical name selection, name variant detection, profile grounding, profile versioning, privacy mode enforcement, and frontend components — all without requiring API keys or GPU.
+CI runs lint and tests automatically on every PR (`.github/workflows/test.yml`). The test suite covers embedding similarity, lexical blocking, per-type threshold resolution, entity merger behavior, merge dispute agent routing, extraction caching, extraction retry logic, canonical name selection, name variant detection, profile grounding, profile versioning, privacy mode enforcement, and the web reader — all without requiring API keys or GPU.
 
 ### Code Quality
 ```bash
@@ -511,4 +528,4 @@ For questions about:
 
 **Built for**: Historians, researchers, and academics working with large document collections
 
-**Built with**: Python, Pydantic, FastHTML, Instructor, OpenAI SDK, RapidFuzz, Jina Embeddings, Rich
+**Built with**: Python, Pydantic, Starlette, Jinja2, Instructor, OpenAI SDK, RapidFuzz, Jina Embeddings, Rich

@@ -12,6 +12,24 @@
 
 A page that cannot be read is reported as `failed` with a reason; it is never returned as an empty page. Long PDFs can run as jobs with per-page progress.
 
+## Try it
+
+On a fresh clone, with only Docker installed:
+
+```bash
+git clone https://github.com/samestrin/llm-pdf-ocr-api
+cd llm-pdf-ocr-api
+docker compose up --build
+```
+
+Open <http://localhost:5000> and drop in `tests/fixtures/born_digital.pdf`, a two-page PDF with a text layer. The pages show their text and say they were read by `text_layer`.
+
+Or send the same file with `curl` from a second terminal:
+
+```bash
+curl -F file=@tests/fixtures/born_digital.pdf localhost:5000/v1/extract
+```
+
 ## Quick start
 
 Run the published image (no GPU and no model download; Tesseract is inside):
@@ -63,6 +81,8 @@ Everything is an environment variable; none is required.
 
 Vision setup, with vLLM, Ollama and cloud examples, is in [Vision model backend](docs/vision-backend.md).
 
+The owner's private review deploy (behind a login, no host port, no model server) is in [Private review deploy on embassy](docs/deploy/embassy.md).
+
 ## Benchmark
 
 Twenty freely licensed PDFs (born-digital, two-column, tables, forms, scans and poor scans) with reference text, in [`benchmarks/`](benchmarks/README.md). Results from `uv run python benchmarks/run.py`, committed in [`benchmarks/results/2026-11-03.md`](benchmarks/results/2026-11-03.md), which also has the per-document rows:
@@ -74,6 +94,19 @@ Twenty freely licensed PDFs (born-digital, two-column, tables, forms, scans and 
 | `vision` | not measured | not measured | not measured | not measured |
 
 A document with a failed page scores 0, so `text_layer` is penalised for the seven scanned pages it cannot read (it fails them rather than guessing). Neither plain-text method recovers Markdown tables, so Table F1 is 0 for both. The vision row is empty because the committed run had no vision endpoint; it is filled in by running the benchmark with `OCR_LLM_BASE_URL` set.
+
+To fill in the vision row, run it locally with Ollama:
+
+```bash
+docker compose --profile vision up -d
+docker compose exec ollama ollama pull qwen2.5vl:7b
+export OCR_LLM_BASE_URL=http://localhost:11434/v1
+export OCR_LLM_DEFAULT_MODEL=qwen2.5vl:7b
+export OCR_LLM_TIMEOUT_SECONDS=300
+uv run python benchmarks/run.py
+```
+
+The row will name the endpoint (local Ollama) and the model (`qwen2.5vl:7b`). The result file records the model name only, never the endpoint URL or a key.
 
 ## Coming from 0.0.1
 
@@ -131,7 +164,12 @@ Jobs are held in the service's memory and run one at a time. The PDF is dropped 
 
 **Endpoint:** `/` **Method:** GET
 
-![The web page after reading a PDF: each page's image beside its text, and the full Markdown below with copy and download buttons](docs/screenshot-web-page.png)
+| Light | Dark |
+| --- | --- |
+| ![The web page in the light theme at desktop width, after reading a two-page PDF: each page's image beside its text, then the full Markdown with copy and download buttons](docs/screenshot-web-page-light-desktop.png) | ![The web page in the dark theme at desktop width, after reading a two-page PDF: each page's image beside its text, then the full Markdown with copy and download buttons](docs/screenshot-web-page-dark-desktop.png) |
+| ![The web page in the light theme at phone width, with the upload card, the two pages stacked and the Markdown output](docs/screenshot-web-page-light-phone.png) | ![The web page in the dark theme at phone width, with the upload card, the two pages stacked and the Markdown output](docs/screenshot-web-page-dark-phone.png) |
+
+The screenshots are made by `uv run python docs/make_screenshots.py`.
 
 A page to use the service from a browser: drop or pick a PDF, choose Markdown or JSON and a method, and follow the job's progress. The result shows each page's image beside its text, the method that read it, and why it failed if it did; the full Markdown or JSON follows. The Markdown can be copied to the clipboard (which the browser allows on `localhost` or HTTPS), and the result downloaded as `result.md` or `result.json`. The page follows the browser's light or dark theme and fits a phone-width screen. Page text is shown as text, never as HTML, and a job that has expired is reported as an error. It is plain HTML, CSS and JavaScript shipped inside the package (no build step), served with `Content-Security-Policy: default-src 'self'`, and loads nothing from any other origin, so it works with no network. For an API-only deployment, set `OCR_WEB_PAGE=false`: `/` and the page's files then answer 404, and every API endpoint works as before.
 

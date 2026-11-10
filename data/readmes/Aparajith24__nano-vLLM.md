@@ -13,7 +13,9 @@ building the core ideas and measuring each one:
 - **prefix caching**: users whose prompts start the same share those blocks and
   skip prefilling them;
 - **chunked prefill**: long prompts are read a slice per round, so users who
-  are already generating keep getting tokens.
+  are already generating keep getting tokens;
+- **batched prefill**: everyone who reads in the same round is read in one
+  forward pass, one row of the batch per user.
 
 Every change is measured against a **baseline server** (`baseline_server.py`,
 kept unchanged so it can be re-run) that keeps a separate KV cache per user and
@@ -23,29 +25,31 @@ pads all of them to the same length every decode step.
 
 Apple M4, 16 GB, Mac GPU (MPS), SmolLM2-135M at fp32, each user asks for 100
 tokens, at most 30 users decoding at once. **Every number and chart below was
-measured in one session** (2026-10-19), because the same code can run at
-different speeds on different days.
+measured in one session** (2026-11-10), because the same code can run at
+different speeds on different days. The two earlier attention stages in the
+charts keep the numbers they were first published with.
 
 | | Baseline | nano-vLLM | Change |
 |---|---|---|---|
-| Total throughput, 30 users | 191 tok/s | **475 tok/s** | **2.5×** |
+| Total throughput, 30 users | 187 tok/s | **559 tok/s** | **3.0×** |
 | One decode step, ~30 users | 142 ms | **49 ms** | 2.9× faster |
-| Gap between tokens (ITL p50), 30 users | 152 ms | **47 ms** | 3.2× smaller |
-| Throughput, 1 user | 30 tok/s | **38 tok/s** | 1.3× |
-| TTFT p99, 40 users (10 wait for a seat) | 16.2 s | **6.4 s** | 2.5× smaller |
+| Gap between tokens (ITL p50), 30 users | 167 ms | **50 ms** | 3.4× smaller |
+| Throughput, 1 user | 28 tok/s | **36 tok/s** | 1.3× |
+| TTFT p99, 40 users (10 wait for a seat) | 16.5 s | **5.3 s** | 3.1× smaller |
 | One decode step, 28 users × 512 tokens of context | ~190 ms (SDPA) | **95 ms** | 2× faster |
-| TTFT p50, 30 users sharing a 500-token prompt | 4.2 s (caching off) | **0.73 s** (caching on) | 5.8× smaller |
-| Longest stall for 20 decoding users when 10 long prompts arrive | 2.1 s (chunking off) | **0.64 s** (512-token chunks) | 3.3× shorter |
+| TTFT p50, 30 users sharing a 500-token prompt | 4.2 s (caching off) | **0.51 s** (caching on) | 8.1× smaller |
+| Longest stall for 20 decoding users when 10 long prompts arrive | 4.0 s (chunking off) | **0.42 s** (512-token chunks) | 9.6× shorter |
 
 ![Total throughput against users](docs/throughput.png)
 
 ![TTFT and ITL against users](docs/latency.png)
 
 With these short prompts (7 tokens), chunked prefill has nothing to split, so
-its line sits on top of the green one (471 against 475 tok/s at 30 users). Its
-effect shows only when long prompts arrive, in the chunked prefill test below.
-The attention change matters most for long contexts, which these 100-token
-answers never reach.
+its line sits on top of the plain paged one; batched prefill is what moves it,
+because 30 users arriving together are now one forward pass instead of 30. Its
+chunking side shows only when long prompts arrive, in the chunked prefill test
+below. The attention change matters most for long contexts, which these
+100-token answers never reach.
 
 ## How it works
 
@@ -62,8 +66,9 @@ answers never reach.
                                                  3. seat users from the front of the line while a seat
                                                     and enough blocks for their prompt + 1 are free;
                                                     reuse cached blocks for a known prompt prefix
-                                                 4. prefill up to 512 prompt tokens: half-read prompts
-                                                    first, then new users (only the uncached part)
+                                                 4. prefill up to 512 prompt tokens in a batched pass:
+                                                    half-read prompts first, then new users (only the
+                                                    uncached part), one row of the batch per user
                                                  5. decode one token for every user whose prompt is read
  client ◀──SSE, one token each── handler ◀──── tokens through an asyncio.Queue
 
@@ -215,12 +220,16 @@ runs use the default 512-token chunked prefill.
 
 | Users | TTFT p50 off | TTFT p50 on | TTFT p99 off | TTFT p99 on |
 |---|---|---|---|---|
-| 1 | 370 ms | 201 ms | 370 ms | 201 ms |
-| 10 | 1.94 s | 439 ms | 3.35 s | 690 ms |
-| 30 | 4.25 s | **731 ms** | 9.97 s | **1.51 s** |
+| 1 | 230 ms | 270 ms | 230 ms | 270 ms |
+| 10 | 1.33 s | 335 ms | 2.84 s | 399 ms |
+| 30 | 4.16 s | **514 ms** | 9.74 s | **785 ms** |
 
 With caching off, 30 users × 500 tokens is 15,000 prompt tokens, read 512 per
 round between decode steps; with caching on, most of that never needs reading.
+Batching is what makes the difference at 30 users: once the first user's blocks
+are cached, every newcomer reads only its own question, so a whole round's
+worth of them (often dozens) fits in the 512-token budget and is read in one
+forward pass instead of one per user.
 
 ### Chunked prefill
 
@@ -233,20 +242,27 @@ anyone gets another token.
 
 | Prompt tokens read per round | Longest stall (early users) | ITL p99 (early users) | TTFT p50 (late users) | TTFT p99 (late users) |
 |---|---|---|---|---|
-| no limit | 2,090 ms | 1,032 ms | 1.6 s | 2.9 s |
-| 256 | 711 ms | 412 ms | 4.6 s | 9.8 s |
-| **512 (default)** | **637 ms** | 423 ms | 3.1 s | 6.4 s |
-| 1,024 | 681 ms | 548 ms | 2.2 s | 4.5 s |
+| no limit | 4,000 ms | 178 ms | 3.85 s | 3.85 s |
+| 256 | 346 ms | 331 ms | 3.87 s | 8.53 s |
+| **512 (default)** | **418 ms** | 393 ms | 2.75 s | 5.93 s |
+| 1,024 | 574 ms | 535 ms | 2.19 s | 4.44 s |
 
 - **Users already generating get a smoother stream.** The worst freeze drops
-  3.3× and the ITL p99 more than halves (1,032 → 423 ms).
-- **The people with long prompts pay for it.** Their first token comes later
-  (1.6 s → 3.1 s), because each round moves their prompts forward only a slice
-  and also decodes all 20 early users.
-- **The stall does not shrink below ~640 ms** even with small slices: each
+  from 4.0 s to 0.42 s, 9.6× shorter.
+- **The people with long prompts pay for it.** With a budget their first token
+  comes later (3.85 s → 2.75 s at 512, still behind the 2.19 s of 1,024),
+  because each round moves their prompts forward only a slice and also decodes
+  all 20 early users.
+- **With no budget, batching makes the stall one long block.** All 10 long
+  prompts are read in a single forward pass, so their tokens all arrive when
+  the whole batch is done: late users' TTFT becomes 3.85 s for the first and
+  last alike, and the early users' worst gap is the 4 s it takes. The ITL p99
+  looks better (178 ms) only because that one gap is a single sample; the
+  longest gap is what hurts.
+- **The stall does not shrink below ~350 ms** even with small slices: each
   round also decodes 30 users whose contexts reach 900 tokens, so a round is
-  never cheap. A bigger budget gives late users their answer sooner at the cost
-  of bigger gaps for everyone else.
+  never cheap. 256 has the shortest single stall but the worst late TTFT and
+  total throughput, so 512 stays the default.
 
 ## Correctness
 
@@ -259,6 +275,7 @@ compares against Hugging Face with sampling turned off:
 | `test_paged.py` | Paged prefill and decode, teacher-forced across block boundaries, 1 user and 4 users of different lengths (one joining late), with the pool **filled with garbage** first | Same tokens as HF everywhere, logits within 3.5e-4 |
 | `test_paged.py` (prefix) | A user reusing another user's cached blocks still matches HF | Same tokens, logits within 9e-5 |
 | `test_paged.py` (chunks) | A 90-token prompt read 7 tokens at a time, across every block boundary, matches HF at the end of every chunk and through decode | Same tokens, logits within 1.1e-4 |
+| `test_paged.py` (batch) | Four prompts of different lengths and different starting points, one reusing another user's cached blocks, read in **one** forward pass (so rows are padded and the mask does the separating), then decoded together | Same tokens, logits within 5e-5 on CPU, 4e-4 on MPS |
 | `test_engine.py` | The server's engine gives exactly HF `generate`'s greedy answers, with a big pool, 8-token chunks, 512-token chunks, and pools so small (5 and 8 usable blocks) that users are preempted and recomputed | 7 of 7 prompts identical in all six; 3–4 preemptions in each tiny pool |
 | `test_blocks.py`, `test_kv_pool.py` | Tables, free lists and reference counts after every step; values read back exactly | All asserts pass |
 
@@ -298,6 +315,7 @@ Two lessons from testing:
 | 21 | Budget size | **512 tokens** (setting `NANO_PREFILL_CHUNK`, 0 = no limit) | Measured 256, 512 and 1,024 twice: 512 gave the shortest worst stall both times (637 ms in the final run), with a middle cost to the late users' TTFT |
 | 22 | How blocks are handed out | **Grow as you go**: seat a user when their prompt + 1 token fits, and add one block each time a decoder crosses a 16-token boundary; when the pool is empty, **preempt by recompute**: free the user's blocks, put them at the front of the line, and later prefill their prompt + answer so far (minus the last token, which is the next decode input, so no token is sampled twice) | Blocks are no longer held for tokens that are never written. Recompute instead of swapping to CPU needs no second memory pool and no copy code, and prefix caching often makes the prompt part free again. On a 9-block test pool: at most 5 users seated instead of 3, 42 rounds instead of 57, same answers. At the default 1,920 blocks the server never preempts, so the earlier benchmarks still hold |
 | 23 | Who gets preempted, and when blocks are found | The **most recently seated** user; decoders get their next block **before** anyone new is seated | The newest user has done the least work, so recomputing them costs least, and the oldest users always finish. Growing first means nobody is seated only to be thrown out in the same round |
+| 24 | How the prefill budget is spent | **One forward pass per round for everyone who reads**: a row per user, each chunk padded with token 0 and hidden by a causal mask, block tables ragged and filled out with the dummy block; rows are grouped by power-of-two length so a short tail never pads out a long prompt. The seating and cache policy is unchanged | 30 users with 7-token prompts went from 30 forwards (878 ms) to one (69 ms); 30-user TTFT p50 601 → 325 ms, p99 1,006 → 332 ms. A batch of one costs ~8 ms more than before. Measured trap: writing K and V through a boolean mask made MPS copy the index list to the CPU on every layer (225 ms instead of 35 ms per call); `index_select` over a flattened row axis fixed it, and the results stayed bit-identical |
 
 ## Limits
 
@@ -306,9 +324,15 @@ Two lessons from testing:
 - The paged attention is a gather plus plain PyTorch operations, not a fused
   GPU kernel, so the gather is still a copy and a step for 28 users at 512
   tokens of context takes ~95 ms, about half of it gathering.
-- New users are prefilled one at a time (one forward pass each, even inside the
-  same round), so TTFT grows with the number of users arriving together
-  (about 600 ms p50 for 30 at once).
+- Batched prefill pads every row to the longest chunk in its group (groups are
+  power-of-two lengths, so at most 2× wasted rows), and a batch of one still
+  builds the padded shapes: one user's prefill costs ~8 ms more than the old
+  one-at-a-time path (58 ms → 78 ms TTFT at 1 user). It is plain PyTorch
+  matmuls over those rows, not a varlen kernel.
+- Users seated in the same round cannot share prefix-cache blocks with each
+  other: the cache is looked up while seating, before anything is read. They
+  share the forward pass instead, but they read a shared prefix once per user,
+  so such a group takes one block per user rather than one shared block each.
 - Chunked prefill trades the late users' TTFT for the early users' smoothness;
   the budget is fixed, not adapted to the load.
 - Preemption recomputes instead of swapping to CPU, so a preempted user with a
@@ -322,9 +346,7 @@ Two lessons from testing:
 
 ## Next steps
 
-1. **Batched prefill**: prefill everyone who arrives together in one forward
-   pass (with a token budget) to cut TTFT.
-2. **A real paged attention kernel** (Metal or Triton on NVIDIA) that reads
+1. **A real paged attention kernel** (Metal or Triton on NVIDIA) that reads
    blocks in place, so shared prefix blocks are read once, not gathered per user.
-3. **A `/metrics` endpoint** with TTFT, ITL, batch size and free blocks while the
+2. **A `/metrics` endpoint** with TTFT, ITL, batch size and free blocks while the
    server runs.

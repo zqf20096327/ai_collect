@@ -281,6 +281,7 @@ Compare methods under the same resource rules, keeping execution, evaluation val
 | **Harbor format** | [TB-Science](https://github.com/harbor-framework/terminal-bench-science), Terminal-Bench and other Harbor datasets; `bench tasks` lists supported tasks | [Adapter guide](docs/guides/bench-adapter.md) |
 | **ASI native wrapper** | ASI’s own runner, with known compatibility issues checked before launch | [Compatibility](docs/guides/bench-adapter.md#asi-bench-版本兼容) |
 | **LongDS native CLI** | DataMind's sequential Codex / Claude Code sessions and original judge, via an external adapter | [LongDS setup](examples/bench-adapters/longds/README.md) |
+| **Native embodied policies** | Evaluate registered models in native simulators with frozen samples and independent evidence verification | [Embodied evaluation quickstart](docs/guides/embodied-quickstart.md) |
 | **External adapters** | Other benchmarks via a JSON protocol, without rebuilding Orbit | [ResearchClawBench example](examples/bench-adapters/researchclawbench/README.md) |
 
 ```bash
@@ -316,12 +317,15 @@ orbit bench cancel <job>
 orbit bench rm-job <job>        # delete a finished job with its trials and runs (type the job id)
 ```
 
-Methods are `name=agent[,auth=P,model=M,effort=E,bundle=DIR]` with agent `codex`, `claude-code`,
+Evaluation configurations use the existing `--method` syntax
+`name=agent[,auth=P,model=M,effort=E,bundle=DIR]` with agent `codex`, `claude-code`,
 `oracle` (reference solution) or `empty` (submits nothing; checks that the verifier gives 0). Every
 trial records execution (how the solve run ended), evaluation (`valid` / `invalid` / `unknown`) and
-cleanup separately; only valid scores count. The Web UI shows jobs, a task × method matrix and
-cross-job comparison under **Bench**. Grader secrets given with `--pass-env` reach only the verify
-run. Per-task solve resources (GPU, memory, CPU, timeout) come from an optional JSON file given with
+cleanup separately; only valid scores count. The Web UI shows jobs, a task × configuration matrix and
+cross-job comparison under **Evaluations**. **Configurations** groups previously evaluated settings
+by name and content revision; changing the model or reasoning effort creates a configuration version.
+An independent Method concept remains future design. Grader secrets given with `--pass-env` reach
+only the verify run. Per-task solve resources (GPU, memory, CPU, timeout) come from an optional JSON file given with
 `orbit bench add --resources`; every run records its measured peaks, and a solve run killed for memory
 makes the trial invalid instead of a zero. Any other benchmark needs only an adapter executable that speaks a small JSON protocol (no
 rebuild of Orbit): [docs/guides/bench-adapter.md](docs/guides/bench-adapter.md).
@@ -447,8 +451,8 @@ space. Folders organize runs and bench jobs without moving files: `orbit run --f
 | Direction | Current progress |
 | --- | --- |
 | **Digital experiments** | Docker execution, resource scheduling, sweeps, trajectory records and local Web review are implemented; single-machine workflows are validated. |
-| **Benchmarks & multiple machines** | Implemented; benchmark validation focuses on oracle / empty methods, and multi-node validation uses two daemons on one host. |
-| **Embodied environments** | Vision: extend execution and resource abstractions to simulation, robots and experimental equipment. Device backends are not implemented yet. |
+| **Benchmarks & multiple machines** | Benchmarks have integration-specific validation records. Multi-node validation uses two daemons on one host. |
+| **Embodied environments** | Native simulation, independent policies, evidence verification and Trial review are implemented. Physical device backends are a future direction. |
 | **Learning and evolution from trajectories** | Records and review are available for agents to analyze and refine the next experiment. Automated learning, policy updates and evaluation feedback loops are future research directions. |
 
 Orbit is in early development (0.1.1). See [project status](docs/status.md) for validation limits and near-term work, and [design](docs/design.md) for the architecture.
@@ -461,6 +465,8 @@ Orbit is in early development (0.1.1). See [project status](docs/status.md) for 
 | --- | --- |
 | Connect agents and manage plugins | [Plugin guide](plugin/README.md) |
 | Add a benchmark or size task resources | [Benchmark adapter guide](docs/guides/bench-adapter.md) |
+| Run and review an embodied evaluation | [Quickstart](docs/guides/embodied-quickstart.md) · [Benchmark coverage and verified policies](docs/guides/embodied-compatibility.md) |
+| Add an embodied policy or native benchmark | [Onboarding templates](docs/guides/embodied-onboarding.md) |
 | Connect several machines | [Multi-node guide](docs/guides/multi-node.md) |
 | Understand architecture and support | [Design](docs/design.md) · [Project status](docs/status.md) |
 | Build and publish a package | [Release guide](docs/guides/releasing.md) |

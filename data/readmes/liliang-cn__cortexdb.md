@@ -4,7 +4,7 @@
 
 AI memory and a knowledge graph in one SQLite file. Pure Go, no service to run, works without an embedding model.
 
-![The CortexDB live view](docs/assets/img/live-view-dark-1600.webp)
+![The CortexDB live view: two recalls light up the graph, then the Recalls, Ontology and Library pages](docs/assets/img/live-view-en.gif)
 
 ## Install
 
@@ -36,6 +36,18 @@ In Codex, review and trust the plugin hooks in `/hooks` to activate automatic
 recall. See the [plugin guide](plugins/cortexdb/README.md) for setup and
 `cortexdb-mcp --doctor --self-test` diagnostics (v2.119.0+).
 
+## Live view
+
+A web UI over the brain, local or shared: run `cortexdb-mcp-stdio --graph-3d`, or ask the agent to call `serve_graph_3d`.
+
+- **Graph**: the knowledge graph in 3D. A recall from any agent or machine lights the records it returned, and the Live feed says who asked what.
+- **Recalls**: every recall with its plan, its hits and why each ranked (`CORTEXDB_RECALL_LOG=1`).
+- **Changes** and **Activity**: every fact added, replaced or retracted, and the tool calls the brain handled.
+- **Ontology**: the declared types held against what the records are actually typed as.
+- **Library**: the same memories as a reading room, shelved by project.
+
+Read-only, light by default, works on a phone, in English or Chinese (the toggle in the top bar). See [the guide](docs/GUIDE.md#the-live-view).
+
 ## Claude Code mod
 
 `cortexdb-live` is an optional [mod](https://code.claude.com/docs/en/plugins/mods/overview) that runs inside Claude Code on top of the `cortexdb` plugin. Install it after the plugin:
@@ -60,7 +72,7 @@ Without them the status line names the missing rules.
 
 - **Planned recall.** Before the brain is searched, haiku turns each prompt into keywords in Chinese and English, aliases, entity names and a retrieval mode. A bare "ok" or "go ahead" searches nothing. The band above the prompt shows what was recalled; expand it to see the plan and every hit. Hide lasts until the next recall; `/cortexdb-show` brings the hidden one back.
 - **Status line.** Which brain the session uses, its node count and how long the last recall took, or why the brain can't be reached.
-- **Capture.** 90 seconds after a session goes idle, haiku distils the new part of the conversation into durable memories (`auto:<session>:<slug>`). Each later pass replaces a memory under the same slug rather than adding a copy. Older memories a new one makes untrue (a host moved, a decision reversed) are marked superseded: kept, but no longer recalled as current.
+- **Capture.** 90 seconds after a session goes idle, haiku distils the new part of the conversation into durable memories (`auto:<session>:<slug>`). Each later pass replaces a memory under the same slug rather than adding a copy. Older memories a new one makes untrue (a host moved, a decision reversed) are marked superseded: kept, but no longer recalled as current. The project's Claude Code file memory (`~/.claude/projects/<project>/memory/`) is shown to haiku as already recorded, so a capture does not restate a note in other words. A prompt with an image attached is not recalled for.
 
 Haiku runs on Claude Code's own model access, so no API key is needed. Language: `/config` → `cortexdb-live` → `language` (`auto`, `zh`, `en`). The mod honours the plugin's own switches: `cortexdb-recall --disable` and `cortexdb-session-end --disable` turn recall and capture off for both. While the mod runs, the plugin's shell recall and capture hooks stand down, so nothing is done twice. Codex keeps those hooks. Mods are an early-access Claude Code feature.
 

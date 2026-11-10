@@ -1,9 +1,18 @@
-> **🔥 v6.4.1 is live (Oct 29, 2026).** Signed Windows and macOS (Apple Silicon) desktop builds are out; Linux is coming soon. This repo is the open-source home of the Python runtime — desktop builds get new features first. [Download v6.4.1 →](https://github.com/Dulus-Ai/dulus-updates/releases/tag/v6.4.1) 🦅🇩🇴
+<p align="center">
+  🔥 <strong>v6.4.4 is live (Nov 10, 2026).</strong> Signed Windows and macOS (Apple Silicon) desktop builds are out; Linux is coming soon. This repo is the open-source home of the Python runtime — desktop builds get new features first.<br>
+  <a href="https://github.com/Dulus-Ai/dulus-updates/releases/tag/v6.4.4"><strong>Download v6.4.4 →</strong></a> 🦅
+</p>
 
-# Dulus
+<h1 align="center">Dulus</h1>
 
-<img width="1183" height="854" alt="image" src="https://github.com/user-attachments/assets/907f4dd2-476f-4715-86d0-6cf4a9576339" />
+<p align="center">
+  <b>One runtime. Every provider. Your machine.</b><br>
+  The open-source AI agent for your terminal — and the core of the <a href="https://dulus.ai/download/">Dulus desktop app</a>.
+</p>
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/907f4dd2-476f-4715-86d0-6cf4a9576339" width="760" alt="Dulus — one agent, every model, your machine">
+</p>
 
 <p align="center">
   <a href="https://pypi.org/project/dulus/"><img src="https://img.shields.io/pypi/v/dulus.svg?style=flat-square&color=ff6b1f&labelColor=07070a&label=pypi" alt="PyPI version"></a>
@@ -40,14 +49,6 @@
 </p>
 
 <p align="center">
-  <a href="#fuel--reload-wallet-qr-ready"><strong>⛽ /fuel walkthrough →</strong></a>
-  ·
-  <a href="#get-your-dulus-api-key-no-website-required"><strong>🔑 API key from pip →</strong></a>
-  ·
-  <a href="https://dulus.online"><strong>🚀 dulus.online</strong></a>
-</p>
-
-<p align="center">
   <strong>⚠️ Heads up: this repository is a mirror, not the live line.</strong><br>
   The signed binaries are <strong>2.2× the commits</strong> and <strong>4.3× the code</strong> of what you see here —<br>
   sandbox, screen control, agent swarms and the self-improvement loop live there first.<br>
@@ -70,6 +71,10 @@
   on-chain, transferable, spent by the token. No plan approvals, no frozen accounts.<br>
   Point your OpenAI SDK at <code>https://control.dulus.ai/v1</code> and go.
 </p>
+
+
+<details>
+<summary><strong>🔑 Get your API key from pip</strong></summary>
 
 <p align="center">
   <strong>🔑 Need an API key?</strong> Stop waiting on the website.<br>
@@ -102,6 +107,11 @@ export OPENAI_BASE_URL='https://control.dulus.ai/v1'
   <a href="https://dulus.online"><strong>🚀 Platform → dulus.online</strong></a>
 </p>
 
+</details>
+
+
+<details>
+<summary><strong>⛽ Fuel walkthrough — reload wallet QR</strong></summary>
 
 <p align="center">
   <strong>⛽ $DULUS Fuel is LIVE in the CLI — <code>/fuel</code> is ready.</strong><br>
@@ -122,6 +132,8 @@ dulus
   <em>Tested. Reloaded. Fuel credited.</em> We’re not playing points — this is on-chain gas for inference.<br>
   <strong>$DULUS</strong> · <code>control.dulus.ai/v1</code> · 12+ models · spent by the token 🦅
 </p>
+
+</details>
 
 
 ---
@@ -358,6 +370,8 @@ Those numbers are not a vanity dashboard. They explain the product: Dulus is bui
 ---
 
 ## Install in 30 seconds
+
+> **Dulus runs on a free Dulus account.** The first `dulus` opens your browser to sign in — over SSH or on a box with no desktop it shows a link, a code and a QR to approve from your phone or laptop instead; after that the session is remembered. CI, scripts and servers: set `DULUS_API_KEY` to a `dulus_sk_*` key from `/login dulus key`. `--version` and `--help` never ask.
 
 If Python 3.11 or newer is already installed:
 

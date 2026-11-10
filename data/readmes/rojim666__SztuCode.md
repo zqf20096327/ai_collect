@@ -14,8 +14,15 @@
 
 ### 桌面工作台（TypeScript daemon）
 
-![SztuCode 桌面工作台首页](docs/images/image1.png)
-![SztuCode 上下文演进功能](docs/images/image2.png)
+#### 新建任务与项目工作台
+
+![SztuCode 桌面工作台首页：新建任务与项目选择](docs/images/workbench-home.jpg)
+
+#### 插件中心
+
+![SztuCode 插件中心：办公文档、前端设计与开发协作](docs/images/plugin-center.jpg)
+
+截图来自当前桌面前端连接 TypeScript daemon 的云端浏览器预览。
 
 SztuCode 不只面向代码仓库。作为**全场景办公智能体**，它的工作台覆盖高校学习与日常办公的完整链路：撰写与审阅 Word 文档、处理 Excel 表格与公式、生成汇报 PPT、解析 PDF 资料、操控浏览器检索信息、生成图片，以及软件工程任务本身。桌面工作台连接 TypeScript daemon；命令行可选择 TypeScript 或 Python runtime。后台 daemon 负责运行 Agent Loop、调用工具、管理权限和保存会话，并通过 JSON-RPC 事件流持续反馈执行状态。
 
@@ -412,7 +419,9 @@ Python 评测入口位于 `py-runtime/src/sztu_code/evaluation`（harness / mode
 
 欢迎同学、开发者和研究者通过代码、测试、文档、设计、评测和问题分析参与。新贡献者可以从 [`good first issue`](https://github.com/rojim666/SztuCode/labels/good%20first%20issue) 开始，需要社区协作的任务会标注 [`help wanted`](https://github.com/rojim666/SztuCode/labels/help%20wanted)。
 
-开始前请阅读：
+第一次贡献：选一个小任务 → 修改并运行相关检查 → 提交 PR。文档和小修可以直接 PR；已有 Issue 留言认领即可，大改先讨论范围。只安装自己修改部分需要的环境，具体步骤见[贡献指南](CONTRIBUTING.md)。
+
+按需阅读：
 
 - [贡献指南](CONTRIBUTING.md)
 - [社区行为准则](CODE_OF_CONDUCT.md)

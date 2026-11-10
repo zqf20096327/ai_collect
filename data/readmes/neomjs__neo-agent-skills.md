@@ -32,7 +32,7 @@ this package exists to make unnecessary.
 
 **A workspace that is not ours projects one audience.** `neo-agent-skills-materialize --audience app`
 (and `--check --audience app`) links only the skills whose manifest row lists `app` — today
-`neo-app-authoring` and `neural-link` — and both surfaces become per-skill links, because a directory
+`context-recovery`, `neo-app-authoring`, and `neural-link` — and both surfaces become per-skill links, because a directory
 link would expose the maintainer corpus. `neo-app` passes the flag from the workspaces it creates; the
 audience is declared by the caller, never inferred. A row without `audiences` serves maintainers, so the
 projection without the flag is unchanged. The matching instruction file comes from
@@ -212,6 +212,41 @@ A repository's own guards, the checks only it has, run in the `guards` job of
 The guards run pull-request code, so they get a job of their own, apart from `PR baseline`. It is one job however
 many guards a caller declares, so a caller binds one required context, `<caller job> / guards`, and a new guard
 needs no ruleset edit. A caller that declares no guards skips the job and holds no runner slot for it.
+
+## Shared guide lint
+
+```bash
+npx --no-install neo-agent-skills-guides
+npx --no-install neo-agent-skills-guides --root ../other --script-root . --script-root ../other --skip no-mermaid
+```
+
+A mechanical lint for a repository's `learn/` guides. It checks whole files, so a guide that is already wrong fails
+even when the diff never touched it.
+- **HARD:**
+  - a Mermaid reserved word used as a node ID or `classDef` name;
+  - a Mermaid self-loop;
+  - a dead relative `.md` link;
+  - an `ai:*` script reference that no manifest defines;
+  - a Tools-table row naming no `ai/mcp/server/*/openapi.yaml` operation;
+  - a ticket reference in nested `learn/guides/` Markdown (CSS and Mermaid colors are exempt).
+- **WARN:** no diagram, a crowded `LR` flow, a catalog heading inside an explanation guide, and `framework`.
+
+Every rule runs over the top-level `learn/agentos/*.md` and `learn/benefits/*.md` of `--root`, which defaults to the
+working directory. The ticket rule also walks `learn/guides/`. Script references resolve against every
+`--script-root`, which defaults to the root. Tool rows resolve against `--openapi-root`, and where no operations
+exist that rule checks nothing. `--skip <rule>` drops a rule, and a name no rule answers to is refused.
+
+In CI, a caller turns it on in the stable `PR baseline` job:
+
+```yaml
+    with:
+      guides: true
+      guides_skip: '["dead-script-ref"]'
+```
+
+It is off by default, so an upgrade adds no check a caller did not ask for. `guides_skip` is a JSON array of rule ids.
+A repository whose guides name another repository's scripts skips `dead-script-ref` here and lets the repository
+that owns those scripts run the rule.
 
 ## Shared PR-review check
 

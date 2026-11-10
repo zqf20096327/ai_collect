@@ -121,7 +121,7 @@ When an upstream service is temporarily unavailable, Stravia retries or switches
 
 ### Platform tools and built-in agent runtime
 
-- `StraviaRead` — one tool, one `path`: read files, webpages, `search://` questions, and images; Office documents (DOCX/XLSX/PPTX/DOC/XLS/PPT) read as extracted Markdown; long results page through automatically.
+- `StraviaRead` — one tool, one `path` plus a plain-text `question`: read files, webpages, research questions, and images with no URL encoding; Office documents (DOCX/XLSX/PPTX/DOC/XLS/PPT) read as extracted Markdown; long results page through automatically.
 - **Web Search** — use the Local agent loop with a browser-backed Local source, Exa, or Zhipu, or bind an External Route whose Vendor plugin returns a complete cited report.
 - **Media Understanding** — describe images and extract text (JPEG/PNG/WebP) or answer questions about Office documents with the vision model you choose.
 - **Media Generation** — generate or edit an image through a saved Route backed by a capable Vendor plugin, then reuse its Artifact Reference in later tools.
@@ -186,6 +186,8 @@ The same Rust core powers both; the management surface is the same WebUI.
 Rust toolchain: [`rust-toolchain.toml`](rust-toolchain.toml) · Bun `1.4.2` · Task `3.52.0` · uv for Python E2E.
 
 Project JavaScript development, build, and test commands use Bun. Rust and Python tests retain their native runners.
+
+Before invoking Cargo directly or opening the workspace in an IDE, run `task prepare:crates` (requires Cargo and Git). It installs the pinned `patch-crate` tool when needed and prepares the patched dependencies; Task's Rust commands do this automatically. Run it again after `cargo clean`. Preparation must finish before builds start; do not refresh patched sources during a build. Patch updates and offline source setup are described in the [architecture documentation](docs/design/architecture.md#61-descriptor-与操作入口).
 
 | Command                  | Purpose                                                     |
 | ------------------------ | ----------------------------------------------------------- |

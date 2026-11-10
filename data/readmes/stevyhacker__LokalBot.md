@@ -46,7 +46,7 @@ Record microphone and meeting-app audio without a bot joining. Get local transcr
 
 ### Find something you saw
 
-One search across your meeting transcripts and, if you turn it on, what you saw on screen. Search by keyword or by meaning, then open the matching passage or screen moment instead of hunting through apps. The same window (**⌃⇧ Space**, or **Ctrl+Shift+Space** on Windows and Linux, once you turn on the shortcut in **Settings → General**) also runs app commands such as **Record now** or **Start dictation** from whatever app you're in.
+One search across your meeting transcripts and, if you turn it on, what you saw on screen. Search by keyword or by meaning, then open the matching passage or screen moment instead of hunting through apps. The same window (**⌃⇧ Space**, or **Ctrl+Shift+Space** on Windows and Linux, once you turn on the shortcut in **Settings → Ask**, or **Settings → General** on Windows and Linux) also runs app commands such as **Record now** or **Start dictation** from whatever app you're in.
 
 <div align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="Assets/readme/search-dark.png" /><img src="Assets/readme/search-light.png" width="640" alt="Quick Recall finding a Keynote deck and a Mail reply seen on screen, and two meetings that mention the demo presentation" /></picture></div>
 
@@ -61,7 +61,7 @@ As you type in other apps, gray text suggests how your sentence ends. Press **Ta
 - **Knows what you're answering.** It reads the message or page above the field, so a reply fits the thread.
 - **Remembers your meetings, if you let it.** Turn on meeting and work memory, and it can bring in what was decided, like the ship date above.
 - **Writes in your language.** On Mac, the same small model keeps up in German, French, Italian, Spanish, and more.
-- **Stays on your computer.** A small model runs inside the app: Gemma 4 E2B on Mac, LFM2.5 1.2B on Windows and Linux. What you type and the context it reads never leave your computer.
+- **Stays on your computer.** A small model runs inside the app: Gemma 4 E2B on Mac, LFM2.5 1.2B on Windows and Linux. What you type and the context it reads stay on your computer, unless you choose an autocomplete server and approve it.
 
 Turn it on in **Settings → Autocomplete**, where you can try it on a sample conversation first and later see how much it wrote for you.
 
@@ -111,7 +111,7 @@ Turn on Dictation in **Settings → Dictation**, then hold **⌥ Space** (**Alt+
 
 ### Rewrite what you selected
 
-Turn on selection actions in **Settings → General**, select text in any app, and press **⌃⇧ W**. Fix the grammar, make it shorter, translate it, summarize it, or type your own instruction, then replace the selection or copy the result. **Draft a reply with my memory** also searches your meetings, so the reply can use what was actually agreed, and lists the meetings it used. It runs on your Think model, which stays on your computer unless you chose and approved a server. On Windows and Linux the shortcut is **Ctrl+Alt+Space**, because ⌃⇧ W closes tabs and windows there; on Wayland, bind `lokalbot selection-actions` to a shortcut in your desktop's settings.
+Turn on selection actions in **Settings → Ask** (**Settings → General** on Windows and Linux), select text in any app, and press **⌃⇧ W**. Fix the grammar, make it shorter, translate it, summarize it, or type your own instruction, then replace the selection or copy the result. **Draft a reply with my memory** also searches your meetings, so the reply can use what was actually agreed, and lists the meetings it used. It runs on your Think model, which stays on your computer unless you chose and approved a server. On Windows and Linux the shortcut is **Ctrl+Alt+Space**, because ⌃⇧ W closes tabs and windows there; on Wayland, bind `lokalbot selection-actions` to a shortcut in your desktop's settings.
 
 ### It remembers how you work
 
@@ -132,7 +132,7 @@ Prepare local follow-up drafts. Also keep a note for every meeting in your Obsid
 
 ### Also on Windows and Linux (alpha)
 
-A native Windows and Linux app, written in Rust, has the same pages and reads the same library, so a library moves between computers. Meetings, transcription, Ask, search, day memory, screen context, dictation, autocomplete, selection actions, spoken summaries, Files, overnight review, Personal Context, calendar, Agent Mode, and the CLI and MCP server all work. It's an alpha: the Windows build isn't code-signed yet, some features depend on your Linux desktop (Wayland support is partial), and Gmail in meeting briefs hasn't been ported. See [what works where](LinuxWindows/README.md#what-works-where) and [screenshots](LinuxWindows/docs/screenshots).
+A native Windows and Linux app, written in Rust, has the same pages and reads the same library, so a library moves between computers. Encrypted items, such as Ask history, Personal Context, screenshots, and remembered voices, open only on the computer that saved them. Meetings, transcription, Ask, search, day memory, screen context, dictation, autocomplete, selection actions, spoken summaries, Files, overnight review, Personal Context, calendar, Agent Mode, and the CLI and MCP server all work. It's an alpha: the Windows build isn't code-signed yet, some features depend on your Linux desktop (Wayland support is partial), and Gmail in meeting briefs hasn't been ported. See [what works where](LinuxWindows/README.md#what-works-where) and [screenshots](LinuxWindows/docs/screenshots).
 
 ## For developers & agents
 
@@ -149,7 +149,7 @@ claude mcp add lokalbot -- /Applications/LokalBot.app/Contents/Helpers/lokalbot-
 claude mcp add lokalbot -- lokalbot-cli mcp
 ```
 
-Access is off by default. On a Mac, turn on **Allow external agents to read your LokalBot data** in **Settings → External Agents** and tick what agents may read: Meetings, Screen memory, What I shared about myself, or Files. On Windows and Linux, turn on meeting-library access in **Settings → Privacy & Data**. Then install the CLI from **Settings → Advanced → Agent CLI**.
+Access is off by default. On a Mac, turn on **Allow external agents to read your LokalBot data** in **Settings → External Agents** and tick what agents may read: Meetings, Screen memory, What I shared about myself, or Files. On Windows and Linux, each has its own switch under External agents in **Settings → Privacy & Data**: meeting library, files, screen memory, and What I shared about myself. Then install the CLI from **Settings → External Agents → Agent CLI** on a Mac, or **Settings → Advanced → Agent CLI** on Windows and Linux.
 
 **Ready to act on a meeting?** Open any action item in Claude Code or Codex, and the prompt is already typed in with the task and where it came from, for you to review and send.
 
@@ -158,13 +158,13 @@ Or use the CLI from any shell or agent:
 ```bash
 lokalbot-cli search "database decision"
 lokalbot-cli get latest --include metadata,summary
-lokalbot-cli search-files "lease renewal" --kind pdf   # Mac, with Files ticked
+lokalbot-cli search-files "lease renewal" --kind pdf   # with Files access on
 lokalbot-cli mcp
 ```
 
-Without a PATH installation, use `/Applications/LokalBot.app/Contents/Helpers/lokalbot-cli` on Mac. On Windows and Linux, **Settings → Advanced → Agent CLI** installs it too; see [Coding agents](LinuxWindows/README.md#coding-agents) for where it goes and how to add it to your PATH. There the CLI has the read-only commands and every MCP tool except `search_files`; `ask`, `reply`, `search-files`, and the setup and configuration commands are Mac only.
+Without a PATH installation, use `/Applications/LokalBot.app/Contents/Helpers/lokalbot-cli` on Mac. On Windows and Linux, **Settings → Advanced → Agent CLI** installs it too; see [Coding agents](LinuxWindows/README.md#coding-agents) for where it goes and how to add it to your PATH. The commands and MCP tools are the same on every platform.
 
-Screen-memory MCP tools require separate permission scoped to today, the last seven days, or all retained history. They return text and metadata, not decrypted screenshots. On a Mac, `search_files` searches the folders you chose under Files by their words and returns file paths, excerpts, and the matched passages; it needs the Files box and never changes your files. External clients may send results to their own model providers.
+Screen-memory MCP tools require separate permission scoped to today, the last seven days, or all retained history. They return text and metadata, not decrypted screenshots. `search_files` searches the folders you chose under Files by their words and returns file paths, excerpts, and the matched passages; it needs Files access and never changes your files. External clients may send results to their own model providers.
 
 The app also has an optional **Agent Mode** for working with reviewed context. File and shell actions follow its approval settings; it is separate from the read-only CLI/MCP interface.
 
@@ -267,7 +267,7 @@ Yes. Turn on **Meeting note export** to keep a Markdown note for every meeting i
 <details>
 <summary><strong>Does it run on Windows or Linux?</strong></summary>
 
-Yes, as an alpha. The Windows and Linux app is a native Rust app with the same pages, the same models for summaries and search, and the same library format, so a library moves between computers. Gmail in meeting briefs is Mac only for now, and on Wayland some features depend on your desktop. See [what works where](LinuxWindows/README.md#what-works-where).
+Yes, as an alpha. The Windows and Linux app is a native Rust app with the same pages, the same models for summaries and search, and the same library format, so a library moves between computers. Encrypted items, such as Ask history, Personal Context, screenshots, and remembered voices, open only on the computer that saved them. Gmail in meeting briefs is Mac only for now, and on Wayland some features depend on your desktop. See [what works where](LinuxWindows/README.md#what-works-where).
 
 </details>
 
@@ -284,6 +284,8 @@ Different jobs use different models. These are the Mac defaults on a fresh insta
 | Autocomplete | Gemma 4 E2B Base | `Q6_K` | 3.85 GB |
 | Semantic search | EmbeddingGemma 2 | `Q8_0` | 0.31 GB |
 | Speaker diarization | Nemotron 3 (preview) via FluidAudio | Core ML | ~0.20 GB |
+
+The table leaves out helper models, which download when a feature first needs them: with Qwen3-ASR, speaker separation adds a word-timing model of about 1 GB, and turning on Files adds a 555 MB image and audio projector.
 
 Qwen3-ASR covers 52 languages and dialects. Transcription alternatives include Parakeet, Granite Speech, Whisper large-v3 turbo, SenseVoice for Chinese, Japanese, and Korean, and GigaAM for Russian; Pyannote Community-1 remains available for diarization. The Lightweight preset swaps in smaller models, including LFM2.5 1.2B Instruct (0.73 GB) for autocomplete. Model choices can vary by release; Settings shows the active selections and available presets. Speed and memory use depend on your computer, model, context length, and other workloads.
 

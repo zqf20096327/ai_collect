@@ -5,7 +5,13 @@
 <h1 align="center">Leaflet</h1>
 
 <p align="center">
-  A native desktop app where people and AI agents write living documents together.
+  A native app for Mac, Windows, iPhone and iPad where people and AI agents write living documents together.
+</p>
+
+<p align="center">
+  <a href="https://leaflet.capyvibe.app">Website</a> ·
+  <a href="https://apps.apple.com/app/leaflet-notes-agents/id6829665849">App Store</a> ·
+  <a href="https://github.com/tacshi/Leaflet/releases/latest">Mac and Windows</a>
 </p>
 
 <p align="center">
@@ -13,7 +19,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License"></a>
   <a href="#requirements"><img src="https://img.shields.io/badge/macOS-13%2B-000000?logo=apple&logoColor=white" alt="macOS 13 or later"></a>
   <a href="#requirements"><img src="https://img.shields.io/badge/Windows-x64%20%7C%20arm64-0078D4?logo=windows&logoColor=white" alt="Windows x64 and arm64"></a>
-  <a href="#ios"><img src="https://img.shields.io/badge/iOS%20%7C%20iPadOS-26%2B%20(in%20progress)-000000?logo=apple&logoColor=white" alt="iOS and iPadOS 26 or later, in progress"></a>
+  <a href="https://apps.apple.com/app/leaflet-notes-agents/id6829665849"><img src="https://img.shields.io/badge/App%20Store-iOS%20%7C%20iPadOS%2026%2B-0D96F6?logo=appstore&logoColor=white" alt="On the App Store, for iOS and iPadOS 26 or later"></a>
   <a href="https://go.dev"><img src="https://img.shields.io/badge/Go-1.27-00ADD8?logo=go&logoColor=white" alt="Go 1.27"></a>
   <a href="#agents-outside-the-app-mcp"><img src="https://img.shields.io/badge/MCP-supported-6E56CF" alt="MCP supported"></a>
   <a href="https://github.com/egoist/mygo"><img src="https://img.shields.io/badge/built%20with-MyGo-F2545B" alt="Built with MyGo"></a>
@@ -31,9 +37,28 @@ validated tools, as one step you can undo. Pages are saved on your device
 first and sync through iCloud Drive, or a Leaflet server when you sign in,
 so Leaflet works offline, with local models too.
 
-It is written in Go with [MyGo](https://github.com/egoist/mygo), which
-draws the whole interface natively on the GPU, with no web view for the app
-itself.
+The Mac and Windows app is written in Go with
+[MyGo](https://github.com/egoist/mygo), which draws the whole interface
+natively on the GPU, with no web view for the app itself. The iPhone and
+iPad app is SwiftUI and UIKit, on the same Go core.
+
+<p align="center">
+  <img src="docs/screenshots/mac-page-dark.png" width="900" alt="Leaflet on a Mac in dark mode: a travel plan with headings, lists and a diagram, and the Budget table">
+</p>
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/mac-blocks-light.png" width="100%" alt="A page in light mode with a table, a pie chart, to-dos and a callout"></td>
+    <td width="50%"><img src="docs/screenshots/mac-todos-dark.png" width="100%" alt="The To-dos tab beside a launch plan with a line chart and a code block"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td width="74%"><img src="docs/screenshots/ipad-agent.png" width="100%" alt="Leaflet on iPad, with an agent answering in the side panel"></td>
+    <td width="26%"><img src="docs/screenshots/iphone-agent.png" width="100%" alt="Leaflet on iPhone, with the agent sheet open over a page"></td>
+  </tr>
+</table>
 
 ## Contents
 
@@ -105,6 +130,9 @@ itself.
   OpenRouter, DeepSeek and GLM, a ChatGPT Plus or Pro sign-in, custom
   endpoints, and local servers such as Ollama, LM Studio, llama.cpp and
   vLLM, which run agents offline.
+- Agents run from your device, signed in or not. Each device keeps its own
+  providers, a cloud one's API key in the device's keychain: add a provider
+  on each device you use it on.
 - Agents outside the app, such as Claude Code, Codex and Cursor, work on
   pages through [`leaflet mcp`](#agents-outside-the-app-mcp).
 - A [`leaflet` command](#command-line) finds, reads, makes and files pages
@@ -121,7 +149,8 @@ itself.
   choose, with a 15-second skip each way, and the system's media controls and
   keys drive it.
 - Real-time transcription with Soniox, or any OpenAI-compatible
-  `/audio/transcriptions` endpoint, including one on your own network.
+  `/audio/transcriptions` endpoint, on your own network or in the cloud:
+  each is called from your device, with its key in the device's keychain.
 - Transcription with speakers through MOSS, with a MOSI API key kept on the
   device: recordings once they stop, and audio files.
 - Transcription on the device itself, offline and without a key, with the
@@ -152,6 +181,7 @@ itself.
 ## Requirements
 
 - macOS 13 or later, on Apple silicon or Intel; or Windows on x64 or arm64.
+- iOS or iPadOS 26 or later, on iPhone and iPad.
 - To build from source: Go 1.27.3 or later; the Go code needs no cgo or C
   compiler. The Mac app's on-device speech helper ([`speech`](speech))
   is Swift, which `scripts/build-speech.sh` builds with Xcode 26 or later
@@ -159,18 +189,20 @@ itself.
   it, and release builds need it, as they need Xcode to sign and notarize.
   Windows installers need NSIS.
 - iCloud sync needs iCloud Drive turned on.
-- Sync through a server and cloud models need a
-  [Supabase](https://supabase.com) account: **Continue with Supabase**
-  finds or creates a project in it and sets it up from
-  [`supabase/`](supabase/README.md). Without one, Leaflet runs on your
-  devices alone.
+- Sync through a server needs a [Supabase](https://supabase.com) account:
+  **Continue with Supabase** finds or creates a project in it and sets it
+  up from [`supabase/`](supabase/README.md). Without one, Leaflet runs on
+  your devices alone, agents and transcription too.
 
 ## Install
 
-Download the disk image for macOS or the installer for Windows from the
+Get Leaflet for iPhone and iPad on the
+[App Store](https://apps.apple.com/app/leaflet-notes-agents/id6829665849).
+
+For the Mac and Windows, download the disk image or the installer from the
 [latest release](https://github.com/tacshi/Leaflet/releases/latest).
-Installed copies update themselves from GitHub Releases. Windows installers
-are not code signed yet, so SmartScreen may warn when one first runs.
+These copies update themselves from GitHub Releases. Windows installers are
+not code signed yet, so SmartScreen may warn when one first runs.
 
 ## Run from source
 
@@ -181,9 +213,9 @@ go tool mygo dev
 ```
 
 Without a server, Leaflet runs on this device only: pages, editing,
-comments, public links, local models and transcription servers on your
-network all work, and sign-in, sync, cloud models and cloud transcription
-are hidden or explained in place.
+comments, public links, agents and transcription all work, with the
+providers and keys added on the device, and sign-in and sync are hidden or
+explained in place.
 
 Every build can sign in with Supabase: the OAuth app's client ID is built
 in, and its secret stays in Leaflet's sign-in Worker (see
@@ -204,8 +236,9 @@ helper first with `scripts/build-speech.sh`, which needs Xcode 26 or later.
 
 ### iOS
 
-The iPhone and iPad app is in [`ios/`](ios), and is being built. It
-links the same Go core as the desktop app, which gomobile binds to Swift
+The iPhone and iPad app, on the
+[App Store](https://apps.apple.com/app/leaflet-notes-agents/id6829665849),
+is in [`ios/`](ios). It links the same Go core as the desktop app, which gomobile binds to Swift
 through the [`mobile`](mobile) package. It needs Xcode 27 and
 [XcodeGen](https://github.com/yonaskolb/XcodeGen):
 
@@ -222,7 +255,8 @@ Then open `ios/Leaflet.xcodeproj`. To run on a device, set your team in
 `scripts/publish_testflight.sh <version> <build>` builds the app for the
 App Store and publishes it to its internal TestFlight group, with
 [asc](https://asccli.sh) signed in to App Store Connect; `--help` explains
-what it needs.
+what it needs. It builds `main` at the commit `origin` has, or another
+pushed branch with `--allow-branch`.
 
 ### Data
 
@@ -249,7 +283,8 @@ claude mcp add -s user leaflet -e LEAFLET_DATA_DIR=<data folder> -- <executable>
 | `create_page`, `rename_page` | Make and rename pages |
 | `set_page_tags` | Set a page's tags |
 | `move_page` | Move a page into a folder, inside another page, or to the top level |
-| `create_folder`, `rename_folder` | Make and rename folders |
+| `create_folder`, `rename_folder` | Make folders, at the top level or in another folder, and rename them |
+| `move_folder` | Move a folder into another folder or to the top level |
 | `write_markdown`, `insert_blocks`, `replace_block`, `move_block`, `delete_blocks` | Edit a page, as the in-app agents do |
 
 The server opens the same database as the app, so it works with the app
@@ -286,7 +321,8 @@ adds to them, with the same tools as `leaflet mcp`:
 | `leaflet rename PAGE TITLE` | Change a page's title |
 | `leaflet mv PAGE --in PAGE \| --folder FOLDER \| --top` | Move a page inside another, into a folder, or to the top level |
 | `leaflet tag PAGE [TAG...]` | Set a page's tags, or print them; `--clear` takes them off |
-| `leaflet folder new NAME`, `leaflet folder rename FOLDER NAME` | Make and rename folders |
+| `leaflet folder new NAME [--in FOLDER]`, `leaflet folder rename FOLDER NAME` | Make folders, at the top level or in another folder, and rename them |
+| `leaflet folder mv FOLDER --in FOLDER \| --top` | Move a folder into another folder or to the top level |
 
 A page is named by its title, its ID, or the start of its ID as `ls`
 shows it. `--json` prints what the MCP tools return, and `leaflet
@@ -362,10 +398,13 @@ make check                                   # gofmt, golangci-lint, govulncheck
 make ios-check                               # swift-format, SwiftLint, osv-scanner and mobsfscan
 make clean                                   # remove build/ and the binary go build leaves
 scripts/check-migrations.sh                  # every migration, in order, on Supabase's Postgres (Docker)
-cd supabase/functions && deno test _shared/  # the Edge Functions' shared code
+cd supabase/functions && deno test --frozen  # the account Edge Function
 ```
 
-The editor's tests run its view headless with `ui.NewTester`.
+The editor's tests run its view headless with `ui.NewTester`. Golden tests
+read what the code should make from `testdata/golden` in their package;
+after a change that is meant to alter it, `go test ./internal/doc -update`
+(a package at a time) writes the new values there.
 
 The app's texts are MyGo catalogs in [`locales/`](locales), one file per
 language (`en.json`, `zh-Hans.json`, `ja.json`), from which `go tool mygo
@@ -400,7 +439,7 @@ rules.
 | `internal/remote` | Supabase over HTTP: Auth, PostgREST, Storage and Edge Functions |
 | `internal/sync` | Pushing the outbox, pulls, account adoption and the device heartbeat, through Supabase or iCloud Drive |
 | `internal/supabaseapi` | The Supabase Management API, signed in to with the person's own account |
-| `internal/provision` | Finding, creating and setting up their Leaflet project: migrations and Edge Functions |
+| `internal/provision` | Finding, creating and setting up their Leaflet project: migrations and the Edge Function |
 | `internal/oauth` | The part of a browser sign-in on this device: loopback redirect and PKCE |
 | `internal/icloud` | The Leaflet folder in iCloud Drive: its files, written whole, and asking iCloud to download them |
 | `internal/keychain` | The app's secrets in the system keychain, read at most once a run |
@@ -412,7 +451,7 @@ rules.
 | `internal/theme` | Colors, fonts and icons |
 | `locales` | The app's texts in each language, and the Go code generated from them |
 | `scripts` | Debug and release builds, publishing to GitHub Releases, and the migrations' check |
-| `supabase` | Migrations (tables, row-level security, RPCs, Vault) and Edge Functions |
+| `supabase` | Migrations (tables, row-level security, RPCs, Vault) and the `account` Edge Function |
 | `worker` | The sign-in Worker on Cloudflare: the OAuth redirect page and the token exchange that holds the client secret |
 | `docs` | The protocol, user stories and the icon's sources |
 | `ios` | The iPhone and iPad app: SwiftUI and UIKit, its XcodeGen project and build scripts |

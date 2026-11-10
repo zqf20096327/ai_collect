@@ -42,10 +42,11 @@ Built on [Quickshell](https://quickshell.org). Colors from your wallpaper, anima
 | 🔋 **Power saving** | One switch turns off animations, blur, transparency, the visualizer and the dancing frame, and puts them back when it's turned off |
 | ➡️ **Right sidebar** | Quick toggles (Android-style pills or classic buttons, editable), volume / brightness / mic, Wi-Fi and Bluetooth pages, per-app volume, notification center, calendar, to-do, focus / stopwatch / countdown timers |
 | 🖼️ **Desktop** | Shape clock, big clock, weather, resources, calendar, media with lyrics (click or drag its progress bar to seek), greeting, to-do, notes, world clock, timers, user card, image frame; audio visualizer; drag-to-place edit mode |
+| 🎞️ **Motion & looks** | Motion style (expressive, smooth, snappy) and a spring slider, an effect for popups, sidebars and the launcher, ripple and press squeeze, colors that fade into a new palette, a speed for panels, bar and notifications; surfaces (tonal, glass, flat), outline, text weight and spacing; looks that set it all at once (`hi look`), your own saved and shared with presets (Settings → Interface). Power saving and Focus Mode turn the heavy parts off |
 | 🎨 **Theming** | Wallpaper picker (local folders, Wallhaven, Unsplash), live wallpapers (video, gif), Material 3 palette from the wallpaper via matugen, scheme variants, light / dark / auto, shaped wallpaper frame |
 | ⚙️ **Settings** | Every option in a settings app, Hyprland displays / gaps / blur / input included, searchable from the launcher |
 | 🌍 **Languages** | English and Russian: the whole interface, dates and plural forms |
-| 👋 **Welcome & presets** | A first-run setup, and presets that save your config, wallpaper and colors to one shareable file |
+| 👋 **Welcome & presets** | A first-run setup, and presets that save your config, wallpaper and colors to one shareable file; profiles for yourself (rules, scripts, widgets, keybinds too), a diff before applying, partial loads, undo, and a git-friendly folder: [docs/PROFILES.md](docs/PROFILES.md) |
 
 Animations run everywhere, yet the shell idles at about 1% CPU: hidden panels and disabled widgets aren't created,
 and the audio spectrum is drawn by a single shader.
@@ -137,7 +138,25 @@ The installer:
 The optional apps (all off by default): Zen Browser, Telegram, Vesktop, osu!lazer, Steam (needs `[multilib]`), Spotify and Neovim.
 Each one goes through `pacman` if a configured repository has it, otherwise through `paru` / `yay`.
 
-Options: `--yes` (no menu and no questions: installs everything except the optional apps), `--with-apps` (those too), `--no-deps`, `--no-start`, `--no-dots`, `--channel=git|release`. Then tap <kbd>Super</kbd>.
+Options: `--yes` (no menu and no questions: installs everything except the optional apps), `--with-apps` (those too), `--no-deps`, `--no-start`, `--no-dots`, `--channel=git|release`,
+`--only=hypr,fish` / `--skip=deps` (pick the parts without the menu; `--list` prints their names). Later, `hi install` runs the
+installer again (it repairs the links and the Hyprland line) and `hi uninstall` removes hi-shell. Then tap <kbd>Super</kbd>.
+
+### As a pacman package
+
+The repo has a `PKGBUILD` (`packaging/aur/hi-shell/`). It builds hi-shell from the latest tagged release and pulls
+in the packages it needs:
+
+```sh
+git clone https://github.com/imu-useful/hi-shell.git && cd hi-shell/packaging/aur/hi-shell
+makepkg -si
+hi install    # once, as your user: the ~/.config/quickshell link and the line in your Hyprland config
+```
+
+The files go to `/usr/share/hi-shell` and `hi` to `/usr/bin`. The shell then updates with the system (`paru -Syu`, `yay -Syu`),
+not from Settings → About; after an update, `hi restart`, and `hi install` brings new keybinds and rules to
+`~/.config/hypr/hi-shell/` (it asks before replacing a file you edited). To remove it: `hi uninstall`, then `sudo pacman -R hi-shell`.
+The optional programs (screenshots, OCR, night light, ...) are listed by `pacman -Qi hi-shell` and checked by `hi doctor`.
 
 ### NixOS
 
@@ -232,14 +251,26 @@ Stops the shell, removes the line from your Hyprland config and the link. Packag
 | click the weather in the bar | Weather details: the current conditions, the next 24 hours and the 7 days (refresh button inside); `qs -c hi-shell ipc call weatherDetails toggle` |
 | scroll | Every slider (volume, brightness, mic, app volumes, track position, settings); on the bar: system icons = volume, battery = brightness, media = player volume, keyboard layout = switch, workspaces = previous / next; the calendar scrolls through months |
 
-The `hi-shell` command (linked into `~/.local/bin` by `install.sh`) wraps the common jobs:
+The `hi` command (linked into `~/.local/bin` by `install.sh`) wraps the common jobs:
 
 ```sh
-hi-shell doctor            # is the shell running, are its programs installed
-hi-shell qr [text]         # a QR code in the terminal (no text: the clipboard)
-hi-shell keybinds [word]   # the keybinds, optionally only those matching a word
-hi-shell ipc <target> <function> [args]   # the same as qs -c hi-shell ipc call ...
+hi start | stop | restart | status | log [-f] | doctor | version
+hi update [--check] | channel [git|release] | install [options] | uninstall [--purge]
+hi settings [page] | launcher | apps | overview | sidebar [left|right] | bar [show|hide|toggle] | lock
+hi session [suspend|hibernate|reboot|poweroff|logout] | boot [list|<entry>]
+hi shot [region|full|ocr|translate|record|stop] | brightness [up|down|<percent>] | display [toggle|mirror|...] | powersave [on|off]
+hi notif [list|clear|dnd] | todo [list|add <text>|done <n>] | focus [status|start|stop|task <text>] | screentime [today|limit <app> <min>]
+hi ask <prompt> | theme [dark|light|toggle|<scheme>] | wallpaper [random|<file>] | play | pause | next | prev
+hi config get <option|section> | set <option> <value> | reset [option|section] | edit | path
+hi preset list | save <name> | load <file>
+hi sounds <pack>           # download a sound pack (miui, samsung, iphone, windows, win7, winxp, android)
+hi qr [text]               # a QR code in the terminal (no text: the clipboard)
+hi keybinds [word]         # the keybinds, optionally only those matching a word
+hi ipc <target> <function> [args]   # the same as qs -c hi-shell ipc call ...  (hi ipc: list everything)
 ```
+
+`hi help` lists everything. Tab completion works in fish, bash and zsh (`install.sh` links the scripts; `hi completions zsh`
+prints one), including the option names after `hi config get` / `set`. `hi update --check` only says whether an update is out.
 
 Change the keys in `~/.config/hypr/hi-shell/keybinds.lua` (the other files in that folder hold the startup, window and layer rules; `update.sh` keeps your edits and leaves a new version of a changed file as `<name>.lua.new`; turn on Settings → Hyprland → "Keep my Hyprland files on update", `hyprland.keepFiles` in the config, and updates don't touch that folder at all, they only list what changed upstream). Every panel can also be toggled over IPC, e.g. for your own binds or scripts:
 
@@ -283,22 +314,27 @@ the defaults on first start; edits apply live). The Hyprland page applies change
 `~/.config/hi-shell/hyprland.lua`, which `overrides.lua` loads at startup; "Reset Hyprland overrides" removes them.
 A new resolution, orientation or scale for a monitor is tried first: a "Keep these display settings?" card counts down
 15 seconds and puts the old settings back (Revert, Esc or no answer); only Keep saves them.
+A value that breaks its rule in `common/ConfigSchema.js` (a typo in `bar.position`, a `lock.brightness` of 7) is reported in the log (`qs -c hi-shell log`) and replaced by its default; `python3 tools/audit_config.py` lists the options that have no control in the settings app (`docs/CONFIG_AUDIT.md`).
+The full list of options (type, default, allowed values, where Settings changes it) is in [docs/CONFIG.md](docs/CONFIG.md), made from the source; `hi config search <word>` finds an option by name or description. Settings has a search box (also `hi settings search <word>`) and hides the rarely needed rows until you turn on Settings › Quick › Show advanced settings (`settingsAdvanced`).
 Sections:
 
 - `language`: `auto` (from `$LANG`), `en` or `ru`
-- `appearance`: fonts, transparency, animation speed (`0` disables animations), matugen `scheme`, `autoMode`
+- `appearance`: `looks` (your saved looks: name → the options it sets; `hi look save <name>`, `hi look <name>`; built in: Soft, Glass, Sharp, Playful, Calm), `motionStyle`, `animationBounce`, `popupEffect`, `sidebarEffect`, `launcherEffect`, `panelSpeed`, `barSpeed`, `notificationSpeed`, `paletteFade`, `ripple`, `pressScale`, `surfaceStyle`, `borderWidth`, `textWeight`, `letterSpacing`, `cornerScale` (0 = square corners, 1 = Material's), `fontScale`, `density` (`compact`, `comfortable`, `spacious`), `seedColor` (`#rrggbb`: the palette comes from this color instead of the wallpaper; `hi theme seed <#rrggbb|wallpaper>`), `contrast` (-1..1), `colorOverrides` (role → `#rrggbb` over the palette, e.g. `{"primary": "#ff6a00"}`; roles are the names in `~/.local/state/hi-shell/colors.json`), fonts, transparency, animation speed (`0` disables animations), matugen `scheme`, `autoMode`, `restartOnIconTheme` (on by default: the shell restarts when KDE's icon theme changes, because icons break in a running process otherwise)
 - `greeting`: the "Welcome back!" at every start: `enabled`, `text`, `style` (`random`, `rise`, `drop`, `pop`, `slide`, `spin`), `logo`; the very first start always plays its own animation
 - `wallpapers`: folders, download folder, `unsplashKey` / `wallhavenKey`, desktop `frame` shape, `frameDance` (the frame turns and pulses to the music)
 - `bar`: `position` (top, bottom, left, right), `style` (hug, float, islands, m3), height, margin, and the widget
   lists `left` / `center` / `right`. Widgets: `launcher`, `workspaces`, `activeWindow`, `media`, `resources`, `clock`,
   `weather`, `tray`, `systemIcons`, `notifications`, `utilButtons`, `networkSpeed`, `battery`, `updates`, `keyboardLayout`, `power`,
-  `visualizer` (needs `cava`), `divider`. Per-widget options: `bar.workspaces`, `bar.clock`, `bar.media`,
+  `visualizer` (needs `cava`), `divider`. Edit the widgets right on the bar: Settings › Bar › Edit on the bar, or `hi bar edit` (drag a widget to move it, off the bar to remove it; a panel adds the rest; `hi bar done` or Done leaves it). Settings › Bar has a picker for the bar to edit (main, a screen, an extra bar) and for widget copies. `bar.monitors` (screen name from `hyprctl monitors` → overrides of `enabled`, `position`, `style`, `height`, `margin`, `left`, `center`, `right` for the main bar on that screen; `hi bar monitor <screen> <key> <json>`), `bar.extra` (more bars, each `{ id, monitors, position, style, height, margin, left, center, right }`; `hi bar add <id> [position] [widgets…]`, `hi bar rm <id>`; put `clock`, the island, in one bar only), `bar.instances` (copies of a widget with options of their own: write `resources#disks` in a list and set `{ "resources#disks": { "shown": ["disk"] } }`; works for `resources`, `utilButtons`, `workspaces`, `media` and the new `zoneClock`, e.g. `{ "zoneClock#tokyo": { "zone": "Asia/Tokyo", "label": "TYO" } }`; `hi bar instance <type#name> <json>`). Popups, the OSD and the sidebars still follow the main bar's position. Your own widgets: a command with no QML (`hi script <name> '<command>'`, the `script` widget) or a QML file in `~/.config/hi-shell/widgets/` (`hi widgets new <name>`), see [docs/WIDGETS.md](docs/WIDGETS.md). Per-widget options: `bar.workspaces`, `bar.clock`, `bar.media`,
   `bar.resources`, `bar.utilButtons`, `bar.updates`; `bar.media.spinArt` spins the cover art like a record while playing (on by default)
-- `sidebar`: `quickToggles.style` (android, classic), `quickToggles.perPage` (tiles per page, 6 by default, 0 = one page), `quickToggles.slide` (animate page changes) and `quickToggles.shown` (order; also editable with the ✎ button
+- `launcher`: `prefixes` (the prefix characters that are on, in the order of the chips: `=` `>` `<` `:` `;` `/` `~`) and `sources` (what a plain search looks through, in the order of the results: `math`, `focus`, `windows`, `settings`, `apps`, `emoji`); Settings › Interface
+- `sidebar`: `sections` (what the right sidebar shows and in what order: `quickToggles`, `quickSliders`, `tabs`), `tabs` (`notifications`, `calendar`, `todo`, `timers`, in order; Settings › Interface), `quickToggles.style` (android, classic), `quickToggles.perPage` (tiles per page, 6 by default, 0 = one page), `quickToggles.slide` (animate page changes) and `quickToggles.shown` (order; also editable with the ✎ button
   in the sidebar), night light temperature
 - `desktop`: `clockSeconds` (seconds in the big digital clock), `focusMode` (with windows open: sharp wallpaper, widgets and frame hidden; on by default), `coverMode` (the playing track's cover instead of the wallpaper, colors included; also a quick toggle and
   `qs -c hi-shell ipc call coverMode toggle`), draw the `wallpaper`, show `widgets`, `monitor` for them (empty = first screen), `layout` (written by edit
   mode), `worldClocks` (IANA zones), `image` for the image frame, bottom `visualizer`
+- Per screen (Settings › Desktop › Screens): `desktop.monitors` and `dock.monitors` (the screens that show the widgets / have a dock: names, `["*"]` for all; empty = the older `monitor` option, else the first screen), `desktop.layouts` (screen → a widget layout of its own, same shape as `desktop.layout`), `dock.perScreen` (screen → overrides of the dock's `position`, `iconSize`, `autoHide`, `magnify`, … ; the pinned apps stay shared), `wallpapers.perScreen` (screen → a picture of its own; the palette still follows the main wallpaper). CLI: `hi dock screens <all|name...>`, `hi desktop screens|own …`, `hi wallpaper screen <name> <file|none>`
+- `rules`, `rulesEnabled`: "when this is true, do that" (battery, fullscreen, screens, time, apps, a command; actions: set an option and put it back, run an ipc call or a command); Settings › Rules, `hi rules`, [docs/RULES.md](docs/RULES.md)
 - `ai.model`: claude CLI model alias (empty = CLI default, `opus`, `sonnet`, `haiku`; also the picker in the chat)
 - Autostart (Settings → Autostart): lists every plain `hl.exec_cmd("…")` line of your Hyprland files (any `.lua` under `~/.config/hypr`, inside `hl.on("hyprland.start", …)` or at the top level) and of `~/.config/hi-shell/exec.lua`, where the commands you add there go (loaded from the generated `~/.config/hi-shell/hyprland.lua`). A command can be changed, switched off (the line is commented out), deleted or run now; a file's first change keeps a copy as `<name>.backup-hi-shell-autostart`. Commands built from variables or spread over lines aren't listed; a file that is a symlink (NixOS, stow) or can't be written is shown but locked; Windows line endings and non-UTF-8 files are kept as they were; a mistake in a hand-edited `exec.lua` is reported by a notification and doesn't stop the rest of the config
 - `ai.enabled`: `false` turns the AI off (no AI tab in the left sidebar, no palette on Super+Y); the welcome screen asks, and Settings → General → AI chat → Enable AI switches it
@@ -315,6 +351,10 @@ Sections:
 - `appearance.screenCorners`: rounded screen corner radius (0 = off)
 - `appearance.contextMenu`: `material` (the shell's own Material You menus for the tray, default), `caelestia` (the same menus in the look of [caelestia's shell](https://github.com/caelestia-dots/shell): compact pill rows, a Back pill under a submenu) or `standard` (the system's menus); also in Settings › Interface
 - `apps.terminal`: terminal for terminal apps and the system upgrade
+
+## Tests
+
+`./tests/run.sh` runs the tests (python3 and node; no framework needed): the config schema and reference (`python3 tools/config_meta.py check` also fails if an option has no description or can't be reached from Settings, or `docs/CONFIG.md` is stale), the `hi` command with a fake `qs`, presets, the palette script, the config audit and the Russian translations. The QML itself isn't unit-tested; it is checked by running the shell.
 
 ## Terminal configs
 

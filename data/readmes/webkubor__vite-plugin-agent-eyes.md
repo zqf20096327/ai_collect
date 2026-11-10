@@ -17,10 +17,12 @@
 ## 30 秒看懂它
 
 <p align="center">
-  <img src="assets/demo/agent-eyes-blog-walkthrough.gif" alt="实录：webkubor 博客作品页 → Agent Eyes 入口 → 爬虫配置 → CDP 浏览器检测 → 路由截图" width="900" />
+  <img src="assets/demo/agent-eyes-v0.17.1-log.png" alt="Agent Eyes 0.17.1 隔离演示：模拟异常写入本地 errors.log" width="900" />
 </p>
 
-> 演示来自我的 [webkubor 博客](https://webkubor.online/) 在本地 Vite dev 运行时的真实画面：`/projects` 路由、54 条 sitemap、浏览器 CDP 检测与项目路由截图。[看静态帧和录制说明](./assets/demo/README.md)。
+> 这是 npm 版 0.17.1 在隔离 Vite 8 示例中的真实画面：触发模拟异常后，页面读取插件写出的本地 `errors.log`。[素材与采样说明](./assets/demo/README.md)。
+
+https://github.com/user-attachments/assets/e039b812-c366-421f-9f08-afdee5ea428a
 
 | 以前排查要做的事 | 现在打开网页就能看到 |
 |---|---|
@@ -59,6 +61,28 @@ React、Vue、Svelte、Solid 与原生 JS 均可用。CI 验证 Vite 4–8；安
 ## 真实的 401，别让 agent 盲猜
 
 登录请求成功，下一个接口却返回 401。浏览器 `fetch` 看不到完整的 `Set-Cookie` / `Cookie` 代理链路；`agentProxy()` 会记录实际请求与响应的 cookie 属性，并在本地 HTTP 开发环境修正常见的 Domain / Secure / SameSite 问题。[看这个案例](https://webkubor.github.io/vite-plugin-agent-eyes/guide/case-401)。
+
+### 设计 token 提交检查（0.18.0+）
+
+`designTokens` 默认启用、严重度为 `warn`，只检查 staged 新增行。检测 `.css/.scss/.less/.vue/.tsx/.jsx/.ts/.js/.astro/.svelte` 中的 3/4/6/8 位 hex、`rgb/rgba/hsl/hsla/oklch/oklab/lab/lch/color()` 数值字面量及 Tailwind `bg-[#fff]` 等任意值。提示：「硬编码颜色，应使用项目 tokens（见 DESIGN.md）」。
+
+```ts
+agentGit({
+  guard: {
+    checks: {
+      designTokens: {
+        level: 'block', // 默认 warn；guard.level: 'warn' 仍会降级
+        tokenFiles: ['**/tokens.*', '**/*tokens*.css', '**/theme.*', '**/design-tokens/**', '**/styles/variables.*'],
+        allowValues: ['#000', 'rgb(0 0 0)'],
+      },
+    },
+  },
+})
+```
+
+也可写 `designTokens: false` 关闭、`designTokens: 'block'` 阻断，或在 `checks: ['designTokens']` 中单独启用。`tokenFiles` 替换默认列表，路径相对仓库根，支持 `*`、`**`、`?`（`**/` 可匹配根目录）。`allowValues` 精确匹配单个颜色字面量，忽略大小写和首尾空格。
+
+默认豁免上述 token 文件、自定义属性声明、行注释/块注释/HTML 注释、测试与 fixture 目录及 `.test/.spec/.fixture` 文件；SVG 资源不参与扫描。`transparent`、`currentColor`、`inherit` 和纯 `var()` 引用不报告。同一行普通声明仍会检查，每行最多报告一次。此检查是轻量文本检查，不解析完整 CSS/JS AST；跨行颜色函数、计算表达式与命名颜色不在当前检测范围。升级或改配置后重新启动 dev，以重写 Git hook。
 
 ## 更多能力与边界
 

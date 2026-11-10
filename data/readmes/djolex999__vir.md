@@ -189,7 +189,9 @@ worse results, not better."_ Fair. Vir addresses it in layers:
   at or below `0.6` is dropped before the more expensive distill step.
 - **Opt-in `CLAUDE.md` sync.** Nothing vir generates touches your prompt
   context automatically. `vir sync-claude` shows a diff and waits for your
-  confirmation. You decide what reaches Claude.
+  confirmation. You decide what reaches Claude. Notes that `vir audit` or
+  `vir audit --transcript` flagged stay out until you approve them in
+  `vir review --audited`.
 - **Plain markdown output.** Every note is a file in your notes folder. Read
   it, edit it, delete it. Nothing is hidden in a database you can't inspect.
 - **Lint and dedupe.** `vir lint` flags contradictions and stale notes;
@@ -465,6 +467,7 @@ with your distro, init system, and Node version.
 | `vir journal [date]`        | free  | Daily work journal from transcripts, no LLM calls (default: today) |
 | `vir journal --since <date>` | free | Write every day with activity from that date on |
 | `vir lint`                  | cheap | Find orphans, stale notes, contradictions |
+| `vir lint --stale`          | free  | Old notes with newer work in the same project, each with how often agents still retrieve it |
 | `vir dedupe`                | cheap | Interactive duplicate detection + merge   |
 | `vir review`                | free  | Walk new notes: approve/edit/reject       |
 | `vir review --restore <note>` | free | Put one rejected note back            |
@@ -473,6 +476,7 @@ with your distro, init system, and Node version.
 | `vir review --audited`      | free  | Walk notes vir audit flagged, worst first |
 | `vir review --insights`     | free  | Accept, edit or reject rules proposed by `vir connect` |
 | `vir audit --apply-rejects` | free  | Move fresh reject verdicts to `.rejected/` (reversible) |
+| `vir audit --transcript`    | $$    | Check each note against its own transcript; contradicted notes join `vir review --audited` |
 | `vir lint --strays`         | free  | Note files with no live DB row (retitle debris) |
 | `vir lint --strays --fix`   | free  | Move retitle debris to `archived/` (only when a live copy exists) |
 | `vir lint --legacy-related` | free  | Pre-0.12.0 notes whose stored Related holds content a rewrite drops |
@@ -659,6 +663,8 @@ Located at `~/.vir/config.json`.
 | `filterToolCalls`   | `moderate`                  | Tool-output filtering: `aggressive` \| `moderate` \| `off` |
 | `retrievalDiversity`| `0`                         | MMR diversity (0..1); 0 = pure relevance                   |
 | `logQueries`        | `true`                      | Log retrievals to `~/.vir/queries.jsonl`; `false` = off    |
+| `checkTranscripts` | `false`                     | After each daemon pass, run `vir audit --transcript` on the oldest unchecked notes |
+| `checkTranscriptsPerRun` | `20`                   | Notes checked per daemon pass when `checkTranscripts` is on |
 | `embeddingProvider` | (unset)                     | `ollama` \| `local` \| `none`; unset = auto-detect         |
 | `models.classify`   | `claude-haiku-5-5`          | Classify model (Kie keeps Haiku 4.5)                       |
 | `models.distill`    | `claude-sonnet-5`           | Distill model for decision-heavy and large sessions        |

@@ -481,7 +481,8 @@ extensions folder. (Don't put a name, password or token in an https address: git
 - **Remove** moves the clone to the Trash; the bundle's preferences are kept for next time.
 - From a terminal: `AllInOneIME --add-source <url> [--path …] [--branch …] [--pin …]` (prints the review and enables
   it; again after a force push), `--update-sources` (fast-forwards every reviewed source that isn't pinned),
-  `--list-extensions` (on `~/Library/Input Methods/AllInOneIME.app/Contents/MacOS/AllInOneIME`).
+  `--list-extensions` (on `~/Library/Input Methods/AllInOneIME Input.app/Contents/MacOS/AllInOneIME`; `AllInOneIME.app`
+  in an install updated from 0.7.2).
 - Only reviewed code loads: a source folder in the load list that wasn't reviewed on this Mac (a copied config) is left
   out. git never waits for an answer: no terminal and no prompts, so an unknown host key or a password prompt fails at once.
 
@@ -931,4 +932,4 @@ until you turn it off (`autocomplete` in the config).
   Chinese line. Sentences end at . ! ? 。！？ and line breaks, and go by their script: Chinese (any Chinese character:
   "我原本计划明天去hiking，" is Chinese), Japanese (kana), Korean, Hindi, each other script, and Latin letters (English,
   French …) as one. After the caret, its next line with something on it, up to 200 characters, so that the model doesn't
-  write it again. What it shows is still checked against all the text before the caret (up to 1,500 charac
+  write it again. What it shows is still check

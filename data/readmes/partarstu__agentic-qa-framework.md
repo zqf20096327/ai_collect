@@ -1,0 +1,1093 @@
+# QuAIA™ — Quality Assurance with Intelligent Agents
+
+<img src="static/quaia_logo.png" alt="QuAIA Logo" width="50" style="margin-right: 15px; float:left">
+
+QuAIA™ is an open-source framework for intelligent automation of the most important software testing life cycle 
+processes starting with software requirements review and up to generating test execution reports.
+
+The corresponding article on Medium can be
+found [here](https://medium.com/@partarstu/the-next-evolution-in-software-testing-from-automation-to-autonomy-1bd7767802e1).
+
+## Demo
+
+Watch a demo of QuAIA™ in action:
+
+[QuAIA™ Framework Demo](https://youtu.be/LUf6ydlKfIU)
+
+## Features
+
+* **Modular Agent Architecture:** Includes specialized agents for:
+    * Requirements Review
+    * Test Case Design: generates the test cases of a user story, reviews and fixes them in a loop, then saves, classifies and publishes them, running the Test Case Generation, Review and Classification agents in-process as its delegates; it rebuilds the test cases from, and reviews them against, the procedures the UI test execution agents recorded
+    * UI & API Test Execution (separate project)    
+    * Procedure Knowledge (separate project): selects the recorded procedures that match the preconditions and steps of a test case
+    * Incident Report Creation
+* **Jira RAG Sync:** Keeps the Qdrant vector store in sync with a project's Jira issues programmatically (triggered via the orchestrator's `/update-jira-db` endpoint, executed by the sync job or the local sync service), without invoking an LLM agent.
+* **Confluence Document RAG:** Ingests Confluence page bodies into a dedicated documents collection (triggered via `/update-confluence-db`): version/hash-based change detection skips unchanged pages, storage-format bodies are normalized to markdown and chunked along headings with breadcrumbs, and removed pages are reconciled out of the vector store. Attachments (PDF, images, office documents, spreadsheets, text) are extracted page by page with a rendered page image, offline OCR for scanned content and headless LibreOffice conversion for office formats.
+* **Dedicated Prompt Guard Service:** A dedicated microservice for detecting prompt injection attacks using the ProtectAI model.
+* **Web UI Monitoring Dashboard:** Real-time monitoring interface for:
+    * Agent status visualization (AVAILABLE, BUSY, BROKEN states)
+    * Task history with execution details and duration
+    * Error log viewer with filtering capabilities
+    * Agent execution logs accessible per task
+    * Summary statistics (uptime, task counts, agent health)
+* **Agent State Management:** Intelligent agent lifecycle management with:
+    * Automatic status tracking (AVAILABLE → BUSY → AVAILABLE/BROKEN)
+    * Broken agent detection with reason classification (OFFLINE, TASK_STUCK)
+    * Automatic recovery mechanism with task cancellation support
+    * Concurrency-safe agent selection with atomic reservation
+* **Agent Log Capture:** Captures execution logs from agents and returns them as artifacts for debugging and monitoring.
+* **JWT Authentication:** Secure dashboard access with configurable credentials and token expiration.
+* **Prompt Injection Protection:** Built-in safeguards to detect and prevent prompt injection attacks.
+* **A2A and MCP - compliant:** Adheres to the specifications of Agent2Agent and Model Context protocols.
+* **Orchestration Layer:** A central orchestrator manages agent registration, task routing, and workflow execution.
+* **Integration with External Systems:** Supports integration with Jira by utilizing its MCP server.
+* **Vector Database Integration:** Uses Qdrant for semantic search capabilities, enabling intelligent duplicate detection and RAG-based features.
+* **Embedding Service:** Dedicated microservice for generating dense and learned-sparse text
+  embeddings in one pass, using a multilingual model (BGE-M3 family). Endpoints:
+  `POST /embed-document-text` and `POST /embed-query-text` (batches, guarded by
+  `INTERNAL_SERVICE_API_KEY`), `GET /health` (liveness) and `GET /ready` (readiness after
+  model warm-up).
+* **Test Management System Integration:** Integrates with Zephyr and Xray for operations related to test case management.
+* **Test Reporting:** Generates detailed Allure reports for test execution results.
+* **Extensible:** Designed for easy addition of new agents, tools, and integrations.
+* **Architecture as Code (CALM):** The system architecture, including its security controls, is described with the [FINOS CALM](https://calm.finos.org/) standard and validated as a blocking CI gate, keeping the model and the running system in sync.
+
+## Architecture
+
+The orchestrator acts as the central hub, managing the lifecycle and interactions of various specialized agents. Agents
+expose details about their capabilities to the orchestrator and allow it to identify the tasks they can handle.
+
+When an event occurs (e.g., a Jira webhook indicating new requirements), the orchestrator:
+
+1. Receives the event.
+2. Identifies the appropriate agent(s) based on the task description and registered agent capabilities.
+3. Routes the task to the selected agent(s).
+4. Monitors the task execution and collects results.
+5. Triggers subsequent agents or workflows as needed (e.g., after the requirements of a story are reviewed, trigger its test case design).
+
+### Test Case Design
+
+The Test Case Design agent designs the test cases of one user story in a single A2A task. The orchestrator sends it the story key as text and as a structured data part which holds only `story_key` (any other field fails the task), and the agent starts a new *design session* from it: the state shared in-process with the generator, the reviewer and the classification agent it delegates to (the story content and attachments, the acceptance criteria, the test cases with the acceptance criteria each covers, the review findings, the deleted test cases and the progress of the design). Test case generation and review are plain in-process classes with their own sub-agents, and the Test Case Classification agent runs in-process too; none of them is an A2A service of its own. The design LLM only routes: it first fetches the story with the `jira_get_issue` tool of the Atlassian MCP server, then calls four tools in order, each running alone even when the model calls several at once and returning a short summary, while the story, the findings and the duplicate verdicts stay in the session. The Jira tool is the only Atlassian tool the design gets and accepts only the story's key, once; the instructions name the configured `JIRA_ADDITIONAL_FIELD_IDS` to request with it, and the tool stores the story in the session and answers with one line, so the story never enters the design LLM's context:
+
+1. **`generate_test_cases`** needs the fetched story. The acceptance criteria are extracted and stored in the session, then one test case is created per acceptance criterion, each naming the criteria it covers; a test case naming an unknown criterion is sent back to the model. The test cases are stored as drafts (`DRAFT-1`, `DRAFT-2`, ...), and the tool returns the drafts with the criteria each covers and the criteria left without a test case.
+2. **`review_test_cases`** reviews every new, changed or restored test case on its own, against the story, its attachments and the acceptance criteria: one review runs first and the rest concurrently, so they can reuse the cached prompt prefix they share. A test case that was fixed is reviewed together with its previous version and previous findings, and the review only verifies the fix: a previous finding that still applies is kept, a resolved one is dropped, and a new finding may concern only the changed content. Then the whole set is reviewed for coverage gaps and duplicate coverage, with the deleted test cases and the findings that removed them: a missing part that fits an existing flow is a `modify`, `add_test_case` is only for a new flow or condition, a test case is deleted only when another one fully covers it (otherwise the two are merged: the duplicate is deleted and the survivor modified with the deleted test case as related), and a gap that a deleted test case covered names it, which restores it instead of writing a new one; duplicate coverage is always `medium`. Every finding has a severity (`low`, `medium`, `high`, `critical`), an action (`modify`, `remove_duplicate_steps`, `delete_test_case`, `add_test_case`) and exactly one owner test case, or none for a missing test case. The whole-set review is sent back to the model when it deletes a test case in favour of one that is also deleted, removes duplicate steps from a test case that is deleted, has two test cases remove their shared steps from each other, would leave no test case, names a deleted test case on anything but `add_test_case`, or names an unknown acceptance criterion.
+3. **`fix_test_cases`**, offered only while the loop runs, applies the findings at or above `TEST_CASE_DESIGN_FIX_MIN_SEVERITY`: deleted test cases are kept with their findings so they can be restored, a gap naming a deleted test case restores it, one fixer per affected test case gets only the test cases its findings relate to (a merged, deleted one included), and the test cases of the remaining gaps are generated together by the same steps as the first ones (test steps, then test cases, one per gap), with all current test cases as context. One fixer runs first and the rest concurrently, alongside the generation of the missing test cases. The restores and deletions reach the session only once every fixer and that generation succeeded, so a fix repeated after a failed one plans the same changes and never writes a restored test case anew. Each fix is followed by another review, so the loop always ends with a review. It stops, in this order of precedence, as `converged` when no blocking finding is left, as `iteration_limit` after `TEST_CASE_DESIGN_MAX_ITERATIONS` reviews, or as `no_progress` when the number of blocking findings did not fall since the previous review. After the stop, deleted test cases that open gaps name are restored.
+4. **`publish_test_cases`**, offered only after the stop, first checks every final test case once for duplicates among the existing test cases of the project (see *Duplicate Check in Test Case Reviews*); a failed check asks the model to publish again, which repeats only the failed checks. It then saves the final test cases one at a time in the test management system, linked to the story, **classifies** them through the Test Case Classification agent, then adds to each test case a **review comment** (the iterations run, the stop reason, its remaining findings by severity, the open findings of the whole set and its duplicate check) and sets its status to "Review Complete". It runs alone even when the model calls it twice at once, and it records per test case what it has saved, commented and set, so a repeated call resumes without writing anything twice: a failed duplicate check or write asks the model to publish again (within the agent's tool retry budget), and a provider error in the classification reruns the design. The classification agent may label only the test cases of this design. Nothing is indexed: the saved test cases become duplicate candidates for later designs with the next `/update-test-case-db` sync.
+Nothing is written before the loop has stopped and the duplicate check is done: a failure up to then fails the task without touching the test management system. A failed write is retried by publishing again, which resumes after the last completed write; when the retries are used up, what was already written stays, since the test management client cannot delete, and the task fails and the dashboard shows it. When a step fails with an error the agent cannot resolve, it aborts the design at once with the reason instead of retrying, so the task fails without further model requests. The whole design, delegates included, shares one budget (`TEST_CASE_DESIGN_TOTAL_TOKENS_LIMIT`) and appears on the dashboard as one task.
+
+### Procedure Knowledge
+
+The UI test execution agents of the `test-execution-agents` repository record every procedure they execute in a shared Neo4j graph. The **procedure knowledge agent** of that repository explores this graph with read-only tools and selects, for each precondition (`P1`, `P2`, ...) and test step (`S1`, `S2`, ...) of a test case, up to 3 recorded procedures that really match it, and up to 3 for each run of consecutive items that one recorded workflow covers. It returns them in their original form, as trees down to the atomic procedures.
+
+The Test Case Design agent uses these selections in two independent assessments:
+
+* **Rebuild** after `generate_test_cases` (every draft) and after `fix_test_cases` (every fixed or added test case): the selections of all test cases are requested at once, then the knowledge-aware test case generator rebuilds each test case that got at least one procedure. It **reuses** a fitting procedure (its description, test data names and expected results for unchanged behaviour), **merges** a run of steps selected together into one step, **adds** a precondition for an unmet prerequisite of a reused procedure, and **keeps** an item no selection fits; the story wins for the behaviour it introduces or changes. A reused item takes the procedure's description verbatim, filled in by code, so the execution agent matches it exactly. Name, summary, comment and acceptance criteria stay those of the draft, and every draft item is covered exactly once and in order. Generation and fixing prompts write one precondition per line.
+* **Review**: each per-test-case review gets a fresh selection for the test case as it is now and checks it for fitting procedures or workflows that were not reused, unmet prerequisites, and test data and expected results that deviate from a recorded workflow of unchanged behaviour (at least high severity). An item without a selected procedure is no finding, since the graph knows only what was executed before. The whole-set review asks for nothing.
+
+The design agent does not know the knowledge agent: it sends each request to the **orchestrator's own A2A endpoint** (`ORCHESTRATOR_URL` + `/a2a`, card at `/a2a/.well-known/agent-card.json`), which requires `X-API-Key: INTERNAL_SERVICE_API_KEY` and fails closed (503) without it. The request is one data part `{capability, payload, timeout_seconds}`: the routing selects the registered agent whose capability fits the configured capability text, the orchestrator forwards the payload as one data part and returns that agent's artifacts unchanged, and the task appears on the dashboard with its logs, errors and the token usage the agent reports. The timeout is capped at 1800 s. Any failure (no fitting agent, timeout, agent error, an invalid selection) is logged as an error and named in the step's summary, and the test case goes on unchanged; `PROCEDURE_KNOWLEDGE_ENABLED=false` skips the requests altogether.
+
+### Agent State Management
+
+The orchestrator maintains detailed state information for each registered agent:
+
+| Status | Description |
+|--------|-------------|
+| **AVAILABLE** | Agent is ready to accept new tasks. |
+| **BUSY** | Agent is running as many tasks as its capacity allows (one, unless its card declares more). |
+| **BROKEN** | Agent is unavailable due to being OFFLINE or having a TASK_STUCK. |
+
+**Broken Agent Classification:**
+- `OFFLINE`: Agent is not responding to health checks.
+- `TASK_STUCK`: Agent is responsive but a task timed out.
+
+### Concurrency and Agent Selection
+
+The orchestrator uses atomic agent selection with a lock-based mechanism to prevent race conditions when multiple tasks
+compete for the same available agents. Key features include:
+
+* **Atomic Reservation:** Agent selection and status update happen within a single lock to prevent double-booking.
+* **Task Capacity:** An agent that declares the Agent Card extension `urn:quaia:extensions:task-capacity:v1` with the parameter `capacity` (an integer from 1 to 32) runs that many tasks at once and becomes BUSY only when all of them are taken; any other agent runs one task at a time. The dashboard lists the running tasks of every agent.
+* **Wait-and-Retry:** If no suitable agent is available, the orchestrator waits with exponential backoff.
+* **LLM-Based Selection Caching:** The orchestrator caches LLM decisions for agent sets to avoid redundant API calls.
+
+Routing is one model call over **every** registered agent, each listed with its ID, name, card description, declared
+skills and current availability, so the model can tell "busy" from "incapable". Every decision carries a mandatory
+justification and is logged with the task ID, the outcome and the selected agent name (visible in the dashboard
+logs). The decision has one of three outcomes:
+
+* **Agent selected:** the agent is reserved, provided it is registered and currently AVAILABLE; any other ID is logged
+  as an invalid routing result and handled like the busy outcome.
+* **Suitable but busy:** the orchestrator keeps waiting and retrying; when the wait times out, the error names the
+  suitable-but-busy situation and includes the last justification.
+* **None suitable:** the orchestrator stops at once, records a dashboard error and fails the request with the
+  justification instead of waiting for the timeout. When an earlier decision of the same wait selected an agent that
+  is still registered, the orchestrator logs a warning and keeps waiting for that agent instead.
+
+The label-based selection of execution agents also returns a justification, which is logged whenever the selected set
+is empty or partial.
+
+### Broken Agent Recovery
+
+A background task continuously monitors broken agents and attempts recovery:
+
+1. For `OFFLINE` agents: Periodically checks if the agent responds to card fetch requests.
+2. For `TASK_STUCK` agents: Attempts to cancel the stuck task using the A2A protocol before marking the agent as available.
+3. Agents that remain unrecoverable for 24 hours are given up on.
+
+### Jira MCP Sessions
+
+Every agent that uses Jira tools obtains them through a **per-request MCP session**: `AgentBase` is given toolset
+*factories* rather than a live connection, and it builds a fresh session for each agent run and closes it as soon as the
+run ends (a retried run gets a new one too). A session that went stale between requests can therefore never break the
+next one.
+
+Within a run, the session is **self-healing**: a recoverable transport failure — a closed or broken stream, an
+end-of-stream, a timeout (including an MCP request timeout), or an HTTP network/protocol error — tears the session down,
+re-establishes it (full handshake, including log-level negotiation) and retries the failed operation **exactly once**.
+The budget is one reconnect per operation, and both tool discovery and tool invocation are covered. Anything that is not
+recoverable — a bad argument, an unknown issue key — propagates unchanged, so real errors still reach the model.
+
+The MCP server is a combined Jira + Confluence server (`ATLASSIAN_MCP_SERVER_URL`). Each agent passes the allowlist of
+the tool names it actually uses, and its tool discovery is filtered down to that list, so no agent receives Confluence
+(or Jira) tools it was not built for. A write tool (e.g. `confluence_update_page`, `jira_add_comment`) is never
+repeated after a reconnect; only tools whose name starts with a read verb after the `jira_`/`confluence_` prefix, or
+that the server annotates as read-only or idempotent, are.
+
+### Traceability of Agents and Test Results
+
+Each agent reports a configurable `VERSION` in its A2A agent card, which the orchestrator surfaces in the dashboard's
+agents view; each task-start log line names both the agent version and the model that served it. For test executions,
+the orchestrator attaches an `agent_info` block (agent name, agent version and `TEST_ENVIRONMENT_LABEL`) to every
+`TestExecutionResult` — successful, failed-extraction and all-agents-broken alike. The Allure report turns those three
+values into three separate tags, so a report can be filtered by agent, by agent version, or by environment
+independently.
+
+**Timestamps** reported by agents are normalised to UTC: a timestamp without an offset is interpreted as UTC rather
+than as the reporting host's local time, so Zephyr, Xray and Allure all record the same instant.
+
+For a visual representation of the system's architecture and data flow, please refer to the following diagrams:
+
+* [Architectural Diagram](architectural_diagram.html) ([German Version](architectural_diagram_DE.html))
+* [Flow Diagram](flow_diagram.html) ([German Version](flow_diagram_DE.html))
+
+### Architecture as Code (CALM)
+
+The architecture above is also maintained as machine-readable **architecture as code** using the
+[FINOS CALM](https://calm.finos.org/) (Common Architecture Language Model) standard, under the [`calm/`](calm/) directory.
+This makes the architecture a first-class, version-controlled artifact rather than a static diagram that drifts out of
+date.
+
+The model captures every service and external system as `nodes`, the integration edges between them (A2A, MCP, HTTPS) as
+`relationships`, and the framework's security mechanisms as `controls` attached to the relevant nodes and edges:
+
+| Control | Applies to | Mechanism |
+|---|---|---|
+| Orchestrator API key | Orchestrator | `X-API-Key` on control/webhook endpoints (`ORCHESTRATOR_API_KEY`) |
+| Dashboard JWT | Orchestrator | JWT on dashboard endpoints (`DASHBOARD_JWT_SECRET`) |
+| Jira webhook HMAC | Jira → Orchestrator | `X-Hub-Signature` HMAC-SHA256 (`JIRA_WEBHOOK_SECRET`) |
+| Prompt-injection guard | Every agent | Prompt-injection screening (`PROMPT_INJECTION_CHECK_ENABLED`) |
+| Internal service API key | Embedding & Prompt Guard services; Test Case Design agent → orchestrator delegation endpoint | Shared `X-API-Key` (`INTERNAL_SERVICE_API_KEY`) |
+| Execution agent bearer token | Orchestrator → execution agents and procedure knowledge agent | `Authorization: Bearer` on their main A2A endpoint (`REMOTE_EXECUTION_AGENT_AUTH_TOKEN`) |
+
+A governance **pattern** (`calm/patterns/quaia.pattern.json`) asserts that every required node, relationship and control
+is present. The CI pipeline runs this validation as a **blocking** `Architecture (CALM)` job, so removing an agent or
+dropping a security control makes the build fail. See [`calm/README.md`](calm/README.md) for the full layout and for how
+to run the validation locally (requires Node.js 20+).
+
+## Getting Started
+
+### Prerequisites
+
+* Python 3.14+
+* Docker
+* [`uv`](https://docs.astral.sh/uv/) (Python package and project manager)
+* [Node.js](https://nodejs.org/) 20+ (only needed to validate the CALM architecture model locally; see
+  [Architecture as Code (CALM)](#architecture-as-code-calm))
+
+### Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/partarstu/agentic-qa-framework.git
+   cd agentic-qa-framework
+   ```
+
+2. **Install `uv`** (if not already installed):
+   ```bash
+   # macOS / Linux
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   # Windows (PowerShell)
+   powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+   ```
+
+3. **Create the virtual environment and install dependencies:**
+   ```bash
+   uv sync
+   ```
+   This creates a `.venv` and installs the locked runtime and development
+   dependencies. Run commands inside the environment with `uv run`, e.g.
+   `uv run pytest`. The optional, machine-learning dependencies of the
+   embedding and prompt-guard services are installed on demand via
+   `uv sync --extra embedding-service` or `uv sync --extra prompt-guard-service`.
+
+### Docker Images
+
+The project utilizes Docker for containerization of the orchestrator and agent services. A common base image, `agentic-qa-base:latest`, is built from `Dockerfile.base` to ensure consistency and reduce build times.
+
+Each service runs using `gunicorn` as the WSGI server. The command for agents is
+`gunicorn -w 1 -k uvicorn_worker.UvicornWorker --bind 0.0.0.0:$PORT agents.<agent_name>.main:app`, and for the
+orchestrator, it is `gunicorn -w 1 -k uvicorn_worker.UvicornWorker orchestrator.main:orchestrator_app`. Note that
+`$PORT` refers to the internal port the agent listens on, while the `AgentCard` will use the `EXTERNAL_PORT` for its
+URL.
+
+### Environment Variables
+
+Create a `.env` file in the project root and configure the following environment variables. These variables control the
+behavior of the orchestrator and agents.
+
+```
+# LLM Provider
+GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY # Required for the default Gemini model. Gemini API key consumed directly by
+                                 # pydantic-ai's google-gla provider for every agent's and the orchestrator's LLM calls.
+MODEL_NAME=google-gla:gemini-3.8-flash # Default: google-gla:gemini-3.8-flash. The model the orchestrator and every
+                                 # agent use. Either a pydantic-ai model string, or "qwen:<model>" (e.g.
+                                 # qwen:Qwen/Qwen3.8-27B-FP8) to route all workflows to the self-hosted, OpenAI-
+                                 # compatible Qwen deployment configured below.
+QWEN_ENDPOINT= # Required for a "qwen:" model name. Base URL of the OpenAI-compatible Qwen endpoint, including the
+                                 # API version (e.g. https://qwen-3-8-<id>.europe-west4.run.app/v1/).
+QWEN_API_KEY= # Optional. Static API key for the Qwen endpoint. An endpoint served by Cloud Run (*.run.app) ignores it
+                                 # and authenticates through an IAM identity token minted from the application default
+                                 # credentials instead, so it needs either a service account key file in
+                                 # GOOGLE_APPLICATION_CREDENTIALS, or 'gcloud auth application-default login
+                                 # --impersonate-service-account=<invoker service account>'.
+QWEN_NON_THINKING_PRESENCE_PENALTY=0 # Default: 0. Presence penalty of Qwen requests whose agent has no thinking level
+                                 # (thinking off), sent with the model card's non-thinking sampling (temperature 0.7, top_p 0.8).
+QWEN_THINKING_PRESENCE_PENALTY=0.5 # Default: 0.5. Presence penalty of Qwen requests whose agent has a thinking level,
+                                 # sent with the model card's thinking sampling (temperature 1.0, top_p 0.95) and a
+                                 # reasoning effort graded from the level (Qwen accepts low, medium and xhigh, so
+                                 # "minimal" is sent as "low" and "high" as "xhigh").
+QWEN_CONTEXT_WINDOW= # Optional. Context window of the Qwen deployment in tokens; set it to the served
+                                 # --max-model-len (e.g. 262144). Context compaction starts at 90 % of it; unset, a
+                                 # conservative 200000-token window is assumed.
+
+# Logging
+LOG_LEVEL=INFO # Default: INFO. Controls the verbosity of logging.
+GOOGLE_CLOUD_LOGGING_ENABLED=False # Default: False. Set to "True" to enable Google Cloud Logging.
+LOG_TO_FILE=True # Default: True. When enabled, each service also writes its logs to a rotating file under LOG_DIR
+                                 # (e.g. orchestrator.log, requirements_review.log).
+LOG_DIR=logs # Default: a "logs" directory next to config.py. Directory for the rotating per-service log files.
+
+# Prompt Overrides
+PROMPT_OVERRIDES_DIR= # Optional. Directory holding prompt template overrides. When set, a file in this directory
+                                 # replaces the bundled template at the same repository-relative path (e.g.
+                                 # agents/requirements_review/system_prompts/main_prompt_template.md or
+                                 # prompts/routing_instruction_template.md). Startup fails fast when the directory is
+                                 # missing or when an override's named placeholders differ from the bundled template's.
+                                 # Templates are Markdown; in a template with {placeholders}, literal braces (e.g. in
+                                 # a JSON example) must be escaped as {{ and }}.
+                                 # Every container that loads prompts (orchestrator and agents) needs the directory,
+                                 # e.g. as a Cloud Run volume mount.
+
+# Orchestrator
+ORCHESTRATOR_HOST=localhost # Default: localhost. The host where the orchestrator runs.
+ORCHESTRATOR_PORT=8000 # Default: 8000. The port the orchestrator listens on.
+ORCHESTRATOR_URL=http://localhost:8000 # Default: http://localhost:8000. The full URL of the orchestrator, reachable by the agents:
+                                 # the orchestrator advertises it in the card of its A2A delegation endpoint, and the Test Case
+                                 # Design agent sends its procedure knowledge requests there (Cloud Run: `_ORCHESTRATOR_URL`).
+ORCHESTRATOR_API_KEY=YOUR_ORCHESTRATOR_API_KEY # Required. Authenticates the orchestrator's control/webhook endpoints.
+                                 # Requests must include an 'X-API-Key' header with this value. If it is left unset, those
+                                 # endpoints fail closed and return HTTP 503 (authentication not configured).
+                                 # This corresponds to OrchestratorConfig.API_KEY.
+JIRA_WEBHOOK_SECRET= # Optional but recommended. When set, Jira webhook requests must carry a valid
+                                 # 'X-Hub-Signature' HMAC-SHA256 of the raw body; invalid/missing signatures are rejected.
+JIRA_ADDITIONAL_FIELD_IDS= # Optional. Comma-separated Jira custom field IDs (e.g. customfield_10101,customfield_10202)
+                                 # whose values are handed to agents as part of the issue content in the requirements
+                                 # review and test case design tasks. Entries are trimmed, empty
+                                 # entries and duplicates are dropped, and every entry must match the Jira custom field
+                                 # ID format ('customfield_' followed by digits) - anything else fails startup. Unset
+                                 # means the requirements review task text is unchanged.
+                                 # Set it on the orchestrator (requirements review) and on the Test Case Design agent,
+                                 # which requests the fields itself when it fetches the story (Cloud Run: `_JIRA_ADDITIONAL_FIELD_IDS`).
+ATLASSIAN_MCP_SERVER_URL=http://localhost:9000/mcp # Default: http://localhost:9000/mcp. The URL of the Atlassian (Jira + Confluence) MCP server.
+JIRA_URL=YOUR_JIRA_INSTANCE_URL # Required for Xray, the RAG sync runtime and the agents' attachment downloads. The base URL of your Jira
+                                 # instance (e.g. https://your-company.atlassian.net). Also used by the separate Jira
+                                 # MCP server (see "Jira MCP Server Setup" below), which has its own .env file.
+JIRA_USERNAME=YOUR_JIRA_USERNAME # Required alongside JIRA_URL. The email address associated with your Jira account.
+JIRA_API_TOKEN=YOUR_JIRA_API_TOKEN # Required alongside JIRA_URL. A Jira API token for authentication.
+ORCHESTRATOR_VERSION=4.0.0 # Default: 4.0.0. Version of the orchestrator, reported for traceability.
+ORCHESTRATOR_THINKING_LEVEL=medium # Default: medium. Thinking level of the orchestrator's model calls (routing, multi-agent routing and results extraction): none (thinking off), minimal, low, medium, high or xhigh. On Qwen, a level turns thinking on at the matching reasoning effort and none turns it off through the chat template (recommended on Qwen: none).
+TEST_CASE_DESIGN_TASK_TIMEOUT_SECONDS=3300 # Default: 3300. How long the orchestrator waits for one test case design, the wait for a free Test Case Design agent included; keep it below the orchestrator's request timeout (3500 s on Cloud Run).
+TEST_ENVIRONMENT_LABEL=Standard Test Environment # Default: Standard Test Environment. Label describing the
+                                 # environment tests are executed against. Reported on every test execution
+                                 # result and emitted as an Allure tag.
+
+# Dashboard Authentication
+# These settings control access to the UI monitoring dashboard at /api/dashboard/*
+DASHBOARD_USERNAME=admin # Required. Username for dashboard login. Dashboard auth fails closed if this is unset.
+DASHBOARD_PASSWORD_HASH= # Required bcrypt hash for dashboard login. Generate with: python -c "import bcrypt; print(bcrypt.hashpw(b'password', bcrypt.gensalt()).decode())". Escape $ as $$ in compose files.
+MAX_OUTPUT_TOKENS= # Optional global LLM output cap; agent-specific caps override it. Unset on Claude means the model's maximum output (thinking included), streamed when it exceeds the SDK's non-streaming limit.
+QDRANT_TEST_CASES_COLLECTION_NAME=test_cases
+CONFLUENCE_RETRIEVAL_ENABLED=false
+SHAREPOINT_RETRIEVAL_ENABLED=false
+DASHBOARD_PERSISTENCE_ENABLED=false # Opt-in durable task, error, and accepted dashboard-log history in Qdrant.
+QDRANT_DASHBOARD_COLLECTION_NAME=dashboard_state
+DASHBOARD_LOG_RETENTION_DAYS=1
+DASHBOARD_HISTORY_RETENTION_DAYS=7
+DASHBOARD_MAINTENANCE_INTERVAL_SECONDS=3600
+SYNC_CALLBACK_ORCHESTRATOR_URL= # Optional authenticated /sync-outcome callback target for sync-job completion.
+MCP_SERVER_TIMEOUT_SECONDS=30 # Client-side MCP timeout applied to both the connection and the read timeout. Must stay <= the Atlassian MCP server's request timeout.
+MCP_SESSION_LIFECYCLE_TIMEOUT_SECONDS=30 # Bounded, cancellation-shielded window for MCP session set-up/tear-down during a recovery retry.
+ANTHROPIC_API_KEY= # Required when a Claude model is configured (MODEL_NAME starting with anthropic: or claude-).
+TEST_CASE_INDEX_STATUSES= # Comma-separated list of test-case statuses eligible for indexing; empty indexes every status. Recommended: exclude deprecated/obsolete statuses.
+TEST_CASE_DUPLICATE_MIN_SCORE=0.8 # Minimum dense similarity for test-case duplicate candidates.
+TEST_CASE_DUPLICATE_MAX_CANDIDATES=5 # Maximum duplicate candidates judged per reviewed test case.
+LOGIN_RATE_LIMIT_ATTEMPTS=5 # Login attempts allowed per client IP per window.
+LOGIN_RATE_LIMIT_WINDOW_SECONDS=60 # Sliding-window length for the login rate limit.
+LOGIN_RATE_LIMIT_TRUSTED_PROXY_HOPS=0 # How many X-Forwarded-For entries from the right are trusted (0 = the socket peer). Set to 1 behind a reverse proxy or Cloud Run, otherwise every user shares one rate-limit bucket.
+SHAREPOINT_TENANT_ID= # Entra tenant ID for SharePoint app-only access (Sites.Selected permission recommended).
+SHAREPOINT_CLIENT_ID= # Entra app registration client ID.
+SHAREPOINT_CLIENT_SECRET= # Entra app registration client secret. Store in a secret manager, never in the repo.
+SHAREPOINT_AUTHORITY_URL=https://login.microsoftonline.com # Default. Entra authority serving the client-credentials token request.
+SHAREPOINT_GRAPH_BASE_URL=https://graph.microsoft.com/v1.0 # Default. Microsoft Graph base URL (the smoke stack points both at its mock).
+QDRANT_SHAREPOINT_COLLECTION_NAME=sharepoint_documents # Per-source SharePoint document collection.
+
+### RAG sync outcomes
+
+Each scoped sync writes `running`, then `completed`, `completed_with_errors`, or `failed` outcome metadata. An ambiguous job launch stays `running` with an unconfirmed-start message; the dashboard marks a running outcome stale after `RAG_SYNC_JOB_TASK_TIMEOUT_SECONDS`. The sync job uses 4 GiB and 2 CPU because document parsing is memory intensive. Outcome writes and callbacks are reporting-only: troubleshoot Qdrant or callback failures from logs without assuming the underlying sync failed.
+DASHBOARD_JWT_SECRET=change-me-in-production-please # Required. Secret key for JWT token signing. CHANGE THIS IN PRODUCTION! Tokens are rejected if this is unset.
+DASHBOARD_JWT_EXPIRE_HOURS=24 # Default: 24. Number of hours before JWT tokens expire.
+
+# Zephyr Test Management System
+ZEPHYR_BASE_URL=YOUR_ZEPHYR_BASE_URL # Required if TEST_MANAGEMENT_SYSTEM=zephyr. The base URL of your Zephyr instance.
+ZEPHYR_API_TOKEN=YOUR_ZEPHYR_API_TOKEN # Required if TEST_MANAGEMENT_SYSTEM=zephyr. API token for Zephyr authentication.
+
+# Xray Test Management System
+XRAY_BASE_URL=YOUR_XRAY_BASE_URL # Required if TEST_MANAGEMENT_SYSTEM=xray. The base URL of your Xray instance.
+XRAY_CLIENT_ID=YOUR_XRAY_CLIENT_ID # Required if TEST_MANAGEMENT_SYSTEM=xray. Xray API client ID.
+XRAY_CLIENT_SECRET=YOUR_XRAY_CLIENT_SECRET # Required if TEST_MANAGEMENT_SYSTEM=xray. Xray API client secret.
+XRAY_PRECONDITIONS_FIELD_ID=Pre-conditions # Default: Pre-conditions. Jira field ID/name holding a test case's preconditions.
+                                 # The field id is PROJECT-SCOPED: a value belonging to another project degrades
+                                 # silently (the preconditions end up embedded in the description instead of the
+                                 # dedicated field). Each environment must point at its own project's field.
+
+# Agent Configuration
+AGENT_BASE_URL=http://localhost # Default: http://localhost. Base URL for agents.
+PORT=8001 # Default: 8001. The internal port an agent listens on.
+EXTERNAL_PORT=8001 # Default: 8001. The externally accessible port for the agent.
+REQUIREMENTS_REVIEW_FOCUS_AREA_COUNT=5 # Default: 5. Maximum number of focus areas the Requirements Review agent selects per story; each is reviewed by its own parallel sub-agent before the reviews are merged.
+TEST_CASE_DESIGN_FIX_MIN_SEVERITY=medium # Default: medium. One of low, medium, high, critical. A test case review finding at or above this severity blocks the test case design and gets fixed; lower ones are only reported in the review comment.
+TEST_CASE_DESIGN_MAX_ITERATIONS=4 # Default: 4. Maximum number of reviews in a test case design: the first follows the generation, every further one a fix.
+TEST_CASE_DESIGN_TOTAL_TOKENS_LIMIT=4000000 # Default: 4000000. Token budget of one test case design, shared with the generation, review and classification agents it runs in-process.
+TEST_CASE_DESIGN_MAX_OUTPUT_TOKENS= # Optional. Maximum output tokens per model response of the Test Case Design agent; defaults to MAX_OUTPUT_TOKENS.
+PROCEDURE_KNOWLEDGE_ENABLED=true # Default: true. Whether the Test Case Design agent rebuilds its test cases from the recorded procedures the procedure knowledge agent selects and reviews them against these; false skips every request (see "Procedure Knowledge").
+PROCEDURE_KNOWLEDGE_TIMEOUT_SECONDS=900 # Default: 900. How long the Test Case Design agent waits for the recorded procedures of one test case, the orchestrator's routing included; also the timeout of the delegated task (capped at 1800 s by the orchestrator).
+# Thinking level of each agent's model calls: none (thinking off), minimal, low, medium, high or xhigh. Unset keeps the default
+# shown; on Qwen a level turns thinking on at the matching reasoning effort and none turns it off through the chat template.
+# The generation, review and classification agents run inside the Test Case Design service, which reads their levels.
+REQUIREMENTS_REVIEW_THINKING_LEVEL=medium # Default: medium. Recommended on Qwen: none.
+INCIDENT_CREATION_THINKING_LEVEL=medium # Default: medium. Recommended on Qwen: none.
+TEST_CASE_DESIGN_THINKING_LEVEL=medium # Default: medium. Recommended on Qwen: low.
+TEST_CASE_GENERATION_THINKING_LEVEL=medium # Default: medium. Recommended on Qwen: low.
+TEST_CASE_REVIEW_THINKING_LEVEL=medium # Default: medium. Recommended on Qwen: low.
+TEST_CASE_CLASSIFICATION_THINKING_LEVEL=medium # Default: medium. Recommended on Qwen: low.
+# Version each agent reports in its A2A agent card (visible in the dashboard) and, for execution agents,
+# on every test execution result. Each agent reads its own variable.
+REQUIREMENTS_REVIEW_AGENT_VERSION=1.5.0 # Default: 1.5.0.
+TEST_CASE_DESIGN_AGENT_VERSION=1.3.0 # Default: 1.3.0.
+TEST_CASE_CLASSIFICATION_AGENT_VERSION=1.5.0 # Default: 1.5.0.
+INCIDENT_CREATION_AGENT_VERSION=1.4.0 # Default: 1.4.0.
+
+# Agent Discovery (for remote agents)
+REMOTE_EXECUTION_AGENT_HOSTS=http://localhost # Default: http://localhost. Comma-separated URLs of remote agent hosts, the procedure knowledge agent included.
+AGENT_DISCOVERY_PORTS=8001-8007 # Default: 8001-8007. Port range for agent discovery.
+REMOTE_EXECUTION_AGENT_AUTH_TOKEN= # Optional. Shared bearer token sent to the main A2A endpoint of the execution agents and the procedure knowledge agent. Leave empty for local agents started without auth.
+
+# Google Cloud Storage (via Volume Mounts)
+# In cloud deployments, GCS buckets are mounted as local folders via Cloud Run volume mounts.
+# The following variables configure the local paths where attachments are accessed:
+ATTACHMENTS_LOCAL_DESTINATION_FOLDER_PATH=/tmp # Default: /tmp. Path where attachments are read from.
+MCP_SERVER_ATTACHMENTS_FOLDER_PATH=/tmp # Default: /tmp. Path where MCP server stores attachments.
+JIRA_ATTACHMENT_SKIP_POSTFIX=_SKIP # Default: _SKIP. Attachments with filenames ending in this postfix (before the extension) 
+                                   # will be excluded from agent analysis. Case-insensitive. Example: "mockup_SKIP.png" is skipped.
+JIRA_ATTACHMENT_MAX_BYTES=104857600 # Default: 104857600 (100 MiB). Attachments larger than this are skipped instead of being handed to the model.
+JIRA_ATTACHMENT_DOWNLOAD_TIMEOUT_SECONDS=60 # Default: 60. Timeout of one attachment download over the Jira REST API.
+
+# OpenTelemetry (for tracing and metrics)
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 # Default: http://localhost:4317. Endpoint for OpenTelemetry collector.
+
+# Test Management System
+TEST_MANAGEMENT_SYSTEM=zephyr # Default: zephyr. Specifies the test management system in use. One of "zephyr" or "xray".
+
+# Test Reporting
+TEST_REPORTER=allure # Default: allure. Specifies the test reporting tool.
+
+# Qdrant Vector Database (for RAG and semantic search)
+QDRANT_URL=http://localhost:6333 # Default: http://localhost:6333. URL of the Qdrant server, including the port.
+QDRANT_API_KEY= # Optional. API key for Qdrant authentication.
+QDRANT_TIMEOUT_SECONDS=30 # Default: 30. Request timeout for the Qdrant client.
+QDRANT_COLLECTION_NAME=jira_issues # Default: jira_issues. Name of the main collection for Jira issues.
+QDRANT_TICKETS_COLLECTION_NAME=jira_issues # Default: jira_issues. Name of the collection the RAG DB sync writes Jira issues to.
+QDRANT_METADATA_COLLECTION_NAME=rag_metadata # Default: rag_metadata. Name of the collection for RAG metadata.
+QDRANT_DOCUMENTS_COLLECTION_NAME=confluence_documents # Default: confluence_documents. Name of the collection the Confluence sync writes document parts to.
+RAG_MIN_SIMILARITY_SCORE=0.7 # Default: 0.7. Minimum similarity score for vector search results.
+RAG_MAX_RESULTS=5 # Default: 5. Maximum number of results to return from vector search.
+EMBEDDING_SERVICE_URL= # Required for agents using Vector DB. URL of the embedding service for remote embedding generation.
+EMBEDDING_SERVICE_TIMEOUT_SECONDS=120.0 # Default: 120.0. Timeout for embedding service requests.
+EMBEDDING_SERVICE_MAX_RETRIES=6 # Default: 6. Connect/timeout retry attempts (with backoff) while the embedding service starts (e.g. Cloud Run cold start).
+EMBEDDING_SERVICE_RETRY_BACKOFF_CAP_SECONDS=32.0 # Default: 32.0. Upper bound for the exponential backoff between embedding service retries.
+QDRANT_UPSERT_BATCH_SIZE=64 # Default: 64. Number of points per batched vector upsert.
+
+# RAG Sync Runtime
+RAG_SYNC_JOB_NAME= # Unset by default. Cloud Run job resource name (projects/<p>/locations/<r>/jobs/<job>); enables job mode.
+RAG_SYNC_JOB_REGION=us-central1 # Default: us-central1. Region of the sync job.
+RAG_SYNC_SERVICE_URL= # Unset by default. Local sync service URL (development only); enables local mode.
+RAG_SYNC_JOB_TASK_TIMEOUT_SECONDS=3600 # Default: 3600. Task timeout bounding one sync run.
+RAG_SYNC_LOCK_TTL_SECONDS=3900 # Default: task timeout + 300. Lock expiry; a live job never outlives its lock.
+RAG_SYNC_START_ALLOWANCE_SECONDS=300 # Default: 300. How long an unconfirmed job start keeps the lock before takeover.
+# Every Jira status is ingested. Reset the Jira sync cursor once after upgrading from a status-filtered deployment.
+                                 # statuses eligible to be synced into the RAG vector DB.
+
+# Confluence Document Ingestion
+CONFLUENCE_URL= # Required for document RAG. Base URL of the Confluence Cloud site (e.g. https://<tenant>.atlassian.net).
+CONFLUENCE_USERNAME= # Required for document RAG. Confluence user for basic auth.
+CONFLUENCE_API_TOKEN= # Required for document RAG. Confluence API token for basic auth.
+RAG_CONFLUENCE_LIST_PAGE_SIZE=50 # Default: 50. Page size for Confluence listing calls.
+RAG_CONFLUENCE_MAX_RETRIES=5 # Default: 5. Retries for Confluence 429/5xx responses, honouring Retry-After.
+RAG_CONFLUENCE_TIMEOUT_SECONDS=30 # Default: 30. Request timeout for Confluence REST calls.
+RAG_CHUNK_MAX_TOKENS=512 # Default: 512. Chunk token budget for page bodies, breadcrumb included (1 token ~ 4 characters).
+RAG_MAX_ATTACHMENT_BYTES=104857600 # Default: 100 MiB. Listed attachment size cap checked before download.
+RAG_MAX_PAGES_PER_DOCUMENT=200 # Default: 200. Maximum pages or image frames ingested; the true count is retained.
+RAG_RENDER_DPI=150 # Default: 150. PDF page rendering resolution.
+RAG_MAX_IMAGE_DIMENSION=4096 # Default: 4096. Maximum width or height of a normalized page image.
+RAG_OFFICE_CONVERSION_ENABLED=true # Default: true. Convert office formats to PDF with headless LibreOffice.
+RAG_OFFICE_CONVERSION_TIMEOUT_SECONDS=120 # Default: 120. Maximum duration of one LibreOffice conversion.
+RAG_OFFICE_CONVERSION_CONCURRENCY=1 # Default: 1. Maximum concurrent LibreOffice processes per sync runtime.
+RAG_OCR_TEXT_THRESHOLD_CHARACTERS=20 # Default: 20. Pages below this native-text length receive full-page OCR.
+
+# Embedding Service Configuration
+EMBEDDING_BACKENDS=text # Default: text. Comma-separated enabled backends; "text" is the only one implemented.
+EMBEDDING_TEXT_MODEL=BAAI/bge-m3 # Default: BAAI/bge-m3. Multilingual model producing dense and learned-sparse output in one pass.
+EMBEDDING_TEXT_MODEL_REVISION=5617a9f61b028005a4858fdac845db406aefb181 # Default: 5617a9f61b028005a4858fdac845db406aefb181. Hugging Face commit of EMBEDDING_TEXT_MODEL downloaded at image build time; set it together with EMBEDDING_TEXT_MODEL.
+EMBEDDING_MAX_BATCH_SIZE=32 # Default: 32. Maximum number of texts per embedding request.
+EMBEDDING_MAX_TEXT_LENGTH=50000 # Default: 50000. Maximum text length (characters) per input.
+
+# Incident Creation Agent Configuration
+INCIDENT_AGENT_MIN_SIMILARITY_SCORE=0.7 # Default: 0.7. Minimum score for duplicate detection.
+ISSUE_PRIORITY_FIELD_ID=priority # Default: priority. Jira field ID for issue priority.
+ISSUE_SEVERITY_FIELD_NAME=customfield_10124 # Default: customfield_10124. Jira custom field name for severity.
+JIRA_BUG_ISSUE_TYPE=Bug # Default: Bug. Jira issue type used when searching the vector DB for duplicate bugs.
+INCIDENT_AGENT_SEVERITY_VALUES='10020':blocker or crash,'10021':functional failure,'10022':UI/UX issue,'10023':typo or minor visual issue
+                                 # Default shown. Comma-separated "value:description" pairs offered to the LLM for the
+                                 # ISSUE_SEVERITY_FIELD_NAME field.
+INCIDENT_AGENT_PRIORITY_VALUES=High:immediate fix,Medium:normal release,Low:backlog # Default shown. Comma-separated
+                                 # "value:description" pairs offered to the LLM for the ISSUE_PRIORITY_FIELD_ID field.
+INCIDENT_AGENT_TERMINAL_STATUSES=Closed,Done,Duplicate,Rejected,Won't Fix,Cannot Reproduce,Resolved # Default shown.
+                                 # Comma-separated Jira statuses excluded from duplicate-bug detection.
+
+# Prompt Injection Detection
+PROMPT_INJECTION_CHECK_ENABLED=False # Default: False. Set to "True" to enable prompt injection detection. When enabled, PROMPT_GUARD_SERVICE_URL must point to a running prompt guard service.
+PROMPT_GUARD_PROVIDER=protect_ai # Default: protect_ai. The provider for prompt injection detection.
+PROMPT_GUARD_SERVICE_URL= # Required if PROMPT_INJECTION_CHECK_ENABLED is True. URL of the prompt guard service.
+INTERNAL_SERVICE_API_KEY= # Shared secret. When set, the embedding and prompt-guard services require a matching X-API-Key header (and their clients send it); recommended whenever those services are not strictly network-isolated. Required by the orchestrator's A2A delegation endpoint, which fails closed (503) without it, and by the Test Case Design agent, which sends it there with its procedure knowledge requests.
+PROMPT_INJECTION_MIN_SCORE=0.8 # Default: 0.8. The minimum score for a prompt to be considered an injection.
+PROMPT_INJECTION_MODEL_NAME=ProtectAI/deberta-v3-base-prompt-injection-v2 # Default: ProtectAI/deberta-v3-base-prompt-injection-v2. The name of the model used for prompt injection detection.
+PROMPT_INJECTION_MODEL_REVISION=90c9989b1a342275dd0d1a95aad283c04e075671 # Default: 90c9989b1a342275dd0d1a95aad283c04e075671. Hugging Face commit of PROMPT_INJECTION_MODEL_NAME downloaded at image build time; set it together with PROMPT_INJECTION_MODEL_NAME.
+```
+
+**Note on Local Models:**
+If you are running the orchestrator or agents locally (not in a Docker container deployed to the cloud), you must manually download the necessary models:
+1. **Prompt Injection Detection Model:** Required if `PROMPT_INJECTION_CHECK_ENABLED` is set to `True`. Run `scripts/download_prompt_guard_model.py`.
+2. **Embedding Model:** Required when running the embedding service locally, which every Vector DB client (the Incident Creation agent, the Requirements Review agent's document retrieval and the RAG sync runtime) calls. Run `scripts/download_embedding_model.py`.
+
+When deploying to cloud environments via Docker, the model downloads are handled automatically as part of the Docker image build process.
+
+### Jira MCP Server Setup
+
+The QuAIA™ framework integrates with Jira via a Model Context Protocol (MCP) server. This server acts as an
+intermediary, handling communication between Jira webhooks and the orchestrator.
+
+To run the Jira MCP server, you will need Docker installed.
+
+1. **Create a `.env` file for the MCP server:**
+   The MCP server uses its own `.env` file for configuration. Create a file named `.env` in the `mcp/jira/` directory
+   with the following content:
+
+   ```
+   JIRA_URL=YOUR_JIRA_INSTANCE_URL
+   JIRA_API_TOKEN=YOUR_JIRA_API_TOKEN
+   JIRA_USERNAME=YOUR_JIRA_USERNAME   
+   CONFLUENCE_URL=YOUR_CONFLUENCE_URL
+   CONFLUENCE_USERNAME=YOUR_CONFLUENCE_USERNAME
+   CONFLUENCE_API_TOKEN=YOUR_CONFLUENCE_API_TOKEN
+   ```
+    * `JIRA_URL`: The base URL of your Jira instance (e.g., `https://your-company.atlassian.net`).
+    * `JIRA_API_TOKEN`: A Jira API token for authentication. You can generate one in your Atlassian account settings.
+    * `JIRA_USERNAME`: The email address associated with your Jira account.
+    * `CONFLUENCE_URL`, `CONFLUENCE_USERNAME`, `CONFLUENCE_API_TOKEN`: Optional. When present, the server also enables
+      its Confluence toolset (e.g. `https://your-company.atlassian.net/wiki`, your Atlassian email and an Atlassian API
+      token). The same three values configure the RAG sync runtime's Confluence access (see
+      [Updating the RAG Vector Database](#updating-the-rag-vector-database)).
+
+2. **Run the MCP Server using Docker:**
+   Navigate to the `mcp/jira/` directory and execute the `start_mcp_server.bat` script (valid only for Windows
+   platform):
+
+   ```bash
+   cd mcp/jira
+   start_mcp_server.bat
+   ```
+   This command will start the Docker container for the MCP server, mapping port `9000` on your host to the container's
+   port `9000`. It also mounts a local directory (`D:\temp` in the example, corresponding to
+   `ATTACHMENTS_LOCAL_DESTINATION_FOLDER_PATH` in your main `.env` file) to `/tmp` inside the container (corresponding to
+   `MCP_SERVER_ATTACHMENTS_FOLDER_PATH`). Ensure this local directory exists and has appropriate permissions. The agents
+   that review Jira issues download attachments directly over the Jira REST API; the shared folder is only used by the
+   Incident Creation agent to hand files to the MCP server. Such an
+   approach is needed because the current implementation of Jira MCP server only downloads the attachments locally on
+   the server and doesn't transfer them to the agent. That's why those downloaded attachments need to be retrieved and
+   volume mapping is the current solution for that. Within the cloud setup, a cloud storage could be mapped to the
+   docker
+   container and then downloaded attachments could be retrieved by the agent from the cloud storage.
+
+### Starting agents locally
+
+1. **Start Qdrant Vector Database (required for RAG features):**
+   The Incident Creation agent, the Requirements Review agent's document retrieval, the RAG sync runtime and the
+   orchestrator's sync locks require a running Qdrant instance for vector database operations.
+   ```bash
+   scripts/start_qdrant.bat
+   ```
+   This script starts Qdrant in a Docker container on port 6333, published on `127.0.0.1` only, and waits until it is
+   ready. The image tag matches the deployed Qdrant (`_QDRANT_IMAGE_TAG` in `cloudbuild.yaml`; override it with
+   `QDRANT_IMAGE_TAG`), and the data persists in the `qdrant_data` volume. Local runs always use this instance: set
+   `QDRANT_URL=http://localhost:6333` and leave `QDRANT_API_KEY` empty in your `.env`. Never point a local run at the
+   deployed Qdrant: local syncs, tests and experiments would write into production collections. A container created by
+   an older version of the script keeps its old image and port binding; recreate it with `docker rm -f qdrant` (the
+   data stays in the volume). Stop it (`docker stop qdrant`) before running the smoke suite, whose Qdrant mock uses the
+   same port.
+
+2. **Start the Embedding Service (optional):**
+   If you want to use a dedicated embedding service instead of loading the model in each agent:
+   ```bash
+   uv run --extra embedding-service python services/embedding_service/main.py
+   ```
+   The text model loads in the background at startup; `GET /ready` answers once warm-up
+   completes. Install the extra once with `uv sync --extra embedding-service`.
+
+3. **Start the Prompt Guard Service (optional):**
+   Required if prompt injection checks are enabled.
+   ```bash
+   python services/prompt_guard_service/main.py
+   ```
+
+4. **Start Individual Agents:**
+   Open separate terminal windows for each agent you want to run:
+
+    * **Requirements Review Agent:**
+      ```bash
+      python agents/requirements_review/main.py
+      ```
+    * **Test Case Design Agent** (it runs the Test Case Generation, Review and Classification agents in-process, so they need no process of their own):
+      ```bash
+      python agents/test_case_design/main.py
+      ```
+    * **Incident Creation Agent:**
+      ```bash
+      python agents/incident_creation/main.py
+      ```
+
+5. **Start the Orchestrator:**
+   ```bash
+   python orchestrator/main.py
+   ```
+
+### Web UI Monitoring Dashboard
+
+The orchestrator includes a built-in web UI for monitoring agent status, tasks, and logs in real-time. It targets WCAG 2.2 AA: every control works by keyboard, statuses pair colour with an icon and a word, every chart has a text alternative, and it follows the system's light or dark theme, a raised contrast preference, Windows contrast themes and reduced motion.
+
+#### Accessing the Dashboard
+
+Once the orchestrator is running, navigate to `http://localhost:8000/` (or your configured orchestrator URL) to
+access the dashboard. You will be prompted to log in with your configured credentials.
+
+**Credentials:**
+
+`DASHBOARD_USERNAME`, `DASHBOARD_PASSWORD`, and `DASHBOARD_JWT_SECRET` have no default values — until all three are
+set, the dashboard fails closed and login returns HTTP 503. The `.env` example above uses `admin`/`admin` only as a
+placeholder.
+
+> **⚠️ Important:** Never use placeholder credentials in production.
+
+#### Dashboard Features
+
+The views are tabs of the app bar (a bottom bar on a phone); a view keeps its state while another one is shown, and a hidden view sends no requests.
+
+* **Overview:** Key figures (agents by status, success rate of the finished tasks with its trend over the last 100 tasks, estimated cost and tokens, uptime and version), a live topology of the orchestrator and its agents, the live activity feed since the page opened, the latest failures and the knowledge sync outcomes.
+* **Agents:** Every registered agent with its status (Available, Busy, Broken, with the reason of a broken agent), capacity, running tasks and live activity, and the "Discover agents" action. An agent opens a side sheet with its running and recent tasks, its description and the tail of its tasks' logs, live while the sheet is open.
+* **Tasks:** The last 100 tasks (the most the API returns) as a sortable, filterable table with agent, status, start, duration, tokens and cost. A task opens a side sheet with its timing, error, token usage per operation and its log tail, live while it runs; "Open in Logs" opens the Logs view on it.
+* **Errors:** The latest 50 errors, grouped by module and agent, with their tracebacks and a link to the task.
+* **Logs:** The orchestrator's logs, or those of one agent or one task, with a level filter, a search in the loaded lines, "Load older" paging and a follow mode that keeps up with new lines.
+* **Search and jump** (`Ctrl+K`, `⌘K` on macOS) finds views, agents and tasks; `G` then a view's letter switches views, `?` lists the keyboard shortcuts, and the preferences set the theme.
+* Task starts and ends are announced to screen readers in batches (for example "3 tasks started, 2 finished, 1 failed"), and so is a lost connection to the orchestrator.
+
+#### Starting the UI Development Server (For Development Only)
+
+If you want to run the UI in development mode with hot-reloading, `ORCHESTRATOR_PORT` must be set to the port the
+orchestrator is running on first — the dev server's proxy configuration requires it and fails to start otherwise:
+
+```bash
+cd orchestrator/ui
+export ORCHESTRATOR_PORT=8000   # Windows (PowerShell): $env:ORCHESTRATOR_PORT=8000
+npm ci
+npm run dev
+```
+
+The development server runs on port 5173 with a proxy to the orchestrator backend. It needs Node.js 24 with npm 11.10 or newer, because `orchestrator/ui/.npmrc` disables the packages' install scripts and installs only versions released at least three days ago. `npm run lint` (no warning allowed), `npm run build` (type-check and bundle) and `npm test` (Vitest) are the checks the `Dashboard UI` CI job runs; `orchestrator/ui/README.md` describes the stack and the tests.
+
+#### Building the UI for Production
+
+To build the UI and integrate it with the orchestrator (`ORCHESTRATOR_PORT` must be set as above):
+
+```bash
+cd orchestrator/ui
+# Windows
+start.bat
+
+# Linux/macOS
+./start.sh
+```
+
+This will build the React application, copy the static files to `orchestrator/static/` for serving by the
+orchestrator, and then start the dev server on top of that build. The orchestrator's Docker image builds the UI itself. The build also writes `licenses.md`, the licences of the bundled packages and fonts, which the orchestrator serves at `/licenses.md` and the dashboard links from its legal notice.
+
+### Model Settings and the pydantic-ai Version
+
+Provider-specific request settings (Claude 5 thinking and effort, Qwen reasoning and sampling, the maximum output tokens and the transport-level retries) are resolved in one place, `common/model_factory.py`, on **pydantic-ai 2.57.0**. A Claude agent that thinks returns a structured result as Native Output (the answer constrained to its JSON schema) instead of through a forced output tool, which would make Claude answer without thinking. No global temperature or top_p is sent: Gemini and Claude run on their provider defaults, and Qwen on its model card's sampling for the active mode. Every model client (Gemini, Claude and the OpenAI-compatible Qwen endpoint) runs on `httpx2`, with pydantic-ai's `AsyncHTTPX2TenacityTransport` as the retry transport, and the Atlassian MCP server is reached through pydantic-ai's `MCPToolset`. Qwen's chat template accepts a system message only at the start of the conversation, so the Qwen model profile merges all instruction parts of an agent (e.g. the test case design's main prompt and its per-story instruction) into one leading system message; the smoke suite's LLM mock rejects a later system message the same way.
+
+The agents keep the pydantic-ai 1.x run semantics: `end_strategy="early"` (tools requested alongside the final output are skipped rather than run) and a single retry per MCP tool call. A custom `MODEL_NAME` left to pydantic-ai follows its 2.x prefixes: `openai:` now targets the Responses API (`openai-chat:` for Chat Completions), and `google-vertex:` is `google-cloud:`; the `google-gla:`, `anthropic:` and `qwen:` names are built by the model factory and are unaffected.
+
+#### Qwen3.8-27B: recommended settings
+
+Thinking is configured per agent and is the same for every provider: an agent's thinking level (`<AGENT>_THINKING_LEVEL`, see the *Environment Variables* block) turns thinking on at that effort, and `none` turns it off. On Qwen, no level sets the chat template's `enable_thinking` to `false` with the model card's non-thinking sampling (temperature 0.7, top_p 0.8, presence penalty `QWEN_NON_THINKING_PRESENCE_PENALTY`), and a level sends the matching reasoning effort with the thinking sampling (temperature 1.0, top_p 0.95, presence penalty `QWEN_THINKING_PRESENCE_PENALTY`); top_k 20 comes from the checkpoint's generation config. The defaults in `config.py` keep the levels of the default Gemini model, so a Qwen deployment sets the recommended values below in the `overrides` of its environment in `deploy/manifest.yaml`:
+
+| Agent | Variable | Recommended |
+| --- | --- | --- |
+| Orchestrator | `ORCHESTRATOR_THINKING_LEVEL` | `none` |
+| Requirements review | `REQUIREMENTS_REVIEW_THINKING_LEVEL` | `none` |
+| Incident creation | `INCIDENT_CREATION_THINKING_LEVEL` | `none` |
+| Test case design | `TEST_CASE_DESIGN_THINKING_LEVEL` | `low` |
+| Test case generation | `TEST_CASE_GENERATION_THINKING_LEVEL` | `low` |
+| Test case review | `TEST_CASE_REVIEW_THINKING_LEVEL` | `low` |
+| Test case classification | `TEST_CASE_CLASSIFICATION_THINKING_LEVEL` | `low` |
+| Presence penalty, thinking off | `QWEN_NON_THINKING_PRESENCE_PENALTY` | `0` (the default) |
+| Presence penalty, thinking on | `QWEN_THINKING_PRESENCE_PENALTY` | `0.5` (the default) |
+
+The presence penalty of the model card (1.5) gave a worse result in both modes: it breaks agentic steps (instruction following, tool loops), so both penalties are settings and default to the best value of their mode.
+
+**Serving**: use vLLM **0.29.0 or newer** (verified on v0.31.0). Builds before v0.29.0 ignore `tool_choice: "required"`, so the structured outputs of the agents are unconstrained (fixed in vLLM by #52830). Builds that enforce the schema grammar (verified on v0.31.0) let the model omit the optional fields of an output model, which is why each routing result of the orchestrator (`AgentSelected`, `SuitableAgentBusy`, `NoSuitableAgent`) is its own output tool with only required fields. These are vLLM behaviours, not Qwen ones.
+
+Running Qwen3.8 with thinking on is much slower on a single GPU, so raise `TEST_CASE_DESIGN_TASK_TIMEOUT_SECONDS` for it, while keeping it below the orchestrator's request timeout (3500 s on Cloud Run).
+
+#### Context compaction
+
+The main loop of every A2A agent, including the generation, review and classification runs the test case design delegates to in-process, compacts its older history before the context window fills, instead of failing the task. It uses `TieredCompaction` from `pydantic-ai-harness` with two zero-LLM tiers, applied before each model request:
+
+1. When the estimated history exceeds 90 % of the model's context window, the oldest tool results are replaced with the placeholder `[tool result cleared]`, keeping the newest 6 tool call/result pairs. The calls stay, so the model can run a tool again if it needs the data.
+2. Only if the history is still over the target, the oldest whole messages are dropped down to the last 20, always keeping the first user prompt (the task) and never splitting a tool call from its result.
+
+The estimate is anchored on the provider-reported usage of the last response, plus about 4 characters per token for what was added since. Gemini and Claude windows come from the pricing data pydantic-ai ships; for Qwen, set `QWEN_CONTEXT_WINDOW` to the served `--max-model-len` (e.g. 262144), otherwise a conservative 200K window is assumed. No LLM summary is generated: masking old tool output matches summarization at a lower cost, and a summary would put text derived from untrusted Jira and Confluence content into a system prompt. The sub-agents that make a single call, and the orchestrator's routing agents, get no compaction, since their history does not grow. A single message larger than the window, such as one huge tool result, cannot be compacted. A compaction rewrites the history, so the next request misses the prompt cache once.
+
+### Token Budget and Cost Oversight
+
+Every LLM call made by the agents and the orchestrator is metered. After each agent run, the consumed token counts
+(input/output/total, requests, tool calls) and an estimated USD cost are:
+
+* **logged** as a one-line summary by the agent and by the orchestrator, and
+* **surfaced in the dashboard** — per task (Tokens/Cost columns) and as an aggregate on the summary cards.
+
+The orchestrator's own routing/extraction LLM runs are logged as well.
+
+#### Hard per-task limit
+
+Each agent run is capped at a **total token budget per task**. When a run exceeds it, the run is aborted with
+pydantic-ai's `UsageLimitExceeded` and the task is reported as failed. The cap is **token-based** because pydantic-ai
+enforces token limits, not monetary ones — the USD figure is for oversight only.
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `TOTAL_TOKENS_LIMIT_PER_TASK` | Maximum total tokens an agent may consume in a single task. | `1000000` |
+
+#### Cost estimation
+
+USD cost is derived from a static price table, `BudgetConfig.MODEL_PRICING` in `config.py`, keyed by the pydantic-ai
+model name and expressed in USD per 1,000,000 tokens (`input`/`output`). Keep it current with your provider's published
+pricing. Models that are not present in the table report a `null` cost (their tokens are still counted).
+
+### Deployment to Google Cloud Run
+
+This project is already configured for deployment to Google Cloud Run. The `cloudbuild.yaml` file orchestrates the
+building of Docker images and their deployment as separate services. You need to have the gcloud CLI installed before
+you run any of the commands below.
+
+#### Preconditions:
+
+1. Existing VPC network. This one can be created with the following commands:
+    ```bash
+   gcloud compute networks create agent-network --subnet-mode=custom
+   gcloud compute networks subnets create SUBNET_NAME --network=NETWORK_NAME --range=IP_RANGE --region=REGION
+    ```
+   The target subnetwork network also must have Private Google Access activated so that agents running in Google Cloud
+   Run could reach
+   other agents which have "internal" ingress (basically all agents have it except orchestrator).
+2. Access to the Secrets Manager. This one can be created with the following command:
+    ```bash
+   gcloud projects add-iam-policy-binding <project_id> --member="serviceAccount:<project_number>-compute@developer.gserviceaccount.com" --role="roles/secretmanager.secretAccessor" 
+    ```
+3. Cloud NAT in order to route requests from the VPC network out to the internet. This one can be created with the
+   following commands:
+    ```bash
+   gcloud compute routers create ROUTER_NAME --network=NETWORK_NAME --region=REGION
+   gcloud compute routers nats create NAT_GATEWAY_NAME --router=ROUTER_NAME --region=REGION --nat-all-subnet-ip-ranges 
+    ```
+4. The following **secrets in the Google Secrets Manager** with corresponding values need to be added (the full list
+   is the `secrets` section of `deploy/manifest.yaml`):
+    * `GOOGLE_API_KEY`
+    * `ANTHROPIC_API_KEY` (orchestrator and agents, only for an environment whose `MODEL_NAME` names a Claude model and which lists it under its `secrets` in `deploy/manifest.yaml`; other environments don't deploy it)
+    * `JIRA_API_TOKEN`
+    * `JIRA_USERNAME`
+    * `JIRA_URL`
+    * `ZEPHYR_API_TOKEN`
+    * `ZEPHYR_BASE_URL`
+    * `ATLASSIAN_MCP_SERVER_URL`
+    * `ORCHESTRATOR_API_KEY`
+    * `QDRANT_API_KEY`
+    * `DASHBOARD_USERNAME`
+    * `DASHBOARD_PASSWORD_HASH`
+    * `DASHBOARD_JWT_SECRET`
+    * `AGENT_AUTH_TOKEN` (mapped to the orchestrator's `REMOTE_EXECUTION_AGENT_AUTH_TOKEN`)
+    * `CONFLUENCE_URL`, `CONFLUENCE_USERNAME`, `CONFLUENCE_API_TOKEN` (RAG sync job and Atlassian MCP server)
+    * `INTERNAL_SERVICE_API_KEY` (RAG sync job and Test Case Design agent, for the embedding service; orchestrator and Test Case Design agent, for the orchestrator's A2A delegation endpoint)
+    * `SHAREPOINT_TENANT_ID`, `SHAREPOINT_CLIENT_ID`, `SHAREPOINT_CLIENT_SECRET` (RAG sync job; placeholder values
+      are enough while no SharePoint drive is synced)
+5. Cloud Storage bucket for general operations (with all needed folders created, see "Substitution Variables").
+6. Cloud Storage bucket for storing and publicly serving test execution reports (this bucket needs to have public
+   access)
+
+#### Deployment manifest and redeploy gate
+
+`deploy/manifest.yaml` is the source of truth for what every deployed workload is configured with: per service its
+environment keys with their defaults, its secret names (only names - Cloud Run resolves the values through the
+workload's identity) and its version, plus each environment's target (project, region) and overrides. Resource sizing,
+image tags, request timeouts and container ports stay in `cloudbuild.yaml`, because they must line up with deploy-time
+settings the manifest does not own.
+
+`scripts/render_deployment_config.py` resolves one service for one environment. The precedence chain, later layers
+winning, is: shared defaults and the service's own defaults -> values derived from the deployment target
+(`GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_REGION` and the `{project}`, `{region}`, `{version}` placeholders) -> the
+environment's overrides -> runtime overrides (`QUAIA_DEPLOY_OVERRIDE_<KEY>` variables). An override may only set a
+key the manifest declares, an empty value never beats a default, a key without a value is not deployed, and a secret
+name the manifest doesn't declare fails the rendering. A secret listed under `optional_secrets` (`ANTHROPIC_API_KEY`)
+is deployed only in the environments that list it under their own `secrets`. Run the same command locally to see exactly what a deployment
+would apply:
+
+```bash
+PROJECT_ID=my-project uv run scripts/render_deployment_config.py orchestrator production
+```
+
+It writes `deploy/rendered/<service>.env.yaml` (for `--env-vars-file`), `deploy/rendered/<service>.secrets.txt` (the
+`--set-secrets` value) and `deploy/rendered/<service>.marker`, and prints the marker. The build renders every
+workload once, passing its substitutions as runtime overrides, and every deploy step consumes its rendered files.
+
+The marker combines the service's version with a hash of its rendered configuration and is stored as the
+`quaia_deploy_marker` label on the deployed service or job. Before deploying, `deploy/redeploy_gate.sh` reads the label
+and skips the deployment when the marker is unchanged: a configuration-only change redeploys the service on its own,
+and an unchanged service is not redeployed. **Bump a service's `version` in the manifest to roll out a code change
+whose configuration is unchanged.** The third-party images take their version from the `_ATLASSIAN_MCP_IMAGE_TAG` and
+`_QDRANT_IMAGE_TAG` substitutions, so a new tag redeploys them.
+
+To deploy Qwen through the pipeline, set `MODEL_NAME`, `QWEN_ENDPOINT`, `QWEN_CONTEXT_WINDOW`, the two `QWEN_*_PRESENCE_PENALTY` keys and the `<AGENT>_THINKING_LEVEL` keys in the `overrides` of the environment (see *Qwen3.8-27B: recommended settings*): the manifest declares them with empty defaults on the orchestrator, `requirements-review-agent`, `test-case-design-agent` (which reads the generation, review and classification levels too) and `incident-creation-agent`, the only workloads that call the LLM, and a key without a value is not deployed. The identity each of these four services runs as needs `roles/run.invoker` on the Qwen Cloud Run service, which lives outside this repository. `QWEN_API_KEY` is not declared, because every secret a service references must exist in Secret Manager; an endpoint that needs it, or a private network, is not deployable through the pipeline.
+
+#### Deployment:
+
+After having all preconditions fulfilled, you can execute the following command:
+
+```bash
+gcloud builds submit --config 'path/to/your/cloudbuild.yaml' --substitutions "^;^_BUCKET_NAME=YOUR_GCS_BUCKET_NAME;_ALLURE_REPORTS_BUCKET=YOUR_ALLURE_REPORTS_BUCKET_NAME;_REQUIREMENTS_REVIEW_AGENT_BASE_URL=YOUR_REQUIREMENTS_REVIEW_AGENT_URL;_TEST_CASE_DESIGN_AGENT_BASE_URL=YOUR_TEST_CASE_DESIGN_AGENT_URL;_INCIDENT_CREATION_AGENT_BASE_URL=YOUR_INCIDENT_CREATION_AGENT_URL;_REMOTE_EXECUTION_AGENT_HOSTS=YOUR_COMMA_SEPARATED_AGENT_HOSTS;_PROMPT_GUARD_SERVICE_URL=YOUR_PROMPT_GUARD_SERVICE_URL;_DEPLOY_ALL_SERVICES=true" .
+```
+
+```powershell
+gcloud builds submit --config 'path/to/your/cloudbuild.yaml' --substitutions "`^;`^_BUCKET_NAME=YOUR_GCS_BUCKET_NAME;_ALLURE_REPORTS_BUCKET=YOUR_ALLURE_REPORTS_BUCKET_NAME;_REQUIREMENTS_REVIEW_AGENT_BASE_URL=YOUR_REQUIREMENTS_REVIEW_AGENT_URL;_TEST_CASE_DESIGN_AGENT_BASE_URL=YOUR_TEST_CASE_DESIGN_AGENT_URL;_INCIDENT_CREATION_AGENT_BASE_URL=YOUR_INCIDENT_CREATION_AGENT_URL;_REMOTE_EXECUTION_AGENT_HOSTS=YOUR_COMMA_SEPARATED_AGENT_HOSTS;_PROMPT_GUARD_SERVICE_URL=YOUR_PROMPT_GUARD_SERVICE_URL;_DEPLOY_ALL_SERVICES=true" .
+```
+
+**Substitution Variables:**
+* `_BUCKET_NAME`: The name of the Google Cloud Storage bucket used for storing attachments downloaded by Jira MCP
+  server.
+* `_JIRA_ATTACHMENTS_FOLDER`: The name of the subdirectory within `_BUCKET_NAME` that is mounted as the Jira MCP
+  server's attachments volume (`only-dir` on the Cloud Run volume mount). Default: `jira`.
+* `_ALLURE_REPORTS_BUCKET`: The GCS bucket where test execution HTML reports will be stored.
+* `_REQUIREMENTS_REVIEW_AGENT_BASE_URL`: The URL of the deployed Requirements Review Agent.
+* `_TEST_CASE_DESIGN_AGENT_BASE_URL`: The URL of the deployed Test Case Design Agent. It is the only deployed test case agent: the generation, review and classification agents run inside it, and its Cloud Run request timeout is 3600 s, so a whole design fits into one request.
+* `_INCIDENT_CREATION_AGENT_BASE_URL`: The URL of the deployed Incident Creation Agent.
+* `_REMOTE_EXECUTION_AGENT_HOSTS`: A comma-separated list of URLs for all deployed agents that the orchestrator will
+  interact with, the procedure knowledge agent of the `test-execution-agents` repository included.
+* `_ORCHESTRATOR_URL`: The URL of the deployed orchestrator, set as `ORCHESTRATOR_URL` on the orchestrator (the URL its
+  A2A delegation card advertises) and on the Test Case Design agent (where it sends its procedure knowledge requests).
+  Default: empty, which leaves the procedure knowledge requests failing until it is set.
+* `_PROMPT_GUARD_SERVICE_URL`: The URL of the deployed Prompt Guard Service.
+* `_JIRA_ADDITIONAL_FIELD_IDS`: The `JIRA_ADDITIONAL_FIELD_IDS` of the Test Case Design agent (see *Environment Variables*). Default: empty.
+* `_EMBEDDING_SERVICE_URL`: The URL of the deployed Embedding Service.
+* `_EMBEDDING_MEMORY` / `_EMBEDDING_CPU`: Memory and CPU of the embedding service. Defaults: `8Gi` / `2`.
+* `_EMBEDDING_BACKENDS` / `_EMBEDDING_TEXT_MODEL`: The embedding service's enabled backends and text model.
+* `_QDRANT_URL`: The URL of the deployed Qdrant service.
+* `_QDRANT_STORAGE_FOLDER`: The subdirectory within `_BUCKET_NAME` mounted as Qdrant's storage volume. Default: `qdrant`.
+* `_TIMEZONE`: The `TZ` environment variable applied to every deployed service. Default: `Europe/Vienna`.
+* `_ORCHESTRATOR_REQUEST_TIMEOUT`: The Cloud Run request timeout for the orchestrator service. Default: `3500s`.
+* `_ALLURE_REPORTS_CONTAINER_PATH`: The path inside the orchestrator container where the Allure reports volume is
+  mounted. Default: `/app/allure-report`.
+* `_LOCAL_ATTACHMENTS_MOUNT_PATH` / `_JIRA_MCP_SERVER_ATTACHMENTS_MOUNT_PATH`: The container paths where the shared
+  attachments volume is mounted for the Incident Creation agent and for the Atlassian MCP server, respectively. Both
+  default to `/tmp` and correspond to `ATTACHMENTS_LOCAL_DESTINATION_FOLDER_PATH` / `MCP_SERVER_ATTACHMENTS_FOLDER_PATH`.
+* `_RAG_SYNC_TASK_TIMEOUT_SECONDS` / `_RAG_SYNC_LOCK_TTL_SECONDS` / `_RAG_SYNC_START_ALLOWANCE_SECONDS`: The sync job's
+  task timeout, the scope lock expiry (keep it above the task timeout) and how long an unconfirmed job start keeps the
+  lock. Defaults: `3600` / `3900` / `300`.
+* `_RAG_SYNC_MEMORY` / `_RAG_SYNC_CPU`: Memory and CPU of the sync job. Defaults: `4Gi` / `2`.
+* `_QDRANT_DOCUMENTS_COLLECTION_NAME`, `_RAG_OFFICE_CONVERSION_ENABLED`, `_RAG_MAX_ATTACHMENT_BYTES`,
+  `_RAG_MAX_PAGES_PER_DOCUMENT`, `_RAG_RENDER_DPI`, `_RAG_MAX_IMAGE_DIMENSION`: The sync job's settings of the same names
+  (see *Environment Variables*); `_QDRANT_DOCUMENTS_COLLECTION_NAME` sets `QDRANT_CONFLUENCE_COLLECTION_NAME`.
+* `_ATLASSIAN_MCP_IMAGE_TAG` / `_QDRANT_IMAGE_TAG`: The image tags of the Atlassian MCP server and of Qdrant, which
+  are also their redeploy versions. Defaults: `0.21.1` / `v1.19.1`.
+* `_PROMPT_OVERRIDES_DIR` / `_PROMPT_OVERRIDES_BUCKET` / `_PROMPT_OVERRIDES_FOLDER`: Optional prompt overrides. When
+  `_PROMPT_OVERRIDES_DIR` is set, the folder `_PROMPT_OVERRIDES_FOLDER` of the bucket `_PROMPT_OVERRIDES_BUCKET` is
+  mounted at that path into the orchestrator and every agent, and `PROMPT_OVERRIDES_DIR` points to it.
+* `_DEPLOY_ALL_SERVICES`: Set to `true` to deploy all services. Individual service flags — `_DEPLOY_ATLASSIAN_MCP`,
+  `_DEPLOY_EMBEDDING_SERVICE`, `_DEPLOY_PROMPT_GUARD`, `_DEPLOY_QDRANT` — are available for granular deployment instead.
+
+The build always deploys the RAG sync Cloud Run Job (`rag-sync-job`, task retries 0) and grants the orchestrator's
+runtime service account `roles/run.jobsExecutorWithOverrides` on that job only, which carries the
+`run.jobs.runWithOverrides` permission the orchestrator needs to start executions with per-run arguments.
+
+**Important**: Before the initial deployment of the framework into Google Cloud Run it's quite hard to know which URL
+will be assigned to each agent and orchestrator. That's why most probably you'll have to run the deployment command
+once, then identify the assigned URL of each service, update the substitution values in the command and run it again.
+
+### Hermetic smoke tests
+
+The smoke suite is a self-contained integration test, independent of any Cloud Run deployment and of any LLM provider. It runs the real orchestrator and the QA agents (requirements review, test case design and incident creation) under `docker-compose.smoke.yml`, with every external boundary replaced by a mock under `tests/smoke/mocks/` (the LLM, Jira MCP, Jira REST, Zephyr, Qdrant + embedding, Confluence REST and Microsoft Graph). A mock test-execution agent stands in for the VM-hosted real executors, and a mock procedure knowledge agent (`tests/smoke/mocks/procedure_knowledge_agent.py`) for the real one: like it, it declares its task capacity in its card and answers with the Java agents' `token_usage` text artifact and a canned `procedure_selection` (a registration procedure for the first precondition, a reset workflow for the first two steps together, and that workflow for a step that already is it).
+
+The LLM mock (`tests/smoke/mocks/llm_mock.py`) is an OpenAI-compatible Chat Completions server that every agent and the orchestrator reach through the existing `qwen:` route (`MODEL_NAME: "qwen:smoke-mock"` and `QWEN_ENDPOINT` in the compose file), so no production code knows about it and the real model client, its retries, the tool loop, output validation and usage metering stay under test. It recognises the calling operation by the tools a request offers and the shape of its output tool, and answers deterministically from the conversation: the next tool call of that operation's workflow, or its final output built from the framework's own models. Every request is recorded at `/__recorded`; a request that matches no operation is answered with HTTP 400 and recorded as unhandled, which fails the suite, so a new LLM call needs a scripted answer in the mock. The stack carries no provider key, and the suite refuses to run when an agent card reports any other model.
+
+The suite drives the system through the orchestrator's public webhooks and asserts on what reaches each mocked boundary:
+
+* **Every LLM call** → each model-driven operation of the flows (routing, results extraction, the requirements review with its focused reviews and their merge, every step of the test case design including the duplicate judgement, classification and incident creation) reached the LLM mock, and none went unanswered.
+* **Model request settings** → the mock records each request's `temperature`, `top_p`, `presence_penalty`, `reasoning_effort`, `chat_template_kwargs` and the properties and required fields of every offered tool. The stack sets `ORCHESTRATOR_THINKING_LEVEL: "none"`, so the routing requests carry thinking off (`enable_thinking: false`, temperature 0.7, top_p 0.8, presence penalty 0) and exactly the three routing result tools with every field required, while the test case design requests carry its default level (`reasoning_effort: medium`, temperature 1.0, top_p 0.95, presence penalty 0.5).
+* **Requirements review** (`POST /new-requirements-available`) → a non-empty review comment reaches Jira (REST or MCP), and the agent first fetched the source story via the Jira MCP. The prompt override mounted from `tests/smoke/overrides/` reaches the review model's instructions, the story attachment is downloaded over Jira REST, and the review issues a hybrid documents query whose text is non-empty and shorter than the issue content. With `REQUIREMENTS_REVIEW_FOCUS_AREA_COUNT` set to 3, the usage artifact meters the three focused reviews (`review_with_attachments`) and the merge run (`merge_reviews`).
+* **Additional Jira fields** (`JIRA_ADDITIONAL_FIELD_IDS`) → the configured custom field IDs reach the models of the requirements review and the test case design, and the Jira MCP mock records that both flows requested them.
+* **Routing and cards** → routing decisions with justifications reach the dashboard logs, and every agent's card
+  description carries its model, version and skill name.
+* **Test case design** (`POST /story-ready-for-test-case-generation`) → the Test Case Design agent generates, reviews and fixes the test cases through the whole loop: the LLM mock reports a high finding per test case in every review (on a real model, the severity-classifier override mounted from `tests/smoke/overrides/` does), so the design runs exactly one fix cycle and stops as `iteration_limit` after the second review (`TEST_CASE_DESIGN_MAX_ITERATIONS: "2"` in the compose file), and every final comment reports that; a design that converges on its own is covered by the unit tests. Then the scripted test cases (name + steps, one per acceptance criterion) reach Zephyr exactly once, each linked once to the originating story; the classification labels reach every test case; every test case gets the "Review Complete" status and a final review comment with the header naming the iterations and the stop reason, its severity-tagged findings, and the "Duplicate check" section, which renders the judge's partial overlap with a seeded test case. The design's LLM fetched the story exactly once through the Jira MCP, without comments (`comment_limit` 0) and with the content and the configured fields. When publishing, each final test case was searched for duplicates exactly once, within its project (the Qdrant mock answers test-case queries with the stored points, so the judge runs end to end); the usage artifact carries per-operation counters of the design agent and the sub-agents of its generation and review delegates, the test case fixer and the knowledge-aware test case generator included.
+* **Procedure knowledge** → the design delegates one knowledge request per test case to the orchestrator's A2A endpoint (`ORCHESTRATOR_URL` and `INTERNAL_SERVICE_API_KEY` in the compose file) after the generation, before each review and after the fix: the mock knowledge agent receives every draft once and the rebuilt test cases in both reviews and the fix, each as a completed task of that agent in the orchestrator's task history with the usage of its `token_usage` artifact, and the dashboard reports the capacity its card declares. Every per-test-case review request carries the selected procedures, and every saved test case reuses their descriptions verbatim, with its two steps merged into the one recorded workflow.
+* **Test execution / incident creation** (`POST /execute-tests`) → a failed automated test drives a real Bug issue into the seeded Jira project, the failed execution is reported to Zephyr inside a fresh test cycle, the bug is linked to that execution, and the duplicate search consulted the vector DB with the project filter. The executing agent's name and version and the environment label reach the incident model and the bug. The typed (`api`) test case reaches the execution agent while the seeded untyped one is skipped with a warning.
+* **Manual execution** (`POST /execute-test`) → one result for the chosen mock agent reaches Zephyr and no bug is
+  created.
+* **Structured logging** → the requirements review's log lines carry the agent's name and task id.
+* **Dashboard** → the login answers `429` with `Retry-After` after the configured attempts, and the task history
+  survives an orchestrator restart. The restart check runs last and calls `docker compose -f docker-compose.smoke.yml
+  restart orchestrator` (override the file with `SMOKE_COMPOSE_FILE`), so the Docker CLI must be available where
+  pytest runs.
+* **Jira DB update** (`POST /update-jira-db`) → the orchestrator forwards to the local sync service, which pushes the seeded Jira story into the mocked vector DB
+  (collection creation with the named dense + sparse schema, and a point upsert carrying both vectors), and also a
+  seeded issue in the `Closed` status.
+* **Confluence DB update** (`POST /update-confluence-db`) → the local sync service ingests the seeded Confluence page
+  (space lookup, page listing, body fetch, breadcrumb-prefixed chunks upserted into the documents collection) and its
+  PDF and image attachments (page records with the reconciliation chain and a page image); a second
+  sync of the unchanged space re-embeds nothing, and a concurrent request for the same scope answers `409 Conflict`.
+* **Negative paths** → all five webhooks reject an invalid API key (401), a missing `issue_key` fails with 400, a
+  missing `project_key` or `space_key` fails with 422, and the dashboard API rejects a missing token (401) — all without dispatching
+  to an agent.
+
+The RAG syncs are fired first, concurrently: they fill the vector DB the other flows retrieve from, and the mocked model would otherwise reach it before them. Then the model-driven webhooks are fired once, concurrently (the flows are mutually independent), so the suite runs in seconds once the stack is up.
+
+It runs in GitHub Actions (the `smoke` job in `.github/workflows/ci.yml`) on every push and pull request, and needs no secret. To run it locally:
+
+```bash
+docker build -t agentic-qa-base:latest -f Dockerfile.base .
+docker compose -f docker-compose.smoke.yml up -d --build --wait
+uv run pytest tests/smoke -m smoke -v
+docker compose -f docker-compose.smoke.yml down -v
+```
+
+### A/B tests against a baseline
+
+The smoke suite proves that the flows work on a scripted model; it says nothing about the quality of what a real model writes, so a change to the model, its settings or an agent's prompt can degrade every output while the suite stays green. The A/B suite under `tests/ab/` (marker `ab`) closes that gap. It runs the same topology with the model-driven services on a real model - `docker-compose.ab.yml` sets `MODEL_NAME` and `GOOGLE_API_KEY` for the orchestrator, requirements review, test case design and incident creation, and restores the orchestrator's default thinking level that the smoke stack turns off - and gives every LLM-driven workflow its own A/B test, which runs that workflow once and compares what it produced against the workflow's snapshot committed under `tests/ab/baselines/<name>/`:
+
+| Workflow (`-k`) | Webhook | Compared outputs (dimensions) |
+| --- | --- | --- |
+| `requirements_review` | `POST /new-requirements-available` | the review comment (`requirements_review`) |
+| `test_case_design` | `POST /story-ready-for-test-case-generation` | the generated test cases (`test_case_generation`), their review comments (`test_case_review`) and their classification labels (`test_case_classification`) |
+| `incident_creation` | `POST /execute-tests` | the bug report created for the failed execution (`incident_report`) |
+
+Routing and results extraction have no dimension of their own: a wrong route or extraction fails the run of the workflow itself. The RAG syncs, `/execute-test` and the dashboard produce no model output, so the smoke suite alone covers them. The suite runs the RAG syncs once first, then each selected workflow one after another, and refuses a stack whose agents report the LLM mock's model. Each workflow is compared on two levels:
+
+* **Structural metrics** (`tests/ab/artifacts.py`) - test cases per run, steps per case, share of cases carrying an objective, labels and a review comment, bugs created, output lengths. Each is "higher is better", so a candidate below its baseline value means the run produced *less*.
+* **Judged quality** (`tests/ab/judge.py`) - both runs' outputs for a dimension are handed to a judge model as anonymous "Output A" and "Output B" and judged against the requirement they came from - the seeded story together with the attachments the agents received, and for the bug report also the failed execution it was written from, so a detail grounded in those is not mistaken for an invention; the prompt-override marker the review flow appends is stripped before judging - on a five-level scale - `much_better`, `better`, `same`, `worse`, `much_worse`, read from the candidate's side - with a rationale that must name the concrete content behind the label. The pair is judged a second time with the two swapped: a verdict only counts when both orders agree on its direction (at the milder of the two magnitudes), and orders that disagree are reported as `inconsistent` - judge noise, never a regression. A candidate judged `much_worse` in both orders means the run produced something clearly *worse* and is a regression; one judged `worse` (in both orders, or `worse` in one and `much_worse` in the other) is reported as a warning only, because a single run of a non-deterministic model can land somewhat below a single baseline run without any change.
+
+Metrics apply a 25% tolerance because the artifacts come from a non-deterministic model; the judge's tolerance is the agreement of both orders. A regression on either level fails the workflow's test; a judged `worse` shows up in the pytest warnings summary and as `WARNING` in the report. Every comparison writes a full report - per-metric deltas, per-dimension verdicts for each order and the judge's rationale behind them - to `logs/ab_report_<workflow>.html`, a self-contained page to open in any browser.
+
+The A/B suite never runs automatically, because every run makes real, billed model calls: run it by hand, for the workflows a change touches. In GitHub Actions, start the **A/B** workflow (`.github/workflows/ab.yml`) with its `workflow` input set to `all` or to one workflow; it needs a `GOOGLE_API_KEY` repository secret and uploads the reports as the `ab-reports` artifact. Locally, run it against a fresh stack, since the recording mocks keep what earlier runs wrote:
+
+```bash
+docker build -t agentic-qa-base:latest -f Dockerfile.base .
+GOOGLE_API_KEY=<your-key> docker compose -f docker-compose.smoke.yml -f docker-compose.ab.yml up -d --build --wait
+
+# Compare one workflow against the default baseline
+uv run pytest tests/ab -m ab -k test_case_design -v
+
+# Capture: this run becomes tests/ab/baselines/gemini/<workflow>.json for every selected workflow
+AB_WRITE_BASELINE=1 AB_BASELINE_NAME=gemini uv run pytest tests/ab -m ab -v
+
+# Compare a candidate configuration against it
+AB_BASELINE_NAME=gemini AB_RUN_LABEL=qwen3-vl-32b uv run pytest tests/ab -m ab -v
+
+docker compose -f docker-compose.smoke.yml -f docker-compose.ab.yml down -v
+```
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `AB_BASELINE_NAME` | `default` | Which snapshots under `tests/ab/baselines/` to compare against. |
+| `AB_WRITE_BASELINE` | unset | When set, each selected workflow's run is saved as its baseline instead of being compared. |
+| `AB_RUN_LABEL` | the model the running agents report | What the candidate run is called in the report. |
+| `AB_JUDGE_MODEL` | `google-gla:gemini-3.8-flash` | The judge, the same model the A/B stack runs on. |
+
+The committed baselines under `tests/ab/baselines/default/` are recorded runs of the A/B stack's model (their `label` and `captured_at` say which and when), so the bar is what the current prompts and model produced on the seeded `SMOKE-1` story, and a later run must not fall below it beyond the tolerance. Refresh a workflow's baseline by capturing over it (`AB_WRITE_BASELINE=1 ... -k <workflow>`) whenever its outputs are meant to change, and keep additional named baselines beside it for the configurations you compare against. Asking for a baseline that does not exist skips the comparison with the capture command in its message.
+
+When a change is *meant* to alter what the agents produce, refresh the affected baselines in the same change instead of loosening the checks.
+
+## Invoking Orchestrator Workflows
+
+### Triggering Workflows via Jira Webhooks
+
+The orchestrator listens for webhooks from Jira or CI/CD systems to initiate automated workflows. Both Jira webhooks below reject an `issue_key` which is not a Jira issue key (`PROJ-123`) with `400` before any agent runs.
+
+* **New Requirements Available (Requirements Review):**
+  Send a POST request to `/new-requirements-available` with a JSON payload containing the `issue_key` of the Jira user
+  story.
+
+  Example payload:
+  ```json
+  {
+      "issue_key": "SCRUM-1"
+  }
+  ```
+
+* **Story Ready for Test Case Generation:**
+  Send a POST request to `/story-ready-for-test-case-generation` with a JSON payload containing the `issue_key` of the
+  Jira user story. This triggers the test case design of the story (see *Test Case Design* above): its test cases are generated, reviewed and fixed in a loop, then saved, classified and published with their review comments. `TEST_CASE_DESIGN_TASK_TIMEOUT_SECONDS` bounds the wait for a free Test Case Design agent and the design together. The agent designs one story at a time, so a story that arrives during another design waits for it and has only the rest of the budget; when too little is left, the call fails (`503` when the wait used it all, `408` when the design runs out of time) and the story has to be sent again.
+
+  Example payload:
+  ```json
+  {
+      "issue_key": "SCRUM-1"
+  }
+  ```
+
+### Executing Automated Tests
+
+You can trigger the execution of automated tests for a specific project.
+
+* **Execute Tests:**
+  Send a POST request to `/execute-tests` with a JSON payload containing the `project_key` of the Jira project. This
+  will execute all test cases labeled as "automated" within that project. For any failed tests, the orchestrator will
+  automatically trigger incident creation using the Incident Creation Agent.
+
+  Example payload:
+  ```json
+  {
+      "project_key": "SCRUM"
+  }
+  ```
+  The results will be reported back to Zephyr and an Allure report will be generated. Uploading the results and
+  generating the report are independent steps: a failure of either is recorded as a dashboard error and listed in the
+  response's `reporting_failures` instead of failing the run (a missing test plan skips only the upload). Test cases
+  left queued after every execution agent of their group has gone are returned as `error` results.
+
+* **Execute a single test case manually:**
+  Send a POST request to `/execute-test` with the `test_case_key`, the `agent_id` of an
+  explicitly chosen unattended execution agent and the `project_key`. The agent is reserved
+  directly (404 unknown, 409 busy, 503 broken) with no LLM routing; the result is uploaded to
+  the test management system and the report is regenerated. A manual run never creates
+  incidents. The response is the structured execution result plus its `reporting_failures`.
+  ```json
+  {"test_case_key": "SCRUM-42", "agent_id": "ui-execution-agent", "project_key": "SCRUM"}
+  ```
+
+  `/execute-tests` groups test cases only by the recognized test-type labels derived from the
+  `TestCaseType` enumeration in `common/models.py` (`ui`, `api`, `security`, `performance`,
+  `load`, `stress`); test cases without such a label are skipped with a warning. The
+  "automated" label that marks test cases as executable is `AUTOMATED_TC_LABEL` in
+  `config.py` (`OrchestratorConfig`).
+
+### Updating the RAG Vector Database
+
+The RAG sync runs in its own deployable image (a Cloud Run Job in production, a local
+service in development) so its dependencies stay out of the orchestrator. The
+orchestrator acquires a per-scope lock (`jira:<project>` / `confluence:<space>`) and
+starts the sync in the configured mode:
+
+* **Job mode** (`RAG_SYNC_JOB_NAME` set): the orchestrator starts a job execution through
+  the Cloud Run Admin API, passing the scope options and the lock token as per-execution
+  container arguments, and answers `202 Accepted` with the execution name.
+* **Local mode** (`RAG_SYNC_SERVICE_URL` set): the orchestrator forwards the request to
+  the local sync service, awaits the result and returns it. Start it with
+  `python services/rag_sync/local_service.py --port 8085` (it requires `INTERNAL_SERVICE_API_KEY`, which the
+  orchestrator sends).
+* Neither configured: the endpoints answer with an error naming the missing configuration.
+
+An external scheduler (e.g. Cloud Scheduler) calls the endpoints on a cadence with the
+API key and a short deadline. `409 Conflict` means a sync is already running for the
+scope and must not trigger aggressive retries. A crashed job frees its scope after the
+lock TTL.
+
+* **Update the Jira issues collection:**
+  Send a POST request to `/update-jira-db` with a JSON payload containing the `project_key`
+  of the Jira project. The sync runs programmatically — no LLM agent is involved.
+  ```json
+  {"project_key": "SCRUM"}
+  ```
+
+* **Update the test-case collection:**
+  Send a POST request to `/update-test-case-db` with a JSON payload containing the
+  `project_key`. Every run is a full resync (the test-management systems offer no cheap
+  "changed since" query): all eligible test cases (`TEST_CASE_INDEX_STATUSES`; empty means
+  every status) are re-rendered and upserted, unchanged content skips re-embedding, and
+  stored points absent from the listing are deleted.
+  ```json
+  {"project_key": "SCRUM"}
+  ```
+
+* **Update the documents collection (Confluence):**
+  Send a POST request to `/update-confluence-db` with a JSON payload containing the
+  `space_key` (personal spaces start with `~`), and optionally a `page_id`, an
+  `attachment_name_pattern` (case-insensitive regex) and a `skip_page_body` flag.
+  Page bodies are ingested: the storage-format body is normalized to markdown
+  (headings, lists, tables, code and content macros kept; navigation/dynamic macros
+  dropped), chunked along headings with `Page title > Section` breadcrumbs, and
+  upserted as dense + sparse vectors into the documents collection. The run is
+  idempotent: unchanged page and attachment versions are skipped without any fetch,
+  and a re-run after a crash re-ingests only the items whose fingerprint was never
+  saved.
+  ```json
+  {"space_key": "DEV", "page_id": 12345, "attachment_name_pattern": "^report.*\\.pdf$", "skip_page_body": false}
+  ```
+  Attachments matching the name pattern are stored one record per document page. Each
+  record carries the page text, the page image (when the format has one) and the
+  reconciliation chain (Confluence page, attachment, page `n` of `m`); its embedded text
+  starts with `Page title > attachment name > page n of m`, so pages are found by
+  document name as well as by content.
+
+  | Format                                   | Page text                                                             | Page image      |
+  |------------------------------------------|-----------------------------------------------------------------------|-----------------|
+  | PDF                                      | Native text; OCR for image-only pages and for embedded images         | Rendered page   |
+  | PNG, JPEG, GIF, WebP, BMP, TIFF          | OCR (one page per frame)                                              | Normalized PNG  |
+  | DOCX, PPTX                               | Converted PDF; native text-only reader if conversion is off or fails  | Rendered page   |
+  | DOC, PPT, ODT, ODP, RTF                  | Converted PDF                                                         | Rendered page   |
+  | XLS, ODS                                 | Converted PDF                                                         | None

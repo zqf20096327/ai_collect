@@ -30,15 +30,15 @@ goethe start
 ```bash
 # 1. Start Goethe and load a model
 goethe up
-goethe install --model nvidia/Llama-3.1-8B-Instruct-NVFP4 --load
+goethe install nvidia/Llama-3.1-8B-Instruct-NVFP4 --load
 
 # 2. Share it
-goethe configure api                 # this machine only, your VPN (recommended), or a public address
-goethe key --create my-laptop        # one key per app or person
+goethe api configure                 # this machine only, your VPN (recommended), or a public address
+goethe api keys --create my-laptop        # one key per app or person
 goethe api                           # the address to give your apps
 ```
 
-On a 32 GB Blackwell GPU, `goethe recommend` lists `meshapplied/Qwen3.8-27B-NVFP4-NInfer` first.
+On a 32 GB Blackwell GPU, `goethe models recommend` lists `meshapplied/Qwen3.8-27B-NVFP4-NInfer` first.
 
 Anything that speaks the OpenAI, Anthropic or LiteLLM API can use it right away, all at the same address: the OpenAI and Anthropic SDKs, LiteLLM, LangChain, LlamaIndex, Open WebUI, coding assistants, or plain `curl`.
 
@@ -58,7 +58,7 @@ print(reply.choices[0].message.content)
 - **Easy to serve.** Every model you load is served at the same URL; a request picks its model by name.
 - **Fast.** Use the custom kernel attachments to accelerate and optimise model capability.
 - **Private by default.** Nothing reaches the API until you allow it. Rate-limit, expire, scope or revoke keys at any time.
-- **Fits your network.** This machine only, Tailscale / WireGuard / ZeroTier, or a public IP. `goethe configure api` walks you through the choice.
+- **Fits your network.** This machine only, Tailscale / WireGuard / ZeroTier, or a public IP. `goethe api configure` walks you through the choice.
 - **Many models, many GPUs.** Run several models side by side, split large models across GPUs, and keep other GPU software running next to Goethe.
 - **Always on.** Loaded models come back after a reboot or a crash.
 
@@ -92,7 +92,7 @@ Goethe ships its own CUDA 13 runtime and compiler, so no CUDA toolkit is needed 
 | 535 to 579 | 12.2 to 12.9 | Data-center GPUs (A100, H100, H200, B200, L40S, L4 and similar), through NVIDIA's CUDA forward compatibility |
 | Older than 535 | | Not supported; the installer offers to update the driver |
 
-GeForce and TITAN cards need driver 580 or newer. Enough GPU memory for the model is the only other requirement; `goethe recommend` lists the models that fit.
+GeForce and TITAN cards need driver 580 or newer. Enough GPU memory for the model is the only other requirement; `goethe models recommend` lists the models that fit.
 
 Supported [model families and quantization formats](docs/user-guide.md#supported-models) are in the user guide.
 

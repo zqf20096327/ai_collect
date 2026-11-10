@@ -95,6 +95,7 @@ This repository is the model zoo for that path: **91 converted models** (as of 2
 | [GFPGAN v1.4](#gfpgan-v14-blind-face-restoration) | Blind face restoration |  |  | [🤗 HF](https://huggingface.co/litert-community/GFPGAN-v1.4-LiteRT) |
 | [Bonsai Image 4B](bonsai_image/) | Text-to-image (ternary DiT, CPU) | Galaxy S26 (CPU) | 23.5 s per 256×256 image (app, 4 steps, 2026-10-09) | [🤗 HF](https://huggingface.co/litert-community/Bonsai-Image-ternary-4B) |
 | [iris-3b Turbo](#iris-3b-turbo) | Text-to-image (pixel-space DiT, GPU) | Galaxy S26 | 212.6 s per 768×768 image (app, 4 steps, first image after the install, 2026-10-21) | [🤗 HF](https://huggingface.co/litert-community/iris-3b-Turbo-LiteRT) |
+| [Idol](#idol-speridlabsidol--idol-turbo) | Image to 3D Gaussian splat (GPU; background removal on the CPU) | Galaxy S26 | 158 s per photo (app, 5 steps, 65,536 Gaussians, first photo after start on a cool phone; 329–351 s on a phone already warm; the first release's 262,144-Gaussian form, also in the repo: 267 s, 2026-11-10) | [🤗 HF](https://huggingface.co/litert-community/Idol) |
 | [MoGe-2 ViT-S](#moge-2-vit-s) | Monocular geometry (points, normals, depth) | Pixel 8a | ~522 ms | [GitHub](https://github.com/john-rocky/LiteRT-Models/releases/download/v3/moge.tflite) |
 | [Depth Anything 3 Small](#depth-anything-3-vit-s-small) | Monocular depth | Pixel 8a | ~1.8 s/image | [🤗 HF](https://huggingface.co/mlboydaisuke/Depth-Anything-3-Small-LiteRT) |
 | [Metric3D v2 ViT-S](#metric3d-v2-vit-s) | Metric depth | Pixel 8a | ~44 ms | [🤗 HF](https://huggingface.co/mlboydaisuke/Metric3D-v2-LiteRT) |
@@ -134,7 +135,7 @@ This repository is the model zoo for that path: **91 converted models** (as of 2
 | [Fun-ASR-Nano-2512](asr_litertlm/) | Speech recognition, zh / en / ja (LiteRT-LM) | Galaxy S26 (CPU) | 1.19 s for a 6.4 s clip (RTF 0.19) | [🤗 HF](https://huggingface.co/litert-community/Fun-ASR-Nano-2512) |
 | [Confucius4-R2T2](asr_litertlm/) | Speech recognition, zh / en, a Qwen3-ASR-1.7B fine-tune (LiteRT-LM) | Galaxy S26 (CPU) | 2.59 s for a 6.4 s clip (RTF 0.40) | [🤗 HF](https://huggingface.co/mlboydaisuke/Confucius4-R2T2-LiteRT) |
 
-Latency is the figure each model's section below records, on the device named; blank means this repository records no measurement. **Galaxy S26** rows (Snapdragon 8 Elite Gen 5) come from [npubench](npubench/): LiteRT 2.2.0 `CompiledModel` GPU, median of 50 runs after warm-up, `run()` plus output readback, thermal status NONE, 2026-08; the value in parentheses is the same phone's Hexagon NPU. 50 models were measured that way — see [Snapdragon NPU](#snapdragon-npu-hexagon). The Galaxy S26 (CPU) rows dated 2026-10 (Qwen3-ASR-1.7B, Fun-ASR-Nano-2512, Confucius4-R2T2, Bonsai Image 4B, Audio8-TTS-Preview-0.6b), the Galaxy S26 GPU row of iris-3b Turbo and the Galaxy S26 GPU + NPU row of Ming-3.0-tts-0.5B are instead the sample apps' own device checks on the same phone, as their sections say. **Pixel 8a** (Tensor G3, Mali GPU, fp16) figures marked `~` come from each model's conversion notes; per [docs § Latency figures](docs/LITERT_CONVERSION_GUIDE.md#latency-figures-time-run--readback), figures recorded before 2026-08 may time only the asynchronous `run()` call (ormbg's earlier "~10 ms" re-measured at 246 ms with the readback). Camera FPS, RTF, tok/s and per-turn figures are end-to-end app measurements. The Model column links to the full entry: I/O shapes, preprocessing, license, conversion script and sample app.
+Latency is the figure each model's section below records, on the device named; blank means this repository records no measurement. **Galaxy S26** rows (Snapdragon 8 Elite Gen 5) come from [npubench](npubench/): LiteRT 2.2.0 `CompiledModel` GPU, median of 50 runs after warm-up, `run()` plus output readback, thermal status NONE, 2026-08; the value in parentheses is the same phone's Hexagon NPU. 50 models were measured that way — see [Snapdragon NPU](#snapdragon-npu-hexagon). The Galaxy S26 (CPU) rows dated 2026-10 (Qwen3-ASR-1.7B, Fun-ASR-Nano-2512, Confucius4-R2T2, Bonsai Image 4B, Audio8-TTS-Preview-0.6b), the Galaxy S26 GPU rows of iris-3b Turbo and Idol, and the Galaxy S26 GPU + NPU row of Ming-3.0-tts-0.5B are instead the sample apps' own device checks on the same phone, as their sections say. **Pixel 8a** (Tensor G3, Mali GPU, fp16) figures marked `~` come from each model's conversion notes; per [docs § Latency figures](docs/LITERT_CONVERSION_GUIDE.md#latency-figures-time-run--readback), figures recorded before 2026-08 may time only the asynchronous `run()` call (ormbg's earlier "~10 ms" re-measured at 246 ms with the readback). Camera FPS, RTF, tok/s and per-turn figures are end-to-end app measurements. The Model column links to the full entry: I/O shapes, preprocessing, license, conversion script and sample app.
 
 # Run a model in 5 lines
 
@@ -186,6 +187,8 @@ LiteRT is TensorFlow Lite renamed (2024-09-04). The `.tflite` format and the mod
 | `pip install tflite-runtime` (last release 2023, wheels to Python 3.11) | `pip install ai-edge-litert` (cp310–cp314) | `ai_edge_litert.interpreter.Interpreter`, `ai_edge_litert.compiled_model.CompiledModel` |
 | `pip install ai-edge-torch` | `pip install litert-torch` (`litert_torch.convert(model, sample_inputs)`) | every model in this zoo was converted with it |
 | MediaPipe LLM Inference API | LiteRT-LM (`com.google.ai.edge.litertlm:litertlm-android` 0.16.1) | MediaPipe LLM Inference is maintenance-only |
+
+What moving from LiteRT 1.4.0's `Interpreter` C API to LiteRT 2.3.2's `CompiledModel` changes on a Galaxy S26 (latency and output agreement, three models, 2026-11-10): [interpreter-vs-compiledmodel/](interpreter-vs-compiledmodel/).
 
 Two `CompiledModel` GPU rules: every op in the graph must be GPU-compatible (no CPU fallback), and tensors are rank 4 at most. Full mapping with sources: [docs/LITERT_CONVERSION_GUIDE.md § Three PyTorch → Android routes](docs/LITERT_CONVERSION_GUIDE.md#three-pytorch--android-routes-on-one-model-measured-2026-09-05) <!-- TODO(lane B, articles): replace this in-repo anchor with the published article URL -->
 
@@ -890,8 +893,4 @@ Converted via **litert-torch** with encoder + decoder initial prediction only (C
 
 # Speech Recognition
 
-### Parakeet (FastConformer-CTC)
-
-NVIDIA Parakeet (`parakeet-tdt_ctc-110m`, the CTC branch): the 17-layer FastConformer encoder + CTC head run **fully on the LiteRT CompiledModel GPU** on a Pixel 8a — the first big global-attention transformer in this zoo to survive the Mali fp16 path end to end. On-device transcript matches PyTorch exactly (real-frame logits corr 0.99997), 3105/3105 ops on LITERT_CL (1 partition), ~330 ms GPU + ~70 ms host mel ≈ 0.4 s end-to-end per 16 s window (device-app measured).
-
-Converted via **litert-torch**: RelPositionMultiHeadAttention re-authored as manual ≤4D matmuls, GLU→`a·sigmoid(b)`, masking folded 
+### Parake

@@ -845,6 +845,13 @@ DeerFlow still uses `Forwarded` / `X-Forwarded-*` headers to recover the browser
 >
 > Reconciliation uses an atomic takeover claim that re-checks the lease after candidate selection, so a successful owner renewal wins over orphan recovery and only one reconciler can report a run as recovered. When multiple Gateway workers share the Docker/AIO or E2B sandbox backend, also configure `sandbox.ownership.type: redis`; E2B uses the leases during background startup and periodic reconciliation so duplicate/orphan cleanup cannot terminate a live peer's sandbox.
 
+If a completed thread operation (such as a checkpoint, goal, or artifact write,
+branch, or deletion) fails to release its database reservation, the same Gateway
+worker retries cleanup when it receives a new run or mutation for that thread.
+This also works in single-worker deployments with lease heartbeats disabled.
+If cleanup fails again, admission returns a busy response. Completed requests
+can still replay their saved results by idempotency key.
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed Docker development guide.
 
 #### Upgrading an existing checkout
@@ -940,6 +947,8 @@ such a checkout, use `bash ./scripts/<name>.sh ...`.
    ```bash
    make dev
    ```
+
+   Local nginx writes temporary files under the checkout's `temp/` directory.
 
 5. **Access**: http://localhost:2026
 
@@ -1168,6 +1177,9 @@ failed run. Live runs require a disposable OpenSandbox service and runtime home.
 BoxLite shutdown rejects late VM registration and keeps its SDK loop open while
 in-flight acquisitions finish. If they cannot drain within five seconds,
 shutdown fails with resources still owned and can be retried.
+Startup-recovered BoxLite VMs use the same private async loop as newly created
+VMs for health checks, commands, and shutdown. Recovery skips boxes removed
+after discovery without creating replacement VMs.
 
 Successful `read_file` calls treat a JSON document's `error` field as file data,
 not a failure of the read tool. This keeps receipts accurate when inspecting
@@ -1208,7 +1220,4 @@ For stdio file outputs, a bare filename is linked to a uniquely matching file cr
 For HTTP/SSE background-task calls, `session_init_timeout` separately bounds connection setup (including the SSE endpoint event) and MCP initialization together; it stops applying once the tool call begins. Initialization deadline errors identify the server and configured time limit.
 Ordinary `task` subagents retain the parent run's captured thread incarnation for MCP calls, including legacy threads, so delegation preserves the same lifecycle scope.
 MCP tool names are prefixed with `<server_name>_` by default to prevent collisions across servers. If a server already namespaces its own tools, set `tool_name_prefix: false` on that server in `extensions_config.json` to keep the original names. Disable the prefix only when the resulting names remain unique across all enabled servers.
-Signed-in users' notification toggle, default model, conversation mode, and reasoning effort are saved to their account and restored on other browsers or after clearing browser storage. Browser notification permission still needs to be granted on each device. Changes retry after network failures; unsent changes survive a reload in the same tab. Concurrent edits to different fields are preserved; for the same field, the last server write wins. Existing unscoped browser preferences are not uploaded automatically because they have no account owner; reselect those settings once after upgrading. Static demos and auth-disabled development keep browser-local settings. Thread-specific model overrides and other display preferences remain local.
-
-In a new chat, the submitted question stays above its streamed reasoning and
-tool steps while the server creates the conversation an
+Signed-in users' notification toggle, default model, conversation mode, and reasoning effort are saved to their account and restored on other 

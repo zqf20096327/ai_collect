@@ -186,6 +186,27 @@ class CalculateSumTool < ApplicationMCPTool
 end
 ```
 
+#### Schema Keywords
+
+Extra keyword arguments on `property` and `collection` become JSON Schema keywords, and arguments are validated against that schema before `perform` runs. Write them in snake_case (`min_length`, `multiple_of`); they are emitted with their JSON Schema names (`minLength`, `multipleOf`). On a `collection`, `min_items`, `max_items` and `unique_items` describe the array; every other keyword describes each item:
+
+```ruby
+property :priority, type: "string", enum: %w[low normal high]
+property :retries, type: "integer", minimum: 0, maximum: 5
+collection :labels, type: "string", enum: %w[bug feature docs], min_items: 1, unique_items: true
+```
+
+A keyword given as a proc is resolved each time the schema is built, both for `tools/list` and for argument validation. The proc runs with `session`, `session_data`, `current_user` and `current_gateway` in scope, so each client sees and is held to its own values:
+
+```ruby
+property :tool, type: "string", required: true, enum: -> { current_user.allowed_tools }
+collection :labels, type: "string", enum: -> { current_user.project.labels.pluck(:name) }, max_items: -> { session_data["label_limit"] }
+```
+
+Tools without procs keep a cached validator. Outside a request (rake tasks), `session` and `current_user` are `nil`.
+
+A proc that raises is reported to `Rails.error` as `ActionMCP::SchemaResolutionError`. That tool is left out of `tools/list` and answers `tools/call` like an unknown tool; every other tool is unaffected.
+
 #### Consent Management
 
 For tools that perform sensitive operations (file system access, database modifications, external API calls), you can require explicit user consent:
@@ -524,6 +545,21 @@ When set, responses include an opaque `nextCursor` when more items are available
 
 `tasks/list` always paginates regardless of this setting (defaults to 50 per page, or `pagination_page_size` if configured).
 
+### Custom JSON-RPC Methods
+
+Vendor methods can be served next to the MCP core methods. Names take the form `vendor/method`; the MCP namespaces (`tools/`, `prompts/`, `resources/`, `notifications/`, ...) are reserved. The handler receives the request params and the session, and its return value becomes the JSON-RPC result:
+
+```ruby
+# config/initializers/action_mcp.rb
+ActionMCP.configure do |config|
+  config.register_method("acme/toolsets/list") do |params, session|
+    { toolsets: Toolset.visible_to(ActionMCP::Current.user).as_json }
+  end
+end
+```
+
+Raise `JSON_RPC::JsonRpcError` to answer with a specific error code; any other exception is reported to `Rails.error` and answered with `internal_error`.
+
 ### Server Instructions
 
 Server instructions help LLMs understand **what your server is for** and **when to use it**. They describe the server's purpose and goal, not technical details like rate limits or authentication (tools are self-documented via their own descriptions).
@@ -845,6 +881,21 @@ end
 ```
 
 Tools access it via `session_data["user_id"]`. See [GATEWAY.md](GATEWAY.md) for details.
+
+### Per-Request `_meta`
+
+Tools, prompts and resource templates read the `_meta` object of the current `tools/call`, `prompts/get` or `resources/read` request through `request_meta` (an indifferent-access hash, empty when the client sent none):
+
+```ruby
+class OrdersTemplate < ApplicationMCPResTemplate
+  def resolve
+    trace_id = request_meta["example.com/trace"]
+    # ...
+  end
+end
+```
+
+The MCP specification does not authenticate `_meta`. Use it as a lookup hint, and authorize from the session.
 
 ### 1. Create `mcp/config.ru`
 

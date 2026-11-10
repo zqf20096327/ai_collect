@@ -92,7 +92,7 @@ Octoweb starts ONE `octomind server` process the first time an assistant is need
 every chat in every workspace, inline edit, background learning and the mail jobs — each as its own session with its
 own working directory and agent tag. The server is stopped when octoweb quits.
 
-octomind is a plug-and-play AI agent runtime. You install it once, point it at an API key, and get a fully configured specialist agent — model, system prompt, tools, and all — with zero manual setup. The `octoweb:assistant` tag fetches that agent's configuration from the [community tap registry](https://github.com/muvon/octomind-tap) automatically.
+octomind is a plug-and-play AI agent runtime. You install it once, point it at an API key, and get a fully configured specialist agent — model, system prompt, tools, and all — with zero manual setup. The `octoweb:chief` tag fetches that agent's configuration from the [community tap registry](https://github.com/muvon/octomind-tap) automatically.
 
 ### Setup
 
@@ -110,17 +110,17 @@ export OPENROUTER_API_KEY="your_key"   # easiest — covers all providers
 ```
 
 **3. Nothing else to start** — octoweb launches `octomind server` itself (on a free loopback port, with a per-run
-secret), resolves the `octoweb:assistant` agent from the tap, and connects every sidebar session to it.
+secret), resolves the `octoweb:chief` agent from the tap, and connects every sidebar session to it.
 
 **4. Open the sidebar in octoweb:** `⌘⇧A`
 
 ### Changing the agent
 
-The agent tag in the sidebar header defaults to `octoweb:assistant`. You can type any tag your octomind instance knows about — `developer:rust`, `assistant`, your own custom agents — the new-session picker autocompletes as you type, and the sidebar reconnects to that agent immediately.
+The agent tag in the sidebar header defaults to `octoweb:chief`. You can type any tag your octomind instance knows about — `developer:rust`, `assistant`, your own custom agents — the new-session picker autocompletes as you type, and the sidebar reconnects to that agent immediately. The list now offers domains first (for example `developer`); picking one starts that domain's `chief` agent.
 
-Shipped tags include `octoweb:assistant` (sidebar chat), `octoweb:editor` (inline text transformation, used by `⌘⇧E`), `octoweb:learning` (background learning), and `octoweb:trend` (live social trend research) — see the [tap registry](https://github.com/muvon/octomind-tap).
+Shipped tags include `octoweb:chief` (sidebar chat), `octoweb:editor` (inline text transformation, used by `⌘⇧E`), `octoweb:learning` (background learning), and `octoweb:trend` (live social trend research) — see the [tap registry](https://github.com/muvon/octomind-tap).
 
-The `octoweb:assistant` agent uses a stable working directory per browser workspace.
+The `octoweb:chief` agent uses a stable working directory per browser workspace.
 Default keeps `~/.local/share/octoweb`; other workspaces use
 `~/.local/share/octoweb-workspaces/octoweb-<workspace-id>`. Renaming a workspace
 keeps its directory and Octomind lesson scope. Each directory has the same local
@@ -134,7 +134,7 @@ No data leaves your machine unless your agent sends it somewhere. The AI provide
 
 Agents can do more than reply with text: via the `render_ui` tool they can draw interactive surfaces — forms, buttons, live views — inline in the sidebar chat. Buttons can open URLs in a new tab or resolve back to the agent.
 
-Octoweb speaks [A2UI v1.0](https://a2ui.org/specification/v1.0-a2ui/) and renders the full basic catalog (Card, Row/Column/List, Text, Image, Icon, Video, AudioPlayer, Button, TextField, CheckBox, ChoicePicker, Slider, DateTimeInput, Tabs, Modal, Divider), including data-model binding, `${…}` string interpolation, list templates, validation checks, accessibility attributes, and agent-issued `callRendererFunction`. Envelopes are validated before they render, so a malformed surface comes back to the agent as a precise error instead of a blank card.
+Octoweb speaks [A2UI v1.0](https://a2ui.org/specification/v1.0-a2ui/) and renders the full basic catalog (Card, Row/Column/List, Text, Image, Icon, Video, AudioPlayer, Button, TextField, CheckBox, ChoicePicker, Slider, DateTimeInput, Tabs, Modal, Divider), including data-model binding, `${…}` string interpolation, list templates, validation checks, and accessibility attributes. Envelopes are validated before they render, so a malformed surface comes back to the agent as a precise error instead of a blank card.
 
 ### Proactive Learning
 

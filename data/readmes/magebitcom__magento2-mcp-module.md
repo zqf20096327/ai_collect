@@ -23,6 +23,7 @@ The base module ships the transport, authentication, ACL, audit log, and tool re
   - [Tax and currency module — `Magebit_McpTaxTools`](#tax-and-currency-module--magebit_mcptaxtools)
   - [Report module — `Magebit_McpReportTools`](#report-module--magebit_mcpreporttools)
   - [Google Analytics module — `Magebit_McpGoogleAnalyticsTools`](#google-analytics-module--magebit_mcpgoogleanalyticstools)
+  - [Hyvä Commerce module — `Magebit_McpHyvaCommerceTools`](#hyvä-commerce-module--magebit_mcphyvacommercetools)
   - [Database module — `Magebit_McpDbTools`](#database-module--magebit_mcpdbtools)
 - [Setup](#setup)
 - [Managing tools](#managing-tools)
@@ -100,7 +101,7 @@ Two caveats worth knowing:
 - **`setup:upgrade` enables modules it has not seen before.** Adding the suite to an existing store lands all nine as `=> 1`. If some should be off, disable them in the same deploy, before the store serves traffic.
 - **Disabling a module is a blunt instrument.** To keep one installed but hide individual tools, use **System → MCP → Tools** in the admin, which toggles a single tool at a time behind its own ACL resource.
 
-The Google Analytics and database modules are deliberately **not** in the suite — the first needs a Google login and pulls in the Google SDKs, the second grants bulk database reads. Both are listed below and are one `composer require` away.
+The Google Analytics, Hyvä Commerce and database modules are deliberately **not** in the suite — the first needs a Google login and pulls in the Google SDKs, the second needs Hyvä Commerce, the third grants bulk database reads. All three are listed below and are one `composer require` away.
 
 ## Sub-modules
 
@@ -206,6 +207,20 @@ composer require magebitcom/magento2-mcp-report-tools
 
 ```bash
 composer require magebitcom/magento2-mcp-google-analytics-tools
+```
+
+### Hyvä Commerce module — [`Magebit_McpHyvaCommerceTools`](https://github.com/magebitcom/magento2-mcp-hyva-commerce-tools)
+
+> **Needs Hyvä Commerce 1.4.** Read its [README](https://github.com/magebitcom/magento2-mcp-hyva-commerce-tools#readme) before enabling it.
+
+- Hyvä CMS pages and blocks: drafts, versions, schedules, publishing, translations and Page Builder migration
+- Menu Builder menus, Form Builder forms, email and newsletter templates
+- Store Credit balances, Linked Products groups and category product positions
+- Media Gallery assets and images, Media Optimization
+- Read-only AI Worker jobs, Advanced Admin Permissions and Admin Dashboard widgets
+
+```bash
+composer require magebitcom/magento2-mcp-hyva-commerce-tools
 ```
 
 ### Database module — [`Magebit_McpDbTools`](https://github.com/magebitcom/magento2-mcp-db-tools)
@@ -315,10 +330,10 @@ bin/magento magebit:mcp:token:create \
   --name "<label>" \
   [--allow-writes] \
   [--expires "+30 days"] \
-  [-s <tool.name>] [-s <tool.name>]
+  [-s <tool_name>] [-s <tool_name>]
 ```
 
-The plaintext is printed once and is never recoverable afterwards — store it securely. Manage tokens with:
+The plaintext is printed once and is never recoverable afterwards — store it securely. `-s` takes the tool name `tools/list` shows (`catalog_product_list`) or its dotted form (`catalog.product.list`); both are stored as the dotted name, and a name that matches no tool fails the command without creating a token. Manage tokens with:
 
 ```bash
 bin/magento magebit:mcp:token:list [-u <username>]
@@ -394,7 +409,7 @@ Each OAuth client has its own scope cap and the consenting admin can narrow furt
 - **No raw SQL in the base module.** `db.query` ships only in the separately installed [`Magebit_McpDbTools`](#database-module--magebit_mcpdbtools), which is off by default and allowlist-only. Nothing in the base module or the domain sub-modules accepts an SQL string.
 - **Confirmation hint for destructive tools.** Write tools may flag themselves as requiring confirmation; clients that support it (e.g. Claude Desktop) prompt the operator.
 - **Per-(admin, tool) rate limiter.** Off by default; recommended for production.
-- **Audit log.** Every request is recorded — even unauthenticated attempts. Argument values are PII-redacted before storage.
+- **Audit log.** Every request is recorded — even unauthenticated attempts. Argument values are PII-redacted before storage. The one exception is the `server/discover` probe newer MCP clients send before `initialize`: its expected `-32601` answer is not written, so it does not count as an error. The tool column holds the dotted canonical name (`catalog.product.list`) whichever form the client sent, refused calls included; only a name that matches no tool is stored as sent.
 - **Separated admin permissions.** Token management, OAuth-client management, audit-log viewing, tool management and module configuration are five distinct ACLs.
 
 If you discover a security issue, please report it privately to [info@magebit.com](mailto:info@magebit.com) rather than opening a public issue.
@@ -408,7 +423,9 @@ The contract surface is:
 1. Implement `Magebit\Mcp\Api\ToolInterface` and declare an ACL resource for the tool. By convention, dots in the tool name become underscores in the ACL id (`catalog.product.get` → `Vendor_Module::mcp_tool_catalog_product_get`).
 2. Register the tool in `di.xml` under `Magebit\Mcp\Model\Tool\ToolRegistry`. The DI key must match the tool's `getName()` and conform to `^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$`.
 3. For write tools that wrap a Magento service contract, optionally implement `Magebit\Mcp\Api\UnderlyingAclAwareInterface` so the dispatcher also enforces the equivalent admin-UI permission. `tools/list` applies the same check, so a role that lacks the underlying permission is never offered the tool.
-4. Run `bin/magento magebit:mcp:tools:validate-acl` to confirm every tool's ACL resource resolves. It also warns about underlying resources that do not resolve on this install — those tools stay hidden from `tools/list` for every role.
+4. If the tool needs an optional module, implement `Magebit\Mcp\Api\AvailabilityAwareInterface`; while `isAvailable()` is false the tool is hidden and answers `-32010` like an unregistered one.
+5. If `execute()` finds that the caller may not act on the entity (for example it is outside the admin's store scope), throw `Magebit\Mcp\Exception\ForbiddenException`. It answers `-32004 FORBIDDEN` with your message and `error.data`. Use a soft error (`isError: true`) for anything else.
+6. Run `bin/magento magebit:mcp:tools:validate-acl` to confirm every tool's ACL resource resolves. It also warns about underlying resources that do not resolve on this install — those tools stay hidden from `tools/list` for every role.
 
 Publishing your module? Add the [`magebit-mcp-tools`](https://github.com/topics/magebit-mcp-tools) topic to its GitHub repository so it turns up alongside the rest of the ecosystem.
 

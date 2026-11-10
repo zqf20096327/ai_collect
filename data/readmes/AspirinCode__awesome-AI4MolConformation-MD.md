@@ -366,7 +366,9 @@ Wang, L., Brasnett, C., Borges-Araújo, L. et al.
 
 
 
-
+* **SimPoly: Simulation of polymers with machine learning force fields derived from first principles** [2026]  
+Simm, G.N.C., Hélie, J., Schulz, H. et al.  
+[Nat Commun (2026)](https://doi.org/10.1038/s41467-026-78736-x) | [code](https://github.com/microsoft/simpoly)  
 
 * **Neopep: Reinforcement Learning from Machine-Learned Force Field Energy for Non-Canonical Peptide Structure Prediction** [2026]  
 Dhanya Jagannathan, Philip M. Kim.  
@@ -1078,6 +1080,10 @@ Wang, Han, Linfeng Zhang, Jiequn Han, and E. Weinan.
 
 
 
+* **A thermodynamic correction layer for machine learning interatomic potentials** [2026]  
+Sarath Menon, Braulio Sanchez Ortega, Ralf Drautz.  
+  [arXiv:2610.34551 (2026)](https://doi.org/10.48550/arXiv.2610.34551)  
+
 * **Energetically Anchored Machine-Learning Interatomic Potential Embeddings for Reliable Hydrogen Evolution Electrocatalyst Prediction** [2026]  
 Ching Lin, Po-Wen Chen, Tien-Hsiang Hsueh.  
   [J. Chem. Inf. Model.(2026)](https://doi.org/10.1021/acs.jcim.6c01720)  
@@ -1514,10 +1520,4 @@ Dario Coscia, Pim de Haan, Max Welling.
 Hanwen Kang, Tenglong Lu, Zhanbin Qi, Jiandong Guo, Sheng Meng, Miao Liu.  
 [arXiv:2508.10505 (2025)](https://doi.org/10.48550/arXiv.2508.10505)  
 
-* **PIL-Net: a physics-informed graph convolutional network for predicting atomic multipoles** [2025]  
-Whitter, Caitlin, Alex Pothen, and Aurora Clark.  
-[Digital Discovery (2025)](https://doi.org/10.1039/D5DD00228A) | [code](https://github.com/rinikerlab/EquivariantMultipoleGNN)  
-
-* **Performance of universal machine-learned potentials with explicit long-range interactions in biomolecular simulations** [2025]  
-Viktor Zaverkin, Matheus Ferraz, Francesco Alesiani, Mathias Niepert.  
-[arX
+* **PI

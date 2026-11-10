@@ -84,13 +84,13 @@ Deployed and donated across three communities; taught older adults to self-assem
 
 ## Open-source engineering
 
-**23 external pull requests merged across 14 organizations.**
+**25 external pull requests merged across 16 organizations and maintainers.**
 
 <table>
 <tr>
-<td align="center"><b>23</b><br><sub>merged PRs</sub></td>
-<td align="center"><b>14</b><br><sub>organizations</sub></td>
-<td align="center"><b>15</b><br><sub>repositories</sub></td>
+<td align="center"><b>25</b><br><sub>merged PRs</sub></td>
+<td align="center"><b>16</b><br><sub>organizations &amp; maintainers</sub></td>
+<td align="center"><b>17</b><br><sub>repositories</sub></td>
 </tr>
 </table>
 
@@ -109,6 +109,8 @@ Contributions to: `HuggingFace/peft` · `langgenius/dify` · `networkx/networkx`
 </details>
 
 [→ Full evidence record with dated methodology](https://github.com/DresdenGman/open-source-contributions)
+
+Case studies: [SALib — six merged PRs](https://github.com/DresdenGman/open-source-case-studies/blob/main/salib-case-study.md) · [StatsForecast — three merged PRs](https://github.com/DresdenGman/open-source-case-studies/blob/main/statsforecast-case-study.md)
 
 <br>
 

@@ -207,13 +207,29 @@ curl -X POST http://localhost:3000/interrupt/invoke \
   -H "Content-Type: application/json" \
   -d '{"messages": [{"role": "user", "content": "delete record rec_2"}], "thread_id": "hitl-1"}'
 
-# Approve it
+# Approve it ("reject" to refuse)
 curl -X POST http://localhost:3000/interrupt/resume \
   -H "Content-Type: application/json" \
-  -d '{"thread_id": "hitl-1", "decision": "yes"}'
+  -d '{"thread_id": "hitl-1", "decision": "approve"}'
 ```
 
-When a run pauses, the response's `interrupts` array holds what it's waiting on (empty when it finished). `/stream` sends an `{"type": "interrupt"}` event before `done`. `/resume` returns 404 for an unknown thread and 409 if the thread isn't waiting for a decision.
+Approval is handled by LangChain's `humanInTheLoopMiddleware`: the tools just act, and the middleware pauses before the ones listed in `interruptOn` run. When a run pauses, the response's `interrupts` array holds what it's waiting on as `{ "id", "value" }` entries (empty when it finished). Each `value.actionRequests` lists the tool calls awaiting a decision, with a `description` to show the reviewer. `/stream` sends an `{"type": "interrupt"}` event before `done`.
+
+If the model asks for several approvals in one turn, they arrive as one interrupt with several actions. Answer each in order:
+
+```bash
+-d '{"thread_id": "hitl-1", "decision": ["approve", "reject"]}'
+```
+
+Rejecting any of them sends the model back to re-plan, and the approved ones in that batch don't run either (that's LangChain's rule). An answer can also be an object, e.g. `{"type": "reject", "message": "Not eligible"}`, which the model sees as the reason.
+
+When more than one agent is waiting (a supervisor ran two subagents that both need approval), there is one interrupt per agent. Answer all of them by id:
+
+```bash
+-d '{"thread_id": "hitl-1", "decisions": {"<interrupt id>": "approve", "<other id>": ["approve", "reject"]}}'
+```
+
+`/resume` returns 404 for an unknown thread, 409 if the thread isn't waiting for a decision, and 400 for an answer the interrupt doesn't accept, a wrong number of answers, or a `decisions` map that skips a pending interrupt. After a 400 the thread is still paused, so you can answer again.
 
 ### 4. Structured Output
 
@@ -310,6 +326,8 @@ LANGSMITH_PROJECT=langgraph-starter-kit
 | `/health` | GET | Health check |
 
 When `API_KEY` is set, send `-H "Authorization: Bearer $API_KEY"` with every request except `/health`.
+
+Every response includes the `thread_id` (`/stream` puts it on the `interrupt` and `done` events). Pass it back to continue the conversation. If you leave it out, the server starts a new thread with a random id. Threads belong to one app, so `/support` and `/swarm` never see each other's history, even when they share a Postgres database.
 
 **Apps:** `swarm` `supervisor` `interrupt` `analyst` `researcher` `rag` `support`
 

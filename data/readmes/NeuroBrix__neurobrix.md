@@ -6,7 +6,7 @@ generation, and image upscaling) from one container format and one command-line 
 It is for developers who want to run these models on their own GPUs or CPUs, on Linux,
 Windows and macOS, without writing or maintaining a separate pipeline for each model family. NeuroBrix does not
 train models. It runs published models that have been packaged as `.nbx` containers and
-distributed through the [NeuroBrix Hub](https://neurobrix.es/models).
+distributed through the [NeuroBrix Hub](https://neurobrix.org/models).
 
 <p align="center">
   <img src="./assets/logo_NeuroBrix.png" alt="NeuroBrix logo" width="160"/>
@@ -16,12 +16,12 @@ distributed through the [NeuroBrix Hub](https://neurobrix.es/models).
   <a href="https://pypi.org/project/neurobrix/"><img src="https://img.shields.io/pypi/v/neurobrix?color=blue" alt="PyPI"/></a>
   <a href="https://pypi.org/project/neurobrix/"><img src="https://img.shields.io/pypi/pyversions/neurobrix" alt="Python versions"/></a>
   <a href="https://github.com/NeuroBrix/neurobrix/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-green" alt="License: Apache 2.0"/></a>
-  <a href="https://neurobrix.es/models"><img src="https://img.shields.io/badge/hub-neurobrix.es-orange" alt="NeuroBrix Hub"/></a>
+  <a href="https://neurobrix.org/models"><img src="https://img.shields.io/badge/hub-neurobrix.org-orange" alt="NeuroBrix Hub"/></a>
 </p>
 
 <p align="center">
-  <a href="https://neurobrix.es/models">Hub</a> &nbsp;|&nbsp;
-  <a href="https://docs.neurobrix.es">Documentation</a> &nbsp;|&nbsp;
+  <a href="https://neurobrix.org/models">Hub</a> &nbsp;|&nbsp;
+  <a href="https://docs.neurobrix.org">Documentation</a> &nbsp;|&nbsp;
   <a href="https://github.com/NeuroBrix/neurobrix/releases">Releases</a> &nbsp;|&nbsp;
   <a href="https://github.com/NeuroBrix/neurobrix/blob/main/CONTRIBUTING.md">Contributing</a> &nbsp;|&nbsp;
   <a href="https://gitlab.com/neurobrix/neurobrix">GitLab mirror</a>
@@ -60,7 +60,7 @@ ready-made containers from the hub.
 ## Install and first run
 
 NeuroBrix needs Python 3.10 or newer. The current release is
-**0.6.2** ([release notes](https://github.com/NeuroBrix/neurobrix/releases/tag/v0.6.2)).
+**0.6.5** ([release notes](https://github.com/NeuroBrix/neurobrix/releases/tag/v0.6.5)).
 
 It has two engines. The **Triton engine** (`--triton`) runs on
 [nbxtensor](https://github.com/NeuroBrix/nbxtensor) and Triton and needs no PyTorch. The
@@ -105,7 +105,8 @@ PyTorch index, then `neurobrix[pytorch]`) 6.82 GiB.
 no Triton for macOS: `install-metal` installs NeuroBrix's Triton build for Apple GPUs
 ([NeuroBrix/triton-ext](https://github.com/NeuroBrix/triton-ext); upstream:
 [triton-lang/triton-ext#126](https://github.com/triton-lang/triton-ext/pull/126)), each wheel
-checked against the sha256 written in nbxtensor:
+checked against the sha256 written in nbxtensor (in 0.6.3: macOS 15 and CPython 3.12; macOS 14 and
+CPython 3.10-3.13 by hand, see the known limits below):
 
 ```bash
 pip install neurobrix
@@ -136,12 +137,15 @@ neurobrix hub --category LLM
 neurobrix import TinyLlama/TinyLlama-1.1B-Chat-v1.0 --accept-license
 
 # Run it once (hardware is detected automatically)
-neurobrix run --model TinyLlama-1.1B-Chat-v1.0 \
+neurobrix run --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 \
     --prompt "Write a Python function that reverses a string." --max-tokens 256
 ```
 
-`neurobrix import <org>/<name>` installs the model under `~/.neurobrix/cache/<name>`, and
-`--model` takes that `<name>`.
+**One name per model.** A model is named by its hub name, `<org>/<name>` (its Hugging Face or vendor repository's).
+`neurobrix import` records that name beside the installed model, and `--model` (`run`, `serve`, `upscale`), `remove`,
+`neurobrix list` and the HTTP API all use it; there is no second, short name. A model installed before 0.6.3 keeps its
+directory name until `neurobrix import <org>/<name>` is run once for it (nothing is downloaded again), and `list` and
+every use say so in one line.
 
 A run prints its result on stdout (the generated text, the transcript, or `SAVED: <path>` for a file) and a few
 status lines on stderr: the engine in use and the run time, and on the very first run a line saying the machine is
@@ -152,17 +156,80 @@ environment both.
 ### Serve and chat
 
 `neurobrix serve` keeps a model loaded in a background daemon between requests; `chat` talks to a language model
-through it, and `run` uses it when it serves the same model:
+through it, `run` uses it when it serves the same model, and `stop` unloads it:
 
 ```bash
-neurobrix serve --model TinyLlama-1.1B-Chat-v1.0
+neurobrix serve --model TinyLlama/TinyLlama-1.1B-Chat-v1.0
 neurobrix chat                       # interactive multi-turn chat (/new, /context, /status, /quit)
 neurobrix run --prompt "Hello"       # --model can be omitted while a daemon is running
 neurobrix stop                       # stop the daemon and free GPU memory
 ```
 
 Whether the weights stay on the device between requests (warm) depends on the plan Prism chooses for the machine;
-`serve` says which. Details, including how a conversation and its KV cache behave today: [Serving and chat](docs/serving.md).
+`serve` says which. Details: [Serving and chat](docs/serving.md).
+
+### The conversation cache
+
+The KV cache belongs to the chat session, on both engines. Each turn matches the conversation's token IDs against what
+the cache already holds and prefills only the new ones (TinyLlama, a 421-token second turn: 158 positions prefilled
+instead of 421). Prism chooses the session's prefill chunk from the certified kernel times (`--explain-plan` says
+which, or why none); with that chunk, a turn served from the cache gives the same bytes as the same conversation
+prefilled together.
+
+A conversation has a ceiling, stated when `serve` starts ("served context: up to N positions a session"): the
+positions the card's cache holds (`session_reach` in `run --explain-plan`) plus, past them, those the KV host tier's
+share of host memory holds, within the model's window. A turn that would pass it is refused with that ceiling (over
+HTTP: `400 context_length_exceeded`);
+older turns are never summarised or dropped. `/context` in `chat` shows the conversation's exact token count, the
+ceiling and the tokens the cache holds; `/new` starts again.
+
+`run --turns` plays a JSON list of user messages as one session, through the same code the daemon runs, and prints
+each answer with the tokens its turn matched and prefilled:
+
+```bash
+echo '["Name three primary colours.", "Which of them is the warmest?"]' > turns.json
+neurobrix run --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 --turns turns.json --max-tokens 64
+```
+
+### OpenAI-compatible API
+
+`neurobrix serve --http` opens an HTTP server that speaks the OpenAI API on the same daemon: the same loaded model,
+the same queue and the same inference thread as `chat` and `run`, so they share the warm weights.
+
+```bash
+neurobrix serve --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 --http      # http://127.0.0.1:8765/v1
+```
+
+The address is `127.0.0.1:8765` unless `--http-host` / `--http-port` say otherwise; an address other than loopback
+is refused without `--api-key-file <file>`, and every request then sends `Authorization: Bearer <key>`. The endpoints
+served are those the loaded model's family has: `/v1/models`, `/v1/chat/completions` (streamed as Server-Sent Events,
+tool calls parsed from the format the model's chat template declares, a thinking model's reasoning in
+`reasoning_content`), `/v1/completions`, `/v1/images/generations`, `/v1/audio/speech` and
+`/v1/audio/transcriptions`, and `/v1/embeddings` for an embedding family (none in the catalogue yet: refused by
+name). The `model` field is the model's one name.
+
+```bash
+curl -s http://127.0.0.1:8765/v1/chat/completions -H 'Content-Type: application/json' -d '{
+  "model": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+  "messages": [{"role": "user", "content": "What is a KV cache?"}], "max_tokens": 128}'
+```
+
+With the OpenAI Python client (`pip install openai` on the client side; the engine does not need it):
+
+```python
+from openai import OpenAI
+
+client = OpenAI(base_url="http://127.0.0.1:8765/v1", api_key="unused")   # the key file's content when the server has one
+model = client.models.list().data[0].id
+
+for chunk in client.chat.completions.create(model=model, stream=True,
+                                            messages=[{"role": "user", "content": "Tell me a story."}]):
+    if chunk.choices and chunk.choices[0].delta.content:
+        print(chunk.choices[0].delta.content, end="", flush=True)
+```
+
+A parameter the engine does not honour (`stop`, `logprobs`, `n` > 1, ...) is refused by name
+in the OpenAI error object, never ignored. Every endpoint, parameter and setting: [Serving and chat](docs/serving.md).
 
 ---
 
@@ -175,19 +242,42 @@ Whether the weights stay on the device between requests (warm) depends on the pl
 | NVIDIA GPUs, Linux (CUDA) | Released in 0.6.0. Both compute branches. The project's own test machines are V100s. |
 | CPU (x86-64) | Released in 0.6.0 (the PyTorch engine). |
 | Apple Silicon (Metal) | In 0.6.0. Both engines: the Triton engine through Metal (NeuroBrix's Triton build for Apple GPUs, installed by `python -m nbxtensor install-metal`), the PyTorch engine on MPS. Install: [Install and first run](#install-and-first-run), Apple Silicon. |
-| AMD and Intel GPUs | The Triton engine, through nbxtensor's HIP and Level Zero drivers, with the vendor's runtime and its Triton build (`neurobrix doctor` gives the vendor's install commands). Found a bug on your card? [Open an issue](https://github.com/NeuroBrix/neurobrix/issues). |
+| Intel GPUs | **Experimental, not yet validated on hardware by the NeuroBrix lab — reports welcome.** An Intel GPU whose Level Zero runtime is installed (Arc, Core Ultra, and Gen12: Tiger, Alder, Raptor Lake) is tried by the Triton engine, with Intel's Triton build (`neurobrix doctor` gives the install commands). If the driver says the chip cannot do what was asked (a kernel it will not build, an unsupported feature), the run says which call failed and why, runs again without that chip (on the CPU when it was the only device), and remembers it until the driver or nbxtensor changes; any other error is the run's own, named. Please tell us what happened: [Intel GPU report](https://github.com/NeuroBrix/neurobrix/issues/new?template=intel_gpu_report.yml). |
+| AMD GPUs | A target, not yet validated on a card: the Triton engine reaches them through nbxtensor's HIP driver, with the vendor's runtime and its Triton build (`neurobrix doctor` gives the vendor's install commands). Tried it on your card? [Open an issue](https://github.com/NeuroBrix/neurobrix/issues). |
+| Integrated GPUs | In 0.6.3. An integrated GPU is described in the machine's profile as one memory pool with the host and named with its platform. Apple Silicon is driven (Metal); an Intel integrated GPU with its Level Zero runtime is tried (experimental, the row above); AMD integrated GPUs and Intel chips older than Gen12 are not driven — they are named, with the reason, and the model runs on the CPU with every core of the machine's profile. |
 | Windows | In 0.6.1. Both engines; the Triton engine needs the NVIDIA, AMD or Intel driver and the Triton build for your GPU (`neurobrix doctor` names what is missing). Found a bug on Windows? [Open an issue](https://github.com/NeuroBrix/neurobrix/issues). |
 
-Several GPUs in one machine are used automatically when a model does not fit on one.
-Known limitations of the current release are listed in its
-[release notes](https://github.com/NeuroBrix/neurobrix/releases/tag/v0.6.2). Read them before
-filing a bug.
+Several GPUs in one machine are used automatically when a model does not fit on one. The first launch names each GPU
+from what the operating system ships (the PCI bus on Linux, Win32_VideoController on Windows), with its platform and
+whether it is integrated. When a run meets a device out-of-memory in one of its components, it re-plans that
+component with the memory it measured and goes on, once, keeping the components already finished.
+
+**Known limits of 0.6.5:**
+
+- On an Intel Mac the integrated GPU is named from system_profiler without its platform; it is not driven, and the
+  engine runs on the CPU.
+- Constrained decoding needs the grammar engine, the `nbxgrammar` package, which `pip install neurobrix` installs on
+  Linux x86_64 and aarch64, macOS arm64 and x86_64 and Windows x86_64; on any other platform no wheel of it exists and a
+  constrained request is refused by name (`501 constrained_decoding_not_installed`). It enforces a subset of JSON Schema (a
+  constraining keyword outside it is refused by name) and writes tool calls in the format the model's template
+  declares.
+- No embedding model is in the catalogue yet: `/v1/embeddings` refuses every catalogue model by name.
+- A very long single prompt on the compiled engine is prefilled in chunks of the rows the plan prices (128 for
+  Qwen3-Coder-30B-A3B): it is answered, slowly — 79 931 tokens took 39 minutes on two V100-32GB.
+- A daemon holds one model; a conversation past the card's cache spills to host memory one sequence at a time
+  (batch 1).
+- The macOS 14 Metal wheels (CPython 3.10-3.13) are published at
+  [apple-v0.1.0+triton3.8.0-macos14](https://github.com/NeuroBrix/triton-ext/releases/tag/apple-v0.1.0%2Btriton3.8.0-macos14)
+  and `python -m nbxtensor install-metal` selects them (since nbxtensor 0.0.9).
+
+The full list is in the [release notes](https://github.com/NeuroBrix/neurobrix/releases/tag/v0.6.5). Read them
+before filing a bug.
 
 ### Models on the hub
 
 The hub listed 45 public models in 10 categories on 2026-10-12. The hub itself is the live
-list (`neurobrix hub`, or [neurobrix.es/models](https://neurobrix.es/models)). Each
-identifier below is what you pass to `neurobrix import`.
+list (`neurobrix hub`, or [neurobrix.org/models](https://neurobrix.org/models)). Each
+identifier below is what you pass to `neurobrix import`, and then to `--model`.
 
 | Category | Models |
 |---|---|
@@ -209,42 +299,42 @@ works on every hardware and in every execution mode; the release notes say which
 
 ## Usage by family
 
-The family is read from the container, so `run` takes the inputs that family needs. Run
-`neurobrix run --help` for every flag.
+The family is read from the container, so `run` takes the inputs that family needs. Every command and flag:
+the [CLI reference](docs/reference/cli.md) (`neurobrix run --help` prints the same).
 
 ```bash
 # Language model
-neurobrix run --model TinyLlama-1.1B-Chat-v1.0 --prompt "Explain recursion." \
+neurobrix run --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 --prompt "Explain recursion." \
     --temperature 0.7 --max-tokens 512 --output answer.txt
 
 # Speech-to-text: audio in, text out
-neurobrix run --model whisper-large-v3-turbo --audio recording.wav
+neurobrix run --model openai/whisper-large-v3-turbo --audio recording.wav
 
 # Speech understanding: audio plus an instruction
-neurobrix run --model Voxtral-Mini-3B-2507 --audio meeting.wav \
+neurobrix run --model mistralai/Voxtral-Mini-3B-2507 --audio meeting.wav \
     --prompt "Summarize this call."
 
 # Text-to-speech
-neurobrix run --model Kokoro-82M --prompt "Hello from NeuroBrix." --output speech.wav
+neurobrix run --model hexgrad/Kokoro-82M --prompt "Hello from NeuroBrix." --output speech.wav
 
 # Vision-language: image plus a question
-neurobrix run --model GLM-4.1V-9B-Thinking --input-image photo.jpg \
+neurobrix run --model zai-org/GLM-4.1V-9B-Thinking --input-image photo.jpg \
     --prompt "What is in this image?"
 
 # Multimodal models take --mode (text or image)
-neurobrix run --model Janus-Pro-7B --mode text --input-image photo.jpg --prompt "Describe this image."
-neurobrix run --model Janus-Pro-7B --mode image --prompt "a red apple on a wooden table"
+neurobrix run --model deepseek-ai/Janus-Pro-7B --mode text --input-image photo.jpg --prompt "Describe this image."
+neurobrix run --model deepseek-ai/Janus-Pro-7B --mode image --prompt "a red apple on a wooden table"
 
 # Image generation
-neurobrix run --model Flex.1-alpha --prompt "a lighthouse at dusk" \
+neurobrix run --model ostris/Flex.1-alpha --prompt "a lighthouse at dusk" \
     --steps 20 --seed 42 --output lighthouse.png
 
 # Video generation; --input-image switches an image-to-video model to its first frame
-neurobrix run --model CogVideoX-2b --prompt "a hot air balloon over mountains" \
+neurobrix run --model zai-org/CogVideoX-2b --prompt "a hot air balloon over mountains" \
     --num-frames 17 --seed 42 --output balloon.mp4
 
 # Upscaling
-neurobrix upscale --model Real-ESRGAN-RealESRGAN_x4plus --input photo.png --output photo_x4.png
+neurobrix upscale --model xinntao/Real-ESRGAN-RealESRGAN_x4plus --input photo.png --output photo_x4.png
 ```
 
 ### Execution modes
@@ -264,8 +354,8 @@ The same flags apply to `neurobrix serve`. `neurobrix upscale` takes them as
 ```bash
 neurobrix hub [--category CATEGORY] [--search TERM]   # browse the hub
 neurobrix import <org>/<name> [--no-keep] [--force]   # download and install
-neurobrix list [--store]                              # installed models / downloaded archives
-neurobrix remove <name> [--all]                       # remove from the cache (and the store)
+neurobrix list [--store]                              # installed models by name / downloaded archives
+neurobrix remove <org>/<name> [--all]                 # remove from the cache (and the store)
 neurobrix clean --all -y                              # remove everything
 neurobrix info --models --hardware --system           # what is installed and detected
 neurobrix inspect <name or model.nbx>                 # look inside a container
@@ -321,8 +411,8 @@ not filed as public issues.
 
 - Issues and pull requests: [GitHub](https://github.com/NeuroBrix/neurobrix/issues), mirrored on
   [GitLab](https://gitlab.com/neurobrix/neurobrix)
-- Model hub: [neurobrix.es/models](https://neurobrix.es/models)
-- Documentation: [docs.neurobrix.es](https://docs.neurobrix.es) and the [docs/](./docs) directory
+- Model hub: [neurobrix.org/models](https://neurobrix.org/models)
+- Documentation: [docs.neurobrix.org](https://docs.neurobrix.org) and the [docs/](./docs) directory
 - Building applications and coding agents: [docs/BUILD_WITH_AGENTS.md](./docs/BUILD_WITH_AGENTS.md)
 - Roadmap: [docs/roadmap.md](./docs/roadmap.md)
 - Changes: [CHANGELOG.md](./CHANGELOG.md)

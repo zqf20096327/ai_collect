@@ -2,7 +2,7 @@
 
 <div align="right">
 
-[![CI](https://github.com/SagarBiswas-MultiHAT/ChatAutomation-AI-Assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/SagarBiswas-MultiHAT/ChatAutomation-AI-Assistant/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://www.python.org/)
+[![CI](https://github.com/SagarBiswas-MultiHAT/ChatAutomation-AI-Assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/SagarBiswas-MultiHAT/ChatAutomation-AI-Assistant/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://www.python.org/) [![Sponsor SagarBiswas-MultiHAT on Polar.sh](https://img.shields.io/badge/Sponsor-Polar.sh-0062FF?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://buy.polar.sh/polar_cl_I7DT5UQNUs1Qjb4VrFYOiRA2nkb3RVVUJCnjr3o5SGK)
 
 </div>
 
@@ -185,6 +185,16 @@ This runs the detection logic without clicking or typing.
 
 - PyAutoGUI failsafe is enabled: move the mouse to the top-left corner to stop.
 - Use responsibly and follow the platform’s policies.
+
+---
+
+## Support MultiHAT Open-Source
+
+If you find this project useful in your workflow, development, or security research, consider supporting **SagarBiswas-MultiHAT** in its ongoing maintenance and future updates (supports both One-Time and Monthly backing):
+
+[![Support on Polar.sh](https://img.shields.io/badge/Support%20on-Polar.sh-0062FF?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://buy.polar.sh/polar_cl_I7DT5UQNUs1Qjb4VrFYOiRA2nkb3RVVUJCnjr3o5SGK)
+[![Portfolio](https://img.shields.io/badge/Portfolio-sagarbiswas.multihat.dev-2563EB?style=for-the-badge&logo=todoist&logoColor=white)](https://sagarbiswas.multihat.dev/)
+[![Agency](https://img.shields.io/badge/Agency-multihat.dev-111827?style=for-the-badge&logo=vercel&logoColor=white)](https://multihat.dev)
 
 ---
 

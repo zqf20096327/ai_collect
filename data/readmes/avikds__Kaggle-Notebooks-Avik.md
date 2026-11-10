@@ -1,6 +1,14 @@
 # Kaggle Notebooks
 
-- [Charmonium Spectroscopy and Dimuon Kinematic Reconstruction at CMS: Resonance Line-Shape Fitting](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/cms-jpsi-dimuon-spectroscopy-ml.ipynb)
+- [Deep Tabular Representations for Kepler Object of Interest Exoplanet Disposition Classification](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/nasa-kepler-exoplanet-disposition-classification.ipynb)
+- [Physics-Informed Lithium-Ion Battery Health Monitoring and Prognostics](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/nasa-li-ion-battery-physics-informed-prognostics.ipynb)
+- [High-Energy Jet Substructure & Multi-Modal Neural Architectures on the 150-Particle LHC Benchmark](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/lhc-jet-substructure-deep-learning.ipynb)
+- [Quantitative Space Climatology & Magnetospheric Dynamics: Statistical & Deep Learning Analysis](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/planetary-kp-index-climatology-and-forecasting.ipynb)
+- [Cosmological Small-Scale Structure and Subhalo Phase-Space Architecture in IllustrisTNG-50](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/tng50-subhalo-phase-space-dynamics.ipynb)
+- [Radioactive Particle Tracking with Sodium Iodide (NaI(Tl)) Detectors: Gamma-Ray Spectrometry Inversion](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/nai-gamma-rpt-inversion-surrogate-modeling.ipynb)
+- [Surrogate Modeling, Global Sensitivity Analysis & Optimization Verification for RbGeI3 Perovskite Solar Cells](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/rbgei3-scaps1d-surrogate-modeling.ipynb)
+- [Direct Borohydride Fuel Cell (DBFC) Electrochemical Dynamics: Impedance Spectroscopy Inversion](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/dbfc-polarization-kinetics-eis-pinn.ipynb)
+- [Charmonium Spectroscopy & Dimuon Kinematic Reconstruction at CMS: Resonance Line-Shape Fitting](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/cms-jpsi-dimuon-spectroscopy-ml.ipynb)
 - [Multifrequency Spectral Decomposition of Compact Foregrounds in the Planck ERCSC Bandmerged Catalog](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/planck-ercsc-sed-deep-resnet.ipynb)
 - [Nanofluid Thermal Conductivity Prediction: Physics-Informed ML & Deep Neural Architectures](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/nanofluid-thermal-conductivity-pinn-kkl.ipynb)
 - [Empirical Wood Physics, Taxonomic Trait Allocation & ML Modeling on TWDD Database](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/empirical-wood-physics-taxonomic-trait-modeling.ipynb)
@@ -135,6 +143,7 @@
 
 # Hackathon Notebooks & Writeups
 
+- [Physical-Engineering Design Synthesis via Deterministic Feasibility Auditing](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/code-gated-agent-harness-physical-engineering.ipynb)
 - [Kinematic Translation Engine: Decoding 10 Hz Combine Sensor Dynamics into In-Game Separation](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/nfl-bdb-2027-kinematic-translation.ipynb)
 - [Verifiable Hybrid Orchestration of Behaviour Trees & Vision-Language Reasoning](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/verifiable-behaviour-trees-edge-vlms-robotics.ipynb)
 - [Autonomous Healthcare Workflow Synthesis & Reliability Engineering in χ-Bench](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/pomdp-healthcare-workflow-synthesis.ipynb)
@@ -158,6 +167,8 @@
 
 # Competition Notebooks
 
+- [LLM Classification Finetuning: Predicting Human Preference in Chatbot Arena Conversations](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/permutation-equivariant-llm-preference-finetuning.ipynb)
+- [Latent Threat Vector Identification in Non-Stationary Transaction Streams via Kinematic Information Geometry](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/kinematic-threat-fusion-heterogeneous-boosting.ipynb)
 - [Surface Electromyography & Inertial Kinematics for Zero-Shot Cross-Subject Hand Gesture Recognition](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/calibration-free-multimodal-semg-gesture-decoding.ipynb)
 - [Multi-Modal Atmospheric Remote-Sensing via Radiometry, Plume Dispersion Dynamics, Shrinkage-Calibrated Ensembles](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/obscura-multimodal-atmospheric-radiometry.ipynb)
 - [Verifiable Compilation of Fault-Tolerant Quantum Subroutines via Structured Kickmix Permutations](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/fault-tolerant-kickmix-quantum-circuit-synthesis.ipynb)

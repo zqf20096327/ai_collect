@@ -73,7 +73,8 @@ BuildSpace gives you three layers of CI/CD automation:
 | Internal npm package on GitHub Packages, with any internal Rust crates built beside it | [`package-stage` + `package-promote`](#package-stage-and-promote) | Push to main; promotion by dispatch and approval |
 | Public npm package on npmjs, staged and promoted the same way | [`package-stage` + `package-promote`](#package-stage-and-promote) with `registry: https://registry.npmjs.org` | Push to main; promotion by dispatch and approval |
 | Swift macOS `.pkg`, staged on staging Macs and promoted to production and Jamf | [`swift-stage` + `swift-promote`](#swift-stage-and-promote) | Push to main; promotion by dispatch and approval |
-| SwiftPM library, released by tags | [`swift-stage` + `swift-promote`](#swift-stage-and-promote) with `library: true` | Push to main; promotion by dispatch and approval |
+| SwiftPM library, released by tags | [`swift-stage` + `swift-promote`](#swift-stage-and-promote) with `kind: library` | Push to main; promotion by dispatch and approval |
+| Payload macOS `.pkg` with a `payload-path` (no binary), promoted to production and Jamf | [`swift-stage` + `swift-promote`](#swift-stage-and-promote) with `kind: payload` | Push to main; promotion by dispatch and approval |
 | macOS `.pkg` PR build (no binary) | [`pkg-release-pr`](#package-pr-build) | Every PR commit |
 | Swift macOS `.pkg` (PR build previews) | [`swift-pkg-pr`](#swift-package-pr-build) | Every PR commit |
 | Any project — check if README is current | [`check-readme`](#check-readme) | Every PR |
@@ -108,8 +109,9 @@ tracks the remaining consumers and removal conditions.
 | GitHub-only releases and Makefile dylibs | [Compatibility rules](docs/release-label-compatibility.md#workflow-rules) |
 
 Package stage/promote does not replace standalone Go/Rust binary releases or
-crates.io publishing. Swift stage/promote does not build Makefile dylibs or
-payload-only packages. Those callers need a replacement before retirement.
+crates.io publishing. Swift stage/promote does not build Makefile dylibs; it
+packages installers with `kind: payload` and a required `payload-path`. Callers
+without a replacement keep their compatibility workflow until one exists.
 
 ### README Update-To-Date Check
 
@@ -260,6 +262,12 @@ publish:
   same manifest bytes back with the expected digest, so the registry refuses a
   tag for any other manifest. The publishing role needs `ecr:BatchGetImage` as
   well as `ecr:PutImage`.
+- The attestation is also pushed to the registry as an OCI 1.1 referrer of the
+  image digest, so an admission controller can verify provenance from the
+  registry alone, without calling GitHub. Registries that honour OCI subjects
+  keep a referrer while its image exists (Amazon ECR exempts referrers from
+  lifecycle rules until their subject is deleted). The publishing role pushes
+  it with the same layer and manifest permissions it uses for the image.
 - The caller's repository identity and configured environment remain the AWS
   OIDC subject. The reusable workflow becomes the attestation signer:
   `photon-hq/buildspace/.github/workflows/publish-image.yml`. Verifiers must check
@@ -354,7 +362,7 @@ moving off the old names changes both `uses:` lines and pins in one commit; its
 next main push stages a build that `package-promote.yml` can promote, since builds
 signed by the old stage workflow can't be.
 
-**Set up release environments before the first promotion.** With `gh`, `jq` and a repository administrator's `gh auth login`, run this once per repository without cloning BuildSpace:
+**Configure main-only staging before enabling staging publication.** A caller migration's first main push publishes to staging, so do not defer its setup until production promotion. Production's reviewers must be configured before promotion; they are not a prerequisite for retiring unused labels. The helper below configures both environments. With `gh`, `jq` and a repository administrator's `gh auth login`, run it once per repository without cloning BuildSpace:
 
 ```bash
 script=$(gh api -H 'Accept: application/vnd.github.raw+json' 'repos/photon-hq/buildspace/contents/scripts/setup-release-environments.sh?ref=main') && bash -s -- photon-hq/your-repo <<<"$script"
@@ -444,18 +452,41 @@ source commit, and moves `latest`.
   `app`, in both callers, and grants `id-token: write` to both calls. A scoped
   name releases every package its `pack` script writes under that scope; an
   unscoped name releases only that package, so its `pack` script must write no
-  other tarball, or the build fails. The staging build and the promoted
+  other tarball, or the build fails. A build that mixes both kinds sets
+  `package-selection` in both callers to its exact names and `@scope/` prefixes,
+  such as `app @app/`; the selection must include `package`, which still names
+  the build. Every exact name must be packed; a scope prefix may match any
+  number of packages. The effective selection is recorded in the manifest and
+  must match at promotion, ignoring order and duplicate entries. Older manifests
+  without it retain the selection derived from their package and registry.
+  Names that map to one release filename, such as `@app/core` and `app-core`,
+  are rejected before collection writes any files. The staging build and the promoted
   candidates are published through npm trusted publishing, with provenance and
-  no token, by npm 11.21.1: trusted publishing manages dist-tags from npm 11.21.0. On npmjs, give
-  the package a trusted publisher for each caller workflow file, for example
-  `publish.yml` with environment `staging` and `promote.yml` with environment
-  `production`, and allow both `npm publish` and `npm dist-tag` on each. Leave the
+  no token, by npm 11.21.1: trusted publishing manages dist-tags from npm 11.21.0.
+  Before enabling staging publication, give every selected package a trusted
+  publisher for the staging caller, for example `publish.yml` with environment
+  `staging`. Configure each package's promotion publisher shortly before its
+  first promotion, for example `promote.yml` with environment `production`.
+  [New publishers expire](https://docs.npmjs.com/trusted-publishers/#trusted-publisher-configuration-expiry)
+  unless their first successful publish occurs within two days of creation;
+  staging does not validate the separate promotion publisher. Delete and recreate
+  an expired publisher before use; keep production approval requirements in place.
+  Allow both `npm publish` and `npm dist-tag` on each publisher. Leave the
   environment off the promote publisher if a `trusted-actor` promotes, since its
   runs have none. npm scans a new version for a few minutes before it serves it,
   so each publish waits up to 30 minutes for the version to appear before it
   checks its integrity and moves a tag. The dependency rules below apply to the
-  package's own scope, and a build staged for one registry is refused under the
-  other.
+  package's own scope, or to its `package-selection`, and a build staged for one
+  registry is refused under the other.
+- **A failed npm publish job can leave a published version.** If `npm dist-tag`
+  reports `This trusted publisher cannot manage dist-tags`, a package maintainer
+  must enable **Allow npm dist-tag** for that publisher. For every package in the
+  manifest, check the registry's immutable version, integrity,
+  `candidate-<run>-<attempt>` tag and channel tag. Check the stored candidate's
+  manifest and attestation before choosing recovery.
+  A candidate tag alone is not a successful staging release. Do not delete or
+  republish the version, promote it to repair staging, or assume a rerun uses
+  the same files and version.
 - **A Bun repository** sets `bun-version` in the stage caller, which sets up Bun
   in place of pnpm, and its own `install`, such as `bun install --frozen-lockfile`.
 - **Promotion refuses** a candidate that is not newer than `latest` or is already
@@ -552,7 +583,7 @@ source commit, and moves `latest`.
 - `downstream` repositories receive an `internal-package-published` dispatch after
   each publication, using the `APP_ID` and `APP_PRIVATE_KEY` GitHub App.
 
-Local validation: `node --test test/package-release.test.mjs test/release-version.test.mjs` (after
+Local validation: `node --test test/package-*.test.mjs test/release-version.test.mjs` (after
 `npm ci --prefix .github/package-release`) and `python3 -m unittest discover -s test`
 (the crate packaging test runs when `cargo` is installed).
 
@@ -904,7 +935,7 @@ jobs:
 
 ### Swift Stage and Promote
 
-Run the [release environment setup](#package-stage-and-promote) once per repository before the first promotion; Swift promotion also requires the `production` environment's reviewers.
+Configure main-only staging before enabling staging publication, including before merging a caller migration; Swift promotion requires the `production` environment's reviewers before promotion. The [release environment setup](#package-stage-and-promote) helper configures both.
 
 `.github/workflows/swift-stage.yml` and `.github/workflows/swift-promote.yml` release
 Swift macOS `.pkg` packages, and SwiftPM libraries, the way
@@ -982,6 +1013,9 @@ on:
       staging-version:
         description: Staging build to promote; blank promotes the newest
         default: ''
+      skip-minimum-age-reason:
+        description: Hotfix only; skip the staging age check and say why
+        default: ''
 jobs:
   promote:
     uses: photon-hq/buildspace/.github/workflows/swift-promote.yml@<reviewed-commit-sha>
@@ -989,9 +1023,12 @@ jobs:
       contents: write
       actions: read
       attestations: read
+      pull-requests: read
     with:
       package-name: macrocosm-astrolabe
       staging-version: ${{ inputs.staging-version }}
+      skip-minimum-age-reason: ${{ inputs.skip-minimum-age-reason }}
+      minimum-staging-age: 2h # optional; 2h is the default
       jamf-url: ${{ vars.JAMF_URL }} # optional
       private-deps: true # optional: a dependency is one of the owner's private repositories
     secrets:
@@ -1001,13 +1038,26 @@ jobs:
       JAMF_CLIENT_SECRET: ${{ secrets.JAMF_CLIENT_SECRET }}
 ```
 
-- **Inputs.** `package-name`, `identifier`, `scripts-path`, `payload-path`,
+- **Inputs.** `kind` is `executable` (the default), `payload` or `library`.
+  `package-name`, `identifier`, `scripts-path`, `payload-path`,
   `resource-bundles`, `entitlements` and `private-deps` (with the `APP_ID` and
   `APP_PRIVATE_KEY` secrets) work as in [Swift Release](#swift-release).
   `paths`, `ci-workflow`, `ci-wait-minutes`, `environment` (default `staging`)
   and `dry-run` work as in `package-stage`. The promote call names the same
-  `package-name` and `library`, and sets `private-deps` (with the same
+  `package-name` and `kind`, and sets `private-deps` (with the same
   secrets) when a dependency is one of the owner's private repositories.
+  Callers that passed `library: true` pass `kind: library` to both
+  `swift-stage` and `swift-promote`.
+- **Payloads.** `kind: payload` packages a `.pkg` with no
+  compiled binary, as [Package Release](#package-release) does: the build
+  sets up no Swift toolchain and skips the `.env`, compile and binary steps,
+  so `pkgbuild` packages the contents of the required `payload-path` at the
+  install root `/` with `scripts-path`, `identifier` and the version, unsigned.
+  `resource-bundles`, `entitlements` and `private-deps` are
+  refused. Versions, attestation, the staging prerelease, approval and Jamf
+  work as for any package. Payload promotion checks `Package.resolved` when
+  present, otherwise `Package.swift`. It skips SwiftPM dependency checks only
+  when both files are absent.
 - **Toolchain.** The build installs the Swift toolchain that the package's
   committed `.swift-version` names, or the latest Swift release when it has
   none. swiftly rewrites `.swift-version` when it selects a toolchain, so the
@@ -1028,7 +1078,30 @@ jobs:
   `private-deps`. The reviewer's summary lists each release it checked: the
   pinned version from `Package.resolved`, or the lowest version
   `Package.swift` requires, which SwiftPM may resolve higher.
-- **Libraries.** `library: true` builds nothing. Stage waits for CI, then tags
+- **Staging age.** Promotion waits until every change the build carries
+  since the latest `vX.Y.Z` has been on staging for `minimum-staging-age`
+  (default `2h`; minutes, hours or days such as `30m`, `2h`, `1d`). The time
+  counts from the publish time of the first staging release that carries the
+  change, its own or a later one, so a commit whose stage published nothing
+  starts with the next build. Only staging releases published after the
+  latest `vX.Y.Z` count, because publishing it sends GitGate's staging Macs
+  back to it until the next main push. A pull request labelled
+  `min-staging-age:<age>` holds its change for that age when it is longer;
+  labels never shorten the wait. Labels are read when `resolve` runs, so a
+  label added while the promotion waits for approval doesn't count. If a
+  `vX.Y.Z` comes out while the promotion waits for approval, publishing
+  checks again from that release, because it sent staging Macs back to it;
+  that check reads the labels as they are then. A skip reason given at
+  resolution still applies. The
+  reviewer's summary lists each change,
+  its time on staging and its minimum. Reading the labels takes
+  `pull-requests: read` on the promote job. An empty `minimum-staging-age`
+  means the default. `skip-minimum-age-reason` skips the check, for a hotfix;
+  the build still needs approval and the release notes keep the reason. A
+  library, which no staging Mac runs, is
+  exempt; the packages that pin it wait instead. A library's promote job
+  still needs `pull-requests: read`, or GitHub refuses the run at startup.
+- **Libraries.** `kind: library` builds nothing. Stage waits for CI, then tags
   `vX.Y.Z-staging.<run id>.<attempt>` with a prerelease that holds only the
   manifest, and promotion tags `vX.Y.Z` on the same commit. SwiftPM resolves
   only stable versions for a requirement such as `from: "1.2.0"`, so a staging
@@ -1049,7 +1122,9 @@ jobs:
   the caller repository, `refs/heads/main` and the source commit), whose
   version is not newer than the latest `vX.Y.Z`, or that depends on the
   owner's repositories other than through production releases (see
-  **Dependencies**), and it refuses unless the
+  **Dependencies**), or whose changes have not run on staging for their
+  minimum age without a `skip-minimum-age-reason` (see **Staging age**), and
+  it refuses unless the
   `production` environment requires a reviewer. A build already released as
   `vX.Y.Z` from the same commit has nothing to publish.
 - **Trust boundaries.** Only the build job runs caller code, and it can read but
@@ -1126,8 +1201,9 @@ jobs:
 
 **File:** `.github/workflows/pkg-release.yml`
 
-**Compatibility workflow.** A payload-only package needs its own replacement;
-Swift stage/promote has no payload-only mode. See the [rules and remaining callers](docs/release-label-compatibility.md).
+**Compatibility workflow.** New callers with a `payload-path` use [Swift Stage and Promote](#swift-stage-and-promote)
+with `kind: payload`. Scripts-only callers without a `payload-path` keep this workflow.
+See the [rules and remaining callers](docs/release-label-compatibility.md).
 
 Release pipeline for macOS `.pkg` distribution packages that don't contain a compiled binary. Packages payload files and scripts into a `.pkg`, creates a GitHub Release, and optionally uploads to Jamf Pro. Use this instead of `swift-release` when your package only delivers configuration files, LaunchDaemons, scripts, or other non-binary payload.
 
@@ -2001,127 +2077,4 @@ Publishes a single package to npm (installs dependencies, builds, publishes). Tr
 | Input | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `bun-version` | string | No | `latest` | Bun version |
-| `node-version` | string | No | `24` | Node.js version |
-| `working-directory` | string | No | `.` | Directory containing `package.json` |
-| `build-command` | string | No | `bun run build` | Build command |
-| `tag` | string | No | `latest` | npm dist-tag |
-| `dry-run` | boolean | No | `false` | Run `npm publish --dry-run` |
-| `publish-command` | string | No | `npm publish` | Publisher command; registry, tag, access, and dry-run flags are appended |
-| `npm-token` | secret | No | — | npm token; used only as a fallback when OIDC Trusted Publishing is unavailable or fails |
-
-#### Usage
-
-```yaml
-- uses: photon-hq/buildspace/.github/blocks/publish-npm@main
-  with:
-    build-command: "npm run build"
-    npm-token: ${{ secrets.NPM_TOKEN }}
-```
-
-#### Publishing modes
-
-1. **OIDC Trusted Publishing (preferred):** when the calling job has `id-token: write`, the action publishes tokenlessly with provenance. Requires a configured [trusted publisher](https://docs.npmjs.com/trusted-publishers) for the package on npmjs.com and npm ≥ 11.5.1 on the runner.
-2. **Token fallback:** if OIDC is unavailable (no `id-token: write`) or fails, the action publishes with `npm-token`. This is the default behavior today — keep providing `NPM_TOKEN` so publishing works until OIDC is fully set up.
-
----
-
-### publish-github-package
-
-**Path:** `.github/blocks/publish-github-package/action.yaml`
-
-Builds and publishes one owner-scoped npm package to GitHub Packages. It uses an explicit registry flag so a package can be published to npmjs.org and GitHub Packages in the same release even when `publishConfig.registry` is present, then verifies the exact version is visible.
-
-#### Inputs
-
-| Input | Type | Required | Default | Description |
-|-------|------|----------|---------|-------------|
-| `bun-version` | string | No | `latest` | Bun version |
-| `node-version` | string | No | `24` | Node.js version |
-| `working-directory` | string | No | `.` | Directory containing `package.json` |
-| `build-command` | string | No | `bun run build` | Build command |
-| `tag` | string | No | `latest` | Package tag |
-| `dry-run` | boolean | No | `false` | Validate package contents without publishing |
-| `publish-command` | string | No | `npm publish` | Publisher command; registry, tag, and dry-run flags are appended |
-| `github-token` | secret | Yes | — | GitHub token with `packages: write` |
-
-#### Usage
-
-```yaml
-- uses: photon-hq/buildspace/.github/blocks/publish-github-package@main
-  with:
-    build-command: "npm run build"
-    github-token: ${{ github.token }}
-```
-
----
-
-### comment-on-pr
-
-**Path:** `.github/blocks/comment-on-pr/action.yaml`
-
-Posts, updates, or removes a marked comment on a pull request. With a
-`comment-key`, it searches every comment page and updates the first matching
-comment. Other markers and later duplicates remain unchanged. Without a pull
-request payload, it skips without making API calls.
-Without a key, the default `present` state creates an unmarked comment.
-
-#### Inputs
-
-| Input | Type | Required | Default | Description |
-|-------|------|----------|---------|-------------|
-| `message` | string | No | `""` | Comment body for the default `present` state (markdown supported) |
-| `comment-key` | string | No | `""` | Unique key to find and update an existing comment |
-| `state` | string | No | `present` | `present` creates or updates; `absent` removes the first matching comment and requires a nonempty key |
-
-#### Usage
-
-```yaml
-- uses: photon-hq/buildspace/.github/blocks/comment-on-pr@main
-  with:
-    comment-key: my-build-status
-    message: |
-      ## Build Status
-      All checks passed for commit ${{ github.sha }}
-```
-
-
----
-
-### update-docs
-
-**Path:** `.github/blocks/update-docs/action.yaml`
-
-Uses [Claude Code](https://github.com/anthropics/claude-code) to analyze release changes and submit a PR to a documentation repository. Clones the docs repo, runs the Claude Code CLI to identify and make documentation updates, then creates a PR if changes were made. Expects a pre-generated `github-token` with write access to the docs repo (the `update-docs` workflow generates this token from the caller-provided App secrets).
-
-Authored guide updates follow the target repository's existing rules without an added directory allowlist. Generated references stay with their declared producers. The action keeps pnpm's normal CI installation behavior and instructs the generator to run the repository's current checks.
-
-#### Inputs
-
-| Input | Type | Required | Default | Description |
-|-------|------|----------|---------|-------------|
-| `service-name` | string | No | Repository name | Name of the service that was released |
-| `version` | string | Yes | — | The released version (e.g., `1.2.3`) |
-| `release-tag` | string | Yes | — | The raw release tag (e.g., `v1.2.3`). Used for linking back to the release. |
-| `release-notes` | string | Yes | — | Release notes markdown from the release |
-| `changes-diff` | string | Yes | — | Git diff of changes in this release |
-| `docs-path` | string | Yes | — | Documentation focus hint; existing target-repository rules determine edit scope and page placement |
-| `docs-repo` | string | No | `photon-hq/docs` | Target docs repository (`owner/repo`) |
-| `docs-branch` | string | No | `main` | Base branch of the docs repo |
-| `anthropic-api-key` | secret | Yes | — | Anthropic API key for Claude Code |
-| `github-token` | secret | Yes | — | GitHub token with write access to the docs repo |
-
-#### Outputs
-
-| Output | Type | Description |
-|--------|------|-------------|
-| `pr-url` | string | URL of the created PR (empty if no changes needed) |
-| `has-changes` | string | `'true'` or `'false'` whether docs updates were generated |
-
-#### Usage
-
-```yaml
-- uses: photon-hq/buildspace/.github/blocks/update-docs@main
-  with:
-    version: '1.2.3'
-    release-tag: 'v1.2.3'
-    release-note
+| `node-version` | string | No | `

@@ -5,7 +5,7 @@
 <p align="center">A lean, self-hosted AI agent that everyone can use. Each person gets an assistant with
 its own private computer, their files, skills, app connections and scheduled jobs.</p>
 
-![Home](docs/screenshots/e2e/02-home.png)
+![AI Chatbot Framework home: chats, files, skills, tasks, connections and your apps in the sidebar](docs/screenshots/home.webp)
 
 > AI Chatbot Framework used to be an intent/entity NLU chatbot builder. Version 2 rebuilds it as an
 > agent. The old code is in the git history.
@@ -18,6 +18,10 @@ its own private computer, their files, skills, app connections and scheduled job
   of one answer run in parallel; long commands run in the background and report back when done; long outputs truncated and saved to a file; context compaction; **steering** (type
   while the agent works; it picks your message up without stopping — right away while it thinks, after
   the running command otherwise); **Stop** at any time.
+- **Sub-agents** – for a job that splits into parts, the agent starts helpers that work side by side, each
+  with its own goal, a fresh context and a model the agent picks (its own, a fast one, or any model id),
+  then puts their reports together. The chat shows what each one is doing, and each one's own session opens
+  read-only (also while it works) from its step in the chat.
 - **One private sandbox per user** – a Docker container with a persistent `/workspace`, resource limits
   and no Linux capabilities. Commands and local MCP servers run there.
 - **Files, not forms** – `context.md` (about you) and `memory.md` (what the agent remembers) are plain
@@ -38,7 +42,10 @@ its own private computer, their files, skills, app connections and scheduled job
   moment can show up too. `context.md`, `memory.md`, hidden files and deleted files are not listed.
 - **Skills** – the open Agent Skills format (`skills/<name>/SKILL.md`). Upload a `.zip` or a `SKILL.md`,
   or let the agent write its own. Only names and descriptions are in the prompt until a task needs one.
-  Built in: `skill-creator`, `pdf`, `action-items`, `weekly-review`, `price-watch`, `cited-research`,
+  Type `/` in a chat to pick one: a message with `/name` in it (also a task's prompt) makes the agent
+  use that skill.
+  Built in: `council-of-llms` (one question to several models as sub-agents; the agent compares their
+  answers and gives the best one), `skill-creator`, `pdf`, `action-items`, `weekly-review`, `price-watch`, `cited-research`,
   `plain-writing`, `personal-assistant` (a proactive assistant over email, calendar and other apps, with
   a first-run interview that saves preferences to `assistant/profile.md`, and an optional Cockpit app),
   `openui` (views in chat answers, below) and `personal-apps` (how to build apps, below). Skills unused for
@@ -61,6 +68,9 @@ its own private computer, their files, skills, app connections and scheduled job
   ` ```openui ` block written with the same components (bar, line and pie charts, progress, lists, steps,
   tabs, sliders, choices, buttons). A button sends its text back into the chat, so the user can pick
   instead of typing.
+- **Projects** – ongoing work with its own instructions and, optionally, a folder in your files. A chat started
+  in a project follows its instructions and keeps its files in that folder; a task made in a project runs as a
+  chat there. Deleting a project keeps its chats, tasks and files.
 - **Scheduled tasks** – repeating ("every weekday at 08:00 …") or once ("tomorrow at 17:00"); each run becomes a
   chat, and a one-off task turns itself off after its run. Set them up on the Tasks page or just ask the agent: the built-in `system` MCP server gives it `list_tasks`, `create_task`, `update_task`,
   `delete_task` and `run_task` (the server name `system` is reserved).
@@ -150,7 +160,9 @@ Environment variables (users can override the model in **Settings**):
 | `ACF_LLM_API_KEY` | `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` | Server-wide key, used by every user without their own. Only sent to the server's provider and `ACF_LLM_BASE_URL` |
 | `ACF_SECRET_KEY` | generated in `ACF_DATA_DIR/secret.key` | Encrypts API keys, MCP configs and OAuth tokens in the database. Required by the production stack |
 | `ACF_LLM_BASE_URL` | provider default | e.g. `http://localhost:11434/v1` with `openai` for Ollama |
-| `ACF_MAX_AGENT_STEPS` | `40` | Model calls per message |
+| `ACF_MAX_AGENT_STEPS` | `40` | Model calls per message (and per sub-agent) |
+| `ACF_SUBAGENTS` | `8` | Sub-agents of one run working at the same time; more wait their turn (`0` = no sub-agents) |
+| `ACF_SUBAGENT_FAST_MODEL` | provider's small model | The model a sub-agent gets when the agent asks for `fast` (Claude: `claude-haiku-5-5`, OpenAI: `gpt-4.1-mini`, others: the user's model) |
 | `ACF_COMPACT_TOKENS` / `ACF_COMPACT_KEEP_TOKENS` | `120000` / `20000` | When to summarise old messages, and how much recent history to keep |
 | `ACF_CONTEXT_WINDOW` | model's own | Context window size (tokens) for the chat's context meter; default comes from LangChain's model profile, `128000` if unknown |
 | `ACF_MEMORY_LIMIT` | `4000` | Characters of `memory.md` (it goes into every prompt); the agent's writes past it are refused |
@@ -201,7 +213,7 @@ the access token expires.
 
 **Popular apps.** The Connections page lists remote MCP servers that support OAuth dynamic client
 registration — Linear, Notion, Jira & Confluence, Sentry, monday.com, Canva, Intercom, Stripe, Vercel and
-Hugging Face. **Add** writes the entry into your configuration; **Sign in** does the rest, no API key needed.
+Hugging Face. **Connect** writes the entry into your configuration; **Sign in** does the rest, no API key needed.
 To add your own (or override a built-in one by `id`), point `ACF_MCP_PRESETS_FILE` at a JSON file:
 
 ```json

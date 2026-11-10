@@ -1,0 +1,159 @@
+# LiteGPT
+
+**A small language model built from scratch, with every step on record.**
+
+LiteGPT V2 is a 201M-parameter model with its own architecture implementation, its own trained tokenizer and its own weights. It was designed on an RTX 4090 Laptop GPU and pretrained in 37 hours on a single rented A100. Every experiment was registered before it ran, and every result is published with the run records behind it.
+
+| Model | What it is |
+|---|---|
+| [LiteGPT-V2-Base](https://huggingface.co/kmkrworks/LiteGPT-V2-Base) | The pretrained model, 4,096-token context |
+| [LiteGPT-Llama-V2-Instruct](https://huggingface.co/kmkrworks/LiteGPT-Llama-V2-Instruct) | The chat version |
+| [LiteGPT-V2-Base-GGUF](https://huggingface.co/kmkrworks/LiteGPT-V2-Base-GGUF), [LiteGPT-Llama-V2-Instruct-GGUF](https://huggingface.co/kmkrworks/LiteGPT-Llama-V2-Instruct-GGUF) | Both models for llama.cpp and LM Studio: BF16, Q8_0 and Q4_K_M |
+| [Try it in your browser](https://huggingface.co/spaces/kmkrworks/LiteGPT-V2-Chat) | Chat with the Instruct model, running entirely in your browser |
+
+## Why this project
+
+LiteGPT V1 was built on nanoGPT. The aim of V2 was to leave that behind and build the whole training pipeline ourselves: architecture, tokenizer, data preparation, training loop, evaluation and release tooling. Then train a model end to end with it and see what comes out. Topping benchmarks was never the goal. Understanding the complexities along the way was.
+
+## Built on a laptop GPU
+
+Most of V2 was designed and tested on a laptop with an **RTX 4090 Laptop GPU** (16 GB). Getting sustained training out of a mobile GPU took real work:
+
+- **Windows to WSL2:** on Windows the full model managed about 15.6k tokens per second over 30 minutes, and the GPU was thermally throttled 98% of that time at 89 °C. WSL2 made `torch.compile` possible, which added 23.9% speed and freed 2.9 GiB of GPU memory. Flash attention added another 12%.
+- **A measured operating point:** with both, the full 28-layer model sustained about 30k tokens per second for 30 minutes, with no thermal throttling.
+- **A thermal investigation:** the design experiments were at first throttled 95 to 98% of the time, because the GPU sat at its temperature limit well below its power limit. The CPU and GPU share heat pipes, so CPU heat costs GPU headroom. A tuned power profile fixed it: GPU capped at 120 W, CPU at 55 W sustained with a 93 °C limit, and fans at maximum. Complete runs then showed 0% thermal slowdown, at 81 to 83 °C on average, so the GPU was limited by power rather than heat.
+- **Living with a laptop:** WSL updated itself mid-run, Windows Update rebooted the machine twice, and a loose charger let it sleep. Every run resumes exactly from its last checkpoint, and a watchdog flags stalls, so the worst loss was about 10 minutes.
+
+**Why the final training moved to an A100:** full pretraining means days of continuous full load, and running a mobile GPU like that for long stretches shortens its life. So the 37-hour pretraining run and the chat fine-tuning ran on a rented A100 instead. It is still achievable on the laptop: at the measured 30k tokens per second, the same pretraining would take about four days (*estimate*).
+
+## Highlights
+
+- **A modern architecture, implemented from scratch:** RoPE, RMSNorm with QK-norm, SwiGLU and grouped-query attention, 28 layers × 768.
+- **Its own tokenizer:** a 32,768-token byte-level BPE, trained on the project's own data mix.
+- **A big step up from V1:** clearly better on five benchmarks and clearly worse on none. On code text it is about three times better (bits per byte 1.612 → 0.515).
+- **Strong code modelling for its size:** the lowest code bits per byte of every model under 300M parameters we measured.
+- **Light to run:** 0.59 GiB of GPU memory at batch 8 with its own engine, the lowest of the 11 base models we measured, and 1.66 GiB of RAM on CPU.
+- **Runs in llama.cpp and LM Studio:** the Q8_0 file is 215 MB, decodes at 189 tok/s on 4 laptop CPU threads in 0.35 GiB of RAM, and matches the original model's tokens and outputs. See [llama.cpp (GGUF)](docs/results.md#llamacpp-gguf).
+- **Runs on a plain CPU:** 52.5 tok/s on 4 laptop threads in float32, as fast as SmolLM2-135M, and an estimated 12 tok/s on a Raspberry Pi 5. See [CPU and Raspberry Pi](docs/results.md#cpu-and-raspberry-pi).
+- **Good at structured output once fine-tuned:** 91.4% accuracy on Banking77 intents, and valid JSON on 99.99% of MASSIVE requests.
+- **Easy to use:** loads in Hugging Face Transformers with no remote code, and ships with an offline Python API and command line.
+- **Open and on record:** every dataset revision, threshold, decision and result is in the repository, with 34 charts generated from the run records.
+
+![V2 against V1 on every benchmark](docs/figures/v1_vs_v2.svg)
+
+![Bits per byte by domain across pretraining](docs/figures/m3_bits_per_byte.svg)
+
+## How it compares
+
+V2 doesn't reach the top score in these comparisons. What it brings is the combination above: a model built entirely from scratch, light enough for a laptop, and open down to every run record.
+
+**Text-to-data, after fine-tuning each model the same way** (mean of 3 seeds, higher is better):
+
+| Model | Parameters | Score | Banking77 | MASSIVE | CUAD | Peak RAM on CPU |
+|---|---:|---:|---:|---:|---:|---:|
+| Qwen3-0.6B | 596M | 0.851 | 0.931 | 0.812 | 0.809 | 4.27 GiB |
+| Gemma 3 270M | 268M | 0.822 | 0.919 | 0.778 | 0.768 | 2.62 GiB |
+| SmolLM2-135M | 135M | 0.817 | 0.920 | 0.787 | 0.745 | 1.61 GiB |
+| **LiteGPT V2** | **201M** | **0.800** | **0.914** | **0.775** | **0.711** | **1.66 GiB** |
+
+**As a base model** (higher is better, except bits per byte and memory):
+
+| Model | Zero-shot mean, 10 tasks | Code bits per byte | GPU memory, batch 8 |
+|---|---:|---:|---:|
+| Qwen3-0.6B-Base | 0.489 | 0.372 | 2.72 GiB |
+| SmolLM2-135M | 0.403 | 0.559 | 0.73 GiB |
+| Gemma 3 270M | 0.393 | 0.617 | 2.59 GiB |
+| **LiteGPT V2** | **0.383** | **0.515** | **0.59 GiB** |
+| LiteGPT V1 | 0.371 | 1.612 | 0.78 GiB |
+
+**As a chat model** (IFEval, higher is better): Qwen3-0.6B 0.564, Gemma 3 270M-it 0.251, SmolLM2-135M-Instruct 0.220, **LiteGPT V2 Instruct 0.129**, LiteGPT V1 Instruct 0.083.
+
+V2's memory figures use its own engine and the others use Transformers. Every model, every task and the charts: [docs/results.md](docs/results.md).
+
+## Use it
+
+With Transformers:
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+name = "kmkrworks/LiteGPT-Llama-V2-Instruct"
+tokenizer = AutoTokenizer.from_pretrained(name)
+model = AutoModelForCausalLM.from_pretrained(name)
+inputs = tokenizer.apply_chat_template([{"role": "user", "content": "Name three colours."}], add_generation_prompt=True, return_tensors="pt", return_dict=True)
+output = model.generate(**inputs, max_new_tokens=48)
+print(tokenizer.decode(output[0, inputs["input_ids"].shape[1]:], skip_special_tokens=True))
+```
+
+With LiteGPT's own engine, from this repository (Python 3.12, [uv](https://docs.astral.sh/uv/)), after downloading a model folder:
+
+```bash
+uv sync --locked
+```
+
+```bash
+uv run litegpt chat --model LiteGPT-Llama-V2-Instruct
+```
+
+```python
+import litegpt
+
+m = litegpt.load("LiteGPT-V2-Base")
+print(litegpt.generate(m, "The capital of France is", max_new_tokens=32))
+```
+
+With llama.cpp, from the GGUF repositories:
+
+```bash
+llama-server -hf kmkrworks/LiteGPT-Llama-V2-Instruct-GGUF:Q8_0 --jinja
+```
+
+In LM Studio, search for `kmkrworks/LiteGPT`.
+
+Once downloaded, everything runs offline. More in [docs/inference.md](docs/inference.md).
+
+## How it was built
+
+| Stage | What happened |
+|---|---|
+| Design | Each architecture change tested one at a time on small proxy models, on the laptop GPU |
+| Data | Web, synthetic textbooks, math and code, with benchmark text filtered out and licences audited |
+| Pretraining | 37 hours on one rented A100, with no restarts and no skipped steps |
+| Chat fine-tuning | 3 epochs on curated conversations, passing its registered quality gate |
+| Evaluation | One suite for V2 and 16 other models, plus a fine-tuned text-to-data benchmark |
+
+Every benchmark is in [docs/results.md](docs/results.md), and every chart is in [docs/figures](docs/figures/README.md).
+
+## What's next
+
+Work is now starting on a fresh tokenizer.
+
+## What's here
+
+| Folder | What it holds |
+|---|---|
+| [`litegpt/`](litegpt/README.md) | The package: model, tokenizer, inference, training, evaluation, export, API and CLI |
+| [`docs/`](docs/README.md) | Results, charts, architecture, data, training, decisions and the specification |
+| [`benchmarks/`](benchmarks/README.md) | Run configs and benchmark tools |
+| [`scripts/`](scripts/README.md) | Data preparation, training, scoring, release and rented-server tools |
+| [`tests/`](tests/README.md) | The test suite |
+| [`runs/`](runs/README.md) | Run records behind every reported number |
+| [`deploy/`](deploy/README.md) | The browser chat Space |
+
+## V1
+
+V1 is GPT-2 Small (124M), trained on FineWeb-Edu and fine-tuned on Alpaca, published as `koganrath/LiteGPT-Base` and `koganrath/LiteGPT-Instruct`. Its code is preserved in [`scripts/legacy_v1/`](scripts/legacy_v1/README.md).
+
+## Licence
+
+Code: MIT ([`LICENSE`](LICENSE)). Weights: Apache-2.0. Each model ships a notice file listing its data sources and their terms.
+
+## Acknowledgements
+
+- [PyTorch](https://pytorch.org), [flash-attn](https://github.com/Dao-AILab/flash-attention), Hugging Face [`tokenizers`](https://github.com/huggingface/tokenizers) and [`transformers`](https://github.com/huggingface/transformers), and [lm-evaluation-harness](https://github.com/EleutherAI/lm-evaluation-harness)
+- [nanoGPT](https://github.com/karpathy/nanoGPT) by Andrej Karpathy, the starting point for V1's initial design
+- [SmolLM corpus, FineMath and SmolTalk](https://huggingface.co/HuggingFaceTB) by Hugging Face
+- [github-code-clean](https://huggingface.co/datasets/codeparrot/github-code-clean) by CodeParrot
+- [CUAD](https://huggingface.co/datasets/theatticusproject/cuad), [MASSIVE](https://huggingface.co/datasets/AmazonScience/massive), [Banking77](https://huggingface.co/datasets/PolyAI/banking77) and [BillSum](https://huggingface.co/datasets/FiscalNote/billsum)
+
+**Built with Qwen. Built with Llama.** The models were trained in part on data generated by Qwen2.5-72B-Instruct, and the chat model on data generated by Llama-3.1-405B-Instruct. See each model's notice file.

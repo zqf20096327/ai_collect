@@ -106,7 +106,7 @@ Turn it on in Settings → Model → Long-term memory (Beta); it is off by defau
 
 ### Game rules mode (in development)
 
-<p align="center"><img src="docs/screenshots/rules-themes.jpg" alt="One story in five looks: choices, dice, a fight, a skill and victory, in Simple dark, Simple light, Classical, Retro console and Bold" width="880"></p>
+<p align="center"><img src="docs/screenshots/rules-themes.jpg" alt="One story in five looks: choices, dice, a fight, a skill and victory, in Simple dark, Simple light, Classical, Retro console and Color block" width="880"></p>
 <p align="center"><img src="docs/screenshots/rules-dice.jpg" alt="A dice check: the twenty-sided die shows 17, plus 1 makes 18 against 12, a success" width="49%"> <img src="docs/screenshots/rules-battle.jpg" alt="The fight screen: two wolves and a bandit chief on a mountain road, with health, energy and the attack, skill, item, guard and flee actions below" width="49%"></p>
 
 On per card and off by default; off, nothing sent to the model changes. On, the program decides success and the model writes what happened.
@@ -114,14 +114,14 @@ On per card and off by default; off, nothing sent to the model changes. On, the 
 - **Dice checks**: a risky choice shows its attribute, odds and risk. Pick it and the dice roll, and the result goes to the model with the turn, at no extra request. Rolls come from a seed, so regenerating, rolling back or loading a save changes nothing.
 - **Turn-based fights**: when the story comes to blows you fight it out with attacks, skills, items, guarding or fleeing, without calling the model, which then writes on from the result. Foes differ in strength, and wounds stay with you.
 - **A pack and growth**: your character, items, quests, a map and achievements. Wins bring experience and levels, and new foes go into a bestiary. A card's own health, inventory and quest variables can be bound to the rules.
-- **Four looks**: Simple, Classical, Retro console and Bold, with choices, dice, fights, skills and victory all changing together.
+- **Four looks**: Simple, Classical, Retro console and Color block, with choices, dice, fights, skills and victory all changing together.
 - **It travels with the card**: exported PNGs and JSON carry the rules. With Fights and growth picked in the card creator, the guide settles starting attributes, skills, items and common foes with you.
 
 ### Characters keep their look
 
 - **Character roster**: each character's fixed face, everyday outfit, a reference picture and a LoRA. When several characters share a picture, each is described separately, so faces don't blend.
 - **Each card's own art style and negative prompt**, added to every picture for that card.
-- **Redraws keep the earlier pictures**: when a picture, reference image, sprite or expression, scene or avatar is redrawn or replaced, each keeps its last few (5 by default; set in Pictures & voice → Image backend) in a row beneath it: click one to bring it back, delete the ones you don't want.
+- **Redraws keep the earlier pictures**: when a picture, reference image, sprite or expression, scene or avatar (in Edit card and in the card creator) is redrawn or replaced, each keeps its last few (5 by default; set in Pictures & voice → Image backend) in a row beneath it: click one to bring it back, delete the ones you don't want.
 - **Each card's own dialogue and narrator voices**.
 - Cards made with the card creator get their roster built automatically.
 
@@ -150,10 +150,16 @@ If you can't quite say what you want, the creator guides you round by round:
 
 <br clear="right">
 
-## Latest changes [2.4.2]
+## Latest changes [2.4.4]
 
-<p align="center"><img src="web/whatsnew/2.4.2-party.webp" alt="A party fight: you and two companions against two wolves and a bandit chief, in the bold, retro console and ink looks, with a companion's portrait across the screen as she uses a skill" width="720"></p>
+<p align="center"><img src="web/whatsnew/2.4.4-bar.webp" alt="The top bar on a phone: two rows, with the preset, compress, memory, model and thinking pills in one row; in full screen the bar is tucked away with a small arrow at the top that pulls it down" width="720"></p>
 
+- **2.4.4: imported SillyTavern presets work more like they do in SillyTavern**: User and AI assistant entries before Chat History are sent as messages of their own, and newly imported presets default to Like SillyTavern, so the jailbreak and output format follow your message each turn; on Claude-format APIs the history stays unchanged and caching costs as little as In the prefix. The preset window now explains which option to pick.
+- **2.4.4: a two-row top bar and full screen on phones**: on a phone the chat's top bar takes two rows, with a Full screen button that tucks it away to give the story more room; the small arrow at the top pulls it back down.
+- **2.4.4: Vertex's native API, and fixes**: Gemini Agent Platform (once Vertex AI) chats through Gemini's native API by default, with the thinking shown and Google Search; fixes for dragging cards into order on Android, unreadable visual novel text and missing game choices on old Android WebViews, in-app updates that installed the old version on some phones, and a blank window when the interface size wasn't 100%.
+- **2.4.3: a card's own scripts now run**: the Tavern Helper scripts a card's author left on now run. Those that follow the variables run in the background the way MVU runs them; the rest start on the page when the chat opens, with their own panels in a small window at the bottom right and their buttons above the input box. Check this card says where each one runs and what it lacks here.
+- **2.4.3: the status bar in the card editor, earlier pictures kept**: the card editor has a Status bar section to restyle it, or to change it by saying what you want; redrawn or replaced pictures, reference pictures, sprites, scenes and avatars stay, ready to take back.
+- **2.4.3: a new party bar, iPhone keeps writing**: Color block (once Bold) shows the party as a slanted band along the bottom in fights; on iPhone (iOS 26 or later) a reply goes on in the background with its progress in the Dynamic Island; plus a ComfyUI negative prompt, When done text reveal, and cards up to about 110 MB.
 - **2.4.2: party fights**: on a card with the full game rules, companions fight beside you, up to four in all, acting by speed as in an RPG Maker game. The Party tab in the pack says who fights, and a companion using a skill gets their portrait in the banner.
 - **2.4.2: a card's own words, more kinds of story**: attributes, life, foe tiers, skills and the rest can take the card's own names (HP, BOSS, Special move, Partners), and Genre adds Monster raising, Online game, Apocalypse survival and Everyday life.
 - **2.4.2: long chats stay quick, replies flow**: switching cards and sending no longer stall in chats hundreds of turns long; replies come out at an even pace, with five Text reveal effects in the theme; Settings > More > Performance log records how long each step took.
@@ -470,7 +476,7 @@ flowchart LR
 
 ### 游戏规则模式（开发中）
 
-<p align="center"><img src="docs/screenshots/rules-themes.jpg" alt="同一场故事在五种界面下的对比：选项、掷骰、战斗、放技能、胜利，分别是简约深色、简约浅色、古风、怀旧游戏机和酷炫" width="880"></p>
+<p align="center"><img src="docs/screenshots/rules-themes.jpg" alt="同一场故事在五种界面下的对比：选项、掷骰、战斗、放技能、胜利，分别是简约深色、简约浅色、古风、怀旧游戏机和撞色" width="880"></p>
 <p align="center"><img src="docs/screenshots/rules-dice.jpg" alt="掷骰检定：二十面骰掷出 17，灵巧 +1，共 18，需要 12，成功" width="49%"> <img src="docs/screenshots/rules-battle.jpg" alt="战斗界面：两头灰狼和山贼头目站在山路上，下方是生命、内力和攻击、技能、道具、防御、逃跑" width="49%"></p>
 
 按卡开启，默认关，关着时发给模型的内容不变。打开后成败由程序计算，模型只负责把结果写好。
@@ -478,14 +484,14 @@ flowchart LR
 - **掷骰检定**：有风险的选项写着属性、成功率和风险，点了就掷骰，结果随这一轮发给模型，不多花请求。点数由种子决定，重新生成、回滚、读档都不变。
 - **回合制战斗**：故事打起来时进入战斗，攻击、技能、道具、防御、逃跑，全程不调用模型，打完模型按结果接着写。敌人有强弱，受的伤会留下来。
 - **行囊和成长**：角色、背包、任务、地图和成就都在「行囊」里。打赢得经验，升级加属性，新敌人记进图鉴。卡已有的体力、背包、任务变量可以绑定成规则的字段。
-- **四种界面**：简约、古风、怀旧游戏机、酷炫，选项、掷骰、战斗、放技能、胜利一起换。
+- **四种界面**：简约、古风、怀旧游戏机、撞色，选项、掷骰、战斗、放技能、胜利一起换。
 - **跟着卡走**：导出的 PNG、JSON 带着规则。创作角色卡选「战斗与成长」时，向导会商量开局属性、技能、物品和常见敌人。
 
 ### 角色有固定的形象
 
 - **角色名册**：给每个角色记下固定的长相、平时的衣着、一张人设图（参考图）和 LoRA。多人同框时逐个描述，不会串脸。
 - **每张卡自己的画风和负面词**，加在这张卡的每一张图上。
-- **重画不丢旧图**：配图、人设图、立绘和表情、场景、头像重画或换掉之后，每处留最近几张（默认 5 张，「配图与朗读 → 画图方式」里可以改），排在下面，点一张换回来用，不要的删掉。
+- **重画不丢旧图**：配图、人设图、立绘和表情、场景、头像（修改角色卡和创作角色卡里都是）重画或换掉之后，每处留最近几张（默认 5 张，「配图与朗读 → 画图方式」里可以改），排在下面，点一张换回来用，不要的删掉。
 - **每张卡自己的对白音色和旁白音色**。
 - 用「创作角色卡」做出的卡，名册会自动建好。
 
@@ -514,10 +520,16 @@ flowchart LR
 
 <br clear="right">
 
-## 最新版本变动[2.4.2]
+## 最新版本变动[2.4.4]
 
-<p align="center"><img src="web/whatsnew/2.4.2-party.webp" alt="队伍战斗：你、沈知微和老周三人对两头灰狼和山贼头目，酷炫、怀旧游戏机和古风三种界面，沈知微放技能时横幅换上她的立绘" width="720"></p>
+<p align="center"><img src="web/whatsnew/2.4.4-bar.webp" alt="手机上的顶栏：平时两行，预设、压缩、记忆、模型和思考排成一行；全屏时顶栏收起，顶上留一个小箭头，点开顶栏滑下来" width="720"></p>
 
+- **2.4.4：导入的酒馆预设更像在酒馆里用**：聊天记录前的「用户」「AI 助手」条目作为单独的消息发送，新导入的预设默认「同酒馆」，破限和输出格式每轮紧跟在你的消息后面；用 Claude 格式的接口时历史不改，缓存和「放进前缀」一样省。预设窗口里写清了每个选项怎么选。
+- **2.4.4：手机顶栏两行、全屏**：手机上聊天页的顶栏缩成两行，多了「全屏」：顶栏收起来，正文多占一些地方，点顶上的小箭头再拉出来。
+- **2.4.4：Vertex 原生接口和一批修复**：Gemini Agent Platform（原 Vertex AI）默认走 Gemini 原生接口，能显示思考、用 Google 搜索；修了安卓拖动排序、旧系统 WebView 上视觉小说的字看不清和游戏卡选项出不来、部分手机应用内更新装不上、界面大小不是 100% 时打开一片空白。
+- **2.4.3：卡自带的脚本能运行了**：角色卡里作者开着的酒馆助手脚本现在会跑：跟着变量走的在后台照 MVU 的方式执行，其余的打开对话时在页面上启动，自己画的界面在右下角小窗，按钮在输入框上方。「检查这张卡」写明每个脚本在哪运行、缺哪些函数。
+- **2.4.3：修改角色卡里改状态栏、抽图历史**：修改角色卡多了「状态栏」一节，能调整样式，也能用「按意见改」说一句让向导改；重画或换掉的配图、人设图、立绘、场景和头像都留着，点一张换回来。
+- **2.4.3：撞色队伍状态栏、iPhone 后台接着写**：撞色主题的队伍战斗换成底部一条斜带；iPhone 版（iOS 26 以上）切到后台也接着写，灵动岛显示进度；还有 ComfyUI 负面提示词、「写完再显示」、110 MB 以内的大卡导入。
 - **2.4.2：队伍战斗**：开了「完整」游戏规则的卡可以带同伴一起打，最多 4 人上场，按速度轮流出手，像 RPG Maker 的回合制。行囊里的「队伍」页安排谁出战，同伴放技能时换上他的立绘。
 - **2.4.2：每张卡自己的叫法、更多题材**：游戏规则的属性、生命、敌人档位、技能这些词可以按卡改名（比如 HP、BOSS、必杀技、伙伴），「题材」多了怪兽养成、网游、末日求生、日常。
 - **2.4.2：长对话不卡、出字更顺**：几百轮的对话切卡、发送不再卡；回复按均匀的节奏写出来，主题里有五种出字效果可选；「设置 → 更多 → 性能记录」能记下每一步的耗时。

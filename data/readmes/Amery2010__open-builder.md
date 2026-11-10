@@ -88,6 +88,8 @@ Open [localhost:8080](http://localhost:8080). The container serves the Web app; 
 
 For Vercel, Cloudflare, or Netlify, use `pnpm build` and output directory `dist`. Repository automation is defined in the [Pages](.github/workflows/deploy.yml) and [release](.github/workflows/release.yml) workflows.
 
+For portable Skills, the standalone CLI and local MCP setup, see the [headless guide](docs/headless.md).
+
 ## Development
 
 The application uses React 19, TypeScript 6, Vite 8, Tailwind CSS 4, Zustand, Sandpack, and Tauri 2.
@@ -105,6 +107,8 @@ pnpm build
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the complete validation and release workflow. The [user guide](docs/user-guide.md#native-builds) also covers native build commands.
 
 ## Contributing
+
+Community support: [LinuxDo](https://linux.do/), [V2EX](https://www.v2ex.com/).
 
 [Bug reports](https://github.com/Amery2010/open-builder/issues), feature proposals, and pull requests are welcome. Read the [contributing guide](CONTRIBUTING.md) before opening a pull request.
 

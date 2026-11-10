@@ -8,12 +8,12 @@
 [![license](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
 [![skills.sh](https://skills.sh/b/caelum29/calibre-mcp)](https://skills.sh/caelum29/calibre-mcp)
 
-> **The most capable Calibre MCP server in existence** — connect Claude (or any MCP client)
-> to your [Calibre](https://calibre-ebook.com) ebook library and search it by *meaning*, not
-> just keywords.
+> **A Calibre MCP server** — connect Claude (or any MCP client) to your
+> [Calibre](https://calibre-ebook.com) ebook library and search it by *meaning*, not just
+> keywords.
 
 Ask your AI assistant *“which of my books explain consumer-group rebalancing?”* and get the
-exact chapter — across 800+ books or inside one. Curate metadata, dedupe, and safely edit
+exact chapter — across your whole library or inside one book. Curate metadata, dedupe, and safely edit
 your library, all through natural language.
 
 <p align="center">
@@ -24,12 +24,14 @@ your library, all through natural language.
 
 ## ✨ Highlights
 
-- **<!-- tool-count:modelFacing -->19<!-- /tool-count:modelFacing --> tools** covering the full surface: search, read content, browse categories, curate,
-  and (opt-in) write — update metadata, bulk-edit, merge duplicates, import, delete, and
-  manage bundles (named topical filters).
+- **<!-- tool-count:modelFacing -->19<!-- /tool-count:modelFacing --> tools** for searching, reading, curating and (opt-in) editing a library: search,
+  read content, browse categories, audit and recover metadata, and — with writes on — update
+  metadata, bulk-edit, merge duplicates, import, delete, and manage bundles (named topical
+  filters). Format conversion and export are not tools: they go through the Calibre CLI (the
+  `calibre-mcp` skill documents how, safely, while the GUI is open).
 - **Semantic search** — meaning-based, hybrid vector + keyword retrieval over your whole
   library *or inside a single book*. Multilingual (English + Russian verified,
-  cross-lingual queries work). No other Calibre MCP server has this.
+  cross-lingual queries work).
 - **In-chat UI (MCP Apps)** — in hosts that support MCP Apps (Claude Desktop), library
   searches render an interactive cover carousel, `calibre_get_book` a book detail card
   with cover, rating, and read/similar actions, and `calibre_get_figures` a figure viewer
@@ -44,7 +46,11 @@ your library, all through natural language.
 ## 📋 Requirements
 
 - **Calibre** with the **Content Server running** (in Calibre: *Connect/share → Start
-  Content server*). Tested against Calibre 9.x; any recent version should work.
+  Content server*). Developed and tested against Calibre 9.18; annotations and notes need 9.18+.
+- **Platform:** verified on **macOS**. Linux and Windows are not claimed: the code has paths
+  for them and the unit suite runs on Linux in CI, but neither has had a live check. The
+  Claude Desktop bundle installs on macOS, Windows and Linux; it is verified live only on
+  macOS.
 - **Node.js ≥ 22.16** for the npm/npx install (not needed for the Claude Desktop
   one-click bundle — Desktop ships its own runtime).
 - Optional, for best PDF text extraction: poppler's `pdftotext`
@@ -63,7 +69,7 @@ npx skills@latest add caelum29/calibre-mcp   # pick calibre-mcp-setup
 
 Then tell your agent: **"set up calibre-mcp"**. The `calibre-mcp-setup` skill drives
 everything below — preflight (Node, calibredb, Content Server), the Calibre-side
-config, the right install for your client (macOS/Windows/Linux), and a `calibre_ping`
+config, the right install for your client, and a `calibre_ping`
 verification — asking you only the questions that are yours to answer (which client,
 writes on/off). Works in any Agent-Skills-compatible harness (Claude Code, Copilot,
 Amp, …). Prefer doing it by hand? Pick your client below.
@@ -138,7 +144,7 @@ Pick the skills and target agents interactively. Two philosophies, same as
 into your setup so you can hack on them; the **Claude Code plugin** (above) keeps them as a
 managed, auto-updating bundle. Either way the skills drive this MCP server's tools, so
 install the server too — or let the `calibre-mcp-setup` skill do it: it walks any agent
-through preflight, per-client install (macOS/Windows/Linux), and verification.
+through preflight, per-client install, and verification.
 
 ### First contact — a five-prompt tour
 
@@ -166,12 +172,18 @@ raw-filename titles, invalid ISBNs).
 ## ✍️ Enabling writes
 
 Write tools (`calibre_update_book`, `calibre_bulk_update`, `calibre_add_book`,
-`calibre_remove_book`, `calibre_merge_books`, `calibre_manage_bundles`) are **hidden by
-default** — including `calibre_manage_bundles`' read-only `list` action, since the gate works
-per tool, not per action. Two independent switches must be on:
+`calibre_remove_book`, `calibre_merge_books`, `calibre_manage_bundles`, `calibre_extract_isbn`) are
+**off by default**. Two independent switches must be on:
 
 1. **The MCP-side gate** — set `CALIBRE_MCP_ENABLE_WRITE=1` (or tick *Enable writes* in
-   the Desktop bundle settings). Without it the write tools are disabled — hidden from the tool list and uncallable.
+   the Desktop bundle settings). The gate works **per call**: with it off, the five preview-first
+   tools (`calibre_bulk_update`, `calibre_remove_book`, `calibre_merge_books`,
+   `calibre_manage_bundles`, `calibre_extract_isbn`) stay listed (announced read-only) and their
+   previews work, while a call that would write (`apply: true`, `preview: false` or `confirm: true`)
+   returns `write_disabled`. `calibre_update_book` and `calibre_add_book` have no preview, so they
+   are hidden from the tool list. `calibre_build_index` is not a write tool: with the gate off it
+   still builds the index, and `enableFts: true` reports `fts.status: write_disabled` instead of
+   enabling Calibre's full-text indexing.
 2. **The Calibre-side gate** — the Content Server must allow local writes. **By
    default the server embedded in the Calibre GUI is read-only**, so either enable
    the GUI option below or run a standalone server with `--enable-local-write`:
@@ -187,7 +199,7 @@ per tool, not per action. Two independent switches must be on:
    (i.e. permit local write access), then restart the Content Server from the GUI.
    This is the `--enable-local-write` equivalent for the embedded server.
 
-With only the first switch on, write tools appear but Calibre refuses the write — the
+With only the first switch on, writes reach Calibre but it refuses the write — the
 error message tells you exactly that. Reads work fine against the GUI-embedded server.
 
 Safety behavior: `calibre_bulk_update` requires an explicit book selection (`ids` or
@@ -196,7 +208,8 @@ Safety behavior: `calibre_bulk_update` requires an explicit book selection (`ids
 deletion removes records *and* files, permanently. `calibre_merge_books` shows its full
 merge plan until you pass `confirm: true`, and trashed sources stay recoverable from
 Calibre's trash (mode `safe` keeps them entirely). `calibre_add_book` only imports files
-from whitelisted folders (`CALIBRE_MCP_ADD_ROOTS`).
+from whitelisted folders (`CALIBRE_MCP_ADD_ROOTS`). `calibre_extract_isbn` only previews the
+ISBN it found until you pass `apply: true`.
 
 ## 🔎 Semantic search
 
@@ -315,7 +328,11 @@ pnpm build && node scripts/legal-gate.mjs <skill-dir> --book <id> [--book <id>�
 ## ⚙️ Configuration
 
 Everything is optional — with a running Content Server on the default port, zero config
-works. Environment variables (the Desktop bundle exposes the same settings as UI fields):
+works. Environment variables (the Desktop bundle exposes the same settings as UI fields).
+Stable settings are part of the semver contract; tuning settings may change in a minor
+release (see the [stability policy](./docs/STABILITY.md)).
+
+### Stable settings
 
 | Variable | Default | Purpose |
 |---|---|---|
@@ -324,13 +341,20 @@ works. Environment variables (the Desktop bundle exposes the same settings as UI
 | `CALIBRE_MCP_ENABLE_WRITE` | off | Master write gate (`1`/`true`/`yes`) |
 | `CALIBRE_MCP_CALIBREDB_PATH` | *auto-discover* | `calibredb` binary; found via standard install paths, then `PATH` |
 | `CALIBRE_MCP_INDEX_DIR` | platform data dir¹ | Semantic index + embedding-model cache |
-| `CALIBRE_MCP_SEMANTIC_FLOOR` | `0.78` | Cosine score below which semantic results are flagged low-confidence |
-| `CALIBRE_MCP_RERANK` | on | Cross-encoder rerank stage on semantic search (~576 MB model, seconds of CPU per query); set `off`/`false`/`0` to disable |
 | `CALIBRE_MCP_MAX_BOOK_BYTES` | `268435456` (256 MB) | Largest book download `calibre_build_index` / `calibre_get_content` will extract; bigger books are skipped² |
-| `CALIBRE_MCP_INDEX_BUSY_TIMEOUT_MS` | `5000` | How long an index write waits on another server process holding the index (e.g. Claude Desktop + Claude Code side by side) before failing |
 | `CALIBRE_MCP_LOG_LEVEL` | `info` | `debug`/`info`/`warn`/`error` — for stderr and the JSONL log files in `<index dir>/logs/` (see [Troubleshooting → Logs](docs/TROUBLESHOOTING.md#logs)) |
 | `CALIBRE_MCP_ADD_ROOTS` | `~/Documents`, `~/Downloads` | Folders `calibre_add_book` may import from (path-delimiter separated) |
 | `CALIBRE_MCP_BOARD_STYLE` | `shelf` | Search-results widget style in MCP Apps hosts: `shelf` (scrolling cover shelf) or `coverflow` (3D cover flow; the Desktop bundle exposes this as a *Coverflow search results* toggle) |
+
+### Tuning settings
+
+Tied to the current models; a change gets a CHANGELOG note.
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `CALIBRE_MCP_SEMANTIC_FLOOR` | `0.78` | Cosine score below which semantic results are flagged low-confidence |
+| `CALIBRE_MCP_RERANK` | on | Cross-encoder rerank stage on semantic search (~576 MB model, seconds of CPU per query); set `off`/`false`/`0` to disable |
+| `CALIBRE_MCP_INDEX_BUSY_TIMEOUT_MS` | `5000` | How long an index write waits on another server process holding the index (e.g. Claude Desktop + Claude Code side by side) before failing |
 
 ¹ macOS `~/Library/Application Support/calibre-mcp/index`, Windows
 `%APPDATA%\calibre-mcp\index`, Linux `$XDG_DATA_HOME/calibre-mcp/index`.
@@ -360,9 +384,9 @@ back a much heavier copy (an 8 MB PDF served as 70 MB), so a disk-sized cap sile
   the binary (macOS: `/Applications/calibre.app/Contents/MacOS/calibredb`).
 - **A PDF extracts to empty text** — it’s a scanned/image PDF; Calibre has no OCR, and
   neither do we.
-- **Library not found (404)** — pass the library’s *display name* or *ID* as shown by
-  `calibre_list_libraries`; when in doubt, leave the library unset and let the server
-  pick its default (unless `calibre_list_libraries` reports the default as unavailable — then pass an explicit id).
+- **Unknown library** — the error lists the known libraries; pass one’s *display name* or
+  *ID* (or fix `CALIBRE_MCP_LIBRARY` when it says *Unknown default library*); when in doubt,
+  leave the library unset and let the server pick its default (unless `calibre_list_libraries` reports the default as unavailable — then pass an explicit id).
 
 ## 🛠️ Development
 
@@ -376,8 +400,10 @@ pnpm pack:mcpb    # build the Claude Desktop .mcpb bundle
 ```
 
 The codebase is Clean Architecture: tool handlers, Calibre clients, and the semantic
-core are SDK-free; only `src/server.ts` touches the MCP SDK. User docs — the tool
-reference and the semantic-search guide — live in [`docs/`](./docs).
+core are SDK-free; only `src/server.ts` touches the MCP SDK. How it fits together:
+[`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). What semver covers:
+[`docs/STABILITY.md`](./docs/STABILITY.md). User docs — the tool reference and the
+semantic-search guide — live in [`docs/`](./docs).
 
 Questions, ideas, and setups welcome in
 [**Discussions**](https://github.com/caelum29/calibre-mcp/discussions); bug reports and PRs

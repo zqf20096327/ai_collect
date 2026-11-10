@@ -36,6 +36,7 @@
 <details>
 <summary><strong>⚡ Latest Updates</strong></summary>
 
+- **(Nov 10th, 2026)**: We have updated all accepted papers in **ACM MM 2026**.
 - **(Nov 8th, 2026)**: We have updated all accepted papers in **ECCV 2026**.
 - **(Nov 4th, 2026)**: We have updated all accepted papers in **ICML 2026**.
 - **(Oct 31st, 2026)**: We have updated all accepted papers in **ACL 2026**.
@@ -104,6 +105,15 @@
 
 * **[AAAI 2026]** ***EmoVid:*** *A Multimodal Emotion Video Dataset for Emotion-Centric Video Understanding and Generation*<br>
 [![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://arxiv.org/pdf/2511.11002) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://zane-zyqiu.github.io/EmoVid)
+
+* **[ACM MM 2026]** ***TokBench:*** *Evaluating Your Visual Tokenizer before Visual Generation*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://arxiv.org/abs/2505.18142) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://wjf5203.github.io/TokBench/home_page.html)
+
+* **[ACM MM 2026]** ***MuSS:*** *A Large-Scale Dataset and Cinematic Narrative Benchmark for Multi-Shot Subject-to-Video Generation*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://arxiv.org/abs/2604.23789)
+
+* **[ACM MM 2026]** *Motion Concept Unlearning in Video Diffusion Models*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://arxiv.org/abs/2609.36832)
 
 * **[ACL 2026]** *Bringing Real-World Relations into Video Generation with Graph-Structured Knowledge*<br>
 [![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://aclanthology.org/2026.acl-long.172.pdf)
@@ -802,7 +812,4 @@
 - [VEnhancer: Generative Space-Time Enhancement for Video Generation](http://arxiv.org/abs/2407.07667v1) [![GitHub Stars](https://img.shields.io/github/stars/Vchitect/VEnhancer?style=social)](https://github.com/Vchitect/VEnhancer) [![Project Page](https://img.shields.io/badge/Project-Page-blue?logo=website)](https://vchitect.github.io/VEnhancer-project/)
 - [Mobius: A High Efficient Spatial-Temporal Parallel Training Paradigm for Text-to-Video Generation Task](http://arxiv.org/abs/2407.06617v4)
 - [VIMI: Grounding Video Generation through Multi-modal Instruction](http://arxiv.org/abs/2407.06304v1)
-- [GVDIFF: Grounded Text-to-Video Generation with Diffusion Models](http://arxiv.org/abs/2407.01921v2)
-- [Evaluation of Text-to-Video Generation Models: A Dynamics Perspective](http://arxiv.org/abs/2407.01094v1) [![Huggingface Face](https://img.shields.io/badge/Hugging-Face-orange?logo=website)](https://huggingface.co/Video-Bench/Video-Bench)
-- [Text-Animator: Controllable Visual Text Video Generation](http://arxiv.org/abs/2406.17777v1)
-- [MotionBooth: Motion-Aware Customized Text-to-Video Generation](http://arxiv.org/abs/2406.17758v3) [![GitHub Stars](https://img.shields.io/github/stars/jianzongwu/MotionBooth?style=social)](https://github.com/jianzongwu/MotionBooth) [![Project Page](https://img.shields.io/badge/Project-Page-blue?logo=website)](https://jianzongwu.github.io/projects/motionbooth) [![Huggingface Face](https://img.shields.io/badge/Hugging-Face-orange?logo=website)](https://huggingface.co/ji
+- [GVDIFF: Grounded 

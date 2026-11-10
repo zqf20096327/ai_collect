@@ -11,13 +11,13 @@
 </p>
 
 <p>
-<a href="https://interactive-active-ai.github.io/NextTransformer/#leaderboard"><img alt="Leaderboard" src="https://img.shields.io/badge/leaderboard-live-8B5CF6?style=flat-square"></a>
-<a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-F2A93B?style=flat-square"></a>
-<img alt="Python 3.10-3.13" src="https://img.shields.io/badge/python-3.10--3.13-3776AB?style=flat-square&logo=python&logoColor=white">
-<img alt="PyTorch 2.9.1" src="https://img.shields.io/badge/PyTorch-2.9.1-EE4C2C?style=flat-square&logo=pytorch&logoColor=white">
-<a href="https://discord.gg/k2XPXW6Jz"><img alt="Discord" src="https://img.shields.io/badge/Discord-join-74638C?style=flat-square&logo=discord&logoColor=white"></a>
-<a href="https://interactive-active-ai.github.io/NextTransformer/docs/community/#wechat"><img alt="WeChat group" src="https://img.shields.io/badge/WeChat-group-E5607E?style=flat-square&logo=wechat&logoColor=white"></a>
-<a href="https://github.com/Interactive-Active-AI/NextTransformer/discussions"><img alt="GitHub Discussions" src="https://img.shields.io/badge/discussions-ask-7A5AF0?style=flat-square&logo=github&logoColor=white"></a>
+<a href="https://interactive-active-ai.github.io/NextTransformer/#leaderboard"><img alt="Leaderboard" src="https://img.shields.io/badge/leaderboard-live-526B85?style=flat"></a>
+<a href="https://huggingface.co/NextTransformer"><img alt="Model weights on Hugging Face" src="https://img.shields.io/badge/Hugging%20Face-models-74638C?style=flat&amp;logo=huggingface&amp;logoColor=white"></a>
+</p>
+
+<p>
+<a href="https://discord.gg/k2XPXW6Jz">Discord</a> · <a href="https://interactive-active-ai.github.io/NextTransformer/docs/community/#wechat">WeChat</a> · <a href="https://github.com/Interactive-Active-AI/NextTransformer/discussions">Discussions</a> · <a href="CITATION.cff">Cite</a><br>
+<sub>Python 3.10–3.13 · PyTorch 2.9.1 · <a href="LICENSE">MIT license</a></sub>
 </p>
 
 <b>English</b> · <a href="README.zh-CN.md">简体中文</a>
@@ -58,7 +58,7 @@ your browser.
 ## Results
 
 <!-- generated:leaderboard -->
-<a href="https://interactive-active-ai.github.io/NextTransformer/#leaderboard"><img src=".github/assets/readme/results-en.svg" alt="CORE at update 46,875 for all 36 runs, against the Dense Baseline" width="100%"></a>
+<a href="https://interactive-active-ai.github.io/NextTransformer/#leaderboard"><img src=".github/assets/readme/results-en.svg" alt="CORE at update 46,875 for all 38 runs, against the Dense Baseline" width="100%"></a>
 
 [Full leaderboard](https://interactive-active-ai.github.io/NextTransformer/docs/results/leaderboard/) · [Training replay](https://interactive-active-ai.github.io/NextTransformer/#leaderboard)
 <!-- /generated:leaderboard -->
@@ -109,6 +109,10 @@ covers smoke tests, evaluation, auditing and exporting a result.
 
 ## Model zoo
 
+The [NextTransformer organization on Hugging Face](https://huggingface.co/NextTransformer) is the home for model weights. Check its **Models** tab for available downloads. The [leaderboard](https://interactive-active-ai.github.io/NextTransformer/#leaderboard) lists evaluated runs, including those whose weights have not yet been released.
+
+Contributor-hosted weights: [AttnRes-Canon (49B comparison)](https://huggingface.co/GY2233/nextt-arena-attnres-full-canon-abcd) · [Dense (200B-token scaling run)](https://huggingface.co/Enderfga/nextt-scaling-dense-200b-4k).
+
 <details open>
 <summary><b>Browse architectures by family</b></summary>
 
@@ -121,7 +125,7 @@ covers smoke tests, evaluation, auditing and exporting a result.
 | <img src="https://img.shields.io/badge/Sparse-E5607E?style=flat-square" alt="Sparse"> | DSA · QSA · NSA · SeerAttention-style · MoBA |
 | <img src="https://img.shields.io/badge/Linear-3F7FD9?style=flat-square" alt="Linear"> | DeltaNet · GSA + QK-norm · GLA · KDA · RetNet · ELU-Norm · GDN |
 | <img src="https://img.shields.io/badge/Hybrid-F07856?style=flat-square" alt="Hybrid"> | GDN–MHA · GDN–SWA · DeltaNet–MHA · KDA–MLA-NoPE · GDN–QSA\* · MoBA–MHA |
-| <img src="https://img.shields.io/badge/Others-D99A2B?style=flat-square" alt="Others"> | SSSL · MQA · GQA · MLA-QK · MLA-NoPE-QK |
+| <img src="https://img.shields.io/badge/Others-D99A2B?style=flat-square" alt="Others"> | SSSL · MQA · GQA · MLA-QK · MLA-NoPE-QK · Gated Attention · elementwise · Gated Attention · headwise |
 <!-- /generated:model-zoo -->
 
 \* Results coming soon. Papers, adaptations and configurations are in the [model zoo](https://interactive-active-ai.github.io/NextTransformer/docs/methods/zoo/).

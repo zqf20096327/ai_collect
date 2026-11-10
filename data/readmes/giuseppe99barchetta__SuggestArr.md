@@ -2,7 +2,7 @@
 
 ## 🚀 SuggestArr - Media Automation Made Simple
 
-![ezgif com-optimize (2)](https://github.com/user-attachments/assets/d5c48bdb-3c11-4f35-bb55-849297d521e7)
+![SuggestArr: recommendations from what you watch, sent to Seer](docs/assets/suggestarr-hero.png)
 
 ![Build Status](https://img.shields.io/github/actions/workflow/status/giuseppe99barchetta/suggestarr/docker_hub_build.yml?branch=main&label=Build&logo=github)
 ![Platform Support](https://img.shields.io/badge/platforms-linux%2Famd64%20|%20linux%2Farm64-blue?logo=linux)
@@ -11,7 +11,7 @@
 [![](https://dcbadge.limes.pink/api/server/https://discord.com/invite/JXwFd3PnXY?style=flat)](https://discord.com/invite/JXwFd3PnXY)
 </div>
 
-SuggestArr automates media recommendations and download requests based on what your users watch on **Jellyfin**, **Plex** or **Emby**. It takes recently watched content, finds similar titles through TMDb (or an AI model), and sends the requests to **Seer**.
+SuggestArr automates media recommendations and download requests based on what you watch on **Jellyfin**, **Plex** or **Emby**. It takes recently watched content, finds similar titles through TMDb (or an AI model), and sends the requests to **Seer**.
 
 ## Features
 
@@ -24,10 +24,21 @@ SuggestArr automates media recommendations and download requests based on what y
 - **Filters**: skip content already on streaming services in your country, plus quality and per-user filters.
 - **Web interface** for setup, scheduling, users, requests and live logs, with connection tests during setup.
 - **Recaps and milestones** you can share ([details](docs/RECAP.md)).
+- **One-tap rating prompts** on Telegram a while after you watch something ([details](docs/RATING_PROMPTS.md)).
 - **SQLite, PostgreSQL or MySQL** database.
 - **Public REST API** with Swagger UI.
 
 See the [Feature Guide](docs/FEATURES.md) for how each feature works.
+
+## Screenshots
+
+| Home | Requests |
+| --- | --- |
+| ![Home dashboard with request stats, recap and suggestions awaiting approval](docs/assets/screenshots/home.png) | ![Requests sent to Seer, with posters and availability](docs/assets/screenshots/requests.png) |
+| **AI Search** | **Jobs** |
+| ![AI Search results for a plain-language request](docs/assets/screenshots/ai-search.png) | ![Scheduled jobs and their recent runs](docs/assets/screenshots/jobs.png) |
+
+Users in these screenshots are fictional; titles, ratings and posters come from [TMDb](https://www.themoviedb.org/). This product uses the TMDB API but is not endorsed or certified by TMDB. Regenerate them with `cd client && TMDB_API_KEY=... npm run screenshots` (without a key, placeholder titles are used).
 
 ## Requirements
 
@@ -60,7 +71,11 @@ docker compose up -d
 
 Then open http://localhost:5000 and follow the setup wizard.
 
-For Unraid, source install, reverse proxy, authentication, backups and recommended settings, see the [Installation Guide](docs/INSTALLATION.md).
+**TrueNAS SCALE**: SuggestArr is in the [community catalog](https://apps.truenas.com/catalog/suggestarr_community/). Open **Apps → Discover Apps**, search for *SuggestArr* and install it.
+
+**Unraid**: open the **Apps** tab (Community Applications), search for *SuggestArr* and install it. An official template is also available in [`unraid/template.xml`](unraid/template.xml).
+
+For TrueNAS and Unraid details, source install, reverse proxy, authentication, backups and recommended settings, see the [Installation Guide](docs/INSTALLATION.md).
 
 ## Public API
 

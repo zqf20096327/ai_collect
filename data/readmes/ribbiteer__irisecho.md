@@ -28,23 +28,24 @@ guidance, your own LoRAs, presets and side-by-side comparisons.
 
 | Studio | What you do | Models |
 |---|---|---|
-| **Image** | Describe a picture; get photos, illustration, lettering that reads; or follow the outlines, depth or pose of a guide picture | Z-Image Turbo (also with a guide picture\*), FLUX.1 schnell, Qwen-Image, Qwen-Image 2.1\*, FLUX.1 dev / Krea\*, Krea 2\* |
-| **Edit** | Say what should change in a picture, or only in the areas you mark; combine up to ten pictures | Qwen Edit (fast and careful), Qwen-Image 2.1\*, FLUX.1 Kontext\* |
+| **Image** | Describe a picture; get photos, illustration, lettering that reads; or follow the outlines, depth or pose of a guide picture | Qwen-Image 2.1\* (up to 4 MP), Qwen-Image (careful and fast), Z-Image Turbo (also with a guide picture\*), Krea 2\*, FLUX.1 dev\*, schnell and Krea\* |
+| **Edit** | Say what should change in a picture, or only in the areas you mark; combine up to ten pictures | Qwen-Image 2.1\* (up to 4 MP), Qwen Edit (careful and fast), FLUX.1 Kontext\* |
 | **Upscale** | Enlarge 2-4× and restore detail, no prompt needed | SeedVR2 3B and 7B |
 | **Video** | 2-5 s clips from text, a first frame, a last frame, or both; camera moves on presets; continue a clip from its last frame; LTX-2.5 makes the sound too | LTX-2.5\*, Wan 2.2 (and Fun Camera), HunyuanVideo 1.5\* |
 | **3D** | A picture or a description becomes a model to view, print or export (GLB, STL, 3MF, OBJ, PLY) | Pixal3D\* (one picture or front and back), TRELLIS.2\* |
 | **Voice** | Narration in 28 preset voices or a blend of them, a whole script at once | Kokoro |
-| **Clone** | A voice you have the right to use, from a 5-15 s sample, with performed laughs and sighs | Chatterbox, Chatterbox Turbo |
-| **Music** | Beds, jingles and stingers from a few tags; seamless loops on the bar; cover, repaint or extend a recording | ACE-Step 1.5 |
+| **Clone** | A voice you have the right to use, from a 10-15 s sample you record in the app or bring as a file, with performed laughs and sighs | Chatterbox, Chatterbox Turbo |
+| **Music** | Beds, jingles and full songs from a few tags; seamless loops on the bar; with ACE-Step, cover, repaint or extend a recording | ACE-Step 1.5 (also XL and XL SFT), YuE2\*, MiniMax Music 3\*, Stable Audio 3 Medium\* |
 | **Sound** | One-shot effects: foley, UI sounds, impacts, ambience; variations of a sound you have | Stable Audio 3 SFX\* |
 
-<sub>\* Opt-in: non-commercial (FLUX.1 dev family; Qwen-Image 2.1, research and evaluation only), free for commercial use only under $1M a year (Krea 2) or $10M a year (LTX-2.5), not licensed in the EU, UK or South Korea (HunyuanVideo 1.5), gated (Stable Audio and LTX-2.5: accept the publisher's terms on Hugging Face and add a read token), under Meta's DINOv3 License, accepted in the app (Pixal3D, not offered in the EU, and TRELLIS.2), or with a pose reader built on Stable Diffusion 2 and its use restrictions, accepted in the app (Z-Image with a guide picture). IrisEcho shows each license and walks you through it.</sub>
+<sub>\* Opt-in: non-commercial (FLUX.1 dev family; YuE2), under a research license for the model files while the pictures are yours to use (Qwen-Image 2.1), free for commercial use only under $1M a year (Krea 2, Stable Audio 3), $10M a year (LTX-2.5) or $20M a year (MiniMax Music 3, which also asks commercial products to name it), not licensed in the EU, UK or South Korea (HunyuanVideo 1.5), gated (Stable Audio 3 SFX and LTX-2.5: accept the publisher's terms on Hugging Face and add a read token), under Meta's DINOv3 License, accepted in the app (Pixal3D, not offered in the EU, and TRELLIS.2), or with a pose reader built on Stable Diffusion 2 and its use restrictions, accepted in the app (Z-Image with a guide picture). IrisEcho shows each license and walks you through it.</sub>
 
 **Improve** sits under every picture and video prompt: a small local model
 (Qwen3-VL) rewrites a rough idea the way the chosen model likes it, or describes
 a picture as a prompt, and you accept or undo the result. The **Library** is
 searchable by the words in your prompts, with filters for studio, model, date
-and favourites; a search is a link (`#/library?q=fox`).
+and favourites; a search is a link (`#/library?q=fox`). Select several to
+delete them together, with an Undo for a few seconds after.
 
 Voice lines come out trimmed and loudness-matched, music loops are cut on whole
 bars, cloned takes are ranked liveliest first, and pictures are saved with no
@@ -185,7 +186,7 @@ irisecho music "chiptune, upbeat, bright lead" --bpm 140 --seconds 20 --loop --j
   the commands run the engines themselves.
 - **Made to be read by a program.** `--json` prints one object per job with the
   finished files; exit codes say whether it worked.
-- **The whole app, not a subset.** Edits, upscaling, video and sound effects
+- **The whole app, not a subset.** Edits, upscaling and video
   are reached through `irisecho api`, which finds the running app and signs the
   request.
 - **You stay in charge of licenses.** An agent never accepts a model license or
@@ -197,8 +198,10 @@ prints it with your install's own paths filled in.
 ## Install
 
 **Windows 11 with an NVIDIA RTX card (20-series or newer):** download
-`IrisEcho_x.y.z_x64-setup.exe` from Releases and run it. The first launch sets up
-a private Python environment (about a minute); after that it opens straight to
+`IrisEcho_x.y.z_x64-setup.exe` from Releases and run it (each release lists its
+SHA-256 in `SHA256SUMS`). The first launch sets up a private Python environment
+with the exact package versions the release was tested with (about a minute);
+after that it opens straight to
 the app. Pick a studio, choose a model, and IrisEcho downloads what that model
 needs.
 
@@ -245,6 +248,7 @@ irisecho setup kokoro                                        # install and downl
 irisecho say --file lines.txt --voice bm_george --out vo/    # id|text per line
 irisecho clone "Correct! [chuckle] Ten points." --ref host.wav --takes 3
 irisecho music "synthwave, driving, analog synth" --bpm 110 --seconds 30 --loop
+irisecho music "heartland rock, raspy vocal" --model ace-step-xl --seconds 180 --lyrics-file song.txt
 irisecho image "a lighthouse at blue hour" --aspect 16:9 --count 4
 irisecho image "a fox" --model flux-dev --set steps=30 --set guidance=2.5   # advanced controls
 irisecho 3d figurine.png --format stl --height 80             # a printable model

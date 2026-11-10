@@ -38,7 +38,7 @@
 >
 > 📱 想要原生 App？Flutter 移动端客户端（Android / iOS / Web / 桌面）在独立仓库 [`OpenBiliClaw-mobile`](https://github.com/whiteguo233/OpenBiliClaw-mobile)：推荐、对话、画像、收藏 / 稍后再看 / 30 天历史一应俱全，连接同一本地后端。
 
-> 🇨🇳 **国内源**：[Gitee v0.3.235 源码](https://gitee.com/whiteguo233/openbiliclaw/tree/openbiliclaw-v0.3.235)已同步本版源码。安装包请从 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.235) 获取；[123 云盘](https://4001474255.share.123pan.cn/123pan/IxbZMh-90KO3)仍保留 v0.3.213 历史文件，最新版国内安装包镜像待更新。
+> 🇨🇳 **国内源**：[Gitee 源码镜像](https://gitee.com/whiteguo233/openbiliclaw/tree/main)提供源码。安装包请从 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 获取；[123 云盘](https://4001474255.share.123pan.cn/123pan/IxbZMh-90KO3)仍保留 v0.3.213 历史文件，最新版国内安装包镜像待更新。
 
 ## 10 秒看懂 OpenBiliClaw
 
@@ -67,7 +67,7 @@
 普通用户只需四步；Firefox、Docker、脚本和手动部署等备用路径都在 [安装与部署详情](#安装与部署详情)。
 
 1. **装插件** —— [Chrome 应用商店一键安装](https://chromewebstore.google.com/detail/cdfjfkdjjhdaccbldipkjhpibnfbiamg)（自动更新），或从 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 下载 zip 手动安装（最新功能先到，商店版可能滞后几天）。
-2. **装后端** —— 从同一个 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 下载桌面安装包（macOS `.dmg` / Windows `.exe`，开箱即用、常驻菜单栏/托盘）。Apple Silicon 与 Windows 提供**精简版**和 **`-with-embedding` 版**（预置本地 BGE-M3，约 1.1GB）；Intel Mac 提供精简版。免费云端向量无需下载本地模型，选择本地向量时再按需下载，或使用预置模型的安装包。**Gitee 源码已同步至 v0.3.235，最新版安装包见 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.235)。123 云盘当前仍是 v0.3.213 历史文件。** 想改源码或深度定制,就把下面这句话粘给 Claude Code / Codex CLI / Cursor 等 AI 编程助手：
+2. **装后端** —— 从同一个 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 下载桌面安装包（macOS `.dmg` / Windows `.exe`，开箱即用、常驻菜单栏/托盘）。Apple Silicon 与 Windows 提供**精简版**和 **`-with-embedding` 版**（预置本地 BGE-M3，约 1.1GB）；Intel Mac 提供精简版。免费云端向量无需下载本地模型，选择本地向量时再按需下载，或使用预置模型的安装包。**Gitee 提供源码镜像，最新版安装包见 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest)。123 云盘当前仍是 v0.3.213 历史文件。** 想改源码或深度定制,就把下面这句话粘给 Claude Code / Codex CLI / Cursor 等 AI 编程助手：
 
    ```text
 trusted local UI → private API; remote UI → password setup → authenticated HTTP / WS
@@ -257,11 +257,11 @@ query inspiration → configured provider chain
 
 ## 最近更新
 
-📌 最新版本：**v0.3.235（2026-11-08）**
+📌 最新版本：**v0.3.237（2026-11-10）**
 
-- **免费模型融入调用链**：两个只读千问实例可直接选择、排序，BGE-M3 在原有向量设置中选择。
-- **聊天添加网站与 RSS**：先试跑再确认，来源频率、占比和异常提醒统一管理。
-- **网站采集按需运行**：macOS 自动准备 Ego，后台无界面采集，空闲后释放资源。
+- **本机首次启动免密**。远程访问密码在设置里手动开启，保存后立即生效。
+- **macOS 安装更清楚**。打开 DMG 后按箭头把应用拖进「应用程序」。
+- **免费模型初始化更稳**。大批导入时显示进度，遇到限流或暂时断连可恢复。
 
 完整变更详见 [docs/changelog.md](docs/changelog.md)。
 
@@ -329,13 +329,13 @@ npm run package:firefox        # 额外打成未签名 openbiliclaw-extension-v*
 
 到 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 的 `openbiliclaw-v*` 聚合发布页下载对应系统的安装包。这个聚合页会同步展示：
 
-> 🇨🇳 **国内源**：[Gitee v0.3.235 源码](https://gitee.com/whiteguo233/openbiliclaw/tree/openbiliclaw-v0.3.235)已同步本版源码。安装包请从 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.235) 获取；[123 云盘](https://4001474255.share.123pan.cn/123pan/IxbZMh-90KO3)仍保留 v0.3.213 历史文件，最新版国内安装包镜像待更新。
+> 🇨🇳 **国内源**：[Gitee 源码镜像](https://gitee.com/whiteguo233/openbiliclaw/tree/main)提供源码。安装包请从 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 获取；[123 云盘](https://4001474255.share.123pan.cn/123pan/IxbZMh-90KO3)仍保留 v0.3.213 历史文件，最新版国内安装包镜像待更新。
 
 - 当前后端源码 tag：`backend-v*`
 - 当前插件 release：`extension-v*`，并附 `openbiliclaw-extension-v*.zip` / `openbiliclaw-extension-v*-firefox.zip`（Firefox 临时调试）；启用 AMO signing 时还会附 `openbiliclaw-extension-v*-firefox.xpi`（Firefox 正式安装）
 - 当前桌面安装包 release：`desktop-v*`，同版本桌面 channel 完成后会附可用的 `.dmg` / `.exe`；缺失 channel 显示未发布，不回填上一版资产
 
-- **macOS**：从发布页下载与你的 Mac 匹配的 DMG：Apple 芯片用 `OpenBiliClaw-macos-v*-arm64.dmg`；Intel 用 `OpenBiliClaw-macos-v*-x64.dmg`（如发布页提供）。退出旧版后打开 DMG，将 app 拖入「应用程序」，然后启动。新包经过 Developer ID 签名与 Apple 公证，无需解除隔离命令。
+- **macOS**：从发布页下载与你的 Mac 匹配的 DMG：Apple 芯片用 `OpenBiliClaw-macos-v*-arm64.dmg`；Intel 用 `OpenBiliClaw-macos-v*-x64.dmg`（如发布页提供）。退出旧版后打开 DMG，按窗口里的箭头将 OpenBiliClaw 拖到「应用程序」，复制完成后从「应用程序」打开。新包经过 Developer ID 签名与 Apple 公证，无需解除隔离命令。
 - **Windows**：下载 `OpenBiliClaw-windows-*-Setup.exe`，双击安装。向导最后一页提供默认勾选的「Launch OpenBiliClaw」复选框，点「完成」才会启动刚安装的新版本（升级时安装器会先结束无互斥体的旧实例；若运行中的是已带 AppMutex 的新版应用，安装/卸载会先弹「OpenBiliClaw 正在运行」提示，退出应用后点 OK 自动重检，正常点「完成」即完成新旧交接，取消勾选则不启动）；`/SILENT` / `/VERYSILENT` 静默安装没有向导界面，安装成功后仍会自动启动新版本；但应用仍在运行时静默安装（配合 `/SUPPRESSMSGBOXES`）会按取消处理，需先退出应用。
 
 macOS 主应用继续以 10.15+ 为兼容目标；只有 Go 1.26.6 构建的可选 Tailnet helper 实测要求
@@ -716,7 +716,7 @@ TikTok 账号链路：`手动初始化 / 显式开启的周期增量 → 来源�
 
 本地向量：`正式请求 / 诊断 → Ollama 自动加速 → 有效向量；runner 故障 → CPU 重试 → 验证结果`。CPU 选择在本次后端运行期间共享，重启后重新尝试自动加速。
 
-推荐交互：`主 API → 默认独立推荐进程 → 当前 SQLite 候选 → 完整排序 → 原子提交 → 卡片 + 总量/平台库存`；主 API 桥接库存事件，后台补货由有客户端时的库存观察任务同步。
+推荐交互：`主 API 鉴权 → 私有连接 → 默认独立推荐进程 → 当前 SQLite 候选 → 完整排序 → 原子提交 → 卡片 + 总量/平台库存`；主 API 桥接库存事件，后台补货由有客户端时的库存观察任务同步。
 
 聊一聊：`会话风格 → 持久化 turn 冻结风格 → API 持有的 agent 执行任务 → 会话上下文与聊天笔记 + 角色工具（含网页搜索/链接阅读）+ 表达风格 → 正文工具协议检查 → 事件落库 / SSE → 回复完成`；HTTP 断连后原执行继续，完成的 turn 重试直接回放。
 
@@ -992,3 +992,5 @@ OpenBiliClaw 的目标是做你的**全网个性化内容入口**——从 B 站
 [![LINUX DO](https://img.shields.io/badge/LINUX_DO-友情链接-4D6BFE?style=flat-square&logo=discourse&logoColor=white)](https://linux.do/)
 
 </details>
+
+请求预算数据流（2026-11-08，待发布）：`llm.timeout → LLM 注册表 / 免费适配器 → Rust IPC timeout_ms → HTTP 剩余预算`。初始化根据注册表预算计算阶段期限；组件边界和签名模型输入不变。

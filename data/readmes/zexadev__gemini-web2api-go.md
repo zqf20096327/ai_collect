@@ -165,7 +165,7 @@ go build -o gemini-web2api-go .
 启动后会看到 banner：
 
 ```
-gemini-web2api-go v4.27.1
+gemini-web2api-go v4.28.0
   Listening:   http://0.0.0.0:8083
   Base URL:    http://localhost:8083/v1
   API key:     sk-gemini-XX...XXXX  (mutable in admin UI)
@@ -250,6 +250,7 @@ Bifrost 等网关的 Google provider）：
 | `POST /v1beta/models/{model}:streamGenerateContent` | 真流式；带 `?alt=sse`（SDK 默认）回 SSE，不带回 JSON 数组 |
 | `POST /v1beta/models/{model}:countTokens` | 本地 tiktoken 估算 |
 | `GET /v1beta/models`、`GET /v1beta/models/{model}` | 模型清单，跟 `/v1/models` 同一份 |
+| `POST /v1/models/{model}:generateContent` 等 | 上面三个动作的 `/v1` 写法，同一套处理。`google-genai` 3.x 配自定义 `base_url` 时默认走 `/v1` |
 
 - **鉴权**：API key 放 `x-goog-api-key` 头或 `?key=` 参数（SDK 默认这么带），`Authorization: Bearer` 也认。
 - **模型名**用本项目的（`gemini-3.6-flash`、`gemini-3.1-pro` 等，见[模型](#模型)），不是官方 API 的 `gemini-2.5-flash` 那些。
@@ -466,6 +467,8 @@ curl http://127.0.0.1:8083/v1/chat/completions \
 | 严格模型校验（`strict_model`） | 默认关。账号某一档额度用完时，上游不报错，而是静默换成更弱的模型照样回 200。开启后，服务端自报的模型跟请求的不一致就不把降级回答当成功：换下一个号重试，全池都被降级就回 `429 insufficient_quota`（`code: model_downgraded`，带 `Retry-After`）。流式在吐出第一个字之前就判断，不会先吐一半再报错。媒体模型（生图/音乐/视频/画布）不参与判断。 |
 | 降级冷却（`strict_model_cooldown_min`） | 配合严格模型校验：被降级的号在这个模型上歇多久再用，默认 300 分钟（网页端用量按 5 小时窗口算）。0 = 不记，每次请求都重新试。 |
 | 重试次数 / 重试间隔 / 上游超时 | |
+| 超时后重试（`retry_on_timeout`） | 默认开。关掉后上游等满「上游超时」还没回完就直接报错，不再按重试次数重发：重发多半还是超时，一个请求最坏要等「超时 × 重试次数」，超长输入或慢模型（如 Argon）下能拖十几分钟。空响应、出错话术等其他失败照常重试。 |
+| 流式保活（`stream_keepalive_sec`） | 默认 0（关）。流式请求连续这么多秒没往客户端写东西，就发一次保活，防止前面的 nginx / Cloudflare / newapi 等中间层因连接空闲回 504。建议 15。OpenAI 两个接口发 SSE 注释行 `: ping`（客户端按规范忽略），`/v1beta` 发一块空正文（Google SDK 不认注释行）。**代价**：保活要先开流（HTTP 200），之后再失败只能在流里报错，拿不到 502/429 状态码，依赖状态码换渠道的客户端会受影响；秒级就失败的请求不受影响。非流式请求无效，只能调大中间层的超时。 |
 | 明细保留天数 | 过期只删明细，聚合数据永久保留 |
 | TLS 指纹 | `chrome_146`（默认）/ `chrome_144` / `chrome_133` / `firefox_147` / `safari_16_0` / `safari_ios_17_0` |
 | Firefox 指纹（`firefox_fingerprint`） | 实验，默认关。开启后请求伪装成 Firefox：直连时 TLS 握手走 Firefox 指纹、UA 换成 Firefox、去掉 Chrome 专有的 `Sec-CH-UA`。cookie 从 Firefox 导出时建议配套打开。走代理时 TLS 这层改不了（见[指纹模拟](#指纹模拟)），只有 header 变 |

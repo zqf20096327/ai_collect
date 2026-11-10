@@ -26,23 +26,30 @@ The five most recent updates, newest first. Each line links to its
 commit, so you can see what changed lately without digging through the
 log:
 
-- **2026-11-08**: An interactive architecture diagram of the whole system
-  (modules, dependencies and data flows) now ships in `docs/diagrams` as a
-  self-contained HTML page with guided views and export
-  ([commit](https://github.com/pqant/claude-continuity/commit/5ae9011)).
-- **2026-11-08**: The waiting tab blink now starts after a 5 s settle
-  window instead of 15 s, so a finished turn reaches your tab faster
-  ([commit](https://github.com/pqant/claude-continuity/commit/a9a295d)).
-- **2026-11-08**: Progress frames are padded by rendered cells, so wide
-  glyphs never wrap into the next line
-  ([commit](https://github.com/pqant/claude-continuity/commit/581fe93)).
-- **2026-11-08**: The animator blink key carries the unconsumed reply ts,
-  so a reply arriving mid-blink is still delivered
-  ([commit](https://github.com/pqant/claude-continuity/commit/54494b4)).
-- **2026-11-08**: The reply flag is held through the settle window instead
-  of being cleared early
-  ([commit](https://github.com/pqant/claude-continuity/commit/581ff6f)).
-
+- **2026-11-10**: `turn_clock` now drives the status line HUD too: the
+  `◆ … Active Usage` segment carries `⏱ prev task 39m15s`, so the last
+  task's duration sits in the line you actually watch, updated the
+  moment the turn ends
+  ([commit](https://github.com/pqant/claude-continuity/commit/6524d4b)).
+- **2026-11-10**: The turn clock's reply timing moved to where the pane
+  actually renders it: every prompt line now carries the previous task
+  (`prev reply start -> end (2m34s)`) read from the transcript, so you
+  see how long the last task took the moment you send the next one
+  ([commit](https://github.com/pqant/claude-continuity/commit/b220ddf)).
+- **2026-11-10**: New opt-in `turn_clock` config surfaces message timing
+  in the pane: the prompt time plus the previous reply's window and
+  wall time, matching what the transcript HTML export shows
+  ([commit](https://github.com/pqant/claude-continuity/commit/37317c8)).
+- **2026-11-10**: Rotation gate decisions (guide/deny/block/silent) now
+  land in the session ledger with their ratio and C-text variant, so a
+  strange rotation is debugged from disk instead of reverse-engineering
+  the renderer
+  ([commit](https://github.com/pqant/claude-continuity/commit/5392666)).
+- **2026-11-10**: `cc-continuity install` now pins
+  `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=95` next to the context-window pin, so
+  a fresh install always starts the rotation gate ahead of native
+  auto-compact (a user-set value is never overwritten)
+  ([commit](https://github.com/pqant/claude-continuity/commit/708237d)).
 ## How it works
 
 The whole flow in one picture: the automatic session loop, the optional
@@ -110,14 +117,18 @@ exec zsh                 # reload the shell (claude() wrapper)
 cc-continuity doctor     # everything should be green
 ```
 
-From PyPI:
+From PyPI (recommended: `pipx`, the standard way to install Python CLIs):
 
 ```bash
-pip install cc-continuity
+pipx install cc-continuity          # or: uv tool install cc-continuity
 cc-continuity install
 exec zsh
 cc-continuity doctor
 ```
+
+Plain `pip install cc-continuity` also works inside a venv or when
+embedding it as a library; `pipx`/`uv tool` put the CLI on PATH without
+touching your Python environment.
 
 On Windows (WSL) the same steps run inside the distro (bash as the
 login shell); the full WSL guide is [`docs/WINDOWS.md`](docs/WINDOWS.md).

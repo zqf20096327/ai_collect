@@ -13,6 +13,7 @@
   <a href="https://github.com/Magnvs7/Promethevs/releases/latest"><img src="https://img.shields.io/github/v/release/Magnvs7/Promethevs?label=release" alt="Latest release"></a>
   <a href="engine-0.2/LICENSE"><img src="https://img.shields.io/badge/engine-Apache--2.0-blue" alt="Engine licence: Apache-2.0"></a>
   <a href="https://doi.org/10.5281/zenodo.23577839"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.23577839.svg" alt="DOI"></a>
+  <a href="https://github.com/sponsors/Magnvs7"><img src="https://img.shields.io/badge/Support-Magnvs7-FFB100?logo=githubsponsors&logoColor=white" alt="Support"></a>
 </p>
 
 PROMETHEVS runs **DeepSeek-V4.1-Flash-1017**, one of the strongest open models, from all 510 GB of its original weights, on an ordinary PC that cannot even load it: a Ryzen 9 3950X with 64 GB of DDR4, an RTX 3060 with 12 GB and two NVMe drives.
@@ -140,6 +141,15 @@ We measured agreement against our own exact path; we have not yet run DeepSeek's
 ## Reproduce
 
 [REPRO.md](REPRO.md) outlines the steps we ran: download and verify the weights, build the stores, set the profile, run the benchmark. The scripts themselves ship in release 0.2 (`PROMETHEVS_0.2.zip`, see [engine-0.2/INSTALL.md](engine-0.2/INSTALL.md)).
+
+## Support
+
+PROMETHEVS is just me, on my everyday home PC with one RTX 3060. No team, no lab, and no other GPUs to test on.
+
+The engine is free (Apache-2.0). If it’s useful to you and you want to help me keep putting time into it, you can support me here: https://github.com/sponsors/Magnvs7
+
+Running it on your own rig helps too. If you’ve got Windows, 64 GB RAM, a 12 GB+ RTX 30/40 card and about 1.1 TB of NVMe, post your numbers with the benchmark form:
+https://github.com/Magnvs7/Promethevs/issues/new?template=benchmark_report.md
 
 ## Licence
 

@@ -18,7 +18,7 @@ Cost Guard analyzes [OpenCode](https://opencode.ai/) usage, relative model costs
 
 ## Quick start
 
-Use **current `main`** (v80.207, 2026-11-08), the supported distribution.
+Use **current `main`** (v81.22, 2026-11-10), the supported distribution.
 
 Without Git: [repository](https://github.com/qstoffe/cost-guard) → **main → Code → Download ZIP**. Preserve the extracted structure; download again to update.
 
@@ -33,43 +33,34 @@ git pull --ff-only
 
 Install **Python 3.11+**; standard OpenCode installations need no configuration.
 
-### Optional Web Beta
+### Cost Guard — the default Web application
 
-Windows: `windows/Beta/Cost-Guard-Web.cmd`; experimental macOS: `macos/Beta/Cost-Guard-Web.command` (desktop acceptance pending). [Beta guide](docs/web-beta.md). Foreground: `python cost-guard-web.py --foreground`.
+- **Windows:** double-click `windows/Cost-Guard-Web.cmd`.
+- **macOS:** open `macos/Cost-Guard-Web.command`. Its optional locally generated **Cost Guard.app** uses the same managed menu-bar runtime; physical Finder/Gatekeeper acceptance remains unverified.
+- **Python:** `python cost-guard.py` uses those existing managed launch paths on Windows/macOS. `--help` and `--version` never start a browser.
 
-### Windows
+The native tray/menu owns the local service. Closing a browser tab does not stop it; use **Open Cost Guard** to reopen and **Exit Cost Guard** to stop. Launcher-invoked restart deliberately replaces only the verified host for this checkout. [Web guide](docs/web-beta.md).
 
-Double-click the `.cmd` launchers under `windows/`:
+**Updating from v80:** update old Beta shortcuts once to the top-level Web paths above. Move terminal shortcuts to `Legacy/`; old paths are not forwarding aliases. Update in place to retain config, cache/history, account state and Web preferences; no data migration or reset is needed. Do not copy a private configuration into a public distribution.
 
-Update old shortcuts/bookmarks to the hyphenated names; no aliases ship.
-
-| Launcher | Mode |
-| --- | --- |
-| `Cost-Guard.cmd` | Normal model comparison/account quota report. |
-| `Cost-Guard-Watch.cmd` | Live/global Watch; Ctrl+C stops Watch only. |
-
-Report, Watch and Diagnostics use a **separate, persistent PowerShell 7/5.1 console**. Completion, errors and Ctrl+C retain a child prompt with Python's `$LASTEXITCODE` (9009 for missing Python 3.11+). The caller returns launch status only; synchronous: `py -3 cost-guard.py` (optionally `--watch`). See [download trust](#open-source-license-and-windows-download-trust).
-
-### macOS
-
-Launchers under `macos/`:
-
-| Launcher | Mode |
-| --- | --- |
-| `Cost-Guard.command` | Normal report. |
-| `Cost-Guard-Watch.command` | Live/global Watch; Ctrl+C exits. |
-
-Prefer `git clone` on macOS to preserve executable modes. If ZIP extraction loses them, run:
+Prefer `git clone` on macOS to preserve executable modes. If ZIP extraction loses them:
 
 ```sh
-chmod +x macos/*.command macos/Beta/*.command development/user-tools/diagnostics/macos/*.command
+chmod +x macos/*.command macos/Legacy/*.command development/user-tools/diagnostics/macos/*.command
 ```
 
-Use Finder's **Open** for quarantine prompts.
+Respect Finder's quarantine/Gatekeeper prompts; no security bypass is required or supplied. Quote parent paths containing spaces.
 
-Terminal: `windows\Cost-Guard.cmd`, `./macos/Cost-Guard.command`. Quote parent paths containing spaces.
+### Legacy CLI — supported fallback
 
-See [CLI usage](#setup-and-usage); use `python3` on macOS or `py -3` on Windows if needed.
+| Platform | Normal report | Terminal Watch |
+| --- | --- | --- |
+| Windows | `windows/Legacy/Cost-Guard.cmd` | `windows/Legacy/Cost-Guard-Watch.cmd` |
+| macOS | `macos/Legacy/Cost-Guard.command` | `macos/Legacy/Cost-Guard-Watch.command` |
+
+The explicit `python cost-guard-cli.py` entry retains all CLI report/date/session/Watch arguments and works without a browser or GUI, including Linux/headless use. Windows report/Watch/Diagnostics retain their separate persistent PowerShell console and Python exit code; Ctrl+C stops Watch only. No Legacy launcher starts Web. See [CLI usage](#setup-and-usage).
+
+During transition, explicit old arguments to `cost-guard.py` still forward unchanged to CLI (including errors for unknown flags); only no-argument desktop launch changes. Outside Windows/macOS, no-argument `cost-guard.py` fails with guidance, not a GUI attempt. Developer/headless Web: `python cost-guard-web.py --foreground` opens no browser. Use `python3` on macOS or `py -3` on Windows if needed.
 
 ## Core concepts
 
@@ -83,6 +74,8 @@ Distinct signals:
 - **Quotas / limits:** independent account-native windows, credits, budgets and availability.
 
 Reference costs—including Watch **Today**—are **CCost**, unless labeled otherwise, not native **Used** or actual **Billed**. Included work can have CCost with Billed $0. Quota bars default to **Used / Total**; Web Settings can instead show finite native **Remaining / Total**. **Remaining** pace describes capacity left independently. Quota credentials do not prove historical attribution.
+
+Moving Claude aliases show **version unverified** unless the request records a concrete release. Current picker/catalog defaults cannot resolve older requests. Affected historical cache projections repair automatically on access; raw history remains unchanged.
 
 ### Symbols and token categories
 
@@ -117,16 +110,17 @@ Normal: model comparisons/account quotas. [Synthetic 160-column CLI text](develo
 Check `python --version` is 3.11+. Full commands, from the repository root:
 
 ```text
-python cost-guard.py                            # Available models + account quotas
-python cost-guard.py --all-models               # Full pricing/model catalog only
-python cost-guard.py --token-mix                # Total and per-model Token Mix %/CCost, all available history
-python cost-guard.py --sessions 10              # Latest 10 available root sessions
-python cost-guard.py --sessions all             # All available root sessions
-python cost-guard.py --watch                    # Global Watch; Ctrl+C exits
-python cost-guard.py <session-id>               # One session
-python cost-guard.py <session-id> --watch       # Watch one session/root tree
-python cost-guard.py 2026-08-24                 # One local calendar day
-python cost-guard.py 2026-08-01:2026-08-31      # Inclusive local date range
+python cost-guard.py                            # Default managed Web (Windows/macOS)
+python cost-guard-cli.py                        # Available models + account quotas
+python cost-guard-cli.py --all-models           # Full pricing/model catalog only
+python cost-guard-cli.py --token-mix            # Historical Token Mix %/CCost
+python cost-guard-cli.py --sessions 10          # Latest 10 available root sessions
+python cost-guard-cli.py --sessions all         # All available root sessions
+python cost-guard-cli.py --watch                # Global Watch; Ctrl+C exits
+python cost-guard-cli.py <session-id>           # One session
+python cost-guard-cli.py <session-id> --watch   # Watch one session/root tree
+python cost-guard-cli.py 2026-08-24              # One local calendar day
+python cost-guard-cli.py 2026-08-01:2026-08-31   # Inclusive local date range
 python cost-guard.py --version
 python cost-guard.py --help
 ```
@@ -167,7 +161,7 @@ Reports show `OpenCode not found` only when selection fails and no PATH executab
 
 ## Normal report
 
-`python cost-guard.py` shows definitions, models/notices and `Accounts Overview`. Token Mix uses the latest 100 visible priced prompts, including running/child work. Account CCost independently loads relevant local-day/window/month history, without changing that sample or adding prompt detail/graphs.
+`python cost-guard-cli.py` shows definitions, models/notices and `Accounts Overview`. Token Mix uses the latest 100 visible priced prompts, including running/child work. Account CCost independently loads relevant local-day/window/month history, without changing that sample or adding prompt detail/graphs.
 
 ### Model comparison
 
@@ -343,6 +337,8 @@ The cache is disposable. Stop Cost Guard before deleting `cache/`; the next run 
 
 SQLite WAL, short transactions and bounded waits support concurrent report/global/session Watch.
 
+Web can reclaim opted-in session-cache entries only when both proven root/child activity and meaningful use are over 30 days old. Visible requested reports/history and CLI reports count as use; passive warming and diagnostic API reads do not. Unknown/legacy dates stay protected. Housekeeping waits at least one hour of current host uptime, then attempts a small idle batch at most daily; busy/active/selected work defers it. History still comes from read-only OpenCode sources and rebuilds on demand. Reusable SQLite pages need not shrink the file; no automatic full VACUUM, source deletion or JSON-state migration occurs.
+
 ## Diagnostics for environment-specific problems
 
 For troubleshooting, use `development/user-tools/diagnostics/windows/Cost-Guard-Diagnostics.cmd` (macOS: `macos/Cost-Guard-Diagnostics.command` in the same diagnostics folder), or run:
@@ -361,7 +357,7 @@ Bundles omit prompts/titles, raw payloads/auth, tokens and account labels/IDs; s
 
 ## Current version
 
-**v80.207 (2026-11-08):** Full Web Watch Running rows expand to show bounded, privacy-filtered source invocation inputs. Foreground and background Running statuses share the same semantic yellow. Missing links, redacted/unsupported fields and oversized inputs are labeled honestly; duration updates preserve disclosure interaction. CLI/Mini and accounting are unchanged. See [Watch activity](docs/watch-activity.md).
+**v81.22 (2026-11-10):** Mini Watch Activity keeps configured-local HH:mm today or under 12 hours old, then shows compact floored h/d/m/y ago. Exact-date/offset help, the running ▶, all eligible old history and native sizing remain intact; the existing five-second render updates ages without new polling. [Mini Watch](docs/web-mini-watch.md).
 
 Earlier changes: [version history](VERSION_HISTORY.md). [Live-proof limits](development/architecture/modules/history-loading.md#startup-presentation-and-launcher-evidence). Claude quotas remain experimental.
 

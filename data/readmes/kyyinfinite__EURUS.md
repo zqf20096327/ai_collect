@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/kyyinfinite/eurus/releases"><img alt="Release" src="https://img.shields.io/badge/release-v0.4.0b1-2ea44f?style=for-the-badge"></a>
+  <a href="https://github.com/kyyinfinite/eurus/releases"><img alt="Release" src="https://img.shields.io/badge/release-v0.4.1-2ea44f?style=for-the-badge"></a>
   <img alt="Python" src="https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-3776AB?style=for-the-badge&logo=python&logoColor=white">
   <img alt="Status" src="https://img.shields.io/badge/status-beta-f59e0b?style=for-the-badge">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-2563eb?style=for-the-badge">

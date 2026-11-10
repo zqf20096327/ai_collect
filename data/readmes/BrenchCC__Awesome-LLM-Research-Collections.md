@@ -62,6 +62,10 @@
 
 ## Attention Architecture
 
+- **Muir: Linear Attention with Sensitivity-Allocated Gating and Matched-Filter Readout** (2026.11) \
+  **Description**: Muir improves gated delta-rule linear attention by allocating lower-rank capacity to less sensitive erase gates, using matched-filter readout to reduce state interference, and introducing a stable parallel update. It improves language modeling and long-context recall over Gated DeltaNet-2 while matching its throughput. \
+  <a href="https://arxiv.org/abs/2611.08376"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+
 - **FlashMemory-DeepSeek-V4: Lightning Index Ultra-Long Context via Lookahead Sparse Attention** (2026.06) \
   **Description**: This paper proposes Lookahead Sparse Attention, which uses a separately trained neural memory indexer to predict future context needs and retain only query-critical KV chunks on GPU. FlashMemory reduces the physical KV cache footprint to 13.5% of full-context attention on average while preserving or slightly improving long-context accuracy. \
   <a href="https://arxiv.org/abs/2606.09079"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
@@ -564,6 +568,11 @@
 
 ## Distillation
 
+- **P²-MOPD: Accelerating Multi-Teacher On-Policy Distillation via Parameter Priors** (2026.11) \
+  **Description**: P²-MOPD treats expert task vectors as parameter priors and jointly trains their mixing coefficients with the student's weights under a multi-teacher on-policy distillation objective. It recovers expert capabilities faster and more evenly across domains than standard MOPD, exceeding its final average recovery in half the training steps. \
+  <a href="https://arxiv.org/abs/2611.03953"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://github.com/SinuoWang/P2-MOPD"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
+
 - **Rethinking On-Policy Distillation of Large Language Models II: One Training Example** (2026.09) \
   **Description**: This paper studies on-policy distillation at the data-minimal limit and finds that training on a single query recovers most of the gain from full-data OPD across domains and model families. It explains this through state coverage and student-teacher alignment, showing that 16 semantically distinct queries can match full-data training while OPD is data-overfed but algorithm-starved. \
   <a href="https://arxiv.org/abs/2609.04172"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
@@ -833,13 +842,4 @@
   **Description**: This paper presents FIPO, a reinforcement learning algorithm that overcomes reasoning bottlenecks in LLMs by addressing coarse-grained credit assignment in GRPO-style training, where outcome-based rewards fail to distinguish critical logical pivots from trivial tokens. \
   <a href="https://arxiv.org/abs/2603.19835"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
 
-- **Agentic Proposing: Enhancing Large Language Model Reasoning via Compositional Skill Synthesis** (2026.02) \
-  **Description**: This paper introduces Agentic Proposing, a framework that uses a specialized agent with Multi-Granularity Policy Optimization (MGPO) to dynamically select and compose modular reasoning skills for synthesizing high-precision training trajectories. \
-  <a href="https://arxiv.org/abs/2602.03279"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-
-- **The Entropy Mechanism of Reinforcement Learning for Reasoning Language Models** (2025.05) \
-  **Description**: This paper studies policy entropy collapse as a bottleneck in RL for reasoning language models, showing an empirical relationship between entropy and downstream performance that makes the performance ceiling predictable. It derives entropy dynamics from the covariance between action probability and logit updates, then proposes Clip-Cov and KL-Cov to preserve exploration and improve downstream performance. \
-  <a href="https://arxiv.org/abs/2505.22617"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-
-- **Seek in the Dark: Reasoning via Test-Time Instance-Level Policy Gradient in Latent Space** (2025.05) \
-  **Description**: This paper introduces LatentSeek, a test-time instance-level adaptation frame
+- **Agentic Proposing: Enhancing Large Language Model Reasoning via Compositional Skill Synth

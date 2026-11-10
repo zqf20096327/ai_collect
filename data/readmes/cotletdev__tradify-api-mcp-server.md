@@ -51,6 +51,8 @@ Free for your own use, your own trade business included ([license](#license)).
 [![License: Elastic 2.0](https://img.shields.io/badge/license-Elastic%202.0-141318)](https://github.com/cotletdev/tradify-api-mcp-server/blob/main/LICENSE)
 [![MCP Badge](https://lobehub.com/badge/mcp/cotletdev-tradify-api-mcp-server)](https://lobehub.com/mcp/cotletdev-tradify-api-mcp-server)
 
+Also on Odel: https://odel.app/modules/cotlet/tradify and mcpbeat: https://mcpbeat.com/mcp-servers/cotlet/tradify/
+
 ```bash
 uv tool install tradify-api-mcp                  # or: pip install tradify-api-mcp
 tradify-mcp connect                                # reads your Tradify session from Chrome
@@ -89,6 +91,7 @@ No. Tradify has no official ChatGPT or Claude connector. Cotlet is an unofficial
 
 **How do I connect Tradify to ChatGPT?**
 Sign up at [cotlet.dev](https://cotlet.dev/signup?app=tradify&utm_source=github&utm_medium=readme&utm_campaign=tradify&utm_content=faq-chatgpt), sign in to Tradify once in your Cloud Browser there, and add Cotlet to ChatGPT, following the steps in your account. Then ask ChatGPT about your jobs, quotes and invoices like you would ask your office manager. ChatGPT needs a server on the internet, so this repo alone, running on your computer, does not connect to ChatGPT.
+Why Zapier, n8n and webhooks can't do this for Tradify, and what an AI receptionist can do once it's connected: [How to connect Tradify to ChatGPT when there is no API, no Zapier and no webhook](https://medium.com/@cotletdev/how-to-connect-tradify-to-chatgpt-when-there-is-no-api-no-zapier-and-no-webhook-c65386a50a04).
 
 **Can ChatGPT create quotes in Tradify for me?**
 Yes, with Cotlet. Give it your notes, and it writes a draft quote in Tradify with labour and materials lines, shows it to you, and sends it to the customer only after your OK. The same works in Claude, Cursor, Codex and other AI agents.

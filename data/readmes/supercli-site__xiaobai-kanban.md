@@ -181,7 +181,7 @@ DSH 的口号是 *Everything is a Plugin*，所以**先装「能装插件的插�
 <span style="font-size:10.5px;opacity:.7;text-align:center;line-height:1.5">密钥加密存<br/>用环境变量注入</span>
 </a>
 
-<a href="https://github.com/webkubor/scorecard" style="display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px 8px;border:1px solid var(--vp-c-divider);border-radius:12px;text-decoration:none;color:inherit">
+<a href="https://github.com/supercli-site/scorecard" style="display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px 8px;border:1px solid var(--vp-c-divider);border-radius:12px;text-decoration:none;color:inherit">
 <img src="https://cdn.jsdelivr.net/gh/webkubor/free-imgbed@main/scorecard/mark-v3.svg" alt="scorecard" height="38" />
 <span style="font-size:12.5px;font-weight:600">scorecard</span>
 <span style="font-size:10.5px;opacity:.7;text-align:center;line-height:1.5">开源项目<br/>体检报告</span>
@@ -320,7 +320,7 @@ DSH 的口号是 *Everything is a Plugin*，所以**先装「能装插件的插�
 
 | 你遇到 | 工具 | 解决什么 | 怎么装 |
 |---|---|---|---|
-| 不知道自己的开源项目还缺什么 | [**scorecard**](https://scorecard.webkubor.online) | 粘个 GitHub 链接就出体检报告 | **不用装**，网页直接用 |
+| 不知道自己的开源项目还缺什么 | [**scorecard**](https://scorecard.supercli.site) | 粘个 GitHub 链接就出体检报告 | **不用装**，网页直接用 |
 | 代码写多了，死代码堆成山 | [**deadcode-reaper**](https://github.com/webkubor/deadcode-reaper-skill) | 扫出死代码并清理，还你干净的上下文 | 让 Agent 读仓库说明装 |
 | 想给项目做品牌标识 | [**logo-brand-designer**](https://github.com/webkubor/logo-brand-designer) · [看实际设计案例](./docs/brand-design.md) | 品牌色来源、风格对比、透明底 SVG 与深浅小尺寸评审 | Agent skill，见仓库 README |
 | 界面好不好看，说不清 | [**facet**](https://github.com/webkubor/facet) | 把 Markdown 一键变成 PDF / 长图 / 演讲页，也能给界面做结构化体检 | `npx` 直接跑 |
@@ -516,7 +516,7 @@ glab version && gh --version
 | 「Token 存哪才安全」 | 「装 kyvault，帮我把 Token 加密存好」 | [kyvault](https://github.com/webkubor/kyvault) |
 | 「这个配色是不是看不清」 | 「用 contrast-guard 检查对比度」 | [contrast-guard](https://github.com/webkubor/frontend-contrast-guard) |
 | 「我的页面为什么这么丑」 | 「用 contrast-guard measure 量一下，跟 linear.app 比」 | [contrast-guard](https://github.com/webkubor/frontend-contrast-guard) `measure` |
-| 「这个开源项目靠谱吗」 | 「用 scorecard 给它打个分」 | [scorecard.webkubor.online](https://scorecard.webkubor.online) |
+| 「这个开源项目靠谱吗」 | 「用 scorecard 给它打个分」 | [scorecard.supercli.site](https://scorecard.supercli.site) |
 | 「我这个月 AI 花了多少钱」 | 「装 usage-statusline」 | [usage-statusline](https://github.com/webkubor/claude-usage-statusline) |
 
 > 💡 研发主力用 [Superpowers](https://github.com/obra/superpowers)（258K⭐ 社区标准），密钥 / 前端监控 / 视觉质量用 webkubor 生态补位。
@@ -609,7 +609,7 @@ Agent 会说：「Token 有问题」
 | [vite-plugin-agent-eyes](https://github.com/webkubor/vite-plugin-agent-eyes) | Agent 前端监控 |
 | [contrast-guard](https://github.com/webkubor/frontend-contrast-guard) | 配色对比度 + 视觉质量护栏 |
 | [voxflow](https://github.com/webkubor/voxflow) | AI 声音到 AI 音乐 |
-| [scorecard](https://github.com/webkubor/scorecard) | 开源项目九维度质检 |
+| [scorecard](https://github.com/supercli-site/scorecard) | 开源项目九维度质检 |
 
 推荐的开源工具：
 

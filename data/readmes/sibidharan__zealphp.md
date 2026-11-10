@@ -45,7 +45,7 @@ Running `php app.php` serves the same docs site locally. Set `ZEALPHP_SITE_URL` 
 | **Shared memory** | `Store` (OpenSwoole\Table) + `Counter` (OpenSwoole\Atomic) — cross-worker state |
 | **Timers** | `App::tick()`, `App::after()`, `App::onWorkerStart()` — per-worker recurring tasks |
 | **ZealAPI** | File-based REST: drop `api/device/list.php` → `/api/device/list` works automatically |
-| **Templating** | Nested `App::render()` / `App::renderToString()` — single `_master.php`, component-based |
+| **Templating** | `App::render()` for pages, `App::component()` for stateless and reactive components — single `_master.php` |
 | **Sessions** | All `session_*()` functions overridden via ext-zealphp — coroutine-safe, per-request isolation |
 | **Unit tests** | PHPUnit 11 — extensive unit and integration test suites, all green |
 | **Benchmarks** | OpenSwoole-powered concurrency with a modular `scripts/bench.sh` runner for wrk/ab sweeps through c=1000 |
@@ -97,7 +97,7 @@ docker compose up app
 
 ```bash
 # New project
-composer create-project zealphp/project:^0.4.17 my-project
+composer create-project zealphp/project:^0.4.21 my-project
 cd my-project
 php app.php
 # → https://php.zeal.ninja
@@ -220,7 +220,7 @@ $app->setFallback(fn() => App::include('/index.php'));
 $app->run();
 ```
 
-Now your WordPress, Drupal, or custom PHP app runs on OpenSwoole — persistent connections, no cold starts, WebSocket and streaming available when you're ready. ZealPHP's **file-execution family** — `App::render()` / `App::renderToString()` / `App::renderStream()` / `App::include()` — share a single core that runs the file, captures its output, and applies the [universal return contract](https://php.zeal.ninja/responses#return-contract). Need htmx-style swap targets without separate partial files? `App::fragment()` (v0.2.24) marks named regions inline so the same `App::render()` call serves either the full page or just one region — see [Template fragments](https://php.zeal.ninja/templates#fragments). `App::includeFile()` is the deprecated alias for `App::include()` and still works. See the [legacy apps page](https://php.zeal.ninja/legacy-apps) for the Apache rewrite recipes and the full `.htaccess` / `nginx.conf` coverage matrices.
+Now your WordPress, Drupal, or custom PHP app runs on OpenSwoole — persistent connections, no cold starts, WebSocket and streaming available when you're ready. ZealPHP's **file-execution family** — `App::render()` (pages, with `stream:` / `htmx:` / `fragment:` options), `App::component()` (markup) and `App::include()` — share a single core that runs the file, captures its output, and applies the [universal return contract](https://php.zeal.ninja/responses#return-contract). Need htmx-style swap targets without separate partial files? `App::fragment()` (v0.2.24) marks named regions inline so the same `App::render()` call serves either the full page or just one region — see [Template fragments](https://php.zeal.ninja/templates#fragments). `App::includeFile()` is the deprecated alias for `App::include()` and still works. See the [legacy apps page](https://php.zeal.ninja/legacy-apps) for the Apache rewrite recipes and the full `.htaccess` / `nginx.conf` coverage matrices.
 
 ---
 
@@ -236,8 +236,9 @@ php app.php logs
 php app.php stop
 ```
 
-PID file lives at `/tmp/zealphp/zealphp_{port}.pid` (one per port — multiple
-apps on different ports are supported). Logs go to `/tmp/zealphp/`:
+PID file lives at `<log dir>/zealphp_{port}.pid` (one per port — multiple
+apps on different ports are supported), where the log dir is per-user:
+`/tmp/zealphp-<uid>`. Logs go there too:
 `server.log`, `access.log`, `debug.log`, `zlog.log`. `php app.php logs` tails
 all four; add `--access`, `--debug`, `--server`, or `--zlog` to filter.
 
@@ -274,12 +275,12 @@ docker compose run --rm --build compare
 Set `ZEALPHP_BENCH_MODE=1` to skip the demo middleware and session file I/O on
 the benchmark path. The sample auth/validation middleware is opt-in via
 `ZEALPHP_DEMO_MIDDLEWARE=1`.
-Set `ZEALPHP_LOG_DIR=/tmp/zealphp` to send `debug.log`, `access.log`, and
+Set `ZEALPHP_LOG_DIR=/var/log/zealphp` (or any dir you own) to send `debug.log`, `access.log`, and
 `zlog.log` there, and keep `ZEALPHP_LOG_ASYNC=1` so request logging is queued
 off the hot path. Use `ZEALPHP_DEBUG_LOG=0` and `ZEALPHP_ACCESS_LOG=0` for
 quiet runs.
-If `/tmp/zealphp` is not writable, ZealPHP falls back to a writable local log
-directory.
+Without it, ZealPHP uses a per-user dir it owns (`0700`), never a shared
+`/tmp/zealphp`.
 
 ---
 
@@ -336,7 +337,7 @@ sudo bash setup.sh
 ./vendor/bin/phpunit tests/Unit/ --testdox
 
 # Integration tests — server must be running
-php app.php &
+ZEALPHP_TEST_ROUTES=1 php app.php &
 ./vendor/bin/phpunit tests/Integration/ --testdox
 
 # All tests
@@ -440,6 +441,8 @@ App::onWorkerStart(function($server, $workerId) use ($hitCounter) {
 
 ## Design Principles
 
+**Build pages from components, keep routes as wiring.** A page is a public file plus a template folder named after it; the template lays the page out from components (`App::component()`), each component kept next to the page that uses it (`template/<page>/components/`) until a second page needs it (`template/components/`). Route and API files only wire: they call a `src/` class and return a status, data, or `App::render()` / `App::component()`, never HTML they build themselves. Logic lives in `src/` classes. The rules are in [Where code goes](docs/directory-structure.md#where-code-goes), and the demo site follows them under test.
+
 **Coroutine mode (recommended):** `App::superglobals(false)` enables `OpenSwoole\Runtime::HOOK_ALL` so all PHP I/O (file, curl, PDO, sleep) yields the event loop automatically. Each request runs in its own coroutine with isolated `RequestContext::instance()` state (`G` remains as a `class_alias` for `RequestContext` since v0.2.6 — both names resolve to the same class). This is the default for new scaffolds since v0.2.4.
 
 **Superglobals mode (legacy compatibility):** `App::superglobals(true)` disables coroutines in the main thread — `$_GET`, `$_POST`, `$_SESSION` work safely because only one request runs at a time per worker. Use this when migrating existing apps incrementally. Implicit file routes for legacy code run through the CGI bridge (`App::include()`) via a **pre-spawned subprocess pool** (`cgiMode('pool')`, entry script `src/pool_worker.php`, ~1–3 ms warm, the default) so blocking PHP runs in a child process with its own arena. `cgiMode('proc')` opts into a fresh `proc_open` subprocess per request (~30–50 ms cold, entry script `src/cgi_worker.php`) for the rare case that demands fully fresh-process semantics.
@@ -469,16 +472,16 @@ The fine-grained setters (`App::superglobals()`, `App::isolation()`, `App::enabl
 2. Run `composer validate`, `./vendor/bin/phpunit`, and `./vendor/bin/phpstan analyse --no-progress` (level 10, zero errors).
 3. Open a release PR, wait for required checks to go green, and merge (rebase):
    ```bash
-   git checkout -b release/v0.4.17
-   git commit -am "chore: release v0.4.17"
-   git push origin1 release/v0.4.17
-   gh pr create --base master --head release/v0.4.17 --title "chore: release v0.4.17"
+   git checkout -b release/v0.4.21
+   git commit -am "chore: release v0.4.21"
+   git push origin1 release/v0.4.21
+   gh pr create --base master --head release/v0.4.21 --title "chore: release v0.4.21"
    ```
 4. After merge, tag the merged commit and push to both remotes (tags aren't protected):
    ```bash
    git checkout master && git pull origin1 master --ff-only
-   git tag -a v0.4.17 -m "Release v0.4.17"
-   git push origin v0.4.17 && git push origin1 v0.4.17
+   git tag -a v0.4.21 -m "Release v0.4.21"
+   git push origin v0.4.21 && git push origin1 v0.4.21
    ```
 5. Bump `zealphp/project` (the scaffold) to the same version and refresh its `llms.txt`. Packagist auto-syncs via webhook for both packages.
 

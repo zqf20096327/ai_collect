@@ -8,54 +8,43 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/bigbraingoldfish/lullabeast/actions/workflows/ci.yml/badge.svg)](https://github.com/bigbraingoldfish/lullabeast/actions/workflows/ci.yml)
 [![Runs on OpenClaw](https://img.shields.io/badge/runs%20on-OpenClaw-c9962e.svg)](https://docs.openclaw.ai)
-![Version](https://img.shields.io/badge/version-1.0.0-7c3aed.svg)
+![Version](https://img.shields.io/badge/version-1.2.0-7c3aed.svg)
 ![Status](https://img.shields.io/badge/status-beta-orange.svg)
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey.svg)
 
 </div>
 
-Lullabeast is an open-source, local-capable, autonomous development pipeline. Describe what you want to build in plain English, and your team of agents (planner, executor, reviewer) implements it phase by phase against a real git repository, with deterministic gate scripts checking every step and an escalation path back to you when they get stuck.
+Lullabeast is an open-source, autonomous development pipeline built to get real, tested apps from local and cheap open-weight models such as Qwen, DeepSeek, Kimi, MiniMax, and GLM. Describe what you want to build in plain English, and your team of agents (planner, executor, reviewer) implements it phase by phase against a real git repository, with deterministic gate scripts checking every step, cost and token tracking per phase and per agent as it runs (when your models report usage), and an escalation path back to you when the agents get stuck.
 
 Lullabeast runs on [OpenClaw](https://docs.openclaw.ai/) and requires it: Lullabeast is the pipeline and dashboard, while the agents themselves run inside OpenClaw's runtime environment. The Docker image bundles a pinned, pre-configured OpenClaw, so the install path below needs nothing but Docker and an API key.
 
-<p align="center">
-  <img src="docs/assets/diagrams/demo-cycle.gif" alt="One full Lullabeast run, from idea to finished app" width="720">
-</p>
+https://github.com/user-attachments/assets/084f1abd-6b5d-408e-b0b8-05046f2ac6c6
 
-> **Early release, and honest about it.** Lullabeast reliably builds small, single-purpose webapps end to end, and hard phases escalate to you by design, but larger or more complex projects tend to surface more issues and need more polish before they're done. This beta release is a single-user tool meant to run on a trusted machine, protected by a locally generated access token. (I personally run the pipeline and OpenClaw in a VM for transparency.) I'm shipping now to get it in front of other builders and find out where it breaks so I can strengthen it. Bug reports and suggestions are welcome.
+> **Early release, and honest about it.** Lullabeast reliably builds small, single-purpose webapps end to end, and hard phases escalate to you by design, but larger or more complex projects tend to surface more issues and need more polish before they're done. This beta release is a single-user tool meant to run on a trusted machine, protected by a locally generated access token. Frontier one-shot models (the latest GPT, Gemini, and Claude) cost more and are capable enough to suit a different architecture, so this one isn't built for them. (I personally run the pipeline and OpenClaw in a VM for transparency.) I'm shipping now to get it in front of other builders and find out where it breaks so I can strengthen it. Bug reports and suggestions are welcome.
 
 ---
 
 ## Why it exists
 
-Open-weight models like Qwen, Kimi, and MiniMax cost a fraction of frontier prices, and they fail in known, repeatable ways. Lullabeast is built around those failures:
+Open-weight models like Qwen, DeepSeek, Kimi, MiniMax, and GLM now write real software at a fraction of frontier prices, and some run on your own hardware. They're good, not flawless: they still trail the frontier, and benchmarks flatter them. Lullabeast gives them the structure to deliver, with gates around every phase. The structure is for the models; the gates are a safety net for the misses:
 
-| The failure mode | How Lullabeast handles it |
+| What the safety net catches | How Lullabeast handles it |
 |---|---|
-| **Deleting files** under context pressure | Every deletion has to be declared up front. If a file disappears that wasn't, the gate flags it and the phase re-runs. |
-| **Drifting from the spec** as a build grows | Context is cleared between tasks and each one stays atomic, so focus stays narrow against a clear definition of done; the reviewer then confirms those principles held across the whole phase. |
-| **Declaring victory** without running the tests | A phase can't close until the gate confirms every required test exists, is structured correctly, and passes. |
-| **Disappearing mid-turn** and leaving you guessing | Each agent gets three real attempts before anything is flagged to you, and timeouts catch an agent that never starts or hangs, so one dropped turn never sinks the run. |
+| A file **disappears** without being declared | Every deletion has to be declared up front. If a file disappears that wasn't, the gate flags it and the phase re-runs. |
+| The build **drifts from the spec** as it grows | Context is cleared between tasks and each one stays atomic, so focus stays narrow against a clear definition of done; the reviewer then confirms those principles held across the whole phase. |
+| A phase **claims it's done** before the tests pass | A phase can't close until the gate confirms every required test exists, is structured correctly, and passes. |
+| An agent **goes quiet** mid-turn | Each agent gets three real attempts before anything is flagged to you, and timeouts catch an agent that never starts or hangs, so one dropped turn never sinks the run. |
 
 ---
 
 ## How it works
 
 <p align="center">
-  <img src="docs/assets/diagrams/workflow.png" alt="Lullabeast workflow: idea to PRD to roadmap, then the gated planner/executor/reviewer build loop with escalation, to a finished app" width="760">
+  <img src="docs/assets/diagrams/workflow.png" alt="How a run works. Setup, once per project: the idea, in plain English; a PRD, which prd-creator turns it into; a roadmap of ordered phases, which roadmap-converter builds. Per phase, until the roadmap is done: the planner writes the plan and specifies the phase's tests up front; the executor writes those tests, then the code that makes them pass, and runs them; the reviewer checks the result behaves and passes it forward or sends it back to the executor. A plain-Python gate checks the evidence after each step, and a phase the reviewer passes is committed and merged. When a gate can't be satisfied, the run stops and asks you. An optional completion report closes the roadmap." width="1008">
 </p>
 
-Queue several projects and Lullabeast works them in order, honoring dependencies between them.
-
-**The agents.** Four pipeline agents and two ideation agents, run by a single orchestrator state machine that owns the git operations and recovery logic:
-
-- **Planner:** turns the current roadmap phase into a concrete implementation plan.
-- **Executor:** writes the code and tests, then commits to a phase branch.
-- **Reviewer:** verifies the result actually behaves as intended, including screenshot-based visual review for UI phases.
-- **Gate scripts:** deterministic, LLM-free Python checkers between every handoff: file manifest, git diff, test results, behavioral evidence, unaccounted deletions. The gates are the pipeline's source of truth; no agent advances on its own say-so.
-- **Escalation:** invoked only when gates and retries are exhausted; notifies you and pauses.
-- **prd-creator / roadmap-converter:** drive the idea, PRD, roadmap front end.
+One orchestrator runs this loop and owns git: it commits and merges each phase the reviewer passes. Queue several projects and Lullabeast works them in order, honoring dependencies between them.
 
 ---
 
@@ -111,7 +100,7 @@ Lullabeast is model-agnostic. OpenClaw owns all model configuration, so you choo
 
 | Mode | What runs the agents | Trade-off |
 |---|---|---|
-| **Budget cloud** (best results so far) | Open-weight multi-modal models via your OpenRouter key (e.g. MiniMax, GLM, Kimi, Qwen) | Cheap per token; your key, your provider |
+| **Budget cloud** (best results so far) | Open-weight multi-modal models via your OpenRouter key (e.g. MiniMax, GLM, Kimi, Qwen, DeepSeek) | Cheap per token; your key, your provider |
 | **Fully local** | Validated on a single RTX 4090 (48GB, modded) with `unsloth/Qwen3.6-27B-MTP-GGUF` & `llamacpp/Qwen3.6-27B` (both q8_0); [wiring guide](deploy/README.md#local-models-on-the-host) | No cloud in the loop; front-end (UI) phases are the weak spot, with the most failures and retries |
 | **Hybrid** | Local for **escalation + executor** (where most of the work, and the cost savings, happen), cloud for **planner and/or reviewer** (cheap to build a strong foundation and review thoroughly) | Often the best cost/quality balance; still being tuned |
 
@@ -141,7 +130,7 @@ mkdir -p projects && docker compose up -d && docker compose logs -f
 
 On Windows, run these lines in Git Bash with Docker Desktop running ([Windows notes](deploy/README.md#windows-notes)).
 
-The container runs detached, so it survives closing the terminal; the `logs -f` view is just a window into it, and Ctrl+C there detaches without stopping anything. Wait for the boot log to end with the doctor verdict (the built-in health check) and a banner containing your dashboard URL, then open that URL on the machine running Docker. It includes your access token and authorizes your browser via a cookie (30 days); scripts can send the same token as a `Bearer` header instead. First boot is slower: it provisions state and validates your API key end to end with a one-time live webhook ping.
+The container runs detached, so it survives closing the terminal; the `logs -f` view is just a window into it, and Ctrl+C there detaches without stopping anything. Wait for the boot log to end with the doctor verdict (the built-in health check) and a banner containing your dashboard URL, then open that URL on the machine running Docker. It includes your access token and authorizes your browser via a cookie (30 days); scripts can send the same token as a `Bearer` header instead. First boot is slower: it provisions state and sends a one-time live webhook ping, one tiny agent run on your API key. The doctor checks that the webhook accepted it, not the model's reply, so a key your provider rejects still boots green; that run's error shows in the log.
 
 The full container contract (environment variables, volumes, upgrades, customization, hardening) is in **[deploy/README.md](deploy/README.md)**.
 

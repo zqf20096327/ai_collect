@@ -4,7 +4,7 @@
   <br/>
   
   [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-  [![Version](https://img.shields.io/badge/version-0.1.0--beta-green.svg)](package.json)
+  [![Version](https://img.shields.io/badge/version-0.2.0--beta-green.svg)](package.json)
   [![Architecture](https://img.shields.io/badge/architecture-Plasmo%20%7C%20React%20%7C%20TypeScript-orange)]()
 </div>
 
@@ -97,11 +97,11 @@ The heart of ContxtAI. Create or edit profiles, define identity rules, and add s
 ---
 
 ### One-Click Context Injection
-Inject your selected context directly into supported AI platforms with a single click. No more copy-pasting project descriptions between ChatGPT, Claude, and Gemini.
+Inject your selected context directly into supported AI platforms with a single click. No more copy-pasting project descriptions between ChatGPT, Claude, Gemini, Grok, and DeepSeek. Powered by a resilient, self-healing **Universal Injection Pipeline** that seamlessly synchronizes with modern rich-text editors (Lexical, ProseMirror, Quill, and native inputs).
 
 <p align="center"><img src="./extension/assets/inject-button.png" alt="Inject Button UI" /></p>
 
-💡 **Use Case:** Start a new ChatGPT session. Click the ContxtAI extension icon and press **"Inject Selected Context"**. Your preferred profile context instantly drop right into the chat box!
+💡 **Use Case:** Start a new ChatGPT, Claude, Grok, or DeepSeek session. Click the ContxtAI extension icon and press **"Inject Selected Context"**. Your preferred profile context instantly drops right into the chat box!
 
 ---
 
@@ -188,26 +188,20 @@ ContxtAI is structured as a `pnpm` monorepo containing two main packages:
 
 ## Supported Platforms
 
-Currently supported AI platforms:
+Currently supported AI platforms (with native one-click context bridges and 8k+ token ceilings):
 
-- ChatGPT
+- **ChatGPT** (`chatgpt.com`, `chat.openai.com`) — 8,000 token budget (Lexical editor bridge)
+- **Claude** (`claude.ai`) — 8,000 token budget (ProseMirror contenteditable bridge)
+- **Gemini** (`gemini.google.com`) — 10,000 token budget (Rich-textarea bridge)
+- **Grok** (`grok.com`, `x.ai`) — 8,000 token budget (Lexical / ProseMirror bridge)
+- **DeepSeek** (`chat.deepseek.com`) — 8,000 token budget (Dynamic textarea bridge)
 
-- Claude
+More platforms are planned and under active exploration:
 
-- Gemini
-
-More platforms are planned:
-
-- Cursor
-
-- Grok
-
+- Cursor (`.cursorrules` integration)
 - Perplexity
-
 - Open WebUI
-
 - Ollama WebUI
-
 - Local LLM interfaces
 
 
@@ -274,23 +268,14 @@ The deployable zip file will be located in `extension/build/`.
 
 ## 🤝 Contributing
 
-ContxtAI is designed to be highly extensible. You can contribute without touching the core engine!
+ContxtAI is designed to be highly extensible, and we welcome contributions of all levels!
 
-- **Add a new AI Platform:** Create a new bridge file in `extension/contents/bridges/` to handle DOM injection for a new site (e.g., Perplexity, xai).
+- **Add a new AI Platform:** Create a new bridge in `extension/contents/bridges/` using our Universal Injection Pipeline (e.g., Perplexity, Open WebUI, Ollama).
+- **Add a Formatting Template:** Create a template in `core/src/templates/` to format context tailored for specific tools.
+- **Improve the Core Engine & Security:** Add new DLP scrubbing patterns in `core/src/engine/scrubber.ts`.
+- **Build Future Roadmap Features:** Help implement Personas, Parameterized Prompt Templates, Local MiniLM Semantic RAG, or In-Page Command Palette (`Cmd + Shift + K`).
 
-- **Add a new Formatting Template:** Create a template file in `core/src/templates/` to define how context should be formatted for specific tools (e.g., Midjourney).
-
-- **Improve the Core Engine:** Help us build V2 features like SQLite WASM integration and Local MiniLM Embeddings for semantic retrieval.
-
-- We're also exploring a few big features :
-
-1) **Personas:** Pre-configured persona profiles for tailored AI behaviors
-
-2) **Prompt Templates:** Reusable structured templates for common workflows
-
-3) **Centralized / Git-like Versioning DB:** Tracking, branching, and syncing context changes over time
-
-Please read our [Documentation](ContxtAI_Documentation.md) for a deep dive into the architecture before contributing.
+For detailed instructions, architecture setup, testing standards, and the full future wishlist, please read our **[Contribution Guide](CONTRIBUTIONS.md)** and **[Documentation](ContxtAI_Documentation.md)**.
 
 ---
 

@@ -48,6 +48,21 @@ Analyze TRL completions and render the saved report as searchable HTML:
 
 For verl dumps, use `--format verl` and omit `--reward-column`. Reports contain event evidence and exemplar references, with raw response text kept in the original dump. `render` accepts analysis or comparison JSON. Choose a fresh output path each time.
 
+Event reports include shared-prompt changes and prompt-descriptor shifts. `analyze --benchmark-results reference.json` attaches separately supplied benchmark counts and provenance; these figures do not calibrate the analyzed run.
+
+### Watch completed steps
+
+Seal each closed file against the producer's expected prompt-group counts, then watch the directory:
+
+```sh
+.venv/bin/rollout watch seal /path/to/completions/completions_1.parquet \
+  --format trl --run experiment-1 --groups /path/to/groups.json
+.venv/bin/rollout watch run /path/to/completions --format trl --run experiment-1 \
+  --start-step 1 --state /path/to/watch-state
+```
+
+State contains private source copies and durable per-step reports and journals. Resume with the same command; `--once` processes one finite inventory. Missing steps wait. First-emission prefix steps remain separate from inferred onset and wall-clock delivery. Render a saved commit's `report.json`, and inspect against its `source/` directory. See `rollout watch run --help` and `rollout watch seal --help` for publication and resume requirements.
+
 ### Compare windows or dumps
 
 ```sh
@@ -55,7 +70,7 @@ For verl dumps, use `--format verl` and omit `--reward-column`. Reports contain 
   --a 80:100 --b 140:160 --output /path/to/diff.json --html /path/to/diff.html
 ```
 
-Supply a second dump to compare runs. Reports show differences, uncertainty, prompt overlap and citations for each side. See `rollout diff --help` and `rollout inspect --help` for input and inspection options.
+Ranges may overlap or appear in either order; each range is inclusive. Supply a second dump to compare runs. Reports show differences, uncertainty, prompt overlap and citations for each side. See `rollout diff --help` and `rollout inspect --help` for input and inspection options.
 
 ### Inspect an event
 

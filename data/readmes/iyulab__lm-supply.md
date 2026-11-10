@@ -398,7 +398,7 @@ sealed class MyPhonemizer : IPhonemizer
 
 ## Available Models
 
-*Updated: 2026-03 based on MTEB leaderboard and community benchmarks*
+*The catalogs are reviewed on a declared schedule, and every change to what an alias resolves to is a CHANGELOG line — see [docs/CATALOG.md](docs/CATALOG.md).*
 
 ### Embedder (ONNX)
 
@@ -591,6 +591,44 @@ Low-end/quantized models (the `FallbackToSmallest` tier below) are prone to *deg
 | **Medium** | 4-6GB | `gguf:qwen3-default` (Qwen 3.5 4B) | thinking ON |
 | **High** | 6-10GB | `gguf:qwen3-balanced` (Qwen 3.5 9B) | |
 | **Ultra** | 20-24GB | `gguf:qwen3-quality` (Qwen 3.6 35B MoE) | thinking ON |
+
+#### Which models to offer on this machine
+
+`GgufModelRegistry.Recommend()` answers it for the machine it runs on, so an application does not keep its own tier table:
+
+```csharp
+using LMSupply.Generator.Gguf;
+
+var recommendation = GgufModelRegistry.Recommend();           // or Recommend(ExecutionProvider.Cpu, contextLength: 8192)
+foreach (var model in recommendation.Models)                  // smallest first
+{
+    Console.WriteLine($"{model.Tier,-10} {model.DisplayName}  {(model.Judgement.Fits ? "runs on the GPU" : model.Judgement.FitsInSystemRam ? "runs from system memory" : "too large")}"
+        + (model.IsAutomaticPick ? "  <- gguf:auto" : "") + (model.IsBestThatRunsWell ? "  <- best that runs well here" : ""));
+}
+```
+
+The list is the catalog's ladder — `Fast`, `Default`, `Balanced`, `Quality` and `ExtraLarge`, tiers named in the library's words (show your own) — judged with the same rule automatic selection and the loader use. A model that does not fit stays in the list marked as too large. `IsSmallestUsable`, `IsAutomaticPick` and `IsBestThatRunsWell` mark the rungs worth highlighting: a small machine gets the same rung for the first and the last, a large one reaches `ExtraLarge`, and `gguf:auto` is always one of the rungs, so the list and the automatic pick never disagree. `CatalogRevision` changes when the catalog does (see [docs/CATALOG.md](docs/CATALOG.md)). `DisplayName` is a name for people without the quantization; the quantization is `Model.QuantizationType`.
+
+#### A model that is not in the catalog
+
+When a person types a Hugging Face repository id, `LocalGenerator.DescribeAsync(id)` shows the same facts as a listed row — and refuses a bad id before the download prompt:
+
+```csharp
+var probe = await LocalGenerator.DescribeAsync("unsloth/Qwen3.5-9B-GGUF");
+switch (probe.Status)
+{
+    case ModelProbeStatus.Found:
+        // probe.Description: name, backend (GGUF/ONNX), licence if the catalog knows it
+        // probe.DownloadBytes: what a load downloads; probe.Judgement: runs on the GPU / from memory / too large (GGUF)
+        break;
+    case ModelProbeStatus.NotFound:         // no such repository (the Hub answers a private one the same way: set HF_TOKEN)
+    case ModelProbeStatus.NoLoadableFiles:  // the repository exists, with no GGUF or ONNX model in it
+    case ModelProbeStatus.Unreachable:      // could not check — not the same as "does not exist"
+        break;
+}
+```
+
+It reads one repository listing (the one the download that follows reuses) and downloads nothing. The verdict uses the same rule as the catalog rows, on the file the load would pick and its size; an ONNX model has no verdict, because its load does not use that rule.
 
 > **Platform-based routing:** `LoadAsync("default")` and `LoadAsync("auto")` both select the model for the current host on the GGUF/llama.cpp backend — CUDA on NVIDIA, Metal on Apple Silicon, Vulkan on AMD/Intel GPUs, CPU otherwise (v0.67.0: the ONNX/DirectML branch for Windows discrete AMD/Intel GPUs is gone with the DirectML provider; those GPUs use Vulkan). Use `gguf:*` aliases or ONNX aliases for explicit control.
 

@@ -314,7 +314,7 @@ Most AI agent attacks don't look like attacks. They hide inside normal-looking c
 SUNGLASSES is a free, open-source input inspection layer. It does not sit invisibly in front of your agent and sanitise everything it reads (nothing does). It gives you three surfaces you invoke deliberately:
 
 - **`sunglasses scan`**, inspect a file, a repo or a string on demand, in CI or at the terminal. Reports what it found *and what it could not read*.
-- **The Claude Code firewall hook**, inspects tool calls before they run and can block them. It is best-effort under load: the hook has a 10-second timeout, and a timed-out hook does not block the call (see `KNOWN_VERSION_GAPS.md`).
+- **The Claude Code firewall hook**, inspects tool calls before they run and can block them. It is best-effort under load: the hook has a 10-second timeout, since v0.6.6 its optional pattern lane stops itself at 7 seconds and answers ask, and a default install (v0.6.10 and later) sets `onFailure: "block"` so a hook that times out or cannot start refuses the call on Claude Code 2.1.295 and later (`init --fail-open` opts out; see `KNOWN_VERSION_GAPS.md`).
 - **The MCP server**, exposes scanning to an agent as a tool it can call.
 
 It flags; it does not silently strip. Content it cannot inspect (an archive, an image whose OCR is unavailable, a file over the size cap) is reported as **not inspected**, never as clean. Inside opened files, coverage is per format; see the PDF note.
@@ -694,7 +694,7 @@ A deep scan of audio or video downloads the Whisper speech model (about 145 MB f
 
 SUNGLASSES auto-detects file types. If you try to scan audio/video without `--deep`, it tells you what to do instead of crashing.
 
-**Input size cap.** `engine.scan()` reads at most **1 MB** by default. On ordinary prose scan cost is roughly linear in input length (~50 µs/byte), but **not on every input shape**: the matcher is quadratic on a single unbroken token, so a long token can cost far more than its length suggests (measured curve and consequences in [KNOWN_VERSION_GAPS.md](KNOWN_VERSION_GAPS.md)). Even at the linear rate, an uncapped filter handed a 10 MB page stalls an agent for minutes, a denial of service an attacker triggers with a large *benign* document. A scan that hit the cap says so: `result.truncated` is `True` and `result.bytes_scanned` reports what was actually read, in the human output and in `--json`. Change it with `SunglassesEngine(max_scan_bytes=N)`, or pass `0` to disable it.
+**Input size cap.** `engine.scan()` reads at most **1 MB** by default. On ordinary prose scan cost grows with input length, and some input shapes cost more than their length suggests (see [KNOWN_VERSION_GAPS.md](KNOWN_VERSION_GAPS.md), gap 4). An uncapped filter handed a 10 MB page stalls an agent for minutes, a denial of service an attacker triggers with a large *benign* document. A scan that hit the cap says so: `result.truncated` is `True` and `result.bytes_scanned` reports what was actually read, in the human output and in `--json`. Change it with `SunglassesEngine(max_scan_bytes=N)`, or pass `0` to disable it.
 
 **Exit codes.** `0` = read the whole input and found nothing that fails the scan (with `--fail-on` or `--baseline`, findings below the level or listed in the baseline are still reported). `1` = threat found (with `--fail-on` or `--baseline`, a finding below the level or listed in the baseline does not exit `1`; see above). `3` = part of the input could not be read (a PDF text layer without `sunglasses[media]`, say) and nothing was found in the rest. `3` exists because `0` is a claim: "I read it and it is clean" and "I could not open it and saw nothing" must not be the same signal to a CI job.
 
@@ -713,7 +713,7 @@ print(result.is_clean)     # False — v0.5.6: this now means "no findings AND f
                            # To keep the pre-0.5.6 "no findings" test, use
                            # `not result.threat_found` — note the inversion:
                            # `result.threat_found` alone is the OPPOSITE condition.
-print(result.latency_ms)   # ~0.7ms on a short input; scales with length
+print(result.latency_ms)   # milliseconds; grows with input length
 ```
 
 ### Connect the MCP server
@@ -795,7 +795,7 @@ Both runs print which engine they measured. `--installed` refuses to run when th
 
 Labeled dataset shipped in this repo: 38 real agent-input attacks (positives) + 77 famous open-source READMEs (react, kubernetes, numpy, ollama…) that must stay clean (negatives). No randomness, no network, no LLM judge (same clone + same command → byte-identical results, sealed by a SHA-256 of the metrics block).
 
-| Metric (v0.6.19) | Value |
+| Metric (v0.6.20) | Value |
 |--------|-------|
 | Precision | 86.1% |
 | Recall | 97.4% (37/38) |
@@ -852,7 +852,7 @@ language contributions welcome; see `KNOWN_VERSION_GAPS.md` for the measured det
 ## The Firewall, from detector to control (v0.4)
 
 Everything above this line *reports*. The firewall *stops*. It installs as a
-Claude Code `PreToolUse` hook and answers one question before every tool call (**best-effort**: the hook runs under a 10-second timeout, and Claude Code lets a timed-out hook's tool call proceed, so on the pathological input shapes described in [KNOWN_VERSION_GAPS.md](KNOWN_VERSION_GAPS.md) a call can go through unscanned):
+Claude Code `PreToolUse` hook and answers one question before every tool call (**best-effort**: the hook runs under a 10-second timeout; its optional pattern lane stops itself at 7 seconds and answers ask, and a default install sets `onFailure: "block"`, so a hook that still times out refuses the call on Claude Code 2.1.295 and later; see [KNOWN_VERSION_GAPS.md](KNOWN_VERSION_GAPS.md)):
 **does this action violate a fact we can prove?**
 
 ```bash
@@ -1001,20 +1001,24 @@ private key files are named individually and matching is boundary-aware, so
   lives in CPython itself (issue 109631). If you turn the WARN lane
   on, use Python 3.11.6, 3.12.1 or newer. macOS ships 3.9 as /usr/bin/python3.
 - **Large content passed as tool input can use up the WARN lane clock on any
-  Python.** On content of about 200 KB and up (a big file written in one call or
-  a large pasted payload) the 7 seconds add up over hundreds of pattern checks
+  Python.** On a long document of tens of kilobytes (a big file written in one call or
+  a large pasted payload) the 7 seconds can add up over hundreds of pattern checks
   plus building the pattern database on the first call, with no single slow
   pattern to blame. When the clock runs out the lane stops and asks you, and
   that call reaches you without a completed pattern check. Hard blocks do not
   use this clock and are unaffected.
-- **It fails open, and says so.** A crash falls through to Claude Code's own
-  permission flow rather than wedging your agent. A *dead control* is different:
+- **A crash inside the check falls through, and says so.** An error while
+  checking defers to Claude Code's own permission flow with a notice that the
+  call was NOT checked, rather than wedging your agent. A hook that times out or
+  cannot start is different: a default install refuses the call on Claude Code
+  2.1.295 and later (`init --fail-open` lets it through; older hosts ignore the
+  key). A *dead control* is different again:
   if the policy file is missing, empty, unreadable or unparseable, or if the audit
   trail cannot be written, the firewall now ASKS and names which control is down,
   and unreadable includes the shapes that are not a file you can read at all: a
   FIFO, socket, device node or directory in that path is answered from metadata
   before anything opens it, because a FIFO with no writer blocks in the kernel
-  and a blocked hook is timed out by the harness and fails open. A NUL byte
+  and a blocked hook is ended by the harness at its timeout, which refuses the call on a default install and lets it through under `--fail-open`. A NUL byte
   anywhere in the policy counts as unparseable, comments included: YAML will
   happily keep one inside a value, and a path with a NUL in it silently matches
   nothing, which is the one answer indistinguishable from a clean scan.

@@ -21,7 +21,7 @@
   <img src="https://img.shields.io/badge/OpenAI-compatible-f7f7f7?style=flat-square&logo=openai&logoColor=white&labelColor=0c0c0c" alt="OpenAI-compatible">
   <img src="https://img.shields.io/badge/node-%E2%89%A522-339933?style=flat-square&logo=nodedotjs&logoColor=white&labelColor=0c0c0c" alt="Node 22+">
   <img src="https://img.shields.io/badge/rust-anchor%201.2-dea584?style=flat-square&logo=rust&logoColor=white&labelColor=0c0c0c" alt="Rust, Anchor 1.2">
-  <img src="https://img.shields.io/badge/rehearsal-17%2F17%20checks-14f195?style=flat-square&labelColor=0c0c0c" alt="17 of 17 rehearsal checks">
+  <img src="https://img.shields.io/badge/rehearsal-50%2F50%20checks-14f195?style=flat-square&labelColor=0c0c0c" alt="50 of 50 rehearsal checks">
   <img src="https://img.shields.io/badge/payments-ed25519%20vouchers-9945ff?style=flat-square&labelColor=0c0c0c" alt="ed25519 vouchers">
 </p>
 
@@ -54,7 +54,7 @@
 - [Router console](#router-console)
 - [Build from source](#build-from-source)
 - [FAQ](#faq)
-- [Roadmap](#roadmap)
+- [Roadmap](#roadmap) · [Changelog](CHANGELOG.md)
 - [Contributing](#contributing)
 
 ---
@@ -207,6 +207,8 @@ x-orrery-provider: 5Tq7…
 x-orrery-route: price
 x-orrery-cost: 0.000009
 ```
+
+and the body's `usage` has the same bill: `{"prompt_tokens": 91, "completion_tokens": 102, "total_tokens": 193, "cost": 0.000018}`. Streams end with it when you set `"stream_options": {"include_usage": true}`.
 </details>
 
 <details>
@@ -366,6 +368,7 @@ WantedBy=multi-user.target
 </details>
 
 - **Your wallet stays cold.** The node runs on its own key (`~/.orrery/provider/node.json`), which can redeem and post enclave claims but can never send what you earn anywhere except your wallet's USDC account. Give it ~0.01 SOL for redemption fees.
+- **Private nodes on AMD SEV-SNP.** In `provider.json`, `"tee": { "mode": "snp", "report": "report.bin", "vcek": "vcek.der" }` serves the report your CPU signed for the node's encryption key, with the chip's certificate. The node refuses to start on a report made for another key (it prints the report data to ask for) or on a VM launched with debugging allowed. Routers verify the report themselves against AMD's roots before they seal a prompt to you; check your own with `orrery enclave verify`.
 - **Your upstream key is safe.** Only standard chat fields reach your upstream; fallback model lists, plugins, provider routing and `n` are dropped, so a caller cannot spend your key on something your price list does not cover.
 - **Holder prices (optional).** Add `holder.tiers` to give wallets that hold $OREY a lower price. See [Holder pricing](#holder-pricing).
 - **Change anything** by editing the file and running `register` again: it updates the listing, and routers check the new price list against the hash on chain.
@@ -418,7 +421,7 @@ The program has **not been audited yet**. Read [SECURITY.md](SECURITY.md) for wh
 |---|---|
 | `orrery router --wallet <keypair> --rpc <url>` | run the router on `127.0.0.1:7171` |
 | `orrery models` | every model on the network, cheapest price, provider count |
-| `orrery providers` | every listing and what the chain says about it |
+| `orrery providers` | every listing, what the chain says about it and whether its model server answers |
 | `orrery channels` | your channels: deposit, what you signed, what was redeemed |
 | `orrery close <channel> --wallet <keypair>` | start closing (the provider gets a grace period to redeem) |
 | `orrery close <channel> --wallet <keypair> --finish` | after the grace period, the rest comes back to you |
@@ -447,8 +450,8 @@ assets/    brand and README media
 
 ```bash
 cd program && anchor build --arch v2 && cargo test -p orrery   # 2 unit + 13 LiteSVM tests on the compiled program
-cd node && pnpm install && pnpm test                            # 18 tests
-pnpm e2e                                                        # full local rehearsal, 17 checks
+cd node && pnpm install && pnpm test                            # 85 tests
+pnpm e2e                                                        # full local rehearsal, 50 checks
 cd web && pnpm install && pnpm dev                              # http://localhost:3870
 ```
 
@@ -523,7 +526,7 @@ OpenAI Chat Completions (`/v1/chat/completions`, streaming or not), the OpenAI R
 
 - [x] Settlement program: registry, channels, ed25519 vouchers, enclave claims, bonds
 - [x] Router and provider node, OpenAI-compatible, streaming, fall-through
-- [x] Local end-to-end rehearsal on the real program, 30 of 30 checks
+- [x] Local end-to-end rehearsal on the real program, 50 of 50 checks (a node buying and burning the network token with its pledged share and the router verifying it on chain, every API, quotes before paying, per-request budgets, routers skipping a node whose model server is down and showing it in their status, embeddings, fallbacks, billed usage in streams, bench on chat and embedding models, a router picking its channel back up after losing its records, limits, cache pricing and affinity, 400 parallel answers, Codex CLI and Claude Code, DNS-rebinding refusal, logs that add up to what was signed)
 - [x] Holder pricing: tiers by share of $OREY supply, checked by router and provider
 - [x] npm package [`orrery-node`](https://www.npmjs.com/package/orrery-node)
 - [x] Site and docs at [orrerynode.com](https://orrerynode.com)
@@ -542,7 +545,12 @@ OpenAI Chat Completions (`/v1/chat/completions`, streaming or not), the OpenAI R
 - [x] Router and provider consoles, `orrery doctor` (0.1.4)
 - [x] Embeddings (`/v1/embeddings`), routed and paid like chat, priced on input tokens (0.1.5)
 - [x] Model fallbacks (`"a|b"` or a `models` array), `orrery bench`, `orrery spend` and `orrery provider earnings`, MCP prices and `max_price` (0.1.5)
-- [ ] Built-in hardware attestation verifier
+- [x] Billed usage in OpenAI's shape with `usage.cost`, benches for embedding models, and routers that pick their channels back up after losing their records (0.1.6)
+- [x] Quotes before paying (`orrery quote`, MCP `quote`), a dollar budget per request (`x-orrery-max-cost`, `--max-cost`), `orrery provider compare`, the wallet's channels in `doctor` and `orrery channels`, and nodes that report their model server on `/health`, which routers check every 30 seconds and route around (0.1.7)
+- [x] Wallet and node pages read live from the program, with share cards; the network terminal (preview on sample data)
+- [x] Routers show each node's model server (console, status, MCP, `orrery providers`); a built-in AMD SEV-SNP verifier and `orrery enclave verify`; private nodes on SEV-SNP; routers verify burn pledges on chain, a `:burn` route and `x-orrery-burn` (0.1.8)
+- [x] Built-in hardware verifier for AMD SEV-SNP: the router checks an enclave's report itself, against AMD's roots, with no attestation service (`orrery enclave verify`, 0.1.8)
+- [ ] Built-in verifier for Intel TDX
 - [ ] $OREY bonds live on mainnet
 
 ## Contributing

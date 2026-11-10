@@ -19,9 +19,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-proprietary-97ca00?labelColor=000000" alt="License" height="17"></a>
 </p>
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/benzi_banner_v3.png" width="1000" alt="Benzi -- Compiler-backed AI coding agent">
-</p>
+https://github.com/user-attachments/assets/626ee911-1dbe-4970-bb25-ec2e3fc31d7b
 
 <p align="center">
   <a href="https://varianttech.net/demo"><img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/cta9_demo.png" width="112" alt="Instant Demo"></a>

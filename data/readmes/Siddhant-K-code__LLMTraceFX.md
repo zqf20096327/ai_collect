@@ -24,6 +24,14 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/Siddhant-K-code/LLMTraceFX/actions/workflows/ci.yml"><img src="https://github.com/Siddhant-K-code/LLMTraceFX/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
+  <a href="https://github.com/Siddhant-K-code/LLMTraceFX/actions/workflows/codeql.yml"><img src="https://github.com/Siddhant-K-code/LLMTraceFX/actions/workflows/codeql.yml/badge.svg?branch=main" alt="CodeQL status"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License: Apache-2.0"></a>
+  <img src="https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue" alt="Python 3.11, 3.12, 3.13">
+  <a href="#perf-gate-in-ci"><img src="https://img.shields.io/badge/GitHub%20Action-perf%20gate-orange?logo=githubactions&amp;logoColor=white" alt="GitHub Action: perf gate"></a>
+</p>
+
+<p align="center">
   <img src="assets/brand/social-preview.png" alt="LLMTraceFX evidence and optimization report preview using synthetic example data" width="820">
 </p>
 
@@ -210,6 +218,31 @@ relabelled as measurements.
 - **Native Qwen MTP:** emit a capability report and an explicit unsupported
   record when the installed stack cannot produce trustworthy native-MTP
   evidence.
+- **Server-side metrics (vLLM, SGLang, llama.cpp, TGI):** snapshot a Prometheus
+  `/metrics` endpoint before and after a run and diff the two. Server numbers
+  such as queue time and server TTFT are only reported when the window
+  provably contains exactly the requests you sent. Otherwise the window is
+  marked `contaminated`, `incomplete`, `counter_reset`, or `unverifiable`.
+
+### Export to observability tools
+
+`export otlp` writes a record as OpenTelemetry spans in OTLP/JSON, using the
+GenAI semantic conventions (`gen_ai.*`). The Collector `otlpjsonfile` receiver
+can read it, and it can be POSTed to any OTLP/HTTP `/v1/traces` endpoint, so
+Jaeger, Tempo, Phoenix, or Langfuse can show it. `export perfetto` writes a
+Chrome trace for [ui.perfetto.dev](https://ui.perfetto.dev). Both outputs are
+deterministic: IDs derive from the `run_id`, and every timing keeps its
+provenance as a `llmtracefx.*` attribute.
+
+### Perf gate
+
+`gate` compares candidate records with baseline records of the same model,
+workload, and platform, and exits 0 (pass), 1 (regression), or 2
+(inconclusive). It reports inconclusive instead of guessing when a side has too
+few runs, when runs are not comparable, when the metric's unit or provenance
+differs, when the difference is within run-to-run noise, or when the noise is
+larger than the allowed regression, so a noisy runner cannot pass by chance.
+The same check ships as a GitHub Action; see [Perf gate in CI](#perf-gate-in-ci).
 
 ### Verification and resumability
 
@@ -675,6 +708,45 @@ is a practical methods example. It explains why client buffering, empty SSE
 events, hidden reasoning, and truncated streams change what a time-to-first-
 token number means.
 
+#### Server-side view of the same request
+
+When you run the server yourself, add `--server-metrics-url` to see what the
+engine recorded for the request:
+
+```bash
+uv run llmtracefx-optimizer collect-api \
+  --run-id local-vllm \
+  --provider vllm \
+  --endpoint http://127.0.0.1:8000/v1/chat/completions \
+  --model-id my-model \
+  --prompt-file examples/optimizer/api-smoke-prompt.txt \
+  --output-dir output/local-vllm \
+  --api-key-env VLLM_API_KEY \
+  --server-metrics-url http://127.0.0.1:8000/metrics
+```
+
+`server_metrics_evidence.json` is written next to the record. Its highlights
+appear only when the server's request counter rose by exactly one and nothing
+was queued or running when the window opened. llama.cpp exposes no request
+counter, so its windows are `unverifiable` unless you pass
+`--server-metrics-assume-isolated`. That records the result as
+`operator_asserted`, not as a measurement. For other workflows, use
+`server-metrics snapshot` before and after, then `server-metrics diff
+--expected-requests N`. It exits 2 when the window cannot be attributed.
+
+#### Viewing a run as a trace
+
+```bash
+uv run llmtracefx-optimizer export perfetto \
+  --record output/local-vllm/record.json \
+  --api-evidence output/local-vllm/api_evidence.json \
+  --server-metrics output/local-vllm/server_metrics_evidence.json \
+  --output output/local-vllm/trace.json
+```
+
+Open `trace.json` in [ui.perfetto.dev](https://ui.perfetto.dev). Swap
+`perfetto` for `otlp` to get OTLP/JSON instead.
+
 ### Apple Instruments and Metal
 
 Check support before recording:
@@ -746,6 +818,37 @@ Then run `tune`, `tune-report`, or `optimize` against the verified result
 directory. The example policy files under `examples/optimizer/` are labelled
 examples and contain no benchmark claim.
 
+## Perf gate in CI
+
+Commit baseline `record.json` files for a workload, produce candidate records
+in your own job (on the hardware you care about, since hosted runners have no
+GPU or Apple silicon), then gate the pull request:
+
+```yaml
+- uses: Siddhant-K-code/LLMTraceFX@main
+  with:
+    baseline: perf/baseline          # files or directories of record.json
+    candidate: output/candidate
+    metric: decode_tokens_per_second # or total, prefill, decode, ...
+    max-regression: "0.05"           # fail beyond 5% worse
+    min-repetitions: "3"
+```
+
+The action needs only the standard library, so it installs nothing beyond
+Python. It writes a Markdown table to the job summary and exposes `verdict`
+(`pass`, `regression`, or `inconclusive`) and `report` (JSON path) as
+outputs. Set `fail-on-inconclusive: "false"` to report without failing when
+the runs are too few or too noisy to decide. Pin a commit SHA rather than
+`@main` for reproducible CI.
+
+The same check runs locally:
+
+```bash
+uv run llmtracefx-optimizer gate \
+  --baseline perf/baseline --candidate output/candidate \
+  --metric total --max-regression 0.05 --output gate.json
+```
+
 ## KV-cache truth auditing
 
 `llmtracefx-cache-audit` checks whether a cache claim is supported by exact
@@ -807,6 +910,10 @@ Use `uv run llmtracefx-optimizer --help`,
 The legacy scripts are listed for package inventory only. Do not assume they
 implement a side-effect-free `--help` path.
 
+For how LLMTraceFX compares with other benchmarking and observability tools,
+and the planned next features, see
+[`docs/ecosystem-gap-analysis.md`](docs/ecosystem-gap-analysis.md).
+
 ## Current status and limitations
 
 - The repository contains synthetic fixtures and interface examples, but no
@@ -814,8 +921,54 @@ implement a side-effect-free `--help` path.
 - MLX collection requires Apple silicon and an existing local model. There is
   no direct CUDA collector; NVIDIA llama.cpp evidence is imported from captured
   output.
+- The canonical real-MLX audit is scoped to one host, model, and conversion.
+  Its constant-target `CACHE_OK` output identity cannot distinguish workload
+  arrays and provides no evidence against cross-prefix or cross-namespace
+  contamination; it confirms only that cached and fresh paths produced the
+  same fixed answer. It is a mechanical timing-comparability gate, not
+  independent corroboration of reuse. All six preregistered process
+  replicates must complete structurally, with no replacement. Measured output
+  divergence, incorrect output, recomputation, or a non-evicted capacity
+  revisit remains a valid negative result rather than invalidating a completed
+  replicate; observation counts are not pass thresholds, and such pairs are
+  not latency-comparable. `preflight` and `run-all` require `--run-attempt 1`,
+  canonical run ID `qwen3-4b-99469aa8-attempt-1`, and the exact workspace
+  `/Users/siddhant-git-ai/.cache/llmtracefx/qwen3-4b-kv-cache-v1/canonical-run-attempt-1`.
+  They bind an empty prior-invalidated-ledger list. The global preflight gate runs
+  before workspace creation, so an initial refusal consumes no replicate and
+  can be retried only after explicit clean-reboot confirmation. Once attempt 1
+  starts, any invalidation permanently invalidates the canonical result under
+  this preregistration. Immediately before workspace/ledger creation,
+  `run-all` atomically consumes the durable external marker
+  `/Users/siddhant-git-ai/.cache/llmtracefx/canonical-attempts/qwen3-4b-99469aa8-attempt-1.json`;
+  preflight only verifies its absence. The marker is finalized in place and
+  is never deleted by the runner, so no new-workspace retry is canonical. MLX allocator
+  peaks reset immediately before each cache fetch, covering lookup/copy/trim
+  plus generation from an equivalent cold/hit boundary; stage instrumentation
+  remains outside client clocks. Within each pair the
+  cold control always precedes the warm treatment, so monotone drift can
+  inflate an apparent latency benefit; deltas are descriptive, not causal
+  speedups. Before
+  runtime imports, every distribution in the locked MLX-LM closure is hashed
+  from standard-library metadata and compared with the immutable packaged
+  Apple Silicon/Python 3.13 identity allowlist. Canonical execution requires
+  an externally extracted, SHA-256-checked copy of
+  `scripts/run-real-mlx-cache-audit-trusted.py` taken from the checkout with
+  `git show` (the wheel does not install it), invoked as
+  `EXTERNAL_VENV/bin/python -I -S /external/trusted-bootstrap.py
+  --trusted-repo-root /absolute/repo ...`; the console entry point remains for
+  help and capability inspection. Every artifact command requires an exact
+  `--expected-commit`. The bootstrap, runtime identity, and project code are
+  read from that exact commit, with project code imported only from a private
+  read-only snapshot rather than the mutable checkout. The dependencies-only
+  venv and output workspace may be siblings, but neither may contain the
+  other; the output must remain outside every repository and free of
+  runtime-package import shadows.
 - API timing is observed at the client. It cannot expose provider queueing,
-  prefill, kernel execution, or server-side clocks.
+  prefill, kernel execution, or server-side clocks. For servers you operate,
+  `--server-metrics-url` adds the engine's own window counters. They are
+  server-wide, so they are reported only for windows that pass the attribution
+  check.
 - Native Qwen MTP execution is not supported by the current MLX-LM path.
   LLMTraceFX records that limitation instead of substituting generic
   draft-model speculation.

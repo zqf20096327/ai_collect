@@ -1,5 +1,20 @@
 # 破甲一键通
 
+> ## 📌 当前状态（2026-11-10）
+>
+> **客户端 8.41** · 生产环境已上高防三层架构 · 后台带安全风控中心
+>
+> | 项 | 值 |
+> |---|---|
+> | 官网 | `https://pojiaduan.cn/` |
+> | 下载 | `https://pojiaduan.cn/dist/pojia-next-exe.zip`（永远指向最新版） |
+>
+> ---
+>
+> **8.41 关键变更**：云记忆超限改为就地压缩（不再整段跳过）· 兜底人格真正生效（`persona.md` 缺失时不再只剩政策壳）· `--full` 的文件保护中和不再被 skip 分支丢弃 · GUI 一键破甲补上 `nofileguard` · 单实例改前缀枚举（跨版本不再静默退出）
+>
+> **8.37 关键变更**：单实例互斥 · 托盘退出硬杀 · 群号内置不联网 · 头像昵称本地落盘 · 锚点不符自动清缓存重拉 · 登录强制闸门（离线不算验证）· 破甲按钮随核心状态置灰 · 版本升级才清一次盘
+
 > ### 🌐 官网（国内推荐从这里进）：**https://pojiaduan.cn/**
 > 下载、更新公告、交流群都在官网 —— [**pojiaduan.cn**](https://pojiaduan.cn/)
 >
@@ -7,17 +22,18 @@
 
 **一句话：把你电脑上那几个 AI 客户端「自己改不到的内置提示词」，换成你自己写的那份 —— 双击 exe、点一个按钮的事。**
 
-> **近期变更**：新增 Codex 目标；四个客户端统一等宽卡片；登录只填激活码（自动预填，不再输群号）；每次启动需勾选三份协议；激活码与领码 QQ、官方群绑定，退群受限、回群自动恢复。
+> **近期变更**：四个客户端统一等宽卡片；多设备按台数计价（2~6 台，7 天 13.88 起）；新号注册需 QQ 群验证（用该 QQ 在官方群 @机器人 发一次口令，老号不受影响）；客户端登录只填激活码；每次启动需勾选三份协议。
 
 > ### 🙏 本项目的破甲来自谁（署名）
 > **破甲思路与部分实现来源（排名不分先后，各自实现，MIT 署名与许可要求均已保留）：**
-> [@YuJunZhiXue / dsh-purge](https://github.com/YuJunZhiXue/dsh-purge)（DSH 破甲的原始项目）、
+> [@YuJunZhiXue](https://github.com/YuJunZhiXue)（DSH 破甲的原始项目，原仓库已下线）、
 > [@kingcharleslzy-ai / dsh-purge](https://github.com/kingcharleslzy-ai/dsh-purge)（社区版）、
-> [@JeffKeeping / dsh-purge-plus](https://github.com/JeffKeeping/dsh-purge-plus)、
+> [@JeffKeeping](https://github.com/JeffKeeping)（dsh-purge-plus，原仓库已下线）、
 > [@luowang-ui / dsh-purge-plus](https://github.com/luowang-ui/dsh-purge-plus)、
-> [@ryrfZ / codex-session-patcher](https://github.com/ryrfZ/codex-session-patcher)、
+> [@ryfineZ / codex-session-patcher](https://github.com/ryfineZ/codex-session-patcher)、
 > [@dsh-market / dsh-market](https://github.com/dsh-market/dsh-market)。
 > 本项目由 **@z91772524-ai** 维护（代码、文档、发布）；逐条对照见 [思路与致谢](#-思路与致谢)。
+> 除「思路来源」外，[同一个章节](#-思路与致谢)还列了**代码里真正在用的开源组件**（Cython / PyInstaller / pywebview / pythonnet / MinGW-w64 / WebView2 / Python 标准库），每条都标了许可证和可核位置。
 > 若你认为某段内容应单独标注出处，欢迎开 issue 指出（文件 + 位置），核实后补上。
 
 支持 **DSH / WorkBuddy / ZCode / Codex** 四个客户端，一个工具全管，口径完全一致。
@@ -28,20 +44,18 @@
 [![Stars](https://img.shields.io/github/stars/z91772524-ai/pojia-next?style=flat-square&logo=github&label=Stars&color=ea580c)](https://github.com/z91772524-ai/pojia-next/stargazers)
 [![Release](https://img.shields.io/github/v/release/z91772524-ai/pojia-next?label=release&color=2ea043)](https://github.com/z91772524-ai/pojia-next/releases)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
 [![Platform](https://img.shields.io/badge/platform-Windows-0078d4)](https://www.microsoft.com/windows)
-[![Dependencies](https://img.shields.io/badge/依赖-0%20个-brightgreen)](#安全审查你可以自己验)
-[![Network](https://img.shields.io/badge/核心联网-0%20次-brightgreen)](#安全审查你可以自己验)
+[![Portable](https://img.shields.io/badge/免安装-单文件%20exe-2ea043)](#-三步就能用)
+[![Dependencies](https://img.shields.io/badge/三方依赖-0%20个-brightgreen)](#-安全审计与安全设计)
+[![Online](https://img.shields.io/badge/启动时-联网校验激活码-blue)](#-三步就能用)
 [![security](https://github.com/z91772524-ai/pojia-next/actions/workflows/security.yml/badge.svg)](https://github.com/z91772524-ai/pojia-next/actions/workflows/security.yml)
 
 ![主界面](preview.png)
 
 ![Skill 页](preview-skills.png)
 
-> ### 🚨 一句话警告：本项目**激活码 5 元**
-> 第三方发布的「**WKBD rev1.0 / rev2.0**」（化名 `popopo`）是基于本项目**换皮二次发布**，
-> 且把 MIT 强制保留的版权声明删空成 `Copyright (c) 2026`。
-> 如果你花钱买了它，请立即退款 —— 完整证据与自助验证方法见 [反抄袭通告](反抄袭通告.md)。
+> ### 💰 本项目**激活码 5 元**
+> 官网 <https://pojiaduan.cn/> 自助发卡领取；请不要从第三方渠道购买。
 
 ---
 
@@ -79,11 +93,29 @@
 单文件 exe，**电脑上不用装 Python**，放哪都行（桌面就行）。
 （GitHub 对附件文件名只认英文，所以 exe 装在 zip 里发行，解压一次就行。）
 
-### 2️⃣ 双击 → 输群号
+### 2️⃣ 双击 → 输激活码
 弹出一个原生窗口（WebView2 内核，Win10/11 自带运行时）。
-第一次打开会看到一张**免费声明卡** —— 激活码 5 元，在官网 <https://pojiaduan.cn/> 自助发卡领取，认准官方 QQ 交流群 `1121243020`；
-然后**输入激活码完成在线验证**（不再需要群号）（v8.6 起 exe 不再内嵌核心，验证通过后自动获取 ——
+第一次打开会看到一张声明卡 —— **激活码 5 元**，在官网 <https://pojiaduan.cn/codeweb/> 自助发卡领取。
+
+**领码流程**：填 QQ 号 + 自己设的密码 → 用这个 QQ 在任意官方群 **@登录验证机器人** 发一次网页给出的 13 位口令 → 付 5 元 → 页面直接给出激活码。
+
+拿到码后回到客户端**粘贴激活码完成在线验证**（不需要输群号；v8.6 起 exe 不再内嵌核心，验证通过后自动获取 ——
 此后核心升级全自动，不用再换 exe）。
+
+> #### 🖥 一台不够用？多设备按台数买
+>
+> 同一个激活码可以同时登录多台电脑，台数 2~6 自由选，价格是整单总价：
+>
+> | 台数 | 7 天 | 30 天 | 单台均价（30 天） |
+> |---|---|---|---|
+> | 2 台 | 13.88 | 36.66 | 18.33 |
+> | 3 台 | 18.88 | 48.66 | 16.22 |
+> | 4 台 | 23.88 | 62.66 | 15.66 |
+> | 5 台 | 28.88 | 76.66 | 15.33 |
+> | 6 台 | 33.88 | 90.66 | 15.11 |
+>
+> 续费时**时长按天叠加**（在当前到期日上往后顺延）；**台数只升不降** —— 2 台续成 3 台，
+> 剩余天数全程按 3 台算。换电脑要解绑，5 元一次；不换机器直接续费即可。
 
 ### 3️⃣ 勾选 → 点「破甲」
 窗口里每一行就是一个客户端，先看状态灯 → 勾选要处理的 → 点底部的 **「破甲」** ——
@@ -98,7 +130,7 @@
 > ### ⚠️ Windows 拦我？
 > 没有代码签名证书的 exe，SmartScreen 可能会弹「Windows 已保护你的电脑」——
 > 这是无签名 exe 的常态。点 **「更多信息」→「仍要运行」** 即可。
-> 不放心的话：哈希对得上的附件才用（[怎么校验](#校验下载的文件没被篡改-sha256)），
+> 不放心的话：哈希对得上的附件才用（[怎么校验](#校验下载的文件没被篡改sha256)），
 > 并**只认官方渠道**（官网 pojiaduan.cn / 本仓库 Release）。
 
 ---
@@ -127,10 +159,11 @@
 | 你担心的 | 实际情况 |
 |---|---|
 | **改坏了能不能恢复？** | **每个改动都先备份**。点「还原」一键变回官方原版（按"护照"名单精确还原，不误删别人的文件） |
-| **会不会偷偷联网 / 上传我的数据？** | **核心零网络请求**（CI 每次提交自动断言）；GUI 只在两处碰网络：本地回环 `127.0.0.1` 起界面服务（不对外），以及**你在环境页主动点「下载」**时访问官方下载源（URL 全是代码里的字面量，见 [安全审查](#安全审查你可以自己验)） |
+| **会不会偷偷联网 / 上传我的数据？** | **核心零网络请求**（CI 每次提交自动断言）；GUI 只在两处碰网络：本地回环 `127.0.0.1` 起界面服务（不对外），以及**你在环境页主动点「下载」**时访问官方下载源（URL 全是代码里的字面量，见 [安全审查](#-安全审计与安全设计)） |
 | **exe 会不会带毒？** | 构建全程 CI 自动跑三套安全扫描；附件哈希可校验；**只认官方渠道**（官网 pojiaduan.cn / 本仓库 Release）一个来源 |
 | **会不会删我的东西？** | 只做文件级补丁，**不删包、不碰注册表 / 服务、不装驱动**；连清缓存都默认**只统计不删** |
-| **是不是要花钱？** | **激活码 5 元、开源**（MIT）。花钱买到的请立即申请退款 —— 官方仓库只有这一个 |
+| **是不是要花钱？** | **激活码 5 元、开源**（MIT）。多设备按台数买（2~6 台，7 天 13.88 起）。花钱买到的请立即申请退款 —— 官方仓库只有这一个 |
+| **手机上能管后台吗？** | 可以，装 [破甲后台 App](https://pojiaduan.cn/dl/pjadmin-android-1.0.apk)（29 KB，安卓 5.0+）。它是个壳，打开就是电脑上同一个后台页面，改价、看订单、封设备都能用 |
 
 ---
 
@@ -162,7 +195,7 @@
 ## ❓ 常见问题
 
 **Q：双击 exe 提示「Windows 已保护你的电脑」？**
-A：SmartScreen 对无签名 exe 的标准提示。点「更多信息」→「仍要运行」。想彻底安心就先校验哈希（[方法](#校验下载的文件没被篡改-sha256)）。
+A：SmartScreen 对无签名 exe 的标准提示。点「更多信息」→「仍要运行」。想彻底安心就先校验哈希（[方法](#校验下载的文件没被篡改sha256)）。
 
 **Q：窗口闪退 / 打不开？**
 A：九成是 WebView2 运行时缺失（常见于深度精简系统）。换台正常电脑在「环境」页装好运行时再拷回来即可。
@@ -309,7 +342,7 @@ GUI 里每个目标的状态灯 + 「演练」就是体检入口，全程只读�
 
 ### 校验下载的文件没被篡改（SHA256）
 
-仓库根目录有 [`SHA256SUMS.txt`](SHA256SUMS.txt)（覆盖仓库全部文件）；**发行包另有精简校验 [`SHA256SUMS-exe.txt`](SHA256SUMS-exe.txt)**：zip 下载后核一层，解压出来的 exe 再核一层。下载后自己核一遍：
+仓库根目录有 [`SHA256SUMS.txt`](SHA256SUMS.txt)（覆盖仓库全部文件）；**发行包另有精简校验 `SHA256SUMS-exe.txt`**（随 Release 附件分发，不在仓库里）：zip 下载后核一层，解压出来的 exe 再核一层。下载后自己核一遍：
 
 ```powershell
 # Windows PowerShell
@@ -343,6 +376,48 @@ exe 里的立场文案（免费声明 / 防倒卖提示等）以**密文块**形
 
 <details>
 <summary><b>📋 版本记录</b>（精简版 · 全量见 <a href="更新日志.md">更新日志.md</a> · 点开）</summary>
+
+### v8.40 —— 四客户端独立人格 + 图标 + 登录修复
+
+- **修 GUI 驱动时人格被写回旧稿**：GUI 用 `_persona_load_override` 接管了核心的人格加载入口，
+  默认返回 GUI 内置的旧通用稿 → 界面点「破甲」会把 DSH/WorkBuddy 降级回旧人格。
+  改为读核心内置人格，命令行与界面两条路径终于一致
+- **ZCode 换 GLM 专用稿**：按 GLM 的失效模式重写（更客气的拒绝、爱给「合规替代」、
+  爱在交付后补「请注意合法使用」），恶意代码按八个工程模块拆开
+- **目标恢复为四个**：DSH / WorkBuddy → DeepSeek 稿，ZCode → GLM 稿，Codex → MDX v45 英文协议
+- **图标**：软件图标换成官网左上角「破」标志（黑底白字，七档尺寸）；Codex 卡片补真实 logo
+- **修托盘崩溃**：`CreateWindowExW` 的 HINSTANCE 参数未声明原型，句柄超过 2^31 抛
+  `OverflowError`，整条托盘线程死亡。已补 argtypes/restype
+- 引流串官网域名同步
+
+### v8.39 —— TOML 重复键修复 + 诊断上报打通
+
+- 修 Codex `config.toml` 重复键：配置工具重写后注释丢失，旧的 `model_instructions_file`
+  变成裸键，按标记删不到、新键再插一条 → `tomllib` 报 `Cannot overwrite a value`，
+  整份配置被回滚。现在插入前无条件清理顶层同名键，幂等
+- 旧 `AGENTS.md` 残留识别：标记被剥掉但正文还在时按内容特征识别，先存档再移除
+- `/diagupload` 之前全 404，服务端补齐接收端，诊断能落到 `data/diag/`
+- `action_refused` 上报补上拒绝原因
+
+### v8.38 —— 修复 EdgeOne 证书链导致的「服务器连接中」
+
+- 客户端 TLS 信任库由「仅内置私有根」改为「系统信任库 + 内置私有根」双信任
+- 内置 ca.pem 由 1 张根证书扩为 2 张：pojia-root-ca-2026 + DigiCert Global Root G2
+- 修复接入 EdgeOne 后 `CERTIFICATE_VERIFY_FAILED: self-signed certificate in certificate chain`，公告 / 核心 / 版本校验 / 在线统计全部恢复
+- 直连 IP 兜底仍走私有根，两条链路都能验
+- 8.37 及以下必须升级
+
+### v8.37 —— 版本号对齐 + 核心 CDN 同步
+
+- 修正 BUILD_VER 错配，客户端上报版本与安装包一致
+- 剥离构建机 sitecustomize，文件删除 / 缓存清理恢复正常
+- 补齐 `ZCodeTarget._mirror_block`，ZCode 破甲不再报 AttributeError
+- 核心与 CDN 同步下发，消除 SIG 安全校验失败
+- 8.36 以下已下架，旧版登录会被拒
+
+### v8.36 / v8.35 —— 过渡版本
+
+统一服务端版本下发口径（8.36）、修核心下发链路（8.35）。两版均已被 8.37 覆盖，不再单独展开。
 
 ### v8.34 —— 启动不再卡「检测中」+ 广告跳转修正
 
@@ -448,42 +523,30 @@ Python 运行时和脚本一起打包成**一个 exe**，双击就跑。exe 放�
 
 | 来源 | 借鉴了什么 |
 |---|---|
-| [@YuJunZhiXue](https://github.com/YuJunZhiXue) / [dsh-purge](https://github.com/YuJunZhiXue/dsh-purge) | 运行时守卫的思路（pojia-guard 在其基础上重写加固，并加了原版没有的限次熔断）；写后自检 + 备份校验机制 |
+| [@YuJunZhiXue](https://github.com/YuJunZhiXue) / dsh-purge <sub>（原仓库已下线，链接指向作者主页）</sub> | DSH 破甲的原始项目。运行时守卫的思路（pojia-guard 在其基础上重写加固，并加了原版没有的限次熔断）；写后自检 + 备份校验机制 |
 | [@ryfineZ](https://github.com/ryfineZ) / [codex-session-patcher](https://github.com/ryfineZ/codex-session-patcher) | 「交付即验证」：注入结束主动验证补丁真实驻留，杜绝假成功 |
 | [@kingcharleslzy-ai](https://github.com/kingcharleslzy-ai) / [dsh-purge](https://github.com/kingcharleslzy-ai/dsh-purge)（社区版） | 「设计原则」的口径（本机优先 / 每步可见 / 随时可回滚 / 不替你做决定）；操作前自动快照、状态一屏给结论的体验（本项目的体检报告与备份还原在此基础上做成了一键化） |
-| [@JeffKeeping](https://github.com/JeffKeeping) / [dsh-purge-plus](https://github.com/JeffKeeping/dsh-purge-plus)、[@luowang-ui](https://github.com/luowang-ui) / [dsh-purge-plus](https://github.com/luowang-ui/dsh-purge-plus) | 宿主新版本适配优先：上游 Desktop 更新后第一时间跟进适配，而不是让用户卡在旧版本 |
+| [@luowang-ui](https://github.com/luowang-ui) / [dsh-purge-plus](https://github.com/luowang-ui/dsh-purge-plus)、[@JeffKeeping](https://github.com/JeffKeeping) / dsh-purge-plus <sub>（原仓库已下线，链接指向作者主页）</sub> | 宿主新版本适配优先：上游 Desktop 更新后第一时间跟进适配，而不是让用户卡在旧版本 |
 | [@dsh-market](https://github.com/dsh-market) / [dsh-market](https://github.com/dsh-market/dsh-market) | 可视化分发的一键安装体验参考——官网下载区按「下载即用、无需命令行」的思路组织 |
 
-> 「反抄袭」反的是**删除版权声明后收费换皮**，不是「做过类似的事」—— 思路借鉴、各自实现是开源社区的常态，上述仓库的许可与署名要求均被遵守。如果你认为某段内容应当单独标注出处，欢迎开 issue 指出（文件 + 位置），核实后补上。
+### 🧩 用到的开源组件（全部为构建期 / 运行期依赖，不 vendor 源码）
 
-## 🚨 反抄袭通告
+上面那张表是「思路来源」；下面这张是「代码里真的在用的东西」——全部经 `pip` 安装或系统自带，仓库里没有一个字节的第三方源码，可以逐条对照构建脚本核验。
 
-**第三方发布的「WKBD rev1.0 / rev2.0」（化名 `popopo`）是基于本项目换皮的二次发布。**
+| 组件 | 许可证 | 在本项目里承担什么 | 可核位置 |
+|---|---|---|---|
+| [Cython](https://github.com/cython/cython) | Apache-2.0 | 把 `pojia_gui.py` 编译成 C++ → `pyd`，`--no-docstrings` 去掉注释与文档串，成品 exe 里没有可直接反编译的 GUI pyc | `pj-838/_build_841.py:33` |
+| [PyInstaller](https://github.com/pyinstaller/pyinstaller) | GPL-2.0 + 启动器例外 | 把 `launcher.py` + `pojia_gui.pyd` + 图标/证书/收款码打成单文件 exe，用户免装 Python | `pj-838/_build_841.py:50`、`pj-838/ui-test-836.spec` |
+| [pywebview](https://github.com/r0x0r/pywebview) | BSD-3-Clause | 原生窗口壳 + WebView2 绑定，界面是本地 HTML 而不是浏览器标签页 | spec `hiddenimports`（`webview`、`webview.platforms.edgechromium`） |
+| [pythonnet](https://github.com/pythonnet/pythonnet) / [clr_loader](https://github.com/pythonnet/clr-loader) | MIT | pywebview 在 Windows 上的 WinForms 后端，负责把 .NET 窗口挂到 Python | spec `hiddenimports`（`pythonnet`、`clr_loader`） |
+| [MinGW-w64](https://www.mingw-w64.org/)（gcc） | GPL + 运行时例外 | `pyd` 的 C/C++ 编译器，`--compiler=mingw32` 编扩展，构建机不用装整套 MSVC | `pj-838/_build_841.py:38` |
+| [Microsoft Edge WebView2](https://learn.microsoft.com/microsoft-edge/webview2/) | 微软运行时（随 Win10/11 分发） | 真正的渲染内核，Win10/11 自带；缺失时「环境」页负责检测并引导安装 | `pojia_gui.py` 环境检测项 |
+| Python 标准库 [`http.server`](https://docs.python.org/3/library/http.server.html) | PSF | 只监听 `127.0.0.1` 的本地渲染服务，前端与 Python 侧通过它通信，不出本机 | `pj-838/pojia_gui.py:72` |
 
-- rev1.0 的 exe 内 **99.8% 的专有命名（420/421）**、完整人格政策均逐字来自本项目 v7.7 源码；
-- 09-25 改为源码交付的 rev2.0 后，与我方源码仍有 **73.7% 专有命名（277/376）**
-  与 **67.2% 中文长串（906/1349）** 逐字相同；
-- MIT 强制要求保留的版权声明被移除：其 `LICENSE` 除版权行外与本项目**逐字相同**，
-  版权行先被换成其化名 `Copyright (c) 2026 popopo`，后又删空为 `Copyright (c) 2026`（无著作权人）；
-  其 `README` 中提及原作者/本项目 **0 处**。
+> 依赖替换说明：本项目**没有**用 Electron / Tauri / Qt 做界面。选 pywebview + WebView2 的原因是包体小（免打包 Chromium）、Win10/11 自带内核、能直接调 Win32 API（单实例互斥、窗口置前、托盘）。这条技术选型的代价是**强依赖 WebView2 运行时**，所以安装文档把它列为第一项排查目标。
+>
+> 引入新依赖前请先跑 `python -m pip check`，并在 `pj-838/ui-test-836.spec` 的 `excludes` 里确认没有把重库（PIL/numpy/pandas 等）隐式拖进包 —— 历史上吃过一次 35 MB 白拖慢冷启动的亏。
 
-**本项目为 MIT，允许商用** —— 所以问题不在"收费"，而在**移除、顶替并删空版权声明**。
-
-2026-09-25，原作者到对方 QQ 群（「Coding交流 · 抖音ASH背着蓝书包」）依据事实质证，
-**发言数句后即被移出群聊**。当晚对方在群公告中**补注了「原作者」与项目链接**，
-但同一条公告前半段仍称"我的项目"，且**仓库代码产物内至今没有任何署名**。
-
-📷 证据截图：[群公告（推广 + 索要点 star）](evidence/2026-09-25-group-notice.png)
-· [群聊质疑与移出群聊](evidence/2026-09-25-group-chat.png)
-· [群成员公开质疑](evidence/2026-09-25-2057-group-question.jpg)
-· [群公告补注原作者](evidence/2026-09-25-2057-group-notice-revised.jpg)
-
-📄 完整证据、实测数据与**自助验证方法**：[反抄袭通告](反抄袭通告.md)
-
-> 如果你在外面看到以「WKBD rev1.0 / rev2.0」「Forge」「popopo」等名义的**付费**破甲工具，
-> 请注意：**那不是本项目，也未经本项目授权。激活码 5 元，官网自助发卡领取。**
-> 本项目的自证口令固定回复：`破甲自检成功｜你已被圈:激活码 5 元，官网自助发卡领取，官方 QQ交流群1121243020`
-> 若你收到的回复不是这一句，说明你装的不是本项目原版。
 
 ---
 
@@ -527,18 +590,16 @@ Python 运行时和脚本一起打包成**一个 exe**，双击就跑。exe 放�
 
 | 文件 | 说明 |
 |---|---|
-| `破甲一键通GUI.exe` | **图形界面单文件版**（在 Release 的 `pojia-next-v8.6-exe.zip` 里，仓库不入库）—— 免装 Python，双击即用（v8.6 起首次启动输群号在线验证） |
+| `破甲一键通GUI.exe` | **图形界面单文件版**（在 Release 的 `pojia-next-v8.40-exe.zip` 里，仓库不入库）—— 免装 Python，双击即用（v8.6 起首次启动输群号在线验证） |
 | `build_exe.py` 等 | 构建工具脚本（不含客户端逻辑） |
 | ~~`破甲一键通.py` / `破甲GUI.py`~~ | **不再随仓库分发**（v8.26 起只发 exe 成品，主逻辑编译为机器码） |
 | `一键破甲.bat` | 纯 ASCII 启动器，通配符定位 `.py`，自动找 Python |
 | `persona.md` | 唯一共用人格源（三个目标共用） |
 | `使用说明.md` | 完整说明书（图文步骤、找不到安装位置怎么办） |
-| `更新日志.md` | v7.4 → v8.6 每版改了什么、升级要注意什么 |
+| `更新日志.md` | v7.4 → v8.41 每版改了什么、升级要注意什么 |
 | `小白教程.md` | 给完全没基础的朋友的六步图文教程 |
 | `修复报告.md` | v7.4 相比原工具修掉的缺陷逐条对照（每条都写了复现方式与修法） |
-| `反抄袭通告.md` | 换皮二改的完整证据、实测数据与自助验证方法 |
-| `赞赏码.png` | 聚合收款码，微信/支付宝/QQ钱包（**完全自愿**，不参与任何功能） |
-| `donate-qr.png` | v8.6 内置「捐赠」弹窗用的收款码（同样完全自愿，随 exe 打包） |
+| `donate-qr.png` | 收款码（微信/支付宝/QQ钱包），v8.6 内置「捐赠」弹窗也用这张（**完全自愿**，不参与任何功能） |
 | `preview.png` / `preview-skills.png` | 本文顶部的界面预览图（主界面 / Skill 页） |
 | `icon.ico` | 窗口与 exe 图标源文件 |
 | `LICENSE` | MIT 许可证 |
@@ -582,13 +643,13 @@ Python 运行时和脚本一起打包成**一个 exe**，双击就跑。exe 放�
 
 ## 交流 & 支持
 
-- **QQ 交流群：`1121243020`** —— 使用问题、更新通知、新版本都发在群里，有问题直接来问
+- **QQ 交流群**：主群 `1121243020`，另有一到十二群，全部群号与二维码在官网首页「加群」区 —— 使用问题、更新通知都发在群里
 - **Telegram 交流群：[t.me/pojia666](https://t.me/pojia666)** —— 墙外 / 海外的朋友走这边
 - 有 bug 或想法，也可以在本仓库提 [Issue](https://github.com/z91772524-ai/pojia-next/issues)
 
 如果这个脚本帮到了你，可以请我喝杯奶茶 —— **不打赏是本分，打赏是对我的认可**：
 
-![赞赏码](赞赏码.png)
+![赞赏码](donate-qr.png)
 
 <sub>微信 / 支付宝 / QQ钱包 都能扫。完全自愿，不打赏也照样用。</sub>
 

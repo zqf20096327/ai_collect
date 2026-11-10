@@ -5,9 +5,9 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="apps/docs/static/img/shots/timeline-dark.webp">
-  <img alt="The LibrePhotos timeline, with photos grouped by day and place" src="apps/docs/static/img/shots/timeline-light.webp">
+  <img alt="The LibrePhotos timeline: the Memories strip, then photos grouped by day and place" src="apps/docs/static/img/shots/timeline-light.webp">
 </picture>
-<sub>Sample photos from Pexels, see the <a href="apps/docs/static/img/shots/CREDITS.md">credits</a>.</sub>
+<sub>Sample photos from Unsplash and others, see the <a href="apps/docs/static/img/shots/CREDITS.md">credits</a>.</sub>
 
 A self-hosted, open-source photo management service with automatic face recognition, object detection, and semantic search — powered by modern machine learning.
 
@@ -89,7 +89,7 @@ Pick the deployment that fits your setup. Step-by-step guides are in the [docume
 - **Face classification/clustering:** [hdbscan](https://github.com/scikit-learn-contrib/hdbscan) clustering and a [scikit-learn](https://scikit-learn.org/) multilayer perceptron, both ported to numpy
 - **Image captioning:** [LFM2.5-VL](https://huggingface.co/onnx-community/LFM2.5-VL-450M-ONNX), prompted with the recognised people and the place
 - **Tagging, semantic search and similar photos:** [OpenCLIP ViT-B/32](https://huggingface.co/laion/CLIP-ViT-B-32-DataComp.XL-s13B-b90K) (DataComp-XL, MIT licence)
-- **Semantic search:** [CLIP ViT-B/32](https://huggingface.co/Xenova/clip-vit-base-patch32) with [FAISS](https://github.com/facebookresearch/faiss)
+- **Semantic search:** [CLIP ViT-B/32](https://huggingface.co/Xenova/clip-vit-base-patch32) with an exact inner-product index in numpy
 - **ML runtime:** [ONNX Runtime](https://onnxruntime.ai/) for every model, no PyTorch
 - **Reverse geocoding:** [geopy](https://github.com/geopy/geopy)
 

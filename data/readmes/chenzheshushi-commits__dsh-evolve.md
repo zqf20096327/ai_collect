@@ -39,7 +39,7 @@ dsh plugin --profile web add github:chenzheshushi-commits/dsh-evolve
 Pin a specific release instead of tracking `main`:
 
 ```bash
-dsh plugin --profile web add "https://github.com/chenzheshushi-commits/dsh-evolve/releases/download/v0.8.2/dsh-evolve-0.8.2.tgz"
+dsh plugin --profile web add "https://github.com/chenzheshushi-commits/dsh-evolve/releases/download/v0.8.4/dsh-evolve-0.8.4.tgz"
 ```
 
 Then restart the harness — tools are discovered at startup, not hot-reloaded.
@@ -187,6 +187,52 @@ behavior on failure. Nothing runs in your main loop.
 - **Mechanisms over model smarts.** Safety comes from deterministic rules, so swapping models changes quality, never safety.
 
 ---
+
+## What's new in v0.8.4 — The desktop settings page can save again
+
+v0.8.1 taught the loopback fence about the desktop shell's `dsh-app://app` origin.
+That was necessary but not sufficient: the shell does not forward that origin.
+
+Electron's `forwardWebRequest` (`apps/desktop/src/web-document.ts`) deletes
+`Origin`, `Host`, `Cookie` and `Sec-Fetch-Site` before calling the Host, so every
+settings write from the app arrives as a bare loopback request with neither
+header. The fence treated a missing `Sec-Fetch-Site` as untrusted and answered
+403 — the "every setting is read-only" report.
+
+The fence now accepts that exact shape when the socket and the `Host` header are
+loopback: no `Origin` **and** no `Sec-Fetch-Site`. The rest of the boundary is
+unchanged and pinned by tests: `Sec-Fetch-Site: cross-site` is still refused (with
+or without `Origin`), `dsh-app://app` remains the only trusted app-scheme origin,
+`Origin: null` stays refused, and the loopback socket + loopback Host checks run
+first. Every early refusal now records its reason, not just origin mismatches, so
+the next 403 is answerable from `evolve-guard-debug.log`.
+
+No configuration changes in this release.
+
+## What's new in v0.8.3 — One plugin, one owner
+
+The desktop app can run `apply()` twice for one plugin: two loader rows, or a host
+reload that re-enters without disposing the previous mount. The second pass used to
+die on the first globally-unique registration:
+
+    prompt section "evolve-protocol" is already registered
+
+Because `apply()` must never throw into boot, that failure was swallowed and the
+plugin showed as *enabled* while memory and skills were dead.
+
+The first live mount now owns the workspace. A second mount (different fiber) or a
+re-entering pass (same fiber whose effects are still live) registers nothing and
+records why in `$DSH_HOME/evolve-workspace/duplicate-mount.log`:
+
+- `duplicate mount ignored` — two loader rows. Remove the extra one; check
+  `dsh.profile.bundles`, the profile's `cordis.patch.yml`, and the home-level
+  `$DSH_HOME/cordis.patch.yml` (it applies to every profile).
+- `apply() re-entered without disposing the previous mount` — the host re-applied
+  the plugin while the old instance was still wired. The old instance keeps
+  serving; restart the app if it looks stale.
+
+The guard is process-local and keyed by the resolved workspace, so separate
+`DSH_HOME` trees are unaffected. No configuration changes in this release.
 
 ## What's new in v0.8.2 — The refusal log actually lands somewhere
 

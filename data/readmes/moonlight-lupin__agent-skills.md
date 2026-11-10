@@ -25,9 +25,6 @@ agent_skills/
 │   ├── notebooklm-mode/              ← NotebookLM-style source vault + grounded answers
 │   ├── people-enrichment/            ← PDL person/company enrichment/search to styled .xlsx
 │   ├── library-rag/                  ← Nemotron-3-Embed-1B + sqlite-vec semantic search engine
-│   ├── source-tracker/               ← persistent citation database + URL health + bibliography export
-│   ├── fact-checker/                 ← targeted claim verification + confidence rating + cited reports
-│   ├── media-analyzer/               ← rhetorical technique detection (loaded language, framing, omission)
 │   ├── endpoint-probe/               ← API/MCP surface discovery (REST, GraphQL, SOAP, JSON-RPC)
 │   └── youtube-topic-research/       ← YouTube search + transcript summarization
 ├── mlops/                            ← model evaluation and ops skills
@@ -49,7 +46,7 @@ agent_skills/
 │   ├── claude-plugin-converter/      ← convert Claude Code plugins → self-contained Hermes plugins
 │   ├── log-analyzer/                 ← log pattern detection: error clusters, rate limits, timeouts
 │   ├── input-token-overheads/        ← audit input token cost, two scopes: per-turn prompt overhead + aggregate spend (cost accounting)
-│   ├── operator-brain/               ← 8-module behavioral stack: act, lead with outcome, ground claims
+│   ├── operator-brain/               ← 10-module behavioral stack (Fable 5 + 5.1): act, lead with outcome, ground claims, narrate long work
 │   └── hermes-onboarding/            ← 21-step customer onboarding: gateway, dashboard, memory, crons
 ├── software-development/              ← skill development, review, and methodology skills
 │   └── skill-quality-review/          ← batch skill audit: 9 checks, writing-for-agents levers, efficacy testing
@@ -71,19 +68,16 @@ New skills are added as folders under the relevant domain directory.
 | [image-studio](creative/image-studio/) | creative | Staged fal.ai image gen/edit/upscale/cleanup with cost logging + `--dry-run` | pexels-stock-photos |
 | [clips-studio](creative/clips-studio/) | creative | Staged fal.ai short-video: text-to-video, animate still, camera moves | image-studio |
 | [pexels-stock-photos](creative/pexels-stock-photos/) | creative | Free real-world stock photos (Pexels API, 20k/month) with attribution handling | image-studio |
-| [deep-research](research/deep-research/) | research | Iterative research engine: structured evidence, source quality ranking (primary/secondary/tertiary), refute polarity, overview-first reports, four-label evidence-basis discipline ([VERIFIED]/[SOURCED]/[REASONED]/[ESTIMATED]), deterministic validation gates (claim-support, citations, structure), verbatim quote anchoring, per-round search budgets, follow-up report revision | fact-checker, source-tracker |
-| [entity-research](research/entity-research/) | research | Cited company/person dossiers: ownership, adverse media, sanctions, litigation | deep-research |
-| [people-enrichment](research/people-enrichment/) | research | PDL person/company lookup → styled `.xlsx` | entity-research |
+| [deep-research](research/deep-research/) | research | Iterative research engine: structured evidence, source quality ranking (primary/secondary/tertiary), refute polarity, overview-first reports, four-label evidence-basis discipline ([VERIFIED]/[SOURCED]/[REASONED]/[ESTIMATED]), deterministic validation gates (claim-support, citations, structure), verbatim quote anchoring, per-round search budgets, provider-neutral search and page-reader fallbacks, referent disambiguation probe, firmware support-status triangulation recipe, provider head-to-head benchmarking, follow-up report revision, persistent citation DB scripts (absorbed source-tracker) | — |
+| [entity-research](research/entity-research/) | research | Cited company/person dossiers: ownership, adverse media, sanctions, litigation; optional cited organisation-evidence run (Exa Agent API) | deep-research |
+| [people-enrichment](research/people-enrichment/) | research | PDL person/company lookup → styled `.xlsx`; email-list enrichment (free triage, one lookup per domain); shared mailboxes never kept as a person's email | entity-research |
 | [library-rag](research/library-rag/) | research | Semantic search over personal library (Nemotron-3-Embed-1B + sqlite-vec), incremental + prune-missing | notebooklm-mode |
 | [notebooklm-mode](research/notebooklm-mode/) | research | Source-grounded Q&A from a source vault, strict or augmented grounding | library-rag, deep-research |
-| [news-monitoring](research/news-monitoring/) | research | Recurring news digests with cron delivery + multi-language + dedup | source-tracker |
+| [news-monitoring](research/news-monitoring/) | research | Recurring news digests with cron delivery + multi-language + dedup | — |
 | [youtube-topic-research](research/youtube-topic-research/) | research | YouTube search → transcript → summary pipeline | notebooklm-mode |
-| [source-tracker](research/source-tracker/) | research | Persistent citation DB: URL dedup, topic tags, link health, bibliography export | deep-research, fact-checker |
-| [fact-checker](research/fact-checker/) | research | Claim verification → confidence rating (verified→outdated) + cited report | deep-research, source-tracker |
-| [media-analyzer](research/media-analyzer/) | research | Rhetorical technique detection (loaded language, framing, omission) — not political labels | fact-checker, deep-research |
 | [endpoint-probe](research/endpoint-probe/) | research | Discover API/MCP surfaces (REST, GraphQL, SOAP, JSON-RPC) — probe script + interpretation guide | website-scraping |
 | [model-compare](mlops/model-compare/) | mlops | Blind multi-model A/B comparison: simple, tools, coding, review modes + embedding benchmark | — |
-| [website-scraping](web-scraping/website-scraping/) | web-scraping | Recon → lightest extraction tool → JSONL + run manifest | source-tracker |
+| [website-scraping](web-scraping/website-scraping/) | web-scraping | Recon → lightest extraction tool → JSONL + run manifest | — |
 | [fill-template](productivity/fill-template/) | productivity | Bulk-fill Word/Excel templates from a data table (mail-merge) | — |
 | [travel-itinerary](productivity/travel-itinerary/) | productivity | Business-trip itineraries from emails/PDFs → Markdown + `.ics` + chat variants | — |
 | [decision-log](productivity/decision-log/) | productivity | ADR-style decision journal with superseding chains + cron review reminders | — |
@@ -98,11 +92,11 @@ New skills are added as folders under the relevant domain directory.
 | [contrastive-refinement](plugins/skill-governance/skills/contrastive-refinement/) | agent-ops (bundled in `plugins/skill-governance/`) | Evidence-first skill refinement: probe candidate edits on the same task, blind-select, compose, record lessons with evidence lines | skill-governance (its own plugin) |
 | [skill-quality-review](software-development/skill-quality-review/) | software-development | Batch skill audit: 9 automated checks, writing-for-agents levers, per-skill grep methodology, efficacy A/B testing, frontmatter/description fixes | — | [log-analyzer](agent-ops/log-analyzer/) | agent-ops | Log pattern detection: error clusters, rate limits, timeout clusters, tool failures | scheduled-summary |
 | [input-token-overheads](agent-ops/input-token-overheads/) | agent-ops | Audit input token cost at two scopes: per-turn prompt overhead (tool schemas, skills index, system text, profile, memory — measured live, ranked, reduced) and aggregate spend/cost accounting across sessions, cron fires, and tool traffic (cache-aware interpretation, pre-checked config levers, scheduled delta checks) | — |
-| [operator-brain](agent-ops/operator-brain/) | agent-ops | 8-module behavioral stack from Anthropic's Fable guide: act, lead with outcome, ground every claim | controlled-english-output |
+| [operator-brain](agent-ops/operator-brain/) | agent-ops | 10-module behavioral stack from Anthropic's Fable 5 and Fable 5.1 guides: act, lead with outcome, ground every claim, narrate long work, stay surgical | — |
 | [hermes-onboarding](agent-ops/hermes-onboarding/) | agent-ops | 21-step customer onboarding: gateway, dashboard, memory, search, guardrails, maintenance crons | disk-cleanup, log-analyzer |
 | [disk-cleanup](devops/disk-cleanup/) | devops | Triage disk space: survey all mounts → safe/ask buckets → execute approved set → verify delta | — |
 | [dev-pipeline](plugins/dev-pipeline/) | plugins | Five-stage development pipeline: grill → spec → test-evals → build → review-commit, planned by S0-S3 complexity and reviewed by R0-R3 risk (T0-T3 review-tier aliases), with a review-lessons library and a pre_tool_call create-gate that blocks new software-development skills unless a single-use allow flag is consumed | skill-quality-review |
-| [skill-governance](plugins/skill-governance/) | plugins | Consolidated skill provenance and governance: manifest fingerprints + drift acks and advisory-only contrastive probes behind one composed hook surface, conservative `governance.records` join, non-destructive legacy state import, and one opt-in clearance cron (sole successor to the retired skill-manifest + contrastive-advisor plugins) | — |
+| [skill-governance](plugins/skill-governance/) | plugins | Consolidated skill provenance and governance: manifest fingerprints + drift acks and advisory-only contrastive probes behind one composed hook surface, conservative `governance.records` join, non-destructive legacy state import, and one clearance Automation Blueprint (`/blueprint`-adopted, no self-installed cron; sole successor to the retired skill-manifest + contrastive-advisor plugins) | — |
 
 > **Related work:** [Odysseus](https://github.com/pewdiepie-archdaemon/odysseus) (PewDiePie's self-hosted AI workspace) ships similar features as a standalone web app — "Deep Research" and "Compare" — while `deep-research` and `model-compare` cover the same ground as pure-prompt workflows + stdlib scripts inside any agent's tool loop.
 
@@ -147,7 +141,7 @@ Install by copying or symlinking `plugins/dev-pipeline/` into `~/.hermes/plugins
 
 ### skill-governance
 
-A Hermes plugin that consolidates the provenance engine and the advisory edit-observation engine behind one composed hook surface (`on_skill_lifecycle`, `on_session_start`, `pre_tool_call`, `pre_llm_call`). It bundles the `contrastive-refinement` skill (`plugins/skill-governance/skills/contrastive-refinement/`, registered as `skill-governance:contrastive-refinement`): behavioral skill edits get one advisory reminder to run the probe cycle (fire ledger at `~/.hermes/skill-probes/fire-ledger.jsonl`). The manifest engine enforces `UPSTREAM_MANIFEST.md`: arrivals must have a manifest row, content changes in manifested skills must be re-acknowledged against a content fingerprint (`/skill-manifest-ack <name> <sha>`). `manifest.v1`/`advisor.v1` import legacy state by copy (destination-wins, sources never modified); one optional clearance cron (`cron.*`, default off) replaces both legacy schedulers and preserves both clearance procedures verbatim (only an *enabled* legacy job suppresses it); `governance.records` joins the two views conservatively — an acknowledged fingerprint never implies validated evidence.
+A Hermes plugin that consolidates the provenance engine and the advisory edit-observation engine behind one composed hook surface (`on_skill_lifecycle`, `on_session_start`, `pre_tool_call`, `pre_llm_call`). It bundles the `contrastive-refinement` skill (`plugins/skill-governance/skills/contrastive-refinement/`, registered as `skill-governance:contrastive-refinement`): behavioral skill edits get one advisory reminder to run the probe cycle (fire ledger at `~/.hermes/skill-probes/fire-ledger.jsonl`). The manifest engine enforces `UPSTREAM_MANIFEST.md`: arrivals must have a manifest row, content changes in manifested skills must be re-acknowledged against a content fingerprint (`/skill-manifest-ack <name> <sha>`). `manifest.v1`/`advisor.v1` import legacy state by copy (destination-wins, sources never modified). v0.3.0 ships the clearance procedure as an adopted Automation Blueprint (`skill-governance:clearance`, daily `0 9 * * *`, delivery `origin`) registered through the public host surface — the plugin imports no private cron modules and writes no cron state; it replaces both legacy schedulers and preserves both clearance procedures verbatim. `governance.records` joins the two views conservatively — an acknowledged fingerprint never implies validated evidence.
 
 Install from the Hermes plugin catalog:
 

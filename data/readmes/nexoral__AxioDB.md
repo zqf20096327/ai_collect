@@ -15,32 +15,22 @@
 </p>
 
 [![CI](https://github.com/nexoral/AxioDB/actions/workflows/Push.yml/badge.svg)](https://github.com/nexoral/AxioDB/actions/workflows/Push.yml)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/16511/badge)](https://www.bestpractices.dev/projects/16511)
+[![OpenSSF Baseline](https://www.bestpractices.dev/projects/16511/baseline)](https://www.bestpractices.dev/projects/16511)
+[![Known Vulnerabilities](https://snyk.io/test/npm/axiodb/badge.svg)](https://snyk.io/test/npm/axiodb)
+[![Socket Security](https://socket.dev/api/badge/npm/package/axiodb)](https://socket.dev/npm/package/axiodb)
 [![npm version](https://badge.fury.io/js/axiodb.svg)](https://badge.fury.io/js/axiodb)
-[![npm downloads total](https://img.shields.io/npm/dt/axiodb.svg)](https://www.npmjs.com/package/axiodb)
-[![npm downloads yearly](https://img.shields.io/npm/dy/axiodb.svg)](https://www.npmjs.com/package/axiodb)
-[![npm downloads weekly](https://img.shields.io/npm/dw/axiodb.svg)](https://www.npmjs.com/package/axiodb)
-[![npm downloads monthly](https://img.shields.io/npm/dm/axiodb.svg)](https://www.npmjs.com/package/axiodb)
-[![jsDelivr hits](https://img.shields.io/jsdelivr/npm/hm/axiodb.svg)](https://www.jsdelivr.com/package/npm/axiodb)
-[![install size](https://img.shields.io/npm/unpacked-size/axiodb?label=install%20size)](https://www.npmjs.com/package/axiodb)
-[![npm types](https://img.shields.io/npm/types/axiodb?label=types)](https://www.npmjs.com/package/axiodb)
 [![Zero native deps](https://img.shields.io/badge/dependencies-0%20native-success)](https://www.npmjs.com/package/axiodb)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen)](https://nodejs.org)
-[![Tested on Node.js](https://img.shields.io/badge/Node.js%20tested-20%20%7C%2021%20%7C%2022%20%7C%2023%20%7C%2024%20%7C%2025%20%7C%2026-339933?logo=node.js)](https://github.com/nexoral/AxioDB/actions/workflows/Push.yml)
-[![Bun tested](https://img.shields.io/badge/Bun%20tested-1.4.0%20%7C%201.4.1%20%7C%201.4.2%20%7C%201.4.3%20%7C%201.4.4%20%7C%20latest-black?logo=bun)](https://github.com/nexoral/AxioDB/actions/workflows/Push.yml)
 [![ACID Durability](https://img.shields.io/badge/ACID-WAL%20Durability-blueviolet)](https://axiodb.in)
-[![Sub-millisecond Read](https://img.shields.io/badge/p50%20read-0.6ms%20(1300%2B%20QPS)-8A2BE2)](https://axiodb.in/performance)
-[![AI Agent State](https://img.shields.io/badge/AI%20Agent-State%20%26%20Memory-4B0082)](https://axiodb.in)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-blue)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/nexoral/AxioDB/pulls)
 [![GitHub Stars](https://img.shields.io/github/stars/nexoral/AxioDB?style=social)](https://github.com/nexoral/AxioDB)
-[![GitHub Forks](https://img.shields.io/github/forks/nexoral/AxioDB?style=social)](https://github.com/nexoral/AxioDB/forks)
-[![Contributors](https://img.shields.io/github/contributors/nexoral/AxioDB)](https://github.com/nexoral/AxioDB/graphs/contributors)
-[![Last Commit](https://img.shields.io/github/last-commit/nexoral/AxioDB)](https://github.com/nexoral/AxioDB/commits/main)
 
 👉 **[Official Documentation — axiodb.in](https://axiodb.in/)**: full guides, API reference, and examples. This README is a quick start.
 
 ## Quick start
+
+### Node.js & Bun
 
 ```bash
 npm install axiodb
@@ -49,7 +39,7 @@ npm install axiodb
 ```javascript
 const { AxioDB } = require('axiodb');
 
-const db = new AxioDB({ GUI: true });          // Dashboard at http://localhost:27018
+const db = new AxioDB();
 const users = await (await db.createDB('AppDB')).createCollection('users');
 
 await users.insert({ name: 'Alice', age: 30 });
@@ -57,7 +47,22 @@ const { data } = await users.query({ age: { $gt: 25 } }).Sort({ age: -1 }).Limit
 console.log(data.documents);
 ```
 
-No server to run, no `node-gyp`, no `electron-rebuild`. Requires Node.js ≥20 (also verified on Bun v1.4.0).
+### Deno (zero install via URL)
+
+No installation required in Deno — import directly via `esm.sh`:
+
+```typescript
+import { AxioDB } from 'https://esm.sh/axiodb';
+
+const db = new AxioDB();
+const users = await (await db.createDB('AppDB')).createCollection('users');
+
+await users.insert({ name: 'Alice', age: 30 });
+const { data } = await users.query({ age: { $gt: 25 } }).Sort({ age: -1 }).Limit(10).exec();
+console.log(data.documents);
+```
+
+No server to run, no `node-gyp`, no `electron-rebuild`. Requires Node.js ≥22 (also verified on Bun v1.4.0).
 
 ### 🤖 AI Agent Skill
 
@@ -101,7 +106,6 @@ Everything below is included in the main zero-dependency package — no extra se
 * ⚡ **Sub-Millisecond Reads (<1ms)** — Delivers blazing-fast queries with automatic in-memory caching and disk indexing, without needing to configure a separate Redis layer.
 * 🔍 **Rich Querying & Data Joins** — Filter documents with intuitive operators (`$gt`, `$in`, `$regex`), paginate, sort, and join multiple collections with aggregation pipelines (`$lookup`).
 * 🤖 **Built-in AI Agent MCP Server** — Pass `{ MCP: true }` to instantly boot an official Model Context Protocol server on port 27020, giving Claude, Cursor, and autonomous AI agents 45 tools to manage database state.
-* 🖥️ **Built-in Web Dashboard** — Pass `{ GUI: true }` to launch a full visual dashboard at `http://localhost:27018` to inspect collections, view metrics, and run live queries.
 * 🌐 **Built-in HTTP REST & TCP Servers** — Turn on `{ HTTP: true }` (port 27018) or `{ TCP: true }` (port 27019) whenever you need remote microservices, worker processes, or client apps to talk to the same database.
 
 ### 🛠️ Optional Companion Tools
@@ -111,7 +115,7 @@ Install these only when you need dedicated standalone apps or command-line scrip
 * 🖥️ **Desktop App (Electron GUI)** — A standalone desktop management application for Linux, macOS, and Windows to manage local and remote AxioDB instances without opening a web browser.
 * ⚡ **Terminal CLI (Go Binary)** — A lightweight, standalone CLI binary with an interactive REPL shell, TLS remote connections, and database backup/export/import tools.
 * 🤖 **AI Agent Skill** — Run `npx skills add nexoral/AxioDB --skill skill` to equip your AI coding assistant (Cursor, Claude Code, Windsurf, Copilot) with verified query syntax and schemas.
-* 🐳 **Official Docker Container** — Deploy `theankansaha/axiodb` in Kubernetes, cloud servers, or Docker Compose with all surfaces (HTTP, TCP, MCP, Dashboard) ready to run.
+* 🐳 **Official Docker Container** — Deploy `theankansaha/axiodb` in Kubernetes, cloud servers, or Docker Compose with all surfaces (HTTP, TCP, MCP) ready to run.
 
 ## Performance & Testing
 

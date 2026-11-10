@@ -1,3 +1,8 @@
+<div align="center">
+<img alt="Solar Filament Segmentation Dashboard" src="https://github.com/user-attachments/assets/97cd34d3-6008-4cbb-bd94-0de83255a2a9" width="80%" />
+<br/>
+
+
 # Solar Filament Segmentation
 A **deep learning semantic segmentation project** for detecting **solar filaments** in full-disk H-alpha images of the Sun, built with **TensorFlow / Keras**. The goal is to predict a pixel-wise binary mask marking filaments, comparing a U-Net trained from scratch against **EfficientNetB0 transfer-learning** variants before selecting a final model.
 

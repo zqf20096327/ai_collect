@@ -3,7 +3,7 @@
 # LIA — Your next conversation, already prepared
 
 I built LIA because I wanted to pick up a conversation without piecing its context together again.
-This self-hosted AI assistant brings your emails, meeting notes and open commitments into view, then helps you prepare the next step.
+This free, open-source, self-hosted AI assistant brings your emails, meeting notes and open commitments into view, then helps you prepare the next step. The software is free; hosting and connected services may incur costs.
 
 **Start the guided installer:**
 
@@ -28,7 +28,7 @@ The moment I wanted to improve is simple: **“I'm speaking with Claire. What di
 - **Choose what happens next.** Review the email draft before sending. Edit it, approve it or say no.
 - **Use your services yourself.** Open **Tools** for mail, calendar, tasks, contacts, files and Hue controls: by hand with no model call, and yellow stars where one click asks LIA for a summary, a reply or a form to check. The connected provider determines the available controls.
 
-Try: *“Prepare my catch-up with Claire using the project brief, our recent emails and the last meeting notes. Highlight anything that conflicts.”*
+Try: _“Prepare my catch-up with Claire using the project brief, our recent emails and the last meeting notes. Highlight anything that conflicts.”_
 
 That continuity is LIA's focus: the relationship, its sources and the next action in one place. Start there; voice, personal Radio, routines and the rest are available when you need them. The [functional map](https://lia.jeyswork.com/maps/functional) shows how those pieces connect.
 
@@ -47,7 +47,6 @@ The command above starts the installer in [install.sh](install.sh). It asks how 
 Already have the checkout? Run `./install.sh` from its root. An interrupted installation can continue with `./install.sh --resume`.
 
 The [self-hosting guide](docs/guides/GUIDE_SELF_HOSTING.md) covers every installer choice and troubleshooting. The [getting-started guide](docs/GETTING_STARTED.md) covers the wider setup.
-
 
 <details>
 <summary><strong>Installer options, production hosting and optional integrations</strong></summary>
@@ -135,8 +134,6 @@ cd apps/web && pnpm dev
 ```
 
 </details>
-
-
 
 ### Development URLs
 
@@ -236,14 +233,14 @@ Every capability below is documented in an architecture decision record (ADR) or
 
 #### Knowledge spaces
 
-- Personal document bases in 15+ formats with hybrid search (pgvector cosine + BM25), Google Drive and OneDrive folder sync, a Gmail label as a source, and a system space that indexes the product's own help corpus so LIA can explain itself — drawn from the in-app FAQ, whose 549 questions cover every feature a person can use, in six languages.
+- Personal document bases in 15+ formats with hybrid search (pgvector cosine + BM25), Google Drive and OneDrive folder sync, a Gmail label as a source, and a system space that indexes the product's own help corpus so LIA can explain itself — drawn from the in-app FAQ, whose 553 questions cover every feature a person can use, in six languages.
 - A document that cannot be indexed says why in your language — a scanned PDF without a text layer names its remedy.
+- Search spaces by their name or a file's, sort them by name, recency, file count or activity, and keep favourites in their own group, right after Meetings in the menu: a favourite changes the list, never what retrieval reads.
 - Any indexed document, paused space or not, attaches to a chat message as a copy from the composer's « + » ([ADR-295](docs/architecture/ADR-295-Knowledge-Documents-As-Message-Attachments.md), [GUIDE_RAG_SPACES](docs/guides/GUIDE_RAG_SPACES.md), [ADR-055](docs/architecture/ADR-055-RAG-Spaces-Architecture.md), [ADR-058](docs/architecture/ADR-058-System-RAG-Spaces.md)).
 
 #### Meetings and minutes
 
-- Search complete minutes from the meeting list, with server-side filtering and pagination.
-
+- Search complete minutes from the meeting list, with server-side filtering and pagination, and delete a meeting from its row.
 - Record from the phone or the computer while the chat stays usable, with a capture that survives reloads and lost microphones.
 - Import a recording you already hold — WAV, MP3 or M4A — and it becomes a meeting with its minutes: sent in chunks under published bounds, read only as the format it claims, its length measured before any engine is paid.
 - A chain of transcription engines walked at processing time.
@@ -255,7 +252,7 @@ Every capability below is documented in an architecture decision record (ADR) or
 
 - A 360° relationship lens over open loops, calls, messages and memories, with a written debrief per person built lazily when the card opens ([ADR-176](docs/architecture/ADR-176-Personal-CRM-Relations.md), [ADR-193](docs/architecture/ADR-193-Read-Capabilities-And-Merged-Identity.md), [ADR-269](docs/architecture/ADR-269-Relationship-Debrief.md)).
 - A timeline on each relationship card lines up its dated records — commitments, calls, memories, relayed messages, text messages — on one thread, page after page, never repeating or dropping one.
-- Connections between users of the same instance, assistant to assistant — relayed messages delivered by the recipient's own assistant, field-level read-only shares, silent blocking; a first name reaches the person it designates, and a name that fits several people is asked about, never guessed ([ADR-180](docs/architecture/ADR-180-Peer-Connections.md), [ADR-182](docs/architecture/ADR-182-Peer-Routing-Awareness-And-Honest-Failure.md)).
+- Connections between users of the same instance, assistant to assistant — a message asked in words leaves without a confirmation card and is delivered once by the recipient's own assistant, field-level read-only shares, silent blocking; a first name reaches the person it designates, and a name that fits several people is asked about, never guessed ([ADR-180](docs/architecture/ADR-180-Peer-Connections.md), [ADR-182](docs/architecture/ADR-182-Peer-Routing-Awareness-And-Honest-Failure.md)).
 - A generated image shared with a connection as a copy, in one click and one transaction, its comment quoted literally in their chat ([ADR-316](docs/architecture/ADR-316-Sharing-A-Generated-Image-With-A-Connection.md)).
 
 #### What LIA produced is yours
@@ -302,6 +299,16 @@ the messages of a page weighed. Nothing is sent or saved until you do it by hand
 stands beside the answer, and an administrator can switch it off
 ([what a click asks of LIA](docs/technical/TOOL_ASSISTS.md),
 [ADR-372](docs/architecture/ADR-372-What-LIA-Does-From-The-Tools-A-Click-A-Call-A-Proposal.md)).
+
+The same help reaches every screen. Select readable text anywhere in LIA, the chat
+included: a small menu reads it aloud, explains, summarises, simplifies, translates or
+searches the web, naming the service it asked and its sources, and turns it into a task,
+an event, a reminder, a ticket or a memory through the usual form, saved by your own click.
+While you write, a selection is translated, corrected, formatted, shortened, made more
+formal or warmer, and a replacement keeps the browser's undo; a focused field has its own
+dictation. Passwords, security codes and isolated frames are left out, and every answer
+states its cost. A card in the chat opens its e-mail, event, contact, task, file or light
+here, checked against the account that answered it.
 
 What a provider's client gains reaches the assistant's tools in the same release, deleting for
 good excepted, so the same gesture can be asked in words, with a confirmation card when it
@@ -412,8 +419,8 @@ A ticket has a lifecycle, a holder and a result ([ADR-276](docs/architecture/ADR
 #### Interests and habits, learned with restraint
 
 - An interest is created only on a named ground quoted from your own words, with six exclusion classes and a cap on deletions per run ([ADR-166](docs/architecture/ADR-166-Extraction-Admission-Doctrine.md), [INTERESTS](docs/technical/INTERESTS.md)).
-- Habits are learned deterministically from a recurrence ledger, promoted, refreshed or demoted by a nightly job and never on doubt.
-- A status you set on a learned window holds for the heartbeat, its scheduling and the assistant's context alike, a missed routine is offered by name, and one learning switch closes every door ([ADR-214](docs/architecture/ADR-214-Habitudes-Utilisateur-Apprentissage-Deterministe.md)).
+- Habits are learned deterministically from a request ledger, promoted, refreshed or demoted by a nightly job and never on doubt: a recurring need is recognised by the days it comes back, and its hour only describes it.
+- What LIA learns becomes proposals rendered by code — automate a need, move a routine you run by hand, look at a failing one, widen your notification hours, pause notifications nobody reacts to, connect a source — accepted, put off or refused in one click, at most one a day under a chat answer. A status you set holds for the proposals, the heartbeat's timing and the assistant's context alike, and one learning switch closes every door ([ADR-214](docs/architecture/ADR-214-Habitudes-Utilisateur-Apprentissage-Deterministe.md), [ADR-375](docs/architecture/ADR-375-Learned-Usage-Becomes-Proposals.md)).
 
 #### A daily briefing
 
@@ -428,8 +435,9 @@ The home page opens on the date and LIA's living face, then aggregates your sour
 
 #### A chat that streams
 
+- The interface follows your style: three icon styles — Lucide, Fluent Color (the default) or Streamline Flex, the colour ones completed by attributed LIA drawings where a collection lacks a concept, the system's forced colours kept — and an automatic appearance, light during the hours you choose and absolute black otherwise, in your account's time zone ([icon styles](docs/technical/ICON_STYLES.md), [display preferences](docs/technical/DISPLAY_PREFERENCES.md)).
 - Answers arrive over SSE with rich HTML cards, interactive widgets and a per-message cost badge.
-- A data card shows everything the source supplied and never invents a missing value — an e-mail's body, every organisation of a contact, conference join points, subtasks, a place's photos (full-screen gallery), reviews and opening hours, a route's alternatives, weather slots, generated-document previews — the detail behind native disclosures; opening one calls nothing. The model reads a versioned semantic view of the answer, never the card's HTML ([ADR-332](docs/architecture/ADR-332-Deterministic-Cards-Received-Facts-And-Message-Owned-Actions.md), [HTML_CARDS](docs/technical/HTML_CARDS.md)).
+- Data cards take the shape of their content (Enveloppes): an envelope for a mail, an invitation for an event, a folder for files, research with its sources in the margin, in your palette, light, dark or OLED, on a computer and a phone. Every supplied fact and actual photo, map, weather slot or document preview stays available, and a long collection folds after its first items without another provider or model request. The model reads a versioned semantic view of the answer, never the card's HTML ([ADR-332](docs/architecture/ADR-332-Deterministic-Cards-Received-Facts-And-Message-Owned-Actions.md), [HTML_CARDS](docs/technical/HTML_CARDS.md)).
 - Reply, forward, move an e-mail to the trash or adjust a reminder from its card: the request is prepared in the composer, and the server re-checks the original message, source and account grant. E-mail deletion still passes through approval before changing its original mailbox. A route opens as an interactive Google map whose estimated cost is announced first and every construction counted ([ADR-332](docs/architecture/ADR-332-Deterministic-Cards-Received-Facts-And-Message-Owned-Actions.md)).
 - MCP cards name the server's public origin and the called method above an accessible response disclosure; opening it reveals the received result without another call. Weather icons follow the provider's condition codes and day/night information, across current, daily and hourly forecasts.
 - In the rich HTML mode every data-bearing answer is a composed page — a lead sentence, one section per facet in the component that fits it, a closing callout — laid out on conversational turns too unless a voice is reading them ([ADR-177](docs/architecture/ADR-177-Rich-HTML-Response-Components.md)).
@@ -466,6 +474,7 @@ The home page opens on the date and LIA's living face, then aggregates your sour
 - In supported Live configurations, the voice model can delegate a data request or action to the chat engine. The delegated turn uses the graph’s approvals, registers and quotas and appears in the thread. Concurrent speech, interruption and delegation behavior depend on the provider, model and mode.
 - A provider declares its wire and the seam never branches on its name.
 - A direct session holds the read-only tools itself and acts on nothing.
+- Every voice of the person — Live, Live direct, a call with them and the chat's spoken comment — speaks in the personality they chose, facts untouched; on an ElevenLabs agent LIA writes the expression palette that fits, its own greeting and exactly the session's tools, and a call to a third party stays cordial ([ADR-373](docs/architecture/ADR-373-The-Personality-Governs-The-Voice.md)).
 - A silence puts the session on standby instead of ending it: the provider connection closes and nothing is billed until the phrase or a tap wakes it into a new connection; only the person ends a session ([ADR-329](docs/architecture/ADR-329-Live-Standby-And-Multilingual-Wake-Word.md)).
 - The provider's own usage is folded into an indicative meter and shown, never recorded — the vendor's bill read once at the end where it has one ([ADR-299](docs/architecture/ADR-299-Live-Voice-Mode-Two-Intelligences-One-Seam.md), [ADR-300](docs/architecture/ADR-300-A-Second-Live-Provider-One-Seam-Two-Wires.md), [LIVE_MODE](docs/technical/LIVE_MODE.md)).
 
@@ -482,11 +491,15 @@ The home page opens on the date and LIA's living face, then aggregates your sour
 
 The complete native catalogue uses original designs and contextual expressions.
 Reviewed offline artwork supplies bounded body relief, while the shared rig
-owns head pose, eyes, brows and mouth. Reduced motion and unavailable graphics
+owns head pose, eyes, brows, mouth and the limbs each design actually has.
+Arms, wrists and feet join listening, thought, speech and body scenes, with
+breath-led settling, planted support and articulation calibrated for each variant.
+Scenes coordinate preparation, action and recovery; cold-weather scarves are
+fitted to each silhouette in both live and fallback rendering. Reduced motion and unavailable graphics
 retain their native fallback. See the [volume guide](docs/technical/NATIVE_AVATAR_VOLUME.md)
 for projection and performance limits.
 
-- Psyche temperament, actual tool execution and the delivered answer's tone share one animation rig, including the shaded Smiley. Eyes lead a head with depth and weight.
+- Psyche temperament, actual tool execution and the delivered answer's tone share one animation rig across the companion catalogue. Eyes lead a head with depth and weight.
 - Continuous mouth/brow contours, quiet thought and varied resting scenes keep transitions natural. Speech follows actual audio, and a prepared draft never earns an accomplished-action gesture. Fresh cached weather and the account clock add discreet ambience without a provider or LLM call.
 - You place the companion — a drag, the arrow keys, or a fold into its restore dot — and on a phone nothing else moves it.
 - Reduced motion keeps static contextual poses ([ADR-240](docs/architecture/ADR-240-expressive-eyes-widget.md), [ADR-252](docs/architecture/ADR-252-Expressive-Eyes-Animation-Rig.md), [ADR-253](docs/architecture/ADR-253-Per-Turn-Expressivity-Annotation.md), [ADR-264](docs/architecture/ADR-264-Living-Brows-And-Mouth.md), [ADR-294](docs/architecture/ADR-294-A-Face-That-Never-Plays-The-Same-Twice.md)).
@@ -569,7 +582,7 @@ for projection and performance limits.
 
 #### Three registers, sealed on request
 
-- Optional JEV badges qualify displayed emails (professional, personal, spam or phishing/scam; normal, urgent or critical priority) and appointments (professional or personal). Accepted labels also inform the answer. Uncertainty produces no badge; these advisory labels grant no permission and provide no guarantee of safety ([ADR-351](docs/architecture/ADR-351-Advisory-Source-Annotations-Shared-With-The-Answer.md)).
+- Optional JEV badges qualify displayed emails (professional, personal, spam or phishing/scam; normal, urgent or critical priority; a reply expected, never on spam or phishing) and appointments (professional or personal). Accepted labels also inform the answer. Uncertainty produces no badge; these advisory labels grant no permission and provide no guarantee of safety ([ADR-351](docs/architecture/ADR-351-Advisory-Source-Annotations-Shared-With-The-Answer.md)).
 
 - One row per action (claimed before it happens, closed from an explicit result), one per consultation (which capability read what, when, with what outcome), one per turn.
 - Proactive acts and direct reads are recorded too.
@@ -729,17 +742,21 @@ Define the deployment's identity, permissions, business sources, usage rules, in
 Browse the views that interest you; open any image at full resolution.
 
 <details>
-<summary><strong>Start here — conversation, Relations, personal Radio and LIA World</strong></summary>
+<summary><strong>Start here — your dashboard, conversations, Relations and personal Radio</strong></summary>
+
+
 
 <p align="center">
-  <a href="docs/assets/screenshot-lia-world.jpg"><img src="docs/assets/screenshot-lia-world.jpg" alt="LIA World — isometric campus, LIA companion, private home and rooms leading to native functions" width="1000" /></a>
-  <br /><em>LIA World — a shared campus and a private place for your assistant.</em>
-</p>
-
-<p align="center">
-  <a href="docs/assets/screenshot-homepage.png"><img src="docs/assets/screenshot-homepage.png" alt="Personal home dashboard — daily briefing, agenda, mail, tasks and reminders" width="1000" /></a>
+  <a href="apps/web/public/screenshots/dashboard-wide.png"><img src="apps/web/public/screenshots/dashboard-wide.png" alt="Personal home dashboard — daily briefing, agenda, mail, tasks and reminders" width="1000" /></a>
   <br /><em>Your personal hub — the day’s priorities, appointments and useful context in one place.</em>
 </p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/dashboard-actions.png"><img src="apps/web/public/screenshots/proof/dashboard-actions.png" alt="Dashboard — appointment menu with directions, reminder and meeting preparation" width="1000" /></a>
+  <br /><em>Act from a dashboard card: get directions, set a reminder or prepare an appointment.</em>
+</p>
+
+
 
 <p align="center">
   <a href="apps/web/public/screenshots/proof/dossier.png"><img src="apps/web/public/screenshots/proof/dossier.png" alt="Chat — project sources, conflicting dates and practical next steps" width="1000" /></a>
@@ -756,10 +773,65 @@ Browse the views that interest you; open any image at full resolution.
   <br /><em>Follow a personal programme with its transcript and inspectable sources.</em>
 </p>
 
+<p align="center">
+  <a href="docs/assets/screenshot-lia-world.jpg"><img src="docs/assets/screenshot-lia-world.jpg" alt="LIA World — isometric campus, LIA companion, private home and rooms leading to native functions" width="1000" /></a>
+  <br /><em>LIA World — a shared campus and a private place for your assistant.</em>
+</p>
+
 </details>
 
 <details>
-<summary><strong>Places, maps and routes in rich conversations</strong></summary>
+<summary><strong>Your tools — mail, calendar, tasks, contacts, files and lights</strong></summary>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/tools.png"><img src="apps/web/public/screenshots/proof/tools.png" alt="Mail — inbox, open message, attachments and labels" width="1000" /></a>
+  <br /><em>Read and manage your mailbox with the message and its attachments beside the list.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/tools-mail-menu.png"><img src="apps/web/public/screenshots/proof/tools-mail-menu.png" alt="Mail — contextual menu on an open message" width="1000" /></a>
+  <br /><em>Open the real action menu for replies, labels and mailbox operations.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/tools-mail-assist.png"><img src="apps/web/public/screenshots/proof/tools-mail-assist.png" alt="Mail — LIA summary, key points and suggested next steps" width="1000" /></a>
+  <br /><em>Ask LIA to summarize the message without leaving your mailbox.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/tools-calendar.png"><img src="apps/web/public/screenshots/proof/tools-calendar.png" alt="Calendar — week view, two calendars and appointments" width="1000" /></a>
+  <br /><em>Plan the week across your calendars, with appointments and task deadlines in view.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/tools-tasks.png"><img src="apps/web/public/screenshots/proof/tools-tasks.png" alt="Tasks — project lists, deadlines and completion controls" width="1000" /></a>
+  <br /><em>Organize a project’s next steps and mark completed work.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/tools-contacts.png"><img src="apps/web/public/screenshots/proof/tools-contacts.png" alt="Contacts — address book and open contact details" width="1000" /></a>
+  <br /><em>Find a contact and read their details and recent exchanges.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/tools-files.png"><img src="apps/web/public/screenshots/proof/tools-files.png" alt="Files — Drive browser and spreadsheet preview" width="1000" /></a>
+  <br /><em>Browse your files and inspect a budget directly in the application.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/tools-lights.png"><img src="apps/web/public/screenshots/proof/tools-lights.png" alt="Lights — rooms, brightness, colour and scenes" width="1000" /></a>
+  <br /><em>Adjust connected lights through the native room and lamp controls.</em>
+</p>
+
+</details>
+
+<details>
+<summary><strong>Native cards — weather, places, maps and routes</strong></summary>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/weather.png"><img src="apps/web/public/screenshots/proof/weather.png" alt="Weather — native card with air quality, pollen and conditions" width="1000" /></a>
+  <br /><em>Read current conditions, air quality and pollen together on the weather card.</em>
+</p>
 
 <p align="center">
   <a href="apps/web/public/screenshots/proof/places.png"><img src="apps/web/public/screenshots/proof/places.png" alt="Google Places — complete place card with opening hours and practical details" width="1000" /></a>
@@ -767,8 +839,8 @@ Browse the views that interest you; open any image at full resolution.
 </p>
 
 <p align="center">
-  <a href="apps/web/public/screenshots/proof/maps.png"><img src="apps/web/public/screenshots/proof/maps.png" alt="Google Maps — location card with geographic map, coordinates and address" width="1000" /></a>
-  <br /><em>Inspect a location with its geographic map, coordinates and address in the conversation.</em>
+  <a href="apps/web/public/screenshots/proof/maps.png"><img src="apps/web/public/screenshots/proof/maps.png" alt="Google Maps — location card with geographic map and address" width="1000" /></a>
+  <br /><em>Inspect a location with its geographic map and address in the conversation.</em>
 </p>
 
 <p align="center">
@@ -923,16 +995,12 @@ Browse the views that interest you; open any image at full resolution.
 
 </details>
 
-The [Administration & Monitoring](#administration--monitoring) section below includes the three Grafana views supplied by the project.
+The [Administration & Monitoring](#administration--monitoring) section below includes the current provisioned Grafana dashboards with fictional metric values.
 
 <details>
 <summary><strong>Capture notes, manifests and reproduction commands</strong></summary>
 
-The World illustration above is the owner's supplied French application capture,
-published with this release. It is an unmodified illustration of the current
-interface; its visible account name is part of that supplied image. Its
-[provenance manifest](apps/web/public/screenshots/proof/world-manifest.json)
-distinguishes it from the automated fictional-data captures below.
+The World view is captured from the current application's canvas with fictional people and an isolated session. Its [provenance manifest](apps/web/public/screenshots/proof/world-manifest.json) records the unmodified screenshot.
 
 Explore the real application interface in English and light mode, filled with fictional demonstration data. The geographic maps and walking route use [real Google Maps imagery and geographic data](apps/web/e2e/fixtures/maps/provenance.json), prepared separately and served locally with attribution. The browser captures exercise the actual pages, controls and widgets without model inference, provider calls, connected accounts or external actions. Radio uses a local silent audio fixture. The interactive budget is a custom skill example produced by an executed [Python fixture generator](apps/web/e2e/capture/render_trip_budget.py); its estimates are illustrative and no booking is made.
 
@@ -980,43 +1048,11 @@ The admin interface brings deployed capabilities, accounts, model configuration,
 | Area                          | What you control                                                                                                                                                                                                                                                                                                                                                           |
 | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **LLM configuration**         | The model behind every node and slot, provider parameters, prompt versions, the context window per slot                                                                                                                                                                                                                                                                    |
-| **Bounded JEV decisions**     | An independent opt-in switch for each native decision, a general switch, dedicated model and price settings, and diagnostic traces of duration, fallback and spend; uncertain results return to the established path ([ADR-325](docs/architecture/ADR-325-JEV-Bounded-Decisions-With-Hot-Switches-And-Accounted-Fallbacks.md), [guide](docs/technical/JEV_INTEGRATION.md)) |
+| **Bounded JEV decisions**     | An independent opt-in switch for each native decision, a general switch, dedicated model and price settings, each decision threshold within its published bounds, thirty days of counted judgements, and diagnostic traces of duration, fallback and spend; uncertain results return to the established path ([ADR-374](docs/architecture/ADR-374-JEV-Retirements-Declared-Thresholds-And-Durable-Statistics.md), [ADR-325](docs/architecture/ADR-325-JEV-Bounded-Decisions-With-Hot-Switches-And-Accounted-Fallbacks.md), [guide](docs/technical/JEV_INTEGRATION.md)) |
 | **Model catalogue & pricing** | Providers, capability flags, accepted reasoning depths, a provenance badge and prices per model — the source of truth for the LLM factory, with its status against the public registries; image-generation and Google API pricing alongside; live cross-worker invalidation                                                                                                |
 | **Platform capabilities**     | One switch per capability, grouped in families, each row showing the deployment bound, the operator choice and the state actually enforced                                                                                                                                                                                                                                 |
 | **Budgets & limits**          | Per-user token, message and cost quotas with live gauges; the instance daily ceiling in euros, today's spend and what remains                                                                                                                                                                                                                                              |
 | **Knowledge & skills**        | Knowledge spaces and reindexation, the system FAQ space, skills (enable, translate, delete), admin MCP servers and plugins                                                                                                                                                                                                                                                 |
 | **People & voice**            | Users with every per-account switch as a sortable column, roles, connector health, assistant personalities, the TTS catalogue and voice picker                                                                                                                                                                                                                             |
 | **Platform health**           | Incidents and their diagnoses, each shown with the evidence it was written from                                                                                                                                                                                                                                                                                            |
-| **Registers**                 | Readable, technical and Article-12 extractions over one, several or all accounts — masked unless audited                                                                                                                                                                                                                                                                   |
-| **Broadcast, debug, demo**    | Announcements to everyone or to chosen accounts, each stored with its recipients and listed with its audience; per-user debug verbosity, the public showroom link, CSV consumption exports                                                                                                                                                                                 |
-
-### Real-Time Debug Panel
-
-A panel embedded in the chat, organised into six groups; an empty section shows "N/A" rather than disappearing.
-
-| Group                      | Sections                                                                                                                                                      |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Request Analysis**       | Intent classification, Domain detection, Routing decision, Query transformations                                                                              |
-| **Planning & Execution**   | Planner output, Tool selection, Context resolution, Token budget, Execution timeline, ForEach analysis, Execution waves                                       |
-| **Intelligent Mechanisms** | Cache hits, pattern learning, semantic expansion, Skills activation                                                                                           |
-| **Context Injection**      | Memory injection (scores), RAG injection (scores), Knowledge enrichment (Brave), Journal injection (per-entry scores, budget)                                 |
-| **Background Extraction**  | Memory detection (create/update/delete), Journal extraction, Interest profile                                                                                 |
-| **LLM & API Pipeline**     | Request lifecycle (timing breakdown per node), LLM Pipeline (chronological reconciliation), LLM call details (model, tokens, latency, cost), Google API calls |
-
-> Built for developers and operators: diagnose, optimise prompts and understand the agent's decisions in real time — no external tool, no log access needed ([DEBUG_PANEL](docs/technical/DEBUG_PANEL.md)).
-
-### Observability
-
-- **Prometheus**: 660 custom metrics (agents, LLM, infrastructure), labelled by route template — a name or a search in an address never becomes a series. A metric nobody can see is a metric nobody acts on: every one must be wired to a Grafana panel, a recording rule or an alert, and a shrink-only ratchet fails the build on a newly blind metric — and the reverse holds: every panel reads a series something produces.
-- **Grafana**: 33 dashboards, including product-value and radio cockpits · **Loki**: structured JSON logs that keep facts, never people's words, shipped by Grafana Alloy ([ADR-317](docs/architecture/ADR-317-A-Log-Line-Carries-Facts-Never-The-Words.md)) · **Tempo**: distributed tracing, spans named by the route template · **Langfuse**: LLM tracing with prompt versions. The whole stack runs on supported versions, pinned by digest.
-- **Linked signals, a pipeline that watches itself**: a log line opens its trace, a trace its logs and metrics, a latency point its exemplar; Loki, Alloy, Tempo and Grafana are scraped on closed keep-lists and `LogsNotDelivered` fires when lines go missing; every dashboard opens on seven days (logs and traces on four hours) behind one shared menu — [ADR-333](docs/architecture/ADR-333-Linked-Signals-And-A-Pipeline-That-Watches-Itself.md).
-- **Probes**: liveness (`GET /health`) split from readiness (`GET /ready`, 503 unless PostgreSQL **and** Redis answer) — [ADR-115](docs/architecture/ADR-115-Liveness-Readiness-Probes.md).
-- **Alerting**: a vital core (service, database and Redis down, disk, OOM, 5xx rate, SSE latency, backup failure, public-endpoint and TLS probes, chain self-monitoring) evaluated by Prometheus, emailed by a dedicated Alertmanager, unit-tested with `promtool`, every alert linking its runbook. The latency alert observes only turns a person waits for, and only over enough of them for a p95 to mean something; the operator's daily report opens on the alerts that fired, the incidents still open and the container restarts, each source named when it cannot be read. One Alertmanager template drops what is not configured, every severity reaches the team receivers it announces, deduplicated, and the routing matrix runs against the production image's real entrypoint — [ADR-119](docs/architecture/ADR-119-Alerting-Reactivation-Minimal-Core.md).
-- **Per-process memory**: every API worker publishes what it holds (`lia_worker_memory_bytes`, one series per live worker), drawn on the infrastructure dashboard and watched by an alert that names the process; what a process loads is declared, measured on the target host and bounded where it multiplies — the supervisor never imports the application, heavy libraries load where they are used, and the speech engine keeps one resident model per worker ([ADR-283](docs/architecture/ADR-283-Worker-Memory-Anatomy.md)).
-- **Self-diagnostics**: a leader-elected self-check of the golden signals, one incident per outage whichever observer saw it first, and a budget-capped diagnosis written in each administrator's language from evidence collected at diagnosis time — metrics, a sanitised log excerpt, the running build, the alert's runbook — shown under its verdict in Settings › Platform health; an alert incident whose resolution never arrived is reconciled from Alertmanager and closed ([ADR-247](docs/architecture/ADR-247-Self-Diagnostics-And-Answer-Resilience.md), [ADR-266](docs/architecture/ADR-266-Diagnosis-Evidence-At-Diagnosis-Time-And-Exact-Str-Embedding-Inputs.md)).
-
----
-
-### See the instance from the operator's side
-
-These three Grafana screenshots were supplied by the project owner and reproduced unchanged. Their figures show the supplied dashboard st
+| **Registers**                 | Readable, technical and Article-12 extractions over one, several or all accounts — masked unless audited   

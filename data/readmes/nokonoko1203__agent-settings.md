@@ -111,9 +111,12 @@ Codexでは`pre_tool_use_guard.py`が、特権コマンド（`sudo`など）、�
 
 スキルは`claude/skills/`にあります。Codexには入れていません。
 
+名前を`/`付きで書いたスキルは、`disable-model-invocation: true`を付けた手動専用です。Claudeが自動では選ばないので、`/harness-init`のように自分で呼び出します。
+
 | 段階 | スキル | 内容 |
 |---|---|---|
 | 進め方 | `playbook` | 不具合の修正・機能の追加・リファクタリング・性能の改善・調査の手順書 |
+| 進め方 | `/refocus` | 並列作業で状況を見失ったときに、作業・状態・次にすることを示し、以降の応答を次の行動が先に来る形にする |
 | 調査 | `research` | 技術選定や仕様比較を根拠付きで`.tmp/research/`にまとめる |
 | 調査 | `how` | 既存のコードが今どう動いているかを説明する |
 | 調査 | `why` | 既存のコードや設計がなぜ今の形なのかを、記録から調べる |
@@ -121,14 +124,14 @@ Codexでは`pre_tool_use_guard.py`が、特権コマンド（`sudo`など）、�
 | 設計 | `spike-rebuild` | 試作して測り、仕様を作ってから作り直す |
 | 実装 | `codex` | Codex CLIに、モデル・effortを指定して作業を頼む |
 | レビュー | `code-reviewer` | PR・差分を、再現条件と根拠のある不具合に絞ってレビューする |
-| 保守運用 | `harness-init` | リポジトリに`make check`・CI・CLAUDE.mdを整える |
-| 保守運用 | `create-verification-skill` | アプリを利用者と同じ操作で確かめる、プロジェクト専用の検証スキルを作る |
-| 保守運用 | `maintain-verification-skill` | 検証スキルと機能一覧を、アプリの現状に合わせて点検する |
-| 保守運用 | `create-e2e-ci` | 外部との境界をモックに向けたe2eテストと、監査・型検査・テスト・e2eを動かすCIを作る |
+| 保守運用 | `/harness-init` | リポジトリに`make check`・CI・CLAUDE.mdを整える |
+| 保守運用 | `/create-verification-skill` | アプリを利用者と同じ操作で確かめる、プロジェクト専用の検証スキルを作る |
+| 保守運用 | `/maintain-verification-skill` | 検証スキルと機能一覧を、アプリの現状に合わせて点検する |
+| 保守運用 | `/create-e2e-ci` | 外部との境界をモックに向けたe2eテストと、監査・型検査・テスト・e2eを動かすCIを作る |
 | 保守運用 | `write-e2e-case` | AIが画面を操作して確かめた手順から、e2eのケースを書き起こす。落ちたケースは、意図した画面の変更による操作の壊れなら直し、製品の退行や期待する結果の失敗なら報告する |
 | 保守運用 | `write-api-case` | 公開契約を根拠に、DBや外部APIをモックしたAPIの統合テストのケースを書き、e2eと共有の対応表に載せる |
-| 保守運用 | `create-preview-env` | PRごとのプレビュー環境（Cloudflare WorkersかAmplify）と、社内だけが開けるアクセス制限を作る |
-| 保守運用 | `correct` | 繰り返す間違いを、効く一番上の層（設計・型・lint・テスト・文書）で防ぐ |
+| 保守運用 | `/create-preview-env` | PRごとのプレビュー環境（Cloudflare WorkersかAmplify）と、社内だけが開けるアクセス制限を作る |
+| 保守運用 | `/correct` | 繰り返す間違いを、効く一番上の層（設計・型・lint・テスト・文書）で防ぐ |
 | 文書 | `sanitize-artifacts` | 生成文書から会話・指示の混入を取り除く |
 | 文書 | `yomiyasu` | AIが生成した日本語を推敲する |
 | 文書 | `write-japanese-work-reports` | 作業メモや下書きから、日本語の業務報告書・進捗報告・作業報告の本文を起草・推敲する |

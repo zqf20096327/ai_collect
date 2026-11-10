@@ -272,7 +272,7 @@ alternate names for the same feature.
 
 | Surface | What it represents | Who uses it |
 | --- | --- | --- |
-| **Source Graph** | An automatically refreshed structural index with 34 configurable code/data/documentation families and exactly 37 bounded query modes, including exact-target `file`, `function`, `class`, `body`, `bodygrep` and `deps` modes, used to return repository context instead of repeatedly scanning the tree | Managers and workers |
+| **Source Graph** | An automatically refreshed structural index with 34 configurable code/data/documentation families and exactly 38 bounded query modes, including exact-target `file`, `function`, `class`, `body`, `bodygrep` and `deps` modes, used to return repository context instead of repeatedly scanning the tree | Managers and workers |
 | **Manager Context Graph** | An opt-in, append-only ledger and deterministic graph of manager conversation evidence across repository, thread, session and task identities | Verified managers only |
 
 The Manager Context Graph can search an earlier decision, recover the exact
@@ -379,15 +379,15 @@ are durable and repository state remains local.
 
 The full block diagram and the Observe → Decide → Delegate → Verify → Promote → Learn loop: [The whole system](docs/ARCHITECTURE.md#the-whole-system).
 
-## What's new in 0.12.94
+## What's new in 0.12.96
 
-- Linux: a Landlock-sandboxed worker can run cmake, ninja and the linker in its own temp directory; chmod-family calls there are brokered instead of denied.
-- Cards whose validation needs a native toolchain or a shell (cmake, make, ninja, cargo, npm, bash, ...) are no longer routed to the VS Code LM adapters, which cannot run them.
-- The known-bug-pattern gate blocks only on findings the candidate introduces; findings already in the tree are reported, not blocking. `cpp.literal_divide_zero` no longer matches literals such as `0.25f`.
-- `request.json` has one shared size bound, enforced when the file is written, instead of each reader's own 1-2 MiB cap.
-- Fewer manager tokens per card: review callbacks carry a compact review digest, `aiworkhub_agent_task_status` and `aiworkhub_task_show` default to a ~2 KB brief view, and a NeedFix converts to a card in one call.
-- The accept neighbour lane runs only the test functions that call the changed code, and falls back to whole test files when it cannot tell.
-- `scripts/release_cut.py` runs the whole release cut in order and stops at the first failing step.
+- Worker Live Output is a chat for Claude, Codex and OpenCode workers, built from the manager console's rows: assistant text, grouped tool calls, commands, file diffs and a usage footer. A valid provider event never shows as "Unparsed provider line".
+- The dashboard recovers by itself after an extension-host stall: late timers no longer reject answers already in the pipe, dead requests leave the write queue, and the storage scan runs off the host thread.
+- Manager Chat Stop reliably ends the turn and shows a Stopping state; paste works from anywhere in the chat.
+- An infrastructure reject replays the retained candidate with no model run, a rework reject can relaunch in the same call, and accept validates outside the promotion lock.
+- Every required reviewer lens launches or says why it did not, an expired credential fails over to another adapter, and a `vscode_lm` worker that is making progress is no longer killed in staging.
+- One read-only manager tool explains what happened to a request. Test impact records which tests run which lines and selects tests by the changed lines.
+- The release cut reruns failed nodes once before it stops and ends its whole process tree when stopped. Tracked files carry no host paths or logins, and a guard keeps them out.
 - The full release history is in [CHANGELOG.md](CHANGELOG.md).
 
 ## Continuous Audit as a Service (CAAS)

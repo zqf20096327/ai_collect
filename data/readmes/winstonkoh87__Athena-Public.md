@@ -2,7 +2,7 @@
 
 # Athena
 
-**A local-first memory, decision engine, and governance harness for AI agents — portable across IDEs.**
+**Turn stateless LLMs into a stateful, compounding AI agent — portable across any IDE.**
 
 **Own the state. Rent the intelligence.** Persistent memory, structured reasoning,
 and governed AI agents that work across any LLM — stored as plain Markdown and JSONL
@@ -21,9 +21,21 @@ on your disk across Claude Code, Antigravity, Cursor, Gemini CLI, and VS Code.
 
 ---
 
-## The Problem
+## The Problem: Stateless AI is an Amnesiac Bottleneck
 
-You've spent months training ChatGPT to understand you. Then a model update resets the personality. You switch to Claude or Gemini — you start from zero. Worse, platform memory is designed to agree with you faster, not to stress-test your assumptions when stakes are high.
+Why do AI coding assistants still give generic, textbook answers? **Because frontier LLMs are fundamentally stateless.**
+
+Every time you open a new session, the model starts from zero. It has no memory of your architecture, your past post-mortems, your risk tolerance, or your code invariants. To get useful work done, you are forced to pay an **Amnesia Tax**—spending 10 minutes writing prompt essays explaining your stack and constraints. Worse, platform memory is designed to agree with you faster (sycophancy), not to stress-test your assumptions when stakes are high.
+
+Athena solves this by separating **intelligence** (the rented model) from **state** (your sovereign disk):
+
+| Dimension | Stateless Chatbots (Rented RAM) | Stateful Agent with Athena (Owned Hard Drive) |
+|:---|:---|:---|
+| **Memory & Context** | Amnesiac: starts from zero; 10-minute prompt prep tax | Continuous: `/start` restores active tasks & invariants in <2K tokens |
+| **Response Depth** | Generic median: broad consensus advice & textbook platitudes | Hyper-nuanced: conditioned on your real stack, balance sheet, & past post-mortems |
+| **Alignment & Rigor** | Sycophantic: agrees with whatever you say, validating bad ideas | Governed: Law #1 blocks ruin; consigliere flags repeated blind spots |
+| **Data Sovereignty** | Vendor lock-in: cloud database fees, wiped on API deprecation | 100% Sovereign: local Git-tracked Markdown & SQLite on your machine |
+| **Model Agility** | Trapped in one chat platform | Portable: switch between Claude Code, Antigravity, Gemini, or Ollama instantly |
 
 Athena moves the **memory, problem-framing, and decision layer to your machine**: plain Markdown and JSONL ledgers that you own, git-version, and mount into any IDE. The model is just whoever's on shift.
 
@@ -82,7 +94,9 @@ Athena/
 ├── src/athena/          # Core runtime (Memory, Intelligence/GTO, Governance, Lifecycle, Tools)
 ├── tests/               # Comprehensive test suites (unit, integration, red-team)
 ├── scripts/             # Automation, synchronization, and verification harnesses
-├── docs/                # Architecture, guides, API specs, and benchmarks
+├── docs/                # Architecture, guides, wiki sources, roadmap, and API specs
+├── examples/            # Published agent workflows, case studies, protocols, and templates
+├── docker/              # Sandboxed container environments
 ├── data/                # Active datasets and project assets (latest iteration only)
 ├── supabase/            # Database schemas, migrations, and vector functions
 ├── .agent/              # Agent workflows, skills, protocols, and configuration
@@ -119,7 +133,7 @@ Athena is not just a prompt pack — it ships executable Python engines and two 
 | **Quantitative decision screening & wargaming** — EEV, 1/3 Kelly, Ruin, MCDA, 2-turn game trees | ✅ Shipped (`code-available`) | [`gto_engine.py`](src/athena/intelligence/gto_engine.py) & [`wargame.py`](src/athena/intelligence/wargame.py) emit SHA-256 receipts (`107` tests); Stop hook blocks unreceipted numeric engine claims |
 | **Pre-registered problem framing** — VOI stop-rule, `R1–R13` commitment & falsifier gates | ✅ Shipped (`code-available`) | [`frame_ledger.py`](src/athena/intelligence/frame_ledger.py) validates falsifiers, loop budgets, and Brier calibration (`57` tests) |
 | **Governed autonomy** — hooks block destructive commands, ungrounded claims, and secrets | ✅ Shipped (partial) | Ruin check blocks 14/16 destructive commands; 2 shell bypasses are [known and tracked](docs/TECH_DEBT.md) |
-| **Compounding personalization** — session 2,000 recalls session 5 | 🟡 N=1 evidence | 2,100+ sessions, 428 active protocols, and 626 case studies by the author; no multi-user study |
+| **Compounding personalization** — session 2,000 recalls session 5 | 🟡 N=1 evidence | 2,100+ sessions, 428 active protocols, and 627 case studies by the author; no multi-user study |
 | **Anti-sycophancy** — personalization doesn't silently increase agreement | 🟡 Partial mitigation | Code-enforced meta-awareness gate (Claude Code hook); agent-discretion in hookless IDEs — see [honest limits](docs/ENGINEERING_DEPTH.md) |
 
 > **Why publish this table?** Because the failure mode of this product category is self-mythologizing — describing aspirations in the present tense. Athena's own convention ([Epistemic Status](examples/workflows/_shared.md#epistemic-status-convention-anti-self-mythologizing)) requires labeling every mechanism as `code-enforced`, `code-available`, `agent-discretion`, or `aspirational`. This table is that convention applied to the README.

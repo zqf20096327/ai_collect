@@ -1,34 +1,49 @@
 # Construct
 
-**Construct is a tool for AI agents that turns everything that can be found out about a thing into one exact,
+**Construct is a tool for AI agents. It turns everything that can be found out about a thing into one exact,
 checked description of it: its named parts at their real sizes, how they fit together, open and move, and how
-each one is known, measured or guessed.** An agent does the research and writes the description; Construct
-checks it and builds from it, the same description always into the same result. Everything else comes from that
-one description.
+each one is known, measured or guessed.** An agent does the research and writes the description. Construct
+checks it and builds from it, and the same description always gives the same result. Put constructs together and
+they make a **world**: a room, a street, a whole game level. Inside a world every construct is still whole, with
+its own parts, sources and joints, so you can move, reuse or open any of it.
 
-**Describe a thing. Get a hologram, a 3D model, a print and a kit.** You ask any AI agent for a thing
-in plain words, and it builds an animated model of it in lines of light, the **Measured Light** style,
-as one web page you can open anywhere, honest about what is known. The same construct becomes a 3D
-model with named parts and working joints, a print, a model kit, a CAD file or a film.
+**Describe a thing, or show a place. Get a hologram, a 3D model, a print, a kit, or a whole world.** Ask any AI
+agent in plain words and it builds an animated model in lines of light, in the **Measured Light** style. The result
+is a single web page you can open anywhere, and it is honest about what is known. The same construct can also become
+a 3D model with named parts and working joints, a print, a model kit, a CAD file or a film, or one piece of a world
+made with others.
+
+A world can be asked for in plain words, put together from constructs you already have, or made from a single
+picture. Given one picture of a place, it builds the place zero-shot. [Stortorget](examples/worlds/stortorget/),
+Stockholm's old square, was made from a single photograph and stands almost exactly as the photograph shows it.
+[Rain Harbour](examples/worlds/rain-harbour/) is a game level made from one concept picture, ready to open in Godot,
+Unity or Unreal. And a world comes apart again, construct by construct: rearrange it by hand in Hermes, or take any
+one construct out to open, export or reuse on its own.
 
 <p align="center">
   <a href="https://rtmandreyev.github.io/construct/examples/sainte-chapelle/"><img src="docs/media/assembly-sainte-chapelle.gif" width="32%" alt="The Sainte-Chapelle construct assembling itself"></a>
-  <a href="https://rtmandreyev.github.io/construct/examples/duomo-di-milano/"><img src="docs/media/assembly-duomo-di-milano.gif" width="32%" alt="The Duomo di Milano construct assembling itself"></a>
+  <a href="https://rtmandreyev.github.io/construct/examples/kestrel/"><img src="docs/media/assembly-kestrel.gif" width="32%" alt="KESTREL, an invented ice tug, assembling itself, its cradle arms opening and radiator wings folding"></a>
   <a href="https://rtmandreyev.github.io/construct/examples/toyota-land-cruiser-fj62/"><img src="docs/media/assembly-toyota-land-cruiser-fj62.gif" width="32%" alt="The Toyota Land Cruiser FJ62 construct assembling itself"></a>
 </p>
 <p align="center">
-  <a href="https://rtmandreyev.github.io/construct/examples/kestrel/"><img src="docs/media/assembly-kestrel.gif" width="32%" alt="KESTREL, an invented ice tug, assembling itself, its cradle arms opening and radiator wings folding"></a>
-  <a href="https://rtmandreyev.github.io/construct/examples/tompion-year-going-clock/"><img src="docs/media/assembly-tompion-year-going-clock.gif" width="32%" alt="Tompion's year-going longcase clock construct assembling itself, its hood and trunk doors opening"></a>
-  <a href="https://rtmandreyev.github.io/construct/examples/volkswagen-t1-samba/"><img src="docs/media/assembly-volkswagen-t1-samba.gif" width="32%" alt="The Volkswagen T1 Samba construct assembling itself"></a>
+  <a href="https://rtmandreyev.github.io/construct/worlds/rain-harbour/"><img src="docs/media/world-rain-harbour.gif" width="32%" alt="Rain Harbour assembling as a world: the towers of a night street, its neon signs in English and Chinese, then the hero car"></a>
+  <a href="https://rtmandreyev.github.io/construct/worlds/the-shed/"><img src="docs/media/world-shed.gif" width="32%" alt="The shed and the things around it assembling as a world: the shed with its deck and log store, the VW T1 Samba and the Vespa"></a>
+  <a href="https://rtmandreyev.github.io/construct/worlds/stortorget/"><img src="docs/media/world-stortorget.gif" width="32%" alt="Stortorget assembling as a world from the photograph's viewpoint: the gabled houses, the Christmas tree, the lamp and the rows of market stalls"></a>
 </p>
-<p align="center"><sub><b>Constructs.</b> Sainte-Chapelle · Duomo di Milano · Toyota Land Cruiser FJ62 · KESTREL, an invented ice tug · Tompion's year-going clock · Volkswagen T1 Samba, each built in masterpiece mode, by Claude Opus 5.5, KESTREL by GPT-6.1 Sol and the clock by DeepSeek V4.1 Flash. <a href="https://rtmandreyev.github.io/construct/">Open the gallery</a> to orbit them, replay the assembly and read the labels; <a href="docs/for/invent-from-what-exists.md">how KESTREL was made</a>, step by step.</sub></p>
+<p align="center"><sub><b>Constructs</b> (top): the Sainte-Chapelle and the Toyota Land Cruiser FJ62 by Claude Opus 5.5, KESTREL, an
+invented ice tug, by GPT-6.1 Sol, each in masterpiece mode. <b>Worlds</b> (below): Rain Harbour, a game level, and Stortorget at
+Christmas, each made by GPT-6.1 Sol from one picture; the shed and the things around it, made of constructs from the
+gallery. <a href="https://rtmandreyev.github.io/construct/">Open the gallery</a> to orbit them, replay the
+assembly and read the labels; <a href="docs/for/invent-from-what-exists.md">how KESTREL was made</a>,
+<a href="examples/worlds/stortorget/">how Stortorget was made</a>.</sub></p>
 
-- **Construct for Hermes.** A native Hermes plugin: ask for a thing in plain words and the construct appears live in the chat, with its 3D model, kit and NetLogo runs beside it. `hermes plugins install rtmandreyev/construct#hermes/construct` ([what it does](hosts/hermes/construct/README.md), [Villa Savoye in Hermes, step by step](docs/for/hermes-walkthrough.md)).
+- **Construct for Hermes.** A native Hermes plugin. Ask for a thing in plain words and the construct appears live in the chat, with its 3D model, kit and NetLogo runs beside it. You can also place your constructs together into worlds. `hermes plugins install rtmandreyev/construct#hermes/construct` ([what it does](hosts/hermes/construct/README.md), [Villa Savoye in Hermes, step by step](docs/for/hermes-walkthrough.md), [worlds, step by step](docs/for/worlds-walkthrough.md)).
+- **Every piece stays separate.** In a world made from one picture you can still handle each construct on its own: move a car, turn a tower, swap the signs, open a door on its hinge, export it to Blender or Godot, or reuse a building in another level ([Rain Harbour, before and after](examples/worlds/rain-harbour/#changed-by-hand)).
 - **Any agent, any model.** Claude Code, Hermes, any MCP client or any OpenAI-compatible endpoint, or by hand.
-- **Honest about what is known.** Every part says how it is known, its size and its shape apart, every guess in a shade of how firmly it is held.
+- **Honest about what is known.** Every part says how it is known, for its size and its shape separately, and every guess is shown in a shade of how firmly it is held. [What each mark means](docs/PROVENANCE.md).
 - **One house style.** Models never choose the colours, so every construct looks like it belongs with the rest.
 - **It repairs itself.** Every problem comes back with where it is and how to fix it.
-- **Nothing to install.** Python's standard library and a browser; no API keys or network service inside Construct.
+- **Nothing to install.** It needs only Python's standard library and a browser. There are no API keys and no network service inside Construct.
 
 ## Find your path
 
@@ -40,18 +55,43 @@ model with named parts and working joints, a print, a model kit, a CAD file or a
 | are planning a change to your **home or garden** | Your shed, room or garden as a model to try the change on first: a deck, shelves, an extension, a new layout. A planning model, not a survey | [Try it on a copy](docs/for/home-and-garden.md) |
 | want to customise or restore a **vehicle** | Your car, bike or scooter from its published sizes and your photos, your parts told apart from the factory's: try wheels or a new colour, plan a restoration, make a model of it | [Your vehicle](docs/for/your-vehicle.md) |
 | need a part that is **missing or broken** | A knob, bracket or cover drawn to the thing it fits, as a print or a CAD file someone can make | [Make the part](docs/for/replace-a-part.md) |
+| want **a place from a photo**: a square, a street, a building, your neighbourhood | One photograph is enough to start (Stortorget, from one); more pictures make it closer, up to a digital twin, house by house, each part saying how it is known | [Stortorget, start to finish](examples/worlds/stortorget/) |
+| want **your things together in one place** | Your house with your furniture, your car and scooter under it, a ship over the roof: whole constructs placed at real size, arranged by asking or by hand | [Worlds, step by step](docs/for/worlds-walkthrough.md) |
 | want a **model kit of your own thing** | Your scooter, house or guitar as a kit to print, glue and paint, with a booklet ([one to open](https://rtmandreyev.github.io/construct/examples/vespa-gs150/kit/assembly.html)) | [A kit of your own](docs/for/a-kit-of-your-own.md) |
 | want to **show someone what you mean** | A model a builder, a fabricator or a friend can turn and measure, and a file for their own tools | [Show what you mean](docs/for/show-what-you-mean.md) |
 | ***Professionals and creators*** | | |
-| are a **maker** | A print at your printer's largest size, a model kit with plates and a booklet ([five to try](https://rtmandreyev.github.io/construct/#kits)), true CAD shapes | [Print, kit, CAD](docs/for/makers.md) |
-| create **new ships, creatures or worlds** for a game, film or story | New things designed from real ones: a construct, a 3D model with working parts, a film ([see KESTREL](https://rtmandreyev.github.io/construct/examples/kestrel/), an invented ice tug) | [New things from real ones](docs/for/invent-from-what-exists.md) |
+| are a **maker** with a printer or CAD | A construct as one checked print at your printer's largest size (Tompion's clock: 21 cm on a desktop printer, 10½ hours in PrusaSlicer), a model kit with plates, a booklet and its steps in 3D ([five to open](https://rtmandreyev.github.io/construct/#kits)), and true CAD shapes in FreeCAD and STEP | [Print, kit, CAD](docs/for/makers.md) |
+| create **new ships, creatures or places** for a game, film or story | New things designed from real ones: a construct, a 3D model with working parts, a film ([see KESTREL](https://rtmandreyev.github.io/construct/examples/kestrel/), an invented ice tug) | [New things from real ones](docs/for/invent-from-what-exists.md) |
 | have **software or a documented system** you wish were a physical product | Its documented functions mapped to controls, displays and the parts inside, what the documents fix kept apart from what is designed (one worked example: a software synthesizer as a 61-key instrument) | [Documentation → product](docs/for/documentation-to-product.md) |
-| are a **game developer** | Props with named parts, real sizes and working joints, for Godot, Unity or Unreal | [Into a game engine](docs/for/game-developers.md) |
-| are a **3D artist** | A construct in Blender with its build, joints and finish on sliders, ready to render or model over | [Into Blender](docs/for/3d-artists.md) |
-| work in **film and motion** | A construct that assembles across a piece of music, as a video | [Film mode](docs/for/film-and-motion.md) |
+| are a **game developer** | Props in named parts at their real size, with doors and lids on working hinges in Godot, FBX for Unity and Unreal; models of what your game needs instead of stock ones; a whole level from one concept picture ([Rain Harbour](examples/worlds/rain-harbour/): 21 constructs placed 50 times, a hero car, one command to a Godot map) | [Into a game engine](docs/for/game-developers.md) |
+| are a **3D artist** | A construct or a whole world in Blender with its build, joints, metal and finish on sliders, painted from a small material map ([the Villa Savoye](examples/villa-savoye/), 396 parts, and [the Villa lived in](https://rtmandreyev.github.io/construct/worlds/villa-savoye-lived-in/), a world of 13, rendered in Cycles); OBJ in quads to model over; FBX and USD | [Into Blender](docs/for/3d-artists.md) |
+| work in **film and motion** | A construct that assembles across your track, pausing, surging and flaring with the music, shimmering with a vocal stem ([three films](https://rtmandreyev.github.io/construct/#films)); keyed reveals in Blender; a world's named views as shots | [Film mode](docs/for/film-and-motion.md) |
 | are an **educator or researcher** | An agent-based model's run drawn as a construct, compared, printed, filmed | [Models come alive](docs/for/educators-and-researchers.md) |
-| work in a **museum or archive** | Reconstructions that say how each part is known, so a visitor can tell evidence from design | [Honest reconstructions](docs/for/museums-and-archives.md) |
-| are a **developer** | A scene contract, a command line, an MCP server and skills to build on | [Build on it](docs/for/developers.md) |
+| work in a **museum or archive** | Reconstructions where every part says how it is known (measured, traced, seen in a photo, designed), sources cited and the critic's verdict kept: [Tompion's clock](https://rtmandreyev.github.io/construct/examples/tompion-year-going-clock/) from the Royal Collection's record, [Stortorget](examples/worlds/stortorget/) house by house | [Honest reconstructions](docs/for/museums-and-archives.md) |
+| are a **developer** | A scene contract that is data, a check that returns each problem with its path and a fix, the same scene always built the same; a command line, an MCP server, skills, and a Hermes plugin with thirteen tools (`construct_world`, `construct_export`…) | [Build on it](docs/for/developers.md) |
+
+## New in 1.3
+
+Every change with pictures and the commands to try it: **[What's new in 1.3, a walkthrough](docs/NEW-IN-1.3.md)**.
+
+- **Worlds.** Whole constructs placed together in one scene, each keeping its own parts. Put your chair, clock and
+  synthesizer in your house, your cars under it and a ship over the roof, or build a street, a market square or a game
+  level. The world's audit says what overlaps, what runs into the house it stands in, and what stands where a door
+  opens. Six worlds ship to start from. [Worlds, step by step](docs/for/worlds-walkthrough.md) · [the format](docs/WORLDS.md)
+- **A world from a picture, in masterpiece mode.** Attach a photo or a concept picture. Hermes plans the pieces,
+  builds each new construct in its own masterpiece rounds with a fresh critic and places them at real size. Then it
+  runs the world itself through rounds against the picture. Two worlds were made this way, each from one picture:
+  [Rain Harbour](examples/worlds/rain-harbour/), a game level, and [Stortorget](examples/worlds/stortorget/),
+  Stockholm's old square at Christmas.
+- **Arranged by hand in Hermes.** Use Arrange on a world's card to drag a construct onto any floor, table or roof,
+  turn it or lift it, add one from the library, and save, all without calling a model. There is a Worlds tab, with
+  groups of your own and previews. The plugin ships 24 constructs (16 in 1.2.1) and all six worlds, the two from pictures with their artwork. A level
+  made from one prompt can be remade by hand: [Rain Harbour, before and after](examples/worlds/rain-harbour/#changed-by-hand).
+- **More ways out.** FBX, USD and USDZ (through Blender); a Godot game map, where everything that stays put is one
+  static body and every hinged or sliding part moves on its own joint; and the Blender add-on imports a world. Every construct now finishes with its own material map, which every export uses by
+  default, and its artwork (signs, labels, screens) exports as textures in glTF and OBJ.
+- **Sturdier masterpiece rounds**, from two long runs: ties recorded, artwork kept in checkpoints, references
+  carried from round to round, more time on request (`rounds extend`), colour judged in the solid view.
 
 ## New in 1.2
 
@@ -105,12 +145,36 @@ And one construct taken through all of it, step by step: **[A longcase clock, en
 
 ## Examples
 
-**Provenance and solids.** The Duomo di Milano in provenance shades (**P**): verified sizes in cyan, traced shapes in blue,
-every guess a deeper amber the more firmly it is held; and the same Duomo as a solid (**S**), as a modelling program shows it. [Museums and archives →](docs/for/museums-and-archives.md)
+**Worlds.** Rain Harbour and Stortorget were each made in Hermes from one picture and one request, zero-shot. Rain
+Harbour is a game level from a concept picture: 21 constructs placed 50 times, every sign in real English and
+Chinese, and a drivable hero car. Stortorget comes from one photograph of Stockholm's old square: eight real houses
+researched one by one, one market stall placed 41 times, and the tree, all standing almost exactly as the photograph
+shows them. The Villa Savoye, lived in, is made of your own constructs: the house with its furniture, a Braun, a
+Revox, a Leica, SERUM, an FJ62 and a DB5 under the pilotis, and KESTREL far off over the roof. [Worlds, step by step →](docs/for/worlds-walkthrough.md)
+
+<p align="center">
+  <a href="examples/worlds/rain-harbour/"><img src="examples/worlds/rain-harbour/blender-street.jpg" width="98%" alt="Rain Harbour in Blender at night: a wet street between towers, neon signs in English and Chinese reflected in the road, the yellow hero car"></a>
+</p>
+<p align="center">
+  <a href="examples/worlds/stortorget/"><img src="examples/worlds/stortorget/reference.jpg" width="49%" alt="The photograph Stortorget was made from: the red and orange gabled houses over rows of red Christmas market stalls and a tall spruce"></a>
+  <a href="examples/worlds/stortorget/"><img src="examples/worlds/stortorget/blender-photo.jpg" width="49%" alt="Stortorget made from that photograph, in Blender at dusk: the same houses, stalls and spruce from the same place"></a>
+</p>
+<p align="center"><sub>Left, the one photograph Stortorget was asked from (Ximonic, CC BY-SA 4.0); right, the world made from
+it, rendered from the same place.</sub></p>
+<p align="center">
+  <a href="https://rtmandreyev.github.io/construct/worlds/villa-savoye-lived-in/"><img src="docs/media/worlds/blender-villa-dusk.jpg" width="49%" alt="The Villa Savoye, lived in, in Blender at dusk: the Land Cruiser and the DB5 under its pilotis, KESTREL high over the roof"></a>
+  <a href="https://rtmandreyev.github.io/construct/worlds/villa-savoye-lived-in/"><img src="docs/media/worlds/blender-villa-table.jpg" width="49%" alt="Inside the Villa: a Revox A77, a Braun SK 4 and a Leica M3 on a table in the salon"></a>
+</p>
+<p align="center"><sub>Every world as it ships, imported into Blender with Construct's add-on, each construct finished
+with its own material map.</sub></p>
+
+**Provenance and solids.** On the left, the Duomo di Milano in provenance shades (**P**): verified sizes in cyan, traced
+shapes in blue, and every guess a deeper amber the more firmly it is held. On the right, the same Duomo as a solid (**S**),
+the way a modelling program shows it. [Museums and archives →](docs/for/museums-and-archives.md)
 
 <p align="center">
   <img src="docs/media/provenance-shades-duomo.jpg" width="49%" alt="The Duomo di Milano in the provenance view: verified sizes in cyan, traced parts in blue, inferred parts in shades of amber, with the legend counting each">
-  <img src="docs/media/solid-duomo.jpg" width="49%" alt="The Duomo di Milano as a solid, from the same view">
+  <img src="docs/media/solid-duomo.jpg" width="49%" alt="The Duomo di Milano as a solid in its marble, the Madonnina gilded, from the same view">
 </p>
 
 **Film mode.** A construct assembling across a piece of music. [Film and motion →](docs/for/film-and-motion.md)
@@ -121,7 +185,7 @@ every guess a deeper amber the more firmly it is held; and the same Duomo as a s
   <a href="https://rtmandreyev.github.io/construct/films/arecibo-observatory/"><img src="docs/media/film-arecibo-observatory.gif" width="32%" alt="The Arecibo Observatory assembling across a piece of music"></a>
 </p>
 
-**Game engines and Blender.** The FJ62 in Godot, knocked apart into its pieces; and from light to a finished model. [Game developers →](docs/for/game-developers.md) · [3D artists →](docs/for/3d-artists.md)
+**Game engines and Blender.** The FJ62 in Godot, knocked apart into its pieces, and the same car going from light to a finished model. [Game developers →](docs/for/game-developers.md) · [3D artists →](docs/for/3d-artists.md)
 
 <p align="center">
   <img src="docs/media/godot-fj62-pieces.gif" width="49%" alt="The Toyota Land Cruiser FJ62 in Godot, falling apart into its pieces and settling">
@@ -201,7 +265,7 @@ models never choose its colours, is in **[The Measured Light style](docs/STYLE.m
 
 ## Install
 
-Construct runs from a copy of this repository; there is nothing to install system-wide. Clone it
+Construct runs from a copy of this repository. There is nothing to install system-wide. Clone it
 and build the skills for your agent:
 
 ```sh
@@ -215,7 +279,7 @@ Then add the skill to your agent, or use Construct directly:
 | Host | How to add it |
 | --- | --- |
 | Claude Code | `claude --plugin-dir dist/claude-code/construct` for one session, or copy `dist/claude-code/construct/skills/construct` into `.claude/skills/` |
-| Hermes, the plugin | `hermes plugins install rtmandreyev/construct#hermes/construct`: twelve tools, the construct live in the chat, 3D models, kits and NetLogo runs in Hermes Desktop ([Construct for Hermes](hosts/hermes/construct/README.md)) |
+| Hermes, the plugin | `hermes plugins install rtmandreyev/construct#hermes/construct`: thirteen tools, the construct live in the chat, worlds, 3D models, kits and NetLogo runs in Hermes Desktop ([Construct for Hermes](hosts/hermes/construct/README.md)) |
 | Hermes, the skill alone | `hermes skills install rtmandreyev/construct/skills/construct`, or copy `dist/hermes/construct` into `~/.hermes/skills/` |
 | Any MCP client | Add `{"mcpServers": {"construct": {"command": "python3", "args": ["/path/to/construct/construct_hologram/server.py"]}}}` |
 | Any OpenAI-compatible model | `python3 construct_hologram/cli.py author "..." --base-url ... --model ... --key-env ... --out scene.json` |
@@ -224,8 +288,8 @@ Then add the skill to your agent, or use Construct directly:
 
 ## Quick start
 
-**In the Claude or ChatGPT app, no terminal.** Download Construct, give the app its folder and your photos, and ask:
-the Claude app's Cowork and the ChatGPT app's Codex both read the skill and build the construct for you.
+**In the Claude or ChatGPT app, no terminal.** Download Construct, give the app its folder and your photos, and ask.
+The Claude app's Cowork and the ChatGPT app's Codex both read the skill and build the construct for you.
 [Construct in the Claude or ChatGPT app →](docs/for/in-the-apps.md)
 
 **In your agent,** just ask in plain words: *"a masterpiece of the Sydney Opera House"*, or *"a masterpiece
@@ -259,10 +323,10 @@ the skill picks one and tells you why before it starts.
 | **timeboxed** | Masterpiece in 2 hours in all: the critic's time counts too | Two rounds without a win, 12 rounds, or 2 hours in all | Up to 2 hours, fewer rounds when the critic is slow | When you want masterpiece done within two hours |
 | **unbounded** | The same rounds, with no cap and no time limit | Only after two rounds without a win | Many rounds and hours, a high token cost | Only when you ask for it by name |
 
-Masterpiece's two hours count only the agent's own work; the critic's turns come on top, so a
+Masterpiece's two hours count only the agent's own work. The critic's turns come on top, so a
 run with a slow critic can take three hours or more. **timeboxed** stops at two hours in all. The
-skill never picks timeboxed or unbounded on its own: the critic finds an improvement almost every round,
-so it can run for hours. Every round is reported, so you can stop it whenever you like.
+skill never picks timeboxed or unbounded on its own, because the critic finds an improvement almost every
+round, so a run can go on for hours. Every round is reported, so you can stop it whenever you like.
 
 ## Models
 
@@ -273,7 +337,11 @@ evaluation runs:
   (tested: GPT-6.1 Sol, Claude Opus 5.5). A smaller model given such a subject says so and
   recommends them.
 - **Simpler objects in fast mode:** DeepSeek V4.1 Flash does as well as those on objects such as a
-  tape deck, a watch or a camera.
+  tape deck, a watch or a camera (a toy xylophone with its own finish map: about nine minutes).
+- **Worlds:** placing and arranging works with any of the models above. A world from a picture in
+  masterpiece mode is long work for a strong model: Rain Harbour and Stortorget were each about a day
+  of GPT-6.1 Sol, every construct built by its own subagent. Say "fast" for one pass each. Worlds were
+  also tested in Hermes Desktop with DeepSeek V4 Pro.
 - **Small models** (tested: MiniMax M3.1 Flash, Thinking Machines Inkling, NVIDIA Nemotron 3.5
   Super VL) are not recommended: in about half of their runs they did not save a scene, and they
   made scale errors.
@@ -288,13 +356,20 @@ Construct is deliberately small. You need:
 - For the Blender add-on, Blender 4.2 or newer (the film of a run: checked in Blender 5.2); for the
   NetLogo bridge, NetLogo 6 or 7 (the extension: NetLogo 7, and NetLogo 3D 7).
 - For CAD, FreeCAD 1.0 or newer (STEP needs nothing more); for game engines, any glTF 2.0 importer
-  (glued joints: tested in Godot 4.7).
+  (glued joints and worlds as game maps: tested in Godot 4.7). FBX and USD come through Blender.
+- For Hermes, the Construct plugin needs Hermes 0.22 or newer; a world from a picture in masterpiece
+  mode needs `delegation.max_spawn_depth: 2` in Hermes's config (an orchestrator subagent per
+  construct).
 - Tested on macOS; review capture on Linux and Windows is untested.
 
 ## Documentation
 
 | If you want to… | read |
 | --- | --- |
+| see everything new in 1.3, the worlds one by one | [What's new in 1.3](docs/NEW-IN-1.3.md) |
+| make a world, in Hermes or by hand, and the format | [Worlds, step by step](docs/for/worlds-walkthrough.md) and [Worlds](docs/WORLDS.md) |
+| see how a world was made from one picture | [Rain Harbour](examples/worlds/rain-harbour/) and [Stortorget](examples/worlds/stortorget/) |
+| use constructs and whole levels in a game | [Construct for game developers](docs/for/game-developers.md) |
 | see everything new in 1.2, with examples | [What's new in 1.2](docs/NEW-IN-1.2.md) |
 | see everything new in 1.1, with examples | [What's new in 1.1](docs/NEW-IN-1.1.md) |
 | see how a construct is made, step by step | [How a construct is made](docs/HOW-IT-IS-MADE.md) |
@@ -304,7 +379,7 @@ Construct is deliberately small. You need:
 | start from a ready-made template (a book, a CD, a guitar, a car) | [Archetypes](docs/ARCHETYPES.md) |
 | make mountains, routes and planets from real elevation data | [Terrain](docs/TERRAIN.md) |
 | turn a construct into a film with music | [Film mode](docs/FILM.md) |
-| export a 3D model, plain or finished | [3D export](docs/EXPORT.md) and the [Blender add-on](hosts/blender/README.md) |
+| export a 3D model or a world, plain or finished from its own material map | [3D export](docs/EXPORT.md) and the [Blender add-on](hosts/blender/README.md) |
 | print it, or make it a model kit | [3D printing and kits](docs/PRINTING.md) |
 | open it in CAD | [FreeCAD and STEP](docs/FREECAD.md) |
 | put it in a game engine | [Godot](docs/GODOT.md) |
@@ -318,7 +393,7 @@ Construct is deliberately small. You need:
 | design a physical product from a system's documentation | [Documentation → product](docs/for/documentation-to-product.md) |
 | see how reconstructing, modifying and inventing are one pipeline | [The design-freedom continuum](docs/for/documentation-to-product.md#the-design-freedom-continuum) |
 | know where the method comes from | [About](docs/ABOUT.md) |
-| see what changed | [CHANGELOG.md](CHANGELOG.md) and the [1.2.0](docs/releases/v1.2.0.md), [1.1.0](docs/releases/v1.1.0.md) and [1.0.0](docs/releases/v1.0.0.md) release notes |
+| see what changed | [CHANGELOG.md](CHANGELOG.md) and the [1.3.0](docs/releases/v1.3.0.md), [1.2.0](docs/releases/v1.2.0.md), [1.1.0](docs/releases/v1.1.0.md) and [1.0.0](docs/releases/v1.0.0.md) release notes |
 
 The full index is in [docs/README.md](docs/README.md).
 
@@ -334,7 +409,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Run the tests with
 (`examples/netlogo-*`: [viral marketing](examples/netlogo-viral-marketing/), [flocking](examples/netlogo-flocking/),
 [wolf sheep](examples/netlogo-wolf-sheep/), [fire](examples/netlogo-fire/), [fireflies](examples/netlogo-fireflies/),
 [virus on a network](examples/netlogo-virus-on-a-network/) and [virus compare](examples/netlogo-virus-compare/)) derive from Uri
-Wilensky's NetLogo models and are under CC BY-NC-SA 3.0 instead (see each LICENSE). The [Blender
+Wilensky's NetLogo models and are under CC BY-NC-SA 3.0 instead (see each LICENSE). The
+[Stortorget](examples/worlds/stortorget/) world, made from a CC BY-SA 4.0 photograph that it includes, is under CC BY-SA
+4.0 (see its [LICENSE](examples/worlds/stortorget/LICENSE)). The [Blender
 add-on](hosts/blender/) is under GPL-3.0-or-later, as Blender's extensions platform requires; what
 you make with it is yours.
 

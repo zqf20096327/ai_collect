@@ -20,7 +20,7 @@
   <a href="https://registry.modelcontextprotocol.io/v0/servers?search=turbo-quant-memory"><img alt="MCP Registry" src="https://img.shields.io/badge/MCP%20Registry-listed-6f42c1.svg"></a>
   <img alt="Python 3.11+" src="https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue.svg">
   <a href="https://github.com/Lexus2016/turbo_quant_memory/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Lexus2016/turbo_quant_memory/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="MCP tools" src="https://img.shields.io/badge/MCP-24%20tools-green.svg">
+  <img alt="MCP tools" src="https://img.shields.io/badge/MCP-29%20tools-green.svg">
   <img alt="Local-first" src="https://img.shields.io/badge/data-100%25%20local-success.svg">
 </p>
 
@@ -145,12 +145,33 @@ If you run more than one agent in the same working tree, tqmemory connects them 
 
 This is partial protection, not a guarantee that every change is saved. It does not block writes: two agents can still overwrite each other's work, and tqmemory can only show it and help you recover. Agents that never call tqmemory see nothing. It works on one computer only. To turn it off, set `TQMEMORY_WORKSPACE_DISABLE=1`.
 
-## The 24 MCP tools
+## Reuse one project's memory from another folder
+
+For a temporary choice without a folder binding, call `list_projects()` and then `select_project(project_id="<id>")`. The current MCP connection uses that project's memory immediately. `select_project()` resets to automatic detection. Selection does not rewrite the project's original root or index local files. An explicit `TQMEMORY_PROJECT_ID` must not conflict with the selected ID.
+
+`list_projects()` shows saved project IDs, names, display labels, original roots, and bound folders. The terminal equivalent is `turbo-memory-mcp projects`. To use an existing project's memory from a new folder, call `bind_project(project_id="<id>", path="/absolute/new/folder")`. The binding persists locally, and the current MCP connection switches to that folder immediately. `server_info()` confirms the resolved project. `set_project_labels(project_id, labels=[...])` changes display labels; labels never determine identity. `unbind_project(path="/absolute/new/folder")` removes the exact binding.
+
+Only existing project IDs can be bound. A binding does not index files in the new folder; call `index_paths` separately when you want that. Bindings are exact folders, so a nested repository is not silently captured. If a folder is replaced or its recorded Git origin changes, access fails until you explicitly rebind it. An explicit `TQMEMORY_PROJECT_ID` environment override still takes precedence.
+
+Memory calls follow the selected folder; `workspace_status`, `file_history`, and `restore_file` still describe the MCP process's original working tree.
+
+When restoring a storage snapshot on another machine, project notes, global notes, labels, and encrypted secrets move with the storage root. Local folder bindings contain the old machine's absolute paths; use `select_project` by ID and rebind folders on the new machine when needed. The secrets vault also requires its original passphrase or keyring key.
+
+## Automatic index maintenance
+
+The primary storage-owning MCP process checks retrieval indexes immediately after startup and every six hours while it runs. It optimizes tables that have unindexed full-text rows or versions older than seven days. Work runs in the background under each project's in-process write lock; requests for that project may briefly receive a busy response while optimization holds the lock. Independent standalone or CLI writers are not covered by this lock; an optimization conflict is logged and retried on a later pass. Proxy clients and uncoordinated standalone fallback processes do not run maintenance. The source Markdown and canonical JSON notes are not changed. `turbo-memory-mcp index-status` reports table size, version age, and full-text coverage without modifying data.
+
+LanceDB keeps recent versions for seven days, so optimization can temporarily increase disk use on an active table. Do not delete LanceDB files manually. If an older MCP process still owns the storage, restart its clients so the new process can become the owner and start maintenance.
+
+The first full sync of a legacy table re-embeds its rows once. Later full syncs skip unchanged rows while the embedding model, backend, and backend version remain the same. Changing any of these rebuilds the vectors on the next full sync; scheduled maintenance alone does not re-embed them.
+
+## The 29 MCP tools
 
 | Group | Tools |
 | :--- | :--- |
 | Write | `remember_note` · `deprecate_note` · `promote_note` · `index_paths` |
-| Read | `semantic_search` · `hydrate` · `recent_context` · `list_scopes` |
+| Read | `semantic_search` · `hydrate` · `recent_context` · `list_scopes` · `list_projects` |
+| Projects | `select_project` · `set_project_labels` · `bind_project` · `unbind_project` |
 | Graph | `link_entities` · `unlink_entities` · `get_related_entities` |
 | Hygiene | `lint_knowledge_base` · `health` · `self_test` · `server_info` |
 | Vault | `set_secret` · `get_secret` · `list_secrets` · `delete_secret` |

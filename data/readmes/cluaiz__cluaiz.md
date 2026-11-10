@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Cluaiz" src="assets/logo.png" width="30%">
+  <img alt="Cluaiz" src="assets/logo.webp" width="30%">
 </p>
 
 <h3 align="center">
@@ -66,6 +66,10 @@ powershell -c "irm https://cluaiz.com/install.ps1 | iex"
 curl -fsSL https://cluaiz.com/install.sh | bash
 ```
 
+Supported systems: Windows 10 / 11 x64; Linux x64 or ARM64 with glibc 2.39 or newer (Ubuntu 24.04, Debian 13,
+Fedora 40 or newer; Ubuntu 22.04 and Debian 12 are not supported yet); macOS 14 or newer on Apple Silicon (M1 or
+newer). Intel Macs and Windows on ARM are not supported yet.
+
 Update later with `cluaiz self update` (models and settings stay); remove everything with `cluaiz self uninstall`
 (`--keep-models` keeps the models).
 
@@ -123,6 +127,12 @@ from `permission.json` (`cluaiz permission port <n>`).
 
 Families and the models tested with each are listed in [`RELEASE.md`](RELEASE.md).
 
+**Model providers.** Models of an OpenAI-compatible API can be added in `providers.json` (`cluaiz provider add`, or
+the CEP `providers.*` methods) and used as `<provider>/<model>` beside the installed models: chat, embeddings,
+text-to-speech and speech-to-text. A provider's chat model runs through the Engine's own chat, so memory, Engine
+tools, context planning and attachments work with it; load settings do not apply. Keys are read from the
+environment or `config/.env` and are never returned in full. See [`docs/engine/providers.md`](docs/engine/providers.md).
+
 ### Documents and ingest
 
 `POST /v1/ingest` and `cluaiz ingest <file>` turn documents and images into text, chunks or vectors. A model is
@@ -175,8 +185,8 @@ Not included yet: the OCR pack and a persistent vector index. Details:
 | `POST /v1/embeddings` | Text and image embeddings |
 | `POST /v1/audio/speech`, `POST /v1/audio/transcriptions` | Text-to-speech, speech-to-text |
 | `POST /v1/ingest` | Document to text or vectors |
-| `GET /v1/models`, `GET /api/tags`, `POST /api/pull` | Installed models, downloads |
-| `POST /v1/cep`, `POST /mcp`, `cluaiz mcp-server` | CEP methods: system, settings, models, files, tools, chat memory, approvals, tasks |
+| `GET /v1/models`, `GET /api/tags`, `POST /api/pull` | Installed models (and providers' models in `/v1/models`), downloads |
+| `POST /v1/cep`, `POST /mcp`, `cluaiz mcp-server` | CEP methods: system, settings, models, model providers, files, tools, chat memory, approvals, tasks |
 | `cep_call` / `cep_free` (C ABI) | The same CEP messages for apps that embed the engine |
 
 Reference: [`docs/api/README.md`](docs/api/README.md) and [`docs/api/cep/README.md`](docs/api/cep/README.md).
@@ -200,6 +210,8 @@ Reference: [`docs/api/README.md`](docs/api/README.md) and [`docs/api/cep/README.
 | `cluaiz run <model> ["prompt"]` | Chat in the terminal, or answer one prompt ([guide](docs/cmd/chat.md)) |
 | `cluaiz agent ["task"]` | Coding agent in a folder: reads, searches, edits files, runs commands; asks before changes ([guide](docs/cmd/agent.md)) |
 | `cluaiz pull`, `list`, `rm`, `show` | Download, list, remove, inspect models (with the plan) |
+| `cluaiz model set-chat`, `set-vector` | The default chat and embedding models |
+| `cluaiz provider add`, `list`, `models`, `test`, `remove` | Models of an OpenAI-compatible API, used as `<provider>/<model>` ([guide](docs/engine/providers.md)) |
 | `cluaiz serve`, `ps` | Start the API server; show the loaded model |
 | `cluaiz bench <model>` | Prompt and generation speed (llama-bench) |
 | `cluaiz status`, `calibrate` | The hardware the planner sees; re-scan after a hardware change |
@@ -218,10 +230,10 @@ What release v0.1.0 ships (core + GPU packs, chosen by the installer) and where 
 | :--- | :--- | :--- | :--- |
 | **NVIDIA GPU**, Windows | CUDA 12 / CUDA 13 | `win-x64` core + `llama-cuda12` / `llama-cuda13` | ✅ RTX 3050 Laptop 4 GB, Windows 11 (CUDA 13) |
 | **NVIDIA GPU**, Linux | CUDA 12 / CUDA 13 | `linux-x64` core + `llama-cuda12` / `llama-cuda13` | ✅ Tesla T4 16 GB, Ubuntu 24.04 (CUDA 12 pack, driver 580) |
-| **AMD Radeon / Intel Arc**, Windows and Linux | Vulkan | core + `llama-vulkan` | 🧪 Built, not yet run on this hardware |
-| **Apple Silicon** (M1 or newer) | Metal (inside the core) | `mac-arm64` core | ⚠️ M5, 16 GB: installs and chats at llama.cpp's speed for the same settings, but auto placement does not use the Metal GPU yet ([run](test/mac/runs/2026-10-28-m5-air-16gb/SUMMARY.md)) |
-| **x86-64 CPU** (SSE4.2 to AVX-512) | CPU, best build picked at start | any core | ✅ Ryzen 7 7435HS (Windows), Xeon 2.3 GHz (Ubuntu) |
-| **ARM64 Linux** | CPU (NEON and newer) | `linux-arm64` core | 🧪 Built, not yet run on hardware |
+| **AMD Radeon RX / Pro, Intel Arc A / B**, Windows and Linux | Vulkan | core + `llama-vulkan` | 🧪 Built, not yet run on this hardware |
+| **Apple Silicon** (M1 or newer), macOS 14 or newer | Metal (inside the core) | `mac-arm64` core | ✅ MacBook Air M5 16 GB: installs and chats at llama.cpp's speed ([run](test/mac/runs/2026-10-28-m5-air-16gb/SUMMARY.md)); macOS 15 (GitHub runner, virtual M1): install, and auto placement on the Metal GPU ([run](test/cloud/runs/2026-11-09-run6-cpu-os-matrix/RESULTS.md)) |
+| **x86-64 CPU** (SSE4.2 to AVX-512) | CPU, best build picked at start | any core | ✅ Ryzen 7 7435HS (Windows 11), Xeon 2.3 GHz (Ubuntu), Xeon Platinum 8488C with AVX-512 / AMX (Ubuntu 24.04, Windows Server 2025, Debian 13, Fedora 42) ([run](test/cloud/runs/2026-11-09-run6-cpu-os-matrix/RESULTS.md)) |
+| **ARM64 Linux** | CPU (NEON and newer) | `linux-arm64` core | ✅ AWS Graviton2 (Neoverse-N1), Ubuntu 24.04 ([run](test/cloud/runs/2026-11-09-run6-cpu-os-matrix/RESULTS.md)) |
 
 ROCm/HIP, OpenVINO, SYCL and CANN builds are not part of the release yet.
 
@@ -348,7 +360,7 @@ Gemma 4 31B 4 vs 4 t/s.
   (GPU, GPU + RAM, CPU) from live hardware measurements.
 - **Backends:** `llama.cpp` (cluaiz fork, linked into the engine) for GGUF models; ONNX Runtime for speech and
   vision models.
-- **Platforms:** Windows x64 (MSVC), Linux x64 / ARM64 (glibc 2.38+), macOS Apple Silicon.
+- **Platforms:** Windows x64 (MSVC), Linux x64 / ARM64 (glibc 2.39+), macOS Apple Silicon.
 - **Delivery:** a CPU core plus optional GPU packs (CUDA 12, CUDA 13, Vulkan); the engine loads the GPU backend
   libraries it finds next to its executable at start.
 
@@ -538,6 +550,7 @@ sequenceDiagram
 | HTTP API | [`docs/api/README.md`](docs/api/README.md) |
 | CEP (engine protocol) | [`docs/api/cep/README.md`](docs/api/cep/README.md) |
 | Model families and formats | [`RELEASE.md`](RELEASE.md) |
+| Model providers (OpenAI-compatible APIs) | [`docs/engine/providers.md`](docs/engine/providers.md) |
 | Platforms and GPU packs | [`docs/deployments/platforms.md`](docs/deployments/platforms.md) |
 | Release workflow | [`docs/deployments/cicd.md`](docs/deployments/cicd.md) |
 | Security and auth | [`docs/architecture/security-and-auth-architecture.md`](docs/architecture/security-and-auth-architecture.md) |

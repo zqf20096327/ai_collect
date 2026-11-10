@@ -184,8 +184,8 @@ Real applications running today, every one of them built with Rullst. Click to e
 <table>
   <tr>
     <td width="50%" align="center" valign="top">
-      <a href="https://rullst-showcase.redpond-24d9228d.eastus.azurecontainerapps.io/"><img src="https://raw.githubusercontent.com/Rullst/Rullst/main/images/readme/demo-showcase.webp" alt="Showcase built with Rullst: SSR, LiveView, Wasm, ORM, billing, security and AI demos" width="100%"></a>
-      <br><b>🌐 Showcase</b> — SSR, LiveView, Wasm, ORM, billing, security and AI demos · <a href="https://rullst-showcase.redpond-24d9228d.eastus.azurecontainerapps.io/">Open ↗</a>
+      <a href="https://rullst-showcase.redpond-24d9228d.eastus.azurecontainerapps.io/"><img src="https://raw.githubusercontent.com/Rullst/Rullst/main/images/readme/demo-showcase.webp" alt="Showcase built with Rullst: SSR, HTMX, ORM, billing, security and AI demos" width="100%"></a>
+      <br><b>🌐 Showcase</b> — SSR, HTMX, ORM, billing, security and AI demos · <a href="https://rullst-showcase.redpond-24d9228d.eastus.azurecontainerapps.io/">Open ↗</a>
     </td>
     <td width="50%" align="center" valign="top">
       <a href="https://rullst-lms.redpond-24d9228d.eastus.azurecontainerapps.io/"><img src="https://raw.githubusercontent.com/Rullst/Rullst/main/images/readme/demo-lms.webp" alt="LMS built with Rullst: course catalog and learning platform" width="100%"></a>
@@ -418,8 +418,9 @@ production data. [Assisted upgrade tutorial](https://rullst.github.io/Rullst/boo
 
 ## 🚀 Versions: v13 is a prerelease
 
-`13.0.0-alpha.4` is the latest v13 prerelease and the 13.0 feature freeze;
-`13.0.0-rc.1` (fixes and documentation only) and then `13.0.0` follow. Cargo
+`13.0.0-alpha.4` is the latest v13 prerelease. `13.0.0-alpha.5`, the 13.0
+feature freeze, then `13.0.0-rc.1` (fixes and documentation only) and
+`13.0.0` follow. Cargo
 never selects a prerelease on its own, so `cargo install cargo-rullst` and
 `cargo add rullst` without a version still pick the end-of-life 12.x. Until
 13.0.0 is released, name the exact version:
@@ -477,7 +478,8 @@ list every change.
   not a certification ([guide](https://rullst.github.io/Rullst/book/security-report.html)).
 - **Efficiency figures (Experimental):** `cargo rullst green` reports measured
   binary and image size, idle memory, dependency count and CPU time per
-  request, each with its method, and a carbon figure only as a labelled SCI
+  request (idle memory and CPU time on Linux only, since they read `/proc`),
+  each with its method, and a carbon figure only as a labelled SCI
   estimate from your own inputs ([guide](https://rullst.github.io/Rullst/book/green.html)).
 - **For AI assistants:** every `--json` output follows one contract with a
   `schema` id, the site publishes `llms.txt` and `llms-full.txt`, and the
@@ -498,11 +500,22 @@ list every change.
 - **Progressive web apps:** `cargo rullst make:pwa` (manifest, service worker,
   offline page), a Google Play Trusted Web Activity configuration and a
   Microsoft Store guide ([guide](https://rullst.github.io/Rullst/book/tutorials/43-progressive-web-apps.html)).
+- **Frontend tools, opt-in:** `rullst::assets::url("app.css")` links static
+  files under a content-hashed name served `immutable`; `cargo rullst add
+  tailwind` sets up Tailwind CSS v4 through its pinned, checksum-verified
+  standalone CLI (no Node.js) in `dev`, `build` and the Dockerfile; `cargo
+  rullst add alpine` vendors Alpine.js's CSP build for client-only state under
+  the strict CSP ([guide](https://rullst.github.io/Rullst/book/frontend.html)).
 - **Studio production monitoring:** a read-only monitoring endpoint, and a
   standalone Studio for remote projects with a project switcher, history and
   alerts ([guide](https://rullst.github.io/Rullst/book/production-monitoring.html)).
 - **OAuth login:** a login challenge store and `cargo rullst make:oauth` for
   Google, GitHub, Microsoft and Apple.
+- **Two-step verification:** `cargo rullst make:mfa` adds authenticator-app
+  setup pages with a QR code, a second sign-in step after the password and
+  provider sign-ins, and a reset command; it and `make:oauth`/`make:privacy`
+  also work with an application's own sign-in through a small
+  [authentication contract](https://rullst.github.io/Rullst/book/cli_reference.html#authentication-contract).
 - **i18n:** translations, CLDR plural rules and number, currency and date
   formatting.
 - **Typed transactions:** `Orm::transaction` returns the error of its closure.
@@ -519,7 +532,7 @@ list every change.
 - **Opt-in candidates:** email login, scoped API tokens, active-session
   management with remote logout, private S3/R2 storage with resumable uploads,
   durable outgoing webhooks and recurring publications, Redis Streams
-  messaging, distributed tracing and a recoverable Live UI are in the 13.0
+  messaging and distributed tracing are in the 13.0
   prereleases behind their own features; each guide states what has been
   validated and what is still open.
 
@@ -548,6 +561,14 @@ list every change.
   notice prints.
 - The LMS, Blog, Portfolio and ERP starters of `cargo rullst new`: they are
   applications in [`examples/`](https://github.com/Rullst/Rullst/tree/main/examples).
+- WebAssembly islands (`#[island]`, `make:island`, `build:client`): the
+  default CSP does not allow browsers to compile WebAssembly. Use htmx and
+  native HTML; `#[server_function]` and its `wasm32` caller remain.
+- Live components (`LiveComponent`, `#[live_component]`, `make:live`,
+  `rullst::live::recovery`): use htmx with `rullst::realtime::RealtimeSse`
+  (Server-Sent Events) or `rullst::ws` WebSockets.
+- The Turso variant of `make:billing`: billing is generated for SQLx projects
+  only.
 
 The [v13 adoption guide](https://rullst.github.io/Rullst/book/migration-v13.html)
 gives each change its replacement, and `cargo rullst upgrade --dry-run`

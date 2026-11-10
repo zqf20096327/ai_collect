@@ -13,10 +13,10 @@ spans to be fixed. Plain text is accepted up to 512 KB, supported archives up to
 Python standard library only, no network, no model. Prose only, never code.
 
 [![test](https://github.com/seyedehsanhadi/sloptrim/actions/workflows/test.yml/badge.svg)](https://github.com/seyedehsanhadi/sloptrim/actions/workflows/test.yml)
-[![Version](https://img.shields.io/badge/version-0.9.6-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.9.7-blue)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE.txt)
 [![Dependencies](https://img.shields.io/badge/dependencies-none-blue)](scripts/detect.py)
-[![Tests](https://img.shields.io/badge/tests-283-blue)](tests/)
+[![Tests](https://img.shields.io/badge/tests-305-blue)](tests/)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue)](scripts/detect.py)
 
 [Install](#install) &middot; [What it does](#what-it-does) &middot; [Measured](#measured) &middot; [Limits](#what-it-cannot-do) &middot; [Patterns](references/patterns.md) &middot; [Ethics](ETHICS.md)
@@ -30,7 +30,7 @@ Python standard library only, no network, no model. Prose only, never code.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/demo-dark.svg">
-  <img src="assets/demo-light.svg" width="800" alt="A recorded session. The contract arrives at session start, again on the prompt, and again inside a subagent. A saved file scores 45 and its patterns are named. After the fix the next read is clean at 15. The same text saved as a .docx scores the same, read out of the zip. Every hook latency is measured.">
+  <img src="assets/demo-light.svg" width="800" alt="A recorded session. The contract arrives at session start and again inside a subagent, and each prompt gets a one-line reminder. A saved file scores 45 and its patterns are named. After the fix the next read is clean at 15. The same text saved as a .docx scores the same, read out of the zip, and inside a source file it is not scored. Every hook latency is measured.">
 </picture>
 
 <div align="center"><sub>A recorded session, not a mock-up. <a href="record/session_capture.py">record/session_capture.py</a> fires the real hooks with the payloads Claude Code sends and writes <a href="record/session.json">record/session.json</a>; <a href="record/anim.py">record/anim.py</a> draws it. The hook lines, the scores and the milliseconds come from that capture; the grey labels beside them are narration. The prose being scored is <a href="record/draft.md">record/draft.md</a>, a short piece written for the recording.</sub></div>
@@ -85,8 +85,9 @@ because they are typographic habits.
 | Formats | 20, including `.docx`, `.pptx`, `.xlsx`, OpenDocument, `.epub`, `.ipynb`, LaTeX; the first 262,144 characters of extracted prose is scored |
 | Runs in | Claude Code, on save. Other agents via `/sloptrim init`, which writes the contract to `AGENTS.md`, and `.cursor/rules/` |
 | Needs | Node for the hooks, Python 3.9 or newer for the detector, nothing else |
-| Suite | 200 Python tests and 83 hook checks, with CI configured for Linux, Windows and macOS, against Python 3.9 and 3.13 (macOS on 3.13) |
+| Suite | 222 Python tests and 83 hook checks, with CI configured for Linux, Windows and macOS, against Python 3.9 and 3.13 (macOS on 3.13) |
 | Does not see | A file written by a `Bash` command, which reaches disk without passing `Write` or `Edit` |
+| Context cost | About 1,400 tokens at session start and for each subagent in `full` (1,120 in `lite`, 1,415 in `strict`), plus a one-line reminder per prompt. `SLOPTRIM_MODE=off` makes it zero for a run |
 
 | Command | Effect |
 |---|---|
@@ -97,7 +98,7 @@ because they are typographic habits.
 | `/sloptrim init` | Write the contract to `./AGENTS.md` and a Cursor rule to `./.cursor/rules/` |
 | `/sloptrim doctor` | Diagnose the install |
 
-For one run only, set `SLOPTRIM_MODE` to `off`, `lite`, `full` or `strict`. It beats the saved level and is never written back, so a headless code job can run `SLOPTRIM_MODE=off claude -p ...` without paying for the prose contract (about 1,100 tokens at session start and 900 per subagent).
+For one run only, set `SLOPTRIM_MODE` to `off`, `lite`, `full` or `strict`. It beats the saved level and is never written back, so a headless code job can run `SLOPTRIM_MODE=off claude -p ...` without paying for the prose contract (about 1,400 tokens at session start and the same for each subagent).
 
 ```bash
 python scripts/detect.py draft.docx    # JSON: patterns, metrics, 0-100 score
@@ -117,13 +118,13 @@ separately. AUC is a ranking measure, not accuracy at Sloptrim's guard threshold
 |---|---:|---:|---:|
 | GPT-4o | **0.943** | 0.870–0.992 | 46.7% / 0% |
 | Claude 3.5 Sonnet | **0.842** | 0.729–0.936 | 3.3% / 0% |
-| o1-pro | **0.877** | 0.769–0.957 | 23.3% / 6.7% |
+| o1-pro | **0.881** | 0.777–0.957 | 23.3% / 3.3% |
 | paraphrased GPT-4o | **0.832** | 0.728–0.925 | 6.7% / 3.3% |
 | humanized o1-pro | **0.783** | 0.668–0.889 | 0% / 3.3% |
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/detection-dark.svg">
-  <img src="assets/detection-light.svg" width="756" alt="Public matched benchmark ROC-AUC: GPT-4o 0.943, Claude 3.5 Sonnet 0.842, o1-pro 0.877, paraphrased GPT-4o 0.832, humanized o1-pro 0.783.">
+  <img src="assets/detection-light.svg" width="756" alt="Public matched benchmark ROC-AUC: GPT-4o 0.943, Claude 3.5 Sonnet 0.842, o1-pro 0.881, paraphrased GPT-4o 0.832, humanized o1-pro 0.783.">
 </picture>
 
 Across these arms, Sloptrim achieved ROC-AUC **0.783–0.943**. Confidence intervals
@@ -161,6 +162,11 @@ as Markdown/plain prose.
 score often ranks these machine samples above matched human samples. The threshold
 results show why that is not the same as a dependable yes/no classifier: sensitivity
 changes sharply with model, prompt, formatting and threshold.
+
+**Long Markdown documents written by people can score high.** Headings, bullet lists
+and bold labels are counted, and a long project README has many of each. In a sample
+of 102 READMEs written before 2022, 18 scored above 40. Read the named patterns
+before rewriting a document of that kind.
 
 **It is not an authorship classifier and must not be used as one.** A score says
 something about writing, never about a person. Read [ETHICS.md](ETHICS.md).

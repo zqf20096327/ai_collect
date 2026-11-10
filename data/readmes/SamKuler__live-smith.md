@@ -50,8 +50,10 @@ For example:
 5. Send a request. Review its proposed changes using the Session's approval and
    Edit Scope controls.
 
-Once a Profile is saved, switch models from the composer. The interface supports
-English and 简体中文, and can open in a Live modal or the system browser.
+Once a Profile is saved, switch models from the composer. Live Smith supports
+English and 简体中文. Open it in a **Live dialog**, your **System browser**, or a
+**Separate window (macOS)**. On macOS 14 or later, the separate window lets you
+drag saved MIDI and audio from chat into Live.
 
 The [user guide](docs/USER_GUIDE.md) covers the interface, saved work, attachments,
 tools and day-to-day workflows.
@@ -123,10 +125,12 @@ See the [user guide](docs/USER_GUIDE.md) and
 ## Privacy
 
 Profiles, connections, Sessions, attachments, Skills and Plugin data are stored
-locally. Model requests send your prompt, relevant Live context, saved creative
-brief, selected Skill guidance and supported attachment content to the provider
-you choose. Requested audio listening can also send an Arrangement render or a
-saved Session audio asset.
+locally. With persistent storage, SQLite holds Session history and media
+references, and a private media directory holds the original files. Model
+requests send your prompt, relevant Live context, saved creative brief,
+selected Skill guidance and supported attachment content to the provider you
+choose. Requested audio listening can also send an Arrangement render or a saved
+Session audio asset.
 
 Audio services and MCP servers receive the inputs used by their tools. Local
 MCP processes run as your operating-system user; review their code, launch

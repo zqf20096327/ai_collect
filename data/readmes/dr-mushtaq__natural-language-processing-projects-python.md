@@ -420,10 +420,15 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
 - **[Hugging Face PEFT documentation](https://huggingface.co/docs/peft/index)** - FREE
 - **[Hugging Face TRL documentation](https://huggingface.co/docs/trl/index)** - FREE
 
-#### Tutorial 
+#### Tutorial and  Videos
 - **[Natural Language Processing (NLP) with PyTorch](https://www.dataquest.io/blog/natural-language-processing-nlp-with-pytorch/)** - FREE
 - **[ChatGPT Prompt Engineering for Developers](https://www.youtube.com/watch?v=tRvcAdqsJWo)** - FREE
 - **[cikit-LLM vs. Traditional Text Classifiers](https://machinelearningmastery.com/scikit-llm-vs-traditional-text-classifiers-when-should-you-use-an-llm/?fbclid=IwY2xjawSUZ-hleHRuA2FlbQIxMQBzcnRjBmFwcF9pZBAyMjIwMzkxNzg4MjAwODkyAAEeEOFatpayHn62tbByt1E1BBC-1YYRS4RP6DiN0OULBHSm-BwfatvPp8dOuZk_aem_5QTvYFGqmTOB7iStfrjURg)** - FREE
+- - **[cikit-LLM vs. Traditional Text Classifiers](https://machinelearningmastery.com/scikit-llm-vs-traditional-text-classifiers-when-should-you-use-an-llm/?fbclid=IwY2xjawSUZ-hleHRuA2FlbQIxMQBzcnRjBmFwcF9pZBAyMjIwMzkxNzg4MjAwODkyAAEeEOFatpayHn62tbByt1E1BBC-1YYRS4RP6DiN0OULBHSm-BwfatvPp8dOuZk_aem_5QTvYFGqmTOB7iStfrjURg)** - FREE
+- **[Stanford CS229 I Machine Learning I Building Large Language Models (LLMs)](https://www.youtube.com/watch?v=9vM4p9NN0Ts)** - FREE
+- **[Stanford CME295 Transformers & LLMs | Autumn 2026 | Lecture 3 - LLM training](https://youtu.be/S3bCDcJhz4s?si=p9qNfNDL1JDFzaTA)** - FREE
+- **[Reinforcement Learning with LLMs](https://www.youtube.com/watch?v=3Vaj0Oka_t4)** - FREE
+- **[Biology of a Large Language Model](https://youtu.be/vRQs7qfIDaU?si=ykPX7eZTW1BFYXI_)** - FREE
 #### Road Map 
 - **[Best LLMs cheatsheet](https://substack.com/@analyticalrohit/note/c-271591664?r=f2squ)** - FREE
 - **[Road map with CHATGPT](https://github.com/dr-mushtaq/natural-language-processing-projects-python/blob/main/%F0%9F%93%9A%20LLM/Road%20Map%20and%20resoruces.md)** - FREE
@@ -508,6 +513,4 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
 |✅**How Attention Works in Transformer Architecture**|[1](https://youtu.be/qNVErF4WP60?si=GGfWzpNC_0mHRybc)[-2](https://youtu.be/KMHkbXzHn7s?si=nwv80fPLLL2cfzKn)|[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
 | ✅**The Mechanics of LLM Temperature and Sampling Methods**|[1](https://youtu.be/PQk5bNoOfZA?si=GkNQnQnZv7P18p_s)[-2](https://youtu.be/jnikMver_CE?si=5KBEDJU2zDJ51E2u) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
  |**🌐1-GPT (Decoder-only models)**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
-  ✅**Top K Top P & Temperature Explained LLM Sampling**|[1](https://drive.google.com/file/d/1tsRhFM7nQja1DEsB6Ssjjl8QUCFoukUv/view?usp=sharing)[-2](https://youtu.be/jnikMver_CE?si=5KBEDJU2zDJ51E2u)[-3](https://youtu.be/C9fFuaQo9cE?si=Tl7vHH03Tl-V6vVQ) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
-  ✅**Generative Configuration**|[1](https://drive.google.com/file/d/1r8pTOHcxEOIQ-c3Tw_EFWvqDs2bJ44P9/view?usp=sharing)[-2](https://youtu.be/b0hQ9ikTeyo?si=327Xg2sZXqaEvsKV)|[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
- |**🌐1-GPT (Decoder-only models)**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&log
+  ✅**Top K Top P & Temperature Explained LLM Sampling**|[1](https://drive.google.com/file/d/1tsRhFM7nQja1DEsB6Ssjjl8QUCFoukUv/view?usp=sharin

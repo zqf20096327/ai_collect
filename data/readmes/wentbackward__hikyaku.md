@@ -109,7 +109,7 @@ Both formats produce identical results. An explicit `id` / `virtual_model` insid
 
 **URL resolution (RFC 3986).** The proxy combines `base_url` with the request path using standard URL resolution ([RFC 3986 §5.2.2](https://www.rfc-editor.org/rfc/rfc3986#section-5.2.2)). Include a trailing slash on `base_url` when your backend uses a path prefix (e.g. `"http://host:port/v1/"`) so that relative resolution appends correctly. The incoming request path from the client is forwarded verbatim — the proxy does not manipulate it.
 
-Secrets use `${ENV_VAR}` syntax — resolved at startup, never stored in config. Hot-reload with `SIGHUP` — config, log level, and backend probes update without restart.
+Secrets use `${ENV_VAR}` syntax — resolved at startup, never stored in config. Hot-reload with `SIGHUP` — config, log level, and backend probes update without restart (a change to a [restart-only field](docs/configuration.md#reloading-the-config) such as the listen port is refused and the running config kept).
 
 See the [full configuration reference](docs/configuration.md) for details on auth types, TLS, auto-routing, and parameter profiles.
 
@@ -158,7 +158,7 @@ The `virtual_model` name is an arbitrary string — whatever the client sends in
 | Slash namespace in the name (dropdowns) | `local/qwen-coder` |
 | Fully-qualified HF-style | `Qwen/Qwen3-Coder-30B` |
 
-If a client breaks, set `LOG_LEVEL=1` and read the `[req]` line — it shows the exact model name that arrived. Then name your virtual model to match.
+If a client breaks, read the error it gets back: an unknown model is refused with a 404 that names the model exactly as it arrived and lists the available ones. Then name your virtual model (or an alias) to match. The log does not echo unknown model names, since they are caller text; it shows `<unknown model len=N>` ([what each log level may contain](docs/logging.md#what-each-level-may-contain)).
 
 ### Routing decisions
 
@@ -250,10 +250,10 @@ routes:
     headers:
       remove: [X-Forwarded-For, User-Agent]
       add:    { X-Tenant-Id: "${TENANT_ID}" }
-      rename: { Authorization: X-Original-Auth }
+      rename: { X-Client-Trace: X-Upstream-Trace }
 ```
 
-Backend headers apply first; route headers apply on top, route wins on conflict. Full reference in [docs/configuration.md](docs/configuration.md#outbound-header-manipulation).
+Backend headers apply first; route headers apply on top, route wins on conflict. Caller credential headers are never forwarded, and a rename out of or into one has no effect. Full reference in [docs/configuration.md](docs/configuration.md#outbound-header-manipulation).
 
 ### Recipes
 
@@ -270,7 +270,7 @@ Click the refresh icon on the connection. OpenWebUI calls `/v1/models` and popul
 
 LiteLLM wants a provider prefix. For custom OpenAI-compatible endpoints, prefix with `openai/` — at time of writing LiteLLM strips that prefix before calling the base URL, so a virtual model named `qwen-coder` is reached as `openai/qwen-coder` in LiteLLM config.
 
-If the version of LiteLLM you're running *doesn't* strip the prefix, you'll see `openai/qwen-coder` arrive at the proxy (check `LOG_LEVEL=1`). Either register a matching virtual model or update LiteLLM.
+If the version of LiteLLM you're running *doesn't* strip the prefix, the client gets a 404 `unknown model "openai/qwen-coder"` back from the proxy. Either register a matching virtual model or update LiteLLM.
 
 #### Ollama
 
@@ -329,7 +329,7 @@ Use `/model` inside Claude Code to pick a virtual model whose route points to yo
 - Base URL: `http://hikyaku:4000/v1`
 - API key: your `server.api_key`
 
-The client sees virtual models via `/v1/models`. If anything odd happens, `LOG_LEVEL=1` + `[req]` line will show you the model name as received — 90% of client-integration issues diagnose from that one line.
+The client sees virtual models via `/v1/models`. If anything odd happens, the proxy's 404 names the model as received, and `LOG_LEVEL=1` shows each request's route, backend, upstream URL and status — most client-integration issues diagnose from those.
 
 ## Capturing full request bodies for debugging
 

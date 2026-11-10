@@ -14,7 +14,7 @@
 <p align="center">
   <a href="https://github.com/bislink360/semantic-markdown/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/bislink360/semantic-markdown?label=release&color=4f46e5"></a>
   <a href="docs/reference/compatibility.md"><img alt="Spec: smd v2, stable" src="https://img.shields.io/badge/spec-smd%20v2%20stable-7c3aed"></a>
-  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-22c55e"></a>
+  <a href="LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-22c55e"></a>
 </p>
 
 <p align="center">
@@ -73,7 +73,7 @@ Semantic Markdown makes the meaning of a document explicit, so an agent can tell
 | `smd validate docs/` · MCP `validate` | Problems with rule codes and machine-applicable fixes, as a gate before it commits |
 | `smd mcp --allow-write` | Opt-in write tools: `check_task`, `set_status`, `add_decision`, each validated |
 
-**What it saves, measured.** The agent view drops styling, layout and content marked for people only. On seven sample documents ([extension/test/samples](extension/test/samples/)), the full agent view is **5–37% smaller** than the file (median ≈17%) and `--brief` **14–43%**; reading the outline plus one section costs **about 80% less** than the file on 6k–8k-token documents. The bigger the document and the more often it is read, the more that adds up. For a small document (under ≈1,500 tokens) the skill and tool overhead costs more than it saves: just read the file, as the reader skill does. Methodology, fixed costs and a break-even table: **[docs/reports/tokens.md](docs/reports/tokens.md)**; what the agent view keeps and drops: [docs/guides/agent-setup.md](docs/reports/tokens.md#how-the-savings-arise). `smd savings docs/` reports the numbers for your own repository.
+**What it saves, measured.** The agent view drops styling, layout and content marked for people only. On seven sample documents ([extension/test/samples](extension/test/samples/)), the full agent view is **4–37% smaller** than the file (median ≈17%) and `--brief` **13–43%**; reading the outline plus one section costs **about 80% less** than the file on 6k–8k-token documents. The bigger the document and the more often it is read, the more that adds up. For a small document (under ≈1,500 tokens) the skill and tool overhead costs more than it saves: just read the file, as the reader skill does. Methodology, fixed costs and a break-even table: **[docs/reports/tokens.md](docs/reports/tokens.md)**; what the agent view keeps and drops: [docs/guides/agent-setup.md](docs/reports/tokens.md#how-the-savings-arise). `smd savings docs/` reports the numbers for your own repository.
 
 Measured on [`checkout-redesign.smd`](extension/test/samples/checkout-redesign.smd), a ≈2,500-token PRD (≈4 characters per token):
 
@@ -208,4 +208,4 @@ Press **F5** in `extension/` to launch an Extension Development Host with the te
 
 ## License
 
-[MIT](LICENSE)
+Copyright 2026 bislink360. Licensed under the [Apache License, Version 2.0](LICENSE).

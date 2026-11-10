@@ -8,17 +8,17 @@
 
 <br/>
 
-[![v3.0.1](https://img.shields.io/badge/v3.0.1-6366f1?style=flat-square&logo=semver&logoColor=white)](./CHANGELOG.md)
+[![v3.6.1](https://img.shields.io/badge/v3.6.1-6366f1?style=flat-square&logo=semver&logoColor=white)](./CHANGELOG.md)
 [![Platform](https://img.shields.io/badge/macOS_·_Linux_·_Windows-334155?style=flat-square&logo=apple&logoColor=white)](./docs/SETUP-GUIDE.md)
 [![Website](https://img.shields.io/badge/claude.travisjneuman.com-818cf8?style=flat-square&logo=cloudflare&logoColor=white)](https://claude.travisjneuman.com)
 [![License](https://img.shields.io/badge/MIT-blue?style=flat-square&logo=opensourceinitiative&logoColor=white)](./LICENSE)
 [![Use Template](https://img.shields.io/badge/Use_This_Template-2ea44f?style=flat-square&logo=github&logoColor=white)](https://github.com/travisjneuman/.claude/generate)
 
-[![Skills](https://img.shields.io/badge/Skills-180-10b981?style=flat-square)](./skills/MASTER_INDEX.md)
+[![Skills](https://img.shields.io/badge/Skills-183-10b981?style=flat-square)](./skills/MASTER_INDEX.md)
 [![Agents](https://img.shields.io/badge/Agents-10-f59e0b?style=flat-square)](./agents/README.md)
 [![Commands](https://img.shields.io/badge/Commands-29-a855f7?style=flat-square)](./docs/COMMANDS.md)
-[![Repos](https://img.shields.io/badge/Marketplace_Repos-81-3b82f6?style=flat-square)](./plugins/marketplaces/)
-[![Marketplace Skills](https://img.shields.io/badge/Marketplace_Skills-11000+-ec4899?style=flat-square)](./docs/MARKETPLACE-GUIDE.md)
+[![Repos](https://img.shields.io/badge/Marketplace_Repos-86-3b82f6?style=flat-square)](./plugins/marketplaces/)
+[![Marketplace Skills](https://img.shields.io/badge/Marketplace_Skills-11300+-ec4899?style=flat-square)](./docs/MARKETPLACE-GUIDE.md)
 [![Hooks](https://img.shields.io/badge/Hooks-7-06b6d4?style=flat-square)](./hooks/README.md)
 [![Templates](https://img.shields.io/badge/Templates-17-84cc16?style=flat-square)](./templates/README.md)
 
@@ -30,7 +30,7 @@
 
 A drop-in configuration layer for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) that transforms it from a capable AI assistant into an enterprise-grade development powerhouse.
 
-**One `git clone` gives you** 180 domain skills, 10 specialist agents, 81 community marketplaces with 11,000+ additional skills, 29 slash commands, 7 lifecycle hooks — all auto-activating based on what you're working on. No manual configuration required.
+**One `git clone` gives you** 183 domain skills, 10 specialist agents, 86 community marketplaces with 11,300+ additional skills, 29 slash commands, 7 lifecycle hooks — all auto-activating based on what you're working on. No manual configuration required.
 
 **How it works:** Describe what you want in plain language. Everything is installed and available, but only a small core of skills keeps its full description in Claude's context. The rest is listed by name and found through a generated index ([`INDEX.md`](./INDEX.md), [`index/graph.json`](./index/graph.json)) and the `toolkit-router` skill, so a large toolkit costs almost nothing until something is needed. Language rules load only for matching files.
 
@@ -70,6 +70,8 @@ Up: [github.com/travisjneuman](https://github.com/travisjneuman) · Not here: pe
 | project or task templates | [`templates/README.md`](./templates/README.md) | |
 | version history, release notes | [`CHANGELOG.md`](./CHANGELOG.md) | |
 | contributing, pull requests | [`CONTRIBUTING.md`](./CONTRIBUTING.md) | |
+| security, reporting a vulnerability, trust model | [`SECURITY.md`](./SECURITY.md) | What full access trusts and how to narrow it |
+| audit findings, open improvement items | [`advisor-plans/README.md`](./advisor-plans/README.md) | Status table; done and open |
 | showcase website, claude.travisjneuman.com | [`website/README.md`](./website/README.md) | Next.js static export |
 | VS Code settings | [`vscode/README.md`](./vscode/README.md) | |
 | archived README, GSD tutorial, 2026-03 audits | [`archive/`](./archive/) | Historical only; see Contents below |
@@ -126,21 +128,36 @@ graph LR
 
 Click the green **"Use this template"** button at the top of this repo to create your own copy with a clean commit history. Then clone your new repo to `~/.claude/`.
 
-### One-Line Install
-
-Or clone directly if you prefer:
+### Or clone directly
 
 ```bash
 git clone https://github.com/travisjneuman/.claude.git ~/.claude
 ```
 
-### Initialize Marketplace Clones
+Already have a `~/.claude` that Claude Code created? Don't clone over it: download and run [`scripts/install-in-place.sh`](./scripts/install-in-place.sh), which turns it into a checkout and keeps your existing files.
+
+### Or: just the skills, as a plugin
+
+If you already have a `~/.claude` you like, you can take only the skills. This adds no hooks, no settings, no permission changes, and no background jobs. Inside Claude Code:
+
+```
+/plugin marketplace add travisjneuman/.claude
+/plugin install tjn-skills@tjn-claude
+```
+
+That is all 183 skills. Claude Code lists plugin skills with their descriptions and trims the least-used ones when the listing outgrows its budget, so if you only work in one area, install a domain bundle instead (`tjn-frontend`, `tjn-mobile`, `tjn-backend`, `tjn-systems-infra`, `tjn-quality-security`, `tjn-data-ai`, `tjn-business`, `tjn-creative`, `tjn-research`, `tjn-workflow`); the full list with install lines is in [`skills/README.md`](./skills/README.md#install-as-a-plugin). `/skill-doctor` shows what each skill costs. The agents, commands, rules, hooks, and `CLAUDE.md` are not part of the plugin; for those, use the full install above. (Added November 2026; if it misbehaves on your Claude Code version, please open an issue.)
+
+### Optional: community marketplaces
+
+About 80 third-party skill repos, cloned read-only into an ignored folder. The toolkit works without them.
 
 ```bash
-git clone https://github.com/travisjneuman/.claude.git ~/.claude
-cd ~/.claude
 bash ~/.claude/scripts/init-marketplaces.sh
 ```
+
+### Optional: your private layer
+
+Your GitHub account, project folders, and private rules go in a gitignored `local/` folder; see [`local.example/README.md`](./local.example/README.md). Until you set `GITHUB_OWNERS` there, nothing is ever committed or pushed for you.
 
 ### Start Claude Code
 
@@ -151,16 +168,32 @@ claude
 
 That's it. Claude Code loads the toolkit from `~/.claude/` in every session.
 
+### What runs on its own
+
+Read this before the first session. Everything here is switched off with one line in `~/.claude/.env.local` (copy [`.env.example`](./.env.example)).
+
+| What | When | Turn off with |
+|------|------|---------------|
+| Claude Code runs without permission prompts (`bypassPermissions`); the guard hook blocks only a short list of destructive commands in Bash and PowerShell | Every session | Change `permissions.defaultMode` in `settings.json` |
+| Fast-forward pull of `~/.claude` from its `origin`, and of the marketplace clones | Background, at most daily | `PULL_INTERVAL_HOURS=0` |
+| Install and update the plugins `settings.json` enables | After that pull | `PLUGIN_AUTOINSTALL=0` |
+| Install missing language servers for the LSP plugins (`npm install -g`, or `pacman` where passwordless sudo exists) | After that pull | `LSP_AUTOINSTALL=0` |
+| Tally which skills, agents, and commands were used (names and counts only, stays on your machine) | Daily | `DAILY_MAINTENANCE=0` |
+| Session transcripts are kept instead of deleted after 30 days (`cleanupPeriodDays` is 36500) | Always | Lower `cleanupPeriodDays` in `settings.json` |
+| Commit and push pending work in repos you own | Session end and daily, **only after you set `GITHUB_OWNERS`** | Leave `GITHUB_OWNERS` unset, or `SESSION_END_AUTOPUSH=0` |
+
+**Trust model.** The daily pull brings in whatever the `origin` of your `~/.claude` publishes, including hook scripts that then run on your machine. If you cloned this repo directly, that origin is this repo. If you'd rather review changes first, use the template (your copy becomes the origin and you merge upstream when you choose) or set `PULL_INTERVAL_HOURS=0` and pull by hand. `settings.json` is the maintainer's working configuration: review its `enabledPlugins`, `env`, and `permissions` and make them yours. Marketplace clones are other people's repositories, pulled at their latest commit and unreviewed; Claude can read and follow a skill from one. That is intended for a full-access setup, and [SECURITY.md](./SECURITY.md) says how to narrow it.
+
 ---
 
 ## 📦 What's Included
 
 | Component | Count | Description |
 |-----------|-------|-------------|
-| **[Skills](./skills/MASTER_INDEX.md)** | 180 | Domain expertise modules (React, security, DevOps, finance, etc.) |
+| **[Skills](./skills/MASTER_INDEX.md)** | 183 | Domain expertise modules (React, security, DevOps, finance, etc.) |
 | **[Agents](./agents/README.md)** | 10 | Specialist subagents for focused tasks (code review, debugging, etc.) |
 | **[Commands](./docs/COMMANDS.md)** | 29 | Slash commands for common workflows |
-| **[Marketplace Repos](./plugins/marketplaces/)** | 81 | Community skill repositories (11,000+ additional skills) |
+| **[Marketplace Repos](./plugins/marketplaces/)** | 86 | Community skill repositories (11,300+ additional skills) |
 | **[Hooks](./hooks/README.md)** | 7 | Wired public hooks (session lifecycle, status line, safety guards; not git hooks or the dispatcher) |
 | **[Templates](./templates/README.md)** | 17 | Project scaffolding and task templates |
 | **[Rules](./rules/)** | 10 | Stack-specific coding guardrails (TypeScript, Python, Go, Rust, etc.) plus web legal-exposure defaults |
@@ -230,7 +263,7 @@ Session Start
   ├── Repo health banner (only when something needs attention)
   └── Private local hook (optional, from local/)
 
-Before Bash / Write / Edit
+Before Bash / PowerShell / Write / Edit
   └── Guard: blocks root rm -rf, force push, reset --hard, secret-file writes, AI trailers
 
 After File Edits
@@ -253,9 +286,9 @@ See **[hooks/README.md](./hooks/README.md)** for the full hook reference.
 ## 🔑 Key Features
 
 <details>
-<summary><strong>🏪 Marketplace — 81 marketplace repos, 11,000+ skills</strong></summary>
+<summary><strong>🏪 Marketplace — 86 marketplace repos, 11,300+ skills</strong></summary>
 
-The toolkit aggregates 81 community skill repositories as ignored local clones in `plugins/marketplaces/`. All are read-only (fetch but never push). Skills span security (Trail of Bits), full-stack development, scientific computing, SAP/enterprise, Elixir, Terraform, creative writing, and more. Some marketplace repos are **installed as plugins**, making their agents, commands, and skills fully active in the routing system alongside built-in resources. Non-installed repos contribute discoverable skills via keyword search.
+The toolkit aggregates 86 community skill repositories as ignored local clones in `plugins/marketplaces/`. All are read-only (fetch but never push). Skills span security (Trail of Bits), full-stack development, scientific computing, SAP/enterprise, Elixir, Terraform, creative writing, and more. Some marketplace repos are **installed as plugins**, making their agents, commands, and skills fully active in the routing system alongside built-in resources. Non-installed repos contribute discoverable skills via keyword search.
 
 ```bash
 # Search marketplace skills
@@ -272,7 +305,7 @@ See **[docs/MARKETPLACE-GUIDE.md](./docs/MARKETPLACE-GUIDE.md)** for the full ca
 <details>
 <summary><strong>🛡️ Safety Guards</strong></summary>
 
-The `guard.js` hook blocks dangerous commands before execution:
+The `guard.js` hook blocks dangerous commands before execution, in Bash and in PowerShell (where it also blocks a recursive force delete of a drive or home root and piping a download into `Invoke-Expression`). It is pattern matching, a seatbelt rather than a sandbox; see [SECURITY.md](./SECURITY.md).
 
 | Blocked Pattern | Risk |
 |----------------|------|
@@ -397,11 +430,20 @@ See **[docs/NEW-DEVICE-SETUP.md](./docs/NEW-DEVICE-SETUP.md)** for the full walk
 | **Windows 11** | Full support | Git Bash | Hooks use Node.js runner to avoid WSL issues |
 | **WSL** | Works | bash | Native Linux behavior inside WSL |
 
-**Requirements:** Node.js (comes with Claude Code), Git, bash (Git Bash on Windows).
+**Requirements:** Claude Code 2.1.139 or later (the hooks use exec form), Node.js (comes with Claude Code), Git, bash (Git Bash on Windows).
 
 ---
 
 ## 🆕 What's New
+
+**November 2026 — Audit, efficiency pass, and a plugin install**
+
+- **Fixes for people who are not the maintainer:** setup scripts no longer rewrite your `origin` or disable pushing on your own repos; the installer no longer writes a broken `.mcp.json`. If you installed earlier, see the CHANGELOG's "If you installed before November 2026".
+- **Skills-only plugin:** `/plugin marketplace add travisjneuman/.claude`, then `tjn-skills` or one of ten domain bundles. No hooks, settings or background jobs.
+- **Guard covers PowerShell**, and hooks start without a shell (exec form), which matters most on Windows.
+- **Skills follow the 500-line guidance:** 37 long skills are now an overview plus `references/` files, with every line kept.
+- **Security policy and trust model:** [`SECURITY.md`](./SECURITY.md) says what a full-access setup trusts and how to narrow it.
+- **Sessions are kept**, not deleted after 30 days; the website builds again; counts refreshed on 2026-11-10.
 
 **September 2026 — Modernization for current Claude Code**
 

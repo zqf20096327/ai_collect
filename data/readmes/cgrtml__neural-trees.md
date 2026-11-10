@@ -51,6 +51,12 @@ this, the rest of the library still works:
 a torch-backed estimator there raises an error naming `pip install torch`
 rather than failing at import.
 
+On macOS with an XGBoost teacher, set `OMP_NUM_THREADS=1` before starting
+Python. torch and XGBoost each load an OpenMP runtime, and in one process
+XGBoost's `fit` or a torch fit segfaulted in our environment (xgboost 3.4.1,
+torch 2.14.1, in either import order). With one OpenMP thread it does not;
+the test suite sets it in `tests/conftest.py`.
+
 ### Install from source
 
 ```bash
@@ -227,9 +233,15 @@ Wilcoxon p):
 | 100 trees | 4 159 | -0.78 (3/8, p=0.04) | -0.40 (5/6, p=0.58) |
 | 300 trees | 11 059 | -1.28 (1/10, p=0.005) | -0.90 (3/8, p=0.12) |
 
-One tree is level with XGBoost at about ten times its splits (30 trees),
-and three trees with XGBoost at 100 trees: the differences there are
-small and not significant. Neither reaches 300 trees, the gap
+One tree is level with XGBoost at 30 trees and three trees with XGBoost
+at 100 trees: the differences there are small and not significant. The
+split counts are not the same unit, though. Each gate of the student is
+oblique: it weighs every input, so 137 splits are 137 x 7 to 137 x 54
+weights on these tables (about 960 to 7 400, mean about 3 500), the same
+order as the 1 303 splits and leaf values of XGBoost with 30 trees, not a
+tenth of it. Counted by nonzero weights, the distilled tree is not smaller
+than the XGBoost model it matches, and the table above should not be read
+as a size advantage. Neither reaches 300 trees, the gap
 is largest on electricity and covertype (3 to 5 points), and ten passes
 fit in about 15 minutes for 20 000 rows on one CPU thread (`synthetic=2`
 is faster). Prediction from the numpy export costs about what XGBoost
@@ -397,7 +409,9 @@ a soft tree cannot learn and measures the four growth decisions:
 ```
 
 That DOI always resolves to the most recent release. To cite the exact version
-you ran, use the DOI of that release instead; v0.8.0 is
+you ran, use the DOI of that release instead; v0.9.1 is
+[10.5281/zenodo.24094993](https://doi.org/10.5281/zenodo.24094993),
+v0.8.0 is
 [10.5281/zenodo.23091242](https://doi.org/10.5281/zenodo.23091242),
 v0.7.0 is [10.5281/zenodo.22929121](https://doi.org/10.5281/zenodo.22929121).
 

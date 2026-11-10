@@ -56,7 +56,7 @@
 
 ## Format
 
-- **[Paper Title](https://arxiv.org/abs/XXXX.XXXXX)** 
+- [Title][Link]
 
 ----
 
@@ -134,6 +134,8 @@
 - **[Agent Sociodrama: Social-Dynamics-Guided Persona Recasting for LLM Agent Teams](https://arxiv.org/pdf/2610.15788)**
 - **[Multi-Agent Relay Thinking](https://arxiv.org/abs/2610.35219)**
 - **[EvoTeam: Multi-Agent Collaboration via Evolving Teams](https://arxiv.org/abs/2610.39813)** [GitHub](https://github.com/DEEP-JLU/EvoTeam)
+- **[SwarmEvolve: Latent Agent Swarms for Evolutionary Discovery and Optimization](https://arxiv.org/abs/2611.08483)** [GitHub](https://github.com/Qile-J/SwarmEvolve)
+- **[AgentBaton: Efficient Model Collaboration in Agentic Tasks](https://arxiv.org/abs/2610.35959)**
 
 ## Multi-Agent Frameworks & Benchmarks
 

@@ -198,6 +198,10 @@ A huge thank you to every developer who took the time to improve this extension 
 
 ## Version History
 
+### Version 307.0
+- With the Windows Terminal terminal type, dragging the mouse in another application that covers the Claude Code panel no longer holds down Shift in that application.
+- Thanks to [@adrian-schmidt-foehre-mint](https://github.com/adrian-schmidt-foehre-mint) for reporting (#263).
+
 ### Version 306.0
 - The licensing contact line now points to GitHub issues instead of an email address.
 
@@ -1636,15 +1640,4 @@ Native mode now in beta phase
 - Clarified free-for-commercial-use license.
 - Data privacy documentation.
 
-### Version 4.1
-- "Add Image" renamed to "Add File" with broad file type support.
-- Multiple file attachment support.
-
-### Version 4.0
-- Fixed Excel cell paste (now pastes as text instead of an image).
-
-### Version 3.8
-- Fixed UI lag when typing in the prompt textbox.
-
-### Version 3.7
-- Performance improv
+### Versi

@@ -21,7 +21,7 @@ The `[hf]` extra adds `huggingface_hub` and `datasets`, for `hf://` outputs and 
 Plain `saturate` works with your own iterables and local output.
 
 > **Experimental.** The API and behaviour can change in any 0.x release, often with no
-> deprecation period. Pin an exact version (`saturate==0.3.0`) if you rely on how it behaves
+> deprecation period. Pin an exact version (`saturate==0.3.1`) if you rely on how it behaves
 > now, and read
 > [CHANGELOG.md](https://github.com/davanstrien/saturate/blob/main/CHANGELOG.md) before you
 > upgrade. See [Status](#status).
@@ -222,7 +222,9 @@ You never need `Engine`. Any server that speaks the OpenAI HTTP API — vLLM, SG
 llama.cpp, TGI, TEI, something a colleague runs — can be launched however you like and
 passed as `endpoint=` its URL. `Engine` is a convenience for the common case where the
 model server and the pump share one process/Job: it boots the server in its own process
-group, health-gates it, and kills it on exit.
+group, health-gates it, and kills it on exit. SGLang starts with the first Python that has
+sglang (this one, else a `python3` on PATH), so a script run with `uv run` on the SGLang image
+needs no `cmd=`.
 Health checks lie during warm-up, so readiness also POSTs a trial request — but the default
 acceptance is **alive-only**: any response below 500, including 404, counts, because it
 proves the API path parses requests. To gate readiness on your actual workload, pass
@@ -454,8 +456,29 @@ def to_request(row):
 ```
 
 A row that holds the raw audio bytes gets a content id by default, so identical clips dedupe:
-load the column undecoded (`decode=False`). A multipart request is sent once: a failure
-becomes an error row, and `retry_errors=True` retries it on the next run.
+load the column undecoded (`decode=False`). A multipart request whose files are bytes (or a
+`BytesIO`) is retried like any other. One that holds an open file is sent once (the first send reads and
+closes the file): a failure becomes an error row, and `retry_errors=True` retries it on the
+next run.
+
+## In a notebook or an async function
+
+`pump()` runs its own asyncio event loop, so it cannot start where one is already running: a
+Jupyter or Colab cell, or the inside of an `async def`. It raises a `RuntimeError` that says
+so. Run it in a thread there:
+
+```python
+import asyncio
+
+stats = await asyncio.to_thread(pump, rows, to_request, parse, endpoint, "out/")
+```
+
+Interrupting the cell does not stop a run started this way. The cell stays busy until the run
+ends, then shows `CancelledError` in place of the stats. The run itself is not affected: it
+writes its output and stats as usual. To stop a run, restart the kernel. Do not start a second run on the same output while the
+first is still going: both would request the same rows.
+
+With `nest_asyncio` applied, `asyncio.run` nests, and `pump()` runs in a cell as it is.
 
 ## Running under an agent
 

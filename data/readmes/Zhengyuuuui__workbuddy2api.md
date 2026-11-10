@@ -196,7 +196,7 @@ model_provider = "codebuddy"
 
 ## 模型列表
 
-### 国内版 CodeBuddy（34 个，逐个实测可用）
+### 国内版 CodeBuddy（37 个，逐个实测可用）
 
 | 模型 ID | 显示名 | 厂商 |
 |---|---|---|
@@ -207,6 +207,8 @@ model_provider = "codebuddy"
 | `deep-model` | Deep | codebuddy |
 | `hy4-preview` | Hy4 preview | tencent |
 | `hy4-preview-f` | Hy4 preview | tencent |
+| `hy4free` | Hy4 Free | tencent |
+| `hy4std` | Hy4 Standard | tencent |
 | `hy3` | Hy3 | tencent |
 | `hy3-x` | Hy3 | tencent |
 | `hunyuan-chat` | Hunyuan-Turbos | tencent |
@@ -218,6 +220,7 @@ model_provider = "codebuddy"
 | `glm-5v-turbo` | GLM-5v-Turbo | zhipu |
 | `kimi-k3` | Kimi-K3 | moonshot |
 | `kimi-k3-1` | Kimi-K3.1 | moonshot |
+| `kimi-k3.1-pro` | Kimi-K3.1-Pro | moonshot |
 | `kimi-k2.8-preview` | Kimi-K2.8-Preview | moonshot |
 | `kimi-k2.7` | Kimi-K2.7-Code | moonshot |
 | `kimi-k2.6` | Kimi-K2.6 | moonshot |
@@ -238,20 +241,26 @@ model_provider = "codebuddy"
 > `glm-5.1` 必须携带 `reasoning_effort`（proxy 会自动补 `medium`），
 > 否则上游返回 `code 11150`。它会先输出推理内容，`max_tokens` 过小可能只得到空回复。
 
-### 海外版 WorkBuddy AI（23 个，逐个实测可用）
+### 海外版 WorkBuddy AI（26 个，逐个实测可用）
 
 > 以下为 `personal_free_user` 免费账号实测可用的模型。
-> 免费账号下 GPT-5.6 / GPT-6 / GPT-5.5 / GPT-5.4 / Gemini / Grok / `primary-model`
-> 会被拒（`code 11158 not allowed for user type`）；`deep-model` 等已下线（`code 11102`）。
+> 免费账号下 GPT-5.6 / GPT-6 / GPT-5.5 / GPT-5.4 / Gemini / Grok /
+> `kimi-k3.1-pro` / `kimi-k3.1-pro-highspeed` / `primary-model` 会被拒
+> （`code 11158 not allowed for user type`）；`deep-model`、`step-5-preview`
+> 等已下线（`code 11102`）；`hy-image-3.5`、`kling-video-v3` 是图像/视频模型，
+> 不能走 chat（`code 11103`）。
 
 | 模型 ID | 显示名 | 厂商 |
 |---|---|---|
 | `default-model` | Auto | codebuddy |
 | `fast-model` | Fast | codebuddy |
 | `balanced-model` | Balanced | codebuddy |
+| `max-model` | Max | codebuddy |
 | `auto` | Auto | codebuddy |
 | `hy4-preview` | Hy4 preview | tencent |
 | `hy4-preview-f` | Hy4 preview | tencent |
+| `hy4free` | Hy4 Free | tencent |
+| `hy4std` | Hy4 Standard | tencent |
 | `hy3` | Hy3 | tencent |
 | `gpt-5.3-codex` | GPT-5.3-Codex | openai |
 | `glm-5.3` | GLM-5.3 | zhipu |
@@ -267,8 +276,13 @@ model_provider = "codebuddy"
 | `minimax-m3` | MiniMax-M3 | minimax |
 | `minimax-m3.1-flash` | MiniMax-M3.1-Flash | minimax |
 | `space-bunny` | Space-Bunny | tencent |
-| `step-5-preview` | Step-5-Preview | stepfun |
 | `deepseek-v4.1-flash` | Deepseek-V4.1-Flash | deepseek |
+| `deepseek-v4.1-flash-sg` | Deepseek-V4.1-Flash | deepseek |
+
+> 上表只是**实测可用的 26 个**。代码里的海外快照还额外保留 11 个上游条目
+> （`primary-model`、`deep-model`、`gpt-5.6-terra/luna`、`gpt-6-sol/luna`、
+> `gpt-5.5`、`gpt-5.4`、`gemini-3.5/3.8-flash`、`grok-4.7`），付费账号下可能可用，
+> 免费账号调用会返回 `11158`。它们只在上游 `/v3/config` 拉不到时作为回退。
 
 > 模型列表会随平台更新变化，以 `GET /v1/models` 的实际返回为准。
 
@@ -303,6 +317,16 @@ uv run server/probe_models.py --port 8788           # 海外版（8788）
 uv run server/probe_models.py --extra "glm-9.9"     # 追加自定义候选
 uv run server/probe_models.py --from-config         # 顺便从云端配置收集候选
 ```
+
+> ⚠️ **探测要有耐心**。`onlyReasoning` 的模型（`kimi-k3.1-pro`、`hy4std`、
+> `glm-5.1` 等）会先花几分钟做推理，`max_tokens` 给小了只会拿到空 content
+> （HTTP 仍是 200）。实测 `hy4std` 单请求耗时 593s、2444 个 chunk。
+> 脚本默认 120s 超时，测这类模型要自行调大；顺序探测时还会被全局限速器
+> （1 QPS + 3s 抖动）串行化，几十个候选跑十几分钟是正常的。
+
+> ⚠️ **`/v3/config` 的 `models` 数组不是完整清单**。`kimi-k3.1-pro`、
+> `hy4free`、`hy4std` 只出现在 `agents[].models` 里，顶层 `models` 没有。
+> 用 `--from-config` 遍历所有嵌套字段才不会漏。
 
 输出会按可用/不可用分组，并标注上游错误码：
 
@@ -363,9 +387,9 @@ for m in cfg.get('models') or []: print(' ', m.get('id'), '|', m.get('name'))
                            获取方式见 doc/mitm-capture-playbook.md §7。
                            海外版客户端不产 x-device-token，此参数对
                            workbuddy-ai 平台无效）
---rate-qps FLOAT         全局限速：持续 QPS（默认 1.0，0 不限速）
---rate-burst INT         全局限速：突发容量（默认 5，超出排队）
---rate-jitter FLOAT      每请求随机抖动上限（秒，默认 3.0，0 关闭）
+--rate-qps FLOAT         全局限速：持续 QPS（默认 3.0，0 不限速）
+--rate-burst INT         全局限速：突发容量（默认 10，超出排队）
+--rate-jitter FLOAT      每请求随机抖动上限（秒，默认 0.5，0 关闭）
 --credit-burn-threshold  消耗速率告警阈值（默认 0.3 = 窗口消耗占剩余额度 30%）
 ```
 
@@ -561,6 +585,45 @@ server/install_clean_cron.sh uninstall   # 卸载
 > 想改频率/保留期就编辑 `server/install_clean_cron.sh` 顶部的 `HOUR` / `MINUTE` /
 > `RETAIN_DAYS` / `MAX_SIZE_MB`，重新 `install` 即可（会先卸载旧的）。
 
+### 防护策略与阈值
+
+proxy 有三层防护，都遵循同一个原则：**只在确有异常时介入，不打扰正常使用**。
+
+| 防护 | 默认值 | 触发条件 | 动作 |
+|---|---|---|---|
+| 全局限速 | 3 QPS / 突发 10 / 抖动 0.5s | 令牌桶耗尽 | 排队等待，不拒绝 |
+| 熔断器 | 连续 8 次 5xx / 冷却 60s | 上游连续 5xx | 快速失败 429 |
+| 429 熔断 | 按上游 reset 时间（默认 300s） | 上游返回 429/6004 | 快速失败 429 |
+| 消耗告警 | 1,000,000 tokens / 10min | 窗口消耗超阈值 | **只记日志，不拒绝** |
+
+#### 阈值是怎么定的
+
+**限速 3 QPS + 0.5s 抖动**：最初是 1 QPS + 3s 抖动，来自一次封禁事件后的保守配置。
+但 3s 抖动加在**每一个**请求上，交互式编码场景下每次都要等 0~3 秒，体感就是"网关很慢"。
+现在维持限速（避免打爆上游）但把常驻延迟降到可接受范围。
+
+**熔断 8 次 5xx / 60s**：最初是 5 次 / 120s。5xx 更可能是上游瞬时抖动而非封控，
+连错 5 次就把用户挡在门外 2 分钟，反馈是"用一会儿就被网关拦"。
+真正的封控信号是 429/6004，那条路径本来就会按上游返回的 reset 时间冷却，不受此影响。
+
+**消耗告警 1,000,000 tokens / 10min**：这里曾有一个**单位 bug** ——
+阈值用 `credits_remain × 0.3` 算，窗口却累加 `tokens`，两个单位直接比较。
+国内版计费接口返回 403（`code 10085`）拿不到 credits，于是走兜底值 500，
+而 500 是 **token 数**：一次真实请求（大 system prompt + 代码上下文）轻松上万 token，
+结果一两个请求就报 `credit_burn_warning`。现在：
+
+- 上游 usage 带 `credit` 字段且能拿到 `credits_remain` 时 → **credits 比 credits**
+- 否则 → **tokens 比 tokens**，兜底阈值 1,000,000 tokens/10min
+
+按 AI 编码会话估算：单次请求 1~5 万 token，10 分钟内几十次请求约几十万 token，
+1,000,000 之上才算异常（死循环重试、忘记截断的上下文）。
+
+> 告警**只写日志、不拒绝请求**，不影响使用。看日志：
+> ```bash
+> grep credit_burn_warning logs/proxy.log
+> curl -s 'http://127.0.0.1:8787/v1/credits' | jq '.burn_warning, .local'
+> ```
+
 ## 常见问题
 
 ### 找不到 session 文件 / 401 认证失败
@@ -601,6 +664,50 @@ API returned an empty or malformed response (HTTP 200) — body is an event stre
 - **瞬时拒绝重试**：HTTP 200 但零帧时换模型重试一次；重试**复用同一份会话 / trace 身份**（换模型不换会话，避免上游判成多个并发会话），并清掉上一轮的 `previous_response_id`
 
 回归测试：`server/test_nonstream_hardening.py`。
+
+### 流式转发的健康判定
+
+proxy 对「什么是健康的流」只有一条判据：**数据在流就算健康，静默才杀。**
+
+```
+header 超时   连接 / TLS / 首字节        120s
+idle 超时     每次读之间的间隔           300s（= httpx read）
+总时长上限    没有
+chunk 数上限  没有
+连续空 chunk   没有
+```
+
+**为什么不设总时长 / chunk 数 / 连续空 chunk 上限**：推理模型
+（`reasoning_effort=high`）会先只流 `delta.reasoning_content`，实测难题 +
+大上下文下这个阶段可达 500+ chunk，之后才出正文；长正文流也可能几万个 chunk。
+任何基于「连续多少 chunk 没有 content」或「总共多少 chunk」的判断都会把
+正常请求误杀。唯一保留的是**累计缓冲字节上限（64MB）**——那是内存资源保护，
+与流是否健康无关。
+
+### 上游错误不会静默吞掉
+
+上游可能在 HTTP 200 **之后**的 SSE 流里返回错误对象。proxy 解析出 `error`
+字典就立刻按协议转成错误帧并终止，而不是继续循环最后交出一个空回复：
+
+- Responses / Anthropic → `event: error` 帧（裸 `data:` 会让客户端触发 422）
+- OpenAI → 裸 `data:` 错误 chunk
+
+上游常把 `{"code":11155,"msg":"..."}` 序列化后塞进 `message` 字段，
+proxy 会解出内层 code 和 msg 再上报。
+
+### 思考过程（reasoning_content）会转发
+
+| 路径 | 处理 |
+|---|---|
+| OpenAI 流式 | 透传（只覆盖 `delta.content`，不动其他字段） |
+| Anthropic 流式 | 转成原生 `thinking` 块，含块顺序处理 |
+| 非流式 | 随 `message.reasoning_content` 返回 |
+
+ Anthropic 的 content block 必须按顺序打开/关闭，不能交错，所以开 text 块前
+会先关掉还开着的 thinking 块。
+
+> `max_tokens` 给小了可能出现「推理吃满配额、正文为空」（`finish_reason=length`、
+> `content=""`）。这是上游行为，此时 `reasoning_content` 里能看到思考内容。
 
 ## 技术细节
 

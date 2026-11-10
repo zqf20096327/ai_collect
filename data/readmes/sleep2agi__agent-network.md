@@ -1,22 +1,20 @@
 <div align="center">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/anet-mark-dark.svg">
-  <img src="docs/assets/readme/anet-mark-light.svg" width="96" height="96" alt="Agent Network logo">
-</picture>
 
-# Agent Network
-[![npm](https://img.shields.io/npm/v/@sleep2agi/agent-network?label=npm&color=009e7e)](https://www.npmjs.com/package/@sleep2agi/agent-network)
-[![Desktop](https://img.shields.io/github/v/release/sleep2agi/agent-network-app?filter=desktop-v*&label=download&color=2f6feb)](https://github.com/sleep2agi/agent-network-app/releases/latest)
-[![QA](https://github.com/sleep2agi/agent-network/actions/workflows/qa.yml/badge.svg?branch=main)](https://github.com/sleep2agi/agent-network/actions/workflows/qa.yml)
-[![Docs](https://img.shields.io/badge/docs-anet.sh-009e7e)](https://anet.sh)
-[![License](https://img.shields.io/badge/license-Apache_2.0-blue)](./LICENSE)
-[![Stars](https://img.shields.io/github/stars/sleep2agi/agent-network?style=flat&color=yellow)](https://github.com/sleep2agi/agent-network/stargazers)
+<a href="https://anet.sh"><img src="docs/assets/readme/hero-zh.jpg" alt="Agent Network：一个人，一支 Agent 军团。像用微信一样指挥 Claude、Codex、Grok、OpenCode 节点" width="100%"></a>
 
-[文档](https://anet.sh) · [下载桌面版](https://github.com/sleep2agi/agent-network-app/releases/latest) · [快速上手](https://anet.sh/guide/getting-started) · **中文** · [English](./README.en.md)
+<p>
+<a href="https://www.anet.sh/download"><img alt="Desktop" src="https://img.shields.io/github/v/release/sleep2agi/agent-network-app?display_name=release&label=download&color=1b65db&style=for-the-badge&labelColor=0b1220"></a>
+<a href="https://www.npmjs.com/package/@sleep2agi/agent-network"><img alt="npm" src="https://img.shields.io/npm/v/@sleep2agi/agent-network/preview?label=npm&color=1b65db&style=for-the-badge&labelColor=0b1220"></a>
+<a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache_2.0-38c8e0?style=for-the-badge&labelColor=0b1220"></a>
+<a href="https://github.com/sleep2agi/agent-network/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/sleep2agi/agent-network?color=38c8e0&style=for-the-badge&labelColor=0b1220"></a>
+<a href="https://anet.sh"><img alt="Docs" src="https://img.shields.io/badge/docs-anet.sh-38c8e0?style=for-the-badge&labelColor=0b1220"></a>
+</p>
 
-<img width="2667" height="1400" alt="image" src="https://github.com/user-attachments/assets/0e4ead5a-fab5-4cb3-a92d-cd029549c2bf" />
+**[🌐 官网](https://anet.sh) · [⬇️ 下载桌面版](https://www.anet.sh/download) · [🚀 快速上手](https://anet.sh/guide/getting-started) · [▶️ 48 秒介绍视频](https://anet.sh) · 中文 · [English](./README.en.md)**
 
-**把分布在多台机器上的 Claude Code、Codex、Grok、OpenCode 连成一支 Agent 军团 —— 在一个桌面应用里指挥它们。**
+**企业级开源版 Grok Bot，更适合企业内部私有化部署。**
+
+把分布在多台机器上的 Claude Code、Codex、Grok、OpenCode 连成一支 Agent 军团 —— 在一个桌面应用里指挥它们。
 
 </div>
 
@@ -34,10 +32,7 @@
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/tasks-dark.webp"><img src="docs/assets/readme/tasks-light.webp" width="880" alt="桌面端任务页：左侧按项目筛选，右侧是需求池、进行中、完成三列看板"></picture>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/chat-dark.webp">
-  <img src="docs/assets/readme/chat-light.webp" width="880" alt="Agent Network 桌面端：左侧是在线 Agent 列表，右侧是与一个节点的对话">
-</picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/chat-dark.webp"><img src="docs/assets/readme/chat-light.webp" width="880" alt="Agent Network 桌面端：左侧是在线 Agent 列表，右侧是与一个节点的对话"></picture>
 
 ## 30 秒上手
 
@@ -57,6 +52,8 @@ anet node start my-bot
 看到 `SSE connected` 就说明节点上线了。之后用桌面端连 `http://127.0.0.1:9200` 和它对话，或运行 `anet hub dashboard` 打开 Web 版（`http://localhost:3000`）。公网部署请立刻 `anet passwd` 改密 —— 完整步骤见 [上手指南](https://anet.sh/guide/getting-started)。
 
 ## 工作原理
+
+<div align="center"><img width="2667" height="1400" alt="Agent Network 开源版架构：人类指挥层、客户端层、Hub、部署层、节点层" src="https://github.com/user-attachments/assets/0e4ead5a-fab5-4cb3-a92d-cd029549c2bf" /></div>
 
 ```mermaid
 flowchart LR
@@ -97,3 +94,5 @@ flowchart LR
 <a href="https://star-history.com/#sleep2agi/agent-network&Date"><img src="https://api.star-history.com/svg?repos=sleep2agi/agent-network&type=Date" width="600" alt="Star History Chart"></a>
 ## 许可证
 [Apache License 2.0](./LICENSE)。桌面与移动客户端源码在 [sleep2agi/agent-network-app](https://github.com/sleep2agi/agent-network-app)（MIT）。
+
+Grok 与 Grok Bot 是 xAI 的商标；Agent Network 是独立的开源项目，与 xAI 无关联。

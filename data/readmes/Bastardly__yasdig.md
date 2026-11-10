@@ -122,7 +122,8 @@ could have a bug a crafted file exploits to run code on your computer. So the pr
 that load and run every model — the image models' and the Assistant's — are started unable to open an internet connection —
 nor can anything it starts — and the lock can't be lifted from inside. Even a file
 that broke in couldn't send your pictures or anything else anywhere, or fetch more.
-On Windows it also can't open your files outside yasdig's own folders.
+On Windows it also can't open your files outside yasdig's own folders; on Linux it can
+read them but can't write or delete anything outside yasdig's own folders.
 
 **Saved pictures carry their settings.** *Save to output* and *Download* write the
 prompt, model names and settings into the PNG, so others can recreate your picture
@@ -171,8 +172,10 @@ Not sure where to start? The ones marked *Recommended* there and in the model li
 **Video.** Wan 2.2 (TI2V-5B and the I2V-A14B pair), Wan 2.1 VACE and dense models,
 MiniMax H3 with sound, and LTX-2.3 and LTX-2.5 with sound (distilled, 8 steps, with
 LTX's own ×2 hi-res in the same run) — text or a first frame to video, LoRAs, a live preview, and
-long clips made a shot at a time from each shot's last frame. Clips enlarge (FSR, no
-flicker) and save to Outputs as video files.
+long clips made a shot at a time from each shot's last frame. **Narrated stills**: your
+pictures with a voice reading over them, in the voice of a short recording you pick
+(Chatterbox, English or 23 languages; Qwen3-TTS). Clips enlarge (FSR, no flicker) and save to Outputs as video
+files.
 
 **Model files** can be `.safetensors`, `.gguf` or `.ckpt`, and are recognised by what
 is inside them, so file names and folders don't matter. The Models tab fetches the

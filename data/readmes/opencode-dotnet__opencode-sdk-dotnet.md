@@ -97,7 +97,7 @@ You also need the `opencode` CLI, from the `@opencode/cli` npm scope. Install th
 repository pins — later releases usually work, but they are not what the tests run against:
 
 ```sh
-npm install -g @opencode/cli@2.2.5
+npm install -g @opencode/cli@2.2.6
 ```
 
 You do not have to start it. `OpenCodeServer.StartAsync()` in the [quick start](#-quick-start)
@@ -343,9 +343,7 @@ Architecture, decision records, and engineering policy live under
 
 ## 📌 Versions and support
 
-- From `1.0.0`, a version's parts say where a change comes from: a patch fixes or adds, a minor
-  moves the pinned opencode release and may change the generated protocol models, and only a major
-  breaks the hand-written surface.
+- From `1.0.0`, a version follows the bump type of the upstream opencode release it pins: an upstream patch is an SDK patch, a minor a minor, a major a major. The SDK's own fixes and additions are a patch, and only a major breaks the hand-written surface. A release that moves the pin may change the generated protocol models the way upstream changed them; the CHANGELOG lists each such change as **breaking**.
   See [CHANGELOG.md](https://github.com/opencode-dotnet/opencode-sdk-dotnet/blob/master/CHANGELOG.md).
 - 📌 The SDK builds against a snapshot of an upstream release tag, never a live branch.
   [`spec/SNAPSHOT.md`](https://github.com/opencode-dotnet/opencode-sdk-dotnet/blob/master/spec/SNAPSHOT.md)
@@ -439,8 +437,9 @@ has the versions and the full completion gate.
 Got questions or wild feature ideas?
 
 👉 Blank issues are disabled. Use the [missing-operation form](https://github.com/opencode-dotnet/opencode-sdk-dotnet/issues/new?template=operation_gap.yml)
-for a missing operation; use the [bug form](https://github.com/opencode-dotnet/opencode-sdk-dotnet/issues/new?template=bug_report.yml)
-for anything else, including questions and ideas, and say when it is an idea. A vulnerability goes through a private advisory instead, as [SECURITY.md](https://github.com/opencode-dotnet/opencode-sdk-dotnet/blob/master/.github/SECURITY.md) says.
+for a missing operation; use the [feature-idea form](https://github.com/opencode-dotnet/opencode-sdk-dotnet/issues/new?template=feature_idea.yml)
+for an idea, and the [bug form](https://github.com/opencode-dotnet/opencode-sdk-dotnet/issues/new?template=bug_report.yml)
+for anything else, including questions. A vulnerability goes through a private advisory instead, as [SECURITY.md](https://github.com/opencode-dotnet/opencode-sdk-dotnet/blob/master/.github/SECURITY.md) says.
 
 ## Related Projects
 

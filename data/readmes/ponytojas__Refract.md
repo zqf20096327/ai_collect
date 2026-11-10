@@ -46,6 +46,7 @@ Refract started as a replacement for OpenAI Prism: it opens Prism's exports as t
 
 - LaTeX editor (CodeMirror) with tabs, autosave and syntax highlighting.
 - Completion as you type: common commands, environments (`\begin{…}` closes itself), `\ref` from the project's labels, `\cite` from its `.bib` files, and file paths in `\input`, `\include` and `\includegraphics`, relative to the main file. Each command shows its arguments and a short description, and keeps them in view while you fill them in; citations show the author, year and title of each work.
+- A collapsible document outline under the file tree, following `\input` and `\include`: click a heading to jump to it, and the one containing the cursor is highlighted. Headings are searchable from the command palette too.
 - Compilation with [Tectonic](https://tectonic-typesetting.github.io): no TeX distribution to install, packages are fetched and cached on first use. Errors and warnings are listed with file and line, each with **Fix with AI**.
 - PDF preview with SyncTeX in both directions: <kbd>⌘J</kbd> shows the cursor's position in the PDF, <kbd>⌘</kbd>-click in the PDF jumps to the source.
 - A right-click menu in the PDF (go to source, zoom, download).
@@ -323,6 +324,7 @@ All settings are environment variables.
 | `REFRACT_AUTH` | `cloudflare` (default), `password` or `none`. See [Choose how people sign in](#choose-how-people-sign-in). |
 | `REFRACT_DATA_DIR` | Where projects, the database and caches live. Default `/data`. |
 | `REFRACT_ADDR` | Listen address. Default `:8080`. |
+| `REFRACT_MODE` | `selfhost` (default) or `saas`, for the hosted service. With `saas`, the ChatGPT plan is off (OpenAI's plan usage covers self-hosted apps): people use the assistant with API providers only. |
 | `REFRACT_CF_TEAM_DOMAIN`, `REFRACT_CF_AUD` | Cloudflare Access team domain and application AUD tag. |
 | `REFRACT_PUBLIC_URL` | The address users open Refract at, e.g. `https://refract.example.com`. Needed for OpenID Connect. |
 | `REFRACT_OIDC_ISSUER`, `REFRACT_OIDC_CLIENT_ID`, `REFRACT_OIDC_CLIENT_SECRET` | Your OpenID Connect provider's issuer URL and Refract's client credentials there. |

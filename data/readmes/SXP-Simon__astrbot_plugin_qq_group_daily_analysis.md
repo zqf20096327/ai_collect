@@ -2,7 +2,7 @@
 
 # 群聊日常分析插件
 
-[![Plugin Version](https://img.shields.io/badge/当前版本-v6.0.0-blue.svg?style=for-the-badge&color=76bad9)](https://github.com/SXP-Simon/astrbot_plugin_qq_group_daily_analysis)
+[![Plugin Version](https://img.shields.io/badge/当前版本-v6.0.1-blue.svg?style=for-the-badge&color=76bad9)](https://github.com/SXP-Simon/astrbot_plugin_qq_group_daily_analysis)
 [![AstrBot](https://img.shields.io/badge/AstrBot-插件市场入口-ff69b4?style=for-the-badge)](https://cloud.astrbot.app/plugin/SXP-Simon/astrbot_plugin_qq_group_daily_analysis)
 [![AstrBot Version](https://img.shields.io/badge/AstrBot-%3E%3D4.24.1-orange.svg?style=for-the-badge)](https://github.com/AstrBotDevs/AstrBot)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
@@ -23,7 +23,7 @@
   </tr>
 </table>
 
-_✨ 一个基于 AstrBot 的智能群聊分析插件，支持 **OneBot** ( [NapNeko/NapCatQQ<img src="https://avatars.githubusercontent.com/u/165024194?s=200&v=4" width="14px" >](https://napneko.github.io/), [LLOneBot/LuckyLilliaBot<img src="https://avatars.githubusercontent.com/u/161472069?s=200&v=4" width="14px" >](https://www.llonebot.com/), [SnowLuma/SnowLuma<img src="https://avatars.githubusercontent.com/u/216149176?s=200&v=4" width="14px" >](https://snowluma.github.io/))、**QQ 官方机器人**、**Telegram**、**Discord**，未来支持更多平台。 ✨_
+_✨ 一个基于 AstrBot 的智能群聊分析插件，支持 **OneBot** ( [NapNeko/NapCatQQ<img src="https://avatars.githubusercontent.com/u/165024194?s=200&v=4" width="14px" >](https://napneko.github.io/), [LLOneBot/LuckyLilliaBot<img src="https://avatars.githubusercontent.com/u/161472069?s=200&v=4" width="14px" >](https://www.llonebot.com/))、**QQ 官方机器人**、**Telegram**、**Discord**，未来支持更多平台。 ✨_
 
 <img src="https://count.getloli.com/@astrbot-qq-group-daily-analysis?name=astrbot-qq-group-daily-analysis&theme=booru-jaypee&padding=6&offset=0&align=top&scale=1&pixelated=1&darkmode=auto" alt="count" />
 </div>
@@ -202,6 +202,14 @@ _✨ 一个基于 AstrBot 的智能群聊分析插件，支持 **OneBot** ( [Nap
 | 自定义 LLM 服务         | 用户可自行选取个人提供的服务商。                            | 留空则回退到默认服务商                                                           |
 
 ## 每日群漫画配置
+
+在「配置 → 每日群漫画 → 漫画风格方案」选用经典、像素 RPG、手账等 14 种内置风格。固定模式使用列表第一套已启用的方案。想改写时可复制内置提示词，点正文旁的「恢复默认」即可重新使用当前风格的原版。也可以添加方案并选择「自定义风格」，填写自己的名称和完整分镜提示词，再保存配置。已保存的自定义方案会按名称出现在「风格来源」中，选中即可复制到另一条方案。新增多条方案后，可开启顺序、随机或洗牌轮换；轮换进度可由所有群共享，也可以按机器人实例与群聊独立保存。
+
+在「数据 → 存储分区明细与管理 → 漫画样图缓存」可按风格预览、下载、重新获取或清理样图。生成成品可在「历史报告」按「群漫画」筛选。漫画配置中的「查看轮换进度」可查看上次选用的风格，并重置共享、单群或全部轮换进度。
+
+原有的角色人格与参考图继续在「漫画角色方案」设置。已有角色专属正文会继续使用，清空后就跟随风格方案。管理员可用 `/查看漫画风格` 浏览分镜样图，或带上风格序号、名称或 ID 直接打开指定风格。Telegram 和 QQ 官方机器人支持上一张、下一张，OneBot 使用分页合并转发。实际使用的风格在「漫画风格方案」配置，浏览样图不会修改配置或推进轮换。
+
+内置分镜与样图来自 [@凉雨](https://github.com/Liangyu-G)。
 
 每日群漫画不按自然日限流：每次成功得到群分析结果时都会尝试生成一张。手动群分析、定时传统分析、定时增量最终报告，以及开启“增量分析立即报告”后的即时增量最终报告都适用。同一群已有漫画在排队或生成时，新请求会直接跳过，避免重复出图；不同群仍受漫画并发配置限制。
 
@@ -443,7 +451,7 @@ AI:     (自动调用 group_daily_analysis_trigger)
 
 | 平台              | 适配器类型                         | 驱动与方言支持                                                                                                                   | 特殊要求/说明                                                                                                                                                        |
 | ----------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **QQ (OneBot)**   | OneBot v11 / v12                   | **方言驱动架构**：内置 NapCat、LLOneBot (LuckyLilliaBot)、SnowLuma、Standard (go-cqhttp / Lagrange / onebots / WeChatBridge) 驱动 | 插件通过 `get_version_info` / `get_version` 自动探测并动态绑定最佳方言驱动；支持多端群相册、群文件多级解包、协议端真实头像与全链路观测日志。                       |
+| **QQ (OneBot)**   | OneBot v11 / v12                   | **方言驱动架构**：内置 NapCat、LLOneBot (LuckyLilliaBot)、Standard (go-cqhttp / Lagrange / onebots / WeChatBridge) 驱动           | 插件通过 `get_version_info` / `get_version` 自动探测并动态绑定最佳方言驱动；支持多端群相册、群文件多级解包、协议端真实头像与全链路观测日志。                       |
 | **QQ 官方机器人** | QQ Bot API v2（WebSocket/Webhook） | 官方统一 API                                                                                                                     | 需开启群全量消息；只分析启用后实时缓存的消息；图片/HTML 优先显示事件昵称，缺失时使用群内稳定匿名名；Markdown 文本使用成员艾特。                                      |
 | **Discord**       | Discord                            | Discord Gateway                                                                                                                  | **必须** 拥有 `Read Message History` (查看消息历史记录) 权限。                                                                                                       |
 | **Telegram**      | Telegram Bot API                   | Telegram Bot API                                                                                                                 | 若机器人不是群管理员，入群前需先在 BotFather 关闭隐私模式 (`/setprivacy` -> `Disable`)。若机器人已在群内且非管理员，关闭后需要先移出机器人再重新拉入，设置才会生效。 |
@@ -454,8 +462,7 @@ AI:     (自动调用 group_daily_analysis_trigger)
 > 插件采用了开放闭合原则 (OCP) 的**方言驱动解耦架构**，在连接时自动探测后端实现并无缝自适应：
 > 1. **NapCat.Onebot**：支持标准逆序分页、独有的 `upload_file_stream` 分块流式上传大图/兜底、`get_qun_album_list` 群相册列表与协议端真实头像解析。
 > 2. **LLOneBot (LuckyLilliaBot)**：支持相册上传专属 `files` 列表参数、相册列表 `data: list` 数组解包与多层嵌套兼容。
-> 3. **SnowLuma**：支持专属 `message_id` 锚点分页拉取群历史（不传 `reverseOrder`）、精准识别 `result=120` / `rejected` 发送拒绝与禁言错误。
-> 4. **Standard (go-cqhttp / Lagrange / onebots / 微信桥接 WeChatBridge)**：
+> 3. **Standard (go-cqhttp / Lagrange / onebots / 微信桥接 WeChatBridge)**：
 >    - **真实用户头像**：针对微信/企业微信接入等映射数字 ID 场景，优先通过 `get_stranger_info` / `get_user_info` 获取真实头像 URL（带 1 小时正缓存与并发去重），失败时自动回退官方 CDN 并进入 10 分钟负缓存，杜绝重复无效请求。
 >    - **群文件与相册多级解包**：自动兼容 `data.folders`、`data.album_list`、顶层列表等不同协议端返回格式，确保文件夹自动创建与归档不回退。
 >    - **全链路可观测日志**：动作发起、参数目标、原始响应 Payload 与解析降级流转全景上报，方便快速诊断排障。

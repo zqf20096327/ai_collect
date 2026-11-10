@@ -1,54 +1,80 @@
 <p align="center">
-  <img src="assets/oasis-icon.svg" alt="OASIS app icon" width="84">
-</p>
-<h1 align="center">OASIS</h1>
-<p align="center">
-  <strong>The open-source coding agent for any model.</strong><br>
-  Work in your terminal or a web app. Bring your own model, your Claude Code plugins and your MCP servers.<br>
-  OASIS supplies the tools, subagents, permissions and a check that the work was actually verified.
-</p>
-<p align="center">
-  <a href="https://github.com/FAHTHIZ/oasis/actions/workflows/quality.yml"><img alt="Quality checks" src="https://github.com/FAHTHIZ/oasis/actions/workflows/quality.yml/badge.svg?branch=main"></a>
-  <a href="https://github.com/FAHTHIZ/oasis/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/FAHTHIZ/oasis?style=flat-square&color=3FE07A"></a>
-  <img alt="Node.js 22.15 or newer" src="https://img.shields.io/badge/Node.js-22.15%2B-339933?style=flat-square&logo=node.js&logoColor=white">
-  <img alt="Windows, macOS and Linux" src="https://img.shields.io/badge/platforms-Windows%20%C2%B7%20macOS%20%C2%B7%20Linux-1f2937?style=flat-square">
-  <a href="LICENSE"><img alt="Apache 2.0 license" src="https://img.shields.io/github/license/FAHTHIZ/oasis?style=flat-square"></a>
-</p>
-<p align="center">
-  <a href="#install">Install</a> ·
-  <a href="#quick-start">Quick start</a> ·
-  <a href="#two-ways-to-work">Terminal and web</a> ·
-  <a href="#plugins-mcp-and-models">Plugins and models</a> ·
-  <a href="#tested-like-a-real-user">Real-user tests</a> ·
-  <a href="#benchmarks">Benchmarks</a> ·
-  <a href="#how-it-compares">Comparison</a> ·
-  <a href="docs/README.md">Docs</a>
+  <a href="https://github.com/FAHTHIZ/oasis">
+    <img src="assets/oasis-readme-hero.svg" alt="OASIS: the open-source coding agent for any model. Terminal and web app, Claude Code plugins, verified work." width="100%">
+  </a>
 </p>
 
 <p align="center">
-  <img src="assets/screenshots/web-task-dark.png" alt="The OASIS web app in dark mode after a real gpt-oss-20b run: a list of completed steps (read slug.mjs, edited it, wrote a test, reviewed the diff, ran the tests), the agent's summary, and the Files panel showing the changed files." width="100%">
-  <br><sub>The OASIS web app after an unscripted run with a free 20B model. Recorded 8 November 2026.</sub>
+  <a href="https://github.com/FAHTHIZ/oasis/actions/workflows/quality.yml"><img alt="Quality checks" src="https://img.shields.io/github/actions/workflow/status/FAHTHIZ/oasis/quality.yml?branch=main&style=flat-square&label=quality&labelColor=0B0F0C&color=32E07A"></a>
+  <a href="https://github.com/FAHTHIZ/oasis/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/FAHTHIZ/oasis?style=flat-square&labelColor=0B0F0C&color=7CFF5E"></a>
+  <img alt="About 2,350 tests" src="https://img.shields.io/badge/tests-2%2C350%2B-0ED168?style=flat-square&labelColor=0B0F0C">
+  <img alt="Node.js 22.15 or newer" src="https://img.shields.io/badge/node-22.15%2B-32E07A?style=flat-square&logo=node.js&logoColor=white&labelColor=0B0F0C">
+  <img alt="Windows, macOS and Linux" src="https://img.shields.io/badge/platforms-win%20%C2%B7%20mac%20%C2%B7%20linux-1A1F1B?style=flat-square&labelColor=0B0F0C">
+  <a href="LICENSE"><img alt="Apache 2.0 license" src="https://img.shields.io/github/license/FAHTHIZ/oasis?style=flat-square&labelColor=0B0F0C&color=1A1F1B"></a>
+  <a href="https://github.com/FAHTHIZ/oasis/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/FAHTHIZ/oasis?style=flat-square&labelColor=0B0F0C&color=7CFF5E&logo=github"></a>
+</p>
+
+<p align="center">
+  <b>The open-source coding agent for any model.</b><br>
+  Bring any model, keep your Claude Code setup, and get work that is actually checked.<br>
+  OASIS runs on your machine or server and works from the terminal or any browser.<br>
+  It supplies the tools, subagents, permissions and memory, and it won't say "tests pass" unless it saw them pass.
+</p>
+
+<p align="center">
+  <a href="#install"><b>Install</b></a> ·
+  <a href="#quick-start"><b>Quick start</b></a> ·
+  <a href="#two-ways-to-work">Terminal and web</a> ·
+  <a href="#plugins-mcp-and-models">Plugins and models</a> ·
+  <a href="#tested-like-a-real-user">Real-user tests</a> ·
+  <a href="#how-it-compares">Comparison</a> ·
+  <a href="docs/README.md">Docs</a> ·
+  <a href="CHANGELOG.md">Changelog</a>
+</p>
+
+<br>
+
+<p align="center">
+  <img src="assets/screenshots/web-task-dark.png" alt="The OASIS web app in dark mode with a finished task reopened from the sidebar: the request, short progress updates alternating with execution groups (an explore subagent and a file read, edits with diff review, a test run), the final summary, and the Files panel with the changed files." width="100%">
+  <br><sub>A finished task reopened from the sidebar. Captured by the browser end-to-end test: the real OASIS runtime editing real files and running real tests, driven by a scripted model so every run is reproducible. Unscripted real-model runs are under <a href="#tested-like-a-real-user">Tested like a real user</a>.</sub>
 </p>
 
 ## Why OASIS
 
-- **Any model, no lock-in.** OpenAI, Anthropic, Gemini, OpenRouter, Groq, DeepSeek, Mistral, xAI, Bedrock, Vertex AI, Foundry, any OpenAI-compatible endpoint, gateways such as [OmniRoute](https://github.com/cheaper-inference/omniroute), or a local server (Ollama, LM Studio, llama.cpp, vLLM). Backup models and failover are built in.
-- **Your Claude Code setup works as is.** `CLAUDE.md`, `.claude/agents`, skills, slash commands, hooks, settings, `.mcp.json` and Claude Code plugins from any marketplace load without conversion.
-- **It checks its own work.** After the agent edits code, a verification step sends it back if it claims success without reviewing its diff or running the checks. Every edit is checkpointed, so Undo always works.
-- **A real agent system.** Parallel, background and resumable subagents, agent teams with a shared task board, and a separate git worktree per agent when you want isolation.
-- **Safety you can read.** Clear permission modes, shell-command risk analysis, protected paths, secret scanning, guarded network tools and optional OS or container sandboxes.
+<table>
+  <tr>
+    <td width="33%" valign="top">
+      <h3>Any model, no lock-in</h3>
+      OpenAI, Anthropic, Gemini, OpenRouter, Groq, DeepSeek, Mistral, xAI, Bedrock, Vertex AI, Foundry, any OpenAI-compatible endpoint, gateways such as <a href="https://github.com/cheaper-inference/omniroute">OmniRoute</a>, or a local server (Ollama, LM Studio, llama.cpp, vLLM). <code>oasis connect</code> finds a model that can call tools and saves backups for failover.
+    </td>
+    <td width="33%" valign="top">
+      <h3>Your Claude Code setup, as is</h3>
+      <code>CLAUDE.md</code>, <code>.claude/agents</code>, skills, slash commands, hooks, settings, <code>.mcp.json</code> and Claude Code plugins from any marketplace load without conversion. Codex plugins and Gemini CLI extensions are converted on install.
+    </td>
+    <td width="33%" valign="top">
+      <h3>It checks its own work</h3>
+      After edits, a verification step sends the agent back if it skipped the diff review or the checks. A "tests pass" claim nobody observed is sent back too, and if the check couldn't run, the answer says so. Every edit is checkpointed, so Undo always works.
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <h3>Remote-first, secure</h3>
+      One web app for laptop, tablet and phone. Files, shell and keys stay on your machine. The browser gets a 256-bit access key, plus DNS-rebinding protection and brute-force lockout. Close the tab mid-task and it picks up where it was.
+    </td>
+    <td valign="top">
+      <h3>A real agent system</h3>
+      Parallel, background and resumable subagents, agent teams with a shared task board, a git worktree per agent, <code>/goal</code> to keep going until a condition holds, and cross-session memory and search.
+    </td>
+    <td valign="top">
+      <h3>Safety you can read</h3>
+      Clear permission modes, shell-command risk analysis, protected paths, secret scanning, guarded network tools and optional OS or container sandboxes. Project settings that loosen anything wait until you trust the workspace.
+    </td>
+  </tr>
+</table>
 
 ## Install
 
-**Desktop app** (includes the web app and everything it needs):
-
-| Windows | macOS | Linux |
-| --- | --- | --- |
-| [x64 `.exe`](https://github.com/FAHTHIZ/oasis/releases/latest) · [ARM64 `.exe`](https://github.com/FAHTHIZ/oasis/releases/latest) | [Apple Silicon `.dmg`](https://github.com/FAHTHIZ/oasis/releases/latest) · [Intel `.dmg`](https://github.com/FAHTHIZ/oasis/releases/latest) | [`.AppImage`](https://github.com/FAHTHIZ/oasis/releases/latest) · [`.deb`](https://github.com/FAHTHIZ/oasis/releases/latest) (x64 and ARM64) |
-
-The macOS app is not code-signed yet: confirm the first launch under System Settings → Privacy & Security.
-
-**Command line** (needs Node.js 22.15+ and Git):
+One package gives you the terminal agent and the browser workspace (needs Node.js 22.15+ and Git):
 
 | Method | Command |
 | --- | --- |
@@ -57,7 +83,7 @@ The macOS app is not code-signed yet: confirm the first launch under System Sett
 | Homebrew | `brew tap fahthiz/oasis https://github.com/FAHTHIZ/oasis && brew install fahthiz/oasis/oasis-cli` |
 | From source | `git clone https://github.com/FAHTHIZ/oasis.git && cd oasis && npm install && npm install --global .` |
 
-The install scripts take the latest stable release, ask before changing anything, and finish with `oasis doctor`. Each release ships a `SHA256SUMS` file. See [Downloads and releases](docs/RELEASES.md).
+The install scripts take the latest stable release, ask before changing anything, and finish with `oasis doctor`. Each release ships the npm tarball and a `SHA256SUMS` file. See [Downloads and releases](docs/RELEASES.md).
 
 ## Quick start
 
@@ -76,6 +102,7 @@ For scripts and CI:
 oasis -p "summarize the open TODOs"                                  # one-shot
 oasis exec --output-format stream-json "fix the lint errors" > run.jsonl
 oasis -p --permission-mode dont-ask "review this diff"               # never waits on an approval
+oasis -p --permission-mode auto --goal "npm test passes"              # keeps going until the check says it holds
 ```
 
 ## Two ways to work
@@ -89,26 +116,35 @@ OASIS has two interfaces, both on the same runtime, sessions and settings. Start
   </tr>
   <tr>
     <td><a href="assets/demo/oasis-real-model-demo.mp4"><img src="assets/demo/oasis-real-model-demo.gif" alt="Unscripted OASIS terminal run with gpt-oss-20b: the agent reads a file, fixes a bug, adds a test, runs it after approval and is sent back to review its changes."></a></td>
-    <td><img src="assets/screenshots/web-approval-dark.png" alt="The OASIS web app asking for approval before a step in a real run."></td>
+    <td><img src="assets/screenshots/web-approval-dark.png" alt="The OASIS web app asking for approval to run npm test in a card above the message box, with the step behind it marked as waiting and the task sidebar showing Needs you."></td>
   </tr>
   <tr>
     <td>Streaming diffs with word highlights, inline images, <code>/tasks</code>, <code>/rewind</code>, <code>/export</code> to Markdown or HTML. <code>oasis -p</code> and <code>oasis exec</code> for scripts, with JSON output and <code>--output-schema</code>.</td>
-    <td>Step-by-step activity, Files and Changes panels, a real terminal (<kbd>Ctrl</kbd>+<kbd>&#96;</kbd>), plan mode, Undo, cost and context meters, <code>/</code> and <code>@</code> autocomplete, voice input, and one-click Claude Code plugins.</td>
+    <td>Live timeline with expandable execution groups, a task sidebar, Files and Changes panels, a real terminal (<kbd>Ctrl</kbd>+<kbd>&#96;</kbd>), plan mode, Undo, cost and context meters, <code>/</code> and <code>@</code> autocomplete, voice input, and one-click Claude Code plugins.</td>
   </tr>
 </table>
 
-The web app runs on your own computer, not a hosted service. The desktop app is the same web app in a native window. To use it from a phone on your network, see [Mobile and tablet setup](MOBILE.md). There is no native Android or iOS app.
+The web app runs on a computer or server you control, not a hosted service, and opens in any modern browser. An optional [desktop app](docs/DESKTOP.md) for Windows, macOS and Linux shows the same workspace in its own window; there is no separate mobile app.
+
+### Use it from anywhere
+
+```sh
+oasis web --public-url https://oasis.example.com --trust-proxy   # behind Caddy, nginx, Tailscale Serve or Cloudflare Tunnel
+oasis web key                                                    # show the access key; --rotate replaces it
+```
+
+Open the address on any device, paste the link once and tick **Remember this device**. Tasks run on the server, so a reload or dropped connection reattaches to the running task and asks any open approval again. Recipes and the full security model: [Remote access](docs/REMOTE-ACCESS.md).
 
 <table>
   <tr>
     <td width="50%"><img src="assets/screenshots/web-welcome-light.png" alt="The OASIS web app welcome screen in light mode, with suggested first tasks."></td>
     <td width="22%"><img src="assets/screenshots/web-phone-dark.png" alt="The OASIS web app at phone width in dark mode."></td>
-    <td width="28%"><img src="assets/screenshots/real-model-pdf.png" alt="The OASIS web app reading an uploaded PDF and summarising it."></td>
+    <td width="28%"><img src="assets/screenshots/web-sign-in-dark.png" alt="The OASIS sign-in screen asking for the link or access key, with a Remember this device checkbox."></td>
   </tr>
   <tr>
     <td><sub>Light theme</sub></td>
     <td><sub>Phone width</sub></td>
-    <td><sub>Reading an uploaded PDF</sub></td>
+    <td><sub>Signing in from another device</sub></td>
   </tr>
 </table>
 
@@ -170,6 +206,7 @@ Stdio, HTTP and SSE, with OAuth (`oasis mcp login`), elicitation and MCP Tasks. 
 ```sh
 oasis connect                              # paste a key (kept out of shell history)
 oasis connect --from-env gemini            # use GEMINI_API_KEY
+oasis connect --from-env nvidia            # use NVIDIA_API_KEY from build.nvidia.com (nvapi-…)
 oasis connect http://localhost:11434       # Ollama, LM Studio, llama.cpp or vLLM
 oasis connect http://127.0.0.1:20128/v1    # an OmniRoute gateway
 ```
@@ -184,9 +221,9 @@ These runs used the released app the way a person would: type a request, approve
 | --- | --- | --- | --- |
 | "Build a small to-do web app in index.html" | Web app | gpt-oss-20b (free) | Working app in about 6 minutes |
 | "math.mjs add() is wrong. Fix it and add a test, then run it." | `oasis -p` | gpt-oss-20b | Fixed, test written and passing, exit 0. About 10 minutes, mostly provider wait. |
-| "slugify() only replaces the first space. Fix it, add a test, run the tests." | Web app, Ask first | gpt-oss-20b | Fixed with a global regex, test added, 1 passing. 409 s, 2 approvals. Screenshot above. |
+| "slugify() only replaces the first space. Fix it, add a test, run the tests." | Web app, Ask first | gpt-oss-20b | Fixed with a global regex, test added, 1 passing. 409 s, 2 approvals. [Screenshot](assets/screenshots/real-model-task-dark.png) (earlier interface). |
 | Fix a bug and run the tests after approval | Terminal | gpt-oss-20b | Passed |
-| Read an uploaded PDF | Web app | gpt-oss-20b | Passed in 49 s |
+| Read an uploaded PDF | Web app | gpt-oss-20b | Passed in 49 s ([screenshot](assets/screenshots/real-model-pdf.png)) |
 | Install 16 Claude Code plugins and use them | Web app and terminal | gpt-oss-20b | All installed; hooks, skills and MCP servers ran |
 | Call an MCP tool in auto mode | Terminal | gpt-oss-20b | Passed |
 | Delegate to an `explore` subagent in a worktree | Terminal | gpt-oss-20b | Passed; worktree removed afterwards |
@@ -209,16 +246,17 @@ Two tasks and one trial cannot rank agents, and OASIS does not guarantee that ev
 
 ## How it compares
 
-| | OASIS | Claude Code | Codex CLI | Gemini CLI | OpenCode | Hermes Agent |
-| --- | --- | --- | --- | --- | --- | --- |
-| Open source | Yes | No | Yes | Yes | Yes | Yes |
-| Any model | Yes | Anthropic | OpenAI first | Google | Yes | Yes |
-| Runs Claude Code plugins | Yes, plus Codex plugins and Gemini extensions | Yes | Own plugins | Own extensions | Own plugins | Own skills |
-| Web interface | Local web app | Cloud | Cloud | No | Local web app and desktop | Messaging apps |
-| Subagents | Parallel, background, resumable, teams | Yes | Yes | Yes | Yes | Yes |
-| Checks its work before it says done | Built in | With hooks | Not built in | Not built in | Not built in | Not built in |
+| | OASIS | Claude Code | Codex CLI | Cursor CLI | OpenCode | Kimi Code | Hermes Agent |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Open source | Apache-2.0 | No | Apache-2.0 | No | Yes | MIT | Yes |
+| Models | Any provider or local server | Anthropic | OpenAI first | Cursor's catalog, some BYOK | Any provider | Kimi first | Any provider |
+| Runs Claude Code plugins | Yes, plus Codex plugins and Gemini extensions | Yes | Own plugins | Own rules and hooks | Own plugins | Own skills | Own skills |
+| Web interface | Self-hosted, remote-ready | Cloud | Cloud | Cloud agents | Local web app | Local web app | Messaging apps |
+| Subagents | Parallel, background, resumable, teams, worktrees, `/batch` (`/swarm`) | Yes | Yes | Yes | Yes | Yes | Yes |
+| Keeps going until a goal holds | `/goal` with pause and resume, also in `-p --goal` for CI | ralph-loop plugin | `/goal` | Long-running cloud agents | Not documented | `/goal` | Not documented |
+| Refuses unobserved "tests pass" claims | Built in | With hooks | Not documented | Not documented | Not documented | Not documented | Not documented |
 
-OASIS still trails in model-specific tuning, hosted cloud runs, community size and real-world hours. The full comparison, with sources, is in [docs/COMPARISON.md](docs/COMPARISON.md).
+Gemini CLI is now for Gemini Code Assist enterprise users; free and AI Pro users were moved to Antigravity CLI. OASIS still trails in model-specific tuning, hosted cloud runs, community size and real-world hours. The full comparison, with sources, is in [docs/COMPARISON.md](docs/COMPARISON.md).
 
 ## How it works
 
@@ -255,12 +293,12 @@ Read the [security policy](SECURITY.md) before using OASIS on sensitive code.
 
 ```sh
 npm install
-npm test           # about 2,300 tests
+npm test           # about 2,350 tests
 npm run check      # tests, benchmark regressions, eval validation
 npm run lint
 ```
 
-CI also runs platform security tests, a live Docker sandbox test, native PTY tests and a browser test that drives the web app (a task with an approval, plus color-contrast checks in dark, light and phone views). Contributions are welcome: start with the [Contributing guide](CONTRIBUTING.md).
+CI also runs platform security tests, a live Docker sandbox test, native PTY tests and a browser test that drives the web app like a person: a task with an approval, a page reload mid-task that must reattach, an approval answered from a second browser, reopening the finished task in a fresh browser with all its steps, signing in with Remember this device, and WCAG contrast checks in dark, light, phone and sign-in views. Contributions are welcome: start with the [Contributing guide](CONTRIBUTING.md).
 
 ## Documentation
 
@@ -270,7 +308,7 @@ CI also runs platform security tests, a live Docker sandbox test, native PTY tes
 | [First run](docs/FIRST-RUN.md) | [Configuration](docs/CONFIGURATION.md) | [Contributing](CONTRIBUTING.md) |
 | [Interfaces](docs/INTERFACES.md) | [Subagents](docs/SUBAGENTS.md) | [Security](SECURITY.md) |
 | [Downloads](docs/RELEASES.md) | [Comparison](docs/COMPARISON.md) | [Support](SUPPORT.md) |
-| [Mobile setup](MOBILE.md) | [Benchmarks](docs/BENCHMARKS.md) | [Brand guidelines](BRAND.md) |
+| [Releases](docs/RELEASES.md) | [Benchmarks](docs/BENCHMARKS.md) | [Brand guidelines](BRAND.md) |
 
 ## License
 

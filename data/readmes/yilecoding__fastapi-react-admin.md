@@ -72,7 +72,7 @@ packages/      one-way deps: i18n / api ← ui ← platform ← web
 AI changes code fast, so every change needs something to catch it:
 
 - **Tests** — 1,600+ tests against a real database and a real browser, no mocks, on every CI run; the [E2E report](https://yilecoding.github.io/fastapi-react-admin/e2e/) is public
-- **Types** — frontend/backend types are generated from OpenAPI, so an API change the pages didn't follow fails type checking
+- **Types** — the frontend/backend contract is generated from OpenAPI; mobile infers every request's types from it, so an API change the screens didn't follow fails type checking (the web client is still migrating, and its call sites currently declare response types by hand)
 - **Rules written for AI** — 50+ per-directory `CLAUDE.md` / `AGENTS.md` files record pitfalls found by testing; a coding assistant reads the one for whatever directory it edits
 - **A backend inside the AI ecosystem** — Python + FastAPI, with the built-in AI assistant on pydantic-ai
 
@@ -112,7 +112,7 @@ AI changes code fast, so every change needs something to catch it:
 | **Open API** | AK/SK-signed endpoints · scopes / IP allow-list / replay protection / rate limits · call logs · incremental sync · Python / Node / Java SDKs · webhook subscriptions (Standard Webhooks signatures · retries · delivery log · bulk resend) |
 | **Messages & notifications** | in-app notifications (real-time) · notices (rich text + attachments · audiences · scheduled publishing · pinned / level / expiry · pop-up after sign-in with required acknowledgement · top banner · sign-in page notices · read stats) · notification routing (email / SMS / Feishu · DingTalk · WeCom group bots · per-event policies · delivery log) · SMS (Alibaba Cloud / Tencent Cloud) |
 | **Scheduled jobs** | online scheduling · cron preview · run history |
-| **Operations** | settings · dictionaries · sign-in / operation logs (redacted) · server & Redis monitoring · new-version prompt |
+| **Operations** | settings · dictionaries · sign-in / operation logs (redacted) · data change history (who changed which field from what to what, when and from where · linked to the operation log) · server & Redis monitoring · new-version prompt |
 | **Clients** | Electron desktop (installers for three platforms · silent printing · local hardware · auto-update) · native Expo app (not a WebView wrapper; scope below) |
 | **Developers** | component sandbox (every component tweakable and copy-pasteable) · color palette · type-safe API contract generated from OpenAPI |
 
@@ -146,7 +146,7 @@ Switch with `DATABASE_TYPE` in `.env` — same code, same migration chain, seed 
 
 ## Quick start
 
-You need Node ≥ 22.13, Python ≥ 3.10, [uv](https://docs.astral.sh/uv/) and Docker.
+You need Node ≥ 22.13, Python ≥ 3.11, [uv](https://docs.astral.sh/uv/) and Docker.
 
 ```bash
 docker compose -f docker-compose.dev.yml up -d          # PostgreSQL + Redis

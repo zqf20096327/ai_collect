@@ -43,8 +43,7 @@
 <!-- The banner carries this sentence as a picture; this line carries it as text,
      so search and screen readers get the same claim. Keep the two in sync, and keep
      both verbatim with the hero on trace-mcp.com and with docs/_config.yml —
-     ops/positioning.md holds the sentence. The boundary line under it is not a
-     footnote: it travels with the claim wherever the claim goes, including the one
+     The boundary line under it is not a footnote: it travels with the claim wherever the claim goes, including the one
      declinable exception (TRA-979) — keep that clause verbatim with the hero too. -->
 <p align="center">
   <strong>trace-mcp indexes what your agent keeps re-reading, and serves the answer instead.</strong><br />
@@ -605,6 +604,19 @@ Full docs live at **[trace-mcp.com](https://trace-mcp.com/)** (same content as `
 | [Comparisons](https://trace-mcp.com/comparisons.html) | Full side-by-side tables vs. other code intelligence / memory / RAG tools |
 | [Development](https://trace-mcp.com/development.html) | Building, testing, contributing, adding new plugins |
 | [Design system](DESIGN.md) | The desktop app's macOS 26 design system — tokens, type, geometry, materials, primitives, accessibility floors |
+
+---
+
+## Supported by
+
+<a href="https://assetfeed.com/search">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/sponsors/assetfeed-dark.svg" />
+    <img src="docs/images/sponsors/assetfeed-light.svg" alt="AssetFeed" height="56" />
+  </picture>
+</a>
+
+Built by the team behind [AssetFeed](https://assetfeed.com/search).
 
 ---
 

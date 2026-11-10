@@ -20,6 +20,7 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that 
 - [FreeCAD Robust MCP Server](#freecad-robust-mcp-server)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
+  - [Security](#security)
   - [Installation Requirements / Dependencies](#installation-requirements--dependencies)
   - [For Users](#for-users)
     - [Quick Links](#quick-links)
@@ -88,6 +89,28 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that 
 - **Multiple Connection Modes**: XML-RPC (recommended), JSON-RPC socket, or embedded
 - **GUI & Headless Support**: Full modeling in headless mode, plus screenshots/colors in GUI mode
 - **Macro Development**: Create, edit, run, and template FreeCAD macros via MCP
+
+## Security
+
+The bridge accepts Python from paired clients and runs it with the FreeCAD
+user's permissions, including access to files and the network. When a GUI
+bridge is running, the current development version shows a persistent, non-modal
+status warning. The workbench indicator's tooltip includes listener details.
+Stop the bridge when it is not needed.
+
+In workbench 0.7.0 and later, bridge listeners are restricted to loopback and
+require pairing. Older 0.6.x bridges do not provide pairing authentication.
+Pairing does
+not prevent a trusted client from following malicious instructions in a model
+or protect against malicious software running as the same user. The MCP server
+does not expose arbitrary Python and macro execution tools by default, but
+ordinary modeling tools still execute Python through the bridge. Client tool
+approval behavior varies and is not enforced by the bridge.
+
+See the [security guide](docs/guide/security.md) for the warning, pairing,
+client approvals, file access, and remote-access considerations.
+
+![FreeCAD with the standalone bridge permissions warning in the status bar](docs/assets/images/bridge-permissions-full.png)
 
 ## Installation Requirements / Dependencies
 
@@ -392,8 +415,11 @@ The Robust MCP Server provides **150+ tools** organized into categories. Tools m
 | `execute_python`             | Execute arbitrary Python code in FreeCAD's context            | All  |
 | `get_freecad_version`        | Get FreeCAD version, build date, and Python version           | All  |
 | `get_connection_status`      | Check MCP bridge connection status and latency                | All  |
-| `get_console_output`         | Get recent FreeCAD console output (up to N lines)             | All  |
+| `get_console_output`         | Get recent Report view or available console history           | All* |
 | `get_mcp_server_environment` | Get Robust MCP Server environment (OS, hostname, instance_id) | All  |
+
+*Console history depends on FreeCAD session capabilities and is unavailable in
+embedded mode; an unavailable source returns an error.*
 
 #### Document Management (7 tools)
 

@@ -11,21 +11,22 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0--or--later-blue" alt="license: AGPL-3.0-or-later"></a>
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey" alt="platform: Windows, macOS, Linux">
   <img src="https://img.shields.io/badge/AI-local%20%26%20offline-0e6b6b" alt="AI">
+  <a href="#tested-against-public-reference-data"><img src="https://img.shields.io/badge/tested%20on-NIST%20%26%20public%20reference%20data-2e7d32" alt="tested on NIST and public reference data"></a>
 </p>
 
 🇮🇹 **Versione italiana: [README.it.md](README.it.md)**
 
 ![RepertIA: a simulated demo flight animated on the local map](docs/media/repertia-demo.gif)
 
-🎬 **Watch the demo** (test data from a public image by Josh Hickman and a simulated flight, declared in the video). Download: [English](https://github.com/silvexe/RepertIA/releases/download/v3.0.1/RepertIA-demo-3.0.1-en.mp4) · [Italian](https://github.com/silvexe/RepertIA/releases/download/v3.0.1/RepertIA-demo-3.0.1-it.mp4)
+🎬 **Watch the demo** (test data from a public image by Josh Hickman and a simulated flight, declared in the video). Download: [English](https://github.com/silvexe/RepertIA/releases/download/v3.0.2/RepertIA-demo-3.0.2-en.mp4) · [Italian](https://github.com/silvexe/RepertIA/releases/download/v3.0.2/RepertIA-demo-3.0.2-it.mp4)
 
-https://github.com/user-attachments/assets/f5e79cc8-14cd-4164-b6d9-e10e3cde26e1
+https://github.com/user-attachments/assets/01ccfccf-8893-4bf9-be96-a6fd0de9568d
 
-
-📘 **Illustrated guide:** [Italian and English, one page](https://github.com/silvexe/RepertIA/releases/download/v3.0.1/RepertIA-guida-3.0.1.html)
+📘 **Illustrated guide:** [Italian and English, one page](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/RepertIA-guida-3.0.3.html)
 
 RepertIA analyses forensic images (E01, raw/dd, dmg), from 2.20 full file system extractions of iPhones and Android
-phones and, from 3.0, drone flight logs from a single local web interface, on Apple Silicon Macs, Windows
+phones, from 3.0 drone flight logs and, from 3.0.2, logical sources (zip, tar, 7z and rar archives, FTK Imager AD1
+logical images, ISO and UDF CD/DVD images or a folder) from a single local web interface, on Apple Silicon Macs, Windows
 or Linux (experimental). It uses established forensic tools (The Sleuth Kit, libewf, plaso, PhotoRec, bulk_extractor,
 ExifTool, libyal) and gathers their results into a case you can browse with filters, timelines and previews. An optional
 language model running on the analyst's own computer answers questions in English or Italian, citing files, offsets and
@@ -35,6 +36,20 @@ inodes.
 **RepertIA works completely WITHOUT artificial intelligence.** The local AI model is **not included** in the packages:
 it is an optional choice of the user (LM Studio, llama-server or Ollama), which can be used or not. Without a model all
 analyses, searches and reports work just the same.
+
+## Tested against public reference data
+
+RepertIA has been tested on public images prepared by others, with the expected answers written by their authors. We ran
+the tests ourselves and publish data, method and [scripts](tools/prove/) so that anyone can repeat them.
+
+| Test | Reference data | Result |
+|---|---|---|
+| **Deleted file recovery** | 90 NIST CFTT "Deleted File Recovery" images | Complete and correct files: **first or tied for first** against the published reports, on FAT, exFAT, NTFS and ext. On exFAT **all of them** (273/273 and 376/376) → [details](docs/prove/nist-dfr-carving.md) |
+| **Image carving** | 26 NIST CFTT "Graphic File Carving" images (2014 and 2023) | Whole files, also not aligned to sectors: **equal to the best published result**, zero false positives. Fragmented files (2014): **below** the best → [details](docs/prove/nist-dfr-carving.md) |
+| **Full case** | NIST CFReDS "Data Leakage" (PC, USB stick, CD-R), 60 questions with official answers | **53 questions checked on the images: answers identical to NIST's**, except a few explained differences between the data in the images and the NIST answers (and one e-mail in the unused space of the OST, which RepertIA does not read); the other 7 are analyst reasoning. Seven defects found and fixed → [details](docs/prove/nist-data-leakage.md) |
+| **Smartphones** | Joshua Hickman's Android 14 and iOS 17, with the diary of actions | **All 262 actions present in the phones' data** found, with the right details even where the diary has the wrong direction, time or number (5 cases). The other 2 in the diary are not in the phone's log → [details](docs/prove/smartphone-hickman.md) |
+
+This is not a certification: NIST and Joshua Hickman did not test RepertIA. We used their public data.
 
 ## Screenshots
 
@@ -48,6 +63,8 @@ analyses, searches and reports work just the same.
 |---|---|
 | <img src="docs/img/en/load-mass-storage.jpg" alt="Choosing a forensic copy of a disk" width="420"> | <img src="docs/img/en/load-smartphone.jpg" alt="Choosing a smartphone extraction" width="420"> |
 | Forensic copies of disks, SSDs, pendrives and cards: E01, raw/dd, img, dmg | Full file system extractions of iPhone and Android (Cellebrite, GrayKey, others): zip, tar, tar.gz or folder. Optional: iOS keychain and sysdiagnose |
+
+From 3.0.2 also **🗂️ Logical source**: files already collected by others (zip, tar, tar.gz, 7z, rar, FTK Imager AD1 logical images with FTK's hashes checked file by file, ISO 9660 and UDF CD/DVD images, a folder).
 
 <details>
 <summary><b>More screenshots</b></summary>
@@ -84,14 +101,14 @@ analyses, searches and reports work just the same.
 
 | System | File |
 |---|---|
-| Windows (installer) | [RepertIA-3.0.1-Setup.exe](https://github.com/silvexe/RepertIA/releases/download/v3.0.1/RepertIA-3.0.1-Setup.exe) |
-| Windows (portable) | [RepertIA-3.0.1-Windows.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.1/RepertIA-3.0.1-Windows.zip) |
-| Mac (Apple Silicon) | [RepertIA-3.0.1-Mac.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.1/RepertIA-3.0.1-Mac.zip) |
-| Linux x86_64 (experimental) | [RepertIA-3.0.1-Linux.tar.gz](https://github.com/silvexe/RepertIA/releases/download/v3.0.1/RepertIA-3.0.1-Linux.tar.gz) |
-| Acceptance test (*collaudo*) | [RepertIA-collaudo.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.1/RepertIA-collaudo.zip) |
-| SHA-256 checksums | [SHA256SUMS.txt](https://github.com/silvexe/RepertIA/releases/download/v3.0.1/SHA256SUMS.txt) |
-| Checksum signature | [SHA256SUMS.txt.minisig](https://github.com/silvexe/RepertIA/releases/download/v3.0.1/SHA256SUMS.txt.minisig) |
-| Illustrated guide (HTML) | [Italian and English](https://github.com/silvexe/RepertIA/releases/download/v3.0.1/RepertIA-guida-3.0.1.html) |
+| Windows (installer) | [RepertIA-3.0.3-Setup.exe](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/RepertIA-3.0.3-Setup.exe) |
+| Windows (portable) | [RepertIA-3.0.3-Windows.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/RepertIA-3.0.3-Windows.zip) |
+| Mac (Apple Silicon) | [RepertIA-3.0.3-Mac.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/RepertIA-3.0.3-Mac.zip) |
+| Linux x86_64 (experimental) | [RepertIA-3.0.3-Linux.tar.gz](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/RepertIA-3.0.3-Linux.tar.gz) |
+| Acceptance test (*collaudo*) | [RepertIA-collaudo.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/RepertIA-collaudo.zip) |
+| SHA-256 checksums | [SHA256SUMS.txt](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/SHA256SUMS.txt) |
+| Checksum signature | [SHA256SUMS.txt.minisig](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/SHA256SUMS.txt.minisig) |
+| Illustrated guide (HTML) | [Italian and English](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/RepertIA-guida-3.0.3.html) |
 
 All versions: <https://github.com/silvexe/RepertIA/releases>
 
@@ -99,7 +116,8 @@ All versions: <https://github.com/silvexe/RepertIA/releases>
 button downloads only the source code, not the program to install.
 
 > **Disclaimer.** RepertIA is a personal project. It is not certified or validated by any third party and is not
-> affiliated with any office or public administration. Results must be confirmed with a second tool or on the original
+> affiliated with any office or public administration. We tested it against public reference data (see
+> [Tested against public reference data](#tested-against-public-reference-data)). Results must be confirmed with a second tool or on the original
 > data before being used in official reports or proceedings. The software is provided "as is", without any warranty
 > (see [LICENSE](LICENSE)). The language model's answers are investigative leads, not conclusions.
 
@@ -109,8 +127,9 @@ button downloads only the source code, not the program to install.
 |---|---|
 | File systems | NTFS, FAT/exFAT, ext, HFS+, APFS (FileVault too, with the key); deleted and orphan files, ADS; unallocated space; Volume Shadow Copies and APFS snapshots |
 | Encrypted volumes | Detection of BitLocker, LUKS, FileVault, VeraCrypt (high entropy); decryption of BitLocker, LUKS1 and APFS with the key (never stored) |
-| Windows artifacts | For every installation on the disk (including Windows.old): accounts and logons (SAM and event logs), Prefetch, Amcache, UserAssist, ShimCache, BAM, SRUM, LNK files and jump lists, ShellBags, Activity History, NTFS journal `$UsnJrnl`, events (services, power on/off, Remote Desktop, Defender, USB), networks, Recycle Bin, browsers |
+| Windows artifacts | For every installation on the disk (including Windows.old): accounts and logons (SAM and event logs), Prefetch, Amcache, UserAssist, ShimCache, BAM, SRUM, LNK files and jump lists, ShellBags, Activity History, NTFS journal `$UsnJrnl`, events (services, power on/off, Remote Desktop, Defender, USB), networks, Recycle Bin, browsers; from 3.0.2 Windows Search index (`Windows.edb`), Internet Explorer history (`WebCacheV01.dat`), Sticky Notes, Google Drive |
 | macOS artifacts | Data volume, quarantine, launch items, TCC, iMessage, recent documents, Safari, KnowledgeC, Bluetooth, Time Machine |
+| Logical source (3.0.2) | zip, tar, tar.gz, 7z, rar, FTK Imager AD1 (also segmented; FTK's MD5/SHA-1 recalculated for every file), ISO 9660 and UDF CD/DVD images including multi-session CD-Rs with VAT (files only in previous VATs shown as deleted), or a folder; phone databases recognised by name, KML/GPX as map layers |
 | Smartphones (2.20) | iPhone and Android full file system extractions (zip from Cellebrite, GrayKey and others, tar, tar.gz, folder) read without copying; WhatsApp, iMessage/SMS and SMS/MMS chats with a bubble view (also in the portable report), address books, attachments linked to the files and previewed over the chat, chat export (HTML/CSV with SHA-256); iLEAPP and ALEAPP included, with the chats of the other apps and a Calls view derived from their results; optional iOS keychain acquired separately (e.g. GrayKey) passed to iLEAPP, secret values hidden by default; iOS sysdiagnoses (one or more) read with a second iLEAPP run |
 | Cited files (2.20) | File paths and names cited by artifacts, chat attachments, timeline rows and agent answers found in the image or extraction (phone, Windows and macOS paths; folder and name fields joined; by path, hash or name and size), one box per file with the result in three levels (✅ found with certainty, ⚠️ probable with the candidates, ❌ not present) and a preview, also in the Word/PDF report; WhatsApp attachments verified with their SHA-256, thumbnail from the database when the file is missing |
 | Timeline | File system + plaso; dates in UTC, Italian time or the device's time zone (detected); FAT/exFAT converted correctly |

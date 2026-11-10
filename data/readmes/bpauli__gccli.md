@@ -459,6 +459,9 @@ gccli health snapshots                 # Health Snapshot sessions (--limit, --of
 gccli health snapshots show 2026-10-21 <uuid>
 gccli health snapshots epochs <uuid>   # Measurements of one session
 gccli health snapshots report 2026-10-21 <uuid> --output snapshot.pdf   # PDF report of one session
+gccli health snapshots rename 2026-10-21 <uuid> "Morning check"
+gccli health snapshots note 2026-10-21 <uuid> "Felt rested"   # --clear removes the note
+gccli health snapshots delete 2026-10-21 <uuid>   # Asks first; --force skips the prompt
 
 # Stress and recovery
 gccli health stress                    # Stress for today
@@ -1247,6 +1250,19 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<date>`: Date of the session (YYYY-MM-DD, today, yesterday, 3d).
   - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
   - `-o, --output=STRING`: Output file path (default: health_snapshot_{uuid}.pdf).
+- `gccli health snapshots rename <date> <uuid> <name>`: Rename a Health Snapshot session.
+  - `<date>`: Date of the session (YYYY-MM-DD, today, yesterday, 3d).
+  - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
+  - `<name>`: New session name.
+- `gccli health snapshots note <date> <uuid> [<text>] [flags]`: Set or remove the note of a Health Snapshot session.
+  - `<date>`: Date of the session (YYYY-MM-DD, today, yesterday, 3d).
+  - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
+  - `[<text>]`: Note text. It replaces the note of the session.
+  - `--clear`: Remove the note instead of setting a text.
+- `gccli health snapshots delete <date> <uuid> [flags]`: Delete a Health Snapshot session.
+  - `<date>`: Date of the session (YYYY-MM-DD, today, yesterday, 3d).
+  - `<uuid>`: Session UUID (activityUuid.uuid in 'health snapshots list').
+  - `-f, --force`: Skip confirmation prompt.
 - `gccli health body-battery view [<date>]`: Show body battery data for a date. Also runs as `gccli health body-battery [<date>]`.
   - `[<date>]`: Date (YYYY-MM-DD, today, yesterday, 3d). Defaults to today.
 - `gccli health body-battery range --start=DATE --end=DATE`: Show body battery data for a date range.
@@ -1704,20 +1720,4 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
 - `gccli challenges adhoc decline <invite-id>`: Decline an invite to an ad-hoc challenge.
   - `<invite-id>`: Invite ID (adHocChallengeInviteId).
 - `gccli challenges adhoc leave <uuid> [flags]`: Leave an ad-hoc challenge. Only a new invite gets you back in.
-  - `<uuid>`: Challenge UUID, as the list commands print it.
-  - `-f, --force`: Skip confirmation prompt.
-- `gccli challenges adhoc delete <uuid> [flags]`: Delete an ad-hoc challenge that you created.
-  - `<uuid>`: Challenge UUID, as the list commands print it.
-  - `-f, --force`: Skip confirmation prompt.
-- `gccli records list`: View personal records. Also runs as `gccli records`.
-- `gccli records types`: List personal record types.
-- `gccli records activity <id>`: List the personal records set in an activity.
-  - `<id>`: Activity ID.
-- `gccli records candidates list`: List the personal record candidates that wait for your review. Also runs as `gccli records candidates`.
-- `gccli records candidates accept <id>`: Accept a personal record candidate as a personal record.
-  - `<id>`: Candidate ID, as records candidates prints it.
-- `gccli records candidates dismiss <id> [flags]`: Dismiss a personal record candidate. This cannot be undone.
-  - `<id>`: Candidate ID, as records candidates prints it.
-  - `-f, --force`: Skip confirmation prompt.
-- `gccli records hide <type-id>`: Hide a personal record type on the records page.
-  - `<type-id>`: Record type ID, as records types p
+  - `<uuid>`:

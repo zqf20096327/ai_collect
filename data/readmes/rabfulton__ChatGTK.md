@@ -49,6 +49,7 @@ A GTK-based Linux desktop client for OpenAI, Google Gemini, xAI Grok, Perplexity
 - [Getting API keys](#getting-api-keys)
 - [Custom Models](#custom-models)
 - [Grok Model Discovery and Search](#grok-model-discovery-and-search)
+- [Model Discovery and Specialized Models](#model-discovery-and-specialized-models)
 - [Local Models](#local-models)
 - [Document Mode](#document-mode)
 - [Document Import / Conversion](#document-import--conversion)
@@ -200,6 +201,109 @@ You will need at least one API key for the application to function. Alternativel
   - You can integrate any custom provider that has an OpenAPI compatible endpoint.
   - Keys can be set as environment variables or inside the applications settings.
   - I have tested Openrouter, Mistral, Nvidia Cloud, Groq and Bytedance so far.
+
+## Streaming and Reasoning
+
+Reasoning and the live response stay hidden until you click the
+**Assistant is thinking…** box above the answer.
+It opens a scrollable preview of up to sixteen lines and scrolls it into view;
+click again to collapse it. On smaller windows the preview fits the available height.
+The preview labels reasoning and the streaming response separately, and follows
+new text until you scroll up. If no reasoning is returned, the response preview
+still shows progress. The finished answer is rendered in the main conversation.
+The completed reply keeps a collapsed **Reasoning** section, which
+is saved with the chat. Copy, read-aloud and semantic memory use the answer.
+
+| Provider | Streaming and reasoning support |
+| --- | --- |
+| OpenAI | Responses streaming; requests reasoning summaries for modern GPT reasoning models and supported o3/o4 models. Older chat models stream answers where supported. |
+| Gemini | Native streaming with thought summaries and signed function-call continuation. |
+| Grok | Responses streaming for modern models; displays reasoning or summaries when returned. Legacy chat streaming is also supported. |
+| OpenRouter | Custom chat endpoints; requests reasoning and preserves structured reasoning details for tool continuation. |
+| llama.cpp and other local servers | Custom chat endpoints; accepts `reasoning_content` and leading `<think>…</think>` blocks, including tags split across chunks. |
+
+Reasoning availability depends on the selected model and server configuration.
+OpenAI and Gemini expose summaries; some models return no visible reasoning.
+Servers returning a complete JSON response instead of an event stream still
+work, with the answer and reasoning shown when the response completes.
+
+During generation, text updates in batches to keep the UI responsive. Full
+Markdown, code, tables and formulas render when the answer completes. Scrolling
+up pauses automatic following. Cancel closes the active stream and keeps the
+partial reply marked **Stopped**. A broken or truncated stream keeps available
+output marked **Response interrupted**. Switching chats discards late updates.
+Image generation, audio, and providers without a streaming adapter retain their
+existing request paths.
+
+Protocol references: [OpenAI reasoning](https://developers.openai.com/api/docs/guides/reasoning),
+[Gemini thinking](https://ai.google.dev/gemini-api/docs/thinking),
+[Grok reasoning](https://docs.x.ai/developers/model-capabilities/text/reasoning),
+[OpenRouter reasoning](https://openrouter.ai/docs/guides/best-practices/reasoning-tokens),
+and [llama.cpp server](https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md).
+
+## Model Discovery and Specialized Models
+
+Use **Settings > Models > Refresh Models** to update provider listings, then
+select the models you want in the conversation selector. Anthropic discovery
+uses its [native model-list API](https://platform.claude.com/docs/en/api/models/list),
+including pagination, rather than a fixed list. Gemini discovery also follows
+pagination. Refreshed listings are cached for later sessions.
+
+The old five-model Claude preset cache is refreshed once when opening its
+whitelist with a configured provider. Discovery failures are labelled in the
+provider section, including HTTP status when available, rather than presenting
+fallback presets as a complete listing. Models returned by the API do not need a
+built-in card to appear. Select their checkboxes and save settings to include them
+in the conversation selector.
+
+Image, speech and file-transcription selectors combine supported capabilities
+with each provider's last successful model listing. These choices are independent
+of the conversation whitelist. Failed refreshes retain the cached listing, and
+custom endpoints remain available without remote discovery. Saved or manually
+entered choices are preserved; a saved TTS model missing from discovery is labelled
+**not in latest listing**. Historical cards remain available for older chats.
+
+Known deprecated models are grouped under a collapsed **Deprecated** section
+within each provider's whitelist. Hover over a model for its documented shutdown
+date and suggested replacement, where known. Selections and group expansion are
+preserved when refreshing; grouping does not change the selected model or remove
+older model cards. OpenAI lifecycle information was reviewed on November 10, 2026
+against its [deprecation schedule](https://developers.openai.com/api/docs/deprecations).
+
+Recognized variants of the GPT Image, conversational GPT Realtime, GPT Audio,
+OpenAI speech/file-transcription and Gemini image/TTS families inherit the app's existing routing.
+Discovered image models appear in the image tool selector; supported speech
+models appear in **Audio > Text to Speech Model**, including dated snapshots.
+The selected speech model is used for playback, automatic read-aloud, the
+read-aloud tool and voice previews. Speech selection now uses explicit model IDs;
+the TTS HD switch has been removed. Old OpenAI settings migrate to `tts-1` or
+`tts-1-hd` according to the saved HD preference; old Gemini settings migrate to
+`gemini-2.5-flash-preview-tts`. Model-card overrides take precedence.
+
+File transcription supports `gpt-transcribe` and recognized dated OpenAI
+transcription variants through the upload endpoint. Live-only transcription
+models are excluded until a dedicated streaming transcription adapter exists.
+
+Conversational GPT Realtime models use the
+[GA session format](https://developers.openai.com/api/docs/guides/realtime).
+Explicitly named legacy realtime-preview models retain their beta transport.
+Translation and transcription realtime models are separate workflows and are
+not treated as conversational voice models.
+
+Family recognition covers compatible variants, not arbitrary future API changes.
+Unknown models do not automatically gain tools, vision or other capabilities.
+OpenAI's [Speech API retirement notice](https://developers.openai.com/api/docs/guides/text-to-speech)
+sets January 6, 2027 as the shutdown date for `tts-1`, `tts-1-hd` and
+`gpt-4o-mini-tts`. Replacing read-aloud synthesis with a Realtime workflow is a
+separate migration; selecting a realtime model in the Speech API is not supported.
+
+The Speech Prompt Template is shared by the play button, automatic TTS and the
+read-aloud tool when using Gemini TTS or OpenAI chat-based audio models. Plain
+`tts-1` and `tts-1-hd` read the supplied text and do not support speech instructions.
+Although `gpt-4o-mini-tts` supports an API instructions field, ChatGTK's current
+Speech API adapter does not yet send it. Custom TTS adapters and voice previews
+also do not apply the saved template. Prompt support must be wired per adapter
+when adding the new Realtime synthesis path.
 
 ## Grok Model Discovery and Search
 

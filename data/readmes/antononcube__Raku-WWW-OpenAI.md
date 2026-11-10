@@ -46,107 +46,100 @@ then the functions `openai-*` attempt to use the env variable `OPENAI_API_KEY`.
 The package has an universal "front-end" function `openai-playground` for the 
 [different functionalities provided by OpenAI](https://platform.openai.com/docs/api-reference/introduction).
 
-Here is a simple call for a "chat completion":
+Here is a simple text-generation call. The default model is `gpt-6.1-sol` and
+the default path is the Responses API:
 
-```perl6
+```raku
 use WWW::OpenAI;
-openai-playground('Where is Roger Rabbit?', max-tokens => 64);
+openai-playground('Where is Roger Rabbit?', max-tokens => 128, format => 'values');
 ```
 ```
-# [{finish_reason => stop, index => 0, logprobs => (Any), text => 
-# 
-# Roger Rabbit is a fictional character from the movie "Who Framed Roger Rabbit" and he does not exist in real life. He can only be found in the movie and its related merchandise.}]
+# Roger Rabbit lives in **Toontown**, the cartoon neighborhood of Los
 ```
 
 Another one using Bulgarian:
 
-```perl6
-openai-playground('Колко групи могат да се намерят в този облак от точки.', max-tokens => 64);
+```raku
+openai-playground('Колко групи могат да се намерят в този облак от точки.', max-tokens => 128, format => 'values');
 ```
 ```
-# [{finish_reason => length, index => 0, logprobs => (Any), text => 
-# 
-# Не може да се даде точен отговор на този въпрос без да се предостави допълнителна информация за облака от точки. Броят на групите може да зав}]
+# Моля, качете изображението на облака от точки, за да преценя колко групи (клъстери) се виждат.
 ```
 
-**Remark:** The function `openai-completion` can be used instead in the examples above. 
-See the section 
-["Create chat completion"](https://platform.openai.com/docs/api-reference/chat/create) of [OAI2]
-for more details.
+The function `openai-completion` can also be used for text generation.
+Use `openai-chat-completion` with `path => 'chat/completions'` when explicitly
+calling the Chat Completions endpoint with a compatible model.
 
 ### Models
 
 The current OpenAI models can be found with the function `openai-models`:
 
-```perl6
+```raku
 openai-models
 ```
 ```
-# (babbage-002 dall-e-2 dall-e-3 davinci-002 gpt-3.5-turbo gpt-3.5-turbo-0125 gpt-3.5-turbo-0301 gpt-3.5-turbo-0613 gpt-3.5-turbo-1106 gpt-3.5-turbo-16k gpt-3.5-turbo-16k-0613 gpt-3.5-turbo-instruct gpt-3.5-turbo-instruct-0914 gpt-4 gpt-4-0125-preview gpt-4-0613 gpt-4-1106-preview gpt-4-turbo-preview gpt-4-vision-preview text-embedding-3-large text-embedding-3-small text-embedding-ada-002 tts-1 tts-1-1106 tts-1-hd tts-1-hd-1106 whisper-1)
+# (chat-latest chatgpt-image-latest ... whisper-1)
 ```
+
+The returned list reflects the models available to your API account. The
+package's built-in model list includes current and legacy IDs. Deprecated IDs
+remain selectable while OpenAI still serves them; retirement dates are listed
+in [OpenAI's deprecations page](https://developers.openai.com/api/docs/deprecations).
+For example, `gpt-5` and `whisper-1` can be selected explicitly during their
+deprecation periods. An ID remaining in the package cannot restore access after
+OpenAI shuts it down.
 
 ### Code generation
 
-There are two types of completions : text and chat. Let us illustrate the differences
-of their usage by Raku code generation. Here is a text completion:
+For new text-generation code, use the Responses path:
 
-```perl6
+```raku
 openai-completion(
         'generate Raku code for making a loop over a list',
-        type => 'text',
+        model => 'gpt-6.1-sol',
         max-tokens => 120,
         format => 'values');
 ```
 ```
-# my @list = (1, 2, 3, 4, 5, 6); # example list
-# 
-# for @list -> $item { # loop over the list using the for loop
-#     say $item; # print each item in the list
-# }
-# 
-# # Output:
-# # 1
-# # 2
-# # 3
-# # 4
-# # 5
-# # 6
-```
-
-Here is a chat completion:
-
-```perl6
-openai-completion(
-        'generate Raku code for making a loop over a list',
-        type => 'chat',
-        max-tokens => 120,
-        format => 'values');
-```
-```
-# Here is an example of Raku code that loops over a list and prints each element:
+# Use a `for` loop to iterate over a list in Raku:
 # 
 # ```raku
-# my @list = 1, 2, 3, 4, 5;
+# my @fruits = <apple banana cherry>;
 # 
-# for @list -> $element {
-#     say $element;
+# for @fruits -> $fruit {
+#     say $fruit;
 # }
 # ```
 # 
-# This code will output:
-# ```
-# 1
-# 2
-# 3
-# 4
-# 5
+# Output:
+# 
+# ```text
+# apple
+# banana
+# cherry
 # ```
 ```
 
-**Remark:** The argument "type" and the argument "model" have to "agree." (I.e. be found agreeable by OpenAI.)
-For example: 
-- `model => 'text-davinci-003'` implies `type => 'text'`
-- `model => 'gpt-3.5-turbo'` implies `type => 'chat'`
+
+You can preserve separate system and user messages with `openai-chat-completion`:
+
+```raku
+openai-chat-completion(
+        [system => 'Answer with Raku code only.',
+         user => 'Write a loop over a list.'],
+        model => 'gpt-6.1-sol',
+        format => 'values');
+```
+```
+# my @items = <apple banana cherry>;
+# 
+# for @items -> $item {
+#     say $item;
+# }
+```
+
+
+Legacy text-completion models require `type => 'text'` and an active model ID.
 
 
 ### Image generation
@@ -159,11 +152,10 @@ Images can be generated with the function `openai-create-image` -- see the secti
 
 Here is an example:
 
-```perl6, eval=FALSE
+```raku, eval=FALSE
 my $imgB64 = openai-create-image(
         "racoon with a sliced onion in the style of Raphael",
-        response-format => 'b64_json',
-        model = 'dalle-e-3',
+        model => 'gpt-image-2.6-flare',
         n => 1,
         size => '1024x1024',
         format => 'values',
@@ -172,30 +164,33 @@ my $imgB64 = openai-create-image(
 
 Here are the options descriptions:
 
-- `response-format` takes the values "url" and "b64_json"
+- GPT Image models return Base64 image data; `response-format` applies to older DALL·E models
 - `n` takes a positive integer, for the number of images to be generated
-- `size` takes the values '1024x1024', '512x512', '256x256', 'large', 'medium', 'small'. 
+- `size` accepts `auto`, `square`, `landscape`, or `portrait` for the current GPT Image models
 
-Here we generate an image, get its URL, and place (embed) a link to it via the output of the code cell:
+Here we embed a generated image using the returned Base64 data:
 
-```perl6, results='asis', eval=FALSE
+```raku, results='asis', eval=FALSE
 my @imgRes = |openai-create-image(
         "racoon and onion in the style of Roy Lichtenstein",
-        response-format => 'url',
         n => 1,
-        size => 'small',
+        size => 'square',
+        format => 'values',
         method => 'tiny');
 
-'![](' ~ @imgRes.head<url> ~ ')';
+'![](data:image/png;base64,' ~ @imgRes.head ~ ')';
 ```
 
-**Remark:** The argument "model" can be `Whatever` of one of "dall-e-2" or "dall-e-3". 
-Not all parameters that are valid for one of the models are valid or respected by the other --
-see the subsection ["Create image"](https://platform.openai.com/docs/api-reference/images/create) of 
-[OpenAI's documentation](https://platform.openai.com/docs/api-reference).
+The default image model is `gpt-image-2.6-flare`. Older DALL·E model names
+remain in the package for historical compatibility; OpenAI has shut down
+`dall-e-2` and `dall-e-3`.
 
 
 ### Image variation
+
+The image variations endpoint used by the examples below relied on `dall-e-2`,
+which OpenAI has shut down. For current image-to-image work, use
+`openai-edit-image` with a GPT Image model.
 
 **Remark:** See the files ["Image-variation*"](./docs/Image-variation-and-edition.md) for more details.
 
@@ -205,7 +200,7 @@ Images variations over image files can be generated with the function `openai-va
 
 Here is an example:
 
-```perl6, eval=FALSE
+```raku, eval=FALSE
 my $imgB64 = openai-variate-image(
         $*CWD ~ '/resources/RandomMandala.png',
         response-format => 'b64_json',
@@ -225,7 +220,7 @@ Here are the options descriptions:
 
 Here we generate an image, get its URL, and place (embed) a link to it via the output of the code cell:
 
-```perl6, results='asis', eval=FALSE
+```raku, results='asis', eval=FALSE
 my @imgRes = |openai-variate-image(
         $*CWD ~ '/resources/RandomMandala.png',
         response-format => 'url',
@@ -263,7 +258,7 @@ Here is a random mandala color (RGBA) image:
 Here we generate a few editions of the colored mandala image above, get their URLs,
 and place (embed) the image links using a table:
 
-```perl6, results=asis, eval=FALSE
+```raku, results=asis, eval=FALSE
 my @imgRes = |openai-edit-image(
         $*CWD ~ '/../resources/RandomMandala2.png',
         'add cosmic background',
@@ -287,7 +282,7 @@ The argument "images" is a list of image URLs, image file names, or image Base64
 
 Here is an example with three images:
 
-```perl6
+```raku
 my $url1 = 'https://i.imgur.com/LEGfCeq.jpg';
 my $url2 = 'https://i.imgur.com/UcRYl9Y.jpg';
 my $fname3 = $*CWD ~ '/resources/ThreeHunters.jpg';
@@ -295,17 +290,15 @@ my @images = [$url1, $url2, $fname3];
 say openai-completion("Give concise descriptions of the images.", :@images, max-tokens => 900, format => 'values');
 ```
 ```
-# 1. The first image is a vibrant illustration of a raccoon perched on a tree branch surrounded by a flurry of colorful butterflies.
-# 
-# 2. The second image depicts two raccoons running along a path next to a large tree with a sign, surrounded by butterflies, in a colorful autumn landscape.
-# 
-# 3. The third image shows a trio of raccoons sitting in a tree hollow, with a warm, luminous backdrop and butterflies fluttering around, set in an autumnal forest scene.
+# 1. A wide-eyed raccoon perches on a mossy branch, surrounded by colorful butterflies and lush foliage.
+# 2. Two raccoons run toward a flowering tree adorned with a “2023.11” sign, amid butterflies and a whimsical autumn landscape.
+# 3. Three raccoons gather on a moss-covered branch in a sunlit forest filled with orange leaves and colorful butterflies.
 ```
 
 The function `encode-image` from the namespace `WWW::OpenAI::ChatCompletions` can be used
 to get Base64 image strings corresponding to image files. For example:
 
-```perl6, results=asis, eval=FALSE
+```raku, results=asis, eval=FALSE
 my $img3 = WWW::OpenAI::ChatCompletions::encode-image($fname3);
 say "![]($img3)"  
 ```
@@ -318,7 +311,7 @@ When a file name is given to the argument "images" of `openai-completion` then t
 Here is an example of using 
 [OpenAI's moderation](https://platform.openai.com/docs/api-reference/moderations):
 
-```perl6
+```raku
 my @modRes = |openai-moderation(
 "I want to kill them!",
 format => "values",
@@ -327,17 +320,19 @@ method => 'tiny');
 for @modRes -> $m { .say for $m.pairs.sort(*.value).reverse; }
 ```
 ```
-# violence => 0.998648464679718
-# harassment/threatening => 0.5217957496643066
-# harassment => 0.49981600046157837
-# hate => 0.1619441658258438
-# hate/threatening => 0.04833448305726051
-# violence/graphic => 0.000130274318507872528
-# sexual => 0.0000252172667387640096
-# self-harm => 4.838872882828582e-06
-# self-harm/intent => 2.9584793992398772e-06
-# sexual/minors => 1.4673852888336114e-07
-# self-harm/instructions => 1.7596822887711028e-09
+# violence => 0.9527683472498025
+# harassment/threatening => 0.3972887313593611
+# harassment => 0.34057871905923465
+# illicit => 0.11078220244277934
+# illicit/violent => 0.06772771747410274
+# hate/threatening => 0.02235435107822504
+# hate => 0.013671582768712567
+# self-harm => 0.0005152672191311762
+# self-harm/intent => 0.000287036046633266432
+# sexual => 0.000091105119440064544
+# violence/graphic => 0.0000503335575452811456
+# sexual/minors => 4.98595821272702e-06
+# self-harm/instructions => 2.586743108135441e-06
 ```
 
 ### Audio transcription and translation
@@ -345,7 +340,7 @@ for @modRes -> $m { .say for $m.pairs.sort(*.value).reverse; }
 Here is an example of using
 [OpenAI's audio transcription](https://platform.openai.com/docs/api-reference/audio):
 
-```perl6
+```raku
 my $fileName = $*CWD ~ '/resources/HelloRaccoonsEN.mp3';
 say openai-audio(
         $fileName,
@@ -354,13 +349,25 @@ say openai-audio(
 ```
 ```
 # {
-#   "text": "Raku practitioners around the world, eat more onions!"
+#   "languages": [
+#     {
+#       "code": "en"
+#     }
+#   ],
+#   "usage": {
+#     "type": "duration",
+#     "seconds": 6
+#   },
+#   "text": "Raku practitioners around the world, eat more onions."
 # }
 ```
 
-To do translations use the named argument `type`:
 
-```perl6
+Transcription defaults to `gpt-transcribe`. You can still select
+`model => 'whisper-1'` while that model remains available. Translation uses
+`whisper-1`; specify `type => 'translations'`:
+
+```raku
 my $fileName = $*CWD ~ '/resources/HowAreYouRU.mp3';
 say openai-audio(
         $fileName,
@@ -378,7 +385,7 @@ say openai-audio(
 
 Here is an example of text-to-speech generation - `type`, `prompt`, have to be specified:
 
-```perl6
+```raku
 my $fileName = $*CWD ~ '/resources/EveryDay.mp3';
 my $res = openai-audio(
         $fileName, 
@@ -390,7 +397,7 @@ my $res = openai-audio(
         method => 'tiny');
 ```
 ```
-# Buf[uint8]:0x<FF F3 E4 C4 00 5F 94 39 D8 17 5A C0 00 06 53 52 1C 77 E6 BC B9 73 8C C2 A3 68 E0 DB 30 35 48 0C D1 43 20 20 C8 89 30 E0 C0 40 CB 36 5A 72 CB 98 10 26 0C 29 85 02 62 03 18 60 C6 18 21 84 08 61 02 18 20 46 08 00 08 01 6B 0B 46 5B 32 CB 96 4C B2 65 A7 2E 59 6C CB 36 66 11 88 05 98 2E 42 0E 24 42 62 28 ...>
+# Buf[uint8]:0x<FF F3 C4 C4 00 5B E4 39 AC 01 5A C0 00 34 45 02 C2 4D 6C 73 B3 84 F0 D7 38 AB 41 C9 D1 00 B4 05 B7 2C B9 68 D3 AE 79 C0 50 05 34 96 B3 88 65 04 E5 93 41 77 F9 40 19 22 D3 31 18 D0 83 52 8D 8C 36 30 D4 83 31 00 C0 5E 92 B0 B8 4D B7 3D F4 F3 30 73 DD 24 54 64 94 13 95 1C 04 78 2D 81 64 0C 06 37 38 FF ...>
 ```
 
 
@@ -400,7 +407,7 @@ my $res = openai-audio(
 can be obtained with the function `openai-embeddings`. Here is an example of finding the embedding vectors
 for each of the elements of an array of strings:
 
-```perl6
+```raku
 my @queries = [
     'make a classifier with the method RandomForeset over the data dfTitanic',
     'show precision and accuracy',
@@ -419,7 +426,7 @@ Here we show:
 - That the result is an array of four vectors each with length 1536
 - The distributions of the values of each vector
 
-```perl6
+```raku
 use Data::Reshapers;
 use Data::Summarizers;
 
@@ -430,21 +437,21 @@ records-summary($embs.kv.Hash.&transpose);
 ```
 # $embs.elems : 4
 # $embs>>.elems : 1536 1536 1536 1536
-# +--------------------------------+-------------------------------+--------------------------------+-------------------------------+
-# | 3                              | 1                             | 2                              | 0                             |
-# +--------------------------------+-------------------------------+--------------------------------+-------------------------------+
-# | Min    => -0.6047187           | Min    => -0.6678709          | Min    => -0.6308942           | Min    => -0.590719           |
-# | 1st-Qu => -0.012928714         | 1st-Qu => -0.012335346        | 1st-Qu => -0.012563366         | 1st-Qu => -0.01316472075      |
-# | Mean   => -0.00075381957348203 | Mean   => -0.0007606080686471 | Mean   => -0.00072762704473066 | Mean   => -0.0007624376152279 |
-# | Median => -0.00081807276       | Median => -0.000239203835     | Median => -0.00061062546       | Median => -0.00098278925      |
-# | 3rd-Qu => 0.01215142175        | 3rd-Qu => 0.0114232735        | 3rd-Qu => 0.011824543          | 3rd-Qu => 0.012312613         |
-# | Max    => 0.22180624           | Max    => 0.2273228           | Max    => 0.21278104           | Max    => 0.21206765          |
-# +--------------------------------+-------------------------------+--------------------------------+-------------------------------+
+# +----------------------------------+----------------------------------+-----------------------------------+----------------------------------+
+# | 1                                | 3                                | 0                                 | 2                                |
+# +----------------------------------+----------------------------------+-----------------------------------+----------------------------------+
+# | Min    => -0.088196              | Min    => -0.111389              | Min    => -0.10614                | Min    => -0.098328              |
+# | 1st-Qu => -0.0169449             | 1st-Qu => -0.017197              | 1st-Qu => -0.017029               | 1st-Qu => -0.0169449             |
+# | Mean   => -0.0004749156457061569 | Mean   => 0.00014255968077729145 | Mean   => -0.00031491291398803395 | Mean   => -0.0003526161114374797 |
+# | Median => -0.00058               | Median => 0.0002962350845336914  | Median => 0.0007591               | Median => -0.0003255605697631836 |
+# | 3rd-Qu => 0.0173874              | 3rd-Qu => 0.0165939              | 3rd-Qu => 0.016388                | 3rd-Qu => 0.0161057              |
+# | Max    => 0.108398               | Max    => 0.098877               | Max    => 0.111084                | Max    => 0.081177               |
+# +----------------------------------+----------------------------------+-----------------------------------+----------------------------------+
 ```
 
 Here we find the corresponding dot products and (cross-)tabulate them:
 
-```perl6
+```raku
 use Data::Reshapers;
 use Data::Summarizers;
 my @ct = (^$embs.elems X ^$embs.elems).map({ %( i => $_[0], j => $_[1], dot => sum($embs[$_[0]] >>*<< $embs[$_[1]])) }).Array;
@@ -455,12 +462,12 @@ say to-pretty-table(cross-tabulate(@ct, 'i', 'j', 'dot'), field-names => (^$embs
 # +---+----------+----------+----------+----------+
 # |   |    0     |    1     |    2     |    3     |
 # +---+----------+----------+----------+----------+
-# | 0 | 1.000000 | 0.724379 | 0.756525 | 0.665386 |
-# | 1 | 0.724379 | 1.000000 | 0.808996 | 0.716001 |
-# | 2 | 0.756525 | 0.808996 | 1.000000 | 0.698533 |
-# | 3 | 0.665386 | 0.716001 | 0.698533 | 1.000000 |
+# | 0 | 1.000369 | 0.207500 | 0.197296 | 0.085141 |
+# | 1 | 0.207500 | 1.000164 | 0.346319 | 0.103709 |
+# | 2 | 0.197296 | 0.346319 | 1.000013 | 0.077962 |
+# | 3 | 0.085141 | 0.103709 | 0.077962 | 1.000569 |
 # +---+----------+----------+----------+----------+
-````
+```
 
 **Remark:** Note that the fourth element (the cooking recipe request) is an outlier.
 (Judging by the table with dot products.)
@@ -472,7 +479,7 @@ Here is a prompt for "emojification" (see the
 entry
 ["Emojify"](https://resources.wolframcloud.com/PromptRepository/resources/Emojify/)):
 
-```perl6
+```raku
 my $preEmojify = q:to/END/;
 Rewrite the following text and convert some of it into emojis.
 The emojis are all related to whatever is in the text.
@@ -482,22 +489,14 @@ Respond only with the modified text, do not include any summary or explanation.
 Do not respond with only emoji, most of the text should remain as normal words.
 END
 ```
-```
-# Rewrite the following text and convert some of it into emojis.
-# The emojis are all related to whatever is in the text.
-# Keep a lot of the text, but convert key words into emojis.
-# Do not modify the text except to add emoji.
-# Respond only with the modified text, do not include any summary or explanation.
-# Do not respond with only emoji, most of the text should remain as normal words.
-```
 
 Here is an example of chat completion with emojification:
 
-```perl6
+```raku
 openai-chat-completion([ system => $preEmojify, user => 'Python sucks, Raku rocks, and Perl is annoying'], max-tokens => 200, format => 'values')
 ```
 ```
-# 🐍 Python sucks, 🦝 Raku rocks, and Perl is 😒 annoying
+# Python 🐍 sucks, Raku 🦋 rocks 🤘, and Perl 🐪 is annoying 😒
 ```
 
 For more examples see the document ["Chat-completion-examples"](./docs/Chat-completion-examples_woven.md).
@@ -512,7 +511,7 @@ using the parameter specs `llm => 'chatgpt'` or `llm => 'openai'`.
 
 Here is an example of finding textual answers:
 
-```perl6
+```raku
 use ML::FindTextualAnswer;
 my $text = "Lake Titicaca is a large, deep lake in the Andes 
 on the border of Bolivia and Peru. By volume of water and by surface 
@@ -521,7 +520,7 @@ area, it is the largest lake in South America";
 find-textual-answer($text, "Where is Titicaca?", llm => 'openai')
 ```
 ```
-# Andes
+# On the border of Bolivia and Peru.
 ```
 
 By default `find-textual-answer` tries to give short answers.
@@ -540,11 +539,11 @@ area, it is the largest lake in South America"
 
 Here we get a longer answer by changing the value of "request":
 
-```perl6
+```raku
 find-textual-answer($text, "Where is Titicaca?", llm => 'chatgpt', request => "answer the question:")
 ```
 ```
-# Lake Titicaca is located in the Andes on the border of Bolivia and Peru in South America.
+# Lake Titicaca is in the Andes, on the border of Bolivia and Peru.
 ```
 
 **Remark:** The function `find-textual-answer` is inspired by the Mathematica function
@@ -558,7 +557,7 @@ then all questions are spliced with the given text into one query (that is sent 
 
 For example, consider the following text and questions:
 
-```perl6
+```raku
 my $query = 'Make a classifier with the method RandomForest over the data dfTitanic; show precision and accuracy.';
 
 my @questions =
@@ -596,6 +595,10 @@ Default models can be specified with the operating system environmental variable
 - `OPENAI_DEFAULT_IMAGE_GENERATION_MODEL`
 - `OPENAI_DEFAULT_EMBEDDING_MODEL`
 
+The built-in defaults are `gpt-6.1-sol` for text, `gpt-image-2.6-flare` for
+image generation and editing, and `text-embedding-3-small` for embeddings.
+Transcription defaults to `gpt-transcribe`.
+
 -------
 
 ## Command Line Interface
@@ -611,9 +614,9 @@ openai-playground --help
 # Usage:
 #   openai-playground [<words> ...] [--path=<Str>] [-n[=UInt]] [--mt|--max-tokens[=UInt]] [-m|--model=<Str>] [-r|--role=<Str>] [-t|--temperature[=Real]] [-i|--images=<Str>] [-l|--language=<Str>] [--response-format=<Str>] [-a|--auth-key=<Str>] [--timeout[=UInt]] [-f|--format=<Str>] [--method=<Str>] [--base-url=<Str>] -- Command given as a sequence of words.
 #   
-#     --path=<Str>                Path, one of 'chat/completions', 'images/generations', 'images/edits', 'images/variations', 'moderations', 'audio/transcriptions', 'audio/translations', 'embeddings', or 'models'. [default: 'chat/completions']
+#     --path=<Str>                Path, one of 'responses', 'chat/completions', 'images/generations', 'images/edits', 'images/variations', 'moderations', 'audio/transcriptions', 'audio/translations', 'embeddings', or 'models'. [default: 'responses']
 #     -n[=UInt]                   Number of completions or generations. [default: 1]
-#     --mt|--max-tokens[=UInt]    The maximum number of tokens to generate in the completion. [default: 100]
+#     --mt|--max-tokens[=UInt]    The maximum number of tokens to generate in the completion. [default: 4096]
 #     -m|--model=<Str>            Model. [default: 'Whatever']
 #     -r|--role=<Str>             Role. [default: 'user']
 #     -t|--temperature[=Real]     Temperature. [default: 0.7]

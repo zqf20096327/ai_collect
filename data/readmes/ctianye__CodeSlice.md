@@ -1,21 +1,62 @@
 # CodeSlice
 
-> Read any codebase. Ask questions as you go. Get answers you can verify.
+> 本地优先的 AI 代码阅读桌面应用：边读边问，答案可验证。
 
 CodeSlice 是一款本地优先的 AI 代码阅读桌面应用。添加代码仓库后，打开文件、选中代码并开始提问。回答附有可点击的文件与行号引用；AI 需要写文件或运行命令时，先由你审核授权。
+
+**[下载 Windows 版（.exe）](https://github.com/ctianye/CodeSlice/releases/latest)** ·
+**[下载 Linux 版（AppImage / deb / rpm）](https://github.com/ctianye/CodeSlice/releases/latest)** ·
+[全部版本](https://github.com/ctianye/CodeSlice/releases) ·
+[MIT 许可](LICENSE)
+
+Windows 提供 `.exe` 安装包；Linux 提供 AppImage、`.deb` 与 `.rpm`（均为 x86_64）。
+
+![CodeSlice 项目选择与本地项目列表](docs/screenshots/welcome.png)
+
+<details>
+<summary>English</summary>
 
 **CodeSlice** is a local-first AI code-reading desktop app for developers. Drop
 in a repository, open a source file, select the code you want to understand, and
 start a conversation. Answers include clickable file-and-line citations; changes
 and shell commands require your approval before they run.
 
-**[Download CodeSlice for Windows](https://github.com/ctianye/CodeSlice/releases/latest)** ·
-[Browse all releases](https://github.com/ctianye/CodeSlice/releases) ·
-[MIT license](LICENSE)
+</details>
 
-![CodeSlice project picker and local project list](docs/screenshots/welcome.png)
+## 实战演示
 
-## See CodeSlice in action
+### 边读代码边提问
+
+打开项目，浏览文件树，在内置编辑器中阅读源码。在对话面板直接提问，或选中几行代码，让对话聚焦到这段代码。
+
+![在 CodeSlice 桌面应用中浏览和阅读源码](docs/screenshots/workspace.png)
+
+### 让回答回到源码
+
+CodeSlice 会在回答中附带引用。点击文件与行号引用，即可直接定位到对应的源码位置。
+
+![带可点击源码引用的 AI 回答](docs/screenshots/citations.png)
+
+### 变更与命令始终由你掌控
+
+当智能体请求写文件或执行命令时，你可以先检查请求内容，再决定批准或拒绝。未获批准的操作不会执行。
+
+![审核并批准 AI 请求的文件变更](docs/screenshots/approval.png)
+
+### 让阅读笔记贴近代码
+
+把有用的解释保存为可搜索的笔记。笔记中的代码引用会带你回到原始源码。
+
+![浏览已保存的 CodeSlice 知识库笔记](docs/screenshots/knowledge-base.png)
+
+### 在独立的代码图谱与笔记图谱中探索
+
+代码图谱与笔记图谱独立切换，共用静态画布和右侧检查器栏，跟随浅色 / 深色主题。图谱构建一次即持久化到本地数据库，再次打开瞬时呈现。支持按关系族筛选、按社区显示 / 隐藏、搜索定位、悬浮详情；只有社区中心节点常驻标签。检查器列出调用者与被调用者，并可用你配置的模型流式总结节点与全部直接邻点；对话可以跳到对应代码节点。笔记链接只记录共享文件夹、项目或文件引用，不代表语义相似。详见 [图谱交互与验证](docs/GRAPH_EXPLORER.md)。
+
+![在 CodeSlice 知识图谱中探索代码依赖](docs/screenshots/knowledge-graph.png)
+
+<details>
+<summary>English</summary>
 
 ### Read a repository while asking questions about it
 
@@ -23,72 +64,273 @@ Open a project, browse its file tree, and read the source in the integrated
 editor. Ask a question in the conversation pane or select a few lines to focus
 the conversation on that code.
 
-![Browse and read source code in the CodeSlice desktop app](docs/screenshots/workspace.png)
-
 ### Follow answers back to the source
 
 CodeSlice returns citations with its answers. Select a file-and-line reference
 to navigate directly to the relevant source code.
-
-![An AI answer with clickable source-code citations](docs/screenshots/citations.png)
 
 ### Stay in control of changes and commands
 
 When an agent requests a file write or command, inspect the request and approve
 or reject it. Approval is required before the operation runs.
 
-![Review and approve an AI-requested file change](docs/screenshots/approval.png)
-
 ### Keep reading notes close to the code
 
 Save useful explanations as searchable notes. Code references in a note take
 you back to the original source.
 
-![Browse saved CodeSlice knowledge-base notes](docs/screenshots/knowledge-base.png)
+### Explore code and notes in separate graphs
 
-## Getting started
+Switch between independent code and note graphs with the same static canvas.
+Filter relation families, show or hide whole communities, search and focus a
+node, or hover to inspect it; only community centers carry labels. The inspector
+rail lists callers and callees and can summarize the selected node and every
+direct neighbor using your configured model. Conversations can jump to their
+related code nodes. Note links record shared folders, projects or file
+references; they do not assert semantic similarity.
 
-1. Download `CodeSlice-0.1.0-Setup.exe` from the [latest GitHub Release](https://github.com/ctianye/CodeSlice/releases/latest) and install it on Windows 10 or 11.
+</details>
+
+---
+
+## 目录
+
+- [实战演示](#实战演示)
+- [v0.2.2 更新](#v022-更新)
+- [快速开始](#快速开始)
+- [功能一览](#功能一览)
+- [运行要求](#运行要求)
+- [已知限制](#已知限制)
+- [参与贡献](#参与贡献)
+- [核心特性](#核心特性)
+- [架构](#架构)
+- [技术栈](#技术栈)
+- [仓库结构](#仓库结构)
+- [本地开发](#本地开发)
+- [构建与打包](#构建与打包)
+- [数据与凭据](#数据与凭据)
+- [安全模型](#安全模型)
+- [已实现功能](#已实现功能)
+- [常见问题](#常见问题)
+- [致谢](#致谢)
+- [许可](#许可)
+
+---
+
+## v0.2.2 更新
+
+- **图谱不再卡在“正在排布图谱”**：画布把「稳定化完成」的回调挂在一个永远不会触发的
+  vis 事件上——Network 是用空数据集构造的，vis 在空图上直接返回且不发事件。现在数据
+  注入后显式发起稳定化，并有事件 + 超时双重兜底：遮罩一定消失、物理引擎一定关闭，
+  节点不再持续漂移，画布也恢复可点击、可拖拽。
+- **布局真正被持久化**：稳定结束后把坐标写入 SQLite（此前只有手动拖动节点才会写），
+  重新打开或切换标签可以秒开；重建后也会复用同一拓扑的坐标。
+- **向量化不再整批失败**：批次里只要有一段超出模型上下文，整批 413 就会让这次索引
+  整体失败且一条向量都不落库，于是下一轮又从头重试同样的几千段。现在按批落库，
+  失败的批次逐条重试并按 6000 / 3000 / 1500 字符降级，只牺牲真正超限的那一段。
+- **打包产物不再污染索引与图谱**：`release-*`、`*-unpacked`、`dist-*` 按规则忽略
+  （旧版只匹配精确名 `release`），并补充 `.bin` / `.asar` / `.dat` 等二进制后缀与
+  乱码比例检测。本仓库自索引的片段数从 3966 降到 2364，索引耗时从约 70 秒降到 3 秒。
+- **任务状态更诚实**：进度写库失败不再中断整轮索引；上一进程残留的 running / pending
+  任务在启动时标记为中断；向量化有失败时侧栏直接显示原因。
+- **发布**：版本号统一到 0.2.2，Windows 与 Linux（AppImage / deb / rpm）安装包同步重建。
+
+<details>
+<summary>English</summary>
+
+- **The graph no longer sticks on "laying out…".** The settle callback was attached
+  to a vis event that never fires: the network is constructed with empty data, and
+  vis returns early without emitting when there is nothing to move. A stabilisation
+  pass is now requested once the data is in, backed by both the event and a timeout,
+  so the overlay always clears, physics always stops, and the canvas is interactive.
+- **Layouts are actually persisted.** Settled coordinates are written to SQLite
+  (previously only a manual drag saved them), so reopening a graph is instant and a
+  rebuild reuses the coordinates of the same topology.
+- **Embedding no longer fails as a batch.** One oversized chunk made the whole
+  request fail with HTTP 413, and because nothing was written, every later run
+  retried the same thousands of chunks. Vectors are now persisted per batch, a
+  failing batch is retried chunk by chunk and degrades through 6000 / 3000 / 1500
+  characters, so only the truly oversized text is dropped.
+- **Build output no longer pollutes the index or the graph.** `release-*`,
+  `*-unpacked` and `dist-*` are ignored by rule (the old list matched the exact name
+  `release` only), plus binary suffixes and a replacement-character check.
+
+</details>
+
+<details>
+<summary>v0.2.1 更新</summary>
+
+- **索引容错**：跳过 WSL / Linux 打包产物与无法访问的文件，不再因单个符号链接
+  （如 `_internal` 里的 `libgfortran*.so`）导致整次索引失败。
+- **知识图谱**：代码与笔记各有一张本地图谱。代码图谱由 Tree-sitter AST 与显式
+  import 证据构建，结果持久化到 SQLite；画布支持关系族筛选、按社区显示 / 隐藏、
+  搜索定位和悬浮详情，双击节点直接打开代码或笔记。
+- **AI 关系解读**：在检查器里查看节点的调用者 / 被调用者，并让模型流式总结节点与
+  全部直接邻点；窄窗口下检查器变为可拖动的底部面板。
+- **代码批注**：选中代码即可添加持久、可折叠的批注卡片，跟随文件与行号保存。
+- **对话与图谱互通**：回答可定位到对应图谱节点，图谱节点也能直接发起提问或打开源码。
+- **阅读体验**：Markdown 就地编辑、Agent 提示词可配置；二进制文件只显示文件信息，
+  不再解码成乱码。
+- **检索与图谱准确性**：修正跨语言误连，跨文件调用必须有 AST / import 证据；
+  完善向量检索与相关测试。
+- **发布**：版本号统一到 0.2.1，Windows 与 Linux（AppImage / deb / rpm）安装包
+  同步重建。
+
+</details>
+
+---
+
+## 快速开始
+
+1. 从 [最新 GitHub Release](https://github.com/ctianye/CodeSlice/releases/latest)
+   下载对应平台的安装包：Windows 使用 `CodeSlice-0.2.2-Setup.exe`；Linux 使用
+   AppImage、`.deb` 或 `.rpm`（x86_64）。
+2. 启动 CodeSlice，点击添加项目并选择本地代码仓库所在的文件夹。
+3. 打开源文件，选中你想理解的代码，在对话面板提问。
+4. 打开 **设置 → 模型**，配置兼容的模型服务与 API Key。Key 保存在系统的凭据管理器
+   （Windows 凭据管理器；Linux 使用 Secret Service）。
+5. 把有用的回答保存为笔记。AI 每次写文件或执行 shell 命令前，都需要你逐条批准。
+
+应用、仓库索引与对话记录都在你的电脑上运行和保存。向模型提问时，CodeSlice 会把
+相关的问题与代码上下文发送给你配置的模型服务，适用该服务的数据处理政策。
+API Key 保存在系统凭据管理器中。
+
+应用更新会覆盖安装程序文件；笔记、批注、对话、设置和索引保存在安装目录之外的本机
+数据目录，正常更新会保留这些数据。卸载或手动删除用户数据目录会将其移除。
+
+<details>
+<summary>English</summary>
+
+1. Download the package for your platform from the
+   [latest GitHub Release](https://github.com/ctianye/CodeSlice/releases/latest):
+   `CodeSlice-0.2.2-Setup.exe` for Windows, or the AppImage, `.deb`, or `.rpm`
+   (x86_64) for Linux.
 2. Start CodeSlice and add a local repository by selecting its folder.
-3. Open a source file, select the code you want to understand, and ask a question in the conversation pane.
-4. Open **Settings → Model** to configure a compatible model provider and API key. The key is stored in Windows Credential Manager.
-5. Save useful answers as notes. Review and explicitly approve each proposed file write or shell command.
+3. Open a source file, select the code you want to understand, and ask a
+   question in the conversation pane.
+4. Open **Settings → Model** to configure a compatible model provider and API
+   key. The key is stored in the OS credential manager (Windows Credential
+   Manager or Linux Secret Service).
+5. Save useful answers as notes. Review and explicitly approve each proposed
+   file write or shell command.
 
 The application, repository index, and saved conversations run and stay on your
 computer. When you ask a model a question, CodeSlice sends the relevant question
 and code context to the model provider configured by you; that provider's data
-handling policies apply. API keys are saved in Windows Credential Manager.
+handling policies apply. API keys are saved in the OS credential manager.
 
-## What it does
+Application updates install over the existing app. Notes, annotations,
+conversations, settings, and indexes live in the user data directory outside the
+installation folder, so a normal upgrade preserves them. Uninstalling or
+manually deleting the user data directory removes that local data.
+
+</details>
+
+---
+
+## 功能一览
+
+- 以文件树、源码编辑器、对话三栏阅读本地仓库。
+- 使用 Tree-sitter 将支持的语言切分为结构化片段，并通过本地 FTS5 与向量相似度进行
+  混合检索。
+- 回答附带可导航的文件与行号引用。
+- 为选中的代码区间添加持久、可折叠的批注。
+- 写文件或执行命令前，逐条请求你的批准。
+- 把对话整理成可索引、可搜索、可跨项目复用的笔记。
+- 在独立的代码图谱与笔记图谱中可视化代码和笔记，支持展开社区、聚焦关系总结，
+  以及从对话跳到代码。
+- 对话、索引与应用数据全部保存在本地。
+
+<details>
+<summary>English</summary>
 
 - Reads local repositories in a three-pane file tree, source editor, and chat.
 - Splits supported languages into structural chunks using Tree-sitter and
   searches with local FTS5 and vector similarity retrieval.
 - Adds navigable file-and-line citations to answers.
+- Adds persistent, collapsible annotations to selected code ranges.
 - Requires per-action approval before writing a file or running a command.
 - Turns conversations into indexed, searchable notes that can be reused across
   projects.
+- Visualizes code and notes in separate static graphs with expandable
+  communities, focused relationship summaries, and conversation-to-code
+  navigation.
 - Saves conversations, indexes, and application data locally.
 
-## Requirements
+</details>
 
-- Windows 10 (version 1809 or later) or Windows 11.
+---
+
+## 运行要求
+
+- Windows 10（1809 或更高版本）或 Windows 11；或 Linux x86_64
+  （AppImage / `.deb` / `.rpm`）。
+- 需要配置兼容的模型服务和你自己的 API Key 才能获得 AI 回答。支持在本地配置的
+  模型服务。
+
+安装包已包含桌面应用与本地 Python 后端，最终用户无需安装 Python、Node.js 或
+开发者工具。
+
+<details>
+<summary>English</summary>
+
+- Windows 10 (version 1809 or later) or Windows 11, or Linux x86_64
+  (AppImage, deb, or rpm).
 - A compatible model provider and your own API key for AI answers. Local model
   providers are supported where configured.
 
-The installer includes the desktop app and local Python backend. End users do
+The packages include the desktop app and local Python backend. End users do
 not need to install Python, Node.js, or developer tools.
 
-## Known limitations
+</details>
 
-- Windows is the packaged desktop platform for the first release.
+---
+
+## 已知限制
+
+- 预编译安装包面向 Windows 10/11 与 Linux x86_64（AppImage / deb / rpm），
+  均未做代码签名。
+- 模型回答依赖已配置的模型服务；API 费用与服务商的数据保留政策取决于你的服务与套餐。
+- Tree-sitter 结构化索引目前配置了 Python、TypeScript、JavaScript、Go、Rust、Java、
+  C、C++、JSON 与 Bash。其他文件仍可用于应用支持的纯文本工作流。
+- Markdown 阅读器覆盖常见子集（标题、列表、表格、围栏代码、引用、图片、行内格式）。
+  文档中的原始 HTML 会按文本显示，列表项内的嵌套块结构会被展平。
+- 文档编辑会保存整个缓冲区，没有部分 diff 保存或合并界面。打开后磁盘上的文件若被
+  修改，会拒绝保存而不是合并；未保存草稿按标签页保留在当前会话中。
+
+<details>
+<summary>English</summary>
+
+- Prebuilt packages target Windows 10/11 and Linux x86_64 (AppImage, deb, rpm);
+  none of them are code-signed.
 - Model responses require a configured provider; API charges and provider
   retention policies depend on your provider and plan.
 - Tree-sitter structural indexing is currently configured for Python,
   TypeScript, JavaScript, Go, Rust, Java, C, C++, JSON, and Bash. Other files
-  remain available for the application’s supported text-based workflows.
+  remain available for the application's supported text-based workflows.
+- The Markdown reader covers the common subset (headings, lists, tables, fenced
+  code, quotes, images, inline formatting). Raw HTML in a document is shown as
+  text, and nested block structures inside a list item are flattened.
+- Document editing saves the whole buffer; there is no partial-diff save and no
+  merge UI. A file changed on disk after you opened it is rejected rather than
+  merged, and unsaved drafts are kept per open tab for the session.
 
-## For contributors
+</details>
+
+---
+
+## 参与贡献
+
+开发环境见[本地开发](#本地开发)，架构见 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)，
+打包见 [packaging/README.md](packaging/README.md)。后端测试在 `backend/` 下用
+`uv run pytest` 运行。在配置好的 Windows 构建机上，先运行
+`pwsh -File packaging/build_backend.ps1`，再运行
+`pwsh -File packaging/build_desktop.ps1` 构建安装包。
+
+欢迎提交贡献与问题报告。涉及应用行为的改动，请说明问题、复现步骤与预期行为。
+
+<details>
+<summary>English</summary>
 
 See [local development](#本地开发), [architecture](docs/ARCHITECTURE.md), and
 [packaging](packaging/README.md). The backend tests run with `uv run pytest` from
@@ -99,28 +341,7 @@ See [local development](#本地开发), [architecture](docs/ARCHITECTURE.md), an
 Contributions and issue reports are welcome. For changes to the application,
 please explain the problem, reproduction steps, and expected behavior.
 
-> 本地优先的「代码阅读」智能体桌面应用。把任意一个代码仓库拖进来，边读边问，
-> 每个回答都带可点击的文件/行号引用；需要动文件或跑命令时，逐条向你申请授权。
-
-CodeSlice 是一个跑在你机器上的 Electron 桌面程序 + 本地 Python 服务。
-模型调用走你自己的 API Key，代码、索引、对话记录全部留在本地
-（安装版在 `%APPDATA%\codeslice-desktop`，见[数据与凭据](#数据与凭据)），
-不上传任何服务器。
-
----
-
-## 目录
-
-- [核心特性](#核心特性)
-- [架构](#架构)
-- [技术栈](#技术栈)
-- [仓库结构](#仓库结构)
-- [本地开发](#本地开发)
-- [构建与打包](#构建与打包)
-- [数据与凭据](#数据与凭据)
-- [安全模型](#安全模型)
-- [V1 范围与路线图](#v1-范围与路线图)
-- [常见问题](#常见问题)
+</details>
 
 ---
 
@@ -132,6 +353,7 @@ CodeSlice 是一个跑在你机器上的 Electron 桌面程序 + 本地 Python �
 | **多标签编辑器** | 像 VS Code 那样同时开多个文件和笔记，标签可拖拽排序、中键或 × 关闭、右键「关闭其他」。点笔记里的引用会新开一个代码标签，原来的笔记不会消失。 |
 | **集成终端** | 编辑器下方可展开的终端，直接跑命令；输出逐行流式到达，可拖拽调高、↑↓ 翻历史。 |
 | **AI 可执行命令** | 对话里模型调 `run_command` 走的审批卡与终端是同一套沙箱：同一份危险命令黑名单，同一条 `command_rules` 授权规则。 |
+| **文档阅读与就地编辑** | 打开 `.md` / `.mdx` 默认渲染成排版文档（标题层级、表格、代码块带复制、图片按相对路径解析并走本机接口加载）。工具栏「阅读 / 编辑」切换：编辑态用 Monaco 直接改，`⌘/Ctrl+S` 或「保存」写回磁盘；保存带 mtime 校验，文件在打开后被别人改过会拒绝覆盖并给出提示。 |
 | **可溯源的引用** | 每条回答附 `文件:行号` 引用块，点击直接跳转并用左侧色条标出范围；再点同一个引用块取消标亮。 |
 | **混合检索** | SQLite FTS5 关键词检索 + numpy 余弦相似度语义检索，结果融合排序。 |
 | **结构化索引** | Tree-sitter 解析 Python / TS / JS / Go / Rust / Java / C / C++ / JSON / Bash，按函数、类、模块切块。 |
@@ -144,7 +366,7 @@ CodeSlice 是一个跑在你机器上的 Electron 桌面程序 + 本地 Python �
 | **对话分区** | 侧栏把「本项目对话」置顶、「其他对话」折叠在下，列表项标注来自哪个项目。 |
 | **索引状态自检** | 打开项目即检查索引：从未索引时静默建立，已索引则静默增量刷新，无需手动操作；工具栏常驻「309 文件 · 1508 片段」累计徽标。 |
 | **知识点标题** | 对话与笔记的标题由回答内容概括（「多轮对话消息两种写法」），不再是「关于 README.md 第 357-359 行」。 |
-| **本地凭据** | API Key 存 Windows 凭据管理器，绝不写进 SQLite。 |
+| **本地凭据** | API Key 存系统凭据管理器（Windows 凭据管理器 / Linux Secret Service），绝不写进 SQLite。 |
 
 ---
 
@@ -181,7 +403,7 @@ CodeSlice 是一个跑在你机器上的 Electron 桌面程序 + 本地 Python �
 **启动握手**：后端在真正开始监听之后，向 stdout 打印一行
 
 ```
-CODESLICE_READY {"port": 54746, "token": "xN-Nxo...", "version": "0.1.0"}
+CODESLICE_READY {"port": 54746, "token": "xN-Nxo...", "version": "0.2.2"}
 ```
 
 Electron 主进程读到这一行才知道该连哪个端口、用什么 Token。
@@ -193,7 +415,7 @@ Electron 主进程读到这一行才知道该连哪个端口、用什么 Token�
 
 | 层 | 技术 | 选型理由 |
 | --- | --- | --- |
-| 桌面壳 | Electron + electron-builder (NSIS) | 需要管理子进程、原生文件对话框、系统凭据 |
+| 桌面壳 | Electron + electron-builder（NSIS / AppImage / deb / rpm） | 需要管理子进程、原生文件对话框、系统凭据 |
 | 界面 | React 18 + TypeScript + Vite 5 | 成熟的编辑器周边生态，构建快 |
 | 代码显示 | Monaco Editor | 与 VS Code 同源，语法高亮与 diff 开箱即用 |
 | API | FastAPI + Uvicorn | 原生 async、SSE 简单、Pydantic 校验 |
@@ -202,7 +424,7 @@ Electron 主进程读到这一行才知道该连哪个端口、用什么 Token�
 | 存储 | SQLite（WAL）+ FTS5 | 零运维、单文件、可随应用一起搬运 |
 | 向量检索 | numpy 余弦相似度 | V1 规模（万级 chunk）足够，且可替换成任意 VectorStore |
 | 语法分析 | Tree-sitter + 逐语言 grammar 包 | 增量解析、跨语言、无需语言服务器 |
-| 凭据 | `keyring`（Windows Credential Manager） | 交给操作系统保管，不落盘明文 |
+| 凭据 | `keyring`（Windows 凭据管理器 / Linux Secret Service） | 交给操作系统保管，不落盘明文 |
 
 ---
 
@@ -222,12 +444,12 @@ CodeSplit/
 │   │   ├── services/         # 路径校验、git、锚点、终端沙箱、命令执行
 │   │   └── storage/          # 数据访问层
 │   ├── pyproject.toml
-│   ├── scripts/              # smoke / e2e_contract / ui_smoke / mock_model / cdp_reload 联调脚本
-│   ├── tests/                # pytest（17 个文件、237 个用例）
+│   ├── scripts/              # smoke / e2e_contract / ui_smoke / doc_save_test / doc_conflict_test / cdp_reload
+│   ├── tests/                # pytest（24 个测试文件）
 │   └── .venv/                # uv 管理的虚拟环境（Python 3.11）
 ├── frontend/                 # Vite + React 渲染进程
 │   └── src/
-│       ├── components/       # FileTree / CodeViewer / ChatPane / EditorTabs / TerminalPanel ...
+│       ├── components/       # FileTree / CodeViewer / MarkdownDoc / ChatPane / EditorTabs ...
 │       ├── api.ts            # HTTP 客户端
 │       └── bridge.ts         # Electron preload 桥接
 ├── desktop/                  # Electron 主进程 + 打包配置
@@ -310,7 +532,7 @@ cd desktop; npm run dev
 # 1) 后端 → packaging\dist-backend\codeslice-backend.exe（扁平布局）
 pwsh -File packaging\build_backend.ps1
 
-# 2) 前端 + Electron → desktop\release\CodeSlice-0.1.0-Setup.exe
+# 2) 前端 + Electron → desktop\release\CodeSlice-0.2.2-Setup.exe
 pwsh -File packaging\build_desktop.ps1
 ```
 
@@ -328,6 +550,11 @@ HTTP 服务，两处必须是同一份产物），再校验安装包内确实包
 
 后端产物直接放在 `packaging\dist-backend\`，不会被复制进 `desktop/`：
 `electron-builder.yml` 的 `extraResources.from` 指的就是那里。
+
+Linux 安装包使用 `desktop/electron-builder-linux.yml`：先在 Linux（或 WSL）中用同一
+PyInstaller 入口生成 `packaging/dist-backend-linux/`，再在 `desktop/` 下运行
+`npm run dist:linux`，AppImage / deb / rpm 会输出到 `desktop/release-linux/`。
+PyInstaller 产物必须在 Linux 平台生成，不能从 Windows 交叉编译。
 
 > 注意：`uv sync` / `uv run` 会把 PyInstaller 从 `backend\.venv` 里卸掉（它只在
 > `packaging\requirements-packaging.txt` 里）。同步过依赖之后，重跑
@@ -362,22 +589,26 @@ backend\.venv\Scripts\python.exe backend\scripts\check_packaged_notes.py --base 
 
 | 运行方式 | 数据目录 |
 | --- | --- |
-| 安装版（`CodeSlice.exe`） | `%APPDATA%\codeslice-desktop\` |
-| 开发版（`uv run fastapi dev` / `codeslice-backend.exe` 手工启动） | `%LOCALAPPDATA%\CodeSlice\` |
+| Windows 安装版（`CodeSlice.exe`） | `%APPDATA%\codeslice-desktop\` |
+| Windows 开发版（`uv run fastapi dev` / `codeslice-backend.exe` 手工启动） | `%LOCALAPPDATA%\CodeSlice\` |
+| Linux 安装版 | `~/.config/codeslice-desktop/`（默认） |
+| Linux 开发版 | `~/.codeslice/` |
 | `scripts\dev.ps1` 一键启动 | 仓库下 `.devdata\` |
 
 原因是：安装版由 Electron 主进程显式设置 `CODESLICE_DATA_DIR=app.getPath('userData')`，
-而 `app.getPath('userData')` 取 `package.json` 的 `name`（`codeslice-desktop`），所以是
-`%APPDATA%\codeslice-desktop`；开发模式下没人设置该变量，后端回落到
-`backend/app/core/config.py` 的默认值 `%LOCALAPPDATA%\CodeSlice`。
+而 `app.getPath('userData')` 取 `package.json` 的 `name`（`codeslice-desktop`），所以
+Windows 下是 `%APPDATA%\codeslice-desktop`，Linux 下是
+`~/.config/codeslice-desktop`；开发模式下没人设置该变量，后端回落到
+`backend/app/core/config.py` 的默认值（Windows 为 `%LOCALAPPDATA%\CodeSlice`，
+Linux 为 `~/.codeslice`）。
 
 | 内容 | 位置 |
 | --- | --- |
-| SQLite 数据库 | `<数据目录>\codeslice.db` |
-| 日志 | `<数据目录>\logs\backend.log` |
-| LangGraph 检查点 | `<数据目录>\checkpoints.db` |
-| 窗口尺寸等桌面状态 | 仅安装版：`%APPDATA%\codeslice-desktop\window-state.json` |
-| 模型 API Key | Windows 凭据管理器，服务名 **`codeslice`** |
+| SQLite 数据库 | `<数据目录>/codeslice.db` |
+| 日志 | `<数据目录>/logs/backend.log` |
+| LangGraph 检查点 | `<数据目录>/checkpoints.db` |
+| 窗口尺寸等桌面状态 | 仅安装版：Windows 为 `%APPDATA%\codeslice-desktop\window-state.json`，Linux 为 `~/.config/codeslice-desktop/window-state.json` |
+| 模型 API Key | 系统凭据管理器（Windows 凭据管理器 / Linux Secret Service），服务名 **`codeslice`** |
 | 会话 Token | 仅进程内存，每次启动随机生成 |
 
 可用环境变量 `CODESLICE_DATA_DIR` 覆盖数据目录（开发脚本会指向仓库下的 `.devdata\`）。
@@ -392,6 +623,7 @@ backend\.venv\Scripts\python.exe backend\scripts\check_packaged_notes.py --base 
 | `chunks_fts` | FTS5 全文索引（中文按重叠二元组存词、英文小写词，关键词检索按覆盖率排序） |
 | `conversations` / `messages` | 对话与消息（含引用、工具调用元数据） |
 | `code_anchors` | 绑定到代码位置的锚点，状态 `unchanged` / `modified` / `moved` / `deleted` |
+| `code_annotations` | 用户添加的代码批注，绑定到项目、文件和行号 |
 | `notes` | 阅读笔记；`folder_id` 指向知识库文件夹（可空 = 未分类） |
 | `note_folders` | 知识库文件夹，`parent_id` 自引用成任意层级的树 |
 | `command_rules` | 命令授权规则（`once` / `session` / `always`） |
@@ -413,7 +645,8 @@ CodeSlice 按「不信任本地服务的调用方」来设计——因为同一�
    握手交给 Electron 主进程，再经 preload 注入渲染进程。所有 `/api/*` 请求必须带
    `X-Session-Token`，否则 `401 {"detail": "invalid session token"}`。
    仅 `GET /api/health` 豁免（用于启动探活）。
-4. **API Key 永不进数据库**。写入 Windows 凭据管理器，服务名 `codeslice`。
+4. **API Key 永不进数据库**。写入系统凭据管理器（Windows 凭据管理器 / Linux
+   Secret Service），服务名 `codeslice`。
    `GET /api/settings` 只返回 `api_key_configured: bool`，不返回明文。
    读取走 `keyring.get_password`，删除走 `keyring.delete_password`。
 5. **按命令授权，而不是「信任整个项目」**。写文件与执行命令都触发
@@ -429,9 +662,7 @@ CodeSlice 按「不信任本地服务的调用方」来设计——因为同一�
 
 ---
 
-## V1 范围与路线图
-
-**V1 已实现**
+## 已实现功能
 
 - 单项目、单用户、本地运行
 - Tree-sitter 结构化切块 + FTS5/向量混合检索
@@ -460,10 +691,13 @@ CodeSlice 按「不信任本地服务的调用方」来设计——因为同一�
   （检索段数、模型、temperature、输出上限、追加指令、工具轮数上限、是否自动重拟标题）
   通过 `GET/PUT /api/agent/graph` 读写，存在 `settings` 表的 `agent.node_config` 键里，
   改完下一轮对话生效，不用重启后端
+- 文档阅读与就地编辑：`.md` / `.mdx` 打开即渲染（标题层级、表格、代码块、图片按相对路径
+  从本机接口加载），工具栏「阅读 / 编辑」切换，编辑态 `⌘/Ctrl+S` 或「保存」写回磁盘；
+  保存带 `expected_mtime` 校验，文件在打开后被别人改过会拒绝覆盖并提示重新打开
 - 模型配置（OpenAI 兼容 / Anthropic）+ 连通性测试
 - 本地向量模型一键下载：设置页内置 `bge-m3` / `qwen3-embedding:0.6b` 两个预设，
   通过本机 Ollama 下载并自动写入 Embedding 配置（切换模型后提示重建索引）
-- PyInstaller 后端 + electron-builder NSIS 安装器
+- PyInstaller 后端 + electron-builder NSIS / AppImage / deb / rpm 安装包
 
 **本地向量模型（Ollama）**
 
@@ -610,17 +844,6 @@ Base URL：
 「文件 7 / 片段 7 / 向量 0」，看起来像索引是空的。未配置向量模型时 `vectors` 恒为 0，
 检索退回关键词模式，这是正常状态而不是失败。
 
-**后续（V1 之外）**
-
-| 方向 | 说明 |
-| --- | --- |
-| 三维知识图谱 | 把模块依赖、调用关系、对话脉络可视化成可导航的三维图 |
-| 热力图 | 按修改频率 / 对话关注度 / 复杂度给文件与函数着色 |
-| MCP 文档导入 | 通过 MCP 接入外部文档源（Confluence、Notion 等），与代码一起检索 |
-| 多语言 LSP | 用语言服务器替代/补充 Tree-sitter，获得跨文件符号解析 |
-| 全文重构智能体 | 跨文件、多步、可回滚的批量改动 |
-| 多用户 / 云端同步 | V1 明确不做——数据留在本机是这个产品的核心承诺 |
-
 ---
 
 ## 常见问题
@@ -641,6 +864,15 @@ uv run fastapi dev app/main.py
 
 PyInstaller 产出的 exe 没有代码签名，属于典型误报。点「更多信息 → 仍要运行」，
 或把安装目录加入白名单。正式分发需要购买代码签名证书。
+
+**Q：Linux 上怎么安装？**
+
+- AppImage：`chmod +x CodeSlice-0.2.2-x86_64.AppImage` 后直接运行，不需要安装。
+- deb：`sudo apt install ./CodeSlice-0.2.2-amd64.deb`。
+- rpm：`sudo dnf install ./CodeSlice-0.2.2-x86_64.rpm`（或 `sudo rpm -i ...`）。
+
+deb / rpm 默认安装到 `/opt/CodeSlice`，启动项会出现在应用菜单中。安装包未做代码签名，
+系统可能提示来源未知；确认文件来自本仓库 Release 后可继续安装。
 
 **Q：为什么某些语言没有结构化大纲？**
 
@@ -669,10 +901,11 @@ packaging\dist-backend\codeslice-backend.exe --selftest
 
 **Q：数据存在哪？卸载会删吗？**
 
-安装版在 `%APPDATA%\codeslice-desktop\`，开发版在 `%LOCALAPPDATA%\CodeSlice\`
-（详见[数据与凭据](#数据与凭据)）。卸载程序默认保留这些目录
+Windows 安装版在 `%APPDATA%\codeslice-desktop\`，Linux 安装版在
+`~/.config/codeslice-desktop/`；开发版分别在 `%LOCALAPPDATA%\CodeSlice\` 与
+`~/.codeslice/`（详见[数据与凭据](#数据与凭据)）。卸载程序默认保留这些目录
 （`deleteAppDataOnUninstall: false`，避免误删笔记与对话）；
-需要彻底清理时手动删除即可。API Key 在 Windows 凭据管理器中，需单独删除。
+需要彻底清理时手动删除即可。API Key 在系统凭据管理器中，需单独删除。
 
 **Q：能同时打开多个项目吗？**
 
@@ -695,7 +928,7 @@ uv run fastapi dev app/main.py --port 8123
 **Q：安装后 `CodeSlice.exe` 是 Electron 的默认图标？**
 
 说明打包时 rcedit 那一步没生效。正常的打包输出里应该有
-`[ok] icon verified: ...` 与 `[ok] version info: CodeSlice 0.1.0.0`。
+`[ok] icon verified: ...` 与 `[ok] version info: CodeSlice 0.2.2.0`。
 原因是 `desktop/electron-builder.yml` 里 `signAndEditExecutable: false`（本地不签名），
 electron-builder 因此跳过写图标/版本；而打开它的替代路径需要解压含符号链接的
 winCodeSign 包，非管理员做不到。`packaging\build_desktop.ps1` 改为
@@ -717,6 +950,39 @@ electron-builder 不会清理 `extraResources` 的旧文件，增量构建可能
 
 ---
 
+## 致谢
+
+知识图谱的设计——Tree-sitter AST 抽取管线、关系词表与画布视觉语言——参考了
+[Graphify](https://github.com/Graphify-Labs/graphify)（Copyright 2026 Safi Shamsi
+and the Graphify contributors，Apache License 2.0）。CodeSlice 为独立实现，
+署名与许可条款见 [NOTICE](NOTICE) 与
+[THIRD_PARTY_LICENSES/Graphify-Apache-2.0.txt](THIRD_PARTY_LICENSES/Graphify-Apache-2.0.txt)。
+
+项目同时依赖 React、Monaco Editor、FastAPI、LangGraph、Tree-sitter、vis-network
+等开源项目，许可信息以各自包清单为准。
+
+<details>
+<summary>English</summary>
+
+The knowledge-graph design — the Tree-sitter AST extraction pipeline, the
+relation vocabulary, and the canvas visual language — is modelled on
+[Graphify](https://github.com/Graphify-Labs/graphify), Copyright 2026 Safi
+Shamsi and the Graphify contributors, and is used under the Apache License 2.0.
+CodeSlice is an independent implementation; see [NOTICE](NOTICE) and
+[THIRD_PARTY_LICENSES/Graphify-Apache-2.0.txt](THIRD_PARTY_LICENSES/Graphify-Apache-2.0.txt)
+for the attribution terms.
+
+CodeSlice also builds on React, Monaco Editor, FastAPI, LangGraph, Tree-sitter,
+and vis-network; their licenses are declared in the respective package
+manifests.
+
+</details>
+
+---
+
 ## 许可
 
-未定。此仓库处于早期开发阶段。
+本项目以 MIT 许可证发布，见 [LICENSE](LICENSE)。知识图谱的设计参考了
+[Graphify](https://github.com/Graphify-Labs/graphify)（Apache License 2.0），
+相关署名与许可证副本见 [NOTICE](NOTICE) 和
+[THIRD_PARTY_LICENSES/Graphify-Apache-2.0.txt](THIRD_PARTY_LICENSES/Graphify-Apache-2.0.txt)。

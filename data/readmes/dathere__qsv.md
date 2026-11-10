@@ -67,7 +67,7 @@
 | [json](docs/help/json.md)<br>👆 | Convert JSON array to CSV.
 | [jsonl](docs/help/jsonl.md)<br>🚀🔣 | Convert newline-delimited JSON ([JSONL](https://jsonlines.org/)/[NDJSON](http://ndjson.org/)) to CSV. See `tojsonl` command to convert CSV to JSONL.
 | [lens](docs/help/lens.md)✨<br>🗃️🐻‍❄️🖥️ | Interactively view, search & filter tabular data files using the [csvlens](https://github.com/YS-L/csvlens#csvlens) engine. Apart from CSV and its dialects, Arrow, Avro/IPC, Parquet, JSON array & JSONL formats are supported with the "polars" feature. |
-| [luau](docs/help/luau.md)✨<br>📇🌐🔣📚 ![CKAN](docs/images/ckan.png) ![Luau](docs/images/luau.png) | <a name="luau_deeplink"></a>Create multiple new computed columns, filter rows, compute aggregations and build complex data pipelines by executing a [Luau](https://luau-lang.org) [0.740](https://github.com/Roblox/luau/releases/tag/0.740) expression/script for every row of a CSV file ([sequential mode](https://github.com/dathere/qsv/blob/bb72c4ef369d192d85d8b7cc6e972c1b7df77635/tests/test_luau.rs#L254-L298)), or using [random access](https://www.webopedia.com/definitions/random-access/) with an index ([random access mode](https://github.com/dathere/qsv/blob/bb72c4ef369d192d85d8b7cc6e972c1b7df77635/tests/test_luau.rs#L367-L415)).<br>Can process a single Luau expression or [full-fledged data-wrangling scripts using lookup tables](https://github.com/dathere/qsv-lookup-tables#example) with discrete BEGIN, MAIN and END sections.<br> It is not just another qsv command, it is qsv's [Domain-specific Language](https://en.wikipedia.org/wiki/Domain-specific_language) (DSL) with [numerous qsv-specific helper functions](https://github.com/dathere/qsv/blob/master/src/cmd/luau.rs#L1473-L2755) to build production data pipelines. |
+| [luau](docs/help/luau.md)✨<br>📇🌐🔣📚 ![CKAN](docs/images/ckan.png) ![Luau](docs/images/luau.png) | <a name="luau_deeplink"></a>Create multiple new computed columns, filter rows, compute aggregations and build complex data pipelines by executing a [Luau](https://luau-lang.org) [0.745](https://github.com/Roblox/luau/releases/tag/0.745) expression/script for every row of a CSV file ([sequential mode](https://github.com/dathere/qsv/blob/bb72c4ef369d192d85d8b7cc6e972c1b7df77635/tests/test_luau.rs#L254-L298)), or using [random access](https://www.webopedia.com/definitions/random-access/) with an index ([random access mode](https://github.com/dathere/qsv/blob/bb72c4ef369d192d85d8b7cc6e972c1b7df77635/tests/test_luau.rs#L367-L415)).<br>Can process a single Luau expression or [full-fledged data-wrangling scripts using lookup tables](https://github.com/dathere/qsv-lookup-tables#example) with discrete BEGIN, MAIN and END sections.<br> It is not just another qsv command, it is qsv's [Domain-specific Language](https://en.wikipedia.org/wiki/Domain-specific_language) (DSL) with [numerous qsv-specific helper functions](https://github.com/dathere/qsv/blob/master/src/cmd/luau.rs#L1473-L2755) to build production data pipelines. |
 | [moarstats](docs/help/moarstats.md)<br>📇🏎️ | Add up to an additional 73 statistical measures, including extended outlier, robust & bivariate statistics to an existing stats CSV file. ([example](docs/moarstats/NYC_311_SR_2010-2020-sample-1M.stats.csv)).|
 | [partition](docs/help/partition.md)<br>👆 | Partition a CSV based on a column value. |
 | [pivotp](docs/help/pivotp.md)✨<br>🐻‍❄️🚀🪄 | Pivot CSV data. Features "smart" aggregation auto-selection based on data type & stats. |
@@ -115,7 +115,7 @@
 🧠: expensive operations are memoized with available inter-session Redis/Disk caching for fetch commands.  
 🗄️: [Extended input support](#extended-input-support).  
 🗃️: [Limited Extended input support](#limited-extended-input-support).  
-🐻‍❄️: command powered/accelerated by [![polars 0.55.1 at py-2.1.0:0b47007](https://img.shields.io/badge/polars-0.55.1:py--2.1.0:0b47007-blue?logo=polars)](https://github.com/pola-rs/polars/releases/tag/py-2.1.0) vectorized query engine.  
+🐻‍❄️: command powered/accelerated by [![polars 0.55.1 at py-2.1.0:ff1b37d](https://img.shields.io/badge/polars-0.55.1:py--2.1.0:ff1b37d-blue?logo=polars)](https://github.com/pola-rs/polars/releases/tag/py-2.1.0) vectorized query engine.  
 🤖: command uses Natural Language Processing or Generative AI.  
 🏎️: multithreaded and/or faster when an index (📇) is available.  
 🚀: multithreaded even without an index.  
@@ -127,7 +127,7 @@
 📚: has lookup table support, enabling runtime "lookups" against local or remote reference CSVs.  
 🌎: has geospatial capabilities.  
 ⛩️: uses [MiniJinja](https://docs.rs/minijinja/latest/minijinja/) template engine.  
-![Luau](docs/images/luau.png) : uses [Luau](https://luau.org/) [0.740](https://github.com/Roblox/luau/releases/tag/0.740) as an embedded scripting [DSL](https://en.wikipedia.org/wiki/Domain-specific_language).  
+![Luau](docs/images/luau.png) : uses [Luau](https://luau.org/) [0.745](https://github.com/Roblox/luau/releases/tag/0.745) as an embedded scripting [DSL](https://en.wikipedia.org/wiki/Domain-specific_language).  
 🎲: randomly generated or randomized output with a --seed option for reproducibility.  
 🖥️: part of the User Interface (UI) feature group.  
 

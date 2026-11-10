@@ -68,6 +68,29 @@ Es gibt von mir die weiteren Schwesterseiten im Kontext Informatik/KI: [Schulisc
 
 <!-- tocstop -->
 
+## Ethik
+
+KI und Gesellschaft:
+
+- Standardwerk (€:) [AI Ethics](https://mitpress.mit.edu/9780262538190/ai-ethics/) (2020) von Mark Coeckelbergh
+- Deutsches Open Access Buch [Künstliche Intelligenz und Wir](https://link.springer.com/book/10.1007/978-3-662-71567-3) (2025)
+
+Informatik und Gesellschaft:
+
+- Historisches Standardwerk [Computer Power and Human Reason: From Judgment to Calculation](https://archive.org/details/computerpowerhum0000weiz_v0i3) (1976) von Joseph Weizenbaum
+- Standardwerk (€:) [The Ethics of Information](https://academic.oup.com/book/35378) (2013) von Luciano Floridi
+- Zeitungsbeitrag [Informatik und Verantwortung](https://www.sueddeutsche.de/politik/informatik-und-verantwortung-es-gibt-wichtigeres-als-apps-fuer-hundehaufen-1.4207887) (2018)
+
+Richtlinien:
+
+- DE: [GI Ethische Leitlinien](https://gi.de/ueber-uns/organisation/unsere-ethischen-leitlinien) (2018)
+- Hochschullehre:
+	- DE: Schwartmann, Kurth und Köhler: [Der Einsatz von KI an Hochschulen – eine rechtliche Betrachtung, Ordnung der Wissenschaft (3) 2024](https://ordnungderwissenschaft.de/wp-content/uploads/2024/06/Gesamtausgabe.pdf). S. 161-168.
+	- BY: [KI-Leitlinie Hochschullehre](https://www.hochschule-bayern.de/fileadmin/daten/Positionspapiere/KI-Leitlinie_Hochschule-Bayern-19052025.pdf) (2025)
+	- OTH-AW: [KI-Richtlinie OTH Amberg-Weiden](https://www.oth-aw.de/files/oth-aw/Hochschule/KI-Richtlinie_Studium-Lehre-Forschung.pdf)
+- Verwaltung:
+	- BY: [KI-Leitfaden für Behörden](https://www.stmfh.bayern.de/digitalisierung/ki/KI-Leitfaden_Behoerden_2025.pdf) (2025)
+
 ## Bachelor-Level
 
 \[ Vor einem Masterstudium (Informatik/KI) / Zum Ausgleich **heterogener Vorkenntnisse aus dem Bachelorstudium**. \]
@@ -641,9 +664,4 @@ Werkzeuge:
 		- Grundlegend #3 (technisch): Webartikel **[Managing output in the .NET SDK projects](https://cezarypiatek.GitHub.io/post/managing-output-in-sdk-projects/)** (2019) von Cezary Piątek
 			- (Einstiegsalternative: (€) Buch [.NET Core in Action](https://www.manning.com/books/dotnet-core-in-action) (2018) von Dustin Metzgar, Kapitel 3 „How to build with .NET Core“)
 			- Zwei Build-Arten: .NET Framework (**msbuild**; Windows-only; Visual Studio) vs. .NET / .NET Core (**dotnet build**; Cross-Platform; .NET CLI)
-			- Zwei Referenztypen: **[ProjectReference](https://github.com/dotnet/msbuild/blob/main/documentation/ProjectReference-Protocol.md)** (u.a. [PreserveNewest](https://stackoverflow.com/questions/62991404/how-does-project-item-metadata-preservenewest-actually-work) sowie „Copy Local“ = Private:false) vs. **[PackageReference](https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files)** (u.a. „NOT Copy Local“ = [ExcludeAssets:runtime](https://learn.microsoft.com/en-US/nuget/consume-packages/package-references-in-project-files#controlling-dependency-assets) sowie [PrivateAssets:all](https://learn.microsoft.com/en-us/answers/questions/702182/how-to-hide-dependent-nuget-dll39s-from-consuming.html) und im Legacy-Build-Kontext ggf. [CopyLocalLockFileAssemblies:true](https://stackoverflow.com/questions/43837638/how-do-i-get-net-core-projects-to-copy-nuget-references-to-the-build-output/52824190#52824190))
-		- NuGet: Microsoft [**Quickstart** to create a NuGet package](https://learn.microsoft.com/en-us/nuget/quickstart/create-and-publish-a-package-using-the-dotnet-cli) | Webartikel **[5 steps to better NuGet package](https://alex-klaus.com/better-nuget/)** von Alex Klaus | [Best Practices for **Versioning** NuGet **Packages** in the Enterprise](https://blog.inedo.com/nuget/package-versioning) (2021) by Eric Seng | **[NuGet in the Enterprise](https://blog.inedo.com/nuget/in-the-enterprise-2021)** (2021) by Eric Seng | [Prerelease Packages & **Repackaging**](https://docs.inedo.com/docs/proget-packages-repackaging) (2021) | [Managing the global packages, cache, and temp folders](https://learn.microsoft.com/en-us/nuget/consume-packages/managing-the-global-packages-and-cache-folders)
-		- Impuls zur Inspiration: [Adding both Project and Package references](https://github.com/dotnet/project-system/issues/2836)
-- Basis von DevOps #3: **System Integration**
-	- Webartikel **[Continuous Integration](https://martinfowler.com/articles/continuousIntegration.html)** (2006) von Martin Fowler ⭐
-	- C
+			- Zwei Referenztypen: **[ProjectReference](https://github.com/dotnet/msbuild/blob/main/documentation/ProjectReference-Protocol.md)** (u.a. [PreserveNewest](https://stackoverflow.com/questions/62991404/how-does-project-item-metadata-preservenewest-actually-work) sowie „Copy Local“ = Private:false) vs. **[PackageReference](https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files)** (u.a. „NOT Copy Local“ = [ExcludeAssets:runtime](http

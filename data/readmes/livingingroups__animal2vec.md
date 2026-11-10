@@ -82,7 +82,7 @@ dummy_data = nn.chunk_and_normalize(
 
 processed_chunks = []
 method_dict = {
-        "sigma_s": 0.1,  # Filter width in seconds
+        "sigma_s": 0.005,  # Default MAX filter width in seconds
         "metric_threshold": 0.15,  # Likelihood threshold for the predictions
         "maxfilt_s": 0.1,  # Time to smooth with maxixmum filter. Only used when method=canny
         "max_duration_s": 0.5,  # Detections are never longer than max duration (s). Only used when method=canny
@@ -116,7 +116,7 @@ with torch.inference_mode():
                                         # A dictionary with information on how to estimate the onset / offset
                                          method_dict=method_dict,
                                          # Which method to use for fusing the predictions into time bins
-                                         method="avg",
+                                         method="max",
                                          multiplier=bi,
                                          bs=16)
         processed_chunks.append(fused_preds)
@@ -279,6 +279,19 @@ support; event metrics have no true-negative count. `frame_mAP` remains a
 separate frame-classification metric in single-worker runs.
 
 Keep proposal and operating thresholds separate:
+
+New training criteria and inference/evaluation CLIs default to **MAX pooling,
+5 ms window, proposal cutoff 0.15**. Experiment YAMLs omit `method`, `sigma_s`,
+and `metric_threshold` so they inherit these defaults. The legacy criterion
+uses `metric_threshold` for both proposal generation and frame decisions;
+the event operating confidence cutoff remains separate at 0.5. These metrics
+settings do not change the training objective.
+
+For historical AVG behavior, set `criterion.method=avg`,
+`criterion.sigma_s=0.1`, and `criterion.metric_threshold=0.175` when training,
+or pass the equivalent CLI options to inference. Saved explicit settings stay
+explicit; loading an old checkpoint does not rewrite its criterion. Historical
+metric tensors remain available through the explicitly named legacy methods.
 
 | Setting | Meaning |
 | --- | --- |

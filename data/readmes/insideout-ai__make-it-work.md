@@ -27,7 +27,7 @@ After implementation, [deliver](skills/deliver/SKILL.md) can commit, push, and o
 
 ## Skills
 
-13 skills, from codebase onboarding to delivery. Invoke any skill as `/make-it-work:<skill-name>`; the links below open its full workflow.
+14 skills, from codebase onboarding to delivery. Invoke any skill as `/make-it-work:<skill-name>`; the links below open its full workflow.
 
 | What you need | Skill | What you get |
 | --- | --- | --- |
@@ -44,6 +44,7 @@ After implementation, [deliver](skills/deliver/SKILL.md) can commit, push, and o
 | Check for regressions | [run-regression](skills/run-regression/SKILL.md) | Full or scoped test results, with unavailable checks made explicit |
 | Review changes against project intent | [review-the-code](skills/review-the-code/SKILL.md) | A verdict and findings grounded in requirements, code, and project guidance |
 | Publish a completed implementation | [deliver](skills/deliver/SKILL.md) | An approved commit, push, and new or updated PR |
+| Review a session and provide workflow feedback | [feedback-on-session](skills/feedback-on-session/SKILL.md) | Evidence-backed findings and your perspective in a local, shareable report |
 
 ## Quick start
 
@@ -306,7 +307,13 @@ Displayed durations are **elapsed time (includes waits and pauses)**. Active pro
 
 The HTML reflects delivery actions recorded by make-it-work. Commits, pushes and pull requests completed outside the plugin are not automatically reflected; the saved delivery status can therefore remain failed or partial after external delivery succeeds.
 
-After a run completes, `implement` adds an anonymous, share-safe entry to the cumulative `make-it-work/implement-feedback.md` file. Runs without fix rounds, replanning, escalation or recorded guardrail interventions get a compact entry; runs with extra rounds or guardrail interventions get a retrospective that identifies where the workflow could improve, asking the user one clarification at a time only when the answer could change that diagnosis. The terminal chat summary includes the feedback result, the main cause and suggested improvement when analyzed, and a link to the full local file; suggestions are not applied automatically. The same happens when a run stops because a fix, review, or replan limit was exhausted. Guardrail interventions are reported separately from extra-round counts and are not automatically treated as failures. Their original detail, affected steps, timestamps and user resolution source/channel are retained in execution history; only share-safe paraphrases reach feedback. Findings arising after the workflow remain outside this feature. Feedback is written only after the workflow is already terminal, never changes its result, and is never uploaded automatically — review the file yourself before choosing whether to send it to the make-it-work owners.
+After final approval and completion, `implement` automatically follows `feedback-on-session`, combining a review of the available conversation with the existing artifact retrospective. It saves one anonymous, share-safe report in `make-it-work/<TICKET>/workflow-feedback.md` and the same run's entry in cumulative `make-it-work/implement-feedback.md`. The report includes the plugin version captured when the run began; legacy runs without a captured version remain explicitly unknown. Conversation review also runs when no retries were needed. Extra fix rounds, replanning, escalation, guardrail interventions, hook interruptions and repeated waits retain their evidence-backed artifact analysis, with safeguards and waits reported separately from implementation retries.
+
+The combined report is saved before a single invitation to add or correct context. Each finding includes a suggested next step, owner, verification and recommendation confidence. The controller hands off to feedback explicitly; scoped hooks require the current report and any required retrospective dispatch before a terminal summary or delivery question. A genuine technical failure can instead produce a verified unavailable outcome and a local `feedback-unavailable.json` receipt when writable. That receipt is not a saved retrospective; an unperformed review or a claim of no friction does not qualify as unavailability. An unanswered invitation leaves feedback provisional without delaying the completion summary or delivery offer; later replies update the same report. Autopilot saves the review with input not requested and questions left open. The same integration runs at exhausted fix, review or replan limits. Feedback never changes the terminal workflow result or approved package, and recommendations are not applied automatically. Standalone `/make-it-work:feedback-on-session` remains available for interrupted or abandoned sessions and supplied transcripts. Nothing is uploaded automatically.
+
+Automatic feedback also inspects the generated workflow dashboard HTML against the saved state and audit log. New runs collect a compact numbered source packet and record inspected sections and stage-report observations. The dashboard shows recorded package assurance separately from completion and links the current session export. It records supported content/markup issues and separates CSS/layout risks from observed rendering; no browser is used. The same feedback pass handles it without another agent or review cycle, and missing HTML is an evidence limitation rather than a completion blocker.
+
+After final approval, the dashboard shows **Finalizing session** while feedback is collected in one bounded pass. A verified **Feedback saved** or **Unavailable** outcome settles finalization before optional delivery is offered. Answering delivery never restarts feedback. The implementation state and package approval remain unchanged. The parent collects the evidence and saves the combined report; a required independent agent returns only the artifact diagnosis.
 
 Use it when you want one command to take a ticket from request to a reviewed, documented implementation, in a repo that has been onboarded with `go-deep`.
 
@@ -362,7 +369,7 @@ When Claude gets something wrong, don't just correct it - ask why it missed. Wha
 
 ### InsideOut AI marketplace — commercial launch channel
 
-Install commercial version 5.4.2 through the publisher's marketplace:
+Install commercial version 5.6.0 through the publisher's marketplace:
 
 ```text
 /plugin marketplace add insideout-ai/make-it-work

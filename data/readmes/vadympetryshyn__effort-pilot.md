@@ -1,8 +1,8 @@
 # What is Effort Pilot?
 
-### Spend 20–50% fewer tokens and get responses ~1.5× faster in <img src="assets/claude-inline.svg" height="30" alt=""> Claude Code.
+### The right reasoning effort for every turn in <img src="assets/claude-inline.svg" height="30" alt=""> Claude Code, set for you.
 
-Effort Pilot switches the reasoning effort for every turn, automatically: plans get `xhigh`, building gets `medium`, questions and trivial tasks — a git commit, a push, a rename — get `low`. You stop paying for deep thinking where none is needed, and get more of it where it counts.
+Effort Pilot switches the reasoning effort for every turn, automatically: plans get `high`, building gets `medium`, questions and trivial tasks — a git commit, a push, a rename — get `low`. Deep thinking goes where it counts, and a quick question no longer waits on it.
 
 [![version](https://img.shields.io/github/v/release/vadympetryshyn/effort-pilot?label=version&color=d97757)](https://github.com/vadympetryshyn/effort-pilot/releases)
 [![CI](https://github.com/vadympetryshyn/effort-pilot/actions/workflows/ci.yml/badge.svg)](https://github.com/vadympetryshyn/effort-pilot/actions/workflows/ci.yml)
@@ -10,16 +10,20 @@ Effort Pilot switches the reasoning effort for every turn, automatically: plans 
 [![stars](https://img.shields.io/github/stars/vadympetryshyn/effort-pilot?style=flat&color=d97757)](https://github.com/vadympetryshyn/effort-pilot/stargazers)
 [![last commit](https://img.shields.io/github/last-commit/vadympetryshyn/effort-pilot)](https://github.com/vadympetryshyn/effort-pilot/commits/main)
 
-<img src="assets/hero-4.svg" alt="Effort Pilot switching effort: xhigh to plan, high to investigate, medium to build, low to commit and push" width="820">
+<img src="assets/hero-5.svg" alt="Effort Pilot switching effort: high to plan and to investigate, medium to build, low to commit and push" width="820">
 
 ## What you get
 
-Same work, compared with leaving effort on `high` all the time: fewer tokens burned, faster responses, and fewer turns
-you have to redo, because hard work gets more thinking, not less.
+Compared with leaving effort on `high` all the time, on the author's own turns:
 
-<img src="assets/why-2.svg" alt="Effort Pilot vs. always-on high: about 35% fewer tokens, 1.5x faster responses, 20% fewer turns that fall short" width="820">
+<img src="assets/why-4.svg" alt="Effort Pilot vs. always-on high: quick questions answered about twice as fast, up to 10% fewer tokens, effort set every turn without /effort" width="820">
 
-<sub>≈ Approximate, from the author's own sessions; savings range from ~20% on hard work to ~50% and more on everyday turns. Every setup differs: measure yours with `/effort-pilot report`.</sub>
+- **Quick answers, about twice as fast.** A question or a chat turn runs at `low`: its median model time is about half of what it is at `high` (−52%, 90% range −22% … −68%).
+- **Plans lose nothing.** Plans and plan mode run at `high`, the same depth as always-on `high`; set `planEffort` to `xhigh` or `max` for more.
+- **Up to 10% fewer tokens.** Every turn that drops from `high` to `medium` or `low` thinks less, so it spends fewer tokens. How much you save depends on your settings: the more levels you set below `high`, the more you save.
+- **Nothing to switch.** You never type `/effort`; the line above the prompt shows what it picked and why.
+
+<sub>≈ From the author's own sessions with `/effort-pilot report`. Token savings vary with your settings and your work. Not proven yet: fewer turns that fall short. Every setup differs: measure yours.</sub>
 
 ## Install
 
@@ -54,11 +58,11 @@ restart. **Pause:** `/effort-pilot off`. **Remove:** `/plugin uninstall effort-p
 
 ## How it works
 
-Before each turn a small, fast model (Haiku, ≈ $0.0002 a turn) reads your message and picks the effort:
+Before each turn a small, fast model (Haiku, ≈ $0.0004 a turn) reads your message and picks the effort:
 
 | You… | Phase | Effort |
 |---|---|---|
-| ask for a plan, or use plan mode | plan | `xhigh` |
+| ask for a plan, or use plan mode | plan | `high` |
 | ask a hard question, investigate a bug | analyze | `high` |
 | ask to build or fix something | implement / fix | `medium` (`high` when hard) |
 | approve a plan | implement | `medium` — the thinking went into the plan |
@@ -68,12 +72,12 @@ A band above the prompt shows the effort now, how it got there and why. Follow-u
 
 ## Features
 
-- 🗣️ **Just say it.** "do this on max", "medium is enough", "plan it, then build on high" — in any language, typed or dictated. `ultrathink` runs that work at `xhigh`, as Claude Code does (with `CLAUDE_CODE_DISABLE_ULTRATHINK` set, the word asks for nothing). "back to auto" hands it back.
-- 🧭 **Plan mode** runs at `xhigh`; the approved plan is built at `medium`.
+- 🗣️ **Just say it.** "do this on max", "medium is enough", "plan it, then build on high" — in any language, typed or dictated. `ultrathink` runs that work at `xhigh`, as Claude Code does (with `CLAUDE_CODE_DISABLE_ULTRATHINK` set, the word asks for nothing). "back to auto" hands it back. Name a model the same way: "switch me to Sonnet at medium", "back to Opus", "plan it on Fable, then build on Sonnet at high". It holds for the rest of the session, until you name another, pick one with `/model`, or turn the pilot off; subagents keep their own model. On a model Effort Pilot does not manage (Sonnet, Haiku by default) the effort you named with it holds too. Talking about a model (for a subagent, a tool, in code, comparing them) switches nothing. Each switch costs one request that re-reads the conversation without the prompt cache.
+- 🧭 **Plan mode** runs at `high`; the approved plan is built at `medium`. Want plans on another model? Set `planModeModel` (say `fable`): plan mode runs on it, and the approved plan is built on your session's model again (a model you name in words wins over the setting). Each switch costs one request that re-reads the conversation without the prompt cache.
 - 🤖 **Subagents** get their own effort, on the session's model or another one (never below the build effort, `medium` by default). An effort the Agent call names, or `CLAUDE_CODE_SUBAGENT_EFFORT`, is left alone. Your own and plugin agents keep their own effort unless you list them (below). Each subagent's effort is shown: in its description, or in one transcript line at its first request.
 - 🔔 **Background results** and messages from other sessions are read too: one the agent only relays or hands to the next agent goes at the build effort (at `high` while a plan or an analysis is under way); one that reports a failure, a background command's output, or a step in hard work keeps the effort of the work it serves.
 - ✋ **You stay in charge.** `/effort <level>` pins it; `/effort-pilot on` resumes.
-- 🔒 **Private.** Nothing leaves your machine but the Haiku call. Your effort setting is changed per message; the model is never changed, and the prompt cache stays intact (where a switch would rewrite it, Effort Pilot stands aside).
+- 🔒 **Private.** Nothing leaves your machine but the Haiku call. Your effort setting is changed per message; the model is never changed unless you ask for one or set `planModeModel`, and the prompt cache stays intact (where a switch would rewrite it, Effort Pilot stands aside).
 
 ## Commands
 
@@ -92,7 +96,8 @@ All in `/config` → **effort-pilot**.
 
 | Setting | Default | |
 |---|---|---|
-| `planEffort` | `xhigh` | plans and plan mode |
+| `planEffort` | `high` | plans and plan mode |
+| `planModeModel` | empty | a model for plan mode (an alias like `fable`, or a full id); the approved plan is built on the session's model. Empty: the model is never changed |
 | `analyzeEffort` | `high` | hard questions, investigations |
 | `buildEffort` | `medium` | building and fixing |
 | `hardBuildEffort` | `high` | building that is hard (many files, tricky logic, a bug of unknown cause, push, deploy, deletes) |
@@ -130,7 +135,7 @@ Issues and PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Questions and
 [Discussions](https://github.com/vadympetryshyn/effort-pilot/discussions); a turn that got the wrong effort is the most
 useful [issue](https://github.com/vadympetryshyn/effort-pilot/issues/new?template=misrouted.yml).
 
-If it saves you tokens, a ⭐ helps others find it.
+If it is useful to you, a ⭐ helps others find it.
 
 ## License
 

@@ -150,8 +150,9 @@ and [install security](https://github.com/raullenchai/Rapid-MLX/blob/main/SECURI
 
 The guided installer prefers a runnable model already cached on this Mac when
 it fits the RAM tier. Otherwise its quick first-chat download is
-`lfm2.5-1b-4bit` below 16 GB and `qwen3.5-4b-4bit` at 16 GB or above; larger
-quality picks remain available through `rapid-mlx recipe` and the model picker.
+`lfm2.5-2.6b-4bit` at 8 GB or above, with `lfm2.5-1b-4bit` for smaller or
+unknown RAM. Larger quality picks remain available through `rapid-mlx recipe`
+and the model picker.
 
 ---
 
@@ -271,14 +272,13 @@ headroom for macOS and the serving process. Omit `steps` to use the validated
 family default shown below.
 
 <!-- image-model-matrix:start -->
-| Alias | Best fit | Modes | Download | Minimum unified memory | Default steps |
+| Alias or HF repo ID | Best fit | Modes | Download | Minimum unified memory | Default steps |
 | --- | --- | --- | ---: | ---: | ---: |
 | `flux2-klein-4b` | Recommended; fast everyday images | Generate + edit | 4.3 GiB | 16 GB | 4 |
 | `bonsai-image-4b-2bit` | Smallest download | Generate | 3.6 GiB | 12 GB | 4 |
 | `z-image-turbo` | Photorealistic images | Generate | 5.5 GiB | 16 GB | 8 |
 | `flux-schnell` | FLUX.1 compatibility | Generate | 9.0 GiB | 32 GB | 4 |
 | `sdxl-base` | SDXL compatibility | Generate | 6.5 GiB | 16 GB | 30 |
-| `flux2-klein-4b-bf16` | Explicit full-precision Klein path | Generate + edit | 14.9 GiB | 32 GB | 4 |
 | `hidream-o1-dev` | Complex compositions | Generate | 16.4 GiB | 32 GB | 28 |
 | `sd35-large-4bit` | Stable Diffusion 3.5 | Generate | 15.3 GiB | 32 GB | 28 |
 | `qwen-image-2.1` | Text-rich images on low-memory Macs | Generate + edit | 8.9 GiB | 8 GB | 40 |
@@ -300,7 +300,7 @@ request and memory behavior.
 At 1024×1024 with the four-step Klein default, measured warm generation was
 about **9.2 seconds per image on an M3 Ultra**. On a 32 GB M2 Pro, the q4 path
 measured a 52.7-second median; explicitly selecting
-`flux2-klein-4b-bf16` reduced that median to 41.8 seconds (1.26× throughput).
+`mflux-community/flux2-klein-4b-mflux-bf16` reduced that median to 41.8 seconds (1.26× throughput).
 The eight-step `z-image-turbo` baseline was about 34 seconds on the M3 Ultra
 and 150 seconds on the M2 Pro.
 The q4 alias remains the predictable default; on the measured 32 GB M2 Pro,
@@ -369,6 +369,8 @@ The dependency commands below use the official `install.sh` environment. For Hom
 
 Audio aliases behind the OpenAI-compatible `/v1/audio/*` endpoints — any
 OpenAI SDK works unchanged.
+
+`tts-1`, `tts-1-hd`, and `gpt-4o-mini-tts` select the default TTS model (served TTS model, otherwise Kokoro).
 
 ```bash
 ~/.rapid-mlx/bin/python -m pip install 'rapid-mlx[audio]'
@@ -752,8 +754,9 @@ Top three things that go wrong:
 
 **Privacy:** Anonymous, metadata-only telemetry is on by default in 0.15.0 and
 is documented in Settings → Privacy. The desktop app sends its events to
-rapidmlx.com's telemetry service, while the engine sends
-privacy-hardened batches to PostHog Cloud (US). Turn it off in Settings →
+rapidmlx.com's telemetry service. Desktop launch and daily foreground
+`app_opened` events use the engine's privacy-hardened PostHog Cloud (US) pipeline,
+even without a model running. Turn it off in Settings →
 Privacy, with `rapid-mlx telemetry off`, `RAPID_MLX_TELEMETRY=0`, or
 `DO_NOT_TRACK=1`. Prompts, completions, paths, IP addresses, locations, and API
 keys are never collected, and no per-person profile is built. See

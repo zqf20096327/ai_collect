@@ -523,7 +523,7 @@ ClipMint reads the views, likes and comments of every clip that's on your
 channel, including ones you uploaded yourself, which it finds by title. Then it
 says what the numbers show:
 
-<img src="assets/screenshots/16-performance.png" alt="How your Shorts did: 37 clips on YouTube with a median of 12 views, a finding marked Looks real that clips with a title the AI actually wrote got a median of 31 views against 3.5 for the rest, two more marked Looks real, two marked Worth watching, a line listing what has no clear link yet, and a note that the ranking is unchanged" width="880">
+<img src="assets/screenshots/16-performance.png" alt="How your Shorts did: 43 clips on YouTube with a median of 10 views, a finding marked Looks real that clips with a title the AI actually wrote got a median of 20 views against 4 for the rest, three more marked Looks real, one marked Worth watching, a line listing what has no clear link yet, and a note that the ranking now leans less on reaction words" width="880">
 
 - **Every pattern is tested against chance.** With a few dozen Shorts, most
   differences are noise, and the panel says so: a finding is marked **Looks
@@ -941,6 +941,7 @@ To run it: **More info → Run anyway**.
 - **Windows will warn you.** The exe isn't code-signed, so SmartScreen shows *"Windows protected your PC"*. Click **More info → Run anyway**. On a Mac it is Gatekeeper instead — see above.
 - **First launch is slow.** It's a single file that unpacks itself each time. The mac app is a normal bundle and starts faster.
 - **Where things go.** The key lives at `%APPDATA%\ClipMint\settings.json`; clips go to `%USERPROFILE%\Videos\ClipMint`, changeable in Settings. On a Mac: `~/Library/Application Support/ClipMint/settings.json` and `~/Movies/ClipMint`.
+- **No key, no run.** Picking the best moments needs the free API key, so **Generate** without one opens the key box instead of starting a run that would stop after the download.
 - **ffmpeg is bundled**, so there is nothing else to install — on both platforms.
 - **The downloadable .exe transcribes on the CPU.** The CUDA runtime is 2GB, and a single-file exe re-unpacks its whole payload on every launch — so bundling it would cost every user a slow start for something only NVIDIA owners can use. If you have an NVIDIA card and want the ~5x faster transcription, build the one-folder version from source: `pip install -r requirements-nvidia.txt` then `python build_exe.py` (CUDA is the default there; `--no-cuda` opts out).
 
@@ -1678,6 +1679,4 @@ Techland's game.
 
 **Parth Bhadana**
 
-[YouTube](https://www.youtube.com/@ParthBhadana799) &middot; [GitHub](https://github.com/kleZ799) &middot; [LinkedIn](https://www.linkedin.com/in/parth-bhadana-530014202/) &middot; [Discord](https://discord.gg/jnMrGbBz3m) &middot; [Buy me a coffee](https://buymeacoffee.com/parthbhadana)
-
-ClipMint is free, a
+[YouTube](https://www.youtube.com/@ParthBhadana799) &middot; [GitHub](https://github.com/kleZ799) &middot; [L

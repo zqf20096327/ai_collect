@@ -11,16 +11,17 @@
 [![license](https://img.shields.io/npm/l/dsh-any-agent.svg?style=flat-square)](LICENSE)
 [![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg?style=flat-square)](package.json)
 [![tests](https://img.shields.io/github/actions/workflow/status/xmtlzzz/dsh-any-agent/tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/xmtlzzz/dsh-any-agent/actions/workflows/tests.yml)
+[![M8ven Score](https://m8ven.ai/badge/mcp/xmtlzzz-dsh-any-agent-ypgfnj?v=7c88b6fc8313c05af27cf83f262b9ac1)](https://m8ven.ai/mcp/xmtlzzz-dsh-any-agent-ypgfnj?s=readme)
 
 [Website](https://dsh-any-agent.xmtlz.dev/) · [Quick start](#quick-start) · [Features](#-why-its-different) · [Tools](#-tools) · [Live view](#-live-view-see-what-the-dispatched-work-is-doing) · [Usage notes](USAGE-NOTES.en.md) · [Changelog](CHANGELOG.md)
 
 </div>
 
-🧪 0.6.2 offline suite green · 👀 new live call-chain view (`watch` / `dashboard`, with token usage) · 🔌 MCP over stdio · 📦 Zero dependencies · 📜 MIT
+🧪 Offline suite green in CI on Linux, Windows and macOS · 👀 new live call-chain view (`watch` / `dashboard`, with token usage) · 🔌 MCP over stdio · 📦 Zero dependencies · 📜 MIT
 
 An MCP server that drives DeepSeek Harness as a **long-lived coding agent**. Hand it a goal, let it write code and run scripts, steer it mid-flight, and collect the result when you are ready.
 
-**Claude Code · Claude Desktop · Codex · Cursor · Windsurf · Zed · Gemini CLI · opencode · VS Code** — or any client that speaks MCP over stdio.
+**Claude Code · Claude Desktop · Codex · Cursor · Windsurf · Zed · Gemini CLI · Antigravity · opencode · VS Code** — or any client that speaks MCP over stdio.
 
 ## 🎯 The problem this solves
 
@@ -91,7 +92,7 @@ outer worktree isolation. For collaboration, prefer letting DSH run the team its
 
 ## Quick start
 
-Requires **Node.js ≥ 22.15** and **DSH installed with a working model route and credentials**. See [Requirements](#-requirements) for details.
+Requires **Node.js ≥ 22.15** and **DSH installed with a working model route and credentials**. See [Requirements](docs/en/install.md) for details.
 
 ```bash
 npm install -g dsh-any-agent
@@ -99,7 +100,7 @@ dsh-any-agent-setup
 dsh-any-agent-setup --yes
 ```
 
-The second command previews the changes; `--yes` applies them. Reconnect your client's MCP server, then ask your agent to start a DSH conversation in your project, dispatch a task, and collect the result. The [dispatch workflow](#-workflow-dispatch-then-collect-later) shows the tool sequence.
+The second command previews the changes; `--yes` applies them. Reconnect your client's MCP server, then ask your agent to start a DSH conversation in your project, dispatch a task, and collect the result. The [dispatch workflow](docs/en/usage.md) shows the tool sequence.
 
 > **Want to see it first?** Watch the [54-second promo](https://dsh-any-agent.xmtlz.dev/en/#video) — dispatch, interject, the sentinel landing and the caller's review, with the terminal replayed from a real run:
 >
@@ -111,11 +112,11 @@ The second command previews the changes; `--yes` applies them. Reconnect your cl
 <summary>Full contents</summary>
 
 - **Quick start** — [Install and connect](#quick-start) · [Changelog](CHANGELOG.md)
-- **Start here** — [The problem](#-the-problem-this-solves) · [Why it's different](#-why-its-different) · [Why not just wrap the DSH CLI](#-why-not-just-wrap-the-dsh-cli) · [Requirements](#-requirements) · [Setup](#-setup)
-- **Using it** — [Tools](#-tools) · [Live view](#-live-view-see-what-the-dispatched-work-is-doing) · [Dispatch then collect](#-workflow-dispatch-then-collect-later) · [Completion notifications](#-workflow-get-notified-on-completion-no-polling) · [Many conversations](#-workflow-many-conversations-at-once)
-- **Behavior** — [Permissions](#-permissions) · [Reasoning](#-reasoning-hidden-by-default) · [Logging and privacy](#-logging-and-privacy) · [Workspace & GUI](#-workspace-visibility-in-the-dsh-gui)
-- **Hard parts** — [The write lock](#-the-write-lock-one-writer-per-conversation-at-a-time)
-- **Reference** — [Environment](#-environment-variables) · [Tests](#-tests) · [Known limitations](#-known-limitations) · [Why the old profile name?](#-why-is-the-profile-still-called-dsh-mcp)
+- **Start here** — [The problem](#-the-problem-this-solves) · [Why it's different](#-why-its-different) · [Why not just wrap the DSH CLI](docs/en/architecture.md) · [Requirements](docs/en/install.md) · [Setup](docs/en/install.md)
+- **Using it** — [Tools](#-tools) · [Live view](#-live-view-see-what-the-dispatched-work-is-doing) · [Dispatch then collect](docs/en/usage.md) · [Completion notifications](docs/en/usage.md) · [Many conversations](docs/en/usage.md)
+- **Behavior** — [Permissions](docs/en/security.md) · [Reasoning](docs/en/usage.md) · [Logging and privacy](docs/en/security.md) · [Workspace & GUI](docs/en/security.md)
+- **Hard parts** — [The write lock](docs/en/locking.md)
+- **Reference** — [Environment](docs/en/reference.md) · [Tests](docs/en/tests.md) · [Known limitations](docs/en/limits.md) · [Why the old profile name?](docs/en/limits.md)
 
 </details>
 
@@ -129,15 +130,17 @@ The second command previews the changes; `--yes` applies them. Reconnect your cl
 | `dsh_read` | **Cursor-based incremental read** of what a *running* conversation is producing right now. The cursor is a **revision number**: an entry whose text grew since your last read reappears — match it by `seq` and replace its text, don't append again |
 | `dsh_get` | Conversation details; with `run_id`, the **final result of that dispatch** (the "collect the result later" entry point) **plus its review ticket**. Run records live in memory (last 20) — use the sentinel file after a restart |
 | `dsh_review` | **Caller review.** Submit `pass` / `partial` / `fail` for a completed run, with notes and optional findings. The verdict is written to `<state dir>/reviews/<conversation_id>/<run_id>.review.json` and back into the in-memory run and sentinel. Advisory by default: it never blocks the next `dsh_send` |
-| `dsh_interject` | Interject while it's busy: `interject` = stop and redirect, `queue` = wait for the current turn, then speak. **This round writes a sentinel too**, and the reply carries its `sentinel_file`. On an idle conversation it behaves like `wait=true` and **blocks until the turn ends** |
+| `dsh_interject` | Interject while it's busy: `interject` = stop and redirect, `queue` = wait for the current turn, then speak. **This round writes a sentinel too**, and the reply carries its `sentinel_file`. In both modes, and on an idle conversation, it **blocks until the new turn ends**; to queue without blocking, use `dsh_send(queue=true)` |
 | `dsh_takeover` | **Preempt the write lock.** The only way out when another DSH process holds it (DSH has no steal API — preempting means killing the holder). It classifies the holder first: our own orphaned child → taken automatically; another live instance → needs `force`; **GUI/unknown → never killed**, reported instead |
-| `dsh_interrupt` | Stop the current turn (the conversation stays healthy) |
+| `dsh_interrupt` | Stop the current turn without sending anything new (the conversation stays healthy); to stop and redirect, use `dsh_interject` |
 | `dsh_release` | Hand the conversation back (frees the write lock so you can open it in your own DSH GUI). Still resumable; `forget=true` writes a tombstone — by-id lookups are refused until you delete `$DSH_HOME/.dsh-any-agent-forgotten/<id>.json` |
 | `dsh_approval_decide` | Adjudicate a pending approval (only when `on_approval=ask`) |
-| `dsh_status` | Lightweight status check (single conversation) |
+| `dsh_status` | Lightweight status check (single conversation), including the write-lock holder `lock_holder` |
 | `dsh_inbox` | **Cross-conversation approval inbox**: every pending approval with reason, input and age; decide with `dsh_approval_decide` |
 | `dsh_queue` | Inspect/modify the session queue: `list` / `remove` / `update` / `promote` (created by `dsh_send(queue=true)`, memory only) |
 | `dsh_doctor` | Read-only health check: DSH version, profile, state/dir writability, orphan locks, sessions and RSS, effective config |
+
+Every tool declares all four MCP annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`). Six only read state and are marked read-only: `dsh_list`, `dsh_read`, `dsh_get`, `dsh_status`, `dsh_inbox`, `dsh_doctor`. Tool titles, descriptions and the server instructions come in English and Chinese: they follow your system language, or set `DSH_MCP_LANG=en|zh`. Tool results follow the same setting; a few less common error messages are still Chinese only.
 
 ## 👀 Live view: see what the dispatched work is doing
 
@@ -198,6 +201,10 @@ tasks are not forced into a team. Turn it off with `dsh-any-agent team off`, or
 for one call with `dsh_send(team=false)`.
 
 > Full steps (commands, verification, rollback) are in [Team mode](docs/en/team.md).
+
+## 🙏 Acknowledgements
+
+dsh-any-agent started from [Moer2831/Deepseek-DSH-MCP](https://github.com/Moer2831/Deepseek-DSH-MCP) (MIT), where this server was called `dsh-mcp`. The ACP client, the session hub, write-lock handling, sentinel files, `DESIGN.md` and the first test suites come from that project; client setup and restore, team mode, the live view, caller review and the release pipeline were added here. The original copyright notice is kept in [LICENSE](LICENSE).
 
 ## Star History
 

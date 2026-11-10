@@ -82,10 +82,14 @@ The MiniMax Code Agent communicates through the host MCP client. Business reques
 | [Disk Insight](plugins/zch0227/disk-insight/) | See where disk space went on macOS and Windows with a sunburst space map, find junk files sorted into three safety tiers, large and duplicate files, and how much code repositories and Git worktrees take; ask an Agent about any item, and permanently delete what you select after a confirmation that lists every item. Requires MiniMax Code 3.1.2 or later | [zch0227](https://github.com/zch0227) |
 | [A/时差保安 / Timezone Guard](plugins/liuchen19960902/timezone-guard/) | Check the other side's local time before you message: the target city's clock turns into a green "now is fine", yellow "keep it short", or red "go to sleep" verdict. Requires MiniMax Code 3.1.2 or later | [FineCat](https://github.com/LiuChen19960902) |
 | [AI Node Canvas](plugins/antianqi/ai-node-canvas/) | An infinite-canvas node graph for MiniMax Code: wire text, image, video and audio runs into a graph, let each result flow downstream, and run media tools on any result | [antianqi](https://github.com/antianqi) |
+| [MiniMax Bot Team](plugins/antianqi/minimax-bot-team/) | Today's bot is one person wearing several masks, taking turns with you. MiniMax Bot Team gives you a team instead: members with different skills and temperaments, each guarding one field, and they can argue about the same question from different angles | [antianqi](https://github.com/antianqi) |
 | [Agent Flow](plugins/huixin615/agent-flow/) | Import this plugin's Hook event file to inspect native task calls and sub-agent lifecycles, with exact task-to-child links when IDs are available. Choose a recorded chat or the latest imported record; no Host session files are opened. Requires MiniMax Code 3.1.4 or later | [Huixin615](https://github.com/Huixin615) |
 | [蹬王之王 · Expiry Guardian](plugins/hylouis233/expiry-guardian/) | Track credit and reset-card expiry from a local ledger you maintain, and get a "spend the card or let the credits burn first" recommendation with the reasoning spelled out | [Hylouis](https://github.com/Hylouis233) |
 | [MiniMax Pet](plugins/minimax-ai/minimax-pet/) | A lightweight companion with appearance, task and settings tabs, visible-session activity, answer-needed reminders and a transparent desktop pet. Requires MiniMax Code 3.1.6 or later | [MiniMax](https://github.com/MiniMax-AI) |
 | [MCP OAuth Console](plugins/microbiosis/mcp-oauth-console/) | Sign in to MCP servers that require OAuth: device-code or authorization-code + PKCE flow, the `Authorization` header written into the MCP configuration, and an opt-in refresh before expiry | [Microbiosis](https://github.com/Microbiosis) |
+| [本机大盘 · Local Market Board](plugins/jzlikewei/kurumi-monitor/) | Watch your own machine as a stock terminal: CPU, GPU, temperature, memory, disk, network and every running process become listed stocks with live candlesticks, moving averages, a watchlist, a leaderboard and a trade tape, on macOS and Windows. Requires minimax Code 3.1.2 or later | [jzlikewei](https://github.com/jzlikewei) |
+| [Quota Bottle](plugins/7723qqq/quota-bottle/) | An octopus-shaped glass bottle that floats on your desktop and shows the remaining Token Plan quota from a login you configure yourself, with the liquid level and opacity following the remaining share, and a device-code login plus an opt-in local token-usage estimate as fallbacks | [7723qqq](https://github.com/7723qqq) |
+| [Site QA](plugins/lonelyguy-se1/site-qa/) | Check local HTML/robots/sitemap for SEO and accessibility gaps, then ask the agent to fix them (Mini App + skill/CLI). Requires MiniMax Code 3.1.6 or later | [LonelyGuySE1](https://github.com/LonelyGuy-SE1) |
 
 <details>
 <summary>Preview: Cutline</summary>
@@ -129,7 +133,7 @@ The preview uses synthetic data. The app interface is currently in Chinese. See 
 
 ### Requirements
 
-Use a MiniMax Code desktop version that supports MiniApps. Check the app's README for tested client versions, operating systems, configuration, and known limitations. Compatibility is documented per app. Apps that use newer capabilities need a newer client, and older versions cannot install them: running Agent tasks or opening in their own window needs MiniMax Code 3.1.2 or later; reading your conversations, calling your installed tools, or using the microphone needs 3.1.5 or later. From 3.1.5 you can switch off each permission an app declares, one by one, in its plugin details.
+Use a MiniMax Code desktop version that supports MiniApps. Check the app's README for tested client versions, operating systems, configuration, and known limitations. Compatibility is documented per app. Apps that use newer capabilities need a newer client, and older versions cannot install them: running Agent tasks or opening in their own window needs MiniMax Code 3.1.2 or later; reading your conversations, calling your installed tools, or using the microphone needs 3.1.6 or later; using the camera or showing system notifications needs 3.1.9 or later; following which MiniMax Code page you are on needs 3.1.11 or later. From 3.1.6 you can switch off each permission an app declares, one by one, in its plugin details.
 
 ### 1. Download
 
@@ -162,7 +166,7 @@ The installed manifest must be at:
 
 The author directory (`amszuidas/`) only groups contributions in the repository. Copy the plugin directory directly into the client's `plugins/` directory, without that extra author level.
 
-These packages use **manual installation**. The client's GitHub plugin import feature does not support these MiniApp packages.
+From MiniMax Code 3.1.11 you can import an app instead of copying it: on the Plugins page, choose **Create**, then **Import from a Git repository** under Mini App, and paste the URL of the plugin directory, for example `https://github.com/MiniMax-AI/MiniMax-Code-MiniApps/tree/main/plugins/amszuidas/mcode-token-usage-board`. The client downloads the whole repository (about 160 MiB) and gives up after five minutes, so on a slow connection install manually instead. Earlier clients cannot import from this repository because it is larger than their 128 MiB limit.
 
 ### 3. Open
 

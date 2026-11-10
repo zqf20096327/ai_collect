@@ -17,11 +17,11 @@
 
 | Release | Highlights |
 |---------|------------|
+| **1.7.1** | Packages the CLI Agent Skill and its references under `skills/t2i/` for compatible NuGet inspection tools, while preserving `t2i init` and `t2i upgrade` |
 | **1.7.0** | Added Microsoft Foundry MAI-Image-2.6 and 2.6-Flash providers, dynamic sizing, aspect-ratio selection, optional web grounding, and replaced ImageSharp with managed PNG encoding |
 | **1.6.0** | Added reference-image (image-to-image) support: `t2i --image`/`--mask`/`--input-fidelity` for FLUX.2, GPT-Image (`images/edits`), and MAI-Image-2.5 (`/mai/v1/images/edits`) |
-| **1.5.2 (candidate)** | Candidate release with GPT-Image-2.5 Sunburst/Flare support, retired-provider migration handling, GPT image sizing fixes, managed skill updates, and the `ElBruno.Text2Image.BlazorComponents` Razor Class Library |
-| **1.5.1** | Added GPT-Image-2.5 Sunburst/Flare support, retired-provider migration handling, GPT image sizing fixes, managed skill updates, and the `ElBruno.Text2Image.BlazorComponents` Razor Class Library |
-| **1.4.0** | Added MAI-Image-2.5 and MAI-Image-2.5-Flash support |
+| **1.5.2** | Improved GPT-Image-2.5 sizing and retired-provider migration handling, and completed the Blazor Components release |
+| **1.5.1** | Introduced GPT-Image-2.5 Sunburst/Flare and the `ElBruno.Text2Image.BlazorComponents` package |
 
 See the [Blazor components guide](docs/blazor-components.md) and
 [sample documentation](src/samples/BlazorText2ImageDemo/README.md).
@@ -212,7 +212,13 @@ See [docs/cli-tool.md](docs/cli-tool.md) for the full guide.
 
 ## 🤖 AI Agent Integration
 
-The `t2i` CLI is now discoverable by GitHub Copilot and Claude Code as a native skill, enabling AI agents to generate images directly within your development workflow. Run `t2i init` to configure skill integration, which adds the necessary metadata to `.github/skills/t2i/` or `.claude/skills/t2i/` directories in your workspace. Once integrated, AI agents can autonomously invoke `t2i` for image generation tasks without manual configuration.
+The `t2i` CLI includes an Agent Skill for GitHub Copilot and Claude Code. Run
+`t2i init` to install the skill and its reference files under
+`.github/skills/t2i/` or `.claude/skills/t2i/` in your workspace. The CLI
+NuGet tool package also contains the skill under `skills/t2i/` for compatible
+package inspection tools. Installing the tool does not automatically activate
+the skill in an agent, and image-generation providers must be configured
+separately.
 
 See [docs/skill-integration.md](docs/skill-integration.md) for the complete setup guide.
 
@@ -279,28 +285,6 @@ await result.SaveAsync("flux2-output.png");
 // Or use FLUX.2 Flex for text-heavy design:
 using var flexGenerator = new Flux2Generator(endpoint, apiKey,
     modelName: "FLUX.2 Flex", modelId: "FLUX.2-flex");
-```
-
-### Basic Usage — Cloud (MAI-Image-2)
-
-```csharp
-using ElBruno.Text2Image;
-using ElBruno.Text2Image.Foundry;
-
-// Create an MAI-Image-2 generator using Microsoft Foundry
-// Default model is MAI-Image-2
-using var generator = new MaiImage2Generator(
-    endpoint: "https://your-resource.services.ai.azure.com",
-    apiKey: "your-api-key",
-    modelName: "MAI-Image-2",
-    modelId: "MAI-Image-2");
-
-var result = await generator.GenerateAsync("a futuristic cityscape with neon lights, cyberpunk style");
-await result.SaveAsync("mai-image2-output.png");
-
-// Or use MAI-Image-2 (retired) for alternative model:
-using var maiE = new MaiImage2Generator(endpoint, apiKey,
-    modelName: "MAI-Image-2 (retired)", modelId: "MAI-Image-2 (retired)");
 ```
 
 ### Basic Usage — Cloud (MAI-Image-2.5 / MAI-Image-2.5-Flash)
@@ -467,12 +451,6 @@ services.AddFlux2Generator(
     endpoint: "https://your-resource.openai.azure.com",
     apiKey: "your-api-key",
     modelId: "FLUX.2-pro");
-
-// MAI-Image-2 cloud model (requires ElBruno.Text2Image.Foundry package)
-services.AddMaiImage2Generator(
-    endpoint: "https://your-resource.services.ai.azure.com",
-    apiKey: "your-api-key",
-    modelId: "MAI-Image-2");
 
 // MAI-Image-2.5 / MAI-Image-2.5-Flash cloud models (requires ElBruno.Text2Image.Foundry package)
 services.AddMaiImage25Generator(

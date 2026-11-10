@@ -73,6 +73,11 @@ Compatibility covers the endpoints and fields documented here, not the entire Op
 - Audio input/output, embeddings, and the general OpenAI Files API are not exposed. Internal text-attachment offloading is not a general file-upload API.
 - The daemon serves plain HTTP. It does not terminate TLS.
 
+### What's new in v0.4.1
+- **Frontier model rename handled**: upstream renamed the top tier from `gemini-argon` to `gemini-carbon` on 2026-11-10. `gemini-carbon` is now recognised as a reasoning model, so it no longer falls back to the lowest thinking level, and it carries a documented 1M/64k limit instead of the configured guess. Pin clients from `GET /v1/models`; a name upstream has dropped returns `404 model_not_found`.
+- **Documented limits actually apply**: the limit table was keyed from `displayName`, but the live registry carries the versioned name in `description` and a UI label in `displayName`, so every model silently reported `limitsSource: config`. Each candidate is now tried in turn.
+- **Frontier quota attribution**: the quota bucket behind the top tier is still named "Gemini Pro", so both the current and previous tier names map to it when reporting an exhausted bucket.
+
 ### What's new in v0.4.0
 
 - **Web search grounding**: answers include a `Sources:` list; `BRIDGE_INCLUDE_GROUNDING=0` suppresses it.
@@ -278,7 +283,7 @@ The resulting buckets are exposed in `/v1/accounts`, `/v1/quota`, `gsb --account
 
 The 5-hour window is nested under the weekly allowance, so `gsb` caps effective 5-hour remaining credits to the weekly remaining credits when the weekly pool runs lower.
 
-When an account reaches `0` credits, non-lite models (`gemini-flash`, `gemini-pro`, `gemini-argon`) are blocked or downgraded upstream until `resetAt`, while `gemini-flash-lite` remains usable. `gsb` also records synthetic per-model cooldowns when upstream silently substitutes a model, escalating `1m → 5m → 15m → 1h → 6h → 24h` across repeated observations.
+When an account reaches `0` credits, non-lite models (`gemini-flash`, `gemini-pro`, `gemini-carbon`) are blocked or downgraded upstream until `resetAt`, while `gemini-flash-lite` remains usable. `gsb` also records synthetic per-model cooldowns when upstream silently substitutes a model, escalating `1m → 5m → 15m → 1h → 6h → 24h` across repeated observations.
 
 `quotaWindow` in `/v1/accounts` describes what the numbers cover, including `weeklyExposed`, `weeklyRemaining`, `weeklyTotal`, `nextResetAt`, and `nextResetInSeconds`.
 
@@ -735,7 +740,9 @@ Returns an OpenAI-style list plus OpenRouter-style metadata:
 
 Responses carry an `ETag`; send `If-None-Match` to get `304`. The HTTP response is cacheable for 60 seconds (`Cache-Control: max-age=60`), while the per-account upstream model registry is cached for 10 minutes and refreshed in the background every `BRIDGE_MODEL_REFRESH_MS`. `?fresh=1` forces live discovery.
 
-Model IDs are whatever Gemini Web currently advertises, for example `gemini-flash`, `gemini-flash-lite`, `gemini-pro`, or `gemini-argon`. Aliases and display names are matched too. Prefixes `gsb/`, `google/`, `models/`, `vx/`, and `vertex/` are stripped before matching; a `@think=<level>` suffix sets thinking effort for that request.
+Model IDs are whatever Gemini Web currently advertises, for example `gemini-flash`, `gemini-flash-lite`, `gemini-pro`, or `gemini-carbon`. Aliases and display names are matched too. Prefixes `gsb/`, `google/`, `models/`, `vx/`, and `vertex/` are stripped before matching; a `@think=<level>` suffix sets thinking effort for that request.
+
+Upstream renames a model in place without notice: on 2026-11-10 the frontier tier moved from `gemini-argon` to `gemini-carbon`. A name that upstream has stopped advertising no longer resolves and returns `404 model_not_found`. Pin clients to a name after checking `GET /v1/models` rather than assuming one lasts across an upstream release.
 
 `gsb --models-json` prints the same payload without starting the daemon. With no loaded accounts it prints a static fallback list.
 
@@ -1061,7 +1068,7 @@ Behavior:
 | Argument | Required | Notes |
 |---|---|---|
 | `query` | Yes | Search query or question |
-| `model` | No | `gemini-flash`, `gemini-flash-lite`, `gemini-pro`, `gemini-argon` |
+| `model` | No | Any id from `GET /v1/models`; omit to use the account's default model |
 | `timeout_seconds` | No | 10–600 seconds; defaults to `BRIDGE_SEARCH_TIMEOUT_MS` (180 s) |
 
 A search runs as a temporary chat on the same account pool, quota accounting, and failover as normal requests. It does not add threads to the user's Gemini history. The result text is the synthesized answer followed by a `Sources:` list; snippets are included when Gemini provided them.

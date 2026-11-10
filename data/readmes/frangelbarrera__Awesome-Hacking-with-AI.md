@@ -106,6 +106,7 @@ An AI application is more than a model. Prompts, retrieval sources, vector store
 | [Semgrep AI Best Practices](https://github.com/semgrep/ai-best-practices) | Secure development | Security rules for code integrating LLM providers, MCP, assistants, and agent frameworks. |
 | [Giskard](https://github.com/Giskard-AI/giskard-oss) | Evaluation | Open-source evaluation and testing for AI and LLM systems. |
 | [DeepTeam](https://github.com/confident-ai/deepteam) | Red teaming | LLM red-team testing for engineering workflows. |
+| [whatileaked](https://github.com/selan-ai/whatileaked) | Agent transcript secret scanning | Scans local Claude Code, Codex and Cursor transcripts for credentials already sent to the model, using the gitleaks rule set. No network, zero dependencies; reports rule names and fingerprints, not secret values. |
 
 ### MCP Security
 
@@ -123,6 +124,7 @@ The Model Context Protocol (MCP) standardizes how hosts, clients, and servers ex
 | [Awesome MCP Security](https://github.com/Puliczek/awesome-mcp-security) | Curated list | Complementary directory of MCP-security resources, tools, research, and guides. |
 | [Agent Scan (formerly mcp-scan)](https://github.com/snyk/agent-scan) | Security scanner | Tooling for inspecting MCP server exposures before adoption. |
 | [Cisco MCP Scanner](https://github.com/cisco-ai-defense/mcp-scanner) | Security scanner | Multi-engine scanner for MCP servers and tools. |
+| [HOL Guard](https://github.com/hashgraph-online/hol-guard) | Open-source agent security tool | HOL-maintained Apache-2.0 software for scanning supported agent components and applying allow, block, or approval policies to covered MCP tool calls. Coverage depends on supported integration hooks, not all MCP activity. |
 
 Before connecting a server, establish source provenance, transport, identities, requested scopes, filesystem and network access, whether it can read/write/execute, logging behavior, dependency posture, and approval steps for consequential actions. See the [MCP Security Guide](docs/MCP_SECURITY.md).
 
@@ -297,6 +299,7 @@ These are not plug-and-play endorsements. Prefer read-only access, minimal scope
 | [MetasploitMCP](https://github.com/GH05TCREW/MetasploitMCP) | Exploitation framework | MCP access to Metasploit operations. Every module invocation is a privileged action; restrict to dedicated labs with explicit approval. |
 | [Shodan MCP](https://github.com/w0h1v/mcp-shodan) | Attack-surface search | Queries Shodan for internet-connected devices, DNS context, and CVE information. External queries only; respect provider terms and API limits. |
 | [CVE MCP Server](https://github.com/mukul975/cve-mcp-server) | Vulnerability intelligence | Aggregates CVE, EPSS (Exploit Prediction Scoring System), and related vulnerability-intelligence APIs behind one MCP interface. Review upstream API terms before use. |
+| [npmscan](https://github.com/salemalem/npmscan-mcp-plugin) | Dependency supply chain | Read-only checks of npm packages for confirmed malware, OSV/GitHub/NVD advisories, maintainer changes, and install scripts before an agent installs them. Queries a hosted service with package names and manifests; no credentials and no writes. Treat results as advisory and keep a person in the loop for dependency changes. |
 
 ## Research and Architecture Case Studies
 

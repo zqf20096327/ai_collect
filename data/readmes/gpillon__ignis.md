@@ -94,9 +94,9 @@ the 16 GB RTX 50 cards the 16 GB entries. The **RTX 3090 and 3090 Ti** are
 supported, on the 27B's 16 GB entries; the **RTX 4090** and the 16 GB RTX 40
 cards are verified for correctness: the release's sm_86 gate passed on an Ada
 Lovelace card (sm_89)
-([the finding](docs/findings/2026-11-07-sm86-gate-passes-on-sm89.md)). An RTX 30 or RTX 40 card
-needs release 0.10.0 or the development build: the 0.9 releases are built for
-Blackwell alone. The NVFP4 builds, Flash-Next
+([the finding](docs/findings/2026-11-08-sm86-gate-on-the-release-range.md)). The releases
+are built for compute capabilities 8.6 and 12.0, so RTX 30 and RTX 40 cards run
+them. The NVFP4 builds, Flash-Next
 and the image model load on Blackwell alone, on a card of 32 GB or more
 ([every model on every card](docs/user/reference/models.md#where-each-model-loads)). The
 figures here are measured on an RTX 5090
@@ -129,8 +129,8 @@ that build it, and the rest of that is what the remaining work is for.
 Take a build from **[Releases](https://github.com/gpillon/ignis/releases)** — a
 Windows `.zip`, a Linux `.tar.gz`, or the `linux/amd64` container image on
 `ghcr.io/gpillon/ignis`. Run it on an RTX 50, RTX PRO 6000 or RTX 30 card; the
-releases from 0.10.0 are built for compute capabilities 8.6 and 12.0, the 0.9
-ones for 12.0 alone. (Every push to `main` that
+releases are built for compute capabilities 8.6 and 12.0.
+(Every push to `main` that
 changes code also publishes a rolling development build, **not a release**: the image
 `ghcr.io/gpillon/ignis:develop` and the `develop` prerelease.)
 
@@ -606,7 +606,7 @@ Flash-Next, and the image model:
 | **Uncensored, 16 GB card** | [`gpillon/Qwen3.8-27B-trellis-3bpw-abliterated-ignis`](https://huggingface.co/gpillon/Qwen3.8-27B-trellis-3bpw-abliterated-ignis) | `qwen3_8_27b_trellis_sc30-v2-huihui-abliterated.ninfer` |
 | **Swift 1.5** (a fine-tune of the 27B; **commercial use above the license's US$1M revenue threshold is not licensed**) | [`gpillon/Swift-1.5-Qwen3.8-27B-nvfp4-ignis`](https://huggingface.co/gpillon/Swift-1.5-Qwen3.8-27B-nvfp4-ignis) | `qwen3_8_27b_nvfp4full-v2-ukisai-swift-1.5.ninfer` |
 | **Swift 1.5, 16 GB card** | [`gpillon/Swift-1.5-Qwen3.8-27B-trellis-3bpw-ignis`](https://huggingface.co/gpillon/Swift-1.5-Qwen3.8-27B-trellis-3bpw-ignis) | `qwen3_8_27b_trellis_sc30-v2-ukisai-swift-1.5.ninfer` |
-| **Flash-Next** (125B MoE, 67.8 GiB with its MTP companion) | [`gpillon/Qwen3.8-Flash-Next-trellis-a25-ignis`](https://huggingface.co/gpillon/Qwen3.8-Flash-Next-trellis-a25-ignis) | `qwen3_8_flash_next_trellis_a25-v2.ninfer` |
+| **Flash-Next** (125B MoE, 68.2 GiB with its MTP and vision companions) | [`gpillon/Qwen3.8-Flash-Next-trellis-a25-ignis`](https://huggingface.co/gpillon/Qwen3.8-Flash-Next-trellis-a25-ignis) | `qwen3_8_flash_next_trellis_a25-v2.ninfer` |
 | **Image** (Qwen-Image-2.1-Turbo, 15.57 GiB, **non-commercial use only**) | [`gpillon/ignis-image-2.1-turbo`](https://huggingface.co/gpillon/ignis-image-2.1-turbo) | `ignis_image_2_1_turbo-v2.ninfer` |
 
 The server fetches the standard one by itself the first time it starts without

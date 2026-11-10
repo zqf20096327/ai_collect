@@ -2,8 +2,9 @@
 
 **English** | [中文](README.zh-CN.md)
 
-Long, multi-shot MiniMax H3 video in ComfyUI — **2+ minutes at 1080p in one run**. Plan shots in a visual Director,
-generate them segment by segment, keep every finished segment on disk, and repair only what went wrong.
+Long, multi-shot MiniMax H3 video in ComfyUI — **2+ minutes at 1080p in one run**. Plan shots in a visual Director;
+continued shots are rendered together on one seamless timeline (**0.4.0: CCW, Chained Context Windows**), every finished
+part is kept on disk, and you repair only what went wrong — down to a few seconds.
 
 > H3MD does **not** include any MiniMax H3 weights; the model has its own license (see [NOTICE.md](NOTICE.md)).
 
@@ -18,11 +19,14 @@ generate them segment by segment, keep every finished segment on disk, and repai
 | <img src="docs/media/mv_1080p_singing.gif" width="420"> | <img src="docs/media/mv_1080p_everest.gif" width="420"> |
 
 ## Highlights
-- **Long video in one run**: 2–3 minutes at 1088×1920, split automatically into seamlessly continued segments.
-- **Repair instead of re-render**: `rerun_segments` re-renders only the bad segments, locked to their neighbours at both ends.
+- **Seamless long video (0.4.0, CCW)**: tick one switch on the Director and continued shots are rendered together on one
+  timeline with Chained Context Windows — no continuation seams, no drift, no double images; hard cuts stay clean.
+- **Long video in one run**: 2–3 minutes at 1080p (measured: a 2 min 20 s music video at 1920×1088 in 2 h 18 min on an RTX 5090).
+- **Repair instead of re-render**: the **Redraw / Preview** node redraws just a few seconds of a finished video (you may
+  change that shot's prompt or pictures first); `rerun_segments` re-renders whole segments, locked to their neighbours.
 - **Motion copy**: a reference video drives the motion (depth + SAM3 + Fun ControlNet); the look comes from your photos.
 - **No long-video drift**: `lowres_anchor` keeps colors and faces stable over a whole single-scene take.
-- **Fits your GPU**: automatic splitting by VRAM, high-res strip tiling, disk cache and resume; the 4B + ClipProj encoder saves 10+ GB.
+- **Fits your GPU**: automatic splitting by VRAM, high-res strip tiling, disk cache and resume; the optional 4B + ClipProj text encoder saves 10+ GB.
 
 ## Install
 
@@ -38,7 +42,7 @@ generate them segment by segment, keep every finished segment on disk, and repai
 > or ComfyUI-Manager → **Custom Nodes Manager** → search **H3MD Director**.
 
 1. No `pip install` is needed.
-2. You need a ComfyUI version with MiniMax H3 support (0.43 or newer recommended).
+2. You need a ComfyUI version with MiniMax H3 support (0.43 or newer; **0.44 or newer for Seamless long video**).
 3. Open an example workflow: ComfyUI **Templates** → `ComfyUI-H3MD-Director`, or drag one from
    [`example_workflows/`](example_workflows) into ComfyUI. **New here? Start with `H3MD Director simple`** (v0.3):
    only three things on the canvas – the **H3MD Control Panel** (size, fps / interpolation, face refine, seed, which
@@ -83,6 +87,84 @@ generate them segment by segment, keep every finished segment on disk, and repai
 H3MD Director --plan--> H3MD Loop Sampler (+ H3MD Loop Options) --long video--> H3MD Save Video Interp
 ```
 
+## Seamless long video — CCW: Chained Context Windows (window mode)
+0.4.0's main feature. ComfyUI's core Context Windows render a long video as overlapping windows and average the
+overlaps; CCW runs the windows in time order and lets each window take over the overlap from the one before it, so
+nothing is averaged and nothing doubles.
+
+Tick **Seamless long video** at the top of the Director. Your plan stays exactly as it is; only how it is rendered
+changes:
+* Shots that continue each other are rendered **together on one timeline** with overlapping context windows, so there
+  is **no continuation seam** and no drift from segment to segment.
+* Hard cuts stay hard cuts (the windows break there, nothing is blended across a cut).
+* Low-res windows are **chained** (接续窗口): they run in time order and a window takes over the overlap from the one
+  before it instead of averaging two pictures, so there are no double images in the overlaps (`"chain": false` = the
+  old averaging, with overlap 56).
+* A very long plan is split into groups (about 60 s each) **only at a hard cut**, where the picture changes anyway.
+  If one continuous take is longer than a group, the Director says where to put a hard cut.
+* Each shot keeps its own prompt, pictures, reference video and music for its own time range; reference videos longer
+  than H3's ~15 s limit work (each window gets its own slice).
+* Lines and actions inside a long shot: write their time from the shot's start, the usual way
+  (`At 00:07.9 she sings: <d>[English] ...</d>.`) or as `[8s] ...`; each one goes to the one window that holds that
+  second, so nothing is sung or played twice (see the prompt skill).
+* Inside one continuous take each shot is drawn from its own text only: write place, light and outfit in full in
+  every shot (continued shots too) and give big changes a time. With 接续窗口 big changes inside a take (a spin, a back
+  view turning to the front, running past changing scenery) no longer dissolve where windows overlap (11-08 tests:
+  spin, back-to-front turn, a 22 s take with two hand-overs, a 12 s run along the sea). With `"chain": false` they can.
+* Switched off automatically: depth / pose control (the video stays a normal reference video; also off in motion copy)
+  and RefMods (identity comes from the reference pictures).
+* Low-res preview and local redraw: see the steps below (node **H3MD Redraw / Preview**; the plan keys `"preview"` /
+  `"redraw"` do the same when written by hand).
+* Frame interpolation (48 / 60 fps) never blends two shots at a hard cut: the frame between them repeats the nearest
+  original frame (0.4.0; before, every hard cut got one frame of the two shots melted together).
+* Memory: the result is decoded and written in ~10 s chunks, and the high-res pass plans its strips per window, so
+  2K works on 64 GB RAM (measured: 21 s at 2560×1408 in 41 min on an RTX 5090).
+* A locked song that is also `<Audio N>` gives each window only its own stretch of the song (not the whole file), and
+  changing only high-res settings (high-res LoRAs, high-res windows) reuses the finished low-res pass.
+* Segment numbers (`segments_to_run`, `rerun_segments`, `stop_after`) count **groups** in window mode, as the
+  Director's notes list them (one group = the shots rendered together).
+* About 25% slower than the old chain (11-08, 1920×1088: low-res about +11 %, high-res about +34 % per frame). Turn
+  it off to get the old behaviour back exactly. Measured on an RTX 5090: a 2 min 20 s music video at 1920×1088
+  (3 groups, 48 fps) took 2 h 18 min, compute VRAM peak 11.1 GB.
+
+### Step by step
+1. Tick **Seamless long video** on the Director. Keep `resume_from_cache` **on** on the Loop node (it is on in the
+   example workflows; preview, redraw and resume all work from the cache).
+2. *Optional, low-res preview:* in the example workflow, the **H3MD Redraw / Preview** node sits between the Director
+   and the Loop, bypassed. Select it, press Ctrl+B, tick `preview` and run: only the low-res pass (about half the
+   time). Happy with motion and framing? Untick `preview` and run again: the full version starts from the cached
+   low-res pass.
+3. *Fix a few seconds:* write them into `redraw` on the same node, on the whole video's timeline: `20-24`,
+   `1:12-1:15`, several ranges separated by commas. Run: only the windows that touch those seconds are rendered again,
+   with a new seed; every other frame stays identical and the groups not touched come from the cache. Not happy? Run
+   again (a new seed each time). Happy? Clear `redraw` (or bypass the node): the redrawn take is kept.
+   You may also edit the shot first: change its prompt, add or replace a picture (for example a still of the outfit
+   from a shot where it came out right), or change its reference video or audio. Only the redrawn seconds use the
+   change; the rest keeps the take you have. Not possible with a redraw: another size or length, moving a hard cut,
+   another locked song. A redraw that starts at a hard cut is the safest place for bigger changes (nothing to match on
+   the left side).
+4. *A whole group is wrong:* type its number in `rerun_segments` (groups are numbered as the Director's notes list
+   them).
+5. *Stopped, crashed, or the PC restarted:* run again. Finished groups come from the cache; the interrupted group
+   continues from the sampling step it was in (tested: the result is frame-identical to an uninterrupted run).
+
+### Cache: what is kept and how big
+* Where: `<drive>/H3MD_cache/resume_<id>/` (the drive with the most free space, or the `cache_dir` you set).
+* Per group: the decoded frames (`seg_XXX_frames.npy`), the final latent (about 0.2 GB per minute), and in `seg_XXX_progress/` the
+  low-res result `pass1.pt` (about 130 MB per 50 s group, kept so a preview, a redraw or a high-res-only change skips
+  the low-res pass). Resume files of the current step exist only while a group runs.
+* Frame size: the example workflows store them as 8-bit (`cache_dtype = uint8` in Loop Options): 6.3 MB per
+  1920×1088 frame, about **9 GB per minute** of video (the 2 min 20 s video above: about 21 GB). Compared on that
+  video: the saved video differs by at most 1/255 in a pixel value and an H.264 file of either is equally close to it
+  (40.7 dB) - no visible difference. Use `fp16` (12.5 MB per frame, about 18 GB per minute; the node's own default)
+  when you save 10-bit video (`yuv420p10le`), and keep `fp16` for a video you started with it: the cache format is
+  part of the resume settings, so switching mid-way re-renders every group.
+* Example: the 2 min 20 s video above left a 41 GB cache folder (fp16).
+* Every redraw moves the previous take of that group to `_replaced_<time>/` in the same folder (a full copy of the
+  group: about 15 GB for a 53 s group at 1920×1088). Delete those folders when you have chosen.
+* H3MD never deletes the cache on its own: turn on `delete_cache_after_save` on H3MD Save Video Interp, or delete the
+  `resume_...` folder by hand when the video is final.
+
 ## More (click to open)
 
 <details>
@@ -123,21 +205,21 @@ H3MD Director --plan--> H3MD Loop Sampler (+ H3MD Loop Options) --long video--> 
 
 **Example workflows**
 * `H3MD Director simple.json` — **start here** (v0.3): Control Panel + Director + preview; models / sampler / save in
-  subgraphs; no rgthree, Crystools, easy-use, LayerStyle or TE-Speed nodes. Low VRAM: the 4B text encoder + ClipProj
-  are inside the models subgraph (bypassed), with a note on how to switch.
+  subgraphs; no rgthree, Crystools, easy-use, LayerStyle or TE-Speed nodes. Low VRAM: swap the 32B text encoder for 4B +
+  ClipProj (the full workflow has the ClipProj node bypassed; see the text encoder notes below).
 * `H3MD Director.json` — the full setup used for the samples; adds face refine, RIFE interpolation to 48 fps, one extra
   refine step and a few convenience nodes.
 
 | Node pack | What it does in the workflows | Needed? | Without it |
 |---|---|---|---|
-| ComfyUI 0.43+ (core MiniMax H3 nodes) | models, sampler, VAE | **required** | — |
+| ComfyUI 0.43+ (core MiniMax H3 nodes; 0.44+ for Seamless long video) | models, sampler, VAE | **required** | — |
 | H3MD Director (this pack) | Director, Loop Sampler, Save Video Interp, depth / SAM3 motion copy | **required** | — |
 | [ComfyUI-KJNodes](https://github.com/kijai/ComfyUI-KJNodes) | SageAttention and chunked feed-forward patches (less VRAM) | recommended (simple + full) | runs, but needs more VRAM; the SageAttention patch also needs the SageAttention package, otherwise bypass that node |
 | [ComfyUI-ClipProj](https://github.com/nicolab28/ComfyUI-ClipProj) | 4B text encoder projection, saves 10+ GB VRAM | only with the 4B encoder | use the 32B encoder |
 | [ComfyUI-VFI](https://github.com/GACLove/ComfyUI-VFI) | RIFE interpolation in `H3MD Save Video Interp` | optional | keep `interpolate` off: 24 fps output |
 | [ComfyUI-VOSR2](https://github.com/ylchen333/ComfyUI-VOSR2) (simple) / TE-Speed-VOSR2 (full) | face refine in `H3MD Save Video Interp` | optional | keep `face_refine` off (default) |
 | [ComfyUI-SeedVR2_VideoUpscaler](https://github.com/numz/ComfyUI-SeedVR2_VideoUpscaler) | face refine with `refine_model = SeedVR2`: its DiT / VAE loaders go to `seedvr2_model` / `seedvr2_vae` (TE-Speed SeedVR2 also works) | optional | use VOSR2, or keep `face_refine` off |
-| T8 semantic bridge (MiniMax H3 prompt enhancer T8) | its "Semantic Bridge" config or multi-bridge stack can go straight into the Loop's `semantic_bridge` input (same math as our own bridge node) | optional | our H3MD Semantic Bridge node / Control Panel |
+| T8 semantic bridge (MiniMax H3 prompt enhancer T8) | its "Semantic Bridge" config or multi-bridge stack can go straight into the Loop's `semantic_bridge` input (same math as our own bridge node) | optional | our H3MD Semantic Bridge node (in the example workflows: wired, bypassed - select it and press Ctrl+B to use it; the style buttons no longer switch a bridge on). The bridge's author does not recommend it with reference pictures or lip-sync to a reference audio |
 | [ComfyUI-YCNodes-MiniMax-H3](https://github.com/yichengup/ComfyUI-YCNodes-MiniMax-H3) | `H3SigmaRefiner`: one extra refine step | optional | plain `BasicScheduler` |
 | [rgthree-comfy](https://github.com/rgthree/rgthree-comfy) | Power Lora Loader (many LoRAs in one node) | full only, optional | the simple workflow's Control Panel loads LoRAs itself |
 | ComfyUI-Dehypnotic, Crystools, Easy-Use, LayerStyle, CRT-Nodes | aspect-ratio picker, switch, number, VRAM purge, timer | full only, optional | not needed to render |
@@ -404,9 +486,12 @@ the missing-models popup only downloads into registered `models/` folders and do
   clear the cache folder.
 * This version changed the sampling engine: older caches are not resumed, and an old workflow's `H3MD Loop Options`
   node should be deleted and re-added (its options changed).
-* **Text encoder**: 32B (`qwen3vl_32b_minimax_h3_int8_convrot`) follows prompts best. Short on VRAM? Use 4B + ClipProj:
-  it saves 10+ GB with no loss in image quality, only slightly weaker prompt understanding (details can differ a little
-  from 32B). Fine for generating from scratch. **Keep one encoder for a whole piece**; do not switch when re-rendering
+* **Text encoder**: 32B (`qwen3vl_32b_minimax_h3_int8_convrot`) follows prompts best. Short on VRAM? Use 4B
+  (`qwen3vl_4b_fp8_scaled`, Load CLIP type `krea2`) + ClipProj: it saves 10+ GB with no loss in image quality, only
+  slightly weaker prompt understanding (details can differ a little from 32B). Measured on ComfyUI 0.44 (RTX 5090,
+  64 GB): it encodes much more slowly (29 s per encode against 5 s with 32B; window mode encodes every window) and
+  peak RAM / VRAM were almost the same (51 / 29.7 GB against 50 / 30.9 GB), because ComfyUI streams the 32B from
+  disk. Use it when the 32B does not load at all. **Keep one encoder for a whole piece**; do not switch when re-rendering
   segments with `rerun_segments`.
 * **Fast-motion ghosting**: a fast arm swing can briefly show ghost hands (4 frames are packed into 1 latent step, plus
   few sampling steps). Re-render that segment with a new seed via `rerun_segments`.
@@ -489,7 +574,27 @@ how we solved them — feel free to build on them.
 - 4B + ClipProj saves 10+ GB of VRAM with no loss in image quality, only slightly weaker prompt understanding. Fine for
   generating from scratch; don't switch encoders in the middle of one piece.
 
-### 9. Method
+### 9. CCW: Chained Context Windows (0.4.0)
+- **Problem**: joining segments (1.) leaves a small seam at every join and lets drift build up. ComfyUI's core Context
+  Windows sample a whole take at once in overlapping windows, but they **average the overlaps**: where the picture
+  changes a lot (a spin, a back view turning to the front), two different pictures averaged become double images — our
+  2 min 20 s test showed five such spots.
+- **Approach**: in the low-res pass the windows run in time order, and a window's overlap with the windows before it
+  takes their result of the same step (input and output) instead of averaging. Same amount of computation. The high-res
+  pass keeps averaged windows (the picture is already set there).
+- Hard cuts are window boundaries (nothing is blended across a cut), and long plans are grouped (about 60 s) only at
+  hard cuts. Each window gets its own share of the prompt: lines with a time (`At 00:07.9 ...`, `[8s] ...`) go to the one
+  window that draws that second, and reference pictures follow the windows that mention them.
+- **Result**: the five double-image spots of the 2:20 test are gone; about 25 % slower than joining segments.
+
+### 10. Local redraw: a noise mask over the finished take
+- Only the windows that touch the chosen seconds are sampled; everything else is held by a noise mask, the low-res pass
+  keeps the take's **own** low-res result on the kept rows, and only the changed decode chunks are decoded. The previous
+  take is moved to `_replaced_<time>/`, so nothing is lost.
+- **Lessons from testing**: soft, blended edges gave double exposure → hard edges; using a shrunk final latent as the
+  low-res base washed the picture out → the take's own low-res result.
+
+### 11. Method
 - **Search the community before testing**: a GPU runs only a few tests a day.
 - **Measure**: per-segment saturation and Laplacian sharpness plus face crops, not "it feels like".
 - **Analyze the cache offline**: it holds every segment's low-res and final latent, so you can find the guilty stage
@@ -500,6 +605,7 @@ H3MD stands on many shoulders. Their code, models or openly shared findings gave
 
 **Engine, models and nodes**
 - 👍 [MiniMax](https://huggingface.co/MiniMaxAI) for open-sourcing H3, and [Comfy-Org](https://huggingface.co/Comfy-Org/MiniMax-H3) for native ComfyUI support
+- 👍 [Comfy-Org](https://github.com/comfyanonymous/ComfyUI): the core Context Windows for MiniMax H3 that CCW builds on (the context-window idea goes back to Kosinkadink's [AnimateDiff-Evolved](https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved) context options)
 - 👍 [Luna-H3-Sampler](https://github.com/lunaaispace-eng/Luna-H3-Sampler): two-pass sampling engine (bundled, GPL-3.0)
 - 👍 [LBH-123-AI](https://huggingface.co/LBH-123-AI/Minimax_h3_latent_Upscaler): learned latent upscaler (MIT)
 - 👍 [Alissonerdx](https://huggingface.co/Alissonerdx/Minimax-H3-ComfyUI): sharpness upscaler and lms LoRA

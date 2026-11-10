@@ -84,9 +84,15 @@ is a separate listing.
 - **Choose how you run it.** Use [managed DocsMint](https://docsmint.com) or
   self-host the application, database, search, queues, and files.
 
-## Document version patch 2.1.3
+## Integration diagnostics
 
-Preview and restore historical content without reloading the editor. See [2.1.3 release notes](docs/release/v2.1.3-notes.md).
+REST and HTTP MCP responses include a server-issued request ID in the
+X-Request-ID header. Include that ID when reporting a failed request.
+See the [2.1.5 release notes](docs/release/v2.1.5-notes.md).
+
+## Document version patch 2.1.4
+
+Preview and restore historical content without reloading the editor. See [2.1.4 release notes](docs/release/v2.1.4-notes.md).
 
 ## Security patch 2.1.1
 

@@ -35,9 +35,10 @@
 [![PyPI ragleap-memory](https://img.shields.io/pypi/v/ragleap-memory?label=ragleap-memory)](https://pypi.org/project/ragleap-memory/) [![Downloads](https://img.shields.io/pepy/dt/ragleap-memory?label=downloads)](https://pypi.org/project/ragleap-memory/)
 [![PyPI ragleap-security](https://img.shields.io/pypi/v/ragleap-security?label=ragleap-security)](https://pypi.org/project/ragleap-security/) [![Downloads](https://img.shields.io/pepy/dt/ragleap-security?label=downloads)](https://pypi.org/project/ragleap-security/)
 
-**Tracing (Python)**
+**Tracing and cost (Python)**
 
 [![PyPI ragleap-trace](https://img.shields.io/pypi/v/ragleap-trace?label=ragleap-trace)](https://pypi.org/project/ragleap-trace/) [![Downloads](https://img.shields.io/pepy/dt/ragleap-trace?label=downloads)](https://pypi.org/project/ragleap-trace/)
+[![PyPI ragleap-optimizer](https://img.shields.io/pypi/v/ragleap-optimizer?label=ragleap-optimizer)](https://pypi.org/project/ragleap-optimizer/) [![Downloads](https://img.shields.io/pepy/dt/ragleap-optimizer?label=downloads)](https://pypi.org/project/ragleap-optimizer/)
 
 **Physical AI (Python, simulation only)**
 
@@ -230,7 +231,7 @@ pip install ragleap-voice
 uv add ragleap-voice
 ```
 
-Need durable, tenant-scoped long-term memory for an LLM app? `ragleap-memory` stores it in one SQLite file with FTS5 keyword search, typed entries with trust labels, supersede and erase, plus (version 0.2.0) a token budget on search, per-tenant quotas, one file per tenant and download/upload of a memory (alpha, not independently audited):
+Need durable, tenant-scoped long-term memory for an LLM app? `ragleap-memory` stores it in one SQLite file with FTS5 keyword search, typed entries with trust labels, supersede and erase, plus (version 0.2.0) a token budget on search, per-tenant quotas, one file per tenant and download/upload of a memory, and (version 0.3.0) optional vector and hybrid search with your own embedder (alpha, not independently audited):
 
 ```bash
 pip install ragleap-memory
@@ -248,13 +249,29 @@ pip install "ragleap-security[crypto]"
 uv add ragleap-security
 ```
 
+Need to see what your Python AI code does without recording its content? `ragleap-trace` is a dependency-free tracing library (standard library only): spans with hard limits, privacy-safe by default, and an adapter for ragleap-rag hooks. It writes to memory or a local file and has no network exporters.
+
+```bash
+pip install ragleap-trace
+# or, with uv
+uv add ragleap-trace
+```
+
+Want to cut the token use of LLM requests, and measure what you lose? `ragleap-optimizer` is an alpha library, not independently audited: every step reports what it changed and whether it can lose information, and `evaluate` compares quality on your own cases. No savings figure has been measured.
+
+```bash
+pip install ragleap-optimizer
+# or, with uv
+uv add ragleap-optimizer
+```
+
 Or run the full self-hosted app (channels, the AI Office dashboard, Docker Compose) — see [Quickstart](#quickstart) below. Browse every package at [packages.ragleap.com](https://packages.ragleap.com). Try it hands-on with the runnable scripts in [examples/](examples/) — `01_ingest_and_query.py` (upload a document, ask a question via the API) and `02_test_channel_directly.py` (test channel answering logic without real bot credentials).
 
 ## If a RAG chatbot answers questions, RagLeap runs your business
 
 Most open-source RAG projects give you a toolkit — you still have to build the app, wire up a UI, add memory, and connect every channel yourself. RagLeap Core gives you one AI across WhatsApp, Telegram, Discord, and voice calls, instead of a different disconnected bot per channel. Memory persists across sessions and channels, so it isn't relearning who a customer is every time. Voice is a real, working inbound-call handler (Twilio Media Streams, Whisper STT, OpenAI TTS) — not just document Q&A with a phone number bolted on — and n8n workflow automation can be triggered directly from any conversation.
 
-What this repo doesn't include: a multi-tenant admin dashboard (settings, analytics, team, billing) and an executive-assistant layer (Manager AI). It does ship a single-tenant dashboard, the AI Office at `/office` (approvals, employees by department, tasks, agent runs, activity, Settings and a Setup checklist). RagLeap Core itself is single-tenant, self-hosted, and configured via `.env`.
+What this repo doesn't include yet: a multi-tenant admin dashboard (settings, analytics, team, billing) and an executive-assistant layer (Manager AI). It does ship a single-tenant dashboard, the AI Office at `/office` (approvals, employees by department, tasks, agent runs, activity, Settings and a Setup checklist). RagLeap Core itself is single-tenant, self-hosted, and configured via `.env`. Multi-tenant use and hosting are planned inside ragleap-core, with no date.
 
 ## What makes RagLeap Core specifically different
 
@@ -290,9 +307,9 @@ WhatsApp, Telegram, and Discord bots are included in this repo too — single-te
 
 | It's not... | It is... |
 |---|---|
-| A hosted product | Self-hosted software you run yourself |
-| Multi-tenant, with persistent cross-session memory | Single-tenant — one bot, one document set, per deployment |
-| A multi-tenant platform | WhatsApp/Telegram/Discord/Voice channel adapters included, single-tenant |
+| A hosted product | Self-hosted software you run yourself today. Hosting is planned inside ragleap-core (no date) |
+| Multi-tenant, with persistent cross-session memory | Single-tenant today: one document set per deployment, served by a staff of AI employees (46 roles), not by one bot. Multi-tenant use is planned (no date) |
+| A multi-tenant platform | Not yet: multi-tenant use is planned (no date). WhatsApp/Telegram/Discord/Voice channel adapters are included, single-tenant |
 | A no-code SaaS dashboard | A codebase you deploy and configure |
 | Feature-complete | The foundational subset — see [Roadmap](#roadmap) |
 
@@ -449,7 +466,7 @@ pip install ragleap-rag
 - **`ragleap-integrations`** — MCP (Model Context Protocol) client over Streamable HTTP that returns `ragleap-tools` `Tool` objects (since 0.4.0 it is also a UTCP client for `http` manuals, see below). The owner configures the servers and an exact `server.tool` allowlist; the model only supplies arguments. HTTPS-only transport with DNS pinning and a hard wall-clock deadline. Live-checked against public servers: DeepWiki on the legacy protocol path, and Google Cloud's MCP endpoints on the newest revision (2026-07-28; discovery only). Also live-checked on 2026-10-17 (0.1.1) and again on 2026-10-24 (the published 0.2.0 wheel) against a third party's public mock MCP servers (mcpplaygroundonline.com): modern-path `tools/call` succeeded (pinned and unpinned), bearer-token authentication worked (HTTP 401 without a token, success with a fresh one) and the legacy fallback worked. Not yet live-verified: `x-mcp-header` mirroring, pagination and this client's handling of a live `-32022` reply. The default response cap is 1 MiB (256 KiB in 0.1.0, which Google Cloud's Pub/Sub MCP endpoint exceeded); raise `max_response_bytes` if discovery fails. Version 0.4.0 adds a UTCP (Universal Tool Calling Protocol) client, `connect_utcp()`: it reads one UTCP manual once and offers only its allowlisted `http` tools, with an exact allowlist, approved origins checked at discovery and on every call, no variable substitution, the same approval hook and audit events (marked `"protocol": "utcp"`) and constant error texts; the bounded HTTPS transport now also supports GET, PUT, DELETE and PATCH. It is tested against a recording fake transport and a local TLS server. Its discovery was live-checked once, on 2026-11-07, against Unified.to's public UTCP manual (HTTP 200, 33 tools, all `http`): none of the 20 tools tried was offered, because every template declares `auth`, which 0.4.0 does not support. No tool call against a real UTCP server has been made, the normative text of the UTCP specification was not read, and auth blocks, `header_fields`, OAuth, OpenAPI conversion and a multi-tenant hub are not supported yet. Version 0.3.0 adds multi-tenant use (`McpHub`: a token per request for each `Scope`, narrowed allowlists, per-tenant approval and rate limits, scoped audit events; `ragleap-security` is an optional extra); it was live-checked on 2026-10-26 (branch source) and 2026-10-27 (published wheel) against a mock MCP auth server, which cannot tell tenants apart, so separation is shown from the requests that were sent. Version 0.2.0 added `connect(url, allow=[...])` (one call from a URL to ready tools and a `ragleap-tools` Toolkit) and governance: server tool hints are treated as untrusted, flagged tools can require approval through an `approve` hook, and an `on_event` hook reports one audit event per discovery and per call (never arguments or results). Live-checked on 2026-10-25 against Google Cloud's Pub/Sub MCP endpoint (`tools/list` only, no credentials): `connect()`, the annotation parsing and the approval flags matched an independent calculation from the real hints. The `approve` hook, its denial text and the per-call audit events are tested against fake servers only. No curated business connectors and no agent loop yet. Install with `pip install ragleap-integrations` or `uv add ragleap-integrations`.
 - **`ragleap-agents`** — a small act-observe agent loop over `ragleap-tools` Tool objects, one proposed action at a time: schema-checked actions, untrusted tool results, a taint rule that forces approval for outbound actions after untrusted content, pause and resume, and (from 0.5.0) sub-agents through a delegate tool. Standard library plus `ragleap-tools`; alpha; live results with real models are limited (see its release notes). Install with `pip install ragleap-agents`.
 - **`ragleap-security`** — small, auditable security primitives: immutable tenant scopes, a hash-chained audit log (tamper-evident, not tamper-proof), secrets that do not print themselves with a heuristic redactor, hard input limits, key rotation with optional AES-256-GCM encryption, rate limits, and file-integrity checks. Standard library only (encryption needs the optional `cryptography` extra: `pip install ragleap-security[crypto]`); alpha; not independently audited. Install with `pip install ragleap-security`.
-- **`ragleap-memory`** — durable, tenant-scoped long-term memory in one SQLite file: FTS5 keyword search, typed entries with trust labels (new entries default to untrusted), supersede, forget, export, and erase that removes the text from the file. Version 0.2.0 adds a token budget on search (`max_tokens`), usage counters and per-tenant quotas, `ShardedStore` (one file per tenant) and download/upload of a memory as a file. Needs `ragleap-security`; alpha; retrieval quality not benchmarked; not independently audited. Install with `pip install ragleap-memory`.
+- **`ragleap-memory`** — durable, tenant-scoped long-term memory in one SQLite file: FTS5 keyword search, typed entries with trust labels (new entries default to untrusted), supersede, forget, export, and erase that removes the text from the file. Version 0.3.0 adds optional vector and hybrid search over vectors that your own embedder function produces (no provider code in the library), with a per-tenant daily embedding cap. Version 0.2.0 added a token budget on search (`max_tokens`), usage counters and per-tenant quotas, `ShardedStore` (one file per tenant) and download/upload of a memory as a file. Needs `ragleap-security`; alpha; retrieval quality not benchmarked; not independently audited. Install with `pip install ragleap-memory`.
 - **`ragleap-optimizer`** — a measure-first layer that reduces the token use of LLM requests: exact repeated-context removal, whitespace and JSON minifying, a stable prompt prefix, bounded tool-output trimming (it reports when it loses information), a tenant-scoped exact cache, retries and fallback, and an evaluation harness that compares quality before and after on your own cases. No savings figure is claimed; alpha; not independently audited. Install with `pip install ragleap-optimizer`.
 - **`ragleap-physical`** — a simulation-first, observe-first safety bridge between AI agents and simulators (pre-alpha, simulation only). The AI can only propose; a named person approves the exact change; limits are checked again when it is applied; the outcome is verified in the simulator. Four AI-facing tools and a small MCP server, an operator console for the human approval step, MuJoCo adapters (optional extra), workspace limits, two- and three-joint arms, an offline ROS 2 observe-only mock, a simulated machine tool, and observe-only energy and MTConnect mocks. Not built: MQTT, PLC or real-robot bridges; nothing here controls real hardware. Not independently audited. Install with `pip install ragleap-physical`.
 - **`ragleap-ops`** — Kubernetes deployment manifests for RagLeap Core, live-tested end-to-end on a real cluster. Install with `pip install ragleap-ops` or `uv add ragleap-ops`.
@@ -879,11 +896,11 @@ You do not need to write code to help: pick a test, run a few steps on sample fi
 
 | Area | Tested by | OS / setup | Result | Issue |
 |---|---|---|---|---|
-| (no reports yet) | | | | |
+| Windows installer with the Ollama option | @Anurag07-crypto | Windows 11 Pro 25H2 (build 26200.9711), Docker 29.9.2, Ollama 0.40.14, qwen2.5:3b and nomic-embed-text | Services started, the dashboard opened, the chat and embedding connection tests passed, one PDF was ingested (5 chunks) and one chat request was answered (HTTP 200). One machine, one PDF, one question: not a compatibility guarantee, and macOS and Linux desktops are not verified. [Evidence](https://github.com/ragleap/community-tests/tree/main/windows-ollama-781) | [#781](https://github.com/ragleap/ragleap-core/issues/781) |
 
 ## Contributing
 
-RagLeap Core is working, tested, and open for contributions now. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to get started, and check the [good first issue](../../issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) label for scoped tasks.
+RagLeap Core is working, tested, and open for contributions now. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to get started, and check the [good first issue](https://github.com/ragleap/ragleap-core/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) label for scoped tasks.
 
 Want to see exactly what's being worked on and what's open to claim? Check the [Project board](https://github.com/users/antonyrag/projects/1) — issues are staged as Good First Issue, Ready (Scoped), or Needs Scoping, so you can pick something that matches how much design work you want to do versus just build.
 
@@ -891,8 +908,8 @@ Want to see exactly what's being worked on and what's open to claim? Check the [
 
 ## Community
 
-- [GitHub Issues](../../issues) — bugs and feature requests
-- [GitHub Discussions](../../discussions) — ideas and questions
+- [GitHub Issues](https://github.com/ragleap/ragleap-core/issues) — bugs and feature requests
+- [GitHub Discussions](https://github.com/ragleap/ragleap-core/discussions) — ideas and questions
 - [ragleap.com](https://ragleap.com) — the project website
 
 ## License

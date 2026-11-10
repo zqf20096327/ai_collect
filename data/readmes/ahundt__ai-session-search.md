@@ -120,8 +120,9 @@ What a harness receives depends on what it can read, in the format and location 
 | ChatGPT Codex desktop and CLI/IDE | MCP config, managed `AGENTS.md` block, skill |
 | OpenCode | MCP config, managed `AGENTS.md` block |
 | Gemini CLI, Antigravity App/IDE/CLI | MCP config, shared `~/.gemini/GEMINI.md` block, skill |
-| Pi, Prime Agent | Skill and native `AGENTS.md` only: Pi has no MCP client, and Prime's kernel currently takes remote HTTP MCP integrations |
-| Cursor, Windsurf, VS Code, Zed, OpenClaw, legacy KiloCode | MCP config |
+| Pi 0.99.0+ | MCP config in `~/.pi/agent/mcp.json`, skill, native `AGENTS.md` guidance |
+| Prime Agent | MCP config in `~/.prime/agent/settings.json` with `type: "stdio"`, skill, native `AGENTS.md` guidance |
+| Cursor, Windsurf, VS Code, Zed, OpenClaw, KiloCode | MCP config |
 
 No MCP tool changes your sessions or configuration, and publishing a bundle stays a CLI and
 library operation. A query does refresh the index, writing `aise`'s own state;
@@ -395,7 +396,7 @@ installing, `uv add ai-session-search` adds a project dependency, and
 `python -m pip install ai-session-search` also works.
 
 Wheels cover CPython 3.12 through 3.14 on manylinux2014 x86_64 and aarch64, macOS x86_64 and
-arm64, and Windows x86_64. Building from source needs Rust 1.88 or newer and a C compiler,
+arm64, and Windows x86_64. Building from source needs Rust 1.89 or newer and a C compiler,
 because SQLite is built from bundled C.
 
 Installing the package never touches your configuration: no aliases, no MCP client edits, no

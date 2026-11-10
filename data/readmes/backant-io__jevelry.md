@@ -32,7 +32,7 @@ jevelry lets your code and your coding agent ask Jev, the decision model from Ty
 
 Your code and your coding agent make the same small calls every day: is this ticket urgent, which team should get it, is this bug a duplicate, did this test fail because of the code or because of the machine it ran on. Today each of those is usually a prompt that returns text you parse, and you don't learn how sure the model was.
 
-With jevelry you ask each of those questions to Jev with one command. A question lives in a small file called a jevel, and seventeen ready-made jevels ship with the package. Jev answers with how sure it is, and the jevel turns that into one of three decisions:
+With jevelry you ask each of those questions to Jev with one command. A question lives in a small file called a jevel, and eighteen ready-made jevels ship with the package. Jev answers with how sure it is, and the jevel turns that into one of three decisions:
 
 | Decision | Meaning | What your code does |
 |---|---|---|
@@ -179,20 +179,34 @@ jevelry models --local
 On an Apple M4 Pro with 24 GB that prints:
 
     This machine: Apple M4 Pro, 24 GB memory, about 17 GB usable by the GPU
-    Ranked by the Jev Decision Index 0.3.2, where hosted Jev 1.14 scores 61.5
+    Ranked by the Jev Decision Index 0.4.1, where hosted Jev 1.14 scores 60.2
 
       #  id                    model                     quant   download    needs  fit        score  s/question  licence
-      1  vllm-d3-flash         vLLM-SR d3-flash 9B       Q8_0      9.6 GB  11.2 GB  runs well   55.8         2.1  Apache-2.0
-      2  bespoke-nimble-9b-v3  Bespoke Nimble 9B v3      Q8_0      9.6 GB  11.2 GB  runs well   54.7         2.1  CC BY-NC 4.0, non-commercial
-      3  vllm-d3-mini          vLLM-SR d3-mini 4B        Q8_0      5.2 GB   6.8 GB  runs well   52.6         1.1  Apache-2.0
+      1  vllm-d3-flash         vLLM-SR d3-flash 9B       Q4_K_M    6.6 GB   8.2 GB  runs well   54.3         2.1  Apache-2.0
+      2  bespoke-nimble-9b-v3  Bespoke Nimble 9B v3      Q4_K_M    6.6 GB   8.2 GB  runs well   51.1         2.1  CC BY-NC 4.0, non-commercial
+      3  vllm-d3-mini          vLLM-SR d3-mini 4B        Q8_0      5.2 GB   6.8 GB  runs well   50.0         1.1  Apache-2.0
       ...
-     16  vllm-d3               vLLM-SR d3 27B            Q4_K_M   19.9 GB  22.6 GB  won't fit   66.3           -  Apache-2.0
-     17  clef                  Cloudflare Clef 27B       Q4_K_M   20.0 GB  22.7 GB  won't fit   53.1           -  Apache-2.0
-     18  openjev               OpenJev 27B               Q4_K_M   19.9 GB  22.6 GB  won't fit      -           -  CC BY-NC 4.0, non-commercial
+     18  vllm-d3               vLLM-SR d3 27B            Q4_K_M   19.9 GB  22.6 GB  won't fit   67.2           -  Apache-2.0
+     19  clef                  Cloudflare Clef 27B       Q4_K_M   20.0 GB  22.7 GB  won't fit   54.9           -  Apache-2.0
+     20  openjev               OpenJev 27B               Q4_K_M   19.9 GB  22.6 GB  won't fit      -           -  CC BY-NC 4.0, non-commercial
 
     OpenJev 27B: not on the index; its card reports 84.0% against hosted Jev's 85.4% on its own 10,000 questions
 
 Each row is one model at the quant that suits this machine. `download` is the size of the file, `needs` the memory it takes while it answers, `fit` whether this machine has that memory (`runs well`, `tight` or `won't fit`), `score` its result on the index, `s/question` the seconds a question of about 500 tokens takes here, and `licence` what you may use it for. Models that run well come first, then tight ones, then the ones that won't fit, each group by best score, so row 1 is the one to pick. [Local models](#local-models) says where each number comes from. `--json` prints the same rows for a program.
+
+The index is not the whole answer for the jevels that ship here. These seven models were each asked the 74 cases of the 17 jevels that shipped that day, 186 expected answers in all, on an M4 Pro with llama.cpp 0.9.0 on 10 November 2026. The brackets are 95% intervals.
+
+| Model | Download | Right, of 186 | Sure enough to act | Right when it acts |
+|---|---|---|---|---|
+| Liquid d1-Omni 2B | 1.8 GB | 85% [80-90] | 72% | 93% [88-96] |
+| Liquid d1 2B | 1.8 GB | 83% [77-88] | 72% | 93% [88-96] |
+| vLLM-SR d3-nano 2B | 2.6 GB | 83% [77-88] | 70% | 95% [89-97] |
+| Interfaze lev 4B | 4.5 GB | 82% [76-87] | 82% | 90% [84-93] |
+| Liquid d1 3B | 2.9 GB | 80% [74-85] | 72% | 94% [89-97] |
+| Kev 4B | 4.5 GB | 48% [41-56] | 25% | 93% [82-98] |
+| Kev 0.8B | 0.8 GB | 35% [29-43] | 23% | 62% [47-75] |
+
+The index has the first six within five points of each other, 31.1 to 35.5, with Kev 4B second among them. On these cases Kev 4B is far behind the other five and seldom sure enough to act, though right when it is. The two Liquid 2B models and the other families that read a prompt in one batch take 4,096 tokens for the state with one question, where Kev, lev and Liquid d1 3B take 8,192. The other models in the list were not measured. For a jevel of your own, `jevelry eval <jevel>` gives the same figures for the model you have set up.
 
 Then install one by its id or its row number:
 
@@ -240,11 +254,13 @@ Every ask then sends the server's own model whatever the jevel pins, and no `x-j
 | `jevelry ask [jevel]` | asks every question of a jevel (or of `--questions`) about a state and prints one JSON document; `--batch` asks many from stdin at once |
 | `jevelry run <jevel>` | asks a jevel whose options name commands, then runs the command for Jev's decision |
 | `jevelry outcome <log_id> <question> <value>` | records what proved true: `agree`, `disagree`, an option, a level index, `yes` or `no` |
-| `jevelry report` | agreement per jevel and question, from the log |
+| `jevelry report` | agreement per jevel and question, from the log; `--speed` for how long asks took |
 | `jevelry tui` | the full-screen view: the start screen, the dashboard, Review, Jevel, Try and History |
 | `jevelry list` | every jevel jevelry can find, with its folder; the first folder wins |
 | `jevelry show <jevel>` | the resolved frontmatter as JSON, then the body, then `example.json` when the jevel has one |
 | `jevelry check <jevel>` | refuses a defective jevel with exit 2 and warns about questions Jev handles poorly |
+| `jevelry eval <jevel>` | asks every case in the jevel's `cases.json` and counts the expected answers, with exit 8 when one is not |
+| `jevelry cases <jevel>` | prints, as cases, the asks of the jevel that a person confirmed or corrected in the log |
 | `jevelry types` | writes a TypeScript declaration so `jevel(name).decide()` returns each jevel's own answer types |
 | `jevelry models` | the model names your account may send, from `GET /v1/models`; `--local` ranks the decision models this machine can run |
 | `jevelry stop` | stops the local model server jevelry started, and any it did not record, and waits until they have exited; a Jev server jevelry did not start keeps running |
@@ -264,6 +280,8 @@ Every ask then sends the server's own model whatever the jevel pins, and no `x-j
 | `--jevels <dir>` | a jevels folder searched first; repeatable |
 | `--no-log` | keeps this ask out of the log |
 | `--log-state` | writes the state itself into the log line, next to its hash |
+| `--cache` | answers an exact repeat of a local model's ask from the log instead of asking again |
+| `--only <names...>` | asks only these questions of the jevel; a repeated question comes with all its repeats |
 | `--batch` | reads many asks from stdin, one JSON object per line, and answers them concurrently in one process |
 | `--concurrency <n>` | with `--batch`, how many asks are in flight at once; 16 by default |
 
@@ -283,6 +301,7 @@ printf '%s\n' '{"id":"a","jevel":"ticket-triage","state":{"ticket":{"subject":"C
 | `--model <id>` | the model, over the jevel's pin and `JEVELRY_MODEL` |
 | `--jevels <dir>` | a jevels folder searched first; repeatable |
 | `--log-state` | writes the state itself into the log line, next to its hash |
+| `--cache` | answers an exact repeat of a local model's ask from the log instead of asking again |
 
 ### `outcome`
 
@@ -290,12 +309,22 @@ printf '%s\n' '{"id":"a","jevel":"ticket-triage","state":{"ticket":{"subject":"C
 |---|---|
 | `--note <text>` | a sentence kept with the outcome |
 
+### `eval`
+
+| Flag | What it does |
+|---|---|
+| `--model <id>` | model id, overriding the jevel's pin and `JEVELRY_MODEL` |
+| `--jevels <dir>` | a jevels directory searched first, repeatable |
+| `--against <file>` | a result saved with `--json` from another model: prints how often this one answers the same, with the interval, and each answer that differs |
+| `--json` | the whole result, every case and check in it |
+
 ### `report`
 
 | Flag | What it does |
 |---|---|
 | `--jevel <name>` | only this jevel |
 | `--since <iso>` | only asks at or after this time |
+| `--speed` | how long asks took per jevel and model, instead of agreement |
 | `--json` | machine-readable rows |
 
 ### `tui`
@@ -341,7 +370,7 @@ With a local model or a running Jev server set up and no `TYPESAFE_BASE_URL`, `j
 | `--typesafe` | `install` only: stores a TypeSafe key when none is there, then asks hosted Jev; without a key nothing changes |
 | `--local [model]` | `install` only: runs that model on this machine, an id or a row number from `jevelry models --local`, or shows the list to choose from |
 | `--local-url <url>` | `install` only: asks the Jev server that already runs at this URL, after one setup check; no download |
-| `--yes` | `install` only: answers yes to the Homebrew and tight-fit questions, needed without a terminal |
+| `--yes` | `install` only: answers yes to the Homebrew, tight-fit and remove-the-previous-model questions, needed without a terminal |
 
 ## Keyboard shortcuts
 
@@ -488,6 +517,7 @@ Seventeen ship with the package, each with an `example.json` to ask it with and 
 | `notification-triage` | a batch of notifications for one person |
 | `pr-description-check` | a pull request description against its diff |
 | `reply-check` | a reply, to close the thread or keep it open |
+| `request-route` | a request on its way to a language model, to pick a small one or a large one |
 | `review-comment-kind` | a review comment or a failing test output |
 | `review-quality` | a finished code review |
 | `task-difficulty` | a task before you route it |
@@ -495,7 +525,21 @@ Seventeen ship with the package, each with an `example.json` to ask it with and 
 
 jevelry finds jevels in `--jevels <dir>`, then `JEVELRY_JEVELS`, then `./jevels`, then `$JEVELRY_HOME/jevels`, then the ones that ship, and the first one with the name wins. To write your own, copy the nearest folder into `./jevels`, change the `name`, rewrite the questions and run `npx jevelry check <name>` until it prints 0 warnings. `check` refuses what the API would refuse (more than 255 options, a threshold outside 0 to 1, a question with no instructions) and warns about a yes/no question whose "yes" means no, a double negative, options that carry different fields and a model that is not pinned. The whole method is in [skills/jevelry/references/writing-jevels.md](skills/jevelry/references/writing-jevels.md).
 
-Then write a `cases.json` with at least three states from your own data: one clear one way, one clear the other way and one you would ask a colleague about. The clear cases should land on the right answer, and the unclear one should stay below `act`.
+Then write a `cases.json` with at least three states from your own data: one clear one way, one clear the other way and one you would ask a colleague about. The clear cases should land on the right answer, and the unclear one should stay below `act`. `eval` asks every case and holds each answer to that:
+
+    npx jevelry eval ticket-triage
+
+    question     checks  right  accuracy (95%)  act  wrong at act
+    frustration  4       4      100% (51-100%)  3/4  0
+    team         4       3      75% (30-95%)    3/3  1
+    urgent       4       4      100% (51-100%)  3/4  0
+
+    4 cases, 12 checks, 11 right against jev-1.13.0; median 405 ms per case
+    wrong: "the export fails for one customer": team expected technical, got billing at act
+
+It exits 8 when an answer is not the expected one, so a script can wait on it. The interval is there because a few cases prove little: four right of four still allows an accuracy of 51%. `act` is how many of the clear answers were confident, and `wrong at act` counts the answers that were wrong and confident, the kind your code would have acted on. `eval` sends one ask per case, so on hosted Jev it costs what that many asks cost, and it writes nothing to the log. The numbers above show the layout and are not a measurement.
+
+A few cases prove little, and the best new ones are states that really came up. `jevelry cases <name>` prints, in the shape of `cases.json`, every ask of the jevel that was logged with its state (`--log-state`) and that a person confirmed or corrected with `jevelry outcome` or in Review: the state, and what was true. A confirmed answer is expected as it was given, a corrected one as the person gave it, and a state your cases already hold is left out. Read them before you add them: a case is a claim about what is right.
 
 ## Decisions and the log
 
@@ -531,12 +575,26 @@ Every ask goes into `$JEVELRY_HOME/log.jsonl` with its answers, its decisions an
     npx jevelry outcome <log_id> urgent yes
     npx jevelry report --jevel ticket-triage
 
-    jevel          question     asks  act  mark  fall_back  outcomes  agree(act)  agree(mark)  certainty
-    ticket-triage  frustration  1     0    1     0          0         -           -            0.64
-    ticket-triage  team         1     1    0     0          0         -           -            1.00
-    ticket-triage  urgent       1     1    0     0          1         100%        -            0.98
+    jevel          question     asks  act  mark  fall_back  outcomes  agree(act)  agree(mark)  certainty  overconfident
+    ticket-triage  frustration  1     0    1     0          0         -           -            0.64       -
+    ticket-triage  team         1     1    0     0          0         -           -            1.00       -
+    ticket-triage  urgent       1     1    0     0          1         100%        -            0.98       -2 pts
 
-`agree(act)` is how often `act` was right, and that is the number you move a threshold by. For a question that repeats over a list, the question name carries the index, so you write `same_as[0]`.
+`agree(act)` is how often `act` was right, and that is the number you move a threshold by. `overconfident` is how far the model's certainty ran ahead of how often a person agreed, over the answers that were reviewed: `+20 pts` is a model that was sure 87% of the time and right 67%, and a threshold on it lets through more wrong answers than its number says. For a question that repeats over a list, the question name carries the index, so you write `same_as[0]`.
+
+Every answered ask is logged with how long the model took, and `report --speed` reads that back per jevel and model:
+
+    npx jevelry report --speed
+
+    jevel          model              asks  p50 ms  p95 ms  tokens/s  cold  cold p50 ms
+    ticket-triage  jev-1.13.0         6     405     1260    1166      0     -
+    ticket-triage  local/Kev-4B-Q8_0  4     918     951     691       1     8440
+
+The median is what an ask usually costs. An ask that waited for the local model to start or load, or that woke it from its idle sleep, is counted apart, under `cold`, with its own median, so the load does not sit in the warm numbers. `tokens/s` is input tokens per second of waiting, the whole round trip. Asks logged before jevelry kept durations are left out. The numbers above show the layout and are not a measurement.
+
+A local model answers the same prompt the same way every time, and no faster the second time. A Kev or lev model is the exception in the last decimals: its server has four slots, and the fourth decimal of a certainty depends on what the server was asked before. Over the 267 answers of the shipped prompts, asked forwards, backwards and 16 at a time, no value and no decision changed and no certainty moved by more than 0.0011 on Kev 0.8B; against one slot the largest move was 0.0014 on lev 4B. With `--cache`, `jevel(name, { cache: true })` or `JEVELRY_CACHE=1`, an ask whose state and questions are exactly those of an earlier ask by the same local model is answered from the log: the same answer, read by today's thresholds, in a few milliseconds and without the model loaded. Its log line names the ask it came from in `cached_from`, its `usage` is zero, and `report --speed` leaves it out. Hosted Jev is always asked.
+
+Every question of a jevel is read against the whole state, so a question whose answer no longer matters still costs its tokens. When one question decides whether the others are needed, ask it alone with `--only`, and the rest only when its answer leaves them open: `jevelry ask checklist-compliance --only followed --state @report.json`, then `--only deviation_kind deviation_explained` if the report was not simply followed. On the shipped jevels that have such a question, 15 to 44% of the tokens went to questions the first answer had already settled. A local Kev or lev model costs less time for the same tokens: jevelry starts its server with four slots that share one context, so it reads the state once for up to four questions and then each question. On Kev 0.8B three questions about a 7,300-token state took 7.8 s instead of 22.7 s, and over the 91 shipped examples and cases the server processed a fifth fewer tokens, with every value and decision the same; on lev 4B the shipped examples took 24% less time. `usage` still counts the state for every question. Liquid d1 keeps one slot: with four its server was no faster.
 
 ### Tuning thresholds
 
@@ -547,10 +605,18 @@ Once a question has 20 reviewed decisions, the Jevel screen proposes a lower act
 `jevelry models --local` and `jevelry install --local` read the list live from Hugging Face each time, and these rules decide what you see:
 
 - **Official builds only.** The models come from ggml-org, the llama.cpp project, which converts and checks them, and from LiquidAI, which publishes its own. Test repos are left out, and so is a model whose decision type llama-server cannot serve. Only the Q8_0 and Q4_K_M files are offered.
-- **Ranking.** Scores come from the [Jev Decision Index](https://huggingface.co/spaces/multimodalart/jev-decision-index) 0.3.2, the full score corrected for chance, as published on 2026-10-16. Hosted Jev 1.14 scores 61.5 on it. The index measures the 16-bit models, so the Q8_0 and Q4_K_M files you download may score a little lower. A model the index does not list has no score and comes last among the models with the same fit.
-- **Quant.** The Q8_0 file when it runs well here, else Q4_K_M. Prompt speed on Apple's GPU is the same for both, and Q4_K_M changes about 5% of vLLM-SR d3-flash's answers.
-- **Memory.** `needs` is the file plus the context and working memory at 8192 tokens: 1.5 GiB, 2.5 GiB for a model above 15B parameters, and 3.8 GiB more for a Kev model. A Mac's GPU may use two thirds of its memory up to 32 GB and three quarters above that (Metal's limit on macOS 15 and earlier; macOS 26 allows a little more), an NVIDIA GPU its own memory, and a machine with neither three quarters of its memory. llama.cpp keeps 1 GiB of that free. A model `runs well` when it needs at most 90% of the rest, is `tight` up to the whole amount and `won't fit` above it.
-- **Speed.** `s/question` is a question of about 500 prompt tokens, worked out from the published llama.cpp prompt-processing numbers of a 7B model on this chip and scaled by the model's size: discussion [#4167](https://github.com/ggml-org/llama.cpp/discussions/4167) for Apple Silicon and [#15013](https://github.com/ggml-org/llama.cpp/discussions/15013) for NVIDIA. Expect it to be off by up to about 30%. It is `-` for a chip those tables leave out, a machine with no supported GPU and a model that won't fit.
+- **Ranking.** Scores come from the [Jev Decision Index](https://huggingface.co/spaces/multimodalart/jev-decision-index) 0.4.1: its index value, which is 0.6 of the same-skills score and 0.4 of the new-domains score, as generated on 2026-11-06. Hosted Jev 1.14 scores 60.2 on it. The index measures the 16-bit models, so the Q8_0 and Q4_K_M files you download may score a little lower. A model the index does not list has no score and comes last among the models with the same fit.
+- **Quant.** The Q8_0 file when it runs well here, else Q4_K_M. Prompt speed on Apple's GPU is the same for both, and Q4_K_M changes about 5% of vLLM-SR d3-flash's answers. `jevelry install --local <id>:Q4_K_M` takes the lighter file where the Q8_0 would also run, and `<id>:Q8_0` the other way round. Measured on the 186 expected answers of the shipped cases (llama.cpp 0.9.0, M4 Pro, 10 November 2026):
+
+  | Model | Server memory, Q8_0 | Q4_K_M | Right of 186, Q8_0 | Q4_K_M | Same value, of 267 answers | Same decision |
+  |---|---|---|---|---|---|---|
+  | Liquid d1 3B | 2.89 GiB | 1.76 GiB | 149 | 150 | 257 | 243 |
+  | Interfaze lev 4B | 4.56 GiB | 3.21 GiB | 153 | 152 | 257 | 241 |
+  | Kev 4B | 4.73 GiB | 3.33 GiB | 90 | 90 | 257 | 250 |
+
+  The lighter file takes 30 to 39% less memory and is right as often, but it is not the same model answer for answer: about 4% of the values and 6 to 10% of the decisions differ. Their speed was not compared: the two files ran under different load.
+- **Memory.** `needs` is the file plus the context and working memory at 8192 tokens: 1.5 GiB, 2.5 GiB for a model above 15B parameters, and 0.5 GiB more for a Kev model, which keeps its answers for every token of a batch and is started with a small one. A Mac's GPU may use two thirds of its memory up to 32 GB and three quarters above that (Metal's limit on macOS 15 and earlier; macOS 26 allows a little more), an NVIDIA GPU its own memory, and a machine with neither three quarters of its memory. llama.cpp keeps 1 GiB of that free. A model `runs well` when it needs at most 60% of the rest, so that the other programs on the machine keep theirs; it is `tight` up to the whole amount and `won't fit` above it. On a 24 GB Mac that is 9 GiB: a 4B model runs well at Q8_0, a 9B model at Q4_K_M. The verdict is against that limit, not against what is free at the moment: under the table, `jevelry models --local` names the models that need more memory than is free right now. `jevelry install --local` says the same before it downloads one.
+- **Speed.** `s/question` is a question of about 500 prompt tokens, worked out from the published llama.cpp prompt-processing numbers of a 7B model on this chip and scaled by the model's size: discussion [#4167](https://github.com/ggml-org/llama.cpp/discussions/4167) for Apple Silicon and [#15013](https://github.com/ggml-org/llama.cpp/discussions/15013) for NVIDIA. Expect it to be off by up to about 30%. It is `-` for a chip those tables leave out, a machine with no supported GPU and a model that won't fit. Once a local model has answered on this machine, `jevelry models --local` also says under the table what it actually did: its prompt tokens a second over the warm asks in the log. On a Mac in Low Power Mode, which is the usual setting on battery, `jevelry models --local` says so under the table: there a local model answers at about two thirds of its High Power speed. What else the machine is doing, and its power mode, move the real number as much as the model does: on an M4 Pro the 2B vLLM-SR d3-nano read about 1,600 prompt tokens a second in High Power mode on a quiet machine, and about 800 while other programs kept the machine busy.
 - **Download.** The table estimates the size from the parameter count. The install reads the exact size and the sha256 from Hugging Face and checks the fit again before it downloads.
 
 On macOS jevelry reads the chip name and the memory from Node and starts no program to probe the GPU. On Linux it asks `nvidia-smi` for an NVIDIA GPU. Local models run on macOS and Linux; on Windows jevelry cannot yet tell its own model server from another program, so it refuses to start one there. `JEVELRY_MACHINE` replaces the detection, for example to see the list for a machine you are about to buy:
@@ -580,6 +646,7 @@ OpenJev 27B is not on the index; its card reports 84.0% against hosted Jev's 85.
 | `JEVELRY_JEVELS` | more jevel folders, colon separated | none |
 | `JEVELRY_TIMEOUT_MS` | the request timeout, per attempt | `30000`, and `300000` with a local model, whose first ask waits for it to load |
 | `JEVELRY_LOG_STATE` | `1` writes the state itself into each ask line, for `ask`, `run` and `decide` | off, only the hash |
+| `JEVELRY_CACHE` | `1` answers an exact repeat of a local model's ask from the log, for `ask`, `run` and `decide` | off, every ask reaches the model |
 | `JEVELRY_KEY_STORE` | `file` keeps the key in `$JEVELRY_HOME/env` on macOS too | the keychain on macOS |
 | `JEVELRY_MACHINE` | JSON of a machine (`os`, `chip`, `cpus`, `ramBytes`, `darwinMajor`, `gpu`) that replaces detection, to see the local models for another machine | this machine |
 | `JEVELRY_HF_URL` | the Hugging Face root for the model list and downloads | `https://huggingface.co` |
@@ -607,6 +674,7 @@ A command started by `jevelry run` gets these, and `TYPESAFE_API_KEY` is removed
 | Path | What it holds |
 |---|---|
 | `log.jsonl` | every ask, outcome and run, one JSON line each |
+| `requests.idx` | 32 bytes for every request the log holds a model's answer to, so `--cache` knows an ask is no repeat without reading the log; rebuilt from the log when it is missing |
 | `env` | the key, when the keychain is unavailable |
 | `tui.json` | the TUI theme, `dark` or `light`, set from `ctrl+p` |
 | `jevels/` | your own jevels for every project on this machine |
@@ -615,7 +683,7 @@ A command started by `jevelry run` gets these, and `TYPESAFE_API_KEY` is removed
 | `server.json` | the process, port and model of the `llama-server` jevelry started, so `jevelry stop` stops that one and nothing else; it stays until that process has exited |
 | `llama-server.log` | what `llama-server` printed, appended on every start |
 
-jevelry starts the local server as `llama-server -m <model> --host 127.0.0.1 --port <port> --alias local/<file> --no-webui --no-mmproj -c 8192 -b 4096 -ub 4096 -np 1 --sleep-idle-seconds 300`. The port is picked at install and stays the same. A chosen local model or server wins over a key, and a `TYPESAFE_BASE_URL` in the environment wins over both.
+jevelry starts the local server as `llama-server -m <model> --host 127.0.0.1 --port <port> --alias local/<file> --no-webui --no-mmproj -c 8192 -b 4096 -ub 4096 -np 1 --sleep-idle-seconds 300 -lv 2`. A Kev or lev model gets `-np 4 -kvu` in place of `-np 1`: four slots that share the 8192 tokens, so that the questions of one ask share its state. A Kev model also gets `-ub 512`, a small ubatch, because it keeps its answers for every token of one. `-lv 2` keeps the server's warnings and errors in `llama-server.log` and leaves out the lines it would write for every question, so the log does not grow with every ask. After a switch to another local model, `install` asks whether to remove the previous model's file, which nothing uses any more. On a yes the file goes, and with it the folders made for it when nothing else is in them. The port is picked at install and stays the same. A chosen local model or server wins over a key, and a `TYPESAFE_BASE_URL` in the environment wins over both.
 
 ## When it fails
 
@@ -628,9 +696,10 @@ jevelry starts the local server as `llama-server -m <model> --host 127.0.0.1 --p
 | 2 | the jevel or the state is wrong, and the document names the field |
 | 3 | rate limited or overloaded, with `retry_after_ms` when TypeSafe gave one |
 | 4 | the key is missing or refused, and no request was made |
-| 5 | over the token budget, and no request was made |
+| 5 | over the token budget, and no request was made; or the state with one question is longer than the local model takes (8,192 tokens, or 4,096 for a model that reads its prompt in one batch), and its server refused it |
 | 6 | the network, TypeSafe's servers, or a local model server that cannot start or answer, with the reason |
 | 7 | TypeSafe answered a shape this build cannot read |
+| 8 | `jevelry eval` only: every case was asked, and at least one answer was not the expected one |
 | 9 | `jevelry run` only: Jev marked the call and nobody confirmed it, so the command stayed put |
 
 When `jevelry run` runs a command, it exits with that command's exit code.
@@ -696,7 +765,9 @@ npm run test:live -- tests/live/jevels.test.ts
 
 ## How do we know you can trust it
 
-519 tests run offline against recorded answers from TypeSafe's API reference, against the seventeen jevels and their cases, and against every screen of `jevelry tui` at 80x24 and 120x40. The local-model tests among them use a fake `llama-server`, a fake jevd, a fake Homebrew and a fake Hugging Face, so no test downloads a model or starts a real server, and they check that a 27B model is never offered as runnable on a 24 GB Mac. 99 tests run against the real API on demand with `npm run test:live`: every jevel answers its own `example.json`, every case in every `cases.json` gets the answer it expects, five more cover the API itself, one routes the `ticket-triage` example through `decide` in your program, one asks `ticket-triage` from the Try screen of `jevelry tui` and one lets `failing-test` run its command. One of those tests reads the log afterwards and checks that your key stays out of it.
+`npm run scoreboard` writes the numbers each change is judged on into `scoreboard/<date>-<commit>.json`: the CLI's start-up next to bare Node, the size and time of an install, how long logged asks took per jevel and model, a running model server's memory next to jevelry's estimate for it, and, with `--eval`, every jevel's cases. It never starts a model, it asks one only with `--eval`, and it lists what it could not measure. With `--eval --gate` it exits 8 when a jevel's cases score worse, or one more answer is wrong at `act`, than in the newest earlier result of the same model: a release can wait on that without anyone choosing a bar.
+
+603 tests run offline against recorded answers from TypeSafe's API reference, against the eighteen jevels and their cases, and against every screen of `jevelry tui` at 80x24 and 120x40. The local-model tests among them use a fake `llama-server`, a fake jevd, a fake Homebrew and a fake Hugging Face, so no test downloads a model or starts a real server, and they check that a 27B model is never offered as runnable on a 24 GB Mac. 99 tests run against the real API on demand with `npm run test:live`: every jevel answers its own `example.json`, every case in every `cases.json` gets the answer it expects, five more cover the API itself, one routes the `ticket-triage` example through `decide` in your program, one asks `ticket-triage` from the Try screen of `jevelry tui` and one lets `failing-test` run its command. One of those tests reads the log afterwards and checks that your key stays out of it.
 
 ## License
 

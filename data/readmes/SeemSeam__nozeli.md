@@ -68,11 +68,12 @@ Agent 交付得快，不代表人已经理解。Nozeli 希望让你看清成果�
 
 ## 当前状态
 
-- 面向 Windows、macOS、Linux；当前验证为 **Linux x64／Wayland 与 X11/XWayland**，其他平台尚未通过。
+- 面向 Windows、macOS、Linux；本版 Linux x64 与 macOS arm64 分别完成真实包验证，不代表各平台全功能签收。开发命令见[桌面说明](apps/desktop/README.md#本机开发与打包macos-arm64)。
+- macOS alpha.6 本机迁移与专项保留为[历史证据](docs/testing.md#alpha6-macos-本机迁移与验收2026-11-09)，不冒充 Beta1 验收；本版资格见下述同提交 CI 与发行说明。
 - 已有阅读、批注、编辑、真实文件与后台协作工作流；具体格式、版本和能力边界见[当前状态与能力边界](docs/status.md)。
-- **Alpha预发行版本 `v0.1.0-alpha.5`**（发行状态与附件以[GitHub 发布页](https://github.com/SeemSeam/nozeli/releases/tag/v0.1.0-alpha.5)为准）：本轮源码在前一版基础上包含前台唯一主对话与显式“提交后台”入口、紧凑 F/O/W 协作状态行、有界文档读取、主控内部故障归系统处理、版本绑定的审核历史、空交接连接恢复，以及有界任务板与空闲原生 Agent 回收；Linux x64 已完成本机安装与专项实测，完整回归与发行包核验随发布流程进行，Windows/macOS 未验证。目标发布与分发审计状态见[发布说明与发行边界](docs/release.md)。
-- 已发布：<https://github.com/SeemSeam/nozeli/releases/tag/v0.1.0-alpha.4>（2026-11-01 公开 prerelease）；<https://github.com/SeemSeam/nozeli/releases/tag/v0.1.0-alpha.5>（2026-11-04 所有者授权公开 prerelease，常规回归、便携包构建、解压冒烟与校验和核对通过后发布）。
-- 第三方源码与再分发审计未完成：公开 Alpha 仍需保留未完成义务和当前发布授权说明，不构成合规认证。
+- **Beta1 双平台预发行 `v0.1.0-beta.1`**（[发行页](https://github.com/SeemSeam/nozeli/releases/tag/v0.1.0-beta.1)，公开状态及下载以发行页为准）：整合 macOS arm64 原生支持与紧凑Task卡、审核同流阅读、卡内执行过程、附件冻结交接和提醒稳定性修复。Linux x64 与 macOS arm64 包均绑定 `17209df`，真实阅读／保存／冷恢复及随包 Pi 多轮 Task 旅程已分别通过；[main CI](https://github.com/SeemSeam/nozeli/actions/runs/42739206219)和[Mac 实包工作流](https://github.com/SeemSeam/nozeli/actions/runs/42727225581)全绿。
+- 用户于2026-11-10在知悉六项义务未签收后，追加明确授权**公开本版 Beta 预发行**，取代此前“只准备草稿”的限制；这不是沿用 alpha.6 授权或合规签收，不标稳定版或 latest。第三方源码／再分发审计未完成，六项义务仍 pending，`--public` 仍阻断。mac 包仅 ad-hoc 签名，未经 Developer ID 签名或公证；Intel Mac、Windows、mac 自动更新及完整九格式显示矩阵未提供或未验。
+- 已公开的 [alpha.6](https://github.com/SeemSeam/nozeli/releases/tag/v0.1.0-alpha.6)及更早发行记录保留；草稿、CI、技术验收与合规签收是不同状态，不互相替代。
 
 ## 进一步了解
 

@@ -985,6 +985,31 @@ relationships:
 
 The agent sees these in its system prompt and uses them to write correct JOINs instead of guessing from column names.
 
+### History tables
+
+A history table (a slowly changing dimension) keeps one row per version of a key, each with a validity interval. Declared `many_to_one`, it looks safe, but a join on the key alone matches every version and multiplies the facts. An account that moved region once has two history rows, so each of its orders is counted twice, and nothing errors or comes back NULL. The fan-out check does not fire either, because the declared cardinality is `many_to_one`.
+
+Pick the version rule the business reports by, and declare it as the join's `required_filter`. The agent sees that filter as a condition it must apply, so it should be the rule itself:
+
+```yaml
+relationships:
+  # Region as it was when the order was placed (validity is half-open:
+  # a version's valid_to is the next version's valid_from).
+  - from: sales.orders.account_id
+    to: sales.account_history.account_id
+    type: many_to_one
+    required_filter: "order_date >= valid_from AND (valid_to IS NULL OR order_date < valid_to)"
+    description: "One row per account version; join the version valid on the order date."
+```
+
+To report by the account's region today instead, declare `required_filter: "valid_to IS NULL"`. The two rules attribute history differently, and with an inner join each drops different facts: the current rule drops orders of accounts that no longer have a current version, and the as-of rule drops orders that fall outside every interval.
+
+With either rule, the join on `account_id` alone draws a warning, and the rule passes in `WHERE` or in the join's `ON`. The as-of rule also flags a join that picks only the current version or omits the `valid_from` bound. The check matches column names, though, not tables or logic:
+
+- another table's column of the same name satisfies it, so with several history tables a `p.valid_to IS NULL` meant for one also covers the others;
+- a filter that keeps several versions, such as `valid_to IS NOT NULL`, satisfies the current rule;
+- in a `LEFT JOIN`, the as-of rule's `order_date` sits on the preserved side, where the `ON` clause removes no rows, so a correct as-of left join is still reported as missing `order_date`.
+
 ### Relationship Validation
 
 When a `SemanticSource` is passed to the `Validator`, declared relationships are actively validated against the agent's SQL:
@@ -1460,21 +1485,4 @@ from agentic_data_contracts.validation import (
 
 # CI-time gate: refuses a shadow that reads a table the contract does not
 # govern. Pass the adapter's dialect so this parses shadows the same way
-# check_sensitivity below will.
-problems = validate_sensitivity_tables(
-    contract, source.get_metrics(), dialect=adapter.dialect
-)
-
-metric = source.get_metric("total_revenue")
-report = check_sensitivity(metric, sql, contract=contract, adapter=adapter)
-print(report.summary())
-
-# Fails on a violation, on "no verdict possible", and on a query that read
-# none of the shadowed tables -- so nothing was checked at all.
-if not report.ok:
-    sys.exit(1)
-```
-
-`check_sensitivity` takes the `MetricDefinition` itself, not a metric name — the same convention as `reconcile_decomposition`. Before anything runs, `sql` goes through the contract's own `Validator` (**step 0**): a policy block (a forbidden table, a missing tenant filter, more than one statement in the string) raises `ValueError`, because an entry point that ran arbitrary SQL past every other check would be a policy bypass. SQL the Validator cannot parse is a different outcome: there is no policy verdict to render on text Layer 1 could not read, so every selected property comes back `unchecked` and nothing at all executes — not even the base query.
-
-**Principal-restricted tables are checked as the caller.** `check_sensitivity` takes `caller_principal` — the same string, zero-arg callable, or `None` that `Validator` and `create_tools` take — and resolves it **once** per call. That one identity is used twice: step 0 validates the query as that caller, and every shadow must read only tables the caller may read (`contract.allowed_table_names_for(caller)`), so a contract-authored shadow can never reach a table the caller is denied — `ValueError` otherwise, even when the caller's own query is allowed. A callable is not re-invoked in between, so it cannot clear the query as one caller and have the shadow governed as another. The default, `None`, is an anonymous caller and fails closed: it is denied every table carrying `allowed_principals`/`blocked_principals`, both in the query and in a shadow. `validate_sensitivity_tables` takes an optional `caller_principal` string too, with a deliberately different default: a CI gate has no caller, so without one it checks shadows structurally against every table the contract
+# check_sensitivity below wi

@@ -3,34 +3,34 @@
 **A bilingual (English / [中文](README.zh-CN.md)), always-fresh map of embodied AI and robot learning.**
 Hand-verified papers, code, datasets, simulators and hardware with one-line takeaways — plus every new robotics paper on arXiv, fetched and tagged by topic every day.
 
-### 🌐 [Open the website → hu-zlatan.github.io/embodied-ai-radar](https://hu-zlatan.github.io/embodied-ai-radar/)
+### 🌐 [Open the website → embodied-ai-radar.com](https://embodied-ai-radar.com/)
 
-[![Website](https://img.shields.io/badge/website-live-0f6fde)](https://hu-zlatan.github.io/embodied-ai-radar/)
+[![Website](https://img.shields.io/badge/website-live-0f6fde)](https://embodied-ai-radar.com/)
 [![Daily arXiv intake](https://github.com/hu-zlatan/embodied-ai-radar/actions/workflows/intake.yml/badge.svg)](https://github.com/hu-zlatan/embodied-ai-radar/actions/workflows/intake.yml)
 [![Verified links](https://github.com/hu-zlatan/embodied-ai-radar/actions/workflows/verify.yml/badge.svg)](https://github.com/hu-zlatan/embodied-ai-radar/actions/workflows/verify.yml)
 [![License: MIT + CC BY 4.0](https://img.shields.io/badge/license-MIT%20%2B%20CC%20BY%204.0-lightgrey)](LICENSE-DATA.md)
 
 ![Screenshot of the Embodied AI Radar website](docs/screenshot.png)
 
-**CoRL 2026 (Nov 9–12, Austin):** the [program guide](https://hu-zlatan.github.io/embodied-ai-radar/venues/corl-2026-program.html) lists all 687 accepted papers by session and poster number, with filters and arXiv/code links, plus the 32 workshops.
+**CoRL 2026 (Nov 9–12, Austin):** the [program guide](https://embodied-ai-radar.com/venues/corl-2026-program.html) lists all 687 accepted papers by session and poster number, with filters and arXiv/code links, plus the 32 workshops.
 
-**New to the field?** Follow the [reading path](https://hu-zlatan.github.io/embodied-ai-radar/start.html): 10 steps from RL and imitation basics through visuomotor policies, VLA models, simulation, locomotion and world models to hardware you can build — 41 hand-picked entries, each with a bilingual takeaway.
+**New to the field?** Follow the [reading path](https://embodied-ai-radar.com/start.html): 10 steps from RL and imitation basics through visuomotor policies, VLA models, simulation, locomotion and world models to hardware you can build — 41 hand-picked entries, each with a bilingual takeaway.
 
 ## Why this one
 
 - **Verified.** Every curated arXiv ID is checked against arXiv and every link is checked by CI, weekly.
 - **Fresh.** A GitHub Action pulls new cs.RO papers (plus robotics papers from cs.CV / cs.LG / cs.AI / cs.CL) every day and tags them by topic — they appear on the site without anyone touching the repo.
-- **Searchable.** Instant search and filters (topic · robot type: arm, hand, humanoid, legged, drone… · accepted venue such as CoRL, NeurIPS, IROS · curated vs. daily · has code) on a fast static site that works on phones. Papers accepted at a venue also get a page per conference, e.g. [CoRL 2026](https://hu-zlatan.github.io/embodied-ai-radar/venues/corl-2026.html) ([all venues](https://hu-zlatan.github.io/embodied-ai-radar/venues/index.html)), and every robot type has its own page and Atom feed, e.g. [humanoid](https://hu-zlatan.github.io/embodied-ai-radar/robots/humanoid.html) · [dexterous hand](https://hu-zlatan.github.io/embodied-ai-radar/robots/hand.html) · [quadruped](https://hu-zlatan.github.io/embodied-ai-radar/robots/legged.html). You can also browse by lab or company, e.g. [NVIDIA](https://hu-zlatan.github.io/embodied-ai-radar/labs/nvidia.html) · [Stanford](https://hu-zlatan.github.io/embodied-ai-radar/labs/stanford.html) · [Shanghai AI Lab](https://hu-zlatan.github.io/embodied-ai-radar/labs/shanghai-ai-lab.html) ([all labs](https://hu-zlatan.github.io/embodied-ai-radar/labs/index.html)).
+- **Searchable.** Instant search and filters (topic · robot type: arm, hand, humanoid, legged, drone… · accepted venue such as CoRL, NeurIPS, IROS · curated vs. daily · has code) on a fast static site that works on phones. Papers accepted at a venue also get a page per conference, e.g. [CoRL 2026](https://embodied-ai-radar.com/venues/corl-2026.html) ([all venues](https://embodied-ai-radar.com/venues/index.html)), and every robot type has its own page and Atom feed, e.g. [humanoid](https://embodied-ai-radar.com/robots/humanoid.html) · [dexterous hand](https://embodied-ai-radar.com/robots/hand.html) · [quadruped](https://embodied-ai-radar.com/robots/legged.html). You can also browse by lab or company, e.g. [NVIDIA](https://embodied-ai-radar.com/labs/nvidia.html) · [Stanford](https://embodied-ai-radar.com/labs/stanford.html) · [Shanghai AI Lab](https://embodied-ai-radar.com/labs/shanghai-ai-lab.html) ([all labs](https://embodied-ai-radar.com/labs/index.html)).
 - **Signal, not just volume.** Each paper shows the GitHub stars of its code and, when it made [Hugging Face Daily Papers](https://huggingface.co/papers), its community upvotes (▲) — sort search by either, or see the most-upvoted robotics papers of the last two weeks on the home page.
-- **Code tracker.** [Every curated repo](https://hu-zlatan.github.io/embodied-ai-radar/code.html) on one page: GitHub stars, stars gained this week, last update and detected license, with filters by topic and license.
-- **Reusable.** The whole curated index is downloadable as [`curated.json`](https://hu-zlatan.github.io/embodied-ai-radar/curated.json) or [`curated.csv`](https://hu-zlatan.github.io/embodied-ai-radar/curated.csv) (opens in Excel; CC BY 4.0) with topics, robot types, links, takeaways and GitHub stars — build your own tools on it.
+- **Code tracker.** [Every curated repo](https://embodied-ai-radar.com/code.html) on one page: GitHub stars, stars gained this week, last update and detected license, with filters by topic and license.
+- **Reusable.** The whole curated index is downloadable as [`curated.json`](https://embodied-ai-radar.com/curated.json) or [`curated.csv`](https://embodied-ai-radar.com/curated.csv) (opens in Excel; CC BY 4.0) with topics, robot types, links, takeaways and GitHub stars — build your own tools on it.
 - **Bilingual.** Every curated entry has a one-line takeaway in English and Chinese; the site has an EN / 中文 toggle.
-- **Citable.** Every arXiv paper on the site has a one-click BibTeX, and [`curated.bib`](https://hu-zlatan.github.io/embodied-ai-radar/curated.bib) bundles all curated papers (built from arXiv metadata). Every curated entry also has its own shareable page, e.g. [LEAP Hand](https://hu-zlatan.github.io/embodied-ai-radar/e/arxiv-2309.06440.html).
+- **Citable.** Every arXiv paper on the site has a one-click BibTeX, and [`curated.bib`](https://embodied-ai-radar.com/curated.bib) bundles all curated papers (built from arXiv metadata). Every curated entry also has its own shareable page, e.g. [LEAP Hand](https://embodied-ai-radar.com/e/arxiv-2309.06440.html).
 
 | What | How often |
 |---|---|
-| Daily arXiv feed ([site](https://hu-zlatan.github.io/embodied-ai-radar/feed.html) · [Atom](https://hu-zlatan.github.io/embodied-ai-radar/feed.xml); one Atom feed per topic, e.g. [VLA](https://hu-zlatan.github.io/embodied-ai-radar/topics/vla.xml)) | every day, automatically |
-| Curated index (below and on the site) · agent picks from the daily feed ([Atom](https://hu-zlatan.github.io/embodied-ai-radar/picks.xml), a few a day, bilingual) | several times a week |
+| Daily arXiv feed ([site](https://embodied-ai-radar.com/feed.html) · [Atom](https://embodied-ai-radar.com/feed.xml); one Atom feed per topic, e.g. [VLA](https://embodied-ai-radar.com/topics/vla.xml)) | every day, automatically |
+| Curated index (below and on the site) · agent picks from the daily feed ([Atom](https://embodied-ai-radar.com/picks.xml), a few a day, bilingual) | several times a week |
 | [Weekly digest](digest/) | weekly |
 
 ## Topics
@@ -48,7 +48,7 @@ VLA & robot foundation models · manipulation & dexterous hands · tactile sensi
 <a id="vla"></a>
 ### VLA & Robot Foundation Models
 
-_Vision-language-action models and generalist robot policies._ [Browse with the latest papers →](https://hu-zlatan.github.io/embodied-ai-radar/topics/vla.html)
+_Vision-language-action models and generalist robot policies._ [Browse with the latest papers →](https://embodied-ai-radar.com/topics/vla.html)
 
 - ⭐⭐⭐ **[π0: A Vision-Language-Action Flow Model for General Robot Control](https://arxiv.org/abs/2410.24164)** (2024) — A VLM backbone with a flow-matching action expert, trained across many robots, doing long dexterous tasks like laundry folding. · [code](https://github.com/Physical-Intelligence/openpi)
 - ⭐⭐ **[A Pragmatic VLA Foundation Model](https://arxiv.org/abs/2601.18692)** (2026) — LingBot-VLA: an Apache-2.0 foundation model trained on about 20,000 hours of real data from nine dual-arm setups, tested on four platforms with 100 tasks each; code, base model and benchmark data are released. · [code](https://github.com/Robbyant/lingbot-vla) · [project](https://technology.robbyant.com/lingbot-vla)
@@ -63,12 +63,12 @@ _Vision-language-action models and generalist robot policies._ [Browse with the 
 - ⭐ **[EagleVLA: Towards Onboard Real-Time Robot Control via Foresight-Aligned Asynchronous Inference](https://arxiv.org/abs/2607.12659)** (2026) — EagleVLA: asynchronous VLA inference for low-power onboard chips such as Jetson Orin, tackling perception-execution misalignment and slow reaction; a CoRL 2026 Spotlight, formerly titled Jetson-PI. · [code](https://github.com/PKU-SEC-Lab/EagleVLA)
 - ⭐ **[GigaBrain-0.5M\*: a VLA That Learns From World Model-Based Reinforcement Learning](https://arxiv.org/abs/2602.12099)** (2026) — Post-trains a VLA (GigaBrain-0.5, 10k+ h of robot data) with RL conditioned on a video world model's predictions (RAMP); reports ~30% over the RECAP baseline on laundry folding, box packing and espresso making. · [code](https://github.com/open-gigaai/giga-brain-0) · [project](https://gigabrain05m.github.io)
 
-**[All 259 entries →](lists/vla.md)**
+**[All 264 entries →](lists/vla.md)**
 
 <a id="manipulation"></a>
 ### Manipulation & Dexterous Hands
 
-_Imitation learning, diffusion policies, grasping, bimanual and dexterous manipulation._ [Browse with the latest papers →](https://hu-zlatan.github.io/embodied-ai-radar/topics/manipulation.html)
+_Imitation learning, diffusion policies, grasping, bimanual and dexterous manipulation._ [Browse with the latest papers →](https://embodied-ai-radar.com/topics/manipulation.html)
 
 - ⭐⭐⭐ **[Diffusion Policy: Visuomotor Policy Learning via Action Diffusion](https://arxiv.org/abs/2303.04137)** (2023) — Generating action sequences by denoising handles multimodal demos far better than regression; now a standard IL baseline. · [code](https://github.com/real-stanford/diffusion_policy)
 - ⭐⭐ **[AIRoA-0: Long-Horizon, Precise, Cross-Embodiment Manipulation from Handheld Data](https://arxiv.org/abs/2611.03815)** (2026) — Learned from 16,151 hours of handheld gripper demos with no robot data; reports 78% average success over ten tasks versus 27% for the best other VLA, and releases the dataset, weights and post-training recipe. · [code](https://github.com/airoa-org/AIRoA-0) · [project](https://a-0.airoa.io)
@@ -83,15 +83,17 @@ _Imitation learning, diffusion policies, grasping, bimanual and dexterous manipu
 - ⭐ **[3D Diffusion Policy: Generalizable Visuomotor Policy Learning via Simple 3D Representations](https://arxiv.org/abs/2403.03954)** (2024) — Conditions a diffusion policy on a compact point-cloud encoding; more data-efficient and robust to viewpoint than images. · [code](https://github.com/YanjieZe/3D-Diffusion-Policy)
 - ⭐ **[Mobile ALOHA: Learning Bimanual Mobile Manipulation with Low-Cost Whole-Body Teleoperation](https://arxiv.org/abs/2401.02117)** (2024) — Puts ALOHA on a mobile base; co-training with static ALOHA data boosts mobile tasks like cooking and opening cabinets. · [code](https://github.com/MarkFzp/mobile-aloha)
 
-**[All 170 entries →](lists/manipulation.md)**
+**[All 174 entries →](lists/manipulation.md)**
 
 <a id="tactile"></a>
 ### Tactile & Visuotactile Sensing
 
-_Tactile sensors, touch representations and contact-rich control._ [Browse with the latest papers →](https://hu-zlatan.github.io/embodied-ai-radar/topics/tactile.html)
+_Tactile sensors, touch representations and contact-rich control._ [Browse with the latest papers →](https://embodied-ai-radar.com/topics/tactile.html)
 
 - ⭐⭐⭐ **[DIGIT: A Novel Design for a Low-Cost Compact High-Resolution Tactile Sensor with Application to In-Hand Manipulation](https://arxiv.org/abs/2005.14679)** (2020) — An inexpensive, compact GelSight-style fingertip sensor that made vision-based touch widely accessible. · [code](https://github.com/facebookresearch/digit-interface)
 - ⭐ **[Visible Touch: Rendering Contact for Visuomotor Policies](https://arxiv.org/abs/2609.14156)** (2026) — CoRL 2026 Spotlight. Brings contact into image-conditioned policies by rendering it, targeting the gap left by approaches that need tactile hardware, separate tactile encoders or non-image backbones. · [code](https://github.com/qaz1678249/visibletouch) · [project](https://visibletouch.github.io/)
+- **[MDF++: Visuo-Tactile World Action Model with End-to-end Representation Learning](https://arxiv.org/abs/2611.09293)** (2026) — Learns visuo-tactile latents end-to-end inside a diffusion world-action model not frozen encoders; multi-task cross-modal losses avoid feature collapse. Reports up to 50% gains on real bolt screwing and nut mating. · [project](https://jointmdf.github.io/)
+- **[RevoSim: Scalable Multimodal Tactile Simulation for Dexterous Manipulation](https://arxiv.org/abs/2611.08939)** (2026) — Tactile simulator for the BrainCo Revo3 hand modelling 285 piezoresistive taxels and five visuotactile fingertips (pressure, depth, RGB, marker motion); up to 4,096 parallel envs on one RTX 5090. · [code](https://github.com/BrainCoTech/RevoSim) · [project](https://braincotech.github.io/RevoSim-web/)
 - **[Blind Dexterous Grasping via Real2Sim2Real Tactile Policy Learning](https://arxiv.org/abs/2606.11767)** (2026) — Tactile-only blind grasping on a LEAP Hand: calibrate a digital twin to reproduce real touch signals, pretrain a layout-aware tactile encoder, and distill object-specific RL experts into a diffusion policy.
 - **[Equivariant Visual-Tactile Diffusion Policy for Contact-Rich Manipulation](https://arxiv.org/abs/2610.03333)** (2026) — VISTA: equivariant visuotactile diffusion policy that fuses touch into spherical visual tokens and rotates them with the gripper pose, for more data-efficient contact-rich imitation. · [code](https://github.com/Kenn3o3/Vista) · [project](https://vista-paper.github.io/)
 - **[FM-VLA: Force-based Memory for Vision-Language-Action Models in Contact-Rich Manipulation](https://arxiv.org/abs/2607.18231)** (2026) — Gives a VLA memory through compact force-history tokens from a pretrained VAE, for tasks like pressing a button a set number of times. Reports over 80% success on three memory-dependent tasks. · [project](https://qft-333.github.io/FM-VLA-Page/)
@@ -100,15 +102,13 @@ _Tactile sensors, touch representations and contact-rich control._ [Browse with 
 - **[Heterogeneous Tactile Transformer](https://arxiv.org/abs/2606.29948)** (2026) — Shared tactile representation across sensors: sensor-specific encoders plus a common transformer, pretrained on a new 1.6M-frame paired dataset from four sensors; adapts to new tasks and unseen sensors. · [code](https://github.com/jxbi1010/HTT) · [project](https://jxbi1010.github.io/htt-gh-page/)
 - **[How Firm Should a Grasp Be?](https://arxiv.org/abs/2610.11221)** (2026) — Estimates mass, elasticity and friction visuotactilely during the grasp and applies the minimum safe grip force; adds a dataset of fruits and vegetables with measured physical properties.
 - **[Inference-time Policy Steering via Vision and Touch](https://arxiv.org/abs/2606.14981)** (2026) — Inference-time steering with vision and touch: visual sampling picks the behaviour, tactile-guided diffusion editing fixes local contact, scored by a visuo-tactile latent world model. Reports +51% over the base policy. · [code](https://github.com/yilin-wu98/vital) · [project](https://yilin-wu98.github.io/vital_website)
-- **[Learning with Object-centric Representations of Tactile Interactive Perception for Robot Manipulation](https://arxiv.org/abs/2609.33235)** (2026) — Learns object representations from tactile exploration, aligned with text descriptions of properties, and uses them as context for manipulation. Reports task success from 41% to 92% (seen) and 19% to 67% (unseen). · [project](https://xinyiyxyx.github.io/tactile-object-centric/)
-- **[Modular Sensory Stream for Integrating Physical Feedback in Vision-Language-Action Models](https://arxiv.org/abs/2604.23272)** (2026) — Adds separate tactile, force and torque streams to a pretrained VLA through joint cross-modal attention, with staged training and an auxiliary task that predicts future physical signals. Real-robot tests. · [project](https://jiminlx.github.io/MoSS)
 
-**[All 76 entries →](lists/tactile.md)**
+**[All 78 entries →](lists/tactile.md)**
 
 <a id="locomotion"></a>
 ### Locomotion & Humanoids
 
-_Legged locomotion, humanoid whole-body control and parkour._ [Browse with the latest papers →](https://hu-zlatan.github.io/embodied-ai-radar/topics/locomotion.html)
+_Legged locomotion, humanoid whole-body control and parkour._ [Browse with the latest papers →](https://embodied-ai-radar.com/topics/locomotion.html)
 
 - ⭐⭐⭐ **[Learning to Walk in Minutes Using Massively Parallel Deep Reinforcement Learning](https://arxiv.org/abs/2109.11978)** (2021) — Thousands of parallel GPU environments train a quadruped walking policy in minutes; legged_gym became a standard starter. · [code](https://github.com/leggedrobotics/legged_gym)
 - ⭐⭐ **[Perceptive Humanoid Motion from Simulation](https://arxiv.org/abs/2611.06908)** (2026) — HALO trains humanoid skills on vision-language-motion data synthesised in a thousand procedural homes, so data scales with compute. Reports zero-shot transfer: 91% over 360 trials in six real environments. · [code](https://github.com/apple-aiml-research/ml-halo) · [project](https://apple-aiml-research.github.io/ml-halo/)
@@ -123,12 +123,12 @@ _Legged locomotion, humanoid whole-body control and parkour._ [Browse with the l
 - ⭐ **[OmniRetarget: Interaction-Preserving Data Generation for Humanoid Whole-Body Loco-Manipulation and Scene Interaction](https://arxiv.org/abs/2509.26633)** (2025) — Retargeting that preserves human-object and human-scene interaction rather than only body pose, generating physically plausible data for humanoid loco-manipulation. · [code](https://github.com/amazon-far/holosoma) · [project](https://omniretarget.github.io)
 - ⭐ **[Retargeting Matters: General Motion Retargeting for Humanoid Motion Tracking](https://arxiv.org/abs/2510.02252)** (2025) — Shows retargeting artifacts such as foot sliding hurt tracking policies, and offers GMR, a general retargeter. Its open-source repo is widely used for humanoid data. · [code](https://github.com/YanjieZe/GMR) · [project](https://jaraujo98.github.io/retargeting_matters)
 
-**[All 170 entries →](lists/locomotion.md)**
+**[All 172 entries →](lists/locomotion.md)**
 
 <a id="world-models"></a>
 ### World Models
 
-_Learned dynamics, video world models, world action models (WAM) and model-based RL for embodied agents._ [Browse with the latest papers →](https://hu-zlatan.github.io/embodied-ai-radar/topics/world-models.html)
+_Learned dynamics, video world models, world action models (WAM) and model-based RL for embodied agents._ [Browse with the latest papers →](https://embodied-ai-radar.com/topics/world-models.html)
 
 - ⭐⭐⭐ **[Mastering Diverse Domains through World Models](https://arxiv.org/abs/2301.04104)** (2023) — DreamerV3 — one set of hyperparameters works across 150+ tasks, including collecting diamonds in Minecraft from scratch. · [code](https://github.com/danijar/dreamerv3)
 - ⭐⭐ **[Cosmos 3: Omnimodal World Models for Physical AI](https://arxiv.org/abs/2606.02800)** (2026) — A family of omnimodal models that handles language, image, video, audio and action in one mixture-of-transformers, folding VLMs, video generators, world simulators and world-action models into a single framework. · [code](https://github.com/nvidia/cosmos) · [project](https://research.nvidia.com/labs/cosmos-lab/cosmos3/)
@@ -143,32 +143,32 @@ _Learned dynamics, video world models, world action models (WAM) and model-based
 - ⭐ **[GigaWorld-Policy: An Efficient Action-Centered World--Action Model](https://arxiv.org/abs/2603.17240)** (2026) — An action-centered WAM that predicts actions from the observation and makes video generation optional, so motion accuracy depends less on forecast quality and inference is cheaper. · [code](https://github.com/open-gigaai/giga-world-policy) · [project](https://gigaai-research.github.io/GigaWorld-Policy/)
 - ⭐ **[GreenWAM: A World Foundation Model for Robotics](https://arxiv.org/abs/2610.18774)** (2026) — One world model that is also the policy, across 20 robot families mapped to a shared joint-space action format; reports strong WorldArena, RoboTwin 2.0 and LIBERO-plus results and a one-step distilled humanoid policy. · [code](https://github.com/greenvla/GreenWAM) · [project](https://greenvla.github.io/GreenWAM)
 
-**[All 129 entries →](lists/world-models.md)**
+**[All 130 entries →](lists/world-models.md)**
 
 <a id="navigation"></a>
 ### Navigation & Embodied Agents
 
-_Vision-language navigation, embodied question answering, mobile manipulation and LLM planners._ [Browse with the latest papers →](https://hu-zlatan.github.io/embodied-ai-radar/topics/navigation.html)
+_Vision-language navigation, embodied question answering, mobile manipulation and LLM planners._ [Browse with the latest papers →](https://embodied-ai-radar.com/topics/navigation.html)
 
 - ⭐⭐⭐ **[Do As I Can, Not As I Say: Grounding Language in Robotic Affordances](https://arxiv.org/abs/2204.01691)** (2022) — SayCan — an LLM proposes steps and learned value functions score what the robot can actually do right now.
 - ⭐ **[Driving, Fast or Slow? Neuro-Symbolic Guidance for Motion Prediction in Multi-Modal Ground Mobility](https://arxiv.org/abs/2606.15251)** (2026) — TraCS adds interpretable, probabilistic traffic-rule logic to black-box motion predictors, generated from natural-language regulations; reports consistent gains on Argoverse 2. Oral.
 - ⭐ **[ViNT: A Foundation Model for Visual Navigation](https://arxiv.org/abs/2306.14846)** (2023) — A Transformer navigation policy trained on many robots' driving data that adapts to new goal types and robots with light fine-tuning. · [code](https://github.com/robodhruv/visualnav-transformer)
 - ⭐ **[GNM: A General Navigation Model to Drive Any Robot](https://arxiv.org/abs/2210.03370)** (2022) — The predecessor of ViNT — one goal-conditioned navigation policy trained on pooled data from several different robots, which transfers to new robots including ones not seen in training. · [code](https://github.com/robodhruv/visualnav-transformer)
 - ⭐ **[The Marathon 2: A Navigation System](https://arxiv.org/abs/2003.00368)** (2020) — The paper behind Nav2, the standard ROS 2 navigation stack - behavior-tree orchestration of planners, controllers and recovery behaviors, validated by long marathon runs on real robots. · [code](https://github.com/ros-navigation/navigation2)
+- **[CPNav: Calibrated Vision-Language Navigation for Object-Goal Search in Unseen Environments](https://arxiv.org/abs/2611.10366)** (2026) — Wraps VLM action scores for object-goal search in a conformal prediction layer with a user-set risk level, plus collision-free primitives and backtracking. Reports gains on HM3D/MP3D and on a small real robot. · [code](https://github.com/practice-lab-ucla/CPnav)
+- **[MOSU2: Long-range Navigation System with Multi-modal Scene Understanding](https://arxiv.org/abs/2611.11148)** (2026) — Outdoor long-range navigation where a VLM first reasons on context and only pulls in geometry and motion cues when an interaction stays unclear. Reports real-world success up from 61.8% to 94.2% over MOSU. · [project](https://jinggm.github.io/mosu2/)
 - **[AcroRL: Learning Aggressive Quadrotor Inversion using Bidirectional Thrust](https://arxiv.org/abs/2605.24301)** (2026) — RL policies modulate a reference trajectory for compact quadrotor flips with reversible thrust, one policy per direction. In JAX simulation: 32% lower position RMSE and 57% shorter settling than baselines.
 - **[Adaptive Risk-Certified Event-Triggered Replanning for Dynamic Navigation](https://arxiv.org/abs/2610.09302)** (2026) — Uses calibrated barrier risk (CVaR along the MPC rollout) as an early warning to switch to a safer planning mode. Reports 83.3% fewer collisions than a safety-filter-only baseline. · [project](https://nail-uh.github.io/corl2026.github.io/)
 - **[An Agentic Framework for Proactive Robots with Procedural Assistance Memory](https://arxiv.org/abs/2610.21211)** (2026) — Proactive assistant robot: a VLM reads a state-machine memory of the user's routine to decide when to help, and a VLA executes. The memory is revised daily by reflection, without retraining. · [code](https://github.com/DAVIAN-Robotics/PAM) · [project](https://davian-robotics.github.io/PAM/)
 - **[Approximate Imitation Learning for Event-based Quadrotor Flight in Cluttered Environments](https://arxiv.org/abs/2603.07578)** (2026) — Event-camera drone flight: learn the representation offline from a large dataset, then fine-tune the policy online on cheap state only, with no event rendering. Training drops from 52.44 h to 1.86 h.
 - **[AsyncVLA: An Asynchronous VLA for Fast and Robust Navigation on the Edge](https://arxiv.org/abs/2602.13476)** (2026) — A large foundation model on a remote workstation gives high-level guidance while a light onboard Edge Adapter refines actions at high rate. Reports 40% higher success than baselines with delays up to 6 s.
-- **[COOL: Curiosity-Driven Object Ownership Learning for Personalized Robotic Assistance](https://arxiv.org/abs/2610.09358)** (2026) — Learns who owns which objects from everyday observation and keeps a long-term spatial memory refreshed by curiosity-driven exploration, so commands like 'find my bottle' work.
-- **[CoFL-S: Spatially Queryable Sector Flow Fields for Local Language-Conditioned Navigation](https://arxiv.org/abs/2607.02222)** (2026) — Low-level VLN action head that predicts a language-conditioned flow field over the visible sector and rolls it out into trajectories. Adds a continuous-time Habitat benchmark. · [code](https://github.com/ut-dragon-lab/CoFL)
 
-**[All 83 entries →](lists/navigation.md)**
+**[All 85 entries →](lists/navigation.md)**
 
 <a id="perception"></a>
 ### Perception, SLAM & 3D Mapping
 
-_Visual / LiDAR SLAM and odometry, 3D reconstruction, object pose, depth and open-vocabulary scene maps for robots._ [Browse with the latest papers →](https://hu-zlatan.github.io/embodied-ai-radar/topics/perception.html)
+_Visual / LiDAR SLAM and odometry, 3D reconstruction, object pose, depth and open-vocabulary scene maps for robots._ [Browse with the latest papers →](https://embodied-ai-radar.com/topics/perception.html)
 
 - ⭐⭐⭐ **[ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM](https://arxiv.org/abs/2007.11898)** (2020) — The go-to feature-based SLAM library — monocular, stereo and RGB-D, with IMU fusion and multi-map relocalization. · [code](https://github.com/UZ-SLAMLab/ORB_SLAM3)
 - ⭐⭐ **[Segment Anything](https://arxiv.org/abs/2304.02643)** (2023) — SAM — a promptable segmentation model (points, boxes, masks) trained on 1B+ masks; a standard building block for object masks in robot perception pipelines. · [code](https://github.com/facebookresearch/segment-anything)
@@ -188,7 +188,7 @@ _Visual / LiDAR SLAM and odometry, 3D reconstruction, object pose, depth and ope
 <a id="control"></a>
 ### Planning, Control & Safety
 
-_Motion planning, trajectory optimization, MPC, safety filters and safe learning-based control._ [Browse with the latest papers →](https://hu-zlatan.github.io/embodied-ai-radar/topics/control.html)
+_Motion planning, trajectory optimization, MPC, safety filters and safe learning-based control._ [Browse with the latest papers →](https://embodied-ai-radar.com/topics/control.html)
 
 - ⭐⭐⭐ **[cuRobo: Parallelized Collision-Free Minimum-Jerk Robot Motion Generation](https://arxiv.org/abs/2310.17274)** (2023) — GPU-parallel motion generation for arms — many trajectory optimizations run at once, giving collision-free, smooth plans in milliseconds. · [code](https://github.com/NVlabs/curobo)
 - ⭐ **[cuRoboV2: Dynamics-Aware Motion Generation with Depth-Fused Distance Fields for High-DoF Robots](https://arxiv.org/abs/2603.05493)** (2026) — cuRoboV2 adds torque-aware B-spline trajectory optimization and GPU-native TSDF/ESDF perception for high-DoF robots. · [code](https://github.com/NVlabs/curobo)
@@ -203,12 +203,12 @@ _Motion planning, trajectory optimization, MPC, safety filters and safe learning
 - ⭐ **[MoveIt 2](https://moveit.ai/)** (2019) — The ROS 2 manipulation framework - motion planning, inverse kinematics, collision checking and real-time servoing for robot arms. · [code](https://github.com/moveit/moveit2)
 - ⭐ **[Pinocchio](https://github.com/stack-of-tasks/pinocchio)** (2019) — Fast C++/Python rigid-body dynamics library with analytical derivatives; a common backbone for kinematics, optimal control (e.g. Crocoddyl) and legged/humanoid control stacks.
 
-**[All 50 entries →](lists/control.md)**
+**[All 51 entries →](lists/control.md)**
 
 <a id="learning"></a>
 ### Robot Learning: RL & Imitation
 
-_Reinforcement learning, imitation learning and policy post-training methods for robots, on any embodiment._ [Browse with the latest papers →](https://hu-zlatan.github.io/embodied-ai-radar/topics/learning.html)
+_Reinforcement learning, imitation learning and policy post-training methods for robots, on any embodiment._ [Browse with the latest papers →](https://embodied-ai-radar.com/topics/learning.html)
 
 - ⭐⭐⭐ **[Proximal Policy Optimization Algorithms](https://arxiv.org/abs/1707.06347)** (2017) — The clipped policy-gradient method behind most GPU-parallel sim-to-real locomotion and dexterity training.
 - ⭐⭐ **[Precise and Dexterous Robotic Manipulation via Human-in-the-Loop Reinforcement Learning](https://arxiv.org/abs/2410.21845)** (2024) — HIL-SERL — real-world RL with human corrections, reported to reach near-perfect success on precise assembly and dynamic tasks after a few hours of training. · [code](https://github.com/rail-berkeley/hil-serl)
@@ -223,12 +223,12 @@ _Reinforcement learning, imitation learning and policy post-training methods for
 - ⭐ **[What Matters in Learning from Offline Human Demonstrations for Robot Manipulation](https://arxiv.org/abs/2108.03298)** (2021) — robomimic — a controlled study of imitation and offline RL on human-collected manipulation demos (demo quality, observation choices, history-aware BC), released with the framework and datasets. · [code](https://github.com/ARISE-Initiative/robomimic)
 - ⭐ **[Addressing Function Approximation Error in Actor-Critic Methods](https://arxiv.org/abs/1802.09477)** (2018) — TD3 — fixes DDPG's value overestimation with twin critics, delayed policy updates and target smoothing; still a standard continuous-control baseline. · [code](https://github.com/sfujim/TD3)
 
-**[All 132 entries →](lists/learning.md)**
+**[All 137 entries →](lists/learning.md)**
 
 <a id="sim"></a>
 ### Sim-to-Real & Simulators
 
-_Physics simulators, GPU-parallel training and transfer to real robots._ [Browse with the latest papers →](https://hu-zlatan.github.io/embodied-ai-radar/topics/sim.html)
+_Physics simulators, GPU-parallel training and transfer to real robots._ [Browse with the latest papers →](https://embodied-ai-radar.com/topics/sim.html)
 
 - ⭐⭐⭐ **[MuJoCo](https://mujoco.org/)** (2012) — Fast, accurate contact physics; the default simulator for robot learning research, open-sourced by DeepMind. · [code](https://github.com/google-deepmind/mujoco)
 - ⭐⭐ **[When the Simulator Fails, Not the Policy: Auditing Contact Artifacts in Simulated Robot Benchmarks](https://arxiv.org/abs/2610.41857)** (2026) — Many benchmark 'policy failures' are physics-engine ejections. SimuGuard traced RoboTwin artifacts to one collision constant; changing it cut artifact episodes from 12/100 to none and lifted five tasks 89% → 98%. · [code](https://github.com/ALEXander22568/simuguard)
@@ -243,12 +243,12 @@ _Physics simulators, GPU-parallel training and transfer to real robots._ [Browse
 - ⭐ **[ManiSkill3: GPU Parallelized Robotics Simulation and Rendering for Generalizable Embodied AI](https://arxiv.org/abs/2410.00425)** (2024) — GPU-parallel simulation and rendering with many manipulation tasks; fast visual RL and data generation. · [code](https://github.com/haosulab/ManiSkill)
 - ⭐ **[RoboCasa: Large-Scale Simulation of Everyday Tasks for Generalist Robots](https://arxiv.org/abs/2406.02523)** (2024) — 120 kitchen scenes, 2,500+ objects and 100 tasks with generated demonstrations for training generalist policies. · [code](https://github.com/robocasa/robocasa)
 
-**[All 63 entries →](lists/sim.md)**
+**[All 64 entries →](lists/sim.md)**
 
 <a id="datasets"></a>
 ### Datasets & Benchmarks
 
-_Large robot datasets, egocentric data and evaluation suites._ [Browse with the latest papers →](https://hu-zlatan.github.io/embodied-ai-radar/topics/datasets.html)
+_Large robot datasets, egocentric data and evaluation suites._ [Browse with the latest papers →](https://embodied-ai-radar.com/topics/datasets.html)
 
 - ⭐⭐⭐ **[Open X-Embodiment: Robotic Learning Datasets and RT-X Models](https://arxiv.org/abs/2310.08864)** (2023) — 1M+ trajectories from 22 robot types pooled by 30+ labs; RT-X models trained on it beat single-robot baselines. · [code](https://github.com/google-deepmind/open_x_embodiment)
 - ⭐⭐ **[LeRobot](https://github.com/huggingface/lerobot)** (2024) — PyTorch library with datasets, pretrained policies (ACT, Diffusion, SmolVLA) and drivers for low-cost arms.
@@ -263,12 +263,12 @@ _Large robot datasets, egocentric data and evaluation suites._ [Browse with the 
 - ⭐ **[RLBench: The Robot Learning Benchmark & Learning Environment](https://arxiv.org/abs/1909.12271)** (2019) — 100 hand-designed manipulation tasks with demos; a staple for 3D policy methods like PerAct. · [code](https://github.com/stepjam/RLBench)
 - ⭐ **[ScanNet: Richly-annotated 3D Reconstructions of Indoor Scenes](https://arxiv.org/abs/1702.04405)** (2017) — RGB-D scans of 1,500+ indoor scenes with 3D reconstructions, camera poses and semantic labels; the standard benchmark for 3D scene understanding that embodied perception builds on. · [code](https://github.com/ScanNet/ScanNet)
 
-**[All 97 entries →](lists/datasets.md)**
+**[All 102 entries →](lists/datasets.md)**
 
 <a id="hardware"></a>
 ### Hardware & Open-Source Robots
 
-_Low-cost arms, hands, grippers and data-collection rigs you can build._ [Browse with the latest papers →](https://hu-zlatan.github.io/embodied-ai-radar/topics/hardware.html)
+_Low-cost arms, hands, grippers and data-collection rigs you can build._ [Browse with the latest papers →](https://embodied-ai-radar.com/topics/hardware.html)
 
 - ⭐⭐⭐ **[LEAP Hand: Low-Cost, Efficient, and Anthropomorphic Hand for Robot Learning](https://arxiv.org/abs/2309.06440)** (2023) — A 16-DoF dexterous hand buildable for about $2,000 from off-the-shelf parts. · [code](https://github.com/leap-hand/LEAP_Hand_API) · [project](https://leaphand.com/)
 - ⭐⭐ **[Pixel: A Co-Designed Full-Stack Robot System for Learning General-Purpose Mobile Manipulation](https://arxiv.org/abs/2611.03648)** (2026) — Hardware, data and learning designed together: a low-cost wheeled humanoid with compliant grippers, teleoperation and robot-free human data collection, one whole-body controller and a shared policy pipeline. · [project](https://pixel-robot.com/pixel)

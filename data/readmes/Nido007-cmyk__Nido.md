@@ -76,6 +76,130 @@ device, encrypted. There are no accounts, no cloud and no analytics.
   yet, and it never uses the network. A very long guide is shown
   shortened, with a note saying so; the guide stays stored in full in
   its pack.
+- **Loads its models again on devices with little RAM** (0.1.82): the
+  check that runs before a model loads was charging every model about
+  0.29 GB for output scores the engine only produces for one
+  position, so on a tablet with about 3.3 GB of RAM no model could
+  pass the check, however much memory was freed. The charge is
+  corrected; the check still refuses when memory is really short, for
+  example with other apps open.
+- **Lighter on memory: models load one at a time and only when
+  needed** (0.1.83): the chat model and the search model used to
+  start together, each checking the same free memory as if it were
+  alone; they now start one after the other, and a refused load is
+  recorded with the numbers the check saw. Opening the app loads
+  only the search model, so the guides and search work straight
+  away; the chat model loads the first time you send a message and
+  unloads after three minutes without chat. On small devices the
+  models also start with a smaller batch (and the Qwen3 model with
+  a smaller context), a low battery, power saving or a hot device
+  lowers the thread count, and when Android reports critical memory
+  pressure the models unload instead of waiting to be closed.
+- **The memory check charges what the load really costs, and
+  refusals can be read in the app** (0.1.84): switching models no
+  longer counts the outgoing model's memory as still used on the
+  side of the check that decides; the context cache and the
+  compute buffer are charged at the precision and batch size the
+  load will actually use; and on devices with 4 GB of memory or
+  less the check tries one short-answer context below the usual
+  floor before refusing. The Execution Telemetry screen now lists
+  every refused load with the numbers the check saw, and the
+  records travel in its JSON and CSV exports.
+- **The emergency step of the memory check uses the memory
+  that is really free, and an orderly unload no longer counts
+  as a crash** (0.1.85): on devices with 4 GB of memory or
+  less, the short-answer context of last resort is priced
+  against the free memory Android reports at that moment,
+  without the watermark and margin the normal steps subtract;
+  unloading a model in good order (idle timeout, system
+  pressure, switching models) no longer degrades the crash
+  guard as if the app had crashed; and a refusal judged
+  without the live memory reading now says so in its telemetry
+  record. Every normal step keeps the stricter count, and the
+  2 GB system headroom is unchanged.
+- **Guides from a verified imported pack are answered as
+  written, and the model badge is the verdict of the real
+  load** (0.1.86): a pack that came in through the signed
+  import door and verified is now served word for word from
+  the chat, without loading the language model, under the
+  same rule as the built-in packs, so asking about one of its
+  guides no longer sends the question to the model with
+  memory at its tightest; the compatibility badge of each
+  model is judged with the same specification and planner
+  verdict as the load itself (on a tablet like the owner's
+  the 1.5B model now shows red, because even its cheapest
+  emergency plan does not fit there); importing a pack asks
+  for its signed manifest with a second picker instead of
+  refusing when the first selection missed it; and the guide
+  library can be opened from Settings in normal use. A
+  suspected double counting in the crash guard was tested
+  with a regression and does not exist; the guard is
+  unchanged.
+- **Sums get worked out, and a cut answer always says
+  so** (0.1.92): on Qwen3-0.6B, a question that is a
+  calculation (two or more figures and a «how many» or
+  «what time») now lets the model reason before it
+  answers, on that turn only; measured with the real
+  model file and the app's own prompt, correct answers
+  went from 16 of 60 to 41 of 60, and if the reasoning
+  leaves no answer the turn is answered directly as
+  before. The «answer was cut» fact is now read from the
+  engine's own stop signal instead of counting streamed
+  pieces, which undercounted and could leave an answer
+  stopped by the limit without its note. A model marked
+  «too heavy» that still has a partly downloaded file
+  says so and offers to delete it, and one model whose
+  check fails no longer blanks the state of the others.
+- **Downloads settle, heavy models stop offering, and
+  the last line reads whole** (0.1.91): a download
+  retried after a failure now settles with that one
+  download: the card offers «Select and use», because
+  the presence check retries its file hash once when
+  the calculation itself stumbles (a real mismatch is
+  never retried into trust) and the card says why when
+  a finished download cannot show as installed; a
+  model marked «too heavy for this device» no longer
+  offers a download or retry button, since that red
+  mark is the load check's own verdict; and the guide
+  reader, the guide library, CPR practice and the
+  emergency country sheet now keep their bottom edge
+  inside the safe area, so the last line of a long
+  guide is no longer cut in half by the system bar;
+  and the «ran low on space» note under a model's
+  answer now appears only when a generation really
+  used up its whole token budget, not whenever the
+  turn was merely assigned less than the default.
+- **The model answers again, and its answers finish**
+  (0.1.90): a question no guide covers is generated by the
+  loaded model instead of refused (the refusal now guards
+  only health and emergency questions without evidence);
+  the context budget shrinks its generation reserve before
+  giving up, so a short story no longer dies with a
+  technical error on a small context window; and the
+  default answer length doubles, so a five step
+  explanation or a short email comes out whole instead of
+  closing early.
+- **A smell of gas gets the gas guide, and two screens stop
+  stepping on themselves** (0.1.89): the last release made
+  the word for word road run, and on the owner's tablet it
+  served a guide word for word for the gas question, with
+  the pack's name on it and no model in between, but it was
+  the carbon monoxide neighbour instead of the gas leak
+  guide: measured against the owner's real pack, the pack's
+  own keyword ranking puts the carbon monoxide fragment
+  first on a coverage tie, and that guide's own text says
+  its gas cannot be smelled. The choice now reads the sign
+  in the question: when a question says you can smell, see
+  or hear something, a guide that states its danger cannot
+  be smelled, seen or heard loses the tie to a guide that
+  does not say that, in Spanish, English and Portuguese,
+  and when the first short list holds only the wrong
+  neighbour the app checks the wider list before serving
+  anything. The guide reader's header now sits below the
+  system status bar, clear of the clock and the battery
+  icons. And the NIDO screen's tabs size themselves to
+  their labels, so the long tab word stays on one line; on
+  a narrow phone the row scrolls instead of wrapping.
 - **Talks to another NIDO over Bluetooth**: encrypted messages between two
   paired phones, with no internet and no server. To pair, you paste the
   other phone's code (the text of its QR); a contact shows as verified only
@@ -121,7 +245,7 @@ The interface is available in English, Spanish and Portuguese.
 ## Install
 
 1. Download `app-release.apk` from the
-   [v0.1.81-alpha release](https://github.com/Nido007-cmyk/Nido/releases/tag/v0.1.81-alpha).
+   [v0.1.92-alpha release](https://github.com/Nido007-cmyk/Nido/releases/tag/v0.1.92-alpha).
 2. Check it against the `app-release.apk.sha256` file published next to it.
 3. Install it on an Android phone (arm64).
 4. On first launch NIDO downloads its language model, between about 0.4

@@ -84,22 +84,25 @@ including the option that was rejected.*
   or plain steps), and the diff, in one place.
 - **Tasks**: when a session ends, a small model catches the work that came up and didn't get
   finished as a few user-level items; you accept, dismiss or close them (`cogit captures`, and
-  on the map).
+  on the map). Off by default: `cogit config set captures true`.
 - **Pull request descriptions with the decisions**: `cogit pr` writes the goal, the
   decisions and the rejected options, never the raw chat. `cogit pr --install-action` adds a
   GitHub Action that posts them on every pull request.
 - **Teams share the record through git**: after a pull, your teammates' sessions are on the
   map too, with who ran them and what changed most.
-- **Cheap by default**: a small side model records in the background; in our measurement it
-  cost under 2 cents per 20 messages.
+- **The agent's own reasons, or the cheapest record**: a small model records in the
+  background and never interrupts the agent. By default, when a session ends, the model it ran
+  on reopens the whole conversation and corrects the record with what only it saw, for about
+  one more message. Economical leaves it all to the small model: under 2 cents per 20 messages
+  in our measurement.
 - **No server, no account**: it runs on your machine. Nothing leaves it unless you say so: `cogit
   init` asks whether to share the record (titles, decisions and reasons) with your team. If you
   do, `git push` sends it to your own repository, outside your branches, so it never shows up in
   a pull request or `git status`. Your chats stay local, `cogit prune` deletes old sessions, and
   key and token patterns are redacted.
 - **The agent gets the context too**: a new session starts where the last one left off, and
-  before editing a file the agent hears what was already tried and rejected there. It works
-  alongside memory tools; it doesn't replace them.
+  the agent can look up what was decided and rejected with `cogit why`. It works alongside
+  memory tools; it doesn't replace them.
 
 ## Install
 

@@ -1,18 +1,34 @@
 # Llama RPC Farm
 
-**True llama.cpp, over your whole house.** One dashboard that spans real
-multi-machine llama.cpp RPC clusters — your desktops' GPUs pooled across
-boxes — and on-demand multi-model serving through llama-swap. Any mix of
-Linux, Windows, and macOS machines — see the hardware table. Any client
+[![Stars](https://img.shields.io/github/stars/dakotacookson/Llama-RPC-Farm?style=flat-square)](https://github.com/dakotacookson/Llama-RPC-Farm/stargazers)
+[![Release](https://img.shields.io/github/v/release/dakotacookson/Llama-RPC-Farm?include_prereleases&style=flat-square)](https://github.com/dakotacookson/Llama-RPC-Farm/releases)
+[![CI](https://github.com/dakotacookson/Llama-RPC-Farm/actions/workflows/ci.yml/badge.svg)](https://github.com/dakotacookson/Llama-RPC-Farm/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/dakotacookson/Llama-RPC-Farm?style=flat-square)](LICENSE)
+
+**True llama.cpp, from one box to your whole house.** One dashboard for
+real llama.cpp serving: run a model on a single machine, pool GPUs and RAM
+across machines over RPC, or serve many models on demand through
+llama-swap — any mix of Linux, Windows, and macOS machines. Any client
 that speaks OpenAI.
 
-Real llama.cpp means real features: full CUDA, tensor-split across GPUs,
-spec decoding, KV-cache options, 128k+ contexts — the raw llama-server
-features, wired together across machines for you, instead of hand-rolled
-startup scripts.
+It started with the GPUs already in the house: a few machines, different
+cards, and no clean way to make them one usable endpoint. Hand-rolled
+`llama-server --rpc` scripts worked until a second model, a Windows box, or
+a family member needed access. Llama RPC Farm is the dashboard that grew
+out of that: stock llama.cpp underneath, one place to arrange machines and
+models, and one OpenAI-compatible endpoint on top.
 
-**Nothing outside this folder is ever modified.** Your existing
-`llama.cpp/`, `llama-swap/` configs, and scripts stay untouched.
+![Quick tour: Flow Visualizer, model editor, Hugging Face downloads, chat, launch, and themes](docs/img/demo.gif)
+
+- **Good fit:** spare GPUs across a few boxes, mixed OSes, one endpoint,
+  stock llama.cpp flags, per-user model access.
+- **Not the goal:** public multi-tenant serving, a new inference runtime,
+  or automatic device discovery with its own scheduler. The farm drives
+  stock llama.cpp builds; placement stays explicit and visible.
+
+**[Download installers](https://github.com/dakotacookson/Llama-RPC-Farm/releases/latest)**
+· [Quick start](#quick-start) · [Documentation](#documentation) ·
+[Discussions](https://github.com/dakotacookson/Llama-RPC-Farm/discussions)
 
 ## What it does
 
@@ -23,8 +39,7 @@ startup scripts.
 
 - **Serve many models on demand** — llama-swap starts and stops each model's
   llama-server the moment a client asks, and frees the GPUs when it's done.
-  Group models with the loading behavior that fits: run together, always-on,
-  take turns, or solo.
+  Group models to run together, stay always-on, take turns, or run solo.
 
   ![Serve groups: per-cluster loading behavior](docs/img/cluster-behavior.png)
 
@@ -42,90 +57,90 @@ startup scripts.
 
 - **Find and fetch models without leaving the farm** — the built-in
   Hugging Face browser searches the Hub with GGUF-aware filters (quant,
-  task, company, collection), shows you sharded variants as one model,
-  and downloads straight into your shared `store://` path so every
-  machine sees it immediately.
+  task, company, collection), shows sharded variants as one model, and
+  downloads straight into your shared `store://` path so every machine
+  sees it immediately.
 
   ![Hugging Face browser: search, filter by quant/task, download to a store](docs/img/downloads.png)
 
+## Deployment topologies
+
+Each model picks the topology that suits its hardware — automatically
+(`launch_mode: auto`) or explicitly. All of them sit behind the same
+llama-swap endpoint.
+
+| Topology | Where inference runs | Use it when |
+|---|---|---|
+| **Single box** | one machine, no RPC | the model fits on one box. CUDA, ROCm, Vulkan, Metal and CPU-only are all first-class |
+| **Multi-box RPC cluster** | host machine, with `--rpc` to peers | the model is too big for one box; pool GPUs and host RAM across machines |
+| **Peer-local** | a peer, started through its agent | compute belongs on another box, but clients still use one farm endpoint |
+| **Custom runtime** | an external OpenAI-compatible server the agent starts/stops | you already have a non-llama.cpp stack |
+| **MLX** | Apple Silicon via `mlx_lm.server` | Mac-native serving without RPC or device flags |
+
+MLX and custom runtimes are **separate runtimes, not llama.cpp RPC
+peers** — one model is either MLX (one Mac), custom (one external server),
+or llama.cpp (which may span boxes). Recipes, topology details, and
+combinations to avoid: **[docs/topologies.md](docs/topologies.md)**.
+
 ## Quick start
+
+### Install a release (recommended)
+
+Grab the newest
+[release](https://github.com/dakotacookson/Llama-RPC-Farm/releases/latest):
+Linux `.deb`, macOS `.pkg`, Windows `setup.exe` for the app, plus matching
+peer-agent packages and a universal agent wheel. Packaged builds start at
+login and include the embedded gateway.
+
+### From source
 
 ```bash
 ./install.sh    # Linux/macOS     (Windows: install.bat)
 ./run.sh        # then open http://localhost:8199
+
+./farmctl status                       # headless CLI over the same API
+./farmctl start                       # start llama-swap (loads on demand)
+./farmctl launch --model my-model     # warm ONE model
+./farmctl doctor                      # readiness checklist
 ```
 
-That's the entire setup path — the full walkthrough (vault, machines,
-stores, llama.cpp build, llama-swap, gateway, client config) is in
+The install script sets up the app and Python environment only. On first
+launch, the dashboard's **Setup needed** panel installs llama.cpp + RPC on
+peers and llama-swap on the swap host. Full walkthrough:
 **[docs/setup.md](docs/setup.md)**.
 
-Windows SmartScreen warning on the unsigned installer? See
-**[docs/windows-signing.md](docs/windows-signing.md)** for the safe
-"More info → Run anyway" steps and how to sign future builds.
+> **LAN/VPN only.** llama.cpp's RPC server is unauthenticated by design.
+> Keep RPC ports, the UI, and the gateway on a trusted network or VPN — do
+> not port-forward them to the internet. Details: **[SECURITY.md](SECURITY.md)**.
 
-### Try it with your AI agent in one prompt
+**No cluster yet?** Run it solo on one machine first — one GPU, several
+GPUs, or CPU/RAM only. The same UI, model configs, and endpoint work when
+you add peers later; nothing needs to be rebuilt. A two-machine test path
+is in **[docs/examples.md](docs/examples.md)**.
 
-This repo ships an agent playbook (`AGENTS.md`), so any coding agent that
-reads AGENTS.md can install and manage the farm for you. Tell your agent:
+### Let your AI agent do it
+
+This repo ships an agent playbook (`AGENTS.md`). Tell your coding agent:
 
 > Clone https://github.com/dakotacookson/Llama-RPC-Farm, open the folder,
 > and follow the "AI agent quick playbook" in AGENTS.md to install and
 > start the app. Then walk me through adding my machines and models per
 > docs/setup.md.
 
-That's it — the agent handles install, startup, and configuration while
-you supervise.
+## Connect a client
 
-## Users & API keys
-
-Every client identifies with a farm API key — there's nothing else to set
-up. In the UI (settings/access keys), create one key per person or
-device; each key gets a **model allowlist**, so your kid's PC shows only
-the fast 4B, your coding box shows the coder models, and an admin key
-sees everything. Keys are also how usage is attributed per user in the
-dashboard.
-
-![Access keys: per-key model grants, admin/user level, strict/unrestricted views](docs/img/access-keys.png)
-
-Clients send the key as a normal auth header — same style as OpenAI:
+Point any OpenAI-compatible client at the gateway (`:8090`) or llama-swap
+directly (`:8080`). Keys, per-user model grants, and client configs:
+**[docs/access.md](docs/access.md)**.
 
 ```bash
 curl http://<master-ip>:8090/v1/chat/completions \
   -H "Authorization: Bearer sk-farm-XXXX" \
   -H "Content-Type: application/json" \
-  -d '{
-    "model": "my-model-128k",
-    "messages": [{"role": "user", "content": "hi"}],
-    "stream": true
-  }'
+  -d '{"model":"my-model-128k",
+       "messages":[{"role":"user","content":"hi"}],
+       "stream":true}'
 ```
-
-`X-Api-Key: sk-...` works identically; `Authorization: Bearer` is just
-what every OpenAI-compatible tool already sends, so most of the time you
-only ever paste the key once. The master (or any trusted IP) can skip the
-key entirely. List what a key can see:
-
-```bash
-curl http://<master-ip>:8090/v1/models -H "Authorization: Bearer sk-farm-XXXX"
-```
-
-Admins manage it all from the UI — create/revoke keys, edit who sees
-what, and watch per-key usage. Access keys live in the per-install,
-git-ignored `config/settings.yaml` (never in git); agent tokens and the
-HF token live only in the encrypted vault (details in
-[docs/secrets.md](docs/secrets.md)).
-
-## Test every model type before it matters
-
-The built-in test bench (Tests tab) covers every llama.cpp capability,
-right where the models live — so you verify a model actually works
-through your real cluster before a client ever sees it: **Chat**
-(streaming conversations against llama-swap, any text model), **Vision**
-(multimodal), **Audio**, **Embeddings**, and **Decision** (structured
-choice testing). Each type routes through the same views/keys/gateway as
-production traffic, so the test is the whole chain, not just the model.
-
-![Tests: chat, vision, audio, embeddings, decision test benches](docs/img/testing-tabs.png)
 
 ## Supported hardware
 
@@ -136,10 +151,10 @@ scripts, same probe, same dashboard), it just needs real-world users**:
 
 | Setup | Status |
 |---|---|
-| x86_64 Linux (master & peers) | ✅ Tested — this is the daily-driver config |
-| NVIDIA GPUs, Linux (CUDA) | ✅ Tested — multi-GPU tensor-split, RPC + local GPU mix |
-| NVIDIA GPUs, Windows peers | ✅ Tested — RPC over the peer agent |
-| CPU + RAM sharing over RPC | 🧪 Code paths complete, needs contributors to test |
+| x86_64 Linux (master & peers) | ✅ Tested — daily-driver config |
+| NVIDIA GPUs, Linux (CUDA) | ✅ Tested by @dakotacookson — multi-GPU tensor-split, RPC + local GPU mix |
+| NVIDIA GPUs, Windows peers | ✅ Tested by @dakotacookson — RPC over the peer agent |
+| CPU + RAM sharing over RPC | ✅ Tested by @dakotacookson |
 | AMD GPUs (ROCm/HIP, `rocm-smi` stats) | 🧪 Code paths complete, needs contributors to test |
 | Apple Silicon (Metal backend) | ✅ Tested by @joshuamsalazar — Metal backend |
 | Intel XPU (SYCL) | 🧪 Vendor supported in detection/scripts, untested |
@@ -148,58 +163,78 @@ Each backend speaks the same tokens (`CUDA0/1..`, `ROCm0/1..`, `Metal`,
 `CPU`) and flows through identical launch scripts — see
 [docs/rpc-model.md](docs/rpc-model.md) for internals. If your setup is in
 the 🧪 rows and it works (or breaks), that's a valuable bug report /
-contribution — pull requests welcome.
+contribution — [open an issue](https://github.com/dakotacookson/Llama-RPC-Farm/issues)
+with your hardware, logs, and what you tried, or start a thread in
+[Discussions](https://github.com/dakotacookson/Llama-RPC-Farm/discussions).
+"Works on my box" reports are exactly what turns a 🧪 row into ✅.
 
-## How it works, in one breath
-
-The machine you run the UI on is the master; everything you add is a peer.
-Model configs live as YAML, the app generates the exact launch scripts
-(RPC nodes first, llama-server last), and llama-swap fronts it all so
-clients always hit one endpoint. The app also runs the `:8090` view/access
-gateway in-process — no separate service to install. Secrets (agent tokens, HF token) live in an encrypted vault on your box, never in
-configs, never in scripts.
-
-### Expectations: speed
+## Performance
 
 Pooling over RPC trades tokens/sec for reach. A split model across
 machines will be slower per-token than the same model on one box — that's
 physics, and it's the price of using GPUs that would otherwise sit idle.
-The farm never pretends otherwise; if a model fits on one machine, keep
-it there, and use the cluster for the ones that don't.
+If a model fits on one machine, keep it there.
 
-### Why this and not exo / etc.
+Real auto-tune runs from the maintainer's fleet (server-reported llama.cpp
+timings, decode tok/s, 64 generated tokens — not a controlled benchmark):
 
-Flexibility. exo invents its own device mesh with its own inference
-runtime — the farm instead drives **stock llama.cpp builds**, so every
-llama-server flag and backend upgrade works as-is, and adds llama-swap's
-on-demand start/stop so many models share one endpoint. Machines and
-models are pools you arrange however your household needs: some machines
-as one pool of GPUs for a giant model, another pool for a second model,
-llama-swap routing between them, per-user keys deciding who reaches what.
-It's a farm you shape, not a fixed topology.
+| Scenario | Model | Placement | Context | Decode |
+|---|---|---|---|---|
+| 4B Q4_K over RPC | 4B-class Q4_K | 3 Linux boxes, 6 GPUs, split `8,3,3,2,1,1` | 16k | ~130 tok/s |
+| 27B Q8_0 over RPC + MTP | Qwen3.8-27B-Uncensored Q8_0 | 3 Linux boxes, 6 GPUs | 180k | ~24.6 tok/s |
 
-## Security model
+The tuner writes every trial to `generated/tune-history.csv`. Methodology
+and a report template: **[docs/benchmarks.md](docs/benchmarks.md)**.
 
-**This is a homelab tool for trusted networks.** llama.cpp's RPC server
-is unauthenticated by design; the farm assumes your LAN or a VPN
-(Tailscale-style) is the boundary. Don't port-forward the RPC ports or
-the UI to the public internet. What the app does touch: peer-agent HTTP
-and HTTP for the peer agents on machines
-you add (agent tokens live in the encrypted `.env` vault, never in
-configs or scripts). Everything else stays inside the
-project folder.
+## How is this different?
+
+| | Llama RPC Farm | Hand-rolled llama.cpp RPC | exo |
+|---|---|---|---|
+| **Inference engine** | Stock llama.cpp builds | Stock llama.cpp | Its own runtime/device mesh |
+| **Cluster setup** | UI: pick machines + GPU/RAM chips | You write the `--rpc` scripts | Automatic peer discovery |
+| **Many models, one endpoint** | llama-swap on demand + serve groups | You wire it yourself | Different model/runtime model |
+| **Lifecycle** | Start/stop/status per model and per machine | Shell scripts + manual cleanup | Managed by exo |
+| **Mixed OS fleet** | Linux, Windows, macOS peers via typed agent | Per-OS scripts and quoting | Varies by support |
+| **Client access** | Per-key model allowlists + `:8090` gateway | Not included | Not the focus |
+| **Placement visibility** | Live per-tensor Flow Visualizer from llama.cpp sched logs | Logs only | Not llama.cpp sched |
+
+The trade-off is deliberate: the farm does **not** invent a new inference
+runtime. It drives the same llama.cpp binaries you would use by hand, so
+every upstream flag and backend upgrade works as-is. If you already have a
+working hand-rolled script, the farm removes the per-model/per-machine
+script sprawl and adds llama-swap's on-demand start/stop, the dashboard,
+and per-user keys. It is not a replacement for LocalAI/vLLM model zoos or
+serving stacks — it is for people who want **stock llama.cpp** and explicit
+control over where every layer runs. More:
+**[docs/faq.md](docs/faq.md)**.
 
 ## Documentation
 
 | Doc | What it covers |
 |-----|----------------|
-| [docs/setup.md](docs/setup.md) | Step-by-step install & setup guide |
+| [docs/setup.md](docs/setup.md) | Step-by-step install, machines, stores, engines, clients |
+| [docs/topologies.md](docs/topologies.md) | Single-box, RPC, peer-local, custom, MLX; recipes and anti-patterns |
+| [docs/access.md](docs/access.md) | Users, API keys, per-key model grants, gateway, client config |
+| [docs/benchmarks.md](docs/benchmarks.md) | Real measured runs, reproduction, submit your numbers |
+| [docs/testing.md](docs/testing.md) | Test bench (chat/vision/audio/embeddings/decision) and test suite |
+| [docs/faq.md](docs/faq.md) | RPC speed, matching GPUs, Windows, security, and common questions |
 | [docs/architecture.md](docs/architecture.md) | Module map, request/data flow |
-| [docs/rpc-model.md](docs/rpc-model.md) | How RPC clustering & numbering works |
-| [docs/secrets.md](docs/secrets.md) | The encrypted vault, how passwords flow |
+| [docs/rpc-model.md](docs/rpc-model.md) | RPC numbering, device tokens, ports, generated scripts |
 | [docs/configuration.md](docs/configuration.md) | Every config file, what owns it |
 | [docs/api.md](docs/api.md) | Full HTTP/WebSocket endpoint reference |
 | [docs/README.md](docs/README.md) | Full documentation index |
+
+Security: **[SECURITY.md](SECURITY.md)**. Contributing:
+**[CONTRIBUTING.md](CONTRIBUTING.md)**. Wrapped-engine licenses:
+**[THIRD-PARTY-LICENSES.md](THIRD-PARTY-LICENSES.md)**.
+
+## Community
+
+- [Discussions](https://github.com/dakotacookson/Llama-RPC-Farm/discussions) — questions, setups, show and tell
+- [Issues](https://github.com/dakotacookson/Llama-RPC-Farm/issues) — bugs and hardware reports
+- [Roadmap](https://github.com/dakotacookson/Llama-RPC-Farm/issues/108) — what would make the farm more useful to you
+- Hardware reports wanted: [AMD ROCm #105](https://github.com/dakotacookson/Llama-RPC-Farm/issues/105), [Intel SYCL #107](https://github.com/dakotacookson/Llama-RPC-Farm/issues/107)
+- Benchmarks wanted: [1 vs 2 vs 3 boxes #106](https://github.com/dakotacookson/Llama-RPC-Farm/issues/106)
 
 ## Standing on giants
 
@@ -207,27 +242,27 @@ This project is an orchestration layer only — the engines are the real
 work of two projects we build on and depend on, installed as required
 downloads (both MIT-licensed):
 
-- **[llama.cpp](https://github.com/ggml-org/llama.cpp)** (ggml-org) — the
-  inference engine itself: `llama-server`, `ggml-rpc-server`, tensor
-  splitting, Metal/CUDA/ROCm/SYCL backends. Nothing here would exist
-  without it.
-- **[llama-swap](https://github.com/mostlygeek/llama-swap)** (mostlygeek)
-  — the on-demand model start/stop proxy that makes multi-model serving
-  from one endpoint possible.
+- **[llama.cpp](https://github.com/ggml-org/llama.cpp)** — `llama-server`,
+  `ggml-rpc-server`, tensor splitting, Metal/CUDA/ROCm/SYCL backends.
+- **[llama-swap](https://github.com/mostlygeek/llama-swap)** — the
+  on-demand model start/stop proxy behind the one endpoint.
 
 We do not copy or modify their code — the farm talks to them by
-downloading official builds and over HTTP. Full license details for
-llama.cpp, llama-swap, and every other wrapped tool:
+downloading official builds and over HTTP. Full license details:
 [THIRD-PARTY-LICENSES.md](THIRD-PARTY-LICENSES.md).
 
 ## Status
 
-v1.0.0. llama.cpp RPC + llama-swap is the supported engine.
+Current release line: **2.0.x** — see
+[GitHub Releases](https://github.com/dakotacookson/Llama-RPC-Farm/releases)
+for the newest build and installers. llama.cpp RPC + llama-swap is the
+supported engine. The rolling build publishes Linux `.deb`, macOS `.pkg`,
+and Windows `setup.exe` artifacts, plus the peer-agent packages, on every
+`main` build.
 
 Licensed under **Apache-2.0** (this project's own code; download engines
 llama.cpp and llama-swap remain MIT under their own terms) — free for
 personal and commercial use. If it saves you a GPU headache, the GitHub
-**Sponsors** button is right up there. Licensing of
-wrapped tools: [THIRD-PARTY-LICENSES.md](THIRD-PARTY-LICENSES.md).
-Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md); every PR
-is review-approved by the maintainer.
+**Sponsors** button is right up there. Contributions welcome — see
+[CONTRIBUTING.md](CONTRIBUTING.md); every PR is review-approved by the
+maintainer.

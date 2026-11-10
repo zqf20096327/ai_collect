@@ -21,7 +21,6 @@ You can also refer to my other repo [AI-web_scraper](https://github.com/m92vyas/
 We have switched from Selenium to Playwright for concurrent web scraping support. Kindly install the required playwright dependencies as given below.
 
 ---
-
 ### Install:
 ```python
 # install llm-reader
@@ -34,37 +33,25 @@ playwright install-deps
 
 ### Import:
 ```python
+from url_to_llm_text import url_to_llm_text
 from url_to_llm_text.get_html_text import get_page_source   # you can also use your own code or other services to get the page source
 from url_to_llm_text.get_llm_input_text import get_processed_text   # pass html source text to get llm ready text
+from url_to_llm_text.config import ScraperConfig, load_config
 ```
 
 ### Get processed LLM input text:
 
 ```python
-url= <url_to_scrape>
+url = <url_to_scrape>
 
-# get html source text
-# You can use your own function to get the html source text 
-
-page_source = await get_page_source(url)
-
-# get LLM ready input text from html source text
-
-llm_text = await get_processed_text(page_source, url)
+# Option 1: One-liner function
+llm_text = await url_to_llm_text(url)
 print(llm_text)
 
-### or use asyncio ### 
-
-# import asyncio
-# url = <url_to_scrape>
-# # creating a simple function here. View documentation for more parameter details.
-# async def get_llm_ready_text(url: str) -> str:
-#     page_source = await get_page_source(url)
-#     llm_text = await get_processed_text(page_source, url)
-#     return llm_text
-
-# llm_text = asyncio.run(get_llm_ready_text(url))
-# print(llm_text)
+# Option 2: Separate HTML fetch and text processing
+page_source = await get_page_source(url)
+llm_text = await get_processed_text(page_source, url)
+print(llm_text)
 ```
 
 ---
@@ -192,9 +179,70 @@ https://github.com/m92vyas/llm-reader/wiki/Documentation
 
 ---
 
+### This open-source repository is sponsored by:
+![Proxy-Seller](proxy-seller.png)
+Proxy-Seller gives you reliable proxy infrastructure for any workflow: private residential, mobile (4G/5G/LTE), ISP, and datacenter IPv4/IPv6 proxies, all with HTTP(S) and SOCKS5 support. Tap into 47M+ residential IPs across 220+ locations, target exactly the country, city, or ISP you need, and count on 99.7% uptime backed by 24/7 support.
+
+Get 15% off with promo code LLMREADER.
+
+Visit [Proxy-Seller](https://proxy-seller.com/?partner=E031794D853648C8)
+
+---
+
 ### To Scrape and Crawl without getting Blocked:
-- You can replace the `get_page_source` function with any paid API or use your own proxies or scraping setup to get the page source. e.g. you can use a pay-as-you-go option like [Scrappey](https://scrappey.com/?ref=rishi) to get page source without getting blocked and then pass the HTML to `get_processed_text` function to get LLM text for free.
+
+**Built-in Proxy Support**:
+You can route requests directly through any residential, mobile, ISP, or datacenter proxy (for example, with [Proxy-Seller](https://proxy-seller.com/?partner=E031794D853648C8)). `llm-reader` provides 3 flexible ways to configure proxies and browser settings:
+
+#### 1. Pass Directly in Code (URL String or Dict):
+```python
+from url_to_llm_text import url_to_llm_text, get_page_source
+
+# Option A: Standard proxy URL string (e.g. from Proxy-Seller)
+# Format: http://login:password@ip:port_http (or socks5://login:password@ip:port_socks)
+proxy_url = "http://login:password@11.55.11.0:49353" # update host and port.
+text = await url_to_llm_text("https://example.com", proxy=proxy_url)
+
+# Option B: Dictionary format
+proxy_dict = {
+    "server": "http://11.55.11.0:49353", # update host and port
+    "username": "login",
+    "password": "password"
+}
+text = await url_to_llm_text("https://example.com", proxy=proxy_dict)
+```
+
+#### 2. Zero-Code Setup via Environment Variable:
+Set the proxy in your `.env` or system environment, and `llm-reader` will automatically use it across all requests without altering your code:
+```bash
+export LLM_READER_PROXY="http://login:password@11.55.11.0:49353" # update host and port
+```
+
+#### 3. Using a Configuration File (`llm_reader.yaml` or `llm_reader.json`):
+Copy `llm_reader.example.yaml` to `llm_reader.yaml` in your project root. Configure your proxy (e.g., using your Proxy-Seller credentials), browser stealth, and bandwidth savers:
+```yaml
+proxy:
+  server: "http://11.55.11.0:49353" # update host and port
+  username: "login"
+  password: "password"
+
+performance:
+  block_images: false       # Keeps image downloads. If set to true, image URLs are still extracted from data-src!
+  block_media: true         # Blocks heavy streaming video/audio (.mp4) to save paid proxy GB
+  block_fonts: true         # Blocks web fonts (.woff2) to save proxy bandwidth
+  block_trackers: true      # Blocks ads and analytics trackers for 2x faster loading
+
+content:
+  remove_header_footer: false # Set true to strip navbars and footers to save LLM tokens
+  max_characters: null        # Max output character limit (default: null / no truncation)
+```
+
+- Turn on `block_media`, `block_fonts`, and `block_trackers` in your config to avoid wasting paid residential proxy GB on heavy assets.
+
+- You can also replace `get_page_source` with any paid scraping API (e.g. [Scrappey](https://scrappey.com/?ref=rishi)) if you prefer API-based unblocking, and pass the HTML to `get_processed_text`.
+
 - You can use [this guide](Cheaper_Alternative.md) to get an pay as you go option compared to subscription based solutions like Firecrawl.
+
 - You can save in your subscription cost and also in downstream LLM usage cost.
 
 ---

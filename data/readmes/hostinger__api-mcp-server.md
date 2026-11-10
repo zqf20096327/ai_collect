@@ -18,6 +18,15 @@ claude mcp add --transport http hostinger https://mcp.hostinger.com
 
 This opens a browser window to authorize via OAuth. Once approved, the operations below are reachable through `execute` in your session.
 
+### Codex
+
+```bash
+codex mcp add hostinger --url https://mcp.hostinger.com
+codex mcp login hostinger
+```
+
+`login` opens the same OAuth flow in your browser.
+
 ### Other MCP-compatible clients
 
 Add `https://mcp.hostinger.com` as a remote Streamable HTTP MCP server in your client's configuration and complete the OAuth prompt when it appears. Refer to your client's docs for how it exposes "add remote MCP server" / "custom connector" settings.
@@ -1000,6 +1009,7 @@ Check availability of domain names across multiple TLDs.
 Multiple TLDs can be checked at once.
 If you want alternative domains with response, provide only one TLD and set `with_alternatives` to `true`.
 TLDs should be provided without leading dot (e.g. `com`, `net`, `org`).
+Premium domains are included: an available premium domain has `is_available` and `is_premium` set to `true`.
 
 Endpoint has rate limit of 90 requests per minute.
 
@@ -1012,6 +1022,8 @@ Use this endpoint to verify domain availability before purchase.
 
 Retrieve domain forwarding data.
 
+Returns 404 when the domain has no forwarding.
+
 Use this endpoint to view current redirect configuration for domains.
 
 - **Method**: `GET`
@@ -1020,6 +1032,14 @@ Use this endpoint to view current redirect configuration for domains.
 #### domains_forwarding_update
 
 Update domain forwarding configuration.
+
+Updating a forwarding changes the domain's DNS. If the domain does not use Hostinger nameservers, they are
+switched to Hostinger's nameservers automatically, so website, email and other services whose DNS is hosted
+elsewhere stop working. The root (@) A and AAAA records in the domain's Hostinger DNS zone are also replaced
+with records pointing to Hostinger, even when the domain already uses Hostinger nameservers. The domain's
+current nameservers are returned by the [domain details endpoint](#tag/domains-portfolio); confirm with the
+user before updating a forwarding on a domain that uses other nameservers. DNS changes can take some time to
+propagate.
 
 Use this endpoint to modify existing redirect configuration for domains.
 
@@ -1039,6 +1059,14 @@ Use this endpoint to remove redirect configuration from domains.
 
 Create domain forwarding configuration.
 
+Creating a forwarding changes the domain's DNS. If the domain does not use Hostinger nameservers, they are
+switched to Hostinger's nameservers automatically, so website, email and other services whose DNS is hosted
+elsewhere stop working. The root (@) A and AAAA records in the domain's Hostinger DNS zone are also replaced
+with records pointing to Hostinger, even when the domain already uses Hostinger nameservers. The domain's
+current nameservers are returned by the [domain details endpoint](#tag/domains-portfolio); confirm with the
+user before creating a forwarding on a domain that uses other nameservers. DNS changes can take some time to
+propagate.
+
 Use this endpoint to set up domain redirects to other URLs.
 
 - **Method**: `POST`
@@ -1049,6 +1077,8 @@ Use this endpoint to set up domain redirects to other URLs.
 Retrieve a pending IRTP verification for a domain.
 
 Both the old and new registrant must confirm it before the WHOIS change takes effect.
+
+Returns 404 when the domain has no pending IRTP verification.
 
 Use this endpoint to check the status of a WHOIS change awaiting registrant confirmation.
 
@@ -1141,6 +1171,19 @@ The domain must be active. The subscription it belongs to is resolved automatica
 and the request is rejected with a 404 status code when the domain has no domain
 subscription of its own.
 
+The move is also refused unless the domain:
+- was registered at least 4 days ago
+- does not expire within the next 10 days
+- has an extension that supports moves
+- has no move already in progress
+- was not moved in the last 10 days
+- is not a premium domain
+- is not still processing a recent renewal
+
+A move refused for one of these rules is rejected with a 404 status code and error code 2048,
+with a message naming the rule. The receiving account is checked first, and when it cannot
+be used the message stays generic.
+
 Domains protected by premium protection require an additional verification step,
 such requests are rejected with a 428 status code.
 
@@ -1191,6 +1234,13 @@ Claim a free domain available on your account and register it.
 Unlike purchasing a domain, this consumes a free domain you already have,
 so no payment method is required.
 
+A free domain and a free domain transfer from the same plan are alternatives:
+claiming the free domain removes the plan's free domain transfer
+(`type: free_domain_transfer`). Before making request, confirm with the user which
+of the two they want. Right after a claim, the removed free domain transfer may
+still appear in the [domain list endpoint](#tag/domains-portfolio) for a short
+time; do not claim it.
+
 A successful response means the domain is registered. If registration fails, login to
 [hPanel](https://hpanel.hostinger.com/) and check domain registration status.
 
@@ -1234,6 +1284,14 @@ Use this endpoint to prepare domains for transfer to other registrars.
 
 Retrieve detailed information for specified domain.
 
+A domain is found here only once it is registered. Until then, `Get domain list` shows it, and
+its `verification` field says what registration waits for when the domain is held for
+verification.
+
+After registration, the registry may require the owner contact to be verified by email, phone
+number or contact name before a deadline, after which the domain is suspended. The
+`contact_verification` field shows what needs verifying, its state and the deadline.
+
 Use this endpoint to view comprehensive domain configuration and status.
 
 - **Method**: `GET`
@@ -1242,6 +1300,14 @@ Use this endpoint to view comprehensive domain configuration and status.
 #### domains_portfolio_list
 
 Retrieve all domains associated with your account.
+
+A plan can include both a free domain (`type: free_domain`) and a free domain
+transfer (`type: free_domain_transfer`). They are alternatives: claiming one
+removes the other, which may still be listed for a short time after the claim.
+
+A domain held for verification before it is registered has `status: pending_verification`,
+and its `verification` field says what registration waits for: a manual review, an SMS code,
+or owner contact verification.
 
 Use this endpoint to view user's domain portfolio.
 
@@ -1294,8 +1360,9 @@ Use this endpoint to make domain owner's information publicly visible.
 
 #### domains_portfolio_renewal-information
 
-Retrieve renewal information for a specified domain, including its status and current
-expiration date.
+Retrieve renewal information for a specified domain, including its status, current
+expiration date, whether it can be renewed, whether it is in its grace or redemption period,
+and when each of those periods ends.
 
 Use this endpoint to build renewal automation and expiry monitoring for a single domain.
 
@@ -1328,7 +1395,8 @@ The domain is set up with the default nameservers and with privacy protection. U
 
 A successful response means the setup request was accepted, not that the domain is already
 registered. Poll `Get domain list` for the outcome, the domain appears in `Get domain details`
-only once it is registered.
+only once it is registered. When the domain is held for verification, its `verification` field
+in `Get domain list` says what registration waits for.
 
 Use this endpoint to finish registering a domain that is awaiting setup on your account.
 
@@ -1353,9 +1421,16 @@ Claim a free domain transfer available on your account and start the transfer.
 Unlike purchasing a transfer, this consumes a free domain transfer you already have,
 so no payment method is required.
 
-Before making request, unlock the domain at the current registrar and get its authorization
-code. The transfer is validated first, so domains which cannot be transferred are rejected
-before the free domain transfer is consumed.
+A free domain and a free domain transfer from the same plan are alternatives:
+claiming the free domain transfer removes the plan's free domain
+(`type: free_domain`). Before making request, confirm with the user which of the
+two they want. Right after a claim, the removed free domain may still appear in
+the [domain list endpoint](#tag/domains-portfolio) for a short time; do not claim it.
+
+Before making request, unlock the domain at the current registrar and, if its TLD uses one,
+get its authorization code. The transfer is validated first, so domains which cannot be
+transferred, or are missing a required authorization code, are rejected before the free
+domain transfer is consumed.
 
 A successful response means the transfer has been started. Completion depends on the current
 registrar and can be followed with the [transfer list endpoint](#tag/domains-transfer).
@@ -1394,8 +1469,8 @@ Transfer a domain from another registrar to your account.
 
 The transfer runs on a domain transfer service you have already purchased.
 
-Before making request, unlock the domain at the current registrar and get its authorization
-code.
+Before making request, unlock the domain at the current registrar and, if its TLD uses one,
+get its authorization code.
 
 A successful response means the transfer has been started. Completion depends on the current
 registrar and can be followed with the [transfer list endpoint](#tag/domains-transfer).
@@ -1479,6 +1554,13 @@ Use this endpoint to view available contact profiles for domain registration.
 Create WHOIS contact profile.
 
 Use this endpoint to add new contact information for domain registration.
+
+The keys required in `whois_details` and `tld_details` depend on the TLD, country and entity type, and can be
+country-specific: for Lithuania, for example, `state_lt` and `zip_lt` are required instead of `state` and
+`zip`. A 422 response lists every required key that is missing or has an invalid value under
+`errors.whois_details`, and under `errors.tld_details` when `tld_details` is sent. Each error states the
+key's constraint and, where the key takes a fixed set of values, the allowed values, so all of them can be
+corrected in one retry.
 
 - **Method**: `POST`
 - **Path**: `/api/domains/v1/whois`
@@ -2267,98 +2349,4 @@ to it.
 #### hosting_nodejs_list-environment-variables
 
 Lists the Node.js environment variables currently set for the website. Values are always
-masked as `********` and cannot be read back through this API. Use this endpoint to see
-which keys are configured or to verify a change, not to read values.
-
-To change variables, use the `Replace Node.js environment variables` endpoint. It replaces
-the whole set, so never copy the masked values from this response into that request; send
-the full desired set with real values taken from the project `.env` file or the user
-prompt instead.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/builds/settings/env`
-
-#### hosting_nodejs_replace-environment-variables
-
-Replaces the website's Node.js environment variables with the ones provided. This is a
-full replace: any variable not in the request is deleted, and sending an empty `env_vars`
-array deletes every variable. Saving writes the values and restarts the running Node.js
-process.
-
-A restart is enough for apps that read environment variables at process start, such as
-Express or NestJS. It is not enough for frameworks that bake variables into the build.
-Next.js standalone is one of those: build-time values (including `NEXT_PUBLIC_*`) need a
-fresh build. After this call, use the `Start Node.js build` endpoint so those apps
-pick up the new values.
-
-The `List Node.js environment variables` endpoint returns masked values (`********`), so
-never copy values from it into this request. Always send the full desired set with real
-values taken from the project `.env` file or the user prompt.
-
-- **Method**: `PUT`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/builds/settings/env`
-
-#### hosting_nodejs_runtime-logs
-
-Returns the Node.js application's runtime console log entries, oldest first, each with
-timestamp, level and message. On the first call send `period` (`1h`, `1d`, `1w` or `1m`)
-and optionally `levels` and `limit` (1-5000, default 1000); when more entries match than
-`limit`, the newest are kept.
-
-To poll for new entries send `total_lines + 1` from the previous response as `from_line`
-and omit `period`; `period` and `from_line` cannot be combined. Lines that are not JSON
-with a timestamp, level and message are skipped, so `logs` may hold fewer than `limit`
-entries while `total_lines` counts every raw line. Entries with a timestamp before
-`last_deployed_at` belong to the previous deployment. Returns an empty `logs` list when
-the application has not written a log file yet.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/runtime-logs`
-
-#### hosting_nodejs_clear-runtime-logs
-
-Empties the Node.js application's runtime log file. This cannot be undone, so confirm with
-the user before calling it. Returns success even when no log file exists yet.
-
-Use it before reproducing a problem so the next `Get Node.js runtime logs` call returns
-only fresh entries; start that call with `period` again instead of reusing a `from_line`
-from before the clear.
-
-- **Method**: `DELETE`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/runtime-logs`
-
-#### hosting_nodejs_restart-application
-
-Restarts the Node.js server process for the website. Does not rebuild or redeploy the
-application. Use it to apply environment or configuration changes, or to recover a hung
-application.
-
-Only applicable to server-side applications (Express, Next.js, NestJS, etc.). Static
-front-end apps (React, Vue, Vite) have no persistent server process, so restarting them
-has no effect. Returns success even when the website has no server process to restart.
-
-- **Method**: `POST`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/server/restart`
-
-#### hosting_nodejs_list-vulnerabilities
-
-Lists known npm package vulnerabilities detected on a Node.js website, enriched with
-advisory metadata (severity, CVSS score, CVE, advisory URL). Results are sorted from
-the most severe to the least severe, then by publish date (newest first). Use the
-`severities` query parameter to filter.
-
-Vulnerabilities with `is_patchable` set to `true` can be auto-fixed via the
-`Patch Node.js Vulnerabilities` endpoint, which opens a GitHub pull request with
-updated package versions. Auto-fix is only available for websites deployed from a
-connected GitHub repository. Vulnerabilities with `is_patching_in_progress` set to
-`true` are already included in an open patch pull request; while any patch pull
-request is open, new patch requests for this website are rejected until it is merged
-or closed.
-
-Data comes from periodic dependency scans, so it may lag behind the latest deployment.
-An empty list means the most recent scan found no vulnerabilities; it does not
-guarantee the current deployment is vulnerability-free. Available on Business and
-Cloud Hosting plans.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/vulnerabilities`
+masked as `********` and cannot be read back through this API. Use this end

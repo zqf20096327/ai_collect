@@ -42,6 +42,7 @@ https://github.com/user-attachments/assets/5bf9bea8-e5ac-4632-a292-a80a45831dff
 
 ## News
 
+- **[2026-11]** v7.21.0: the plugin loads when OpenClaw installs it, with no native module to build.
 - **[2026-11]** v7.20.0: a fan-out agent can run as a goal, so several agents can each work a copy of a
   project until it is done, in parallel.
 - **[2026-11]** v7.19.0: a fan-out agent can run in a directory of its own, so several agents can write code
@@ -107,7 +108,9 @@ clawo goal --objective-file GOAL.md --check "npm run bench:check" --check-timeou
 ```
 
 The server writes an access token to `~/.openclaw/server-token` and the CLI reads it from there. To sign in the
-browser once, open `http://127.0.0.1:18796/login?token=<token>&redirect=/dash`.
+browser once, open `http://127.0.0.1:18796/login?token=<token>&redirect=/dash`. The token grants full control,
+including running commands as the server's user, so keep it private; see
+[Security model](./skills/references/getting-started.md#security-model) before exposing the server beyond localhost.
 
 - 🧪 **Acceptance contracts and evidence bundles** ([guide](./skills/references/verification.md))
 - 🔁 **Workflows, resume and the goal node** ([guide](./skills/references/workflow.md))
@@ -141,8 +144,8 @@ engine, so one dropdown switches between Claude, Codex, Antigravity and Grok mod
 
 | Engine      | CLI        | Tested version                  |
 | ----------- | ---------- | ------------------------------- |
-| Claude Code | `claude`   | 2.1.319                         |
-| Codex       | `codex`    | 0.166.0                         |
+| Claude Code | `claude`   | 2.1.322                         |
+| Codex       | `codex`    | 0.167.0                         |
 | Antigravity | `agy`      | 1.5.3                           |
 | Grok Build  | `grok`     | 1.0.77                          |
 | OpenCode    | `opencode` | 1.19.5                          |

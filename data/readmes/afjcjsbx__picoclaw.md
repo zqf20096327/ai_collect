@@ -16,7 +16,7 @@ _Small on purpose. Small is not lesser. Small is enough._
   <img src="https://img.shields.io/github/stars/afjcjsbx/picoclaw?style=flat&label=stars" alt="GitHub stars">
   <br>
   <a href="https://afjcjsbx.github.io/picoclaw/"><img src="https://img.shields.io/badge/Docs-Read-007acc?style=flat&logo=read-the-docs&logoColor=white" alt="Documentation"></a>
-  <a href="https://discord.gg/bEuEDnKpf"><img src="https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?style=flat&logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://discord.gg/XTt5Y6cJfY"><img src="https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?style=flat&logo=discord&logoColor=white" alt="Discord"></a>
   <a href="https://deepwiki.com/afjcjsbx/picoclaw"><img src="https://img.shields.io/badge/Wiki-DeepWiki-FFA500?style=flat&logo=wikipedia&logoColor=white" alt="DeepWiki"></a>
 </p>
 
@@ -30,7 +30,7 @@ _Small on purpose. Small is not lesser. Small is enough._
 ---
 
 <p align="center">
-  <a href="https://discord.gg/bEuEDnKpf">
+  <a href="https://discord.gg/XTt5Y6cJfY">
     <img src="assets/discord-banner.png" alt="PicoClaw on Discord — meet builders, share ideas, get help" width="80%">
   </a>
 </p>
@@ -514,6 +514,57 @@ Connect PicoClaw to the Agent Social Network by sending a single message via the
 | `picoclaw migrate`        | Migrate data from older versions     |
 | `picoclaw auth login`     | Authenticate with providers          |
 
+### Chat commands
+
+Slash commands work in interactive CLI mode and in connected chat channels:
+
+| Command | Description |
+| --- | --- |
+| `/start` | Start the bot. |
+| `/help [command]` | Show all commands or detailed help for one command. |
+| `/stop` | Stop the current task. |
+| `/show [model\|channel\|agents\|mcp <server>]` | Show current configuration. |
+| `/list [model\|models\|channels\|agents\|skills\|mcp\|plugins]` | List available options. |
+| `/switch model <index\|name>` | Switch the active model. |
+| `/check channel <name>` | Check whether a channel is available. |
+| `/context` | Show session context and token usage. |
+| `/compact [--force] [focus]` | Compact conversation context, optionally focusing the summary. |
+| `/clear` (alias `/new`) | Clear the chat history. |
+| `/subagents` | Show running tasks and subagents in this chat. |
+| `/use <skill> [message]` | Force an installed skill for one request. |
+| `/voice [off\|on\|tts\|status]` | Set automatic text-to-speech mode. |
+| `/reload` | Reload the configuration file. |
+| `/<name> [arguments]` | Run a [custom prompt command](docs/guides/custom-commands.md) from the workspace or global `commands/` directory. |
+
+Use `/help <command>` for usage details. Availability depends on the channel; unsupported commands return an explicit error.
+
+### Custom prompt commands
+
+You can build your own slash commands as Markdown files. Workspace commands live in `<workspace>/commands/`; global commands live in `~/.picoclaw/commands/`. Nested directories become nested command names, so `commands/team/review.md` becomes `/team/review`.
+
+```md
+---
+description: Review code for correctness
+---
+
+Review $ARGUMENTS for bugs and missing tests.
+```
+
+Invoke it like any other command:
+
+```text
+/review src/auth.ts
+```
+
+| Template feature | Behavior |
+| --- | --- |
+| `$ARGUMENTS` | Inserts the complete argument string as entered, including quotes. |
+| `$1`, `$2`, ... | Inserts positional arguments; quotes group words, and the highest placeholder consumes the rest. |
+| No placeholder | Appends non-empty arguments after a blank line. |
+| `description` frontmatter | Shown in `/help` and the Web UI command palette. |
+
+Workspace commands override global commands with the same name, while built-in commands always win. Custom commands appear in `/help` on every channel; the Web UI, Telegram, and Discord also list compatible names in their command menus. See [Custom Prompt Commands](docs/guides/custom-commands.md) for precedence, examples, and limitations.
+
 ### Scheduled tasks and reminders
 
 PicoClaw supports scheduled reminders and recurring tasks through the `cron` tool:
@@ -558,4 +609,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 **PicoClaw is built in the open. Come build it with us.**
 
-[⭐ Star PicoClaw](https://github.com/afjcjsbx/picoclaw) · [💬 Join Discord](https://discord.gg/bEuEDnKpf) · [🐛 Report an issue](https://github.com/afjcjsbx/picoclaw/issues)
+[⭐ Star PicoClaw](https://github.com/afjcjsbx/picoclaw) · [💬 Join Discord](https://discord.gg/XTt5Y6cJfY) · [🐛 Report an issue](https://github.com/afjcjsbx/picoclaw/issues)

@@ -19,6 +19,8 @@
 - [why](#why)
 - [the funeral](#the-funeral)
 - [run a model](#run-a-model)
+  - [living experts and weight swaps](#living-experts-in-the-harness)
+  - [dreaming between turns](#dreaming-between-turns)
 - [train a model](#train-a-model)
 - [architecture](#architecture)
 - [what's inside](#whats-inside)
@@ -156,6 +158,12 @@ The harness also ships as `libnotorch_harness`, with CPU and CUDA family APIs.
 An organism can link it and supply its own generation loop.
 [Embedding and CUDA examples](NOTORCHLOG.md#readme-inference--notorch-runs-models-it-doesnt-just-train-them).
 
+The CPU Harness reads the model’s embedded tokenizer or, for split GGUFs,
+the adjacent `tokenizer.gguf`. Give each split model its own directory.
+`--tokenizer FILE` selects a specific vocabulary. The CLI (including `-T`)
+and native consumers use the same resolver in `harness/tokenizer.h`. Text
+generation samples only IDs covered by the loaded vocabulary.
+
 **EmbeddingGemma 2 text** has a separate full-sequence encoder API: native F32
 bidirectional attention, projection-only per-layer inputs, masked mean pooling,
 and 768-dimensional normalized output. Read/write activation hooks expose every
@@ -165,6 +173,15 @@ reference parity gate. Six neutral fixtures and the complete frozen
 80-document/24-query corpus pass numerical parity, with exact native replay;
 [measured results](docs/validation/embeddinggemma2-validation-2026-11-05.json)
 record the source, checkpoint and tokenizer boundary.
+
+**Qwen3-Embedding** is the second encoder on the same API: a causal Qwen3
+decoder read to its final norm, last-token pooling over the appended
+`<|endoftext|>`, 1024-dimensional normalized output. Its byte-level tokenizer
+runs in C through the exact Qwen3 split over NFC. The
+[encoder guide](docs/QWEN3EMBEDDING.md) covers conversion, text mode and gates.
+On the pinned 0.6B checkpoint the model card's four published scores agree within
+3e-7, and repeat runs give byte-identical vectors. The official-ID tokenizer gate
+and the vector-parity gate are built and wait for their references.
 
 fuck torch — but also, you do not need llama.cpp to *run* what you built.
 The CPU, Metal and CUDA paths live here. Packed matrices stay packed through
@@ -182,6 +199,245 @@ uses F32 matrix weights and owns recurrent/convolution state. Fourteen original
 OneJev prompts pass every-layer and full-logit comparison with Transformers;
 1,214 frozen-fixture checks exercise chunking and failures.
 See [commands, format boundaries and measured parity](docs/qwen35.md).
+
+### DoE. Living experts in the Harness
+
+`--experts` seats a native **Democracy of Experts** on the middle block of the
+dense llama-family, Qwen3.5 hybrid, Gemma 3 text, OLMoE and Qwen3-MoE CPU
+decoders. Each token
+elects a variable number of LoRA experts between attention and the FFN. Four
+rank-4 experts start in six seats.
+`--learn-experts` gives the elected experts one Oja update after each completed
+turn and enables vitality, mitosis and apoptosis. Plain inference is the default.
+
+```sh
+./notorch --experts --learn-experts --spore-out first.gguf model.gguf "A robin builds its nest in" 8 0
+./notorch --experts --spore-in first.gguf --expert-trace model.gguf "The robin returns to" 8 0
+```
+
+Qwen3.5 seats the same experts after the full-attention or GatedDeltaNet
+residual and before the FFN. Supply the GGUF tokenizer for a source-layout
+model with a separate vocabulary. Dreams and calibration get their own
+recurrent, convolution and full-attention state.
+
+```sh
+./notorch --tokenizer tokenizer.gguf --experts --learn-experts --async-consolidation \
+  --spore-out awake.gguf onejev.gguf "Check this file" 2 0
+./notorch --tokenizer tokenizer.gguf --experts --spore-in awake.gguf onejev.gguf "Check it again" 2 0
+```
+
+The default spore is an independent GGUF bound to the SHA-256 of the host file. Give
+`--spore-out` a new filename to keep each generation. The KV cache and the
+transcript begin fresh on restart. The spore restores LoRA A/B, vote weights,
+membership, vitality, frequency, age, low-vitality counts, Oja cursors,
+consensus, oscillator input history, RNG and clocks. In chat, `/reset` clears
+the KV while the parliament lives on. `--expert-trace` prints per-token gates,
+chosen logits, births, deaths and turn boundaries to stderr.
+
+Add `--async-consolidation` to `--experts --learn-experts` to hand each
+completed turn to a C worker. Chat can accept input while it updates the
+elected experts. The next forward receives the committed parliament. EOF and
+`/exit` join the last worker before publishing the requested spore.
+
+To carry the parliament to a different GGUF, add `--portable-spore` when
+saving. The next Harness process needs the new body and that one spore.
+
+```sh
+./notorch --experts --learn-experts --async-consolidation --portable-spore --spore-out memory.gguf smollm2.gguf "A robin builds its nest in" 8 0
+./notorch --experts --spore-in memory.gguf --expert-trace qwen2.5.gguf "The robin returns to" 8 0
+```
+
+Existing generations can also travel. `--spore-only` converts a completed
+generation before the first election. It can publish a portable file from an
+older exact spore, or bind a portable spore to a target for subsequent sessions.
+
+```sh
+./notorch --experts --spore-only --spore-in first.gguf --portable-spore --spore-out memory-v2.gguf smollm2.gguf
+./notorch --experts --spore-only --spore-in memory-v2.gguf --spore-out qwen-local.gguf qwen2.5.gguf
+```
+
+On the original file, restore is exact. On a different file the Harness
+measures 32 shared literals at the parliament's post-attention layer. Matching
+architecture, width, depth, ordered RMSNorm fingerprint and aligned residual
+axes allow direct reuse of every expert weight across quantizations. Otherwise
+the A/B factors and voting vectors cross in the 32 measured directions. The
+target's initial values supply the orthogonal complement. Both paths carry the
+seats, history, consensus, RNG and turn counters. `--expert-trace` reports the
+transfer mode, both host digests, widths and layers. The commands and measured
+continuations for SmolLM2 Q4, SmolLM2 Q8 and Qwen2.5 are in the
+[engineering log](NOTORCHLOG.md#2026-11-09--a-parliament-crosses-gguf-bodies).
+
+#### One parliament, different weights
+
+In the SmolLM2-360M experiment, one generation learned “Miro carries a key”
+and a sibling learned “Miro carries a bell”. Each had one waking turn and 24
+elections. Each portable spore occupied 331,616 bytes. The Harness loaded the
+same pair on three weight files and ran five fixed prompts with greedy decoding
+and a twelve-token budget.
+
+| Receiving weights | Width | Expert import | Prompts with different continuations between the two histories |
+| --- | ---: | --- | ---: |
+| SmolLM2-360M Q4_K_M | 960 | Exact | 5/5 |
+| SmolLM2-360M Q8_0 | 960 | Aligned | 2/5 |
+| Qwen2.5-0.5B-Instruct Q4_K_M | 896 | Projected | 2/5 |
+
+On Qwen2.5, “At the lighthouse, Miro reaches for his” continued with
+“watch and sees that the minute hand is 6 cm long” from the key spore and
+“watch and finds that it is exactly 10 minutes past” from the bell spore.
+[Probabilities and single-seat interventions](experiments/doe_spores/portable-scores.tsv).
+
+#### Dreaming between turns
+
+With `--dream N`, a completed learning turn can seed a private episode of up
+to 32 greedy choices. The living experts score 32 calibrated directions through
+their own A/B factors. The strongest unused direction supplies a word. The
+resident model generates from that word on its own KV cache. The elected seats
+receive one Oja update at a quarter of the waking rate. Committing an episode
+marks the cue as used for the current round of 32. `--async-consolidation`
+runs the waking update and dream on the same worker while chat accepts input.
+
+The following commands replay a SmolLM2 → Qwen3 → Llama handoff. Set
+`SMOL_Q4`, `QWEN3` and `LLAMA3` to the three local weight files in the
+table below or the preceding table. Each output filename must be new.
+
+```sh
+./notorch -q --experts --learn-experts --portable-spore --spore-out miro.gguf \
+  "$SMOL_Q4" "Miro is the lighthouse keeper. Every night Miro carries a key. At sunrise the lighthouse keeper returns home." 1 0
+
+# Hear Qwen3's proposed dream on stderr. This also works on an archived spore.
+./notorch -q --experts --expert-trace --dream-only 6 --spore-in miro.gguf "$QWEN3"
+
+# Commit that episode and carry Qwen3's experts into Llama with no intervening user turn.
+./notorch -q --experts --learn-experts --async-consolidation --dream-only 6 \
+  --spore-in miro.gguf --portable-spore --spore-out qwen-dream.gguf "$QWEN3"
+./notorch -q --experts --spore-in qwen-dream.gguf "$LLAMA3" "At the lighthouse, Miro reaches for his" 12 0
+
+# In interactive chat, keep learning and dreaming after each subsequent reply.
+./notorch --experts --learn-experts --async-consolidation --dream 6 \
+  --spore-in qwen-dream.gguf --portable-spore --spore-out llama-next.gguf "$LLAMA3"
+```
+
+From the same SmolLM2 key spore both larger bodies picked ` music` for their
+first dream. Qwen3 generated `: "The Sound of Silence`. Llama generated
+`Question`, a newline and the beginning of a numbered list. Both held seven
+elections and made six choices. In preview mode both reproduced the respective
+dream and returned a byte-identical spore on the receiving body.
+
+| Receiving weights (Q4_K_M) | Width | “At the lighthouse, Miro reaches for his…” before → after one local dream | Change in log odds of ` key` over ` bell` on “Every night the lighthouse keeper carries a” |
+| --- | ---: | --- | ---: |
+| Qwen3-1.7B | 2048 | “flashlight, which is on the table” → “bag of marbles, which contains 100” | +0.665598 |
+| Llama-3.2-3B-Instruct | 3072 | “trusty notebook and begins to sketch the scene before him.” in both runs | −0.021778 |
+
+We also switched **Qwen3 → Llama 3.2** twice, carrying Qwen3's key spore
+before and after its six-token dream. On Llama, the earlier dream shifted the
+same key/bell log odds by **+0.066209**. Both branches gave the same twelve
+greedy tokens on each of the five fixed prompts. Llama's next dream used
+` river` and advanced the inherited clock to cycle 2.
+
+The dream text stays in the optional trace. The spore carries the updated
+factors, Oja cursors, RNG and a separate dream clock. A sleeping parliament
+keeps its waking turn count, elections, consensus and vitality. Existing
+unslept generations use exact v1 or portable v2. After the first recorded
+dream the corresponding schemas are v3 and v4.
+[AML protocol](experiments/doe_spores/dream.aml) ·
+[Full scores](experiments/doe_spores/dream-scores.tsv) ·
+[Two-hop measurements and model revisions](NOTORCHLOG.md#2026-11-09--private-dreams-across-qwen3-and-llama-32).
+
+#### Gemma 3 → Qwen3.5 → Gemma 3
+
+Gemma's experts vote after the normalized attention output rejoins the residual
+stream. We ran the same waking turn on Gemma 3-270M-IT, let its parliament
+dream for six choices, then took that portable spore into Qwen3.5-0.8B.
+Qwen chose the cue ` river` and generated ` of the world, the river`.
+Seats 0, 1 and 2 wrote their A/B factors. Its two generations gave the same
+12 greedy tokens on “At the lighthouse, Miro reaches for his”.
+
+Back on **the original Gemma weights**, those two spores first chose different
+tokens at choice 11. With Qwen's pre-dream spore, the lamp was “glowing with
+a soft, warm light”. With its post-dream spore it was “a bright, warm yellow”,
+and the keeper then looked at the sea. Both carried one waking turn and 24
+waking elections. The returned post-dream spore also carried two dreams, 12
+private choices and 14 private elections.
+
+The following commands replay both continuations from the
+[AML experiment's](experiments/doe_spores/gemma3.aml) `gemma-dream.gguf`.
+
+```sh
+export NT_CHAT='||' NT_CTX=64 NT_ATTN_THREADS=1
+./notorch -q --experts --tokenizer "$Q35_TOK" --spore-only --spore-in gemma-dream.gguf \
+  --portable-spore --spore-out qwen-before.gguf "$Q35"
+./notorch -q --experts --tokenizer "$Q35_TOK" --learn-experts --async-consolidation --dream-only 6 \
+  --spore-in qwen-before.gguf --portable-spore --spore-out qwen-after.gguf "$Q35"
+for state in qwen-before.gguf qwen-after.gguf; do
+  ./notorch -q --experts --spore-in "$state" "$G270" 'At the lighthouse, Miro reaches for his' 32 0
+done
+```
+
+The same 270M spore also ran on **Gemma 3-1B-IT**. Its own six-choice dream
+shifted the log odds of ` key` over ` bell` by **+0.408905** on “Every night
+the lighthouse keeper carries a”. Preview left each host's spore byte-identical.
+Synchronous and background learning wrote identical GGUFs on all three hosts.
+[Full scores](experiments/doe_spores/gemma3-scores.tsv) ·
+[Weights, commands and controls](NOTORCHLOG.md#2026-11-09--gemma-3-experts-and-a-qwen35-round-trip).
+
+#### A living parliament inside OLMoE
+
+On OLMoE, two selections happen at the middle block. The parliament elects living
+LoRA seats and adds their correction to the attention residual. The pretrained
+router reads that corrected vector and chooses which FFN experts to execute.
+`--expert-trace` shows the living seats' gates. `--moe-trace` shows the native
+expert IDs in per-token accumulation order and their applied weights at each
+layer. Ordinary decoding emits `moe route`. A private dream emits
+`moe dream-route` on its own positions. Route tracing works with plain inference too. OLMoE keeps the selected mass
+from its full softmax. Qwen3-MoE normalizes the selected weights to sum to one.
+
+Set `G270`, `OLMO_Q4` and `OLMO_K` to Gemma 3-270M-IT Q8_0 and the two
+OLMoE-1B-7B-0924-Instruct GGUFs (Q4_0 and Q4_K_M). Start a waking memory on
+Gemma, record a private dream on OLMoE and replay both histories on the second
+quantization. Each output spore takes a new filename.
+
+```sh
+export NT_CHAT='||' NT_CTX=64 NT_ATTN_THREADS=1
+./notorch -q --experts --learn-experts --portable-spore --spore-out gemma-key.gguf \
+  "$G270" 'Miro is the lighthouse keeper. Every night Miro carries a key. At sunrise the lighthouse keeper returns home.' 1 0
+./notorch -q --experts --spore-only --spore-in gemma-key.gguf --portable-spore \
+  --spore-out olmo-awake.gguf "$OLMO_Q4"
+./notorch -q --experts --expert-trace --moe-trace --learn-experts --async-consolidation --dream-only 6 \
+  --spore-in olmo-awake.gguf --portable-spore --spore-out olmo-dream.gguf "$OLMO_Q4" 2>olmo-sleep.routes
+for state in olmo-awake olmo-dream; do
+  ./notorch -q --experts --expert-trace --moe-trace --spore-in "$state.gguf" \
+    "$OLMO_K" 'At the lighthouse, Miro reaches for his' 12 0 2>"$state.routes"
+done
+```
+
+On Q4_0 the comma in “At the lighthouse, Miro reaches for his” has token ID
+13. In block 12 the last of its eight FFN experts was **38** in plain inference,
+**28** with the imported Gemma spore and **38** after one recorded OLMoE
+dream. On this prompt plain generation began “ phone”, and the imported
+parliament began “ bag”. Preview preserved the 705,888-byte awake spore.
+Blocking and worker sleep produced the same 706,048-byte spore.
+
+Both saved histories also crossed to Q4_K_M. The Harness kept the living A/B and
+voting vectors byte for byte and aligned the spore to the receiving weights. On
+the same prompt the awake spore generated “ bag” first and the post-dream spore
+generated “ phone”. Restoring the two spores to Gemma changed its next-token
+log odds for ` key` over ` bell` by −0.130377 on that prompt.
+
+[The two selections and the portable state](research/democracy_of_experts.md#two-selections-on-a-sparse-body)
+· [AML experiment](experiments/doe_spores/olmoe.aml)
+· [Weights, scores and reproduction](NOTORCHLOG.md#2026-11-09--a-comma-crosses-a-native-olmoe-routing-boundary)
+
+The [SmolLM2-360M experiment](experiments/doe_spores/transplant.aml) moves a
+single seat's A/B between two GGUF spores and probes fresh conversations.
+AML runs the protocol and reads full-vocabulary logits from the C Harness.
+[Measured probabilities and log odds](experiments/doe_spores/smollm2-360m.tsv)
+and [reproduction commands](NOTORCHLOG.md#2026-11-09--asynchronous-consolidation-and-single-expert-transplants)
+are available for all four founders in both directions.
+
+The [SmolLM2-135M replay](experiments/doe_spores/replay.py) regenerates the
+control and learned spores, traces and restart comparison. The [engineering
+record](NOTORCHLOG.md#2026-11-09--smollm2-remembers-a-parliament-across-processes)
+contains measured continuations and the numerical change made during bring-up.
 
 ## train a model
 
@@ -581,7 +837,7 @@ void nt_blas_matvec(float *out, const float *W, const float *x, int m, int n);
 int  nt_qmatvec(float *out, const uint8_t *Wq, int dtype, const float *x, int m, int k);
 ```
 
-under `USE_BLAS` these dispatch to `cblas_sgemm` / `cblas_sgemv` (Accelerate on macOS, OpenBLAS on Linux). without BLAS they fall back to the naive C loops — correct, just slower. the example engines reach the same BLAS path directly through their own local wrappers in their hot paths: `infer_gemma.c` / `infer_llama.c` / `infer_janus.c` call `cblas_sgemm`, and `infer_llama3_bpe.c` calls `cblas_sgemv` (scalar fallback without `USE_BLAS`).
+under `USE_BLAS` these dispatch to `cblas_sgemm` / `cblas_sgemv` (Accelerate on macOS, OpenBLAS on Linux). without BLAS they fall back to the naive C loops — correct, just slower. the example engines reach the same BLAS path directly through their own local wrappers in their hot paths: `infer_llama.c` / `infer_janus.c` call `cblas_sgemm`, and `infer_llama3_bpe.c` calls `cblas_sgemv` (scalar fallback without `USE_BLAS`).
 
 ---
 

@@ -10,7 +10,7 @@
 
 <!-- 演示位（可选升级）：真机录屏 30–60 秒 —— 进工作模式 → 一句话生成 PPT → 产物卡片展开 → 切到交互模式拖滑块重算。动态 GIF 比静态截图更有说服力。 -->
 
-![HarmonyOS](https://img.shields.io/badge/HarmonyOS-API%2024%20(6.1.1)-blue)
+![HarmonyOS](https://img.shields.io/badge/HarmonyOS-API%2026%20(26.0.0)-blue)
 ![version](https://img.shields.io/badge/version-7.3.0-blue)
 ![forms](https://img.shields.io/badge/Agent%20Forms-Intelligent%20UI%20%2B%20Harness-blueviolet)
 ![shell](https://img.shields.io/badge/shell-IEC%20native%20%C2%B7%20no%20VM-orange)
@@ -74,6 +74,7 @@ Guncat Work 是**鸿蒙手机上的原生 AI 工作台**：它不只负责对话
 - **端侧直出 Office**：PPT / Word / Excel / SVG 由本地生成器产出，基于 JSON 中间层，文档可无损读回、算子式编辑；PDF 与 Office 全部本地解析，不消耗多模态配额。
 - **47 个内置工具**：文件增删改查与模式匹配搜索、任务清单、图片查看、网络下载、PDF 解析、Office 读写、数据管道清洗转换与格式互转、JSVM-API 的 `run_js` 代码沙箱（不联网、不读写文件系统，后台线程执行并带超时保护），以及上面那套 `shell` / `run_python` 执行能力。
 - **用量与成本**：本地逐请求记账、按日聚合为 53 周热力图；内置 DeepSeek 峰谷价与 OpenCode 额度统计，支持月预算、CSV 导出与清空，记账只在响应结束时做 O(1) 归一化，不进入流式热路径。
+- **AI 生成内容标识**：对话/工作模式回答、交互模式界面、复制文本与导出的 Word / PowerPoint / Excel / SVG 均带 `AI生成` 显式标识；Office 文件在 `docProps/custom.xml`、SVG 在 `<metadata>` 中写入符合 GB 45438-2025 附录 E 的 AIGC 隐式标识。应用不内置、不代理大模型，模型服务由用户自行配置。
 - **独立设置页**：按「模型」「能力」「声音」「系统」分组——模型配置 / 高级参数 / 用量与成本；个性化指令 / 能力调度 / 本地联网搜索 / 多模态解析；朗读；终端 / 工具目录 / 检查更新。修改自动防抖保存，返回或切换方案前再同步一次，不丢输入。
 - **个性化指令**：设置 →「能力」→「个性化指令」集中维护自己的长期偏好（语气、格式、术语、工作习惯等），不必每次对话重复交代。每条可选填名称（40 字上限）与正文（8000 字上限，支持 Markdown），「Markdown 渲染」只切换编辑页的原文 / 渲染预览，默认不渲染，保存的始终是原始文本。生效范围多选——交互模式、工作模式与每个聊天引擎，新建默认勾选交互模式与工作模式，至少选一个才能保存；编辑时可删除（二次确认），有未保存修改时返回会提示放弃编辑。保存后，所选范围的系统提示词末尾会追加一段「# 个性化指令（用户在设置中添加）」，每条正文包在 `<personal-instruction>` 标签里（填了名称时带 `name` 属性），并说明这些内容是长期用户偏好、不是新任务；原有提示词前缀逐字节不变，只在结尾追加，指令不改时相邻轮次仍可命中 KV 缓存。指令只存本地、不上传不云同步；单条 8000 字，拼进提示词总预算 16000 字符，超出按添加顺序截断并标注；不注入子代理、标题生成与上下文摘要等内部请求，不改变工具面与权限。
 - **三协议接入**：OpenAI Completions（`/chat/completions`）、OpenAI Responses（`/responses`）、Anthropic Messages（`/messages`），均支持图片直传；深度思考与联网搜索按各协议显式控制。
@@ -90,8 +91,8 @@ Guncat Work 是**鸿蒙手机上的原生 AI 工作台**：它不只负责对话
 
 ### 环境要求
 
-- DevEco Studio 6.1.1 或兼容版本
-- HarmonyOS SDK API 24（`6.1.1`）
+- DevEco Studio 26.0.0 或兼容版本
+- HarmonyOS SDK API 26（`26.0.0`），应用最低运行 API 24（`6.1.1`）
 - HarmonyOS 手机真机（平板 / 2in1 亦可，宽屏自动展开三栏布局）
 
 ### 构建
@@ -109,7 +110,7 @@ hvigorw --mode module -p product=default -p module=entry@default -p buildMode=de
    `libnode.so.xz`，约 23MB；GitHub 拒绝 >100MB 单文件。跑过 `build_node.sh` 的
    可跳过，已存在的 `.so` 不会被覆盖）。
 3. 使用 DevEco Studio 打开**仓库根目录**。
-4. 安装并选择 HarmonyOS SDK API 24。
+4. 安装并选择 HarmonyOS SDK API 26。
 5. 配置调试或发布签名。
 6. 连接 HarmonyOS 真机。
 7. 运行 `entry` 模块，或使用上述命令构建 HAP。

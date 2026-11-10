@@ -664,6 +664,28 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 <!-- AUTO-GENERATED from CHANGELOG.md by scripts/stamp-whats-new.mjs — do not hand-edit between the ork:whats-new markers. -->
 <!-- Regenerated on `npm run build`; CI (`--check`) fails if this is stale. Full history: [CHANGELOG.md](CHANGELOG.md). -->
 
+**[v10.10.8](https://github.com/yonatangross/orchestkit/compare/v10.10.7...v10.10.8)** · 2026-11-09
+
+- **release:** fetch mcp-publisher through the authenticated API (#5162)
+
+**[v10.10.7](https://github.com/yonatangross/orchestkit/compare/v10.10.6...v10.10.7)** · 2026-11-09
+
+- **ci-sentinel:** match the skill to the locked-down dispatch (#5156)
+- **ci-sentinel:** say every failed check, and pin the playbook copy (#5159)
+- **deps-dev:** bump @biomejs/biome (#5153)
+- **deps-dev:** bump @sanity/client (#5154)
+- **deps:** bump @anthropic-ai/sdk (#5151)
+- …and 4 more (see [CHANGELOG.md](CHANGELOG.md))
+
+**[v10.10.6](https://github.com/yonatangross/orchestkit/compare/v10.10.5...v10.10.6)** · 2026-11-09
+
+- **ci-sentinel:** refresh drifted skill text (#5147)
+- **ci:** remove the ci-sentinel ceiling that could never fire (#5141), closes [#5138](https://github.com/yonatangross/orchestkit/issues/5138)
+- **ci:** tell claude-triage the repo so it stops running out of turns (#5143), closes [#5142](https://github.com/yonatangross/orchestkit/issues/5142)
+- **docs:** serve the server card media type when a client asks (#5125)
+- **secrets-veil:** keep image URLs on named media hosts readable (#5146)
+- …and 4 more (see [CHANGELOG.md](CHANGELOG.md))
+
 **[v10.10.5](https://github.com/yonatangross/orchestkit/compare/v10.10.4...v10.10.5)** · 2026-11-08
 
 - Codex hook paths and docs MCP query validation (#5119)
@@ -696,22 +718,6 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 - **release:** cap entries per dist tree request (#5088)
 - **release:** refuse an invalid dist entry cap
 - **memory:** remove the false scored-promotion story and dead hooks (#5089)
-
-**[v10.10.0](https://github.com/yonatangross/orchestkit/compare/v10.9.1...v10.10.0)** · 2026-11-06
-
-- **docs-site:** upload source maps to PostHog at build time (#5082)
-- **hooks:** count every frontmatter hook handler (#5079)
-- **release:** drop stable description counts and give the scan fetch its own budget (#5081)
-
-**[v10.9.1](https://github.com/yonatangross/orchestkit/compare/v10.9.0...v10.9.1)** · 2026-11-05
-
-- **ci:** pin ruff, and clear SIM102 in circuit-breaker (#5080)
-- **docs-site:** serve missing /lab pages as static HTML, not the app shell (#5075)
-- stamp the README hook counts from one source (#5076), closes [#5067](https://github.com/yonatangross/orchestkit/issues/5067)
-
-**[v10.9.0](https://github.com/yonatangross/orchestkit/compare/v10.8.6...v10.9.0)** · 2026-11-05
-
-- **release:** sync plugins/ork to the orchestkit-plugin dist repo (#5070)
 
 _See [CHANGELOG.md](CHANGELOG.md) for the full release history._
 <!--/ork-->

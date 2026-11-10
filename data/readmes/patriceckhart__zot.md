@@ -74,7 +74,7 @@ Every release on the [releases page](https://github.com/patriceckhart/zot/releas
 
 ## Authenticate
 
-The easiest way is to just run `zot` and type `/login`. The TUI opens even without credentials and walks you through a browser-based login flow.
+The easiest way is to just run `zot` and type `/login`. The TUI opens even without credentials. API keys are entered directly in a hidden terminal input, including over SSH. Subscription login uses the provider's browser or device-code flow.
 
 ### Credential lookup order
 
@@ -127,11 +127,24 @@ zot runs the command only when that provider is selected, not while checking log
 
 Treat `auth.json` as executable configuration: anyone who can modify it can cause zot to run a program under your user account. zot does not interpret `!` prefixes or execute command strings through a shell.
 
+### Headless API-key setup
+
+Use `zot auth set <provider>` for a hidden terminal prompt without starting
+the TUI, or `zot auth set <provider> --stdin < /path/to/protected-key.txt`
+for scripts. Keys are not accepted as positional arguments, to avoid exposing
+them in process listings and shell history. Both forms validate the key where
+supported and save it to `$ZOT_HOME/auth.json`. Custom providers must already
+be configured in `models.json`.
+
+For subscription login over SSH, use the existing copy-code or device flows,
+or forward the provider's fixed callback port. See
+[headless and SSH authentication](docs/providers.md#headless-and-ssh-authentication).
+
 ### `/login` flow
 
 Run `zot` and type `/login`. Pick one of two methods:
 
-- **API key**: a small local web server starts on `127.0.0.1:<free-port>`, your browser opens a form, you pick a provider from the full API-key provider list, paste the key, and zot saves it to `auth.json` if accepted. Providers with a lightweight model-list endpoint are probed before saving; provider backends that need extra project/account env vars are saved directly.
+- **API key**: pick a provider, paste the key into the masked terminal input, and press Enter to validate and save it to `auth.json`. No browser or callback server is needed. Providers with a lightweight model-list endpoint are probed before saving. Providers needing extra project/account settings show setup guidance instead.
 - **Subscription**: use your Claude Pro/Max, ChatGPT Plus/Pro, Kimi Code, SuperGrok/X Premium, or GitHub Copilot subscription. DeepSeek and Google Gemini do **not** have a subscription login path. For those, use the API-key flow.
   - For Anthropic, choose browser callback (`localhost:53692`) or copy code before starting login. Browser callback also accepts a pasted code or full redirect URL from the same authorization link. Copy code uses Anthropic's hosted redirect and works over SSH or on headless machines without a local callback server. Anthropic uses the Claude Code OAuth flow. Messages go to `api.anthropic.com` with a bearer token and the Claude Code identity headers.
   - OpenAI uses the Codex CLI OAuth flow with a browser callback on `localhost:1455`. The same authorization link also accepts a pasted code or full redirect URL if the browser cannot reach zot's callback port (for example, over SSH). Copy the final redirect URL from the browser address bar, even if the page fails to load locally. The callback port must still be available on the machine running zot. Messages go to `chatgpt.com/backend-api/codex/responses` with the `chatgpt-account-id` extracted from the returned id_token.
@@ -160,7 +173,7 @@ $ZOT_HOME/
 ├── models-cache.json   # live /v1/models discovery cache (6h ttl)
 ├── AGENTS.md           # optional: global instructions appended to the prompt
 ├── SYSTEM.md           # optional: replaces the default system prompt
-├── COMPACT.md          # optional: additional compaction instructions
+├── COMPACT.md          # optional: replacement compaction template
 ├── skills/             # optional: user SKILL.md files
 ├── themes/             # optional: user theme JSON files
 ├── extensions/         # installed extensions, one dir per extension
@@ -169,6 +182,8 @@ $ZOT_HOME/
 ```
 
 Drop a `SYSTEM.md` in `$ZOT_HOME` to replace the built-in identity and zot-docs guidance for every run. `--system-prompt` still wins per-invocation. Pass an empty value (`--system-prompt ""`) to intentionally omit the built-in identity. Custom prompts still receive appended instructions and generated context, including `AGENTS.md`, skills, auto-swarm guidance when enabled, and the date/cwd footer. Delete the file to revert to the default.
+
+The default identity is tool-independent. Built-in editing guidance follows the available tool set, including `--no-tools` and restricted `--tools` selections. The docs guidance mentions `read` only when available. Shell-based editing is discouraged only when `bash`, `edit`, and `write` are all available. On Windows, the cmd.exe shell hint is included only when `bash` is available. Custom prompts replace the built-in editing guidance as well as the identity and docs guidance.
 
 ### Offline documentation
 
@@ -195,17 +210,20 @@ must still be available locally. Release builds require a successful docs downlo
 
 ### Compaction instructions
 
-Create `$ZOT_HOME/COMPACT.md` to add persistent guidance to manual (`/compact`)
-and automatic compaction. For per-run additions, use the repeatable flag:
+Create `$ZOT_HOME/COMPACT.md` to replace the built-in summary template for manual
+(`/compact`) and automatic compaction. The file controls the summary's content
+and format. For per-run additions, use the repeatable flag:
 
 ```sh
 zot --append-compaction-prompt "Reference Markdown documents by path instead of repeating their contents."
 ```
 
-Instructions are appended to the built-in summary template in this order:
-`COMPACT.md`, then flag values in command-line order. They do not replace the
-summary template or the separate summarization system prompt. Missing or blank
-files add nothing. Other file-read failures stop startup with an error.
+A nonblank `COMPACT.md` replaces the built-in summary template. Missing or blank
+files use the built-in template. Flag values are appended to the selected template
+in command-line order. The separate summarization system prompt still requires
+summarizing rather than continuing the conversation, but does not impose the
+built-in format when a custom template is used. Other file-read failures stop
+startup with an error.
 Instructions are loaded when the agent is configured, so restart zot after
 editing the file. They also apply to resumed sessions, but are not stored as
 session settings. Normal system-prompt overrides and `AGENTS.md` do not configure
@@ -214,7 +232,9 @@ this separate summarization request.
 For example, `COMPACT.md` could contain:
 
 ```markdown
-Prioritize the current work, unresolved issues, key decisions, and next steps.
+Summarize the conversation as a concise handoff for another coding assistant.
+Use sections for current work, completed changes, unresolved issues, key decisions,
+and next steps.
 Reference existing Markdown documents by exact path instead of repeating their
 contents. Preserve essential context that is not recorded in those documents.
 ```
@@ -222,7 +242,8 @@ contents. Preserve essential context that is not recorded in those documents.
 The summarizer receives the transcript without tools. It cannot open referenced
 files or verify that their contents are sufficient for resuming work.
 The Go SDK exposes `Config.AppendCompactionPrompt`. Direct core users can set
-`Agent.CompactionInstructions` before use. Continuous-mode summaries use the same
+`Agent.CompactionPrompt` to replace the template and `Agent.CompactionInstructions`
+to append guidance before use. Continuous-mode summaries use the same
 configured instructions, followed by any per-request `conversation.compact`
 instructions. No customization leaves the existing compaction behavior unchanged.
 
@@ -993,27 +1014,4 @@ zot --provider google-vertex
 
 Required configuration (env vars, read at construction time):
 
-- `GOOGLE_CLOUD_PROJECT` — required, your GCP project id.
-- `GOOGLE_CLOUD_LOCATION` — optional, defaults to `us-central1`.
-
-Credential lookup order for Vertex:
-
-1. `GOOGLE_CLOUD_API_KEY`: simplest option. An API key created in the GCP console is sent as `x-goog-api-key`, without a token exchange.
-2. `GOOGLE_APPLICATION_CREDENTIALS`: path to a supported credential JSON file.
-3. **Default ADC file**: if neither of the above is set, zot checks the file written by `gcloud auth application-default login`. This is `~/.config/gcloud/application_default_credentials.json` on Unix systems and `%APPDATA%\gcloud\application_default_credentials.json` on Windows.
-
-Two credential file shapes are supported:
-
-- `type: "service_account"`: zot signs a JWT with the private key and exchanges it for a short-lived access token.
-- `type: "authorized_user"`: zot exchanges the stored client ID, client secret, and refresh token for a short-lived access token.
-
-Access tokens are cached in memory and refreshed on demand.
-
-If none of these are available, zot errors with `vertex: no auth — set GOOGLE_CLOUD_API_KEY or GOOGLE_APPLICATION_CREDENTIALS`.
-
-### Amazon Bedrock
-
-zot talks to Bedrock's Converse streaming API and supports two credential styles:
-
-- **Bedrock API key** (bearer token) via `AWS_BEARER_TOKEN_BEDROCK`. This is the simplest setup: a single opaque string, region-scoped to wherever it was minted. It requires only the `bedrock:CallWithBearerToken` permission.
-- **SigV4** via `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY` (plus optional `AWS_S
+-

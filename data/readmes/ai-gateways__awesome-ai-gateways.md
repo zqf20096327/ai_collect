@@ -42,6 +42,7 @@ Gateways built for model traffic: one API in front of many providers, with routi
 - [Teapot Router](https://teapotrouter.com) - Hosted gateway for coding agents that speaks the Anthropic and OpenAI protocols on one key, with per-request cost, token, and latency logging, public machine-readable pricing, multi-upstream failover, and credit that never expires (`Proprietary`).
 - [Traceloop Hub](https://github.com/traceloop/hub) - LLM gateway that exposes an OpenAI-compatible API over OpenAI, Anthropic, Azure OpenAI, Vertex AI, and Bedrock and records every call as OpenTelemetry traces (`Apache-2.0`, `Rust`).
 - [TrueFoundry AI Gateway](https://www.truefoundry.com/ai-gateway) - Enterprise gateway for hundreds of models with unified governance and real-time observability, offered alongside TrueFoundry's MCP gateway and agent gateway (`Proprietary`).
+- [Vectoree](https://vectoree.ai) - Hosted OpenAI-compatible gateway for coding agents with one project key across multiple providers, plus auth, PostgreSQL and object storage, a CLI and agent skill, billed pay-as-you-go with a $5 welcome credit (`Proprietary`).
 
 ## MCP Gateways
 
@@ -107,6 +108,7 @@ Hosted APIs for many models behind one key, and routers that pick a model for ea
 - [Amazon Bedrock Intelligent Prompt Routing](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-routing.html#prompt-routing-works) - Serverless Bedrock endpoint that routes each request between models in the same family based on predicted response quality (`Proprietary`).
 - [AnyAPI.ai](https://anyapi.ai) - Hosted API for 400+ models behind one OpenAI-compatible endpoint and an Anthropic Messages endpoint on the same host, with automatic provider failover, per-token billing, and a free tier of 100K tokens per day (`Proprietary`).
 - [cheapaimodel](https://cheapaimodel.ai/docs) - Hosted OpenAI-compatible API with one key for every model in its catalog, billed per token from a prepaid US-dollar balance, with per-key expiry dates, spending budgets, model allowlists, and IP allowlists (`Proprietary`).
+- [Imagera LLM API](https://imagera.ai/llm-api) - Hosted OpenAI-compatible API that serves 320+ language models from 48 labs with one API key, streams responses as server-sent events, and bills per token from the account's Imagera balance (`Proprietary`).
 - [Microsoft Foundry Model Router](https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/model-router#how-model-router-works) - Trained language model, deployed like any other Foundry model, that routes each prompt in real time to the most suitable underlying LLM (`Proprietary`).
 - [Nivana](https://nivana.one/docs/routing) - Hosted model router that profiles each request by task and difficulty, scores every model in its pool on measured quality, live price, and speed, and sends the request to the highest scorer (`Proprietary`).
 - [Not Diamond](https://www.notdiamond.ai) - Model router for coding agents that predicts which model to use for each input and works with existing harnesses and gateways (`Proprietary`).

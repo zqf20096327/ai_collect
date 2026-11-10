@@ -267,11 +267,11 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 ### Retrieval-Augmented Generation (RAG)
 
 - What is Retrieval-Augmented Generation (RAG), and why is it important?
-  - Answer: Explained in this video: [AI Engineering Explained: LLM, RAG, MCP, Agent, Fine-Tuning, Quantization](https://www.youtube.com/watch?v=lnfWvX66FUk)
+  - Answer: Explained in this video: [AI Engineering Explained: LLM, RAG, MCP, Agent, Fine-Tuning, Quantization](https://www.youtube.com/watch?v=lnfWvX66FUk) and [How does RAG work?](https://outcomeschool.com/blog/retrieval-augmented-generation-rag)
 - Explain the architecture of a basic RAG system.
-  - Answer: Explained in this video: [AI Engineering Explained: LLM, RAG, MCP, Agent, Fine-Tuning, Quantization](https://www.youtube.com/watch?v=lnfWvX66FUk)
+  - Answer: Explained in this video: [AI Engineering Explained: LLM, RAG, MCP, Agent, Fine-Tuning, Quantization](https://www.youtube.com/watch?v=lnfWvX66FUk) and [How does RAG work?](https://outcomeschool.com/blog/retrieval-augmented-generation-rag)
 - What are the key components of a RAG pipeline?
-  - Answer: Explained in this video: [AI Engineering Explained: LLM, RAG, MCP, Agent, Fine-Tuning, Quantization](https://www.youtube.com/watch?v=lnfWvX66FUk)
+  - Answer: Explained in this video: [AI Engineering Explained: LLM, RAG, MCP, Agent, Fine-Tuning, Quantization](https://www.youtube.com/watch?v=lnfWvX66FUk) and [How does RAG work?](https://outcomeschool.com/blog/retrieval-augmented-generation-rag)
 - What are chunking strategies, and how do you choose the right chunk size?
   - Answer: [Chunking Strategies for RAG](https://outcomeschool.com/blog/chunking-strategies-for-rag)
 - Compare fixed-size chunking, semantic chunking, and recursive chunking.
@@ -452,6 +452,8 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
   - Answer: [Decoding InstructGPT](https://outcomeschool.com/blog/decoding-instructgpt) and [How does Pretraining work?](https://outcomeschool.com/blog/llm-pretraining)
 - What is RLHF (Reinforcement Learning from Human Feedback), and how is it used to align LLMs?
   - Answer: [Reinforcement Learning from Human Feedback (RLHF)](https://outcomeschool.com/blog/reinforcement-learning-from-human-feedback-rlhf)
+- What is a reward model, and how is it trained?
+  - Answer: [What is a Reward Model and How Is It Trained?](https://outcomeschool.com/blog/reward-model)
 - What is Deep RL from Human Preferences, the paper that started RLHF?
   - Answer: [Deep RL from Human Preferences](https://outcomeschool.com/blog/decoding-deep-rl-from-human-preferences)
 - Why did DPO displace PPO-based RLHF at many labs? When is online RL still better?
@@ -820,7 +822,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - How do you handle a slow or long-running tool call in a voice agent?
   - Answer: [How does a voice agent hide the delay of a slow tool call?](https://outcomeschool.com/blog/slow-tool-calls-in-voice-agents)
 - How do you handle barge-in (user interruptions) in a voice agent?
-  - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [What is turn-taking in a voice AI agent?](https://outcomeschool.com/blog/what-is-turn-taking-in-a-voice-ai-agent), [What is barge-in in a voice AI agent?](https://outcomeschool.com/blog/what-is-barge-in-in-a-voice-ai-agent), [How does a voice agent tell a real interruption from a cough or background noise?](https://outcomeschool.com/blog/interruption-vs-background-noise) , [How does a voice agent stop speaking instantly when interrupted?](https://outcomeschool.com/blog/stopping-speech-on-interruption) and [How does a voice agent truncate its memory to only what the user actually heard?](https://outcomeschool.com/blog/truncating-context-on-interruption)
+  - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [What is turn-taking in a voice AI agent?](https://outcomeschool.com/blog/what-is-turn-taking-in-a-voice-ai-agent), [What is barge-in in a voice AI agent?](https://outcomeschool.com/blog/what-is-barge-in-in-a-voice-ai-agent), [How does a voice agent tell a real interruption from a cough or background noise?](https://outcomeschool.com/blog/interruption-vs-background-noise) , [How does a voice agent stop speaking instantly when interrupted?](https://outcomeschool.com/blog/stopping-speech-on-interruption), [How does a voice agent truncate its memory to only what the user actually heard?](https://outcomeschool.com/blog/truncating-context-on-interruption), [How does a voice agent recover from a false interruption?](https://outcomeschool.com/blog/false-interruption-recovery) and [How does a voice agent handle the user and agent talking at the same time?](https://outcomeschool.com/blog/overlapping-speech-in-voice-agents)
 - Cascaded ASR + LLM + TTS vs native speech-to-speech models: what are the trade-offs?
   - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent) and [Cascaded vs Speech-to-Speech: How to choose the right voice agent architecture?](https://outcomeschool.com/blog/cascaded-vs-speech-to-speech)
 - What is the difference between half-duplex and full-duplex voice agents?
@@ -864,6 +866,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - How does an LPU work?
   - Answer: [How does an LPU work?](https://outcomeschool.com/blog/how-does-an-lpu-work)
 - Estimate the GPU memory needed to serve a 70B model (weights, KV cache, activations). Does it fit on a single 80 GB GPU?
+  - Answer: [How does an LLM use GPU memory?](https://outcomeschool.com/blog/llm-gpu-memory)
 - Do the roofline math: how many tokens/sec can one H100 produce for a 70B model at batch size 1?
 - What is model parallelism vs data parallelism in distributed training?
 - What is tensor parallelism, and how does it help serve large models?

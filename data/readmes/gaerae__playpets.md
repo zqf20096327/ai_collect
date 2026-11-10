@@ -29,7 +29,7 @@ Site in: [English](https://playpets.gaerae.com/) · [Korean](https://playpets.ga
 - 👥 Up to 12 friends at once, in the yard and out on your desktop, one by one, with gifts from the yard to decorate it. Keep your pet in the ChatGPT desktop app too: both read the same pet files.
 - 💬 They chat with you, and with each other, through the AI you pick.
 - 🧑‍💻 They react to Claude Code, Codex, Gemini CLI, Cursor and other MCP tools.
-- 🏡 A yard of their own: four places or your own backgrounds, gifts like a swing or a pond, three games, a garden, fishing and a 150-entry album.
+- 🏡 A yard of their own: four places or your own backgrounds, gifts like a swing or a pond, four games (one only in winter), a garden, fishing and a 169-entry album.
 - 🌱 The four starter pets also dig, plant, fish and change clothes with the seasons.
 - 🔓 Free and open source (MIT) for macOS, Windows and Linux.
 
@@ -47,7 +47,7 @@ Site in: [English](https://playpets.gaerae.com/) · [Korean](https://playpets.ga
 | AI connections | Signed-in Claude Code or Codex CLI, local Ollama, an OpenAI or Grok (xAI) API key, or an OpenAI-compatible server; one AI per friend |
 | Places | Four places and imported backgrounds; season, time and weather controls |
 | Play | Hide and seek, parade, tag |
-| Garden and album | Dig for seeds, saplings and keepsakes; plant; fish and catch bugs; fill a 150-entry album |
+| Garden and album | Dig for seeds, saplings and keepsakes; plant; fish and catch bugs; fill a 169-entry album |
 | Desktop mode | Send friends and gifts out one by one from their right-click menu; friends stroll and visit the gifts (on macOS, over full-screen apps too) |
 | Coding company | Hooks and MCP for Claude Code, Codex, Gemini CLI, Cursor, Grok Build, Qoder, Kimi Code and other MCP tools |
 | Languages | English, Korean, Japanese, Simplified Chinese |
@@ -71,7 +71,7 @@ winget install --id 9NSKXQ6R187M --source msstore
 
 - From 1.3.0 the macOS app is signed and notarized. The Windows installer from GitHub is not code-signed yet, so SmartScreen may warn ([how to install it through the warning](https://playpets.gaerae.com/guide/install#installer-from-github)); the Microsoft Store and winget packages are signed by Microsoft.
 - The [install guide](https://playpets.gaerae.com/guide/install) covers those warnings and Linux notes.
-- The Microsoft Store package needs Windows 10 version 1809 or later.
+- The Microsoft Store package needs Windows 10 version 2004 or later.
 - To build from source, see [Development](#development).
 
 ## Getting started

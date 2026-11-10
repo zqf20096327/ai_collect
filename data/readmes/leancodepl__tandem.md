@@ -23,7 +23,7 @@ Run `dart run skills@ add leancodepl/tandem --skill tandem --agent claude`, then
 
 In a new session, `/tandem` starts the same workflow. Claude Code is the only coding agent Tandem is tested with. You can set up Cursor with `--agent cursor` and `.cursor/skills/tandem/SKILL.md`, or Codex with `--agent codex` and `.agents/skills/tandem/SKILL.md`. These setups have not been tested.
 
-Pick a screen. Its state class lists the data an AI agent can read and the methods it can call. Those methods use the same validation as your buttons. Calls marked for approval wait for the user. Add a `TandemView` for the agent to draw a view with your own widgets, such as an order summary with a button to place the order. The integration stays within that screen.
+Pick a screen. Its state class lists the data an AI agent can read and the methods it can call. Those methods use the same validation as your buttons. Calls marked for approval wait for the user. Add a `TandemView` for the agent to draw with A2UI components backed by your own widgets, such as an order summary with a button to place the order. The integration stays within that screen.
 
 ## How it works
 
@@ -559,7 +559,7 @@ To send the user's token, give `HttpAgentConnection` an `http.Client` that adds 
 
 ## Project status
 
-Each release of Tandem is checked on iOS and Android. Other platforms are outside this release gate. Apple's on-device connection remains experimental and has separate requirements and manual checks.
+Each release of Tandem is checked on iOS and Android. For the web, CI runs the tests of `tandem` and the example in Chrome and builds the example with WebAssembly. Other platforms are outside these checks. Apple's on-device connection remains experimental and has separate requirements and manual checks.
 
 Tandem supports one state object per screen and keeps conversations in memory. Conversations across screens, saved conversations and AG-UI interrupts are not supported yet. An interrupt fails the run. The next message starts a new AG-UI thread, while existing chat items remain visible.
 

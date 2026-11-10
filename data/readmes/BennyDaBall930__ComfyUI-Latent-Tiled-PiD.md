@@ -297,3 +297,7 @@ and no NVIDIA code** — the PiD checkpoints come from NVIDIA under the
 Independent project — not affiliated with, sponsored by, or endorsed by NVIDIA or Comfy Org.
 
 Built & tested locally with care by BennyDaBall930.
+
+**Follow me on X [@BennyDaBall_OG](https://x.com/BennyDaBall_OG) !**
+
+**Want to support my work? Buy me a coffee on [Ko-fi](https://ko-fi.com/bennydaball) !**

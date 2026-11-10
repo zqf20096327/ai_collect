@@ -33,11 +33,11 @@ Upscale an existing H3 video with a learned latent upscaler, then refine detail 
   <tbody>
     <tr>
       <td width="50%"><video controls playsinline preload="metadata" width="100%" src="https://github.com/user-attachments/assets/5177d194-77af-4bbd-99d4-5f116a9997e7"></video></td>
-      <td width="50%"><video controls playsinline preload="metadata" width="100%" src="https://github.com/user-attachments/assets/2ddd1845-8f32-461d-9363-934b31840b66"></video></td>
+      <td width="50%"><video controls playsinline preload="metadata" width="100%" src="https://github.com/user-attachments/assets/2f3b9e7f-cfec-4792-b04e-f4725c955e39"></video></td>
     </tr>
     <tr>
       <td align="center"><a href="https://huggingface.co/SOLRICKS/MiniMax-H3-Upscaler/resolve/main/Minimax_H3_I2V.mp4">Open original video</a></td>
-      <td align="center"><a href="https://huggingface.co/SOLRICKS/MiniMax-H3-Upscaler/resolve/main/Minimax-H3-Upscaler.mp4">Open upscaled video</a></td>
+      <td align="center"><a href="https://huggingface.co/SOLRICKS/MiniMax-H3-Upscaler/resolve/main/Minimax_H3_I2V_Upscaler.mp4">Open upscaled video</a></td>
     </tr>
   </tbody>
 </table>
@@ -50,7 +50,7 @@ Download the models and example workflows from the [Visual AI Models & Tools](ht
 
 | Model | Download | Place in |
 |---|---|---|
-| Experimental INT8 refiner LoRA | [h3_upscale_refiner_int8.safetensors](https://huggingface.co/SOLRICKS/MiniMax-H3-Upscaler/resolve/main/h3_upscale_refiner_int8.safetensors?download=true) | `ComfyUI/models/loras/` |
+| INT8 refiner LoRA | [h3_upscale_refiner_int8.safetensors](https://huggingface.co/SOLRICKS/MiniMax-H3-Upscaler/resolve/main/h3_upscale_refiner_int8.safetensors?download=true) | `ComfyUI/models/loras/` |
 | FP16 latent upscaler | [minimax_h3_latent_upscaler_3d_conv_v1_fp16.safetensors](https://huggingface.co/SOLRICKS/MiniMax-H3-Upscaler/resolve/main/minimax_h3_latent_upscaler_3d_conv_v1_fp16.safetensors?download=true) | `ComfyUI/models/latent_upscale_models/` |
 
 You also need a compatible **MiniMax H3 FL2VA diffusion model** and **H3 video VAE**, such as the files in [Kijai/MiniMax-H3-experimental](https://huggingface.co/Kijai/MiniMax-H3-experimental). Put these in `models/diffusion_models/` and `models/vae/` respectively. Connect a model without generation/Turbo/style LoRAs: this node applies the refiner LoRA itself.

@@ -9,8 +9,8 @@ This is the corresponding code for the book Harness Engineering: Optimization, C
 ## TOC
 - Chapter 1 Why Harness Engineering Matters
 - Chapter 2 The Harness as the Agent System Substrate
-- Chapter 3 Skills, Instructions, and Runtime Scaffolding
-- Chapter 4 Context-Scoped Skill Compilation
+- Chapter 3 Skills, Instructions, Runtime Scaffolding, and Trust Boundaries
+- Chapter 4 Long-Running Skills, Registries, and Controlled Evolution
 - Chapter 5 Agent Identity: The Durable Boundary
 - Chapter 6 The Action Surface: Tools, Sandboxes, and Capability Scoping 
 - Chapter 7 Coordination as State: Why Multi-Agents Systems Fail at the Handoff Layer
@@ -55,6 +55,23 @@ Every notebook can be opened and run on Google Colab directly from the links bel
 |---|---|
 | Harness Components | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Nicolepcx/harness_engineering/blob/main/ch02/ch02_harness_components.ipynb) |
 | State Across Execution Boundaries | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Nicolepcx/harness_engineering/blob/main/ch02/ch02_state_across_execution_boundaries.ipynb) |
+
+### Chapter 3 — Skills, Instructions, Runtime Scaffolding, and Trust Boundaries
+| Notebook | Colab |
+|---|---|
+| Skills as a Trust Boundary | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Nicolepcx/harness_engineering/blob/main/ch03/ch03_skills_as_a_trust_boundary.ipynb) |
+| Skills, Instructions & Runtime Scaffolding (JEV) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Nicolepcx/harness_engineering/blob/main/ch03/ch03_skills_instructions_runtime_scaffolding_jev.ipynb) |
+| Runtime Scaffolding: Judge–Verifier | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Nicolepcx/harness_engineering/blob/main/ch03/ch03_skills_runtime_scaffolding_judge_verifier.ipynb) |
+| Evaluation with Langfuse: Skills Split, Latency & Costs | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Nicolepcx/harness_engineering/blob/main/ch03/ch03_evaluation_langfuse_skills_split_latency_costs.ipynb) |
+
+### Chapter 4 — Long-Running Skills, Registries, and Controlled Evolution
+| Notebook | Colab |
+|---|---|
+| Agent Skill Registries | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Nicolepcx/harness_engineering/blob/main/ch04/ch04_agent_skill_registries.ipynb) |
+| Explicit Execution State | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Nicolepcx/harness_engineering/blob/main/ch04/ch04_explicit_execution_state.ipynb) |
+| Long-Running Skill State | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Nicolepcx/harness_engineering/blob/main/ch04/ch04_long_running_skill_state.ipynb) |
+| Long-Running Skill State (LangGraph) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Nicolepcx/harness_engineering/blob/main/ch04/ch04_long_running_skill_state_langgraph.ipynb) |
+| Skill Evolution | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Nicolepcx/harness_engineering/blob/main/ch04/ch04_skill_evolution.ipynb) |
 
 
 __NOTE:__ You may need to run the notebooks with a GPU. 

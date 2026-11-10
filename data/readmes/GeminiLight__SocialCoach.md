@@ -43,23 +43,9 @@
 2. **进入对练。** 对方有自己的诉求、顾虑和底线，会追问、提出异议，也会坚持立场。
 3. **复盘，再试一次。** 看教练如何结合你的原话给出反馈，尝试另一种回应，把收获带进下一次练习。
 
-<table align="center">
-<tr>
-<th width="33%">1 · 找到适合的练习</th>
-<th width="33%">2 · 进入情境对话</th>
-<th width="33%">3 · 看懂自己的表现</th>
-</tr>
-<tr>
-<td><a href="docs/screenshots/screenshot-01-home-zh.png"><img src="docs/screenshots/screenshot-01-home-zh.png" width="260" alt="首页推荐拒绝临时加班的练习，并说明它为什么适合当前目标"></a></td>
-<td><a href="docs/screenshots/screenshot-02-pushback-zh.png"><img src="docs/screenshots/screenshot-02-pushback-zh.png" width="260" alt="在对练中回应经理的要求和进一步追问"></a></td>
-<td><a href="docs/screenshots/screenshot-03-evidence-debrief-zh.png"><img src="docs/screenshots/screenshot-03-evidence-debrief-zh.png" width="260" alt="复盘引用用户原话，解释表达的问题，并给出更清楚的边界表达建议"></a></td>
-</tr>
-<tr>
-<td><sub>根据你的目标，安排下一场练习。</sub></td>
-<td><sub>在来回交谈中练习回应与协商。</sub></td>
-<td><sub>从自己的原话里找到改进方向。</sub></td>
-</tr>
-</table>
+<p align="center"><img src="docs/screenshots/demo-practice-zh.gif" width="380" alt="一场真实录制的拒绝临时加班练习：先含糊答应，经理追问几点开始；再说清边界并给出方案，经理继续追问细节；结束后揭示经理没说的底牌，复盘引用学习者原话"></p>
+
+<p align="center"><sub>一次真实录制，未剪辑台词：含糊的第一句被听成「好」，说清边界后对方仍在追问，复盘从你的原话讲起。</sub></p>
 
 <p align="center"><a href="https://socialcoach.aurax.live"><strong>开始一场练习 →</strong></a></p>
 
@@ -86,7 +72,7 @@
 
 先看看五个双语练习情境：[和老板谈加薪](https://tianfu.wang/SocialCoach/guides/salary-raise/)、[拒绝临时加班](https://tianfu.wang/SocialCoach/guides/declining-extra-hours/)、[会议上被同事质问](https://tianfu.wang/SocialCoach/guides/meeting-tension/)、[和伴侣谈家务分工](https://tianfu.wang/SocialCoach/guides/spouse-chores/)、[请朋友还钱](https://tianfu.wang/SocialCoach/guides/friend-borrowed-money/)。每页都能进入应用练对应场景。
 
-从覆盖 **7 类生活情境的 58 个场景**中选择，跟随个性化推荐练习，也可以描述你自己的处境。界面与练习内容均支持**中文和英文**。
+从覆盖 **7 类生活情境的 63 个场景**中选择，跟随个性化推荐练习，也可以描述你自己的处境。界面与练习内容均支持**中文和英文**。
 
 文字练习至少从 12 个用户回合开始，可以每次增加 8 回合继续同一场对话，保留此前的内容和承诺，由你决定何时结束并复盘。
 
@@ -240,15 +226,17 @@ SocialCoach 基于 Wang 等人的论文 [*SocialCoach: Personalized Social Skill
 
 欢迎扫码加入 **SocialCoach 体验交流群**，分享体验、反馈问题，一起聊聊那些难开口的场景。
 
-<img src="docs/community/wechat-group-2026-10-21.png" alt="SocialCoach 体验交流群微信二维码，2026 年 10 月 28 日前有效" width="320">
+<img src="docs/community/wechat-group-2026-11-09.png" alt="SocialCoach 体验交流群微信二维码，2026 年 11 月 16 日前有效" width="320">
 
-群二维码在 **2026 年 10 月 28 日前有效**。也可以添加我的个人微信：**`gemining2018`**。
+群二维码在 **2026 年 11 月 16 日前有效**。也可以添加我的个人微信：**`gemining2018`**。
 
 ## 参与贡献
 
 欢迎提交问题反馈、翻译和改进。报告 bug 时，请附上复现步骤、浏览器与模型配置，并去除 API key 和私人对话。
 
-语料贡献从 [`app/src/data/corpus/`](app/src/data/corpus) 开始：内容保持中英双语，提供 `source`，并明确标注教学示例。参与开发前请阅读 [`AGENTS.md`](AGENTS.md) 与 [`app/AGENTS.md`](app/AGENTS.md)。
+**不会写代码也能贡献场景**：用[场景投稿表单](https://github.com/GeminiLight/SocialCoach/issues/new?template=scenario-proposal.yml)描述一场你难开口的对话，维护者整理成双语场景并测试后上线。详见 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
+
+直接修改语料从 [`app/src/data/corpus/`](app/src/data/corpus) 开始：内容保持中英双语，提供 `source`，并明确标注教学示例。参与开发前请阅读 [`AGENTS.md`](AGENTS.md) 与 [`app/AGENTS.md`](app/AGENTS.md)。
 
 ## Contributors
 

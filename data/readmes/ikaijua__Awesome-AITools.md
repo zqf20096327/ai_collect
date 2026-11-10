@@ -235,6 +235,7 @@ Automate web, desktop, and mobile interactions with supporting browsers and sand
 | Lightpanda | A lightweight, high-performance headless browser written in Zig, designed for AI agents. Optimized for speed and low memory (~9x faster than Chrome), featuring native MCP support and Markdown output for LLMs. | [GitHub](https://github.com/lightpanda-io/browser) ![GitHub Repo stars](https://img.shields.io/github/stars/lightpanda-io/browser?style=social) | Free |
 | bb-browser | Enable AI agents to control your real Chrome browser session, accessing sites with your existing login state without APIs. | [GitHub](https://github.com/epiral/bb-browser) ![GitHub Repo stars](https://img.shields.io/github/stars/epiral/bb-browser?style=social) | Free |
 | Chrome DevTools MCP | Official Model Context Protocol server from Chrome DevTools that enables AI coding agents (like Claude Code, Gemini CLI) to control and inspect a live Chrome browser. Supports performance trace analysis, network request debugging, screenshot capture, and console log inspection, helping AI agents better run, test, and debug code. | [GitHub](https://github.com/ChromeDevTools/chrome-devtools-mcp) ![GitHub Repo stars](https://img.shields.io/github/stars/ChromeDevTools/chrome-devtools-mcp?style=social) | Free |
+| Firecrawl | Open-source (AGPL-3.0, self-hostable core) context API for AI agents. It searches the web (with full page content on request), scrapes any URL into clean Markdown or structured JSON, parses PDFs and other documents, crawls whole sites, maps a site's URLs, interacts with pages in a real browser (clicks, forms, dynamic pages), runs agent jobs for multi-source research and monitors pages for changes. Use it through the hosted API, Python and Node SDKs, a CLI, the [MCP server](https://github.com/firecrawl/firecrawl-mcp-server) for Claude Code, Cursor and other MCP clients, or the [Firecrawl skills](https://github.com/firecrawl/skills) for coding agents. [More Info](https://github.com/ikaijua/Awesome-AITools/discussions/1620) | [URL](https://www.firecrawl.dev/?utm_source=awesome-aitools&utm_medium=integration) [GitHub](https://github.com/firecrawl/firecrawl) ![GitHub Repo stars](https://img.shields.io/github/stars/firecrawl/firecrawl?style=social) | Free/Paid |
 
 ### Agent Memory & Context
 
@@ -400,18 +401,4 @@ Store and retrieve historical memory, and build context from codebases and knowl
 | --- | --- | --- | --- |
 | DeepInfer | 🌱 DeepSeek's open-source, production-grade inference framework that powers DeepSeek-V4.1-Flash at scale — high throughput and low latency, integrating DeepSeek's optimized kernels (FlashMLA, DeepGEMM, DeepEP, TileLang) with DSpark speculative decoding, SWA bounded replay, async scheduling, batch-invariant/deterministic sampling, and structured outputs. Runs on NVIDIA SM100 (Blackwell) and Huawei Ascend 950. Early release: offline inference only — a full KV cache and Prefill/Decode disaggregation are not yet packaged, and only DeepSeek-V4.1-Flash is supported. Apache-2.0, free to self-host.<br>[More Info](https://github.com/ikaijua/Awesome-AITools/discussions/1375) | [GitHub](https://github.com/deepseek-ai/DeepInfer) ![GitHub Repo stars](https://img.shields.io/github/stars/deepseek-ai/DeepInfer?style=social) | Free |
 | DwarfStar (ds4) | antirez's (creator of Redis) from-scratch native inference engine in C (MIT) — built to run a few near-frontier open models on consumer hardware: DeepSeek V4/4.1 Flash, V4 Pro, GLM 5.2/5.3 and Qwen3.8 Flash Next fit on a 96GB Mac or one 96GB NVIDIA GPU via aggressive 2-bit routed quantization. Serves OpenAI- and Anthropic-compatible APIs, so Claude Code, Codex, opencode and Zed can point at localhost; includes a built-in coding agent, on-disk KV cache, and layer-splitting across machines for models too big for one box. Not a general GGUF loader — only its supported models. | [GitHub](https://github.com/antirez/ds4) ![GitHub Repo stars](https://img.shields.io/github/stars/antirez/ds4?style=social) | Free |
-| AirLLM | A Python library that reduces LLM inference memory usage by loading one layer at a time, enabling 70B models on 4GB GPUs, 405B on 8GB, and 671B DeepSeek-V3 on ~12GB. Supports 4-bit/8-bit quantization and a wide range of open models via a single AutoModel interface. | [GitHub](https://github.com/lyogavin/airllm) ![GitHub Repo stars](https://img.shields.io/github/stars/lyogavin/airllm?style=social) | Free |
-
-### Writing
-| Name | Description | Links | Fees |
-| --- | --- | --- | --- |
-| Notion AI | AI-assisted note-taking software | [URL](https://www.notion.so)| with certain free AI trials, AI features $10/month |
-| Obsidian | Powerful local-first markdown note-taking tool with extensive AI plugin ecosystem - supports AI summarization, RAG, and intelligent note processing via community plugins | [URL](https://obsidian.md/) | Free/Paid|
-| Deep L Write | English and German writing tools to fix writing errors and rewrite sentences promptly. | [URL](https://www.deepl.com/write) | Free version to use with text word limit / paid upgrade available |
-
-
-### Translation
-| Name | Description | Links | Fees |
-| --- | --- | --- | --- |
-| Google Translate|Support text, picture, document and URL|[URL](https://translate.google.com/)|Free|
-|
+| AirLLM | A Python library that reduces LLM inference memory usage by loading one layer at a time, enabling 70B models on 4GB GPUs, 405B on 8GB, and 671B DeepSeek-V3 on ~12GB. Supports 4-bit/8-bit quantization and a wide range of open models via a single AutoModel 

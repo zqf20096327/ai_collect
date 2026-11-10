@@ -1,192 +1,183 @@
-# peforth v2
+# peforth v2.1.0
 
-**peforth is an AI-first Forth environment hosted by Python.** It combines a small extensible Forth kernel, direct access to Python, and an optional AI-assisted terminal REPL in the single `f` command.
+**peforth is an AI-first Forth programming environment hosted by Python.**
 
-> **The best way to explore peforth is to talk directly to this repository.** Use GitHub Copilot or the Gemini sidebar to explore its documentation, design plans, source code, and Git history.
->
-> **Be cautious of instant answers.** Ask the AI to examine the relevant repository materials before answering, rather than relying on general knowledge.
+> **"Forth drives Forth; Python provides host primitives."**
 
-**Version 2 is now the mainline implementation on `master`.** The migration from v1 has been completed; the previous migration branch is no longer required for installation.
+In peforth 2.1.0, the environment shifts from a Python-centric monolithic supervisor to a pure Forth-driven architecture:
+- **Minimal Bootloader (`main.py`)**: A tiny 9-line bootstrap shim.
+- **Dependency-Free Micro-Kernel (`projectk.py`)**: Zero external dependencies, strictly 2 seed words (`code` and `end-code`), uniform `KernelError`, and generator coroutines.
+- **Forth-Level REPL (`repl.f`)**: Multiline interactive input accumulation and dual-mode switching (`chat>` and `>`).
+- **Word-Oriented Security (`ai.py`)**: Fine-grained task security where vocabulary words carry `safe=True` annotations. Pure Forth words run freely without friction; only unsafe words trigger the interactive security approval review workflow.
+- **Integrated AI Assistant**: Conversational answers stream directly to the terminal; Forth code execution is delegated to `peforth_run_forth`.
+- **SQLite Diagnostics & Live Monitoring**: Comprehensive event tracking in `ai-diagnostics.sqlite3` with terminal emoji live streaming (`peforth-monitor` / `tools/peforth_logging_monitor.py`) and watchdog progress supervision (`tools/peforth_watchdog.py`).
 
-## Highlights
+---
 
-- **Forth + Python:** Define Forth words and embed host-side Python through `code ... end-code`. Use Python libraries without a separate foreign-function runtime.
-- **[Project K](https://github.com/hcchengithub/project-k) kernel:** Built on the independent Project K Forth kernel, providing cooperative Task pause/resume, input streams, dictionary introspection, and extensible words.
-- **Interactive REPL:** Enter Forth directly, define your own words, inspect the dictionary, and switch between `forth` and `chat` modes.
-- **Optional AI assistant:** The OpenAI Agents API integration provides conversational help and can propose Forth actions in the active VM, subject to local approval.
-- **Transparent sources:** Core Forth vocabulary is in `peforth/f/`; host runtime and integrations live in `peforth/*.py`.
+## Architecture: Repo vs. Runtime
 
-> **Compatibility:** peforth v2 is a major rewrite, not a drop-in replacement for v1. Legacy features such as the v1 debugger, Jupyter integration, and `peforth.ok()` are not supported. Use the v1.33 release if your application depends on those interfaces.
+peforth distinguishes between the **development repository** and **runtime execution environments**:
+
+- **Repository (`.../peforth`)**:
+  Used solely for codebase development, Git version control, and running the contract test suite (`test_all.py`).
+- **Runtimes (`~/.peforth` or `$HOME\.peforth`)**:
+  Dedicated, standalone checkouts and virtual environments where peforth runs day-to-day.
+  Windows and Ubuntu/WSL runtimes are kept strictly separate.
+
+---
 
 ## Requirements
 
 - Python **3.10 or newer**
 - Git
-- [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended for installation)
-- An OpenAI Platform API key **only if you want AI features**. Ordinary Forth execution works without one.
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended for fast virtual environment management)
+- An OpenAI-compatible API key (optional; only needed for AI chat and pair programming)
 
-The development installation is sourced from this repository; it is not presented here as a published PyPI release.
+---
 
-## Install
+## Runtime Installation
 
-Windows and Ubuntu/WSL should use **separate checkouts and virtual environments**.
+### 1. Ubuntu / WSL Runtime
 
-### Ubuntu / WSL
+For WSL, keep this Linux checkout inside its native Linux filesystem (`~/.peforth`), not under `/mnt/c`:
 
 ```bash
 git clone https://github.com/hcchengithub/peforth.git ~/.peforth
 cd ~/.peforth
 uv venv
-uv pip install -e .
+uv pip install --python .venv -e .
 ~/.peforth/.venv/bin/f
 ```
 
-To invoke `f` by name from other directories in the current shell:
+To invoke `f` by name from anywhere in your shell:
 
 ```bash
 export PATH="$HOME/.peforth/.venv/bin:$PATH"
 f
 ```
 
-For WSL, keep this Linux checkout inside its Linux filesystem (for example, `~/.peforth`), not under `/mnt/c`.
+---
 
-### Windows PowerShell
+### 2. Windows PowerShell Runtime
 
 ```powershell
 git clone https://github.com/hcchengithub/peforth.git "$HOME\.peforth"
 Set-Location "$HOME\.peforth"
 uv venv
-uv pip install -e .
+uv pip install --python .venv -e .
 & "$HOME\.peforth\.venv\Scripts\f.exe"
 ```
 
-To invoke `f` by name from other directories in the current PowerShell session:
+To invoke `f` by name from anywhere in PowerShell:
 
 ```powershell
 $env:PATH = "$HOME\.peforth\.venv\Scripts;$env:PATH"
 f
 ```
 
-If `uv` reports `invalid peer certificate: UnknownIssuer` on a managed Windows network, use native Windows certificate handling:
+> **Note for managed corporate networks**: If `uv` reports certificate errors, use native Windows certificate handling:
+> ```powershell
+> uv --native-tls pip install -e .
+> ```
 
-```powershell
-uv --native-tls pip install -e .
+---
+
+## Configuration (`.env` & `providers.yaml`)
+
+Copy `.env.example` to `.env` in your runtime directory (Windows: `$HOME\.peforth\.env`, Ubuntu/WSL: `~/.peforth/.env`):
+
+```env
+# Start from the repository's .env.example and fill in required credentials.
+OPENAI_API_KEY=your_openai_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
+DEEPSEEK_API_KEY=your_deepseek_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
 ```
 
-Do not disable TLS certificate verification.
+### Multi-Provider Configuration (`providers.yaml`)
 
-## CLI help and monitoring
+peforth separates **Stateful** (OpenAI Agents API sessions) and **Stateless** (OpenAI-compatible `/chat/completions`) profiles in `providers.yaml`.
+You can inspect available profiles or switch providers dynamically using the `/provider` command or natural language:
 
-Run `f -h` to see the command-line options. The `-e` option executes the remaining arguments as Forth input. Use `-l` or `--load` to include Forth source files; repeat the option to load multiple files. Put all load options before `-e` or `-c`, since those options consume the remaining arguments:
+```text
+chat> /provider
+Current provider: gpt-6-luna (Stateful)
+Available profiles: gpt-6-luna, gemini-flash, deepseek-v3
 
-```bash
-f -l ./definitions.f --load ./program.f -e run-program
+chat> /provider gpt-6-luna
+Switched to provider profile: gpt-6-luna
+
+chat> please switch LLM to Gemini Flash
+Switched to provider profile: gemini-flash
 ```
 
-For example, start the diagnostic monitor with:
+---
 
-```bash
-f -e run-monitor
+## Quick Start
+
+Launch `f` (or `python main.py`) to start peforth:
+
+peforth enters in conversational **Chat mode** (`chat>`) by default. You can talk to AI directly, or run Forth commands using the `/` prefix:
+
+```text
+chat> tell me a joke
+chat> /help
+chat> /1 2 + . cr
 ```
 
-- **Monitor:** Reads the local SQLite diagnostic log in read-only mode and displays existing and new runtime and AI events. It runs in the foreground; press `Ctrl-C` to stop it.
+Switch to Forth mode anytime with `/forth`, or return to chat mode with `chat`:
 
-- **Watchdog:** Runs by default inside the Monitor. It alerts when an AI turn makes no objective progress for five minutes or when a runtime being monitored exits unexpectedly. On Windows, including WSL, alerts appear as Windows Message Boxes. It warns but does not cancel a turn or stop a process.
+```text
+chat> /forth
+Switched to Forth mode (>). Type 'chat' to return to chat mode.
+> 1 2 + . cr
+> : square dup * ;
+> 5 square . cr
+> help          \ Interactive user guide & tutorial
+> words py >>   \ Filter word names
+> chat
+Switched to chat mode (chat>). Type '/forth' to return to Forth mode.
+chat>
+```
 
-## Quick start
-
-Start `f` and enter ordinary Forth:
-
+In Forth mode, you can still ask the AI directly using `ai:`:
 ```forth
-1 2 + . cr
-: square dup * ;
-5 square . cr
-words
+ai: calculate 355 113 / in Forth
 ```
 
-Define a Forth word directly in Python:
-
-```forth
-code double
-    vm.push(vm.pop() * 2)
-end-code
-
-21 double . cr
+To exit peforth:
+```text
+chat> /bye
 ```
 
-The host Python code runs in the same process as the Forth VM, so it has the normal permissions of your local user account.
+---
 
-To leave the REPL, enter `bye` or press Ctrl-D. For Forth definitions, introspection, parsing, control structures, and more Python integration examples, see [peforth manual（漂亮字）](docs/user/peforth%20manual.md) and [peforth manual (English)](docs/user/peforth%20manual%20%28English%29.md).
+## Diagnostics & Watchdog Monitoring
 
-## Optional AI assistant
-
-Set `OPENAI_API_KEY` in the process environment or in `~/.peforth/.env` (Windows: `$HOME\.peforth\.env`). Keep it private and never commit it.
-
-Example local configuration:
-
-```dotenv
-OPENAI_API_KEY=your-platform-api-key
-# Set this to a model supported by your API project:
-# PEFORTH_AI_MODEL=your-model-id
-PEFORTH_AI_SKILLS_DIR=skills
-```
-
-Inside the REPL:
-
-```forth
-ai: Explain what a Forth defining word is.
-chat
-```
-
-In `chat` mode, subsequent input goes to the selected AI session. Enter `forth` to return to Forth mode. Other commands include `ai-status`, `ai-sessions`, `ai-new`, and `ai-confirm`.
-
-**Local execution is permissioned:** When the assistant proposes Forth code via `peforth_run_forth`, peforth asks for approval. You can approve once, trust only the current AI task, deny, or cancel. Approved code executes in the **live local VM** and can use its Python bridge; review proposals before approving them. See [AI support](docs/user/ai.md) for details about approvals, sessions, configuration, and troubleshooting.
-
-AI API usage is optional and billed according to your OpenAI Platform account and selected model.
-
-## Documentation
-
-See the [documentation index](docs/README.md) for the full map. [User guides](docs/user/) contain the Forth manuals and AI usage guide; [development documents](docs/development/) contain design, diagnostics, plans, and project notes.
-
-## Project layout
-
-| Location | Purpose |
-| --- | --- |
-| `peforth/projectk.py` | Core Forth VM and Task execution |
-| `peforth/f/base.f` | Base vocabulary, defining words, and compiler-level constructs |
-| `peforth/f/auxiliary.f` | Auxiliary Forth words |
-| `peforth/f/ai.f` | Forth-facing AI words and control flow |
-| `peforth/repl.py` | Terminal REPL and runtime initialization |
-| `peforth/ai_bridge.py`, `peforth/ai_tools.py` | AI transport, session helpers, and host tools |
-| `docs/user/` | User manuals and AI usage guide |
-| `docs/development/` | Design, diagnostics, development plans, and project notes |
-| `docs/README.md` | Documentation index |
-| `skills/`, `plugins/` | Repository-owned AI skill and plugin assets |
-| `tests/` | Automated tests |
-
-The `skills/` and `plugins/` source directories are not automatically installed into external AI CLIs.
-
-## Updating and developing
-
-This is an **editable source checkout**. To update, inspect your local changes and pull from `master`:
+In a separate terminal or Herdr pane, launch the live diagnostic monitor:
 
 ```bash
-cd ~/.peforth
-git status
-git pull --ff-only
-uv pip install -e .
+peforth-monitor
+# or:
+python tools/peforth_logging_monitor.py
 ```
 
-Run the test suite from the checkout using your environment's Python; for example:
+The monitor connects to `~/.peforth/ai-diagnostics.sqlite3` in read-only mode and displays live emoji events:
+- 🚀 `runtime started` / 🏁 `runtime finished`
+- 🌐 `HTTP request started` / ✅ `HTTP response received`
+- 📡 `SSE stream opened` / 📨 `SSE event received`
+- 🛠️ `tool call started` / 📤 `tool result submitted`
+- 🙋 `approval requested` / 👍 `approval received`
+- ▶️ `Forth execution started` / ⏹️ `Forth execution finished`
+
+The embedded **Watchdog** alerts with a Windows Message Box if an active AI turn makes no objective progress for 5 minutes.
+
+---
+
+## Testing & Quality Assurance
+
+To verify architectural contracts, kernel purity, security approval flow, and diagnostics:
 
 ```bash
-.venv/bin/python -m unittest discover -s tests
+python test_all.py
 ```
-
-On Windows, use `.venv\Scripts\python.exe` instead.
-
-Do not run `git pull` over uncommitted modifications without reviewing them first. The historical [V2 migration plan](docs/development/v2-migration-plan.md) is retained as background, not as the current installation guide.
-
-## License
-
-[MIT](LICENSE)

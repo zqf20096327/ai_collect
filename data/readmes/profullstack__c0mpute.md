@@ -20,8 +20,9 @@ curl -fsSL https://c0mpute.com/install.sh | sh
 ```
 
 That is the whole setup. The installer puts `c0mpute`, `infernet` and `coinpay` in
-`~/.c0mpute/bin` and starts the worker for you (a systemd service where it can, a
-background daemon otherwise). Check it with `c0mpute worker status`, then run
+`~/.c0mpute/bin`, checks each release binary's minisign signature, and starts the worker
+for you as **your user, not root** (a systemd user service where it can, a background
+daemon otherwise; `--system-service` for a root-managed system service). Check it with `c0mpute worker status`, then run
 `c0mpute bench` once so your node gets a score on the
 [node board](https://c0mpute.com/nodes).
 
@@ -31,17 +32,23 @@ background daemon otherwise). Check it with `c0mpute worker status`, then run
 - **What it does:** serves AI inference (through [Infernet](https://infernetprotocol.com)),
   FFmpeg transcoding and storage jobs from the network.
 - **What you get:** paid inference is billed through CoinPay (16 coins or PayPal) and you set
-  your payout address with `infernet payout set <coin> <address>`. Paid demand is early, so
-  expect small, irregular earnings for now.
+  your payout address with `infernet payout set <coin> <address>`. Paid demand is early and the
+  network is small, so expect small, irregular earnings for now. Storage payouts
+  ([CIP-006](docs/prds/006-challenges-metering-payouts.md)) are not paying yet, and CoinPay
+  settlement for hosting and ads is built but off by default.
 - **House models (on by default):** the node pulls and serves the models Infernet publishes at
   [infernetprotocol.com/house-models.json](https://infernetprotocol.com/house-models.json) that fit
-  it (RAM, and always leaving 10% of the disk free), today Profullstack's
-  `saas-business-strategist-agent` and the uncensored `huihui_ai/qwen3.5-abliterated:4b`/`:9b`.
-  `c0mpute worker status` lists them and the disk they use. Opt out at install with
-  `--no-house-models` (uncensored only: `--no-uncensored-models`), or later with
-  `infernet house-models off` / `infernet house-models uncensored off`; cap the disk with
+  it (RAM, and always leaving 10% of the disk free), today Profullstack's agent models.
+  The uncensored `huihui_ai/qwen3.5-abliterated:4b`/`:9b` are on the list too, but a node
+  serves them **only if you opt in** (`--uncensored-models` at install, or
+  `infernet house-models uncensored on`). `c0mpute worker status` lists them and the disk
+  they use. Opt out of house models at install with `--no-house-models`, or later with
+  `infernet house-models off`; cap the disk with
   `infernet house-models cap <gb>`. Models you pulled yourself are never removed.
   Details: [infernetprotocol.com/docs/house-models](https://infernetprotocol.com/docs/house-models).
+- **Trust:** the worker runs code from the network on your machine. What it can touch, how
+  releases are signed, and how to remove it: [docs/node-safety.md](docs/node-safety.md). If you
+  would rather not trust a new project with your main machine, run it in a VM or on a spare box.
 - **Invite people:** share `https://c0mpute.com/r/<your-handle>`. Nodes installed from it
   show your handle on the board (`C0MPUTE_REF=<handle>` does the same by hand).
 
@@ -64,6 +71,27 @@ That installs three CLIs into `~/.c0mpute/bin`:
 | `infernet` | AI inference workload runner | [infernet-protocol](https://github.com/infernetprotocol/infernet-protocol) (upstream) |
 
 The c0mpute installer pulls each from its own release feed.
+
+### Verified downloads
+
+Every c0mpute release artifact is signed with [minisign](https://jedisct1.github.io/minisign/).
+The public key is [`minisign.pub`](minisign.pub):
+
+```
+RWQqOew3QbWhAWH36TA5roreh18RgRqgozSwhE3yZtdza7eeLKmbDbJM
+```
+
+The installer checks `<artifact>.minisig` before it unpacks anything and aborts if the
+signature is missing or does not verify. If `minisign` is not installed it fetches a pinned
+minisign release (checked against a hard-coded sha256) into a temp dir; no root needed.
+`c0mpute` self-updates verify the same signature, with the key compiled in, before swapping
+the binary. To check a download by hand:
+
+```sh
+minisign -Vm c0mpute-linux-x86_64.tar.gz -P RWQqOew3QbWhAWH36TA5roreh18RgRqgozSwhE3yZtdza7eeLKmbDbJM
+```
+
+See [SECURITY.md](SECURITY.md).
 
 ## What c0mpute does
 
@@ -106,6 +134,23 @@ c0mpute coinpay reputation inspect did:coinpay:worker:abc123
 
 The plugin form mirrors the URL namespace: `c0mpute.com/transcode`,
 `c0mpute.com/coinpay`, `c0mpute.com/infernet`.
+
+### Git hosting
+
+Repos kept by the network: signed by your key, three self-healing copies, cloneable from
+any gateway with your machine offline, and a push can deploy an app. Private by default:
+end-to-end encrypted, so node operators only hold ciphertext; `c0mpute git share` lets
+teammates in, `--public` makes a repo readable by anyone.
+
+```sh
+c0mpute git install                  # once: git understands c0mpute:// URLs
+c0mpute git init my-project          # adds remote origin = c0mpute://<your-key>/my-project
+git push origin main
+git clone c0mpute://<owner-key>/my-project
+c0mpute git --help                   # full guide: URLs, push to deploy, gateways
+```
+
+Guide: [docs/git-hosting.md](docs/git-hosting.md).
 
 ### CPU speech inference
 
@@ -299,6 +344,29 @@ journalctl --user -u c0mpute-worker -f
 
 Under systemd the worker runs in the foreground (no `-d`) — systemd owns the
 lifecycle. See the unit header for GPU/role customization via `systemctl --user edit`.
+`c0mpute worker install` writes the same unit for you (`--system` for a root-managed
+one) and refuses when another unit already runs a worker for your user.
+
+#### Troubleshooting: one identity, two workers
+
+Run one worker per identity (`~/.config/c0mpute/identity.key`). A second
+`c0mpute worker start` on the same machine replaces the running worker: it stops
+bidding, finishes its jobs (up to 10 min) and exits with code 90 (91: a duplicate that
+stood down). Every unit c0mpute installs has `RestartPreventExitStatus=90 91`, so
+systemd does not restart it, and older units get that as a drop-in. The usual cause is
+a system unit (`/etc/systemd/system/c0mpute-worker.service`, `User=you`) next to the
+user unit:
+
+```sh
+c0mpute doctor          # every worker process, unit and identity lock on this machine
+c0mpute doctor --fix    # disables the extra unit (prints the sudo command for system units)
+sudo systemctl disable --now c0mpute-worker.service   # remove a system unit by hand
+```
+
+An identity copied to a second machine runs as two "twins" under one peer id: buyers
+keep the newer process's bid, re-award a job the other one answers for at once, the
+older twin stops bidding, and c0mpute.com/nodes marks the node *duplicate identity*.
+Delete `identity.key` in the copy before starting it.
 
 ## Architecture at a glance
 

@@ -319,6 +319,9 @@
 - [osaurus-ai/osaurus](https://github.com/osaurus-ai/osaurus) - The native macOS harness for AI agents: any model, persistent memory, autonomous operation.
 - [egoist/kero](https://github.com/egoist/kero) - A cross-platform native terminal app optimized for agents.
 - [liguobao/ds-harness-remote](https://github.com/liguobao/ds-harness-remote) - Remote access to local DSH, Codex, Cursor, and Claude Code workspaces over a low-latency, end-to-end encrypted P2P network.
+- [KKKKhazix/agent-autoloop](https://github.com/KKKKhazix/agent-autoloop) - Lets your CLI agent pick up work in the background and follow it through on its own, only pinging you when a decision is needed.
+- [snarktank/ralph](https://github.com/snarktank/ralph) - An autonomous AI agent loop that runs repeatedly until all PRD items are complete.
+- [kingcharleslzy-ai/dsh-purge](https://github.com/kingcharleslzy-ai/dsh-purge) - Community-maintained DeepSeek Harness companion: host compatibility, status diagnostics, prompt management, updates and local backup/rollback.
 
 ## Skills, Plugins & Context Engineering
 
@@ -344,7 +347,7 @@
 - [automazeio/ccpm](https://github.com/automazeio/ccpm) - Project management skill system using GitHub Issues and worktrees.
 - [TexasBedouin/vibe-check](https://github.com/TexasBedouin/vibe-check) - Turns a vague idea into a buildable plan, then guides the build.
 - [google-labs-code/design.md](https://github.com/google-labs-code/design.md) - A format specification for describing a visual identity to coding agents. DESIGN.md gives agents a persistent, structured understanding of a.
-- [jnMetaCode/superpowers-zh](https://github.com/jnMetaCode/superpowers-zh) - 🦸 AI 编程超能力 · 中文增强版 — superpowers（250k+ ⭐）完整汉化 + 4 个中国原创 skills，让 Claude Code / Copilot CLI / Hermes Agent / Cursor / Windsurf / Kiro / Gemin.
+- [jnMetaCode/superpowers-zh](https://github.com/jnMetaCode/superpowers-zh) - AI coding superpowers, Chinese enhanced edition: full Chinese localization of the superpowers skills framework (250k+ stars) plus 4 original skills, covering 26 AI coding tools including Claude Code, Copilot CLI, Hermes Agent, Cursor, Windsurf, Kiro and Gemini CLI.
 
 **Autonomous loops (Ralph)**
 
@@ -572,7 +575,7 @@
 - [pchalasani/claude-code-tools](https://github.com/pchalasani/claude-code-tools) - Productivity tools for Claude Code, Codex-CLI, and similar agents.
 - [xingkongliang/skills-manager](https://github.com/xingkongliang/skills-manager) - Desktop app to manage and sync agent skills across 50+ coding tools.
 - [virgiliojr94/book-to-skill](https://github.com/virgiliojr94/book-to-skill) - Turn any technical book PDF into a Claude Code skill — ready to study, reference, and use while you work.
-- [titanwings/distilly](https://github.com/titanwings/distilly) - Distilly — Distill how they think into reusable Skills for any Agent or Bot. Formerly Colleague Skill（原同事 Skill）.
+- [titanwings/distilly](https://github.com/titanwings/distilly) - Distilly — Distill how they think into reusable Skills for any Agent or Bot. Formerly Colleague Skill.
 - [ciembor/agent-rules-books](https://github.com/ciembor/agent-rules-books) - AGENTS.md rules / skills for AI coding agents: Codex, Cursor & Claude Code. Inspired by Clean Code, Refactoring, DDD, Clean Architecture and.
 - [Spark-To-Paper-Skills/paperjury](https://github.com/Spark-To-Paper-Skills/paperjury) - Pre-submission AI review stress-test for research papers. A Claude Code skill: review, verdict, revise, verify.
 - [ranxianglei/billion-context](https://github.com/ranxianglei/billion-context) - A context-compression plugin for small context windows (a 100K context is enough), token savings (5x fewer tokens), and month-long single se.
@@ -633,6 +636,15 @@
 - [AminBlg/SimpleEnglish](https://github.com/AminBlg/SimpleEnglish) - Agent skill: make LLMs write docs in ASD-STE100 Simplified Technical English.
 - [benjitaylor/skills](https://github.com/benjitaylor/skills) - Skills for AI coding agents.
 - [mromidev/claude-animated-shorts](https://github.com/mromidev/claude-animated-shorts) - Claude skill for viral animated story shorts (2D characters in a 3D world) with three.js + Remotion.
+- [shadcn/improve](https://github.com/shadcn/improve) - An agent skill that audits any codebase and writes implementation plans for other agents to execute.
+- [google/agents-cli](https://github.com/google/agents-cli) - The CLI and skills that turn any coding assistant into an expert at creating, evaluating, and deploying AI agents.
+- [handsomestWei/patent-disclosure-skill](https://github.com/handsomestWei/patent-disclosure-skill) - Agent skill for Chinese patent work: patent-point mining, disclosure drafting (invention/utility/design), plain-language patent explainers and examination replies.
+- [binance/binance-skills-hub](https://github.com/binance/binance-skills-hub) - Open skills marketplace that gives AI agents native access to Binance crypto markets and data.
+- [google-gemini/gemini-skills](https://github.com/google-gemini/gemini-skills) - Skills for the Gemini API, SDK and model/agent interactions.
+- [larashero3-dotcom/lieflat-less-ai-tone](https://github.com/larashero3-dotcom/lieflat-less-ai-tone) - Skill that strips AI tone from writing, grounded in a 5.2-million-character corpus study.
+- [bangtutorial/bang-motion](https://github.com/bangtutorial/bang-motion) - Agent skill for browser motion graphics: openers, promos, bumpers, kinetic typography and explainer styles.
+- [janestreet/agent_skills](https://github.com/janestreet/agent_skills) - Agent skills from Jane Street.
+- [Ebony-Vinyl/EAC-Desktop](https://github.com/Ebony-Vinyl/EAC-Desktop) - Desktop home for the DSH plugin ecosystem: hundreds of DeepSeek Harness plugins in one app.
 
 ## Agent Frameworks & Orchestration
 
@@ -815,7 +827,7 @@
 - [a2aproject/A2A](https://github.com/a2aproject/A2A) - Agent2Agent (A2A) is an open protocol enabling communication and interoperability between opaque agentic applications.
 - [a2aproject/A2A](https://github.com/a2aproject/A2A) - Agent2Agent (A2A) is an open protocol enabling communication and interoperability between opaque agentic applications.
 - [GetBindu/Bindu](https://github.com/GetBindu/Bindu) - Bindu: The identity, communication, and payments layer for AI agents.
-- [wang2122/sprix-sage-router](https://github.com/wang2122/sprix-sage-router) - Sprix AI at 屿智同行 — state-aware SELF/COLLABORATE/HANDOFF routing for A2A agent networks.
+- [wang2122/sprix-sage-router](https://github.com/wang2122/sprix-sage-router) - Sprix AI — state-aware SELF/COLLABORATE/HANDOFF routing for A2A agent networks.
 
 **Durable execution & background agents**
 
@@ -831,18 +843,4 @@
 
 - [Azure-Samples/get-started-with-ai-agents](https://github.com/Azure-Samples/get-started-with-ai-agents) - Deploy an agent web app with Azure AI Foundry.
 - [Azure-Samples/app-service-agentic-langgraph-foundry-python](https://github.com/Azure-Samples/app-service-agentic-langgraph-foundry-python) - LangGraph + Foundry agents on App Service.
-- [google-antigravity/antigravity-sdk-python](https://github.com/google-antigravity/antigravity-sdk-python) - A Python library for building AI agents that leverage the full power of Google Antigravity.
-- [YGYOOO/WorldX](https://github.com/YGYOOO/WorldX) - One sentence creates an AI-driven world — generate maps, characters, and watch stories emerge on their own. 一句话生成一个AI自主驱动的世界.
-- [Fei2411/DeepSeek-Bot](https://github.com/Fei2411/DeepSeek-Bot) - A team of long-lived bots for DeepSeek Harness, with main bots, bot-to-bot messages and group chats.
-
-- [BuilderIO/agent-native](https://github.com/BuilderIO/agent-native) - A framework for building agentic apps.
-- [openJiuwen-ai/jiuwenswarm](https://github.com/openJiuwen-ai/jiuwenswarm) - Intelligent AI agent built on openJiuwen; brings LLM capabilities to your fingertips.
-- [onestardao/WFGY](https://github.com/onestardao/WFGY) - Open-source framework for AI reasoning, RAG, agents, and real-world workflows.
-- [Fei2411/DeepSeek-Bot](https://github.com/Fei2411/DeepSeek-Bot) - A team of long-lived bots for DeepSeek Harness, with main bots, bot-to-bot messages and group chats.
-- [MaxMiksa/Autonomous-Company](https://github.com/MaxMiksa/Autonomous-Company) - An autonomous company working 24/7 on your own PC - Windows/Linux/macOS.
-- [wanikua/danghuangshang](https://github.com/wanikua/danghuangshang) - Open-source multi-agent collaboration system inspired by Chinese governance — deploy and coordinate specialized AI agents with OpenClaw.
-- [4thfever/cultivation-world-simulator](https://github.com/4thfever/cultivation-world-simulator) - 基于 AI Agent 工作流的修仙世界模拟器，旨在还原智能、开放的仙侠世界。| An open-source Cultivation World Simulator using Agentic Workflow to create a dynamic, emerging Xia.
-- [hyperspaceai/agi](https://github.com/hyperspaceai/agi) - The first distributed AGI system. Thousands of autonomous AI agents collaboratively train models, share experiments via P2P gossip, and push.
-- [google/agentmesh](https://github.com/google/agentmesh) - Google's open framework for building multi-agent systems with mesh-style orchestration.
-- [google-research/harness2](https://github.com/google-research/harness2) - Framework that optimizes the prompts, tools, memory and orchestration around a model.
-- [open-gitagent/opengap](https://github.com/open-gitagent/opengap) - Git-native st
+- [google-antigravity/antigravity-sdk-python](https://github.com/google-antigravity/antigra

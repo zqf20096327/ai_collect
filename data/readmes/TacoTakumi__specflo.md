@@ -107,8 +107,8 @@ The installed skills make your agent *able* to drive specflo; a note in an
 agent memory file makes it *routine*. Put it in one of three places:
 
 - **Global** - `~/.claude/CLAUDE.md`, or your harness's user memory file. It
-  applies to every repo you work in; the note only has the agent run specflo in
-  a repo that has a `.specflo/` directory.
+  applies to every repo you work in. `specflo guide` changes nothing and runs
+  in a repo that has no specflo setup, where it shows how to start.
 - **Local** - `CLAUDE.local.md` in the repo root, added to `.gitignore`. It
   applies to this repo and only to you, so a team repo's files stay unchanged.
   This file is a Claude Code feature. In another harness, a repo that does not
@@ -122,12 +122,11 @@ use. Add this near the top of the file:
 ```markdown
 ## Development workflow
 
-The user develops features with specflo. In a repo that has a `.specflo/`
-directory, run `specflo guide` at the start of a session to orient yourself;
-`specflo status` shows the active project and phase. Features move through
-brainstorm -> spec -> plan -> execute using the specflo skills, recording
-decisions, requirements, and tasks through the specflo CLI rather than editing
-its artifacts by hand.
+This user develops with specflo. At the start of a session, run `specflo guide`
+before any other work. It shows the state of the repo, when to use each project
+level and the next step. Every code change goes through specflo, including a
+one-line fix and a fix from a follow-up. A subagent that has an assigned task
+does not run the guide.
 ```
 
 Prompts that map onto the workflow:
@@ -139,8 +138,8 @@ Prompts that map onto the workflow:
 - "Run it in auto mode." - explicit opt-in to an unattended run (see `specflo auto`).
 
 `specflo guide` runs cold - before `init`, in any repo - and orients a fresh
-agent in one shot: what specflo is, the pipeline, the full command surface, and
-what to do next. When in doubt, tell your agent to run it.
+agent in one shot: what specflo is, the pipeline, when to use each level, the
+build commands, and what to do next. When in doubt, tell your agent to run it.
 
 ## The pipeline
 
@@ -449,7 +448,7 @@ Decisions go through the usual `specflo decision add`, which writes them into
 ### Setup and orientation
 
 - `specflo --version` - print the installed version and exit.
-- `specflo guide [daemon] [--json]` - orientation in one shot: what specflo is, the pipeline, the command surface, and what to do next here. Runs **cold** (works before `specflo init`), so a fresh agent can get up to speed in any repo. The daemon and team commands (serve, remote, promote, product, workitem, gate, lease, console) are listed by `specflo guide daemon`; `--json` carries every command.
+- `specflo guide [research|agents|daemon] [--json]` - orientation in one shot: what specflo is, the pipeline, when to use each level, the build commands, and what to do next here. Runs **cold** (works before `specflo init`), so a fresh agent can get up to speed in any repo. Three topics hold the commands most sessions do not need: `specflo guide research` lists the research commands, `specflo guide agents` the agent commands, and `specflo guide daemon` the daemon and team commands (serve, remote, promote, product, workitem, gate, lease, console). `--json` carries every command.
 - `specflo init` - scaffold `.specflo/config.yaml` + the projects dir (default `docs/projects/`).
 
 ### Configuration
@@ -492,6 +491,7 @@ See **[The config file](#the-config-file)** for the file itself.
 
 - `specflo task start <T-NN> [--force] [--worktree]` / `task done <T-NN> [--note ...] [--commit <sha>] [--closes <FU-NN> ...]` - mark a task `in_progress` / `done`. `task start` refuses a task whose dependencies are not all done, naming each one; `--force` starts it anyway. `task start --worktree` gives the task its own git worktree at `.specflo/worktrees/<project>/<T-NN>` on a new branch `specflo/<project>/<T-NN>` cut from HEAD, records the worktree and its base branch and sha on the task, and prints the path; it refuses a task already in progress. Each path listed in `.specflo/worktree-include` (one per line, relative to the checkout root, for files git does not carry such as a `.env`) is copied into the new worktree, and a listed path that does not exist is named. Worktree starts run one at a time under a lock. `task done --commit` records the task's commit as a full sha in a `- Commit:` field; a value that names no commit in the checkout is refused. `task done --note` records the note in the same write as the state change. `task done --closes FU-NN`, repeatable, closes each follow-up the task settles with `--by <project>/<T-NN>` and the task's note, or else its title (`Task done.` for a blank title), as the close note, and `--json` lists them in `closed_followups`. Every named follow-up is checked open, and every followup document readable, before the task changes. `--closes` is refused for a project hosted on a daemon.
 - `specflo task block <T-NN> [--reason ...]` / `task reopen <T-NN> [--note ...]` - mark a task `blocked` (optionally recording why) / return it to `pending` (optionally with a note). `task start` and `task block` take no `--note`. Reopening a worktree task first saves what its worktree holds against the base sha as a patch under `.specflo/worktrees/patches/<project>/`, prints its path (`patch` in `--json`), then removes the worktree and its branch.
+- `specflo task defer <T-NN> --do <text> --why <text>` - hand a pending or blocked task this project will not do to a new follow-up (`FU-NN`). The task stays in the plan, frozen, with the reason as its last note, and no longer counts as open work; `specflo followup show FU-NN` prints it in full. Refused for a task that is in progress or done, a task that open tasks depend on, and the only active task of the plan.
 - `specflo task land <T-NN> [--message <text>] [--json]` - turn what a worktree task holds, committed or not, into exactly one commit on its base branch: the change is replayed onto the branch's tip, the checkout is fast-forwarded, the commit is recorded in the task's `Commit:` field, and the worktree and its branch are removed. The message is `--message`, else the task title. The task stays `in_progress`: run its verify step on the base branch, then `task done`. Files the commit changed outside the task's `Files` are printed and recorded in a note on the task. It refuses, changing nothing: a task that is not in progress or runs in the shared tree, a change under the projects directory, a checkout on another branch, an uncommitted change in the checkout to a file the task changes (other uncommitted files, such as `plan.md`, do not block it), and a conflict with the base branch, which it names by file with no rebase left in progress. `task start --worktree` and `task land` are refused for a project hosted on a daemon.
 - `specflo task edit <T-NN> [--title ...] [--acceptance ...] [--verify ...] [--scope ...] [--files ...] [--needs ...] [--implements REQ-NN[,REQ-MM]] [--add-depends-on T-NN ...] [--drop-depends-on T-NN ...] [--force] [--json]` - correct an active task's fields in place, rather than hand-editing `plan.md`. At least one edit flag is required; a field already holding the given value is reported as unchanged rather than rewritten. Every value is one line: a value carrying a line break is refused, and `--title`, `--acceptance`, `--verify` and `--implements` refuse an empty value (an empty `--scope`, `--files` or `--needs` clears that optional field). `--add-depends-on` and `--drop-depends-on` are repeatable and are refused before any write: an added edge when the named task does not exist, is superseded, is the task itself, or would close a dependency cycle; a dropped edge when the task does not hold it (so an edge onto a task that no longer exists can still be dropped). A **done** task refuses the edit unless `--force`, which rewrites the field and appends one `[Edit]` note per changed field carrying the value it overwrote; a **superseded** entry is frozen with or without `--force`. `--json` emits `{id, changed}`.
 - `specflo task note <T-NN> --text ... [--label Note|Design|Resolution|Descoped] [--json]` - append one dated note line to a task entry: `- Note: <YYYY-MM-DD> [<Label>] <text>`. Notes accumulate at the bottom of the entry in the order written and work on a task in any progress state, including a done or superseded one. The label set is closed and `Edit` is reserved for `task edit --force`; the text is written as a single line (runs of whitespace and newlines collapse to single spaces) and empty text is refused. Notes surface in `specflo task show` and nowhere else - `task list`, `status` and `checkpoint` are unaffected - and a hand-written note that does not parse is a non-blocking plan warning, never a validation failure. `--json` emits `{id, note}`.
@@ -545,7 +545,8 @@ The `specflo research` commands (ingest, source add, user set, destination set, 
 ### Harness integration
 
 - `specflo skills install|status|update|uninstall [--scope user|project] [--harness NAME[:SCOPE]]` - install specflo's bundled workflow skills into the agent harnesses on your machine, and keep them current. See **[Skills](#skills)**.
-- `specflo doctor [--json]` - check the setup on this machine: the `specflo` command is on PATH, and each detected agent harness has every bundled skill, installed by `specflo skills install` or as a link to the same content. A missing, stale or locally modified skill and a broken or mismatched link each fail with the command that fixes it, and so does a machine where no harness has every skill. A harness with no specflo skills is listed and skipped. Runs cold (works before `specflo init`). Exits 1 when a check fails. `--json` emits `{ok, checks}`.
+- `specflo doctor [--json]` - check the setup on this machine: the `specflo` command is on PATH, and each detected agent harness has every bundled skill, installed by `specflo skills install` or as a link to the same content. A missing, stale or locally modified skill and a broken or mismatched link each fail with the command that fixes it, and so does a machine where no harness has every skill. A harness with no specflo skills is listed and skipped. The last line is the release: `ok` when this is the newest release, `note` with both versions when PyPI has a newer one, `skip` when PyPI is out of reach. That line never fails the run, and doctor does not ask PyPI when `CI` or `AGENTSQUIRE_NO_UPDATE_CHECK` is set. Runs cold (works before `specflo init`). Exits 1 when a check fails. `--json` emits `{ok, checks}`.
+- `specflo check-update` - ask PyPI whether a newer specflo release exists and print one line: the installed version, and the newest one with the upgrade command for a `uv tool` or `pipx` install when PyPI has a newer release. Exits 1 only when the check fails. This command and `specflo doctor` are the only ones that use the network for this. They record the answer in a cache file (`~/.cache/agentsquire/specflo.json`, or under `$XDG_CACHE_HOME`; on Windows under `%LOCALAPPDATA%`), and after that any specflo command prints one line on stderr while the recorded release is newer than the installed one. That notice reads only the file, never prompts and never changes an exit code. Silence it by setting `CI` or `AGENTSQUIRE_NO_UPDATE_CHECK`.
 - `specflo extension install [--scope user|project]` - install the bundled pi extension into pi's extension directory: `~/.pi/agent/extensions/specflo` by default, `./.pi/extensions/specflo` with `--scope project`. A plain local copy with a version stamp - no npm, no network - and pi discovers the directory on its own, so no pi settings are read or written. Re-run to update. See **[The pi extension](#the-pi-extension)**.
 
 ### Daemon, pool, gate and product commands

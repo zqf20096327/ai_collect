@@ -59,6 +59,15 @@ and checked by tests that run in CI.
 
 ## Engineering Decision Records
 
+<div align="center">
+
+<details>
+<summary><b>ADR index (click to open)</b></summary>
+
+<h3 align="center">Few ADRs Worth Skimming</h3>
+
+<div align="left">
+
 Every non-obvious decision in this codebase, why a domain rule lives where it does, why an obvious-looking shortcut was rejected, what broke and how it got fixed, is written down at the moment it was made, not reconstructed afterward for a portfolio. The ADRs live in <a href="docs/adr"><img src="https://img.shields.io/github/directory-file-count/wycliffRotich-dev/aethergrid/docs/adr?type=file&extension=md&label=ADRs&color=blueviolet&cacheSeconds=3600" alt="ADR count" align="absmiddle"></a>. A few worth reading directly if you want to see the reasoning, not just the conclusion:
 
 - [**ADR 0007 - Reconciliation Loop**](docs/adr/0007-reconciliation-loop.md): how the system detects and repairs state left inconsistent by dead workers and expired leases, instead of assuming the happy path is the only path.
@@ -129,8 +138,15 @@ Every non-obvious decision in this codebase, why a domain rule lives where it do
 - [**ADR 0087 - Compare the Upgraded Schema With a Fresh One**](docs/adr/0087-compare-the-upgraded-schema-with-a-fresh-one.md): Accepted. The rehearsal compared the rows of every table, so a constraint, an index or a default that a migration changed could not be seen in a CSV export. It now builds a second database with the new release's migrate service, dumps the schema of both with pg_dump --schema-only, and fails on any difference other than the two lines that carry a random key, naming each one. Nineteen new tests failed first, six mutations each fail them, a real run from v0.6.0 reported `the upgraded schema matches a fresh one (452 lines)`, and the full suite passes (1237). Not claimed: that a defect in the migration SQL itself is caught, since both builds run the same files, or condition 5 of ADR 0075.
 - [**ADR 0088 - Start the New API on the Upgraded Database**](docs/adr/0088-start-the-new-api-on-the-upgraded-database.md): Accepted. The rehearsal shows that an upgraded database holds the right rows and the right schema, and not that the release that upgraded it can start on it. It starts the new release's API on that database with `up --no-deps --no-build --wait`, read back the seeded node, worker and job with the key the old release issued, and fails when the API does not start, a read is not a 200 or a body carries a different id. Not claimed: that any state is preserved, since the new API may reclaim a lease on startup, or condition 5 of ADR 0075.
 - [**ADR 0089 - Read the Job Command After the Upgrade**](docs/adr/0089-read-the-job-command-after-the-upgrade.md): Accepted. The rehearsal checked the status and the id of the seeded node, worker and job, and the seeded job had no command, so a migration that lost or changed a stored command would have passed. It now issues the key with the `jobs:execute` scope inside the old release, seeds the job with a command, and fails when the worker route returns no running job or a different command. Fourteen new tests were written first, five mutations each fail them, and a real run from v0.6.0 to main at 304177f read the command back from the new API. Not claimed: that the command runs, that any other command survives, or that the lease survives startup in any run other than that one.
+- [**ADR 0090 - Issue API Keys for a Named Tenant**](docs/adr/0090-issue-api-keys-for-a-named-tenant.md): Accepted. A key belongs to one tenant, and the application could issue one for any existing tenant, but the script that issues keys only reached the default tenant, so a deployment had one tenant unless someone edited the database. The script now issues a key for a named tenant with `--tenant`, creates the tenant only with `--create-tenant`, and prints its usage without a database. The test database guard runs before any tenant is resolved or created. Two tests pin the failure paths, a lost race on the tenant name and the guard order, and each fails against a deliberately broken script. One real run on Postgres 16 from e3304e2 showed three keys in three tenants, and through the running API the acme key created a job and read it back while the globex key got the same status and body for that job as for a random id. Not claimed: that two operators creating one new name at the same moment fail cleanly on Postgres, that response headers or timing hide a foreign job, or that isolation holds beyond jobs, which ADR 0064 and ADR 0075 decide.
 
 The index above is the fastest way to see how each part of the system was decided.
+
+</div>
+
+</details>
+
+</div>
 
 ---
 
@@ -286,6 +302,15 @@ npm run dev
 ```
 
 CI runs the full test suite against a live Postgres service on every push. See `.github/workflows`.
+
+---
+
+## Contributing
+
+Fork the repository, create a branch, and open a pull request against
+main. Setup, the checks every change must pass, and the rules for ADRs
+are in [CONTRIBUTING.md](https://github.com/wycliffRotich-dev/aethergrid/blob/main/CONTRIBUTING.md).
+For anything larger than a small fix, open an issue first.
 
 ---
 

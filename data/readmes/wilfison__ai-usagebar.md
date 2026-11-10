@@ -15,13 +15,13 @@ scroll over it to cycle between them.
 
 | Vendor | What is shown | Credentials |
 | --- | --- | --- |
-| **Anthropic (Claude)** | Session + weekly usage, model-scoped caps, extra usage, banked resets, plan; optionally your Claude Code sessions' context | `~/.claude/.credentials.json` (OAuth, auto-refreshed) |
-| **OpenAI (Codex)** | 5h + weekly usage, code review, credits, banked resets | `~/.codex/auth.json` (OAuth) |
+| **Anthropic (Claude)** | Session + weekly usage (no session row on a verified Ultra plan), model-scoped caps, extra usage, cloud session credits, usage credits, banked resets, plan; optionally your Claude Code sessions' context | `~/.claude/.credentials.json` (OAuth, auto-refreshed) |
+| **OpenAI (Codex)** | 5h + weekly usage, code review, credits (a count, not dollars), banked resets | `~/.codex/auth.json` (OAuth) |
 | **Z.AI / GLM** | Plan usage and reset windows | API key: `ZAI_API_KEY` |
-| **OpenRouter** | Credit balance and usage | API key: `OPENROUTER_API_KEY` |
+| **OpenRouter** | Credit balance and usage; the two most recently used models with a management key | API key: `OPENROUTER_API_KEY`; optional management key: `OPENROUTER_MANAGEMENT_API_KEY` |
 | **DeepSeek** | Balance / credits | API key: `DEEPSEEK_API_KEY` |
 | **Kimi** | Weekly quota + 5h window, plan | API key: `KIMI_API_KEY` |
-| **Ollama Cloud** | Session + weekly (or monthly) usage, top models, cost | API key: `OLLAMA_API_KEY` ([create one](https://ollama.com/settings/keys)) |
+| **Ollama Cloud** | Session + weekly usage, or the monthly included credits with purchased credits | API key: `OLLAMA_API_KEY` ([create one](https://ollama.com/settings/keys)) |
 | **Custom** | Metrics and texts you map from a JSON endpoint | Optional key in a header you choose |
 
 An API key is taken from the environment variable if it is set, otherwise from
@@ -54,7 +54,7 @@ extensions.gnome.org.
 Open preferences with the gear button in the popup footer, or
 `gnome-extensions prefs ai-usagebar@wilfison`. The sidebar has two sections:
 
-- **General**: *Panel* (position and label format), *Popup* (extra rows, pace
+- **General**: *Panel* (position, label format and pace arrows), *Popup* (extra rows, pace
   marker, the `Super+U` shortcut), *Display* (primary vendor, vendor logos,
   severity colors) and *Behavior* (refresh interval, notifications, update check, reset all).
 - **Vendors**: one page per vendor: enable it and set its credentials.
@@ -77,7 +77,8 @@ Every vendor provides `{icon}`, `{vendor_short}`, `{plan}`, `{session_pct}`,
 `{weekly_elapsed}`. Reset tokens are countdowns such as `4h 05m`; `*_elapsed` is
 the share of the window that has passed. Vendors with a reset instant also give
 `{session_pace}` and `{weekly_pace}` (`↑` ahead of pace, `→` on track, `↓`
-under). OpenRouter and DeepSeek have no usage windows, so there the `session_` /
+under); **Pace arrows** under *Panel* appends the session arrow to the label
+without editing the format. OpenRouter and DeepSeek have no usage windows, so there the `session_` /
 `weekly_` tokens hold the consumed share (OpenRouter) or `0`.
 
 <details>
@@ -91,7 +92,7 @@ under). OpenRouter and DeepSeek have no usage windows, so there the `session_` /
 | OpenRouter | `{or_label}`, `{or_balance}`, `{or_total}`, `{or_used}`, `{or_used_today}`, `{or_used_week}`, `{or_used_month}`, `{or_consumed_pct}`, `{or_free_tier}`, `{or_limit}`, `{or_limit_remaining}` |
 | DeepSeek | `{ds_balance}`, `{ds_granted}`, `{ds_topped_up}`, `{ds_available}`, `{currency}` |
 | Kimi | `{kimi_plan}`, `{kimi_window_pct}`, `{kimi_window_reset}`, `{kimi_weekly_pct}`, `{kimi_weekly_reset}`, `{kimi_monthly_pct}`, `{kimi_monthly_reset}` |
-| Ollama Cloud | `{oll_plan}`, `{oll_cost}`; `{oll_session_*}`, `{oll_weekly_*}`, `{oll_monthly_*}` with `_pct`, `_reset`, `_elapsed` (never paced: the API reports no reset) |
+| Ollama Cloud | `{oll_plan}`; `{oll_session_*}`, `{oll_weekly_*}`, `{oll_monthly_*}` with `_pct`, `_reset`, `_elapsed`, `_pace`, `_pace_indicator`; on a credits plan `{oll_balance}`, `{oll_allowance}`, `{oll_purchased}`; `{oll_cost}` is always `-` (kept so older formats render) |
 | Custom provider | `{custom_plan}`, `{custom_<i>_pct}`, `{custom_<i>_reset}` for each metric from 0 |
 
 </details>
@@ -135,6 +136,10 @@ this mapping shows two usage rows and a text row:
 - `resetsAt` takes an RFC 3339 timestamp or a Unix epoch (seconds or
   milliseconds); `resetsAfterSeconds` takes the seconds left. With `windowSecs`
   (at least 60) and a reset, the row gets the pace marker.
+- An optional `currency` (a three-letter code such as `"USD"` or `"EUR"`)
+  formats a metric's `used` and `limit`, or a numeric text, as money:
+  `$12.50 of $60.00` instead of `12.5 of 60`. It cannot be set on a
+  `percent` metric.
 - A **text** shows a string, number or boolean. `plan` sets a fixed title;
   `planPath` reads it from the response.
 - Labels are 1–64 characters and unique. The mapping is checked when the editor

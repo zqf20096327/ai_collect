@@ -96,14 +96,16 @@ flowchart TD
 | 最初 | 用户最初的目标 | 保留：最多 3 个用户回合、≤20% 预算 |
 | 中段 | 更早的回合 | 已被总结覆盖，不再单独发 |
 | 总结 | 最新一条 `compact` 总结 | 折进 `system`（不是当消息） |
-| 总结前 | 最近的现场回合 | 保留：最多 3 个回合、≤30% 预算 |
+| 总结前 | 最近的现场回合 | 保留：默认最多 3 个回合、≤30% 预算 |
 | 总结后 | 之后的全部新回合 | 全部保留（当前正在推进的） |
+
+这几个数（3 / 3 / 20% / 30%）是**默认值**，宿主可以用 `config.contextKeep` 覆盖；传 `{ firstTurns: 0 }` 就是压缩后连最初那几轮原文也不带，只信总结 + 最近现场（见下方「上下文压缩保留方案」）。
 
 几个关键取舍，以及为什么：
 
 - **裁剪的最小单位是「回合」，不是「消息」。** 一个回合 = 用户一次发言，或模型的一次响应连同它发起的全部工具调用和结果。工具结果按 `toolCallId` 回到发起它的回合，**同进同出**。所以裁剪结果永远不会切断"调用 / 结果"的配对——那种残缺会被供应商 400。
 - **最新那条总结折进 system，而不是当成一条消息塞进对话。** 裸的 `role:'user'` 总结会被模型读成"用户塞给我一张表"，于是从头重做整个任务。实测 `gpt-oss-120b` 折进 system 前只有 1/6 能正确接着做，之后 6/6。
-- **总结里保留最初目标。** 挑内容时，最初那几轮用户发言（说不出的话）单独钉住，最多 3 个回合、占 20% 预算。就算预算装不下，总结本身也被要求保留"用户最初的目标"，而总结在 `system` 里永远不会被裁掉。
+- **总结里保留最初目标。** 挑内容时，最初那几轮用户发言（说不出的话）单独钉住，默认最多 3 个回合、占 20% 预算。就算预算装不下，总结本身也被要求保留"用户最初的目标"，而总结在 `system` 里永远不会被裁掉。这几个数可以用 `contextKeep` 调小甚至设成 0——原始措辞和总结里的目标同时出现时，模型有时会把旧话当成当前指令。
 - **二次压缩不会忘掉上一次的总结。** 压缩请求会把上一版总结作为"背景"并进提示词，新总结必须保留其中仍然有效的事实。直接丢掉旧总结，会越压越忘。
 - **按预算保留，不按条数。** 用户第一条消息就粘一大段日志时，只按条数留会让压缩永远收敛不了（实测 120/120 轮压完仍超阈值）。所以旧内容按预算分：目标 20%、最近现场 30%。
 - **每轮最多压一次。** 不为"压到达标"而连续调用模型——那样一轮能烧掉上千次请求（实测）。压完还超限就照常发出去，由服务端判断；下一轮还超自然会再压一次。
@@ -652,6 +654,7 @@ import Agent from '@kernel4632/agent-core'
 | `maxTokens` | `undefined` | 单次生成的最大输出 token，映射到请求体的 `maxOutputTokens`；不设＝不限。`provider.maxOutputTokens` 显式设置时优先于它 |
 | `compactThreshold` | `0.8` | 压缩触发比例，0.8 表示到达 80% 时压缩 |
 | `compact` | `undefined` | 压缩单独用一套模型时写在这里，例如 `{ model: '便宜的小模型' }`；不写就和主模型共用 |
+| `contextRatio` | `undefined` | 冷启动的估算倍率（每字符多少 token）。进程重启后第一个 `send` 用它估算，不用默认 0.6；真实 usage 到达后仍会覆盖它 |
 | `output` | `undefined` | 结构化输出格式，例如 `Agent.output.object({ schema })`；不写就返回普通文字 |
 | `maxToolConcurrency` | `undefined` | 默认不限制**文件工具**的并发；主动设置后超出的排队。内存工具（`Agent.tool.adopt` / MCP）在主进程直接跑，不受这个上限约束 |
 | `retryBaseDelay` | `5000` | 第一次退避的基数（毫秒），之后每次 ×2：5s、10s、20s…（照抄 Roo Code） |
@@ -661,6 +664,7 @@ import Agent from '@kernel4632/agent-core'
 | `requestTimeout` | `undefined` | 默认不限制单笔请求时长；主动设置毫秒数后，卡住的一笔会被中断 |
 | `noToolPrompt` | 一条"请继续使用工具"的提醒 | 有工具但模型连续不调时，在结束前一轮临时发给模型；只挂在那一次请求上，不写进 `history`。设成 `''` 就不提醒 |
 | `noToolRounds` | `3` | 有工具时，连续多少轮不调工具就结束一次 `send`；设成 `1` 就是模型不调工具即结束，设成 `Infinity` 就永不因不调工具结束。没注册工具时一轮就结束，不受它影响 |
+| `contextKeep` | `{ firstTurns: 3, recentTurns: 3, firstShare: 0.2, recentShare: 0.3 }` | 压缩后保留多少总结之前的原文：`firstTurns` 开场最多几个用户回合，`recentTurns` 总结前最多几个回合，两个 `*Share` 是各自最多占多少预算。`0` 表示这一段不留（比如 `{ firstTurns: 0 }` 只信总结 + 最近现场）；本次 send 的用户输入永远保留 |
 
 ### 重试规则
 
@@ -723,7 +727,7 @@ const agent = Agent.create({
 })
 ```
 
-在 `agent.send({ input, config: { ... } })` 里传入的配置会**写回 Agent**、之后的每一次模型请求继续生效（包括正在跑的这一轮的下一笔，见下方「每轮现拼」）。合并规则分三种：`provider` 和 `retry` **整份替换**（传了就只用新的，未写的字段不再保留）；`capabilities` 和 `compact` **按字段浅合并**（只传其中一项不丢另外的）；其余字段直接覆盖。`maxContextTokens` 是上下文预算，`maxTokens` 是单次生成的最大输出（会映射成请求体的 `maxOutputTokens`），两者不是一回事。
+在 `agent.send({ input, config: { ... } })` 里传入的配置会**写回 Agent**、之后的每一次模型请求继续生效（包括正在跑的这一轮的下一笔，见下方「每轮现拼」）。合并规则分三种：`provider` 和 `retry` **整份替换**（传了就只用新的，未写的字段不再保留）；`capabilities`、`compact` 和 `contextKeep` **按字段浅合并**（只传其中一项不丢另外的）；其余字段直接覆盖。`maxContextTokens` 是上下文预算，`maxTokens` 是单次生成的最大输出（会映射成请求体的 `maxOutputTokens`），两者不是一回事。
 
 `cache` 默认开启。四种协议各按自己的方式让服务端复用固定的开头（system、工具描述、历史），命中后那部分不再重新计算，长会话能明显变快、变便宜：
 
@@ -805,9 +809,51 @@ console.log(answer.text)
 | `onStep` | 一轮模型和工具都完成后 | `{ step, result, toolCalls, toolResults }`；`toolResults` 是完整结果对象（`call` + `output`），和 `onToolResult` 同一种形状 |
 | `onRetry` | 请求失败重试 | `{ attempt, error, delay }`（主请求和压缩请求共用） |
 | `onInject` | 每轮请求前（压缩之后） | `{ tokens, budget, compactThreshold }` → 返回字符串就临时附在本次请求末尾；返回其它值不注入 |
-| `onCompact` | 上下文压缩 | `compact-start` / AI SDK 事件（统一带 `request: 'compact'` 标记）/ `compact-finish`（带 `usage`，即压缩这一笔的用量） |
+| `onCompact` | 上下文压缩 | `compact-start`（`messages` + `reason` / `token` / `budget` / `compactThreshold` / `ratio` / `chars` / `media` / `calibrated`）/ AI SDK 事件（统一带 `request: 'compact'` 标记）/ `compact-finish`（带 `usage`，即压缩这一笔的用量） |
 
 除了 `onPermission` 和 `onInject`，所有回调都只是通知：回调自己抛错会被忽略，任务照常进行，工具结果也不会被改写。`onPermission` 的返回值决定放不放行，所以它抛错时这次 `send` 会失败，交给你的 `.catch()`。注意它按"非 `true` 即拒绝"处理：**每个分支都要显式 `return true`**，忘了返回会让那次工具被拒。`onInject` 抛错只当这一轮不注入，不打断任务。
+
+**为什么压？** `compact-start` 把判断依据一起带出来：
+
+| 字段 | 含义 |
+|------|------|
+| `reason` | `'automatic'`（估算过了阈值）/ `'overflow-retry'`（模型报上下文超长，强制压一次重发）/ `'manual'`（`agent.compact()`） |
+| `token` | 这一轮压缩前的上下文估算值（和触发判断用的是同一个数） |
+| `budget` | `config.maxContextTokens`（上下文预算，不是模型窗口） |
+| `compactThreshold` | 触发比例 |
+| `ratio` | 这次用的"每字符多少 token"比例（按模型自校准的那个值） |
+| `chars` / `media` | `token` 的两个组成部分：文字字符数、媒体块数（`token = ceil(chars × ratio) + media × 1200`） |
+| `calibrated` | `ratio` 是不是从真实 usage 学来的。`false` = 还在用默认值或宿主 seed |
+| `ratioSource` | `'usage'` / `'host'` / `'default'`，直接说明这个比例是谁给的 |
+
+判断"是不是估算误判"就看 `token` 和 `budget × compactThreshold` 的关系，以及 `ratio` 是不是明显偏离你的内容（中文 ≈ 1，英文 ≈ 0.25）。注意 `token` 是**这一轮开始时**的估算：上一次真实请求之后又写进来的工具结果也在里面，所以它会比"上一次请求的 input"大。
+
+`calibrated: false` 有两个常见原因：一是进程刚起、还没成功跑完过一笔请求；二是上游没在响应里回 `usage`（流式请求需要 `stream_options.include_usage`，个别中转站不支持，可以用 `capabilities.usage: false` 关掉这个字段，但那样估算就只能一直用默认比例）。**校准是每个进程从零开始的**：重启后恢复一份很大的 history 时，第一个 `send` 用的仍是默认比例，可能因此多压一次——把 `token / chars / ratio` 记下来就能确认。想据此折算真实比例：`真实 token ÷ chars`。
+
+#### 冷启动的估算倍率（`contextRatio`）
+
+上面那个"重启后第一个 send 多压一次"可以直接消掉：宿主把上次学到的倍率存起来，恢复会话时传回去，第一次估算就用它。
+
+```js
+// 进程 A：跑过之后把倍率存起来（宿主自己存，core 不碰磁盘）
+const { ratio, source } = agent.getContextRatio()
+if (source === 'usage') await save(`${provider}:${model}`, ratio)
+
+// 进程 B：恢复会话时先传回去，第一个 send 就用它估，而不是默认 0.6
+const agent = Agent.create({
+    history,
+    config: { contextRatio: await load(`${provider}:${model}`) },
+})
+
+// 也可以运行中改：立刻生效，之后真实 usage 到达仍会覆盖它
+agent.setContextRatio(0.297)
+```
+
+- 优先级：**真实 usage 学到的 > `contextRatio`（宿主 seed）> 默认 0.6**。
+- `getContextRatio()` 返回 `{ ratio, calibrated, source }`，`source` 是 `'usage'` / `'host'` / `'default'`。
+- `onCompact` 的 `compact-start.ratioSource`、`onInject` 的参数里也能看到当前来源。
+- 上游不返回 usage 时，宿主 seed 会一直有效（不会被打回默认值）；`setContextRatio` 之后的第一笔真实 usage 仍会重新校准。
+- 按 `provider + model` 存：换模型后比例本来就不一样，这台 Agent 的估算器也是按模型分开记的。
 
 #### 宿主注入临时提示（`onInject`）
 
@@ -1181,6 +1227,7 @@ const { messages, token } = Agent.context.build({
     history: agent.history,
     system: '你是助手',
     tools: tools.schema,
+    keep: { firstTurns: 0 },   // 可选：压缩后保留多少旧内容，语义同 config.contextKeep
 })
 // messages → 可以直接传给 LLM.chat 的消息数组
 // token    → 估算的 token 数（不装分词器：文字按字符数 × 每字符 token 比，比例由 Loop 从真实 usage 自校准；媒体按块计，不看 base64 长度）
@@ -1190,7 +1237,7 @@ const { messages, token } = Agent.context.build({
 永远同进同出。所以裁剪结果里不会出现"有调用没结果"或"有结果没调用"的残缺配对——那种序列会被
 OpenAI 和 Anthropic 直接 400。
 
-压缩时自动保留：用户最初的 3 个回合（保留原始目标）+ 最新总结 + 总结前最近 3 个回合 + 总结后所有回合。
+压缩时默认保留：用户最初的 3 个回合（保留原始目标）+ 最新总结 + 总结前最近 3 个回合 + 总结后所有回合。数量可用 `keep`（对应 `config.contextKeep`）覆盖，`0` 表示不留。
 
 模型的思考内容（`reasoning`）会留在 `history` 里供上层 UI 渲染，但不会回传给模型：
 它是某一次响应的厂商产物，不是持久对话状态，回传还会被一些服务拒绝。
@@ -1439,7 +1486,25 @@ config: {
 
 **最新的那条总结会折进 `system`，而不是当成一条用户消息塞进对话里**，并且带一句"这是你自己之前做过的工作，数据已由工具确认"。裸的 `role:'user'` 总结会被模型读成"用户塞给我一张表"，于是它从头重做整个任务——真实端点实测 `gpt-oss-120b` 改之前 1/6 能正确续跑，改之后 6/6。
 
-保留多少旧内容是**按预算**算的，不是按条数：最初目标最多占 20%、总结前的现场最多占 30%，总结之后的新回合不受限。只按条数留的话，用户第一条消息粘一大段日志就能让压缩永远收敛不了（实测 120/120 轮压完仍超阈值）。放不下的最初目标不会丢——总结本身就被要求保留用户的原始目标，而总结在 `system` 里，永远不会被裁掉。
+保留多少旧内容是**按预算**算的，不是按条数：默认最初目标最多占 20%、总结前的现场最多占 30%，总结之后的新回合不受限。只按条数留的话，用户第一条消息粘一大段日志就能让压缩永远收敛不了（实测 120/120 轮压完仍超阈值）。放不下的最初目标不会丢——总结本身就被要求保留用户的原始目标，而总结在 `system` 里，永远不会被裁掉。
+
+这几个默认值可以用 `config.contextKeep` 覆盖：
+
+```js
+config: {
+    // ...
+    contextKeep: {
+        firstTurns: 0,     // 压缩后不带总结之前的开场原文，只信总结 + 最近现场
+        // recentTurns: 3,  // 总结前保留几个回合
+        // firstShare: 0.2, // 开场最多占多少预算 [0,1]
+        // recentShare: 0.3,// 总结前现场最多占多少预算 [0,1]
+    },
+}
+```
+
+- `0` 是合法值，表示这一段一点都不留（实现里用 `??` 取默认值，不是 `||`）。
+- 无论怎么配，**本次 send 的用户输入永远保留**——它是当前任务，剪掉模型就只能瞎猜。
+- 手动 `agent.compact()` 和自动压缩用的是同一份 `contextKeep`，不用配两遍。
 
 每轮最多压一次。压完还超限就照常发出去，由模型服务判断收不收；下一轮还超自然会再压。**不会**为了压到达标而连续调用模型——那样一轮能烧掉上千次请求。
 
