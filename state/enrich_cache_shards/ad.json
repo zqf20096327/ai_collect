@@ -448,11 +448,11 @@
   }
  },
  "hexabot-ai/Hexabot": {
-  "commit_90d": 75,
-  "commit_7d": 23,
+  "commit_90d": 66,
+  "commit_7d": 28,
   "rel_ver": "v2.2.2",
   "rel_pub": "2025-01-24",
-  "rel_days": 648,
+  "rel_days": 655,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -468,10 +468,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

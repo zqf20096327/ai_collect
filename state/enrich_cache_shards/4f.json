@@ -4537,8 +4537,8 @@
   }
  },
  "vastxie/99AI": {
-  "commit_90d": 3,
-  "commit_7d": 0,
+  "commit_90d": 10,
+  "commit_7d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -4553,10 +4553,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261027",
    "contrib": "20261027",
    "lang": "20261027"
@@ -4665,11 +4665,11 @@
   }
  },
  "phone-harness/phone-harness": {
-  "commit_90d": 147,
-  "commit_7d": 13,
+  "commit_90d": 119,
+  "commit_7d": 1,
   "rel_ver": "0.3.3",
   "rel_pub": "2026-11-02",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -4684,10 +4684,10 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"

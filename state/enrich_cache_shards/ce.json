@@ -30,12 +30,12 @@
   }
  },
  "microsoft/agent-lightning": {
-  "commit_7d": 7,
+  "commit_7d": 4,
   "commit_90d": 64,
-  "rel_ver": "v1.0.2",
-  "rel_pub": "2026-09-29",
-  "rel_days": 35,
-  "rel_n90": 3,
+  "rel_ver": "v1.0.3",
+  "rel_pub": "2026-11-03",
+  "rel_days": 7,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -47,10 +47,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

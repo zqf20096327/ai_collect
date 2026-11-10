@@ -420,11 +420,11 @@
   }
  },
  "wangzhishou/OneBox": {
-  "commit_7d": 6,
-  "commit_90d": 882,
-  "rel_ver": "1.5.1",
-  "rel_pub": "2026-10-23",
-  "rel_days": 11,
+  "commit_7d": 110,
+  "commit_90d": 977,
+  "rel_ver": "1.5.6",
+  "rel_pub": "2026-11-09",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -440,10 +440,10 @@
    "Java": 0,
    "Python": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

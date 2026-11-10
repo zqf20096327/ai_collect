@@ -613,10 +613,10 @@
   }
  },
  "z91772524-ai/pojia-next": {
-  "commit_7d": 31,
-  "commit_90d": 125,
-  "rel_ver": "v8.29",
-  "rel_pub": "2026-11-02",
+  "commit_7d": 17,
+  "commit_90d": 143,
+  "rel_ver": "v8.40",
+  "rel_pub": "2026-11-09",
   "rel_days": 1,
   "rel_n90": 1,
   "rel_pre": false,
@@ -631,10 +631,10 @@
    "HTML": 8,
    "JavaScript": 2
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1588,10 +1588,10 @@
  },
  "postgres-ai/database-lab-engine": {
   "commit_7d": 6,
-  "commit_90d": 90,
+  "commit_90d": 94,
   "rel_ver": "v4.2.1",
   "rel_pub": "2026-10-08",
-  "rel_days": 26,
+  "rel_days": 33,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -1607,10 +1607,10 @@
    "SCSS": 1,
    "HTML": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"

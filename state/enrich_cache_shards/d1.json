@@ -512,11 +512,11 @@
   }
  },
  "huggingface/swift-transformers": {
-  "commit_90d": 32,
-  "commit_7d": 10,
+  "commit_90d": 33,
+  "commit_7d": 1,
   "rel_ver": "1.4.0",
   "rel_pub": "2026-11-02",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -528,10 +528,10 @@
   "lang": {
    "Swift": 100
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

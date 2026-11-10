@@ -4805,11 +4805,11 @@
  },
  "mvdctop/Movie_Data_Capture": {
   "commit_90d": 4,
-  "commit_7d": 4,
-  "rel_ver": "8.2.1",
-  "rel_pub": "2026-11-01",
+  "commit_7d": 0,
+  "rel_ver": "8.2.4",
+  "rel_pub": "2026-11-08",
   "rel_days": 2,
-  "rel_n90": 7,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4824,10 +4824,10 @@
    "PowerShell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"

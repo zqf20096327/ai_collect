@@ -144,12 +144,12 @@
   }
  },
  "traceloop/openllmetry": {
-  "commit_7d": 1,
-  "commit_90d": 24,
-  "rel_ver": "0.62.4",
-  "rel_pub": "2026-09-29",
-  "rel_days": 35,
-  "rel_n90": 3,
+  "commit_7d": 2,
+  "commit_90d": 22,
+  "rel_ver": "0.63.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 5,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -161,10 +161,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

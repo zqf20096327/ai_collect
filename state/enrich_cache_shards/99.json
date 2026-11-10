@@ -128,11 +128,11 @@
   }
  },
  "pingcap/autoflow": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": "0.4.0",
   "rel_pub": "2025-01-03",
-  "rel_days": 669,
+  "rel_days": 676,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -148,10 +148,10 @@
    "SCSS": 1,
    "CSS": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

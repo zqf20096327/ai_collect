@@ -479,12 +479,12 @@
   }
  },
  "Kc1t/alethe-agents": {
-  "commit_90d": 617,
-  "commit_7d": 59,
+  "commit_90d": 538,
+  "commit_7d": 21,
   "rel_ver": "v1.7.0",
   "rel_pub": "2026-09-20",
-  "rel_days": 44,
-  "rel_n90": 5,
+  "rel_days": 51,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -499,10 +499,10 @@
    "JavaScript": 1,
    "Python": 1
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

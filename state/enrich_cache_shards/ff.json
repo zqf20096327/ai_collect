@@ -79,12 +79,12 @@
   }
  },
  "AAswordman/Operit": {
-  "commit_90d": 381,
-  "commit_7d": 3,
+  "commit_90d": 394,
+  "commit_7d": 79,
   "rel_ver": "v1.12.2",
   "rel_pub": "2026-09-18",
-  "rel_days": 46,
-  "rel_n90": 2,
+  "rel_days": 53,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -99,10 +99,10 @@
    "TypeScript": 2,
    "Python": 2
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

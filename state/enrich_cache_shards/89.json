@@ -156,11 +156,11 @@
   }
  },
  "giancarloerra/SocratiCode": {
-  "commit_7d": 6,
-  "commit_90d": 372,
-  "rel_ver": "v1.16.1",
-  "rel_pub": "2026-10-15",
-  "rel_days": 19,
+  "commit_7d": 21,
+  "commit_90d": 374,
+  "rel_ver": "v1.16.2",
+  "rel_pub": "2026-11-05",
+  "rel_days": 5,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -175,10 +175,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

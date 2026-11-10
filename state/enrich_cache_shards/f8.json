@@ -256,11 +256,11 @@
   }
  },
  "minitap-ai/mobile-use": {
-  "commit_90d": 11,
-  "commit_7d": 0,
+  "commit_90d": 13,
+  "commit_7d": 2,
   "rel_ver": "v3.3.0",
   "rel_pub": "2026-01-12",
-  "rel_days": 295,
+  "rel_days": 302,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -276,10 +276,10 @@
    "Makefile": 1,
    "Dockerfile": 1
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

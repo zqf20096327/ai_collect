@@ -149,11 +149,11 @@
   }
  },
  "scikit-learn-contrib/hdbscan": {
-  "commit_7d": 2,
-  "commit_90d": 6,
+  "commit_7d": 10,
+  "commit_90d": 19,
   "rel_ver": "release-0.8.44",
   "rel_pub": "2026-06-01",
-  "rel_days": 155,
+  "rel_days": 162,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -169,10 +169,10 @@
    "TeX": 0,
    "Shell": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

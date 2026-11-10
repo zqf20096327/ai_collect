@@ -321,11 +321,11 @@
  },
  "HexmosTech/git-lrc": {
   "commit_7d": 0,
-  "commit_90d": 53,
+  "commit_90d": 28,
   "rel_ver": "v0.6.17",
   "rel_pub": "2026-10-23",
-  "rel_days": 11,
-  "rel_n90": 12,
+  "rel_days": 18,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -340,10 +340,10 @@
    "CSS": 6,
    "Shell": 4
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

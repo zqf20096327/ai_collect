@@ -279,11 +279,11 @@
   }
  },
  "google/adk-web": {
-  "commit_7d": 4,
-  "commit_90d": 95,
+  "commit_7d": 10,
+  "commit_90d": 109,
   "rel_ver": "v1.0.7",
   "rel_pub": "2026-10-01",
-  "rel_days": 33,
+  "rel_days": 40,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -298,10 +298,10 @@
    "SCSS": 11,
    "JavaScript": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261110",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261110",
+   "release": "20261110",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
