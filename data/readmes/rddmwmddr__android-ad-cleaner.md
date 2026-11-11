@@ -15,17 +15,17 @@ https://t.me/+A5X3Mxzs-Cg3NjYx
 
 插上手机，点几下按钮。不需要 Python，也不需要 AI 工具。
 
-> **v0.4.1 · 2026-11-09**：这一版修「结果显示成功、开关没关上」：段落没走完、开关拨不动、手机锁屏，现在都记成未完成，结果页可以重试没做成的步骤。手机版执行时屏幕保持常亮，没插电也不会中途锁屏。新增红米 K90 Ultra、小米 MIX Flip 2、一加 15T 三个机型脚本。旧版不会自动更新，0.2.7 起的客户端左下角会提示新版；请重新下载，已有备份会保留。详见 [更新记录](CHANGELOG.md)，错误日志上报说明见 [这里](docs/12-错误日志上报.md)。官网：https://ahuamiao.com/sites/other/android-ad-removal-intro.html
+> **v0.4.3 · 2026-11-11**：0.4.2 的手机版装上后一打开就报错闪退，这一版修好了。桌面客户端把引擎内部按阶段拆成几块，用起来不变。0.4.1 及以前没有应用内更新，要先手动装一次 0.4.2；从 0.4.2 起可以在 App 里检查、下载并安装更新，手机版仍需在系统弹窗里确认；0.2.7 起的客户端左下角会提示新版；请重新下载，已有备份会保留。详见 [更新记录](CHANGELOG.md)，错误日志上报说明见 [这里](docs/12-错误日志上报.md)。官网：https://ahuamiao.com/sites/other/android-ad-removal-intro.html
 
-此前版本已处理 Windows 本地页面超时、荣耀截图越界、通知渠道误操作风险、vivo 快应用与备份问题。各 Issue 的处理范围和待验证项见 [社区问题处理记录](docs/09-社区问题处理.md)。已发布的 0.4.1 安装包只支持 adb 设备；当前开发分支已合并纯血鸿蒙桌面能力，尚未正式发布，见 [鸿蒙接入说明](harmony/README.md)。
+此前版本已处理 Windows 本地页面超时、荣耀截图越界、通知渠道误操作风险、vivo 快应用与备份问题。各 Issue 的处理范围和待验证项见 [社区问题处理记录](docs/09-社区问题处理.md)。0.4.2 起 Mac / Windows 客户端也能连纯血鸿蒙手机，这条通道还没有在鸿蒙真机上复测，见 [鸿蒙接入说明](harmony/README.md)。
 
 | 设备 | 下载 | 说明 |
 |---|---|---|
-| Mac · Apple 芯片（M1 及以后） | [AndroidAdCleaner-0.4.1-mac-arm64.dmg](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.1/AndroidAdCleaner-0.4.1-mac-arm64.dmg) | 已签名、通过苹果公证，双击就能打开 |
-| Mac · Intel 芯片（macOS 11 及以上） | [AndroidAdCleaner-0.4.1-mac-intel.dmg](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.1/AndroidAdCleaner-0.4.1-mac-intel.dmg) | 同上 |
-| Windows 10 / 11 · 安装版 | [AndroidAdCleaner-0.4.1-windows-setup.exe](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.1/AndroidAdCleaner-0.4.1-windows-setup.exe) | 弹「Windows 已保护你的电脑」时点「更多信息」→「仍要运行」；和旧版共用安装标识，会原地升级 |
-| Windows 10 / 11 · 免安装 | [AndroidAdCleaner-0.4.1-windows-portable.zip](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.1/AndroidAdCleaner-0.4.1-windows-portable.zip) | 解压后双击 `AndroidAdCleaner.exe`；不会替换、也不会卸载已安装的旧版 |
-| 安卓手机 · 手机版（安卓 11 及以上） | [AndroidAdCleaner-0.4.1-android-arm64.apk](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.1/AndroidAdCleaner-0.4.1-android-arm64.apk) | 不用连电脑，安装和授权见[手机版教程](docs/手机版教程/README.md) |
+| Mac · Apple 芯片（M1 及以后） | [AndroidAdCleaner-0.4.3-mac-arm64.dmg](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.3/AndroidAdCleaner-0.4.3-mac-arm64.dmg) | 已签名、通过苹果公证，双击就能打开 |
+| Mac · Intel 芯片（macOS 11 及以上） | [AndroidAdCleaner-0.4.3-mac-intel.dmg](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.3/AndroidAdCleaner-0.4.3-mac-intel.dmg) | 同上 |
+| Windows 10 / 11 · 安装版 | [AndroidAdCleaner-0.4.3-windows-setup.exe](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.3/AndroidAdCleaner-0.4.3-windows-setup.exe) | 弹「Windows 已保护你的电脑」时点「更多信息」→「仍要运行」；和旧版共用安装标识，会原地升级 |
+| Windows 10 / 11 · 免安装 | [AndroidAdCleaner-0.4.3-windows-portable.zip](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.3/AndroidAdCleaner-0.4.3-windows-portable.zip) | 解压后双击 `AndroidAdCleaner.exe`；不会替换、也不会卸载已安装的旧版 |
+| 安卓手机 · 手机版（安卓 11 及以上） | [AndroidAdCleaner-0.4.3-android-arm64.apk](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.3/AndroidAdCleaner-0.4.3-android-arm64.apk) | 不用连电脑，安装和授权见[手机版教程](docs/手机版教程/README.md) |
 
 不知道 Mac 是哪种芯片：左上角苹果图标 → 关于本机，「芯片」写 Apple M 开头的选 Apple 芯片。所有版本：[Releases](https://github.com/rddmwmddr/android-ad-cleaner/releases)；国内下载走 [Gitee](https://gitee.com/rddmw/android-ad-cleaner/releases)，不用登录（Windows 安装版只在 GitHub 上）。国内走 Gitee 时拿到的是 Windows 免安装版，它不会替换已安装的旧版：要顶掉旧版，用安装版覆盖安装，或先在 Windows「设置」的应用列表里卸载旧的「安卓去广告」（0.3.2 及更早版本装的名字）再删掉旧快捷方式；卸载只删程序目录，数据与备份保留；免安装版启动时若发现旧版还在，也会在界面里提示一次。用法：[docs/08-桌面客户端.md](docs/08-桌面客户端.md)。
 
@@ -109,6 +109,7 @@ https://t.me/+A5X3Mxzs-Cg3NjYx
 | 一加 | Ace 2 Pro（PJA110） | ColorOS 16.0.5.1201<br>Android 16 | ⚠️ | 部分 | — |
 | 一加 | 13T（PKX110） | ColorOS 16.0.10.500<br>Android 16 | ✅ 10-28 | ✅ | ✅ 17 |
 | 一加 | Ace 6T（PLR110） | ColorOS 17.0.0.101<br>Android 17 | ✅ 10-31 | ✅ | — |
+| 一加 | 一加 16（PYB110） | ColorOS 17.0.0.155<br>Android 17 | ✅ 11-12 | ✅ | — |
 | OPPO | Find N6（PLP120） | ColorOS 16.0.9 | ⚠️ | ✅ | ✅ 30 |
 | OPPO | Find X8s（PKT110） | ColorOS 17.0.0.102<br>Android 17 | ✅ 10-28 | ✅ | ✅ 26 |
 | OPPO | Find X9 Ultra（PMA110） | ColorOS 17.0.0.106<br>Android 17 | ✅ 10-29 | ✅ | ✅ 6 |
@@ -173,6 +174,7 @@ https://t.me/+A5X3Mxzs-Cg3NjYx
 - **一加 Ace 2 Pro（PJA110，ColorOS 16）**：脚本入口照同代系统（ColorOS 16）在一加 Ace 2 与 OPPO 机型上已实测的路径改写，本机未跑过、等复测；差异见[清单](docs/清单/OPPO-ColorOS.md)。营销通知未测。
 - **一加 13T（PKX110）**：2026-10-28 实测：广告跟踪 76 项、商店两段、小布建议；浏览器/下拉搜索/负一屏见清单差异。营销通知 17 个渠道。
 - **一加 Ace 6T（PLR110）**：2026-10-31 贡献者真机九段全跑 224 秒；本仓库无该机型，未复测，见[清单差异](docs/清单/OPPO-ColorOS.md)。营销通知未测。
+- **一加 16（PYB110）**：2026-11-12 本机九段全跑 397 秒，二次重跑幂等；商店「我的」页没有设置文字行，走 `APP_SETTINGS` 直达，负一屏的个性化开关挪到了「隐私」里，见[清单差异](docs/清单/OPPO-ColorOS.md)。营销通知未测。
 - **OPPO Find N6（PLP120）**：路径实测，整段待验证。营销通知 30 个渠道。
 - **OPPO Find X8s（PKT110）**：10-28 真机整段重跑通过：广告跟踪 96 项 + 搜索与建议等 12 项逐项回读确认。营销通知 26 个渠道。
 - **OPPO Find X9 Ultra（PMA110）**：2026-10-29 八段整轮通过，重跑 211 秒，回读确认 173 项；见[说明](recipes/oppo-PMA110/README.md)。营销通知独立关闭并回读 6 个营销渠道，其他原有渠道及总开关未变。

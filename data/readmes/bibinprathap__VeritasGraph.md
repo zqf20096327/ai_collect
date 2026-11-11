@@ -10,6 +10,7 @@
 [![CI](https://github.com/bibinprathap/VeritasGraph/actions/workflows/ci.yml/badge.svg)](https://github.com/bibinprathap/VeritasGraph/actions)
 [![GitHub Stars](https://img.shields.io/github/stars/bibinprathap/VeritasGraph?style=social)](https://github.com/bibinprathap/VeritasGraph)
 [![MCPVault: claimed](https://mcpvault.io/badge/veritasgraph.svg)](https://mcpvault.io/servers/veritasgraph/health?utm_source=external_badge&utm_medium=referral&utm_campaign=mcp_health_report)
+[![M8ven Score](https://m8ven.ai/badge/mcp/bibinprathap/veritasgraph)](https://m8ven.ai/mcp/bibinprathap/veritasgraph?s=readme)
 
 > **🎯 Traditional RAG guesses based on similarity. VeritasGraph reasons based on structure — and refuses to answer when the evidence isn't there.**
 

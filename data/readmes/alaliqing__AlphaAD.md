@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--10-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1407-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--11-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1411-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1407 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1411 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 223 | 2026-11-08 | [View papers](#category-perception-sensor-fusion) |
+| Perception & Sensor Fusion | 224 | 2026-11-10 | [View papers](#category-perception-sensor-fusion) |
 | Prediction & World Models | 111 | 2026-11-08 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 96 | 2026-11-04 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 57 | 2026-11-05 | [View papers](#category-control-vehicle-dynamics) |
+| Planning & Decision-Making | 97 | 2026-11-10 | [View papers](#category-planning-decision-making) |
+| Control & Vehicle Dynamics | 58 | 2026-11-10 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 51 | 2026-10-29 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 160 | 2026-11-09 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 213 | 2026-11-08 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 156 | 2026-11-09 | [View papers](#category-systems-deployment-connectivity) |
+| End-to-End & VLA | 161 | 2026-11-10 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 211 | 2026-11-08 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 157 | 2026-11-10 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 29 | 2026-11-06 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 311 | 2026-11-08 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 312 | 2026-11-08 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,14 +45,14 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 103 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Dataset | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
 | Benchmark | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 191 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
-| Synthetic Data | 34 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 112 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| Simulation | 192 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Synthetic Data | 33 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
+| Cooperative / V2X | 114 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
 | VLA | 87 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
 | World Model | 119 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 138 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| Reinforcement Learning | 137 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 100 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
@@ -63,7 +63,17 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 223 papers
+## Perception & Sensor Fusion · 224 papers
+
+<a id="paper-2611-14003"></a>
+
+### Spatio-Temporal Calibration of a Vehicle-Mounted Microphone Array for Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Marvin Seegert, Richard Taupitz, Korbinian Moller, Johannes Betz<br>
+**Published:** 2026-11-10<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.14003) | [PDF](https://arxiv.org/pdf/2611.14003.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Microphones let an autonomous vehicle sense into areas its cameras and LiDAR cannot see, by picking up the sound that other traffic participants emit. Locating those sources and fusing them with the...
 
 <a id="paper-2611-11532"></a>
 
@@ -84,6 +94,17 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Links:** [arXiv abstract](https://arxiv.org/abs/2611.11131) | [PDF](https://arxiv.org/pdf/2611.11131.pdf) | [↑ BackToTop](#browse-by-topic)
 
 **Abstract:** High-fidelity LiDAR simulation remains a bottleneck for scalable development and validation of autonomous systems. Existing generators can synthesize realistic scans, but they are typically...
+
+<a id="paper-2611-12932"></a>
+
+### URL-Sim: Unified and Regulated LiDAR Simulation for High-Fidelity Reconstruction of Dynamic Driving Scenes ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Kefei Qian, Xipeng Feng, Jie Li, Long Cao, Yuhan Chen, et al.<br>
+**Published:** 2026-11-06<br>
+**Research tags:** Simulation<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.12932) | [PDF](https://arxiv.org/pdf/2611.12932.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Reconstructing high-fidelity LiDAR simulation scenes from real-world driving logs is essential for cost-effective safety validation of autonomous driving systems. While simulators based on Neural...
 
 <a id="paper-2611-07613"></a>
 
@@ -120,7 +141,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2611-05291"></a>
 
-### Low-Density 3D Point Cloud Classification ![New](https://img.shields.io/badge/New-red)
+### Low-Density 3D Point Cloud Classification ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Ahmed Baha Ben Jmaa, Faten Chaieb<br>
 **Published:** 2026-11-03<br>
@@ -130,7 +151,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2611-04912"></a>
 
-### MiCaDe: Online LiDAR-Camera Miscalibration Change Detection for Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+### MiCaDe: Online LiDAR-Camera Miscalibration Change Detection for Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Carlo Sgaravatti, Riccardo Pieroni, Matteo Corno, Sergio M. Savaresi, Luca Magri, et al.<br>
 **Published:** 2026-11-03<br>
@@ -481,7 +502,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-16012"></a>
 
-### Adversarial Robustness of Camera-Radar Sensor Fusion for Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
+### Adversarial Robustness of Camera-Radar Sensor Fusion for Autonomous Driving ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Ce Zhou, Yubo Wu, Khang Nguyen, Liyang Xiao, Thomas Hou, et al.<br>
 **Published:** 2026-10-11<br>
@@ -492,7 +513,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-15745"></a>
 
-### SpikeOcc: Towards Resilient Multimodal 3D Occupancy Perception via Spiking Experts ![Recent](https://img.shields.io/badge/Recent-orange)
+### SpikeOcc: Towards Resilient Multimodal 3D Occupancy Perception via Spiking Experts ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Yiding Sun, Zijie Xu, Hongqiang Lin, Jiajun Cao, Dongxu Zhang, et al.<br>
 **Published:** 2026-10-11<br>
@@ -502,7 +523,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-15604"></a>
 
-### Squeeze-Aware-YOLO: Early Channel Recalibration and Multi-Scale Fusion for Real-Time Traffic Sign Detection ![Recent](https://img.shields.io/badge/Recent-orange)
+### Squeeze-Aware-YOLO: Early Channel Recalibration and Multi-Scale Fusion for Real-Time Traffic Sign Detection ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Mizbaul Haque Maruf, Syed Samin Sadaf, Syed Tamzid Bakht, Md. Hasanul Kabir, Sabbir Ahmed<br>
 **Published:** 2026-10-11<br>
@@ -513,7 +534,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-15522"></a>
 
-### GNFormer: Gaussian Neural Field Transformer for Efficient Camera-based Occupancy Prediction ![Recent](https://img.shields.io/badge/Recent-orange)
+### GNFormer: Gaussian Neural Field Transformer for Efficient Camera-based Occupancy Prediction ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Guangcheng Chen, Li He, Hong Zhang<br>
 **Published:** 2026-10-11<br>
@@ -1635,27 +1656,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Published:** 2026-07-04<br>
 **Links:** [arXiv abstract](https://arxiv.org/abs/2607.04098) | [PDF](https://arxiv.org/pdf/2607.04098.pdf) | [↑ BackToTop](#browse-by-topic)
 
-**Abstract:** In recent years, 4D imaging radar has gained wide attention in autonomous driving for its robustness against harsh weather and ability to output target velocity. Nevertheless, mainstream 4D...
-
-<a id="paper-2607-03247"></a>
-
-### Learning to Suppress SPAD-based LiDAR Flare
-
-**Authors:** Xuanya Zhu, Linghao Shen<br>
-**Published:** 2026-07-03<br>
-**Research tags:** Dataset<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.03247) | [PDF](https://arxiv.org/pdf/2607.03247.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Single-Photon Avalanche Diode (SPAD)-based Light Detection and Ranging (LiDAR) is emerging for autonomous vehicles due to its high sensitivity and precise depth sensing capabilities. However, flare...
-
-<a id="paper-2607-02074"></a>
-
-### Comprehensive Robustness Analysis of LiDAR-based 3D Object Detection in Autonomous Driving
-
-**Authors:** Adwait Chandorkar, Kai Krink, Yerdana Maulenbay, Hasan Tercan, Tobias Meisen<br>
-**Published:** 2026-07-02<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.02074) | [PDF](https://arxiv.org/pdf/2607.02074.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Recent advancements in LiDAR-only 3D object detection have demonstrated improved detection accuracy over benchmark datasets. However, the adversarial robustness of these models remains untested. Very...
-
-<a id
+**Abstract:** In recent yea

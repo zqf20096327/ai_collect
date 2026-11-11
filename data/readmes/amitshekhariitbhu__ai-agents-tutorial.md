@@ -467,6 +467,26 @@ Let's get started: [How does LangGraph work?](https://outcomeschool.com/blog/how
 
 ---
 
+## How do Human-in-the-Loop agents work?
+
+In this blog, we will learn about how Human-in-the-Loop agents work. We will also see why a fully automatic agent is risky, the points where a human can step in, how an agent pauses and continues after the human replies, how to decide which actions need a human, and where this approach works well and where it slows us down.
+
+We will cover the following:
+
+- The problem with fully automatic agents
+- What is a Human-in-the-Loop agent?
+- Where can a human step in?
+- How does a Human-in-the-Loop agent work?
+- How does the agent pause and continue?
+- A simple code example
+- Which actions need a human?
+- Common mistakes
+- Advantages and disadvantages
+
+Let's get started: [How do Human-in-the-Loop agents work?](https://outcomeschool.com/blog/human-in-the-loop-agents)
+
+---
+
 ## Harness Engineering in AI
 
 In this blog, we will learn about Harness Engineering in AI. We will understand what a harness is, why we need it, and how it is used in AI Agents and evaluation systems.
@@ -971,6 +991,28 @@ We will cover the following:
 - Where it works well and where it fails
 
 Let's get started: [How does a voice agent handle the user and agent talking at the same time?](https://outcomeschool.com/blog/overlapping-speech-in-voice-agents)
+
+---
+
+## How does a voice agent add its own backchannels like "okay" and "got it"?
+
+In this blog, we will learn about how a voice agent adds its own backchannels like "okay" and "got it". We will also see why a silent agent feels broken, the two kinds of backchannels an agent uses, how the agent decides the right moment and the right sound, how it plays the sound without interrupting itself, how full-duplex models do it, and where it works well and where it fails.
+
+We will cover the following:
+
+- What is a backchannel?
+- Why does a silent voice agent feel broken?
+- The two kinds of backchannels a voice agent uses
+- The parts of a voice agent
+- How the agent decides when to say "mm-hmm"
+- How the agent picks the right sound
+- How the agent plays the sound without stopping its listening
+- How the agent avoids interrupting itself
+- How the agent says "got it" after the user finishes
+- How full-duplex models do it in a different way
+- Where it works well and where it fails
+
+Let's get started: [How does a voice agent add its own backchannels like "okay" and "got it"?](https://outcomeschool.com/blog/agent-side-backchannels)
 
 ---
 

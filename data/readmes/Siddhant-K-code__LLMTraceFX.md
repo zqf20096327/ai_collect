@@ -26,6 +26,8 @@
 <p align="center">
   <a href="https://github.com/Siddhant-K-code/LLMTraceFX/actions/workflows/ci.yml"><img src="https://github.com/Siddhant-K-code/LLMTraceFX/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
   <a href="https://github.com/Siddhant-K-code/LLMTraceFX/actions/workflows/codeql.yml"><img src="https://github.com/Siddhant-K-code/LLMTraceFX/actions/workflows/codeql.yml/badge.svg?branch=main" alt="CodeQL status"></a>
+  <a href="https://pypi.org/project/llmtracefx/"><img src="https://img.shields.io/pypi/v/llmtracefx" alt="PyPI version"></a>
+  <a href="https://pepy.tech/projects/llmtracefx"><img src="https://static.pepy.tech/personalized-badge/llmtracefx?period=total&amp;units=INTERNATIONAL_SYSTEM&amp;left_color=BLACK&amp;right_color=GREEN&amp;left_text=downloads" alt="PyPI downloads"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License: Apache-2.0"></a>
   <img src="https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue" alt="Python 3.11, 3.12, 3.13">
   <a href="#perf-gate-in-ci"><img src="https://img.shields.io/badge/GitHub%20Action-perf%20gate-orange?logo=githubactions&amp;logoColor=white" alt="GitHub Action: perf gate"></a>
@@ -130,6 +132,18 @@ The main workflow is:
    incomplete evidence.
 3. **Compare and tune** candidates under one objective and stated constraints.
 4. **Optimize** only after the collected evidence supports a recommendation.
+
+## Install
+
+```bash
+pip install llmtracefx
+```
+
+This installs the library and the `llmtracefx-*` commands from
+[PyPI](https://pypi.org/project/llmtracefx/). Extras use the usual syntax, for
+example `pip install "llmtracefx[mlx]"` on macOS arm64. The Quickstart below
+clones the repository instead, because it reads example files from the source
+tree and uses the locked dependencies.
 
 ## Quickstart
 
@@ -814,6 +828,24 @@ uv run llmtracefx-optimizer workloads run-api \
   --dry-run
 ```
 
+With `--budget-plan`, `--budget-ledger`, and `--budget-request-id`, each
+request is claimed in a sealed ledger at its full price ceiling before any
+network I/O. A ledger entry is `planned`, `attempted`, `completed`, `failed`, or
+`abandoned`. A request ID is never attempted twice. A `failed` request blocks
+later requests for its model permanently. An `attempted` request whose process
+died before settlement also blocks its model, until an operator records it:
+
+```bash
+uv run llmtracefx-optimizer workloads abandon-budget-request \
+  --budget-plan budget-plan.json \
+  --budget-ledger budget-ledger.json \
+  --budget-request-id request-id \
+  --reason "runner was killed before settlement"
+```
+
+The entry becomes `abandoned`, keeps its full ceiling charged, and the reason
+is appended to the ledger events. That request ID can never be retried.
+
 Then run `tune`, `tune-report`, or `optimize` against the verified result
 directory. The example policy files under `examples/optimizer/` are labelled
 examples and contain no benchmark claim.
@@ -825,7 +857,7 @@ in your own job (on the hardware you care about, since hosted runners have no
 GPU or Apple silicon), then gate the pull request:
 
 ```yaml
-- uses: Siddhant-K-code/LLMTraceFX@main
+- uses: Siddhant-K-code/LLMTraceFX@v1
   with:
     baseline: perf/baseline          # files or directories of record.json
     candidate: output/candidate
@@ -838,8 +870,9 @@ The action needs only the standard library, so it installs nothing beyond
 Python. It writes a Markdown table to the job summary and exposes `verdict`
 (`pass`, `regression`, or `inconclusive`) and `report` (JSON path) as
 outputs. Set `fail-on-inconclusive: "false"` to report without failing when
-the runs are too few or too noisy to decide. Pin a commit SHA rather than
-`@main` for reproducible CI.
+the runs are too few or too noisy to decide. `@v1` follows the latest 1.x
+release. Pin a release tag such as `@v1.11.0` or a commit SHA for fully
+reproducible CI.
 
 The same check runs locally:
 
@@ -996,6 +1029,13 @@ make lint-changed
 
 The project supports Python 3.11 through 3.13. The `mlx` extra is installed
 only on macOS arm64, and the `modal` extra is optional.
+
+## Releasing
+
+Publishing a GitHub release for a tag `vX.Y.Z` uploads the package to PyPI,
+moves the `v1` tag for the Action, and deploys the evidence viewer Space.
+[docs/releasing.md](docs/releasing.md) has the one-time PyPI and Hugging Face
+setup.
 
 ## License
 

@@ -376,6 +376,19 @@ what enforces; adding the server alone just gives the model tools it can ignore.
 
 That is the entire installation. [All sixteen clients →](#installation)
 
+**Requirements:**
+- **Node.js 22.14.0 or later**, for the plugin's hooks and its MCP server. `node` must be on the PATH of the Claude
+  Code process.
+- **Claude Code 2.1.139 or later.** The hooks use the exec form (`"command": "node", "args": [...]`), which Claude
+  Code added in 2.1.139. An older Claude Code ignores `args`, so the hooks do nothing and nothing says so;
+  `install_doctor` (or `npx token-optimizer-doctor`) reports it. Their fail-open setting (`"onFailure": "continue"`)
+  is read from 2.1.295, and continuing is also the default for an exec-form hook that cannot start.
+- **If you just installed Node.js** (or Git), start Claude Code again from a new terminal so it picks up the new PATH.
+- **Hooks without Node:** they run `node` directly, with no shell, so Windows needs no Git Bash for them. If `node`
+  cannot start, they let the tool call through (`"onFailure": "continue"`): you lose the savings, not the session.
+- **MCP server without Node:** it fails to connect (`/mcp` shows it) until Node is reachable. Claude Code retries it
+  automatically, or press Reconnect in `/mcp`.
+
 Then, whenever you want to know what to do next:
 
 ```text
@@ -1081,6 +1094,7 @@ all.
 | `TOKEN_OPTIMIZER_LEAN_HANDOFF`         | off        | a subagent's report over 4,000 characters reaches the lead lean; also needs `Agent\|Task` in the PostToolUse matcher |
 | `TOKEN_OPTIMIZER_REPO_ASK`             | off        | a `repo_ask "<question>"` shell command for agents, named in their briefing |
 | `TOKEN_OPTIMIZER_PROXY_SHARE_PREFIX`   | on         | a cache marker before each subagent's task, so siblings share their prefix  |
+| `TOKEN_OPTIMIZER_PROXY_HOIST_CONTEXT`  | on         | opening-context paragraphs an earlier session already sent move into the shared cached prefix; a new session's first request wrote 4,301 tokens to cache, now 508 (same project); across 5 projects, about 6,800 to 3,000 once the ledger has seen 2-3 sessions |
 | `TOKEN_OPTIMIZER_PROXY_COLD_GATE`      | on         | a sibling's first request waits (up to 12 s) to read the first one's cache   |
 | `TOKEN_OPTIMIZER_PROXY_KEEPWARM`       | on         | a capped read-back ping keeps a large conversation's cache warm when idle   |
 | `TOKEN_OPTIMIZER_OUTPUT_COMPACT`       | on         | Bash and Grep results over 6 KB compacted, Grep grouped by file; full text kept |
@@ -1349,6 +1363,152 @@ mistakes: what an overpowered model wastes, and what an underpowered one costs
 in retries. A tier that needs a retry in more than half its episodes is excluded
 at any price, because four cheap turns that fail are not cheap.
 
+### Learned cost control: pruning, loop guard, holdout, and the quota you actually pay with
+
+Four controls learn from this repository's own finished sessions. They act on
+what a session *loads* and *how it fails*, which the compression above does not
+reach. None of them needs a model call to work.
+
+**Tool pruning.** A tool unused for 10 prompts across 2 or more sessions (or for
+5 sessions) is written as a bare-name `permissions.deny` rule into the project's
+`.claude/settings.local.json`. That removes its definition from every later
+request (verified on Claude Code 2.1.319: 173 tools to 171). The list is written
+only after the repository's other sessions have been idle for 60 minutes. A
+deny rule reaches sessions that are already running, so writing it while a
+warm session is mid-flight would make that session re-write its cache. The
+file and shell tools, AskUserQuestion, plan mode, ToolSearch, Skill, WebFetch,
+WebSearch and this package's own tools are never pruned. A pruned web tool would
+never be asked for, so the automatic restore below could never bring it back.
+Rules you wrote are never removed or adopted.
+
+Pruning is reversible without a command. A session whose model reaches for a
+pruned tool, or whose user names one, gets it back at the next fold, and that
+tool is never pruned again.
+
+The `Agent` tool is prunable. Claude Code 2.1.3xx already defers almost every
+other tool, and `Agent` was the largest definition still sent inline with every
+request: 5,189 characters, about 1,250 tokens. Once pruned, the model cannot
+reach for it, and people ask for "agents", not `Agent`. So the Stop hook reads
+the turn's prompt whenever `Agent` is pruned. If the prompt asks for agents
+("use two agents", "spawn a sub-agent"), the hook restores the tool at once and
+continues the turn, so the request is served in the same turn. A bare "in
+parallel" does not count: a wrong match would cost a turn and the prune.
+
+The catalog of tools a session loads is read in the
+background from `claude -p`'s init event. The process is killed before any model
+call, so the read costs no money or quota. Sessions launched outside a
+repository, such as from a home directory, get their own store keyed on the
+launch directory.
+
+**Codex.** Codex has capability switches instead of a per-tool deny list. On
+the same evidence rule, read from Codex's own session logs in `~/.codex/sessions`,
+it switches off the capabilities a repository never uses: the sub-agent tools
+(`features.multi_agent`, `agents.enabled`), image viewing (`features.view_image`),
+the advert for uninstalled plugins (`features.tool_suggest`), ChatGPT apps
+(`features.apps`) and the sleep tool (`features.sleep_tool`).
+The switches go in a marked block at the top of that repository's
+`.codex/config.toml`. Measured on codex-cli 0.167.0, the sub-agent switch alone
+cut each request's standing prompt from 72,078 to 60,579 bytes (−16%). In a trusted
+project's config, the last three together cut it another 7.3% (71,768 to 66,550 bytes).
+`features.plugins` is never touched, because it also removes the skills
+instructions. Codex
+reads project config only for projects it trusts, so an untrusted repository
+stays a proposal. The file is left alone when it is tracked by git, or when it
+already defines a `[features]` or `[agents]` table (writing it twice would stop
+Codex starting). The global `~/.codex/config.toml` is never written. Asking for
+sub-agents in so many words, or attaching a screenshot, gives the capability
+back for good. Undo: `token-optimizer-learned toolprune restore --codex`.
+
+**GitHub Copilot CLI.** Copilot's tool list can only be cut with a launch flag:
+`--excluded-tools` has no setting a repository or hook could write. So the
+managed `copilot` command adds it. On the same evidence rule, read from
+Copilot's own session logs (`~/.copilot/session-state/*/events.jsonl`, or
+`$COPILOT_HOME`), it leaves out the built-in tools a repository never used,
+such as image generation, dynamic workflows, the session SQL tools and the
+GitHub MCP server's search tools. Measured on Copilot CLI 1.0.107, leaving out
+20 of the 28 tools cut a session's first request from 26,748 to 12,762 input
+tokens, and its AI credits from 7.04 to 3.43. Every persisted Copilot setting
+moved it by 560 tokens at most. The shell, file and search tools, the
+sub-agent tools, `web_fetch` and `skill` are never left out, and nothing is left
+out when you pass `--available-tools` or `--excluded-tools` yourself. A tool
+that is left out cannot be called, so the restore signal is asking for it:
+typing its name, or for example "generate an image" or "Copilot Spaces". That
+gives it back for good. A Copilot started without the managed command keeps
+every tool, and its sessions still count as evidence. Status:
+`token-optimizer-learned status`. Undo: `token-optimizer-learned toolprune
+restore --copilot`.
+
+Four Copilot user settings (`askUser`, `connectors`, `contextManagementTools`,
+`imageGeneration`) together cost those 560 tokens per request. They are your
+user-level settings, not a repository's, so they are only reported by
+`token-optimizer doctor` unless you opt in with
+`TOKEN_OPTIMIZER_COPILOT_LEAN_SWITCHES=write` (default `off`). Then the managed
+`copilot` command writes `false` for each one still unset in
+`$COPILOT_HOME/settings.json`. It never overrides a value you set (so
+`copilot config imageGeneration true` keeps it on for good) and never touches a
+file that is not strict JSON. `token-optimizer-learned toolprune restore
+--copilot` undoes it: the original file byte for byte if you have not edited it
+since, otherwise only the switches it wrote. After that they are not written
+again.
+
+**Loop guard.** On a failed call (`PostToolUseFailure`), the guard looks at the
+current turn. The same failure signature four times in one turn, or a turn
+churning past 2.5x this repository's usual length, is redirected at once. Three
+repeats, or many failures in a long turn, count as suspect. A suspect turn is
+redirected straight away, or sent to an optional judge
+(`TOKEN_OPTIMIZER_LOOPGUARD_JUDGE=on`, run through your own `claude` CLI and
+accounted). The redirect names the failure, and it carries what the knowledge
+graph already holds about the files involved: the dead ends and working commands
+an earlier session recorded. Each turn gets one redirect. After that, the person
+sees one line saying how to interrupt the turn; the guard never stops a turn
+itself. It acts from the first session, since identical repeated failures are a
+loop in any repository.
+
+**Injection holdout.** Every kind of context these hooks inject is billed on
+every later request of the session. One session in ten withholds exactly one
+class (session index, standing rules, graph findings, advisories, guidance, and
+so on). Its cache-aware cost per prompt is then compared against ordinary
+sessions with a permutation test. A class that sessions are measurably cheaper
+without is gated. The test keeps running in reverse, so a wrong gate undoes
+itself. The tool policy, crash notices and anything else a session needs to work
+are never withheld. Set `TOKEN_OPTIMIZER_INJECTION_HOLDOUT=off` to opt out; a
+benchmark arm turns it off automatically.
+
+**Billing mode and quota pacing.** Billing mode is detected per client, without
+opening a credential file. Claude Code's non-secret `oauthAccount.billingType` is
+the signal, alongside API-key and cloud-provider environment variables;
+`TOKEN_OPTIMIZER_BILLING` overrides it. API users are optimized for cache-aware
+cost per task. Subscription users are optimized for finished work per unit of
+quota. Under the default `TOKEN_OPTIMIZER_SUBSCRIPTION_POLICY=pace`, leftover
+capacity is spent (by continuing with a queued backlog task) only when **both**
+of these hold:
+
+- the 5-hour window is under 90% used;
+- the week is on pace (weekly use is no more than the share of the week
+  elapsed).
+
+Capacity "left over" today is otherwise taken from later in the week. The
+numbers come from Claude Code's own status-line payload (`rate_limits`), which
+hooks never see. Run `token-optimizer-learned statusline install` to record
+them; it wraps any status line you already have. With no data it holds rather
+than guesses. `suggest` and `report` turn pacing off.
+
+`pace-verify` adds one continuation per session that asks the model to run the
+tests after unverified edits. It is opt-in. In a 15-pair learned SWE-bench
+pilot it fired in 8 of 13 sessions and added 33% turns and 29% cost. It changed
+no outcome: both arms resolved the same 12 of 15.
+
+```
+token-optimizer-learned status                   # all four, with evidence
+token-optimizer-learned toolprune restore [Tool] # give tools back
+token-optimizer-learned statusline install       # let pacing see real quota
+```
+
+What is verified and what is not: the mechanisms are covered by tests and by the
+probes named above. Their effect on end-to-end task cost has **not** been
+measured yet. The holdout exists to measure exactly that on your own sessions,
+and it reports "collecting" until it has enough of them.
+
 ### Waste detection that becomes a ratchet
 
 A report is read once and forgotten. Here a detection produces a **durable,
@@ -1543,152 +1703,4 @@ provider for the optimizer's own model calls, with **two independent ways in**:
 Both produce the same ordinary OrcaRouter API key, and everything downstream —
 the Bearer header, the endpoint, model discovery, `401` recovery — is identical
 whichever one you used. The two are not interchangeable in the UI on purpose: a
-single button that sometimes asks for a key and sometimes opens a browser makes
-logout, reauthentication and support harder.
-
-![The OrcaRouter card showing both authentication choices side by side, with the stored key masked](./docs/media/orcarouter/auth-methods.png)
-
-### Configure it
-
-Open the dashboard (`npm run dashboard`) and use the **OrcaRouter** card, or set
-it from the environment:
-
-```bash
-export ORCAROUTER_API_KEY=sk-orca-…          # the API-key choice
-export TOKEN_OPTIMIZER_ORCA_MODEL=orcarouter/auto   # which model the optimizer calls
-```
-
-Or connect with an account instead, which writes the issued key under
-`$TOKEN_OPTIMIZER_HOME` (default `~/.token-optimizer`) with owner-only
-permissions:
-
-```bash
-token-optimizer-route orcarouter --connect   # opens a browser, then stores the key
-token-optimizer-route orcarouter --status    # shows a redacted status and the origins in use
-token-optimizer-route orcarouter --clear     # removes the stored key
-```
-
-**A PKCE-issued key is durable, not a refresh token.** OrcaRouter returns a
-long-lived key, not an access/refresh pair, so it is reused until you revoke it
-at <https://www.orcarouter.ai/console/authorized-apps> — there is no refresh to
-schedule and re-authorizing on every launch would hit the account's limit of ten
-keys per 24 hours. When the relay answers `401`, the exact account and credential
-generation that made the rejected request is marked for reauthentication, and
-nothing attempts a refresh. Refreshable OAuth tokens rotate automatically;
-durable key grants such as OrcaRouter are reused until the provider revokes them.
-
-### Origins
-
-Authentication and inference are **different hosts**, and neither is derived from
-the other:
-
-| Purpose                          | Default                        |
-| -------------------------------- | ------------------------------ |
-| Consent screen and code exchange | `https://www.orcarouter.ai`    |
-| Inference and model discovery    | `https://api.orcarouter.ai/v1` |
-
-`https://api.orcarouter.ai/v1/auth/keys` is a 404 — the auth endpoints are not
-under the relay. Self-hosted installs can set `ORCA_BASE_URL` for a single shared
-origin, or `ORCA_AUTH_BASE_URL` / `ORCA_API_BASE_URL` separately; explicit values
-win, and cleartext HTTP is permitted only for loopback.
-
-### Models
-
-The model control is a listbox built from `GET /v1/models` on the configured
-origin, using your own key so the list is what your workspace can actually call.
-Model ids keep their `vendor/model` namespace. Options are filtered per entry
-point, and a model that does not declare a capability is **not offered** rather
-than offered and then rejected:
-
-- text chat — `?capability=chat`, and the model must declare an `openai`,
-  `anthropic`, `gemini` or `openai-response` endpoint type;
-- multimodal — the same, plus an explicit `architecture.input_modalities` entry
-  for the modality being sent (an undeclared capability fails closed);
-- embedding, image, video and rerank — matched strictly against the
-  `embeddings`, `image-generation`, `openai-video` and `jina-rerank` endpoint
-  types.
-
-If discovery fails, a small **verified fallback** list is shown and labelled as
-such (`openai/gpt-5.5`, `anthropic/claude-opus-4.8`, `google/gemini-3.5-flash`,
-`deepseek/deepseek-v4-pro`, `orcarouter/auto`), with its context, modality and
-reasoning-effort metadata intact. A successful live result is authoritative and
-never has the fallback mixed into it.
-
-| Text entry point                                                                                    | After switching to images                                                                                                                           |
-| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![The model listbox open on the live chat catalog](./docs/media/orcarouter/text-model-dropdown.png) | ![The model listbox after switching to images, holding only models that declare image input](./docs/media/orcarouter/multimodal-model-dropdown.png) |
-
-The second capture is after the entry point is switched to images: the text-only
-selection is cleared, and only models whose catalog entry declares image
-input remain.
-
-`npm run evidence:orcarouter` regenerates the screenshots and assertions for the
-card into `orca-evidence/` (untracked — it is a run artifact). The copies linked
-from this README live in `docs/media/orcarouter/`, alongside the other dashboard
-captures. A delivery check reads `orca-evidence/` and refuses a patch that ships
-it, so the directory is ignored rather than committed.
-
----
-
-## Honest comparison
-
-|                              | Token Optimizer                                                      | Typical alternatives                                 |
-| ---------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------- |
-| **License**                  | MIT — commercial use fine                                            | Often noncommercial-only; check before using at work |
-| Default behaviour            | Refuses the wasteful call                                            | Suggests a better tool                               |
-| Re-read of an unchanged file | Returns a diff                                                       | Returns the file again                               |
-| Savings figure               | Direct before/return ledger; causal graph effect separately held out | Computed from the tool's own assumptions             |
-| Cross-session memory         | Findings, decisions, dead ends                                       | Usually none                                         |
-| Compaction                   | Consolidation, ranked by cost-to-rederive                            | Checkpoint and replay                                |
-| Cache economics              | Measured from the transcript, attributed to a line                   | Rarely addressed                                     |
-| Model routing                | Measured from episode outcomes                                       | Guessed from task size                               |
-| Cross-project                | Fixes transfer by content hash                                       | Per-project only                                     |
-| Clients                      | 16                                                                   | 3–6 typical                                          |
-| Telemetry                    | None                                                                 | Varies                                               |
-
----
-
-## Installation
-
-Every client launches the same stdio server — `npx -y @ooples/token-optimizer-mcp@latest` —
-but they differ in what they let a hook _do_, and that difference is the whole
-product. A client with a pre-execution veto can have the wasteful call refused;
-one without can only be told. Both are listed honestly below.
-
-Ready-made configuration for all sixteen lives in
-[`integrations/`](./integrations), generated from one source and validated by
-`npm run verify:clients`. Full matrix: [`docs/CLIENT_SUPPORT.md`](./docs/CLIENT_SUPPORT.md).
-
-Every MCP connection also receives capability-aware mandatory routing
-instructions in its `initialize` response. That gives all clients a universal
-always-on policy, but only the ten clients with native pre-tool surfaces can
-hard-veto a wasteful built-in call; install their lifecycle bundle for actual
-enforcement.
-
-### Enforcing tier — the wasteful call is refused
-
-These ten clients expose a pre-execution hook. Their packaged lifecycle bundle
-shares one capability-aware decision engine and defaults to `assist`: routing,
-retrieval, capture and harvest all on, no refusals. Set
-`TOKEN_OPTIMIZER_MODE=enforce` if you want expensive built-in calls vetoed, or
-`off` to disable the hooks entirely.
-
-| Client                 | Installable lifecycle surface                                                                                                                    |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Claude Code**        | Native plugin: `/plugin marketplace add ooples/token-optimizer-mcp`, then `/plugin install token-optimizer@token-optimizer`                      |
-| **Codex**              | Native plugin in [`integrations/codex/plugin`](./integrations/codex/plugin), or standalone hooks in [`integrations/codex`](./integrations/codex) |
-| **GitHub Copilot CLI** | Project hooks in [`integrations/copilot`](./integrations/copilot)                                                                                |
-| **Gemini CLI**         | Gemini extension at the repository root, backed by [`integrations/gemini`](./integrations/gemini)                                                |
-| **Qwen Code**          | Extension bundle in [`integrations/qwen`](./integrations/qwen)                                                                                   |
-| **Cursor**             | Project hooks and always-applied rule in [`integrations/cursor`](./integrations/cursor)                                                          |
-| **Cline**              | Project hooks and rule in [`integrations/cline`](./integrations/cline)                                                                           |
-| **OpenCode**           | In-process plugin and hooks in [`integrations/opencode`](./integrations/opencode)                                                                |
-| **Kilo**               | In-process plugin and hooks in [`integrations/kilo`](./integrations/kilo)                                                                        |
-| **Windsurf**           | Project hooks and rule in [`integrations/windsurf`](./integrations/windsurf)                                                                     |
-
-### Rules tier — mandatory routing where the host has no veto API
-
-Roo Code, Zed, Amp, Continue, Crush, and Droid do not expose a packaged
-pre-execution bridge that can safely veto built-in calls. Their generated,
-always-on rules make optimized routing mandatory whenever the exact MCP schema
-is visible, and fail open to a bounded na
+single button that sometimes asks for a key and sometimes opens a b

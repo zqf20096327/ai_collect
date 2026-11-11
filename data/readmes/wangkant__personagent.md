@@ -16,7 +16,7 @@
 personagent is a character for your group chats: pick a ready one or write your own, and run it on any OpenAI-compatible model. Start by chatting with it on your own computer, then bring it into QQ, WeChat, Telegram, Discord and eighteen more from the same local page.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/wangkant/personagent/main/docs/welcome.jpg" alt="The Connect apps screen of the local page, with every platform it can join" width="960">
+  <img src="https://raw.githubusercontent.com/wangkant/personagent/main/docs/welcome.jpg" alt="The Connect apps view of the local page: the platforms that connect by scanning a code or by pasting one or two values, the advanced platforms collapsed, and the coding assistants it can join" width="960">
 </p>
 
 <p align="center"><em>Connect apps, in the same local page as setup and the character chat.</em></p>
@@ -36,6 +36,7 @@ A burst of messages gets one reply.
 <td valign="top">
 What a correction teaches, like what the group calls the gym, carries into every later reply in that chat.<br>
 A troll or a bystander cannot retrain it.<br>
+Where reactions cannot settle a change, it decides itself and records why; nobody has to approve anything.<br>
 Every change is on record, and any of them can be rolled back.
 </td>
 </tr>
@@ -55,7 +56,7 @@ Rewrite the persona whenever you like. What the character learned is kept.
 </tr>
 </table>
 
-Each chat has its own memory, and it forgets when asked: `Nova, remember Sam is vegetarian`, `Nova, forget vegetarian` ([memory commands](https://github.com/wangkant/personagent/blob/main/docs/guide.md#memory-commands)).
+Each chat has its own memory: recent messages that survive a restart, a summary of earlier conversation, dated events and facts about people, which the character keeps current by itself. It forgets when asked: `Nova, remember Sam is vegetarian`, `Nova, forget vegetarian` ([memory commands](https://github.com/wangkant/personagent/blob/main/docs/guide.md#memory-commands)). The Activity view shows everything it remembers, and any item there can be forgotten or brought back ([memory](https://github.com/wangkant/personagent/blob/main/docs/guide.md#memory)).
 
 ## Start here
 
@@ -80,7 +81,7 @@ Open **Connect apps** in the local page:
 | Paste one or two values | Telegram, Discord, Matrix, Twitch, IRC, Zulip, VK, Stoat, KOOK, Feishu/Lark, DingTalk, Slack, WeCom AI bot, Mattermost, Misskey | Values from the app's console; the page says which |
 | Advanced | WeCom app, WeChat Official Account, QQ webhook, OneBot v11 (NapCat), Satori | A public address, or other software on this computer |
 
-Connected apps start again each time personagent starts. The scan-to-connect apps, Telegram, Discord, Matrix, Twitch, IRC, Zulip, VK and Stoat are connected by personagent itself; the rest go through an [AstrBot](https://github.com/AstrBotDevs/AstrBot) it downloads and runs in the background. On a server, `personagent up` starts everything without a browser. Setup for each app is in the [user guide](https://github.com/wangkant/personagent/blob/main/docs/guide.md#put-it-in-a-chat), and QQ from zero in the [Chinese deployment guide](https://github.com/wangkant/personagent/blob/main/docs/deploy.zh-CN.md).
+Connected apps start again each time personagent starts. The scan-to-connect apps, Telegram, Discord, Matrix, Twitch, IRC, Zulip, VK and Stoat are connected by personagent itself; the rest go through an [AstrBot](https://github.com/AstrBotDevs/AstrBot) it downloads and runs in the background. On a server without a display, `personagent connect <platform>` connects any of those ten from the terminal, with the same steps and checks as the page, and `personagent up` starts everything without a browser. Setup for each app is in the [user guide](https://github.com/wangkant/personagent/blob/main/docs/guide.md#put-it-in-a-chat), and QQ from zero in the [Chinese deployment guide](https://github.com/wangkant/personagent/blob/main/docs/deploy.zh-CN.md).
 
 Already running AstrBot, Koishi or Matrix? personagent can sit behind it as the character: see [bridges you run yourself](https://github.com/wangkant/personagent/blob/main/docs/guide.md#bridges-you-run-yourself), the [Satori connector](https://github.com/wangkant/personagent/blob/main/integrations/satori/README.md) and the [Matrix connector](https://github.com/wangkant/personagent/blob/main/integrations/matrix/README.md).
 

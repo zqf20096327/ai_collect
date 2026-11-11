@@ -929,7 +929,11 @@ running the daemon signs in by itself. It opens on an overview of the
 installation: usage statistics, the AI apps that use it, a live diagram of a
 request's path, and the model, directories and their sizes. The same page edits
 flows, shows every agent with its metadata and prompt (read-only), and lists rules,
-skills and implants and switches each one on or off for the installation.
+skills and implants and switches each one on or off for the installation. Its
+Memory tab reads, edits, creates and deletes Claude Code's file-based memory
+(`projects/<project>/memory/` and its `MEMORY.md` index) in every configuration
+directory the daemon knows, such as a second one set with `CLAUDE_CONFIG_DIR`, and
+copies or moves an item between them.
 
 ### Persona continuity
 
@@ -1376,9 +1380,4 @@ You are an expert in X...
 lowercase letters, digits and underscores (`^[a-z0-9][a-z0-9_]*$`): the activation
 descriptor accepts no other agent name.
 `trigger_command` and each optional `routing.aliases` entry become MCP slash
-prompts. See [Skill tiers](#skill-tiers) and the
-[field reference](agents/README.md#agent-source-and-metadata), including the
-optional `preferred_implants`.
-
-Validate the frontmatter with `.venv/bin/python scripts/validate_agents.py`. It
-checks required fields and ID format, not whether the listed files exist; a
+prompts. See [Skill tiers](#skil

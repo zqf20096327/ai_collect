@@ -25,10 +25,10 @@ agent_skills/
 │   ├── notebooklm-mode/              ← NotebookLM-style source vault + grounded answers
 │   ├── people-enrichment/            ← PDL person/company enrichment/search to styled .xlsx
 │   ├── library-rag/                  ← Nemotron-3-Embed-1B + sqlite-vec semantic search engine
-│   ├── endpoint-probe/               ← API/MCP surface discovery (REST, GraphQL, SOAP, JSON-RPC)
-│   └── youtube-topic-research/       ← YouTube search + transcript summarization
+│   └── endpoint-probe/               ← API/MCP surface discovery (REST, GraphQL, SOAP, JSON-RPC)
 ├── mlops/                            ← model evaluation and ops skills
-│   └── model-compare/                ← blind multi-model A/B comparison + embedding benchmark
+│   ├── model-compare/                ← blind multi-model A/B comparison + embedding benchmark
+│   └── paired-agent-eval/            ← paired A/B pilot harness: matched task pairs, blinded defect scoring, behavioral text-variant batteries
 ├── web-scraping/                     ← web data-extraction skills
 │   └── website-scraping/             ← recon → lightest-tool extraction → JSONL output
 ├── productivity/                     ← personal / business-ops skills
@@ -38,10 +38,9 @@ agent_skills/
 │   ├── scheduled-summary/            ← cron-driven cross-session digest for messaging platforms
 │   ├── file-organizer/               ← LLM-powered directory organizer: scan → propose → confirm → move
 │   ├── receipt-compiler/             ← phone-camera receipt photos → straightened B&W A4 expense-claim PDF
-│   ├── task-brief/                   ← goal/context/constraints brief compiled + confirmed before substantial tasks
+│   ├── task-brief/                   ← goal/done-when/constraints brief before substantial tasks; reusable prompts
 │   ├── marp-deck/                    ← Marp Markdown decks → PPTX/PDF/HTML render
-│   ├── pdf2epub/                     ← text-layer PDF book → structured EPUB (cover, TOC nav, illustrations, endnotes)
-│   └── pdf2epub-calibration/         ← classifier calibration rules for pdf2epub (companion)
+│   └── pdf2epub/                     ← text-layer PDF book → structured EPUB (cover, TOC nav, illustrations, endnotes; classifier calibration rules absorbed)
 ├── agent-ops/                        ← agent infrastructure and maintenance skills
 │   ├── claude-plugin-converter/      ← convert Claude Code plugins → self-contained Hermes plugins
 │   ├── log-analyzer/                 ← log pattern detection: error clusters, rate limits, timeouts
@@ -51,7 +50,7 @@ agent_skills/
 ├── software-development/              ← skill development, review, and methodology skills
 │   └── skill-quality-review/          ← batch skill audit: 9 checks, writing-for-agents levers, efficacy testing
 ├── devops/                           ← infrastructure and system maintenance skills
-│   └── disk-cleanup/                 ← triage survey → safe/ask buckets → execute → verify delta
+│   └── disk-triage/                  ← triage survey → safe/ask buckets → execute → verify delta (renamed from disk-cleanup — bundled Hermes plugin now owns that name)
 └── plugins/                          ← installable Hermes Agent plugins
     ├── skill-retrieval/              ← BM25 retrieval that injects the top-K relevant skills per turn
     ├── dev-pipeline/              ← five-stage development pipeline (grill/spec/test-evals/build/review-commit) with a pre_tool_call create-gate hook
@@ -68,15 +67,15 @@ New skills are added as folders under the relevant domain directory.
 | [image-studio](creative/image-studio/) | creative | Staged fal.ai image gen/edit/upscale/cleanup with cost logging + `--dry-run` | pexels-stock-photos |
 | [clips-studio](creative/clips-studio/) | creative | Staged fal.ai short-video: text-to-video, animate still, camera moves | image-studio |
 | [pexels-stock-photos](creative/pexels-stock-photos/) | creative | Free real-world stock photos (Pexels API, 20k/month) with attribution handling | image-studio |
-| [deep-research](research/deep-research/) | research | Iterative research engine: structured evidence, source quality ranking (primary/secondary/tertiary), refute polarity, overview-first reports, four-label evidence-basis discipline ([VERIFIED]/[SOURCED]/[REASONED]/[ESTIMATED]), deterministic validation gates (claim-support, citations, structure), verbatim quote anchoring, per-round search budgets, provider-neutral search and page-reader fallbacks, referent disambiguation probe, firmware support-status triangulation recipe, provider head-to-head benchmarking, follow-up report revision, persistent citation DB scripts (absorbed source-tracker) | — |
+| [deep-research](research/deep-research/) | research | Iterative research engine: structured evidence, source quality ranking (primary/secondary/tertiary), refute polarity, overview-first reports, four-label evidence-basis discipline ([VERIFIED]/[SOURCED]/[REASONED]/[ESTIMATED]), deterministic validation gates (claim-support, citations, structure), verbatim quote anchoring, per-round search budgets, provider-neutral search and page-reader fallbacks, referent disambiguation probe, firmware support-status triangulation recipe, provider head-to-head benchmarking, source families / shelf lives / money-figure bases, items × fields comparison mode and research recipes, checkable done-when tests, follow-up report revision, persistent citation DB scripts (absorbed source-tracker) | — |
 | [entity-research](research/entity-research/) | research | Cited company/person dossiers: ownership, adverse media, sanctions, litigation; optional cited organisation-evidence run (Exa Agent API) | deep-research |
 | [people-enrichment](research/people-enrichment/) | research | PDL person/company lookup → styled `.xlsx`; email-list enrichment (free triage, one lookup per domain); shared mailboxes never kept as a person's email | entity-research |
 | [library-rag](research/library-rag/) | research | Semantic search over personal library (Nemotron-3-Embed-1B + sqlite-vec), incremental + prune-missing | notebooklm-mode |
 | [notebooklm-mode](research/notebooklm-mode/) | research | Source-grounded Q&A from a source vault, strict or augmented grounding | library-rag, deep-research |
 | [news-monitoring](research/news-monitoring/) | research | Recurring news digests with cron delivery + multi-language + dedup | — |
-| [youtube-topic-research](research/youtube-topic-research/) | research | YouTube search → transcript → summary pipeline | notebooklm-mode |
 | [endpoint-probe](research/endpoint-probe/) | research | Discover API/MCP surfaces (REST, GraphQL, SOAP, JSON-RPC) — probe script + interpretation guide | website-scraping |
-| [model-compare](mlops/model-compare/) | mlops | Blind multi-model A/B comparison: simple, tools, coding, review modes + embedding benchmark | — |
+| [model-compare](mlops/model-compare/) | mlops | Blind multi-model A/B comparison: simple, tools, coding, review modes + embedding benchmark; dated battery findings library | paired-agent-eval |
+| [paired-agent-eval](mlops/paired-agent-eval/) | mlops | Does tiered pipeline processing justify its cost: matched single-agent vs pipeline pairs, acceptance suites, blinded severity-weighted defect scoring; behavioral skill-text variant A/B batteries (operating methodology for the operator-brain text-variant evals) | model-compare |
 | [website-scraping](web-scraping/website-scraping/) | web-scraping | Recon → lightest extraction tool → JSONL + run manifest | — |
 | [fill-template](productivity/fill-template/) | productivity | Bulk-fill Word/Excel templates from a data table (mail-merge) | — |
 | [travel-itinerary](productivity/travel-itinerary/) | productivity | Business-trip itineraries from emails/PDFs → Markdown + `.ics` + chat variants | — |
@@ -84,17 +83,16 @@ New skills are added as folders under the relevant domain directory.
 | [scheduled-summary](productivity/scheduled-summary/) | productivity | Cron-driven cross-session digest — surfaces activity invisible on chat platforms | decision-log, news-monitoring |
 | [file-organizer](productivity/file-organizer/) | productivity | LLM-powered directory organizer: scan → propose structure → confirm → chunked moves | — |
 | [receipt-compiler](productivity/receipt-compiler/) | productivity | Phone-camera receipt photos → straightened B&W scans → A4 expense-claim PDF with confirmation gate | pdf |
-| [task-brief](productivity/task-brief/) | productivity | Goal/context/constraints/tooling brief compiled and confirmed before substantial work starts | — |
-| [pdf2epub](productivity/pdf2epub/) | productivity | Text-layer PDF book → structured EPUB: cover, printed-TOC nav, inline illustrations, linked endnotes | pymupdf, ebooklib, Pillow |
-| [pdf2epub-calibration](productivity/pdf2epub-calibration/) | productivity | Classifier calibration rules for pdf2epub: line classification thresholds, TOC probe matching, endnote-section architecture | — (companion to pdf2epub) |
+| [task-brief](productivity/task-brief/) | productivity | Goal/done-when/context/constraints/tooling brief compiled and confirmed before substantial work starts; reusable-prompt mode for recurring work | — |
+| [pdf2epub](productivity/pdf2epub/) | productivity | Text-layer PDF book → structured EPUB: cover, printed-TOC nav, inline illustrations, linked endnotes; classifier calibration rules absorbed into `references/calibration.md` | document-toolkit, opendataloader-pdf |
 | [marp-deck](productivity/marp-deck/) | productivity | Marp presentations: Markdown source of truth → PDF/PPTX/HTML, with themes, SVG components, PPTX import, and render tests | — |
 | [claude-plugin-converter](agent-ops/claude-plugin-converter/) | agent-ops | Two-phase converter: analyze Claude Code plugins → generate installable Hermes plugins | — |
-| [contrastive-refinement](plugins/skill-governance/skills/contrastive-refinement/) | agent-ops (bundled in `plugins/skill-governance/`) | Evidence-first skill refinement: probe candidate edits on the same task, blind-select, compose, record lessons with evidence lines | skill-governance (its own plugin) |
-| [skill-quality-review](software-development/skill-quality-review/) | software-development | Batch skill audit: 9 automated checks, writing-for-agents levers, per-skill grep methodology, efficacy A/B testing, frontmatter/description fixes | — | [log-analyzer](agent-ops/log-analyzer/) | agent-ops | Log pattern detection: error clusters, rate limits, timeout clusters, tool failures | scheduled-summary |
+| [skill-quality-review](software-development/skill-quality-review/) | software-development | Batch skill audit: 9 automated checks, writing-for-agents levers, per-skill grep methodology, efficacy A/B testing, frontmatter/description fixes | — |
+| [log-analyzer](agent-ops/log-analyzer/) | agent-ops | Log pattern detection: error clusters, rate limits, timeout clusters, tool failures | scheduled-summary |
 | [input-token-overheads](agent-ops/input-token-overheads/) | agent-ops | Audit input token cost at two scopes: per-turn prompt overhead (tool schemas, skills index, system text, profile, memory — measured live, ranked, reduced) and aggregate spend/cost accounting across sessions, cron fires, and tool traffic (cache-aware interpretation, pre-checked config levers, scheduled delta checks) | — |
 | [operator-brain](agent-ops/operator-brain/) | agent-ops | 10-module behavioral stack from Anthropic's Fable 5 and Fable 5.1 guides: act, lead with outcome, ground every claim, narrate long work, stay surgical | — |
-| [hermes-onboarding](agent-ops/hermes-onboarding/) | agent-ops | 21-step customer onboarding: gateway, dashboard, memory, search, guardrails, maintenance crons | disk-cleanup, log-analyzer |
-| [disk-cleanup](devops/disk-cleanup/) | devops | Triage disk space: survey all mounts → safe/ask buckets → execute approved set → verify delta | — |
+| [hermes-onboarding](agent-ops/hermes-onboarding/) | agent-ops | 21-step customer onboarding: gateway, dashboard, memory, search, guardrails, maintenance crons | disk-triage, log-analyzer |
+| [disk-triage](devops/disk-triage/) | devops | Triage disk space: survey all mounts → safe/ask buckets → execute approved set → verify delta (renamed from disk-cleanup; the bundled Hermes `disk-cleanup` plugin owns that name) | — |
 | [dev-pipeline](plugins/dev-pipeline/) | plugins | Five-stage development pipeline: grill → spec → test-evals → build → review-commit, planned by S0-S3 complexity and reviewed by R0-R3 risk (T0-T3 review-tier aliases), with a review-lessons library and a pre_tool_call create-gate that blocks new software-development skills unless a single-use allow flag is consumed | skill-quality-review |
 | [skill-governance](plugins/skill-governance/) | plugins | Consolidated skill provenance and governance: manifest fingerprints + drift acks and advisory-only contrastive probes behind one composed hook surface, conservative `governance.records` join, non-destructive legacy state import, and one clearance Automation Blueprint (`/blueprint`-adopted, no self-installed cron; sole successor to the retired skill-manifest + contrastive-advisor plugins) | — |
 

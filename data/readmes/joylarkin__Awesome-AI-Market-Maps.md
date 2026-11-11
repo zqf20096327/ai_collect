@@ -71,6 +71,9 @@ OR
 #### Physical AI
 - [Will Howard Davies - The 2026 Physical AI Market Map - November 2026](https://lnkd.in/p/gnJpnz5m?utm_source=awesome-ai-market-maps)
 
+#### Top AI 
+- [Leonis Capital - The 2026 Leonis AI 100 - November 2026](https://www.leoniscap.com/research/the-2026-leonis-ai-100?utm_source=awesome-ai-market-maps)
+
 #### Everything Else
 - [CB Insights - The Emerging AI 50 in NYC - November 2026](https://www.cbinsights.com/research/the-emerging-ai-50-in-nyc/?utm_source=awesome-ai-market-maps)
 
@@ -1155,7 +1158,4 @@ OR
 
 #### GenAI 
 - [a16z - The Top 100 GenAI Consumer Apps 2025 - March 2025](https://a16z.com/100-gen-ai-apps-4/?utm_source=awesome-ai-market-maps)
-- [IoT Analytics - The leading generative AI companies - March 2025](https://iot-analytics.com/leading-generative-ai-companies/?utm_source=awesome-ai-market-maps)
-
-#### AI Hardware
-- [SemiAnalysis - The GPU Cloud C
+- [IoT Analytics - The leading generative AI co

@@ -1,19 +1,54 @@
 # SoWork-Brainstorm-Kit
 
-### Your topic. Any cast. Ideas without the homework.
+### Stop asking AI for "10 ideas." Make a council argue about yours.
 
 **English · [繁體中文](README.zh-TW.md)**
 
-[![Validate text bundle](https://github.com/contentincubator2-ops/SoWork-Brainstorm-Kit/actions/workflows/validate.yml/badge.svg)](https://github.com/contentincubator2-ops/SoWork-Brainstorm-Kit/actions/workflows/validate.yml)
-**v0.4.0 · Public preview · Text workflow**
+[![Validate text bundle](https://github.com/sowork-dev/SoWork-Brainstorm-Kit/actions/workflows/validate.yml/badge.svg)](https://github.com/sowork-dev/SoWork-Brainstorm-Kit/actions/workflows/validate.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+**v0.4.0 · Public preview · Text workflow · Built for ChatGPT- and Claude-style chats**
 
-Turn a one-line question into an AI-led brainstorming session. Ask for **any theme or group**, name the people you want, or let the AI assemble a complementary cast. It proposes ideas, challenges its own proposals through different perspectives, and recommends a direction—while you just say **“Continue,” “Swap the cast,” or “You decide.”**
+<p align="center"><img src="docs/demo.gif" alt="SoWork Brainstorm Kit: download the text pack, bring a question, let the council begin" width="800"></p>
 
-**Not a nine-person roster with a four-option menu.** The bundled profiles and groups are starting examples. Ask for one person, two, five, six or more; **three is the default, not a hard maximum**. New people are fictional editorial lenses, not newly verified biographies. Cast size and output depth still depend on the AI tool's context and response limits.
+Drop one text file into an AI chat and name a topic. A cast of famous **fictional** personas proposes ideas, challenges each other's proposals, and hands you a practical plan. You just say **"Continue," "Swap the cast," or "You decide."**
 
-[Get started](#quick-start) · [Try a topic](#things-to-try) · [See evidence](#examples-and-test-evidence) · [FAQ](#faq) · [Roadmap](docs/roadmap.zh-en.md)
+[Try it in 30 seconds](#try-it-in-30-seconds) · [See a full session](locales/en/examples/persona-council.md) · [Real model transcript](examples/test-runs/open-cast-en.md) · [FAQ](#faq) · [Roadmap](docs/roadmap.zh-en.md)
 
-> The cast is fictional role-play inside one AI conversation—not the actual people, authentic quotations, endorsements, or independently deployed agents. This preview is not a native plugin. [Licensing is pending](LICENSE); ChatGPT web acceptance remains incomplete.
+## The problem
+
+Ask a chatbot for campaign ideas and you get ten polite, interchangeable bullets, then homework: "Which one do you like?"
+
+A real workshop works because **people with different instincts push on each other**. This kit makes the AI do that on purpose:
+
+- **Contrasting lenses, not renamed generic advisers.** Each character has a job: propose, challenge one specific idea, or improve how it works.
+- **You steer with one word.** Swapping people keeps your topic, constraints, and progress.
+- **It ends in a decision.** Comparable directions, a recommendation with its assumptions, and a small first experiment.
+
+No install, Python, or API key. No prompt-writing project.
+
+## Try it in 30 seconds
+
+1. Download **[START-HERE.en.txt](https://github.com/sowork-dev/SoWork-Brainstorm-Kit/raw/main/START-HERE.en.txt)** and attach it to a new ChatGPT or Claude conversation. Ask the AI to confirm it can read the file.
+2. Paste this and replace the topic:
+
+```text
+Use the attached SoWork-Brainstorm-Kit in LAZY_COUNCIL mode.
+My topic: How can a neighborhood bookstore attract repeat visits on a small budget?
+Pick a complementary named cast, start proposing now, let them challenge
+each other's ideas, then recommend a direction. Do not give me homework.
+```
+
+3. Say **"Continue"** whenever you want more. Want a different room? Say *"Give me five filmmakers"* or *"Use David Bowie and Coco Chanel only."*
+
+> *Authored illustration, not a recorded model run.* Topic: a low-budget refill campaign. **Systems lens:** a refill card stamped on visits 3, 6 and 9. **Experience lens:** a stamp card is a chore; make the 3rd refill a ritual with a hand-numbered label. **Revision:** the numbered label doubles as a collectible and a shareable asset. **Output:** three directions, one recommendation, a one-week first experiment.
+
+Full examples: [authored walkthrough](locales/en/examples/persona-council.md) · [recorded GPT-6.1-sol run](examples/test-runs/open-cast-en.md) (see its limitations).
+
+## Who it's for
+
+Marketers, founders, creators, and small teams who want a better first draft of thinking before a meeting, pitch, or launch.
+
+> **Honest limits.** The cast is fictional role-play inside one AI conversation, not the actual people, authentic quotations, endorsements, or independently deployed agents. This is a portable text workflow, not a native plugin. ChatGPT web acceptance testing is incomplete. Details in the [FAQ](#faq).
 
 ## Contents
 
@@ -44,9 +79,9 @@ The reference library contains **31 method cards**, including related variants�
 **No local installation, Python, or API key is needed to try the text pack.** You need an AI tool/account that can actually read the attachment; the tool's own access requirements still apply.
 
 1. Download one v0.4.0 language pack:
-   - **[English · START-HERE.en.txt](https://github.com/contentincubator2-ops/SoWork-Brainstorm-Kit/releases/download/v0.4.0/START-HERE.en.txt)**
-   - **[繁體中文 · START-HERE.txt](https://github.com/contentincubator2-ops/SoWork-Brainstorm-Kit/releases/download/v0.4.0/START-HERE.txt)**
-   - [Release notes and assets](https://github.com/contentincubator2-ops/SoWork-Brainstorm-Kit/releases/tag/v0.4.0)
+   - **[English · START-HERE.en.txt](https://github.com/sowork-dev/SoWork-Brainstorm-Kit/raw/main/START-HERE.en.txt)**
+   - **[繁體中文 · START-HERE.txt](https://github.com/sowork-dev/SoWork-Brainstorm-Kit/raw/main/START-HERE.txt)**
+   - [Release notes and assets](https://github.com/sowork-dev/SoWork-Brainstorm-Kit/releases/tag/v0.4.0)
 2. Upload **one** complete language pack to a new AI conversation. Ask the AI to confirm it can read it; do not accept a claim based only on the filename.
 3. Paste this and replace the topic:
 
@@ -145,6 +180,8 @@ The badge above reports the repository's **static validation workflow**, not mod
 
 ## FAQ
 
+**How many people can the cast have?** Any number the AI tool can handle: one, two, five, six or more. Three is the default, not a hard maximum. New people are fictional editorial lenses, not newly verified biographies; output depth depends on the AI tool's context and response limits.
+
 **Is this a native ChatGPT/Claude plugin or an installed agent framework?**
 
 No. It is a portable text workflow. Uploading instructions does not install a plugin, authorize tools, or create background workers. See [compatibility](locales/en/docs/compatibility.md).
@@ -169,9 +206,9 @@ Only if the AI can retrieve the actual needed files and confirms what it read. A
 
 The kit cannot guarantee an AI provider's confidentiality, retention settings, or account policies. Use fictional or anonymized inputs. Never post client data, personal information, private URLs, credentials, or raw private conversations in public Issues or PRs. See [security and privacy](SECURITY.md).
 
-**Can I redistribute or use it commercially under MIT or Creative Commons?**
+**Can I redistribute or use it commercially?**
 
-No project-wide reuse license has been selected. This is a publicly readable preview, not an MIT- or CC-licensed release. Broader redistribution and commercial terms need the owner's decision; third-party references retain their own rights. See [LICENSE](LICENSE).
+Yes. Original material is released under the [MIT License](LICENSE). Third-party method names, trademarks, websites and original teaching materials remain subject to their own rights and are credited in [method sources](locales/en/SOURCES.md) and [persona sources](locales/en/personas/SOURCES.md). The fictional personas are editorial lenses, not endorsements by the real people they reference.
 
 ## Repository map
 
@@ -186,7 +223,7 @@ No project-wide reuse license has been selected. This is a publicly readable pre
 
 ## Contribute and validate
 
-Useful contributions include **small reproducible behavior reports, clearer translations, source-backed method corrections, and focused tests**. Start with [CONTRIBUTING](CONTRIBUTING.md), [community expectations](CODE_OF_CONDUCT.md), or [open an issue](https://github.com/contentincubator2-ops/SoWork-Brainstorm-Kit/issues/new/choose). Use synthetic examples; do not upload private work sessions.
+Useful contributions include **small reproducible behavior reports, clearer translations, source-backed method corrections, and focused tests**. Start with [CONTRIBUTING](CONTRIBUTING.md), [community expectations](CODE_OF_CONDUCT.md), or [open an issue](https://github.com/sowork-dev/SoWork-Brainstorm-Kit/issues/new/choose). Use synthetic examples; do not upload private work sessions.
 
 For local maintenance, use Python 3.10+ and the standard library:
 
@@ -201,4 +238,4 @@ The build produces separate language packs. Validation checks package consistenc
 
 Concept and product direction: **CJ Wang**. Method references and persona background sources are credited separately in [method sources](locales/en/SOURCES.md) and [persona sources](locales/en/personas/SOURCES.md). Public reference context is distinct from author-created thinking mechanisms; improvised dialogue is not historical evidence. Do not invent quotations, imitate large passages of copyrighted works, or present proposals as events that already happened.
 
-[Public-material policy](locales/en/docs/sanitization-policy.md) · [Security](SECURITY.md) · [License decision pending](LICENSE)
+[Public-material policy](locales/en/docs/sanitization-policy.md) · [Security](SECURITY.md) · [MIT License](LICENSE)

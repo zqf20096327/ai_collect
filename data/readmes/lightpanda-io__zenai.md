@@ -12,7 +12,7 @@ Zig client for AI APIs, ported from the official Go SDKs ([go-genai](https://git
   - [Codex](#chatgpt-subscription-codex): OpenAI models billed to your ChatGPT plan instead of API credits
   - [Anthropic](https://docs.anthropic.com/en/docs/about-claude/models)
 - **Search** (`zenai.search`): [Tavily](https://docs.tavily.com/), [Brave Search](https://brave.com/search/api/), [Exa](https://exa.ai/docs/reference/search), [Keenable](https://docs.keenable.ai/), [Parallel](https://docs.parallel.ai/search/search-quickstart)
-- **Judgement** (`zenai.typesafe`): [TypeSafe System One](https://docs.typesafe.ai), whose Jev model answers typed questions about a piece of state (a probability, a labelled choice or a score) instead of generating text
+- **Judgement** (`zenai.typesafe`): [TypeSafe System One](https://docs.typesafe.ai), whose Jev model answers typed questions about a piece of state (a probability, a labelled choice or a score) instead of generating text. `zenai.decisions` asks the same questions of Jev or Gemini's Decisions API, whichever has a key
 
 <img width="1024" height="1024" alt="Meditating panda with incense smoke" src="https://github.com/user-attachments/assets/b9c82960-05ec-4aa1-b171-092ee2126551" />
 
@@ -84,11 +84,11 @@ The OpenAI-compatible backends all use the OpenAI client with a different `base_
 | `.openai_compatible` | `OPENAI_BASE_URL` | `OPENAI_API_KEY` |
 
 ```zig
-var llama_client = zenai.llama_cpp.Client.init(io, allocator, "llama.cpp", .{
-    .base_url = "http://localhost:8080/v1",
-});
-const ai: zenai.provider.Client = .{ .llama_cpp = &llama_client };
+const ai = try zenai.provider.Client.init(io, allocator, .llama_cpp, "llama.cpp", .{});
+defer ai.deinit(allocator);
 ```
+
+`zenai.provider.info(tag)` gives each tag's default base URL, key variable, default model and whether it is a local server.
 
 Gateway model ids are provider-prefixed (`"anthropic/claude-sonnet-5"`). For Hugging Face, pass `.base_url` to target a dedicated Inference Endpoint instead of the serverless router. `provider.Client.init` picks `.openai_compatible` on its own when `OPENAI_BASE_URL` is set, which covers vLLM, LiteLLM, Together, Groq and the like.
 
@@ -97,12 +97,28 @@ When you need something the abstraction doesn't expose, switch on the tag and us
 ```zig
 switch (ai) {
     .gemini => |g| {
-        // Use Gemini-specific features like cached content, file uploads, etc.
-        var cached = try g.createCachedContent("gemini-2.5-flash", .{ ... });
+        // Gemini-specific features such as token counting.
+        var count = try g.countTokensFromText("gemini-2.5-flash", "What is Zig?");
+        defer count.deinit();
     },
     else => {},
 }
 ```
+
+### Chat
+
+`zenai.Chat` keeps a conversation's history on top of any `provider.Client`. It copies everything it is given, and a failed turn leaves the history as it was.
+
+```zig
+var chat: zenai.Chat = .init(allocator, ai, "gemini-2.5-flash", .{ .system = "Be brief." });
+defer chat.deinit();
+
+_ = try chat.send("My name is Alice.");
+const reply = try chat.send("What is my name?");
+std.debug.print("{s}\n", .{reply.text orelse ""});
+```
+
+`sendStream` forwards the reply's text as it arrives, `sendParts` sends images, and `sendWithTools` runs the tool loop with its calls and results kept in the history.
 
 ## Gemini
 
@@ -148,22 +164,6 @@ try client.generateContentStreamFromText(
 </details>
 
 <details>
-<summary>Chat</summary>
-
-```zig
-var chat = zenai.gemini.Chat.init(&client, "gemini-2.5-flash", .{ .temperature = 0 }, .{});
-defer chat.deinit();
-
-const r1 = try chat.sendMessage("My name is Alice.");
-std.debug.print("{s}\n", .{r1.text() orelse ""});
-
-const r2 = try chat.sendMessage("What is my name?");
-std.debug.print("{s}\n", .{r2.text() orelse ""});
-```
-
-</details>
-
-<details>
 <summary>Function calling</summary>
 
 ```zig
@@ -197,6 +197,33 @@ if (response.value.firstFunctionCall()) |fc| {
 </details>
 
 <details>
+<summary>Decisions</summary>
+
+The Decisions API evaluates one shared `input` against a map of typed questions and returns a calibrated answer per question id: `noul` (a probability), `choice` (a label with per-option probabilities) or `score` (a level on an ordered scale). The input is ingested once, so put every question in the same request.
+
+```zig
+const decisions = zenai.gemini.decisions;
+
+const questions: decisions.Questions = .init(&.{
+    .{ .key = "is_complaint", .value = .noulText("Is the customer complaining?") },
+    .{ .key = "topic", .value = .choiceText(
+        "What is this message about?",
+        decisions.choices(&.{ "billing", "delivery", "other" }),
+    ) },
+    .{ .key = "anger", .value = .scoreText("How angry is the customer?", &.{ "Calm", "Annoyed", "Furious" }) },
+});
+var response = try client.createDecision(decisions.default_model, .{ .text = "The pizza arrived cold." }, questions);
+defer response.deinit(); // the answers borrow it
+
+std.debug.print("complaint: {d:.2}\n", .{response.value.noul("is_complaint").?});
+std.debug.print("topic: {s}\n", .{try response.value.choice("topic", questions)}); // validated against the criteria
+```
+
+The input can also be a list of content blocks (`.{ .parts = &.{ .{ .type = .image, .uri = file_uri, .mime_type = "image/png" } } }`). A blocked input comes back with empty `answers` and `prompt_feedback.block_reason` set.
+
+</details>
+
+<details>
 <summary>Vertex AI</summary>
 
 The same client can target [Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/docs) instead of the Developer API, in one of two modes.
@@ -204,7 +231,7 @@ The same client can target [Vertex AI](https://cloud.google.com/vertex-ai/genera
 **Express mode** takes a plain [Vertex API key](https://cloud.google.com/vertex-ai/generative-ai/docs/start/express-mode/overview) and needs no project:
 
 ```zig
-var client = zenai.vertex.Client.init(io, allocator, api_key, .{ .vertex = .{} });
+var client = zenai.gemini.Client.init(io, allocator, api_key, .{ .vertex = .{} });
 defer client.deinit();
 ```
 
@@ -215,13 +242,13 @@ export TOKEN=$(gcloud auth print-access-token)
 ```
 
 ```zig
-var client = zenai.vertex.Client.init(io, allocator, token, .{
+var client = zenai.gemini.Client.init(io, allocator, token, .{
     .vertex = .{ .project = "my-project", .location = "global" },
 });
 defer client.deinit();
 ```
 
-Generation, streaming, `Chat` and `countTokens` work in both modes. Model listing needs project/location mode, because Google's `ListPublisherModels` rejects API keys. Embeddings, file uploads and cached content are Developer-API-only and return `error.UnsupportedByBackend` on Vertex.
+Generation, streaming, `Chat` and `countTokens` work in both modes. Model listing needs project/location mode, because Google's `ListPublisherModels` rejects API keys. Embeddings and decisions are Developer-API-only and return `error.UnsupportedByBackend` on Vertex.
 
 Through the provider abstraction, `.vertex` is picked when `GOOGLE_GENAI_USE_VERTEXAI=1` (or `true`) is set. Express mode reads `GOOGLE_API_KEY`. Project mode reads `GOOGLE_CLOUD_PROJECT` and `GOOGLE_CLOUD_LOCATION`/`GOOGLE_CLOUD_REGION` (default `"global"`), but you still pass the access token explicitly as the credential.
 
@@ -265,22 +292,6 @@ try client.chatCompletionStreamFromText(
         }
     }.cb,
 );
-```
-
-</details>
-
-<details>
-<summary>Chat</summary>
-
-```zig
-var chat = zenai.openai.Chat.init(&client, "gpt-4o", .{ .temperature = 0 });
-defer chat.deinit();
-
-const r1 = try chat.sendMessage("My name is Alice.");
-std.debug.print("{s}\n", .{r1.text() orelse ""});
-
-const r2 = try chat.sendMessage("What is my name?");
-std.debug.print("{s}\n", .{r2.text() orelse ""});
 ```
 
 </details>
@@ -371,22 +382,6 @@ try client.createMessageStreamFromText(
         }
     }.cb,
 );
-```
-
-</details>
-
-<details>
-<summary>Chat</summary>
-
-```zig
-var chat = zenai.anthropic.Chat.init(&client, "claude-sonnet-4-6", 1024, .{});
-defer chat.deinit();
-
-const r1 = try chat.sendMessage("My name is Alice.");
-std.debug.print("{s}\n", .{r1.text() orelse ""});
-
-const r2 = try chat.sendMessage("What is my name?");
-std.debug.print("{s}\n", .{r2.text() orelse ""});
 ```
 
 </details>
@@ -631,22 +626,38 @@ const verdict = try response.value.choiceEnum("verdict", questions, Verdict);
 
 </details>
 
+### Either provider: `zenai.decisions`
+
+Gemini's [Decisions API](#gemini) takes the same three question types. `zenai.decisions.Pool` asks whichever provider has a key, using the TypeSafe types above, and converts for Gemini (JSON content is sent as compact JSON text). It reads the environment on every ask, so exporting a key mid-run takes effect without a restart, and it keeps one warm client per concurrent caller:
+
+```zig
+var pool: zenai.decisions.Pool = .init(io, allocator, environFn, .{
+    // Optional: lets MY_DECISION_PROVIDER=typesafe pick Jev when both keys are set.
+    .provider_env_var_name = "MY_DECISION_PROVIDER",
+});
+defer pool.deinit();
+
+var failure: zenai.http.ErrorDetail = .{};
+var response = try pool.ask(arena, .{ .text = "The pizza arrived cold." }, questions, .{}, &failure);
+defer response.deinit();
+```
+
+Gemini (`GOOGLE_API_KEY`/`GEMINI_API_KEY`, not on Vertex) is preferred over `TYPESAFE_API_KEY` when both are set. `GOOGLE_GEMINI_BASE_URL` and `TYPESAFE_BASE_URL` point either one elsewhere. A Gemini input blocked by safety filters fails with `error.InputBlocked`, with the reason in `failure`.
+
 ## Features
 
 | | Gemini | OpenAI | Anthropic |
 | --- | :---: | :---: | :---: |
 | Generation + SSE streaming | ✓ | ✓ | ✓ |
-| Multi-turn chat | ✓ | ✓ | ✓ |
 | Function calling | ✓ | ✓ | ✓ |
 | Embeddings | ✓ | ✓ | |
 | Model listing | ✓ | ✓ | |
 | Token counting | ✓ | | |
-| File uploads (resumable) | ✓ | | |
-| Cached content | ✓ | | |
+| Decisions (calibrated judgements) | ✓ | | |
 | Safety settings | ✓ | | |
 | Extended thinking | | | ✓ |
 
-The provider abstraction covers generation, streaming and embeddings across all of them, and `lastError()` returns the status and message behind a failed request.
+The provider abstraction covers generation, streaming, embeddings and multi-turn chat (`zenai.Chat`) across all of them, and `lastError()` returns the status and message behind a failed request.
 
 Search options beyond the basics:
 

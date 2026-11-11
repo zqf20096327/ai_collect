@@ -1,0 +1,82 @@
+# mini-vllm
+
+<p align="center">
+  <img src="assets/mini-vllm.png" alt="mini-vllm: a smiling GPU whose memory fills with colored KV-cache blocks, next to a block table" width="800">
+</p>
+
+A minimal implementation of vLLM's core ideas: PagedAttention and continuous batching.
+
+## About
+
+mini-vllm is a small, readable LLM inference engine (~900 lines of Python), built to learn how vLLM works inside. It runs Hugging Face models such as Llama 3.2 and includes:
+
+- **PagedAttention**: the KV cache is stored in fixed-size blocks, and a Triton kernel reads them through per-sequence block tables.
+- **Continuous batching**: the scheduler adds and removes requests at every step, so the batch never waits for its slowest request.
+- **Chunked prefill**: long prompts are processed in chunks so they do not block decoding for other requests.
+- **Prefix caching**: KV blocks are hashed, so requests that share a prompt prefix reuse the same blocks.
+
+It is for learning, not production. vLLM is 4–20x faster (see [Benchmarks](#benchmarks)).
+
+## Installation
+
+```bash
+pip install mini-vllm
+```
+**Requirements**: Python 3.10+, CUDA-capable GPU
+
+## Quick Start
+
+```python
+from mini_vllm import LLMEngine
+
+# Initialize the engine
+engine = LLMEngine(
+    model_name="meta-llama/Llama-3.2-1B",
+    block_size=16,
+    num_gpu_blocks=100
+)
+
+# Add a request
+req_id = engine.add_request("The meaning of life is")
+
+# Generate tokens
+while True:
+    outputs = engine.step()
+    if not outputs:
+        break
+    
+    # Check if generation is complete
+    if req_id in outputs:
+        print(outputs[req_id])
+```
+
+## Benchmarks
+
+**Hardware**: NVIDIA A100 (Modal)  
+**Model**: `meta-llama/Llama-3.2-1B`  
+**Max tokens per request**: 50  
+**Prompt**: `"The meaning of life is"`
+
+### mini-vllm Performance
+
+| Batch Size | Duration | Total Tokens | Throughput |
+|------------|----------|--------------|------------|
+| 1          | 4.59s    | 50           | 10.90 tokens/sec |
+| 4          | 1.01s    | 250          | 248.48 tokens/sec |
+| 16         | 1.20s    | 1050         | 872.23 tokens/sec |
+
+### Comparison with vLLM
+
+| Batch Size | mini-vllm | vLLM | Ratio (vLLM/mini) |
+|------------|-----------|------|-------------------|
+| 1          | 10.90 tokens/sec | 213.73 tokens/sec | 19.6x |
+| 4          | 248.48 tokens/sec | 977.46 tokens/sec | 3.9x |
+| 16         | 872.23 tokens/sec | 3510.41 tokens/sec | 4.0x |
+
+
+### References
+- [vLLM repo](https://github.com/vllm-project/vllm)
+- [vLLM paper](https://arxiv.org/abs/2309.06180)
+- [nano-vllm repo](https://github.com/GeeeekExplorer/nano-vllm)
+- [continuous-batching-llm-inference](https://www.anyscale.com/blog/continuous-batching-llm-inference)
+- [paged-attention-minimal](https://github.com/tspeterkim/paged-attention-minimal)

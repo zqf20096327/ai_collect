@@ -46,6 +46,10 @@ Papers:
 
 
 # Recent Random Papers
+- [arXiv 2026.11](https://arxiv.org/abs/2611.13160), How Much of Your VLA Is kNN
+- [arXiv 2026.11](https://arxiv.org/abs/2611.14467), A Theory of Policy Optimization in Post-Training: Coverage Collapse and Reference Resets
+- [arXiv 2026.11](https://arxiv.org/abs/2611.14420), OnlyAct: Extracting Action Representations from Foundation Models for World Models
+- [arXiv 2026.11](https://arxiv.org/abs/2611.14365), From Video Frames to Robot Meta-Frames: A Unified Latent Interface for World Action Models
 - [arXiv 2026.11](https://arxiv.org/abs/2611.09892), On Agentic Manipulation Policies
 - [arXiv 2026.11](https://arxiv.org/abs/2611.09030), A Controlled Study of Models, Skills, Feedback, and Curriculum in Agentic Robotics
 - [arXiv 2026.11](https://arxiv.org/abs/2611.09847), Computer-Use Agents Are Embodied Generalists
@@ -758,7 +762,4 @@ Papers:
 - CVPR 2022, Neural 3D Video Synthesis from Multi-view Video, [Website](https://neural-3d-video.github.io/)
 - ICCV 2021, **Nerfies**: Deformable Neural Radiance Fields, [Website](https://nerfies.github.io/) / [Github](https://github.com/google/nerfies)
 - CVPR 2023 highlight, **HyperReel**: High-Fidelity 6-DoF Video with Ray-Conditioned Sampling, [Website](https://hyperreel.github.io/) / [Github](https://github.com/facebookresearch/hyperreel)
-- arXiv 2022.05, **FlashAttention**: Fast and Memory-Efficient Exact Attention with IO-Awareness, [arXiv](https://arxiv.org/abs/2205.14135) / [Github](https://github.com/HazyResearch/flash-attention)
-- CVPR 2023, **CLIP^2**: Contrastive Language-Image-Point Pretraining from Real-World Point Cloud Data, [arXiv](https://arxiv.org/abs/2303.12417)
-- CVPR 2023, **ULIP**: Learning a Unified Representation of Language, Images, and Point Clouds for 3D Understanding, [arXiv](https://arxiv.org/abs/2212.05171) / [Github](https://github.com/salesforce/ULIP)
-- CVPR 2023, Learning Video Representations from Large Language Models, [Website](https://facebookresearch.gith
+- arXiv 2022.05, **FlashAttention**: Fast and Memory-Efficient Exact Attention with IO-Awareness, [arXiv](https://arxiv.org/abs/2205.14135) / [Github](https://g

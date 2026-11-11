@@ -50,8 +50,9 @@ built, the checks, the engine numbers and what went wrong):
 
 You write the goal as a short brief. The **bootstrap** turns it into
 numbered requirements, a `verify` script and a list of small tasks, in three
-sessions, one step each, so no session has to plan everything at once. Each
-task then gets its own session: the agent builds it, Tenaz runs `verify`,
+local sessions, one step each, unless an agent has already prepared valid
+bootstrap files (see [Delegate from another agent](#delegate-from-another-agent)).
+Each task then gets its own session: the agent builds it, Tenaz runs `verify`,
 and a fresh session of the same model, or of the one `--model-for` gives
 the reviewer, reviews the diff. A review asks for changes only for a
 problem that matters for the requirements. A task that
@@ -278,13 +279,32 @@ it best; a run takes hours.
 
 A frontier agent (Claude Code, Codex and the like) can hand a long goal to
 Tenaz, keep working on other things, and check the result when the run is
-done. The local model does the hours of work; the frontier agent writes the
-brief and reviews what comes back.
+done. The frontier agent inspects the project, writes the brief, runs
+`tenaz init`, and prepares the bootstrap in the worktree `init` prints:
+`.tenaz/spec.md`, `.tenaz/map.md`, executable `verify` (`.tenaz/verify` in
+an existing project), `.tenaz/notes/BOOTSTRAP.md` and `.tenaz/tasks/*.md`.
+Before sizing cards it reads the builder's model and context budget with
+`tenaz status --project <worktree>`. Cards pin files, interfaces, decisions,
+dependencies and acceptance checks so the local model can build them.
+
+Then it starts `tenaz run --project <worktree>`. Tenaz performs preflight
+and validates every bootstrap step; valid steps need no local bootstrap
+session. An invalid step follows the normal local repair path and can
+block. No ledger edits or extra flags are needed. Leave the files unwritten
+to keep the local bootstrap flow. The frontier agent reviews the result.
+
+The initial `verify --all` must pass twice with identical final JSON,
+checking only a real baseline: existing tests or tooling smoke checks.
+It does not prove future requirements. Builders add those checks as they
+implement each task; do not use placeholder checks that always pass.
+The handoff has been tried with real tools; full completion and any benefit
+to construction remain [unverified](docs/COMPATIBILITY.md#known-gaps).
 
 Tenaz ships a companion [Agent Skill](skills/tenaz/SKILL.md) for that.
 It tells the agent how to install and set up Tenaz with `tenaz doctor`,
-when to delegate and when not to, how to write the brief, how to start and
-follow the run, and how to check the result before reporting it. Install
+when to delegate and when not to, how to write the brief and bootstrap,
+how to start and follow the run, and how to check the result before
+reporting it. Install
 it with [skills](https://skills.sh), which asks which agents to add it to:
 
 ```bash
@@ -521,6 +541,36 @@ model after it (`/v1/unload-model`), and is limited
 by `--media-timeout` (1800 s by default): TRELLIS.2 at 1024 took about
 7 minutes on an M5 Mac. A run may have an image engine, a 3D engine or
 both, on the same server or not. Pi gets no media tools.
+
+### MCP servers of your own
+
+`--mcp name=url` offers the agent an MCP server you run, over HTTP: for
+example Blender Lab's server for a running Blender, `--mcp
+blender=http://127.0.0.1:9191/`. Repeat it for more servers. `init` pins
+them; `tenaz run --mcp` replaces them and `tenaz run --no-mcp` drops them
+([ADR 0032](docs/adr/0032-mcp-servers-of-your-own.md)). You start and stop
+the server; Tenaz only passes its address on. fx, OpenCode, Qwen Code and
+`--harness acp` get them; `init` and `run` refuse them with Pi or
+dsh. fx allows each call `--media-timeout` (1800 s by default); the
+limit is written for OpenCode and Qwen Code too, but not checked there
+(see Known gaps in [COMPATIBILITY](docs/COMPATIBILITY.md)). A call does
+not free the LLM, as an image does.
+`verify` sees only files, so when the server keeps state, such as
+Blender's scene, have the brief ask for it to be saved to a file
+`verify` checks.
+
+For Blender, install the add-on from Blender Lab's `mcp-<version>.zip`
+(`blender -c extension install-file mcp-1.0.3.zip --repo=user_default
+--enable`) and its server from `blender-<version>.mcpb` (a zip; `uv tool
+install` on its folder), then start both:
+
+```bash
+blender -b --online-mode -c blender_mcp
+```
+
+```bash
+blender-mcp --transport http --port 9191
+```
 
 ### Protocol, prompts and skills
 

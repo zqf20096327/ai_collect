@@ -244,7 +244,7 @@ Every server exposes three tools:
 
 The operations `search` offers, by binary:
 
-Operations that newer tools replace are hidden from `search`, and not documented, in every binary that also offers the replacing tool. They keep working through `execute` until they are removed.
+Operations that newer tools replace are hidden from `search`, and not documented, in every binary that also offers the replacing tool. Some keep working through `execute` until they are removed. Others only run inside the tool that replaced them: `execute` refuses them and names that tool.
 
 ### `hostinger-agency-hosting-mcp`
 
@@ -2348,5 +2348,4 @@ to it.
 
 #### hosting_nodejs_list-environment-variables
 
-Lists the Node.js environment variables currently set for the website. Values are always
-masked as `********` and cannot be read back through this API. Use this end
+Lists the Node.js environment variables currently set for the websit

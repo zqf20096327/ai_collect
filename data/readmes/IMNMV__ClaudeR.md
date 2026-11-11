@@ -52,6 +52,7 @@ claudeAddin()
 <details>
 <summary><b>Recent Updates</b> (click to expand)</summary>
 
+- **The first agent message reaches the log, and plot capture tidies up after itself (R 0.16.5).** Found during a two-agent demo. When the coordination log started empty, the addin treated the first message of the run as old history, so it never reached the console or the session log. It now skips only what was already in the log when you pressed Start Server, and a log you clear mid-run is shown from its first message. Separately, when copying a plot for the agent failed, the hidden image device the copy had opened stayed open. It is now always closed, and your current graphics device is left as it was.
 - **Annotation instructions given once (clauder-mcp 0.16.4).** From a user's run. Task instructions had to go in a column copied onto every row, which bloated the file and repeated them for every row in a batch. `run_annotation_job` now takes `instructions` once and gives them to every call ahead of the rows. Claude gets them as a system prompt, so long instructions can be reused from call to call instead of paid for in full each time. The instructions are recorded at the top of the raw replies file.
 - **Gemini CLI removed (R 0.16.4 / clauder-mcp 0.16.3).** Google shut Gemini CLI down on June 18, 2026, and Antigravity (`agy`) replaced it. `install_cli(tools = "gemini")` and the `gemini` option of `run_annotation_job` are gone, and both now point you to `agy` instead.
 - **Labelling calls see only the row (clauder-mcp 0.16.3).** `run_annotation_job` now starts each Claude call with no tools, MCP servers, hooks, CLAUDE.md or slash commands, from an empty folder, so the model labelling a row sees nothing but that row (installed plugins are still listed but have nothing to run through). Older Claude Code versions get whichever of these options they have. Codex calls also start from an empty folder. Every reply is kept word for word in `{name}_annotating_raw.jsonl`. A reply that isn't valid JSON or doesn't fit the schema is asked again, up to three tries. Hitting your plan's usage limit stops the job with every saved row kept, and running it again picks up where it stopped. Two new options: `no_api_key = true` removes API keys from each call so the CLI uses your subscription login, and `batch_size` sends several rows per call for very large jobs (the default stays 1, so no row can influence another). A crash no longer leaves a job reading "running" forever, and the working file is never left half written.
@@ -363,6 +364,20 @@ Active sessions (2):
 Start it once per session, the same as `claudeAddin()` in R. If the port is busy it moves
 to the next free one and tells you which it took.
 
+Every session needs its own name, because that is how the agent tells them apart.
+`clauder.start()` uses the name `default`, which is also what the R addin fills in for
+you. With an R session already running under that name, Python stops with
+
+```
+RuntimeError: Session name 'default' is already owned by a live or unknown process
+```
+
+Give the Python session a name of its own, and tell the agent to connect to that name:
+
+```python
+clauder.start(session_name = "analysis")
+```
+
 If you would rather not type it each time, run it from an IPython startup file:
 
 ```python
@@ -598,6 +613,8 @@ If you can do it with R, your AI assistant can too.
     - Ask the AI to use `execute_r_async` for code that takes longer than 25 seconds.
     - The AI collects the result with `get_async_result`, which waits until the job is done.
     - Async jobs run in a separate R process via `callr` and do **not** have access to your main session's environment. The AI must write self-contained code that uses `saveRDS()` to pass data in and write results out, then loads them back into the main session after the job completes.
+- **"Session name 'default' is already owned by a live or unknown process"**:
+    - Another session, R or Python, is already running under that name. Each session needs its own. In Python, start with a name, e.g. `clauder.start(session_name = "analysis")`. In R, type a different name in the addin's Session Name box before pressing Start Server.
 - **Server Restart Issues**:
     - If you see an "address already in use" error after restarting the server, it's a UI bug. The server is still active. If you encounter connection issues, switch the port number in the Viewer Pane or restart RStudio.
     - If the AI still can't connect, click **"Force Release Port"** under the Advanced section. This force-kills whatever process is holding the port so you can start fresh.

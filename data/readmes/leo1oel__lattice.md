@@ -32,6 +32,7 @@ Your project stays an ordinary folder on disk, so it works offline, opens in any
 ## Write
 
 Source and PDF side by side (or the PDF in a window of its own, for a second screen), with completion and diagnostics as you type, SyncTeX jumps both ways and one-click builds with your own TeX Live.
+Switch a `.tex` tab from **Source** to **Visual** to read and edit it with its headings, emphasis, equations, lists and figures drawn in place, in the same editor.
 An outline rail follows your sections, `\cite` keys show their reference on hover, and six highlighters with meanings mark what still needs work.
 Start from a NeurIPS, ICML, ICLR, ACL, CVPR or AAAI template or one of two thesis classes, and **Export for arXiv** writes one ZIP that builds on its own.
 Dock any panel anywhere, keep Writing and Reading layouts, or save your own workspaces.
@@ -48,6 +49,7 @@ Annotations and Overleaf comments also line up in a column beside the PDF, each 
 ### Bring your own agent
 
 The Agent panel runs [Claude Code](https://github.com/anthropics/claude-code) or [Codex](https://github.com/openai/codex), or another agent CLI on your Mac such as Cursor, OpenCode or Droid, signed in as you.
+Or connect your own OpenAI- or Anthropic-compatible API in Settings › Agent › Model endpoint: an address, a key (kept in your Keychain) and model names, which the agent runs through Pi with no command-line tool to install.
 Lattice comes with no model and no AI subscription of its own.
 The agent reads your project and papers, fixes build errors and edits files; every change shows as a diff you can review or undo.
 It can also use the MCP servers you add to that CLI, such as Zotero or Heptabase: see [Zotero, Heptabase and the Agent panel](docs/zotero-and-notes.md).
@@ -106,7 +108,8 @@ On Linux, Lattice checks for new releases and links to GitHub Releases, but does
 Windows (experimental). Releases that pass their Windows checks also carry an
 unsigned x64 `windows-x64-experimental-setup.exe`, with a SHA-256 checksum and
 setup instructions. SmartScreen may warn about the unknown publisher. The Agent
-and automatic updates are unavailable; install TeX Live separately. See the
+and automatic updates are unavailable; Lattice can install TeX Live for you from
+its setup dialog, or you can install it yourself. See the
 [Windows guide](docs/windows-host.md) for requirements and limitations.
 
 ## Contributing
@@ -132,6 +135,9 @@ Lattice stands on many open-source projects. The major ones:
 Lattice is licensed under the [Apache License 2.0](LICENSE) (see also [NOTICE](NOTICE)), with the MIT-licensed [Synara](https://github.com/Emanuele-web04/synara) agent runtime by T3 Tools Inc. and Emanuele Di Pietro.
 Releases up to and including 0.1.341 were GPL-3.0-or-later and remain available under those terms.
 See [third-party notices](THIRD_PARTY_NOTICES.md) for component licenses and [Synara integration notes](docs/synara-runtime.md) for the runtime details.
+
+The GPUI preview app in [`gpui/`](gpui/) is a separate program under GPL-3.0-or-later ([`gpui/LICENSE`](gpui/LICENSE)), because it links Zed's GPL-3.0-or-later editor crates; a few of its parts are Apache-2.0, as [its README](gpui/README.md#license) lists.
+Everything outside `gpui/` stays Apache-2.0.
 
 Two components carry their own terms:
 

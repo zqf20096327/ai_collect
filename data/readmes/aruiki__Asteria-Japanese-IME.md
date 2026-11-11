@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <a href="https://aruiki.github.io/kanai/asteria-v3-promo.mp4?v=3.0.0">
+  <a href="https://aruiki.github.io/kanai/asteria-v3-promo.mp4?v=20261111">
     <img src="docs/images/promo-preview.gif" alt="Wordで107文字をローマ字で続けて打ち、Spaceを1回押すと「来月から始まる新しいプロジェクトの計画について部長と相談した結果…」と正しく変換される実際の録画と、Google日本語入力との比較グラフ" width="100%">
   </a>
 </p>
@@ -27,7 +27,7 @@
   <a href="https://github.com/aruiki/Asteria-Japanese-IME/releases/latest/download/Asteria64.msi">↓ 無料でダウンロード（Windows 10 / 11）</a>
 </h3>
 
-<p align="center"><sub>v4.1.0 · 約1.7 GB（AIモデルと辞書を含む） · アカウント登録なし</sub></p>
+<p align="center"><sub>v5.2.0 · 約1.7 GB（AIモデルと辞書を含む） · アカウント登録なし</sub></p>
 
 ---
 
@@ -41,10 +41,10 @@ Asteria（アステリア）は、変換の正確さを何より優先した日�
 
 | | Asteria | Google日本語入力 |
 | --- | ---: | ---: |
-| 前の文で正解が決まる同音語（300問） | **91%** | 44% |
-| 日常の短い文（500問） | **92%** | 87% |
+| 前の文で正解が決まる同音語（300問） | **91%** | 45% |
+| 日常の短い文（500問） | **95%** | 87% |
 
-<sub>Asteria v3.0.0、Google日本語入力 3.34.6260、2026年10月。<a href="docs/verification/release-v3.0.0-20261024.md#google日本語入力との比較の測り直し紹介動画のグラフ2026-10-25">測り方と全結果</a></sub>
+<sub>Asteria 開発版 3.34.6464、Google日本語入力 3.34.6260、2026年11月。<a href="docs/verification/accuracy-realinput-20261111.md">測り方と全結果</a></sub>
 
 ## 打ち方は、いつものまま
 

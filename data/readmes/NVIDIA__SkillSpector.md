@@ -562,7 +562,7 @@ SkillSpector detects **71 vulnerability patterns** across 17 categories:
 | ID | Pattern | Severity | Description |
 |----|---------|----------|-------------|
 | E1 | External Transmission | MEDIUM | Sending data to external URLs |
-| E2 | Env Variable Harvesting | HIGH | Enumerating, copying, or searching environment data to collect secrets |
+| E2 | Env Variable Harvesting | HIGH | Enumerating, copying, or searching environment data to collect secrets. A copy traced only to a child process's `env=` is reported LOW |
 | E3 | File System Enumeration | MEDIUM | Scanning directories for sensitive files |
 | E4 | Context Leakage | HIGH | Transmitting conversation context externally |
 
@@ -813,7 +813,7 @@ Options:
   -f, --format [terminal|json|markdown|sarif]  Output format [default: terminal]
   -o, --output PATH                            Output file path
   --no-llm                                     Skip LLM analysis (static only)
-  --yara-rules-dir PATH                        Extra YARA rules directory
+  --yara-rules-dir PATH                        Extra YARA rules directory (includes disabled)
   -b, --baseline PATH                          Suppress findings listed in a baseline
   --show-suppressed                            List baseline-suppressed findings
   -V, --verbose                                Show detailed progress

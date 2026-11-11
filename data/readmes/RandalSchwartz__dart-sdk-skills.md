@@ -3,7 +3,7 @@
 [![CI](https://github.com/RandalSchwartz/dart-sdk-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/RandalSchwartz/dart-sdk-skills/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Authoritative, version-by-version agent skills for the **Dart & Flutter SDKs**: language features, core APIs, experimental feature flags (`--enable-experiment`), static metaprogramming (Macros & Augmentations), widget deprecations, Material 3 migrations, `minSdk` compatibility, and **legacy codebase rescue (Dart 1.0 & Flutter 1.0 to modern Dart 3.13+ & Flutter 3.47+)**.
+Authoritative, version-by-version agent skills for the **Dart & Flutter SDKs**: language features, core APIs, experimental feature flags (`--enable-experiment`), static metaprogramming (Macros & Augmentations), widget deprecations, Material 3 migrations, `minSdk` compatibility, and **legacy codebase rescue (Dart 1.0 & Flutter 1.0 to modern Dart 3.14+ & Flutter 3.50+)**.
 
 Designed to bridge LLM training cutoff gaps, ensuring AI coding agents (Claude Code, Google Antigravity, OpenAI Codex, GitHub Copilot, Cursor, Cline) write syntactically and semantically correct code across all target SDKs.
 
@@ -52,7 +52,7 @@ This repository bundles two top-level, progressively disclosed skills:
 * **`rescuing-legacy-dart-apps.md`**: 4-stage pipeline for migrating Dart 1.x & pre-2.12 codebases to modern Dart 3.x.
 * **`how-to-find-minsdk.md`**: Systematic methodology for finding `minSdk` lower bounds.
 * **`version-matrix.md`**: Searchable matrix mapping every feature and API to introducing Dart versions.
-* **Version Reference Guides**: Detailed breakdowns for Dart 2.x milestones and every Dart 3.x release (3.0 through 3.14).
+* **Version Reference Guides**: Detailed breakdowns for Dart 2.x milestones and every Dart 3.x release (3.0 through 3.15).
 
 ### 2. `flutter-sdk-changelog` (Flutter Framework & Widgets)
 * **`SKILL.md`**: Fast widget & API replacement matrix.
@@ -94,8 +94,10 @@ This repository bundles two top-level, progressively disclosed skills:
 | **`WillPopScope`**                            | `PopScope(canPop: ..., onPopInvokedWithResult: ...)` | Flutter 3.12+          |
 | **`FlatButton`, `RaisedButton`**              | `TextButton`, `ElevatedButton`                       | Flutter 2.0+           |
 | **`TextTheme.headline6`, `bodyText2`**        | `TextTheme.titleLarge`, `bodyMedium`                 | Flutter 3.7+           |
-| **`package:flutter/material.dart`**           | `package:material_ui/material_ui.dart`               | Flutter 3.44+          |
-| **`package:flutter/cupertino.dart`**          | `package:cupertino_ui/cupertino_ui.dart`             | Flutter 3.44+          |
+| **`package:flutter/material.dart`**           | `package:material_ui/material_ui.dart`               | Flutter 3.44+ (Deprecated 3.50) |
+| **`package:flutter/cupertino.dart`**          | `package:cupertino_ui/cupertino_ui.dart`             | Flutter 3.44+ (Deprecated 3.50) |
+| **`DropdownButtonFormField(onChanged: cond ? fn : null)`** | `DropdownButtonFormField(enabled: cond, onChanged: fn)` | Flutter 3.50+ (`material_ui` 1.8.0) |
+| **`TextStyle.getParagraphStyle()` (without `hyphens`)** | Include `Hyphens? hyphens` parameter | Flutter 3.50+ |
 | **`BottomNavigationBar`**                     | `NavigationBar` (Material 3)                         | Flutter 3.0+           |
 | **`ToggleButtons`**                           | `SegmentedButton<T>` (Material 3)                    | Flutter 3.7+           |
 | **`describeEnum(e)`**                         | `e.name` (Dart 2.15+ native property)                | Flutter 3.47+          |

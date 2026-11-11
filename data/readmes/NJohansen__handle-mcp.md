@@ -52,7 +52,7 @@ claude mcp add handle -- uvx handle-mcp@latest
 
 Then ask:
 
-- *"Plan 5 dinners for 4 within 900 kr, built on this week's offers. Fill the cheapest cart."*
+- *"We have 4,000 kr a month for food. Plan this week's meals."* It asks who eats, what you like and which store, then plans on this week's offers and fills the cheapest cart after your yes.
 - *"What is on offer this week? Any free gifts?"*
 - *"Which delivery times are cheapest tomorrow?"*
 
@@ -67,6 +67,7 @@ Other stores, Claude Desktop, headless machines and AI agents (`--from-env`): [s
 | `list_recipes` | no | Featured recipes (BilkaToGo: the week's madplan), by tag (nemlig) or by category (BilkaToGo) |
 | `get_recipe` | no | The products to buy for a recipe, for any number of persons |
 | `list_offers` | no | This week's offers and free gifts |
+| `get_nutrition` | no | Nutrition per 100 g/ml from the label |
 | `compare_basket` | no | Prices a list in every store, fees included, cheapest first |
 | `get_cart` | no | Cart lines, fees, total, in one store or every store |
 | `set_cart_quantities` | **yes** | Sets quantities in the cart (REMA 1000: the list "handle-mcp"). Nothing else |

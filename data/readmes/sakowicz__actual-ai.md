@@ -15,7 +15,7 @@
 This is a project that allows you to categorize uncategorized transactions
 for [Actual Budget](https://actualbudget.org/)
 using [OpenAI](https://openai.com/api/pricing/), [Anthropic](https://www.anthropic.com/pricing#anthropic-api), [Google Generative AI](https://ai.google/discover/generativeai/), [Ollama](https://github.com/ollama/ollama)
-or any other compatible API (including OpenRouter).
+or any other compatible API (including OpenRouter and Requesty).
 
 ## 🌟 Features
 
@@ -65,10 +65,10 @@ services:
         condition: service_healthy
     environment:
       ACTUAL_SERVER_URL: http://actual_server:5006
-      ACTUAL_PASSWORD: your_actual_password
+      ACTUAL_PASSWORD: your_actual_password # or ACTUAL_SESSION_TOKEN, see below
       ACTUAL_BUDGET_ID: your_actual_budget_sync_id # This is the ID from Settings → Show advanced settings → Sync ID
       CLASSIFICATION_SCHEDULE_CRON: 0 */4 * * * # How often to run classification.
-      LLM_PROVIDER: openai # Can be "openai", "openrouter", "anthropic", "google-generative-ai", "ollama" or "groq"
+      LLM_PROVIDER: openai # Can be "openai", "openrouter", "requesty", "anthropic", "google-generative-ai", "ollama" or "groq"
       FEATURES: '["classifyOnStartup", "syncAccountsBeforeClassify", "suggestNewCategories"]'
 #      VALUESERP_API_KEY: your_valueserp_api_key # API key for ValueSerp, required if webSearch tool is enabled
 #      OPENAI_API_KEY:  # optional. required if you want to use the OpenAI API
@@ -79,8 +79,14 @@ services:
 #      OPENROUTER_BASE_URL:  # optional. default: "https://openrouter.ai/api/v1"
 #      OPENROUTER_REFERRER:  # optional but recommended by OpenRouter (or OPENROUTER_REFERER)
 #      OPENROUTER_TITLE:  # optional. default: "actual-ai"
+#      REQUESTY_API_KEY:  # optional. required if you want to use Requesty
+#      REQUESTY_MODEL:  # optional. default is "openai/gpt-4o-mini"
+#      REQUESTY_BASE_URL:  # optional. default: "https://router.requesty.ai/v1" (use "https://router.eu.requesty.ai/v1" for EU routing)
+#      REQUESTY_REFERRER:  # optional. sent as HTTP-Referer for Requesty analytics
+#      REQUESTY_TITLE:  # optional. default: "actual-ai"
 #      LLM_TIMEOUT_MS:  # optional. request timeout in ms for LLM calls, default: 120000
 #      OPENROUTER_ENABLE_TOOL_CALLING:  # optional. "true" to allow model tool-calling on openrouter, default: false
+#      REQUESTY_ENABLE_TOOL_CALLING:  # optional. "true" to allow model tool-calling on requesty, default: false
 #      LLM_TEMPERATURE:  # optional. temperature for LLM calls, e.g. 1 for models that reject other values
 #      ANTHROPIC_API_KEY:  # optional. required if you want to use the Anthropic API
 #      ANTHROPIC_MODEL:  # optional. required if you want to use a specific model, default is "claude-3-5-sonnet-latest"
@@ -93,11 +99,26 @@ services:
 #      GROQ_API_KEY:  # optional. required if you want to use the Groq API
 #      GROQ_MODEL:  # optional. required if you want to use a specific model, default is "mixtral-8x7b-32768"
 #      GROQ_BASE_URL:  # optional. default: "https://api.groq.com/openai/v1"
+#      ACTUAL_SESSION_TOKEN:  # optional. use instead of ACTUAL_PASSWORD on OpenID servers, see "OpenID servers"
 #      ACTUAL_E2E_PASSWORD:  # optional. required if you have E2E encryption
 #      NODE_TLS_REJECT_UNAUTHORIZED: 0 # optional. required if you have trouble connecting to Actual server 
 #      NOT_GUESSED_TAG=#actual-ai-miss
 #      GUESSED_TAG=#actual-ai
 ```
+
+## OpenID servers
+
+If your Actual server only allows OpenID login, there is no password for `ACTUAL_PASSWORD`. Set
+`ACTUAL_SESSION_TOKEN` instead. It takes precedence over `ACTUAL_PASSWORD` when both are set.
+
+To get one, sign in to Actual in a browser, open DevTools, and go to **Application → IndexedDB →
+actual → asyncStorage**. The value of the `user-token` key is your session token (a UUID). Close the
+window without logging out: logging out deletes the session. Check it with
+`curl -H "X-ACTUAL-TOKEN: <token>" <server>/account/validate`.
+
+The token acts as your user, so treat it like a password. How long it stays valid depends on the
+server's `ACTUAL_TOKEN_EXPIRATION` (default `never`). To revoke it, `POST` `{"token": "<token>"}` to
+`<server>/account/logout`.
 
 ## Feature Configuration
 
@@ -154,6 +175,12 @@ By default, model tool-calling is disabled when `LLM_PROVIDER=openrouter` becaus
 
 ```
 OPENROUTER_ENABLE_TOOL_CALLING=true
+```
+
+The same applies to `LLM_PROVIDER=requesty`; re-enable it with:
+
+```
+REQUESTY_ENABLE_TOOL_CALLING=true
 ```
 
 ## Customizing the Prompt

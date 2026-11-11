@@ -1,11 +1,14 @@
 # CENet: Context Enhancement Network for Medical Image Segmentation
 
 <p align="center">
-  <a href="https://doi.org/10.1007/978-3-032-04927-8_12">
+  <a href="https://papers.miccai.org/miccai-2025/0141-Paper2882.html">
     <img src="https://img.shields.io/badge/MICCAI-2025-blue.svg" alt="MICCAI 2025 Paper" />
   </a>
   <a href="https://arxiv.org/abs/2505.18423">
     <img src="https://img.shields.io/badge/arXiv-2505.18423-b31b1b.svg" alt="arXiv:2505.18423" />
+  </a>
+  <a href="https://huggingface.co/afshinbigboy/CENet">
+    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Weights-yellow.svg" alt="Hugging Face weights" />
   </a>
   <br>
   <sub><sup>MICCAI 2025 Early Accept (Top 9%) — Code released 10.07.2025</sup></sub>

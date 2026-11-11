@@ -19,6 +19,76 @@ rather than a footnote.
 
 ---
 
+## Guide
+
+| Task | Section |
+|---|---|
+| Pick a provider and start a serving node | [Serving paths](#choose-the-serving-path) |
+| Choose sequence, feature, or context operations | [Workload guide](#is-this-the-store-for-your-problem) |
+| Check constraints before choosing the store | [Limitations](#what-this-store-is-bad-at) |
+| Use RESP locally | [Docker quick start](#quick-start-single-node-docker) |
+| Understand persistence and feature writes | [Architecture](#architecture) |
+| Build from source | [Build instructions](#build--test-from-source) |
+
+## Choose the Serving Path
+
+### Start a native feature-serving node
+
+From a source checkout, use the single-node Compose configuration for the HTTP
+command surface used by the native Feast provider:
+
+```bash
+docker compose -f docker-compose.single-node.yml up --build -d
+curl -fsS http://127.0.0.1:17102/health
+```
+
+The command endpoint is port 17102; it is not the RESP endpoint in the separate
+Docker quick start below. Install and configure the provider using its
+[setup guide](integrations/feast/feast_temporalstore_command/README.md).
+Its latest-value API is an online store, not a replacement for Feast's offline
+store or materialization engine. History is opt-in and increases stored work.
+The Compose deployment retains data in a named volume; `down` stops it without
+deleting that volume. Do not add `-v` unless the stored data is disposable.
+
+### Select a component
+
+| Workload | Entry point | Deployment decision |
+|---|---|---|
+| Feast materialization and online reads | [Feast integration](integrations/feast) | Select the provider and write acknowledgement policy; preserve timestamp ordering and expiry semantics. |
+| Context ingestion, retrieval, and feedback | [MatrixArk runtime](https://github.com/matrixarkai/matrixark) and the [Python client](#python-llm-context-client) | Configure storage and model providers separately; installing an SDK does not start either service. |
+| Replicated serving | [Cluster deployment](#deploy-laptop--replicated-cluster) | Choose the replication mode and read consistency before interpreting latency or durability. |
+| Embedded cache or consensus | [MatrixCache](https://github.com/matrixarkai/matrixcache) and [MatrixRaft](https://github.com/matrixarkai/matrixraft) | These are reusable libraries, not additional mandatory network services. |
+
+For performance results, distinguish accepted writes from stale conditional writes, requests
+from rows, and resident reads from storage misses. Keep payloads, batch widths, concurrency,
+durability, maintenance, and replica counts explicit. Allocation reductions and compressed
+wire bytes do not by themselves establish device write amplification or maximum service QPS.
+
+The other independently usable Apache-2.0 projects are
+[MatrixObject](https://github.com/matrixarkai/MatrixObject) for object storage,
+[MatrixArk](https://github.com/matrixarkai/matrixark) for context workflows,
+[MatrixCache](https://github.com/matrixarkai/matrixcache) for embedded caching,
+[MatrixRaft](https://github.com/matrixarkai/matrixraft) for consensus, and
+[MatrixAdsDemo](https://github.com/matrixarkai/MatrixAdsDemo) for an executable
+ads-serving demonstration. These repositories are not a list of mandatory
+services to start alongside TemporalStore.
+
+## Deployment and Upgrade Checklist
+
+- Pin the server revision and client package together. Select the HTTP command
+  provider or RESP provider explicitly; their endpoints are not interchangeable.
+- Record acknowledgement policy, replication mode, cache budget, and whether
+  history is enabled. Increasing a cache budget changes the memory conditions
+  of a performance comparison, not the write durability contract.
+- Preserve durable volumes before changing versions. Read the
+  [format policy](#before-the-first-milestone-formats-can-change) before opening
+  existing data with a new binary; do not assume downgrade compatibility.
+- Size for process memory as well as configured cache capacity. Resident indexes,
+  decoded data, in-flight requests, and allocator retention are separate costs.
+- Keep accepted newer writes, rejected stale writes, latest-value reads, and
+  history reads separate in capacity estimates. Local instruction or allocation
+  reductions do not establish an end-to-end throughput improvement.
+
 ## Is this the store for your problem?
 
 | You are building | This store | Read on |
@@ -50,8 +120,10 @@ retention**, not on the read.
 **10,000 points a series**, trimmed oldest-first on every append, and it is also the default *and
 the maximum* read bound — a `count` above it is clamped, so a long window cannot return more than
 the retained length. One append is hard-capped at 100,000 points. Whole-key TTL
-(`CommonExpire` / `CommonTtl`) is evaluated lazily on read and by a background sweep bounded at
-128 in-memory buckets and 8 on-store buckets a round, so expiry never becomes an unbounded scan.
+(`CommonExpire` / `CommonTtl`) is evaluated lazily on read and by a background sweep with default
+budgets of 100 hot and 5 cold expired-record candidates per round. Periodic cold expiry is enabled
+by default; `load_cold_buckets_for_expire: false` defers released objects. Metadata-only deletion
+does not reload their payloads or bucket indexes, and is not counted as a reload.
 
 **What the tail costs.** The term that grows with the shard is the resident index. Measured on the
 shipped routing range `0..1023`, one shard, single-block records:
@@ -286,6 +358,38 @@ comparing stores.
 Both store values identically (`ValueProto.SerializeToString()`) but **do not share a key space**:
 rows written through one are not readable through the other, so choose one per project rather than
 switching under a populated store.
+
+**Shared-row writes and durability.** The command path can keep small packed hash rows in
+the WAL instead of immediately materializing a separate block and served-index update for
+each row. In synchronous mode, acknowledgement still waits for the WAL commit; deferred
+materialization is not an asynchronous durability setting. Larger frames continue through
+the block path. Legacy recovery and memory-limited configurations keep their existing paths.
+Conditional timestamp checks reuse the bounded field cache, with storage lookup on a miss.
+
+WAL-backed locations remain readable across reload and checkpoint publication. Maintenance
+retires their registrations only after replacement data and index locations are durable;
+a checkpoint does not by itself mean the underlying WAL bytes can be reclaimed. This moves
+work out of the foreground, not out of the storage lifecycle. Retained file size is not
+cumulative write amplification, and local process-restart checks are not power-loss or
+multi-host qualification. These changes do not establish a new cross-store speedup.
+
+Asynchronous string values remain log-backed when their payload leaves the memory cache,
+including values too large for that cache to admit. Other models keep their existing placement
+policy. Location entries are index metadata, not
+retained payload buffers. Foreground relocation is opt-in through a positive
+`TS_WAL_RESIDENT_BLOCKS` value (`TS_WAL_RESIDENT_PAGES` remains an alias); unset or zero does
+not create slab copies merely because the locator count grows. Cache payload-byte limits still
+apply. The read path also retains at most eight decoded WAL records, so cache byte statistics
+are not a bound on complete process RSS. Portable export and maintenance relocation remain
+separate operations, and needed WAL records stay retained until their dependencies are gone.
+
+Binary WAL records that cross block boundaries use a packed envelope and checksummed
+continuation footers. Raw scans preserve the complete physical bytes, so byte-based cursors
+and retained log IDs remain stable through prefix reclaim. Tail recovery starts at the last
+closed block or its crossing record. Existing records remain readable, but older binaries
+cannot read newly packed records. Pause writes and maintenance during a mixed-version
+rollout, upgrade every replay reader, then resume. Downgrade requires restoring an
+older-format backup.
 
 ```yaml
 # feature_store.yaml, command-surface plugin
@@ -581,6 +685,48 @@ Foundation ─ MatrixCache (multi-layer cache) · MatrixRaft (Rust Raft consensu
    │
 Storage backend (auto) ─ object store → shared filesystem → local + Raft
 ```
+
+### Feature-serving write path
+
+The native Feast path shares field names across a batch and checks event timestamps
+on the serving node. Binary conditional requests borrow value bytes through admission
+and timestamp checks; rejected stale rows do not allocate owned per-feature payloads
+on that path. Accepted rows are encoded into owned packed frames. Complete-row
+overwrites reuse resident field identities and avoid repeated field searches; partial
+updates, older encodings, and mirrored writes retain their compatible paths.
+
+The command provider can learn a per-thread stale-traffic hint with
+`adaptive_timestamp_prefetch: true` (default). It pre-reads timestamps when recent
+batches are mostly stale, skipping rejected rows before feature serialization;
+eligible survivors still use the server's atomic conditional route. The hint stores
+no timestamps or values and resets on client close. A return to fresh traffic can
+cost one extra read; mixed-layout and older-node fallbacks keep their documented
+read-then-write concurrency limits.
+
+Single-field hash projections can reuse a positive field-cache buffer after checking
+the resident field index. Misses and unsupported encodings retain the full-frame
+path. This avoids fetching and decoding a packed row for an eligible cached field;
+it does not make all projections cache hits or remove TTL and invalidation checks.
+
+Hash writes reuse an invalidation-key buffer across a row's fields, while retaining
+the existing per-field cache checks and invalidation rules. WAL-backed reads share
+decoded immutable batches through a cache bounded to eight records, identified by
+WAL instance, shard, and log ID. Publishing a decoded batch does not clone every
+payload; cache hits acquire shared ownership before copying the selected block
+outside the cache lock. Concurrent fills reuse the same cached record, and evicted
+batches are released outside that lock.
+
+The decoded-record limit is a record count, not a byte budget. Cold reads still
+fetch and decode a carrying WAL frame, and returned blocks still copy their bytes.
+These changes do not make the read path zero-copy or reclaim persistent WAL data.
+
+These are allocation and bookkeeping reductions, not weaker acknowledgement rules.
+Synchronous writes still wait for their durability barrier, stale conditional writes
+do not renew TTL, and WAL-backed values remain subject to safe materialization and
+reclamation ordering. Start with the [command provider guide](integrations/feast/feast_temporalstore_command/README.md)
+for configuration and the [benchmark guide](docs/feast_online_store_benchmark.md)
+for matched workloads. Lower copy counts alone do not establish higher saturated
+QPS, lower tail latency, or lower cumulative device writes.
 
 Related Apache-2.0 repositories, public and open to anyone in the world to use, fork and
 contribute to:

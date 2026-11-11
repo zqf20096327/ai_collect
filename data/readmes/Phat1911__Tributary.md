@@ -5,12 +5,18 @@
 **Landing page:** <https://phat1911.github.io/Tributary/> — one screen,
 live screenshots, the two-minute quickstart.
 
-**Status: v0.1.3 — self-hostable AI token pools** (gateway, org pools,
+**Status: v0.1.4 — self-hostable AI token pools** (gateway, org pools,
 dashboard). Pre-alpha software, real release: every org gets per-user
 keys over pooled provider capacity, with quotas, audit, and leak
 signals. Roadmap lives in [`SPEC.md`](SPEC.md) §14.
 
 ## Why Tributary?
+
+**What Tributary is today: a free, self-hosted V1 governance tool.** One
+container on your own machine, no recurring cost, no hosted tier — your
+team's AI usage, governed by you. The V2 marketplace is a **gated
+roadmap**: it opens only behind provider/reseller agreements for credit
+transfer. It is not the storefront — V1 is the product.
 
 Hosted API routers are convenient — but they hold your keys, your
 credits, and your usage data, and they optimize for one developer
@@ -20,14 +26,17 @@ own capacity**:
 - **No middleman, no markup** — you pay provider prices directly; the
   software is free (FSL-1.1-ALv2) and runs in one container on your own
   machine.
-- **Your keys never leave your building** — envelope-encrypted at rest,
-  never exposed to any third party.
+- **Your keys and usage stay in the building by default** —
+  envelope-encrypted at rest, exposed to no third party. One optional
+  exception, taken only by org choice: the **purpose classifier** —
+  **off by default**, **disclosed to members** — sends prompts to the
+  classifier provider the org configures when (and only when) the org
+  enables it.
 - **Governance out of the box** — per-member keys, quotas, two-network
-  sharing detection, a purpose classifier, and an immutable audit log:
+  sharing detection, and a database-enforced append-only audit log:
   everything a key pasted into a group chat can never give you.
-- **On a router, your money only spends; here, idle credits can earn** —
-  optional (V2 roadmap): a settlement layer where surplus credits become
-  supply for people who need cheap access.
+- **On a router, your money only spends** — if V2 opens, idle credits
+  can optionally earn (gated roadmap — see below).
 
 **Self-hosted *and* a marketplace? The boundary, stated plainly:** V1 is
 governance inside one trust domain — no blockchain, ever; your keys and
@@ -39,7 +48,28 @@ strangers exchange value — and nowhere else — the chain carries the
 receipts: append-only books, escrow no single person can move, every
 money moment a public record.
 
+**Depositor mode (experimental).** A pool created with `kind:"root"`
+accepts depositor-supplied keys and credits and settles earnings per
+depositor for each burn window. Root pools are strictly opt-in — org
+pools (the default) are unchanged — and the feature is experimental:
+the adversarial audit session runs this week, and findings land in the
+public [`AUDIT.md`](AUDIT.md) as they always do. The settlement layer
+it targets is live on Solana devnet: program
+`9pEmyxftdRUZV2iw6ZzCNgZz9QygG53i7APNaWcEHvjX` — 2-of-2 multisig
+governed, upgrade history public on any explorer.
+
 One line: **a router is something you rent; this is a building you own.**
+
+## Business model, plainly
+
+V1 is free forever, by strategy: adoption first, zero recurring cost —
+the software costs us nothing per org you run. The first dollar
+Tributary plans to earn is an operator's settlement fee (a fixed 5–10%
+band) on V2 marketplace volume, paid by operators — never by members.
+V2's launch gate includes provider/reseller agreements for credit
+transfer; until that gate opens, Tributary is exactly what you see: a
+free, self-hosted governance tool. No dollar is planned from ToS-gray
+flows, and if V2 never opens, V1 stands on its own.
 
 ## Quickstart
 
@@ -68,8 +98,12 @@ git clone https://github.com/Phat1911/Tributary.git && cd Tributary
 cp deploy/.env.example .env
 echo "TRIBUTARY_MASTER_KEY=$(openssl rand -hex 32)" >> .env   # REQUIRED — your vault key; keep it secret
 docker compose up -d          # prefers the prebuilt image; builds from source only as fallback
-docker exec -it -e TRIBUTARY_DATABASE_URL=sqlite:///data/tributary.db \
-  tributary tributary create-admin --email you@example.com --password '<generated>'
+docker exec -it \
+  -e TRIBUTARY_DATABASE_URL=sqlite:///data/tributary.db \
+  -e TRIBUTARY_ADMIN_PASSWORD="$(openssl rand -base64 18)" \
+  tributary tributary create-admin --email you@example.com
+# (--password '<secret>' on the command line also works — but it lands in
+#  your shell history; the env var is the documented path)
 ```
 
 ```sh
@@ -116,6 +150,7 @@ surface as review flags, not silent surprises.
 | | |
 |---|---|
 | [`deploy/README.md`](deploy/README.md) | Detailed ops: ports, reverse proxies (the trusted-proxy setting matters), backups, Postgres, healthchecks, quota behavior, upgrades |
+| [`docs/threat-model.md`](docs/threat-model.md) | What is audited and how, what is **not** independently reviewed yet, bus factor — the honest boundaries |
 | [`docs/onboarding-org-admin.md`](docs/onboarding-org-admin.md) | Admin first-day guide (DRAFT v1) — empty box → org → pool → member key → first request |
 | [`docs/pilot-support.md`](docs/pilot-support.md) | "It broke" diagnostics runbook — healthz → logs → audit → review queue, with the known fixes |
 | [Pilot feedback](https://github.com/Phat1911/Tributary/issues/new?template=pilot-feedback.yml) | Running a pilot? Tell us what worked, what broke, what's missing — it drives the M6 rewrite |

@@ -2,7 +2,7 @@
 
 ### The free AI already on your Mac.
 
-[![Version 1.16.0](https://img.shields.io/badge/version-1.16.0-blue)](https://github.com/Arthur-Ficial/apfel)
+[![Version 1.17.1](https://img.shields.io/badge/version-1.17.1-blue)](https://github.com/Arthur-Ficial/apfel)
 [![Swift 6.3+](https://img.shields.io/badge/Swift-6.3%2B-F05138?logo=swift&logoColor=white)](https://swift.org)
 [![macOS 26 Tahoe+](https://img.shields.io/badge/macOS-26%20Tahoe%2B-000000?logo=apple&logoColor=white)](https://developer.apple.com/macos/)
 [![No Xcode Required](https://img.shields.io/badge/Xcode-not%20required-orange)](https://developer.apple.com/xcode/resources/)
@@ -38,7 +38,7 @@ Update:
 brew upgrade apfel
 ```
 
-Build from source (Command Line Tools with macOS 26.4 SDK / Swift 6.3, no Xcode):
+Build from source (Command Line Tools with the macOS 27 SDK / Swift 6.3, no Xcode; the binary runs on macOS 26 and 27):
 
 ```bash
 git clone https://github.com/Arthur-Ficial/apfel.git && cd apfel && make install
@@ -231,7 +231,7 @@ alias apfel=apfel-run                 # optional, every apfel flag still works
 | Tool calling | Supported | Native `ToolDefinition` + JSON detection. See [docs/tool-calling-guide.md](docs/tool-calling-guide.md) |
 | `response_format: json_object` | Supported | System-prompt injection; markdown fences stripped from output |
 | `response_format: json_schema` | Supported | Guaranteed schema-conforming output via FoundationModels `DynamicGenerationSchema`; works with `stream: true` |
-| `temperature`, `top_p`, `max_tokens`, `seed` | Supported | Mapped to `GenerationOptions`. `top_p` is nucleus sampling; `temperature: 0` maps to greedy (deterministic). Omitting `max_tokens` uses the remaining context window (drop-in OpenAI semantics) - see [Default response cap](#default-response-cap-max_tokens) |
+| `temperature`, `top_p`, `max_tokens`, `seed` | Supported | Mapped to `GenerationOptions`. `top_p` is nucleus sampling; `temperature` below 0.001 (0 included) maps to greedy (deterministic). Omitting `max_tokens` uses the remaining context window (drop-in OpenAI semantics) - see [Default response cap](#default-response-cap-max_tokens) |
 | `stream: true` | Supported | SSE; final usage chunk only when `stream_options: {"include_usage": true}` (per OpenAI spec) |
 | `usage` | Supported | Real tokenizer counts on macOS 26.4+ (chars/4 estimate below). macOS 27: the runtime's own accounting incl. Apple's chat-template framing (about 46 extra `prompt_tokens` on a one-line prompt); macOS 26: apfel counts the message text. Details in [docs/openai-api-compatibility.md](docs/openai-api-compatibility.md) |
 | `finish_reason` | Supported | `stop`, `tool_calls`, `length` |

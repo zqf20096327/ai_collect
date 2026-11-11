@@ -40,13 +40,14 @@ npx agent-roast          # review what you have not committed yet (on a clean tr
 npx agent-roast hook install          # Claude Code, Codex and Cursor
 ```
 
-For Claude Code there is also a plugin: `/plugin install agent-roast --marketplace Nari-Ab/agent-roast`.
+For Claude Code there is also a plugin: `/plugin install agent-roast --marketplace Nari-Ab/agent-roast`. Any agent that speaks
+MCP can also call agent-roast as a read-only tool, `agent-roast mcp` ([setup](docs/integrations.md#mcp-server)).
 
 When the agent is about to finish, agent-roast reviews everything it changed. If a check got weaker, the agent is **sent back
 once**, with the file, the line and the before and after, and told to fix the code instead. If it tries again, you get a
 warning rather than an endless loop. Anything agent-roast cannot check lets the agent finish: it never breaks a session. An
-intended change is accepted by committing it. Setup for each agent, what it does not do, and how to pause it:
-[docs/integrations.md](docs/integrations.md).
+intended change is accepted by committing it. Not sure yet? `npx agent-roast hook install --advisory` only warns you and never
+sends the agent back. Setup for each agent, what it does not do, and how to pause it: [docs/integrations.md](docs/integrations.md).
 
 > The agent hooks follow each agent's documented hook protocol and are tested with simulated hook input, not yet in long live
 > sessions with every agent. Reports of what you see are welcome.
@@ -77,12 +78,12 @@ Policy is read from the **base** branch, so a pull request cannot switch off the
 
 | Rule | Fires when | By default |
 | --- | --- | :-: |
-| `assertion-weakened` | an exact check is replaced by a weaker one: `toBe(42)` → `toBeDefined()`, `assert x == 1` → `assert x` | blocks |
-| `guard-weakened` | a coverage threshold is lowered, `strict` is switched off, a lint rule is downgraded, a CI step may fail, a workflow stops running tests | blocks |
-| `test-skip` | a test is switched off: `it.skip`, `@pytest.mark.skip`, `t.Skip`, `#[ignore]`, `@Disabled`, `[Ignore]`, `xit`, ... | blocks |
-| `test-focus`, `trivial-assert` | `.only` / `fit`; `expect(true).toBe(true)` and its relatives in ten languages | blocks |
+| `assertion-weakened` | an exact check is replaced by a weaker one: `toBe(42)` → `toBeDefined()`, `toBe(2)` → `toBeLessThanOrEqual(2)`, `toEqual(x)` → `toMatchObject(x)`, `assert x == 1` → `assert x` | blocks |
+| `guard-weakened` | a coverage threshold is lowered, `strict` is switched off, a lint rule is downgraded, a CI step may fail, a workflow stops running tests, a `conftest.py` hook sets a report to `passed` | blocks |
+| `test-skip` | a test is switched off or expected to fail: `it.skip`, `@pytest.mark.skip`, `@pytest.mark.xfail`, `it.fails`, `test.fixme`, `t.Skip`, `#[ignore]`, `@Disabled`, `[Ignore]`, `xit`, ... | blocks |
+| `test-focus`, `trivial-assert` | `.only` / `fit`; `expect(true).toBe(true)` and its relatives in ten languages; a test that asserts on a function it mocked itself | blocks |
 | `assertion-removed`, `test-removed`, `expectation-rewritten` | a test loses assertions, disappears, or its expected value is edited next to production code | warns |
-| `swallowed-error`, `type-escape`, `stub-abandonment` | `catch {}` / `except: pass`, `as any` / `# type: ignore`, `throw new Error("Not implemented")` | warns |
+| `swallowed-error`, `type-escape`, `stub-abandonment` | `catch {}` / `except: pass`, `as any` / `# type: ignore` / `# pragma: no cover` / `istanbul ignore`, `throw new Error("Not implemented")` | warns |
 
 Renames, moved tests, parametrization, moved assertions and reformatting are recognized and not reported, and neither is a skip
 that depends on the environment (`if testing.Short() { t.Skip() }`, `test.skip(isMobile, ...)`). JavaScript/TypeScript, Python
@@ -110,15 +111,20 @@ old debt with a baseline: [docs/reference.md](docs/reference.md#configuration).
 Measured, with the denominators and the caveats in [docs/benchmarks.md](docs/benchmarks.md). **Weakened checks are rare, mostly
 deliberate, and not specific to AI. agent-roast is a tripwire that stays silent until a check gets weaker.**
 
-- **71 of 71** hand-labeled cheating edits are caught and **51 of 51** harmless look-alikes (reformats, moves, raised
+- **126 of 126** hand-labeled cheating edits are caught and **90 of 90** harmless look-alikes (reformats, moves, raised
   thresholds, environment-gated skips) stay silent. The cases were written with the detector, so they guard against regressions;
-  they do not prove accuracy. Three gaps are documented and still open.
+  they do not prove accuracy. One gap is documented and still open.
 - **12,645 commits** that touch tests or CI/config in 166 public repositories: blocking rules fired on 0.3% of AI-signed commits
   (Claude, Copilot, Cursor, Codex, Devin, aider) and on 0.3% of the others. Inside the same repositories the odds for an
   AI-signed commit were 0.81 times those of another commit (95% CI 0.40–1.67). There is no sign that AI-signed commits weaken
   checks more often.
 - **About one finding in five was a false alarm**, and most of the rest were deliberate, explained changes a reviewer should
   see rather than mistakes. The labels come from one reader (an AI assistant), so treat them as a first estimate.
+- **9,732 commits compared in full** from 164 public repositories that use coding agents (5,454 of them AI-signed) were reviewed again for the
+  last two releases, and every new finding was read. 0.15.0's rules reported 30 new findings there and 7 were false alarms (fixed in 0.16.0);
+  0.17.0's rule for an exact check turned into a bound reported 18 in 14 commits, all of them loosened checks, after two false alarms were
+  fixed. One reader, and a convenience sample ([section 7](docs/benchmarks.md#7-ai-signed-commits-and-a-test-that-checks-its-own-mock),
+  [section 8](docs/benchmarks.md#8-an-exact-check-turned-into-a-bound)).
 - `replay` ran on 179 public repositories that use coding agents: no commit would have been blocked in 149 of them.
 - The rules for **eight more languages** (Go, Rust, Java, Kotlin, C#, Ruby, PHP, Swift) ran on the newest 300 commits of 39
   repositories and every finding was read: 26 of 99 were skips that depend on the environment, now fixed; of the 73 left, 56 are

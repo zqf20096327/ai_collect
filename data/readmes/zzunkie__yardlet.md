@@ -4,7 +4,7 @@
 [![Release](https://img.shields.io/github/v/release/zzunkie/yardlet?label=release)](https://github.com/zzunkie/yardlet/releases/latest)
 [![License: MIT](https://img.shields.io/github/license/zzunkie/yardlet)](LICENSE)
 [![macOS 15+](https://img.shields.io/badge/macOS-15%2B-000000?logo=apple&logoColor=white)](#requirements)
-[![Swift 6.2](https://img.shields.io/badge/Swift-6.2-F05138?logo=swift&logoColor=white)](Package.swift)
+[![Swift 6.4](https://img.shields.io/badge/Swift-6.4-F05138?logo=swift&logoColor=white)](#development)
 [![Homebrew](https://img.shields.io/badge/Homebrew-tap-FBB040?logo=homebrew&logoColor=white)](https://github.com/zzunkie/homebrew-tap)
 
 <a href="https://www.producthunt.com/products/yardlet-2"><picture>
@@ -18,7 +18,9 @@ you already use, Codex, Claude Code, OpenCode, Antigravity CLI and others, side 
 of projects and tasks, each with the agent loop, sign-in and session history it already has. It adds
 no agent layer of its own and writes nothing into the agents' settings.
 
-Yardlet is written in Swift and SwiftUI; it is not a web view. It does not replace the agents or
+Yardlet is written in Swift and SwiftUI; it is not a web view. It uses 53 MiB of memory at rest after a
+first launch and 214 MiB with ten tasks streaming at once, not counting the agents' own CLIs (Yardlet
+0.11.10 on an M1 Pro MacBook Pro with macOS 15.6, November 2026). It does not replace the agents or
 proxy their accounts: it starts the CLI you already use, with the account you already signed in to.
 
 Most of us will end up with an agent workbench of our own. Yardlet began as one, built for working with
@@ -105,7 +107,7 @@ Turn off **Settings > General > Automatically check for updates** and Yardlet as
 you check yourself.
 
 An update installs only if it is signed with the release key built into Yardlet and with the same
-Developer ID. Sparkle keeps its settings in Yardlet's own preferences (keys starting with `SU`) and
+Developer ID, and the download is checked against the release key before it is opened. Sparkle keeps its settings in Yardlet's own preferences (keys starting with `SU`) and
 downloads under `~/Library/Caches/com.zzunkie.yardlet/org.sparkle-project.Sparkle/`. It installs no
 login item, launch agent or system helper: its installer runs only while an update is put in place.
 
@@ -138,7 +140,8 @@ through a connector is sent to that agent's provider under your account with it.
 check asks `yardlet.app` for the appcast with Yardlet's and Sparkle's versions in its user agent and
 sends no system profile; updates download from GitHub Releases. When Yardlet's main thread stays
 busy for more than 250 ms, it writes the time and the stack (function names only) to
-`~/Library/Logs/Yardlet/hangs.log`, kept under 2 MB and sent nowhere;
+`~/Library/Logs/Yardlet/hangs.log`, with earlier entries in `hangs.1.log` to `hangs.4.log`, kept to
+about 20 MB in all and sent nowhere;
 `defaults write com.zzunkie.yardlet Yardlet.debug.hangLog -bool NO` turns it off from the next
 launch. See the
 [privacy policy](https://yardlet.app/privacy.html).
@@ -176,9 +179,10 @@ Three helpers in the app bundle do work outside the main process:
 - The Intel version is new. It has been tried on one Intel Mac, a 2018 Mac mini with Intel UHD
   Graphics 630 on macOS 15.8, where it starts, streams a task and draws the built-in browser; other
   Intel graphics (Iris, AMD Radeon) and macOS 26 on Intel have not been tried. CI starts it on Intel
-  macOS 15 and 26 with every change to `main`, but those Macs have only a virtual GPU, on which the
-  built-in browser often stops before it draws. If you use Yardlet on an Intel Mac, please tell us how
-  it goes, especially if the built-in browser closes or stays blank: a
+  macOS 15 and 26 every night and when a change touches how the bundle is built, but those Macs have
+  only a virtual GPU, on which the built-in browser often stops before it draws. If you use Yardlet
+  on an Intel Mac, please tell us how it goes, especially if the built-in browser closes or stays
+  blank: a
   [bug report](../../issues/new?template=bug_report.yml) with "Intel" chosen, or a note in
   [Discussions](../../discussions).
 - On Intel Macs the built-in browser plays no H.264 video or AAC audio, such as many sites' MP4
@@ -252,7 +256,10 @@ Staging verifies the bundle and copies it to `~/Library/Application Support/Yard
 it never touches the installed app. Install Update… asks for confirmation, quits Yardlet through the
 normal quit path (which warns about running tasks), and a detached installer swaps the bundle once the
 app has exited, keeps the previous one in `Updates/Previous`, and reopens Yardlet. Tasks, drafts and
-history live outside the bundle. The installer log is `Updates/install.log`. While tasks run, Install Update…
+history live outside the bundle. The installer log is `Updates/install.log`. Install Update… goes forward, or to
+another build with the same build number (`CFBundleVersion`): a staged build with a lower one than the installed app
+is refused when it is staged, when it would be offered, and again by the installer. To go back to an earlier build,
+replace the app yourself; the previous bundle is in `Updates/Previous`. While tasks run, Install Update…
 also offers **Restart When Tasks Finish**: Yardlet waits until no task or subagent has run for a few seconds, checks
 that the staged build is still the one chosen, and installs through the same quit; the Yardlet menu shows the wait
 and **Cancel Update** ends it.
@@ -260,8 +267,8 @@ and **Cancel Update** ends it.
 Yardlet shows a staged build without being asked, as the Claude app shows a downloaded update: **Restart to
 update** above the account button at the bottom of the sidebar, and the same line above Quit in the menu bar
 menu, both opening Install Update…. It looks when the window opens, when Yardlet comes to the front and once
-a minute, and only checks that the staged build is Yardlet's and not the one installed; the signature is
-checked when you install. A build that updates with Sparkle does not look.
+a minute, and only checks that the staged build is Yardlet's, not the one installed and not an earlier build; the
+signature is checked when you install. A build that updates with Sparkle does not look.
 
 The bundle script uses SwiftPM's native build engine to retain its established resource layout.
 On toolchains that default to Swift Build, use `swift test --build-system native` for the same
@@ -441,7 +448,7 @@ profile remains valid; the outer app and helpers still use QA identifiers. Launc
 mocked, but Touch ID QA uses the real keychain access groups and requires the person to authenticate.
 On a public test site such as `webauthn.io`, confirm both registration and authentication with the
 platform authenticator. A valid signature or an available authenticator alone does not establish
-that either ceremony succeeded. Both ceremonies were verified with Touch ID on 2026-10-23.
+that either ceremony succeeded.
 This does not enable iCloud Keychain passkeys (docs/BROWSER_HOST.md §7).
 
 Runtime paths are selected per session and the local index is restored without eagerly starting either harness.
@@ -459,7 +466,7 @@ Yardlet's sidebar index and local UI state remain separate from provider storage
 See [native session storage](docs/NATIVE_SESSION_STORAGE.md) for what each task
 stores and what Yardlet reads.
 
-Additional provider accounts can be registered under Connections → Accounts.
+Additional provider accounts can be registered in Settings › Harness Accounts.
 Choose an account for a new task by its available quota; saved tasks retain their selected CLI
 environment.
 See [provider connections](docs/PROVIDER_CONNECTIONS.md) for the supported boundaries.

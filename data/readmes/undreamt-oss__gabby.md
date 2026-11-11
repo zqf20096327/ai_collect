@@ -54,10 +54,10 @@ An agent definition composes a model, environment, skills, tools, knowledge sour
 
 | Area | What Gabby provides |
 |---|---|
-| Execution | Async-first agent loop, sync wrappers, bounded steps and tool calls, deadlines, cancellation, optional planning and retries |
+| Execution | Async-first agent loop, sync wrappers, bounded steps and tool calls, deadlines, cancellation, optional planning and retries, per-run token and estimated cost circuit breakers |
 | Models | OpenAI-compatible, Ollama, Hugging Face Inference Providers, Anthropic, Gemini |
-| Skills | Reusable, composable skill definitions, dependency resolution, package and registry workflows, optional Ed25519 publisher signatures |
-| Tools and policies | Schema-validated tools, explicit permissions, approval hooks, bounded results, runtime policy enforcement |
+| Skills | Reusable, composable skill definitions, dependency resolution, package and registry workflows, Ed25519 publisher signature verification required by default |
+| Tools and policies | Schema-validated tools, explicit permissions, JWT scope-based RBAC, approval hooks, bounded results, runtime policy enforcement |
 | Isolation | Optional per-run Docker or Podman sandboxing for supported shell/filesystem tools; configuration and host determine the effective boundary |
 | Knowledge | Bounded plain-text and Markdown ingestion, SQLite FTS5 and vector stores, hybrid retrieval contracts, pluggable embeddings and reranking |
 | Interfaces | Python API and FastAPI `/v1` run and SSE endpoints |
@@ -96,6 +96,9 @@ The generated starter uses a placeholder model and grants no tools by default. A
 Gabby is pre-1.0 alpha software. Public extension APIs may change before v1.0. Local tests and static checks establish only the behaviors they exercise; they do not certify a hosted deployment, every provider/model pairing, or every container host and engine combination. Review the [release notes](CHANGELOG.md), [readiness scorecard](docs/PROJECT_SCORECARD.md), and [threat model](docs/THREAT_MODEL.md) before evaluating it for sensitive or production workloads.
 
 ## Open source and contributing
+
+See the [runtime integrations guide](docs/INTEGRATIONS.md) for MCP, OpenTelemetry, signed audit,
+and orchestration adapters.
 
 Gabby is maintained in the [undreamt-oss](https://github.com/undreamt-oss) organization. Contributions are welcome across runtime behavior, providers, documentation, examples, accessibility, security, and developer experience.
 

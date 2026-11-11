@@ -63,11 +63,7 @@ approval on.
 `brew upgrade` replaces the app while it runs, and the app restarts itself
 into the new version once llama-swap has no requests in flight (see
 [Updates](#updates)). Upgrading from 0.3.2, the app quits instead, and you
-open it again once. `brew uninstall --zap` also removes its settings and
-logs, and, with your password, the GPU memory limit's files. If you raised
-that limit, untick it before uninstalling (see [GPU memory](#gpu-memory)).
-Your API keys and secret variables stay in your login keychain, which
-Homebrew can't reach; Keychain Access can delete them (see [Files](#files)).
+open it again once. To remove it, see [Uninstalling](#uninstalling).
 
 If you installed the zip before, Homebrew can take over that copy in
 `/Applications`, when it's the same version as the cask:
@@ -107,11 +103,41 @@ Then follow steps 2 and 3 below.
    Homebrew's own folder; the first line only creates it if it isn't there.
    `llsl` follows the symlink to find the app it belongs to.
 
+### Uninstalling
+
+First, while the app is still there, untick **Launch at Login** in its menu
+and, if you raised it, the GPU memory limit (Settings → Tweaks, then Save).
+Only the app can unregister itself from macOS's login items, and only while
+it's installed.
+
+- **With Homebrew:** `brew uninstall --cask llama-swap-launcher` quits the
+  app (stopping llama-swap first), removes it, and removes `llsl`'s link.
+  Add `--zap` to remove the app's files too (the first four rows below),
+  with your password for the GPU memory limit's, which are root's.
+- **From the zip:** quit the app, move it to the Trash, and remove `llsl`'s
+  link (`sudo rm /usr/local/bin/llsl`).
+
+Everything the app leaves, and how to remove it:
+
+| What | Where | Removed by |
+|---|---|---|
+| Settings, the managed config folder, the last update check | `~/Library/Application Support/com.my-wang.llama-swap-launcher/` | `--zap`, or delete the folder |
+| Logs | `~/Library/Logs/com.my-wang.llama-swap-launcher/`, or wherever you put them (see [Logs](#logs)) | `--zap`, or delete them |
+| macOS's own preferences file for the app (the file chooser's size and last folder) | `~/Library/Preferences/com.my-wang.llama-swap-launcher.plist` | `--zap`, or delete it |
+| The GPU memory limit's helper: the limit it keeps, and its log | `/Library/Application Support/com.my-wang.llama-swap-launcher.wired-limit/`, `/Library/Logs/com.my-wang.llama-swap-launcher.wired-limit.log` | `--zap`, or `sudo rm -r` both |
+| API keys and secret variables | Your login keychain (see [Files](#files)) | Keychain Access; Homebrew can't reach the keychain |
+| Login items | System Settings → General → Login Items & Extensions, with a blank icon once the app is gone: **Open at Login**, if Launch at Login was on, and **Allow in the Background**, if you ever raised the GPU memory limit | **−** removes an Open at Login entry. macOS gives no way to remove an Allow in the Background entry by hand; it's harmless, as it lost its permission with the app |
+| Permissions | Local Network, and notifications | Nothing to do: macOS forgets them when the app is deleted, so a reinstall asks again |
+
+Forgetting to untick the GPU memory limit is harmless: macOS drops the
+helper once the app is gone, and its default returns when the Mac restarts.
+
 ## The menu
 
 - **Status:** starting, ready, paused, not responding, running (but
   refusing the app; the line below says why, such as a missing API key),
-  stopping, restarting (after a crash), stopped or failed, with llama-swap's
+  stopping, restarting (after a crash), waiting for its files (at launch; see
+  [Good to know](#good-to-know)), stopped or failed, with llama-swap's
   pid.
 - **Last GPU fault**, once a model's GPU backend has failed since the app
   started: which model, when, and whether it was unloaded automatically. A
@@ -314,7 +340,8 @@ can't be reached at all by a newer `llsl`; it says that too, and exits 3.
 ```
 
 - `state` is one of `stopped`, `starting`, `ready`, `paused`, `not
-  responding`, `running`, `stopping`, `restarting` or `failed`. `paused`
+  responding`, `running`, `stopping`, `restarting`, `waiting for its files`
+  or `failed`. `paused`
   comes with `"paused": true`: llama-swap answers, but its inference is
   paused (see [`pause`](#what-each-command-does)), and `status` exits 8. `running` means
   llama-swap runs but refuses the app, so the app can't see its models or
@@ -833,8 +860,12 @@ Tweaks) does it for you, and again at every startup. Set it in whole GB.
   Allow in the Background, switched on: that's your permission,
   remembered, so turning the limit on again doesn't ask. Untick it before
   you delete the app, so the helper goes with it; `brew uninstall --zap`
-  deletes its files. If you forgot, install the app again, untick, Save,
-  then uninstall. Turned off while the helper couldn't run (switched off in
+  deletes its files. If you forgot, no harm is done: macOS drops the helper
+  once the app is gone, and its default returns when the Mac restarts. Only
+  the helper's file with the limit stays, which `--zap` removes (install
+  the app again first, if you've uninstalled it). Installed again, the app
+  starts with the box unticked, and turning the limit on asks for macOS's
+  approval again, as the first time did. Turned off while the helper couldn't run (switched off in
   System Settings, say), the helper keeps its last limit, and applies it
   when it next starts, a moment before the app sets the one you've just
   saved.
@@ -855,6 +886,7 @@ Tweaks) does it for you, and again at every startup. Set it in whole GB.
 | The launcher log | `~/Library/Logs/com.my-wang.llama-swap-launcher/launcher.log` by default; see [Logs](#logs). |
 | llama-swap's own log | `~/Library/Logs/com.my-wang.llama-swap-launcher/llama-swap.log` by default, when its output has a file of its own. |
 | Preferences, control socket, pidfile, the last update check | `~/Library/Application Support/com.my-wang.llama-swap-launcher/` |
+| macOS's own preferences file for the app (the file chooser's size and last folder) | `~/Library/Preferences/com.my-wang.llama-swap-launcher.plist` |
 | The GPU memory limit's helper | Its limit in `/Library/Application Support/com.my-wang.llama-swap-launcher.wired-limit/`, its log in `/Library/Logs/com.my-wang.llama-swap-launcher.wired-limit.log`; root's (see [GPU memory](#gpu-memory)). |
 | API keys and secret variables | Your login keychain, as "Llama Swap Launcher: llama-swap API key LLSL_…" and "Llama Swap Launcher: secret environment variable …" (Keychain Access can show and delete them). |
 
@@ -873,6 +905,16 @@ Tweaks) does it for you, and again at every startup. Set it in whole GB.
   tells you, with the last lines llama-swap wrote, which usually say why. If
   the app itself crashes, llama-swap usually stops with it, but its model
   servers don't; the next time the app opens, it stops them first.
+- **llama-swap on a disk that mounts after login,** such as a ZFS pool, an
+  external drive or a network share: when the app opens and llama-swap's
+  binary, its config, or your own config folder isn't there yet, it waits for
+  them, for up to 5 minutes, with the menu showing `waiting for its files`
+  and the path; **Stop** ends the wait. Then it starts llama-swap as usual.
+  If they're still missing after 5 minutes, it says which, and you can
+  **Start** once the disk is mounted. `llsl start` waits along with it. Keep
+  models on the same disk as the binary or the config, so that once those
+  are there, the models are too. Only an opening waits: **Start** fails at
+  once if a file is missing.
 - **A llama-swap downloaded with a browser** may be blocked by Gatekeeper the
   first time. The app explains how to allow it.
 - **A path with spaces in a model's command** needs quotes in llama-swap's

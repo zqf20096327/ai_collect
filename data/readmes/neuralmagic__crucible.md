@@ -138,12 +138,19 @@ Other tools depend on what you run:
 
 Crucible Playbooks, the desktop app, tracks what each playbook did and is doing, read from a
 controller or local packs. Each [release](https://github.com/neuralmagic/crucible/releases)
-carries it for Apple silicon Macs and for Fedora, with `crucible-lsp` included.
-
-On macOS:
+carries it for Apple silicon Macs and for Fedora, with `crucible-lsp` included. To install the
+newest release:
 
 ```bash
-v=0.6.1
+curl -fsSL https://raw.githubusercontent.com/neuralmagic/crucible/main/scripts/install-desktop.sh | sh
+```
+
+The script takes a version (`| sh -s 0.6.4`), checks the download against its published
+checksum, and on macOS unpacks the app into `/Applications` (`| APPS=~/Applications sh` puts it
+in yours). By hand, on macOS:
+
+```bash
+v=0.6.4
 curl -LO "https://github.com/neuralmagic/crucible/releases/download/v$v/Crucible-Playbooks-v$v-aarch64-apple-darwin.zip"
 ditto -x -k "Crucible-Playbooks-v$v-aarch64-apple-darwin.zip" /Applications
 xattr -d com.apple.quarantine "/Applications/Crucible Playbooks.app"
@@ -153,10 +160,10 @@ open "/Applications/Crucible Playbooks.app"
 The app is signed ad hoc, so without the `xattr` step macOS blocks its first launch; System
 Settings, Privacy & Security, Open Anyway allows it too.
 
-On Fedora (x86_64 or aarch64):
+And on Fedora (x86_64 or aarch64):
 
 ```bash
-v=0.6.1
+v=0.6.4
 sudo dnf install "https://github.com/neuralmagic/crucible/releases/download/v$v/crucible-playbooks-$v-1.fc45.$(uname -m).rpm"
 ```
 

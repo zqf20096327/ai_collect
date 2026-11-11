@@ -173,6 +173,7 @@ extras you want:
 ```bash
 magnum install --plugin                      # launchd agent + herdr plugin
 magnum install --gh --no-launchd             # optional: `gh magnum …`
+magnum hooks install                         # optional: agents report a turn's end at once (see Agent hooks)
 magnum completion zsh > "${fpath[1]}/_magnum"
 ```
 
@@ -262,9 +263,9 @@ keeps them in the checkout's `state/` instead, for development.
 
 Besides those, Magnum reads `MAGNUM_MYSQL_DSN` (the MySQL server, see [Quick start](#quick-start)) and
 `HERDR_BIN_PATH` (the herdr executable that `magnum open`, `reveal_on_attention` and the plugin commands run;
-herdr sets it inside plugin actions, else `herdr` on `PATH`), and hands `[herdr] socket` to the herdr
-commands it runs and to the LaunchAgent as `HERDR_SOCKET_PATH`. `MAGNUM_BIN` names the `magnum` binary that
-the herdr plugin's commands run (else the plugin's own `bin/magnum`, then the installed one),
+herdr sets it inside plugin actions, else `herdr` on `PATH`), and hands `[herdr] socket` (your herdr
+session) to the herdr commands it runs and to the LaunchAgent as `HERDR_SOCKET_PATH`. `MAGNUM_BIN` names the
+`magnum` binary that the herdr plugin's commands run (else the plugin's own `bin/magnum`, then the installed one),
 `MAGNUM_PICK_QUERY` is the initial filter of `magnum pick` (as `--query`), and `MAGNUM_TUI_TRACE=<file>`
 makes a live screen append one line per message to the file, with how long its Update and View took, to
 diagnose a frozen or spinning screen (off unless set). Every role's pane gets the round's context
@@ -287,20 +288,59 @@ shims, Homebrew's and the system directories), and every command it runs inherit
 readiness commands, `mise exec`, gh and the agent CLIs. A tool only your shell's exports put on `PATH`, such
 as DBngin's `mysql`, `psql` or `redis-server` in versioned directories, is missing there (every schema load
 then fails). So the daemon asks your login shell for its `PATH` once at its start, before it runs anything (`$SHELL -ilc`, `zsh`
-when `SHELL` is unset, 20 s at most, no terminal and no stdin), and appends the directories its own `PATH`
+when `SHELL` is unset, 20 s at most, no terminal and no stdin; a shell that answers nothing in 20 s is asked
+once more, for 40 s, because a cold start of its startup files can outlast the first wait), and appends the directories its own `PATH`
 lacks, in the shell's order. launchd's `PATH` stays first, so mise's shims still win. Banners and hook
 output are skipped: the last line that reads as a `PATH` (colon-separated absolute directories) counts. The
 `daemon.shell_path` event says how many directories were added ("PATH from zsh: 4 directories added"),
 and `magnum status` shows the count on its daemon line. The debug log names the directories, the event
-never does. A shell that fails, prints no `PATH` or answers nothing in 20 s leaves launchd's `PATH`
-alone, with a warning event ("the login shell (zsh) answered nothing in 20s. The launchd PATH stays"). A
+never does; a `PATH` from the second ask adds "on a second try". A shell that fails, prints no `PATH` or
+answers nothing in either wait leaves launchd's `PATH` alone, with a warning event ("the login shell (zsh)
+answered nothing in 20s, nor in 40s on a second try. The launchd PATH stays"). A
 change of your shell's `PATH` (a DBngin upgrade) takes effect at the next `magnum daemon-restart`, as a
 config change does. The CLI keeps the environment of the terminal it runs in. `false` keeps launchd's
 `PATH` alone and runs no shell. The factory daemon (`magnum factory daemon`) takes the same `PATH` at its start, because it runs its copies'
 setup, reset and precheck commands itself. `logs/factory.log` says what the shell added, and a change takes
-effect at the next `magnum factory install`.
+effect at the next `magnum factory install`. Whatever `shell_path` says, a daemon whose environment names no
+locale (launchd sets neither `LANG` nor `LC_ALL`) sets `LANG=en_US.UTF-8` at its start, which every command it
+runs inherits, and logs it: without one, Ruby reads every file as US-ASCII and rubocop crashes. A `LANG` or an
+`LC_ALL` already set is kept.
 
-Three more `[daemon]` keys pace the agents. `max_total_working_codex` (default 5) caps the Codex agents working at once, your own sessions included. `agent_start_stagger` (default `"15s"`) is the least time between two agent launches, across rounds, and at most 3 Codex agents start at once. `min_warm` (default `"30m"`) is how long a pool slot another PR holds must stay unused before a waiting PR may take it back, its sessions parked and the slot released: with no human typing, no session working, blocked or prompted within it, no run and no pin.
+Three more `[daemon]` keys pace the agents. `max_total_working_codex` (default 5) caps the Codex agents working at once, your own sessions included (those of your herdr session count beside the review panes' when `[herdr] review_session` puts these in another; a session of yours that does not answer counts none). `agent_start_stagger` (default `"15s"`) is the least time between two agent launches, across rounds, and at most 3 Codex agents start at once. `min_warm` (default `"30m"`) is how long a pool slot another PR holds must stay unused before a waiting PR may take it back, its sessions parked and the slot released: with no human typing, no session working, blocked or prompted within it, no run and no pin.
+
+magnum's review panes run in a herdr session: yours by default (`[herdr] socket`, named by `[terminal]
+session`). `[herdr] review_session = "reviews"` puts them in a session of their own (`herdr --session
+reviews`: its own herdr server and terminal windows), on `~/.config/herdr/sessions/<name>/herdr.sock` unless
+`[herdr] review_socket` names another socket (absolute after `~` expands, and only with `review_session`;
+`"default"` is herdr's own default session). `[herdr] socket` stays your session whatever the panes' is: the
+toasts show there, the slot guards and the inventory read your agents and consoles there (a herdr of yours
+that is not running shows the agents it saved, as idle ones: it restores them when it starts), and the herdr plugin and the LaunchAgent use it. `magnum open`, the board's `o`
+and `reveal_on_attention` reveal a client of the panes' session, and the daemon opens one in a new window when
+no herdr server runs in a named session, which starts it after a reboot (at once, then at most twice an hour
+while it stays down, each a `herdr.opened` event; never your own, nor a session whose server runs but does not
+answer: a client of it may be open, and the open would bring it to the front). A change moves the panes once
+the daemon runs on it (`magnum daemon-restart --drain`; the factory's local review, whose rounds open there
+too, follows once the factory daemon starts on it: `magnum factory install`), at its first moment with nothing
+in flight: until then
+no round, retro, curation, fix or whiteboard starts (a PR's wait says `draining`), and `magnum open` of a PR
+with nothing live asks to try again in a minute. Then it rebinds every PR's sessions to the panes that hold
+their conversations (a server that started again restored them under new ids), parks them, pinned PRs too (the
+conversations are kept; pins and slots stay), closes their workspaces in the old session, toasts once in yours
+and restarts, and launchd starts it in the new session (a daemon launchd does not run, `magnum daemon` in a
+terminal, exits too, and its toast and exit say to start it again by hand). The move holds to the next idle moment while a park is
+refused (an agent at work, a busy pane of yours in a magnum workspace), while the old session does not answer,
+while no herdr server runs there and magnum recorded panes in it (herdr restores them and resumes their agents
+when its server starts, so the move waits to park them: it opens a named old session itself, and names the
+command that starts yours), and while the restart is refused because what launchd would start fails its check:
+the event `herdr.panes_move_waits` names the PR or the reason, and a toast does after 30 minutes. A move cut
+short goes on at the next start. A named review session is never the factory's (`[factory] herdr_session`), by name or by
+socket, nor your session's name (`[terminal] session`) on another socket, and doctor warns while it is your own
+session (`[herdr] socket` on its socket: the panes then share yours, and no guard reads where you work). The
+registry records which session its herdr ids are of once a daemon of this build starts: if `[herdr] socket`
+and `[terminal] session` point at the session the panes should run in, start the daemon on them first, then
+point them back at your session and set `review_session` to that session, and nothing moves. With
+`review_session = ""` the panes stay in your session, as before, even when the factory runs there
+too (`[factory] herdr_session = "default"`).
 
 A command handed to the daemon waits up to 30 s for its answer (the daemon answers requests before its
 GitHub poll and between the poll's GitHub calls, so one waits for a single call); a request still pending says how to follow it (`magnum logs request:<id> -f`). A request
@@ -314,9 +354,10 @@ The daemon prunes audit events older than `[daemon] keep_events` (default `"30d"
 requests older than `keep_requests` (default `"7d"`) on every reconcile; `"0"` keeps them forever. The
 step rows a checkout resumes from after a crash are the one exception, and only while their subject (a
 checkout, named with the head's sha) has had an event inside the window: a subject quiet for `keep_events`
-loses them with the rest. `poll_interval` and `reconcile_interval` must be positive, the other waits and
-quiet periods (`close_grace`, `push_quiet_period`, ...) and `min_free_disk_gb` not negative, and
-`default_repo`, when set, `owner/name`; the config is refused otherwise. Two `[[pool]]` blocks may not
+loses them with the rest. `poll_interval` and `reconcile_interval` must be positive, `observe_interval`
+`"0"` or between 2 seconds and `poll_interval`, the other waits and quiet periods (`close_grace`,
+`push_quiet_period`, ...) and `min_free_disk_gb` not negative, and `default_repo`, when set,
+`owner/name`; the config is refused otherwise. Two `[[pool]]` blocks may not
 render the same `slot_name` or `slot_path`.
 
 A push that lands while a round's reviewers still run restarts them on the new head, up to
@@ -508,7 +549,8 @@ request's on GitHub too) and the continue of a judge turn a usage limit paused w
 (`re-review · quiet hours → 07:00`), while their timing rules keep counting. A round of the judge alone
 still starts: a delta check of a small push, a reply round, and a re-review of the head Magnum reviewed
 (a review request after a reply), each one turn of a few minutes. `magnum review`, the board's and the
-picker's review keys still start any round, and a round in flight finishes. Nothing else stops: the poll,
+picker's review keys still start any round, and a round in flight finishes. Under `autofix = "open"` no new
+fix loop starts by itself inside it (a loop that runs goes on, and `f` still starts one). Nothing else stops: the poll,
 auto-approval, the retro, notes curation, parking and cleanup go on. The window includes its start and
 excludes its end, and crosses midnight when the end comes first (`"22:00-06:00"` covers 22:00 to 05:59); a
 malformed value or an empty window (`"07:00-07:00"`) is refused when the config loads.
@@ -607,7 +649,11 @@ needed" instead. `[daemon] skip_trivial_deltas` (default
 `["comments", "whitespace", "docs", "base", "empty"]`, `[]` = re-review every push) picks the kinds, a
 `[[watch]]` can override it, and `magnum review` always runs. A list you wrote before `empty` existed
 replaces the default and so keeps it off. A file that steers the review agents (an `AGENTS.md`, `CLAUDE.md` or `CLAUDE.local.md` in any
-directory, anything under `.claude/` or `.codex/`, `.mcp.json`) never counts as documentation for this. A
+directory, anything under `.claude/` or `.codex/`, `.mcp.json`) never counts as documentation for this, nor
+does a file a link of those paths in the reviewed commit's tree leads to (`.claude/skills` ->
+`../.agents/skills` makes `.agents/skills/x/SKILL.md` one), a file on the way to such a target (a push may
+turn it into a link), or a file the instruction files import (`@path`); a reviewed commit whose links
+Magnum cannot read makes the push non-trivial. A
 comment line that holds its language's interpolation counts as code, because in a heredoc, a template or a
 `run:` block it runs: `#{` in Ruby and ERB, `{` in Python, `${` in JavaScript, TypeScript, Kotlin, shell and
 Terraform, `{{` in YAML.
@@ -755,14 +801,20 @@ last round `audit pass`.
 
 Replies get that round on their own, without a push. The poll reads, for a PR whose activity moved, its
 reviews and comments with their authors and their association with the repository (no text): a reply in
-one of Magnum's threads by the PR's author or by an owner, member or collaborator of the repository, or a
+one of Magnum's threads by the PR's author, by an owner, member or collaborator of the repository or by the
+watch's fixer App (an App has no association with the repository, and it answers for the author), or a
 comment by the PR's author or a review of theirs with no inline comments (a body alone answers the review
 as a whole; the author's agent's "(Claude)" replies are the author's), never one by Magnum's own logins.
 A review of the author's whose inline comments start threads of their own (the findings of their own
 review tool, say) or answer another reviewer's is no reply. The poll's read says which for the last two
 reviews; for every other review since Magnum's latest review of the PR (up to ten) it asks GitHub in one
 more call for the batch (1 point, none when nothing needs it), and a review it could not ask about counts
-as before. Anyone else's reply in a thread (in a public repository anyone may
+as before. A reply in a thread is a review with no body, which GitHub's timeline never lists: the poll
+finds it among the PR's last two reviews, so a reply with two newer reviews after it and no push starts
+nothing (the next round's judge still reads it in the threads). Since replies often fill those two, a newer
+review with a body is then asked about in that one more call. The first poll of each repository with this
+build reads every open PR Magnum reviewed at its head once, changed or not, so a reply an earlier build
+could not see is read too. Anyone else's reply in a thread (in a public repository anyone may
 reply), a bot's without that association, a teammate's review elsewhere or a bot's top-level comment
 starts nothing; the next round's judge reads them anyway. When such replies came on a head Magnum reviewed, the PR waits
 `[daemon] reply_debounce` (default `"3m"`, `"0"` turns it off) after the last one and at least
@@ -784,7 +836,11 @@ answer); it never needs your attention. A changed verdict posts one short review
 meanwhile wins: the re-review of the new head reads the replies too. After two of Magnum's rebuttals in
 a thread, an answer marks the thread `stop`: the judge replies there no more, `post-review` refuses to,
 and the board flags the PR for you (`pr.stalemate`; `reviewed · argued` in STATE) until you act on it
-(`magnum review`, a verdict, a mute). Replies older than the daemon's first start with this build start nothing on their own; the board
+(`magnum review`, a verdict, a mute). The judge still decides the finding, and writes the stopped threads
+whose finding it keeps open as `stops_open` in its result: a thread whose answer it accepts is not
+flagged, and a later round that settles a flagged thread clears the flag (so does the continued turn of a
+round a usage limit paused after flagging). A list with an entry that names no thread of the threads file
+by its id decides nothing, with a warning: every stopped thread stays flagged. Replies older than the daemon's first start with this build start nothing on their own; the board
 counts them (`↩N`), and `magnum review --replies` (the board's `r` on such a row) re-decides them now.
 
 CI that finishes red after the review gets a round of its own too. The judge reads the head's failing
@@ -802,8 +858,11 @@ same way starts no other, a different check failing later does. A rerun that tur
 or passes, while it waits drops it (`pr.ci_red_dropped`, back to reviewed), and a push supersedes it.
 A check `ignore_checks` names is no failure here: it starts no judge check, and its record never names
 it. The poll reads a head's checks again when its CI rollup's state changes, and also when its counts of
-failed or pending checks do (a rollup stays FAILURE while an earlier failure is red); the counts come in
-the same rollup request, with more fields.
+failed, pending or passed checks do (a rollup stays FAILURE while an earlier failure is red, and a check
+created passed, such as a run's report through the Checks API, moves only the passed count); the counts
+come in the same rollup request, with more fields. It also reads them on every poll while Magnum's start
+of a `ci_dispatch` workflow waits for its run, and while its re-run of a run that started no job waits for
+the new attempt (in any repository; it then also reads the head's runs, one REST call).
 
 The rest of the re-review sees a base merge the same way: triage reads the PR's own diff of the files whose
 own change differs, the simplify reviewer's rerun measures that change, and the reviewers' and the judge's
@@ -899,11 +958,22 @@ each such retry is one `round.overload_shared` info event under the PR naming ho
 overload no other PR shares is charged as before, and a PR an overload already parked stays parked until
 `magnum review`.
 
+A launch failure other PRs share is not the PR's either. A round whose error carries a pane line (a
+judge's prompt herdr refused because its launch died, "the pane shows: Error: …") that another PR's agent
+ended with within the last 30 minutes (the lines `agents.shared_failure` groups) charges no attempt and
+does not count against the daily cap: the PR goes back in line and retries after a wait that doubles from 1
+minute up to 30 minutes while its rounds keep ending on that line. Its error says so (`error: the launch
+fails the same way on 2 PRs (no attempt charged; retry 1 in 1m): …`), and each such round is one
+`round.launch_shared` info event under the PR. A line no other PR shares is charged as before, but the
+attempts it charged go back once another PR's agent ends with it (one `round.attempts_refunded` event), and
+a PR they parked in needs attention goes back in line at once.
+
 A fetch, clone, checkout or dependency step that fails for a reason outside the PR (an SSH key the
-agent lost, DNS, a network timeout or refusal, TLS, or the same dependency error on two PRs within ten
-minutes) pauses dispatch for everything once, with one toast, and is never charged to the PR. Magnum
-probes `git ls-remote` of a watched clone (over HTTPS through gh, like its fetches) after 2 minutes, then after twice as long each time it still
-fails (up to 30 minutes), and resumes by itself when it answers; `magnum resume` lifts the pause at once.
+agent lost, DNS, a network timeout or refusal, a server curl could not connect to, TLS, or the same
+dependency error on two PRs within ten minutes) pauses dispatch for everything once, with one toast,
+and is never charged to the PR. Magnum probes `git ls-remote` of a watched clone (over HTTPS through
+gh, like its fetches) after 2 minutes, then after twice as long each time it still fails (up to 30
+minutes), and resumes by itself when it answers; `magnum resume` lifts the pause at once.
 
 A logged-out agent CLI pauses its kind: the login check before a round (`[kinds.*] login_check`) skips a
 logged-out reviewer and ends a round whose judge is logged out, and a run that fails with the login error
@@ -923,9 +993,12 @@ The `[usage]` section watches the Codex budget, which Magnum reads from Codex's 
 (default 80) automatic full re-reviews wait (`re-review · Codex soft cap` on the board), since a full
 re-review costs about twice a first review and finds no more; first reviews, delta checks, re-reviews of
 the same head, reply rounds, a review request and `magnum review` still run. At `codex_hard` (default 95)
-every round that needs Codex waits until the budget is below it again. `magnum status` and the tab bar
-show the gauge (`codex 87%`); `0` turns a cap off. The reading can be stale: after a switch to another
-Codex account the newest session file still carries the old account's limits, and no Codex session runs
+every round that needs Codex waits until the budget is below it again. The factory reads the same budget (at
+each launch of a stage with a Codex role, and each pass of a local review that runs one): at `codex_soft` its
+local review waits, and its stages' Codex roles yield, each running as its Claude `codex_fallback` (see
+[Factory](#factory-writing-code-from-a-jira-key-or-a-prompt), Roles). `magnum status`
+and the tab bar show the gauge (`codex 87%`); `0` turns a cap off. The reading can be stale: after a switch to
+another Codex account the newest session file still carries the old account's limits, and no Codex session runs
 to refresh it while the kind is paused, or at the soft cap while every round waiting is a full re-review.
 `magnum resume --tool codex` (or `--tool all`, with or without a daemon) overrules the reading whenever it
 is at either cap, a pause or not, and lifts the hard cap's pause: both caps wait for Codex's next reading,
@@ -1103,82 +1176,4 @@ name the new panes of another PR. Magnum never closes, reuses or parks away a pa
 starting or live session of another PR records (of two live sessions with one pane, the newer owns it): an
 old parked, closed or lost session of the PR that records one has its herdr ids dropped, which one
 `agents.herdr_ids_reused` event says, and nothing of it is closed; its conversation still resumes, in a new
-pane. What no registry row records, an eval replay's panes (a replay keeps its sessions in a registry of its
-own) or your own, can take an old id too, so magnum closes, parks or reuses a pane by the id a session
-recorded, or sends it a key there (a park's or a quit's ctrl+c, a hard park's exit keys), only while herdr
-shows it is still that session's: the agent there carries the session's agent name, or, with no agent, the
-pane works in the PR's checkout (the slot the session ran in). A quit that finds its pane someone else's
-sends nothing and logs it: it counts as done when herdr lists the session's agent nowhere, and waits for
-the next try (busy) when herdr shows that agent in another pane, where magnum moves the session. A workspace is
-closed or reused only while every pane in it is the PR's that way (a pane no session records must carry one
-of the PR's agents or work in its checkout, so a shell you `cd` elsewhere in a PR's workspace makes the next
-round lay out a workspace of its own). A pane or a workspace that fails is left alone, and the old
-session that recorded it has its herdr ids dropped, one `agents.herdr_ids_reused` event per reason
-(`other_pr`, `another_agent`, `outside_checkout`) naming the ids, never a pane's text or directory.
-
-An agent CLI that dies as it starts can leave herdr listing the launch under the role's agent name
-(`launch_pending`, status unknown) on a pane that shows only a shell prompt, and herdr refuses that name to
-every later start (`agent_name_taken`). Before a start, and when the quit that starts a role fresh finds the
-name still listed after its wait, magnum closes such a pane and records a `pr.launch_cleared` warning with
-the role, the pane and the CLI's own error line. A pane whose agent works or is blocked, or whose
-foreground is anything but the shell, is never touched. When the launch held the very pane the role was
-about to start in, magnum first splits a replacement from it, with the same environment and label, and the
-agent starts there.
-
-A new CLI version is the first suspect when launches start failing, so the daemon reads the version of each
-agent kind its roles use, as `magnum doctor` does (`<kind> --version` through its PATH), when it starts and
-at every tick's health check, and keeps it in the registry with the binary (the kind's command with its
-links resolved; for a mise shim, which links to mise itself, the binary `mise which <kind>` names) and its
-modification time. The version command runs again only once the binary changes, except that a read that
-failed (an error, its 15-second timeout, a context that ended) leaves nothing recorded and is tried again at
-the next health check: one warning per cause since the daemon started, and a `kind.version_unknown` warning
-when three checks in a row failed (the start's read is the first; the reads go on). Another version than the
-one recorded is a `kind.version_changed` event. For a CLI mise pins, one whose tool in `mise ls --current
---json` (by the kind's name, else the one whose install directory holds the binary) requests the very version
-it resolves to (`codex = "0.162.1"`), the change is unexpected: a warning and one toast ("codex-cli 0.162.1 →
-0.163.0 at 11:24"), both naming the pin ("mise pins it to 0.162.1"). Any other change is routine, such as
-Claude Code updating itself or a tool mise requests as `latest`, `lts` or a prefix: the event is info, with
-no toast, and so is a change when mise cannot answer (mise is asked only when a version changed). Either way
-`magnum status` shows the versions on its `clis:` line, with "(changed at 11:24)" for a day after a change.
-For that day a PR that goes to needs attention because a role of that kind did not start (the "failed 3× …
-start codex-judge" line, a dead launch's line among them) ends its line with "; the codex CLI changed at
-11:24", whether mise pins the CLI or not. When two or more PRs' agents end with the same pane error line
-within 30 minutes (the line of a `pr.launch_cleared`, of a prompt herdr refused because the agent was gone, or
-of a lost agent's pane in `pr.panes_closed`), the daemon records an `agents.shared_failure` warning naming the
-PRs, the roles, the line and a CLI change of the day, pinned or not, with one toast ("2 PRs' codex-judge
-launches end the same way"), once per line a day. Nothing is paused and magnum pins no version: you decide,
-and mise owns the versions.
-
-The machine's memory is measured, not acted on. At most once a minute the health check starts a sample of
-the kernel's memory pressure level (`sysctl -n kern.memorystatus_vm_pressure_level`: 1 normal, 2 warn, 4
-critical) and the swap (`sysctl -n vm.swapusage`) on a goroutine of its own, each command with a 3-second
-timeout, so one that fails keeps the other's reading; the tick never waits for it, and the next tick's check
-records the finished sample in the registry (`machine.memory`: the level, the swap used and its total in
-bytes, when it was read and, for a part it could not read, why). A new level counts once two samples in a
-row read it (the first known level since a start counts at once), so a level that flaps for one sample
-records nothing, and each change of the level that counts is a `machine.memory_pressure` event: the first
-known level since a start is info, a return to normal is info, warn a warning and critical an error. A run
-of critical pressure, which starts at its first critical sample and lasts until a normal sample, toasts
-once ("magnum: memory pressure critical", with the swap and how many of magnum's agents are live), and never
-twice within an hour, so a level that flaps does not toast again. A command that fails (Linux has neither
-value) leaves its part unknown, with one warning per value and kind of failure (a non-zero exit, a timeout,
-a failed start, an answer that does not parse) since the daemon started, and no sysctl at `/usr/sbin/sysctl`
-stops the sampling until the daemon restarts; an unknown sample is never a return to normal. `magnum status`
-shows the sample on its `memory:` line and `magnum doctor` reads the level and the swap at once (a WARN at
-critical). Nothing waits on memory pressure yet: the samples tell how often it is critical, which a hold on
-it would need to know.
-
-The judge is the exception to resuming. Codex's prompt cache lasts about an hour and a half, so a judge
-resumed later re-reads its whole conversation uncached on its first turn (25 of 39 resumed judge turns did,
-4.7M tokens in 2.3 days). A judge whose last turn on the PR ended longer than `[pipeline] judge_fresh_after`
-ago (default `"90m"`, `"0"` always resumes) starts the next round in a fresh session instead, the way a judge
-whose session was lost does: a re-review becomes a recovery, whose prompt has the judge read its earlier
-reviews and their threads from GitHub, while the reviewers keep their conversations and re-review the new
-commits as usual. Unlike a lost session's, that judge works at its `rereview_effort` and its own pass reviews
-the commits since the last review (the whole PR again after a force push); a delta check or a re-review of
-the same head runs with a fresh judge at its `rereview_effort` too. A judge still live in its pane is quit
-first, which parks its conversation (history kept), and the fresh one starts once herdr no longer lists it.
-A continue finishes its paused turn in the old conversation. Each such start is a `round.judge_fresh_cold`
-event with the idle time. A session that has served its role's `max_session_rounds` (the judge's 6) starts
-fresh the same way, however recent its last turn (see Roles and kinds). So does a live Codex judge that never
-took a prompt, whatever its idle time
+pane. What no registry row records, an eval replay's panes (a rep

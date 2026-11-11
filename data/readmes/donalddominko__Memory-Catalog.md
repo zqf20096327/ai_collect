@@ -57,6 +57,8 @@ Say these in plain words; exact wording doesn't matter. **Where:** MAIN = a chat
 | **was** *idea* **considered?** / **what was left undiscussed about** *stream* | ANY | Reads the register | Matching lines with status and checkpoint |
 | **verify checkpoints** | ANY | Section 6 | Each anchor's result |
 | **read the** *Project name* **board and update the catalog** | MAIN | Brings a Project's news into main memory until the nightly sync exists (section 7) | Candidates, then the usual report |
+| **handoff this chat** / **handoff** *stream* | ANY | Section 20: writes the resume line for each stream the chat moved forward, after a conflict check | The lines written, and the exact first message for the next chat |
+| **pickup** *stream* / **pickup** | ANY | Section 20: reads the resume line (or lists every one when no stream is named), checks it against its source of truth and recent chats | Where the stream stands, the next step, the open decisions and any differences found; no work starts until you say so |
 <!-- commands:end -->
 
 ## What's in the catalog
@@ -65,7 +67,8 @@ Say these in plain words; exact wording doesn't matter. **Where:** MAIN = a chat
 |---|---|
 | `index.md` | Every work stream, its status, where its detail lives |
 | `backlog.md` | Open tasks by stream: the only place task status lives |
-| `log.md` | Dated history, older months rolled up |
+| `log.md` | Dated history: the current month, and one line pointing to each archived month |
+| `log-archive/` | Earlier months of the log, moved verbatim |
 | `principles.md` | Rules of thumb you've adopted, with checkpoints |
 | `considered.md` | Ideas declined (with your reason) or raised but not discussed |
 | `checkpoints.md` | Chat keys, turns and anchor phrases for provenance |

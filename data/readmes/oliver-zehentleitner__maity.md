@@ -3,6 +3,7 @@
 [![Licence](https://img.shields.io/badge/licence-MIT-blue.svg)](LICENSE)
 [![Keep the Why · family](https://maity.dev/keep-the-why-dashboard/badge-family.svg)](https://maity.dev/keep-the-why-dashboard/)
 [![maity](https://maity.team/badge/oliver-zehentleitner/maity.svg)](https://maity.team/oliver-zehentleitner/maity/overview)
+[![Discord](https://img.shields.io/badge/chat-Discord-5865F2.svg)](https://discord.gg/VRWUe7zKzp)
 
 <a href="https://maity.team/register"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/readme-banner-dark.svg"><img src="docs/img/readme-banner-light.svg" alt="Your agents, one team. You in the middle with your agents, your team around you, the community around that, and the paths between them: inbox requests, reviews, cards, messages, briefings and wakes." width="100%"></picture></a>
 
@@ -119,7 +120,9 @@ and on the [dashboard](https://maity.dev/keep-the-why-dashboard/), including
 ## What it is not
 
 Not a coding agent, an IDE, a model gateway or a sandbox. The hub never
-starts or bills your agents, runs no inference and counts no tokens. An
+starts or bills your agents and runs no inference. It sums the token
+counts a supervised run's harness reported, for the agent's owner, and
+keeps no price list. An
 optional runner, which you run yourself, can start agents on your own
 machine. There is no telemetry, and a hub needs no outside service.
 

@@ -1,0 +1,205 @@
+# Stardust Agent｜大学生申报材料一站式工作台
+
+<img align="right" src="./assets/logo.png" width="72" height="72" alt="Stardust Agent">
+
+**大学生申报材料（申报书、申请书、商业计划书、实践报告、个人陈述）一站式工作台。**
+
+**Stardust Agent** 是面向大学生的开源 AI Agent 工作台，帮助整理大创申报书、挑战杯申报书、中国国际大学生创新大赛商业计划书、奖学金申请书、保研材料和三下乡实践材料。学生可以在项目中整理学校通知和已有资料，让 Agent 检索依据、协助起草，再逐章编辑并导出 Word。
+
+项目提供 35 个领域指南。后端使用 Python 和 FastAPI，支持 Ollama 本地模型和 OpenAI 兼容接口。这里的覆盖指指南与赛道目录，各赛道的模型写作、模板、图表和导出支持程度不同，尚未完成全部场景的端到端验收。仓库改动不代表已经在线上部署。
+
+[![GitHub stars](https://img.shields.io/github/stars/cuic19053-hue/stardust-agent?style=social)](https://github.com/cuic19053-hue/stardust-agent/stargazers) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
+
+[打开在线工作台](https://agent.stardust.website) · [查看大创 Word 样例](./examples/demos/demo_innovation_research.docx) · [Agent 设计说明](./docs/design/AGENT_REFACTOR.md) · [English](./README_EN.md)
+
+## 快速上手
+
+1. 打开 [在线工作台](https://agent.stardust.website)，登录后创建项目。
+2. 描述申报目标，上传学校通知、项目记录等材料，并核对确认提取出的信息。
+3. 在对话中查找依据、起草内容，预览并保存章节草稿，逐章编辑后导出 Word。
+
+例如，可以先问：“我想申报大创创新训练项目，课题是校园无人机巡检。请帮我梳理申报书结构，还需要准备哪些材料？”
+
+在线入口无需安装 Python 或使用命令行。使用平台模型无需自备 API Key，账号额度、模型可用性与费用以工作台提示为准。未知事实应保留待补充；用户确认只代表其提供或认可了信息，不代表系统完成独立核验。
+
+## 支持哪些大学生申报材料？
+
+| 申报场景 | 可以整理的材料 | 样例与指南 |
+| --- | --- | --- |
+| **大创与科研立项** | 大创创新训练、创业训练和校院级科研立项申报书 | [大创 Word 样例](./examples/demos/demo_innovation_research.docx) · [创新训练指南](./subskills/innovation-research/SKILL.md) |
+| **挑战杯与创新大赛** | 挑战杯申报书、大学生创新大赛（原互联网+）商业计划书 | [挑战杯样例](./examples/demos/demo_challenge_cup.docx) · [商业计划书样例](./examples/demos/demo_internet_plus.docx) |
+| **奖学金与评优** | 国家奖学金、国家励志奖学金、校级奖学金及评优申请材料 | [国家奖学金样例](./examples/demos/demo_national_scholarship.docx) · [申请指南](./subskills/national-scholarship/SKILL.md) |
+| **升学与留学** | 保研推免个人陈述、交流项目和国家公派留学申请材料 | [保研样例](./examples/demos/demo_graduate_recommendation.docx) · [推免指南](./subskills/graduate-recommendation/SKILL.md) |
+| **三下乡与社会实践** | 社会调研、支教、政策宣讲和科技服务等实践申报材料 | [社会调研指南](./subskills/social-survey/SKILL.md) |
+
+样例使用示例数据，供了解材料结构和排版，不是已授权入库的真实学生范文。具体栏目、字数及提交要求请以所在学校的最新通知为准。[查看全部 35 个领域指南](./subskills/README.md) · [查看全部 Word 样例](./examples/demos/)
+
+## 常见问题
+
+**不会编程，可以使用吗？** 可以直接使用在线工作台，按提示创建项目并填写或上传材料。本地部署和 MCP 接入面向需要自行配置环境的用户。
+
+**可以用自己的材料吗？** 可以上传学校通知、项目记录等资料，核对并确认提取结果后，再让 Agent 在项目资料中检索依据。现有数字、来源和完整性检查范围有限，模型仍可能遗漏、误解或编造；回答中的事实、引文及其适用性仍需要本人逐项检查。
+
+**需要付费或配置模型吗？** 代码按 MIT 协议开源。在线平台模型有试用额度与积分计费；使用自己的 API Key 时，费用按模型服务商规则计算。本机 Ollama 不扣工作台积分，但需自行准备运行环境。[模型与服务配置](./server/README.md)
+
+当前仓库实现中，国奖基础起稿可不调用模型；明确要求字数、风格或重点经历时使用所选模型。是否已在线上提供以部署版本为准。
+
+## 跟着一次工具调用读代码
+
+> 请查一下已确认材料，告诉我样本量和记录的观察指标。
+
+测试项目里有一份已确认的观察记录。本机实测中，Qwen2.5 7B 选择了 `search_project_materials`。服务端在当前项目中检索，将命中的段落交还给模型。下面是这次回答的节选。
+
+> 根据已确认的观察记录，团队观察了12株番茄苗，并记录了土壤含水量和病斑面积。
+
+评测会同时核对工具名和答复内容。如果回答引入记录里没有的“准确率达到 92%”，这条用例就会失败。[用例与原始材料](./server/evals/cases.json) · [评测脚本](./server/evals/run.py)
+
+| 工程问题 | 实现方式 | 源码 |
+| --- | --- | --- |
+| 模型怎样选工具，何时结束？ | 同步答复与 SSE 流式答复共用对话循环。一轮对话最多迭代 6 次，工具调用预算为 8 次。服务端执行前再次检查工具授权，并绑定当前项目。 | [运行时](./server/proposal/chat_runtime.py) · [工具路由](./server/proposal/chat_tools.py) |
+| 回答里的材料从哪里来？ | 项目资料经用户确认后分段索引。RAG 检索结合关键词和可用的同版本向量，返回来源文件和段落位置。官方通知另按学校、年度和适用范围查找。 | [项目检索](./server/proposal/retrieval.py) · [知识来源与覆盖](./docs/rag-status.md) |
+| 聊天怎样变成 Word？ | 学生从对话中预览并选取章节草稿，编辑后保存。导出使用项目里已保存的正文，提交前仍可核对学校模板和引用。 | [对话草稿](./server/proposal/chat_drafts.py) · [Word 导出](./server/proposal/exporter.py) |
+| 长任务中途断开怎么办？ | 启用材料 worker 后，章节生成和导出等任务按项目入队。提交使用幂等键，写回前检查项目版本，付费任务租约中断时保留记录供核对。普通聊天仍依赖当前请求，断线续传与跨设备去重尚未完整接通。 | [任务队列](./server/proposal/material_jobs.py) · [执行进程](./server/material_worker.py) |
+
+## 本地运行与复现
+
+需要 Python 3.11 或更高版本，并启动本机 Ollama。在终端运行以下命令。
+
+```bash
+git clone https://github.com/cuic19053-hue/stardust-agent.git
+cd stardust-agent
+python3 -m venv .venv
+.venv/bin/python -m pip install -r utils/requirements.txt -r server/requirements.txt
+ollama pull qwen2.5:7b
+ollama pull bge-m3
+.venv/bin/python -m uvicorn app:app --app-dir server --host 127.0.0.1 --port 8765
+```
+
+打开本机工作台，在「模型配置」中选择 Ollama。点击「开始新对话」描述申报目标，上传并核对资料后即可提问。本机模式使用 SQLite，数据保存在 `.agent-data/`。云端使用 Supabase 按账号管理项目。平台模型使用工作台积分，自带 API Key 时按模型服务商规则计费。[本机工作台](http://127.0.0.1:8765) · [模型、存储和服务配置](./server/README.md)
+
+在仓库根目录运行下面的命令，可以用本机模型复现上面的提问。脚本使用临时项目，输出实际调用的工具、答复片段和各用例的通过情况。
+
+```bash
+.venv/bin/python server/evals/run.py
+```
+
+## 场景、样例与扩展
+
+35 个申报场景以 Skills 形式提供领域指南。网页按选定赛道加载经过滤的指南，并支持按需分页读取该 Skill 已链接的参考资料；指南及示例不能当作官方规则或学生事实。Word 输出是供编辑核对的草稿，自动图形需要构建器支持、有效图片或节点数据及绘图依赖；数据不足或渲染失败时可能留下待补充提示，不能据此推定全部赛道图表已接通。[全部场景](./subskills/README.md) · [挑战杯样例](./examples/demos/demo_challenge_cup.docx) · [奖学金样例](./examples/demos/demo_national_scholarship.docx) · [全部 Word 样例](./examples/demos/)
+
+仓库公共语料包含 **42 篇正式高校官方通知及 1 篇院级科创活动报道**，检索需匹配学校、年度与适用对象，并回源核验。**已获授权、脱敏并审核通过的真实范文当前为 0 篇**；详见 [RAG 状态说明](./docs/rag-status.md)。
+
+开发者可以从 Codex、Cursor 或其他 MCP 客户端连接本机项目工具，也可以直接加载某一赛道的 `SKILL.md`。本机项目 MCP 与网页共享项目和材料，使用 stdio 启动的命令为 `.venv/bin/python server/mcp_server.py --transport stdio`。[项目 MCP 实现](./server/mcp_server.py) · [Skills 入口](./SKILL.md)
+
+<details>
+<summary><b>展开 35 个领域指南及文件大小</b></summary>
+
+以下是指南目录与内容量，不表示各赛道已通过相同的写作、排版或线上交付验收。
+
+**🔬 科研与竞赛 · 9 个**
+
+| # | 赛道 | 编码 | 内容量 |
+|---|---|---|---|
+| 1 | 大创 · 创新训练项目 | `innovation-research` | 59 KB |
+| 2 | 大创 · 创业训练项目 | `entrepreneurship-training` | 46 KB |
+| 3 | 大创 · 创业实践项目 | `entrepreneurship-practice` | 52 KB |
+| 4 | 校级科研立项 | `university-research` | 61 KB |
+| 5 | 院级科研立项 | `college-research` | 79 KB |
+| 6 | 挑战杯 · 课外学术科技作品 | `challenge-cup` | 81 KB |
+| 7 | 互联网+ · 商业计划书 | `internet-plus` | 75 KB |
+| 8 | 互联网+ · 红旅赛道 | `internet-plus-red-tour` | 64 KB |
+| 9 | 国家级项目立项逻辑评测 | `national-project-eval` | 43 KB |
+
+**🏆 评优与资助· 12 个**
+
+| # | 赛道 | 编码 | 内容量 |
+|---|---|---|---|
+| 10 | 国家奖学金（10000 元） | `national-scholarship` | 37 KB |
+| 11 | 国家励志奖学金（6000 元） | `motivation-scholarship` | 46 KB |
+| 12 | 校级奖学金 | `university-scholarship` | 43 KB |
+| 13 | 企业专项奖学金 | `enterprise-scholarship` | 49 KB |
+| 14 | 单项奖学金 | `single-scholarship` | 44 KB |
+| 15 | 国家助学金 | `grant-application` | 13 KB |
+| 16 | 优秀毕业生 | `outstanding-graduate` | 45 KB |
+| 17 | 优秀学生 / 三好学生 / 优秀团员 | `outstanding-student` | 60 KB |
+| 18 | 优秀学生干部 | `outstanding-cadre` | 71 KB |
+| 19 | 文明大学生 | `civilized-student` | 61 KB |
+| 20 | 优秀班集体 | `class-collective` | 55 KB |
+| 21 | 优秀毕业设计 / 论文 | `outstanding-thesis` | 64 KB |
+
+**🌾 活动类 · 5 个**
+
+| # | 赛道 | 编码 | 内容量 |
+|---|---|---|---|
+| 22 | 三下乡 · 社会调查 | `social-survey` | 46 KB |
+| 23 | 三下乡 · 支教 | `volunteer-teaching` | 52 KB |
+| 24 | 三下乡 · 政策宣讲 | `policy-lecture` | 55 KB |
+| 25 | 三下乡 · 科技服务 | `tech-service` | 66 KB |
+| 26 | 西部计划 | `western-plan` | 63 KB |
+
+**🚩 政治身份类 · 3 个**
+
+| # | 赛道 | 编码 | 内容量 |
+|---|---|---|---|
+| 27 | 入团申请书 | `youth-league-application` | 61 KB |
+| 28 | 阶段汇报 / 思想汇报 | `summary-report` | 29 KB |
+| 29 | 转正申请书 | `youth-league-conversion` | 29 KB |
+
+**🎓 升学类 · 2 个**
+
+| # | 赛道 | 编码 | 内容量 |
+|---|---|---|---|
+| 30 | 保研推免申请 | `graduate-recommendation` | 45 KB |
+| 31 | 选调生申请 | `selected-graduate` | 63 KB |
+
+**✈️ 公派留学 / 交流类 · 2 个**
+
+| # | 赛道 | 编码 | 内容量 |
+|---|---|---|---|
+| 32 | CSC 国家公派留学 | `csc-scholarship` | 59 KB |
+| 33 | 交流项目申请 | `exchange-program` | 73 KB |
+
+**📋 其他 · 2 个**
+
+| # | 赛道 | 编码 | 内容量 |
+|---|---|---|---|
+| 34 | 转专业申请 | `major-transfer` | 66 KB |
+| 35 | 应征入伍申请书 | `military-enlistment` | 60 KB |
+
+</details>
+
+## 项目与社区
+
+项目源自团队参加挑战杯、反复修改申报书的实践。感谢完成了本项目绝大部分编写工作的 [@richyhu](https://github.com/richyhu)。欢迎通过 Issue 提供学校模板的差异、更新的申报要求和能够复现的问题。[项目演示视频](https://www.douyin.com/video/7692700167341985051) · [贡献指南](./CONTRIBUTING.md) · [作者联系方式](./assets/contact_qr.png)
+
+<details>
+<summary>社区路线图</summary>
+
+> 已突破 140 ⭐，「讲莲杯 / 创青春 / 三创赛」已进入开发队列。**点 Star = 催更。**
+
+| 里程碑 | 解锁赛道 |
+|---|---|
+| ⭐ 300 | 节能减排大赛、生命科学竞赛（学科专项类） |
+| ⭐ 500 | 服务外包大赛、商业精英挑战赛（商科类） |
+| ⭐ 1000 | 师范生教学技能、英语类竞赛 |
+
+</details>
+
+<details>
+<summary>使用说明与免责声明</summary>
+
+**本项目按「现状」提供，仅供学习和参考。**
+
+1. **非官方出品**：与任何高校、教育主管部门、评审委员会无关。评审标准与格式规范基于公开信息和社区经验整理，不构成官方指导意见。
+2. **真实性由使用者负责**：生成的申报材料，其真实性和准确性由使用者本人承担全部责任。虚假申报可能面临学籍处分乃至法律责任。
+3. **不保证结果**：不承诺通过评审、获得立项或拿到奖学金。
+4. **格式以学校模板为准**：各校模板在栏目顺序、字数、排版上可能不同，提交前请对照本校要求逐项检查。
+5. **政治类文书的特殊性**：参考内容不构成政治立场建议，政治表述的准确性由申请人承担全部责任。
+6. **责任豁免**：在法律允许的最大范围内，作者及贡献者不对因使用或无法使用本项目产生的任何直接、间接或后果性损害承担责任。
+7. **合规使用**：请遵守所在国家/地区及学校的法律法规。如使用行为违反相关规定，请立即停止并删除本项目。
+
+**使用本项目即表示你已阅读、理解并同意上述声明。**
+
+</details>
+
+本项目采用 MIT 许可，使用与分发时请保留原作者署名和许可声明。[LICENSE](./LICENSE)

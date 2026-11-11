@@ -6,7 +6,7 @@
 
 # 富江破甲（破甲）
 
-富江破甲（破甲）：DeepSeek Harness破甲插件，激活词富江，所有东西直接大白话问，内含技能库skill下载与调用、漏洞知识库poc利用、漏洞报告更新和全自动授权渗透。当前版本：0.20.12，附免责声明。插件图片看最下面
+富江破甲（破甲）：DeepSeek Harness破甲插件，激活词富江，所有东西直接大白话问，内含技能库skill下载与调用、漏洞知识库poc利用、漏洞报告更新和全自动授权渗透。当前版本：0.20.13，附免责声明。插件图片看最下面
 
 本项目将 `@deepseek-ai/dsh-prompt-custom` 安装到 DeepSeek Harness 的配置目录。插件程序位于 `plugin/`，提示词配置单独保存在 `prompt-custom.json`。
 
@@ -29,7 +29,22 @@
 .\install.ps1 -DryRun
 ```
 
-安装器默认使用 `desktop` 配置，优先调用 Desktop 自带的 DSH 命令行工具；也支持通过 `-Profile`、`-DshCommand`、`-DshHome` 指定配置名称、命令行工具和数据目录。
+安装器默认使用 `desktop` 配置，会从运行路径、默认安装位置、注册表和开始菜单或桌面快捷方式查找 Desktop 自带的 DSH 命令行工具，再尝试系统 PATH，支持安装到 D、E 等其他盘符。双击安装脚本仍未找到时，可按提示粘贴实际安装文件夹或可执行文件路径。
+
+也可以手动指定安装目录；程序目录与 `.dsh` 数据目录是两个不同位置：
+
+```powershell
+# 指定程序安装目录，支持中文和空格
+.\install.ps1 -DshCommand "D:\应用\DeepSeek Harness"
+
+# 仅当 .dsh 数据目录也移动过时，额外指定数据目录
+.\install.ps1 -DshCommand "D:\应用\DeepSeek Harness" -DshHome "E:\数据\.dsh"
+
+# 仅预览，不执行安装或弹出路径输入
+.\install.ps1 -DryRun -DshCommand "D:\应用\DeepSeek Harness"
+```
+
+`-DshCommand` 也接受 `DeepSeek Harness.exe` 或 `dsh.cmd` 的完整路径；`-Profile` 可指定配置名称，未传 `-DshHome` 时继续遵循已有的 `DSH_HOME` 设置。
 
 安装时，脚本将插件复制到 `$DSH_HOME\local-plugins\dsh-prompt-custom`，通过 `dsh plugin --profile <profile> add <path>` 注册，并将附带的提示词配置复制到 `$DSH_HOME\prompt-custom.json`。如果已有配置与新配置不同，会先在原文件旁备份；注册失败且存在备份时，会恢复原提示词配置。未设置 `DSH_HOME` 时，默认使用 `$env:USERPROFILE\.dsh`。
 
@@ -138,7 +153,7 @@ REA 需要兼容的 Node.js 版本：`^22.23.4 || ^24.22.1 || >=26.12.1`。插�
 
 插件使用公开的 `systemPrompt`、`skills`、`tools`、智能体生命周期及 `webServer` 服务，不通过修改 Harness 程序文件安装。安装后需要完全退出并重新启动 Harness。
 
-当前版本已核对文件结构与安装逻辑，未重新完成全部功能的实际运行验证，不能据此承诺所有技能、CVE 条目或自动流程都可用。已知情况：免责声明弹窗关闭后的 Enter / Esc 监听仍可能影响输入和快捷键。
+0.20.13 修复了关闭免责声明后 Enter 发送、Shift+Enter 换行及 Esc 被拦截的问题，并避免中文输入法确认候选词时误触发弹窗快捷键。本次验证针对键盘事件与安装路径修复，不代表全部技能、CVE 条目或自动流程均已完成实际运行验证。
 
 ## 提示词配置与免责声明
 

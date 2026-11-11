@@ -96,6 +96,11 @@ python3 -m venv .venv
 .venv/bin/python scripts/installer/install.py   # optional: puts `kvist` on your PATH
 ```
 
+Onelines:
+```bash
+git clone https://github.com/davud-d/Kvist; cd Kvist; python3 -m venv .venv; .venv/bin/python -m pip install -r requirements.txt; .venv/bin/python scripts/installer/install.py   # optional: puts `kvist` on your PATH
+```
+
 On Windows use `py -m venv .venv`, `.venv\Scripts\python.exe` and
 `scripts\installer\install.py`. The installer asks which parts to set up (CLI,
 JetBrains, VS Code, desktop app, Zed). Details are in
@@ -159,8 +164,10 @@ interrupted task stays in the session, so `/resume` or a new message picks it up
 - **Voice.** An orb you talk to: say "Kvist" and it listens, short spoken
   answers (`/tui voice`, kitty or Ghostty;
   [`frontends/voice`](frontends/voice/README.md)).
-- **Electron app.** `scripts/installer/install_gui.py`, or
-  [`frontends/gui/electron`](frontends/gui/electron/README.md).
+- **Kvist Pixel.** `scripts/installer/install_app.py`
+  ([`frontends/gui/tauri`](frontends/gui/tauri/README.md)). The old Electron app is legacy:
+  `scripts/installer/install_gui.py`, kept out of the main installer, or
+  [`frontends/gui/electron-legacy`](frontends/gui/electron-legacy/README.md).
 - **Browser.** `kvist-web` opens `http://127.0.0.1:9671` and guides you through
   connecting a model ([details](frontends/web-local/README.md)).
 - **VS Code and JetBrains.** A chat panel that starts Kvist for the open
@@ -188,6 +195,7 @@ Type `/` to see the list. The common ones:
 | `/changes`, `/diff`, `/revert` | What the agent changed, and undoing it |
 | `/context`, `/status` | Context usage, state |
 | `/permissions` | Rules for commands (`allow`, `host` = outside the sandbox, `ask`, `deny`) and auto mode, where a second model answers approval questions (**not safe**); see [configuration](docs/configuration.md) |
+| `/update` | Installs the newest build of an installed `kvist-core` (checked against the published SHA-256); restart Kvist afterwards. Kvist itself only tells you a new version exists and never downloads it unasked (`auto_update: false` or `KVIST_AUTO_UPDATE=0` silences the notice) |
 | `/doctor` (or `kvist --doctor`) | Checks modules, frontends, provider, API keys and settings; asks before sending the model a test request that must answer "pong" (`--yes` answers it) |
 | `/web-search-provider` | Tavily, Brave, Exa, Gemini (Google Search) or SearXNG for web search |
 | `/settings-api` | Request pacing, timeouts, retries, context window, fallbacks |
@@ -261,12 +269,12 @@ Kvist treats their content as data that cannot change its safety rules.
 (cd frontends/tui/ink && npm install && npm test)
 (cd frontends/tui/opencode && bun install && bun test)
 (cd frontends/ide/vscode && npm install && npm test)
-(cd frontends/gui/electron && npm ci && npm test)
+(cd frontends/gui/electron-legacy && npm ci && npm test)
 ```
 
 ```text
 kernel/            the Python core (python -m kernel)
-frontends/         tui/classic, tui/ink, tui/opencode, gui/electron, ide/vscode, ide/jetbrains, zed, web-local, tray
+frontends/         tui/classic, tui/ink, tui/opencode, gui/electron-legacy, ide/vscode, ide/jetbrains, zed, web-local, tray
 scripts/           installers and release scripts
 docs/              protocol, skills, configuration, media
 site/              kvist.site landing page

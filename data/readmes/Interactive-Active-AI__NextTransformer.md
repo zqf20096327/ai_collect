@@ -11,16 +11,19 @@
 </p>
 
 <p>
-<a href="https://interactive-active-ai.github.io/NextTransformer/#leaderboard"><img alt="Leaderboard" src="https://img.shields.io/badge/leaderboard-live-526B85?style=flat"></a>
-<a href="https://huggingface.co/NextTransformer"><img alt="Model weights on Hugging Face" src="https://img.shields.io/badge/Hugging%20Face-models-74638C?style=flat&amp;logo=huggingface&amp;logoColor=white"></a>
+<a href="https://interactive-active-ai.github.io/NextTransformer/#leaderboard"><img alt="Leaderboard" src="https://img.shields.io/badge/leaderboard-live-96C1F1?style=flat&amp;labelColor=D1E5FF" height="19"></a>&thinsp;
+<a href="https://interactive-active-ai.github.io/NextT-Blogs/"><img alt="NextTransformer research blog" src="https://img.shields.io/badge/Blog-F6D7AB?style=flat" height="19"></a>&thinsp;
+<a href="https://huggingface.co/NextTransformer"><img alt="Model weights on Hugging Face" src="https://img.shields.io/badge/Hugging%20Face-models-F5CE70?style=flat&amp;logo=huggingface&amp;logoColor=79501F&amp;labelColor=FFF0BB" height="19"></a>&thinsp;
+<a href="https://discord.gg/k2XPXW6Jz"><img alt="Join Discord" src="https://img.shields.io/badge/Discord-D3C2F3?style=flat&amp;logo=discord&amp;logoColor=574589" height="19"></a>&thinsp;
+<a href="https://interactive-active-ai.github.io/NextTransformer/docs/community/#wechat"><img alt="WeChat group" src="https://img.shields.io/badge/WeChat-F5CED9?style=flat&amp;logo=wechat&amp;logoColor=8B4161" height="19"></a>&thinsp;
+<a href="https://github.com/Interactive-Active-AI/NextTransformer/discussions"><img alt="GitHub Discussions" src="https://img.shields.io/badge/Discussions-C4D4F6?style=flat&amp;logo=github&amp;logoColor=475D8A" height="19"></a>
+<br>
+<img alt="Python 3.10–3.13" src="https://img.shields.io/badge/Python-3.10--3.13-A4CBEB?style=flat&amp;logo=python&amp;logoColor=345B86&amp;labelColor=D7EBFA" height="19">&thinsp;
+<img alt="PyTorch 2.9.1" src="https://img.shields.io/badge/PyTorch-2.9.1-F4AF98?style=flat&amp;logo=pytorch&amp;logoColor=9D4436&amp;labelColor=FFE0D2" height="19">&thinsp;
+<a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/MIT-E3D7F4?style=flat" height="19"></a>&thinsp;
+<a href="CITATION.cff"><img alt="Cite NextTransformer" src="https://img.shields.io/badge/Cite-F6D7AB?style=flat" height="19"></a>&thinsp;
+<img alt="English (current language)" src="https://img.shields.io/badge/English-A9C7EB?style=flat" height="19">&nbsp;<a href="README.zh-CN.md"><img alt="简体中文" src="https://img.shields.io/badge/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-E9EFF6?style=flat" height="19"></a>
 </p>
-
-<p>
-<a href="https://discord.gg/k2XPXW6Jz">Discord</a> · <a href="https://interactive-active-ai.github.io/NextTransformer/docs/community/#wechat">WeChat</a> · <a href="https://github.com/Interactive-Active-AI/NextTransformer/discussions">Discussions</a> · <a href="CITATION.cff">Cite</a><br>
-<sub>Python 3.10–3.13 · PyTorch 2.9.1 · <a href="LICENSE">MIT license</a></sub>
-</p>
-
-<b>English</b> · <a href="README.zh-CN.md">简体中文</a>
 
 </div>
 
@@ -33,6 +36,7 @@ result is an audited, file-backed record, and AI agents can research new archite
 
 ## News
 
+- <img src="https://img.shields.io/badge/BLOG-F6D7AB?style=flat-square" alt="Blog" height="18"> **2026-11-11** · The research blog is live. The first post traces [how Opus found AttnRes-Canon](https://interactive-active-ai.github.io/NextT-Blogs/attnres-canon/en/). [Blog repository](https://github.com/Interactive-Active-AI/NextT-Blogs)
 - <img src="https://img.shields.io/badge/RFC-8B5CF6?style=flat-square" alt="RFC" height="18"> **2026-11-05** · **[Scaling RFC](https://github.com/Interactive-Active-AI/NextTransformer/discussions/22)**: 4K-context Dense and MoE pretraining on ClimbMix at **200B and 400B tokens**. Feedback on data, model configurations and evaluation is welcome.
 - <img src="https://img.shields.io/badge/COMMUNITY-2A78D6?style=flat-square" alt="Community" height="18"> **2026-11-04** · **[NextTransformer-V](https://github.com/Enderfga/NextTransformer-V)** by [@Enderfga](https://github.com/Enderfga): a community multimodal track that trains every NextTransformer method on interleaved image and text tokens under the same compute-matched contract. Its first study, pre-registered, asks where hybrid backbones get the 2D layout of an image.
 - <img src="https://img.shields.io/badge/NEW-E5607E?style=flat-square" alt="New" height="18"> **2026-10-31** · NextTransformer is now open source: 31 finished runs, 36 model cards, the full protocol, the documentation and the observatory.

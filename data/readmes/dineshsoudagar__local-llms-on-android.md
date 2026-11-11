@@ -3,18 +3,46 @@
 Turn your Android phone into a **local LLM server for your home network**, or chat privately on-device with text, images, PDFs, audio, and offline speech-to-text.
 
 <p>
-  <img src="https://img.shields.io/badge/🎁_Become_a_tester-Get_Pro_FREE-gold?style=for-the-badge" alt="Become a tester, get Pro free">
+  <img src="https://img.shields.io/badge/🔒_Testing_closed-Pro_coming_soon-gray?style=for-the-badge" alt="Testing closed, Pro coming soon">
 </p>
 
-1. Join the beta group with the Google account on your phone: [groups.google.com/g/pocket-llm-pro-beta](https://groups.google.com/g/pocket-llm-pro-beta) (after joining the group, it can take up to 30 minutes before the Play link works for you)
-2. Tap **Become a tester** and install from Google Play: [play.google.com/apps/testing/io.github.dineshsoudagar.pocketllm](https://play.google.com/apps/testing/io.github.dineshsoudagar.pocketllm)
-3. Use it for 14 days and send feedback. You get **Pocket LLM Pro free** at launch.
+**Testing is closed.** Thanks to everyone who tested! Pocket LLM Pro is coming soon to Google Play.
 
-Chat in the app, open its Web UI on your computer, or connect a compatible OpenAI client while the model runs on your phone.
+---
 
-🏠 [Watch the LAN demo](#lan-server-demo) or [connect scripts and scheduled workflows](docs/lan/README.md).
+## ⭐ GitHub vs Google Play
 
-Install the small base APK, then download a built-in model or import your own LiteRT model (beta).
+Pocket LLM Pro is an optional one-time purchase that unlocks the features marked ⭐.
+
+| Feature | GitHub | Google Play |
+|---|:---:|:---:|
+| Offline, private chat | ✅ | ✅ |
+| Built-in models (Qwen, DeepSeek, Gemma) | ✅ | ✅ |
+| Custom `.litertlm` model import | ✅ | ✅ |
+| Thinking mode | ✅ | ✅ |
+| Documents, PDFs and OCR | ✅ | ✅ |
+| Image input and camera | ✅ | ✅ |
+| Offline dictation (Whisper) | ✅ | ✅ |
+| New app design | 🔜 Planned | ✅ |
+| Context size fitted to your phone's memory | 🔜 Planned | ✅ |
+| Long chats: old messages summarized, not dropped | 🔜 Planned | ✅ |
+| LAN server, Web UI and OpenAI-compatible API | ✅ | ⭐ Pro |
+| llama.cpp engine: run GGUF models | ❌ | ✅ |
+| Browse and download models from Hugging Face | ❌ | ✅ |
+| Import GGUF and safetensors models | ❌ | ✅ |
+| Find your phone's maximum context size | ❌ | ✅ |
+| Dictation with the model's own audio input | ❌ | ✅ |
+| Web search in chat | ❌ | ⭐ Pro |
+| Image tools: create images, remove background | ❌ | ⭐ Pro |
+| Offline translator: text and camera overlay | ❌ | ⭐ Pro |
+
+Free users of the Google Play version get 3 tries of the image tools.
+
+**Pro costs €2.99, once. It helps me keep building free apps as an indie developer. Thank you for your support!**
+
+More free apps from me, coming soon: **Smart To Do** and **Cloud Tidy**.
+
+Feedback or ideas? Email me at [dinesh@100paths.de](mailto:dinesh@100paths.de).
 
 ---
 

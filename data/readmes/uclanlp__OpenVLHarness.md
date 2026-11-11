@@ -6,7 +6,7 @@
   OpenVLHarness
 </h1>
 
-<h3 align="center">Make any MLLM think and code in visual space with multimodal evidence.</h3>
+<h3 align="center">Real World Visual Agentic Tool&#8209;Use with Multimodal Memory</h3>
 
 <p align="center">
   <a href="https://openvlharness.github.io/"><img src="https://img.shields.io/badge/Project-Homepage-2653c1.svg?style=for-the-badge" height="25" alt="Project homepage"></a>
@@ -25,9 +25,17 @@
   </a>
 </p>
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/tagline-dark.svg">
+    <img src="assets/tagline.svg" alt="Teach any MLLM to think and code in visual space with precise multimodal evidence" width="660">
+  </picture>
+</p>
+
 <a id="news"></a>
 ## 📰 News
 
+- **2026-11-13:** We will give a [talk on OpenVLHarness](https://mp.weixin.qq.com/s/Y0SOJ3esuFWU0GnR2p6q5w) on Friday, November 13, 2026, 6–7 PM PST. [Register here](https://t.bilibili.com/1268243648604012563).
 - **2026-10-24:** Listed on [Hugging Face Trending Papers](https://huggingface.co/papers/trending) and featured by [Hugging Papers](https://x.com/HuggingPapers/status/2114027064751685782) on X.
 - **2026-10-20:** [Featured by AK on X](https://x.com/_akhaliq/status/2112566784343876081).
 - **2026-10-20:** Top 3 Paper of the Day on [Hugging Face Daily Papers](https://huggingface.co/papers/date/2026-10-20).

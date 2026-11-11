@@ -41,8 +41,8 @@ npm run dev
 
 ```powershell
 npm run typecheck     # 类型检查
-npm run test:unit     # 525 项单元
-npm run test:e2e      # 86 条 Electron 流程（会先构建）
+npm run test:unit     # 532 项单元
+npm run test:e2e      # 85 条 Electron 流程（会先构建）
 npm run verify        # 类型、UI、文档、清单、单元与 Electron
 npm run dist:final    # 重建两个交付 exe
 npm run smoke:packaged
@@ -56,10 +56,10 @@ npm run smoke:packaged
 |---|---|
 | [docs/START-HERE.md](docs/START-HERE.md) | 一页版：打开 Morrow、接模型（含不用 API Key 的订阅路线）、选文件夹、排错 |
 | [docs/v0.3.0-plan.html](docs/v0.3.0-plan.html) | v0.3.0 规划：11 张任务卡、路线图、UI/UX 示意、指标与开发交接（HTML） |
-| [docs/GUIDE.md](docs/GUIDE.md) | 安装、界面、工作模式、审批、文件/终端/Git/浏览器/电脑操作、模型、订阅、记忆、Super-Agent |
+| [docs/GUIDE.md](docs/GUIDE.md) | 安装、界面、工作模式、审批、文件/终端/Git/浏览器/电脑操作、模型、订阅、记忆、协作任务 |
 | [docs/STUDIO.md](docs/STUDIO.md) | 创作台三条链路、协作者、时间线、交付、质量、数据与回收站 |
 | [docs/REFERENCE.md](docs/REFERENCE.md) | 模型与订阅清单、媒体引擎、内置技能、快捷键、数据路径、环境变量 |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 进程模型、扁平源码结构、数据、IPC、Agent/Super-Agent、压缩、Studio、设计系统、安全、去重记录 |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 进程模型、扁平源码结构、数据、IPC、Agent/协作任务、压缩、Studio、设计系统、安全、去重记录 |
 | [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | 开发环境、测试、质量门槛、打包、第三方许可、文档截图流程 |
 | [docs/VERIFICATION.md](docs/VERIFICATION.md) | 当前交付哈希、冒烟、测试结果与截图清单 |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | 提交前检查与协作约定 |
@@ -73,7 +73,7 @@ npm run smoke:packaged
 - 工作 / 聊天 / 计划三种基础方式，叠加深度研究与长期目标。
 - 权限三档（只读 / 询问 / 完全访问）与危险动作审批；拒绝优先于允许。
 - 真实 PTY 终端、Git 工作台、多标签内置浏览器与 Windows UI Automation。
-- Super-Agent：Morrow 负责拆解与汇总，成员并行执行；支持独立工作副本、成果版本、独立验收、记录、并发上限、卡住提醒与试点回退。
+- 协作任务：简单工作主代理直接完成，需要并行时派发成员；支持独立工作副本、成果版本、独立验收、重试、并发上限与卡住提醒。
 
 ![审批卡](docs/screens/guide-permission.png)
 
@@ -88,11 +88,11 @@ npm run smoke:packaged
 
 ## 项目规模与质量
 
-- `src/`：90 个 TS/TSX 源文件（不含 `.d.ts`），150,836 行；含 CSS/HTML 共 123 个文件，194,185 行。
-- 代码合计（统一口径：生产源码 + 测试 + 构建脚本 + 启动器，按 `wc -l` 换行计）：190 个文件，236,226 行；运行 `node scripts/count-code.mjs` 可复现。
-- 核心回归：525 项单元 + 86 条 Electron 流程；41 个功能域。
+- `src/`：92 个 TS/TSX 源文件（不含 `.d.ts`），152,443 行；含 CSS/HTML 共 125 个文件，195,705 行。
+- 代码合计（统一口径：生产源码 + 测试 + 构建脚本 + 启动器，按 `wc -l` 换行计）：194 个文件，238,321 行；运行 `node scripts/count-code.mjs` 可复现。
+- 核心回归：532 项单元 + 85 条 Electron 流程；41 个功能域。
 - 质量门槛：类型检查、UI token 审计、核心清单、单元、Electron 与打包冒烟。
-- 文档截图：27 张主文档截图 + 18 张修复记录截图，全部 2100×1200 原始 PNG，不缩放、不压缩。
+- 文档截图：29 张主文档截图，全部 2100×1200 原始 PNG，不缩放、不压缩。
 
 ## 开发与打包
 

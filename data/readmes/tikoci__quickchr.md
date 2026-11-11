@@ -1,0 +1,489 @@
+# quickchr
+
+CLI and library to download, launch, and manage MikroTik CHR virtual machines via QEMU.
+
+## Quick Start
+
+### Prerequisites
+
+- [Bun](https://bun.sh) runtime, 1.4.3 or newer
+- [QEMU](https://www.qemu.org) with `qemu-system-x86_64` and/or `qemu-system-aarch64`
+- `qemu-img` for default qcow2 creation, the setup wizard, disk resize, extra disks, and snapshots
+- UEFI firmware (edk2) for arm64 CHR
+
+Install QEMU:
+
+```bash
+# macOS
+brew install qemu
+
+# Ubuntu/Debian
+sudo apt install qemu-system-x86 qemu-system-arm qemu-efi-aarch64 qemu-utils
+
+# Fedora/RHEL
+sudo dnf install qemu-kvm qemu-system-aarch64 edk2-aarch64 qemu-img
+
+# Arch
+sudo pacman -S qemu-full
+```
+
+```powershell
+# Windows — install QEMU (qemu-img is included)
+winget install SoftwareFreedomConservancy.QEMU
+
+# Install Bun (PowerShell — matches bun.sh official install docs)
+powershell -c "irm bun.sh/install.ps1 | iex"
+# Alternative: winget install Oven-sh.Bun
+```
+
+Running in a Claude Code cloud session or another proxied sandbox with no KVM? See
+[MANUAL.md → Claude Code cloud sessions](./MANUAL.md#claude-code-cloud-sessions-and-other-proxied-sandboxes)
+for the network access and setup script it needs.
+
+### Install
+
+CLI:
+
+```bash
+bun install -g @tikoci/quickchr
+quickchr doctor
+```
+
+Library:
+
+```bash
+bun add @tikoci/quickchr
+```
+
+### Prerelease QA (0.5.1)
+
+0.5.1 is published to npm `next` first; the unqualified install above uses `latest`,
+and 0.5.1 is promoted there once QA passes. Pin this published candidate for
+reproducible CLI or library QA:
+
+```bash
+bun install -g @tikoci/quickchr@0.5.1
+bun add @tikoci/quickchr@0.5.1
+quickchr --version
+```
+
+Use `@next` instead of `@0.5.1` to follow later candidates. See the
+[0.5.1 changelog](./CHANGELOG.md#051--2026-10-22) for the changes since 0.5.0,
+including storage admission, cache accounting, and disk preservation fixes.
+The [0.5.0 notes](./CHANGELOG.md#050--2026-10-22) cover migration from 0.4.x.
+
+### CLI Usage
+
+The easiest way to start is the interactive wizard — it walks through
+every option and starts the CHR for you. It requires `qemu-img` and reports
+a missing tool before prompting or downloading:
+
+```bash
+quickchr setup
+```
+
+![quickchr setup wizard walkthrough](./docs/images/wizard-demo.gif)
+
+Or run `quickchr` with no arguments on a TTY to get the same wizard
+automatically. See [MANUAL.md §3 setup](./MANUAL.md#setup) for a
+step-by-step breakdown of every wizard prompt.
+
+All wizard options are also available as flags for scripting:
+
+```bash
+# Create a machine without starting it
+quickchr add --name my-chr --channel stable --arch arm64
+
+# Create with a resized boot disk and extra blank disks
+quickchr add --name lab --boot-size 1G --add-disk 512M --add-disk 2G
+
+# Start an existing machine
+quickchr start my-chr
+
+# Create and start in one step
+quickchr start --name throwaway --version 7.22.1 --boot-size 2G
+
+# List instances (table view)
+quickchr list
+
+# Detailed status for one instance
+quickchr status my-chr
+
+# Stable connection descriptor/env for a running instance
+quickchr inspect my-chr
+quickchr env my-chr
+quickchr env my-chr --json
+
+# Stop an instance
+quickchr stop my-chr
+
+# Stop all instances
+quickchr stop --all
+
+# Run a RouterOS CLI command on a running instance
+quickchr exec my-chr /system/resource/print
+quickchr exec my-chr ":put [/system/routerboard/get serial-number]"
+
+# Attach to serial console of a running instance (exit: Ctrl-A X)
+quickchr console my-chr
+
+# Tail QEMU log
+quickchr logs my-chr
+quickchr logs my-chr --follow
+
+# Query live machine config (license, device-mode, admin users)
+quickchr get my-chr
+quickchr get my-chr license
+quickchr get my-chr device-mode --json
+
+# Manage snapshots (requires qcow2 boot disk)
+quickchr snapshot my-chr list
+quickchr snapshot my-chr save before-upgrade
+quickchr snapshot my-chr load before-upgrade
+quickchr snapshot my-chr delete before-upgrade
+
+# Apply or renew a trial license
+quickchr license my-chr
+
+# Network discovery and virtual socket management
+quickchr networks
+quickchr networks sockets
+
+# Set up shell completions (bash/zsh/fish)
+quickchr completions
+
+# Persist a default so you stop repeating a flag on every add/start
+quickchr settings set default-channel long-term
+quickchr settings set secure-login true
+quickchr settings print
+
+# Resolve/cache an image without creating or booting a machine
+quickchr cache key --channel stable
+quickchr cache add --channel stable --arch x86
+
+# Reset disk to fresh image
+quickchr clean my-chr
+
+# Inspect disk layout
+quickchr disk lab
+
+# Remove instance entirely
+quickchr remove my-chr
+
+# Check prerequisites
+quickchr doctor
+```
+
+`quickchr stop <name>` terminates QEMU (a power cut). For an explicit guest
+shutdown request, use `quickchr shutdown <name> [--timeout <seconds>]` (default
+10 seconds, or `QUICKCHR_SHUTDOWN_TIMEOUT`). It waits for QEMU to exit and clearly
+reports a forced power cut if the guest does not stop within the grace budget.
+
+### Create / Start Options
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--version <ver>` | RouterOS version (e.g., 7.22.1) | Latest stable |
+| `--channel <ch>` | stable, long-term, testing, development | stable |
+| `--arch <arch>` | arm64, x86, or auto | Host native |
+| `--name <name>` | Instance name | Auto-generated |
+| `--cpu <n>` | vCPU count | 1 |
+| `--mem <mb>` | Memory in MB | 512 |
+| `--boot-disk-format <f>` | Boot disk format: qcow2\|raw | qcow2 |
+| `--boot-size <size>` | Resize boot disk (e.g., 512M, 2G). Requires `qemu-img`. | |
+| `--add-disk <size>` | Attach an extra blank qcow2 disk. Repeatable. Requires `qemu-img`. | |
+| `--forward <spec>` | Add or pin a QEMU SLiRP hostfwd mapping. Repeatable. | |
+| `--no-wait` | Return once QEMU is running; readiness is up to the caller. Not with provisioning flags or `--fg` | |
+| `--fg` / `--foreground` | Run in foreground — serial console on stdio | |
+| `--bg` / `--background` | **Deprecated, does nothing** — background is already the default. Warns; use `--no-wait` to return early | |
+| `--add-package <pkg>` | Extra package to install (repeatable) | |
+| `--install-all-packages` | Install all packages from `all_packages.zip` | |
+| `--add-user <user:pass>` | Create a user after boot | |
+| `--disable-admin` | Disable the default admin account | |
+| `--secure-login` | Create a managed login; use `--disable-admin` to disable admin | |
+| `--no-secure-login` | Keep admin with no password (skip managed account creation) | |
+| `--add-network <spec>` | Add a network NIC (repeatable). Specs: `user`, `shared`, `bridged:<iface>`, `socket::<name>`, `tap:<iface>`. Default: single user NIC. | |
+| `--no-network` | Start with no NICs (headless) | |
+| `--no-winbox` | Exclude WinBox port mapping | |
+| `--no-api-ssl` | Exclude API-SSL port mapping | |
+| `--license-level <l>` | Apply trial license: p1, p10, unlimited | |
+| `--license-account <a>` | MikroTik account email | env `MIKROTIK_WEB_ACCOUNT` |
+| `--license-password <p>` | MikroTik account password | env `MIKROTIK_WEB_PASSWORD` |
+| `--device-mode <m>` | Configure device-mode: rose\|advanced\|basic\|home\|auto\|skip | |
+| `--device-mode-enable <f>` | Set one or more device-mode flags to yes | |
+| `--device-mode-disable <f>` | Set one or more device-mode flags to no | |
+| `--no-device-mode` | Skip device-mode provisioning entirely | |
+| `--port-base <port>` | Starting port number | Auto (9100+) |
+| `--timeout-extra <s>` | Add extra seconds to the auto-computed boot timeout | |
+| `--dry-run` | Print what would run without executing | |
+
+### RouterOS Provisioning Support Policy
+
+quickchr separates **boot-only** machine management from **post-boot provisioning**.
+
+- **Boot-only / QEMU-local features work on older RouterOS 7.x builds:** image download, boot/start, disk resize, extra disks, network attachment, and port mappings.
+- **Post-boot provisioning is validated/tested on RouterOS 7.20.8+ only:** package install, managed login or custom user creation, disabling admin, CHR license operations, and device-mode changes.
+- This is a **quickchr support policy**, not a RouterOS claim that older versions can never work. We intentionally stop at the first long-term baseline to avoid version-specific provisioning traps that are not covered by tests.
+- If you plan to provision, prefer **`--channel long-term`** or an explicit version **`>= 7.20.8`**.
+
+| Feature | Minimum RouterOS | Notes |
+|---------|------------------|-------|
+| Boot / start / stop | Any RouterOS 7.x; RouterOS 6 on x86 (best-effort) | Boot-only path; no post-boot RouterOS mutations. 6.x has no REST: readiness is a native-API login, and provisioning is refused — see MANUAL "RouterOS 6 (boot-only)" |
+| Disk resize / extra disks / disk inspection | Any RouterOS 7.x | Requires host `qemu-img`; QEMU-local only |
+| Network attachment / port mappings | Any RouterOS 7.x | QEMU networking setup; not provisioning |
+| Managed login / custom user / disable-admin | 7.20.8+ | Post-boot provisioning |
+| Package install / install-all-packages | 7.20.8+ | Post-boot provisioning |
+| License apply / renew | 7.20.8+ | Post-boot provisioning |
+| Device-mode changes | 7.20.8+ | Post-boot provisioning; intentionally unsupported below the baseline |
+
+### Background vs Foreground Mode
+
+By default `quickchr start` runs QEMU in the **background**: QEMU is spawned as a detached process and the command returns once CHR has booted. Use `quickchr list`, `quickchr status`, and `quickchr stop` to manage it.
+
+```bash
+# Background (default) — returns after CHR finishes booting
+quickchr start --channel stable
+
+# Foreground — serial console attached to your terminal
+quickchr start --channel stable --fg
+```
+
+In **foreground** mode, your terminal becomes the CHR serial console. Use these key sequences:
+
+| Key | Action |
+|-----|--------|
+| `Ctrl-A X` | Exit QEMU and return to shell |
+| `Ctrl-A C` | Toggle QEMU monitor (`quit` to force-stop) |
+| `Ctrl-A H` | List all key shortcuts |
+
+> **Note:** Background QEMU processes are true OS-level orphans — `quickchr` does not use shell job control (`&`). After the command returns you can close the terminal and QEMU keeps running. `quickchr stop <name>` ends it with a power cut; `quickchr shutdown <name>` asks the guest to shut down first, and still falls back to a power cut if it does not exit in time.
+
+### Disk Support
+
+- CLI and wizard boot disks default to qcow2, converted from the raw MikroTik image using `qemu-img`. Library callers default to raw unless `bootSize` implies qcow2.
+- `--boot-size` resizes qcow2 before first boot; explicitly combining raw with a boot size is refused.
+- Extra disks from `--add-disk` are always created as blank qcow2 images.
+- `quickchr clean <name>` removes any resized boot disk and extra disks, then recreates them from the saved machine config.
+- `quickchr disk <name>` shows the stored disk layout. If `qemu-img` is installed, it also shows virtual and actual sizes.
+- `quickchr snapshot` manages qcow2 internal snapshots (requires a qcow2 boot disk).
+
+### Multi-NIC Networking
+
+By default each CHR gets a single user-mode NIC (SLIRP). Use `--add-network` to add more NICs or replace the default:
+
+```bash
+# Two CHRs on a shared L2 segment via socket_vmnet (macOS) or bridge (Linux)
+quickchr start --name router1 --add-network user --add-network shared
+quickchr start --name router2 --add-network user --add-network shared
+
+# Named virtual socket (L2 link between two CHRs; either may start first)
+quickchr networks sockets create lab-switch
+quickchr start --name r1 --add-network socket::lab-switch
+quickchr start --name r2 --add-network socket::lab-switch
+
+# More than two machines on one segment needs UDP multicast, which does not work
+# on macOS or where UDP is blocked — and fails silently when it does not
+quickchr networks sockets create lab-segment --mode mcast
+
+# Bridge to a physical interface
+quickchr start --name gw --add-network user --add-network bridged:en0
+```
+
+Not sure which mechanism fits your traffic (host→guest service, host receiving
+guest-originated UDP, L2 broadcasts, VM↔VM links, real LAN)? See the
+[networking recipes guide](./docs/networking-recipes.md) — a "traffic shape →
+mechanism" decision table. The CLI flags map 1:1 to the library:
+`--add-network` ↔ `StartOptions.networks`, `--forward` ↔ `StartOptions.extraPorts`.
+
+### Port Layout
+
+Each instance gets a block of 10 ports. With the default base of 9100, the first instance maps:
+
+| Offset | Service | Default port |
+|--------|---------|-------------|
+| +0 | HTTP / REST / WebFig | 9100 |
+| +1 | HTTPS | 9101 |
+| +2 | SSH | 9102 |
+| +3 | RouterOS API | 9103 |
+| +4 | RouterOS API-SSL | 9104 |
+| +5 | WinBox | 9105 |
+| +6–+9 | Reserved (spare) | 9106–9109 |
+
+The second instance gets 9110–9119, and so on.
+
+### Custom Port Forwards and Fixed WinBox
+
+Use `--forward <spec>` on `add` or create-and-start `start` commands to add
+extra QEMU SLiRP `hostfwd` mappings. The shorthand uses the built-in service
+registry when it knows the guest port:
+
+```bash
+quickchr add lab --forward smb                  # auto host port → guest 445/tcp
+quickchr add dude-lab --forward winbox:8291     # host 8291 → guest WinBox 8291/tcp
+quickchr add app-lab --forward myapp:9200:7777/udp
+quickchr add btest-lab --forward btest:9200-9210:2000-2010/udp  # UDP port range
+```
+
+A **port range** (`name:hostStart-hostEnd[:guestStart-guestEnd][/proto]`) expands
+to one `hostfwd` per port — handy for L3 peers with dynamic data ports. To
+*receive* UDP a guest sends (no forward at all), see the gateway path in the
+[networking recipes guide](./docs/networking-recipes.md).
+
+Reusing a built-in service name such as `winbox` pins/replaces that service's
+host port for the machine. Existing machines keep the mapping stored in
+`machine.json`; recreate the machine to change fixed service ports cleanly.
+
+### Machine Descriptors and Subprocess Environments
+
+`quickchr inspect <name> [--json]` emits a stable, versioned
+(`descriptorVersion: 1`) JSON descriptor for a **running** machine — the
+quickchr ↔ centrs interface contract
+([issue #71](https://github.com/tikoci/quickchr/issues/71),
+[`docs/centrs-interface.md`](docs/centrs-interface.md)): status, machine
+identity, and a per-service `services` map (`rest-api`, `native-api`, `ssh`)
+giving host/port/transport/`tls`/availability/auth for each, plus optional
+`customForwards` and `networks`. `--json` is accepted for parity; inspect
+output is always JSON. It has no `env` field — use `quickchr env` for
+subprocess env vars.
+
+`quickchr env <name> [--json]` prints the same subprocess environment as
+`ChrInstance.subprocessEnv()`: shell `KEY=value` lines by default, or a JSON
+map with `--json`.
+
+> **Credential caveat:** descriptor/env output includes connection secrets —
+> `subprocessEnv()`/`quickchr env`'s `QUICKCHR_AUTH`/`BASICAUTH`, and each
+> `descriptor()` service's own auth fields (`services["rest-api"].auth.password`/
+> `.basic`/`.header`; `services["native-api"].auth.password`, no basic/header;
+> `services.ssh.auth.privateKeyPath`) — so child processes can connect without
+> reading quickchr's secret store. Treat it like a password: do not commit it,
+> paste it into public issues, or leave it in CI logs. Stopped machines fail
+> with `MACHINE_STOPPED`; start the machine before requesting a descriptor or
+> env map.
+
+### Library Usage
+
+```typescript
+import { QuickCHR } from "@tikoci/quickchr";
+
+// Start a CHR instance
+const chr = await QuickCHR.start({
+  name: "disk-lab",
+  channel: "stable",
+  arch: "arm64",
+  mem: 512,
+  bootSize: "1G",
+  extraDisks: ["512M", "2G"],
+});
+
+// Use REST API
+const info = await chr.rest("/system/resource");
+console.log(info);
+
+// Run a RouterOS CLI command
+const result = await chr.exec("/system/resource/print");
+console.log(result);
+
+// Stop (or remove)
+await chr.stop(); // power cut for normal teardown
+// Alternatively, replace stop() above with: await chr.shutdown({ timeoutMs: 10_000 });
+await chr.remove();
+
+console.log(chr.state.bootDiskFormat); // "qcow2"
+console.log(chr.state.extraDisks);     // ["512M", "2G"]
+```
+
+### Version & channel API
+
+Pick which CHRs are worth booting (handy for CI matrices) without scraping CLI text:
+
+```typescript
+import { resolveActiveChannels, resolveAllVersions } from "@tikoci/quickchr";
+
+await resolveAllVersions();
+// { stable: "7.23.1", "long-term": "7.21.4", testing: "7.23rc4", development: "7.24beta2" }
+
+await resolveActiveChannels();
+// ["stable", "long-term", "development"]
+//   released channels always, plus any pre-release at/ahead of stable
+```
+
+`compareRouterOsVersion` orders pre-release suffixes (`7.24beta2` < `7.24rc1` <
+`7.24` < `7.24.1`). The same map is available from the CLI via
+`quickchr version --json`. See [MANUAL.md](./MANUAL.md) → *Version & channel helpers*.
+
+### Cache API
+
+CI can resolve cache identity and download an image without booting QEMU:
+
+```typescript
+import { CACHE_VERSION_UNRESOLVED, cacheAdd, cacheKey } from "@tikoci/quickchr";
+
+const identity = await cacheKey({ channel: "stable", arch: "x86" });
+// { dir: "/home/runner/.local/share/quickchr/cache", version: "7.24.4", arch: "x86" }
+
+if (identity.version !== CACHE_VERSION_UNRESOLVED) {
+  await cacheAdd({ version: identity.version, arch: "x86" });
+}
+```
+
+An explicit version never performs channel resolution. Offline channel lookup
+returns `version: "unresolved"` from `cacheKey`; `cacheAdd` remains strict and
+fails when it cannot resolve or download the requested image.
+
+### Use in Tests
+
+```typescript
+import { describe, test, afterAll, expect } from "bun:test";
+import { QuickCHR } from "@tikoci/quickchr";
+
+let chr: Awaited<ReturnType<typeof QuickCHR.start>>;
+
+test("boot CHR and check version", async () => {
+  chr = await QuickCHR.start({ channel: "stable" });
+
+  const resource = await chr.rest("/system/resource");
+  expect(resource["board-name"]).toContain("CHR");
+}, 120_000);
+
+afterAll(async () => {
+  if (chr) await chr.remove();
+});
+```
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `MIKROTIK_WEB_ACCOUNT` | MikroTik.com account email (for license renewal) |
+| `MIKROTIK_WEB_PASSWORD` | MikroTik.com password (for license renewal) |
+| `QUICKCHR_DEFAULT_CHANNEL`, `QUICKCHR_DEFAULT_ARCH`, `QUICKCHR_ACCEL`, `QUICKCHR_CACHE_MAX_SIZE`, `QUICKCHR_STORAGE_RESERVE`, `QUICKCHR_TIMEOUT_EXTRA`, `QUICKCHR_SECURE_LOGIN` | Env-tier overrides for the 7 `quickchr settings` keys — see [MANUAL.md §3 `settings`](./MANUAL.md#3-cli-command-reference) |
+| `QUICKCHR_INTEGRATION` | Set to `1` to run integration tests |
+| `QUICKCHR_TEST_TARGET` | Integration tests only: RouterOS channel (`stable`/`long-term`/`testing`/`development`) or pinned version (e.g. `7.22.1`) to boot. Empty = `stable`. The Integration workflow resolves each `routeros-target` once, then sets this to that exact pin across platforms |
+
+The full list (including `QUICKCHR_DATA_DIR`, `QUICKCHR_NO_PROMPT`, `QUICKCHR_DEBUG`,
+`NO_COLOR`) is in [MANUAL.md §11](./MANUAL.md#11-auth-secrets-environment-variables).
+
+## Documentation
+
+- **[MANUAL.md](./MANUAL.md)** — complete reference: every CLI command,
+  every library API, provisioning, channels, networking, storage,
+  errors. Source-checked.
+- **[examples/](./examples/)** — runnable scripts (`bun run`): `quickstart/`
+  (boot + query), `grounding/` (apply config → read back — the one `bun:test`),
+  `dude/` (install a package), `harness/` (drive an external tool), `rollback/`,
+  `service-forward/`, `file-transfer/`, `device-mode/`, plus `mndp`/`udp-gateway`/
+  `version-matrix`. See [examples/COVERAGE.md](./examples/COVERAGE.md).
+- **[docs/networking-recipes.md](./docs/networking-recipes.md)** — which
+  networking mechanism for which traffic shape.
+- **[DESIGN.md](./DESIGN.md)** — architecture, layers, design principles.
+- **[CONTRIBUTING.md](./CONTRIBUTING.md)** — dev setup and `bun run check`.
+- **[CHANGELOG.md](./CHANGELOG.md)** — release history.
+
+**Using quickchr with an AI agent?** The **`routeros-quickchr`** skill (in
+[tikoci/routeros-skills](https://github.com/tikoci/routeros-skills)) teaches
+agents the grounding workflow — boot a CHR, apply config, read it back — plus
+the networking recipes and harness patterns.
+
+## License
+
+MIT

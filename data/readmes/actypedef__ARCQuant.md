@@ -8,7 +8,7 @@
 
 </h5>
 
-![arcquant](assets/ARCQuant_Visualize.png)
+![arcquant](assets/arcquant_arc.gif)
 
 **ARCQuant** is a high-performance quantization framework for low-bit LLMs that improves accuracy under fine-grained formats such as NVFP4, while preserving a unified and efficient inference pipeline.
 

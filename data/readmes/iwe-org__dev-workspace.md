@@ -38,6 +38,13 @@ commit.
    codebase, drafts the product doc and a starting architecture note from it,
    asks you only what the code can't answer, and deletes the example documents.
 
+## In the iWe app
+
+This template is listed in the [iWe template
+registry](https://github.com/iwe-org/templates). In the iWe app, choose **File ▸
+New Workspace from Template…** to create a workspace from it; the app copies the
+template into a new folder, so there is nothing to clone.
+
 ## How you use it
 
 **Day one.** Run the setup. For an existing codebase it's mostly reading — the
@@ -71,22 +78,24 @@ iwe tree -k data/features                                            # the featu
 data/
 ├── index.md          # the graph root — every hub is a child
 ├── product.md        # what you're building — the doc every session reads first
-├── plans.md    plans/         # implementation plans: Active / Done / Cancelled
+├── plans.md    plans/         # implementation plans: Active / Deferred
+├── plans-archive.md           # closed plans: Done by month / Cancelled
 ├── features.md features/      # feature docs, proposed → implemented
-├── bugs.md     bugs/          # symptom / repro / root cause / fix
+├── bugs.md     bugs/          # one ticket per problem: Open / Deferred
+├── bugs-archive.md            # closed tickets: Fixed / Cancelled
 ├── spec.md     spec/          # behavioral specs — the durable truth, synced at ship time
 ├── architecture.md architecture/  # design decisions, with the rejected alternatives
 ├── concept.md  concept/       # product vision — the tiebreaker for feature debates
-├── codebase.md codebase/      # the code map: a component tree + flows — derived, refreshable
 ├── releases.md releases/      # one page per version + the unreleased accumulator
 ├── backlog.md  backlog/       # prioritized next work
 ├── someday.md  someday/       # ideas that aren't commitments
+├── learnings.md learnings/    # traps, rules, corrections — one fact per page
 └── milestone.md               # milestones: plans whose children are plans
 ```
 
 Every document carries typed, schema-validated frontmatter —
 `iwe schema validate` is the commit gate. Relationships are links, not fields;
-the `*.example.md` docs show every convention on a small fictional app and are
+the `*-example.md` docs show every convention on a small fictional app and are
 deleted by setup.
 
 `AGENTS.md` is the agent's operating manual. `SCHEMA.md` documents the

@@ -26,18 +26,12 @@ RT-Utils provides a builder class to faciliate the creation and loading of an RT
 The format for the ROI mask is an nd numpy array of type bool. It is an array of 2d binary masks, one plane for each slice location within the DICOM series. The slices should be sorted in ascending order within the mask. Through these masks, we extract the contours of the regions of interest and place them within the RT Struct file. Note that there is currently only support for the use of one frame of reference UID and structered set ROI sequence. Also note that holes within the ROI may be handled poorly.
 
 ## Installation
-```
+```bash
 pip install rt_utils
 ```
-##
-**libGL**  
-   libGL is a required system dependency. Install it on Linux using:
-   ```
-   ```bash
-   sudo apt install libgl1
-```
+
 ## Installation in editable mode
-```
+```bash
 git clone https://github.com/qurit/rt-utils.git
 cd rt-utils
 pip install -e .
@@ -72,6 +66,39 @@ rtstruct.add_roi(
   mask=MASK_FROM_ML_MODEL,
   name="Voxel-edge ROI",
   contour_mode="voxel_edge"
+)
+
+rtstruct.save('new-rt-struct')
+```
+
+## Adding an ROI from coordinates
+If the geometry is already known in patient space, the contours can be given
+directly instead of being derived from a mask. Each contour is a list of
+`[x, y, z]` points in millimetres, and is attached to the slice nearest its own
+position.
+```Python
+from rt_utils import RTStructBuilder
+
+rtstruct = RTStructBuilder.create_new(dicom_series_path="./testlocation")
+
+rtstruct.add_roi_from_coordinates(
+  coordinates=[
+    [
+      # One contour, on one slice
+      [-20.0, -170.0, -559.0],
+      [30.0, -170.0, -559.0],
+      [30.0, -110.0, -559.0],
+      [-20.0, -110.0, -559.0],
+    ],
+    [
+      # Another contour, on the next slice
+      [-20.0, -170.0, -562.4],
+      [30.0, -170.0, -562.4],
+      [30.0, -110.0, -562.4],
+      [-20.0, -110.0, -562.4],
+    ],
+  ],
+  name="RT-Utils ROI from coordinates!",
 )
 
 rtstruct.save('new-rt-struct')

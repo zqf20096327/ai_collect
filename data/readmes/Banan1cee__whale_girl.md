@@ -6,7 +6,7 @@
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18-339933)](https://nodejs.org/)
 [![Python](https://img.shields.io/badge/python-3.12-3776AB)](https://www.python.org/)
-[![Wechatauto](https://img.shields.io/badge/wechatauto-1.2.9-4B8BBE)](https://pypi.org/project/wechatauto-replica/)
+[![Wechatauto](https://img.shields.io/badge/wechatauto-1.2.10-4B8BBE)](https://pypi.org/project/wechatauto-replica/)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-0078D4)
 [![GitHub stars](https://img.shields.io/github/stars/Banan1cee/whale_girl)](https://github.com/Banan1cee/whale_girl/stargazers)
 
@@ -160,6 +160,11 @@ Only download installers from **GitHub Releases**: <https://github.com/Banan1cee
 
 Current release builds are **not signed yet**, so Windows may show "Unknown publisher". Verify `SHA256SUMS.txt` from the release before installing. The signing policy is in [`docs/CODE_SIGNING_POLICY.md`](docs/CODE_SIGNING_POLICY.md); the privacy policy is in [`docs/PRIVACY.md`](docs/PRIVACY.md).
 
+## Articles
+
+- **我在微信里养了个 AI 群友：零焦点 UIA 收发、本地数据、可换人设** — how the bridge talks to WeChat without stealing focus, the UIA/WM_CHAR version traps, and the personas system.
+  - Zhihu: <https://zhuanlan.zhihu.com/p/2103852627175986683>
+  - Copy in this repo: [`docs/articles/wechat-ai-companion.md`](docs/articles/wechat-ai-companion.md)
 ## Acknowledgements
 
 - **Character author 上善无形** — the Whale Girl icon is a derivative work based on their original character. See [`docs/NOTICE.md`](docs/NOTICE.md).

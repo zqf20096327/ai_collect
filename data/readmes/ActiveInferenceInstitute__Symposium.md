@@ -18,6 +18,20 @@ remote CI and the updated Pages deployment are verified. See the
 Private organizing inputs remain outside this repository;
 2024/2025 archives and the offline 2026 intake templates are preserved.
 
+## Contents
+
+- [Find a method or repository](#find-a-method-or-repository)
+- [Quick start for 2026](#quick-start-for-2026)
+- [Interactive interface](#interactive-interface)
+- [Configure paid analysis](#configure-paid-analysis)
+- [Command-line workflows](#command-line-workflows)
+- [Features and package API](#features-and-package-api)
+- [Review the next intake before publication](#review-the-next-intake-before-publication)
+- [Development and verification](#development-and-verification)
+- [Public Symposium program](#public-symposium-program)
+- [Documentation](#documentation)
+- [Citation](#citation)
+
 ## Find a method or repository
 
 Start with the [searchable methods hub](https://activeinferenceinstitute.github.io/Symposium/methods.html),
@@ -272,3 +286,11 @@ remain in the PDF/Word cover and citation metadata. The repository and release
 metadata use the [MIT license](LICENSE).
 
 Maintained by the [Active Inference Institute](https://activeinference.institute/).
+
+## InstituteOS sidecar
+
+This repository carries a committed [`.aii/`](.aii/README.md) sidecar with curated
+InstituteOS metadata (`aii-sidecar/v1`): category, maturity, ecosystem relations,
+key artifacts, provenance, and portable tasks. It is read by
+[InstituteOS](https://github.com/ActiveInferenceInstitute/InstituteOS) tooling and
+does not affect the project's build or runtime.

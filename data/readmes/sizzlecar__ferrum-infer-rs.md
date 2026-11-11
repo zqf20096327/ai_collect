@@ -69,6 +69,8 @@ Execution and capacity defaults adapt to hardware and available memory; explicit
 
 ## Image generation and editing
 
+Supports **Qwen-Image-2.1-Turbo** and **P-H3-Image**. The main/development version supports ordered multi-reference editing: up to ten images for Qwen and eight for P-H3. Released **v0.19.0 still accepts only one Qwen reference**. P-H3 also supports continuous batching on Linux CUDA SM89/SM120.
+
 Use a local [Qwen-Image-2.1-Turbo](https://huggingface.co/Qwen/Qwen-Image-2.1-Turbo) model directory. Linux CUDA example with FP8 text encoder/DiT:
 
 ```sh
@@ -80,11 +82,17 @@ ferrum serve /path/to/Qwen-Image-2.1-Turbo --backend cuda \
 | API | Input |
 |---|---|
 | `POST /v1/images/generations` | JSON text prompt |
-| `POST /v1/images/edits` | Multipart prompt + one 8-bit RGB/RGBA PNG |
+| `POST /v1/images/edits` | Multipart prompt + ordered PNG references: up to ten for Qwen on main/development (one in v0.19.0); up to eight for P-H3 |
 
-Both return PNG in `b64_json`. CUDA batches compatible requests automatically within capacity limits. Validated on L20 (SM89) and RTX 5090 (SM120); cuDNN 9 is required. Metal supports generation and editing with a GGUF DiT, validated at 1024×1024 on an M4 Mac mini with 16 GiB memory.
+Both return PNG in `b64_json`. CUDA batches compatible requests automatically within capacity limits. Validated on L20 (SM89) and RTX 5090 (SM120); cuDNN 9 is required. Qwen also supports Metal generation and editing with a GGUF DiT, validated at 1024×1024 on an M4 Mac mini with 16 GiB memory.
 
-See the [image guide](docs/image-generation.md) for CLI examples, Metal setup and CUDA LoRA.
+For P-H3, copy the [CUDA configuration](crates/ferrum-cli/examples/config/p-h3-image-cuda.json), set the model and CUDA/cuDNN paths, then start:
+
+```sh
+ferrum serve --image-config p-h3-image-cuda.json --served-model-name P-H3-Image --port 8000
+```
+
+P-H3 uses the Comfy W4A8 text encoder/DiT, INT8 VAE and native prompt expansion. For either model, repeat multipart `image[]` fields or CLI `--image` arguments in the intended reference order (for example, a character followed by a pose). P-H3 accepts `size=2720x1536` for a landscape edit. See the [image guide](docs/image-generation.md) for examples, capacity limits, Metal and Qwen CUDA LoRA.
 
 ## Supported scope
 
@@ -95,13 +103,22 @@ See the [image guide](docs/image-generation.md) for CLI examples, Metal setup an
 | CUDA quantization | Selected model paths: GPTQ INT4, compressed-tensors INT4, block-FP8 |
 | Specific CUDA models | Gemma 4 compressed-tensors W4A16; GPT-OSS MXFP4 |
 | PQ2_0 | Complete-model validation on Metal; CUDA operator coverage only |
-| Images | Qwen-Image-2.1-Turbo generation and single-PNG editing; Linux CUDA SM89/SM120 and Metal. Validated at 1024×1024 on M4 Metal |
+| Images | Qwen-Image-2.1-Turbo generation/editing on Linux CUDA and Metal (main/development: up to ten references; v0.19.0: one); P-H3-Image generation/editing with up to eight references on Linux CUDA SM89/SM120. P-H3 Metal is not supported |
 
 Support depends on the architecture, format and backend combination; text support does not imply vision support. CPU is a compatibility backend. See the [validation catalog](docs/release-regression-catalog.md) for tested combinations and coverage.
 
 Embedding, ASR, TTS and legacy execution APIs are retired. See [migration notes](https://github.com/sizzlecar/ferrum-infer-rs/pull/441).
 
 ## Performance
+
+**P-H3-Image on RTX 5090 · 2720×1536 editing:**
+
+| Workload | End-to-end time, two runs | Output throughput | Request latency P50 / P99 |
+|---|---:|---:|---:|
+| One reference, C1 | 26.94 / 23.65 s | — | Same as request time (one sample/run) |
+| Eight requests with distinct references, C8 | 119.13 / 118.40 s | 4.03 / 4.05 images/min | 87.24 / 118.76 s; 86.38 / 118.08 s |
+
+Linux/WSL, 48 GB guest-memory limit, W4A8 DiT/text encoder, INT8 VAE, F16 prompt expansion enabled, 8 steps, fixed server capacity 8. Both runs completed 8/8 requests without errors and met the measured P99 ≤120 s threshold; two small runs do not establish a stable production SLO. Candidate measurements precede the final release package. C8 sampled peak RSS: 38.71 / 39.33 GiB; peak VRAM was not collected. [Configuration, workload and evidence](docs/performance-rtx5090-p-h3-20261111.md).
 
 **RTX 5090: latest recorded results for all benchmarked popular models.** Throughput is tok/s, shown as **Ferrum / reference**. C8/C16 are client concurrency; each row identifies the measured Ferrum version.
 

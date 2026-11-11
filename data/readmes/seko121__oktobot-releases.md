@@ -4,6 +4,10 @@
 
 **An AI agent for Android that works for you, not just chats.** Give it a goal and it searches, browses, opens apps and uses your phone step by step until the task is done. You choose the AI: your own cloud API key, a ChatGPT / Claude / Kiro / Antigravity subscription, or a model that runs entirely on your phone.
 
+[![Latest release](https://img.shields.io/github/v/release/seko121/oktobot-releases)](https://github.com/seko121/oktobot-releases/releases/latest) [![Downloads](https://img.shields.io/github/downloads/seko121/oktobot-releases/total)](https://github.com/seko121/oktobot-releases/releases) [![Stars](https://img.shields.io/github/stars/seko121/oktobot-releases)](https://github.com/seko121/oktobot-releases/stargazers)
+
+⭐ **If Oktobot is useful to you, please star this repo** — it genuinely helps other people discover the project.
+
 - **Phone control, your way:** Accessibility, or Shizuku / ADB for faster and more robust control, plus a separate small screen where the agent works while you keep using your phone.
 - **Everything in one agent:** voice and video calls, AI browser, image generation and editing, memory, MCP servers, Agent Skills (Claude / OpenClaw format), scheduled tasks and a sandboxed Linux shell.
 - **Private by design:** no account and no server of ours; conversations and memory stay on your device.
@@ -48,6 +52,13 @@ Get the latest `Oktobot_vX.Y.Z.apk` from the [Releases page](../../releases/late
 3. Verify the signature if you like (see below).
 
 Updates install over the previous version as long as it is signed with the same key.
+
+### Get it on Obtainium
+
+Prefer automatic updates straight from GitHub Releases? Add Oktobot in [Obtainium](https://obtainium.imranr.dev/) and it will track new signed builds from this repo:
+
+[<img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium" height="60">](https://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/seko121/oktobot-releases)
+
 
 ### Verify the download
 

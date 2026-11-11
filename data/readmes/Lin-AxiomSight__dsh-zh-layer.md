@@ -24,6 +24,7 @@
 - **AI 翻译纯手动触发，绝不偷偷扣费**：由你决定何时点击翻译。仅提交未翻译条目，不点按钮零 Token 消耗。
 - **纯净零依赖**：基于原生 Node.js 与浏览器 API 实现，不引入任何第三方 npm 依赖。安装极速，不污染依赖树，和你现有插件生态完美共存。
 - **非侵入式包装**：不硬编码、不改 DSH 源码，DSH 升级不影响功能，随时可开关，卸载即恢复。
+- **全平台支持**：原生支持 Windows、macOS 与 Linux，配置文件夹一键直达。
 
 ## 📸 效果预览
 
@@ -66,7 +67,7 @@ dsh plugin --profile web add dsh-zh-layer
 ##### 方式二：客户端图形界面
 
 1. 打开 DSH 客户端，**插件** 页面，点击 **添加插件** 。
-2. 直接输入包名 `dsh-zh-layer` 或指定版本的 `dsh-zh-layer@0.6.0`点击安装。
+2. 直接输入包名 `dsh-zh-layer` 或指定版本的 `dsh-zh-layer@0.7.0`点击安装。
 
 ##### 方式三：插件市场
 
@@ -111,13 +112,12 @@ dsh plugin --profile web remove dsh-zh-layer
 ## ⚠️ 已知局限与说明
 
 - AI 翻译默认调用 `deepseek-official` 的 `deepseek-flash` 模型，暂不支持自定义。
-- 「打开配置文件夹」快捷按钮目前仅支持 Windows。
 - 排版依赖 DSH 现有的 DOM 结构，如果 DSH 大版本更新发生底层变动，或安装了特殊 UI 插件，排版可能失效。
 
 ## 👨‍💻 关于作者
-我是 [Lin-AxiomSight](https://github.com/Lin-AxiomSight)，一名即将毕业的学生。
+我是 [Lin-AxiomSight](https://github.com/Lin-AxiomSight)，即将毕业的学生。
 
-这个项目诞生于我的日常痛点，也见证了我对 DSH 插件底层架构（Cordis）和 React 渲染的持续探索。
+开发这个插件最初只是为了满足自用需求。在解决这个问题的过程里，顺带了解 DSH 的插件机制和 React 渲染逻辑。
 
 欢迎提交 Issue，或是通过 GitHub 私信交流。
 

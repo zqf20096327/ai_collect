@@ -141,8 +141,9 @@
 
 ---
 
-# Hackathon Notebooks & Writeups
+# Hackathon Notebooks
 
+- [Empirical Soccer Telemetry: Multi-Vendor Spatial Kinematics and Tactical Phase Engineering](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/multi-vendor-soccer-spatial-telemetry-engineering.ipynb)
 - [Physical-Engineering Design Synthesis via Deterministic Feasibility Auditing](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/code-gated-agent-harness-physical-engineering.ipynb)
 - [Kinematic Translation Engine: Decoding 10 Hz Combine Sensor Dynamics into In-Game Separation](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/nfl-bdb-2027-kinematic-translation.ipynb)
 - [Verifiable Hybrid Orchestration of Behaviour Trees & Vision-Language Reasoning](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/verifiable-behaviour-trees-edge-vlms-robotics.ipynb)
@@ -167,6 +168,7 @@
 
 # Competition Notebooks
 
+- [ShareChat RecSys Challenge: Latent Geometry, Out-of-Time Temporal Modeling, and Multi-Model Stacking](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/sharechat-recsys-latent-geometry-stacking.ipynb)
 - [LLM Classification Finetuning: Predicting Human Preference in Chatbot Arena Conversations](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/permutation-equivariant-llm-preference-finetuning.ipynb)
 - [Latent Threat Vector Identification in Non-Stationary Transaction Streams via Kinematic Information Geometry](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/kinematic-threat-fusion-heterogeneous-boosting.ipynb)
 - [Surface Electromyography & Inertial Kinematics for Zero-Shot Cross-Subject Hand Gesture Recognition](https://github.com/avikds/Kaggle-Notebooks-Avik/blob/main/calibration-free-multimodal-semg-gesture-decoding.ipynb)

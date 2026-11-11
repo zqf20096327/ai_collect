@@ -131,6 +131,92 @@ the whole batch.
 - A Solana RPC endpoint (Helius, QuickNode, or the public
   `api.mainnet-beta.solana.com` as a fallback) and a funded wallet.
 
+### Build → set up → diagnose
+
+```bash
+go build -o azimuth .
+./azimuth setup            # guided, idempotent; DRY_RUN stays on unless you confirm live
+./azimuth doctor           # read-only; re-run any time
+./azimuth doctor --json    # machine-readable report, same exit codes
+```
+
+`azimuth setup` walks nine steps: preflight doctor; discovery modes and
+`DRY_RUN`; wallet (generate a new keypair or import one, typed with echo off);
+Solana RPC with a live read-only test; entry route (deterministic, or Hermes AI
+with a probe test); optional Telegram reports with a test message; entry-gate
+defaults; systemd user units via `install.sh` (same opt-in flags), linger and
+the dashboard password hash; and a closing doctor run. It writes two files,
+both `0600`: the daemon's `<repo>/.env` (seeded from `.env.example` on first
+run) and `<profile>/.env`, which alone holds the wallet private key. Re-running
+edits both in place: comments, ordering and keys setup does not own survive.
+
+Safety rules the engine enforces for every front end:
+
+- A new config gets `DRY_RUN=true`. Going live needs the exact phrase
+  `I UNDERSTAND THIS TRADES REAL FUNDS`, typed interactively or passed as
+  `--live --confirm-live '<phrase>'`. An existing `DRY_RUN` is never changed as
+  a side effect: a non-interactive re-run keeps it unless you pass
+  `--simulate-trades` (back to dry run) or `--live`, and an interactive re-run
+  on a live config asks "Keep live trading?" with keep as the default.
+- Secrets (wallet key, webhook secret, RPC URLs, API keys, dashboard password)
+  never appear in output, plan listings or errors; they reach helper processes
+  on stdin, never argv.
+- Replacing an existing wallet key needs `REPLACE` typed (or `--replace-wallet`).
+- The rent-reclaim timer, which signs transactions, needs `SIGNS TX` typed.
+
+Automation: `--non-interactive` takes every answer from flags (unset flags keep
+current values), and `--dry-run` prints the planned changes without writing:
+
+```bash
+./azimuth setup --non-interactive --dry-run --wallet import --private-key-file key.txt \
+  --rpc-urls 'https://mainnet.helius-rpc.com/?api-key=YOUR_KEY' --route deterministic \
+  --modes pulse --install --with-dashboard --dashboard-password-file pw.txt --linger
+```
+
+Secret files may be `-` (stdin, one per run). `--set KEY=VALUE` edits any other
+non-secret daemon setting; `azimuth setup --help` lists every flag. The Solana
+ticket size is fixed in `dlmm_pipeline.py` and is not set by the wizard.
+
+Doctor reports `PASS`, `WARN`, or `FAIL` with repair hints. Exit codes are **0**
+for all passes, **1** for any failure, and **2** for warnings without failures.
+It checks configuration, tools, Redis authentication, read-only RPC health and
+wallet funding, AI runtime dependencies, user services, the skill symlink,
+resources, and executable architecture. It does not start the scanner, send
+transactions, write configuration, or change services.
+
+Use `--profile /path/to/profile` to check another profile's skill symlink.
+Doctor selects the newest bundled Python version under
+`$HERMES_HOME_BASE/tools/python-*/bin/python3` (`HERMES_HOME_BASE` defaults to
+`~/.hermes`) and checks imports in isolated mode through `hermes_bootstrap`.
+The source tree defaults to `$HERMES_HOME_BASE/hermes-agent`; `--hermes-root`
+overrides it. The import check runs from that directory and adds it to `sys.path`.
+Use `--hermes-python /path/to/bundled/bin/python3` to select an interpreter
+explicitly. If no bundled runtime exists, `--hermes-root /path/to/hermes-agent`
+can locate a legacy `venv` or `.venv`; successful legacy checks report `WARN`
+and recommend using the bundled runtime for `AI_HEALTH_CMD`.
+`--repo` selects the checkout and `--env-file` selects
+the configuration file. Doctor reads literal dotenv assignments without sourcing
+shell code. It does not open wallet key files or profile secrets itself. To
+check wallet funding, put only `SOLANA_PUBLIC_KEY` and `SOLANA_RPC_URLS` in the
+selected config. Reports omit configured values and numeric balances.
+
+When `AI_HEALTH_CMD` is set, doctor runs that trusted, read-only probe (65-second
+deadline). The probe resolves its own provider credentials; its output is
+suppressed. Exit **14** is a configuration failure, including missing dependencies
+in the selected interpreter, rather than a healthy deterministic fallback.
+Other commands and network checks default to a five-second timeout (`--timeout`).
+
+The shared environment schema, diagnostic engine and setup engine live in
+`internal/setup`; tests check every documented assignment and default in
+`.env.example` for drift. A localhost-only dashboard onboarding UI is planned
+(Phase 3); it will drive the same engine, whose secret-write path accepts only
+loopback callers while in setup mode.
+
+### Manual path
+
+The sections below are the manual equivalent of `azimuth setup`, which
+automates them.
+
 ### Create a Hermes profile
 
 If you don't have a Hermes profile yet, create a dedicated one for the trading

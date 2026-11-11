@@ -1,12 +1,32 @@
 # MonoAgens
 
-A tiny kernel for one persistent AI self that lives in many bodies. The kernel records
-everything it sees, holds Expectations about the world, and only thinks hard (calls the LLM)
-when the cognition layer's appraisal decides an event matters.
+MonoAgens is an AI agent built as **one persistent self that lives in many bodies** — chat
+apps, a terminal, later devices and robots. Most agent frameworks start from "a message
+arrived, run the model". MonoAgens starts from "something happened, record it, then decide
+whether it is worth thinking about": it remembers across bodies and time, keeps its promises,
+knows when to stay quiet in a group, and can replay every decision it made.
 
-- `DESIGN.md` — the design (read this first).
-- `PLAN.md` — the build steps.
-- `AGENTS.md` — working rules and invariants.
+**Built like the Linux kernel.** A small core holds only the mechanisms of a mind — perception,
+attention, memory, expectations, a cheap decision to act — and the LLM is woken only when a
+moment deserves it. Everything else lives around the core, as in an operating system:
+**middleware** (policy, commands and tools, install, identity, roles) is the system layer,
+**bodies** (Telegram, CLI, …) are the drivers, and **plugins** are the applications. The core
+keeps a stable contract with all of them: it can improve inside without breaking what is built
+on top.
+
+> **Note, to avoid confusion.** "Kernel" here is an analogy for how the code is organised, not a
+> literal one: MonoAgens is not an operating system, not a scheduler that serves many agents, and
+> not an SDK for building other agents. It is one agent that persists. Words borrowed from the
+> brain ("memory", "attention", "sleep", "soul") name engineering mechanisms; they are not claims
+> of consciousness or feelings. *Agens* is Latin for "the one who acts", the root of *agent*.
+
+- [`docs/constitution.md`](docs/constitution.md) — the rules that never change (read first).
+- [`docs/core.md`](docs/core.md) — the core specification (contract frozen); formulas and sources
+  in [`docs/core-math.md`](docs/core-math.md).
+- [`docs/`](docs/README.md) — one specification per layer: middleware, bodies, plugins, project.
+- [`prior/`](prior/) — the default instincts (knob values) a new soul is born with; tune with replay.
+- [`docs/tasks/`](docs/tasks/README.md) — work for coding workers, in order.
+- [`AGENTS.md`](AGENTS.md) — rules and invariants for coding agents.
 - `scripts/replay.py` — scenario replay for tuning the cognition layer.
 
 ## Tuning with replay
@@ -22,7 +42,7 @@ uv run python scripts/replay.py
 uv run python scripts/replay.py --fake
 
 # One scenario only.
-uv run python scripts/replay.py scenarios/01_group_chitchat_greeting.yaml
+uv run python scripts/replay.py scenarios/silence/01_group_chitchat_greeting.yaml
 ```
 
 The replay database comes from `REPLAY_DATABASE_URL` and its name must end with `_replay`;
@@ -37,7 +57,7 @@ summary table for all scenarios, and the total LLM calls with the prompt, cached
 and total token counts. Compare reports before and after a `soul.yaml` change to see which
 decisions moved.
 
-`--fake` never creates Expectations (it always answers `say("ok")` when woken), so reminder
+`--fake` never creates Expectations (when woken it always replies "ok" through the fake organ), so reminder
 and recall scenarios are expected to FAIL there. It is for checking appraisal for free.
 
 Tuning guide for `soul.yaml`: in this foundation the decision is reflex-driven (addressed

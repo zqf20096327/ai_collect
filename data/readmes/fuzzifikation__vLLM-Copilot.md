@@ -22,7 +22,7 @@ Microsoft decided to make life difficult for all of us, introducing features nob
 <img src="https://github.com/fuzzifikation/vLLM-Copilot/raw/main/docs/images/Howto-use-the-new-UI.png" width="560" alt="How to use the Copilot model picker: the circled vLLM-Copilot provider tab at the top, a pinned model with mode and output-length chips, and the circled Local session selector at the bottom left of the chat input">
 </a>
 
-<em><strong>How to use the new Copilot UI:</strong> switch the chat to <strong>Local</strong> (bottom left of the chat input) and pick your model under the circled <strong>vLLM-Copilot</strong> tab for the full mode and output-length controls. The Copilot harness offers mapped effort choices only; <a href="#known-issues">other picker metadata remains missing</a>.</em>
+<em><strong>How to use the new Copilot UI:</strong> a new chat runs the <strong>Copilot harness</strong>, which offers mapped effort choices only (<a href="#known-issues">other picker metadata remains missing</a>). For the full mode and output-length controls, switch the chat to <strong>Local</strong> (bottom left of the chat input) while that harness still exists: Microsoft deprecated it in VS Code 1.146 and removes it in February 2027. Then pick your model under the circled <strong>vLLM-Copilot</strong> tab. Details: <a href="https://github.com/fuzzifikation/vLLM-Copilot/blob/main/docs/agents-window.md#which-harness-runs-your-chat">which harness runs your chat</a>.</em>
 
 </div>
 
@@ -111,9 +111,9 @@ If you want to support this work: [![Sponsor via PayPal](https://img.shields.io/
 1. **Install** this extension from the VS Code Marketplace.
 2. **Open the vLLM panel:** click the **V** icon in the activity bar (left sidebar). The **Dashboard** opens.
 3. **Add your vLLM server & model:** *(same for llama.cpp, lm-studio, ollama)* in the Dashboard, click **Add or Reconfigure Server/Model** at the bottom of the tree → enter your server URL → *(optional) enter vLLM API key and HTTP request headers from IT* → pick a model → done. The extension auto-configures the model (family, capabilities, context window) from curated presets (bundled, and refreshed live from GitHub when online) or HuggingFace.
-4. **Edit settings** *(optional)*: open the **Model Settings** view (below the Dashboard) to adjust displayName, params, model modes, and more. No `settings.json` editing required.
+4. **Edit settings** *(optional)*: open the **Model Settings** view (third in the vLLM sidebar, under Dashboard and DeepSeek Harness) to adjust displayName, params, model modes, and more. No `settings.json` editing required.
 5. **Change the personality** *(optional)*: in **Model Settings**, pick a model and choose a personality from the dropdown in its **General** section (or `Ctrl+Shift+P` → **Set Model Personality**). Pick **Default (no personality)** later to clear it.
-6. **Chat:** Open Copilot Chat ([the picture at the top](#new-ui) shows the controls). The chat input's bottom bar carries the **model chip**, such as `Think-Deep · 16K`. Click it to open the model picker and choose the **vLLM-Copilot** provider tab. Pick a model, then switch mode and output length from the chip on its row. **Use Local for the full controls.** The Copilot harness offers modes listed in `copilotHarnessMapping` under standard effort labels; Output Length and other metadata remain missing (see [Known Issues](#known-issues)).
+6. **Chat:** Open Copilot Chat ([the picture at the top](#new-ui) shows the controls). The chat input's bottom bar carries the **model chip**, such as `Think-Deep · 16K`. Click it to open the model picker and choose the **vLLM-Copilot** provider tab. Pick a model, then switch mode and output length from the chip on its row. **Use Local for the full controls** while that harness lasts; Microsoft removes it in February 2027. The Copilot harness offers modes listed in `copilotHarnessMapping` under standard effort labels; Output Length and other metadata remain missing (see [Known Issues](#known-issues)).
 
 </td></tr>
 </table>
@@ -224,8 +224,18 @@ Models and providers misbehave. The extension makes bounded recovery attempts fo
 
 ## Features
 
+### DeepSeek Harness
+Open it with the **V** icon in the activity bar (left sidebar); it sits under the Dashboard.
+
+Copilot keeps taking controls away from you, so we stopped waiting and built our own agent harness: the **DeepSeek Harness (DSH)** runs inside VS Code with your own vLLM model doing the thinking. Your models, modes, parameters and personalities come along, and its usage lands in the same tracker. It ships as a separate extension, and this section is where you reach it:
+
+- **Bridge not installed** - the section explains what it is and offers **Install DeepSeek Harness Bridge**, which opens the extension page inside VS Code. It is in alpha, and testers are what it needs.
+- **Bridge installed** - the section becomes the bridge's control panel, ordered by how often you reach for a row: **Open Harness** leads - it starts a stopped harness and installs a missing one, so that row alone is the whole session - then a second view, start, stop, restart, install or update, logs, bridge status, **Report an Issue**, stale-tab cleanup, settings, and uninstall last. The rows are read from the installed bridge itself, so a command it adds later appears on its own; only the order and **Report an Issue** (the bridge's issue list on GitHub - an alpha lives on the reports it gets) are ours. The section opens itself the moment the bridge finishes installing, so those rows are in front of you instead of an empty editor; later the bridge's own status bar pill is the short route to a harness view.
+
+The harness needs a model server - the same servers you configure here - and declares this extension as a dependency.
+
 ### Model Settings
-Open it with the **V** icon in the activity bar (left sidebar); it sits below the Dashboard.
+Open it with the **V** icon in the activity bar (left sidebar); it sits below the DeepSeek Harness section.
 <table>
 <tr>
 <td valign="top" width="62%">
@@ -393,9 +403,9 @@ The full command list, including auth rotation, model/server removal, log tools,
 
 The extension opens a short Markdown update guide once per installed version, including on fresh installations. It replaces the old picker-explainer notification.
 
-**The Agents window sends at most 128 tools to your model.** VS Code's Agent Host hard-codes a 128-tool ceiling for every BYOK request, no matter what your model or server can actually take. When built-in, MCP and extension tools exceed 128, VS Code drops the overflow silently and shows "The model only supports 128 tools". That number is not your model's limit: local vLLM servers accept far more. No extension setting changes it, and "Configure Tools" in the warning is the only lever inside the Agents window. The cap lives in VS Code's Agent Host, not in the provider API, so a chat switched to **Local** sends every tool you have enabled. Upstream: [microsoft/vscode#347351](https://github.com/microsoft/vscode/issues/347351).
+**The Agents window sends at most 128 tools to your model.** VS Code's Agent Host hard-codes a 128-tool ceiling for every BYOK request, no matter what your model or server can actually take. When built-in, MCP and extension tools exceed 128, VS Code drops the overflow silently and shows "The model only supports 128 tools". That number is not your model's limit: local vLLM servers accept far more. No extension setting changes it, and "Configure Tools" in the warning is the only lever inside the Agents window. The cap lives in VS Code's Agent Host, not in the provider API, so a chat switched to **Local** sends every tool you have enabled, and Local is on Microsoft's removal list for February 2027. Upstream: [microsoft/vscode#347351](https://github.com/microsoft/vscode/issues/347351).
 
-**Agent Host sessions expose mapped modes, not the full model controls.** The Copilot harness replaces our model entry with its own. Models with `copilotHarnessMapping` now offer standard effort choices that select the corresponding model modes. Domain or adaptive modes without a mapping remain available in **Local** and **Model Settings** only. **Output Length**, the model icon and price line are still missing from the Agent Host picker. Use **Local** for the full controls. Upstream: [microsoft/vscode#340138](https://github.com/microsoft/vscode/issues/340138).
+**Agent Host sessions expose mapped modes, not the full model controls.** The Copilot harness replaces our model entry with its own. Models with `copilotHarnessMapping` now offer standard effort choices that select the corresponding model modes. Domain or adaptive modes without a mapping remain available in **Local** and **Model Settings** only. **Output Length**, the model icon and price line are still missing from the Agent Host picker. Use **Local** for the full controls, and see [the note at the top](#new-ui) for how long Local remains. Upstream: [microsoft/vscode#340138](https://github.com/microsoft/vscode/issues/340138).
 
 **Four more VS Code bugs limit this extension, and we filed all six reports.** The 128-tool ceiling and the missing model menus are the two above. The rest: [microsoft/vscode#333413](https://github.com/microsoft/vscode/issues/333413) (model settings stay stale in the picker after an update, the quirk the **Output Length** chip click works around), [microsoft/vscode#333802](https://github.com/microsoft/vscode/issues/333802) (subagents reject your BYOK models), [microsoft/vscode#326597](https://github.com/microsoft/vscode/issues/326597) (VS Code drops historical thinking parts before the provider sees them), [microsoft/vscode#321761](https://github.com/microsoft/vscode/issues/321761) (the output room VS Code reserves ignores your configured output cap). Add a reproduction to any of them; evidence and volume are what move Microsoft.
 

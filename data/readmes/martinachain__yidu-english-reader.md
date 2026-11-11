@@ -4,7 +4,7 @@
 
 **中文** · [English](./README.en.md)
 
-🔗 **在线体验：[english-reading.zeabur.app](https://english-reading.zeabur.app)**（自带 DeepSeek key 即可使用）
+🔗 **在线体验：[yidu.srv1903550.hstgr.cloud](https://yidu.srv1903550.hstgr.cloud)**（自带 DeepSeek key 即可使用）
 
 **易读**是一个面向中文学习者的英文阅读工具，一个产品、两个入口：
 
@@ -80,10 +80,10 @@ key 只保存在你本地（网页阅读器存浏览器 `localStorage`，插件�
 
 ### ⚠️ 自己部署时，浏览器插件的同步需要额外一步
 
-浏览器插件往哪个网址同步，是**写死在 `extension/manifest.json` 里的**（Chrome 的 `content_scripts.matches` 不能在运行时修改）。默认只认两个地址：
+浏览器插件往哪个网址同步，是**写死在 `extension/manifest.json` 里的**（Chrome 的 `content_scripts.matches` 不能在运行时修改）。默认认三个地址（新正式地址、Zeabur 旧地址过渡期、localhost）：
 
 ```json
-"matches": ["https://english-reading.zeabur.app/*", "http://localhost:3000/*"]
+"matches": ["https://yidu.srv1903550.hstgr.cloud/*", "https://english-reading.zeabur.app/*", "http://localhost:3000/*"]
 ```
 
 所以：

@@ -78,17 +78,17 @@
 
 <picture><source media="(max-width: 610px), (min-width: 768px) and (max-width: 895px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/a328a9beab67af18c7a84e4c8c71062b53429bc0/assets/profile/rows/s-lately-r1-m.svg"><source media="(max-width: 1149px)" srcset="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/a328a9beab67af18c7a84e4c8c71062b53429bc0/assets/profile/rows/s-lately-r1-mid.svg"><img src="https://raw.githubusercontent.com/nicedreamzapp/nicedreamzapp/a328a9beab67af18c7a84e4c8c71062b53429bc0/assets/profile/rows/s-lately-r1.svg" width="100%" alt="3.6k+ GitHub stars across my 43 public repos. 40k+ Hugging Face downloads of my 29 open models."></picture>
 
-**Building lately** (the week of Nov 9, numbers as of Nov 10, 2026)
+**Building lately** (the week of Nov 9, numbers as of Nov 11, 2026)
 
-🔨 **[browser-agent](https://github.com/nicedreamzapp/browser-agent)** · My browser agent now leases a separate virtual Mac instead of my screen and pauses it when nobody is using it.
+🔨 **[browser-agent](https://github.com/nicedreamzapp/browser-agent)** · The browser agent now leases a separate virtual Mac instead of my screen and pauses it when nobody is using it.
 
-🔨 **[Heat-N-Clean-Glass-Oven](https://github.com/nicedreamzapp/Heat-N-Clean-Glass-Oven)** · Shrank the oven 8 mm in diameter so the glass slurper fits, and added 48 vent holes to the lid ceramic holder.
+🔨 **[NarrateClaude](https://github.com/nicedreamzapp/NarrateClaude)** · Released NarrateClaude 2.0.0 with barge in, so you can talk over the voice on macOS to stop it.
 
-🔨 **[NarrateClaude](https://github.com/nicedreamzapp/NarrateClaude)** · NarrateClaude 2.0.0 shipped with barge in on macOS, so you can talk over the voice to stop it.
+🔨 **[Heat-N-Clean-Glass-Oven](https://github.com/nicedreamzapp/Heat-N-Clean-Glass-Oven)** · Shrank the oven 8 mm so the glass slurper fits the top cap and added 48 vent holes to the lid holder.
 
 🔨 **[moonstone](https://github.com/nicedreamzapp/moonstone)** · The Moonstone console now has a model picker, a usage bar, finish time estimates and a stall watch.
 
-🔨 **[bodymovin-cast](https://github.com/nicedreamzapp/bodymovin-cast)** · Published a Google Cast TV receiver for Body Movin with privacy and support pages.
+🔨 **[RealTimeAICam](https://github.com/nicedreamzapp/RealTimeAICam)** · Benchmarks are up for iPhone 1.4.0 and Android 1.28, and Xcode Cloud now downloads and verifies the vision model.
 
 🔗 [claude-code-local](https://github.com/nicedreamzapp/claude-code-local): **<!--CCL:START-->3,400+ stars, 648 forks<!--CCL:END-->** · [Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code) · [Browser Broker](https://github.com/nicedreamzapp/browser-broker) · [Browser Agent](https://github.com/nicedreamzapp/browser-agent) (▶ [56-second demo](https://youtu.be/SIuMNa2k6Wc)) · [NarrateClaude + Ohm](https://github.com/nicedreamzapp/NarrateClaude) · [nemotron-omni-mlx](https://github.com/nicedreamzapp/nemotron-omni-mlx) · [MLX pull request](https://github.com/ml-explore/mlx-lm/pull/1710) · [@zcbenz](https://github.com/zcbenz) · [Agent-12](https://nicedreamzapp.github.io/agent12/) · [@galashko](https://github.com/galashko) · [lfm-tool-calls](https://github.com/nicedreamzapp/lfm-tool-calls) · [Trinidad Head](https://github.com/nicedreamzapp/trinidad-head)
 
@@ -103,7 +103,7 @@
 > 📱 **Every app, both stores.** All 5 are live on the App Store and Google Play. Private by default, pay once (or nothing), no subscriptions. Android source ships in each repo's android/ folder.
 
 
-📱 <!--APPS-LINE:START-->5 apps on the App Store and Google Play, **2,898 downloads** so far (1,998 App Store, 900 Google Play), 71 new on iPhone in the last week.<!--APPS-LINE:END-->
+📱 <!--APPS-LINE:START-->5 apps on the App Store and Google Play, **2,911 downloads** so far (1,998 App Store, 913 Google Play), 71 new on iPhone in the last week.<!--APPS-LINE:END-->
 
 🍎 **App Store:** [Song Forge](https://apps.apple.com/us/app/id6788616929) · [RealTime AI Cam](https://apps.apple.com/us/app/id6751230739) · [RealTime Space](https://apps.apple.com/us/app/id6788646103) · [Brainforest](https://apps.apple.com/us/app/id6788301765) · [Hive Strike](https://apps.apple.com/us/app/id6808332314)<br>
 🤖 **Google Play:** [Song Forge](https://play.google.com/store/apps/details?id=com.nicedreamz.ownatune) · [RealTime AI Cam](https://play.google.com/store/apps/details?id=com.mattmacosko.realtimeaicam) · [RealTime Space](https://play.google.com/store/apps/details?id=com.nicedreamz.realtimespace) · [Brainforest](https://play.google.com/store/apps/details?id=com.brainforest.app) · [Hive Strike](https://play.google.com/store/apps/details?id=com.nicedreamz.hivestrike)
@@ -115,12 +115,12 @@
 
 | App | Live since | Downloads | App Store | Google Play | New on iPhone, last 7 days | App Store rating |
 |---|---|---:|---:|---:|---:|:---:|
-| **RealTime AI Cam** | Aug 2025 | **1,973** | 1,357 | 616 | 41 | ★ 5.0 (3) |
-| **Song Forge** | Jul 2026 | **410** | 205 | 205 | 8 | – |
+| **RealTime AI Cam** | Aug 2025 | **1,982** | 1,357 | 625 | 41 | ★ 5.0 (3) |
+| **Song Forge** | Jul 2026 | **413** | 205 | 208 | 8 | – |
 | **RealTime Space** | Jul 2026 | **403** | 341 | 62 | 18 | – |
-| **Brainforest** | Jul 2026 | **98** | 88 | 10 | 3 | ★ 5.0 (1) |
+| **Brainforest** | Jul 2026 | **99** | 88 | 11 | 3 | ★ 5.0 (1) |
 | **Hive Strike** | Sep 2026 | **14** | 7 | 7 | 1 | – |
-| **Total** | | **2,898** | **1,998** | **900** | **71** | |
+| **Total** | | **2,911** | **1,998** | **913** | **71** | |
 
 **New iPhone downloads per week, last 8 weeks:** 117 → 65 → 157 → 85 → 49 → 51 → 49 → 71 (+22 vs the week before).
 <!--APP-STATS:END-->

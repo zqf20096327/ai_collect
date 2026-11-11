@@ -18,7 +18,7 @@ Cost Guard analyzes [OpenCode](https://opencode.ai/) usage, relative model costs
 
 ## Quick start
 
-Use **current `main`** (v81.22, 2026-11-10), the supported distribution.
+Use **current `main`** (v81.28, 2026-11-11), the supported distribution.
 
 Without Git: [repository](https://github.com/qstoffe/cost-guard) → **main → Code → Download ZIP**. Preserve the extracted structure; download again to update.
 
@@ -75,7 +75,7 @@ Distinct signals:
 
 Reference costs—including Watch **Today**—are **CCost**, unless labeled otherwise, not native **Used** or actual **Billed**. Included work can have CCost with Billed $0. Quota bars default to **Used / Total**; Web Settings can instead show finite native **Remaining / Total**. **Remaining** pace describes capacity left independently. Quota credentials do not prove historical attribution.
 
-Moving Claude aliases show **version unverified** unless the request records a concrete release. Current picker/catalog defaults cannot resolve older requests. Affected historical cache projections repair automatically on access; raw history remains unchanged.
+Recorded concrete Claude releases take precedence. Otherwise an exact, location-qualified Claude Agent catalog entry can supply an **estimated** reference identity, including supported short catalog labels; it cannot prove which release executed an older request. Missing entries/prices stay unavailable. Affected cache projections repair on access without rewriting history.
 
 ### Symbols and token categories
 
@@ -357,7 +357,7 @@ Bundles omit prompts/titles, raw payloads/auth, tokens and account labels/IDs; s
 
 ## Current version
 
-**v81.22 (2026-11-10):** Mini Watch Activity keeps configured-local HH:mm today or under 12 hours old, then shows compact floored h/d/m/y ago. Exact-date/offset help, the running ▶, all eligible old history and native sizing remain intact; the existing five-second render updates ages without new polling. [Mini Watch](docs/web-mini-watch.md).
+**v81.27 (2026-11-11):** Accounts and Full Watch estimate secondary/later quota Capacity and its 30-day equivalent from usable same-window priced subtotals, with explicit partial-pricing qualification. Unsupported evidence stays unknown with a specific explanation. [Cause and verification](development/journal/web/secondary-capacity.md).
 
 Earlier changes: [version history](VERSION_HISTORY.md). [Live-proof limits](development/architecture/modules/history-loading.md#startup-presentation-and-launcher-evidence). Claude quotas remain experimental.
 

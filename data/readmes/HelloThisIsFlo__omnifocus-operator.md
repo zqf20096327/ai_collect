@@ -44,6 +44,14 @@ Paste this into `~/Library/Application Support/Claude/claude_desktop_config.json
   <img src="docs/images/first-run-light.png" alt="OmniFocus first-run permission dialog showing OmniFocus Operator's welcome banner with two steps: tick the 'Automatically run' checkbox, then click Run Script" width="600">
 </picture>
 
+> ⚠️ **Claude Desktop on recent macOS — temporary extra step.** If the server fails to start with `PermissionError: [Errno 1] Operation not permitted: …/com.omnigroup.OmniFocus4/…`, macOS is blocking access to OmniFocus's data. Until a proper installer ships:
+>
+> 1. Find the real `uvx` binary: run `realpath "$(which uvx)"` in a terminal.
+> 2. Open **System Settings → Privacy & Security → Full Disk Access**, click **+**, press **⌘⇧G**, paste that path, and switch it on.
+> 3. Quit Claude Desktop completely (**⌘Q**) and reopen it.
+>
+> Granting Full Disk Access to Claude itself does **not** help — Claude Desktop launches MCP servers as their own responsible process. Note that this grant applies to everything you run through `uvx`, not only OmniFocus Operator. Confirmed on macOS 27 with uv 0.13.7; terminal clients such as Claude Code are not affected.
+
 ### For Claude Code, OpenCode, Cursor…
 
 Ask your agent — copy this prompt:
@@ -195,6 +203,7 @@ All read tools are idempotent. Write tools reference projects and tags by name o
 | **v1.4.2** | UNTIL Format Hotfix — parser accepts RFC 5545 DATE form; builder aligns with OmniFocus UI ✅ |
 | **v1.4.3** | First-Run UX — welcome banners in `bridge.js` that frame OmniFocus's permission dialog with two-click instructions; startup log line ✅ |
 | **v1.4.4** | Batch Limit Increase — `add_tasks` / `edit_tasks` accept up to 150 items per call ✅ |
+| **v1.4.5** | FastMCP Version Cap — dependency capped below 3.4 to restore agent-facing validation errors ✅ |
 | **v1.5** | Project Writes — add/edit projects, review marking |
 | **v1.6** | UI & Perspectives — perspective switching, deep links |
 | **v1.7** | Smart Perspective Content — perspective-aware response shapes |

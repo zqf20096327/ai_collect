@@ -4,6 +4,8 @@
 
 **Jev reads every new paper on arXiv each morning. You read the few that matter.**
 
+Also runs on [Claude (Haiku)](#use-claude-instead-of-jev) — same daily page, self-reported probabilities, [first-look calibration](docs/claude-calibration.md).
+
 Plain-English interests · calibrated probabilities · about 6 cents a day for *all* of arXiv · fork and go, no server
 
 [Quick start](#quick-start-5-minutes-no-server) · [Try the demo](#try-it-in-10-seconds) · [How it works](#how-it-works) · [Benchmark](#measured-against-real-reviewers-decisions) · [繁體中文](README.zh-TW.md)
@@ -72,11 +74,78 @@ Each is an ordinary config file in [`radars/`](radars). Fork the repo and yours 
    ```
 3. **Add a key** under *Settings → Secrets and variables → Actions*:
    - `TYPESAFE_API_KEY` from [console.typesafe.ai](https://console.typesafe.ai/settings/keys), **or**
-   - `OPENROUTER_API_KEY` if you are still on TypeSafe's waitlist. Set `backend = "openrouter"` and `model = "typesafe/jev-1.13"` in `radar.toml`; [OpenRouter serves Jev without a waitlist](https://openrouter.ai/typesafe/jev-1.13).
+   - `OPENROUTER_API_KEY` if you are still on TypeSafe's waitlist. Set `backend = "openrouter"` and `model = "typesafe/jev-1.13"` in `radar.toml`; [OpenRouter serves Jev without a waitlist](https://openrouter.ai/typesafe/jev-1.13), **or**
+   - `ANTHROPIC_API_KEY` to judge with Claude instead of Jev (see below). Set `backend = "claude"` in `radar.toml`.
 4. **Turn on Pages:** *Settings → Pages → Source: GitHub Actions*.
 5. **Run it:** *Actions → Paper Radar → Run workflow* (type `50` in *limit* for a cheap first test).
 
+### Use Claude instead of Jev
+
+If you already have an Anthropic API key, Claude can do the judging — same
+pipeline, same calibration step, no Jev waitlist:
+
+```toml
+[jev]
+backend = "claude"
+# model = "claude-haiku-5-5"   # the default; set it explicitly to pin a version
+```
+
+```bash
+paper-radar run --backend claude --limit 50
+```
+
+Two honest warnings. First, **Claude's probabilities are self-reported, not
+calibrated**: Jev returns a calibrated `noul`; Claude returns a number it
+wrote in JSON. Run `paper-radar label` on a few dozen papers and then
+`paper-radar calibrate` to fit your thresholds to Claude before trusting a
+run — the Jev thresholds in `radar.toml` will not transfer. Second, **the
+benchmark numbers in this README are Jev-only**: the Cochrane screening
+result (96.9% recall, 78% work saved on 19,447 records) was measured with
+Jev and does not apply to Claude. The API is also billed separately from a
+Claude Pro/Max subscription, and costs more per paper than Jev; set
+`jev.price_per_mtok` to roughly 0.15 for a Haiku cost estimate, and lower
+`jev.requests_per_minute` if you are on a low API tier.
+
+There is now a first-look calibration for the Claude backend — see
+[`docs/claude-calibration.md`](docs/claude-calibration.md). On 49 papers from
+the 2026-11-11 arXiv listing (6 relevant), Claude Haiku 5.5 scored Brier
+0.040 and ECE 0.081, with suggested Claude thresholds of must_read 0.65 and
+maybe 0.35, versus the Jev thresholds of 0.80 / 0.50. Read the provenance
+warning in that doc before trusting the numbers: the labels were made by
+Muse, not by the user, from titles and trimmed abstracts — this is a
+first look, not a user-validated calibration, and Claude is not claimed to
+be calibrated. For balance: the user never labelled papers for Jev either —
+the Jev thresholds are defaults from the repo's first commit and the only
+ground-truth measurement in the repo is the screening benchmark — so this is
+the first labelled measurement for either backend on the daily radar.
+
 After that it runs on weekdays at 02:00 UTC, right after arXiv's daily announcement. Your radar is at `https://<you>.github.io/<repo>/` and the feed at `/feed.xml`.
+
+### Use as a GitHub Action
+
+No fork needed: any repository with a `radar.toml` can run Paper Radar as one step. Add a key as a repository secret (*Settings → Secrets and variables → Actions*), then:
+
+```yaml
+# .github/workflows/radar.yml
+on:
+  schedule:
+    - cron: "0 2 * * 1-5"   # 02:00 UTC, weekdays
+  workflow_dispatch:
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Eliot5566/JEV-Paper-Radar@v0.1.3
+        with:
+          config: radar.toml
+          typesafe-api-key: ${{ secrets.TYPESAFE_API_KEY }}
+          # anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}  # with backend: claude
+          # limit: "50"    # a cheap first test
+```
+
+Pin to a release tag — `@v0.1.2` is the first tag that contains `action.yml` (`@v0.1.1` predates it, so it cannot work). Other inputs: `command` (`run` or `screen`), `backend` (`typesafe`, `openrouter`, `claude`, `mock`), and `args` for extra flags such as `--rejudge --no-notify`. Keys are passed as secrets and are never printed in the log.
 
 ## Try it in 10 seconds
 
@@ -207,6 +276,8 @@ come from.
 ## Screening mode, for systematic reviews
 
 A review's title-and-abstract stage is the same shape as a daily radar pointed at a search strategy, with one difference that changes everything: a record is eligible only if **every** inclusion criterion holds, and one exclusion criterion disqualifies it. So screening is a separate command with its own scoring.
+
+The full story for review teams — how it works, how to run it, and the benchmark against Cochrane reviewers' decisions, with the honest limits — is in [`docs/screening.md`](docs/screening.md).
 
 ```bash
 cp profiles/systematic-review.toml review.toml   # edit the query and the criteria

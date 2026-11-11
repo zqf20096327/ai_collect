@@ -12,7 +12,7 @@
 
 <a href="https://codexpet.top"><img src="./assets/cover/awesome-codex-pet-cover.png" alt="Open the Awesome Codex Pet gallery"></a>
 
-![pets: 377](https://img.shields.io/badge/pets-377-2ea44f) ![categories: 11](https://img.shields.io/badge/categories-11-0969da) ![languages: en | zh--CN | ko | ja | es](https://img.shields.io/badge/languages-en%20%7C%20zh--CN%20%7C%20ko%20%7C%20ja%20%7C%20es-8250df) ![code: MIT](https://img.shields.io/badge/code-MIT-111111) ![assets: CC BY--NC 4.0](https://img.shields.io/badge/assets-CC%20BY--NC%204.0-f97316) ![install: one command](https://img.shields.io/badge/install-one%20command-111111) [![Pet previews](https://github.com/legeling/awesome-codex-pet/actions/workflows/pet-previews.yml/badge.svg)](https://github.com/legeling/awesome-codex-pet/actions/workflows/pet-previews.yml)
+![pets: 384](https://img.shields.io/badge/pets-384-2ea44f) ![categories: 11](https://img.shields.io/badge/categories-11-0969da) ![languages: en | zh--CN | ko | ja | es](https://img.shields.io/badge/languages-en%20%7C%20zh--CN%20%7C%20ko%20%7C%20ja%20%7C%20es-8250df) ![code: MIT](https://img.shields.io/badge/code-MIT-111111) ![assets: CC BY--NC 4.0](https://img.shields.io/badge/assets-CC%20BY--NC%204.0-f97316) ![install: one command](https://img.shields.io/badge/install-one%20command-111111) [![Pet previews](https://github.com/legeling/awesome-codex-pet/actions/workflows/pet-previews.yml/badge.svg)](https://github.com/legeling/awesome-codex-pet/actions/workflows/pet-previews.yml)
 
 </div>
 
@@ -103,7 +103,7 @@ The **Update** action is an AI-assisted v1-to-v2 conversion, not a download noti
 </table>
 
 <details>
-<summary>Full pet index (text only) · 377</summary>
+<summary>Full pet index (text only) · 384</summary>
 
 ### Game Characters
 
@@ -117,7 +117,9 @@ The **Update** action is an AI-assisted v1-to-v2 conversion, not a download noti
 <li><a href="./pets/castorice--lingxiaotian">Castorice</a> · by <a href="https://github.com/legeling">@legeling</a> · v1</li>
 <li><a href="./pets/chen--chenxin-dlut">Ch&#39;en</a> · by <a href="https://github.com/chenxin-dlut">@chenxin-dlut</a> · v1</li>
 <li><a href="./pets/citlali--zaytsevzy">Citlali</a> · by <a href="https://github.com/ZaytsevZY">@ZaytsevZY</a> · v2</li>
+<li><a href="./pets/columbina--zhou-jianwen">Columbina</a> · by @zhou-jianwen · v2</li>
 <li><a href="./pets/cyrene--lingxiaotian">Cyrene</a> · by <a href="https://github.com/legeling">@legeling</a> · v1</li>
+<li><a href="./pets/denia-portrait--zhou-jianwen">Denia Portrait</a> · by @zhou-jianwen · v2</li>
 <li><a href="./pets/dimo-stand--god-wu">Dimo</a> · by @god-wu · v1</li>
 <li><a href="./pets/doro--godxxy1229">Doro</a> · by <a href="https://github.com/godxxy1229">@godxxy1229</a> · v2</li>
 <li><a href="./pets/doro--lingxiaotian">Doro</a> · by <a href="https://github.com/legeling">@legeling</a> · v1</li>
@@ -200,6 +202,7 @@ The **Update** action is an AI-assisted v1-to-v2 conversion, not a download noti
 <ul>
 <li><a href="./pets/zero-two--mingqingmozhao">Zero Two</a> · by @mingqingmozhao · v1</li>
 <li><a href="./pets/agumon--legeling">Agumon</a> · by <a href="https://github.com/legeling">@legeling</a> · v2</li>
+<li><a href="./pets/ai-hayasaka--zhou-jianwen">Ai Hayasaka</a> · by @zhou-jianwen · v2</li>
 <li><a href="./pets/amadeus--legeling">Amadeus</a> · by <a href="https://github.com/legeling">@legeling</a> · v2</li>
 <li><a href="./pets/anya--chenxin-dlut">Anya</a> · by <a href="https://github.com/chenxin-dlut">@chenxin-dlut</a> · v1</li>
 <li><a href="./pets/asuka--maxg24">Asuka</a> · by <a href="https://codex-pets.net/users/maxg24">@maxg24</a> · v1</li>
@@ -211,6 +214,7 @@ The **Update** action is an AI-assisted v1-to-v2 conversion, not a download noti
 <li><a href="./pets/doraemon--xueshi">Doraemon</a> · by <a href="https://codex-pets.net/users/xueshi">@xueshi</a> · v1</li>
 <li><a href="./pets/doraemon-16-gaze--4whmmhw4-arch">Doraemon: 16 Directions, One Mouse to Avoid</a> · by <a href="https://github.com/4whmmhw4-arch">@4whmmhw4-arch</a> · v2</li>
 <li><a href="./pets/elaina--nyakku-shigure">Elaina</a> · by <a href="https://codex-pets.net/users/nyakku-shigure">@nyakku-shigure</a> · v1</li>
+<li><a href="./pets/emilia--zhou-jianwen">Emilia</a> · by @zhou-jianwen · v2</li>
 <li><a href="./pets/eren--ash-sw">Eren</a> · by <a href="https://codex-pets.net/users/ash-sw">@ash-sw</a> · v1</li>
 <li><a href="./pets/fang-yuan--kelleszzz">Fang Yuan</a> · by <a href="https://github.com/kelleszzz">@kelleszzz</a> · v2</li>
 <li><a href="./pets/frieren--lingxiaotian">Frieren</a> · by <a href="https://github.com/legeling">@legeling</a> · v1</li>
@@ -242,6 +246,7 @@ The **Update** action is an AI-assisted v1-to-v2 conversion, not a download noti
 <li><a href="./pets/mihari--hyoni1129">Mihari</a> · by <a href="https://github.com/Hyoni1129">@Hyoni1129</a> · v1</li>
 <li><a href="./pets/mikoto--lingxiaotian">Mikoto</a> · by <a href="https://github.com/legeling">@legeling</a> · v1</li>
 <li><a href="./pets/miku--lingxiaotian">Miku</a> · by <a href="https://github.com/legeling">@legeling</a> · v1</li>
+<li><a href="./pets/mirai-kuriyama--zhou-jianwen">Mirai Kuriyama</a> · by @zhou-jianwen · v2</li>
 <li><a href="./pets/misaka-network--ldl1234">Misaka Network</a> · by <a href="https://github.com/ldl1234">@ldl1234</a> · v2</li>
 <li><a href="./pets/nazuna-nanakusa--puzzlemoondev">Nazuna Nanakusa</a> · by <a href="https://github.com/puzzlemoondev">@puzzlemoondev</a> · v2</li>
 <li><a href="./pets/nazuna-nanakusa-coat--puzzlemoondev">Nazuna Nanakusa (Coat)</a> · by <a href="https://github.com/puzzlemoondev">@puzzlemoondev</a> · v2</li>
@@ -349,6 +354,7 @@ The **Update** action is an AI-assisted v1-to-v2 conversion, not a download noti
 <li><a href="./pets/gpt-muse--opask">GPT-muse</a> · by @opask · v1</li>
 <li><a href="./pets/gpt-dragon-girl--tenghuan123">GPT Dragon Girl</a> · by <a href="https://github.com/tenghuan123">@tenghuan123</a> · v2</li>
 <li><a href="./pets/doubao-halloween--wynn">Halloween Doubao</a> · by <a href="https://github.com/zhou-jianwen">@wynn</a> · v2</li>
+<li><a href="./pets/hello-kitty--zhou-jianwen">Hello Kitty</a> · by @zhou-jianwen · v2</li>
 <li><a href="./pets/lulu--yogazz">Lulu</a> · by <a href="https://github.com/YoGazz">@YoGazz</a> · v1</li>
 <li><a href="./pets/my-melody--zhou-jianwen">My Melody</a> · by @zhou-jianwen · v2</li>
 <li><a href="./pets/qoduck--zhoujianwen">Qoduck</a> · by @wynn · v1</li>
@@ -458,6 +464,7 @@ The **Update** action is an AI-assisted v1-to-v2 conversion, not a download noti
 <ul>
 <li><a href="./pets/azuma--tairazuma">Azuma</a> · by @tairazuma · v1</li>
 <li><a href="./pets/tangdouren--carl312">Tangdouren</a> · by <a href="https://github.com/Carl-312">@Carl-312</a> · v1</li>
+<li><a href="./pets/xjt--zhou-jianwen">xjt</a> · by @zhou-jianwen · v2</li>
 <li><a href="./pets/guga--circus">咕嘎</a> · by @circus · v1</li>
 <li><a href="./pets/fengge--qzl1-stack">峰哥</a> · by <a href="https://github.com/qzl1-stack">@qzl1-stack</a> · v1</li>
 <li><a href="./pets/xuxu-baobao--legeling">旭旭宝宝</a> · by <a href="https://github.com/legeling">@legeling</a> · v2</li>

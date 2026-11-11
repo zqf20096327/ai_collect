@@ -98,8 +98,7 @@ Before contributing, read [ARCHITECTURE_PHILOSOPHY.md](ARCHITECTURE_PHILOSOPHY.m
 
 Work is tracked in GitHub Issues and organized on the [IceGraph Roadmap](https://github.com/users/YanivZalach/projects/3) board.
 
-All contributors must accept the [Contributor License Agreement](CLA.md) before
-a pull request can be merged. See [CONTRIBUTING.md](CONTRIBUTING.md) for the
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the
 contribution and licensing process.
 
 ### Prerequisites
@@ -209,15 +208,5 @@ uv run icegraph --base-url http://localhost:3000 tables
 
 ## License
 
-Current IceGraph versions are open source under the
-[GNU Affero General Public License version 3 only](LICENSE). Personal, internal,
-production, and commercial use are permitted subject to the AGPL terms. If you
-offer a modified version to users over a network, the AGPL includes corresponding
-source obligations.
-
-Revisions released before the license change remain available under the
-[MIT License](https://github.com/YanivZalach/IceGraph/blob/v0.16.2/LICENSE). Contributions require the
-[Contributor License Agreement](CLA.md), which permits future relicensing and
-separate commercial or enterprise licensing.
-
-Copyright (c) 2026 Yaniv Zalach and the IceGraph contributors.
+IceGraph is open source under the [Apache License, Version 2.0](LICENSE). See
+[NOTICE](NOTICE) for attribution.

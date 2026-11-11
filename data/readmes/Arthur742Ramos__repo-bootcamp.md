@@ -279,15 +279,16 @@ The Copilot SDK transforms what would be a simple template-filler into an intell
 - **Codebase Metrics & Hotspots** - Deterministic `METRICS.md` with language breakdown, largest-file hotspots, test-to-source ratio, and an Approachability score (0-100 + grade)
 - **Repo Health Check** - Deterministic `HEALTH.md` scoring onboarding-readiness across documentation, community, quality, and automation signals (0-100 + grade) with prioritized, actionable recommendations
 - **Environment Doctor** - Diagnose Node, git, GitHub CLI/auth, mermaid-cli, and cache health with `bootcamp doctor` (`--json` for CI)
-- **Combined Scan Dashboard** - `bootcamp scan` reports health, metrics, security, and onboarding risk from a single clone, with a `--check` CI gate on the lowest score
+- **Combined Scan Dashboard** - `bootcamp scan` reports health, metrics, security, and onboarding risk from a single clone, with an absolute `--check` CI gate and optional baseline regression comparison
 - **Module Coupling Map** - `bootcamp coupling` ranks modules by import coupling to reveal the load-bearing core, orchestrator hubs, and possibly-orphaned dead code
 - **Circular Dependency Detection** - `bootcamp cycles` finds circular import groups (Tarjan SCC) on the import graph, with a `--check` CI gate
-- **Machine Preflight** - `bootcamp preflight` checks your machine against the target repo's declared toolchain (Node, package manager, Python, Go, Rust, .NET) with a per-row remedy
+- **Machine Preflight** - `bootcamp preflight` checks your machine against the target repo's declared toolchain (Node, package manager, Python, Go, Rust, .NET) with a per-row remedy; `--subdir` checks one package without inheriting unrelated root pins
 - **Ownership Map** - `bootcamp owners` parses `CODEOWNERS` to answer "who do I ask?" with default owners, per-area maintainers, and top committers
 - **Task Discovery** - `bootcamp tasks` answers "how do I build/test/run this?" deterministically across ecosystems (package.json scripts, Makefile, justfile, go-task Taskfile, docker-compose, pyproject/poetry, composer.json, qualifying Cargo manifests), grouped by category with a suggested getting-started sequence (`--json`, `--category`)
 - **Style Pack Explorer** - `bootcamp styles` lists the built-in style packs and the doc sections each one enables
 - **Version & PR Comparison** - Compare refs with `--compare` or analyze pull requests with `bootcamp diff`
 - **Auto-Issue Creator** - Generate GitHub issues from starter tasks
+- **Whole-kit Search** - Find literal text across generated Markdown, JSON, text, and Mermaid documents in the web reader, with source-line snippets and Markdown section navigation.
 - **Web Demo Server** - Beautiful browser UI for analyzing repositories
 - **Template Packs** - Customize output style for different contexts
 - **Diagram Rendering** - Convert Mermaid to SVG/PNG with mermaid-cli
@@ -630,9 +631,53 @@ bootcamp scan ./my-repo --check --min-score 70
 ```
 
 The dashboard also includes the tech-radar **onboarding-risk** score (0-100,
-lower is better) alongside health/metrics/security. The `--check` gate stays on
-the lowest of the three higher-is-better scores (onboarding risk is reported but
-not gated, since for it lower is better).
+lower is better) alongside health/metrics/security. The absolute `--check` gate
+uses the lowest of the three higher-is-better scores. With a baseline, it also
+checks deterioration in all four scores, using the correct direction for risk.
+
+### Scan Baselines and Regression Gates
+
+Keep a scan snapshot to see whether a change makes onboarding harder, even when
+scores still clear your absolute quality floor:
+
+```bash
+# Save UTF-8 JSON outside the scanned repository so the report does not affect its own scan
+bootcamp scan ./my-repo --json > ./onboarding-baseline.json
+
+# Inspect score deltas and changed readiness checks without failing on a regression
+bootcamp scan ./my-repo --baseline ./onboarding-baseline.json
+
+# Enforce both the absolute floor and no deterioration from the baseline
+bootcamp scan ./my-repo --baseline ./onboarding-baseline.json --check --min-score 70
+
+# Allow at most 3 points of deterioration per score; retain machine-readable output
+bootcamp scan ./my-repo --baseline ./onboarding-baseline.json --check --max-regression 3 --json
+```
+
+The tolerance is inclusive: a 3-point decline passes at 3, but a larger decline
+fails. Health, approachability and security regress when their scores decrease;
+onboarding risk regresses when it increases. Readiness status changes are shown
+for context; they do not independently fail the gate. Without `--check`, comparison
+is informational. `--max-regression` requires both `--baseline` and `--check` and
+accepts finite values from 0 to 100 (default 0). Use `--min-score 0` when only the
+regression gate is wanted.
+
+JSON reports include `metadata` (schema version, analyzer release version, scan
+limit) and add `comparison` when a baseline is supplied. Each compared score has
+`before`, `after`, signed `delta`, nonnegative `regression` and
+`exceedsTolerance`; `comparison.regressed` summarizes the regression gate, not the
+absolute floor. Baselines must be regular UTF-8 JSON files no larger than 8 MiB,
+produced by the same analyzer release with the same `--max-files` setting and health
+check catalog. Old reports without metadata, malformed files and incompatible
+baselines are rejected rather than silently compared. Regenerate baselines after
+upgrading or modifying the analyzer, including unpublished changes that retain
+the same package version.
+
+Choose the baseline from the same repository and intended scope. Local worktrees
+may have different directory names, so repository-name equality is not enforced.
+Keep baseline files outside the scanned tree. These scores are deterministic
+heuristics, not a security audit; changes in file-limit sampling can also change
+scores. Use a suitable, identical scan budget for both snapshots.
 
 ### Continuous Onboarding Quality
 
@@ -849,6 +894,9 @@ bootcamp preflight ./my-repo
 
 # CI gate: exit non-zero if any required tool is missing or mismatched
 bootcamp preflight ./my-repo --check
+
+# Check one package in a monorepo, without unrelated root requirements
+bootcamp preflight ./my-repo --subdir packages/api --json --check
 ```
 
 Reads the repo's declared toolchain — Node (`engines.node`, `.nvmrc`,
@@ -866,6 +914,15 @@ installed SDKs, roll-forward policies, and prerelease settings.
 Custom Rust toolchain paths and .NET SDK search paths are reported as unknown
 rather than executing repository-selected code. Unknown checks do not fail
 `--check`; verify them manually.
+
+`--subdir` reads declarations only in the selected directory, not its ancestors,
+siblings, or descendants. Root/workspace toolchain pins and package-manager versions
+are **not inherited**; run a separate root preflight when those also apply. This is
+a declaration check, not a simulation of a shell or version manager's effective
+environment. Paths must stay within the repository, including symlink targets.
+Scoped JSON reports add `subdir` (the canonical repository-relative directory)
+and `scope: "directory"`; each check's `source` identifies its repository-relative
+declaration. Without `--subdir`, the existing root report shape is unchanged.
 
 ### Who Do I Ask? (Ownership Map)
 
@@ -1096,6 +1153,12 @@ Library/tool runbooks select their Build & Release command using the same build 
 
 The web interface allows you to analyze repositories interactively through your browser.
 
+### Searching a generated kit
+
+After analysis, use **Find answers in this kit** to search document contents rather than filenames. Search is case-insensitive and literal (not regex), with one result per matching source line. Select a result to open the existing reader near its Markdown heading; Close returns to the results. The separate file filter still filters names only.
+
+Search does not call a model or search the original repository. It checks at most 64 unique generated text files, each no larger than 512 KiB, and returns the first 50 matching lines in generated-file order. Unsupported formats (including HTML/PDF), unavailable files, and files outside those limits are reported as skipped. Narrow the phrase when results are limited. Search terms and results remain in this page, not browser storage.
+
 ### Template Packs
 
 ```bash
@@ -1265,7 +1328,7 @@ A manager-only exception applies when the explicitly supplied outer repository d
 | `bootcamp impact <url> [file]` | Change impact / blast radius from the import graph (`--json`, `--top`)                                        |
 | `bootcamp coupling <url>`      | Rank modules by import coupling: load-bearing core, hubs, orphans (`--json`, `--top`)                         |
 | `bootcamp cycles <url>`        | Detect circular import dependencies (`--json`, `--check`, `--max-cycles`)                                     |
-| `bootcamp preflight <url>`     | Check your machine against the repo's declared toolchain (`--json`, `--check`)                                |
+| `bootcamp preflight <url>`     | Check your machine against the repo's declared toolchain (`--json`, `--check`, `--subdir`)                    |
 | `bootcamp owners <url>`        | "Who do I ask?" — CODEOWNERS map + maintainers + top committers (`--json`)                                    |
 | `bootcamp tasks <url>`         | "How do I build/test/run this?" — cross-ecosystem task discovery grouped by category (`--json`, `--category`) |
 

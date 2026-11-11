@@ -374,7 +374,7 @@ If you only want to use it, see [Install](#install) above. This is the route for
 Android steps are further down, under [Provisioning](#provisioning).
 
 **On a Mac**, build the desktop app from the same checkout (Apple silicon, macOS 14+, the Command Line Tools
-for `swiftc`, and the same JDK 17–20):
+15 or newer for `swiftc` and the macOS 14 SDK — an older SDK stops the build — and the same JDK 17–20):
 
 ```bash
 ./gradlew :desktop:createDistributable   # → desktop/build/compose/binaries/main/app/Andee.app
@@ -778,7 +778,7 @@ Pure Kotlin, no Compose; the whole thing hangs off two pillars, `WindowManager` 
 | minSdk                    | 27                  | Android 8.1 — it installs and chats. **Screen capability needs API 30+**: `ACTION_IME_ENTER` and `takeScreenshot` are both API 30+, and below that the self-check shows an amber row |
 | Java / Kotlin JVM target  | 1.8                 | `sourceCompatibility` 1.8, `jvmTarget = '1.8'`                                            |
 | **Build JDK**             | **17–20**           | see [Which JDK](#which-jdk) — this is the step people get stuck on                        |
-| versionCode / versionName | 27 / 0.14.0          | see [CHANGELOG.md](CHANGELOG.md) for the policy                                           |
+| versionCode / versionName | 29 / 0.14.2          | see [CHANGELOG.md](CHANGELOG.md) for the policy                                           |
 | applicationId / namespace | `net.kuafuai.andee` | never changed from the template. It affects nothing                                       |
 
 **Runtime dependencies** (`app/build.gradle`):
@@ -1215,7 +1215,7 @@ Read it before redistributing: **the ML Kit barcode SDK and the `play-services-*
 open-source**, and the barcode model is fetched from Google at runtime.
 
 See [CHANGELOG.md](CHANGELOG.md) for what changed and for the versioning policy. The latest release is
-**`v0.14.0`** — pre-1.0 on purpose, because the wire contract and the build flags are still moving.
+**`v0.14.2`** — pre-1.0 on purpose, because the wire contract and the build flags are still moving.
 
 ## Related documents
 

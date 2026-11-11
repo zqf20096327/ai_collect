@@ -194,7 +194,8 @@ LLM::Eval.new do
         llm,
         tools: [LLM::Tool::Ls, LLM::Tool::Pwd, LLM::Tool::Exec],
         tracer:,
-        intercept:
+        intercept:,
+        filter:
       )
     end
 
@@ -209,6 +210,14 @@ LLM::Eval.new do
     intercept do
       Class.new(LLM::Intercept) do
         define_method(:call) do |function:|
+          # ...
+        end
+      end
+    end
+
+    filter do
+      Class.new(LLM::MessageFilter) do
+        define_method(:call) do |message:|
           # ...
         end
       end
@@ -269,7 +278,7 @@ interrupt the agent, or give up trying:
 
 ```ruby
 require "llm"
-require "llm/tools/read_file"
+require "llm/tools/read-file"
 
 llm         = LLM.deepseek
 concurrency = :ractor
@@ -377,7 +386,7 @@ can't use them in the scenarios where they work well:
 
 ```ruby
 require "llm"
-require "llm/tools/read_file"
+require "llm/tools/read-file"
 
 llm = LLM.deepseek
 mcp = LLM::MCP.http(
@@ -1863,7 +1872,7 @@ a large-ish company.
       </p>
     </td>
     <td align="right" valign="middle" width="128">
-      <a title="what's up doc" href="https://www.youtube.com/watch?v=QCST3jx7s_M">
+      <a title="what's up doc" href="https://www.youtube.com/watch?v=H1XelqP2fow">
         <img src="bugsbunny1.jpg" width="128" alt="what's up doc">
       </a>
     </td>

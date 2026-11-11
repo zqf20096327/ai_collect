@@ -1,0 +1,595 @@
+# eq-layer
+
+A control layer that gives an LLM a *decision* about how to speak before it speaks — instead of asking it to be more empathetic in a prompt.
+
+## Why this exists
+
+Asking a model to be more empathetic is style transfer. It produces *more* of the same flat warmth, which reads as uncanny rather than attentive. The failure modes are structural, not knowledge gaps:
+
+- **Flat affect.** "That sounds really tough!" arrives at the same register regardless of what was said.
+- **Escalation blindness.** The user is frustrated, then angry, then threatening. The model holds one tone for all three turns.
+- **Validation without motion.** The feeling is acknowledged; the next step never comes.
+- **Repair collapse.** After a correction the model either capitulates entirely or starts defending itself. There is no middle.
+
+So this repo does not retrain the model. It adds a layer:
+
+1. **Affect state** — `{valence, arousal, escalation_delta, stance, subtext}` as an explicit intermediate representation, tracked across turns. `escalation_delta` is the point: snapshot classification cannot see a trend.
+2. **Intent belief state** — the learned classifier preserves the full posterior over `action_request/status_check/explanation/question/statement/unknown` instead of collapsing uncertainty to one confidence number. A transparent one-step Bayes-risk router chooses whether to act or clarify from that distribution. This is POMDP-inspired uncertainty handling, not a full POMDP.
+3. **Conversation health state** — `repair` identifies observable user→assistant misalignment and its target; `interaction_quality` tracks structural conversation failure separately from emotion using current score, delta, repeated failures, unresolved repair, and clarification load.
+4. **Policy selection** — affect and intent jointly choose a response-policy family (`mirror`, `validate_redirect`, `direct`, `ask`, `deflate`, `repair`, `hold`, `boundary`). Selection is a discrete decision, not generation.
+5. **Factored action compilation** — the selected policy is split into orthogonal controls: `task_move`, `social_move`, `repair_move`, and `realization`. The task is driven primarily by user intent, so affective adaptation cannot silently replace what the user actually asked for.
+6. **Steering** — the factored action, source policy, repair state, interaction quality, and canonical request are injected into the decode path so the control decision actually lands in the tokens.
+7. **Structural response audit** — the generated response is checked against inspectable control contracts such as question budget, required clarification, unsupported privacy promises, unknown-stance admissions, repair repetition, and low-verbosity overruns. This is not a factual truth checker.
+
+## Prior art and novelty boundary
+
+EQ-Layer does **not** claim that affect-aware dialogue policy, user modelling,
+repair, intent routing, or adaptive dialogue management are new. Those ideas
+have substantial pre-LLM precedent in TRAINS/grounding work, adaptive TOOT,
+RavenClaw, user-tailored generation, affect-sensitive AutoTutor, affective
+POMDP dialogue management, and related systems.
+
+The defensible research question is narrower: whether an explicit,
+model-agnostic control layer can improve a **fixed general-purpose language
+model** by separating intent, affect, conversational evidence, policy selection,
+and generation steering while keeping those intermediate decisions inspectable.
+
+See `docs/PRIOR_ART_AND_NOVELTY.md` for the historical map, claims to avoid,
+and architecture lessons carried forward into this project.
+
+## Status
+
+Early. The harness runs; the numbers are development signals, not a real-world EQ benchmark.
+
+There is no standard benchmark for EQ. `eval/` is a first attempt at one, not a finished measurement. If you improve the scorer, that contribution matters as much as adding a policy.
+
+## Agent Skills: Codex, Claude, Copilot, Cursor, Antigravity, and Grok
+
+EQ-Layer is packaged as a portable Agent Skill in `skills/eq-layer/` and as an
+Agent Plugins 1.0 package via `plugin.json`. Repository discovery shims are
+included for the major agent ecosystems:
+
+| Agent | Repository path |
+| --- | --- |
+| OpenAI Codex | `.codex/skills/eq-layer/` |
+| Anthropic Claude Code | `.claude/skills/eq-layer/` |
+| GitHub Copilot | `.github/skills/eq-layer/` |
+| Cursor | `.cursor/skills/eq-layer/` |
+| Google Antigravity | `.agents/skills/eq-layer/` |
+| xAI Grok Build | `.grok/skills/eq-layer/` |
+
+For a user-level install across all supported discovery roots:
+
+```bash
+python tools/install_agent_skills.py --target all
+```
+
+The skill includes a local routing script and reports whether it used the
+lightweight portable path or the full learned research pipeline.
+
+```bash
+printf '%s' '[{"role":"user","content":"devam et"}]' \
+  | python skills/eq-layer/scripts/route.py --pretty
+```
+
+See `skills/eq-layer/references/VENDOR_COMPATIBILITY.md` for verified discovery
+paths and source documentation.
+
+## Quick start
+
+Install the Python runtime:
+
+```bash
+pip install "eq-layer[ml]"
+```
+
+Install the npm skill installer and CLI bridge (Node >= 22.14):
+
+```bash
+npm install -g eq-layer
+npx eq-layer --help
+```
+
+```python
+from eq_layer import ConversationTracker, Selector, Steer, TrainedAffect, TrainedIntent, TrainedSubtext, compose_action
+
+messages = [
+    {"role": "user", "content": "Randevumu üç kez değiştirdiler"},
+]
+affect = TrainedAffect.load("artifacts/emobank_affect.joblib")
+subtext = TrainedSubtext.load("artifacts/xdailydialog_subtext.joblib")
+tracker = ConversationTracker(affect=affect, subtext=subtext)
+tracked = tracker.infer(messages)
+state = tracked.state
+intent = TrainedIntent.from_bundled().infer(messages)
+selection = Selector().select(state, intent)
+action = compose_action(
+    selection.policy,
+    intent,
+    repair=tracked.repair,
+    interaction_quality=tracked.interaction_quality,
+)
+print(selection.policy.name, action.to_dict())
+
+prompt = Steer.build(
+    selection.policy,
+    intent,
+    repair=tracked.repair,
+    interaction_quality=tracked.interaction_quality,
+).apply_to_prompt(messages[-1]["content"])
+```
+
+The two `.joblib` files under `artifacts/` are **not shipped** in the
+repository, the PyPI wheel, or the npm tarball. Produce them with the training
+commands below (`tools/train_emobank_affect.py` and
+`tools/train_xdailydialog_subtext.py`) before running this block. Without those
+artifacts, use the zero-dependency route, which reports
+`"runtime_mode": "lightweight-local"` and needs no `.joblib` file:
+
+```bash
+printf '%s' '[{"role":"user","content":"devam et"}]' \
+  | python -m eq_layer.cli route --intent-mode heuristic --pretty
+```
+
+Run the seeded cases. Exits non-zero on any mismatch or any policy that no
+case can reach:
+
+```bash
+python eval/run.py
+```
+
+Run the intent benchmark separately:
+
+```bash
+python eval/intent_eval.py
+```
+
+It compares the learned adapter with the heuristic fallback and reports
+five-fold cross-validation on the bundled corpus.
+
+Train the affect regressor from the pinned official EmoBank release:
+
+```bash
+python tools/train_emobank_affect.py --output artifacts/emobank_affect.joblib
+python eval/emobank_affect_eval.py
+```
+
+EmoBank is not bundled into this repository. The training/evaluation path uses
+the upstream train/dev/test split and records its pinned commit and
+CC-BY-SA-4.0 provenance in `THIRD_PARTY_DATA.md`.
+
+Train the learned dialogue-signal tracker from pinned XDailyDialog files:
+
+```bash
+python tools/train_xdailydialog_subtext.py --output artifacts/xdailydialog_subtext.joblib
+python eval/xdailydialog_subtext_eval.py
+```
+
+XDailyDialog provides supervised dialogue-act and basic-emotion labels. EQ-Layer
+does **not** pretend that `challenge`, `demand`, or `exhaustion` are direct
+upstream labels: those are conservative compositions of learned dialogue
+signals with learned V/A state. See `THIRD_PARTY_DATA.md` for the license-chain
+caution on the English data.
+
+## Intent is a control signal, not mind-reading
+
+The default intent path is now learned rather than keyword-selected.
+`TrainedIntent` fits a balanced logistic-regression classifier over combined
+word and character TF-IDF features. The bundled corpus currently contains
+Turkish and English examples for `action_request`, `status_check`,
+`explanation`, `question`, `statement`, and `unknown`.
+
+The classifier emits a full posterior distribution, exposed as
+`IntentBelief`. Production routing no longer discards that distribution behind
+a single confidence/margin threshold. `decide_intent_action` computes the
+expected interaction loss of each response move and clarification, then chooses
+the minimum-risk action. For example, ambiguity between a status check and a
+generic question can still be answered because the semantic mismatch cost is
+small, while ambiguity between executing an action and merely responding to a
+statement can trigger clarification.
+
+The current loss matrix is **hand-specified and transparent, not learned or
+claimed optimal**. It encodes relative interaction costs. EQ-Layer therefore
+audits routing sensitivity rather than treating one matrix as ground truth:
+`eval/intent_risk_sensitivity.py` sweeps clarification cost and performs
+one-at-a-time ±20% perturbations of every non-zero loss cell, reporting action
+flips overall and by source stratum. This is a local robustness diagnostic, not
+loss-matrix optimization, and it must not be tuned against blinded human
+preference outcomes. The old confidence and margin fields remain serialized for
+backwards compatibility and diagnostics; they no longer choose the learned
+intent route.
+
+### Intent-risk sensitivity audit
+
+The production control path has also been run over all 120 external held-out
+cases without generating LLM responses. Under one-at-a-time ±20% perturbations
+of every non-zero loss cell, 7,332 / 7,440 routing decisions were unchanged
+(**98.55% local decision stability**).
+
+That result does **not** validate the loss matrix. Scaling the entire
+clarification-cost row changes routing substantially:
+
+- production clarification rate: **45.0%**
+- clarification cost ×0.75: **69.17%**
+- clarification cost ×1.25: **19.17%**
+- clarification cost ×1.50: **9.17%**
+
+The `task_repair` stratum is especially uncertain: 26 / 30 cases route to
+clarification (**86.67%**) with mean fused intent entropy 0.8954. This may
+reflect genuine ambiguity in repair turns, but it is not used to tune the
+matrix. The current loss table remains hand-specified and uncalibrated.
+
+Machine-readable audit:
+`eval/results/intent_risk_heldout_120_audit.json`.
+
+Explicit constraints such as `brief`, `scope_limited`, and `no_guess`
+remain deterministic because they are control requirements, not semantic
+labels.
+
+`HeuristicIntent` remains available as a zero-dependency fallback. It does not
+manufacture a learned posterior and is no longer the adapter used by the main
+evaluation harness.
+
+Affect can still override intent during sustained escalation. A clear action
+request should drive the response in a calm turn; it should not erase a
+multi-turn escalation signal.
+
+The bundled data is small and synthetic. `eval/intent_eval.py` therefore
+reports both a fixed held-out score and five-fold cross-validation; neither is
+presented as evidence of production-level semantic understanding.
+
+## Verified development baselines
+
+The current CI-verified EmoBank regression baseline uses the official upstream
+train/dev/test split (8062 / 1000 / 1000). On the untouched test split:
+
+| dimension | MAE | train-mean baseline MAE | Spearman rho |
+| --- | ---: | ---: | ---: |
+| Valence | 0.2125 | 0.2449 | 0.5460 |
+| Arousal | 0.1782 | 0.1904 | 0.3120 |
+| Dominance | 0.1494 | 0.1563 | 0.2573 |
+
+The regressor beats the train-mean baseline on MAE for all three dimensions,
+but Arousal and Dominance rank correlations are still modest. The machine-readable
+record is `eval/results/emobank_affect_baseline.json`.
+
+### Dialogue-signal baseline
+
+The learned dialogue-signal tracker was verified on the pinned XDailyDialog
+English train/dev/test files (83035 / 8025 / 7716 utterances). On the untouched
+test file:
+
+| task | accuracy | macro-F1 | majority accuracy |
+| --- | ---: | ---: | ---: |
+| dialogue act | 0.8025 | 0.7274 | 0.4557 |
+| basic emotion | 0.8249 | 0.4310 | 0.8166 |
+
+The dialogue-act signal is substantially above the majority baseline. The
+emotion signal is much weaker: macro-F1 is only 0.431 and accuracy is only
+slightly above the majority baseline on test (and below it on dev). EQ-Layer
+therefore treats emotion as supporting evidence rather than standalone proof of
+subtext. The machine-readable result is
+`eval/results/xdailydialog_signal_baseline.json`.
+
+### Higher-level subtext audits
+
+Direct higher-level supervision was investigated rather than assumed:
+
+| source / target | verified result | routing decision |
+| --- | --- | --- |
+| DialogBank correction | 4 direct examples | **NO-GO** — insufficient supervision |
+| DialogBank disagreement | 1 direct example | **NO-GO** — insufficient supervision |
+| Coarse Discourse disagreement | test ROC-AUC 0.8111, AP 0.1420, F1 0.2278 | **NO-GO** — ranking signal exists, but precision/recall are insufficient for `challenge` routing |
+| DBDC3 hard breakdown | test ROC-AUC 0.5057, AP 0.2555 | **NO-GO** — effectively chance-level text-only generalisation |
+
+These results are preserved rather than optimized away. The corresponding
+machine-readable records are
+`eval/results/dialogbank_label_inventory.json`,
+`eval/results/coarse_disagreement_no_go.json`, and
+`eval/results/dbdc3_breakdown_no_go.json`.
+
+### Layer compute cost and decision quality
+
+Component metrics do not say what the layer costs to run. A paired A/B run of
+the same 15 seeded requests with the layer enabled and disabled, 100 passes
+per arm, measured the layer's own deterministic compute with no LLM in either
+arm:
+
+| arm | added median (ms) | added p95 (ms) | intent holdout accuracy (36) | appropriateness rubric |
+| --- | ---: | ---: | ---: | ---: |
+| learned intent adapter | 1.1612 | 1.4636 | 1.000 | 0.9917 |
+| heuristic zero-dependency | 0.1104 | 0.2265 | 0.2778 | 1.0000 |
+
+Classification and routing are timed independently rather than lumped: with
+the learned adapter, intent inference is ~92% of classification and routing
+is ~2% of the total. The two adapters are not interchangeable — both score
+1.000 on the 4 labelled seed cases, but only the learned adapter holds up on
+the 36-case holdout. Latency is machine-dependent and moved ~9% between runs
+on the same machine, so treat the learned figure as approximately
+1.2 ms median rather than an exact constant.
+
+The measured quantity is the layer's compute cost and the structural quality
+of its decision, not response quality: there is no model in the measured path
+to generate prose. End-to-end quality still needs the paired human evaluation
+in `eval/AB_PROTOCOL.md`.
+
+```bash
+python eval/ab_latency_eval.py
+```
+
+Full methodology, tables and run-to-run variation are in
+`docs/AB_LATENCY_BENCHMARK.md`. Machine-readable record:
+`eval/results/ab-latency.json`.
+
+
+## Evidence provenance
+
+A subtext label is not enough by itself. `SubtextDecision.evidence_level`
+records how the label was obtained:
+
+- `verified` — caller/external annotation supplied the state.
+- `direct_learned` — the upstream training target directly matches the emitted label.
+- `derived` — multiple learned signals are composed into a higher-level control label.
+- `structural` — explicit conversational form or marker triggered the label.
+- `fallback` — learned evidence was too weak and an auditable fallback was used.
+
+For example, XDailyDialog directly supervises `question`, but it does not
+directly supervise EQ-Layer's `challenge` or `exhaustion`; those remain
+`derived`. `StanceDecision` uses the same principle: factual
+`user_right/user_wrong` stays `unknown` unless externally verified.
+
+## Blind response-level evaluation
+
+Component metrics do not establish that EQ-Layer improves the final response.
+The repository therefore includes a condition-blind paired human-evaluation
+harness. The complete pre-registered protocol is in `eval/AB_PROTOCOL.md`.
+
+Generate paired responses with the **same base model** in both arms:
+
+```bash
+python eval/ab_generate.py heldout.jsonl pairs.jsonl manifest.json \
+  --model-command "python model_adapter.py" \
+  --model-id SAME_BASE_MODEL_VERSION \
+  --affect-model artifacts/emobank_affect.joblib \
+  --subtext-model artifacts/xdailydialog_subtext.joblib \
+  --temperature 0 \
+  --seed 42 \
+  --git-commit <eq-layer-commit>
+```
+
+The configured command receives JSON on stdin and returns either plain response
+text or JSON containing `text`/`response`. Secrets belong in environment
+variables, not command arguments. `eval/cases.jsonl` is rejected by default
+because it is a development set, and gold annotations are ignored unless an
+explicit oracle-analysis flag is supplied.
+
+
+Prepare pairs as JSONL:
+
+```json
+{"id":"case-001","context":[{"role":"user","content":"..."}],"baseline":"...","eq":"..."}
+```
+
+Blind and randomize them:
+
+```bash
+python eval/ab_prepare.py pairs.jsonl ballot.jsonl key.json --seed 42
+```
+
+Keep `key.json` away from raters. For every case, rate A/B/tie on:
+
+- `intent_fidelity`
+- `appropriateness`
+- `actionability`
+- `non_patronizing`
+- `overall`
+
+Then score a single rater:
+
+```bash
+python eval/ab_score.py rated_ballot.jsonl key.json
+```
+
+Or score multiple raters on the same blinded cases:
+
+```bash
+python eval/ab_score_multi.py key.json rater1.jsonl rater2.jsonl rater3.jsonl
+```
+
+The single-rater scorer reports EQ wins/losses/ties, non-tie win rate, Wilson
+95% confidence intervals, and an exact two-sided sign test. The multi-rater
+scorer additionally aggregates **case-level majority preference** and reports
+**Fleiss' kappa** for inter-rater agreement; it does not treat every rater vote
+as an independent case.
+
+The harness does **not** manufacture a result: response generation and human
+ratings must come from a real pre-registered comparison.
+
+### Passive response auditor
+
+A generated EQ response is also inspected by `ResponseAuditor`. The A/B
+generation pipeline records the result under `generation.response_audit` and
+the manifest records `response_auditor_mode=passive-metadata-only`.
+
+The auditor currently checks only structurally observable control violations:
+
+- empty response;
+- question-budget overrun;
+- missing required clarification;
+- unsupported absolute privacy promise;
+- `stance=unknown` combined with an explicit "you are right / I was wrong"
+  admission;
+- near-duplicate recent assistant responses;
+- repeated prior answer while a repair is active;
+- large low-verbosity overruns.
+
+Phrase matching folds punctuation, fullwidth and zero-width characters,
+combining marks and Turkish dotted/dotless case before checking word boundaries,
+so a spelling-level variant does not hide a privacy promise or a stance
+admission from the audit.
+
+It does **not** decide whether factual claims are true, whether the user's
+position is correct, or whether advice is substantively good. Hard audit
+failures currently request regeneration in metadata only; automatic
+regeneration is deliberately disabled in the A/B experiment so the evaluation
+protocol is not silently changed.
+
+## Selection
+
+Policies declare preconditions, and the most constrained applicable policy
+wins. There is no first-match rule, so adding a policy cannot silently change
+what a looser one does to a state you did not think about.
+
+Two consequences worth arguing about:
+
+- **Implicit tie-breaking is forbidden.** Selection ranks by specificity, then
+  explicit `priority`. If two applicable policies still tie, the selector
+  raises an ambiguity error instead of silently picking whichever was declared
+  first.
+- **`stance` is not guessed.** Whether the user is right is a semantic
+  judgement, so the tracker returns `unknown` unless a case or caller supplies
+  one. Policies that need it declare `user_is_right` or `stance_unknown`, so
+  "I could not tell" stays visible in the output instead of becoming a
+  confident wrong answer.
+
+Cases can carry `annotated` fields (`stance`, `subtext`) for signals that
+keywords genuinely cannot recover — exhaustion is the current example.
+
+## Layout
+
+```
+eq_layer/
+  policies.py      joint affect/intent policy taxonomy + selector
+  actions.py       task/social/repair/realization factorization
+  auditor.py       structural post-generation control-contract audit
+  interaction.py   structural repair lifecycle + interaction-quality state
+  affect.py           affect-state tracker interface + zero-dependency structural fallback
+  trained_affect.py   learned VAD regressor + multi-turn affect adapter
+  trained_subtext.py     learned dialogue-act/emotion signals + conservative subtext derivation
+  trained_disagreement.py experimental direct-disagreement model; verified no-go for routing
+  trained_breakdown.py   experimental text-only breakdown model; verified no-go for routing
+  tracker.py             composes affect, subtext, stance, repair and interaction quality
+  intent.py           intent state + zero-dependency fallback
+  intent_belief.py    posterior belief + transparent Bayes-risk router
+  trained_intent.py   learned TF-IDF + logistic-regression posterior adapter
+  data/intent_train.jsonl  bundled training corpus
+  steer.py               policy + intent → decode path, and the scorer
+  response_experiment.py same-model baseline-vs-EQ generation engine
+eval/
+  cases.jsonl          development cases, not final A/B evidence
+  AB_PROTOCOL.md       pre-registered response-level evaluation protocol
+  ab_generate.py       paired response generation
+  ab_prepare.py        A/B blinding
+  ab_score.py          single-rater scoring
+  ab_score_multi.py    multi-rater scoring
+  ab_latency_eval.py   layer-on vs layer-off latency + decision-quality A/B
+  run.py
+```
+
+## Scoring
+
+Three metrics, deliberately narrow:
+
+- **specificity** — does the response name the concrete thing the user actually said, or a category of difficulty?
+- **genericness** — count of empty validation phrases. Penalised on purpose: these are cheap under human raters, so models learn to produce them unless a cost is attached.
+- **escalation latency** — how many turns pass after tension rises before the register changes.
+
+If genericness is not penalised, a model will score well by saying nothing in particular.
+
+## Affect and conversational signals are now partly learned
+
+`TrainedAffect` learns continuous Valence, Arousal and Dominance from EmoBank,
+then converts Valence to `[-1, 1]` and Arousal to `[0, 1]` for policy state.
+Multi-turn `escalation_delta` is computed from consecutive learned arousal
+predictions rather than keyword counts.
+
+`TrainedSubtext` separately learns dialogue-act and basic-emotion signals from
+XDailyDialog. Those supervised signals are then combined with V/A state to
+derive higher-level control labels conservatively:
+
+- learned `question` -> `question`
+- learned `directive` + independent heat -> `demand`
+- learned `question` + anger/disgust + high arousal -> `challenge`
+- learned sadness + negative low-arousal V/A -> `exhaustion` / `resignation`
+
+`correction` and disclosure boundaries remain structural because the chosen
+upstream data does not directly supervise those categories.
+
+`stance=user_right/user_wrong` is **not** inferred from generic dialogue.
+Whether a user is factually or procedurally correct requires external evidence.
+`AnnotationStanceResolver` therefore emits `unknown` unless a verifier or
+annotation supplies a stance. This is intentional rather than a missing
+confidence threshold.
+
+The remaining limitations are:
+
+- **`escalating_past_n` excludes the current turn.** The question is whether
+  the preceding turns were rising, so one polite message after three hostile
+  ones does not reset the register.
+- **`question` vs `challenge`** turns on whether escalation markers are
+  present, not on punctuation. `Sözleşme kaç gün geçerli?` is a question;
+  `Sen de mi?!` is a challenge.
+- **Exhaustion/resignation still lacks direct supervision.** The current label
+  is a `derived` composition of learned sadness plus low-valence/low-arousal
+  state. It must not be described as a directly learned exhaustion classifier.
+- **First-word matching strips punctuation.** `Neden?` must match `neden` or
+  the one-word repeated question — the exact shape `escalating` exists to
+  catch — silently never fires.
+
+The remaining hard gap is direct, transferable supervision for higher-level
+states such as correction, exhaustion/resignation, and factual stance. Two
+plausible direct proxies — disagreement detection and text-only breakdown
+detection — were tested and retained as no-go results instead of being wired
+into policy routing. The tracker exposes where labels are direct, derived,
+structural, fallback, or externally verified.
+
+## Publishing
+
+Two artifacts, one semantic version: PyPI `eq-layer` (the Python runtime and
+control layer) and npm `eq-layer` (the portable Agent Skill installer and CLI
+bridge). Each side keeps its version in exactly one canonical location, and the
+release workflows verify the GitHub release tag against those fields before
+uploading.
+
+`.github/workflows/create-release.yml` is the release entry point: a push to
+`main` that changes `.release-request` creates the GitHub release when missing
+and explicitly dispatches both publishers (`release.yml` for PyPI and
+`publish-npm.yml` for npm). A release tag on its own does not publish npm;
+GitHub suppresses the `release` event for releases created with `GITHUB_TOKEN`,
+so the explicit dispatch is required. The npm job waits until the exact version
+is live on PyPI before publishing, so a failed PyPI release cannot leave npm
+ahead. Both publishers no-op when their registry already has the version, and
+prerelease GitHub releases are skipped by both workflows.
+
+npm publishing uses trusted publishing over GitHub OIDC by default and requests
+a provenance attestation (`npm publish --access public --provenance`). The
+presence of an `NPM_TOKEN` secret does **not** change that: token mode runs only
+when a maintainer explicitly dispatches `publish-npm.yml` with
+`use_token_fallback=true`. That fallback publishes with
+`npm publish --access public --no-provenance`, because provenance is an
+OIDC-only attestation. See `docs/PUBLISHING.md` for the full flow.
+
+## Contributing
+
+Cases are the main entry point. Open one for a failure mode you can describe concretely — especially the ones where two policies seem equally right.
+
+Policy changes go through an RFC first: `.github/RFC_TEMPLATE.md`.
+
+## Related projects
+
+Part of the Furox scientific-computing portfolio: independently versioned projects that pair agent-facing interfaces (MCP servers and Agent Skills) with deterministic, fail-closed verification.
+
+- [scientific-computing-system](https://github.com/Furox-Art/scientific-computing-system) — zero-dependency Python numerics with run manifests.
+- [scientific-computing-system-2.0](https://github.com/Furox-Art/scientific-computing-system-2.0) — NumPy/SciPy/pandas build with replayable fit records.
+- [scientific-toolkit](https://github.com/Furox-Art/scientific-toolkit) — MCP gateway over nine research tools.
+- [axiomize](https://github.com/Furox-Art/axiomize) — unit-checked modeling engine with SBML, CellML and Modelica export.
+- [axiomize-quantum-skills-2.0](https://github.com/Furox-Art/axiomize-quantum-skills-2.0) — modeling engine plus quantum-inspired reasoning bundle.
+- [quantum-reasoning-skill](https://github.com/Furox-Art/quantum-reasoning-skill) — agent skill that keeps competing hypotheses alive.
+- [plan-auditor](https://github.com/Furox-Art/plan-auditor) — evidence-based completion gate for coding agents.
+- [nomosguard](https://github.com/Furox-Art/nomosguard) — deterministic security decision layer with a hash-chained ledger.
+- [literature-evidence-mcp](https://github.com/Furox-Art/literature-evidence-mcp) — literature MCP server with a hash-chained evidence ledger.
+- [repocraft](https://github.com/Furox-Art/repocraft) — byte-deterministic project scaffolding.
+
+## License
+
+MIT. See `LICENSE`.

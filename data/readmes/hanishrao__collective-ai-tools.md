@@ -97,6 +97,7 @@ Use these hashtags in search to filter out the tools
 - [Heroify](https://www.heroify.lol/) - Generate high-quality 3D graphics for landing pages. `#paid`
 - [Luphra](https://www.luphra.com/) - Prompt-to-matter: AI that turns prompts and sketches into editable 3D and physical products. `#freemium`
 - [Meshy](https://www.meshy.ai) - Create Stunning 3D Game Assets with AI `#free`
+- [objekto.io](https://objekto.io/en) - Turns a few words, a photo or a sketch into a multi-part, print-ready 3D model designed by AI, then has it 3D printed and delivered (France only for now). `#freemium`
 - [OctoEverywhere](https://octoeverywhere.com/) - OctoEverywhere is a 3D printing failure detection assistant that uses computer vision algorithms to detect printing errors such as spaghetti, layer shifts, adhesion issues, and more `#paid`
 - [Omnia](https://www.theomnia.io/) - Create 3D models based on text prompts or uploaded images. `#paid`
 - [Pixela AI](https://pixela.ai/) - AI-generated game textures. Share yours with the community! `#free`
@@ -378,6 +379,7 @@ Use these hashtags in search to filter out the tools
 - [Canva](https://www.canva.com/) - Use it to create social media posts, presentations, posters, videos, logos and more. `#freemium`
 - [Canva AI](https://www.canva.com/ai-image-generator/) - AI-powered design platform with image generation and editing tools. `#freemium`
 - [DALL-E 3](https://openai.com/dall-e-3) - OpenAI's advanced AI image generator with improved quality and safety. `#freemium`
+- [DESIGN:OS Studio](https://jangtrinh.github.io/design-os-studio/) - FREE desktop design studio where your own AI agent designs on .fig files and you refine on a GPU canvas. `#free` `#design`
 - [Designs AI](https://designs.ai/) - Make a logo, video, social media banner, business card, flyer, mockup and more with AI. `#freemium`
 - [Diagrammaton](https://www.figma.com/community/plugin/1295127627739218424/diagrammaton) - Diagrammaton converts natural language descriptions into fleshed out diagrams. `#free`
 - [Edraw MindMaster](https://www.edrawsoft.com/mindmaster/) - Multi-platform intelligent mind mapping software. `#free`
@@ -460,6 +462,7 @@ Use these hashtags in search to filter out the tools
 - [CodeTrendy](https://codetrendy.com/) - Curated directory of newly launched startups, SaaS and AI tools, with a free read-only remote MCP server (https://codetrendy.com/api/mcp) that lets AI assistants search listings, read profiles and find alternatives, no API key. `#free` `#mcp`
 - [Codiga](https://www.codiga.io/) - Customizable real-time static code analysis. `#free`
 - [CodiumAI (Qodo)](https://www.qodo.ai/)%20AI%20Tool) - Quality agent platform for organizational standards. `#paid`
+- [Continua](https://continua-nu.vercel.app/) - Experimental macOS 13+ companion designed to resume interrupted Codex Desktop coding tasks after supported usage resets, with local task history; unsigned/not notarized, manual updates, and genuine unattended recovery unverified. `#free`
 - [Continue](https://continue.dev/) - Open-source AI code assistant that works with any LLM `#free`
 - [Copilot](https://github.com/features/copilot) - AI assistant that speeds up delivery and keeps your code safe `#paid`
 - [Cortex](https://github.com/cortex-docs/cortex) - Generates API documentation, typed SDKs, and MCP servers from API specifications and Markdown. `#free` `#opensource`
@@ -486,6 +489,7 @@ Use these hashtags in search to filter out the tools
 - [Heabsy](https://heabsy.com/) - OpenAI- and Anthropic-compatible inference API for open models, with an EEA tier on dedicated GPUs in EEA data centres and zero data retention. `#paid`
 - [HeyCLI](https://heycli.com/) - Natural language execution for Linux terminals. `#paid`
 - [Hocoos](https://hocoos.com/) - AI-driven no-code website construction tool. `#paid`
+- [HopBase](https://hop-base.com/) - AI API gateway with one base URL for Claude, GPT, Gemini, DeepSeek and Qwen text models plus image and video models such as Seedream, Seedance and Kling, compatible with OpenAI, Anthropic and Gemini endpoints. `#paid` `#api` `#llm`
 - [Hyperconsciousness](https://github.com/louis030195/hyperconsciousness) - Developer-alpha Rust knowledge store with encrypted, append-only records and an MCP server for agent access through scoped, expiring grants. `#free` `#opensource`
 - [Imgcook](https://www.imgcook.com/) - Taobao design-to-code intelligent tool. `#free`
 - [JamGPT](https://jam.dev/) - Automated error reporting and fixing assistant. `#free`
@@ -497,6 +501,7 @@ Use these hashtags in search to filter out the tools
 - [LangChain](https://www.langchain.com/) - Open-source framework for building LLM-powered applications and agents, with 1000+ integrations. `#free` `#opensource`
 - [Lintrule](https://www.lintrule.com/) - Supercharge Code Reviews and Policy Enforcement `#paid`
 - [Lovable](https://lovable.dev/) - Generating full-stack apps via Supabase/GitHub. `#freemium`
+- [MailVeri MCP](https://github.com/mailveri/mailveri-mcp) - Open-source MCP server that lets Claude, Cursor and other agents verify single emails and bulk lists via the MailVeri API (SMTP, catch-all, disposable and role detection). `#freemium` `#opensource` `#mcp`
 - [MarsX](https://www.marsx.dev/) - MicroApps and no-code software development. `#freemium`
 - [Markstream](https://markstream.simonhe.me/) - Open-source streaming Markdown renderer for AI chat interfaces, with incomplete-token handling and packages for Vue, React, Svelte, Angular, and Vue 2. `#free` `#opensource`
 - [Masaka for Codex](https://github.com/masakaai/codex-multiple-env) - Local macOS and Linux CLI that keeps each ChatGPT account and workspace in an isolated CODEX_HOME, shows Codex usage windows, and switches future native Codex sessions without copying tokens. `#free` `#opensource`
@@ -772,6 +777,7 @@ Use these hashtags in search to filter out the tools
 - [Allowly Hiring Evidence](https://allowly.ai/solutions/hiring/) - Applies approved employment-screening policies to selected fields, records linked reviews and corrections, and exports signed Hiring Decision Packs. `#freemium`
 - [Baigua Interview](https://baigua.ai/) - Safe technical interview code-writing assistant. `#free`
 - [CareJobs.Now](https://carejobs.now) - Free AI job search for US healthcare workers: describe the job you want in plain words and it matches you to 170,000+ hospital and clinic jobs with posted pay. `#free`
+- [CookLLM](https://cookllm.com/en/jobs/match) - AI job matcher that emails you new AI jobs from 1,300+ AI companies' career pages and hiring posts on X and LinkedIn, scored against your resume. `#paid`
 - [Cover Letter Copilot](https://coverlettercopilot.ai/) - Your AI-Powered Cover Letter Generator `#freemium`
 - [Deepbrain AI](https://www.deepbrain.io/) - Innovate HR Process with AI Interview. `#paid`
 - [Interview Cat](https://mianshiya.com/) - Answer suggestions based on real-time listening. ``
@@ -837,6 +843,7 @@ Use these hashtags in search to filter out the tools
 ## Image Generator
 
 - [Adobe Firefly 3](https://www.adobe.com/products/firefly.html) - Adobe's latest AI image generation with commercial-safe content `#freemium`
+- [AI Anime Generator](https://ai-anime-generator.io/) - Create anime portraits and original characters from text or reference images, with 40 one-time signup credits. `#freemium`
 - [AI Image](https://aiimage.com) - Generate and edit images from text prompts and reference pictures in a browser. `#paid` `#design`
 - [AI Passport Photo](https://aipassportphoto.com/) - Take A Photo with Your Mobile Phone and Get Your Passport Photo in Seconds. `#freemium`
 - [Alimvo](https://alimvo.com/) - AI product photo and video generator for ecommerce brands. Create studio shots, lifestyle scenes, and ad creatives in minutes. `#freemium`
@@ -876,6 +883,7 @@ Use these hashtags in search to filter out the tools
 - [Seedream AI Studio](https://seedream4.video/) - Multi-model AI image generation using ByteDance Seedream 5.0/4.5/4.0, with one-click image-to-video animation via Kling 2.1. `#freemium`
 - [Stable Diffusion Online](https://stablediffusionweb.com/#ai-image-generator) - text-to-image diffusion model capable of generating photo-realistic images given any text input, cultivates autonomous freedom to produce incredible imagery, empowers billions of people to create stunning art within seconds. `#opensource`
 - [stockimg.ai](https://stockimg.ai/) - Stockimg is an all in one design and content creation tool powered by AI. You can easily generate logo, illustration, wallpaper, poster and more. `#freemium`
+- [ThumbnailSnap](https://thumbnailsnap.com/youtube-thumbnail-maker) - Generates YouTube, Shorts and TikTok thumbnails with AI and keeps the title as an editable text layer; cropping your own photo and adding text is free. `#freemium`
 - [Top VS Best](https://topvsbest.com/aiimagecreator/) - Effortlessly craft mesmerizing and exclusive images through our AI-powered image generation. `#free`
 - [Vivify GPT Image 2.5](https://vivify.video/models/gpt-image-2-5) - Generate product visuals and edit reference images with Flare or Sunburst in a browser. `#paid`
 - [Wepik AI](https://wepik.com/ai) - Text to Image Converter `#free`
@@ -922,6 +930,7 @@ Use these hashtags in search to filter out the tools
 - [MarketMirror](https://github.com/DarkWorldCoder/market-mirror) - Tests ads, prices, emails and sales pitches on simulated buyers and returns a go / iterate / no-go report; runs locally from coding agents as an MCP server. `#free` `#opensource`
 - [MentionDesk](https://mentiondesk.com/) - Tools to optimize being quoted or referenced within AI responses and track mentions. `#paid`
 - [Qimi](https://qimi.ai/) - Game industry ad production and placement. `#free`
+- [Revenue Scout](https://revenuescout.ai/) - Finds public posts where people need what you sell and drafts replies for you to review and post. `#freemium` `#lead-generation`
 - [SE Visible (visible.seranking.com)](https://visible.seranking.com/) - AI brand visibility tracker for search/LLM result coverage. `#paid`
 - [Socialmon](https://www.socialmon.ai/) - Find viral marketing examples and trends across topics and industries. `#paid`
 - [Sparkiz.ai](https://sparkiz.ai) - Turn a product link into a ready-to-launch AI video ad (avatars, voiceover, captions) in 60 seconds. `#freemium`
@@ -937,6 +946,7 @@ Use these hashtags in search to filter out the tools
 - [Feishu Minutes](https://www.feishu.cn/product/minutes) - Transcribes video/audio into knowledge notes. `#freemium`
 - [Fireflies.ai](https://fireflies.ai/) - High-accuracy transcription in 100 languages. `#free`
 - [iFlytek Meeting](https://meeting.xfyun.cn/) - Secure AI cloud meeting system platform. `#free`
+- [Meetini](https://meetini.net/) - Meeting and interview assistant for Apple Silicon Macs with local captions, transcripts, meeting notes, and metered AI assistance. `#paid`
 - [Noty.ai](https://noty.ai/) - Converts meeting content into executable tasks. `#free`
 - [Otter.ai](https://otter.ai/) - joins calls to automatically record/summarize. `#freemium`
 - [Tencent Meeting AI](https://www.tencent.com/) - Real-time meeting organization and summaries. `#free`
@@ -994,37 +1004,4 @@ Use these hashtags in search to filter out the tools
 - [Spotify Play Count MCP](https://github.com/GeminiGeorge22/spotify-play-count-mcp) - MCP server that gives AI assistants Spotify play counts for any track, album, artist or playlist, plus artist monthly listeners and followers; runs on your own Apify token. `#opensource` `#mcp`
 - [Suno AI](https://suno.ai/) - AI-powered music creation platform that generates complete songs from text prompts `#freemium`
 - [Tera Studio](https://terastudio.co/) - Learns your singing voice from about a minute of singing, then sings any song you upload back in your voice, in any language. `#freemium`
-- [Udio](https://udio.com/) - Advanced AI music generator with high-quality audio output and style control `#freemium`
-
-**[⬆️ Back to Top](#table-of-contents)**
-
-## Paraphraser
-
-- [Better Synonyms](https://www.bettersynonyms.com/) - A convenient way to find better synonyms for words in a specific context. `#free`
-- [Franz AI](https://chrome.google.com/webstore/detail/franz-ai-text-rewriter/lclcncbdhfpolppomniofbkiaaebaefg) - A Chrome extension to rewrite text using OpenAI API. `#free`
-- [Penelope AI](https://penelope-ai.vercel.app/) - Speed up writing with paraphrasing, summarizing and story generation `#paid`
-- [Rewriteit AI](https://rewriteit.ai/) - Rewrite with Confidence: Enhance Your Writing with AI Technology `#free`
-- [StudyCrumb](https://studycrumb.com/paraphrasing-tool) - This essay rephraser can change the wording of any content `#free`
-
-**[⬆️ Back to Top](#table-of-contents)**
-
-
-## Personal Assistant
-
-- [ChatGPT Sidebar](https://chatgpt-sidebar.com/) - AI & you work side by side on any page `#free`
-- [Pathfinder](https://www.summit.im/pathfinder/) - Pathfinder, brought to you by Summit, is an innovative AI-driven tool designed to assist individuals in creating personalized plans and strategies to achieve their goals. `#free`
-
-**[⬆️ Back to Top](#table-of-contents)**
-
-## Presentation
-
-- [AiPPT](https://www.aippt.com/) - Simplifies design with automatic outlines. `#free`
-- [auxi](https://www.auxi.ai/) - PowerPoint plugin for management consultants. `#free`
-- [beautiful.ai](https://www.beautiful.ai/) - Automated brand-compliant slide production. `#freemium`
-- [Bige AIPPT](https://bige.net/) - Massive high-quality template selection. `#free`
-- [Biling AI PPT](https://ibiling.cn/) - Online manuscript and PPT framework tool. `#free`
-- [Bosi AIPPT](https://bosi.ai/) - Efficient PPT creation for business and study. `#free`
-- [ChatPPT](https://chat-ppt.com/) - Command-style workplace office assistant. `#paid`
-- [Chronicle](https://chroniclehq.com/) - High-impact presentation tool for non-pros. `#free`
-- [Decktopus AI](https://decktopus.com/) - AI generator with a presenter coach and editor. `#freemium`
-- [EditableImage](https://editableimage.com/) - Turns a slide screenshot into an editab
+- [Udio](https://udio.com/) - Advanced A

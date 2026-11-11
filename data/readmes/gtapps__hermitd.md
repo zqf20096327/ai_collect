@@ -2,7 +2,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
   <a href="https://code.claude.com/docs/en/plugins"><img src="https://img.shields.io/badge/Claude%20Code-plugin-orange.svg" alt="Claude Code Plugin" /></a>
-  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.30-green.svg" alt="Version 1.4.30" /></a>
+  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.31-green.svg" alt="Version 1.4.31" /></a>
   <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/gtapps/hermitd/_gh_traffic_stats/.github/badges/clones.json" alt="Downloads" />
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" />
   <a href="https://discord.gg/54sJqAxhUh"><img src="https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white" alt="Join" /></a>
@@ -35,7 +35,7 @@ https://github.com/user-attachments/assets/84012a4d-4ca1-475e-b82d-1db45634a5e3
 <details open>
 <summary>Already run Claude Code? Install the plugin</summary>
 
-With Claude Code 2.1.318+ and Bun 1.4+ installed:
+With Claude Code 2.1.322+ and Bun 1.4+ installed:
 
 ```bash
 claude plugin install hermitd --marketplace gtapps/hermitd --scope local
@@ -298,7 +298,7 @@ Claude Code 2.1.287 blocks plugins named `claude*`, so this project moved from `
 
 Coming from `claude-code-hermit`? See [how to migrate](#upgrading-from-claude-code-hermit).
 
-Run `hermitd update` from the project folder, or `hermitd update <name>` from anywhere. Docker updates refresh the host core first, then the container. The update waits for a quiet moment, applies migrations, then restarts the agent once and resumes the conversation.
+Run `hermitd update` from the project folder, or `hermitd update <name>` from anywhere. Docker updates refresh the host core first, then the container. The update waits for a quiet moment, applies migrations, then restarts the agent once and resumes the conversation. External updates finish with a `hermitd doctor --fix` pass and record its result in update history. Run `hermitd doctor [--fix]` to list health findings and their commands, or apply safe repairs and re-check; queued upgrades remain pending until the agent applies them.
 
 `hermitd list` shows registered and discovered agents on this host, including stopped and missing projects. `hermitd status [name]` shows transport, execution and its age, open and waiting tasks, and the task in progress, including one a worker or helper runs. Both support `--json`. Listing never removes entries; `hermitd prune` removes missing projects.
 

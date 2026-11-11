@@ -266,7 +266,7 @@ the three must agree (see the DOCS-IN-SYNC rule in `CLAUDE.md`).
   method answers an interface method in each class (resolution clauses `IJob.Execute = RunJob` included), the call/read/write
   sites of an interface member (attributed to the member, RB-5), a class's interfaces and what answers each member, and for a
   class method the members it answers (`--uses`: the sites reaching it; `--max-sites N` caps the list). `--json` = `implementors/1`; `--format dot|mermaid`;
-  `--library-db` adds library implementor counts (`--include-library` lists them). Chart: `ask implementors`. MCP: `get_implementors`.
+  `--library-db` adds library implementor counts (`--include-library` lists them). Chart: `ask implementors`. `query implementors` is an alias of the same verb (same flags and exit codes; `--name` is accepted for `--target`). MCP: `get_implementors`.
 * `find-unit` for an **RTL / VCL / third-party** symbol needs the **platform
   library** database (`resolve-dbs --platform win64`), not a project DB - a
   project DB holds only that project's own units.
@@ -864,7 +864,9 @@ be written and writes nothing. This verb replaces `Register-DragLintProtocol.ps1
 5. On IDE startup, the drag-lint logo + version appear on the RAD Studio
    splash screen. **Help > About > drag-lint** shows an entry with live
    engine self-info (version, build date, tree-sitter versions,
-   capabilities, exe path, plugin log location), fetched from `drag-lint.exe`
+   capabilities, exe path, plugin log location; `drag-lint info --db` also
+   reports `grammar_dlls_differ` when an index was parsed with other
+   tree-sitter DLLs), fetched from `drag-lint.exe`
    on a background thread so it never blocks IDE startup; if the exe call
    fails, the entry shows a structured diagnostic error block instead.
 
@@ -1130,5 +1132,4 @@ write and rolls every edited file back when the build fails: the whole run is al
 
 | Command | What it does | Notable flags |
 |---|---|---|
-| `rename --kind symbol --name <q> --to <new> --db <db>` | Cross-unit rename (declaration + every reference). Refuses (exit 2, naming the file) when the old name is used in an indexed `.inc` include: refs inside `{$I}` text are not indexed until extractor 1.22. Renaming an event handler also rewrites its `OnClick = Name` binding in the form's text `.dfm`; a binary `.dfm` that holds the name refuses (exit 2, naming the `.dfm`). `--json` reports each edit at the identifier it replaces **`--apply` is proved and gated (1.44.1):** every identifier token of the old name is decided as an edit, another symbol's (binding, or the receiver's static type via `ref_types` + `ref_receivers`), or a named refusal (exit 2, nothing written); every token of the new name is checked for capture, because a rename that compiles can still bind differently. A method renames with its overloads, overrides and implementers. `--plan [--json]` reports it all, exit 0. A write needs `--project <X.dproj>` (or a DB at `<folder>\_D-RAG\<base>.sqlite`, whose project it is) and passes the compile gate: baseline build, all-or-nothing write, after build, rollback. `--no-compile` is refused with `--apply`. | `--apply`, `--no-backup`, `--json` |
-| `rename --kind param --in <f> --line <L> --col <C> --to <new>` | Routine-local rename (parameter/variable). An occurrence under a `with` is decided by the index (`--db`), else refused; a routine already using the new name refus
+| `rename --kind symbol --name <q> --to <new> --db <db>` | Cross-unit rename (declaration + every reference). Refuses (exit 2, naming the file) when the old name is used in an indexed `.inc` include: refs inside `{$I}` text are not indexed until extractor 1.22. Renaming an event handler also rewrites its `OnClick = Name` binding in the form's text `.dfm`; a binary `.dfm` that holds the name refuses (exit 2, naming the `.dfm`). `--json` reports each edit at the identifier it replaces **`--apply` is proved and gated (1.44.1):** every identifier token of the old name is decided as an edit, another symbol's (binding, or the receiver's static type via `ref_types` + `ref_receivers`), or a named refusal (exit 2, nothing written); every token of the new name is checked for capture, because a rename that compiles can still bind differently. A method renames with its overloads, overrides and implementers. `--plan [--json]` reports it all, exit 0. A write needs `--project <X.dproj>` (or a DB at `<folder>\_D-RAG\<base>.sqlite`, whose project it is) and passes the compile gate: baseline build, all-or-nothing write, after build, rollback. `--no-compile` is refused with `--apply`. | `--apply`, `--no-backup`, `--json

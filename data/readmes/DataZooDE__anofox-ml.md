@@ -11,6 +11,7 @@
   <a href="https://github.com/DataZooDE/anofox-ml/actions/workflows/MainDistributionPipeline.yml"><img src="https://github.com/DataZooDE/anofox-ml/actions/workflows/MainDistributionPipeline.yml/badge.svg?branch=main" alt="Build"></a>
   <img src="https://img.shields.io/badge/estimators-188-brightgreen.svg" alt="188 estimators">
   <a href="#-claude-code-skills"><img src="https://img.shields.io/badge/Claude_Code-AI_skills_plugin-8A2BE2" alt="Claude Code plugin"></a>
+  <a href="https://datazoode.github.io/anofox-ml/"><img src="https://img.shields.io/badge/try_it-in_your_browser-2f6f5e" alt="Try it in your browser"></a>
   <img src="https://img.shields.io/badge/status-early%20development-orange.svg" alt="Status: early development">
 </p>
 
@@ -71,7 +72,17 @@ A DuckDB extension that brings the [anofox-ml](https://github.com/sipemu/anofox-
 
 ## Installation
 
-The extension is not published as a DuckDB community extension yet; that is on hold until the API has matured. Download a prebuilt binary from a GitHub release, or build it from source.
+### From the Community Extensions Repository
+
+anofox_ml is a [DuckDB community extension](https://duckdb.org/community_extensions/) for DuckDB v1.5.6 and v2.0.0 on Linux, macOS, Windows and DuckDB-Wasm:
+
+```sql
+INSTALL anofox_ml FROM community;
+LOAD anofox_ml;
+SELECT ml_version();
+```
+
+You can also download a prebuilt binary from a GitHub release, or build it from source.
 
 ### From a GitHub Release
 
@@ -87,7 +98,11 @@ LOAD './anofox_ml.duckdb_extension';
 SELECT ml_version();
 ```
 
-The setting can only be given when the database is opened, e.g. `duckdb.connect(config={"allow_unsigned_extensions": "true"})` in Python or `dbConnect(duckdb(config = list(allow_unsigned_extensions = "true")))` in R. `SHA256SUMS` in the release lists the checksums. DuckDB-Wasm builds (`wasm_mvp`, `wasm_eh`, `wasm_threads`, DuckDB 1.5.6) ship as `anofox_ml.duckdb_extension.wasm` in the same kind of zip. Changes per version are in [CHANGELOG.md](CHANGELOG.md).
+The setting can only be given when the database is opened, e.g. `duckdb.connect(config={"allow_unsigned_extensions": "true"})` in Python or `dbConnect(duckdb(config = list(allow_unsigned_extensions = "true")))` in R. `SHA256SUMS` in the release lists the checksums. DuckDB-Wasm builds (`wasm_mvp`, `wasm_eh`, `wasm_threads`, for DuckDB 1.5.6 and 2.0.0) ship as `anofox_ml.duckdb_extension.wasm` in the same kind of zip. Changes per version are in [CHANGELOG.md](CHANGELOG.md).
+
+### DuckDB-Wasm
+
+The extension runs in the browser too: **[try it in the playground](https://datazoode.github.io/anofox-ml/)**, DuckDB-Wasm with anofox_ml and example queries, nothing to install. CI runs the SQL test suite on the `wasm_eh` builds in DuckDB-Wasm, under Node for DuckDB 1.5.6 and 2.0 and in headless Chromium through the playground page for 2.0 (`test/wasm`). `wasm_mvp` and `wasm_threads` are built and checked statically: DuckDB-Wasm's threaded runtime cannot load any extension at the moment, DuckDB's own included ([extension-ci-tools#453](https://github.com/duckdb/extension-ci-tools/issues/453)). In the browser everything runs on one thread, so fits that use several threads natively (forests, boosting, tuning) are slower, and memory is limited to the browser tab's heap. `PerpetualRegressor` / `PerpetualClassifier` are not in the wasm builds, because their library always starts its own threads.
 
 ### From Source
 
@@ -358,7 +373,7 @@ SELECT ml_coverage(y, pi90.lower, pi90.upper), ml_interval_score(y, pi90.lower, 
 FROM (SELECT y, ml_predict_interval(m, [x1, x2], 0.1) AS pi90 FROM test, calibrated);
 
 -- or in one step: CV+ intervals around gradient boosting, one model per store
-CREATE TABLE models AS
+CREATE TABLE cv_models AS
 SELECT store, ml_fit_agg('CrossConformalRegressor', y, [x1, x2],
        '{"estimator": "HistGradientBoostingRegressor", "estimator_params": {"n_estimators": 200}, "cv": 5}') AS m
 FROM train GROUP BY store;
@@ -521,13 +536,14 @@ FROM readings r JOIN m USING (sensor);
 **Densities and robust outliers.** `KernelDensity` and `FactorAnalysis` give per-row log-likelihoods through `ml_score_samples`. `EllipticEnvelope` (robust covariance) scores rows with `ml_outlier_score_agg` like the other detectors (lower = more anomalous):
 
 ```sql
-SELECT ml_score_samples(ml_fit_agg('KernelDensity', [a, b], '{"bandwidth": {"Fixed": 1.0}}'), [5.0, 5.0]);
+SELECT ml_score_samples(ml_fit_agg('KernelDensity', [a, b], '{"bandwidth": {"Fixed": 1.0}}'), [1.0, 3.0]) FROM train;
 ```
 
 **Learning curves and early stopping.** `ml_staged_predict` scores every boosting stage at once. `ml_fit_with_validation_agg` stops on a validation set you choose, for example the last weeks of a series instead of a random split:
 
 ```sql
 -- validation RMSE per stage
+CREATE TABLE model AS SELECT ml_fit_agg('HistGradientBoostingRegressor', y, [x1, x2], '{"n_estimators": 200}') AS m FROM train;
 SELECT stage, ml_rmse(y, p[stage]) AS rmse
 FROM (SELECT y, ml_staged_predict(m, [x1, x2]) AS p FROM test, model), range(1, 201) r(stage)
 GROUP BY stage ORDER BY stage;
@@ -542,7 +558,7 @@ FROM (SELECT *, max(day) OVER (PARTITION BY store) AS max_day FROM sales) GROUP 
 
 ```sql
 UPDATE models SET model = w.model
-FROM (SELECT store, ml_warm_start_agg(m.model, units, [price, dow], '{"n_estimators": 300}') AS model
+FROM (SELECT store, ml_warm_start_agg(m.model, units, [price, promo, dow], '{"n_estimators": 300}') AS model
       FROM new_rows JOIN models m USING (store) GROUP BY store, m.model) w
 WHERE models.store = w.store;
 ```
@@ -710,7 +726,7 @@ make test                         # SQL logic tests in test/sql
 cargo test                        # Rust FFI tests
 cargo fmt --all                   # format
 cargo clippy --all-targets        # lint
-make check_skills                 # run the skills' SQL examples
+make check_skills                 # run the SQL examples of this README and the skills
 ```
 
 ### Layout

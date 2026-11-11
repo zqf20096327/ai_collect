@@ -169,6 +169,7 @@ meshioplusplus refine     in.vtu out.vtu --where "q<0.3"     # adaptive, closed 
 meshioplusplus partition  in.vtu 'out_{part}.vtu' --nparts 4 # N balanced parts
 meshioplusplus remesh-volume in.vtu out.vtu --cell-size 0.5  # retetrahedralize (isosurface stuffing)
 meshioplusplus optimize-volume in.vtu out.vtu               # ODT-remesh a tet mesh (relocate + flips)
+meshioplusplus adapt-volume in.vtu out.vtu --hgrad 1.5      # remesh a tet mesh to a graded size field
 meshioplusplus smooth     in.vtu out.vtu --iterations 20     # relax node positions
 meshioplusplus smooth     in.vtu out.vtu --method odt        # ODT smoothing, tet-only
 meshioplusplus interpolate src.vtu tgt.vtu out.vtu           # transfer fields across meshes
@@ -926,6 +927,18 @@ By default (`objective="worst"`) it raises the least dihedral angle and never lo
 
 The flips touch only interior faces/edges, so the boundary surface is preserved exactly (watertight in ⇒ watertight out); the point set is invariant, so `point_data`/`field_data` and named Point regions carry through while `cell_data`/Cell/Side regions are dropped. Tet-only, and (like `remesh_volume`) C++-core only.
 
+#### Size-field tetrahedral remeshing
+
+**`meshioplusplus.adapt_volume`** turns a valid but over-refined tetrahedral mesh, typically `octree_mesh`'s graded output, into one with fewer, better-shaped tetrahedra: it collapses, splits, swaps and smooths towards an isotropic size field with a gradation and a bound on how far the boundary moves, keeping corners, ridges, materials, regions and boundary tags. Every edit is guarded by exact orientation tests and a quality floor, and the output is byte-identical across backends and thread counts. It is native and MIT-licensed, an alternative to the LGPL MMG backend's `adapt`. See `doc/adapt_volume.md`.
+
+<!--pytest-codeblocks:skip-->
+
+```python
+out, report = meshioplusplus.adapt_volume(tets, hgrad=1.5, return_report=True)
+print(report["num_tets_before"], report["num_tets_after"], report["max_boundary_deviation"])
+tets = meshioplusplus.octree_mesh(skin, post_adapt=True, adapt_hgrad=1.5)  # the same as a post-stage
+```
+
 #### Smoothing
 
 **`meshioplusplus.smooth`** relaxes point coordinates to improve element shape, leaving topology and every data value alone: **only the points move**. See `doc/smooth.md`.
@@ -982,9 +995,4 @@ meshioplusplus.write("section.vtu", section)                  # a triangle/quad 
 ```python
 vol = meshioplusplus.read("part.vtu")                          # carrying point_data["T"]
 shells = meshioplusplus.isosurface(vol, "T", [300.0, 350.0, 400.0])
-meshioplusplus.write("shells.vtu", shells)                     # three tagged contour surfaces
-```
-
-#### Field derivatives (gradient / divergence / curl)
-
-**`meshioplusplus.gradient`** differentiates a `point_data` field: its gradient, divergence or curl. meshio++ could already transform, transfer, summarize and contour a field — this is what lets it *differentiate* one, which is the missing input for contouring a derived quantity (`|∇T|`, vorticity) and for the gradient-based error indicators that drive the selective `refine`. Two methods: **Green-Gauss** (the default) applies the divergence theorem over the cell, fanning each face into triangles about its corner average, which is **exact for a linear field on any cell** — planar faces or not, because the fan surface is closed; **least-squares** fits over the cells sharing a node and falls back to Green-Gauss (counted, never silently wrong) on a degenerate neighbourhood. An `nc`-component input yields `3·nc` gradient components laid out `[component][derivative]`, so a scalar gives `(n, 3)` and a 3-vector `(n, 9)`; divergence gives 1 and curl 3. Output is `Float64`, name
+meshioplusplus.write("shells.vtu", shells)                     

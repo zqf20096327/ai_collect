@@ -34,7 +34,7 @@
 6. **Evidence reports:** exports Markdown or JSON showing what was checked, whether source and selected approved dependencies still qualify the results, where evidence is missing and what needs attention next.
 7. **PatchProof:** plans and runs declared checks, binds patches and command-scoped approved inputs to qualified evidence, and shares impact, compatibility and verification gaps through local bundles and GitHub summaries.
 8. **Five host integrations:** Claude Code, Codex, Gemini CLI, Cursor Agent and GitHub Copilot CLI.
-9. **Better instruction following.** The rules you write down are shown to the agent at the moment they apply, so it follows them. That includes rules you already wrote for another agent: Cursor rules, Copilot instructions and `AGENTS.md` files reach Claude Code and the rest, and `ep_milestones --add-rule A B` declares a new one in one line. On test projects, it skipped a required change in 4 of 50 runs instead of 35 of 50, and almost always told you when it did. Even when your request pulled the other way, a rule written as a direct instruction was followed about four times as often as a plain description (skipped in 5 of 60 runs against 23 of 60). [Details](#behavior-evidence-across-development-milestones).
+9. **Better instruction following:** shows your project's rules to the agent at the moment they apply; in tests, a rule shown this way was followed about 90% of the time, against about 30% when there was no rule. [Details](#behavior-evidence-across-development-milestones).
 
 ---
 
@@ -669,10 +669,10 @@ only the analyzed command was measured. Deleted behavior remains a coverage gap;
 available current source can still be examined. Legacy records remain readable
 as whole-file samples without invented attribution.
 
-After explicit optional engine setup, `guide` and `strict` completion consider
-the shared runner automatically across all five hosts. There is no new completion
-blocker and no individual mutant target sent to the coding agent. You can also
-run it explicitly:
+It runs when you ask for it, on any of the five hosts. Completion runs it
+only if the project sets `"strength": {"at_stop": true}`. The agent never sees
+its findings, yet on the held-out sweep it made the agent wait 18 s at every
+stop, so it is off by default. It never blocks completion. Run it explicitly:
 
 ```bash
 python plugin/bin/ep_strength.py --root PATH

@@ -9,7 +9,7 @@ An AI coding agent for the terminal, built in Rust.
 ragent is a Rust coding agent inspired by RooCode, Claude Code, Copilot CLI and
 OpenCode. It provides multi-provider LLM orchestration, a comprehensive built-in
 tool system, a terminal UI, and a client/server architecture — all compiled into a
-single statically-linked binary with zero runtime dependencies.
+single binary that links only against the system C runtime (libc, libm, libgcc_s).
 
 It is implemented in Rust as a learning exercise for the author.
 
@@ -47,11 +47,11 @@ Start with [TUI-QUICKSTART.md](TUI-QUICKSTART.md) to run it, or
   the action is permitted or refused; it is a tightening-only layer over the static
   rules (a `deny` is hard, an `allow` never overrides an explicit policy `deny`, and
   any analyzer failure degrades to the normal interactive prompt)
-- **Comprehensive tool system** — **150 registered tools across 21 categories** in
-  the default build (the engine-gated `mf_screenshot` tool registers only when a
-  drivable headless browser is present, one above the count shown — spec
-  `openhands` FR-029). `ragent run --dry-run` prints the live per-category counts;
-  the groups are:
+- **Comprehensive tool system** — a registry of tools grouped into permission
+  categories in the default build (the engine-gated `mf_screenshot` tool registers
+  only when a drivable headless browser is present — spec `openhands` FR-029).
+  `ragent run --dry-run` prints the live total and per-category counts (see
+  [docs/howtos/tools/INDEX.md](docs/howtos/tools/INDEX.md)); the groups are:
 
 ![ragent tool session](assets/screens/ragentsession.png)
 
@@ -621,18 +621,20 @@ inherited by every crate.
 Incremental compilation is disabled workspace-wide (`.cargo/config.toml` sets
 `[build] incremental = false`, and `[profile.dev]` / `[profile.test]` repeat it)
 because the configured `sccache` wrapper cannot cache incremental artifacts, so
-the cache only consumed disk. Expect full rebuilds; `BUILDSTATS.md` records the
+the cache only consumed disk. Expect full rebuilds; [`docs/BUILDSTATS.md`](docs/BUILDSTATS.md) records the
 measured cost of each step on the reference machine - release build 8m 1s /
 1.78 GiB, debug build 2m 22s / 2.37 GiB, the first full test run 7m 9s /
 14.95 GiB (that run compiles every test binary from scratch; the green re-run
 that reused them took 8m 49s and 0.30 GiB), and a coverage run 9m 0s that
 reused the instrumented tree. The same report carries the line-coverage figures:
-**86.7% of 168,392 instrumented lines**, with all 18 crates above 85% except the
-CLI presentation binary.
+**86.7% of 168,392 instrumented lines**, with every crate in that measurement above 85%
+except the CLI presentation binary (per-crate table in [`docs/BUILDSTATS.md`](docs/BUILDSTATS.md)).
 
 Every crate builds **one** integration-test binary from its `tests/` tree
 (`autotests = false` plus a single `[[test]] name = "all"` that `#[path]`-includes
-each `tests/test_*.rs` file), so a full run links 19 targets instead of ~950.
+each `tests/test_*.rs` file), so a full run links one target per crate plus one for
+the root package (`ls crates/*/tests/all.rs tests/all.rs` lists them) instead of one
+per test file.
 Tests run under [cargo-nextest](https://nexte.st) (`.config/nextest.toml`): every
 test gets its own process, so a wedged test cannot block its neighbours. Run one
 file by filter:
@@ -694,49 +696,28 @@ Generic OpenAI-compatible endpoint (including custom port) can be configured in
 ```
 ragent [OPTIONS] [COMMAND]
 
-Commands:
   run          Execute agent with prompt
   serve        Start HTTP server only
-  orchestrate  Run a small orchestration example (demonstrates multi-agent coordinator)
-  session      Manage sessions (list, resume, export-archive, import)
-  db           Inspect and compact the session database (prune)
-  memory       Manage persistent memory (export, import, list)
-  auth         Configure provider authentication
+  session      Manage sessions
   models       List available models
-  config       Show resolved configuration (show, check)
+  config       Show resolved configuration
   research     Manage research items under `research/`
   spec         Run spec commands from the CLI (the `/spec` slash-command parity surface)
-  plugins      Manage plugins (the `/plugins` slash-command parity surface)
-  connectors   Manage connectors (the `/connectors` slash-command parity surface)
-  openapi      Emit the OpenAPI 3.1 document (or `--client` for the generated typed client)
-  automation   Manage automations (the `/automation` slash-command parity surface)
-  acp-server   Serve the ACP endpoint on stdio for IDE clients (features acp-server)
   new          Scaffold a new project in the current directory (the `/new` command)
-
-Options:
-      --model <MODEL>          Override model (provider/model format)
-      --agent <AGENT>          Override agent [default: general]
-      --log-level <LOG_LEVEL>  Log level, trace..error or all [default: info]
-      --no-tui                 Disable TUI, use plain stdout
-      --yes                    Auto-approve all permissions
-      --log                    Show the log panel in the TUI
-      --config <CONFIG>        Path to config file
-      --maxsteps <MAXSTEPS>    Maximum number of agentic loop steps (default: 500)
-      --dry-run                Run a readiness check without invoking any model or tool
-      --json                   Emit the dry-run readiness report as JSON
-      --no-git-context         Disable automatic git context injection
-      --no-readme-context      Disable automatic README context injection
-  -V, --version                Print the ragent version and exit
 ```
+
+With no command, `ragent` launches the interactive TUI. Run `ragent --help` for
+the full list of commands and options, and `ragent <command> --help` for one
+command.
 
 `ragent run --dry-run` is the fastest way to confirm a machine is set up: it loads
 config, resolves the provider, lists the registered skills and tools by category, and
-connects MCP servers, then prints a `READY` / `NOT READY` verdict.
+connects MCP servers, then prints a `READY` / `WARNING` / `BLOCKED` verdict.
 
 ## Configuration
 
-ragent reads configuration from `ragent.json` (or `ragent.jsonc`) in the `.ragent/`
-directory, with fallback to `~/.config/ragent/ragent.json`.
+ragent reads configuration from `ragent.json` in the `.ragent/` directory, layered
+over `~/.config/ragent/ragent.json`.
 
 A repository's `.ragent/ragent.json` is untrusted input, so `Config::merge_project`
 strips the privileged keys a project may not set: `yolo`, permission allow-rules,
@@ -759,7 +740,7 @@ live in the user-global config. Rejected keys are logged at `warn!`.
     }
   },
   "defaultAgent": "general",
-  "permissions": [
+  "permission": [
     { "permission": "file:write", "pattern": "src/**", "action": "allow" }
   ],
   "memory": {
@@ -920,7 +901,6 @@ mailbox messaging.
 Quick flow:
 
 - Create a team: `/team create <name>` (or `team_create`)
-- Re-open an existing team: `/team open <name>`
 - Spawn teammates: `team_spawn`
 - Add/list/claim/complete tasks: `team_task_create`, `team_task_list`,
   `team_task_claim`, `team_task_complete`
@@ -930,10 +910,9 @@ Quick flow:
 
 Docs and examples:
 
-- Guide: [`docs/userdocs/TEAMS.md`](docs/userdocs/TEAMS.md)
 - How-to manual: [`docs/howtos/teams.md`](docs/howtos/teams.md)
-- Example blueprints: [`.ragent/blueprints/teams/`](.ragent/blueprints/teams/)
-  (`code-review`, `parallel-feature`, `debate`)
+- Blueprints: [`docs/howtos/slashcommands/blueprints.md`](docs/howtos/slashcommands/blueprints.md)
+  (`/blueprints list` shows the team blueprints installed locally)
 
 ## Architecture
 
@@ -947,7 +926,7 @@ The project is a Cargo workspace built from 19 focused crates:
 | `ragent-config`         | Configuration types, defaults, and parsing                               |
 | `ragent-connectors`     | Connector catalogue, store, providers, MCP bridge, `/connectors`       |
 | `ragent-hyperresearch`  | Deep-research engine: decomposition, notes, citation graph, vault       |
-| `ragent-llm`            | Provider clients and model registry (14 providers + Model Router)        |
+| `ragent-llm`            | Provider clients and model registry (every built-in provider + Model Router) |
 | `ragent-plugins`        | Codex/Claude dialect plugins, sandboxed JS runtime, `/plugins`         |
 | `ragent-research`       | Web/local research gathering, synthesis, dated report output             |
 | `ragent-server`         | Axum HTTP routes and SSE streaming                                       |
@@ -1012,8 +991,8 @@ Key optimisations include:
 
 ## Project Status
 
-**v1.0.158** — The core architecture, tool system (150 tools across 21 categories in
-the default build), TUI, HTTP server, memory system, teams/swarm coordination, spec
+**v1.0.158** — The core architecture, tool system, TUI, HTTP server, memory system,
+teams/swarm coordination, spec
 management, skills system, research system, plugin and connector systems, pluggable
 execution backends, ACP integration, the automation service, and multi-layered
 security are functional and under active development.
@@ -1026,7 +1005,7 @@ Related documents:
 - [SPEC.md](SPEC.md) — the full specification and requirement history (incl. §21.4
   on the one-test-binary-per-crate layout)
 - [STATS.md](STATS.md) — line, file, test and per-crate composition statistics
-- [BUILDSTATS.md](BUILDSTATS.md) — measured build, test and coverage time/disk cost
+- [docs/BUILDSTATS.md](docs/BUILDSTATS.md) — measured build, test and coverage time/disk cost
 - [QUICKSTART.md](QUICKSTART.md) — the guided feature tour
 - [TUI-QUICKSTART.md](TUI-QUICKSTART.md) — running and driving the terminal UI
 - [docs/howtos/](docs/howtos/) — one how-to manual per subsystem

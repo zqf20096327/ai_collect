@@ -28,10 +28,6 @@
 </p>
 
 <p align="center">
-  <a href="README.md">English</a> | <a href="README.zh-CN.md">简体中文</a>
-</p>
-
-<p align="center">
   <strong>
     <a href="https://www.opensre.com/docs/getting-started/quickstart">Quickstart</a> ·
     <a href="https://www.opensre.com/docs">Docs</a> ·
@@ -148,7 +144,7 @@ See **[Headless CLI](https://www.opensre.com/docs/guides/headless-cli)** for std
 **From Python** — drive the agent in-process from your own code (source checkout required):
 
 ```python
-from bootstrap.embedded import start_embedded_session
+from surfaces.embedded import start_embedded_session
 
 session = start_embedded_session()
 result = session.chat("why is checkout-api slow?")

@@ -152,7 +152,7 @@ dsh plugin --profile desktop add link:<插件目录的绝对路径>
 | `dy_comment` | 发评论 / 回复（可 `mention` 真人 @；图文作品用 `reply_index` 按序号回） | `autoComment`+`mentionName` / `autoCommentPlain`，或 `force: true` |
 | `dy_share` | **转发视频给某人**（悬停出分享面板→点那行的「分享」），随后同一会话发「一句话 + 一个表情包」 | 名字在「可以主动发消息的人」里，或 `force: true` |
 | `dy_chat_send` | 私信发一句（续火花用） | 同上 |
-| `dy_chat_sticker` | 私信发表情包（关键词联想，可 `flip` 换一批） | 同上 |
+| `dy_chat_sticker` | 私信发表情包（按关键词挑；`pick` 为 0 或不填时自动挑，不总发第一张） | 同上 |
 | `dy_dm_inbox` | **只读**私信收件箱（谁发的、内容预览） | — |
 | `dy_dm_poll` | 手动跑一次后台秒回巡检（有新的就回一句） | `dmAutoReply` |
 | `dy_dm_round` | 旧的「看一遍私信回一句」：模板短句 + 每日额度 | `dmReply` |
@@ -167,6 +167,7 @@ dsh plugin --profile desktop add link:<插件目录的绝对路径>
 | `dy_selfcheck` | 真跑一次环境自检（家目录 / Python / MCP + 一次登录检查） |
 | `dy_cleanup` | 立刻清一次：临时垃圾、老缩略图、老日报、日志轮转、媒体音轨、浏览器 Cache |
 | `dy_chrome_open` | 把「本人已登录的 Chrome」拉起来并开 CDP 端口（之后所有动作都走它） |
+| `dy_reconcile_pending` | 核对没拿到回执的评论、列出关机留下的待核对条目（只核对，不自动重发） |
 | `dy_login_start` / `dy_login_poll` | 扫码登录 |
 | `dy_login_sms` / `dy_login_sms_submit` | 短信验证码登录 |
 
@@ -337,7 +338,7 @@ node selfcheck.mjs      # 55 条断言：宿主能加载 / 工具齐（35 个）
 **稳定性（都是实测踩出来的）**
 
 - `_goto` 容忍抖音常见的 `ERR_ABORTED` / 连接被重置：重试 2 次，最后用 `commit` 兜底；
-- 共用 Chrome 时会**泄漏标签页**（实测堆到 39 个）→ 每次动作前 `_sweep_tabs` 收掉多余标签；
+- 共用 Chrome 时会**泄漏标签页**（实测堆到 39 个）→ 早期方案是每次动作前 `_sweep_tabs` 收掉多余标签（该函数目前未接入调用，只在代码里保留）；
 - 私信发送改成最小实现（原内联 JS 里有 `const` 重复声明，会抛 `Assignment to constant variable.`）；
 - 定时器里 `maybeClean` / `dmRound` 曾因块级作用域报 `is not defined`，现在统一「先声明后赋值 + `typeof` 防御」。
 
@@ -360,3 +361,16 @@ node selfcheck.mjs      # 55 条断言：宿主能加载 / 工具齐（35 个）
 - 记忆页：没装可选记忆插件时显示本地「原始记录 + 人设」，不再 404。
 - 配置保存失败以本地为准；`perDay=0` 只停自动刷，手动可跑；多实例端口按家目录派生（`DOUYIN_PROFILE_PORT`）；requirements 补 `pillow`。
 - 验收边界：只读/离线已验；点赞/评论/私信/发布未做真实账号验收，别对外说「全部通过」。
+
+---
+
+## 补充：监听、回执和浏览器（2026-11-11）
+
+> 细节在 `docs/2026-11-11-reliability.md`。这里只记使用时会碰到的变化。
+
+- 私信页和作品/评论页分开，名字分别是 `dsh-douyin-chat`、`dsh-douyin-feed`。监听只挂聊天页；连上或自己打开页面不算新消息，不会弹「有新消息」。
+- 私信监听掉线后会自己重连；只有「最后一条入站消息」变化时才弹一条 Windows 通知（自己打开会话、已读刷新都不算），一分钟内最多一条。
+- 只有 `ok` 且 `verified` 才算发出。输入框里的草稿不算。关机留下的未完成发送标成待核对，不自动重发。评论核对用 `dy_reconcile_pending`：核对过程不占着动作锁。
+- Edge 用插件目录 `browser/msedge`，调试端口比 Chrome 那路大 1，第一次要重新登录。原来的 Chrome 登录资料仍在 `browser/`。
+- `dy_chat_sticker` 不再接受 `flip`。`pick` 为 0 或不填时按标签自动挑，不总发第一张。
+- 改的是插件源码；重启宿主后 JS 和家目录里的 Python 一起换。

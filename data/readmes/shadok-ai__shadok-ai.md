@@ -76,6 +76,14 @@ Enter to skip; you can add it later from the web UI).
 - **Channels** — one `claude` process each, running in parallel. Renaming,
   grouping, and closing all sync live between the browser and Telegram: it's
   one list, server-owned, not two copies.
+- **Rooms** — a channel with **no agent**, where people talk: same column,
+  same groups, same chat, nothing running behind it and no quota spent. **＋ new
+  room** under the agents; an admin can mirror one into a Telegram topic, and a
+  message there lands in the room (commands answer that there is no agent
+  here). Closing a room archives it: it leaves the list for everyone and its
+  messages stay on disk. The column tells them apart at a glance —
+  an **agent** is a round avatar with initials, a **room** a square slate tile
+  with a speech bubble (and no presence dot).
 - **Groups** — on a desktop the groups live in their own **left column**: pick
   one to narrow the agents pane to it, and the global tools (Profiles, Ledger,
   Secrets, Users, Security, Telegram, Sound) stay in the header at the top. Each
@@ -87,7 +95,15 @@ Enter to skip; you can add it later from the web UI).
   (access to Claude, workspace, Claude Code) rather than a black screen. Dragging an agent onto a
   group files it there, dragging groups reorders them, and double-clicking a name
   renames it — a group can also be renamed by clicking its name at the top of the
-  agents column. A question the agent asks shows as an *Approval requested* card. The
+  agents column. **Folders** arrange the agents INSIDE a group: *📁 new folder*
+  (under *＋ new agent*) makes one in the group on screen, its ＋ makes a
+  sub-folder, and folders nest up to 8 levels. Drag an agent onto a folder to put
+  it inside, or onto another agent to sit beside it; drag a folder onto a folder
+  to nest it. A click folds a folder (folded, it shows the mood and agent count of
+  all it holds); × removes it and what it held moves up a level. Folders are only
+  an arrangement: they change nothing about who sees an agent or where it runs —
+  a folder belongs to its group and is seen exactly by those who see the group.
+  Whether a folder is folded is your browser's own choice. A question the agent asks shows as an *Approval requested* card. The
   whole cockpit is skinned like Microsoft Teams (grey light mode / near-black dark
   mode, the Shadok mark in the header). On a phone the tools sit in the ⋯ menu and
   the agents sheet lists every group.
@@ -185,6 +201,25 @@ Enter to skip; you can add it later from the web UI).
   nothing most of the day. The guard runs with the target agent's profile
   secrets, so an agent may put one only on itself (a person may guard any agent
   they can drive).
+- **Webhooks** — let an outside system (CI, a form, a monitoring tool, Zapier…)
+  wake an agent with an HTTP call, the event-driven twin of a schedule. Create
+  one in the agent's **⚡ Webhooks** popin (the ⚡ icon in its bar, beside ⏰;
+  name + the prompt to run); you get a URL and a secret token, shown **once**:
+
+  ```bash
+  curl -X POST https://<your-cockpit>/hooks/<id> \
+    -H 'Authorization: Bearer whk_…' \
+    -H 'Content-Type: application/json' -d '{"status":"failed"}'
+  ```
+
+  The call answers `202` at once and the agent runs in the background with your
+  prompt, followed by the request body (≤16 kB, labelled as **untrusted** data —
+  it never speaks for you). Calls to the same webhook are queued and run one
+  after the other; a busy agent is retried for ~10 min. A sender that can only
+  take a URL may pass `?token=…` instead of the header. Pause, rotate the token
+  (↻) or delete it from the same popin. Only a person in the browser can create
+  or change a webhook — never an agent. An unknown id, a paused webhook and a
+  wrong token all answer the same `404`.
 - **Per-agent stats** — the agent's ⋯ menu has a **📊 Stats** view: token usage
   over the last hour / 24 h / 7 days / 30 days, split in a tooltip into input,
   output, cache-write and cache-read, with a **notional cost** beside each window.
@@ -268,6 +303,39 @@ Enter to skip; you can add it later from the web UI).
   the audio was left unheard — ask and the agent can listen. Telegram caps what
   a bot may download at 20 MB; past that you get a clear notice instead of
   silence.
+- **Choose where the bot works** (admin, Telegram panel) — **Where the bot
+  works** has three answers. **Board group** is the default and leaves
+  everything as it was: a group you pair with `/setup <code>`, one topic per
+  agent, and private messages that belong to you alone. **Board group + open
+  DMs** adds the door below to it. **Open DMs only** removes the group
+  entirely: a group that adds the bot is told it only works in private,
+  `/setup` is refused everywhere, nobody pairs — and your own private chat with
+  the bot becomes one guest conversation among the others, with no commands.
+  Updating changes nothing on its own: an instance that never touched this
+  reads as **Board group**.
+- **Open the bot to other people** (admin, Telegram panel, privileged
+  deployment only) — normally the bot's private messages belong to you alone and
+  anyone else is told it is private. Pick **Board group + open DMs** (pair the
+  bot's DMs first — **Pair Telegram**, then `/setup <code>` in a private chat
+  with it; you do NOT need a board group) or **Open DMs only** (no pairing at
+  all), then a **restricted
+  group** and a **profile**: anyone who writes to the bot then gets their own
+  agent instead, on that profile, inside that group, and always the same agent
+  for the same person. The profile is what decides the job — support, a front
+  desk, whatever you set up — and its guardrails are what those people are
+  driving, so choose it deliberately. You read and take over those conversations
+  from the cockpit, in that group; the group runs under its own Unix user, and
+  only its members see it, so whoever you add to the group can read them too.
+  Opening the bot is enough to be greeted: Telegram's own **START** button
+  wakes that person's agent, which introduces itself in the words its profile
+  gives it — so the welcome is something you write, by writing the role. If you
+  delete someone's agent from the cockpit, their next message simply starts a
+  new one.
+  They can talk and answer their agent's questions, and nothing else: no
+  command reaches the bot. Two things worth knowing before you open it — every
+  conversation is a real agent that stays resident, and they all draw on **your**
+  Claude subscription, so there is no cap and no queue by design. Go back to
+  **Board group** and every such conversation is closed at once.
 - **Link to a message** — every message (yours and the agent's) has a 🔗 link
   button beside copy. It copies a URL like `…/#agent=<session>&msg=<id>`;
   whoever opens it — someone who already has access to this cockpit, after the
@@ -326,6 +394,15 @@ Enter to skip; you can add it later from the web UI).
   otherwise just print a local path you cannot open. **Artifacts are denied**
   cockpit-wide for the same reason — a page on claude.ai is not the file you
   asked for (`SHADOK_ALLOW_ARTIFACTS=1` lifts it).
+- **Agents can ask an admin for help** — an agent stuck on something only a
+  human can fix (a Linear token that expired, no access to the Slack token it
+  needs, a Claude API key answering 401, a bug) files a report through the
+  `shadok-report` skill instead of failing silently. Every admin gets a badge
+  and a sound on the **Reports** button (🚩 in the header), and the Telegram
+  owner gets a DM. The panel shows each report with what the agent was doing,
+  merges a repeated failure into one card (`×3`), opens the vault on the
+  credential named (`--secret LINEAR_API_KEY`) and lets you mark it resolved.
+  Agents never put a secret's value in a report, only its name.
 - **Photos and videos, viewable** — an image or a **video** (mp4/webm/mov…) in
   the chat renders inline (a video gets a real player), and clicking a photo
   opens it full-size in a lightbox. The 🖼 button in an agent's bar opens a
@@ -355,7 +432,8 @@ Enter to skip; you can add it later from the web UI).
   - **From the agent's side.** The ▯ button in an agent's bar opens its info
     panel: its directory and profile, the skills it has (runs this week, ⏰ how
     many on a schedule), and its schedules with the skills each one uses. Click
-    a skill to open its card in the Skill Factory.
+    a skill to open its card in the Skill Factory. The ⏰ Schedule panel shows
+    the same thing under each schedule ("Uses ✦ skill"), one click from editing it.
   - **Creating.** The new-skill form asks for a **name** (what people see) and
     a **technical name** (what agents call it, `/name:name`), proposed from the
     name until you type your own. Choose it then: it is the skill's repository
@@ -1306,6 +1384,7 @@ client, or immediately on an explicit `stop` (which ends it for everyone).
 | `{type:"term-attach"}` · `{type:"term-detach"}` | **experimental, tmux only** — open/close the pane's raw byte pipe |
 | `{type:"term-input", data}` · `{type:"term-resize", cols, rows}` | raw input (base64) / match the pane to the viewport |
 | `{type:"stop", sessionId?}` | ends the session for all clients; `sessionId` targets another channel (zombie cleanup) |
+| `{type:"room-join", roomId}` · `{type:"room-post", roomId, text, clientId?}` | a ROOM link (people only, same-origin browser): join a room (answered with `room-history`), then post to it (fanned out as `room-message`, refusals as `room-error`). A connection is an agent link or a room link, never both — `start` is refused after `room-join` |
 
 **server → client**
 
@@ -1333,7 +1412,7 @@ HTTP endpoints (same auth): `/usage`, `/live`, `/sessions`, `/recover`,
 `/channels/glance` (GET — each visible row's last-message time and context %,
 read from the transcript's tail so the list fills before the agents resume),
 `/channel` (DELETE), `/groups`, `/groups/ssh` (GET — the SSH **public** key to
-register per group, filtered like `/groups`), `/crons`, `/timezone`, `/title` (GET/PUT — the
+register per group, filtered like `/groups`), `/crons`, `/webhooks` (GET; POST create, PATCH/DELETE `/webhooks/:id`, POST `/webhooks/:id/rotate` — writes browser person only, the token is returned only by create/rotate; the call itself, `POST /hooks/:id`, sits before the password gate and authenticates with the webhook's own token), `/timezone`, `/title` (GET/PUT — the
 cockpit's name, per launch directory: click the header brand to rename it, so
 several cockpits stay apart in the tab bar; an empty PUT reverts to the default),
 `/theme` (GET/PUT — the cockpit's colour palette, per launch directory: an accent

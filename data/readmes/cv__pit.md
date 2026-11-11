@@ -50,7 +50,7 @@ This tracks `main`, where changes land after CI passes. To update:
 pi update git:github.com/cv/pit
 ```
 
-Run `/reload` after updating. Prefer a fixed release? Use `pi install git:github.com/cv/pit@v0.34.0` instead; package updates won't move a pinned install.
+Run `/reload` after updating. Prefer a fixed release? Use `pi install git:github.com/cv/pit@v0.35.1` instead; package updates won't move a pinned install.
 
 For a one-session trial or a project-only install, see [installation options](docs/configuration.md#installation-scope). Pit is distributed from GitHub, not npm; [releases](https://github.com/cv/pit/releases) and the [changelog](CHANGELOG.md) cover what's new.
 
@@ -70,6 +70,10 @@ From there, try a workflow that fits your project:
 - **Keep what works.** Ask, “Save that test workflow so we can reuse it,” and the agent turns the call into a [saved function](docs/saved-functions.md).
 - **Manage and share functions.** Use `/functions` to inspect saved functions, and promote proven ones to a trusted project or your user directory. `/pit-reflect` helps spot opportunities for reuse.
 
+## Beyond Pi
+
+Hosts built on [pi-durable](https://www.npmjs.com/package/@earendil-works/pi-durable), such as [pi-action](https://github.com/cv/pi-action), can load the same `typescript` tool from `pit/durable`: `createPitDurableExtension()` returns a pi-durable extension, and session functions persist as conversation entries. Slash commands and image viewing stay Pi-only; [Pit on pi-durable hosts](docs/durable.md) lists what works and the security differences.
+
 ## Documentation
 
 Start at the [documentation index](docs/README.md), or go directly to:
@@ -80,6 +84,7 @@ Start at the [documentation index](docs/README.md), or go directly to:
 - [Resolve a problem](docs/troubleshooting.md): installation and runtime diagnostics.
 - [Saved functions](docs/saved-functions.md): reusable workflows and their lifecycle.
 - [Security model](docs/security.md): the sandbox, injected capabilities, and trust boundaries.
+- [pi-durable hosts](docs/durable.md): Pit's tool outside Pi, for hosts such as pi-action.
 - [Contributing](CONTRIBUTING.md): local development and review requirements.
 - [Architecture](docs/architecture.md) and [releasing](docs/releasing.md): maintainer guides.
 

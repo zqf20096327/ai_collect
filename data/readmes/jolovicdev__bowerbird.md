@@ -47,8 +47,8 @@ check for updates. This is everything that goes out:
 | A short test message, with nothing from your notebooks | The model provider you choose | Each time you press Test model and key in Settings |
 
 API keys go only to their own provider. Choose an
-[Ollama](https://ollama.com) model running on your machine, and questions and
-passages stay there too.
+[Ollama](https://ollama.com) model running on your machine, or a model on a
+server of your own, and questions and passages go nowhere else.
 
 ## What it does
 
@@ -87,8 +87,55 @@ Builds for Linux (`.deb`, AppImage), macOS 13.4 or later (Apple Silicon
 `.dmg`), Windows (portable `.zip`) and Android (64-bit ARM `.apk`) are
 attached to each [release](https://github.com/jolovicdev/bowerbird/releases).
 The macOS app is signed ad hoc, not notarized, so macOS blocks its first
-launch: allow it under System Settings, Privacy & Security, Open Anyway. To
-build from source, see [Build and run](#build-and-run).
+launch: allow it under System Settings, Privacy & Security, Open Anyway. For a
+home server or NAS there is a Docker image, see
+[Run with Docker](#run-with-docker). To build from source, see
+[Build and run](#build-and-run).
+
+## Run with Docker
+
+The image holds the server and its web app, for `amd64` and `arm64` Linux.
+Save this as `compose.yaml`, put a password of at least 16 characters in
+`BOWERBIRD_TOKEN`, and run `docker compose up -d`:
+
+```yaml
+services:
+  bowerbird:
+    image: ghcr.io/jolovicdev/bowerbird
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:7477:7477"
+    environment:
+      BOWERBIRD_TOKEN: "change me: 16 or more characters"
+    volumes:
+      - bowerbird:/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+volumes:
+  bowerbird:
+```
+
+Open `http://localhost:7477` and sign in with that password. The browser stays
+signed in for 30 days; changing `BOWERBIRD_TOKEN` signs every browser out.
+`/data` holds the notebooks, `settings.toml` with your API keys, and the
+search, OCR and speech models downloaded on first use.
+
+To reach it from other devices, put HTTPS in front, so the password and your
+notebooks never cross the network as plain text. With
+[Caddy](https://caddyserver.com) on the same machine, this `Caddyfile` does it:
+
+```text
+notebooks.example.org {
+	reverse_proxy localhost:7477
+}
+```
+
+Or keep it on [Tailscale](https://tailscale.com), where `tailscale serve`
+adds HTTPS inside your tailnet.
+
+For a model server on the same machine, enter
+`http://host.docker.internal:11434` under **Your own server** in Settings.
+Inside the container, `localhost` is the container itself.
 
 ## How it works
 
@@ -113,9 +160,18 @@ The default model is `deepseek-flash`. Any provider that
 OpenAI, Anthropic, Gemini, DeepSeek, Mistral, Groq, xAI, OpenRouter and
 Ollama. In Settings, enter the model name (prefix it with the provider, as in
 `groq::model-name`, to choose the provider yourself) and paste the provider's
-API key. A name in Ollama's `model:tag` form, such as `deepseek-r1:7b`, stays
+API key. A name in Ollama's `model:tag` form, such as `qwen3.8:27b`, stays
 with Ollama. **Test model and key** sends one short message to check that they
 work, and shows the provider's reason when they don't.
+
+To use a model server on another computer, such as Ollama, LM Studio or
+llama.cpp, enter its address under **Your own server** in Settings, for
+example `http://192.168.1.20:11434`. The models that would go to Ollama on this
+device go there instead, through the OpenAI-compatible API these servers offer
+at `/v1`: names no cloud provider uses, and any name with `ollama::` in front. This is how the phone app uses local models. Each of these servers
+listens only on its own computer until told otherwise: start Ollama with
+`OLLAMA_HOST=0.0.0.0`, turn on **Serve on Local Network** in LM Studio, or give
+`llama-server` the option `--host 0.0.0.0`.
 
 Keys are saved in `settings.toml`, readable only by your user account:
 `~/.config/bowerbird/` on Linux and macOS, `%APPDATA%\bowerbird\` on Windows,
@@ -163,10 +219,13 @@ npm --prefix ui run build
 cargo run --release -p bowerbird-server
 ```
 
-The server prints a link with an access token. Open it in a browser. It
-listens on `127.0.0.1:7477`; `--addr` changes that, and anything other than
-a loopback address exposes your notebooks to the network, protected only by
-the token. Links added through the server may only point at the public
+The server makes an access token at each start and prints a link with it.
+Open the link in a browser, or open the address and sign in with the token as
+the password. `BOWERBIRD_TOKEN` sets a token of your own instead, which the
+server then doesn't print. It listens on
+`127.0.0.1:7477`; `--addr` changes that, and anything other than a loopback
+address exposes your notebooks to the network, protected only by the token,
+so the server then refuses a token shorter than 16 characters. Links added through the server may only point at the public
 internet, not at the server's own machine or its local network, unless it runs
 with `--allow-private-links`. Leave that off when anyone else can reach the
 server, directly or through a reverse proxy. The desktop app allows such links.
@@ -233,11 +292,6 @@ so they need `DEEPSEEK_API_KEY`. The end-to-end tests serve the UI from
 web page extraction and DuckDuckGo; the last line downloads the OCR and
 search models and reads a scanned page.
 
-`node ui/scripts/readme-screenshots.mjs <url> <token> docs/screenshots`
-rebuilds the demo notebook and the screenshots above. Run it against a
-server whose `--library` is an empty folder; it asks the configured model real
-questions.
-
 ### Continuous integration
 
 - `.github/workflows/ci.yml`, on every push and pull request: formatting,
@@ -246,8 +300,8 @@ questions.
 - `.github/workflows/live.yml`, daily: the live tests and the end-to-end
   tests. Needs the `DEEPSEEK_API_KEY` repository secret.
 - `.github/workflows/release.yml`, on `v*` tags and manual runs: the Linux,
-  macOS, Windows and Android builds; a tag publishes them as a GitHub
-  release. It also runs weekly without macOS, whose runner minutes cost ten
+  macOS, Windows and Android builds and the Docker image; a tag publishes the
+  builds as a GitHub release and the image to `ghcr.io/jolovicdev/bowerbird`. It also runs weekly without macOS, whose runner minutes cost ten
   times as much. The APK gets the release key from the `ANDROID_KEYSTORE`
   (base64 of the keystore) and `ANDROID_KEYSTORE_PASSWORD` repository
   secrets.

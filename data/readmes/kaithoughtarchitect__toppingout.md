@@ -55,14 +55,14 @@ The name comes from the building site: the ceremony held when the last beam goes
 
 **How to start:** in the repo that will hold your records, start a session and say `Read <path to this folder>/skills/f-setup/SKILL.md and follow it` (`SETUP.md`). Then run one job (below). You don't need the whole flow first: the foreman follows `METHOD.md`, and you answer when it asks.
 
-**Tested on** Windows with Claude Code as the foreman. macOS and Linux are expected to work (the scripts are Node, Python and Bash) but aren't verified yet: `SETUP.md`, "Tested setup".
+**Tested on** Windows with Claude Code as the foreman. macOS and desktop Linux are expected to work (the scripts are Node, Python and Bash) but aren't verified yet: `SETUP.md`, "Tested setup". To run it on a Linux server of your own while your computer sleeps: `SETUP.md`, "Running in the cloud".
 
 ### One job, from your side
 
 1. Give the foreman a ticket: a tracker link, or a short `TICKET-<nn>.md` (`/f-sketch` helps write one).
 2. It walks the site, then asks for your **"go"**.
 3. It writes work orders; you paste each pointer into the builder (or the pane link does it), until the build, the two inspections and the acceptance ledger are done.
-4. On your word ("open the PR") it opens the PR, and on "greploop" runs up to three Greptile rounds. You say **"merge"** when the evidence satisfies you.
+4. On your word ("open the PR") it opens the PR and runs up to three Greptile review rounds on it. You say **"merge"** when the evidence satisfies you.
 5. It closes the job, saves the lessons, and proposes the next ticket for you to confirm.
 
 ---
@@ -74,7 +74,14 @@ The name comes from the building site: the ceremony held when the last beam goes
 | A new foreman | this README → `METHOD.md` → `RULES.md` → `OVERRIDES.md` → `Foreman-Playbook.md` → `templates/` |
 | The owner | this README → `METHOD.md` §"The owner's loop" → `BUILDER-PROFILES.md` |
 | Setting it up in a new repo | `SETUP.md` |
+| Updating an existing install | the next section |
 | Choosing or running a builder | `BUILDER-PROFILES.md` + `Builder-Playbook.md` |
+
+## Updating
+
+In your project, **between jobs**, start a session and type `/f-setup`. It pulls the newest Topping Out, shows what's new (`CHANGELOG.md`), applies it on your yes, keeps every file you've adapted, and commits exactly the changed files on your word. It refuses while a job is open. Read-only check at any time: `node <path to toppingout>/skills/f-setup/install.mjs --repo . --check`.
+
+**An install from before 2026-11-11** has the older `/f-setup`, which doesn't pull. Update once by hand: `git pull` in your Topping Out folder, then `/f-setup`. From then on, `/f-setup` alone.
 
 ---
 
@@ -85,7 +92,7 @@ The name comes from the building site: the ceremony held when the last beam goes
 3. **Everything goes through files.** Work orders are files, reports are files, reviews are files. The builder gets a one-line pointer (from the owner, or sent over a pane link by the foreman), never pasted text.
 4. **Disk before words.** After every builder step, the foreman checks commits, captures and files on disk *before* it reads the builder's report.
 5. **Every claim carries its evidence:** a command and its output, a commit hash, a test name. A claim without evidence counts as not done.
-6. **Some acts need the owner's word.** These are approval boundaries, not all of them irreversible: merging and pushes, tracker transitions, messages, branch and worktree deletion, edits outside the ticket's files, migrations, and the "greploop" grant for at most three Greptile rounds on one PR. The full list, and the exceptions (the job's own cleanup and records push after a verified merge, an autonomous run's grants), are in `RULES.md`.
+6. **Some acts need the owner's word.** These are approval boundaries, not all of them irreversible: merging and pushes, tracker transitions, messages, branch and worktree deletion, edits outside the ticket's files, migrations, and a fourth Greptile round on one PR ("greploop"; rounds 1 to 3 come with opening the PR). The full list, and the exceptions (the job's own cleanup and records push after a verified merge, an autonomous run's grants), are in `RULES.md`.
 7. **Every reply ends with the 5-line status block** (`templates/J-STATUS.md`).
 
 ---
@@ -127,9 +134,9 @@ The name comes from the building site: the ceremony held when the last beam goes
  CROSS-MODEL   foreman /pack-review (checks its own brief) ──> fresh session of another
                family runs /xreview ──> foreman /adjudicate ──> repair work orders
  FINAL RE-RUN  all captures, probes, both base-vs-head again at the final head
- ACCEPTANCE LEDGER  no FAIL/UNTESTED/INCONCLUSIVE to open the PR; every row PASS (the foreman's own run done) to merge
+ ACCEPTANCE LEDGER  no FAIL/UNTESTED/INCONCLUSIVE/blank to open the PR; every requirement row PASS (the foreman's own run done) to merge
                                           │
- PR opened (owner watches it in the browser) ──> [owner: "greploop"] /f-greploop: ≤3 Greptile rounds
+ PR opened (owner watches it in the browser) ──> /f-greploop: ≤3 Greptile rounds
       (adjudicate → builder repairs → tests + both base-vs-head + ledger re-run → push) ──> PR description check
                                           │
  [owner: "merge"]
@@ -165,7 +172,7 @@ The name comes from the building site: the ceremony held when the last beam goes
 | `SETUP.md` | installing the skills and agents into a repo |
 | `skills/f-schedule/templates/` | `PROJECT.md`, `TICKET.md`, `BOARD.json`: the files `/f-schedule` writes for a project (the one copy) |
 | `templates/` | fill-in-the-blanks for every document the method produces, in the order they're used (see `METHOD.md`) |
-| `snippets/` | code to copy: the gate runner template, the import-scan script and the mutation-probe harness template |
+| `snippets/` | code to copy: the gate runner template, the import-scan script, the mutation-probe harness template, the parallel proof, the test-time counter and the site walk's outside grader |
 | `examples/example-board/` | a **made-up** project board (synthetic data, generated by `/f-board`): open `board.html` to see what a board looks like |
 | `skills/` | **30 skills, the complete set.** Topping Out's own: `f-setup`, `f-sketch`, `f-survey`, `f-blueprint`, `f-schedule`, `f-shift`, `f-board`, `f-signoff`, `f-night-shift`, `f-status`, `f-comply`, `f-inspect`, `f-greploop`, and the Logbook's `f-card`, `f-search`, `f-archive`, `f-archive-search`, `f-catchup`, `f-context`, `f-distill`, `f-dream`. Shared: `f-plancheck`, `pack-review`, `xreview`, `adjudicate`, `model-council`, `agent-council`, `speak`, `converse`, and the pane link `orca-pi-connect` (Orca) |
 | `addons/deep-agents/` | **optional:** for an AI agent built on LangChain, LangGraph or Deep Agents. `/f-setup` asks and installs it only on yes: the `/deep` skill, a reference checked against the real `deepagents` code, LangChain's docs server, and a running agent skeleton for a new project (`addons/deep-agents/README.md`) |

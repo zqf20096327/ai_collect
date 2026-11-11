@@ -66,14 +66,15 @@ below. The attention change matters most for long contexts, which these
                                                  3. seat users from the front of the line while a seat
                                                     and enough blocks for their prompt + 1 are free;
                                                     reuse cached blocks for a known prompt prefix
-                                                 4. prefill up to 512 prompt tokens in a batched pass:
-                                                    half-read prompts first, then new users (only the
-                                                    uncached part), one row of the batch per user
-                                                 5. decode one token for every user whose prompt is read
+                                                 4. spend up to 512 prompt tokens: half-read prompts first,
+                                                    then new users (only the uncached part)
+                                                 5. read every chunk through one path, one row per user:
+                                                    each decoder's next token (one token) and the prompt
+                                                    slices above; decoders first
  client ◀──SSE, one token each── handler ◀──── tokens through an asyncio.Queue
 
- inside one decode step, for each of the 30 layers:
-   new token ─▶ RMSNorm ─▶ Q, K, V ─▶ RoPE at position n
+ inside one forward pass, for each of the 30 layers:
+   each new token ─▶ RMSNorm ─▶ Q, K, V ─▶ RoPE at position n
                                   ├─▶ write K, V into block table[n // 16], slot n % 16
                                   └─▶ gather every user's blocks (one gather per layer, short
                                       tables filled out with dummy block 0) ─▶ masked attention
@@ -313,9 +314,10 @@ Two lessons from testing:
 | 19 | Seats | **Keep 30** | Not re-measured for the paged engine; 30 users fit easily in the pool, and keeping the cap makes every before/after comparison fair |
 | 20 | How chunked prefill shares a round | A **budget of prompt tokens per round**; half-read prompts go first, and new users are seated only while budget is left; each chunk's full blocks are added to the prefix cache right away | Half-read prompts first means nobody is overtaken forever. Registering after every chunk keeps prefix caching working: a user seated in a later round reuses the blocks the first user has already read |
 | 21 | Budget size | **512 tokens** (setting `NANO_PREFILL_CHUNK`, 0 = no limit) | Measured 256, 512 and 1,024 twice: 512 gave the shortest worst stall both times (637 ms in the final run), with a middle cost to the late users' TTFT |
-| 22 | How blocks are handed out | **Grow as you go**: seat a user when their prompt + 1 token fits, and add one block each time a decoder crosses a 16-token boundary; when the pool is empty, **preempt by recompute**: free the user's blocks, put them at the front of the line, and later prefill their prompt + answer so far (minus the last token, which is the next decode input, so no token is sampled twice) | Blocks are no longer held for tokens that are never written. Recompute instead of swapping to CPU needs no second memory pool and no copy code, and prefix caching often makes the prompt part free again. On a 9-block test pool: at most 5 users seated instead of 3, 42 rounds instead of 57, same answers. At the default 1,920 blocks the server never preempts, so the earlier benchmarks still hold |
+| 22 | How blocks are handed out | **Grow as you go**: seat a user when their prompt + 1 token fits, and add one block each time a decoder crosses a 16-token boundary; when the pool is empty, **preempt by recompute**: free the user's blocks, put them at the front of the line, and later prefill their prompt + answer so far (minus the last token, which is the next decode input, so no token is sampled twice) | Blocks are no longer held for tokens that are never written. Recompute instead of swapping to CPU needs no second memory pool and no copy code, and prefix caching often makes the prompt part free again. On a 9-block test pool: at most 5 users seated instead of 3, 46 rounds instead of 57, same answers. At the default 1,920 blocks the server never preempts, so the earlier benchmarks still hold |
 | 23 | Who gets preempted, and when blocks are found | The **most recently seated** user; decoders get their next block **before** anyone new is seated | The newest user has done the least work, so recomputing them costs least, and the oldest users always finish. Growing first means nobody is seated only to be thrown out in the same round |
-| 24 | How the prefill budget is spent | **One forward pass per round for everyone who reads**: a row per user, each chunk padded with token 0 and hidden by a causal mask, block tables ragged and filled out with the dummy block; rows are grouped by power-of-two length so a short tail never pads out a long prompt. The seating and cache policy is unchanged | 30 users with 7-token prompts went from 30 forwards (878 ms) to one (69 ms); 30-user TTFT p50 601 → 325 ms, p99 1,006 → 332 ms. A batch of one costs ~8 ms more than before. Measured trap: writing K and V through a boolean mask made MPS copy the index list to the CPU on every layer (225 ms instead of 35 ms per call); `index_select` over a flattened row axis fixed it, and the results stayed bit-identical |
+| 24 | How the prefill budget is spent | **One forward pass per round for everyone who reads**: a row per user, each chunk padded with token 0 and hidden by a causal mask, block tables ragged and filled out with the dummy block; rows are grouped by power-of-two length so a short tail never pads out a long prompt. The seating and cache policy is unchanged | 30 users with 7-token prompts went from 30 forwards (878 ms) to one (69 ms); 30-user TTFT p50 601 → 325 ms, p99 1,006 → 332 ms. Measured trap: writing K and V through a boolean mask made MPS copy the index list to the CPU on every layer (225 ms instead of 35 ms per call); `index_select` over a flattened row axis fixed it, and the results stayed bit-identical |
+| 25 | Prefill and decode as code | **One path**: a round builds a list of rows — a decoder is a chunk of one token at its current position, a half-read prompt is its next slice — and reads them in as few forward passes as their lengths allow, decoders first; `model.decode` is deleted. A prompt that finishes in a round is finished by sampling its own last token, so **every user gets exactly one token per round** | The write, mask and attention code that had to stay in agreement is now one function. Throughput is unchanged in an A/B in one session (30 users 604 → 599 tok/s, 20 users with late long prompts 200.5 → 198.5), and one user's prefill got cheaper (35.3 → 25.9 ms, TTFT 54 ms). Round counts rise by one per user start (test engine 19 → 20, 9-block pool 42 → 46) because the old extra token in a user's first round was the two-phase order leaking into the answer. Second trap: the first version copied K and V through `index_select` even when no row was padded, costing 8 ms per step (ITL p50 50 → 58 ms); the copy is now skipped unless a row is short |
 
 ## Limits
 
@@ -324,11 +326,13 @@ Two lessons from testing:
 - The paged attention is a gather plus plain PyTorch operations, not a fused
   GPU kernel, so the gather is still a copy and a step for 28 users at 512
   tokens of context takes ~95 ms, about half of it gathering.
-- Batched prefill pads every row to the longest chunk in its group (groups are
-  power-of-two lengths, so at most 2× wasted rows), and a batch of one still
-  builds the padded shapes: one user's prefill costs ~8 ms more than the old
-  one-at-a-time path (58 ms → 78 ms TTFT at 1 user). It is plain PyTorch
-  matmuls over those rows, not a varlen kernel.
+- Prefill and decode share one path, but rows are still padded to the longest
+  chunk in their group (groups are power-of-two lengths, so at most 2× wasted
+  rows), and it is plain PyTorch matmuls over those rows, not a varlen kernel:
+  a decoder's one token cannot ride in the same forward pass as a long prompt
+  chunk without paying that padding (measured 328 → 682 ms for a 4 + 902-token
+  pair). Decoders therefore run as their own short pass at the start of a
+  round, which is why a round costs a decode step plus the prefill it allows.
 - Users seated in the same round cannot share prefix-cache blocks with each
   other: the cache is looked up while seating, before anything is read. They
   share the forward pass instead, but they read a shared prefix once per user,

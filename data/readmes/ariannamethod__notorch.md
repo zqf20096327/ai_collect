@@ -140,6 +140,13 @@ through NoTorch's own decoders. Each family declares its architecture names; an
 unknown architecture is refused by name. File-level verification and reference
 runs live in the [harness record](NOTORCHLOG.md#readme-run-a-model).
 
+**Janus v4** exports can select `janus.forward_graph="pytorch-v4-prefix"`
+to execute the published Python graph in native C: historical Echo attention,
+simultaneous token smear, complete-block backout and the global low-rank
+RRPRAM reduction. Independent per-cache token histories support exact prefix
+recomputation across chunked prefill and decode. Existing exports retain the
+incremental profile. [Metadata, cache contract and numerical proof](docs/JANUS_V4_PREFIX.md).
+
 **LFM3** is the registry's first hybrid: gated short convolutions and attention
 share one body, per-head sigmoid gates ride the attention output, and the
 sliding-versus-full split is read from the file's `sliding_window_pattern`
@@ -191,21 +198,53 @@ with the machine and the model beside them.
 
 ---
 
-### Qwen3.5 dense text
+### Qwen3.5 text and vision
 
 Native full attention + GatedDeltaNet inference, source-layout BF16/F32 loading,
 C safetensors conversion and explicit ASCII chat tokenization. The CPU path
 uses F32 matrix weights and owns recurrent/convolution state. Fourteen original
 OneJev prompts pass every-layer and full-logit comparison with Transformers;
 1,214 frozen-fixture checks exercise chunking and failures.
+The original checkpoint's vision encoder is native C too: `qwen35_to_gguf
+--vision` retains its BF16/F32 tensors in a separate GGUF. The image API runs
+PIL-compatible preprocessing, the vision transformer and merger, and explicit
+three-axis positions through the text decoder. Five original OneJev images
+match the independent encoder; full-vocabulary logits and greedy continuations
+match through image prefill and decoding. Text conversion remains byte-identical.
 See [commands, format boundaries and measured parity](docs/qwen35.md).
+
+### LFM3-Omni: eyes, ears and a voice
+
+LiquidAI's LFM3-Omni-2B with every modality its card declares: text, images,
+video frames and 16 kHz audio in; text, 24 kHz speech, or both interleaved out.
+`tools/lfm3_omni_to_gguf` turns the official safetensors into one GGUF, F16 or
+`--q8_0` straight from BF16, and every tensor it shares with LiquidAI's own GGUF
+pair is byte-identical. The towers (vision, audio encoder, depth decoder, codec)
+live in `harness/lfm3_omni.c` and feed the `lfm3` decoder through
+`forward_embd`.
+
+```bash
+make notorch_omni lfm3_omni_to_gguf
+./lfm3_omni_to_gguf LFM3-Omni-2B/ omni-f16.gguf
+./notorch_omni --image page.png omni-f16.gguf "Describe this image in one sentence."
+./notorch_omni --system "Perform ASR in English." --audio clip16k.wav omni-f16.gguf ""
+./notorch_omni --system "Perform TTS in American English using a female voice." \
+    --mode audio --speech-out hello.wav omni-f16.gguf "Hello from notorch"
+```
+
+Each tower agrees with the official PyTorch modules in float64 to within 6e-6
+relative L2, and on the measured text, image and transcription prompts the F16
+greedy answers are the official model's ids, token for token, on x86 and on
+Apple silicon. Speed against llama.cpp on both machines,
+the gates and the limits (16 kHz audio only, video as same-size frames, no codec
+encoder) are in the [engineering record](NOTORCHLOG.md#2026-11-10--lfm3-omni-2b-every-modality-measured).
 
 ### DoE. Living experts in the Harness
 
 `--experts` seats a native **Democracy of Experts** on the middle block of the
-dense llama-family, Qwen3.5 hybrid, Gemma 3 text, OLMoE and Qwen3-MoE CPU
+dense llama-family, Qwen3.5 hybrid, Gemma 3 text, OLMoE, Qwen3-MoE and LFM3 CPU
 decoders. Each token
-elects a variable number of LoRA experts between attention and the FFN. Four
+elects a variable number of LoRA experts between the block's mixer and its FFN. Four
 rank-4 experts start in six seats.
 `--learn-experts` gives the elected experts one Oja update after each completed
 turn and enables vitality, mitosis and apoptosis. Plain inference is the default.
@@ -233,6 +272,50 @@ membership, vitality, frequency, age, low-vitality counts, Oja cursors,
 consensus, oscillator input history, RNG and clocks. In chat, `/reset` clears
 the KV while the parliament lives on. `--expert-trace` prints per-token gates,
 chosen logits, births, deaths and turn boundaries to stderr.
+
+Each expert also has a permanent SHA-256 birth address and a parent address.
+The ancestry ledger stays inside the spore after death and slot reuse, and
+travels with the population when weights change. New spores use version 5
+(exact) or 6 (portable). Versions 1–4 are adopted on import: their existing
+seats receive addresses derived from the original archive, with unknown
+parents recorded explicitly. A second save is stable. The native API can find
+and transplant factors by identity; `doe_probe lineage HOST SPORE` prints the
+ledger, including retired ancestors.
+The optional audit helper builds with `make doe_probe AML_ROOT=/path/to/aml`;
+the Harness and replay API themselves are C and require no AML runtime.
+
+On a return to a previously visited body, `--body-memory` can recall the
+components that body learned outside the 32 transferable directions. It matches
+living expert addresses in the selected earlier same-host spore, takes its
+local A/B/vote components and keeps the incoming parliament's shared coordinates,
+membership, genealogy, RNG and clocks. Unmatched identities retain their
+incoming vectors unchanged. Both the incoming parliament and the selected
+local reference are explicit:
+
+```sh
+./notorch --experts --spore-only --spore-in latest-from-b.gguf \
+  --body-memory last-on-a.gguf --portable-spore \
+  --spore-out returned-to-a.gguf model-a.gguf
+```
+
+Keep `latest-from-b.gguf` portable and `last-on-a.gguf` from these exact A
+weights. The latter supplies local expert memory by birth address; the latest
+global population continues to own its lifecycle. [How recall combines the
+coordinates](research/democracy_of_experts.md#returning-to-a-bodys-own-memory).
+
+An incoming body can also explicitly calibrate the scale of its stored votes:
+
+```sh
+./notorch --experts --spore-only --spore-in incoming-portable.gguf \
+  --expert-vote-rms 1 --spore-out calibrated.gguf receiving-model.gguf
+```
+
+This samples the 32 raw anchor residuals, measures the centered spread of the
+living experts' dot scores and applies one common positive scale to all six
+vote rows. The calibrated rows persist in the existing GGUF format. A/B,
+identities, consensus, RNG and clocks keep their values. With `--body-memory`,
+the order is import, local recall, then explicit vote calibration. The default
+election path and default import perform no vote rescaling.
 
 Add `--async-consolidation` to `--experts --learn-experts` to hand each
 completed turn to a C worker. Chat can accept input while it updates the
@@ -426,6 +509,201 @@ log odds for ` key` over ` bell` by −0.130377 on that prompt.
 [The two selections and the portable state](research/democracy_of_experts.md#two-selections-on-a-sparse-body)
 · [AML experiment](experiments/doe_spores/olmoe.aml)
 · [Weights, scores and reproduction](NOTORCHLOG.md#2026-11-09--a-comma-crosses-a-native-olmoe-routing-boundary)
+
+#### Carry a parliament into LFM3-Omni-2B
+
+The Omni text decoder has 24 blocks. Its 13 short convolutions and 11 attention
+blocks feed the same residual stream. The parliament acts at block 12, after
+sliding-window attention and before its feed-forward layer. A private dream gets its
+own convolution history and attention cache.
+
+In the [AML run](experiments/doe_spores/lfm3.aml), one waking turn on Gemma
+3-270M-IT supplied the spore. Omni Q4_K_M recorded a six-choice dream. To replay
+the two saved histories on the official Omni Q8_0 weights, set `RUN` to that
+run's directory and `OMNI_Q8` to its Q8_0 GGUF.
+
+```sh
+export NT_CHAT='||' NT_CTX=64 NT_ATTN_THREADS=1
+for state in omni-awake omni-dream; do
+  ./notorch -q --experts --expert-trace --spore-in "$RUN/$state.gguf" \
+    "$OMNI_Q8" 'Every night the lighthouse keeper carries a' 8 0
+done
+```
+
+On the same Q8_0 file, on one AMD EPYC 9V74 thread, the awake spore selected
+` lighthouse` first, and the post-dream spore selected ` a`. On Q4_K_M they both
+selected ` lighthouse`. The plain Q8_0 margin between those two tokens is a
+property of the machine's Q8_0 kernel as well: −0.175 on that EPYC, +0.423 on
+an M4 Pro, +0.218 on an i5-8500T.
+Transplanting the four founders' dreamed A/B into the awake Q4_K_M archive
+reproduced both full 128,000-entry logit vectors byte for byte.
+[Hybrid memory and sleep](research/democracy_of_experts.md#a-parliament-on-a-hybrid-decoder)
+· [Measurements and commands](NOTORCHLOG.md#2026-11-10--a-parliament-on-the-lfm3-omni-2b-text-decoder)
+
+#### Let the parliament see and hear
+
+`notorch_omni --experts --mode text` runs the same living seats on image,
+video, audio and text inputs. Every projected media row reaches the middle
+block's election and the completed-block observation. With `--learn-experts`,
+the whole turn supplies one consolidation update to each elected seat. Expert
+mode currently returns text; the ordinary Omni entry retains its speech and
+interleaved output modes.
+
+```sh
+./notorch_omni --mode text --image scene.png --experts --learn-experts \
+  --async-consolidation --dream-tokens 6 --portable-spore \
+  --spore-out scene-memory.gguf omni-q8.gguf "Describe the scene."
+./notorch_omni --mode text --image next-scene.png --experts \
+  --spore-in scene-memory.gguf omni-f16.gguf "What changed?"
+```
+
+The second command starts with fresh convolution windows and KV. The spore
+carries the parliament's acquired state into the receiving weights. Add
+`--learn-experts` and a new `--spore-out` path to record the next generation.
+An audio episode uses `--audio clip16k.wav` and, for transcription,
+`--system "Perform ASR in English."` with the same expert options.
+
+Sleep selects a text cue through the current experts, generates on private
+hybrid state, and commits the elected seats' factors, cursors, RNG and sleep
+clock. Visual and auditory experience can therefore change the parliament that
+chooses its next dream. The [long-experience AML protocol](experiments/doe_spores/omni_long.aml)
+compares learning without sleep, serial sleep and worker sleep over 24 visual
+turns, crossing Q8 → F16 → Q8 and archiving every generation. Its probes restore
+their own copies so measurement never becomes the next training episode.
+The completed run preserved exact serial/worker spores at all 24 boundaries,
+grew from four to six living seats, and retained 21.18 MB in the serial history.
+The final night's A/B alone reproduced all 384,000 logits of three fresh probes.
+Both audio transcription controls also preserved exact serial/worker spores.
+The [measured protocol](experiments/doe_spores/omni-long.md) includes the body
+hashes, population history, sleep effects and activation-path comparison.
+See [media, consolidation and continuity](research/democracy_of_experts.md#media-experience-and-consolidation).
+
+#### Replay an encounter while asleep
+
+The ordinary text Harness can also capture and replay its exact assembled
+prompt, including its stop-token policy. A replay has fresh private decoder
+state and uses the same native sleep-rate update as sensory replay:
+
+```sh
+./notorch -n 1 -t 0 --experts --learn-experts \
+  --replay-out early.gguf --spore-out awake.gguf model.gguf \
+  "Miro is the lighthouse keeper. Every night Miro carries a key."
+./notorch --experts --learn-experts --async-consolidation \
+  --spore-in awake.gguf --replay-only early.gguf -n 6 \
+  --spore-out remembered.gguf model.gguf
+```
+
+`--replay-out` takes a one-shot encounter. `--replay-only` generates no public
+answer, takes a budget of 1–32 choices (default 6), and uses the saved input
+and policy. The receiving model and tokenizer encode a peer's UTF-8 utterance
+before it becomes that body's episode.
+
+An input can now become an addressed episode: its assembled IDs, copied media
+rows and output-token policy are saved in a separate GGUF. Replay starts private
+convolution/KV state, generates a greedy continuation and consolidates elected
+experts at the sleep learning rate. Its receipts have their own clocks;
+ordinary dreams keep their 32-cue rotation.
+
+```sh
+# Encounter, remember the population, and preserve the sensory input.
+./notorch_omni --mode text --experts --learn-experts --image scene.png \
+  --replay-out seen.gguf --portable-spore --spore-out awake.gguf \
+  omni-q8.gguf "Which color is on the left? Reply with one color."
+
+# Replay that very input in a worker. No new user turn or public answer.
+./notorch_omni --mode text --experts --learn-experts --async-consolidation \
+  --replay-only seen.gguf -n 12 --spore-in awake.gguf \
+  --portable-spore --spore-out after-replay.gguf omni-q8.gguf
+
+# Let another body inherit the parliament and encode its next encounter.
+./notorch_omni --mode text --experts --learn-experts --image scene.png \
+  --spore-in after-replay.gguf --replay-out seen-f16.gguf \
+  --portable-spore --spore-out next-body.gguf omni-f16.gguf "What do you see?"
+```
+
+Use `--audio clip16k.wav --system "Perform ASR in English."` to capture an
+auditory episode. The captured rows belong to the exact host SHA: on another
+GGUF, encode the original image or WAV again, as in the third command. Expert
+identities survive that change. The content address covers input IDs, rows,
+host and policy; every replay records its last episode ID and cumulative
+cycles, choices, prefill positions, elections and stops. Capturing an episode
+publishes an input artifact independently of the later generation's spore.
+[Native replay API](harness/experts.h) ·
+[Mixed experience in AML](experiments/doe_spores/omni_replay.aml) ·
+[Measured continuation](experiments/doe_spores/omni-replay.md)
+
+The continuation reached turn 36 with six living identities, 12 new sensory
+replays and unchanged prior text-dream clocks. All 12 waking and replay
+boundaries preserved exact serial/worker spores through Q8 → F16 → Q8.
+Transplanting the last replay's A/B by identity reproduced all 256,000 logits
+of two fresh probes while retaining the recipient's clocks and genealogy.
+
+#### A parliament over a longer life
+
+The same turn-36 Omni population now continues through **128 additional Gemma
+encounters** in six histories: early key/bell experience, each followed by
+waking alone, ordinary dreams or spaced replay of its first encounter. At
+turn 164, each ledger contains 30 birth addresses, six living experts and 24
+retired ancestors. Two original Omni identities remain alive. One replaying
+history retains 20.56 MB across its 144 saved generations; all six retain
+123.38 MB while each current exact spore occupies 145,376 bytes.
+
+On the two fixed probes, replay preserves a key-minus-bell log-odds difference
+of **+0.062147 and +0.081848** after the 124 common later encounters. The ordinary
+dream histories have identical full logit rows from checkpoint 80 onward.
+Copying the last night's A/B by living identity reproduces all 524,288 logits
+for both the dream and replay interventions. A receipt chain makes interrupted
+experience resumable: split/restarted and worker runs preserve exact spores,
+including the final eight encounters after repeated births and retirements.
+[C/AML protocol and recovery commands](experiments/doe_spores/continuity.md) ·
+[Full-row measurements](experiments/doe_spores/long-logits.tsv) ·
+[Population genealogy](experiments/doe_spores/long-lineage.tsv)
+
+#### Votes and the choice of sleep episodes
+
+`nt_experts_measure_replay` reads a saved text or sensory episode on private
+decoder state. It reports the applied vote mass, entropy, effective number of
+participants and each living expert's normalized A(Bx) response, addressed by
+birth ID. It also measures how those responses differ from their living mean.
+This read changes no expert factors, histories, clocks, RNG or saved episode.
+
+[`vote_sleep.aml`](experiments/doe_spores/vote_sleep.aml) uses this API to choose
+from a bank of four sealed episodes. It compares fixed early replay, a rotating
+queue and current response disagreement, each with original votes or explicit
+RMS-one calibration. Queue and disagreement selection visit every address
+before beginning another round. Each completed night commits the selected
+address, candidate measurements, round history and all six populations in a
+hash-linked receipt. Resume verifies the full chain and recomputes its choices;
+serial and worker consolidation use the same replay API.
+
+The six continuations add **64 encounters** to the existing turn-164 Gemma
+history and reach turn 228 with 44 birth addresses. On the saved lighthouse
+episode, RMS-one calibration keeps the leader's mean mass near **0.729**
+instead of **0.999877**, with the same top-k of two. Rotation and disagreement
+each replay every bank entry twice in different orders. Stopping at night 32
+and resuming with the worker reproduces the uninterrupted scores, selections
+and spores. On the receiving Qwen body the same target increases concentration;
+both measured responses are retained with the explicit calibration target.
+[Mechanism and measurements](experiments/doe_spores/vote-sleep.md)
+
+#### Several small bodies, one parliament
+
+Gemma3-270M and Qwen3.5-0.8B now alternate through **one portable parliament**.
+The C/AML experiment completes twelve encounters on a frozen peer conversation,
+comparing independent per-body histories, a shared history and a shared history
+with `--body-memory` on every return. The shared population reaches turn 48
+and 24 replay cycles; each independent body reaches turn 42 and 18 cycles.
+All six inherited identities remain alive across the twelve encounters.
+
+The worker version of body recall matches all 36 entry, waking and replay
+generations byte for byte, together with every scheduled full-logit reading.
+On Gemma's final visit, the shared history changes the two selected key/bell
+margins by +0.086056 and +0.099398 relative to its separate history; local
+recall adds +0.019276 and +0.025373. Each receipt names the exact global parent,
+local body memory, captured episode and next body-bank states.
+[Shared-parliament protocol and commands](experiments/doe_spores/continuity.md#two-bodies-four-histories) ·
+[Scores across both bodies](experiments/doe_spores/shared-scores.tsv) ·
+[Full-row comparisons](experiments/doe_spores/shared-logits.tsv)
 
 The [SmolLM2-360M experiment](experiments/doe_spores/transplant.aml) moves a
 single seat's A/B between two GGUF spores and probes fresh conversations.

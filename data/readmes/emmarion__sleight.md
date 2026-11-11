@@ -80,18 +80,43 @@ sort on unique lists certified against [`msort/spec.sl`](msort/spec.sl).
 [`mini/`](mini/) writes the semantics of the fragment of
 [MINIMAL.md](MINIMAL.md) as relations in the language itself.
 
-Two larger proofs, both translated from existing ones (each directory's
+Three proofs, all translated from existing ones (each directory's
 NOTICE.md credits them): [`bb/`](bb/) proves that the fifth busy beaver
-value is 47,176,870, and [`fourcolor/`](fourcolor/) proves the four
-colour theorem for straight-line drawings. In single measurements on a
-12-core Mac with slc, each checked in about 35 s; most of the work runs
+value is 47,176,870, [`fourcolor/`](fourcolor/) proves the four colour
+theorem for straight-line drawings, and [`stlc/`](stlc/) proves that the
+simply typed λ-calculus is strongly normalizing, by an induction on types
+in the style of Joachimski and Matthes rather than by reducibility
+candidates. [`fourcolor/plane/`](fourcolor/plane/) extends the four colour
+theorem to drawings whose points have constructive real coordinates, the
+Cauchy reals of [`real/`](real/), which restates the Rocq standard
+library's. In single measurements on a 12-core Mac with slc, `bb/` and
+`fourcolor/` each checked in about 35 s; most of the work runs
 as native code in parallel jobs. Each directory's README says how to
 check it and what the proof rests on.
+
+[`higman/`](higman/) proves Higman's lemma constructively and with no
+`native-compute`: for a two-letter alphabet, and for each fixed finite
+alphabet through a macro that writes the proof out for its size.
 
 [`agent/`](agent/) runs LLM agents on Sleight programming tasks over many
 sessions; the heap sort above was written that way. The October 14,
 2026 talk ([`talk/slides.md`](talk/slides.md), PDF at
 https://github.com/emmarion/sleight/releases/download/v0.2.0/slides.pdf) reports how the models did.
+
+## Logic and strength
+
+Sleight's logic is anticlassical.
+[`tests/anticlassical.sl`](tests/anticlassical.sl) checks that excluded
+middle at any level `L`, with `¬P` read as a level-`L` function, gives a
+function that returns `False`.
+
+The author asserts that each Sleight function terminates by a
+lexicographic order of type about ω^(k+2), on the level, the `subterm`
+arguments, and the position in the function body, where k is the largest
+number of `subterm` parameters on any function in the program.
+Correspondingly, the language as a whole computes exactly the multiply
+recursive functions, so its strength is about IΣ₂ (anticlassicality
+aside), with proof-theoretic ordinal ω^ω^ω, well below Peano arithmetic.
 
 ## What might be new
 

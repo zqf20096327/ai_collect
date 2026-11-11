@@ -49,6 +49,12 @@ pi -e ./extensions/auto-mode.ts
 
 `/auto-mode` is an alias.
 
+## Custom agent directory
+
+Pi-automode stores its global configuration at `extensions/pi-automode/config.json` inside Pi's agent directory. The default is `~/.pi/agent`; `PI_CODING_AGENT_DIR` changes it. If you already use this variable, move your existing configuration from the default directory to the custom directory.
+
+Relative `PI_CODING_AGENT_DIR` paths are resolved against the process working directory. Use an absolute path to avoid ambiguity.
+
 ## Agent diagnostics
 
 The package registers one model-callable, read-only tool:

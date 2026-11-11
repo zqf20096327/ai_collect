@@ -154,6 +154,7 @@ AI Agents are autonomous systems that use LLMs to reason, plan, and take actions
 - [Composio](https://github.com/ComposioHQ/composio) — 1000+ toolkits, auth management, and sandboxed workbench for AI agents.
 - [Dify](https://github.com/langgenius/dify) — Open-source LLMOps platform with visual agent builder.
 - [Google Gemini Enterprise Agent Platform](https://cloud.google.com/products/gemini-enterprise-agent-platform) — Google Cloud's agent development platform (formerly Vertex AI Agent Builder).
+- [Kwant](https://github.com/alexsergivan/kwant) — Open-source, self-hosted team of AI agents in one Rust binary with spaces, local models, @mention handoffs and approvals.
 - [LazyMind](https://github.com/LazyAGI/LazyMind) — Self-hosted skill runtime for workflows with persisted state and artifacts.
 - [MaxKB](https://github.com/1Panel-dev/MaxKB) — Open-source platform for building enterprise-grade agents.
 - [Microsoft Copilot Studio](https://copilotstudio.microsoft.com/) — Low-code agent builder. Integrates with M365, Dynamics, Power Platform.
@@ -207,6 +208,7 @@ AI Agents are autonomous systems that use LLMs to reason, plan, and take actions
 - [agentmemory](https://github.com/rohitg00/agentmemory) — Persistent cross-session memory for coding agents (Claude Code, Codex, Copilot CLI, Cursor, Gemini CLI, OpenCode, pi, Hermes, OpenClaw, or any MCP client). Hybrid BM25 + vector + graph retrieval over local SQLite with no external database; keyless mode or free on-device embeddings; reproducible LongMemEval-S harness. Apache-2.0.
 - [Busabase](https://github.com/busabase/busabase) — Open-source database and workspace for agents with persistent context and permission-aware, auditable ChangeRequests.
 - [claude-mem](https://github.com/thedotmack/claude-mem) — Cross-session persistent memory for AI coding agents. Captures session activity, compresses it with AI, and injects relevant context into future sessions. Works with Claude Code, OpenClaw, Codex, Gemini, Hermes, Copilot, and more. Apache-2.0.
+- [deja-vu](https://github.com/vshulcz/deja-vu) — Local cross-session memory, BM25F search, uncommitted file recovery, and handoff CLI and MCP server across 43 coding agents over SQLite. MIT.
 - [funes](https://github.com/huggingface/funes) — Durable, searchable memory of past agent sessions. Indexes Claude Code, Codex, pi, and Hermes; recall over MCP; publish as a Hugging Face dataset. Apache-2.0.
 - [Headroom](https://github.com/headroomlabs-ai/headroom) — Context compression layer for AI agents. Reduces tool outputs, logs, RAG chunks, and files by 60–95% before they reach the LLM—without loss of answer quality. Library, proxy, and MCP server modes; reversible compression; supports Claude Code, Codex, Cursor, and Aider.
 - [Hindsight](https://github.com/vectorize-io/hindsight) — Agent memory that learns: state-of-the-art memory layer for AI agents with persistent, personalized recall.

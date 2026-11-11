@@ -58,11 +58,13 @@ Pointer does not support MCP, include built-in web search, or process audio and 
 
 ### Download
 
-CI publishes a Windows installer on the [Releases](https://github.com/experdot/pointer/releases) page:
+The release workflow uploads all three platforms to one draft. After review and publication, packages are available on the [Releases](https://github.com/experdot/pointer/releases) page:
 
 - **Windows**: `pointer-<version>-setup.exe`
+- **macOS**: `pointer-<version>-mac-<arch>.dmg` and `.zip`, for Intel (`x64`) and Apple Silicon (`arm64`)
+- **Linux**: `pointer-<version>-linux-x86_64.AppImage` and `pointer-<version>-linux-amd64.deb`
 
-macOS and Linux packages are configured but not published automatically yet: `pnpm build:mac` and `pnpm build:linux` produce them locally, while the release workflow currently builds Windows only.
+macOS packages are currently unsigned, non-notarized **test builds** that require no Apple signing credentials in CI. Gatekeeper may block installation or launch, and macOS automatic updates are not supported for these builds. Install later test builds manually. See the [release guide](docs/release-guide.md) for platform coverage and validation requirements.
 
 ### Build from source
 
@@ -96,10 +98,17 @@ pnpm build:unpack   # build without packaging
 pnpm lint           # ESLint (warnings fail the run)
 pnpm format         # Prettier
 pnpm typecheck      # type check main + renderer
-pnpm test           # unit tests (domain + renderer mirror)
+pnpm test           # domain, kernel, IPC, mirrors and React DOM tests
+pnpm test:coverage  # full-source coverage report and regression thresholds
+pnpm test:stress    # large trees, seeded inputs and storage budgets
+pnpm test:release   # release tag guards and draft metadata
+pnpm test:e2e       # production build + real Electron desktop scenarios
 pnpm smoke:kernel   # boot the kernel in a temp dir and verify the query/command/event chain
-pnpm release        # build and publish to GitHub Releases
+pnpm package:local  # build and package locally without uploading
+pnpm release        # verify tag, build and upload a Windows release draft
 ```
+
+Testing scope, isolation rules and verification records are documented in [docs/testing.md](docs/testing.md).
 
 ## Configuration
 
@@ -147,14 +156,14 @@ src/
 | Storage   | `.pointer.md` files, node:sqlite index (FTS5, trigram tokenizer) |
 | Build     | Vite, Electron Builder                                           |
 | Editor    | Monaco Editor                                                    |
-| Rendering | react-markdown (streaming), Shiki, KaTeX, Mermaid                |
+| Rendering | react-markdown (streaming), rehype-highlight, KaTeX, Mermaid     |
 | Updates   | electron-updater (GitHub Releases)                               |
 
 ## Documentation
 
 - [Architecture](docs/architecture.md) — layering, data flow, contracts, storage layout
+- [Release guide](docs/release-guide.md)（中文）— branches, tags, CI and release publication
 - [Auto-update guide](docs/auto-update-guide.md)（中文）
-- [Windows code signing guide](docs/code-signing-guide.md)（中文）
 
 ## Contributing
 

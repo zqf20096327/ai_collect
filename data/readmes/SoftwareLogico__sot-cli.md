@@ -29,7 +29,7 @@ The name `sot-cli` is a direct nod to the architectural pattern it is built arou
 - **🌐 Multi-Provider**: Switch OpenRouter/LMStudio/OpenAI/Ollama/NVIDIA/Bedrock live.
 - **🖥️ Browser Automation**: Human-like web browsing — navigate, click, type, screenshot, and tab management (powered by browser-use). Use your real Chrome/Brave/Edge profiles or a clean session.
 - **💰 Native Prompt Caching**: Payload architecture designed for prefix-matching, saving up to 50% API costs on long histories by caching static dialogue and keeping dynamic files at the bottom.
-- **🧠 Context Awareness**: Real-time context limit tracking (Allocated vs. Max) with visual terminal warnings to prevent token overflow.
+- **🧠 Context Awareness**: Real-time context limit tracking (Allocated vs. Max, overridable with `--context_limit`) with visual terminal warnings to prevent token overflow.
 
 👉 [SoT](SoT_Method.md) | [Tools](ARCHITECTURE.md) | [Roadmap](ROADMAP.md)
 
@@ -270,12 +270,23 @@ sot-cli prompt --subagent_model gemma4
 # Resume a previous session
 sot-cli <session_id>
 
-# Cleaning the house removing extras manually
-# Manually remove files in SoT
-sot-cli --clean_sot <session_id>
+# Text-only session: never send images/PDF/audio/video to a non-multimodal model
+sot-cli prompt --no-media
 
-# Convert previous used tools into receipts
-sot-cli --clean_sot <session_id> --hypercompress
+# Override the context-limit denominator used by the context bar (default: detected, else 1M)
+# Accepts 131000, 131k or 1.3m
+sot-cli prompt --context_limit 200k
+sot-cli prompt --context_limit 1.3m
+
+# Collapse past tool turns into receipts before resuming.
+# Optional PERCENT (1-100) = share of the OLDEST closed turns to compress.
+sot-cli <session_id> --hypercompress
+sot-cli <session_id> --hypercompress 30
+
+# Cleaning the house manually — these are two INDEPENDENT one-shot operations
+# `--clean_sot` drops the persisted SoT/media blocks and does NOT start a session,
+# so it cannot be combined with --hypercompress in the same invocation.
+sot-cli --clean_sot <session_id>
 ```
 
 ## 🧠 The Core Concept: The SoT Method

@@ -74,7 +74,7 @@ Compatibility covers the endpoints and fields documented here, not the entire Op
 - The daemon serves plain HTTP. It does not terminate TLS.
 
 ### What's new in v0.4.1
-- **Frontier model rename handled**: upstream renamed the top tier from `gemini-argon` to `gemini-carbon` on 2026-11-10. `gemini-carbon` is now recognised as a reasoning model, so it no longer falls back to the lowest thinking level, and it carries a documented 1M/64k limit instead of the configured guess. Pin clients from `GET /v1/models`; a name upstream has dropped returns `404 model_not_found`.
+- **Frontier model tier tracked through the rename**: upstream renamed the top tier from `gemini-argon` to `gemini-carbon` on 2026-11-10. Thinking level and model selection now come from the live registry instead of name tables, so a renamed or newly introduced tier is described correctly without a code change. The name tables remain only as a fallback for a registry that publishes no thinking policy. Pin clients from `GET /v1/models`; a name upstream has dropped returns `404 model_not_found`.
 - **Documented limits actually apply**: the limit table was keyed from `displayName`, but the live registry carries the versioned name in `description` and a UI label in `displayName`, so every model silently reported `limitsSource: config`. Each candidate is now tried in turn.
 - **Frontier quota attribution**: the quota bucket behind the top tier is still named "Gemini Pro", so both the current and previous tier names map to it when reporting an exhausted bucket.
 
@@ -375,6 +375,7 @@ The UI can change these settings live and optionally persist them to `$BRIDGE_HO
 | Max RPM per Account | `BRIDGE_MAX_RPM_PER_ACCOUNT` | `0`–`600` (`0` disables) |
 | Max Concurrent Streams | `BRIDGE_MAX_CONCURRENT_PER_ACCOUNT` | `0`–`64` (`0` disables) |
 | Reject Downgrade | `BRIDGE_REJECT_DOWNGRADE` | Boolean |
+| Reject Label Mismatch | `BRIDGE_REJECT_LABEL_MISMATCH` | Boolean |
 | Stream `reasoning_content` | `BRIDGE_LIVE_THOUGHTS` | Boolean |
 | Stream `tool_calls` deltas | `BRIDGE_LIVE_TOOL_CALLS` | Boolean |
 | Keep pre-tool preamble | `BRIDGE_TOOL_PREAMBLE` | Boolean |
@@ -901,6 +902,7 @@ Streaming behavior:
 ```
 
 If the served model differs from the requested one, the payload also includes `requested_model` and `model_served`.
+The same fields appear when the backend id matched but the answer was labelled with a different tier, with `model_served.label_mismatch: true`. That case is reported because the id alone cannot tell a rename in place from the tier the client asked for; the request still succeeds unless `BRIDGE_REJECT_LABEL_MISMATCH=1`.
 
 #### Function calling behavior
 
@@ -1252,6 +1254,7 @@ An unknown value falls back to `chrome_150_psk`. User-Agent and `Sec-CH-UA*` ver
 | `BRIDGE_MAX_RPM_PER_ACCOUNT` | `24` | Per-account requests per rolling minute; `0` disables |
 | `BRIDGE_MAX_CONCURRENT_PER_ACCOUNT` | `2` | Per-account concurrent active streams; `0` disables |
 | `BRIDGE_REJECT_DOWNGRADE` | `true` | Reject detected upstream model substitution instead of silently returning another model |
+| `BRIDGE_REJECT_LABEL_MISMATCH` | `false` | Fail a request whose answer is labelled with a different tier than the registry entry, even though the backend id matched. Off by default: upstream renames a tier in place, so rejecting takes the renamed tier offline |
 | `BRIDGE_QUIET_HOURS` | Empty | `HH:MM-HH:MM` window in which background rotation/model refresh pauses (requests still work) |
 
 ### 11.7 Generation and history

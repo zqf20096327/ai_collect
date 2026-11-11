@@ -284,6 +284,27 @@ canonical workflow, target-specific validation steps, and a reusable delegation 
 
 ## Commands
 
+### `waza artifact` (unreleased v0.41 source preview)
+
+Publish immutable artifact manifests without executing agents. The opt-in store
+is separate from legacy mutable result files; content verification is not
+execution attestation.
+
+```bash
+mkdir -m700 .waza-artifacts
+waza artifact create manifest.json --store .waza-artifacts
+waza artifact upload manifest.json terminal terminal.json --store .waza-artifacts
+waza artifact finalize "$DIGEST" --store .waza-artifacts
+waza artifact inspect "$DIGEST" --store .waza-artifacts
+```
+
+`DIGEST` is the canonical manifest digest returned by `create`; `terminal` must
+be its declared logical artifact name. Azure uses `--azure-container-url` instead
+of `--store`, with existing credentials and no automatic login. Lab can discover
+stored declaration pointers and inspect current integrity. Unreadable publication
+or an ambiguous finalization write reports `unknown`, not observed marker absence. See
+[declaration, publication, recovery and migration](docs/IMMUTABLE_ARTIFACTS.md).
+
 <span id="waza-interop-source-build-preview"></span>
 
 ### `waza interop` (v0.40.0)
@@ -1849,8 +1870,4 @@ a completed session is not marked abandoned.
 
 Waiting for a retired client's replacement honors each request's cancellation; retiring an old generation does not wait for replacement startup. Parent cancellation remains a failure even after a skill invocation ends the turn early, or when session/global cleanup finishes without an SDK error. This bounds caller waiting, not child-process lifetime: retired shared clients remain tracked until command-level shutdown so active sibling sessions are not force-stopped. Repeated unresponsive trials can therefore retain multiple client processes until finalization; there is no per-run process-count bound.
 
-Shutdown-usage fallback is excluded for session IDs with an in-progress disconnect. If a disconnect exceeds the cancellation grace and is abandoned, that engine retains the exclusion for its lifetime, even if the background disconnect later completes. This avoids fallback resuming or shutting down a session whose disconnect has not been joined. Already recorded RPC metrics and observed event usage remain available, but missing final usage is not invented. Skipped fallback emits a warning, or a `shutdown_usage/usage_missing_or_partial` diagnostic when lifecycle diagnostics are enabled. Fallback after joined disconnects and usage captured before ephemeral-session teardown keep their existing behavior.
-
-Outcome publication applies permissions through the owned temporary-file handle, so replacement of its pathname cannot redirect that permission change to another file. Existing regular-file permissions and the creation umask remain respected. Use output directories and ancestors that untrusted users cannot modify: publication and temporary-path cleanup still use pathnames and do not provide an attacker-writable-namespace confinement guarantee.
-
-Completed startup keeps its lifetime context alive through graceful SDK cleanup. Authentication failure immediately cleans up an owned client and retains any cleanup error; later engine shutdown still performs final SDK cleanup. Shared clients remain the top-level owner
+Shutdown-usage fallback is excluded for session IDs with an in-progress disconnect. If a disconnect exceeds the cancellation grace and is abandoned, that engine retains the exclusion for its lifetime, even if the background disconnect later completes. This avoids fallback resuming or shutting down a session whose disconnect has not been joined. Already recorded RPC metrics and observed event usage remain

@@ -40,7 +40,7 @@ Unreal-MCP is the Unreal Engine counterpart of [Unity-MCP](https://github.com/Iv
 
 Unlike Unity and Godot (C# engines that host the .NET `McpPlugin` in-process), Unreal's editor is **C++** — so the .NET MCP host runs as an auto-managed **sidecar process** (`unreal-mcp-bridge`) that the plugin spawns and talks to over a localhost IPC channel. The full design lives in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (see the §0 system-overview diagram).
 
-> **Status: beta.** The plugin, the .NET sidecar, the `unreal-mcp-cli`, the AI Game Developer editor UI, and **27 built-in tools across 7 families** (plus 3 system tools) — the editor data layer is one query language, [RQL](docs/rql.md) have shipped and are exercised by CI. The `unreal-mcp-cli` is **published on npm** — install the plugin with it (Option B below); the Fab / Epic Marketplace listing for the precompiled plugin is coming soon (Option A). Pixel-capture (screenshot) tools need a GPU-backed editor; everything else runs headless.
+> **Status: beta.** The plugin, the .NET sidecar, the `unreal-mcp-cli`, the AI Game Developer editor UI, and **30 built-in tools across 8 families** (plus 3 system tools) — the editor data layer is one query language, [RQL](docs/rql.md) have shipped and are exercised by CI. The `unreal-mcp-cli` is **published on npm** — install the plugin with it (Option B below); the Fab / Epic Marketplace listing for the precompiled plugin is coming soon (Option A). Pixel-capture (screenshot) tools need an editor that renders: windowed, or headless with `-RenderOffscreen` (what `unreal-mcp-cli` starts); under `-nullrhi` they return an error. Everything else also runs under `-nullrhi`.
 
 > **[💬 Join our Discord Server](https://discord.gg/cfbdMZX99G)** — Ask questions, showcase your work, and connect with other developers!
 
@@ -48,7 +48,7 @@ Unlike Unity and Godot (C# engines that host the .NET `McpPlugin` in-process), U
 
 - ✔️ **AI agents** — Use the best agents from **Anthropic**, **OpenAI**, **Google**, or any other provider with no vendor lock-in
 - ✔️ **RQL data layer** — query and change actors, components, assets, levels and editor state with one language ([`rql-query` / `rql-mutate` / `rql-schema`](#tools))
-- ✔️ **27 built-in Tools** — [MCP Tools](#tools) across **7 families** for operating the Unreal Editor
+- ✔️ **30 built-in Tools** — [MCP Tools](#tools) across **8 families** for operating the Unreal Editor
 - ✔️ **Blueprint authoring** — Create, edit, and **compile** Blueprints with a structured error/warning feedback loop the AI can act on
 - ✔️ **C++ edit & compile** — Read, scaffold, and edit project C++, then compile (Live Coding or UBT) with a structured error report
 - ✔️ **Visual feedback** — Capture viewport, game-view, camera, and isolated-actor screenshots the LLM can inspect directly
@@ -68,7 +68,7 @@ Unlike Unity and Godot (C# engines that host the .NET `McpPlugin` in-process), U
 - [Install](#install)
 - [Updating the plugin](#updating-the-plugin)
 - [First run](#first-run)
-- [Tools](#tools) — all 7 families, 27 tools (+ 3 system tools)
+- [Tools](#tools) — all 8 families, 30 tools (+ 3 system tools)
   - [Install Additional Skills and Tools](#install-additional-skills-and-tools)
 - [Per-tool visibility](#per-tool-visibility)
 - [`unreal-mcp-cli`](#unreal-mcp-cli)
@@ -182,9 +182,9 @@ Connection settings persist to `<Project>/Saved/Config/UnrealMcp/ai-game-develop
 
 # Tools
 
-Unreal-MCP ships **27 built-in ("core") tools** across **7 families** that your AI can call, plus **3 system tools** it cannot (see below). Tool ids are kebab-case (`rql-query`, `blueprint-compile`), matching the Unity/Godot naming convention. Extensions can add more (see [Customize Tools, Prompts & Resources](#customize-tools-prompts--resources)).
+Unreal-MCP ships **30 built-in ("core") tools** across **8 families** that your AI can call, plus **3 system tools** it cannot (see below). Tool ids are kebab-case (`rql-query`, `blueprint-compile`), matching the Unity/Godot naming convention. Extensions can add more (see [Customize Tools, Prompts & Resources](#customize-tools-prompts--resources)).
 
-> This list is generated from the STANDARD-surface registration sources (`UnrealMCP/Source/UnrealMcpEditor/Private/Tools/UnrealMcp*Tools.cpp`, excluding `UnrealMcpSkillTools.cpp` — its tool is a system tool, listed separately below — plus `UnrealMCP/Source/UnrealMcpRql/Private/UnrealMcpRqlTools.cpp`). Counts: rql 3, blueprint 11, console 1, tool list 1, python 1, source 6, screenshot 4 = **27**.
+> This list is generated from the STANDARD-surface registration sources (`UnrealMCP/Source/UnrealMcpEditor/Private/Tools/UnrealMcp*Tools.cpp`, excluding `UnrealMcpSkillTools.cpp` — its tool is a system tool, listed separately below — plus `UnrealMCP/Source/UnrealMcpRql/Private/UnrealMcpRqlTools.cpp`). Counts: rql 3, blueprint 11, console 1, tool list 1, python 1, source 6, screenshot 4, fab 3 = **30**.
 
 <details>
   <summary><b>RQL — the data layer (3)</b></summary>
@@ -265,6 +265,22 @@ wiring is not exposed to Python: use the Blueprint tools for that.
 </details>
 
 <details>
+  <summary><b>Fab family (3) — search and add Fab content</b></summary>
+
+| Tool id | What it does |
+| --- | --- |
+| `fab-search` | Search the [Fab](https://www.fab.com) marketplace (`query`, `listingType`, `freeOnly`, `sort`, paging); returns each listing's uid, title, type, price and formats |
+| `fab-library` | List the Fab assets the signed-in user owns, with where each is already imported; `filter` searches the whole library |
+| `fab-add` | Download a listing the user owns and import it like the Fab panel's *Add to Project* (Unreal Engine packs, Megascans with `quality`, glTF/FBX); returns the content folder, skips listings already in the project |
+
+They drive the engine's own Fab plugin (on by default since UE 5.5): its Epic sign-in and its import workflows. The
+first `fab-library` / `fab-add` without a sign-in opens Epic's sign-in page in the browser (opening Fab from the
+editor's toolbar also signs in, from a remembered Epic login). Buying, or adding a free listing to the library, stays on fab.com. Complete projects and engine code
+plugins are installed from the Epic Games Launcher, not added to a project.
+
+</details>
+
+<details>
   <summary><b>Source / C++ family (6)</b></summary>
 
 | Tool id | What it does |
@@ -288,9 +304,9 @@ All file operations are jailed to `<Project>/Source/`.
 | `screenshot-viewport` | Capture the active editor viewport; optional `savePath` also writes the PNG inside the project |
 | `screenshot-game-view` | Capture the PIE / game view; optional `savePath` as above |
 | `screenshot-camera` | Render from a resolved camera actor via `USceneCaptureComponent2D`; optional `savePath` as above |
-| `screenshot-isolated` | Render an actor in isolation (transient SceneCapture2D + show-only list) |
+| `screenshot-isolated` | Render an actor in isolation (transient SceneCapture2D + show-only list); optional `savePath` as above |
 
-Captures return a base64 **PNG as MCP image content** so the LLM can inspect the render directly. Each capture renders a new frame at call time, also while the editor window is in the background or minimized, and its text says whether the frame is fresh and whether effects and animation were ticking. While an AI agent is connected, the plugin keeps the editor ticking and rendering at full rate in the background (also when minimized) ("Use Less CPU when in Background" is overridden for that session only; your saved preference is unchanged). Dimensions are clamped (default 1024, hard cap 2048 per side). Pixel capture needs a GPU-backed editor; under headless `-nullrhi` these tools return a structured error.
+Captures return a base64 **PNG as MCP image content** so the LLM can inspect the render directly. Each capture renders a new frame at call time, also while the editor window is in the background or minimized, and its text says whether the frame is fresh and whether effects and animation were ticking. While an AI agent is connected, the plugin keeps the editor ticking and rendering at full rate in the background (also when minimized) ("Use Less CPU when in Background" is overridden for that session only; your saved preference is unchanged). Dimensions are clamped (default 1024, hard cap 2048 per side). Pixel capture needs an editor that renders: windowed, or headless with `-RenderOffscreen` (the `unreal-mcp-cli` default). Under `-nullrhi` nothing renders, so these tools return an error that names `-nullrhi` and the fix.
 
 </details>
 
@@ -377,7 +393,7 @@ The full 18-command surface:
 | `bootstrap-local` | Build the bridge from source into `<project>/Intermediate/UnrealMCP` (the server is downloaded by `setup-mcp`, not built) |
 | `update [path]` | Update everything: the project's UnrealMCP plugin and installed extensions to their latest versions (close the editor first), then `unreal-mcp-cli` itself. Outside a project it updates only the CLI. `--check` reports (exit 2 when something is outdated); `--no-self`, `--no-project`, `--no-extensions`, `--no-clean` skip a step |
 | `install-engine` | Detect installed Unreal engines; for a missing version, link to the Epic launcher |
-| `setup-skills` | Write a Claude-Code skill stub that drives this project's Unreal MCP server |
+| `setup-skills` | Write the `unreal-mcp-cli` agent skill (cold-start workflow, RQL recipes, exit codes) into an agent's skills folder, offline |
 
 ![AI Game Developer — Unreal MCP](https://github.com/IvanMurzak/Unreal-MCP/blob/main/docs/img/promo/hazzard-divider.svg?raw=true)
 
@@ -589,7 +605,7 @@ The complete, buildable example is [`samples/UnrealAIRuntimeSample/`](samples/Un
 
 A runtime connection ships exactly **one** built-in tool: **`ping`** (a liveness probe). `ping` is a [system tool](#tools), so it answers at `POST /api/system-tools/ping` and is not advertised to an AI agent — meaning a packaged game that registers nothing of its own presents an **empty** tool list, which is an honest description of it. Everything a runtime AI agent can do is **bring-your-own**: register your own tools via the extension bus above (`RegisterToolProvider`) and they appear normally.
 
-All of the engine-development families — the RQL data layer (`rql-query` / `rql-mutate` / `rql-schema` over actors, components, assets, levels, the console and editor state), every screenshot tool, plus Blueprint authoring, C++ source edit & compile, `console-run-command`, `unreal-tool-list` and `python-execute` — are **editor-only** (the [27 editor tools](#tools)). They drive the editor and several are RCE-class (e.g. `rql-mutate`, `console-run-command`, `python-execute`), so they are not compiled into a shipped game by default. There is no editor in a packaged game, so the runtime built-in surface is intentionally just `ping` + whatever tools your game registers.
+All of the engine-development families — the RQL data layer (`rql-query` / `rql-mutate` / `rql-schema` over actors, components, assets, levels, the console and editor state), every screenshot tool, plus Blueprint authoring, C++ source edit & compile, `console-run-command`, `unreal-tool-list`, `python-execute` and the Fab tools — are **editor-only** (the [30 editor tools](#tools)). They drive the editor and several are RCE-class (e.g. `rql-mutate`, `console-run-command`, `python-execute`), so they are not compiled into a shipped game by default. There is no editor in a packaged game, so the runtime built-in surface is intentionally just `ping` + whatever tools your game registers.
 
 ## <a id="editor-only-exclude-from-packaged-games"></a>Editor-only — exclude Unreal-MCP from packaged games
 
@@ -658,7 +674,7 @@ The plugin reads configuration with the precedence **process env → `<Project>/
 - **`No connected clients. Retrying [1..10]` then HTTP 500 from a local server.** The connection mode defaulted to `Cloud`, so the sidecar dialed ai-game.dev instead of your local server. Set `UNREAL_MCP_CONNECTION_MODE=Custom` (env, `.env`, or the UI toggle).
 - **No `[Unreal-MCP] plugin loaded` line at boot.** The editor module failed to load — check the Output Log for a `StartupModule` error or a malformed `.uplugin`.
 - **A tool body returns `'x' is required.` when invoked over the REST passthrough.** Send `-H "Content-Type: application/json"`; without it the server drops the JSON body.
-- **Screenshot tools return a structured error.** Pixel capture needs a GPU-backed editor — they cannot render under headless `-nullrhi`.
+- **Screenshot tools return `Screenshot tools are unavailable: this editor runs with the null RHI (-nullrhi)`.** Nothing renders under `-nullrhi`. Restart the editor without it: windowed, or headless with `-RenderOffscreen`, which renders screenshots (with `unreal-mcp-cli`, omit `--nullrhi`).
 - **No sidecar / sidecar keeps restarting.** Check the bridge status in the **Connection** section (`Running (restarts: N)` / `Stopped`). If the log shows `no sidecar binary resolved for rid <rid> …`, neither a bundled binary, a downloaded one, nor `UNREAL_MCP_BRIDGE_PATH` resolved. A Fab install needs the bridge installed by hand: **Get bridge** opens the release page, extract the zip for your platform into the folder **Open bridge folder** shows, then click **Connect** (the Fab build never downloads or starts a program by itself); a CLI / packaged release bundles it, so there it means the plugin was packaged without your platform's bridge (reinstall the correct build); in a from-source build, set `UNREAL_MCP_BRIDGE_PATH` or run `unreal-mcp-cli bootstrap-local` to build one from source (docs/ARCHITECTURE.md §6.3, §6.8).
 - **Ports.** IPC uses a deterministic per-project port in `30000–39999` and probes forward (then an ephemeral port) on a collision; the local server uses a deterministic hash port in `20000–29999` with no probing — the CLI derives the same number without reading any config, and the server binds the exact requested port. The exact number is a debugging nicety, not a requirement.
 - **Logs.** Use the main window's **Open log file** action, an RQL query (`console | where Verbosity == "Error"`), or the editor Output Log (`LogUnrealMcp` category).

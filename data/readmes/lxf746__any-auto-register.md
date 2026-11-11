@@ -208,10 +208,6 @@ python3 -m uvicorn main:app --port 8000
 
 ### 代理池
 
-| 🌟 推荐代理服务 | 简介说明 |
-| :--- | :--- |
-| <a href="https://www.ipwo.net/?ref=githubregister"><img src="assets/ipwo-banner.png" width="130" alt="IPWO 住宅代理"/></a> | **[IPWO 住宅代理](https://www.ipwo.net/?ref=githubregister)** 覆盖全球 195+ 地区动静态 IP 资源，支持 http/https/socks5 协议，为自动化注册和多账号任务提供更多网络环境选择。适用于账号注册、浏览器自动化、Web 数据处理等场景，灵活配置不同地区代理。[<u>**免费测试入口**</u>](https://www.ipwo.net/?ref=githubregister)，90% 折扣码：`0204` |
-
 - **静态代理**:代理管理页手动添加,系统按成功率加权轮询,连续失败 5 次自动禁用
 - **API 提取代理**:通过 HTTP API 动态提取代理 IP
 - **旋转网关代理**:固定入口地址、每次请求自动分配出口 IP,适用于 BrightData / Oxylabs / IPRoyal 等
@@ -454,6 +450,23 @@ docker compose build --no-cache && docker compose up -d
 [![Star History Chart](https://api.star-history.com/svg?repos=lxf746/any-auto-register&type=Date)](https://star-history.com/#lxf746/any-auto-register&Date)
 
 > 如果这个项目帮你省下了重复劳动的时间,点个 ⭐ 让更多人看到。
+
+## 赞助商
+
+<table>
+<tr>
+<td width="220" align="center">
+<a href="https://www.rapidproxy.io/?ref=lxf" target="_blank">
+<img src="https://www.rapidproxy.io/static/rapidproxy/images/rapid_logo_700.png" alt="RapidProxy" width="180" />
+</a>
+</td>
+<td>
+<b><a href="https://www.rapidproxy.io/?ref=lxf">RapidProxy</a></b> — 高质量住宅代理，智能 IP 轮换，低封禁率，流量不过期，助力数据采集。<br/>
+90M+ 真实住宅 IP · 200+ 国家 / 地区 · 99.9% 在线率 · &lt;0.5s 响应。<br/>
+<a href="https://www.rapidproxy.io/?ref=lxf"><b>免费试用 →</b></a>
+</td>
+</tr>
+</table>
 
 ## License
 

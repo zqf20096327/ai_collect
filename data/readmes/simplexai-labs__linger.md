@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/logo-horizontal.svg" width="900" alt="Linger"></p>
+<p align="center"><img src="assets/logo-horizontal.svg" width="360" alt="Linger"></p>
 
 <p align="center"><b>Linger is an open-source personal agent that runs locally on your computer.</b></p>
 
@@ -7,9 +7,15 @@
 </p>
 
 <p align="center">
-  <a href="https://docs.simplexai.com/"><img alt="Documentation" src="https://img.shields.io/badge/Docs-0975ce"></a>
+  <a href="https://docs.heylinger.com/"><img alt="Documentation" src="https://img.shields.io/badge/Docs-0975ce"></a>
   <a href="https://github.com/simplexai-labs/PolyStrata"><img alt="Powered by PolyStrata" src="https://img.shields.io/badge/Powered%20by-PolyStrata-1a1a16?logo=github&logoColor=white"></a>
   <a href="https://github.com/Niko1221/Strata"><img alt="Powered by Strata" src="https://img.shields.io/badge/Powered%20by-Strata-1a1a16?logo=github&logoColor=white"></a>
+</p>
+
+<p align="center">
+  <a href="https://x.com/HeyLingerAI"><img alt="Follow on X" src="https://img.shields.io/badge/@HeyLingerAI-000000?logo=x&logoColor=white"></a>
+  <a href="https://www.youtube.com/@HeyLingerAI"><img alt="YouTube" src="https://img.shields.io/badge/YouTube-FF0000?logo=youtube&logoColor=white"></a>
+  <a href="https://www.reddit.com/user/HeyLinger/"><img alt="Reddit" src="https://img.shields.io/badge/Reddit-FF4500?logo=reddit&logoColor=white"></a>
 </p>
 
 <p align="center"><img src="assets/hero.gif" width="900" alt="Linger: Open Source Personal Agent That Fully Runs on Your Local PC. Finds what you need across apps, remembers what matters, and gets things done. Open-Source, Local AI, Consumer Macs and PCs. Five pages play in turn. Local AI, powered by PolyStrata: a 125B parameter model on a 12 GB GPU, with the 55 GB 3-bit model file kept partly in GPU memory and the rest in RAM or on SSD, writing 45.5 tokens per second with Qwen3.8-Flash-Next on an RTX 3060 12 GB with 64 GB of RAM. Find and connect: stop searching app by app; Linger searches Files, Mail, Calendar, Slack and Docs and returns a project brief with its status, what is blocked and who can help. Remember and grow: a detail from a chat three weeks ago, Mom's birthday is the 14th and she loves orchids, is saved to memory and becomes a birthday plan with an orchid order to approve, right on time. Get it done: Linger keeps working while you are away, sorting the week's files by project, summarizing progress, drafting the recap email and preparing the weekly brief, ready for your review. Agent teams: one launch brief becomes a team.md that a research agent, a copy agent and a visuals agent follow, and they bring back a launch package for review"></p>
@@ -44,9 +50,6 @@ Powered by **Efficient AI model–harness co-design**, it brings powerful local 
 
 ## Quick start
 
-Linger runs your agents on your own computer. You need Claude Code, Codex or Pi
-installed and signed in there. Pick one of two ways to start.
-
 ### Option 1: the desktop app
 
 For one person on one computer. Download the package for your platform from
@@ -54,12 +57,14 @@ For one person on one computer. Download the package for your platform from
 opens Linger, connects this computer and runs its agents. **Quick Install** on its
 setup screen sets up a Linger server on this computer too.
 
-| Platform             | Package                                     |
-| -------------------- | ------------------------------------------- |
-| macOS, Apple silicon | `Linger-<version>-arm64.dmg`                |
-| macOS, Intel         | `Linger-<version>-x64.dmg`                  |
-| Windows x64          | `Linger-<version>-x64-setup.exe` and `.zip` |
-| Linux x64            | None. Run from source.                      |
+| Platform             | Package                                                                                            |
+| -------------------- | -------------------------------------------------------------------------------------------------- |
+| macOS, Apple silicon | `Linger-<version>-arm64.dmg`                                                                       |
+| Windows x64          | `Linger-<version>-windows-x64-setup.exe`, or `-windows-x64-portable.zip` to run without installing |
+| Linux x64            | `Linger-<version>-linux-x64.tar.gz` (glibc 2.35 or newer)                                          |
+
+There is no package for Intel Macs; use Docker Compose there. Check each
+download against `SHA256SUMS.txt` from the same release.
 
 ### Option 2: Docker Compose
 
@@ -86,12 +91,12 @@ reach the server.
 
 Open <http://localhost:3000> and sign in. The app then shows the commands that
 connect your computer. See
-[Install with Docker Compose](https://docs.simplexai.com/install/docker-compose)
+[Install with Docker Compose](https://docs.heylinger.com/install/docker-compose)
 to serve other computers on your network and to turn on voice.
 
 ## Learn more
 
-The full documentation lives at **[docs.simplexai.com](https://docs.simplexai.com/)**.
+The full documentation lives at **[docs.heylinger.com](https://docs.heylinger.com/)**.
 
 <table>
   <tr>
@@ -99,11 +104,11 @@ The full documentation lives at **[docs.simplexai.com](https://docs.simplexai.co
     <th width="520" align="left">What it covers</th>
   </tr>
   <tr>
-    <td><a href="https://docs.simplexai.com/install/desktop-app">Desktop app</a></td>
+    <td><a href="https://docs.heylinger.com/install/desktop-app">Desktop app</a></td>
     <td>Install the app, or build it from source.</td>
   </tr>
   <tr>
-    <td><a href="https://docs.simplexai.com/models/choose-a-runtime">Choose a runtime</a></td>
+    <td><a href="https://docs.heylinger.com/models/choose-a-runtime">Choose a runtime</a></td>
     <td>Claude Code, Codex or Pi, on local models or a subscription.</td>
   </tr>
   <tr>
@@ -120,7 +125,7 @@ The full documentation lives at **[docs.simplexai.com](https://docs.simplexai.co
 
 <p>
   <a href="https://github.com/simplexai-labs/linger/graphs/contributors">
-    <img alt="Linger contributors" src="https://contrib.rocks/image?repo=simplexai-labs/linger" />
+    <img alt="Linger contributors" src="https://raw.githubusercontent.com/simplexai-labs/linger/contributors/contributors.svg" />
   </a>
 </p>
 
@@ -133,16 +138,6 @@ Choose the channel that best fits your question:
 - [GitHub Issues](https://github.com/simplexai-labs/linger/issues): report reproducible bugs and track engineering work. Read the [contribution guide](CONTRIBUTING.md) before opening one.
 - [Email](mailto:tonyzhang@simplexai.com): write to tonyzhang@simplexai.com for anything that does not fit an issue.
 - [Security policy](SECURITY.md): report a vulnerability privately, never in a public issue.
-
-## Star History
-
-<a href="https://www.star-history.com/#simplexai-labs/linger&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=simplexai-labs/linger&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=simplexai-labs/linger&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=simplexai-labs/linger&type=Date" />
-  </picture>
-</a>
 
 ## Acknowledgements
 
@@ -168,3 +163,13 @@ Have an idea? [Open a feature request](https://github.com/simplexai-labs/linger/
 This repository is licensed under the [Linger Open Source License](LICENSE),
 based on Apache 2.0 with additional conditions. [NOTICE](NOTICE) lists
 third-party code and the logos and images that this license does not cover.
+
+## Star History
+
+<a href="https://www.star-history.com/#simplexai-labs/linger&type=date&legend=top-left">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=simplexai-labs/linger&type=date&theme=dark&legend=top-left" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=simplexai-labs/linger&type=date&legend=top-left" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=simplexai-labs/linger&type=date&legend=top-left" />
+  </picture>
+</a>

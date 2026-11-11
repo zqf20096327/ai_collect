@@ -8,9 +8,9 @@
 
 A curated collection of **AI-assisted reverse-engineering projects, experiments, and ideas** for device interoperability, app rebuilding and game preservation—including failed attempts and author corrections.
 
-# 2048 cases & projects
+# 2106 cases & projects
 
-**Latest case update:** November 11, 2026, 04:10 · **Last maintained:** November 11, 2026, 04:10 · Beijing time (UTC+8). Counts as of this maintenance; source dates and the continuous evidence cutoff are separate.
+**Latest case update:** November 12, 2026, 04:11 · **Last maintained:** November 12, 2026, 04:11 · Beijing time (UTC+8). Counts as of this maintenance; source dates and the continuous evidence cutoff are separate.
 
 Updates **6× daily** · [Full index](INDEX.en.md) · [Browse categories](#browse-by-category)
 
@@ -22,18 +22,19 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 ## Recent picks
 
-**10 worth reading**: trace binary evidence, examine machine-code security claims, inspect decoys, keep devices useful and preserve games—including a new binary-to-web launch report. Inspectable methods and candid test limits matter more than one-shot claims. Dates identify sources or author updates, not collection dates.
+**10 worth reading**: bring camera photos straight to a Mac, inspect what agents actually found, and preserve games. Practical interoperability reports sit alongside small tests and documented limitations. Dates identify sources or author updates, not collection dates.
 
-1. **[XRef: who writes this binary field?](cases/en/alex09x-xref-serialized-status-writer-walkthrough.md)** · `2026-11-07` author post; `2026-11-06` pinned docs — **Trace serialized keys to candidate writers and instruction evidence**, with public Rust/JSON/MCP tools for analysts and agents. Rankings are heuristic, x86-64 input support is bounded, and live probes can disturb the target. Not run here. `Related project`
-2. **[hexgrab: learn from PowerToys, then build a smaller picker](cases/en/hexgrab-powertoys-colorpicker-rea-study.md)** · `2026-10-29` report; `2026-10-12` investigation — Claude/REA studies shipped binaries; the author's source scorecard gives **8 of 9 claims fully correct, one partial**. Public .NET 10 implementation; hotkey registration in an unexamined runner exposed a blind spot. One monitor tested, not independently rerun. `Analysis test`
-3. **[AlphaProof Code: examine Signal's actual machine code](cases/en/alphaproof-code-signal-machine-code-security-verification.md)** · `2026-11-10` team announcement — DeepMind reports **a month to prove key protocol-security properties**, using an LLM framework including Gemini Carbon. This is related binary security analysis, not source recovery or proof that all of Signal is bug-free. Specifications and proof artifacts were not checked here. `Related project`
-4. **[scapectl: control a Fractal Scape headset without the web app](cases/en/scapectl-fractal-scape-claude-usb-hid.md)** · `2026-10-29` — **Claude Code-assisted USB HID research and a public Go tray app/CLI** for status, EQ presets and device events. Documents hardware corrections to source labels; macOS/Windows project-tested, Linux untested. Unsigned/unnotarized; not run here. `In progress`
-5. **[TimeSplitters 2: trace PS2 behavior into a native PC port](cases/en/destinity-timesplitters2-claude-native-pc-recompile.md)** · `2026-11-10` author report; `2026-11-09` pinned docs — **Claude-assisted MIPS-to-C++ work, with PCSX2 frame and state comparisons.** The project reports a Linux/Steam Deck first-level playthrough, still using PCSX2 graphics/audio. Internal test tooling is unpublished; later levels, some VU1 state and internet play need checks. Windows/online await release. Bring your own disc; not built here. `In progress`
-6. **[Project Avalanche: rebuild SSX for modern PCs](cases/en/project-avalanche-ssx2012-claude-bevy-reimplementation.md)** · `2026-11-09` report and pinned project docs (Beijing time) — **Claude-assisted disc-format and behavior research becomes a Rust/Bevy reimplementation**, with documented Windows/Linux builds, snowboarding, saves and dedicated servers. Nobody has completed a full playthrough; undecoded behavior remains approximate. Bring your own Xbox 360 disc image; not built or played here. `In progress`
-7. **[DX-Ball: from one audio function to a Windows rebuild](cases/en/dx-ball-sound-pan.md)** · `2026-11-01` report; `2026-10-31` project record — Codex/REA/Ghidra reconstruction reports **270 matching game functions and 84,968 bytes**, plus a native VC4 build. Timestamp-only image differences are against an earlier rebuild, not the retail EXE. Original 50-board campaign and full native audio remain unverified; bring your own files. Not rebuilt here. `Project-tested reconstruction`
-8. **[MechWarrior 3: bring the 1999 mech game to modern PCs](cases/en/mechwarrior3-rea-ghidra-modern-cpp-rebuild.md)** · `2026-11-04` report and pinned project record — Owen Morgan credits **REA/Ghidra research and function-by-function C++ reconstruction**, with reported Unicorn comparisons. Public native backends, widescreen and eight-player UDP networking; Linux was not play-tested in the report, Pirate's Moon is unsupported. Bring your own game; not built here. `In progress`
-9. **[Anti-BLA: measure the decoy before retrying REA](cases/en/anti-bla-rea-static-decoy-recovery-tests.md)** · `2026-11-10` author thread and pinned docs — **Static JS evidence and a measured ASAR header restore useful analysis on owned fixtures.** Two REA providers were unavailable; an earlier seven-question paired run showed no accuracy or token benefit. A bounded recovery experiment, not universal defeat of protection. Not rerun here. `Analysis test`
-10. **[Theme Park: original binaries to a web game with a new ride](cases/en/gemini4-carbon-theme-park-binary-web-ride-report.md)** · `2026-11-11` Demis Hassabis post (Beijing time) — Demis reports **Gemini 4 Carbon reversing his original binaries, adding a DeepMind ride and porting to the web in one shot**. Source, prompts and full-game compatibility tests were not obtained; the video was not watched here. `Unverified report`
+1. **[Fujifilm X half: camera to Mac without the phone](cases/en/fujifilm-x-half-opus-wireless-mac-import-report.md)** · `2026-11-12` author report — **Opus reportedly finds Bluetooth time-slot and Wi-Fi startup-code differences**, then builds JPEG imports and Google Photos uploads. sneha describes incremental tests on their camera, not an iteration-free build. Code and protocol traces unchecked here. `Unverified here`
+2. **[Tiny Electron app: correct wiring, oversized evidence](cases/en/rea-tiny-electron-ipc-evidence-output-test.md)** · `2026-11-11` author test — **REA reportedly pairs renderer-to-main IPC in a five-file, 846-byte sample**, but emits 316kb of JSON and skips an inline script. Roughly ten seconds includes cold startup; no source or full output checked here. `Analysis test`
+3. **[hexgrab: learn from PowerToys, then build a smaller picker](cases/en/hexgrab-powertoys-colorpicker-rea-study.md)** · `2026-10-29` report; `2026-10-12` investigation — Claude/REA studies shipped binaries; the author's source scorecard gives **8 of 9 claims fully correct, one partial**. Public .NET 10 implementation; hotkey registration in an unexamined runner exposed a blind spot. One monitor tested, not independently rerun. `Analysis test`
+4. **[When memory contradicts AGENTS.md](cases/en/sparsamp-agent-memory-agents-md-conflict-probes.md)** · `2026-11-11` author experiment — **Five runs per setup probe format, freshness and paid-run approval.** Sparshith reports Codex following the file, while Claude considers newer or safer instructions. Small behavioral test, not a universal priority rule; harness/model effects unresolved. `Analysis test`
+5. **[MousePods: AirPods become a Linux mouse and head tracker](cases/en/airpods3-claude-remotehid-linux-head-mouse-report.md)** · `2026-11-11` reports; `2026-11-10` pinned project docs — **Claude-assisted RemoteHID research, a public implementation and project-reported AirPods 3/Pro 2 hardware checks.** No earbud flashing; Proton game integration does modify prefixes. MTU and device-identity changes were not isolated; some modes remain experimental. Not run here. `Unverified here`
+6. **[A 1994 Jeep: check the firmware before trusting the number](cases/en/zulali-32year-jeep-claude-control-report.md)** · `2026-11-11` author and reader reports — **Claude/Codex-assisted SCI diagnostics and a reported fuel-trim sign correction.** fly relays NOx falling from 702 to 13, but the final modification is unclear. Passing inspection is not proof of compliance; actuator commands are not autonomous driving. Repository and vehicle tests unchecked here. `Unverified here`
+7. **[TimeSplitters 2: trace PS2 behavior into a native PC port](cases/en/destinity-timesplitters2-claude-native-pc-recompile.md)** · `2026-11-10` author report; `2026-11-09` pinned docs — **Claude-assisted MIPS-to-C++ work, with PCSX2 frame and state comparisons.** The project reports a Linux/Steam Deck first-level playthrough, still using PCSX2 graphics/audio. Internal test tooling is unpublished; later levels, some VU1 state and internet play need checks. Windows/online await release. Bring your own disc; not built here. `In progress`
+8. **[bo2-mac: Black Ops II on ARM64](cases/en/bo2-mac-claude-arm64-static-translation-report.md)** · `2026-11-11` thread report — **Claude-assisted Ghidra/Remill/LLVM translation, reportedly 51–60fps in campaign on one M1.** Some code still uses a tiny x86 VM; beta, no online, reported 111–116°C. Repository and test logs unchecked; bring your own Steam copy. `Unverified report`
+9. **[DX-Ball: from one audio function to a Windows rebuild](cases/en/dx-ball-sound-pan.md)** · `2026-11-01` report; `2026-10-31` project record — Codex/REA/Ghidra reconstruction reports **270 matching game functions and 84,968 bytes**, plus a native VC4 build. Timestamp-only image differences are against an earlier rebuild, not the retail EXE. Original 50-board campaign and full native audio remain unverified; bring your own files. Not rebuilt here. `Project-tested reconstruction`
+10. **[Nichicon battery: acknowledgment is not execution](cases/en/gemini-echonet-lite-code-copy-analysis-report.md)** · `2026-11-11` author article, recalling August–September work — **Gemini-assisted HEX comparisons identify reported power and schedule fields.** The author also records unchanged settings despite success replies, standby deadlock and copy-paste fixes losing safeguards. Hardware safety and long-term operation are not verified here. `In progress`
+
 
 
 ## Classic cases
@@ -50,10 +51,10 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 | Category | Entries |
 | :--- | ---: |
-| [Games & preservation](categories/en/games.md) | **418** |
-| [Hardware & interoperability](categories/en/hardware.md) | **548** |
-| [Applications & clients](categories/en/apps.md) | **836** |
-| [Algorithms & feature recovery](categories/en/algorithms.md) | **246** |
+| [Games & preservation](categories/en/games.md) | **428** |
+| [Hardware & interoperability](categories/en/hardware.md) | **564** |
+| [Applications & clients](categories/en/apps.md) | **863** |
+| [Algorithms & feature recovery](categories/en/algorithms.md) | **251** |
 
 [**View all cases →**](INDEX.en.md) · [Contribute (中文)](CONTRIBUTING.md) · [Maintenance (中文)](MAINTENANCE.md)
 

@@ -10,7 +10,6 @@
   <a href="https://github.com/okoflow/waft/actions/workflows/ci.yml"><img src="https://github.com/okoflow/waft/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0--only-blue" alt="License: GPL-3.0-only"></a>
   <img src="https://img.shields.io/badge/macOS-14%2B-informational" alt="macOS 14 or later">
-  <a href="https://github.com/sponsors/imsvidskiy"><img src="https://img.shields.io/github/sponsors/imsvidskiy?label=Sponsor&logo=GitHub&color=ea4aaa" alt="Sponsor"></a>
 </p>
 
 <p align="center">
@@ -64,10 +63,11 @@ Or download the disk image from the [latest release](https://github.com/okoflow/
 | [Privacy](docs/privacy.md) | What Waft keeps and sends |
 | [Troubleshooting](docs/troubleshooting.md) | When something doesn't work |
 | [Architecture](docs/architecture.md) | The code, for contributors |
+| [Releasing](docs/releasing.md) | Cutting a release, for maintainers |
 
 ## Waft+
 
-Dictation is free. [Waft+](docs/usage.md#waft) lists what a single payment adds, and all of it is free while Waft is in beta.
+Dictation is free. [Waft+](docs/usage.md#waft) lists what a single payment adds and how the free trial works.
 
 ## Contributing
 

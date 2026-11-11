@@ -67,7 +67,7 @@
 
 - **Full browser** with tabs, navigation, URL bar, dark theme
 - **AGENT panel** on the side: type a command → the AI decides step by step until it's done
-- **Reads the page** (DOM, numbered interactive elements, and OCR) and acts through structured tools — it doesn't rely on "seeing" the screen
+- **Reads the page** (DOM, numbered interactive elements, and OCR) and acts through structured tools — it doesn't rely on "seeing" the screen. Works on pages that forbid scripts too (raw files on Hugging Face / GitHub): Bah reads them from its own isolated script world
 - **AI**: image generation **works free out of the box** (no key). Chat and the full autonomous agent need a key — **DeepSeek** (cheap, recommended) — also **Mistral** / **NVIDIA NIM** — or **Ollama** (local/offline, free)
 - **Chat per tab** — each browser tab keeps its own conversation; the AI remembers each tab separately
 - **One-shot skills**: open N videos at once, jump to the exact moment a phrase is spoken across several videos, **chat about a YouTube video using its transcript**, compare prices, fetch news — deterministic shortcuts that cost zero tokens
@@ -127,6 +127,8 @@ USER → "open gmail and delete the spam"
 
 Clicks happen through `webContents.sendInputEvent` in the main process — a **real** Chromium mouse event, not a synthetic one, so React/Vue/anti-bot sites respond normally. The AI prefers the **DOM-first** path (`click_ref`), falling back to text and then coordinates.
 
+Iframes count too: fields and buttons inside embedded forms (job applications, payment fields, booking widgets) — same-origin or from another site — appear in the element list marked `frame="host"`, and `click_ref` / `fill_ref` work on them the same way.
+
 ---
 
 ## Running it
@@ -161,6 +163,8 @@ The agent runs with full browser privileges, so it's worth being clear about wha
 - 🔓 **It's your real session.** The browser uses a persistent partition (`persist:browser`), so cookies and logins are saved. If you're logged into Gmail in Bah, so is the agent. **The AI can access anything you could access manually.** Don't log into accounts you wouldn't trust an assistant with.
 
 - 🛡️ **Safety brake on sensitive actions.** Before **paying, buying, deleting, or entering card data**, the agent **pauses and asks for your confirmation** — and this works on *every* path (model clicks, coordinate clicks, Enter on a checkout page, learned shortcuts, and repeated automations). It never does those silently.
+
+- 💬 **Page pop-ups don't freeze anything.** A site's `alert`/`confirm` opens in Bah's own box instead of the native one that locked the page (and the agent). During a task, alerts are closed and ordinary confirms accepted (the agent can arm the answer first with its `dialog` action); a confirm that looks like a **payment or a deletion goes to you**.
 
 - 🛑 **Stop means stop.** The ■ Stop button cancels immediately, even mid model-call or mid-loop; a late response won't "resurrect" a cancelled task.
 

@@ -82,18 +82,23 @@ A Session contains independently addressable Flow instances. Each instance retai
 
 The main conversation and floating windows use the same Flow view. New floating windows start near the upper left and cascade diagonally. Reopening the same Flow in the running TUI restores its window position, size, and maximized state. Selecting a different Flow changes the recipient of input and controls while retaining each view's draft and reading position. Closing a window does not stop execution. The default Flow is the Session's initial view, with no extra authority.
 
-The input floats independently of document width, with a square outline, terminal-default background, a 96-column width that adapts to the viewport, and three editable rows by default. Its position and size use spring motion when switching focus or resizing; dragging the focused window carries the input synchronously. Model, reasoning, and permission controls use the selected view's settings, along with its draft, quotes, attachments, and submission acknowledgements. The input itself cannot be dragged.
+The input floats independently of document width, with a square outline, terminal-default background, a 96-column width that adapts to the viewport, and 4 editable rows by default. Its position and size use spring motion when switching focus or resizing; dragging the focused window carries the input synchronously. A fixed-width meter at the lower left selects reasoning intensity directly, with hover comparisons and a **⋯** menu for all supported choices, including default, auto, and none. The highest supported intensity displays a rainbow using the current theme's palette, including during hover previews. The model label opens a compact selector. Permissions occupy the upper-right border and open inside the existing text rows; drafts remain intact, saves use host acknowledgements, and Esc returns to editing. Escalation appears only in Eager mode without reserving a gap in other modes. Model, reasoning, and permission controls use the selected view's settings, along with its draft, quotes, attachments, and submission acknowledgements. The input itself cannot be dragged.
 
 Click **↓ N new** in the input border or press `Ctrl+End` to animate to the latest output and resume following it. Scrolling or selecting transcript text interrupts the transition. Main and floating conversations retain separate reading positions.
 
+On TUI exit, a themed summary shows the final session's identity, invocation usage, work metrics, Goal, Plan, and `atman --continue <uuid>` command after restoring the terminal. Its layout adapts to terminal width and preserves aligned columns and padded identity and resume blocks. Unused automatic startup sessions are discarded without a summary or resume command.
+
 Interrupted conversations retain pending input in Inbox and expose **Recover R** with mouse and keyboard controls. [Input queue and execution recovery](docs/input-queue.md) describes routing, insertion eligibility, cancellation, pauses, and recovery.
 
-Project Hub (`Ctrl+L`) and pinned-project session entries open the selected session's default conversation directly. Click a project to show its sessions, then activate a session with Enter or one click to close the Hub and open its conversation. Sidebar project actions occupy one compact row; recent sessions display their default Flow's output tail and mark the current view with an edge bar. Project names, sessions and supporting details use theme-defined grayscale levels, and the collapsed project tab has hover feedback. Narrow terminals use a drawer. Original history opens read-only; indexed history retains its recovery review.
+Project Hub (`Ctrl+L`) and pinned-project session entries open the selected session's default conversation directly. Click a project to show its sessions, then activate a session with Enter or one click to close the Hub and open its conversation. Sidebar project actions occupy one compact row. All opened sessions appear before five ordinary recent entries while retaining catalog order; focusing an existing session or project keeps its position. Opened conversations update their output tails in the background. The current view has an accent edge bar, other opened sessions use a subdued accent, and new completions remain highlighted until the session is reentered. Project names, sessions and supporting details use theme-defined grayscale levels, and the collapsed project tab has hover feedback. Narrow terminals use a drawer. Original history opens read-only; indexed history retains its recovery review.
+
+Each session's **↗** control opens its bound conversation in a floating panel, including across projects. An opened session's **×** closes its views while retaining history, execution, drafts and pending acknowledgements. Closing an individual panel keeps the session open in the sidebar; closing the last session returns to Projects without creating a replacement session. With a session selected in the sidebar, `O` opens its panel and `Delete` closes the session.
 
 | Entry | Purpose |
 |---|---|
 | `:sessions` | Open Switch Session: search, sort, filter by project, rename, and directly enter a conversation. |
 | `:new-session` | Create a blank session immediately at a matching startup location; otherwise choose its project and working directory. |
+| `:move-session` | Change session project membership and update navigation. Existing flows keep their working directories; new flows use the destination project. |
 | `:projects` | Browse, pin, archive, and open projects and their sessions. |
 | `:activity` | Switch the right sidebar between Overview and Activity. |
 | `:panel` | Open the command palette for settings, tools, and existing panels. |
@@ -108,7 +113,7 @@ Unbound legacy TUI views discover sessions in bounded background workers with th
 
 The right sidebar combines Goal / Plan / Todos and Context / MCP in Overview, with Tasks / Flow / History in Activity. Main and floating views share this layout. FlowHub, Links, WatchHub, Inbox History, Worktrees, Flow Workspace, and the management Session panel require the optional `atman-tui/extended-panels` Cargo feature. Runtime messaging, watchers, and storage remain active in default builds.
 
-The left sidebar shows globally pinned projects, their five most recent sessions and project-specific session creation. Pins persist across restarts; hiding the sidebar preserves them, and unpinning offers Undo. Use `:project-sidebar`, **Toggle Project Sidebar** in `Ctrl+P`, or the **P** tab to reopen it. Narrow terminals use a drawer. `Ctrl+L` opens the full project directory; **Sort** or `S` selects newest first, oldest first or name A–Z on both pages.
+The left sidebar shows globally pinned projects, every opened session, five additional recent sessions per project and project-specific session creation. Opening a project's session pins that project. Pins persist across restarts; hiding the sidebar preserves them, and unpinning offers Undo. A project with open sessions remains visible until those sessions close. Sessions without project metadata appear in a local **Sessions** group. Use `:project-sidebar`, **Toggle Project Sidebar** in `Ctrl+P`, or the **P** tab to reopen it. Narrow terminals use a drawer. `Ctrl+L` opens the full project directory; **Sort** or `S` selects newest first, oldest first or name A–Z on both pages.
 
 Project directory refresh and history search display compact animated progress while waiting for their replies. Visible conversation windows share the animation clock; hidden or completed loading indicators stop requesting frames.
 
@@ -321,6 +326,8 @@ atman run examples/edit_and_verify.at --flow edit_and_verify \
 
 ### Routing + lifecycle
 
+Routed prompts pass message text directly to the selected entry. URL query strings, code, quotes, and multiline pastes do not switch the message into command-argument parsing. See [input routing](docs/input-queue.md#sending-and-routing).
+
 ```atman
 route "review " { flow: review_code }
 route "fix " { flow: fix_issue }
@@ -485,6 +492,8 @@ Provider `max_tokens` controls the request's output limit. Model `max_tokens` re
 The provider manager separates **API** from **Chat reasoning format**. Model settings expose **Inherit**, **Chat Completions**, and **Responses**. **Test connection** checks discovery and authentication; **Test model** sends a small request with the draft API, reasoning selection, and a tool definition. It does not execute an external tool. Editing the draft clears previous test feedback; Hide preserves a running test, and Stop test cancels it explicitly.
 
 Provider Manager supports local search, connection details, and actions based on Config, OAuth, or Environment sources. `Enter` or a record click opens details. `Ctrl+S` saves a provider form; `Esc` cancels or asks how to handle unsaved changes. Hiding a pending operation preserves its draft and result. Connection tests retain their result and do not enable a disabled saved provider.
+
+Click the composer's model label to search the compact selector by typing or pasting a model, alias or provider name. Arrow keys select a result; Enter or a result click requests the switch. No matches leaves selection disabled. **⋯** or `Tab` opens the full selector with the same query; `Ctrl+U` clears it and `Esc` closes it. Search preserves the conversation draft and waits for the original model-switch acknowledgement.
 
 Model Manager groups models under provider headings with display names and model counts. Search keeps these groups within All providers or the selected provider, including empty providers when applicable. Continuation pages retain the provider heading. Configured models are editable; Catalog entries are read-only. Cached catalogs remain visible for disabled providers. `Ctrl+S` saves a model form; `Esc` cancels or opens the unsaved-changes prompt. Delete requires confirmation and blocks while aliases reference the model. Browsing, editing, and testing do not switch the current session model.
 

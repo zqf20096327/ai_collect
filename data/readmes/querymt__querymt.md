@@ -122,6 +122,21 @@ macOS Silicon users who download the `qmtcode` release binary need to clear the 
 xattr -dr com.apple.quarantine qmtcode
 ```
 
+## Release channels
+
+| Channel | Release | `--version` |
+|---------|---------|-------------|
+| stable  | `vX.Y.Z` tag | `X.Y.Z` |
+| nightly | rolling `nightly` prerelease | `<base>-nightly.<UTC YYYYMMDDHHMMSS>` |
+
+`<base>` is the workspace version, or the next patch if `v<workspace version>` is already tagged. A nightly sorts above the stable it follows and below the next one.
+
+Every release also publishes a `release.json` (`version`, `channel`, `commit`, `published_at`).
+
+A `vX.Y.Z` tag must match the workspace version. If it is not below the published nightly, its commit must also contain the nightly's commit, otherwise the release fails.
+
+Helper scripts and their tests are in `scripts/release/`.
+
 ## Documentation
 
 For everything else, refer to [docs.query.mt](https://docs.query.mt).

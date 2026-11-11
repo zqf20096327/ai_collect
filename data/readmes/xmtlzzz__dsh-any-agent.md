@@ -11,9 +11,8 @@
 [![license](https://img.shields.io/npm/l/dsh-any-agent.svg?style=flat-square)](LICENSE)
 [![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg?style=flat-square)](package.json)
 [![tests](https://img.shields.io/github/actions/workflow/status/xmtlzzz/dsh-any-agent/tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/xmtlzzz/dsh-any-agent/actions/workflows/tests.yml)
-[![M8ven Score](https://m8ven.ai/badge/mcp/xmtlzzz-dsh-any-agent-ypgfnj?v=7c88b6fc8313c05af27cf83f262b9ac1)](https://m8ven.ai/mcp/xmtlzzz-dsh-any-agent-ypgfnj?s=readme)
 
-[Website](https://dsh-any-agent.xmtlz.dev/) · [Quick start](#quick-start) · [Features](#-why-its-different) · [Tools](#-tools) · [Live view](#-live-view-see-what-the-dispatched-work-is-doing) · [Usage notes](USAGE-NOTES.en.md) · [Changelog](CHANGELOG.md)
+[Website](https://dsh-any-agent.xmtlz.dev/) · [Quick start](#quick-start) · [Features](#-why-its-different) · [Tools](#-tools) · [Live view](#-live-view-see-what-the-dispatched-work-is-doing) · [Usage notes](docs/en/caveats.md) · [Changelog](CHANGELOG.md)
 
 </div>
 
@@ -28,7 +27,7 @@ An MCP server that drives DeepSeek Harness as a **long-lived coding agent**. Han
 You already have a coding agent in your editor. What you do **not** have is one that can:
 
 - **hand a multi-hour job to another agent and walk away** — then collect the result when it's done;
-- **keep the job alive across restarts** of your editor, your session, your machine's idle reap;
+- **keep the job alive across restarts** of your editor, your session, your machine's idle reap (the conversation always survives; for a turn that is still running to survive the client closing or reconnecting, turn on resident process mode, `DSH_MCP_DAEMON=1`);
 - **cut in mid-flight** when it's going the wrong way, without destroying the work;
 - **run several of them at once** and switch between them;
 - **see what it is doing** without asking the agent — which tools it called, which approvals went through, how many tokens it spent.
@@ -102,11 +101,18 @@ dsh-any-agent-setup --yes
 
 The second command previews the changes; `--yes` applies them. Reconnect your client's MCP server, then ask your agent to start a DSH conversation in your project, dispatch a task, and collect the result. The [dispatch workflow](docs/en/usage.md) shows the tool sequence.
 
+Only using Cursor or VS Code? Add it in one click instead (runs `npx -y dsh-any-agent@latest`; DSH still has to be installed):
+
+[![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=dsh-any-agent&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsImRzaC1hbnktYWdlbnRAbGF0ZXN0Il19)
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_MCP_server-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=dsh-any-agent&config=%7B%22name%22%3A%22dsh-any-agent%22%2C%22type%22%3A%22stdio%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22dsh-any-agent%40latest%22%5D%7D)
+
 > **Want to see it first?** Watch the [54-second promo](https://dsh-any-agent.xmtlz.dev/en/#video) — dispatch, interject, the sentinel landing and the caller's review, with the terminal replayed from a real run:
 >
 > <a href="https://dsh-any-agent.xmtlz.dev/en/#video"><img src="https://raw.githubusercontent.com/xmtlzzz/dsh-any-agent/main/website/src/media/promo-poster.jpg" width="560" alt="▶ Play the dsh-any-agent promo (54 seconds)"></a>
 
-> **Before your first task:** read the [Usage Notes](USAGE-NOTES.en.md), especially the model-config and external-MCP permission boundaries. External MCP tools bypass DSH's sandbox. For a fresh machine, follow the [migration guide](USAGE-MIGRATION.en.md).
+> **Before your first task:** read the [Usage Notes](docs/en/caveats.md), especially the model-config and external-MCP permission boundaries. External MCP tools bypass DSH's sandbox. For a fresh machine, follow [Setup](docs/en/install.md).
+
+> **Permissions: this server only dispatches; permissions follow DSH and your configuration.** The default is `workspace-write` (writes limited to the workspace; out-of-workspace requests are auto-allowed and listed in the result). For personal use on your own machine most people just turn on full access: `dsh-any-agent-setup --yes --permission danger-full-access`, after which DSH asks for nothing and everything is allowed. **Anyone who can call these tools can run commands on your machine** (including a caller agent that got prompt-injected); use `read-only` for untrusted content. See [Permissions & privacy](docs/en/security.md).
 
 <details>
 <summary>Full contents</summary>
@@ -170,7 +176,7 @@ dsh-any-agent dashboard --open
 - **`watch`**: the call chain in your terminal, redrawn in place like `top` (no scrolling spam). `watch <conversation id prefix>` follows one conversation; `--once` prints once and exits.
 - **`dashboard`**: a local read-only web page; `--open` launches it in your default browser. Left: conversations grouped by client. Middle: the run timeline, with a timing bar per tool call and approvals/escalations highlighted. Right: overview, tool breakdown, files touched, approvals, and **token usage** (input / output / cache hit, context window, per-turn chart).
 - **English / 中文**: follows your system language by default; pass `--lang en|zh` to choose, or switch from the page's top-right corner.
-- **Doesn't disturb running work**: both are separate processes that only read event files — they never touch the write lock or DSH. Use them to watch progress, and **don't open MCP-driven conversations in the DSH GUI** (that takes the write lock; see [usage notes 3.10](USAGE-NOTES.en.md)).
+- **Doesn't disturb running work**: both are separate processes that only read event files — they never touch the write lock or DSH. Use them to watch progress, and **don't open MCP-driven conversations in the DSH GUI** (that takes the write lock; see [usage notes 3.10](docs/en/caveats.md)).
 - **Safety and privacy**: the dashboard binds `127.0.0.1` only, its URL carries a one-time token, it checks the Host header, and it has no control that changes state. Command, path and prompt previews are redacted first; **reasoning is never written at any level**. `DSH_MCP_LIVE=meta` keeps only tool names and status; `off` disables it.
 
 > Details in [Usage · side view](docs/en/usage.md); event format and design trade-offs in the [live view design](docs/en/live-view-design.md).
@@ -179,8 +185,9 @@ dsh-any-agent dashboard --open
 
 | Document | Contents |
 |---|---|
-| [Setup](docs/en/install.md) | Requirements, profile bootstrap, 9 MCP clients |
+| [Setup](docs/en/install.md) | Requirements, profile bootstrap, 10 MCP clients |
 | [Usage](docs/en/usage.md) | Dispatch/collect, sentinels, many conversations, live view, reasoning |
+| [Usage notes](docs/en/caveats.md) | Pitfalls: model routing, cost, concurrency and the write lock, permissions, privacy, troubleshooting |
 | [Live view design](docs/en/live-view-design.md) | Event stream format, `watch` / `dashboard`, token source, privacy trade-offs |
 | [Team mode](docs/en/team.md) | Default behavior, how to disable (per client), verify and revert |
 | [Permissions & privacy](docs/en/security.md) | Tiers, approvals, GUI visibility, logging |
@@ -202,9 +209,20 @@ for one call with `dsh_send(team=false)`.
 
 > Full steps (commands, verification, rollback) are in [Team mode](docs/en/team.md).
 
+## 📇 Listed on
+
+<!-- Directory and registry badges live here, not in the header (which keeps only the package's own status).
+     One 20px badge per line, alphabetical; prefer a site's small badge over its large card. -->
+
+<p align="center">
+  <a href="https://glama.ai/mcp/servers/xmtlzzz/dsh-any-agent"><img src="https://glama.ai/mcp/servers/xmtlzzz/dsh-any-agent/badges/score.svg" height="20" alt="dsh-any-agent MCP server on Glama"></a>
+  <a href="https://m8ven.ai/mcp/xmtlzzz-dsh-any-agent-ypgfnj?s=readme"><img src="https://m8ven.ai/badge/mcp/xmtlzzz-dsh-any-agent-ypgfnj?v=7c88b6fc8313c05af27cf83f262b9ac1" height="20" alt="M8ven Score"></a>
+  <a href="https://mcprush.com/to/dsh-any-agent-mcp?ref=badge"><img src="https://mcprush.com/badge/dsh-any-agent-mcp/score.svg" height="20" alt="DSH Any Agent MCP on mcprush"></a>
+</p>
+
 ## 🙏 Acknowledgements
 
-dsh-any-agent started from [Moer2831/Deepseek-DSH-MCP](https://github.com/Moer2831/Deepseek-DSH-MCP) (MIT), where this server was called `dsh-mcp`. The ACP client, the session hub, write-lock handling, sentinel files, `DESIGN.md` and the first test suites come from that project; client setup and restore, team mode, the live view, caller review and the release pipeline were added here. The original copyright notice is kept in [LICENSE](LICENSE).
+dsh-any-agent started from [Moer2831/Deepseek-DSH-MCP](https://github.com/Moer2831/Deepseek-DSH-MCP) (MIT), where this server was called `dsh-mcp`. The ACP client, the session hub, write-lock handling, sentinel files, the [original design draft](docs/history/design-v0.2.md) and the first test suites come from that project; client setup and restore, team mode, the live view, caller review and the release pipeline were added here. The original copyright notice is kept in [LICENSE](LICENSE).
 
 ## Star History
 

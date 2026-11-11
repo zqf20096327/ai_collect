@@ -817,6 +817,10 @@
 
 ## Reasoning RL
 
+- **Are Dense Rewards Worth Their Tokens in GRPO?** (2026.11) \
+  **Description**: Using a matched-compute protocol across 1,668 runs, this study finds that dense process rewards do not outperform standard GRPO once generated tokens and training time are counted, despite apparent gains per update. Selecting prompts with predicted success near one-half yields small, reproducible improvements at equal compute. \
+  <a href="https://arxiv.org/abs/2611.13560"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+
 - **Ring-Zero: Scaling Zero RL to a Trillion Parameters for Emergent Reasoning** (2026.07) \
   **Description**: This paper scales reinforcement learning with verifiable rewards from a base model to one trillion parameters through a stable pipeline combining clipped importance sampling, training-inference ratio correction, and mixed-precision control. The resulting model improves sample efficiency and reasoning quality while spontaneously developing structured, self-verifying, and adaptive reasoning behaviors. \
   <a href="https://arxiv.org/abs/2607.12395"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
@@ -838,8 +842,4 @@
   <a href="https://arxiv.org/abs/2602.20945"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
   <a href="https://wutaiqiang.github.io/project/Art"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
 
-- **FIPO: Eliciting Deep Reasoning with Future-KL Influenced Policy Optimization** (2026.03) \
-  **Description**: This paper presents FIPO, a reinforcement learning algorithm that overcomes reasoning bottlenecks in LLMs by addressing coarse-grained credit assignment in GRPO-style training, where outcome-based rewards fail to distinguish critical logical pivots from trivial tokens. \
-  <a href="https://arxiv.org/abs/2603.19835"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-
-- **Agentic Proposing: Enhancing Large Language Model Reasoning via Compositional Skill Synth
+- **FIPO: Eliciting Deep Reasoning with Future-KL Influenced Poli

@@ -115,6 +115,13 @@ themselves.
 Two notes: restart the host session after connecting, and **Codex requires
 running `/hooks` inside Codex once to trust the commands** before they fire.
 
+Windows note: `npx dsh-immune-system@latest <command>` resolves the bin
+through the shell, and cmd's search trips over a SAME-NAMED directory in the
+current one — inside this repo's checkout (`dsh-immune-system/` sits at the
+root) run it from any other directory, or call the CLI by path:
+`node dsh-immune-system/dist/zcode/src/cli.js <command>`. Users in their own
+projects are unaffected.
+
 ### Auditing the history you already have
 
 A fresh install has an empty library. `immune audit` replays the same
@@ -224,6 +231,8 @@ immune rewrite --id 49,50    # re-do specific rules
 ```
 
 Rewritten rules carry `prescription_source = 'llm'`, so captured evidence and model-written wording stay distinguishable in the database. A model will sometimes follow a stale symptom instead of the command — several production rules shared one generic symptom — so the prompt says the command wins, and a rule whose purpose cannot be told from its input is skipped rather than guessed. Rewriting needs a model by design; there is nothing deterministic to say that the original pass did not already say.
+
+**No API key? The host agent is a model.** From any MCP-capable host, `immune_rewrite_candidates` returns the echo-grade rules plus the rewrite contract, and `immune_rewrite_apply` takes your one-sentence rewrites back — guarded (one pass per 12h, at most 3 rules, the rule must still be a dump, and your replacement must be advice or it is refused). Those rules land with `prescription_source = 'host_llm'` and immediately become priming- and export-eligible: on the maintainer's production library this loop retired the three highest-delivered command dumps (6,694 lifetime deliveries between them) without a single endpoint call.
 
 ### When the same lesson exists twice
 

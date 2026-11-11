@@ -8,12 +8,12 @@
 </p>
 <p align="center">
   <a href="#产品预览">产品预览</a> · <a href="#核心功能">核心功能</a> ·
-  <a href="#快速开始">快速开始</a> · <a href="docs/architecture.zh-CN.md">系统架构</a> ·
+  <a href="#快速开始">快速开始</a> · <a href="docs/architecture.zh-CN.md">系统架构</a> · <a href="docs/provider-coverage-matrix.md">能力与 Provider 矩阵</a> ·
   <a href="CONTRIBUTING.md">参与贡献</a>
 </p>
 <p align="center">
   <a href="https://github.com/ydflow/Trail/actions/workflows/pr.yml"><img src="https://github.com/ydflow/Trail/actions/workflows/pr.yml/badge.svg?branch=main" alt="Main checks" /></a>
-  <img src="https://img.shields.io/badge/channel-0.4.0--beta.2-0f5749" alt="0.4.0-beta.3 source channel" />
+  <img src="https://img.shields.io/badge/channel-0.4.0--beta.3-0f5749" alt="0.4.0-beta.3 source channel" />
   <img src="https://img.shields.io/badge/Electron-React%20%2B%20TypeScript-477b74" alt="Electron, React and TypeScript" />
 </p>
 

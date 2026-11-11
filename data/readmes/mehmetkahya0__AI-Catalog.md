@@ -42,7 +42,7 @@
 <div align="center">
   <strong>⭐ If you find this catalog helpful, please consider giving it a star! ⭐</strong>
   <br><br>
-  <i>Last updated: November 9, 2026 | Next goal: 500 stars 🎯</i>
+  <i>Last updated: November 11, 2026 | Next goal: 500 stars 🎯</i>
   <br><br>
   <i>🤖 Thanks to Claude Sonnet 4 for write .sh files! </i>
 </div>
@@ -109,7 +109,7 @@ Welcome to the most comprehensive AI tools catalog! This repository contains **5
 ### 📊 Quick Stats
 - **Total Tools**: 500+
 - **Categories**: 40+
-- **Last Updated**: November 9, 2026
+- **Last Updated**: November 11, 2026
 - **Contributors**: Open for PRs!
 - **Next Goal**: ⭐️ 500 stars
 
@@ -321,6 +321,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Public Prompts](https://publicprompts.art)** 🆓 - Free collection of prompts
 - **[PromptDrive.ai](https://promptdrive.ai)** 🔄 - Prompt management and optimization
 - **[PromptInterface.ai](https://promptinterface.ai)** 🔄 - Interactive prompt builder
+- **[Prompt Generator](https://trypromptgenerator.com)** 🔄 - Writes prompts for ChatGPT, Claude, Midjourney, Veo and more; free daily allowance, no sign-up
 
 #### 🎨 Image Generation Prompts
 - **[AI Image Lab](https://aiimagelab.art)** 🆓 - Free AI image generator with curated prompt library across 8 categories. 4K output
@@ -457,7 +458,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - [BuyWhere](https://buywhere.ai) - Real-time Singapore e-commerce pricing API and MCP server for AI agents
 - **[Latchkey](https://latchkey.dev)** 💰 - Self-healing GitHub Actions runners with AI diagnosis
 - **[deed.page](https://deed.page)** 🔄 - MCP server and API that let AI agents publish HTML to a permanent URL
-- **[Datacircle](https://api.datacircle.dev/v1)** 🆓 - API and MCP server that let AI agents find the best GTM APIs
+- **[Datacircle](https://datacircle.dev)** 🆓 - API and MCP server that let AI agents find the best GTM APIs ([API](https://api.datacircle.dev/v1))
 - **[UI Verify](https://uiverify.ai)** 🔄 - Visual regression testing with an AI judge that triages UI diffs
 - **[BetterToken](https://bettertoken.ai)** 💰 - LLM API gateway: one key for Claude, GPT, DeepSeek, Qwen, Kimi and GLM
 - **[Scalekit](https://scalekit.com)** 🔄 - AI agent integration platform: 600+ connectors, 35,000+ tools, per-user OAuth
@@ -467,6 +468,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Atlas Cloud](https://www.atlascloud.ai)** 💰 - AI API gateway: one key for LLM, image, video and audio models
 - **[looot](https://looot.ai)** 💰 - Pay-per-call business data API and MCP server for AI agents
 - **[OneTag AI](https://onetagai.com)** 🔄 - Add AI to any static site with one script tag, no backend
+- **[HopBase](https://hop-base.com)** 💰 - AI API gateway: one base URL for Claude, GPT, Gemini, DeepSeek plus image and video models
 
 ## Low Code - no code Tools
 - Magicform

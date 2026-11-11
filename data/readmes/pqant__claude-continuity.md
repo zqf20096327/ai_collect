@@ -26,30 +26,11 @@ The five most recent updates, newest first. Each line links to its
 commit, so you can see what changed lately without digging through the
 log:
 
-- **2026-11-10**: `turn_clock` now drives the status line HUD too: the
-  `◆ … Active Usage` segment carries `⏱ prev task 39m15s`, so the last
-  task's duration sits in the line you actually watch, updated the
-  moment the turn ends
-  ([commit](https://github.com/pqant/claude-continuity/commit/6524d4b)).
-- **2026-11-10**: The turn clock's reply timing moved to where the pane
-  actually renders it: every prompt line now carries the previous task
-  (`prev reply start -> end (2m34s)`) read from the transcript, so you
-  see how long the last task took the moment you send the next one
-  ([commit](https://github.com/pqant/claude-continuity/commit/b220ddf)).
-- **2026-11-10**: New opt-in `turn_clock` config surfaces message timing
-  in the pane: the prompt time plus the previous reply's window and
-  wall time, matching what the transcript HTML export shows
-  ([commit](https://github.com/pqant/claude-continuity/commit/37317c8)).
-- **2026-11-10**: Rotation gate decisions (guide/deny/block/silent) now
-  land in the session ledger with their ratio and C-text variant, so a
-  strange rotation is debugged from disk instead of reverse-engineering
-  the renderer
-  ([commit](https://github.com/pqant/claude-continuity/commit/5392666)).
-- **2026-11-10**: `cc-continuity install` now pins
-  `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=95` next to the context-window pin, so
-  a fresh install always starts the rotation gate ahead of native
-  auto-compact (a user-set value is never overwritten)
-  ([commit](https://github.com/pqant/claude-continuity/commit/708237d)).
+- **2026-11-11**: The transcript page now stays out of the conversation's way: protocol plumbing is filtered out (slash-command XML from `/clear` and `/rename`, task notifications, Continuity Stop-hook feedback, skill base-directory lines, `No response requested.`), the CONTINUITY RESUME blob and CC's resume prompt collapse to one-line anchors (`↻ CONTINUITY RESUME cp-NNN · handoff.md`, `↻ CC resume`), and pasted images fold into a single `🖼 image` chip instead of raw metadata lines ([commit](https://github.com/pqant/claude-continuity/commit/6366583)).
+- **2026-11-11**: Deferred rotations now wake themselves up: when the rotator defers because the agent was still active after the Stop, it arms a bounded self-retry tick that re-checks a short delay later and drives the rotation itself once the session is quiet. The Stop hook stays the primary route, the tick is idempotent (rotation_id guard) and capped in attempts, and `"retry_deferred": false` in the config turns the path off ([commit](https://github.com/pqant/claude-continuity/commit/dacaab0)).
+- **2026-11-11**: DEGRADED handoffs now freeze themselves: the banner gained a direct order for the still-alive pre-rotation agent ("This file is finalized. Do not edit it and do not start any more work in this session; end your turn now."), so a finished handoff can no longer be reached into and edited after finalization ([commit](https://github.com/pqant/claude-continuity/commit/5b2a07e)).
+- **2026-11-11**: The HUD prev-task segment is now readable at a glance: the Active Usage line reads `⏱ Previous task completion 39m 15s` (spaced units; `1h 2m 03s` and `47s` too) instead of `⏱ prev task 39m15s`, while the turn clock prompt line keeps its compact shape ([commit](https://github.com/pqant/claude-continuity/commit/12dd90b)).
+- **2026-11-11**: `cc-continuity status [slug]`: inspect any registered project from anywhere - the same block (rotation line and `--json` included), resolved through the exact slug matching `ratio` uses, so the two commands can never point at different projects ([commit](https://github.com/pqant/claude-continuity/commit/2ea65a3)).
 ## How it works
 
 The whole flow in one picture: the automatic session loop, the optional

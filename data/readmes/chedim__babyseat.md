@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23550667.svg)](https://doi.org/10.5281/zenodo.23550667)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23550667.svg)](https://doi.org/10.5281/zenodo.23550667) [![Blurps hatched (est.)](https://img.shields.io/badge/%F0%9F%90%A3%20Blurps%20hatched%20%28est.%29-231-f5a623)](https://pypistats.org/packages/babyseat) [![Blurps alive (est.)](https://img.shields.io/badge/%F0%9F%90%A3%20Blurps%20alive%20%28est.%29-~33-f5a623)](https://github.com/chedim/babyseat/issues/1096) [![Docker pulls](https://img.shields.io/docker/pulls/chedim/babyseat?label=%F0%9F%90%B3%20Docker%20pulls&color=f5a623)](https://hub.docker.com/r/chedim/babyseat)
 ![babyseat](docs/logo/logo-1280x640.png)
 
 **Talk to it. It remembers.**
@@ -7,22 +7,24 @@ babyseat is an AI seat with a memory that learns in real time. Everything you
 and your AI say passes through it, and it learns from every message as it
 happens. 
 
-![Membrane](screenshot.png)
-> the new "Decisions Cockpit" UI with Membrane field in the background.
-
 It runs locally, on its own or inside [Home Assistant](docs/home-assistant.md),
 in front of your models: [Ollama](https://ollama.com) (local or its cloud
 models), OpenAI-compatible cloud APIs, and Claude through the Claude Code engine.
 Any OpenAI, Ollama or MCP client, Claude Code included, can talk to it
 ([models and clients](#models-and-clients)).
 
-> **The names.** **babyseat** is the whole project: the seat, its web UI,
+> **The names.**
+> **babyseat** is the whole project: the seat, its web UI,
 > Blurp (off in 0.7.5: `MEMBRANE_BLURP=1` turns it on), the Home Assistant integration and the Docker image
-> (`pip install babyseat`, `chedim/babyseat`). **membrane** is its memory and
+> (`pip install babyseat`, `chedim/babyseat`).
+>
+> **membrane** is its memory and
 > proxy, so the `membrane` command, Python module, `MEMBRANE_*` variables and
 > `.membrane` folders keep that name. Why "membrane": a living boundary that
 > absorbs what it already understands and passes the rest on
 > ([the maths](docs/math-findings.md)).
+>
+> **cliffhanger** is a reactive graph programming language that allows your LLM to program your field.
 
 ---
 
@@ -243,7 +245,7 @@ it), `STABLE` (facts seen in 3 chats over 2 days, never contradicted),
 alerts and a pointer to `state(section=...)`. Each record line says its
 source and age, e.g. `(person · 2h ago)` ([details](docs/entity-field.md#this-conversation)).
 After it, a `RECALL` block (#668): the 12 best rows the field holds for your latest
-message, one fact line each, ordered by a scorer whose weights live in the field and are refit at night from the rows the model's own searches end up using. With the `rerank` extra (`pip install 'babyseat[rerank]'`), a reranker (bge-reranker-v2-m3) re-orders the scorer's top 20 (on a CUDA GPU -- NVIDIA, or AMD through a ROCm build of PyTorch -- else Apple's MPS, else the CPU); the model's `query` tool reads the same ranking.
+message, one fact line each, ordered by a scorer whose weights live in the field and are refit at night from the rows the model's own searches end up using. Since 0.7.52 the scorer's order is one ballot of a vote over the seat's whole field (every chat, every person, tool outputs): five voters -- the embedder, the word lane, entity recall, the move log (how far each event moved each thing, recorded at capture) and instance histories (the noun phrases each event names, read once by spaCy as it lands; a past-tense clause starts an instance, "my" / "the" join it; with the person, time and place ballots -- an event's dates are placed by dateparser from when it was said) -- each fill a top 20 and are combined by Borda with the weights fitted held-out on LoCoMo in the 11-07 bench (move log 2, instance histories 3, entity recall 0.75, embedder 0.125, word lane 0.125; nothing is trained at run time; `MEMBRANE_VOTE=0` turns it off; see docs/entity-field.md). A reranker (bge-reranker-v2-m3) re-orders the vote's top 20 (on a CUDA GPU -- NVIDIA, or AMD through a ROCm build of PyTorch -- else Apple's MPS, else the CPU); the model's `query` tool reads the same ranking. It is on by default: when `sentence-transformers` is missing the seat installs it at boot in the background (wheels only; CPU-only torch on Linux without an NVIDIA driver), Home Assistant on glibc too (under HA's own package pins); not on musl (Home Assistant OS / Container: torch has no musl builds) or under 8 GB of RAM; the Docker image has it baked in (CPU). `pip install 'babyseat[rerank]'` installs it up front, `MEMBRANE_RERANK=0` turns it off.
 
 **With tools,** the model gets membrane's MCP surface: `query` and `state` to
 read the field (`state(section=...)` pulls one part of the seat's WHERE WE ARE:
@@ -724,7 +726,7 @@ python experiments/variety_toy.py        # the variety toy: the gate's calibrati
 
 A working lab, used every day to build itself: this repo's own field holds
 about 14,000 entities, and its background mind digests, dreams and talks
-about its own work. Version **0.7.5**; API and flag surfaces may still
+about its own work. Version **0.7.53**; API and flag surfaces may still
 move. Licensing: **MIT** from 0.7.3 (see [LICENSE](LICENSE)); releases up to
 0.7.2 stay under PolyForm Noncommercial 1.0.0.
 

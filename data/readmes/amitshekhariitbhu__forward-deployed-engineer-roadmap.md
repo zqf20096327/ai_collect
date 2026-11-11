@@ -214,6 +214,7 @@ In this step, we will learn how an LLM goes from answering questions to actually
 - [What is a ReAct Agent?](https://outcomeschool.com/blog/react-agent)
 - [What is a Plan-and-Execute Agent?](https://outcomeschool.com/blog/plan-and-execute-agent)
 - [What is a Reflection Agent?](https://outcomeschool.com/blog/reflection-agent)
+- [How do Human-in-the-Loop agents work?](https://outcomeschool.com/blog/human-in-the-loop-agents)
 - [How does AI Agent Memory work?](https://outcomeschool.com/blog/ai-agent-memory)
 - [How does ChatGPT remember you?](https://outcomeschool.com/blog/how-does-chatgpt-remember-you)
 - [What is MCP (Model Context Protocol)?](https://outcomeschool.com/blog/what-is-mcp-model-context-protocol)

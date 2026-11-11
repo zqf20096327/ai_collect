@@ -29,13 +29,13 @@ You can also install Desktop from a terminal:
 **Linux / macOS**
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/iowarp/clio-agent/main/install/install.sh | bash -s -- --desktop
+curl -fsSL https://clio.iowarp.ai/desktop.sh | bash
 ```
 
 **Windows (PowerShell)**
 
 ```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/iowarp/clio-agent/main/install/install.ps1))) -Desktop
+irm https://clio.iowarp.ai/desktop.ps1 | iex
 ```
 
 See the **[installation guide](https://clio.iowarp.ai/docs/install/)** for supported
@@ -69,11 +69,11 @@ to select a branch, tag or commit. On Windows use `-Source`, `-Dev` and `-Ref`.
 Source mode needs Git and installs the service without building a frontend. See
 [contributor setup](docs/CONTRIBUTOR_QUICKSTART.md) for Web/Desktop development.
 
-CLIO 0.9.5.1 uses standard Python 3.14 with the GIL enabled. For a persistent
+CLIO 0.9.6.1 uses standard Python 3.14 with the GIL enabled. For a persistent
 backend-only installation with the verified SDK roots:
 
 ```sh
-uv tool install --python 3.14 --with dspy==3.4.0 --with fastmcp==4.1.2 --with fastmcp-tasks==4.1.2 --with mcp==2.2.0 clio-agent==0.9.5.1
+uv tool install --python 3.14 --with dspy==3.4.0 --with fastmcp==4.1.2 --with fastmcp-tasks==4.1.2 --with mcp==2.2.0 clio-agent==0.9.6.1
 clio-agent serve
 ```
 

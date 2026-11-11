@@ -42,6 +42,8 @@ https://github.com/user-attachments/assets/5bf9bea8-e5ac-4632-a292-a80a45831dff
 
 ## News
 
+- **[2026-11]** v7.22.0: Claude sessions can run under several Claude accounts and move to the next one when
+  an account reaches its usage limit, continuing the same conversation.
 - **[2026-11]** v7.21.0: the plugin loads when OpenClaw installs it, with no native module to build.
 - **[2026-11]** v7.20.0: a fan-out agent can run as a goal, so several agents can each work a copy of a
   project until it is done, in parallel.
@@ -178,6 +180,7 @@ orchestrator does not edit its own code unattended.
 | **Persistent sessions**     | Long-lived agents kept alive across requests, with context, tool, model and worktree control.                                 | [`sessions.md`](./skills/references/sessions.md)            |
 | **Multi-engine runtime**    | One interface over the engines above, any ACP agent, and custom CLIs.                                                         | [`multi-engine.md`](./skills/references/multi-engine.md)    |
 | **Session handoff**         | Moves a live conversation to another engine or model in the same workspace; the old session keeps running.                   | [`sessions.md`](./skills/references/sessions.md)            |
+| **Claude accounts**         | Several Claude accounts, keys or gateways; a session moves to the next one at its usage limit and keeps its conversation.    | [`multi-engine.md`](./skills/references/multi-engine.md#claude-accounts-and-rotation)|
 | **Verification plane**      | Acceptance contracts the runtime runs itself, with an evidence bundle on disk; a run without a contract ends `unverified`.    | [`verification.md`](./skills/references/verification.md)    |
 | **Durable run kernel**      | Declarative workflows over `agent`, `goal`, `fanout`, `council`, `verifier`, `human_gate`, `router` and more, checkpointed.   | [`workflow.md`](./skills/references/workflow.md)            |
 | **Fan-out**                 | One task across N engine/model agents in parallel, with an optional synthesis pass.                                           | [`tools.md`](./skills/references/tools.md)                  |

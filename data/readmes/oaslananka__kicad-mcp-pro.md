@@ -51,7 +51,7 @@
 
 KiCad MCP Pro is a Model Context Protocol server for KiCad EDA workflows. It exposes tools, resources, and prompts for schematic, PCB, validation, DFM, and manufacturing export automation.
 
-The server now starts with the bounded `default` profile: 24 read-only review tools instead of the complete expert catalog. Use `build` with write mode for controlled edits, `release` with manufacturing mode for human-gated handoff, or `expert`/`full` only for advanced trusted clients. Current catalog counts and context-size estimates come from [`docs/evidence/progressive-disclosure-profile-snapshot.json`](docs/evidence/progressive-disclosure-profile-snapshot.json); see [`docs/agents/progressive-disclosure.md`](docs/agents/progressive-disclosure.md).
+The server now starts with the bounded `default` profile: 25 read-only review tools instead of the complete expert catalog. Use `build` with write mode for controlled edits, `release` with manufacturing mode for human-gated handoff, or `expert`/`full` only for advanced trusted clients. Current catalog counts and context-size estimates come from [`docs/evidence/progressive-disclosure-profile-snapshot.json`](docs/evidence/progressive-disclosure-profile-snapshot.json); see [`docs/agents/progressive-disclosure.md`](docs/agents/progressive-disclosure.md).
 
 Telemetry and error reporting are disabled by default. Opt-in OpenTelemetry
 configuration is documented in
@@ -84,7 +84,7 @@ separate until the qualification work in #730 is complete.
 | PyPI package | [`kicad-mcp-pro`](https://pypi.org/project/kicad-mcp-pro/) |
 | npm wrapper | [`kicad-mcp-pro`](https://www.npmjs.com/package/kicad-mcp-pro) |
 | MCP Registry name | `io.github.oaslananka/kicad-mcp-pro` |
-| Version | `4.11.0` | <!-- x-release-please-version -->
+| Version | `4.12.0` | <!-- x-release-please-version -->
 | OSS maturity report | [`docs/repo-maturity-report.md`](docs/repo-maturity-report.md) |
 | OpenSSF evidence | [`docs/openssf-evidence.md`](docs/openssf-evidence.md) |
 
@@ -121,6 +121,28 @@ kicad-mcp-pro --version
 kicad-mcp-pro setup
 kicad-mcp-pro doctor
 ```
+
+### Optional Cloud remote — Windows
+
+With KiCad MCP Pro installed, open PowerShell and run:
+
+```powershell
+kicad-mcp-pro remote
+```
+
+On first use, choose a local KiCad project and approve the device pairing
+in your browser. Subsequent starts reuse the paired device and project.
+The terminal stays open and reports **Connected** only after the Cloud
+acknowledges the signed session; press Ctrl+C to disconnect. Foreground mode
+retires an existing verified user-owned background Connector task, avoiding
+the extra empty Python console window. Local KiCad files remain on-device.
+
+Open the [Cloud Devices page](https://kicad-mcp-pro.oaslananka.dev/devices)
+and choose **Manage access** for the project to grant/revoke each AI client's
+**project-summary** permission. Cloud remote editing is not yet available:
+no write controls are presented as functional. Local MCP use does not require
+a Cloud account. Selecting a different project on a paired device is not yet
+supported in this foreground CLI.
 
 `setup` guides the local MCP client configuration without requiring a Cloud
 account. For scripts, use `kicad-mcp-pro setup --agent claude-code`; the

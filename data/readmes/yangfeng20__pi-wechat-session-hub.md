@@ -23,6 +23,7 @@ Pi WeChat Session Hub 是一个 Pi 扩展, 用微信管理本机多个 Pi 会话
 - [安全与运行边界](#安全与运行边界)
 - [常见问题](#常见问题)
 - [开发与验证](#开发与验证)
+- [更新日志](CHANGELOG.md)
 - [许可证](#许可证)
 
 ## 特性
@@ -38,7 +39,7 @@ Pi WeChat Session Hub 是一个 Pi 扩展, 用微信管理本机多个 Pi 会话
 
 | 项 | 要求 | 说明 |
 |---|---|---|
-| 操作系统 | **Windows** | 可见 UI 模式依赖 Windows Terminal 与 Windows 登录计划任务 |
+| 操作系统 | **Windows** | 可见 UI 模式依赖 Windows Terminal; 登录后自动启动使用当前用户 Run 注册表项 |
 | Node.js | `>= 22.19.0` | 与 `package.json` 的 `engines` 一致 |
 | Pi | `>= 0.85.1 < 2.0.0` | CI 矩阵覆盖 `0.85.1` / `1.0.0` / `1.3.0` |
 | Windows Terminal | 建议安装 | 缺少 `wt.exe` 时阻塞可见 UI 操作, 后台模式仍可用 |
@@ -69,13 +70,13 @@ Pi 会从 npm 或 git 拉取包并自动安装依赖, 扩展注册到用户级�
 pi install npm:pi-wechat-session-hub
 
 # 固定版本, 避免升级带来的行为差异
-pi install npm:pi-wechat-session-hub@0.1.0
+pi install npm:pi-wechat-session-hub@0.1.2
 
 # 从 GitHub 安装, 跟随默认分支, 适合追最新提交
 pi install git:github.com/yangfeng20/pi-wechat-session-hub
 
 # 固定到 tag 或 commit
-pi install git:github.com/yangfeng20/pi-wechat-session-hub@v0.1.0
+pi install git:github.com/yangfeng20/pi-wechat-session-hub@v0.1.2
 ```
 
 安装后:
@@ -174,7 +175,7 @@ Node.js 需满足 `package.json` 中的最低版本. 首次使用顺序:
 | `/wx autostart off` | 关闭并移除 Windows 登录任务 |
 | `/wx help` | 查看本机命令帮助 |
 
-停止时, Gateway 先停止接收新微信消息, 再 drain 已入队 route 工作并等待正在处理的 Pi turn 收尾. `/wx stop` 在后台收尾期间提示"正在停止", 完成后再通知最终状态. `/wx restart` 会安全停止旧后台进程并启动新进程, 等待新服务就绪或报告失败; 它不会启动新旧并行 poller. 如果 daemon 非正常退出, durable queue 会保留未完成项并阻断后续 FIFO, 需要显式 `/retry <message-id> --confirm`.
+停止时, Gateway 先停止接收新微信消息, 再 drain 已入队 route 工作并等待正在处理的 Pi turn 收尾. `/wx stop` 在后台收尾期间提示"正在停止", 完成后再通知最终状态. `/wx restart` 会安全停止旧后台进程并启动新进程, 等待新服务就绪或报告失败; 它不会启动新旧并行 poller. 如果 daemon 非正常退出, durable queue 会保留未完成项; 这些项会在下次处理时被自动跳过并向微信回一条提示, 不会卡死后续消息. 需要重新执行时用 `/retry <message-id> --confirm`.
 
 Windows 自动启动默认关闭; 开启后在当前用户登录 Windows 时使用已保存授权连接. 它不在 Windows 登录桌面前运行, 也不会在启动时弹出扫码窗口. 如果尚未完成微信授权或授权失效, 需要先在 Pi TUI 执行 `/wx login`. 非 Windows 平台执行 `/wx autostart on` 会被明确拒绝.
 
@@ -184,11 +185,12 @@ Windows 自动启动默认关闭; 开启后在当前用户登录 Windows 时使�
 
 ```text
 /new [--mode background|ui] [--project <alias>] [--name <名称>]
-/sessions [--project <alias>] [--state active|saved|pending|all] [--page <n>]
+/sessions [--project <alias>] [--state active|saved|pending|all]
 /resume <会话索引|名称>
 /last [会话索引|名称]
 /stop [会话索引|名称]
 /retry <message-id> --confirm
+/watch [--all]
 /status
 /projects
 /help
@@ -197,18 +199,19 @@ Windows 自动启动默认关闭; 开启后在当前用户登录 Windows 时使�
 | 命令 | 是否改变状态 | 作用 |
 |---|---|---|
 | `/new` | 是 | 新建会话并绑定当前微信 route |
-| `/sessions` | 否 | 分页列出 Hub 管理的会话 |
+| `/sessions` | 否 | 一次列出 Hub 管理的全部匹配会话 |
 | `/resume` | 是 | 把当前微信 route 切到目标会话 |
 | `/last` | **否** | 只读回顾目标会话最近一轮对话 |
 | `/stop` | 是 | 停止目标会话的 Pi worker |
 | `/retry` | 是 | 重新执行指定消息, 可能产生副作用 |
+| `/watch` | 否 | 默认总览运行中与异常会话; `--all` 查看全部, 含最后活动时间 |
 | `/status` | 否 | 展示 Hub、当前会话与 UI 模式可用性 |
 | `/projects` | 否 | 列出已登记项目 |
 | `/help` | 否 | 查看命令帮助 |
 
-`/new` 默认在后台创建会话, 也可显式使用 `/new --mode ui` 在新 Windows Terminal tab 中创建可见 UI 会话. `/sessions` 默认列出 Hub 管理的全部活跃前台和后台会话, 每页 5 条, 每个会话单独展示标题、项目、模式和状态, 当前微信路由会明确标记. 标题优先显示 session name; 未命名时使用 Pi `/resume` 同样采用的首条用户文本, 最长 32 个 Unicode 字符, 超出以 `...` 省略. `/resume 3` 把微信 route 切换到索引为 `3` 的会话. 如果切换目标的 agent 已处于 idle, 回复会附带最近一次回复预览; 超过 800 个 Unicode 字符时只显示开头并提示完整内容仍在会话中. 如果 agent 正在运行, 只确认切换, 不发送旧回复. 索引在会话排序变化后保持不变, 不因列表重排而复用.
+`/new` 默认在后台创建会话, 也可显式使用 `/new --mode ui` 在新 Windows Terminal tab 中创建可见 UI 会话. `/sessions` 默认列出 Hub 管理的全部活跃前台和后台会话, 一次回复展示全部匹配会话, 以 **markdown 表格**展示索引、标题、模式与状态, 当前微信路由在标题后标记为 `（当前）`, 表格下方汇总涉及的项目. 标题优先显示 session name; 未命名时使用 Pi `/resume` 同样采用的首条用户文本, 最长 32 个 Unicode 字符, 超出以 `...` 省略. `/resume 3` 把微信 route 切换到索引为 `3` 的会话. 如果切换目标的 agent 已处于 idle, 回复会附带最近一次回复预览; 超过 3800 个 Unicode 字符时只显示结尾并提示完整内容仍在会话中. 如果 agent 正在运行, 只确认切换, 不发送旧回复. 索引在会话排序变化后保持不变, 不因列表重排而复用.
 
-`/status` 会额外输出 `可见 UI 模式` 一行; 平台不支持或缺少 `wt.exe` 时显示 `不可用` 及具体原因.
+`/watch` 默认只展示运行中、启动中、异常或断连会话; `/watch --all` 展示全部, 包含空闲会话和最后活动时间. 失败类型直接从 Pi transcript 的 `stopReason` 与 `errorMessage` 读取, 可识别周/5 小时/月额度、TPM 限流、网络错误和鉴权错误; 如果上游错误提供重置时间, 会原样显示. 当前 worker 的 `running` 状态可直接读取, 但 Hub 没有独立的 turn 定时心跳, 因此不臆测“卡住”状态. `/status` 额外输出 `可见 UI 模式`; 平台不支持或缺少 `wt.exe` 时显示 `不可用` 及具体原因.
 
 ## 在微信端找回上下文
 
@@ -228,18 +231,66 @@ Windows 自动启动默认关闭; 开启后在当前用户登录 Windows 时使�
 
 最近一轮对话
 你：
-<最近一条 user 提问, 最多 600 字符>
+<最近一条 user 提问, 最多 1200 字符, 保留开头>
 AI：
-<最近一条 assistant 回复, 最多 600 字符>
+<最近一条 assistant 回复, 最多 3800 字符, 保留结尾>
 
 发送 /resume 3 可切换到此会话。
 ```
 
 - 带选择器时未复现有会内固定尾行改为提示 `发送 /resume <索引> 可切换到此会话`; 无选择器时提示 `发送任意内容可继续对话`
-- 单段超过 600 个 Unicode 字符时截断, 并附 `[提问较长, 已截断。]` 或 `[回复较长, 完整内容仍在会话记录中。]`
+- 提问超过 1200 个 Unicode 字符时截断并附 `[提问较长, 已截断。]`, 保留开头以便判断问了什么
+- 回复超过 3800 个 Unicode 字符时截断, 标题标为 `AI（末段节选）` 并附 `[回复较长, 以上为结尾 3800 字; 完整内容仍保留在会话记录中。]`, 保留结尾以便看到结论与下一步
+- 整条回复连同 header 受 **单条消息 2000 字上限**约束 (见下方“单条消息长度限制”)
 - 工具输出与 thinking 推理 **不会** 进入摘要, 只展示用户提问与最终回复
 - 会话正在运行时, 在 header 与正文之间插入 `⚠️ 该会话正在运行, 以下为目前已落盘的内容。`, 避免把中间步骤误读为最终结论
 - assistant 尚未产生回复时显式输出 `AI：尚未产生回复。`
+
+### 微信 markdown 渲染能力
+
+2026-11-11 对真实微信客户端 (手机 + PC) 实测, 微信会按 markdown 渲染回复:
+
+| 语法 | 手机 | PC | 说明 |
+|---|---|---|---|
+| 表格 | 支持 | 支持 | 带边框与列对齐, 无需横向滚动 |
+| 无序/有序列表 | 支持 | 支持 | 块级元素, 每项独占一行 |
+| 加粗 / 行内代码 | 支持 | 支持 | 行内代码渲染为灰底 |
+| 分隔线 `---` | 支持 | 支持 | 渲染为横线 |
+| 引用块 `>` | 保留换行 | **换行被吞** | 两端不一致, 避免使用 |
+| 单换行 | **渲染为空格** | **渲染为空格** | 必须用空行或块级元素才能换行 |
+
+关键约束: **单个 `\n` 会被当作空格合并进同一段落**。因此多行内容必须依赖空行分隔或块级元素 (列表项、表格行)。由于引用块在两端行为不一致, Hub 内部拼装的回复只用表格与列表。
+
+### 单条消息长度限制
+
+发往微信的回复必须满足两个约束, 均由 2026-11-11 对真实 iLink 服务端的实测得出:
+
+| 约束 | 实测结果 |
+|---|---|
+| `item_list` 只能有 1 个 `text_item` | 2 个 item 时即使总长仅 30 字也返回 `ret=-2 prepare failed` |
+| 请求体 UTF-8 字节数 ≤ 约 16800 | 16791 字节成功, 16926 字节返回 `ret=-2` |
+
+实测数据 (中文正文, 单个 `text_item`):
+
+```text
+3100 汉字  JSON  9723 字节  ->  OK
+4550 汉字  JSON 14073 字节  ->  OK
+5275 汉字  JSON 16248 字节  ->  OK
+5456 汉字  JSON 16791 字节  ->  OK   <- 实测成功上限
+5501 汉字  JSON 16926 字节  ->  FAIL ret=-2
+5637 汉字  JSON 17334 字节  ->  FAIL ret=-2
+```
+
+注意限制的是 **UTF-8 字节数而非字符数**: 一个汉字占 3 字节, ASCII 占 1 字节, 所以同一字节预算下中文能装的字数显著少于英文。
+
+历史上 `sendText` 曾按 2000 **字符**切分为多个 `text_item`, 与上述两条约束直接冲突。由于此前没有任何回复超过 2000 字, 该切分分支从未执行, 直到放大 `/last` 摘要长度才首次触发 `api_error` 投递失败。
+
+当前防护:
+
+- `IlinkApiClient.sendText` 不再拆分正文, 始终只发 1 个 `text_item`, 并在发送前用真实 body 字节数校验, 越界则报 `message_too_long`
+- `command-router.ts` 中 `MAX_SINGLE_MESSAGE_BYTES = 15000` 作为发往微信前的最后一道保险, 按 UTF-8 字节精确截断并附 `[回复过长, 已截断。]`
+- `/last` 与 `/resume` 的文本上限按最坏情况字节预算取值, 保证连同 header 后仍低于上限
+- 回归测试同时断言 router 层字节预算与 client 层单 `text_item` 约束
 
 ### 无记录与未绑定会话
 
@@ -299,7 +350,7 @@ Windows 首次创建空 manager 目录时会关闭继承 ACL, 仅授权当前用
 - route 绑定、会话索引和 worker owner 持久保存; session 恢复前重新验证项目路径是否仍位于 `allowedProjectRoots`.
 - 审计事件不记录消息正文、模型输出或凭证. 队列只在未完成期间保存原消息及 `replyContext`; 完成后压缩移除 payload, 并保留最近 1000 个 messageId 的 SHA-256 摘要用于去重.
 - iLink `sendtyping` 仅提供 best-effort "正在输入"提示. Pi turn settled 后 Hub 发送一条完整最终回复, 不做 token 级微信流式回传.
-- 关闭服务后不会自动登录或生成 QR. 自动启动仅由 `autoStartOnWindowsLogon` 和当前用户登录计划任务控制.
+- 关闭服务后不会自动登录或生成 QR. 自动启动仅由 `autoStartOnWindowsLogon` 和当前用户登录启动项控制.
 - 可见 UI 模式在执行前校验平台和 `wt.exe`, 校验不通过即阻塞, 不产生半启动进程.
 
 ## 常见问题
@@ -316,7 +367,7 @@ Windows 首次创建空 manager 目录时会关闭继承 ACL, 仅授权当前用
 凭证文件只在不存在时 create-only 写入, 不会覆盖. 若授权失效, 重新执行 `/wx login` 覆盖 Hub 自己的凭证文件即可.
 
 **Q: 微信消息一直没回复?**
-先 `/wx status` 看当前终端接入状态与未完成消息数. 若队列被非正常退出留下的失败项阻断, 需要 `/retry <message-id> --confirm` 重新执行, 该操作可能产生副作用.
+先 `/wx status` 看当前终端接入状态与未完成消息数. 单条消息处理或回复投递失败时, 该消息会被自动跳过, 微信会收到一条包含消息 ID 的提示, 后续消息不受影响; 需要重新执行时用 `/retry <message-id> --confirm`, 该操作可能产生副作用.
 
 **Q: 为什么 `/sessions` 看不到我在别的目录开的会话?**
 Hub 只管理 `allowedProjectRoots` 内的会话, 且不扫描本机其他 session 文件. 用 `/wx roots add <绝对路径>` 授权该目录后重新打开会话即可接入.

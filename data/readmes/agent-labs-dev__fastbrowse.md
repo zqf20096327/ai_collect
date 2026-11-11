@@ -30,8 +30,8 @@ credentials, irreversible actions and spending under the control of code.
   origin it was declared for, and models only see its name. Step, time and dollar limits are enforced in code.
 - **Any browser.** A Browser Use Cloud browser by default, local Chrome, or any Chromium browser or Electron app
   that is already running.
-- **Desktop apps too.** On Linux with Hyprland, `--desktop` drives a native app window through its accessibility
-  tree, in the background, with [deskpilot](https://github.com/cjber/deskpilot).
+- **Desktop apps too.** On Linux with Hyprland, `--desktop` starts a native app and drives it through its
+  accessibility tree, in the background, with [deskpilot](https://github.com/cjber/deskpilot).
 - **One agent, every interface.** A CLI, a Python library, Node and Go SDKs that need no Python, an MCP
   server, and a skill for coding agents.
 
@@ -66,7 +66,7 @@ Jev can also run through the gateway as a last resort, or another decision host 
 Keys can live in a `.env` file in the working directory ([`.env.example`](.env.example) lists every setting), but
 values named by `--secret` must be in the process environment. `uv tool install fastbrowse` keeps the command on
 your PATH, `uv add fastbrowse` adds it to a project, and `npm install fastbrowse` gives Node.js the same agent with
-no Python.
+no Python. `fastbrowse self-update` names how a copy was installed and prints the command that upgrades it.
 
 To work on fastbrowse itself:
 
@@ -442,7 +442,7 @@ timeout if it has one (`MCP_TOOL_TIMEOUT` in Claude Code).
 
 ## Safety model
 
-- **Irreversible actions.** Jev judges each click, Enter press and dialog acceptance. Without authorization, a
+- **Irreversible actions.** Jev judges each click, key chord and dialog acceptance, including Enter presses. Without authorization, a
   irreversible action stops at `needs_confirmation`. This is a
   classifier, not a guarantee: a page can word a harmful control to look harmless.
 - **Secrets.** Models see names only. A value is resolved at the moment it is typed, only on its declared origin,

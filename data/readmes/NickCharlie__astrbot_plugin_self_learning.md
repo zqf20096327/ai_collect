@@ -6,7 +6,7 @@
 
 让 AstrBot 在群聊中持续采集、学习、审查并注入上下文，使 Bot 逐步具备表达风格、群组黑话、社交关系、长期记忆和人格演化能力。
 
-[![Version](https://img.shields.io/badge/version-4.9.0-blue.svg)](https://github.com/NickCharlie/astrbot_plugin_self_learning)
+[![Version](https://img.shields.io/badge/version-4.9.3-blue.svg)](https://github.com/NickCharlie/astrbot_plugin_self_learning)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-green.svg)](LICENSE)
 [![AstrBot](https://img.shields.io/badge/AstrBot-%3E%3D4.11.4-orange.svg)](https://github.com/Soulter/AstrBot)
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
@@ -424,4 +424,4 @@ Provider 未配置时插件仍可加载，但 LLM 相关功能会降级并写入
 
 `query_affection` 查询数据库中的本人分数或当前群排行，不请求模型、不修改分数。普通成员只能查询本人；排行和他人查询需全局管理员，跨群查询仅限管理员私聊明确指定机器人已加入的群号。查询沿用现有 `affection_scope`，不迁移或合并历史记录。
 
-该工具独立于通用 `enable_llm_hooks`，不会为查询开启社交分析或人格学习。数据库未就绪、查询失败和缺少记录分别返回状态；同分用户并列，未记录成员不按零分排名。
+该工具独立于通用 `enable_llm_hooks`，不会为查询开启社交分析或人格学习。数据库未就绪、查询失败和缺少记录分别返回状态；同分用户并列，未记录成员不按零分排名。排行默认返回前 10 名，`limit=1` 至 `20` 返回前 N 名；管理员要求完整榜单时使用 `mode=ranking`、`limit=0`，返回当前作用域全部已有记录。

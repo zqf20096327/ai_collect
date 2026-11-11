@@ -10,13 +10,13 @@
   <a href="https://www.npmjs.com/package/sinapsai"><img src="https://img.shields.io/npm/dm/sinapsai.svg" alt="npm downloads" /></a>
   <a href="https://www.npmjs.com/package/sinapsai"><img src="https://img.shields.io/badge/Dependencies-0-brightgreen.svg" alt="Zero Dependencies" /></a>
   <a href="https://github.com/roedyrustam/sinapsai/actions/workflows/ci.yml"><img src="https://github.com/roedyrustam/sinapsai/actions/workflows/ci.yml/badge.svg" alt="CI Status" /></a>
-  <img src="https://img.shields.io/badge/Tests-542%20Passed-brightgreen.svg" alt="Tests Passed" />
+  <img src="https://img.shields.io/badge/Tests-589%20Passed-brightgreen.svg" alt="Tests Passed" />
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-Strict-blue.svg" alt="TypeScript Strict" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
   <a href="./CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg" alt="PRs Welcome" /></a>
 </p>
 
-**SinapsAI** is a high-performance **Local AI Control Plane & Unified Gateway** built for Node.js, Edge Runtimes, and TypeScript. It bridges your applications with multiple LLM providers (OpenAI, Anthropic Claude, Google Gemini, DeepSeek, Mistral AI, Ollama, Groq, OpenRouter, xAI Grok, Cohere v2, and custom endpoints) through a single, standardized **Unified API**.
+**SinapsAI** is a high-performance **Local AI Control Plane & Unified Gateway** built for Node.js, Edge Runtimes, and TypeScript. It bridges your applications with multiple LLM providers (OpenAI, Anthropic Claude, Google Gemini, AWS Bedrock, Azure OpenAI, DeepSeek, Mistral AI, Ollama, Groq, OpenRouter, xAI Grok, Cohere v2, and custom endpoints) through a single, standardized **Unified API**.
 
 Engineered with a **100% in-process / in-memory** architecture, SinapsAI eliminates downtime via automatic failover, load balancing, lowest-latency routing, and a resilient **Circuit Breaker**—without requiring intermediary proxy servers, external Redis dependencies, or adding measurable latency (<10ms overhead).
 
@@ -98,6 +98,12 @@ Most AI gateways (LiteLLM, Portkey, Helicone) require deploying separate Docker 
   - [38. Standard Schema v1 & Zod Direct Resolver (createStructured)](#38-standard-schema-v1--zod-direct-resolver-createstructured)
   - [39. Embedded Local Web UI & Telemetry Dashboard (sinapsai dashboard)](#39-embedded-local-web-ui--telemetry-dashboard-sinapsai-dashboard)
   - [40. Hallucination & Faithfulness Sentinel (createGroundingVerified)](#40-hallucination--faithfulness-sentinel-creategroundingverified)
+  - [41. AWS Bedrock & Azure OpenAI Enterprise Cloud Providers](#41-aws-bedrock--azure-openai-enterprise-cloud-providers)
+  - [42. Steganography Firewall 2.0 & Hidden Injection Neutralization](#42-steganography-firewall-20--hidden-injection-neutralization)
+  - [43. Parallel Multi-Agent Swarm with Atomic Deep-Merge](#43-parallel-multi-agent-swarm-with-atomic-deep-merge)
+  - [44. Actor-Critic Self-Correcting Consensus Swarm Loop](#44-actor-critic-self-correcting-consensus-swarm-loop)
+  - [45. Streaming Durable Workflows & Checkpoint Deletion (GDPR / UU PDP)](#45-streaming-durable-workflows--checkpoint-deletion-gdpr--uu-pdp)
+  - [46. In-Process Semantic Prompt Router & Synthetic Dataset Distiller](#46-in-process-semantic-prompt-router--synthetic-dataset-distiller)
 - [🤖 AI & LLM Code Generation Guidelines](#-ai--llm-code-generation-guidelines)
 - [Supported Providers](#-supported-providers)
   - [Creating a Custom Provider (e.g. Ollama)](#creating-a-custom-provider-eg-ollama)
@@ -1586,6 +1592,202 @@ console.log('Grounding passed:', grounding.passed);        // true
 console.log('Escalated:', grounding.escalated);            // false if passed on first try
 ```
 
+### 41. AWS Bedrock & Azure OpenAI Enterprise Cloud Providers
+
+Native zero-dependency enterprise cloud integrations with automatic tool mapping, streaming, and IAM/Entra ID authentication:
+
+```typescript
+import { SinapsClient, AwsBedrockProvider, AzureOpenAiProvider } from 'sinapsai';
+
+const client = new SinapsClient({
+  providers: [
+    // AWS Bedrock: Pure SigV4 signing over Web Crypto (crypto.subtle)
+    new AwsBedrockProvider({
+      region: 'us-east-1',
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+      defaultModel: 'anthropic.claude-3-7-sonnet-20250219-v1:0',
+    }),
+    // Azure OpenAI: Custom deployments & Entra ID or API key auth
+    new AzureOpenAiProvider({
+      resourceName: 'my-company-azure',
+      deploymentId: 'gpt-4o-deployment',
+      apiKey: process.env.AZURE_OPENAI_API_KEY!,
+    }),
+  ],
+});
+
+const res = await client.chat.completions.create({
+  model: 'anthropic.claude-3-7-sonnet-20250219-v1:0',
+  messages: [{ role: 'user', content: 'Hello enterprise cloud LLM!' }],
+});
+console.log(res.choices[0].message.content);
+```
+
+### 42. Steganography Firewall 2.0 & Hidden Injection Neutralization
+
+Neutralizes invisible prompt injection attacks using Zero-Width characters, ASCII tag smuggling, and Bidi direction overrides with automatic NFKC normalization:
+
+```typescript
+import { SinapsClient, OpenAiProvider } from 'sinapsai';
+
+const client = new SinapsClient({
+  providers: [new OpenAiProvider({ apiKey: process.env.OPENAI_API_KEY! })],
+  securityGuardrails: {
+    enabled: true,
+    action: 'block', // 'block' | 'sanitize' | 'warn'
+  },
+});
+
+// A prompt with invisible zero-width spaces (\u200B) or hidden tag codes (\uE0001)
+// is intercepted, normalized, or blocked before reaching the upstream LLM.
+```
+
+### 43. Parallel Multi-Agent Swarm with Atomic Deep-Merge
+
+Execute specialist subagents in parallel with deterministic context deep-merge, preventing state collision during concurrent fan-out:
+
+```typescript
+import { SinapsClient, OpenAiProvider } from 'sinapsai';
+
+const client = new SinapsClient({
+  providers: [new OpenAiProvider({ apiKey: process.env.OPENAI_API_KEY! })],
+});
+
+const swarm = client.swarm({
+  agents: [
+    { id: 'researcher', name: 'Researcher', instructions: 'Research topics.' },
+    { id: 'coder', name: 'Coder', instructions: 'Write clean code.' },
+  ],
+});
+
+const result = await swarm.runParallel({
+  tasks: [
+    { agentId: 'researcher', prompt: 'Analyze requirements for caching.' },
+    { agentId: 'coder', prompt: 'Implement caching interface.' },
+  ],
+  arrayStrategy: 'union', // Deduplicates arrays across branches
+});
+
+console.log(result.synthesizedContent);
+```
+
+### 44. Actor-Critic Self-Correcting Consensus Swarm Loop
+
+Automated iterative self-refinement where a worker agent drafts a solution and a reviewer agent critiques and grades it until approved:
+
+```typescript
+import { SinapsClient, AnthropicProvider, OpenAiProvider } from 'sinapsai';
+
+const client = new SinapsClient({
+  providers: [
+    new AnthropicProvider({ apiKey: process.env.ANTHROPIC_API_KEY! }),
+    new OpenAiProvider({ apiKey: process.env.OPENAI_API_KEY! }),
+  ],
+});
+
+const swarm = client.swarm({
+  agents: [
+    { id: 'worker', name: 'Worker', instructions: 'Implement robust code.' },
+    { id: 'reviewer', name: 'Reviewer', instructions: 'Review against strict requirements and score 0-100.' },
+  ],
+});
+
+const result = await swarm.runActorCritic({
+  workerAgentId: 'worker',
+  criticAgentId: 'reviewer',
+  task: 'Write a zero-dependency Luhn algorithm validator in TypeScript.',
+  minScore: 90,
+  maxIterations: 3,
+  onIteration: (iteration, draft, review) => {
+    console.log(`[Cycle ${iteration}] Score: ${review.score}/100 - Approved: ${review.approved}`);
+  },
+});
+
+console.log('Final Solution:\n', result.finalSolution);
+```
+
+### 45. Streaming Durable Workflows & Checkpoint Deletion (GDPR / UU PDP)
+
+Subscribe to live workflow execution steps and permanently purge state to comply with Right-to-be-Forgotten regulations:
+
+```typescript
+import { SinapsClient, OpenAiProvider } from 'sinapsai';
+
+const client = new SinapsClient({
+  providers: [new OpenAiProvider({ apiKey: process.env.OPENAI_API_KEY! })],
+});
+
+// 1. Subscribe to live workflow step events (streaming over WebSockets/SSE)
+client.workflows.onStep((event) => {
+  console.log(`[Workflow ${event.workflowId}] Step: ${event.step.name} (${event.step.status})`);
+});
+
+// 2. Start durable workflow
+const state = await client.workflows.startWorkflow('user-session-123', { userId: 'u_999' });
+
+// 3. Right-to-be-Forgotten: Purge workflow checkpoint permanently from storage
+await client.workflows.deleteWorkflow('user-session-123');
+```
+
+### 46. In-Process Semantic Prompt Router & Synthetic Dataset Distiller
+
+Sub-millisecond prompt domain routing to specialized LLMs and automated PII-sanitized dataset curation (DPO & SFT) for fine-tuning:
+
+```typescript
+import {
+  SinapsClient,
+  OpenAiProvider,
+  AnthropicProvider,
+  SemanticRouter,
+  DatasetDistiller,
+} from 'sinapsai';
+
+// 1. Configure in-process semantic router (<0.5ms vector centroid classification)
+const semanticRouter = new SemanticRouter({
+  routes: [
+    {
+      name: 'coding',
+      model: 'claude-3-7-sonnet',
+      description: 'Programming, TypeScript, algorithms, and bug fixing',
+      samples: ['How do I write a binary search tree in TypeScript?', 'Fix null pointer exception'],
+    },
+    {
+      name: 'support',
+      model: 'gpt-4o-mini',
+      description: 'Account billing, subscription cancellation, and FAQs',
+      samples: ['How do I cancel my subscription and get a refund?', 'Update billing address'],
+    },
+  ],
+});
+
+// 2. Initialize client with semantic routing & dataset distillation
+const client = new SinapsClient({
+  providers: [
+    new AnthropicProvider({ apiKey: process.env.ANTHROPIC_API_KEY! }),
+    new OpenAiProvider({ apiKey: process.env.OPENAI_API_KEY! }),
+  ],
+  semanticRouter,
+  distiller: new DatasetDistiller(),
+});
+
+// 3. Prompt automatically routes to 'claude-3-7-sonnet' based on semantic domain
+const response = await client.chat.completions.create({
+  messages: [{ role: 'user', content: 'Help me optimize this recursive Fibonacci algorithm in TS' }],
+});
+
+// 4. Record interaction as DPO preference pair with automatic PII redaction
+client.distiller.recordDpo({
+  prompt: 'Write an email template for roedy@example.com',
+  chosen: 'Dear Roedy, your request has been confirmed.',
+  rejected: 'Email me at roedy@example.com for questions.',
+});
+
+// 5. Export HuggingFace/TRL compatible DPO JSONL dataset
+const dpoJsonl = client.distiller.exportDpoJsonl();
+console.log('Exported DPO Dataset:\n', dpoJsonl);
+```
+
 ---
 
 ## 🤖 AI & LLM Code Generation Guidelines
@@ -1597,13 +1799,14 @@ When generating code or scaffolding projects using **SinapsAI**, AI models and c
    - Never hallucinate subpackages like `@sinapsai/core`, `sinapsai/router`, or `sinapsai-proxy`.
 2. **Standard Client Instantiation**:
    - Instantiate `new SinapsClient({ providers: [ ... ], strategy?: 'adaptive' })`.
-   - Provide concrete native provider classes: `OpenAiProvider`, `AnthropicProvider`, `GeminiProvider`, `GroqProvider`, `DeepSeekProvider`, `MistralProvider`, `OllamaProvider`, `OpenRouterProvider`, `XAiProvider`, `CohereProvider`.
+   - Provide concrete native provider classes: `OpenAiProvider`, `AnthropicProvider`, `GeminiProvider`, `AwsBedrockProvider`, `AzureOpenAiProvider`, `GroqProvider`, `DeepSeekProvider`, `MistralProvider`, `OllamaProvider`, `OpenRouterProvider`, `XAiProvider`, `CohereProvider`.
 3. **Execution Methods**:
    - Non-Streaming: `const res = await client.chat.completions.create({ model, messages })`.
    - Streaming: `const stream = await client.chat.completions.create({ model, messages, stream: true })` and consume via `for await (const chunk of stream)`.
    - Embeddings: `const emb = await client.embeddings.create({ model, input })`.
    - Autonomous Agents: `await client.runWithTools({ model, messages, tools, maxSteps })`.
    - Multi-Agent Swarms: `client.swarm({ agents: [ ... ] })`.
+   - Actor-Critic Swarms: `client.swarm.runActorCritic({ workerAgentId, criticAgentId, task })`.
 4. **Zero-Dependency Guarantee**:
    - SinapsAI is 100% in-process. Do NOT tell users to start a Docker container, Python proxy, or external Redis unless they explicitly choose distributed storage.
 
@@ -1616,6 +1819,8 @@ When generating code or scaffolding projects using **SinapsAI**, AI models and c
 | **OpenAI** | `OpenAiProvider` | `baseUrl`, `timeoutMs`, `costPer1kTokens`, `fallbackModels` |
 | **Anthropic Claude** | `AnthropicProvider` | `baseUrl`, `timeoutMs`, `costPer1kTokens`, `fallbackModels`, `promptCaching`, `thinkingBudget` (`number \| 'auto'`) |
 | **Google Gemini** | `GeminiProvider` | `baseUrl`, `timeoutMs`, `costPer1kTokens`, `fallbackModels`, `safetySettings`, `thinkingBudget` (`number \| 'auto'`), `cachedContent`, `googleSearch`, `codeExecution`, `enableAvailabilityFallback`, `GEMINI_MODELS`, `fetchAvailableModels()` |
+| **AWS Bedrock** | `AwsBedrockProvider` | `region`, `accessKeyId`, `secretAccessKey`, `sessionToken`, `baseUrl`, `timeoutMs`, `costPer1kTokens`, `fallbackModels` (Converse API + pure SigV4 signer) |
+| **Azure OpenAI** | `AzureOpenAiProvider` | `resourceName`, `deploymentId`, `apiKey`, `entraToken`, `apiVersion`, `timeoutMs`, `costPer1kTokens`, `fallbackModels` |
 | **DeepSeek** | `DeepSeekProvider` | `baseUrl`, `timeoutMs`, `costPer1kTokens`, `fallbackModels`, reasoning tokens (`reasoning_content`) |
 | **xAI (Grok)** | `XAiProvider` | `baseUrl`, `timeoutMs`, `costPer1kTokens`, `fallbackModels`, `reasoningEffort`, `thinkingBudget` (`number \| 'auto'`), `XAI_MODELS` |
 | **Cohere** | `CohereProvider` | `baseUrl`, `timeoutMs`, `costPer1kTokens`, `fallbackModels`, `COHERE_MODELS` |
@@ -1780,6 +1985,8 @@ const swarm = client.swarm({
 | `llmo` | `LlmOptimizationOptions \| boolean` | `undefined` | Universal LLM Optimization engine (`minifyPrompts`, `deduplicateSystem`, `alignKvCachePrefix`, `autoCascadeModel`, `cascadeTiers`, `dynamicThinking`) |
 | `memory` | `EpisodicMemoryOptions` | `undefined` | In-process long-term episodic vector memory with tenant/user isolation and dynamic prompt injection |
 | `rag` | `HybridRagOptions` | `undefined` | In-process Okapi BM25 + dense vector hybrid retrieval engine with Reciprocal Rank Fusion |
+| `semanticRouter` | `SemanticRouter` | `undefined` | In-process sub-millisecond semantic prompt classifier and model router |
+| `distiller` | `DatasetDistiller` | `new DatasetDistiller()` | In-process synthetic fine-tuning dataset generator (DPO & SFT) with PII redaction |
 | `hooks` | `SinapsEventHooks` | `{}` | Lifecycle event listeners for observability |
 
 ### `CircuitBreakerOptions`

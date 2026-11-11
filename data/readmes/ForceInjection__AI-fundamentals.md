@@ -393,6 +393,7 @@ SFT 之后把推理能力推上去要靠 RL，而 RL 的 rollout 由推理引擎
 - [当 KV 装不进显存：四篇论文的四种内存账，与一个「统一命名空间 + 成本旋钮」的设想](09_inference_system/kv_cache/04_memory_tiering/01_memory-tiering-overview.md) - DirectKV / NEO / eLLM / Strata 四篇论文内存层级路线的横切总纲：去搬运 / 挪计算 / 并账本 / 重排调度，附按条件选路的对号表与「数字怎么读」口径清单
 - [当 KV Cache 跨过信任边界：三篇论文给出的三种泄露面，与一个「共享层级 + 默认加密」的设想](09_inference_system/kv_cache/05_kv_security/01_kv-security-overview.md) - 读行为 / 读数据 / 读时延三种取证位置：PromptPeek / Shadow in the Cache / Auditing Prompt Caching，附按角色选路的对号表，以及取证距离与防御动作同轴的成本账
 - [当复用跨出同前缀与同模型：四条路线与四种对齐开销](09_inference_system/kv_cache/06_kv_reuse/01_kv-reuse-overview.md) - KVLink（文档级预计算 + link token）、DroidSpeak（跨微调变体共享 + 关键层重算）与 CacheBlend（免训练非前缀复用）四条路线与「数字怎么读」口径清单
+- [四条路线，一条落地：vLLM 与 SGLang 的 KV 复用支持现状](09_inference_system/kv_cache/06_kv_reuse/04_framework-kv-reuse-support.md) - 三仓 HEAD 源码核对：路线 1 原生默认开且跨实例纵深（vLLM 18 connector / SGLang HiCache L3），路线 2 仅 LMCache 接线且与前缀缓存互斥（TODO 未解），路线 3/4 零实现，LoRA 被两家同构隔离
 - [当压缩表示被继续使用：三篇论文给出的三种二次决策](09_inference_system/kv_cache/07_kv_compression/01_kv-compression-overview.md) - Self-Indexing KVCache / SALS / EchoKV 把压缩产物继续用作检索索引、token 选择场与重建素材
 - [TTFT 多了 15 毫秒之后：一套实证过的 KV Cache 性能分析方法论](09_inference_system/kv_cache/08_methodology/01_kv-cache-perf-methodology.md) - 真机排查总结的六件工具与六类问题：时钟链闭合、排除链判死、仪器纪律、native 对齐，配操作清单与脱敏后的实测数字
 - [当 Agent 流量成为推理系统的主要负载](09_inference_system/agent_serving/agent-workload-serving.md) - KV 生命周期错配、调度语义失真、会话粘性与容量公式失效：Agent 负载下的四连锁问题与两引擎源码级现状
@@ -401,6 +402,7 @@ SFT 之后把推理能力推上去要靠 RL，而 RL 的 rollout 由推理引擎
 - [HBF 是 HBM 的替代吗？单位存储便宜了，Token 成本却可能更高](09_inference_system/hbf-vs-hbm.md) - Hot Chips 2026 的 (β, α) 坐标系与 $/token 公式：单位容量便宜 8–16 倍、单位容量带宽只有 HBM 的 1/25，折算成带宽单价反而贵 1.7 倍，HBF 只在一个很窄的低带宽区间里划算
 - [Engram：条件记忆与主机内存参数](09_inference_system/engram/README.md) - DeepSeek 条件记忆（N-gram Embedding）首篇源码深读：官方 422 行 demo + SGLang 巨页手术，LPDDR 换 HBM 的优势与代价逐项算账
 - [DeepSeek 把家底搬上了昇腾：六个组件、三种双端模式与一份 950 微架构报告](09_inference_system/deepseek_ascend/deepseek-ascend-open-source.md) - 逐仓拆解 TileLang/DeepGEMM/DeepEP/TileKernels/FlashMLA/DeepSelect 的昇腾版：三种双端模式、950 微架构要点与诚实缺口清单
+- [一座 384 卡的 TokenFactory：CloudMatrix384 论文精读](09_inference_system/cloudmatrix_infer/cloudmatrix384-tokenfactory.md) - 华为超节点 + SiliconFlow 推理栈：384 张 910 连成一台机器（UB 跨节点带宽损失 <3%）、PDC 三池分离、EP320 每 die 一个专家、EMS 内存池，prefill 6,688 / decode 1,943 tokens/s/NPU 附五条口径声明
 - [KV 压缩推到极限：从架构改造到分层缓存](09_inference_system/kv_cache/07_kv_compression/README.md) - V4 与 K3 架构重写后的 KV 体积账（1M 上下文 250GB 量级 → 个位数 GB）、V4.1-Flash 技术报告精读（CED / CSA2 / FP4 KV）与 HiCache 七池八池的系统后果，三篇互为时间线
 - [Prefill 与 Decode：两阶段的推理机制](09_inference_system/prefill_decode/README.md)（[交互可视化](09_inference_system/prefill_decode/prefill_decode_visual.html) · [校验脚本](09_inference_system/prefill_decode/prefill_decode_validate.py)） - 逐步标注每步矩阵形状与计算量，从 compute-bound vs memory-bound 推导 GQA、量化、PagedAttention、Offloading、PD 分离的必然性
   - [Continuous Batching 深度解析](09_inference_system/prefill_decode/continuous_batching.md) - 静态批处理的三重浪费、vLLM V1 的 token-level 统一调度与 SGLang prefill-first 主动驱逐

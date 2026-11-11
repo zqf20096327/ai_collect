@@ -2,12 +2,12 @@
 
 把读题、建模求解、科研绘图、论文写作与终稿检查组织成可追溯的 AI Agent 工作流。
 
-[![Repository checks](https://github.com/hua695/MathModeling-Skills-Arsenal/actions/workflows/validate.yml/badge.svg)](https://github.com/hua695/MathModeling-Skills-Arsenal/actions/workflows/validate.yml)
+[![Repository checks](https://github.com/cjh-solver/MathModeling-Skills-Arsenal/actions/workflows/validate.yml/badge.svg)](https://github.com/cjh-solver/MathModeling-Skills-Arsenal/actions/workflows/validate.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 
 适合已有题目、数据和人工判断，希望让 AI 分工、证据和交付更清楚的建模团队。覆盖国赛、美赛、MathorCup 等竞赛；具体格式与 AI 使用要求以本届官方规则为准。
 
-**先看效果：** [逐章写作示例](examples/chapter-parallel/README.md) · [可复制提示词](docs/quickstart.md) · [验证与边界](docs/validation.md) · [完整技能目录](docs/skill-catalog.md)
+**先看效果：** [逐章写作示例](examples/chapter-parallel/README.md) · [本地数模工作台](tools/harness-workbench/README.md) · [可复制提示词](docs/quickstart.md) · [验证与边界](docs/validation.md) · [完整技能目录](docs/skill-catalog.md)
 
 ## 能得到什么
 
@@ -45,7 +45,7 @@ flowchart LR
 ## 三分钟开始
 
 ```bash
-git clone https://github.com/hua695/MathModeling-Skills-Arsenal.git
+git clone https://github.com/cjh-solver/MathModeling-Skills-Arsenal.git
 cd MathModeling-Skills-Arsenal
 ```
 
@@ -75,6 +75,7 @@ MathorCup 全流程可指定 `full-contest-mathorcup`；只解一问、只画图
 
 ## 如何判断效果
 
+- **可视化工作台：** [查看安装和比赛使用方法](tools/harness-workbench/README.md)，本机读取 Harness 项目，查看流程、小问、文件、图表和论文，不调用模型维护页面。
 - **流程验证：** 正反例测试检查提前派发、输入哈希漂移、旧图版本等是否被拒绝。
 - **输出示例：** [合成章节与图表交接](examples/chapter-parallel/README.md) 展示输入、正文、批准边界与提示词，附可运行的数据计算。
 - **视觉样例：** 下图是已有 `fireworks-tech-graph` 的上游风格资源，不代表本次生成的科研结果图。科研数据图走 SciPilot / ModelViz，竞赛非数据图默认走 TikZ。
@@ -95,7 +96,7 @@ python -m unittest discover -s tests -p 'test_mathorcup*.py'
 python -m unittest discover -s tests -p 'test_harness*.py'
 ```
 
-[贡献与维护](CONTRIBUTING.md) · [更新记录](CHANGELOG.md) · [问题反馈](https://github.com/hua695/MathModeling-Skills-Arsenal/issues)
+[贡献与维护](CONTRIBUTING.md) · [更新记录](CHANGELOG.md) · [问题反馈](https://github.com/cjh-solver/MathModeling-Skills-Arsenal/issues)
 
 技能通过名称互相引用，请保留目录名及原有许可证。`tech-route-maker` 等历史独立技能保留在目录中，主控不再将其作为路线图兜底。创意写作分类可单独安装。
 

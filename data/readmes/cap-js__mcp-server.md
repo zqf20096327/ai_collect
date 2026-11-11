@@ -30,6 +30,7 @@ The server helps AI models answer questions such as:
 - [Available Tools](#available-tools)
   - [`search_model`](#search_model)
   - [`search_docs`](#search_docs)
+- [JavaScript API](#javascript-api)
 - [Support, Feedback, Contributing](#support-feedback-contributing)
 - [Security / Disclosure](#security--disclosure)
 - [Code of Conduct](#code-of-conduct)
@@ -166,6 +167,7 @@ opencode mcp add --global cds-mcp \
 | Variable | Description |
 | --- | --- |
 | `CDS_MCP_OFFLINE` | Set to `true` to use locally cached embeddings without checking for updates. Accepts `true` or `false`. |
+| `CDS_MCP_OFFLINE_DIR` | In offline mode, use this folder instead of the local cache. |
 | `CDS_MCP_MODEL` | Non-empty embedding model name. |
 | `CDS_MCP_MANIFEST_TIMEOUT` | Manifest request timeout in positive integer milliseconds. Defaults to `15000`. |
 | `CDS_MCP_DOWNLOAD_TIMEOUT` | Bundle response-header timeout in positive integer milliseconds. Defaults to `30000`. |
@@ -237,6 +239,100 @@ CDS compiles all your `.cds` files into a unified model representation that incl
 - HTTP endpoints
 
 The fuzzy search algorithm matches definition names and allows for partial matches, making it easy to find entities like "Books" even when searching for "book".
+
+## JavaScript API
+
+Import the supported named exports from the package root:
+
+```js
+import { createCapireEmbeddings, DEFAULT_MODEL } from '@cap-js/mcp-server'
+```
+
+### Generate capire embeddings from the command line
+
+Generate CAP documentation embeddings with a custom model.
+The CLI fetches `https://cap.cloud.sap/docs/llms-full.txt` automatically:
+
+```sh
+cds-mcp createCapireEmbeddings --model nomic-ai/nomic-embed-text-v1.5
+```
+
+See [Configuration](#configuration) for supported flags. Pass them after
+`cds-mcp createCapireEmbeddings`.
+
+Use `--output ./generated-embeddings` to select the output directory.
+
+### Generate capire embeddings programmatically
+
+The API fetches CAP documentation from `https://cap.cloud.sap/docs/llms-full.txt` by default.
+
+Pass the chunking settings, custom model, and output settings to the API:
+
+```js
+import { createCapireEmbeddings } from '@cap-js/mcp-server'
+
+const result = await createCapireEmbeddings(
+  { minTokens: 10, maxHeadingDepth: 5 },
+  {
+    model: 'nomic-ai/nomic-embed-text-v1.5',
+    capireMetadata: { commitId: 'documentation-revision', version: '1.0.0' }
+  }
+)
+```
+
+To generate multiple models programmatically, pass an array to
+`embeddingConfig.model`. The API returns an array of results in the same order.
+A single model name, or an omitted model, still returns one result object.
+
+To read a local file, use `chunkingConfig.input`. To supply Markdown directly,
+use `chunkingConfig.text`. An explicit input file takes precedence over supplied text.
+
+```js
+await createCapireEmbeddings(
+  { input: './guide.md', minTokens: 10 },
+  { model: 'nomic-ai/nomic-embed-text-v1.5' }
+)
+```
+
+### Use generated embeddings in the MCP server
+
+Test your created embeddings with `cds-mcp`:
+
+```sh
+CDS_MCP_OFFLINE=true CDS_MCP_OFFLINE_DIR="/absolute/path/to/generated/output" cds-mcp search_docs "How do I define a service?"
+```
+
+To use your generated embeddings, configure your MCP client with the folder that contains them:
+
+```json
+{
+  "mcpServers": {
+    "cds-mcp": {
+      "command": "npx",
+      "args": ["-y", "@cap-js/mcp-server"],
+      "env": {
+        "CDS_MCP_OFFLINE": "true",
+        "CDS_MCP_OFFLINE_DIR": "/absolute/path/to/generated/output"
+      }
+    }
+  }
+}
+```
+
+### Configuration
+
+The CLI and JavaScript API use these settings:
+
+| CLI flag | API option | Description |
+| --- | --- | --- |
+| `--input <file>` | `chunkingConfig.input` | Local CAP documentation file with the same heading and source annotation structure. Takes precedence over `chunkingConfig.text`. If neither is supplied, fetches `llms-full.txt`. |
+| — | `chunkingConfig.text` | Markdown supplied directly to the API. |
+| `--output <directory>` | `embeddingConfig.output` | Output directory; default `./embeddings`. |
+| `--results <file>` | — | Save a JSON result array (`dim`, `count`, `outDir`, `modelFolderName`) after all models succeed. Relative paths use the current working directory; the parent directory must exist. Generation failures leave an existing results file unchanged, but can leave files for earlier models. Without this flag, results appear alongside diagnostics on stdout. |
+| `--model <name>` | `embeddingConfig.model` | Embedding model. Repeat the flag or pass an API array for multiple models. Defaults to `CDS_MCP_MODEL` or `DEFAULT_MODEL` (`BAAI/bge-small-en-v1.5`). |
+| `--min-tokens <number>` | `chunkingConfig.minTokens` | Minimum chunk size in tokens. Integer greater than or equal to `0`; default `10`. |
+| `--max-heading-depth <number>` | `chunkingConfig.maxHeadingDepth` | Maximum heading depth. Integer greater than or equal to `1`; default `5`. |
+| `--capireMetadata <json-or-file>` | `embeddingConfig.capireMetadata` | JSON string or file containing an object with optional Capire metadata, such as `version`, `commitId`, `cdsDependency: { node, java }`, and caller-defined fields. CLI `commitId` must be a single directory name. |
 
 ## Support, Feedback, Contributing
 

@@ -9,6 +9,7 @@
 - [IAXL Design](doc/design/iaxl.md)
 - [KV Zip Design](doc/design/kv-zip.md)
 - [KVShrink Design](doc/design/kvshrink.md)
+- [Recipes Design](doc/design/recipes.md)
 
 ## Host Setup
 
@@ -51,6 +52,12 @@ export IAXL_QATLIB=intree   # before sourcing setvars.sh / building
 `POLICY=0` gives every process one virtual function from each QAT device, which `IAXL_QAT_DEVICES` / `KVSHRINK_QAT_DEVICES` index. With `POLICY=1` each process only sees device `0`.
 
 With `IAXL_QATLIB=intree` the build links the system `libqat` / `libusdm` found by `pkg-config qatlib` instead of downloading and building the out-of-tree package into `_lib`. Without a system qatlib (as in the dev container), it builds qatlib `IAXL_QATLIB_VERSION` (default `26.02.0`; match the host `qatmgr`) into `_lib`, and `start.sh` mounts the host `/run/qat`.
+
+To run the in-tree driver in qatlib standalone mode instead, which qatlib recommends for containers, use the [`qat-standalone` recipe](examples/recipes/qat-standalone/README.md): each container gets its own QAT VFs instead of the host `qatmgr`, runs without `--privileged`, `--pid host` or the host `/dev`, and runs one rank. Each run of the command below starts the container of the next GPU without one (on a host without GPUs, of the next NUMA node with QAT):
+
+```bash
+IAXL_RECIPE=qat-standalone ./start.sh   # e.g. container iaxl.vllm.gpu2, vLLM port 8002; CUDA_VISIBLE_DEVICES=2 (XPU: ZE_AFFINITY_MASK) selects the GPU
+```
 
 3. Install the GDRCopy driver and configure DSA:
 
@@ -123,6 +130,8 @@ Send a Chat Completions test request:
 ```
 
 To run the model on the CPU, start the container on the vLLM CPU image as described in the [vLLM CPU inference guide](doc/usage/vllm-cpu-inference.en.md).
+
+To keep a scenario's overrides of `setvars.sh`, `start.sh`, `tools/auto_config.sh` and `examples/kvshrink-vllm-serve.sh` together, put them in a recipe directory and select it with `IAXL_RECIPE=<name> ./start.sh`; see the [recipes design](doc/design/recipes.md) and the commented [`vllm-cpu` recipe](examples/recipes/vllm-cpu/README.md), which doubles as the reference example.
 
 ## KVShrink vLLM Benchmark
 

@@ -44,11 +44,19 @@
 
 # **LLMScribe**
 
-**Turn any code repository into clean, structured, deterministic data.**
+**Turn any local code repository into clean, structured context for AI
+coding agents.**
+
+One core, four surfaces — an MCP server, a CLI, a desktop GUI and a Python API. All of
+them read your project from disk, and the same input always produces the same bytes.
 
 No AI. No embeddings. No hidden ranking.
 
 Apache-2.0, and it runs entirely on your machine — no network, no account.
+
+**Works with** Cursor, Claude Code, Claude Desktop, Codex, VS Code, Windsurf, Zed,
+Cline, Continue, JetBrains and LM Studio — any MCP client — plus `pip install` and a
+standalone Windows EXE.
 
 
 <a href="https://github.com/AMRITO-KUNDU/llmscribe">
@@ -59,7 +67,8 @@ Apache-2.0, and it runs entirely on your machine — no network, no account.
 
 ## The problem
 
-Your agent does not have an intelligence problem. It has a **retrieval** problem.
+Your agent does not have an intelligence problem. It has a **retrieval** problem — and
+no model upgrade fixes a context window filled with the wrong files.
 
 On a 1.4-million-line codebase, one benchmark agent burned 6,000 seconds and produced nothing — no analysis, no output, zero score.
 
@@ -85,7 +94,7 @@ What users keep reporting:
 | The failure | What LLMScribe does |
 | --- | --- |
 | Reads 200 files to change one line | `project_map` returns the whole tree with contents excluded, before a single file is read |
-| Re-reads the same files in a loop | Output is deterministic — same input, same bytes, every run |
+| Re-reads the same files in a loop | Same input, same bytes, every run |
 | Misses the file that actually mattered | `project_dependencies` resolves local, stdlib, external and unresolved imports, plus reverse dependencies |
 | Search returns nothing when the text exists | `search` returns path, line, matched text and match type, or a stable error code — never a silent empty |
 | Stale fixtures read as current truth | Nothing is inferred, embedded or ranked; you get the files as they are, plus a Git diff |
@@ -167,7 +176,7 @@ src/
 
 Search across file paths, file names, file contents, and individual lines.
 
-Search is intentionally deterministic: LLMScribe does not try to guess what you meant.
+Search is intentionally literal: LLMScribe does not try to guess what you meant.
 
 ```python
 search(query="authentication")
@@ -613,7 +622,7 @@ map → search → read
 
 ## CLI
 
-Every command can return machine-readable JSON with `--json`, which makes the CLI a building block for scripts, automation, and developer tools.
+Every command can return machine-readable JSON with `--json` (`-j`), which makes the CLI a building block for scripts, automation, and developer tools.
 
 ```bash
 llmscribe map
@@ -629,6 +638,33 @@ llmscribe map --json
 llmscribe search "auth" --json
 llmscribe dependencies src/auth/service.py --json
 ```
+
+**Paths are flexible.** Every command takes an optional directory, so `--path` is never required:
+
+```bash
+llmscribe .                       # map the current directory
+llmscribe ./src                   # map a specific directory
+llmscribe map ./src               # the same thing, spelled out
+llmscribe search "auth" ./src     # search inside a directory
+```
+
+**Aliases** for the verbs you already type:
+
+| Alias | Command |
+|-------|---------|
+| `ls` | `map` |
+| `tree` | `overview` |
+| `grep`, `find` | `search` |
+| `cat` | `read` |
+| `deps` | `dependencies` |
+
+`read` accepts several files and switches to a batch read automatically:
+
+```bash
+llmscribe cat src/main.py src/util.py
+```
+
+`llmscribe -V` prints the version.
 
 ---
 
@@ -760,10 +796,14 @@ All interfaces share one core engine, so behavior stays consistent everywhere.
 
 LLMScribe intentionally stays simple. The goal is not to make the repository "smarter." The goal is to make the repository **accessible to software**.
 
+One consequence is worth stating precisely: LLMScribe is **deterministic** — the same
+input produces the same bytes on every run. An agent can rely on what it learned last
+turn, and you can diff two runs of the same command and see only what actually changed.
+
 **We provide**
 
 - Repository extraction
-- Deterministic search
+- Literal search
 - Structured project data
 - File retrieval
 - Dependency information

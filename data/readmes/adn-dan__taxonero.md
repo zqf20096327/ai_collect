@@ -43,9 +43,9 @@ never modified.**
   identification) goes through the queue at full GPU speed while the geographic check (GBIF) follows on its
   results; the GPU is released as soon as the AI part is over. Presence around
   a point costs one GBIF request per 1° area for all species at once (cached 180 days), not one per candidate.
-- Dashboard styled like Immich (same colors, font, sidebar): Photos page with filters (to review,
-  auto-confirmed, confirmed by me, rejected, no detection), by what was detected (animals, plants, fungi,
-  combinable) and by group, and a keyboard-driven full-screen viewer;
+- Dashboard styled like Immich (same colors, font, sidebar): Photos page with status tabs (to review,
+  auto-confirmed, confirmed by me, rejected, no detection) and a Groups menu (animals, plants, fungi, each with
+  its groups: birds, mammals…, several at once), and a keyboard-driven full-screen viewer;
   clickable boxes that open the Wikipedia or Wikispecies article in a side panel; common names in
   15 languages; boxes drawn by hand; Species page (Grid view per group, or Tree view of every branch, kingdom > phylum > class >
   order > family > species; filters by group and IUCN Red List);
@@ -75,6 +75,13 @@ never modified.**
   the region. Keyboard: `1`-`5` candidate, `←` `→` reference photo, `⏎` choose the species.
 - **Identify** page: drop (or paste) an image to have it identified without storing it, with its range
   map and Wikipedia article.
+- **Public identification page** (optional, off by default: Settings > General, or `PUBLIC_IDENTIFY=true`; server
+  edition): the address `/identify` opens without login or password, for anyone you give it to. One image in, what
+  the AI recognises out (names, candidates, links to Wikipedia and GBIF). Nothing else is open: not your photos, your
+  species, the settings or the rest of the dashboard, and the image is not kept. Bounded against abuse: 25 MB per
+  image, 20 images per address every 10 minutes, 3 requests at once. Each image uses the AI models (GPU or CPU) of
+  your server: share the address accordingly. Behind a proxy, set `FORWARDED_ALLOW_IPS` so that the limit counts
+  each visitor and not the proxy.
 - Fast review: moves to the next photo automatically; select several photos (tick on the photo, long press
   on touch screens, Ctrl/Shift + click, mouse drag, a whole month, every photo of the filter, or the inverse of the
   selection), wherever photos appear, including species and rank pages, to confirm, reject, give them the same
@@ -89,7 +96,8 @@ never modified.**
 - Interface in 12 languages (French, English, German, Spanish, Italian, Dutch, Portuguese, Catalan,
   Polish, Swedish, Japanese, Chinese), chosen in **Settings > General**; the same language is used for
   species common names and Wikipedia articles. Breton, Basque and Occitan are available for species
-  names, with the interface in French. Tags written to Immich follow `NAMES_LANG`.
+  names, with the interface in French. Tags and descriptions written to the photos follow the interface language
+  or a fixed one, or hold scientific names only (**Settings > General**).
 - In the review sheet, a mini map shows the candidate's range and where the photo was taken; hovering
   another candidate shows its range, to judge plausibility at a glance.
 - Writes **hierarchical tags** to Immich (`Nature/Aves/Passeriformes/Paridae/Parus/Great Tit (Parus major)`)
@@ -301,13 +309,16 @@ pulled again at each deployment (`pull_policy: always`), hence the latest `lates
 on the NAS instead: copy the sources, `sudo sh deploy/truenas/build.sh /mnt/POOL/apps/taxonero/data`, then in
 the YAML `image: taxonero:<variant>` and `pull_policy: never`.
 
-Icon in the app list: a custom app gets a generic icon. As described in the
-[Jellyfin guide for TrueNAS](https://jellyfin.org/docs/general/installation/advanced/truenas) (TrueNAS 24.10 and
-later), add an `icon` line to its metadata in the TrueNAS shell (app named `taxonero`), then **Edit** > *Save*:
+App card (logo, version, links): TrueNAS gives a custom app a generic card ("App Version: custom",
+"Version: 1.0.0"). `deploy/truenas/app-info.sh` fills in the logo, the name, the links and the app version read
+from the image. Run it in the TrueNAS shell (24.10 and later) after the install and after each update, then
+**Edit** > *Save*:
 
 ```sh
-sudo sed -i -e '/^  icon:/d' -e '/^metadata:/a\  icon: https://raw.githubusercontent.com/adn-dan/taxonero/main/packaging/icons/taxonero.png' /mnt/.ix-apps/app_configs/taxonero/metadata.yaml
+curl -fsSL https://raw.githubusercontent.com/adn-dan/taxonero/main/deploy/truenas/app-info.sh | sudo sh
 ```
+
+"Version: 1.0.0" stays: it is the version of the custom app template, which TrueNAS uses for its folders.
 
 ### Desktop edition (Windows, macOS, Linux; x86 and ARM)
 
@@ -431,7 +442,7 @@ account). With Docker, an added folder must be mounted in the container, like `P
 Every option is documented in [`.env.example`](.env.example). Part of them can also be set from the
 dashboard's **Settings** page (candidate filters, domestic animals, automatic confirmation, videos,
 description, time window, frequency): those settings are stored in the database and take precedence over
-the environment. Sensitive settings (`DRY_RUN`, dashboard password, `NAMES_LANG`) stay in the environment.
+the environment. Sensitive settings (`DRY_RUN`, dashboard password) stay in the environment.
 The main ones:
 
 - `EXCLUDE_EXTINCT` (default `true`): drops the extinct species BioCLIP sometimes suggests, mostly on
@@ -480,7 +491,8 @@ The main ones:
 - `AUTO_CONFIRM_AUDIT` (default 0.05): share of detections that would have been confirmed automatically,
   kept for review at random ("Audit" filter). Without them, your reviews only cover doubtful cases and the
   calibration never sees the high-confidence zone; the summary is shown in the statistics.
-- `NAMES_LANG` (tags, description) and `NAMES_LANGS` (names shown in the dashboard).
+- `NAMES_LANG`: starting language of the tags and descriptions, then changed in **Settings > General**
+  (unset on a new install: the interface language). `NAMES_LANGS`: languages whose common names are fetched.
 - `PUID` / `PGID`: container user, owner of `./data` (TrueNAS SCALE: often 568).
 
 ## Command line

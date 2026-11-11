@@ -4,7 +4,7 @@
 
 309 projects across local LLMs, chat interfaces, agents, MCP servers, RAG, speech and image generation. A weekly job checks every project against the GitHub API, and anything archived, deleted or silent for over a year moves to [UNMAINTAINED.md](UNMAINTAINED.md).
 
-**309** projects | **308** active in the last 90 days | **10.7M** combined stars | **0** unmaintained | refreshed 2026-11-02
+**309** projects | **306** active in the last 90 days | **10.8M** combined stars | **0** unmaintained | refreshed 2026-11-09
 
 See the [live health table](LIVE.md) for stars, last push and license per project.
 
@@ -22,11 +22,11 @@ See the [live health table](LIVE.md) for stars, last push and license per projec
 - [Model Gateways and Routers](#model-gateways-and-routers) (11)
 - [Observability and Evals](#observability-and-evals) (20)
 - [RAG and Vector Databases](#rag-and-vector-databases) (24)
-- [Search and Knowledge](#search-and-knowledge) (13)
+- [Search and Knowledge](#search-and-knowledge) (14)
 - [Speech and Audio](#speech-and-audio) (15)
 - [Vision and Multimodal](#vision-and-multimodal) (5)
 - [Voice Agents](#voice-agents) (5)
-- [Rising](#rising) (25)
+- [Rising](#rising) (24)
 - [Source-Available](#source-available) (25)
 
 ## Agents and Automation
@@ -295,6 +295,7 @@ See the [live health table](LIVE.md) for stars, last push and license per projec
 - [DocsGPT](https://github.com/arc53/DocsGPT) - Self-hosted platform for building document-grounded assistants and agents with enterprise search.
 - [Firecrawl](https://github.com/firecrawl/firecrawl) - Self-hostable web data API that scrapes and crawls sites into clean markdown or JSON for LLMs.
 - [gpt-researcher](https://github.com/assafelovic/gpt-researcher) - Autonomous research agent that searches the web and writes cited reports on any topic.
+- [kensaku](https://github.com/yjid/kensaku) - Local search across documents, code and screenshots, indexed on your own machine.
 - [LLM Wiki](https://github.com/nashsu/llm_wiki) - Desktop app that turns your documents into a linked wiki maintained by an LLM.
 - [Open Notebook](https://github.com/lfnovo/open-notebook) - Self-hosted alternative to NotebookLM for organizing sources, notes and chats over your documents.
 - [OpenResearch](https://github.com/alphaXiv/OpenResearch) - Local-first workspace that turns coding agents into research agents for literature review.
@@ -348,7 +349,6 @@ New projects under 500 stars that are worth watching. They move to their categor
 - [Guaardvark](https://github.com/guaardvark/guaardvark) - Self-hosted AI studio on your own GPU for chatting with your files and running agents. (Agents and Automation)
 - [gyotaku](https://github.com/xevrion/gyotaku) - Offline Linux app that searches your screenshots by the text inside them. (Search and Knowledge)
 - [keirouter](https://github.com/mydisha/keirouter) - Self-hostable AI gateway that proxies requests to multiple model providers. (Model Gateways and Routers)
-- [kensaku](https://github.com/yjid/kensaku) - Local search across documents, code and screenshots, indexed on your own machine. (Search and Knowledge)
 - [Kindly Web Search MCP Server](https://github.com/Shelpuk-AI-Technology-Consulting/kindly-web-search-mcp-server) - MCP server for web search and robust page content retrieval in AI coding tools. (MCP Servers and Gateways)
 - [llamastash](https://github.com/llamastash/llamastash) - Terminal-native orchestrator that launches and manages local LLM engines and models with low overhead. (LLM Runtimes and Inference)
 - [llmserve](https://github.com/AlexsJones/llmserve) - Terminal UI that picks a local model and backend, then starts a server for it. (LLM Runtimes and Inference)

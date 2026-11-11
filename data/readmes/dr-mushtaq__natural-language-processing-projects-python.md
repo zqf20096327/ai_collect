@@ -386,7 +386,7 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
 
 #### YouTube Channels
 - **[Large Language Models by Serrano.Academy](https://www.youtube.com/playlist?list=PLs8w1Cdi-zva4fwKkl9EK13siFvL9Wewf)** - FREE
-- **[Understanding Large Language Model by Under The Hood](https://www.youtube.com/playlist?list=PLUfbC589u-FSwnqsvTHXVcgmLg8UnbIy3)** - FREE
+- **[Understanding Large Language Model by Under The Hood](https://www.youtube.com/playlist?list=PLUfbC589u-FSwnqsvTHXVcgmLg8UnbIy3)** - FREE-Completed 
 - **[CampusX](https://www.youtube.com/@campusx-official)** - FREE
 - **[Language AI & NLP by Jay Alammar](https://www.youtube.com/playlist?list=PLTx9yCaDlo1UlgZiSgEjq86Zvbo2yC87d)** - FREE
 - **[MyTechNotes](https://www.youtube.com/@mytechnotes86)** - FREE
@@ -474,6 +474,7 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
 - **[Zero to AI](https://github.com/PavanMudigonda/zero-to-ai)** - FREE
 - **[Finituning-Large-Language-Models](https://github.com/AngelFelipeMP/Finituning-Large-Language-Models)** - FREE
 - **[llm-zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp)** - FREE
+- **[LLM Course by Maxime Labonne](https://github.com/mlabonne/llm-course)** - FREE
   
  ### Week 1-[**📚Chapter1:Introduction**]()
 
@@ -513,4 +514,4 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
 |✅**How Attention Works in Transformer Architecture**|[1](https://youtu.be/qNVErF4WP60?si=GGfWzpNC_0mHRybc)[-2](https://youtu.be/KMHkbXzHn7s?si=nwv80fPLLL2cfzKn)|[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
 | ✅**The Mechanics of LLM Temperature and Sampling Methods**|[1](https://youtu.be/PQk5bNoOfZA?si=GkNQnQnZv7P18p_s)[-2](https://youtu.be/jnikMver_CE?si=5KBEDJU2zDJ51E2u) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
  |**🌐1-GPT (Decoder-only models)**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
-  ✅**Top K Top P & Temperature Explained LLM Sampling**|[1](https://drive.google.com/file/d/1tsRhFM7nQja1DEsB6Ssjjl8QUCFoukUv/view?usp=sharin
+  ✅**Top K Top P & Temperature Explained LLM 

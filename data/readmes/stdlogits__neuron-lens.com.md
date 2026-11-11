@@ -25,16 +25,20 @@ The site is a static single-page app: Vite, Svelte 5 and TypeScript, no server c
 
 ## The data
 
-The explorer reads a prebuilt catalog of static JSON (and, for Gemma 4, packs of images and sounds)
-from `/data`, which the build copies from `public/data`. It is several gigabytes and not in the
-repository: `scripts/neurons/` builds it from the neuron-lens catalogs (see `AGENTS.md`, "The
-catalog"). Without it the dev server shows the explorer's shell and an error where the data goes; the
-e2e tests bring their own mock catalog (`e2e/fixtures`).
+The explorer reads a prebuilt catalog of static JSON (and, for Gemma 4, packs of images and sounds):
+on the site from `data.neuron-lens.com` (Cloudflare R2), in development from `catalog/`, which the dev
+server serves at `/data`. It is several gigabytes and not in the repository: `scripts/neurons/` builds
+it from the neuron-lens catalogs, and `scripts/catalog/upload.sh` puts it on R2 (see `AGENTS.md`, "The
+catalog"). Without it the dev server shows the explorer's shell and an error where the data goes, unless
+it is started with `VITE_CATALOG=live` to read the live catalog; the e2e tests bring their own mock catalog
+(`e2e/fixtures`).
 
 ## Deploy
 
-`scripts/deploy.sh` builds from a clean, pushed `main` with the catalog in place, uploads `dist` to
-Cloudflare Pages with Wrangler, and checks the live site with `scripts/verify-deployment.mjs`. It
+`scripts/deploy.sh` builds from a clean, pushed `main` whose catalog builds (named in
+`src/lib/catalog.json`) are already on R2, uploads `dist` to Cloudflare Pages with Wrangler, and checks
+the live site with `scripts/verify-deployment.mjs`. A new catalog goes up first, with
+`scripts/catalog/upload.sh <model>`. It
 needs `CLOUDFLARE_ACCOUNT_ID` (in the environment or `~/.config/cloudflare/neuron-lens.env`) and signs
 in with `CLOUDFLARE_API_TOKEN` if set, else with `wrangler login`; `--dry-run` stops before the upload.
 

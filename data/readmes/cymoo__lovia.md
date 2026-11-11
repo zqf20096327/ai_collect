@@ -429,6 +429,11 @@ lookups work by default.
 API keys and proxy settings are not inherited; pass required variables via
 `Workspace.local(..., env={...})`.
 
+The workspace can also be a directory in a running container or on an SSH
+host — `Workspace.remote(RemoteHost.ssh("box"), "/srv/project")` — with the
+same tools and the same policy, enforced over there. The host needs
+`python3` ≥ 3.10 and nothing installed.
+
 → [Workspace](https://cymoo.github.io/lovia/workspace/)
 
 ### Plugins
@@ -508,7 +513,9 @@ serve(create_app(agent, db_path="lovia.db"), host="127.0.0.1", port=8000)
   mode, run limits, memory and the system prompt in Settings; a change
   applies from the next run. Each chat works in a folder of its own — the
   sidebar groups chats by folder, and each picks its permission mode
-  (`create_app(workspaces=WorkspaceSwitch())` in your own app).
+  (`create_app(workspaces=WorkspaceSwitch())` in your own app). The folder
+  can be on an SSH host or in a running container: pick it in the add
+  dialog, and the chat's tools run there.
 - **Rich tool results** — a tool returns `ui_result(kind, props)` to draw UI;
   tables, ECharts charts and sandboxed HTML pages come built in
   (`show_table`, `show_chart`, `show_html`).

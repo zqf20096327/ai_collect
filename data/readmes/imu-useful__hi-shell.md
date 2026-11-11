@@ -21,7 +21,7 @@ Built on [Quickshell](https://quickshell.org). Colors from your wallpaper, anima
 
 <br>
 
-<img src="docs/screenshots/desktop.webp" alt="hi-shell desktop: bar, widgets and the wallpaper in a Material shape" width="100%">
+<img src="docs/keynote.webp" alt="hi-shell keynote: the show that opens the first run (rendered with tools/render_keynote.sh)" width="100%">
 
 </div>
 
@@ -291,7 +291,7 @@ qs -c hi-shell ipc call overview toggle
 qs -c hi-shell ipc call switcher next                # prev, commit, cancel (Alt+Tab)
 qs -c hi-shell ipc call bar toggle                   # show, hide
 qs -c hi-shell ipc call display set mirror           # internal, left, right, external; toggle, next (the display key)
-qs -c hi-shell ipc call settings open hyprland        # toggle, close; pages: quick general bar desktop interface services hyprland about
+qs -c hi-shell ipc call settings open hyprland        # toggle, close; pages: home style motion wallpaper bar dock desktop notifications power services hyprland about; a tab: bar/island
 qs -c hi-shell ipc call focus settings               # Focus Mode settings window; openTab timer|wallpaper|lists|profiles|todo|exit, profile <id>, current
 qs -c hi-shell ipc call focus start                  # Focus Mode session with the active profile; stop (Manual mode only), abort (emergency), status, addTask <text>
 # Focus Mode blocks sites through /etc/hosts (services/focus_hosts.py via pkexec, backup in /etc/hosts.hi-shell.bak);
@@ -315,7 +315,11 @@ the defaults on first start; edits apply live). The Hyprland page applies change
 A new resolution, orientation or scale for a monitor is tried first: a "Keep these display settings?" card counts down
 15 seconds and puts the old settings back (Revert, Esc or no answer); only Keep saves them.
 A value that breaks its rule in `common/ConfigSchema.js` (a typo in `bar.position`, a `lock.brightness` of 7) is reported in the log (`qs -c hi-shell log`) and replaced by its default; `python3 tools/audit_config.py` lists the options that have no control in the settings app (`docs/CONFIG_AUDIT.md`).
-The full list of options (type, default, allowed values, where Settings changes it) is in [docs/CONFIG.md](docs/CONFIG.md), made from the source; `hi config search <word>` finds an option by name or description. Settings has a search box (also `hi settings search <word>`) and hides the rarely needed rows until you turn on Settings › Quick › Show advanced settings (`settingsAdvanced`).
+The full list of options (type, default, allowed values, where Settings changes it) is in [docs/CONFIG.md](docs/CONFIG.md), made from the source; `hi config search <word>` finds an option by name or description. Settings has a search box (also `hi settings search <word>`) and hides the rarely needed rows until you turn on Settings › Overview › Advanced settings (`settingsAdvanced`).
+Settings opens on an Overview (wallpaper and colors, quick switches, every page); the other pages are grouped into Personalization,
+Desktop, System & apps, Habits & automation and Shell. Ctrl+Tab / Ctrl+Shift+Tab step through the pages, Ctrl+PageUp /
+Ctrl+PageDown through the tabs of a page (Bar: Layout, Widgets, Your own widgets, Dynamic Island), Ctrl+F jumps to the search;
+`hi settings bar/island` opens one tab.
 Sections:
 
 - `language`: `auto` (from `$LANG`), `en` or `ru`
@@ -327,8 +331,8 @@ Sections:
   `weather`, `tray`, `systemIcons`, `notifications`, `utilButtons`, `networkSpeed`, `battery`, `updates`, `keyboardLayout`, `power`,
   `visualizer` (needs `cava`), `divider`. Edit the widgets right on the bar: Settings › Bar › Edit on the bar, or `hi bar edit` (drag a widget to move it, off the bar to remove it; a panel adds the rest; `hi bar done` or Done leaves it). Settings › Bar has a picker for the bar to edit (main, a screen, an extra bar) and for widget copies. `bar.monitors` (screen name from `hyprctl monitors` → overrides of `enabled`, `position`, `style`, `height`, `margin`, `left`, `center`, `right` for the main bar on that screen; `hi bar monitor <screen> <key> <json>`), `bar.extra` (more bars, each `{ id, monitors, position, style, height, margin, left, center, right }`; `hi bar add <id> [position] [widgets…]`, `hi bar rm <id>`; put `clock`, the island, in one bar only), `bar.instances` (copies of a widget with options of their own: write `resources#disks` in a list and set `{ "resources#disks": { "shown": ["disk"] } }`; works for `resources`, `utilButtons`, `workspaces`, `media` and the new `zoneClock`, e.g. `{ "zoneClock#tokyo": { "zone": "Asia/Tokyo", "label": "TYO" } }`; `hi bar instance <type#name> <json>`). Popups, the OSD and the sidebars still follow the main bar's position. Your own widgets: a command with no QML (`hi script <name> '<command>'`, the `script` widget) or a QML file in `~/.config/hi-shell/widgets/` (`hi widgets new <name>`), see [docs/WIDGETS.md](docs/WIDGETS.md). Per-widget options: `bar.workspaces`, `bar.clock`, `bar.media`,
   `bar.resources`, `bar.utilButtons`, `bar.updates`; `bar.media.spinArt` spins the cover art like a record while playing (on by default)
-- `launcher`: `prefixes` (the prefix characters that are on, in the order of the chips: `=` `>` `<` `:` `;` `/` `~`) and `sources` (what a plain search looks through, in the order of the results: `math`, `focus`, `windows`, `settings`, `apps`, `emoji`); Settings › Interface
-- `sidebar`: `sections` (what the right sidebar shows and in what order: `quickToggles`, `quickSliders`, `tabs`), `tabs` (`notifications`, `calendar`, `todo`, `timers`, in order; Settings › Interface), `quickToggles.style` (android, classic), `quickToggles.perPage` (tiles per page, 6 by default, 0 = one page), `quickToggles.slide` (animate page changes) and `quickToggles.shown` (order; also editable with the ✎ button
+- `launcher`: `prefixes` (the prefix characters that are on, in the order of the chips: `=` `>` `<` `:` `;` `/` `~`) and `sources` (what a plain search looks through, in the order of the results: `math`, `focus`, `windows`, `settings`, `apps`, `emoji`); Settings › Sidebars & launcher
+- `sidebar`: `sections` (what the right sidebar shows and in what order: `quickToggles`, `quickSliders`, `tabs`), `tabs` (`notifications`, `calendar`, `todo`, `timers`, in order; Settings › Sidebars & launcher), `quickToggles.style` (android, classic), `quickToggles.perPage` (tiles per page, 6 by default, 0 = one page), `quickToggles.slide` (animate page changes) and `quickToggles.shown` (order; also editable with the ✎ button
   in the sidebar), night light temperature
 - `desktop`: `clockSeconds` (seconds in the big digital clock), `focusMode` (with windows open: sharp wallpaper, widgets and frame hidden; on by default), `coverMode` (the playing track's cover instead of the wallpaper, colors included; also a quick toggle and
   `qs -c hi-shell ipc call coverMode toggle`), draw the `wallpaper`, show `widgets`, `monitor` for them (empty = first screen), `layout` (written by edit
@@ -349,7 +353,7 @@ Sections:
 - `dock`: enabled (off by default), apps button (a full-screen list of every app), position (bottom, top, left, right), auto-hide, show on an empty workspace, magnify (and its amount), icon size, gap, corner radius, edge margin, window dots, running apps, pinned app ids
 - `capture`: OCR languages (`auto` = every installed tesseract language, or e.g. `eng+rus`); `recordSound` for screen recordings: `off`, `system` (what plays through the speakers) or `mic` (also the buttons under the mode switcher in Record mode)
 - `appearance.screenCorners`: rounded screen corner radius (0 = off)
-- `appearance.contextMenu`: `material` (the shell's own Material You menus for the tray, default), `caelestia` (the same menus in the look of [caelestia's shell](https://github.com/caelestia-dots/shell): compact pill rows, a Back pill under a submenu) or `standard` (the system's menus); also in Settings › Interface
+- `appearance.contextMenu`: `material` (the shell's own Material You menus for the tray, default), `caelestia` (the same menus in the look of [caelestia's shell](https://github.com/caelestia-dots/shell): compact pill rows, a Back pill under a submenu) or `standard` (the system's menus); also in Settings › Style
 - `apps.terminal`: terminal for terminal apps and the system upgrade
 
 ## Tests
@@ -415,7 +419,7 @@ $lock_cmd = qs -c hi-shell ipc call lock lock || pidof hyprlock || hyprlock
 
 ## Power saving
 
-Settings › Quick › **Power saving mode** turns off what costs the most CPU and GPU: animations, Hyprland's blur, panel
+Settings › Overview › **Power saving** turns off what costs the most CPU and GPU: animations, Hyprland's blur, panel
 transparency, the audio visualizer, the dancing wallpaper frame and cover mode. Weather is checked every hour instead of
 every few minutes. The values it changes are kept in `~/.config/hi-shell/config.json` (`powerSaving`), so turning the mode
 off restores them, also after a restart. It's switched on by hand only.

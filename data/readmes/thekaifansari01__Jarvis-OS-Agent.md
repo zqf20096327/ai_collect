@@ -1194,7 +1194,25 @@ Jarvis speaks or asks for consent
 - **Node.js 18+** (Node.js 24+ recommended for latest MCP servers)
 - **npm** (bundled with Node.js)
 
-### One-Block Setup
+### ⚡ 1-Click Auto-Installer (Recommended)
+
+Skip the manual setup. Open **PowerShell** and paste this single command:
+
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; & ([scriptblock]::Create((Invoke-RestMethod -Uri 'https://github.com/thekaifansari01/Jarvis-OS-Agent/releases/latest/download/install.ps1')))
+```
+
+**Sit back and relax.** This bulletproof script will automatically:
+1. Verify Python 3.10+ and Node.js 18+ are installed.
+2. Clone the repository and set up the Python virtual environment (`venv`).
+3. Install all Python dependencies **including the CPU-optimized version of PyTorch** (saving you from a 2GB CUDA download crash on low-RAM devices).
+4. Run `npm install` for the WhatsApp Baileys Bridge.
+5. Auto-generate your `.env` file from `.env.example`.
+6. Register the `jarvis` command globally in your system.
+
+### 🛠️ Manual Installation (Advanced)
+
+If you prefer to set up everything manually, run these commands block-by-block in PowerShell:
 
 ```powershell
 git clone https://github.com/thekaifansari01/Jarvis-OS-Agent.git
@@ -1461,30 +1479,4 @@ Only if the specific server needs one. GitHub requires a Personal Access Token, 
 No. MCP is strictly **opt-in** to preserve stability. If `Data/mcp_servers.json` is missing or contains an empty `mcpServers` object, Jarvis boots identically to the pre-MCP version with zero overhead, zero startup delay, and no MCP log lines. You enable it explicitly by adding your first server entry.
 
 **How do I access the web UI?**
-Open a single URL: `http://127.0.0.1:8000` — the **Unified Portal**. It serves both the **Knowledge Indexer** (folder management, filters, RAG stats) and the **Mobile Bridge** (Android QR pairing, device control) as tabs in one sidebar-navigated UI. The individual backends are still bound to `:8080` (RAG) and `:8090` (Mobile), but you never need to remember those ports.
-
-Full FAQ: [docs · FAQ →](https://jarvis-os-agent.vercel.app/faq)
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome — bug fixes, new providers, documentation, and tool integrations.
-
-1. **Fork** the repository
-2. **Create a branch** (`git checkout -b feature/MyFeature`)
-3. **Commit** (`git commit -m 'Add MyFeature'`)
-4. **Push** (`git push origin feature/MyFeature`)
-5. **Open a Pull Request**
-
-> ⚖️ **Contributor License Agreement (CLA):** By submitting a Pull Request, you agree to the terms in [CONTRIBUTING.md](CONTRIBUTING.md). This grants the maintainer rights to use your contribution under both GPLv3 and commercial or proprietary licenses. Please read it before contributing.
-
-Please also review our [Code of Conduct](CODE_OF_CONDUCT.md).
-
-**Good first issues:** Look for the [`good first issue`](https://github.com/thekaifansari01/Jarvis-OS-Agent/labels/good%20first%20issue) label.
-
----
-
-## 📄 License
-
-This project is distributed under the **GNU General Public License v3.0**. See [LICENSE](LICENSE) for the full
+Open a single URL: `http://127.0.0.1:8000` — the **Unified Portal**. It serves both the **Knowledge Indexer** (folder management, filters, RAG stats) and the **Mobile Bridge** (Android QR pairing, device control) as tabs in one sidebar-navigated UI. The individual backends are still bound to `:8080` (RAG) and `:8090` (Mobile), but you never need to remember

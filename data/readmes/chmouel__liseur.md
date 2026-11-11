@@ -87,7 +87,7 @@ browse it by language, shelf or section, and download the books you want
 before there is anything to connect to. No account is needed for any of them.
 
 Reading position syncs across devices through [calibre-web](https://github.com/janeczku/calibre-web), [Komga](https://komga.org/),
-[BookOrbit](https://bookorbit.app) or [liseur-sync](https://github.com/chmouel/liseur-sync),
+[BookOrbit](https://bookorbit.app) or [liseur-sync](https://chmouel.github.io/liseur-sync/),
 down to the exact sentence on the last three. BookOrbit positions travel as EPUB CFIs.
 A Custom connection can be an [OPDS](https://en.wikipedia.org/wiki/Open_Publication_Distribution_System) address, a kosync address, or both, so a plain catalog and a sync server that know nothing about each other still add up to a library that follows you. What each server can and cannot do is in [`docs/SERVER_CAPABILITIES.md`](docs/SERVER_CAPABILITIES.md).
 
@@ -96,9 +96,12 @@ With liseur-sync you get extras, like a per-device settings backup, and better i
 Two home-screen widgets show the current book cover or a paged shelf of your
 library covers. Tap a cover to read. Neither needs configuration.
 
-Liseur has no ads or account, and its own code has no trackers or analytics.
-It connects to services you choose for book sync, speech, translation and the
-reading companion. Browsing the free catalogs (Project Gutenberg,
+Liseur has no ads or account. The F-Droid and GitHub builds have no trackers
+or analytics. The Google Play build reports which features are used and why
+the app crashed, under a random installation identifier and with no book
+content or account details. You can turn this off in Settings > Advanced.
+Liseur connects to services you choose for book sync, speech, translation and
+the reading companion. Browsing the free catalogs (Project Gutenberg,
 textos.info, ManyBooks, Gallica) and using an online dictionary
 also makes network requests. See the
 [privacy policy](https://chmouel.github.io/liseur/PRIVACY) for details.
@@ -120,8 +123,10 @@ also makes network requests. See the
 
 ## Related Projects
 
-- [liseur-sync](https://github.com/chmouel/liseur-sync): Lightweight self-hosted library and sync server. Watched folders, browse, download, positions and reading stats. This will give you the best "kindle/just work" experience compared to the other sync servers.
+- [liseur-sync](https://chmouel.github.io/liseur-sync/): Lightweight self-hosted library and sync server. Watched folders, browse, download, positions and reading stats. This will give you the best "kindle/just work" experience compared to the other sync servers.
 - ~[liseur-desktop](https://github.com/chmouel/liseur-desktop): Desktop version of Liseur (abandoned).~
+
+
 
 ## Development
 
@@ -163,4 +168,7 @@ Another inspiration was a painting by [Pierre-Auguste Renoir](https://en.wikiped
 
 ## Licence
 
-[MIT](LICENSE). Bundled fonts are under the SIL Open Font License.
+[MIT](LICENSE). Bundled fonts are under the SIL Open Font License. The
+Shelves wallpapers are William Morris designs from public-domain scans
+in The Metropolitan Museum of Art's
+[Open Access](https://www.metmuseum.org/hubs/open-access) collection.

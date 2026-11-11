@@ -31,6 +31,7 @@ For AI and ML news, [read MyFeed's public topic feed](https://myfeed.space/ai?ut
 
 - [Quick start](#quick-start)
   - [Try a prompt regression offline](#try-a-prompt-regression-offline)
+  - [Test the first click in a browser](#test-the-first-click-in-a-browser)
 - [How to use it](#how-to-use-it)
 - [What to expect](#what-to-expect)
 - [FAQ](#faq)
@@ -61,6 +62,19 @@ On Linux, replace `| LANG=en_US.UTF-8 pbcopy` with `| xclip -selection clipboard
 [Watch the 54-second Hired in 60 drill](https://youtu.be/frJjFcm0njk) for a related Python interview example that shows how a failing test exposes a bad edit.
 
 For interview prep, the [Interview Quick Review Pack](https://fainir.gumroad.com/l/rbzbacf?utm_source=github&utm_medium=readme&utm_campaign=coding-agent-readme-review-pack) includes a free worked Git question and a sample PDF. The full pack costs $12.
+
+### Test the first click in a browser
+
+[Walk through the OpenWorld startup repair](examples/openworld-first-play.md). Fail a single Three.js request, recover with Retry, and check that the game reaches its controls. Use the same sequence to test an agent’s claim that a UI fix works.
+
+For a file upload, use a synthetic export in a signed-out browser. Save these two lines as `pocket-test.csv` and open [the KeepFinding guest importer](https://keepfind.ing/pocket?utm_source=github&utm_medium=readme&utm_campaign=mcasp-pocket-preview).
+
+```csv
+title,url,time_added,tags,status
+Sample bookmark,https://example.com/,1761955200,qa,unread
+```
+
+Select **Import your Pocket export** and choose the file. The preview should say **1 link · read as Pocket export**. For this test, stop at the preview.
 
 ## How to use it
 
@@ -2724,14 +2738,4 @@ Once the core system is working, consider adding advanced capability-building la
 - domain-specific dashboards for engineering, support, finance, growth, and science
 - structured entity graphs linking people, projects, documents, tasks, KPIs, incidents, and experiments
 - policy simulation tools for testing what the system would have done under different approval or trust settings
-- tool invention layers that wrap repeated shell or browser sequences into reusable tools or macros
-- trajectory replay and critique so the system can learn from entire execution paths, not just final outcomes
-- memory consolidation jobs that periodically compress episodic logs into higher-quality semantic and procedural memory
-- automatic benchmark rotation so the system does not overfit to a stale eval set
-- proactive opportunity discovery that generates goals from neglected docs, stale repos, unanswered tickets, KPI shifts, and experiment gaps
-
-Treat these as optional expansions after the core system is stable. Do not add them prematurely if they would reduce clarity, observability, or reliability.
-
-RESEARCH-INFORMED SYSTEMS TO STUDY AND STEAL FROM
-
-The following references were selected from primary sources current as of March 28, 2026. They are not here because they are popular tools. They are here because th
+- tool invention layers that wrap repeated shell or brows

@@ -14,7 +14,7 @@ magpie plugin add <本目录>                                    # 本地目录
 magpie plugin add github:magpie-community/plugins             # 从仓库装（packages/compress-core）
 ```
 
-装完 `magpie plugin list` 里应该能看到这个插件声明了 `middleware`、`hooks`、`page` 和两个 `panels`。
+装完 `magpie plugin list` 里应该能看到这个插件声明了 `middleware`、`hooks`、`page` 和一个 `usage` 面板。
 
 ## 策略
 
@@ -61,10 +61,27 @@ ccr 是「把大段文本换成一个标签」的策略。它和其他压缩不�
    `head` / `tail`（前后 N 行）、`lines`（行区间）、`grep`（正则筛选）、`stats`（元信息）
    六种取法，模型可以只取它要的那一段。
 
-**为什么要单独「装 retrieve」**：ccr 动手前先检查调用方 agent 的工具清单里有没有
-`omniroute_ccr_retrieve`。没有就不压，原样放行（遥测里会看到 `no_retrieve_tool`）——
+**为什么要单独「装 retrieve」**：ccr 动手前先检查调用方声明的取回能力：工具清单里直接
+声明 `omniroute_ccr_retrieve`、有 code tool 且 agent 在白名单、或 system/developer 的延迟
+工具清单里逐行列出。三条都不成立就不压，原样放行（遥测里会看到 `no_retrieve_tool`）——
 因为压了模型却没有取回手段，等于把内容真丢了。门控宁可不干活也不丢东西，所以
-**不装 retrieve 工具时 ccr 永远是 0 命中，这是设计行为不是故障**。
+**`no_retrieve_tool` 仅表示门控未识别到取回声明**；工具未配置和客户端契约形态变化都可能触发，需要分别核验。
+
+三条路径分别是 `direct`（`tools[]` 里声明）、`indirect`（有 code tool 且 agent 在白名单：
+omp / pi / opencode——这是**按声明推断的启发式，不是能取回的证明**）、`deferred`
+（延迟工具清单里逐行列出；判定也支持 system/developer 消息 content 块数组里的显式
+`text` / `input_text` 块）。原生 Claude CLI 回环请求已验证消息文本块容器：旧门控为 `none`，修复后为 `deferred`。
+
+原生 Codex 搜索后加载的定义位于根 `input[]` 中 `type:"tool_search_output"` 项的 `tools[]`，
+其中 `type:"namespace"` 下的函数也参与判定。未加载 CCR 定义的首轮保持 `none`；加载后为 `direct`。
+门控不扫描用户正文或普通工具输出。原生工具调用已逐字取回 6209 字符原文，回归覆盖加载前后状态；
+结构依据官方 [Tool search](https://developers.openai.com/api/docs/guides/tools-tool-search)。
+历史线性化 capture 仍不足以恢复旧请求的容器结构。注意
+**有 shell 不等于能取回**：codex 常带 `exec_command`，但 shell 本身不构成 retrieve 通道，
+2026-11-12 起 codex 不在间接白名单里——它要么显式声明 retrieve 工具，要么命中延迟清单。
+若当前宿主上 `/mcp/run/ccr-retrieve` 返回 404（网关没把 server 派给该 agent），推荐在
+Magpie Library 里把 ccr-retrieve 设成 direct（stdio 命令）：同步会按它重写 agent 配置，
+比手改 `config.toml` 耐久。客户端是否已修要单独验证，不能从代码侧修好推断。
 
 安装（一次性，二选一）：
 
@@ -81,6 +98,12 @@ store 是本地文件，默认 24 小时过期、
 容量有上限（单块 2MB / 全局 64MB），超了按最久未用淘汰；同一段内容被取回得越频繁，
 ccr 越倾向不再压它（防乒乓）。模型读到的标签行前面会保留原文开头 200 个字符，
 方便它判断要不要取回。
+
+**严格超过** 512KiB 持久上限的块不落盘（正好 512KiB 仍可落盘），Bun 宿主跳过压缩、
+原文原样发出。宿主先 `await` store 就绪才开始压，不是没就绪就跳过；本次请求产生 marker
+时先把原文落盘成功再发布 marker，落盘失败则保持原文。落盘不等于永久可取回：TTL 到期
+与容量淘汰仍然适用。压缩之后管线只校验 **本次真正被替换的段**，映射对不上就回滚到
+ccr 进入前的快照（不是整条管线进入前的 body）。
 
 技术细节（store 格式、ramp、门控规则、与上游 OmniRoute 的差异）见
 `docs/ccr-retrieval-chain.md`。
@@ -124,7 +147,7 @@ lite 默认**全量改写、严格前缀稳定**：每条消息从第一轮起�
 
 侧栏 Plugins 组 → 压缩：一条压缩尺、档位、每个策略一行、最近八次请求。
 
-界面按浏览器语言自动选择中文或英文；标题旁的 `EN` / `中文` 按钮可随时切换，并记住选择。策略说明、参数标签、实验室和差异弹窗都跟随语言。文档同样成对提供，每篇顶部有中英文互链。
+界面默认中文；标题旁的 `EN` / `中文` 按钮可随时切换，浏览器存储可用时会记住选择。策略说明、参数标签、实验室和差异弹窗都跟随语言。文档同样成对提供，每篇顶部有中英文互链。
 
 ## 面板 · 设置
 
@@ -146,7 +169,7 @@ lite 默认**全量改写、严格前缀稳定**：每条消息从第一轮起�
 
 钩子把累计统计写进插件配置目录的 `stats.json`，和 `requests.jsonl`、`captures/` 放在一起，**不碰 magpie 自己的 `plugins.json`**。那个文件 magpie 盯着 mtime，一改就重启钩子宿主——等于每压一次请求重启一次，代价远超收益。
 
-magpie 给页面和面板的沙箱是 `connect-src 'none'`，也没有文件系统，`magpie.options` 是它唯一能读的东西。所以页面读不到 `stats.json`：压缩尺旁边会写明数字在哪个文件里，页面上不再显示实时数字。
+magpie 给页面和面板的沙箱是 `connect-src 'none'`，也没有文件系统，页面不能直接读取 `stats.json`。钩子把统计发布成同目录下的 `compress-stats.js`，页面定期重新载入它来更新数字，不通过网络请求读取数据文件。
 
 写文件时很保守：
 

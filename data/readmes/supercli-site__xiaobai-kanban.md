@@ -340,8 +340,8 @@ DSH 的口号是 *Everything is a Plugin*，所以**先装「能装插件的插�
 | 你遇到 | 工具 | 解决什么 | 怎么装 |
 |---|---|---|---|
 | Agent 改完代码，你看不出对不对，只能截图问它 | [**Agent Eyes**](https://github.com/webkubor/vite-plugin-agent-eyes) | 自愈遥测 + 截图 + DOM 快照，不靠猜代码定位问题 | `npm i -D vite-plugin-agent-eyes` |
-| 配色对比度总被说看不清 | [**contrast-guard**](https://github.com/webkubor/frontend-contrast-guard) | 量化对比度，把「看不清」变成可验证的数字 | `npm i -g contrast-guard` |
-| 配色改了，但界面结构也乱了 | [**frontend-contrast-guard**](https://github.com/webkubor/frontend-contrast-guard) | CSS 采样 + 评审证据留档 | 见仓库 README |
+| 配色对比度总被说看不清 | [**ui-craft**](https://github.com/webkubor/ui-craft) | 量化对比度，把「看不清」变成可验证的数字 | `npm i -g ui-craft` |
+| 配色改了，但界面结构也乱了 | [**ui-craft**](https://github.com/webkubor/ui-craft) | CSS 采样 + 评审证据留档 | 见仓库 README |
 | 发了新版，用户还在用旧页面 | [**refresh-guard**](https://github.com/webkubor/vite-plugin-refresh-guard) | 版本更新检测：静默 / 提示 / 弹窗阻断，三档 | `npm i -D vite-plugin-refresh-guard` |
 | 想让 Agent 打字机式地流式回答 | [**ai-sse-kit**](https://github.com/webkubor/ai-sse-kit) | SSE 分帧 / 协议适配 / 取消生命周期，框架无关 | `npm i ai-sse-kit` |
 | 想在 Mac 上用图形界面管 Git | [**Meridian**](https://github.com/webkubor/meridian) | Tauri + Vue 的 Git 客户端，MIT 开源无遥测 | 见仓库 README |
@@ -514,8 +514,8 @@ glab version && gh --version
 | 「我想写代码，但不知道从哪开始」 | 「用 Superpowers 帮我搭项目骨架」 | [Superpowers](https://github.com/obra/superpowers)（258K⭐ 研发技能框架） |
 | 「前端报错了，我看不懂」 | 「装 agent-eyes，然后读日志告诉我哪坏了」 | [vite-plugin-agent-eyes](https://github.com/webkubor/vite-plugin-agent-eyes) |
 | 「Token 存哪才安全」 | 「装 kyvault，帮我把 Token 加密存好」 | [kyvault](https://github.com/webkubor/kyvault) |
-| 「这个配色是不是看不清」 | 「用 contrast-guard 检查对比度」 | [contrast-guard](https://github.com/webkubor/frontend-contrast-guard) |
-| 「我的页面为什么这么丑」 | 「用 contrast-guard measure 量一下，跟 linear.app 比」 | [contrast-guard](https://github.com/webkubor/frontend-contrast-guard) `measure` |
+| 「这个配色是不是看不清」 | 「用 ui-craft 检查对比度」 | [ui-craft](https://github.com/webkubor/ui-craft) |
+| 「我的页面为什么这么丑」 | 「用 ui-craft measure 量一下，跟 linear.app 比」 | [ui-craft](https://github.com/webkubor/ui-craft) `measure` |
 | 「这个开源项目靠谱吗」 | 「用 scorecard 给它打个分」 | [scorecard.supercli.site](https://scorecard.supercli.site) |
 | 「我这个月 AI 花了多少钱」 | 「装 usage-statusline」 | [usage-statusline](https://github.com/webkubor/claude-usage-statusline) |
 
@@ -607,7 +607,7 @@ Agent 会说：「Token 有问题」
 | [typora-Bloom-theme](https://github.com/webkubor/typora-Bloom-theme) | Typora 写作主题（95⭐） |
 | [kyvault](https://github.com/webkubor/kyvault) | Agent 密钥安全 |
 | [vite-plugin-agent-eyes](https://github.com/webkubor/vite-plugin-agent-eyes) | Agent 前端监控 |
-| [contrast-guard](https://github.com/webkubor/frontend-contrast-guard) | 配色对比度 + 视觉质量护栏 |
+| [ui-craft](https://github.com/webkubor/ui-craft) | 配色对比度 + 视觉质量护栏 |
 | [voxflow](https://github.com/webkubor/voxflow) | AI 声音到 AI 音乐 |
 | [scorecard](https://github.com/supercli-site/scorecard) | 开源项目九维度质检 |
 

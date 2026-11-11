@@ -105,8 +105,15 @@ make build          # produces ./phi
 make install        # build and install into $GOBIN
 ```
 
-On first start, phi automatically creates `~/.phi/{bin,skills,hooks,session}`. Search
-tools (`fd`, `rg`) download into `~/.phi/bin` in the background when missing.
+On first start, phi automatically creates these directories under `~/.phi/`:
+
+- `bin/` — downloaded search tools (`fd`, `rg`)
+- `skills/` — global `SKILL.md` files
+- `extensions/` — installed extensions (see [doc/extensions.md](doc/extensions.md))
+- `session/` — persisted sessions, one folder per project directory
+- `jobs/` — sub-agent transcripts, one folder per job
+
+Search tools (`fd`, `rg`) download into `~/.phi/bin` in the background when missing.
 
 The TUI gives the model four core tools — `read`, `write`, `edit`, and
 `bash` — plus `grep`, `find`, and `ls`. The model uses these to
@@ -145,10 +152,21 @@ figures.
 | Time to first frame | **~31 ms** (26–49 ms) |
 | Cold `go build` (empty `GOCACHE`) | **~5.5 s** |
 | Warm rebuild | **~0.7 s** |
-| Go source (excl. tests) | **~22k LOC** / 107 files |
-| Go packages | **32** |
-| Direct module deps | **6** (15 modules total) |
+| Go source (excl. tests) | **~54k lines** (~49k non-blank) / 345 files |
+| Go packages | **84** |
+| Direct module deps | **8** |
 | Linked runtimes | system libs only (no Node / Electron / Python) |
+
+Timing, memory, and size rows were measured on the macOS arm64 setup above
+and have not been re-run since they were first published. The source, package, and
+dependency rows were re-measured in November 2026 (2026-11-11) against the main branch:
+
+- Source: non-test `*.go` files tracked by git in the root module (excluding
+  `ext/`), counted with `wc -l` (lines) and `grep -cv '^\s*$'` (non-blank lines),
+  because `cloc` and `tokei` were not available.
+- Packages: directories containing `.go` files in the root module (excluding
+  `ext/`, a separate module), equivalent to `go list ./...`.
+- Direct deps: non-`// indirect` entries in the `require` blocks of `go.mod`.
 
 ## Configuration
 
@@ -256,7 +274,7 @@ The editor supports:
 
 - `@` — fuzzy file mention picker (type `@` and start typing a path)
 - `/` — slash command picker (`/sessions`, `/branch`, `/skill`, `/new`, `/fork`, `/diff`, `/code`)
-- `?` — shortcut help picker (lists `/`, `!`, `@`, and key bindings; `Esc` closes)
+- `?` — shortcut help picker (lists `/`, `!`, `!!`, `@`, and key bindings; `Esc` closes)
 - `!command` — run a shell command locally and stream its output into the
   transcript (see [Commands](#commands))
 - `Ctrl+K` — command palette: settings → model / theme / permissions / agents (incl. per-role models), hooks
@@ -271,6 +289,8 @@ The editor supports:
 | `Ctrl+A`       | Jump to the start of the line   |
 | `Ctrl+E`       | Jump to the end of the line     |
 | `Ctrl+U`       | Clear the composer input, images, and skills |
+| `Ctrl+V`       | Paste text, or attach an image from the clipboard |
+| `Shift+Enter`  | Insert a newline in the composer |
 | `Ctrl+Shift+C` | Copy the selected transcript text |
 
 Themes: `Dark` (default), `Darcula`, `Pink`, and `Terminal`, switchable from
@@ -343,6 +363,7 @@ unfinished.
 | `phi update --check` | Query the latest release without installing |
 | `phi sessions`     | List persisted sessions for this directory    |
 | `phi sessions fork <id>` | Copy a session at its current point, print the new id |
+| `phi sessions remove <id>` | Delete a persisted session for this directory (alias `rm`; unique id prefix ok) |
 | `/sessions`        | List sessions for this directory (TUI)        |
 | `/branch`          | Switch the working branch — see [Branch switching](#branch-switching) |
 | `/new`             | Start a fresh empty session (TUI)             |
@@ -350,6 +371,7 @@ unfinished.
 | `/diff`            | Full-screen git review — see [Diff review](#diff-review) |
 | `/code`            | Full-screen source viewer — see [Code viewer](#code-viewer) |
 | `!command`         | Run a shell command locally, stream output into the transcript; `Esc` cancels it |
+| `!!command`        | Same as `!command`, and also adds the output to the model context |
 
 In the TUI, `!command` runs locally via `bash -c` — outside the agent loop. It
 doesn't count toward agent busy state, and the running command can be cancelled
@@ -367,6 +389,8 @@ Sessions persist automatically per working directory under
 - `/fork` — copy the current session at its current point into a new session
   (new id, same conversation) and switch to it; the source keeps running
   untouched
+- `phi sessions remove <id>` — delete a session (`rm` also works; a unique id
+  prefix is enough)
 - `phi sessions fork <id>` — copy a session at its current point and print the
   new id; continue it headlessly with `phi run --session <new-id>`
 - `phi run --session <id>` / `phi run --continue-last` — resume headlessly
@@ -400,8 +424,10 @@ Exit codes: `0` success · `1` runtime/LLM error ·
 `3` config/usage error.
 
 In headless mode, permission `ask` decisions are denied (there is no approval
-UI), so `readonly`-style safety applies without extra flags. For benchmarks
-that need arbitrary shell (`pytest`, `npm test`, …), pass `--yolo` to skip the
+UI): unless `permissions.mode` is set, `phi run` uses `headless-strict`. This
+is not `readonly` — anything the policy already allows still runs, including
+writes inside the workspace and allowlisted bash. For benchmarks that need
+arbitrary shell (`pytest`, `npm test`, …), pass `--yolo` to skip the
 permission gate for that run only.
 
 ## Skills
@@ -455,10 +481,14 @@ Modes:
 | Mode               | Behavior                                            |
 | ------------------ | --------------------------------------------------- |
 | `interactive`      | Default. `ask` decisions prompt in the TUI.         |
-| `readonly`         | Deny writes / bash; read tools still work.          |
-| `autopilot`        | Fold `ask` → allow, run unattended.                 |
+| `readonly`         | Deny writes and `ask`; policy-allowed bash still runs. |
+| `autopilot`        | Fold `ask` → deny (same as `headless-strict` today). |
 | `headless-strict`  | Fold `ask` → deny (used by `phi run`).              |
 | `allow-all`        | Skip every permission check.                        |
+
+`readonly` does not block every bash command: a command the underlying policy
+allows (`bash.allow`, or `bash.default: allow`) still runs after the deny list
+is checked. Writes, other `ask` decisions, and `agent_spawn` are denied.
 
 Per-tool rules: `bash.default` / `bash.allow` / `bash.deny` (regexes against
 the command). `permissions.rules` adds your own rules by tool, kind, command,
@@ -593,7 +623,6 @@ Built-in tools the model can call (see `internal/tools/`):
 | `ls`           | Directory listing                            |
 | `agent_spawn`  | Start an isolated sub-agent job (async)      |
 | `agent_wait`   | Wait for a job; returns short summary only   |
-| `agent_cancel` | Cancel a running job                         |
 
 Sub-agent transcripts live under `~/.phi/jobs/<id>/` and are **not** injected
 into the parent context — only the wait/task summary is.

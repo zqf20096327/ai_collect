@@ -1,6 +1,6 @@
-# ruv-FANN
+# ruv-FANN — neural networks, WebAssembly and weight-space programming
 
-Small neural networks you can train, inspect and edit in Rust, Node.js and the browser. The repository also contains separate forecasting, agent, GPU-compute and image-processing projects.
+Small neural networks you can train, inspect and edit in Rust, JavaScript, TypeScript and the browser. Add bounded weight search, independent model evaluation, finite-domain checks and explicit AgentDB revisions. The repository also contains separate forecasting, agent, GPU-compute and image-processing projects.
 
 [![See the weights. Prove the change. An illustrated guide to inspecting a network, editing a weight and evaluating the result.](docs/assets/weight-space-story.svg)](https://ruvnet.github.io/ruv-FANN/)
 
@@ -10,7 +10,7 @@ Small neural networks you can train, inspect and edit in Rust, Node.js and the b
 [![API documentation](https://docs.rs/ruv-fann/badge.svg)](https://docs.rs/ruv-fann)
 [![CI](https://github.com/ruvnet/ruv-FANN/actions/workflows/ci.yml/badge.svg)](https://github.com/ruvnet/ruv-FANN/actions/workflows/ci.yml)
 
-**For Rust, start with the `ruv-fann` crate. For JavaScript and TypeScript, start with the `ruv-fann` npm package.** Add `ruv-fann-wsp` when you want to propose direct weight edits, inspect what changed, and explicitly evaluate and version the result. The Rust core provides generic floating-point networks, training algorithms and model I/O inspired by [FANN](https://github.com/libfann/fann).
+**For Rust, start with the `ruv-fann` crate. For JavaScript and TypeScript, start with the `ruv-fann` npm package.** Core npm 0.3.0 exposes the weight toolkit through explicit `ruv-fann/*` subpaths. Choose standalone `ruv-fann-wsp` for a smaller weight-editing installation, or individual toolkit packages for focused integrations. The Rust core provides generic floating-point networks, training algorithms and model I/O inspired by [FANN](https://github.com/libfann/fann).
 
 ![Repository map: five independent Rust workspaces for neural networks, agent tools, forecasting, CUDA source translation and image processing.](docs/assets/package-map.svg)
 
@@ -19,19 +19,27 @@ Small neural networks you can train, inspect and edit in Rust, Node.js and the b
 | Location | Available behavior | Version / guide |
 | --- | --- | --- |
 | `packages/wsp/` | **`ruv-fann-wsp`**: inspect and trace models, build bounded weight patches, evaluate candidates, then promote or roll back | Published npm **[0.2.0](https://www.npmjs.com/package/ruv-fann-wsp)** · [WSP guide](packages/wsp/README.md) · [Interactive story](https://ruvnet.github.io/ruv-FANN/) |
-| `packages/core/` | **`ruv-fann` for JavaScript/TypeScript**: typed dense models, reusable WASM batch inference, SGD and AdamW training | Published npm **[0.1.2](https://www.npmjs.com/package/ruv-fann)** · [JavaScript guide](packages/core/README.md) |
+| `packages/core/` | **`ruv-fann` for JavaScript/TypeScript**: WASM inference/training plus fifteen explicit toolkit subpaths, including Agenticow memory | npm release **[0.3.0](https://www.npmjs.com/package/ruv-fann)** · [JavaScript guide](packages/core/README.md) |
+| `packages/wsp-toolkit/` | Twelve focused packages: bounded search, holdout gates, invariants, worker proposals, AgentDB authority, Hub/Workers adapters and constellation tools | **0.1.0** each · [Toolkit guide](packages/wsp-toolkit/README.md) · [Umbrella release](https://github.com/ruvnet/ruv-FANN/releases/tag/ruv-fann-toolkit-v0.2.0) |
 | `packages/wasm/` | **`ruv-fann-wasm`**: direct WASM bindings, bundled runtime binaries and SIMD detection | Published npm **[0.1.2](https://www.npmjs.com/package/ruv-fann-wasm)** · [Runtime guide](packages/wasm/README.md) |
-| Repository root | **`ruv-fann` for Rust**: train feedforward networks, prepare immutable CPU inference snapshots, and use optional WebGPU operations | Checkout `0.2.2` · [Crate](https://crates.io/crates/ruv-fann) · [Core example](examples/basic_usage.rs) · [API](https://docs.rs/ruv-fann) |
-| `integrations/candle/` | Import actual Candle CPU linear layers and compare training gradients/SGD/AdamW with Candle | `ruv-fann-candle 0.1.0` · [Candle guide](integrations/candle/README.md) |
+| Repository root | **`ruv-fann` for Rust**: train feedforward networks, prepare immutable CPU inference snapshots, and use optional WebGPU operations | Checkout `0.2.3` · [Crate](https://crates.io/crates/ruv-fann) · [Core example](examples/basic_usage.rs) · [API](https://docs.rs/ruv-fann) |
+| `integrations/candle/` | Import actual Candle CPU linear layers and compare training gradients/SGD/AdamW with Candle | Checkout `ruv-fann-candle 0.1.1` · [Candle guide](integrations/candle/README.md) |
 | `bindings/napi/` | Native Node inference and dense autograd through napi-rs, sharing the Rust core | `@ruv-fann/napi 0.1.0` · [Native Node guide](bindings/napi/README.md) |
-| `ruv-swarm/` | Fourteen Rust packages for scheduling, persistence, transport, MCP, CLI, and WASM | `1.0.6`–`1.0.8`; unified WASM `2.0.0` · [Rust guide](ruv-swarm/README.md) |
+| `ruv-swarm/` | Fourteen Rust packages for scheduling, persistence, transport, MCP, CLI, and WASM | Checkout `1.0.6`–`1.0.8`; unified WASM `2.0.1` · [Rust guide](ruv-swarm/README.md) |
 | `ruv-swarm/npm/` | Node CLI/MCP, SQLite state, prepared WASM inference, historical forecast intervals, and capability assignment | `ruv-swarm 2.0.0` · [npm guide](ruv-swarm/npm/README.md) |
 | `integrations/ruv-fann/` | Use ruv-FANN neural outputs in RuVector search and tune inference batches with MetaHarness | `@ruv-fann/integrations 0.1.0` · [Integration guide](integrations/ruv-fann/README.md) |
-| `neuro-divergent/` | Six Rust packages: RNN training, baselines, chronological evaluation, residual-calibrated intervals, and checkpoints | `0.2.0` · [Forecasting guide](neuro-divergent/README.md) |
+| `neuro-divergent/` | Six Rust packages: RNN training, baselines, chronological evaluation, residual-calibrated intervals, and checkpoints | Checkout `0.2.0`–`0.2.1` · [Forecasting guide](neuro-divergent/README.md) |
 | `cuda-wasm/` | Translate a CUDA subset to Rust or WGSL source; Node wrapper requires the external `cuda2rust` compiler | Rust `0.2.0`; npm `2.0.0` · [Translator guide](cuda-wasm/README.md) |
 | `opencv-rust/` | Portable Rust matrices, browser image operations, a small SDK, and native OpenCV C++ bindings | Portable/SDK `4.9.0`; native `opencv-sys 0.2.0` · [Image-processing guide](opencv-rust/README.md) |
 
 The five main Cargo workspaces have separate build requirements; the optional Candle and napi-rs packages each have their own workspace and lockfile. Running `cargo test` at the repository root tests the core crate; use the verification driver below to cover the other workspaces. The npm WSP, core and WASM releases are identified above; other version numbers describe this checkout and should be checked against their package registries before use. The dated [release inventory](docs/release-inventory.json) records earlier package identities and registry observations; `scripts/verify-packages.py --inventory` reports the current checkout.
+
+The [metadata refresh](https://github.com/ruvnet/ruv-FANN/releases/tag/ruv-fann-metadata-v1)
+also publishes `ruv-fann-wsp@0.2.1`, `ruv-fann-wasm@0.1.3` and toolkit
+satellites at `0.1.1`; `agenticow@0.3.1` has its own
+[release](https://github.com/ruvnet/agenticow/releases/tag/agenticow-v0.3.1).
+Those updates add package discoverability without changing runtime bytes or
+dependency pins. Examples below retain the corresponding runtime generations.
 
 Each family has a defined scope. Forecasting currently implements a univariate RNN and simple baselines; LSTM/GRU forecasting architectures return unsupported errors. Agent assignment records scheduling decisions; external task execution depends on the integration you supply. CUDA translation emits source and does not execute a GPU kernel. The native OpenCV bridge calls an installed C++ library, while the portable packages implement a smaller set of operations.
 
@@ -89,6 +97,36 @@ links benchmark and security evidence, including 46 tests on each of Node.js 22
 and 24, real Chromium checks, and 19 adversarial input checks. See the
 [field guide](https://ruvnet.github.io/ruv-FANN/) for an illustrated explanation
 of those results and their limits.
+
+## Bounded weight improvement with independent evaluation
+
+[![Workers propose weight edits, independent holdout and finite-domain gates check candidates, and AgentDB controls revision CAS and explicit rollback.](https://raw.githubusercontent.com/ruvnet/ruv-FANN/e573ed708dcc4a5705990f3a8991deaefcf8be74/docs/assets/wsp-toolkit-loop.svg)](https://ruvnet.github.io/ruv-FANN/)
+
+**[Explore the animated field guide →](https://ruvnet.github.io/ruv-FANN/)**
+
+The toolkit extends local weight editing into a bounded proposal/evaluation loop. Node.js workers explore development cases, while the coordinator keeps holdouts and output constraints separate. A passing candidate is re-proposed through the supplied authority and activated only with an expected-revision comparison. Rollback creates a new revision containing the chosen old weights.
+
+```sh
+npm install ruv-fann@0.3.0
+```
+
+| Need | Core import | Individual package |
+| --- | --- | --- |
+| Inspect weights and trace activations | `ruv-fann/wsp` | `ruv-fann-wsp@0.2.0` |
+| Search a bounded parameter set | `ruv-fann/search` | `ruv-fann-wsp-search@0.1.0` |
+| Test named independent datasets | `ruv-fann/lifecycle` | `ruv-fann-wsp-lifecycle@0.1.0` |
+| Check finite-domain output constraints | `ruv-fann/invariants` | `ruv-fann-wsp-invariants@0.1.0` |
+| Coordinate workers and bounded generations | `ruv-fann/swarm`, `ruv-fann/loop` | `ruv-fann-wsp-swarm`, `ruv-fann-wsp-loop` |
+| Branch model memory, checkpoint experiments and promote explicitly | `ruv-fann/agenticow` | `agenticow@0.3.0` (native Node.js) |
+| Serialize AgentDB revisions and acknowledge persistence | `ruv-fann/registry` | `ruv-fann-wsp-registry@0.1.0` |
+| Load a pinned checkpoint or build a stateless edge handler | `ruv-fann/huggingface`, `ruv-fann/cloudflare` | Hub and Cloudflare adapters |
+| Plan packages, validate metadata and render observations | `ruv-fann/constellation`, `ruv-fann/contracts`, `ruv-fann/telemetry` | Three constellation packages |
+
+Read the [complete runnable rejection→gate→promotion example](packages/wsp-toolkit/README.md#repair-xor-gate-it-independently-and-choose-a-revision), the [core environment matrix](packages/core/README.md#capability-entrypoints), or run the source toolkit's `npm run demo:loop` for actual AgentDB reopen and rollback. The complete facade installs the toolkit, including its build tooling; individual packages provide smaller dependency footprints. Existing satellite pins intentionally retain a nested core 0.1.2 runtime. Agenticow 0.3.0 is a direct dependency exposed through `ruv-fann/agenticow`; its RVF bindings require Node.js and a supported native binary. See the [complete branch-and-gate example](packages/core/README.md#branch-model-memory-with-agenticow). AgentDB is separately installed and owned by the application.
+
+The loop does not call an LLM provider, execute generated code or publish packages. Worker threads are execution contexts, not security sandboxes; finite-domain tests and hashes do not establish universal safety or generalization. Release publication is a separate protected workflow that verifies exact archives and public installations.
+
+**Topics:** Rust neural networks · JavaScript machine learning · TypeScript · WebAssembly SIMD · weight-space programming · model evaluation · neural weight search · AgentDB persistence · Agenticow copy-on-write memory · Cloudflare Workers.
 
 ## Try the neural-network core
 
@@ -328,7 +366,19 @@ For a single family, pass `--workspace neuro-divergent` to the verification driv
 
 Measure the workload you intend to deploy. Record the commit, compiler, CPU or GPU, target features, model shape, batch size, thread count, warm-up, and numeric tolerance. Compare identical inputs and weights, and include allocation and transfer costs in end-to-end results. Criterion output is written under `target/criterion/`.
 
-The latest comparison uses actual Float64 WASM in Node and Chromium. A
+The November 11 Rust CPU evaluation measures **4.08× faster dense f32 training**
+and **3.88× faster dense f64 training** for `128 → 128 → 64 → 16`, compared with
+the verified public 0.2.2 source on one Ryzen 9 9950X host. Reordered training
+has measured tradeoffs of up to about 1.3% more latency. The new prepared
+single-inference path interleaves independent output rows while preserving
+each neuron's exact arithmetic order; large f32 networks measure about **2.5×
+faster**, while four small inference cases are **6–8% slower**. See the
+[complete results, paired intervals and rejected experiments](docs/rust-performance-2026-11-11.md)
+and [raw evidence](benchmarks/rust-0.2.3-evidence.tar.gz). These are synthetic
+CPU throughput results; they do not establish global state-of-the-art accuracy
+or throughput.
+
+The November 8 comparison uses actual Float64 WASM in Node and Chromium. A
 128-row SIMD batch produced these mean per-row latencies, including JavaScript
 validation and copies. Speed ratios compare repeated prepared single calls in
 the same binary; setup and compilation are outside the timings.

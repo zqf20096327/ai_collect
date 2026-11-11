@@ -109,33 +109,16 @@ The Start page draws this workflow: three core steps from a raw file to results,
 
 ## Architecture
 
-```mermaid
-flowchart TB
-    subgraph INTERFACE["Interface"]
-        PAGES["<b>app_pages</b><br/>the pages: inputs, a service call, a result card"]
-        UI["<b>ui</b><br/>shell and navigation, AppState (the one writer of the data),<br/>components, the user's saved choices"]
-    end
-    subgraph SERVICES["Services"]
-        MANAGE["<b>manage</b><br/>traces and replay, Word report and study dossier, accounts,<br/>AI engine and vector databases, start-up checks"]
-        GRAPH["<b>graph</b><br/>graph model, builders, renderers"]
-    end
-    subgraph WORK["Data work"]
-        EXPLORE["<b>explore · monitor</b><br/>quality audit, correlations, outliers"]
-        ENRICH["<b>enrich</b><br/>formulas, derived variables,<br/>transformations, imputation"]
-        INGEST["<b>ingest</b><br/>CSV, Excel and Parquet,<br/>with a parse report"]
-    end
-    subgraph ENGINE["Data and statistics engine"]
-        CORE["<b>core</b><br/>data session, analysis population, criteria,<br/>lineage and fingerprints, trace steps, connector kit"]
-        STATS["<b>biostats</b><br/>tests and effect sizes, models,<br/>multiple imputation and pooling"]
-    end
-    DATA["<b>Storage</b><br/>Parquet versions with lineage files · JSON traces · DuckDB accounts and statistics cache · per-user workspaces"]
-    INTERFACE --> SERVICES --> WORK --> ENGINE
-    SERVICES --> DATA
-```
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/KarimELMERNISSI/Cohort-Studio/main/assets/readme/architecture-dark.svg">
+    <img src="assets/readme/architecture.svg" width="100%" alt="The architecture of CohortStudio in layers, from top to bottom: the interface (app_pages and ui), the only layer that needs Streamlit; the services (manage and graph), with four connector families (identity provider, AI provider, vector database, graph engine); the data work (ingest, enrich, explore and monitor); the data and statistics engine (core, biostats and prompts), with its catalogues; and utils. Imports go down only. The browser enters through the interface; the command line and scripts enter at the services. The services store one workspace per user (Parquet versions with lineage files, hash-chained traces, the study definition, documents and their vector index) and the accounts in DuckDB. Cloud AI providers, a remote Qdrant server and the yFiles engine reach outside the server, only after an explicit consent or an opt-in install.">
+  </picture>
+</p>
 
-Each package sits on a layer, and imports only go down; every layer may use `utils` (settings, logging, optional
-groups, paths). [`test_layering.py`](tests/test_layering.py) places every module on its layer and checks, on each
-push, that:
+**Layers.** Each package sits on a layer, and imports only go down; every layer may use `utils` (settings, logging,
+optional groups, paths). [`test_layering.py`](tests/test_layering.py) places every module on its layer and checks, on
+each push, that:
 
 - no two modules import each other, directly or through others (one cycle exists by design: the multiple-imputation
   engine and its worker process);
@@ -146,6 +129,14 @@ push, that:
 
 The few exceptions left are listed in the test, and the list can only shrink.
 
+**Two ways in.** The browser reaches the pages, the only code that needs Streamlit. The command line
+(`manage_users.py`, for the accounts) and a script that replays a trace (`run_trace`) enter at the services, below
+the interface.
+
+**One writer.** A page never changes the data itself: it asks `AppState`, which applies the change and records it as
+one step of the trace. The services write each saved version as a Parquet file with its lineage file, and the replay
+recomputes the steps and compares each with the fingerprint recorded for it.
+
 **Connectors.** Four families share one shape ([`core/registry.py`](core/registry.py)): the identity providers
 (local accounts, a Better Auth sidecar, or no sign-in), the AI providers (Ollama, Gemini, OpenAI, Mistral, Claude),
 the vector databases (LanceDB, Qdrant) and the graph engines (Plotly, Graphviz, yFiles). Each implementation is a
@@ -153,12 +144,23 @@ class that says whether it can run here, and why not, and is loaded only when us
 server's choice; for the others, the session's choice comes first, then the user's saved choice, the server's
 setting and a default. Settings says why a connector is used and lists those that cannot run here, with the group to
 install. One contract test per family checks the same rules for each, and a new connector is one module and one
-registration, with no change to the code that uses the family.
+registration, with no change to the code that uses the family. In the scheme, an arrow marks what reaches outside
+your server: a cloud AI provider or a remote Qdrant server, after an explicit consent, and the yFiles engine, after
+an opt-in install.
 
 **Settings and catalogues.** Every setting the application reads is a field of one object
 ([`utils/settings.py`](utils/settings.py)), read from the environment and `.env` and checked at start-up. Each kind
 of trace step is declared once ([`core/steps.py`](core/steps.py)), with its label, whether it changes the data and how
-the replay handles it.
+the replay handles it; so are the kinds of criterion ([`core/criteria.py`](core/criteria.py)), of stored analysis
+([`biostats/plan.py`](biostats/plan.py)) and of check ([`core/verification.py`](core/verification.py)).
+
+**Storage.** Everything a user makes stays in their own workspace, under `<DATA_ROOT>/users/<username>/`: the
+versions of their datasets, their traces, the study definition and its revisions, their documents and the vector
+index built from them. DuckDB holds the accounts and the cache of dataset statistics.
+
+The scheme is drawn by [`dev_scripts/make_architecture_diagram.py`](dev_scripts/make_architecture_diagram.py); a
+test fails when it no longer names every package of the layer table, or when its files are not what the script
+builds.
 
 ---
 
@@ -315,7 +317,7 @@ cryptography) ship no wheel for Intel Macs.
 
 ```bash
 # Build and start (Docker Compose v2); data, accounts and traces live in ./data
-docker compose up -d --build
+BUILD_COMMIT=$(git rev-parse HEAD) docker compose up -d --build
 
 # First start: the log shows a one-time setup token; the login page asks for it to create the administrator
 docker compose logs cohortstudio
@@ -324,7 +326,7 @@ docker compose logs cohortstudio
 Without Compose:
 
 ```bash
-docker build -t cohortstudio:latest .
+docker build --build-arg BUILD_COMMIT=$(git rev-parse HEAD) -t cohortstudio:latest .
 cp .env.example .env       # then fill in what you use
 docker run -d -p 8501:8501 -v ${PWD}/data:/app/data --env-file .env --name cohortstudio cohortstudio:latest
 docker logs cohortstudio   # the one-time setup token
@@ -333,8 +335,9 @@ docker logs cohortstudio   # the one-time setup token
 The container runs as uid 1000: on a Linux host, run `chown -R 1000:1000 data` once before the first start.
 
 The image installs every optional group except the proprietary graph-yfiles engine (the build argument
-`WITH_YFILES=1` adds it). CI builds it on every push, starts a fresh container and checks its health endpoint and
-the first-run setup.
+`WITH_YFILES=1` adds it). `BUILD_COMMIT` records the commit the image is built from (the image holds no `.git`), so
+that a trace and the study dossier name it; without it they name the code by its fingerprint only. CI builds it on
+every push, starts a fresh container and checks its health endpoint, the first-run setup and the commit it names.
 
 ---
 

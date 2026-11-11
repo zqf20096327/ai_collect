@@ -1,204 +1,157 @@
-# J.A.R.V.I.S.
+# JARVIS
 
-> Just A Rather Very Intelligent System — a local, voice-driven AI operator for
-> Linux and Windows. Backed by **Hermes Agent** (v0.20.1) with Ollama Cloud, plus
-> Hermes' built-in toolset and MCP ecosystem (WhatsApp, Firefox, Android,
-> Playwright, and more).
->
-> Runs on **Windows 11** natively (Hermes + JARVIS voice server + MCP servers all
-> run on the host). Linux works too — no WSL required.
+A voice assistant that lives on a Windows 11 PC. Say "hey Jarvis", talk to it
+in Italian, English or Russian, and it answers out loud in the same language.
+Besides answering, it can write and fix code in a folder you give it, and do
+things on the computer for you: open apps and sites, use your Firefox, click
+through desktop programs.
 
-![JARVIS orb](docs/img/orb.png)
+It is a personal project, built and used on one machine. Everything that can
+run locally does (wake word, speech recognition, memory search); the language
+models run on a Claude Pro subscription and the Gemini free tier.
 
-## Architecture
+## What it does
 
-JARVIS is a thin voice + UI layer on top of **Hermes Agent**. Hermes owns the
-brain (LLM, tools, memory, MCP servers, sessions); JARVIS owns the wake-word loop,
-WebSocket bridge to the React HUD, and the orb canvas.
+**Voice.** Wake word with openwakeword. Speech is transcribed by NVIDIA
+Parakeet v3 on the CPU in about a quarter of a second. Replies are spoken with
+edge-tts neural voices; each sentence gets a native voice for its language,
+and sentences stream into one audio player so there is no gap after every full
+stop. Say "hey Jarvis" while it talks and it stops and listens.
+
+**Chat.** Questions, reminders, WhatsApp, Home Assistant, web search and the
+rest go to [Hermes Agent](https://hermes-agent.nousresearch.com), which runs
+locally as a gateway. Its default model is Gemini Flash; harder turns are
+routed to Claude Haiku, Sonnet or Opus through the Pro subscription.
+
+**Code view.** When a request means writing or changing code or files, a
+Claude Code session (Claude Agent SDK) opens in its own full-screen view, laid
+out like OpenCode: the session with every tool call, a review pane with the
+folder's real git diff, a file viewer and a terminal with each command's
+output. A small Claude Haiku router decides between chat, code and PC, so you
+don't have to say "code mode".
+
+**PC view.** Requests to operate the computer go to a second Claude session
+that takes the most direct route: a shell command when one does the job
+(opening Gmail is one `Start-Process`), your own Firefox through the Blueprint
+extension for websites, and [Cua Driver](https://github.com/trycua/cua) for
+desktop apps. Cua Driver works through UI Automation in the background, so it
+doesn't move your mouse or steal focus. Sending, buying, deleting or touching
+account security asks you first (by voice or with a button), unless you switch
+confirmations to "auto". The view shows each step and a live picture of the
+screen with the last click marked.
+
+**Memory.** After each reply, Claude Haiku pulls out the facts worth keeping
+("the exam is on Monday"). They are embedded locally with a multilingual model
+(fastembed) and stored in Qdrant. Before every request the relevant ones are
+looked up and handed to the model, so a question in Russian finds a fact said
+in Italian weeks earlier. The PC session also keeps short notes on how things
+work on this machine.
+
+**Interface.** A React page at `http://127.0.0.1:8765`: a 3D particle sphere
+that reacts to listening, thinking and speaking, the clock, the last answer,
+system stats, reminders, light and dark themes.
+
+## How it fits together
 
 ```
-   voice input
-       │
-       ▼
-┌──────────────┐    wake-word   ┌─────────────────┐    SSE stream    ┌──────────────┐
-│  microphone  │ ─────────────▶│  JARVIS voice   │ ────────────────▶│  React HUD   │
-│  (openwakew.) │   "hey jarvis"│  server :8765   │   (WS /api/ws)   │  orb + chat  │
-└──────────────┘                └─────────────────┘                   └──────────────┘
-                                          │
-                                          ▼
-                                   ┌─────────────────┐    MCP stdio     ┌──────────────┐
-                                   │  Hermes gateway │ ────────────────▶│  whatsapp    │
-                                   │  :8642          │                  │  firefox     │
-                                   │  Ollama Cloud   │                  │  android     │
-                                   │  (gpt-oss:120b) │                  │  + more      │
-                                   └─────────────────┘                  └──────────────┘
-                                          │
-                                          ▼
-                                  Hermes profiles
-                                  (jarvis / eli6 / wwf / custom)
+ microphone ──"hey jarvis"──▶ JARVIS server :8765 ──WebSocket──▶ browser UI
+                              │  wake word, Parakeet STT, edge-tts
+                              │  router (Claude Haiku): chat / code / pc
+                              │  memory (Haiku extraction, fastembed, Qdrant)
+          ┌───────────────────┼──────────────────────────┐
+          ▼                   ▼                          ▼
+   Hermes gateway :8642   code session              PC session
+   Gemini / Claude        Claude Agent SDK          Claude Agent SDK
+   WhatsApp, Home         in a project folder       shell + Firefox (Blueprint)
+   Assistant, web…                                  + Cua Driver
 ```
 
-## Features
+## Requirements
 
-- **Hermes Agent brain** — full agent SDK, multi-profile, sessions, memory,
-  todo planning, MCP tool ecosystem.
-- **Voice-first** — "Hey Jarvis" wake word (openwakeword), faster-whisper STT,
-  Piper offline TTS, Italian + English out of the box.
-- **Per-project profiles** — each major project gets its own Hermes profile
-  (SOUL.md, memory, session, terminal cwd). Switch via orb button, voice
-  command, or `POST /api/mode {"mode": "wwf"}`.
-- **Persona overrides** — JARVIS (default, British butler) and ELI6 (direct
-  co-founder voice) are orthogonal to project mode; you can be ELI6 in any
-  project.
-- **Ultron Three.js orb** — holographic orb with bloom + chromatic aberration,
-  state-reactive modulation (wake flash, speaking surge, listening mic-amp,
-  thinking spin, mode-themed brightness).
-- **Compact task tracker** — Agentic Task Engine renders live `todo` tool calls
-  as a click-to-expand pill on the orb console.
-- **MCP servers** — WhatsApp (read/send messages, files, voice), Firefox
-  (Playwright-driven, persistent profile), Android (mobile-mcp for tap/swipe/
-  screenshot/launch on wireless-ADB devices). Add more via `hermes mcp add`.
-- **Voice-driven project onboarding** — say "JARVIS, create a new project
-  called finance" to open the wizard pre-filled.
-- **Subagents** — `/research`, `/review`, `/email`, `/write` slash commands
-  prepend role-specific prompts to the active profile; or quick-launch via
-  buttons on the orb console.
-- **Project wizard** — UI panel on the Settings page (or CLI) that creates a
-  Hermes profile, generates a SOUL.md from your answers, restarts the gateway,
-  and verifies the new profile is live. Add a new project in under a minute.
+- Windows 11 (the voice server also starts on Linux, but the PC view is
+  Windows-only)
+- Python 3.10+ (developed on 3.12), Node.js 20+, ffmpeg (`winget install Gyan.FFmpeg`)
+- A Claude Pro or Max subscription, for the code and PC views, the router and
+  memory
+- A Gemini API key (free tier) for Hermes' default model
+- For the PC view: Firefox with the
+  [Blueprint MCP extension](https://addons.mozilla.org/firefox/addon/blueprint-mcp-for-firefox/)
 
-> ### ⚠️ Security
-> JARVIS has full, unsandboxed system access — the Hermes agent executes shell
-> commands and reads/writes files without confirmation. It binds only to
-> localhost. **Never expose port 8765 or 8642 to the network.** Hermes' own
-> threat scanner blocks known prompt-injection patterns; see Hermes docs for
-> details.
-
-## Quick start
-
-### Windows 11
+## Install
 
 ```powershell
-# 1. Clone (or download) and cd into the repo
+git clone https://github.com/EliseyRotar/jarvis-ai
 cd jarvis-ai
 
-# 2. One-time bootstrap (creates venv, installs deps, runs the wizard)
+# venv, Python packages, Hermes Agent, ffmpeg check, setup page
 .\start.ps1 -Bootstrap
 
-# 3. Subsequent runs — start the gateway + voice server
-.\start.ps1
+# speech recognition model (~465 MB)
+.\install_stt_model.ps1
 
-# 4. Open the orb HUD
-start http://127.0.0.1:8765/
+# PC view: Cua Driver and the Blueprint server
+.\install_pc_tools.ps1
 
-# 5. Shut down
+# Claude Pro token for the code view, PC view, router and memory
+npm install -g @anthropic-ai/claude-code
+claude setup-token
+```
+
+Put the token in `~/.jarvis/.env` (start from `.env.example`). The first start
+downloads the wake-word and embedding models.
+
+## Run
+
+```powershell
+.\start.ps1      # Hermes gateway + JARVIS, then open http://127.0.0.1:8765
 .\stop.ps1
 ```
 
-`start.ps1` orchestrates: kills stale processes, starts Hermes gateway on
-`127.0.0.1:8642`, waits for `/health`, starts JARVIS voice server on
-`127.0.0.1:8765`, writes PIDs to `.jarvis.pids` for `stop.ps1`.
-
-### Adding a new project
-
-Say "JARVIS, create a new project called finance" — the wizard opens
-pre-filled. Or open Settings → Projects → Add project.
-
-Required: name (kebab-case), absolute working-directory path. Optional:
-project title, description, tech stack, key conventions. The wizard generates
-a SOUL.md, creates the profile directory under `~/.hermes/profiles/<name>/`,
-restarts the gateway, and verifies the new profile is live.
-
-To switch to a project after creation: orb console → mode button, or
-"switch to project <name>", or `POST /api/mode {"mode":"<name>"}`.
+To have it always on, `.\install_autostart.ps1` adds a Startup entry that runs
+`keepalive.ps1` at logon. The keepalive starts the voice server and restarts
+it if it dies. It runs in your session on purpose: a Windows service can't
+reach the microphone or the speakers. Create `.jarvis.paused` next to the
+script to pause it.
 
 ## Configuration
 
-### Environment
-
-- `JARVIS_HERMES_URL` — Hermes API server base URL (default
-  `http://127.0.0.1:8642`).
-- `JARVIS_HERMES_API_KEY` — default profile key (or read from
-  `~/.hermes/.env`).
-- `JARVIS_HERMES_WWF_KEY` / `JARVIS_HERMES_ELI6_KEY` — per-profile overrides.
-- `JARVIS_DISABLE_WAKEWORD=1` — disable the openwakeword loop (text only).
-- `JARVIS_WAKE_MODEL` — openwakeword model id (default `hey_jarvis`).
-
-### Files
-
-- `~/.hermes/SOUL.md` — JARVIS default persona.
-- `~/.hermes/profiles/<name>/SOUL.md` — per-project persona + context.
-- `~/.hermes/profiles/<name>/.env` — `API_SERVER_KEY` + provider keys.
-- `~/.hermes/profiles/<name>/config.yaml` — model, cwd, terminal settings.
-- `~/.jarvis/projects.json` — JARVIS-side record of created projects.
-- `~/.jarvis/mcp.json` — legacy JARVIS MCP config (retired; Hermes owns MCPs).
-
-### Switching voices (personas)
-
-`POST /api/persona {"persona":"eli6"}` — switches the voice layer. Persona is
-orthogonal to project mode.
-
-| Persona | Voice | Use case |
-|---|---|---|
-| `jarvis` | British butler, dry wit, "sir" | Default. Coding, dev work, anything where formal feedback helps. |
-| `eli6`  | Direct, lowercase, opinionated | Fast iteration, "don't tell me I'm right, tell me what's wrong." |
-
-## MCP servers
-
-| Name | Tools | Setup |
-|---|---|---|
-| **whatsapp** | search_contacts, list_messages, list_chats, send_message, send_file, send_audio_message, download_media | Run the Go bridge (`whatsapp-mcp/whatsapp-bridge/whatsapp-bridge.exe`) and scan the QR. |
-| **firefox** | browser_navigate, browser_click, browser_type, browser_take_screenshot, browser_snapshot, … | Spawns its own Firefox via Playwright. Profile at `~/.hermes/firefox-profile`. |
-| **android** | mobile_click_on_screen_at_coordinates, mobile_swipe_on_screen, mobile_take_screenshot, mobile_launch_app, mobile_open_url, … | `adb pair <phone_ip>:<port> <code>` then `adb connect <phone_ip>:<port>`. |
-| **playwright** (alt) | Same as firefox but Chrome — not registered by default. | `hermes mcp add playwright --command npx --args "-y","@playwright/mcp@latest"` |
-
-Add more via `hermes mcp add <name> --command <cmd> --args ...`.
-
-## Subagents
-
-Slash commands (in chat or via WS):
-
-- `/research <question>` — web search + synthesis with citations.
-- `/review <file or branch>` — code review grouped by severity.
-- `/email <recipient + context>` — drafts email in your voice.
-- `/write <topic>` — polished copy / docs with audience + word-count meta.
-
-Or quick-launch via the right-side buttons on the orb console.
+- `~/.jarvis/.env`: JARVIS settings; every option is listed in `.env.example`.
+- `%LOCALAPPDATA%\hermes\config.yaml`, `.env`, `SOUL.md`: Hermes models, tools,
+  MCP servers and personality.
+- `~/.jarvis/pc.json`: PC view model and confirmation mode (set from the UI).
+- `~/.jarvis/pc_notes.md`: what the PC session learned about this machine.
 
 ## Development
 
-```bash
-# Lint / typecheck the frontend
-cd jarvis/web && npm run build
-
-# Run all existing tests
-.venv/Scripts/python.exe -m pytest tests/ -q
-
-# Rebuild the frontend after a change
-cd jarvis/web && npm run build
-# (the built assets go to jarvis/static/dist/)
+```powershell
+.venv\Scripts\python.exe -m pytest        # tests
+cd jarvis\web; npm run build              # rebuild the UI into jarvis\static\dist
 ```
 
-### Repository layout
+The built UI is committed, so a fresh clone works without Node unless you
+change the frontend.
 
 ```
-jarvis-ai/
-├── start.ps1, stop.ps1            # one-command lifecycle
-├── bootstrap.py                   # first-run wizard (venv, deps, Hermes install)
-├── jarvis/
-│   ├── main.py                    # FastAPI + WebSocket + wake-word loop
-│   ├── hermes_client.py           # bridge to Hermes Sessions API
-│   ├── persona.py                 # voice-layer overrides (jarvis/eli6)
-│   ├── stream_parser.py           # tag-aware streaming parser
-│   ├── voice_intents.py           # deterministic voice commands
-│   ├── subagents/                 # role-prefixed LLM wrappers
-│   ├── admin/add_project.py       # project wizard (CLI + HTTP)
-│   ├── web/                       # React + Vite frontend
-│   ├── tools/                     # memory, connectors, channels
-│   └── static/dist/               # built frontend (gitignored or committed)
-└── tests/                         # pytest suite
+jarvis/
+  main.py            FastAPI server, WebSocket, wake-word loop, turn handling
+  hermes_client.py   Hermes sessions API: streaming, model routing
+  code_session.py    Claude Code session for the code view, chat/code/pc router
+  pc_session.py      Claude session that operates the PC
+  memory_store.py    long-term memory
+  stt.py, tts.py     speech in and out
+  lang.py            Italian / English / Russian detection
+  web/               React + Vite frontend
+tests/               pytest suite
 ```
+
+## Security
+
+JARVIS runs commands and edits files without asking, and the PC view can
+operate any app you can. It listens only on `127.0.0.1` and has no
+authentication, so never expose ports 8765 or 8642. See
+[SECURITY.md](SECURITY.md).
 
 ## License
 
-Same as before — see `LICENSE`.
+MIT, see [LICENSE](LICENSE). `whatsapp-mcp/` is vendored from
+[lharries/whatsapp-mcp](https://github.com/lharries/whatsapp-mcp) (MIT, Luke Harries).

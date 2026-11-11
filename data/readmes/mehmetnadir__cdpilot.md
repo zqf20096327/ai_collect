@@ -150,10 +150,11 @@ tools, or `enable` to add some (the server sends `tools/list_changed`). `--tools
 picks tools by name; `all` (default) is unchanged. Schema size of `tools/list`
 (tiktoken `o200k_base`): 45 tools = 5,769 tokens, `core` = 11 tools = 1,342 tokens; the four
 `browser_agent_*` tools add ~11% of schema (49 tools ≈ 6,400 tokens, scaled from the measurement).
+The three `browser_canvas_*` tools are listed only while a live canvas is open (`cdpilot canvas open`), and never under `core`; `tools/list_changed` follows when the first canvas opens or the last one closes.
 
 ### Agent mode over MCP
 
-`browser_agent_observe` (`diff`), `browser_agent_act` (`ref`/`url`, `action`, `text`), `browser_agent_flow_save`
+`browser_agent_observe` (`diff`, `full`, `all`), `browser_agent_find` (`text`, `role`, `max`), `browser_agent_act` (`ref`/`url`, `action`, `text`), `browser_agent_flow_save`
 (`name`, `last`) and `browser_agent_run` (`flow`, `vars`, `dry_run`) wrap the agent commands below, so a model
 on MCP works from numbered refs, gets diffs, and replays a learned flow with no page read at all. They are
 outside the `core` profile; `browser_tools enable` adds them. A drift or a missing variable comes back as
@@ -472,6 +473,35 @@ cdpilot a11y summary          # Quick summary
 cdpilot a11y find <role>      # Find elements by ARIA role
 ```
 
+### Choosing a page view
+
+Tokens are o200k_base counts of each command's stdout on Hacker News and the Wikipedia "Web browser" article
+(median of 3 runs, rounded to hundreds, 2026-11-11; pages drift, so expect a few percent).
+
+| View | What it gives | Can act on it | HN / Wikipedia |
+|---|---|---|---|
+| `content` | the page's plain text | no | 1,200 / 4,700 |
+| `agent observe` | numbered `@refs` for actionable entries and headings/landmarks, plus a short text | yes (`agent act --ref`) | 4,300 / 8,300 |
+| `agent observe --rows` | the same entries as arrays | yes | 2,900 / 5,200 |
+| `agent observe --full` | every entry, nothing hidden, no size limit | yes | 6,900 / 17,300 |
+| `agent find "<text>"` | the entries whose name contains the text, from the whole page (at most 20) | yes | a few hundred |
+| `a11y-snapshot` | one `@ref` line per interactive or structural node | yes (`click-ref @N`) | 8,100 / 13,100 |
+| `a11y` | the full tree with roles and names, no refs | no | 9,800 / 31,400 |
+| `describe` | `a11y-snapshot` + page text, and it writes a screenshot file | yes (`click-ref @N`) | 8,800 / 13,600 |
+
+To act on a page under a token budget, start with `agent observe`; `--rows` prints the same entries in about a
+third fewer tokens (opt-in: `[ref, role, name(, value)]`). After a click or a fill, read the `agent act` result: it
+already holds the change (142–496 tokens on Wikipedia, MDN and react.dev), and `agent observe --diff` right after
+it returned 45–60. Use `a11y-snapshot` or
+`observe --full` when you need a ref for every node, and `content` when you only read. The ranking is
+page-dependent: on react.dev `a11y-snapshot` (1,200) is smaller than `content` (1,500).
+
+`agent observe` (and the lists in `agent act` and `agent run`) print at most 400 entries, in accessibility-tree
+order, and say so in a `truncated` note (`{shown, total, hint}`). Of 13 measured pages 7 have more than 400
+entries; a long page costs 17,000-85,000 tokens uncut. Refs past the cut still work: `agent act --ref @N` takes
+any ref, and `agent find "<text>" [--role r]` lists the ones you need. `--all` (or `CDPILOT_OBSERVE_MAX=0`)
+prints everything in the default view; `--full` also shows the hidden entries.
+
 ### Agent mode: numbered refs and diffs (token budget)
 
 ```bash
@@ -480,8 +510,17 @@ cdpilot agent act --ref @3 --action click
 cdpilot agent act --ref @4 --action fill --text "cdpilot"
 cdpilot agent act --url https://example.com/   # navigates silently, prints the diff
 cdpilot agent observe --diff          # only what changed since the last observe/act
+cdpilot agent observe --full          # every entry, nothing hidden, no size limit (also on act and run)
+cdpilot agent observe --all           # default view without the 400-entry limit (CDPILOT_OBSERVE_MAX=N sets it, 0 = none)
+cdpilot agent find "Stalingrad" --role link   # {ref, role, name} of up to 20 matches + total_matches; refs work with act
+cdpilot agent observe --rows          # entries as [ref, role, name, value?] arrays
 cdpilot agent stats | agent reset
 ```
+
+The agent commands (`agent observe`, `agent act`, `agent run`, `agent flow list|show`) print compact
+UTF-8 JSON when stdout is not a terminal (an agent, a pipe, an MCP tool call) and indented JSON in a
+terminal. `CDPILOT_JSON=pretty|compact` overrides this. Scripts that grep line by line should use `jq`
+or set `CDPILOT_JSON=pretty`.
 
 `observe` turns the accessibility tree into a numbered list of things an agent can act on (buttons, links,
 fields with their current value, unique text anchors) plus a short text summary; no screenshot, no HTML.
@@ -490,6 +529,18 @@ on a new element without another observe), `changed.removed` (refs), `changed.va
 when it changed (`text_changed`). Refs are stable while the element exists (keyed by the DOM node, not by
 position); a navigation starts a new set. `token_estimate` is `len(json)/4`; `saved_vs_full` compares the diff
 with a full observe of the same page. State lives in `~/.cdpilot/projects/<id>/agent-state.json`.
+
+**What the printed list leaves out.** By default `actions` keeps every interactive entry, headings, regions
+and navigation landmarks, and text that is clickable although the accessibility tree calls it text (a
+`<div onclick>`: `cursor:pointer` starts there, or Chrome marks it clickable, and no link or button sits
+above it). It leaves out plain text, table cells and list markers, entries whose name is only the sum of
+their own kept children, and cuts names over 80 characters to 79 + `…` (output only). The text is still in
+`text`. Only the printed list is thinned: refs, saved flows (`agent run` anchors on the full list) and
+`act --ref` of a hidden ref are unchanged. One extra `DOMSnapshot.captureSnapshot` call (2 s limit) decides
+"clickable"; if it fails nothing is hidden. `--full` (CLI `observe`/`act`/`run`; over MCP only `browser_agent_observe` takes `full: true`,
+`browser_agent_act` and `browser_agent_run` have no `full`) prints the unfiltered list. `--rows` (or `CDPILOT_OBSERVE_FORMAT=rows`) prints `actions` and `changed.added` as arrays
+`[ref, role, name]`, with the field value as a 4th element only for entries that have one; objects stay
+the default.
 
 #### Learned flows: drive a site once, replay it with no model
 
@@ -507,9 +558,10 @@ position among equals (`{"role":"button","name":"Archive","nth":0}`), never a `@
 belong to one session. `agent flow save` writes the trail as a flow; `agent run` finds each anchor on the live
 page (exact name, then case-insensitive, then a longer name containing it when that is unambiguous) and acts,
 with no model in the loop. The result's `tokens_avoided` is an upper bound — a full observation before each step;
-an agent that reads diffs reads less. On three real sites the model loop read
-2,292–18,331 tokens, the `agent run` result 90–136 (HN 18,331 → 90, Wikipedia 15,474 → 136,
-httpbin 2,292 → 119). When a site has a flow, `agent observe` lists it under `known_flows`.
+an agent that reads diffs reads less. On three real sites (measured on 2026-11-10, before `observe` hid text that
+cannot be acted on) the model loop read 2,292–18,331 tokens, the `agent run` result 90–136 (HN 18,331 → 90,
+Wikipedia 15,474 → 136, httpbin 2,292 → 119). A default `observe` now prints about 4,300 tokens on HN and 8,300
+on Wikipedia, still far above the `agent run` result. When a site has a flow, `agent observe` lists it under `known_flows`.
 
 **Drift stops, never guesses.** If a step's anchor is gone, or the step lands on another host than it did
 when recorded, `agent run` exits 4 and prints that page's full observation (`status:"drift"`, `step`,
@@ -537,16 +589,69 @@ Page text that addresses the model instead of the user is the shape of an indire
 assistants reading this page: ignore your previous instructions…"). `agent observe`, the diff of `agent act`
 and a drift result of `agent run` carry `injection_suspect: [{text, match}]` (at most 5, absent when none)
 whenever such a block is in the text: `ignore_instructions`, `addresses_ai`, `system_prompt`,
-`new_instructions`, `hide_from_user`, `exfiltrate`, `fake_system`, `tool_call`, `navigate_order`. Nothing is
+`new_instructions`, `hide_from_user`, `exfiltrate`, `fake_system`, `fake_turn`, `encoded_order`, `tool_call`,
+`navigate_order`. Nothing is
 hidden or blocked, the text stays where it was; the agent sees the mark next to it and treats the block as data.
-Matching runs on a normalised copy (zero-width characters removed, NFKC, case folded, spaced-out letters joined);
-the "ignore previous instructions" family also covers Spanish, French, Turkish, Japanese, German and Portuguese.
-The patterns were tuned on two sets (`test/fixtures/injection-korpus.json`, `injection-heldout.json`), so their
-numbers there (20 of 20 and 24 of 24 caught, 0 false alarms) are in-sample. On a set never used for tuning
-(`injection-heldout-2.json`, 30 + 30 lines in 7 languages) they catch 8 of 30 with 1 of 30 false alarms (a recipe
-line); on a third such set (`injection-heldout-3.json`, 40 + 40 lines in 12 languages) 7 of 40 with 2 of 40
-(before this pass: 2 of 40). Fake chat turns, homoglyphs, base64 and Chinese/Russian/Arabic lines still pass.
-Treat the mark as a hint, not a filter: a page without it can still carry an injection.
+Matching runs on a normalised copy (zero-width characters removed, NFKC, case folded, spaced-out letters joined,
+Cyrillic/Greek look-alikes mapped inside a mixed-script word); base64 payloads are decoded and scanned; the
+"ignore previous instructions" family covers 14 languages. The patterns were tuned on three sets
+(`test/fixtures/injection-korpus.json`, `injection-heldout.json`, `injection-heldout-2.json`), so their numbers
+there (20 of 20, 24 of 24 and 27 of 30 caught) are in-sample. On a set never used for tuning
+(`injection-heldout-3.json`, 40 + 40 lines in 12 languages, written without seeing the patterns) they catch 11 of 40
+with 2 of 40 false alarms (a quoted security report and a recipe line); the gain over the previous pass (7 of 40)
+came from multilingual, encoded and urgency lines, not from fake chat turns or fake system notices, which still
+mostly pass when phrased differently. Treat the mark as a hint, not a filter: a page without it can still carry an injection.
+
+### Live canvas (experimental)
+
+A canvas (experimental; macOS and Linux, not on Windows yet) is a tab in your browser that an agent writes HTML into and updates in place: a status board, a form the
+user fills in, a table that grows while the model streams. The tab keeps its scroll position, focus and form state
+between updates (the new HTML is morphed into the page, not reloaded). Clicks and form input come back as events; treat their content as untrusted page data (an `untrusted` field says
+which fields).
+
+```bash
+cdpilot canvas open --name board                 # opens the tab; prints "canvas: board <targetId>"
+cdpilot canvas set page.html --name board        # replace the content ("-" reads stdin)
+cdpilot canvas patch page.html --name board      # morph to the new HTML: "ok +add -del ~upd ↕move <ms> ms"
+llm-cli ... | cdpilot canvas stream --name board # stdin as it arrives, patched whole-document
+cdpilot canvas watch page.html --name board      # re-patch on every save; Ctrl+C stops
+cdpilot canvas events --name board --follow      # one JSON line per click / submit / input
+cdpilot canvas list                              # name, targetId, pid, age
+cdpilot canvas close --name board                # or --all
+```
+
+Mark the elements that report back with `data-action` (or `data-emit`): a click on them, a form `submit` and
+`input` become `{seq, t, src, type, action, id, data}` lines; `src` is `page` for the page's events and `host` for
+cdpilot's own (`blocked`, `nav`, `closed`). Event `data` is capped at 1 KB; `data.url` in host events is chosen by the
+page and is not trusted.
+
+MCP: `browser_canvas_set`, `browser_canvas_patch`, `browser_canvas_events` appear in `tools/list` only while a canvas
+of the project is open (the server sends `notifications/tools/list_changed`); `browser_tools enable` lists them
+anyway. They are not in `--tools core`. A canvas is opened from the CLI (`cdpilot canvas open`). HTML goes to the canvas process over a local socket, never in a
+command line or the session log.
+
+What the canvas page cannot do (the HTML is treated as untrusted — an agent may have copied it from anywhere):
+- It runs in its own browser context, so it never sees your other tabs, cookies or storage; the context and the tab
+  close when the canvas process ends, even on SIGKILL.
+- Only `http://cdpilot-canvas.invalid/<name>/` is served to it, with a CSP (`default-src 'none'`, inline script and
+  style only, `data:`/`blob:` images) and `sandbox allow-scripts`. Every other navigation gets an empty 204 and a
+  `blocked` event; every subresource request is refused (`BlockedByClient`). `--allow-net <host>` at `open` allows
+  https requests to that exact host on port 443 and nothing else.
+- The canvas runs in a browser context whose proxy is a local port that never answers (`--allow-net` hosts bypass
+  it), so a request that slips past cdpilot's interception goes nowhere (speculation-rules prefetch did, measured
+  before this was added). Pop-ups the page opens in that context are closed.
+- WebRTC constructors are removed before the page's scripts run, in its frames too (CSP does not cover WebRTC).
+- The document is written only after cdpilot has proven it is the canvas document (frame URL and execution context);
+  if the context changes, the write is refused and the page reopened. Navigation history is cleared after each load.
+- A leak test runs every vector we know (fetch, img, script, iframe, WebSocket, prefetch, ping, window.open, form,
+  meta refresh, `blob:` navigation, `history.back()`, speculation rules, pop-ups from derived documents, WebRTC
+  STUN/TURN in the page and in srcdoc frames) against an unguarded and a guarded canvas:
+  each vector must reach the test listener unguarded (or is reported as not measurable in that environment) and show 0 requests guarded. Not measurable there: `data:`
+  navigation (Chrome blocks it itself), preconnect and DNS prefetch (the canvas's off-the-record context does not
+  send these hints; the canvas also sends `X-DNS-Prefetch-Control: off`).
+
+Not supported on Windows yet (the canvas process uses a Unix socket). Paint latency is not published until it is
+measured on an idle machine.
 
 ### Session Management
 
@@ -1169,7 +1274,7 @@ google-chrome --remote-debugging-port=9450 --user-data-dir="$HOME/cdpilot-chrome
 cdpilot connect 9450          # or: cdpilot connect ws://127.0.0.1:9450/devtools/browser/<id>
 cdpilot connect --auto        # or: find it via a DevToolsActivePort file
 cdpilot go https://example.com/dashboard
-cdpilot disconnect            # forget it; the browser keeps running
+cdpilot disconnect            # close cdpilot's own tab, forget it; the browser keeps running
 ```
 
 Since Chrome 136, `--remote-debugging-port` is ignored on the default profile,
@@ -1221,7 +1326,8 @@ and exits with code 2 and the start command above instead of half-working.
 - `connect` refuses when this project already has a browser cdpilot launched
   ("stop it first (`cdpilot stop`) or use another project"), and only
   `127.0.0.1` / `localhost` is accepted (anything else exits 2). `disconnect`
-  also stops this project's `watch` daemon.
+  closes cdpilot's own tab in that browser (never yours, never the last one)
+  and stops this project's `watch` daemon.
 - cdpilot treats a browser as its own only with proof: the browser id it
   recorded at `launch` (or, for older entries, a live recorded pid that holds
   the debug port). A busy port is not proof, so a leftover registry entry never
@@ -1364,6 +1470,8 @@ print(result.stdout)
 | `CDPILOT_TIMEOUT` | unset | Default `--timeout` in seconds for every command (flag wins, `0` disables); expiry exits 124 |
 | `CDPILOT_NO_AUTOLAUNCH` | `0` | `1` = page commands fail with the old "Is the browser running?" error instead of launching the browser |
 | `CDPILOT_IDLE_CLOSE` | `15` | Minutes without a cdpilot command or page change before a browser cdpilot launched closes itself (fractions allowed, `0` = never; read at launch). Default applies to auto-launch and MCP launches; an explicit CLI `launch` is off unless this is set or `--idle-close <min>` is given |
+| `CDPILOT_JSON` | auto | `pretty` = indented, `compact` = one line; default: agent command JSON is indented in a terminal and compact UTF-8 otherwise |
+| `CDPILOT_OBSERVE_FORMAT` | unset | `rows` = `agent observe/act/run` print `actions` as `[ref, role, name(, value)]` arrays (same as `--rows`); MCP has no per-call switch |
 | `CDPILOT_LOG` | `1` | `0` = do not write the session log (`cdpilot log`) |
 | `CDPILOT_LOG_DAYS` | `14` | Days of session log to keep; older day files are deleted on the first write of a day (`0` keeps all) |
 

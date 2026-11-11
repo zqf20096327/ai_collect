@@ -83,7 +83,8 @@ specialized Python API can inspect and disrupt the validated local
 | Torch-free DWT-DCT detection | `remove-ai-watermarks[detect]` |
 | Direct local Paint InvisMark disruption | `remove-ai-watermarks[pixels]` |
 | Invisible image removal (needs CUDA) | `remove-ai-watermarks[qwen-zimage]` |
-| Every production feature available on the active Python | `remove-ai-watermarks[all]` |
+| Production removal and default classifier backends | `remove-ai-watermarks[all]` |
+| Optional OCR proposals for operator verification | `remove-ai-watermarks[text-draft]` |
 
 Lower-level and specialized extras include `pixels`, `heif`, `trustmark`,
 `migan`, `lama`, `diffusion`, `classify-onnx`, and `source-classify`. The
@@ -308,13 +309,19 @@ ControlNet, followed by SAM-masked Z-Image repair of any detected face. The
 alternative, `sdxl-zimage`, swaps the global stage for SDXL and keeps the same face
 stage. `chroma-zimage` uses the Apache-2.0 Chroma1 global pass with its own flat
 vendor floors; see `docs/chroma1-engine-research.md` for the calibration. An opt-in
-fourth profile, `qwen21-zimage`, swaps the global stage for Qwen-Image-2.1 (with
+profile, `qwen21-zimage`, swaps the global stage for Qwen-Image-2.1 (with
 `madebyollin/texture-fix-vae-for-qwen-image-2.1` and `Qwen-Image-2.1-Fun-Controlnet-Union`
 Canny); because `Qwen/Qwen-Image-2.1` is released under the Qwen Research License,
 `qwen21-zimage` is for non-commercial research, evaluation, and personal use only
 (not for commercial use). `--pipeline auto` picks sdxl-zimage for Google,
 chroma-zimage for Microsoft, and qwen-zimage otherwise, keeping `auto` commercial-safe.
 All are CUDA only.
+
+Since 0.57.0, `qwen21-zimage` includes bounded geometric alignment by default after the shared
+Qwen-2.1 global and face stages, accepting a result only when both source MSE and local LPIPS improve.
+It retains the Qwen Research License restrictions. Qualified text geometry can
+be supplied through the Python API; the CLI does not run automatic OCR. See
+[the fidelity profile](https://github.com/wiltodelta/remove-ai-watermarks/blob/main/docs/cli.md#fidelity-profile) for limits and fallback behavior.
 
 ```bash
 uv tool install --force "remove-ai-watermarks[qwen-zimage]"
@@ -514,7 +521,7 @@ The skill refuses stock-agency and other third-party paid-asset marks. See
 Context Protocol tools over stdio, each a thin wrapper around one CLI command:
 
 ```json
-{"mcpServers": {"remove-ai-watermarks": {"command": "uvx", "args": ["remove-ai-watermarks", "mcp"]}}}
+{"mcpServers": {"remove-ai-watermarks": {"command": "uvx", "args": ["--python", "3.12", "--with", "remove-ai-watermarks[all,classify-onnx,text-draft]", "remove-ai-watermarks", "mcp"]}}}
 ```
 
 See [the MCP server guide](https://github.com/wiltodelta/remove-ai-watermarks/blob/main/docs/mcp-server.md).

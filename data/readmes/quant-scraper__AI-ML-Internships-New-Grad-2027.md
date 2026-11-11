@@ -4,7 +4,7 @@ Every open internship and graduate role at 31 AI labs and AI & machine learning 
 
 From **[QuantScraper](https://quant-scraper.com/ai?for=students)**, where you can filter these by city, firm and focus, and see experienced roles too. Also: [2027 Quant Internships & Graduate Roles](https://github.com/quant-scraper/Quant-Student-Roles) · [2027 Big Tech Internships & Graduate Roles](https://github.com/quant-scraper/Big-Tech-Student-Roles).
 
-**38** internships · **30** graduate roles · updated 2026-11-10 22:23 UTC
+**38** internships · **30** graduate roles · updated 2026-11-11 12:44 UTC
 
 ## Where the roles are
 
@@ -37,8 +37,8 @@ From **[QuantScraper](https://quant-scraper.com/ai?for=students)**, where you ca
 | ↳ | [Research Intern, Frontier Speculative Decoding (Summer 2027)](https://job-boards.greenhouse.io/togetherai/jobs/5267198007) | San Francisco | Inference & performance | USD 121k–146k | Nov 2 |
 | ↳ | [Research Intern, Frontier Agents (Summer 2027)](https://job-boards.greenhouse.io/togetherai/jobs/5238468007) | San Francisco | Agents | USD 121k–146k | Nov 2 |
 | **[Sierra](https://quant-scraper.com/companies/sierra)** | [Research Intern](https://jobs.ashbyhq.com/Sierra/ef896ee9-e903-4a1f-84c2-537373cb9081) | San Francisco | AI / ML | — | Oct 31 |
-| **[Meta Superintelligence Labs](https://quant-scraper.com/companies/msl)** | [Research Scientist Intern, MSL - Agentic Post-Training (PhD)](https://www.metacareers.com/jobs/1155292783739299/) | Menlo Park | Post-training & RL | — | Oct 30 |
-| ↳ | [Research Scientist Intern, MSL Agents (PhD)](https://www.metacareers.com/jobs/1136354555738164/) | Menlo Park | Agents | — | Oct 22 |
+| **[Meta Superintelligence Labs](https://quant-scraper.com/companies/msl)** | [Research Scientist Intern, MSL - Agentic Post-Training (PhD)](https://www.metacareers.com/jobs/1155292783739299/) | Menlo Park | Post-training & RL | USD 92k–152k | Oct 30 |
+| ↳ | [Research Scientist Intern, MSL Agents (PhD)](https://www.metacareers.com/jobs/1136354555738164/) | Menlo Park | Agents | USD 92k–152k | Oct 22 |
 | **[Scale AI](https://quant-scraper.com/companies/scaleai)** | [Machine Learning Research Intern (Summer 2027)](https://job-boards.greenhouse.io/scaleai/jobs/4735665005) | New York, San Francisco | AI / ML | USD 120k–150k | Oct 20 |
 | **[Modal](https://quant-scraper.com/companies/modal)** | [ML Research Intern](https://jobs.ashbyhq.com/modal/38888294-6bc7-4dab-b072-6d0f0c2ed79a) | New York, San Francisco | AI / ML | USD 180k | Jul 28 |
 | **Mistral AI** | [Applied Scientist (Internship)](https://jobs.ashbyhq.com/mistral.ai/de46ba8b-00cb-4618-83df-66e15a78434e) | Paris, London | Forward deployed & solutions | — | Jul 3 |
@@ -59,8 +59,8 @@ From **[QuantScraper](https://quant-scraper.com/ai?for=students)**, where you ca
 | **[Vercel](https://quant-scraper.com/companies/vercel)** | [Software Engineering Intern - Summer '27](https://job-boards.greenhouse.io/vercel/jobs/6181759004) | San Francisco | Software | — | Nov 6 |
 | **[Together AI](https://quant-scraper.com/companies/together)** | [Technical Writer Intern, Developer Experience (Summer 2027)](https://job-boards.greenhouse.io/togetherai/jobs/5271149007) | San Francisco | Software | USD 85k | Nov 3 |
 | **[Sierra](https://quant-scraper.com/companies/sierra)** | [Software Engineer Intern, Agent (London 2027)](https://jobs.ashbyhq.com/Sierra/7af8aa4e-ba84-49ba-bc53-19358f4564ff) | London | Agents | — | Oct 20 |
-| **[xAI](https://quant-scraper.com/companies/xai)** | [Spring 2027 Software Engineering Internship/Co-op](https://job-boards.greenhouse.io/xai/jobs/5252108007) | Palo Alto | Software | USD 62k | Oct 2 |
-| ↳ | [Summer 2027 Software Engineering Internship/Co-op](https://job-boards.greenhouse.io/xai/jobs/5255111007) | Palo Alto | Software | USD 62k | Oct 2 |
+| **[xAI](https://quant-scraper.com/companies/xai)** | [Spring 2027 Software Engineering Internship/Co-op](https://job-boards.greenhouse.io/xai/jobs/5252108007) | Palo Alto | Software | USD 62k–83k | Oct 2 |
+| ↳ | [Summer 2027 Software Engineering Internship/Co-op](https://job-boards.greenhouse.io/xai/jobs/5255111007) | Palo Alto | Software | USD 62k–83k | Oct 2 |
 | **[Physical Intelligence](https://quant-scraper.com/companies/physicalintelligence)** | [Mechatronics Intern](https://jobs.ashbyhq.com/physicalintelligence/0bcf909e-b38b-4276-91a1-e55c4c56a33a) | San Francisco | General | — | Sep 17 |
 | **[Mistral AI](https://quant-scraper.com/companies/mistral)** | [Applied AI, Forward Deployed Machine Learning Engineer - (Internship)](https://jobs.ashbyhq.com/mistral.ai/fcdb8407-20b9-4179-81b6-f2ca2c79a39b) | Paris | Forward deployed & solutions | — | Sep 14 |
 | **Sierra** | [Software Engineer Intern, Agent (Summer 2027)](https://jobs.ashbyhq.com/Sierra/eb8e8b58-394b-43f0-b9bd-4f1407d9aa17) | Singapore | Agents | — | Sep 7 |

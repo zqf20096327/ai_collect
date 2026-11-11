@@ -76,6 +76,7 @@ How the methods work: [geological modelling](https://xplorahub.com/methods/geolo
 - [BlenderGeoModeller](https://github.com/bsomps/BlenderGeoModeller) - <img src="assets/icons/python.svg" alt="Python" height="16"> Blender add-on that imports drillholes and builds block models and grade shells, with GemPy integration. MIT.
 - [fractoolbox](https://github.com/ICWallis/fractoolbox) - <img src="assets/icons/python.svg" alt="Python" height="16"> Structural geology and borehole image analysis of fractures. Apache-2.0.
 - [structuralGeology](https://github.com/nfcd/structuralGeology) - <img src="assets/icons/python.svg" alt="Python" height="16"> Jupyter notebooks for structural geology, from a university course. MIT.
+- [OpenGeode-Geosciences](https://github.com/Geode-solutions/OpenGeode-Geosciences) - <img src="assets/icons/cplusplus.svg" alt="C++" height="16"> <img src="assets/icons/python.svg" alt="Python" height="16"> Data structures for geological models and geological objects, built on the OpenGeode framework. MIT.
 
 ## Drillholes and logging
 
@@ -110,6 +111,7 @@ How the methods work: [portable XRF](https://xplorahub.com/methods/portable-xrf)
 
 - [pyrolite](https://github.com/morganjwilliams/pyrolite) - <img src="assets/icons/python.svg" alt="Python" height="16"> Processing, normalisation and plotting of geochemical data. MIT.
 - [Geochemistry QAQC](https://github.com/GeoscienceAustralia/Geochemistry) - <img src="assets/icons/python.svg" alt="Python" height="16"> Geoscience Australia's script for checking standards and duplicates in geochemical data. Apache-2.0.
+- [GeoCluster Research Harness](https://github.com/EigenformAI/geocluster-research-harness) - <img src="assets/icons/javascript.svg" alt="JavaScript" height="16"> <img src="assets/icons/python.svg" alt="Python" height="16"> Research agent in a Docker image, with a bundled geological MCP server, that cleans assay tables, clusters geochemistry, ranks anomalies and answers questions from technical reports, using your own model provider. Apache-2.0. [XploraHub page](https://xplorahub.com/products/geocluster-research-harness-eigenform).
 
 ## Remote sensing
 
@@ -125,6 +127,10 @@ Background: [AI in mining](https://xplorahub.com/guides/ai-in-mining).
 - [uncover-ml](https://github.com/GeoscienceAustralia/uncover-ml) - <img src="assets/icons/python.svg" alt="Python" height="16"> Machine learning for geoscience mapping, from Geoscience Australia's UNCOVER programme. Apache-2.0.
 - [pulearn](https://github.com/pulearn/pulearn) - <img src="assets/icons/python.svg" alt="Python" height="16"> Positive-unlabelled learning, suited to prospectivity where only known deposits are labelled. BSD-3-Clause.
 - [elapid](https://github.com/earth-chris/elapid) - <img src="assets/icons/python.svg" alt="Python" height="16"> MaxEnt and other presence-only models, used for prospectivity as well as species mapping. MIT.
+- [GPlates](https://github.com/GPlates/GPlates) - <img src="assets/icons/cplusplus.svg" alt="C++" height="16"> <img src="assets/icons/python.svg" alt="Python" height="16"> Desktop app and Python package (pyGPlates) for plate tectonic reconstructions, the base of spatio-temporal prospectivity models. GPL-2.0.
+- [GPlately](https://github.com/GPlates/gplately) - <img src="assets/icons/python.svg" alt="Python" height="16"> Reconstructs points, lines and rasters through deep time and queries plate kinematics, such as subduction rates, on top of pyGPlates. GPL-2.0.
+- [STAMP PNG](https://github.com/EarthByte/STAMP_PNG) - <img src="assets/icons/jupyter.svg" alt="Jupyter" height="16"> Spatio-temporal prospectivity modelling of porphyry systems in Papua New Guinea and the Solomon Islands, from EarthByte. Apache-2.0.
+- [Porphyry prospectivity, Americas](https://github.com/EarthByte/porphyry-prospectivity-americas) - <img src="assets/icons/jupyter.svg" alt="Jupyter" height="16"> Spatio-temporal copper prospectivity in the American Cordillera, using positive-unlabelled learning on plate-model data, from EarthByte. Apache-2.0.
 
 ## Open data
 
@@ -155,6 +161,7 @@ Government geoscience portals, where most exploration data starts. For each port
 - [PyGMT](https://github.com/GenericMappingTools/pygmt) - <img src="assets/icons/python.svg" alt="Python" height="16"> Publication-quality maps and figures with the Generic Mapping Tools. BSD-3-Clause.
 - [PyVista](https://github.com/pyvista/pyvista) - <img src="assets/icons/python.svg" alt="Python" height="16"> 3D visualisation and mesh analysis, used by several tools above. MIT.
 - [RustGIS](https://github.com/opengeos/RustGIS) - <img src="assets/icons/rust.svg" alt="Rust" height="16"> Fast desktop and browser GIS in pure Rust, with over 1,000 terrain, hydrology, lidar and remote sensing tools. Apache-2.0.
+- [Vease](https://github.com/Geode-solutions/Vease) - <img src="assets/icons/typescript.svg" alt="TypeScript" height="16"> Desktop and browser viewer for subsurface meshes and geological models, built on OpenGeode and VTK. LGPL-2.1.
 
 ## Related lists
 

@@ -21,8 +21,8 @@ Mnemonic Proxy works differently. It sits between your agent and your model serv
 prompt, so the window does not fill up. They are not summarized and not thrown away: every message stays on disk,
 word for word, and the model can read it back with a `recall` tool when it needs it.
 
-It is for you if you run a local model server (Strata, llama-server, Ollama, LM Studio, ds4-server or any
-OpenAI-compatible server) and a coding agent (Claude Code, Codex, opencode, pi, Hermes, Continue), and you are tired
+It is for you if you run a local model server (Strata, llama-server, Ollama, LM Studio, Unsloth, ds4-server or
+any OpenAI-compatible server) and a coding agent (Claude Code, Codex, opencode, pi, Hermes, DeepSeek Harness, Continue), and you are tired
 of auto-compaction.
 
 <p align="center">
@@ -91,6 +91,7 @@ the same history.
 | opencode | `http://127.0.0.1:8096/v1` (`openai-compatible` provider) | `"compaction": {"auto": false}` | [opencode](docs/agents.md#opencode-chat-completions) |
 | pi, omp | `http://127.0.0.1:8096/v1` (`openai-completions`) | `"compaction": {"enabled": false}` | [pi](docs/agents.md#pi-hermes-continue--chat-completions) |
 | Hermes Agent | `http://127.0.0.1:8096/v1` (custom provider) | `compression.enabled: false` | [Hermes](docs/hermes-agent.md) |
+| DeepSeek Harness (`dsh`) | `baseURL: http://127.0.0.1:8096/v1` (`openai-completions`) | `compaction-basic`, `tool-result-pruner`: `disabled: true` | [DeepSeek Harness](docs/agents.md#deepseek-harness-chat-completions) |
 | Continue, other Chat Completions clients | `http://127.0.0.1:8096/v1` | the client's own context compaction | [Chat Completions](docs/agents.md#pi-hermes-continue--chat-completions) |
 
 Ollama and LM Studio: give the model a context of 32768 first. With their default (4096 or 8192) they silently drop
@@ -118,7 +119,7 @@ plain text and holds everything the agent saw, secrets included: protect the `da
 
 - [Install and platforms](docs/install.md): Linux, macOS, Windows, WSL, a one-click launcher
 - [Agents](docs/agents.md): full setup for each agent, tested versions
-- [Engines](docs/engines.md): Strata, llama-server, ds4-server, Ollama, LM Studio, saved state
+- [Engines](docs/engines.md): Strata, llama-server, ds4-server, Ollama, LM Studio, Unsloth, saved state
 - [Configuration](docs/configuration.md): every option, and what the automatic configuration picks
 - [How it works](docs/how-it-works.md): the long version, step by step
 - [Benchmarks](docs/benchmarks.md): the long session, AgentLongBench, recall, saved state

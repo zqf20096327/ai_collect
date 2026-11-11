@@ -13,7 +13,7 @@
 ![Unreal Engine](https://img.shields.io/badge/Unreal%20Engine-5.x-313131?logo=unrealengine)
 ![Electron](https://img.shields.io/badge/Electron-React%20%2B%20TypeScript-47848f?logo=electron)
 ![MCP](https://img.shields.io/badge/MCP-server%20%2B%20client-8a2be2)
-![Version](https://img.shields.io/badge/version-0.5.0%20alpha-orange)
+![Version](https://img.shields.io/badge/version-0.6.0%20alpha-orange)
 
 **English** · [Türkçe](README.tr.md) · [Español](README.es.md) · [简体中文](README.zh-CN.md)
 
@@ -57,6 +57,8 @@ It is built for indie developers, technical artists and students who want **cons
 - **"Producer" AI agent (Ctrl+J).** An in-app assistant with 20+ tools: write assets, run pipelines, review previews, generate animations and run Python inside Unreal. Paid or irreversible actions always ask for confirmation.
 - **MCP server and client.** AssetForge exposes a token-protected [Model Context Protocol](https://modelcontextprotocol.io) server at `http://127.0.0.1:9560/mcp`, so Claude Code, Claude Desktop or any MCP client can drive your asset pipeline. External MCP servers (Blender MCP, Unreal MCP, filesystem…) can be plugged in as tools.
 - **Bring your own model.** Assign different LLMs to the assistant, the prompt engine and vision QA.
+- **Any generation backend.** Run steps on ComfyUI (one or more servers on your network), on any OpenAI-compatible image or text-to-speech API, or on any HTTP API through the generic HTTP step.
+- **Web server for teams.** Open the same app in a browser and invite people as editors or viewers. Everyone works on one project on one PC, and the app can also run as a server only, with no window.
 - **Game-ready characters.** UE5 Manny/Quinn bone naming, LODs, IK Rig and retargeter, and a shared SOMA skeleton with automatic retargeting.
 
 ## Screenshots
@@ -86,6 +88,7 @@ It is built for indie developers, technical artists and students who want **cons
 | Anthropic API key **or** an OpenAI-compatible endpoint | prompts, brief chat, QA, agent | Local models through Ollama or LM Studio work too. |
 | Meshy API key | 3D models, textures, rigging | |
 | ElevenLabs API key | sound effects, engine audio | |
+| Custom backends (optional) | anything with a Gradio demo or HTTP API | Install an AI project from its git repo with an install recipe (`assetforge.json` in the repo, or a draft AssetForge suggests). It gets its own Python environment and starts when a node needs it. The *Gradio app* node also runs apps opened by Pinokio, on another PC, or Hugging Face Spaces. |
 | ComfyUI (optional) | images, 3D, audio, motion | Any API-format workflow, kept in a library in Settings. Add several ComfyUI servers (this PC, other PCs on your network, a rented GPU) and let each node pick one or choose automatically. Name the nodes `AF:prompt`, `AF:image`, `AF:model`, `AF:audio`, `AF:seed` (or use `{{PROMPT}}` placeholders). A Comfy account key is needed only for partner nodes. |
 | NVIDIA GPU + ~25 GB disk (optional) | Kimodo text-to-motion | One-click setup in the Animation page. Needs a Hugging Face token. |
 
@@ -131,12 +134,15 @@ Yes. Any OpenAI-compatible or Anthropic-compatible endpoint works, including ful
 **Can I control it from Claude Code or another AI agent?**
 Yes. Connect any MCP client to `http://127.0.0.1:9560/mcp` with the token shown in Settings.
 
+**Can my team use it together?**
+Yes. Turn on the web server in Settings → "Web ve paylaşım", set an owner password and send invite links. By default it is reachable only from your PC. You can open it to your local network, or use Tailscale or Cloudflare Tunnel for access from outside. On a local network the connection is plain HTTP, so use a tunnel on networks you don't trust.
+
 **Which skeleton do animations use?**
 Clips are generated on Kimodo's SOMA skeleton, renamed to UE5 Manny bones with root motion in Blender, and retargeted to your character in Unreal.
 
 ## Versions and roadmap
 
-AssetForge uses [Semantic Versioning](https://semver.org). The current version is **0.5.0 (alpha)**, and 1.0 is estimated in about 6 months.
+AssetForge uses [Semantic Versioning](https://semver.org). The current version is **0.6.0 (alpha)**, and 1.0 is estimated in about 6 months.
 
 | Version | Target | Goal |
 |---|---|---|

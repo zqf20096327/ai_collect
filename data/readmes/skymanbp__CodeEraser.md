@@ -11,7 +11,7 @@
 LLM-assisted codebases drift the same way: the same function written twice, the same paragraph pasted into three files, files that only grow. CodeEraser refuses the write that would do that, before it reaches disk, with no model in the loop.
 
 - A write that copies code already in the tree is refused, and the refusal names the region it duplicates.
-- A write that leaves a file over <!--ce:gate:size.file_lines_fail#digits-->750<!--/ce--> lines is refused the same way.
+- A write that grows a file past <!--ce:gate:size.file_lines_fail#digits-->750<!--/ce--> lines is refused the same way.
 - Everything else is a report or a gate: the Stop audit refuses the turn, `ce precommit` the commit, CI the merge.
 
 **Judges** Python, TypeScript/TSX, Rust, Go, Haskell, C, C++, Java, Lua, R, Markdown and HTML (<!--ce:count:langs#word-->thirteen<!--/ce--> language codes, <!--ce:count:grammars#word-->twelve<!--/ce--> tree-sitter grammars); JS, CSS, Vue, Svelte, shell and YAML files for size only; `.txt` for documentation duplication only.
@@ -48,7 +48,7 @@ $ Write invoicer/discount.py
 
 ```console
 $ Write invoicer/invoice.py
-✗ ce: this write leaves <work>/invoicer/invoice.py at 93 lines, past the hard budget of 40 (plan §4.1). Split the file instead of growing it.
+✗ ce: <work>/invoicer/invoice.py is already past the hard budget of 40 at 51 lines; this write grows it to 93 (plan §4.1). A write that keeps or shrinks it passes: split it step by step.
 $ ce scan .
 FAIL invoicer/invoice.py:1 file-lines = 51 (limit 40) [invoicer/invoice.py]
 warn invoicer/report.py:1 file-lines = 35 (limit 30) [invoicer/report.py]
@@ -156,9 +156,9 @@ Every capability reaches the CLI, the GUI and the plugin with its MCP server, or
 
 <sub>Zoom and pan this diagram at [codeeraser.dev/#architecture](https://codeeraser.dev/#architecture).</sub>
 
-- **Rust <!--ce:tool:rust#v-->1.94.1<!--/ce-->** (edition <!--ce:tool:edition#name-->2024<!--/ce-->): tree-sitter <!--ce:tool:tree_sitter#vminor-->0.27<!--/ce--> with <!--ce:count:grammars#word-->twelve<!--/ce--> grammars, rusqlite <!--ce:tool:rusqlite#vminor-->0.40<!--/ce--> (index schema <!--ce:ver:schema.index#digits-->17<!--/ce--> / GRAPH_REV <!--ce:ver:graph_rev#digits-->24<!--/ce--> / MENTION_REV <!--ce:ver:mention_rev#digits-->4<!--/ce-->), a per-project daemon.
+- **Rust <!--ce:tool:rust#v-->1.94.1<!--/ce-->** (edition <!--ce:tool:edition#name-->2024<!--/ce-->): tree-sitter <!--ce:tool:tree_sitter#vminor-->0.27<!--/ce--> with <!--ce:count:grammars#word-->twelve<!--/ce--> grammars, rusqlite <!--ce:tool:rusqlite#vminor-->0.40<!--/ce--> (index schema <!--ce:ver:schema.index#digits-->17<!--/ce--> / GRAPH_REV <!--ce:ver:graph_rev#digits-->26<!--/ce--> / MENTION_REV <!--ce:ver:mention_rev#digits-->4<!--/ce-->), a per-project daemon.
 - **Haskell (GHC <!--ce:tool:ghc#v-->9.14.1<!--/ce-->)**: `ce-core`, every judgment family. **Tauri <!--ce:tool:tauri#digits-->2<!--/ce-->**: the GUI over the same crate.
-- **One wire:** NDJSON over stdio (proto <!--ce:ver:proto#v-->9.1.0<!--/ce-->, <!--ce:count:families#word-->sixteen<!--/ce--> families); the daemon speaks its own protocol (<!--ce:ver:daemon#v-->2.3.0<!--/ce-->).
+- **One wire:** NDJSON over stdio (proto <!--ce:ver:proto#v-->9.1.0<!--/ce-->, <!--ce:count:families#word-->sixteen<!--/ce--> families); the daemon speaks its own protocol (<!--ce:ver:daemon#v-->2.4.0<!--/ce-->).
 - **Design rules:** ADR-001 … ADR-009 (Rust frontend, parse layer in Rust, lazy daemon, cheap PreToolUse, two clone layers, shrink-only ratchet, pinned distribution, policy as Haskell data, derived documentation facts) in [DEVELOPMENT_PLAN](docs/DEVELOPMENT_PLAN.md).
 - **Philosophy.** Measure in Rust, decide and write in Haskell, print everywhere else. Nothing asks a model anything; hooks fail open and say so; documentation is generated or gated, including the <!--ce:count:booklets#word-->nineteen<!--/ce-->-booklet [methodology](docs/reference/methodology.md), and every push runs the <!--ce:count:gates#word-->seven<!--/ce--> product gates on this tree.
 
@@ -169,6 +169,7 @@ PreToolUse shapes behaviour; it is not a security wall (shell writes bypass it; 
 - **Languages.** AST judgment uses the <!--ce:count:grammars#word-->twelve<!--/ce--> grammars above; Markdown, HTML and `.txt` are judged by the documentation and graph rules; T4 clones are not promised.
 - **Advice, never a verdict.** Symbol-level liveness, `ce similar`, `ce merge` and `ce arch` never fail a gate; a guard class stays `observe` until it has its own false-positive record.
 - **Lines not drawn.** `cognitive_fail` defaults to 0 (complexity only warns), and `ce structure` has no score floor.
+- **What the text names.** Liveness reads the references a file spells. A load whose target is computed (`require(prefix .. name)`, `import("./lib/" + name)`) or a star import whose `__all__` is not all literal draws no edge for what it does not spell: the file stays dead, its language cannot vouch for it, and `ce erase` never offers it. Entry points declared in `setup.cfg` or a non-root `pyproject.toml` are not read.
 - **Distribution.** A release builds <!--ce:count:platforms#word-->five<!--/ce--> targets; `ce setup` wires nothing from an elevated account that is not the logged-in user (exit 13); judging this repository needs the `cli/tests` submodule seated.
 - **One wire line.** A request line to the core is at most <!--ce:gate:wire.line_bytes#digits-->134,217,728<!--/ce--> bytes; larger requests split into batches, and an oversized item is refused by name, never truncated.
 

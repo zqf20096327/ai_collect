@@ -61,6 +61,12 @@ update it prints the changelog notes for the new version, capped at 10 lines wit
 | `qclaude notes [version]` | prints the changelog for this install |
 | `qclaude quota` | credits used/left, burn rate and forecast |
 | `qclaude quota --json` | machine-readable quota snapshot |
+| `qclaude models` | model list with its source and age |
+| `qclaude models --refresh` | asks Qoder for the current list (CLI, desktop catalog, public docs) |
+| `qclaude models --apply` | writes the current list into the Claude Code picker |
+| `qclaude integrations` | detects Claude Code, OpenCode and OpenBot, and offers to wire the bridge |
+| `qclaude opencode` | starts the bridge, then opens OpenCode |
+| `qclaude openbot` | starts the bridge, then opens OpenBot |
 | `qclaude rewards` | shows the daily 100-credit campaign |
 | `qclaude rewards --claim` | claims it manually (never automatic by default) |
 | `qclaude uninstall` | removes the app, launcher and settings (asks first) |
@@ -81,6 +87,21 @@ Home, Endpoint, Accounts, Routing, Analytics, Usage & Logs, Health, Models and S
 write `bridge.config.json` and the Claude user settings with backups; analytics keep 7 days. The
 Accounts cards show real Qoder credits per profile, and Analytics adds credits, burn rate and a
 quota forecast.
+
+## OpenAI-compatible API
+
+Any tool that speaks OpenAI can use the same bridge — OpenBot, Cursor, an SDK, a script:
+
+```bash
+curl http://127.0.0.1:8787/v1/chat/completions \
+  -H 'content-type: application/json' \
+  -d '{"model":"Auto","messages":[{"role":"user","content":"hello"}],"stream":true}'
+```
+
+`GET /v1/models` answers in the OpenAI shape (`{"object":"list"}`). This path does **not** go through
+Claude Code: the client's system prompt and tools are sent to Qoder exactly as written, and native
+tool calls come back as `tool_calls`. Point OpenBot's custom OpenAI-compatible provider at
+`http://127.0.0.1:8787/v1`.
 
 ## What works
 

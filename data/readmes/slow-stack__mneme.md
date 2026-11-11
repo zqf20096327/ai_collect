@@ -10,7 +10,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-3E63DD?style=flat-square" alt="license"></a>
   <a href="https://github.com/slow-stack/mneme/actions"><img src="https://img.shields.io/github/actions/workflow/status/slow-stack/mneme/ci.yml?style=flat-square&label=CI" alt="CI"></a>
   <a href="https://nodejs.org"><img src="https://img.shields.io/badge/node-22%2B-3E63DD?style=flat-square&logo=nodedotjs&logoColor=white" alt="node"></a>
-  <a href="https://github.com/slow-stack/mneme"><img src="https://img.shields.io/badge/tests-3262%20total-3E63DD?style=flat-square" alt="tests"></a>
+  <a href="https://github.com/slow-stack/mneme"><img src="https://img.shields.io/badge/tests-3401%20total-3E63DD?style=flat-square" alt="tests"></a>
   <a href="https://codecov.io/gh/slow-stack/mneme"><img src="https://img.shields.io/codecov/c/github/slow-stack/mneme/main?style=flat-square" alt="coverage"></a>
   <a href="https://github.com/awesome-dsh-plugin/awesome-dsh-plugin"><img src="https://awesome-dsh-plugin.com/badge.svg" alt="Awesome"></a>
 </p>
@@ -29,10 +29,10 @@
 
 ## 📰 最近更新
 
-**v0.13.0 — 记忆开始分得清「这一次」和「你这个人」**（2026-11-10）
+**v0.14.0-beta.3 — 情绪页白屏修好了，档位被冻结覆盖也说得明白了**（2026-11-12，预发布）
 
-夜里巩固时情绪第一次有了落点：记下「哪一次、因为什么、什么情绪」。同一情绪要在 3 个以上互相独立的会话里出现过，才算你稳定的倾向；不够就只当这一次——被降级的会记账，不静默丢。**这一相位默认不跑**，要同时打开 `sleepModeEnabled` 与 `sleepAffectiveEnabled` 才会开始记。
-同版日记本长成本子样（能到点自己写、正文终于排版），工作流（M.O.）从面板下架，另有一圈面板与容量预警的修复。
+点开「情感」页整块面板变空白的回归修掉了。根因是一行 `formatRelativeTime(it.lastSeen)` 漏传 `t`，函数内部要拿它取文案，缺参就抛错；这行跑在 render 里，React 整棵树卸载，日志里什么都不留——所以看起来像「点了没反应」。`v0.14.0-beta.1` 与 `beta.2` 都带这个回归，只有库里存在带 `lastSeen` 的情绪边时才触发，因此不是每个人都会遇到。
+另修一处「面板说的和实际做的不一致」：档位选 `off` 或 `shadow`、同时开着**矛盾冻结**时，判成矛盾的对会照旧停车进待审队列，档位选哪一档都不减少——而这条互斥关系此前只写在设置项提示语里，下拉旁边看不到。现在档位下方直接标一行「⚠ 冻结正在覆盖本档位」。判据与后端同源，不改默认值、不改语义；要停止新增仍须自己关掉矛盾冻结。
 
 > 逐条见 [CHANGELOG](dsh-mneme/CHANGELOG.md) · 完整版本历史见 [Releases](https://github.com/slow-stack/mneme/releases)
 
@@ -153,7 +153,9 @@ dsh web
   召回（混合检索 + 精排）──► 注入会话上下文
 ```
 
-## 🧭 M.O.：让「怎么做」也住进仓库（v0.9 beta）
+## 🧭 M.O.：让「怎么做」也住进仓库（v0.9 beta，v0.13.0 起从面板下架）
+
+> **状态（v0.13.0）**：这一组已从设置面板下架，界面上没有入口了。三个旗标（`actionPipelineEnabled` / `actionRunEnabled` / `actionNudgeEnabled`）与 `/mo-run` 命令、座位注册逻辑都还在，语义零改动——想恢复界面，把那行加回 `FEATURE_GROUPS` 与 `FEATURE_FIRST_SCREEN` 即可。下面保留的是它的设计说明。
 
 记忆库记得住**为什么**这么做，但记不住**这件事到底怎么跑**。工作流住在哪，决定了它能不能被改：住在记忆库里是一行没有 diff 的文字，住在会话里是一次性的提示词，住在人脑里改不动也不留痕。
 
@@ -295,7 +297,7 @@ dsh-mneme-serve          # 默认 ~/.dsh/memory + 127.0.0.1:8790
 
 ```bash
 cd dsh-mneme && npm install
-npm test        # 3262 个测试
+npm test        # 3401 个测试
 npm run stress  # 三轴线压测
 npm run sync    # src → lib 同步
 ```
@@ -334,12 +336,12 @@ dsh-mneme 的机制设计与下列公开研究相互印证（以下引用均逐�
 
 ## 📰 Recent updates
 
-**v0.13.0 — Memory now tells "this once" apart from "who you are"** (2026-11-10)
+**v0.14.0-beta.3 — the affective panel no longer goes blank, and an overridden tier now says so** (2026-11-12, pre-release)
 
-Emotion finally has a place to live: the nightly consolidation records which occasion, why, and what feeling. An emotion counts as one of your stable traits only when it shows up in three or more independent sessions; short of that it stays "this once" — every downgrade is counted, never silently dropped. **This phase is off by default**: turn on both `sleepModeEnabled` and `sleepAffectiveEnabled` before anything gets recorded.
-The same release grows the diary into a real notebook (it can write itself on schedule, and its text is finally laid out), retires the M.O. workflow from the panel, and brings a round of panel and capacity-warning fixes.
+The regression that blanked the whole affective panel is fixed. One call to `formatRelativeTime(it.lastSeen)` was missing its `t` argument; the function reaches for that to look up a label, so it threw — and because the line runs inside render, React unmounted the entire tree and left nothing in the log. That is why it looked like "I clicked it and nothing happened". Both `v0.14.0-beta.1` and `beta.2` shipped this; it only triggers when the library holds an affective edge with `lastSeen`, so not every user hits it.
+This release also fixes one case where the panel disagreed with behaviour: with the tier set to `off` or `shadow` and **conflict freeze** on, contradicting pairs still park in the pending queue no matter which tier is chosen — and that mutual exclusion was only documented in a settings hint, invisible from the dropdown itself. The tier row now shows "⚠ conflict freeze is overriding this tier". The condition is the same one the backend uses, defaults and semantics are untouched, and stopping new arrivals still requires turning conflict freeze off.
 
-> Per-item notes in the [CHANGELOG](dsh-mneme/CHANGELOG.md) · full history in [Releases](https://github.com/slow-stack/mneme/releases)
+> Full list in [CHANGELOG](dsh-mneme/CHANGELOG.md) · version history in [Releases](https://github.com/slow-stack/mneme/releases)
 
 ## What problem does it solve
 
@@ -458,7 +460,9 @@ The one way to lose data is pointing the library **inside** your profile scope (
   recall (hybrid search + rerank) ──► inject into the conversation
 ```
 
-## 🧭 M.O.: make "how it's done" live in the repo (v0.9 beta)
+## 🧭 M.O.: make "how it's done" live in the repo (v0.9 beta; retired from the panel in v0.13.0)
+
+> **Status (v0.13.0)**: this group is no longer rendered in the settings panel. The three flags (`actionPipelineEnabled` / `actionRunEnabled` / `actionNudgeEnabled`), the `/mo-run` command and the seat-registration logic are all unchanged — to bring the UI back, add the group back to `FEATURE_GROUPS` and `FEATURE_FIRST_SCREEN`. What follows is the original design write-up.
 
 The memory store remembers **why** a thing was done that way, but not **how the thing actually runs**. Where a workflow lives decides whether it can be changed at all: as a line in the memory store it has no diff; as a session prompt it exists once; in someone's head it can't be edited and leaves no trace.
 
@@ -600,7 +604,7 @@ Community projects that wire mneme into more platforms — not part of this repo
 
 ```bash
 cd dsh-mneme && npm install
-npm test        # 3262 tests
+npm test        # 3401 tests
 npm run stress  # three-axis stress test
 npm run sync    # src → lib sync
 ```

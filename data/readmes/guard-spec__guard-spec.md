@@ -30,7 +30,7 @@ answer for exfiltration links, personal data and a leaked canary before the
 answer reaches your users. It is written in Go, runs as two services next to Postgres, and has
 been built and evaluated for **English and Vietnamese**.
 
-Status: **v0.5.0, pre-1.0.** The API and the database schema can still
+Status: **v0.6.0, pre-1.0.** The API and the database schema can still
 change. Read [Security model and limitations](#security-model-and-limitations)
 before you rely on it.
 
@@ -93,9 +93,11 @@ before you rely on it.
   as a backstop.
 - **Audit:** one row per request (content off by default), an activity log of
   every configuration and security change, retention in days.
-- **Admin UI** in English and Vietnamese, light and dark: dashboard, request
-  flow, simulator, policies, providers, request log, alerts, members and
-  security ([Admin UI](#admin-ui)).
+- **Admin UI** in English and Vietnamese, light and dark, checked with
+  axe-core: getting started, dashboard and security overview, request flow
+  with policy templates and sample sentences, simulator, providers, request
+  log with one-click false-positive handling, alerts, members and security,
+  and a Ctrl+K command palette ([Admin UI](#admin-ui)).
 
 **Operations**
 - Docker Compose for a single host, a Helm chart for Kubernetes, an image with
@@ -327,7 +329,7 @@ scripts/quickstart.sh
    existing `.env` is never overwritten;
 2. runs `docker compose -f docker-compose.yml up -d` with
    `ghcr.io/guard-spec/guard-spec-gateway` and `-control-plane` at
-   `GUARDSPEC_VERSION` (default `0.5.0`). Before the gateway starts, the
+   `GUARDSPEC_VERSION` (default `0.6.0`). Before the gateway starts, the
    `models-init` service pulls the recommended models (about 270 MB, SHA-256
    verified) into `./models/cache`; on later starts it finds them and does
    nothing;
@@ -667,7 +669,14 @@ in a second table.
 | `MAX_SCAN_TOKENS` | empty (today's limits) | The most tokens the gateway scans for one proxied request. Empty or `0`: the byte limits as before (about 28 KB of user, system and tool-call text; 128 KiB of tool results, documents and tool descriptions; 1 MiB of earlier turns), 413 above them. Set: the request's token cap (413 above it), and requests past those byte limits are scanned on the long path in the large-input lane instead of refused. See [Large inputs](#large-inputs) |
 | `INFERENCE_LARGE_MAX_CONCURRENCY` | CPUs / 4 (the container's CPU limit counts; at least 1) | Large requests scanned at once, and their model runs, on a limiter of their own |
 | `LARGE_SCAN_ORG_CONCURRENCY` | half of `INFERENCE_LARGE_MAX_CONCURRENCY` (at least 1) | Large requests of one org scanned at once |
-| `LARGE_SCAN_QUEUE_TIMEOUT` | `30s` | How long a large request waits for the lane before 429 with `Retry-After` |
+| `LARGE_SCAN_QUEUE_TIMEOUT` | `30s` | How long a large request waits for the lane before 429 with `Retry-After`; also how long a request waits for a free PDF extractor (`PDF_EXTRACT`) |
+| `PDF_EXTRACT` | `on` | `on` or `off`. `on`: the text of a PDF sent inline (a `document` block with a base64 source on `/v1/messages`, a `file` part with `file_data` on chat completions, an `input_file` item with `file_data` on `/v1/responses`) is extracted (hidden text, annotations and form fields included) and scanned as a document, so `INDIRECT_ACTION` and `MAX_SCAN_TOKENS` apply; the forwarded body is unchanged unless `redact` replaces the part with the document placeholder. A PDF that yields no text (`no_text`, `encrypted`, `damaged`, `timeout`, `over_limit`, `internal`) or that the gateway cannot fetch (a url or file id: `remote`) stays an unscanned part under `UNSCANNED_PARTS`, with audit tags `input:pdf_scanned=<n>` and `input:pdf_unscanned_<reason>=<n>` and the rule fields `input.pdf.count`, `input.pdf.scanned`, `input.pdf.reasons`. `off`: PDFs are unscanned parts, as in 0.5.0. No per-org override of extraction; an organization can refuse PDFs or unreadable ones with its [input settings](#per-organization-input-settings). See [PDFs](#pdfs) |
+| `PDF_EXTRACT_MAX_BYTES` | `33554432` (32 MiB) | Largest PDF the extractor opens, in bytes (`1024` to `1073741824`); larger ones are `over_limit`. The body limit applies first: a PDF arrives base64-encoded, so the largest PDF that can reach the gateway is about 3/4 of `MAX_REQUEST_BYTES` (3 MiB by default). The start-up log states the effective limit and warns when this is set above it |
+| `PDF_EXTRACT_MAX_PAGES` | `600` | Most pages extracted from one PDF (`1` to `100000`); more is `over_limit` |
+| `PDF_EXTRACT_MAX_TEXT_BYTES` | `4194304` (4 MiB), or 4 × `MAX_SCAN_TOKENS` when that is smaller | Most text extracted from one PDF, in bytes (`1024` to `1073741824`); more is `over_limit`. With `MAX_SCAN_TOKENS` unset, text past the short path's 128 KiB of documents is `over_limit` as well |
+| `PDF_EXTRACT_TIMEOUT` | `10s` | Wall-clock budget for one PDF (`100ms` to `10m`), the wait for an extractor excluded; past it the PDF is `timeout` |
+| `PDF_EXTRACT_MEMORY` | `536870912` (512 MiB) | Memory cap of one PDFium instance (WebAssembly linear memory), in bytes (`33554432`, 32 MiB, to `4294967296`, 4 GiB); a document that needs more is `damaged` |
+| `PDF_EXTRACT_MAX_CONCURRENCY` | CPUs / 2 (at least 1) | PDFs extracted at once (`1` to `1024`); others wait up to `LARGE_SCAN_QUEUE_TIMEOUT`, then 429 with `Retry-After` |
 | `MAX_REQUEST_BYTES` | `4194304` (4 MiB) | Largest request body; a larger one gets 413 before it is read. Raise it with `MAX_SCAN_TOKENS` past about 1M tokens |
 | `METRICS_ADDR` | `:9090` | Metrics listener; `off` disables it |
 | `METRICS_TENANT_LABELS` | `false` | `true` adds one metric series per org |
@@ -689,7 +698,7 @@ in a second table.
 | `GATEWAY_URL` | empty (compose: `http://gateway:8080`) | The gateway's base URL inside the deployment. The control plane reads its `/readyz` (server side, 3 s timeout) for the Models page; empty: the page says it is not configured |
 | `UPSTREAM_KEY_ORGS` | empty (compose: `UPSTREAM_KEY_MAIN=*`) | As on the gateway. Saving an upstream (or a config file) that names a key variable not allowed for the org is refused |
 | `UPSTREAM_KEY_*`, `UPSTREAM_ALLOW_PRIVATE` | empty, `false` (compose: `false`; dev override: `true`) | Used only by `POST .../upstreams/:id/test` (owner only), which applies the gateway's key allowlist and address rules. A key is sent with a test only to orgs `UPSTREAM_KEY_ORGS` lists by id, not through `*` (except with `GUARD_ENV=dev`); the answer says `key_sent`. Give the control plane `UPSTREAM_KEY_*` variables only if tests should use them |
-| `TRUSTED_PROXIES` | empty | Comma-separated CIDRs or addresses of reverse proxies. Their `X-Forwarded-For` is read from the right, and the first address that is not a trusted proxy is the client, for rate limits, sessions and the activity log. Empty: the header is ignored and the TCP peer is the client |
+| `TRUSTED_PROXIES` | empty | Comma-separated CIDRs or addresses of reverse proxies. Their `X-Forwarded-For` is read from the right, and the first address that is not a trusted proxy is the client, for rate limits, sessions and the activity log. The gateway reads it too, for API keys limited to addresses (`allowed_cidrs`). Empty: the header is ignored and the TCP peer is the client |
 | `MFA_ENC_KEY` | empty (dev: a fixed key) | 32 random bytes in base64 (`openssl rand -base64 32`). Encrypts TOTP secrets with AES-256-GCM. Without it 2FA cannot be turned on; when users already have 2FA the control plane refuses to start without it. The development key is refused outside `GUARD_ENV=dev`. Back it up with the database: a lost key disables everyone's 2FA. Several keys, comma-separated and the newest first, for a rotation (`control-plane keys rotate`) |
 | `CONTENT_KEK` | empty | Opens the stored content the gateway encrypted; the same value as on the gateway (or `CONTENT_KEK_FILE`, `CONTENT_KEK_VAULT_KEY`). See [Encryption](docs/security/README.md#encryption) |
 | `<SECRET>_FILE`, `vault:` values | — | Any secret setting can come from a file (`NAME_FILE`) or HashiCorp Vault KV v2 (`NAME=vault:<mount>/<path>#<key>`, with `VAULT_ADDR`, `VAULT_TOKEN` or `VAULT_TOKEN_FILE`, `SECRETS_VAULT_TTL` default `5m`). See [Secrets](docs/security/README.md#where-secrets-come-from) |
@@ -720,7 +729,7 @@ URL tried before Hugging Face: `<mirror>/<name>/<version>/<file>`).
 | `GATEWAY_PORT`, `METRICS_PORT` | `8080`, `9090` | Host ports of the gateway |
 | `CONTROL_PLANE_PORT`, `CONTROL_PLANE_METRICS_PORT` | `18081`, `9091` | Host ports of the control plane |
 | `POSTGRES_PORT` | `5432` | Host port of Postgres (dev override only) |
-| `GUARDSPEC_VERSION` | `0.5.0` | Tag of the `ghcr.io/guard-spec/guard-spec-*` images in `docker-compose.yml` (the dev override builds from source instead) |
+| `GUARDSPEC_VERSION` | `0.6.0` | Tag of the `ghcr.io/guard-spec/guard-spec-*` images in `docker-compose.yml` (the dev override builds from source instead) |
 | `MODELS_UID`, `MODELS_GID` | `0` | Owner of files written by `models-init` and `models-pull` |
 | `QUICKSTART_TIMEOUT` | `600` | `scripts/quickstart.sh`: seconds to wait for `/readyz` |
 
@@ -807,10 +816,16 @@ needs `Authorization: Bearer <token from /v1/auth/login>`. Roles are `owner`,
 | `GET /policy/schema` (fields, operators per type, actions) | any user |
 | `POST /policy/parse` (`{"text"}` to `{"condition"}`; 422 `{"error","position"}`) | any user |
 | `POST /policy/format` (`{"condition"}` to `{"text"}`; 422 on an invalid tree) | any user |
+| `POST /policy/sample` (`{"text"}`, at most 8000 bytes, to `{vars, layers, rules}`: a sample sentence scored with the sanitizer, the L1 rules and the personal data patterns for the simulator; `scores.l2` and `scores.l3` are -1; nothing stored; 60 per user per minute) | any user |
 | `GET /organizations/:orgId` (includes `default_upstream_id`) | viewer |
-| `PATCH /organizations/:orgId` (`audit_store_content`) | admin |
+| `PATCH /organizations/:orgId` (`audit_store_content`; 202 with a pending request under [two-person approval](#governance)) | admin |
+| `DELETE /organizations/:orgId` (`{"confirm": "<slug>", "reason"}`; never the default organization; an owner gets 202 with a request another owner or an instance administrator approves; an instance administrator deletes at once with a `reason`) | owner, instance admin |
+| `GET /organizations/:orgId/approvals?status=pending\|approved\|rejected\|expired\|cancelled\|all` | admin, instance admin |
+| `POST /organizations/:orgId/approvals/:id/approve`, `.../reject` (`{"note"}`; the requester cannot approve their own; an organization's deletion is approved by another owner or an instance administrator) | admin, instance admin |
 | `GET`, `PUT /organizations/:orgId/guard-settings` | viewer, admin |
-| `GET`, `PUT /organizations/:orgId/security` (2FA requirement, login methods, domain join, session lifetime, `scim_revoke_keys`) | admin, owner |
+| `GET /organizations/:orgId/input-settings` (the settings or `inherit`, the instance limits read from the gateway, a pending loosening) | viewer |
+| `PUT /organizations/:orgId/input-settings` (`{input_mode, max_input_tokens, allowed_file_types, unreadable_file_action, reason}`), `DELETE` (back to the instance's behaviour, `{reason}`); 202 with a pending request when it loosens and [two-person approval](#governance) is on. See [Per-organization input settings](#per-organization-input-settings) | admin |
+| `GET`, `PUT /organizations/:orgId/security` (2FA requirement, login methods, domain join, session lifetime, `scim_revoke_keys`, `two_person_approval`, `approval_expiry_hours`, `api_key_max_lifetime_days`) | admin, owner |
 | `GET /organizations/:orgId/scim/tokens` (tokens without their value, `base_url`, number of SCIM users and groups) | admin |
 | `POST /organizations/:orgId/scim/tokens` (`{name, expires_at}`; the token is in the answer once), `DELETE .../scim/tokens/:id` | owner |
 | `GET`, `PUT /organizations/:orgId/group-roles` (IdP group to role mappings) | admin, owner |
@@ -819,8 +834,9 @@ needs `Authorization: Bearer <token from /v1/auth/login>`. Roles are `owner`,
 | `POST /organizations/:orgId/members/:userId/reset-mfa` | owner |
 | `GET /organizations/:orgId/activity?actor=&action=` | admin |
 | `GET`, `PUT`, `DELETE /organizations/:orgId/projects/:projectId/members[/:userId]` | viewer, admin |
-| `GET`, `POST /organizations/:orgId/api-keys` | admin |
-| `PATCH`, `DELETE /organizations/:orgId/api-keys/:keyId` | admin |
+| `GET`, `POST /organizations/:orgId/api-keys` (`expires_at`, `allowed_cidrs`; see [API key policy](#governance)) | admin |
+| `PATCH` (`rpm_limit`, `tpm_limit`, `allowed_cidrs`, `expires_at`), `DELETE /organizations/:orgId/api-keys/:keyId` | admin |
+| `POST /organizations/:orgId/api-keys/:keyId/rotate` (`{"overlap_hours": 24}`; the successor key is in the answer once) | admin |
 | `GET`, `POST /organizations/:orgId/projects` (list includes `default_upstream_id`) | viewer, admin |
 | `GET`, `POST /organizations/:orgId/upstreams` | viewer, admin |
 | `PUT`, `DELETE /organizations/:orgId/upstreams/:id` (409 while a rule or default uses it) | admin |
@@ -828,12 +844,17 @@ needs `Authorization: Bearer <token from /v1/auth/login>`. Roles are `owner`,
 | `PUT /organizations/:orgId/default-upstream` (`{"upstream_id": id or null}`) | admin |
 | `PUT /organizations/:orgId/projects/:projectId/default-upstream` | admin |
 | `GET`, `PUT /organizations/:orgId/config[?dry_run=true]` (YAML; `GET` is 409 when the stored config would not apply again) | viewer, admin |
-| `GET`, `POST /organizations/:orgId/policies` (409 on a name the org already uses; `enabled` defaults to true) | viewer, admin |
+| `GET`, `POST /organizations/:orgId/policies` (409 on a name the org already uses; `enabled` defaults to true; `log_only`, `reason`) | viewer, admin |
 | `POST /organizations/:orgId/policies/simulate` | viewer |
-| `PUT`, `DELETE /organizations/:orgId/policies/:id` | admin |
+| `PUT`, `DELETE /organizations/:orgId/policies/:id` (disabling answers 202 under two-person approval; only a disabled policy is deleted, else 409 `policy_enabled`) | admin |
+| `GET /organizations/:orgId/policies/:id/versions`, `GET .../versions/diff?from=&to=` ([policy history](#governance)) | viewer |
+| `POST /organizations/:orgId/policies/:id/rollback` (`{"version", "reason"}`; without `version`, one step back) | admin |
 | `GET /organizations/:orgId/requests?limit=&cursor=&action=` (includes `route_target`, `repeat_count` and `has_content`; never the content) | viewer |
+| `GET /organizations/:orgId/requests/:requestId/impact` (what a false-positive fix concerns over 7 days, from stored scores and hashes: `same_input`, `same_rule`, `threshold`; counts only; see [Admin UI](#admin-ui)) | viewer |
+| `GET /organizations/:orgId/getting-started` (the setup checklist: enabled providers and reachability from the request log, active API keys, enabled policies, the gateway's layers and version, alert channels, own input settings, `complete`; counts only) | viewer |
 | `POST /organizations/:orgId/requests/:requestId/content` `{"reason"}`: the stored prompt and answer of one request, logged as `request.content_viewed` with the reason | the org's `content_read_role` (default admin) |
 | `GET /organizations/:orgId/dashboard?window=24h\|7d\|30d&project_id=` (request log aggregates; see below) | viewer |
+| `GET /organizations/:orgId/reports/requests.csv?window=24h\|7d\|30d` or `?from=&to=` (the same per period as CSV, counts only; see [Governance](#governance)) | viewer |
 | `GET`, `POST /organizations/:orgId/exemplars` | viewer, admin |
 | `PUT`, `DELETE /organizations/:orgId/exemplars/:id` | admin |
 | `GET`, `POST /organizations/:orgId/invites`, `DELETE .../invites/:inviteId` (also under `/orgs/:orgId`) | admin |
@@ -851,8 +872,10 @@ log in Postgres over a window that ends now (`window` is `24h`, the default,
 `block_rate`, `by_action`, `latency_ms` (`p50`, `p95`, `p99`; null without
 latencies), a `series` of `{start, count, blocked}` per hour (24h) or per day
 (UTC, empty buckets included), and the top five `top_labels` (benign left
-out), `top_rules` (with rule and policy names) and `top_projects`. The admin
-UI dashboard reads it.
+out), `top_rules` (with rule and policy names) and `top_projects`, and the
+most attacked: `top_blocked_projects` and `top_blocked_keys` (key prefix and
+alias), refused requests only. The admin UI dashboard and security overview
+read it.
 
 **Errors** are `{"error": "message"}`; the identity endpoints add a
 machine-readable `"code"` (such as `mfa_required`, `login_method_not_allowed`,
@@ -919,12 +942,25 @@ values of all kinds); both read `[]` and `0` unless the org turned on
 `input.unscanned.count` (how many such parts, all kinds together) describe
 the parts the gateway forwards but cannot read, in the turns it scans; see
 [Content the gateway cannot read](#content-the-gateway-cannot-read).
+`input.pdf.count` (PDF parts in those turns), `input.pdf.scanned` (how many
+of them were read with `PDF_EXTRACT`) and `input.pdf.reasons` (why the others
+were not: `no_text`, `encrypted`, `damaged`, `timeout`, `over_limit`,
+`internal`, `remote`) describe the PDFs. Example: `"encrypted" in
+input.pdf.reasons` with action `block`.
+`input.files.types` lists the types of the images, files and audio in those
+turns, detected from their content (`pdf`, `png`, `jpeg`, `gif`, `webp`,
+`docx`, `xlsx`, `pptx`, `zip`, `wav`, `mp3`, `ogg`, `flac`, `unknown`,
+`remote`); see [Per-organization input settings](#per-organization-input-settings).
 `pii.entities`, `toxicity.score` and `topic.categories` were removed: new
 rules may not name them, and stored rules that do read `[]` or `0` as they
 always did. A policy holds at most 200 rules; each rule has a CEL
 cost limit, the rules of one request share a cost budget and a timeout, and
 any of these limits fails closed with 503. Project policies run before the
-org-wide ones.
+org-wide ones. A policy with `log_only` is evaluated like any other, but
+what its `allow`, `block` and `route` rules would have decided is only
+recorded in the request log (tag `policy:would_block=<rule id>`); the
+request goes on to the next policy. Every save is kept as a version
+(see [Governance](#governance)).
 
 ## Routing
 
@@ -1115,6 +1151,14 @@ upstreams, the output guard and the client.
 - A scope without rules offers one-click templates: block high-risk
   injection, log possible injection in tool responses, route suspicious
   requests to another upstream (when there is one) and block hidden Unicode.
+- **Policy from template** adds a whole policy in one click: **Personal
+  data** (block card and CCCD numbers, log other personal data), **OTP and
+  KYC** (block attempts to extract OTPs, secrets or the prompt, a CCCD sent
+  with a phone number; log ID photos the gateway cannot read) and
+  **Banking** (injection from 0.6, injection in tool results and documents,
+  hidden characters, card numbers). It starts **log only** in the current
+  scope, so the request log shows what it would block before you turn it on;
+  the dialog says when its rules need personal data detection.
 - Drag a rule up or down to reorder it within its policy (or use the arrow
   buttons). Drag from a rule's round **match** handle to Block, Allow, Log or
   an upstream to set its action; an upstream makes it a `route` rule.
@@ -1122,7 +1166,11 @@ upstreams, the output guard and the client.
   The server validates every rule; its errors are shown on the rule.
 - The **Simulator** evaluates a request (scores, category, model and other
   schema fields) against the rules shown, unsaved changes included, highlights
-  the path and lists every rule's outcome.
+  the path and lists every rule's outcome. **Try a sample sentence** scores a
+  text on the control plane (`POST /v1/policy/sample`: the sanitizer, the L1
+  rules, the personal data patterns), fills the fields, runs the simulator
+  and lists the L1 rules that fired. L2 and L3 need the gateway's models, so
+  they show as not run (-1); nothing is stored.
 
 | Rule editor, visual | Rule editor, text |
 |---|---|
@@ -1154,9 +1202,57 @@ them, each linked to the policy and rule on the Flow page.
 |---|---|
 | ![Upstreams](docs/images/admin-upstreams.png) | ![Config as code with a diff](docs/images/admin-config.png) |
 
-Guard settings, API keys (the secret is shown once, at creation), projects,
+Guard settings, API keys (the secret is shown once, at creation; a key can
+be limited to addresses and rotated with an overlap window), projects,
 exemplars and the audit log (with the route target of each request) have
-pages of their own.
+pages of their own. **Policy history** lists every saved version of a
+policy with its author, time and reason, shows the changes between two
+versions and rolls back to any of them; the Flow page has a **Log only**
+switch per policy and offers to delete a policy only once it is disabled.
+**Approvals** lists the requests waiting for a second administrator (and,
+for instance administrators, every organization's pending deletion), and
+the **Dashboard**
+downloads its period as CSV (see [Governance](#governance)).
+
+**Getting started** lists the setup steps with their real state
+(`GET /v1/organizations/{id}/getting-started`): a model provider (and
+whether the last forwarded request in 7 days got an answer), an API key, an
+enabled policy and the detection layers the gateway reports (required), an
+alert channel and the organization's own input settings (recommended). Each
+step links to the page that sets it up. An organization still missing a
+provider, a key or a policy lands there after sign-in until the steps are
+done or the page is hidden (per organization, in this browser); the
+dashboard shows a setup card while a required step is left.
+
+**Security overview** shows the refused requests and their trend over 24
+hours, 7 or 30 days, the most attacked API keys and projects, the top
+detections, the health of the detection models (layers, a verified
+classifier, a recommended update, a failed reload) and the running gateway
+and control plane versions, with the CSV report of the period.
+
+**False positives in one click.** A request's details show why it was
+refused: the score of each detection layer that ran and the rules and
+categories that fired (gateways from 0.7 record them as `detector:*` tags,
+never text), the policy rule, and the log-only rules that would have
+decided. A refused request gets a panel to add an **allow exemplar** of the
+text or **report the false positive**, without leaving the page. The text is
+never fetched for it: it starts from the stored prompt only when you already
+read it (content storage on, your role, a logged reason), else you type it.
+The panel previews the impact from what the control plane stores
+(`GET .../requests/{id}/impact`, 7 days): identical requests (same body hash)
+and how many were refused; for a rule's refusal, how many requests that rule
+decided (an exemplar does not change a rule; the panel links to the flow);
+for the detector's, how many refusals at or below the score a higher block
+threshold would let through, or that the score is above the gateway's
+threshold. It cannot tell exactly which other requests an exemplar would
+flip: that would need the texts and the detector's models, and it says so.
+
+**Command palette.** Ctrl+K (⌘K on a Mac), or **Search** in the top bar,
+goes to any page the role may see and to the organization's policies,
+projects, model providers and API keys. Arrows move, Enter opens, Escape
+closes. The **request log** saves named filters (action and search, per
+organization, in this browser) and downloads the CSV report for a chosen
+period and project.
 
 **Report** on a request log row (or in its details) turns a missed attack or a
 wrongly blocked text into a prefilled GitHub issue for the project's "Bypass"
@@ -1174,7 +1270,9 @@ sends nothing. Viewers can report. What happens to a report is described in
 The UI loads nothing from other origins and runs under the control plane's
 `Content-Security-Policy` (`default-src 'self'`, no inline scripts or styles);
 the e2e tests run the production build under that policy and fail on any
-violation. Screenshots are taken against the mocked API of the e2e tests
+violation. Every page is checked with axe-core in English and Vietnamese
+(`e2e/a11y.spec.ts`): a serious or critical WCAG 2.1 A or AA violation fails
+the build. Screenshots are taken against the mocked API of the e2e tests
 (`npm run screenshots` in `web/`).
 
 ## Alerts and notifications
@@ -1313,203 +1411,4 @@ on `eval/` (AUC 0.987 against 0.784; ProtectAI is English-only and flags 51%
 of its benign rows) and ranks better on `deepset` and
 `jailbreak-classification`, whose training splits it saw. **On SPML, which no
 detector here trained on, ProtectAI is better**: AUC 0.997 against 0.974, and
-Guard Spec's default threshold blocks only 36% of its attacks (ProtectAI 99%,
-with 8% false positives). Meta Prompt Guard 2 is gated and not included; the
-page explains how to add it.
-
-### Go benchmarks: sanitizer, output guard, policy and HTTP path
-
-Measured on **2026-11-06** with the benchmarks added on top of commit
-`19fc3ff`, on an **Apple M3 Max (14 cores, 36 GB), macOS 15.4.1, Go 1.26.10,
-ONNX Runtime 1.31.1**, by:
-
-```bash
-make bench                                              # L1 only; no models, no cgo
-MODEL_DIR=/path/to/models make bench-onnx               # adds L1+L2(v3b)+L3 and L1+L2; skips without models
-```
-
-`make bench` runs the `testing.B` benchmarks in `internal/sanitizer`,
-`internal/outputguard`, `internal/policy` and `cmd/gateway` (`BENCHTIME=5s`
-for longer runs). Numbers are from a single run with the default 1 s per
-benchmark.
-
-**End to end through the gateway.** A client posts `/v1/chat/completions` to
-the gateway on a loopback socket; the request goes through the sanitizer, the
-detector, one policy of five CEL rules, the proxy to a fake upstream
-(`httptest`, answers at once) and the output guard on the way back. Audit rows
-are built but not written to Postgres. So this is the gateway's own overhead,
-without a model and without a database. Latency is per request, sent one at a
-time; "parallel" is the time per request with 14 concurrent clients
-(`b.RunParallel`).
-
-| Request | L1 only p50 / p99 | L1 + L2 p50 / p99 | L1 + L2 + L3 p50 / p99 |
-|---|---|---|---|
-| Benign, English, 39 characters | 0.38 / 0.92 ms | 2.17 / 2.78 ms | 2.86 / 16.2 ms |
-| Benign, Vietnamese, 66 characters | 0.37 / 0.90 ms | 2.87 / 12.8 ms | 3.76 / 4.47 ms |
-| Benign, English, 2,014 characters | 1.35 / 1.92 ms | 25.5 / 122 ms | 37.9 / 40.1 ms |
-| Attack, blocked (no upstream call) | 0.15 / 0.43 ms | 2.22 / 5.24 ms | 3.09 / 3.68 ms |
-| Benign short, parallel (time per request) | 0.058 ms | 0.86 ms | 1.31 ms |
-
-Model time grows with the number of tokens in the prompt, so the long prompt
-costs much more than the short ones with L2 and L3. The p99 values come from a
-few hundred requests per row on a laptop and are noisy (for example 122 ms for
-L1 + L2 on the long prompt against a p50 of 25.5 ms); read the p50 column.
-
-**Components, in process** (one call per operation):
-
-| Benchmark | Input | Time per call | Allocations |
-|---|---|---|---|
-| `BenchmarkSanitize` (input sanitizer) | 39-char English prompt | 3.8 µs | 24 |
-| | 2,025-char prompt | 133 µs | 24 |
-| | 1,560 chars with zero-width, bidi and full-width characters | 224 µs | 83 |
-| `BenchmarkOutputGuardText` (whole answer) | 2,048-char answer, nothing to change | 0.008 ms ¹ | 5 |
-| | 1,836-char answer with e-mails, phones, cards, links, images | 0.30 ms ¹ | 436 |
-| `BenchmarkOutputGuardStream` (16-byte deltas) | 2,048-char answer, nothing to change | 0.013 ms ¹ | 70 |
-| | 1,836-char answer with findings | 0.37 ms ¹ | 1,036 |
-| `BenchmarkOutputGuardSSE` (16-byte deltas, JSON included) | chat completion stream, clean / with findings | 0.49 / 0.85 ms ¹ | 8,889 / 9,105 |
-| | Messages API stream, clean / with findings | 0.26 / 0.65 ms ¹ | 5,065 / 5,682 |
-| | Responses API stream, clean / with findings | 0.39 / 0.76 ms ¹ | 5,781 / 6,262 |
-| `BenchmarkEvaluate` (CEL, compiled policy) | 1 rule | 2.6 µs | 70 |
-| | 10 rules | 15 µs | 393 |
-| | 50 rules | 82 µs | 1,905 |
-
-The stream figures are the total for all deltas of one answer (128 for the
-clean one): about 0.1 µs per delta for the clean answer and 3 µs with
-findings, 1.6× and 1.3× the whole-answer guard on the same text. In the
-event streams most of the time goes to decoding and encoding each event's
-JSON (2 to 4 µs per event).
-
-¹ Output guard rows: measured on **2026-11-07** on the same machine with the
-stream changes of RF-ea8d7c72, as the median of 8 runs (`benchstat`), each
-run alternating with v0.3.0 so that both saw the same load. The machine was
-shared (load average 5 to 20): the guard rows varied by under 7%, the event
-stream rows by up to ±160%. v0.3.0 in the same runs: whole answer 0.50 /
-0.63 ms, stream 3.8 / 4.6 ms (7.5× and 7.3× the whole answer, about 30 µs per
-delta), event streams 4.1 to 5.1 ms. To reproduce:
-
-```bash
-go test -run '^$' -bench 'OutputGuard' -benchmem -count 8 ./internal/outputguard
-```
-
-**Conversation window** (`BenchmarkConversationWindow`, and
-`BenchmarkConversationWindowML` under `make bench-onnx`): the nine-turn
-tutoring chat of `cmd/gateway/testdata/multiturn.json` posted to
-`/v1/messages` with `SCAN_HISTORY=latest`, so the trailing turn is about 90
-characters and the window (the last four user turns) about 340. "Uncached" has
-no scan cache, so the window is scored on every request, as on each new user
-turn; "cached" resends unchanged user turns, as an agent loop does. Measured
-on **2026-11-07**, same machine, `BENCHTIME=3s`, while another job kept the
-CPU busy (load average 27 to 40 on 14 cores): read the differences, not the
-absolute values, and expect less on an idle machine.
-
-| Window | L1 only p50 / p99 | L1 + L2 + L3 p50 / p99 |
-|---|---|---|
-| Off | 0.43 / 1.06 ms | 8.8 / 37 ms |
-| On, uncached (new user turn) | 0.59 / 1.21 ms | 21.5 / 120 ms |
-| On, cached (agent loop) | 0.39 / 1.59 ms | 7.4 / 30 ms |
-
-A new window costs one more detector run over the joined turns: about
-0.2 ms with L1, and with the models what L2 and L3 take for its length (here
-about 13 ms more at p50; model time grows with the tokens, up to
-`CONVERSATION_WINDOW_BYTES`). A request whose user turns did not change pays a
-cache lookup.
-
-**Personal data in requests** (`BenchmarkInputPII`, `BenchmarkCountPII`):
-a chat request of 2 KB or 20 KB of English and Vietnamese text that ends with
-an e-mail address and a phone number, with the org setting off and on.
-"Sanitize step" runs the request guard alone (where the check runs); "HTTP"
-is the whole path with L1 and a `log` rule on `input.pii.count`. Measured on
-**2026-11-08**, same machine, median of 3 to 4 runs (load average about 4).
-
-| Request text | Sanitize step off / on | HTTP p50 off / on (L1) | `CountPII` alone |
-|---|---|---|---|
-| 2 KB | 148 / 159 µs | 1.18 / 1.20 ms | 10.5 µs (0.7 µs without digits or `@`) |
-| 20 KB | 1.62 / 1.68 ms | 11.08 / 11.19 ms | 53 µs (6.6 µs without digits or `@`) |
-
-```bash
-go test -run '^$' -bench 'InputPII' -benchmem ./cmd/gateway
-go test -run '^$' -bench 'CountPII' -benchmem ./internal/outputguard
-```
-
-### Detection latency on Linux (GitHub-hosted runners)
-
-Measured on **2026-11-06** at commit `70827a7`, by the manual
-[Bench workflow](.github/workflows/bench.yml)
-([run 42171305472](https://github.com/guard-spec/guard-spec/actions/runs/42171305472)),
-with Go 1.26.10, ONNX Runtime 1.31.1 and the released models
-(guardspec-classifier v3b, multilingual-e5-small, both int8):
-
-- **amd64**: GitHub-hosted `ubuntu-24.04` runner, **AMD EPYC 9V74** (4 vCPUs,
-  16 GB), native x86_64, not emulated;
-- **arm64**: GitHub-hosted `ubuntu-24.04-arm` runner, **Arm Neoverse-N2**
-  (4 vCPUs, 16 GB), for comparison.
-
-GitHub-hosted runners are shared virtual machines, so other tenants can slow
-a run down: read these numbers as indicative, not as a server benchmark.
-Each row is a single run.
-
-**Sanitizer + detector per eval row** (`cmd/eval`, the 2,176 rows of
-`eval/`, one at a time, in process; the same measurement as the table above):
-
-| Detector | amd64 p50 / p95 / p99 | arm64 p50 / p95 / p99 |
-|---|---|---|
-| L1 only | 0.15 / 0.34 / 0.48 ms | 0.17 / 0.34 / 0.49 ms |
-| L1 + L2 (v3b) | 5.2 / 13.7 / 24.1 ms | 5.7 / 14.3 / 17.6 ms |
-| **L1 + L2 + L3 (v3b, default with models)** | 7.2 / 20.0 / 25.1 ms | 9.5 / 24.0 / 30.2 ms |
-| L1 + L2 + L3 (v3b), cascade | 5.4 / 16.1 / 19.6 ms | 6.7 / 20.0 / 24.0 ms |
-
-**One model run per request** (`cmd/onnxbench`, 200 requests per row, a text
-of exactly that many tokens; anything longer than 256 tokens is scored as
-several 256-token windows overlapping by 64 tokens, the window both models
-use: v3b's `max_len` and L3's `l3WindowTokens`). "Conc 4" is four concurrent requests: on 4 vCPUs each run
-already uses every core, so latency grows about 4x and throughput stays flat.
-
-| Layer | Tokens | Conc | amd64 p50 / p95 / p99 | amd64 req/s | arm64 p50 / p95 / p99 | arm64 req/s |
-|---|---:|---:|---|---:|---|---:|
-| L2 classifier (v3b) | 64 | 1 | 8.6 / 19.1 / 21.8 ms | 90 | 8.8 / 9.1 / 9.4 ms | 113 |
-| | 64 | 4 | 27.9 / 37.8 / 48.0 ms | 141 | 32.6 / 46.5 / 50.3 ms | 118 |
-| | 512 | 1 | 85 / 88 / 92 ms | 11.7 | 85 / 90 / 100 ms | 11.6 |
-| | 512 | 4 | 371 / 454 / 477 ms | 10.7 | 399 / 496 / 548 ms | 10.0 |
-| | 2,048 | 1 | 323 / 335 / 368 ms | 3.1 | 305 / 312 / 326 ms | 3.3 |
-| L3 embedder (e5-small) | 64 | 1 | 7.9 / 8.6 / 9.8 ms | 125 | 9.8 / 10.7 / 11.3 ms | 101 |
-| | 64 | 4 | 26.4 / 40.4 / 45.9 ms | 147 | 33.8 / 51.5 / 57.5 ms | 113 |
-| | 512 | 1 | 74 / 82 / 85 ms | 13.3 | 74 / 81 / 85 ms | 13.3 |
-| | 512 | 4 | 348 / 416 / 446 ms | 11.6 | 333 / 450 / 471 ms | 11.7 |
-| | 2,048 | 1 | 456 / 478 / 494 ms | 2.2 | 364 / 378 / 388 ms | 2.7 |
-
-The run's job summaries and the `bench-ubuntu-24.04*` artifacts have the full
-tables (256 tokens, 2,048 tokens at concurrency 4) and the `lscpu` output.
-Run it again with `gh workflow run bench.yml`.
-
-On these 4-vCPU runners, the default L1 + L2 + L3 costs about 7 ms per typical
-eval row at p50 on amd64, roughly twice the M3 Max laptop (3.7 ms), and model
-time grows about linearly with the prompt's tokens: plan for about 0.15 to 0.25 ms
-per token per layer for long prompts on a comparable CPU.
-
-## Security model and limitations
-
-What Guard Spec does:
-
-- Detects instruction-override attempts in user text, tool results,
-  retrieved documents and MCP tool descriptions, in English and Vietnamese,
-  and refuses the request before it reaches the model.
-- Removes invisible-character, bidi, tag-block and encoding tricks before
-  classification, so they cannot hide a payload from the detector.
-- Reduces what a successful injection can do through the answer: images and
-  links to unknown hosts are stripped (a common exfiltration channel),
-  personal data is redacted, and a canary can catch system-prompt leaks.
-- Fails closed: if policies, org settings or the detector cannot run, the
-  request is refused (503), not passed through.
-
-What it does **not** protect against:
-
-- **Attacks it does not recognise.** Detection is probabilistic. Expect some
-  attacks to pass, especially new phrasings, other languages, and
-  multi-turn attacks that look harmless in each single message: the
-  [conversation window](#conversation-window) joins only the last few user
-  turns, and an attack spread wider, or padded out of the window, is scored
-  turn by turn. Treat it as
-  one layer of defence; keep least-privilege tools, human confirmation for
-  risky actions and output handling in your application.
-- **Injections hidden in code or logs that only the classifier sees.**
-  The class
+Guard Spec's default threshold blocks only 36% of its attacks

@@ -16,6 +16,10 @@ https://www.meetup.com/handsonprogrammingevents/
 ___________________________________________________________________________________________________________
 ### ======== 2026 ========   
    
+### Paper for November 17, 2026:    
+A Circuit for In-Context Learning     
+https://arxiv.org/pdf/2611.05344    
+    
 ### Paper (actually a blog) for November 10, 2026:   
 LLMs can natively read & write neural network weights   
 https://rikiyat.github.io/blog/weight-space-programming/   
@@ -2303,5 +2307,4 @@ https://arxiv.org/pdf/1612.05424.pdf - Unsupervised Pixel-level domain adaptatio
 ## Mar 13, 2017 - Hacker Dojo  
 https://arxiv.org/pdf/1701.06547.pdf - adversarial learning for neural dialog generation  
 
-### February 27, 2017 - Hacker Dojo   
-https://arxiv.org/pdf/1612.02699.pdf - Deep Supervision with Shape Concepts for Occlusion-Aware 3D Object Parsing  
+### February 27, 2017 - Hacker Dojo 

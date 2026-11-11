@@ -15,7 +15,7 @@ Türkçe metinleri yapay zeka izlerinden arındıran bir [Claude skill'i](https:
 - Çeviri kokan kalıplar: "günün sonunda", "derinlemesine dalmak", "-e sahip olmak".
 - İngilizce noktalama: cümle içinde uzun çizgi (—), "ve"den önce virgül, *25%*.
 
-turkish-humanizer bu örüntüleri yakalar ve metni yeniden yazar. Bunu yaparken **anlamı, sayıları, terimleri ve özel isimleri olduğu gibi korur**, bilgi eklemez ve çıkarmaz. Akademik bir metin akademik kalır.
+turkish-humanizer bu örüntüleri yakalar ve metni yeniden yazar. İsterseniz yeniden yazmadan yalnızca hangi örüntülerin nerede geçtiğini de raporlar. Bunu yaparken **anlamı, sayıları, terimleri ve özel isimleri olduğu gibi korur**, bilgi eklemez ve çıkarmaz. Akademik bir metin akademik kalır.
 
 ## Önce / sonra
 
@@ -23,7 +23,7 @@ turkish-humanizer bu örüntüleri yakalar ve metni yeniden yazar. Bunu yaparken
 >
 > **Sonra:** Yapay zeka birçok sektörü dönüştürüyor ve şirketlerin buna hazırlanması gerekiyor.
 
-Beş metin türü için tam örnekler [`turkish-humanizer/examples/`](turkish-humanizer/examples/) klasöründe.
+Altı metin türü için tam örnekler [`turkish-humanizer/examples/`](turkish-humanizer/examples/) klasöründe.
 
 ## Nasıl kullanılır?
 
@@ -137,12 +137,46 @@ Aynı metin [`dist/kisa-talimat.txt`](dist/kisa-talimat.txt) dosyasında da var.
 | Neyin değiştiğini de görmek | "Doğallaştır, altına kısa bir değişiklik özeti ekle: ..." |
 | Resmi tonun korunması | "Bu resmi bir yazı, resmiyetini bozmadan doğallaştır: ..." |
 | İngilizce bir metni doğal Türkçeye | "Bunu Türkçeleştir: ..." |
+| Yeniden yazım olmadan yalnızca inceleme | "Bunu yeniden yazma, nerelerinde iz var göster: ..." |
+| Kendi üslubunuza yakın bir sonuç | "Şu benim yazdığım bir paragraf: ... Aşağıdaki metni buna yakın bir sesle doğallaştır: ..." |
 
 ### Bilmeniz gerekenler
 
 - **Sonucu mutlaka okuyun.** Skill anlamı korumak için tasarlandı ve testlerde bunu başardı, ama yayımlamadan ya da göndermeden önce sayıları ve isimleri kontrol etmek sizin güvenceniz.
 - **En iyi sonucu Claude'da verir.** Testler Claude ile yapıldı. Diğer araçlarda kurallar aynı, ama sonuçlar modelden modele değişebilir.
 - **Bir şey ters giderse** (bir sayı değiştiyse, metne olmayan bir bilgi eklendiyse) lütfen [bir issue açın](../../issues/new/choose). Bu tür bildirimler projeyi en çok geliştiren katkılardır.
+
+## Tarayıcı: `tara.py`
+
+Skill ile birlikte küçük bir komut satırı aracı gelir. Katalogdaki örüntülerden düz metinde sayılabilenleri ve cümle uzunluğu dağılımını raporlar. Yalnızca Python'ın standart kitaplığını kullanır, kurulum gerektirmez.
+
+```bash
+python3 turkish-humanizer/scripts/tara.py yazi.md
+python3 turkish-humanizer/scripts/tara.py yazi.md --register akademik   # gundelik | is | akademik
+python3 turkish-humanizer/scripts/tara.py yazi.md --json
+```
+
+```
+Register: gundelik · 11 cümle, 133 sözcük
+Cümle uzunluğu: ortalama 12.1, en kısa 4, en uzun 24, değişim katsayısı 0.51, 14-22 bandında %27
+
+DOL-01 · Açılış dolguları (1)
+    satır 5: Umarım bu e-posta sizi iyi bulur. Bu e-postayı…
+YAPI-04 · Gereksiz edilgen yapı (2)
+    satır 7: …incelemeler sonucunda ekibimiz tarafından tespit edilmiştir…
+```
+
+İkinci işi, yeniden yazılmış bir metni kaynağıyla karşılaştırmaktır. Kaynaktaki sayıların, URL ve e-posta adreslerinin, özel adların yeni metinde bulunup bulunmadığına, "-ebilir", "bazı", "muhtemelen" gibi temkin ifadelerinin azalıp azalmadığına bakar. *25%* ile *%25* gibi biçim farklarını değer farkı saymaz.
+
+```bash
+python3 turkish-humanizer/scripts/tara.py yeni.md --kaynak eski.md
+```
+
+Üç şeyi bilmekte yarar var:
+
+- **Yapay zeka dedektörü değildir.** Metni kimin yazdığını söylemez, puan vermez. İnsanlar da bu kalıplarla yazar.
+- **Bulgular adaydır.** `--register akademik` ile "söz konusu", "bu bağlamda" gibi o türde olağan kalıplar ayrı listelenir, ama son kararı katalogdaki **Dokunma** satırı ve okuyan kişi verir.
+- **Anlamı okuyamaz.** Karşılaştırma sözcük düzeyindedir. Bir sayının yerinde durması cümlenin aynı şeyi söylediğini göstermez.
 
 ## Depo yapısı
 
@@ -154,14 +188,16 @@ turkish-humanizer/          ← skill'in kendisi (kurulan klasör)
 │   ├── cumle-turleri.md    ← cümle çeşitliliği araç kutusu
 │   ├── baglaclar.md        ← bağlaç alternatifleri ve register etiketleri
 │   └── noktalama.md        ← TDK'ya dayalı noktalama ve yazım denetimi
-├── examples/               ← 5 metin türü için önce/sonra çiftleri
+├── examples/               ← 6 metin türü için önce/sonra çiftleri
+├── scripts/tara.py         ← örüntü tarayıcı ve kaynak karşılaştırma
 └── evals/                  ← test vakaları
 kaynaklar/                  ← ayrıntılı kaynak belgeler ve kaynakça
 dist/                       ← kullanıma hazır dosyalar (zip, tek dosya, kısa talimat)
 scripts/                    ← dist/ dosyalarını üreten script
+tests/                      ← tara.py ve katalog tutarlılığı testleri
 ```
 
-Skill dosyalarını değiştirdiyseniz `python3 scripts/tek-dosya-olustur.py` ile `dist/` klasörünü yeniden üretin.
+Skill dosyalarını değiştirdiyseniz `python3 scripts/tek-dosya-olustur.py` ile `dist/` klasörünü yeniden üretin. Testler `python3 -m unittest discover -s tests` ile çalışır.
 
 ## Katkı
 
@@ -194,6 +230,7 @@ The skill rewrites the text while preserving meaning, numbers, terminology and p
 
 - **Install:** on claude.ai, upload `dist/turkish-humanizer.zip` under *Settings → Capabilities → Skills*. In Claude Code, copy the inner `turkish-humanizer/` folder to `~/.claude/skills/`. For ChatGPT, Gemini and other assistants, use `dist/turkish-humanizer-tek-dosya.md` (all rules in one file) as a knowledge file, or paste `dist/kisa-talimat.txt` as instructions.
 - **Use:** give Claude Turkish text and say *"insanlaştır"*, *"doğallaştır"* or *"humanize this"*.
+- **Audit only:** ask *"yeniden yazma, sadece izleri göster"* to get a report instead of a rewrite. `turkish-humanizer/scripts/tara.py` counts the catalog's countable patterns from the command line and, with `--kaynak`, checks that numbers, names, addresses and hedges survived a rewrite. It is not an AI detector.
 - **Contribute:** the pattern catalog in `turkish-humanizer/references/ai-oruntuleri.md` uses one copy-paste template per pattern. See [CONTRIBUTING.md](CONTRIBUTING.md) (in Turkish). Issues and PRs in English are welcome too.
 
 License: MIT.

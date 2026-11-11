@@ -101,7 +101,7 @@ latency is recorded, step by step, and shown in the dashboard.
 | Calls at once | ✅ No limit of its own, your server decides, never billed per line | 4, then US$10 per line a month | 20, then US$8 per call a month | 10 by default when self-hosted, you can raise it; 10 in its cloud |
 | Backup model | ✅ From any provider, when one fails or is slow | Same provider only, on OpenAI and Bedrock | ✅ Takes over when the main model fails or is slow | — |
 | Phone lines | ✅ Twilio, Telnyx, Plivo, Vonage and any carrier by SIP trunk, all included free; incoming only on Genesys | ✅ Twilio, Vonage, Telnyx, SIP | ✅ Twilio, Telnyx, SIP | ✅ Twilio, Vonage, Telnyx, Plivo, Vobiz, Cloudonix, Asterisk |
-| Campaigns | ✅ Every line that calls out, free, no per-call platform fee (retries coming) | ✅ | ✅ | ✅ With retries |
+| Campaigns | ✅ Every line that calls out, free, no per-call platform fee, with retries | ✅ | ✅ | ✅ With retries |
 | Knowledge base (RAG) | ✅ Free, on your server, matching words; or your own search | ✅ Google Gemini, or your own server | ✅ | ✅ |
 | Several assistants in one call | ✅ Squads, in Vapi's format | ✅ Squads | ✅ | ✅ |
 
@@ -194,7 +194,9 @@ cp .env.example .env          # fill in your keys and OPENRING_PASSWORD
 docker compose up --build     # dashboard and API on http://localhost:8000
 ```
 
-On a server, set `PUBLIC_URL` to its https address so Twilio can reach it.
+On a server, set `PUBLIC_URL` to its https address so Twilio can reach it. There is a ready image,
+`ghcr.io/elifalanrocha/openring`, and a one-click [Render](https://render.com/deploy?repo=https://github.com/elifalanrocha/openring)
+blueprint; [docs/deploy.md](docs/deploy.md) covers those, Railway and a plain VPS.
 
 ## ❓ FAQ
 

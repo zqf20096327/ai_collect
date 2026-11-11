@@ -419,6 +419,7 @@ Pipeline for a new, non-trivial ask: `intent-capture` (pin *what*) → `plan-fir
 | [teardown](skills/addons/teardown.md) | Interactive 3D simulators of any machine or model on Triforge: `teardown.cli.js` detects the project, its `.glb` models and the machine from a plain description, drafts a spec, scaffolds a gears, crank or custom starter under one machine-agnostic page (parts, isolate, cutaway, camera and tour from the real bounds), checks it, builds an offline page, renders review sheets and drives the live page like a visitor (`probe`) in headless Chrome; capped cutaways, glass mode, synced charts, callouts and a V8-capable crank starter; loads on its own for simulator, cutaway or exploded-view requests; opt-in; `/teardown` |
 | [teardown-film](skills/addons/teardown-film.md) | Optional add-on to `teardown`: `teardown-film.cli.js` records a simulator's tour to an H.264 MP4 by stepping the page frame by frame in headless Chrome and encoding with ffmpeg; `--preview` for a quick look; mixes in the score if there is one; opt-in; `/teardown-film` |
 | [teardown-sound](skills/addons/teardown-sound.md) | Optional add-on to `teardown`: `teardown-sound.cli.js` writes a simulator's score as a WAV from the tour's timeline (chord bed, a hum at the machine's gear-mesh or firing frequency, a tick per beat, a whoosh on the cut), reproducible and mastered to -14 LUFS with the peak at or below -2 dBFS; opt-in; `/teardown-sound` |
+| [figma-code](skills/addons/figma-code.md) | Optional add-on: `figma-code.cli.js` turns an exported Figma SVG into pixel-matched HTML and CSS (real text, flex where the geometry is exact, inline SVG for gradients and paths), then proves it with a headless-browser pixel diff; rule-driven standards pass (risky rules reverted on their own) and Next, Astro and Laravel components; `/figma-code` |
 | [project-context](skills/addons/project-context.md) | Private, gitignored `project-context/` docs folder with an `INDEX.md` per sub-folder (setup by auto-detect, project type or custom list); `scan.js` companion tracks changes so only new files are re-read; guarded against commits |
 
 </details>
@@ -517,6 +518,8 @@ Slash commands are shortcuts **you** type; the agent never runs them on its own.
 
 **Mod command** (Claude Code, from the `budget-ledger` mod): `/budget` shows the same ledger report.
 
+**Mod command** (Claude Code, from the `feature-usage` mod): `/kit-usage` switches feature-usage tracking on or off, turns the first-use notice on or off, and `/kit-usage report` lists which skills, commands and scripts were used and which installed ones never were.
+
 **Skills by name** (Claude Code turns every installed skill into `/<skill-name> <free text>`, which loads it on purpose instead of waiting for the agent to match it):
 
 | Group | Commands | Use when |
@@ -525,7 +528,7 @@ Slash commands are shortcuts **you** type; the agent never runs them on its own.
 | Standards | `/coding-standards`, `/code-audit`, `/comment-style` | editing code, auditing, or changing comment level |
 | Memory | `/memory-bank`, `/memory-gardener`, `/skill-ablation` | recording decisions, pruning notes, testing which skills are still needed |
 | Setup and authoring | `/install-kit`, `/mod-setup`, `/mod-writer`, `/command-writer`, `/cli-writer`, `/skill-scope`, `/skill-writer` | installing the kit or mods, writing a skill or mod |
-| Add-ons | `/project-context`, `/narrate`, `/personality`, `/diagram`, `/teardown`, `/teardown-film`, `/teardown-sound` | setting up that add-on |
+| Add-ons | `/project-context`, `/narrate`, `/personality`, `/diagram`, `/teardown`, `/teardown-film`, `/teardown-sound`, `/figma-code` | setting up that add-on |
 | Stack and tools | `/astro-page`, `/threejs-scene`, `/shopify-toolkit-install`, `/mcp-manager`, `/system1-prefilter`, `/strata-css`, `/triforge` | working in that stack or setting up that tool |
 | Claude models | `/claude-all-models`, `/fable-5-1`, `/fable-5`, `/opus-5-5`, `/opus-5`, `/opus-4-8`, `/opus-as-fable`, `/sonnet-5-5`, `/sonnet-5`, `/haiku-5-5`, `/haiku-4-5`, `/hooks-enforcement` | choosing or prompting a Claude model |
 | OpenCode models | `/opencode-all-models` (holds all the per-model protocols) | choosing or prompting an open-weight model |
@@ -624,6 +627,7 @@ Mods are small, optional Claude Code plug-ins in [`mods/`](mods/). They run in c
 | Mod | What it does | Kind | Needs or pairs with |
 |---|---|---|---|
 | `budget-ledger` | Logs real token use, cost, cache and tool-result sizes per turn, one file per session; adds `/budget` | observes only | nothing |
+| `feature-usage` | Records which skills load, commands are typed and kit scripts run, one name-only row each in `~/.ai-dev-kit/usage/log`; adds `/kit-usage` (on, off, notify, status, report). Switchable at install (`--usage on\|off`) and in plain words | observes only | `session-budget`'s `usage.js` for the report |
 | `precommit-gate` | Gates `git commit` and `git push`: blocks leaked secrets, secret files, bad messages and `--no-verify`; warns once on stray files and debug leftovers | blocks | the `pre-commit` skill |
 | `guard` | Denies edits to secret files, lockfiles and `.git`, and destructive commands (root-like recursive deletes, force push, deleting remote main, `reset --hard`, `clean -f`, publish, download piped into a shell); settings in `.claude/guard.json` | blocks | nothing |
 | `edit-check` | After each edit, runs syntax, ESLint, Stylelint and standards checks and shows the model only the problems; a clean file adds nothing | reminds | the `pre-merge-gate` skill |
@@ -667,6 +671,10 @@ Scripts are plain Node (no packages) that do the mechanical work so the agent do
 | `skill-ablation/archive.js` | Moves the session file, skill roots, commands and the hooks block into `.ablation-archive/<date>/` with a manifest; `restore` brings all or named skills back | by the skill |
 | `handover/size.js` | Reports a `handover.md` over 120 lines or with stacked session sections, and a `learnings.md` over 30 bullets; silent when within limits | `/wrap-up`, and a Claude Code session-start hook |
 | `skill-scope/auto.js` | Archives the per-session-archivable skills and restores the ones a task names (trigger words in `triggers.json`; a finished theme locks `ux-theory` to expansion phrases) | `/next`, and two Claude Code hooks |
+| `skill-scope/auto.js pickup` | Prints the queued task with what its mode means, the handover verbatim and the archived-skills report; `apply --require-task` also writes the `## Next task` and `## Skills` lines | `/pickup`, `/next` |
+| `handover/draft.js` | The mechanical half of a handover: header line, commits since the last one, uncommitted files, existing next task, size check, optional session-journal facts | `/wrap-up` |
+| `session-budget/usage.js` | Feature-usage switch and report: `on`, `off`, `notify on\|off`, `status`, `report [--days N] [--all-projects]`, `reset --yes`; reads the log the `feature-usage` mod writes and lists installed features never used | `/kit-usage` |
+| `skill-scope/kit.js` | Keyword scorer over the command table: prints the single best command for a situation, or the whole table | `/kit` |
 | `skill-scope/auto.js run` | Restores an archived skill, then runs its script; the six commands for archivable skills call it | `/audit`, `/stale`, `/version-bump` and three more |
 | `memory-gardener/stale.js` | Lists memory and handover bullets that name deleted files (report only) | `/stale` |
 | `misfire-log/append.js` and `report.js` | Logs a skill or mod that should have fired but did not; ranks repeat offenders | by the skill |
@@ -845,11 +853,4 @@ npm run dev
 
 `site/` is ignored by `main`, so the worktree never shows up in `git status` here. Keeping the site at that exact path matters: the scripts that rebuild the site's kit map (`scripts/build-kit-graph.ts`, `scripts/build-map-links.ts`) read the kit's files three folders up.
 
-**To change the kit's content and refresh the site**, commit the kit change on `main`, then re-run those two scripts inside the site worktree and commit the result on the `site` branch. The site's own README, on that branch, has the full steps and the Vercel setup.
-
-## Recent additions
-
-- **Skills load only when the task needs them, automatically.** `skill-scope/auto.js` archives the per-session skills at session start (hook), restores one when a message names its trigger word (hook), and `/next <task>` does both by hand. Trigger words live in one file, `skill-scope.triggers.json`. Commands for archivable skills (`/audit`, `/stale`, `/version-bump` and three more) call `auto.js run`, which restores the skill before running its script. Measured on the full kit with headless Haiku: 40,782 tokens a turn before, 40,155 after. A restored skill is not in the session's skill list until the next session, so the hook names the `SKILL.md` to read.
-- **`ux-theory`.** Colour, type, composition (layout, hierarchy, proximity, alignment, balance, white space), motion and fx, one topic file each, opened only for the topic a task needs. A theme doc with a `## Component inventory` heading locks it, so later it restores only for expansion phrases. Two small tests found field-term wording and plain wording equal in quality with no consistent token difference, so `skill-writer` now allows a field term only where one term replaces a sentence.
-- **The ceiling on `handover.md` is now checked.** `handover/size.js check` flags a handover over 120 lines, stacked session sections and a `learnings.md` over 30 bullets, and prints nothing otherwise. A session-start hook and `/wrap-up` run it.
-- **The installer covers the whole lifecycle.** `update` refreshes archived skills and adds hooks a newer kit ships; `uninstall` removes archived skills and, with `--remove-hooks`, only the kit's own hook entries; `install`, `update` and `uninstall` now copy, refresh and r
+**To change the kit's content and refresh the site**, commit the kit change on `main`, then re-run those two scripts inside the site 

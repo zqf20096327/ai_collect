@@ -189,6 +189,48 @@ The default training objective is a history-scale-balanced masked pinball loss o
 in the report's advancing per-patch normalized space. A separate `validation_loss_space` can keep
 checkpoint selection fixed across objective comparisons. See the
 [alignment record](docs/report-alignment.zh-CN.md) and [round-one experiment](results/report_round1/README.md).
+
+Native multi-block DHF training is opt-in:
+
+```python
+training = TrainConfig(
+    mode="lora", training_strategy="dhf", loss_space="normalized",
+    validation_loss_space="history_scaled",
+    context_length=256, prediction_length=192,
+    dhf_min_context_patches=1, dhf_max_block_patches=6,
+)
+```
+
+For numeric-only inputs, DHF encodes one observed sequence of `context_length + prediction_length` steps
+and samples consecutive forecast blocks sharing that context stream. On released
+models, this example uses 448 steps: a 32-step initial prefix leaves 416 possible
+labels per target, versus 192 for the default `training_strategy="window"`.
+Actual block histories vary from 32 up to 416 steps; `context_length=256` is not a
+fixed DHF history. Uniform lengths from 1 to 6 patches, truncated at the sequence
+end, are a project choice; the report does not disclose its distribution.
+DHF requires normalized loss. Numeric covariates share the context encoding;
+categorical covariates use a safe per-origin reference path with multiple forward
+calls. Validation remains an ordinary
+single-origin forecast at the configured history/horizon and chosen validation
+loss. A separately checkpointed layout RNG keeps window sampling independent.
+See the [round-two protocol and results](results/report_round2/README.md) and
+[acceptance record](results/report_round2/acceptance.zh-CN.md) for the tested scope.
+Equal optimizer steps do not imply equal supervision or computation.
+
+Optional `missing_probability=.5, missing_max_span=64` simulates continuous input
+gaps while retaining original finite labels. `dynamic_role_sampling=True` samples
+target/past/known roles on originally declared targets only; fixed covariates stay
+fixed and every example keeps a target. Both mechanisms default off and have
+independent checkpointed random states. See the [round-three example](examples/report_round3/README.md)
+and [four-arm complete/gapped-history experiment](results/report_round3/README.md).
+
+Synthetic sequence priors and staged continued training are available through
+`SyntheticConfig` and `TrainingStage`: per-example source mixing, independent
+resumable RNG streams, fixed real validation, and source-specific exposure logs.
+See the [runnable Python/YAML example](examples/report_round4/README.md) and
+[ETTh1 adaptation / frozen ETTh2 transfer evidence](results/report_round4/README.md).
+This project-defined recipe is not official pretraining reproduction.
+
 The
 [technical reference](docs/reference.md) documents normalization, categorical
 encoding, numerical tolerances and the inference compatibility layer.
@@ -294,13 +336,60 @@ python scripts/benchmark_suite.py --jobs 2
 For frozen transfer, model acceptance and independent audit commands, see the
 [full validation workflow](docs/reference.md#evaluation-and-verification).
 
+## Optional inference runtime
+
+Keep default FP32 eager execution, or pass a separate `InferenceConfig` to
+`FineTunedModel.predict()`, `evaluate()` or `model.backtest()`:
+
+```python
+from timestral_ft import InferenceConfig
+runtime = InferenceConfig(precision="bf16", compile=True, warmup_steps=2)
+predictions = model.predict("history.parquet", 96, inference_config=runtime)
+print(predictions.attrs["inference_runtime"])
+```
+
+BF16 autocasts eligible Transformer/head operations; patch projection and
+FP32/FP64 statistical paths retain their precision. Weights stay FP32 and exports
+keep official names. Compiled/warm instances are reused; failures raise by default.
+Receipts distinguish requested and effective modes, actual compiled executions,
+fallback reasons and mixed execution. Speed is shape/device dependent, with a
+separate first-call cost. See the [runnable example](examples/report_round5/README.md)
+and [measured matrix and six-task GIFT quality control](results/report_round5/README.md).
+
+## Context representations
+
+```python
+import numpy as np
+from timestral_ft import encode
+from timestral_ft.compat import load_model
+
+backbone = load_model("mistralai/Timestral-5M",
+                      revision="bdd20cfc15a3fea0e4cb5ccef37f8d3ca7aa335f")
+features = encode(backbone, np.sin(np.arange(150) / 8), pooling="mean")
+print(features.patches.shape, features.pooled.shape, features.valid)
+```
+
+`encode()` exposes per-patch/per-variable context Transformer outputs and observed-patch
+masks, with mean/last pooling. It runs FP32 eager on numeric targets only, independently
+of the forecast head. Invalid vectors are zero; real lengths, left padding and cropping
+have explicit original-input coordinates. `FineTunedModel.encode()` also accepts arrays;
+it does not apply table preprocessing. See the [API](docs/reference.md#context-representation-api)
+and [runnable example](examples/report_round6/README.md).
+
+These features are exploratory. In the fixed GunPoint split, raw/mean/last 1-NN accuracy
+was 91.33%/88.67%/88.00%. In simulated ETTh2 window anomalies, the mean embedding's AP
+was 0.7818 versus 0.8663 for six simple statistics (three injection seeds).
+[Complete results](results/report_round6/README.md) retain failures, threshold sensitivity
+and scope limits. This does not establish the classification/anomaly capabilities proposed
+as future work in the official report.
+
 ## Documentation
 
 | Resource | Contents |
 |---|---|
 | [Chinese usage guide](docs/guide.zh-CN.md) | Data preparation, configuration, training, resume, prediction and export |
 | [English technical reference](docs/reference.md) | Training semantics, device behavior, metrics and compatibility details |
-| [Report alignment record](docs/report-alignment.zh-CN.md) | Official mechanisms, implementation choices, round-one loss and remaining tasks |
+| [Report alignment record](docs/report-alignment.zh-CN.md) | Official mechanisms, implementation choices, normalized loss, DHF and remaining tasks |
 | [ETTh1 configuration](examples/etth1.yaml) | A runnable example with numeric and categorical covariates |
 | [Broader validation](results/validation/README.md) | Multi-seed benchmarks, frozen transfer and four-size acceptance |
 | [GIFT-Eval guide](examples/gift_eval/README.md) | Environment setup, all-task training and official evaluation |

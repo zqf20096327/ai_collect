@@ -2,7 +2,7 @@
 
 **Real-world use cases, open-source projects, benchmarks and criticism of [Jev](https://typesafe.ai), TypeSafe AI's System One model — what people actually build with it, and where it actually fails.**
 
-![entries](https://img.shields.io/badge/entries-505-2f81f7) ![open source](https://img.shields.io/badge/open%20source%20projects-281-2f81f7) ![updated](https://img.shields.io/badge/updated-2026--11--10-2f81f7) ![data license](https://img.shields.io/badge/data-CC0--1.0-2f81f7)
+![entries](https://img.shields.io/badge/entries-505-2f81f7) ![open source](https://img.shields.io/badge/open%20source%20projects-281-2f81f7) ![updated](https://img.shields.io/badge/updated-2026--11--11-2f81f7) ![data license](https://img.shields.io/badge/data-CC0--1.0-2f81f7)
 
 Three things make this different from the other Jev lists:
 
@@ -51,7 +51,7 @@ Three things make this different from the other Jev lists:
 | Where the entries come from | GitHub 265, Reddit 143, YouTube 39, Hacker News 25, blogs and web 69 |
 | Languages of the code | Python 89, TypeScript 55, JavaScript 32, Rust 19, Go 12, HTML 12 |
 | Categories | 12 |
-| Last refreshed | 2026-11-10 |
+| Last refreshed | 2026-11-11 |
 
 Signals: ★ GitHub stars · ▲ Reddit or Hacker News points · ▶ views · ♥ likes. They come from four different platforms and **are not comparable with each other** — they are a popularity reading, never a quality one.
 
@@ -75,7 +75,7 @@ Hand-picked, and picked for evidence rather than for stars: an entry is here bec
    <sub>code · Open imitations and local models · ▲ 192 · r/LocalLLaMA · 2026-09-19</sub>
 
 6. **[Codex router driven by Jev](https://github.com/0xNatoshi/jev-codex-router)** — Routing as a product rather than a demo: picks Codex's model, reasoning depth and speed mode on every single turn.  
-   <sub>code · Agent and workflow logic · ★ 275 · 0xNatoshi · 2026-09-17</sub>
+   <sub>code · Agent and workflow logic · ★ 274 · 0xNatoshi · 2026-09-17</sub>
 
 7. **[Hermes plugin compacts context without rewriting messages](https://reddit.com/r/hermesagent/comments/1wkpl3q/integrated_the_jev_context_engine_into_hermes)** — The most rigorous engineering in the index — context compaction with fallbacks, metrics, a shadow comparison against the old path, and a dashboard to watch it.  
    <sub>code · Agent and workflow logic · ▲ 138 · r/hermesagent · 2026-09-19</sub>
@@ -87,7 +87,7 @@ Hand-picked, and picked for evidence rather than for stars: an entry is here bec
    <sub>opinion · Benchmarks and comparisons · ▶ 585 · Prism Labs · 2026-09-20</sub>
 
 10. **[Cloudflare search relevance engine using Jev](https://github.com/superagents-lab/jev-search)** — A whole search stack — query interpretation, source selection, relevance ranking — running on typed decisions at the edge.  
-   <sub>code · Classification and routing · ★ 557 · superagents-lab/jev-search · 2026-09-17</sub>
+   <sub>code · Classification and routing · ★ 559 · superagents-lab/jev-search · 2026-09-17</sub>
 
 ## Where Jev struggles
 
@@ -176,14 +176,14 @@ Every other Jev list is a highlight reel. These are the entries that report a li
 | What | What it does | Kind | Signal | Date |
 | --- | --- | --- | --- | --- |
 | [Categorize meal-planning lists faster than an LLM](https://news.ycombinator.com/item?id=49802160) | A builder reports using Jev to categorize preset meal-planning lists in under a second, compared with 30–60 seconds using DeepSeek V4 Flash at similar cost. | use case | ▲ 95 | 2026-09-23 |
-| [Cloudflare search relevance engine using Jev](https://github.com/superagents-lab/jev-search) | Cloudflare Worker app uses Jev for query interpretation, source selection, and relevance ranking, with TypeSafe, Vercel, and Workers AI provider paths. | code | ★ 557 | 2026-09-17 |
+| [Cloudflare search relevance engine using Jev](https://github.com/superagents-lab/jev-search) | Cloudflare Worker app uses Jev for query interpretation, source selection, and relevance ranking, with TypeSafe, Vercel, and Workers AI provider paths. | code | ★ 559 | 2026-09-17 |
 | [Classified 261 IRS forms at 100% accuracy](https://github.com/kyotofin/tax-doc-classifier) | A tax-page classifier reports 100% strict accuracy at about $0.001 per page, 34× cheaper and 6× faster than its previous LLM pipeline. | use case | ★ 519 | 2026-09-18 |
 | [Clarify queries before retrieval](https://reddit.com/r/Rag/comments/1x38uno/we_started_using_jev_to_clarify_queries_before) | An enterprise knowledge-management team is testing Jev before embedding and searching user questions, to detect unclear intent or multiple questions before retrieval. | use case | ▲ 88 | 2026-10-11 |
-| [Navigates Neo4j graphs with Jev classification](https://github.com/jexp/neo4jev) | A repository using Jev to classify neighbouring graph relationships and navigate a Neo4j graph. | code | ★ 182 | 2026-09-16 |
+| [Navigates Neo4j graphs with Jev classification](https://github.com/jexp/neo4jev) | A repository using Jev to classify neighbouring graph relationships and navigate a Neo4j graph. | code | ★ 184 | 2026-09-16 |
 | [Triage inbound leads with Jev](https://github.com/deepdave98/jev-playground) | A benchmarked Jev experiment reports 90% routing accuracy at 366 ms and $0.04 per thousand leads for inbound lead triage. | use case | ★ 33 | 2026-09-22 |
 | [Builds a 400-response conversational classifier](https://reddit.com/r/projects/comments/1wlk8yu/typesafes_jev_model_work_as_an_llm) | Uses Jev to classify intent, formality, emotional intensity and human-escalation need across 18 parallel questions, then selects among 400 hand-written responses. | use case | ▲ 9 | 2026-09-20 |
 | [Built prompt signals and routed Claude with Jev](https://reddit.com/r/LLMDevs/comments/1wkjufw/tried_using_jev_for_prompt_observability_and_llm) | Created a prompt oscilloscope that emits structured signals while typing, plus a Jev layer that routes requests before they reach Claude. | use case | ▲ 9 | 2026-09-19 |
-| [Config-driven Jev inbox classifier](https://github.com/parth-kp/jev-mail-classifier) | A repository that uses Jev to classify email and trigger configurable tag, move, flag, and notification actions. | code | ★ 24 | 2026-09-19 |
+| [Config-driven Jev inbox classifier](https://github.com/parth-kp/jev-mail-classifier) | A repository that uses Jev to classify email and trigger configurable tag, move, flag, and notification actions. | code | ★ 25 | 2026-09-19 |
 | [TypeScript log triage package using Jev](https://github.com/reachjalil/jevlogs/blob/main/skills/jevlogs/SKILL.md) | jevlogs asks structured Jev questions about log records and routes low-value records away from deeper LLM analysis. | code | ★ 21 | 2026-09-20 |
 | [Find clothing from natural-language requests](https://github.com/selmakcby/jev-kiyafet-bul) | A Turkish-language app uses Jev to make clothing-search decisions and code to rank the results, separating intent judgment from result ordering. | use case | ★ 5 | 2026-09-28 |
 | [TypeSafe model and tool router](https://github.com/TypeSafeAI/typesafe-router) | Runnable TypeSafeAI app that forwards requests to Jev, returns typed model or tool choices, and uses confidence thresholds for fallback behavior. | official | ★ 5 | 2026-09-17 |
@@ -205,7 +205,7 @@ Every other Jev list is a highlight reel. These are the entries that report a li
 
 | What | What it does | Kind | Signal | Date |
 | --- | --- | --- | --- | --- |
-| [Score code quality with Jev](https://github.com/supercorp-ai/supercov/blob/main/docs/getting-started.md) | Supercov documents an optional Jev-backed code-quality scoring path alongside its local test-coverage workflow. | code | ★ 164 | 2026-09-23 |
+| [Score code quality with Jev](https://github.com/supercorp-ai/supercov/blob/main/docs/getting-started.md) | Supercov documents an optional Jev-backed code-quality scoring path alongside its local test-coverage workflow. | code | ★ 165 | 2026-09-23 |
 | [Analyze roleplay tone and story state with Jev sensors](https://reddit.com/r/SillyTavernAI/comments/1wl7uje/jev_might_be_the_next_frontier_for_improving) | A SillyTavern extension sends recent responses to batched Jev questions about plot change, character outcomes, and alignment with the system prompt. | use case | ▲ 320 | 2026-09-20 |
 | [Score project ideas with parallel typed evaluations](https://reddit.com/r/SideProject/comments/1wiw6tk/i_built_a_side_project_to_test_typesafes_jev) | An open-source app asks about ten Choice and scoring questions in parallel, then returns a numerical project-viability score instead of generating text. | use case | ▲ 244 | 2026-09-17 |
 | [Match job posts to fictional candidates](https://github.com/kaucap08/jev-job-matching) | Scores 400 job posts against 30 fictional candidates in 12,000 decisions, reporting 3m17s runtime, $0.17 cost, and errors against an answer key. | use case | ★ 7 | 2026-10-19 |
@@ -237,7 +237,7 @@ Every other Jev list is a highlight reel. These are the entries that report a li
 
 | What | What it does | Kind | Signal | Date |
 | --- | --- | --- | --- | --- |
-| [Check Markdown specs against code with Jev](https://github.com/nozomi-koborinai/jev-spec) | A GitHub tool that uses Jev to catch drift between a project's Markdown specifications and its code on each commit. | code | ★ 12 | 2026-09-20 |
+| [Check Markdown specs against code with Jev](https://github.com/nozomi-koborinai/jev-spec) | A GitHub tool that uses Jev to catch drift between a project's Markdown specifications and its code on each commit. | code | ★ 13 | 2026-09-20 |
 | [Building a Jev safety layer for agent tool uses](https://reddit.com/r/PiCodingAgent/comments/1whsav6/anyone_else_testing_out_typesafe_ais_new_system) | The author is testing Jev to scan every tool call and return a safety rating, with plans to add prompt-intent and reasoning checks plus model routing. | use case | ▲ 115 | 2026-09-16 |
 | [Node.js multilingual profanity and toxicity screener](https://github.com/ItisShikhar/gg-friggin-ez) | A Jev-powered Node.js screener for multilingual profanity, including leetspeak, spacing and romanized forms, with reported 50–500 ms latency. | code | ★ 7 | 2026-09-19 |
 | [Use Jev confidence to decide when to escalate](https://reddit.com/r/LLMDevs/comments/1wkwqu2/what_is_jev_typesafes_system_one_model_explained) | The author explains Jev's typed decisions, latency, pricing, and confidence signal, while noting benchmark caveats and recommending confidence-based human or larger-model escalation. | opinion | ▲ 91 | 2026-09-19 |
@@ -245,12 +245,12 @@ Every other Jev list is a highlight reel. These are the entries that report a li
 | [Build a Go client for Jev-backed content safety](https://github.com/cipherTing/sael) | Sael begins with a Go client for TypeSafe System One and plans to use it in a content-safety classifier for an AI request relay. | code | ★ 5 | 2026-09-21 |
 | [LangChain-ready Jev security gate for agent tools](https://github.com/lgy1027/jevshield) | Provides Choice, Noul and Score evaluations, calibrated-confidence routing, fail-closed parsing and a local fallback for blocking risky agent tool calls. | code | ★ 5 | 2026-09-20 |
 | [Monitor agent chains and contain malicious behavior with Jev](https://github.com/carlosedm10/agi-jev-containment) | A HackSpain project combining Jev and Sentinel for chain-level malicious-agent detection, escalation-based containment, Neo4j forensics, and a dashboard. | code | ★ 5 | 2026-09-14 |
-| [Risk gate for AI coding agents using Jev / 使用 Jev 的 AI 代理风险门控](https://github.com/ursuciprian/reflex) | Blocks risky shell commands and guards against prompt injection for Claude Code and other agents; integrates Jev for safety escalation. | code | ★ 4 | 2026-09-24 |
 | [Auto-approves harmless OpenCode permissions](https://reddit.com/r/opencodeCLI/comments/1wl5k2c/i_built_jevvy_autoapprove_harmless_opencode) | Jevvy reviews routine shell permission prompts with calibrated questions, preserving prompts when uncertain and supporting TypeSafe AI or Zen. | code | ▲ 30 | 2026-09-20 |
+| [Risk gate for AI coding agents using Jev / 使用 Jev 的 AI 代理风险门控](https://github.com/ursuciprian/reflex) | Blocks risky shell commands and guards against prompt injection for Claude Code and other agents; integrates Jev for safety escalation. | code | ★ 4 | 2026-09-24 |
+| [Automate PR review with Jev](https://github.com/tincke10/Jevest) | Jevest adds Jev as a millisecond decision layer around an LLM-based pull-request review pipeline. | code | ★ 4 | 2026-09-18 |
 | [Check tutorial drafts against their briefs](https://reddit.com/r/laravel/comments/1wpymfd/the_laravel_ai_sdk_can_now_classify_i_built_a) | A Laravel application sends a draft and its brief to Jev for a probability-based check; PHP routes the result while an editor retains final approval. | use case | ▲ 12 | 2026-09-25 |
 | [QA demos for triage and test-agent guardrails](https://github.com/gauravkhuraana/jev-qa-demos) | A TypeScript/Vercel AI Gateway demo repo shows Jev triage of CI failures, command safety checks for test agents, RAG grounding checks, and tests of documented failure modes. | code | ★ 3 | 2026-09-25 |
 | [Real-time exchange risk-triage gateway](https://github.com/klauswg/jev-guard) | A Jev-backed gateway for exchange deposits and withdrawals uses Jev only for triage while deterministic code retains final authority. | code | ★ 3 | 2026-09-22 |
-| [Automate PR review with Jev](https://github.com/tincke10/Jevest) | Jevest adds Jev as a millisecond decision layer around an LLM-based pull-request review pipeline. | code | ★ 3 | 2026-09-18 |
 | [Agent tool-call chaperone using Jev](https://github.com/agent-chaperone/agent-chaperone) | Show HN project that screens AI agent tool calls and their results with Jev before they proceed. | code | ▲ 4 | 2026-09-21 |
 | [Authorize agent tool calls with Jev policies](https://github.com/omkarghugarkar007/actiongate-jev) | Actiongate-jev provides runtime authorization and guardrails for AI-agent tool calls using deterministic policies and Jev through OpenRouter. | code | ★ 2 | 2026-09-19 |
 | [Benchmarks Jev secret detection with Noul and category decisions](https://github.com/teyhouse/jev-secret-detection) | Open-source tests Jev on secret-detection datasets derived from gitleaks, GitGuardian and others, finding promising results while questioning production cost. | code | ★ 2 | 2026-09-17 |
@@ -267,15 +267,15 @@ Every other Jev list is a highlight reel. These are the entries that report a li
 | What | What it does | Kind | Signal | Date |
 | --- | --- | --- | --- | --- |
 | [Run coding-agent workflows as Jev-guided graphs](https://reddit.com/r/ClaudeCode/comments/1wp9nga/the_agentic_loop_is_outdated) | Jive is an open-source agent harness that represents execution as dependent DAG nodes, combining bash and Jev calls to reduce unnecessary LLM calls during tasks such as repository investigation. | code | ▲ 304 | 2026-09-24 |
-| [Agent memory with Jev reranking](https://github.com/kitfunso/hippo-memory) | A zero-dependency SQLite/MCP memory system that includes an opt-in hosted Jev reranker and benchmarks retrieval. | code | ★ 791 | 2026-03-15 |
+| [Agent memory with Jev reranking](https://github.com/kitfunso/hippo-memory) | A zero-dependency SQLite/MCP memory system that includes an opt-in hosted Jev reranker and benchmarks retrieval. | code | ★ 792 | 2026-03-15 |
 | [Local gateway routing coding-agent tool calls through Jev](https://github.com/vinilana/jev-gateway) | Gateway uses Jev to choose coding-agent tools, supports Codex and Claude Code launchers, and enables routing-on/off comparisons. | code | ★ 326 | 2026-09-18 |
 | [Hermes plugin compacts context without rewriting messages](https://reddit.com/r/hermesagent/comments/1wkpl3q/integrated_the_jev_context_engine_into_hermes) | A Hermes plugin uses Jev to remove or shrink old tool-call bulk while preserving user and agent messages verbatim. It includes fallbacks, metrics, shadow comparison, and a FastAPI dashboard. | code | ▲ 138 | 2026-09-19 |
-| [Codex router driven by Jev](https://github.com/0xNatoshi/jev-codex-router) | A GitHub router that selects Codex’s model, reasoning depth, and speed mode on every turn using Jev decisions. | code | ★ 275 | 2026-09-17 |
+| [Codex router driven by Jev](https://github.com/0xNatoshi/jev-codex-router) | A GitHub router that selects Codex’s model, reasoning depth, and speed mode on every turn using Jev decisions. | code | ★ 274 | 2026-09-17 |
 | [Adaptive Thinking gates extra LLM reasoning](https://reddit.com/r/LocalLLaMA/comments/1xa9ffa/jev_based_adaptive_thinking_for_llms) | The open-source project uses a Jev-like gate to trigger additional reasoning when token-level entropy indicates uncertainty, and to select among parallel thought paths. | code | ▲ 98 | 2026-10-19 |
-| [Control agent memory with Jev](https://github.com/libingzheren/Jev-Mem) | Jev-Mem uses Jev to govern memory admission, graph relationships, retrieval routing, scoring, and stopping while another model generates answers. | code | ★ 261 | 2026-09-20 |
+| [Control agent memory with Jev](https://github.com/libingzheren/Jev-Mem) | Jev-Mem uses Jev to govern memory admission, graph relationships, retrieval routing, scoring, and stopping while another model generates answers. | code | ★ 262 | 2026-09-20 |
 | [Jive terminal agent built from Jev-backed execution graphs](https://reddit.com/r/coolgithubprojects/comments/1wmp07o/jive_rethinking_the_agentic_loop_with_system_one) | Open-source coding agent replacing sequential tool calls with DAGs containing tool and Jev calls. Reports faster benchmark runs than Codex and Claude Code on several tasks. | code | ▲ 51 | 2026-09-21 |
 | [Rank agent skills with Jev and live session context](https://github.com/Dicklesworthstone/skillranker) | A Rust CLI ranks skills for the next agent step using Jev, with Claude Code hooks, structured JSON, abstention, and local feedback. | code | ★ 141 | 2026-09-17 |
-| [Automate Pokémon Red decisions with Jev](https://github.com/christianmat/jev-pokemon/blob/main/README.md) | An open-source harness reports completing Pokémon Red in 37h 40m for about $1.65 by giving Jev legal actions and game facts while code handles emulator mechanics. | use case | ★ 133 | 2026-09-25 |
+| [Automate Pokémon Red decisions with Jev](https://github.com/christianmat/jev-pokemon/blob/main/README.md) | An open-source harness reports completing Pokémon Red in 37h 40m for about $1.65 by giving Jev legal actions and game facts while code handles emulator mechanics. | use case | ★ 134 | 2026-09-25 |
 | [Question Jev's fit for deep agent harnesses](https://reddit.com/r/AI_Agents/comments/1x0cw8r/is_jev_or_similar_actually_useful_in_a_harness) | The author argues that separating Jev's action decisions from an LLM's reasoning may obscure why actions were taken and hinder deep, general-purpose agent workflows; they ask for supporting data. | opinion | ▲ 31 | 2026-10-08 |
 | [jev-harness: official coding harness for Jev](https://github.com/TypeSafeAI/jev-harness) | Official TypeSafe harness where LLMs propose, Jev answers narrow questions, code decides, and every step leaves an audit receipt. | official | ★ 39 | 2026-09-22 |
 | [Replace repeated agent tool calls with Jev-driven graph nodes](https://reddit.com/r/LLMDevs/comments/1wp8ugp/jive_rethinking_the_agentic_loop_with_system_one) | Jive is an open-source agent harness that combines bash and Jev nodes in dependency graphs, using Jev to execute planned steps without repeated LLM calls. | code | ▲ 27 | 2026-09-24 |

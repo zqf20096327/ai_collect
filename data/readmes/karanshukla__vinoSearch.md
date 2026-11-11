@@ -30,7 +30,7 @@ That downloads the latest release, checks it against its `.sha256`, installs the
 
 To upgrade, use **Check for updates** on the settings window's About page, or run `vinosearch-upgrade` (a release tag like `vinosearch-upgrade v6` installs that one). It skips whatever is already done and restarts the service.
 
-`curl -fsSL https://github.com/karanshukla/vinoSearch/releases/latest/download/install.sh | bash -s -- --uninstall` removes the service, the KRunner and GNOME files and the binaries. Add `--purge` to also delete the index, model, compiled cache and runtime.
+`curl -fsSL https://github.com/karanshukla/vinoSearch/releases/latest/download/install.sh | bash -s -- --uninstall` removes the service, the KRunner and GNOME files and the binaries, and deletes the models and their compiled cache. Your index and settings stay; add `--purge` to also delete the index and the OpenVINO runtime. To delete only the models, use **Delete…** on the settings window's Model page, or `vinosearch delete-model`.
 
 <details>
 <summary>From source instead</summary>
@@ -78,7 +78,7 @@ Building needs Rust 1.95 or newer, which Debian's and Ubuntu's packaged Rust isn
 - **Sway, Hyprland, COSMIC and the rest:** `vinosearch menu` asks for a query in fuzzel, wofi, rofi, tofi or bemenu (the first it finds), shows the results in it, and opens the one you pick. Bind it to a key, e.g. `bindsym $mod+s exec vinosearch menu` in sway or `bind = SUPER, S, exec, vinosearch menu` in Hyprland. `--launcher "rofi -dmenu -i"` (or `VINOSEARCH_LAUNCHER`) picks another dmenu-style command. It asks the running service, so a warm query is as quick as KRunner's.
 - **Terminal:** `vinosearch search "how do I rotate the signing key"`, `vinosearch search "code: retry a failed download"`, or `vinosearch similar ~/Pictures/IMG_2041.jpg` for indexed photos that look like one.
 
-Results need 3 or more characters. Enter opens the file: a text file at the matching line in your editor, a PDF at the matching page in Okular, Evince, Papers or Zathura. Other files, and apps that can't be told where, open at the top.
+Results need 3 or more characters. Enter opens the file: a text file at the matching line in your editor, a PDF at the matching page in Okular, Evince, Papers or Zathura, an audio or video file from the matching time in mpv, VLC or Celluloid. Other files, and apps that can't be told where, open at the top.
 
 **All results.** KRunner's **Show all results** on any match, or the vinoSearch icon beside GNOME's results, opens the query in a search window (needs `vinosearch-settings`): up to 100 files of each kind, photos as a grid of thumbnails, text and documents with their snippet and line or page, filtered by kind, folder, date and file type. Enter or a double click opens a result at its match; **Open folder** and **Copy file** (pastes as the file in a file manager; needs `wl-copy`) are below. `vinosearch-settings --search "query"` opens it from a key binding.
 
@@ -86,7 +86,7 @@ Results need 3 or more characters. Enter opens the file: a text file at the matc
 
 <p align="center"><img src="docs/media/settings.svg" width="720" alt="The vinoSearch settings window on its Index page, indexing photos: the file count rises, the Pictures folder's share of the index grows, then it reads Up to date."></p>
 
-Open **vinoSearch** from the app menu, or run `vinosearch-settings`. On sway or Hyprland, **Add folder…** needs a file chooser portal (`xdg-desktop-portal-gtk` provides one; `xdg-desktop-portal-wlr` doesn't); without it, type the path instead. It shows what's indexed and lets you add folders and exclusions, turn images, documents and code on, set how close a result has to be and pick the editor that opens text results from your installed apps, pick the NPU, GPU or CPU, and turn KRunner and GNOME search on or off, each on its own. Changes apply within 30 seconds, no restart.
+Open **vinoSearch** from the app menu, or run `vinosearch-settings`. On sway or Hyprland, **Add folder…** needs a file chooser portal (`xdg-desktop-portal-gtk` provides one; `xdg-desktop-portal-wlr` doesn't); without it, type the path instead. It shows what's indexed and lets you add folders and exclusions, turn images, documents and code on, set how close a result has to be and pick the editor that opens text results and the player that plays audio and video from your installed apps, pick the NPU, GPU or CPU, and turn KRunner and GNOME search on or off, each on its own. Changes apply within 30 seconds, no restart.
 
 Everything it sets lives in `~/.config/vinosearch/config.toml`, if you'd rather edit that:
 
@@ -95,6 +95,7 @@ exclude = ["~/Downloads"]   # never indexed or watched, even under an indexed ro
 device = "NPU"
 idle_unload_minutes = 5     # free the model after this long idle; 0 keeps it loaded
 editor = "code"             # opens text results at their line [default: the default app]; or "org.kde.kate.desktop", or "foot -e nvim +{line} {file}"
+player = "mpv"              # plays media results at their time (mpv, vlc or celluloid) [default: the default app]; or "mpv --start={seconds} {file}"
 
 [formats.text]
 min_score = 0.65            # lower it for more, looser results

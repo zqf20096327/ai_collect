@@ -126,7 +126,7 @@ Options (`--help` shows the same):
 
 | Option | Environment | |
 |---|---|---|
-| `--port <n>` | `WIREBUDDY_PORT` | HTTP port on 127.0.0.1; default 8765, falls back to a free one |
+| `--port <n>` | `WIREBUDDY_PORT` | HTTP port on 127.0.0.1 (and `::1`); default 8765, falls back to a free one |
 | `--token <t>` | `WIREBUDDY_TOKEN` | session token, at least 16 characters; default random. Prefer the variable: other local users can see command lines in `ps` |
 | `--capture-dir <dir>` | `WIREBUDDY_CAPTURE_DIR` | where live captures go; default `~/.local/share/wirebuddy/captures` |
 | `--profile <name>` | `WIREBUDDY_PROFILE` | Wireshark configuration profile for dissection and Open in Wireshark |
@@ -404,15 +404,17 @@ the questions you asked it.
   token can do everything you can in the UI, starting a capture included. That covers an AI agent
   that also has a shell or controls the browser pane: give WireBuddy only to agents you trust,
   and don't share the URL.
-- The server listens on `127.0.0.1` only. API calls need the random per-session token in an
-  `X-WireBuddy-Token` header (the WebSocket takes it in its URL); it is compared in constant time.
+- The server listens on the loopback addresses only (`127.0.0.1`, and the same port on `::1`
+  where there is one). API calls need the random per-session token in an `X-WireBuddy-Token`
+  header (the WebSocket takes it in its URL); it is compared in constant time.
 - Requests with a foreign `Host` (DNS rebinding), any `Origin` but the server's own (`null`
   included) or a body that isn't JSON are refused. The page has a Content Security Policy.
 - The MCP tools can start and stop captures on the interfaces `dumpcap` may capture on, always
   into WireBuddy's capture folder. They can open any capture file you can read, read packets,
   change the filter, marks, time references, packet comments, selection, columns and Decode As
-  entries, open Wireshark, and write new `.pcap`/`.pcapng` exports where you can write; an
-  existing file is never replaced unless the agent exported it itself in the same session.
+  entries, open and close panels, open Wireshark, and write new `.pcap`/`.pcapng` exports where
+  you can write; an existing file is never replaced unless the agent exported it itself in the
+  same session.
 - File › Export Objects and `export_objects` save files from the traffic, whose names and
   contents a sender chose, only into a new folder they create (`http-objects`, `http-objects-2`,
   …) in a directory you or the agent name, under names of their own (`f12-report.pdf`). No other
@@ -441,7 +443,7 @@ the questions you asked it.
 
 ```bash
 npm run build
-npm test               # unit checks, the capture file reader, live slices against full reads, the HTTP API, MCP tools and panels
+npm test               # unit checks, the sharkd client, the capture file reader, live slices against full reads, the HTTP API, MCP tools and panels
 npm run test:browser   # panels and the examples in headless Chrome (skipped without Chrome)
 npm run test:examples  # the investigations' bugs and their fixes, over loopback without a capture
 npm run test:package   # the npm package installed as users get it, run over MCP
@@ -462,6 +464,16 @@ plugins don't change the results. The capture checks in `npm test` need `dumpcap
   three requests were pipelined into, read as plain TCP segments, and ones of a message that ends
   more than about 8 MiB after them don't say where it is reassembled (less when many connections
   are busy at once).
+- Provisional packets count as settled once no sender with a message or an answer under way has
+  sent anything for 10 s of capture time. If one goes on after such a pause (a slow response, a
+  stalled download, a late DNS or ping reply), the packets listed before it keep reading as if
+  it had ended there (segments don't say where they are reassembled, a request doesn't name its
+  answer, and a display filter's provisional matches among them aren't checked again) until the
+  next full read. Provisional packets behind more than four VLAN tags or eight MPLS labels, on
+  link types other than Ethernet, Linux cooked capture, raw IP and loopback, or inside a tunnel
+  (GRE, VXLAN, Geneve, IP in IP, an Ethernet pseudowire) come without the start of their own
+  connection unless it is among the 2000 or so packets before them, so until read in full they
+  read like a capture begun mid-connection (no window scaling, TLS not decrypted).
 - A time reference the display filter hides stays hidden, while Wireshark lists time references
   whatever the filter; the packets after it count from it all the same, and Next/Previous Time
   Reference go to it. "Open in Wireshark" doesn't take the time references along.

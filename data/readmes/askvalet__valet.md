@@ -18,7 +18,7 @@ A self-hosted, open-source, AI-native homepage.
 
 <br>
 
-<a href="https://askvalet.dev/film/valet.mp4"><img src="docs/images/film.webp" alt="Play the film: the main screen, ⌘K opening a service, answering a question and finding a page in the docs, the Services, Home, Media and Library tabs, asking what's playing and what to watch, approving a change, adding a card from chat, and the integrations" width="100%"></a>
+<a href="https://askvalet.dev/film/valet.mp4"><img src="docs/images/film.webp" alt="Play the film: the main screen, ⌘K finding a film and a book inside the services, the Services, Home, Media and Library tabs, asking what's playing, asking out loud, switching models with a command, approving a change, the same assistant in Telegram, adding a card from chat, several machines side by side, and the integrations" width="100%"></a>
 
 <sub>▶ <a href="https://askvalet.dev/film/valet.mp4">Watch the film</a> · or <a href="https://demo.askvalet.dev">try the demo</a>, right in your browser</sub>
 
@@ -70,8 +70,9 @@ Everything on the page is live. Progress bars move, numbers tick over, and new t
 ### Wall display mode
 
 Open `/wall` on a tablet or a spare monitor for a page made to be read from across the room. The wall is its own page: you
-pick exactly which cards it shows, several pages can take turns, and it dims at night. Nothing on it can be pressed, and
-chat never shows.
+pick exactly which cards it shows, several pages can take turns, and it dims at night. A page can show only when it should
+(mornings, when nobody's home, while the doorbell rings), and a few controls you list can work from it, big enough for a
+finger. Nothing else on it can be pressed, and chat never shows.
 
 <p align="center"><img src="docs/images/wall-services.webp" alt="The wall display: a large clock, the date and the weather, with every service's status below" width="620"><br><img src="docs/images/wall-house.webp" alt="The wall display's House page: the cameras, the thermostat, who's home, the doors, the energy and the weather" width="620"><br><sub>Two wall pages taking turns: the services, then the house.</sub></p>
 

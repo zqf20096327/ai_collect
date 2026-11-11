@@ -154,7 +154,7 @@ To use the assistant, connect an AI in **Settings → Assistant** (see [AI model
 Refract is a single container: the Go server with the web app built in, Tectonic, SyncTeX and git. It listens on port 8080 and keeps everything under `/data`.
 
 ```sh
-docker run -d --name refract --restart unless-stopped \
+docker run -d --name refract --restart unless-stopped --stop-timeout 30 \
   -p 127.0.0.1:8080:8080 -v refract-data:/data \
   -e REFRACT_SECRET_KEY="<the output of: openssl rand -base64 32>" \
   -e REFRACT_AUTH=password \
@@ -240,6 +240,8 @@ To back up, stop the container, copy the volume, and keep `REFRACT_SECRET_KEY` w
 
 To upgrade, pull the new image (`docker pull ghcr.io/ponytojas/refract:0.1`, or a newer version's tag) and start a new container on the same volume. Database changes are applied automatically at startup.
 
+Stopping Refract lets requests in flight and auto-pushes finish, and running assistant turns record that they were stopped: up to about 20 seconds. Docker's default is to kill the container after 10, so start it with `--stop-timeout 30` as above.
+
 ### Moving from `REFRACT_AUTH=none` to a sign-in mode
 
 Data created without sign-in belongs to an account called `local`. Give it your email before switching, so your projects and connections stay yours:
@@ -324,9 +326,9 @@ All settings are environment variables.
 | `REFRACT_AUTH` | `cloudflare` (default), `password` or `none`. See [Choose how people sign in](#choose-how-people-sign-in). |
 | `REFRACT_DATA_DIR` | Where projects, the database and caches live. Default `/data`. |
 | `REFRACT_ADDR` | Listen address. Default `:8080`. |
-| `REFRACT_MODE` | `selfhost` (default) or `saas`, for the hosted service. With `saas`, the ChatGPT plan is off (OpenAI's plan usage covers self-hosted apps): people use the assistant with API providers only. |
+| `REFRACT_MODE` | `selfhost` (default) or `saas`, for the hosted service. With `saas`, the ChatGPT plan is off (OpenAI's plan usage covers self-hosted apps): people use the assistant with API providers only. With `saas`, Refract refuses to start with `REFRACT_AUTH=none` or without an https `REFRACT_PUBLIC_URL`. |
 | `REFRACT_CF_TEAM_DOMAIN`, `REFRACT_CF_AUD` | Cloudflare Access team domain and application AUD tag. |
-| `REFRACT_PUBLIC_URL` | The address users open Refract at, e.g. `https://refract.example.com`. Needed for OpenID Connect. |
+| `REFRACT_PUBLIC_URL` | The address users open Refract at, e.g. `https://refract.example.com`. Needed for OpenID Connect, and required with `REFRACT_MODE=saas`. |
 | `REFRACT_OIDC_ISSUER`, `REFRACT_OIDC_CLIENT_ID`, `REFRACT_OIDC_CLIENT_SECRET` | Your OpenID Connect provider's issuer URL and Refract's client credentials there. |
 | `REFRACT_OIDC_NAME` | Label of the sign-in button: *Continue with …*. Default `SSO`. |
 | `REFRACT_OIDC_ALLOWED` | Comma-separated emails and `@domains` that may create an account by signing in with OpenID Connect. Empty: existing accounts only. |

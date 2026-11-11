@@ -1,7 +1,7 @@
 <p align="right"><b>English</b> · <a href="README.es.md">Español</a></p>
 
 <p align="center">
-  <img src="docs/media/aula-icon.png" width="128" height="128" alt="Aula's app icon: a brick-red arch painted in one brush stroke, with the sun on the horizon">
+  <img src="docs/media/aula-icon.png" width="128" height="128" alt="Aula's app icon: a brick-red arch drawn in ink and watercolor, with the sun rising inside it">
 </p>
 
 <h1 align="center">Aula</h1>
@@ -50,10 +50,15 @@ Download the file for your system from the [latest release](https://github.com/l
 
 | System | File | First launch |
 | --- | --- | --- |
-| macOS 13 or later (Apple Silicon and Intel) | `Aula-0.1.3-mac.dmg` | Open the .dmg and drag Aula to *Applications*. Aula isn't notarized by Apple yet, so macOS asks you to confirm the first time. On macOS 15 or later, try to open it, then go to *System Settings → Privacy & Security* and click *Open Anyway*. On macOS 13 and 14, right-click Aula and choose *Open*. |
-| Windows 10 and 11 (x64 and ARM, one installer) | `Aula-Setup-0.1.3.exe` | Run the installer (it doesn't need admin rights). If SmartScreen shows up, click *More info → Run anyway*. Aula isn't code-signed yet. |
-| Linux x64 | `Aula-0.1.3-linux-x86_64.AppImage` or `Aula-0.1.3-linux-amd64.deb` | AppImage: make it executable (`chmod +x Aula-*.AppImage`) and open it. Debian or Ubuntu: `sudo apt install ./Aula-0.1.3-linux-amd64.deb`. |
-| Linux ARM64 | `Aula-0.1.3-linux-arm64.AppImage` | Make it executable (`chmod +x`) and open it. |
+| macOS 13 or later (Apple Silicon and Intel) | `Aula-0.2.2-mac.dmg` | Open the .dmg and drag Aula to *Applications*. Aula isn't notarized by Apple yet, so macOS asks you to confirm the first time. On macOS 15 or later, try to open it, then go to *System Settings → Privacy & Security* and click *Open Anyway*. On macOS 13 and 14, right-click Aula and choose *Open*. |
+| Windows 10 and 11 (x64 and ARM, one installer) | `Aula-Setup-0.2.2.exe` | Run the installer (it doesn't need admin rights). If SmartScreen shows up, click *More info → Run anyway*. Aula isn't code-signed yet. |
+| Linux x64 | `Aula-0.2.2-linux-x86_64.AppImage` or `Aula-0.2.2-linux-amd64.deb` | AppImage: make it executable (`chmod +x Aula-*.AppImage`) and open it. Debian or Ubuntu: `sudo apt install ./Aula-0.2.2-linux-amd64.deb`. |
+| Linux ARM64 | `Aula-0.2.2-linux-arm64.AppImage` | Make it executable (`chmod +x`) and open it. |
+
+> **Updating from 0.1.x:** install the current version by hand this one time (download it here and install it over
+> your copy; your courses and settings stay). Aula 0.1.x will say the new version's signature isn't valid: since 0.2.0
+> Aula is signed with new keys, because the old ones were lost. From 0.2.0 on, Aula updates itself again. On a Mac, macOS asks once more for
+> permission to use Aula's saved keys.
 
 On Linux you need a 64-bit distribution with glibc. Install GNOME Keyring or KWallet too, or Aula has to store your
 keys unencrypted.
@@ -200,6 +205,11 @@ answer away.
   password.
 - **Aula always on** (optional): with the window closed, Aula can send you a morning summary, check your platform, remind
   you of deadlines and write a weekly summary. It all lands in the Inbox, and it stops for the day when it reaches its daily budget.
+- **Your iPad and iPhone** (optional, with Aula on a Mac): open Aula from your own devices while your courses, your AI
+  and your data stay on the Mac. The iPad gets the whole app; the iPhone, Aula as your assistant (what it did, what is
+  pending, the chat and the calendar). Devices reach the Mac over your private Tailscale network and are linked once
+  with a code. From there you can also open Aula's browser live: sign in to your platform away from home, or do an
+  assignment yourself and hand it to Aula to review before you submit it. See [docs/DEVICES.md](docs/DEVICES.md).
 - **Memory**: Aula remembers what helps it teach you, like how you prefer explanations or what you find hard. You can
   see, edit, pause or export all of it in *Settings → What Aula remembers*.
 - **Search**: <kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>K</kbd> finds screens, courses and tools, and anything inside your

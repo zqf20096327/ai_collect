@@ -51,6 +51,8 @@ Free for your own use, your own business included ([license](#license)).
 [![License: Elastic 2.0](https://img.shields.io/badge/license-Elastic%202.0-141318)](https://github.com/cotletdev/peopleperhour-api-mcp-server/blob/main/LICENSE)
 [![MCP Badge](https://lobehub.com/badge/mcp/cotletdev-peopleperhour-api-mcp-server)](https://lobehub.com/mcp/cotletdev-peopleperhour-api-mcp-server)
 
+Also on Odel: https://odel.app/modules/cotlet/peopleperhour and mcpbeat: https://mcpbeat.com/mcp-servers/cotlet/peopleperhour/
+
 ```bash
 uv tool install peopleperhour-api-mcp                  # or: pip install peopleperhour-api-mcp
 peopleperhour-mcp connect                          # reads your PeoplePerHour session from Chrome

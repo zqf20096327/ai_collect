@@ -4,12 +4,23 @@
 
 CodeSlice 是一款本地优先的 AI 代码阅读桌面应用。添加代码仓库后，打开文件、选中代码并开始提问。回答附有可点击的文件与行号引用；AI 需要写文件或运行命令时，先由你审核授权。
 
-**[下载 Windows 版（.exe）](https://github.com/ctianye/CodeSlice/releases/latest)** ·
-**[下载 Linux 版（AppImage / deb / rpm）](https://github.com/ctianye/CodeSlice/releases/latest)** ·
+**[下载 Windows 版](https://github.com/ctianye/CodeSlice/releases/latest)** ·
+**[下载 macOS 版](https://github.com/ctianye/CodeSlice/releases/latest)** ·
+**[下载 Linux 版](https://github.com/ctianye/CodeSlice/releases/latest)** ·
 [全部版本](https://github.com/ctianye/CodeSlice/releases) ·
 [MIT 许可](LICENSE)
 
-Windows 提供 `.exe` 安装包；Linux 提供 AppImage、`.deb` 与 `.rpm`（均为 x86_64）。
+| 平台 | 架构 | 安装包 |
+| --- | --- | --- |
+| Windows 10 / 11 | x64 | `CodeSlice-0.2.6-Setup.exe` |
+| macOS 11+ | Apple Silicon（arm64） | `CodeSlice-0.2.6-arm64.dmg` |
+| macOS 11+ | Intel（x64） | `CodeSlice-0.2.6-x64.dmg` |
+| Linux（Ubuntu 22.04+ / Debian 12+） | x86_64 | `CodeSlice-0.2.6-x86_64.AppImage`、`-amd64.deb`、`-x86_64.rpm` |
+| Linux（Ubuntu 22.04+ / Debian 12+） | arm64 | `CodeSlice-0.2.6-arm64.AppImage`、`-arm64.deb`、`-aarch64.rpm` |
+
+安装包由 GitHub Actions 在对应的原生 runner 上构建：Windows 使用 NSIS，macOS 使用
+DMG，Linux 使用 AppImage / deb / rpm。暂未提供 Windows ARM64 与 Linux ARMv7 安装包。
+界面文案目前以中文为主，仓库同时提供英文 README 辅助说明。
 
 ![CodeSlice 项目选择与本地项目列表](docs/screenshots/welcome.png)
 
@@ -96,7 +107,7 @@ references; they do not assert semantic similarity.
 ## 目录
 
 - [实战演示](#实战演示)
-- [v0.2.2 更新](#v022-更新)
+- [v0.2.6 更新](#v026-更新)
 - [快速开始](#快速开始)
 - [功能一览](#功能一览)
 - [运行要求](#运行要求)
@@ -117,7 +128,173 @@ references; they do not assert semantic similarity.
 
 ---
 
-## v0.2.2 更新
+## v0.2.6 更新
+
+- **修复“排布刚开始就被当成完成”**：vis 的 `stabilize()` 在启动时会先触发一次
+  `stabilized` 事件，旧代码把它当作完成信号，于是把初始坐标直接存成了最终布局，
+  看起来就是一个均匀的大球。现在只认真正的 `stabilizationIterationsDone`，并忽略
+  空网络提前发出的完成事件。
+- **大图完整跑完迭代预算**：`minVelocity` 设为 0，避免速度阈值在几十次迭代后就提前
+  结束；2k+ 节点按 200 次迭代排布，约 10–15 秒一次，之后复用持久化坐标。
+- **窗口被遮挡也能完成排布**：启动排布改用 `setTimeout` 而不是 `requestAnimationFrame`，
+  并关闭 Electron 的后台节流，避免窗口在后台时排布永远不开始。
+- **只保存真正完成的布局**：看门狗或异常路径不再把初始坐标写进数据库。
+- **旧布局一次性失效**：`LAYOUT_VERSION` 升到 3，之前保存成球的坐标会在升级后
+  自动作废并重新排布一次。
+- **发布**：版本号统一到 0.2.6。
+
+<details>
+<summary>English</summary>
+
+- **The layout was persisted before it started.** vis emits `stabilized` from the
+  `stopSimulation()` call at the beginning of `stabilize()`. Treating that as
+  completion saved the seed coordinates as the final layout, which looked like
+  one uniform ball. The app now listens only to `stabilizationIterationsDone`
+  and ignores completion events from the empty network.
+- **Large graphs use their full iteration budget.** `minVelocity` is zero so the
+  pass cannot stop after a few dozen ticks from the velocity threshold; 2k+ node
+  graphs run 200 iterations once (roughly 10–15 seconds) and then reuse the
+  persisted coordinates.
+- **A covered window still finishes the layout.** The pass starts with
+  `setTimeout` instead of `requestAnimationFrame`, and Electron background
+  throttling is disabled, so an occluded window no longer leaves the graph on
+  its seed.
+- **Only completed layouts are persisted.** Watchdog and error paths no longer
+  write seed coordinates to the database.
+- **Old layouts are retired once.** `LAYOUT_VERSION` is now 3, so coordinates
+  saved as a ball are discarded and regenerated after the upgrade.
+- **Release:** version bumped to 0.2.6.
+
+</details>
+
+<details>
+<summary>v0.2.5 更新</summary>
+
+- **大图不再坍缩成一个球**：超过 1200 个可见节点时，稳定化迭代从 80 次恢复为 200 次。
+  社区重新分开，UI、检索、存储、测试等区域保持不同的密度和位置，而不是均匀铺成一个圆球。
+  实测 2k+ 节点首次排布约 6 秒，排完后坐标写入 SQLite，再次打开直接复用。
+- **中断保护改为“停滞才停”**：监听稳定化进度，连续 15 秒没有进展才结束（硬上限 120 秒）。
+  慢机器不会再在排布进行到一半时被固定成半成品，同时保留原来的防卡死兜底。
+- **重新打开不再重复排布**：修复开发模式 StrictMode 重挂载时丢掉已保存坐标的问题；
+  切换标签或重新打开图谱会直接使用已持久化的布局。
+- **旧布局一次性失效**：布局 key 加入 `LAYOUT_VERSION`，之前由 80 次迭代生成、
+  看起来是一个球的坐标会自动作废，下次打开重新排布一次。
+- **发布**：版本号统一到 0.2.5。
+
+<details>
+<summary>English</summary>
+
+- **Large graphs no longer collapse into one ball.** Graphs with more than 1200
+  visible nodes now use 200 stabilization passes instead of 80. Communities stay
+  separated with visibly different densities, which is what makes the overview
+  readable. A 2k+ node graph settles in about six seconds once, then reuses the
+  coordinates persisted in SQLite.
+- **The settle watchdog only stops a stalled pass.** Progress events keep the
+  layout alive; it is cut off only after 15 seconds without progress (120-second
+  hard ceiling), so a slow machine no longer freezes a half-finished layout.
+- **Reopening does not re-layout.** A development-mode StrictMode remount used to
+  discard the seeded coordinates; tab switches and reopens now reuse the saved
+  layout immediately.
+- **Stale layouts are retired once.** The layout key now includes
+  `LAYOUT_VERSION`, so coordinates produced by the old 80-pass layout are
+  discarded and regenerated on the next open.
+- **Release:** version bumped to 0.2.5.
+
+</details>
+
+</details>
+
+<details>
+<summary>v0.2.4 更新</summary>
+
+- **检查更新不再被 GitHub 403 卡住**：此前前端直连 GitHub 匿名 API，每小时只有
+  60 次额度，共享出口或连续点击就会返回 403。现在由本地后端请求并缓存 30 分钟，
+  API 限流时自动改用 jsDelivr 静态版本源 / GitHub Release 页面 / Atom；都失败才给出可读提示，
+  不再把原始 HTTP 403 直接抛到设置页。启动检查和手动检查共用这份缓存。
+- **按平台选择更新包**：Windows 下载 `Setup.exe`；macOS 按 Apple Silicon / Intel
+  选择对应 DMG；Linux 选择 AppImage。找不到匹配资产时回到 Release 页面。
+- **macOS 安装包纳入正式构建链**：当前源码 tag 包含 macOS x64 / arm64 构建脚本，
+  Intel 与 Apple Silicon 各自原生构建，并在封包前做 ad-hoc 签名。
+- **发布**：版本号统一到 0.2.4。
+
+<details>
+<summary>English</summary>
+
+- **Update checks no longer fail with GitHub 403.** The renderer used to call the
+  anonymous GitHub API, which allows only 60 requests per hour per public IP; a
+  shared NAT or repeated clicks surfaced HTTP 403. The local backend now fetches
+  and caches the result for 30 minutes, falls back to a jsDelivr-hosted version file / GitHub release page / Atom feed when the API is rate-limited, and only reports a readable error when
+  both fail. Startup and manual checks share the cache.
+- **Platform-aware download.** Windows gets the Setup executable, macOS gets the
+  matching Apple Silicon / Intel DMG, and Linux gets the AppImage. If no asset
+  matches, the button opens the release page.
+- **macOS packages are part of the normal build.** The source tag now contains the
+  macOS x64/arm64 build scripts; each architecture is built natively and ad-hoc
+  signed before the DMG is created.
+- **Release:** version bumped to 0.2.4.
+
+</details>
+
+</details>
+
+<details>
+<summary>v0.2.3 更新</summary>
+
+- **像 IDE 一样跳转**：`F12` / `Ctrl+Click`（macOS 为 `⌘+Click`）跳转到定义，
+  `Shift+F12` 列出引用，`Alt+←/→` 在跳转历史中前进后退。同名符号会弹出选择器；
+  命中外部库、找不到目标或位置有歧义时，界面会说明原因，而不是静默失败。
+- **悬浮信息与同词高亮**：悬停显示符号签名、docstring / `WHY` 注释与相对路径；
+  光标所在符号和全部出现位置带 VS Code 风格方框，按住 Ctrl / ⌘ 时目标词出现下划线。
+- **符号索引随图谱一次建好**：新增持久化的定义 / 引用索引（`symbol_defs` /
+  `symbol_refs`），带精确行列与跨文件解析结果；打开已有项目不会额外全量扫描。
+- **打开普通文件不再出现“引用第 1–1 行”**：只有从引用、图谱或对话真正带着行范围
+  跳转时才显示引用条，普通打开文件恢复干净视图。
+- **Linux 包不再依赖新 glibc**：GitHub Actions 的 Linux 构建改用 uv 管理的 CPython，
+  后端不再把构建机的 `GLIBC_2.38` 带进 AppImage；构建末尾会扫描所有二进制，超过
+  `GLIBC_2.35` 直接失败。Linux 包改为在原生 x64 与 arm64 runner 上分别构建。
+- **macOS 安装包**：GitHub Actions 在 Intel（`macos-15-intel`）与 Apple Silicon
+  （`macos-15`）runner 上分别构建 DMG；仅做 ad-hoc 签名，未使用 Developer ID、未公证，首次启动
+  需要右键「打开」或移除 quarantine 属性。
+- **发布流程交给 GitHub**：推送 `v*` 标签后自动构建 Windows NSIS、macOS x64/arm64
+  DMG、Linux x64 / arm64 的 AppImage / deb / rpm，生成 `SHA256SUMS` 并附加到
+  Release。Windows 构建会自动下载 rcedit，不再依赖构建机预热 electron-builder 缓存。
+- **发布**：版本号统一到 0.2.3。
+
+<details>
+<summary>English</summary>
+
+- **IDE-style navigation.** `F12` / `Ctrl+Click` (⌘+Click on macOS) goes to the
+  definition, `Shift+F12` lists references, and `Alt+←/→` walks the navigation
+  history. Ambiguous names open a picker; external or unresolved targets explain
+  why instead of failing silently.
+- **Hover and occurrence highlighting.** Hovering shows the signature,
+  docstring/`WHY` comment, and relative path. The symbol under the cursor and all
+  of its occurrences get a VS Code-style box, with an underline on the target
+  while Ctrl/⌘ is held.
+- **The symbol index is built with the graph.** Persistent definition/reference
+  tables (`symbol_defs` / `symbol_refs`) store exact lines/columns and
+  cross-file resolution; opening an existing project does not trigger another
+  full scan.
+- **No more “引用第 1–1 行” on ordinary file opens.** The citation bar only
+  appears for a real ranged jump; opening a file normally is clean again.
+- **Linux packages no longer require a new glibc.** CI builds the backend with
+  uv-managed CPython, so the AppImage no longer inherits the runner's
+  `GLIBC_2.38`; the build scans every bundled binary and fails above
+  `GLIBC_2.35`. Linux artifacts are now built natively on x64 and arm64 runners.
+- **macOS packages.** CI builds separate DMGs on Intel (`macos-15-intel`) and
+  Apple Silicon (`macos-15`) runners. They are ad-hoc signed and not notarized;
+  first launch needs right-click → Open or removal of the quarantine attribute.
+- **GitHub owns the release build.** A `v*` tag builds Windows NSIS, macOS
+  x64/arm64 DMGs, and Linux x64/arm64 AppImage, deb, and rpm packages, writes
+  `SHA256SUMS`, and attaches everything to the release. Windows CI downloads
+  rcedit automatically instead of relying on a warm electron-builder cache.
+
+</details>
+
+</details>
+
+<details>
+<summary>v0.2.2 更新</summary>
 
 - **图谱不再卡在“正在排布图谱”**：画布把「稳定化完成」的回调挂在一个永远不会触发的
   vis 事件上——Network 是用空数据集构造的，vis 在空图上直接返回且不发事件。现在数据
@@ -157,6 +334,8 @@ references; they do not assert semantic similarity.
 
 </details>
 
+</details>
+
 <details>
 <summary>v0.2.1 更新</summary>
 
@@ -183,8 +362,9 @@ references; they do not assert semantic similarity.
 ## 快速开始
 
 1. 从 [最新 GitHub Release](https://github.com/ctianye/CodeSlice/releases/latest)
-   下载对应平台的安装包：Windows 使用 `CodeSlice-0.2.2-Setup.exe`；Linux 使用
-   AppImage、`.deb` 或 `.rpm`（x86_64）。
+   下载对应平台的安装包：Windows 使用 `CodeSlice-0.2.6-Setup.exe`；macOS 按芯片选择
+   arm64（Apple Silicon）或 x64（Intel）的 `.dmg`；Linux 按架构选择 x86_64 或 arm64
+   的 AppImage、`.deb`、`.rpm`。
 2. 启动 CodeSlice，点击添加项目并选择本地代码仓库所在的文件夹。
 3. 打开源文件，选中你想理解的代码，在对话面板提问。
 4. 打开 **设置 → 模型**，配置兼容的模型服务与 API Key。Key 保存在系统的凭据管理器
@@ -203,8 +383,9 @@ API Key 保存在系统凭据管理器中。
 
 1. Download the package for your platform from the
    [latest GitHub Release](https://github.com/ctianye/CodeSlice/releases/latest):
-   `CodeSlice-0.2.2-Setup.exe` for Windows, or the AppImage, `.deb`, or `.rpm`
-   (x86_64) for Linux.
+   `CodeSlice-0.2.6-Setup.exe` for Windows; an arm64 (Apple Silicon) or x64
+   (Intel) `.dmg` for macOS; or the x86_64 / arm64 AppImage, `.deb`, or `.rpm`
+   for Linux.
 2. Start CodeSlice and add a local repository by selecting its folder.
 3. Open a source file, select the code you want to understand, and ask a
    question in the conversation pane.
@@ -239,6 +420,8 @@ manually deleting the user data directory removes that local data.
 - 把对话整理成可索引、可搜索、可跨项目复用的笔记。
 - 在独立的代码图谱与笔记图谱中可视化代码和笔记，支持展开社区、聚焦关系总结，
   以及从对话跳到代码。
+- 像 IDE 一样在代码间跳转：`F12` / `Ctrl+Click` 到定义，`Shift+F12` 查看引用，
+  `Alt+←/→` 前进后退。
 - 对话、索引与应用数据全部保存在本地。
 
 <details>
@@ -255,6 +438,8 @@ manually deleting the user data directory removes that local data.
 - Visualizes code and notes in separate static graphs with expandable
   communities, focused relationship summaries, and conversation-to-code
   navigation.
+- Jumps between symbols like an IDE: `F12` / `Ctrl+Click` for go-to-definition,
+  `Shift+F12` for references, and `Alt+←/→` for back/forward.
 - Saves conversations, indexes, and application data locally.
 
 </details>
@@ -263,8 +448,8 @@ manually deleting the user data directory removes that local data.
 
 ## 运行要求
 
-- Windows 10（1809 或更高版本）或 Windows 11；或 Linux x86_64
-  （AppImage / `.deb` / `.rpm`）。
+- Windows 10（1809 或更高版本）或 Windows 11；macOS 11+（Apple Silicon 或 Intel）；或 Linux x86_64 / arm64（Ubuntu 22.04+、Debian 12+，
+  AppImage / `.deb` / `.rpm`）。
 - 需要配置兼容的模型服务和你自己的 API Key 才能获得 AI 回答。支持在本地配置的
   模型服务。
 
@@ -274,8 +459,8 @@ manually deleting the user data directory removes that local data.
 <details>
 <summary>English</summary>
 
-- Windows 10 (version 1809 or later) or Windows 11, or Linux x86_64
-  (AppImage, deb, or rpm).
+- Windows 10 (version 1809 or later) or Windows 11; macOS 11+ (Apple Silicon or Intel); or Linux x86_64 / arm64 (Ubuntu 22.04+,
+  Debian 12+; AppImage, deb, or rpm).
 - A compatible model provider and your own API key for AI answers. Local model
   providers are supported where configured.
 
@@ -288,8 +473,14 @@ not need to install Python, Node.js, or developer tools.
 
 ## 已知限制
 
-- 预编译安装包面向 Windows 10/11 与 Linux x86_64（AppImage / deb / rpm），
-  均未做代码签名。
+- 预编译安装包面向 Windows 10/11（x64）、macOS 11+（arm64 / x64）与
+  Linux x86_64 / arm64（AppImage / deb / rpm），均未使用 Developer ID 代码签名；
+  macOS 包仅做 ad-hoc 签名且未公证。
+  界面文案目前以中文为主，英文 README 仅作文档辅助。
+- macOS 首次启动可能被 Gatekeeper 拦截：右键 CodeSlice →「打开」，或执行
+  `xattr -dr com.apple.quarantine /Applications/CodeSlice.app`。
+- AppImage 需要系统提供 FUSE；Ubuntu 22.04+ 若未安装 `libfuse2`，可先
+  `sudo apt install libfuse2`，或使用 `--appimage-extract-and-run` 解包运行。
 - 模型回答依赖已配置的模型服务；API 费用与服务商的数据保留政策取决于你的服务与套餐。
 - Tree-sitter 结构化索引目前配置了 Python、TypeScript、JavaScript、Go、Rust、Java、
   C、C++、JSON 与 Bash。其他文件仍可用于应用支持的纯文本工作流。
@@ -301,8 +492,13 @@ not need to install Python, Node.js, or developer tools.
 <details>
 <summary>English</summary>
 
-- Prebuilt packages target Windows 10/11 and Linux x86_64 (AppImage, deb, rpm);
-  none of them are code-signed.
+- Prebuilt packages target Windows 10/11 (x64), macOS 11+ (arm64 / x64), and Linux x86_64 / arm64 (AppImage, deb, rpm); none are code-signed and
+  the macOS builds are not notarized. The UI is currently Chinese-first; the
+  English README is documentation assistance only.
+- On first macOS launch, Gatekeeper may block the app: right-click CodeSlice →
+  Open, or run `xattr -dr com.apple.quarantine /Applications/CodeSlice.app`.
+- AppImage needs FUSE. On Ubuntu 22.04+ install `libfuse2`, or run with
+  `--appimage-extract-and-run`.
 - Model responses require a configured provider; API charges and provider
   retention policies depend on your provider and plan.
 - Tree-sitter structural indexing is currently configured for Python,
@@ -355,6 +551,7 @@ please explain the problem, reproduction steps, and expected behavior.
 | **AI 可执行命令** | 对话里模型调 `run_command` 走的审批卡与终端是同一套沙箱：同一份危险命令黑名单，同一条 `command_rules` 授权规则。 |
 | **文档阅读与就地编辑** | 打开 `.md` / `.mdx` 默认渲染成排版文档（标题层级、表格、代码块带复制、图片按相对路径解析并走本机接口加载）。工具栏「阅读 / 编辑」切换：编辑态用 Monaco 直接改，`⌘/Ctrl+S` 或「保存」写回磁盘；保存带 mtime 校验，文件在打开后被别人改过会拒绝覆盖并给出提示。 |
 | **可溯源的引用** | 每条回答附 `文件:行号` 引用块，点击直接跳转并用左侧色条标出范围；再点同一个引用块取消标亮。 |
+| **代码跳转** | `F12` / `Ctrl+Click` 跳到定义，`Shift+F12` 列出引用，`Alt+←/→` 在跳转历史中前进后退。同名符号弹出选择器，外部库与未解析位置给出明确提示；悬浮显示签名、docstring 与 `WHY` 注释。光标所在符号和全部出现位置会像 VS Code 一样带框高亮，跳转后目标符号短暂闪烁。 |
 | **混合检索** | SQLite FTS5 关键词检索 + numpy 余弦相似度语义检索，结果融合排序。 |
 | **结构化索引** | Tree-sitter 解析 Python / TS / JS / Go / Rust / Java / C / C++ / JSON / Bash，按函数、类、模块切块。 |
 | **逐条授权** | 写文件、执行命令必须经你批准，规则可设为「仅本次 / 本会话 / 总是」。没有「信任整个项目」一键放行。 |
@@ -403,7 +600,7 @@ please explain the problem, reproduction steps, and expected behavior.
 **启动握手**：后端在真正开始监听之后，向 stdout 打印一行
 
 ```
-CODESLICE_READY {"port": 54746, "token": "xN-Nxo...", "version": "0.2.2"}
+CODESLICE_READY {"port": 54746, "token": "xN-Nxo...", "version": "0.2.6"}
 ```
 
 Electron 主进程读到这一行才知道该连哪个端口、用什么 Token。
@@ -415,7 +612,7 @@ Electron 主进程读到这一行才知道该连哪个端口、用什么 Token�
 
 | 层 | 技术 | 选型理由 |
 | --- | --- | --- |
-| 桌面壳 | Electron + electron-builder（NSIS / AppImage / deb / rpm） | 需要管理子进程、原生文件对话框、系统凭据 |
+| 桌面壳 | Electron + electron-builder（NSIS / DMG / AppImage / deb / rpm） | 需要管理子进程、原生文件对话框、系统凭据 |
 | 界面 | React 18 + TypeScript + Vite 5 | 成熟的编辑器周边生态，构建快 |
 | 代码显示 | Monaco Editor | 与 VS Code 同源，语法高亮与 diff 开箱即用 |
 | API | FastAPI + Uvicorn | 原生 async、SSE 简单、Pydantic 校验 |
@@ -532,7 +729,7 @@ cd desktop; npm run dev
 # 1) 后端 → packaging\dist-backend\codeslice-backend.exe（扁平布局）
 pwsh -File packaging\build_backend.ps1
 
-# 2) 前端 + Electron → desktop\release\CodeSlice-0.2.2-Setup.exe
+# 2) 前端 + Electron → desktop\release\CodeSlice-0.2.6-Setup.exe
 pwsh -File packaging\build_desktop.ps1
 ```
 
@@ -551,16 +748,48 @@ HTTP 服务，两处必须是同一份产物），再校验安装包内确实包
 后端产物直接放在 `packaging\dist-backend\`，不会被复制进 `desktop/`：
 `electron-builder.yml` 的 `extraResources.from` 指的就是那里。
 
-Linux 安装包使用 `desktop/electron-builder-linux.yml`：先在 Linux（或 WSL）中用同一
-PyInstaller 入口生成 `packaging/dist-backend-linux/`，再在 `desktop/` 下运行
-`npm run dist:linux`，AppImage / deb / rpm 会输出到 `desktop/release-linux/`。
-PyInstaller 产物必须在 Linux 平台生成，不能从 Windows 交叉编译。
+Linux 安装包使用 `desktop/electron-builder-linux.yml`，推荐在 Linux（原生机器、WSL 或
+CI）中运行：
+
+```bash
+./packaging/build_linux.sh --arch x64     # x86_64
+./packaging/build_linux.sh --arch arm64   # aarch64 / arm64
+```
+
+脚本优先用 [uv](https://docs.astral.sh/uv/) 创建 Python 3.11 环境；uv 提供的 CPython
+链接较旧的 glibc，后端不会把构建机的 `GLIBC_2.38` 带进安装包。构建完成后会扫描
+`packaging/dist-backend-linux/` 中的所有二进制，若所需 glibc 高于 2.35 就直接失败。
+没有 uv 时才会退回系统 `python3 -m venv`。
+
+PyInstaller 产物必须在目标架构的 Linux 上生成，不能从 Windows 交叉编译；arm64 包同理，
+需要 arm64 runner 或 arm64 机器。GitHub Actions 已按架构分别构建：推送 `v*` 标签后，
+Windows、macOS x64/arm64、Linux x64/arm64 会并行打包，汇总后自动创建 / 更新 Release
+并上传 `SHA256SUMS-v0.2.6.txt`。也可以手动触发 `release` workflow；填写
+`publish_tag` 可把本次构建发布到已有的 tag（不填则只上传 Actions artifact）。
+
+AppImage / deb / rpm 输出到 `desktop/release-linux/`。只想重新打包前端或复用已有后端时，
+可加 `--skip-backend`。
+
+macOS DMG 使用另一条脚本（必须在 macOS 上运行）：
+
+```bash
+./packaging/build_mac.sh --arch arm64   # Apple Silicon
+./packaging/build_mac.sh --arch x64     # Intel
+```
+
+脚本用 uv 创建同一架构的 Python 环境，PyInstaller 后端与 Electron 主进程都由本机架构
+生成；输出在 `desktop/release-mac/`。DMG 仅做 ad-hoc 签名，不使用 Developer ID、
+未公证；CI 通过 `CSC_IDENTITY_AUTO_DISCOVERY=false` 跳过 Apple 签名，再由
+`afterPack` 钩子给 app 做 ad-hoc 签名，首次启动按上面的 Gatekeeper 说明处理。
+GitHub Actions 使用 `macos-15-intel`（x64）与 `macos-15`（arm64）两个原生 runner。
 
 > 注意：`uv sync` / `uv run` 会把 PyInstaller 从 `backend\.venv` 里卸掉（它只在
 > `packaging\requirements-packaging.txt` 里）。同步过依赖之后，重跑
 > `build_backend.ps1` 时**不要**加 `-SkipInstall`。
 
-打包细节、参数与故障排查见 **[packaging/README.md](packaging/README.md)**。
+打包细节、参数与故障排查见 **[packaging/README.md](packaging/README.md)**。发布新版本时，除了
+`package.json` / `pyproject.toml`，还要同步根目录 `version.json` 的 `version`、`tag` 和
+`url`；它是更新检查在 GitHub API 限流时的 CDN 兜底。
 
 ### 验证打包产物
 
@@ -591,24 +820,27 @@ backend\.venv\Scripts\python.exe backend\scripts\check_packaged_notes.py --base 
 | --- | --- |
 | Windows 安装版（`CodeSlice.exe`） | `%APPDATA%\codeslice-desktop\` |
 | Windows 开发版（`uv run fastapi dev` / `codeslice-backend.exe` 手工启动） | `%LOCALAPPDATA%\CodeSlice\` |
+| macOS 安装版 | `~/Library/Application Support/codeslice-desktop/` |
+| macOS 开发版 | `~/.codeslice/` |
 | Linux 安装版 | `~/.config/codeslice-desktop/`（默认） |
 | Linux 开发版 | `~/.codeslice/` |
 | `scripts\dev.ps1` 一键启动 | 仓库下 `.devdata\` |
 
 原因是：安装版由 Electron 主进程显式设置 `CODESLICE_DATA_DIR=app.getPath('userData')`，
 而 `app.getPath('userData')` 取 `package.json` 的 `name`（`codeslice-desktop`），所以
-Windows 下是 `%APPDATA%\codeslice-desktop`，Linux 下是
+Windows 下是 `%APPDATA%\codeslice-desktop`，macOS 下是
+`~/Library/Application Support/codeslice-desktop`，Linux 下是
 `~/.config/codeslice-desktop`；开发模式下没人设置该变量，后端回落到
 `backend/app/core/config.py` 的默认值（Windows 为 `%LOCALAPPDATA%\CodeSlice`，
-Linux 为 `~/.codeslice`）。
+macOS / Linux 为 `~/.codeslice`）。
 
 | 内容 | 位置 |
 | --- | --- |
 | SQLite 数据库 | `<数据目录>/codeslice.db` |
 | 日志 | `<数据目录>/logs/backend.log` |
 | LangGraph 检查点 | `<数据目录>/checkpoints.db` |
-| 窗口尺寸等桌面状态 | 仅安装版：Windows 为 `%APPDATA%\codeslice-desktop\window-state.json`，Linux 为 `~/.config/codeslice-desktop/window-state.json` |
-| 模型 API Key | 系统凭据管理器（Windows 凭据管理器 / Linux Secret Service），服务名 **`codeslice`** |
+| 窗口尺寸等桌面状态 | 仅安装版：Windows 为 `%APPDATA%\codeslice-desktop\window-state.json`，macOS 为 `~/Library/Application Support/codeslice-desktop/window-state.json`，Linux 为 `~/.config/codeslice-desktop/window-state.json` |
+| 模型 API Key | 系统凭据管理器（Windows 凭据管理器 / macOS Keychain / Linux Secret Service），服务名 **`codeslice`** |
 | 会话 Token | 仅进程内存，每次启动随机生成 |
 
 可用环境变量 `CODESLICE_DATA_DIR` 覆盖数据目录（开发脚本会指向仓库下的 `.devdata\`）。
@@ -697,7 +929,7 @@ CodeSlice 按「不信任本地服务的调用方」来设计——因为同一�
 - 模型配置（OpenAI 兼容 / Anthropic）+ 连通性测试
 - 本地向量模型一键下载：设置页内置 `bge-m3` / `qwen3-embedding:0.6b` 两个预设，
   通过本机 Ollama 下载并自动写入 Embedding 配置（切换模型后提示重建索引）
-- PyInstaller 后端 + electron-builder NSIS / AppImage / deb / rpm 安装包
+- PyInstaller 后端 + electron-builder NSIS / DMG / AppImage / deb / rpm 安装包
 
 **本地向量模型（Ollama）**
 
@@ -860,16 +1092,36 @@ uv run fastapi dev app/main.py
 然后在前端界面里粘贴同一个 `dev-token`，或写进 `frontend/.env.local` 的
 `VITE_SESSION_TOKEN`。用 `scripts/dev.ps1` 启动则自动处理。
 
+**Q：检查更新提示「GitHub 检查失败（HTTP 403）」？**
+
+旧版由前端直接调用 GitHub 匿名 API，该接口按公网 IP 每小时只允许 60 次；共享出口、
+反复点击或代理出口被多人使用时就会触发限流。v0.2.4 起改由本地后端请求并缓存 30 分钟，
+API 限流时自动回退到 jsDelivr 静态版本源 / GitHub Release 页面 / Atom，设置页不会再收到原始 403。
+仍在使用旧版的用户，请手动到 [Releases](https://github.com/ctianye/CodeSlice/releases)
+下载一次 v0.2.4 或更新版本。
+
 **Q：Windows 提示「已保护你的电脑」/ 杀毒软件报毒？**
 
 PyInstaller 产出的 exe 没有代码签名，属于典型误报。点「更多信息 → 仍要运行」，
 或把安装目录加入白名单。正式分发需要购买代码签名证书。
 
+**Q：macOS 上怎么安装？**
+
+下载对应芯片的 DMG（Apple Silicon 用 `arm64`，Intel 用 `x64`），打开后把 CodeSlice
+拖进「应用程序」。安装包仅做 ad-hoc 签名、未公证，首次启动若被 Gatekeeper 拦截：
+
+- 右键 CodeSlice →「打开」→ 再点「打开」；或
+- 执行 `xattr -dr com.apple.quarantine /Applications/CodeSlice.app` 后再启动。
+
 **Q：Linux 上怎么安装？**
 
-- AppImage：`chmod +x CodeSlice-0.2.2-x86_64.AppImage` 后直接运行，不需要安装。
-- deb：`sudo apt install ./CodeSlice-0.2.2-amd64.deb`。
-- rpm：`sudo dnf install ./CodeSlice-0.2.2-x86_64.rpm`（或 `sudo rpm -i ...`）。
+- AppImage：`chmod +x CodeSlice-0.2.6-x86_64.AppImage` 后直接运行，不需要安装；
+  arm64 机器使用 `CodeSlice-0.2.6-arm64.AppImage`。若提示缺少 FUSE，可
+  `sudo apt install libfuse2`，或运行 `./CodeSlice-0.2.6-x86_64.AppImage --appimage-extract-and-run`。
+- deb：`sudo apt install ./CodeSlice-0.2.6-amd64.deb`（arm64 为
+  `CodeSlice-0.2.6-arm64.deb`）。
+- rpm：`sudo dnf install ./CodeSlice-0.2.6-x86_64.rpm`（arm64 为
+  `CodeSlice-0.2.6-aarch64.rpm`，或 `sudo rpm -i ...`）。
 
 deb / rpm 默认安装到 `/opt/CodeSlice`，启动项会出现在应用菜单中。安装包未做代码签名，
 系统可能提示来源未知；确认文件来自本仓库 Release 后可继续安装。
@@ -901,10 +1153,11 @@ packaging\dist-backend\codeslice-backend.exe --selftest
 
 **Q：数据存在哪？卸载会删吗？**
 
-Windows 安装版在 `%APPDATA%\codeslice-desktop\`，Linux 安装版在
-`~/.config/codeslice-desktop/`；开发版分别在 `%LOCALAPPDATA%\CodeSlice\` 与
-`~/.codeslice/`（详见[数据与凭据](#数据与凭据)）。卸载程序默认保留这些目录
-（`deleteAppDataOnUninstall: false`，避免误删笔记与对话）；
+Windows 安装版在 `%APPDATA%\codeslice-desktop\`，macOS 安装版在
+`~/Library/Application Support/codeslice-desktop/`，Linux 安装版在
+`~/.config/codeslice-desktop/`；开发版分别为 `%LOCALAPPDATA%\CodeSlice\`、
+`~/.codeslice/` 与 `~/.codeslice/`（详见[数据与凭据](#数据与凭据)）。卸载程序默认
+保留这些目录（`deleteAppDataOnUninstall: false`，避免误删笔记与对话）；
 需要彻底清理时手动删除即可。API Key 在系统凭据管理器中，需单独删除。
 
 **Q：能同时打开多个项目吗？**
@@ -928,7 +1181,7 @@ uv run fastapi dev app/main.py --port 8123
 **Q：安装后 `CodeSlice.exe` 是 Electron 的默认图标？**
 
 说明打包时 rcedit 那一步没生效。正常的打包输出里应该有
-`[ok] icon verified: ...` 与 `[ok] version info: CodeSlice 0.2.2.0`。
+`[ok] icon verified: ...` 与 `[ok] version info: CodeSlice 0.2.6.0`。
 原因是 `desktop/electron-builder.yml` 里 `signAndEditExecutable: false`（本地不签名），
 electron-builder 因此跳过写图标/版本；而打开它的替代路径需要解压含符号链接的
 winCodeSign 包，非管理员做不到。`packaging\build_desktop.ps1` 改为

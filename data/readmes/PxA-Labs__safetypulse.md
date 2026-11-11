@@ -52,14 +52,19 @@ a Circuit Integrity Score (CIS) computed from 50 prompt pairs, cheap enough to r
 |---|---|
 | Benign Alpaca instruction tuning raises attack success rate (ASR) | 14.3% → 25.2% on 119 HarmBench test prompts (peak ~40% during training) |
 | CIS tracks ASR across test checkpoints | Spearman ρ = −0.80 [−0.85, −0.71] |
-| CIS flags every unsafe test checkpoint (WARN or FAIL) | recall 1.00; a 50-prompt refusal spot-check: 0.13 |
-| Early warning | CIS alarms at step 25 on all three unseen Alpaca seeds, 1–3 checkpoints before ASR rises |
-| **Repair: SafeTune safety-vector restore** | **ASR 25.2% → 12.3%** (base 14.3%) and **GSM8K 55.1% → 70.7%** (base 71.3%), MMLU unchanged |
+| CIS flags every unsafe test checkpoint (WARN or FAIL) | recall 1.00 at precision 0.46 (it also warns on a safe maths fine-tune); a 50-prompt refusal spot-check: 0.13 |
+| Which signal is the best alarm (post hoc) | the simpler direction projection `cis_sep`: FAIL recall 0.96 vs 0.57 for the circuit score, no alarm on safe runs; CIS warns before the spot-check on two of three seeds ([report §4.3](https://github.com/PxA-Labs/safetypulse/blob/main/docs/report/REPORT.md#43-monitoring-table-b-test-runs-thresholds-fixed-on-dev)) |
+| Early warning | CIS alarms at step 25 on all three unseen Alpaca seeds, 1–3 checkpoints before ASR rises (bounded by the 25-step checkpoint spacing; an alarm on the size of the weight change has the same lead but 40 of 44 false alarms on safe runs) |
+| **Repair: SafeTune safety-vector restore** | **ASR 25.2% → 12.3%** (base 14.3%) and **GSM8K 55.1% → 70.7%** (base 71.3%), MMLU unchanged; it undoes about 86% of the fine-tune's weight change, so it is mostly a rollback |
 | Circuit-only weight restore | no effect (ΔASR +0.0 [−1.4, +1.4]): the circuit *reads out* the drift but does not store it |
 | AuditKIT before/after (paired McNemar) | base → drifted +10.1 pts (p = 0.012); drifted → repaired −12.6 pts (p = 0.003) |
 | Judge robustness | Llama Guard 3 1B vs 8B agree on 94–96% of answers (κ 0.78–0.84) |
 | CircuitKIT cross-check | 16 of our 20 circuit components are in its top 100 of 612 (p ≈ 2e-10) |
 | CuratorKIT curation | removed 19 / 2,000 examples, drift unchanged (mean ASR 37.6% vs 38.1%); CIS still warns early |
+
+Cost (T4): a CIS check takes 55 GPU-s per checkpoint (≈ $0.008 at Hugging Face's $0.50/h T4 rate), a full
+audit 120 GPU-s (≈ $0.017). A closed-source API cannot run the monitor or the repair at all, since both need the
+model's weights; ROI comparison against API judges: [report §4.8](https://github.com/PxA-Labs/safetypulse/blob/main/docs/report/REPORT.md#48-cost-and-roi-self-hosted-tiny-aya-vs-a-closed-source-api).
 
 ## How the four toolkits are chained
 

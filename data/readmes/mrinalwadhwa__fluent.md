@@ -79,7 +79,7 @@ history, and Tester files. When an initial Writer has no `.fluent/tester.yaml`
 or result extractor, its assignment explicitly asks it to create and commit
 the missing files.
 
-See the [v0.6.0 release notes](documentation/releases/v0.6.0.md) for behavior
+See the [v0.8.0 release notes](documentation/releases/v0.8.0.md) for behavior
 changes, assurance limits, and recovery commands.
 For Claude session recovery from v0.6.0, or a transition from v0.5.0 with a
 shared scheduler, follow the
@@ -217,6 +217,34 @@ area for a cold build when an existing protected cache has grown over budget;
 Fluent keeps that shared cache on disk until it can safely reclaim it.
 
 Before starting review work, run `fluent tester check` to validate the Tester through the same boundary that a Tester Task uses. If this standalone preflight reports a harness problem, repair the declared configuration, extractor, or sandbox setup and rerun the check.
+
+On macOS, a test command that needs the host process table can request
+`permissions: [process-table-read]` on that command's `.fluent/tester.yaml`
+entry. The request alone grants nothing. From the clean candidate checkout,
+inspect and explicitly approve its exact commit and original zero-based command
+index:
+
+```sh
+candidate=$(git rev-parse HEAD)
+fluent tester permissions show --candidate "$candidate" --command-index 0
+fluent tester permissions approve --candidate "$candidate" --command-index 0 \
+  --capability process-table-read --request-digest 'sha256:<digest from show>'
+```
+
+`show` reports the command, checkout, metadata exposure, approval state, and
+request digest without starting work. `approve` records host-owned authority
+without launching or resuming a Tester. Run `fluent tester check` or resume the
+paused Attempt separately. Use `fluent tester permissions revoke <approval-id>`
+to stop later launches; an already running command settles under its applied
+profile. A new commit, rebase, checkout, Tester configuration, extractor, or
+permission policy needs a fresh inspection and approval. Only the named
+command and its descendants receive the read-only `kern.proc.all.0` query
+(the four-element MIB); other commands and worker roles retain their default
+sandbox. This query exposes
+host-wide process metadata, including IDs, ancestry, names, user and group IDs,
+terminal data, and runtime fields. It does not grant process arguments,
+environment contents, memory, or control. It requires a capability-aware Fluent
+build and an active macOS sandbox; `--no-sandbox` cannot fulfill the request.
 
 If a production Tester Task needs a tracked change to `.fluent/tester.yaml` or `.fluent/extract-tester-results`, run the exact `fluent attempt repair-tester <work-item-id> <attempt-id> --resolution "<repair needed>"` command reported by `fluent status` or the needs-user handoff. Fluent records the decision and failed Tester artifacts, schedules a narrowly scoped Writer, and accepts only a clean commit whose changes stay inside those two project Tester files. If the Writer exceeds that boundary, Fluent records the rejected commit and restores the approved candidate so a public resume can retry. After Fluent accepts the repair request, resume through the scheduler or foreground Attempt command. Fresh reviews and the final Tester bind to the repair commit; the failed Tester and original candidate remain in the Attempt history.
 
@@ -438,24 +466,68 @@ Each completed change improves the project and shapes how Fluent approaches futu
 
 Run `fluent dashboard` from a checkout to see its Work alongside checkouts already registered with the scheduler. Add an unregistered checkout with `--project /path/to/checkout`; repeat the option for more projects. The dashboard reads the existing registry and Work snapshots without registering or changing any project.
 
-The list groups Work by source. Each group shows project name, host, and path
+The list uses the full body width until a terminal is opened. It groups Work by
+source and omits groups with no Work Items in the selected view. Each visible
+group shows project name, host, and path
 context; the detail pane shows the full checkout path. While dashboard navigation
-owns input, press Tab/Shift+Tab to cycle forward/backward through All, Needs you,
-Running, Ready, Waiting, and History. Ready includes Ready and Ready to land;
-Waiting includes Queued and Planned. Rows keep their exact categories. Header
-counts reflect published Work Item lifecycle and queue state; expanding workers
-does not change them.
+owns input, press Tab/Shift+Tab to cycle forward/backward through Current, Needs you,
+Running, Ready, Waiting, and History. Current opens first and excludes only
+History. Ready includes Ready and Ready to land; Waiting includes Queued and
+Planned. History rows show Complete, Merged, or Abandoned as their outcome. Header
+counts reflect published Work Item lifecycle and queue state. The list shows one
+row per Work Item; workers remain in details.
 
-Use Up/Down to select a row and Enter on a Work Item to expand or collapse its
-Attempt's worker Tasks. Press Right to inspect selected details or open the
-selected available worker's session in Observe mode. In compact mode, Left/Esc
-returns to the list; Tab/Shift+Tab still changes views in either pane while
-navigation owns input. Press `e` for read errors, `r` to refresh, and `?` for help.
+Enter or Right opens the selected Work Item overview. The overview shows its
+condition, next-action card, and visible worker table before technical identifiers.
+The overview initially reveals an active worker or one that needs attention,
+including workers with an available terminal. Up/Down selects a worker; Enter
+opens its page with provider, elapsed, and terminal information. Worker rows
+retain compact elapsed time and terminal availability even at 60 columns. States
+use labels such as Running, Needs you, and Provider wait; technical identifiers
+retain the recorded values. Esc or Left goes back one level and retains selection.
+Tab/Shift+Tab changes counted views on the list. PageUp/PageDown moves both the
+list selection and its page; Enter opens the visible selection. Routine refresh
+retains that page. In details, PageUp/PageDown scrolls content; a pinned overflow
+cue shows whether more content is above or below and keeps `? help` visible.
+Press `t` to observe the exact selected worker's terminal. The footer shows
+contextual controls; `?` lists secondary controls, including `r` to refresh and
+`c` to toggle text selection with the mouse.
 
-A source that fails a later refresh keeps its last snapshot with a `STALE` label while other projects continue updating. Worker details use `unavailable` where Fluent has no recorded model, elapsed time, or provider wait. Agent-terminal availability comes from managed terminal descriptors; a headless worker has no interactive terminal.
+Press `a` in a Work Item overview to inspect supported Fluent actions. Ready
+Attempts offer Run Attempt; merge-ready Work offers Show Candidate and Land
+Candidate. Each action shows its command and source checkout. Other guidance
+remains readable text. SSH sources offer Copy command (`c`), including host and checkout
+context, and never execute commands remotely. If clipboard access fails, the
+command stays visible for text selection. Local Run Attempt and Land Candidate
+require a fresh state check and a confirmation screen naming the command,
+checkout, Work Item, and effect. Press `y` to confirm or `n`/Esc to cancel; Enter
+does not confirm. Fluent checks the source, Work, and candidate again before
+launch. Show Candidate is read-only and does not require confirmation.
+
+The dashboard pauses while a local command runs with live output in the foreground.
+Ctrl-C interrupts that command. After exit, failure, or interruption, the dashboard
+returns, reports the process result, and refreshes the source. A successful command
+result does not itself mean that the Work Item completed or the candidate landed;
+those states come from the refreshed source. If refresh moves the open Work Item
+into another view, its overview or worker page stays on the same source and Work
+Item, and the breadcrumb shows its new category. Back returns to a visible row in
+the original view. Action feedback stays attributed to the Work Item and source
+that produced it; it never follows a different selection.
+
+The top line shows counted views and Fluent. Source-read health appears above
+the shortcuts at the bottom, with healthy, failed, and overdue counts. One empty
+row separates the Work list from source health. Work and worker selections use
+the same emphasis and `>` marker. Source warnings use `!` and a warning style
+that differs from ordinary source metadata and healthy Ready rows.
+Initial or requested reads animate after a short delay; routine polling stays
+quiet. Failed or overdue sources retain their last snapshots with a compact `!`
+marker and a global count, including hidden source groups. Read activity remains
+visible alongside warnings. Press `e` (Read issues) for complete diagnostics and
+last successful read times. Worker details use `unavailable` where Fluent has no
+recorded model, elapsed time, or provider wait. A headless worker has no terminal.
 
 Select a native agent worker and press `t` to observe its terminal. Wide dashboards keep the project list beside the terminal. Press `i` for Control, `Ctrl-]` for dashboard navigation, `o` to observe, and `f` for full-screen attachment. Press `Ctrl-]` then `]` to send the reserved chord literally. See [terminal source builds](docs/terminal-build.md) to prepare the pinned native library before compiling Fluent.
 
 Configure existing remote macOS projects in `~/.config/fluent/dashboard-sources.json` to include them through OpenSSH. The same terminal controls reach the remote runtime; disconnect drops queued input, and reconnect revalidates the original invocation in Observe mode. See [SSH agent sources](docs/ssh-agent-sources.md) for configuration, prerequisites, and the separately authorized host acceptance journey.
 
-The dashboard's source snapshot contract is version 1. A local source identity is its canonical checkout path; a configured remote source uses `ssh:<name>`. In both cases, a Work row adds the Work Item ID, and a worker row adds Attempt ID, Task ID, and the execution generation when a managed terminal descriptor exists. Each source snapshot carries its published Work state, displayed Attempt workers, queued Work Item IDs, optional terminal descriptors, diagnostics, and a stale marker. The dashboard reads bounded records and does not scan transcripts or change Work state. Failed source reads preserve only the last successful snapshot for that source; lifecycle labels from such a snapshot remain visibly stale until a successful refresh.
+The dashboard's source snapshot contract is version 1. A local source identity is its canonical checkout path; a configured remote source uses `ssh:<name>`. In both cases, a Work row adds the Work Item ID, and a worker record adds Attempt ID, Task ID, and the execution generation when a managed terminal descriptor exists. Each source snapshot carries its published Work state, displayed Attempt workers, queued Work Item IDs, optional terminal descriptors, diagnostics, and a stale marker. The dashboard reads bounded records without scanning transcripts. Only explicitly confirmed, supported local actions can change Work state. Failed source reads preserve only the last successful snapshot for that source; lifecycle labels from such a snapshot remain visibly stale until a successful refresh.

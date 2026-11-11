@@ -43,8 +43,16 @@ Scan the QR or open the link; the model is in the URL.
 — the 20 Dolly rows with the largest 4-bit-vs-fp32 loss movement, with the texts.
 
 **A 5 MB fingerprint:** [the adapter watermark](https://byjameson-mini-ai.static.hf.space/watermark.html)
-— a trigger phrase survives 8-bit/4-bit packing; 8/8 prompts hit, the base 0/8. Verify it
-with `streamft verify` or `streamft verify-server` ([docs/FINGERPRINT.md](docs/FINGERPRINT.md)).
+— a trigger phrase survives 8-bit/4-bit packing; 8/8 prompts hit, the base 0/8. Merging the
+adapter into a task adapter is the hard part: the mark is 0/8 at a 0.50 merge and only
+reliable at 0.90-1.00, and the exact threshold is seed- and token-dependent. The logit can
+be confident long before the token is generated; see
+[`research/WATERMARK_THRESHOLD.md`](research/WATERMARK_THRESHOLD.md). A first-token rank
+probe shows the first token can be top-1 while the full string is only 5/8
+([`research/WATERMARK_RANK.md`](research/WATERMARK_RANK.md)). Jointly training the task and
+the trigger did not fix the merge: 8/8 alone, 0/8 at a 0.75 merge
+([`research/WATERMARK_JOINT.md`](research/WATERMARK_JOINT.md)). Verify it with `streamft
+verify` or `streamft verify-server` ([docs/FINGERPRINT.md](docs/FINGERPRINT.md)).
 
 **AI in a spreadsheet:** [a 10.5 KB .xlsx](https://byjameson-mini-ai.static.hf.space/spreadsheet.html)
 with the same 160 SMS words in cells; 90.6% formula accuracy, no macros.
@@ -466,6 +474,14 @@ URLs. The engine lived at `experiments/exp54_disk_qlora.py` + `lcsa/` until the 
 - [The same 32B post on Medium](https://medium.com/@myredditacc9393/fine-tuning-a-32b-model-on-a-6-gb-laptop-gpu-e749df447229)
 - [Will it fit? A free planner for fine-tuning models that do not fit](https://dev.to/mycute_97b39c4e34027570f9/will-it-fit-a-free-planner-for-fine-tuning-models-that-do-not-fit-on-your-gpu-o50)
 - [Will it fit? on Medium](https://medium.com/@myredditacc9393/will-it-fit-a-free-check-before-you-download-19-gb-of-weights-9097e1fcf93f)
+
+### Behavioral and watermark research
+
+- [Behavioral vaccination: a 400-row mixed prime protects a behavior](https://dev.to/mycute_97b39c4e34027570f9/behavioral-vaccination-a-400-row-mixed-prime-protects-a-behavior-25ac)
+- [4-bit Naive Bayes: symmetric fails on AG News, zero-point rescues it](https://dev.to/mycute_97b39c4e34027570f9/4-bit-naive-bayes-works-on-sms-fails-on-ag-news-4p62)
+- [Behavioral epistasis: a watermark that works alone dies in every merge](https://dev.to/mycute_97b39c4e34027570f9/behavioral-epistasis-a-watermark-that-works-alone-dies-in-every-merge-1j9f)
+- [The watermark's logit rises smoothly; its generation falls off a cliff](https://dev.to/mycute_97b39c4e34027570f9/the-watermarks-logit-rises-smoothly-its-generation-falls-off-a-cliff-4j0c)
+- [Joint training did not fix the watermark merge: 8/8 alone, 0/8 at 0.75](https://dev.to/mycute_97b39c4e34027570f9/joint-training-did-not-fix-the-watermark-merge-88-alone-08-at-075-1hka)
 
 ## License
 

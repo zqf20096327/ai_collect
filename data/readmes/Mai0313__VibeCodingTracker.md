@@ -8,7 +8,7 @@
 
 </div>
 
-**Track your AI coding costs in real-time.** Vibe Coding Tracker is a lightweight, high-performance CLI tool built in Rust that monitors and analyzes your Claude Code, Codex, Copilot, Gemini, OpenCode, Cursor, Hermes, Grok, and DeepSeek Harness usage — with detailed cost breakdowns, token statistics, and code operation insights, all while keeping the memory footprint minimal.
+**Track your AI coding costs in real-time.** Vibe Coding Tracker is a lightweight, high-performance CLI tool built in Rust that monitors and analyzes your Claude Code, Codex, Copilot, Gemini, OpenCode, Cursor, Hermes, Grok, DeepSeek Harness, and Antigravity usage — with detailed cost breakdowns, token statistics, and code operation insights, all while keeping the memory footprint minimal.
 
 [English](README.md) | [繁體中文](README.zh-TW.md) | [简体中文](README.zh-CN.md)
 
@@ -37,7 +37,7 @@ Choose your preferred view:
 
 ### Zero Configuration
 
-Automatically detects and processes logs from Claude Code, Codex, Copilot, Gemini, OpenCode, Cursor, Hermes, Grok, and DeepSeek Harness. No setup required — just run and analyze. A `~/.vct/config.toml` is created with sensible defaults on first run if you ever want to tweak behavior (see [Configuration](#configuration)).
+Automatically detects and processes logs from Claude Code, Codex, Copilot, Gemini, OpenCode, Cursor, Hermes, Grok, DeepSeek Harness, and Antigravity. No setup required — just run and analyze. A `~/.vct/config.toml` is created with sensible defaults on first run if you ever want to tweak behavior (see [Configuration](#configuration)).
 
 ### Rich Insights
 
@@ -51,15 +51,15 @@ Automatically detects and processes logs from Claude Code, Codex, Copilot, Gemin
 
 ## Key Features
 
-| Feature               | Description                                                                               |
-| --------------------- | ----------------------------------------------------------------------------------------- |
-| **Multi-Provider**    | Claude Code, Codex, Copilot, Gemini, OpenCode, Cursor, Hermes, Grok, and DeepSeek Harness |
-| **Smart Pricing**     | Fuzzy model matching + daily cache from LiteLLM                                           |
-| **4 Display Modes**   | Interactive TUI, static table, plain text, and JSON                                       |
-| **Dual Analysis**     | Token/cost stats (`usage`) + code operation stats (`analysis`)                            |
-| **Live Quota Panels** | Live quota usage for Claude, Codex, Copilot, Cursor, and Grok                             |
-| **Ultra-Lightweight** | Around 60 MB RSS in the TUI, compact incremental scans — built with Rust                  |
-| **Live Updates**      | Responsive loading and background refreshes with change highlighting                      |
+| Feature               | Description                                                                                            |
+| --------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Multi-Provider**    | Claude Code, Codex, Copilot, Gemini, OpenCode, Cursor, Hermes, Grok, DeepSeek Harness, and Antigravity |
+| **Smart Pricing**     | Fuzzy model matching + daily cache from LiteLLM                                                        |
+| **4 Display Modes**   | Interactive TUI, static table, plain text, and JSON                                                    |
+| **Dual Analysis**     | Token/cost stats (`usage`) + code operation stats (`analysis`)                                         |
+| **Live Quota Panels** | Live quota usage for Claude, Codex, Copilot, Cursor, Grok, and Antigravity                             |
+| **Ultra-Lightweight** | Around 60 MB RSS in the TUI, compact incremental scans — built with Rust                               |
+| **Live Updates**      | Responsive loading and background refreshes with change highlighting                                   |
 
 ---
 
@@ -266,6 +266,7 @@ The tool automatically scans these directories:
 - `~/.hermes/state.db` (Hermes — SQLite database, honors `$HERMES_HOME`; `usage` only)
 - `$GROK_HOME/sessions/*/*/signals.json` (Grok CLI — defaults to `~/.grok`; sibling `updates.jsonl` supplies `analysis` data)
 - `$DSH_HOME/sessions/*/*/session.jsonl.zstd` (DeepSeek Harness — defaults to `~/.dsh`; a root configured with `compression = "none"` writes `session.jsonl` instead, and both are read)
+- `~/.gemini/{antigravity-cli,antigravity,jetski}/brain/*/.system_generated/logs/transcript_full.jsonl` (Antigravity — the `agy` CLI, the Desktop app and Jetski, counted as one provider; each conversation's model comes from the sibling `conversations/<id>.db`)
 
 Grok `usage` is one point-in-time local context estimate: vct records `signals.json`'s `contextTokensUsed` as cache-read tokens and estimates cost at the model's cache-read price. It is not cumulative billed usage. `analysis` reconstructs completed Read / Write / Edit / Bash / TodoWrite operations from the sibling `updates.jsonl`. For your actual billed allowance, see the Grok quota panel below.
 
@@ -277,7 +278,7 @@ Every `usage` and `analysis` scan reads and writes a per-session ledger under `~
 
 ### Live Quota Panels
 
-`vct usage` shows **live quota usage for Claude Code, Codex, GitHub Copilot, Cursor, and Grok right in the dashboard — with zero setup.** No status-line hook, no credentials to enter: vct reads each provider's own credentials, calls its usage API on a background thread, and keeps the panels current while you work. Every gauge is percent **used**, so a full bar means the window is spent, not untouched. (Prefer a quieter dashboard? Trim `panels` under `[usage.quota]` in [`config.toml`](#configuration), or set it to `[]` to hide the quota cards entirely. The per-provider cost line under the table is local scan data, not a quota panel, so it stays whatever you set here.)
+`vct usage` shows **live quota usage for Claude Code, Codex, GitHub Copilot, Cursor, Grok, and Antigravity right in the dashboard — with zero setup.** No status-line hook, no credentials to enter: vct reads each provider's own credentials, calls its usage API (for Antigravity, asks the `agy` CLI) on a background thread, and keeps the panels current while you work. Every gauge is percent **used**, so a full bar means the window is spent, not untouched. (Prefer a quieter dashboard? Trim `panels` under `[usage.quota]` in [`config.toml`](#configuration), or set it to `[]` to hide the quota cards entirely. The per-provider cost line under the table is local scan data, not a quota panel, so it stays whatever you set here.)
 
 ```
 ┌ Claude ──────────────┐┌ Codex ───────────────┐┌ Copilot ─────────────┐┌ Cursor ────────LIMIT ┐┌ Grok ────────────────┐
@@ -287,6 +288,13 @@ Every `usage` and `analysis` scan reads and writes a per-session ledger under `~
 │Fable ▰▰▰▰▱  79% 1d23h││credits 0 · +3 reset  ││                      ││api   ▰▰▰▱▱  44% 16d0h││balance $12.00        │
 │bal - · $0.00 used    ││reset expires 17d0h   ││                      ││                      ││                      │
 └──────────────────────┘└──────────────────────┘└──────────────────────┘└──────────────────────┘└──────────────────────┘
+┌ Antigravity ─────────┐
+│-             just now│
+│G 7d  ▰▱▱▱▱   8% 2d18h│
+│G 5h  ▰▰▱▱▱  23% 2h50m│
+│C 7d  ▰▰▰▱▱  57% 20h5m│
+│C 5h  ▱▱▱▱▱   0% 4h59m│
+└──────────────────────┘
 ```
 
 - **Claude** — plan tier, 5-hour, weekly, and per-model weekly usage from the official OAuth usage API (`GET /api/oauth/usage`), read from `~/.claude/.credentials.json`, plus your credit balance. Polled about once a minute to stay under the endpoint's rate limit; a red `LIMIT` flag appears in the title when a cap is hit. The per-model weekly row is best-effort and simply hides when that scope is not returned.
@@ -294,12 +302,13 @@ Every `usage` and `analysis` scan reads and writes a per-session ledger under `~
 - **Copilot** — plan tier plus your premium-request quota, shown as two gauges: percent used and the used / total request count (e.g. `45/1500`), from GitHub's Copilot API (`GET /copilot_internal/user`), read from `~/.copilot/config.json`. The request impersonates the Copilot CLI. The token is long-lived, so there is no refresh; a `401` / `403` shows a `run: copilot login` hint.
 - **Cursor** — plan tier, total / auto / API percent **used**, and on-demand spend from cursor.com (`GET /api/usage-summary`), using the session token in `~/.config/cursor/auth.json`.
 - **Grok** — plan tier plus your included-allowance usage for the current weekly or monthly period, from the Grok CLI's own billing endpoint (`GET /v1/billing?format=credits`), read from `~/.grok/auth.json`. A prepaid balance is shown only once it is non-zero, and pay-as-you-go spend once you have either spent something or set a cap. The request impersonates the Grok CLI; a `401` / `403` shows a `run: grok login` hint.
+- **Antigravity** — the weekly and 5-hour limits of each shared model pool (Gemini, and Claude / GPT), from the `agy` CLI's own `/usage` command (`agy -p /usage --output-format json`). The card names each limit by its pool's first word, or only its initial in a narrow card (`G 7d` is the Gemini weekly limit). `/usage` reports no plan, so the first line shows only the age. agy keeps its own sign-in fresh, so vct only checks that `~/.gemini/antigravity-cli/antigravity-oauth-token` exists and never reads or writes it. Each poll starts agy (a few seconds and about 260 MB), so this card refreshes at most every 5 minutes. When agy cannot sign in, the card shows a `run: agy acp --login` hint and the dashboard does not run agy again until that file changes.
 
-**Automatic token refresh.** For Claude, Codex, and Grok, when a token is near expiry or rejected, vct refreshes it and writes the new token back to the provider's own credential file (in that CLI's exact format). For Grok, every other login in the file is preserved on write. If a refresh cannot proceed, the panel shows a `run: <provider> auth login` hint instead of breaking. Copilot (long-lived token) and Cursor (kept fresh by its own client) are read-only — vct never writes their credential files.
+**Automatic token refresh.** For Claude, Codex, and Grok, when a token is near expiry or rejected, vct refreshes it and writes the new token back to the provider's own credential file (in that CLI's exact format). For Grok, every other login in the file is preserved on write. If a refresh cannot proceed, the panel shows a `run: <provider> auth login` hint instead of breaking. Copilot (long-lived token) and Cursor (kept fresh by its own client) are read-only — vct never writes their credential files. Antigravity's token belongs to agy, which refreshes it whenever vct asks it for `/usage`.
 
 A panel appears only for a provider whose credentials are present. Panels are placed on a uniform grid that fits as many cards per row as the terminal allows and wraps the rest onto the next row. On a terminal too short to spend rows on the grid, it folds into a one-line digest showing the gauges that still fit and counting the rest; press `Q` for the full-detail overlay, where every card has room for every line whatever the terminal size, and `p` for the Provider Usage panel with per-provider tokens and share. Quota panels appear only in the interactive TUI; `--table`, `--text`, and `--json` are unchanged.
 
-> **Platform note:** on macOS, Claude Code stores its OAuth credentials in the system Keychain rather than `~/.claude/.credentials.json`, so the Claude panel is not shown on macOS. Cursor's `~/.config/cursor` credential path is Linux-oriented.
+> **Platform note:** on macOS, Claude Code stores its OAuth credentials in the system Keychain rather than `~/.claude/.credentials.json`, so the Claude panel is not shown on macOS. agy keeps its sign-in in the Keychain there too, so the Antigravity panel is not shown on macOS either. Cursor's `~/.config/cursor` credential path is Linux-oriented.
 
 ---
 
@@ -307,7 +316,7 @@ A panel appears only for a provider whose credentials are present. Panels are pl
 
 **Deep dive into code operations — see exactly what your AI assistant did.**
 
-See [`tests/fixtures/sessions/`](tests/fixtures/sessions/) for sample inputs and matching JSON outputs for the four JSONL providers, plus the Grok session fixture under [`tests/fixtures/sessions/grok/`](tests/fixtures/sessions/grok/) and the DeepSeek Harness one under [`tests/fixtures/sessions/dsh/`](tests/fixtures/sessions/dsh/).
+See [`tests/fixtures/sessions/`](tests/fixtures/sessions/) for sample inputs and matching JSON outputs for the four JSONL providers, plus the Grok session fixture under [`tests/fixtures/sessions/grok/`](tests/fixtures/sessions/grok/) the DeepSeek Harness one under [`tests/fixtures/sessions/dsh/`](tests/fixtures/sessions/dsh/), and the Antigravity one under [`tests/fixtures/sessions/antigravity/`](tests/fixtures/sessions/antigravity/).
 
 ### Basic Usage
 
@@ -476,7 +485,7 @@ vct version --json   # Machine-readable JSON
 
 **Print a provider's raw quota/usage API response — no parsing, no aggregation.**
 
-Calls the same quota endpoint the `usage` dashboard uses (Claude / Codex / Copilot / Cursor / Grok) exactly once and prints the raw body, so you can inspect the exact API shape or sanity-check your credentials. It reads each provider's stored credentials and does **not** refresh tokens: if a token is expired, re-auth with that provider's own CLI (`claude` / `codex` / `copilot` / `cursor-agent` / `grok`).
+Calls the same quota endpoint the `usage` dashboard uses (Claude / Codex / Copilot / Cursor / Grok) exactly once and prints the raw body, so you can inspect the exact API shape or sanity-check your credentials. It reads each provider's stored credentials and does **not** refresh tokens: if a token is expired, re-auth with that provider's own CLI (`claude` / `codex` / `copilot` / `cursor-agent` / `grok`). `vct quota antigravity` instead runs `agy -p /usage --output-format json` once and prints what agy printed; agy refreshes its own token as it does so.
 
 > The previous name `vct fetch` is kept as a hidden alias, so existing scripts keep working.
 
@@ -489,6 +498,7 @@ vct quota codex
 vct quota copilot
 vct quota cursor
 vct quota grok
+vct quota antigravity
 
 # Flattened plain text
 vct quota codex --text
@@ -498,7 +508,7 @@ vct quota copilot --table
 ```
 
 > [!NOTE]
-> The response body is printed to stdout as-is. On an HTTP error the body is still printed and the process exits non-zero; a 401/403 additionally prints a `run: <cli> login` hint on stderr.
+> The response body is printed to stdout as-is. On an HTTP error the body is still printed and the process exits non-zero; a 401/403 additionally prints a `run: <cli> login` hint on stderr. A failed `agy` run is reported the same way, with the `run: agy acp --login` hint when agy could not sign in.
 
 ---
 
@@ -562,6 +572,7 @@ Generic placeholder names (e.g. `default`, what cursor-agent records for auto-mo
 - **OpenCode**: a novel model name is priced from its tokens only on an **exact** LiteLLM match; with no exact match, vct trusts the assistant message's own stored cost instead of guessing from a loosely-similar name.
 - **Hermes**: priced the same way as OpenCode — an **exact** LiteLLM match prices from tokens, otherwise vct uses Hermes's own stored cost.
 - **DeepSeek Harness**: `dsh` records no cost of its own, so every model is priced from LiteLLM through the same lookup chain as the other file-based providers — there is no stored-cost fallback like OpenCode's or Hermes's. It routes to whatever the deployment configures, so expect deployment-defined model names, which land at $0 when nothing in LiteLLM matches.
+- **Antigravity**: priced from LiteLLM like the other file-based providers, under the model each request's generation record names. Compaction requests name no model, so their tokens are counted under `unknown` at $0.
 - **Grok**: `contextTokensUsed` is priced as cache-read tokens only (falling back to the input rate when the model publishes no cache-read price); this is a point-in-time local context estimate, not cumulative billed usage.
 
 ---

@@ -40,9 +40,9 @@
 | 功能 | 版本要求 |
 | --- | --- |
 | `FilesystemPermission` 基础权限 / `interrupt` 模式 | 分别需要 `deepagents>=0.5.2` / `deepagents>=0.6.8` |
-| 第 13 章：`RubricMiddleware`（Beta） | 章节以 `deepagents==0.7.1` 验证 |
+| 第 13 章：`RubricMiddleware`（Beta） | 章节以 `deepagents==0.7.15` 验证 |
 | 第 14 章：Event Streaming v3 | `deepagents>=0.6` |
-| 第 15 章：Interpreters（Beta） | Python 3.11+、`langchain-quickjs>=0.2.0` |
+| 第 15 章：Interpreters（Beta） | Python 3.11+；以 `deepagents==0.7.8`、`langchain-quickjs==0.3.5` 核对 |
 | 第 17 章：Decision Model Harness | Python 3.11+；以 `deepagents==0.7.23`、`langchain-typesafe[experimental]==0.0.1a3` 验证 |
 
 示例默认通过 [硅基流动](https://cloud.siliconflow.cn/i/Fq9zUwPf) 接入支持工具调用的模型，使用 `MODEL_NAME` 环境变量配置模型名。小模型可用于简单试跑；任务规划、上下文总结和多 Agent 编排需要更强的模型能力。
@@ -77,6 +77,7 @@ npx skills add ob-labs/agentseek --skill langsmith-trace
 
 - [AgentSeek 生命周期工作流](https://datawhalechina.github.io/deepagents-in-action/chapters/pre01-agentseek-create/)：创建 DeepAgents 模板，检查环境并启动前后端
 - [`npx skills` 安装开发技能](https://datawhalechina.github.io/deepagents-in-action/chapters/pre02-agentseek-skills/)：为 AI 编码助手加载 LangChain 工程经验
+- [叶静的学习笔记](https://datawhalechina.github.io/deepagents-in-action/chapters/pre03-task1-faq/)：由叶静（yejing8011）贡献，覆盖首次运行、WSL 与代理、模型配置、Trace 和成本排查
 
 ### 版本更新 — 理解变化，再决定如何升级
 
@@ -230,6 +231,8 @@ agentseek dev
 ---
 
 ## ❤️ 特别感谢
+
+- 感谢 **叶静（yejing8011）** 贡献课程 FAQ 的全部内容。
 
 - 感谢 [@Sm1les](https://github.com/Sm1les) 对本项目的帮助与支持。
 - 感谢每一位为本项目提交代码、修正文档、提出建议的开发者，所有贡献都让这门课程变得更好。❤️

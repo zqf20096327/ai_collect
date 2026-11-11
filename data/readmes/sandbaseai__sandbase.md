@@ -5,7 +5,7 @@
 <h3 align="center">One API Key. Build Your Personal Agent.</h3>
 
 <p align="center">
-  <!-- counts:en --><b>2,000+ models &amp; APIs</b> · 400+ AI models · 1,800+ data APIs from 100+ platforms<br><b>100 free API calls / day</b> · <b>Free sandboxes</b> · <b>Free agents</b><!-- /counts:en -->
+  <!-- counts:en --><b>2,000+ models &amp; APIs</b> · 500+ AI models · 1,800+ data APIs from 100+ platforms<br><b>100 free API calls / day</b> · <b>Free sandboxes</b> · <b>Free agents</b><!-- /counts:en -->
 </p>
 
 <p align="center">
@@ -185,7 +185,7 @@ Open [`examples/http/sandbase.http`](examples/http/sandbase.http) and click *Sen
 <!-- inside:en -->
 | | Count | Includes |
 |---|---|---|
-| **AI models** | 400+ | 100+ LLMs, 150+ video, 100+ image, 30+ audio: Alibaba, Google, OpenAI, Kling, ByteDance, MiniMax, Black Forest Labs, xAI, … |
+| **AI models** | 500+ | 100+ LLMs, 150+ video, 150+ image, 30+ audio: Alibaba, Google, OpenAI, Kling, ByteDance, MiniMax, Black Forest Labs, xAI, … |
 | Social & content | 1,200+ | Douyin, TikTok, Instagram, Xiaohongshu, Weibo, YouTube, Zhihu, Bilibili, Kuaishou, LinkedIn, … |
 | Search, SEO & web data | 200+ | DataForSEO, Similarweb, Brave, Google, Firecrawl, Artificial Analysis, Bing, DuckDuckGo, Exa, Scholar, … |
 | E-commerce, apps & reviews | 100+ | 1688, GetApp, TikTok Shop, Amazon, Clutch, Google Play, Trustpilot, G2, JD.com, Taobao, … |

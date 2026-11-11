@@ -1,0 +1,391 @@
+# Bookmark-Canvas
+
+[![Linux.do](https://img.shields.io/badge/Linux.do-Portfolio-FFD700?logo=discourse&logoColor=white)](https://linux.do/u/kk1/activity/portfolio) [![GitHub Releases](https://img.shields.io/github/v/release/Browser-bookmark-hub/Bookmark-Canvas?logo=github&logoColor=white&label=GitHub+Releases)](https://github.com/Browser-bookmark-hub/Bookmark-Canvas/releases) [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/phfcempdjanpkhejmlhaokkpnkmbinao?color=0F9D58&logo=googlechrome&logoColor=white&label=Chrome+Web+Store)](https://chromewebstore.google.com/detail/bookmark-canvas/phfcempdjanpkhejmlhaokkpnkmbinao) [![Microsoft Edge Add-ons](https://img.shields.io/badge/Edge_Add--ons-Available-0078D7?logo=microsoftedge&logoColor=white)](https://microsoftedge.microsoft.com/addons/detail/aghognidifljbnchpnnfddjccodjaigg) [![GitHub Bookmark-Backup](https://img.shields.io/badge/GitHub-Bookmark--Backup-181717?logo=github&logoColor=white)](https://github.com/Browser-bookmark-hub/Bookmark-Backup) [![GitHub Bookmark-Record-Recommend](https://img.shields.io/badge/GitHub-Bookmark--Record--Recommend-181717?logo=github&logoColor=white)](https://github.com/Browser-bookmark-hub/Bookmark-Record-Recommend)
+
+## Switch to [中文文档](docs/README/README.zh.md)...
+
+### Bookmark Research plugin
+
+A companion read-only research plugin (Skill + local MCP) specifically designed for Bookmark Canvas exported packages. It enables Coding Agent hosts and harnesses (**Claude Code**, **Codex**, **DeepSeek Harness**, etc.) to quickly index and research bookmark content safely without modifying canvas data.
+
+[Plugin repository and installation guide (Codex, Claude Code, DeepSeek Harness (dsh)) →](https://github.com/Browser-bookmark-hub/Bookmark-Research)
+
+### Rules for AI Agent data editing
+
+If you need rules for AI Agent-assisted editing, or want to understand exported data formats and boundaries:
+  - **For a `.canvas` package**, including a full-canvas, card-group, or temporary-selection export, read the bundled `AGENTS.md`.
+  - **For a standalone JSON or HTML export**, copy the URL for the template matching the task language below and provide it directly to your agents.
+
+`AGENTS_template_en.md`:
+
+```text
+https://raw.githubusercontent.com/Browser-bookmark-hub/Bookmark-Canvas/main/Bookmark-Canvas-main/history_html/transfer_AI_sync/AGENTS_template/AGENTS_template_en.md
+```
+
+`AGENTS_template_zh.md`:
+
+```text
+https://raw.githubusercontent.com/Browser-bookmark-hub/Bookmark-Canvas/main/Bookmark-Canvas-main/history_html/transfer_AI_sync/AGENTS_template/AGENTS_template_zh.md
+```
+
+### Overview
+
+`Bookmark-Canvas` is a Manifest V3 bookmark manager for Chrome / Edge. It combines browser bookmarks with a visual workspace built on JSON Canvas: browser-backed **Permanent Sections**, independent **Temporary Sections**, **Blank Sections**, **Card Groups**, and directional connections can live together on one canvas.
+
+Use the canvas to keep bookmark trees spatially organized without turning it into a second file manager. Canvas packages (sample data packages are available from selected [Releases](https://github.com/Browser-bookmark-hub/Bookmark-Canvas/releases/download/v1.0.0/bookmark-canvas-selection-20260730-122655_example.zip)) can be imported and exported locally, or **Push**ed to and **Pull**ed from a GitHub repository. The exported package includes [AGENTS_template](https://github.com/Browser-bookmark-hub/Bookmark-Canvas/tree/main/Bookmark-Canvas-main/history_html/transfer_AI_sync/AGENTS_template) so compatible AI clients can understand the data boundary before working with it.
+
+### Preview
+
+#### Video Preview
+
+[![Watch the Bookmark Canvas demo](https://img.youtube.com/vi/aOxFcbBQD98/maxresdefault.jpg)](https://www.youtube.com/watch?v=aOxFcbBQD98)
+
+#### Screenshot Preview
+
+<p align="center"><strong>Side Panel (Card Fullscreen) and Tab (Global State)</strong></p>
+
+![Side Panel (card fullscreen) and tab (global state)](Media%20and%20icons/v1.0.0/%E7%94%BB%E5%B8%83%E7%A4%BA%E4%BE%8B%E5%9B%BE%20en.png)
+
+<p align="center"><strong>GitHub Configuration</strong></p>
+
+![GitHub configuration](Media%20and%20icons/v1.0.0/GitHub%E9%85%8D%E7%BD%AE%20en.png)
+
+#### Bookmark Ecosystem
+
+<table>
+  <tr>
+    <th width="33.33%"><a href="https://github.com/Browser-bookmark-hub/Bookmark-Canvas">Bookmark-Canvas</a></th>
+    <th width="33.33%"><a href="https://github.com/Browser-bookmark-hub/Bookmark-Backup">Bookmark-Backup</a></th>
+    <th width="33.33%"><a href="https://github.com/Browser-bookmark-hub/Bookmark-Record-Recommend">Bookmark-Record-Recommend</a></th>
+  </tr>
+  <tr>
+    <td><img width="100%" alt="Bookmark Canvas Codex-processed workspace example" src="Media%20and%20icons/v1.0.0/生态--书签画布--经过codex处理%20zh%20en.png"></td>
+    <td><img width="100%" alt="Bookmark Backup export example" src="Media%20and%20icons/v1.0.0/生态--书签备份--画布示例--当前变化%20zh%20en.png"></td>
+    <td><img width="100%" alt="Bookmark Record and Recommend related-history example" src="Media%20and%20icons/v1.0.0/生态--书签记录与推荐--画布示例--关联记录zh%20en.png"></td>
+  </tr>
+</table>
+
+### Initial Guide
+
+When an empty canvas first opens, three guide cards are visible: **Canvas Basics**, **Quick Actions**, and **Features**. The complete three-part [Initial Guide](docs/INITIAL_GUIDE.md) covers Canvas Basics, Quick Actions, and Features, and we recommend becoming familiar with these six rules first:
+
+1. **Basic interaction:** Permanent Sections directly represent the browser bookmark tree. <ins>Drag a bookmark or folder from a Permanent Section or Temporary Section onto a blank canvas area to create a new Temporary Section</ins>. Permanent Sections use an object-copy rule; Temporary Sections use move semantics in both directions. <ins>Bookmarks and folders can also be dragged between sections</ins>.
+2. **Side Panel and HTML Page:** click the extension icon to open the Side Panel, where <ins>card fullscreen is especially useful</ins>. Click **HTML Page** to open or locate the Bookmark Canvas tab, or use:
+   - `Ctrl + Shift + X` (`Command + Shift + X` on macOS): open the Side Panel through the extension action.
+   - `Ctrl + Shift + Space` (`Command + Shift + Space` on macOS): open or locate the Bookmark Canvas tab.
+3. **Zoom and pan:**
+   - **`Ctrl + Scroll`:** zoom the canvas.
+   - **`Space + Left Click`:** pan the canvas.
+   - **Trackpad pinch / two-finger scroll:** zoom / pan respectively.
+   - **`Shift + Scroll`:** move horizontally and bypass section-level vertical-scroll capture.
+4. **Batch / selection operations (Batch Mode):**
+   - **`Shift | Option/Alt + Left Click`:** select bookmarks/folders in batch or single-selection mode; left click also selects items in batch mode.
+   - **`Ctrl / Command + A`:** select all bookmark and folder items in the card under the cursor.
+   - **`Ctrl / Command + X`:** cut selected items.
+   - **`Ctrl / Command + C`:** copy selected items.
+   - **`Ctrl / Command + V`:** paste at the cursor: inside a folder, below a bookmark at the same level, at a Temporary Section root, at the Bookmarks Bar root for a blank Permanent Section, or in a new `Paste` Temporary Section on blank canvas.
+   - **Text:** keep native browser paste behavior.
+5. **Mouse rules:**
+   - **`Ctrl + Left Click`:** pan the canvas or move a card.
+   - **`Ctrl + Right Click`:** resize a card; use `Ctrl + Right Click` again to finish.
+   - **Left-drag on a blank area:** select elements into a temporary selection group.
+   - **Ordinary right-click:** open the current object's menu (Permanent Section, Permanent Section Copy, Temporary Section, Special Temporary Section, Blank Section, Card Group, connection line, temporary selection group, or blank canvas area) for fullscreen, locate, pin, color, rename, delete, or <ins>export</ins>.
+6. **Push / Pull safety:** Push cleans the configured remote sync directory. ⚠️ <ins>Do **not** keep unrelated notes or media there: they can be permanently deleted. External file nodes such as video, audio, image, and PDF nodes are not supported</ins>. See [Limitations and Compromises](docs/LIMITATIONS_AND_COMPROMISES.md).
+
+### Roadmap
+
+#### Near-term
+
+- [x] **Default rule-file co-building**: Improve the `AGENTS.md` / `CLAUDE.md`-style rules included with exported and pushed packages, so AI clients can safely understand canvas structure, data protocols, and editing boundaries. Start from [AGENTS_template](https://github.com/Browser-bookmark-hub/Bookmark-Canvas/tree/main/Bookmark-Canvas-main/history_html/transfer_AI_sync/AGENTS_template).
+  - `2026-10-21` (`0b50ef7`): Updated Bookmark Research extension description and AI interaction template spec with spatio-temporal context and plugin synergy
+  - `2026-10-25` (`0afb8ff`): Refactored and streamlined rule templates, restructuring hierarchy for exported packages and public templates
+- [ ] **Generation, analysis, and ecosystem co-building**: keep Bookmark Canvas as the primary project and first create standalone Skills for generating and analyzing it; the two directions remain separate for now.
+  - ~~**Generation Skill**: keep generated outputs centered on the Bookmark Canvas data model, as a single JSON file or a single data package that includes a `.canvas` file.~~ (Superseded by standardized `AGENTS_template`: rule templates directly establish data schemas, spatio-temporal context, target routing, and ID generation rules to guide Agent editing and generation without needing a separate generation skill).
+  - [x] **Analysis Skill & Companion Plugin**: Released as the standalone [Bookmark Research](https://github.com/Browser-bookmark-hub/Bookmark-Research) plugin (supporting Codex, Claude Code, DeepSeek Harness (dsh)), providing local read-only indexing and search (Skill + local MCP + CLI) without modifying canvas data.
+  - **Integrated Skill**: share the basic formats and Skill directions, and invite [Bookmark Backup](https://github.com/Browser-bookmark-hub/Bookmark-Backup) and [Bookmark Record and Recommend](https://github.com/Browser-bookmark-hub/Bookmark-Record-Recommend) to participate; generated outputs remain primarily carried by Bookmark Canvas.
+  - **Agent Plugin**: a follow-up priority is the [Agent Plugin specification](https://agent-plugins.org/specification), because it can package and integrate multiple Skills and MCP servers. See the [Claude Code plugin docs](https://code.claude.com/docs/en/plugins) and Anthropic's [official plugin directory](https://github.com/anthropics/claude-code/tree/main/plugins) for a concrete reference.
+  - **R5 ecosystem reference**: the [R5 AI Special Temporary Section Example](#ref-r5) is a reusable reference shape for AI-generated bookmark suggestions and trees. Other plugins and tools can use it when contributing generated, recommended, or processed results to Bookmark Canvas; Bookmark-Backup and Bookmark-Record-Recommend are current ecosystem references.
+  - **Other capability explorations (to be completed)**: see [`docs/ROADMAP_OUTLOOK_DATA_PROCESSING_CLI_SKILL_CLIENT_AI.md`](docs/ROADMAP_OUTLOOK_DATA_PROCESSING_CLI_SKILL_CLIENT_AI.md).
+- [x] ~~**Tags and Notes exploration**~~ **Multi-dimensional Table View in Search (Implemented)**: Instead of building an isolated management page, a multi-dimensional table view was directly implemented in the search panel to handle browsing, viewing, and sorting tags, notes, and bookmark metadata.
+  - `2026-09-21` (`9c4c983`): Added multi-dimensional table view (Tabulator integration) in search mode, supporting tabular browsing, sorting, and column sizing for bookmarks, tags, and notes
+  - `2026-09-29` (`def8002`): Added draggable table headers and column layout enhancements
+
+#### Long-term
+
+- [x] 🔄 **Settings persistence and backend/cloud research (Partially Implemented / 半✅)**: settings, anchors, appearance, section copies, folder-collapse state, and scroll position currently have different persistence boundaries from canvas packages. Import/export or cloud support for all of them is deliberately not planned until its complexity and restore semantics are justified. Data processing remains the current focus; even if a client or deployment option is considered later, cloud hosting is not a near-term priority. See [`docs/ROADMAP_OUTLOOK_DATA_PROCESSING_CLI_SKILL_CLIENT_AI.md`](docs/ROADMAP_OUTLOOK_DATA_PROCESSING_CLI_SKILL_CLIENT_AI.md).
+  - `2026-10-22` (`a2a0f2a`): Added one-click copying of anchor camera parameters and 2D bounding boxes (`visibleRange`) as standard JSON (`type: "bookmark-canvas-anchor"`), used as temporary prompts alongside companion plugins to scope visible cards and topology (partially implemented: only prompt copying for plugin synergy is done; full settings persistence and cloud sync remain under research)
+- [x] 🔄 **Performance follow-up (Ongoing optimizations since v1.0.4 / 阶段性进展)**: Continue improving the path that uses the browser's practical CPU/GPU and rendering capacity as Chrome and hardware evolve. Existing low-detail, out-of-viewport, lazy-loading, and virtualization strategies remain necessary trade-offs today; future browser APIs and platform changes should be evaluated rather than assuming a fixed ceiling.
+  - `2026-09-16` ~ `2026-09-17` (`c723346`, `21c622f`): Optimized out-of-viewport lazy loading and keyframe scaling performance with dynamic level-of-detail degradation
+  - `2026-09-24` ~ `2026-09-28` (`4eea17e`, `0d05963`): Added sidebar/directory large-tree lazy loading to prevent main-thread blocking on massive bookmark trees
+  - `2026-09-28` (`7b90fa9`, `fcb05a6`): Removed line-level ResizeObserver and locked scrollbar gutters to eliminate forced reflows / layout thrashing
+  - `2026-09-29` ~ `2026-10-02` (`5629068`, `52f9056`): Enhanced card scrollbar UI performance and smooth scrolling feel
+- [ ] **More languages and UI QA**: the current UI is built around Simplified Chinese and English. Traditional Chinese, French, Russian, Spanish, Arabic, Japanese, Korean, and other languages need complete copy coverage and layout QA. README translations can be added under [`docs/README/`](docs/README/). See [`docs/LIMITATIONS_AND_COMPROMISES.md`](docs/LIMITATIONS_AND_COMPROMISES.md). Much of the UI is hard-coded rather than a complete i18n system, so this either requires an i18n refactor or careful extraction/indexing of existing Chinese and English strings.
+- [ ] **Limits, compromises, and external-change tracking**: keep documenting browser boundaries and intentional scope decisions, including the decision <ins>not to turn Bookmark Canvas into an attachment manager, file manager, or second Obsidian</ins>; continue following Chrome / Edge behavior, browser API changes and bug fixes, plus GitHub API and hash constraints that affect GitHub Push / Pull. See [`docs/LIMITATIONS_AND_COMPROMISES.md`](docs/LIMITATIONS_AND_COMPROMISES.md) and [`docs/FOLLOW_UP_BROWSER_ROOT_MODEL_GITHUB_HASH.md`](docs/FOLLOW_UP_BROWSER_ROOT_MODEL_GITHUB_HASH.md).
+
+### Docs
+
+- [Documentation](docs/)
+- [Archive index](docs/Archived/00--%E5%BD%92%E6%A1%A3%E7%B4%A2%E5%BC%95-%E8%AF%B7%E5%85%88%E8%AF%BB.md)
+
+### References
+
+**External projects**
+
+- [JSON Canvas](https://github.com/obsidianmd/jsoncanvas)
+- [Obsidian JSON Canvas Skill](https://github.com/kepano/obsidian-skills/tree/main/skills/json-canvas)
+- [xyflow](https://github.com/xyflow/xyflow)
+- [Obsidian Editing Toolbar](https://github.com/PKM-er/obsidian-editing-toolbar)
+- [AltSnap](https://github.com/RamonUnch/AltSnap)
+
+## Format
+
+The following R2-R7 format examples are mirrored from [AGENTS_template](https://github.com/Browser-bookmark-hub/Bookmark-Canvas/tree/main/Bookmark-Canvas-main/history_html/transfer_AI_sync/AGENTS_template). Sample data packages are available from selected [Releases](https://github.com/Browser-bookmark-hub/Bookmark-Canvas/releases).
+
+<ins>If an Agent reads this section, it must read both linked materials above and must not skip AGENTS_template.</ins>
+
+### R2. Permanent Main JSON Example
+Use this shape only when the user explicitly asks to edit the permanent browser-bookmark tree.
+The `identityMap` metadata entry below points to the bookmark node with the same `syncId` in `tree`; `tags` may contain multiple entries, while `note` is a single note and `noteColor` is its sibling field.
+```json
+{
+  "format": "bookmark-canvas-section",
+  "schemaVersion": 3,
+  "sectionType": "permanent",
+  "slot": "A",
+  "title": "Permanent Bookmarks",
+  "descriptionMd": "Describe what this permanent bookmark tree contains.",
+  "fileRole": "primary",
+  "fileNote": "Primary permanent file: canonical bookmark tree source.",
+  "identityMap": [
+    {
+      "syncId": "syncId_20260530_hash_2i6f661",
+      "note": "Check whether this promo-code search is still useful before keeping it.",
+      "noteColor": "orange",
+      "tags": [
+        {
+          "color": "green",
+          "text": "coupon"
+        },
+        {
+          "color": "purple",
+          "text": "promo"
+        }
+      ]
+    }
+  ],
+  "tree": {
+    "title": "",
+    "id": "syncId_20260530_hash_4xl2x2i",
+    "children": [
+      {
+        "title": "Bookmarks Bar",
+        "id": "syncId_20260530_hash_1c4v645",
+        "parentId": "syncId_20260530_hash_4xl2x2i",
+        "folderType": "bookmarks-bar",
+        "syncing": false,
+        "children": [
+          {
+            "title": "windsurf promo code - Google Search",
+            "id": "syncId_20260530_hash_2i6f661",
+            "parentId": "syncId_20260530_hash_1c4v645",
+            "url": "https://www.google.com/search?q=windsurf+promo+code"
+          }
+        ]
+      },
+      {
+        "title": "Other Bookmarks",
+        "id": "syncId_20260530_hash_8r5t1v6",
+        "parentId": "syncId_20260530_hash_4xl2x2i",
+        "folderType": "other",
+        "syncing": false,
+        "children": []
+      }
+    ]
+  }
+}
+```
+
+<a id="ref-r3"></a>
+### R3. Permanent Copy Anchor Example
+A permanent copy is a view anchor, not another bookmark tree.
+```json
+{
+  "format": "bookmark-canvas-section",
+  "schemaVersion": 2,
+  "sectionType": "permanent",
+  "slot": "B",
+  "title": "Permanent Bookmarks",
+  "fileRole": "copy-anchor",
+  "anchorOnly": true,
+  "fileNote": "Permanent copy anchor file: tree content is inherited from primary file; this file keeps per-copy description and canvas anchor.",
+  "inheritFrom": "<vault-relative path to slot A json>",
+  "copyId": "permanent-copy-1780113045642-gtjhd",
+  "descriptionMd": "Copy-specific notes."
+}
+```
+
+<a id="ref-r4"></a>
+### R4. Regular Temporary Section Examples
+
+Top-level regular chain section:
+The child bookmark below shows `tags` and `note`/`noteColor` as sibling metadata on the same temporary item; omit these fields when an item has no metadata.
+For temporary items, the explicit `type` distinguishes folders from bookmarks; do not infer the item kind from placeholder fields such as an empty `url` or `children` array.
+```json
+{
+  "format": "bookmark-canvas-section",
+  "schemaVersion": 2,
+  "sectionType": "temporary",
+  "id": "temp-section-A-1",
+  "label": "A-1",
+  "title": "Research set",
+  "tempKind": "regular",
+  "source": "",
+  "descriptionMd": "A sandbox bookmark tree. This does not directly edit browser bookmarks.",
+  "items": [
+    {
+      "id": "tempId_20260530_hash_6u3p4w4",
+      "sectionId": "temp-section-A-1",
+      "title": "AI",
+      "url": "",
+      "type": "folder",
+      "children": [
+        {
+          "id": "tempId_20260530_hash_1z42o1g",
+          "sectionId": "temp-section-A-1",
+          "title": "GitHub Trending · JavaScript",
+          "url": "https://github.com/trending/javascript?since=daily",
+          "type": "bookmark",
+          "note": "Daily JavaScript trending page; useful for discovery.",
+          "noteColor": "blue",
+          "tags": [
+            {
+              "color": "orange",
+              "text": "trends"
+            },
+            {
+              "color": "blue",
+              "text": "JavaScript"
+            }
+          ],
+          "children": []
+        }
+      ]
+    }
+  ]
+}
+```
+Derived chain section:
+```json
+{
+  "format": "bookmark-canvas-section",
+  "schemaVersion": 2,
+  "sectionType": "temporary",
+  "id": "temp-section-A-1-1",
+  "label": "A-1-1",
+  "title": "Research set - refined",
+  "tempKind": "regular",
+  "source": "",
+  "descriptionMd": "Derived from A-1; keep only the refined subset.",
+  "items": []
+}
+```
+
+<a id="ref-r5"></a>
+### R5. AI Special Temporary Section Example
+Use this when AI adds suggested bookmarks or a generated bookmark tree and no existing target was specified. If the user or context names an existing target, follow [S2](https://github.com/Browser-bookmark-hub/Bookmark-Canvas/blob/main/Bookmark-Canvas-main/history_html/transfer_AI_sync/AGENTS_template/AGENTS_template_en.md#s2-ai-generated-bookmark-routing).
+
+R5 is also an ecosystem co-building reference: other plugins or tools can use this structure when contributing generated, recommended, or processed results to Bookmark Canvas. See [Bookmark-Backup](https://github.com/Browser-bookmark-hub/Bookmark-Backup) and [Bookmark-Record-Recommend](https://github.com/Browser-bookmark-hub/Bookmark-Record-Recommend) for related ecosystem directions.
+
+```json
+{
+  "format": "bookmark-canvas-section",
+  "schemaVersion": 2,
+  "sectionType": "temporary",
+  "id": "temp-section-AI",
+  "label": "AI",
+  "title": "AI title here",
+  "tempKind": "special",
+  "source": "ai-generated",
+  "descriptionMd": "Describe the generated bookmark tree and why these links were grouped.",
+  "items": [
+    {
+      "id": "tempId_20260530_hash_x6k2d5e",
+      "sectionId": "temp-section-AI",
+      "title": "Generated links",
+      "url": "",
+      "type": "folder",
+      "children": [
+        {
+          "id": "tempId_20260530_hash_8a4c1d2",
+          "sectionId": "temp-section-AI",
+          "title": "Example generated bookmark",
+          "url": "https://example.com/",
+          "type": "bookmark",
+          "note": "Explain why this generated link is useful.",
+          "noteColor": "blue",
+          "tags": [
+            {
+              "color": "purple",
+              "text": "AI"
+            }
+          ],
+          "children": []
+        }
+      ]
+    }
+  ]
+}
+```
+
+<a id="ref-r6"></a>
+### R6. .canvas Example
+Paths in file nodes are vault-relative, not relative to the `.canvas` file; `inheritFrom` in permanent copy anchors uses the same vault-relative path convention. When file references are added, deleted, moved, renamed, or edited, match the prefix style already used in the current `.canvas` and update every affected `file` / `inheritFrom` reference; follow Obsidian JSON Canvas path handling.
+Complete canvas data package root directories can have three prefix styles: existing vault root uses `<canvas-data-package-root-name>/Permanent/...`; existing vault subfolder uses `<vault-subdir>/<canvas-data-package-root-name>/Permanent/...`; using the canvas data package root directory itself as a standalone vault uses `Permanent/...` with no canvas-data-package-root-name prefix.
+In the example below, `<prefix>` means empty, `<canvas-data-package-root-name>/`, or `<vault-subdir>/<canvas-data-package-root-name>/`.
+For a default single-arrow edge from `fromNode` to `toNode`, omit `fromEnd` and `toEnd`; add `toEnd: "none"` only for no-arrow edges, and `fromEnd: "arrow"` for two-ended arrows.
+This is only a structural example. In real edits, do not treat `.canvas` as a text template; parse it as JSON, modify the object, and serialize it back so quotes, backslashes, and multilingual text cannot corrupt the JSON.
+```json
+{
+  "nodes": [
+    { "id": "permanent-section", "type": "file", "file": "<prefix>Permanent/A-PermanentBookmarks.json", "x": 0, "y": 0, "width": 600, "height": 600, "color": "4" },
+    { "id": "permanent-section-copy-permanent-copy-1780113045642-gtjhd", "type": "file", "file": "<prefix>{{PERMANENT_MD_REL_2}}", "x": 720, "y": 0, "width": 600, "height": 600, "color": "4" },
+    { "id": "card-group-ai", "type": "group", "x": -40, "y": 700, "width": 1320, "height": 620, "label": "AI workspace", "color": "5" },
+    { "id": "temp-section-AI", "type": "file", "file": "<prefix>Temporary/Special temporary/AI title.json", "x": 0, "y": 760, "width": 525, "height": 380, "color": "#e9973f" },
+    { "id": "md-node-ai-prompt", "type": "text", "text": "Prompt or notes for this generated bookmark set.", "x": 600, "y": 760, "width": 420, "height": 260, "color": "#888888" }
+  ],
+  "edges": [
+    { "id": "edge-ai-1", "fromNode": "md-node-ai-prompt", "fromSide": "right", "toNode": "temp-section-AI", "toSide": "left", "color": "#999999", "label": "generated set" }
+  ]
+}
+```
+
+<a id="ref-r7"></a>
+### R7. Tag Palette and Note Metadata
+```json
+{
+  "note": "Plain-text bookmark/folder note.",
+  "noteColor": "orange",
+  "tags": [
+    {
+      "color": "blue",
+      "text": "design reference"
+    }
+  ]
+}
+```
+- In the example above, `tags[].color` and `noteColor` are lowercase English palette names only: `red`, `orange`, `yellow`, `green`, `blue`, `purple`, `gray`.
+- The exported color value must be the lowercase English name only; do not write hex values (such as `#0a84ff`), `colorHex`, Obsidian canvas color numbers, or CSS variable names.
+- Permanent `identityMap` entries add `syncId` to the same shape; temporary items inline these fields directly.
+- `noteColor` is a sibling field of `note` and `tags`, not part of a tag object; do not write it as `{ "color": "...", "text": "..." }`.
+
+## Data & Privacy
+
+- Canvas data, settings, local indexes, and caches are stored in the browser extension's local storage / IndexedDB by default; this project does not operate a dedicated backend service.
+- GitHub Push / Pull is optional and only accesses the repository configured by the user.
+- Permissions include bookmarks, storage, downloads, tabs, tab groups, windows, active-tab access, favicon access, idle state, and host access; they support bookmark management, canvas interaction, favicon display, and related browser integration.
+- See the [Privacy Policy](PRIVACY_POLICY.md) for the complete data-handling and permission explanation.
+
+## License
+[GPL-3.0](Bookmark-Canvas-main/LICENSE).
+
+## [Back to top](#switch-to-中文文档)

@@ -20,7 +20,7 @@
 
 DSPex brings [DSPy](https://github.com/stanfordnlp/dspy) — Stanford NLP's framework for programming language models — to Elixir. It ships with SnakeBridge-generated `Dspy.*` bindings that mirror DSPy's package layout (great for HexDocs + IDE navigation), plus a minimal `DSPex` convenience layer over [SnakeBridge](https://github.com/nshkrdotcom/snakebridge)'s Universal FFI. Use the generated modules for the full API surface or the thin FFI wrapper for direct calls.
 
-DSPex 0.13.1 pins and generates bindings for DSPy 3.4.0.
+DSPex 0.14.0 pins and generates bindings for DSPy 3.5.0.
 
 **Why DSPex?**
 
@@ -34,7 +34,7 @@ DSPex 0.13.1 pins and generates bindings for DSPy 3.4.0.
 ## Installation
 
 Prerequisites (one-time):
-- Python 3.9+
+- Python 3.10+
 - [uv](https://docs.astral.sh/uv/) for Python package setup:
   `curl -LsSf https://astral.sh/uv/install.sh | sh`
 - Optional (RLM example only): Deno runtime (external binary), install via asdf:
@@ -47,7 +47,7 @@ Add DSPex to your `mix.exs`:
 ```elixir
 def deps do
   [
-    {:dspex, "~> 0.13.1"}
+    {:dspex, "~> 0.14.0"}
   ]
 end
 ```
@@ -63,10 +63,10 @@ Then install dependencies and set up Python:
 
 ```bash
 mix deps.get
-mix snakebridge.setup  # Creates managed venv + installs dspy-ai automatically
+mix snakebridge.setup  # Creates managed venv + installs dspy automatically
 ```
 
-SnakeBridge manages an isolated venv under `priv/snakepit/python/venv`; no manual venv creation or pip installs needed. This release installs DSPy 3.4.0 and depends on SnakeBridge `~> 0.18.1` from Hex.
+SnakeBridge manages an isolated venv under `priv/snakepit/python/venv`; no manual venv creation or pip installs needed. This release installs DSPy 3.5.0 and depends on SnakeBridge `~> 0.18.1` from Hex.
 
 When SnakeBridge changes or you need to refresh generated wrappers, run:
 
@@ -76,7 +76,9 @@ mix snakebridge.regen
 
 Add `--clean` to remove generated artifacts and metadata before regenerating.
 
-The RLM flagship example uses DSPy’s default PythonInterpreter (Pyodide/WASM), which requires Deno on your PATH.
+RLM examples use DSPy’s default PythonInterpreter (Pyodide/WASM), which requires a working Deno executable on your `PATH`. Deno is optional for other DSPex features. Applications installing DSPex from Hex own their Deno installation and version selection; DSPex does not configure asdf or install Deno globally.
+
+This repository pins Deno 2.9.5 in `.tool-versions` for development and examples. With the asdf Deno plugin installed, run `asdf install` from this repository, then verify `deno --version`. In a consuming application, select a compatible version in that application's configuration (for example, `asdf set deno 2.9.5`), or install Deno directly. A version-manager shim on `PATH` is insufficient unless `deno --version` succeeds.
 
 ## Quick Start
 
@@ -154,9 +156,9 @@ Bypass modules and call the LM directly:
 ```elixir
 {:ok, lm} = Dspy.LM.new("gemini/gemini-flash-lite-latest", temperature: 0.9)
 
-# Direct call with messages
-messages = [%{"role" => "user", "content" => "Say hello in French"}]
-{:ok, response} = Dspy.LM.forward(lm, messages: messages)
+# Direct call with a string prompt
+prompt = "Say hello in French"
+{:ok, response} = DSPex.method(lm, "__call__", [prompt])
 ```
 
 ## Examples
@@ -246,7 +248,7 @@ config :snakebridge,
 ## API Reference
 
 DSPex provides a thin wrapper over SnakeBridge's Universal FFI, and the generated
-`Dspy.*` modules expose DSPy 3.4.0's public API surface (generated via SnakeBridge `module_mode: :explicit`):
+`Dspy.*` modules expose DSPy 3.5.0's public API surface (generated via SnakeBridge `module_mode: :explicit`):
 
 ### Lifecycle
 

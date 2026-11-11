@@ -1,6 +1,7 @@
 # native-agent-api
 
 [![CI](https://github.com/emreuyguc/native-agent-api/actions/workflows/ci.yml/badge.svg)](https://github.com/emreuyguc/native-agent-api/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/emreuyguc/native-agent-api/badge)](https://scorecard.dev/viewer/?uri=github.com/emreuyguc/native-agent-api)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 **An HTTP API for Claude Code and Codex CLI.** native-agent-api runs the real coding-agent CLI and
@@ -82,19 +83,46 @@ sequenceDiagram
 
 ## Supported agents
 
-| Agent | Native CLI | Support |
-|---|---|---|
-| `claude` | Claude Code | [Support details](docs/agents/claude-code.md) |
-| `codex` | Codex CLI | [Support details](docs/agents/codex-cli.md) |
+| Agent | Native CLI | Tested CLI version | Support |
+|---|---|---|---|
+| `claude` | Claude Code | 2.1.318 | [Support details](docs/agents/claude-code.md) |
+| `codex` | Codex CLI | 0.167.0 | [Support details](docs/agents/codex-cli.md) |
 
-One gateway process serves one agent. Run two processes to serve both.
+The adapters are verified against the tested CLI version, which the Docker images install. Other
+versions can differ in commands, flags and events. `GET /v1/agent` reports both the installed
+`cli.version` and `cli.tested_version`.
+
+One gateway process serves one agent. Run two processes to serve both. Each has its own login,
+port and token, and both speak the same API. Two processes can attach the same directory, so
+both agents work on the same files.
+
+<p align="center">
+  <img src="docs/assets/two-agents.svg" alt="Two native-agent-api containers, one running Claude Code and one running Codex CLI. Your applications reach both over the same REST, SSE and WebSocket interface, and both agents work in one shared project directory." width="100%">
+</p>
+
+With Docker, each installation is one container with its own volumes; see
+[several installations](docker/README.md#several-installations).
 
 ## Quick start
 
-Requires macOS or Linux, Go, and the agent CLI on `PATH`.
+Requires macOS or Linux. The fastest way is `make setup`: it asks how to run the gateway, writes
+the env files, creates the client token and starts the gateway.
 
 ```sh
 git clone https://github.com/emreuyguc/native-agent-api && cd native-agent-api
+make setup
+```
+
+| Choice in `make setup` | Needs | Agent login |
+|---|---|---|
+| Docker, published image (fastest) | Docker with Compose v2 | Through the API, once per installation |
+| Docker, image built from source | Docker with Compose v2 | Through the API, once per installation |
+| Host, built from source | Go, the agent CLI on `PATH` | The CLI's login on this machine |
+| Host, installed binary | A [release](https://github.com/emreuyguc/native-agent-api/releases) binary ([verify it](docs/releasing.md#verify-a-release)), the agent CLI on `PATH` | The CLI's login on this machine |
+
+To set up by hand on the host:
+
+```sh
 go install ./cmd/native-agent-api
 cp .env.example .env && chmod 600 .env   # every setting is explicit; review the file
 native-agent-api new-token               # client token for $TOKEN, digest for NATIVE_AGENT_TOKEN_SHA256
@@ -102,13 +130,16 @@ native-agent-api login claude
 native-agent-api serve --env-file .env
 ```
 
+In Docker, follow [Docker setup](docker/README.md#setup). Then send a first request; a Docker
+installation uses its published port, such as `8701`:
+
 ```sh
 curl -s http://127.0.0.1:8080/v1/ask -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
   -d '{"prompt":"Explain HTTP/2 in one sentence.","model":{"id":"sonnet","effort":"low"}}' | jq -r .result.text
 ```
 
 The interactive API reference is served at `/docs`, and the OpenAPI 3.1 document at
-`/openapi.yaml`. For Docker, see [docker/README.md](docker/README.md).
+`/openapi.yaml`.
 
 ## Documentation
 
@@ -117,7 +148,7 @@ The interactive API reference is served at `/docs`, and the OpenAPI 3.1 document
 - [Security model](docs/security.md): read this before exposing the gateway
 - [Roadmap and feature status](ROADMAP.md): what works per agent, what is planned
 - [Platform support](docs/platforms.md), [development](docs/development.md),
-  [testing](docs/testing.md)
+  [testing](docs/testing.md), [releasing](docs/releasing.md)
 
 ## Notes
 
@@ -125,5 +156,4 @@ native-agent-api is an independent project, not affiliated with Anthropic or Ope
 CLI and the login you provide; your use of each CLI and account stays subject to that provider's
 terms, so check them before serving a personal subscription to other people or applications.
 
-Vulnerabilities: see [SECURITY.md](SECURITY.md). Contributions: run `make check` before a pull
-request. License: [Apache-2.0](LICENSE).
+Vulnerabilities: see [SECURITY.md](SECURITY.md). Contributions: see [CONTRIBUTING.md](CONTRIBUTING.md). License: [Apache-2.0](LICENSE).

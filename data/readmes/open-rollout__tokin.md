@@ -9,12 +9,13 @@
   <a href="https://github.com/open-rollout/tokin/actions/workflows/ci.yml"><img src="https://github.com/open-rollout/tokin/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
   <a href="https://pypi.org/project/tokin/"><img src="https://img.shields.io/pypi/v/tokin" alt="PyPI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/open-rollout/tokin" alt="License"></a>
+  <a href="https://www.yuanhe.wiki/posts/technical/tokin/"><img src="https://img.shields.io/badge/blog-tokin-blue?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xMiAyMGg5Ii8%2BPHBhdGggZD0iTTE2LjQgMy42YTIuMSAyLjEgMCAxIDEgMyAzTDcgMTlsLTQgMSAxLTR6Ii8%2BPC9zdmc%2B" alt="Blog"></a>
 </p>
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/gateway-dark.svg">
-    <img src="assets/gateway-light.svg" alt="tokin as a gateway. Harnesses, any harness unchanged, each call their own session URL with chat completions in text. Inside tokin each turn is attached to its place in its session's tree; rendered, keeping the ids the model sampled for rollouts, rollout and s, where re-encoding the text would split it as roll and outs; generated on the inference engine from input tokens to output tokens; and parsed back into an assistant message, {&quot;role&quot;: &quot;assistant&quot;, …}, with reasoning and tool calls for its harness. The turn's ids grow the session's tree at that place, each leaf a rollout with token_ids, loss_mask and logprobs, which a trainer collects to update the weights the engine serves." width="100%">
+    <img src="assets/gateway-light.svg" alt="tokin as a gateway. Harnesses, any harness, each call their own session URL with chat completions in text. Inside tokin each turn is attached to its place in its session's tree; rendered, keeping the ids the model sampled for rollouts, rollout and s, where re-encoding the text would split it as roll and outs; generated on the inference engine from input tokens to output tokens; and parsed back into an assistant message, {&quot;role&quot;: &quot;assistant&quot;, …}, with reasoning and tool calls for its harness. The turn's ids grow the session's tree at that place, each leaf a rollout with token_ids, loss_mask and logprobs, which a trainer collects to update the weights the engine serves." width="100%">
   </picture>
 </p>
 
@@ -69,4 +70,4 @@ tokin collect "$URL" -o rollouts.jsonl
 ## Examples
 
 - [`examples/harbor_eval`](examples/harbor_eval): evaluate mini-swe-agent, opencode or pi through tokin on [Harbor](https://github.com/harbor-framework/harbor).
-- [`examples/pi_mimo_rl`](examples/pi_mimo_rl): train pi, unchanged, with slime on MiMo-V2.6-RL-oss.
+- [`examples/pi_mimo_rl`](examples/pi_mimo_rl): train pi with slime on MiMo-V2.6-RL-oss.

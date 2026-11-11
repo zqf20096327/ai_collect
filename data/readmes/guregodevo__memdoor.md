@@ -34,10 +34,8 @@ On this machine:
 
 ```bash
 curl -fsSL https://memdoor.ai/install.sh | bash
-export OPENROUTER_API_KEY=sk-or-...    # or ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, …
-# or no key: memdoor connect local    # janis and an open-weight model on this machine — https://memdoor.ai/docs/open-weight
-cd your-project && memdoor             # the first run sets the machine up
-memdoor workflow try                   # two minutes: the team on a sample problem, ending in a verdict
+cd your-project && memdoor             # sets the machine up, then a key, a sign-in or a local model
+# no key: memdoor connect local       # janis and an open-weight model on this machine — https://memdoor.ai/docs/open-weight
 memdoor cron add --workflow team-backlog "0 2 * * *"   # one open issue a night, a pull request when its Check passed
 ```
 
@@ -131,7 +129,7 @@ editor's own. Steps: [memdoor.ai/docs/editor](https://memdoor.ai/docs/editor).
 
 ```bash
 memdoor run "make the retry wait configurable and add a test"     # a headless turn, no window
-git diff | memdoor run "review this diff; one line per finding"    # stdin is the input
+git diff | memdoor run --stdin "review this diff; one line per finding"    # --stdin: stdin is the input
 memdoor run --json "fix the failing test" | jq 'select(.event=="done")'
 memdoor workflow run release --wait                                 # progress on stderr, results on stdout
 memdoor remote --last                                               # the link /remote gives, on stdout; the gateway holds the run for your phone
@@ -212,6 +210,20 @@ train on what they are sent, the request says so (`allow`), Memdoor warns at
 the pin or at connect. Vendor key or company gateway: nothing else is
 contacted. [`docs/SECURITY.md`](docs/SECURITY.md) lists the hosts the binary
 can name; a test fails the build on a new one.
+
+## Install from a GitHub release
+
+Every release on GitHub carries the binaries and `SHA256SUMS`. To install from
+there instead of memdoor.ai, or from a fork that publishes its own:
+
+```bash
+curl -fsSL https://github.com/guregodevo/memdoor/raw/main/scripts/install.sh \
+  | MEMDOOR_INSTALL_SOURCE=github bash
+# a fork, a fixed release: MEMDOOR_GITHUB_REPOSITORY=owner/repo MEMDOOR_GITHUB_RELEASE=v1.2.3
+```
+
+Keep `MEMDOOR_INSTALL_SOURCE=github` in the environment and `memdoor upgrade`
+reads the same source.
 
 ## Build from source
 

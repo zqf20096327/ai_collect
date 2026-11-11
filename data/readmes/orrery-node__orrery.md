@@ -21,7 +21,7 @@
   <img src="https://img.shields.io/badge/OpenAI-compatible-f7f7f7?style=flat-square&logo=openai&logoColor=white&labelColor=0c0c0c" alt="OpenAI-compatible">
   <img src="https://img.shields.io/badge/node-%E2%89%A522-339933?style=flat-square&logo=nodedotjs&logoColor=white&labelColor=0c0c0c" alt="Node 22+">
   <img src="https://img.shields.io/badge/rust-anchor%201.2-dea584?style=flat-square&logo=rust&logoColor=white&labelColor=0c0c0c" alt="Rust, Anchor 1.2">
-  <img src="https://img.shields.io/badge/rehearsal-50%2F50%20checks-14f195?style=flat-square&labelColor=0c0c0c" alt="50 of 50 rehearsal checks">
+  <img src="https://img.shields.io/badge/rehearsal-57%2F57%20checks-14f195?style=flat-square&labelColor=0c0c0c" alt="57 of 57 rehearsal checks">
   <img src="https://img.shields.io/badge/payments-ed25519%20vouchers-9945ff?style=flat-square&labelColor=0c0c0c" alt="ed25519 vouchers">
 </p>
 
@@ -212,6 +212,35 @@ and the body's `usage` has the same bill: `{"prompt_tokens": 91, "completion_tok
 </details>
 
 <details>
+<summary><b>Claude Code and Codex CLI</b></summary>
+
+With the router running, one command starts Claude Code on it as one job and prints the job's bill when you quit (from 0.1.12):
+
+```bash
+orrery run claude --budget 0.05
+```
+
+```
+orrery · claude-todo-app-1111-0834
+  7 answers · 95,727 tokens (91,156 in, 4,571 out) · $0.004062 of $0.05 budget
+  each answer paid from your wallet to the node that served it
+```
+
+It names the network model outright (`gpt-oss-120b` unless you pass `--model`), tags every request with the job and its budget, and hands Claude Code a placeholder key. A key or token already in your environment is not passed on. Arguments after `--` go to Claude Code.
+
+By hand, on any version: Claude Code asks for Claude model names, so give the router an alias and point Claude Code at it:
+
+```bash
+orrery router --wallet ~/.config/solana/orrery.json --alias 'claude-*=gpt-oss-120b'
+ANTHROPIC_BASE_URL=http://127.0.0.1:7171 ANTHROPIC_API_KEY=orrery claude
+```
+
+The key is a placeholder: Claude Code will not start without one, and the router ignores it. To bill a job as one and stop it at a limit, add `ANTHROPIC_CUSTOM_HEADERS=$'x-orrery-task: my-job\nx-orrery-task-budget: 0.05'` and read the bill with `orrery spend --by task`.
+
+Codex CLI: `orrery connect codex --write`, then `codex --profile orrery`.
+</details>
+
+<details>
 <summary><b>Cursor, Continue, Aider, Open WebUI, LangChain</b></summary>
 
 | Tool | Setting |
@@ -237,7 +266,7 @@ The full guide, with every flag and a troubleshooting table, is at **[orrerynode
 | `:cheap` | price | lowest expected cost for this request |
 | `:fast` | speed | fastest first token this router has measured (EWMA) |
 | `:trusted` | reputation | settled volume 35% · redemptions 15% · age 15% · bonded $OREY 10% · this router's own success rate 25% |
-| `:private` | privacy | only providers whose enclave this router verified; the request is sealed |
+| `:private` | privacy | only providers whose enclave this router verified; the request is sealed, and the answer names the enclave in `x-orrery-enclave`, `x-orrery-enclave-image` and `x-orrery-enclave-verdict`. Start the router with `--private-only` to make every request take this route, whatever it asks for |
 
 The router tries the top three providers in order and cools a failing one down for 15 seconds up to 5 minutes, so a slow or dead provider is skipped without your tool noticing. If a provider drops a stream mid-answer, the router hands the text so far to the next provider whose manifest says `resume: true` and keeps writing into the same stream; the provider that dropped it is paid nothing for that answer. Pin one with `x-orrery-provider: <address prefix>`, or set the route with `x-orrery-route`.
 
@@ -413,6 +442,8 @@ Every router talks to every provider directly. The program never sees a prompt o
 | a provider's node key leaks | nothing of the provider's: redemptions only go to the listing wallet |
 | the admin turns hostile | nothing: the admin cannot move deposits or bonds, list or delist, or add a fee |
 
+What a node learns about you: the prompt (unless you use `:private`, where only a verified enclave can read it), the channel that pays, and the address your router connects from. It does not learn who the end user is: ids that clients attach for an API company's abuse checks (`user`, `safety_identifier`, a cache key, Anthropic `metadata.user_id`, which Claude Code fills with an account, device and session id) are dropped by the router before a request leaves your machine, and a node does not pass `user` on to its model server either (from 0.1.12). The answer then carries `x-orrery-withheld` with the names of what was dropped (never the values), so you can see it happened.
+
 The program has **not been audited yet**. Read [SECURITY.md](SECURITY.md) for what each key can do and how to report a vulnerability privately.
 
 ## CLI
@@ -421,12 +452,17 @@ The program has **not been audited yet**. Read [SECURITY.md](SECURITY.md) for wh
 |---|---|
 | `orrery router --wallet <keypair> --rpc <url>` | run the router on `127.0.0.1:7171` |
 | `orrery models` | every model on the network, cheapest price, provider count |
+| `orrery provider price --config provider.json [--beat 5] [--floor in/out] [--write]` | undercut the cheapest other listing of each model by a margin, never below your floor |
+| `orrery provider check --config provider.json` | is this node ready to earn: model server, public address, listing, fee money, enclave, pledge |
+| `orrery enclave verify --node <listing>` | audit a private node: its claim from chain, its report from the node, every check a router runs (`--report --vcek` and `--quote` check a file) |
 | `orrery providers` | every listing, what the chain says about it and whether its model server answers |
 | `orrery channels` | your channels: deposit, what you signed, what was redeemed |
 | `orrery close <channel> --wallet <keypair>` | start closing (the provider gets a grace period to redeem) |
 | `orrery close <channel> --wallet <keypair> --finish` | after the grace period, the rest comes back to you |
 | `orrery provider init` | find a local model server and write a starting provider.json |
 | `orrery provider register \| show \| start \| attest \| redeem --config provider.json` | run a provider |
+
+Task budgets: send `x-orrery-task: <name>` on every request of a job and `x-orrery-task-budget: 0.05` on the first. The router keeps one running total per task, answers with `x-orrery-task-spent` and `x-orrery-task-left`, and refuses the next request once the budget is gone (`GET /orrery/tasks` lists them; over MCP, `task` and `task_budget`). Budgets are kept in `~/.orrery/router/tasks.json`, so they survive a restart, and `orrery spend --by task` adds up what each job cost from the router's own log. `orrery sealed` lists every private answer with the enclave the router had verified.
 
 Router flags: `--route`, `--deposit` (2), `--top-up-below` (0.25), `--daily-cap` (5), `--min-reputation` (0.2), `--port` (7171), `--refresh` (60), `--enclave-images`, `--alias` (`claude-*=llama-3.3-70b`: answer other model names with a network model). Environment: `ORRERY_WALLET`, `ORRERY_RPC_URL`, `ORRERY_HOME` (`~/.orrery`), `ORRERY_ALIASES`.
 
@@ -450,8 +486,8 @@ assets/    brand and README media
 
 ```bash
 cd program && anchor build --arch v2 && cargo test -p orrery   # 2 unit + 13 LiteSVM tests on the compiled program
-cd node && pnpm install && pnpm test                            # 85 tests
-pnpm e2e                                                        # full local rehearsal, 50 checks
+cd node && pnpm install && pnpm test                            # 122 tests
+pnpm e2e                                                        # full local rehearsal, 57 checks
 cd web && pnpm install && pnpm dev                              # http://localhost:3870
 ```
 
@@ -526,7 +562,7 @@ OpenAI Chat Completions (`/v1/chat/completions`, streaming or not), the OpenAI R
 
 - [x] Settlement program: registry, channels, ed25519 vouchers, enclave claims, bonds
 - [x] Router and provider node, OpenAI-compatible, streaming, fall-through
-- [x] Local end-to-end rehearsal on the real program, 50 of 50 checks (a node buying and burning the network token with its pledged share and the router verifying it on chain, every API, quotes before paying, per-request budgets, routers skipping a node whose model server is down and showing it in their status, embeddings, fallbacks, billed usage in streams, bench on chat and embedding models, a router picking its channel back up after losing its records, limits, cache pricing and affinity, 400 parallel answers, Codex CLI and Claude Code, DNS-rebinding refusal, logs that add up to what was signed)
+- [x] Local end-to-end rehearsal on the real program, 57 of 57 checks (end-user ids never reaching a model server, a client started with `orrery run` and billed as one job, requests encrypted to the node's own key, task budgets for agents, a node buying and burning the network token with its pledged share and the router verifying it on chain, every API, quotes before paying, per-request budgets, routers skipping a node whose model server is down and showing it in their status, embeddings, fallbacks, billed usage in streams, bench on chat and embedding models, a router picking its channel back up after losing its records, limits, cache pricing and affinity, 400 parallel answers, Codex CLI and Claude Code, DNS-rebinding refusal, logs that add up to what was signed)
 - [x] Holder pricing: tiers by share of $OREY supply, checked by router and provider
 - [x] npm package [`orrery-node`](https://www.npmjs.com/package/orrery-node)
 - [x] Site and docs at [orrerynode.com](https://orrerynode.com)
@@ -550,7 +586,13 @@ OpenAI Chat Completions (`/v1/chat/completions`, streaming or not), the OpenAI R
 - [x] Wallet and node pages read live from the program, with share cards; the network terminal (preview on sample data)
 - [x] Routers show each node's model server (console, status, MCP, `orrery providers`); a built-in AMD SEV-SNP verifier and `orrery enclave verify`; private nodes on SEV-SNP; routers verify burn pledges on chain, a `:burn` route and `x-orrery-burn` (0.1.8)
 - [x] Built-in hardware verifier for AMD SEV-SNP: the router checks an enclave's report itself, against AMD's roots, with no attestation service (`orrery enclave verify`, 0.1.8)
-- [ ] Built-in verifier for Intel TDX
+- [x] Built-in verifier for Intel TDX, checked against a real quote (`orrery enclave verify --quote`), TDX nodes, task budgets for agents, burn pledges that buy on mainnet through Jupiter (`orrery provider burn`), enclave verdicts in `doctor` (0.1.9)
+- [x] A receipt on every private answer (`x-orrery-enclave` headers, kept in the router's log, `orrery sealed`), `orrery enclave verify --node` to audit a private node check by check, a `--private-only` router, a bill per job (`orrery spend --by task`, budgets that survive a restart), `orrery provider price` (0.1.10)
+- [x] Wire sealing: every request encrypted to the node's own key, signed by the node key on its listing (`x-orrery-wire`), and enclave verifiers that read AMD's and Intel's revocation lists (0.1.11)
+- [x] End-user ids dropped by the router before a request leaves (`user`, `safety_identifier`, a cache key, Anthropic `metadata.user_id`), no `user` passed upstream by a node, and `orrery run claude` with a budget and a bill (0.1.12)
+- [x] Revocation lists in the built-in verifiers: AMD's and Intel's signed lists are fetched from the chip maker, verified against the pinned roots and checked for the chip's certificates (in main, next release)
+- [x] Wire sealing: every request is encrypted to the node's own key (signed by the node key on chain), so a host, load balancer or firewall in front of a node sees ciphertext (in main, next release)
+- [ ] Firmware (TCB) status in the built-in verifiers; NVIDIA GPU attestation
 - [ ] $OREY bonds live on mainnet
 
 ## Contributing
