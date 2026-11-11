@@ -204,12 +204,12 @@
   }
  },
  "alpic-ai/skybridge": {
-  "commit_90d": 79,
-  "commit_7d": 5,
-  "rel_ver": "v2.1.0",
-  "rel_pub": "2026-10-23",
-  "rel_days": 8,
-  "rel_n90": 11,
+  "commit_90d": 60,
+  "commit_7d": 1,
+  "rel_ver": "v2.1.1",
+  "rel_pub": "2026-11-09",
+  "rel_days": 2,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -224,10 +224,10 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4197,6 +4197,76 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "wycocoyu/Resume-Agent": {
+  "commit_90d": 18,
+  "commit_7d": 8,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Python": 52,
+   "TypeScript": 44,
+   "TeX": 2,
+   "JavaScript": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "commit": "20261111",
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "xinshuowl/DeltaForce-Trader": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-05-18",
+  "rel_days": 177,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "wyf-yfw/miniseek": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 66,
+   "HTML": 34,
+   "Shell": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

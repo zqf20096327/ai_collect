@@ -612,7 +612,7 @@
   "commit_90d": 97,
   "rel_ver": "v1.0.35",
   "rel_pub": "2026-10-14",
-  "rel_days": 17,
+  "rel_days": 28,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -628,10 +628,10 @@
    "CSS": 3,
    "Shell": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4680,6 +4680,52 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "simplifiers/ai-slop-checker": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 27,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "MahanteshPatil1214/VeriDoc-AI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 86,
+   "TypeScript": 10,
+   "CSS": 3,
+   "Dockerfile": 0,
+   "PLpgSQL": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

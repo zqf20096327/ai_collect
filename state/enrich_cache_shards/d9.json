@@ -4121,5 +4121,54 @@
    "contrib": "20261108",
    "lang": "20261108"
   }
+ },
+ "YingqingHe/Awesome-LLMs-meet-Multimodal-Generation": {
+  "commit_90d": 2,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "commit": "20261111",
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "CapriChooms/CapriCore": {
+  "rel_ver": "v1.0.4",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 83,
+   "Python": 6,
+   "C#": 5,
+   "PowerShell": 3,
+   "CSS": 2
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
  }
 }

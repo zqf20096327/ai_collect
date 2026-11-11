@@ -1329,11 +1329,11 @@
   }
  },
  "AienTech/dossier": {
-  "commit_7d": 4,
-  "commit_90d": 26,
-  "rel_ver": "v1.11.0",
-  "rel_pub": "2026-10-31",
-  "rel_days": 4,
+  "commit_7d": 10,
+  "commit_90d": 37,
+  "rel_ver": "v1.13.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1349,10 +1349,10 @@
    "PLpgSQL": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"
@@ -4293,6 +4293,32 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "100yenadmin/fish-audio-hermes": {
+  "rel_ver": "v1.12.1",
+  "rel_pub": "2026-11-09",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 54,
+   "JavaScript": 23,
+   "TypeScript": 22,
+   "Shell": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

@@ -217,11 +217,11 @@
   }
  },
  "samber/cc-skills-golang": {
-  "commit_7d": 2,
-  "commit_90d": 22,
+  "commit_7d": 1,
+  "commit_90d": 23,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-08-20",
-  "rel_days": 74,
+  "rel_days": 83,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -235,10 +235,10 @@
    "Makefile": 15,
    "Shell": 6
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4751,6 +4751,36 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "automagik-si/genie": {
+  "commit_90d": 1837,
+  "commit_7d": 123,
+  "rel_ver": "v6.261109.9",
+  "rel_pub": "2026-11-09",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "TypeScript": 79,
+   "JavaScript": 14,
+   "Rust": 4,
+   "Shell": 3,
+   "Python": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "commit": "20261111",
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

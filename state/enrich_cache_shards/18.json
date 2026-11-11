@@ -405,12 +405,12 @@
   }
  },
  "QwenAudio/Fun-ASR": {
-  "commit_90d": 43,
-  "commit_7d": 2,
+  "commit_90d": 32,
+  "commit_7d": 3,
   "rel_ver": "runtime-llamacpp-v0.1.10",
   "rel_pub": "2026-09-05",
-  "rel_days": 42,
-  "rel_n90": 3,
+  "rel_days": 67,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -425,10 +425,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -461,11 +461,11 @@
   }
  },
  "soda-inria/tabicl": {
-  "commit_90d": 15,
+  "commit_90d": 14,
   "commit_7d": 1,
   "rel_ver": "v2.2.0",
   "rel_pub": "2026-09-02",
-  "rel_days": 57,
+  "rel_days": 70,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -478,10 +478,10 @@
    "Python": 97,
    "Shell": 3
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261029",
-   "release": "20261029",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4497,6 +4497,69 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "CursedPrograms/ConfederateAI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 81,
+   "Wolfram Language": 13,
+   "JSON": 4,
+   "YAML": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "aynursusuz/UNITTS": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "splashdeluxe/ai-job-search-template": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2026-11-02",
+  "rel_days": 9,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

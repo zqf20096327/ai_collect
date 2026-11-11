@@ -4386,5 +4386,30 @@
    "contrib": "20261109",
    "lang": "20261109"
   }
+ },
+ "Oqura-ai/wisdom": {
+  "rel_ver": "v0.5.1",
+  "rel_pub": "2026-11-09",
+  "rel_days": 2,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 90,
+   "CSS": 6,
+   "JavaScript": 5
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
  }
 }

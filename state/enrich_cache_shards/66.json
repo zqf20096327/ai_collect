@@ -217,11 +217,11 @@
   }
  },
  "huangwb8/ChineseResearchLaTeX": {
-  "commit_90d": 110,
-  "commit_7d": 4,
+  "commit_90d": 113,
+  "commit_7d": 5,
   "rel_ver": "v4.1.2",
   "rel_pub": "2026-10-17",
-  "rel_days": 16,
+  "rel_days": 25,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -237,10 +237,10 @@
    "Lua": 2,
    "Shell": 1
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -384,8 +384,8 @@
   }
  },
  "meta-pytorch/tnt": {
-  "commit_90d": 16,
-  "commit_7d": 2,
+  "commit_90d": 15,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -396,10 +396,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

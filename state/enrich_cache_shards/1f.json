@@ -4106,5 +4106,59 @@
    "contrib": "20261108",
    "lang": "20261108"
   }
+ },
+ "VladLerkin/family-tree-editor": {
+  "rel_ver": "v2.1.41",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 98,
+   "Python": 1,
+   "HTML": 0,
+   "Shell": 0,
+   "Swift": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "aoreshkov/oracle-forms-mcp": {
+  "rel_ver": "v0.20.0",
+  "rel_pub": "2026-11-07",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Kotlin": 96,
+   "Java": 3,
+   "Dockerfile": 0,
+   "Shell": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
  }
 }

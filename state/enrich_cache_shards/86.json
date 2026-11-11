@@ -160,8 +160,8 @@
   }
  },
  "MLGroupJLU/LLM-eval-survey": {
-  "commit_7d": 4,
-  "commit_90d": 17,
+  "commit_7d": 2,
+  "commit_90d": 19,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -170,10 +170,10 @@
   "sec_ids": [],
   "contrib_n": 20,
   "lang": {},
-  "enriched_at": "20261031",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4490,6 +4490,28 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "realwarp/FLUX": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 73,
+   "HTML": 24,
+   "Shell": 2,
+   "PowerShell": 2
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

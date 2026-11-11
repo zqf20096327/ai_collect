@@ -368,11 +368,11 @@
   }
  },
  "pulseaiclub/phi": {
-  "commit_90d": 965,
-  "commit_7d": 59,
-  "rel_ver": "v0.28.9",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_90d": 905,
+  "commit_7d": 42,
+  "rel_ver": "v0.29.8",
+  "rel_pub": "2026-11-09",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -388,10 +388,10 @@
    "Shell": 1,
    "Go Template": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4479,6 +4479,108 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "matthewdonsemail-lab/log": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 95,
+   "Python": 4,
+   "JavaScript": 1,
+   "HTML": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "humanethq/airgap-check": {
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 99,
+   "Shell": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "Azetus/dsh-quorfloat": {
+  "rel_ver": "v0.1.10",
+  "rel_pub": "2026-11-06",
+  "rel_days": 5,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 41,
+   "Rust": 39,
+   "JavaScript": 18,
+   "CSS": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "apprua/apprua": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 76,
+   "Shell": 13,
+   "PowerShell": 9,
+   "JavaScript": 3,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

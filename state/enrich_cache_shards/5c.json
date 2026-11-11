@@ -5309,13 +5309,16 @@
    "Shell": 1,
    "Python": 1
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261111",
   "dim_ts": {
    "release": "20261103",
    "security": "20261103",
    "contrib": "20261103",
-   "lang": "20261103"
-  }
+   "lang": "20261103",
+   "commit": "20261111"
+  },
+  "commit_90d": 676,
+  "commit_7d": 32
  },
  "ARM-software/compute-flow": {
   "rel_ver": "deps-v0.0.1",
@@ -5393,6 +5396,76 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "mindspore-ai/dvm": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C++": 66,
+   "Python": 30,
+   "Cuda": 3,
+   "Shell": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "BBQ2077/exl3-windows-gfx1201": {
+  "rel_ver": "v2026.10.18.3",
+  "rel_pub": "2026-10-18",
+  "rel_days": 24,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 69,
+   "Cuda": 23,
+   "C++": 8,
+   "HTML": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "yanmingyu92/admiralagent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "R": 100,
+   "Python": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

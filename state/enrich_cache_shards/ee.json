@@ -4517,5 +4517,28 @@
    "contrib": "20261108",
    "lang": "20261108"
   }
+ },
+ "lshadyxxx/ModelForge": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 26,
+   "HTML": 23,
+   "CSS": 20,
+   "TypeScript": 19,
+   "JavaScript": 11
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
  }
 }

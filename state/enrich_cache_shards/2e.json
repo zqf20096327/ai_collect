@@ -4912,5 +4912,32 @@
    "contrib": "20261108",
    "lang": "20261108"
   }
+ },
+ "AInVFX/ainvfx-paintaplate": {
+  "rel_ver": "v1.11.1",
+  "rel_pub": "2026-11-03",
+  "rel_days": 8,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 55,
+   "JavaScript": 39,
+   "CSS": 3,
+   "HTML": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
  }
 }

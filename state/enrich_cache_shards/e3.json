@@ -340,12 +340,12 @@
   }
  },
  "syrizelink/OpenFic": {
-  "commit_7d": 23,
-  "commit_90d": 174,
+  "commit_7d": 4,
+  "commit_90d": 147,
   "rel_ver": "v0.13.0",
   "rel_pub": "2026-10-28",
-  "rel_days": 3,
-  "rel_n90": 11,
+  "rel_days": 14,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -360,10 +360,10 @@
    "JavaScript": 0,
    "NSIS": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4566,6 +4566,95 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "crit-labs/crit-hub": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "dhsakilkhan503-a11y/claude-haiku-5-5-high-volume-billing": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "WispAgents/wisp": {
+  "rel_ver": "nightly",
+  "rel_pub": "2026-10-23",
+  "rel_days": 19,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 89,
+   "CSS": 7,
+   "HTML": 1,
+   "Java": 1,
+   "Rust": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "AmineSeboui/quoin-editor": {
+  "rel_ver": "v2.0.4",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 2,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

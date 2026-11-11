@@ -1422,13 +1422,16 @@
    "HTML": 4,
    "Shell": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261111",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261111"
+  },
+  "commit_90d": 1786,
+  "commit_7d": 145
  },
  "Yeonghun1675/L2M3": {
   "rel_ver": "0.0.1",
@@ -4315,6 +4318,79 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "mintlify/agent-traffic": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "zyvo9/ZYVO-AI": {
+  "rel_ver": "pc-v1.17.9",
+  "rel_pub": "2026-09-17",
+  "rel_days": 55,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 93,
+   "Python": 3,
+   "CSS": 3,
+   "Shell": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "sirfyyn/flelink": {
+  "rel_ver": "v0.1.12",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 60,
+   "JavaScript": 32,
+   "HTML": 3,
+   "CSS": 3,
+   "Python": 2
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

@@ -4965,13 +4965,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261111",
   "dim_ts": {
    "release": "20261105",
    "security": "20261105",
    "contrib": "20261105",
-   "lang": "20261105"
-  }
+   "lang": "20261105",
+   "commit": "20261111"
+  },
+  "commit_90d": 141,
+  "commit_7d": 73
  },
  "Ayorinha/ayorai-opensearch": {
   "rel_ver": "v0.6.0",
@@ -5019,6 +5022,47 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "ehasin/Self-Driving-Car-NN-in-action": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 84,
+   "HTML": 13,
+   "CSS": 4
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "karizteam/KTOperator": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "TypeScript": 93,
+   "JavaScript": 7
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

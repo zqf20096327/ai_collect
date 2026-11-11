@@ -4355,5 +4355,82 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "LlamaToaster/LlamaToaster": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 96,
+   "JavaScript": 1,
+   "PowerShell": 1,
+   "Shell": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "brunozilio/superfik": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 91,
+   "JavaScript": 5,
+   "Python": 3,
+   "HTML": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "kontext-tech/kontext-studio": {
+  "rel_ver": "v0.263.1",
+  "rel_pub": "2026-11-08",
+  "rel_days": 3,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 58,
+   "TypeScript": 36,
+   "JavaScript": 5,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
  }
 }

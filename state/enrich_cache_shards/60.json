@@ -3880,5 +3880,29 @@
    "contrib": "20261109",
    "lang": "20261109"
   }
+ },
+ "thatgfsj-dsh/dsh-plugin-skills": {
+  "rel_ver": "v0.2.2-rc.1",
+  "rel_pub": "2026-11-09",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 87,
+   "Shell": 13
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
  }
 }

@@ -211,8 +211,8 @@
   }
  },
  "walkinglabs/awesome-harness-engineering": {
-  "commit_7d": 0,
-  "commit_90d": 25,
+  "commit_7d": 64,
+  "commit_90d": 117,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -221,10 +221,10 @@
   "sec_ids": [],
   "contrib_n": 48,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4704,6 +4704,79 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "exasol-labs/speq-skill": {
+  "rel_ver": "v0.28.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 80,
+   "Shell": 20,
+   "Dockerfile": 0,
+   "Handlebars": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "edwardcapriolo/reckoning": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Java": 90,
+   "C": 6,
+   "Shell": 3,
+   "WGSL": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "InternLM/Sage-SciPerception": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-06",
+  "rel_days": 5,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 69,
+   "Python": 31
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

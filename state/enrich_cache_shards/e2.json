@@ -484,11 +484,11 @@
   }
  },
  "microsoft/Tutel": {
-  "commit_90d": 10,
-  "commit_7d": 1,
+  "commit_90d": 11,
+  "commit_7d": 2,
   "rel_ver": "v0.4.1",
   "rel_pub": "2025-03-20",
-  "rel_days": 594,
+  "rel_days": 601,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -503,10 +503,10 @@
    "C++": 4,
    "Shell": 0
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5015,6 +5015,31 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "DomynAI/domyn-agents": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 12,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 100,
+   "Shell": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

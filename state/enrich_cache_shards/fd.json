@@ -155,11 +155,11 @@
   }
  },
  "nndeploy/nndeploy": {
-  "commit_90d": 41,
+  "commit_90d": 3,
   "commit_7d": 0,
   "rel_ver": "v3.0.10",
   "rel_pub": "2026-04-04",
-  "rel_days": 196,
+  "rel_days": 221,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -175,10 +175,10 @@
    "C": 6,
    "CMake": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4305,6 +4305,72 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "assassin808/learn-from-lessons": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 85,
+   "HTML": 15
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "Hatamleh/ship-app": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 60,
+   "Svelte": 37,
+   "CSS": 3,
+   "HTML": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "NeoPanic/Ant3": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 91,
+   "CSS": 5,
+   "JavaScript": 3,
+   "HTML": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

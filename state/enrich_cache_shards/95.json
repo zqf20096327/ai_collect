@@ -397,8 +397,8 @@
   }
  },
  "datawhalechina/deepagents-in-action": {
-  "commit_90d": 98,
-  "commit_7d": 4,
+  "commit_90d": 99,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -413,10 +413,10 @@
    "JavaScript": 4,
    "CSS": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -494,11 +494,11 @@
   }
  },
  "lotus-data/lotus": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 1,
+  "commit_7d": 1,
   "rel_ver": "v1.2.4",
   "rel_pub": "2026-07-03",
-  "rel_days": 106,
+  "rel_days": 131,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -510,10 +510,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5874,6 +5874,57 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "theYahia/hh-mcp": {
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-09-02",
+  "rel_days": 70,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "gfx-labs/jobshop": {
+  "rel_ver": "v0.10.18",
+  "rel_pub": "2026-11-11",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 85,
+   "TypeScript": 7,
+   "JavaScript": 4,
+   "Nix": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

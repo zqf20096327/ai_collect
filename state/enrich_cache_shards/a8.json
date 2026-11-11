@@ -5049,5 +5049,32 @@
    "contrib": "20261108",
    "lang": "20261108"
   }
+ },
+ "intigraph/quipu": {
+  "rel_ver": "quipu-ai-v0.17.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 6,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 87,
+   "Python": 9,
+   "JavaScript": 2,
+   "Shell": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
  }
 }

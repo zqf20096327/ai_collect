@@ -4311,5 +4311,59 @@
    "contrib": "20261109",
    "lang": "20261109"
   }
+ },
+ "Okohedeki/designai": {
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 22,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 51,
+   "TypeScript": 28,
+   "CSS": 13,
+   "Jinja": 7,
+   "HTML": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "jwkim04/tesseract-npu": {
+  "rel_ver": "core-v1.0.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 33,
+   "C": 22,
+   "Python": 21,
+   "SystemVerilog": 17,
+   "CMake": 2
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
  }
 }

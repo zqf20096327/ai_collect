@@ -189,12 +189,12 @@
   }
  },
  "modelscope/modelscope": {
-  "commit_7d": 1,
-  "commit_90d": 19,
-  "rel_ver": "v1.40.2",
-  "rel_pub": "2026-10-09",
-  "rel_days": 25,
-  "rel_n90": 3,
+  "commit_7d": 11,
+  "commit_90d": 33,
+  "rel_ver": "v1.40.3",
+  "rel_pub": "2026-11-09",
+  "rel_days": 2,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -209,10 +209,10 @@
    "Shell": 0,
    "Smarty": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -345,7 +345,7 @@
   "commit_90d": 0,
   "rel_ver": "v2.3.1",
   "rel_pub": "2023-12-18",
-  "rel_days": 1034,
+  "rel_days": 1059,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -357,10 +357,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4674,6 +4674,28 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "noemiebi/dsh-deep-search-kit": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 45,
+   "HTML": 25,
+   "Shell": 23,
+   "CSS": 7
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

@@ -5030,5 +5030,59 @@
    "contrib": "20261109",
    "lang": "20261109"
   }
+ },
+ "Gorkem-Taha/G-Toolbox": {
+  "rel_ver": "v4.4.0",
+  "rel_pub": "2026-09-14",
+  "rel_days": 58,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 35,
+   "HTML": 25,
+   "Python": 24,
+   "C#": 9,
+   "CSS": 5
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "shahriar-ahmed-seam/LexCompiler": {
+  "rel_ver": "v2.5.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 14,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 98,
+   "Python": 2,
+   "CSS": 0,
+   "Dockerfile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
  }
 }

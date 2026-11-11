@@ -327,11 +327,11 @@
   }
  },
  "Core-Mate/OpenGUI": {
-  "commit_90d": 125,
-  "commit_7d": 1,
-  "rel_ver": "opengui-workbuddy-v0.4.1",
-  "rel_pub": "2026-10-11",
-  "rel_days": 13,
+  "commit_90d": 130,
+  "commit_7d": 5,
+  "rel_ver": "opengui-workbuddy-v0.4.2",
+  "rel_pub": "2026-11-09",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -347,10 +347,10 @@
    "JavaScript": 0,
    "Java": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4973,6 +4973,53 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "citizenhicks/mobius": {
+  "commit_90d": 462,
+  "commit_7d": 27,
+  "rel_ver": "mobius-v0.17.3",
+  "rel_pub": "2026-11-11",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 91,
+   "JavaScript": 5,
+   "Swift": 3,
+   "TypeScript": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "commit": "20261111",
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "narcosovalle173-glitch/browser-agent-operator-sandbox-pay": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

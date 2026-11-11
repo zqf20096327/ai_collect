@@ -118,8 +118,8 @@
   }
  },
  "h2oai/h2o-3": {
-  "commit_7d": 0,
-  "commit_90d": 33,
+  "commit_7d": 3,
+  "commit_90d": 18,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -134,10 +134,10 @@
    "Python": 11,
    "R": 6
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

@@ -2209,11 +2209,11 @@
   }
  },
  "cuga-project/cuga-agent": {
-  "commit_90d": 167,
-  "commit_7d": 25,
+  "commit_90d": 153,
+  "commit_7d": 4,
   "rel_ver": "v0.4.4",
   "rel_pub": "2026-11-01",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -2234,10 +2234,10 @@
    "Shell": 2,
    "Jinja": 1
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021"
@@ -4437,6 +4437,83 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "renezander030/skillgate": {
+  "rel_ver": "v0.16.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 19,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 84,
+   "JavaScript": 7,
+   "Go": 6,
+   "Shell": 3,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "Keerthirajan58/bugbout": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "Ayush0612005/repomind": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 84,
+   "HTML": 6,
+   "Python": 3,
+   "Shell": 2,
+   "PowerShell": 2
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

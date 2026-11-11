@@ -109,11 +109,11 @@
   }
  },
  "twinnydotdev/twinny": {
-  "commit_90d": 120,
-  "commit_7d": 2,
+  "commit_90d": 136,
+  "commit_7d": 11,
   "rel_ver": "v4.0.20",
   "rel_pub": "2026-09-22",
-  "rel_days": 43,
+  "rel_days": 50,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -129,10 +129,10 @@
    "Dockerfile": 0,
    "Go Template": 0
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

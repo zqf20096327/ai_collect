@@ -50,11 +50,11 @@
   }
  },
  "aurelio-labs/semantic-router": {
-  "commit_7d": 16,
-  "commit_90d": 122,
-  "rel_ver": "v1.1.1",
-  "rel_pub": "2026-10-22",
-  "rel_days": 1,
+  "commit_7d": 10,
+  "commit_90d": 120,
+  "rel_ver": "v1.1.2",
+  "rel_pub": "2026-11-09",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -70,10 +70,10 @@
    "Makefile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1474,13 +1474,16 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261111",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261111"
+  },
+  "commit_90d": 794,
+  "commit_7d": 33
  },
  "kcxain/Awesome-LLM4Kernel": {
   "rel_ver": null,
@@ -4568,6 +4571,108 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "Pickardt/Chat-GPT-Astra-6.1": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": null
+ },
+ "MaestroAI-Company/opera": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 7,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 91,
+   "Rust": 4,
+   "Kotlin": 3,
+   "JavaScript": 2,
+   "Java": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "mearihaka/dsh-longing": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 90,
+   "HTML": 10
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "cowdex/cowcrew": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 49,
+   "TypeScript": 47,
+   "CSS": 3,
+   "Shell": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "kmeanskaran/auto-ml-adk": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 69,
+   "TypeScript": 17,
+   "HCL": 6,
+   "Shell": 4,
+   "CSS": 3
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

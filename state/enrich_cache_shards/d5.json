@@ -187,11 +187,11 @@
   }
  },
  "google-deepmind/science-skills": {
-  "commit_90d": 5,
+  "commit_90d": 6,
   "commit_7d": 1,
   "rel_ver": "v1.3.1",
   "rel_pub": "2026-10-23",
-  "rel_days": 1,
+  "rel_days": 19,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -204,10 +204,10 @@
    "Python": 91,
    "TeX": 9
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4349,6 +4349,32 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "Kr-ATG/dsh-seeker-os": {
+  "rel_ver": "fonts-v1",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 50,
+   "TypeScript": 42,
+   "HTML": 7,
+   "Python": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

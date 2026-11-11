@@ -100,10 +100,10 @@
    "Jupyter Notebook": 100,
    "Python": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1687,13 +1687,16 @@
    "JavaScript": 92,
    "Shell": 8
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261111",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261111"
+  },
+  "commit_90d": 102,
+  "commit_7d": 11
  },
  "salesforce/factualNLG": {
   "rel_ver": null,
@@ -4506,6 +4509,27 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "hhaverage2/AI-Reader": {
+  "rel_ver": "v2.8",
+  "rel_pub": "2026-11-09",
+  "rel_days": 2,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

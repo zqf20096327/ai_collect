@@ -1623,13 +1623,16 @@
    "Shell": 6,
    "Python": 4
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261111",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261111"
+  },
+  "commit_90d": 47,
+  "commit_7d": 7
  },
  "dliedke/ClaudeCodeExtension": {
   "rel_ver": null,
@@ -2880,11 +2883,11 @@
   }
  },
  "AhmadHassan-BTed/AutoSwarm-Shadow-Adapter": {
-  "commit_90d": 58,
-  "commit_7d": 1,
+  "commit_90d": 6,
+  "commit_7d": 2,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-08-20",
-  "rel_days": 63,
+  "rel_days": 83,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -2900,10 +2903,10 @@
    "JavaScript": 1,
    "HTML": 0
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261022",
-   "release": "20261022",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"
@@ -4889,6 +4892,76 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "yusuke-114/claude-xcode-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "saurabh-yergattikar/ShieldMCP": {
+  "rel_ver": "v0.1.0-alpha.1",
+  "rel_pub": "2026-10-11",
+  "rel_days": 31,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 85,
+   "BibTeX Style": 5,
+   "TeX": 5,
+   "CSS": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "GM888888456/Astrbot_Amo_forever": {
+  "rel_ver": "v6.11.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 89,
+   "HTML": 11
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

@@ -1,10 +1,10 @@
 {
  "google/dopamine": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 9,
+  "commit_90d": 9,
   "rel_ver": "v2",
   "rel_pub": "2019-09-26",
-  "rel_days": 2577,
+  "rel_days": 2603,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2217,12 +2217,12 @@
   }
  },
  "vinvcn/mattpocock-skills-zh-CN": {
-  "commit_7d": 2,
-  "commit_90d": 34,
-  "rel_ver": "v1.3.1",
-  "rel_pub": "2026-10-08",
-  "rel_days": 21,
-  "rel_n90": 2,
+  "commit_7d": 3,
+  "commit_90d": 33,
+  "rel_ver": "v1.3.2",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -2234,10 +2234,10 @@
    "JavaScript": 72,
    "Shell": 28
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261029",
-   "release": "20261029",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021"
@@ -4649,6 +4649,76 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "aneldev/dyna-ai-gateway": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 2,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "wet86y/voice-terminal": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 67,
+   "TypeScript": 12,
+   "Rust": 12,
+   "Vue": 5,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "tkothe/uhura": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

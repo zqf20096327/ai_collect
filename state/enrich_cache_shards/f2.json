@@ -440,11 +440,11 @@
   }
  },
  "airbnb/chronon": {
-  "commit_90d": 28,
+  "commit_90d": 24,
   "commit_7d": 0,
   "rel_ver": "v0.0.101",
   "rel_pub": "2025-07-10",
-  "rel_days": 482,
+  "rel_days": 489,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -460,10 +460,10 @@
    "Starlark": 2,
    "Shell": 1
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5244,6 +5244,53 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "mlapin/libsdca": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 52,
+   "C++": 40,
+   "Rust": 3,
+   "CMake": 2,
+   "C": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "YeStarOne/feiyuos-memory-graph": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 86,
+   "HTML": 14
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

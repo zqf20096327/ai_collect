@@ -285,11 +285,11 @@
   }
  },
  "mohitagw15856/pm-claude-skills": {
-  "commit_7d": 15,
-  "commit_90d": 320,
+  "commit_7d": 8,
+  "commit_90d": 315,
   "rel_ver": "v83.2.0",
   "rel_pub": "2026-10-23",
-  "rel_days": 12,
+  "rel_days": 19,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -305,10 +305,10 @@
    "Shell": 2,
    "CSS": 1
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

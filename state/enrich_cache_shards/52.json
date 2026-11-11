@@ -378,11 +378,11 @@
   }
  },
  "ServiceNow/BrowserGym": {
-  "commit_7d": 2,
+  "commit_7d": 0,
   "commit_90d": 5,
   "rel_ver": "v0.14.3",
   "rel_pub": "2026-01-20",
-  "rel_days": 284,
+  "rel_days": 295,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -397,10 +397,10 @@
    "JavaScript": 2,
    "Makefile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4826,6 +4826,71 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "stefanoskarakasis/Product-Marketing-Skills": {
+  "rel_ver": "v1.20.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 10,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 93,
+   "HTML": 7
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "zry98/pomumd": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 100
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "Aarv-1o/Attentry": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 88,
+   "CSS": 5,
+   "JavaScript": 5,
+   "HTML": 3
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

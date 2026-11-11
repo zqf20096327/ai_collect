@@ -82,8 +82,8 @@
   }
  },
  "tensorchord/Awesome-LLMOps": {
-  "commit_90d": 114,
-  "commit_7d": 18,
+  "commit_90d": 130,
+  "commit_7d": 16,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -95,10 +95,10 @@
    "Shell": 58,
    "Python": 42
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4151,8 +4151,8 @@
   }
  },
  "ai-boost/awesome-prompts": {
-  "commit_90d": 111,
-  "commit_7d": 24,
+  "commit_90d": 112,
+  "commit_7d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -4163,22 +4163,22 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
   }
  },
  "KevinMusgrave/pytorch-metric-learning": {
-  "commit_90d": 188,
-  "commit_7d": 143,
-  "rel_ver": "v3.0.1",
-  "rel_pub": "2026-11-01",
+  "commit_90d": 214,
+  "commit_7d": 26,
+  "rel_ver": "v3.0.2",
+  "rel_pub": "2026-11-08",
   "rel_days": 3,
-  "rel_n90": 7,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4190,10 +4190,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
@@ -4465,6 +4465,55 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "EndLess728/react-native-mediapipe-posedetection": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-01-20",
+  "rel_days": 295,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 36,
+   "Kotlin": 30,
+   "Swift": 24,
+   "Objective-C++": 5,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "eduardomatheusok-crypto/assistente-estudo-rag": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 95,
+   "CSS": 5,
+   "Dockerfile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

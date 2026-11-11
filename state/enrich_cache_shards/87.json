@@ -115,11 +115,11 @@
   }
  },
  "MiniMax-AI/cli": {
-  "commit_90d": 80,
-  "commit_7d": 6,
-  "rel_ver": "v1.0.28",
-  "rel_pub": "2026-10-12",
-  "rel_days": 12,
+  "commit_90d": 61,
+  "commit_7d": 5,
+  "rel_ver": "v1.0.29",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -132,10 +132,10 @@
    "TypeScript": 100,
    "JavaScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4269,6 +4269,57 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "Loom-AI-Labs/ai-fabric-framework": {
+  "rel_ver": "ai-fabric-framework-v0.8.47",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "rsaryev/llx-cli": {
+  "rel_ver": "v0.5.1",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 85,
+   "TypeScript": 10,
+   "Shell": 3,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

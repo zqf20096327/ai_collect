@@ -1621,13 +1621,16 @@
    "C": 25,
    "Shell": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261111",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261111"
+  },
+  "commit_90d": 4,
+  "commit_7d": 0
  },
  "sajanv88/full_stack_fastapi_react_template": {
   "rel_ver": "release/v1.0.2",
@@ -4610,6 +4613,60 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "iamsaquib8/domq": {
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-11-07",
+  "rel_days": 4,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Rust": 85,
+   "Python": 8,
+   "JavaScript": 3,
+   "HTML": 3,
+   "CSS": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "altafino/crazy": {
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Rust": 61,
+   "TypeScript": 23,
+   "Vue": 15,
+   "Makefile": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

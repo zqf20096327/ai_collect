@@ -201,11 +201,11 @@
   }
  },
  "KimYx0207/AI-Coding-Guide-Zh": {
-  "commit_90d": 39,
-  "commit_7d": 0,
-  "rel_ver": "v5.5",
-  "rel_pub": "2026-10-03",
-  "rel_days": 27,
+  "commit_90d": 33,
+  "commit_7d": 12,
+  "rel_ver": "v5.6",
+  "rel_pub": "2026-11-09",
+  "rel_days": 2,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -217,10 +217,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -298,10 +298,10 @@
    "Python": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

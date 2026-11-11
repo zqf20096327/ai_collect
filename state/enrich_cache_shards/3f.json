@@ -109,11 +109,11 @@
   }
  },
  "mozilla-ai/llamafile": {
-  "commit_7d": 5,
-  "commit_90d": 17,
+  "commit_7d": 4,
+  "commit_90d": 21,
   "rel_ver": "0.10.6",
   "rel_pub": "2026-09-15",
-  "rel_days": 50,
+  "rel_days": 57,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -129,10 +129,10 @@
    "Makefile": 7,
    "Shell": 5
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -379,8 +379,8 @@
   }
  },
  "limbo018/DREAMPlace": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 2,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -395,10 +395,10 @@
    "CMake": 2,
    "C": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4168,6 +4168,48 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "sergeyb-code2096g0/Cursor-Quota-Unlimited-2026": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "commit": "20261111",
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "oliverhees/paibot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 60,
+   "JavaScript": 40
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

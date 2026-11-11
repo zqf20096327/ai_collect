@@ -1375,13 +1375,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261019",
+  "enriched_at": "20261111",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261111"
+  },
+  "commit_90d": 9,
+  "commit_7d": 0
  },
  "supermodeltools/cli": {
   "rel_ver": "v0.6.16",
@@ -4373,13 +4376,16 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261111",
   "dim_ts": {
    "release": "20261105",
    "security": "20261105",
    "contrib": "20261105",
-   "lang": "20261105"
-  }
+   "lang": "20261105",
+   "commit": "20261111"
+  },
+  "commit_90d": 315,
+  "commit_7d": 63
  },
  "danilkotelnikov/Arc-Science": {
   "rel_ver": null,

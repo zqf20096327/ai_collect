@@ -554,13 +554,13 @@
   }
  },
  "ys-ll/uniterm": {
-  "commit_7d": 127,
-  "commit_90d": 1207,
-  "rel_ver": "v1.11.2",
-  "rel_pub": "2026-10-26",
-  "rel_days": 9,
-  "rel_n90": 11,
-  "rel_pre": false,
+  "commit_7d": 79,
+  "commit_90d": 1239,
+  "rel_ver": "main-snapshot",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -574,10 +574,10 @@
    "Java": 2,
    "CSS": 1
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

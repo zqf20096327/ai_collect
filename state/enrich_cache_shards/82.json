@@ -4859,10 +4859,10 @@
   }
  },
  "Neywa-Labs/mlx-audio": {
-  "commit_90d": 556,
-  "commit_7d": 58,
-  "rel_ver": "v0.6.4",
-  "rel_pub": "2026-11-02",
+  "commit_90d": 598,
+  "commit_7d": 81,
+  "rel_ver": "v0.6.5",
+  "rel_pub": "2026-11-09",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -4878,10 +4878,10 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"

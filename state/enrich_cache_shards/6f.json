@@ -30,12 +30,12 @@
   }
  },
  "blader/humanizer": {
-  "commit_7d": 1,
-  "commit_90d": 60,
-  "rel_ver": "v3.1.0",
-  "rel_pub": "2026-09-28",
-  "rel_days": 32,
-  "rel_n90": 4,
+  "commit_7d": 16,
+  "commit_90d": 79,
+  "rel_ver": "v4.0.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -46,10 +46,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -355,8 +355,8 @@
   }
  },
  "google-research/morph-net": {
-  "commit_90d": 1,
-  "commit_7d": 0,
+  "commit_90d": 2,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -368,10 +368,10 @@
    "Python": 96,
    "Starlark": 4
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4533,6 +4533,79 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "Mattral/filing-qa": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-06-17",
+  "rel_days": 147,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 95,
+   "HCL": 2,
+   "Jupyter Notebook": 1,
+   "Makefile": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "stlin256/DSH-Harmony": {
+  "rel_ver": "v0.4.10",
+  "rel_pub": "2026-11-07",
+  "rel_days": 4,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 53,
+   "JavaScript": 32,
+   "PowerShell": 11,
+   "Python": 4,
+   "HTML": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "Moonbot-Tech/MoonDoc": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

@@ -4389,5 +4389,32 @@
    "contrib": "20261108",
    "lang": "20261108"
   }
+ },
+ "Starlight-Intelligence/Starlight-Intelligence-System": {
+  "rel_ver": "starlight-intelligence-modules-2026-06-19",
+  "rel_pub": "2026-06-19",
+  "rel_days": 145,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "TypeScript": 63,
+   "JavaScript": 20,
+   "PowerShell": 6,
+   "Python": 4,
+   "HTML": 4
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
  }
 }

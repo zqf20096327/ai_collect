@@ -338,11 +338,11 @@
   }
  },
  "Ebony-Vinyl/EAC-Desktop": {
-  "commit_90d": 735,
-  "commit_7d": 11,
+  "commit_90d": 736,
+  "commit_7d": 1,
   "rel_ver": "launcher-v0.1.0",
   "rel_pub": "2026-10-25",
-  "rel_days": 6,
+  "rel_days": 17,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -358,10 +358,10 @@
    "PowerShell": 4,
    "NSIS": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4870,6 +4870,59 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "crit-labs/crit": {
+  "rel_ver": "v0.17.2",
+  "rel_pub": "2026-11-09",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 66,
+   "C++": 31,
+   "Cuda": 3,
+   "CMake": 1,
+   "Metal": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
+ },
+ "mwwlean/resourxe": {
+  "rel_ver": "v2.0.0-revival",
+  "rel_pub": "2026-11-09",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 77,
+   "Svelte": 22,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

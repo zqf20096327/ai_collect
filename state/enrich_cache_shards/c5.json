@@ -355,10 +355,10 @@
    "HTML": 4,
    "PLpgSQL": 2
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261111",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261111",
+   "release": "20261111",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3008,13 +3008,16 @@
    "Python": 98,
    "TypeScript": 2
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261111",
   "dim_ts": {
    "release": "20261023",
    "security": "20261023",
    "contrib": "20261023",
-   "lang": "20261023"
-  }
+   "lang": "20261023",
+   "commit": "20261111"
+  },
+  "commit_90d": 6,
+  "commit_7d": 3
  },
  "tkalevra/FaultLine": {
   "rel_ver": null,
@@ -4892,6 +4895,26 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "guithepc/mentor-prompt": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "commit": "20261111",
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }

@@ -4687,5 +4687,32 @@
    "contrib": "20261108",
    "lang": "20261108"
   }
+ },
+ "zkwi/local-photo-search": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-10-08",
+  "rel_days": 34,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 45,
+   "Python": 34,
+   "CSS": 8,
+   "Rust": 5,
+   "HTML": 5
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
+  }
  }
 }

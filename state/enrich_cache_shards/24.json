@@ -2395,13 +2395,16 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261111",
   "dim_ts": {
    "release": "20261023",
    "security": "20261023",
    "contrib": "20261023",
-   "lang": "20261023"
-  }
+   "lang": "20261023",
+   "commit": "20261111"
+  },
+  "commit_90d": 48,
+  "commit_7d": 5
  },
  "FanyinLiu/Nexus": {
   "rel_ver": "v0.4.8-beta.1",
@@ -3966,6 +3969,33 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "butterpurse-dot/deepseek-harness-linux": {
+  "rel_ver": "v0.2.2-rc.1-arm64",
+  "rel_pub": "2026-11-10",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 52,
+  "lang": {
+   "TypeScript": 95,
+   "Python": 1,
+   "CSS": 1,
+   "JavaScript": 1,
+   "Swift": 1
+  },
+  "enriched_at": "20261111",
+  "dim_ts": {
+   "release": "20261111",
+   "security": "20261111",
+   "contrib": "20261111",
+   "lang": "20261111"
   }
  }
 }
