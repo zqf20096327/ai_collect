@@ -275,7 +275,7 @@
   "commit_90d": 1,
   "rel_ver": "v2.6.0",
   "rel_pub": "2024-11-05",
-  "rel_days": 730,
+  "rel_days": 737,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -291,10 +291,10 @@
    "Java": 4,
    "CMake": 1
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261105",
-   "release": "20261105",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

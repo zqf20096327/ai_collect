@@ -4423,5 +4423,52 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "AOSSIE-Org/OpenVerifiableLLM": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 12,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 20,
+  "lang": {
+   "Python": 86,
+   "Shell": 14
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
+ },
+ "pankajgarkoti/magi": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 55,
+   "Shell": 40,
+   "Lua": 3,
+   "Dockerfile": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }

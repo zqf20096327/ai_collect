@@ -4434,5 +4434,71 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "experir/unai-unity-ai-connector": {
+  "rel_ver": "v1.1.0-beta.1",
+  "rel_pub": "2026-10-14",
+  "rel_days": 29,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 97,
+   "Python": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
+ },
+ "aashir-athar/MiND-Shot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 85,
+   "JavaScript": 10,
+   "CSS": 5,
+   "HTML": 1
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
+ },
+ "MT24Learning/knowledge-sprint-series": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }

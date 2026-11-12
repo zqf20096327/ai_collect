@@ -4527,5 +4527,51 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "wne-uw-mjwozniak/wne-uw-ml1-qf-labs-materials": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 99,
+   "Python": 1
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
+ },
+ "doITmagic/romana": {
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-10-23",
+  "rel_days": 20,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 97,
+   "Shell": 2,
+   "HTML": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }

@@ -261,10 +261,10 @@
  },
  "youngfish42/Awesome-FL": {
   "commit_7d": 2,
-  "commit_90d": 3,
+  "commit_90d": 5,
   "rel_ver": "v1.1-alpha",
   "rel_pub": "2026-05-02",
-  "rel_days": 175,
+  "rel_days": 194,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -277,10 +277,10 @@
    "Python": 82,
    "HTML": 18
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

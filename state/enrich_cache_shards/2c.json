@@ -204,8 +204,8 @@
   }
  },
  "LjyYano/Thinking_in_Java_MindMapping": {
-  "commit_7d": 2,
-  "commit_90d": 15,
+  "commit_7d": 1,
+  "commit_90d": 16,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -216,10 +216,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261105",
-   "release": "20261105",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4321,6 +4321,29 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "dodo-mojo/dodo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Mojo": 96,
+   "Python": 2,
+   "C": 1,
+   "C++": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
   }
  }
 }

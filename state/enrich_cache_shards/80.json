@@ -372,12 +372,12 @@
   }
  },
  "stenolabs/stenoai": {
-  "commit_7d": 5,
-  "commit_90d": 246,
+  "commit_7d": 0,
+  "commit_90d": 110,
   "rel_ver": "v0.8.0",
   "rel_pub": "2026-10-03",
-  "rel_days": 28,
-  "rel_n90": 5,
+  "rel_days": 40,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -392,10 +392,10 @@
    "Swift": 2,
    "Astro": 2
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4987,6 +4987,33 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "lenovolquser15-ai/Local-AI-IDE": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-11-11",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 74,
+   "JavaScript": 14,
+   "CSS": 8,
+   "HTML": 4,
+   "Batchfile": 1
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
   }
  }
 }

@@ -83,10 +83,10 @@
    "Ruby": 24,
    "SCSS": 4
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

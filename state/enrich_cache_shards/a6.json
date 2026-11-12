@@ -85,11 +85,11 @@
   }
  },
  "OpenMind/OM1": {
-  "commit_7d": 1,
+  "commit_7d": 4,
   "commit_90d": 23,
   "rel_ver": "nightly",
   "rel_pub": "2026-06-04",
-  "rel_days": 154,
+  "rel_days": 161,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -103,10 +103,10 @@
    "Makefile": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261105",
-   "release": "20261105",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

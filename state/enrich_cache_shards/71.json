@@ -4334,11 +4334,11 @@
   "commit_7d": 6
  },
  "Neywa-Labs/nativ": {
-  "commit_90d": 1038,
-  "commit_7d": 39,
+  "commit_90d": 914,
+  "commit_7d": 12,
   "rel_ver": "v0.4.5",
   "rel_pub": "2026-11-04",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -4354,18 +4354,18 @@
    "Shell": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261105",
-   "release": "20261105",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
   }
  },
  "RunanywhereAI/trnrt": {
-  "rel_ver": null,
-  "rel_none": true,
+  "rel_ver": "v0.1.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -4376,16 +4376,20 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "release": "20261105",
+   "release": "20261112",
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105",
    "commit": "20261111"
   },
   "commit_90d": 315,
-  "commit_7d": 63
+  "commit_7d": 63,
+  "rel_pub": "2026-11-08",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "danilkotelnikov/Arc-Science": {
   "rel_ver": null,
@@ -4491,6 +4495,31 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "sequico/server-noonien": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 2,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
   }
  }
 }

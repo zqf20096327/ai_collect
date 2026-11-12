@@ -4753,5 +4753,52 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "molly554/whiteboard-ai-tutor": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 67,
+   "Python": 33,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
+ },
+ "hid276/rust-image-studio": {
+  "rel_ver": "v1.2.7",
+  "rel_pub": "2026-11-12",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 99,
+   "Shell": 1,
+   "PowerShell": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }

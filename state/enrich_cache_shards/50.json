@@ -356,12 +356,12 @@
   }
  },
  "lee-to/ai-factory": {
-  "commit_90d": 209,
-  "commit_7d": 95,
-  "rel_ver": "2.21.0",
-  "rel_pub": "2026-10-30",
-  "rel_days": 6,
-  "rel_n90": 5,
+  "commit_90d": 233,
+  "commit_7d": 22,
+  "rel_ver": "2.23.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 3,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -376,10 +376,10 @@
    "Python": 6,
    "Makefile": 2
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261105",
-   "release": "20261105",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4078,6 +4078,75 @@
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
+  }
+ },
+ "prathje/motion-canvas-narrator": {
+  "rel_ver": "0.1.0",
+  "rel_pub": "2025-10-16",
+  "rel_days": 392,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 94,
+   "JavaScript": 6
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
+ },
+ "joedejesus/JJ_ML_DL_BOOK": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
+ },
+ "ArchitektSpeer/mc-agent-mcp": {
+  "rel_ver": "v0.2.1",
+  "rel_pub": "2026-10-15",
+  "rel_days": 28,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 97,
+   "JavaScript": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
   }
  }
 }

@@ -1,7 +1,7 @@
 {
  "xcanwin/KeepChatGPT": {
-  "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_7d": 2,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -13,10 +13,10 @@
    "JavaScript": 84,
    "Python": 16
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2062,13 +2062,16 @@
    "CSS": 0,
    "SCSS": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261112",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261112"
+  },
+  "commit_90d": 16,
+  "commit_7d": 2
  },
  "meshy-dev/Meshy-guide": {
   "rel_ver": null,
@@ -4371,6 +4374,33 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "sagiyaacoby/Orchivra": {
+  "rel_ver": "v3.2.3",
+  "rel_pub": "2026-11-10",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 81,
+   "CSS": 11,
+   "HTML": 7,
+   "Shell": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
   }
  }
 }

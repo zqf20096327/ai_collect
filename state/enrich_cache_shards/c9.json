@@ -4587,5 +4587,32 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "cyang2020/brk": {
+  "rel_ver": "latest",
+  "rel_pub": "2026-11-10",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 95,
+   "Python": 3,
+   "HTML": 1,
+   "Shell": 1,
+   "Objective-C": 0
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }

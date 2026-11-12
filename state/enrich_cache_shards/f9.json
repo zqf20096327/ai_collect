@@ -289,11 +289,11 @@
   }
  },
  "google/vizier": {
-  "commit_90d": 21,
+  "commit_90d": 16,
   "commit_7d": 1,
   "rel_ver": "v0.1.24",
   "rel_pub": "2025-02-01",
-  "rel_days": 630,
+  "rel_days": 649,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -306,10 +306,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4468,6 +4468,29 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "zxh0/vibe-writing": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 70,
+   "HTML": 22,
+   "Cuda": 4,
+   "Shell": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
   }
  }
 }

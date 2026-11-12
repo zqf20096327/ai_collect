@@ -275,7 +275,7 @@
   "commit_90d": 3,
   "rel_ver": "v0.2.0",
   "rel_pub": "2025-08-20",
-  "rel_days": 430,
+  "rel_days": 449,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -288,10 +288,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5012,13 +5012,16 @@
    "Shell": 0,
    "Python": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261112",
   "dim_ts": {
    "release": "20261111",
    "security": "20261111",
    "contrib": "20261111",
-   "lang": "20261111"
-  }
+   "lang": "20261111",
+   "commit": "20261112"
+  },
+  "commit_90d": 1096,
+  "commit_7d": 153
  },
  "byte-od/mixture-of-scars": {
   "rel_ver": null,

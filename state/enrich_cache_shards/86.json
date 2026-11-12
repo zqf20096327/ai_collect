@@ -4374,12 +4374,12 @@
   }
  },
  "kortix-ai/CompanyOS": {
-  "commit_90d": 6735,
-  "commit_7d": 523,
+  "commit_90d": 6726,
+  "commit_7d": 530,
   "rel_ver": "dev-latest",
   "rel_pub": "2026-05-31",
-  "rel_days": 158,
-  "rel_n90": 10,
+  "rel_days": 165,
+  "rel_n90": 11,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -4394,10 +4394,10 @@
    "JavaScript": 1,
    "PLpgSQL": 1
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261105",
-   "release": "20261105",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
@@ -4512,6 +4512,54 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "solla-h/dsh-mobile-app": {
+  "rel_ver": "v0.1.0-alpha.5",
+  "rel_pub": "2026-11-09",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 92,
+   "JavaScript": 7,
+   "Shell": 1
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
+ },
+ "Koe458-ui/oredlab": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 95,
+   "HTML": 2,
+   "JavaScript": 2,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
   }
  }
 }

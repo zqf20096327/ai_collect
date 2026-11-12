@@ -4273,5 +4273,83 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "raphaelmansuy/opengenie": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 0,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 50,
+   "TypeScript": 29,
+   "JavaScript": 12,
+   "CSS": 6,
+   "Shell": 2
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
+ },
+ "ChisaAlter/WhaleIsle-MyGo": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 39,
+   "JavaScript": 36,
+   "HTML": 23,
+   "TypeScript": 1,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
+ },
+ "spaxe-dev/zen-mcp": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 2,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 100,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }

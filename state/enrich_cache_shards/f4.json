@@ -4256,5 +4256,28 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "ubermenchh/mini-vllm": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2025-12-28",
+  "rel_days": 319,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }

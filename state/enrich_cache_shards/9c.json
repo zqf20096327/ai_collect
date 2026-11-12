@@ -144,11 +144,11 @@
   }
  },
  "limix-ldm-ai/LimiX": {
-  "commit_90d": 71,
-  "commit_7d": 1,
+  "commit_90d": 74,
+  "commit_7d": 3,
   "rel_ver": "V1.1.0",
   "rel_pub": "2025-11-10",
-  "rel_days": 360,
+  "rel_days": 367,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -161,10 +161,10 @@
    "Python": 99,
    "Dockerfile": 1
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261105",
-   "release": "20261105",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4571,6 +4571,27 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "jianzeki-dot/comfyui-ki-nodes": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 55,
+   "Python": 43,
+   "CSS": 2
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
   }
  }
 }

@@ -4615,5 +4615,32 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "aktalascloud/polaris-gfx803-rx580-zluda-rocm-hip-comfyui-windows": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 15,
+  "rel_n90": 5,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 65,
+   "PowerShell": 25,
+   "C": 7,
+   "Batchfile": 2,
+   "HIP": 1
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }

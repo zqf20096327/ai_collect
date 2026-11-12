@@ -4767,5 +4767,79 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "DorsaRoh/Machine-Learning": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Python": 0
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "commit": "20261112",
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
+ },
+ "auto-use/Auto-Use": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "V1.4",
+  "rel_pub": "2026-06-19",
+  "rel_days": 146,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 73,
+   "JavaScript": 13,
+   "CSS": 7,
+   "HTML": 7,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "commit": "20261112",
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
+ },
+ "techmaharaj/prompt-layer-demo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 88,
+   "Shell": 11,
+   "Makefile": 1
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }

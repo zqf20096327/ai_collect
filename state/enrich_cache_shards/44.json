@@ -4688,13 +4688,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261112",
   "dim_ts": {
    "release": "20261031",
    "security": "20261031",
    "contrib": "20261031",
-   "lang": "20261031"
-  }
+   "lang": "20261031",
+   "commit": "20261112"
+  },
+  "commit_90d": 1,
+  "commit_7d": 0
  },
  "xiaok/hermes-autonomous": {
   "rel_ver": null,

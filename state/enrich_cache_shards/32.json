@@ -4749,13 +4749,16 @@
    "Python": 2,
    "Shell": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261112",
   "dim_ts": {
    "release": "20261111",
    "security": "20261111",
    "contrib": "20261111",
-   "lang": "20261111"
-  }
+   "lang": "20261111",
+   "commit": "20261112"
+  },
+  "commit_90d": 34,
+  "commit_7d": 34
  },
  "scruge1/stuaim": {
   "rel_ver": null,

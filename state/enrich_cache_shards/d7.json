@@ -4295,5 +4295,27 @@
    "contrib": "20261109",
    "lang": "20261109"
   }
+ },
+ "punit2911/MedQueryDoc-AI-Intelligent-Medical-Document-Assistant": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 77,
+   "Python": 9,
+   "CSS": 7,
+   "HTML": 7
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }

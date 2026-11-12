@@ -4348,5 +4348,58 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "labstack/pitot": {
+  "rel_ver": "v2026.11.5-alpha",
+  "rel_pub": "2026-11-11",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 49,
+   "TypeScript": 23,
+   "HTML": 22,
+   "MDX": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
+ },
+ "liangxiao777/TeachMeCoding": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 13,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 1,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }

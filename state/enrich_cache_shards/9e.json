@@ -4498,5 +4498,32 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "condrdev/condr": {
+  "rel_ver": "nightly",
+  "rel_pub": "2026-11-10",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 87,
+   "Kotlin": 5,
+   "Swift": 5,
+   "JavaScript": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }

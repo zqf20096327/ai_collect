@@ -5414,13 +5414,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261030",
+  "enriched_at": "20261112",
   "dim_ts": {
    "release": "20261030",
    "security": "20261030",
    "contrib": "20261030",
-   "lang": "20261030"
-  }
+   "lang": "20261030",
+   "commit": "20261112"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "shixingxingai/agent-100day": {
   "rel_ver": null,

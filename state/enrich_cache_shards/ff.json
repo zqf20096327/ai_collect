@@ -1716,13 +1716,16 @@
   "lang": {
    "Shell": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261112",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261112"
+  },
+  "commit_90d": 50,
+  "commit_7d": 0
  },
  "Vivek-736/Repo-Mind": {
   "rel_ver": null,
@@ -4759,6 +4762,57 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "Browser-bookmark-hub/Bookmark-Canvas": {
+  "rel_ver": "v1.0.4",
+  "rel_pub": "2026-09-01",
+  "rel_days": 72,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 86,
+   "CSS": 12,
+   "HTML": 2,
+   "Python": 1
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
+ },
+ "samartined/zeffin": {
+  "rel_ver": "apk-v1.0.1",
+  "rel_pub": "2026-11-11",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 52,
+   "Kotlin": 47,
+   "Shell": 1
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
   }
  }
 }

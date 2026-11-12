@@ -5183,5 +5183,31 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "cuic19053-hue/stardust-agent": {
+  "commit_90d": 184,
+  "commit_7d": 18,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 87,
+   "JavaScript": 7,
+   "PLpgSQL": 3,
+   "CSS": 2,
+   "HTML": 2
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "commit": "20261112",
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }

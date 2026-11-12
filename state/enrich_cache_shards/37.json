@@ -111,8 +111,8 @@
   "commit_7d": 2,
   "rel_ver": "v2.6.0-ce",
   "rel_pub": "2026-10-15",
-  "rel_days": 21,
-  "rel_n90": 3,
+  "rel_days": 28,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -127,10 +127,10 @@
    "CSS": 2,
    "HTML": 1
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261105",
-   "release": "20261105",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4364,6 +4364,23 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "jovancherian/FlowSync": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
   }
  }
 }

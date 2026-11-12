@@ -233,7 +233,7 @@
   "commit_90d": 1,
   "rel_ver": "2.2.2",
   "rel_pub": "2026-09-25",
-  "rel_days": 41,
+  "rel_days": 48,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -247,10 +247,10 @@
    "TeX": 21,
    "Shell": 0
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261105",
-   "release": "20261105",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

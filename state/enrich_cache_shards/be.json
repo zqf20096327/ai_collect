@@ -400,7 +400,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.46.1b7",
   "rel_pub": "2026-09-24",
-  "rel_days": 42,
+  "rel_days": 49,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -410,10 +410,10 @@
   "sec_ids": [],
   "contrib_n": 10,
   "lang": {},
-  "enriched_at": "20261105",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261105",
-   "release": "20261105",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

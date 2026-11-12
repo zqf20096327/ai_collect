@@ -40,10 +40,10 @@
    "JavaScript": 1,
    "CSS": 1
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261105",
-   "release": "20261105",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -159,10 +159,10 @@
  },
  "Helicone/helicone": {
   "commit_90d": 14,
-  "commit_7d": 1,
+  "commit_7d": 0,
   "rel_ver": "v2025.08.21-1",
   "rel_pub": "2025-08-21",
-  "rel_days": 435,
+  "rel_days": 448,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -178,10 +178,10 @@
    "PLpgSQL": 0,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

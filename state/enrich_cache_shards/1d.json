@@ -280,11 +280,11 @@
   }
  },
  "tensorflow/gnn": {
-  "commit_7d": 2,
-  "commit_90d": 10,
+  "commit_7d": 1,
+  "commit_90d": 11,
   "rel_ver": "v1.0.3",
   "rel_pub": "2024-05-13",
-  "rel_days": 901,
+  "rel_days": 913,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -299,10 +299,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

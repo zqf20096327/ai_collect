@@ -4749,5 +4749,28 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "grandexecuti/esp32-iphone-agent-windows": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 71,
+   "JavaScript": 14,
+   "CSS": 6,
+   "C++": 4,
+   "HTML": 2
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }

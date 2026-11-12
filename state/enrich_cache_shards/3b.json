@@ -206,7 +206,7 @@
   "commit_90d": 0,
   "rel_ver": "v3.2.2",
   "rel_pub": "2026-07-14",
-  "rel_days": 95,
+  "rel_days": 121,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -220,10 +220,10 @@
    "Python": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5064,6 +5064,23 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "sii-nex/Nex-N2.6": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
   }
  }
 }

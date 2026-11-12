@@ -33,12 +33,12 @@
   }
  },
  "AgriciDaniel/claude-seo": {
-  "commit_7d": 0,
-  "commit_90d": 209,
-  "rel_ver": "v2.5.0",
-  "rel_pub": "2026-10-22",
-  "rel_days": 11,
-  "rel_n90": 8,
+  "commit_7d": 86,
+  "commit_90d": 340,
+  "rel_ver": "v2.6.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 2,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -53,10 +53,10 @@
    "PowerShell": 3,
    "HTML": 1
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -413,9 +413,9 @@
  },
  "strands-labs/strands-decider": {
   "commit_7d": 7,
-  "commit_90d": 29,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_90d": 53,
+  "rel_ver": "v0.3.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -425,14 +425,18 @@
    "Python": 93,
    "Shell": 7
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
-  }
+  },
+  "rel_pub": "2026-11-05",
+  "rel_days": 7,
+  "rel_n90": 3,
+  "rel_pre": false
  },
  "Gabriella439/grace": {
   "commit_7d": 0,
@@ -4067,6 +4071,52 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "ranajahanzaib/business-operations-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 69,
+   "TypeScript": 23,
+   "CSS": 8,
+   "HTML": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
+ },
+ "FimawLLC/fimaw-skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 52,
+   "C#": 25,
+   "Shell": 9,
+   "JavaScript": 5,
+   "HTML": 3
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
   }
  }
 }

@@ -3850,11 +3850,11 @@
   }
  },
  "pbakaus/impeccable": {
-  "commit_90d": 1203,
-  "commit_7d": 40,
-  "rel_ver": "skill-v4.8.0",
-  "rel_pub": "2026-10-26",
-  "rel_days": 10,
+  "commit_90d": 1342,
+  "commit_7d": 227,
+  "rel_ver": "loop-v0.1.1",
+  "rel_pub": "2026-11-11",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -3870,10 +3870,10 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261105",
-   "release": "20261105",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"

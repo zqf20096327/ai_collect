@@ -4697,11 +4697,11 @@
   }
  },
  "Neywa-Labs/mlx-vlm": {
-  "commit_90d": 818,
-  "commit_7d": 141,
+  "commit_90d": 832,
+  "commit_7d": 52,
   "rel_ver": "v0.7.12",
   "rel_pub": "2026-11-04",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -4713,10 +4713,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261105",
-   "release": "20261105",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
@@ -4810,6 +4810,25 @@
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
+  }
+ },
+ "aflanameenv-oss/heartdisease-ml-prediction": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
   }
  }
 }

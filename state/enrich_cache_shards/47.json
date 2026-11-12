@@ -2451,16 +2451,16 @@
    "JavaScript": 8,
    "HTML": 8
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261112",
   "dim_ts": {
    "release": "20261111",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021",
-   "commit": "20261105"
+   "commit": "20261112"
   },
-  "commit_90d": 149,
-  "commit_7d": 41,
+  "commit_90d": 194,
+  "commit_7d": 45,
   "rel_pub": "2026-11-06",
   "rel_days": 5,
   "rel_n90": 2,

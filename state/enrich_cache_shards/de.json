@@ -345,8 +345,8 @@
   }
  },
  "study8677/awesome-architecture": {
-  "commit_7d": 0,
-  "commit_90d": 17,
+  "commit_7d": 2,
+  "commit_90d": 13,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -359,10 +359,10 @@
    "TypeScript": 49,
    "CSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4383,6 +4383,28 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "Chandaro/BacII-Math-AI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 99,
+   "HTML": 1,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
   }
  }
 }

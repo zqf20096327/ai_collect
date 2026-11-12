@@ -771,13 +771,13 @@
   }
  },
  "Oleafly/Oleafly": {
-  "commit_90d": 386,
-  "commit_7d": 25,
-  "rel_ver": "biber-2.17-aarch64",
-  "rel_pub": "2026-11-04",
-  "rel_days": 1,
+  "commit_90d": 375,
+  "commit_7d": 21,
+  "rel_ver": "v0.4.11",
+  "rel_pub": "2026-11-08",
+  "rel_days": 4,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -791,10 +791,10 @@
    "TeX": 3,
    "Typst": 2
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261105",
-   "release": "20261105",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

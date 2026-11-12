@@ -4515,5 +4515,32 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "ClickHouse/loom": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-10-27",
+  "rel_days": 16,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 85,
+   "TypeScript": 12,
+   "JavaScript": 2,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }

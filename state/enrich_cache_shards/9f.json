@@ -4827,5 +4827,54 @@
    "contrib": "20261109",
    "lang": "20261109"
   }
+ },
+ "pluja/anysub": {
+  "commit_90d": 252,
+  "commit_7d": 114,
+  "rel_ver": "v4.0.2",
+  "rel_pub": "2026-11-11",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Svelte": 45,
+   "Go": 28,
+   "Python": 10,
+   "JavaScript": 7,
+   "Shell": 4
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "commit": "20261112",
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
+ },
+ "alexturkey/ozel-uzak-masaustu": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "PowerShell": 100
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }

@@ -4151,13 +4151,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261029",
+  "enriched_at": "20261112",
   "dim_ts": {
    "release": "20261029",
    "security": "20261029",
    "contrib": "20261029",
-   "lang": "20261029"
-  }
+   "lang": "20261029",
+   "commit": "20261112"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "alphaparkinc/openclaw-genpark-CognitiveSynapse": {
   "rel_ver": null,

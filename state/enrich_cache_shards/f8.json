@@ -230,7 +230,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.5.2",
   "rel_pub": "2026-08-31",
-  "rel_days": 66,
+  "rel_days": 73,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -246,10 +246,10 @@
    "Shell": 2,
    "Batchfile": 1
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261112",
   "dim_ts": {
-   "commit": "20261105",
-   "release": "20261105",
+   "commit": "20261112",
+   "release": "20261112",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

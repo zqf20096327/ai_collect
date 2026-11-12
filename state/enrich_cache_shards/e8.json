@@ -4853,5 +4853,32 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "jplenio/Plenio-VST3": {
+  "rel_ver": "v0.1.0-alpha",
+  "rel_pub": "2026-11-09",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 55,
+   "Vue": 15,
+   "TypeScript": 11,
+   "Python": 8,
+   "PowerShell": 5
+  },
+  "enriched_at": "20261112",
+  "dim_ts": {
+   "release": "20261112",
+   "security": "20261112",
+   "contrib": "20261112",
+   "lang": "20261112"
+  }
  }
 }
