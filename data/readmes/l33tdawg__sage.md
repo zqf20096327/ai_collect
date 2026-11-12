@@ -74,7 +74,7 @@ call `sage_inception` and follow its returned memory mode.
 <details>
 <summary>Build from source</summary>
 
-**From source (Go 1.26.10+):**
+**From source (Go 1.26.11+):**
 
 ```bash
 git clone https://github.com/l33tdawg/sage.git && cd sage
@@ -100,7 +100,7 @@ docker run -d --name sage \
   ghcr.io/l33tdawg/sage:latest
 ```
 
-Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.6`.
+Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.7`.
 
 The SAGE server stays in that container. To give a local MCP client a stdio
 bridge, start a second process **inside the same running container**:
@@ -317,7 +317,23 @@ uses re-enrollment; historical memory authorship is preserved.
 ---
 
 <details>
-<summary>Recent release notes (v11.25.6 and earlier)</summary>
+<summary>Recent release notes (v11.25.7 and earlier)</summary>
+
+## What's New in v11.25.7
+
+**Go 1.26.11 closes a reachable HTTP vulnerability.** GO-2026-6859 affects the
+`net/http` body reader and is reachable through SAGE's HTTP surface. Source
+builds now require Go 1.26.11, and every shipped Go source-build container uses
+that toolchain.
+
+The Go dependency group also moves `compress` to 1.20.4, `x/sync` to 0.25.0,
+`x/sys` to 0.50.0, `modernc.org/sqlite` to 1.62.0, and its pinned
+`modernc.org/libc` to 1.80.1. Browser fixtures move to Playwright 1.65, and the
+pinned CodeQL and Docker login actions are refreshed.
+
+No consensus version change, app-version change, chain reset, or data migration.
+`latest` and automatic upgrade voting remain app29; app30 remains explicit.
+Container: `ghcr.io/l33tdawg/sage:11.25.7`. SDK 11.25.7.
 
 ## What's New in v11.25.6
 
@@ -955,12 +971,4 @@ Container: `ghcr.io/l33tdawg/sage:11.19.21`. SDK 11.19.21.
 
 ## What's New in v11.19.20
 
-**Dedup rejection is sticky.** Content that was rejected, challenged, or forgotten can no longer be re-admitted by submitting the identical bytes again: the voter's dedup lookup now matches any *other* memory that has left `proposed`, not just committed ones, while a candidate can never match its own row (the v10.1 self-match fix stays fixed). Two identical submissions racing each other no longer veto each other, and a correction still passes whenever its content actually changed.
-
-The dedup lookup — evaluated once per pending memory on the voter's two-second poll — is now indexed on both stores. SQLite gains a `content_hash` index; Postgres drops its legacy committed-only partial index at startup and rebuilds once, which can make the first boot after upgrade slower on a large `memories` table.
-
-Also in this release: the README, the `sage-memory` skill, and the reference docs qualify the BFT/consensus claims for single-validator personal installs, and the papers section now cites the true published provenance.
-
-No consensus change or chain migration; app-v27 remains the ceiling.
-
-Container: `g
+**Dedup rejection is sticky.** Content that was rejected, challenged, or forgotten can no longer be re-admitted by submitting the identical bytes again: the voter's dedup lookup now matches any *other* memory that has left `proposed`, not just committed ones, while a candidate can never match its own row (the v10.1 self-match fix stays 

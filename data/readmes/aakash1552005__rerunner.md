@@ -5,17 +5,27 @@
 **Deterministic flight recorder, replay engine, and CI test runner for AI agents.**
 
 [![CI](https://img.shields.io/badge/CI-passing-brightgreen.svg)](https://github.com/aakash1552005/rerunner/actions)
-[![Release](https://img.shields.io/badge/release-v0.3.1-blue.svg)](https://github.com/aakash1552005/rerunner/releases)
+[![Release](https://img.shields.io/github/v/release/aakash1552005/rerunner?color=blue)](https://github.com/aakash1552005/rerunner/releases)
 [![PyPI](https://img.shields.io/pypi/v/rerunner.svg)](https://pypi.org/project/rerunner/)
 [![Python Version](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue.svg)](pyproject.toml)
 [![GitHub Action](https://img.shields.io/badge/GitHub%20Action-ready-orange.svg)](action.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 [![Type Checked: mypy](https://img.shields.io/badge/type%20checked-mypy%20strict-blue.svg)](https://mypy-lang.org/)
+[![Docs](https://img.shields.io/badge/docs-mkdocs--material-526CFE.svg)](https://aakash1552005.github.io/rerunner/)
+
+**English** · [中文](docs/readme/README_zh.md) · [日本語](docs/readme/README_ja.md) · [한국어](docs/readme/README_ko.md) · [Español](docs/readme/README_es.md) · [Deutsch](docs/readme/README_de.md)
 
 *Record your AI agent once. Replay forever in CI in 0ms with $0 API tokens.*
 
 </div>
+
+```bash
+# 1-Line Quickstart: install + wire Rerunner MCP into Claude Code, Cursor & Codex
+pip install rerunner && rerunner setup --clients claude,cursor,codex
+```
+
+![Rerunner Replay vs Live Latency](docs/assets/benchmark-latency.svg)
 
 ```text
   ┌────────────────────────────────────────────────────────────────────────┐
@@ -75,7 +85,7 @@ Testing production AI agents and running them in Continuous Integration (CI) cre
 2. **High API Costs**: Running an 8-step agent across dozens of CI runs drains thousands of dollars in LLM API credits.
 3. **Reproducibility & Debugging**: When an agent fails at **Step 5**, you cannot reproduce the bug locally without re-running Steps 1 through 4 live.
 
-**Rerunner** solves this by providing a lightweight cassette recorder that intercepts `httpx` traffic natively across the **Anthropic Claude SDK**, **OpenAI SDK**, **Google GenAI SDK**, **Model Context Protocol (MCP)**, **Microsoft AutoGen**, **Semantic Kernel**, and **LangChain / LangGraph**.
+**Rerunner** solves this by providing a lightweight cassette recorder that intercepts `httpx`, `requests`, and `aiohttp` traffic natively across the **Anthropic Claude SDK**, **OpenAI SDK**, **Google GenAI SDK**, **Cohere SDK**, **AWS Bedrock**, **Model Context Protocol (MCP)**, **Microsoft AutoGen**, **Semantic Kernel**, and **LangChain / LangGraph** — plus a universal HTTP/SSE proxy (`rerunner serve`) for TypeScript, Go, Rust, and browser agents.
 
 ---
 
@@ -480,17 +490,34 @@ rerunner export-eval session.jsonl -o session.eval.jsonl --format openai
 
 # Visually play back agent execution steps in terminal with Rich styling
 rerunner play session.jsonl
+
+# Export a self-contained interactive HTML flight trace (zero CDN)
+rerunner inspect session.jsonl --export-html trace.html
+
+# Start cross-language HTTP/SSE replay proxy for TypeScript, Go, Rust, or Docker agents
+rerunner serve session.jsonl --mode replay --port 8080
+
+# Start stdio MCP server or auto-configure Claude Code, Cursor, and Codex
+rerunner mcp
+rerunner setup --clients claude,cursor,codex
+
+# Merge sharded cassettes into one re-numbered, SHA-256-chained cassette
+rerunner merge shard1.jsonl shard2.jsonl -o combined.jsonl
+
+# Generate Ed25519 keys and sign/verify a cassette Merkle root
+rerunner keygen -o .keys
+rerunner sign session.jsonl --private-key .keys/rerunner_ed25519.key
 ```
 
 ### Pre-commit cassette security audit
 
 Install [pre-commit](https://pre-commit.com/), then add the official hook to your project's
-`.pre-commit-config.yaml` (after this hook is merged into a release):
+`.pre-commit-config.yaml`:
 
 ```yaml
 repos:
   - repo: https://github.com/aakash1552005/rerunner
-    rev: <release-tag-containing-rerunner-doctor-hook>
+    rev: v0.3.2
     hooks:
       - id: rerunner-doctor
 ```

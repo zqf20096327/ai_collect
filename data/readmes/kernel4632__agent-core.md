@@ -104,7 +104,7 @@ flowchart TD
 几个关键取舍，以及为什么：
 
 - **裁剪的最小单位是「回合」，不是「消息」。** 一个回合 = 用户一次发言，或模型的一次响应连同它发起的全部工具调用和结果。工具结果按 `toolCallId` 回到发起它的回合，**同进同出**。所以裁剪结果永远不会切断"调用 / 结果"的配对——那种残缺会被供应商 400。
-- **最新那条总结折进 system，而不是当成一条消息塞进对话。** 裸的 `role:'user'` 总结会被模型读成"用户塞给我一张表"，于是从头重做整个任务。实测 `gpt-oss-120b` 折进 system 前只有 1/6 能正确接着做，之后 6/6。
+- **最新那条总结折进 system，而不是当成一条消息塞进对话。** 把总结当普通用户消息发给模型，它会读成"用户塞给我一张表"，于是从头重做整个任务。实测 `gpt-oss-120b` 折进 system 前只有 1/6 能正确接着做，之后 6/6。
 - **总结里保留最初目标。** 挑内容时，最初那几轮用户发言（说不出的话）单独钉住，默认最多 3 个回合、占 20% 预算。就算预算装不下，总结本身也被要求保留"用户最初的目标"，而总结在 `system` 里永远不会被裁掉。这几个数可以用 `contextKeep` 调小甚至设成 0——原始措辞和总结里的目标同时出现时，模型有时会把旧话当成当前指令。
 - **二次压缩不会忘掉上一次的总结。** 压缩请求会把上一版总结作为"背景"并进提示词，新总结必须保留其中仍然有效的事实。直接丢掉旧总结，会越压越忘。
 - **按预算保留，不按条数。** 用户第一条消息就粘一大段日志时，只按条数留会让压缩永远收敛不了（实测 120/120 轮压完仍超阈值）。所以旧内容按预算分：目标 20%、最近现场 30%。
@@ -387,7 +387,11 @@ const agent = Agent.create({ config: { ...config, system: ['你是一个助手�
 **为什么用子进程而不是 Worker 线程**：Worker 被 `terminate()` 之后 Bun 不归还它占的约 22MB，
 而且杀线程带不走它 `Bun.spawn` 出来的孙进程。常驻 agent 天天要杀工具进程（工具崩溃、超时、用户打断），
 两笔账会一直累积。换成子进程之后实测 200 次「起→用→杀」主进程只涨 2MB（Worker 版是 4.4GB），
-孙进程一起带走，主进程退出时工具进程也全部跟着死。复用时单次调用 0.08ms，比 Worker 还快。
+孙进程一起带走，主进程退出时工具进程也全部跟着死。
+
+**一次调用一个进程，跑完就杀，不留进程池。** 冷启动约 50ms（其中裸 `bun` 进程本身就要 47ms），
+复用能省约 35ms，但每个待命进程要常驻一份 Bun 运行时（实测 WorkingSet 约 70MB，宿主空闲也一直占着）。
+对代理循环来说这点延迟不划算，所以用完即杀；要低延迟的宿主可以在工具层自己缓存。
 
 ### 数据流
 
@@ -649,14 +653,12 @@ import Agent from '@kernel4632/agent-core'
 | `capabilities` | 见下方 | 按模型能力逐项开关图片、音频、视频、文件、工具调用、结构化输出、toolChoice、思考内容和流式用量 |
 | `mediaFallback` | `'error'` | 媒体能力关闭时的处理方式；改成 `'strip'` 后保留文字并丢掉不支持的媒体 |
 | `provider` | `{}` | AI SDK 的生成参数，整份交给 AI SDK；不设时用模型自己的默认值 |
-| `maxToolOutput` | `undefined` | 默认不截断工具输出；主动设置后超出部分从中间截断并告知模型 |
-| `maxContextTokens` | `128000` | 上下文预算，**默认开启自动压缩**：估算的上下文超过预算的 `compactThreshold` 比例时就压缩一次。设 `Infinity` 关闭 |
+| `maxToolOutput` | `undefined` | 默认不截断工具输出；主动设置后超出部分从中间截断并告知模型 || `maxContextTokens` | `128000` | 上下文预算，**默认开启自动压缩**：估算的上下文超过预算的 `compactThreshold` 比例时就压缩一次。设 `Infinity` 关闭 |
 | `maxTokens` | `undefined` | 单次生成的最大输出 token，映射到请求体的 `maxOutputTokens`；不设＝不限。`provider.maxOutputTokens` 显式设置时优先于它 |
 | `compactThreshold` | `0.8` | 压缩触发比例，0.8 表示到达 80% 时压缩 |
 | `compact` | `undefined` | 压缩单独用一套模型时写在这里，例如 `{ model: '便宜的小模型' }`；不写就和主模型共用 |
 | `contextRatio` | `undefined` | 冷启动的估算倍率（每字符多少 token）。进程重启后第一个 `send` 用它估算，不用默认 0.6；真实 usage 到达后仍会覆盖它 |
 | `output` | `undefined` | 结构化输出格式，例如 `Agent.output.object({ schema })`；不写就返回普通文字 |
-| `maxToolConcurrency` | `undefined` | 默认不限制**文件工具**的并发；主动设置后超出的排队。内存工具（`Agent.tool.adopt` / MCP）在主进程直接跑，不受这个上限约束 |
 | `retryBaseDelay` | `5000` | 第一次退避的基数（毫秒），之后每次 ×2：5s、10s、20s…（照抄 Roo Code） |
 | `retryMaxDelay` | `600000` | 单次退避上限（毫秒），到顶就按这个值等待、不再增长（默认 10 分钟，照抄 Roo Code） |
 | `retryMaxElapsed` | `undefined` | 默认不限重试总时长；主动设置毫秒数后，到点把错误交给上层 |
@@ -729,7 +731,7 @@ const agent = Agent.create({
 })
 ```
 
-在 `agent.send({ input, config: { ... } })` 里传入的配置会**写回 Agent**、之后的每一次模型请求继续生效（包括正在跑的这一轮的下一笔，见下方「每轮现拼」）。合并规则分三种：`provider` 和 `retry` **整份替换**（传了就只用新的，未写的字段不再保留）；`capabilities`、`compact` 和 `contextKeep` **按字段浅合并**（只传其中一项不丢另外的）；其余字段直接覆盖。`maxContextTokens` 是上下文预算，`maxTokens` 是单次生成的最大输出（会映射成请求体的 `maxOutputTokens`），两者不是一回事。
+在 `agent.send({ input, config: { ... } })` 里传入的配置会**写回 Agent**、之后的每一笔模型请求继续生效（包括正在跑的这一轮的下一笔和它的每次重试，见下方「每笔请求现拼」）。合并规则分三种：`provider` 和 `retry` **整份替换**（传了就只用新的，未写的字段不再保留）；`capabilities`、`compact` 和 `contextKeep` **按字段浅合并**（只传其中一项不丢另外的）；其余字段直接覆盖。`maxContextTokens` 是上下文预算，`maxTokens` 是单次生成的最大输出（会映射成请求体的 `maxOutputTokens`），两者不是一回事。
 
 `cache` 默认开启。四种协议各按自己的方式让服务端复用固定的开头（system、工具描述、历史），命中后那部分不再重新计算，长会话能明显变快、变便宜：
 
@@ -941,9 +943,9 @@ await agent.send({
 
 > 直接 `send` 的内容块会在入口校验：`text` / `image` / `audio` / `video` / `file` 这些块形状不对（比如媒体缺 `mediaType`、值不是字符串 / URL / 二进制）会当场拒绝，不会写进只增不删的历史。图片块用 `{ type: 'image', image: <data URL 或 base64 或 URL 对象> }`，或 AI SDK 当前的 `{ type: 'file', mediaType, data }`。
 
-#### 每轮现拼：运行中改什么，下一笔请求就生效
+#### 每笔请求现拼：运行中改什么，下一笔请求就生效
 
-每发一笔模型请求之前，Loop 都会重新从宿主那里取一遍这次请求要用的全部东西——配置、`system`、工具表，再重新拼出这一轮的上下文和请求。具体到代码就一句话：`agent` 是活对象，Loop 每轮重新读一次 `agent.config` 和 `agent.tools`，不是 `send` 开始时留一份副本。所以一次 `send` 还在跑的时候改它们，下一笔请求就用新值：不用停掉当前任务，也不用重建 Agent。
+**每一笔真正发给模型的请求**之前，Loop 都会重新从宿主那里取一遍要用的全部东西——配置、`system`、工具表，再从 `history` 现推 messages。这里说的"每一笔"是字面意思：每轮的首次请求，**以及它的每一次重试**。`agent` 是活对象，不是 `send` 开始时留的一份副本。
 
 ```js
 // 在 onStep / onLLMFinish 里改都行：当前这笔请求和它发起的工具已经跑完
@@ -953,13 +955,14 @@ agent.config.system = '新的系统提示'
 agent.tools = Agent.tool.omit(agent.tools, ['shell'])   // 运行中撤掉一个工具，下一笔请求就不带它
 ```
 
-- **什么时候切换**：只在请求边界。已经发出去的那一笔不会被打断，它发起的工具也照常跑完；下一轮请求模型时才换。流式过程中不会热替换。
-- **每轮都会重新取的**：连接（`baseURL` / `apiKey` / `model` / `protocol`）、`provider` 里的生成参数（温度、思考强度等）、`capabilities` / `mediaFallback`、`cache`、`retry` / `requestTimeout`、`maxTokens`、`maxContextTokens` / `compactThreshold`、`noToolRounds`、`maxToolOutput` / `maxToolConcurrency`、`system`、工具表；压缩用的 `compact` 配置在压缩发生的那一轮取。token 估算也按新模型重新记。
+- **什么时候切换**：只在请求边界。已经发出去、正在流式返回的那一笔不会被打断（也不会热替换）；下一笔请求——**包括同一轮的重试**——就用新值。最常见的情况：模型 A 失败、退避期间你把 `agent.config.model` 换成 B，下一次重试直接发给 B，不会一直卡在 A 上。
+- **每笔都会重新取的**：连接（`baseURL` / `apiKey` / `model` / `protocol`）、`provider` 里的生成参数（温度、思考强度等）、`capabilities` / `mediaFallback`、`cache`、`requestTimeout`、`maxTokens`、`maxContextTokens`、`system`、工具表、以及从 `history` 现推的 messages。token 估算也按新模型重新记。
+- **每轮才取的**：压缩判定（`compactThreshold` / 压缩用的 `compact` 配置）、`noToolRounds` 计数、轮次上限、`onInject` 的"这一轮要不要插一句"。这些是有副作用的决策（压缩会真的发一次请求、往 `history` 追加总结），不能放进重试里；新模型装不下时走"上下文超长 → 压缩后重发"那条兜底。
 - **工具表只读一遍，不重新扫描目录**：把 `agent.tools` 换成新的集合（`Agent.tool.from` / `pick` / `omit` 的返回值）就生效；目录里的文件不会在这次运行中被重新扫描——要重新扫描用新的 `send`（`send({ tools })` 会在开始时现扫）。模型看到的那张表和执行时用的 handler 取自同一份集合。
-- **不随轮次换的只有两样**：`history` 是这次运行的权威数据，循环始终往同一个数组追加；回调是运行期的接线，在 `send` 开始时定下。
+- **不随请求换的只有两样**：`history` 是这次运行的权威数据，循环始终往同一个数组追加；回调是运行期的接线，在 `send` 开始时定下。
 - 按次传的 `send({ config })` 语义不变：写回 `agent.config`，这次运行从第一笔请求起就用它。
 
-> 会话运行中改模型 / 思考强度 / system / 工具表，直接改 `agent.config` 和 `agent.tools` 就行：历史、流式输出和运行状态都不中断。
+> 会话运行中改模型 / 思考强度 / system / 工具表，直接改 `agent.config` 和 `agent.tools` 就行：历史、流式输出和运行状态都不中断，正在重试的那笔请求也会立刻用上新配置。
 
 #### `agent.stop()`
 
@@ -969,17 +972,23 @@ agent.tools = Agent.tool.omit(agent.tools, ['shell'])   // 运行中撤掉一个
 await agent.stop()   // 等待完全停止后返回 { ok: true }；Agent 空闲时返回 { ok: false }
 ```
 
-#### `agent.resume(options?)`
+#### `agent.send()`：不带输入就是"继续"
 
-不发新消息，用现有历史的末尾接着跑——典型场景是停止后继续被中断的回复。它不往 `history` 里写任何东西：模型看到的末尾就是中断前的最后一条（assistant 或 tool 消息），所以**不会**出现"续跑后历史里多出一条假的用户消息"。
+`send` 的输入是可选的。**不传输入 = 从当前历史接着跑**，不追加任何消息；传了输入 = 先把这条用户消息追加进历史，再跑。
 
 ```js
-const answer = await agent.resume()          // 从上次停下的地方继续，返回值和 send 相同
-const answer = await agent.resume({ config: { model: '新模型' } })   // 也可以像 send 一样按次覆盖 config / callbacks
+const answer = await agent.send('新指令')          // 追加一条 user 消息，然后跑
+const answer = await agent.send()                  // 不追加，直接对当前历史跑：从上次停下的地方继续
+const answer = await agent.send({ config: { model: '新模型' } })   // 继续，同时按次覆盖配置
 ```
 
-- 历史末尾必须是 `assistant` 或 `tool` 消息（有"没说完的话"可续），否则直接报错；想发新内容用 `send`。
-- `resume` 不接受 `input`；传了会报错，防止把"继续"误写成新指令。
+历史末尾是哪种消息不重要——循环只做"对当前历史发一次请求"：
+
+- 末尾是 `assistant` / `tool`：从停下的地方接着说（中断后恢复就是这种）；
+- 末尾是 `user`：回答它；
+- 空历史：模型只看到 system，照样能跑。
+
+"继续"和"发新消息"是同一个动作的两种起始状态，所以只有一个方法。
 
 #### 流式与网页实时推送
 
@@ -1143,9 +1152,11 @@ const wrap = (tool, host) => ({ ...tool, execute: (input, options) => tool.execu
 >
 > 从 0.25 升级（破坏性改名）：上下文预算 `maxTokens` 改名为 **`maxContextTokens`**；`maxTokens` 现在指**单次生成的最大输出** token（映射到请求体的 `maxOutputTokens`）。这是把名字拨回 OpenAI / Anthropic 的习惯（它们的 `max_tokens` 就是输出上限，不是上下文）。另外：`onPermission` 现在要求**严格返回布尔**——非 `true`（含对象、漏 `return`）一律按拒绝处理；新增 `Agent.tool.pick` / `Agent.tool.omit` 用来取工具子集（做只读模式用 `omit` 去掉写工具）。
 >
-> 从 0.27 升级：`Compact.run` 的返回值从总结文本变成 `{ content, usage }`（单独用 `Agent.compact` 时注意解构）；`onCompact` 的流事件统一带 `request: 'compact'` 标记、`compact-finish` 带 `usage`；工具被拒绝/取消/无效调用也触发 `onToolResult`，`onStep` 的 `toolResults` 是完整结果对象；自动压缩的用量计进 `send().usage`；新增 `agent.resume()` 从历史末尾续跑；工具的 `schema[name]` 带来源标记 `source: 'file' | 'memory'`；文件工具（子进程路径）的 `execute(input, options)` 现在也能拿到 `options.abortSignal`（取消即杀进程不变，信号仅供工具优雅收尾）。
+> 从 0.27 升级：`Compact.run` 的返回值从总结文本变成 `{ content, usage }`（单独用 `Agent.compact` 时注意解构）；`onCompact` 的流事件统一带 `request: 'compact'` 标记、`compact-finish` 带 `usage`；工具被拒绝/取消/无效调用也触发 `onToolResult`，`onStep` 的 `toolResults` 是完整结果对象；自动压缩的用量计进 `send().usage`；工具的 `schema[name]` 带来源标记 `source: 'file' | 'memory'`；文件工具（子进程路径）的 `execute(input, options)` 现在也能拿到 `options.abortSignal`（取消即杀进程不变，信号仅供工具优雅收尾）。
 >
 > 从 0.30 升级（破坏性）：去掉了 `maxSteps` 和结束原因 `'step-limit'`。这个包**不再限制循环轮数**——什么时候停由模型的判断和工具的结果决定。原来靠 `maxSteps` 兜底的地方，改由应用层控制：给 `send` 传 `signal`、设 `requestTimeout`，或者写一个返回 `stop: true` 的 `finish` 工具。
+>
+> 从 0.42 升级（破坏性）：压缩总结的历史块从 `role:'user'` + `compact: true` 改成 **`role:'compact'`**，`Message` 上不再有 `compact` 字段。旧存档里的总结会被当成普通用户消息——要么重存这些会话，要么按新形状迁移。
 
 #### `Agent.tool.execute(options)`
 
@@ -1159,7 +1170,6 @@ const result = await Agent.tool.execute({
     signal: abortController.signal,   // 可选：取消信号
     onOutput: output => {},           // 可选：接收工具流式输出（文件工具的 stdout/生成器 yield，内存工具的生成器 yield）
     limit: 32000,                     // 可选：输出字符上限，超出从中间截断；不传则不截断
-    concurrency: 8,                   // 可选：同一批（同一个 signal）最多同时跑几个文件工具，超出的排队
 })
 // result.output → 工具输出块，type 是 'text' | 'json' | 'content' | 'error-text' | 'error-json' | 'execution-denied'
 // result 还带：stop:true（工具要求结束循环）/ error（工具失败）/ interrupted:true（被取消）
@@ -1188,7 +1198,7 @@ console.log(output.total)
 
 有工具时先完成工具调用，再读取最终对象。工具轮或 `tool-stop` 不会凭空产生 `output`。最终对象校验成功立即结束；格式错误默认也会重试（重新生成不保证还是坏的），想让它立刻失败可用 `retry` 过滤或收紧 `retryMaxElapsed`。手动及自动压缩只生成文本总结，不继承任务的对象格式。流式和非流式都在最终结果上提供 `output`；流中仍会有生成时的文字片段。
 
-直接使用底层 LLM，绕过 Agent 循环。
+直接使用底层 LLM，绕过 Agent 循环。这里的参数是**一次性**的：`Agent.llm.chat` 不认识 `agent.config`，运行中改配置再重发是 Agent 层（`send` / 重试）的事——见「每笔请求现拼」。
 
 #### `Agent.llm.chat(options)`
 
@@ -1262,7 +1272,9 @@ History.compact({ content: '之前的对话总结...' })
 History.error({ content: '请求失败：500', request: { model: 'claude', ms: 1234, error: 'boom' } })
 ```
 
-**失败记录（`role:'error'`）**：它不参与回合、不参与工具配对、不参与压缩，`Context.build()` 会整条丢掉；`render()` 仍然把正文渲染出来，`request` 原样保存在这条消息上，宿主可以放自己的审计信息（模型、耗时、错误原因）。只有 `user` / `assistant` / `tool` 会发给模型——history 里出现别的 role，会跳过并 `console.warn` 一次（`error` 除外，那是预期用法）。
+**失败记录（`role:'error'`）**：它不参与回合、不参与工具配对、不参与压缩，`Context.build()` 会整条丢掉；`render()` 仍然把正文渲染出来，`request` 原样保存在这条消息上，宿主可以放自己的审计信息（模型、耗时、错误原因）。只有 `user` / `assistant` / `tool` 会发给模型——`compact`（压缩总结）和 `error` 是合法但不进模型的 role；history 里出现别的 role，会跳过并 `console.warn` 一次。
+
+**压缩总结（`role:'compact'`）**：内容是总结正文，`turns()` 把它当成独立的一个回合，`Context.build()` 会把最新那条折进 system、不发给模型。它不是用户说的话，UI 可以按 role 单独渲染。
 
 **读历史**——渲染给用户看、数聊了几轮，这两件事的知识本来就在核心里，不用你照着内部结构重写：
 
@@ -1289,7 +1301,6 @@ History.turns(agent.history)   // 折成回合：[[user], [assistant, tool], [us
 | 旋钮 | 默认 | 为什么生产必须设 |
 |------|------|------------------|
 | `maxToolOutput` | 不截断 | 工具输出不截断有 31 万 token 风险：一个 1MB 的文本（`cat` 一个日志文件）就够，超过多数模型的整个窗口，还会永久留在历史里，压缩也救不回来。设个字符数，比如 `32000`。 |
-| `maxToolConcurrency` | 不限制 | 默认不限文件工具并发：模型偶尔一轮返回几十个工具调用，会瞬间起几十个进程。设个上限，比如 `8`。 |
 | `requestTimeout` | 不限制 | 默认不限单笔时长：卡住的请求会一直等下去。设毫秒数，到点中断这一笔。 |
 | `retryMaxElapsed` | 不限制 | 默认重试所有错误且无总上限，等于无限重试。生产建议设毫秒数收口，或用 `retry` 过滤掉不该重试的错误（如 `auth`、`request`）。 |
 | `maxContextTokens` | `128000` | 上下文预算，要按你模型的窗口调。比窗口大会撑爆，比需求小会频繁压缩。 |
@@ -1491,7 +1502,7 @@ config: {
 
 > 用更小的小模型做压缩时注意：那笔压缩请求的**大小是由主模型的 `maxContextTokens` 决定的**，跟压缩模型自己的窗口无关。如果压缩模型的窗口比主模型预算小，压缩请求会先在小模型这边撑爆。让压缩模型的窗口 ≥ 主模型预算，或把 `maxContextTokens` 调小。
 
-**最新的那条总结会折进 `system`，而不是当成一条用户消息塞进对话里**，并且带一句"这是你自己之前做过的工作，数据已由工具确认"。裸的 `role:'user'` 总结会被模型读成"用户塞给我一张表"，于是它从头重做整个任务——真实端点实测 `gpt-oss-120b` 改之前 1/6 能正确续跑，改之后 6/6。
+**最新的那条总结会折进 `system`，而不是当成一条用户消息塞进对话里**，并且带一句"这是你自己之前做过的工作，数据已由工具确认"。把总结当普通用户消息发出去，模型会读成"用户塞给我一张表"，于是它从头重做整个任务——真实端点实测 `gpt-oss-120b` 改之前 1/6 能正确续跑，改之后 6/6。
 
 保留多少旧内容是**按预算**算的，不是按条数：默认最初目标最多占 20%、总结前的现场最多占 30%，总结之后的新回合不受限。只按条数留的话，用户第一条消息粘一大段日志就能让压缩永远收敛不了（实测 120/120 轮压完仍超阈值）。放不下的最初目标不会丢——总结本身就被要求保留用户的原始目标，而总结在 `system` 里，永远不会被裁掉。
 
@@ -1561,9 +1572,7 @@ export default {
 
 并行。模型在一轮里要求调用多个工具时，所有工具同时开跑，结果按原顺序收集后一起写回历史。
 
-同一个 Agent 内，**文件工具**同时最多跑 `config.maxToolConcurrency` 个（默认不限制，一个工具独占一个工具进程），超出的排队。模型偶尔会一轮返回几十个工具调用，建议设一个上限（比如 8）避免瞬间起几十个进程。不同 Agent 各自计算，互不影响。**内存工具（`Agent.tool.adopt` / MCP）在主进程直接跑，不受这个上限约束**——要限它们得在自己的 `execute` 里做。
-
-注意阻塞型工具会**长期占着名额**：上限设成 8、又有 8 个会话各挂一个 `wait_for_message`，第 9 个会话的任何工具都排不进来。多会话的 bot 要按会话数把这个值调大。
+**没有并发上限**：模型一次发出几个调用，就是在说这几件事互相独立——核心给它们排队等于擅自改变语义，所以这里不设上限、也不提供 `maxToolConcurrency` 这类开关。文件工具一个调用起一个独立进程、跑完就杀，内存工具在主进程直接跑。需要保护资源的宿主，自己少给工具、在工具里限流，或者在 `onPermission` 里拦。
 
 ---
 

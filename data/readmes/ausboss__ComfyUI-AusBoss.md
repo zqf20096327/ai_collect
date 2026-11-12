@@ -20,6 +20,7 @@ Most of them are for image and video work. ComfyUI's core nodes already cover th
 - **[Mask by Touch](#mask-by-touch):** click a thing on the picture and get its mask. Hover shows what a click would take, and **Fine edges** follows hair and fur.
 - **[Mask by Name](#mask-by-name):** type "the red jacket" and get its mask and a cut-out.
 - **[Image Crop + Rotate + Pad](#image-crop--rotate--pad):** turn, crop and pad a picture by dragging handles on the node, for outpainting.
+- **[Edit Lock](#edit-lock):** an edit changes what you asked for, and the rest of the picture stays exactly where it was. No mask needed.
 - **[Stitch Inpaint](#stitch-inpaint):** after an inpaint or outpaint, everything you didn't ask to change is your original pixels again.
 - **[Video Crop + Rotate + Pad → Clip](#video-crop--rotate--pad--clip):** trim a clip on a timeline, and pad or crop it to a new shape.
 - **[Tiled Upscale](#tiled-upscale):** upscale a picture in tiles to the megapixels you set.
@@ -78,6 +79,12 @@ It returns the `image`, a `mask` of everything the model paints (padding, see-th
 ![A night photo of a woman leaning out of a car window is turned and padded, and Krea 2 fills the new space with more of the street.](assets/readme/rotate-outpaint.gif)
 
 Krea 2 Rotate + Outpaint turns a photo, pads it and paints the new area in one pass. [Try the Krea 2 Rotate + Outpaint example →](example_workflows/Krea%202%20Rotate%20%2B%20Outpaint%20%28AusBoss%29.json)
+
+### Load Image
+
+Loads a picture and sets its size in one node. Pick a file, upload one, or step through the input folder with the arrows. **Size** can stay off, or bring the picture to a megapixel count, a longest side, a scale, a box it must fit inside, or a box it fills by cropping. It can also cut a piece or a shape such as 16:9 out of the picture without resizing, and **Keep** picks which part stays: the center, a side or a corner. **Round to** keeps the result on a multiple of 8, 16 or whatever the model wants. The node shows the picture going in and coming out, with both sizes, before you run, such as `912 × 1632 → 1144 × 2048`.
+
+It returns the `image`, a `mask` of its see-through parts, the new `width` and `height`, the `filename` for a save prefix, and the file's `original_width` and `original_height`.
 
 ### Load Image + Pad
 
@@ -139,6 +146,18 @@ The same watercolor edit without and with Realign to Source: 61 px off before, 0
 
 Qwen drew this watercolor 5.6% taller, and Realign to Source lined it back up with the original.
 
+### Edit Lock
+
+Keeps every part of your picture that an edit did not change exactly where it was, with the colors it had. An edit model redraws the whole picture, so the parts you did not ask about often come back a little zoomed in, shifted or tinted, and the picture jumps when you flip between before and after. Put Edit Lock between the model and the sampler and give it the picture you are editing. It needs no mask: it sees what the edit changes while the picture is being made, and holds on to everything else.
+
+When the edit changes the whole picture (a new style, new light), there is nothing to keep, so the node steps aside and the edit runs as usual. A soft effect over the whole picture, such as rain or falling snow, is let through as well: the node then only holds the picture in place. **Lock** (`lock`) set to `off` does nothing at all, `always` locks even a whole-picture edit, and an optional `mask` says where the edit may happen. **Tolerance** (`tolerance`) sets how big a change must be to count as part of the edit.
+
+On MiniMax-H3-Image, 4 megapixel edits moved the picture by up to 14 px without the lock (measured at 1 megapixel) and by 0.2 px or less with it (0.08 px or less on 35 of the 36 locked runs), on 19 local edits at two seeds each. After five edits in a row on one picture the plain chain had drifted 1.65 px and turned visibly pink; the locked chain sat at 0.04 px with no tint.
+
+### Edit Lock Restore
+
+Puts your picture's own pixels back in every part the edit did not change. Edit Lock keeps those parts in place, but they still pass through the VAE, which softens fine detail a little. Add this right after the VAE Decode and wire in Edit Lock's `edit_lock` output. **Feather** (`feather`) sets how softly the original fades into the edit. It also returns `edit_mask`, white where the edit changed the picture, and a one-line `report` of how much was kept.
+
 ### Image Compare A/B
 
 Compares two pictures with a slider, or flips between them whole. Nothing covers the picture, and its size shows underneath. The panel grows with the node, and images A and B pass through, so you can put it anywhere on an image wire. **Erase** mixes the two by hand: rub parts of one picture away with a brush so the other shows through, then save the mix as a PNG under a name you type, with a layered PSD for Photoshop or GIMP if you want it.
@@ -198,6 +217,12 @@ Picks one frame from a batch, unchanged: `1` is the first, `-1` the last and `-2
 Changes a clip's frame rate by making in-between frames. You set the source and target fps, so 24 to 30 works as well as doubling. The blend method crossfades frames, and optical flow uses RAFT weights you put in place yourself. At a hard cut it holds the frame instead of blending two unrelated shots. It works in chunks to keep memory down.
 
 It returns the new frames and their fps. It doesn't touch audio, so carry the source audio to Save Video separately. The [help page](js/docs/AUSBOSS_NODES_FrameInterpolate.md) covers the weights and timing.
+
+### FlashVSR Upscale
+
+Makes a video larger and sharper with the FlashVSR model. Set **Scale** from 1 to 4 and it returns every frame at the new size, with fine detail drawn back in. It reads the clip a few frames at a time, so a long clip needs no more graphics memory than a short one, and a result too large for the free memory is made in tiles.
+
+It needs one model file in `ComfyUI/models/diffusion_models` and no other pack. The [help page](js/docs/AUSBOSS_NODES_FlashVSRUpscale.md) has the download link, the memory it needs and the speed. [Try the FlashVSR Video Upscale example →](example_workflows/FlashVSR%20Video%20Upscale%20%28AusBoss%29.json)
 
 ### Save Video
 
@@ -344,6 +369,14 @@ Puts batch `b` after `a`. When the sizes match, nothing is resized. When they di
 
 A text box that grows with the node and sends its text, unchanged, down a `STRING` wire. Use it for a prompt, caption, path or other text that several nodes share. Spaces and line breaks are kept. Ctrl + Up and Ctrl + Down change the weight of the selected words, as in ComfyUI's own prompt boxes.
 
+### Text Lines
+
+Runs what comes after once for each line of your text. Type five prompts, one on each line, and one run makes five pictures. It also takes a list another node wrote, skips empty lines, and can take a leading `1.` or `-` off each line. `number` counts the lines from 1, to give each its own seed.
+
+### Prompt Variations
+
+A prompt box that changes on every run. Write choices in curly brackets, split by `|`, such as `a {red|blue|green} {sweater|jacket}`, and the node picks one from each set. Wire in the seed your sampler uses: a new seed gives a new mix, and the same seed gives the same prompt again. Set the seed to randomize and queue 50 runs to get 50 different prompts. Text without brackets comes out exactly as typed, so a JSON prompt is safe.
+
 ### H3 Prompt Writer
 
 Type what happens, one line for each moment, and leave a blank line to cut to a new place. Connect up to four pictures and give each one a job: a person, a place, an outfit, a thing or a style. Copy the moves from a video, keep a clip going, or add a voice or a song. A timeline on the node shows when each moment plays before you run it. It needs no extra model and you never see H3's prompt format. Connect a small text model and it fills in a one-line idea.
@@ -396,7 +429,7 @@ Turns parts of a workflow off and on from one small card. Select the nodes of on
 
 ## Example workflows
 
-These are the workflows where the nodes do something core ComfyUI doesn't do by itself: outpainting and inpainting that put your original picture back, lining an edit back up with its source, upscaling a picture in tiles, masking a thing by its name or with a click, and removing a watermark from a clip. Open a JSON file from [`example_workflows/`](example_workflows), or find them under this pack in ComfyUI's template browser. Each one has a thumbnail, numbered groups and a Workflow Note with the setup steps and model downloads.
+These are the workflows where the nodes do something core ComfyUI doesn't do by itself: outpainting and inpainting that put your original picture back, lining an edit back up with its source, upscaling a picture in tiles, masking a thing by its name or with a click, removing a watermark from a clip, and making a clip larger and sharper. Open a JSON file from [`example_workflows/`](example_workflows), or find them under this pack in ComfyUI's template browser. Each one has a thumbnail, numbered groups and a Workflow Note with the setup steps and model downloads.
 
 ![The Krea 2 Rotate + Outpaint workflow: a setup note on the left, then groups for your input, the two boxes and the model loaders, and the result with a before-and-after slider and Save Image.](assets/readme/workflow-layout.webp)
 
@@ -417,6 +450,7 @@ The workflows open with their image and video loaders empty, so you load your ow
 | [Mask by Name](example_workflows/Mask%20by%20Name%20%28AusBoss%29.json) | Type what to find in a picture, and get its mask and a cut-out with a see-through background | ComfyUI's own SAM 3.1 (ComfyUI 0.20 or newer) |
 | [Mask by Touch](example_workflows/Mask%20by%20Touch%20%28AusBoss%29.json) | Click a thing in a picture, or its whole subject, and get its mask and a cut-out with hair-fine edges | ComfyUI's own SAM 3.1 and its background-removal model (ComfyUI 0.21 or newer) |
 | [Simple Video Watermark Remover](example_workflows/Simple%20Video%20Watermark%20Remover%20%28AusBoss%29.json) | Find an overlay in a clip and remove it, with a one-frame comparison branch | ComfyUI's own SAM 3.1 (ComfyUI 0.20 or newer), plus `big-lama.pt` |
+| [FlashVSR Video Upscale](example_workflows/FlashVSR%20Video%20Upscale%20%28AusBoss%29.json) | Make a clip larger and sharper with one node | `flashvsr_v1.1_fp16.safetensors` |
 
 Every example uses only core nodes and this pack. Speed and memory use depend on the models, the sizes, the frame count and whatever else is using the GPU.
 

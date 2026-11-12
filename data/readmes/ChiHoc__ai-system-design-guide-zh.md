@@ -1,0 +1,366 @@
+> [!IMPORTANT]
+> 本仓库是由 ChiHoc 维护的非官方简体中文镜像；英文上游是正文事实与版权归属的唯一来源。下方保留的作者、社交账号与原阅读站信息均属于英文上游项目。
+
+# 🧠 AI System Design Guide（AI 系统设计指南）
+### The Complete Interview & Production Reference（完整面试与生产参考）
+
+<p align="center">
+  <a href="https://www.aidaddy.tech"><img src="https://img.shields.io/badge/Read%20it%20online%20%E2%86%92-7C3AED?style=for-the-badge&logo=bookstack&logoColor=white" alt="Read the guide online at aidaddy.tech"></a>
+  <a href="https://enginebogie.com/u/ombharatiya"><img src="https://img.shields.io/badge/Book%20a%20mock%20interview%20%E2%86%92-0E7C66?style=for-the-badge&logo=googlecalendar&logoColor=white" alt="在 EngineBogie 预约 1:1 模拟面试"></a>
+  <a href="https://topmate.io/ombharatiya"><img src="https://img.shields.io/badge/Mentorship%20on%20Topmate-1F2937?style=for-the-badge&logoColor=white" alt="在 Topmate 预约指导"></a>
+</p>
+<p align="center">
+  <sub>🌐 在 <b><a href="https://www.aidaddy.tech">aidaddy.tech</a></b> 即时搜索。🎯 与 Om 进行 1:1 模拟面试和指导。⭐ 点赞仓库以支持本项目。</sub>
+</p>
+
+<p align="center">
+  <a href="https://github.com/ombharatiya"><img src="https://img.shields.io/badge/Follow%20on%20GitHub-ombharatiya-181717?style=for-the-badge&logo=github" alt="Follow on GitHub"></a>
+  <a href="https://x.com/ombharatiya"><img src="https://img.shields.io/badge/Follow%20on%20Twitter-@ombharatiya-1DA1F2?style=for-the-badge&logo=x" alt="Follow on Twitter"></a>
+  <a href="https://linkedin.com/in/ombharatiya"><img src="https://img.shields.io/badge/Connect%20on%20LinkedIn-ombharatiya-0A66C2?style=for-the-badge&logo=linkedin" alt="Connect on LinkedIn"></a>
+</p>
+
+<p align="center">
+  <b>如果这份指南对你有帮助，请关注 <a href="https://github.com/ombharatiya">@ombharatiya</a> 的 GitHub、<a href="https://x.com/ombharatiya">X</a> 和 <a href="https://linkedin.com/in/ombharatiya">LinkedIn</a>，以便在新章节、模型更新和面试题发布时收到通知。</b>
+</p>
+
+<p align="center">
+  <a href="https://github.com/ombharatiya/ai-system-design-guide/commits/main"><img src="https://img.shields.io/github/last-commit/ombharatiya/ai-system-design-guide?label=updated&color=blue" alt="Last commit"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License"></a>
+  <a href="#-contributing"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
+  <a href="https://github.com/ombharatiya/ai-system-design-guide/stargazers"><img src="https://img.shields.io/github/stars/ombharatiya/ai-system-design-guide?style=social" alt="Stars"></a>
+  <a href="https://github.com/ombharatiya/ai-system-design-guide/graphs/contributors"><img src="https://img.shields.io/github/contributors/ombharatiya/ai-system-design-guide?color=blueviolet" alt="Contributors"></a>
+  <a href="https://github.com/ombharatiya/ai-system-design-guide/issues"><img src="https://img.shields.io/github/issues/ombharatiya/ai-system-design-guide?color=orange" alt="Open issues"></a>
+</p>
+
+> **生产级 AI 系统的持续更新参考。** 持续迭代，面向面试的深度内容。
+
+这是一份实用且持续更新的指南，覆盖 AI system design（AI 系统设计）、RAG architectures（RAG 检索增强生成架构）、LLM engineering（LLM 工程）、agentic AI（智能体化 AI）、MCP 和 A2A protocols（A2A 协议），以及 AI engineering interview preparation（AI 工程面试准备）。内容包括生产模式、模型选型、评估方法，以及来自 staff-level interviews（Staff 级别面试）的真实案例。
+
+**首次阅读？** 可直接跳转到 [193 道面试题库](00-interview-prep/01-question-bank.md)、[RAG 基础章节](06-retrieval-systems/01-rag-fundamentals.md)，或选择 [适合生产环境的 LLM](02-model-landscape/01-model-taxonomy.md)。
+
+---
+
+## 📚 快速导航
+
+| 我想要…… | 从这里开始 |
+|--------------|------------|
+| **准备面试** | [题库](00-interview-prep/01-question-bank.md) → [答题框架](00-interview-prep/02-answer-frameworks.md) |
+| **与真实面试官练习** | [预约 1:1 模拟面试或指导](https://enginebogie.com/u/ombharatiya)（也可在 [Topmate](https://topmate.io/ombharatiya) 预约） |
+| **快速学习 AI 系统** | [LLM 内部机制](01-foundations/01-llm-internals.md) → [RAG 基础](06-retrieval-systems/01-rag-fundamentals.md) |
+| **构建生产级 RAG** | [分块](06-retrieval-systems/02-chunking-strategies.md) → [向量数据库](06-retrieval-systems/04-vector-databases.md) → [重排序](06-retrieval-systems/06-reranking-strategies.md) → [生产级 RAG](06-retrieval-systems/14-production-rag-at-scale.md) |
+| **进阶检索** | [上下文检索](06-retrieval-systems/10-contextual-retrieval.md) → [ColBERT](06-retrieval-systems/11-late-interaction-colbert.md) → [多模态 RAG](06-retrieval-systems/12-multimodal-rag.md) |
+| **设计多租户 AI** | [访问控制](12-security-and-access/02-access-control.md) → [案例研究](16-case-studies/08-multi-tenant-saas.md) |
+| **构建智能体** | [智能体基础](07-agentic-systems/01-agent-fundamentals.md) → [MCP & A2A](07-agentic-systems/03-tool-use-and-mcp.md) → [LangGraph](09-frameworks-and-tools/02-langgraph-orchestration.md) |
+| **运行自主智能体循环** | [循环工程](07-agentic-systems/12-loop-engineering.md) (四层循环、终止、预算、验证、循环极限化) |
+| **工具使用与计算机智能体** | [全景](17-tool-use-and-computer-agents/01-tool-use-landscape.md) → [OpenClaw](17-tool-use-and-computer-agents/03-openclaw-deep-dive.md) → [安全](17-tool-use-and-computer-agents/07-safety-and-governance.md) |
+| **自主编码智能体** | [Claude Code](09-frameworks-and-tools/09-claude-code.md) → [OpenCoder 全景](09-frameworks-and-tools/10-opencoderguide.md) |
+| **应对框架版本更迭** | [应对框架更迭](09-frameworks-and-tools/12-navigating-framework-churn.md) (过时教程、版本固定、真正应该学习的内容) |
+| **选择合适模型（2026）** | [模型分类](02-model-landscape/01-model-taxonomy.md) → [定价](02-model-landscape/03-pricing-and-costs.md) |
+| **在生产环境评估 AI** | [AI 评估指南（Phoenix/Langfuse）](ai_evals_comprehensive_study_guide.md) → [AI 评估指南（LangWatch/Langfuse）](ai_evals_complete_guide_langwatch_langfuse.md) |
+| **正确解读基准测试** | [基准与排行榜](14-evaluation-and-observability/03-benchmarks-and-leaderboards.md) (饱和、污染、评测框架差异) |
+| **跟踪前沿研究（2026）** | [研究雷达](RESEARCH-RADAR.md) (热门论文与下一步学习方向) |
+| **构建语音智能体** | [实时语音智能体](18-voice-and-audio-agents/01-realtime-voice-agents.md)（流水线、语音到语音与双工前端、延迟、每分钟成本）→ [语音 AI 题目](00-interview-prep/01-question-bank.md#语音-ai-问题) |
+| **跨模型路由或添加网关** | [AI 网关与模型路由](11-infrastructure-and-mlops/03-ai-gateways-and-model-routing.md) (降级、速率限制、LiteLLM) |
+| **控制 AI 成本** | [FinOps 与 token 经济学](11-infrastructure-and-mlops/04-finops-and-token-economics.md) (缓存、批处理、归因、单位经济性) |
+| **满足 AI 法规要求** | [AI 治理与合规](13-reliability-and-safety/04-ai-governance-and-compliance.md) (欧盟 AI 法案、NIST RMF、需要实施的内容) |
+| **生成图像、视频和音频** | [多模态生成](19-multimodal-generation/01-multimodal-generation.md) (流水线、溯源、评估) |
+| **训练推理模型** | [RLVR 与 GRPO](03-training-and-adaptation/08-rlvr-and-reasoning-models.md) (o 系列与 R1 的训练方式) |
+| **在本地运行模型** | [端侧与边缘部署](04-inference-optimization/09-on-device-and-edge-deployment.md) (Ollama 与 vLLM、量化、硬件) |
+| **使智能体能够从崩溃中恢复** | [持久执行](07-agentic-systems/11-durable-execution.md) (重放、恰好一次、Temporal) |
+| **构建数据层** | [AI 数据工程](06-retrieval-systems/15-data-engineering-for-ai.md) (摄取、去重、个人身份信息、去污染) |
+| **寻找优质 AI 学习课程** | [推荐课程与学习路径](COURSES.md) |
+| **从当前岗位转型到 AI** | [岗位转型指南](TRANSITION_GUIDE.md) |
+| **了解 2026 年 AI 就业市场** | [就业市场趋势](00-interview-prep/06-job-market-trends-2026.md) |
+| **快速解答常见问题** | [FAQ](00-interview-prep/07-faq.md) (RAG、智能体、模型、评估、推理、记忆、安全) |
+| **查找术语** | [词汇表](GLOSSARY.md) (逐项解释术语) |
+
+### 选择路径
+
+```mermaid
+flowchart TD
+    A[新读者] --> B{你的目标}
+    B -->|面试准备| C[题库]
+    B -->|构建 RAG| D[RAG 基础]
+    B -->|构建智能体| E[智能体基础]
+    B -->|选择模型| F[模型分类]
+    B -->|评估 AI| G[AI 评估指南]
+    C --> H[答题框架]
+    D --> I[分块与向量数据库]
+    E --> J[MCP 与工具使用]
+    F --> K[定价 2026]
+    G --> L[Phoenix 或 LangWatch]
+```
+
+---
+
+## 🎯 为什么需要本指南
+
+**传统书籍在出版前就已经过时。** 这是一个活文档：当新模型发布、当模式演进时，它会随之更新。
+
+| 本指南 | 纸质书籍 |
+|------------|---------------|
+| 2026 年 11 月模型（Claude Opus 5.5、Sonnet 5.5、Haiku 5.5、Fable 5.1、GPT-6 Astra/Sol/Luna、GPT-6.1 Sol/Terra、Gemini 4 Argon、Gemini 3.8 Flash、Grok 4.7、Muse Wonder、Muse Spark 1.3、DeepSeek V4.1-Flash、Mistral Large 4、MiMo-V2.6、GLM-5.3、Kimi K3.1 Pro、Qwen3.8） | 仍停留在 GPT-4 |
+| MCP 2026-07-28 规范、A2A v1.0.1、OpenClaw、计算机使用、全双工语音智能体、智能体式 RAG、ColBERT、潜在推理、MoE 推理服务 | 尚未涵盖 |
+| 附 2026 年 11 月核验日期的实际定价 | 已经过时 |
+| Staff 级面试问答（截至 2026 年 11 月的 193 道题，含语音 AI 和近期候选人报告的面试轮次）与就业市场趋势 | 泛泛的问题 |
+
+**快速模型选择（2026 年 11 月）：**
+
+- **智能体式编码与困难生产工作：** Claude Opus 5.5（每 1M $4/$20），Anthropic 建议客户从它开始；它以 59 分（max effort）位居 Artificial Analysis Intelligence Index v5.0.1（2026 年 11 月 3 日）公开可用模型之首（Gemini 4 Carbon 得分 60，但仅向部分网络防御人员开放；GPT-6 Astra 得分 57）。
+- **生产默认：** $2/$10 层包括 Claude Sonnet 5.5、GPT-6 Sol 和 GPT-6.1 Sol。Sonnet 5.5 的缓存读取价格于 10 月 7 日降至每 1M $0.10，与 GPT-6.1 Sol 相同，因此缓存密集的智能体循环在两者上的成本如今大致相当。智能体集群、聊天与通用工作负载可路由至此。Gemini 4 Argon（10 月 13 日正式发布）仅在 11 月 30 日前为 $2/$10，12 月 1 日起为 $4/$20，且仅支持隐式缓存，因此应按 $4/$20 预算。
+- **新增中间层：** GPT-6.1 Terra（10 月 26 日，$1/$5）的价格是 $2/$10 层的一半，在该指数中得分 51；Sonnet 5.5 为 54、GPT-6.1 Sol 为 55。为更大模型付费前，先用稳定流量进行对照测试。
+- **能力上限：** Claude Fable 5.1 或 GPT-6 Astra（$10/$50），仅在评估表明 Opus 5.5 在 high 强度下仍不足时使用。
+- **高吞吐：** Claude Haiku 5.5 和 GPT-6 Luna 均为 $0.10/$0.50，但 Haiku 5.5 的提示词超过 100K token（包括缓存读写）后，整个请求按 $0.50/$2.50 计费，因此应保持提示词简短。Gemini 3.8 Flash 在 12 月 31 日前半价 $0.75/$3.75，之后 $1.50/$7.50，因此按标价预算；能在谷时安排的批处理用 DeepSeek V4.1-Flash，此时为峰时 $0.30/$1.20 的一半。
+- **开放权重：** Moonshot 于 2026 年 11 月 4 日发布 Kimi K3.1 Pro 权重（总参数 2.8T、激活 104B、定制许可证），在 v5.0.1 指数得 46 分，比 Opus 5.5 低 13 分；下一个已发布权重模型 DeepSeek V4.1-Flash 在 max effort 下得 33 分。Artificial Analysis 在 11 月 6 日仍将 K3.1 Pro 标为专有，因此开放与闭源差距是 13 还是 26 分取决于分类规则，引用时应注明。成熟选择包括 MiMo-V2.6-Pro 和 DeepSeek V4.1-Flash（均为 MIT）、GLM-5.3 和 Kimi K3；10 月新增 Meta Muse Spark Open 和 Mistral Large 4。先读许可：GLM-5.3 仅对年收入超过 US$10B 的 MaaS 运营商增加安全审查；Kimi K3、Kimi K3.1 Pro 和 Muse Spark Open 对收入超过 US$20M 的 MaaS 业务要求另行签约（K3.1 Pro 还要求月活超过 100M 或月收入超过 US$20M 的产品显著标注“Kimi K3.1-Pro”）；任何 MaaS 业务使用 Mistral Large 4 均需商业许可。
+- **切换之前：** OpenAI 输入超过 272K token、Haiku 5.5 超过 100K 后整个请求按长上下文费率计费；新版 SDK 主版本默认发送的 Anthropic API 版本 `2026-10-21` 对所有模型的任何 `temperature`、`top_p` 或 `top_k` 值（包括默认值）返回 400；Opus 5.5、Sonnet 5.5 和 Fable/Mythos 5.1 强制 `tool_choice` 返回 400，而 Haiku 5.5 接受但会跳过思考；Opus 5.5 默认 effort 为 `medium`，而 Opus 5 使用 `high`。
+
+完整拆解见[模型分类](02-model-landscape/01-model-taxonomy.md)和[模型选型指南](02-model-landscape/04-model-selection-guide.md)。
+
+---
+
+## 🎯 本指南的定位与边界
+
+**本指南是：**
+- 一本用于设计生产级 AI 系统的 staff 级参考（RAG、智能体、MCP、评估流水线、多租户隔离）。
+- 一份面试准备配套材料，包含 193 道真实题（含语音 AI 题组和根据近期候选人报告整理的题组）、带完整模拟面试逐字稿的答题框架，以及截至 2026 年 11 月的十道白板练习。
+- 一本跟踪新模型发布、协议变化和新兴模式并随之更新的活文档。
+- 对取舍有明确观点：延迟与成本、准确性与忠实性、单智能体与多智能体。
+- 免费、采用 MIT 许可，并欢迎实践者提交 PR。
+
+**本指南不是：**
+- Python、PyTorch 或机器学习基础教程（请先从课程开始；见 [COURSES.md](COURSES.md)）。
+- 回避具体选择的供应商中立材料；它会点名具体模型、价格和框架，因为真实系统必须做真实选择。
+- 动手构建的替代品；应当结合项目阅读，而不是取代项目实践。
+- 论文摘要合集；只在论文会改变实践时引用，而不追求完整覆盖。
+
+---
+
+## 📖 指南结构
+
+```
+├── 00-interview-prep/           # Questions (193), frameworks, exercises, job-market trends (November 2026)
+├── 01-foundations/              # Transformers, attention, embeddings
+├── 02-model-landscape/          # Claude Opus 5.5, Sonnet 5.5, Haiku 5.5, Fable 5.1, GPT-6 and 6.1, Gemini 4 Argon and 3.8, Grok 4.7, DeepSeek V4.1, open weights, pricing
+├── 03-training-and-adaptation/  # Fine-tuning, LoRA, DPO, distillation, RLVR/GRPO
+├── 04-inference-optimization/   # KV cache, PagedAttention, vLLM, diffusion LLMs, on-device
+├── 05-prompting-and-context/    # Prompt engineering, CoT, Extended Thinking, DSPy, prompt injection
+├── 06-retrieval-systems/        # RAG, chunking, GraphRAG, Agentic RAG, ColBERT, Contextual Retrieval, data engineering
+├── 07-agentic-systems/          # MCP (spec 2026-07-28), A2A v1.0.1, multi-agent, computer-use, durable execution, loop engineering
+├── 08-memory-and-state/         # L1-L3 memory tiers, Mem0, caching
+├── 09-frameworks-and-tools/     # LangGraph, DSPy, LlamaIndex, Claude Code, OpenCoder, framework churn
+├── 10-document-processing/      # Vision-LLM OCR, multimodal parsing
+├── 11-infrastructure-and-mlops/ # GPU clusters, LLMOps, AI gateways, FinOps and cost
+├── 12-security-and-access/      # RBAC, ABAC, multi-tenant isolation
+├── 13-reliability-and-safety/   # Guardrails, red-teaming, AI governance and compliance
+├── 14-evaluation-and-observability/ # RAGAS, LangSmith, benchmarks & leaderboards, drift detection
+├── 15-ai-design-patterns/       # Pattern catalog, anti-patterns
+├── 16-case-studies/             # Real-world architectures with diagrams
+├── 17-tool-use-and-computer-agents/ # OpenClaw, Computer Use, tool agents, safety
+├── 18-voice-and-audio-agents/   # Voice agents: pipeline, speech-to-speech, duplex front ends, turn-taking, cost per minute
+├── 19-multimodal-generation/    # Image/video/audio generation: pipelines, provenance, evaluation
+├── GLOSSARY.md                  # Every term defined
+│
+├── ai_evals_comprehensive_study_guide.md      # 🔬 Deep-dive: AI Evals (Phoenix + Langfuse)
+├── ai_evals_complete_guide_langwatch_langfuse.md  # 🔬 Deep-dive: AI Evals (LangWatch + Langfuse)
+├── COURSES.md                   # 🎓 Recommended courses & learning paths
+├── TRANSITION_GUIDE.md          # 🔄 Transition from Backend/QA/PM/EM to AI roles
+└── RESEARCH-RADAR.md            # 🛰️ Frontier research radar: trending papers and what to learn next
+```
+
+### 按 AI 系统生命周期阶段组织的章节
+
+```mermaid
+mindmap
+  root((AI 系统设计指南))
+    基础
+      LLM 内部机制
+      模型格局
+      训练与适配
+    构建
+      提示词与上下文
+      检索系统
+      智能体系统
+      工具使用与计算机智能体
+      语音与音频智能体
+      多模态生成
+    运行
+      推理优化
+      记忆与状态
+      框架与工具
+      基础设施与 MLOps
+    治理
+      安全与访问
+      可靠性与安全
+      评估与可观测性
+    应用
+      设计模式
+      案例研究
+      面试准备
+```
+
+---
+
+## 🔥 精选案例研究
+
+真实面试题场景，包含完整解法与图示：
+
+| 案例研究 | 问题 | 关键模式 |
+|------------|---------|--------------|
+| [实时搜索](16-case-studies/06-real-time-search.md) | 大规模场景下 5 分钟的数据新鲜度 | 流式处理与混合检索 |
+| [编码智能体](16-case-studies/07-autonomous-coding-agent.md) | 自主修改多个文件 | 沙箱隔离与自我纠正 |
+| [多租户 SaaS](16-case-studies/08-multi-tenant-saas.md) | 可口可乐与百事共享基础设施 | 纵深防御隔离 |
+| [客户支持](16-case-studies/09-customer-support-automation.md) | 60% 自动解决率 | 分层路由与升级处理 |
+| [文档智能](16-case-studies/10-document-intelligence.md) | 每月从 50K 份合同提取信息 | 视觉 LLM 与并行提取器 |
+| [推荐引擎](16-case-studies/11-recommendation-engine.md) | 为 50M 用户提供个性化解释 | ML 排序与 LLM 解释 |
+| [合规自动化](16-case-studies/12-compliance-automation.md) | FDA 法规预审 | 主张提取与先例数据库 |
+| [语音医疗](16-case-studies/13-voice-ai-healthcare.md) | 实时生成临床记录 | BAA 下的 ASR、基于证据的记录与护士审核 |
+| [欺诈检测](16-case-studies/14-fraud-detection.md) | 可解释的 100ms 决策 | ML 与规则混合 |
+| [知识管理](16-case-studies/15-knowledge-management.md) | 带访问控制的 2M 份文档 | 权限感知 RAG |
+| [计算机使用智能体](16-case-studies/16-computer-use-agent-production.md) | 跨 3 个遗留 UI 自动处理费用报表 | Firecracker 虚拟机、动作门控与 IPI 防御 |
+| [多租户微调](16-case-studies/17-multi-tenant-fine-tuning-platform.md) | 280 个租户共享基础模型，每个租户独立使用 LoRA | LoRA 热切换与各租户的评估即 PRD |
+| [评估门控 CI/CD](16-case-studies/18-eval-gated-cicd.md) | 阻止使 AI 质量退化的 PR | 黄金集、LLM 评判者与统计校正 |
+| [客户模型蒸馏](16-case-studies/19-customer-distillation-pipeline.md) | 将每月前沿模型账单从 $50K 降至约 $9K，不到 3 个月回本 | 基于轨迹的蒸馏与金丝雀发布 |
+| [MCP 知识智能体](16-case-studies/20-mcp-knowledge-agent.md) | 从 Snowflake/Confluence/Jira/Slack 获取跨系统答案 | MCP、OAuth 资源服务器与能力门控 |
+
+---
+
+## 🔬 配套深度指南
+
+两本配套指南（每本 3000+ 行）覆盖 AI 评估的端到端流程，面向工程师、PM 和 QA：
+
+| 指南 | 覆盖平台 | 内容 |
+|-------|------------------|---------------|
+| [AI 评估：综合学习指南](ai_evals_comprehensive_study_guide.md) | Arize Phoenix + Langfuse | LLM 作为评判者、RAG 评估、多轮评估、生产安全、使用 `judgy` 进行统计校正、30 天学习路径 |
+| [AI 评估：LangWatch 与 Langfuse 指南](ai_evals_complete_guide_langwatch_langfuse.md) | LangWatch + Langfuse | 同一教学大纲，结合 LangWatch 的 30+ 现成评估器、平台并排比较和选型指导 |
+
+**两本指南共同覆盖的主题：**
+- 追踪与可观测性配置（Phoenix、LangWatch、Langfuse）
+- 错误分析：开放编码 → 主轴编码 → 失败模式分类
+- 划分训练/开发/测试集并用真实标注校准 LLM 评判者
+- 基于代码的评估器（正则表达式、JSON schema、格式校验器）
+- RAG 专项评估：忠实性、上下文召回率、答案相关性
+- 多步流水线评估与多轮对话评估
+- 生产护栏、安全监控、实时漂移检测
+- 使用 `judgy` 库进行统计校正
+- 人工标注最佳实践与标注者间可靠性
+- 大规模评估流水线的成本与延迟优化
+
+## 🎓 面向面试准备（Interview Prep）
+
+AI 工程（AI engineering）与系统设计（system design）面试常会问这样的问题：
+
+> "设计一个多租户 RAG 系统，使竞争对手无法看到彼此的数据。"
+
+> "你的智能体花了 15 步完成一个只需 3 步的任务。你会如何调试？"
+
+本指南提供 **具体模式**、**真实取舍** 和 **生产故障模式**：这正是高级别面试官所期望的深度。
+
+➡️ 从 [Interview Prep](00-interview-prep/) 开始
+
+**想在正式面试前演练一次？** 阅读优秀答案可以积累知识，但面试还考察另一种能力：在计时和取舍质疑下，把设计说清楚。Om 提供 1:1 AI 系统设计模拟面试、答案与简历审阅，以及面向转向高级 AI 岗位者的长期指导。可在 [EngineBogie](https://enginebogie.com/u/ombharatiya) 或 [Topmate](https://topmate.io/ombharatiya) 预约。
+
+<p align="center">
+  <a href="https://enginebogie.com/u/ombharatiya"><img src="https://img.shields.io/badge/Book%20a%20mock%20interview%20%E2%86%92-0E7C66?style=for-the-badge&logo=googlecalendar&logoColor=white" alt="在 EngineBogie 预约模拟面试"></a>
+  <a href="https://topmate.io/ombharatiya"><img src="https://img.shields.io/badge/Mentorship%20on%20Topmate-1F2937?style=for-the-badge&logoColor=white" alt="在 Topmate 预约指导"></a>
+</p>
+
+---
+
+## ❓ 常见问题（Frequently Asked Questions）
+
+### 什么是 AI system design（AI 系统设计）？
+
+AI system design（AI 系统设计）是围绕 LLM（Large Language Models，大型语言模型）、检索（retrieval）、Agent（智能体）和评估（evaluation）构建生产级系统的学科。它涵盖模型选择、RAG（Retrieval-Augmented Generation，检索增强生成）流水线、Agent 编排、memory（记忆）、observability（可观测性）和 safety（安全性）。参见 [LLM 内部机制](01-foundations/01-llm-internals.md) 和 [AI Design Patterns](15-ai-design-patterns/) 以建立基础认知。
+
+### 我该如何准备 AI engineering（AI 工程）面试？
+
+从 [题库](00-interview-prep/01-question-bank.md) 开始（截至 2026 年 11 月共有 193 道题），然后结合 [答题框架](00-interview-prep/02-answer-frameworks.md) 和 [白板练习](00-interview-prep/04-whiteboard-exercises.md) 进行练习。大多数高级别面试会考察 RAG 设计、Agent 调试、multi-tenant isolation（多租户隔离）以及 cost/latency tradeoffs（成本/延迟取舍），这些都收录在 [案例研究](16-case-studies/) 中。正式面试前，至少和一位会打断并质疑你的人做一次计时模拟；可在 [EngineBogie](https://enginebogie.com/u/ombharatiya) 或 [Topmate](https://topmate.io/ombharatiya) 与 Om 预约。
+
+### 什么是 RAG（Retrieval-Augmented Generation，检索增强生成）？
+
+RAG 是一种模式：LLM 会在生成答案之前，从外部知识源（如 vector DB、search index、graph）检索相关上下文，从而减少 hallucinations（幻觉）并让回答基于你的数据。完整流程见 [RAG 基础](06-retrieval-systems/01-rag-fundamentals.md)，规模化实践见 [生产级 RAG at Scale](06-retrieval-systems/14-production-rag-at-scale.md)。
+
+### 什么是 AI agents（AI 智能体），它们与 chatbots（聊天机器人）有何不同？
+
+AI agents（AI 智能体）是由 LLM 驱动的系统，能够规划、调用工具，并通过多步执行来完成目标；而 chatbots（聊天机器人）通常是单轮响应。智能体会引入循环、记忆、错误恢复，以及通过 MCP（Model Context Protocol，模型上下文协议）等协议进行工具使用。可从 [智能体基础](07-agentic-systems/01-agent-fundamentals.md) 开始。
+
+### 什么是 MCP（Model Context Protocol，模型上下文协议），它与 A2A 有何区别？
+
+MCP 是一种开放协议，使 LLM 应用能以标准方式发现并调用外部工具和数据源。A2A（Agent2Agent）是将工作交给不受你控制的智能体的互补协议：远程智能体在 `/.well-known/agent-card.json` 发布 Agent Card，客户端向其发送消息，由远程智能体决定是否开启长时间运行的任务。两者解决不同层面：MCP 是工具边界，A2A 是智能体边界，多数系统远在需要 A2A 之前就需要 MCP。两者现在均归属 Linux Foundation 的 Agentic AI Foundation（A2A 于 2026 年 8 月加入）。面试中应精确引用版本：MCP 规范按日期修订，当前版（2026-07-28）使协议核心无状态，下一版计划于 2027 年 3 月 30 日发布，不存在“MCP 2.0”；A2A 最新规范版本为 v1.0.1。详见 [Tool Use and MCP](07-agentic-systems/03-tool-use-and-mcp.md)。
+
+### 生产环境中该用哪个 LLM：Claude、GPT、Gemini，还是开源模型？
+
+这取决于 latency budget（延迟预算）、context length（上下文长度）、每任务成本（每任务 token 乘价格，而非每 token 价格）、tool-use quality（工具使用质量）和 data residency（数据驻留）。2026 年 11 月的合理起点是：智能体式编码与困难工作用 Claude Opus 5.5（每 1M $4/$20），多数生产流量用 $2/$10 层（Claude Sonnet 5.5、GPT-6 Sol、GPT-6.1 Sol），质量达标时使用 GPT-6.1 Terra（$1/$5），高吞吐用 Claude Haiku 5.5、GPT-6 Luna 或 Gemini 3.8 Flash（Haiku 5.5 的 $0.10/$0.50 价格仅适用于 100K token 以下的提示词），仅在评估表明低价层不足时使用 Claude Fable 5.1 或 GPT-6 Astra（$10/$50）。[模型分类](02-model-landscape/01-model-taxonomy.md) 和 [定价](02-model-landscape/03-pricing-and-costs.md) 章节比较这些模型，以及 Gemini 4 Argon、Grok 4.7、Muse Spark 1.3、DeepSeek V4.1-Flash 和 MiMo-V2.6、GLM-5.3、Kimi K3.1 Pro（权重自 2026 年 11 月 4 日起提供）、Mistral Large 4 等开放权重模型；[模型选型指南](02-model-landscape/04-model-selection-guide.md) 将其转为决策树。切换前运行自身评估：供应商分数不能跨测试框架或推理强度迁移。
+
+### 如何在生产环境中评估 LLM 或 RAG 系统？
+
+将离线评估（offline evals，包含 LLM-as-a-judge 以及 ground-truth calibration，真值校准）、在线指标（faithfulness、context recall、answer relevance）和持续 tracing（追踪）结合起来。配套深度解析 [AI Evals: Phoenix + Langfuse](ai_evals_comprehensive_study_guide.md) 与 [AI Evals: LangWatch + Langfuse](ai_evals_complete_guide_langwatch_langfuse.md) 会完整讲解这一流程。
+
+### 如何安全地构建多租户 RAG 系统？
+
+采用 defense-in-depth（纵深防御）：按租户建立独立索引或命名空间、在查询时进行访问检查，以及在 prompt layer（提示层）加入防护。 [访问控制](12-security-and-access/02-access-control.md) 章节和 [多租户 SaaS 案例研究](16-case-studies/08-multi-tenant-saas.md) 覆盖了在面试和生产中都经得住考验的模式。
+
+### 什么是 agentic RAG？
+
+Agentic RAG（智能体式 RAG）把检索与一个智能体循环结合起来，让系统可以决定搜索什么、何时重新查询、何时升级处理，而不是只执行一次固定的 retrieve-then-generate（先检索后生成）流程。架构与取舍见 [Agentic RAG](06-retrieval-systems/08-agentic-rag.md)。
+
+### 这份指南免费吗？我可以贡献吗？
+
+是的，MIT 许可且免费。欢迎提交 PR；见 [贡献指南](CONTRIBUTING.md)。如果你有 production failure modes（生产故障模式）、新的模型基准，或者想补充面试题，请提交 PR。
+
+### 这份指南多久更新一次？
+
+持续更新。新的模型发布、协议变化（MCP、A2A）和新兴模式会在发布后持续补充。2026 年 11 月更新将模型、价格、协议和框架版本推进至 2026 年 11 月 6 日状态。近期新增包括十二道[近期面试报告题目](00-interview-prep/01-question-bank.md#近期面试报告中的问题)（Q174-Q185：安全遥测智能体、权限对等的代码探索器、devbox、提示注入下的评论接入、智能体式零售搜索、必须使用 AI 的设计轮）、八道 [2026 年 11 月题目](00-interview-prep/01-question-bank.md#进阶问题-2026-年-11-月)（Q186-Q193：按终端客户隔离限制措施、服务端消息线程、多供应商弃用计划、网络安全访问计划、开放权重许可证审查、重评排行榜、失效放行的租户隔离、智能体批准控制）、十八道[近期面试报告题目](00-interview-prep/01-question-bank.md#近期面试报告中的问题)（Q156-Q173：设计文档审查、模型分发、GPU 调度、从零实现 KV 缓存和 tokenizer、不使用框架的智能体、AI 辅助编码、上线准备、安全面试）、八道 [2026 年 10 月题目](00-interview-prep/01-question-bank.md#进阶问题-2026-年-10-月)（Q148-Q155：智能体监控、事件分类、网关供应链、微调迁移、价格断崖、决策模型、API 版本发布、补丁 SLA）、十二道[语音 AI 题目](00-interview-prep/01-question-bank.md#语音-ai-问题)、七道 2026 年 9 月题目、第十道白板练习、重写的[实时语音智能体](18-voice-and-audio-agents/01-realtime-voice-agents.md)章节，以及 [2026 年 11 月就业市场趋势](00-interview-prep/06-job-market-trends-2026.md)。
+
+### 如果我从后端、QA、PM 或 EM 转向 AI，可以使用这份指南吗？
+
+可以。 [岗位转型指南](TRANSITION_GUIDE.md) 会把现有技能映射到 AI engineering（AI 工程）、MLE（Machine Learning Engineer，机器学习工程师）和 AI architect（AI 架构师）方向，并按角色提供阅读路径。可搭配 [COURSES.md](COURSES.md) 获取精选学习资源。
+
+---
+
+## 🔄 活文档（Living Book）
+
+本指南会持续追踪：
+- 新模型发布和真实世界性能
+- 新兴模式（MCP、Agentic RAG、Flow Engineering）
+- 更新的定价和速率限制
+- 弃用项和最佳实践变更
+
+**⭐ 点星并关注** 这个仓库，以便在更新推送时收到通知。
+
+---
+
+## 🤝 贡献
+
+发现信息过期了？有生产经验想分享？欢迎提交 PR。  
+见 [贡献指南](CONTRIBUTING.md)。
+
+---
+
+## 👋 保持联系（Stay Connected）
+
+如果这份指南对你有帮助，支持它最直接的方式，是关注新章节和更新最先发布的渠道：
+
+- **网站：** [aidaddy.tech](https://www.aidaddy.tech) - 阅读完整指南，支持搜索、清晰导航和移动端友好布局。
+- **GitHub:** [@ombharatiya](https://github.com/ombharatiya) - 关注仓库，给项目点星，并留意新版本发布。
+- **X / Twitter:** [@ombharatiya](https://x.com/ombharatiya) - 关于模型发布、MCP、智能体和面试的简短观点。
+- **LinkedIn:** [ombharatiya](https://linkedin.com/in/ombharatiya) - 更深入的文章和高级 AI 岗位面试准备建议。
+- **模拟面试与指导：** [EngineBogie](https://enginebogie.com/u/ombharatiya) 或 [Topmate](https://topmate.io/ombharatiya) - 预约 1:1 AI 系统设计模拟面试、答案审阅，或转向 AI 岗位的持续指导。
+
+<p align="center">
+  <a href="https://github.com/ombharatiya"><img src="https://img.shields.io/badge/Follow%20on%20GitHub-ombharatiya-181717?style=for-the-badge&logo=github" alt="Follow on GitHub"></a>
+  <a href="https://x.com/ombharatiya"><img src="https://img.shields.io/badge/Follow%20on%20Twitter-@ombharatiya-1DA1F2?style=for-the-badge&logo=x" alt="Follow on Twitter"></a>
+  <a href="https://linkedin.com/in/ombharatiya"><img src="https://img.shields.io/badge/Connect%20on%20LinkedIn-ombharatiya-0A66C2?style=for-the-badge&logo=linkedin" alt="Connect on LinkedIn"></a>
+</p>
+
+---
+
+## 📄 许可证（License）
+
+MIT License。见 [LICENSE](LICENSE)。
+
+---
+
+<p align="center">
+  <b>构建与维护： <a href="https://github.com/ombharatiya">Om Bharatiya</a> · <a href="https://github.com/ombharatiya">GitHub</a> · <a href="https://x.com/ombharatiya">Twitter</a> · <a href="https://linkedin.com/in/ombharatiya">LinkedIn</a></b>
+</p>

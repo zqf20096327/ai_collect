@@ -8,7 +8,7 @@
 
 [![Build](https://img.shields.io/github/actions/workflow/status/KongFangXun/sofagent/verify.yml?branch=main)](https://github.com/KongFangXun/sofagent/actions/workflows/verify.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen)](./LICENSE)
-[![Version](https://img.shields.io/badge/Version-v1.8.0-16B8F3)](./CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-v1.9.0-16B8F3)](./CHANGELOG.md)
 ![npm](https://img.shields.io/npm/v/sofagent)
 ![npm downloads](https://img.shields.io/npm/dw/%40sofagent%2Faudit)
 [![Stars](https://img.shields.io/github/stars/KongFangXun/sofagent?style=social)](https://star-history.com/#KongFangXun/sofagent&Date)
@@ -25,7 +25,7 @@
 - [核心特性](#核心特性)
 - [什么是 FDE Harness](#什么是-fde-harness)
 - [多平台挂载](#多平台挂载)
-- [v1.8.0：判定底座 · 阶段三（接线与分发）](#v180判定底座--阶段三接线与分发)
+- [v1.9.0：判定底座 · 阶段四（消费与收口）](#v190判定底座--阶段四消费与收口)
 - [FDE Harness 两阶段](#fde-harness-两阶段)
 - [安装](#安装)
 - [使用](#使用)
@@ -47,7 +47,7 @@
 <details>
 <summary>🧩 三因子口径（点开，术语见〈<a href="#什么是-fde-harness">什么是 FDE Harness</a>〉）</summary>
 
-> sofagent 是**自带 Harness 的 FDE 交付物治理层**——工程层（FDEing）与治理层（harness）已交付，判定层（S1M 决策模型）排期 v1.6.0–v1.9.0、v2.0.0 宣告（阶段三 v1.8.0 已发版 2026-11-05）。三层各司其职。
+> sofagent 是**自带 Harness 的 FDE 交付物治理层**——工程层（FDEing）与治理层（harness）已交付，判定层（S1M 决策模型）排期 v1.6.0–v1.9.0、v2.0.0 宣告（阶段四 v1.9.0 已发版 2026-11-12）。三层各司其职。
 > 身份公式 **FDEing × S1A（S1A = S1M + Harness）**，口径见 [PHILOSOPHY](./docs/PHILOSOPHY.md)。
 
 </details>
@@ -78,7 +78,7 @@ sofagent 不造 Agent——交付的是让任何 Agent 被管住的那一层（�
 
 **五分钟沙箱演示**（v1.5.1 已交付；沙箱隔离、真实文件零接触）：`npx -y -p sofagent sofagent audit demo`——一条命令跑完「沙箱构建 → 注入 → 故意违规 → 审计拦截 → 快照回滚 → HMAC 举证导出」五幕链路（`--speed fast` 为 60 秒版；产物落 `$SOFAGENT_DATA/demo`，不触碰被审仓库）。（demo 经 npm 通道提供；install.sh 安装态 CLI 暂无 demo 子命令）
 
-> 版本说明：v1.8.0 已发版（2026-11-05）；npm 可安装最新版 `@sofagent/audit@1.8.0`。
+> 版本说明：v1.9.0 已发版（2026-11-12）；npm 可安装最新版 `@sofagent/audit@1.9.0`。
 
 ## 该不该装？
 
@@ -120,11 +120,14 @@ sofagent 不造 Agent——交付的是让任何 Agent 被管住的那一层（�
 - 🤖 **部署 AI 节点**——三层交付物（文档层 + Skill 层 + 运行层），装进你已有的 AI 工具，从"你干活"变"你派活"
 - 📦 **判断冻结成交付物**——每个节点带「做好标准（merge_criteria）· 谁拍板（approver）」，机器可判定、跨阶段共享
 
-**判定层 · S1M**（判断与生成分离的决策模型；**v1.6.0–v1.9.0 施工·v2.0.0 宣告——阶段一/二已交付，阶段三已于 v1.8.0 交付（接线与分发，2026-11-05 发版）**——本版只声明路线；锚定 [S1M-DECISION-POINTS](./FDE/S1M-DECISION-POINTS.md)，已交付落点是既有判定与举证面）：
+**判定层 · S1M**（判断与生成分离的决策模型；**v1.6.0–v1.9.0 施工·v2.0.0 宣告——阶段一~四已交付（阶段四 = v1.9.0 消费与收口，2026-11-12 发版）**——本版只声明路线；锚定 [S1M-DECISION-POINTS](./FDE/S1M-DECISION-POINTS.md)，已交付落点是既有判定与举证面）：
 
 - 🔎 **判定留痕**——decision-log 因果链记录每个可问责决策（谁拍板、依据什么、为何这么做），供 auto-PR 解释块与 daemon 周报消费
 - ⚙️ **判定通道与分发（v1.8.0 形态）**——`DecisionChannel` 默认实现（本地子进程 NDJSON）+ off/shadow/active 三档接线 + 判定回执五件落链 + 权重分发通路（来源白名单 / sha256 强校验 / 断点续传 / USB 两档离线运行）——v1.8.0 已发版（2026-11-05）
 - 🔗 **判定可举证**——审计历史落 HMAC 链，`--verify-chain` 可离线复算链完整性，结论能被第三方复核
+  - 前提一：**可复验 = 同一环境指纹下**。换机后须持旧 fingerprint 才能复算，否则判 `unverifiable`——属黄态（不可复算），不是篡改
+  - 前提二：历史 `decision-log.jsonl` 含早期测试写入面与设备写入面——104,337 条中 96,002 条验签有效、8,333 条签名不符、2 条无签名，**验签不过共 8,335 条**。处置为「历史原样 + 新写入面分段」：不重签（一次性测试 key 已不可得）、不删件（append-only）
+  - 前提三：**默认 `--verify-chain` 今天对真实数据出红，首红位置随运行目录指纹而变**——仓根（fp `20db1f9d`）首红是索引 2（`A` 类测试夹具）；在 `engine/audit` 目录内运行（fp `ffae2ca0`）首红是索引 0（创世条目，2026-08-08 早期一次性测试 key 签发）。其中 8,330 条在仓根指纹下判红、仅 3 条判黄——两者同为早期测试 key 签发，属**混链遗留，不是新写入被篡改**；分链起新写入面不再产生此类条目
 
 > 边界：当前判定层概率输出尚未完成校准接线（判据阈值仍挂零样本基线），规则判定由确定性判定器兜底——判定层接管为未来态（见 [ARCHITECTURE](./docs/ARCHITECTURE.md)）。
 
@@ -172,26 +175,27 @@ sofagent 不造 Agent——交付的是让任何 Agent 被管住的那一层（�
 | **薄挂载** | WorkBuddy / Codex / Gemini CLI / Hermes | ⚠️ Skill 自觉加载 | Skill 目录 symlink（Codex 走 `AGENTS.md` 挂载点）+ git hook 审计 |
 
 - **档位差的是注入强度，不是「有没有」**：DSH 逐工具调用可拦，OpenClaw 每会话注入一遍，其余靠 Agent 自觉。「支持某平台」= 约束资产可用，**≠ 强度相同**；迁移前看目标宿主档位，矩阵见 [加载链 HOOK](./engine/hooks/sofagent-load-chain/HOOK.md)
-- **审计兜底平台无关**——`sofagent audit --install-hook` 走 git hook，任何档位每次 commit 都自动审计（默认启用 17 条；完整 28 条需在 `.sofagent/config.yml` 显式开启 `extendedRulesEnabled: true`），违规硬拦截。
+- **审计兜底平台无关**——`sofagent audit --install-hook` 走 git hook，任何档位每次 commit 都自动审计（默认启用 17 条；完整 28 条只认 `.sofagent/config.yml` 的 `extendedRulesEnabled: true` 开关——`--full` 不开规则集，只选引擎与 diff 范围），违规硬拦截。
   约束是建议性的，审计是强制性的（边界：默认非 fail-closed，`--no-verify` 可跳过前两层防线、post-commit 只留痕不阻断，详见 [LIMITATIONS §三](./docs/LIMITATIONS.md#三安全与信任模型局限)）
 
 一条命令选定挂载档位：`bash install.sh --platform <平台名>`（全部平台与差异见 [HANDBOOK](./docs/HANDBOOK.md)）
 
 > 📌 `AGENTS.md`（Codex）/ `GEMINI.md`（Gemini CLI）/ `.claude/` / `.cursor/` 为各宿主的分层挂载点，均为对 `SKILL/` 的薄引用。
 
-## v1.8.0：判定底座 · 阶段三（接线与分发）
+## v1.9.0：判定底座 · 阶段四（消费与收口）
 
-🧭 **判定件从「模型可用」到「工程可接」**——四阶段判定底座第三版：判定以标准通道接入编排（不占本地主模型槽），以可分发制品走出仓库（sha256 全程校验）：
+🧩 **判定件从「工程可接」到「收口可证」**——四阶段判定底座收官版：判据面扩展、判定头本地推理接线、四层性能标准与对照读数全部落数（release-gate PASS 条件放行 · 80 条验收 78 勾）：
 
 | 能力 | 一句话 | 触达方式 |
 |---|---|---|
-| **DecisionChannel 默认实现** | 本地子进程 NDJSON 协议（StdioDecisionChannel）：逐请求超时即杀 · 进程必回收 · 协议 SSOT 单源 | SDK 面 |
-| **三档接线** | off 归一 / shadow 影子不改行为 / active 过对账才生效——判定档永不进自动路由矩阵 | `judgeMode` 配置 |
-| **判定回执五件落链** | state 摘要 / 证据引用 / 模型身份 / 完整概率 / 确定性基线——每次判定可回放（content:false 指纹纪律） | decision-log |
-| **并行约束解码** | 一次前向出全部字段：打包按字段数 · 超词表分块零截断 · 批内同伴处置序 | SDK 面 |
-| **观测四字段** | calls / failures / degradations / 延迟桶计数，经 MCP 透传 | `sofagent daemon` |
-| **权重分发通路** | fail-closed 四红线（白名单/sha256/断点续传/进度回调）+ USB 两档离线（A 安装器 --media · B 便携即插即跑） | `install.sh --media` |
-| **/v1/systemone 门面** | 判定件可被 System One 既有客户端直接消费（环回绑定 · 零内容日志） | HTTP POST |
+| **三域判据集** | workflow / 本体数据 / 路由判定各 ≥1 套判据集，加载校验 + interface-only 如实声明 + 未校准域进决策路径即抛（fail-closed） | SDK 面 |
+| **FDE 判据面接线** | S1M 决策点三首落点建档（三问判定 / 离场就绪度 / 健康分合成），归属迁移过 evidenceReadiness 门且留痕 | SDK 面 |
+| **判定头本地推理** | judge-local 五环 fail-closed——权重缺失 / sha 不符拒绝判定**不回落 LLM**；回执四件（判据版本 / 权重 sha16 / 读数 / 时间） | CLI 可达（`sofagent orchestrator judge-local`） |
+| **判定可复现重放** | judge-replay——三件套指纹核对 + state 快照 → 离线重放同一概率分布 | CLI 可达（`sofagent orchestrator judge-replay`） |
+| **判定调用密度落数** | 打包 74 请求 vs 串行 370 调分列（混报会把打包成效记成假象） | 进程内自动（judge() 出口埋点） |
+| **格式破坏率双通道** | 类型化接口 0% vs 文本通道 14.86%——对照通道偏置的量化读数（格式失败 ≠ 能力差距） | 归档读数（datasets/v19-density/） |
+| **出卷纪律 lint 软⑧⑨** | 弱预言信号提示（存在性/进程成功类单独不构成证据）+ 覆盖显式批级提示（「没查什么」须登记） | SDK 面 |
+| **断网可用演练** | offline-drill 三件（零网络断言 / 隔离 HOME 审计 / verify-chain HMAC）可复跑留档 | CLI 可达（`bash tools/check/offline-drill.sh`） |
 
 ## FDE Harness 两阶段
 
@@ -225,7 +229,7 @@ sofagent 不造 Agent——交付的是让任何 Agent 被管住的那一层（�
 npx -y -p sofagent sofagent audit
 ```
 
-> 💡 quick 跑 17 条默认（A1–A11 + A18–A23；其中 A9 commit-msg 注入检测——读最近一次 commit 消息，无消息时按无输入跳过（A3 无task跳过））；`--init` 的 hook 默认同样 17 条，完整 28 条需在 `.sofagent/config.yml` 开 `extendedRulesEnabled: true`——详见 [LIMITATIONS §三](./docs/LIMITATIONS.md#三安全与信任模型局限)。
+> 💡 quick 跑 17 条默认（A1–A11 + A18–A23；A9 读最近一次 commit 消息，无消息按无输入跳过（A3 无task跳过））；`--init` 同样 17 条，完整 28 条**只认** `.sofagent/config.yml` 的 `extendedRulesEnabled: true` 开关（`--full` 只选引擎与 diff 范围，不开规则集）——详见 [LIMITATIONS §三](./docs/LIMITATIONS.md#三安全与信任模型局限)。
 
 > ⚠️ 这一步是**一次性审计**（当次进程内），不装 git hook——之后 commit 不会被自动拦。要长期守护请跑 `sofagent audit --init`（见下方完整安装）。
 
@@ -248,7 +252,7 @@ $ npx -y -p sofagent sofagent audit
 **完整安装**（Node.js ≥ 18，先下载审查再执行）——**装在企业跑 AI 节点的设备上**：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/KongFangXun/sofagent/refs/tags/v1.8.0/bootstrap.sh -o bootstrap.sh
+curl -fsSL https://raw.githubusercontent.com/KongFangXun/sofagent/refs/tags/v1.9.0/bootstrap.sh -o bootstrap.sh
 less bootstrap.sh          # 先看一眼脚本内容，确认安全
 bash bootstrap.sh && rm bootstrap.sh
 ```
@@ -332,7 +336,7 @@ npx -y -p sofagent sofagent audit --ruleset security   # 加载安全规则集
 
 ## 生态与文档索引
 
-**Featured in**（社区收录 · 13 项已收录）：
+**Featured in**（社区收录 · 14 项已收录）：
 
 [![Awesome AI Agents](https://img.shields.io/badge/Awesome_AI_Agents-featured-2ea44f)](https://github.com/NipunaRanasinghe/awesome-ai-agents)
 [![Glama](https://img.shields.io/badge/Glama-indexed-4A90D9)](https://glama.ai/mcp/servers/KongFangXun/sofagent)
@@ -347,9 +351,10 @@ npx -y -p sofagent sofagent audit --ruleset security   # 加载安全规则集
 [![awesome-ai-governance](https://img.shields.io/badge/awesome--ai--governance-listed-brightgreen)](https://github.com/agentrust-io/awesome-ai-governance)
 [![awesome-auditable-ai](https://img.shields.io/badge/awesome--auditable--ai-listed-brightgreen)](https://github.com/yzhao062/awesome-auditable-ai)
 [![loop-engineering](https://img.shields.io/badge/loop--engineering-listed-brightgreen)](https://github.com/cobusgreyling/loop-engineering/blob/main/docs/adopters.md)
+[![awesome-harness-engineering (walkinglabs)](https://img.shields.io/badge/awesome--harness--engineering%20%28walkinglabs%29-listed-brightgreen)](https://github.com/walkinglabs/awesome-harness-engineering)
 
 **收录申请中（PR open）**：
-[![awesome-harness-engineering](https://img.shields.io/badge/awesome--harness--engineering-PR%20open-orange)](https://github.com/ai-boost/awesome-harness-engineering/pull/227)
+[![awesome-harness-engineering (ai-boost)](https://img.shields.io/badge/awesome--harness--engineering%20%28ai--boost%29-PR%20open-orange)](https://github.com/ai-boost/awesome-harness-engineering/pull/227)
 [![awesome-ai-agents (e2b)](https://img.shields.io/badge/awesome--ai--agents%20%28e2b%29-PR%20open-orange)](https://github.com/e2b-dev/awesome-ai-agents/pull/1471)
 
 **仓库内两大目录的语义归属**：
@@ -369,7 +374,7 @@ npx -y -p sofagent sofagent audit --ruleset security   # 加载安全规则集
 | 社区参与 · 行为准则 | [COMMUNITY](./docs/COMMUNITY.md) |
 | 外部验证与行业对照 | [VALIDATION](./docs/VALIDATION.md) |
 
-> 🧪 **工程可信度**（当前口径）：6917 测试 / 14 包（`tools/check/test-count.sh` 实测口径）+ 12 插件（8 DSH + 4 OpenClaw）· 28 条审计规则 · fresh-eyes 独立审查（见 [review-system](./docs/guides/review-system.md)）。
+> 🧪 **工程可信度**（当前口径）：7014 测试 / 14 包（`tools/check/test-count.sh` 实测口径）+ 12 插件（8 DSH + 4 OpenClaw）· 28 条审计规则 · fresh-eyes 独立审查（见 [review-system](./docs/guides/review-system.md)）。
 > **包数口径**（消歧）：主读数口径 = 14 包（test-count.sh 实测；下述两口径为集合定义）——workspace 29 = 13 模块包 + `engine/corpus`（`@sofagent/rsi-corpus` 语料管道，版本线独立）+ load-chain + dsh-plugin-kit + umbrella + 8 DSH 插件 + 4 OpenClaw 插件（见 [WIKI §六](./docs/WIKI.md#六当前状态)）；**测试计数口径** = 13 模块包（含 test script 的 workspace 全量实测 27 个——活读数见 `tools/check/test-count.sh` 头注的口径说明，插件与工具包不计）——非同一集合。
 > 测试数二口径：**发版时点值**（各版本 `4805→4903` 增量账）与**当前实测值**（上方行）；权威值以 `tools/check/check-test-count.sh` 实跑为准；性能数据为单机参考值。
 

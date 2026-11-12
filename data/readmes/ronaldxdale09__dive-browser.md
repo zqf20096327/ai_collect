@@ -99,7 +99,9 @@ claude mcp add --transport http dive http://127.0.0.1:7391/mcp `
   --header "Authorization: Bearer $(Get-Content $env:APPDATA\dive\mcp-token)"
 ```
 
-Cursor and other clients take the same URL and header. Settings › Developer shows the token path and the current port. `page_evaluate` stays off unless you start Dive with `DIVE_MCP_ALLOW_EVAL=1`.
+Cursor and other clients take the same URL and header. Settings › Developer shows the token path and the current port. `page_evaluate` stays off unless you start Dive with `DIVE_MCP_ALLOW_EVAL=1` (or `true`; any other value leaves it off).
+
+Every tool, what it does and its parameters: [docs/MCP-TOOLS.md](docs/MCP-TOOLS.md).
 
 ## Build from source
 
@@ -113,9 +115,9 @@ export CEF_PATH="$HOME/.local/share/cef"   # CEF is downloaded here once (~500 M
 pnpm dev
 ```
 
-Windows needs the MSVC toolchain and one extra environment variable so
-whisper.cpp and CEF agree on a C++ runtime; [docs/WINDOWS.md](docs/WINDOWS.md)
-has the setup and the reasoning.
+Windows needs the MSVC toolchain and the C++ runtime flags set by
+`scripts/windows/msvc-runtime.ps1` so whisper.cpp and CEF agree on a C++
+runtime; [docs/WINDOWS.md](docs/WINDOWS.md) has the setup and the reasoning.
 
 `pnpm check` runs the full gate. Layout, environment knobs and conventions are in [CONTRIBUTING.md](CONTRIBUTING.md); design notes and measurements are under [docs/](docs/README.md).
 

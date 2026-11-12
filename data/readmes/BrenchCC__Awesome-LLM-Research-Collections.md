@@ -66,6 +66,11 @@
   **Description**: Muir improves gated delta-rule linear attention by allocating lower-rank capacity to less sensitive erase gates, using matched-filter readout to reduce state interference, and introducing a stable parallel update. It improves language modeling and long-context recall over Gated DeltaNet-2 while matching its throughput. \
   <a href="https://arxiv.org/abs/2611.08376"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
 
+- **DepthGraft: Structural Regularization through Hierarchical Cross-Layer KV Reconstruction** (2026.11) \
+  **Description**: DepthGraft reconstructs deep-layer keys and values from stride-aligned shallow and middle layers, using cross-layer KV reuse to distribute gradients and regularize KV representations. Across dense and MoE models, it improves downstream performance while reducing KV-cache storage by roughly one third and enabling earlier prefill completion. \
+  <a href="https://arxiv.org/abs/2611.03142"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://github.com/jianke0604/DepthGraft"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
+
 - **FlashMemory-DeepSeek-V4: Lightning Index Ultra-Long Context via Lookahead Sparse Attention** (2026.06) \
   **Description**: This paper proposes Lookahead Sparse Attention, which uses a separately trained neural memory indexer to predict future context needs and retain only query-critical KV chunks on GPU. FlashMemory reduces the physical KV cache footprint to 13.5% of full-context attention on average while preserving or slightly improving long-context accuracy. \
   <a href="https://arxiv.org/abs/2606.09079"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
@@ -279,6 +284,13 @@
   <a href="https://huggingface.co/spaces/Usmansafder/finchain-space"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
 
 ## Interpretability
+
+- **SAE Interprets MoE: Sparse AutoEncoders Reveal That MoE Experts Exhibit Human-Interpretable Fine-Grained Specialization** (2026.11) \
+  **Description**: This paper trains sparse autoencoders on MoE layer outputs and decomposes each latent's pre-activation into expert contributions, revealing specialization that routing frequency misses. In Qwen3-30B-A3B, most latents are dominated by one or two experts whose interpretable roles divide broad domains into finer tasks. \
+  <a href="https://arxiv.org/abs/2611.08089"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://bytedance-seed.github.io/SAE-interprets-MoE/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
+  <a href="https://github.com/Bytedance-Seed/SAE-Interprets-MoE"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
+  <a href="https://huggingface.co/ByteDance-Seed/Qwen3-30B-A3B-MoE-SAE"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
 
 - **Your Transformer Can Hold Two Thoughts at Once: Evidence of Linear Superposition in LLMs** (2026.09) \
   **Description**: This paper presents evidence that mixing embeddings from distinct text streams preserves a superposition of their next-token distributions, a property that weakens during pretraining and can be restored through lightweight fine-tuning. It also introduces guided decoding to recover two coherent continuations from a single mixed forward pass. \
@@ -828,18 +840,4 @@
 - **All Roads Lead to Rome: Incentivizing Divergent Thinking in Vision-Language Models** (2026.04) \
   **Description**: This paper presents MUPO, a reinforcement learning approach that addresses diversity collapse in GRPO-trained VLMs by incentivizing divergent thinking across multiple solutions, enabling deeper yet broader reasoning patterns. \
   <a href="https://arxiv.org/abs/2604.00479"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://xytian1008.github.io/MUPO/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
-  <a href="https://github.com/xytian1008/MUPO"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
-  <a href="https://huggingface.co/xytian1008/MUPO-Thinker-7B"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
-
-- **VL-Calibration: Decoupled Confidence Calibration for Large Vision-Language Models Reasoning** (2026.04) \
-  **Description**: This paper introduces VL-Calibration, a reinforcement learning framework that separates visual and reasoning confidence in large vision-language models to address confidently incorrect predictions. It estimates visual certainty from image-perturbation grounding and token entropy, then applies token-level advantage reweighting to improve calibration and visual reasoning accuracy. \
-  <a href="https://arxiv.org/abs/2604.09529"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://github.com/Mr-Loevan/VL-Calibration"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
-
-- **The Art of Efficient Reasoning: Data, Reward, and Optimization** (2026.03) \
-  **Description**: This paper studies efficient reasoning in LLMs, using RL to incentivize short accurate trajectories, with findings on training stages, rewards, and generalization across models from 0.6B to 30B parameters. \
-  <a href="https://arxiv.org/abs/2602.20945"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://wutaiqiang.github.io/project/Art"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
-
-- **FIPO: Eliciting Deep Reasoning with Future-KL Influenced Poli
+  <a href="h

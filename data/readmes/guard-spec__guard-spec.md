@@ -30,7 +30,7 @@ answer for exfiltration links, personal data and a leaked canary before the
 answer reaches your users. It is written in Go, runs as two services next to Postgres, and has
 been built and evaluated for **English and Vietnamese**.
 
-Status: **v0.6.0, pre-1.0.** The API and the database schema can still
+Status: **v0.7.0, pre-1.0.** The API and the database schema can still
 change. Read [Security model and limitations](#security-model-and-limitations)
 before you rely on it.
 
@@ -329,7 +329,7 @@ scripts/quickstart.sh
    existing `.env` is never overwritten;
 2. runs `docker compose -f docker-compose.yml up -d` with
    `ghcr.io/guard-spec/guard-spec-gateway` and `-control-plane` at
-   `GUARDSPEC_VERSION` (default `0.6.0`). Before the gateway starts, the
+   `GUARDSPEC_VERSION` (default `0.7.0`). Before the gateway starts, the
    `models-init` service pulls the recommended models (about 270 MB, SHA-256
    verified) into `./models/cache`; on later starts it finds them and does
    nothing;
@@ -664,8 +664,11 @@ in a second table.
 | `SHADOW_MAX_INFLIGHT` | CPUs / 2 (at least 1) | Candidate runs at once, on their own ONNX limiter; a text that finds them all busy is not compared (`skipped`) |
 | `GATEWAY_ADMIN_TOKEN` | empty (off) | Bearer token of `POST /admin/models/reload` and `GET /admin/models`; at least 32 bytes. Empty: those routes answer 404 |
 | `ONNXRUNTIME_LIB` | set in the image | Path of `libonnxruntime.so` / `.dylib` (`-tags onnx` builds) |
-| `INFERENCE_MAX_CONCURRENCY` | number of CPUs | Concurrent model runs per process |
+| `INFERENCE_MAX_CONCURRENCY` | number of CPUs (`2` on CUDA) | Concurrent model runs per process |
 | `INFERENCE_INTRA_OP_THREADS` | ORT's choice (Linux: min(4, CPUs); with L2+L3 each gets min(4, CPUs/2)) | ONNX Runtime threads per session |
+| `INFERENCE_PROVIDER` | `cpu` (`cuda` in an image built from `build/gateway-gpu.Dockerfile`) | ONNX Runtime execution provider. `cpu` is the default and needs nothing else. `cuda` (the GPU option: your own image from `build/gateway-gpu.Dockerfile`, which is not published; an NVIDIA GPU; the FP16 model) runs the models with the CUDA execution provider; when CUDA cannot start the gateway exits with an error saying why. `auto` uses CUDA when it starts, else the CPU with a warning. `/readyz` (`detector.inference`) and `doctor` report the provider, GPU, CUDA and ONNX Runtime versions and the model file. See [GPU](docs/deploy/README.md#gpu-optional) |
+| `INFERENCE_CUDA_DEVICE_ID` | `0` | CUDA device of `INFERENCE_PROVIDER=cuda` or `auto` |
+| `INFERENCE_BATCH_SIZE` | `8` on the short path and `16` on the long path; `8` for both on CUDA | Token windows per model run, on the short and the long path (`1` to `1024`) |
 | `MAX_SCAN_TOKENS` | empty (today's limits) | The most tokens the gateway scans for one proxied request. Empty or `0`: the byte limits as before (about 28 KB of user, system and tool-call text; 128 KiB of tool results, documents and tool descriptions; 1 MiB of earlier turns), 413 above them. Set: the request's token cap (413 above it), and requests past those byte limits are scanned on the long path in the large-input lane instead of refused. See [Large inputs](#large-inputs) |
 | `INFERENCE_LARGE_MAX_CONCURRENCY` | CPUs / 4 (the container's CPU limit counts; at least 1) | Large requests scanned at once, and their model runs, on a limiter of their own |
 | `LARGE_SCAN_ORG_CONCURRENCY` | half of `INFERENCE_LARGE_MAX_CONCURRENCY` (at least 1) | Large requests of one org scanned at once |
@@ -729,7 +732,7 @@ URL tried before Hugging Face: `<mirror>/<name>/<version>/<file>`).
 | `GATEWAY_PORT`, `METRICS_PORT` | `8080`, `9090` | Host ports of the gateway |
 | `CONTROL_PLANE_PORT`, `CONTROL_PLANE_METRICS_PORT` | `18081`, `9091` | Host ports of the control plane |
 | `POSTGRES_PORT` | `5432` | Host port of Postgres (dev override only) |
-| `GUARDSPEC_VERSION` | `0.6.0` | Tag of the `ghcr.io/guard-spec/guard-spec-*` images in `docker-compose.yml` (the dev override builds from source instead) |
+| `GUARDSPEC_VERSION` | `0.7.0` | Tag of the `ghcr.io/guard-spec/guard-spec-*` images in `docker-compose.yml` (the dev override builds from source instead) |
 | `MODELS_UID`, `MODELS_GID` | `0` | Owner of files written by `models-init` and `models-pull` |
 | `QUICKSTART_TIMEOUT` | `600` | `scripts/quickstart.sh`: seconds to wait for `/readyz` |
 
@@ -1398,17 +1401,4 @@ How to read them, and their limits:
 
 ### Comparison with other detectors
 
-[docs/benchmark.md](docs/benchmark.md) (also on
-[guardspec.io/docs](https://guardspec.io/docs/)) compares Guard Spec L1,
-L1+L2 and L1+L2+L3 with ProtectAI `deberta-v3-base-prompt-injection-v2` and
-LLM Guard's default threshold for it, on `eval/` and four public datasets at
-pinned revisions (`deepset/prompt-injections`,
-`jackhhao/jailbreak-classification`, `Lakera/gandalf_ignore_instructions`,
-`reshabhs/SPML_Chatbot_Prompt_Injection`): ROC AUC, TPR/FPR at each
-detector's default, TPR at FPR ≤ 1%, latency and model size. `make benchmark`
-reproduces it. In short (2026-11-07, Apple M3 Max): Guard Spec L1+L2+L3 leads
-on `eval/` (AUC 0.987 against 0.784; ProtectAI is English-only and flags 51%
-of its benign rows) and ranks better on `deepset` and
-`jailbreak-classification`, whose training splits it saw. **On SPML, which no
-detector here trained on, ProtectAI is better**: AUC 0.997 against 0.974, and
-Guard Spec's default threshold blocks only 36% of its attacks
+[docs/benchmark.md](docs/benchma

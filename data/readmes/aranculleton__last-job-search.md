@@ -8,7 +8,7 @@ private page. It never sends anything for you.
 [![CI](https://github.com/aranculleton/last-job-search/actions/workflows/ci.yml/badge.svg)](https://github.com/aranculleton/last-job-search/actions/workflows/ci.yml)
 
 <p align="center">
-  <img src="docs/images/page-brief-light-dark-deab7c36.png" width="720"
+  <img src="docs/images/page-brief-light-dark-3e2972af.png" width="720"
        alt="The Brief, light on one side of a diagonal cut and dark on the other: today's most pressing thing, the next three things to do, who is waiting on you, the best new jobs, news with what to do with each item, and your numbers by week">
   <br>
   <sub><b>The Brief</b>: your day at a glance, in light or dark</sub>
@@ -36,17 +36,17 @@ No resume yet? Say "build one with me". [START_HERE.md](START_HERE.md) has each 
 ## What it looks like
 
 <p align="center">
-  <img src="docs/images/page-demo-e21026de.gif" width="720"
+  <img src="docs/images/page-demo-9f74d461.gif" width="720"
        alt="A walk through the page: the Brief, To do, Jobs, Contacts, Coming up, Chat and Settings">
   <br>
   <sub>A walk through the page. Every name is made up.</sub>
 </p>
 
 <p align="center">
-  <img src="docs/images/page-contacts-a3edc3d8.png" width="62%"
+  <img src="docs/images/page-contacts-750af168.png" width="62%"
        alt="Contacts on a computer: who needs you first, each person's latest draft on their card">
   &nbsp;
-  <img src="docs/images/page-coming-up-phone-2e0f1fd5.png" width="18%" alt="Coming up on a phone">
+  <img src="docs/images/page-coming-up-phone-bd4c2964.png" width="18%" alt="Coming up on a phone">
   <br>
   <sub>Contacts on a computer, and Coming up on a phone</sub>
 </p>
@@ -63,6 +63,31 @@ No resume yet? Say "build one with me". [START_HERE.md](START_HERE.md) has each 
 | The **pencil**, or the **trash** | Your change, or a no and why: it remembers both |
 
 Anything else, ask in **Chat** on the page.
+
+## The chats you'll see
+
+Claude works in chats of its own, so your list of chats shows a few named "Job search" that
+you didn't start. Nothing is wrong, and you never need to open or type in them unless a card
+on your page's **To do** says so: your page is the one place you use. Delete one by mistake
+and nothing is lost: the app starts it again when it's needed.
+
+| Chat | What it does | How long it stays |
+|---|---|---|
+| **Job search page** | Answers your page and its **Chat** | Stays. Each day you use your page (or sooner, when it grows full) a fresh one takes over; the old one is called "Job search page (finishing up)" for a little while, then is put away by itself |
+| **Job search: morning brief** | Writes your brief on its days, in a chat of its own so your page still answers at once | Stays. When it grows long, a fresh one takes over and the old one is put away by itself |
+| **Job search: starts chats on your computer** | Only if you use your computer for LinkedIn: starts the chats there | Stays for good, so you allow it only once (below) |
+| **Job search: *the work*** (for example "Job search: Finding jobs") | One big job: finding jobs, drafting, finding people, an interview prep, or a question in **Chat** while the page is busy | Put away by itself when the work is done |
+| **Job search · *the work* · *your computer's name*** | A job that reads LinkedIn on your computer | Put away by itself when the work is done, except the first one, which stays as the one below |
+| **Job search: on your computer** | Only if you use your computer for LinkedIn: takes every later LinkedIn job there by itself, so nothing new needs your OK | Stays open on your computer |
+
+So you'll normally see three that stay (two if you don't use a computer), plus the one on your
+computer and one for each job while it runs. Chats an older version made are put away by
+themselves too, and each can be brought back.
+
+**The first time Claude uses your computer**, "Job search: starts chats on your computer"
+asks "Let Claude use your computers and other sessions from here?". Choose Allow, once. A
+card on your page's **To do** says which chat and what to choose. After that first job, the
+chat on your computer takes the next ones by itself, with nothing to allow.
 
 ## Why it's different
 

@@ -1,23 +1,27 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/yana-banner-dark.svg">
-    <img src="docs/yana-banner-light.svg" alt="Yana AI" width="760">
+    <img src="docs/yana-banner-light.svg" alt="Yana AI" width="720">
   </picture>
 </p>
 
 <h3 align="center">Models propose. Yana decides. Humans stay in charge.</h3>
 
 <p align="center">
-  A local control plane that sits between any AI model and real power over your machine.
+  A local control plane between any AI model and real power over your machine.<br>
+  The runtime, the rules and the audit trail of the Yana ecosystem.
+</p>
+
+<p align="center">
+  <a href="https://github.com/Horonomos-laps/Yana-AI/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Horonomos-laps/Yana-AI/ci.yml?branch=main&label=CI&style=flat" alt="CI" height="20"></a>
+  <a href="https://crates.io/crates/yana-rt"><img src="https://img.shields.io/crates/v/yana-rt?logo=rust&label=crates.io&color=ce422b&style=flat" alt="yana-rt on crates.io" height="20"></a>
+  <a href="https://pypi.org/project/yana-ai/"><img src="https://img.shields.io/pypi/v/yana-ai?logo=pypi&label=PyPI&color=3775a9&style=flat" alt="yana-ai on PyPI" height="20"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-2563eb?style=flat" alt="Apache 2.0 license" height="20"></a>
 </p>
 
 <p align="center">
   <a href="https://merx.help/shield"><img src="https://merx.help/badge/A+.svg" alt="AgentShield Security" height="20"></a>
-  <a href="https://github.com/yanacuti1121/Yana-AI/actions/workflows/ci.yml"><img src="https://github.com/yanacuti1121/Yana-AI/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://crates.io/crates/yana-rt"><img src="https://img.shields.io/crates/v/yana-rt?logo=rust&color=ce422b" alt="yana-rt on crates.io"></a>
-  <a href="https://pypi.org/project/yana-ai/"><img src="https://img.shields.io/pypi/v/yana-ai?logo=pypi&color=3775a9" alt="yana-ai on PyPI"></a>
-  <a href="https://github.com/yanacuti1121/Yana-AI/releases/latest"><img src="https://img.shields.io/github/v/release/yanacuti1121/Yana-AI?label=release&color=8b5cf6" alt="Latest release"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-2563eb" alt="Apache 2.0 license"></a>
+  <a href="https://launchindex.io/tool/yana-ai"><img src="https://launchindex.io/badge/yana-ai.svg" alt="Verified Launch on LaunchIndex" height="20"></a>
 </p>
 
 <p align="center">
@@ -30,70 +34,74 @@
 <p align="center">
   <a href="#quick-start">Quick start</a> ·
   <a href="#how-it-works">How it works</a> ·
-  <a href="#yana-studio">Yana Studio</a> ·
-  <a href="#performance">Performance</a> ·
+  <a href="#the-yana-ecosystem">Ecosystem</a> ·
+  <a href="#under-the-hood">Under the hood</a> ·
   <a href="#what-protects-you-and-where-it-stops">Limits</a> ·
   <a href="https://yana.vutam.link">Website</a>
 </p>
 
----
+<p align="center">
+  <sub>
+    <a href="CODE_OF_CONDUCT.md">Code of conduct</a> ·
+    <a href="CONTRIBUTING.md">Contributing</a> ·
+    <a href="LICENSE">Apache-2.0 license</a> ·
+    <a href="SECURITY.md">Security policy</a>
+  </sub>
+</p>
 
-## At a glance
+<br>
 
 <table>
   <tr>
-    <td align="center" width="25%"><h3>19</h3><sub>model providers<br>13 cloud, 6 local</sub></td>
-    <td align="center" width="25%"><h3>41</h3><sub>runtime subcommands<br>in one Rust binary</sub></td>
-    <td align="center" width="25%"><h3>66</h3><sub>tool-call hooks<br>Pre, Post and Stop</sub></td>
-    <td align="center" width="25%"><h3>290</h3><sub>core files<br>pinned by SHA-256</sub></td>
-  </tr>
-  <tr>
-    <td align="center"><h3>4</h3><sub>agent hosts<br>Claude Code, Codex, Cursor, Antigravity</sub></td>
-    <td align="center"><h3>4.2 ms</h3><sub>runtime startup<br>release build, Apple M4</sub></td>
-    <td align="center"><h3>100 agents</h3><sub>specialist personas</sub></td>
-    <td align="center"><h3>2,035 skills</h3><sub>working knowledge,<br>no permissions</sub></td>
+    <td align="center" width="20%"><h3>42</h3><sub>runtime subcommands<br>in one Rust binary</sub></td>
+    <td align="center" width="20%"><h3>66</h3><sub>tool-call hooks<br>Pre, Post and Stop</sub></td>
+    <td align="center" width="20%"><h3>290</h3><sub>core files<br>pinned by SHA-256</sub></td>
+    <td align="center" width="20%"><h3>100 agents</h3><sub>specialist personas</sub></td>
+    <td align="center" width="20%"><h3>2,035 skills</h3><sub>working knowledge,<br>no permissions</sub></td>
   </tr>
 </table>
 
-Counts are derived from the filesystem by `core/scripts/check_counts.py`, which CI runs.
-Timings are local measurements from 2026-10-20; the method is under [Performance](#performance).
+<p align="center"><sub>Counts come from the filesystem and are checked in CI by <code>core/scripts/check_counts.py</code>.</sub></p>
+
+## Why this exists
+
+An agent that can run commands can also run the wrong one. Skills and prompts make an
+agent better at its job, but they cannot stop it from doing damage. Yana puts a
+separate decision step in front of every action, and that step does not depend on the
+model behaving well.
+
+- A model says what it wants to do. Yana decides whether that is allowed.
+- Every decision goes into a hash-chained log, so editing it afterwards is detectable.
+- A person can always stop the agent, and some actions cannot happen without one.
 
 ## Quick start
-
-Choose one: the desktop app, or the command line.
-
-**Desktop app.** Download Yana Studio (v1.7.0) from the
-[latest release](https://github.com/yanacuti1121/Yana-AI/releases/latest) or
-[yana.vutam.link](https://yana.vutam.link).
-
-| Platform | Installer |
-| --- | --- |
-| macOS, Apple Silicon | `.dmg` or `.zip` |
-
-**Command line.** Govern the agent you already use:
 
 ```bash
 pip install yana-ai    # Python CLI
 yana-ai install        # add Yana's hooks and rules to your repo
 yana-ai doctor .       # check that everything is wired
-cargo install yana-rt  # optional: native runtime, no Python needed
+cargo install yana-rt  # native runtime, no Python needed
 ```
 
-Needs Python 3.11+ (or Rust), Git, and one supported host. All CLI commands are in
-[COMMANDS.md](COMMANDS.md). Yana is not published to npm, see [VERSIONING.md](VERSIONING.md).
+Needs Python 3.11+ (or Rust), Git, and one supported host: Claude Code, Codex, Cursor
+or Antigravity. All commands are in [COMMANDS.md](COMMANDS.md). Yana is not published
+to npm, see [VERSIONING.md](VERSIONING.md).
+
+**Prefer an app?** Download Yana Studio or the macOS app from the
+[Yana-studio releases](https://github.com/Horonomos-laps/Yana-studio/releases/latest) or
+from [yana.vutam.link](https://yana.vutam.link).
 
 > [!NOTE]
 > The macOS build is ad-hoc signed and **not notarized** (no Apple Developer
 > membership yet), so Gatekeeper warns on first launch.
 > [docs/MACOS_INSTALL.md](docs/MACOS_INSTALL.md) shows the two official ways to open it.
-> Each release lists its own assets: check that your platform is there and verify
-> against `SHA256SUMS` when provided. There is no Linux ARM build.
+> Verify downloads against `SHA256SUMS` when a release provides it. There is no Linux
+> ARM build.
 
 ## How it works
 
-A model can say what it wants to do. Yana decides whether that is allowed, and a
-person can always stop it. Every model takes the same path: Claude, GPT, Gemini,
-DeepSeek, or one running on your own machine.
+Every model takes the same path: Claude, GPT, Gemini, DeepSeek, or one running on your
+own machine.
 
 ```mermaid
 flowchart LR
@@ -108,29 +116,43 @@ flowchart LR
 
 Skills teach an agent how to work. Only a capability can grant permission to act.
 
-### System structure
+## The Yana ecosystem
+
+|  | **Yana-AI** (you are here) | **[yana-web](https://github.com/Horonomos-laps/yana-web)** | **[Yana-studio](https://github.com/Horonomos-laps/Yana-studio)** |
+| --- | --- | --- | --- |
+| **What** | Runtime `yana-rt`, governance rules and hooks, the CLI, agents and skills | The website, and a local web app with chat, missions and a key vault | Desktop apps: the macOS app, Yana Studio and Yana IDE |
+| **Stack** | Rust, Python, shell | Node.js, React | SwiftUI, Electron, Code-OSS |
+| **Role** | Decides | Shows | Shows |
+
+The apps never call a model provider themselves. Studio sends every request through
+`yana-rt`, so a permission check cannot be skipped by switching client.
+
+> [!NOTE]
+> The web app, the website and the desktop apps now live in their own repositories.
+> Older links and history that mention `tools/yana-web`, `tools/yana-studio` or
+> `tools/yana-ide` point at code that moved. New work on those parts goes to
+> yana-web and Yana-studio.
+
+## What is in this repository
 
 | Component | What it does | Status |
 | --- | --- | --- |
-| **[Yana Studio](tools/yana-studio)** | Desktop workspace: files, editor, terminals, chat, tasks and a design canvas for a real project (v1.7.0). | ![Live, partial parity](https://img.shields.io/badge/live-partial_parity-2e8b75) |
-| **[Yana IDE](tools/yana-ide)** | Deeply customized VS Code agent workspace with Yana agent cockpit and office tools. | ![Live](https://img.shields.io/badge/-live-2e8b75) |
-| **[Runtime `yana-rt`](src)** | Rust engine with one turn loop and one authority contract for every client and every provider. | ![Live](https://img.shields.io/badge/-live-2e8b75) |
+| **[Runtime `yana-rt`](src)** | One turn loop and one authority contract for every client and every provider. | ![Live](https://img.shields.io/badge/-live-2e8b75) |
 | **[Governance](core)** | Capability manifests, human approval, hash-chained audit log, core-lock integrity. | ![Live](https://img.shields.io/badge/-live-2e8b75) |
-| **[Giám Thị](#giám-thị)** | Watcher outside any AI session that halts every later tool call when it finds drift. | ![Live, opt-in](https://img.shields.io/badge/live-opt--in-2e8b75) |
+| **[Giám Thị](#under-the-hood)** | Watcher outside any AI session that halts every later tool call when it finds drift. | ![Live, opt-in](https://img.shields.io/badge/live-opt--in-2e8b75) |
 | **[Harness adapters](adapters)** | Claude Code, Codex, Cursor and Antigravity. Enforcement strength differs per host. | ![Live, varies by host](https://img.shields.io/badge/live-varies_by_host-2e8b75) |
 | **[Knowledge layer](core/skills)** | 100 agents, 2,035 skills, commands and rules that teach agents how to work. They grant no permissions. | ![Live](https://img.shields.io/badge/-live-2e8b75) |
 | **[Yana OS](src/os)** | Local management plane: agent identity, autonomy levels, quotas, health, quarantine. | ![In development](https://img.shields.io/badge/-in_development-d97706) |
-| **[Yana Desktop / Web](tools/yana-web)** | Earlier Electron shell and web UI. Studio is a separate rebuild, not a reskin. | ![Maintained separately](https://img.shields.io/badge/-maintained_separately-64748b) |
 | **[Yana Wheelbot](https://github.com/yanacuti1121/yana-wheelbot)** | Robotics platform on ESP32-S3, in its own repository. | ![Experimental](https://img.shields.io/badge/-experimental-dc2626) |
 
 `Live` means shipped and in use. `In development` means real code exists but is not
 feature-complete. `Experimental` means opt-in and not independently verified.
 
-`yana-rt` has 41 subcommands. Zero Python dependency. This is the source-defined count across feature builds, including feature-gated ones.
+`yana-rt` has 42 subcommands. Zero Python dependency. This is the source-defined count across feature builds, including feature-gated ones.
 
 ```text
 core/
-├── hooks/    # 66 PreToolUse / PostToolUse / Stop hooks (63 shell, 3 JavaScript)
+├── hooks/    # 66 PreToolUse / PostToolUse / Stop hooks
 ├── rules/    # 71 rules, most are guidance the agent applies; hooks enforce a subset
 ├── agents/   # 100 specialist agents
 ├── skills/   # 2,035 skills
@@ -139,45 +161,13 @@ core/
     └── core-lock.json    # SHA-256 manifest — 290 core files pinned
 ```
 
-## Yana Studio (v1.7.0)
+## Under the hood
 
-<p align="center">
-  <img src="docs/studio-screen-1.webp" alt="Yana Studio workspace with chat, project inspector and governance status" width="900">
-</p>
-
-One window for the things you switch between when working with AI on a project.
-Studio talks to models only through `yana-rt`; the UI layer never calls a provider.
-
-| Area | What you get |
-| --- | --- |
-| **Files and editor** | Open a real folder, search filenames, edit with CodeMirror. Files up to 8 MiB are editable; larger ones open as read-only 256 KiB windows. Saves detect outside changes before overwriting. |
-| **Terminals** | Real PTY sessions in tabs, or a grid of up to 12. |
-| **Git** | Read-only status, worktrees and diffs. Stage and commit are deliberately not AI tools. |
-| **Chat** | Streamed through `yana-rt`, saved conversations, stop button, approval prompts, token usage. |
-| **Models** | All 19 providers plus a custom OpenAI-compatible endpoint. A local manager detects 9Router, Ollama, LM Studio, llama.cpp, TurboFieldfare and AirLLM. API keys reach Rust over stdin and are stored encrypted in the OS keystore, never in workspace files. |
-| **Tasks** | Backed by the real `yana-rt task` store. Marking done requires evidence, and `blocked` is computed by the runtime. |
-| **Design canvas** | Native canvas with 22 components, phone and desktop screens, layers, undo/redo and guarded AI proposals. |
-| **Governance telemetry** | What was allowed, what was blocked, and why. |
-
-Not built yet: device registry, agent sessions screen, mobile pairing, SSH/Docker
-execution, permission-lease UI, signed auto-update. Per-screen status lives in
-[`tools/yana-studio/SCREEN-STATUS.md`](tools/yana-studio/SCREEN-STATUS.md).
+Open a section for the details.
 
 <details>
-<summary><b>Build Studio from source</b></summary>
+<summary><b>Runtime: yana-rt, the Rust engine</b></summary>
 
-Needs Node 24+ and a C++ toolchain for `node-pty`.
-
-```bash
-cd tools/yana-studio
-npm ci && npm run rebuild
-npm run stage:runtime -- /absolute/path/to/yana-rt
-npm start
-```
-
-</details>
-
-## Runtime: `yana-rt`
 
 A single Rust binary owns the turn loop and the authority check for every client, so
 Studio, the CLI and MCP do not each reimplement permission logic.
@@ -192,7 +182,12 @@ Remaining runtime work is tracked in [CURRENT-MILESTONE.md](CURRENT-MILESTONE.md
 every client on one capability executor, and testing local-model tool calling against a
 real local model rather than a mock.
 
-## Performance
+
+</details>
+
+<details>
+<summary><b>Performance: measured numbers and their limits</b></summary>
+
 
 Measured 2026-10-20 on an Apple M4 MacBook Air (16 GB RAM, macOS 27.2), `yana-rt` 1.5.1
 release build at commit `986093f5`, against this repository. Each figure is the mean of
@@ -227,7 +222,12 @@ faster. The release binary grew from about 14 MiB.
 
 These are single-machine numbers. Linux and Windows are not measured.
 
-## Giám Thị
+
+</details>
+
+<details>
+<summary><b>Giám Thị: the independent watcher</b></summary>
+
 
 An independent watcher that runs outside any AI session, from the operating system's
 own scheduler (launchd on macOS, a systemd timer on Linux, Task Scheduler on Windows)
@@ -242,7 +242,12 @@ because it runs on a schedule there is a window of up to 6 hours between a chang
 the halt. Codex fires `PreToolUse` only for shell commands, so Yana also checks the lock
 on `SessionStart` and `UserPromptSubmit` for Codex.
 
-## Harness adapters
+
+</details>
+
+<details>
+<summary><b>Harness adapters: Claude Code, Codex, Cursor, Antigravity</b></summary>
+
 
 | Host | How governance is applied | Enforcement |
 | --- | --- | --- |
@@ -254,6 +259,9 @@ on `SessionStart` and `UserPromptSubmit` for Codex.
 Details and switching commands: [adapters/README.md](adapters/README.md). The 170 Claude Code
 slash commands (`/plan`, `/verify`, `/code-review` and others) live in `core/commands/`
 and run inside a session.
+
+
+</details>
 
 ## What protects you, and where it stops
 
@@ -270,21 +278,37 @@ Antigravity screens shell commands only and is bypassed by `agy --dangerously-sk
 deployments without the Rust runtime are not fully governed. Details:
 [known limitations](docs/reference/known-limitations.md).
 
+
 ## Versioning
 
 Three axes, each with its own number and registry: the product (not distributed),
-`yana-rt` on crates.io, and the `yana-ai` Python package on PyPI. Apps under `tools/` ship
-through GitHub Releases with their own tags (`studio-v*` for Studio). Current version
-numbers are left out of this page on purpose, since they go stale; the badges above read
-them live. See [VERSIONING.md](VERSIONING.md).
+`yana-rt` on crates.io, and the `yana-ai` Python package on PyPI. The apps ship through
+GitHub Releases of [Yana-studio](https://github.com/Horonomos-laps/Yana-studio) with
+their own tags. Version numbers are left out of this page on purpose, since they go
+stale; the badges at the top read them live. See [VERSIONING.md](VERSIONING.md).
 
-## More
+## Documentation
 
-[ARCHITECTURE.md](ARCHITECTURE.md) · [PHILOSOPHY.md](PHILOSOPHY.md) · [ROADMAP.md](ROADMAP.md) · [CURRENT-MILESTONE.md](CURRENT-MILESTONE.md) · [CHANGELOG.md](CHANGELOG.md) · [BENCHMARK.md](BENCHMARK.md) · [CONTRIBUTING.md](CONTRIBUTING.md) · [SECURITY.md](SECURITY.md) · [Acknowledgements](ACKNOWLEDGEMENTS.md) · [Lineage](docs/history/LINEAGE.md)
+| Understand | Build | Trust | Follow |
+| --- | --- | --- | --- |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | [CONTRIBUTING.md](CONTRIBUTING.md) | [SECURITY.md](SECURITY.md) | [ROADMAP.md](ROADMAP.md) |
+| [PHILOSOPHY.md](PHILOSOPHY.md) | [COMMANDS.md](COMMANDS.md) | [Known limitations](docs/reference/known-limitations.md) | [CURRENT-MILESTONE.md](CURRENT-MILESTONE.md) |
+| [Lineage](docs/history/LINEAGE.md) | [BENCHMARK.md](BENCHMARK.md) | [Acknowledgements](ACKNOWLEDGEMENTS.md) | [CHANGELOG.md](CHANGELOG.md) |
 
 ---
 
 <p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/yana-banner-dark.svg">
+    <img src="docs/yana-banner-light.svg" alt="Yana AI" width="240">
+  </picture>
+</p>
+
+<p align="center">
   Built by one person, no team, no funding: <b>Vũ Văn Tâm</b>, Vietnam<br>
-  <a href="https://yana.vutam.link/">yana.vutam.link</a> · phamlongh230@gmail.com · <a href="LICENSE">Apache 2.0</a>
+  <a href="https://yana.vutam.link/">yana.vutam.link</a> ·
+  <a href="https://github.com/Horonomos-laps/Yana-AI">Yana-AI</a> ·
+  <a href="https://github.com/Horonomos-laps/yana-web">yana-web</a> ·
+  <a href="https://github.com/Horonomos-laps/Yana-studio">Yana-studio</a> ·
+  <a href="LICENSE">Apache 2.0</a>
 </p>

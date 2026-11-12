@@ -5,7 +5,7 @@
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-zero-brightgreen)](go.mod)
 [![skills.sh](https://skills.sh/b/andrearaponi/walden)](https://skills.sh/andrearaponi/walden)
 
-Walden is an open-source, spec-driven delivery kernel: a deterministic CLI that takes a feature from intention to certified release through reviewed documents, executable proofs, and durable evidence.
+Walden proves that your code meets its spec, and shows what is no longer proven when either one changes. It is an open-source, deterministic CLI that takes a feature from intention to certified release through reviewed documents, executable proofs, and durable evidence.
 
 <p align="center">
   <img src="site/walden-og.jpg" alt="Walden — Intention before code. Proof before completion." />
@@ -68,6 +68,8 @@ Downloads the latest release binary for your platform (darwin/linux, amd64/arm64
 | `--uninstall` | Remove the binary |
 | `--remove-legacy-skill` | Remove guide copies Walden itself wrote before v0.11.0 ([details](#cleaning-up-copies-from-before-v0110)) |
 
+If `walden` is not found after the install, `~/.local/bin` is not on your PATH: the installer prints the line to add.
+
 If another `walden` comes first on your PATH, for example an older one from `go install` in `~/go/bin`, the installer names it and its version at the end; it never touches that binary.
 
 From source: `go install github.com/andrearaponi/walden/cmd/walden@latest`. Later, `walden update` upgrades the binary in place (checksum-verified, atomic). It changes one file: the executable.
@@ -79,6 +81,8 @@ npx skills add andrearaponi/walden --skill walden
 ```
 
 Installs the guide project-level for the agents the Skills CLI detects (Claude Code, Codex, Copilot, OpenCode); add `--global` for a user-level copy, `--copy` for a committable file instead of a link. Update it with `npx skills update walden`. Details, scopes and removal: [skill/walden/install.md](skill/walden/install.md).
+
+A project-level install puts the guide inside the repository: the agents' skill directories and `skills-lock.json`. Commit those files, because `walden release check` blocks on uncommitted paths.
 
 The current guide requires Walden CLI v0.10.4 or a newer compatible release. The skill **does not install the CLI**: if it is missing or incompatible, the skill stops, detects your platform and points you here, then you install the binary yourself and rerun. See the guide's [CLI Prerequisite](skill/walden/SKILL.md#cli-prerequisite) section.
 

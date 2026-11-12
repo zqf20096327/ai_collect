@@ -4,22 +4,26 @@
 
 <p align="center">
   <a href="https://github.com/ry-ops/proxmox-mcp-server/releases"><img src="https://img.shields.io/github/v/release/ry-ops/proxmox-mcp-server?color=ff8a1f&label=release" alt="Release"></a>
-  <img src="https://img.shields.io/badge/tools-341-ff8a1f" alt="341 tools">
+  <img src="https://img.shields.io/badge/tools-346-ff8a1f" alt="346 tools">
+  <a href="#pdm"><img src="https://img.shields.io/badge/Datacenter_Manager-89_tools-3ddc84" alt="Proxmox Datacenter Manager: 89 tools"></a>
+  <a href="#deploy"><img src="https://img.shields.io/badge/deploy_by_asking-Ubuntu_%C2%B7_Kali_%C2%B7_Win11_%C2%B7_PDM-b58cff" alt="Deploy Ubuntu, Kali, Windows 11 and PDM by asking"></a>
   <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.10+-3ec7ff" alt="Python 3.10+"></a>
   <a href="https://modelcontextprotocol.io/"><img src="https://img.shields.io/badge/MCP-2.x-b58cff" alt="MCP SDK 2.x"></a>
   <a href="https://github.com/ry-ops/proxmox-mcp-server/pkgs/container/proxmox-mcp-server"><img src="https://img.shields.io/badge/docker-ghcr.io-3ddc84" alt="Docker image on ghcr.io"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-ffb02e" alt="MIT"></a>
 </p>
 
-<p align="center"><b>Talk to your Proxmox cluster.</b> A Model Context Protocol server that gives Claude, or any MCP client, the <b>whole Proxmox VE API</b>: 341 tools across VMs, containers, storage, clustering, Ceph, SDN and more.</p>
+<p align="center"><b>Talk to your Proxmox cluster.</b> A Model Context Protocol server that gives Claude, or any MCP client, the <b>whole Proxmox VE API</b>: 346 tools across VMs, containers, storage, clustering, Ceph, SDN and more. Add <b>Proxmox Datacenter Manager</b> for 89 more that reach every cluster and Backup Server it manages, and <b>ask for a machine by name</b>: Ubuntu, Kali, Windows 11 or a Datacenter Manager.</p>
 
 <p align="center">
   <a href="#talk">Talk to it</a> ·
   <a href="#how">How it works</a> ·
-  <a href="#tools">341 tools</a> ·
+  <a href="#tools">346 tools</a> ·
   <a href="#prompts">Prompts</a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="#clusters">Clusters</a> ·
+  <a href="#deploy">Deploy by asking</a> ·
+  <a href="#pdm">Datacenter Manager</a> ·
   <a href="#toolsets">Toolsets</a> ·
   <a href="#http">HTTP</a> ·
   <a href="#read-only">Safety</a> ·
@@ -32,13 +36,15 @@
 
 ## ✨ Highlights
 
-- 🧰 **The whole API, not a demo.** 341 tools across 14 areas: nodes, QEMU VMs, LXC containers, storage and backup, cluster and HA, access control, firewall, disks, Ceph, ACME, SDN, notifications, pools and appliances.
+- 🧑‍🚀 **Ask for a machine, get a running one.** "Spin up a Kali VM" runs `deploy_kali_vm`: official image, checksum checked, installed unattended, address reported. Ubuntu, Windows 11 (TPM, Secure Boot, VirtIO) and Datacenter Manager work the same way. [More](#deploy)
+- 🛰️ **Every cluster through one connection.** Point it at Proxmox Datacenter Manager and 89 tools reach every Proxmox VE cluster and Backup Server it manages, including cross-cluster migration. [More](#pdm)
+- 🧰 **The whole API, not a demo.** 346 tools across 14 areas: nodes, QEMU VMs, LXC containers, storage and backup, cluster and HA, access control, firewall, disks, Ceph, ACME, SDN, notifications, pools and appliances.
 - 🧭 **Workflows built in.** Five MCP prompts, such as a cluster health check and a snapshot-change-verify routine, plus live cluster state as MCP resources.
 - 🖥️ **Inside your guests too.** Run commands through the QEMU guest agent (`vm_agent_exec` → `vm_agent_exec_status`) and read back the exit code and output.
-- 🔒 **Look-but-don't-touch with one switch.** `PROXMOX_READ_ONLY=true` refuses every write inside the server, and the client sees only the 150 read-only tools.
+- 🔒 **Look-but-don't-touch with one switch.** `PROXMOX_READ_ONLY=true` refuses every write inside the server, and the client sees only the 151 read-only tools.
 - 🧯 **Safe writes, protected guests.** `PROXMOX_NO_DESTRUCTIVE=true` hides the 73 tools that delete, stop, wipe or roll back. `PROXMOX_PROTECTED_VMIDS` names guests no tool may change.
 - ⏳ **Waits for the slow stuff.** Clone, migrate, backup and restore take `wait: true`, and `wait_for_task` follows any task to the end, with the log when it fails.
-- 🎯 **Load only what you use.** `PROXMOX_TOOLSETS=nodes,qemu,lxc,storage` cuts the tool list from 341 to 127, and the context it costs by more than half. Results come back as compact JSON.
+- 🎯 **Load only what you use.** `PROXMOX_TOOLSETS=nodes,qemu,lxc,storage` cuts the tool list from 346 to 127, and the context it costs by more than half. Results come back as compact JSON.
 - 🚦 **Labelled for safe approval.** Every tool carries MCP `readOnlyHint` and `destructiveHint` annotations, so clients can auto-approve reads and ask before a delete, stop or rollback.
 - 🆕 **Current protocol, old clients welcome.** Built on MCP SDK 2: clients on the stateless 2026-07-28 protocol and on every handshake version back to 2024-11-05 connect. Failed calls are flagged as errors, so clients show them as failures.
 - 🔑 **API tokens or passwords.** Tokens are recommended; pair them with a `PVEAuditor` role for monitoring.
@@ -46,7 +52,7 @@
 - 📜 **Every change on the record.** `PROXMOX_AUDIT_LOG` writes one JSON line per write call: who, what, the outcome and the task, with secrets redacted.
 - 🐳 **Runs anywhere.** Use `uv` from a clone, or the multi-arch image on `ghcr.io`.
 - ♻️ **Long sessions just work.** Password logins renew their Proxmox ticket before it expires.
-- 🤝 **A2A-ready.** `agent-card.json` lists every tool in 14 skill categories, for agent-to-agent discovery.
+- 🤝 **A2A-ready.** `agent-card.json` lists every tool, Proxmox VE and Datacenter Manager, by skill category, for agent-to-agent discovery.
 - 🛡️ **Appliances.** `deploy_fortigate_vm` builds a FortiGate-VM from Fortinet's KVM image, with WAN/LAN NICs on the bridges and VLANs you choose. `deploy_cloud_vms` builds cluster-ready VMs from a cloud image, with your SSH key and a static IP each, ready for k3s-mcp-server's `create_cluster`.
 
 <a id="talk"></a>
@@ -119,7 +125,7 @@ Each resource is a single read, so resources work in read-only mode and for ever
 
 <a id="tools"></a>
 
-## 🧰 341 tools, 14 areas
+## 🧰 346 tools, 14 areas
 
 <p align="center">
   <img src="docs/tools.svg" width="100%" alt="A tile map of the 341 tools by toolset: QEMU VMs 46, nodes 38, cluster and HA 37, access control 33, Ceph 33, firewall 31, LXC 28, notifications 23, disks 17, ACME 17, SDN 16, storage and backup 14, pools 5, appliances 2, plus wait_for_task, which every toolset loads. Then all but nodes, qemu, lxc and storage dim, and the count drops to 127.">
@@ -197,7 +203,7 @@ A `.env` file in the project directory is loaded automatically; see [`.env.examp
 A multi-arch image is published to GitHub Container Registry on every push to `main` and for each release tag:
 
 ```bash
-docker pull ghcr.io/ry-ops/proxmox-mcp-server:latest   # or a version tag, e.g. :2.13.1
+docker pull ghcr.io/ry-ops/proxmox-mcp-server:latest   # or a version tag, e.g. :2.14.0
 docker run -i --rm --env-file .env ghcr.io/ry-ops/proxmox-mcp-server:latest
 ```
 
@@ -314,9 +320,33 @@ Run one server per cluster, each under its own name. Every cluster then gets its
 
 Give each extra cluster only the toolsets it needs, because every server's tools count against the client's context. Over HTTP, run one `proxmox-mcp-server-http` per cluster on its own port.
 
+<a id="deploy"></a>
+
+### 🧑‍🚀 Deploy an OS by asking
+
+<p align="center">
+  <img src="docs/deploy.svg" width="100%" alt="You ask for a Kali VM and the server runs deploy_kali_vm: it fetches Kali's official cloud image and checks its SHA-256, repacks the sparse 25 GiB disk as a 1.06 GiB qcow2, builds a cloud-init seed ISO, creates and boots VM 120, waits for the guest agent to report 10.0.0.77, and deletes the seed ISO. Below, Ubuntu, Kali, Windows 11 and Datacenter Manager build side by side, each finishing with how to reach the machine.">
+</p>
+
+Ask for a VM by name and the server does the rest: fetches the official image (checksum verified, cached on storage and reused), builds a small seed ISO with the first-boot settings, creates and starts the VM, waits until its guest agent answers, and reports how to reach it.
+
+| Tool | What you get |
+|---|---|
+| `deploy_ubuntu_vm` | Ubuntu 24.04 LTS from the official cloud image |
+| `deploy_kali_vm` | Kali Linux from its official cloud image. It ships as `.tar.xz`, which Proxmox can't import, so the server repacks its sparse 25 GiB disk as qcow2 and uploads only the ≈1 GiB of data |
+| `deploy_pdm_vm` | Proxmox Datacenter Manager on a Debian 13 VM, installed by cloud-init from the no-subscription repository; reports `https://<ip>:8443` and the `root@pam` login |
+| `deploy_windows11_vm` | Windows 11 installed unattended: q35, UEFI, Secure Boot keys, TPM 2.0, VirtIO disk and network, VirtIO guest tools. Uses a Windows 11 ISO already on storage (Microsoft has no stable download link); installs without a product key, so activation is yours |
+| `list_os_images` | What's cached on the node, and with `check_upstream`, the latest official versions |
+
+Give an SSH public key, or the tool generates a password and returns it once (the audit log redacts passwords). The seed ISO holds those credentials, so it's deleted as soon as the guest is up. Each tool takes the usual sizing and network inputs (`cores`, `memory`, `disk_gb`, `bridge`, `vlan`, a static `ip` or DHCP) and `wait_until_ready` / `ready_timeout`. Windows Setup takes 20 to 40 minutes; with a shorter timeout the tool returns `installing` and says what to clean up after.
+
 <a id="pdm"></a>
 
 ### 🛰️ Proxmox Datacenter Manager
+
+<p align="center">
+  <img src="docs/pdm.svg" width="100%" alt="proxmox-mcp's pdm toolset connects to Proxmox Datacenter Manager with an API token. One pdm_list_resources call fans out to three remotes and returns their guests, nodes and datastores. pdm_pve_remote_migrate_guest moves web-01 from pve-lab to the pve-prod cluster. pdm_pve_stop_guest on the protected guest pve-lab:104 is refused, and pdm_collect_metrics, which PDM reserves for root@pam, explains the elevated permission it needs.">
+</p>
 
 If you run [Proxmox Datacenter Manager](https://pdm.proxmox.com/) (PDM), point the server at it and the `pdm` toolset loads: 89 tools that reach every Proxmox VE cluster and Proxmox Backup Server PDM manages, through one connection. It can run alongside a direct Proxmox VE connection, or on its own.
 
@@ -390,7 +420,7 @@ The tools are generated from PDM's published API schema; [ROADMAP.md](ROADMAP.md
 
 ### 🎯 Toolsets: load only what you use
 
-Every tool the server advertises sits in the client's context on every turn, and all 341 schemas come to roughly 44k tokens. Set `PROXMOX_TOOLSETS` to the areas you need:
+Every tool the server advertises sits in the client's context on every turn, and all 346 schemas come to roughly 44k tokens. Set `PROXMOX_TOOLSETS` to the areas you need:
 
 ```bash
 PROXMOX_TOOLSETS=nodes,qemu,lxc,storage
@@ -398,11 +428,11 @@ PROXMOX_TOOLSETS=nodes,qemu,lxc,storage
 
 | Setting | Tools | Approx. tokens |
 |---|--:|--:|
-| all (default) | 341 | 44k |
-| `PROXMOX_NO_DESTRUCTIVE=true` | 268 | 35k |
+| all (default) | 346 | 44k |
+| `PROXMOX_NO_DESTRUCTIVE=true` | 273 | 35k |
 | `nodes,qemu,lxc,storage,cluster` | 164 | 23k |
 | `nodes,qemu,lxc,storage` | 127 | 19k |
-| `PROXMOX_READ_ONLY=true` | 150 | 13k |
+| `PROXMOX_READ_ONLY=true` | 151 | 13k |
 | `qemu` | 47 | 8k |
 
 Every count includes `wait_for_task`, which loads with any selection.
@@ -413,7 +443,7 @@ The names are `nodes`, `qemu`, `lxc`, `storage`, `cluster`, `access`, `firewall`
 
 Each tool tells the client what it does, through standard MCP annotations:
 
-- **`readOnlyHint: true`** on the 150 tools that only read.
+- **`readOnlyHint: true`** on the 151 tools that only read.
 - **`destructiveHint: true`** on the 73 that delete, stop, wipe, roll back, restore over, or run commands in a guest.
 - **`destructiveHint: false`** on the other writes, such as create, start or update.
 
@@ -497,7 +527,7 @@ Clone, migrate, backup, restore, disk moves, snapshots and power actions start a
   <img src="docs/safety.svg" width="100%" alt="Bars show 341 tools by default, 268 with PROXMOX_NO_DESTRUCTIVE and 150 with PROXMOX_READ_ONLY. Guests 100 and 101 are protected: stop_vm on 120 succeeds, delete_vm on 100 and node_stopall without a list are refused, and each call lands in the audit log.">
 </p>
 
-**`PROXMOX_READ_ONLY=true`** makes the server look-but-don't-touch. Only GET requests are sent, and every create, update, delete or action tool is refused inside the server before it reaches the network. **The client sees only the 150 read-only tools**, so it never plans around a tool that would be refused. Three read-style tools send POST requests, so they're hidden too:
+**`PROXMOX_READ_ONLY=true`** makes the server look-but-don't-touch. Only GET requests are sent, and every create, update, delete or action tool is refused inside the server before it reaches the network. **The client sees only the 151 read-only tools**, so it never plans around a tool that would be refused. Three read-style tools send POST requests, so they're hidden too:
 - `vm_agent_ping`;
 - `get_vm_vnc_proxy` and `get_vm_spice_proxy`, which create console access tickets.
 
@@ -528,7 +558,7 @@ The rest of the security picture:
 
 ## 🤝 Agent-to-agent (A2A)
 
-[`agent-card.json`](agent-card.json) is this server's identity and capability manifest for other agents. It lists **all 341 tools in 14 skill categories**, each with its name, description, inputs, and `read_only` and `destructive` flags. A test fails if it drifts from the tool registry. It also covers authentication requirements and MCP protocol details.
+[`agent-card.json`](agent-card.json) is this server's identity and capability manifest for other agents. It lists **all 346 Proxmox VE tools in 14 skill categories, plus the 89 Datacenter Manager tools**, each with its name, description, inputs, and `read_only` and `destructive` flags. A test fails if it drifts from the tool registry. It also covers authentication requirements and MCP protocol details.
 
 | Category | Tools | Category | Tools |
 |---|--:|---|--:|

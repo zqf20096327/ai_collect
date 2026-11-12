@@ -71,7 +71,7 @@
         <td>7</td>
         <td><img src="https://www.perplexity.ai/favicon.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://www.perplexity.ai/" target="_blank" rel="noopener noreferrer">Perplexity</a></td>
-        <td>🆕以实时网页检索和引用回答为特色的AI搜索与研究助手。</td>
+        <td>以实时网页检索和引用回答为特色的AI搜索与研究助手。</td>
         <td></td>
         <td><a href="https://www.perplexity.ai/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
@@ -79,7 +79,7 @@
         <td>8</td>
         <td><img src="https://st2.ai55.cc/2/9b4df360-0b21-47b5-8bb3-3efc487cf080.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://chatglm.cn/" target="_blank" rel="noopener noreferrer">智谱清言</a></td>
-        <td>🆕智谱推出的通用AI助手，基于GLM大模型，支持问答、创作...</td>
+        <td>智谱推出的通用AI助手，基于GLM大模型，支持问答、创作、推...</td>
         <td></td>
         <td><a href="https://chatglm.cn/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
@@ -87,7 +87,7 @@
         <td>9</td>
         <td><img src="https://manus.im/favicon.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://manus.im/" target="_blank" rel="noopener noreferrer">Manus</a></td>
-        <td>🆕能够规划并执行复杂任务的通用AI智能体，可交付研究、分析...</td>
+        <td>能够规划并执行复杂任务的通用AI智能体，可交付研究、分析和内...</td>
         <td></td>
         <td><a href="https://manus.im/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
@@ -103,7 +103,7 @@
         <td>11</td>
         <td><img src="https://favicon.zhusl.com/ico?url=midjourney.com" alt="favicon" width="20" height="20"></td>
         <td><a href="https://www.midjourney.com/" target="_blank" rel="noopener noreferrer">Midjourney</a></td>
-        <td>🆕主流AI图像生成平台，通过文本提示创作高质量艺术与设计视...</td>
+        <td>主流AI图像生成平台，通过文本提示创作高质量艺术与设计视觉。</td>
         <td></td>
         <td><a href="https://www.midjourney.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
@@ -111,7 +111,7 @@
         <td>12</td>
         <td><img src="https://hailuoai.com/favicon.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://hailuoai.com/" target="_blank" rel="noopener noreferrer">海螺视频</a></td>
-        <td>🆕MiniMax旗下AI视频创作平台，支持文生视频、图生视...</td>
+        <td>MiniMax旗下AI视频创作平台，支持文生视频、图生视频、...</td>
         <td></td>
         <td><a href="https://hailuoai.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
@@ -172,7 +172,7 @@
         <td>7</td>
         <td><img src="https://www.perplexity.ai/favicon.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://www.perplexity.ai/" target="_blank" rel="noopener noreferrer">Perplexity</a></td>
-        <td>🆕以实时网页检索和引用回答为特色的AI搜索与研究助手。</td>
+        <td>以实时网页检索和引用回答为特色的AI搜索与研究助手。</td>
         <td></td>
         <td><a href="https://www.perplexity.ai/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
@@ -180,13 +180,13 @@
         <td>8</td>
         <td><img src="https://st2.ai55.cc/2/9b4df360-0b21-47b5-8bb3-3efc487cf080.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://chatglm.cn/" target="_blank" rel="noopener noreferrer">智谱清言</a></td>
-        <td>🆕智谱推出的通用AI助手，基于GLM大模型，支持问答、创作...</td>
+        <td>智谱推出的通用AI助手，基于GLM大模型，支持问答、创作、推...</td>
         <td></td>
         <td><a href="https://chatglm.cn/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
         <td>9</td>
-        <td><img src="#" alt="favicon" width="20" height="20"></td>
+        <td><img src="https://st2.ai55.cc/ai55-site/site-icons/recovered/df91c1ecf1d4894c.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://www.kimi.com/" target="_blank" rel="noopener noreferrer">Kimi</a></td>
         <td>月之暗面推出的通用AI助手，支持长文本理解、搜索、推理与创作...</td>
         <td></td>
@@ -620,7 +620,7 @@
         <td>63</td>
         <td><img src="https://favicon.zhusl.com/ico?url=quark.cn" alt="favicon" width="20" height="20"></td>
         <td><a href="https://www.quark.cn/" target="_blank" rel="noopener noreferrer">夸克</a></td>
-        <td>🆕阿里巴巴旗下AI搜索与智能助手，支持问答、总结、创作和多...</td>
+        <td>阿里巴巴旗下AI搜索与智能助手，支持问答、总结、创作和多模态...</td>
         <td></td>
         <td><a href="https://www.quark.cn/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
@@ -628,7 +628,7 @@
         <td>64</td>
         <td><img src="https://www.n.cn/favicon.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://www.n.cn/" target="_blank" rel="noopener noreferrer">纳米 AI</a></td>
-        <td>🆕360推出的多智能体AI助手，提供搜索、问答、创作及任务...</td>
+        <td>360推出的多智能体AI助手，提供搜索、问答、创作及任务协作...</td>
         <td></td>
         <td><a href="https://www.n.cn/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
@@ -891,6 +891,38 @@
     </tr>
     <tr>
         <td>97</td>
+        <td><img src="https://onomeo.com/icon.svg" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://onomeo.com/zh" target="_blank" rel="noopener noreferrer">onomeo</a></td>
+        <td>🆕多模型网页对话与 OpenAI 兼容 API 服务，提供...</td>
+        <td></td>
+        <td><a href="https://onomeo.com/zh" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>98</td>
+        <td><img src="https://github.com/XONER4/honer-ai-downloads/releases/download/android-v10.57.0-105700/icon-512.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://xoner4.github.io/" target="_blank" rel="noopener noreferrer">Honer AI — HONER 的 Android AI 助手</a></td>
+        <td>🆕面向 Android 的 AI 助手，支持俄语和英语聊天...</td>
+        <td></td>
+        <td><a href="https://xoner4.github.io/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>99</td>
+        <td><img src="https://raw.githubusercontent.com/jev-chat/jev-chat-jarvis/main/.github/assets/images/logo.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://chatjevs.com/" target="_blank" rel="noopener noreferrer">Jev 聊天助手</a></td>
+        <td>🆕开源聊天辅助工具，分析当前对话并起草候选回复，由用户决定...</td>
+        <td></td>
+        <td><a href="https://chatjevs.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>100</td>
+        <td><img src="https://gpt.cherrychat.org/v2/pwa/icon-512.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://gpt.cherrychat.org/v2/home" target="_blank" rel="noopener noreferrer">樱桃茶·智域GPT</a></td>
+        <td>🆕多模型 AI 平台，提供对话、绘画、视频、音乐与知识库功...</td>
+        <td></td>
+        <td><a href="https://gpt.cherrychat.org/v2/home" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>101</td>
         <td><img src="https://st2.ai55.cc/2/5cdcd820-c3f2-438b-b472-cf71473a6c1b.webp" alt="favicon" width="20" height="20"></td>
         <td><a href="https://gpt-all.chat/auth?type=register&amp;invite=Mg" target="_blank" rel="noopener noreferrer">Chaos AI Assistant</a></td>
         <td>[推广] 40+模型免费不限使用.</td>
@@ -898,7 +930,7 @@
         <td><a href="https://gpt-all.chat/auth?type=register&amp;invite=Mg" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>98</td>
+        <td>102</td>
         <td><img src="https://st2.ai55.cc/2/0aa6ea2f-b2fe-4ed5-a67e-091ff4ee588f.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="http://gpt33.cn/" target="_blank" rel="noopener noreferrer">盖酷AI实验室</a></td>
         <td>💲酷盖AI实验室,人工智能,OpenAI,智能聊天工具</td>
@@ -906,7 +938,7 @@
         <td><a href="http://gpt33.cn/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>99</td>
+        <td>103</td>
         <td><img src="https://st2.ai55.cc/2/af3e67c9-7268-43da-9a28-4b7a2724eac4.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://www.ohmygpt.com/" target="_blank" rel="noopener noreferrer">OhMyGPT</a></td>
         <td>🔑登录用户每天可以免费使用150次</td>
@@ -914,7 +946,7 @@
         <td><a href="https://www.ohmygpt.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>100</td>
+        <td>104</td>
         <td><img src="https://st2.ai55.cc/1/ac942005b6aa200c2b40e0b80fe80677.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://vip4.1ai.ink/" target="_blank" rel="noopener noreferrer">1Ai-GPT4.0专业版</a></td>
         <td>[推广] 4.0无限次、10+免费模型、全系顶级模型</td>
@@ -922,7 +954,7 @@
         <td><a href="https://vip4.1ai.ink/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>101</td>
+        <td>105</td>
         <td><img src="https://st2.ai55.cc/2/c085e3a6-89db-411d-8d32-43895486cad5.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://chat.uniation.net/" target="_blank" rel="noopener noreferrer">GPT中文站</a></td>
         <td>🤑🎁</td>
@@ -930,7 +962,7 @@
         <td><a href="https://chat.uniation.net/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>102</td>
+        <td>106</td>
         <td><img src="https://st2.ai55.cc/2/fa180c0e-2f38-4e99-8d68-67840e70e86e.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://hotoke.ai/" target="_blank" rel="noopener noreferrer">HOTOKE AI </a></td>
         <td>搭载gpt-3.5-turbo的机械佛将为您提供咨询</td>
@@ -938,7 +970,7 @@
         <td><a href="https://hotoke.ai/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>103</td>
+        <td>107</td>
         <td><img src="https://st2.ai55.cc/2/2b9e250a-7e16-4e05-bfa3-218e6733d5a6.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://open-gpt.app/" target="_blank" rel="noopener noreferrer">open-gpt.app</a></td>
         <td>ChatGPT 应用</td>
@@ -954,7 +986,7 @@
         <td>1</td>
         <td><img src="https://manus.im/favicon.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://manus.im/" target="_blank" rel="noopener noreferrer">Manus</a></td>
-        <td>🆕能够规划并执行复杂任务的通用AI智能体，可交付研究、分析...</td>
+        <td>能够规划并执行复杂任务的通用AI智能体，可交付研究、分析和内...</td>
         <td></td>
         <td><a href="https://manus.im/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
@@ -1018,12 +1050,28 @@
         <td>9</td>
         <td><img src="https://www.genspark.ai/favicon.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://www.genspark.ai/" target="_blank" rel="noopener noreferrer">Genspark</a></td>
-        <td>🆕面向搜索、研究和内容交付的AI智能体工作空间，可自动完成...</td>
+        <td>面向搜索、研究和内容交付的AI智能体工作空间，可自动完成多步...</td>
         <td></td>
         <td><a href="https://www.genspark.ai/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
         <td>10</td>
+        <td><img src="https://st2.ai55.cc/ai55-site/site-icons/recovered/10ccbc099e7bc3d5.svg" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://www.workbuddy.cn/" target="_blank" rel="noopener noreferrer">WorkBuddy</a></td>
+        <td>腾讯推出的全场景AI办公工作台，可自主规划、调用工具并交付文...</td>
+        <td></td>
+        <td><a href="https://www.workbuddy.cn/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>11</td>
+        <td><img src="https://st2.ai55.cc/ai55-site/site-icons/recovered/d19b62d73c8db53d.svg" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://www.deepseek.com/harness/" target="_blank" rel="noopener noreferrer">DeepSeek Harness</a></td>
+        <td>开发者预览版，需本地安装运行。DeepSeek官方开源Age...</td>
+        <td></td>
+        <td><a href="https://www.deepseek.com/harness/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>12</td>
         <td><img src="https://st2.ai55.cc/site-icons/fe21d080d43a0b4c04f4ff16f36a719dbdfba9b6863132672ff6ed327b38e691.webp" alt="favicon" width="20" height="20"></td>
         <td><a href="https://qclaw.qq.com/" target="_blank" rel="noopener noreferrer">QClaw </a></td>
         <td>QClaw - 微信远程办公AI 助手| 腾讯出品</td>
@@ -1031,7 +1079,7 @@
         <td><a href="https://qclaw.qq.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>11</td>
+        <td>13</td>
         <td><img src="https://st2.ai55.cc/site-icons/45d284d1b28dc4c93645eb18ccb7b0c4f834c227d9769c676b2e02831d87f202.webp" alt="favicon" width="20" height="20"></td>
         <td><a href="https://cursor.com/cn/cli" target="_blank" rel="noopener noreferrer">Cursor CLI</a></td>
         <td>编程编写功能强大的脚本和自动化程序。自动更新文档、触发安全审...</td>
@@ -1039,7 +1087,7 @@
         <td><a href="https://cursor.com/cn/cli" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>12</td>
+        <td>14</td>
         <td><img src="https://st2.ai55.cc/site-icons/5d0e124c3d58d16b7365ac36127f1279a4ee3b9f06c89d4832e52224af9514b0.webp" alt="favicon" width="20" height="20"></td>
         <td><a href="https://openai.com/zh-Hans-CN/codex/" target="_blank" rel="noopener noreferrer">Codex</a></td>
         <td>Codex 应用专为多代理工作流程而设计，是代理编码的指挥中...</td>
@@ -1047,47 +1095,87 @@
         <td><a href="https://openai.com/zh-Hans-CN/codex/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>13</td>
+        <td>15</td>
+        <td><img src="https://raw.githubusercontent.com/Orkas-AI/Orkas/main/src/resources/icons/icon.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://orkas.ai/" target="_blank" rel="noopener noreferrer">Orkas</a></td>
+        <td>🆕开源、本地优先的 AI 团队桌面应用，通过 Comman...</td>
+        <td></td>
+        <td><a href="https://orkas.ai/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>16</td>
+        <td><img src="https://brewreel.com/assets/favicon.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://brewreel.com/" target="_blank" rel="noopener noreferrer">精酿 BrewReel</a></td>
+        <td>🆕开源视频创作 Agent Skill，通过模型编写分镜 ...</td>
+        <td></td>
+        <td><a href="https://brewreel.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>17</td>
+        <td><img src="https://mobile-ai-use.com/logo.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://mobile-ai-use.com/" target="_blank" rel="noopener noreferrer">Mobile AI Use - 智能手机AI自动化</a></td>
+        <td>🆕通过浏览器以自然语言操作手机设备的自动化智能体，可理解指...</td>
+        <td></td>
+        <td><a href="https://mobile-ai-use.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>18</td>
+        <td><img src="https://www.bluedoai.com/xiaolan-brand.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://www.bluedoai.com/tools" target="_blank" rel="noopener noreferrer">小蓝助手 Blue（BlueDoAI）</a></td>
+        <td>🆕面向 Windows 的桌面智能体，在授权后处理本地文档...</td>
+        <td></td>
+        <td><a href="https://www.bluedoai.com/tools" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>19</td>
+        <td><img src="https://raw.githubusercontent.com/voygr-tech/placecall/main/assets/logo-400.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://voygr.tech/placecall" target="_blank" rel="noopener noreferrer">PlaceCall</a></td>
+        <td>🆕为 AI Agent 提供真实电话任务，可联系美国商家订...</td>
+        <td></td>
+        <td><a href="https://voygr.tech/placecall" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>20</td>
         <td><img src="https://favicon.zhusl.com/ico?url=remio.ai" alt="favicon" width="20" height="20"></td>
         <td><a href="https://remio.ai/" target="_blank" rel="noopener noreferrer">Remio</a></td>
-        <td>🆕本地优先的 AI 记忆与知识库客户端，为 Agent 索...</td>
+        <td>本地优先的 AI 记忆与知识库客户端，为 Agent 索引和...</td>
         <td></td>
         <td><a href="https://remio.ai/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>14</td>
-        <td><img src="#" alt="favicon" width="20" height="20"></td>
+        <td>21</td>
+        <td><img src="https://st2.ai55.cc/ai55-site/site-icons/recovered/b00f1749ad219954.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://skillhub.cn/enterprise/org-j3zmzop1?publisher=%E5%94%90%E5%8F%AF%E5%88%9B%E7%A0%94" target="_blank" rel="noopener noreferrer">唐可创研 TANCO SkillHub</a></td>
-        <td>🆕面向 AI Agent 与 AI 工作流的可复用 Ski...</td>
+        <td>面向 AI Agent 与 AI 工作流的可复用 Skill...</td>
         <td></td>
         <td><a href="https://skillhub.cn/enterprise/org-j3zmzop1?publisher=%E5%94%90%E5%8F%AF%E5%88%9B%E7%A0%94" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>15</td>
+        <td>22</td>
         <td><img src="https://doubaodaochu.com/favicon.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://doubaodaochu.com/" target="_blank" rel="noopener noreferrer">豆包智能体下架自救指南</a></td>
-        <td>🆕豆包及通义千问智能体的数据备份、人设导出、迁移指南和替代...</td>
+        <td>豆包及通义千问智能体的数据备份、人设导出、迁移指南和替代平台...</td>
         <td></td>
         <td><a href="https://doubaodaochu.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>16</td>
+        <td>23</td>
         <td><img src="https://useai.live/hermes/assets/site-logo-180.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://useai.live/hermes" target="_blank" rel="noopener noreferrer">小马AI Hermes 中文增强包</a></td>
-        <td>🆕Hermes Agent 中文补丁与新手教程，支持一键安...</td>
+        <td>Hermes Agent 中文补丁与新手教程，支持一键安装并...</td>
         <td></td>
         <td><a href="https://useai.live/hermes" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>17</td>
+        <td>24</td>
         <td><img src="https://plugos.net/assets/static/logo.XSmBhCaq.webp" alt="favicon" width="20" height="20"></td>
         <td><a href="https://plugos.net/plugclaw" target="_blank" rel="noopener noreferrer">PlugClaw</a></td>
-        <td>🆕即插即用的私人 AI 计算机，可运行应用、管理工作流并自...</td>
+        <td>即插即用的私人 AI 计算机，可运行应用、管理工作流并自动执...</td>
         <td></td>
         <td><a href="https://plugos.net/plugclaw" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>18</td>
+        <td>25</td>
         <td><img src="https://st2.ai55.cc/2/6f89e6b5-58c3-4eaf-b151-318f3459b4f3.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://toolbuilder.ai/" target="_blank" rel="noopener noreferrer">toolbuilder.ai</a></td>
         <td>🔑自定义 AI </td>
@@ -1149,17 +1237,17 @@
     </tr>
     <tr>
         <td>7</td>
-        <td><img src="#" alt="favicon" width="20" height="20"></td>
+        <td><img src="https://st2.ai55.cc/ai55-site/site-icons/recovered/29ef75cc6d0d369c.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://platform.minimaxi.com/" target="_blank" rel="noopener noreferrer">MiniMax开放平台</a></td>
-        <td>🆕MiniMax面向开发者的AI开放平台，提供语言、视频、...</td>
+        <td>MiniMax面向开发者的AI开放平台，提供语言、视频、语音...</td>
         <td></td>
         <td><a href="https://platform.minimaxi.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
         <td>8</td>
-        <td><img src="#" alt="favicon" width="20" height="20"></td>
+        <td><img src="https://st2.ai55.cc/ai55-site/site-icons/recovered/c1b86ae4f7ca2b28.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://open.bigmodel.cn/" target="_blank" rel="noopener noreferrer">智谱 BigModel开放平台</a></td>
-        <td>🆕智谱面向开发者和企业的大模型开放平台，提供GLM系列模型...</td>
+        <td>智谱面向开发者和企业的大模型开放平台，提供GLM系列模型及文...</td>
         <td></td>
         <td><a href="https://open.bigmodel.cn/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
@@ -1221,70 +1309,126 @@
     </tr>
     <tr>
         <td>16</td>
-        <td><img src="#" alt="favicon" width="20" height="20"></td>
+        <td><img src="https://www.tokendos.com/logo-circle.svg" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://www.tokendos.com/" target="_blank" rel="noopener noreferrer">TokenDos</a></td>
+        <td>🆕AI API 与会员会话算力共享平台，提供供应方报价、活...</td>
+        <td></td>
+        <td><a href="https://www.tokendos.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>17</td>
+        <td><img src="https://gptzzz.ai/logo.svg" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://gptzzz.ai/" target="_blank" rel="noopener noreferrer">GPTZZZ</a></td>
+        <td>🆕面向中文开发者的第三方 AI API 中转服务，提供多厂...</td>
+        <td></td>
+        <td><a href="https://gptzzz.ai/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>18</td>
+        <td><img src="https://favicon.zhusl.com/ico?url=token8341.com" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://www.token8341.com/" target="_blank" rel="noopener noreferrer">TokenWorks（硅碳相变 Token工厂）</a></td>
+        <td>🆕大模型 API 聚合网关，接入 DeepSeek、Kim...</td>
+        <td></td>
+        <td><a href="https://www.token8341.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>19</td>
+        <td><img src="https://api.linktoagi.com/favicon.svg" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://api.linktoagi.com/" target="_blank" rel="noopener noreferrer">LinkAGI</a></td>
+        <td>🆕面向开发者的 AI API 中转服务，提供 GPT、Cl...</td>
+        <td></td>
+        <td><a href="https://api.linktoagi.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>20</td>
+        <td><img src="https://apimodels.app/logo-1024.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://apimodels.app/zh" target="_blank" rel="noopener noreferrer">apimodels.app</a></td>
+        <td>🆕通过一套 OpenAI 兼容接口调用图像、视频、语音与语...</td>
+        <td></td>
+        <td><a href="https://apimodels.app/zh" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>21</td>
+        <td><img src="https://favicon.zhusl.com/ico?url=big-model.smart-agi.com" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://big-model.smart-agi.com/" target="_blank" rel="noopener noreferrer">Twinkle Model</a></td>
+        <td>🆕提供 GPT、Claude 及国产大模型的第三方 API...</td>
+        <td></td>
+        <td><a href="https://big-model.smart-agi.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>22</td>
+        <td><img src="https://teapotrouter.com/teapot-mark.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://teapotrouter.com/" target="_blank" rel="noopener noreferrer">Teapot Router</a></td>
+        <td>🆕面向开发者的 AI API 网关，兼容 Anthropi...</td>
+        <td></td>
+        <td><a href="https://teapotrouter.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>23</td>
+        <td><img src="https://st2.ai55.cc/ai55-site/site-icons/recovered/32132a307cad98d7.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://qionggeme.com/" target="_blank" rel="noopener noreferrer">qionggeme</a></td>
-        <td>🆕面向开发者的 OpenAI-compatible 多模型...</td>
+        <td>面向开发者的 OpenAI-compatible 多模型 A...</td>
         <td></td>
         <td><a href="https://qionggeme.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>17</td>
-        <td><img src="#" alt="favicon" width="20" height="20"></td>
+        <td>24</td>
+        <td><img src="https://st2.ai55.cc/ai55-site/site-icons/recovered/eaa18bbca68799cd.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://teamorouter.com/" target="_blank" rel="noopener noreferrer">TeamoRouter</a></td>
-        <td>🆕兼容 Anthropic 与 OpenAI 协议的多模型...</td>
+        <td>兼容 Anthropic 与 OpenAI 协议的多模型 A...</td>
         <td></td>
         <td><a href="https://teamorouter.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>18</td>
+        <td>25</td>
         <td><img src="https://daoxe.com/logo.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://daoxe.com/" target="_blank" rel="noopener noreferrer">DaoXE</a></td>
-        <td>🆕面向非中国大陆地区中文开发者的多协议 AI API 网关...</td>
+        <td>面向非中国大陆地区中文开发者的多协议 AI API 网关。</td>
         <td></td>
         <td><a href="https://daoxe.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>19</td>
+        <td>26</td>
         <td><img src="https://www.ddshub.cc/__home__/home-assets/logo.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://ddshub.cc/home" target="_blank" rel="noopener noreferrer">呆呆兽中转站</a></td>
-        <td>🆕提供 Claude 与 Codex 模型的 AI API...</td>
+        <td>提供 Claude 与 Codex 模型的 AI API 中...</td>
         <td></td>
         <td><a href="https://ddshub.cc/home" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>20</td>
+        <td>27</td>
         <td><img src="https://www.apismart.ai/favicon.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://apismart.ai/" target="_blank" rel="noopener noreferrer">ApiSmart</a></td>
-        <td>🆕通过兼容 API 统一接入多个主流 AI 模型的平台。</td>
+        <td>通过兼容 API 统一接入多个主流 AI 模型的平台。</td>
         <td></td>
         <td><a href="https://apismart.ai/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>21</td>
-        <td><img src="#" alt="favicon" width="20" height="20"></td>
+        <td>28</td>
+        <td><img src="https://st2.ai55.cc/ai55-site/site-icons/recovered/90865e43f1f65429.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://coderplan.ai/" target="_blank" rel="noopener noreferrer">CoderPlan</a></td>
-        <td>🆕统一 LLM API 网关，支持 Claude、Open...</td>
+        <td>统一 LLM API 网关，支持 Claude、OpenAI...</td>
         <td></td>
         <td><a href="https://coderplan.ai/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>22</td>
+        <td>29</td>
         <td><img src="https://www.xuanshuapi.com/brand/logo.svg" alt="favicon" width="20" height="20"></td>
         <td><a href="https://xuanshuapi.com/register" target="_blank" rel="noopener noreferrer">玄枢API</a></td>
-        <td>🆕面向企业、团队和开发者的多模型 AI 网关，统一接入 C...</td>
+        <td>面向企业、团队和开发者的多模型 AI 网关，统一接入 Cla...</td>
         <td></td>
         <td><a href="https://xuanshuapi.com/register" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>23</td>
-        <td><img src="#" alt="favicon" width="20" height="20"></td>
+        <td>30</td>
+        <td><img src="https://st2.ai55.cc/ai55-site/site-icons/recovered/32132a307cad98d7.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://feiyuanapi.com/" target="_blank" rel="noopener noreferrer">飞源 API</a></td>
-        <td>🆕面向 AI 客户端、IDE、Agent 和自动化脚本的 ...</td>
+        <td>面向 AI 客户端、IDE、Agent 和自动化脚本的 Op...</td>
         <td></td>
         <td><a href="https://feiyuanapi.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>24</td>
+        <td>31</td>
         <td><img src="https://st2.ai55.cc/2/06eb2ff8-4e74-4500-b52c-ae93a265a460.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://faucet.openkey.cloud/" target="_blank" rel="noopener noreferrer">openkey.cloud</a></td>
         <td>😄Free ChatGPT API </td>
@@ -1378,9 +1522,9 @@
     </tr>
     <tr>
         <td>11</td>
-        <td><img src="#" alt="favicon" width="20" height="20"></td>
+        <td><img src="https://st2.ai55.cc/ai55-site/site-icons/recovered/49d523938a22af5a.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://www.trae.cn/" target="_blank" rel="noopener noreferrer">TRAE</a></td>
-        <td>🆕字节跳动推出的AI编程工具，支持代码生成、理解、调试与智...</td>
+        <td>字节跳动推出的AI编程工具，支持代码生成、理解、调试与智能体...</td>
         <td></td>
         <td><a href="https://www.trae.cn/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
@@ -1388,7 +1532,7 @@
         <td>12</td>
         <td><img src="https://lovable.dev/favicon.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://lovable.dev/" target="_blank" rel="noopener noreferrer">Lovable</a></td>
-        <td>🆕通过自然语言生成和迭代全栈Web应用的AI软件开发平台。</td>
+        <td>通过自然语言生成和迭代全栈Web应用的AI软件开发平台。</td>
         <td></td>
         <td><a href="https://lovable.dev/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
@@ -1426,14 +1570,78 @@
     </tr>
     <tr>
         <td>17</td>
+        <td><img src="https://www.pomoai.com/logoLight.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://www.pomoai.com/" target="_blank" rel="noopener noreferrer">POMOAI</a></td>
+        <td>🆕面向中文用户的开源 AI 工作台，提供 GitHub 项...</td>
+        <td></td>
+        <td><a href="https://www.pomoai.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>18</td>
+        <td><img src="https://xquik.com/logo-square.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://xquik.com/" target="_blank" rel="noopener noreferrer">Xquik</a></td>
+        <td>🆕提供 X / Twitter 搜索、推文与账号数据导出、...</td>
+        <td></td>
+        <td><a href="https://xquik.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>19</td>
+        <td><img src="https://vostride.com/icon.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://vostride.com/" target="_blank" rel="noopener noreferrer">agent-qa</a></td>
+        <td>🆕面向网页、Android 与 iOS 应用的测试智能体，...</td>
+        <td></td>
+        <td><a href="https://vostride.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>20</td>
+        <td><img src="https://readgzh.site/apple-touch-icon.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://readgzh.site/" target="_blank" rel="noopener noreferrer">ReadGZH</a></td>
+        <td>🆕将微信公众号文章转换为适合 AI 读取的精简页面，提供 ...</td>
+        <td></td>
+        <td><a href="https://readgzh.site/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>21</td>
+        <td><img src="https://favicondl.com/favicons/android-chrome-512x512.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://favicondl.com/" target="_blank" rel="noopener noreferrer">FaviconDL</a></td>
+        <td>🆕按网址查找并下载网站发布的 ICO、PNG 和 SVG ...</td>
+        <td></td>
+        <td><a href="https://favicondl.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>22</td>
+        <td><img src="https://all-api-hub.qixing1217.top/128.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://all-api-hub.qixing1217.top/" target="_blank" rel="noopener noreferrer">All API Hub</a></td>
+        <td>🆕AI API 中转站账号管理扩展，集中查看余额与用量，提...</td>
+        <td></td>
+        <td><a href="https://all-api-hub.qixing1217.top/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>23</td>
+        <td><img src="https://raw.githubusercontent.com/rocosen/flashdata-mcp/main/assets/logo-400.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://flashdata.dev/" target="_blank" rel="noopener noreferrer">FlashData Google Search 与 YouTube 数据工具（MCP / CLI）</a></td>
+        <td>🆕为 AI Agent 提供 Google 搜索、YouT...</td>
+        <td></td>
+        <td><a href="https://flashdata.dev/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>24</td>
+        <td><img src="https://easi.run/apple-touch-icon.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://easi.run/" target="_blank" rel="noopener noreferrer">easi.run</a></td>
+        <td>🆕可自托管的 Chrome 浏览器会话服务，供外部 AI ...</td>
+        <td></td>
+        <td><a href="https://easi.run/" target="_blank" rel="noopener noreferrer">链接</a></td>
+    </tr>
+    <tr>
+        <td>25</td>
         <td><img src="https://aural-ai.com/favicon.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://aural-ai.com/" target="_blank" rel="noopener noreferrer">Aural</a></td>
-        <td>🆕开源、可自托管的 AI 面试平台，支持多模态面试、自适应...</td>
+        <td>开源、可自托管的 AI 面试平台，支持多模态面试、自适应追问...</td>
         <td></td>
         <td><a href="https://aural-ai.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>18</td>
+        <td>26</td>
         <td><img src="https://st2.ai55.cc/2/847f2ab7-be32-4f22-bd99-f060f26fe810.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://aws.amazon.com/cn/codewhisperer/" target="_blank" rel="noopener noreferrer">AI代码生成器</a></td>
         <td>😄Amazon AI代码生成器</td>
@@ -1441,7 +1649,7 @@
         <td><a href="https://aws.amazon.com/cn/codewhisperer/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>19</td>
+        <td>27</td>
         <td><img src="https://st2.ai55.cc/2/18ef45e1-3bba-4171-99e1-4eea9b803cee.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="http://models.aminer.cn/" target="_blank" rel="noopener noreferrer">智普AI</a></td>
         <td> 认知大模型</td>
@@ -1449,7 +1657,7 @@
         <td><a href="http://models.aminer.cn/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>20</td>
+        <td>28</td>
         <td><img src="https://st2.ai55.cc/2/ec968a9e-0a2b-48b6-9713-df66afe829ca.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://www.tabnine.com/" target="_blank" rel="noopener noreferrer">Tabnine AI</a></td>
         <td>The AI coding assistant that y...</td>
@@ -1457,7 +1665,7 @@
         <td><a href="https://www.tabnine.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>21</td>
+        <td>29</td>
         <td><img src="https://st2.ai55.cc/2/d2887a2e-49dc-4f83-9b17-0be0a1db30ba.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://www.notion.so/product/ai" target="_blank" rel="noopener noreferrer">Notion AI</a></td>
         <td>Knowledge, answers, ideas. One...</td>
@@ -1465,7 +1673,7 @@
         <td><a href="https://www.notion.so/product/ai" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>22</td>
+        <td>30</td>
         <td><img src="https://st2.ai55.cc/2/e4ade2ab-3457-42a5-a877-0982510feb1e.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://github.com/features/copilot/" target="_blank" rel="noopener noreferrer">github.com</a></td>
         <td> GitHubCopilot</td>
@@ -1473,7 +1681,7 @@
         <td><a href="https://github.com/features/copilot/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>23</td>
+        <td>31</td>
         <td><img src="https://st2.ai55.cc/2/3b669ce4-060d-4ab2-a433-e55ab7b30c12.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://aihelperbot.com/" target="_blank" rel="noopener noreferrer">aihelperbot.com</a></td>
         <td>AI Build SQL</td>
@@ -1481,7 +1689,7 @@
         <td><a href="https://aihelperbot.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>24</td>
+        <td>32</td>
         <td><img src="https://st2.ai55.cc/2/4553ed88-f445-45e1-8d7f-9539b3e3e7ec.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://bito.ai/" target="_blank" rel="noopener noreferrer">bito.ai</a></td>
         <td>AI编程辅助工具</td>
@@ -1489,7 +1697,7 @@
         <td><a href="https://bito.ai/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>25</td>
+        <td>33</td>
         <td><img src="https://st2.ai55.cc/2/99aa5b7e-26f4-45e7-a2e9-aefebf0b6fa5.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://replit.com/site/ghostwriter" target="_blank" rel="noopener noreferrer">replit.com</a></td>
         <td>😄</td>
@@ -1497,7 +1705,7 @@
         <td><a href="https://replit.com/site/ghostwriter" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>26</td>
+        <td>34</td>
         <td><img src="https://st2.ai55.cc/2/b297ac0d-d47f-4870-97d5-cc4cba200300.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://regex.ai/" target="_blank" rel="noopener noreferrer">regex.ai</a></td>
         <td> AI正则表达式</td>
@@ -1505,7 +1713,7 @@
         <td><a href="https://regex.ai/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>27</td>
+        <td>35</td>
         <td><img src="https://st2.ai55.cc/2/ab763656-3946-42f8-a653-79f1d54f1136.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://codeium.com/" target="_blank" rel="noopener noreferrer">codeium.com</a></td>
         <td>😄</td>
@@ -1513,7 +1721,7 @@
         <td><a href="https://codeium.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
-        <td>28</td>
+        <td>36</td>
         <td><img src="https://st2.ai55.cc/2/beeb9e0d-f5ed-4ea2-8c87-4a716dafc901.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://kodezi.com/" target="_blank" rel="noopener noreferrer">kodezi.com</a></td>
         <td>AI编程助手</td>
@@ -1529,7 +1737,7 @@
         <td>1</td>
         <td><img src="https://favicon.zhusl.com/ico?url=midjourney.com" alt="favicon" width="20" height="20"></td>
         <td><a href="https://www.midjourney.com/" target="_blank" rel="noopener noreferrer">Midjourney</a></td>
-        <td>🆕主流AI图像生成平台，通过文本提示创作高质量艺术与设计视...</td>
+        <td>主流AI图像生成平台，通过文本提示创作高质量艺术与设计视觉。</td>
         <td></td>
         <td><a href="https://www.midjourney.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
@@ -1601,15 +1809,15 @@
         <td>10</td>
         <td><img src="https://static.canva.com/static/images/favicon.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://www.canva.com/ai/" target="_blank" rel="noopener noreferrer">Canva AI</a></td>
-        <td>🆕Canva内置AI创意套件，支持生成设计、图像、文案、演...</td>
+        <td>Canva内置AI创意套件，支持生成设计、图像、文案、演示和...</td>
         <td></td>
         <td><a href="https://www.canva.com/ai/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
         <td>11</td>
-        <td><img src="#" alt="favicon" width="20" height="20"></td>
+        <td><img src="https://st2.ai55.cc/ai55-site/site-icons/recovered/1526054322006955.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://jimeng.jianying.com/" target="_blank" rel="noopener noreferrer">即梦 AI</a></td>
-        <td>🆕字节跳动旗下AI创作平台，支持文生图、图生图与视频生成编...</td>
+        <td>字节跳动旗下AI创作平台，支持文生图、图生图与视频生成编辑。</td>
         <td></td>
         <td><a href="https://jimeng.jianying.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
@@ -1617,15 +1825,15 @@
         <td>12</td>
         <td><img src="https://favicon.zhusl.com/ico?url=leonardo.ai" alt="favicon" width="20" height="20"></td>
         <td><a href="https://leonardo.ai/" target="_blank" rel="noopener noreferrer">Leonardo.Ai</a></td>
-        <td>🆕面向创作者的AI视觉平台，提供图像生成、编辑、画布与视频...</td>
+        <td>面向创作者的AI视觉平台，提供图像生成、编辑、画布与视频创作...</td>
         <td></td>
         <td><a href="https://leonardo.ai/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
         <td>13</td>
-        <td><img src="#" alt="favicon" width="20" height="20"></td>
+        <td><img src="https://st2.ai55.cc/ai55-site/site-icons/recovered/862a512375e0791d.png" alt="favicon" width="20" height="20"></td>
         <td><a href="https://hellogen.ai/" target="_blank" rel="noopener noreferrer">HelloGen</a></td>
-        <td>🆕HelloGen 是 AI 图片和视频生成工作台，生图免...</td>
+        <td>HelloGen 是 AI 图片和视频生成工作台，生图免费不...</td>
         <td></td>
         <td><a href="https://hellogen.ai/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
@@ -1639,7 +1847,7 @@
     </tr>
     <tr>
         <td>15</td>
-        <td><img src="#" alt="favicon" width="20" height="20"></td>
+        <td><img src="https://st2.ai55.cc/ai55-site/site-icons/recovered/db753d8cbdfbf95e.ico" alt="favicon" width="20" height="20"></td>
         <td><a href="https://www.nano-banana.cn/" target="_blank" rel="noopener noreferrer">nano-banana PRO中文版</a></td>
         <td>nano-banana PRO 纳米香蕉中文官方站|Ai生成...</td>
         <td></td>
@@ -1671,134 +1879,37 @@
     </tr>
     <tr>
         <td>19</td>
-        <td><img src="https://prompthink.com/favicon.ico" alt="favicon" width="20" height="20"></td>
-        <td><a href="https://prompthink.com/" target="_blank" rel="noopener noreferrer">中文 AI 创作卡片工具</a></td>
-        <td>🆕帮助小红书、短视频、朋友圈、电商和职场场景快速生成中文内...</td>
+        <td><img src="https://tattoostencil.org/logo.svg" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://tattoostencil.org/" target="_blank" rel="noopener noreferrer">TattooStencil</a></td>
+        <td>🆕将照片、手稿或手写字转换为可打印的纹身转印线稿，提供免费...</td>
         <td></td>
-        <td><a href="https://prompthink.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
+        <td><a href="https://tattoostencil.org/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
         <td>20</td>
-        <td><img src="#" alt="favicon" width="20" height="20"></td>
-        <td><a href="https://innercanvas.app/" target="_blank" rel="noopener noreferrer">InnerCanvas</a></td>
-        <td>🆕通过绘画提示生成非诊断性的 AI 引导反思报告，用于私人...</td>
+        <td><img src="https://vivify.video/favicon-32x32.png" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://vivify.video/models/gpt-image-2-5" target="_blank" rel="noopener noreferrer">Vivify GPT Image 2.5</a></td>
+        <td>🆕文生图与参考图编辑工具，提供 GPT Image 2.5...</td>
         <td></td>
-        <td><a href="https://innercanvas.app/" target="_blank" rel="noopener noreferrer">链接</a></td>
+        <td><a href="https://vivify.video/models/gpt-image-2-5" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
         <td>21</td>
-        <td><img src="https://github.com/user-attachments/assets/e3468735-30c5-43c7-94cd-3d83077d85b9" alt="favicon" width="20" height="20"></td>
-        <td><a href="https://pixsolo.com/" target="_blank" rel="noopener noreferrer">pixsolo.com</a></td>
-        <td>🆕基于 Web 的 Apple App Store 和 G...</td>
+        <td><img src="https://aigeneratornsfw.com/brand/logo-20260929.webp" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://aigeneratornsfw.com/" target="_blank" rel="noopener noreferrer">aigeneratornsfw.com</a></td>
+        <td>🆕面向成年用户的浏览器图像与视频创作工具，支持参考图编辑、...</td>
         <td></td>
-        <td><a href="https://pixsolo.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
+        <td><a href="https://aigeneratornsfw.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
         <td>22</td>
-        <td><img src="https://easyremovewatermark.com/assets/logo-192.png" alt="favicon" width="20" height="20"></td>
-        <td><a href="https://easyremovewatermark.com/" target="_blank" rel="noopener noreferrer">Easy Remove Watermark</a></td>
-        <td>🆕在浏览器本地去除 Gemini 生成图片右下角可见水印的...</td>
+        <td><img src="https://favicon.zhusl.com/ico?url=fomrix.com" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://fomrix.com/" target="_blank" rel="noopener noreferrer">Fomrix</a></td>
+        <td>🆕从文字或参考图生成 GLB 三维资产，另提供浏览器模型查...</td>
         <td></td>
-        <td><a href="https://easyremovewatermark.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
+        <td><a href="https://fomrix.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
     </tr>
     <tr>
         <td>23</td>
-        <td><img src="https://st2.ai55.cc/2/a3a38c8a-5f0e-4185-9e94-61089090d3f5.png" alt="favicon" width="20" height="20"></td>
-        <td><a href="https://aicolors.co/" target="_blank" rel="noopener noreferrer">AI Colors</a></td>
-        <td>AI Color Palette Generator - B...</td>
-        <td></td>
-        <td><a href="https://aicolors.co/" target="_blank" rel="noopener noreferrer">链接</a></td>
-    </tr>
-</table>
-
-## 音频、视频与数字人
-
-<table>
-    <tr>
-        <td>1</td>
-        <td><img src="https://klingai.com/favicon.ico" alt="favicon" width="20" height="20"></td>
-        <td><a href="https://klingai.com/" target="_blank" rel="noopener noreferrer">可灵 AI</a></td>
-        <td>🆕快手推出的AI视频与图像生成平台，支持文本或图片生成高质...</td>
-        <td></td>
-        <td><a href="https://klingai.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
-    </tr>
-    <tr>
-        <td>2</td>
-        <td><img src="https://hailuoai.com/favicon.ico" alt="favicon" width="20" height="20"></td>
-        <td><a href="https://hailuoai.com/" target="_blank" rel="noopener noreferrer">海螺视频</a></td>
-        <td>🆕MiniMax旗下AI视频创作平台，支持文生视频、图生视...</td>
-        <td></td>
-        <td><a href="https://hailuoai.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
-    </tr>
-    <tr>
-        <td>3</td>
-        <td><img src="https://elevenlabs.io/favicon.ico" alt="favicon" width="20" height="20"></td>
-        <td><a href="https://elevenlabs.io/" target="_blank" rel="noopener noreferrer">ElevenLabs</a></td>
-        <td>🆕AI语音生成平台，提供文本转语音、声音克隆、配音与音频智...</td>
-        <td></td>
-        <td><a href="https://elevenlabs.io/" target="_blank" rel="noopener noreferrer">链接</a></td>
-    </tr>
-    <tr>
-        <td>4</td>
-        <td><img src="https://suno.com/favicon.ico" alt="favicon" width="20" height="20"></td>
-        <td><a href="https://suno.com/" target="_blank" rel="noopener noreferrer">Suno</a></td>
-        <td>🆕通过提示词生成完整歌曲、歌词和人声的主流AI音乐创作平台...</td>
-        <td></td>
-        <td><a href="https://suno.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
-    </tr>
-    <tr>
-        <td>5</td>
-        <td><img src="https://st2.ai55.cc/site-icons/7d5dee391b99df9f5c857f84fd7053210b53f3bd0928eb2ce69ced1a7eca44fd.webp" alt="favicon" width="20" height="20"></td>
-        <td><a href="https://unlucid.ai/" target="_blank" rel="noopener noreferrer">Unlucid AI</a></td>
-        <td>为梦想家们提供的免费、无限制的 AI 工具。利用 AI 的力...</td>
-        <td></td>
-        <td><a href="https://unlucid.ai/" target="_blank" rel="noopener noreferrer">链接</a></td>
-    </tr>
-    <tr>
-        <td>6</td>
-        <td><img src="https://st2.ai55.cc/2/ae7ae8c8-32c9-4b1d-a80a-ceaad7148c62.png" alt="favicon" width="20" height="20"></td>
-        <td><a href="https://ai.yunyan.chat/chat" target="_blank" rel="noopener noreferrer">云衍AI</a></td>
-        <td>🔑3.5模型永久免费。对接官网全部GPTS应用，无需自己再...</td>
-        <td></td>
-        <td><a href="https://ai.yunyan.chat/chat" target="_blank" rel="noopener noreferrer">链接</a></td>
-    </tr>
-    <tr>
-        <td>7</td>
-        <td><img src="https://favicon.zhusl.com/ico?url=kx.bamboochat.cn" alt="favicon" width="20" height="20"></td>
-        <td><a href="https://kx.bamboochat.cn/" target="_blank" rel="noopener noreferrer">kxAI 音频转录专家</a></td>
-        <td>🆕提供音视频和实时内容转文字及翻译。</td>
-        <td></td>
-        <td><a href="https://kx.bamboochat.cn/" target="_blank" rel="noopener noreferrer">链接</a></td>
-    </tr>
-    <tr>
-        <td>8</td>
-        <td><img src="https://sichang.xyz/sichang-icon-512.png" alt="favicon" width="20" height="20"></td>
-        <td><a href="https://sichang.xyz/" target="_blank" rel="noopener noreferrer">思畅AI</a></td>
-        <td>🆕私密、无审查的中文 AI 角色扮演、沉浸对话及图像视频创...</td>
-        <td></td>
-        <td><a href="https://sichang.xyz/" target="_blank" rel="noopener noreferrer">链接</a></td>
-    </tr>
-    <tr>
-        <td>9</td>
-        <td><img src="https://interpreter.youshowedu.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.f0bd8c53.png&amp;w=256&amp;q=75" alt="favicon" width="20" height="20"></td>
-        <td><a href="https://interpreter.youshowedu.com/" target="_blank" rel="noopener noreferrer">优秀同传</a></td>
-        <td>🆕面向会议、课堂、旅行和日常交流的实时语音识别与翻译工具。</td>
-        <td></td>
-        <td><a href="https://interpreter.youshowedu.com/" target="_blank" rel="noopener noreferrer">链接</a></td>
-    </tr>
-    <tr>
-        <td>10</td>
-        <td><img src="https://st2.ai55.cc/2/676fa6d1-592a-4965-a809-3ae379352cb9.png" alt="favicon" width="20" height="20"></td>
-        <td><a href="https://bibigpt.co/" target="_blank" rel="noopener noreferrer">BibiGPT</a></td>
-        <td>一键总结音视频内容</td>
-        <td></td>
-        <td><a href="https://bibigpt.co/" target="_blank" rel="noopener noreferrer">链接</a></td>
-    </tr>
-</table>
-
-## 写作、办公与知识管理
-
-<table>
-    <tr>
-        <td>1</td>
-        <td><img src="https:
+        <td><img src="https://favicon.zhusl.com/ico?url=describeimage.io" alt="favicon" width="20" height="20"></td>
+        <td><a href="https://describeimage.io/" target="_blank" rel="noopener noref

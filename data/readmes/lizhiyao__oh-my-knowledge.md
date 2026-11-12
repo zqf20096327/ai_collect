@@ -1,6 +1,6 @@
 # OMK
 
-[![Beta @next](https://img.shields.io/npm/v/oh-my-knowledge/next.svg?label=Beta)](https://www.npmjs.com/package/oh-my-knowledge?activeTab=versions)
+[![npm](https://img.shields.io/npm/v/oh-my-knowledge.svg)](https://www.npmjs.com/package/oh-my-knowledge?activeTab=versions)
 [![CI](https://github.com/lizhiyao/oh-my-knowledge/actions/workflows/ci.yml/badge.svg)](https://github.com/lizhiyao/oh-my-knowledge/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
@@ -14,17 +14,19 @@ For agent users and AI application developers, extract candidates from selected 
 
 ## Start with local work records
 
-Requires **Node.js ≥22**. The library, artifact authoring, and change review described here require **1.0.0-beta.14 or later**, from the **`@next` channel**; npm `latest` is a separate stable channel. Beta.13 does not include this maintenance UI. Strict extraction, native outcome archives, bounded retries, model-assisted cross-window link review and study review belong to later main development; a Beta.14 version alone does not establish their availability. See the [capability tiers](docs/guides/knowledge/extract-knowledge.md#availability) for release and source boundaries. Read the [migration guide](docs/guides/maintenance/v1-preview-migration.md) before upgrading an older installation.
+Requires **Node.js ≥22**. These steps use OMK **1.0** from npm. Read the [migration guide](docs/guides/maintenance/v1-preview-migration.md) before upgrading an older installation.
 
 ```bash
-npm i -g oh-my-knowledge@next
+npm i -g oh-my-knowledge
 omk --version
 omk studio
 ```
 
 Open the local URL returned by the command and inspect an existing Codex task and its source records. This step makes no model call; Studio offers source and collection guidance when no conversations exist. Follow the [observation guide](docs/guides/observe/observe-production.md) for other log sources.
 
-Next, choose a conversation and turns under “Knowledge → Candidate review”, inspect the material to send, and extract candidates. **Extraction calls a model**, so prepare an [authenticated runtime](docs/reference/integration/executors.md#prerequisites) first. Link sources in the library, revise outdated content, then explicitly generate and save an artifact. Its detail view lets you review knowledge changes and old and new references. Follow the [knowledge maintenance workflow](docs/guides/knowledge/extract-knowledge.md).
+If you prefer the terminal, run `omk know extract` directly. The guide selects sources with you and presents each model request for confirmation; no internal JSON assembly is required.
+
+Alternatively, in Studio choose a conversation and turns under “Knowledge → Candidate review”, inspect the material to send, and extract candidates. **Extraction calls a model**, so prepare an [authenticated runtime](docs/reference/integration/executors.md#prerequisites) first. Link sources in the library, revise outdated content, then explicitly generate and save an artifact. Its detail view lets you review knowledge changes and old and new references. Follow the [knowledge maintenance workflow](docs/guides/knowledge/extract-knowledge.md).
 
 ## When knowledge changes, review its artifacts
 
@@ -47,7 +49,7 @@ Starter cases check the workflow; `UNDERPOWERED` is expected. Release decisions 
 
 [Documentation start](docs/README.md) · [Website](https://oh-my-knowledge.pages.dev/) · [CLI](docs/reference/cli.md) · [Runtimes and executors](docs/reference/integration/executors.md) · [Settings and environment variables](docs/reference/shared/settings.md) · [Examples](examples/README.md)
 
-Beta APIs and storage contracts may change. Knowledge stays in the explicitly selected workspace; execution evidence and machine preferences have their own storage scopes. Back up before upgrading, then establish new evidence through the migration guide.
+Knowledge stays in the explicitly selected workspace; execution evidence and machine preferences have their own storage scopes. Back up before upgrading, then establish new evidence through the migration guide.
 
 ## Security notice
 

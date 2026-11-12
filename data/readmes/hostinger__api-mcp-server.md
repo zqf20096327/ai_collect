@@ -78,7 +78,7 @@ pnpm update -g @hostinger/mcp
 
 This package installs the following MCP server commands:
 
-- `hostinger-api-mcp` — unified server over every operation (409 total)
+- `hostinger-api-mcp` — unified server over every operation (414 total)
 - `hostinger-agency-hosting-mcp` — 43 operations for agency-hosting
 - `hostinger-agent-readiness-mcp` — 4 operations for agent-readiness
 - `hostinger-billing-mcp` — 10 operations for billing
@@ -87,7 +87,7 @@ This package installs the following MCP server commands:
 - `hostinger-ecommerce-mcp` — 30 operations for ecommerce
 - `hostinger-gpu-mcp` — 5 operations for gpu
 - `hostinger-horizons-mcp` — 7 operations for horizons
-- `hostinger-hosting-mcp` — 54 operations for hosting
+- `hostinger-hosting-mcp` — 59 operations for hosting
 - `hostinger-mail-mcp` — 39 operations for mail
 - `hostinger-reach-mcp` — 71 operations for reach
 - `hostinger-vps-mcp` — 68 operations for vps

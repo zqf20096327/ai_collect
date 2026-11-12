@@ -71,8 +71,7 @@ Rust Image Studio originated as AKAN's in-house tool for product visuals and is 
 Every control, menu and option is documented in the **[menu guide](docs/GUIDE.md)**.
 
 - **🎨 Five modes**<br>**Text** · **Variation** (img2img with strength) · **Edit** (instructions + up to 3 reference images) · **Inpaint** (brush the area) · **Expand** (outpainting). One shortcut each (Ctrl+1…5); the mode bar stays pinned while you scroll.
-- **↔️ Smart Expand**<br>A live preview with draggable sides and corners, quick presets (16:9, 9:16, 1:1, 4:3, zoom out) and per-side sliders. Equal passes are planned automatically and the source stays pixel-exact. The prompt is optional: the app writes one for you.
-- **🧠 Auto scene prompts**<br>Images made by the app carry their prompt in PNG metadata. For any other photo, a local vision model (Qwen3-VL via llama.cpp, on the GPU) describes the scene in ~20 s. It runs only when the image engine is idle.
+- **↔️ Smart Expand**<br>A live preview with draggable sides and corners, quick presets (16:9, 9:16, 1:1, 4:3, zoom out) and per-side sliders. Equal passes are planned automatically and the source stays pixel-exact. No prompt needed: it continues the scene around the picture.
 - **🧩 LoRA card**<br>One-click downloads of tested LoRAs: **Lightning 4-step**, **Edit consistency** and **Multiple angles**, the last with a 12-direction × 4-height camera dial that writes the prompt for you. Incompatible combinations switch each other off.
 - **🗂️ Smart gallery**<br>Prompt search, small and large grids, and a full-screen viewer with zoom and pan. Every PNG embeds its seed, size, mode and prompt, so dropping it back in restores the exact settings. Deletions go to the Recycle Bin / Trash.
 - **✍️ Text in images**<br>Renders legible signage text, including Hangul. A one-click text template, validated prompt tips and per-mode examples are built in.
@@ -90,10 +89,10 @@ Engineering notes. Every figure below was measured in the app on an RTX 3060 Ti 
 
 - **Resident, pinned engine.** stable-diffusion.cpp's `sd-server` runs as a managed child process with a fixed placement: weights mirrored in RAM and a 6 GB VRAM cap. The auto-fit placement sometimes failed, or re-read the model from SSD for every image (+6 s), depending on how much RAM was free at startup. Pinned placement gives the same speed every time.
 - **Warm start.** A one-step warm-up at launch loads the weights before you click, so the first image is as fast as the tenth.
-- **INT8 tensor cores.** Optional INT8 ConvRot weights take a step from **1.66 s to 1.02 s**. Same-prompt repeats drop to **~12.5 s**, or **~10.5 s** with ⚡ Fast mode (Spectrum step cache, −23% sampling).
+- **INT8 tensor cores.** Optional INT8 ConvRot weights take a step from **1.66 s to 1.02 s**. Same-prompt repeats drop to **~12.5 s**, or **~10.5 s** with the **Faster** speed (Spectrum step cache, −23% sampling).
 - **Expand without seams.** The new area is generated against a grey-padded reference of the source with a 3% overlap mask. The result is enlarged up to 1.6× and the original is composited back with a smoothstep feather, so the source part is never re-encoded. Wide zooms are split into equal passes (≤3× area, ≤1.6× when three or more sides grow).
 - **A blank-fill detector.** At 1/8 scale it compares the structure in the new band with the source next to it. On 28 test outputs it caught **all 8 failures with zero false alarms** (plain walls and studio backdrops pass), and a failed pass is redrawn with a new seed up to twice.
-- **GPU scheduling, not GPU fighting.** The 7.5 GB photo describer only runs while the image engine is idle. A generate click made meanwhile waits for it and then starts on its own. Every child process is tied to a Windows Job Object (on Linux: `PR_SET_PDEATHSIG`), so nothing outlives the app.
+- **No orphaned engine.** The engine process is tied to a Windows Job Object (on Linux: `PR_SET_PDEATHSIG`), so nothing outlives the app.
 - **Resumable first run.** Downloads continue across restarts with HTTP Range requests. Zips (and the Linux tarballs) are extracted to temporary names and renamed only when complete, so a cut-off install never looks finished. The app checks free disk space before it starts.
 - **A small, quiet app.** Around 9.3k lines of Rust in one 26 MB exe. The UI repaints only when something changes, and thumbnails, decoding and file I/O stay off the UI thread.
 
@@ -105,9 +104,8 @@ Engineering notes. Every figure below was measured in the app on an RTX 3060 Ti 
 |---|---|---|
 | Q4_K_M (default) | ~19 s | ~19 s |
 | INT8 tensor cores | ~21 s | ~12.5 s |
-| INT8 + ⚡ Fast mode | ~20 s | ~10.5 s |
+| INT8 + Faster speed | ~20 s | ~10.5 s |
 | Expand, per pass (INT8) | ~19 s | |
-| Photo description | ~18–19 s | |
 
 ## Get started
 
@@ -125,7 +123,7 @@ Engineering notes. Every figure below was measured in the app on an RTX 3060 Ti 
 
 \*On an RTX 3060 Ti with the rest of its VRAM held by another program to leave what a 6 GB / 4 GB card has free. Slower cards take proportionally longer.
 
-- **GeForce GTX cards** (GTX 16 series and older) have no tensor cores and are compute-bound: a 1024×1024 image took over 500 s on a GTX 1650. They start on the "Fast" size (736×736) with the Lightning 4-step LoRA, about 4× less work, and the INT8 model is hidden there.
+- **GeForce GTX cards** (GTX 16 series and older) have no tensor cores and are compute-bound: a 1024×1024 image took over 500 s on a GTX 1650. They start on the Small size (736×736) with the Fastest speed (Lightning 4-step LoRA), about 4× less work, and the INT8 model is hidden there.
 - **4 GB cards** download a smaller text encoder (Qwen3-VL-8B Q3_K_S, 3.77 GB instead of 5.15 GB). In a PC with under 13 GB of RAM they also get the Q3_K_S image model (2.72 GB instead of 4.2 GB): it is 24% slower per step but needs 1.5 GB less RAM, so the engine isn't paged out.
 - Expand, variation and inpaint always run the normal 8 steps: Lightning 4 steps left borders blank or drew the subject twice when expanding.
 - **Low free RAM:** when too little RAM is free at engine start to keep all weights in memory, the text encoder is read from disk instead (a few seconds more per new prompt) rather than letting Windows page the engine out.
@@ -142,9 +140,8 @@ Engineering notes. Every figure below was measured in the app on an RTX 3060 Ti 
 | Qwen-Image-2.1 Turbo Q4_K_M | 4.2 GB | Hugging Face |
 | Qwen3-VL-8B text encoder | 5.1 GB | Hugging Face |
 | VAE | 676 MB | Hugging Face |
-| *Extras:* vision module (edit, expand, photo description) | 1.2 GB | Hugging Face |
+| *Extras:* vision module (edit, expand) | 1.2 GB | Hugging Face |
 | *Extras:* 3 recommended LoRAs | 545 MB | Hugging Face |
-| *Extras:* photo describer: llama.cpp, Vulkan | 38 MB | GitHub |
 
 Extras are optional: if one fails, core generation remains available and the component can be fetched again later. The faster INT8 model (7.3 GB) can be added from the model menu.
 Files go next to the exe (`runtime/`, `models/`, `outputs/`). Settings live in `%APPDATA%\Rust Image Studio`.
@@ -185,8 +182,7 @@ The app can run on AMD Radeon cards with stable-diffusion.cpp's **official** AMD
 The device name the engine uses (`ROCm0`, `Vulkan0`) is read from `sd-server --list-devices`, and the same placement as on
 NVIDIA is used: weights mirrored in RAM, a 6 GB VRAM budget (less on cards under 8 GB). The
 **INT8 ConvRot model** is available with CUDA on NVIDIA tensor-core GPUs and with ROCm on CDNA/RDNA3/RDNA3.5/RDNA4 devices. Older AMD devices and Vulkan keep Q4_K_M selected; Vulkan INT8 needs device-feature detection before the app can offer it safely.
-⚡ Fast mode and every generation mode stay available. The photo describer was already a Vulkan build and runs on AMD
-drivers too.
+The Faster speed and every generation mode stay available.
 
 **Integrated Radeon (APU).** An APU whose BIOS gives the GPU only a small carve-out (2 GB or less, often 512 MB) works
 from system RAM: on Linux its real GPU memory is the GTT (`mem_info_gtt_total`), on Windows the shared GPU memory (half of
@@ -204,7 +200,7 @@ RTX 3060 Ti only.
 | GPU detection, backend choice, device-name parsing, the Linux ROCm zip's `build/bin/` layout, the Windows ROCm library lookup (ROCm 6 and 7 folders told apart), VRAM budget: unit tests | Windows |
 | The NVIDIA path is unchanged: still `CUDA0`, still the CUDA runtime download, 1024×1024 in 18.3 s / 19.5 s, all tests pass | Windows, RTX 3060 Ti |
 | Archive contents and dependencies of the four AMD zips (HIP runtime DLLs bundled on Windows, `hipblas.dll` imported but not bundled; Linux ROCm links system ROCm 7; Linux Vulkan glibc floor 2.43) | read from the published archives |
-| **The Vulkan engine path end to end in the app**: device read as `Vulkan0`, Q4_K_M generation at 1024×1024 in 21.5 s (new prompt) / 19.1 s (repeat), ⚡ Fast mode 15.1–15.8 s; the first launch's warm-up took 83 s (shader compilation), later ones 22 s | Windows, upstream Vulkan zip on the **RTX 3060 Ti** (NVIDIA's Vulkan driver, not AMD's) |
+| **The Vulkan engine path end to end in the app**: device read as `Vulkan0`, Q4_K_M generation at 1024×1024 in 21.5 s (new prompt) / 19.1 s (repeat), the Faster speed 15.1–15.8 s; the first launch's warm-up took 83 s (shader compilation), later ones 22 s | Windows, upstream Vulkan zip on the **RTX 3060 Ti** (NVIDIA's Vulkan driver, not AMD's) |
 | First-run setup with the Vulkan engine from a local mirror: no CUDA runtime in the list, the zip unpacked into `runtime\vulkan\`, the GPU line and a failed download shown on the setup screen | Windows |
 | APU placement (weights on `Vulkan0`, text encoder from disk, `--max-vram 0`) accepted by the engine and generating correctly, with 8 GB of shared memory simulated | Windows, Vulkan zip on the RTX 3060 Ti |
 
@@ -238,7 +234,6 @@ driver (525 or newer; the app warns if it finds none) · 16 GB RAM · about 17 G
 | Generation engine: stable-diffusion.cpp, CUDA 12 (Linux build) | ~360 MB (estimate) | this repository's engine release |
 | CUDA runtime (cudart, cuBLAS) | 594 MB | this repository's engine release |
 | Models, extras, LoRAs | as on Windows | Hugging Face |
-| *Extras:* photo describer: llama.cpp `b12182`, Ubuntu Vulkan | 36 MB | GitHub (ggml-org/llama.cpp) |
 
 System libraries outside the scope of provisioning come from your distribution; most desktops already include them:
 
@@ -246,7 +241,7 @@ System libraries outside the scope of provisioning come from your distribution; 
 sudo apt install libxkbcommon0 libxkbcommon-x11-0 libwayland-client0 libx11-6 libxcursor1 libxrandr2 libxi6 libvulkan1 libgl1 libegl1 xdg-desktop-portal
 ```
 
-The setup screen checks the parts it can (the NVIDIA driver, glibc, `libstdc++`, `libvulkan` for the photo describer) and names the package to install.
+The setup screen checks the parts it can (the NVIDIA driver, glibc, `libstdc++`, `libvulkan` for the Vulkan engine) and names the package to install.
 `libxkbcommon-x11-0` is required on X11 sessions; without it the app exits before opening a window. `xdg-desktop-portal` plus a GTK, GNOME or KDE
 backend provides the file dialogs. The Korean font (Nanum Gothic) and the icon fonts are built in. If the window doesn't open, try
 `WGPU_BACKEND=vulkan ./RustImageStudio` (or `=gl`).
@@ -266,7 +261,7 @@ and **the Linux engine release has not been built by CI or published yet**; the 
 | `cargo check`, `cargo test` (26 tests) and `cargo build --release` pass without warnings; the binary links only to glibc and libgcc_s | Ubuntu 24.04 under WSL2, no `-dev` packages installed |
 | `.tar.gz` extraction: top-folder strip, symlinks, exec bits, unsafe paths skipped | unit tests, on Linux and Windows |
 | `scripts/build-linux-engine.sh` with CUDA 12.8 builds and packages both archives; outside them the engine needs only glibc, `libstdc++`, `libgcc` and the driver's `libcuda.so.1` | WSL2, one GPU architecture (sm_86), so a 68 MB engine archive instead of the full one |
-| First-run setup end to end from a local mirror: the app downloads and unpacks that engine, the CUDA runtime and the real llama.cpp `b12182` tarball (exec bits set, the CUDA libraries found next to `sd-server` through `RUNPATH=$ORIGIN`) | WSL2 |
+| First-run setup end to end from a local mirror: the app downloads and unpacks that engine and the CUDA runtime (exec bits set, the CUDA libraries found next to `sd-server` through `RUNPATH=$ORIGIN`) | WSL2 |
 | The app starting that engine on an RTX 3060 Ti and generating a 1024×1024 image (24 s); `sd-cli` from the same build, 512×512 | WSL2 (CUDA through the Windows driver) |
 | The engine dying with the app, also on `kill -9` (`PR_SET_PDEATHSIG`) | WSL2 |
 | The app window, setup screen and main screen in English and Korean, built-in Korean and icon fonts (no missing glyphs) | WSLg (Wayland; `WGPU_BACKEND=vulkan` was needed there) |
@@ -275,7 +270,6 @@ and **the Linux engine release has not been built by CI or published yet**; the 
 |---|---|
 | The `linux-engine` workflow on GitHub (all nine architectures, a few hours), its glibc floor (the local build on 24.04 needs 2.38; the workflow builds on 22.04 for 2.35) and the published engine archive's real size | the workflow has not been run yet |
 | The NVIDIA driver / glibc / libvulkan notices on the setup screen | compiled for Linux, not seen on a machine that lacks them |
-| The photo describer on the NVIDIA Vulkan driver under Linux | needs a native driver |
 | File dialogs, clipboard, Trash and "show in folder" on a real GNOME/KDE desktop | WSLg has no desktop portal or file manager |
 | Linux performance (every number on this page is from Windows) | WSL2 numbers aren't representative |
 
@@ -320,5 +314,5 @@ requests that try to weaken it. You are responsible for what you generate and fo
 App source code: [MIT](LICENSE). Models, engines and LoRAs keep their own licenses. The Qwen-Image models use the
 Qwen license, so check it before any commercial use. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-*The application is written in Rust. The inference itself runs in stable-diffusion.cpp and llama.cpp (C/C++, CUDA/Vulkan), which the app downloads and drives.*
-Not affiliated with Alibaba/Qwen, stable-diffusion.cpp or llama.cpp.
+*The application is written in Rust. The inference itself runs in stable-diffusion.cpp (C/C++, CUDA/ROCm/Vulkan), which the app downloads and drives.*
+Not affiliated with Alibaba/Qwen or stable-diffusion.cpp.

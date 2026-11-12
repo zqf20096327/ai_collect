@@ -186,7 +186,7 @@ use_frameworks! :linkage => :static
 target 'YourApp' do
   pod 'XmaxSDK',
       :git => 'https://github.com/Xmax-AI/XmaxSDK-MacOS.git',
-      :tag => '1.1.3'
+      :tag => '1.1.4'
 end
 
 post_install do |installer|
@@ -207,7 +207,7 @@ pod install --repo-update
 ### Manual
 
 Download
-[`XmaxSDK-1.1.3.xcframework.zip`](https://github.com/Xmax-AI/XmaxSDK-MacOS/releases/download/1.1.3/XmaxSDK-1.1.3.xcframework.zip)
+[`XmaxSDK-1.1.4.xcframework.zip`](https://github.com/Xmax-AI/XmaxSDK-MacOS/releases/download/1.1.4/XmaxSDK-1.1.4.xcframework.zip)
 and add the SDK and its required dependencies to your Xcode target.
 
 <br>
@@ -215,6 +215,8 @@ and add the SDK and its required dependencies to your Xcode target.
 ## Quick Start
 
 Use your front camera to turn yourself into a character from a reference image in real time.
+To use X2.1 Flash, pass `.x2_1_flash` to `RealtimeConfiguration`. Its default camera format
+on macOS is 1280 × 704 at 30 fps.
 
 ```swift
 import XmaxSDK
@@ -235,12 +237,7 @@ let videoView = XmaxRealtimeDualVideoView(frame: view.bounds)
 view.addSubview(videoView)
 
 // Create a camera stream and bind the preview
-let localStream = try await realtime.createLocalCameraStream(
-    videoFormat: RealtimeVideoFormat(width: 1920, height: 1080, fps: 30),
-    camera: .systemDefault,
-    microphone: .disabled,
-    mirror: false
-)
+let localStream = try await realtime.createLocalCameraStream()
 videoView.localTrack = localStream.videoTrack
 
 // Once the preview is ready, start generation and display the result

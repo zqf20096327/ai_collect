@@ -167,8 +167,6 @@ Text annotations and their associations are also supported.
 
 * The AI assistant does not "see" manual edits made to the diagram. It always responds based on its last generated
   version. Keep this in mind when interacting with the assistant after making manual changes.
-* Nested lanes are not supported yet.
-* Each non-empty pool must contain exactly one start event.
 
 ## Paper
 

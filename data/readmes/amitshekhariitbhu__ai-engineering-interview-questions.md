@@ -225,6 +225,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 ### Prompt Engineering
 
 - What is prompt engineering, and why is it critical for AI applications?
+  - Answer: [How does Prompt Engineering work?](https://outcomeschool.com/blog/prompt-engineering)
 - Explain zero-shot, one-shot, and few-shot prompting with examples.
   - Answer: [Explain zero-shot, one-shot, and few-shot prompting with examples](https://www.linkedin.com/posts/pallavi-shekhar_llm-prompting-ai-activity-7441801012472078336-JsHr)
 - What is chain-of-thought (CoT) prompting, and when should you use it?
@@ -479,9 +480,10 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - What is the difference between SFT (Supervised Fine-Tuning) and alignment training?
   - Answer: [Decoding InstructGPT](https://outcomeschool.com/blog/decoding-instructgpt)
 - What is RLAIF (RL from AI Feedback), and how does it differ from RLHF?
+  - Answer: [What is RLAIF? Reinforcement Learning from AI Feedback Explained](https://outcomeschool.com/blog/reinforcement-learning-from-ai-feedback-rlaif)
 - What is Constitutional AI, and how does it differ from RLHF?
 - What is RLVR (Reinforcement Learning with Verifiable Rewards), and when does it beat a learned reward model?
-  - Answer: [Group Relative Policy Optimization (GRPO)](https://outcomeschool.com/blog/group-relative-policy-optimization-grpo)
+  - Answer: [Group Relative Policy Optimization (GRPO)](https://outcomeschool.com/blog/group-relative-policy-optimization-grpo) and [What is Reinforcement Learning with Verifiable Rewards (RLVR)?](https://outcomeschool.com/blog/reinforcement-learning-with-verifiable-rewards-rlvr)
 - What is knowledge distillation for fine-tuning, and what are the legal considerations?
   - Answer: [How does Knowledge Distillation work?](https://outcomeschool.com/blog/how-does-knowledge-distillation-work)
 - Your fine-tuned LLM produces factually wrong outputs due to training data quality issues. How do you fix it?

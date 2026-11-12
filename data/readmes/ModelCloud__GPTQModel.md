@@ -82,8 +82,11 @@ GPT-QModel provides a consistent API for calibration, quantization, quality eval
 Its method, format, backend, and kernel layers are modular: method-specific controls remain available where needed, while implementations share the same model lifecycle. This architecture supports mixed and model-specific quantization workflows today and provides a clear integration path for additional methods, formats, kernels, and accelerators.
 
 GPTQ Hessian capture and repeated finalization are described in the [Hessian accumulation flow](docs/gptq-hessian-accumulation.md).
+Disk-backed replay outputs use [bounded staging and shard verification on every read](docs/looper-checkpoint-redesign.md#disk-backed-layer-output-staging-and-reads).
 The [GPTQ mock quantization group flow](docs/gptq-mock-group-flow.md) describes group-boundary handling and metadata ordering.
 AWQ module overrides follow the [dynamic group-size flow](docs/awq-dynamic-group-size.md) through search, staging, and packing.
+Torch AWQ inference keeps checkpoint-precision scales and bias; see the [AWQ runtime dtype precision](docs/awq-runtime-dtype-precision.md) flow.
+GPTQ packers validate FP16 scale storage before writing a checkpoint; see the [GPTQ scale storage range](docs/gptq-scale-storage-range.md) contract.
 
 `TorchLinear` never retains dense/dequantized weights between inference calls.
 The legacy `GPTQ_TORCH_CACHE_WEIGHTS` / `GPTQ_TORCH_LOOKAHEAD` flags and
@@ -96,6 +99,10 @@ device/dtype moves invalidate this metadata automatically.
 The [ParoQuant rotation identity lifecycle](docs/paroquant.md#rotation-identity-lifecycle)
 explains how rotation buffer changes, state loads, and module moves refresh its
 identity shortcut.
+The [quantized embedding row decode](docs/quantized-embedding-row-decode.md)
+page explains how a token lookup reads only its packed rows, why small tables
+and large token counts still use whole-table decode, and what that means for
+packed-weight storage.
 The [CUDA quantized linear epilogue](docs/cuda-quantized-bias-epilogue.md)
 documents wide streaming reductions, bias before low-precision output
 rounding, fallback for empty FP8 inputs, and CUDA gradient propagation for the
@@ -105,6 +112,9 @@ documents fused low-precision bias addition and FP32 checkpoint bias handling.
 The [low-precision bias epilogues](docs/low-precision-bias-epilogue.md)
 reference keeps FP4, VPTQ, FP8, GGUF, and NF12 bias widths and their
 failure paths in one place.
+The [AllSpark W8A16 bias epilogue](docs/allspark-bias-epilogue.md)
+documents how the CUDA and RDNA4 kernels add a checkpoint bias to the
+FP32 accumulator before output rounding.
 The [GGUF Triton packed metadata cache](docs/gguf-triton-packed-cache.md)
 documents weight update invalidation and the explicit-clear contract for
 inference tensors.
@@ -233,7 +243,9 @@ columns at a time and never retains a dense dequantized weight;
 Native backend availability, shape validation, wide activation inputs, and
 derived cache invalidation follow the
 [kernel validation and cache lifecycle](docs/kernel-validation-and-cache-lifecycle.md)
-contract.
+contract. Opt-in AllSpark W8A16 keeps its GPTQ/AWQ checkpoint tensors
+authoritative and its N32K16/WMMA kernel layout a derived cache; see
+[AllSpark checkpoint layout](docs/allspark-checkpoint-layout.md).
 
 FP8 source weights must be finite before quantization; see the
 [FP8 source weight validation contract](docs/quantization-guide.md#fp8-source-weight-validation).
@@ -243,6 +255,8 @@ GSQ is an opt-in scalar refinement for supported `METHOD.GPTQ`, `METHOD.AWQ`, `M
 AWQ FP16 boundary staging and packed decode follow the [AWQ affine range contract](docs/awq-affine-range.md).
 
 Marlin uses `GPTQMODEL_MARLIN_USE_FP32` (default: enabled) to control fp32 accumulation.
+The [Marlin device-profile validator](docs/marlin-device-profile-validation.md)
+checks device ordinals before asking Torch or the extension for a profile.
 
 On ROCm, quantization runs with torch's rocBLAS backend instead of hipBLASLt: hipBLASLt
 loads one Tensile library per (dtype, layout) pair on first use, and those one-time loads
@@ -942,6 +956,8 @@ model.save(quant_path)
 The packed weight is saved as `nf12_packed` (uint8, `N x K*3/2`) with
 `nf12_escapes` and `nf12_exp_base`, so loaders treat it as a quantized
 checkpoint rather than a dense weight.
+The [four-copy embedding path](docs/nf12-embedding-repeat4.md) decodes one
+packed row and writes the initial hyper-connection activations in one launch.
 
 The [NF12 validation backend and performance flow](docs/nf12-validation-backends.md)
 explains device selection, native encoder measurements, and Torch fallback.

@@ -25,6 +25,18 @@ Install the published binary or run `waza update`; a source build is optional.
 Platform, explicit opt-in, evidence, and paid-call restrictions still apply. See the
 [feature/platform matrix](site/src/content/docs/reference/releases.mdx#upcoming-main-only-capabilities).
 
+The unreleased [logical execution-attempt embedding API](docs/EXECUTION_ATTEMPTS.md)
+adds immutable reservations and explicit verified reuse without changing
+`runner run`. Public submission commands and Lab lineage integration remain
+pending; this is not available in installed v0.40.1 artifacts.
+The [checkpoint embedding preview](docs/EXECUTION_CHECKPOINTS.md) adds compatible
+whole-unit recovery. Its unreleased source CLI adds `runner checkpoint create`
+and `runner checkpoint resume`, with protected HTTP create/resume operations.
+The source Lab can create/resume checkpoints and export protected results.
+Ordered evaluation-level lineage and full platform acceptance remain pending.
+For 1.0 results containing a report, the Lab reader labels statuses as unverified
+claims: native canonical-report checks are not performed in the browser.
+
 **v0.40.0 adds** bounded
 runner/text execution, selected AgentV assertion conversion, task-level MCP
 mocks, program-grader context, host lifecycle evidence, and Lab conversations.
@@ -284,6 +296,26 @@ canonical workflow, target-specific validation steps, and a reusable delegation 
 
 ## Commands
 
+### `waza aggregate` (unreleased v0.41 source preview)
+
+Aggregate explicit completed public manifests from an existing local immutable
+store without starting agents or requiring the original worker:
+
+```bash
+waza aggregate --store .waza-artifacts "$DIGEST" -o aggregate.json
+waza aggregate --store .waza-artifacts --inputs inputs.json -o qualified.json
+```
+
+Input reference pairs, verified manifests and verified execution records are
+separate populations. Repeated executions and compatible views are retained;
+missing/conflicting inputs remain in emitted reports and exit nonzero.
+Complete admission is not a passing task or execution attestation. Historical
+usage is unavailable rather than a partial or cached subtotal. Lab's
+**Runner** view's **Aggregate completed public manifests** panel exposes composition,
+diagnostics and the exact JSON download.
+See [worked examples](site/src/content/docs/guides/manifest-aggregation.mdx) and
+[ordering, compatibility and migration](docs/MANIFEST_AGGREGATION.md).
+
 ### `waza artifact` (unreleased v0.41 source preview)
 
 Publish immutable artifact manifests without executing agents. The opt-in store
@@ -342,7 +374,7 @@ waza runner run < examples/runner/unit.json
 
 The v0.40.0 release implements `negotiation`, `exact-unit`, `inline.mock-text`,
 `terminal-result` and opt-in `inline.copilot-text`.
-Only `runner run` starts an engine; each dispatch runs its selected task/trial/
+In v0.40.0, only `runner run` starts an engine; each dispatch runs its selected task/trial/
 attempt once, without discovery, cache or retries. Admitted receipts include
 versioned [logical identities](site/src/content/docs/guides/runner-identities.mdx)
 derived from the original captured input, not proof of execution or deduplication.
@@ -384,6 +416,23 @@ are hard errors; remove `--runner-compat` to retain ordinary local workflows.
 The task entry must be eval-relative, and successful adaptation passes shared
 offline admission within the complete 4 MiB emitted-byte limit.
 See the [compatibility table and before/after examples](site/src/content/docs/guides/runner-compatibility.mdx).
+
+**Unreleased checkpoint source preview:** `waza runner checkpoint create --store
+.waza-artifacts < submission.json` publishes whole-unit checkpoints;
+`waza runner checkpoint resume CHECKPOINT_SHA256 --store .waza-artifacts <
+submission.json` admits compatible recovery. These commands require a clean
+VCS-stamped CLI and a captured submission wrapper, not a bare runner request.
+Ordinary results remain strict schema `1.0`; sanitized pre-store and store-close
+operational failures use schema `1.1`, status `operation_error`, exit code `2`,
+and an allowlisted `error_code`. Close failures retain the capture-approved
+submission, source and checkpoint references when their linkage is valid,
+without changing the submission's own status or exit. An admitted source that
+cannot be linked to the retained submission is marked `source_withheld: true`.
+Raw causes remain operator-only.
+Consumers must keep these levels separate: a store-close failure can have
+top-level exit `2` while the preserved completed or reused submission still has
+nested exit `0`.
+See the [checkpoint workflow and limits](site/src/content/docs/guides/immutable-artifacts.mdx#checkpoint-public-source-preview).
 
 The [local container reference](site/src/content/docs/guides/runner-container.mdx)
 keeps the default scratch image mock-only and provides an explicit
@@ -750,6 +799,7 @@ fi
 waza run eval.yaml --format github-comment > comment.md
 gh pr comment $PR_NUMBER --body-file comment.md
 
+# Completed grading failures also write JUnit XML and retain a nonzero exit status.
 # Generate JUnit XML for CI test reporting
 waza run eval.yaml --reporter junit:results.xml
 
@@ -1850,24 +1900,4 @@ In v0.40.0, task loading and filter errors are reported before engine startup. T
 
 Admission also validates selected fixture-backed tool `input_schema` declarations, including eval fixtures needed only by trigger tests. Omitted/null schemas retain the default; whole-tool overrides and genuinely unused fixture metadata remain excluded.
 
-The CLI discovers `trigger_tests.yaml` after `before_run` and before engine startup, and uses that same parsed spec for the trigger phase. Trigger tests use eval-level MCP dependencies, not task overrides: an eval mock's fixtures can be skipped only when every selected task replaces it **and no trigger phase needs it**. Offline preflight applies the same dependency rule without constructing a trigger runner or starting servers. The mock executor synthesizes trigger results without MCP execution. Task filters, `--skip-graders`, `--no-skills`, and task cache hits do not disable trigger tests.
-
-Canceling during Copilot SDK startup stops waiting and cleans up partial startup; canceling the original caller after successful startup does not terminate the healthy shared client. Reinitializing a healthy client remains idempotent even with a canceled caller context. A canceled shared startup can be replaced on the next client lookup once its cleanup has succeeded, but global shared-client shutdown still rejects new clients. Custom client factories must unblock `Start` on its lifetime-context cancellation or `ForceStop`; each partial-startup cleanup wait reports an error after its two-second deadline. This bounds caller waiting, not goroutine termination for a noncooperating custom client; pending or failed cleanup remains tracked rather than being treated as completed.
-
-Canceling one concurrent initialization waiter does not cache an engine-wide startup failure or prevent another waiter from authenticating successfully.
-
-**Post-v0.40.0 source behavior:** The following cleanup notes describe
-[#870](https://github.com/microsoft/waza/pull/870) and its cancellation-join follow-up,
-integrated after the immutable
-v0.40.0 tag at `93e80d7fdcbf9206215366d6ecca7ed08d26b2b3`. They do not describe
-the published v0.40.0 binaries or extension.
-
-For canceled sends and disconnects that finish during forced cleanup, joining the
-force-stop callback uses only the remaining post-force grace. A callback that
-finishes in that budget does not retire the client merely because the session
-returned first. A blocked callback still retires the client at the same deadline;
-a completed session is not marked abandoned.
-
-Waiting for a retired client's replacement honors each request's cancellation; retiring an old generation does not wait for replacement startup. Parent cancellation remains a failure even after a skill invocation ends the turn early, or when session/global cleanup finishes without an SDK error. This bounds caller waiting, not child-process lifetime: retired shared clients remain tracked until command-level shutdown so active sibling sessions are not force-stopped. Repeated unresponsive trials can therefore retain multiple client processes until finalization; there is no per-run process-count bound.
-
-Shutdown-usage fallback is excluded for session IDs with an in-progress disconnect. If a disconnect exceeds the cancellation grace and is abandoned, that engine retains the exclusion for its lifetime, even if the background disconnect later completes. This avoids fallback resuming or shutting down a session whose disconnect has not been joined. Already recorded RPC metrics and observed event usage remain
+The CLI discovers `trigger_tests.yaml` after `before_run` and before engine startup, and uses that sam

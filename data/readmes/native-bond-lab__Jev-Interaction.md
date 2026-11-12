@@ -4,15 +4,17 @@
 
 **System-One-controlled full-duplex voice interaction.**<br>Turn-taking as decisions you write — not a model you train.
 
-[中文](README.zh-CN.md) · [Profiles](examples/profiles) · [Decisions](jev_interaction/judge/questions.py)
+[中文](README.zh-CN.md) · [Profiles](jev_interaction/profiles) · [Decisions](jev_interaction/judge/questions.py)
 
 [![tests](https://github.com/native-bond-lab/Jev-Interaction/actions/workflows/tests.yml/badge.svg)](https://github.com/native-bond-lab/Jev-Interaction/actions/workflows/tests.yml) ![python](https://img.shields.io/badge/python-3.10%2B-3776ab) ![license](https://img.shields.io/badge/license-Apache--2.0-blue) ![status](https://img.shields.io/badge/status-alpha-f59e0b) ![judge](https://img.shields.io/badge/judge-Jev-0f766e) ![duplex](https://img.shields.io/badge/full--duplex-voice-6366f1)
 <br>
 
-*Most of a conversation happens in the gaps: who waits, who yields, who answers with nothing but an "mm-hm".<br>We wrote every gap down as a question, and gave the questions to Jev.*
+*Most of a conversation happens in the gaps: who waits, who yields, who answers with nothing but an "mm-hm".<br>We wrote every gap down as a question, and gave the questions to Jev.* Try it here: [Try it now](https://pupunpu-jev-interaction.hf.space/).
 
 
 </div>
+
+<img src="docs/cover.png" alt="Jev-Interaction — full-duplex voice, turn-taking you control" width="100%">
 
 > **Built on [Jev](https://typesafe.ai).** Every turn-taking decision here is a question Jev answers in tens of
 > milliseconds. Without it, none of this would work.
@@ -149,10 +151,14 @@ read.
 
 | profile | listening sounds | mid-sentence pauses | talked over | silence | policies |
 |---|---|---|---|---|---|
-| [companion](examples/profiles/companion.yaml) | often, varied | quick to react | stops, delighted | fills it | sample |
-| [support](examples/profiles/support.yaml) | a short "okay" | waits (numbers being read) | stops at once | waits, then one check | thresholds |
-| [tutor](examples/profiles/tutor.yaml) | encouraging | very patient | finishes the explanation | offers a prompt | sample |
-| [interviewer](examples/profiles/interviewer.yaml) | none | lets thinking run | cuts in on rambling | waits for the answer | mixed |
+| [companion](jev_interaction/profiles/companion.yaml) | often, varied | quick to react | stops, delighted | fills it | sample |
+| [support](jev_interaction/profiles/support.yaml) | a short "okay" | waits (numbers being read) | stops at once | waits, then one check | thresholds |
+| [tutor](jev_interaction/profiles/tutor.yaml) | encouraging | very patient | finishes the explanation | offers a prompt | sample |
+| [interviewer](jev_interaction/profiles/interviewer.yaml) | none | lets thinking run | cuts in on rambling | waits for the answer | mixed |
+| [Vera · speaking coach](jev_interaction/profiles/vera.yaml) | almost none | lets silence work | finishes her sentence | gives the next exercise | thresholds |
+| [话唠阿乐 · chatterbox](jev_interaction/profiles/chatterbox_zh.yaml) | constant | jumps in | finishes his sentence | can't bear one | sample |
+| [小奶狗小言 · sweet puppy](jev_interaction/profiles/puppy_zh.yaml) | soft "mm, and then?" | waits | stops the moment you speak | asks if you're okay | sample |
+| [电商客服小安 · support (Chinese)](jev_interaction/profiles/support_zh.yaml) | a rare "好的" | never cuts in on an order number | stops at once | one check | thresholds |
 
 ```yaml
 name: Sam
@@ -168,33 +174,72 @@ policies:
 
 ## Quickstart
 
+One command installs everything, starts the server and opens the page; the page walks you through each provider and key:
+
 ```bash
 git clone https://github.com/native-bond-lab/Jev-Interaction && cd Jev-Interaction
-pip install -e ".[server]"
-cp .env.example .env     # JEV_API_KEY · an OpenAI-compatible LLM endpoint · ELEVENLABS_API_KEY and VOICE_ID
-uvicorn server.app:app --port 8080
+./scripts/setup.sh            # --china installs through a domestic PyPI mirror
 ```
 
-Open <http://localhost:8080>, pick a profile and press **Call**. The built-in VAD is a simple energy detector, so use
-headphones.
+Or as a package, in any folder:
+
+```bash
+pip install "jev-interaction[server] @ git+https://github.com/native-bond-lab/Jev-Interaction"
+jev-interaction serve         # http://localhost:8080
+```
+
+Or with Docker (any OS):
+
+```bash
+cp .env.example .env          # fill it in, or leave it empty and use the setup steps on the page
+docker compose up             # http://localhost:8080
+```
+
+Open <http://localhost:8080>. Setup goes one node at a time: the judge (Jev), a language model, speech recognition, a
+voice. Paste a key and the page recognises whose it is; pick the language model from the endpoint's own model list; test
+each step before moving on. Settings are saved to `.env` in the folder you started from. Then pick a persona and click
+the orb to call (click it again to hang up). The voice detector is TEN VAD, the one production runs on; headphones still give the cleanest call.
+
+**Every node is your choice.** The language model is any OpenAI-compatible endpoint (xAI, OpenAI, DeepSeek, Qwen,
+Doubao, GLM, Kimi, OpenRouter, Groq, a local Ollama or vLLM server); recognition and voice come from the provider
+registry, and a third-party package can add its own ([docs/adapters.md](docs/adapters.md)). The language model is told
+how to write for the voice you pick: voices that perform audio tags (ElevenLabs v3/v4) get a style that uses
+`[laughs]`, `[whispers]`; others get plain spoken words (`jev_interaction/prompts/speech/`).
+
+**Reference setups**, offered on the setup page and at the bottom of `.env.example`, never applied unless you choose them:
+
+| | what we run in production | a mainland China setup |
+|---|---|---|
+| judge | Jev | Jev (set `HTTPS_PROXY` if `api.typesafe.ai` is slow from your network) |
+| language model | grok-4.3, reasoning off, temperature 0.7 | qwen-plus via DashScope |
+| recognition | ElevenLabs Scribe v2 realtime turbo | Paraformer realtime v2 |
+| voice | ElevenLabs eleven_v4_turbo (audio tags) | CosyVoice v2, per-persona voices (plain words) |
+| keys | Jev, xAI, ElevenLabs | Jev, one DashScope key |
+
+**Presets.** `JEV_PRESET=production` (default) is the timing the production engine runs today; `tested` adds the knobs
+measured below; `default` is the library defaults. In code: `jev_interaction.preset("production", language="en")`.
+
+**Hugging Face Space.** `HF_TOKEN=... ./scripts/push_hf_space.sh <owner>/<space>` publishes this repository as a Docker
+Space ([card](deploy/huggingface/README.md)); add the keys as Space secrets and the push sets `MAX_CONCURRENT_CALLS`,
+`MAX_CALL_SECONDS` and `MAX_CALL_MINUTES_PER_DAY` as variables, since every call is billed to them.
 
 ### In your own code
 
 ```python
 from jev_interaction import Config, Profile
-from jev_interaction.adapters import EnergyVAD
+from jev_interaction.adapters import best_vad
 from jev_interaction.adapters.openai_compat import OpenAICompatResponder
 from jev_interaction.adapters.scribe import ScribeRealtime
 from jev_interaction.judge import JevClient
 from jev_interaction.session import Session
 
 session = Session(
-    Profile.load("examples/profiles/support.yaml"),
+    Profile.load("support")          # a built-in persona, or a path to your own YAML,
     send=my_send,                       # async: deliver events to your client
     judge=JevClient(),
     recognizer=ScribeRealtime(language="en"),
     responder=OpenAICompatResponder(),   # any OpenAI-compatible endpoint
-    vad=EnergyVAD(),
+    vad=best_vad(),                      # TEN VAD (pip install ten-vad), or the energy detector without it
     config=Config(language="en"),
 )
 await session.start()
@@ -207,6 +252,8 @@ Events to the client: `line`, `listen`, `hold`, `unhold`, `stop`, `finish_line`,
 
 ### Add a decision
 
+A decision is one module: when it is asked, what Jev is asked, and what the answer does. Write the question:
+
 ```python
 # jev_interaction/judge/questions.py
 def laugh(name: str) -> dict:
@@ -214,8 +261,41 @@ def laugh(name: str) -> dict:
             "criteria": {"laugh": f"{name} finds it funny and laughs", "smile": "a warm word, no laugh", "none": "let it pass"}}
 ```
 
-Ask it from the session where it belongs, give it a policy in `Config.policies`, and replay recorded calls with
-`tools/replay.py` to see where its answers land.
+then the decision, and register it with a policy:
+
+```python
+# jev_interaction/decisions/laugh.py
+from .. import speaking
+from ..judge import questions as Q
+from .base import Decision
+
+speaking.event("laugh", "they made a joke; you laugh, in a few words", answers_user=True, max_tokens=60)
+
+
+class Laugh(Decision):
+    name = policy = "laugh"
+
+    def on_words(self, s):                        # when: new words while the agent is quiet
+        if not s.speaking and not s.generating:
+            s._spawn(self.ask(s))
+
+    def questions(self, s, ctx):                  # what Jev is asked, about the call so far
+        return {"laugh": Q.laugh(s.p.short)}
+
+    async def apply(self, s, answers, ctx):       # what the policy's choice does
+        if self.choose(s, answers, "laugh", ctx) == "laugh":
+            await s.respond("laugh")
+```
+
+```python
+register(Laugh())                                 # jev_interaction.decisions; or add it to DECISIONS there
+config = Config(policies={**Config().policies, "laugh": SamplePolicy()})
+```
+
+Nothing else changes: the session offers every registered decision each new segment of words (`on_words`) and each
+100 ms tick (`on_tick`), and logs the state, the questions and the answers. `allowed` narrows the choices to what
+applies now and `state` adds to what Jev reads; the five built-in decisions in `jev_interaction/decisions/` are the
+examples. Replay recorded calls with `jev-interaction replay runs/*.jsonl --purpose laugh` to see where its answers land.
 
 ### Tested knobs
 
@@ -442,10 +522,10 @@ logged with the state Jev read and the probabilities it returned. What the trace
 
 | piece | protocol | included |
 |---|---|---|
-| VAD | `is_voice(pcm) -> bool` | `EnergyVAD` |
-| recognizer | streaming, closed segments | `ScribeRealtime` (ElevenLabs) |
+| VAD | `is_voice(pcm) -> bool`, optionally `voiced_ms(pcm, playing) -> int` | `TenVAD`, `EnergyVAD` |
+| recognizer | streaming, closed segments | `ScribeRealtime` (ElevenLabs), `ParaformerRealtime` (Alibaba Cloud Bailian) |
 | responder | `lines(messages) -> async lines` | `OpenAICompatResponder` |
-| synthesizer | `audio(text) -> async bytes` | `ElevenLabsTTS` |
+| synthesizer | `audio(text) -> async bytes` | `ElevenLabsTTS`, `CosyVoiceTTS` (Alibaba Cloud Bailian) |
 | judge | `ask(questions, state) -> probabilities` | `JevClient` |
 | policy | `choose(probs, allowed)`, `draw(p)` | `SamplePolicy`, `ThresholdPolicy`, `ArgmaxPolicy` |
 
@@ -453,25 +533,33 @@ logged with the state Jev read and the probabilities it returned. What the trace
 
 ```
 jev_interaction/
-  session.py          one call: inputs, decisions, speaking
+  session.py          one call: its state and its loop (audio in, lines out)
+  decisions/          one module per decision: turn · listen · floor · cut_in · quiet
   judge/              Jev client · the question set · the state text
+  utterance.py        what the user is saying now: words, length, loudness
+  speaking.py         what the responder is told before each kind of line
   policy.py           sample · threshold · argmax
   profile.py          task profiles
   config.py           paces, timings, default policies
+  presets.py          production · tested · default
   ledger.py           the call's history, for both readers
   recorder.py         one JSON line per event, for replay
-  adapters/           VAD · recognizer · responder · synthesizer
-  prompts/system.md   the responder's default system prompt
-server/app.py         WebSocket call server and line-audio route
-web/                  minimal browser client
-tools/replay.py       re-ask recorded decisions with changed questions
+  adapters/           VAD · recognizer · responder · synthesizer; registry.py lists the providers per node
+  prompts/            the responder's system prompt; speech/ holds one writing style per kind of voice
+  profiles/           the built-in personas
+  server/             call server (WebSocket, line audio, profiles, health, settings) and its page (web/)
+  replay.py           re-ask the recorded questions, as asked or reworded
+  testing.py          fake judge, recognizer, responder, VAD and synthesizer: a call with no keys
+  cli.py              `jev-interaction serve` / `init` / `replay`
+scripts/setup.sh      one-click local setup (--china: domestic PyPI mirror)
+deploy/huggingface/   Hugging Face Space card; scripts/push_hf_space.sh publishes it
 docs/                 architecture diagram and benchmark charts
 ```
 
 ## Roadmap
 
 - Send the first sentence to synthesis as soon as it ends, not at the line break.
-- Neural VAD and a second recognizer behind the existing protocols.
+- A second recognizer behind the existing protocols.
 - Turn the tested knobs on in the production engine (here they are `Config` options), with a voiceprint beside the 10 dB rule (a quiet real caller must not become "someone else").
 - Judge v1.5 against a fixed clean answer (same reply in both runs).
 - A small audio turn model as one more line in Jev's state, for the pure-timing benchmarks (eot-bench, TurnBench EOT).
@@ -505,15 +593,15 @@ authors of Full-Duplex-Bench, LiveKit eot-bench and TurnBench for open benchmark
 application company, on real calls with real users: the same design of decisions, questions, paces and policies, with
 Jev judging every moment. Every benchmark number above was measured on that engine.
 
-**This repository: 0.1, alpha.** The decision layer is the tested part. The browser client and the energy VAD are
-minimal stand-ins; bring your own VAD, recognizer, language model and voice through the protocols in
+**This repository: 0.1, alpha.** The decision layer is the tested part. The browser client is a
+minimal stand-in; bring your own VAD, recognizer, language model and voice through the protocols in
 [Swappable pieces](#swappable-pieces). Jev is a hosted API (`JEV_API_KEY`).
 
 | | |
 |---|---|
 | decision layer (questions, state, policies, paces, profiles) | tested, in production upstream |
 | session and server | working; used by the tests and the browser client |
-| browser client, energy VAD | minimal, for trying it out |
+| browser client | minimal, for trying it out |
 | benchmark harnesses | not in this repository yet (see the roadmap) |
 
 Licensed under Apache-2.0 (see [LICENSE](LICENSE)). Jev-Interaction is an independent project built on Jev; it is not

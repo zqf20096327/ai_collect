@@ -1,11 +1,15 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/Michael-A-Kuykendall/airframe/main/assets/airframe-logo.png" alt="Airframe" width="480" height="auto" />
 
-  ### Airframe 0.4.5 — Rust/WGSL dense inference engine
+  ### Airframe 0.4.6 — Rust/WGSL dense inference engine
 
   [![Crates.io](https://img.shields.io/crates/v/airframe.svg)](https://crates.io/crates/airframe)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 </div>
+
+**Languages / 语言 / 語言:** English · [简体中文](docs/zh-CN/README.md) · [繁體中文](docs/zh-TW/README.md)
+
+**Airframe 0.4.6 was released November 12, 2026** on [crates.io](https://crates.io/crates/airframe/0.4.6) and [GitHub Releases](https://github.com/Michael-A-Kuykendall/airframe/releases/tag/v0.4.6). The library example below uses the published crate, which Shimmy 2.6.7 consumes.
 
 Airframe is the engine behind [Shimmy](https://github.com/Michael-A-Kuykendall/shimmy).
 **Default dependency licensing:** Shimmy → Airframe → libfse. Shimmy is Apache-2.0; Airframe and airframe-observe are MIT; ShimmyTok is MIT OR Apache-2.0. The [libfse 0.1.4 additional Apache-2.0 grant](https://github.com/Michael-A-Kuykendall/airframe/blob/8efb1e7a830b0822cfc5ac1b121e149948d5ffe3/crates/libfse/LICENSE-GRANT-0.1.4.md) permits commercial use, modification, redistribution and incorporation into products without separate commercial permission. The original crates.io archive and metadata remain unchanged. Preserve component and third-party notices; see [stack licensing](LICENSING.md).
@@ -13,7 +17,7 @@ Airframe is the engine behind [Shimmy](https://github.com/Michael-A-Kuykendall/s
 The runtime uses Rust, wgpu and WGSL. A backend API being portable does not mean
 a model, operating system, driver or GPU has passed numerical certification.
 
-**0.4.5:** shared checked GGUF parsing, validated dense descriptors/execution
+**0.4.6 (including the 0.4.5 foundation):** shared checked GGUF parsing, validated dense descriptors/execution
 plans, typed model admission, RoPE frequency factors, request state isolation,
 Q/K normalization ownership and complete tensor-span window planning.
 See [CHANGELOG](CHANGELOG.md) and the [workspace roadmap](ROADMAP.md).
@@ -43,16 +47,15 @@ Executed GPU evidence used NVIDIA through **WSL Dozen/Vulkan**. The
 device-destruction and active-generation device-loss investigations remain open;
 numerical parity is not WSL stability certification.
 
-**NOT_RUN:** Metal/M4, native Windows/macOS/Linux GPU correctness, extended-context
-Llama, larger unlisted Qwen fixtures, distinct alternate prefill chunks, INT4 KV
-and experimental kernels. Do not infer those results from CI, parsing or
-successful compilation.
+**Released Airframe 0.4.6:** the exact qualified Apple M1 (Virtual) / Apple Paravirtual Metal / macOS 15.8.2 production path passed **198/198 full-logit comparisons** plus HTTP/state acceptance under the frozen 0.1 maximum-absolute / 0.03 RMS thresholds. It includes the model/output-head upload ordering fix and macOS outer prefill bound of 64 tokens. **Earlier 0.4.5 did not include these corrections.** See [public certification evidence](https://github.com/Michael-A-Kuykendall/shimmy/blob/main/docs/releases/apple-metal-m1-2026-11.md).
+
+**NOT_RUN:** physical M4, untested native GPU and model combinations, extended-context Llama, larger unlisted Qwen fixtures, distinct alternate prefill chunks, INT4 KV and experimental kernels. The earlier intermittent 8K Metal stall has no established root cause; watchdog cleanup remains open separately. Do not infer unsupported results from CI, parsing or successful compilation.
 
 ## Library use
 
 ```toml
 [dependencies]
-airframe = "0.4.5"
+airframe = "0.4.6"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
@@ -100,7 +103,7 @@ Opt-in scalar timing is described in [PROFILING](docs/PROFILING.md).
 unmeasured rather than zero cost. Timings are specific to the actual adapter.
 
 INT4/TurboShimmy and cooperative/vectorized kernels remain experimental,
-uncertified and excluded from the validated 0.4.5 release contract. Validated
+uncertified and excluded from the validated 0.4.6 release contract. Validated
 admission rejects these configurations. Historical compression, throughput and
 quality figures are not current support guarantees. Leave those options disabled.
 
@@ -153,7 +156,7 @@ Runtime MIT — see [LICENSE](LICENSE).
 
 **Inference runtime** (attention kernels, GGUF loader, quantization, WebGPU backend): MIT; see LICENSE and the separate component terms above.
 
-**FSE subsystem** (`crates/libfse`): [Apache-2.0](crates/libfse/LICENSE), including the [additional grant for the existing 0.1.4 archive](https://github.com/Michael-A-Kuykendall/airframe/blob/8efb1e7a830b0822cfc5ac1b121e149948d5ffe3/crates/libfse/LICENSE-GRANT-0.1.4.md). No separate commercial permission is required; third-party rights and applicable notices remain.
+**FSE subsystem** (`crates/libfse`): [Apache-2.0](https://github.com/Michael-A-Kuykendall/airframe/blob/8efb1e7a830b0822cfc5ac1b121e149948d5ffe3/crates/libfse/LICENSE), including the [additional grant for the existing 0.1.4 archive](https://github.com/Michael-A-Kuykendall/airframe/blob/8efb1e7a830b0822cfc5ac1b121e149948d5ffe3/crates/libfse/LICENSE-GRANT-0.1.4.md). No separate commercial permission is required; third-party rights and applicable notices remain.
 
 ---
 

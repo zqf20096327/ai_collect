@@ -1,5 +1,7 @@
 # Strands Agents
 
+[![Awesome Strands Agents](https://img.shields.io/badge/Awesome-Strands%20Agents-00FF77?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjkwIiBoZWlnaHQ9IjQ2MyIgdmlld0JveD0iMCAwIDI5MCA0NjMiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik05Ny4yOTAyIDUyLjc4ODRDODUuMDY3NCA0OS4xNjY3IDcyLjIyMzQgNTYuMTM4OSA2OC42MDE3IDY4LjM2MTZDNjQuOTgwMSA4MC41ODQzIDcxLjk1MjQgOTMuNDI4MyA4NC4xNzQ5IDk3LjA1MDFMMjM1LjExNyAxMzkuNzc1QzI0NS4yMjMgMTQyLjc2OSAyNDYuMzU3IDE1Ni42MjggMjM2Ljg3NCAxNjEuMjI2TDMyLjU0NiAyNjAuMjkxQy0xNC45NDM5IDI4My4zMTYgLTkuMTYxMDcgMzUyLjc0IDQxLjQ4MzUgMzY3LjU5MUwxODkuNTUxIDQxMS4wMDlMMTkwLjEyNSA0MTEuMTY5QzIwMi4xODMgNDE0LjM3NiAyMTQuNjY1IDQwNy4zOTYgMjE4LjE5NiAzOTUuMzU1QzIyMS43ODQgMzgzLjEyMiAyMTQuNzc0IDM3MC4yOTYgMjAyLjU0MSAzNjYuNzA5TDU0LjQ3MzggMzIzLjI5MUM0NC4zNDQ3IDMyMC4zMjEgNDMuMTg3OSAzMDYuNDM2IDUyLjY4NTcgMzAxLjgzMUwyNTcuMDE0IDIwMi43NjZDMzA0LjQzMiAxNzkuNzc2IDI5OC43NTggMTEwLjQ4MyAyNDguMjMzIDk1LjUxMkw5Ny4yOTAyIDUyLjc4ODRaIiBmaWxsPSIjRkZGRkZGIi8+CjxwYXRoIGQ9Ik0yNTkuMTQ3IDAuOTgxODEyQzI3MS4zODkgLTIuNTc0OTggMjg0LjE5NyA0LjQ2NTcxIDI4Ny43NTQgMTYuNzA3NEMyOTEuMzExIDI4Ljk0OTIgMjg0LjI3IDQxLjc1NyAyNzIuMDI4IDQ1LjMxMzhMNzEuMTcyNyAxMDMuNjcxQzQwLjcxNDIgMTEyLjUyMSAzNy4xOTc2IDE1NC4yNjIgNjUuNzQ1OSAxNjguMDgzTDI0MS4zNDMgMjUzLjA5M0MzMDcuODcyIDI4NS4zMDIgMjk5Ljc5NCAzODIuNTQ2IDIyOC44NjIgNDAzLjMzNkwzMC40MDQxIDQ2MS41MDJDMTguMTcwNyA0NjUuMDg4IDUuMzQ3MDggNDU4LjA3OCAxLjc2MTUzIDQ0NS44NDRDLTEuODIzOSA0MzMuNjExIDUuMTg2MzcgNDIwLjc4NyAxNy40MTk3IDQxNy4yMDJMMjE1Ljg3OCAzNTkuMDM1QzI0Ni4yNzcgMzUwLjEyNSAyNDkuNzM5IDMwOC40NDkgMjIxLjIyNiAyOTQuNjQ1TDQ1LjYyOTcgMjA5LjYzNUMtMjAuOTgzNCAxNzcuMzg2IC0xMi43NzcyIDc5Ljk4OTMgNTguMjkyOCA1OS4zNDAyTDI1OS4xNDcgMC45ODE4MTJaIiBmaWxsPSIjRkZGRkZGIi8+Cjwvc3ZnPgo=&logoColor=white)](https://github.com/cagataycali/awesome-strands-agents)
+
 A Rust implementation of the [Strands Agents SDK](https://strandsagents.com/) for building AI agents with model-driven orchestration.
 
 [![Crates.io](https://img.shields.io/crates/v/strands-agents.svg)](https://crates.io/crates/strands-agents)
@@ -12,6 +14,11 @@ A Rust implementation of the [Strands Agents SDK](https://strandsagents.com/) fo
 - **Multi-Provider Support** — AWS Bedrock, OpenAI, Anthropic, Ollama, and more
 - **Type-Safe Tools** — Define tools with the `#[tool]` macro
 - **Multi-Agent Patterns** — Graph and Swarm orchestration
+- **Middleware Stages** — Intercept model calls, tool executions, and agent passes
+- **Interruption & Cancellation** — Human-in-the-loop interrupts and cooperative cancel signals
+- **Invocation Limits** — Turn, token, and structured-output attempt limits with `limit_*` stop reasons
+- **Snapshots & Storage** — Versioned agent snapshots over pluggable blob storage
+- **Memory** — Pluggable memory stores with fan-out search and a `search_memory` tool
 - **Async-First** — Built on Tokio with streaming support
 - **OpenTelemetry Integration** — Built-in tracing and metrics
 
@@ -82,14 +89,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 | Module | Description |
 |--------|-------------|
-| `agent` | Core Agent interface |
-| `models` | Model providers (Bedrock, OpenAI, Anthropic, Ollama, etc.) |
-| `tools` | Tool definition, execution, and MCP support |
-| `multiagent` | Graph and Swarm patterns |
-| `hooks` | Lifecycle hooks |
-| `session` | Session persistence |
-| `conversation` | Context window management |
+| `agent` | Core Agent interface, event loop, and invocation limits |
+| `models` | Model providers, the shared model-info registry, routing, and cache config |
+| `tools` | Tool definition, execution, spec normalization, and MCP support |
+| `vended_tools` | Bundled tool families (loop control, files, shell, HTTP, notebook, subagent, router, orchestrators) |
+| `sandbox` | Execution environments: local host, Docker, and SSH |
+| `middleware` | InvokeModel / ExecuteTool / AgentStream middleware stages |
+| `multiagent` | Graph and Swarm patterns plus the A2A client and server |
+| `hooks` | Ordered lifecycle hooks with interrupt collection |
+| `plugins` | Reusable hook + tool bundles |
+| `interventions` | Guardrails bridged into the hook registry |
+| `session` | Session persistence (repository and snapshot managers) |
+| `storage` | Unified blob storage (in-memory and local file backends) |
+| `memory` | Memory stores and the memory manager |
+| `bidi` | Bidirectional streaming agent core and transports |
+| `background_tasks` | In-process async task runtime |
+| `conversation` | Context window management and truncation |
 | `telemetry` | Metrics and tracing |
+| `testing` | Scripted `MockModel` for tests |
 
 ## Testing
 

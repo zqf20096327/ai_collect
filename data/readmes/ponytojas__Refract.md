@@ -38,7 +38,7 @@ Refract started as a replacement for OpenAI Prism: it opens Prism's exports as t
 - **Your files stay yours.** Projects are plain folders and git repositories on your server. Export any project as a .zip, or push it to GitHub or any git remote.
 - **The assistant never edits behind your back.** It works on a copy of the project, can compile and fix its own errors, and hands you a diff. Nothing changes until you accept it, file by file if you like.
 - **Citations come from real metadata.** The assistant searches OpenAlex and arXiv, and every bibliography entry is built from the publisher's or arXiv's record, never written by a model.
-- **Use the AI you already pay for.** Your ChatGPT plan, your own API keys (OpenAI, Anthropic, Gemini, OpenRouter and more), or local models through Ollama.
+- **Use the AI you already pay for.** Your ChatGPT plan, your own API keys (OpenAI, Anthropic, Gemini, OpenRouter and more), or local models through Ollama when self-hosted.
 
 ## Features
 
@@ -47,8 +47,10 @@ Refract started as a replacement for OpenAI Prism: it opens Prism's exports as t
 - LaTeX editor (CodeMirror) with tabs, autosave and syntax highlighting.
 - Completion as you type: common commands, environments (`\begin{…}` closes itself), `\ref` from the project's labels, `\cite` from its `.bib` files, and file paths in `\input`, `\include` and `\includegraphics`, relative to the main file. Each command shows its arguments and a short description, and keeps them in view while you fill them in; citations show the author, year and title of each work.
 - A collapsible document outline under the file tree, following `\input` and `\include`: click a heading to jump to it, and the one containing the cursor is highlighted. Headings are searchable from the command palette too.
+- Enable **Word count** in **Settings → Editor** (or <kbd>⌘⇧M</kbd>) to see the document total and each section's count in the outline, including its subsections and included files. Counts refresh on save; **Include titles** also applies here. Each included file is counted once; missing files, repeated includes and cycles mark the total as partial. Counts do not expand custom macros or evaluate TeX conditionals.
 - Compilation with [Tectonic](https://tectonic-typesetting.github.io): no TeX distribution to install, packages are fetched and cached on first use. Errors and warnings are listed with file and line, each with **Fix with AI**.
 - PDF preview with SyncTeX in both directions: <kbd>⌘J</kbd> shows the cursor's position in the PDF, <kbd>⌘</kbd>-click in the PDF jumps to the source.
+- **Search PDF** in the preview toolbar highlights matches across every page. With the PDF focused, <kbd>⌘F</kbd> opens search; in the search input, <kbd>↓</kbd>/<kbd>↑</kbd> or <kbd>Enter</kbd>/<kbd>Shift+Enter</kbd> moves forward/backward and <kbd>Esc</kbd> closes it. Search ignores case, handles ligatures and line-wrap hyphenation, and refreshes after compilation while preserving the selected match number (clamped if fewer remain) and reading position. It searches the PDF's extracted text, so scanned images need OCR first. A hyphen at the end of a line is removed when joining words: PDF text cannot reliably distinguish a wrapping hyphen from a real one, so a split compound such as `state-of-the-art` may need to be searched without the hyphen at the line break.
 - A right-click menu in the PDF (go to source, zoom, download).
 - Command palette (<kbd>⌘K</kbd>) and a shortcut overlay (hold <kbd>⌘</kbd> or press <kbd>?</kbd>).
 - English and Spanish interface, light and dark themes. Installable as an app from the browser.
@@ -68,6 +70,7 @@ For a font that Google Fonts does not supply, include its licensed font files in
 - Changes arrive as a review: a diff per file, accepted or rejected all at once or file by file. Accepting creates one commit; rejecting leaves no trace.
 - Shows the model's reasoning while it thinks, when the model provides it, folded away once it answers.
 - Each chat remembers the model and reasoning level it used.
+- **Project instructions**: a `REFRACT.md` at the project root (project menu → **Project instructions** creates it) tells the assistant what to always respect in this project: journal style, spelling, notation, what not to touch. It is an ordinary file, versioned with the project and included in exports. The assistant reads its first 8 KB on every turn, and quick actions read its first 2 KB; text inside `<!-- -->` comments is ignored. Ask the assistant to remember something and it proposes an edit to the file, which you review like any other change. The file can't override the assistant's own rules, such as never inventing citations.
 
 ### Quick actions
 
@@ -83,7 +86,7 @@ Select text and a toolbar offers **Improve**, **Shorten**, **Fix grammar**, **Ta
 
 - Create a blank project, or import a Prism export (.zip) or a folder. Imports are checked: up to 200 MB and 5,000 files, nothing outside the project, no symlinks.
 - Every project is a git repository. Compiling, accepting AI changes and restoring old versions all create commits. The history view shows each version's diff and restores a file or the whole project, as a new commit.
-- Push and pull to any https git remote with a token, or connect a GitHub account and pick or create repositories from Refract. Optional auto-push after each commit.
+- Push and pull to any https git remote with a token, or connect a GitHub account and pick or create repositories from Refract. Optional auto-push after each commit. On the hosted service (`REFRACT_MODE=saas`), remotes must be public addresses and redirects aren't followed: a renamed repository needs its new URL.
 - Export any project as a .zip at any time.
 
 ### Accounts
@@ -232,6 +235,7 @@ Everything lives in the `/data` volume:
 | Path | Contents |
 |---|---|
 | `refract.db` | Users, sessions, projects, chats and settings (SQLite). Credentials and keys in it are encrypted with `REFRACT_SECRET_KEY`. |
+| `refract.db.pre-upgrade` | A copy of the database exactly as it was when the last upgrade started. Safe to delete once the new version works. |
 | `projects/` | One git repository per project. |
 | `tectonic-cache/` | LaTeX packages Tectonic has downloaded. Safe to delete: they come back on the next compile. |
 | `tmp/` | Uploads in progress. |
@@ -239,6 +243,14 @@ Everything lives in the `/data` volume:
 To back up, stop the container, copy the volume, and keep `REFRACT_SECRET_KEY` with the copy.
 
 To upgrade, pull the new image (`docker pull ghcr.io/ponytojas/refract:0.1`, or a newer version's tag) and start a new container on the same volume. Database changes are applied automatically at startup.
+
+To go back to an older version after an upgrade:
+
+1. Stop everything that uses the database: the container and any `refract users …` command still running.
+2. Move `refract.db` aside, together with `refract.db-wal` and `refract.db-shm` if they exist. After an abrupt stop these hold changes not yet written to `refract.db`, and left in place SQLite would replay them over the restored copy.
+3. Copy `refract.db.pre-upgrade` to `refract.db` (changes made since the upgrade are lost) and start the older version.
+
+An older Refract refuses to open a database a newer one has upgraded.
 
 Stopping Refract lets requests in flight and auto-pushes finish, and running assistant turns record that they were stopped: up to about 20 seconds. Docker's default is to kill the container after 10, so start it with `--stop-timeout 30` as above.
 
@@ -311,7 +323,7 @@ Add providers in **Settings → Assistant → API providers**. **Test** checks t
 
 - Keys are encrypted, belong to the user who added them, and are never sent back to the browser.
 - For endpoints that can't list their models, type the model ids in the provider's settings.
-- Base URLs must be reachable from the Refract server: from inside Docker, a local Ollama is usually `http://host.docker.internal:11434`. Private and loopback addresses are allowed; link-local addresses (cloud metadata services) are refused.
+- Base URLs must be reachable from the Refract server: from inside Docker, a local Ollama is usually `http://host.docker.internal:11434`. Private and loopback addresses are allowed; link-local addresses (cloud metadata services) are refused. With `REFRACT_MODE=saas`, base URLs must be public `https://` addresses and local models (Ollama) aren't offered.
 - Refract sets no spending limits. Usage is between you and the provider.
 
 `REFRACT_MODEL_AGENT` and `REFRACT_MODEL_QUICK` set default models for the assistant and for quick actions and citations, used until a user picks one.
@@ -326,7 +338,7 @@ All settings are environment variables.
 | `REFRACT_AUTH` | `cloudflare` (default), `password` or `none`. See [Choose how people sign in](#choose-how-people-sign-in). |
 | `REFRACT_DATA_DIR` | Where projects, the database and caches live. Default `/data`. |
 | `REFRACT_ADDR` | Listen address. Default `:8080`. |
-| `REFRACT_MODE` | `selfhost` (default) or `saas`, for the hosted service. With `saas`, the ChatGPT plan is off (OpenAI's plan usage covers self-hosted apps): people use the assistant with API providers only. With `saas`, Refract refuses to start with `REFRACT_AUTH=none` or without an https `REFRACT_PUBLIC_URL`. |
+| `REFRACT_MODE` | `selfhost` (default) or `saas`, for the hosted service. With `saas`, the ChatGPT plan is off (OpenAI's plan usage covers self-hosted apps): people use the assistant with API providers only. Refract refuses to start with `REFRACT_AUTH=none` or without an https `REFRACT_PUBLIC_URL`. AI providers and git remotes must be public https addresses (no loopback, private or metadata addresses, no local models), and proxy settings are ignored for them. Needs git 2.37 or later. |
 | `REFRACT_CF_TEAM_DOMAIN`, `REFRACT_CF_AUD` | Cloudflare Access team domain and application AUD tag. |
 | `REFRACT_PUBLIC_URL` | The address users open Refract at, e.g. `https://refract.example.com`. Needed for OpenID Connect, and required with `REFRACT_MODE=saas`. |
 | `REFRACT_OIDC_ISSUER`, `REFRACT_OIDC_CLIENT_ID`, `REFRACT_OIDC_CLIENT_SECRET` | Your OpenID Connect provider's issuer URL and Refract's client credentials there. |
@@ -389,7 +401,7 @@ On Windows and Linux, read <kbd>Ctrl</kbd> for <kbd>⌘</kbd>. Hold <kbd>⌘</kb
 - **Secrets at rest:** ChatGPT credentials, API keys and git tokens are encrypted with AES-GCM under `REFRACT_SECRET_KEY`, each bound to its owner.
 - **Isolation between users:** projects, chats and connections are checked against their owner on every access.
 - **Compilation:** Tectonic runs with shell escape disabled (`--untrusted`) and a time limit. Imports are size-limited and can't write outside the project.
-- **Outbound requests:** user-supplied AI provider URLs can't reach link-local addresses such as cloud metadata services. Compiling a document that names a font found neither in the project nor in the TeX bundle downloads it from Google Fonts, sending only the family name; `REFRACT_FONT_DOWNLOADS=0` turns that off.
+- **Outbound requests:** user-supplied AI provider URLs can't reach link-local addresses such as cloud metadata services. With `REFRACT_MODE=saas`, AI providers and git remotes can't reach the server's own network either: loopback, private, shared (CGNAT) and reserved addresses are refused, checked on every connection (so DNS answers and redirects are covered), and git connects only to the addresses it checked. A host firewall that limits outbound traffic is still a good second layer. Compiling a document that names a font found neither in the project nor in the TeX bundle downloads it from Google Fonts, sending only the family name; `REFRACT_FONT_DOWNLOADS=0` turns that off.
 
 Found a vulnerability? Please report it privately through the repository's **Security** tab (*Report a vulnerability*) rather than in a public issue.
 

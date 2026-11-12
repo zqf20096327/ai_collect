@@ -100,6 +100,7 @@ OR
 - [Cunyan Ma — Brown University CNTR - Mapping the Hidden Global Labor Powering AI - October 2026](https://www.ai-materiality-map.org/data-workers/?utm_source=awesome-ai-market-maps)
 
 #### AI Infrastructure
+- [Eze Vidra — VC Cafe - The rise of the inference economy - October 2026](https://www.vccafe.com/the-rise-of-the-inference-economy/?utm_source=awesome-ai-market-maps)
 - [AI-Driven Playbooks - I Mapped 103 Companies Across the Entire AI Supply Chain. Here Is Where the Money Still Has to Flow Through 2028. - October 2026](https://aidriventrading.substack.com/p/i-mapped-103-companies-across-the?utm_source=awesome-ai-market-maps)
 
 #### AI Safety
@@ -1157,5 +1158,4 @@ OR
 - [Leonis Capital - Zero or Hero: A Technical Framework for Valuing AI Companies (Part I: Foundation Models) - March 2025](https://www.leoniscap.com/deep-dives/zero-or-hero-a-technical-framework-for-valuing-ai-companies-(part-i-foundation-models)?utm_source=awesome-ai-market-maps)
 
 #### GenAI 
-- [a16z - The Top 100 GenAI Consumer Apps 2025 - March 2025](https://a16z.com/100-gen-ai-apps-4/?utm_source=awesome-ai-market-maps)
-- [IoT Analytics - The leading generative AI co
+- [a16z - T

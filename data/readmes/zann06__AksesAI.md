@@ -1,5 +1,9 @@
 # AksesAI
 
+**Direktori info gratis & murah seputar AI, dari komunitas, dengan sumber yang bisa diperiksa.**
+
+### 🔗 [aksesai-id.vercel.app](https://aksesai-id.vercel.app)
+
 [![CI](https://github.com/zann06/AksesAI/actions/workflows/ci.yml/badge.svg)](https://github.com/zann06/AksesAI/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org)
@@ -7,11 +11,10 @@
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ecf8e)](https://supabase.com)
 [![RLS](https://img.shields.io/badge/RLS-aktif-brightgreen)](supabase/migrations)
 
-**Direktori info gratis & murah seputar AI, dari komunitas, dengan sumber yang bisa diperiksa.**
-
 API/token gratis, free tier, harga per token, model open-weight, tool gratis, dan hosting gratis — setiap entri wajib punya minimal satu sumber resmi dan diverifikasi manual oleh manusia sebelum terbit.
 
 <p>
+  <a href="https://aksesai-id.vercel.app"><b>🌐 Buka situs</b></a> ·
   <a href="#-mulai-cepat"><b>Mulai cepat</b></a> ·
   <a href="#-fitur"><b>Fitur</b></a> ·
   <a href="CONTRIBUTING.md"><b>Kontribusi</b></a> ·
@@ -428,6 +431,23 @@ Kami menerima kontribusi kode, perbaikan data katalog, dan laporan bug. Panduan 
 - **Sebelum PR:** `pnpm typecheck && pnpm lint && pnpm test` harus lulus
 - **Semua perubahan lewat pull request** — `main` dilindungi dan CI wajib hijau
 - Satu PR untuk satu tujuan; perubahan besar sebaiknya didiskusikan lewat issue dulu
+
+### Dua jalur kontribusi yang berbeda
+
+Proyek ini memisahkan **kontribusi kode** dan **kontribusi data katalog**, karena keduanya punya tingkat risiko yang tidak sebanding:
+
+| Yang ingin diubah | Jalurnya |
+|---|---|
+| Kode aplikasi, dokumentasi, CI, migrasi DB | **Pull request** ke repo ini |
+| Entri katalog (tambah entri, koreksi data, tambah sumber resmi) | **Form di situs**: https://aksesai-id.vercel.app/dashboard/kontribusi/baru |
+
+**Entri katalog tidak diterima lewat pull request maupun issue GitHub.** Pengajuan lewat sana tidak akan diproses dan akan ditutup dengan penjelasan.
+
+**Alasannya bukan soal kepercayaan, tapi soal arsitektur.** Katalog tidak disunting lewat file data biasa. [`scripts/seed-content.mjs`](scripts/seed-content.mjs) adalah skrip sinkronisasi yang berjalan dengan `SUPABASE_SERVICE_ROLE_KEY` — kunci yang menembus Row Level Security — dan melakukan *delete-and-replace*: entri yang slug-nya tidak ada di daftar akan dihapus dari database beserta seluruh sumber dan riwayatnya.
+
+Konsekuensinya, PR yang mengubah berkas itu setara dengan **menerbitkan langsung ke produksi tanpa moderasi**: melewati antrean review, klaim reviewer, pemeriksaan duplikat, dan aturan bahwa seorang kontributor tidak boleh meninjau kirimannya sendiri.
+
+Lewat form, pengajuan Anda memberi hal yang tidak bisa diberikan PR: tercatat di akun Anda, masuk antrean reviewer, dan statusnya bisa dipantau di **Kontribusi saya**.
 
 Proyek ini memakai [Contributor Covenant](CODE_OF_CONDUCT.md). Dengan berpartisipasi, Anda diharapkan mematuhinya.
 

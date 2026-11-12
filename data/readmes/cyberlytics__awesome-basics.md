@@ -25,6 +25,7 @@ Es gibt von mir die weiteren Schwesterseiten im Kontext Informatik/KI: [Schulisc
 
 <!-- toc -->
 
+- [Ethik](#ethik)
 - [Bachelor-Level](#bachelor-level)
   - [Fundament](#fundament)
   - [Bachelor Informatik/KI](#bachelor-informatikki)
@@ -60,6 +61,7 @@ Es gibt von mir die weiteren Schwesterseiten im Kontext Informatik/KI: [Schulisc
 - [Öffentlichkeitsarbeit](#offentlichkeitsarbeit)
 - [Job-Interview Training](#job-interview-training)
 - [Appendix: Course Recommendations & Repos](#appendix-course-recommendations--repos)
+- [Schwesterseiten](#schwesterseiten)
 - [Footer](#footer)
   - [Future Work](#future-work)
   - [Contribute](#contribute)
@@ -664,4 +666,4 @@ Werkzeuge:
 		- Grundlegend #3 (technisch): Webartikel **[Managing output in the .NET SDK projects](https://cezarypiatek.GitHub.io/post/managing-output-in-sdk-projects/)** (2019) von Cezary Piątek
 			- (Einstiegsalternative: (€) Buch [.NET Core in Action](https://www.manning.com/books/dotnet-core-in-action) (2018) von Dustin Metzgar, Kapitel 3 „How to build with .NET Core“)
 			- Zwei Build-Arten: .NET Framework (**msbuild**; Windows-only; Visual Studio) vs. .NET / .NET Core (**dotnet build**; Cross-Platform; .NET CLI)
-			- Zwei Referenztypen: **[ProjectReference](https://github.com/dotnet/msbuild/blob/main/documentation/ProjectReference-Protocol.md)** (u.a. [PreserveNewest](https://stackoverflow.com/questions/62991404/how-does-project-item-metadata-preservenewest-actually-work) sowie „Copy Local“ = Private:false) vs. **[PackageReference](https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files)** (u.a. „NOT Copy Local“ = [ExcludeAssets:runtime](http
+			- Zwei Referenztypen: **[ProjectReference](https://github.com/dotnet/msbuild/blob/main/documentation/ProjectReference-Protocol.md)** (u.a. [PreserveNewest](https://stackoverflow.com/questions/62991404/how-does-project-item-metadata-preservenewest-actually-work) sowie „Copy Local“ = Private:false) vs. **[PackageReference](https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files)

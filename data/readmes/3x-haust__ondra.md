@@ -1,172 +1,184 @@
 <p align="center">
-  <img src="docs/assets/logo.svg" width="88" alt="">
+  <img src="docs/assets/readme-cover.svg" width="880" alt="Ondra">
+</p>
+
+<h1 align="center">Don't manage AI.<br>Delegate the work.</h1>
+
+<p align="center">
+  Ondra is an AI workspace that breaks down the work you delegate, uses the tools it needs, and brings back results it has checked.<br>
+  The important decisions stay with you.
 </p>
 
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/wordmark-dark.svg">
-    <img src="docs/assets/wordmark-light.svg" height="40" alt="Ondra">
-  </picture>
+  <a href="https://github.com/3x-haust/ondra/releases"><b>Download for macOS ↗</b></a> · <a href="#install">Install</a> · <a href="README.ko.md">한국어</a>
 </p>
 
-<p align="center"><b>Make what AI says visible.</b></p>
-
-<p align="center"><b>English</b> · <a href="README.ko.md">한국어</a></p>
+<p align="center"><sub>macOS 13+ · Apple silicon</sub></p>
 
 <p align="center">
-  <a href="https://github.com/3x-haust/ondra/releases"><img src="https://img.shields.io/github/v/release/3x-haust/ondra?include_prereleases&label=release&color=1f6fd8" alt="release"></a>
-  <img src="https://img.shields.io/badge/platform-macOS%2013%2B%20·%20Apple%20silicon-18181b" alt="platform">
-  <img src="https://img.shields.io/badge/status-beta-f59e0b" alt="beta">
+  <img src="docs/assets/main-en.png" width="880" alt="Ondra's main conversation brings together task progress and decisions that need you">
 </p>
 
-<p align="center">
-  <img src="docs/assets/main.png" width="880" alt="Ondra main view">
-</p>
+## Say what you want done. Work through the rest together.
 
-Ondra is an agent workspace for macOS. Tell the main chat what you want, once. It splits the work into jobs, each job sees its part through to the end on its own branch, and the result comes back to main: what changed, why, and how it was checked. Long, hard-to-read model output turns into progress, changed files, screens and choices.
+**Break down the work.** Main turns your request into tasks, and each task follows its part through. Every project has its own conversation, and work started there runs in that folder.
 
-<table>
-  <tr>
-    <td width="50%" valign="top">
-      <b>One chat, many jobs</b><br>
-      Main plans, hands out the work and reports back. You don't have to watch each job.
-    </td>
-    <td width="50%" valign="top">
-      <b>Work and personal, kept apart</b><br>
-      Each space has its own git accounts, browser logins, memory, devices and history.
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <b>Shown, not told</b><br>
-      Plans, to-dos, diffs, before/after screenshots, test results and diagrams instead of paragraphs.
-    </td>
-    <td valign="top">
-      <b>Proof, not claims</b><br>
-      Every "done" is checked against what the job actually ran. Whatever wasn't checked says so.
-    </td>
-  </tr>
-</table>
+**Use the right tools.** Code and documents, browsers, Mac apps and mobile devices. Each task uses the tools and skills the work calls for.
 
-## How it works
+**Bring back checked results.** Main gathers what changed, how it was checked and what remains. A bug comes back with its cause and fix; research with an answer and sources; a release with what shipped and its current status.
 
-**Main splits the work.** "Build me a portfolio site" becomes checking the material, finding references, planning, building and verifying, and each step starts when the one before it is done. Every project folder gets its own chat, and jobs started there work in that folder.
+<details>
+<summary>See the work at a glance</summary>
 
-**Each job has a fresh start.** A job works in its own git worktree, starting from the latest remote code, so jobs never overwrite each other or the folder you are working in. More work on a finished job starts a new job that takes over its branch and results. When you change direction mid-way, the old job wraps up and a new one picks up.
+The canvas shows how Main, projects, tasks and subagents connect, along with what each task is doing now.
 
-**Results come back to main.** When a job ends, main tells you in its own words, shaped to the work: the cause, the fix and the check for a bug; what changed for a feature; what went out for a release; the answer and its sources for research.
+<img src="docs/assets/canvas-en.png" width="880" alt="The canvas connects projects, tasks and subagents with their current progress">
 
-**It only asks what needs you.** Questions that need your intent or taste come up with choices and the context behind them. Pick one and press Enter, or write your own answer. You can also step into any running job and redirect it.
+</details>
 
-<p align="center">
-  <img src="docs/assets/job.png" width="880" alt="A job and its question card">
-</p>
+<details>
+<summary>Let Ondra look after sessions and context</summary>
 
-## Spaces
+- **A session per task:** each task has its own conversation. Enable per-task worktrees to keep Git changes separate from other tasks and your working folder.
+- **Carry the work forward:** long tasks hand completed work, findings, next steps and evidence to a fresh session. Following up on a finished task or changing direction starts a new task that takes over the earlier results.
+- **Reuse the cache:** shared instructions and account selection are arranged to reuse prompt caches. Actual cache use depends on the model and provider.
 
-Work and personal are separate workspaces, not filters. Switching spaces switches everything:
+</details>
 
-- **Accounts:** commits, pushes, PRs and terminals run as that space's git identity and GitHub login. A space without one says so instead of borrowing the other's.
-- **Browser:** logins and cookies stay in their space.
-- **Memory and skills:** what Ondra learned in one space is used only there.
-- **Devices:** each simulator and emulator belongs to work, personal or both.
-- **History:** search, side chat, `btw` and the input history see only this space. Jobs can't read other jobs' or other spaces' files and logs.
+<br>
 
-## What jobs can see and use
+## The important decisions stay with you.
 
-**Shared browser.** A real Chrome inside the app, with a tab per job. Sign in once in the panel and that space's jobs use the session. Passwords come from the macOS Keychain and never reach the model. With Aside installed, jobs browse through it.
+When your intent or taste matters, Ondra brings you choices with context. Pick one and press Enter, or write your own answer. You can also step into a running task and change its direction.
 
-**Computer use.** Native Mac app automation requires a separately prepared, isolated macOS guest. It does not control windows already open on your Mac. Known host desktop commands are blocked, including process-targeted input; without a verified guest connection, native app automation stops instead of switching to your desktop. These command checks are not an OS sandbox for arbitrary shell commands.
+> Delegate the execution. Keep the decisions that set the direction.
 
-**Device use.** Each job makes its own iOS simulator or Android emulator, leaves screenshots as evidence and removes it when done. You can watch and touch the screen from the device panel. Emulators render on the Mac GPU and idle when nothing changes.
+### Results come with what was checked
 
-**Deep research.** Several researchers search in parallel and write one report: the answer and what to do first, how it works as a step diagram, and options compared side by side, with a PDF.
+- **Show the work:** plans, changed files and diffs, before-and-after screens, videos and test results. Open HTML results, tables, checklists and diagrams in the panel too.
+- **Check the record:** completion reports are compared with the task's recorded commands, files and other evidence. Unverified items are marked separately.
+- **Review where it matters:** plan and code reviews help check complex or sensitive changes. The review process follows the work's scope and project instructions.
+- **Carry checks forward:** a passing check stays valid until the code it covers changes. Shipping alone is not a reason to repeat it.
 
-## Shown, not told
+<br>
 
-Jobs report in blocks that the app draws:
+## Tools for the work you delegate
 
-- plan and to-do list, kept in step with the work
-- changed files with line counts, and the diff in the panel
-- before/after screenshots, videos and HTML pages, opened in the panel
-- test results, tables, checklists and diagrams of structure and flow
-- evidence for each claim, marked as checked by the app or not
+**Browser.** Each task uses its own tab to read and interact with the web. Logins are shared within a workspace; passwords are entered through the macOS Keychain without reaching the model.
 
-The canvas shows how main, projects, jobs and sub-agents connect, and what each one is doing right now.
+**Mac apps.** With the required permissions, tasks can operate an app on your Mac and capture its window to check the result. Foreground protection helps keep your own work in focus.
 
-<p align="center">
-  <img src="docs/assets/canvas.png" width="880" alt="Canvas">
-</p>
+**Mobile.** With the platform tools installed, tasks can use iOS simulators and Android emulators to check a mobile app and capture its screen. Watch and interact with the device from Ondra.
 
-## Proof and review
+**Deep research.** Split a question into research threads, investigate sources and check quotations against the originals. Bring the answer, evidence and comparisons together in a visual report and PDF.
 
-- **Evidence is checked.** The app compares a job's "done" with its session: did that command run, did it pass, did code change after it, does the file exist. A job that doesn't add up is sent back, and what stays unproven is listed.
-- **Review before it ships.** Large or risky changes get a review sub-agent before anything is pushed, merged or released. The job fixes what it found.
-- **No checking twice.** A check that passed stays valid until a change touches what it covered, so a release doesn't re-test the fix that came before it.
+<details>
+<summary>Tool access and boundaries</summary>
 
-## Pull requests
+- Mac app actions need Accessibility permission; window capture needs Screen Recording. Foreground protection is configurable and is not an OS-level isolation environment.
+- Mobile tasks create their own devices by default. They can also use an explicitly allowed existing device; protected devices are left alone.
+- Bundled skills include browser use, computer use, device use, deep research, code review, visual reports and web design. You can invoke one directly with `/skill:<name>`.
 
-- **PR tab.** A job's pull request opens in the side panel: state, checks, reviews and comment threads, and the changed files with line comments placed at their lines. Hand any comment to the job in one click.
-- **Pictures in PRs.** Jobs put screenshots and videos into the PR description, a comment, a review reply or a comment on one line, uploaded the same way GitHub's own editor does.
-- **Watching (opt-in).** Turn it on in Settings and Ondra checks the PRs jobs opened. New reviews, failed checks and conflicts go back to the job, which fixes and replies in the thread.
+</details>
 
-## More
+<br>
 
-- **Memory:** rules, taste and lessons, pulled in only when relevant. A graph view shows how they connect. Notes from other tools (CLAUDE.md, AGENTS.md…) can be brought in.
-- **btw and side chat:** ask a quick question about any conversation without interrupting it (`/btw`), or keep a second conversation per space (⌘J).
-- **Search (⌘K):** jobs, projects, memory and commands.
-- **Hooks:** run your own shell commands before or after tools, on a request, or when a job starts or stops, per space.
-- **Notifications:** finished, needs an answer or stuck, with the space's name, when the window is in the back.
-- **Skills:** browser use, computer use, device use, deep research, code review, visual reports, web design and more. Call one with `/skill:<name>`.
-- **Telemetry:** anonymous usage numbers (counts, versions, model ids; never what you asked, your files or your accounts). Turn it off in Settings. [What is sent](docs/TELEMETRY.md).
+## A workspace that fits your work
+
+Create and name workspaces around the way you work. Configure accounts and instructions for each, and keep their browser logins, memory and task history separate.
+
+Choose your model, permissions and concurrency in Settings. Per-task worktrees, automatic memory saving and PR review follow-up are configurable too.
+
+<details>
+<summary>Keep pull requests with the work</summary>
+
+Connect a GitHub account to view PR status, checks, reviews and changed files alongside the task. Hand review comments back to the task, or attach screenshots and videos to a PR.
+
+Pushes and PR changes require GitHub write access. Enable automatic review follow-up in Settings if you want tasks to respond to new reviews, failed checks and conflicts.
+
+</details>
+
+<details>
+<summary>More ways to make it yours</summary>
+
+- **Memory:** keep useful preferences and lessons, or import existing notes. Automatic saving can be turned off.
+- **Quick questions:** use `/btw` for an aside without interrupting the current conversation, or open side chat.
+- **Search and shortcuts:** find tasks, projects, memories and commands. Customize keyboard shortcuts in Settings.
+- **Hooks:** configure shell commands at the points in a task's lifecycle where you need them.
+- **Notifications:** enable system notifications to hear when work finishes or needs your attention.
+- **Usage data:** optional anonymous telemetry can be disabled in Settings. See [what is sent](docs/TELEMETRY.md).
+
+</details>
+
+<br>
 
 ## Install
 
-1. Download `Ondra_<version>_aarch64.dmg` from [Releases](https://github.com/3x-haust/ondra/releases) and drag Ondra into Applications.
-2. Beta builds are not notarized yet. The first time, right-click the app in Finder and choose **Open**, or run once:
+**macOS 13+ · Apple silicon**
 
-   ```sh
-   xattr -dr com.apple.quarantine /Applications/Ondra.app
-   ```
-3. Connect a model account (ChatGPT/Codex, Claude, …) in Settings. Native computer use requires a separate macOS guest with its own apps and permissions; granting host Accessibility or Screen Recording permission does not provide an isolated environment.
+1. Download `Ondra_<version>_aarch64.dmg` from the [latest release](https://github.com/3x-haust/ondra/releases) and drag Ondra into Applications.
+2. Open Ondra and connect a model account, such as ChatGPT/Codex or Claude, in Settings.
+3. Choose a project and say what you want done.
 
-Ondra checks GitHub Releases and offers to update itself.
+Ondra checks GitHub Releases and offers updates in the app. Mac app actions and capture need **Accessibility and Screen Recording** permissions. To work with mobile devices, install **Xcode's iOS Simulator** or the **Android SDK emulator**.
 
-Requirements: macOS 13 or later, Apple silicon. Device use needs Xcode (iOS Simulator) or the Android SDK (emulator).
+<details>
+<summary>If macOS blocks the first launch</summary>
 
-## Build from source
+Confirm that the app came from [this repository's releases](https://github.com/3x-haust/ondra/releases), then right-click it in Finder and choose **Open**. If the quarantine attribute still blocks it, you can run the following once, only for a download you trust:
+
+```sh
+xattr -dr com.apple.quarantine /Applications/Ondra.app
+```
+
+</details>
+
+<details>
+<summary>Build from source</summary>
 
 ```sh
 pnpm install
-cp .env.example .env           # fill in values if you need them
-pnpm bundle                    # browser, desktop, agent engine, Chrome and native binary analyzer
+cp .env.example .env           # fill in the values you need
+pnpm bundle                    # prepare tools, the agent engine and app components
 pnpm tauri dev                 # run in development
-pnpm release notes.md          # release build: update package, .dmg, latest.json (see scripts/release.mjs)
+pnpm release notes.md          # release build (see scripts/release.mjs)
 ```
 
-- The agent engine, Chrome and the binary analyzer are components: the app downloads each once per version into its data folder, so an update carries only the app. The .dmg's app has them inside and works offline.
+- The agent engine comes from [3xhaustpi](https://github.com/3x-haust/3xhaustpi). Put it in a sibling folder or point `ONDRA_ENGINE_DIST` at `packages/coding-agent/dist`.
+- The engine, Chrome and binary analyzer are components downloaded once per version. Updates use the app and any changed components; the DMG's app includes these components.
+- Static binary analysis includes radare2, r2ghidra, native libraries and processor data, with no separate analysis engine to install. See [build and package checks](tools/binary-analysis/README.md).
 
-- Static binary analysis ships with radare2 and r2ghidra, including native libraries and processor data; users need no separate engine or runtime. Build and isolated package checks: [binary analyzer](tools/binary-analysis/README.md).
-- The agent engine is the coding-agent from [3xhaustpi](https://github.com/3x-haust/3xhaustpi), built into a single file. Put it in a sibling folder or point `ONDRA_ENGINE_DIST` at it.
-- On macOS 27, agent-desktop 1.1.0 hangs on every command when an app with pid -1 (Xcode's Device Hub) is running. Build it with the patch in `scripts/patches/` and put the binary at `~/.cache/ondra/agent-desktop-patched`; the bundle step uses it.
+</details>
+
+<details>
+<summary>Local settings and repository layout</summary>
 
 ### Local settings (`.env`)
 
 | Key | Meaning |
 |---|---|
-| `ONDRA_PROTECTED_DEVICES` | Devices no job may boot or touch (regex), e.g. simulators shared by a team |
-| `ONDRA_DEVICES_ALLOWED` | Devices a job may use besides the ones it made itself |
+| `ONDRA_PROTECTED_DEVICES` | Devices no task may boot or operate (regex) |
+| `ONDRA_DEVICES_ALLOWED` | Devices a task may use besides the ones it created |
 
-Development builds read the repo's `.env`; the installed app reads `~/Library/Application Support/dev.3xhaust.ondra/.env`.
+Development builds read the repository's `.env`; the installed app reads `~/Library/Application Support/dev.3xhaust.ondra/.env`.
 
-## Layout
+### Layout
 
-```
+```text
 src/                 SolidJS UI
-  engine/            main chat (captain) and jobs (tasks), prompts, engine RPC
-  views/ ui/         screens and parts · styles/ design tokens
-src-tauri/src/       Rust: engine process, shared browser, worktrees, keychain, devices, notifications
-skills/              skills every job gets
-extensions/          engine extensions (permissions, devices, hooks, memory)
-brand/ docs/         brand and design system
+  engine/            main conversation and tasks, prompts, engine connection
+  views/ ui/         screens and components
+  styles/            design tokens
+src-tauri/src/       Rust: engine process, browser, worktrees, keychain, devices
+skills/              skills for tasks
+extensions/          permissions, computer/device use, hooks, memory and other engine extensions
+brand/ docs/         brand and documentation
 ```
+
+</details>
+
+---
+
+<p align="center">
+  <a href="https://github.com/3x-haust/ondra/releases">Releases</a> · <a href="docs/TELEMETRY.md">Telemetry</a> · <a href="https://github.com/3x-haust/ondra/issues">Report an issue</a>
+</p>

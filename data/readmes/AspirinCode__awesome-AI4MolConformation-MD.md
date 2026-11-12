@@ -840,6 +840,11 @@ Kevin V. Bigting, Shubhadeep Nag, Yaxin An.
 
 
 
+
+* **OriDynamics: Towards a World Model for Biomolecular Dynamics** [2026]  
+Jiahao Yang, Dong Liu, Hongliang Li, Ji Chen, Yuehua Liu, Daoyun Ding, Duo An, Jun Li, Jiahua Rao, Ziqiao Zhang, Peicong Lin, Shuangjia Zheng.  
+[arXiv:2611.11958(2026)](https://doi.org/10.48550/arXiv.2611.11958)  
+
 * **AdaptivePy: A Unified Python Framework for Adaptive Sampling in Molecular Dynamics** [2026]  
 Hassan Nadeem, Diego E. Kleiman, Diwakar Shukla.  
 [J. Chem. Theory Comput. (2026)](https://doi.org/10.1021/acs.jctc.6c01596)  
@@ -1514,10 +1519,4 @@ Li, Y.; Zhang, X.; Liu, M.; Shen, L.
 
 * **PIL-Net: a physics-informed graph convolutional network for predicting atomic multipoles** [2025]  
 Dario Coscia, Pim de Haan, Max Welling.  
-[arXiv:2508.14022 (2025)](https://arxiv.org/abs/2508.14022) | [code](https://github.com/dario-coscia/blip)  
-
-* **FastTrack: a fast method to evaluate mass transport in solid leveraging universal machine learning interatomic potential** [2025]  
-Hanwen Kang, Tenglong Lu, Zhanbin Qi, Jiandong Guo, Sheng Meng, Miao Liu.  
-[arXiv:2508.10505 (2025)](https://doi.org/10.48550/arXiv.2508.10505)  
-
-* **PI
+[arXiv:2508.14022 (2025)](https://arxiv.org/abs/2508.14022) | [code](https://github.com/dario-coscia/blip) 

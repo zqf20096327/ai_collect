@@ -30,6 +30,26 @@ take a prerelease. Both lines load the same model. AI coding agents working on t
 ## Quick start
 
 ```bash
+npx genclass   # signs you in, adds GenClass to your app and walks you through the rest
+```
+
+Run it in your web app's folder and press Enter for each step: account, runtime, dashboard, test workflow, GitHub
+App, coding agent, suggestions. A step that does not fit your project is skipped, Enter also stops any wait, and
+running it again continues from where things are. It draws nothing on your pages. Then:
+
+```bash
+npx genclass dashboard   # what GenClass found on your live site, in the terminal
+npx genclass suggest     # what your app is missing, most important first
+```
+
+With a coding agent (Claude Code, Cursor, Codex), tell it to run `npx genclass status --json` and then
+`npx genclass setup --yes`: the command asks nothing when an agent runs it, and prints a link for the two things only
+you can do (approve the sign-in, install the GitHub App). Guide: [genclass.dev/docs/cli](https://genclass.dev/docs/cli);
+package: [`packages/cli`](packages/cli/README.md).
+
+To add only the runtime, with no account:
+
+```bash
 npx @genclass/runtime@beta init   # finds your framework and shows the diff before it writes anything
 ```
 
@@ -58,6 +78,12 @@ Or with no build step, first in `<head>`:
   ([state it can protect](https://github.com/genclass-dev/GenClass/blob/main/packages/runtime/README.md#state-it-can-protect)).
   `GenClass.init()` is the explicit setup; it discovers state only if you import `@genclass/runtime/discover` first
   and pass `autoState: true`.
+- **A strict performance budget?** The
+  [lite install](https://github.com/genclass-dev/GenClass/blob/main/packages/runtime/README.md#lite-install-after-the-page-has-loaded)
+  loads GenClass after the page has loaded, on a share of page loads. In the one app measured the load event did not
+  move (94.0 ms against 94.2 ms without GenClass and 159.0 ms with the first-line import;
+  [RESULTS.md §28](docs/runtime/RESULTS.md#lite-install)). It sees less: nothing before it starts and none of the
+  app's state, so no stale responses.
 - **Pin the version in the script tag**, as above: the unversioned URL serves `latest`, and the CDN cache may serve an
   older release.
 - **Keep `@beta` while `0.3.0` is in beta.** A bare `npm install @genclass/runtime` or `npx @genclass/runtime init`
@@ -172,7 +198,8 @@ showed it on the developer's fast backend, with no false report on the fixed pag
 GenClass's GitHub App puts what the runtime saw on the pull request it was seen in. Your Playwright tests run with
 the GenClass fixture, your workflow uploads the race files it writes, and the app posts one check and one comment:
 each finding with its test, the seeds it was flagged in and the evidence line. It reads those files and never your
-source code, it comments only where it is installed, and it is free, on public and private repositories.
+source code, it comments only where it is installed, and it is free on public repositories. Private repositories
+come with the Team plan (US$15 a developer a month; [pricing](https://genclass.dev/pricing)).
 
 > **Install** at <https://genclass.dev/github> (the app is GenClass.dev, <https://github.com/apps/genclass-dev>). With
 > no change to your tests, one workflow file is the whole setup: the check on your first pull request links to it,
@@ -217,7 +244,9 @@ export const submitOrder = protect("checkout submit", (cart) => fetch("/api/orde
 
 - **Token and dashboard.** A token (`gc_` plus 22 letters and digits, public) groups your app's diagnostics under a
   private dashboard link (`https://genclass.dev/dashboard/...`). The dashboard is free for every app, with or without
-  an account. Get a token at [genclass.dev/start](https://genclass.dev/start), or let `init` create it after you
+  an account: what GenClass found, where and what it did, for the last 7 days and up to 3 apps in an account. Visitor
+  analytics, forwarding, export, 90 days of history and team members come with the Team plan
+  ([pricing](https://genclass.dev/pricing)); the runtime itself is never limited by a plan. Get a token at [genclass.dev/start](https://genclass.dev/start), or let `init` create it after you
   approve its diff. To keep dashboards in an optional genclass.dev account, `npx @genclass/runtime@beta login` signs in
   from the terminal (device flow) and connects the app in the current folder; `connect`, `whoami` and `logout` do the
   rest, and `npx @genclass/runtime@beta dashboard` prints an app's link again (from `0.3.0-beta.2`). The dashboard

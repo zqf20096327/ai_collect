@@ -80,7 +80,7 @@ WireBuddy is for working on a capture together with the agent:
 | Protocols Wireshark doesn't decode | stay "Data" unless you install a dissector yourself (Wireshark MCP offers Decode As for protocols Wireshark has) | Decode As for protocols Wireshark has (a right-click or one agent call); Lua dissectors the agent writes, tests and loads for the rest |
 | Beyond packet rows | text and JSON for the agent | panels the agent writes: plots, images, video, point clouds |
 | Ready-made analyses | many, from statistics to threat intelligence | Wireshark's statistics and expert info |
-| Where it runs | anywhere `tshark` runs, headless too | Linux with a browser, Wireshark 4.6 and Node.js 22 (macOS and Windows untested; extensions and panels need Linux) |
+| Where it runs | anywhere `tshark` runs, headless too | Linux with a browser, Wireshark 4.6 and Node.js 22 (macOS is verified only in CI on a hosted runner, not by hand, and Windows is untested; extensions and panels need Linux, or macOS where the same checks are made) |
 
 (Compared with what those projects describe in their READMEs, October 2026.)
 
@@ -102,10 +102,13 @@ WireBuddy is for working on a capture together with the agent:
   sudo usermod -aG wireshark $USER         # then log out and in again
   ```
 
+  On macOS it needs read access to `/dev/bpf*`, which Wireshark's ChmodBPF sets up.
+
 - **Node.js ≥ 22**
 
 Developed on Ubuntu 22.04 with Wireshark 4.6.6; CI runs on Ubuntu 24.04 with the current stable
-Wireshark from the PPA. Other Linux distributions should work; macOS and Windows are untested.
+Wireshark from the PPA. Other Linux distributions should work; macOS, live capture
+included, was verified only in CI on a hosted runner, not by hand; Windows is untested.
 
 ## Install and run
 
@@ -159,8 +162,9 @@ A protocol Wireshark knows, on a port it doesn't expect (RTP on UDP port 50000, 
 agent's `decode_as` tool does the same in one call.
 
 Entries apply to every capture you open until WireBuddy exits and win over your profile's Decode As
-for the same port; WireBuddy never writes your Wireshark profile. Decode As needs Linux, like
-extensions.
+for the same port; WireBuddy never writes your Wireshark profile. Decode As needs what extensions
+need: Linux, or macOS where the same checks are made (verified in CI on a hosted runner, not by
+hand).
 
 ## Extensions
 
@@ -191,7 +195,10 @@ Extensions are Lua code that runs as you, with access to your files. WireBuddy o
 extensions no other user could have changed (see [SECURITY.md](SECURITY.md)): a shared team
 folder that colleagues can write is ignored, and so is a folder on a network or FUSE filesystem,
 where that can't be checked. Only let an agent write extensions if you would let it run commands,
-and look at what it wrote. Extensions need Linux.
+and look at what it wrote. Extensions need Linux, or macOS where the same checks are made
+(verified in CI on a hosted runner, not by hand); there a group-writable entry, or one whose ACL
+lets anyone else change it, counts as writable by others, and only local APFS or HFS+ volumes that
+keep ownership are looked into.
 
 ### Panels
 
@@ -258,12 +265,12 @@ scripted session (filter, mark, select) against the fixture; open the URL it pri
 Claude opens the viewer in the browser pane next to the chat by itself as soon as it starts
 working with WireBuddy: while no viewer is connected, the tool results remind it, with the URL.
 
-While Claude is attached, the viewer shows you no error messages. Problems (a file that won't
-open, a rejected filter, a failed capture, a crashed `sharkd`) and what you do in the viewer go
-to Claude instead, with its next WireBuddy tool call; the status bar only counts the problems
-waiting for it. To react while you work, Claude runs `wirebuddy --watch <instance-file>` as a
-background command: it waits for the next problem or question, prints it and exits, which wakes
-Claude.
+An error you run into in the viewer shows there, attached or not. While Claude is attached it also
+hears of it, together with other problems (a file that won't open, a rejected filter, a failed
+capture, a crashed `sharkd`) and what you do in the viewer, with its next WireBuddy tool call; the
+status bar counts the problems waiting for it. To react while you work, Claude runs
+`wirebuddy --watch <instance-file>` as a background command: it waits for the next problem or
+question, prints it and exits, which wakes Claude.
 
 To ask about packets without switching to the chat, right-click them in the packet list and
 choose **Ask Claude about This Packet…** (or **Ask Claude about These N Packets…**). The question
@@ -464,6 +471,7 @@ plugins don't change the results. The capture checks in `npm test` need `dumpcap
   three requests were pipelined into, read as plain TCP segments, and ones of a message that ends
   more than about 8 MiB after them don't say where it is reassembled (less when many connections
   are busy at once).
+- On macOS there is no source for the memory still free, so full reads of a live capture never wait for memory and a very big capture can make the system swap.
 - Provisional packets count as settled once no sender with a message or an answer under way has
   sent anything for 10 s of capture time. If one goes on after such a pause (a slow response, a
   stalled download, a late DNS or ping reply), the packets listed before it keep reading as if

@@ -25,7 +25,7 @@ _Built for AI Agents. Every command works as a structured tool call._
 
 - **Model generation** — Full-modality generation across text, image, video, and speech, with editing and reference-based generation
 - **Asset understanding** — Parse and ask questions about images, documents, audio, and long videos
-- **App orchestration** — Call Managed Agents, agents, and workflows published on Aliyun Model Studio, wired to knowledge bases, memory, web search, and MCP tools
+- **App orchestration** — Call Managed Agents, agents, and workflows published on Aliyun Model Studio, wired to knowledge bases, memory, web search, and MCP tools; create, update, publish, copy, and delete agents/workflows, and edit workflow canvases from the CLI
 - **Native MCP setup** — Register Bailian MCP servers in Codex, Claude Code, Cursor, Qoder, Qoder Work, QwenWork (千问办公), Qwen Code, Gemini CLI, or Pi
 - **Training & deployment** — Validate and upload datasets, fine-tune models, deploy dedicated models as endpoints
 - **Batch inference** — Prepare CSV/JSONL, create and follow asynchronous Chat/Embedding tasks, download original results/errors with optional CSV, or send one synchronous Batch Chat request
@@ -138,6 +138,20 @@ bl knowledge init --workspace-id <workspace-id> --dry-run
 Knowledge bases accrue running-time charges from creation, even without queries. The one-time Standard Edition 720-hour allowance is shared across knowledge bases and expires 30 days after activation for new users. Model calls cost extra; your remaining allowance is unknown. Review the plan and [billing rules](https://help.aliyun.com/zh/model-studio/billing-for-knowledge-base), then add `--yes` to the same command **after confirming the operation**, removing `--dry-run` to execute.
 
 Keep the returned IDs and recovery record. Closing the CLI or a later failure does not stop billing; follow the reported cleanup actions to delete unused knowledge bases. See the [Knowledge Studio quick start](packages/kscli/README.md#quick-start) for retrieval and cleanup. The `bailian-knowledge` Skill is available through `bl skill init`.
+
+### Console dataset and deployment queries
+
+```bash
+bl dataset groups --page 1 --page-size 10 --output json
+bl dataset version --dataset-group-id <group-id> --output json
+bl dataset version --dataset-id <version-id> --include-status --output json
+bl file url --file-key <console-file-key> --output json
+bl deploy instances --page 1 --page-size 10 --output json
+```
+
+Use `dataset groups` (`--name` optionally filters on the server) to obtain `records[].datasetGroupId`, then `dataset version --dataset-group-id <group-id>` to get `{result:[...]}` with `result[].datasetId` and its optional `fileId`. Use `dataset version --dataset-id <version-id>` for details; `--include-status` is available only in detail mode. Exactly one of `--dataset-group-id` and `--dataset-id` is required; they cannot be combined. `fileId` is not `datasetId` and must not be passed as a version ID. Groups fetch one page with one embedded version preview per group; `version --dataset-group-id` does not promise exhaustive results or expose pagination. The API Key / `file_id` semantics of `dataset list` are unchanged.
+
+These read-only commands use Console authentication. An optional `--workspace-id` resolves the workspace's Console identity before querying; resolution failure stops the request. `dataset version --dataset-id` keeps metadata and version/task state separate and does not infer validation success or training readiness. `file url` only resolves a download address. `deploy instances` returns one page of independent services (`records` is the list, `items` the total), not capacity instances. The API-key `dataset get --file-id` and `deploy list` commands are unchanged. Add `--dry-run` to preview without business requests; framework update checks/telemetry follow their settings.
 
 ### RAG audio and video
 

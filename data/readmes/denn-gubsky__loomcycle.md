@@ -22,7 +22,7 @@
 
 ---
 
-> 🌳 **Stable and in production.** loomcycle is past v1.0 (currently v1.150) — feature-complete, hardened, and distribution-ready (Homebrew, multi-arch Docker, a Claude Code plugin, TS + Python adapters, a TrueNAS app). **Validated by two months of continuous production operation at JobEmber.ai** under real user load, with multi-replica HA on Postgres. Development since v1.0 has been new primitives plus hardening — see [`REVISIONS.md`](REVISIONS.md) for recent releases and [the releases page](https://github.com/denn-gubsky/loomcycle/releases) for the full history. Apache-2.0. We welcome bug reports, security disclosures, feature contributions, downstream consumers, and forks. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+> 🌳 **Stable and in production.** loomcycle is past v1.0 (currently v1.152) — feature-complete, hardened, and distribution-ready (Homebrew, multi-arch Docker, a Claude Code plugin, TS + Python adapters, a TrueNAS app). **Validated by two months of continuous production operation at JobEmber.ai** under real user load, with multi-replica HA on Postgres. Development since v1.0 has been new primitives plus hardening — see [`REVISIONS.md`](REVISIONS.md) for recent releases and [the releases page](https://github.com/denn-gubsky/loomcycle/releases) for the full history. Apache-2.0. We welcome bug reports, security disclosures, feature contributions, downstream consumers, and forks. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ---
 
@@ -201,15 +201,17 @@ been primitives plus hardening: memory, documents, teams, sandboxing, retention
 and erasure. The agentic-memory subsystem and the document surfaces built on it
 remain the main direction.
 
-The most recent line (v1.150.0) makes `loomcycle-media` the image for a
-deployment that wants voice and a browser together: it now carries the PinchTab
-client beside ffmpeg and poppler, and patch releases publish it too. The cloud
-example runs it, so Telegram voice notes can be transcribed and answered as voice
-notes. Qwen3-ASR's per-segment header no longer leaks into long transcripts, and
-a run started with a narrowed `tools` list keeps that list after a pause, a
-snapshot restore or a boot recovery.
+The most recent line (v1.152.0) fixes what a measurement of knowledge-base
+agents found: summaries that named their document by another document's code,
+search hits that did not say where their document is, a spawned run's usage
+that counted only its last model call, and a long `spawn_runs` join that a
+client could give up on. Every annotation is rewritten once after the upgrade.
 
-Before it, v1.149.0 let a tenant scrape its own metrics and finished the panic
+Before it, v1.151.0 let a tenant send its own traces and metrics to its own
+OpenTelemetry collector and made a paused run resume the way a run starts.
+
+Earlier, v1.150.0 made `loomcycle-media` the image for voice and a browser
+together, v1.149.0 let a tenant scrape its own metrics and finished the panic
 net for background goroutines, and v1.148.0 added two layers and the operator's view of
 both. Annotations give every section, document and folder of a tenant knowledge
 base a brief and an abstract, attached to retrieval with `with_summary` and

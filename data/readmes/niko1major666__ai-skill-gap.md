@@ -10,7 +10,7 @@
 
 > **上传一份简历，告诉你目标 AI 岗位还差什么、先学什么。**
 >
-> **4240** 条真实 AI 岗位 JD · **79** 家公司 · **16** 个招聘源 · **161** 项技能 · **106** 项学习资源，
+> **4240** 条真实 AI 岗位 JD · **79** 家公司 · **16** 个招聘源 · **168** 项技能 · **113** 项学习资源，
 > 全部来自公开招聘信息；免注册、免登录，上传前明确告知数据外发边界。
 
 [**🚀 在线体验**](https://hdwqwu3howppf2z2xv9i2q.streamlit.app/) ·
@@ -47,7 +47,7 @@ JD 写得含糊（「熟悉分布式训练优先」到底是硬门槛还是加�
 学习资源又散落各处，很容易把时间投在错误的方向上。
 
 这个项目把「招聘市场实际需要什么」数据化：从 16 个公开招聘渠道采集 4240 条 JD，
-抽取 161 项技能并区分 must / nice，再与你的简历逐项比对，输出一份可执行的补强清单。
+抽取 168 项技能并区分 must / nice，再与你的简历逐项比对，输出一份可执行的补强清单。
 
 > 作者背景：非科班大四学生，转投 AI+ 岗位。系统不预设具体专业背景，任何专业均可直接使用。
 
@@ -57,7 +57,7 @@ JD 写得含糊（「熟悉分布式训练优先」到底是硬门槛还是加�
 
 | # | 能力 | 一句话 |
 |---|---|---|
-| 1 | 技能抽取 | 从 JD 抽取 161 项细粒度技能，规则基线 F1 **0.96** |
+| 1 | 技能抽取 | 从 JD 抽取 168 项细粒度技能，规则基线 F1 **0.96** |
 | 2 | must / nice 判定 | 读 JD 原文三级判定，避免把加分项当硬门槛 |
 | 3 | 简历匹配 | 简历文本 → 技能 → 与岗位语义匹配打分 |
 | 4 | 差距报告 | 缺口 / 优先级 / 学习资源 / AI 解读，可导出 Markdown、Word |
@@ -74,7 +74,7 @@ JD 写得含糊（「熟悉分布式训练优先」到底是硬门槛还是加�
 4. 输出匹配度打分 + 逐项对比 + 差距报告（缺失技能/优先级/学习资源）；AI 解读会结合简历解析出的专业给出迁移建议（未识别到专业则不展示）
 5. must/nice 判定读 JD 原文（句内触发词 → 章节标题 → 全行业占比兜底），再按「岗位内提及次数」加权，避免把加分项当硬门槛；零技能岗位用同公司相似岗位兜底并标注来源
 6. Streamlit 三页面：技能图谱 / 简历匹配 / 差距报告
-7. 知识库持续扩充：161 项技能（含 MCP、Function Calling、扩散模型、视觉语言模型、LangGraph、Dify、昇腾等高频缺失项）+ 106 项学习资源；高噪声写法（如裸「量化」= 可量化/量化指标）只在简历解析侧生效，不参与 JD 抽取
+7. 知识库持续扩充：168 项技能（含 MCP、Function Calling、扩散模型、视觉语言模型、LangGraph、Dify、昇腾，以及 iOS/Android/Swift/Kotlin/Flutter 等移动端技能）+ 113 项学习资源；高噪声写法（如裸「量化」= 可量化/量化指标）只在简历解析侧生效，不参与 JD 抽取
 8. 学习与投递闭环：**规则版学习路径**（无 API key 也出三阶段计划，含先修顺序/学时/周数）、**简历补强建议**（针对 P0 缺口给出「改写要点」或「补小项目」，不编造经历）、**报告导出**（Markdown / Word）
 9. 多岗位视角：**多岗位对比**（匹配度、共性缺口、各岗独有缺口）、**反向岗位推荐**（简历技能 → Top 10 岗位）、**技能画像**（按类别的需求加权覆盖率）、**公司 × Top 技能矩阵**（技能图谱页）
 10. 求职闭环：简历经历区分 **工作/实习** 与 **项目**（LLM 判定 → 正则按章节/角色兜底，教育经历不计入），ATS 建议分别提示缺哪类经历；**岗位收藏夹**（差距报告/简历推荐一键收藏，按「公司 + 归一化标题」去重、上限 20，收藏写进链接 `?fav=` 刷新不丢，可导出 JSON），侧边栏跨页面查看与移除
@@ -117,7 +117,7 @@ ai-skill-gap/
 │   ├── raw/            原始 JD（seed 样例 sample_jobs.csv 已入库）
 │   ├── processed/      清洗后结构化数据（jobs.jsonl / 统计）
 │   ├── gold/           人工标注金标准（算 F1 / Recall@5）
-│   └── kb/             skill_taxonomy(161技能·难度+重要度[需求频率驱动]) / learning_resources(106 项)
+│   └── kb/             skill_taxonomy(168技能·难度+重要度[需求频率驱动]) / learning_resources(113 项)
 ├── src/
 │   ├── data/           schema / normalize / freshness(★新鲜度) / source_health(来源健康) / privacy(★PII/上传边界) / job_filter(★标题过滤) / load / build_dataset / skill_stats / resume_advice
 │   ├── extractor/      SiameseUIE / BERT-NER / 规则基线
@@ -268,7 +268,7 @@ Streamlit Community Cloud 的应用在一段时间无人访问后会休眠（sle
 | W4 | BGE 匹配，Recall@5 对比 | ✅ BGE vs TF-IDF：Recall@5 均 0.975，MRR/Hit@1 BGE 更优 |
 | W5-6 | 美化 + Docker + README 量化指标 | `docker build -t ai-skill-gap .` |
 | W7 | 迭代 1：must/nice 判定重构 + 零技能兜底 + 强调度加权 + 简历解析缓存 | ✅ 122 测试通过；57.0% 岗位有硬性要求（修复前 0%），零技能岗位 98.7% 可代理 |
-| W8 | 迭代 2：知识库（KB）内容扩充 | ✅ 131 测试通过；技能 147→161（新增 16、合并 2），学习资源 11→106 项，JD 技能覆盖率 161/161 |
+| W8 | 迭代 2：知识库（KB）内容扩充 | ✅ 131 测试通过；技能 147→161（新增 16、合并 2），学习资源 11→106 项，JD 技能覆盖率 160/161 |
 | W9 | 迭代 3：功能扩展（C1–C7）+ 评测/CI 加固（D1–D7） | ✅ 201 测试通过；规则学习路径/报告导出/多岗对比/反向推荐/技能画像/公司×技能矩阵；覆盖率 58%（门槛 55%）+ 3.10/3.12 矩阵 + 抽取/匹配回归基线 + `docs/metrics.md` |
 | W10 | 迭代 4：首屏冷启动与 CI 修复（v1.3.1 补丁） | ✅ 203 测试通过；全语料抽取 24.3s→1.5s、AppTest 首屏 32s→3.9s、3.10 恢复跑全量用例 |
 | W11 | 迭代 5：README 界面预览 + 文档数字校正 | ✅ 207 测试通过（205 快测 + 2 slow）；新增「公司×Top12 技能」「多岗对比初始界面」预览，矩阵行序改为 JD 数降序；`memory-bank` / 本报告 / 项目报告数字统一到 `docs/metrics.md` |
@@ -276,12 +276,12 @@ Streamlit Community Cloud 的应用在一段时间无人访问后会休眠（sle
 | W13 | 数据扩充工具化：新源接入前体检 | ✅ 222 测试通过（220 快测 + 2 slow）；`scripts/preflight_new_source.py` 只读体检（~2s，FAIL 退出 1）覆盖 job_id 冲突 / 正文跨源重复 / 公司写法分裂 / 合并后零技能占比与技能覆盖 / must 偏移；现有语料自检可复现当期基线口径（数字见 W14）；SOP 见 `memory-bank/dataOnboarding.md` |
 | W14 | 数据扩充实践：接入哔哩哔哩（技术/AI 岗） | ✅ 236 测试通过（234 快测 + 2 slow）；新增 `src/crawler/bilibili.py`（`X-AppKey` + `X-CSRF` 匿名取数，社招 87 + 校招 117）+ `tests/test_bilibili.py`（14 用例）；全站 876 条中技术/AI 仅 204 条（其余岗位 42.4% 零技能），默认只入技术/AI，`--all` 可切全量；语料 4582→4776 条 / 78→79 家，零技能 25.4%→24.4%，must 56.5%→57.5%，importance 6 项微调 |
 | W15 | 数据扩充实践：接入滴滴（技术岗） | ✅ 250 测试通过（248 快测 + 2 slow）；新增 `src/crawler/didi.py`（公开 GET，无 token/签名，社招 1081 条 → 技术 423 条）+ `scripts/probe_didi.py` + `tests/test_didi.py`（14 用例）；全站运营 53.7% / 产品 65.6% / 安全 75.0% 零技能，默认只入「技术」（11.8%），`--all` 可切全量；校招在 Moka（响应 AES 密文）未接入；语料 4776→5163 条 / 79→80 家，零技能 24.4%→23.5%，must 57.5%→57.7%，importance 6 项微调 |
-| W16 | 数据扩充实践：接入美团（技术类） | ✅ 267 测试通过（265 快测 + 2 slow）；新增 `src/crawler/meituan.py`（移动端公开 POST，无 token/签名，社招 3231 条 → 技术类 681 条）+ `scripts/probe_meituan.py` + `tests/test_meituan.py`（17 用例）；全站零售 90.6% / 销售客服 97.0% / 职能 71.1% 零技能，技术类只 6.0%（平均 6.7 项技能），默认只入「技术类」，`--all` 可切全量；查询 token 必须整轮复用（每页换新会退回第 1 页）；语料 5163→4240 条 / 80→79 家，零技能 23.5%→8.0%，must 57.7%→60.0%，importance 16 项微调 |
-| W17 | 发布 v1.4.0：三源扩充（哔哩哔哩 / 滴滴 / 美团）+ 接入前体检工具化 | ✅ 267 测试全绿；语料 4240 条 / 79 家（零技能 8.0%、must 60.0%、覆盖 161/161）；`docs/release-notes/v1.4.0.md` + tag v1.4.0，`release.yml` 自动建 Release；CI（metrics + test 3.10/3.12）绿 |
+| W16 | 数据扩充实践：接入美团（技术类） | ✅ 267 测试通过（265 快测 + 2 slow）；新增 `src/crawler/meituan.py`（移动端公开 POST，无 token/签名，社招 3231 条 → 技术类 681 条）+ `scripts/probe_meituan.py` + `tests/test_meituan.py`（17 用例）；全站零售 90.6% / 销售客服 97.0% / 职能 71.1% 零技能，技术类只 6.0%（平均 6.7 项技能），默认只入「技术类」，`--all` 可切全量；查询 token 必须整轮复用（每页换新会退回第 1 页）；语料 5163→5832 条 / 80→81 家，零技能 23.5%→21.5%，must 57.7%→60.0%，importance 16 项微调 |
+| W17 | 发布 v1.4.0：三源扩充（哔哩哔哩 / 滴滴 / 美团）+ 接入前体检工具化 | ✅ 267 测试全绿；语料 5832 条 / 81 家（零技能 21.5%、must 60.0%、覆盖 160/161）；`docs/release-notes/v1.4.0.md` + tag v1.4.0，`release.yml` 自动建 Release；CI（metrics + test 3.10/3.12）绿 |
 | W18 | 迭代 7：求职闭环（经历分类 + 岗位收藏） | ✅ 284 测试通过（282 快测 + 2 slow）；简历经历新增 `kind`（work/internship/project/other），LLM 判定 + 正则按章节标题/角色/组织兜底（教育经历跳过），简历页分组展示、ATS 分别提示缺工作/实习或项目；新增 `src/matcher/job_favorites.py`（公司+归一化标题去重、上限 20、URL 编解码、按 job_id 还原）+ 侧边栏收藏夹（跨页面查看/移除/导出 JSON），差距报告与简历推荐 Top10 一键收藏，`?fav=` 刷新不丢；新增 `tests/test_job_favorites.py`，语料与指标不变 |
-| W19 | 修复云端显示旧语料（Streamlit 缓存） | ✅ 285 测试通过（283 快测 + 2 slow）；线上代码已有收藏夹但首屏仍是旧版 4582 条 / 78 家 → `@st.cache_data` 不随 `data/processed/jobs.jsonl` 变化失效。新增 `app._file_fingerprint()`（路径 + mtime_ns + size）并接入 `load_core` / `load_engine` / `load_jobs` / `extract_corpus` / `_recommendations` 缓存键；注意 Streamlit 跳过下划线开头参数，首版 `_mtime_ns`/`_size` 实际未参与哈希，已改正常命名并加缓存失效回归；推送后线上验收 4240 条 / 79 家 |
-| W20 | 发布 v1.5.0：求职闭环 + 云端缓存修复 | ✅ 285 测试全绿；`docs/release-notes/v1.5.0.md` + tag v1.5.0，`release.yml` 自动建 Release；包含经历分类、岗位收藏夹、缓存指纹与收藏夹文案修复；语料/指标保持 4240 条 / 79 家、161/161 |
-| W21 | 数据新鲜度 + 来源健康 | ✅ 296 测试通过（294 快测 + 2 slow）；岗位新增 `first_seen_at` / `last_seen_at` / `is_active`，`merge_jobs` 写 `source` / `crawl_time`，跨构建状态 `job_freshness.json`；差距报告显示“更新于 X 天前”、支持近 7 / 30 天筛选、超 30 天提示“可能已下线”；新增 `docs/source_health.md`（14 来源的规模/发布时间覆盖/零技能率/超期统计）+ CI 陈旧校验；语料仍 4240 条 / 79 家，指标零 diff |
+| W19 | 修复云端显示旧语料（Streamlit 缓存） | ✅ 285 测试通过（283 快测 + 2 slow）；线上代码已有收藏夹但首屏仍是旧版 4582 条 / 78 家 → `@st.cache_data` 不随 `data/processed/jobs.jsonl` 变化失效。新增 `app._file_fingerprint()`（路径 + mtime_ns + size）并接入 `load_core` / `load_engine` / `load_jobs` / `extract_corpus` / `_recommendations` 缓存键；注意 Streamlit 跳过下划线开头参数，首版 `_mtime_ns`/`_size` 实际未参与哈希，已改正常命名并加缓存失效回归；推送后线上验收 5832 条 / 81 家 |
+| W20 | 发布 v1.5.0：求职闭环 + 云端缓存修复 | ✅ 285 测试全绿；`docs/release-notes/v1.5.0.md` + tag v1.5.0，`release.yml` 自动建 Release；包含经历分类、岗位收藏夹、缓存指纹与收藏夹文案修复；语料/指标保持 5832 条 / 81 家、160/161 |
+| W21 | 数据新鲜度 + 来源健康 | ✅ 296 测试通过（294 快测 + 2 slow）；岗位新增 `first_seen_at` / `last_seen_at` / `is_active`，`merge_jobs` 写 `source` / `crawl_time`，跨构建状态 `job_freshness.json`；差距报告显示“更新于 X 天前”、支持近 7 / 30 天筛选、超 30 天提示“可能已下线”；新增 `docs/source_health.md`（14 来源的规模/发布时间覆盖/零技能率/超期统计）+ CI 陈旧校验；语料仍 5832 条 / 81 家，指标零 diff |
 | W22 | 简历隐私告知 + PII 脱敏 + 上传限制 | ✅ 310 测试通过（308 快测 + 2 slow）；新增 `src/data/privacy.py`：上传前必确认隐私说明、AI 增强单独 opt-in（默认关闭）、外发前强制脱敏 6 类直接联系方式、仅发送前 6,000 字；限制 5 MB / PDF 30 页 / 5 万字 / DOCX 解压 50 MB / 每会话 10 次 LLM；简历解析缓存从跨会话 `st.cache_data` 改为 session 级；新增 `docs/privacy.md` 与 `tests/test_privacy.py` |
 
 ## 八、数据采集与爬虫
@@ -378,7 +378,7 @@ python -m src.crawler.meituan
 # 来源健康报告（14 个来源的规模 / 发布时间覆盖 / 零技能率 / 超期统计）-> docs/source_health.md
 .\.venv\Scripts\python.exe scripts/source_health.py
 
-# 语料变化后重算 161 技能重要度（JD 需求占比分档 → importance 1~5）
+# 语料变化后重算 168 技能重要度（JD 需求占比分档 → importance 1~5）
 .\.venv\Scripts\python.exe scripts/recalc_importance.py
 
 # 接入新公司 / 新数据源前先体检（只读，约 2 秒；有 FAIL 时退出码 1，venv 已激活）
@@ -392,7 +392,7 @@ python scripts/preflight_new_source.py --source data/raw/ali_ai_jobs.csv
 
 - 采集 JD 数量 / 覆盖公司数（`build_dataset --stats`）：**4240 条 / 79 家**（原始 ? 条 → 过短 7 条 + 非 AI 工程岗 6 条（标题过滤）+ 重复 853 条后；含小红书 1284[社招836+校招448]、快手 1445[社招1179+校招266]、腾讯339、字节261、小米710[社招600+校招110]、美团681[社招技术类681、去重后669]、滴滴423[社招技术类423、去重后387]、哔哩哔哩204[社招87+校招117]、DeepSeek33、Kimi30、MiniMax60、华为2、英文科技岗位600）
 - 技能重要度（`recalc_importance.py`，全语料需求占比分档 ≥10%→5 / ≥5%→4 / ≥2%→3 / ≥1%→2 / <1%→1）：Top 为大模型 38.6%、Python 36.8%、智能体 26.4%、Java 20.4%、C++ 19.5%、机器学习 16.9%、深度学习 13.7%、多模态 13.2%（接入美团后 16 项微调：强化学习 4→5、计算机视觉 3→4、Spark 3→4、Hadoop 2→3、Kubernetes 4→3、GCP 3→2、DeepSpeed 2→3、LangChain 2→3、LangGraph 1→2、注意力机制 1→2、模型压缩 1→2、思维链 1→2、具身智能 1→2、世界模型 1→2、Qwen 1→2、偏好对齐 2→3）
-- 知识库覆盖（迭代 2，161 技能）：**161/161 技能在 4240 条 JD 上可命中**（唯一未命中「联邦学习」，为语料未出现而非词表缺失）；学习资源 **106/161（65.8%）**，Top 80 需求技能覆盖 76 项；新增技能实测占比：视觉语言模型 6.55%、Function Calling 6.34%、MCP 2.93%、视频生成 2.76%、偏好对齐 2.62%、扩散模型 2.45%、昇腾 1.53%、长上下文 1.44%
+- 知识库覆盖（v1.11.0，168 技能）：**168/168 技能在 4240 条 JD 上可命中**；学习资源 **113/168（67.3%）**；v1.11.0 补移动端 7 项（iOS / Android / Swift / Kotlin / Objective-C / Flutter / React Native，实测占比 Android 3.7%、Kotlin 2.8%、iOS 2.7%、Swift 1.6%），零技能 **339→311（8.0%→7.3%）**，金标 F1 不变（test 0.9565 / 全量 0.9123）；迭代 2 新增技能实测占比：视觉语言模型 6.55%、Function Calling 6.34%、MCP 2.93%、视频生成 2.76%、偏好对齐 2.62%、扩散模型 2.45%、昇腾 1.53%、长上下文 1.44%；「联邦学习」未命中属语料未出现，保留词条
 - KB 精度修正：`ML.QUANT` 原别名「量化」命中 6.31%，抽样发现多为「可量化/量化指标」→ 改为 name「模型量化」+ `skip_extract: [量化]`（解析侧仍识别「量化」，抽取侧不匹配），真实占比 1.07%、importance 4→2
 - KB 精度修正（迭代 6）：`ENGINEERING.UNITTEST` 原别名含泛化「测试」→ JD 命中 **11.37%（339 条）**，其中 508 条只靠裸「测试」（多为 A/B 测试、渗透测试、性能测试、测试团队）→ 加 `skip_extract: [测试]` 后真实占比 **0.46%（24 条）**、importance 5→1；「单元测试 / unit-test」照常抽取，gold F1 不变（test 0.9565 / 全量 0.9123）
 - 技能抽取 F1（SiameseUIE vs BERT-NER，在 `data/gold/jd_skills_gold.jsonl` 上算 span 级）
@@ -401,7 +401,7 @@ python scripts/preflight_new_source.py --source data/raw/ali_ai_jobs.csv
 - 岗位内强调度：49.2% 的岗位存在被重复提及（tf ≥ 2）的技能，权重按 `base × (1 + ln tf)` 计入匹配度
 - 语义匹配 Recall@5（BGE vs TF-IDF，在 `data/gold/skill_pair_gold.jsonl` 上算）
 - 单次推理延迟（`scripts/benchmark.py`，CPU/GPU 两口径）
-- **回归基线（迭代 3，CI 固化）**：抽取 F1（test 0.9565 / 全量 0.9123，允许退化 1pt）、TF-IDF 匹配 Recall@5（skill_pair 0.9750 / resume_sentence 0.2200，允许退化 2pt）、语料快照（4240 条 / 79 家 / 4018 个唯一「公司+标题」）、KB 覆盖（161/161）；全量指标见 [`docs/metrics.md`](docs/metrics.md)，由 `python scripts/eval_all.py` 生成，CI 在 main 上校验是否过期
+- **回归基线（迭代 3，CI 固化）**：抽取 F1（test 0.9565 / 全量 0.9123，允许退化 1pt）、TF-IDF 匹配 Recall@5（skill_pair 0.9750 / resume_sentence 0.2200，允许退化 2pt）、语料快照（4240 条 / 79 家 / 4018 个唯一「公司+标题」）、KB 覆盖（168/168）；全量指标见 [`docs/metrics.md`](docs/metrics.md)，由 `python scripts/eval_all.py` 生成，CI 在 main 上校验是否过期
 
 ### 已产出：技能抽取 F1 对比（测试集 10 条，span 级）
 

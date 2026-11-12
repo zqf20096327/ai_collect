@@ -11,9 +11,9 @@
 
 <p>
   <a href="https://ml4sci.com/en/"><img alt="Read online at ml4sci.com" src="https://img.shields.io/badge/read%20online-ml4sci.com-4f46e5?logo=bookstack&logoColor=white"></a>
-  <img alt="216 chapters" src="https://img.shields.io/badge/chapters-216-0284c7">
-  <img alt="1,315 quiz questions" src="https://img.shields.io/badge/quiz%20questions-1%2C315-7c3aed">
-  <img alt="258 graded exercises" src="https://img.shields.io/badge/graded%20exercises-258-059669?logo=python&logoColor=white">
+  <img alt="219 chapters" src="https://img.shields.io/badge/chapters-219-0284c7">
+  <img alt="1,358 quiz questions" src="https://img.shields.io/badge/quiz%20questions-1%2C358-7c3aed">
+  <img alt="261 graded exercises" src="https://img.shields.io/badge/graded%20exercises-261-059669?logo=python&logoColor=white">
   <br>
   <img alt="Runs in your browser" src="https://img.shields.io/badge/runs%20in-your%20browser-0f766e?logo=webassembly&logoColor=white">
   <img alt="No sign-up" src="https://img.shields.io/badge/sign--up-not%20needed-d97706">
@@ -57,8 +57,8 @@ Every chapter is built around the same loop. You read an idea, try it with your 
 |---|---|---|
 | **1&nbsp;·&nbsp;Read** | Lessons with math, figures and an outline that tracks your place. | `Learning objectives → Concepts → Lab → Failure cases → Pass criteria` |
 | **2&nbsp;·&nbsp;Try** | Sliders and live plots let you test an idea before you read the proof. | Interactive figures throughout the text |
-| **3&nbsp;·&nbsp;Code** | Write Python in a built-in editor, press *Grade* and see each test pass or fail. | 258 exercises, run with [Pyodide](https://pyodide.org) |
-| **4&nbsp;·&nbsp;Check** | Concept quizzes explain the misconception behind every wrong answer, and missed questions come back for review. | 1,315 questions and a review queue |
+| **3&nbsp;·&nbsp;Code** | Write Python in a built-in editor, press *Grade* and see each test pass or fail. | 261 exercises, run with [Pyodide](https://pyodide.org) |
+| **4&nbsp;·&nbsp;Check** | Concept quizzes explain the misconception behind every wrong answer, and missed questions come back for review. | 1,358 questions and a review queue |
 
 ## ✨ Features
 
@@ -68,7 +68,7 @@ Every chapter is built around the same loop. You read an idea, try it with your 
 
 | | |
 |---|---|
-| 🧭 **A roadmap, not a pile of chapters** | 216 chapters in 33 parts and 12 tracks, arranged in 7 layers. Each chapter declares what it builds on, so you always know what to read next. |
+| 🧭 **A roadmap, not a pile of chapters** | 219 chapters in 33 parts and 12 tracks, arranged in 7 layers. Each chapter declares what it builds on, so you always know what to read next. |
 | 🐍 **Python in the browser** | Code cells run in place with Pyodide (NumPy, SciPy, pandas, matplotlib, scikit-learn). PyTorch and GPU examples are shown read-only with a copy button; run them on your own machine with each chapter's downloadable lab files. |
 | ✅ **Auto-graded exercises** | A built-in code editor with *Run* and *Grade* buttons and per-test results. Each chapter's lab files also download as a `.zip` to run locally. |
 | 🧠 **Quizzes with feedback** | Every wrong answer explains the misconception behind it, and missed questions go to a review queue. |
@@ -116,7 +116,7 @@ Twelve tracks are arranged in seven layers. A track builds only on tracks in the
 
 ## 📈 Status
 
-**Version 1.0 is live** in Korean and English. All 216 chapters, 1,315 quiz questions and 258 auto-graded exercises are online in both languages. The book keeps improving: chapters are reviewed and revised continuously, and reported errors are fixed in place.
+**Version 1.0 is live** in Korean and English. All 219 chapters, 1,358 quiz questions and 261 auto-graded exercises are online in both languages. The book keeps improving: chapters are reviewed and revised continuously, and reported errors are fixed in place.
 
 ## ❓ FAQ
 

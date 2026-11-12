@@ -44,6 +44,12 @@ Create a `conduit.toml` file in your working directory, otherwise Conduit will n
 
 You can copy the example [from here](https://github.com/valohai/conduit/blob/main/conduit.example.toml) and adjust where Conduit will be listening to LLM calls and setup the providers you are using.
 
+Conduit records the LLM calls it proxies to a SQLite database, `conduit.db` in the working directory by default. Set `database` in `conduit.toml` or the `CONDUIT_DATABASE` environment variable to keep it elsewhere, like a state directory when running Conduit as a service. Conduit creates the file but not its directory. `conduit dashboard` reads the same setting, so point both at the same file:
+
+```toml
+database = "/var/lib/conduit/conduit.db"
+```
+
 Conduit can capture cost values from responses formatted in the common Anthropic (Messages API) and OpenAI (Responses & Chat Completions APIs) or similar responses from other models.
 
 Costs are estimated from a built-in price table of OpenAI and Anthropic models. For any other model (or your own rates), add a `[pricing]` table to `conduit.toml`; each key is a model name prefix, and these prices are checked first:
@@ -54,7 +60,15 @@ input = 0.042    # USD per million tokens
 output = 0.0
 ```
 
-`input` and `output` are required. The optional `cached_input`, `cache_write_5m` and `cache_write_1h` price prompt cache reads and 5-minute and 1-hour cache writes, and default to 0.1x, 1.25x and 2x of `input`; set them for models whose cache rates differ.
+`input` and `output` are required. The optional `cached_input`, `cache_write_5m` and `cache_write_1h` price prompt cache reads and 5-minute and 1-hour cache writes, and default to 0.1x, 1.25x and 2x of `input`; set them for models whose cache rates differ. `cached_input` also prices OpenAI cached tokens, where leaving it out means no discount instead of 0.1x. For models that charge more for long prompts, an optional `[pricing."<prefix>".long_prompt]` table takes `tokens`, the prompt length above which it applies, and the same rate keys; a request over it pays those rates for all of its tokens, cache reads and writes included.
+
+Requests to providers have no total time limit, so long streamed responses are never cut. Instead, an optional `[upstream]` table sets how long Conduit waits to connect and how long a response may go without sending any data, in seconds; `0` disables either one:
+
+```toml
+[upstream]
+connect_timeout_s = 10   # default
+idle_timeout_s = 600     # default
+```
 
 Once a configuration file exists, you can run Conduit in your working directory with the command:
 

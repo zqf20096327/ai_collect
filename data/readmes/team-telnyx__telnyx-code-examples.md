@@ -25,7 +25,7 @@ Each example's README has a Quick Start with the exact install/run commands for 
 ---
 
 <details open>
-<summary><h2>Voice AI</h2> <em>(162 examples)</em></summary>
+<summary><h2>Voice AI</h2> <em>(163 examples)</em></summary>
 
 Build voice applications with [Telnyx Voice AI](https://telnyx.com/products/voice-ai-agents) - IVR menus, call recording, conferencing, WebRTC, and AI-powered call routing.
 
@@ -112,6 +112,7 @@ Build voice applications with [Telnyx Voice AI](https://telnyx.com/products/voic
 | [make-outbound-phone-call-php](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-php/README.md) | PHP | Place an outbound phone call with the Telnyx Call Control API using PHP. |
 | [make-outbound-phone-call-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-python/README.md) | Python | Programmatically place an outbound phone call using Telnyx Call Control and handle the call lifecycle. |
 | [make-outbound-phone-call-ruby](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/make-outbound-phone-call-ruby/README.md) | Ruby | Place an outbound phone call using the Telnyx Call Control API and the Telnyx Ruby SDK, exposed through a Sinatra endpoint. |
+| [phone-identity-voice-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/phone-identity-voice-agent-nodejs/README.md) | Node.js | Inbound call triggers Number Lookup for caller identity, risk scoring, and a live dashboard, then an AI Assistant greets the caller based on trust level. |
 | [media-stream-voice-cloak-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/media-stream-voice-cloak-python/README.md) | Python | Media Stream Voice Cloak - real-time voice modification via media streaming API. Apply pitch shift, echo, or anonymization. |
 | [merge-deal-desk-alerts-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-deal-desk-alerts-python/README.md) | Python | CRM webhook fires when a deal moves to negotiation, triggering Telnyx Voice and AI Inference alerts with Merge CRM. |
 | [merge-employee-hotline-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/merge-employee-hotline-python/README.md) | Python | Employees call and authenticate via caller ID using Telnyx Voice and AI Inference with Merge HRIS. |
@@ -467,8 +468,7 @@ Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assis
 | [ai-voice-survey-sentiment-tracker-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-voice-survey-sentiment-tracker-python/README.md) | Python | AI Voice Survey Sentiment Tracker - real-time CSAT scoring from voice tone and word choice. |
 | [ai-voicemail-transcription-forwarding-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-voicemail-transcription-forwarding-python/README.md) | Python | AI Voicemail Transcription & Forwarding - voicemail to AI-summarized SMS/email with priority classification. |
 | [ai-voiceover-studio-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/ai-voiceover-studio-python/README.md) | Python | Upload a script, select voice/style/pacing, AI adds professional direction cues (pauses, emphasis, pacing), TTS renders the voice-over, stores output in Cloud Storage. Supports multiple takes and retakes. |
+| [attribution-wheel](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/attribution-wheel/README.md) | Typescript | A durable Telnyx Edge actor that tags every AI Gateway inference request, sweeps nightly spend grouped by tag, and pages on-call when a service breaks its 7-day baseline. |
 | [auto-failover-voice-routing](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/auto-failover-voice-routing/README.md) | Typescript | Telecom-native circuit breaker pattern using Telnyx Call Control, KV state, and SMS alerts for automatic SIP failover. |
 | [build-rag-with-telnyx-inference-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-rag-with-telnyx-inference-python/README.md) | Python | Build a retrieval-augmented generation API with Telnyx embeddings and chat completions. |
-| [build-voice-ai-agent-nodejs](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-voice-ai-agent-nodejs/README.md) | Node.js | Build a complete voice AI agent with Telnyx - answer inbound calls, transcribe speech, generate replies with Telnyx Inference, and speak them back via Call Control. |
-| [build-voice-ai-agent-python](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/build-voice-ai-agent-python/README.md) | Python | Build a complete voice AI agent with Telnyx - inbound call handling, AI conversation, and call control. |
-| [call-quality-monitor](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/call-quality-monitor/
+| [build-voice-ai-agent-nodejs](https://raw.githubusercontent.com/

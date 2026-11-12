@@ -4,12 +4,13 @@
 [![npm downloads](https://img.shields.io/npm/dm/ai-omni-skills.svg)](https://www.npmjs.com/package/ai-omni-skills)
 [![license](https://img.shields.io/npm/l/ai-omni-skills.svg)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/moatazhamada/ai-omni-skills.svg?style=social)](https://github.com/moatazhamada/ai-omni-skills)
+[![M8ven Verified](https://m8ven.ai/badge/mcp/moatazhamada-ai-omni-skills-1i76ju?variant=verified)](https://m8ven.ai/mcp/moatazhamada-ai-omni-skills-1i76ju?s=readme)
 
 ![Omni Skills Banner](banner.png)
 
 > **I try every AI tool. My skills scattered everywhere. This unifies them.**
 
-> **🎉 v1.5.0 is out — automatic pre-sync backups, session-aware consent, a smaller core CLI (`sync`, `setup`, `doctor`, `restore`, `update`, `help`), and secondary commands moved under `manage`. [Read the changelog →](CHANGELOG.md)**
+> **🎉 v1.6.0 is out — patched dependency advisories (0 known vulnerabilities), explicit MCP tool annotations, a lighter front-matter parser, and a fixed MCP server lifetime. [Read the changelog →](CHANGELOG.md)**
 
 A CLI + MCP server that takes the skills you've collected across all your AI
 coding tools and unifies them into a single canonical store. Then it syncs them

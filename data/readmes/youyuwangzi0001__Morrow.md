@@ -1,125 +1,131 @@
-# Morrow · 明日工坊
+<p align="center">
+  <img src="docs/cover.png" alt="Morrow desktop window: an AI agent session with a completed plan beside a workspace file tree" width="100%">
+</p>
 
-Morrow 是住在 Windows 电脑里的本地 AI 工作伙伴。它不只是聊天：能读文件、写代码、跑命令、操作浏览器和桌面，把结果做成可打开的成品；也能进入创作台，从一句话开始写小说或做漫剧，最后交付成片、电子书或工程包。
+<h1 align="center">Morrow</h1>
+<p align="center">A local-first AI workspace for Windows that turns a request into a finished file.</p>
+<p align="center"><a href="README.zh.md">中文</a></p>
 
-- **Agent**：工作区内的真实读写、终端、Git、浏览器、电脑操作、审批与长任务。
-- **Studio**：中短篇、长篇与漫剧三条创作链路，蓝图、写作、分镜、时间线、配音、配乐、检查与交付。
-- **本地优先**：会话、记忆、作品、密钥和数据目录都在本机；模型与引擎由你接入。
-- **默认窗口**：2100×1200 物理像素；界面同时适配 1280–3840 宽的桌面窗口。
+<p align="center">
+  <a href="https://www.electronjs.org/docs/latest"><img alt="Electron" src="https://img.shields.io/badge/Electron-44-47848F?logo=electron&logoColor=white"></a>
+  <a href="https://react.dev"><img alt="React" src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black"></a>
+  <a href="https://www.typescriptlang.org/docs"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white"></a>
+  <a href="https://learn.microsoft.com/windows/"><img alt="Windows 10 and 11" src="https://img.shields.io/badge/Windows-10%2F11-0078D6?logo=windows&logoColor=white"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2EA043"></a>
+  <a href="https://github.com/youyuwangzi0001/Morrow/releases"><img alt="Release" src="https://img.shields.io/badge/release-v0.2.0-2EA043"></a>
+</p>
 
-![主界面](docs/screens/guide-chat.png)
+## Overview
 
-## 当前版本
+Morrow is a desktop AI agent for Windows 10/11 x64. You describe the result you want; it reads the workspace, writes files, runs commands, checks its own work, and leaves the result where you can open it. Conversations, memory, workspaces and keys stay on the machine — model access is yours to configure.
 
-`0.2.0`。发布包只保留两个文件：
+It also ships a Studio for long-form work: a short story, a novel or a 30–180-second comic film, taken from a one-line premise to a deliverable through a blueprint you approve first. The blueprint itself is a model call billed by tokens; chapters, frames and media start only after you approve it and are billed separately.
 
-| 文件 | 用途 |
+## Features
+
+### An agent that works inside the folder you choose
+
+- Five ways to work: chat, work, plan, deep research and long-running goals.
+- Real file tree, CodeMirror editor, multi-tab canvas and previews for HTML, Markdown, PDF, Office, images, audio and video.
+- A real PTY terminal (Git Bash by default, PowerShell 7 or WSL), a Git workbench, a multi-tab browser and Windows UI Automation.
+- Three permission levels — read-only, ask, full access. Dangerous commands, out-of-workspace paths and external side effects are approved one at a time, and a denial always beats an approval.
+- Checkpoints per turn and file snapshots before writes, so a session or a file can be rolled back.
+
+![Agent session with a completed plan and a generated report notice](docs/screens/guide-chat.png)
+
+### A Studio that finishes the work
+
+- Short story (30–80k characters), novel (200–1000k) and comic film (30–180 seconds).
+- Blueprint, outline, storyboard, frames, voice, timeline, review and delivery — with a paper-like editor, a five-track timeline and a node canvas for comic workflows.
+- Collaborators turn a plain-language request into a reviewable change plan; nothing is applied before you confirm it, and changes can be undone.
+- Deterministic local checks plus real model review. When no model or engine is available, it fails and says so instead of inventing a result.
+
+![Studio timeline with monitor, five tracks and real audio waveforms](docs/screens/studio-timeline.png)
+
+### One place for models, memory and automation
+
+- API keys for OpenAI-compatible and Anthropic providers, subscription channels, and local models through Ollama, llama.cpp or LM Studio.
+- Projects, a memory centre, 20 built-in skills, workspace skills, MCP servers and scheduled tasks.
+- Cloud media providers for image, video, voice and music sit beside local ComfyUI, FFmpeg and TTS engines.
+
+![Approval card showing the tool, target, impact and parameters](docs/screens/guide-permission.png)
+
+## Installation
+
+### Use a release build
+
+Download both files from [the v0.2.0 release](https://github.com/youyuwangzi0001/Morrow/releases/tag/v0.2.0):
+
+| File | What it is |
 |---|---|
-| `Morrow-0.2.0-portable.exe` | 单文件便携版；首次运行在 exe 同级解压运行时缓存 |
-| `Morrow-0.2.0-setup.exe` | NSIS 安装包；可选安装目录与快捷方式 |
+| `Morrow-0.2.0-portable.exe` | Single-file portable build; unpacks a runtime cache next to the executable on first run |
+| `Morrow-0.2.0-setup.exe` | NSIS installer with a selectable install directory and shortcuts |
 
-两个 exe 均未配置代码签名，Windows 可能提示“已保护你的电脑”，选择“更多信息 → 仍要运行”。校验值、测试与冒烟记录见 [docs/VERIFICATION.md](docs/VERIFICATION.md)。
+Neither executable is code-signed, so Windows SmartScreen may show "Windows protected your PC". Choose **More info → Run anyway**. Verify downloads against `SHA256SUMS.txt` before running them.
 
-## 快速开始
+### Run from source
 
-### 使用发布包
-
-1. 运行便携版或安装包。
-2. 首次引导三步：认识 Morrow → 连接模型 → 选择工作文件夹；也可以先看离线演示。
-3. 在输入框说清想要的结果；需要写入、命令或外部动作时，Morrow 会先征求同意。
-
-### 从源码运行
-
-环境：Windows 10/11 x64、Node.js 22+、Git（推荐 Git Bash）。
+Requirements: Windows 10/11 x64, Node.js 22.12+, and Git (Git Bash is the default terminal).
 
 ```powershell
 npm install
 npm run dev
 ```
 
-常用命令：
+Useful checks:
 
 ```powershell
-npm run typecheck     # 类型检查
-npm run test:unit     # 532 项单元
-npm run test:e2e      # 85 条 Electron 流程（会先构建）
-npm run verify        # 类型、UI、文档、清单、单元与 Electron
-npm run dist:final    # 重建两个交付 exe
-npm run smoke:packaged
+npm run typecheck    # type check both processes
+npm run test:unit    # 539 unit tests
+npm run test:e2e     # 86 Electron flows (builds first)
+npm run verify       # type check, UI audit, docs, suite, unit and Electron
+npm run dist:final   # rebuild the two release executables
 ```
 
-## 文档地图
+## Usage
 
-文档采用扁平结构，一个主题一个文件：
+1. Start Morrow and finish the three-step onboarding: what Morrow is, a model connection, and a workspace folder.
+2. Ask for the result in plain language, for example "turn this sales export into an HTML review with the anomalies marked".
+3. Approve the actions that need it. When the run finishes, open the result from the canvas, the workspace or the Studio library.
 
-| 文档 | 内容 |
-|---|---|
-| [docs/START-HERE.md](docs/START-HERE.md) | 一页版：打开 Morrow、接模型（含不用 API Key 的订阅路线）、选文件夹、排错 |
-| [docs/v0.3.0-plan.html](docs/v0.3.0-plan.html) | v0.3.0 规划：11 张任务卡、路线图、UI/UX 示意、指标与开发交接（HTML） |
-| [docs/GUIDE.md](docs/GUIDE.md) | 安装、界面、工作模式、审批、文件/终端/Git/浏览器/电脑操作、模型、订阅、记忆、协作任务 |
-| [docs/STUDIO.md](docs/STUDIO.md) | 创作台三条链路、协作者、时间线、交付、质量、数据与回收站 |
-| [docs/REFERENCE.md](docs/REFERENCE.md) | 模型与订阅清单、媒体引擎、内置技能、快捷键、数据路径、环境变量 |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 进程模型、扁平源码结构、数据、IPC、Agent/协作任务、压缩、Studio、设计系统、安全、去重记录 |
-| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | 开发环境、测试、质量门槛、打包、第三方许可、文档截图流程 |
-| [docs/VERIFICATION.md](docs/VERIFICATION.md) | 当前交付哈希、冒烟、测试结果与截图清单 |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | 提交前检查与协作约定 |
-| [SECURITY.md](SECURITY.md) | 漏洞报告与安全边界 |
+If you have no API key yet, the ChatGPT/Codex subscription route reuses a local Codex login. The full walkthrough, including model setup and failure recovery, is in [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md).
 
-## 核心能力
+## Configuration
 
-### Agent：从一句话到可验收的成品
+Models, subscriptions and media engines are configured in **Settings**. Data lives in `%APPDATA%\Morrow` for the installer, or in `Morrow Data` next to the executable for the portable build. `MORROW_DATA_DIR` and a few engine paths can be set through environment variables.
 
-- 九类工作区工具：读写、搜索、编辑、命令、网页、媒体、记忆、成品、任务。
-- 工作 / 聊天 / 计划三种基础方式，叠加深度研究与长期目标。
-- 权限三档（只读 / 询问 / 完全访问）与危险动作审批；拒绝优先于允许。
-- 真实 PTY 终端、Git 工作台、多标签内置浏览器与 Windows UI Automation。
-- 协作任务：简单工作主代理直接完成，需要并行时派发成员；支持独立工作副本、成果版本、独立验收、重试、并发上限与卡住提醒。
+The complete list of providers, subscription channels, media services, shortcuts, data paths and environment variables is in [docs/REFERENCE.md](docs/REFERENCE.md).
 
-![审批卡](docs/screens/guide-permission.png)
+## Project structure
 
-### Studio：从一句话到可交付作品
-
-![创作台时间线](docs/screens/studio-timeline.png)
-
-- 中短篇、长篇、漫剧；蓝图确认后才开始产生费用。
-- 写作、分镜、时间线、漫剧画布、配音、配乐、检查与交付。
-- 协作者先把大白话改成可审阅的修改计划，确认后才改，可撤销。
-- 本地确定性检查 + 真实模型审稿；没有模型/引擎时明确失败，不用假候选冒充。
-
-## 项目规模与质量
-
-- `src/`：92 个 TS/TSX 源文件（不含 `.d.ts`），152,443 行；含 CSS/HTML 共 125 个文件，195,705 行。
-- 代码合计（统一口径：生产源码 + 测试 + 构建脚本 + 启动器，按 `wc -l` 换行计）：194 个文件，238,321 行；运行 `node scripts/count-code.mjs` 可复现。
-- 核心回归：532 项单元 + 85 条 Electron 流程；41 个功能域。
-- 质量门槛：类型检查、UI token 审计、核心清单、单元、Electron 与打包冒烟。
-- 文档截图：29 张主文档截图，全部 2100×1200 原始 PNG，不缩放、不压缩。
-
-## 开发与打包
-
-```powershell
-npm run build        # 类型检查 + electron-vite 构建
-npm run dist:final   # 两个交付 exe → deliver/
-npm run docs:capture # 重拍 docs/screens 的 2100×1200 截图
-npm run docs:check   # 检查文档链接与截图尺寸
+```text
+src/main/       Electron main process: window, agent, studio, media, subscriptions
+src/core/       Agent loop, providers, tools, permissions, context, collaboration
+src/renderer/   React UI, feature components and styles
+src/shared/     IPC and data contracts
+tests/          Vitest units and Playwright Electron flows
+docs/           Documentation and 2100×1200 screenshots
+scripts/        Build, test, packaging, smoke and documentation checks
 ```
 
-源码按职责扁平放在 `src/main`、`src/core`、`src/renderer/features`、`src/shared`；协作域已合并为 `src/core/collaboration.ts` 与 `src/main/collaboration.ts`。详见 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) 与 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)。
+## Releases
 
-## 安全与隐私
+Release builds, source archives and checksums live in [Releases](https://github.com/youyuwangzi0001/Morrow/releases). Version-by-version changes, in Chinese and English, are in [CHANGELOG.md](CHANGELOG.md).
 
-- 数据默认保存在本机；发送给模型的内容由你选择的服务商处理。
-- 密钥由系统安全存储加密，界面不回显明文。
-- 工作区外读取只在你明确选择作为附件时发生；写操作仍受权限与审批约束。
-- 浏览器、网页、MCP 与桌面内容均按不可信数据处理。
-- 报告问题见 [SECURITY.md](SECURITY.md)；详细边界见 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#安全边界)。
+## Security
 
-## 已知限制
+- The renderer runs with `contextIsolation` and sandboxing, without `nodeIntegration`; it reaches the system only through a preload whitelist.
+- File tools stay inside the workspace; reading outside it requires an explicit attachment.
+- Keys are encrypted by the system credential store and are never shown again in the UI.
+- Web pages, MCP servers and desktop content are treated as untrusted input. Report vulnerabilities as described in [SECURITY.md](SECURITY.md).
 
-- 仅提供 Windows x64 构建；两个 exe 未签名。
-- ComfyUI、llama.cpp、Ollama、LM Studio、FFmpeg、配音引擎不随包内置，缺失时真实失败并提示。
-- 订阅渠道的登录态与额度取决于服务商；未完成实测的渠道不会显示为“已连接”。
-- 真实模型质量、外部引擎速度与长媒体表现由你的环境决定。
+## Known limitations
 
-## 许可
+- Windows x64 only. Both executables are unsigned.
+- ComfyUI, llama.cpp, Ollama, LM Studio, FFmpeg, ACE-Step and TTS engines are not bundled; when they are missing, the related action fails with an explanation.
+- Subscription logins and quotas belong to the provider. Channels that have not been verified on a real machine are not shown as connected.
+- Model quality, engine speed and long media runs depend on your environment.
 
-MIT。第三方组件与内置技能来源见 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#第三方组件与许可)。
+## License
+
+MIT. See [LICENSE](LICENSE). Third-party components and built-in skill sources are listed in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#第三方组件与许可).

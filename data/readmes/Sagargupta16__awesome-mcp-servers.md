@@ -329,6 +329,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [RouterBase MCP](https://github.com/zenlee123/routerbase-mcp)                                                                                    | Model discovery, pricing lookup and OpenAI-compatible chat completions           | TypeScript        |
 | [RunAPI MCP](https://github.com/runapi-ai/mcp)                                                                                                   | Model discovery, pricing lookup, task creation, and LLM chat                     | TypeScript        |
 | [SandBase CLI](https://github.com/sandbaseai/cli)                                                                                                | Local MCP gateway for discovering and running 2,000+ AI models via one API       | TypeScript        |
+| [SightRadar Face Recognition API MCP](https://github.com/sightradar-hq/sightradar-mcp)                                                           | Face recognition API: index photos, search by selfie, compare and detect faces   | TypeScript        |
 | [Weights & Biases MCP](https://github.com/wandb/wandb-mcp-server)                                                                                | Official W&B Models + Weave                                                      | Python            |
 | [Zambo](https://zambo.dev/mcp)                                                                                                                   | Remote MCP server: 153 tools, cross-AI continuity, AER-1 receipt per job         | Remote            |
 
@@ -363,6 +364,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [No Tax on Overtime MCP](https://github.com/theluckystrike/no-tax-on-overtime-mcp)                                                               | 2025-2028 overtime, tips and senior deduction calculator with IRS caps           | TypeScript        |
 | [Paycheck Calculator MCP](https://github.com/theluckystrike/paycheck-calculator-mcp)                                                             | US take-home pay with 2025-2026 IRS brackets, FICA wage base and state tax       | TypeScript        |
 | [PayPal Agent Toolkit](https://github.com/paypal/agent-toolkit)                                                                                  | Official PayPal toolkit with an MCP server for payments and invoicing            | TypeScript        |
+| [PinnFeed](https://pinnfeed.io/docs/mcp)                                                                                                         | Hosted MCP for live and prematch Pinnacle odds, no-vig prices and closing lines  | Remote            |
 | [QuickBooks MCP](https://github.com/intuit/quickbooks-online-mcp-server)                                                                         | Official Intuit QuickBooks Online                                                | TypeScript        |
 | [Razorpay MCP](https://github.com/razorpay/razorpay-mcp-server)                                                                                  | Official Razorpay server for payments, orders, refunds and settlements           | Go                |
 | [Retirement Contribution Limits 2027 MCP](https://github.com/theluckystrike/retirement-contribution-limits-2027-mcp)                             | 401k, IRA and HSA limits 2025-2027, age 60-63 catch-up and Social Security COLA  | TypeScript        |
@@ -373,6 +375,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Square MCP](https://developer.squareup.com/docs/mcp)                                                                                            | Official hosted Square server for payments, catalog and orders, OAuth login      | Remote            |
 | [Stripe MCP](https://github.com/stripe/ai)                                                                                                       | Stripe payments and billing                                                      | TypeScript        |
 | [Student Loan Repayment Assistance Plan Calculator MCP](https://github.com/theluckystrike/student-loan-repayment-assistance-plan-calculator-mcp) | Federal student loan RAP payments, loan limits and SAVE dates                    | TypeScript        |
+| [Tapetide Indian Stock Market MCP](https://github.com/Tapetide-hq/nse-bse-indian-stock-market-data-mcp)                                          | NSE and BSE stock research: financials, 326-ratio screener, FII/DII, options     | TypeScript        |
 | [Trading Signals MCP](https://github.com/gdietsch/trading-signals-mcp)                                                                           | Pay-per-call event-risk, SEC insider buys and AI trade briefs over x402          | TypeScript        |
 | [TWZRD Agent Intel](https://github.com/twzrd-sol/twzrd-trust)                                                                                    | Solana on-chain wallet trust scoring for agents before x402 micropayments        | Remote            |
 | [UK Income Tax Salary MCP](https://github.com/theluckystrike/uk-income-tax-salary-mcp)                                                           | UK take-home pay 2025/26 and 2026/27 with Scottish bands, NI and student loans   | TypeScript        |
@@ -496,7 +499,4 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 
 ### Travel & Location
 
-| Server                                                                                                                                           | Description                                                                      | Language          |
-| ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- | ----------------- |
-| [Airbnb MCP](https://github.com/openbnb-org/mcp-server-airbnb)                                                                                   | Search Airbnb from your AI agent                                                 | JavaScript        |
-| [Cesium MCP](https://github.com/CesiumGS/cesium-ai-integrations/tree/main/mcp)     
+| Server                                                                             

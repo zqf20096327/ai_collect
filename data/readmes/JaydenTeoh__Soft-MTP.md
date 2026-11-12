@@ -8,7 +8,7 @@
 
 <h3>Official codebase for <a href="https://arxiv.org/abs/2610.38331">Multi-Token Prediction Done Right</a></h3>
 
-Author: <a href="https://jaydenteoh.github.io/" style="color: #0891B2; text-decoration: none;">Jayden Teoh</a>
+Author: <a href="https://jaydenteoh.github.io/blog/2026/kl-gradient-recovery-trick/" style="color: #0891B2; text-decoration: none;">Jayden Teoh</a>
 
 
 </div>

@@ -56,7 +56,7 @@ The weekly practice exercises in the weekly schedule are ungraded; the four grad
 | `Lab-Notebooks/` | Chapter Jupyter notebooks, graded tasks (Easy / Medium / Hard) and worked solutions |
 | `Notes/` | Chapter reading notes (Markdown + PDF) |
 | `Slides/` | Lecture slide decks (one per chapter) |
-| `Homeworks/` | Graded homework briefs (HW1, HW2 now; HW3–HW4 when they open) |
+| `Homeworks/` | Graded homework briefs (HW1–HW3 now; HW4 when it opens) |
 
 ## Getting Started
 
@@ -224,7 +224,7 @@ Each chapter folder follows the same pattern:
 
 **Lab:** Building vision-language applications
 **Practice (ungraded):** Multimodal application development
-**Due:** HW3 (covers Weeks 7–8) — 26 Nov, 23:59
+**Due:** [HW3](https://github.com/hemekci/AIE640/tree/main/Homeworks/HW3-retrieve-and-generate) (covers Weeks 7–8) — 26 Nov, 23:59
 
 ---
 

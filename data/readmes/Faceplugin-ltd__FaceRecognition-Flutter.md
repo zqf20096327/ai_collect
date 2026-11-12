@@ -32,7 +32,7 @@ Use this for the **example app** (check each box in order):
 
 ## Introduction
 
-FacePlugin **Face Recognition SDK for Flutter** is a fully on-device biometric plugin for Android and iOS. Enroll faces, identify in 1:N with VideoWorker, capture with an oval coach, and read attributes with 2D liveness — all on the phone. The pub package `face_recognition_sdk` wraps the same native engines as our FaceRecognitionSDK Android and iOS apps.
+FacePlugin **Face Recognition SDK for Flutter** is a fully on-device biometric plugin for Android and iOS. Enroll faces, identify in 1:N with VideoWorker, capture with an oval coach, and read attributes with 2D liveness — all on the phone. The pub package `face_recognition_sdk` wraps the same native engines as our Android and iOS apps. Drop either the full **FaceRecognitionSDK** runtime or the **FaceRecognition-Liveness** runtime — see [Native packs](#native-packs).
 
 All processing stays on the device. **No** biometric data is sent to FacePlugin cloud — built for KYC, eKYC, and cross-platform mobile onboarding.
 
@@ -53,9 +53,11 @@ Native binaries are **not** on GitHub (too large). Download them from Google Dri
 | Live 1:N identify with VideoWorker | ✓ |
 | 2D liveness / anti-spoofing on identify | ✓ |
 | Oval capture coach with optional enroll | ✓ |
-| Gallery attributes, landmarks, age, gender, emotion | ✓ |
+| Gallery attributes, landmarks, age, gender, emotion | ✓ with the FaceRecognitionSDK pack |
 | Local person database (demo) | ✓ |
 | Settings (thresholds / clear DB) | ✓ |
+
+Attribute fields (age, gender, emotion, mask, glasses, landmarks) come from the **FaceRecognitionSDK** pack. The **FaceRecognition-Liveness** pack returns detection, templates, 1:N identity, and the liveness score.
 
 ### Product List
 
@@ -63,6 +65,8 @@ Native binaries are **not** on GitHub (too large). Download them from Google Dri
 |----------|------------|
 | Android (Recognition) | [FaceRecognition-Android](https://github.com/Faceplugin-ltd/FaceRecognition-Android) |
 | iOS (Recognition) | [FaceRecognition-iOS](https://github.com/Faceplugin-ltd/FaceRecognition-iOS) |
+| Android (Recognition-Liveness) | [FaceRecognition-Liveness-Android](https://github.com/Faceplugin-ltd/FaceRecognition-Liveness-Android) |
+| iOS (Recognition-Liveness) | [FaceRecognition-Liveness-iOS](https://github.com/Faceplugin-ltd/FaceRecognition-Liveness-iOS) |
 | React Native (Recognition) | [FaceRecognition-React-Native](https://github.com/Faceplugin-ltd/FaceRecognition-React-Native) |
 | **Flutter (Recognition)** | **[FaceRecognition-Flutter](https://github.com/Faceplugin-ltd/FaceRecognition-Flutter)** (**this repo**) |
 | Ionic Capacitor (Recognition) | [FaceRecognition-Ionic-Capacitor](https://github.com/Faceplugin-ltd/FaceRecognition-Ionic-Capacitor) |
@@ -103,11 +107,20 @@ You can run the **example** app as-is after placing the runtimes. Home tiles unl
 
 ## Get the runtimes
 
-Same Google Drive packs as FaceRecognitionSDK Android / iOS (includes `frc.fpk` models inside the runtime).
+The Dart API and the copy paths below are the same for both packs. The Drive folder chooses the model. Place the Android AAR and the iOS frameworks from the **same** pack. Each runtime includes its `frc.fpk` models.
+
+### Native packs
+
+| Pack | What it includes | Android | iOS |
+| ---- | ---------------- | ------- | --- |
+| **FaceRecognitionSDK** | Full SDK: detection, template extraction, 1:1 match, 1:N identify, 2D liveness, and attribute models (age, gender, emotion, mask, glasses, landmarks) | [Google Drive](https://drive.google.com/drive/folders/1kpzYVv9Gbm_pEpDe9-x7FGB4NWZzvez0) | [Google Drive](https://drive.google.com/drive/folders/1PKmV-o7gq7s7dDtiNgXPfCi2ZlWaRy5H) |
+| **FaceRecognition-Liveness** | Recognition and liveness: detection, template extraction, 1:1 match, 1:N identify, and 2D liveness | [Google Drive](https://drive.google.com/drive/folders/126bZhQ_ql3PkgwkH44Q6XiNe5aNn7rUW?usp=sharing) | [Google Drive](https://drive.google.com/drive/folders/1WnekMmLIFXsxw93vy7gLBuk15idN23U9?usp=sharing) |
+
+The example screenshots and the Attribute tile use the full **FaceRecognitionSDK** pack.
 
 ### Android
 
-[Google Drive — Android](https://drive.google.com/drive/folders/1kpzYVv9Gbm_pEpDe9-x7FGB4NWZzvez0)
+[Google Drive — FaceRecognitionSDK Android](https://drive.google.com/drive/folders/1kpzYVv9Gbm_pEpDe9-x7FGB4NWZzvez0) · [Google Drive — FaceRecognition-Liveness Android](https://drive.google.com/drive/folders/126bZhQ_ql3PkgwkH44Q6XiNe5aNn7rUW?usp=sharing)
 
 | File | Example app path | Your own app path |
 | ---- | ---------------- | ----------------- |
@@ -115,7 +128,7 @@ Same Google Drive packs as FaceRecognitionSDK Android / iOS (includes `frc.fpk` 
 
 ### iOS
 
-[Google Drive — iOS](https://drive.google.com/drive/folders/1PKmV-o7gq7s7dDtiNgXPfCi2ZlWaRy5H)
+[Google Drive — FaceRecognitionSDK iOS](https://drive.google.com/drive/folders/1PKmV-o7gq7s7dDtiNgXPfCi2ZlWaRy5H) · [Google Drive — FaceRecognition-Liveness iOS](https://drive.google.com/drive/folders/1WnekMmLIFXsxw93vy7gLBuk15idN23U9?usp=sharing)
 
 Unzip into `ios/Frameworks/`:
 
@@ -247,7 +260,7 @@ Future<void> enrollStill(String imagePath) async {
 }
 ```
 
-Thresholds (identify, liveness, pose, eye-close, Capture settings) are **parameters** you pass from Dart — change them freely for your product. Defaults in the example Settings match FaceRecognitionSDK Apps (`identify` 0.67, `liveness` 0.5, level `0`, pose `40°`, eyeclose `0.5`).
+Thresholds (identify, liveness, pose, eye-close, Capture settings) are **parameters** you pass from Dart — change them freely for your product. Defaults in the example Settings match FaceRecognitionSDK Apps (`identify` 0.67, `liveness` 0.8, level `0`, pose `40°`, eyeclose `0.5`).
 
 ---
 
@@ -270,7 +283,7 @@ Call order: `getMachineCode` → `setActivation` → `init` → detect / VideoWo
 
 ### FaceBox (cheat sheet)
 
-Boxes include geometry (`x1,y1,x2,y2`), pose, liveness / quality / eyes / occlusion scores and labels, age / gender / emotion / mask / glasses, optional `attributes` map, and `landmarks` + `landmarkCount`.
+Boxes include geometry (`x1,y1,x2,y2`), pose, and liveness / quality scores and labels. With the **FaceRecognitionSDK** pack they also include age / gender / emotion / mask / glasses, the optional `attributes` map, eyes / occlusion, and `landmarks` + `landmarkCount`. The **FaceRecognition-Liveness** pack leaves those attribute fields empty.
 
 ### Status codes
 

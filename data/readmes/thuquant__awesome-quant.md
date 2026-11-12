@@ -129,6 +129,7 @@
 * [策略易](http://www.iguuu.com/e)（[SDK](https://github.com/sinall/StrategyEase-Python-SDK)）  - 管理交易客户端，提供基于 HTTP 协议的 RESTFul API；各大在线量化交易平台策略自动化解决方案
 * [IB API | Interactive Brokers](https://www.interactivebrokers.com.hk/cn/index.php?f=5234&ns=T) - 盈透证券的交易API
 * [FutunnOpen/py-futu-api](https://github.com/FutunnOpen/py-futu-api) - 富途量化平台 API（原 futuquant）
+* [Siebly](https://siebly.io/) - 开源 JavaScript/TypeScript 加密货币交易所 SDK（MIT），覆盖 Binance、Bybit、OKX、Gate、Bitget、KuCoin、Coinbase、Kraken、HTX 和 Hyperliquid 的 REST 与 WebSocket API。[文档](https://sieblyio.github.io/docs/) | [GitHub](https://github.com/sieblyio)
 
 
 ## 编程
@@ -150,6 +151,7 @@
 * [awesome-python: A curated list of awesome Python frameworks, libraries, software and resources](https://github.com/vinta/awesome-python)
 * [pandas](http://pandas.pydata.org) - Python做数据分析的基础
 * [pyql: Cython QuantLib wrappers](https://github.com/enthought/pyql)
+* [XAD](https://github.com/auto-differentiation/xad-py) - 自动微分（AAD）库，C++ 内核，一次计算得到全部敏感度
 * [ffn](http://pmorissette.github.io/ffn/quick.html) - 绩效评估
 * [ta-lib: Python wrapper for TA-Lib (http://ta-lib.org/).](https://github.com/TA-Lib/ta-lib-python) - 技术指标
 * [StatsModels: Statistics in Python — statsmodels documentation](http://statsmodels.sourceforge.net/) - 常用统计模型
@@ -187,6 +189,7 @@
 * [fffaraz/awesome-cpp: A curated list of awesome C/C++ frameworks, libraries, resources, and shiny things.](https://github.com/fffaraz/awesome-cpp) - C++库整理
 * [rigtorp/awesome-modern-cpp: A collection of resources on modern C++](https://github.com/rigtorp/awesome-modern-cpp) - 现代C++库整理
 * [QuantLib: a free/open-source library for quantitative finance](http://quantlib.org/index.shtml)
+* [QuantLibAAD](https://github.com/auto-differentiation/QuantLibAAD) - QuantLib 与 XAD 自动微分结合，一次伴随计算得到全部风险敏感度
 * [libtrading/libtrading: Libtrading, an ultra low-latency trading connectivity library for C and C++.](https://github.com/libtrading/libtrading)
 * [NexusFix](https://github.com/SilverstreamsAI/NexusFix) - C++23 高性能 FIX 协议引擎，零拷贝解析 + SIMD 加速，解析 ExecutionReport ~246ns（QuickFIX ~730ns）
 

@@ -86,7 +86,8 @@ Enter to skip; you can add it later from the web UI).
   with a speech bubble (and no presence dot).
 - **Groups** — on a desktop the groups live in their own **left column**: pick
   one to narrow the agents pane to it, and the global tools (Profiles, Ledger,
-  Secrets, Users, Security, Telegram, Sound) stay in the header at the top. Each
+  Secrets, Users, Security) stay in the header at the top; Telegram and the
+  notification **Sound** live under the header **⋯** to keep the bar compact. Each
   agent is a round avatar with a presence dot (green ready, red working, hollow
   offline). A group's icon opens the icon picker: choose from the grid, type any
   emoji, or **type a word** (`rocket`, `bug`, `money`…) to search for one; its
@@ -200,7 +201,12 @@ Enter to skip; you can add it later from the web UI).
   prompt and the agent runs. A watcher that is quiet most of the day costs
   nothing most of the day. The guard runs with the target agent's profile
   secrets, so an agent may put one only on itself (a person may guard any agent
-  they can drive).
+  they can drive). Each schedule in the ⏰ popin has a **▶ Run now** button —
+  test a new one without waiting for its slot; its next run stays where it was —
+  and shows when it runs next and how its last run ended. A schedule belongs to
+  its agent: **closing the agent deletes its schedules** (and its webhooks) —
+  the confirmation says how many, since that cannot be undone. An agent that is
+  merely idle or asleep keeps them; waking it is what they are for.
 - **Webhooks** — let an outside system (CI, a form, a monitoring tool, Zapier…)
   wake an agent with an HTTP call, the event-driven twin of a schedule. Create
   one in the agent's **⚡ Webhooks** popin (the ⚡ icon in its bar, beside ⏰;
@@ -219,7 +225,8 @@ Enter to skip; you can add it later from the web UI).
   take a URL may pass `?token=…` instead of the header. Pause, rotate the token
   (↻) or delete it from the same popin. Only a person in the browser can create
   or change a webhook — never an agent. An unknown id, a paused webhook and a
-  wrong token all answer the same `404`.
+  wrong token all answer the same `404`. Closing the agent deletes its
+  webhooks: the URL stops answering and the token is dead.
 - **Per-agent stats** — the agent's ⋯ menu has a **📊 Stats** view: token usage
   over the last hour / 24 h / 7 days / 30 days, split in a tooltip into input,
   output, cache-write and cache-read, with a **notional cost** beside each window.
@@ -331,18 +338,26 @@ Enter to skip; you can add it later from the web UI).
   gives it — so the welcome is something you write, by writing the role. If you
   delete someone's agent from the cockpit, their next message simply starts a
   new one.
+  Each person's agent works in **its own folder**, named after their Telegram
+  id, inside that group's home — so what one agent remembers about the person
+  it is talking to (Claude Code keeps a project's memory per directory) is not
+  loaded by the next person's agent. Said plainly, because it is not a wall:
+  they all run under the SAME Unix user, so an agent that goes looking can
+  still read its neighbour's folder. It stops the accident, not a determined
+  agent; a real wall would be one group per person.
   They can talk and answer their agent's questions, and nothing else: no
   command reaches the bot. Two things worth knowing before you open it — every
   conversation is a real agent that stays resident, and they all draw on **your**
   Claude subscription, so there is no cap and no queue by design. Go back to
   **Board group** and every such conversation is closed at once.
-- **Link to a message** — every message (yours and the agent's) has a 🔗 link
-  button beside copy. It copies a URL like `…/#agent=<session>&msg=<id>`;
-  whoever opens it — someone who already has access to this cockpit, after the
-  usual sign-in — lands on that agent, scrolled to that message, highlighted.
-  The link lives in the URL's `#` part, so it never reaches the server or a
-  proxy log. A message older than the history shown (the last 100 turns), or an
-  agent that was closed, says so instead of opening somewhere else.
+- **Link to a message** — every message (yours and the agent's, and a **room**'s
+  too) has a 🔗 link button beside copy. It copies a URL like
+  `…/#agent=<session>&msg=<id>` for an agent, `…/#room=<room>&msg=<id>` for a
+  room; whoever opens it — someone who already has access to this cockpit, after
+  the usual sign-in — lands on that conversation, scrolled to that message,
+  highlighted. The link lives in the URL's `#` part, so it never reaches the
+  server or a proxy log. A message older than the history shown, or a
+  conversation that was closed, says so instead of opening somewhere else.
 - **Run the command an agent asks you to** — when an agent writes `! cmd` for
   you to run (typically because it cannot), a ▶ run button sits right on that
   command's code block, beside its copy button — so it runs where it was
@@ -505,6 +520,16 @@ Enter to skip; you can add it later from the web UI).
   agent so a change that does not stick cannot loop. A message you send while
   the respawn runs waits a few seconds for it instead of being refused. Clicking
   still reloads at once; `SHADOK_AUTO_RELOAD=0` turns the automatic part off.
+- **An agent that stops listening restarts itself** — Claude Code's terminal can
+  stop taking input while the process behind it stays alive (an upstream bug;
+  nothing on screen shows it). When a message cannot be typed into an agent for
+  that reason, the cockpit restarts it and delivers the message again, once:
+  you see a slower answer, not an error. It never does this while a turn is
+  running or a question is waiting, and at most once per ten minutes per agent.
+  If the restart does not help, the sender is told the truth — the message was
+  *not* delivered and sending it again will not help — and the admins get an
+  agent report (the Reports badge, plus a Telegram DM to the owner).
+  `SHADOK_SUBMIT_RECOVERY=0` turns the automatic restart off.
 - **Phone layout** — the cockpit is a fixed chassis that never pans sideways,
   sized on the *visual* viewport so the composer stays clear of the browser's
   own bar and, when the keyboard opens, sits right above it (the instrument bar
@@ -523,11 +548,18 @@ Enter to skip; you can add it later from the web UI).
   rename, change profile, mirror to Telegram, close — and closing it brings the
   card back. Desktop only: the agents column is hidden on phones.
 - **Guided tour** — on a browser's first visit, a welcome card explains what
-  shadok-ai is, then a spotlight walks the real controls: the agents list, an
-  agent's ⋯ menu, scheduled prompts, the toolbar, the quota bars. Skip and
+  shadok-ai is, then a spotlight walks the real controls, in up to eleven stops:
+  the groups column, the agents list (and rooms), an agent's own bar (gallery,
+  about, terminal), its ⋯ menu, schedules and webhooks, the composer (attach, add
+  a skill, dictate), the toolbar (secrets, ledger, Skill Factory, profiles,
+  Telegram, sound, and what the ⋯ holds), the people buttons (Users, Reports,
+  Security), the quota bars, and the cockpit's name and settings menu. Skip and
   Escape end it at any point; ⋯ → *Guided tour* replays it. A step whose target
   isn't on screen is **dropped rather than faked** — an empty cockpit has no
-  agent menu, so it gets a shorter tour instead of a spotlight on nothing. The
+  agent menu, a cockpit with no group has no groups column, a member has no
+  Reports button — so it gets a shorter tour instead of a spotlight on nothing.
+  The bubble sits below its target, above it, or **beside** it when the target
+  is a full-height column, so it never covers what it describes. The
   **phone gets the whole tour**, because a step can name the landmark on either
   layout (the agents column *or* the channel picker) and is framed on whichever
   one is rendered. On a brand-new instance it comes **before** the sign-in card
@@ -646,7 +678,7 @@ topics* (and *Delete messages* so `/secret` can scrub values), then in the group
 | `/setup <code>` | bind this group as the board (one group per instance), with the code from the panel's **Pair Telegram** — in an already-bound board, it makes the sender an operator |
 | `/spawn [profile] <name>` | new isolated agent in its own topic (also a web tab) |
 | `/stop` (alias `/esc`) | interrupt the current turn — does **not** end the session |
-| `/new` · `/end` | reset · kill the session |
+| `/new` · `/end` | reset · kill the session (`/end` also deletes the agent's schedules and webhooks, and says so) |
 | `/restart` | respawn the agent in place (e.g. to pick up new secrets) |
 | `/profiles` · `/list` | list profiles · list bindings |
 | `/cron every 30m <prompt>` · `/cron daily 09:00 <prompt>` · `/cron daily 09:00 mon-fri <prompt>` | schedule a recurring prompt on this agent |
@@ -1207,6 +1239,7 @@ machine, which silently shifts every daily prompt on a server running in UTC.
 | `SHADOK_IDLE_MIN` | minutes with no client before a session is reclaimed (60) |
 | `SHADOK_AUTO_RELOAD=0` | don't apply a pending "reload to apply" by itself — leave it to the ↻ click |
 | `SHADOK_AUTO_RELOAD_IDLE_SEC` | how long an agent must be quiet before that automatic reload (120) |
+| `SHADOK_SUBMIT_RECOVERY=0` | don't restart an agent whose terminal stopped taking input — report the failed message as an error instead |
 | `SHADOK_PERMISSION_MODE` | mode new agents start in (default `acceptEdits`) |
 | `SHADOK_AUTOUPDATE` | fallback only — the GUI setting wins once used |
 | `SHADOK_PILOT_PROMPT=0` | don't inject the cockpit system prompt |
@@ -1405,14 +1438,14 @@ client, or immediately on an explicit `stop` (which ends it for everyone).
 | `{type:"auto-retry"}` / `-cancelled` / `-gave-up` | transient API error being retried |
 | `{type:"version", …}` / `{type:"server-reload", version}` | update available / server updated, reload |
 | `{type:"term-data", data}` | **experimental** — raw pane output (base64) for a client-side terminal emulator |
-| `{type:"gone"}` / `{type:"error", message, code?}` / `{type:"exited", code}` / `{type:"stopped"}` | session lost, errors, termination. `error.code` is `"busy"` for a prompt refused mid-turn and `"logged-out"` for a spawn refused because the instance isn't signed in, `"resume-refused"` for a `resume` whose shortened id matches no agent or several — so a machine client needn't match on the message text |
+| `{type:"gone"}` / `{type:"error", message, code?}` / `{type:"exited", code}` / `{type:"stopped"}` | session lost, errors, termination. `error.code` is `"busy"` for a prompt refused mid-turn and `"logged-out"` for a spawn refused because the instance isn't signed in, `"resume-refused"` for a `resume` whose shortened id matches no agent or several, `"unresponsive"` for a prompt that could not be delivered because the agent's terminal stopped taking input and the automatic restart did not recover it — so a machine client needn't match on the message text |
 
 HTTP endpoints (same auth): `/usage`, `/live`, `/sessions`, `/recover`,
-`/diff`, `/channels` (its GET adds a **derived** `crons` field — never stored),
+`/diff`, `/channels` (its GET adds a **derived** `crons` field, and `closes` — how many schedules and webhooks closing that agent would delete — never stored),
 `/channels/glance` (GET — each visible row's last-message time and context %,
 read from the transcript's tail so the list fills before the agents resume),
 `/channel` (DELETE), `/groups`, `/groups/ssh` (GET — the SSH **public** key to
-register per group, filtered like `/groups`), `/crons`, `/webhooks` (GET; POST create, PATCH/DELETE `/webhooks/:id`, POST `/webhooks/:id/rotate` — writes browser person only, the token is returned only by create/rotate; the call itself, `POST /hooks/:id`, sits before the password gate and authenticates with the webhook's own token), `/timezone`, `/title` (GET/PUT — the
+register per group, filtered like `/groups`), `/crons` (+ POST `/crons/:id/run` — fire a schedule now, its next slot unchanged), `/webhooks` (GET; POST create, PATCH/DELETE `/webhooks/:id`, POST `/webhooks/:id/rotate` — writes browser person only, the token is returned only by create/rotate; the call itself, `POST /hooks/:id`, sits before the password gate and authenticates with the webhook's own token), `/timezone`, `/title` (GET/PUT — the
 cockpit's name, per launch directory: click the header brand to rename it, so
 several cockpits stay apart in the tab bar; an empty PUT reverts to the default),
 `/theme` (GET/PUT — the cockpit's colour palette, per launch directory: an accent
@@ -1511,24 +1544,4 @@ update breaks the detection).
   deliberately deferred:
   `docs/superpowers/specs/2026-07-28-worktree-rebase-drift-design.md`.
 - The interactive terminal (xterm.js over the raw pane stream) is
-  **experimental** and requires tmux; with node-pty the engine room is all there
-  is.
-- Dialogs the chat cannot handle in one click are managed through the
-  engine room (`waitFor()` + `press()` in library mode).
-- The TUI runs in the alternate screen: `fullBuffer()` ≈ visible screen;
-  very long responses scroll out of view (increase `rows` if needed).
-
-## Why it is called that
-
-Les Shadoks were French cartoon birds, drawn by Jacques Rouxel in 1968, and the
-whole joke was that they pumped. Relentlessly, exhaustingly, and for no result
-anyone could ever identify. One of their mottos: *the more it fails, the more
-likely it is to work.*
-
-An agent woken every hour to report that nothing happened is pumping. You pay a
-model call to be told there was nothing to do, and it will tell you that
-twenty-three more times today. Hence the guard in `crons.ts`: the check runs
-without the model, and a quiet hour costs nothing at all.
-
-The name went unexplained here for the project's first month, which is a
-strange thing to leave out of a README when the joke *is* the design.
+  **experimental** and requires tmux; with node-pty the engine room is all

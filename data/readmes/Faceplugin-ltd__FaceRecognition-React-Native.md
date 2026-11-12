@@ -33,7 +33,7 @@ Use this for the **example app** (check each box in order):
 
 ## Introduction
 
-FacePlugin **Face Recognition SDK for React Native** is a fully on-device biometric library for Android and iOS. Enroll faces, identify in 1:N with VideoWorker, capture with an oval coach, and read attributes with 2D liveness — all on the phone. The npm package `face-recognition-sdk` wraps the same native engines as our FaceRecognitionSDK Android and iOS apps.
+FacePlugin **Face Recognition SDK for React Native** is a fully on-device biometric library for Android and iOS. Enroll faces, identify in 1:N with VideoWorker, capture with an oval coach, and read attributes with 2D liveness — all on the phone. The npm package `face-recognition-sdk` wraps the same native engines as our Android and iOS apps. Drop either the full **FaceRecognitionSDK** runtime or the **FaceRecognition-Liveness** runtime — see [Native packs](#native-packs).
 
 All processing stays on the device. **No** biometric data is sent to FacePlugin cloud — built for KYC, eKYC, and cross-platform mobile onboarding.
 
@@ -55,9 +55,11 @@ Native binaries are **not** on GitHub (too large). Download them from Google Dri
 | **Enroll** | Enroll a person from a gallery photo (exactly one face) into the on-device database |
 | **Identify** | Live 1:N camera match (VideoWorker) with 2D liveness / anti-spoofing |
 | **Capture** | Oval coach capture → still with attributes → optional enroll |
-| **Attribute** | Gallery analysis: landmarks, liveness, pose, quality, age, gender, emotion |
+| **Attribute** | Gallery analysis: landmarks, liveness, pose, quality, age, gender, emotion (FaceRecognitionSDK pack) |
 | **Settings** | Camera lens, identify / liveness / pose / eye-close thresholds, clear DB |
 | **About** | FacePlugin Face Recognition SDK — on-device identity |
+
+Attribute fields (age, gender, emotion, mask, glasses, landmarks) come from the **FaceRecognitionSDK** pack. The **FaceRecognition-Liveness** pack returns detection, templates, 1:N identity, and the liveness score.
 
 ### Product List
 
@@ -65,6 +67,8 @@ Native binaries are **not** on GitHub (too large). Download them from Google Dri
 |----------|------------|
 | Android (Recognition) | [FaceRecognition-Android](https://github.com/Faceplugin-ltd/FaceRecognition-Android) |
 | iOS (Recognition) | [FaceRecognition-iOS](https://github.com/Faceplugin-ltd/FaceRecognition-iOS) |
+| Android (Recognition-Liveness) | [FaceRecognition-Liveness-Android](https://github.com/Faceplugin-ltd/FaceRecognition-Liveness-Android) |
+| iOS (Recognition-Liveness) | [FaceRecognition-Liveness-iOS](https://github.com/Faceplugin-ltd/FaceRecognition-Liveness-iOS) |
 | **React Native (Recognition)** | **[FaceRecognition-React-Native](https://github.com/Faceplugin-ltd/FaceRecognition-React-Native)** (**this repo**) |
 | Flutter (Recognition) | [FaceRecognition-Flutter](https://github.com/Faceplugin-ltd/FaceRecognition-Flutter) |
 | Ionic Capacitor (Recognition) | [FaceRecognition-Ionic-Capacitor](https://github.com/Faceplugin-ltd/FaceRecognition-Ionic-Capacitor) |
@@ -84,7 +88,7 @@ Native binaries are **not** on GitHub (too large). Download them from Google Dri
 | 1 | **Node.js 18+**, **Yarn**, React Native environment ([setup guide](https://reactnative.dev/docs/environment-setup)) |
 | 2 | **Physical device** recommended (camera / liveness; emulator is limited) |
 | 3 | Android `facerecognitionsdk.aar` and iOS frameworks — see [Get the runtimes](#get-the-runtimes) |
-| 4 | Demo licenses are in `example/src/license.ts` (bound to `com.faceplugin.facerecognitionsdk`). Request a new key only if you change `applicationId` / bundle id — see [SDK License](#sdk-license) |
+| 4 | Demo licenses are in `example/src/license.ts` (Android `com.faceplugin.facerecognitionsdk`, iOS `com.faceplugin.facerecognition.app`). Request a new key only if you change `applicationId` / bundle id — see [SDK License](#sdk-license) |
 
 You can run the **example** app as-is after placing the runtimes. Home tiles unlock when the status bar shows **Ready**.
 
@@ -99,11 +103,20 @@ You can run the **example** app as-is after placing the runtimes. Home tiles unl
 
 ## Get the runtimes
 
-Same Google Drive packs as FaceRecognitionSDK Android / iOS (includes `frc.fpk` models inside the runtime).
+The TypeScript API and the copy paths below are the same for both packs. The Drive folder chooses the model. Place the Android AAR and the iOS frameworks from the **same** pack. Each runtime includes its `frc.fpk` models.
+
+### Native packs
+
+| Pack | What it includes | Android | iOS |
+| ---- | ---------------- | ------- | --- |
+| **FaceRecognitionSDK** | Full SDK: detection, template extraction, 1:1 match, 1:N identify, 2D liveness, and attribute models (age, gender, emotion, mask, glasses, landmarks) | [Google Drive](https://drive.google.com/drive/folders/1kpzYVv9Gbm_pEpDe9-x7FGB4NWZzvez0) | [Google Drive](https://drive.google.com/drive/folders/1PKmV-o7gq7s7dDtiNgXPfCi2ZlWaRy5H) |
+| **FaceRecognition-Liveness** | Recognition and liveness: detection, template extraction, 1:1 match, 1:N identify, and 2D liveness | [Google Drive](https://drive.google.com/drive/folders/126bZhQ_ql3PkgwkH44Q6XiNe5aNn7rUW?usp=sharing) | [Google Drive](https://drive.google.com/drive/folders/1WnekMmLIFXsxw93vy7gLBuk15idN23U9?usp=sharing) |
+
+The example screenshots and the Attribute tile use the full **FaceRecognitionSDK** pack.
 
 ### Android
 
-[Google Drive — Android](https://drive.google.com/drive/folders/1kpzYVv9Gbm_pEpDe9-x7FGB4NWZzvez0)
+[Google Drive — FaceRecognitionSDK Android](https://drive.google.com/drive/folders/1kpzYVv9Gbm_pEpDe9-x7FGB4NWZzvez0) · [Google Drive — FaceRecognition-Liveness Android](https://drive.google.com/drive/folders/126bZhQ_ql3PkgwkH44Q6XiNe5aNn7rUW?usp=sharing)
 
 | File | Example path | Customer path (your app) |
 | ---- | ------------ | ------------------------ |
@@ -111,7 +124,7 @@ Same Google Drive packs as FaceRecognitionSDK Android / iOS (includes `frc.fpk` 
 
 ### iOS
 
-[Google Drive — iOS](https://drive.google.com/drive/folders/1PKmV-o7gq7s7dDtiNgXPfCi2ZlWaRy5H)
+[Google Drive — FaceRecognitionSDK iOS](https://drive.google.com/drive/folders/1PKmV-o7gq7s7dDtiNgXPfCi2ZlWaRy5H) · [Google Drive — FaceRecognition-Liveness iOS](https://drive.google.com/drive/folders/1WnekMmLIFXsxw93vy7gLBuk15idN23U9?usp=sharing)
 
 Unzip into `ios/Frameworks/`:
 
@@ -139,7 +152,7 @@ yarn android          # Android
 yarn ios --device     # iOS
 ```
 
-Keep demo ids for the included license: Android `applicationId` and iOS bundle id are both **`com.faceplugin.facerecognitionsdk`**.
+Keep demo ids for the included license: Android `applicationId` **`com.faceplugin.facerecognitionsdk`**, iOS bundle id **`com.faceplugin.facerecognition.app`**.
 
 1. Wait until the home status bar shows **Ready**
 2. **ENROLL** — pick a gallery photo with exactly one face to save an on-device template
@@ -171,7 +184,7 @@ Keep demo ids for the included license: Android `applicationId` and iOS bundle i
 
 Licenses are **offline** and bound to your `applicationId` / bundle identifier.
 
-The sample app already includes a valid key for `com.faceplugin.facerecognitionsdk`. You only need a new key if you use a different id.
+The sample app already includes valid keys for Android `com.faceplugin.facerecognitionsdk` and iOS `com.faceplugin.facerecognition.app`. You only need a new key if you use a different id.
 
 ### How to get a license
 
@@ -237,13 +250,13 @@ Optional Capture UI (peers: `react-native-vision-camera` + `react-native-svg`):
 import { FaceCapture } from 'face-recognition-sdk/capture';
 
 <FaceCapture
-  settings={{ camera_lens: 'front', liveness_threshold: 0.5, liveness_level: 0 }}
+  settings={{ camera_lens: 'front', liveness_threshold: 0.8, liveness_level: 0 }}
   onCancel={() => navigation.goBack()}
   onCaptured={(result) => { /* result.uri, result.faceBox, result.cropB64 */ }}
 />
 ```
 
-`FaceBox` includes `x1,y1,x2,y2`, `liveness` / `livenessLabel`, age / gender / emotion, glasses / mask, `attributes`, and `landmarks`. Optional: `normalizeFaceBox` if you parse raw bridge JSON yourself.
+`FaceBox` includes `x1,y1,x2,y2` and `liveness` / `livenessLabel`. With the **FaceRecognitionSDK** pack it also includes age / gender / emotion, glasses / mask, `attributes`, and `landmarks`. The **FaceRecognition-Liveness** pack leaves those attribute fields empty. Optional: `normalizeFaceBox` if you parse raw bridge JSON yourself.
 
 | Code | Meaning |
 | ---- | ------- |

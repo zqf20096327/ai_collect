@@ -377,6 +377,19 @@ only.
   forward, meetings and time slots grouped by title, and what is left. “Copy
   the recap” puts it on the clipboard as plain text, ready for the weekly
   meeting.
+- **What Kairos learns**: in the Recap tab (formerly Week), a second card shows
+  where the duration model stands: tasks learned, its median error against the
+  default duration, how often the real time fell within its range, and how it
+  converged week after week, rebuilt as it was at each date. It also says how
+  your estimates held over the period and which typed durations the model
+  disputes.
+- **What lingers**: a task with no date no longer sinks for good under the
+  dated ones: once it is older than 4 of your 5 undated tasks when done, it
+  counts as if it were due (an implicit deadline, learned from your own pace,
+  30 days until there is enough history; for its score only, never “overdue”;
+  adjustable, 0 turns it off). In the Recap tab, the “Backlog, no date” list puts the oldest first,
+  counts and marks the tasks that linger, and a tap schedules one, today
+  included.
 - **Working days and holidays**: built-in French calendar, with extra dates
   in Settings.
 
@@ -676,13 +689,15 @@ version that brought it and the platforms it exists on.
 | Follow | Likely finish date | 4.1.0 | All |
 | Follow | Timers to check | 4.1.0 | All |
 | Follow | Week and month recap | 4.1.0 | All |
+| Follow | What Kairos learns | 4.1.0 | All |
+| Follow | What lingers | 4.1.0 | All |
 | Follow | When you work on each type | 3.5.0 | All |
 | Follow | Your most efficient hours | 3.9.0 | All |
 | Follow | Your day on the home screen | 3.12.0 | Android |
 | Follow | Plan the week | 3.0.0 | All |
 | Follow | The month at a glance | 3.8.0 | All |
 | Follow | Move a task from the week | 3.7.0 | All |
-| Follow | Week and statistics | 3.0.0 | All |
+| Follow | Recap and statistics | 3.0.0 | All |
 | Follow | See how things evolve | 3.8.0 | All |
 | Follow | Correct your estimates | 3.8.0 | All |
 | Follow | Statistics your way | 3.7.0 | All |

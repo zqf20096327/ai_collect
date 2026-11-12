@@ -421,7 +421,7 @@ denies the dangerous (`git push --force`, `rm -rf /`), keeps credential
 stores off-limits and asks before writing `.git` or CI configuration. To run
 inspection and dev tools unprompted, opt in: `command_rules=READ_ONLY +
 DEV_TOOLS` from `lovia.workspace.rules` — `lovia web` does, by default
-(clear the bundles in Settings → Permissions to ask for every command).
+(clear an agent's bundles in Settings → Agents to ask for every command).
 
 Shell commands inherit a minimal environment, including Windows system,
 shell, temporary-directory, and user-profile variables so sockets and home
@@ -487,6 +487,7 @@ agent = Agent(name="assistant", model="glm-5.2",
 Memory("./memory")                             # stdlib keyword search (FTS5 bm25)
 Memory("./memory", embedder=OpenAIEmbedder())  # + semantic arm -> hybrid recall
 Memory("./memory", index=None)                 # notes only, no archive
+Memory("./memory", scope=lambda ctx: ctx.deps.project)  # + per-project notes & recall
 ```
 
 → [Memory](https://cymoo.github.io/lovia/memory/)
@@ -507,11 +508,16 @@ serve(create_app(agent, db_path="lovia.db"), host="127.0.0.1", port=8000)
 
 - **Full chat out of the box** — SSE streaming, sessions you can branch from
   any reply, messages that steer a running run or queue until it completes,
-  approvals, schedules, a memory editor and file attachments; runs survive
+  approvals, schedules, a memory editor (notes about you, and per project)
+  and file attachments; runs survive
   browser disconnects.
-- **Settings without restarts** — `lovia web` keeps models, the workspace
-  mode, run limits, memory and the system prompt in Settings; a change
-  applies from the next run. Each chat works in a folder of its own — the
+- **Settings without restarts** — `lovia web` keeps models and its agents in
+  Settings: each agent has its own prompt, model, permission mode, switches
+  and run limits, and a new chat picks one in the composer. A change
+  applies from the next run. Settings, chat history and memory live in one
+  home (`~/.lovia`, or `--home DIR`), never in the launch directory; a
+  project's own `AGENTS.md` and `.agents/skills` load in every chat working
+  there. Each chat works in a folder of its own — the
   sidebar groups chats by folder, and each picks its permission mode
   (`create_app(workspaces=WorkspaceSwitch())` in your own app). The folder
   can be on an SSH host or in a running container: pick it in the add

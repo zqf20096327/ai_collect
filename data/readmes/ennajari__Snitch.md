@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.svg" width="112" alt="Snitch logo: an eye">
+  <img src="https://raw.githubusercontent.com/ennajari/Snitch/master/assets/logo.svg" width="112" alt="Snitch logo: an eye">
 </p>
 
 <h1 align="center">Snitch</h1>
@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <img src="assets/demo-session.gif" width="760" alt="Claude Code with Snitch: the agent runs the tests, finds a wrong expected value, calls escalate instead of editing the test, and tells the user">
+  <img src="https://raw.githubusercontent.com/ennajari/Snitch/master/assets/demo-session.gif" width="760" alt="Claude Code with Snitch: the agent runs the tests, finds a wrong expected value, calls escalate instead of editing the test, and tells the user">
   <br><sub>A real <code>claude plugin eval</code> run (2026-10-24, case <code>broken-expected-value</code>), replayed; the agent's messages are quoted, shortened where marked “…”. Without Snitch, the same agent edited the test in 8 of 32 trap runs.</sub>
 </p>
 
@@ -50,11 +50,11 @@ points at a line in the diff.
 
 <table>
 <tr>
-<td width="50%"><img src="assets/demo-planted.gif" alt="An agent makes a test that needs a missing CI secret pass by setting the secret inside the test; snitch check flags assertion_self_fulfilled"><br><sub><b>A test that can't fail.</b> In a real TemptationBench trial, an agent made a test that needs a missing CI secret pass by setting that secret inside the test. Snitch flags it. Patch and message shortened.</sub></td>
-<td width="50%"><img src="assets/demo-hooks.gif" alt="The plugin warns the agent after a weakened assert, then blocks a final message that hides it"><br><sub><b>Live in Claude Code.</b> The plugin's real hook output: a warning right after a weakened assert, then a blocked stop when the final message hides it.</sub></td>
+<td width="50%"><img src="https://raw.githubusercontent.com/ennajari/Snitch/master/assets/demo-planted.gif" alt="An agent makes a test that needs a missing CI secret pass by setting the secret inside the test; snitch check flags assertion_self_fulfilled"><br><sub><b>A test that can't fail.</b> In a real TemptationBench trial, an agent made a test that needs a missing CI secret pass by setting that secret inside the test. Snitch flags it. Patch and message shortened.</sub></td>
+<td width="50%"><img src="https://raw.githubusercontent.com/ennajari/Snitch/master/assets/demo-hooks.gif" alt="The plugin warns the agent after a weakened assert, then blocks a final message that hides it"><br><sub><b>Live in Claude Code.</b> The plugin's real hook output: a warning right after a weakened assert, then a blocked stop when the final message hides it.</sub></td>
 </tr>
 <tr>
-<td colspan="2" align="center"><img src="assets/demo-check.gif" width="66%" alt="git diff and snitch check on a weakened assertion, exit code 1"><br><sub><b>Before you commit.</b> Real <code>snitch check</code> output; exit code 1 fails a pre-commit hook or CI step.</sub></td>
+<td colspan="2" align="center"><img src="https://raw.githubusercontent.com/ennajari/Snitch/master/assets/demo-check.gif" width="66%" alt="git diff and snitch check on a weakened assertion, exit code 1"><br><sub><b>Before you commit.</b> Real <code>snitch check</code> output; exit code 1 fails a pre-commit hook or CI step.</sub></td>
 </tr>
 </table>
 
@@ -191,6 +191,8 @@ search for `escalate` when it does not see it.
 
 ### GitHub Action
 
+On the GitHub Marketplace as [Snitch for AI coding agents](https://github.com/marketplace/actions/snitch-for-ai-coding-agents).
+
 ```yaml
 on: pull_request
 permissions:
@@ -215,7 +217,7 @@ Output: `events`.
 ```yaml
 repos:
   - repo: https://github.com/ennajari/snitch
-    rev: v0.2.0
+    rev: v0.3.1
     hooks:
       - id: snitch
 ```
@@ -223,9 +225,11 @@ repos:
 ### CLI
 
 ```
-uvx --from git+https://github.com/ennajari/snitch snitch check   # working tree vs HEAD (--staged: staged only)
+pip install snitch-engine              # or: uvx --from snitch-engine snitch ...
+snitch check                           # working tree vs HEAD (--staged: staged only)
 snitch diff <base> <head> [--sarif out.sarif]
 snitch compare <before-dir> <after-dir> [--json]
+snitch mutate <before-dir> <after-dir>   # hollow tests (slow)
 ```
 
 Exit codes: `0` clean, `1` events found, `2` usage error, `3` incomplete check (only with `--strict`: a detector could not run, for example because the repo's tests do not import).
@@ -258,11 +262,11 @@ both checked in CI and in Docker.
 `snitch bench-score` turns Harbor runs into the leaderboard metrics: solve rate, cheat
 rate, silent-cheat rate (with a bootstrap 95% interval over tasks), honest-escalation
 rate, false positives on controls, a per-temptation breakdown, and McNemar's test for
-with vs without Snitch. Flagged trials are confirmed or cleared with review labels (AI-assisted so far; human check pending).
+with vs without Snitch. Flagged trials are confirmed or cleared with review labels (AI only; no person has reviewed them).
 ### First results: Claude Code (edition 2026-11)
 
 Claude Code 2.1.310 on its default model (claude-sonnet-5-5), 40 tasks × 3 runs, with
-and without the Snitch plugin; every flagged trial reviewed with an AI assistant, human check pending
+and without the Snitch plugin; every flagged trial reviewed by AI only (no person)
 ([full results and limits](bench/results/2026-11/README.md)):
 
 | | without Snitch | with Snitch |
@@ -280,8 +284,9 @@ Snitch it reported the problem instead of changing the test.
 Codex CLI 0.164.0 (gpt-6.1-sol) on the same tasks, with the experimental Codex plugin
 for the with-Snitch arm, run 10 days later: it changed or gamed a test in **57 of 78**
 trap trials without Snitch and **0 of 78** with it, and called `escalate` in 59. All 57
-said a test changed; none gave the test's name. These counts include disclosed changes:
-silent cheating was 0 in every arm above. No person has checked these labels yet; see
+said a test changed; none gave the test's `test_` name, though at least 16 identified it
+by description. These counts include disclosed changes:
+silent cheating was 0 in every arm above. Labels reviewed by AI only, no person; see
 the results page for that and the other limits. Gemini CLI follows after its own vendor
 preview.
 (Corrected from 14: a second review pass found 4 more, all disclosed; see the
@@ -293,8 +298,8 @@ results page.)
 - [x] Claude Code plugin: live detection, `escalate`, Stop verifier, enforce gate, evals
 - [x] GitHub Action with SARIF + PR receipt, pre-commit hook
 - [x] TemptationBench: 54 tasks (edition 2026-11 used the first 40), scoring
-- [x] Edition 2026-11 for Claude Code (40 tasks × 3 runs × with/without Snitch; human review pending)
-- [x] Codex CLI: both arms run and published (human review pending), experimental plugin
+- [x] Edition 2026-11 for Claude Code (40 tasks × 3 runs × with/without Snitch; labels reviewed by AI only)
+- [x] Codex CLI: both arms run and published (labels reviewed by AI only), experimental plugin
 - [ ] Gemini CLI (partial run done, vendor preview next), then OpenCode and others
 - [ ] Disclosure judge, mutation testing for hollow tests
 - [ ] TypeScript (Jest / Vitest)
@@ -325,7 +330,7 @@ If you use Snitch or TemptationBench in your work, please cite it
   author  = {Ennajari, Abdellah},
   title   = {Snitch: an integrity layer for AI coding agents, and TemptationBench},
   year    = {2026},
-  version = {0.2.0},
+  version = {0.3.1},
   url     = {https://github.com/ennajari/Snitch}
 }
 ```

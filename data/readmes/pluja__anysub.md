@@ -4,9 +4,7 @@
 
 <h1 align="center">Anysub</h1>
 
-Anysub turns audio and video into subtitles with an easy-to-use web UI. Everything runs on your own machine.
-
-It is the successor to Whishper, rewritten from scratch.
+Anysub (formerly Whishper) makes subtitles from audio and video. Upload a recording, let Whisper transcribe it, then fix the text and timing in the editor and export. It runs on your own computer or server.
 
 <p align="center">
   <img src="docs/images/studio.webp" alt="The Anysub studio with the video, the subtitle list and the waveform timeline" width="900">
@@ -25,17 +23,33 @@ It is the successor to Whishper, rewritten from scratch.
 
 ## Install
 
-On a Linux x86-64 host with Docker and Docker Compose:
+You need Linux on x86-64 with Docker and Docker Compose.
 
-```sh
-mkdir anysub && cd anysub
-curl -fsSLO https://github.com/pluja/anysub/releases/latest/download/compose.yaml
-docker compose up -d
-```
+1. Create a folder and download the Compose file:
 
-Open `http://localhost:5173` and create your account. It asks for a setup code, which you find with `docker compose logs web`.
+   ```sh
+   mkdir anysub && cd anysub
+   curl -fsSLO https://github.com/pluja/anysub/releases/latest/download/compose.yaml
+   ```
 
-[Install](docs/INSTALL.md) covers requirements, Podman, NVIDIA GPUs, reverse proxies and building from source.
+2. **Optional, NVIDIA GPU only.** Skip to step 3 if you don't have an NVIDIA GPU. Otherwise, download the GPU file into the same folder and turn it on. You need the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) and a GTX 16xx, RTX 20xx or newer card.
+
+   ```sh
+   curl -fsSLO https://github.com/pluja/anysub/releases/latest/download/compose.cuda.yaml
+   echo "COMPOSE_FILE=compose.yaml:compose.cuda.yaml" >> .env
+   ```
+
+3. Start Anysub:
+
+   ```sh
+   docker compose up -d
+   ```
+
+4. Open `http://localhost:5173` and create your account. It asks for a setup code, which `docker compose logs web` shows.
+
+A GPU transcribes several times faster than a CPU. AMD and Intel GPUs aren't supported yet, but we plan to add them.
+
+[Install](docs/INSTALL.md) covers Podman, reverse proxies and building from source. [NVIDIA GPUs](docs/GPU.md) helps when the GPU doesn't work.
 
 ## Coming from Whishper 3
 

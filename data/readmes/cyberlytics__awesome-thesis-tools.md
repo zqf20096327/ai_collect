@@ -50,6 +50,7 @@ Hinweise:
 - [Android Apps](#android-apps)
 - [Bonus: 3D-Printing](#bonus-3d-printing)
 - [Appendix: More Free Student Stuff](#appendix-more-free-student-stuff)
+- [Schwesterseiten](#schwesterseiten)
 - [Footer](#footer)
 
 <!-- tocstop -->
@@ -887,4 +888,4 @@ siehe Schwesterseite [awesome-6GL » Generative KI-Werkzeuge](https://github.com
 - **Zoom** bzw. Microsoft **Teams** (Video-Konferenz)
 	- Web/Self-Hosted: **[BigBlueButton](https://docs.bigbluebutton.org/greenlight/gl-install.html)** \[via Container\] | **[Jitsi](https://jitsi.org/)** \[**choco install jitsi**\] (für kleine Gruppen) ggf. in Kombination mit einer [rocket.chat](https://www.rocket.chat/)-Integration | **[NextCloud Talk](https://nextcloud.com/talk/)** | **[WorkAdventure](https://github.com/thecodingmachine/workadventure)**
 	- Cloud: **[Discord](https://discord.com/)** | **[Jitsi Meet](https://meet.jit.si/)** (für kleine Gruppen) | [**gather**.town](https://www.gather.town/) | [Google **Meet**](https://apps.google.com/meet/) (max. 60 Minuten) | **[HyHyve](https://www.hyhyve.com/pricing/)**
-	- (Ergänzungsempfehlung: Für einen hochwertigen virtuellen Hintergrund ohne Greenscreen empfehle ich das kostenpflichtige [XSplit VCam](https://www.xsplit
+	- (Ergänzungsempfehlung: Für einen hochwertigen virtuellen Hintergrund ohne Greenscreen empfehle ich das kostenpflic

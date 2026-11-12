@@ -15,14 +15,15 @@ Reach and ODST Firefight (bots fill your team). Up to 15 bots: the game holds 16
 
 ## Status, updates and bugs
 
-Everything about where the mod stands is in four places:
+Everything about where the mod stands is in five places:
 
 | | |
 |---|---|
-| **[Release](https://github.com/AyoItzKye/project-proving-grounds/releases/latest)** | Version **0.2.2**, last updated **November 11, 2026**. Download it from the Releases page. <!-- release --> |
+| **[Release](https://github.com/AyoItzKye/project-proving-grounds/releases/latest)** | Version **0.2.3**, last updated **November 12, 2026**. Download it from the Releases page. <!-- release --> |
 | **[Updates](docs/UPDATES.md)** | What changed in each version (new, fixed, changed, known problems), newest first. |
 | **[Known bugs](docs/KNOWN_BUGS.md)** | Everything known to be broken, by game, and every bug reported on GitHub with its status. |
 | **[Bot status sheet (PDF)](docs/BOT_STATUS.pdf)** | An honest rating of every game, mode and vehicle, from green (good to go) to red (not working yet). |
+| **[LiDAR maps](lidar-maps/)** | Map scans by game: the author's own (Author Provided Scans, one zip per game) and the ones players share. Import them from the launcher's **LiDAR scans**. |
 
 [![How the bots play each game: summary](docs/bot_status.png)](docs/BOT_STATUS.pdf)
 
@@ -80,7 +81,9 @@ leave parts of the map unused. Scan each map once before you play it (or all of 
    - **One map**: **Pick a map**, then watch. The bots walk every floor, try the jumps and drops, and stop on their
      own once the map is covered.
    - **A whole game**: set **Every map runs** to the game (for example Halo 3), then press **Every map**. Each map of
-     that game is scanned in turn, with its Forge layouts. Leave it running; **Max** speed is the quickest.
+     that game is scanned in turn, with its Forge layouts. Leave it running; **Max** speed is the quickest. Stopped
+     part way, the button reads "Continue (N maps left)" next time and goes on with the maps left; **Skip to next map** moves on
+     from a map that takes too long (what it mapped is saved).
 3. **Forge layouts and custom maps** need one match first: the simulator only knows a layout once the bots have been
    in a match on it. In MCC, start a match on the layout with **LiDAR mapping** turned on in the BOTS panel (top
    right). Mapping bots join your team and walk the whole layout while you watch; end the match when they stop
@@ -126,7 +129,10 @@ what changes is how fast the bots react and how smart they play.
 ## Map the maps (LiDAR)
 
 The bots play better on a map they have mapped: every floor, height, jump and drop. No scans ship with the mod
-(each PC maps its own), and bots play unmapped maps with the map pack's height data in the meantime.
+(each PC maps its own), and bots play unmapped maps with the map pack's height data in the meantime. To start ahead,
+open **LiDAR scans** in the launcher: choose a game and press **Import** to add the author's own scans of it (Author
+Provided Scans), or import a zip another player shared. Players share their scans on the
+[LiDAR maps page](lidar-maps/), one folder per game. An import adds to your own scan; it never replaces it.
 
 Passive LiDAR is always on: in every match you play, the floor you walk, the jumps you land, the lifts and man cannons
 you ride and the teleporters you take (and whether they work both ways) are added to the map's scan in the background, with nothing on screen and nothing for you to do. Over time the bots learn the spots they
@@ -267,7 +273,9 @@ panel (bottom right):
 
 - **Pick a map**: the Maps list opens; click a map's picture (or its **Simulate** button). Forge layouts the bots have
   played on are listed under their map. Picking another map while one runs stops it (what it mapped is saved).
-- **Every map**: all of them in turn, each saved when it finishes.
+- **Every map**: all of them in turn, each saved when it finishes. Stopped part way, it goes on from where it stopped
+  next time (**Start over from the first map** begins again); **Skip to next map** ends a slow map and moves on.
+  Tick **Only maps not scanned yet** first to run just the maps the simulator has never scanned.
 - **Speed**: 1x (real time) to 16x, or **Max** (as fast as this PC runs it). The panel shows the speed actually
   reached: big maps with 16 bots and 8 aircraft run slower than asked on most PCs.
 - **Pause** / **Resume** and **Stop** (it saves what was mapped).

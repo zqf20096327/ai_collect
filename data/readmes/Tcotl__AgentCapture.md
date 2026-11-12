@@ -68,7 +68,7 @@ Decoy management is split into three independently operable types that can be bo
 - **Conversational C2 console**: chat-bubble timeline issuing natural-language directives (8 NL presets incl. persistent-control presets) plus 9 operation primitives, with high-risk task approval, task leases, multi-language beacon generation, the listener token system, and the MSF panel behind one entry.
 - **Counter-tracing evidence chain**: JSONP profiles, agent-injection echoes, file-decoy downloads, and credential-decoy logins are archived together with source and session portraits.
 - **Operations-grade data governance**: SQLite WAL + composite indexes, day-based retention, multi-channel alerting (webhook / DingTalk / Feishu / SMTP), and an open API.
-- **Fast Docker deployment**: bundled `deploy.sh` auto-detects amd64 / arm64 and deploys via Docker Compose.
+- **Fast Docker deployment**: bundled `scripts/deploy.sh` auto-detects amd64 / arm64 and deploys via Docker Compose.
 
 ---
 
@@ -260,7 +260,7 @@ AgentCapture/
 ├── scripts/                # Self-check & ops scripts
 ├── Dockerfile
 ├── docker-compose.yml
-├── deploy.sh               # One-command Docker deployment
+├── scripts/deploy.sh               # One-command Docker deployment
 ├── pyproject.toml
 ├── README.md               # English
 └── README.zh-CN.md         # 中文
@@ -308,17 +308,17 @@ git clone https://github.com/Tcotl/AgentCapture.git
 cd AgentCapture
 
 chmod +x deploy.sh
-./deploy.sh
+./scripts/deploy.sh
 ```
 
 Common flags:
 
 ```bash
-./deploy.sh --port 8080
-./deploy.sh --admin-password 'admin'
-./deploy.sh --platform linux/arm64 --pull
-./deploy.sh --reset-data --yes
-./deploy.sh --logs
+./scripts/scripts/deploy.sh --port 8080
+./scripts/scripts/deploy.sh --admin-password 'admin'
+./scripts/scripts/deploy.sh --platform linux/arm64 --pull
+./scripts/scripts/deploy.sh --reset-data --yes
+./scripts/scripts/deploy.sh --logs
 ```
 
 ### Option 2: Docker Compose manually

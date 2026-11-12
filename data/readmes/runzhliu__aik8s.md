@@ -102,6 +102,12 @@ make build-production
 
 当前部署流程见 [Server-pull deployment](ops/aik8s-pull-deploy/README.md)；工作流定义在 [.github/workflows/deploy.yml](.github/workflows/deploy.yml)。
 
+## 发布动态
+
+在 GitHub 打开 [动态发布模板](https://github.com/runzhliu/aik8s/issues/new?template=moment.md)，分别填写中文和英文，图片直接粘贴到 `moment:images` 与 `moment:end` 标记之间，中英文页面都会显示。提交 Issue 后，动态页面会读取带 `moments` 标签且由 `runzhliu` 发布的 Issue，无须手动 Git 提交；GitHub Actions 会自动更新独立的公开快照，无须重新构建网站。关闭 Issue 可从动态列表移除。已有本地动态数据和图片保留，用于兼容旧链接。
+
+读者可以在站内查看评论，点击链接前往 GitHub 登录、评论和点赞。页面优先读取 GitHub 的实时数据；遇到匿名请求限额时使用自动生成的公开快照，点赞数在快照中约每 30 分钟刷新一次，可能滞后。
+
 ## 添加内容
 
 公开文档默认提供完整中英文版本：中文源文件在 `docs/`，英文在 `translations/en/`，两者保持相同相对路径。新增、更新或移动中文页面时，同步维护英文页、`translations/navigation.en.json` 与 `translations/manifest.json`，不能仅提供英文摘要或中文回退页。详细流程见 [双语维护说明](translations/README.md)。

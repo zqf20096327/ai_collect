@@ -27,10 +27,6 @@
 `e2e-skills` helps check whether tests prove the behavior they name. Start with [Install and try it](#install-and-try-it): add the free memo, install the skills, then run a 30-second scan.
 
 <p align="center">
-  <img src="docs/assets/demo.gif" alt="Demo: when the server rejects a like, the heart stays red because the rollback is missing; a happy-path Playwright test still passes, and a test that makes the server reject the like fails and catches the bug." width="100%" />
-</p>
-
-<p align="center">
   <a href="https://www.kimi.ai/resources/software-testing-skills">
     <img src="docs/assets/kimi-software-testing-skills.png" alt="Kimi's official website listing e2e-skills in AI Software Testing Skills for Smarter QA Automation" width="100%" />
   </a>
@@ -52,6 +48,12 @@
 Review results use P0/P1/P2 for severity: P0 means a test can pass despite a broken feature, P1 concerns reliability or diagnosis, and P2 concerns maintenance.
 
 **Test generation:** After installation, tell the agent which local project to test. It checks the required setup and guides you through anything missing.
+
+<p align="center">
+  <img src="docs/assets/demo.gif" alt="Demo: a refactor drops the POST /api/like call. The UI-only Playwright test still passes because the screen says Liked; the request-aware test fails because the POST never left. Recorded from the runnable example in examples/optimistic-like-demo." width="100%" />
+  <br />
+  <sub>Watch the <a href="docs/assets/demo.mp4">full-quality video (MP4)</a> or <a href="examples/optimistic-like-demo/README.md">run it yourself</a>.</sub>
+</p>
 
 <a id="merged-upstream-fixes"></a>
 
@@ -106,7 +108,7 @@ test('shows the welcome message', async ({ page }) => {
 The bundled scanner catches the false-green assertions without project configuration. Here is the text report (without `--format text` the scanner prints the same result as JSON):
 
 ```console
-$ npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.0 e2e-skills scan tests/ --format text
+$ npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills scan tests/ --format text
 Node source scan (canonical report view)
 Status: COMPLETE; confirmed P0: 2, P0 candidates: 0, unresolved locations: 0.
 Next:
@@ -136,6 +138,8 @@ Because this run reports P0 findings, `e2e-skills scan` exits 1.
 
 **Executable example:** [React optimistic-write proof](examples/react-optimistic-write/README.md) shows why optimistic UI needs request and persistence proof, not just visible state.
 
+**Talk demo:** [Optimistic Like demo](examples/optimistic-like-demo/README.md) is a runnable app with two faults where a passing UI-only test does not prove the write.
+
 </details>
 
 ## Talk: Can You Trust E2E Tests That Pass?
@@ -159,7 +163,7 @@ Starting with cases where tests pass despite bugs, the talk covers combining lin
 Copy the [memo block](docs/test-authoring-memo.md#the-memo) into your project’s `AGENTS.md` (Codex) or `CLAUDE.md` (Claude Code), keeping existing instructions, or insert it from the project directory (Node.js 22+). Use `--host claude` for `CLAUDE.md` and `--dry-run` to preview; the command writes the memo, not skills:
 
 ```bash
-npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.0 e2e-skills guidance --host codex --project . --memo
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills guidance --host codex --project . --memo
 ```
 
 ### 2. Install the skills
@@ -177,7 +181,7 @@ Review and debugging work right away. Test generation also needs Playwright's of
 A static scan takes about 30 seconds on a typical test directory (Node.js 22+):
 
 ```bash
-npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.0 e2e-skills scan tests/ --format text --fail-on p0 --allow-incomplete
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills scan tests/ --format text --fail-on p0 --allow-incomplete
 ```
 
 `INCOMPLETE` in the report means some code was not analysed, so exit 0 is not a clean result ([terms](docs/scanner-cli.md#glossary)).
@@ -221,8 +225,8 @@ Then restart your agent in the project. In Claude Code, approve the project's `p
 Optionally, add the [test-authoring memo](docs/test-authoring-memo.md) to the instruction file your agent loads, so agents also test failure paths. For Claude Code, use your E2E test directory; for Codex, use the repository root, or the E2E test directory if you start Codex there. Add `--dry-run` first to preview:
 
 ```bash
-npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.0 e2e-skills guidance --host claude --project path/to/e2e-tests --memo
-npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.0 e2e-skills guidance --host codex --project path/to/repository --memo
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills guidance --host claude --project path/to/e2e-tests --memo
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills guidance --host codex --project path/to/repository --memo
 ```
 
 In our dev pilot the memo file made the biggest difference: without it the skills caught fewer failure-path faults (Claude 42/54, Codex 27/54) than with the memo in the root instruction file (53/54, 45/54).
@@ -232,12 +236,12 @@ In our dev pilot the memo file made the biggest difference: without it the skill
 The scanner runs without installing the skills, so you can use it locally or in CI:
 
 ```bash
-npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.0 e2e-skills scan path/to/tests --format text
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills scan path/to/tests --format text
 ```
 
 On a real repository the scan often ends `INCOMPLETE` with exit code 2: some code could not be analysed, which does not mean your tests failed. Ask your agent to run the `e2e-reviewer` skill on the same tests; in CI, add `--allow-incomplete` so the exit code follows only the analysed findings. Reading the report: a `P0` (`[P0][CONFIRMED]`) is a mechanically confirmed test that can pass without checking anything; `LLM-TRIAGE` marks an unconfirmed candidate for the `e2e-reviewer` skill to confirm or reject, and a `P0 candidate` (`[P0?]`) is one that would be P0 if confirmed. `provenance-unsupported` means the scanner could not prove where a value such as `page` came from, so that code was not checked. Every other term in the report is defined in the [glossary](docs/scanner-cli.md#glossary).
 
-If `npx` fails with `ETARGET` ("No matching version found ... with a date before"), your `.npmrc` sets `min-release-age`, which hides releases newer than that many days. Lift it for this one pinned command only, without editing `.npmrc`: `npm_config_min_release_age=0 npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.0 e2e-skills scan path/to/tests --format text`.
+If `npx` fails with `ETARGET` ("No matching version found ... with a date before"), your `.npmrc` sets `min-release-age`, which hides releases newer than that many days. Lift it for this one pinned command only, without editing `.npmrc`: `npm_config_min_release_age=0 npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills scan path/to/tests --format text`.
 
 ### Alternatives and troubleshooting
 
@@ -258,7 +262,7 @@ The first pair is for Claude Code, the second for Codex. Test generation still n
 If a skill does not appear or generation stays not ready, run the read-only diagnostic. It reports installed skill copies (including stale duplicates and leftover copies of the removed debugger skills), official agents and MCP configuration, and next steps, and changes nothing:
 
 ```bash
-npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.0 e2e-skills doctor --host claude --project /path/to/playwright-project
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills doctor --host claude --project /path/to/playwright-project
 ```
 
 Use `--host codex` for Codex. See the [installation guide](docs/installation.md) for prerequisites, an installer that also prepares the project setup, and manual setup.
@@ -389,7 +393,7 @@ Weak but not wrong: addressed when refactoring.
 Run the code scanner directly without asking an AI agent. It reports possible problems for review; it does not run your tests or decide whether they prove the intended behavior.
 
 ```bash
-npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.0 e2e-skills scan path/to/tests --format text
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills scan path/to/tests --format text
 ```
 
 Requires Node.js 22 or newer; the TypeScript parser is bundled. npx downloads the package and its dependencies if they are not already cached. The scanner itself does not download tools or load executable project configuration, and it does not execute tests. Use `--format json` for structured output or `--report-file <new-file>` to save a full report without overwriting an existing file.

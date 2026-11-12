@@ -232,9 +232,9 @@ All methods run the same server. Choose one; they are not cumulative.
 | `get_postgresql_config` | ❌ None | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `pg_settings` |
 | `get_database_list` | ❌ None | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `pg_database` |
 | `get_table_list` | ❌ None | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `information_schema.tables` |
-| `get_table_schema_info` | ❌ None | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `information_schema.*`, `pg_indexes` |
+| `get_table_schema_info` | ❌ None | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `information_schema.*`, `pg_indexes`, `pg_constraint` |
 | `get_database_schema_info` | ❌ None | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `pg_namespace`, `pg_class`, `pg_proc` |
-| `get_table_relationships` | ❌ None | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `information_schema.*` (constraints) |
+| `get_table_relationships` | ❌ None | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `pg_constraint`, `information_schema.*` |
 | `get_user_list` | ❌ None | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `pg_user`, `pg_roles` |
 | `get_index_usage_stats` | ❌ None | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `pg_stat_user_indexes` |
 | `get_database_size_info` | ❌ None | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `pg_database_size()` |
@@ -641,6 +641,7 @@ SET track_io_timing = 'on';
   - "Show schema overview for all tables in public schema of inventory database."
   - 📋 **Features**: Column types, constraints, indexes, foreign keys, table metadata
   - ⚠️ **Required**: `database_name` parameter must be specified
+  - 🔄 **Output change (3.5.0+)**: Referenced tables are schema-qualified (`b.p(id)` instead of `p(id)`). A column in several foreign keys is shown in one COLUMN row, with its targets comma-separated in matching order (`a.p, b.p` / `id, id`). Per-partition FK clones that PostgreSQL creates for a partitioned referenced table are no longer listed.
 - **get_database_schema_info**
   - "Show all schemas in ecommerce database with their contents."
   - "Get detailed information about sales schema in ecommerce database."
@@ -657,6 +658,7 @@ SET track_io_timing = 'on';
   - 📋 **Features**: Foreign key relationships (inbound/outbound), cross-schema dependencies, constraint details
   - ⚠️ **Required**: `database_name` parameter must be specified
   - 💡 **Usage**: Leave `table_name` empty for database-wide relationship analysis
+  - 🔄 **Output change (3.5.0+)**: Foreign keys are read from `pg_constraint`, so each FK column pair is listed once. Same-named FKs on other tables or schemas are no longer mixed in. Statistics and "Referenced N times" now count FK constraints instead of joined rows, and per-partition FK clones are not counted.
 - **get_user_list**
   - "List all database users and their roles."
   - "Show user permissions for a specific database."
@@ -1009,8 +1011,7 @@ The following test suites are available:
 
 | Suite | File | Requires Docker |
 |-------|------|----------------|
-| Unit tests (version compatibility logic) | `tests/test_version_compat.py` | No |
-| Unit tests (null-default tool argument schemas) | `tests/test_tool_schema_null_defaults.py` | No |
+| Unit tests (version logic, tool schemas, generated SQL, release scripts) | every `tests/test_*.py` except `test_tools_integration.py` | No |
 | Integration tests (all tools × PG 12–18) | `tests/test_tools_integration.py` | Yes |
 
 `uv run pytest` automatically starts the Docker test containers (PG 12–18), waits for them to be fully initialized, runs all tests, then tears everything down.
@@ -1019,8 +1020,8 @@ The following test suites are available:
 # Run all tests (unit + integration) — Docker is managed automatically
 uv run pytest -v
 
-# Unit tests only (no Docker or PostgreSQL needed)
-uv run pytest tests/test_version_compat.py tests/test_tool_schema_null_defaults.py -v
+# Unit tests only (no Docker or PostgreSQL needed; same command as CI)
+uv run pytest tests --ignore=tests/test_tools_integration.py -v
 
 # Tool argument schema tests only (no Docker or PostgreSQL needed)
 uv run pytest tests/test_tool_schema_null_defaults.py -v

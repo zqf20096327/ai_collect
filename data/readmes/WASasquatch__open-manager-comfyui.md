@@ -27,15 +27,17 @@ The whole workspace at once: [one screenshot](https://raw.githubusercontent.com/
 
 ## Install
 
-Two ways. Only the first gives you ComfyUI's **Extensions** button: ComfyUI draws it when it
-finds a manager package in its own Python at startup, before any custom node loads.
+Two ways on your own machine, and a
+[template for renting a GPU on Vast.ai](https://cloud.vast.ai/?ref_id=285284&creator_id=285284&name=ComfyUI%20with%20Open%20Manager)
+with Open Manager already in place. All but the custom node give you ComfyUI's **Extensions** button: ComfyUI draws it when it finds a manager package in
+its own Python at startup, before any custom node loads.
 
-| | As the manager | As a custom node |
-| --- | --- | --- |
-| Installed with | pip, into the Python ComfyUI runs on | `git clone` into `custom_nodes`, or from ComfyUI-Manager or the Comfy Registry |
-| Opens from | **Extensions**, and the **Discovery** sidebar tab | The **Discovery** sidebar tab |
-| ComfyUI-Manager | Replaced. A `ComfyUI-Manager` folder in `custom_nodes` is skipped | Left as it is |
-| Launch flag | `--enable-manager` | None |
+| | As the manager | As a custom node | [On Vast.ai](#on-vastai) |
+| --- | --- | --- | --- |
+| Installed with | pip, into the Python ComfyUI runs on | `git clone` into `custom_nodes`, or from ComfyUI-Manager or the Comfy Registry | Nothing: it is in the template's image |
+| Opens from | **Extensions**, and the **Discovery** sidebar tab | The **Discovery** sidebar tab | **Extensions**, and the **Discovery** sidebar tab |
+| ComfyUI-Manager | Replaced. A `ComfyUI-Manager` folder in `custom_nodes` is skipped | Left as it is | Removed, and kept out |
+| Launch flag | `--enable-manager` | None | Set by the image |
 
 ### As the manager
 
@@ -88,6 +90,20 @@ git clone https://github.com/WASasquatch/open-manager-comfyui.git
 
 Restart ComfyUI and open the **Discovery** tab in the sidebar. The console shows
 `routes registered below /open_manager/v1/api`.
+
+### On Vast.ai
+
+For ComfyUI on a rented GPU. The template runs Vast's own ComfyUI image with Open Manager as its
+manager, and Desktop Mode, the file browser and the resource monitor switched on. No install and
+no command line:
+
+1. Open the [ComfyUI with Open Manager](https://cloud.vast.ai/?ref_id=285284&creator_id=285284&name=ComfyUI%20with%20Open%20Manager)
+   template on Vast.ai.
+2. Pick a GPU and a disk size, and rent it.
+3. Click **Open** on the instance, then **ComfyUI**.
+
+Open Manager updates itself to its newest release each time ComfyUI starts. Keys, switches,
+volumes and the rest: [VASTAI.md](VASTAI.md).
 
 ### Updating and logs
 
@@ -159,7 +175,8 @@ Every panel opens as a movable window, or centred on the page. One setting each.
 
 ### Remote installs
 
-Desktop Mode is served by ComfyUI's own server: no second port, no second login.
+Desktop Mode is served by ComfyUI's own server: no second port, no second login. On Vast.ai,
+[VASTAI.md](VASTAI.md) has an image with it switched on.
 
 ### Server switches
 
@@ -302,6 +319,7 @@ changed, or already fixed, stands down and says so in the browser console.
 | Node search draws only the rows in view | On | Results build as they scroll into view |
 | Node search waits for a pause in typing | On | Slow searches run once typing pauses |
 | Use Everywhere finds nodes quickly | On | With Use Everywhere 8 on Nodes 2.0 or OM Nodes, its search of the page for every node on every frame is answered from the nodes already found, which takes back most of the frame rate it costs on large workflows. Stands down when Use Everywhere stops searching. Open Manager also says once, per Use Everywhere version, that it slows Nodes 2.0 |
+| Undo steps back through every change | On | Undo and redo step through every change with Use Everywhere installed. Use Everywhere, and any pack that wraps ComfyUI's graph loader without passing on what it returns, makes ComfyUI take each undo as failed, so Ctrl+Z stopped after one step |
 
 ### Link styles
 

@@ -20,7 +20,7 @@ client credentials are needed for dashboard reads.
 - **Alerts** — Fast CI observations, analyzed Full CI comparisons, and exact
   main-branch job failures that remain open until the same job passes again.
 - **Tests** — Test Engine reliability, execution counts, and duration history.
-- **Parity** — NVIDIA test jobs in `.buildkite/test_areas` and how many declare an AMD mirror, overall, per test area, and as a weekly trend.
+- **Platform Scope** — every GPU job in `.buildkite/test_areas`, classified as common (both NVIDIA and AMD should run it), NVIDIA-only or ROCm-only, with the common-path jobs still missing on one platform. Replaces the former AMD Parity page (`/parity` redirects here).
 - **Queue** — live agent queue depth, waiting builds, and Slack alerts when queues back up.
 - **Cost** — compute hours and dollar cost per queue, derived from AWS on-demand pricing.
 - **Performance** — benchmark trends ingested into the warehouse.
@@ -35,6 +35,11 @@ client credentials are needed for dashboard reads.
   device objects, symbols, csrc sources); the builds and kernel backends PR
   decisions actually use; and daily PR decision outcomes and selector run
   time.
+- **Triage** (maintainers only, behind `TRIAGE_ENABLED` and GitHub sign-in) —
+  incoming vLLM issues and PRs with their LLM-read facets, impact score and
+  routed maintainers; a personal "My plate" with Ack / Not mine / Reassign /
+  Drop / Slop / Done; and each maintainer's own routing rules with a 30-day
+  preview. See [triage dashboard](./docs/triage-dashboard.md).
 
 ## Architecture
 
@@ -95,7 +100,7 @@ page (Builds) loads, see the [Builds latency guide](./docs/builds-performance.md
 | --- | --- |
 | `DATABRICKS_HOST`, `DATABRICKS_TOKEN`, `DATABRICKS_WAREHOUSE_ID` | Databricks SQL Warehouse access |
 | `DATABASE_URL` | Postgres connection string for queue and GPU samples |
-| `GITHUB_TOKEN` or `GH_TOKEN` | GitHub token used to resolve PR and commit authors for builds and raise rate limits for test-area discovery and the Parity page history sampler |
+| `GITHUB_TOKEN` or `GH_TOKEN` | GitHub token used to resolve PR and commit authors for builds and raise rate limits for test-area discovery and the Platform Scope page |
 | `BUILDKITE_API_TOKEN` | Buildkite personal API token; needs `read_suites` for Test Engine, GraphQL API access and `write_builds` for queue promotion, and notification-service scopes only when running the OTel setup script |
 | `BUILDKITE_ORGANIZATION`, `BUILDKITE_TEST_SUITE` | Test Engine organization and suite slug (defaults: `vllm`, `ci-1`) |
 | `BUILDKITE_QUEUE_OPERATOR_TOKEN` | Required to enable queue-job promotion; authorized operators enter it for the current browser tab |

@@ -441,12 +441,16 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
     - Answer: [Reinforcement Learning from Human Feedback (RLHF)](https://outcomeschool.com/blog/reinforcement-learning-from-human-feedback-rlhf)
 - What is a reward model, and how is it trained?
     - Answer: [What is a Reward Model and How Is It Trained?](https://outcomeschool.com/blog/reward-model)
+- What is RLAIF (Reinforcement Learning from AI Feedback), and how does it differ from RLHF?
+    - Answer: [What is RLAIF? Reinforcement Learning from AI Feedback Explained](https://outcomeschool.com/blog/reinforcement-learning-from-ai-feedback-rlaif)
 - Proximal Policy Optimization (PPO)
     - Answer: [Proximal Policy Optimization (PPO)](https://outcomeschool.com/blog/proximal-policy-optimization-ppo)
 - Direct Preference Optimization (DPO)
     - Answer: [Direct Preference Optimization (DPO)](https://outcomeschool.com/blog/direct-preference-optimization-dpo)
 - Group Relative Policy Optimization (GRPO)
     - Answer: [Group Relative Policy Optimization (GRPO)](https://outcomeschool.com/blog/group-relative-policy-optimization-grpo)
+- What is RLVR (Reinforcement Learning with Verifiable Rewards), and how does it differ from RLHF?
+    - Answer: [What is Reinforcement Learning with Verifiable Rewards (RLVR)?](https://outcomeschool.com/blog/reinforcement-learning-with-verifiable-rewards-rlvr)
 - Recursive Language Models (RLMs)
     - Answer: [Recursive Language Models (RLMs)](https://outcomeschool.com/blog/recursive-language-models)
 - Continual Learning in LLMs

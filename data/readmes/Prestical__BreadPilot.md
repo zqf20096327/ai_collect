@@ -1,7 +1,13 @@
-<h1 align="center">
-  <img src="apps/desktop/build/icon.png" alt="" width="72" align="center">
-  BreadPilot
-</h1>
+<p align="center">
+  <img src="apps/desktop/build/icon.png" alt="" width="72">
+</p>
+
+<!-- A Markdown heading (not an HTML <h1>): tools such as the AppImage catalog read the app's name from it. -->
+<div align="center">
+
+# BreadPilot
+
+</div>
 
 <p align="center"><strong>Describe a hardware project in plain words. Build it step by step on a 3D breadboard.</strong></p>
 
@@ -25,34 +31,16 @@
 </p>
 
 <p align="center">
-  <img src="docs/media/hero.gif" alt="BreadPilot showing a numbered build step on the 3D breadboard: placing a push button, with the step's instructions and the reason next to it" width="860">
+  <img src="docs/media/showcase-v030-steps.gif" alt="BreadPilot going through numbered build steps on the 3D breadboard: inserting the Pico 2 W, placing the DHT11 sensor and its pull-up resistor, then wiring the OLED display, with each step's instructions and the reason next to it" width="860">
 </p>
 
 BreadPilot turns an idea like *"blink an LED when I press a button"* into a checked circuit for
 the **Raspberry Pi Pico 2 W**, numbered wiring steps in an interactive 3D scene, and MicroPython
-code you can flash to the board in one click. It runs on your own computer with a local AI model.
+code, built into one file you drag onto the board. It runs on your own computer with a local AI model.
 
 > **The AI writes words; code checks the physics.** The AI only understands your idea and drafts
 > text and code. Pin choices, breadboard layout and every safety rule are plain code, so a step is
 > never shown unless the circuit passed the safety check.
-
----
-
-## Contents
-
-- [What it does](#what-it-does)
-- [Demo](#demo)
-- [Quick start](#quick-start)
-- [Using the app](#using-the-app)
-- [Supported hardware](#supported-hardware)
-- [How it works](#how-it-works)
-- [Project structure](#project-structure)
-- [Adding a new part](#adding-a-new-part)
-- [Development](#development)
-- [Your data](#your-data)
-- [Uninstalling](#uninstalling)
-- [Contributing](#contributing)
-- [License](#license)
 
 ---
 
@@ -71,10 +59,13 @@ code you can flash to the board in one click. It runs on your own computer with 
 
 ## Demo
 
-A 40-second tour: describe a two-player reaction game, follow the 3D steps, check the code and
-build the Pico file.
+A tour of BreadPilot 0.3.0, from an idea to a working board (click to watch on YouTube).
 
-https://github.com/user-attachments/assets/0161edb4-e6da-4555-9ad4-219627323e4f
+<a href="https://youtu.be/P4tDY0AZgy4">
+  <img src="https://img.youtube.com/vi/P4tDY0AZgy4/maxresdefault.jpg" alt="BreadPilot v0.3.0 Release Showcase on YouTube" width="860">
+</a>
+
+▶ [Watch on YouTube](https://youtu.be/P4tDY0AZgy4)
 
 ---
 
@@ -86,8 +77,9 @@ https://github.com/user-attachments/assets/0161edb4-e6da-4555-9ad4-219627323e4f
    tested yet), `BreadPilot-…-Setup.exe` (Windows 10 and 11) or `BreadPilot-…-x86_64.AppImage` (Linux).
 2. **Install [Ollama](https://ollama.com/download)** for the free local AI, or skip it and use an
    OpenAI key instead.
-3. **Open BreadPilot.** A short setup checks Ollama, downloads the AI models with one click
-   (about 3 GB) and, if you like, takes an OpenAI key. A guided tour shows the rest.
+3. **Open BreadPilot.** A short setup checks Ollama, lets you pick and download a local AI model
+   with one click (the default is 2.5 GB) and, if you like, takes an OpenAI key. A guided tour shows
+   the rest.
 
 BreadPilot isn't signed with a paid developer certificate yet, so the first start needs one extra
 click:
@@ -146,6 +138,31 @@ The **⚡ Power** switch on the 3D view wires parts to the breadboard rails (def
 the Pico's pins; the code stays the same.
 
 BreadPilot follows your system's light or dark appearance.
+
+---
+
+## Choosing a local model
+
+Pick the local AI in the first-run setup or later in **⚙ Settings → Local AI**. The dropdown groups
+the models by size, and each one shows its download size, the memory it needs and a warning if it
+won't fit your computer:
+
+```
+Small (model under 4 GB)
+  Qwen3 4B Instruct · 2.5 GB · 4.9 GB memory (default, downloaded)
+Large (model 10 GB and more)
+  Gemma 4 31B · 20.4 GB · 18.7 GB+ memory · ⚠ too big for this computer
+```
+
+- **Sizes** are Ollama's own numbers, built into BreadPilot. The app doesn't go online to get them.
+- **Memory** is checked on your computer: after a download, BreadPilot loads the model once in your
+  local Ollama and saves how much memory it really uses. Until then it shows the least it needs
+  ("2.5 GB+"). Nothing leaves your computer.
+- **Pick a downloaded model** and it's used at once; for others press **Download and use**. The
+  model's name then shows on the button next to the idea box.
+- **Which one?** Start with the default. Bigger models may write better code but are slower and need
+  more memory; leave a few GB free for your system and the 3D view. Models with a warning may be very
+  slow or not start.
 
 ---
 
@@ -331,6 +348,19 @@ npm run eval:rag -w @breadpilot/api                                 # retrieval 
 
 # Agent eval (ideas in data/eval/)
 npm run eval:agent -w @breadpilot/api -- [--model <name>] [--openai] [--json <file>]
+
+# Model test: 50 ideas (20 easy, 20 medium, 10 hard), results per difficulty + the model's memory
+# Reloads the model between ideas, prints memory after each, stops if swap grows more than 2 GB
+npm run eval:models -w @breadpilot/api -- --model <ollama tag> [--json <file>] [--think on|off] [--max-swap-gb <n>] [--keep-loaded]
+
+# New parts test: 10 projects with the slide switch, buzzer and DHT11 (3 easy, 4 medium, 3 hard)
+npm run eval:parts -w @breadpilot/api -- [--openai] [--model <ollama tag>] [--json <file>]
+
+# Change test: builds 5 projects, asks for one change each, checks the parts that stay didn't move
+npm run eval:changes -w @breadpilot/api -- [--openai] [--model <ollama tag>] [--only 1,3] [--json <file>]
+
+# Compare the built-in model sizes with ollama.com (--write updates them)
+npm run check:models -w @breadpilot/api [-- --write]
 ```
 
 Project states: `AWAIT_APPROVAL` (approve with `POST /api/projects/<id>/approve`, optionally
@@ -360,7 +390,9 @@ Apple's built-in `security` tool, so BreadPilot never asks for your password, no
 update. It's encrypted with your login password: a copy of your disk or a backup can't open your
 projects. The tradeoff, until BreadPilot is signed with an Apple Developer ID: another program you
 run on your Mac could read that entry without asking. On Windows and Linux, `key.bin` holds the key,
-encrypted by the operating system.
+encrypted by the operating system. On Linux with no keyring (such as GNOME Keyring or KWallet),
+BreadPilot keeps the key in `key.plain`, readable only by your user account, and doesn't save an
+OpenAI key; the next start after a keyring is installed or unlocked moves the key into it.
 
 ---
 

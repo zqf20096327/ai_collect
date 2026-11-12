@@ -318,6 +318,7 @@ Tools for executing commands or interacting with local environments safely.
 | [maxim-saplin/mcp_safe_local_python_executor](https://github.com/maxim-saplin/mcp_safe_local_python_executor) | Safe local Python execution. |
 | [wonderwhy-er/DesktopCommanderMCP](https://github.com/wonderwhy-er/DesktopCommanderMCP) | Local file/process control. |
 | [automateyournetwork/pyATS_MCP](https://github.com/automateyournetwork/pyATS_MCP) | Cisco pyATS network automation. |
+| [seifip/kilobat-cli](https://github.com/seifip/kilobat-cli) | Local macOS network diagnostics MCP for Wi‑Fi, DNS, VPN, routes, host/API connectivity and app traffic. Run `kilobat mcp` over stdio; requires macOS 14+ (the separate desktop app is optional and proprietary). |
 | [getremcp/remcp](https://github.com/getremcp/remcp) | OAuth-protected remote MCP for computers explicitly paired by their owner. Supports file operations, terminal commands, process diagnostics, Chromium and native desktop automation; tools can change device state. Hosted endpoint `https://remcp.site/mcp`, public npm client `@remcp/remcp`. |
 | [Nova Terminal Command (CIVAI)](https://github.com/civai-technologies/terminal-command-agent-mcp-by-nova-civai) | Hosted remote MCP (Streamable HTTP) to run shell commands; Nova account required. |
 
@@ -397,6 +398,8 @@ Tools for executing commands or interacting with local environments safely.
 | [The Stall](https://the-stall.intuitek.ai/mcp) | 208 pay-per-call data capabilities via x402 USDC micropayments — market intel, crypto/DeFi analytics, infrastructure probes, financial data, and more. No API keys. |
 | [Find MCP](https://github.com/agentage/find-mcp) | Search 17,000+ MCP servers from the official MCP registry, remote (Streamable HTTP, catalog.agentage.io/mcp) or stdio (npx @agentage/find-mcp), no auth needed for search. |
 | [Omega-JS-Stack/omega](https://github.com/Omega-JS-Stack/omega/tree/main/packages/mcp-router) | Omega MCP Router: local stdio router for many MCP servers, with cached tool schemas and upstreams started only on first use. |
+| [Speakeasy control plane](https://github.com/speakeasy-api/gram) | Governed MCP gateway with identity-based tool permissions, per-action security policies, and audit logs. |
+
 
 ## 🚀 CI/CD
 
@@ -486,12 +489,14 @@ Exposes a Spinnaker instance as an MCP server through the Gate API.
 | [lobehub/mcp-hello-world](https://github.com/lobehub/mcp-hello-world) | CI/CD test server. |
 | [joeyycli/constitution-lint-action](https://github.com/joeyycli/constitution-lint-action) | GitHub Action + MCP server that lints CLAUDE.md-style agent constitution files for missing operational guardrails (spend limits, injection defense, escalation paths, secrets rules). |
 | [MohammadHijjawi97/since-cutoff](https://github.com/MohammadHijjawi97/since-cutoff) | GitHub Action + MCP server that lists the APIs of pinned Python dependencies that changed after a coding model's training cutoff; with `check-notes: true` it fails the job when the AGENTS.md notes no longer match the lockfile. |
+| [emirmrkaljevic/behave](https://github.com/emirmrkaljevic/behave) | Records how a CLI behaves (stdout, stderr, exit code per flag and input) as YAML golden tests and replays them in CI or against a rewrite, with JUnit output. `behave mcp` exposes probing, adding cases and diffing over stdio. |
 
 ### Build Tools
 
 | Repo | Notes |
 |------|-------|
 | [arvindand/maven-tools-mcp](https://github.com/arvindand/maven-tools-mcp) | Maven and build tooling. |
+| [PabloCirre/kaijuconverter-mcp](https://github.com/PabloCirre/kaijuconverter-mcp) | Universal format conversion & asset processing server for CI/CD pipelines (documents, images, datasets, audio). |
 | [nowork-studio/toprank](https://github.com/nowork-studio/toprank) | NotFair Google Ads MCP server. Diagnose campaigns, recommend optimizations, execute approved changes via the Google Ads API. |
 
 ## ☁️ Cloud Platforms
@@ -578,7 +583,9 @@ Database protection and managed database operations for DevOps teams through loc
 | [Shipvela](https://github.com/stefanautomateed/shipvela-codex) | Hosted OAuth MCP for creating website projects, deploying supported GitHub repositories, and inspecting deployment status and build logs. Remote endpoint: `https://shipvela.com/mcp`. |
 | [azmartone67/dchub-mcp-server](https://github.com/azmartone67/dchub-mcp-server) | DC Hub — live data-center, power, grid, fiber and deal data for agents and site selection (DCPI across 300+ markets). Remote MCP: `https://dchub.cloud/mcp` (94 tools). |
 | [deed.page](https://deed.page/docs) | Static hosting for agents: publish an HTML file or static folder (docs, reports, previews) to a permanent public URL and update it in place with an owner token. No account on the free plan; REST API, [skill](https://github.com/f-o-x11/deed-page-skill). Remote MCP: `https://deed.page/mcp` (24 tools). |
+| [BrewPage](https://github.com/kochetkov-ma/brewpage-openapi) | Hosting for agent and CI output: publish HTML reports, Markdown, JSON, key-value data and files and get a shareable HTTPS link; an owner token updates or deletes in place; content expires (up to 30 days). No account or API key. Local stdio: `npx -y brewpage-mcp`; remote MCP: `https://brewpage.app/mcp` (30 tools); [GitHub Action](https://github.com/marketplace/actions/publish-to-brewpage) for CI reports. |
 | [gpunz/gpunz-mcp](https://github.com/gpunz/gpunz-mcp) | gpu.nz GPU cloud: find GPU servers with live prices, estimate VRAM, launch, monitor and stop ComfyUI, Ollama or vLLM servers billed by the minute. Remote MCP: `https://gpu.nz/mcp` (browsing needs no key, renting needs an API key). |
+| [connormatthewdouglas/agent-work-stack-deals](https://github.com/connormatthewdouglas/agent-work-stack-deals) | Lantern Works — free, keyless GPU-rental price comparison with cited rates, price age and job-cost estimates. Local stdio is read-only (9 tools): `uvx lantern-works-deals-mcp`; the hosted endpoint adds price-watch management (13 tools): `https://lantern-works-mcp.lantern-works.workers.dev/mcp?ref=fg-wagnerdevops`. |
 
 ## 📊 Observability
 
@@ -638,6 +645,19 @@ AWS also provides a [Prometheus MCP Server](https://awslabs.github.io/mcp/server
 | [fclairamb/solidping](https://github.com/fclairamb/solidping) | Self-hostable uptime monitor. Create, run and diagnose checks across 43 types, read incidents, manage status pages. Remote MCP (OAuth 2.1) + stdio. |
 | [last9/last9-mcp-server](https://github.com/last9/last9-mcp-server) | Last9 observability. |
 | [Uptrack-App/uptrack-mcp](https://github.com/Uptrack-App/uptrack-mcp) | Uptime monitoring — 10 tools for monitor/incident management. Remote MCP (OAuth 2.0) + stdio. |
+| [CrakSEO MCP suite](https://github.com/CrakSEO/skills) | Hosted MCP tools and agent skills for technical site audits, Search Console/Bing data, URL indexing, rank tracking, backlinks and AI/search visibility monitoring. Skills connect clients to the appropriate remote endpoint; [setup docs](https://docs.crakseo.com/seo-mcp/connect). |
+
+### Skald
+
+Self-hosted web analytics from the server access log, reachable over MCP.
+
+| | |
+|---|---|
+| **Repo** | [spcaeo/skald](https://github.com/spcaeo/skald) |
+| **Docs** | [MCP guide](https://skaldanalytics.com/docs/help/mcp.md) |
+| **Maintainer** | 👥 Community (Space-O Technologies) |
+| **What it does** | Reads verified traffic figures so an agent can ask about visits, AI-assistant page fetches, crawlers, scanners, comparisons, and withheld days. Mostly read-only; self-hosted under the Elastic License 2.0 (source-available). |
+| **Endpoint** | Self-hosted `https://<your-skald>/traffic-mcp` (streamable HTTP + stdio); API-key auth |
 
 ### Noveum
 
@@ -725,6 +745,8 @@ npm supply-chain checks before an agent installs or upgrades a dependency.
 | [sky-cloak/skycloak-mcp](https://github.com/sky-cloak/skycloak-mcp) | Managed IDaaS / Keycloak MCP for AI agents (OIDC/OAuth realms, users, clients, SSO). Remote endpoint `https://mcp.skycloak.io` with OAuth; [docs](https://skycloak.io/mcp); registry `io.skycloak/skycloak-mcp`. |
 | [bernik-bot/ichi-mcp](https://github.com/bernik-bot/ichi-mcp) | Internet-wide cyber-health index MCP — query the current ICHI threat score/band (NORMAL→CRITICAL), recent critical-vulnerability advisories, and source health. Free, keyless, no auth. Run: `uvx --from git+https://github.com/bernik-bot/ichi-mcp ichi-mcp`. Maintained for ICHI's creator. |
 | [Safeguard](https://safeguard.sh/mcp) | Hosted remote MCP server (OAuth) for software supply chain security: look up projects, SBOMs, findings and vulnerabilities with EPSS and KEV; remote endpoint `https://mcp.safeguard.sh/mcp`. |
+| [Agency Check](https://github.com/CyberStrategy1/agency-check) | Hosted remote MCP (OAuth/Google) that gives a second look before an AI agent buys, sends, books, shares, signs up, or connects an app. Remote endpoint `https://agency-check.app/mcp`; site https://agency-check.app. |
+| [Frank-Masciopinto/ironheights](https://github.com/Frank-Masciopinto/ironheights) | Open-source static scanner for OpenClaw/ClawHub skills (prompt injection, credential reads, remote-exec installs, persistence) plus MCP mode (`npx ironheights` / `ironheights mcp`); early-stage, rule-based. |
 
 ## 📝 Collaboration
 

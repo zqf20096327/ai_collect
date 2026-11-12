@@ -4,11 +4,11 @@
 
 **Open-source AI-powered reverse-engineering platform for autonomous binary analysis, built for Claude Code, Codex, OpenCode and any MCP-compatible agent.**
 
-Ghidra · Frida · x64dbg · Rizin · PE · APK · Malware Analysis · CTF · Binary Analysis
+Ghidra · Frida · x64dbg · Rizin · PE · APK · Cryptography · Blue-Team Hardening · Dual-Track Analysis
 
 ---
 
-**An open-source reverse-engineering lab — executable knowledge base, 100+ MCP tools, Agent-native.**
+**An open-source reverse-engineering lab — executable 1:1 RED/BLUE knowledge base, 110+ MCP tools, Agent-native.**
 
 *From an input signal to an evidence chain, every step is runnable.*
 
@@ -24,30 +24,48 @@ Ghidra · Frida · x64dbg · Rizin · PE · APK · Malware Analysis · CTF · Bi
 
 ---
 
-## :handshake: Sponsored by Sentry
+## :handshake: Sponsors
 
-<div align="center">
+<table width="100%">
+  <tbody>
+    <tr>
+      <td width="380" align="center" valign="middle">
+        <a href="https://infistar.cc/register?aff=OPENREVERSELAB&amp;ref_source=link">
+          <img src="assets/sponsors/infistar-banner-en.png" width="360" alt="Infistar.cc — Unified Multi-Model API Gateway">
+        </a>
+      </td>
+      <td valign="middle">
+        <strong><a href="https://infistar.cc/register?aff=OPENREVERSELAB&amp;ref_source=link">Infistar.cc</a></strong><br /><br />
+        Unified multi-model API gateway (Claude, GPT, Gemini, Grok, DeepSeek &amp; more) — 1,000+ redundant routes with auto failover.<br /><br />
+        <code>open-reverselab</code> users receive <strong>¥5 free sign-up credit</strong> → <a href="https://infistar.cc/register?aff=OPENREVERSELAB&amp;ref_source=link">Try Infistar.cc</a>
+      </td>
+    </tr>
+    <tr>
+      <td width="380" align="center" valign="middle">
+        <a href="https://sentry.io"><picture>
+          <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/sentry-wordmark-dark.svg">
+          <img src="assets/sponsors/sentry-wordmark-light.svg" width="180" alt="Sentry">
+        </picture></a>
+      </td>
+      <td valign="middle">
+        <strong><a href="https://sentry.io">Sentry</a></strong><br /><br />
+        Sponsored account — error monitoring and performance tracing for <code>openreverselab</code>'s automated toolchains.
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-**[Sentry](https://sentry.io)** supports `openreverselab` with a sponsored account — error monitoring and performance tracing for the lab's toolchain.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/sentry-wordmark-dark.svg">
-  <img src="assets/sponsors/sentry-wordmark-light.svg" width="220" alt="Sentry">
-</picture>
-
-<sub>Since Aug 2026 — see <a href="SPONSORS.md">SPONSORS.md</a> for the full sponsor list and how to become one.</sub>
-
-</div>
+<p align="center"><sub>See <a href="SPONSORS.md">SPONSORS.md</a> for the full sponsor list and how to become one.</sub></p>
 
 ---
 
 ## What is ReverseLab
 
-ReverseLab is an opinionated, runnable attack-knowledge base for reverse engineers, security researchers, CTF players, and AI Agents. Every article is structured as **`Scenario → Input signal → Method → Attack chain → MCP tool mapping`**, so a human or an Agent can pick up at any entry signal and walk the chain to evidence.
+ReverseLab is an opinionated, runnable **BLUE / RED / BOTH dual-track** reverse-engineering and security knowledge base for reverse engineers, blue-team defenders, security researchers, and AI Agents. Every offensive technique pairs **1:1** with a defensive hardening/detection counterpart (`Scenario → Input signal → Method → Workflow → MCP tool mapping`), defaulting to **`BLUE`** (static analysis, cryptography, detection & hardening) with explicit switching to **`RED`** (offense & dynamic exploitation) or **`BOTH`** (purple-team paired view).
 
 - **5 boards** spanning web, mobile, Windows, and cross-domain reverse work.
-- **180+ articles** organized by attack surface, not by tooling.
-- **100+ MCP tools** exposed through `reverse_lab_tools` — curl, frida, ghidra, rizin, yara, triage, kb_router, … all callable from Claude Code, Codex, or any MCP-aware Agent.
+- **320+ articles** with 1:1 offensive ↔ defensive pairing (`track: blue | red | both`, `defends`).
+- **110+ MCP tools** exposed through `reverse_lab_tools` — `triage_pe`, `ghidra_*`, `rizin_*`, `make_yara_stub`, `solve_crypto_from_evidence`, `kb_router`, `route_track`, `set_track`, … with track gating (`REVERSELAB_MODE=blue|red|both`).
 - **Directory-as-convention**: every artifact has a fixed home (`samples/`, `exports/`, `patches/`, `kb/`, `reports/`). Drop-in a sample, follow the chain, ship the report.
 
 The lab is built to be run, not browsed. If a step can't be executed, it doesn't belong in the KB.
@@ -56,10 +74,11 @@ The lab is built to be run, not browsed. If a step can't be executed, it doesn't
 
 | You are … | Start here |
 | --- | --- |
-| A **CTF player** stuck on a web/Android/PE challenge | Browse the [CTF Website](kb/ctf-website/README.md), [APK Reverse](kb/apk-reverse/README.md), or [PE Reverse](kb/pe-reverse/README.md) board |
+| A **blue-team defender** hardening services or auditing samples | Default `BLUE` track (`REVERSELAB_MODE=blue`) → `python scripts/misc/kb_router.py "<signal>" --track blue` → `triage_pe` / `make_yara_stub` |
+| A **CTF / red-team researcher** validating exploit chains | Switch to `RED` (`set_track("red")` or `--track red`) → [CTF Website](kb/ctf-website/README.md), [APK Reverse](kb/apk-reverse/README.md), or [PE Reverse](kb/pe-reverse/README.md) |
 | A **security researcher** triaging a sample | [Quick start](#quick-start) → `boards/<board>/AI-USAGE.md` → `sample_full_workup` MCP tool |
 | A **reverse engineer** who wants a workspace, not a tutorial | [Repository layout](#repository-layout) — clone and start |
-| An **AI Agent** developer wiring up reverse-engineering tools | [For AI Agents](#for-ai-agents) — context chain, MCP smoke test, env snapshot protocol |
+| An **AI Agent** developer wiring up reverse-engineering tools | [For AI Agents](#for-ai-agents) — context chain, `route_track`, MCP smoke test, env snapshot protocol |
 
 ## Quick links
 
@@ -76,21 +95,21 @@ The lab is built to be run, not browsed. If a step can't be executed, it doesn't
 ## Knowledge at a glance
 
 ```
-kb/                                180+ articles, 5 boards
-├── ctf-website/techniques/        26 categories, 118 articles — Web attack surface
-├── apk-reverse/techniques/         8 categories,  23 articles — Android reverse
-├── pe-reverse/techniques/          9 categories,  24 articles — Windows PE / binary
-├── general/techniques/             5 categories,  17 articles — Crypto · Protocol · Cheat · IoT · SDR
+kb/                                320+ articles, 5 boards (RED ↔ BLUE 1:1 paired)
+├── ctf-website/techniques/        23 categories, 191 articles — Web attack surface & 1:1 BLUE defense
+├── apk-reverse/techniques/         9 categories,  36 articles — Android & hybrid reverse + 1:1 BLUE defense
+├── pe-reverse/techniques/         10 categories,  49 articles — Windows PE / binary + 1:1 BLUE defense
+├── general/techniques/             6 categories,  45 articles — Crypto · Signature · Protocol · Kernel · 1:1 defense
 └── windows/techniques/             platform-specific PE / config topics
 ```
 
 | Board | Trigger signals | MCP entry points |
 | --- | --- | --- |
-| `ctf-website` | URL · HTTP · JWT · SQLi · SSRF · CVE · API · CSP · OAuth · CAPTCHA · Cloudflare · ReDoS · Slowloris · DoS · Paywall | `http_probe`, `run_ctf_tool`, `kb_router` |
-| `apk-reverse` | APK · DEX · adb · Frida · jadx · smali · SO · native | `android_app_baseline`, `android_crypto_unpack_recipe`, `android_frida_*` |
-| `pe-reverse` | PE · EXE · DLL · x64dbg · Ghidra · Procmon · packer · malware | `triage_pe`, `ghidra_headless_analyze`, `make_x64dbg_breakpoint_script`, `sample_full_workup` |
-| `general` | AES · DES · RSA · protobuf · game cheat · EAC / BE / Vanguard · firmware · JTAG · SDR | `die_scan`, `ghidra_*`, `rizin_*`, `python_re_tool_*` |
-| `misc` | MCP config · skill install · env health check | `mcp_smoke_check`, `ai_toolcheck`, `lab_healthcheck` |
+| `ctf-website` | URL · HTTP · JWT · SQLi · SSRF · CVE · API · CSP · OAuth · Hardening · DoS | `route_track`, `kb_router`, `http_probe`, `run_ctf_tool` |
+| `apk-reverse` | APK · DEX · adb · Frida · jadx · smali · SO · WebView · RN/Flutter | `android_app_baseline`, `android_crypto_unpack_recipe`, `android_frida_*` |
+| `pe-reverse` | PE · EXE · DLL · asar · x64dbg · Ghidra · Procmon · packer · YARA/Sigma | `triage_pe`, `ghidra_headless_analyze`, `make_yara_stub`, `sample_full_workup` |
+| `general` | AES · RSA · Signature · Protobuf · gRPC · JS runtime · Kernel · Anti-cheat | `die_scan`, `solve_crypto_from_evidence`, `ghidra_*`, `rizin_*` |
+| `misc` | Dual-track gate (`BLUE`/`RED`/`BOTH`) · MCP config · env health check | `get_track_status`, `set_track`, `mcp_smoke_check`, `lab_healthcheck` |
 
 The complete directory tree is available under [kb/](kb/).
 
@@ -151,7 +170,7 @@ If individual documents are flagged, handle them case-by-case.
 2. **Claude Code**: `cd <workspace>/open-reverselab`, then start your session.
 3. **Codex APP**: Open the existing `open-reverselab` folder directly (no re-clone needed).
 4. Automated AI install: send the contents of [`templates/prompts/ai-install.en.md`](templates/prompts/ai-install.en.md) to your Agent.
-5. Create a task: `python scripts/misc/new_task.py --board ctf-website --name <name>`.
+5. Create a task: `python scripts/misc/new_task.py --board windows --name <name>` (or route KB by track: `python scripts/misc/kb_router.py "<signal>" --track blue|red|both`).
 6. Verify real MCP invocation whenever switching machines or updating configs:
    ```sh
    uv run --project tools/skills/mcp/ReverseLabToolsMCP \
@@ -200,7 +219,7 @@ reports/      Final reports
 scripts/      Automation scripts
 projects/     Ghidra project files
 templates/    Note / report / rule templates · AI install prompts
-kb/           Reusable attack knowledge base — see "Knowledge at a glance"
+kb/           Reusable RED/BLUE dual-track knowledge base — see "Knowledge at a glance"
 tools/        Toolchain (binaries, wrappers, registry, MCP)
 cases/        Lightweight index — no large file copies
 ```
@@ -232,6 +251,14 @@ ReverseLab is sustained by people and organizations that fund the infrastructure
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <td align="left" valign="middle">
+        <a href="https://infistar.cc/register?aff=OPENREVERSELAB&amp;ref_source=link"><img src="assets/sponsors/infistar-banner-en.png" width="160" alt="Infistar.cc"></a>
+      </td>
+      <td valign="middle"><strong><a href="https://infistar.cc/register?aff=OPENREVERSELAB&amp;ref_source=link">Infistar.cc</a></strong></td>
+      <td valign="middle">2026-11</td>
+      <td valign="middle">Unified multi-model API gateway (Claude, GPT, Gemini, Grok, DeepSeek &amp; more) · ¥5 free sign-up credit via referral link</td>
+    </tr>
     <tr>
       <td align="left" valign="middle">
         <a href="https://sentry.io"><picture>

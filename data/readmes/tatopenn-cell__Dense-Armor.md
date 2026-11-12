@@ -63,7 +63,7 @@ In this library, *shielding* means cleaning the data a model sees — NaN, spike
 
 ## What it does
 
-Dense-Armor is a Python machine learning library with an online part. Every online estimator learns one sample at a time, at control-loop speed, on JAX, and the machine learning classes of `dense_armor.ml` read a whole dataset with `fit`. The same `learn_one` / `predict_one` / `transform_one` contract runs on a market tick, a neural network mini-batch, a drone sensor stream, a robot joint stream, a video frame, a token stream, and a shield can sit in front of any of them. On top of that, `dense_armor.utility.deep.neural` has the deep-learning pieces — layers, attention, convolutional and recurrent blocks, batch and streaming training, continual learning with EWC, GEM and A-GEM, memory consolidation with vector quantization, product quantization and a residual tree — and `dense_armor.utility.signals.stats` and `.timeseries` have the robust models: Student-t, Gaussian mixture, GARCH, and the AR, VAR and Kalman families.
+Dense-Armor is a Python machine learning library with an online part. Every online estimator learns one sample at a time, at control-loop speed, on JAX, and the machine learning classes of `dense_armor.ml` read a whole dataset with `fit`. The same `learn_one` / `predict_one` / `transform_one` contract runs on a market tick, a neural network mini-batch, a drone sensor stream, a robot joint stream, a video frame, a token stream, and a shield can sit in front of any of them. On top of that, `dense_armor.core.deep.neural` has the deep-learning pieces — layers, attention, convolutional and recurrent blocks, batch and streaming training, continual learning with EWC, GEM and A-GEM, memory consolidation with vector quantization, product quantization and a residual tree — and `dense_armor.core.signals.stats` and `.timeseries` have the robust models: Student-t, Gaussian mixture, GARCH, and the AR, VAR and Kalman families.
 
 ---
 
@@ -77,9 +77,9 @@ pip install dense-armor
 
 ```python
 from pathlib import Path
-from dense_armor.utility.finance import PreTradeChecker, DecisionLog
-from dense_armor.utility.finance.synthetic import synthetic_itch
-from dense_armor.utility.finance.feed import iter_itch
+from dense_armor.core.finance import PreTradeChecker, DecisionLog
+from dense_armor.core.finance.synthetic import synthetic_itch
+from dense_armor.core.finance.feed import iter_itch
 
 # 1. a Nasdaq ITCH feed that is byte-identical on every machine, from a seed
 Path("feed.bin").write_bytes(synthetic_itch(1000, seed=0))
@@ -131,17 +131,17 @@ What just happened: every order has been approved, refused or clamped against th
 
 ## Dashboard: one command
 
-The web dashboard of the finance system (chain of pieces, decisions, emergency stop) is not in the pip package: it lives in the repository, in `tools/dashboard/`. Press Download at the top, unzip the file and double-click `tools\dashboard\start-dashboard.bat`; or clone the repository and start it from a terminal.
+The web dashboard of the finance system (chain of pieces, decisions, emergency stop) is not in the pip package: it lives in the repository, in `tools/dashboard/`.
 
-**Windows**, in PowerShell or a terminal:
+**Windows, like any program:**
 
-```bash
-git clone https://github.com/tatopenn-cell/Dense-Armor.git
-cd Dense-Armor
-tools\dashboard\start-dashboard.bat
-```
+1. Press **Download for Windows** at the top and unzip the file.
+2. Double-click `tools\dashboard\install-dashboard.bat`. It installs Python 3.12 if the computer has none, makes a private environment and installs the packages (a few minutes the first time).
+3. The icon **Dense-Armor Dashboard** appears on the desktop. Double-click it: the dashboard opens in the browser at http://127.0.0.1:8080/.
 
-**Linux and macOS**:
+The program is installed in `%LOCALAPPDATA%\Dense-Armor`; you can delete the downloaded folder. Running the installer again updates it.
+
+**Without installing**, from a clone of the repository:
 
 ```bash
 git clone https://github.com/tatopenn-cell/Dense-Armor.git
@@ -149,7 +149,7 @@ cd Dense-Armor
 sh tools/dashboard/start-dashboard.sh
 ```
 
-The script installs `flask` if it is missing, writes the demo configuration to `tools/dashboard/run/` and opens http://127.0.0.1:8080/. Python 3.11 or later is needed. Options are passed on, for example `--port 9000`. The file [start-dashboard.bat](tools/dashboard/start-dashboard.bat) cannot run alone: it needs the rest of the repository next to it, so download it by cloning, not by saving the single file. More in [the dashboard page](https://tatopenn-cell.github.io/Dense-Armor/finance/dashboard/).
+On Windows the same without the icon is `tools\dashboard\start-dashboard.bat`. Options are passed on, for example `--port 9000`. Python 3.11 or later is needed.
 
 ---
 

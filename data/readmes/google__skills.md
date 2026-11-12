@@ -51,6 +51,7 @@ This command gives you an option to also remove obsolete skills.
 - **AI/ML**
   - [**Agent Access Audit**](./skills/cloud/agent-platform-access-audit)
   - [**Agent Platform Alert Configuration**](./skills/cloud/agent-platform-alert-configuration)
+  - [**Agent Platform Autorater Customization**](./skills/cloud/agent-platform-autorater-customization)
   - [**Agent Platform Endpoint Management**](./skills/cloud/agent-platform-endpoint-management)
   - [**Agent Platform Eval Flywheel Skill**](./skills/cloud/agent-platform-eval-flywheel)
   - [**Agent Platform GenAI Inference Skill**](./skills/cloud/agent-platform-inference)
@@ -131,7 +132,10 @@ This command gives you an option to also remove obsolete skills.
   - [**BigFrames (BigQuery DataFrame) basics**](./skills/cloud/bigquery-bigframes)
   - [**BigQuery Asset Impact Analysis**](./skills/cloud/datalineage-bigquery-asset-impact-analysis)
   - [**BigQuery Basics**](./skills/cloud/bigquery-basics)
+  - [**BigQuery Migration Data Loader**](./skills/cloud/bigquery-migration-data-loader)
+  - [**BigQuery Migration Metadata Extraction**](./skills/cloud/bigquery-migration-metadata-extractor)
   - [**BigQuery Migration Service (BQMS) SQL Translator**](./skills/cloud/bigquery-migration-sql-translator)
+  - [**BigQuery Migration Validator**](./skills/cloud/bigquery-migration-validator)
   - [**BigQuery Observability**](./skills/cloud/bigquery-observability)
   - [**BigQuery Optimization Workflow**](./skills/cloud/bigquery-optimization)
   - [**BigQuery Troubleshooting**](./skills/cloud/bigquery-troubleshooting)
@@ -184,7 +188,7 @@ This command gives you an option to also remove obsolete skills.
   - [**Google Cloud Well-Architected Framework skill for the Operational Excellence pillar**](./skills/cloud/google-cloud-waf-operational-excellence)
   - [**Google Cloud Well-Architected Framework skill for the Performance Optimization pillar**](./skills/cloud/google-cloud-waf-performance-optimization)
   - [**Google Cloud Well-Architected Framework skill for the Reliability pillar**](./skills/cloud/google-cloud-waf-reliability)
-  - [**Google Cloud Well-Architected Framework skill for the Security pillar**](./skills/cloud/google-cloud-waf-security)
+  - [**Google Cloud Well-Architected Framework skill for the Security, Privacy, and Compliance pillar**](./skills/cloud/google-cloud-waf-security)
   - [**Google Cloud Well-Architected Framework skill for the Sustainability pillar**](./skills/cloud/google-cloud-waf-sustainability)
 - **Security and identity**
   - [**API Gateway Backend Security and Rate Limiting**](./skills/cloud/api-gateway-backend-security-and-rate-limiting)

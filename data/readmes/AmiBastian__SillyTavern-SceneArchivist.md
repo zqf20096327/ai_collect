@@ -1,6 +1,6 @@
-# Scene Archivist 2.1.0
+# Scene Archivist 2.1.3
 
-The cleaned 2.1.0 build updates the guide media and keeps developer tools out of the public installation. It includes 2.1.0's precise delivery from long memory lists, verified original-message lookup, optional evidence audits, reference allowances, workflow presets and troubleshooting tools. See the [release notes](https://github.com/AmiBastian/SillyTavern-SceneArchivist/releases/tag/v2.1.0).
+2.1.3 adds focus and saved recap coverage to **Suggest recap groups**, gives character memory shortening its own prompt, and keeps independent results available to save after a World Info edit. See the [release notes](https://github.com/AmiBastian/SillyTavern-SceneArchivist/releases/tag/v2.1.3).
 
 <details>
 <summary>New controls in 2.1.0</summary>
@@ -33,7 +33,7 @@ If your characters can hide a body but cannot remember where they had dinner, we
 
 [Install](#install-and-make-your-first-archive) · [Archive thoroughly](#archive-thoroughly) · [Characters](#characters) · [Diaries](#character-diaries) · [Library](#library-and-history) · [Condense](#condense-by-tokens) · [Prompt and recall](#prompt-and-recall) · [Settings](#settings-and-connections) · [Sharing and branches](#sharing-and-branches) · [Recovery](#backups-and-job-recovery) · [Commands](#slash-commands)
 
-The guide media has been updated for this cleaned 2.1.0 build, including desktop and mobile Memory Trail. The examples use an invented story about a flooded railway station. Screenshots and walkthroughs were captured in **SillyTavern 1.19.0** with scripted model replies and sample lorebooks. Your theme and model output will look different. See the [changelog](CHANGELOG.md) for version history.
+The guide uses an invented story about a flooded railway station. Screenshots and walkthroughs were captured in **SillyTavern 1.19.0** with scripted model replies and sample lorebooks. Your theme and model output will look different. See the [changelog](CHANGELOG.md) for version history.
 
 <details>
 <summary>Workspace walkthrough</summary>
@@ -202,9 +202,24 @@ A normal reply can load up to four matching details inside the existing memory b
 
 Set a flexible **Token target**, or use **0** for the shortest faithful version. You can keep the same number of entries or memory bullets and still save tokens by tightening their wording. The result checks preserve required headings, dates, times, and exact quotations. Review the diff for decisions, relationship shifts, promises, clues, and other details that matter to your story.
 
+Open **Maintain → Condense story records → Archive condense prompt** to edit the writing instructions for **Shorten individual entries** and **Create recap**. **Reset archive prompt** restores the default. If a proposal drops a required detail, Scene Archivist retries with that detail. If the retry fails, the job shows what was missing and keeps the source entries. You can edit the prompt and choose **Resume**.
+
+Under **Maintain → Character memories**, **Shorten character memories prompt** is used by **Condense character memories**. **Organize existing memories prompt** controls the separate organization pass and keeps any custom instructions from the old character memory condense prompt. Each has its own reset button.
+
+### Suggest recap groups
+
+1. Select archive entries in **Library**, or enter the first and last unit under **Maintain → Condense story records → Recap suggestions**. The range includes both endpoints.
+2. Optionally enter a **Focus**, such as “Find the scenes that set up the station escape.” Choose **Suggest recap groups**. The model reads every eligible entry in full. If the selection exceeds the connection’s context, narrow the range.
+3. Open **Review group** to read the source text, rename the recap, or adjust which entries to include. Existing recaps with matching or overlapping sources are shown as you change the selection. You can read them before choosing **Create recap**.
+4. The save review shows the original source text and the proposed recap with before and after token estimates. The originals stay in Library at full length.
+
+The latest suggestions stay with the chat after a reload. If an entry changes, is deleted, or becomes protected, the group flags it. Run suggestions again to use updated eligible entries.
+
+![Focused recap suggestion with matching saved coverage](docs/media/51-recap-suggestions.png?v=2.1.3)
+
 Optional recap automation can suggest or create a recap after newer units, fictional time, or archive token pressure. Choose the automation setting before relying on it. Protected records keep their detailed text.
 
-![Token target and archive condensation modes](docs/media/14-condense-controls.png?v=2.1.0-clean)
+![Archive condense prompt and controls for shorter entries and recaps](docs/media/14-condense-controls.png?v=2.1.1)
 
 ![Diary condensation review showing estimated tokens before and after](docs/media/28-diary-condense.png?v=2.1.0-clean)
 
@@ -240,11 +255,13 @@ In Story, **Choose a workflow** offers Simple, Detailed and Mostly Automatic pre
 
 Context settings show approximate reference sizes and offer a separate reference allowance. The default reads the entire selected set; a positive allowance reports overflow. **Relevant complete entries** explicitly permits fitting whole entries and reports omissions. No external lore is rewritten. **Estimate this run** includes reference sizes and enabled memory audits.
 
-Structured memory responses can cite selected message indices or archive source ids for each memory. Inspect → Sources and dependencies and the Sources view retain these links and learning notes. Citations are model supplied and checked against the actual selection; they do not prove every claim is supported. Legacy strings remain supported. Exact current text can reuse its binding; changed or ambiguous text does not inherit an old citation.
+Structured memory responses can cite selected message indices or archive source IDs for each memory. **Inspect → Sources and dependencies** and the Sources view retain these links and learning notes. When shortening, organizing, or updating a list with AI, the model can carry the links from several original bullets into one rewritten bullet. Scene Archivist checks the links against the supplied bullets and flags missing links in review. The original links remain in revisions.
 
 Evidence audits report unsupported details, omissions, dates and knowledge boundaries as review advice. If an audit fails, retry just the audit or use **Skip audit and review** to inspect the retained proposal. Source changes invalidate the retained request. The existing Undo journal, revisions and verified writes protect consequential edits.
 
-**Why was this forgotten?** compares saved text with the last retained delivery trace. **Export reviewed diagnostics** previews a report that excludes story text, names, credentials, URLs and raw errors. **Test helper grounding** is an explicit connection check with invented evidence and at most five real requests; passing it is not a general memory-quality score. Its preview explains possible provider charges.
+Open the Memory Trail on a reply and choose **Find a missing detail** to compare saved text with that reply’s retained delivery trace. Results show whether the record or matching lines were recorded as delivered. From there you can view sources, inspect or edit a record, or queue its full text for the next eligible reply. **Why was this forgotten?** in Tools starts with the latest trace.
+
+**Export reviewed diagnostics** previews a report that excludes story text, names, credentials, URLs and raw errors. **Test helper grounding** is an explicit connection check with invented evidence and at most five real requests; passing it is not a general memory-quality score. Its preview explains possible provider charges.
 
 Library results use pages of 100 so older results remain reachable. Search data and token counts are cached with content and metadata checks; tokenizer work is coalesced and limited to six concurrent calls.
 
@@ -318,6 +335,8 @@ Renaming a chat in SillyTavern keeps its archive and progress. A native branch o
 
 If a later stage fails, choose **Review ready results** to save completed work, then **Retry failed stage**. A canceled review can be reopened through the saved job. **Discard unfinished job** clears its pending proposals. **Undo** checks what was written and preserves newer edits it cannot safely reverse.
 
+If a World Info edit conflicts with a prepared result in combined review, you can compare the original entry, the version saved in World Info, and the proposal. Save unaffected results and come back to the held proposals through **Resume or review**. You can discard an individual held proposal and prepare a new one from the corrected source. Unfinished jobs store unchanged draft entries once, and existing paused jobs can still resume.
+
 ![Job recovery controls after a failed tracker stage](docs/media/29-job-recovery.png?v=2.1.0-clean)
 
 <details>
@@ -346,6 +365,7 @@ If a later stage fails, choose **Review ready results** to save completed work, 
 | Memories skip part of the story | Set **Read from** to **Chat** or **Both** and select the exact missing messages. For archive-only work, use a unit range or **Last X units**. |
 | A request exceeds the context | Choose a larger context on the selected connection, shorten the selection, or explicitly split the failed stage. |
 | A generated entry will not condense | Check its protection flags and the review’s token estimate. A shorter version must preserve the required chronology and quotations. |
+| Condensing reports a missing date, time, or quotation | Read the detail named in the job panel. Adjust the archive condense prompt if needed, then choose **Resume**. The source entries are kept. |
 | A diary does not update | Check that the character has a saved diary and that later messages exist. An exact range can cover an earlier scene. |
 | You need to report a problem | Include the Scene Archivist and SillyTavern versions, steps to reproduce, and the exact error. Keep private story text and credentials out of the report. |
 

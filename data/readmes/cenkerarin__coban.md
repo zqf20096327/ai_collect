@@ -103,11 +103,12 @@ Note: the prompts coban gives the orchestrator and workers, and `coban --help`, 
 | symptom | fix |
 |---|---|
 | `SyntaxError` / `ERR_UNKNOWN_FILE_EXTENSION` on start | Node is too old, check `node -v` (needs ≥ 24) |
-| agent panel opens but asks to log in | log in once with that CLI (`claude`, `codex`...) outside coban, using the same `CLAUDE_CONFIG_DIR` as the profile |
+| agent shows `✗ hata` (error) | it can't work at all: logged out (`cursor-agent login`, `codex login`), expired token, or its model provider rejects requests. coban tells the orchestrator, which should move the task. For Claude, log in with the profile's `CLAUDE_CONFIG_DIR` |
 | a profile is missing | its CLI is not on `PATH` when coban first ran: install it and delete the config file, or add the profile by hand |
 | `coban çalışmıyor` from a `coban ...` command | open the TUI first with plain `coban`: those commands talk to the running app |
-| stale socket after a crash | `rm ~/.coban/coban.sock` |
-| Codex cannot talk to coban | its sandbox may block the unix socket, see Known gaps |
+| stale socket after a crash | `rm ~/.coban/coban.sock` (coban also replaces it at start) |
+| Codex: `coban: connect EPERM` | coban launches codex with `--sandbox workspace-write` and the socket's directory as a writable root, **without network access**. Some sandboxes (macOS Seatbelt) still refuse the unix socket then; opt in per profile with `"network": true` (adds `-c sandbox_workspace_write.network_access=true`: the agent's commands can then reach the internet too). If your profile sets its own `--sandbox`, it must allow the socket itself |
+| Cursor asks before every `coban` call | add `"Shell(coban)"` to `permissions.allow` in `~/.cursor/cli-config.json`, or answer from coban's approval box |
 
 ### From source (development)
 
@@ -143,6 +144,20 @@ are just different `CLAUDE_CONFIG_DIR`s:
 
 `model` is appended as `--model <model>`; `orchestratorModel` overrides it for the profile running as orchestrator —
 coordination is mostly reading and routing, so a cheaper model there saves the most.
+
+## Notifications
+
+On macOS coban shows a notification only when you actually need to act:
+
+- **Blocked worker:** sent only if the worker stays *continuously* blocked for `notifyDelay` seconds (default 20) and
+  its screen still shows a real permission/approval prompt. If the orchestrator or a standing rule answers sooner, nothing
+  appears. The pending notice is cancelled on any status change or kill.
+- **No notice** for the orchestrator's own blocks or for `manual` agents, nor for a blocked screen that is not a
+  recognisable prompt.
+- **Usage limit** (`limited`) notifies immediately (rare).
+- The same agent+state repeats at most once per 5 minutes.
+
+Config: `"notify": false` turns it off, `"notifyDelay": 30` changes the delay (seconds). `COBAN_NO_NOTIFY=1` also disables it.
 
 ## Accounts and limits
 
@@ -182,6 +197,28 @@ so coban keeps running the unmodified Claude Code with your own login.
 - Agents opened by hand show as `manuel`; the orchestrator is told to use idle ones before spawning new workers, and
   coban prepends the worker brief to the first message they get.
 
+## Queues, worktrees and verify gates
+
+Three `coban spawn` flags let the orchestrator hand off sequencing, isolation and checking to coban itself:
+
+- **`--after id1,id2`** queues the spawn. It starts once every listed agent is done: idle or exited after having
+  worked, with its verify gate passed (or given up), or killed. `coban agents` lists queued spawns as
+  `kuyrukta (bekliyor: …)`; `coban kill <id>` cancels one. Dependencies may themselves be queued (chains).
+- **`--worktree[=branch]`** creates a git worktree next to the repo (`<repo>-<id>`, branch `coban/<id>` unless
+  named; an existing branch is checked out) and starts the worker there, so two workers can edit the same files.
+  `coban kill <id> --rm-worktree` removes it afterwards — only when it has no uncommitted changes; the branch is
+  always kept.
+- **`--verify "<cmd>"`** runs `cmd` with `sh` in the worker's directory each time it settles after working. On
+  failure the exit code and the output's last 40 lines are sent back to the worker to fix; after `verifyTries`
+  failures (config, default 3) or if the worker has exited, the orchestrator is told instead. A pass is reported to
+  the orchestrator, and `coban agents` shows `doğrulama:<state>`. Set `verifyAllow` in the config (a list of
+  regexes, each must match the whole command) to restrict which commands may run; unset, any command is accepted.
+
+```sh
+coban spawn h1 "HEDEF: …" --name api --worktree --verify "npx tsc --noEmit && npm test"
+coban spawn h2 "HEDEF: docs for the new API" --after api
+```
+
 ## Keeping context small
 
 Each request an agent makes re-reads its whole context (Claude Code alone is ~45k tokens before any work), so coban
@@ -201,7 +238,7 @@ Mouse: click a bubble to focus it, click `+` to add an agent, scroll the feed wi
 chat are forwarded when the agent asks for them.
 
 `ctrl+b` then: `c` input line · `y`/`a`/`r` approve / always / reject · `i` next approval · `n` new agent · `1-9` select · `j`/`k` next/prev · `o` orchestrator · `m` board panel ·
-`l` toggle feed · `s` select mode (release the mouse to copy text) · `u` next unread · `x` close agent · `q` quit ·
+`l` toggle feed · `←`/`→` (or `<`/`>`) widen / narrow the chat, arrows repeat for a second without `ctrl+b` (saved as `chatWidth`, 0.3-0.6; the `l` feed toggle is saved as `feedHidden`) · `s` select mode (release the mouse to copy text) · `u` next unread · `x` close agent · `q` quit ·
 `ctrl+b` send a literal ctrl+b.
 
 ## Development
@@ -214,13 +251,48 @@ npm run snapshot    # regenerate docs/screenshot.svg
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how the code is laid out.
 
+### Who may do what
+
+Only the user (the `coban` CLI outside an agent) and the orchestrator may call `spawn` (incl. `--worktree` /
+`--verify`), `approve`, `key`, `kill` and `rule`; workers read and message (`post`, `send`, `inbox`, `board`,
+`agents`, `read`, `map`, `wait`), so a worker cannot approve its own permission prompt. OpenCode workers get a
+prompt-free allow only for those read/messaging subcommands. When an agent can't work, the orchestrator is told a
+fixed category (no login / expired token / provider rejected), never the raw screen line (shown to you in the feed).
+Identity is a secret, not a name: every agent gets its own random `COBAN_TOKEN` (`COBAN_AGENT` is display only).
+There is **no user secret** anywhere an agent could read it — no token file, no env var, no second socket (agents run
+as your OS user and can read `~/.coban` and find any socket; nothing in there grants rights). User rights exist only
+inside the coban window itself. A request on the socket without a valid agent token (another terminal of yours, or an
+agent that dropped its token) is `anon`: reading and messaging work, but `spawn`/`approve`/`key`/`kill`/`rule` pop up
+an **ONAY GEREKİYOR** box in the coban window showing the full request (every field, uncut; control and bidi
+characters escaped). Only your `y` there runs it (`n`/`esc` refuses; keys in the first 0.6 s are ignored; refused
+after 2 min). Agent tokens never get such a box: rule edits from any agent, even the orchestrator, are refused, and
+`coban rule add/rm` won't run inside an agent's environment (also not the offline config edit). Agent names are
+plain (`[A-Za-z0-9._-]`, no `coban`/`anon`); what an agent posts is normalized, stripped of invisible characters and
+quoted line by line, so it can't fake coban's `[coban …]` framing. Socket `0600`, `~/.coban` `0700` (that stops other
+OS users, not agents). Remaining risk: an agent allowed to run arbitrary shell commands (outside the prompt-free
+`coban …` allowlist) can read `~/.coban/history.jsonl`, other agents' environments (their tokens, e.g. the
+orchestrator's) and could ask you through the box — read it before pressing `y`. These checks stop prompt-injected or
+confused agents, not a deliberately hostile one with free shell.
+
 ## Known gaps
 
 No scrollback in the chat, no split view, no kitty keyboard protocol (shift+enter), no session restore yet.
-Codex's sandbox may block the unix socket. Status detection is screen heuristics and may need tuning per CLI
+Status detection is screen heuristics and may need tuning per CLI
 version. coban captures the mouse: to copy text press `ctrl+b s`, or use your terminal's override (shift-drag in
 Ghostty/cmux, ⌥-drag in iTerm2).
 
 ## License
 
 MIT
+
+### Standing approvals
+
+`coban rule add "<regex>" [--cwd dir] [--profile id]` auto-answers *yes* (never "always") to a permission prompt whose text
+matches. The regex is anchored and must match the whole text: the dialog's title and *every* line of it (Tip: lines
+too), joined by ` · `, exactly as the first line of `coban approvals` shows it, e.g.
+`Bash command · Remove the build folder · rm -rf build`. A prompt coban can't prove it read whole (top border off
+screen, more than 14 lines, a plain `(y/n)` question, a line that itself contains ` · `) is never auto-approved and is
+marked in `coban approvals`. Each regex runs under a 50 ms limit (a catastrophic pattern counts as no match). There are no
+default rules and only the user (not an agent) can add or remove them. Rules written for 0.3 (body only) no longer
+match: prefix them with the title.
+`coban rule list` / `coban rule rm <n>`; rules live in the config's `rules`.

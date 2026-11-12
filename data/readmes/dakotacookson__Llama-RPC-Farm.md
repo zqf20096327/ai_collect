@@ -1,7 +1,7 @@
 # Llama RPC Farm
 
 [![Stars](https://img.shields.io/github/stars/dakotacookson/Llama-RPC-Farm?style=flat-square)](https://github.com/dakotacookson/Llama-RPC-Farm/stargazers)
-[![Release](https://img.shields.io/github/v/release/dakotacookson/Llama-RPC-Farm?include_prereleases&style=flat-square)](https://github.com/dakotacookson/Llama-RPC-Farm/releases)
+[![Release](https://img.shields.io/github/v/release/dakotacookson/Llama-RPC-Farm?style=flat-square)](https://github.com/dakotacookson/Llama-RPC-Farm/releases)
 [![CI](https://github.com/dakotacookson/Llama-RPC-Farm/actions/workflows/ci.yml/badge.svg)](https://github.com/dakotacookson/Llama-RPC-Farm/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/dakotacookson/Llama-RPC-Farm?style=flat-square)](LICENSE)
 
@@ -18,7 +18,7 @@ a family member needed access. Llama RPC Farm is the dashboard that grew
 out of that: stock llama.cpp underneath, one place to arrange machines and
 models, and one OpenAI-compatible endpoint on top.
 
-![Quick tour: Flow Visualizer, model editor, Hugging Face downloads, chat, launch, and themes](docs/img/demo.gif)
+![Quick tour: Flow Visualizer, model editor, hardware placement, downloads, tests, launch, and themes](docs/img/tour.gif)
 
 - **Good fit:** spare GPUs across a few boxes, mixed OSes, one endpoint,
   stock llama.cpp flags, per-user model access.
@@ -35,25 +35,25 @@ models, and one OpenAI-compatible endpoint on top.
 - **Pool machines into one cluster** — pick which GPUs (and RAM) each box
   shares; peers run RPC servers started through the peer agent.
 
-  ![Model editor: pick GPU/RAM chips across machines, device order at the bottom](docs/img/model-hardware.png)
+  ![Model editor: pick GPU/RAM chips across machines, device order at the bottom](docs/img/model-hardware-2026b.png)
 
 - **Serve many models on demand** — llama-swap starts and stops each model's
   llama-server the moment a client asks, and frees the GPUs when it's done.
   Group models to run together, stay always-on, take turns, or run solo.
 
-  ![Serve groups: per-cluster loading behavior](docs/img/cluster-behavior.png)
+  ![Serve groups: per-cluster loading behavior](docs/img/cluster-behavior-2026b.png)
 
 - **Keep it simple day to day** — live dashboard (VRAM, temp, RPC state),
   per-model flag editor, one-click generated launch scripts, auto-tuner.
 
-  ![Cluster dashboard: live per-machine GPU/VRAM/temp status](docs/img/dashboard.png)
+  ![Cluster dashboard: live per-machine GPU/VRAM/temp status](docs/img/dashboard-2026b.png)
 
 - **Watch the cluster think** — the Flow Visualizer shows real per-tensor
   device assignment straight from llama.cpp's scheduler: which GPU on
   which machine is handling what, live, as models run. Pulsing GPUs are
   compute in flight.
 
-  ![Flow visualizer: real per-tensor device assignment across your cluster](docs/img/visualizer.png)
+  ![Flow visualizer: real per-tensor device assignment across your cluster](docs/img/visualizer-2026b.png)
 
 - **Find and fetch models without leaving the farm** — the built-in
   Hugging Face browser searches the Hub with GGUF-aware filters (quant,
@@ -61,7 +61,7 @@ models, and one OpenAI-compatible endpoint on top.
   downloads straight into your shared `store://` path so every machine
   sees it immediately.
 
-  ![Hugging Face browser: search, filter by quant/task, download to a store](docs/img/downloads.png)
+  ![Hugging Face browser: search, filter by quant/task, download to a store](docs/img/downloads-2026b.png)
 
 ## Deployment topologies
 

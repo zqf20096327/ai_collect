@@ -24,8 +24,8 @@ Keep the conversation, code changes, and agent activity in one place. Review a d
 
 Built on [omp](https://github.com/can1357/oh-my-pi), this Electron desktop app bundles its own agent: **users of the DMG, NSIS, and portable packages do not need to install omp, Bun, or Node separately.** It complements the TUI and shares the usual `~/.omp` configuration and sessions.
 
-[Features](#en-features) · [What's new in 0.9.40](#en-recent) · [Gallery](#en-gallery) · [Install](#en-install) · [Shortcuts](#en-shortcuts) · [Themes](#en-themes) · [Development](#en-development) · [Help](#en-help) · [Releasing](#en-release)
-> **v0.9.40 release.** The improvements below are included in v0.9.40, with the bundled agent built from monorepo `04c428a4` (upstream omp 18.18.6). The gallery screenshots are captured from v0.9.37; [GitHub Releases](https://github.com/nornzach/oh-my-pi-gui/releases) is authoritative for available downloads and release contents.
+[Features](#en-features) · [What's new in 0.9.42](#en-recent) · [Gallery](#en-gallery) · [Install](#en-install) · [Shortcuts](#en-shortcuts) · [Themes](#en-themes) · [Development](#en-development) · [Help](#en-help) · [Releasing](#en-release)
+> **v0.9.42 release.** The improvements below are included in v0.9.42, with the bundled agent built from monorepo `4b67dcb3` (upstream omp 18.19.0). The gallery screenshots are captured from v0.9.37; [GitHub Releases](https://github.com/nornzach/oh-my-pi-gui/releases) is authoritative for available downloads and release contents.
 
 <img src="docs/screenshots/en/01-conversation.png" alt="English omp GUI conversation in the synthetic aurora-web project" width="100%">
 
@@ -42,7 +42,7 @@ The distinctive part is not just a chat window: it is being able to **separate p
 | **Split views & windows** | Place two sessions side by side or stacked, resize the divider, and use multiple windows. Restore the open/active tab layout across restarts. | A split contains **two panes**, not an unlimited pane grid. |
 | **Chat vs. Agent** | Use global, tool-free **Chat** for conversation and workspace **Agent** sessions for coding tasks. | Chat history stays separate from project groups and workspace operations. |
 | **Readable execution** | Inspect diffs and Bash, read, grep, and task calls in dedicated renderers; follow streaming Markdown, highlighted code, collapsible thinking, math, Mermaid, and images. | Tool output remains inspectable alongside the conversation rather than being flattened into plain chat text. |
-| **Terminal & browser** | The side panel's **Terminal** view opens shells in the project folder; agent commands that wait for input (`pty: true`) run there so you can answer them, the agent can read what your terminals show, and dev servers it starts get their own terminal you can watch or close. The **Browser** view is a full browser — address bar, several pages, DevTools — where the agent's `browser` tool opens and drives its pages (or works on the page you have open) so you can watch or take over; links in replies open there too (⌘-click for your default browser). | Terminals and pages belong to their tab and close with it. Browser sign-ins persist and are shared by all tabs, so the agent's pages act as you. The agent still uses another browser when a call names one (`app.path`, `app.cdp_url`, the Chrome relay) or `browser.cdpUrl` is set. |
+| **Terminal & browser** | The side panel's **Terminal** view opens shells in the project folder; agent commands that wait for input (`pty: true`) run there so you can answer them, the agent can read what your terminals show, and dev servers it starts get their own terminal you can watch or close. The **Browser** view is a full browser — address bar, several pages, DevTools — where the agent's `browser` tool opens and drives its pages (or works on the page you have open) so you can watch or take over; links in replies open there too (⌘-click for your default browser). | Terminals and pages belong to their tab and close with it. Browser sign-ins persist and are shared by all tabs, so the agent's pages act as you. The agent still uses another browser when a call names one (`app: "relay"`, a CDP URL or executable, or `"own"`/`"webkit"`/`"chromium"`) or the relay or `browser.cdpUrl` is set. |
 | **Background coordination** | Follow `wait` jobs, inspect `proc://` task and service state, and review `agent://` messages and process controls in compact structured cards. | Coordination details stay bounded and expandable; legacy `hub` transcripts remain readable. |
 | **Plans, Todos & queues** | Review plans and approvals, queue follow-up messages, and monitor bounded Todos/Agents dock cards. Expand a card for a focused full list. | Compact summaries keep large task lists from taking over the conversation. |
 | **Scheduled tasks** | Turn a request into a recurring task or create one from the sidebar. Runs happen in the background, read-only or in their own Git worktree, with a report, an optional shell check, a review queue and an insights page. | Runs happen only while omp is running; slots the computer slept through are recorded as missed, never replayed. Runs use the providers and credentials you configured. |
@@ -63,15 +63,17 @@ The distinctive part is not just a chat window: it is being able to **separate p
 Model requests still go to the providers you configure. The bundled agent removes the separate runtime install, not the need to configure credentials, project dependencies, external Git/OpenSSH/MCP tools, or optional services. Only connect tools and services you trust.
 
 <a id="en-recent"></a>
-### What's new in 0.9.40
+### What's new in 0.9.42
 
-v0.9.40 brings the agent's questions back into one form, shows them and your answers in the chat, fixes API-key sign-ins that stuck on the browser step, and moves the bundled agent to upstream omp 18.18.6:
+v0.9.42 lets you change or turn off every keyboard shortcut, including the system-wide one:
 
 | In daily use | What has improved |
 |---|---|
-| **Agent questions** | When the agent asks several things, they open together in one form again, with prefilled answers, required fields and masked passwords. The chat then shows each question, its options and your answer. |
-| **Provider sign-in** | DeepSeek, Exa and other API-key providers ask for the key inside the sign-in dialog instead of sticking at "Waiting for your browser…" ([#48](https://github.com/nornzach/oh-my-pi-gui/issues/48)). |
-| **Bundled agent** | Rebuilt from monorepo `04c428a4` on upstream omp 18.18.6, with its native addon from npm. Every choice in a form offers a free-text answer (a picture in a form shows as its description for now), auto-compaction warns once instead of repeating every turn when the system prompt and tools alone exceed the budget, and a late usage-limit error from a previous provider no longer blocks the one you selected. |
+| **Your keys, your choice** | **Settings → Keyboard shortcuts** lists every shortcut. Click one to record new keys, or turn it off with its switch; changes apply in every window at once. |
+| **System-wide and menu shortcuts** | The ⇧⌘O show/hide shortcut, which works from any app, can be moved or turned off, and the page warns when another app already holds its keys. Menu shortcuts (⌘N, ⌘E, ⇧⌘N, ⇧⌘W, ⌘F) and the composer's ⌃R / ⌃G can be changed too. |
+| **Clashes caught while recording** | Keys another shortcut already uses are refused with the name of that shortcut; taking over another action's default asks first. |
+| **Shortcut reference** | The ⌘/ panel shows the keys in effect, marks shortcuts you turned off, and its **Customize** button opens the settings page. |
+| **Bundled agent** | Unchanged from 0.9.42: monorepo `4b67dcb3`, upstream omp 18.19.0. |
 <a id="en-gallery"></a>
 ### Explore the interface
 
@@ -188,22 +190,22 @@ Talk to the agent, share a session over a relay, and work through a debug sessio
 <a id="en-install"></a>
 ### Install & start
 
-**Documented install baseline: [v0.9.40](https://github.com/nornzach/oh-my-pi-gui/releases/tag/v0.9.40).** Check [Releases](https://github.com/nornzach/oh-my-pi-gui/releases) for authoritative current downloads and release notes.
+**Documented install baseline: [v0.9.42](https://github.com/nornzach/oh-my-pi-gui/releases/tag/v0.9.42).** Check [Releases](https://github.com/nornzach/oh-my-pi-gui/releases) for authoritative current downloads and release notes.
 
-| Mac | v0.9.40 download |
+| Mac | v0.9.42 download |
 |---|---|
-| Apple Silicon | [omp-0.9.40-arm64.dmg](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.40/omp-0.9.40-arm64.dmg) |
-| Intel | [omp-0.9.40.dmg](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.40/omp-0.9.40.dmg) |
+| Apple Silicon | [omp-0.9.42-arm64.dmg](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.42/omp-0.9.42-arm64.dmg) |
+| Intel | [omp-0.9.42.dmg](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.42/omp-0.9.42.dmg) |
 
-| Windows x64 | v0.9.40 download |
+| Windows x64 | v0.9.42 download |
 |---|---|
-| Installer | [omp-0.9.40-setup.exe](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.40/omp-0.9.40-setup.exe) |
-| Portable | [omp-0.9.40-portable.exe](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.40/omp-0.9.40-portable.exe) |
+| Installer | [omp-0.9.42-setup.exe](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.42/omp-0.9.42-setup.exe) |
+| Portable | [omp-0.9.42-portable.exe](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.42/omp-0.9.42-portable.exe) |
 
-| Linux x64 | v0.9.40 download |
+| Linux x64 | v0.9.42 download |
 |---|---|
-| AppImage | [omp-0.9.40.AppImage](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.40/omp-0.9.40.AppImage) |
-| Debian/Ubuntu | [omp_0.9.40_amd64.deb](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.40/omp_0.9.40_amd64.deb) |
+| AppImage | [omp-0.9.42.AppImage](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.42/omp-0.9.42.AppImage) |
+| Debian/Ubuntu | [omp_0.9.42_amd64.deb](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.42/omp_0.9.42_amd64.deb) |
 
 Open the DMG and drag **omp** into **Applications**. The app and bundled macOS sidecar are ad-hoc signed but not notarized. If macOS blocks the first launch, use **right-click → Open**, or **System Settings → Privacy & Security → Open Anyway**, after confirming the download's source.
 
@@ -225,13 +227,17 @@ Windows packages are currently unsigned. Windows SmartScreen may require **More 
 | `⌥T` | Fresh Git worktree tab |
 | `⌘N` | New session |
 | `⌘K` | Command palette |
-| `⌘P` | Session history search |
+| `⇧⌘F` | Search conversations |
 | `⌘,` | Settings |
 | `⌘B` / `⌘J` | Toggle sidebars |
 | `⌘1`–`⌘9` | Select a tab (`⌘9` the last) |
 | `⌃Tab` / `⌃⇧Tab` | Next / previous tab |
 | `⌥⇧⌘←` / `⌥⇧⌘→` | Move the current tab |
 | `Esc` | Context-dependent close or abort; not an unconditional abort shortcut |
+| `⌘/` | List every shortcut |
+| `⇧⌘O` | Show or hide the omp window, from any app |
+
+Change or turn off any of these in **Settings → Keyboard shortcuts**. Off macOS, ⌘ in a default is Ctrl.
 
 <a id="en-themes"></a>
 ### Custom themes
@@ -390,9 +396,9 @@ Releases belong only to [`nornzach/oh-my-pi-gui`](https://github.com/nornzach/oh
 
 这是基于 [omp](https://github.com/can1357/oh-my-pi) 的 Electron 桌面应用，内置 Agent 二进制：**通过 DMG、NSIS 或便携版安装的用户无需另装 omp、Bun 或 Node。** GUI 与 TUI 互补，共享常规的 `~/.omp` 配置与会话。
 
-[功能全览](#zh-features) · [0.9.40 更新内容](#zh-recent) · [界面导览](#zh-gallery) · [安装](#zh-install) · [快捷键](#zh-shortcuts) · [主题](#zh-themes) · [开发](#zh-development) · [常见问题](#zh-help) · [发布](#zh-release)
+[功能全览](#zh-features) · [0.9.42 更新内容](#zh-recent) · [界面导览](#zh-gallery) · [安装](#zh-install) · [快捷键](#zh-shortcuts) · [主题](#zh-themes) · [开发](#zh-development) · [常见问题](#zh-help) · [发布](#zh-release)
 
-> **v0.9.40 功能展示。** 下文改进均纳入 v0.9.40，内置 Agent 基于 monorepo `04c428a4` 构建（上游 omp 18.18.6）。界面导览截图取自 v0.9.37；可用下载及实际发布内容以 [GitHub Releases](https://github.com/nornzach/oh-my-pi-gui/releases) 为准。
+> **v0.9.42 功能展示。** 下文改进均纳入 v0.9.42，内置 Agent 基于 monorepo `4b67dcb3` 构建（上游 omp 18.19.0）。界面导览截图取自 v0.9.37；可用下载及实际发布内容以 [GitHub Releases](https://github.com/nornzach/oh-my-pi-gui/releases) 为准。
 
 <img src="docs/screenshots/zh/01-conversation.png" alt="中文 omp GUI 中的合成 aurora-web 项目对话" width="100%">
 
@@ -409,7 +415,7 @@ Releases belong only to [`nornzach/oh-my-pi-gui`](https://github.com/nornzach/oh
 | **分屏与多窗口** | 两段会话可左右或上下排列，分隔条可调整，也可使用多个窗口；重启后恢复已打开及选中的标签布局。 | 每个分屏为**双面板**，不是无限面板网格。 |
 | **Chat 与 Agent** | 全局、无工具的 **Chat** 用于交流；项目工作区中的 **Agent** 会话用于编码任务。 | Chat 历史与项目分组、工作区操作保持分离。 |
 | **可读的执行过程** | 专用视图呈现 diff、Bash、read、grep、task；支持流式 Markdown、代码高亮、可折叠思考块、公式、Mermaid 与图片。 | 工具输出可在对话旁直接检查，而不是全部压成普通聊天文本。 |
-| **终端与浏览器** | 侧边面板的 **终端** 视图在项目目录中打开 shell；需要输入的 Agent 命令（`pty: true`）也在这里运行，由你直接作答；Agent 能读取你终端里显示的内容，它启动的开发服务器会有独立的终端，你可以旁观或关闭。**浏览器** 视图是完整的浏览器——地址栏、多个页面、DevTools——Agent 的 `browser` 工具在这里打开并操作页面（也可以直接使用你已打开的页面），你可以旁观或随时接手；回复中的链接也在这里打开（⌘ 点击则用默认浏览器打开）。 | 终端与页面属于各自的标签页，随标签页关闭。浏览器登录状态会保留并由所有标签页共享，因此 Agent 的页面以你的身份操作。调用明确指定其他浏览器（`app.path`、`app.cdp_url`、Chrome relay）或设置了 `browser.cdpUrl` 时，Agent 仍使用对应的浏览器。 |
+| **终端与浏览器** | 侧边面板的 **终端** 视图在项目目录中打开 shell；需要输入的 Agent 命令（`pty: true`）也在这里运行，由你直接作答；Agent 能读取你终端里显示的内容，它启动的开发服务器会有独立的终端，你可以旁观或关闭。**浏览器** 视图是完整的浏览器——地址栏、多个页面、DevTools——Agent 的 `browser` 工具在这里打开并操作页面（也可以直接使用你已打开的页面），你可以旁观或随时接手；回复中的链接也在这里打开（⌘ 点击则用默认浏览器打开）。 | 终端与页面属于各自的标签页，随标签页关闭。浏览器登录状态会保留并由所有标签页共享，因此 Agent 的页面以你的身份操作。调用明确指定其他浏览器（`app: "relay"`、CDP 地址或可执行文件路径，或 `"own"`/`"webkit"`/`"chromium"`），或启用了 relay、设置了 `browser.cdpUrl` 时，Agent 仍使用对应的浏览器。 |
 | **后台协作状态** | `wait` 任务、`proc://` 进程与服务状态、`agent://` 消息及进程控制操作均以紧凑结构化卡片呈现。 | 详情保持有边界并可展开；历史 `hub` 记录仍可正常阅读。 |
 | **计划、待办与队列** | 审查计划与审批、排队发送后续消息，通过有高度约束的 Todos/Agents Dock 卡片查看状态；展开单张卡片查看完整列表。 | 大量任务以紧凑摘要呈现，不占满对话区域。 |
 | **定时任务** | 把一句请求变成周期任务，或在侧边栏新建。任务在后台运行，可只读或在独立 Git worktree 中执行，附带报告、可选的 shell 检查、审查队列与分析页。 | 只有 omp 运行时才会执行；电脑休眠错过的时段记为错过，不会补跑。运行使用你配置的 Provider 与凭据。 |
@@ -430,15 +436,17 @@ Releases belong only to [`nornzach/oh-my-pi-gui`](https://github.com/nornzach/oh
 模型请求仍会发送到你配置的 Provider。内置 Agent 省去了单独安装运行时的步骤，但不替你配置凭据、项目依赖、外部 Git/OpenSSH/MCP 工具或可选服务。请只连接你信任的工具与服务。
 
 <a id="zh-recent"></a>
-### 0.9.40 更新内容
+### 0.9.42 更新内容
 
-v0.9.40 让代理的多个问题重新显示在同一个表单中，在对话里展示问题和你的回答，修复了 API 密钥登录卡在浏览器步骤的问题，并把内置代理升级到上游 omp 18.18.6：
+v0.9.42 让每个键盘快捷键都可以修改或关闭，包括全局快捷键：
 
 | 日常场景 | 改进内容 |
 |---|---|
-| **代理提问** | 代理同时询问多项内容时，会重新显示在同一个表单中，并支持预填答案、必填项和密码遮盖。对话中随后会显示每个问题、选项和你的回答。 |
-| **服务商登录** | DeepSeek、Exa 等 API 密钥服务商会在登录对话框内直接询问密钥，不再卡在“正在等待浏览器…”（[#48](https://github.com/nornzach/oh-my-pi-gui/issues/48)）。 |
-| **内置代理** | 基于 monorepo `04c428a4` 重新构建，对应上游 omp 18.18.6，原生插件来自 npm。表单中的每个选项组都可填写自定义答案（表单中的图片目前显示为其文字说明）；当系统提示词和工具本身就超出压缩预算时，自动压缩只提醒一次，不再每轮重复；上一个服务商迟到的用量上限错误也不再阻塞你当前选择的服务商。 |
+| **按你的习惯设定按键** | **设置 → 键盘快捷键**列出全部快捷键。点击即可录制新的按键，或用开关将其关闭；修改会立即应用到所有窗口。 |
+| **全局与菜单快捷键** | 可在任何应用中使用的 ⇧⌘O 显示/隐藏快捷键现在可以改键或关闭，若这组按键已被其他应用占用，页面会给出提示。菜单快捷键（⌘N、⌘E、⇧⌘N、⇧⌘W、⌘F）以及输入框的 ⌃R / ⌃G 也都可以修改。 |
+| **录制时发现冲突** | 已被其他快捷键使用的按键会被拒绝，并说明被哪个快捷键占用；占用其他操作的默认按键前会先确认。 |
+| **快捷键速查** | ⌘/ 面板显示当前生效的按键，标出已关闭的快捷键，其中的**自定义**按钮会打开设置页面。 |
+| **内置代理** | 与 0.9.42 相同：monorepo `4b67dcb3`，上游 omp 18.19.0。 |
 <a id="zh-gallery"></a>
 ### 界面导览
 
@@ -555,22 +563,22 @@ v0.9.40 让代理的多个问题重新显示在同一个表单中，在对话里
 <a id="zh-install"></a>
 ### 安装与开始使用
 
-**本文安装基线：[v0.9.40](https://github.com/nornzach/oh-my-pi-gui/releases/tag/v0.9.40)。** 最新可下载版本与发布说明以 [Releases](https://github.com/nornzach/oh-my-pi-gui/releases) 为准。
+**本文安装基线：[v0.9.42](https://github.com/nornzach/oh-my-pi-gui/releases/tag/v0.9.42)。** 最新可下载版本与发布说明以 [Releases](https://github.com/nornzach/oh-my-pi-gui/releases) 为准。
 
-| Mac | v0.9.40 下载 |
+| Mac | v0.9.42 下载 |
 |---|---|
-| Apple Silicon | [omp-0.9.40-arm64.dmg](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.40/omp-0.9.40-arm64.dmg) |
-| Intel | [omp-0.9.40.dmg](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.40/omp-0.9.40.dmg) |
+| Apple Silicon | [omp-0.9.42-arm64.dmg](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.42/omp-0.9.42-arm64.dmg) |
+| Intel | [omp-0.9.42.dmg](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.42/omp-0.9.42.dmg) |
 
-| Windows x64 | v0.9.40 下载 |
+| Windows x64 | v0.9.42 下载 |
 |---|---|
-| 安装程序 | [omp-0.9.40-setup.exe](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.40/omp-0.9.40-setup.exe) |
-| 便携版 | [omp-0.9.40-portable.exe](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.40/omp-0.9.40-portable.exe) |
+| 安装程序 | [omp-0.9.42-setup.exe](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.42/omp-0.9.42-setup.exe) |
+| 便携版 | [omp-0.9.42-portable.exe](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.42/omp-0.9.42-portable.exe) |
 
-| Linux x64 | v0.9.40 下载 |
+| Linux x64 | v0.9.42 下载 |
 |---|---|
-| AppImage | [omp-0.9.40.AppImage](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.40/omp-0.9.40.AppImage) |
-| Debian/Ubuntu | [omp_0.9.40_amd64.deb](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.40/omp_0.9.40_amd64.deb) |
+| AppImage | [omp-0.9.42.AppImage](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.42/omp-0.9.42.AppImage) |
+| Debian/Ubuntu | [omp_0.9.42_amd64.deb](https://github.com/nornzach/oh-my-pi-gui/releases/download/v0.9.42/omp_0.9.42_amd64.deb) |
 
 打开 DMG，把 **omp** 拖入**应用程序**。应用与内置 macOS sidecar 均采用 ad-hoc 签名，未经公证。如果 macOS 拦截首次启动，请先确认下载来源，再使用**右键 → 打开**，或**系统设置 → 隐私与安全性 → 仍要打开**。
 
@@ -592,13 +600,17 @@ Windows 包当前未签名。首次启动前请确认下载来源；Windows Smar
 | `⌥T` | 新建 Git worktree 标签页 |
 | `⌘N` | 新建会话 |
 | `⌘K` | 命令面板 |
-| `⌘P` | 会话历史搜索 |
+| `⇧⌘F` | 搜索对话 |
 | `⌘,` | 设置 |
 | `⌘B` / `⌘J` | 切换侧栏 |
 | `⌘1`–`⌘9` | 选中标签页（`⌘9` 为最后一个） |
 | `⌃Tab` / `⌃⇧Tab` | 下一个 / 上一个标签页 |
 | `⌥⇧⌘←` / `⌥⇧⌘→` | 移动当前标签页 |
 | `Esc` | 按当前上下文关闭界面或中止执行，不是无条件中止快捷键 |
+| `⌘/` | 列出全部快捷键 |
+| `⇧⌘O` | 在任何应用中显示或隐藏 omp 窗口 |
+
+可在**设置 → 键盘快捷键**中修改或关闭上述任一快捷键。在 macOS 以外的系统上，默认按键中的 ⌘ 对应 Ctrl。
 
 <a id="zh-themes"></a>
 ### 自定义主题

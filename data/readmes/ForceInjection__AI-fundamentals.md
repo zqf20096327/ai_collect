@@ -151,6 +151,12 @@
 
 - [launch、occupancy、overlap：什么时候手写 kernel，什么时候交给编译器](./02_gpu_programming/05_compiler/01_kernel-compiler-megakernel.md)：TVM（schedule 分离）、Mirage（三层联合超优）、MPK（整模型 megakernel）三级递进，配三 regime 决策轴与 launch-bound 微基准
 
+**量化 GEMM 算子**：
+
+- [Marlin 深拆](./02_gpu_programming/06_quant_gemm/01_marlin-deep-dive.md)：W4A16 反量化三笔税与三个设计（repack 布局/lop3 位技巧/双缓冲流水），配套 numpy CPU 语义复现
+- [Humming 深拆](./02_gpu_programming/06_quant_gemm/02_humming-arch-jit.md)：蚂蚁 + vLLM 社区 JIT kernel 库，500 KB wheel 的按需编译链路与 SASS 位补丁解锁隐藏格式
+- [UMMA 深拆](./02_gpu_programming/06_quant_gemm/03_umma-deep-dive.md)：tcgen05 时代 kernel 内部，五类线程分工与 TMEM 中央舞台，反量化结果直写操作数地盘
+
 **性能分析与调优**：
 
 - [nvbandwidth 最佳实践](./02_gpu_programming/04_profiling/01_nvbandwidth_best_practices.md)：显存带宽与 PCIe 传输带宽测量指南
@@ -386,7 +392,7 @@ SFT 之后把推理能力推上去要靠 RL，而 RL 的 rollout 由推理引擎
 剖析现代推理系统的底层架构创新，重点解构 Mooncake 等以 KV Cache 为中心的高效 LLM 调度系统设计模式与性能调优策略。
 
 - [手搓 KV Cache：从静态预留到 PagedAttention 的页表](09_inference_system/kv_cache/01_concepts/01_basic/03_hand_roll_kv_cache.md) - 可运行模拟器实测三种显存管理策略：碎片入住失败与 5 倍容量的数字来源。
-- [手搓 MLA：从 MHA 到 weight absorption](09_inference_system/kv_cache/01_concepts/01_basic/07_hand_roll_mla.md) - 四版注意力递进 + 真实权重验证吸收等价（fp32 逐位一致），KV 压缩三口径辨析。
+- [手搓 MLA：从 MHA 到 weight absorption](09_inference_system/kv_cache/01_concepts/01_basic/07_hand_roll_mla.md) - 四种注意力变体递进 + 真实权重验证吸收等价（fp32 逐位一致），KV 压缩三口径辨析。
 - [手搓系列导航](hand_roll_series.md) - 手搓系列 5 篇的阅读顺序与实测产出汇总。
 - [Mooncake 架构详解：以 KV Cache 为中心的高效 LLM 推理系统设计](09_inference_system/kv_cache/02_systems/04_mooncake/01_mooncake_architecture.md) - 新一代推理系统的架构创新与性能优化策略
 - [当 KV Cache 装不进内存：FAST'26 五篇论文给出的五个不同答案](09_inference_system/kv_cache/03_fast26/01_fast26-kv-storage-five-scenarios.md) - FAST'26「AI and LLMs」九篇论文中五篇精读的五象限汇总：端侧/智能体/对话/数据中心/冷启动各自的核心矛盾、招式与数字，共同支点是可复现的 I/O 特征；附 4 篇 Agent 精读报告
@@ -396,8 +402,10 @@ SFT 之后把推理能力推上去要靠 RL，而 RL 的 rollout 由推理引擎
 - [四条路线，一条落地：vLLM 与 SGLang 的 KV 复用支持现状](09_inference_system/kv_cache/06_kv_reuse/04_framework-kv-reuse-support.md) - 三仓 HEAD 源码核对：路线 1 原生默认开且跨实例纵深（vLLM 18 connector / SGLang HiCache L3），路线 2 仅 LMCache 接线且与前缀缓存互斥（TODO 未解），路线 3/4 零实现，LoRA 被两家同构隔离
 - [当压缩表示被继续使用：三篇论文给出的三种二次决策](09_inference_system/kv_cache/07_kv_compression/01_kv-compression-overview.md) - Self-Indexing KVCache / SALS / EchoKV 把压缩产物继续用作检索索引、token 选择场与重建素材
 - [TTFT 多了 15 毫秒之后：一套实证过的 KV Cache 性能分析方法论](09_inference_system/kv_cache/08_methodology/01_kv-cache-perf-methodology.md) - 真机排查总结的六件工具与六类问题：时钟链闭合、排除链判死、仪器纪律、native 对齐，配操作清单与脱敏后的实测数字
-- [当 Agent 流量成为推理系统的主要负载](09_inference_system/agent_serving/agent-workload-serving.md) - KV 生命周期错配、调度语义失真、会话粘性与容量公式失效：Agent 负载下的四连锁问题与两引擎源码级现状
-- [约束解码的性能账单：vLLM 与 SGLang 的结构化输出实现拆解](09_inference_system/agent_serving/constrained-decoding-engines.md) - 结构化输出的编译账/每步账/交互账：双引擎实现逐项对照与 jump-forward 差异
+- [当 Agent 流量成为推理系统的主要负载](09_inference_system/agent_serving/01_agent-workload-serving.md) - KV 生命周期错配、调度语义失真、会话粘性与容量公式失效：Agent 负载下的四连锁问题与两引擎源码级现状
+- [Phase 切换从 681 秒到 6.2 秒：Evolving Infra 论文精读](09_inference_system/agent_serving/02_evolving-infra.md) - 第一个 agent-adaptive serving 框架：对称引擎原地换相、共享 L2 池 RDMA 直读、KV 目录按活跃分支计数驱逐，对 Dynamo 吞吐 1.10–2.73×、E2E 延迟降最高 4.12×，附七条口径声明
+- [基础设施的回应：当 serving 开始读懂 harness](09_inference_system/agent_serving/03_infra-response.md) - 四连锁与三件套逐项映射、SGLang role-switch 源码核对（opt-in/须排空/翻转清缓存）、九种 PD 适配方案的对照地图
+- [约束解码的性能账单：vLLM 与 SGLang 的结构化输出实现拆解](09_inference_system/agent_serving/04_constrained-decoding-engines.md) - 结构化输出的编译账/每步账/交互账：双引擎实现逐项对照与 jump-forward 差异
 - [线性注意力与推理系统](09_inference_system/linear_attention/README.md) - delta-rule 一脉（KDA/Gated DeltaNet）落地后的系统挑战：prefill 串行化、状态检查点缓存、状态语义深水区——总览 + 机制/调度/状态语义四篇
 - [HBF 是 HBM 的替代吗？单位存储便宜了，Token 成本却可能更高](09_inference_system/hbf-vs-hbm.md) - Hot Chips 2026 的 (β, α) 坐标系与 $/token 公式：单位容量便宜 8–16 倍、单位容量带宽只有 HBM 的 1/25，折算成带宽单价反而贵 1.7 倍，HBF 只在一个很窄的低带宽区间里划算
 - [Engram：条件记忆与主机内存参数](09_inference_system/engram/README.md) - DeepSeek 条件记忆（N-gram Embedding）首篇源码深读：官方 422 行 demo + SGLang 巨页手术，LPDDR 换 HBM 的优势与代价逐项算账

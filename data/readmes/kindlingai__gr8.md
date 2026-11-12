@@ -7,6 +7,14 @@ the model, see below), with an OpenAI-compatible API on the first box. gr8 is wr
 vLLM, PyTorch or NCCL at serve time. *Beta release. If you run it, please tell us what breaks:
 [issues](https://github.com/kindlingai/gr8/issues) and PRs are welcome.*
 
+GLM-5.3 at TP=4 now defaults to `KV_FORMAT=int4` (`bin/g6m4-int4`, `CAP=513536`, `max_model_len` 513,522, up to 8
+concurrent requests), with INT4 fast paths, folded Hadamard weights, tensor-core decode and `CP_ONECHAIN`.
+`--kv-format fp8` / `KV_FORMAT=fp8` restores `bin/g6m4` at `CAP=485376` without implicit INT4/one-chain settings;
+see [KV4.md](docs/KV4.md). GLM-5.3-Flash at TP=2 with `KV_FORMAT=int4` defaults to `SESS=4` (max concurrent 4) and,
+when `SESS >= 2`, `MTP=3`, `S2_SHARED_WATERFILL=1` and `S2_SHARED_WF_MARGIN=0.02`; `--s2-shared-waterfill 0` rolls
+back to uniform shared rows and `MTP=1`, and `--sess 1` restores the single-session launch; see
+[FLASH.md](docs/FLASH.md). Other model/topology defaults are unchanged.
+
 ### Switch between the models
 
 [![Switch between GLM-5.3, DeepSeek-V4.1-Flash and GLM-5.3-Flash: seconds for each direction](docs/cards/switching.png)](docs/SWITCHING.md)
@@ -43,35 +51,88 @@ pool · one `docker run`
 
 [![GLM-5.3-Flash on two GB10s: decode, prefill and concurrency](docs/cards/glm-5.3-flash-exlr8-2x-spark.png)](https://github.com/kindlingai/glm-5.3-flash-exlr8-2x-spark)
 
-74.5 tok/s for one request writing code · 1,675 tok/s prefill on an 8K prompt · 8 requests at once from a
-2,097,152-token KV pool · the same image on both boxes
+76.5 tok/s for one request writing code · 1,670 tok/s prefill on an 8K prompt · 4 requests at once (`SESS=4`; 8 with
+`TUNE=context`) from a 2,097,152-token KV pool (max tokens per active chat: 262,144 at 1 measured, 262,144 at 2 and 4
+computed; 233,458 at 8 with `TUNE=context`, computed) · the same image on both boxes
 
 **[Recipe](https://github.com/kindlingai/glm-5.3-flash-exlr8-2x-spark)** · [Model page](docs/FLASH.md)
 
 ### GLM-5.3 on 4 Sparks
 
-[![GLM-5.3 on four DGX Sparks: decode, prefill and concurrency](docs/cards/glm-5.3-4x-spark.png)](docs/GLM-5.3.md)
+[![GLM-5.3 on four DGX Sparks: decode, prefill and concurrency](docs/cards/glm-5.3-exlr8-4x-spark.png)](https://github.com/kindlingai/glm-5.3-exlr8-4x-spark)
 
-63.2 tok/s for one request writing code (48-54-token prompts) · 1,513 tok/s prefill on a 32K prompt · 8 requests at
-once, 85.4 tok/s in total · a fact hidden in a 128K prompt found · one boot, measured 2026-11-10 · no recipe yet:
-start it on three to six boxes with Docker Compose, from the [Models and install](#models-and-install) table.
+63.3 tok/s for one request writing code (46-54-token prompts) · 1,540 tok/s prefill on a 32K prompt · 8 requests at
+once (`SESS=8`), 85.8 tok/s in total · int4 KV default: 513,536-token KV pool, max tokens per active chat (prompt +
+max_tokens) 513,522 at 1 (measured) and 207,602 / 54,514 / 19,058 at 2 / 4 / 8 (computed; 2-chat prompt limit
+measured: 199,410 with max_tokens omitted, 174,834 at max_tokens=32,768) · a fact hidden in a 128K prompt found ·
+one boot, measured 2026-11-11 · the same recipe serves three to six boxes.
 
-[Model page](docs/GLM-5.3.md)
+**[Recipe](https://github.com/kindlingai/glm-5.3-exlr8-4x-spark)** · [Model page](docs/GLM-5.3.md)
 
 ### DeepSeek-V4.1-Flash on 4 Sparks
 
 [![DeepSeek-V4.1-Flash on four GB10s in fast mode: decode, prefill and concurrency](docs/cards/deepseek-v4.1-flash-exlr8-4x-spark.png)](https://github.com/kindlingai/deepseek-v4.1-flash-exlr8-4x-spark)
 
-One request: 83-86 tok/s on prose and 143-144 tok/s on code (65-72-token prompts) · 7,835 tok/s prefill on a 32K prompt
-· 249.2 tok/s in total for 16 requests at once, first token median 2.48 s · fast mode by default (`TUNE=speed`), so the
-output is not identical to the exact model's; `TUNE=quality` gives the exact model's output · the recipe's image on four
-boxes: first boot (cold disk) 212.7 s, a switch from GLM-5.3 after that 37-39 s (release 1 image)
+One request: 83.9 tok/s on prose and 137.5 tok/s on code (65-71-token prompts) · 7,720 tok/s prefill on a 32K prompt
+(8,408 tok/s at 128K, 8,344 tok/s at 256K) · 238.7 tok/s in total for 16 requests at once, first token median 2.56 s
+(32 max concurrent; 10,485,760-token KV pool across 32 dedicated 327,680-token slabs, max tokens per active chat
+327,670 at 1 measured and at 2 / 4 / 8 / 16 / 32 computed) · fast mode by default (`TUNE=speed`), so the output is not
+identical to the exact model's; `TUNE=quality` gives the exact model's output · the recipe's image on four boxes: first
+boot (cold disk) 212.7 s, a switch from GLM-5.3 after that 37-39 s (release 1 image)
 
 **[Recipe](https://github.com/kindlingai/deepseek-v4.1-flash-exlr8-4x-spark)** · [Model page](docs/DEEPSEEK.md)
 
-<sub>Each card is drawn by `bench/gif.py card` from the recipe's `kindling.json`, and the GLM-5.3 card from
-[docs/cards/glm-5.3-4x-spark.json](docs/cards/glm-5.3-4x-spark.json) ([docs/cards/make.sh](docs/cards/make.sh)
-redraws them). The model pages give each benchmark and its date.</sub>
+<sub>Each card is drawn by `bench/gif.py card` from the recipe's `kindling.json` ([docs/cards/make.sh](docs/cards/make.sh)
+redraws them from the list in [recipes.json](recipes.json)). The model pages give each benchmark and its date.</sub>
+
+### All recipes
+
+A recipe is its own repository: a `.env` file, a Compose file and measured results, pinned to one gr8 image. gr8 holds
+the engine only.
+
+| Model | Boxes | Recipe |
+|---|---|---|
+| GLM-5.3-Flash | 1 | [glm-5.3-flash-exlr8-1x-spark](https://github.com/kindlingai/glm-5.3-flash-exlr8-1x-spark) |
+| GLM-5.3-Flash | 2 | [glm-5.3-flash-exlr8-2x-spark](https://github.com/kindlingai/glm-5.3-flash-exlr8-2x-spark) |
+| DeepSeek-V4.1-Flash | 4 | [deepseek-v4.1-flash-exlr8-4x-spark](https://github.com/kindlingai/deepseek-v4.1-flash-exlr8-4x-spark) |
+| GLM-5.3 | 4 (3 to 6) | [glm-5.3-exlr8-4x-spark](https://github.com/kindlingai/glm-5.3-exlr8-4x-spark) |
+| GLM-5.3, 737K context | 5 | [glm-5.3-exlr8-5x-spark](https://github.com/kindlingai/glm-5.3-exlr8-5x-spark) |
+| GLM-5.3, 1M context | 6 | [glm-5.3-exlr8-6x-spark](https://github.com/kindlingai/glm-5.3-exlr8-6x-spark) |
+
+## Building on gr8
+
+Current release: **[`v1.0.1`](https://github.com/kindlingai/gr8/releases/tag/v1.0.1)** ·
+[All releases](https://github.com/kindlingai/gr8/releases) · [Release and pinning rules](RELEASING.md)
+
+Recipes, tools, and deployments built on gr8 should pin an immutable `v*` release image by tag and `sha256` digest (or
+an exact merged `main` / `stable` commit when tuning ahead of the next tag) — never a moving tag such as `:latest`,
+`:main`, or `:stable`:
+
+```yaml
+# compose.yaml
+services:
+  gr8:
+    image: ${GR8_IMAGE:-ghcr.io/kindlingai/gr8:v1.0.1@sha256:02e44b9fc971f2acffe117df50de1be829462453287aab2c1d61a31a55738c0b}
+```
+
+Use the same `v1.0.1@sha256:...` reference in `FROM` for a thin wrapper `Dockerfile`, or `git -C gr8 checkout v1.0.1` when
+pinning gr8 as a submodule.
+
+If you are an agent (or developer) building on gr8, start from the matching entry point:
+
+- **Start a cluster for someone:** Read [docs/FIRST-BOOT.md](docs/FIRST-BOOT.md) and ask its setup questions before the
+  first boot; [docs/DEPLOY.md](docs/DEPLOY.md) covers Docker Compose, bare metal, and Kubernetes.
+- **Package a standalone recipe:** Base `compose.yaml` and `.env.example` on
+  [docker/compose.yaml](docker/compose.yaml) and [docker/.env.example](docker/.env.example) (leave option defaults in
+  the launcher rather than duplicating them in Compose), check valid options with `./gr8 knobs` and
+  [KNOBS.md](KNOBS.md), record the `"engine"` pin and measured results in `kindling.json`
+  ([RELEASING.md](RELEASING.md#4-how-recipes-pin-gr8)), and redraw `docs/card.png` from a gr8 checkout with
+  `python3 bench/gif.py card <recipe>/kindling.json --out <recipe>/docs/card.png`.
+- **Build a client, tool, or dashboard:** Call the OpenAI-compatible HTTP API on head port `8100`
+  ([frontend/README.md](frontend/README.md); internal wire protocol in [PROTOCOL.md](PROTOCOL.md)), poll `/health` and
+  `/metrics` (plus localhost-only `/health?deep`), and use `./gr8 <model> status|smoke|down` or `./gr8 switch`
+  ([docs/SWITCHING.md](docs/SWITCHING.md)) for cluster control.
+- **Change gr8 itself:** Read [AGENTS.md](AGENTS.md) before editing engine, launcher, or front-end code.
 
 ## What gr8 does today
 
@@ -254,6 +315,9 @@ another model.
 KindlingAI is:
 
 - [@adapt-ai-systems](https://github.com/adapt-ai-systems)
+  - GLM-5.3-Flash shared-round marginal-utility waterfill speculative row allocation.
+  - GLM-5.3 TP=4 INT4 KV default with explicit FP8 rollback, folded Hadamard UK/UV weights and 16-head tensor-core decode attention.
+  - Bit-exact INT4 decode attention: multi-slot warp scores, lane-transposed query rotation, compacted double-buffered context partials and fused output rotation.
   - Default 12,288-row sequence-parallel DeepSeek v2 prefill with layer-20 tail hoist, direct compute-stream quarter publish and dual-row FFN unpack.
   - Opt-in packed-key attention pipeline for sequence-parallel DeepSeek prefill, with exactness tests.
   - Opt-in sequence-parallel DeepSeek prefill: owned-row attention, expert groups, collectives and timing tests.

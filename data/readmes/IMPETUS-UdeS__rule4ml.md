@@ -15,10 +15,10 @@ pip install rule4ml
 
 This will only install the [base package](https://github.com/IMPETUS-UdeS/rule4ml/tree/main/rule4ml) and its dependencies for resources and latency prediction. The [data_gen](https://github.com/IMPETUS-UdeS/rule4ml/tree/main/data_gen/) scripts and the [Jupyter notebooks](https://github.com/IMPETUS-UdeS/rule4ml/tree/main/notebooks) are to be cloned from the repo if needed.
 
-The data generation dependencies are listed seperately in [data_gen/requirements.txt](https://github.com/IMPETUS-UdeS/rule4ml/tree/main/data_gen/requirements.txt), or can be installed with:
+The data generation dependencies are listed separately in [data_gen/requirements.txt](https://github.com/IMPETUS-UdeS/rule4ml/tree/main/data_gen/requirements.txt):
 
 ```bash
-pip install rule4ml[datagen]
+pip install -r data_gen/requirements.txt
 ```
 
 ## Getting Started
@@ -60,7 +60,16 @@ prediction_df = estimator.predict(model_to_predict)
 # Further formatting can be applied to organize the DataFrame
 if not prediction_df.empty:
     prediction_df = prediction_df.groupby(
-        ["Model", "Board", "Strategy", "Precision", "Reuse Factor", "HLS4ML Version", "Vivado Version"], observed=True
+        [
+            "Model",
+            "Board",
+            "Strategy",
+            "Precision",
+            "Reuse Factor",
+            "HLS4ML Version",
+            "Vivado Version",
+        ],
+        observed=True,
     ).mean()  # each row is unique in the groupby, mean() is only called to convert DataFrameGroupBy
 
 # Outside of Jupyter notebooks, we recommend saving the DataFrame as HTML for better readability

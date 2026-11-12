@@ -62,8 +62,10 @@ That same 80-file project that wouldn't fit? Now you can ask: *"Explain the enti
 - Two-layer rule system with declarative prefix-swap and custom argument handlers
 - One command installs the hook for automatic, invisible context savings
 - Round-trip safe: commands with newlines, heredocs, or command substitution are never rewritten, and neither is a command whose target binary skim cannot resolve on `PATH` (a shell function or alias is invisible to a `PATH` probe by construction, so the real command runs untouched); piped commands are refused too, with one exception — `<cmd> | cat` (bare `cat`, sole consumer, no redirects) rewrites its source, because bare `cat` renders a stream for a reader rather than consuming its bytes
+- `npx tsc`, `npx eslint`, `npx prettier`, `npx biome` and `npx oxlint` are rewritten only when the tool is in `node_modules/.bin` of the current folder or of a parent folder, up to the repository root. Skim then runs `npx --no-install <tool>`, so the project's own copy runs. The rewritten command has `--via-npx` after the tool words, for example `skim prettier --write --via-npx src`. When the tool is not in the project, the `npx` command runs unchanged
 - Dev installs (`skim init --dev`): while working on skim itself, the hook's commit pin goes stale the moment you rebuild at a new commit, which forces a full reinstall on the next `skim init` and makes `skim doctor` exit 1 for being behind HEAD — neither of which rebuilding can fix, because HEAD keeps moving. `--dev` marks the installed hook as dev-pinned: the real commit is still recorded, and only the commit-staleness check is waived, so repeat installs take the already-up-to-date fast path and doctor stops failing. Version and binary-path checks are unchanged, and the waiver applies only to a hook whose SHA-256 manifest verifies. Dev mode is a property of the command, not stored state — running `skim init` **without** `--dev` reverts the hook to a strict install and reports `dev-pinned -> pinned`, so there is no `--undev`; `skim init --dev --force` re-stamps one in place
 - PATH wrappers (`skim init --wrappers`) now apply a force-raw sidecar marker (set by the PreToolUse hook when it identifies a pipeline shape where compression would cause byte loss) and an `fstat`/`isatty` gate (which serves raw bytes when stdout is a regular file, socket, or non-terminal character device). Together these partially close the compression-into-piped-consumer window (#319). Two holes remain (#514): (1) a same-tool concurrent command can clear a live marker, and (2) when no PreToolUse hook fires at all the wrapper falls back to `fstat`-only behaviour with no pipeline-shape awareness. Use `SKIM_PASSTHROUGH=1` when byte-exact output is required in those cases
+- A link or copy of skim that has a tool name and sits outside the wrappers folder finds the real tool behind it. If skim finds only itself, it prints one error line and exits with status 126. It does not start itself again. When a program that skim started reports this error, skim starts no other program. It prints the error line once and exits with status 126, so the number of starts is in proportion to the depth of the chain
 
 ### After-Run Compression (Claude Code auto mode)
 In auto permission mode, Claude Code runs a command without the PreToolUse rewrite. `skim init` also installs a PostToolUse hook, which compresses the output after the command ran.
@@ -107,15 +109,17 @@ In auto permission mode, Claude Code runs a command without the PreToolUse rewri
 - All subcommands support `--json` for machine-readable output
 
 ### Codebase Heatmap (`skim heatmap`)
-- **Churn hotspots** — files changed most frequently, ranked by commit count
-- **Blast radius** — file coupling detection: files that consistently change together
-- **Fix risk** — files with high fix-commit density or fix-after-touch patterns
-- **Bus factor** — files with a single dominant author (>80% of commits)
-- **Module health** — directory encapsulation scores (cross-boundary coupling violations)
-- Configurable time windows: `--window sprint` (14d), `--last 200`, `--since 30d`, or full history
-- File targeting with positional args and `--diff` to scope output without skewing metrics
-- `--insights` for threshold-filtered findings only (CRITICAL/WARNING severity one-liners)
-- `--json` for machine-readable output, `--path` to scope to a subdirectory
+- **Short ranked default view** (30 lines or fewer): a header line with the repository name, the `since..until` dates, the commit count and the window, then the top 10 **hotspots** by commit count, the top 5 code-to-code **coupling** pairs and the top 5 **fix-risk** files above the repository base rate, each row with its number and support. A capped section ends with one exact `N more (--detail <section>)` line. The last line points to the per-file card (`skim heatmap <file>`)
+- **`--detail <section>`** shows 25 rows of one section (`--top N` raises it), then one exact `N more (raise --top)` line: `hotspots`, `coupling`, `fix-risk`, `modules` (crate, package or top-folder encapsulation) or `bus-factor` (one author with more than 80% of a file's commits). Module health and bus factor show only with `--detail`
+- **`--top N`** sets the rows of each list in every view: the default view, `--detail`, `--insights`, the cards and JSON
+- **`skim heatmap <file>...`** prints a "before you edit" card per file (at most 5): co-change partners with 3 or more shared commits (tests first), up to 3 fix commits from history (at most 5 at any `--top`), and owners when the file has 2 or more authors. `--insights <file>` prints the same card
+- **Noise rules:** fix risk and bus factor need 5 commits of a file, coupling needs 3 shared commits, modules need 5 commits; a fix-risk row needs the lower bound of its fix rate above the repository base rate; bus factor needs 2 or more authors in the window. Modules come from tracked `Cargo.toml` and `package.json` folders, else the top folder
+- **Default excludes:** lock files, build output, logs, vendored code, and at any depth `CHANGELOG.md`, `*.snap`, `snapshots/`, `*.pb.go`, `*_pb2.py` and `generated/` folders (`--no-exclude` keeps them; a file marked "generated" only in a header line stays in)
+- **Non-code paths:** doc files (`*.md`, `*.rst`, `*.txt` and similar) and the top folders `docs`, `doc`, `.github`, `.devflow`, `tests` and `test` stay out of the hotspots, the modules and the insights. The `N more` line counts them, and JSON gives `left_out`; `--include-docs` keeps them. `--diff`, file arguments and a `--path` that is a non-code folder keep every path
+- **Fix commits:** a commit counts as a fix only when its subject says so: a `[fix]` tag, a `fix:` or `fix(scope):` type (also `bug`, `hotfix`, `patch`, `revert`), or one of these words first in the subject (`Revert "..."`). A word inside a description does not count. `skim search --risky` uses the same rule
+- `--insights` gives the top 20 CRITICAL/WARNING findings, ranked by severity, score, support and path, then one `N more (raise --top)` line
+- `--json` gives JSON version 2: one compact line, each array of rows capped like its section, with `counts.<section>.{total,shown}`; `file_targets[]` holds at most 20 targets, `warnings[]` has at most one line for each kind of warning, and `excluded_patterns[]` is the fixed pattern list
+- Configurable time windows: `--window sprint` (14d), `--last 200`, `--since 30d`, or full history; `--path` scopes the git log to a subdirectory, and `--diff <base>` gives the default view for the changed files
 
 ### Code Search (`skim search`)
 - **n-gram index** — build an AST-aware search index with `skim search --build` (incremental SHA-256 cache, 50K file cap; use `skim search --rebuild` for a full rebuild from scratch)
@@ -212,6 +216,10 @@ skim 'src/*.ts' --mode signatures --no-header
 # Extract type definitions
 skim src/types.ts --mode types
 
+# Print the raw source lines of one declaration, not the whole file
+skim src/app.ts --symbol parseConfig
+skim src/lib.rs --symbol Point::norm   # only norm inside the impl of Point
+
 # Extract markdown headers (H1-H3 for structure, H1-H6 for signatures/types)
 skim README.md --mode structure
 
@@ -256,6 +264,7 @@ skim - --language typescript   # Stdin (recommended; shebang auto-detected)
 - `--max-lines N` - Emit at most N lines total; when content is elided, one slot goes to the elision marker. One documented exception at `N=1`: 1 content line **plus** the marker (2 lines), because spending the only slot on the marker returns a view containing no code, and dropping the marker to fit is silent loss
 - `--last-lines N` - Emit at most N lines from the tail; when content is elided, one slot goes to the elision marker. The same `N=1` exception applies — the carve-out is a property of the bound, not of the direction
 - `--tokens N` - Fit output within N tokens by escalating through modes, then line-truncating with a marker
+- `--symbol NAME` - Print the raw source lines of one named declaration of one file. `Type::name` or `Type.name` selects a declaration inside one container. If two or more declarations have the name, skim prints all of them, each after a header line. One stderr notice line states how many lines are not shown. `--max-lines`, `--last-lines` and `--line-numbers` apply to the selected lines. Exit code 1: no declaration has the name. Exit code 2: the command is not a symbol read (stdin, two or more files, a glob, a directory, an empty name, `--tokens`, or a `--mode` other than `full`). Exit code 3: Markdown, JSON, YAML, TOML, or a file with no detected language. Known limits: raw source only. Functions in C and C++ files are not found, because their name is inside the declarator. Attributes, doc comments and decorators above a declaration are not in the printed range. The structure mode still parses `.tsx` files with the TypeScript grammar. See the [usage guide](docs/usage.md#symbol-read)
 - `--passthrough` - Bypass compression and exec the real tool with raw argv (equivalent to `SKIM_PASSTHROUGH=1`). **Not universal:** `env`/`printenv` keep credential redaction regardless of passthrough state, and the multi-level dispatchers (`cargo`, `dotnet`, `go`, `swift`) still serve the compressed summary whenever stdin is not a TTY — which is every agent harness, CI job, and pipeline. Run the tool directly when you need raw bytes from a build tool
 - `--debug` - Enable raw-fallback diagnostic banners on stderr (loss-bearing elision markers are always emitted regardless)
 - `--no-cache` - Disable caching
@@ -535,6 +544,7 @@ skim stats --clear               # Reset analytics data
 | `SKIM_DISABLE_ANALYTICS` | Set to `1`, `true`, or `yes` to disable recording |
 | `SKIM_INPUT_COST_PER_MTOK` | Override $/MTok for cost estimates (default: 3.0) |
 | `SKIM_ANALYTICS_DB` | Override analytics database path |
+| `SKIM_DEPTH` | Set by skim. Do not set it yourself. It counts the skim processes in one chain of starts. When the count is more than 32, skim prints one error line and exits with status 126 |
 
 Analytics recording is fire-and-forget (non-blocking) and does not affect command performance. Data is automatically pruned after 90 days.
 
@@ -648,7 +658,7 @@ cargo bench
 - MCP server mode for agent-native workflows
 
 ✅ **Analytics & Intelligence:**
-- `skim heatmap` — git history risk analysis (churn, coupling, bus factor, fix density)
+- `skim heatmap` — git history risk analysis: a short ranked view (churn, coupling, fix risk), `--detail` sections and per-file "before you edit" cards
 - `skim stats` — persistent SQLite dashboard with cost estimation
 - `skim discover` — missed optimization finder across agent sessions
 - `skim learn` — CLI error pattern detection and correction rules

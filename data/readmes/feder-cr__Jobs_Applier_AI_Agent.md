@@ -9,8 +9,6 @@
 </picture>
 <h3 align="center">An AI job application bot: automated job search, then it auto-applies to the jobs that match your resume, while you sleep.</h3>
 
-<a href="#the-count"><img alt="Applications sent with AIHawk, by all its users" src="https://raw.githubusercontent.com/feder-cr/Jobs_Applier_AI_Agent/badges/docs/badges/applications.svg"></a>
-
 <sub>FEATURED IN</sub><br>
 <a href="https://www.businessinsider.com/aihawk-applies-jobs-for-you-linkedin-risks-inaccuracies-mistakes-2024-11"><b>Business Insider</b></a> ·
 <a href="https://techcrunch.com/2024/10/10/a-reporter-used-ai-to-apply-to-2843-jobs/"><b>TechCrunch</b></a> ·
@@ -30,7 +28,7 @@ Give it your resume. The job search finds the postings that fit, you pick, and i
 | Step | What happens |
 |---|---|
 | **1. Reads your resume** | Turns it into a search: the titles, the skills and the places that fit you. |
-| **2. Searches** | 10 million postings from 37 public sources, rebuilt every five hours, searched on your computer. |
+| **2. Searches** | 6 million postings of the last 60 days from 37 public sources, rebuilt every five hours, searched on your computer. |
 | **3. Scores** | Asks of every posting, against your resume, one question: is it in line with you? How sure the answer is makes the score, from 1 to 5. 50 jobs to a page, the next one ready while you read this one. |
 | **4. You pick** | Select the jobs you want and say yes once. |
 | **5. Applies** | A real Firefox opens the company's form, fills every required field, attaches your CV and sends. |
@@ -46,29 +44,15 @@ Windows, in PowerShell:
 irm https://raw.githubusercontent.com/feder-cr/Jobs_Applier_AI_Agent/main/run.ps1 | iex
 ```
 
-Linux:
+Linux, and macOS (on a Mac AIHawk finds and scores the jobs, but cannot send applications yet: its browser has no Mac version):
 
 ```bash
 curl -LsSf https://raw.githubusercontent.com/feder-cr/Jobs_Applier_AI_Agent/main/run.sh | sh
 ```
 
-You need a key: [get one from OrcaRouter](https://www.orcarouter.ai/ref/ref_accd17afb78fc95ac4d7).
+You need a key: [get one from OrcaRouter](https://www.orcarouter.ai/ref/ref_accd17afb78fc95ac4d7). Signing up is free, and a new account starts with no credit: add a few dollars there before the first start, or AIHawk cannot read your resume. An application costs a few cents.
 
-## The count
-
-AIHawk tells us how it is used, so we know what to fix. It sends these events to [PostHog](https://posthog.com), with a random id made on your computer the first time, so each computer counts once:
-
-| Event | When | What it carries |
-|---|---|---|
-| `app_started` | AIHawk opens | AIHawk's version, the operating system |
-| `first_run` | each step before the first search | the step (key asked or saved, resume read or not, mail, jobs downloading or ready), the seconds since AIHawk opened |
-| `search` | a search ends | how many jobs it found |
-| `jobs_scored` | Jev reads a round | how many postings, how many it answered for, how long it took, the model |
-| `app_closed` | AIHawk closes | the last step it reached, whether it searched, how long it was open |
-| `application` | an application ends | how it went (sent, refused, blocked, failed), why in one word (captcha, login, closed posting…), the kind of site (Workday, Greenhouse…), the models, the gateway, the steps, the time, and the tokens each model read and wrote |
-
-Nothing about you or the jobs goes with them: no name, email, resume, answer, company or link. The number on the badge above is the applications sent. The count is always on; a dry run is not counted.
-
+The first start downloads about 250 MB and takes a minute or two; after that it opens in seconds, also without a connection. Nothing else needs installing first (on Linux, `curl`). The first application brings the browser, about 430 MB more, and opens it in a window: on Linux that needs a desktop.
 
 ---
 

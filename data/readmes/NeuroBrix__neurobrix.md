@@ -1,23 +1,63 @@
-# NeuroBrix
+<p align="center">
+  <img src="./assets/logo_NeuroBrix.png" alt="NeuroBrix logo" width="140"/>
+</p>
 
-NeuroBrix is an open-source inference engine that runs AI models (language models,
-vision-language and omni models, speech recognition, speech synthesis, image and video
-generation, and image upscaling) from one container format and one command-line tool.
-It is for developers who want to run these models on their own GPUs or CPUs, on Linux,
-Windows and macOS, without writing or maintaining a separate pipeline for each model family. NeuroBrix does not
-train models. It runs published models that have been packaged as `.nbx` containers and
-distributed through the [NeuroBrix Hub](https://neurobrix.org/models).
+<h1 align="center">NeuroBrix</h1>
 
 <p align="center">
-  <img src="./assets/logo_NeuroBrix.png" alt="NeuroBrix logo" width="160"/>
+  <b>Run real AI models on the GPU you already own. No PyTorch required.</b><br/>
+  Language, speech, image and video models from one engine and one container format.
 </p>
 
 <p align="center">
   <a href="https://pypi.org/project/neurobrix/"><img src="https://img.shields.io/pypi/v/neurobrix?color=blue" alt="PyPI"/></a>
-  <a href="https://pypi.org/project/neurobrix/"><img src="https://img.shields.io/pypi/pyversions/neurobrix" alt="Python versions"/></a>
   <a href="https://github.com/NeuroBrix/neurobrix/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-green" alt="License: Apache 2.0"/></a>
   <a href="https://neurobrix.org/models"><img src="https://img.shields.io/badge/hub-neurobrix.org-orange" alt="NeuroBrix Hub"/></a>
+  <a href="https://github.com/NeuroBrix/neurobrix/stargazers"><img src="https://img.shields.io/github/stars/NeuroBrix/neurobrix?style=social" alt="GitHub stars"/></a>
+  <a href="https://www.pythonweekly.com/p/python-weekly-issue-771-november-12-2026"><img src="https://img.shields.io/badge/featured%20in-Python%20Weekly%20%23771-3776AB?logo=python&logoColor=white" alt="Featured in Python Weekly #771"/></a>
 </p>
+
+<p align="center">
+  <img src="./assets/demo.gif" alt="pip install neurobrix, import TinyLlama, run it: the answer in the terminal" width="760"/>
+</p>
+
+```bash
+pip install neurobrix                      # the Triton engine: no PyTorch (about 1.8 GB installed)
+neurobrix import TinyLlama/TinyLlama-1.1B-Chat-v1.0 --accept-license
+neurobrix run --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 --prompt "Write a Python function that reverses a string."
+```
+
+## Why NeuroBrix
+
+- **Your hardware, not a rented API.** NeuroBrix plans where each part of a model runs from the GPUs and memory it
+  finds: one GPU, several GPUs, streamed through GPU memory, or offloaded to the host. A request that does not fit is
+  refused with the figures, never silently degraded.
+- **One engine for every family.** A mixture-of-experts language model, a speech recognizer and a video diffusion model
+  run through the same engine from the same `.nbx` container: 49 models ready on the
+  [hub](https://neurobrix.org/models), no pipeline per model.
+- **No PyTorch underneath, if you want.** The Triton engine runs on [nbxtensor](https://github.com/NeuroBrix/nbxtensor),
+  our tensor library, with kernel settings certified per GPU class against a float64 reference. The PyTorch engine runs
+  the same container, so each can be checked against the other.
+
+## Runs on hardware you own
+
+| Hardware | Status |
+|---|---|
+| NVIDIA GPUs on Linux and Windows | Released; both engines. Our own test machines are V100s. |
+| Mac GPUs (Metal) | Released; both engines (`python -m nbxtensor install-metal`). |
+| CPU (x86-64) | Released (PyTorch engine). |
+| Other GPUs | Experimental, not yet validated on hardware by our lab; reports welcome: [open an issue](https://github.com/NeuroBrix/neurobrix/issues). |
+
+Three things to try, one command each:
+
+```bash
+neurobrix run --model hexgrad/Kokoro-82M --prompt "Hello from my own GPU." --output speech.wav   # text to speech
+neurobrix run --model openai/whisper-large-v3-turbo --audio recording.wav                        # speech to text
+neurobrix run --model ostris/Flex.1-alpha --prompt "a lighthouse at dusk" --output lighthouse.png  # text to image
+```
+<!-- Commands and flags from "## Usage by family" below (checked against 0.6.11, 2026-11-12). -->
+
+If NeuroBrix runs a model for you, a ⭐ helps other people find it.
 
 <p align="center">
   <a href="https://neurobrix.org/models">Hub</a> &nbsp;|&nbsp;
@@ -40,8 +80,8 @@ distributed through the [NeuroBrix Hub](https://neurobrix.org/models).
   denoising, encoder-decoder, and others).
 - **Two independent compute branches over the same container.** The default branch runs
   the graph through PyTorch (ATen, with cuDNN and cuBLAS on NVIDIA GPUs). The Triton branch
-  (`--triton`) runs the same graph through NeuroBrix's own Triton kernels and its own tensor
-  type instead of PyTorch's operator library. The branches share the container and the
+  (`--triton`) runs the same graph through nbxtensor, NeuroBrix's tensor library (its Triton kernels
+  and its tensor type), instead of PyTorch's operator library. The branches share the container and the
   placement plan, not compute code, so one can be checked against the other.
 - **Placement is computed, not configured.** NeuroBrix detects the machine's devices and
   memory and plans where each component runs: on one GPU, across several GPUs, streamed
@@ -60,7 +100,7 @@ ready-made containers from the hub.
 ## Install and first run
 
 NeuroBrix needs Python 3.10 or newer. The current release is
-**0.6.5** ([release notes](https://github.com/NeuroBrix/neurobrix/releases/tag/v0.6.5)).
+**0.6.13** ([release notes](https://github.com/NeuroBrix/neurobrix/releases/tag/v0.6.13)).
 
 It has two engines. The **Triton engine** (`--triton`) runs on
 [nbxtensor](https://github.com/NeuroBrix/nbxtensor) and Triton and needs no PyTorch. The
@@ -342,7 +382,7 @@ neurobrix upscale --model xinntao/Real-ESRGAN-RealESRGAN_x4plus --input photo.pn
 | Flag | Branch | Use |
 |---|---|---|
 | `--compiled` | PyTorch | Normal use; the default where PyTorch is installed. |
-| `--triton` | Triton | The engine's own Triton kernels instead of PyTorch's operator library; the default where PyTorch is not installed. |
+| `--triton` | Triton | nbxtensor's Triton kernels instead of PyTorch's operator library; the default where PyTorch is not installed. |
 | `--sequential` | PyTorch, one operation at a time | Debugging. |
 | `--triton-sequential` | Triton, one operation at a time | Debugging. |
 
@@ -369,7 +409,7 @@ scripting.
 
 ### Certify your GPU and share it
 
-The Triton engine's kernel settings are certified per launch key (the kernel, its shape class
+nbxtensor's kernel settings, which the Triton engine runs, are certified per launch key (the kernel, its shape class
 and dtypes) and per GPU class, against a float64 oracle, and shipped. A key your GPU class has
 no certificate for is swept at run time and kept on your machine; certifying it makes it
 permanent, and sharing it means nobody with your GPU sweeps it again. The four steps, with the
@@ -413,6 +453,7 @@ not filed as public issues.
   [GitLab](https://gitlab.com/neurobrix/neurobrix)
 - Model hub: [neurobrix.org/models](https://neurobrix.org/models)
 - Documentation: [docs.neurobrix.org](https://docs.neurobrix.org) and the [docs/](./docs) directory
+- The tensor library (nbxtensor) and its own documentation: [github.com/NeuroBrix/nbxtensor/tree/main/docs](https://github.com/NeuroBrix/nbxtensor/tree/main/docs)
 - Building applications and coding agents: [docs/BUILD_WITH_AGENTS.md](./docs/BUILD_WITH_AGENTS.md)
 - Roadmap: [docs/roadmap.md](./docs/roadmap.md)
 - Changes: [CHANGELOG.md](./CHANGELOG.md)

@@ -1,5 +1,5 @@
 # Quarkus + LangChain4j + AI Stack
-# Version: 0.23.4
+# Version: 0.25.0
 
 ## What this repository is
 
@@ -88,7 +88,7 @@ setup skill is what puts them in place.
 *Manual fallback,* if you would rather wire it by hand: register the Quarkus Agents MCP with the
 pinned command
 `claude mcp add -s user quarkus-agent -- jbang --java 21+ io.quarkus:quarkus-agent-mcp:1.2.13:runner`;
-add context7 with `claude mcp add -s user context7 -- npx -y @upstash/context7-mcp@4.5.1` (see [authentication and launch environment](#context7-authentication-and-launch-environment)); optionally install superpowers with
+add context7 with `claude mcp add -s user context7 -- npx -y @upstash/context7-mcp@4.7.0` (see [authentication and launch environment](#context7-authentication-and-launch-environment)); optionally install superpowers with
 `/plugin marketplace add obra/superpowers-marketplace` then
 `/plugin install superpowers@superpowers-marketplace`; and copy [`CLAUDE.md`](CLAUDE.md) into your
 project root yourself (Claude only auto-loads it from a project root or `~/.claude/`, so no plugin
@@ -129,7 +129,7 @@ registers the **Quarkus Agents MCP** and **context7** MCP servers for Codex, and
 into your project root. `AGENTS.md` §1 makes those two MCP servers non-negotiable for this stack.
 
 *Manual fallback:* add the Quarkus Agents MCP with `codex mcp add quarkus-agent -- jbang --java 21+ io.quarkus:quarkus-agent-mcp:1.2.13:runner`;
-add context7 with `codex mcp add context7 -- npx -y @upstash/context7-mcp@4.5.1` (see [authentication and launch environment](#context7-authentication-and-launch-environment)); install/enable the Superpowers plugin if you use it; and copy
+add context7 with `codex mcp add context7 -- npx -y @upstash/context7-mcp@4.7.0` (see [authentication and launch environment](#context7-authentication-and-launch-environment)); install/enable the Superpowers plugin if you use it; and copy
 [`AGENTS.md`](AGENTS.md) into your project root (Codex reads project instructions from the project
 tree).
 
@@ -168,6 +168,15 @@ skills into `.bob/skills/` for you:
 # ./scripts/install-bob-skill.sh /path/to/project  # into that project's .bob/skills/
 # ./scripts/install-bob-skill.sh --global          # into ~/.bob/skills/
 ```
+
+Re-running it refreshes the three skills, including removing supporting files a newer release
+dropped. It applies the same ownership check as the uninstaller below: an existing
+`.bob/skills/audit-project` (or either of the other two names) is replaced only when its
+`SKILL.md` front matter declares that name. A directory that declares a different name, declares
+none, or has no `SKILL.md` — or is a symlink — is left untouched with a warning; the other skills
+are still installed and the script exits non-zero. Rename or move your directory aside, then
+re-run. A skill of your own that *also* declares `name: audit-project` cannot be told apart from
+ours and **will** be overwritten.
 
 Bob asks for approval before activating a skill — once per conversation, not once ever; the setting
 is a single global toggle rather than a per-skill grant. Two things to know while you are here: a
@@ -244,8 +253,9 @@ scaffolding and setup in the skills, rules in `CLAUDE.md` or `AGENTS.md`.
   managed conventions block and points you to `/setup-agentic-scaffolding`, since it relies on
   the conventions instead of restating them.
 - **`audit-project`** (user-invoked) is read-only by default: it audits an existing project
-  against §2–§5, the package layout, and the dependency/properties baseline, and reports
-  prioritized findings with evidence and a suggested fix each — applying fixes only after you
+  against every convention in §2–§5 (`ci/check-audit-coverage.sh` fails when a convention has no
+  audit decision in its catalog), plus `scaffold-project`'s package layout
+  as a low-severity check, and reports prioritized findings with evidence and a suggested fix each — applying fixes only after you
   confirm, by handing off to `scaffold-project`'s component sections. Platform upgrades (an EOL
   Quarkus line, an unsupported Java release, pre-BOM LangChain4j) have no such handoff: they stay
   your own step.
@@ -406,7 +416,7 @@ so add them back for the current project:
 ```
 gemini extensions uninstall quarkus-agentic-scaffolding
 gemini mcp add -s project quarkus-agent jbang --java 21+ io.quarkus:quarkus-agent-mcp:1.2.13:runner
-gemini mcp add -s project context7 npx -y @upstash/context7-mcp@4.5.1
+gemini mcp add -s project context7 npx -y @upstash/context7-mcp@4.7.0
 gemini extensions list
 gemini mcp list
 ```
@@ -505,7 +515,7 @@ Two more things worth knowing:
 - **`CLAUDE.md` is often not in git.** Do not count on `git checkout` to undo this — that is what
   the backup in step 1 is for.
 
-Step 4 uses `grep -q '[^[:space:]]'` rather than a size test on purpose: a file containing only the
+Step 4b uses `grep -q '[^[:space:]]'` rather than a size test on purpose: a file containing only the
 block reduces to exactly 0 bytes, but a block with a blank line on each side leaves a 2-byte
 whitespace-only file. Interior blank lines double up after removal; that is cosmetic, and yours to
 tidy.
@@ -534,9 +544,14 @@ instruction files once at startup.
 ├── CLAUDE.md                 # Always-on project conventions (drop into your project root)
 ├── AGENTS.md                 # Codex/Bob equivalent of the always-on project conventions
 ├── CONTRIBUTING.md           # How to propose changes
+├── SECURITY.md               # Trust boundary of the skills; how to report a vulnerability
 ├── CHANGELOG.md              # Release history
 ├── LICENSE                   # Apache-2.0
 ├── .gitignore
+├── renovate.json             # Release watcher: platform baseline and the pinned MCP versions
+├── .github/                  # CI: quality gates, template validation, ecosystem watcher, release
+├── ci/                       # Scripts and tests behind those workflows (see CONTRIBUTING.md)
+├── evals/                    # Skill-effectiveness eval with results; the retired Codex pilot's report
 ├── .claude-plugin/           # Claude installable-plugin + marketplace manifests
 │   ├── plugin.json
 │   └── marketplace.json
@@ -552,10 +567,20 @@ instruction files once at startup.
 │   ├── install-bob-skill.sh    # Fallback: copy the skills into a project's (or global) .bob/skills/
 │   └── uninstall-bob-skill.sh  # The mirror: remove them again (see Uninstall)
 ├── docs/
-│   └── VALIDATING-TEMPLATES.md   # How to verify the templates still build
+│   ├── agents/
+│   │   ├── issue-tracker.md      # Where issues live and how agent skills read and write them
+│   │   ├── triage-labels.md      # Triage roles mapped to this repo's labels
+│   │   └── domain.md             # Where domain language and decision records live
+│   ├── VALIDATING-TEMPLATES.md   # How to verify the templates still build and start
+│   ├── AGENTIC-COMPENSATION.md   # Decision record: why compensation is not a default convention
+│   ├── ANTHROPIC-SUBMISSION.md   # Community-marketplace submission kit
+│   ├── EVOLUTION-PLAN.md         # Frontier audit and action plan (2026-07-10)
+│   └── FLOW-REDESIGN-PLAN.md     # Three-skill flow redesign plan (2026-07-21)
 └── skills/
     ├── setup-agentic-scaffolding/   # User-invoked: prerequisites (toolchain, MCP, conventions)
     │   ├── SKILL.md
+    │   ├── references/
+    │   │   └── bob-mcp.md               # Bob MCP registration procedure
     │   └── templates/
     │       ├── conventions-CLAUDE.md    # Byte-for-byte seed copy of root CLAUDE.md
     │       └── conventions-AGENTS.md    # Byte-for-byte seed copy of root AGENTS.md
@@ -566,6 +591,7 @@ instruction files once at startup.
     │       ├── application.properties.template
     │       ├── AiService.java.template
     │       ├── AiServiceTest.java.template
+    │       ├── ApplicationIT.java.template
     │       ├── RestResource.java.template
     │       ├── Agent.java.template
     │       ├── McpClient.java.template
@@ -718,7 +744,8 @@ python3 evals/effectiveness/run.py --with-claude-md /tmp/qas-eval-2   # rounds 2
 ```
 
 An earlier [12-run Codex pilot](evals/skill-pilot/results/2026-09-09/REPORT.md) was inconclusive
-because its documentation prerequisites failed; it is kept as published.
+because its documentation prerequisites failed. It is [retired](evals/skill-pilot/README.md): its
+report is kept as published, and its runnable inputs live on in the tag `eval-pilot-2026-09-09`.
 
 The [Anthropic community submission kit](docs/ANTHROPIC-SUBMISSION.md) is prepared and validated;
 submission remains pending authentication. No community or official-directory listing is claimed.
@@ -740,4 +767,4 @@ Licensed under the **Apache License 2.0**. See [`LICENSE`](LICENSE) for the full
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for how to propose changes to the conventions, the skills,
 and the templates — including how to keep new patterns evidence-backed, and how to confirm the
-templates still build (see [`docs/VALIDATING-TEMPLATES.md`](docs/VALIDATING-TEMPLATES.md)).
+templates still build and start (see [`docs/VALIDATING-TEMPLATES.md`](docs/VALIDATING-TEMPLATES.md)).

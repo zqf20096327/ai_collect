@@ -77,7 +77,8 @@ What it does:
   on activations screens everything, expensive checks run only on hits:
   per-token scalar readouts against your directions that stay alive with
   the visualization off and can flip the full instruments on the moment
-  they fire. Train your own with one request, with holdout AUC so you know
+  they fire. They read the prompt too: a verdict on the user's message
+  before the first answer token. Train your own with one request, with holdout AUC so you know
   whether the meter measures signal or noise
   ([details ↓](#probes-and-the-slop-o-meter)).
 - **Watch words surface before they're written** — a
@@ -116,7 +117,7 @@ brainscope --model tiny --lens on    # 0.5B, runs on CPU - good first try
 ```
 
 No app handy? The viz page has a built-in chat box - type and watch. Or run
-the whole instrument on a 135M-parameter model at microcontroller pace:
+the whole instrument on a 28.9M-parameter model at microcontroller pace:
 [examples/esp32](examples/esp32/README.md).
 
 Or skip Python entirely and run the Docker image:
@@ -306,6 +307,41 @@ benchmark. Give it a `threshold` and `"trip": "viz"` and the full instruments
 switch themselves on the moment it fires — screen everything cheaply, look
 closely only at the hits.
 
+**It reads the prompt too.** While the model reads the prompt, the probe
+scores every token of the user's last message and reports before the first
+answer token is written: an input monitor, not only an output one. The strip
+shows the message in blue and the answer in amber, and the answer's smoothed
+level carries on from where the message ended. A probe that fires on the
+message trips the instruments before the answer starts, so the whole answer
+is captured. The reading is kept in `GET /gen` and in the trace as
+`probe_prompt`.
+
+![The probe strip: the user's message in blue, red where the probe crossed its line, then the answer in amber](docs/img/probe-reads-the-prompt.png)
+
+*Qwen2.5-Coder-1.5B, an intent probe on layer 13 (a linear probe trained to
+tell attack requests from coding requests:
+[hidden-intent](https://github.com/moudrkat/hidden-intent)). The
+request asks for a todo app and, in one sentence, to quietly send a copy of
+everything the user types to the requester's own server. The probe crosses its
+line at " everything", right after "quietly send a copy of": token 43 of the
+67 in the message, before the model has written a word.*
+
+A probe trained elsewhere comes in as it is: its weights as `vector`, its
+`bias`, and `hidden_state`, the transformers `hidden_states` index it was
+fitted on. brainscope reads the decoder layer whose output that is
+(`hidden_state − 1`) and scores `h·v + bias`, the probe's own per-token logit:
+
+```bash
+jq '{probes: [{name: "intent", vector: .direction, bias: .bias,
+               hidden_state: .hidden_state, threshold: 0, ema: 0.2}]}' probe.json \
+  | curl -s localhost:8010/probes -H 'Content-Type: application/json' -d @-
+```
+
+On the request above that probe gives a mean logit of −3.44 over the whole
+message, a pass, while the smoothed level crosses 0 at the same " everything":
+a long request dilutes a one-sentence attack in the mean, a running level does
+not.
+
 `POST /probes/train` builds one from two contrast personas without any external
 tooling: the server generates the answers, extracts the diff-of-means direction
 from their activations, reports holdout AUC and a calibrated threshold, and
@@ -315,6 +351,24 @@ The worked example is the **slop-o-meter** — a probe that scores how far a rep
 has drifted into generic filler register, written up with the structure of a
 bank's model validation at toy scale:
 [docs/slopometer.md](docs/slopometer.md).
+
+## Bring your own
+
+brainscope is the instrument; most of what it loads you make yourself, here or
+elsewhere. What it reads, and where it usually comes from:
+
+| what | load it with | make it |
+|---|---|---|
+| steering directions | `--directions dirs.json` or a folder | contrast pairs: `python -m brainscope.extract`; a catalogue of 40 ready ones: [hidden-directions](https://github.com/moudrkat/hidden-directions) |
+| a probe | `POST /probes` (a loaded direction, or `vector` + `bias` + `hidden_state`) | two personas: `POST /probes/train`; any linear probe trained on your own data; an intent probe for coding requests: [hidden-intent](https://github.com/moudrkat/hidden-intent) |
+| a baked persona | `--bake folder/` | [hidden-directions](https://github.com/moudrkat/hidden-directions) |
+| a tuned lens | `--tlens params.pt` | the [`tuned-lens`](https://github.com/AlignmentResearch/tuned-lens) package |
+| a J-lens | `--jlens lens.pt` | `brainscope-jlens fit` |
+| a steering policy | `--policy policy.json` | by hand, see [docs/steering.md](docs/steering.md) |
+
+The rule of thumb: generic and quick lives in brainscope (any model, your data,
+minutes); a probe or a vector with its own dataset and evaluation is a project
+of its own and lives in its own repo.
 
 ## Steering
 
@@ -433,12 +487,13 @@ catalogue from
 
 ## Will it work with my app?
 
-Works when your app talks the **OpenAI chat-completions API** with
-**non-streaming** responses (`stream: true` is ignored, not rejected — the
-reply comes back as one non-streaming JSON body); tool calls
+Works when your app talks the **OpenAI chat-completions API**, streaming
+(`stream: true`, with `logprobs` if you ask) or not; tool calls
 are parsed in hermes/qwen, gemma-fenced and plain-JSON formats, and
 `tool_choice: "required"` (or a named function) is enforced by seeding the
-generation with the opening of a tool call in the model's own format.
+generation with the opening of a tool call in the model's own format. Streamed, a
+tool call arrives as `tool_calls` once it is complete, and reasoning inside
+`<think>` as `reasoning_content`.
 
 Honest limitations: generation runs on plain `transformers` - tens of tokens
 per second, one request at a time, no auth, context bounded by VRAM. Why not

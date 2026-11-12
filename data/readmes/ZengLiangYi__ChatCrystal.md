@@ -7,6 +7,7 @@
 **Local-first AI PKM for coding conversations**
 
 [![GitHub release](https://img.shields.io/github/v/release/ZengLiangYi/ChatCrystal?style=flat-square)](https://github.com/ZengLiangYi/ChatCrystal/releases)
+[![CI](https://github.com/ZengLiangYi/ChatCrystal/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ZengLiangYi/ChatCrystal/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/chatcrystal?style=flat-square)](https://www.npmjs.com/package/chatcrystal)
 [![ChatCrystal MCP server](https://glama.ai/mcp/servers/ZengLiangYi/ChatCrystal/badges/score.svg)](https://glama.ai/mcp/servers/ZengLiangYi/ChatCrystal)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square)](LICENSE)
@@ -39,7 +40,7 @@ It turns scattered AI coding conversations into structured notes, semantic searc
 
 ### Desktop App (Recommended)
 
-Download the latest Windows installer from [GitHub Releases](https://github.com/ZengLiangYi/ChatCrystal/releases). After installing, launch ChatCrystal and configure your LLM and embedding providers in Settings. Conversation history is synced automatically in the background on startup and when agent session files change — there is no import step to wait for. The sidebar shows the sync state and lets you trigger or cancel a pass.
+Download the latest Windows installer from [GitHub Releases](https://github.com/ZengLiangYi/ChatCrystal/releases). After installing, launch ChatCrystal and configure your LLM and embedding providers in Settings. Conversation history is synced automatically in the background on startup and when agent session files change — there is no import step to wait for. The sidebar shows the sync state and lets you trigger or cancel a pass. Rows that are still parsing appear immediately with an **Indexing** marker and load their transcript when opened.
 
 ### CLI / Web
 
@@ -59,6 +60,7 @@ Prefer self-hosting ChatCrystal for multiple devices? See [Docker Cloud Deployme
 
 - **Imports AI coding conversations** from 32 agent harnesses: Claude Code, Claude Desktop, Codex CLI, Cursor, Trae, GitHub Copilot Chat and CLI, Gemini CLI, Qwen Code, OpenCode, Cline, Roo Code, Kilo Code, Continue, DeepSeek Harness, WorkBuddy, CodeBuddy, Antigravity, Droid, Goose, Pi, omp, Raft, Cindy, Qoder/Qoder CN, ZCode, Hermes, Alma, Grok Build, Kimi Code, and MiniMax Code.
 - **Syncs automatically in the background** — a startup pass plus targeted file-watch passes keep conversations current without a manual import; the list fills as soon as each source is scanned, transcripts are parsed in worker threads (and cached for later), and sync progress is visible in the sidebar.
+- **Stays fast** — parsed transcripts are cached locally as gzip snapshots, so later reads, interrupted syncs, and detail loads do not re-parse every file; the cache self-prunes to 512 MB / 30 days.
 - **Reads WSL sessions on Windows** — Claude Code, Codex, Gemini CLI, Qwen Code, OpenCode, Cline, Continue, DeepSeek Harness and other agents installed inside a WSL distro are imported from the distro home (running distros are scanned by default).
 - **Distills conversations into structured notes** with titles, summaries, conclusions, snippets, and tags.
 - **Searches knowledge semantically** with embeddings and relation-aware result expansion.
@@ -154,7 +156,7 @@ Development server ports:
 - API/server: http://localhost:3721
 - Vite client: http://localhost:13721
 
-See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for architecture, testing, build, and release details.
+See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for architecture, testing, build, and release details. Release history lives in [CHANGELOG.md](CHANGELOG.md).
 
 ## Docker Cloud Deployment
 

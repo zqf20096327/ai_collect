@@ -39,8 +39,10 @@
 - **GitHub Action** with native SARIF 2.1.0 output for GitHub Code Scanning
 - **Check integrity** (`ai-guard integrity`) — detects changes that weaken checks: new suppressions, skipped or removed tests, lowered ESLint/TypeScript/coverage settings, removed CI steps
 - **Agent safety**: `ai-guard verify` (one verdict for a change), `ai-guard scan-agent-config` (hidden text and prompt injection in `CLAUDE.md`, skills and MCP config), and `changed --test-integrity` (weakened tests)
-- **Claude Code integration** with hooks that send findings back to Claude and, when it finishes, block once on weakened checks and on problems the session introduced
-- **MCP server** (`ai-guard-mcp`, 8 tools) for local AI-agent workflows over STDIO
+- **Hooks for Claude Code, Cursor and Codex** (`ai-guard init-hooks`): findings go back to the agent as it works, and it is stopped once before finishing on weakened checks or problems it introduced
+- **A pre-commit gate** (`ai-guard init-git-hook`) that checks every commit, whichever agent or person wrote it
+- **Works with Oxlint** as a JS plugin, with identical results checked in CI (`ai-guard init-oxlint`)
+- **MCP server** (`ai-guard-mcp`, 9 tools) for local AI-agent workflows over STDIO
 
 It is engineered to detect reliability bugs, async hazards, security vulnerabilities, and code-scaffolding defects frequently introduced during AI-assisted development (GitHub Copilot, Cursor, Claude Code, Gemini Code Assist, etc.).
 
@@ -181,9 +183,11 @@ Linting checks the code. These check the agent:
 | [`ai-guard verify`](./docs/cli/verify.md) | One verdict for the current change: lint findings it introduced, weakened tests, and agent-config issues. Pre-existing problems never block. |
 | [`ai-guard integrity`](./docs/integrity.md) | Everything that weakens checks vs a base revision: new suppressions, skipped or removed tests, lowered coverage and TypeScript settings, removed CI steps. |
 | [`ai-guard changed --test-integrity`](./docs/cli/test-integrity.md) | A test-focused comparison: focused, skipped, removed or weakened tests, rewritten snapshots, and test commands that can no longer fail. Overlaps with `integrity`; use `integrity` for the full set. |
+| [`ai-guard verify-deps`](./docs/cli/verify-deps.md) | Checks npm packages before they are installed: names that don't exist (invented by assistants), look-alikes of popular packages, new or rarely used packages, install scripts, deprecations, and releases published in the last day (skipped when the package manager enforces a release cooldown). Also as a pre-install hook for Claude Code, Cursor and Codex (`init-hooks --check-installs`) and the `ai_guard_check_package` MCP tool. Uses the npm registry; private registries are skipped. |
 | [`ai-guard scan-agent-config`](./docs/cli/scan-agent-config.md) | Scans `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, skills and MCP configs for hidden text, prompt injection, unpinned MCP servers and inline secrets. |
-| [Claude Code hooks](./docs/integrations/claude-code.md) | Findings reach Claude after each edit. When Claude finishes, the whole change is verified; what is still unresolved is shown to you. |
-| [MCP tools](./docs/mcp-server.md) | `ai_guard_scan_file`, `ai_guard_scan_diff`, `ai_guard_scan_project`, `ai_guard_rules`, `ai_guard_check_integrity`, `ai_guard_verify_change`, `ai_guard_scan_agent_config`, and `ai_guard_fix` (a diff, unless `apply` is set). |
+| [Agent hooks: Claude Code, Cursor, Codex](./docs/integrations/agents.md) | `ai-guard init-hooks` sets up every agent a project uses. Findings reach the agent after edits; before it finishes, the whole change is verified once; `git commit --no-verify` and risky installs are caught before they run. |
+| [Pre-commit gate](./docs/integrations/git-hook.md) | `ai-guard init-git-hook` runs `verify --staged` on every commit through husky, lefthook, simple-git-hooks or pre-commit. Only problems the commit introduces block it. |
+| [MCP tools](./docs/mcp-server.md) | `ai_guard_scan_file`, `ai_guard_scan_diff`, `ai_guard_scan_project`, `ai_guard_rules`, `ai_guard_check_integrity`, `ai_guard_verify_change`, `ai_guard_scan_agent_config`, `ai_guard_check_package`, and `ai_guard_fix` (a diff, unless `apply` is set). |
 
 ---
 
@@ -291,9 +295,13 @@ npx ai-guard <command> [options]
 | `run` | Scan your workspace using AI Guard AST rules | `--path <dir>`, `--strict`, `--security`, `--json`, `--sarif`, `--fail-on <level>`, `--max-warnings <n>`, `--inline-suppressions <mode>` |
 | `changed` | Fast CI scan — only scans modified files in git | `--pr`, `--staged`, `--base <branch>`, `--baseline [file]`, `--integrity <off\|report\|enforce>`, `--test-integrity`, `--inline-suppressions <mode>`, `--strict`, `--sarif`, `--sarif-output <file>`, `--fail-on <level>` |
 | `verify` | One verdict for the current change ([docs](./docs/cli/verify.md)) | `--base <ref>`, `--staged`, `--preset <name>`, `--strict`, `--json` |
+| `verify-deps` | Check npm packages before they are installed ([docs](./docs/cli/verify-deps.md)) | `[packages...]`, `--base <ref>`, `--staged`, `--all`, `--json`, `--sarif`, `--fail-on <level>` |
 | `scan-agent-config` | Scan agent instructions and MCP config ([docs](./docs/cli/scan-agent-config.md)) | `--path <dir>`, `--json`, `--sarif`, `--fail-on <level>`, `--update-lock` |
 | `integrity` | Detect changes that weaken checks vs a base revision ([docs](./docs/integrity.md)) | `--base <ref>`, `--pr`, `--staged`, `--enforce`, `--json`, `--sarif`, `--accept <fingerprints\|all>` |
 | `init` | Automatically detect environment & configure ESLint | `--preset <name>`, `--flat`, `--dry-run`, `-y, --yes` |
+| `init-hooks` | Hooks for Claude Code, Cursor and Codex ([docs](./docs/integrations/agents.md)) | `--agent <list>`, `--check-installs`, `--no-stop-hook`, `--no-bash-guard`, `--dry-run` |
+| `init-git-hook` | Pre-commit gate running `verify --staged` ([docs](./docs/integrations/git-hook.md)) | `--manager <name>`, `--check-deps`, `--dry-run` |
+| `init-oxlint` | Add AI Guard to `.oxlintrc.json` ([docs](./docs/integrations/oxlint.md)) | `--preset <name>`, `--dry-run` |
 | `init-context` | Generate prompt instruction files for AI coding agents | `-a, --all`, `--force`, `--dry-run`, `--rules <categories>` |
 | `doctor` | Diagnose your ESLint, parser, and plugin environment | (No options needed — prints actionable diagnostic report) |
 | `baseline` | Record existing findings, then report only new ones | `create`, `check`, `--fail-on <level>`, `--json`, `--mode <strict\|stable>`, `--preset <name>` |
@@ -378,7 +386,9 @@ This dual-layer defense minimizes review friction and ensures generated code mee
 
 ## Claude Code Integration
 
-Two ways to use it. Pick one:
+Using Cursor or Codex too? `npx ai-guard init-hooks` sets up every agent the project uses; see [Agent hooks](./docs/integrations/agents.md).
+
+Two ways to use it with Claude Code. Pick one:
 
 - **In a project (recommended):** `npm install --save-dev eslint-plugin-ai-guard`, then `npx ai-guard init-claude`. This writes the hooks into the project's `.claude/settings.json`, so everyone on the project gets them.
 - **As a Claude Code plugin** (adds the MCP tools and the `/ai-guard:verify-changes` skill, and works in projects without AI Guard installed): `claude plugin marketplace add ai-guard-dev/eslint-plugin-ai-guard`, then `claude plugin install ai-guard@ai-guard-plugins`.
@@ -392,7 +402,7 @@ npx ai-guard init-claude
 
 - **PostToolUse** — after each edit, findings from the `agent` preset and newly weakened checks in the edited file are sent back to Claude (`decision: "block"` + `reason`, per the hooks protocol). Earlier versions printed plain stdout, which Claude Code does not show to Claude.
 - **SessionStart + Stop** — before Claude finishes, [check integrity](./docs/integrity.md) runs on everything changed in the session. High-confidence weakenings (a new `.skip`, `eslint-disable`, lowered threshold…) block stopping once per finding set; advisories are shown to you, never block. The same hook then [verifies](./docs/cli/verify.md) lint findings and agent-config issues the session introduced (placeholder code, a canned return under a test runner, a hidden instruction in `CLAUDE.md`), which also block once. Skip both with `--no-stop-hook`.
-- **PreToolUse (Bash)** — `git commit --no-verify` / `HUSKY=0` ask for confirmation.
+- **PreToolUse (Bash)** — `git commit --no-verify` / `HUSKY=0` ask for confirmation. With `--check-installs` (opt-in, uses the npm registry), packages in install commands are checked first: names that don't exist are blocked; look-alikes of popular packages and releases from the last day ask you.
 
 ```bash
 # Preview before applying

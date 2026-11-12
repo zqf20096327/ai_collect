@@ -227,6 +227,7 @@ Data Leak, scam, username, domain, social
 - [You.com](https://you.com/) - AI search engine with multiple modes for different research needs.
 - [Phind](https://www.phind.com/) - AI search engine optimized for developers and technical queries.
 - [Exa.ai](https://exa.ai) - Ai search engine.
+- [Keenable](https://keenable.ai) - Independent web search index for AI agents, with search and page fetch over API, CLI and MCP.
 
 ### AI Research & Academic Tools
 
@@ -1064,4 +1065,4 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 
 - [LinkedIn Search](https://recruitin.net/) - Easily use Google to search profiles on LinkedIn.
 - [LinkedIn Search Engine](https://cse.google.com/cse?cx=daaf18e804f81bed0) - Custom google search for linkedin.
-- [LinkedIn Email Reverse Lookup](https://osint.support/chrome-extensions/2019/09/03/linkedin-email-reverse-lookup.html) - Chrome extention for linkedin Simply provide an email address which is of interest to you and click Search. If a match is found the name, p
+- [LinkedIn Email Reverse Lookup](https://osint.support/chrome-extensions/2019/09/03/linkedin-email-reverse-lookup.html) - Chrome ex

@@ -8,7 +8,7 @@
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
 
 A standalone, single-node NegPiP implementation for **Z-Image**, **Z-Image
-Turbo**, **Krea 2**, **SD1**, **SDXL**, and **Anima**. The node patches the
+Turbo**, **Krea 2**, **MOSS-Image / MOSS Turbo**, **SD1**, **SDXL**, and **Anima**. The node patches the
 connected model, merges separate positive and negative text strings, and
 returns the conditioning required by a normal ComfyUI sampling workflow.
 
@@ -143,12 +143,59 @@ categories can react non-linearly, so start with a strength around `0.25` to
   fallback is included, but direct connections from this node remain the
   safest path.
 
+## MOSS-Image / MOSS Turbo notes
+
+MOSS support is new in 2.2.0 and experimental pending generation tests with a
+real checkpoint. Use ComfyUI's **native MOSS-Image support** and `CLIPLoader`
+type **`moss_image`**, with its **Qwen3.5-9B** text encoder. The older OpenMOSS
+custom HF loader is not supported by this NegPiP path.
+
+For an SFT checkpoint with an 8-step SFT DMD LoRA:
+
+1. Load the model, apply your model LoRAs including the DMD adapter, then connect
+   the resulting MODEL to **NegPiP Prompt (Multi-Model)**.
+2. Connect the MOSS CLIP loader and separate positive/negative STRING inputs.
+3. Connect `patched_model` and the node's conditioning outputs directly to the
+   sampler. For a second latent-refinement pass, use the same patched model and
+   conditioning outputs there as well.
+4. Keep the Turbo sampling baseline: **CFG 1**, **8 steps**, **Euler / simple**.
+   With CyberMOSS Sampler 0.1.1+, choose `turbo_reference` and verify that
+   `schedule_mode` is `simple`. NegPiP does not change the sigma schedule.
+
+Start with a short negative prompt at a low magnitude, for example:
+
+```text
+(watermark, text, jpeg artifacts:0.25)
+```
+
+The node encodes the positive prompt normally and negative spans separately,
+using MOSS's thinking-enabled chat template. It injects the negative embeddings
+before the template suffix and applies their signed magnitude to attention
+**V** projections in all main blocks and both text-refiner blocks. Both split
+Q/K/V and fused QKV projections are handled. The native attention backend,
+normalization, rotary positions, model LoRAs and other model patches remain in
+the computation. No extra negative diffusion pass is needed at CFG 1; the
+separate negative-span text encodes do add prompt-encoding work and memory use.
+
+Negative magnitude `0` removes that span. Empty negatives keep the native
+positive-only computation. Positive prompt weighting otherwise follows the
+native MOSS tokenizer; this path does not add positive-weight syntax to it.
+Custom chat templates, embedding transforms that discard NegPiP metadata,
+reference-image editing, compiled-model execution and third-party quantization
+backends have not been validated. Reference-image editing is rejected explicitly.
+
+Checks cover signed V projections, token/template alignment, batches, fused and
+split QKV, model/CLIP cloning, repeated prompts and CFG-1 tensor predictions.
+Passing these checks does not establish image quality or negative-prompt
+effectiveness on a particular SFT/DMD combination.
+
 ## Compatibility
 
 | Architecture | Status | Patch path |
 | --- | --- | --- |
 | Z-Image / Z-Image Turbo | Supported | Lumina2 / NextDiT / Qwen3-4B |
 | Krea 2 | Supported | SingleStreamDiT / Qwen3-VL-4B / 12-layer text fusion |
+| MOSS-Image / MOSS Turbo | Experimental | Native MOSSImage / Qwen3.5-9B / main + text-refiner V projections |
 | SD1 | Supported | paired CLIP embeddings + cross-attention patch |
 | SDXL / SDXL Refiner | Supported | paired CLIP embeddings + cross-attention patch |
 | Anima | Supported | Qwen3-0.6B encoder + internal T5 weight mask + current Cosmos API |
@@ -167,6 +214,17 @@ second one.
 The Anima implementation uses the current ComfyUI rotary-position API and does
 not import the removed `apply_rotary_pos_emb` function from
 `comfy.ldm.cosmos.predict2`.
+
+## Development checks
+
+With Python 3.11+ and PyTorch installed, run:
+
+```sh
+python -B -m unittest discover -s tests -v
+```
+
+The MOSS tests use real CPU tensors and small attention models with isolated
+ComfyUI boundary doubles. They do not load checkpoint weights.
 
 ## Credits and license
 

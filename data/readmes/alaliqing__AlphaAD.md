@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--11-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1411-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--12-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1404-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1411 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1404 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
 | Perception & Sensor Fusion | 224 | 2026-11-10 | [View papers](#category-perception-sensor-fusion) |
 | Prediction & World Models | 111 | 2026-11-08 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 97 | 2026-11-10 | [View papers](#category-planning-decision-making) |
+| Planning & Decision-Making | 96 | 2026-11-10 | [View papers](#category-planning-decision-making) |
 | Control & Vehicle Dynamics | 58 | 2026-11-10 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 51 | 2026-10-29 | [View papers](#category-mapping-localization) |
 | End-to-End & VLA | 161 | 2026-11-10 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 211 | 2026-11-08 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 157 | 2026-11-10 | [View papers](#category-systems-deployment-connectivity) |
+| Safety, Security & Verification | 208 | 2026-11-08 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 155 | 2026-11-10 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 29 | 2026-11-06 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 312 | 2026-11-08 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 311 | 2026-11-08 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -47,16 +47,16 @@ Each paper has one primary topic and may carry several method or resource tags. 
 |:--|--:|:--|
 | Dataset | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
 | Benchmark | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 192 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Simulation | 190 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 33 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 114 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| Cooperative / V2X | 113 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
 | VLA | 87 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
 | World Model | 119 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 137 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| Reinforcement Learning | 134 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 100 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
-| Explainability | 112 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
+| Explainability | 111 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
 | Human Interaction | 17 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
@@ -119,7 +119,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2611-07081"></a>
 
-### Wide View Synthesis from Overlapping Perspective Cameras in Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+### Wide View Synthesis from Overlapping Perspective Cameras in Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Kaixuan Zhang, Zhipeng Xiong, Minxian Li, Mingwu Ren, Xiatian Zhu<br>
 **Published:** 2026-11-04<br>
@@ -130,7 +130,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2611-06007"></a>
 
-### MotoVerse: A Benchmark for Predictive Perception of Motorized Two-Wheelers in Dense Unstructured Traffic ![New](https://img.shields.io/badge/New-red)
+### MotoVerse: A Benchmark for Predictive Perception of Motorized Two-Wheelers in Dense Unstructured Traffic ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Varun A. Paturkar, Shankar Gangisetty, C. V. Jawahar<br>
 **Published:** 2026-11-04<br>
@@ -492,7 +492,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-16906"></a>
 
-### Mining Cross-Modal Perception Gaps in Autonomous Driving: When Camera and LiDAR Disagree ![Recent](https://img.shields.io/badge/Recent-orange)
+### Mining Cross-Modal Perception Gaps in Autonomous Driving: When Camera and LiDAR Disagree ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Hongsen Cao, Mona Jaber, Shanxin Yuan, Ahmed Sayed<br>
 **Published:** 2026-10-12<br>
@@ -1211,7 +1211,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-13147"></a>
 
-### Geometry-Grounded Unified 3D Perception for Autonomous Driving ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### Geometry-Grounded Unified 3D Perception for Autonomous Driving
 
 **Authors:** Longfei Xu, Xiaohui Wang, Zehao Huang, Han Li, Ya Yang, et al.<br>
 **Published:** 2026-08-13<br>
@@ -1656,4 +1656,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Published:** 2026-07-04<br>
 **Links:** [arXiv abstract](https://arxiv.org/abs/2607.04098) | [PDF](https://arxiv.org/pdf/2607.04098.pdf) | [↑ BackToTop](#browse-by-topic)
 
-**Abstract:** In recent yea
+**Abstract:** In recent years, 4D imaging radar has gained wide

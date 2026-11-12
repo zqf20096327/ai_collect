@@ -28,7 +28,7 @@
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License"></a>
   </p>
 
-  <p><a href="https://karamage.github.io/cc-auto-review/#download"><strong>Download for macOS</strong></a> · <a href="https://karamage.github.io/cc-auto-review/#risk"><strong>Score a PR in your browser</strong></a> · <a href="https://karamage.github.io/cc-auto-review/">Website</a></p>
+  <p><a href="https://karamage.github.io/cc-auto-review/#download"><strong>Download</strong></a> · <a href="https://karamage.github.io/cc-auto-review/#risk"><strong>Score a PR in your browser</strong></a> · <a href="https://karamage.github.io/cc-auto-review/">Website</a></p>
 
   <p><a href="README.ja.md">日本語の README はこちら</a></p>
 
@@ -113,6 +113,12 @@ When you turn on the **autopilot**, the app works through your review requests b
 - **Prompt preview** shows exactly what Claude receives.
 - **Repository conventions** (`CLAUDE.md`, `AGENTS.md`, `REVIEW.md`) are read from the base branch.
 
+### 📓 Learnings
+- **Carries what a review learned to the next one**: Knowledge like "this pattern is intentional, don't flag it" is kept per repository and put in the next review's prompt, so the same false positives don't come back.
+- **AI suggestions need your approval**: A review can suggest up to 3 learnings. They go into the prompt only after you adopt them. Even on autopilot nothing is adopted automatically, because PR text that anyone can write reaches the model.
+- **Save one from a rejected finding**: When you reject a finding, **Remember as a learning** saves why. You can also add your own on the Learnings screen.
+- **Pins and a limit**: Up to 30 learnings per repository go into the prompt. Pinned ones always go in.
+
 ### 🤖 Autopilot (optional)
 - **Sweeps your review requests** on an interval, approves or comments, and re-reviews when the author pushes or replies.
 - **Hands risky PRs to a human**: by path, by changed lines, by risk score, or by natural-language criteria you write.
@@ -135,7 +141,7 @@ When you turn on the **autopilot**, the app works through your review requests b
 
 **[Download the DMG](https://karamage.github.io/cc-auto-review/#download)** for Apple silicon or Intel, open it, and drag the app to Applications. It is signed with a Developer ID and notarized by Apple, so it opens normally. All versions are on the [releases page](https://github.com/karamage/cc-auto-review/releases).
 
-On Linux x86_64, download the `.AppImage` or `.deb` from the [releases page](https://github.com/karamage/cc-auto-review/releases). They are not signed, so check them against the `.sha256` file next to each one. These builds are new: they start in CI but have not been tested on a real desktop yet, so please [report any problems](https://github.com/karamage/cc-auto-review/issues).
+On Linux x86_64, **[download the `.AppImage` or `.deb`](https://karamage.github.io/cc-auto-review/#download)**. They are not signed, so check them against the `.sha256` file next to each one. They start in CI but have not been tested on a real desktop yet, so please [report any problems](https://github.com/karamage/cc-auto-review/issues).
 
 ### Prerequisites
 

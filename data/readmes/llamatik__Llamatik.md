@@ -117,7 +117,7 @@ A production-ready agentic runtime for host-app integration:
 Fully **on-device**, optionally remote — all behind a **unified Kotlin API**.
 
 No Python.  
-No required servers.  
+No required servers (a self-hosted server is optional).  
 Your models, your data, your device.
 
 Designed for **privacy-first**, **offline-capable**, and **cross-platform** AI applications on Android, iOS, Desktop, and WASM.
@@ -175,10 +175,14 @@ Designed for **privacy-first**, **offline-capable**, and **cross-platform** AI a
 - ✅ On-device, fully offline
 - ✅ Configurable steps, CFG scale, seed, and `img2img` strength
 - ✅ **Text-to-video** (`txt2video`) — generate short video clips from text prompts; runtime capability check via `supportsVideoGeneration()`
+- ✅ **Generation progress** — `setProgressListener` reports live progress (stage, step, percentage) for images and video
+- ✅ **ControlNet** — guide images with pose, depth, canny edges and more via `loadControlNet` + `generateWithControl`
+- ✅ **Video upscaling** (`VideoUpscalerBridge`) — on-device video super-resolution (RelayVSR / SeedVR2 style models)
 
 ### 🔐 On-device & Private
 - ✅ Fully offline by default — no network required
-- ✅ No data exfiltration — models and data never leave the device
+- ✅ No data exfiltration by default — models and data never leave the device
+- ⚠️ If you choose to connect the app to a Llamatik Server, your prompts are sent to that server. Connections are currently **unencrypted (plain HTTP)** and not 100% secure — avoid sending sensitive data over untrusted networks. Encrypted connections are planned.
 - ✅ Optional remote inference via the built-in HTTP client for hybrid deployments
 
 ### 🧩 Kotlin Multiplatform
@@ -264,9 +268,9 @@ The dependency chain is strictly layered — each module only depends on modules
 
 | Library | Version | Versioning |
 |---|---|---|
-| llama.cpp | [v0.7.0](https://github.com/ggml-org/llama.cpp/releases/tag/v0.7.0) | Semantic versioning (`vMAJOR.MINOR.PATCH`) |
+| llama.cpp | [v0.9.0](https://github.com/ggml-org/llama.cpp/releases/tag/v0.9.0) | Semantic versioning (`vMAJOR.MINOR.PATCH`) |
 | whisper.cpp | [v1.9.5](https://github.com/ggml-org/whisper.cpp/releases/tag/v1.9.5) | Semantic versioning (`vMAJOR.MINOR.PATCH`) |
-| stable-diffusion.cpp | [master-1024-77b72a2](https://github.com/leejet/stable-diffusion.cpp/releases/tag/master-1024-77b72a2) | Git tag (no semver) |
+| stable-diffusion.cpp | [master-1088-32d516c](https://github.com/leejet/stable-diffusion.cpp/releases/tag/master-1088-32d516c) | Git tag (no semver) |
 
 > **Note:** Both llama.cpp and whisper.cpp now follow **semantic versioning**. Previously llama.cpp used build-number tags (e.g. `b4812`). Llamatik tracks these semver releases directly, so you can rely on stable API guarantees across patch and minor upgrades of the underlying libraries.
 
@@ -846,6 +850,36 @@ object StableDiffusionBridge {
         cfgScale: Float = 7.0f,
         seed: Long = -1L,
     ): ByteArray
+
+    /**
+     * Receives progress during txt2img / img2img / generateWithControl / txt2video.
+     * Called synchronously on the generation thread. Pass null to clear. No-op on WASM.
+     */
+    fun setProgressListener(listener: SdProgressListener?)
+
+    /** ControlNet hot-swap. Requires initModel first; never call during a generation. */
+    fun loadControlNet(path: String): Boolean
+    fun unloadControlNet(): Boolean
+    fun hasControlNet(): Boolean
+
+    /**
+     * Image generation guided by a control image (RGBA, controlImageW * controlImageH * 4 bytes).
+     * Requires a loaded ControlNet. Returns raw RGBA pixels, or an empty array on failure.
+     */
+    fun generateWithControl(
+        controlImageRgba: ByteArray,
+        controlImageW: Int,
+        controlImageH: Int,
+        controlType: SdControlType,
+        prompt: String,
+        negativePrompt: String? = null,
+        width: Int = 512,
+        height: Int = 512,
+        steps: Int = 20,
+        cfgScale: Float = 7.0f,
+        controlStrength: Float = 0.9f,
+        seed: Long = -1L,
+    ): ByteArray
 }
 ```
 
@@ -905,6 +939,44 @@ if (StableDiffusionBridge.supportsVideoGeneration()) {
 }
 ```
 
+#### Progress example
+
+```kotlin
+StableDiffusionBridge.setProgressListener { p ->
+    p.fraction?.let { updateProgressBar(it) }   // 0f..1f, null when the total is unknown
+}
+try {
+    val rgba = StableDiffusionBridge.txt2img(prompt = "a lighthouse at dusk")
+} finally {
+    StableDiffusionBridge.setProgressListener(null)
+}
+```
+
+#### ControlNet example
+
+```kotlin
+StableDiffusionBridge.initModel(modelPath)
+StableDiffusionBridge.loadControlNet(controlNetPath)   // reload after every initModel
+
+val rgba = StableDiffusionBridge.generateWithControl(
+    controlImageRgba = edgesRgba,       // already preprocessed, e.g. an edge map for CANNY
+    controlImageW = 512,
+    controlImageH = 512,
+    controlType = SdControlType.CANNY,
+    prompt = "a modern glass house, golden hour",
+)
+```
+
+#### Video upscaling (VideoUpscalerBridge)
+
+`VideoUpscalerBridge` upscales a packed clip (the layout `txt2video` returns) and keeps its own native context. Not available on WASM.
+
+```kotlin
+VideoUpscalerBridge.initModel(upscalerModelPath, upscalerVaePath, upscaleFactor = 2)
+val upscaled = VideoUpscalerBridge.upscale(packedBytes)   // background thread; empty array on failure
+VideoUpscalerBridge.release()
+```
+
 ### 👁️ Vision / Multimodal (MultimodalBridge)
 
 MultimodalBridge wraps llama.cpp's multimodal (VLM) support for on-device image analysis using vision-language models such as SmolVLM.
@@ -935,6 +1007,12 @@ object MultimodalBridge {
      * Must be called from a background thread/coroutine; blocks until generation completes.
      */
     fun analyzeImageBytesStream(imageBytes: ByteArray, prompt: String, callback: GenStream)
+
+    /**
+     * What the loaded model can do (vision, audio, video, ...); MultimodalCapabilities.NONE if
+     * nothing is loaded. Use canAnalyzeImages before calling analyzeImageBytesStream.
+     */
+    fun getCapabilities(): MultimodalCapabilities
 
     /** Cancel an in-progress analyzeImageBytesStream call. */
     fun cancelAnalysis()
@@ -987,6 +1065,20 @@ The Llamatik backend server is now maintained in a dedicated repository.
 [https://github.com/ferranpons/Llamatik-Server](https://github.com/ferranpons/Llamatik-Server)
 
 Visit the repository for full setup instructions, configuration options, and usage details.
+
+### Connecting the app to a server
+
+The Llamatik app can use a Llamatik Server for generation, with or without a local model:
+
+- **Settings → Server**: add a server manually by IP and port, or scan the local network (Llamatik Server advertises itself via mDNS as `_llamatik._tcp`); saved servers can be reconnected in one tap.
+- Capability chips show what the server has loaded (text, image, vision, video, audio).
+- Chat works with only a server connected; responses are streamed.
+- A status dot in the chat toolbar shows the server state: green (online), yellow (reachable but no text model), red (unreachable).
+- If the server fails or has no text model, the app falls back to local generation.
+
+> **Security note:** server connections are currently **not encrypted**. The app warns you before connecting. Be careful about what you send and avoid sharing passwords or sensitive information. Encrypted and unencrypted modes will both be supported in the future.
+
+Details: https://docs.llamatik.com/guides/connecting-to-a-server/
 
 ---
 

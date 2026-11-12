@@ -284,7 +284,7 @@ step only applies if you clicked the link in a browser.
 #### Windows
 
 ```powershell
-$Version = "v1.1.0"
+$Version = "v1.5.0"
 $Asset   = "ekos-$($Version -replace '^v','')-x86_64-pc-windows-msvc.zip"
 $Base    = "https://github.com/alexeyban/EKOS/releases/download/$Version"
 
@@ -303,11 +303,15 @@ Expand-Archive $Asset -DestinationPath .
 
 `ekos.exe` is inside the extracted folder. Move it somewhere on your `PATH`, or add that folder
 to `PATH`. SmartScreen may warn the first time you run it, for the same reason as macOS: the
-binary is unsigned.
+binary is unsigned. Since v1.5.0 `ekos.exe` is linked with the static C runtime, so it needs no
+Visual C++ Redistributable (no "VCRUNTIME140.dll was not found"); the `-full.zip` package also
+carries the console's own Python and its runtime DLLs.
 
 (The Linux/macOS block above was run verbatim against the real v1.0.3 release. This PowerShell
-one was not — no Windows machine was available — so treat it as carefully written rather than
-proven, and please open an issue if it misbehaves.)
+block was not run as written. Since v1.5.0 the Release workflow unpacks the Windows `-full.zip` on
+a Windows Server runner, runs `ekos setup` with answers, checks that the console answers, and runs
+`ekos uninstall`, so the package is exercised on every release. Please open an issue if this block
+misbehaves.)
 
 ### Offline, from an install package
 
@@ -1599,9 +1603,4 @@ hand-written DDL past plain ANSI. The `postgres` / `clickhouse` dialects carry t
 (RFC 0057/0058/0059) that makes real dumps parse; `generic` does not.
 
 A statement the dialect cannot parse costs that statement, not the file (RFC 0176). The rest of
-the file is still recovered, and `ekos recover` says what was skipped:
-
-- `SQL005` — `<file>: 2 of 61 statements were not parsed and skipped`, with the line, the first
-  words and the parser's error for each. A skipped `CREATE TABLE` is called out as a lost table.
-- `SQL001` — when a file states a `CREATE TABLE` and no table was recovered, the message names the
-  dialect it was parsed under and the first error, and points at `[[recov
+the file is still recovered, and `ekos recover`

@@ -37,6 +37,8 @@ pip install osam[cpu]  # or osam[gpu] for NVIDIA GPUs
 `osam[gpu]` installs `onnxruntime-gpu` together with the CUDA and cuDNN
 libraries, so no system CUDA install is needed. Install only one onnxruntime
 build: `onnxruntime` and `onnxruntime-gpu` overwrite each other's files.
+SAM3 needs Python 3.11 or later on CUDA. On Python 3.10, which gets
+onnxruntime-gpu 1.23, it runs on the CPU, and `device="cuda"` raises an error.
 
 For other GPUs (AMD, Intel, or NVIDIA without the CUDA libraries), install
 `osam[webgpu]`; osam then uses the GPU without `--device`. It runs on Vulkan,
@@ -102,7 +104,7 @@ Median of 5 runs after a warm-up, excluding model loading.
 | SAM2 Small | 651 | 74 | 121 | 2119 | 320 | 279 |
 | SAM2 BasePlus | 1237 | 104 | 179 | 2923 | 570 | 494 |
 | SAM2 Large | 2414 | 151 | 319 | 7596 | 1281 | 1109 |
-| SAM3 | 6563 | 347 | 741 | 15341 | 2466 | 3691 |
+| SAM3 | 8431 | 197 | 616 | 16425 | 1163 | 2390 |
 | EfficientSAM 10M | 399 | 55 | 253 | 781 | fails to load | 322 |
 | EfficientSAM 30M | 948 | 74 | 448 | 1767 | fails to load | 664 |
 | YOLO-World XL | — | — | — | — | fails to load | — |
@@ -121,14 +123,14 @@ encoding.
 | SAM2 Small | 44 | 17 | 74 | 58 | 61 | 28 |
 | SAM2 BasePlus | 50 | 17 | 69 | 51 | 65 | 28 |
 | SAM2 Large | 43 | 17 | 87 | 48 | 60 | 29 |
-| SAM3 | 1162 | 74 | 203 | 1519 | 376 | 604 |
+| SAM3 | 1085 | 33 | 99 | 1320 | 333 | 320 |
 | EfficientSAM 10M | 45 | 16 | 51 | 34 | fails to load | 27 |
 | EfficientSAM 30M | 46 | 15 | 56 | 35 | fails to load | 27 |
 | YOLO-World XL | 774 | 42 | 100 | 1829 | fails to load | 237 |
 
 Measured on `examples/_images/dogs.jpg` (2560x1600) with onnxruntime 1.23.2
 (onnxruntime-gpu 1.31.1 for CUDA; onnxruntime 1.30.0 and onnxruntime-ep-webgpu
-0.5.0 for WebGPU, on Vulkan and Metal).
+0.5.0 for WebGPU, on Vulkan and Metal, and for SAM3 on CoreML).
 Run `python examples/benchmark.py --device cpu --device cuda` to measure on
 your machine. Its New image column is image encoding plus the model's default
 prompt.
@@ -166,13 +168,17 @@ client = osam.Client(device="cuda")
 ```
 
 `cpu`, `cuda`, `coreml` and `webgpu` are supported. An unavailable device raises an
-error instead of falling back to CPU. With `coreml`, SAM3 runs its point
-decoder on CPU and the rest on CoreML. On Apple silicon, SAM3 encodes an image
-faster on CoreML than on WebGPU, but its first CoreML load takes about 40 s.
+error instead of falling back to CPU. With `coreml`, SAM3 runs its image
+encoder on CoreML and the rest on WebGPU when `osam[webgpu]` finds a GPU,
+otherwise on CPU. On Apple silicon, SAM3 encodes an image twice as fast on
+CoreML as on WebGPU, but its first CoreML load compiles the encoder into a
+1.8 GB cache.
 
 Without a device, inference runs on CUDA when the installed onnxruntime has it,
 then on WebGPU when `osam[webgpu]` finds a GPU, otherwise on CPU. A session that
 fails to start on the GPU, for example without a Vulkan driver, runs on CPU.
+On macOS with onnxruntime 1.24 or later, SAM3 runs as with `coreml`, falling
+back to the order above if CoreML fails.
 `client.ps()` tells which one was picked. To use another accelerator (CoreML on
 macOS, DirectML on Windows, TensorRT, ROCm), set `OSAM_ONNX_PROVIDERS` to a
 comma-separated list tried in the given order:
@@ -215,6 +221,10 @@ osam run sam3 --image examples/_images/dogs.jpg \
 osam run sam3 --image examples/_images/dogs.jpg \
   --text dog --negative-box 1200,400,1700,1400 > sam3_negative_box.png
 
+# Track objects through a directory of frames, prompted on the first one,
+# writing one PNG per frame (sam3)
+osam run sam3 --video frames/ --text person -o out/
+
 # Or give the whole prompt as JSON, in client.segment's keyword arguments
 osam run sam2 --image examples/_images/dogs.jpg \
   --prompt '{"box": [1233, 376, 1649, 691]}'
@@ -225,6 +235,9 @@ osam run sam3 --image examples/_images/dogs.jpg --prompt @prompt.json \
 
 <img src="assets/dogs_efficientsam.png" width="24%"> <img src="assets/dogs_sam2.png" width="24%"> <img src="assets/dogs_sam3.png" width="24%"> <img src="assets/dogs_sam3_box.png" width="24%">\
 <i>Output images: 'efficientsam_point.png', 'sam2_box.png', 'sam3_text.png', 'sam3_box.png'</i>
+
+Video output refuses to replace existing files unless `--overwrite` is given.
+Input frames are protected even with `--overwrite`.
 
 Each command starts a private server for its run, so every `osam run` loads
 the model again. To keep it loaded across commands, start `osam serve` and set
@@ -295,8 +308,38 @@ has to download the model first.
 `osam.Client(in_process=True)` runs models in your own process instead, with
 no server, and takes the same calls. `device`, `max_loaded_models` and
 `keep_alive` work as they do with a private server, and `close()` unloads its
-models. An unknown model raises `LookupError` on both; from a server, it is
-also an `osam.ResponseError` with status code 404.
+models and clears cached frames and tracking results. An unknown model raises
+`LookupError` on both; from a server, it is also an `osam.ResponseError` with
+status code 404.
+
+`client.track("sam3", frames, actions)` tracks objects through a list of RGB
+frames, taking the actions of `/api/track` below, and returns each frame's
+annotations and `done`. Each edit passes the `done.result` it was made on as
+`base`. It sends frames by reference first and sends inline only those the
+server lacks.
+
+Pass `progress=callback` to receive `osam.types.TrackProgress` while inference
+runs. A preparing event has `action` and `frame` set to `None`; later events
+give zero-based action and frame positions and `total_frames`. Positions can
+go backwards because tracking propagates in both directions, then collects
+final results. They are not a completion percentage. Raising from the callback
+stops the request. Cancellation takes effect between frames, after any native
+inference call or model compilation in flight finishes.
+
+```python
+response = client.track(
+    "sam3", frames, [{"type": "prompt", "frame": 0, "texts": ["person"]}]
+)
+first = response.done.objects[0].object_id
+response = client.track(
+    "sam3",
+    frames,
+    [
+        {"type": "prompt", "frame": 0, "texts": ["person"]},
+        {"type": "remove", "object_id": first, "base": response.done.result},
+    ],
+)
+```
 
 ### HTTP
 
@@ -328,7 +371,8 @@ in seconds or as a duration such as `"10m"`, with `-1` to keep it loaded and `0`
 to unload it now. `/api/ps` lists the loaded models and `/api/version` the
 server's version. Errors come back as `{"error": "...", "code": "..."}`,
 where `code`, such as `"model_not_found"` or `"missing_images"`, stays the same
-across releases, and `osam.ResponseError.code` holds it. `/api/models`,
+across releases, and `osam.ResponseError.code` holds it. Unknown request and
+prompt fields return 422 instead of being ignored. `/api/models`,
 `/api/pull` and `DELETE /api/models/{name}` match `osam list`, `osam pull` and
 `osam rm`; each model in `/api/models` also lists its `capabilities`, such as
 `"segment"`, and the `prompt_kinds` it takes, such as `"points"` and
@@ -336,3 +380,50 @@ across releases, and `osam.ResponseError.code` holds it. `/api/models`,
 `{"status": "pulling encoder.onnx", "completed": 524288, "total": 24799761}` and
 ends with `{"status": "success"}` or `{"error": "...", "code": "pull_failed"}`. The full schema is at
 <http://127.0.0.1:11368/docs>.
+
+`/api/track` tracks objects through a video with SAM3, as
+[ADR 0005](docs/adr/0005-video-tracking-as-a-declarative-timeline.md) describes.
+It takes `frames`, each an image file or a reference as in `/api/segment`, and
+`actions`, every edit so far: a `prompt` first, then `add`, `refine` and
+`remove`, each with `base`, the `result` of the response the edit was made on.
+
+```json
+{"model": "sam3", "frames": ["sha256:...", "sha256:..."], "actions": [
+  {"type": "prompt", "frame": 0, "texts": ["person"]},
+  {"type": "refine", "frame": 5, "object_id": 0, "points": [[320, 240]],
+   "point_labels": [0], "base": "sha256:..."}]}
+```
+
+It streams one line per frame, `{"frame": 0, "annotations": [...]}`, each
+annotation with its `object_id`, then
+`{"done": true, "objects": [...], "result": "sha256:...", "cache": "partial"}`
+and `"images"`, a reference to each frame to send next.
+The NDJSON stream starts with
+`{"progress": true, "action": null, "frame": null, "total_frames": 20}` and
+reports current frame positions while inference runs. Only the subsequent
+frame records contain finalized annotations. The stream ends with `done`, or
+with an error record such as
+`{"error": "...", "code": "base_changed", "status_code": 409, "result": "sha256:..."}`.
+The response has already started with HTTP 200, so clients must read error
+records. Invalid request bodies receive HTTP 422 before the stream starts.
+
+A changed `base` reports `base_changed` with the current `result` digest.
+`missing_images` reports status 412 and `images` to resend inline. The Python
+client retries missing frames and raises `osam.ResponseError` for failures,
+preserving `status_code`, `code`, `images` and `result`. Disconnecting cancels
+work between frames, including requests still waiting for the inference worker.
+
+`/openapi.json` documents all four NDJSON record types and the JSON HTTP error
+body. The video CLI prints current frame positions to stderr; `--json` stdout
+contains only finalized frame and done records.
+`/api/models` lists `"track"` in the `capabilities` of
+a model that tracks, SAM3.
+
+The server keeps the last video's tracking state in memory, so that the next
+edit applies without tracking from the start. At 1080p, each object takes about
+1.3 MB per frame for the first 320 frames and 0.6 MB for each frame after,
+when the tracker drops the oldest memory features, plus the annotations: one
+object over 400 frames kept 471 MB and 103 MB of annotations. A request that
+tracks again, for another video or with actions that don't extend the last
+ones, replaces it; one answered from the server's cache of results leaves it.
+Unloading the model frees it.

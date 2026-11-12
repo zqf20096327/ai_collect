@@ -29,13 +29,15 @@ slash command in the TUI, or pass a flag to headless prompts.
 
 ### UltraSave
 
-# 93% cheaper
+<!-- benchmarks:ultrasave:begin -->
+# 94–99% cheaper
 
-UltraSave cost **0.069x the credits of Normal** on our 20-case benchmark,
-and all 20 tasks still passed.
+UltraSave cost **0.0105x–0.0571x the estimated cost of Normal** with the mode pinned on the requested cohort: Astra (GPT-6 Astra + GPT-6 Luna), Sol (GPT-6.1 Sol + GPT-6 Luna), Opus (Opus 5.5 + Haiku 5.5); 27/27 runs passed against Normal's 27/27. Source: [summary](tools/task_cost_eval/results/requested-20261112-summary.json), 2026-11-12; distill 2.0.9 (39f1c6fe0bf8).
+<!-- benchmarks:ultrasave:end -->
 
-It works directly: narrow searches, small reads, short reports. Required checks
-still run before a task counts as done.
+It leads on your cheaper worker model when you have one, keeps effort at high
+or lower, and compacts a long session early. Required checks still run before
+a task counts as done.
 
 `/ultrasave on` or `--ultrasave`
 
@@ -44,13 +46,15 @@ still run before a task counts as done.
 
 ### UltraFast
 
-# ~2x faster
+<!-- benchmarks:ultrafast:begin -->
+# 19–59% less time
 
-UltraFast finished in **0.509x the wall time of Normal**, about half,
-and all 20 tasks still passed.
+UltraFast took **0.411x–0.814x the wall time of Normal** with the mode pinned on the requested cohort: Astra (GPT-6 Astra + GPT-6 Luna), Sol (GPT-6.1 Sol + GPT-6 Luna), Opus (Opus 5.5 + Haiku 5.5); 27/27 runs passed against Normal's 27/27. Source: [summary](tools/task_cost_eval/results/requested-20261112-summary.json), 2026-11-12; distill 2.0.9 (39f1c6fe0bf8).
+<!-- benchmarks:ultrafast:end -->
 
-It skips planning and delegation rounds and goes straight to the work. Your
-model, effort and verification steps stay the same.
+It goes straight to the work on your own model: no subagent, no waiting on
+side decisions, effort set once per turn at medium or lower. Verification
+steps stay.
 
 `/ultrafast on` or `--ultrafast`
 
@@ -59,13 +63,17 @@ model, effort and verification steps stay the same.
 
 ### UltraCode
 
-# Parallel subagents
+<!-- benchmarks:ultracode:begin -->
+# No quality gain measured
 
-UltraCode lets the session split work into smaller tasks and hand them to
-subagents, then checks their changes and evidence before accepting the result.
+UltraCode passed **27/27 runs against Normal's 27/27** at **2.19x–3.17x the estimated cost** and **1.5x–2.02x the wall time of Normal** with the mode pinned on the requested cohort: Astra (GPT-6 Astra + GPT-6 Luna), Sol (GPT-6.1 Sol + GPT-6 Luna), Opus (Opus 5.5 + Haiku 5.5). Source: [summary](tools/task_cost_eval/results/requested-20261112-summary.json), 2026-11-12; distill 2.0.9 (39f1c6fe0bf8).
+<!-- benchmarks:ultracode:end -->
 
-Delegation is optional and has no speed or cost claim yet. Your model, effort
-and permissions stay the same.
+It puts correctness first: effort is never lowered for a routine round, file
+reads stay whole, and after a turn that changed code an independent reviewer
+checks the patch. The final message ends with `Verification: REVIEWED` or
+`UNVERIFIED`. The cohort above is made of tasks every mode already passes, so
+it shows what the review costs, not what it catches.
 
 `/ultracode on` or `--ultracode`
 
@@ -74,20 +82,43 @@ and permissions stay the same.
 
 ### Auto
 
-# Balanced
+<!-- benchmarks:auto:begin -->
+# 51–59% cheaper, 0.833x–1.18x Normal's time
 
-Auto used **57% less total time** and **77% fewer estimated LLM credits**
-than Normal; both passed **20/20 tasks** in our paired benchmark.
+Distill took **0.414x–0.491x the estimated cost** and **0.833x–1.18x the wall time of Normal** under Auto on the requested cohort: Astra (GPT-6 Astra + GPT-6 Luna), Sol (GPT-6.1 Sol + GPT-6 Luna), Opus (Opus 5.5 + Haiku 5.5); 27/27 runs passed against Normal's 27/27. Source: [summary](tools/task_cost_eval/results/requested-20261112-summary.json), 2026-11-12; distill 2.0.9 (39f1c6fe0bf8).
+<!-- benchmarks:auto:end -->
 
-It switches modes as work changes. Subagents inherit Auto and adapt independently.
+It picks a mode for each request and only moves up inside it, when the work
+turns out harder. Subagents inherit Auto and adapt independently.
 
 `/mode auto` or `--mode auto`
-
-[Results and tradeoffs](https://github.com/samuelfaj/distill/pull/45).
 
 </td>
 </tr>
 </table>
+
+### One prompt, five modes
+
+The same prompt in each mode, with DeepSeek V4.1 Flash Ultrafast as the main
+model and GLM 5.3 Flash Ultrafast as the worker (both through OpenGateway):
+
+> Create a view of moon surface and the sky, photorealistic. in three.js
+
+| Mode | Result | Cost | Time | Tokens | Model calls |
+| --- | --- | ---: | ---: | ---: | --- |
+| **UltraSave** | <img src="docs/images/moon/ultrasave.webp" width="320" alt="UltraSave: grey terrain under a starfield"> | **$0.0019** (0.013x) | **2 min 5 s** (0.047x) | 0.39M | 21 GLM |
+| **UltraFast** | <img src="docs/images/moon/ultrafast.webp" width="320" alt="UltraFast: cratered terrain with low-sun shadows and Earth"> | $0.0873 (0.62x) | 31 min 9 s (0.71x) | 15.9M | 143 DeepSeek |
+| **UltraCode** | <img src="docs/images/moon/ultracode.webp" width="320" alt="UltraCode: boulder field with long shadows, Earth and a faint Milky Way"> | $0.2070 (1.46x) | 63 min 36 s (1.44x) | 41.8M | 200 DeepSeek |
+| **Auto** | <img src="docs/images/moon/auto.webp" width="320" alt="Auto: rock-strewn plain with Earth in the sky"> | $0.0620 (0.44x) | 22 min 43 s (0.52x) | 9.2M | 90 DeepSeek |
+| **Normal** | <img src="docs/images/moon/normal.webp" width="320" alt="Normal: craters and boulders under the Milky Way with Earth"> | $0.1417 (1.00x) | 44 min 4 s (1.00x) | 30.1M | 175 DeepSeek |
+
+Ratios are against Normal. One run per mode, all five started at the same time
+on 2026-11-12 with distill 2.0.9 (39f1c6fe0bf8); each finished with exit code 0.
+Cost uses OpenGateway's billed prices that day (DeepSeek $0.09/M input,
+$0.36/M output, $0.0018/M cached; GLM $0.015/M, $0.05/M, $0.003/M) and leaves
+out the Jev routing calls, which have no published price. UltraCode ended with
+`Verification: UNVERIFIED`. Thumbnails are frames captured in headless Chrome
+at 1280×720.
 
 Details:
 [UltraSave](docs/ultrasave.md), [UltraFast](docs/ultrafast.md) and
@@ -95,10 +126,12 @@ Details:
 
 ## Benchmarks
 
-[![Distill benchmarks: same quality at up to 87% lower cost and up to 76% less time versus native GPT-6 Astra, GPT-6.1 Sol, Claude Opus 5.5 and DeepSeek V4.1 max baselines](docs/images/benchmarks.webp)](BENCHMARKS.md)
+[![Distill benchmarks of 2026-10-16 (Distill 2.0.46): same quality at up to 87% lower cost and up to 76% less time versus native GPT-6 Astra, GPT-6.1 Sol, Claude Opus 5.5 and DeepSeek V4.1 max baselines](docs/images/benchmarks.webp)](BENCHMARKS.md)
 
-See [BENCHMARKS.md](BENCHMARKS.md) for the full results tables, definitions,
-methodology, cost bounds, reproduction commands, and source JSON.
+The image shows the 2026-10-16 campaign on Distill 2.0.46. See
+[BENCHMARKS.md](BENCHMARKS.md) for the current tables, including one row per
+execution mode, with definitions, methodology, cost bounds, reproduction
+commands, and source JSON.
 
 ## Install
 

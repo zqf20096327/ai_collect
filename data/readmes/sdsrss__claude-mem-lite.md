@@ -239,6 +239,47 @@ rm -rf ~/claude-mem-lite/   # unhidden data dir from before the first release (n
     repos/               # Shallow-cloned source repos
 ```
 
+## Upgrading to 6.35.0
+
+**The Last Session line names the session's main outcome more often; nothing to run, and the
+schema version stays 49.** To go back, pin `claude-mem-lite@6.34.0`.
+
+- **The session summary prompt's rule for the session's replies asks the model to order the work
+  it lists as completed by importance**, so the Last Session line SessionStart shows, cut to 120
+  characters, starts with the session's main finished outcome more often. The Completed field is
+  longer than before.
+- **`uninstall --purge` no longer says `Done!` when `~/.claude-mem-lite` is a symbolic link.** The
+  purge then removes nothing and names the link.
+- See CHANGELOG.md.
+
+## Upgrading to 6.34.0
+
+**The session summary reads every turn's last reply; nothing to run, and the schema version stays
+49.** To go back, pin `claude-mem-lite@6.33.0` and delete `runtime/turn-replies-*.json` from the
+data directory: 6.33.0 never reads them.
+
+- **The session summary model reads each turn's last reply**, not only the observations and
+  prompts. Stop keeps each turn's last reply, scrubbed, in `runtime/`.
+- **The secret scrubber erases Hugging Face, DigitalOcean, PyPI, Shopify and Groq tokens.**
+- See CHANGELOG.md.
+
+## Upgrading to 6.33.0
+
+**`uninstall --purge` leaves your own files in a relocated data directory; nothing to run, and the
+schema version stays 49.** The first open adds a nullable column to `events`, which an older build
+ignores. To go back, pin `claude-mem-lite@6.32.0`.
+
+- **With `CLAUDE_MEM_DIR` set, `uninstall --purge` removes only what claude-mem-lite writes
+  there**: its files by each writer's exact file-name format, and its `runtime/` and `managed/`
+  directories whole when nothing of yours sits beside them. It names what it leaves. It used to
+  remove the whole directory, your files included. The default
+  `~/.claude-mem-lite` is removed whole, as before.
+- **The daily unattended maintenance pass no longer runs `normalize`**, which rewrote concept tags
+  with model-picked synonym groups and kept no record. Run it yourself with
+  `claude-mem-lite optimize --run --task normalize` (`--run-all` skips its weekly gate).
+- **Dates and times are shown in local time**, the zone the date filters already read.
+- Details in CHANGELOG.md.
+
 ## Upgrading to 6.32.0
 
 **The steering sync looks above the repository before writing its copy; nothing to run, and the
@@ -929,7 +970,7 @@ Each observation includes type, title, narrative, concepts, facts, importance (1
 # git clone install:
 node install.mjs install              # Install and configure
 node install.mjs uninstall            # Remove (keep data)
-node install.mjs uninstall --purge    # Remove and delete all data
+node install.mjs uninstall --purge    # Remove and delete the data (see Uninstall)
 node install.mjs status               # Show current status
 node cli.mjs doctor                   # Diagnose issues  (cli.mjs, not install.mjs — see note)
 node cli.mjs repair                   # Recover a broken install from the latest signed release
@@ -1030,12 +1071,14 @@ After it finishes, `~/.claude-mem-lite/` is back in sync with the latest release
 # git clone:
 cd claude-mem-lite
 node install.mjs uninstall            # Keeps ~/.claude-mem-lite/ data
-node install.mjs uninstall --purge    # Deletes ~/.claude-mem-lite/ and all data
+node install.mjs uninstall --purge    # Deletes ~/.claude-mem-lite/ and its data
 
 # npx:
 npx claude-mem-lite uninstall
 npx claude-mem-lite uninstall --purge
 ```
+
+When `~/.claude-mem-lite` is a symbolic link, `--purge` removes nothing and names the link.
 
 Data in `~/.claude-mem-lite/` is preserved by default. Delete manually if needed:
 ```bash
@@ -1239,8 +1282,4 @@ claude-mem-lite.
 | `CLAUDE_MEM_SUMMARY_TAIL` | `0`/`off` stops Stop from using the head of the final reply (first 120 characters, code blocks and line-leading markers removed) as a session's Completed line when that reply has no Done / Not done / Failed / Uncertain section; Completed then falls back to observation titles, as before v6.18.0; a line already written gives way to the titles at the session's next turn. A later reply under 400 characters does not replace an earlier one. | _(on)_ |
 | `CLAUDE_MEM_EPISODE_INPUT_FILTER` | What the episode summarizer may learn from. A subagent's tool calls stay out of the episode buffer unless they edit a file inside the project, and mutation probes (mutate → RED run → restore) and the agent's own failing inline scripts (a patch's `anchor not found`) are dropped before a window is saved or summarized — replayed over the 30 audited events, this removes 3 of the 16 that were wrong outright; with `CLAUDE_MEM_LESSON_GROUNDING` none of the 16 lessons is injected. `off` restores the unfiltered input. | _(on)_ |
 | `CLAUDE_MEM_BASH_RECALL` | File recall before a Bash command that views (`cat`, `sed -n`, `head`…) or writes (`sed -i`, `cat > f`, a python patch…) a file, like the Read / Edit recall. A bash prefilter keeps Node from starting for other commands. `off` disables this leg only. | _(on)_ |
-| `CLAUDE_MEM_PRETOOL_PATH_PRECISION` | `off` restores the name-only file match of PreToolUse recall. **On by default** (R3 O1): a lesson recorded for a same-named file in another directory of the project (`src/mcp/server/mod.rs` when you edit `src/snapshot/mod.rs`, the root `README.md` when you edit `tasks/x/README.md`) is not injected; bare names, Claude Code worktree copies, paths outside the project, spellings that cannot be placed (`../`, `~/`, a drive letter) and paths that name no file now (a file that moved) still match. Paths are compared as POSIX paths, so on a native Windows host the match is unchanged. 210 of 4,037 injected rows on 194 transcripts were such a different file. | _(on)_ |
-| `CLAUDE_MEM_LESSON_GROUNDING` | An auto-captured event keeps its lesson only when the lesson quotes the window's own diagnosis (a failing output line, a comment the edit added, or the commit message); otherwise the row is kept without it at importance 1, below every injection face. `off` keeps unquoted lessons. | _(on)_ |
-| `CLAUDE_MEM_LESSON_OUTPUT_CAP` | An auto-captured lesson that shares four consecutive words with TOOL OUTPUT (a command's printed text or a tool's response, which whoever controls that output can write) is kept off the injection faces: an event keeps its row and lesson, searchable, at importance 1; a `change` observation, whose importance later reads can raise, loses the lesson, and the lesson-less row is then dropped like any other (kept only with `CLAUDE_MEM_KEEP_LOW_SIGNAL=1`). Four shared words of filler ("is not in the") count too, so a lesson quoting your own comment or commit message is demoted when it also happens to share such a run with output in the same window. The row's title is not checked. `off` restores the model's importance and the lesson. | _(on)_ |
-| `MEM_NO_AUTO_ADOPT` | Global opt-out for auto-adopt (v2.82.0+). `1` stops auto-adopt across **all** projects — no injected steering, no new local file (`CLAUDE.local.md` or `.claude/rules/claude-mem-lite.md`), and no sync of an existing `CLAUDE.md` or local block (those stay, and keep loading, until `claude-mem-lite unadopt`). For per-project opt-out use `claude-mem-lite adopt --disable` instead (writes a durable `<memdir>/.mem-no-auto-adopt` sentinel that survives marker deletion). | _(disabled)_ |
-| `MEM_NO_ADOPT_HINT` | Silences the one-time notices shown to you the first time a project gets `CLAUDE.local.md` or is steered by injection (the latter suggests `/adopt`, except at `$HOME`; in a project whose `AGENTS.md` the file would switch off it names that file and the setting too), the one-time notice that the guidance went to `.claude/rules/claude-mem-lite.md`, the one-time notice that SessionStart imported `AGENTS.md` into a `CLAUDE.md` holding only the block, and t
+| `CLAUDE_MEM_PRETOOL_PATH_PRECISION` | `off` restores the name-only file match of PreToolUse recall. **On by default** (R3 O1): a lesson recorded for a same-named file in another directory of the project (`src/mcp/server/mod.rs` when you edit `src/snapshot/mod.rs`, the root `README.md` when you edit `tasks/x/README.md`) is not injected; bare names, Claude Code worktree copies, paths outside the project, spellings that cannot be 

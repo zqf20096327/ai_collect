@@ -46,6 +46,8 @@ For Cursor, Claude Desktop, and other clients that read an `mcpServers` config:
 
 The tool takes one or more pages of a site (`urls`) and an optional `dark` flag, and refuses block pages and login walls the same way the CLI does. It renders pages in Playwright's headless Chromium; if that browser is missing, the call fails with the command that installs it.
 
+A call runs for at most 180 seconds (set `BRANDMD_MCP_TIMEOUT` in seconds to change it), and at most two run at once (a third gets an error asking it to retry). Cancelling a call, or running out of time, stops it and closes its browser on macOS and Linux. On Windows the run is ended outright and the browser may be left open (untested).
+
 Works as brand context for Claude Code, Cursor rules, Gemini CLI, Codex, Google Stitch, MCP servers, and any coding agent that reads markdown.
 
 Real examples: [Stripe](examples/stripe.md) · [Linear](examples/linear.md) · [GitHub](examples/github.md) · [Vercel](examples/vercel.md) · [Notion](examples/notion.md) · [Cursor](examples/cursor.md) · [Anthropic](examples/anthropic.md) · [Figma](examples/figma.md) · [Supabase](examples/supabase.md) · [Raycast](examples/raycast.md) · [+20 more in the gallery](examples/README.md)
@@ -144,9 +146,13 @@ brandmd does it from the terminal. Point it at any URL, get a spec-valid DESIGN.
 
 ## Install
 
+Needs Node 20 or newer (Playwright and the Gemini SDK both require it).
+
 ```bash
 # Run directly (no install). On a machine without Playwright's headless
-# Chromium it stops and prints the command that installs it.
+# Chromium it stops and prints the command that installs it. A bare Linux
+# box (CI, Docker) can also lack the system libraries Chromium needs; then
+# it prints the install-deps command for those instead.
 npx brandmd https://linear.app
 
 # Install globally
@@ -175,7 +181,7 @@ export GEMINI_API_KEY=your-key-here  # free: https://aistudio.google.com/apikey
 brandmd https://linear.app --vision
 # Cloudflare-protected sites: brandmd waits up to 20s for the JS challenge
 # to auto-resolve. If your site needs longer, pass --cf-wait-ms 30000.
-# If the challenge persists, you'll get a clear error rather than garbage tokens.
+# If the challenge persists, brandmd refuses (exit 2) rather than writing garbage tokens.
 
 # CSS custom properties
 brandmd https://vercel.com --css
@@ -195,16 +201,18 @@ brandmd diff examples/stripe.md examples/vercel.md --out BRAND_DIFF.md
 
 ## Refusals and exit codes
 
-brandmd fails closed. If a page is a bot-block / access-denied page, a login / sign-in wall landing, or too thin to describe (no rendered text, empty palette), it refuses in **every** format and writes no artifact, so a bad capture can't silently overwrite a good `DESIGN.md`. A plain cross-origin redirect (say marketing -> app on another domain) doesn't refuse: it warns on stderr and is flagged in the output's provenance block, per page.
+brandmd fails closed. If a page is a bot-block / access-denied page (a Cloudflare challenge that never clears included), a login / sign-in wall landing, or too thin to describe (no rendered text, empty palette), it refuses in **every** format and writes no artifact, so a bad capture can't silently overwrite a good `DESIGN.md`. A login wall means a password field on screen when the page loads, or sign-in copy on an auth page: a `/login`-style URL, or another host the request was sent to. A hidden or off-screen sign-up form, or a "Sign up free" headline on an ordinary page, is not one. A plain cross-origin redirect (say marketing -> app on another domain) doesn't refuse: it warns on stderr and is flagged in the output's provenance block, per page.
+
+Every capture goes through the same gate, page by page. One refused page (a block page, a login wall, or a page with almost no text, even next to a rich one) refuses a multi-page run, and with `--dark` the dark capture is checked too. A page that fails to load (a timeout, a DNS error) is left out with a warning and the rest are merged; if none load, the run exits 1. `--dark` that gets no dark capture, like `--vision` that gets no vision result, still writes the light output and exits 1.
 
 | Exit code | Meaning |
 |---|---|
 | `0` | success |
-| `1` | operational or validation error (bad URL, bad flag, browser launch failure) |
-| `2` | refused: block page, insufficient evidence, or a login-wall landing |
+| `1` | operational or validation error (bad URL, bad flag, browser launch failure, no page loaded, `--dark` or `--vision` came back empty) |
+| `2` | refused: block page, insufficient evidence, or a login-wall landing, on any page or theme |
 | `3` | `brandmd check` only: the page drifted from the spec |
 
-Pass `--allow-blocked` to force output anyway; the artifact carries a block marker in every format (Markdown callout, CSS/Tailwind comment header, HTML banner, JSON `blockLikely`). Writes are transactional (temp file + rename with rollback), including the `--agent` set and `brandmd diff`, so a partial failure never truncates an existing file. Atomicity is per process: concurrent brandmd runs against the same output directory are not coordinated, though collision-safe temp/backup names mean one run can never eat another's files.
+Pass `--allow-blocked` to force output anyway; whatever the refusal was, the artifact carries a refused-source marker in every format (Markdown callout, CSS/Tailwind comment header, HTML banner, JSON `blockLikely`). Writes are transactional (temp file + rename with rollback), including the `--agent` set and `brandmd diff`, so a partial failure never truncates an existing file. Atomicity is per process: concurrent brandmd runs against the same output directory are not coordinated, though collision-safe temp/backup names mean one run can never eat another's files.
 
 ## Gallery
 
@@ -236,7 +244,8 @@ Colours are compared **by role**, not as a set of hexes. One hex legitimately fi
 | `--against <file>` | the committed `DESIGN.md` (required) |
 | `--report <file>` | write the drift as JSON for CI annotations |
 | `--fail-on <level>` | `major` (default), `any`, or `none` |
-| `--allow-blocked` | compare anyway if the page looks blocked |
+| `--allow-blocked` | compare anyway if the page is refused (blocked, thin, or a login wall) |
+| `--cf-wait-ms <ms>` | how long to wait for a Cloudflare challenge (default `20000`) |
 | `--viewport <WxH>` | pin the viewport (default `1440x900`) |
 | `--locale <tag>` | pin the browser locale |
 | `--reduced-motion` | request `prefers-reduced-motion: reduce` |
@@ -251,7 +260,7 @@ Worth knowing before you rely on it:
 
 - **Component drift is reported but never fails a build.** Background, text colour and radius are compared on the machine-token components; height and padding are not, because the representative button is picked by frequency and a transparent nav button can win over the real CTA. Opt in with `--fail-on any` once that improves.
 - **`secondaryFont` is unreliable.** The live side is round-tripped through the same generator and parser as a written `DESIGN.md`, which keeps both sides honestly comparable but drops fields the markdown does not carry cleanly. A secondary-font change can pass unnoticed.
-- **Majors can flip on sites that change between visits.** Colour clustering keeps the first representative it sees, so rotating hero imagery or A/B tests can repaint a role without anything really changing. On static marketing pages runs are byte-identical; on dynamic ones, re-run before believing a surprising major. Order-independent clustering is queued.
+- **Majors can flip on sites that change between visits.** Each colour cluster is led by its most-used colour, so the order a page lists its colours in no longer changes the palette or the text roles, but rotating hero imagery or an A/B test that changes how often a colour is used can still repaint a role. On static marketing pages runs are byte-identical; on dynamic ones, re-run before believing a surprising major.
 
 ### In GitHub Actions
 

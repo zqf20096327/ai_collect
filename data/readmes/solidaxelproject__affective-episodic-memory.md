@@ -187,7 +187,7 @@ The resulting structures act as:
 | `stato.py` (`runtime/`) | The homeostat: euthymic return + pre-cycle gate |
 | `ricorda.py` (`runtime/`) | 3-route recall (semantic, emotional, congruent) |
 | `ricorda-ora.py` (`runtime/`) | "Remember this": a queue that consolidates during sleep, as it does for humans |
-| `riflesso.py` | The pre-action memory reflex: a transparent proxy between agent framework and model server; congruent memories surface on their own before the agent answers (see below) |
+| `riflesso.py` and `riflesso_*.py` | The pre-action memory reflex: a transparent proxy between agent framework and model server; congruent memories surface on their own before the agent answers (see below). Split into modules, one per job |
 | `dormi.sh` (`runtime/`) + `dormi-esegui.sh` | The agent's voluntary sleep: the agent asks, the host stops the container, rotates the session id (a true fresh awakening, since gateway sessions persist on disk), restarts |
 | `persistenza.py` + `sincronizza-richiami.py` | Persistence: lived-time forgetting curve, stability that grows with spaced recall, echoes of repeated everyday messages, habits born from frequency |
 | `cervello.py` | Overview: graph, Lux, state, recalls |
@@ -232,9 +232,11 @@ Concrete architectural choices follow from this frame:
 
 The reflex (issue #1) is a transparent proxy between the agent framework and the model server. Before the agent answers, the reflex takes the last thing it read and looks for related memories in the engram Lux. At most one arrives per message, never one that already arrived in the same conversation. It enters as the response of the `memorinvolontaria` tool, so the agent knows it is its own memory and not the interlocutor's words. Every memory that arrives is written to a diary the agent can read.
 
+The reflex is split into modules, one per job (`riflesso_*.py`: involuntary memory, vector, cache and conversation switch, summary, metadata, emotional path), and `riflesso.py` remains the entry point. I decided to split it for code maintenance reasons and because I am learning to program precisely with this project.
+
 The reflex has two parts: the **textual reflex** (a memory surfaces as a verbal thought, which can be weighed, discarded, contradicted) and the **felt reflex** (the emotional marker of the most congruent memory is re-injected at low dose for the duration of that single response, like Damasio's somatic marker).
 
-The felt reflex has safeguards enforced by the code of `riflesso.py`:
+The felt reflex has safeguards enforced by the code of `riflesso_vettore.py`:
 
 1. **Dose cap 0.3×** of the calibrated intensity, enforced in code, not in the caller's goodwill.
 2. **The vector is switched off at the end of the response**, and a 120-second watchdog switches it off even if everything else fails.
@@ -268,7 +270,7 @@ Everything runs locally, on one PC: no external APIs, no data leaving the machin
 
 A second Lux, in [`engrammi/`](engrammi/), stores memories as indices over shared engrams instead of whole vectors. Each memory is cut with deterministic linguistic rules (spaCy dependency parse, `taglia.py`; each sentence goes to the spaCy model of its language, Italian or English, detected with lingua-py) into engrams, short pieces such as a subject or a verb with its complements, and the same engram is shared by every memory that contains it. The pieces are joined by Hebbian arcs that belong to one memory and carry parameters: prepositions become symbols, articles become numbers, punctuation and conjunctions become modifiers. A memory exists only through its arcs: recall rebuilds it by walking them in order. Recall works on the memory index through a textual path (same engram) and a semantic path (bge-m3 embeddings, stored in float16), weighted by how rare each engram is, and nothing is delivered below a calibrated threshold; every successful recall strengthens the memory's arcs with the same spaced-stability curve as the original Lux, and arcs that are never recalled fade. The reflex receives at most one memory per message, as the result of the `memorinvolontaria` tool. A 3D viewer of engrams and arcs is in `engrammi/lux3d.py`. `engrammi/wikilux/` holds the comparison with RAG and bm25, on Wikipedia and on the agent's memories: the Lux finds a memory better from scattered fragments, and loses when the meaning is the same but the words change. Still in design: correcting a memory without deleting it, with negated arcs that fade and correction arcs, inspired by extinction and reconsolidation.
 
-The test procedure for per-layer emotional steering, with contexts up to ~140k tokens, is in [`research/long-context/`](research/long-context/).
+The protocol for building emotional steering vectors (scenes, state reading, self direction, injection, dose calibration) is in [`research/long-context/STEERING-VECTOR-PROTOCOL.md`](research/long-context/STEERING-VECTOR-PROTOCOL.md). The tests with contexts up to ~140k tokens are in [`research/long-context/`](research/long-context/).
 
 ## References
 

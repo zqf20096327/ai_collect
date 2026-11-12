@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/readme-icon-rounded.png" width="96" height="96" alt="MoMo Agent Icon" />
+<img src="docs/assets/readme-cover.jpg" width="100%" alt="MoMo Agent in white on charcoal, surrounded by sketches of a coffee cup, keys, a ticket, and a wristwatch." />
 
 # MoMo Agent
 
@@ -13,6 +13,8 @@
 [![Platform](https://img.shields.io/badge/platform-watchOS%2010%2B%20%7C%20iOS%2017%2B%20%7C%20macOS%2015%2B-4A4A46?style=flat-square)](https://github.com/Miri-Labs/MoMo-Agent)
 
 English | [简体中文](./README.zh-CN.md)
+
+MoMo Agent is fully open source, and we thank the people behind every project we’ve built on or learned from and welcome [pull requests](https://github.com/Miri-Labs/MoMo-Agent/compare) from everyone in the community.
 
 </div>
 

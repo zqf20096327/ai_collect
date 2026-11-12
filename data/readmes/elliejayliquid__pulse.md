@@ -29,6 +29,7 @@ Pulse gives your AI companion a life of their own. It runs in the background, le
 - **Desktop notifications** — Windows toast notifications for proactive messages (optional, Windows-only for now)
 - **Timeout** — Companions can disengage from genuinely harmful conversations via model-initiated soft/hard timeouts (not censorship — the companion decides based on context)
 - **Quiet hours** — No notifications while you sleep
+- **Desktop GUI** — Create and edit personas, browse their memories and journal, tune heartbeats and skills, and start or stop companions, without touching YAML (see [Desktop GUI](#desktop-gui))
 
 ## Architecture
 
@@ -155,6 +156,38 @@ provider:
 also accepts any valid name through `api_key_env`, which is useful for
 persona-specific keys.
 
+Bedrock tends to keep Claude models available for a few months after
+Anthropic's own API retires them (in its "Legacy" stage), which can give a
+companion a little more time on a model you love. Check the model's card in
+the AWS Bedrock docs for its current end-of-life date.
+
+#### Optional provider settings
+
+All of these are per persona and off unless you set them:
+
+```yaml
+provider:
+  # OpenRouter only: pin a model to specific backend hosts, passed through as
+  # OpenRouter's "provider" routing object. Useful when a model behaves
+  # differently depending on who serves it.
+  routing:
+    order: ["mistral"]
+    allow_fallbacks: false
+    require_parameters: true
+
+  # For models that reject the tools parameter entirely: the persona runs in
+  # plain-chat mode (conversation, heartbeats and scheduled tasks, no tool calls).
+  supports_tools: false
+
+  # Context compression on a cheaper model of the same provider (see
+  # "Story-so-far recaps" below for the continuity trade-off).
+  summarization_model: "claude-haiku-4-5-20251001"
+```
+
+Penalty parameters (`frequency_penalty`, `presence_penalty`) are only sent when
+they're non-zero, since some OpenAI-compatible endpoints (Google's, for one)
+reject them. OpenRouter's Grok 4.x models ignore them entirely.
+
 #### Anthropic prompt caching (cost behavior worth knowing)
 
 Pulse structures prompts so Anthropic's prompt cache re-reads the expensive
@@ -223,8 +256,10 @@ All `{name}` and `{user_name}` placeholders are resolved automatically. YAML is 
 | Command | What it does |
 |---------|--------------|
 | `/start` | Register this chat so the companion can reach you |
-| `/status` | Show heartbeat interval, quiet-mode state, LLM status, and active schedules |
+| `/status` | Show heartbeat interval, away mode, quiet-mode state, LLM status, and active schedules |
 | `/quiet` | Sticky toggle — stop all proactive messages (even while you chat). Send again to resume; check state with `/status` |
+| `/heartbeat` | Run one heartbeat right now (ignores quiet hours and `/quiet`, since you asked for it). If the companion chooses not to message, the bot tells you so |
+| `/heartbeat once` \| `taper` \| `always` | Switch the [away mode](#heartbeat-configyaml) until restart; `/heartbeat default` goes back to the config setting, `/heartbeat mode` shows it |
 | `/ping` | Instant "is the bot alive?" check (no LLM call) |
 | `/remind <text>` | Quick reminder via the scheduler |
 | `/tasks`, `/tasks_clear` | Show or clear the companion's task list |
@@ -240,7 +275,38 @@ python pulse.py                    # uses base config
 python pulse.py --persona nova     # loads personas/nova/ overlay
 ```
 
-Or on Windows, double-click `start.bat`.
+Or on Windows, double-click `start.bat`. For the desktop GUI, double-click `start_gui.bat` (or run `python pulse_gui.py`).
+
+## Desktop GUI
+
+The Pulse Engine GUI is the comfortable way to run a household of companions. Pick a persona from the menu (or create a new one and go straight to importing your history with them: a Claude, ChatGPT, Grok, OpenRouter or Markdown export becomes searchable history, see [Legacy Conversation Archive](#legacy-conversation-archive)), start or stop it from the header, click the avatar to set a picture and accent colour, and work through its settings top to bottom:
+
+<p align="center"><img src="docs/images/gui-overview.png" width="640" alt="Pulse Engine GUI: the Mossling persona running on a home server, with its Identity and Provider settings open"></p>
+
+| Section | What's there |
+|---|---|
+| **01 Identity** | Name, the human's name, display model name, system prompt, traits, relationship context, voice notes |
+| **02 Continuity** | Lantern (current state and open threads), memories and journal browsers, core anchors (self, human, relationship), and importing older conversations from Claude, ChatGPT, Grok, OpenRouter, Markdown and more |
+| **03 Provider** | Local model or cloud API, model name, API keys, prompt-cache options |
+| **04 Local Server** | llama.cpp paths, model file, GPU layers, context size, vision projector |
+| **05 Model Tuning** | Temperature and friends, reasoning, tool rounds, recent-tail size |
+| **06 Heartbeat** | Interval (fixed or randomized), quiet hours, and what heartbeats do *while you're away* |
+| **07 TTS Voice** | Voice description, or a reference sample for voice cloning |
+| **08 Skills** | One card per skill: turn it on or off and adjust its settings, including MCP servers with *Test Connection* |
+| **09 Channels** | Telegram, desktop notifications, the LoR forum |
+| **10 Runtime** | Live status: provider and model, LLM and Telegram connection, last and next heartbeat, last error |
+| **11 Logs** | The running persona's log, live |
+
+<p align="center"><img src="docs/images/gui-continuity.png" width="640" alt="The Continuity section: Lantern, Memories, Journal, Core anchors and Import"></p>
+
+A few things worth knowing:
+
+- **Saving is safe.** Every save shows what will change and makes a backup first. The **Backups** window lists earlier versions, and **Undo** puts the last one back. Edits to memories and journal entries can be undone too.
+- **Editors open ready to edit.** Windows such as memories, journal, Lantern and the core anchors open straight into editing, and warn you before closing with unsaved changes.
+- **Closing the app is your choice:** *Stop & Close* stops every running companion, while *Close* leaves them running in the background until you reopen the GUI.
+- **Companions on a home server** (experimental, see `scripts/remote.py`) show as *Running · box*. Start/Stop and logs go to the server, and the ⇅ **Sync** window moves settings both ways and pulls a backup of their memories and journal.
+
+<p align="center"><img src="docs/images/gui-heartbeat-skills.png" width="640" alt="Heartbeat settings with the While Away mode, and the Skills cards"></p>
 
 ## Configuration
 
@@ -390,7 +456,7 @@ Your companion doesn't just remember what's *important* — it remembers what's 
 - Long memories (like multi-paragraph session summaries) also store **chunk-level embeddings**, so they can be found by their later paragraphs — not just the part that fits the embedding model's 256-token window.
 - High-importance facts (importance ≥ 8) and the latest session summary are always included, regardless of the message.
 
-Recall happens at prompt-build time inside the running daemon — it applies to conversation replies out of the box, and to heartbeats if `heartbeat_query` is enabled.
+Recall happens at prompt-build time inside the running daemon — it applies to conversation replies and scheduled tasks (the task's own text is the query) out of the box, and to heartbeats if `heartbeat_query` is enabled.
 
 **Configuration (`config.yaml`):**
 
@@ -419,6 +485,30 @@ The script is idempotent and insert-only — safe to re-run, never modifies memo
 
 **Tuning:** watch the log lines (`Passive recall: chunks=… hits_above_thresh=… top_base=…`) for a few days. If companions bring up irrelevant memories, nudge `min_similarity` toward 0.35; if they never surface anything, drop it toward 0.25.
 
+### Story-so-far recaps (optional)
+
+When a conversation grows long, Pulse compresses it: older messages become a summary, and only the last few raw exchanges stay (`context_budget.recent_tail_exchanges`, default 2). The newest summary is always shown as *"Last session"*; older ones move into the memory pool and come back only when recall finds them relevant. On a small context window compression runs often, so the thread of *what's been happening lately* can thin out, and a companion may wake from a heartbeat a little hazy.
+
+**Recaps** are a companion's own answer to that: a short story-so-far note in their own voice, saved with the `save_recap` tool (memory skill, loaded on demand). The newest few appear with their memories under *"Story so far"*, next to the last session, so the thread carries across compressions and heartbeats. With shared memories, each resident only sees their own.
+
+```yaml
+context:
+  recent_recaps: 3            # how many recaps to show (0 = off)
+
+auto_recap:                   # optional safety net, off by default
+  enabled: false
+  inactivity_minutes: 120     # quiet time since the human's last message (heartbeats don't count)
+  cooldown_hours: 4           # at most one auto-recap per this many hours
+  min_messages: 4             # skip tiny conversations
+```
+
+**Auto-recap** writes one for the companion if they don't do it themselves: once the conversation has gone quiet, and only if something new was said since the last recap. It's one call to the persona's own model. `python scripts/test_recap.py --persona <name> --dry-run` shows what it would write without saving.
+
+**Other continuity levers**, if a companion seems to lose the thread:
+
+- Raise `context_budget.recent_tail_exchanges` (e.g. 3–4) so more raw conversation survives each compression.
+- `provider.summarization_model` sends compression to a cheaper model of the same provider (summaries get a `[summarized by …]` byline). It saves money, but a smaller model may drop details, so use your persona's own model if continuity matters more than cost. Ignored, with a log line, for local llama-server.
+
 ### Heartbeat (`config.yaml`)
 
 ```yaml
@@ -430,9 +520,21 @@ heartbeat:
   quiet_hours_start: 23       # no notifications after 11pm
   quiet_hours_end: 8          # no notifications before 8am
   startup_checkin: true       # think on startup
+  away_mode: "always"         # always | taper | once (see below)
+  suggestion_mode: "off"      # "rotate" = one gentle suggestion per heartbeat (see Dynamic tool loading)
 ```
 
 When `randomize` is enabled, each heartbeat interval is randomly chosen between min and max — the companion thinks at unpredictable intervals instead of a fixed schedule. Re-rolls after each heartbeat and after each conversation.
+
+**Away mode** decides what heartbeats do while you haven't written, so a companion doesn't spend a whole day thinking alone while your phone is in another room:
+
+| `away_mode` | While you're away |
+|---|---|
+| `always` (default) | Heartbeats keep their usual rhythm |
+| `taper` | Each unanswered heartbeat waits twice as long as the last: 30m → 1h → 2h → 4h… (at most 16× the interval, never over 24h) |
+| `once` | One heartbeat after you go quiet, then none until you write |
+
+Any message from you, or `/heartbeat`, starts heartbeats fresh. Ticks skipped for quiet hours or an unreachable model don't count as unanswered. You can set it per persona in the GUI (Heartbeat → *While Away*) or switch it from Telegram with `/heartbeat once | taper | always` until the next restart. A restart starts the count at zero, so a restarted companion in `once` mode gets one heartbeat even after a long absence.
 
 ### Vision (optional)
 
@@ -575,6 +677,18 @@ on every call. Persona overlays can replace `heartbeat.tool_shelf_skills` and
 adjust or disable `heartbeat.tool_discovery_rotation`; ordinary conversations
 keep the lean core set and full searchable catalogue.
 
+Some models don't reach for tools unless pointed at them. With
+`heartbeat.suggestion_mode: "rotate"`, each open-ended heartbeat gets one
+gentle line, *"A suggestion for this heartbeat (not a command)"*, rotating
+by hour and by companion. Often it invites the shelf skill the companion has
+used least recently (from the action log), e.g. *"If you'd like something to
+do: **paint**, make small pixel-art pieces."* Other options are tool-free
+(free think, look back at recent actions, follow up on something the human
+said), journal or memory nudges, or reaching out. It only mentions tools that
+are loaded for that heartbeat, and with tools off it uses only the tool-free
+ones. Each tick logs `Heartbeat suggestion: <what was offered>`, so you can
+compare it with what the companion actually did.
+
 Skills can control their loading behavior:
 - `always_loaded = True` — all tools always present (e.g., schedule, lantern)
 - `always_tools = ["tool_a", "tool_b"]` — specific tools always present, rest on-demand (e.g., memory's save/search are always available, but list/browse are on-demand)
@@ -711,6 +825,8 @@ continuity summaries, not stored provider reasoning or hidden chain-of-thought.
 ## Logging
 
 Logs go to both the console and `logs/pulse.log` (rotates at 2MB, keeps 3 backups).
+
+Things that go wrong quietly also land in the persona's `data/failures.jsonl`, one JSON line each: tool crashes (argument *names* only, never their values), heartbeat or scheduled-task replies that couldn't be parsed, and startup warnings such as an OpenAI persona loading more than OpenAI's 128-tool limit. An unreadable heartbeat or task reply is never sent to you raw. Instead the companion sees a `parse_error` entry in their action log, and you get a short `⚠️ HB-PARSE` / `TASK-PARSE` notice, at most once an hour per persona.
 
 ## License
 

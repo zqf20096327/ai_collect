@@ -10,7 +10,7 @@ Schema-valid JSON · exact OCR-span evidence · per-field confidence · Apache 2
 [![CI](https://github.com/eulogik/TinyDoc-VLM/actions/workflows/ci.yml/badge.svg)](https://github.com/eulogik/TinyDoc-VLM/actions)
 [![License](https://img.shields.io/badge/license-Apache_2.0-1E6F5C.svg)](LICENSE)
 [![HF Space](https://img.shields.io/badge/%F0%9F%A4%97-evidence%20card-1E6F5C)](https://huggingface.co/spaces/eulogik/TinyDoc-VLM)
-[![Tests](https://img.shields.io/badge/tests-209-1E6F5C.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-228-1E6F5C.svg)](tests/)
 
 </div>
 
@@ -30,14 +30,17 @@ grounded extraction layer around it. The first-party 256M checkpoint is retired
 **Measured today:** **0.9475** field F1 on SROIE clean-100 with Qwen2.5-VL-3B and
 **0.9200** with Qwen3-VL-2B-Instruct at 2× the speed. On a synthetic 181-page
 invoice probe, **65.7%** (3B) and **71.8%** (2B) of documents are fully correct.
-Real supplier invoices are still unmeasured. Full provenance and caveats are in
-[`docs/BENCHMARKS.md`](docs/BENCHMARKS.md).
+A separate **real Portuguese receipt/invoice** probe (five fields) reaches
+**72.0%** field accuracy and **22/100** fully correct on a held-out 100-document
+set after an unreleased merge fix (development set: 74.2% / 18). It is not a
+supplier-invoice benchmark. Real B2B supplier invoices are still unmeasured. Full provenance and caveats are
+in [`docs/BENCHMARKS.md`](docs/BENCHMARKS.md).
 
 <a id="at-a-glance"></a>
 
 | | |
 |---|---|
-| **Install** | `pip install tinydoc` (0.2.0) |
+| **Install** | `pip install tinydoc` (0.3.0) · `pip install 'tinydoc[pdf,ui]'` for multipage + local UI |
 | **Runtime** | Local Ollama; Python 3.9+; no API key |
 | **Readers** | `qwen2.5vl:3b` (quality) · `qwen3-vl:2b-instruct` (fast) |
 | **Output** | Schema-valid JSON + per-field quote/bbox + confidence + optional overlay PNG |
@@ -46,14 +49,16 @@ Real supplier invoices are still unmeasured. Full provenance and caveats are in
 | **Multipage (all pages)** | 4/10 fully correct vs 0/10 page-1 · 46 pages · 2B · n=10, descriptive |
 | **Multipage (page-wise + OCR totals)** | **10/10 fully correct** · 100% key-header (90/90) · 0.848 line F1 · 2B · n=10 · **not a pure VLM score** |
 | **Multipage (VLM only, page-wise)** | 6/10 fully correct · 93.3% key-header · 0.848 line F1 · 2B · n=10 |
+| **Multipage (degraded, page-wise + OCR)** | 7/8 fully correct · 98.6% key-header · 2/10 documents failed · 2B · n=10 |
+| **Real Portuguese probe (5 fields)** | **72.0%** field · **22/100** fully correct on the held-out 100; development 74.2% / 18; 0.3.0 merge 64.8% / 3/100 · unreleased merge fix |
 | **DocVQA (reading)** | 0.829 ANLS / 0.765 exact · 200 public images · single-reference |
-| **Not yet measured** | Real supplier invoices, SDK multipage path |
+| **Not yet measured** | Real B2B supplier invoices, harsher/adversarial scans, real-document line items |
 | **License** | Apache 2.0 (SDK); Qwen base models are Apache 2.0 |
 
 ## Quick start
 
 ```bash
-pip install tinydoc==0.2.0
+pip install tinydoc==0.3.0
 
 # Pull one local reader (choose one or both)
 ollama pull qwen2.5vl:3b            # quality tier
@@ -79,8 +84,33 @@ tinydoc extract ./receipts/ --engine ollama:qwen2.5vl:3b \
     --out results.jsonl --overlay overlays/
 ```
 
+### 0.3.0: multipage invoices and the local UI
+
+0.3.0 is on PyPI. It adds the page-wise invoice SDK path and a local Gradio UI:
+
+```bash
+pip install 'tinydoc[pdf,ui]'
+tinydoc invoice invoice.pdf --out result.jsonl   # page-wise + OCR totals
+tinydoc ui                                      # 127.0.0.1:7860, local only
+```
+
+```python
+from tinydoc import InvoicePipeline
+
+pipe = InvoicePipeline("ollama:qwen3-vl:2b-instruct")
+result = pipe.extract("invoice.pdf", with_ocr_totals=True)
+print(result.fields)         # key-header fields + line_items
+print(result.line_items)     # concatenated in page order
+print(result.review_flags)   # arithmetic checks, not model confidence
+print(result.corrections)    # every deterministic repair
+```
+
+The UI is local-only; it does not upload documents. Invoice fields intentionally
+carry no confidence probability. The clean and degraded multipage probes are
+10-document synthetic sets; real invoices and harsher scans are still unmeasured.
+
 A run returns a `DocumentResult`; `tinydoc.draw_overlay` renders the cited spans
-onto a PNG. The local Gradio demo is `python demo/app.py --share` (requires Ollama).
+onto a PNG. The older receipt-only demo is `python demo/app.py --share` (requires Ollama).
 
 > **Large scans:** keep `TINYDOC_OLLAMA_NUM_CTX=8192` (the default). The old
 > implicit 4096 rejected 2481×3508 scans with HTTP 400. Never send Ollama
@@ -168,8 +198,50 @@ and 8/10 trigger a line-sum review flag. OCR adds ~0.2 s/doc; VLM inference
 dominates latency. A currency-symbol prompt (v2) was tested and **rejected**: it
 scored 81/90 raw and 5/10 fully correct versus 84/90 and 6/10 for v1, so the
 canonical run keeps v1 and uses deterministic reconciliation instead. Multipage
-is not a straight-through path, and the SDK extraction path is still
-single-image.
+is not a straight-through path. The 0.3.0 SDK preview exposes the page-wise
+method, but it is a probe-quality feature, not a production multipage claim.
+
+**Degraded multipage** — the same 10 synthetic invoices and 46 pages, with a
+deterministic photo/scan degradation (downscale-then-upscale, rotation, blur,
+noise, JPEG 58). **8/10 documents completed**; among those, **7/8 fully
+correct**, **71/72 key-header** (98.6%), line F1 **0.795**, and OCR totals were
+consistent on **all 10 degraded final pages**. Two documents failed on a page:
+one reproducible malformed JSON and one transient Ollama HTTP 500 under memory
+pressure. The audit explicitly allows those two failures and lists them. This
+is a robustness probe, not a production claim. Artifacts:
+`evaluation/invoice/results/summary_invoice_qwen3-vl_2b_mp_pagewise_degraded_ocr.json`,
+`compare_invoice_clean_vs_degraded_2b.json`.
+
+### Real Portuguese receipts and invoices (five-field probe)
+
+Every earlier invoice number on this page came from a synthetic, vendor-made
+corpus. A separate probe now uses **100 real phone photos** of Portuguese
+receipts and simplified invoices (80 from a private company, 20 personal),
+CC BY 4.0, with human-transcribed vendor, invoice number, date, currency, tax,
+and total. It measures **five fields**, not the nine-field invoice schema, and it
+is **not** a B2B supplier-invoice set.
+
+| Set / path | Field accuracy | Documents fully correct |
+|---|---:|---:|
+| Development, 0.3.0 shipped merge | 374/577 = **64.8%** | 3/100 = **3%** |
+| Development, preserve-printed-total merge | 428/577 = **74.2%** | 18/100 = **18%** |
+| **Holdout, preserve-printed-total merge (held out)** | 419/582 = **72.0%** | 22/100 = **22%** |
+
+The 0.3.0 merge rewrote a printed total as `subtotal + tax`; on tax-inclusive
+receipts that double-counted VAT and turned **50 correct totals into wrong
+ones**. Preserving the printed total and tax, and flagging inconsistency instead
+of silently repairing it, recovers **53 development documents** without a new
+model call. The sealed seed-43 holdout was then run once: field accuracy moved
+**−2.2 points** and fully-correct moved **+4.0 points**, so the fix generalizes.
+
+On holdout: currency 96.0%, date 92.9%, total 76.0%, vendor 58.9%, invoice
+number 41.8%, tax 64.8%. Tax is the least stable field; the remaining total
+errors are the reader's, not the merge's. Three holdout documents were
+incomplete: one runaway 2048-token line-item generation, one truncated response
+with no completion reason, and one valid JSON with no total. The 0.3.0 wheel on
+PyPI does **not** contain the fix. Method, exact intervals, residual categories,
+and artifacts:
+[`evaluation/invoice/PT_REAL_RESULTS.md`](evaluation/invoice/PT_REAL_RESULTS.md).
 
 **DocVQA reading probe** — 200 public images, one question per image, 768 px
 mirror, one reference answer. Qwen3-VL-2B-Instruct scores **0.829 ANLS** and
@@ -223,7 +295,8 @@ If you deploy it:
   currency, arithmetic repairs, OCR-read printed totals) reached 10/10 on the
   nine key-header fields, but that is a pipeline result and line items remain
   weak (0.848 F1, 1/10 all right). Page-wise is ~2× slower; OCR adds ~0.2 s/doc.
-  The SDK extraction path is still single-image.
+  The 0.3.0 SDK preview exposes the page-wise path; that is not a production
+  multipage claim.
 - **Budget latency.** Receipts 7–14 s/doc; page-1 invoices 16–27 s/doc;
   page-wise multipage 70.7 s/doc p50 (16.1 s/page) on an M4 through Ollama,
   above the 4 s target. Batch work, or wait for an MLX/chunked path.
@@ -246,8 +319,9 @@ tracks were measured, failed to beat the free base model, and were closed.
 **Does it work on invoices?**
 On a synthetic public benchmark (181 invoices, page 1) it reaches 91.9%/65.7%
 (3B) and 93.5%/71.8% (2B) key-header/fully-correct. It is not validated on real
-supplier invoices, flagging fails (0/7), and multipage is a 10-document probe,
-not a shipped SDK path.
+supplier invoices, flagging fails (0/7), and multipage is a 10-document probe.
+The 0.3.0 SDK preview exposes the same page-wise method, but the evidence is
+still that probe.
 
 **Does my data leave my machine?**
 No. Inference runs against a local Ollama server. There is no hosted API, no
@@ -280,8 +354,10 @@ last-page currency, arithmetic repairs, and OCR-read printed totals accepted onl
 when `subtotal + tax == total` — reaches **10/10** on the nine key-header fields.
 That is a **pipeline result, not a pure VLM score**, the exact 95% CI is
 69.2–100% at n=10, line items are all right on only 1/10, and OCR adds ~0.2 s/doc.
-The SDK extraction path is still single-image, so multipage is not shipped as a
-straight-through product path.
+The 0.3.0 SDK preview exposes the page-wise path, but it is not a
+straight-through production claim. A deterministic degraded copy of the same
+pages completed 8/10 documents with 7/8 fully correct and 71/72 key-header; two
+pages failed (one malformed JSON, one transient Ollama HTTP 500).
 
 **How does it compare with OCR + regex?**
 On the same 100 receipts, the 3B + trust layer scores 0.9475 field F1 versus
@@ -316,7 +392,7 @@ for their terms.
 | Hybrid v2 (`hybrid_2p2b`, MLX + Tesseract F3) | 🚢 Shipped 2026-10-07, superseded | 0.603 clean-100; address 0.37; paired address 31/7/62 |
 | SmolVLM2-2.2B SFT / vision LoRA | ❌ Closed | Base 0.536; clean-100 LoRA 0.535–0.540; vision LoRA 0.0395 / 0.4277 |
 | TinyDoc-VLM-256M | ⚠️ Retired research checkpoint | OCRBench **0.0%** (n=999 scored); no performance claims |
-| Multipage invoice path (eval harness) | 🧪 Probe | All-pages 4/10; page-wise VLM 6/10; + OCR totals **10/10** key-header (90/90) but 0.848 line F1 and ~2× slower; SDK path still single-image |
+| Multipage invoice path (eval harness) | 🧪 Probe | All-pages 4/10; page-wise VLM 6/10; + OCR totals **10/10** key-header (90/90) but 0.848 line F1 and ~2× slower; degraded copy 7/8 fully correct with 2 page failures; 0.3.0 SDK preview exposes the page-wise path, probe-quality only |
 | TinyDoc-2B grounded LoRA (v3.1) | 🧪 Conditional | Only if v3.0 leaves a measured invoice/grounding residual |
 
 The honest one-liner: **the evaluation harness and product layer are real; the
@@ -354,7 +430,7 @@ third-party reader behind a grounded extraction layer.
 ## Development
 
 ```bash
-python3 -m pytest tests/ -q                 # 209 passed
+python3 -m pytest tests/ -q                 # 228 passed
 python3 -m ruff check tinydoc_vlm/ tests/   # CI-scope lint
 python3 evaluation/phase0/recompute_scores.py
 node scripts/verify-product.mjs claims

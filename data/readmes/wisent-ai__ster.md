@@ -147,8 +147,8 @@ Included now:
 - pair-set authoring and inspection for duplicates, length balance and
   diversity, with no model loaded;
 - synthetic pair generation from a trait description, written either by the
-  local runtime or by a hosted model reached through Brama, with every
-  answer judged for a refusal by the model that wrote it;
+  local runtime or by a hosted model Stado's inference alternatives answer,
+  with every answer judged for a refusal by the model that wrote it;
 - last-token hidden-state extraction from any selected transformer layer;
 - contrastive activation addition (`caa`), principal-direction (`pca`), and
   logistic-probe training;
@@ -183,11 +183,13 @@ Explicit boundaries:
   among them, since every family above is one decoder stack — fails before
   weights are loaded
   rather than silently running a wrong decoder.
-- Ster controls local open-weight models. Hosted model routing belongs to Brama.
+- Ster controls local open-weight models. Hosted model routing belongs to
+  Stado's inference alternatives (Brama among them).
 - Steering reads hidden states, so it always runs on a local open-weight model.
   Writing pair text needs no activations, so `ster pairs synthesize` may take
-  its generator from Brama instead. Ster holds no provider credential and
-  speaks no provider API: it calls the gateway, which owns the routing.
+  its generator from `stado capabilities call inference --consumer ster`
+  instead. Ster holds no provider credential, names no gateway and speaks no
+  provider API.
 - Fine-tuning trains low-rank adapters, and on a reward run the scalar head
   that reads them. It trains nothing else: the base weights are mapped
   read-only and never registered as trainable. One sequence goes through each
@@ -214,31 +216,30 @@ Explicit boundaries:
 
 ## Install
 
-Install the current source release from GitHub:
+Install the current release through Stado, which places `ster` on `PATH`:
 
 ```bash
-cargo install --git https://github.com/wisent-ai/ster --locked
+stado product install --surface cli ster
 ```
 
-From this source checkout:
+From this source checkout, kompilator builds it (no Cargo runs):
 
 ```bash
-cargo install --path . --locked
+mkdir -p .build/ster
+WISENT_OUTPUT_DIR="$PWD/.build/ster" stado product kompilator stage --bin ster
 ```
 
 Metal and CUDA are build-time choices:
 
 ```bash
-cargo install --git https://github.com/wisent-ai/ster --features metal --locked
-cargo install --git https://github.com/wisent-ai/ster --features cuda --locked
+WISENT_OUTPUT_DIR="$PWD/.build/ster" stado product kompilator stage --bin ster --features metal
+WISENT_OUTPUT_DIR="$PWD/.build/ster" stado product kompilator stage --bin ster --features cuda
 ```
 
 The crates.io name `ster` is currently unclaimed and is not Ster's release
 surface. `pip install ster` installs unrelated software from another publisher.
 
-Delivery through Stado and the checkpoint cache are covered in
-[installing and where downloads land](docs/guide/install.md).
-
+Delivery through Stado and the checkpoint cache: [installing and where downloads land](docs/guide/start/install.md).
 
 ## First steering workflow
 
@@ -254,47 +255,13 @@ command family are listed in the [CLI overview](docs/guide/start/cli.md). Run
 `ster <command> --help` for exact arguments; every answer is one JSON document
 on stdout, and the global `--text` flag prints it as `path: value` lines.
 
-Ster reports nothing until you answer. The first command you run on a terminal
-asks once whether it may send its maintainers its failures (`errors`), its
-failures and the commands that ran (`usage`), or nothing; a script or a coding
-agent is never asked. No file, prompt, pair or command argument is sent, and
-your home directory and host name are taken out first. `ster telemetry
-status|on|off|show|export|flush` reads and changes it and shows exactly what
-waits to be sent, and `ster telemetry events` lists every kind of event Ster
-can send, the consent each needs and every property it carries
-([reference](https://ster.wisent.com/docs/cli/telemetry)); `DO_NOT_TRACK=1`
-sends nothing.
-
-`ster support report --description "what you did and what happened"
-[--subject …] [--email …] [--without-failure]` asks Ster's support for help,
-with Ster's version, the system's, this installation's id and the last failure
-telemetry holds; `ster support status` prints every report this installation
-filed with its status and replies
-([reference](https://ster.wisent.com/docs/cli/support)). Ster Desktop's Help →
-Report a Problem files and reads the same reports.
-
-`ster doctor [--json]` tries every functionality Ster's failure catalogue
-declares with an entry point, now, on this machine: the telemetry directory
-can be written and where events go, where support reports go and their
-replies, the workspace and its active pair set. Each is said to work with what
-was seen, to fail with what failed and how to fix it, or to be skipped because
-it changes your data; it exits 1 when one failed
-([reference](https://ster.wisent.com/docs/cli/doctor)).
+What Ster reports and only with your consent (`ster telemetry`), how to ask its
+support for help (`ster support`) and how to try every functionality on this
+machine (`ster doctor`) are in the [CLI overview](docs/guide/start/cli.md#telemetry-support-and-doctor).
 
 ## Architecture
 
-The runtime uses Candle directly. Ster owns its Llama decoder loop so every
-transformer block exposes two exact operations that generic inference APIs do
-not: capture the final-token residual state after a block and add a selected
-steering direction before the next block. The same decoder can also run a
-differentiable pass, which is what makes fine-tuning possible at all: Candle's
-fused `rotary_emb::rope`, `ops::softmax_last_dim`, and `ops::rms_norm` kernels
-have no backward pass, so training selects composed equivalents at exactly those
-three call sites while inference keeps the fused ones. The same pass also
-chooses whether the attached adapters apply, which is what lets preference
-optimization score the frozen reference without a second copy of the weights.
-Tokenization, Safetensors loading, attention, KV caching, sampling, and device
-kernels remain native Rust.
+How one Candle decoder pass serves inference, steering and training: [architecture](docs/guide/start/architecture.md).
 
 ## Documentation and support
 
@@ -303,8 +270,7 @@ kernels remain native Rust.
 - Community: https://discord.gg/qRjpkthq54
 - Private vulnerabilities: GitHub Security Advisories for this repository
 
-Ster is pre-1.0. Artifact schema changes and supported-model expansion remain
-subject to the repository's versioned release contract.
+Ster is pre-1.0; artifact schema changes and supported-model expansion follow its versioned release contract.
 
 ## License
 

@@ -27,12 +27,13 @@ one focused terminal workflow.
 
 ______________________________________________________________________
 
-Codex, Claude, Gemini, and Antigravity sessions show compact tool status and command
-previews, with output previews for failed calls. Explicit Claude skill invocations
-appear alongside them, and answers retain saved usage counts.
+Codex, Claude, and Antigravity sessions show compact tool status and command previews,
+with output previews for failed calls. Explicit Claude skill invocations appear
+alongside them, and answers retain saved usage counts.
 
-Press `w` in session view to inspect saved execution graphs, accept exact outputs,
-answer node questions, retry work, resume dispatch, or cancel a graph.
+Press `w` in session view to inspect saved execution graphs, accept exact outputs, retry
+work, resume dispatch, or cancel a graph. Questions from graph nodes and proposals open
+the same question panel as an ordinary turn's questions.
 
 With `--experimental-multi-agent`, select `/graph`, then describe your task. Regular
 chat stays on the left, with the graph preview and live status in a right pane using at
@@ -110,8 +111,8 @@ cargo install agentty
 
 ## Supported CLI Agents
 
-Agentty currently supports Codex, Claude, Antigravity, and Gemini. Install and
-authenticate at least one provider CLI before starting a session:
+Agentty currently supports Codex, Claude, and Antigravity. Install and authenticate at
+least one provider CLI before starting a session:
 
 - Codex (`codex`, recommended; supports subscription usage): install the
   [Codex CLI](https://github.com/openai/codex) and run `codex login`.
@@ -155,30 +156,15 @@ authenticate at least one provider CLI before starting a session:
 > [Antigravity terms](https://antigravity.google/terms) do not yet clearly describe how
 > subscription access applies when `agy` headless mode is invoked by third-party tools.
 
-- Gemini (`gemini`): install the
-  [Gemini CLI](https://github.com/google-gemini/gemini-cli) and authenticate with an API
-  key or Vertex AI.
-
-> [!WARNING]
->
-> "Sign in with Google" (Google Account OAuth) no longer works for the Gemini CLI after
-> Google's
-> [transition of the Gemini CLI to the Antigravity CLI](https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/).
-> API key (`GEMINI_API_KEY`) and Vertex AI authentication still work, so use one of
-> those for the Gemini backend, or use the Antigravity (`agy`) backend instead.
-
 Agentty uses each provider's official non-interactive CLI or app-server surface
-(`claude -p`, `agy --input-format stream-json`, `codex app-server`, or `gemini --acp`)
-after you authenticate with that provider's CLI. It does not implement OAuth flows, read
-provider OAuth tokens directly, or call private provider APIs. You are responsible for
-choosing an authentication method that is permitted for your account, plan, and usage
-pattern.
+(`claude -p`, `agy --input-format stream-json`, or `codex app-server`) after you
+authenticate with that provider's CLI. It does not implement OAuth flows, read provider
+OAuth tokens directly, or call private provider APIs. You are responsible for choosing
+an authentication method that is permitted for your account, plan, and usage pattern.
 
 ## Usage
 
-Launch Agentty from the repository you want to work in. Project discovery is opt-in: the
-startup suggestion defaults to **Skip**, and the **Projects** tab supports adding a
-repository by path (`a`) or scanning a chosen folder (`d`).
+Launch Agentty from the repository you want to work in:
 
 ```sh
 agentty              # Launch with auto-update enabled (default)
@@ -190,44 +176,23 @@ agentty --help       # Show supported command-line options
 agentty --version    # Show the installed Agentty version
 ```
 
-Start with `agentty --experimental-multi-agent` to enable `/plan`. Use it in a session
-with a prepared worktree, including a new **Regular** session, to turn the chat into a
-**Plan then implement** conversation. Answer or revise the read-only **Planner**
-proposal in the composer, then approve it in your own words to run the **Implementer**;
-follow-ups go to the Implementer.
-
-`--experimental-harness` adds a preview **Harness** session type that runs Agentty's
-built-in agent loop against a free local model, such as one a running Ollama serves, or
-against paid Muse, Kimi, or Qwen using `MODEL_API_KEY`, `KIMI_API_KEY` with
-`KIMI_BASE_URL`, or `DASHSCOPE_API_KEY` with `DASHSCOPE_BASE_URL`, or OpenAI's GPT
-models with a paid `OPENAI_API_KEY` or on your ChatGPT Plus or Pro plan after
-`ag-harness login chatgpt`. Its `/model` picker lists local models first, marks each
-model free, plan, or paid with a cheap, standard, or premium price class, and remembers
-your choice for new Harness sessions. A project's Default Fast Model can be a cheap
-harness model, such as `qwen3.8-flash`, for commit messages and titles. Its edit mode
-runs unsandboxed shell commands. See
-[Harness sessions](https://agentty.xyz/docs/agents/backends/#backends-harness).
-
-Session tracing is disabled unless `--otlp-endpoint` supplies a complete OTLP
-HTTP/protobuf traces URL. Authentication headers can come from
-`OTEL_EXPORTER_OTLP_TRACES_HEADERS` or `OTEL_EXPORTER_OTLP_HEADERS`. Traces contain step
-timings, tool identities, available executable names, exit codes, and output sizes. Add
-`--otlp-capture-content` to include tool commands, arguments, and results as previews of
-at most 4 KiB each. Common credential markers suppress the entire affected preview;
-arbitrary secrets may still appear. Prompts and reasoning are excluded. See the
-[session tracing documentation](https://agentty.xyz/docs/usage/workflow/#session-traces)
-for provider limitations. A traces URL ending in `/v1/traces` also sends the usage
-events below as OTLP log records to the sibling `/v1/logs` URL, even when PostHog
-telemetry is disabled.
-
-Only one Agentty instance can use a given Agentty root at a time. Close the running
-instance before launching another. Separate `AGENTTY_ROOT` directories can run
-independently.
-
-Telemetry is enabled by default: release builds send events to the Agentty PostHog
-project. Set `AGENTTY_TELEMETRY_ENABLED=0` to disable it. See the
-[telemetry details](docs/site/content/docs/usage/workflow.md#telemetry) for the exact
-events and fields.
+- **Projects**: discovery is opt-in. In the **Projects** tab, add a repository by path
+  (`a`) or scan a chosen folder (`d`).
+- **Instances**: only one Agentty instance can use a given Agentty root at a time.
+  Separate `AGENTTY_ROOT` directories can run independently.
+- **Multi-agent**: `--experimental-multi-agent` enables the `/plan` and `/graph`
+  [workflows](https://agentty.xyz/docs/usage/workflow/).
+- **Harness**: `--experimental-harness` adds a preview session type that runs Agentty's
+  built-in agent loop against local or hosted models. Its edit mode runs unsandboxed
+  shell commands. See
+  [Harness sessions](https://agentty.xyz/docs/agents/backends/#backends-harness).
+- **Tracing**: disabled unless `--otlp-endpoint` supplies a complete OTLP HTTP/protobuf
+  traces URL. A URL ending in `/v1/traces` also sends usage events as OTLP log records
+  to the sibling `/v1/logs` URL, even when telemetry is disabled. See
+  [session traces](https://agentty.xyz/docs/usage/workflow/#session-traces).
+- **Telemetry**: enabled by default; release builds send events to the Agentty PostHog
+  project. Set `AGENTTY_TELEMETRY_ENABLED=0` to disable it. See the
+  [telemetry details](https://agentty.xyz/docs/usage/workflow/#telemetry).
 
 ## Documentation
 

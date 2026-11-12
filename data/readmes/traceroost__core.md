@@ -709,8 +709,11 @@ local credential, even offline. The credential is an owner-only (0600) file,
 ### Moving the dashboard to another port
 
 The standalone dashboard and the desktop app use port 4315 by default. Installs from before
-v0.22.0 used 3000 and keep it, and 3000 is also the default for Next.js, Rails, Express and many
-other dev servers. To move TraceRoost to another port:
+v0.22.0 used 3000, which is also the default for Next.js, Rails, Express and many other dev
+servers, so an upgrade moves them to 4315 once, the next time TraceRoost starts, and says so in
+its output and log. Two kinds of install stay on 3000: one reachable beyond this machine
+(`--bind-host`), and Docker, where 3000 is the port inside the container. If you put the dashboard
+back on 3000 afterwards, it stays there. To move TraceRoost to another port:
 
 - **Settings → Dashboard port** (gear icon in the dashboard): enter a port and click **Change**. The
   dashboard moves straight away, without a restart, and the page follows it with your preferences.
@@ -792,7 +795,7 @@ pnpm run local
 TraceRoost is built in two editions from the same source:
 
 - **core:** everything in this README: the dashboard, log/OTel ingestion, the MCP server, the
-  Advisor, and the local CLI analysis (`find`, `trace`, `patterns`, `cohort`, `advise`). It
+  Advisor, and the local CLI analysis (`find`, `trace`, `patterns`, `churn`, `advise`). It
   contains **no** TraceRoost Cloud (org link + upload) code at all: not disabled, not built in.
   Released builds (VSIX, npm, Docker, the desktop app) were core through 0.21.0; since 1.0.0 they
   are full.

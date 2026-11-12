@@ -36,7 +36,25 @@ Just as `SECURITY.md` defines how to handle vulnerabilities, **`ACCESSIBILITY.md
 **Additional resources:**
 - Installation: [INSTALL.txt](./INSTALL.txt)
 - Procurement: [Section 508 Requirements for Government Contracts](https://github.com/CivicActions/open-practice/blob/main/open-requirements-library/accessibility.md)
-- Comparison with similar projects: [COMPARISONS.md](./COMPARISONS.md)
+- Comparison with complementary resources: [COMPARISONS.md](./COMPARISONS.md)
+- Project maintenance and contributor docs: [docs/README.md](./docs/README.md)
+- Resource discovery by task: [TRUSTED_SOURCES.md](./TRUSTED_SOURCES.md#finding-resources-by-task)
+
+### Find the right entry point
+
+| I need… | Start here |
+| --- | --- |
+| A project accessibility commitment or policy | [ACCESSIBILITY template](./examples/ACCESSIBILITY-template.md) |
+| Component implementation guidance | [Examples index](./examples/README.md) |
+| Concise AI coding skills | [mgifford/accessibility-skills](https://github.com/mgifford/accessibility-skills) |
+| Accessibility evaluation methods | [Manual testing guide](./examples/MANUAL_ACCESSIBILITY_TESTING_GUIDE.md) and [Microsoft ACT](https://github.com/microsoft/Microsoft-Accessibility/tree/main/Accessibility-Considerations-Toolkit) |
+| Testing tools and CI checks | [CI/CD guidance](./examples/CI_CD_ACCESSIBILITY_BEST_PRACTICES.md) and the [trusted-source registry](./TRUSTED_SOURCES.md) |
+| Existing accessible web components to evaluate | [Component reference curation](./TRUSTED_SOURCES.md#component-reference-curation) |
+| Research and user-centred design guidance | [Comparison and resource categories](./COMPARISONS.md#resource-categories-are-not-interchangeable) |
+
+The registry is a discovery aid. It does not make every listed source
+authoritative, current, or licensed for reuse. Check the source and its licence
+before relying on it.
 
 ---
 
@@ -49,17 +67,23 @@ This repository is organized to separate **content you adopt** from **project do
 ├── ACCESSIBILITY.md                ← Our own accessibility commitment
 ├── AGENTS.md                       ← AI agent instructions (copy/adapt)
 ├── CONTRIBUTING.md                 ← How to contribute to this project
-├── STYLES.md                       ← Design and content standards
 ├── SUSTAINABILITY.md               ← Sustainability policy
 ├── BROWSER_SUPPORT.md              ← Browser support guidelines
 ├── COMPARISONS.md                  ← Comparison with similar projects
 ├── README.md                       ← This file
 │
+├── docs/                           ← Project maintenance and contributor docs
+│   ├── README.md                   ← Index
+│   ├── DEFINITION_OF_DONE.md       ← Report readiness checklist
+│   ├── STYLES.md                   ← Design and content standards
+│   ├── COMPARISON_WITH_KREERC.md   ← Legacy redirect to COMPARISONS.md
+│   └── archive/                    ← Historical project records
+│
 ├── examples/                       ← Copy these to your project
 │   ├── ACCESSIBILITY-template.md             ← Start here: copy this template
 │   ├── A11Y_SHIFT_LEFT_WORKFLOW.yml          ← GitHub Actions workflow
 │   ├── PRE_COMMIT_ACCESSIBILITY_SAMPLE.yaml  ← Pre-commit hooks
-│   ├── TRUSTED_SOURCES.yaml                  ← Vetted a11y resources
+│   ├── TRUSTED_SOURCES.yaml                  ← Discovery/review registry (not a vetted list)
 │   ├── AUDIO_VIDEO_ACCESSIBILITY_BEST_PRACTICES.md ← Component guides
 │   ├── ANCHOR_LINKS_ACCESSIBILITY_BEST_PRACTICES.md
 │   ├── CI_CD_ACCESSIBILITY_BEST_PRACTICES.md
@@ -125,7 +149,7 @@ An effective `ACCESSIBILITY.md` file acts as a **Living Commitment**, covering t
 * **GitHub Accessibility Scanner:** AI-powered accessibility scans with issue creation via `github/accessibility-scanner` ([Integration Guide](./examples/GITHUB_ACCESSIBILITY_SCANNER_INTEGRATION.md)).
 * **Shift-Left Prevention:** Stop accessibility regressions before merge with pre-commit hooks and CI gates ([Guide](./examples/SHIFT_LEFT_ACCESSIBILITY_AUTOMATION.md)).
 * **Copy-Ready Samples:** Starter files for CI and local guardrails ([Workflow](./examples/A11Y_SHIFT_LEFT_WORKFLOW.yml), [pre-commit config](./examples/PRE_COMMIT_ACCESSIBILITY_SAMPLE.yaml)).
-* **Trusted Source Registry:** Machine-readable list of vetted accessibility references for AI retrieval and citation policies ([YAML](./examples/TRUSTED_SOURCES.yaml)), including [wai-yaml-ld](https://github.com/mgifford/wai-yaml-ld) for structured WCAG/ARIA/ATAG standards data and [CivicActions Open Requirements Library](https://github.com/CivicActions/open-practice/blob/main/open-requirements-library/accessibility.md) for procurement requirements.
+* **Trusted Source Registry:** Machine-readable discovery and review metadata for accessibility references, with authority, licensing, and AI-use fields ([YAML](./examples/TRUSTED_SOURCES.yaml); see the [human-readable guide](./TRUSTED_SOURCES.md)). Inclusion is not an endorsement or proof of authority. The registry also points to [wai-yaml-ld](https://github.com/mgifford/wai-yaml-ld) for structured WCAG/ARIA/ATAG standards data and the [CivicActions Open Requirements Library](https://github.com/CivicActions/open-practice/blob/main/open-requirements-library/accessibility.md) for procurement requirements.
 * **Link Integrity Checks:** Scheduled and PR-time validation of documentation links ([Workflow](./.github/workflows/link-check.yml)).
 * **Best Practice Reference:** Project-specific guidance for complex components like [CI/CD pipelines](./examples/CI_CD_ACCESSIBILITY_BEST_PRACTICES.md), [audio/video](./examples/AUDIO_VIDEO_ACCESSIBILITY_BEST_PRACTICES.md), [anchor links](./examples/ANCHOR_LINKS_ACCESSIBILITY_BEST_PRACTICES.md), [ARIA live regions](./examples/ARIA_LIVE_REGIONS_BEST_PRACTICES.md), [color contrast](./examples/COLOR_CONTRAST_ACCESSIBILITY_BEST_PRACTICES.md), [content design](./examples/CONTENT_DESIGN_ACCESSIBILITY_BEST_PRACTICES.md), [image alt text](./examples/IMAGE_ALT_TEXT_ACCESSIBILITY_BEST_PRACTICES.md), [SVGs](./examples/SVG_ACCESSIBILITY_BEST_PRACTICES.md), [Mermaid diagrams](./examples/MERMAID_ACCESSIBILITY_BEST_PRACTICES.md), [keyboard interactions](./examples/KEYBOARD_ACCESSIBILITY_BEST_PRACTICES.md), [light/dark modes](./examples/LIGHT_DARK_MODE_ACCESSIBILITY_BEST_PRACTICES.md), [navigation](./examples/NAVIGATION_ACCESSIBILITY_BEST_PRACTICES.md), [plain language](./examples/PLAIN_LANGUAGE_ACCESSIBILITY_BEST_PRACTICES.md), [tables](./examples/TABLES_ACCESSIBILITY_BEST_PRACTICES.md), [touch and pointer](./examples/TOUCH_POINTER_ACCESSIBILITY_BEST_PRACTICES.md), [user personalization](./examples/USER_PERSONALIZATION_ACCESSIBILITY_BEST_PRACTICES.md), [forms](./examples/FORMS_ACCESSIBILITY_BEST_PRACTICES.md), [maps](./examples/MAPS_ACCESSIBILITY_BEST_PRACTICES.md), [charts and graphs](./examples/CHARTS_GRAPHS_ACCESSIBILITY_BEST_PRACTICES.md), [tooltips](./examples/TOOLTIP_ACCESSIBILITY_BEST_PRACTICES.md), [print styles](./examples/PRINT_ACCESSIBILITY_BEST_PRACTICES.md), [digital quality (Opquast)](./examples/OPQUAST_DIGITAL_QUALITY_BEST_PRACTICES.md), [accessibility bug reporting](./examples/ACCESSIBILITY_BUG_REPORTING_BEST_PRACTICES.md), and [Copilot agent mode](./examples/COPILOT_AGENT_MODE_GUIDE.md).
 * **Manual Testing Guide:** Comprehensive procedures for keyboard-only and screen reader testing, with step-by-step workflows for validating accessibility beyond automated tools ([Guide](./examples/MANUAL_ACCESSIBILITY_TESTING_GUIDE.md)).
@@ -366,6 +390,11 @@ We are looking for feedback on the taxonomy and automation workflows.
 * **Using this?** Let us know so we can add you to the "Adopters" list.
 
 ## Related Projects
+
+These are complementary resources, not equivalents or endorsements. See
+[COMPARISONS.md](./COMPARISONS.md) for scope, licensing, and limitations.
+
+- [Microsoft Accessibility Considerations Toolkit](https://github.com/microsoft/Microsoft-Accessibility/tree/main/Accessibility-Considerations-Toolkit) — research-informed access considerations and evaluation methodology organized around EN 301 549 Functional Performance Statements; not a WCAG compliance tool or a representation of disabled people
 - [Mike Mai's Agent Skills](https://github.com/mikemai2awesome/agent-skills)
 - [Intopia's Web Accessibility Skill](https://github.com/Intopia/intopia-web-accessibility-skill/)
 - [A11y Spec-First Coding](https://github.com/LaurenceRLewis/a11y-spec-first-skill)
@@ -376,6 +405,48 @@ We are looking for feedback on the taxonomy and automation workflows.
 - [Awesome Copilot A11y Instructions](https://github.com/github/awesome-copilot/blob/main/instructions/a11y.instructions.md)
 - [AccessLint skills](https://github.com/AccessLint/skills)
 - [Upstream First](https://github.com/mgifford/upstream-first) - agent skills for deciding whether a fix belongs locally, upstream, or in an existing dependency
+
+## Cross-repository synchronization
+
+`examples/` in this repository is the canonical source for the topic guides.
+[accessibility-skills](https://github.com/mgifford/accessibility-skills)
+contains concise derivatives. Each skill records its canonical source and sync
+status in `skills/<name>/SYNC.md`; shared finding terminology, schemas, and
+fingerprints are tracked in `VOCABULARY_SYNC.md`.
+
+The deterministic sync engine lives in
+[`accessibility-skills/scripts/sync-check.sh`](https://github.com/mgifford/accessibility-skills/blob/main/scripts/sync-check.sh).
+This repository's
+[sync workflow](./.github/workflows/sync-check-accessibility-skills.yml) checks
+out that repository and runs the same engine against this checkout. It reports
+drift; it does not rewrite skill content or mark a skill synchronized. The
+skills repository owns the actionable drift issue so the same finding is not
+filed in both repositories.
+
+A skill is a distillation, not a copy. A changed canonical guide requires a
+reviewed decision (update, no update needed, intentional divergence, or
+deferred) before the skill's metadata is advanced.
+
+### Local development
+
+The skills repository provides a local-first CLI that discovers this checkout
+from an explicit path, `ACCESSIBILITY_MD_DIR`, `sync.config.yaml`, or a sibling
+directory:
+
+```bash
+cd ../accessibility-skills
+npm run sync:status
+npm run sync:diff -- --skill forms
+npm run sync:review -- --skill forms --decision no-update --note "No material change"
+npm run sync:validate
+npm run sync:report -- --output sync-report.md
+```
+
+No model, network request, GitHub credential, or monorepo is required. See
+[SYNC_WORKFLOW.md](https://github.com/mgifford/accessibility-skills/blob/main/SYNC_WORKFLOW.md)
+for discovery precedence, statuses, review decisions, and PR order. The
+optional agent prompt is
+[UPDATE_SKILL_FROM_CANONICAL.md](https://github.com/mgifford/accessibility-skills/blob/main/prompts/UPDATE_SKILL_FROM_CANONICAL.md).
 
 ## 📄 License
 

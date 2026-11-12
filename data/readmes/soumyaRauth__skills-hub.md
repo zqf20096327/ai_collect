@@ -17,12 +17,14 @@
 [![Stars](https://img.shields.io/github/stars/soumyaRauth/skills-hub?style=for-the-badge&logo=github&color=eab308)](https://github.com/soumyaRauth/skills-hub/stargazers)
 
 **Agent Skills for real engineering work.** Installable with the Skills CLI, and usable with<br>
-Claude Code and other agents that support Agent Skills. No hosted service: markdown, plus one optional MCP server that serves a project's knowledge.
+Claude Code and other agents that support Agent Skills. No hosted service: markdown, one optional MCP server that serves a project's knowledge,<br>
+and [Runway](#-runway), a local tool that tells you whether a prompt will finish before your Claude Code limit.
 
 [**🌐 Website**](https://soumyaRauth.github.io/skills-hub/) &nbsp;·&nbsp;
 [**⚡ Install**](#installation) &nbsp;·&nbsp;
 [**🧰 Skills**](#-the-skills) &nbsp;·&nbsp;
 [**🔀 How they compose**](#-how-they-compose) &nbsp;·&nbsp;
+[**🔧 Tools**](#-tools) &nbsp;·&nbsp;
 [**🧹 Uninstall**](#uninstalling) &nbsp;·&nbsp;
 [**📖 Ecosystem**](ECOSYSTEM.md)
 
@@ -153,7 +155,8 @@ the skills considered and deliberately not added.
 > implementation work, not only when a request sounds like the skill's own name.
 > The skills alone passed 30 of 38 cases, and with the instruction they passed 37
 > of 38. Neither setup loaded a skill where it should have stayed quiet. The same
-> folder has an optional colored active-skills status line.
+> folder has an optional colored active-skills status line, and Runway, which
+> estimates each prompt before it runs and lets you decide whether to send it.
 
 ## 📚 Meet the skills
 
@@ -1431,6 +1434,105 @@ compressed question. A new session resumes from the run ledger.
 
 <br>
 
+## 🔧 Tools
+
+Skills shape how the agent works. Tools are small programs that run on your
+machine and do one job exactly, so the model never has to estimate it. They
+cost no tokens.
+
+### ⛽ Runway
+
+**Can I afford this prompt? Runway estimates it before it runs, and lets you decide.**
+
+```bash
+npx -y github:soumyaRauth/skills-hub runway install-hooks --statusline
+npx -y github:soumyaRauth/skills-hub runway calibrate
+```
+
+For Claude Code. It needs Python 3, with no packages, no API key and no network.
+
+When you press Enter, Runway estimates the prompt before Claude sees it, and
+holds it back so you decide. It answers the question that matters: **how long
+you can keep working once this prompt has run**, if it turns out quick, typical
+or heavy. Nothing is sent and nothing is spent until you decide:
+
+```
+[Runway] Before it runs: this prompt should fit, even if it turns out heavy.
+  Time left after it, at your pace over the last hour (~1h07m now):
+    quick    ~1h06m left              1 step, ~360.7k tokens
+    typical  ~1h05m left              3 steps, ~1.1M tokens
+    heavy    ~55m left                19 steps, ~6.9M tokens
+  5h window  46% used now, resets in 3h53m
+  Context    36% now
+  The range comes from your last 20 prompts; 13 of 15 past prompts landed inside it.
+To run it: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.
+```
+
+Send it again (Up, Enter) to run it, or do nothing to drop it. When a prompt
+could run out partway, the message says so (here with the quota set to 92%
+used, to show it):
+
+```
+[Runway] Paused: this prompt may not finish before your 5-hour limit, if it turns out heavy.
+  Time left after it, at your pace over the last hour (~5m now):
+    quick    ~4m left                 1 step, ~360.7k tokens
+    typical  ~3m left                 3 steps, ~1.1M tokens
+    heavy    limit hit partway        19 steps, ~6.9M tokens
+  5h window  92% used now, resets in 2h00m
+  Context    36% now
+  The range comes from your last 20 prompts; 13 of 15 past prompts landed inside it.
+Run it anyway: press Up, then Enter, within 2 min. Otherwise do nothing; it was not sent.
+```
+
+The status line shows what is left all the time:
+
+```
+⛽ ctx 10% · 5h 33% · resets 4h00m · ~1h05m at this pace
+```
+
+<details>
+<summary><b>Deep dive</b>: how it estimates, and the limits</summary>
+
+One prompt runs several steps (API calls), and each step re-reads the whole
+context. So a prompt of N steps costs at least N × the current context, plus
+outputs and tool results. What a prompt costs depends almost entirely
+on how many steps Claude takes, and that is decided while it works. On real
+history, neither the prompt's wording nor the prompts before it predicted the
+number of steps. Once the steps are known, though, the cost is close to
+exact. So Runway shows the time left after a quick, a typical and a heavy
+outcome, with step counts from your own prompts (10th percentile, median, 90th
+percentile), and says how often past prompts landed inside that range. *Fits*
+means even the heavy case fits, *won't fit* means not even the quick case
+does, and *may not fit* is everything in between.
+
+*Time left* is the room left after the prompt, divided by your pace over the
+last hour (or your average this window, after a break), and it stops at the
+reset. The quota is Claude Code's own reading (percent used, reset time),
+which the status line receives on Pro, Max and Ultra plans, so Runway never
+guesses your plan's limit. The measurements refresh in the background every
+six hours.
+
+`"gate"` in `~/.claude/runway/config.json` sets when it holds a prompt back:
+`"always"` (the default) before every prompt, `"risky"` only when a prompt may
+not fit, or `"off"`. Only the quota
+can pause a prompt. A full context is compacted and the turn carries on.
+`runway check "<prompt>"` gives the same verdict from a terminal without
+sending anything, and `runway status` shows context, quota, burn rate and time
+left.
+
+It checks itself: `runway backtest` replays your transcripts, predicting each
+prompt only from the prompts before it, and reports how many landed inside the
+range. `runway accuracy` does the same for live prompts. A prompt heavier than
+nine in ten of your past prompts lands above the range: that is the case it
+cannot foresee. Until you have five prompts of history, the range uses
+starting defaults and says so. The status line example is illustrative.
+
+</details>
+
+**[Full documentation →](integrations/claude-code/README.md#6-runway-how-much-room-is-left)** &nbsp;·&nbsp; **[Website →](https://soumyarauth.github.io/skills-hub/runway.html)**
+
+<br>
+
 ## Installation
 
 ```bash
@@ -1531,6 +1633,7 @@ and not the skills'. Here is where each one lives:
 | The standing instruction, if you added it | a line or `@` import in a `CLAUDE.md` | Delete that line |
 | The status line, if you added it | `statusLine` in `~/.claude/settings.json` | Delete that entry |
 | The Stop hook, if you added it | `hooks.Stop` in `~/.claude/settings.json` | Delete that entry |
+| Runway, if you installed it | a `UserPromptSubmit` hook and maybe `statusLine` in `~/.claude/settings.json`, and `~/.claude/runway/` | `npx -y github:soumyaRauth/skills-hub runway uninstall-hooks`, then `rm -rf ~/.claude/runway` |
 
 ## Supported agents
 
@@ -1553,6 +1656,10 @@ Everything Claude Code-specific is kept outside the skills:
 - a Stop hook that makes every skill named in the ⚡ line actually load, or be
   dropped in one line, before the turn ends
 - a status line segment that shows the active skills in color
+- Runway, a standard-library Python tool that estimates each prompt before it
+  runs, pauses it when it may not finish before the 5-hour limit, reports how
+  much context and quota is left, and scores its estimates against your own
+  transcripts
 - a plugin manifest and a marketplace manifest, so `/plugin install` or
   `claude --plugin-dir` can load all eighteen at once and `claude plugin eval`
   can test them
@@ -1614,6 +1721,7 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 ├── ECOSYSTEM.md                  ← how the skills activate, compose, and stay quiet
 ├── evals/activation/             ← claude plugin eval suite: which skill loads, and which must not
 ├── integrations/claude-code/     ← optional: standing instruction, colored status line, Stop hooks
+│   └── runway/                   ← context and 5-hour quota left, next-turn prediction, backtest
 ├── mcp/project-knowledge/        ← dependency-free MCP server for .agents/knowledge/, and its self-check
 ├── .claude-plugin/plugin.json    ← makes the repository loadable as a Claude Code plugin
 ├── tests/
@@ -1658,7 +1766,7 @@ See [integrations/claude-code](integrations/claude-code/README.md).
 - **[Architecture Engineer](skills/architecture-engineer/README.md)** · [SKILL.md](skills/architecture-engineer/SKILL.md)
 - **[How they work together](ECOSYSTEM.md)** — activation, composition, visibility, overrides, and what was not added
 - **[Activation suite](evals/activation/README.md)** — which skill a request should load, and which it must not
-- **[Claude Code integration](integrations/claude-code/README.md)** — optional standing instruction and status line
+- **[Claude Code integration](integrations/claude-code/README.md)** — optional standing instruction, status line, and Runway
 - **[Testing](tests/README.md)** — fixtures and expected reasoning behavior
 - **[Contributing](CONTRIBUTING.md)** — how to improve them safely
 - **[Project Knowledge](skills/project-knowledge/README.md)** · [SKILL.md](skills/project-knowledge/SKILL.md)

@@ -55,7 +55,7 @@ automation, knowledge base, and mobile apps for iOS and Android.
 ## Quick start
 
 1. [Create a free Chatway account](https://go.chatway.app/register) if you don't have one.
-2. Add `https://mcp.chatway.app/mcp` as a custom (remote) MCP connector in your AI client.
+2. Using ChatGPT or Codex? [Install the official Chatway plugin](https://chatgpt.com/plugins/plugin_asdk_app_6ac4cc03229c8191a4ee6465d9c514f8). For other clients, add `https://mcp.chatway.app/mcp` as a custom (remote) MCP connector.
 3. Sign in to Chatway when prompted and choose the widgets, channels, and permissions to share.
 4. Ask your assistant something like "Show my latest unresolved Chatway conversations."
 
@@ -65,7 +65,8 @@ automation, knowledge base, and mobile apps for iOS and Android.
 
 | Client | Setup |
 |---|---|
-| ChatGPT | [Connect ChatGPT](#chatgpt) |
+| ChatGPT | [Install the official plugin](#chatgpt) |
+| Codex | [Install the official plugin](#codex) |
 | Claude | [Connect Claude](#claude) |
 | Gemini CLI | [Install the extension](#gemini-cli) |
 | Cursor | [Install the plugin](#cursor) |
@@ -77,7 +78,7 @@ automation, knowledge base, and mobile apps for iOS and Android.
 
 **Works with any client that supports remote MCP servers with OAuth**
 
-Codex, Grok, Devin, OpenCode, and others. See the
+Grok, Devin, OpenCode, and others. See the
 [step-by-step setup guides](https://developers.chatway.app/mcp/guides.mcp_connect_clients)
 for each client.
 
@@ -238,16 +239,37 @@ The same code is available over the REST API with `GET /installation/code`. See 
 
 Connect Chatway to ChatGPT to search customer conversations, manage support tickets, access contacts, and work with your knowledge base directly from ChatGPT.
 
+**Recommended: install the official Chatway plugin**
+
+1. [Install the Chatway plugin in ChatGPT](https://chatgpt.com/plugins/plugin_asdk_app_6ac4cc03229c8191a4ee6465d9c514f8).
+2. Click **Install** and connect your Chatway account.
+3. Select the widgets, channels, and permissions you want ChatGPT to access.
+4. Start a conversation and ask: "Show my latest unresolved Chatway conversations."
+
+**Advanced: custom MCP connection**
+
 1. Open [ChatGPT](https://chatgpt.com) on the web and go to **Settings → Apps**.
 2. Enable **Developer mode** (requires an eligible ChatGPT plan).
 3. Open **Browse Plugins**, click **+**, and create a custom MCP app named `Chatway`.
 4. Enter `https://mcp.chatway.app/mcp` as the MCP server URL and select **OAuth** authentication. Leave the Client ID and Client Secret empty.
 5. Sign in to Chatway and authorize the widgets, channels, and permissions you want ChatGPT to access.
-6. Start a conversation, enable the Chatway app, and ask: "Show my latest unresolved Chatway conversations."
 
-Available tools and write capabilities depend on your ChatGPT plan and workspace settings.
+Custom connections depend on your ChatGPT plan and workspace settings.
 
-[Full ChatGPT setup guide](https://developers.chatway.app/mcp/guides.mcp_connect_clients)
+[Full ChatGPT setup guide](https://developers.chatway.app/mcp/guides.mcp_connect_clients#chatgpt)
+
+### Codex
+
+**Recommended:** [install the official Chatway plugin](https://chatgpt.com/plugins/plugin_asdk_app_6ac4cc03229c8191a4ee6465d9c514f8) and connect your Chatway account.
+
+**Advanced:** add the server manually with the CLI. The configuration is shared with the ChatGPT desktop app and the IDE extension.
+
+```bash
+codex mcp add chatway --url "https://mcp.chatway.app/mcp"
+codex mcp login chatway
+```
+
+[Full Codex setup guide](https://developers.chatway.app/mcp/guides.mcp_connect_clients#codex)
 
 ### Claude
 
@@ -409,7 +431,7 @@ app you build on Replit, pair it with [Chatway webhooks](#real-time-events-with-
 ### Other clients
 
 Add `https://mcp.chatway.app/mcp` as a remote MCP server using the Streamable HTTP transport and
-complete the Chatway sign-in. Client-specific steps for Codex, Grok, and others are in the
+complete the Chatway sign-in. Client-specific steps for Grok, Devin, and others are in the
 [setup guides](https://developers.chatway.app/mcp/guides.mcp_connect_clients).
 
 ## Troubleshooting

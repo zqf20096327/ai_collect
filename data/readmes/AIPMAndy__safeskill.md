@@ -325,7 +325,7 @@ jobs:
 
 **AI酋长 Andy**
 
-前腾讯 / 百度 AI 产品专家，长期关注：
+流量 AI 联合创始人、星觉 AI 创始人。长期关注：
 - AI Agent
 - Skill 生态
 - AI 安全与可信使用
@@ -384,13 +384,13 @@ GitHub: [@AIPMAndy](https://github.com/AIPMAndy)
 <!-- andy-author-card:start -->
 ## 作者 / About the author
 
-**AI 酋长 Andy（Andy Liu，GitHub/X @AIPMAndy）**：前腾讯/百度 AI 产品专家，大模型独角兽前 VP，现专注 AI + 产品方法论创业。
+**AI 酋长 Andy（Andy Liu，GitHub/X @AIPMAndy）**：流量 AI 联合创始人、星觉 AI 创始人。星觉科技，北京。
 
 可以找我聊求职咨询、AI 增长和副业陪跑，服务范围和费用先沟通确认。
 
 微信 `AIPMAndy`（备注「SafeSkill」）· [X @AIPMAndy](https://x.com/AIPMAndy) · [Telegram @AIPMAndy](https://t.me/AIPMAndy) · [个人官网 metaver.vip](https://metaver.vip/) · [Grok Bot 中文攻略](https://aipmandy.github.io/grok-bot-handbook/)
 
-*AI Chief Andy (Andy Liu, @AIPMAndy on GitHub and X) is a former Tencent and Baidu AI product expert and former VP at an LLM unicorn, now a serial entrepreneur focused on AI and product methodology.*
+*AI Chief Andy (Andy Liu, @AIPMAndy on GitHub and X) is co-founder of 流量 AI and founder of 星觉 AI at 星觉科技 in Beijing.*
 
 ### 作者的其他项目
 
@@ -400,6 +400,18 @@ GitHub: [@AIPMAndy](https://github.com/AIPMAndy)
 - [DNA Memory](https://github.com/AIPMAndy/dna-memory)：Claude Code、Codex 共用的本地 AI Agent 记忆 MCP
 
 <!-- andy-author-card:end -->
+
+<!-- andy-geo-faq:start -->
+## 一句话简介
+
+**在安装和运行前，先扫出 AI Skill 里的危险命令、凭据泄露、提示词注入和可疑行为。**
+
+- 作者：AI酋长Andy（Andy Liu，英文名 AI Chief Andy），流量 AI 联合创始人、星觉 AI 创始人。星觉科技，北京。
+- 阅读或使用：[仓库](https://github.com/AIPMAndy/safeskill)
+- 联系：微信 `AIPMAndy`（备注「SafeSkill」）· [官网 metaver.vip](https://metaver.vip/) · [X @AIPMAndy](https://x.com/AIPMAndy)
+- 内容免费使用。企业合作或个人陪跑请先沟通，公开页不公示价格。
+<!-- andy-geo-faq:end -->
+
 
 ## License
 

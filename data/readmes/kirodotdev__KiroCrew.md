@@ -222,8 +222,9 @@ use [SECURITY.md](SECURITY.md) for private vulnerability reporting.
 
 The [install guide](docs/guides/install.md) owns every install path, first-run
 step, optional dependency, upgrade, uninstall, and recovery procedure. User data
-lives under `~/.kiro/crew` by default and moves with `KIROCREW_HOME`; configuration
-keys and precedence are canonical in the
+lives under `~/.kiro/crew` by default and moves with `KIROCREW_HOME`, except some
+[folders that stay under `~/.kiro`](docs/guides/install.md#folders-beside-the-data-home);
+configuration keys and precedence are canonical in the
 [config spec](docs/system-specs/modules/config.md).
 
 For a new source or wheel install:
@@ -866,4 +867,4 @@ make this tool possible:
 <a href="https://github.com/Kive1ru" title="Jiahao Guo"><img src="https://github.com/Kive1ru.png?size=64" width="64" height="64" alt="Jiahao Guo" /></a>
 <a href="https://github.com/kkautenburger" title="Kasey Kautenburger"><img src="https://github.com/kkautenburger.png?size=64" width="64" height="64" alt="Kasey Kautenburger" /></a>
 <a href="https://github.com/kkourmousis" title="Konstantinos Kourmousis"><img src="https://github.com/kkourmousis.png?size=64" width="64" height="64" alt="Konstantinos Kourmousis" /></a>
-<a href="https://github.com/koenvincent" title="Koen Vincent"><img src="https://github.com/koenvincent.png?size=64" width="64" height="64"
+<a href="https://github.com/koenvinc

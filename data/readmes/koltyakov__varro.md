@@ -57,7 +57,7 @@ Chat indicators and the status bar link to running sessions, requests needing at
 
 ### Desktop notifications
 
-Enable banners with `varro.notifications.native` and sounds with `varro.notifications.sound`. Both are off by default. Alerts cover permissions, questions, replies, and plans; clicking opens the project window. macOS suppresses alerts while a window from that VS Code instance is visible; other platforms use focus.
+Enable banners with `varro.notifications.native` and sounds with `varro.notifications.sound`. Both are off by default. Alerts cover permissions, questions, replies, and plans; clicking opens the project window or returns to the originating scratch window's chat. Alerts use the originating VS Code window's focus on every platform, including macOS. An unfocused window can notify while another VS Code window is active, even when both windows are visible.
 
 Requires a local desktop host, not SSH, WSL, or containers. On macOS 11+, allow the bundled [Varro helper](native/macos-notifications/README.md) in System Settings > Notifications. Linux needs `notify-send` for banners and `paplay`, `aplay`, or `canberra-gtk-play` for sound. OS notification settings apply.
 
@@ -103,11 +103,15 @@ Varro starts in `Auto` unless overridden by `varro.chat.defaultPermissionMode` o
 
 Connect or reauthenticate supported API-key and OAuth providers in the Models view. The picker shows known model capabilities and lets you pin, hide, or rename models locally. MCP servers come from OpenCode configuration and can be toggled per session.
 
+For web search on Varro-launched OpenCode V2 servers, Varro defaults to automatic provider selection (`"random"`) when no preference exists, avoiding the first-search setup prompt. Configured providers and saved choices, including disabled search, are preserved. Search queries go to external providers. See [web search settings and opt-out](https://github.com/koltyakov/varro/blob/main/docs/usage.md#web-search) and [OpenCode's web search guide](https://opencode.ai/docs/websearch).
+
 Use **Manage MCPs** at the bottom of the MCP picker to open the separate configuration screen. Use the **Global** and **This project** tabs to choose which servers connect automatically; unchecked servers stay available on demand. These settings update OpenCode configuration, including the startup connection setting. A project setting takes priority over Global, and **Use global** removes it. Choosing the global value writes no project entry, and a project entry with its own connection settings is kept until you edit it in the config file. Project-only servers must be added to global OpenCode configuration before their global setting can be changed. Defaults are editable when sessions are idle and file-based configuration is available; attached servers must be configured on their host.
 
 The MCP picker keeps its own session selection without changing defaults. On-demand servers stay visible and connect when selected. Connections are shared, so a server needed by a running session or child task remains connected until that work finishes. Selection is not per-session tool isolation.
 
 Follow-ups are enabled by default using the session's model and reasoning. Override with **Use for follow-ups** in a model's context menu or `varro.chat.followupModel`; opt out with `varro.chat.followupsEnabled: false`. Requires OpenCode V2; sends the current request and answer for extra inference that may consume tokens or subscription quota. Hover to preview prompts; click to send, preserving your agent, permissions, draft, and attachments. No history backfill or helper chats.
+
+For proxy accounting, opt in to `varro.chat.promptTrace` in user settings to add purpose and source attribution to auxiliary inference prompts. A compatible proxy hook must extract and strip the marker. See [prompt tracing and gateway integration](docs/prompt-tracing.md) for covered routes, metadata, and limitations.
 
 Inline prompt completion is off by default and requires v2 with a supported direct API-key connection. Right-click an eligible model and choose **Use for prompt completion**, or set `varro.chat.promptCompletionModel`. After a typing pause, Varro sends the draft, up to ten recent user prompts, and the latest agent reply from that chat directly to the model. Credentials stay in the extension host. Tab accepts a suggestion; Escape dismisses it; Enter sends only typed or accepted text. Choose **Don't use for prompt completion** to disable it. **Test prompt completion** makes a sample API call that may consume usage but sends no conversation history.
 
@@ -147,7 +151,7 @@ Global configuration reloads when OpenCode is idle. Project changes may need `Va
 
 - [VS Code](https://code.visualstudio.com/) or [VSCodium](https://vscodium.com/) 1.107 or newer
 - [Node.js](https://nodejs.org/) 22.22.2+ on Node 22, or Node 24.15.0+
-- [OpenCode v2 CLI](https://opencode.ai/docs/) 2.0.5+ recommended, or [v1 CLI](https://opencode.ai/v1/docs/) 1.16.0+, on `PATH` or configured through `varro.server.command`. Tested with v2 2.2.6 and v1 1.19.5
+- [OpenCode v2 CLI](https://opencode.ai/docs/) 2.0.5+ recommended, or [v1 CLI](https://opencode.ai/v1/docs/) 1.16.0+, on `PATH` or configured through `varro.server.command`. Tested with v2 2.2.7 and v1 1.19.5
 - A trusted, non-virtual workspace. Remote workspaces run Varro and OpenCode on the remote extension host
 
 ## Documentation

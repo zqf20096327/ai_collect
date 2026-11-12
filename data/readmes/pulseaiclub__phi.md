@@ -42,7 +42,7 @@
 
 <table>
 <tr>
-<td align="center" colspan="2"><a href="https://www.infistar.cc/register?aff=287HW56S&amp;ref_source=link"><img src="assets/infistar-banner.png" alt="Infistar.cc" width="660" /></a></td>
+<td align="center" colspan="2"><a href="https://www.infistar.cc/register?aff=287HW56S&amp;ref_source=link"><img src="assets/infistar.png" alt="Infistar.cc" width="660" /></a></td>
 </tr>
 <tr>
 <td valign="top" width="50%"><strong>phi is sponsored by <a href="https://www.infistar.cc/register?aff=287HW56S&amp;ref_source=link">Infistar.cc</a></strong> — one API key for every major model, priced for people who run agents all day.<br/><br/>⚙️ <strong>Plug and play</strong>: set the base URL, API key, and model name, then call it directly.<br/>🧩 <strong>One key, every model</strong>: switch between Claude, GPT, Gemini, DeepSeek, and other leading models without editing config again.<br/>💰 <strong>Cheap and simple</strong>: some models cost as little as 1% of official rates, with RMB billing and invoices.<br/>🎁 <strong>phi perk</strong>: <a href="https://www.infistar.cc/register?aff=287HW56S&amp;ref_source=link">register through our link</a> and get <strong>$5 in trial credits</strong> 👉</td>
@@ -343,6 +343,10 @@ branches, then remote-tracking branches.
 Enter runs `git switch` on the selected row — off the UI goroutine, so a slow
 checkout does not freeze the composer. Picking a remote row checks out the local
 branch that tracks it, the same thing `git switch feat` does for `origin/feat`.
+
+`Ctrl+X` asks to delete the selected local branch. Confirming deletes it whether
+or not it has been merged, then refreshes the list. Current branches and branches
+in use by another worktree cannot be deleted.
 
 `/branch <name>` skips the picker: it switches to that branch, or creates it
 from HEAD when no branch carries the name yet. Naming is the whole "new branch"

@@ -53,7 +53,10 @@ credited in [NOTICE](docs/NOTICE.md) and in Settings > About.
 - **Select text like on a desktop.** Drag over words to copy, translate or
   search them. On Windows the text is readable at once with Windows' own text
   recognition; otherwise (and for Arabic or games) OpenCircle offers a one-time
-  download of about 30 MB. Settings > Text reading > Engine chooses.
+  download of about 30 MB. On Windows, Arabic and pages that mix two languages
+  are read line by line, each line by the reader that suits it; the Copy text
+  button spins while the screen is still being read. Settings > Text reading >
+  Engine chooses.
 - **Translate in place.** Press `Ctrl+Shift+T` to translate the whole screen. The
   original text is erased and the translation is drawn in its place, with
   matching colour and size; browser address bars and file names are left alone,
@@ -68,7 +71,8 @@ credited in [NOTICE](docs/NOTICE.md) and in Settings > About.
   fine pixel mosaic that hides text for good) and a solid Redact. **Long
   capture**: scroll the page yourself and OpenCircle stitches it. **Steps** keeps
   several snips on a slim strip and copies them as one numbered image. Also a
-  colour picker, a screen ruler, Pin and Share. Snip also takes a translated
+  colour picker, a screen ruler, Pin and Share. **More** also has Copy text, Ask
+  AI and Translate for the picked area. Snip also takes a translated
   page as you see it (the translate pill's Snip button). Details:
   [Snip and annotate](docs/snip-and-annotate.md).
 - **One bottom bar.** Ask OpenCircle AI about your screen, then Search in
@@ -80,9 +84,15 @@ credited in [NOTICE](docs/NOTICE.md) and in Settings > About.
   with markdown and follow-ups: OpenRouter, OpenAI, Anthropic, Gemini, Groq,
   Mistral, DeepSeek, xAI, a local Ollama or LM Studio, or your own server, each
   with a list of its current models (OpenRouter's free router is the default).
-  A follow-up pins the chat so it stays above other apps. Errors say plainly
+  A follow-up pins the chat: it becomes its own window above other apps, the
+  overlay closes by itself, and the chat stays. While the chat is open on the
+  overlay, the bar stays beside it. Errors say plainly
   what went wrong and offer one fix. History is text only and stays on this PC.
 - **Shortcuts for everything.** Give any action its own key and skip the bar.
+  Settings > Shortcuts can put them all back to the defaults.
+- **In English or Arabic.** The whole app, its setup and Settings speak Arabic
+  right to left when you pick it (Settings > General > App language; picking
+  Arabic as your language at the first start does it too).
 - **12 themes and Active Look.** Pick a card in Settings > Appearance (light and
   dark; until you do, it follows the system). Sapphire Glow, a soft glow round
   the screen edge, is the default look; its colours also outline the snip area.
@@ -150,6 +160,29 @@ Check a download with `SHA256SUMS.txt` from the same release:
 sha256sum -c SHA256SUMS.txt --ignore-missing
 ```
 
+### Silent install (IT, winget, Scoop)
+
+The setup installs for all users (it needs an administrator: from a normal prompt it
+stops with exit code 1925; winget and IT tools elevate it). It starts nothing and returns
+when the install is done.
+
+| Switch | Does |
+|---|---|
+| `/quiet` (also `/qn`, `/silent`) | no window; install or update in place |
+| `/dir="C:\Apps\OpenCircle"` | folder of a fresh install (an update stays where it is) |
+| `/uninstall /quiet` | remove OpenCircle (your settings and models stay) |
+| `/managed=<name>` | a package manager or IT tool updates this copy: OpenCircle's own updater stays off (it still says when a newer version exists). Passed to the MSI, which records it in OpenCircle's entry in Apps & features (HKLM, admin-only); pass it on every install or update, or the updater is on again. A portable copy uses a file `opencircle.managed` beside the exe instead (delete it to switch the updater back on) |
+| `/norestart` | accepted, nothing restarts the PC |
+
+Exit codes (Windows Installer's): `0` done, `3010` done, restart wanted, `1641` done,
+restart started, `1602` cancelled, `1603` fatal error, `1618` another install is running,
+`1638` a newer version is installed, `1639` bad `/dir`, `1925` not run as administrator.
+
+Once the store packages are published, with winget: `winget install AmerAlreyahi.OpenCircle`. A copy installed through winget keeps its own
+updater (it updates through the same setup and winget sees the new version in Apps & features);
+`winget upgrade` works too. With Scoop (portable exe): `scoop bucket add opencircle https://github.com/AmerAlreyahi/scoop-bucket`,
+then `scoop install opencircle`; Scoop owns the updates there (the updater is off, Settings > General says so).
+
 **Windows SmartScreen** may say "Windows protected your PC" because the
 installers are not code-signed yet (the project is free). Click **More info**,
 then **Run anyway**. See [Signing](docs/signing.md) to sign your own build.
@@ -201,8 +234,8 @@ Settings. Full list and details: [Shortcuts](docs/shortcuts.md).
 
 - **Windows 10 and 11:** the full feature set.
 - **Linux:** X11 and Wayland. On Wayland the desktop owns the keys and the
-  screen capture (GNOME asks once); shortcuts work on GNOME with or without the
-  shortcut portal, long capture shows its progress in a small pop-up, picking a
+  screen capture (GNOME asks once); shortcuts work on GNOME and KDE Plasma with
+  or without the shortcut portal, long capture shows its progress in a small pop-up, picking a
   window is not offered (a click takes the screen), and Share is Windows only.
   See [Linux notes](docs/linux-notes.md).
 

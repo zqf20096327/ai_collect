@@ -7,7 +7,7 @@
 
   把商品链接、截图或购买需求交给 AI，分清是不是同款，算清真实到手价，判断适不适合你，并持续跟进降价、保价和售后期限。
 
-  [在线体验](https://valusee.com) · [功能记录](docs/VALUSee_IMPLEMENTATION_LOG.md) · [生产部署](docs/VALUSee_PRODUCTION_RELEASE.md) · [浏览器扩展](extension/README.md)
+  [在线体验](https://valusee.com) · [功能记录](docs/VALUSee_IMPLEMENTATION_LOG.md) · [可靠性迭代与验收](docs/ITERATION.md) · [生产部署](docs/VALUSee_PRODUCTION_RELEASE.md) · [浏览器扩展](extension/README.md)
 
   [![License: MIT](https://img.shields.io/badge/License-MIT-2f7d6d.svg)](LICENSE)
   [![Python](https://img.shields.io/badge/Python-3.11+-3776AB.svg?logo=python&logoColor=white)](pyproject.toml)

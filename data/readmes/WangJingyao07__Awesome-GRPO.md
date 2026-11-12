@@ -135,10 +135,12 @@ Each PDF corresponds to a variant or conceptual expansion of GRPO, with summarie
 If you find this repository useful, please consider cite and star our repository (🥰🎉Thanks!!!):
 
 ```bibtex
-@misc{Awesome-GRPO,
-  author = {Wang, Jingyao},
-  title = {Awesome-GRPO: A Unified Framework for GRPO and Its Variants},
-  year = {2025},
-  url = {https://github.com/WangJingyao07/Awesome-GRPO}
+@article{wang2026learning,
+  title={Learning to think: Information-theoretic reinforcement fine-tuning for llms},
+  author={Wang, Jingyao and Qiang, Wenwen and Song, Zeen and Zheng, Changwen and Xiong, Hui},
+  journal={Advances in Neural Information Processing Systems},
+  volume={38},
+  pages={126208--126245},
+  year={2026}
 }
 ```

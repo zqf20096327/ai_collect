@@ -9,8 +9,8 @@
 <p align="center"><b>Put an AI agent in a verified improvement loop.</b></p>
 
 <p align="center">
-  Set <b>constraints</b> and <b>metrics</b>; the agent proposes changes in a loop. <br>
-  Only changes that pass checks are accepted. Improvements compound across iterations.
+  Set <b>gates</b> and what to <b>observe</b>; the agent proposes changes in a loop. <br>
+  Only changes that pass the gates are accepted. Improvements compound across iterations.
 </p>
 
 <p align="center">
@@ -53,24 +53,26 @@ climb for as long as you want.
 ## How it works
 
 <p align="center">
-  <img alt="AutoHelix iteration loop: worktree → agent → checks → merge or discard → repeat" src="assets/how-it-works.svg" width="760">
+  <img alt="AutoHelix iteration loop: copy → agent → checks → merge or discard → repeat" src="assets/how-it-works.svg" width="760">
 </p>
 
-You define a **goal**, the **constraints** that must hold, and the **metrics**
-to track. The agent proposes changes and the harness decides if they land.
+You define a **goal**, the **gates** a change must pass, and what to **observe**
+(benchmarks, reviews, artifacts). The agent proposes changes and the harness
+decides if they land.
 
 Core features:
 
 - **Isolation.** Each iteration runs in fresh private copies of the code. A rejected attempt's code is cleanly discarded, and what was checked is exactly what gets accepted.
-- **Scope enforcement.** Only files marked `editable` can be changed; everything else is frozen.
-- **Constraints gate changes.** Tests, type-checks, or any command that must exit 0. Break a constraint and the iteration is discarded.
-- **Metrics track progress.** Metrics are captured and shown to the next iteration. Optionally gate on them to reject regressions. Logs and artifacts can be saved too.
+- **Scope enforcement.** Only files marked `editable` can be changed; changes elsewhere are discarded, and the agent is told.
+- **Gates decide.** Tests, type-checks, any command that must exit 0, a yes/no question to a read-only agent (`ask:`), or a metric compared with the last accepted iteration. Fail a gate and the iteration is rejected; its change is kept aside for the next agent as a patch.
+- **Observations inform.** Benchmarks, logs, artifacts and LLM reviews are saved by name and shown to the next iteration; their numbers are the run's metrics.
 - **Persistent memory.** Each iteration is a fresh session, but the agent reads and writes notes that survive across all iterations, including rejected ones.
 - **Budget control.** Cap the run by iterations, time, or cost. Codex cost uses an
   API-equivalent estimate; see [cost tracking](docs/config.md#cost-tracking).
 - **Stop conditions.** Optional `stop:` commands end the run when one exits 0,
-  checked on the baseline and after accepted iterations. Use a script or
-  `autohelix ask "Is the goal complete?"`; see [stop conditions](docs/config.md#stop-conditions).
+  checked on the baseline and after accepted iterations. Use a script, a metric
+  (`jq -e '.missing == 0' "$AUTOHELIX_METRICS"`) or
+  `autohelix ask -- "Is the goal complete?"`; see [stop conditions](docs/config.md#stop).
 
 ## Quick start
 
@@ -98,7 +100,7 @@ autohelix skill install --agent codex --scope project --path my-project
 ```
 
 Your coding agent helps define the experiment. AutoHelix runs repeated attempts
-using the configured scope, checks, measurements, and acceptance rules.
+using the configured scope, gates, and observe entries.
 
 1. **Prepare and review**
 
@@ -106,7 +108,7 @@ using the configured scope, checks, measurements, and acceptance rules.
 
    The agent proposes the experiment, shows the complete `autohelix.yaml`, and
    walks through its choices without launching. Review what can change, what
-   must pass, what is measured, and the effective budgets.
+   must pass (gates), what is observed, and the effective budgets.
 
 2. **Run and manage**
 
@@ -139,7 +141,7 @@ commands are described in the [CLI reference](docs/cli.md).
 ## Examples
 
 The [`examples/`](examples/) directory includes concrete tasks ranging from
-reviewer-driven refinement to workflow and algorithm optimization. To list
+review-driven refinement to workflow and algorithm optimization. To list
 what's available:
 
 ```bash
@@ -147,7 +149,7 @@ python examples/setup_example.py --list
 ```
 
 **Code optimization.** AutoHelix can iteratively improve the performance of
-existing code while preserving user-defined correctness constraints. We tested
+existing code while preserving user-defined correctness checks. We tested
 this capability on two established benchmarks:
 [AlgoTune](https://github.com/oripress/AlgoTune) for CPU algorithms and
 [KernelBench](https://github.com/ScalingIntelligence/KernelBench) for GPU
@@ -212,20 +214,64 @@ A run is defined by a single `autohelix.yaml`. Every field is documented in
   <img alt="Annotated autohelix.yaml configuration" src="assets/config-annotated.svg" width="880">
 </p>
 
+<details>
+<summary>The same config as text</summary>
+
+```yaml
+goal: |
+  Optimize the data pipeline for throughput
+  while maintaining correctness on all inputs.
+
+gates:                       # anything that can reject an iteration
+  - pytest tests/ -x
+  - mypy src/ --strict
+  - metric: throughput
+    regress: 5%              # at most 5% worse than the last accepted iteration
+
+observe:                     # feedback for the next agent, numbers for the harness
+  - name: bench
+    command: python benchmark.py   # prints ##autohelix[throughput=...]
+    timeout: 30m
+    metrics:
+      throughput: higher
+      latency_p99: lower
+    capture: [results/profile.json]
+  - name: review             # a read-only LLM review of the change
+    review: What is the most important next fix?
+
+scope:
+  editable: [src/pipeline/, src/transforms/]
+
+agent:
+  backend: claude
+  model: claude-opus-4-8
+  timeout: 30m
+
+budget:
+  iterations: 10
+  cost: 30
+  time: 4h
+```
+
+</details>
+
+Gates run first, in order; observe entries run next, and a failing one doesn't
+reject anything (unless a `metric:` gate needs its number). Configs from earlier
+versions (`constraints:`, `metrics:`, `reviewer:`, ...) are errors that name
+their replacement; see [Old → new](docs/config.md#old--new).
+
 **Project layout**
 
 ```
 my-project/
 ├── autohelix.yaml       # your config
 └── .autohelix/          # runtime state (gitignored)
-    ├── prompt.md        # customizable project prompt
     ├── current          # selected run id
     ├── runs/<id>/       # one persistent state directory per run
     │   ├── run.json     # identity, starting commit, target branch
     │   ├── history.jsonl # results and each model call's usage/log
     │   ├── notes/       # agent's persistent notes
-    │   ├── observations/ # captured command output and artifacts
-    │   ├── reviews/     # reviewer feedback
+    │   ├── observations/ # each observe entry's output, by iteration and name
     │   ├── hints.md     # messages from `autohelix hint`
     │   ├── logs/        # iter-N/call-*/ prompts and transcripts
     │   ├── output/      # report.md and report.html
@@ -236,11 +282,12 @@ my-project/
 Temporary per-phase candidate copies live outside the project, in
 `${XDG_CACHE_HOME:-~/.cache}/autohelix/copies/` (set `AUTOHELIX_COPIES_ROOT` to move them).
 
-Runs resume by config path. Use `autohelix run --new` for a separate experiment,
-`--run ID` to select one, or `--land manual` to keep validated commits on the run's
-`refs/autohelix/<id>` until `autohelix land`. By default, accepted changes land on
-the starting branch when a run segment (one invocation) ends. A resumed run can coexist with
-unrelated dirty checkout files. See [CLI reference](docs/cli.md#autohelix-run).
+Each `autohelix run` starts a new run; `autohelix resume [<id>] [-n MORE]` continues
+one, `autohelix archive <id>` sets one aside and `autohelix delete <id>` removes it.
+Use `--land manual` to keep validated commits on the run's `refs/autohelix/<id>` until
+`autohelix land`. By default, accepted changes land on the starting branch when a run
+segment (one invocation) ends. A resumed run can coexist with unrelated dirty checkout
+files. See [CLI reference](docs/cli.md#autohelix-run).
 
 <!-- ───────────────────── OTHER FEATURES ───────────────────── -->
 
@@ -249,26 +296,32 @@ unrelated dirty checkout files. See [CLI reference](docs/cli.md#autohelix-run).
 <details>
 <summary><b>Report</b></summary>
 
-When a run finishes, an agent reads the run's history, notes, reviews and commits and
+When a run finishes, an agent reads the run's history, notes, logs and commits and
 writes a short summary to `.autohelix/runs/<id>/output/report.md`. `autohelix report` writes it on
 demand, e.g. after an interrupted run. See [Configuration → Report](docs/config.md#report).
 
 </details>
 
 <details>
-<summary><b>Reviewer</b></summary>
+<summary><b>Reviews and progress tracking</b></summary>
 
-Beyond quantitative metrics, you can add a `reviewer:` block with a custom prompt to get qualitative feedback from an LLM. Each review is archived to `.autohelix/runs/<id>/reviews/iter-N.md`,
-and the latest one guides the next iteration. See [Concepts → Reviewer](docs/concepts.md#reviewer).
+Beyond benchmarks, an `observe:` entry with `review: <prompt>` gets qualitative feedback
+from a read-only LLM on exactly the candidate (`autohelix review`, also usable by hand).
+Each review is saved with the iteration's observations and the next agent reads it. With
+`previous: true` and `metrics: {missing: lower}`, a review keeps its own status of a
+worklist across accepted iterations, and `stop:` can end the run when the number reaches
+zero. See [Concepts → Reviews](docs/concepts.md#reviews) and
+[Progress tracking](docs/concepts.md#progress-tracking).
 
 </details>
 
 <details>
 <summary><b>Viewer and run page</b></summary>
 
-`autohelix view` serves a live page for a run on 127.0.0.1: status, metric chart,
-iterations with notes, diffs, reviews and agent activity, and the run summary once it is
-written. When a run stops, AutoHelix saves the same page as one file,
+`autohelix view` follows a run in the terminal: its status and iterations, with the
+agent's live output below; `autohelix dashboard` lists all runs. `autohelix view --web`
+serves a live page for a run on 127.0.0.1: status, metric chart, iterations with gates,
+notes, diffs, observations (reviews included) and agent activity, and the run summary once it is written. When a run stops, AutoHelix saves the same page as one file,
 `.autohelix/runs/<id>/output/report.html`, to open in a browser or share. See
 [Concepts → Run page](docs/concepts.md#run-page).
 
@@ -281,11 +334,11 @@ Two time controls:
 
 - **`budget.time`** — caps *total* wall-clock for the whole run. Checked before each
   iteration starts; doesn't interrupt one in progress.
-- **`budget.iteration_time`** — per-iteration deadline. A hook injects a countdown into
-  the agent's context after each tool call, so it can wrap up and write notes before the
-  deadline hits.
+- **`agent.timeout`** — per-iteration deadline, a hard kill. Where the backend supports
+  it, a hook injects a countdown into the agent's context after each tool call, so it can
+  wrap up and write notes before the deadline hits.
 
-See [Config → budget](docs/config.md).
+See [Config → Agent](docs/config.md#agent) and [Budget](docs/config.md#budget).
 
 </details>
 
@@ -310,19 +363,20 @@ at the start of its next iteration. Useful to steer a run without stopping it. S
 <details>
 <summary><b>Full customization</b></summary>
 
-Beyond `autohelix.yaml`, you can edit the full per-iteration prompt template
-and control how the agent organizes its persistent notes. See
-[Concepts → Prompt Template](docs/concepts.md#prompt-template) and
+Beyond `autohelix.yaml`, you can replace the full per-iteration prompt template
+(`prompt_template:`, with a documented set of variables) and control how the agent
+organizes its persistent notes. See [Concepts → Prompt](docs/concepts.md#prompt) and
 [Concepts → Notes](docs/concepts.md#notes).
 
 </details>
 
 <details>
-<summary><b>Parallel runs</b> (alpha)</summary>
+<summary><b>Several runs at once</b></summary>
 
-`autohelix parallel` executes multiple AutoHelix runs concurrently, each with its own config and
-worktree, sharing notes at a configurable frequency so each agent can see what the others
-have tried. See [CLI → parallel](docs/cli.md#autohelix-parallel-alpha).
+Runs started with `autohelix run --group NAME` run side by side in one project and see each
+other's notes, history and accepted code at the start of every iteration. Compare them on
+`autohelix dashboard`, `autohelix land` the winner and `autohelix archive` the rest. See
+[CLI → Groups](docs/cli.md#groups).
 
 </details>
 
@@ -347,7 +401,7 @@ Compared to other tools, AutoHelix adds a minimal amount of structure to ensure 
 | Goal-directed | ✓ any metric(s) | ✓ val loss | ✓ task list | ✓ boolean | ✗ |
 | Agent-agnostic | ✓ | ✓ | ✓ | ✗ | ✗ |
 | Validation gates | ✓ | ~ self-checks | ✗ | ✗ | ✗ |
-| Isolation on failure | ✓ worktree | ~ self-resets | ✗ | ✗ | ✗ |
+| Isolation on failure | ✓ private copy | ~ self-resets | ✗ | ✗ | ✗ |
 | Fresh context each iteration | ✓ | ✗ | ✓ | ✗ | ✗ |
 | Memory across iterations | ✓ notes, metrics, artifacts | session | progress file | session | session |
 | Scope enforcement | ✓ | ~ by instruction | ✗ | ✗ | ✗ |
@@ -366,8 +420,8 @@ and exploit them, and more iterations apply more pressure to do so. Autonomous l
 the burden from "write perfect code" to "write strong checks."
 
 You can look out for gaming by reading `autohelix report`, the agent's notes, or a
-[reviewer](docs/concepts.md#reviewer)'s feedback. Then close the loophole with a new
-constraint and re-run.
+[review](docs/concepts.md#reviews)'s feedback. Then close the loophole with a new
+gate and re-run.
 
 </details>
 
@@ -378,8 +432,9 @@ constraint and re-run.
 AutoHelix isolates the agent at two levels:
 
 1. **Candidate copies** (default) — each phase of an iteration runs in a separate private
-   copy, outside your project, with its own git metadata. Rejected iterations are deleted entirely; accepted ones
-   are recorded on the run ref and landed separately.
+   copy, outside your project, with its own git metadata. Rejected iterations never reach your branch (their trees
+   stay on hidden refs until the run is deleted); accepted ones are recorded on the run ref
+   and landed separately.
 2. **Docker sandbox** (optional) — filesystem isolation: the agent can't access your
    home directory, SSH keys, or other projects. (Network is not isolated, since the
    agent needs it to reach the model API.)

@@ -23,10 +23,14 @@
 
 ```bash
 git clone https://github.com/qsumm/TestOPS.git && cd TestOPS
-cp backend/.env.example .env   # 把 JWT_SECRET / KEY_STORE_SECRET / DB_PASSWORD 换成随机值！
-docker compose --env-file .env -f deploy/docker-compose.yaml up -d --build
+cp backend/.env.example .env
+bash deploy/up.sh
 ```
-> 首次构建约 3~6 分钟（pip 走阿里云镜像）；GitHub 连不上时用镜像加速 clone，见下文「5 分钟跑起来」。
+> **`up.sh` 会构建 + 启动 + 自动等就绪，最后打印访问地址与管理员初始密码。**
+> 记得先把 `.env` 里的 `JWT_SECRET` / `KEY_STORE_SECRET` / `DB_PASSWORD` 换成随机值
+> （`python3 -c "import secrets;print(secrets.token_urlsafe(48))"` 跑三次）。
+> 首次构建约 2~4 分钟（pip 走阿里云镜像）；GitHub 连不上时用镜像加速 clone，见下文「部署 → 前置条件」。
+> 慢镜像源上构建卡住？见 [自建部署加速指引](docs/04-交付与运营/自建部署加速指引.md)（换源 / 离线 wheel / 预构建镜像三档解法）。
 
 </div>
 
@@ -94,49 +98,87 @@ docker compose --env-file .env -f deploy/docker-compose.yaml up -d --build
 | 项 | 要求 | 说明 |
 |---|---|---|
 | Docker + Compose | Docker 20.10+，`docker compose` v2 | `docker compose version` 能打印版本即可 |
-| 内存 | 建议 ≥ 4GB | 平台 + 数据库 + 两个模拟主机同时跑；2GB 会 OOM |
-| 磁盘 | 建议 ≥ 10GB | 数据库镜像 820MB + 依赖层 |
-| 端口 | 8848（平台）、2891（数据库） | 被占用就改 `deploy/docker-compose.yaml` 里的 `ports` |
-| 网络 | 首次构建需能访问镜像源与 pypi | 已默认走国内源，无需自备梯子 |
+| 内存 | **建议 ≥ 4GB**（最低 2GB 可用） | SeekDB 官方要求**可用内存 ≥ 2GB**。2GB 机器必须没有其它数据库/Java 服务同机，否则数据库起不来（见「数据库一直 Restarting」） |
+| 磁盘 | **≥ 20GB 空闲**（SeekDB 官方要求数据盘 **>15GB**） | 数据库镜像 820MB + 依赖层 + SeekDB 数据/日志预分配。**磁盘不足是数据库静默起不来的头号原因** |
+| 端口 | 8848（平台）、2891（数据库） | 被占用就在 `.env` 里设 `PLATFORM_PORT` / `DB_HOST_PORT`（**不用改文件**，平台日志里打印的访问地址会跟着变） |
+| 网络 | 首次构建需能访问镜像源与 pypi | 已默认走国内源，无需自备梯子；**慢源构建卡住**见 [自建部署加速指引](docs/04-交付与运营/自建部署加速指引.md)（换源 / 离线 wheel / 预构建镜像） |
 
 ### 三步部署
 
 ```bash
 git clone https://github.com/qsumm/TestOPS.git && cd TestOPS
-cp backend/.env.example .env   # ① 复制环境变量模板
-docker compose --env-file .env -f deploy/docker-compose.yaml up -d --build   # ② 构建并启动
+cp backend/.env.example .env
+bash deploy/up.sh
 ```
 
-③ **生成并填入三个密钥**（`.env` 里替换 `change-me-in-env` 与空的 `DB_PASSWORD`）：
+**① 克隆**：国内网络访问 GitHub 不稳（`end of file` / 连接超时是常态），失败重试 2~3 次；持续不通用镜像：
+`git clone https://gh-proxy.com/https://github.com/qsumm/TestOPS.git`
+
+**② 复制环境变量模板**，然后把它换成随机密钥（**公开部署必须换**）：
 
 ```bash
-python3 -c "import secrets;print(secrets.token_urlsafe(48))"   # 跑三次，分别填 JWT_SECRET / KEY_STORE_SECRET / DB_PASSWORD
+python3 -c "import secrets;print(secrets.token_urlsafe(48))"
 ```
 
-- `JWT_SECRET` / `KEY_STORE_SECRET`：**公开部署必须换**。前者是登录令牌签名密钥，后者是你在系统设置页填的 LLM API Key 的落库加密密钥——用仓库里的默认值等于把钥匙挂在门上
-- `DB_PASSWORD`：本机试玩可留空；公网或多人使用必须填
+跑三次，三个结果分别填 `.env` 的：
 
-改完 `.env` 后执行 `docker compose --env-file .env -f deploy/docker-compose.yaml up -d` 让配置生效。
+- `JWT_SECRET` —— 登录令牌签名密钥，用默认值等于任何人都能伪造登录
+- `KEY_STORE_SECRET` —— LLM API Key 的落库加密密钥，用默认值等于钥匙挂在门上
+- `DB_PASSWORD` —— 数据库口令（本机试玩可留空；公网/多人使用必须填）
+
+**③ 一键部署**：`up.sh` 会构建 → 启动 → **自动等就绪** → 打印访问地址与管理员初始密码。
+
+> 手动分步也可以：`docker compose --env-file .env -f deploy/docker-compose.yaml up -d --build`
+> 然后 `bash deploy/wait-ready.sh`（默认最多等 5 分钟，`WAIT_TIMEOUT=600` 可放宽）。
+
+> **构建耗时**：首次约 2~4 分钟（numpy/scipy/sklearn ≈ 90MB 已移出主依赖），之后重建**秒级**
+> （BuildKit pip 缓存层）。慢镜像源上首次可能十几分钟——见
+> [自建部署加速指引](docs/04-交付与运营/自建部署加速指引.md)：换源 / 离线 wheel（不联网，25 秒）/ 预构建镜像。
+
+> **启动要等**：平台的启动顺序是「数据库就绪 → 迁移 → 起 HTTP 服务」，首次 40~180 秒。
+> 这期间 `curl` 报 `Connection reset`、`grep 管理员` 没输出、数据库显示 `Restarting`
+> ——都是**正常现象**。`up.sh` 已替你等；分步执行时用 `bash deploy/wait-ready.sh`。
+> 想要固定的初始密码：`.env` 里加 `ADMIN_PASSWORD=你的密码`（不设则随机生成并打印在日志里）。
 
 ### 验证是否成功
 
 ```bash
-curl http://127.0.0.1:8848/api/health      # 期望 {"code":0,...,"status":"up"}
-docker ps                                   # 4 个容器应全为 Up / healthy
-docker logs aiops-platform | grep -i "管理员"   # 首次启动生成的管理员账号会打印在这里
+curl http://127.0.0.1:8848/api/health
+docker ps
+docker logs aiops-platform | grep -i "管理员"
+
+python3 tools/smoke_mainflow.py --base http://127.0.0.1:8848 --no-llm
 ```
 
-浏览器打开 `http://127.0.0.1:8848`，用日志里打印的管理员账号登录（**首登先改口令**）。此时平台在跑，但 **AI 功能还没有模型**——去「系统设置 → LLM 配置」填一个 OpenAI 兼容端点（Base URL / API Key / 模型名），保存后即可用。监控、告警、探活、巡检不依赖模型，能独立工作。
+> 期望 {"code":0,...,"status":"up"}
+> 4 个容器应全为 Up / healthy
+> ← 管理员账号与初始密码打印在这里
+> ④ 冒烟测试：5 段 29 项（写操作全部幂等自清理；只用 Python 标准库，无需装依赖）
+> 期望：退出码 0
+
+**部署完成后你会在日志里看到这三行**（首次启动才有，初始密码随机生成）：
+
+```
+WARNING  已创建管理员账号 admin，初始密码 = xxxxxxxxxxxx（请立即登录修改；需要固定密码可在 .env 里设 ADMIN_PASSWORD）
+WARNING  已创建只读演示账号 demo/demo（仅用于体验，无处置权限）
+WARNING  平台就绪 → http://127.0.0.1:8848（管理员 admin，初始密码见上方启动日志）
+```
+
+浏览器打开 `http://127.0.0.1:8848`，用日志里的 **admin + 初始密码** 登录（**首登先改口令**）。
+
+- 想要固定密码（自动化部署场景）：在 `.env` 里加 `ADMIN_PASSWORD=你的密码` 再起一次——仅**首次创建**管理员时生效。
+- 换机器访问：把 `127.0.0.1` 换成服务器 IP（compose 的 `ports` 默认发布到 `0.0.0.0:8848`，云上记得放行安全组）。此时平台在跑，但 **AI 功能还没有模型**——去「系统设置 → LLM 配置」填一个 OpenAI 兼容端点（Base URL / API Key / 模型名），保存后即可用。监控、告警、探活、巡检不依赖模型，能独立工作。
 
 ### 想立刻看到它干活
 
 ```bash
-# 灌 7 天演示数据（指标 + 规则 + 历史事件 + 案例卡）
 docker compose --env-file .env -f deploy/docker-compose.yaml exec platform     python scripts/seed_demo.py --days 7
 
-# 触发一次真实故障（5 种：探活失败 / CPU / 磁盘 / 内存 / 进程假死，各一条命令，自动恢复）
 bash deploy/faults/cpu_spike.sh
 ```
+
+> 灌 7 天演示数据（指标 + 规则 + 历史事件 + 案例卡）
+> 触发一次真实故障（5 种：探活失败 / CPU / 磁盘 / 内存 / 进程假死，各一条命令，自动恢复）
 
 ### 常见问题
 
@@ -144,7 +186,9 @@ bash deploy/faults/cpu_spike.sh
 |---|---|
 | `git clone` 超时 / `end of file` | 国内网络访问 GitHub 不稳，用镜像加速：`git clone https://gh-proxy.com/https://github.com/qsumm/TestOPS.git` |
 | 构建卡在 `apt-get` | 基础镜像与 pip 源已默认走国内源；若仍卡，Dockerfile 里 `APT_MIRROR` / `PIP_INDEX_URL` 换回官方源重试 |
-| 容器反复重启、报 `Restarting` | 内存不足（需 ≥4GB），或数据库首次初始化未完成；`docker logs aiops-platform` 看具体原因 |
+| 容器反复重启、报 `Restarting` | 先用 `docker logs aiops-platform` 看是平台还是数据库在重启 |
+| **数据库容器不断重启**，`docker logs aiops-seekdb` 只有 `Seekdb process exited unexpectedly.`，内部日志停在 `server_start 3/14` 且**没有任何错误信息** | **资源不足**（SeekDB 对资源不足不报错、直接退出）。按顺序核对官方最低要求：① **磁盘空闲 >15GB**（数据盘预分配）—— 最常踩，`df -h /` 一看便知；② **可用内存 ≥2GB**（`free -m` 看 available）；③ CPU ≥1 核。注意：加 swap、放大 `shm_size`、`--privileged` 都**不能**替代这两项（实测无效）。解决：清磁盘 / 停同机其它数据库服务 / 换 ≥20GB 空闲 + ≥2GB 可用的机器。MySQL 8 不能替代（`case_cards.embedding` 需要 VECTOR 类型，MySQL 9+ 才有） |
+| **数据库一直 Restarting**、平台刷 `db_init 等待数据库…`、curl 报 `Connection reset by peer` | 数据库启动失败，**几乎都是内存不够**：SeekDB/OceanBase 启动要 ≥1.2GB 空闲内存，不足时它直接退出（`Exit=1` 且 `OOMKilled=false`，不产生内核 OOM 记录）→ 容器反复重启 → 平台等不到库。查：① `free -m` 看 available ② `docker logs aiops-seekdb \| tail -20` ③ `docker inspect aiops-seekdb --format "{{.State.OOMKilled}} {{.State.ExitCode}}"`。解决：停同机其它数据库/Java 服务，或换 ≥4GB 机器。**不是你步骤错了** |
 | 登录提示「安装令牌无效」 | 首次部署的 Agent 需要一次性安装令牌：在「主机管理 → 接入新主机」生成，写进 `.env` 的 `AIOPS_INSTALL_TOKEN_1/_2`，再 `docker compose ... up -d` 重建 agent 容器 |
 | AI 诊断报「未配置模型」 | 「系统设置 → LLM 配置」未填或未启用；填完再点一键诊断 |
 | 端口被占用 | 改 `deploy/docker-compose.yaml` 里 `8848` / `2891` 的映射端口 |
@@ -152,9 +196,12 @@ bash deploy/faults/cpu_spike.sh
 ### 数据与卸载
 
 ```bash
-docker compose --env-file .env -f deploy/docker-compose.yaml down      # 停服务，保留数据
-docker compose --env-file .env -f deploy/docker-compose.yaml down -v   # 连数据卷一起删（不可恢复）
+docker compose --env-file .env -f deploy/docker-compose.yaml down
+docker compose --env-file .env -f deploy/docker-compose.yaml down -v
 ```
+
+> 停服务，保留数据
+> 连数据卷一起删（不可恢复）
 
 数据在 Docker 卷 `aiops-demo_seekdb-data`（时序指标 + 事件 + 案例）；备份即导出该卷。
 
@@ -195,9 +242,11 @@ docker compose --env-file .env -f deploy/docker-compose.yaml down -v   # 连数�
 
 ```bash
 git clone https://github.com/qsumm/TestOPS.git && cd TestOPS
-# 开发环境：后端 FastAPI + SQLite/SeekDB 二选一，前端免构建
-./.venv/bin/python -m pytest backend/tests -q     # 全量测试必须全绿
+./.venv/bin/python -m pytest backend/tests -q
 ```
+
+> 开发环境：后端 FastAPI + SQLite/SeekDB 二选一，前端免构建
+> 全量测试必须全绿
 
 几条硬性约定：
 

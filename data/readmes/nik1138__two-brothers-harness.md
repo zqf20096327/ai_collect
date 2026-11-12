@@ -9,9 +9,9 @@ experienced, level-headed, the arbiter) and a **junior** (the younger brother �
 brave, determined, the challenger). Both work with **one shared context**, have
 **different system prompts**, and exchange **structured protocol messages**: the
 senior consults the junior, may delegate part of the work to it, reviews what
-comes back, and makes the final decision. This is not subagents in the usual
-sense — it is parallel models with explicit roles advising each other as peers
-within a single context.
+comes back, and makes the final decision. The brothers are peers, not a
+subagent hierarchy — `serve` runs may additionally let the Senior spawn
+read-only helper subagents, a separate tier described below.
 
 The implementation is the TypeScript package in
 [`packages/harness/`](packages/harness/) (`@two-brothers/harness`, written in
@@ -87,11 +87,25 @@ server then serves (the npm tarball ships its own copy of that build).
   reply, with a bounded loop; a tool-less configuration keeps the exact
   pre-tools request path. Work mode keeps its mutating junior deliverable loop
   and the senior's read-only verify slice unchanged.
+- **Read-only helper subagents (`serve`/web).** The Senior can spawn one
+  isolated single-role helper through the `subagent` tool: its own context, a
+  fresh provider (usage stays out of the parent footer), and only workspace
+  read/list/search (plus `spill_read`). Settings → Models & roles has a
+  dedicated **Subagent** route (provider/model/effort) that wins over the
+  tool's Senior/Junior fallback. It cannot mutate, run shell, recurse,
+  or receive follow-ups; it returns a bounded report. The web header shows a
+  live `Subagents · N` tree with status, activity, elapsed time and tokens;
+  clicking a child opens a read-only transcript drawer while the parent
+  composer is inert. Child logs live under `<sessions-dir>/subagents/` and
+  never appear in the session list. Mutating children, follow-up/interrupt,
+  async completion and a TUI tree remain later phases.
 - **Payload repair + few-shot exemplars.** Model output goes through a
   tolerant parse, a strict schema check, exactly one repair re-ask with a
   byte-stable `[[REPAIR_REQUEST]]` turn, and finally a sanitize-plus-defaults
-  fallback: the boundary never throws. Each structured node's prompt carries
-  one tiny, strict-valid fenced example of its payload kind.
+  fallback: the boundary never throws. Each structured node's request carries
+  one tiny, strict-valid fenced example of its payload kind on the transcript
+  user turn (or the repair turn), leaving the system prompt kind-stable for
+  prompt caching.
 - **Plugins v2.** ES-module plugins exposing `register(ctx)`: tools (with an
   optional JSON-Schema argument spec validated at dispatch), typed lifecycle
   hooks (`session_start`, `session_end`, `before_tool_call` — which may rewrite
@@ -179,8 +193,10 @@ server then serves (the npm tarball ships its own copy of that build).
   error-classification registry: 408/409/429/5xx and transport errors retry
   (honoring `Retry-After`), other 4xx, quota/billing, and context overflow fail
   fast — overflow triggers compaction instead of burning the retry budget.
-- **Presets, onboarding, cost.** A curated seed table (openai, deepseek,
-  anthropic, gemini, openrouter, lmstudio, custom) keyed by env-var names,
+- **Presets, onboarding, cost.** A curated seed table (hosted providers,
+  subscription plans such as OpenCode Zen/Go, Kimi For Coding, Z.AI coding,
+  Qwen/Xiaomi token plans, Moonshot and MiniMax — see `src/presets.ts`) keyed
+  by env-var names,
   `onboard` to write per-role settings, `models` to list an endpoint's models,
   a hand-maintained price table for `cost: $…` estimates, and per-role
   `--max-tokens` output caps. In the web workspace, Settings → Providers is a
@@ -208,8 +224,9 @@ server then serves (the npm tarball ships its own copy of that build).
   process with `--approval-mode` (never persisted), and is editable from
   Settings → Permissions in the web workspace, the TUI `/settings` →
   Permissions action and `/permission` (`/permission <preset|mode>` still
-  accepts the legacy names); Full access is explicit opt-in and always shows a
-  destructive warning. A mode never
+  accepts the legacy names); Full access is explicit opt-in, always shows a
+  destructive warning, and the web asks for an acknowledgement checkbox before
+  enabling it. A mode never
   bypasses workspace confinement or the sensitive-path refusal, `readonly`
   denies without asking, and neither a model reply nor a tool call can change
   it. The TUI `/permission` dialog also states the effective mode and accepts
@@ -526,8 +543,9 @@ What the workspace gives you:
   earlier accepted tasks. Below the drawer breakpoint the sidebar turns into a
   drawer over the chat (backdrop, Escape, focus handling).
 - **Sessions and presets** — session files listed with readable titles and
-  workspace grouping, plus named provider presets (seeded: openai, deepseek,
-  anthropic, gemini, openrouter, lmstudio, custom) that a role can reference;
+  workspace grouping, plus named provider presets (the curated seed table:
+  hosted providers, subscription plans, LM Studio, custom) that a role can
+  reference;
   API keys are write-only and sealed at rest. A customized built-in seed has
   **Reset to default**, which removes the stored override and its key while the
   role references stay.

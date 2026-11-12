@@ -149,8 +149,11 @@ do ([research/E3_FINAL_REPORT.md](research/E3_FINAL_REPORT.md) §8).
 - Real phishing reuses kit strings (40.3% of real phishing queries are exact
   training queries); the engine invents where real phishing repeats.
 - It is not a data-volume problem: a plain character 6-gram model trained on the
-  same phishing queries scores +0.036 where the transformer scores +0.124. The
-  limit is in how the transformer generalises.
+  same phishing queries stops improving at half of them. That 6-gram also scores
+  lower than the transformer of that time (+0.036 against +0.124), but mostly by
+  copying: 55.3% of its queries are exact training queries, against 40.3% of real
+  ones. Where a 6-gram writes as many new strings as the transformer, its tell is
+  no lower. So a simpler model does not get more out of the data.
 
 **3. Two small control-mode cells,** on benign URLs planned with both a path and a
 query (P1Q1; the report's §§5.1–5.2).

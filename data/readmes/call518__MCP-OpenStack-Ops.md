@@ -27,7 +27,8 @@ instances are stopped?" into OpenStack API calls and returns the results.
 - **Read-only by default**: tools that create, change or delete resources are
   not even registered unless you enable them.
 - **One project at a time**: each server works inside one OpenStack project and
-  checks resource ownership.
+  checks resource ownership. Operators can opt in to policy-checked
+  cross-project reads for some list tools.
 - **Broad coverage**: 111 tools (55 read-only, 56 management) for Nova,
   Neutron, Cinder, Glance, Keystone, Heat, Octavia, and Gnocchi/Aodh telemetry.
 
@@ -50,7 +51,13 @@ Stop all instances with name containing 'test'
 
 The last request changes resources, so it works only after you enable
 modification tools. Telemetry requests need Ceilometer and Gnocchi in the
-cloud. More examples are in the [usage guide](docs/usage-guide.md).
+cloud.
+
+**More requests to try:** [Example queries by area](docs/usage-guide.md#example-queries-by-area)
+lists copy-ready requests, with the tools each one uses, for cluster status,
+instances, networks, storage, cross-project reads, images, identity, Heat, load
+balancers, allocation and quotas, Gnocchi telemetry, Aodh alarms,
+troubleshooting, security, batch actions, and multi-tool reports.
 
 **Example: cluster status in Claude Desktop**
 
@@ -188,6 +195,9 @@ what the account may do.
   `ALLOW_MODIFY_OPERATIONS=true`.
 - **One project per server.** Resources are filtered by the current project
   and checked for ownership; run one server per project to manage several.
+  With `ALLOW_CROSS_PROJECT_READ=true`, some list tools accept
+  `all_projects=true`; OpenStack policy decides who may read across projects,
+  and modification tools stay project-scoped.
 - **Protect HTTP access.** Over `streamable-http`, enable Bearer token
   authentication (`REMOTE_AUTH_ENABLE=true`) and HTTPS before exposing the
   server beyond localhost.
@@ -221,7 +231,7 @@ To change the SDK version for an older release, see
 
 | Guide | Contents |
 | --- | --- |
-| [Usage guide](docs/usage-guide.md) | Example requests, bulk and filtered actions, post-action status, pagination |
+| [Usage guide](docs/usage-guide.md) | [Example queries by area](docs/usage-guide.md#example-queries-by-area), bulk and filtered actions, post-action status, pagination |
 | [OpenWebUI guide](docs/openwebui-guide.md) | Docker Compose stack, direct MCP versus MCPO, OpenWebUI settings, troubleshooting |
 | [Claude Desktop guide](docs/claude-desktop-guide.md) | Extension bundle, `uvx`, source checkout, `mcp-remote`, remote connector |
 | [Claude Code guide](docs/claude-code-guide.md) | Registering the HTTP server in Claude Code |
@@ -255,6 +265,7 @@ unit-test results behind the Status values below are recorded in
 | OpenStack CLI Command | MCP Tool | Status | Notes |
 |---------------------|---------|------|------|
 | `openstack server list` | `get_instance` | ✅ | Separate reader projects each returned exactly ten owned VMs; bounded lab validation only |
+| `openstack server list --all-projects` | `get_instance_details`, `search_instances`, `get_instances_by_status` (`all_projects=true`) | ✅ | Requires `ALLOW_CROSS_PROJECT_READ=true`; OpenStack policy decides access ([cross-project reads](docs/security.md#cross-project-reads)). Rows carry `project_id` and `project_name`. 2026-11-13 targeted check: administrator listed three projects' servers; a `member` received an explicit Nova policy-denial error in fixed-credential and multi-user modes |
 | `openstack server show` | `get_instance` | ✅ | Own fixture queries completed; foreign private ID returned no details; no 16-owned-ID batch claim. Each instance reports `boot_source` (`image` or `volume`); summary mode shows a volume-backed instance's image as unknown, and `detailed=true` resolves it from the boot volume. 2026-11-10 OpenStack 2026.1 check (3.7.6): `volume` for volume-backed servers in summary and detailed modes, `image` otherwise; detailed mode resolved the image name from the boot volume |
 | `openstack server create` | `set_instance` (action="create") | ✅ | **ENHANCED** - Bulk creation support. Boots the image on the flavor's local disk unless a volume option below is given. 2026-11-10 targeted check: a server reached ACTIVE |
 | `openstack server create --boot-from-volume <size>` | `set_instance` (action="create", `boot_from_volume`, `volume_size`) | ✅ | Root disk on a new Cinder volume created from the image; optional `volume_type` and `delete_on_termination`; bulk creation supported. 2026-11-10 targeted check: three servers created in one call reached ACTIVE, each on a bootable 10 GB volume at `/dev/vda`. 2026-11-10 OpenStack 2026.1 check (3.7.6): 1 GB root volumes with `volume_type`; the root volume was deleted with the server, and kept with `delete_on_termination=false` |
@@ -352,6 +363,7 @@ unchanged since.
 | OpenStack CLI Command | MCP Tool | Status | Notes |
 |---------------------|---------|------|------|
 | `openstack volume list` | `get_volume_list` | ✅ | Exactly ten owned volumes per reader; no other test project volume IDs returned. `multiattach` and `source_volid` read the SDK `is_multiattach` and `source_volume_id` fields. 2026-11-10 targeted check: listed with those fields |
+| `openstack volume list --all-projects` | `get_volume_list` (`all_projects=true`) | ✅ | Requires `ALLOW_CROSS_PROJECT_READ=true`. Cinder narrows an unauthorized request to the caller's project instead of denying it, so a current-project-only result carries `scope.warning`. 2026-11-13 targeted check: administrator listed two projects' volumes; a `member` received only its own volume with the warning |
 | `openstack volume show` | `get_volume_list` | ✅ | Listing-based client filtering; no dedicated get_volume_list filter argument |
 | `openstack volume create/delete` | `set_volume` | ✅ | Volume creation/deletion. 2026-11-10 targeted check: a 1 GB volume reached available and two volumes were deleted |
 | `openstack volume set --size` | `set_volume` (action="extend") | ✅ | Positive new_size takes precedence over size; size remains a fallback. A test volume reached the requested size and available state; API acceptance alone is not completion |
@@ -359,6 +371,7 @@ unchanged since.
 | `openstack volume type list` | `get_volume_types` | ✅ | Volume type listing. A failed query returns an error instead of a placeholder `standard` type. 2026-11-10 targeted check: listed |
 | `openstack volume type create/delete` | `set_volume_types` | ✅ | Volume type management; usually admin-only |
 | `openstack volume snapshot list` | `get_volume_snapshots` | ✅ | Two owned base snapshots per reader; API final states checked |
+| `openstack volume snapshot list --all-projects` | `get_volume_snapshots` (`all_projects=true`) | ✅ | Requires `ALLOW_CROSS_PROJECT_READ=true`; narrowed results carry `scope.warning` as for volumes. 2026-11-13 targeted check: administrator listed another project's snapshot; a `member` received only its own snapshot with the warning |
 | `openstack volume snapshot create/delete` | `set_snapshot` | ✅ | Explicit member MCP snapshots reached available and were deleted. Post-action status resolves snapshots instead of reporting an unknown resource type; no restore/I/O claim. 2026-11-10 targeted check (administrator): reached available and was deleted |
 | `openstack backup list` | `get_volume_backups` | ✅ | Three owned available backups per reader; base backup creation used real Cinder APIs |
 | `openstack backup create/delete` | `set_volume_backups` | ✅ | Volume backup management. 2026-11-10 targeted check: a backup reached available and was deleted |
@@ -394,7 +407,7 @@ unchanged since.
 | `openstack user list` | `get_user_list` | ⚠️ Live unverified | Reader denied by Keystone; explicit MCP failure observed; successful listing not validated in this round |
 | `openstack user show` | `get_user_list` | ⚠️ Live unverified | Depends on policy-limited user listing; not independently validated for the new readers |
 | `openstack user create/delete` | `set_users` | ✅ | Password from a server environment variable; no role grants |
-| `openstack project list` | `get_project_details` | ✅ | Project listing |
+| `openstack project list` | `get_project_details` (`all_projects=true`) | ✅ | Without `all_projects`, only the current project with its resource counts. With `all_projects=true` and `ALLOW_CROSS_PROJECT_READ=true`, a summary of every project Keystone policy allows. 2026-11-13 targeted check: administrator listed three projects; a `member` received an explicit Keystone policy-denial failure |
 | `openstack project show` | `get_project_details` (name param) | ✅ | Specific project query |
 | `openstack project create/delete` | `set_project` | ✅ | Project management |
 | `openstack role list` | `get_role_assignments` | ✅ | Role listing |
@@ -437,7 +450,7 @@ Octavia was not available in any live test cloud.
 | OpenStack CLI Command | MCP Tool | Status | Notes |
 |---------------------|---------|------|------|
 | `openstack loadbalancer list` | `get_load_balancer_list` | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Load balancer listing with pagination |
-| `openstack loadbalancer show` | `get_load_balancer_details` | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Load balancer detailed information |
+| `openstack loadbalancer show` | `get_load_balancer_details` | ✅ | 2026-11-12 targeted Octavia read check passed. Load balancer detailed information; pools are matched to listeners from each pool's `listeners` references |
 | `openstack loadbalancer create` | `set_load_balancer` (action="create") | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Load balancer creation |
 | `openstack loadbalancer delete` | `set_load_balancer` (action="delete") | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Load balancer deletion |
 | `openstack loadbalancer set` | `set_load_balancer` (action="update") | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Load balancer property update |
@@ -454,11 +467,11 @@ Octavia was not available in any live test cloud.
 | `openstack loadbalancer listener stats show` | `set_load_balancer_listener` (action="stats") | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Listener statistics |
 | `openstack loadbalancer listener unset` | `set_load_balancer_listener` (action="unset") | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Listener property unset |
 | **Pool Management** | | | |
-| `openstack loadbalancer pool list` | `get_load_balancer_pools` | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Pool listing (all or by listener) |
+| `openstack loadbalancer pool list` | `get_load_balancer_pools` | ✅ | 2026-11-12 targeted Octavia read check passed. Pool listing (all or by listener); reports `listener_ids`, `loadbalancer_ids` and `health_monitor_id` from the Octavia response |
 | `openstack loadbalancer pool create` | `set_load_balancer_pool` (action="create") | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Pool creation with algorithms |
 | `openstack loadbalancer pool delete` | `set_load_balancer_pool` (action="delete") | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Pool deletion |
 | `openstack loadbalancer pool set` | `set_load_balancer_pool` (action="set") | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Pool property update |
-| `openstack loadbalancer pool show` | `get_load_balancer_pools` | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Pool detailed information |
+| `openstack loadbalancer pool show` | `get_load_balancer_pools` | ✅ | 2026-11-12 targeted Octavia read check passed. Pool detailed information, including `listener_ids`, `loadbalancer_ids` and `health_monitor_id` |
 | `openstack loadbalancer pool stats show` | N/A | ❌ Not implemented | No registered tool/action for this CLI operation |
 | `openstack loadbalancer pool unset` | N/A | ❌ Not implemented | No registered tool/action for this CLI operation |
 | **Member Management** | | | |
@@ -469,11 +482,11 @@ Octavia was not available in any live test cloud.
 | `openstack loadbalancer member show` | `get_load_balancer_pool_members` | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Pool member detailed information |
 | `openstack loadbalancer member unset` | N/A | ❌ Not implemented | No registered tool/action for this CLI operation |
 | **Health Monitor Management** | | | |
-| `openstack loadbalancer healthmonitor list` | `get_load_balancer_health_monitors` | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Health monitor listing |
+| `openstack loadbalancer healthmonitor list` | `get_load_balancer_health_monitors` | ✅ | 2026-11-12 targeted Octavia read check passed. Health monitor listing (all or by pool); reports `pool_ids` from the Octavia response |
 | `openstack loadbalancer healthmonitor create` | `set_load_balancer_health_monitor` (action="create") | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Health monitor creation |
 | `openstack loadbalancer healthmonitor delete` | `set_load_balancer_health_monitor` (action="delete") | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Health monitor deletion |
 | `openstack loadbalancer healthmonitor set` | `set_load_balancer_health_monitor` (action="set") | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Health monitor update |
-| `openstack loadbalancer healthmonitor show` | `get_load_balancer_health_monitors` | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Health monitor detailed information |
+| `openstack loadbalancer healthmonitor show` | `get_load_balancer_health_monitors` | ✅ | 2026-11-12 targeted Octavia read check passed. Health monitor detailed information, including `pool_ids` |
 | `openstack loadbalancer healthmonitor unset` | N/A | ❌ Not implemented | No registered tool/action for this CLI operation |
 | **L7 Policy Management** | | | |
 | `openstack loadbalancer l7policy list` | `get_load_balancer_l7_policies` | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. L7 policy listing |

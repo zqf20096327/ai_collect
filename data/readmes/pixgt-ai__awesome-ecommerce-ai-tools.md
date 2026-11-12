@@ -57,6 +57,8 @@
 - **[堆友 AI](https://d.design/)** — 阿里旗下设计资源平台,含 AI 商品场景图能力。
 - **[AdVariq](https://advariq.com/)** — AI 广告创意与商品视觉生成工具，支持爆款广告复刻、商品图智能编辑与场景背景替换。
 
+- **[Vidney](https://vidney.ai/photo-effects/ai-product-photo)**：上传一张商品照，选择白底、木桌、大理石、户外或节日礼盒场景生成商品图；发布前需人工核对标签细字和标志。
+
 ## 模特试穿与服装展示
 
 服装配饰品类的专用能力,用 AI 模特替代真人拍摄。
@@ -74,6 +76,7 @@
 - **[Vizgo](https://vizgo.ai/)** — AI 视频生成工具,支持商品素材成片。
 - **[Wizmade](https://wizmade.si/)** — 多模型 AI 视频与生图平台，集成 Kling、Veo、Seedance 与特效成片。
 - **[AdMakeAI](https://admakeai.com)** — 面向 Facebook、Instagram 和 TikTok 投放的 AI 广告素材工具，一张商品图生成 Meta 各版位尺寸的广告图和 AI 数字人出镜的 UGC 风格竖版视频广告，也能查看竞品在 Meta 广告库里持续投放的广告，用自己的商品复刻同类形式。按点数计费，视频广告需付费套餐。
+- **[Reelpeat 帧会卖](https://www.reelpeat.com/)** — 面向电商卖家的商品视频工具，用商品链接或图片制作带货及广告短视频，生成前可审阅脚本和分镜，提供试用积分，后续按用量计费。
 
 ## 基础图片处理
 
@@ -82,6 +85,7 @@
 - **[佐糖 PicWish](https://picwish.cn/)** — 抠图、修复、放大,免费额度较友好。
 - **[remove.bg](https://www.remove.bg/)** — 老牌自动抠图工具,API 稳定,常被集成进工作流。
 - **[Upscayl](https://github.com/upscayl/upscayl)** — 开源图片无损放大工具,本地运行,免费。
+- **[TinyTools Background Remover](https://tomaserben.com/free-tools/image-background-remover)** — 浏览器内运行的免费抠图工具,照片不上传服务器,无账号要求,输出透明 PNG,适合家居实拍等隐私敏感的商品图预处理。
 
 ## 综合设计平台
 

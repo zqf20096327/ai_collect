@@ -17,6 +17,8 @@ Trading research · autonomous operator · planetary/HNC research · a coding or
 
 </div>
 
+How this project is reviewed, tested, and kept safe is described in [`docs/TRUST.md`](docs/TRUST.md).
+
 ## Quick start in five minutes
 
 Start here. Clone `main`, leave exchange keys unset, and run the guarded smoke. That smoke keeps live trading off for that run. There is a live route: an `.env` with exchange keys boots live. The orange release-boundary badge above stays **HOLD**. Go-live stays **HOLD**.
@@ -29,6 +31,8 @@ cd Aureon-OS
 ./install.sh --smoke
 ```
 
+The single evaluator guide for this path is [`EVALUATE.md`](EVALUATE.md). A measured walkthrough of this path, including the order-safety defaults and the ports that must be free, is in [`INSTALL.md`](INSTALL.md).
+
 `./install.sh --smoke` creates `.venv`, installs the pinned `requirements-plug.lock`, and installs the dashboard with `npm ci --ignore-scripts --prefix frontend` when `frontend/node_modules` is absent. It starts the local stack, requests the endpoints, and stops. If a stack record is already present, `./install.sh --stop` clears that record before the smoke. Installer logs from pip, and from `npm ci` on a fresh tree, scroll before the banner. Go-live stays **HOLD**.
 
 During the smoke the stack binds, then the smoke stops it:
@@ -38,7 +42,7 @@ During the smoke the stack binds, then the smoke stops it:
 - dashboard on `http://127.0.0.1:5173/`
 - stack health and the in-process HNC / Auris / QGITA report on `http://127.0.0.1:8787/`
 
-The smoke sets `AUREON_AUTONOMY_MODE=guarded`, `AUREON_LIVE_TRADING=0`, `AUREON_DISABLE_REAL_ORDERS=1`, and `AUREON_LLM_OFFLINE=1`. Exchange keys stay unset. The provider line is the offline adapter. No order is placed. HNC, Auris, and QGITA run from this repository. The first run installs from `requirements-plug.lock` and, on a fresh tree, from `frontend/package-lock.json`. Those installs fetch packages. External model HTTP stays off. Go-live stays **HOLD**.
+The smoke sets `AUREON_AUTONOMY_MODE=guarded`, `AUREON_LIVE_TRADING=0`, `AUREON_DISABLE_REAL_ORDERS=1`, `AUREON_DISABLE_EXCHANGE_MUTATIONS=1`, and `AUREON_LLM_OFFLINE=1`. Exchange keys stay unset. The provider line is the offline adapter. No order is placed. HNC, Auris, and QGITA run from this repository. The first run installs from `requirements-plug.lock` and, on a fresh tree, from `frontend/package-lock.json`. Those installs fetch packages. External model HTTP stays off. Go-live stays **HOLD**.
 
 ### Linux path
 
@@ -78,7 +82,7 @@ The published pin is `bb04503119681adcf832f3c3e9b0cbf09fc7a938` (`PINNED_COMMIT`
 
 Checkout files are still blob-checked against the pin. When `aureon/utils/aureon_queen_hive_mind.py` differs, `auris_coherence` returns `checkout aureon/utils/aureon_queen_hive_mind.py differs from pin` and the first 12 hex digits of the pin commit. The smoke accepts that error when the text contains `differs from pin`. A tool result whose `trade_readiness` is `HOLD` also passes that check. In the transcript below, `SMOKE PASSED` follows the pin refusal. The checkout stays kind `checkout`.
 
-The transcript below is an earlier run. The prefix `8aa6a2d971cc` on its `auris_coherence` line is that run's pin prefix. Process ids in the banner are from the run that produced it. A later run prints its own pids. `SMOKE PASSED` is the guarded-smoke banner. Go-live stays **HOLD**. With `reports/measured/market_series.json` loaded, the in-process report on `/api/cognition` runs `evaluate_brain`. Auris coherence is the pack reading and trade readiness is the paper-label verdict in that report. QGITA detection rate stays **HOLD**. Auris joined to Λ(t) stays **HOLD**: the formula-path Λ(t) is passed into `get_auris_coherence`, and that call does not change the coherence figure. The release boundary stays **HOLD**. The banner is from before that pack.
+**Historical transcript, not the current result.** The transcript below is an earlier run, and its `SMOKE PASSED` accepted the `auris_coherence` pin refusal shown in it. For today's known state, see [`EVALUATE.md`](EVALUATE.md). The prefix `8aa6a2d971cc` on its `auris_coherence` line is that run's pin prefix. Process ids in the banner are from the run that produced it. A later run prints its own pids. `SMOKE PASSED` is the guarded-smoke banner. Go-live stays **HOLD**. With `reports/measured/market_series.json` loaded, the in-process report on `/api/cognition` runs `evaluate_brain`. Auris coherence is the pack reading and trade readiness is the paper-label verdict in that report. QGITA detection rate stays **HOLD**. Auris joined to Λ(t) stays **HOLD**: the formula-path Λ(t) is passed into `get_auris_coherence`, and that call does not change the coherence figure. The release boundary stays **HOLD**. The banner is from before that pack.
 
 The stack then prints:
 

@@ -1,8 +1,10 @@
 # Semantic Signal — an LLM trading agent that reads charts and keeps memory of its closed trades
 
 [![Python 3.13](https://img.shields.io/badge/python-3.13-blue?logo=python&logoColor=white)](https://www.python.org)
-[![Tests](https://img.shields.io/badge/tests-2%2C690-brightgreen)](tests)
+[![Tests](https://img.shields.io/badge/tests-2%2C737-brightgreen)](tests)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE.md)
+[![tests](https://github.com/qrak/LLM_trader/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/qrak/LLM_trader/actions/workflows/tests.yml)
+[![CodeQL](https://github.com/qrak/LLM_trader/actions/workflows/codeql.yml/badge.svg?branch=master)](https://github.com/qrak/LLM_trader/actions/workflows/codeql.yml)
 
 **Read this in:** [English](README.md) · [Polski](https://www.readme-i18n.com/qrak/LLM_trader?lang=pl) · [中文](https://www.readme-i18n.com/qrak/LLM_trader?lang=zh) · [日本語](https://www.readme-i18n.com/qrak/LLM_trader?lang=ja) · [한국어](https://www.readme-i18n.com/qrak/LLM_trader?lang=ko) · [Español](https://www.readme-i18n.com/qrak/LLM_trader?lang=es) · [Deutsch](https://www.readme-i18n.com/qrak/LLM_trader?lang=de) · [Português](https://www.readme-i18n.com/qrak/LLM_trader?lang=pt) · [Русский](https://www.readme-i18n.com/qrak/LLM_trader?lang=ru)
 
@@ -32,35 +34,38 @@ sets the candle. The public deployment runs BTC/USDC on 4h.
 
 ## Results
 
-**Window:** 2026-09-20 → 2026-10-31 (42 days), BTC/USDC, 4h candles, 10 000 USDC simulated capital.
-**Source:** the bot's own ledger (`data/trading/`), reproducible with `python scripts/results_report.py`.
+<!-- numbers:start -->
+**Window:** 2026-09-20 → 2026-11-10 (52 days), BTC/USDC, 4h candles, 10 000 USDC simulated capital.
+**Source:** the bot's own ledger, frozen at [`results/2026-11-12/`](results/2026-11-12); `python scripts/results_report.py --data-dir results/2026-11-12` reprints every number below.
 
 | metric | bot | buy & hold |
 |---|---|---|
-| Return | **+0.16%** (+$15.72) | **-4.64%** |
-| Closed trades | 14 (12 counted, 2 excluded for fill divergence) | — |
-| Win rate | 42.9% (6W / 6L) | — |
-| Profit factor | 1.40 | — |
-| Sharpe / Sortino | 0.21 / 0.40 | — |
+| Return | **+0.05%** (+$5.27) | **-9.27%** |
+| Closed trades | 16 (14 counted, 2 excluded for fill divergence) | — |
+| Win rate | 37.5% (6W / 8L) | — |
+| Profit factor | 1.11 | — |
+| Sharpe / Sortino | 0.11 / 0.21 | — |
 | Max drawdown | -0.25% | — |
 | Best / worst trade | +4.06% / -2.60% | — |
-| Inference cost | $6.44 (8.8M in / 4.2M out tokens) | — |
-| Net after inference | **+$9.28** | — |
-| Analyses | 83 cycles, median 277 s, $0.0125 each | — |
+| Inference cost | $7.12 (10.0M in / 4.8M out tokens) | — |
+| Net after inference | -$1.85 | — |
+| Analyses | 147 cycles, median 275 s, $0.0113 each | — |
 
 ![Bot vs buy-and-hold over the same window](docs/assets/results-vs-btc.png)
 
-Over those 42 days the bot returned +0.16% while the underlying fell 4.64%. That is 4.8 percentage
-points on twelve counted trades — not evidence of an edge. The paper book records zero fees, so the
-number is gross of trading costs; at a 0.15% round trip the gain would be roughly erased. Two trades
-are excluded from the statistics because their sandbox fills diverged from the real market. The
-numbers above are the 2026-11-01 measurement; the inference cost and cycle totals move with every
-cycle the bot runs. Method, per-trade table and the reproduction command:
-`python scripts/results_report.py`.
+Over those 52 days the bot returned +0.05% while the underlying fell 9.27%. That is
+9.3 percentage points on fourteen counted trades — not evidence of an edge.
+The paper book records zero fees, so the number is gross of trading costs; at a 0.15% round trip the
+result would be clearly negative. The statistics exclude two trades because their
+sandbox fills diverged from the real market. The numbers above come from that frozen snapshot,
+not from the live ledger, so they do not move with every cycle the bot runs.
+Method, per-trade table and the reproduction command:
+`python scripts/results_report.py --data-dir results/2026-11-12`.
+<!-- numbers:end -->
 
 ## What this is not
 
-- **Not profitable.** Twelve counted trades are not a track record, and the paper book records zero fees.
+- **Not profitable.** Fourteen counted trades are not a track record, and the paper book records zero fees.
 - **Not live trading.** The executor runs against an exchange testnet; no real funds are involved anywhere.
 - **Not a black box.** The prompt, the retrieved memories and the verdict behind every decision are on the dashboard.
 
@@ -92,10 +97,11 @@ secret, validates config changes with the loader, and needs a restart to apply. 
 | Reflection | Every N closed trades (N follows the timeframe; 5 on 4h) the brain writes rules from its own outcomes. Each rule carries a surprise ratio, `|realized − expected| / expected`; a best-practice rule above 1.5 is annotated so the model can discount it. |
 | Claim checks | Model-reported trend strength is compared with the computed ADX and overwritten when it disagrees. Pattern quality is scored deterministically. The EV rule in the prompt is computed from the bot's own closed trades. |
 | Risk pipeline | Guard chain (symbol and position cap), a risk-reward gate (`min_rr_entry` is 0.0, so it is inert until a floor is configured or learned), and SL/TP sized from ATR. With the executor live, the stop is checked against the real market; the exchange leg is a backstop. |
-| News and fundamentals | RSS feeds, optional Crawl4AI enrichment, CoinGecko, DeFiLlama and Alternative.me, relevance-scored locally and capped by the prompt budget. |
+| News and fundamentals | RSS feeds with full-article enrichment, CoinGecko, DeFiLlama and Alternative.me, relevance-scored locally and capped by the prompt budget. |
 | Providers | `provider = all` builds a fallback chain (text: Google → DeepSeek → OpenCode Go → LM Studio → OpenRouter → BlockRun; charts skip LM Studio). A failed provider hands the cycle to the next one. This deployment runs `provider = deepseek`. |
 | Settings desk | `http://localhost:8000/admin/` edits `config.ini` and `keys.env` from a form, shows the docs, and never returns a stored secret. Loopback only; config changes are validated with the loader and every save needs a restart. |
-| Tests | 2,690 collected, all runnable. They cover malformed model output, async races, rate-limit backoff, the feedback loop and spot/futures wiring, using temporary SQLite and ChromaDB. |
+| MCP server | A read-only MCP server over the ledger: `recent` rows and `stats` counts per action, both opened with `mode=ro` and `PRAGMA query_only`, no write or order tool by design. It is an optional dependency and the bot never imports it. Details: [docs/MCP.md](docs/MCP.md). |
+| Tests | 2,737 collected, all runnable. They cover malformed model output, async races, rate-limit backoff, the feedback loop and spot/futures wiring, using temporary SQLite and ChromaDB. |
 
 Long version, with the file that implements each of them: [docs/FEATURES.md](docs/FEATURES.md).
 
@@ -105,7 +111,7 @@ Long version, with the file that implements each of them: [docs/FEATURES.md](doc
 flowchart TB
     subgraph Data["Data Sources"]
         EX["Exchanges (CCXT) → OHLCV + Order Book + Trade Flow"]
-        NEWS["RSS Feeds + Crawl4AI + trafilatura"]
+        NEWS["RSS Feeds + trafilatura"]
         FUND["CoinGecko + DeFiLlama + Alternative.me"]
     end
     subgraph Analysis["Analysis Engine"]
@@ -134,7 +140,7 @@ flowchart TB
 ## Testing
 
 ```bash
-python -m pytest tests -q              # 2,690 tests, ~127 s
+python -m pytest tests -q              # 2,737 tests, ~132 s
 ruff check src scripts start.py        # clean
 pyright src start.py                   # 0 errors
 python scripts/check_dead_symbols.py   # 0 dead, 0 test-only
@@ -157,9 +163,12 @@ built and deployed from its own repository.
 | [`docs/FEATURES.md`](docs/FEATURES.md) | Every feature in detail, with the implementing file |
 | [`docs/SETUP.md`](docs/SETUP.md) | Requirements, platform scripts, secrets, dashboard deploy |
 | [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md) | Every config key, prompt budget, billing windows, executor handoff |
+| [`docs/PUBLIC-NUMBERS.md`](docs/PUBLIC-NUMBERS.md) | The ledger → snapshot → `claims.json` → site chain, and the gate that keeps them equal |
+| [`docs/MCP.md`](docs/MCP.md) | Read-only MCP server: the two tools, install, client config, why it cannot write |
 | [`AGENTS.md`](AGENTS.md) | Instruction authority, architecture, config, conventions and verification gates, plus one `AGENTS.md` per package under `src/` |
-| [`claims.json`](claims.json) | The numbers every public text quotes; `scripts/claims_report.py` regenerates it, `scripts/check_claims.py` fails on drift |
+| [`claims.json`](claims.json) | The numbers every public text quotes; `scripts/claims_report.py` regenerates it from the snapshot in [`results/`](results), `scripts/check_claims.py` fails on drift |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Branches, releases, test gates, changelog rules |
+| [`SECURITY.md`](SECURITY.md) | How to report a vulnerability privately, and which findings are not vulnerabilities here |
 | [`CHANGELOG.md`](CHANGELOG.md) | Every change, dated, with the run that verified it |
 
 ## Not built yet

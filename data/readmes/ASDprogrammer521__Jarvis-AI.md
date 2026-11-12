@@ -1,4 +1,10 @@
 <p align="center">
+<a href="https://discord.com/invite/r5q93NpRPt"><img src="https://img.shields.io/badge/Discord-Jarvis%20Community-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join the Jarvis Discord"></a>
+</p>
+
+<p align="center"><b>💬 Join the <a href="https://discord.com/invite/r5q93NpRPt">Jarvis Discord server</a></b> — help, updates and ideas: <a href="https://discord.com/invite/r5q93NpRPt">discord.com/invite/r5q93NpRPt</a></p>
+
+<p align="center">
 <img src="assets/banner.png" alt="JARVIS — Your personal AI assistant for PC &amp; phone" width="100%">
 </p>
 
@@ -461,3 +467,20 @@ This project is licensed under the **MIT License**.
 <p align="center">
 <b>By ASDcuber</b>
 </p>
+
+---
+
+## 🆕 New modules
+
+| Module | How to use |
+|---|---|
+| ✋ **Hand-controlled UI** | Settings → Gestures → *Use my hand as the mouse*, or say “enable hand control”. Index finger moves the real cursor · pinch = click / drag · thumb + middle = right click · ✌ and move up/down = scroll · hold a fist 1.5 s = stop. Everything runs locally on the webcam. |
+| 🎮 **Game HUD & Voice Trainer** | Say “show the game HUD”, “start a Roshan timer 8 minutes repeating”, “tip: rotate to B”, “coach me every 5 minutes”, “start an aim warm-up”, “save my keybinds for Valorant: Q dash, E heal”. Transparent, always-on-top, click-through overlay; timers are announced by voice 10 s before they end. |
+| 🏠 **Local-First Smart Home** | Say “scan my network”, then control Shelly / Tasmota / WLED / Tuya / IP cameras / wake-on-LAN PCs. LAN only: public addresses and HTTP redirects are refused. The phone app can send `{"type":"home","action":"off","target":"room:kitchen"}` over the existing encrypted WebSocket. |
+| 🧑‍💻 **Developer Overlay** | **Alt+Space** (change with `dev_overlay_hotkey` in `config/api_keys.json`). Live CPU/RAM/GPU, git status · diff · log · pull · push · stash · commit, and “explain the error in my clipboard”. |
+
+**Game HUD extras:** header shows the game's **FPS + frame time** and the **clock** (Settings → Modules). FPS needs the free [PresentMon](https://github.com/GameTechDev/PresentMon/releases) console exe in `tools/` and Jarvis run as Administrator; it only listens to Windows frame events (no injection, anti-cheat safe).
+
+**Face lock:** Settings → Face ID → *Lock Jarvis with my face*. Needs a saved face and a PIN (fallback if the camera fails). Locks on start, on “lock Jarvis”, and after N minutes without a saved face; a saved face seen for ~1 s unlocks. While locked, voice, text, tools and phone commands are ignored. Not liveness-checked — a photo may fool it.
+
+No new Python packages are needed (`tinytuya` is only used for Tuya devices and is already in `requirements.txt`).

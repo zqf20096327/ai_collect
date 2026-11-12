@@ -1,184 +1,322 @@
-# Omni-Agent
+<p align="center">
+  <img src="docs/assets/banner.svg" alt="Omni-Agent: One Claude, many models" width="100%">
+</p>
 
-Hintergrund-Agents mit **austauschbarem Modell-Anbieter** und **austauschbarer Agent-CLI**.
+<p align="center">
+  <a href="LICENSE"><img alt="License MIT" src="https://img.shields.io/badge/License-MIT-22d3ee?style=flat-square"></a>
+  <img alt="Version 1.3.0" src="https://img.shields.io/badge/Version-1.3.0-a78bfa?style=flat-square">
+  <img alt="Python 3.9+" src="https://img.shields.io/badge/Python-3.9%2B-3776ab?style=flat-square&logo=python&logoColor=white">
+  <img alt="Claude Code Plugin" src="https://img.shields.io/badge/Claude_Code-Plugin-d97757?style=flat-square">
+  <img alt="Platforms" src="https://img.shields.io/badge/macOS_%C2%B7_Linux_%C2%B7_WSL-grey?style=flat-square">
+  <img alt="No dependencies" src="https://img.shields.io/badge/Dependencies-0-success?style=flat-square">
+</p>
 
-Du gibst einen Auftrag, Omni-Agent startet damit einen zweiten Agenten (zum Beispiel mit DeepSeek, Kimi oder einem lokalen Ollama-Modell), wartet, bis dieser `bericht.md` geschrieben hat, und gibt dir den Bericht zurück. Dein Haupt-Claude arbeitet währenddessen weiter.
+<p align="center">
+  <b>Your Claude hands tasks to other models, other accounts and Codex, in the background, without you waiting.</b><br>
+  DeepSeek, Kimi, Ollama, EUrouter, Codex and any number of Claude accounts. One command, one report.
+</p>
 
+<p align="center">
+  <a href="#install">Install</a> ·
+  <a href="#what-it-looks-like">Demo</a> ·
+  <a href="#what-you-get">Features</a> ·
+  <a href="#quality-per-provider">Quality per provider</a> ·
+  <a href="#usage">Commands</a> ·
+  <a href="docs/02-architecture.md">Architecture</a> ·
+  <a href="CHANGELOG.md">Changelog</a>
+</p>
+
+---
+
+## Why Omni-Agent?
+
+- **Parallel instead of sequential.** Research, comparison, a second opinion or a draft run in the background while your main Claude keeps working. When the run ends, you get a notification.
+- **The right model for the job.** Cheap and fast with DeepSeek, local and private with Ollama, EU-hosted with EUrouter, a second opinion from Codex or from another Claude account with its own quota.
+- **Claude decides on its own.** The subagent `omni-agent:worker` is described so that Claude calls it by itself, also inside a `/goal`. Claude never picks a third-party provider without asking.
+- **Built to be safe.** Clean environment per run, only the one key it needs, no shell by default, a secrets block in review. Keys live in a file with mode 600 and never pass through the chat.
+- **Zero dependencies.** Python standard library, one plugin, no server, no database.
+
+## What it looks like
+
+*Examples, output shortened.*
+
+```text
+> /omni-agent:run --account felipe Compare three methods for assuring teaching quality
+
+● omni-agent:worker   Started: 20261111-004456-claude-felipe (process 48213, detached)
+  … you keep working …
+● Run done: report.md is ready
+  Result · Findings or details · Evidence · Assumptions and open points
 ```
-Claude Code (du) ──/omni-agent:run──► Subagent omni-agent:lauf ──► omni-agent run (losgelöst)
-        ▲  oder Claude delegiert selbst            (dünner Weiterleiter)     ├─ Anbieter  (wessen Modell, wo, welcher Schlüssel)
-        │                                                                    └─ Runner    (welche Agent-CLI führt aus)
-        └──── Benachrichtigung, wenn der Lauf endet ◄──────── ~/.omni-agent/laeufe/<zeit>-<anbieter>/bericht.md
+
+```text
+> /omni-agent:review --account fbs --adversarial
+
+## Verdict
+needs-work, one critical finding
+
+### [critical] Token is printed to the log
+- Location: lib/auth.py:88   - Confidence: 0.9
+- Recommendation: Redact the value before writing it
 ```
 
-| Schicht | Auswahl | Standard |
-|---|---|---|
-| **Anbieter** | DeepSeek, OpenRouter, Kimi, Ollama, EUrouter, Nvidia, Codex (OpenAI-Anmeldung), beliebig viele benannte Claude-Konten | – |
-| **Runner** | Claude Code, opencode, codex, dsh (experimentell) | Claude Code |
+## What you get
 
-## Installieren
+| | |
+|---|---|
+| **Delegation by itself** | The subagent `omni-agent:worker` takes on well-bounded subtasks; `/omni-agent:run` starts it on request |
+| **Background runs** | Detached processes, `status`, `result`, `cancel`, a notification at the end, assignment to the Claude session |
+| **Review with a second opinion** | Git diff to another model or account, fixed report schema, `adversarial-review` challenges the solution |
+| **Project mode** | The agent works in the real project folder, read-only or with `--write`, without commit or push |
+| **Review gate** | Optional (off): a second model checks unreviewed changes before a session ends |
+| **Any number of Claude accounts** | Each with a name, a key and its own quota, with a usage display (`/omni-agent:accounts`) |
+| **Swappable agent CLI** | Claude Code, opencode, codex, dsh. Omni-Agent checks which CLI fits which provider |
+| **Your own providers** | One JSON file in `~/.omni-agent/providers.d/` is enough |
 
-**Schnellster Weg:** Gib Claude Code diese Repo-Adresse und sage „Installiere mir das". Claude folgt dann [INSTALL.md](INSTALL.md).
-
-**Oder selbst, als Claude-Code-Plugin:**
-
+```mermaid
+flowchart LR
+    U["You in Claude Code"] -->|"/omni-agent:run or Claude delegates"| S["Subagent omni-agent:worker"]
+    S --> K["omni-agent run (detached)"]
+    K --> A["Providers<br/>DeepSeek, Kimi, Ollama, EUrouter,<br/>Codex, Claude accounts"]
+    K --> R["Runners<br/>Claude Code, opencode, codex"]
+    A --> B[("report.md")]
+    R --> B
+    B -->|"Notification"| U
 ```
+
+## Install
+
+**Fastest way:** Give Claude Code this repo address and say "Install this for me". Claude then follows [INSTALL.md](INSTALL.md).
+
+**As a Claude Code plugin:**
+
+```text
 /plugin marketplace add alexodexo/omni-agent
 /plugin install omni-agent@omni-agent
 /omni-agent:setup
 ```
 
-**Oder ohne Plugin** (funktioniert auch ohne Claude, im Terminal): Repo klonen, dann `bin/omni-agent setup`. Voraussetzung: Python 3.10 oder neuer (macOS, Linux, WSL) und mindestens eine Agent-CLI (Standard: [Claude Code](https://claude.com/claude-code)).
+**Without the plugin** (also without Claude, in a terminal): clone the repo, then run `bin/omni-agent setup`. Requirements: Python 3.9 or newer (macOS, Linux, WSL) and at least one agent CLI (default: [Claude Code](https://claude.com/claude-code)).
 
-## Benutzen
+## Quality per provider
 
-| Befehl im Claude-Chat | Zweck |
+Runs, reports, background, `status`/`result`/`cancel`, session assignment and review are **the same path for all providers**. Differences exist only where a provider technically cannot do something:
+
+| Capability | Claude accounts | Codex (login) | DeepSeek, Kimi, Ollama, OpenRouter | EUrouter, Nvidia |
+|---|:-:|:-:|:-:|:-:|
+| Background run, report, notification | ✅ | ✅ | ✅ | ✅ |
+| Run on another machine (`--host`) | ✅ | ✅ | ✅ | ✅ |
+| Review and adversarial review | ✅ | ✅ | ✅ | ✅ |
+| Follow-up to the same agent (`--resume`) | ✅ | ✅ | ✅ with runner `claude` | – |
+| **Project mode** (in the real project, read-only or writing) | ✅ | ✅ | ✅ | ✅ |
+| Show usage and balance (`/omni-agent:usage`) | ✅ limits | ✅ limits, plan, credits | ✅ balance (DeepSeek, Kimi, OpenRouter) | ✅ balance (EUrouter) |
+| **Live tested** | ✅ | ✅ | DeepSeek only | no |
+
+Project mode works with every provider; the decision is yours. It sends files from your project to the chosen provider; `omni-agent providers` shows the data location. What "live tested" means, and what is only built from vendor documentation, is in the [provider table](#providers-and-privacy).
+
+## Usage
+
+| Command in the Claude chat | Purpose |
 |---|---|
-| `/omni-agent:run [--hintergrund\|--vordergrund] [--konto NAME \| --anbieter ID] [--projekt] [--schreibend] [--fortsetzen\|--neu] <auftrag>` | Auftrag an einen Lauf mit anderem Modell, anderem Claude-Konto oder Codex. Standard: im Hintergrund, du wirst benachrichtigt |
-| `/omni-agent:review [--base main] [--konto NAME] [Schwerpunkt]` | Git-Änderungen von einem anderen Modell prüfen lassen (Urteil, Befunde nach Schwere) |
-| `/omni-agent:adversarial-review [Schwerpunkt]` | Dasselbe, aber gegnerisch: stellt die gewählte Lösung infrage |
-| `/omni-agent:status [lauf] [--alle]` | Tabelle der Läufe dieser Sitzung |
-| `/omni-agent:result [lauf]` | Bericht eines Laufs, unverändert |
-| `/omni-agent:cancel [lauf]` | Laufenden Lauf abbrechen |
-| `/omni-agent:konten` | Claude-Konten mit Auslastung (5 Stunden, 7 Tage) und Standard |
-| `/omni-agent:setup [--anbieter ID] [--review-gate an\|aus]` | Einrichtung, Anleitung für einen Anbieter, Review-Gate |
-| `/omni-agent:doctor` | Was ist da, was fehlt |
+| `/omni-agent:run [--background\|--foreground] [--account NAME \| --provider ID] [--project] [--write] [--resume\|--new] <task>` | Hand a task to a run with another model, another Claude account or Codex. Default: in the background, you get notified |
+| `/omni-agent:review [--base main] [--account NAME] [focus]` | Have another model review your git changes (verdict, findings by severity) |
+| `/omni-agent:adversarial-review [focus]` | The same, but adversarial: challenges the chosen solution |
+| `/omni-agent:status [run] [--all]` | Table of the runs of this session |
+| `/omni-agent:result [run]` | The report of a run, unchanged |
+| `/omni-agent:cancel [run]` | Cancel a running run |
+| `/omni-agent:usage [target]` | Usage and balance of all providers: Claude limits, Codex limits with plan, DeepSeek, Kimi, OpenRouter and EUrouter balances |
+| `/omni-agent:hosts [test NAME]` | Remote targets (Mac mini, server) for `--host` |
+| `/omni-agent:apply [--yes]` | Shows (with `--yes` writes) the changes an agent made to a project copy on a host |
+| `/omni-agent:accounts` | Claude accounts with usage (5 hours, 7 days) and default |
+| `/omni-agent:setup [--provider ID] [--review-gate on\|off]` | Setup, instructions for a provider, review gate |
+| `/omni-agent:doctor` | What is there, what is missing |
 
-### Wie Claude mit Omni-Agent arbeitet
+### How Claude works with Omni-Agent
 
-Diese Dateien im Plugin legen fest, **wie** Claude mit Omni-Agent umgeht (es gibt keine zentrale „Anleitungsdatei"; in einem Plugin wird `CLAUDE.md` nicht geladen):
+These files in the plugin define **how** Claude deals with Omni-Agent (there is no central "instructions file"; a plugin does not load `CLAUDE.md`):
 
-| Datei | Rolle |
+| File | Role |
 |---|---|
-| `agents/lauf.md` | Der Subagent `omni-agent:lauf`: ein dünner Weiterleiter. **Seine Beschreibung ist der Auslöser**: Claude darf ihn von selbst rufen, wenn eine größere, abgegrenzte Teilaufgabe an ein anderes Modell, Konto oder Codex gehen soll. Du musst „Omni-Agent" nicht sagen, auch in einem `/goal` nicht. Einen Fremdanbieter wählt Claude nie von sich aus |
-| `commands/*.md` | Die Slash-Befehle. `run` ruft den Subagenten, `status`, `result`, `cancel`, `doctor`, `konten` führen den Befehl direkt aus (kein Modell dazwischen) |
-| `skills/omni-agent-laufzeit` | Interner Vertrag des Subagenten: genaue Befehlssyntax, Warteschleife, Projektmodus |
-| `skills/omni-agent-auftrag` | Interne Anleitung, wie ein Auftrag geschrieben wird (Ziel, Kontext, Erledigt-Kriterium, Grenzen) |
-| `skills/omni-agent-ergebnis` | Interne Regeln, wie Ergebnisse weitergegeben werden (Befunde zuerst, Vermutungen kenntlich, nach einem Review anhalten, bei Fehlern keinen Ersatz erfinden) |
-| `hooks/hooks.json` | Ordnet Läufe einer Claude-Sitzung zu, räumt beim Beenden auf, optionales Review-Gate |
+| `agents/worker.md` | The subagent `omni-agent:worker`: a thin forwarder. **Its description is the trigger**: Claude may call it on its own when a larger, well-bounded subtask should go to another model, account or Codex. You do not have to say "Omni-Agent", not even in a `/goal`. Claude never picks a third-party provider on its own |
+| `commands/*.md` | The slash commands. `run` calls the subagent; `status`, `result`, `cancel`, `doctor`, `accounts` run the command directly (no model in between) |
+| `skills/omni-agent-runtime` | Internal contract of the subagent: exact command syntax, wait loop, project mode |
+| `skills/omni-agent-task` | Internal guide for writing a task (goal, context, done criterion, limits) |
+| `skills/omni-agent-results` | Internal rules for passing results on (findings first, guesses marked, stop after a review, no invented substitute on errors) |
+| `hooks/hooks.json` | Assigns runs to a Claude session, cleans up on exit, optional review gate |
 
-**Läufe gehören zur Sitzung.** `status`, `result`, `cancel` und die Rückfrage „fortsetzen oder neu?" beziehen sich zuerst auf Läufe der aktuellen Claude-Sitzung. Endet die Sitzung, werden ihre noch laufenden Läufe beendet (bei `/clear` nicht); Berichte bleiben liegen.
+**Runs belong to the session.** `status`, `result`, `cancel` and the question "resume or start new?" refer first to runs of the current Claude session. When the session ends, its still-running runs are stopped (not on `/clear`); reports stay in place.
 
-**Projektmodus.** `--projekt` lässt den Agenten im Projektordner arbeiten (nur lesend; `--schreibend` erlaubt Änderungen, ohne Commit und Push). Das geht nur mit Claude-Konten und Codex, nie mit einem Fremdanbieter. Der Bericht ist die Schlussantwort des Agenten; im Projekt bleibt keine Berichtsdatei zurück.
+**Project mode.** `--project` lets the agent work in the project folder (read-only; `--write` allows changes, without commit and push). This works with every provider; with third-party providers, the files read go to their data location. The report is the agent's final answer; no report file is left behind in the project.
 
-**Review-Gate (aus, solange du es nicht einschaltest).** `/omni-agent:setup --review-gate an`: Vor dem Beenden einer Claude-Sitzung prüft das Standardkonto jeden neuen Stand ungeprüfter Änderungen und kann das Beenden einmal aufhalten. Ohne Änderungen wird kein Modell gerufen; derselbe Diff wird nie zweimal geprüft, höchstens drei Blockaden je Sitzung, bei Geheimnissen im Diff oder Störungen wird durchgelassen. Das kostet Nutzung, und der Diff verlässt den Rechner.
+**Review gate (off until you switch it on).** `/omni-agent:setup --review-gate on`: before a Claude session ends, the default account checks every new state of unreviewed changes and can hold the exit once. Without changes no model is called; the same diff is never checked twice, at most three blocks per session, and with secrets in the diff or on errors it lets the session through. This costs usage, and the diff leaves your machine.
 
-Im Terminal:
+In the terminal:
 
 ```bash
-omni-agent run --anbieter deepseek --text "Vergleiche drei Methoden zur Qualitätssicherung von Unterricht"
-omni-agent run --anbieter nvidia --runner opencode auftrag.md
+omni-agent run --provider deepseek --text "Compare three methods for assuring teaching quality"
+omni-agent run --provider nvidia --runner opencode task.md
 omni-agent status
-omni-agent result                         # Bericht des letzten Laufs
-omni-agent run --fortsetzen --text "Und wie sieht es bei X aus?"   # Nachfrage an denselben Agenten
-omni-agent cancel                         # laufenden Lauf abbrechen
-omni-agent review --konto fbs --base main --adversarial   # Zweitmeinung zu den Änderungen im Repo
-omni-agent run --hintergrund --konto felipe --text "…"   # losgelöst starten, Laufname kommt sofort
-omni-agent warte --max 540                               # auf den Lauf warten, dann Stand oder Bericht
-omni-agent run --projekt --konto fbs --text "Warum hängt der Login?"   # im aktuellen Projekt, nur lesend
+omni-agent result                         # report of the last run
+omni-agent run --resume --text "And what about X?"   # follow-up to the same agent
+omni-agent cancel                         # cancel the running run
+omni-agent review --account fbs --base main --adversarial   # second opinion on the changes in the repo
+omni-agent run --background --account felipe --text "…"   # start detached, the run name comes back at once
+omni-agent wait --max 540                                 # wait for the run, then state or report
+omni-agent run --project --account fbs --text "Why does the login hang?"   # in the current project, read-only
 ```
 
-**Review:** `omni-agent review` schickt den Git-Diff (alle Änderungen gegen HEAD, bei sauberem Arbeitsbaum der Branch gegen den Hauptzweig, oder `--base main`) an ein anderes Modell oder Konto und liefert Urteil (`freigeben` oder `nacharbeiten`), Befunde nach Schwere mit Datei, Zeile und Sicherheit sowie nächste Schritte. `--adversarial` stellt zusätzlich die gewählte Lösung infrage, ein freier Text danach legt den Schwerpunkt fest. Der Diff verlässt den Rechner: `--vorschau` zeigt vorher, was gesendet würde. Enthält der Diff mögliche Geheimnisse oder `.env`-Dateien, wird **nichts** gesendet (nur `--trotzdem` überstimmt das). Lock-Dateien und Dateien über 400 KB Diff werden ausgenommen. Der Reviewer ändert nichts am Code; Befunde sind Hinweise, keine Wahrheit.
+**Review:** `omni-agent review` sends the git diff (all changes against HEAD; with a clean working tree, the branch against the main branch; or `--base main`) to another model or account and returns a verdict (`approve` or `needs-work`), findings by severity with file, line and confidence, and next steps. `--adversarial` additionally challenges the chosen solution; free text after it sets the focus. The diff leaves your machine: `--preview` shows beforehand what would be sent. If the diff contains possible secrets or `.env` files, **nothing** is sent (only `--force` overrides this). Lock files and diffs over 400 KB are excluded. The reviewer changes nothing in the code; findings are hints, not truth.
 
-**Nachfragen:** `--fortsetzen` setzt den Lauf mit demselben Agentenverlauf fort (Claude und Codex), im selben Ordner; `bericht.md` wird aktualisiert. Anbieter und Runner bleiben die des Laufs.
+**Follow-ups:** `--resume` continues the run with the same agent history (Claude and Codex), in the same folder; `report.md` is updated. Provider and runner stay those of the run.
 
-## Schlüssel: nie im Chat
+## Usage and balance
 
-Schlüssel liegen in `~/.omni-agent/env` (Zeile `NAME=wert`, Rechte 600) oder in einer Umgebungsvariable. `omni-agent setup` legt die Datei an; **du trägst den Schlüssel selbst ein**. Claude fragt nie danach und liest die Datei nie aus. Omni-Agent verweigert die Datei, wenn andere sie lesen könnten.
+`omni-agent usage` (or `/omni-agent:usage`) shows what each provider offers; all queries run in parallel:
 
-## Anbieter und Datenschutz
+```text
+claude-fbs       5 h 2%, reset Wed 03:00 (in 1 h 25 min)  |  7 days 73%, reset Thu 10:00 (in 1 d 8 h)
+codex            Plan prolite  |  7 days 1% used, reset Mon 16 Nov 23:20 (in 5 d 21 h)  |  2 reset credits available
+deepseek         Balance 9.18 USD (topped up 9.18)
+```
 
-**Alles, was du in einen Auftrag schreibst, geht an den Anbieter.** Schicke keine Teilnehmerdaten, Zugangsdaten oder Interna an einen Anbieter, dessen Datenort du nicht akzeptierst.
+| Provider | Source | Shown |
+|---|---|---|
+| Claude accounts | Rate-limit headers of a one-token request | Usage for 5 hours and 7 days with reset; for API keys, free requests and tokens |
+| Codex | `codex app-server` (login of the Codex CLI itself) | Plan, usage per time window with reset, credits, reset credits, block |
+| DeepSeek, Kimi, OpenRouter, EUrouter | Balance query of the provider | Balance with currency |
+| Ollama, Nvidia, custom providers | – | explicitly says "no query known" or "runs locally" |
 
-| Anbieter | Format | Datenort | Live getestet | Schlüssel |
+The key goes only to the provider it belongs to. Live tested: Claude accounts, Codex, DeepSeek and EUrouter (glm-5.3). Kimi and OpenRouter are built from their documentation. With `--host mini` you query the accounts and logins on another machine.
+
+## Running on other machines
+
+Mac mini, Linux server, cloud VM: anything `ssh` can reach. Tailscale addresses and MagicDNS names work the same way (Tailscale SSH without a key too). The command runs **there**; keys, agent CLIs and runs stay there. Your project goes along as a **copy** and comes back only when you say so.
+
+```bash
+omni-agent host add mini --ssh alex@mini.tailnet-name.ts.net    # or a Tailscale IP
+omni-agent host install mini      # fetches Omni-Agent via git into ~/.omni-agent-app on the target
+omni-agent host setup mini        # set up keys and logins there (in your own terminal)
+omni-agent host test mini         # ssh reachable, runners, providers
+omni-agent host default mini      # optional: run, status, review ... go to mini unless you say --host local
+
+omni-agent run --host mini --provider codex --wait 540 --text "Summarize the logs"
+omni-agent run --host mini --project --write --account fbs --text "Fix the failing login test"
+omni-agent apply --host mini          # shows what the agent changed on the copy
+omni-agent apply --host mini --yes    # writes those changes into your project
+```
+
+**How a project travels (`--project`, `--files`):**
+
+1. rsync sends the files git would track plus new ones (no `.git`, no `node_modules`, no secrets) to `~/.omni-agent/remote/projects/<name>-<hash>/` on the host. Files you deleted here are removed there, so the copy is your current state. rsync is only the transport; git is not needed on the host.
+2. The agent works on that copy, read-only or with `--write`. Nothing happens to your folder.
+3. `omni-agent apply` compares the copy with what was sent and shows the changes as a diff. `--yes` writes them. Files you changed here in the meantime are skipped (`--force` overwrites). Paths from the host are checked: nothing outside the project, nothing into `.git`.
+
+- **Secrets stay home:** `.env` files, `*.pem`, `*.key`, `id_rsa*` and similar do not travel. `--with-env` sends `.env` files (when the agent must run the tests); keys and certificates never go.
+- `--files DIR` copies a folder the same way (to `~/.omni-agent/remote/files/`). `review --host mini` collects and checks the diff **here** and sends only the two small review files.
+- `--host` works with `run`, `review`, `status`, `result`, `cancel`, `wait`, `usage` and `doctor`. Background, notification and `--wait` work as they do locally; if the ssh connection drops, the run keeps going on the host.
+- A local task file is sent along as text. `--resume` continues on the host's copy without sending again.
+- Requirements: `ssh` and `rsync` on your side; `rsync`, Python 3.9 or newer and an agent CLI on the host (`git` only for `host install`). Login by key or Tailscale SSH, without a password prompt. A limit protects you: 50,000 files or 500 MB per project.
+- Live tested: Mac mini over a Tailscale address with a Codex login (project copy, change by the agent, `apply`).
+
+**Claude in the cloud:** `claude --cloud` starts a session at Anthropic against a GitHub repository. That is a different model than a run with a report and therefore not yet a `--host` target. Your own cloud machine (a VM with ssh) already works today.
+
+## Keys: never in the chat
+
+Keys live in `~/.omni-agent/env` (line `NAME=value`, mode 600) or in an environment variable. `omni-agent setup` creates the file; **you enter the key yourself**. Claude never asks for it and never reads the file. Omni-Agent refuses the file if others could read it.
+
+## Providers and privacy
+
+**Everything you write in a task goes to the provider.** Do not send participant data, credentials or internals to a provider whose data location you do not accept.
+
+| Provider | Format | Data location | Live tested | Key |
 |---|---|---|---|---|
-| **deepseek** | Anthropic | **China**, Training vorgesehen | ja | `DEEPSEEK_API_KEY` |
-| **openrouter** | Anthropic | nicht belegt | nein | `OPENROUTER_API_KEY` |
-| **kimi** | Anthropic | nicht belegt | nein | `MOONSHOT_API_KEY` |
-| **ollama** | Anthropic | **lokal**, bleibt auf dem Rechner | nein | keiner |
-| **eurouter** | OpenAI | EU (laut Anbieter) | nein | `EUROUTER_API_KEY` |
-| **nvidia** | OpenAI (nur Chat) | nicht belegt | nein | `NVIDIA_API_KEY` |
-| **claude-konto** | Anthropic | Anthropic | nein | `ANTHROPIC_API_KEY` |
-| **codex** (OpenAI-Anmeldung) | OpenAI | OpenAI | ja | keiner: `codex login` |
-| **claude-NAME** (eigene Konten) | Anthropic | Anthropic | nein | `OMNI_AGENT_KONTO_NAME` |
+| **deepseek** | Anthropic | **China**, training intended | yes | `DEEPSEEK_API_KEY` |
+| **openrouter** | Anthropic | not documented | no | `OPENROUTER_API_KEY` |
+| **kimi** | Anthropic | not documented | no | `MOONSHOT_API_KEY` |
+| **ollama** | Anthropic | **local**, stays on the machine | no | none |
+| **eurouter** | Anthropic and OpenAI | EU (per provider) | yes (glm-5.3) | `EUROUTER_API_KEY` |
+| **nvidia** | OpenAI (chat only) | not documented | no | `NVIDIA_API_KEY` |
+| **claude-account** | Anthropic | Anthropic | no | `ANTHROPIC_API_KEY` |
+| **codex** (OpenAI login) | OpenAI | OpenAI | yes | none: `codex login` |
+| **claude-NAME** (own accounts) | Anthropic | Anthropic | no | `OMNI_AGENT_ACCOUNT_NAME` |
 
-„Nein" heißt: nach Herstellerdokumentation eingebaut (Stand 28.10.2026), aber nicht von uns ausprobiert. Für Personenbezug: `ollama` oder `eurouter`. Eigene Anbieter: JSON-Datei in `~/.omni-agent/providers.d/` (gleiches Schema wie [providers.json](providers.json)).
+"No" means: built from vendor documentation (as of 28 Oct 2026), but not tried by us. For personal data: `ollama` or `eurouter`. Custom providers: a JSON file in `~/.omni-agent/providers.d/` (same schema as [providers.json](providers.json)).
 
 ### Codex (OpenAI)
 
-`--anbieter codex` nutzt **die Anmeldung der Codex-CLI selbst**, also dein ChatGPT-Konto oder deinen OpenAI-Schlüssel aus `codex login`. Omni-Agent speichert dafür nichts. Voraussetzung: `codex` ist installiert und angemeldet; `omni-agent doctor` zeigt „angemeldet". Findet es `codex` nicht im PATH, sucht es in der ChatGPT-App (`/Applications/ChatGPT.app/…/codex-cli`); mit `OMNI_AGENT_CODEX=/Pfad/zu/codex` legst du den Ort selbst fest.
+`--provider codex` uses **the login of the Codex CLI itself**, that is your ChatGPT account or your OpenAI key from `codex login`. Omni-Agent stores nothing for it. Requirement: `codex` is installed and logged in; `omni-agent doctor` shows it as logged in. If it does not find `codex` in the PATH, it looks in the ChatGPT app (`/Applications/ChatGPT.app/…/codex-cli`); with `OMNI_AGENT_CODEX=/path/to/codex` you set the location yourself.
 
-- Es gelten **nur** die Anmeldung, nicht deine persönliche `config.toml` und deine Regeln (`--ignore-user-config --ignore-rules`). Modell und Aufwand gibst du an: `--modell klein|standard|stark` oder ein Modellname, `--aufwand low|medium|high`.
-- Codex läuft in seinem Sandkasten (`workspace-write`): schreiben nur im Laufordner, kein Netz für Shell-Befehle. Seine Shell ist deshalb immer da und steht in der Werkzeugzeile.
-- Dein Codex-Kontingent zählt mit. Mit `luna` (`--modell klein`) und `--aufwand low` bleibt es billig.
-- Codex mit einem **Fremdanbieter** (z. B. EUrouter über die Responses-API) ist gebaut, aber nicht live geprüft.
+- **Only** the login applies, not your personal `config.toml` and your rules (`--ignore-user-config --ignore-rules`). You give model and effort: `--model small|default|strong` or a model name, `--effort low|medium|high`.
+- Codex runs in its sandbox (`workspace-write`): it writes only in the run folder, and shell commands have no network. Its shell is therefore always there and is listed in the tools line.
+- Your Codex quota counts too. With `luna` (`--model small`) and `--effort low` it stays cheap.
+- Codex with a **third-party provider** (e.g. EUrouter over the Responses API) is built but not live tested.
 
-### Claude-Konten mit Namen
+### Named Claude accounts
 
-So viele Konten, wie du willst, jedes mit eigenem Namen und eigenem Kontingent:
+As many accounts as you like, each with its own name and its own quota:
 
 ```bash
-omni-agent konto add felipe --art token --titel "Felipes Konto"   # fragt den Schlüssel unsichtbar ab
-omni-agent konto add fps --art api
-omni-agent konto list                                              # zeigt auch die Nutzung (Limits)
-omni-agent run --anbieter claude-felipe --text "…"                # oder /omni-agent:run claude-fps …
-omni-agent konto remove fps --mit-schluessel
+omni-agent account add felipe --kind token --title "Felipe's account"   # asks for the key invisibly
+omni-agent account add fps --kind api
+omni-agent account list                                                  # also shows usage (limits)
+omni-agent run --provider claude-felipe --text "…"                      # or /omni-agent:run claude-fps …
+omni-agent account remove fps --with-key
 ```
 
-- **Name:** Kleinbuchstaben, Ziffern, Bindestrich. Der Anbieter heißt dann `claude-<name>`, der Schlüssel steht in `~/.omni-agent/env` als `OMNI_AGENT_KONTO_<NAME>` (Rechte 600).
-- **Art:** `api` ist empfohlen (`ANTHROPIC_API_KEY`). Ein Abo-Token (`--art token`, `CLAUDE_CODE_OAUTH_TOKEN`) für unbeaufsichtigte Läufe ist bei Anthropic nicht ausdrücklich geregelt; ob das erlaubt ist, ist **nicht belegt**. Die Entscheidung liegt bei dir.
-- **Schlüssel nie in den Chat.** `konto add` fragt im eigenen Terminal ab, oder du trägst die Zeile selbst in die Datei ein. Eine schon vorhandene Zeile übernimmst du mit `--uebernehme CLAUDE_CODE_OAUTH_TOKEN`.
-- **Nutzung in `konto list`:** je Abo-Konto Auslastung der 5-Stunden- und 7-Tage-Grenze samt Rücksetzzeit, bei API-Schlüsseln die freien Anfragen und Tokens. Das kostet eine Ein-Token-Anfrage je Konto (Haiku) und wird aus den Rate-Limit-Headern gelesen; `--ohne-nutzung` überspringt es. Live geprüft nur für Abo-Token; bei API-Schlüsseln stehen die Headernamen nach Anthropics Doku, ungeprüft. Den Kontotyp (Pro, Max) liefern diese Header nicht. Ein leeres Fenster („5 Std –") heißt: gerade läuft keins.
-- **Standard-Konto:** `omni-agent konto standard fbs` legt fest, was ohne `--anbieter` läuft. Kurzform für ein anderes Konto: `--konto felipe`. Fremdanbieter wie DeepSeek werden nie als Standard gewählt, solange du es nicht selbst festlegst.
-- Konten laufen nur mit dem Runner `claude`. Der Anbieter `claude-konto` bleibt als Ein-Konto-Kurzweg (`ANTHROPIC_API_KEY`).
+- **Name:** lowercase letters, digits, hyphen. The provider is then called `claude-<name>`; the key is stored in `~/.omni-agent/env` as `OMNI_AGENT_ACCOUNT_<NAME>` (mode 600).
+- **Kind:** `api` is recommended (`ANTHROPIC_API_KEY`). A subscription token (`--kind token`, `CLAUDE_CODE_OAUTH_TOKEN`) for unattended runs is not expressly regulated by Anthropic; whether that is allowed is **not documented**. The decision is yours.
+- **Never put a key in the chat.** `account add` asks in your own terminal, or you enter the line in the file yourself. An existing line you adopt with `--adopt CLAUDE_CODE_OAUTH_TOKEN`.
+- **Usage in `account list`:** per subscription account, usage of the 5-hour and 7-day limit with reset time; for API keys, the free requests and tokens. This costs one one-token request per account (Haiku) and is read from the rate-limit headers; `--no-usage` skips it. Live tested only for subscription tokens; for API keys the header names follow Anthropic's docs, untested. These headers do not reveal the account type (Pro, Max). An empty window ("5 h –") means: none is running right now.
+- **Default account:** `omni-agent account default fbs` sets what runs without `--provider`. Short form for another account: `--account felipe`. Third-party providers such as DeepSeek are never chosen as the default unless you set it yourself.
+- Accounts run only with the runner `claude`. The provider `claude-account` remains as a single-account shortcut (`ANTHROPIC_API_KEY`).
 
-## Anbieter und Runner passen zusammen
+## Providers and runners must match
 
-Jeder Anbieter spricht ein Format, jede CLI versteht nur manche.
+Each provider speaks one format, each CLI understands only some.
 
-| Anbieter | claude | opencode | codex |
+| Provider | claude | opencode | codex |
 |---|---|---|---|
-| deepseek, openrouter, kimi, ollama | ja | ja | nein |
-| eurouter | nur mit LiteLLM | ja | ja (Responses-Pfad nicht geprüft) |
-| nvidia | nur mit LiteLLM | ja | nein |
-| claude-konto, claude-NAME | ja | – | – |
-| codex (Anmeldung) | – | – | ja |
+| deepseek, openrouter, kimi, ollama | yes | yes | no |
+| eurouter | yes (Anthropic format) | yes | yes (Responses path untested) |
+| nvidia | only with LiteLLM | yes | no |
+| claude-account, claude-NAME | yes | – | – |
+| codex (login) | – | – | yes |
 
-`omni-agent run` nimmt ohne `--runner` den ersten **installierten** passenden Runner (claude, opencode, codex). `omni-agent doctor` zeigt die Matrix für deinen Rechner. Passt nichts, sagt es dir, was fehlt.
+Without `--runner`, `omni-agent run` takes the first **installed** matching runner (claude, opencode, codex). `omni-agent doctor` shows the matrix for your machine. If nothing fits, it tells you what is missing.
 
-**Runner-Stand:** `claude` und `codex` (mit Anmeldung) sind live getestet. `opencode` und Codex mit Fremdanbieter sind nach Herstellerdokumentation gebaut, aber nicht ausprobiert. `dsh` (DeepSeek Harness) ist eine Developer Preview und läuft nur, wenn du `--runner dsh` ausdrücklich nennst.
+**Runner status:** `claude` and `codex` (with a login) are live tested. `opencode` and Codex with a third-party provider are built from vendor documentation but not tried. `dsh` (DeepSeek Harness) is a developer preview and only runs if you name `--runner dsh` explicitly.
 
-### Optional: LiteLLM als Übersetzer
+### Optional: LiteLLM as a translator
 
-Nur nötig, wenn Claude Code gegen einen reinen OpenAI-Anbieter laufen soll. Meist ist `--runner opencode` der bessere Weg. `omni-agent extras litellm install` legt LiteLLM in eine eigene Umgebung (fest gepinnte Version, Hash-Prüfung); gestartet wird es mit `--ueber-litellm`. Der Proxy lauscht nur auf 127.0.0.1 und bekommt nur den einen Schlüssel des Anbieters. Hintergrund: Die Version 1.107.0 von LiteLLM war am 21.10.2026 kompromittiert; Omni-Agent pinnt davor.
+Only needed if Claude Code should run against a pure OpenAI provider. Usually `--runner opencode` is the better way. `omni-agent extras litellm install` puts LiteLLM into its own environment (pinned version, hash check); it is started with `--via-litellm`. The proxy listens only on 127.0.0.1 and gets only the one key of the provider. Background: LiteLLM version 1.107.0 was compromised on 21 Oct 2026; Omni-Agent pins to a version before it.
 
-## Sicherheit
+## Security
 
-| Maßnahme | Wirkung |
+| Measure | Effect |
 |---|---|
-| Saubere Umgebung (`env -i` plus Nötigstes) | Dein Login und deine Base-URL rutschen nicht in den Fremdagenten |
-| Nur der eine benötigte Schlüssel | Kein anderer Anbieter-Schlüssel erreicht den Lauf |
-| Claude-Runner: `--setting-sources project`, `--strict-mcp-config`, `dontAsk`, leerer Arbeitsordner. Die Sitzung wird gespeichert (für `--fortsetzen`) und enthält den Auftrag, nie Schlüssel | Keine fremden Hooks oder MCP-Server |
-| Codex-Runner: `--ignore-user-config --ignore-rules`, Sandbox `workspace-write` | Deine Codex-Einstellungen und Regeln wirken nicht; Schreiben nur im Laufordner |
-| Review: Sperre bei Geheimnissen und `.env` im Diff, Vorschau, Größengrenze, nur Lesen und Schreiben | Es geht nichts raus, was du nicht gesehen hast |
-| Standard **ohne Shell** | Websuche kann Fremdtext liefern, der den Agenten lenkt. `--werkzeuge +shell` nur bewusst |
-| Schlüssel werden in `log.jsonl` und `fehler.log` geschwärzt | Kein Schlüssel im Log |
-| Zeitlimit (900 s) und Rundenobergrenze | Ein hängender Lauf wird samt Kindprozessen beendet |
+| Clean environment (`env -i` plus the bare minimum) | Your login and your base URL do not leak into the third-party agent |
+| Only the one key needed | No other provider key reaches the run |
+| Claude runner: `--setting-sources project`, `--strict-mcp-config`, `dontAsk`, empty working folder. The session is stored (for `--resume`) and contains the task, never keys | No foreign hooks or MCP servers |
+| Codex runner: `--ignore-user-config --ignore-rules`, sandbox `workspace-write` | Your Codex settings and rules have no effect; writing only in the run folder |
+| Review: block on secrets and `.env` in the diff, preview, size limit, read and write only | Nothing leaves that you have not seen |
+| Default **without shell** | Web search can return third-party text that steers the agent. `--tools +shell` only deliberately |
+| Keys are redacted in `log.jsonl` and `error.log` | No key in the log |
+| Timeout (900 s) and turn limit | A hanging run is ended together with its child processes |
 
-Ein Lauf ist **fertig, wenn `bericht.md` existiert**. Der Exit-Code des Runners ist nur ein Zusatzsignal. Omni-Agent-Exit: 0 fertig, 1 Fehler im Lauf, 2 Konfiguration, 3 Endpunkt nicht erreichbar, 124 Zeitlimit.
+A run is **done when `report.md` exists**. The exit code of the runner is only an additional signal. Omni-Agent exit codes: 0 done, 1 error in the run, 2 configuration, 3 endpoint unreachable, 124 timeout.
 
-Das Ergebnis eines Fremdmodells ist ein Entwurf. Prüfe Aussagen, die der Agent als „nicht belegt" markiert hat. Die „Kosten laut CLI" im Fortschritt rechnet Claude Code mit eigenen Preisen; die echten Kosten stehen beim Anbieter.
+The result of a third-party model is a draft. Check statements the agent marked as "not documented". The "cost per CLI" in the progress is computed by Claude Code with its own prices; the real costs are with the provider.
 
-## Entwickeln
+## Development
 
 ```bash
-python3 -m unittest discover -s tests -v     # Kern, Passung, Runner-Befehle, Ende-zu-Ende mit Attrappe
-claude plugin validate --strict .            # Plugin und Marketplace
-claude --plugin-dir .                        # Plugin lokal laden, /reload-plugins nach Änderungen
+python3 -m unittest discover -s tests -v     # core, matching, runner commands, end-to-end with a stand-in
+claude plugin validate --strict .            # plugin and marketplace
+claude --plugin-dir .                        # load the plugin locally, /reload-plugins after changes
 ```
 
-Architektur und Hintergründe: [docs/02-architektur.md](docs/02-architektur.md), Plugin-Grundlagen: [docs/01-plugin-handbuch.md](docs/01-plugin-handbuch.md). Mitarbeit für Agenten: [AGENTS.md](AGENTS.md).
+Architecture and background: [docs/02-architecture.md](docs/02-architecture.md), plugin basics: [docs/01-plugin-handbook.md](docs/01-plugin-handbook.md). Contributing for agents: [AGENTS.md](AGENTS.md).
 
-## Lizenz
+## License
 
 [MIT](LICENSE)

@@ -264,6 +264,7 @@
   - Asked at: [Palantir](#palantir)
 - Design human-in-the-loop approval for an agent that takes consequential actions.
   - Asked at: [OpenAI](#openai), [Palantir](#palantir)
+  - Answer: [How do Human-in-the-Loop agents work?](https://outcomeschool.com/blog/human-in-the-loop-agents)
 - Your agent drifts after a long run and confidently works on the wrong thing. Diagnose it.
   - Asked at: [Cognition](#cognition-devin-windsurf)
 
@@ -295,7 +296,7 @@
   - Asked at: [Mistral AI](#mistral-ai), [Hugging Face](#hugging-face)
 - What is RLVR (RL with verifiable rewards) and where does it beat a learned reward model?
   - Asked at: [Zhipu AI](#zhipu-ai-glm), [Alibaba](#alibaba-qwen), [Sarvam AI](#sarvam-ai), [Scale AI](#scale-ai)
-  - Answer: [Group Relative Policy Optimization (GRPO)](https://outcomeschool.com/blog/group-relative-policy-optimization-grpo)
+  - Answer: [Group Relative Policy Optimization (GRPO)](https://outcomeschool.com/blog/group-relative-policy-optimization-grpo) and [What is Reinforcement Learning with Verifiable Rewards (RLVR)?](https://outcomeschool.com/blog/reinforcement-learning-with-verifiable-rewards-rlvr)
 - Explain reward hacking in RLHF and how labs address it.
   - Asked at: [Scale AI](#scale-ai)
   - Answer: [Reinforcement Learning from Human Feedback (RLHF)](https://outcomeschool.com/blog/reinforcement-learning-from-human-feedback-rlhf) and [What is Reward Hacking in Reinforcement Learning and How Do We Prevent It?](https://outcomeschool.com/blog/reward-hacking)
@@ -341,6 +342,7 @@
   - Answer: [How do LLM guardrails work?](https://outcomeschool.com/blog/how-do-llm-guardrails-work)
 - What is Constitutional AI and how does it differ from RLHF? What is RLAIF?
   - Asked at: [Anthropic](#anthropic)
+  - Answer: [What is RLAIF? Reinforcement Learning from AI Feedback Explained](https://outcomeschool.com/blog/reinforcement-learning-from-ai-feedback-rlaif)
 - How do you prevent an agent with tool access from exfiltrating data via a malicious web page?
   - Asked at: [OpenAI](#openai)
   - Answer: [Prompt Injection in LLMs](https://outcomeschool.com/blog/prompt-injection-in-llms)
@@ -986,7 +988,7 @@
 - Qwen3 uses strong-to-weak distillation, bootstrapping smaller models from flagship ones. How does that work and why is it cheaper?
   - Answer: [How does Knowledge Distillation work?](https://outcomeschool.com/blog/how-does-knowledge-distillation-work)
 - Qwen's reasoning models train with RL using verifiable rewards on maths and code. Why is that preferred over PPO with a learned reward model for these domains?
-  - Answer: [Group Relative Policy Optimization (GRPO)](https://outcomeschool.com/blog/group-relative-policy-optimization-grpo)
+  - Answer: [Group Relative Policy Optimization (GRPO)](https://outcomeschool.com/blog/group-relative-policy-optimization-grpo) and [What is Reinforcement Learning with Verifiable Rewards (RLVR)?](https://outcomeschool.com/blog/reinforcement-learning-with-verifiable-rewards-rlvr)
 
 #### Evaluation and Observability
 
@@ -1299,16 +1301,4 @@
 
 > **Roles this covers:** Machine Learning Engineer, Senior/Staff MLE, Applied Scientist, ML Platform Engineer, GenAI Engineer.
 >
-> **Interview loop, as publicly reported:** A consistent shape across all of them: coding screen → onsite with two coding rounds, one ML system design round (the differentiator), one ML breadth/depth round, and behavioural. GenAI rounds have been added to most of these loops since 2024.
->
-> **Also prepare:** the [common questions](#common-questions-asked-across-companies) tagged Consumer-Scale ML Companies under [AI System Design](#ai-system-design).
-
-#### Coding and Data Structures
-
-- Implement a streaming top-k with a bounded-memory sketch; implement a sliding-window rate counter.
-
-#### ML and DL Fundamentals
-
-- Your offline metric improved but the online A/B did not. Enumerate the reasons this happens and how you would tell them apart.
-- Explain position bias in ranking data and how you would debias training.
-- How do you design a featu
+> **Interview loop, as publicly reported:** A consistent shape across all of them: coding screen → onsite with two coding rounds, one ML system design round (the differentiator), one ML breadth/depth round, and behavioural. GenAI rounds have been added to most of these loops sin

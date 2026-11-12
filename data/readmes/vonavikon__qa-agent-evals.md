@@ -86,13 +86,10 @@ scripts/sec-integration.py    integration test: live pipeline inside the docker 
 scripts/Dockerfile.sandbox    image for the isolation container
 examples/evil-plugin          target plugin for isolation verification
 tests/                        unit and live tests for the pipeline
-docs/spec.md                  specification
-docs/plan.md                  implementation plan
 docs/architecture.md          how it works: pipeline, isolation, responsibility
 docs/research-2026-10-09.md   review of source frameworks
 docs/research-2026-10-10-rsi.md  notes on self-improvement sources
 docs/research-2026-10-11-kaggle-golden.md  open datasets for golden cases
-docs/reviews/                 external spec reviews and code reviews
 runs/                         self-acceptance and third-party run artifacts (raw session logs and sensitive data stripped)
 ```
 
@@ -106,11 +103,11 @@ First came four self-acceptance runs (v1-v4, reports in [runs/](runs/2026-10-08-
 
 Then third-party systems: a prose-editing skill (two runs with a version comparison, [runs/](runs/2026-10-11-stop-slop-r2/report.md)), a slide generator with a content-borne injection, a technical-English rewriting skill, the classic 2048 game through the browser adapter (a deterministic non-LLM SUT), and systems from a closed perimeter (details withheld). Those runs grew v0.3-v0.4: the machine fact layer (grep-caught leaks, including SUT-written files), the judge control sample from open datasets (TruthfulQA 45/45; HH-RLHF attacks), the Growing-Golden feedback loop with a clickable markup page, automatic re-judging of self-contradictions, and measured run economics: a typical acceptance run costs $0.6-1.8 on the SUT side plus roughly $0.4 per judge call, because a judge CLI call carries ~75K tokens of session preamble.
 
-v0.5.0 added execution isolation (host/docker) with live evil-plugin proof, and infrastructure failures are now separated from plugin defects (BLOCKED/ERROR statuses). v0.5.1 and v0.5.2 hardened it: the gateway key lives only in the proxy container, plugin sources are mounted read-only with an evidence-based write probe, proxy path normalization closes /../ traversals, rate/volume/time limits added, and the proxy runs as non-root with no capabilities. The security suite (`python scripts/sec-checks.py docker`) is green on Windows and the Linux CI runner (runs/2026-10-13-sec/); an integration test runs the live pipeline with real Claude Code (runs/2026-10-13-secint/). In total: 52 tests: 43 pipeline unit tests and 9 live proxy tests.
+v0.5.0 added execution isolation (host/docker) with live evil-plugin proof, and infrastructure failures are now separated from plugin defects (BLOCKED/ERROR statuses). v0.5.1 and v0.5.2 hardened it: the gateway key lives only in the proxy container, plugin sources are mounted read-only with an evidence-based write probe, proxy path normalization closes /../ traversals, rate/volume/time limits added, and the proxy runs as non-root with no capabilities. The security suite (`python scripts/sec-checks.py docker`) is green on Windows and the Linux CI runner (runs/2026-10-13-sec/); an integration test runs the live pipeline with real Claude Code (runs/2026-10-13-secint/). In total: 67 tests: 58 pipeline unit tests and 9 live proxy tests.
+
+The pipeline's own scripts are checked with mutation testing (mutmut 2.5.1): the tool injects hundreds of small faults into nine modules in `scripts/` and counts how many the unit tests catch. A surviving mutant is a fault no test notices, so this is testing the tests with the same method the pipeline applies elsewhere: seeded defects against the SUT and a golden set against the judge. A full run takes about 40 minutes and is started manually from the Actions tab (the mutation workflow, Run workflow button); the per-module table and the surviving mutants with diffs are uploaded as artifacts.
 
 Not working yet: only the CLI and browser adapters are implemented; isolation cuts skill invocation but not knowledge of the skills' existence; the judge is wired up manually (explicit `--model` or the owner's choice at step B), because the agent `model` field does not work in every environment.
-
-Spec: [docs/spec.md](docs/spec.md), plan: [docs/plan.md](docs/plan.md).
 
 ## Contributors
 

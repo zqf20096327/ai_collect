@@ -8,9 +8,9 @@
 
 A curated collection of **AI-assisted reverse-engineering projects, experiments, and ideas** for device interoperability, app rebuilding and game preservation—including failed attempts and author corrections.
 
-# 2106 cases & projects
+# 2163 cases & projects
 
-**Latest case update:** November 12, 2026, 04:11 · **Last maintained:** November 12, 2026, 04:11 · Beijing time (UTC+8). Counts as of this maintenance; source dates and the continuous evidence cutoff are separate.
+**Latest case update:** November 13, 2026, 04:11 · **Last maintained:** November 13, 2026, 04:11 · Beijing time (UTC+8). Counts as of this maintenance; source dates and the continuous evidence cutoff are separate.
 
 Updates **6× daily** · [Full index](INDEX.en.md) · [Browse categories](#browse-by-category)
 
@@ -22,20 +22,18 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 ## Recent picks
 
-**10 worth reading**: bring camera photos straight to a Mac, inspect what agents actually found, and preserve games. Practical interoperability reports sit alongside small tests and documented limitations. Dates identify sources or author updates, not collection dates.
+**10 worth reading**: connect devices, investigate opaque apps, compare malware findings and preserve games. Dates identify sources or author updates, not collection dates.
 
-1. **[Fujifilm X half: camera to Mac without the phone](cases/en/fujifilm-x-half-opus-wireless-mac-import-report.md)** · `2026-11-12` author report — **Opus reportedly finds Bluetooth time-slot and Wi-Fi startup-code differences**, then builds JPEG imports and Google Photos uploads. sneha describes incremental tests on their camera, not an iteration-free build. Code and protocol traces unchecked here. `Unverified here`
-2. **[Tiny Electron app: correct wiring, oversized evidence](cases/en/rea-tiny-electron-ipc-evidence-output-test.md)** · `2026-11-11` author test — **REA reportedly pairs renderer-to-main IPC in a five-file, 846-byte sample**, but emits 316kb of JSON and skips an inline script. Roughly ten seconds includes cold startup; no source or full output checked here. `Analysis test`
-3. **[hexgrab: learn from PowerToys, then build a smaller picker](cases/en/hexgrab-powertoys-colorpicker-rea-study.md)** · `2026-10-29` report; `2026-10-12` investigation — Claude/REA studies shipped binaries; the author's source scorecard gives **8 of 9 claims fully correct, one partial**. Public .NET 10 implementation; hotkey registration in an unexamined runner exposed a blind spot. One monitor tested, not independently rerun. `Analysis test`
-4. **[When memory contradicts AGENTS.md](cases/en/sparsamp-agent-memory-agents-md-conflict-probes.md)** · `2026-11-11` author experiment — **Five runs per setup probe format, freshness and paid-run approval.** Sparshith reports Codex following the file, while Claude considers newer or safer instructions. Small behavioral test, not a universal priority rule; harness/model effects unresolved. `Analysis test`
-5. **[MousePods: AirPods become a Linux mouse and head tracker](cases/en/airpods3-claude-remotehid-linux-head-mouse-report.md)** · `2026-11-11` reports; `2026-11-10` pinned project docs — **Claude-assisted RemoteHID research, a public implementation and project-reported AirPods 3/Pro 2 hardware checks.** No earbud flashing; Proton game integration does modify prefixes. MTU and device-identity changes were not isolated; some modes remain experimental. Not run here. `Unverified here`
-6. **[A 1994 Jeep: check the firmware before trusting the number](cases/en/zulali-32year-jeep-claude-control-report.md)** · `2026-11-11` author and reader reports — **Claude/Codex-assisted SCI diagnostics and a reported fuel-trim sign correction.** fly relays NOx falling from 702 to 13, but the final modification is unclear. Passing inspection is not proof of compliance; actuator commands are not autonomous driving. Repository and vehicle tests unchecked here. `Unverified here`
-7. **[TimeSplitters 2: trace PS2 behavior into a native PC port](cases/en/destinity-timesplitters2-claude-native-pc-recompile.md)** · `2026-11-10` author report; `2026-11-09` pinned docs — **Claude-assisted MIPS-to-C++ work, with PCSX2 frame and state comparisons.** The project reports a Linux/Steam Deck first-level playthrough, still using PCSX2 graphics/audio. Internal test tooling is unpublished; later levels, some VU1 state and internet play need checks. Windows/online await release. Bring your own disc; not built here. `In progress`
-8. **[bo2-mac: Black Ops II on ARM64](cases/en/bo2-mac-claude-arm64-static-translation-report.md)** · `2026-11-11` thread report — **Claude-assisted Ghidra/Remill/LLVM translation, reportedly 51–60fps in campaign on one M1.** Some code still uses a tiny x86 VM; beta, no online, reported 111–116°C. Repository and test logs unchecked; bring your own Steam copy. `Unverified report`
-9. **[DX-Ball: from one audio function to a Windows rebuild](cases/en/dx-ball-sound-pan.md)** · `2026-11-01` report; `2026-10-31` project record — Codex/REA/Ghidra reconstruction reports **270 matching game functions and 84,968 bytes**, plus a native VC4 build. Timestamp-only image differences are against an earlier rebuild, not the retail EXE. Original 50-board campaign and full native audio remain unverified; bring your own files. Not rebuilt here. `Project-tested reconstruction`
-10. **[Nichicon battery: acknowledgment is not execution](cases/en/gemini-echonet-lite-code-copy-analysis-report.md)** · `2026-11-11` author article, recalling August–September work — **Gemini-assisted HEX comparisons identify reported power and schedule fields.** The author also records unchanged settings despite success replies, standby deadlock and copy-paste fixes losing safeguards. Hardware safety and long-term operation are not verified here. `In progress`
-
-
+1. **[Fujifilm X half: camera to Mac without the phone](cases/en/fujifilm-x-half-opus-wireless-mac-import-report.md)** · `2026-11-12` author report — **Opus reportedly identifies Bluetooth/Wi-Fi protocol differences** for JPEG imports and Google Photos uploads. Incremental camera tests, not an iteration-free build; code and traces unchecked here. `Unverified here`
+2. **[Anker recorder: ask an agent for last week's conversation](cases/en/berryxia-anker-recorder-rea-mcp-knowledge-app.md)** · `2026-11-12` author report — **REA Bluetooth research and MCP recording retrieval**, with local Qwen ASR or online transcription. Berryxia plans source release after refinement/testing; code and device path unchecked here. `In progress`
+3. **[Lemmings for Windows 95: match functions, not headlines](cases/en/lemmings-win95-human-led-ai-reconstruction-report.md)** · `2026-11-12` report; `2026-11-09` pinned docs — Human-led REA/Claude/Codex work reports **696/696 matched functions across eight modules**. Whole EXE/DLL files still differ; portable builds and original-compiler matching are separate. Bring your own game assets; not built here. `In progress`
+4. **[hexgrab: study PowerToys, build a smaller picker](cases/en/hexgrab-powertoys-colorpicker-rea-study.md)** · `2026-10-29` report; `2026-10-12` investigation — Claude/REA studies binaries; an author/source comparison finds **8 of 9 claims correct, one partial**. Hotkey registration in another binary exposed a blind spot. Public .NET 10 implementation, one monitor tested; not rerun here. `Analysis test`
+5. **[REA on your own app: checks before release](cases/en/phosphen-rea69-own-app-exposure-gate-test.md)** · `2026-11-12` author test — Phosphen reports source-map source and a Stripe key, plus a release gate returning **3 before fixes, 0 afterward**. Sample/logs unchecked; neither key usability nor every finding being a leak is established. `Analysis test`
+6. **[MousePods: AirPods as a Linux mouse and head tracker](cases/en/airpods3-claude-remotehid-linux-head-mouse-report.md)** · `2026-11-11` reports; `2026-11-10` pinned docs — **Claude-assisted RemoteHID research and reported AirPods 3/Pro 2 hardware checks.** No earbud flash, but Proton integration changes prefixes. MTU/device-identity effects were not isolated; not run here. `Unverified here`
+7. **[Garmin Profile 2: share a watch, not its system profile](cases/en/garmin-forerunner955-claude-profile2-workaround.md)** · `2026-11-12` author report — Claude investigates Forerunner 955 limits, then helps build an official-platform app with **reported heart-rate, timer and GPS operation**. No firmware modification; steps, sleep and all-day heart rate still mix. Code and isolation unchecked here. `In progress`
+8. **[Malspark: compare a malware report against human findings](cases/en/malspark-latrodectus-nine-agent-analysis-report.md)** · `2026-11-13` secondary report — Nine agents reportedly analyze a Latrodectus sample in **84 minutes for $8.24**, recovering 84 of 89 reference facts without errors on that set. Full report and scoring unchecked; not complete behavioral coverage or a measured speedup over people. `Analysis test`
+9. **[TimeSplitters 2: PS2 behavior to a PC port](cases/en/destinity-timesplitters2-claude-native-pc-recompile.md)** · `2026-11-10` author report; `2026-11-09` pinned docs — **Claude-assisted MIPS-to-C++ with PCSX2 frame/state comparisons** and a reported Linux/Steam Deck first-level playthrough. Still uses PCSX2 graphics/audio; later levels and internet play need checks. Self-supplied disc; not built here. `In progress`
+10. **[Empire Earth: a rebuilt engine playing the original](cases/en/empire-earth-ai-trailers-compatible-engine-report.md)** · `2026-11-12` report; `2026-11-08` pinned docs — Claude-credited history and project-reported **tick-by-tick comparisons plus mixed original/rebuilt TCP games without desync**. Whole images differ; WON services, audio and physical input are untested. No general source-license grant; not run here. `In progress`
 
 ## Classic cases
 
@@ -51,10 +49,10 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 | Category | Entries |
 | :--- | ---: |
-| [Games & preservation](categories/en/games.md) | **428** |
-| [Hardware & interoperability](categories/en/hardware.md) | **564** |
-| [Applications & clients](categories/en/apps.md) | **863** |
-| [Algorithms & feature recovery](categories/en/algorithms.md) | **251** |
+| [Games & preservation](categories/en/games.md) | **436** |
+| [Hardware & interoperability](categories/en/hardware.md) | **581** |
+| [Applications & clients](categories/en/apps.md) | **889** |
+| [Algorithms & feature recovery](categories/en/algorithms.md) | **257** |
 
 [**View all cases →**](INDEX.en.md) · [Contribute (中文)](CONTRIBUTING.md) · [Maintenance (中文)](MAINTENANCE.md)
 

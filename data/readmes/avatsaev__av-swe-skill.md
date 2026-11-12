@@ -65,8 +65,6 @@ stateDiagram-v2
 
 ## See it work
 
-Animations of the four ops that shape a project, each following the steps the op runs.
-They are plain SVG (no GIF, no script) and follow your light/dark theme.
 
 ### `grill` — turn a rough idea into a defined feature
 

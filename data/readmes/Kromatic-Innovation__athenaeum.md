@@ -52,17 +52,26 @@ memory tool, RAG, and the existing agent-memory libraries, is in
 ## Quick start
 
 **Requires Python 3.13+.** See [Install](docs/guides/install.md) for the
-uv/pip commands, the `PATH` setup `uv tool install` needs, and the
-wrong-interpreter warning to check against if `athenaeum --version` ever
-looks stale.
+`PATH` setup `uv tool install` needs, and the wrong-interpreter warning to
+check against if `athenaeum --version` ever looks stale.
 
 ```bash
+# Install (Python 3.13+; the [mcp] extra is needed for `serve` and `test-mcp`)
+uv tool install --python 3.13 'athenaeum[mcp]'
+# ...or, into an activated Python 3.13+ environment:
+pip install 'athenaeum[mcp]'
+
 # Create a knowledge directory (default: ~/knowledge)
 athenaeum init
 
 # Wire it into Claude Code — it auto-starts with every session
 claude mcp add --scope user athenaeum -- athenaeum serve --path ~/knowledge
 ```
+
+`athenaeum doctor` is a read-only health check. Run on a fresh install, it is
+expected to report FAILs for `mcp`, `hooks` and `search_index` (plus
+`key_mode` when neither an API key nor the `claude` CLI is available)
+until the steps below are complete; each FAIL names its fix.
 
 Want to confirm it works before wiring anything up or spending API budget?
 

@@ -10,18 +10,21 @@
   </a>
 </p>
 
-> [r.uby.dev](https://r.uby.dev/llm) project.
+> An agentic runtime for system programmers - in Ruby.
 
-Welcome to the canonical llm.rb repository.
+The runtime supports concurrent and parallel tool execution.  
+15+ providers.  
 
-llm.rb is a runtime for building agentic AI applications
-on CRuby. It runs on Ruby's standard library by default,
-it supports concurrent and parallel tool execution and has
-a single coherent API that spans 15+ providers. The README
-covers a lot of ground and the
-[changelog](CHANGELOG.md)
-tracks what has changed between releases.
+Parallel execution is provided by Ractor, and the
+fork system call.  
+Concurrent execution is provided by Thread, Fiber, and 
+the 'async' gem (optional).
 
+Works with ActiveRecord, and Sequel.  
+Works with and without Rails.  
+
+It requires nothing but Ruby's standard library.  
+It can be extended with optional, opt-in dependencies.
 
 ## Install
 
@@ -34,17 +37,17 @@ This version works with older rubies and dependencies (ie: json v2).
 gem install llm.rb -v 17.0.1
 ```
 
-##### Latest (v19)
+##### Latest (v20)
+
+v20 is the recommended release.
 
 The v19 release is a smaller release that includes a 
 tiny eval framework that was authored for the [micro1](https://micro1.ai)
-hackathon. It is the recommended release.
-
-It builds on the v18 release, which 
-includes [substational runtime improvements](changelog/v18.md) -
+hackathon. v18 includes [substational runtime improvements](changelog/v18.md) -
 especially for running tool calls on a [Ractor](https://docs.ruby-lang.org/en/4.0/Ractor.html).
-Like v18, it requires Ruby4+, JSON v3, and the latest
-versions of ActiveRecord|Sequel (optional).
+
+Requires Ruby4+, JSON v3, and the latest versions of 
+ActiveRecord|Sequel (optional).
 
 ```bash
 gem install llm.rb
@@ -87,7 +90,7 @@ the tool call(s) were cancelled.
 
 ##### helloworld.rb
 
-A classic "hello world" example. <br> The environment variable
+The environment variable
 `$DEEPSEEK_API_KEY` is assumed to have been set and reference
 a valid DeepSeek API key, otherwise you can provide a key explicitly
 (eg: `LLM.deepseek(key: ENV["MYKEY"])`) and you could swap
@@ -96,23 +99,35 @@ deepseek for any of the other 14 providers as well
 
 ```ruby
 require "llm"
-require "stringio"
 
-class GetTime < LLM::Tool
-  name "get-time"
-  description "returns the current time"
+class GetRepo < LLM::Tool
+  name "get-repo"
+  description "discover clone URL for different repos"
+  parameter :repo, Enum["mruby", "llm.rb"], "the repo name"
+  required %i[repo]
 
-  def call
-    {now: Time.now}
+  def call(repo:)
+    {repo: repos[repo]}
+  end
+
+  private
+
+  def repos
+    {"mruby"  => "https://github.com/mruby/mruby",
+     "llm.rb" => "https://github.com/r-uby-dev/llm"}
   end
 end
 
 llm     = LLM.deepseek
-options = {stream: $stdout, tools: [GetTime], concurrency: :ractor}
+tools   = [*LLM::Tool.git, GetRepo]
+tracer  = LLM::Tracer.enhanced(llm)
+options = {concurrency: :ractor, stream: StringIO.new, tracer:, tools:}
 
 agent = LLM::Agent.new(llm, options)
-agent.talk "hello world"
-agent.talk "what time is it?"
+agent.talk "bare clone the #{['mruby', 'llm.rb'].sample} repo into /tmp/repo"
+agent.talk "summarize recent changes from the repo"
+
+puts options[:stream].string
 ```
 
 ##### eval.rb
@@ -332,6 +347,36 @@ concurrency = [
 warn "concurrency=#{concurrency}"
 agent = LLM::Agent.new(llm, stream: $stdout, concurrency:)
 agent.talk "Find me an interesting Ruby project on GitHub", tools: mcp.tools
+```
+
+##### builtin_tools.rb
+
+The runtime ships toolsets that cover
+different tasks in different contexts.
+The tools are loaded on-demand via a
+separate call to require and do not
+require optional dependencies (but the
+tool call itself might require external
+dependencies like `git`).
+
+For example, the "git" toolset uses the
+git binary to work within a git repository
+and it enables an agent to clone repositories,
+pull changes, work with diffs and commits,
+plus much more. There is one tool per git
+sub-command.
+
+See [lib/llm/tools](lib/llm/tools) to learn
+about the other available builtin tools:
+
+```ruby
+require "llm"
+require "llm/tools/pwd"
+
+llm   = LLM.deepseek
+tools = [*LLM::Tool.git, *LLM::Tool.unix, LLM::Tool::Pwd]
+agent = LLM::Agent.new(llm, tools:)
+agent.talk "tell me what authors this git repo has?", stream: $stdout
 ```
 
 ##### files.rb
@@ -1789,6 +1834,27 @@ llm = llm.with("X-OpenRouter-Title" => "Example App")
 ## FAQ
 
 <details>
+<summary>What about compared to RubyLLM?</summary>
+<br>
+
+It is like comparing an apple and an orange. 
+
+There is different mindsets behind both
+projects and each has their own unique perspective
+on what talking to a large language model
+in Ruby should look like. I am generally
+systems-minded and it shows in how the
+runtime works. I think it is fair to say -
+based on when I last looked - that RubyLLM 
+is much better optimized for Rails and 
+this runtime is optimized for environments 
+that might only have Ruby, the standard 
+library and the filesystem but that's not
+to say you can't use the runtime with Rack,
+Rails, ActiveRecord and even Sequel.
+</details>
+
+<details>
 <summary>Does it work on Windows?</summary>
 <br>
 I think so. Our Windows build is green on CI.
@@ -1860,6 +1926,7 @@ I'm aware of at least one production Rails deployment at
 a large-ish company.
 </details>
 
+
 ## License
 
 <center>
@@ -1872,7 +1939,7 @@ a large-ish company.
       </p>
     </td>
     <td align="right" valign="middle" width="128">
-      <a title="what's up doc" href="https://www.youtube.com/watch?v=H1XelqP2fow">
+      <a title="what's up doc" href="https://www.youtube.com/watch?v=s-1u-hSVZvk">
         <img src="bugsbunny1.jpg" width="128" alt="what's up doc">
       </a>
     </td>

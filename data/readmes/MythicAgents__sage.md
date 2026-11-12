@@ -4,11 +4,12 @@
 
 # Sage
 
-**Sage is an AI operator that lives inside your C2.** It reads your live Mythic operation — its callbacks, tasks,
-credentials, and files — alongside your BloodHound graph, reasons over it the way an analyst would, and turns
-that reasoning into real Mythic tasks, so you can ask it a scoped question about the engagement and get a grounded
-answer, or hand it an objective and let it plan and drive the path itself. Sage drives Mythic and operates
-through your Mythic payloads; it never touches the target environment itself.
+**Sage is an AI operator that lives inside your C2 and works under your direction.** It reads your live Mythic
+operation — its callbacks, tasks, credentials, and files — alongside your BloodHound graph and reasons over it the
+way an analyst would. Ask it a scoped question about the engagement and get a grounded answer, or work an
+objective with it: Sage proposes each next step as a concrete Mythic task, shows you what it expects that step to
+prove, and runs it only when you approve. Sage drives Mythic and operates through your Mythic payloads; it never
+touches the target environment itself.
 
 Concretely, Sage is a chat container for [Mythic](https://github.com/its-a-feature/Mythic). It is not a
 standalone tool — it installs into a Mythic server the same way a payload type or C2 profile does, and it has no
@@ -17,14 +18,18 @@ same Mythic surfaces an operator does — callbacks, payloads, tasks, credential
 the BloodHound graph. It runs on the control plane: it is not an implant and does not create a Sage payload
 callback.
 
-Sage can answer scoped operator questions or run an explicitly configured autonomous objective. Target-facing
-activity always executes through a live Mythic payload callback. The Sage process may query Mythic and BloodHound
+Sage is built for supervised, operator-approved work in Mythic. **Conversation** mode reads and answers;
+**supervised** mode proposes one guarded action at a time and runs it only after you accept its approval card. A
+separate, experimental **auto** mode can pursue an explicitly configured objective without per-action approval;
+it is a research and evaluation capability, validated only against the GOAD lab. Target-facing activity always
+executes through a live Mythic payload callback. The Sage process may query Mythic and BloodHound
 control-plane data, but it must not connect directly to target LDAP, SMB, Kerberos, WinRM, RPC, HTTP, or similar
 services, and Sage-local attack artifacts are not admissible proof of an objective.
 
 <p align="center">
-  <img src="docs/assets/sage-ledger-solve.gif" alt="Sage autonomously solving GOAD" width="900">
-  <br><em>An autonomous GOAD solve: the engagement ledger fills in as each hop is verified, through to domain compromise.</em>
+  <img src="docs/assets/supervised-approval-hero.png" alt="Sage supervised approval card in Mythic" width="900">
+  <br><em>Supervised mode: Sage works the objective in a specialist agent and pauses each guarded action for your
+  decision — Accept, Reject, or Respond with guidance. Captured from a development build in October 2026.</em>
 </p>
 
 > **⚠️ Authorized use only, and still maturing.** Use Sage only for activity you are explicitly authorized to
@@ -32,15 +37,17 @@ services, and Sage-local attack artifacts are not admissible proof of an objecti
 > understood: an autonomous agent driving a C2 carries real risk of unintended impact on a live network. Weigh
 > production use very carefully, and prefer labs and authorized engagements until Sage has matured.
 
-> **Beta-qualified Mythic target: `v4.0.0rc5`.** Native chat containers do not exist before Mythic v4. The beta
-> evidence binds tag `v4.0.0rc5` at commit `a9add7f1f62f5b2098d1f0eb0306c4b15b8cd916`; newer Mythic v4 builds may
-> work, but are not part of this beta's validated support matrix.
+> **Mythic target.** Native chat containers do not exist before Mythic v4. The 0.3.0 release qualification runs one
+> supervised GOAD objective on Mythic `v4.0.8`, and its GitHub release notes report the result. The last live
+> qualification recorded in this repository is 0.1.0-beta's, on tag `v4.0.0rc5` at commit
+> `a9add7f1f62f5b2098d1f0eb0306c4b15b8cd916`. Other Mythic v4 builds may work but have not been qualified. See
+> [Limitations](#limitations).
 
 ## Contents
 
 - [How Sage works](#how-sage-works)
 - [Product contracts and authority modes](#product-contracts-and-authority-modes)
-- [The engagement ledger](#the-engagement-ledger)
+- [The Engagement State Ledger](#the-engagement-state-ledger)
 - [Repository layout](#repository-layout)
 - [Requirements](#requirements)
 - [Install and run Sage](#install-and-run-sage)
@@ -82,7 +89,7 @@ the same authority or acceptance standard.
 When authority permits action, Sage runs an observe/model/select/execute/verify loop. It **observes** state from
 Mythic and BloodHound, **models** the actions available to it as typed capabilities, **selects** one, **executes**
 it as a Mythic task, **verifies** the effect from real proof, then **repairs or re-plans** — appending every proven
-effect to [the engagement ledger](#the-engagement-ledger).
+effect to [the Engagement State Ledger](#the-engagement-state-ledger).
 
 ```mermaid
 flowchart LR
@@ -92,7 +99,7 @@ flowchart LR
     E --> V[Verify from real proof]
     V --> R[Repair / re-plan]
     R --> O
-    V --> L[(Engagement ledger)]
+    V --> L[(Engagement State Ledger)]
 ```
 
 In an autonomous solve, a deterministic controller (`autonomous_controller.py`) honors the model's intent to act
@@ -153,30 +160,47 @@ streaming emitter and terminal lifecycle.
 | `Payload_Type/sage/prompts/` | Externalized agent prompts |
 | `Payload_Type/sage/ttps/` | Tradecraft references and pinned tool metadata |
 
-## The engagement ledger
+## The Engagement State Ledger
 
 An LLM does not remember your engagement between turns. Sage keeps that memory outside the model, in a durable
-**engagement ledger**: a running record of what has actually been achieved, so a multi-day assessment survives
-context resets, restarts, and even a change of model.
+**Engagement State Ledger**: a running record of the capabilities and credential material the operation has
+gained, so a multi-day assessment survives context resets, restarts, and even a change of model.
 
 <p align="center">
-  <img src="docs/assets/engagement-ledger.png" alt="The /state engagement ledger" width="820">
-  <br><em><code>/state</code> renders the hop ledger: each proven effect with its status, task, and evidence.</em>
+  <img src="docs/assets/engagement-ledger.png" alt="The Engagement State Ledger shown by /state" width="820">
+  <br><em><code>/state</code> renders the ledger: each row's effect, status, task, and callback. Captured from a
+  supervised run on a development build in November 2026.</em>
 </p>
 
-- **What it is.** One JSON file per Mythic operation — a table of hops toward the objective, each with a status.
-  You read and edit it in chat with [`/state`](#slash-commands).
+- **What it is.** One ledger per Mythic operation, shared live by every chat channel of that operation — a table
+  of gains, each `achieved` or `pending`. A `pending` row is waiting for its effect or its proof and never
+  satisfies a capability's precondition. You read and correct the ledger in chat with
+  [`/state`](#slash-commands). Each row keeps a permanent number (the `#` column), assigned once and never
+  reused. A correction never deletes a row: `/state remove` records a retraction (who, when, why) that you can undo
+  with `/state restore`, and `/state invalidate` marks a row "no longer holds". The row keeps its number and shows
+  the correction, and no session relies on it again. The Supervisor and Mythic_Operator get a fresh view of the
+  ledger, with the same numbers, on every model call in every mode, so you can ask about "hop 4" directly, even in
+  a new chat. When a conversation or supervised turn ends, and on `/state reconcile`, Sage reconciles the
+  operation's Mythic tasks from every callback and every issuer. The ledger records verified gains, not every task: a task whose effect no verifier confirms leaves no
+  achieved row, even when the task itself succeeded, and failed attempts stay in Mythic's task history.
 
-- **Why it is proof-gated.** A hop flips to *achieved* only when a verifier confirms the effect from real
-  evidence. Each achieved hop carries a **proof envelope** recording the Mythic callback, task, and transaction
-  ids, the terminal task status, and the verifier's input and result hashes (sha256). A row without a valid
-  envelope is quarantined as `legacy_unverified` and can never count as proof — the model cannot write itself a
-  success it did not earn.
+- **Why it is proof-gated.** A row counts as *achieved* only when it traces back to real evidence: a verifier's
+  check of Mythic task output or files, Mythic's credential store, Mythic's callback records, or BloodHound data
+  collected through a payload, or a rule in Sage's code that derives it from rows that already have that proof.
+  Each achieved row carries a **proof envelope** recording what it rests on (the Mythic callback, task,
+  transaction, credential, file or BloodHound ingest it came from, or the rule and premise rows behind a derived
+  row) and the verifier's input and result hashes (sha256). An achieved write without an admissible envelope is
+  stored as `pending` (`proof_missing`) and never counts as proof. The model can read the ledger and submit Mythic
+  evidence IDs for verification, but it never writes rows itself, so it cannot write itself a success it did not
+  earn.
 
-- **Where it lives.** `.sage_engagement/state_<operation>.json`, next to the running Sage process
-  (`SAGE_ENGAGEMENT_STATE_DIR` overrides the directory). Keyed per Mythic operation, it is the portable,
-  exportable record of the assessment — not a checkpoint or a trace, both of which live elsewhere and prove
-  nothing on their own.
+- **Where it lives.** In Sage's application database, `sage.db` (`SAGE_DATABASE_PATH` overrides it), keyed by
+  the Mythic operation and the reset marker Sage stores in that operation. Every change is a short transaction
+  that touches only the rows it changes and appends to the row's history, so concurrent channels never overwrite
+  each other. `skills/sage-goad-reset/scripts/engagement_ledger_migrate.py export` writes the portable JSON record
+  of an operation; the reset archives the database together with those exports. It is not a checkpoint or a
+  trace, both of which live elsewhere and prove nothing on their own. Ledgers from releases that stored
+  `.sage_engagement/state_*.json` files are imported once with that script's `import` command, with Sage stopped.
 
 **Why a ledger at all.** An autonomous agent that reasons only over its own transcript re-runs steps it has
 already completed and attempts steps whose preconditions it never met: it substitutes recitation for perception.
@@ -226,15 +250,18 @@ strategy.
 
 ## Requirements
 
-- **Mythic `v4.0.0rc5`** at commit `a9add7f1f62f5b2098d1f0eb0306c4b15b8cd916` for the beta-qualified path.
-  Earlier Mythic versions have no native chat-container support; other Mythic v4 revisions are unvalidated for
-  this beta.
+- **Mythic v4.** The 0.3.0 release qualification runs on `v4.0.8`; its GitHub release notes report the result.
+  `v4.0.0rc5` at commit `a9add7f1f62f5b2098d1f0eb0306c4b15b8cd916` is the last live-qualified target recorded in
+  this repository (0.1.0-beta). Earlier Mythic versions have no native chat-container support; other Mythic v4
+  revisions have not been live-qualified.
 - Python 3.14 and a repository virtual environment.
 - Model-provider credentials or an OpenAI-compatible endpoint.
-- For the beta-qualified graph path, BloodHound CE 9.5.1 plus [BloodHound MCP](https://github.com/mwnickerson/bloodhound_mcp)
-  commit `92a37dd481ce675fe552f14c9957a31dbbcd212e`.
-- For beta-qualified target activity, an Apollo `v0.1.0-rc1` callback. Other payload types may work through the
-  generic adapter but are unvalidated for this beta.
+- For the live-qualified graph path, BloodHound CE 9.5.1 plus [BloodHound MCP](https://github.com/mwnickerson/bloodhound_mcp)
+  commit `92a37dd481ce675fe552f14c9957a31dbbcd212e`. Sage also needs that MCP's ingest-status operation, which no
+  upstream commit has, so Sage ships it as `Payload_Type/sage/patches/bloodhound-mcp-ingest-status.patch` (see
+  [Ingest readiness](#ingest-readiness)).
+- For live-qualified target activity, an Apollo `v0.1.0-rc1` callback. Other payload types may work through the
+  generic adapter but have not been live-qualified.
 
 Create the development environment from the repository root:
 
@@ -274,7 +301,15 @@ sudo ./mythic-cli install github https://github.com/MythicAgents/sage
 
 The installer pulls the published image named in `config.json` (`ghcr.io/mythicagents/sage:<version>`) instead
 of building one. To build from your checkout instead, run `sudo ./mythic-cli config set sage_use_build_context
-true` and then `sudo ./mythic-cli build sage`.
+true` and then `sudo ./mythic-cli build sage`. Each version image is published from `main` before its release tag,
+and the annotated `v<version>` tag records that image's manifest digest, which the tag's CI checks without
+rebuilding.
+
+The container runs Sage as the user who owns `InstalledServices/sage`, so the databases and state Sage writes
+there belong to that user, not root. A later `mythic-cli install` by that user can replace the directory without
+`sudo`. On its first start, the container hands back to that user any root-owned files an older Sage left there.
+A reinstall replaces the whole directory, including `sage.db` and `.phoenix/`, so archive them first if you need
+the history (see [Runtime state and clean resets](#runtime-state-and-clean-resets)).
 
 After the container registers, create a Mythic chat channel using the `Sage` model, then configure provider,
 model, mode, policy, and credentials in the channel or user-secret views. Mythic renders Sage output as markdown
@@ -356,9 +391,16 @@ Set `mode` when you create the channel, or switch it live with `/mode`:
 |---|---|---|
 | `conversation` (default) | Reads Mythic and BloodHound state, queries read-only tools (callbacks, graph, credentials, tradecraft), and answers. Cannot fire a guarded/offensive action. | Asking questions, reviewing the graph, getting tradecraft advice, planning. The safe default. |
 | `supervised` | Proposes guarded actions; each one waits for your approval before it runs. | Interactive engagement work where you want Sage to act but keep a hand on every trigger. |
-| `auto` | Runs the autonomous kernel — observe → select → execute → verify — with no per-action approval. | A prepared, scoped objective with a live callback and an ingested graph. |
+| `auto` (experimental) | Runs the autonomous kernel — observe → select → execute → verify — with no per-action approval. Validated only against the GOAD lab. | Research and evaluation against a prepared lab objective with a live callback and an ingested graph. |
 
 `/mode` with no argument reports the channel's current mode.
+
+<p align="center">
+  <img src="docs/assets/sage-ledger-solve.gif" alt="Sage in experimental auto mode on the GOAD lab" width="900">
+  <br><em>Experimental auto mode in a GOAD lab: the Engagement State Ledger fills in as each hop is verified, through to
+  domain compromise. Recorded by August 2026 on a development build that predates 0.1.0-beta; auto mode was not run
+  live on 0.3.0. Auto mode is a research and evaluation capability, exercised only on GOAD.</em>
+</p>
 
 ### Supervised approvals
 
@@ -386,36 +428,42 @@ model for this guidance even when only one alternative remains. Symbolic policy 
 guidance and hands control back without issuing another action. Objective-led completion requires objective
 evidence; completing one collection does not prove the objective.
 
-Guarded tools are also **scope-preflighted**: each maps to a required Mythic bot-token scope (`callback.write`,
-`payload.write`, `credential.write`, `file.write`), and a tool whose scope your channel token lacks is disabled
+Guarded tools are also **scope-preflighted**: each maps to a required Mythic bot-token scope (`task.write`,
+`payload.write`, `credential.write`, `file.write`, or `file.read`), and a tool whose scope your channel token lacks is disabled
 up front rather than failing mid-run.
 
-<p align="center">
-  <img src="docs/assets/supervised-approval.png" alt="Supervised approval card in Mythic" width="820">
-  <br><em>In supervised mode a guarded action pauses for approval: Accept, Reject, or Respond.</em>
-</p>
+For every Sage tool to be available, give the channel token `chat-ai.write`, `apitoken.write`, `callback.read`,
+`response.read`, `operation.read`, `operator.read`, `task.write`, `file.write`, `payload.write`,
+`credential.write`, and `eventlog.write` (each `.write` also grants its `.read`). Mythic requires the first two
+on any AI channel token. Sage's session token inherits the channel token's scopes, and Mythic rejects a query
+the token has no read scope for.
+
 
 ### Slash commands
 
 | Command | What it does |
 |---|---|
-| `/state` | Show the [engagement ledger](#the-engagement-ledger) — the durable hop table of proven effects shared by chats in the current Mythic operation engagement |
-| `/state objective <text>` | Set the engagement objective |
-| `/state reconcile [task_id] [apply]` | Import verified effects and credentials from completed Mythic tasks — **dry-run unless `apply`** is given, because task output is attacker-influenceable |
-| `/state set <row> <status>` · `/state remove <row>` · `/state wipe` | Edit or clear ledger rows (you cannot hand-promote a row to `achieved` — that needs a real proof envelope) |
+| `/state` | Show the [Engagement State Ledger](#the-engagement-state-ledger) — the durable table of achieved and pending gains shared by every chat in the current Mythic operation |
+| `/state help` | Show `/state` usage without reading the ledger |
+| `/state objective <text>` | Set the operation's stored compatibility objective (an operation setting, not a channel goal) |
+| `/state reconcile [<id>[,<id>…]] [apply]` | Record verified effects from the operation's completed Mythic tasks, from any issuer, or from the cited task IDs, `cred:<id>` and `file:<id>` entries. Verified updates are saved immediately; `apply` only permits importing missing credential material into Mythic's credential store, which is **previewed unless `apply`** is given, because task output is attacker-influenceable |
+| `/state set <#\|id> achieved task=<id> type=<type> account=<account>@<realm> line=<n> after=<text>` | Promote a pending account-secret row to credential material by citing where the secret sits in a task's output; Sage never takes the secret itself, and only a task whose completion function failed after the agent answered qualifies |
+| `/state remove <#>[,…] [--reason <text>]` · `/state restore <#>[,…]` · `/state invalidate <#>[,…]` | Retract a row, undo a retraction, or mark a row "no longer holds", by hop number (the `#` column) or hop id. Rows are kept and numbered; no command marks a row `achieved` without verified evidence |
+| `/state wipe` | Retract every row and every current graph fact; nothing is deleted or renumbered |
 | `/mode [conversation\|supervised\|auto]` | Show or switch the channel's mode |
 | `/list` | List active Sage chat sessions |
 | `/tools` | List Sage's public Mythic tool functions, descriptions, and access requirements |
+| `/tools staged` | List the binaries in Sage's `tools/` drop zone: type, architecture, matching TTPs, and whether Mythic already holds them |
 | `/report [identity]` | Show retained identity/membership observations shared across assisted chats in this operation engagement, unknown access prerequisites, and next checks; one identity metadata check, no model call or new task |
 | `/stop` | Cooperatively stop the running agent on this channel |
 | `/bloodhound [force] [dir]` | Connect, report, or rebind the BloodHound MCP — see [BloodHound](#bloodhound) |
 | `/mcp <list\|tools\|call\|connect\|disconnect\|policy>` | Manage MCP servers — see [Connecting other MCP servers](#connecting-other-mcp-servers) |
-| `/sandbox [shell\|python] <code>` | Run an isolated local snippet (requires the `callback.write` scope) |
+| `/sandbox [shell\|python] <code>` | Run an isolated local snippet (no network or host mounts; needs no Mythic scope) |
 
 `/state` is available in conversation, supervised and auto modes. Its ledger is shared across
 chats in the same operation engagement and persists once written. A new engagement can show an
 empty ledger: viewing operation details or callbacks does not record an achieved effect, and
-reading `/state` alone does not create a ledger file.
+reading `/state` does not add rows.
 
 `/report` defaults to the identity report; `/report identity` remains supported.
 It is available in conversation and supervised chat, including a fresh chat
@@ -439,10 +487,12 @@ Sage classifies tools as **read-only** (enumerate callbacks, payloads, tasks, fi
 retrieve tradecraft guidance; build capability plans) or **guarded/offensive** (issue a command, execute a
 capability, create a payload, add a credential, ingest a collection, run in the sandbox). The public Mythic
 tool inventory is available through `/tools`; internal helpers and callback payload commands are separate.
-Every tool carries a `@tool_safety` decorator (`TOOL_SAFETY_READ_ONLY` or
-`TOOL_SAFETY_GUARDED`) and CI enforces that no tool ships unclassified — an undecorated method defaults to
-guarded at runtime. The read-only/guarded split determines behavior across modes: guarded tools are
-approval-gated in supervised mode, denied in conversation mode, and only they can change target or Mythic state.
+Every tool carries a `@tool_safety` decorator (`TOOL_SAFETY_READ_ONLY`, `TOOL_SAFETY_GUARDED`, or
+`TOOL_SAFETY_STAGING`) and CI enforces that no tool ships unclassified — an undecorated method defaults to
+guarded at runtime. The classification determines behavior across modes: guarded tools are approval-gated in
+supervised mode, denied in conversation mode, and only they can change target state. The one staging tool,
+`ensure_tool_uploaded`, writes only Mythic's operation file store: it needs no approval in supervised mode and is
+denied in conversation mode.
 
 | Area | Example tools | |
 |---|---|---|
@@ -466,9 +516,13 @@ agents retrieve against through `get_ttp_guidance`.
 
 **Tool drop zone.** `Payload_Type/sage/tools/` is an operator drop zone for tool binaries. It ships **empty** —
 Sage bundles no offensive binaries. Drop a binary in (for example `Rubeus.exe`, `Certify.exe`, `SharpHound.exe`,
-`SharpGPOAbuse.exe`, `SharpDPAPI.exe`, or `Whisker.exe`) and Sage discovers it and stages it into Mythic on
-demand instead of making you upload it by hand. `download_tool` can also fetch a pinned, sha256-verified binary
-from its TTP source straight into this folder.
+`SharpGPOAbuse.exe`, `SharpDPAPI.exe`, or `Whisker.exe`) and Sage can see it through the read-only
+`list_staged_tools` tool, then stage it into Mythic on demand instead of making you upload it by hand. The
+inventory reads each file's type and architecture from its header, matches renamed and per-architecture builds
+(`new_sharphound_x64.exe`, `SharpHound.o`) to their TTPs, and says whether Mythic already holds the same bytes.
+A binary no TTP documents is listed with a hint that tells Sage to ask you what it is for before using it. `/tools
+staged` shows the same inventory in chat. `download_tool` can also fetch a pinned, sha256-verified binary from
+its TTP source straight into this folder. Staging a file never authorizes running it.
 
 For operator-run static metadata and reviewed executable-help inspection in isolated
 containers, see [off-target artifact inspection](docs/development/ARTIFACT_INSPECTION.md).
@@ -484,7 +538,7 @@ a payload's commands does not establish support for every automated capability o
 
 See [payload adapters and command discovery](docs/reference/TOOLS_AND_CAPABILITIES.md#payload-adapters-and-command-discovery)
 for the profile mappings and approval/alias boundary. An implemented profile is separate from live validation;
-the beta-qualified payload remains Apollo in the exact configuration described under [Limitations](#limitations).
+the live-qualified payload remains Apollo in the 0.1.0-beta configuration described under [Limitations](#limitations).
 
 The complete tool and capability reference is in
 [docs/reference/TOOLS_AND_CAPABILITIES.md](docs/reference/TOOLS_AND_CAPABILITIES.md). Because the exposed set is
@@ -547,9 +601,9 @@ Model settings resolve through the chain above. The main settings are:
 | `API_ENDPOINT` | Optional endpoint override — point `openai` at any OpenAI-compatible server (see below) |
 | `API_KEY` | Provider API key when required |
 | `mode` | `conversation` (default), `supervised`, or `auto` — see [Modes](#modes) |
-| `autonomous_solve` | Enable objective-led controller execution; supervised mode still requires approval for each guarded action |
+| `autonomous_solve` | Enable objective-led controller execution; supervised mode still requires approval for each guarded action. Ignored in conversation mode, which stays read-only |
 | `policy_mode` | `hybrid` (default), `symbolic`, or `llm` capability selection |
-| `max_steps` | Model-step ceiling; unset defaults to `200`, `0` means unlimited |
+| `max_steps` | Model-step ceiling per chat request; unset defaults to `200`, `0` means unlimited |
 
 **Providers.** The four above are the tested set. Sage builds the model through LangChain's `init_chat_model`, so
 other providers it supports may work but are unverified. Bedrock is the only provider with dedicated AWS
@@ -571,8 +625,9 @@ This setting governs controller capability selection. Ordinary supervised chat w
 uses the agent graph: read-only requests can run immediately, and guarded requests can be proposed for approval.
 Turning Autonomous Solve off does not remove the operator's ability to request an action.
 
-**Step budget.** `max_steps` bounds the number of model steps in a run. Left unset it defaults to 200; set it to
-`0` for unlimited. A small ceiling caps cost and stops runaway loops on scoped work. For a full autonomous
+**Step budget.** `max_steps` bounds the number of model steps in each chat request; the count starts again with
+every new request, and approving a card continues the same request's budget. Left unset it defaults to 200; set it
+to `0` for unlimited. A small ceiling caps cost and stops runaway loops on scoped work. For a full autonomous
 objective, raise it or set `0` — but the autonomous controller also enforces hard stop-losses independent of step
 count: **60 cycles**, a **45-minute wall clock**, a **3M-token budget**, and a no-progress loop-breaker. Each is
 tunable through `SAGE_CONTROLLER_MAX_CYCLES`, `SAGE_CONTROLLER_WALL_S`, and `SAGE_CONTROLLER_TOKEN_BUDGET`.
@@ -626,6 +681,47 @@ next rebuild and cannot be edited from the UI. Prefer either option above.
 Sage forwards whatever it resolves into the MCP subprocess. Anything you leave unset is simply not
 forwarded, so the server falls back to its own `.env` — which is what keeps the file-based workflow
 (documented in [docs/configuration/BLOODHOUND.md](docs/configuration/BLOODHOUND.md)) working unchanged.
+
+### Ingest readiness
+
+Connected is not the same as able to ingest. Sage verifies a graph collection only through BloodHound's own
+ingest-job status: it uploads the collection with `file_upload(info_type="upload_bytes")`, then reads that exact job
+with `file_upload(info_type="status")` until BloodHound reports it `Complete`. Only that verified result records the
+collection, which is what stops Sage collecting the same graph again.
+
+The pinned MCP commit has no `status` operation, so the Sage image contains that immutable base **plus** Sage's
+checked-in `patches/bloodhound-mcp-ingest-status.patch`, applied at build time; the build fails if it does not
+apply. Changing either half needs an image rebuild (`./mythic-cli build sage`). Syncing Sage source into `/Mythic`
+cannot repair `/opt/bloodhound_mcp`, and a restart alone does not pick up a new image.
+
+Sage checks the **connected** server, not a checkout on disk, with one read-only status read for job 0, which
+BloodHound never assigns:
+
+- `/bloodhound` reports **Connection** and **Ingest** separately, and probes an already-connected server too.
+- Conversation and supervised chats keep working with a connected but ingest-incompatible MCP; graph reads work,
+  and the chat shows a one-time *graph ingest is unavailable* notice naming the fix.
+- Graph collection checks again before its first target task, and ingest checks again before it uploads. Against
+  an incompatible server neither tasks the target nor uploads; the result is **Collection failed** with the
+  dependency diagnostic.
+- Autonomous solves fail closed until the connected MCP answers the status read.
+
+A collection whose job is still ingesting when Sage's two-minute wait ends reports **Collection pending**, and a
+job BloodHound ends as failed, partially complete, canceled, or timed out reports **Collection failed**. Neither
+counts as a verified collection. A host checkout's `mcp_check.py` result does not establish what the serving image
+can do; use the serving chat's `/bloodhound` answer when validating a deployment.
+
+For a custom local MCP checkout (`SAGE_BLOODHOUND_MCP_DIR` pointing at your own clone), apply the same patch to a
+clean checkout of the pinned base, then sync and reconnect:
+
+```bash
+git -C /path/to/bloodhound_mcp checkout --detach 92a37dd481ce675fe552f14c9957a31dbbcd212e
+git -C /path/to/bloodhound_mcp apply --check /path/to/sage/Payload_Type/sage/patches/bloodhound-mcp-ingest-status.patch
+git -C /path/to/bloodhound_mcp apply /path/to/sage/Payload_Type/sage/patches/bloodhound-mcp-ingest-status.patch
+uv --directory /path/to/bloodhound_mcp sync --no-dev
+```
+
+then `/bloodhound force`. Sage never patches a checkout itself; a checkout with other local changes needs your own
+judgment. An MCP that implements the same `status` contract natively needs no patch.
 
 ## When BloodHound is not connected
 
@@ -902,7 +998,7 @@ are:
   verify callback identity and clocks.
 - `sage-live-runner`: prepare, run, monitor, and inspect native Mythic chat requests.
 - `sage-focused-capability-tests`: narrow capability diagnostics plus explicit offline test tiers.
-- `sage-trace-analysis`: inspect Phoenix, Mythic output, and engagement ledgers.
+- `sage-trace-analysis`: inspect Phoenix, Mythic output, and Engagement State Ledger exports.
 - `sage-trajectory-learning`: export and replay redacted transition data.
 
 Range-specific operators, prompts, credentials, and generated evidence remain development inputs. They are not
@@ -982,39 +1078,54 @@ a legacy override, an operator-configured channel ID that is never derived from 
 
 ## Limitations
 
-`v0.1.0-beta` is deliberately narrow:
+Sage 0.3 is deliberately narrow, and its live validation lags its code:
 
-- Auto mode is experimental and has been exercised against GOAD. That does not establish reliability or
-  generalization on another range or a production network.
-- The assisted operation-memory acceptance case joins one completed native Apollo `download` task to its exact
-  current downloaded `.ps1` file record containing direct literal username/password assignments. One tool-free
-  model call may propose `credential-material`; deterministic admission binds the operation, task, callback, and
-  file identity before background delivery. It does not show that a consultant would have missed the finding,
-  acted on it, or received independent value.
-- The beta support target is Linux arm64 Sage Docker on Mythic `v4.0.0rc5` (`a9add7f1f62f5b2098d1f0eb0306c4b15b8cd916`),
-  Apollo `v0.1.0-rc1` (`d44676d9eda540377ce91a6e636dd8788bc86def`), BloodHound CE 9.5.1 image
-  `specterops/bloodhound@sha256:5f6ae41631b82b2516dd5ffa050105ddb2e4dbf04e3e2f6d00fbc302932cf4ed`,
-  BloodHound MCP `92a37dd481ce675fe552f14c9957a31dbbcd212e`, and `sonnet-4-6` through Sage's
-  `openai` protocol via an OpenAI-compatible LiteLLM route. The accepted release evidence records a successful
-  clean-clone Docker/backfill/restart run for exact tree `b25c00ec22c030566ff7636015ca4a39c1910e35`, which is the
-  an ancestor of the `v0.1.0-beta` tag. Since then the tree gained only optional Slack channel-ID routing,
-  `mcp` `1.28.1`, an operator deploy-script fix, and documentation bytes; the offline suite, repository-boundary
-  guards, and the seeded capability case all pass on the tagged tree, but the Docker qualification above was not
-  re-run against it. This is the beta's validated matrix, not a general production readiness claim.
-- Other operating systems and architectures; Mythic, Apollo, BloodHound CE, or BloodHound MCP revisions; model
-  providers and direct-provider routes; models other than the effective `sonnet-4-6` LiteLLM route; and payload
-  types other than Apollo are not validated for this beta. Code paths that support them are not evidence that
-  the release configuration works.
-- The frozen defect cut covered ESSOS certificate-identity proof, reject binding, approval/resolver parity,
-  worker-handoff authority, fabricated operator attribution, and prior-task provenance. The first, handoff,
-  attribution, and provenance defects were repaired and passed their frozen offline gates; reject binding and
-  approval/resolver parity did not reproduce in their assembled offline paths. No new live-range reproduction is
-  claimed.
-- Operation-memory erasure removes Sage-derived state for one operation but deliberately leaves authoritative
-  Mythic records unchanged. It does not erase separate LangGraph checkpoints, Phoenix traces, LiteLLM/provider
-  retention, native Mythic messages, or Slack workspace records; each owner must apply its own retention policy.
-- Slack findings delivery, when configured, contains only a generic change notice. It does not provide finding
-  previews or operation identifiers; review the full finding inside access-controlled Mythic Chat.
+- **Live validation.** The most recent live-validated configuration recorded in this repository is the
+  [0.1.0-beta support matrix](docs/releases/v0.1.0-beta.md): Linux arm64 Sage Docker on Mythic `v4.0.0rc5`,
+  Apollo `v0.1.0-rc1`, BloodHound CE 9.5.1, BloodHound MCP `92a37dd`, and `sonnet-4-6` through an
+  OpenAI-compatible LiteLLM route. Releases from 0.2.0 on are validated by the offline suite, the
+  repository-boundary guards, the repo-hygiene checks, and scripted tests of the assembled chat path; 0.2.0 had
+  no live-range run. The 0.3.0 release qualification runs once, in supervised mode, on a locally built image of
+  the release source: one objective request to obtain Domain Admin of one GOAD domain from an Apollo foothold
+  (plus at most one `proceed` if it ends without proof), within fixed time, token, cost and approval-card limits,
+  with no other operator input than accepting or rejecting cards. 0.3.0 is published only after that run passes,
+  and its GitHub release notes report the image, architecture, Mythic version, model route and result. That result
+  covers that one configuration and objective. The published image is checked for installation, not requalified.
+  Individual fixes are spot-checked live on a GOAD lab during development; those checks are not a release
+  qualification.
+- **Supervised mode.** Live evidence for objective-led supervised mode comes only from GOAD with an Apollo
+  foothold and one model route. Sage proposes and you approve each guarded action, but the quality of its
+  proposals on another engagement is not established. The Supervisor does not yet plan bounded steps: it can hand
+  a specialist the whole objective, so a step runs until one of its limits or an error. When the Supervisor scopes
+  a step to the wrong catalog procedure, the request still ends rather than re-scoping; 0.3.0 recovers only when
+  the specialist names something that is not a catalog procedure.
+- **Auto mode** is experimental, was not run live on 0.3.0, and has been exercised only against GOAD on earlier
+  development builds. That does not establish reliability or generalization on another range or a production
+  network.
+- **Other configurations.** Other operating systems and architectures; other Mythic, Apollo, BloodHound CE, or
+  BloodHound MCP revisions; other model providers, routes, and models; and payload types other than Apollo are not
+  validated. Code paths that support them are not evidence that they work.
+- **Findings acceptance.** The assisted operation-memory acceptance case joins one completed native Apollo
+  `download` task to its exact current downloaded `.ps1` file record containing direct literal username/password
+  assignments. One tool-free model call may propose `credential-material`; deterministic admission binds the
+  operation, task, callback, and file identity before background delivery. It does not show that a consultant
+  would have missed the finding, acted on it, or received independent value.
+- **Known issues.** See the [CHANGELOG](CHANGELOG.md) for each release's known issues. As of 0.3.0 these include
+  SQLite locking on the bind-mounted service directory under macOS Docker Desktop and OrbStack (see
+  [SQLite on macOS Docker Desktop / OrbStack](#sqlite-on-macos-docker-desktop--orbstack)), dependency
+  vulnerabilities that remain until `mythic-container` and `arize-phoenix` update their pins, an approved
+  supervised action that can be issued twice if Sage stops before it records the action's result, repeated
+  collection proposals and empty delegations that end in the no-progress stop, request endings reported as "not
+  terminal" or as errors when a task's completion function failed or a delegation was interrupted, chat display
+  ordering, a ledger that records only verifier-proven gains, and two forge defects (a parent-domain forge from a
+  child-domain source can skip the parent's replication grant, and a krbtgt reference beyond the top-ranked key is
+  refused).
+- **Erasure.** Operation-memory erasure removes Sage-derived state for one operation but deliberately leaves
+  authoritative Mythic records unchanged. It does not erase separate LangGraph checkpoints, Phoenix traces,
+  LiteLLM/provider retention, native Mythic messages, or Slack workspace records; each owner must apply its own
+  retention policy.
+- **Slack.** Findings delivery, when configured, contains only a generic change notice. It does not provide
+  finding previews or operation identifiers; review the full finding inside access-controlled Mythic Chat.
 
 ## Development guidance
 

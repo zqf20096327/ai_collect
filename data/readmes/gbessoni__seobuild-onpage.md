@@ -8,6 +8,8 @@ claude plugin marketplace add gbessoni/seobuild-onpage && claude plugin install 
 
 Not on Claude Code? See [Install + Setup](#install--setup) for Codex, OpenClaw, and manual clone.
 
+> **Hosted version in build:** no API keys, sign in once, works in any agent. [Join the waitlist](https://github.com/gbessoni/seobuild-onpage/issues/2) by leaving a comment, and you'll be notified the day it launches.
+
 Most SEO tools tell you what's wrong with your site. This one writes the pages.
 
 `/seoagi "airport parking JFK"` pulls the current SERP, analyzes what's ranking, finds the gaps in their content, and writes you a complete page -- with the heading structure, depth, FAQ section, and schema markup that actually competes. Not thin content. Not keyword-stuffed filler. Pages backed by live data from the tools the pros use.
@@ -500,4 +502,4 @@ Built by [Greg Bessoni](https://github.com/gbessoni) ([@gregbessoni](https://x.c
 
 ## License
 
-MIT
+MIT. See [LICENSE](LICENSE).

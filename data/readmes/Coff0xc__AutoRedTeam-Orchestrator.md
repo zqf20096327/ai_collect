@@ -132,7 +132,7 @@ The numbers are totals, including the levels below. New catalog entries at each 
 | `active-lab` | A machine you can throw away | Lab-only tools. They ask for a separate approval in the record |
 | `full` | The same kind of lab, with the rest switched on | The experimental engines that are still in git |
 
-A second switch is the API key. `AUTOREDTEAM_AUTH_MODE` defaults to `strict`, and protected tools then need `AUTOREDTEAM_API_KEY` (`MCP_API_KEY` is the other accepted name). `permissive` logs and allows. `disabled` works only when `AUTOREDTEAM_ENV=test` or pytest is running. Choosing `full` does not turn the key off.
+A second switch is the API key. `AUTOREDTEAM_AUTH_MODE` defaults to `strict`, and protected tools then need `AUTOREDTEAM_API_KEY` (`MCP_API_KEY` is the other accepted name). Issue a key with `autort capabilities auth-key`; the MCP wrapper enforces the manifest `auth_required` flag even when a handler forgot its decorator. `permissive` logs and allows. `disabled` works only when `AUTOREDTEAM_ENV=test` or pytest is running. Choosing `full` does not turn the key off.
 
 ```mermaid
 sequenceDiagram
@@ -166,7 +166,7 @@ flowchart LR
 
 Prompts return that card, the parameter names, and one line: this prompt returns the constraint and the parameters. The Python function names stay the names on the list, including `plan_pentest`. The name is an identifier. The text is the constraint. `plan_pentest` is level `active-lab`. This page does not show a planning procedure.
 
-Effects are labels on the row, such as `local-read`, `network-probe`, `network-active`, `target-write`, `host-exec`, `credential-use`, `persistence`, `offensive-content`, and `dry-run`. The reader can see parameter names. It does not yet compare those names with the effect labels. A tool can say `local-read` and still accept a URL. That comparison is not built.
+Effects are labels on the row, such as `local-read`, `network-probe`, `network-active`, `target-write`, `host-exec`, `credential-use`, `persistence`, `offensive-content`, and `dry-run`. The reader compares those labels with parameter names. A tool whose effects stay in the local/dry-run set and that still accepts `url`, `host`, or `target` is flagged as `declared_effects_omit_target_contact`.
 
 ## What the server does at startup
 
@@ -225,7 +225,7 @@ Calls to the permission helpers themselves are ignored. A tool should not look d
 
 An older shortcut is separate from that word matcher. If the only risky word is `poc`, and the tool name contains the letters `list`, `search`, `stats`, `status`, or `query`, the rating is lowered. `poc_listener` contains `list`, so it is lowered. `tests/fixtures/ai_surface/labels.json` locks that result. Changing the shortcut changes the default handlers scan. It is a measured change, not a cleanup.
 
-A scan of this repository's `handlers/` folder is expected to have **zero issues**. New issues there are a regression in the handlers or in the rules.
+A scan of this repository's `handlers/` folder is expected to have **zero auth, validator, or payload issues**. `session_create` is pinned for `declared_effects_omit_target_contact`: it stores a target string locally and the card still says `local-read` / `local-write`. New issues outside that pin are a regression in the handlers or in the rules.
 
 ### Client config and instruction files
 
@@ -300,7 +300,7 @@ flowchart LR
 
 Left out of the package: command-and-control, moving between machines, staying on a machine, post-access work, raising privilege, taking data out, hiding, credentials, Active Directory, and exploit code. They remain in git so an explicit `full` checkout can still import them. Deleting them would break that checkout. A second repository would split the allowed list from the code it describes.
 
-The CI build job installs the package into a clean virtual environment. Those ten packages are not importable there. The `safe` list still prints. A scan of the installed `handlers` folder still reports zero issues. Importing `Scanner` still does not load the three lazy engines. Tests that run inside the checkout do not prove this. Those tests can still import the engines from the working tree. Package the wheel with `pyproject-build`. A leftover setuptools `build/` directory hides `python -m build`.
+The CI build job installs the package into a clean virtual environment. Those ten packages are not importable there. The `safe` list still prints. A scan of the installed `handlers` folder still reports no auth, validator, or payload issues. `session_create` stays pinned for the effect/parameter mismatch. Importing `Scanner` still does not load the three lazy engines. Tests that run inside the checkout do not prove this. Those tests can still import the engines from the working tree. Package the wheel with `pyproject-build`. A leftover setuptools `build/` directory hides `python -m build`.
 
 A published install can still serve the `safe` reader when a handler fails to import a missing engine. That failure is logged. The other groups still register.
 
@@ -341,9 +341,9 @@ These do not contact a target. CVE search reads the local notes.
 | `tools` | `lint` | Contract check |
 | `skills` | `catalog`, `read` | Pinned SKILL.md packs. Read-only |
 | `code-agent` | `expand` | Who calls whom, from the source |
-| `runtime-api` | `serve` | A local read-only view of a saved run |
+| `runtime-api` | `run`, `serve` | A local loop over planned actions, or a read-only view of a saved run |
 | `sandbox` | `docker-smoke` | A local Docker smoke test, network off |
-| `ai-redteam` | `run`, `catalog`, `convert`, `eval-run` | A written scenario. Dry-run unless you go further |
+| `ai-redteam` | `run`, `catalog`, `convert`, `eval-run` | A written scenario or local eval suite. Dry-run unless you go further |
 
 ### Higher levels
 
@@ -505,12 +505,13 @@ Issues a `@tool` function can get:
 |---|---|
 | `high_risk_tool_without_dangerous_auth` | High or above, and the auth decorator is below dangerous |
 | `critical_tool_without_critical_auth` | Critical, and the auth decorator is not critical |
+| `declared_effects_omit_target_contact` | Declared effects stay local or dry-run, and a parameter is named `url`, `host`, `target`, or another target-shaped name |
 | `target_input_without_handler_validator` | A target-shaped argument has no `validate_inputs` decorator |
 | `payload_generation_without_auth_gate` | The text matched `payload` and there is no auth decorator |
 
-Prompts and resources skip that list. Their permission lives on the row.
+Prompts and resources skip the auth and validator rows. Effect mismatch still applies when the row is local-only and the parameters include a target-shaped name.
 
-SARIF rule ids are grouped by class, not one rule per tool: `mcp_tool.auth-critical`, `mcp_tool.auth-missing`, `mcp_tool.target-input`, `mcp_tool.factory`, `mcp_tool.lowlevel`, `mcp_prompt`, `mcp_resource`, `mcp_config`, `skill_instruction`, `surface_inventory_diff`.
+SARIF rule ids are grouped by class, not one rule per tool: `mcp_tool.auth-critical`, `mcp_tool.auth-missing`, `mcp_tool.effect-mismatch`, `mcp_tool.target-input`, `mcp_tool.factory`, `mcp_tool.lowlevel`, `mcp_prompt`, `mcp_resource`, `mcp_config`, `skill_instruction`, `surface_inventory_diff`.
 
 The comparison (`reconcile_capability_manifest`) joins on `(kind, name)` when you scan the repo root or a directory named `handlers`.
 
@@ -575,7 +576,7 @@ Coverage in CI measures this same install. The ten engine globs are omitted from
 
 `core/agent_runtime` is the state of a planned run: tasks, actions, a trace, and an approval marker. `enforce_sandbox_policy` returns a decision. `execute_action_in_docker_sandbox` stays a decision unless the caller passes `allow_execute=True`. `autort sandbox docker-smoke` runs a local container with the network off. A missing Docker daemon is a skip.
 
-`autort runtime-api serve` reads `/api/runs` on the host and port you pass. The usual local pair is `127.0.0.1` and `8765`. It does not call tools.
+`autort runtime-api run` walks a local plan through policy and sandbox, then either skips the steps or runs the allowlisted scanners. `autort runtime-api serve` reads `/api/runs` on the host and port you pass. The usual local pair is `127.0.0.1` and `8765`. Neither command calls a model or a remote target.
 
 `AIRedTeamRunner` plans from a written scenario. Active mode raises `PermissionError` unless the caller passed `allow_active=True`. `core/code_agent` maps Python calls with `ast` and does not run the program.
 
@@ -596,7 +597,7 @@ The older `poc` plus `list` shortcut stays while `labels.json` pins it.
 
 Tag `v3.1` stays where it is. Callers who want the `self-audit` default set `mode`, or they track `main`.
 
-Effect labels are not yet checked against parameter names.
+Effect labels are checked against target-shaped parameter names at reconcile time. `session_create` is the pinned mismatch.
 
 </details>
 

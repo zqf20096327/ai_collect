@@ -10,7 +10,7 @@
   <a href="https://github.com/barbacane-dev/barbacane/actions/workflows/ci.yml"><img src="https://github.com/barbacane-dev/barbacane/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://docs.barbacane.dev"><img src="https://img.shields.io/badge/docs-docs.barbacane.dev-blue" alt="Documentation"></a>
   <img src="https://img.shields.io/badge/unit%20tests-517%20passing-brightgreen" alt="Unit Tests">
-  <img src="https://img.shields.io/badge/plugin%20tests-861%20passing-brightgreen" alt="Plugin Tests">
+  <img src="https://img.shields.io/badge/plugin%20tests-759%20passing-brightgreen" alt="Plugin Tests">
   <img src="https://img.shields.io/badge/integration%20tests-294%20passing-brightgreen" alt="Integration Tests">
   <img src="https://img.shields.io/badge/cli%20tests-23%20passing-brightgreen" alt="CLI Tests">
   <img src="https://img.shields.io/badge/rust-1.95%2B-orange" alt="Rust Version">
@@ -103,6 +103,7 @@ The compiler validates the spec against each plugin's JSON schema (`vacuum:barba
 Full documentation is available at **[docs.barbacane.dev](https://docs.barbacane.dev)**.
 
 - [Installation](https://docs.barbacane.dev/guide/installation.html): release binaries, container images, crates.io, source
+- [Migrating from 0.12 to 1.0](https://docs.barbacane.dev/guide/migrating-to-1.0.html): what changes, what to do, in which order
 - [Getting Started](https://docs.barbacane.dev/guide/getting-started.html) — First steps with Barbacane
 - [Spec Configuration](https://docs.barbacane.dev/guide/spec-configuration.html) — Configure routing and middleware via `x-barbacane-*` extensions
 - [Dispatchers](https://docs.barbacane.dev/guide/dispatchers.html) — Route requests to HTTP, Lambda, S3, Kafka, NATS, WebSocket backends
@@ -129,11 +130,11 @@ docker-compose up -d
 # Grafana: http://localhost:3000 (admin/admin)
 ```
 
-The playground includes a Train Travel API demo with WireMock backend, full observability stack (Prometheus, Loki, Tempo, Grafana), and the control plane UI. See [barbacane-dev/playground](https://github.com/barbacane-dev/playground) for details.
+The playground includes a Train Travel API demo with WireMock backend, full observability stack (Prometheus, Loki, Tempo, Grafana), and the control plane. See [barbacane-dev/playground](https://github.com/barbacane-dev/playground) for details.
 
 ## Official Plugins
 
-34 production-ready plugins ship with Barbacane. They're built as WASM modules and run in a sandbox.
+29 official plugins ship with Barbacane. They're built as WASM modules and run in a sandbox.
 
 ### Dispatchers — where the request goes
 

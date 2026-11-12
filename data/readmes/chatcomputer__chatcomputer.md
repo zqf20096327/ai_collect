@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <a href="https://chatcomputer.github.io">Website</a> ·
+  <a href="https://atomsprout.com/chatcomputer">Website</a> ·
   <a href="https://github.com/chatcomputer/chatcomputer/releases">Download</a> ·
   <a href="docs/STATUS.md">Status</a> ·
   <a href="PRIVACY.md">Privacy</a>
@@ -31,7 +31,7 @@ them. You can pause, cancel, or click the virtual Mac to take over at any moment
 Coding agents get the same Mac: the app is also a command line tool and an MCP server, so Claude Code, Codex and
 others can test GUI apps, installers and websites in a disposable macOS.
 
-The latest published pre-release is **[0.9.12 (73)](https://github.com/chatcomputer/chatcomputer/releases/tag/v0.9.12)**,
+The latest published pre-release is **[0.9.13 (74)](https://github.com/chatcomputer/chatcomputer/releases/tag/v0.9.13)**,
 with permission verification and recovery fixes. Validation is incomplete; see the
 [validation matrix](docs/VALIDATION-0.9.12-MATRIX.md) for passed checks, unfinished scenarios and unavailable test environments.
 
@@ -53,7 +53,7 @@ with permission verification and recovery fixes. Validation is incomplete; see t
 20 fixed tasks (web forms, PDF export, spreadsheets, file organisation, Calendar, a planted prompt injection, an
 email that must be confirmed first) run from the same snapshot every time, and a program checks each result.
 Historical baseline from 2026-10-04, not a verification of the next release
-(every run, task by task, on [the website](https://chatcomputer.github.io/#results)):
+(every run, task by task, on [the website](https://atomsprout.com/chatcomputer/#results)):
 
 | Agent | Passed | Median turns per task |
 |---|---|---|

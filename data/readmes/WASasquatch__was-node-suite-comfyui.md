@@ -7,7 +7,7 @@ first packs to put hundreds of nodes into users' hands. WAS-NS has over a millio
 and is used by thousands of users daily. It has been MIT since the first commit: use it, change it, 
 teach with it, or run it in paid services.
 
-The pack contains **691 nodes for ComfyUI**, across images, filters and colour, masking, 
+The pack contains **694 nodes for ComfyUI**, across images, filters and colour, masking, 
 text and prompts, logic and flow, numbers, latents and sampling, files, animation and video, 
 and Llama-Index in ComfyUI. 
 
@@ -47,18 +47,22 @@ database and the wildcard, LUT and view-extension folders are written under
 `<ComfyUI user dir>/was-node-suite/`, and python compiles the pack to bytecode. An update
 recompiles, so it happens once more each time you pull.
 
-Three optional groups want packages and ship off: `document_export`, which lets **Save DOC**
-write `.docx`, `.odt` and `.pdf`, `llm`, the language model nodes, and `vector_stores`, which
-adds Chroma, LanceDB, FAISS and Postgres to the LLM nodes' vector stores.
+Four optional groups want packages and ship off: `document_export`, which lets **Save DOC**
+write `.docx`, `.odt` and `.pdf`, `llm`, the language model nodes, `vector_stores`, which adds
+LanceDB, FAISS and Postgres to the LLM nodes' vector stores, and `chroma`, which adds Chroma.
 
 ```sh
 # portable ComfyUI, from the ComfyUI_windows_portable directory
 python_embeded\python.exe -m pip install -r ComfyUI\custom_nodes\was-node-suite-comfyui\requirements\document_export.txt
 python_embeded\python.exe -m pip install -r ComfyUI\custom_nodes\was-node-suite-comfyui\requirements\llm.txt
 python_embeded\python.exe -m pip install -r ComfyUI\custom_nodes\was-node-suite-comfyui\requirements\vector_stores.txt
+python_embeded\python.exe -m pip install -r ComfyUI\custom_nodes\was-node-suite-comfyui\requirements\chroma.txt
 ```
 
-Then set `document_export: true`, `llm: true` or `vector_stores: true` under `features:` in `config.yaml`. The `llm`
+[Open Manager](https://github.com/WASasquatch/open-manager-comfyui) installs the same four
+groups from the **Optional** tab on the pack's page.
+
+Then set `document_export: true`, `llm: true`, `vector_stores: true` or `chroma: true` under `features:` in `config.yaml`. The `llm`
 group's keys, model folders and servers: [`docs/LLM.md`](docs/LLM.md).
 [`docs/CONFIG.md`](docs/CONFIG.md#features) has every group, what it needs and what it gates.
 
@@ -66,7 +70,7 @@ group's keys, model folders and servers: [`docs/LLM.md`](docs/LLM.md).
 
 # What changed since v2
 
-691 nodes across a package of source files. The pack itself needs no packages, and nothing is
+694 nodes across a package of source files. The pack itself needs no packages, and nothing is
 fetched from a git URL. What it bundles ships in the repository with its licence beside it,
 listed in [`docs/THIRD_PARTY.md`](docs/THIRD_PARTY.md).
 
@@ -169,7 +173,7 @@ a core ComfyUI node. Only the label changed, and the old names still find them i
 
 # Nodes
 
-**691 nodes** across 67 categories. [`NODES.md`](NODES.md) carries every input, output and
+**694 nodes** across 67 categories. [`NODES.md`](NODES.md) carries every input, output and
 tooltip, and groups them by the `config.yaml` switch that gates them:
 [feature gates](NODES.md#feature-gates).
 

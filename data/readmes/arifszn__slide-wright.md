@@ -5,9 +5,10 @@
 ## How it works
 
 1. **Tell it what you want.** A topic, rough notes, or a full outline — whatever you have.
-2. **It generates a theme.** A custom color palette, typography, and a 2-slide preview in that style. It opens the preview for you.
-3. **You decide.** Love it? It builds the whole deck. Want a different vibe? It generates a fresh direction and shows a new preview. Repeat until it's right.
-4. **You get your deck.** A polished, self-contained presentation. Export it to PDF or PowerPoint, or deploy it to a live URL for a link that works on any device.
+2. **It asks two things.** How many design directions you want to compare, and whether you want animation.
+3. **It generates the themes.** A custom color palette, typography, and a 2-slide preview for each direction. It opens the previews for you.
+4. **You decide.** Pick one and it builds the whole deck. Want a different vibe? It generates fresh directions and shows new previews. Repeat until it's right.
+5. **You get your deck.** A polished, self-contained presentation. Export it to PDF or PowerPoint, or deploy it to a live URL for a link that works on any device.
 
 https://github.com/user-attachments/assets/911a77d8-fae4-48aa-81a0-594e675534c9
 
@@ -78,7 +79,7 @@ After installing, invoke the skill by name with what you want:
 /slide-wright Make me a slide deck about <your topic>
 ```
 
-It builds a theme and a short preview first. Approve it and it generates the full deck. You can hand it rough notes or an outline instead of a topic, and ask it to revise the design or content anytime.
+It asks how many design directions to preview and whether to animate, then shows a short preview of each. Pick one and it generates the full deck. You can hand it rough notes or an outline instead of a topic, and ask it to revise the design or content anytime.
 
 A plain request without the name ("Make me a slide deck about...") also works, but apps with their own built-in slide builder may route it there instead. Naming the skill makes sure slide-wright handles it.
 
@@ -94,7 +95,7 @@ A plain request without the name ("Make me a slide deck about...") also works, b
 
 ## Export to PowerPoint
 
-Ask the agent to export the deck as a PowerPoint file. Text comes out as editable text boxes with speaker notes; shapes, charts, and images are baked into each slide's background, so they look the same but are not editable. Fonts are not embedded, so on a machine without the deck's fonts PowerPoint substitutes similar ones. Use the PDF export when exact typography matters.
+Ask the agent to export the deck as a PowerPoint file. Text comes out as editable text boxes with speaker notes, and local videos are embedded; shapes, charts, and images are baked into each slide's background, so they look the same but are not editable. Fonts are not embedded, so on a machine without the deck's fonts PowerPoint substitutes similar ones. Use the PDF export when exact typography matters.
 
 ```
 /slide-wright Export my deck to PowerPoint

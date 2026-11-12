@@ -43,7 +43,7 @@ Six open-source TTS engines — voice cloning, voice design, multi-character scr
 
 ### 系统架构
 
-![系统架构](https://gcore.jsdelivr.net/gh/ReSerendipity/TTS-MultiModel@main/docs/assets/readme-tts-multimodel-6.svg)
+![系统架构](https://gcore.jsdelivr.net/gh/ReSerendipity/TTS-MultiModel@main/docs/assets/readme-tts-multimodel-6-20261112.svg)
 
 客户端（Web UI / CLI / OpenAI 兼容 API）→ FastAPI 引擎注册表 → 六套本地引擎 + Edge-TTS 在线兜底 → SQLite 历史 / outputs / personas。
 
@@ -53,9 +53,9 @@ Six open-source TTS engines — voice cloning, voice design, multi-character scr
 
 **首次启动引导（onboarding）**
 
-![首次启动引导](https://gcore.jsdelivr.net/gh/ReSerendipity/TTS-MultiModel@main/docs/assets/readme-tts-multimodel-shot-0-guide-20261026.png)
+![首次启动引导](https://gcore.jsdelivr.net/gh/ReSerendipity/TTS-MultiModel@main/docs/assets/readme-tts-multimodel-shot-0-guide-20261112.png)
 
-首次打开会出现 4 步新手引导，spotlight 高亮当前操作的菜单项；完成后不再弹出。
+首次引导完成后进入声音设计工作台：左侧引擎与模式导航，中间为合成文本、语言、描述创建/已保存音色、声音描述与音色标签，右侧为结果音频区。
 
 **主界面（引导完成后）**
 
@@ -183,7 +183,7 @@ The **code is Apache-2.0 and ships with no model weights**. You download weights
 
 ### Architecture
 
-![Architecture](https://gcore.jsdelivr.net/gh/ReSerendipity/TTS-MultiModel@main/docs/assets/readme-tts-multimodel-6.svg)
+![Architecture](https://gcore.jsdelivr.net/gh/ReSerendipity/TTS-MultiModel@main/docs/assets/readme-tts-multimodel-6-20261112.svg)
 
 Clients (web UI / CLI / OpenAI-compatible API) → FastAPI engine registry → six local engines + Edge-TTS online fallback → SQLite history / outputs / personas.
 
@@ -193,9 +193,9 @@ Captured live from source: `python app/clean_launch.py` on `http://127.0.0.1:786
 
 **First-run onboarding**
 
-![First-run onboarding](https://gcore.jsdelivr.net/gh/ReSerendipity/TTS-MultiModel@main/docs/assets/readme-tts-multimodel-shot-0-guide-20261026.png)
+![First-run onboarding](https://gcore.jsdelivr.net/gh/ReSerendipity/TTS-MultiModel@main/docs/assets/readme-tts-multimodel-shot-0-guide-20261112.png)
 
-A 4-step walkthrough appears on first launch, spotlighting the current menu item; it does not reappear after completion.
+After the first-run walkthrough, the Voice Design workbench: engine and mode navigation on the left; synthesis text, language, description tabs, voice description and timbre tags in the center; result audio panel on the right.
 
 **Main UI (after onboarding)**
 

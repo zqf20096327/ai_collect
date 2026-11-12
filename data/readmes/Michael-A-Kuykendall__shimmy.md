@@ -1,3 +1,5 @@
+**Languages / 语言 / 語言:** English · [简体中文](docs/zh-CN/README.md) · [繁體中文](docs/zh-TW/README.md)
+
 <div align="center">
   <img src="https://raw.githubusercontent.com/Michael-A-Kuykendall/shimmy/main/assets/shimmy-logo.png" alt="Shimmy Logo" width="300" height="auto" />
 
@@ -18,33 +20,32 @@
 
 </div>
 
-## Shimmy 2.6.6
+## Shimmy 2.6.7 — released November 12, 2026
 
-Shimmy is a local inference server and CLI; **Airframe 0.4.5 is its engine**.
-This is a coordinated dense-text correctness, dependency-security and
-documentation release, not a new architecture or performance release.
-See [CHANGELOG](CHANGELOG.md).
+Shimmy 2.6.7 is published and uses **Airframe 0.4.6**. This release includes the certified Apple M1 (Virtual) Metal corrections, while physical M4, Qwen3.5 and other unexecuted hardware/models remain **NOT_RUN or unsupported**. See [release notes](CHANGELOG.md), [certification](docs/CERTIFICATION.md) and [verified native downloads](docs/BINARY_INSTALL.md).
+
+Shimmy is a local GGUF inference server and CLI. The previous **Shimmy 2.6.6 / Airframe 0.4.5** release remains available as historical artifacts, not the recommended current installation.
 
 **Default dependency licensing:** Shimmy → Airframe → libfse. Shimmy is Apache-2.0; Airframe and airframe-observe are MIT; ShimmyTok is MIT OR Apache-2.0. The [libfse 0.1.4 additional Apache-2.0 grant](https://github.com/Michael-A-Kuykendall/airframe/blob/8efb1e7a830b0822cfc5ac1b121e149948d5ffe3/crates/libfse/LICENSE-GRANT-0.1.4.md) permits commercial use, modification, redistribution and incorporation into products without separate commercial permission. The original crates.io archive and metadata remain unchanged. Preserve component and third-party notices; see [stack licensing](LICENSING.md).
 
 ## Install and run
 
-Verified [native 2.6.6 archives and checksum instructions](docs/BINARY_INSTALL.md) are available separately from crates.io, including the Windows executable and complete licensing bundles.
+Verified [native 2.6.7 archives and checksum instructions](docs/BINARY_INSTALL.md) are available separately from crates.io, including the Windows executable and complete licensing bundles.
 
 Install the versioned crate with a Rust toolchain:
 
 ```bash
-cargo install shimmy --version 2.6.6 --locked
+cargo install shimmy --version 2.6.7 --locked
 shimmy --version
 shimmy --ctx 512 --kv-quant f32 serve --model-path /path/to/model.gguf --bind 127.0.0.1:11435
 ```
 
 Use a verified admitted fixture in place of the path. A working Rust toolchain
 and GPU driver are required. The fast profile does not provide inference.
-The separately verified [native downloads, Homebrew and Scoop installers](docs/BINARY_INSTALL.md) and [versioned GHCR image](README-DOCKER.md) are now available for 2.6.6. A crates.io upload does not create those channels automatically. Docker latest is unchanged; npm is not included. Verify the exact installed version.
+The separately verified [native downloads, Homebrew and Scoop installers](docs/BINARY_INSTALL.md) and [versioned GHCR image](README-DOCKER.md) are available for **2.6.7**. A crates.io upload does not create those channels automatically. Docker latest is unchanged; npm is not included. Verify the exact installed version.
 
 See [quickstart](docs/quickstart.md) for model hashes, listing, requests and
-network access. Unavailable translations are not linked as current guides.
+network access. Simplified and Traditional Chinese guides are linked above; English remains the authoritative technical contract.
 
 ## Correctness and support
 
@@ -58,10 +59,7 @@ tokenizers or quantization is not certification. Gemma2, MoE, MLA, recurrent,
 state-space and multimodal executors are not enabled.
 INT4/TurboShimmy and experimental kernels remain excluded and rejected.
 
-Executed full-logit GPU evidence is NVIDIA through WSL Dozen/Vulkan. **NOT_RUN for full-logit certification:** Metal/M4,
-other unexecuted native GPU platforms, extended-context Llama, alternate
-prefill chunks and unlisted combinations. WSL device-destruction and
-active-generation device-loss investigations remain open.
+**Released Shimmy 2.6.7 / Airframe 0.4.6:** the qualified Apple M1 (Virtual) / Apple Paravirtual Metal / macOS 15.8.2 path passed **198/198** full-logit comparisons and integrated HTTP/state gates with frozen FP32 tolerances. This correction is included in the released Airframe 0.4.6 engine. See [certification and exact model scope](docs/CERTIFICATION.md) and the [release evidence](docs/releases/apple-metal-m1-2026-11.md). Previous NVIDIA/WSL Vulkan numerical checks remain separate platform evidence. **Physical M4 and Qwen3.5-9B on M4 remain NOT_RUN; Qwen3.5 execution is unsupported.** The historical intermittent 8K stall root cause, watchdog cleanup, WSL device destruction and active-generation device-loss investigations remain open. Untested platforms/models, extended-context Llama and experimental modes remain NOT_RUN.
 No universal determinism, startup, multi-GPU, memory or speed guarantee is made.
 
 ## Server contract
@@ -87,6 +85,8 @@ before readiness without eliminating it or guaranteeing stability.
 - [Docker scope](README-DOCKER.md), [Windows scope](docs/WINDOWS_GPU_BUILD_GUIDE.md) and [troubleshooting](docs/TROUBLESHOOTING.md)
 - [Security](SECURITY.md), [release process](RELEASE_PROCESS.md) and [release gates](RELEASE_GATES_CHECKLIST.md)
 - [Developer guide](DEVELOPERS.md), [contribution policy](CONTRIBUTING.md) and [roadmap](ROADMAP.md)
+
+**Wiki notice:** The separate [GitHub Wiki](https://github.com/Michael-A-Kuykendall/shimmy/wiki) contains historical pre-2.6.7 instructions. For current installation, supported models, security policy and feature availability, use the maintained documents linked above; old llama.cpp/MLX/MoE commands and family-wide GPU claims are not the 2.6.7 support contract.
 
 Shimmy source is Apache-2.0. Airframe runtime and Observe are MIT; ShimmyTok is dual-licensed. libfse 0.1.4 is covered by the [additional Apache-2.0 grant](https://github.com/Michael-A-Kuykendall/airframe/blob/8efb1e7a830b0822cfc5ac1b121e149948d5ffe3/crates/libfse/LICENSE-GRANT-0.1.4.md), permitting commercial use without separate permission. Preserve applicable component, dependency and model terms; see [stack licensing](LICENSING.md).
 

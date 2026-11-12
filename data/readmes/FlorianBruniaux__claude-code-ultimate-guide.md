@@ -144,6 +144,7 @@ An agent is one component of a larger system. The surrounding harness controls c
 | Resource | Decision it supports |
 |---|---|
 | [Agent Harness Engineering](./guide/core/agent-harness.md) | Identify the controls required around an agent loop |
+| [The minimal harness](https://www.florian.bruniaux.com/resources/minimal-harness/?utm_source=github&utm_medium=readme&utm_campaign=harness-minimal&utm_content=readme) | Replay three versions of a sign-up service to find a false positive. Fillable PDF by email. |
 | [Loop & Graph Engineering](./guide/core/loop-graph-engineering.md) | Choose bounded feedback loops or explicit workflow graphs |
 | [AI Design Patterns](./guide/core/ai-design-patterns.md) | Explain an agent design with the GoF, integration, and resilience patterns developers know |
 | [Agent Harness Map](./guide/ecosystem/agent-harness-landscape.md) | Distinguish runtimes, orchestrators, frameworks, control planes, and support tools |
@@ -258,8 +259,8 @@ The economics pages separate observed costs from estimates and scenarios. Recalc
 Install the guide as a stdio MCP server and query it from Claude Code, Codex, Cursor, VS Code, or another MCP client.
 
 ```bash
-claude mcp add --scope user claude-code-guide -- npx -y claude-code-ultimate-guide-mcp@1.3.7
-codex mcp add claude-code-guide -- npx -y claude-code-ultimate-guide-mcp@1.3.7
+claude mcp add --scope user claude-code-guide -- npx -y claude-code-ultimate-guide-mcp@1.3.8
+codex mcp add claude-code-guide -- npx -y claude-code-ultimate-guide-mcp@1.3.8
 ```
 
 Project-scoped Claude Code configuration belongs in `.mcp.json`:
@@ -270,7 +271,7 @@ Project-scoped Claude Code configuration belongs in `.mcp.json`:
     "claude-code-guide": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "claude-code-ultimate-guide-mcp@1.3.7"]
+      "args": ["-y", "claude-code-ultimate-guide-mcp@1.3.8"]
     }
   }
 }

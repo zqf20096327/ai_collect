@@ -1,5 +1,10 @@
 <p align="center">
-  <img src="assets/readme/hero.svg" width="100%" alt="Des-CTF-Knowledge：CTF 解题参考知识库，1049 篇 WP、67 张技法卡片、12 篇专题笔记。">
+  <img src="assets/readme/hero-particles.gif" width="100%" alt="Des-CTF-Knowledge：CTF 解题参考知识库，1049 篇 WP、67 张技法卡片、12 篇专题笔记。">
+</p>
+<p align="center">
+  <a href="https://github.com/Dest1ny-Sec/Des-CTF-Knowledge/releases/latest"><img src="https://img.shields.io/github/v/release/Dest1ny-Sec/Des-CTF-Knowledge?style=flat-square&amp;label=Release&amp;color=365a76" alt="最新发布版本"></a>
+  &nbsp;·&nbsp;
+  <a href="assets/readme/hero.svg">静态封面</a>
 </p>
 
 <h1 align="center">Des-CTF-Knowledge</h1>

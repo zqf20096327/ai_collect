@@ -17,17 +17,17 @@ Ten API providers, sign-ins to your own Claude and ChatGPT subscriptions, and an
 
 | Provider | Models | Highlights |
 |---|---|---|
-| **Anthropic** | Claude Fable 5.1 / Fable 5 (always-on adaptive thinking), Claude Opus 5.5 (1M ctx / 128K out, always-on adaptive thinking, 0.05× cache reads), Claude Opus 5 (1M ctx / 128K out, thinking on by default with an honest Off dial), Claude Sonnet 5.5 (thinking on by default; Off skips thinking before the answer), Claude Sonnet 5, Opus 4.8 / 4.7 (adaptive-only thinking), Opus 4.6 (1M ctx, 128K out), Sonnet 4.6, Haiku 4.5 | Off / Budget / Adaptive thinking, effort control (Low → Max), prompt caching with per-session TTL, fast-mode toggle (Opus 4.8 / 5 / 5.5), categorized refusal cards, serving-model transparency |
-| **OpenAI** | GPT-6 Astra, GPT-6.1 Sol, GPT-6 Sol / Luna, GPT-5.6 Sol / Terra / Luna, GPT-5.5 / 5.5 Pro, GPT-5.4 / 5.4 Pro / Mini / Nano, GPT-5.1, GPT-4.1 / Mini, GPT Chat (Instant) | Reasoning models via the Responses API with visible thinking summaries (effort None → Max where supported), Chat Completions for the non-reasoning models, cached-input accounting, fast mode on GPT-6 Astra, 6.1 Sol, 6 Sol and 6 Luna (one Engine dial applies it to the composer, the context helpers and every pipeline worker) |
-| **Google** | Gemini 3.8 / 3.7 Flash, Gemini 3.5 Flash / Flash-Lite, Gemini 3.1 Pro, Gemini 3.1 Flash-Lite, Gemini 2.5 Pro / Flash / Flash-Lite | Thinking levels on 3.x, thinking budget on 2.5 (true off where the API permits, honest always-on where it doesn't), explicit safety settings with loud filter failures, thinking-token accounting, long-context tier pricing in the cost overlay, native PDF + image support |
+| **Anthropic** | Claude Fable 5.2 / 5.1 / 5 (always-on adaptive thinking), Claude Opus 5.5 (1M ctx / 128K out, always-on adaptive thinking, 0.05× cache reads), Claude Opus 5 (1M ctx / 128K out, thinking on by default with an honest Off dial), Claude Sonnet 5.5 (thinking on by default; Off skips thinking before the answer), Claude Sonnet 5, Opus 4.8 / 4.7 (adaptive-only thinking), Opus 4.6 (1M ctx, 128K out), Sonnet 4.6, Haiku 5.5 (thinking on by default; a prompt over 100K tokens costs five times the rates), Haiku 4.5 | Off / Budget / Adaptive thinking, effort control (Low → Max), prompt caching with per-session TTL, fast-mode toggle (Opus 4.8 / 5 / 5.5, Fable 5.2), categorized refusal cards, serving-model transparency |
+| **OpenAI** | GPT-6 Astra, GPT-6.1 Sol / Terra, GPT-6 Sol / Luna, GPT-5.6 Sol / Terra / Luna, GPT-5.5 / 5.5 Pro, GPT-5.4 / 5.4 Pro / Mini / Nano, GPT-5.1, GPT-4.1 / Mini, GPT Chat (Instant) | Reasoning models via the Responses API with visible thinking summaries (effort None → Max where supported), Chat Completions for the non-reasoning models, cached-input accounting, fast mode on GPT-6 Astra, 6.1 Sol, 6.1 Terra, 6 Sol and 6 Luna (one Engine dial applies it to the composer, the context helpers and every pipeline worker) |
+| **Google** | Gemini 4 Argon (1M context shared by input, thinking and output), Gemini 3.8 Flash, Gemini 3.5 Flash-Lite, Gemini 3.1 Pro, Gemini 3.1 Flash-Lite, Gemini 2.5 Pro / Flash / Flash-Lite | Thinking levels on Gemini 4 and 3.x, thinking budget on 2.5 (true off where the API permits, honest always-on where it doesn't), explicit safety settings with loud filter failures, thinking-token accounting, long-context tier pricing in the cost overlay, native PDF + image support |
 | **xAI** | Grok 4.7, Grok 4.6, Grok 4.5, Grok 4.3, Grok 4.20 (R/NR) | Streamed reasoning summaries, model-aware reasoning-effort control, cached-input pricing, long-context tier pricing |
 | **DeepSeek** | DeepSeek V4 Pro, DeepSeek Flash (V4.1) | On/off thinking toggle with a low / high / max effort ladder while thinking, streamed reasoning content, cache-hit pricing, 1M context / 384K output |
 | **z.ai** | GLM-5.3 / 5.3 Flash / 5.3 FlashX (always-on reasoning), GLM-5.2, GLM-5.1, GLM-5, GLM-5 Turbo, GLM-4.7, GLM-4.7 FlashX, GLM-4.6, GLM-4.5 | On/off thinking toggle with streamed reasoning content, cache-hit pricing |
 | **Xiaomi** | MiMo V2.6 Pro, MiMo V2.6 Flash, MiMo V2.6 Pro UltraSpeed | 1M context, on/off thinking toggle with streamed reasoning content, cached-input pricing |
-| **Moonshot AI** | Kimi K3 (1M context, always-on reasoning with a low/high/max effort ladder), Kimi K2.6 | Automatic context caching with cache-hit pricing and per-conversation cache affinity; on/off thinking toggle on K2.6 with streamed reasoning content |
-| **Fireworks AI** | Kimi K3, Kimi K3 Fast | The open-weight Kimi K3 through Fireworks AI's API instead of Moonshot's own: a reasoning-effort ladder, a temperature dial (honored alongside effort), streamed reasoning content |
-| **GMICloud** | MiMo V2.6 Pro / Flash, MiMo v2.5 Pro / v2.5 | The open-weight MiMo models through GMICloud's API instead of Xiaomi's own: thinking on by default with a true off switch, streamed reasoning content |
-| **Claude subscription** (built in) | Claude Fable 5.1 / Fable 5 / Opus 5.5 / Opus 5 / Sonnet 5.5 / Sonnet 5 / Opus 4.8 / 4.7 / 4.6 / Sonnet 4.6 / Haiku 4.5, as `-bridge` model variants | Each user signs in to their own Claude subscription under **Options → Providers → Subscriptions** (or uses a server-wide sign-in an administrator connected, see [Administration](#administration)); turns run through the official, unmodified [Claude Code](https://docs.claude.com/en/docs/claude-code/overview) program inside the bundled runner container. The models appear in the pickers once a sign-in is connected |
+| **Moonshot AI** | Kimi K3.1 Pro and K3.1 Pro HighSpeed, Kimi K3 (1M context, always-on reasoning with a low/high/max effort ladder), Kimi K2.6 | Automatic context caching with cache-hit pricing and per-conversation cache affinity; on/off thinking toggle on K2.6 with streamed reasoning content |
+| **Fireworks AI** | Kimi K3.1 Pro, Kimi K3, Kimi K3 Fast | The open-weight Kimi K3 and K3.1 Pro through Fireworks AI's API instead of Moonshot's own: a reasoning-effort ladder, a temperature dial (honored alongside effort), streamed reasoning content |
+| **GMICloud** | MiMo V2.6 Pro / Flash | The open-weight MiMo models through GMICloud's API instead of Xiaomi's own: thinking on by default with a true off switch, streamed reasoning content |
+| **Claude subscription** (built in) | Claude Fable 5.2 / 5.1 / 5 / Opus 5.5 / Opus 5 / Sonnet 5.5 / Sonnet 5 / Haiku 5.5 / Opus 4.8 / 4.7 / 4.6 / Sonnet 4.6 / Haiku 4.5, as `-bridge` model variants | Each user signs in to their own Claude subscription under **Options → Providers → Subscriptions** (or uses a server-wide sign-in an administrator connected, see [Administration](#administration)); turns run through the official, unmodified [Claude Code](https://docs.claude.com/en/docs/claude-code/overview) program inside the bundled runner container, pictures and PDFs included. The models appear in the pickers once a sign-in is connected |
 | **ChatGPT subscription** (built in) | GPT-6 Astra, GPT-6.1 Sol, GPT-6 Sol / Luna, GPT-5.6 Sol / Terra / Luna, as `-codex-bridge` variants | Each user signs in to their own ChatGPT subscription with a device code (or uses a server-wide sign-in). Main chat, the wizard, context helpers, validators and every automatic pipeline call run through the official [Codex App Server](https://developers.openai.com/codex/app-server/) in the same runner. Streamed text and thinking, images, cancellation, usage and served-model reporting are preserved, and the OpenAI fast dial requests the App Server's fast tier on all seven models |
 | **Custom endpoints** | OpenRouter, Together AI, Groq, vLLM, LM Studio, Ollama, anything OpenAI-compatible | Multiple named endpoints, per-endpoint API keys, custom model lists with configurable context/output limits, Chat Completions or Responses API formats. Every endpoint URL must use `https://`; a server on your own network (LM Studio or Ollama, for example) also needs its host name in `CUSTOM_ENDPOINT_ALLOW_HOSTS` |
 
@@ -45,7 +45,7 @@ A queue-driven worker maintains campaign state from the replies the player keeps
 
 - **Rolling diff:** after the session's new transcript crosses a character threshold, a small model writes incremental lorebook edits (create / update / disable entries) directly from the transcript.
 - **Repetition detection:** periodically scans for narrative repetition and proposes anti-repetition rules (ban / limit / vary tiers) that are injected into the system prompt.
-- **Sysprompt audit:** periodically reviews the system prompt for drift against the live lorebook state and rewrites it surgically.
+- **Sysprompt audit:** periodically reviews the campaign's system prompt against the turns played since its last review and updates the rules that changed, one section at a time; the story itself stays in the lorebook.
 - **Lorebook consolidation:** periodically dedupes and merges related entries.
 - **Lorebook archival:** entries that haven't been activated in many turns are compressed into a synopsis "trigger" that stays searchable but no longer carries narrative cost. Their full content stays in cold storage and is inflated back into context when the trigger activates.
 - **Narrative thread tracking:** a worker maintains a live index of open story threads (status, last progress, next beat) as an always-in-context lorebook entry, with a full detail entry per thread retrieved on demand. Resolved threads fall off through a grace window and graduate into the event history, so the index stays focused on what's still live.
@@ -61,8 +61,8 @@ Every turn assembles its context from the lorebook through a multi-signal retrie
 - **HyDE query expansion:** a helper model rewrites the user's turn into a hypothetical-answer query to widen semantic recall.
 - **Synonym key expansion:** when the rolling-diff worker creates or updates an entry, it widens the entry's keys with synonyms and alternate phrasings so the entry activates on those too.
 - **Researcher pass:** a helper model picks relevant entries the keyword and semantic passes missed.
-- **Scene presence override:** characters physically present in the current scene always get their entries loaded, whatever their activation scores.
-- **Budget pruning:** entries are scored and fitted into a configurable retrieval budget (42,000 tokens by default). Constant entries and the entries of characters present in the scene always go in. Referenced thread entries are guaranteed up to their own token cap (6,000 tokens by default). Everything else, sticky entries included, competes for the rest of the budget.
+- **Scene presence override:** characters physically present in the current scene get their entries loaded whatever their activation scores. A session can cap this guarantee in tokens (the Engine panel's Present-character guarantee, 0 and so uncapped by default); past the cap, the characters the next reply needs most keep it and the others compete for the budget.
+- **Budget pruning:** entries are scored and fitted into a configurable retrieval budget (42,000 tokens by default). Constant entries always go in, and so do the entries of characters present in the scene, up to that cap when one is set. Referenced thread entries are guaranteed up to their own token cap (6,000 tokens by default). Everything else, sticky entries included, competes for the rest of the budget.
 
 **Scene markers:** assistant responses emit `[SCENE]` blocks tagging location, present characters, present-but-unaware characters, in-world date/time, and notes. The parser strips the block from visible output and persists it as structured data. Downstream turns get a `<scene_state>` context injection enforcing knowledge boundaries across scene transitions, plus per-character **epistemic scoping** via `known_by` tags on lorebook entries (Scene Knowledge and Narrator-Only Knowledge sections in the prompt).
 
@@ -79,17 +79,16 @@ Already have a SillyTavern lorebook? **Import SillyTavern Compatible Lorebook** 
 
 ### Beyond the basics
 
-Everything above is the core loop. Later releases added more on top: autonomous NPC drive sheets and offscreen world ticks (Living World), a world-event authority that arms complications from live campaign state (the Dramatist, on by default for new sessions), server-adjudicated contested outcomes with a consequence ledger (Adversarial World), a fully automated full-history Campaign Audit, message variants (swipes), per-entry lorebook revision history, a per-character voice and pacing layer (Character Engine), and a refusal-prevention layer for the composers that need one (Content honesty, see [A note on content](#a-note-on-content)). Each has its own group in a session's Engine panel, and [`CHANGELOG.md`](CHANGELOG.md) describes them by feature area.
+Everything above is the core loop. Later releases added more on top: autonomous NPC drive sheets and offscreen world ticks (Living World), a world-event authority that arms complications from live campaign state (the Dramatist, on by default for new sessions), server-adjudicated contested outcomes with a consequence ledger (Adversarial World), a fully automated full-history Campaign Audit, message variants (swipes), per-entry lorebook revision history, a per-character voice and pacing layer (Character Engine), and a refusal-prevention layer for the composers that need one (Content honesty, see [A note on content](#a-note-on-content)). The engine features among them have their own groups or switches in a session's Engine panel, and [`CHANGELOG.md`](CHANGELOG.md) describes them by feature area.
 
 ### Chat power tools
 - **Markdown rendering** with code blocks, dialogue highlighting and copy buttons
 - **File attachments:** text, PDFs and images (base64 for chat providers that support vision), stored in the database with their message
-- **Image generation:** GPT Image 2 and GPT Image 2.5 Flare / Sunburst, Gemini 3.1 Flash Image and Gemini 3 Pro Image, Grok Imagine and Grok Imagine 2.0, GLM Image
 - **Multi-session streaming:** stream several sessions at once; the sidebar marks each session that is streaming
 - **Browser-disconnect recovery:** the server accumulates streams independently and saves the result even if you close the tab mid-response
 - **Output-truncation detection:** a visible warning when a response hit the model's output limit
 - **Serving-model transparency:** a badge whenever the provider reports that a different model than the one requested produced the response, so provider-side substitutions and fallbacks are never silent
-- **Full token accounting:** input, output, reasoning, cache-read and cache-write tokens per message, with per-model pricing (including long-context tiers and cache-hit rates) rolled into a live session cost estimate
+- **Full token accounting:** input, output, reasoning, cache-read and cache-write tokens per message, with per-model pricing (including long-context tiers, cache-hit rates and a provider's published price changes, each turn at the rates of its day) rolled into a live session cost estimate
 - **Background-task observability:** embedding, retrieval, validator and pipeline failures are recorded as system events and shown in the UI
 - **Message actions:** edit, delete, resend, regenerate (a new variant beside the old one), cut after a message, copy. A cut or resend that would remove more than two later messages asks you to confirm how many go, and a page showing an out-of-date transcript is refused and reloads instead of cutting messages it never loaded
 - **Search:** global search across all sessions plus in-session `Ctrl+F`
@@ -100,7 +99,7 @@ Everything above is the core loop. Later releases added more on top: autonomous 
 ### Administration
 Administrators find these under **Options → Admin**:
 
-- **Users:** create and delete accounts, reset passwords, change roles, view a user's sessions, and reset someone's two-step sign-in after a lost phone. **Invite Links** makes one-time sign-up links (a role, an optional fixed username, 1 to 30 days) that work with sign-up off and without email.
+- **Users:** create and delete accounts, reset passwords, change roles, choose the model a person's new sessions start on, view a user's sessions, and reset someone's two-step sign-in after a lost phone. **Invite Links** makes one-time sign-up links (a role, an optional fixed username, 1 to 30 days) that work with sign-up off and without email.
 - **Server settings**, changed in the browser without editing files or restarting:
   - **Accounts:** sign-up Off (the default on a new server) or Open, which needs working email; whether sign-up asks people to accept the terms; the terms and privacy text.
   - **Two-factor:** Off, Optional or Required, with an authenticator app and email codes as the methods.
@@ -111,13 +110,13 @@ Administrators find these under **Options → Admin**:
   - **Server:** a read-only view of `TRUST_PROXY`, `ALLOWED_IPS` and which coding panels are set up.
 
   Email and shared keys can also come from `.env`; a value set there wins and shows locked on the page.
-- **Storage:** disk usage, image count and size, and a bulk purge of generated images.
+- **Storage:** the disk's size and free space, and the size of the server's data.
 - **Audit:** a database-backed log of account, administration, settings, pipeline and wizard actions.
 - **Coding panels:** full-screen Claude Code, Codex and Kimi (K3) workspaces that drive agent services running outside this app. None is set up automatically; see [Coding panels](#coding-panels-optional).
 
 ### Security
 - **Provider keys stay on the server.** The browser never receives them, and status views show only a redacted preview. Stored provider and custom-endpoint keys, the shared keys, the email secrets and authenticator secrets are encrypted with AES-256-GCM under a key derived (HKDF) from the deployment's session secret.
-- **Sessions:** `httpOnly`, `sameSite=lax` cookies (`secure` when `TRUST_PROXY` is on), stored in SQLite and regenerated at sign-in. Sessions end at the daily sign-out hour with at least four hours of runway, and a lapsed session shows a sign-in overlay over the still-open app, so an unsent draft survives.
+- **Sessions:** `httpOnly`, `sameSite=lax` cookies (`secure` when `TRUST_PROXY` is on), stored in SQLite and regenerated at sign-in. Sessions end at the daily sign-out hour with at least four hours of runway after their last use (what a hidden or idle page sends does not count), and a week at most; a lapsed session shows a sign-in overlay over the still-open app, so an unsent draft survives.
 - **Two-step sign-in:** Off, Optional or Required, chosen by the administrator. People use an authenticator app (any TOTP app, with ten one-time recovery codes per setup) or email codes, as the administrator allows, and can trust a device for 30 days; an administrator can reset a lost phone. A recovery command covers the case where nobody can sign in ([Recovering access](#recovering-access)).
 - **Passwords:** bcrypt with cost 12, at least eight characters with upper and lower case and a digit, at most 72 bytes; changing a password revokes trusted devices.
 - **Rate limits:** sign-in locks for 30 minutes after 5 failures for one username or 30 from one address. The registration, invite, password-reset, two-step and email-change flows each lock an address out for 15 minutes after 10 requests; each emailed code allows 5 attempts, and at most 6 codes go out per 10 minutes. Ten wrong first-run setup codes lock an address out of setup for 15 minutes.
@@ -136,7 +135,7 @@ Administrators find these under **Options → Admin**:
 - **No external database.** SQLite with WAL journaling, one database file under `./data/`.
 - **No Redis.** Sessions are stored in the same SQLite database, so they survive restarts without an extra service.
 - **No message queue.** The worker polls the database for pipeline and wizard jobs.
-- **No object storage.** Generated images are flat files in `./data/v2/images/`; uploaded attachments are stored in the database.
+- **No object storage.** Uploaded attachments are stored in the database.
 - **No separate auth service.** Everything is in-process.
 
 ---
@@ -150,7 +149,7 @@ TracyHill RP is a general-purpose collaborative-fiction tool, for anything from 
 - **Content honesty** is a refusal-prevention layer. In a campaign session whose composer is a Google model, **Kimi K3** or **Kimi K3 (Fireworks)**, it tells the model that the fiction is written for a consenting adult audience and that everything is allowed inside it. It is on by default and can be switched off for a session in its Engine panel.
 - Chat requests to Google's Gemini models switch off the safety filters Google lets callers adjust; Google's fixed protections still apply.
 
-On a new server, new sessions start at the highest values, world stance 4 and depiction tier 3, unless they inherit a campaign's settings. Only administrators can change these two: for one session in its Engine panel, and for every new session in **Admin: Server settings → New sessions**. Lower them if children use your server. A server that already had accounts before this setting existed keeps starting new sessions at stance 1 and tier 0.
+On a new server, new sessions start at the highest values, world stance 4 and depiction tier 3. Only administrators can change these two: for one session in its Engine panel, and for every new session in **Admin: Server settings → New sessions**. Lower them if children use your server. A server that already had accounts before this setting existed keeps starting new sessions at stance 1 and tier 0.
 
 The wizard works from an example system prompt that each account can replace (the Campaigns panel's **Wizard** tab, **Template Library**). The shipped example is the system prompt of a dark fantasy survival campaign. It is the structural guide for the wizard's interview and generation, and it carries that campaign's tone, so replace it if your audience needs something else. If you run a public or multi-user instance, treat the content settings, the wizard example, the chosen providers and your terms (Admin: Server settings → Accounts) as one content-policy surface.
 
@@ -196,7 +195,7 @@ curl http://localhost:3000/api/system/health
 ```bash
 docker compose down        # stops the containers; data and sign-ins stay
 docker compose down -v     # also deletes the named volumes: `subscriptions` (every Claude and ChatGPT sign-in) and `secrets`
-sudo rm -rf ./data         # deletes the database, the images and the session secret (on Linux the folder belongs to UID 1001)
+sudo rm -rf ./data         # deletes the database and the session secret (on Linux the folder belongs to UID 1001)
 ```
 
 A total reset takes the last two commands together. The init service writes the `secrets` volume again on the next start.
@@ -218,18 +217,19 @@ The API and the worker share the `./data` bind mount, and every service's logs r
 
 ### Option B: Local development (npm)
 
-For working on the code. You need Node 20 (the version in the Docker image) and npm; when no prebuilt `better-sqlite3` binary matches your platform, its install compiles one, which needs a C++ toolchain.
+For working on the code. You need Node 24 (the version in the Docker image) and npm; when no prebuilt `better-sqlite3` binary matches your platform, its install compiles one, which needs a C++ toolchain.
 
 ```bash
 npm ci                          # every workspace
 npm --prefix apps/runner ci     # the subscription runner: plain JavaScript, outside the npm workspaces
+npm --prefix tools/coding-agent-service ci   # the coding panels' service, likewise
 ```
 
 The npm scripts do not read `.env`, and each workspace script runs in its own folder, so every terminal needs the same absolute paths and the same secret. Generate a secret once with `openssl rand -hex 32`, then start each terminal at the repository root with:
 
 ```bash
 export SESSION_SECRET=<your secret> INLINE_WORKERS=0 RUNNER_URL=http://127.0.0.1:7710 \
-  DB_FILE="$PWD/data/dev/rp.sqlite" IMAGE_DIR="$PWD/data/dev/images" RUNNER_DATA_DIR="$PWD/data/dev/runner"
+  DB_FILE="$PWD/data/dev/rp.sqlite" RUNNER_DATA_DIR="$PWD/data/dev/runner"
 ```
 
 and run one of these in each:
@@ -241,7 +241,7 @@ npm run dev:web        # Vite on http://127.0.0.1:3010 with hot reload; it proxi
 npm run start:runner   # optional: the subscription runner on port 7710, for the Claude and ChatGPT models
 ```
 
-Open `http://127.0.0.1:3010`. The API prints the first-run setup code in its terminal. For development only: `MOCK_PROVIDER=1` replaces the chat, image, pipeline and wizard model calls with canned responses (embeddings still call their provider), and `SEED_DEMO_USER=1` creates a `demo` / `demo-pass` administrator on an empty database in place of first-run setup.
+Open `http://127.0.0.1:3010`. The API prints the first-run setup code in its terminal. For development only: `MOCK_PROVIDER=1` replaces the chat, pipeline and wizard model calls with canned responses (embeddings still call their provider), and `SEED_DEMO_USER=1` creates a `demo` / `demo-pass` administrator on an empty database in place of first-run setup.
 
 ### Option C: Build and run with Node
 
@@ -270,11 +270,11 @@ Sign-up, two-step sign-in, email, shared keys, the daily sign-out time and the s
 | **Providers** (optional server-wide keys) | `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GOOGLE_API_KEY`, `XAI_API_KEY`, `ZAI_API_KEY`, `DEEPSEEK_API_KEY`, `XIAOMI_API_KEY`, `MOONSHOT_API_KEY`, `FIREWORKS_API_KEY`, `GMICLOUD_API_KEY` |
 | **Local embeddings** (optional) | `LOCAL_EMBEDDING_URL`, `LOCAL_EMBEDDING_KEY` |
 | **Subscription runner** (built in, nothing to set) | `RUNNER_URL`, `RUNNER_SECRET` (derived from the session secret when blank), `RUNNER_MEMORY_LIMIT` |
-| **Optional coding panels** | `CLAUDE_CODE_*`, `KIMI_CODE_*`, `CODEX_*` |
+| **Optional coding panels** | `CODING_AGENT_*` (or a panel's own `CLAUDE_CODE_*`, `KIMI_CODE_*`, `CODEX_*`) |
 | **Email** (optional; usually set in Admin: Server settings → Email) | `SENDGRID_API_KEY`, `EMAIL_FROM`, `EMAIL_FROM_NAME` |
 | **Development only** (never on a server other people reach) | `SEED_DEMO_USER`, `DEMO_USERNAME`, `DEMO_PASSWORD`, `MOCK_PROVIDER`, `EXPOSE_AUTH_CODES` |
 
-A new session starts on Claude Opus 4.6 when the account can use it (through an Anthropic key or a Claude sign-in), and its context helpers and background workers on the Claude models their Engine-panel dials ship with. When the account cannot use those, a session that has no earlier session of its campaign to inherit from starts on a model the account can use instead, its helper and worker dials follow the same rule, and its retrieval embeddings move from Google's `gemini-embedding-2` to OpenAI's (or to a local embeddings server when `LOCAL_EMBEDDING_URL` is set). Later sessions of a campaign inherit the first session's choices, every dial can be changed in the Engine panel, and `DEFAULT_MODEL_ID` replaces the chat defaults for every account that can use its model. [`ENVIRONMENT.md`](ENVIRONMENT.md) lists the order a fallback model is chosen in.
+A new session starts on Claude Opus 4.6 when the account can use it (through an Anthropic key or a Claude sign-in), and its context helpers and background workers on the Claude models their Engine-panel dials ship with. When the account cannot use those, a new session starts on a model the account can use instead, its helper and worker dials follow the same rule, and its retrieval embeddings move from Google's `gemini-embedding-2` to OpenAI's (or to a local embeddings server when `LOCAL_EMBEDDING_URL` is set). Every dial can be changed in the Engine panel, and `DEFAULT_MODEL_ID` replaces the chat defaults for every account that can use its model. An administrator can also choose one account's model for new sessions in Admin: Users, which comes first for that account whenever it can use the model. [`ENVIRONMENT.md`](ENVIRONMENT.md) lists the order a fallback model is chosen in.
 
 ---
 
@@ -312,6 +312,8 @@ Once connected, the card shows the account and plan and offers **Log out**. The 
 
 An administrator can also connect a server-wide Claude or ChatGPT sign-in in **Admin: Server settings → Shared keys**, after ticking a box that acknowledges the risk: Anthropic and OpenAI may ban a subscription shared with other people. Accounts without a sign-in of their own then run their subscription turns on it.
 
+**For operators:** hosting the official Claude Code and Codex programs for your users is subject to Anthropic's and OpenAI's own terms. Each user signs in with their own account and is billed under their own agreement, and that access may not be resold.
+
 ### Custom OpenAI-compatible endpoints
 
 Any provider that speaks OpenAI's API format (Chat Completions or Responses) can be added at runtime via **Options → Providers → Custom Endpoints**. Each account adds its own:
@@ -329,17 +331,17 @@ Custom endpoints participate in browser-disconnect recovery, streaming, and per-
 
 ## Coding panels (optional)
 
-Administrators can open three full-screen coding workspaces from the **Coding** menu: **Claude Code**, **Codex** and **Kimi (K3)**. Each one drives an agent service that runs outside this app, on a machine you choose, and the app reaches it over HTTPS with a shared secret. None is set up automatically. Until a panel's host and secret are set, the Coding menu shows it greyed out (the whole menu when none is set up), its keyboard shortcut does nothing, and the server records an info event at boot. **Admin: Server settings → Server** shows which panels are set up.
+Administrators can open three full-screen coding workspaces from the **Coding** menu: **Claude Code**, **Codex** and **Kimi (K3)**. All three run on one agent service in this repository, `tools/coding-agent-service`, which runs outside Docker on the machine the agents should work on; the app reaches it over HTTPS with a shared secret. Nothing is set up automatically. The Coding menu offers each panel its service can run and greys out the others with the reason (the whole menu when none is set up), and **Admin: Server settings → Server** shows each panel's state.
 
-| Panel | Agent service | Settings |
+| Panel | What the service runs | What it needs on that machine |
 |---|---|---|
-| Codex | `tools/codex-agent-service/` in this repository, which runs the official Codex App Server under that machine's own Codex sign-in | `CODEX_*` |
-| Claude Code | A Claude Agent SDK service that speaks the panel's protocol; this repository does not include one (the API side is `apps/api/src/domain/claudeCode/`, the event contract `packages/contracts/src/claudeCode.ts`) | `CLAUDE_CODE_*` |
-| Kimi (K3) | A service that speaks the Claude Code panel's protocol and serves Kimi K3; not included either | `KIMI_CODE_*` |
+| Claude Code | Claude Code, through the Claude Agent SDK | a Claude Code sign-in for the user that runs the service, or `ANTHROPIC_API_KEY` |
+| Codex | the official Codex App Server | the Codex CLI on the `PATH`, signed in for that user |
+| Kimi (K3) | Claude Code pointed at Moonshot's Anthropic-compatible endpoints | `KIMI_API_KEY` (the Moonshot API) or `KIMI_SUB_KEY` (Kimi For Coding) |
 
-To turn a panel on: run its agent service with a TLS certificate, make that certificate (or the CA that issued it) readable inside the API container (for example with a volume in a `docker-compose.override.yml`) and point the panel's `*_CA_PATH` at it, set the panel's host and secret in `.env`, and run `docker compose up -d`. The panel turns on in the Coding menu. [`ENVIRONMENT.md`](ENVIRONMENT.md) lists each panel's variables.
+To set it up on the Linux machine the agents should work on, follow [`ENVIRONMENT.md` § Running the coding-agent service](ENVIRONMENT.md#running-the-coding-agent-service): its dependencies, a TLS certificate, a secret and the addresses the app connects from, then the app's `CODING_AGENT_*` settings in `.env`.
 
-The Codex service runs with `npm start` in its folder, on a machine where the Codex CLI is installed and signed in. It serves HTTPS on port 7701 (`AGENT_PORT`) with the certificate and key at `certs/agent-cert.pem` and `certs/agent-key.pem`, requires the shared secret (`AGENT_SECRET`), and accepts only the addresses in `ALLOWED_IPS` (loopback by default). Its workspaces are the home folder of the user that runs it and each folder under `~/projects`, unless `WORKSPACES_JSON` names others. In the panel's YOLO mode the agent has full access to that machine as that user, so run it under an account you are willing to hand over.
+The agents work as the user that runs the service: in the Claude Code and Kimi panels' Full Execution mode and in Codex's YOLO mode they have full access to that machine as that user, so run it under an account you are willing to hand over. A panel can also have a service of its own: its `CLAUDE_CODE_*`, `KIMI_CODE_*` or `CODEX_*` settings replace the shared ones for it once its `_HOST` is set. [`ENVIRONMENT.md`](ENVIRONMENT.md) lists the app's variables and the service's.
 
 ## Architecture
 
@@ -351,7 +353,8 @@ apps/
               proxy, workspace CRUD, admin and server-settings routes,
               pipeline/wizard orchestration, SPA serving. Its
               src/deployment/ folder holds the init service and the
-              operator commands (account recovery, email adoption).
+              operator commands (account recovery, email adoption,
+              re-encrypting a copied database's secrets).
   web/        React 18 + Vite frontend: session UI, composer, dialogs,
               streaming rendering, markdown, drag-drop, admin dialogs.
   worker/     Background job runner. Polls SQLite for pipeline and
@@ -376,14 +379,15 @@ packages/
                     (Anthropic, OpenAI Responses and Chat Completions,
                     Gemini, xAI, DeepSeek, z.ai, Xiaomi, Moonshot,
                     Fireworks, GMICloud, the Claude subscription runner,
-                    custom endpoints) and the image providers behind a
-                    normalized stream contract. The ChatGPT subscription
-                    runtime lives in apps/api/src/domain/providerKeys/.
+                    custom endpoints) behind a normalized stream contract.
+                    The ChatGPT subscription runtime lives in
+                    apps/api/src/domain/providerKeys/.
 
 tools/
-  codex-agent-service/  The Codex panel's agent service (plain JavaScript);
-                        the runner image reuses its App Server client and
-                        composer modules.
+  coding-agent-service/ The coding panels' agent service: plain JavaScript
+                        with its own package.json and lockfile, outside the
+                        npm workspaces. The runner image reuses its Codex
+                        App Server client and composer modules.
 ```
 
 The API and the worker share the same SQLite database. Chat replies stream from the API to the browser as server-sent events; the API calls the providers directly, reaches the runner over the Compose network for subscription models, and queues background jobs for the worker. The worker updates the database as jobs progress, and the frontend polls the API for that state.
@@ -403,8 +407,8 @@ The code depends on it: the data layer calls the synchronous better-sqlite3 driv
 
 One SQLite database:
 
-- **Accounts:** `users`, `user_preferences`, `user_two_factor`, `http_sessions` (the sign-in session store), `invites`, `provider_keys`, `custom_endpoints`, `provider_connections` (each subscription sign-in's state, never a token), `prompt_templates`.
-- **Sessions and messages:** `folders`, `sessions`, `messages`, `message_attachments`, `message_context_snapshots`, `pending_assistant_messages` (disconnect recovery), `settled_assistant_ingestions` (canon-writer receipts), `generated_images`.
+- **Accounts:** `users`, `user_preferences`, `user_two_factor`, `http_sessions` (the sign-in session store), `http_session_revocations` (session ids signed out or revoked, kept eight days), `invites`, `provider_keys`, `custom_endpoints`, `provider_connections` (each subscription sign-in's state, never a token), `prompt_templates`.
+- **Sessions and messages:** `folders`, `sessions`, `messages`, `message_attachments`, `message_context_snapshots`, `pending_assistant_messages` (disconnect recovery), `settled_assistant_ingestions` (canon-writer receipts).
 - **Campaigns:** `campaigns`, `campaign_versions`, `lorebook_entries` with `lorebook_entry_embeddings`, `lorebook_activation_state` and `lorebook_entry_revisions`, `character_attire` and `character_drives` (each with a history table), `scheduled_beats`, the adversarial-world tables (`active_threats`, `campaign_consequences`, `threat_clocks`), `pipeline_runs`, `audit_findings`, `wizard_runs`, `wizard_templates`.
 - **Server:** `server_settings`, `server_subscription_connections`, `audit_events`, `system_events`, `service_heartbeats`.
 
@@ -465,11 +469,21 @@ The API and the worker keep everything stateful in `./data`, bind-mounted at `/a
     tracyhill-rp-v2.sqlite      # the database: accounts, settings, campaigns, messages, uploads
     tracyhill-rp-v2.sqlite-wal  # WAL journal
     tracyhill-rp-v2.sqlite-shm  # shared-memory index
-    images/                     # generated images
     session.secret              # the deployment's session secret (when SESSION_SECRET is not set)
 ```
 
 Keep the session secret with the database. It signs the sign-in cookies and encrypts every stored key and secret, so a database restored without it signs everyone out and cannot read its provider keys, shared keys, email secrets or authenticator secrets. If you set `SESSION_SECRET` yourself, keep that value with your backups instead.
+
+To give a database to a deployment with another secret (a copy of one deployment's data for another, say), re-encrypt its stored secrets for the new one. With the deployment stopped and the database in its `./data`, pass the old secret on standard input, for example the old deployment's `session.secret` file:
+
+```bash
+docker compose down
+docker compose run --rm -T --no-deps tracyhill-rp \
+  node --import tsx apps/api/src/deployment/reencryptSecretsMain.ts --from-stdin --apply < old-session.secret
+docker compose up -d
+```
+
+Without `--apply` it only counts what it would change. It re-encrypts every value the old secret opens and leaves those it does not; sign-ins still start over, since the cookies were signed with the old secret.
 
 Claude and ChatGPT sign-ins live in the `subscriptions` named volume, outside `./data`, so a copy of `./data` never contains them. Back the volume up as well if people should stay signed in after a restore onto a new host; otherwise they sign in again. Compose names it after the project folder (`docker volume ls` shows `<folder>_subscriptions`). With the app stopped:
 
@@ -486,11 +500,11 @@ sudo tar czf tracyhill-rp-backup-$(date +%F).tar.gz ./data
 docker compose up -d
 ```
 
-or, while it runs, take a consistent SQLite snapshot (this needs the `sqlite3` command on the host) and archive it with the images and the secret:
+or, while it runs, take a consistent SQLite snapshot (this needs the `sqlite3` command on the host) and archive it with the secret:
 
 ```bash
 sudo sqlite3 ./data/v2/tracyhill-rp-v2.sqlite ".backup '/tmp/tracyhill-rp.sqlite'"
-sudo tar czf tracyhill-rp-backup-$(date +%F).tar.gz /tmp/tracyhill-rp.sqlite ./data/v2/images ./data/v2/session.secret
+sudo tar czf tracyhill-rp-backup-$(date +%F).tar.gz /tmp/tracyhill-rp.sqlite ./data/v2/session.secret
 sudo rm /tmp/tracyhill-rp.sqlite
 ```
 
@@ -505,7 +519,7 @@ docker compose build
 docker compose up -d
 ```
 
-Each release replaces the repository's public history with a single new commit, so a plain `git pull` cannot merge it; `git reset --hard` moves your clone to the release instead. It discards changes to tracked files, while `.env`, `./data` and other untracked files stay. Migrations run automatically when the API and the worker start, and `./data` and the volumes persist. Read the upgrade notes in [`CHANGELOG.md`](CHANGELOG.md) before moving between releases. When you upgrade a deployment set up with an earlier version:
+Each release is one new commit on top of the one before it (2.0.0 replaced the earlier public history), and `git reset --hard` moves your clone to the release whether or not it predates 2.0.0. It discards changes to tracked files, while `.env`, `./data` and other untracked files stay. Migrations run automatically when the API and the worker start, and `./data` and the volumes persist. Read the upgrade notes in [`CHANGELOG.md`](CHANGELOG.md) before moving between releases. When you upgrade a deployment set up with an earlier version:
 
 - If `.env` sets `SESSION_SECRET`, keep it. Without it the deployment generates a new secret, which signs everyone out and makes every stored key and secret unreadable.
 - A database that already has accounts keeps its earlier behavior until you change it in **Admin: Server settings**: sign-up stays Open (it still needs working email), two-step sign-in stays Optional with email codes (and the authenticator app becomes available), the daily sign-out stays at 3 AM America/New_York, and new sessions start at world stance 1 and depiction tier 0.
@@ -520,7 +534,7 @@ Each release replaces the repository's public history with a single new commit, 
 
 ### Recovering access
 
-An administrator resets another person's two-step sign-in in **Admin: Users** (Reset 2FA) and can set a new password there. When the administrator is the one locked out, run the recovery command in the app container:
+An administrator resets another person's two-step sign-in in **Admin: Users** (open the person, then Reset two-step sign-in) and can set a new password there. When the administrator is the one locked out, run the recovery command in the app container:
 
 ```bash
 docker compose exec tracyhill-rp node --import tsx apps/api/src/deployment/recoverAccountMain.ts --user <name> --reset-two-factor

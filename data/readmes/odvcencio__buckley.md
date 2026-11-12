@@ -1,0 +1,181 @@
+# Buckley
+
+[![Go Reference](https://pkg.go.dev/badge/m31labs.dev/buckley.svg)](https://pkg.go.dev/m31labs.dev/buckley)
+[![CI](https://github.com/odvcencio/buckley/actions/workflows/ci.yml/badge.svg)](https://github.com/odvcencio/buckley/actions/workflows/ci.yml)
+[![Release](https://github.com/odvcencio/buckley/actions/workflows/release.yml/badge.svg)](https://github.com/odvcencio/buckley/actions/workflows/release.yml)
+
+Buckley is a tool-first AI agent harness for serious repository work.
+
+It combines resumable sessions, Arbiter-governed model and tool selection, Claude-style repository instructions, and multiple operator surfaces: terminal, browser, one-shot, ACP, and LSP.
+
+## Agent Skill
+
+Agents working with Buckley should use the [using-buckley](https://github.com/odvcencio/m31labs-skills/blob/main/skills/using-buckley/SKILL.md) skill.
+
+## Why Buckley
+
+- One shared runtime powers TUI chat, `buckley -p`, headless sessions, ACP editor flows, and browser control.
+- Arbiter governs planning/execution/review model routing, reasoning effort, tool pools, timeouts, approvals, and escalation.
+- Runtime prompt assembly automatically pulls in `AGENTS.md`, `CLAUDE.md`, `.claude/instructions.md`, project context, and active skills.
+- When available, local Hyphae project spaces are discovered and offered as
+  durable decision and lesson context across TUI, one-shot, and ACP sessions.
+- Tool use is first-class. Buckley ships with a broad built-in tool surface plus skills, plugins, telemetry, approvals, and SQLite-backed persistence.
+- Sessions survive crashes. Plans, approvals, telemetry, and artifacts stay resumable.
+- Adaptive Harness v1 distinguishes a successful empty search from a failure,
+  then recommends one audited code-mode program when primitive exploration is
+  no longer efficient.
+- Production loops reserve a tools-disabled synthesis pass when a guard stops
+  further actions, so gathered evidence becomes a final answer or an explicit
+  incomplete result instead of being silently thrown away.
+- Subagents carry durable execution contracts, lineage, optional budgets, and
+  workspace claims. Their bounded in-memory preview is backed by a private disk
+  spool whose retained transcript is pinned before cleanup, so long reports do
+  not lose findings silently. Typed artifacts and model-profile receipts make
+  their work inspectable and replayable.
+
+## Quick Start
+
+```bash
+go install m31labs.dev/buckley/cmd/buckley@v0.7.0
+export OPENROUTER_API_KEY="your-key"
+buckley
+```
+
+OpenAI, Anthropic, Google, and Ollama are also supported. OpenRouter is the default path when available.
+
+## Interfaces
+
+| Surface | Command | Use case |
+| --- | --- | --- |
+| TUI | `buckley` | Interactive coding with approvals, streaming, history, and highlighted code |
+| One-shot | `buckley -p "inspect this repo and fix the failing tests"` | Fast task execution from the terminal |
+| Browser UI | `buckley serve --browser` | Local Mission Control with session control, approvals, and live telemetry |
+| ACP agent | `buckley acp` | Editor agent for ACP-compatible clients |
+| LSP bridge | `buckley lsp` | LSP editor integration on stdio |
+
+## Core Workflow
+
+```bash
+buckley plan "add auth" "support email/password login"
+buckley execute <plan-id>
+buckley review
+buckley review-pr 123
+buckley buckbot repo
+buckley review-pr 123 --model codex/auto
+```
+
+The planner, builder, review, and runtime layers share the same governance stack, persistence, and tool registry.
+
+## Notable Capabilities
+
+- Fully integrated Arbiter runtime across one-shot, TUI, ACP, and headless execution paths.
+- Shared runtime prompt assembly for repo instructions, project context, working directory, and skills.
+- Governed tool exposure with role/task-aware pool filtering before tool calls are shown to the model.
+- Anthropic tool calling and tool-result round-tripping, so Claude-class models can participate in the same tool loop.
+- Better model resolution for routed raw IDs such as unqualified Claude model names.
+- Progress-aware tool outcomes that preserve explicit yield counts and avoid
+  treating a successful empty search as a tool failure.
+- Audited, bubblewrap-isolated code mode for batched repository analysis, with
+  one-time recovery guidance when a tool cannot efficiently answer a task and
+  automatic read-only availability inside API-model Buckbot snapshots when
+  that isolation is available.
+- Durable subagent coordination, explicit child budgets and lineage, workspace
+  claims, steering, and replayable evidence.
+- Artifact v1 output contracts and deterministic projections for terminal,
+  JSON, Markdown++, SARIF, FluffyUI, and ACP clients.
+- Versioned empirical model profiles and Arbiter receipts that make dynamic
+  protocol choices measurable, bounded, and reversible.
+
+## Commands People Actually Use
+
+```bash
+buckley commit
+buckley pr
+buckley review
+buckley review-pr 123
+buckley buckbot repo
+buckley hunt
+buckley dream
+buckley experiment run "compare-routing" -m z-ai/glm-5.2 -m moonshotai/kimi-k2.7-code -p "Implement feature X"
+```
+
+`buckley buckbot` is the general-purpose name for Buckley's review agent: use it for a local review, `buckley buckbot repo` for a repository-wide advisory assessment, or `buckley buckbot pr <PR> --post` for an explicitly posted GitHub review. Buckbot has no automatic dollar cap by default, so any configured model can complete a review at its normal depth; use `--budget <USD>` only when a specific run needs a spend ceiling. `buckley review` examines one immutable snapshot of the selected local scope. With unstaged review enabled, worktree and changes reviews automatically include safe non-ignored untracked text files; ignored, secret-like, binary, symlinked, instruction, and otherwise unsafe paths remain excluded and are disclosed in the boundary inventory. Use `--include-untracked path/to/new.go` to provide an explicit safe allowlist when needed. Native Codex verification receives a self-contained copy of only the captured commit plus patch; its JSONL command events must prove successful, classifiable build and test runs that cover the changed source paths. Use `--model codex/auto` to select Luna with xhigh reasoning for focused changes, Terra with medium reasoning for standard changes, and Sol with medium reasoning for broad or project reviews. An exact model override remains fixed. API-model inspection tools are rooted to an independently materialized snapshot. When bubblewrap is available, they also receive audited read-only `exec_program` composition with no network or live-workspace mount; deterministic build/test/check verification remains separately sealed. `buckley review-pr` adds the remote PR diff, CI state, submitted reviews, and unresolved inline feedback; run it from a checkout whose `HEAD` is the PR head so verification is pinned to the same revision. API approvals require actual successful verification tool calls—not prose claiming PASS—and build/test evidence must use one applicable toolchain and cover every changed source package. Branch and PR approvals require passing verification, complete evidence, an explicit disposition for every supplied feedback ID, and an independent approval-critic pass. `buckley review -project` is an advisory architecture assessment and cannot issue an approval verdict. `buckley commit` and `buckley pr` use transparent tool-first workflows rather than opaque text-only prompting. In the TUI, fenced code blocks use Tree-sitter highlighting when the language grammar is available. Use `Shift+Enter` to add a line without sending and `Alt+C` to copy the latest code block. Conversation projection searches for the largest compacted history that fits the provider request budget.
+
+Use `--effort low|medium|high|xhigh|max` on `commit`, `pr`, `pr merge`,
+`review`, `review-pr`, and their `buckbot` aliases. Precedence is the flag,
+then `BUCKLEY_EFFORT_COMMIT`, `BUCKLEY_EFFORT_PR`, or `BUCKLEY_EFFORT_REVIEW`,
+then `BUCKLEY_ONESHOT_EFFORT`, then existing reasoning config
+(`models.reasoning` for commit/PR; `buckbot.reasoning` for reviews).
+An explicit review effort stays fixed when adaptive model selection changes.
+For Sol reviews, select `high` or `xhigh`; use `max` when needed:
+
+```bash
+buckley commit --backend codex --effort xhigh
+buckley review --model codex/gpt-6.1-sol --effort high
+buckley review-pr 123 --model codex/gpt-6.1-sol --effort xhigh
+```
+
+The Codex one-shot backend uses the Codex CLI's configured model unless you
+set `--model` or the command's model environment variable. It passes effort
+as `-c model_reasoning_effort="<value>"`. The Claude one-shot backend ignores
+effort and logs a debug note. API backends use existing model capability
+checks and reasoning policy; supported effort levels depend on the model.
+
+`buckley commit` validates the generated header, body, and issue footers, then
+rechecks that the staged index did not change before committing. It appends
+opaque `Buckley-Change-Hash` and `Buckley-Change-Stats` trailers by default;
+these contain no paths or diff text. Use `--context-trailer=false` when a
+repository does not want the trailers.
+
+`buckley commit` also completes merges, cherry-picks, and reverts that
+stopped on a conflict, and squashes a branch's commits with `--squash
+<base>`. `buckley pr merge <n>` generates the squash or merge commit
+message from the PR and merges it after its required checks pass. See
+[docs/CLI.md](docs/CLI.md#commit) for the full flag reference.
+
+## Configuration
+
+Configuration is layered:
+
+```text
+~/.buckley/config.yaml
+./.buckley/config.yaml
+environment variables
+```
+
+Minimal setup:
+
+```yaml
+providers:
+  openrouter:
+    api_key: ${OPENROUTER_API_KEY}
+```
+
+Buckley supports separate planning, execution, and review models:
+
+```yaml
+models:
+  planning: z-ai/glm-5.2
+  execution: z-ai/glm-5.2
+  review: moonshotai/kimi-k2.7-code
+  reasoning: xhigh
+```
+
+## Skills And Instructions
+
+Buckley ships with 8 bundled skills, including planning, code review, systematic debugging, refactoring, test-driven development, API design, git workflow, and creative writing.
+
+Skills layer on top of repository instructions. If a repo already uses `AGENTS.md` or `CLAUDE.md`, Buckley consumes them automatically and applies the same guidance across terminal, headless, and editor sessions.
+
+## Development
+
+```bash
+./scripts/test.sh
+go build ./cmd/buckley
+```
+
+Primary repo docs live under [`docs/`](docs/).
+
+## License
+
+MIT. See [LICENSE](LICENSE).

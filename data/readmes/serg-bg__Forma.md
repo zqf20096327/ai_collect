@@ -89,7 +89,7 @@ On **Segment** you pick the model, the compute device, and the channel. **Check 
 
 ![The Quantify tab](docs/images/quantify.png)
 
-**Review** opens the workspace, one result, or any OME-Zarr in napari. There, the Forma plugins page through the images of a workspace, edit labels and save them as a new revision beside the original, trace a neuron and export the path as SWC, and, on a Mac, denoise with CARE.
+**Review** opens the workspace, one result, or any OME-Zarr in napari. There, the Forma plugins page through the images of a workspace, edit labels and save them as a new revision beside the original, and trace a neuron and export the path as SWC.
 
 ![The Review tab](docs/images/review.png)
 
@@ -111,7 +111,7 @@ The exported radius is a placeholder of 1 µm, not a measured caliber.
 - Windows limits file paths to 260 characters. Forma says so when a data folder is too deep. Keep data folders short and near the top of a drive.
 - Time series convert and display with their time axis, but segmentation, tracing, and label editing refuse them. Convert a single timepoint for that work.
 - Forma is not notarized by Apple and not signed on Windows, hence the warnings during installation.
-- On Linux, CARE Denoise is not available; it is part of the Mac app only. The Linux app has been tested on an X11 desktop session; Wayland sessions have not been tested.
+- The Linux app has been tested on an X11 desktop session; Wayland sessions have not been tested.
 
 ## Feedback
 
@@ -120,7 +120,7 @@ Forma is new and will have rough edges. Report them as [issues](https://github.c
 ## License
 
 - The Forma app: [GPL-3.0](LICENSE).
-- The model weights (Dataset226) and the CARE denoising weights in the Mac app: [CC BY-NC 4.0](LICENSE-WEIGHTS), noncommercial use.
+- The model weights (Dataset226): [CC BY-NC 4.0](LICENSE-WEIGHTS), noncommercial use.
 - Third-party components keep their own licenses.
 
 ## Cite

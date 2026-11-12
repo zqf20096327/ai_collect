@@ -9,8 +9,9 @@
 [![Release](https://img.shields.io/github/v/release/CelikE/prompt-refiner-skill)](https://github.com/CelikE/prompt-refiner-skill/releases)
 
 An Agent Skill that cleans up a rough request before your coding agent acts on
-it, without changing what you asked for. Works in **Claude Code**,
-**OpenCode**, and **Codex**.
+it, without changing what you asked for. Loads in **Claude Code**,
+**OpenCode**, and **Codex**. Its behaviour is measured on Claude models only
+(Opus 5.5, Sonnet 5.5, Haiku 5.5); on other models it is untested.
 
 ```text
 you:   /prompt-refiner can u look at why the orders sync in src/sync/orders.ts
@@ -132,8 +133,10 @@ More in [docs/examples.md](docs/examples.md).
 
 ## Evals
 
-`evals/` holds 24 generated cases with regex, tool-use, and LLM graders. Each
-case runs with and without the skill, so the score shows what the skill adds.
+`evals/` holds 32 generated cases with regex, tool-use, and LLM graders. Each
+case runs with and without the skill. Only behaviour checks count toward the
+score and the delta; checks of the skill's own output format are reported
+separately, because the plain model cannot meaningfully pass or fail them.
 Results, the rule-to-case map, and how to run the suite are in
 [docs/evals.md](docs/evals.md).
 

@@ -252,7 +252,7 @@ variable. See [Auto-review](#auto-review-keep-the-boundary-lose-the-busywork).
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `MUSE_CLI` | `muse` | Muse host binary to launch. Use an absolute path when the editor's `PATH` differs from your shell's. On Windows the default also finds the `muse.cmd` launcher that the Muse installer puts on `PATH`. When `PATH` has no `muse`, the default falls back to the Muse installer's location (`MUSE_INSTALL_DIR`, else `~/.local/bin`, or `%LOCALAPPDATA%\Programs\muse` on Windows). |
-| `MUSE_SERVE_ARGS` | none | Extra host-lifetime flags for `muse serve` (see `muse serve --help`). Split on whitespace; no shell quoting or expansion. `--join` (serve through the machine's shared session daemon) applies to the main host only: a joined host takes the daemon's write and shell limits, so the read-only and reviewer hosts drop it. |
+| `MUSE_SERVE_ARGS` | none | Extra host-lifetime flags for `muse serve` (see `muse serve --help`). Split on whitespace; no shell quoting or expansion. `--join` (serve through the machine's shared session daemon) applies to the main host only: a joined host takes the daemon's write and shell limits, so the read-only and reviewer hosts drop it. The session hosts already pass `--trust-workspace` (see [Workspace trust](#workspace-trust)); it is not repeated, and `--per-session`, which `muse serve` refuses beside it, leaves trust to that host. |
 | `MUSE_APPROVAL_MODE` | host default | Force an approval posture: `allowAll`, `promptUnmatched`, `onRequest`, or `denyUnmatched`. `promptUnmatched` sends every unmatched tool call through `session/request_permission`. |
 | `MUSE_COMMAND_TIMEOUT_MS` | method-specific | Override the host admission-ack deadline, in milliseconds. |
 | `MUSE_REVIEW_TIMEOUT_MS` | `180000` | Auto-review deadline: a reviewer turn that never finishes is denied after this long, 100–600000 ms. Twice Codex's 90-second guardian review timeout, because each review here is one cold turn rather than a warm pooled reviewer. |
@@ -829,6 +829,20 @@ not be used with untrusted sessions. The
 [editor file tools](#editor-file-access-acp-v1) apply the same root check to
 every path and ignore that setting.
 
+### Workspace trust
+
+Every workspace is trusted, as in claude-agent-acp: ACP has no trust prompt,
+so the hosts that serve your sessions (the main and read-only hosts) run
+`muse serve --trust-workspace`. Muse then loads each workspace's skills,
+rules, and MCP servers. From Muse 1.4.15 that is also what lets the MCP
+servers your editor attaches reach the session, including the
+[editor file tools](#editor-file-access-acp-v1) and
+[terminals](#editor-terminals-acp-v1): an untrusted 1.4.15 host withholds
+them without telling the client. The auto-review reviewer host is not
+trusted, so a repository's own rules cannot steer the judge of an approval.
+Open only folders whose skills and rules you are willing to run, as you would
+with Claude Code.
+
 ## Authentication and remote environments
 
 When Muse has no credential, `session/new` and `session/load` fail with ACP's
@@ -912,7 +926,7 @@ Only if neither is possible, and only if you accept running host tools without
 the sandbox's isolation:
 
 ```sh
-MUSE_SERVE_ARGS="--trust-workspace --disable-sandbox"
+MUSE_SERVE_ARGS="--disable-sandbox"
 ```
 
 `--disable-sandbox` materially reduces isolation, and neither approval prompts
@@ -932,12 +946,12 @@ compatibility table, and reports whether the configured Muse CLI can be invoked
 (`cli-ready` or `cli-unready`). It exits `0` even when Muse is not installed, so
 you can collect output on a machine that is still being set up.
 
-The current vendored SDK surface is Muse 1.4.14
-(`sha256:c94c3d1f2f51e6424074b9ec43eac3eedcf532d3dcd77351ec1383a87d3049c6`).
-The adapter and standalone MSP client live suites pass against
-`1.4.14-R7309.1`, and the 1.4.14 Linux, macOS, and Windows artifacts are pinned
-in the nightly matrix. The nightly live-host support floor is Muse 1.4.11:
-1.4.11 through 1.4.14 run on Linux x86-64 and Windows x64, and the newest
+The current vendored SDK surface is Muse 1.4.15
+(`sha256:ef311d2dbf051ed9114556e14ad3980eb515104baa3409306a6817082a61d8cd`).
+The adapter live suite passes against `1.4.15-R8339.1`, and the 1.4.15 Linux,
+macOS, and Windows artifacts are pinned in the nightly matrix. The nightly
+live-host support floor is Muse 1.4.11:
+1.4.11 through 1.4.15 run on Linux x86-64 and Windows x64, and the newest
 build runs on macOS arm64. Older fingerprints remain recorded as historical
 compatibility evidence but are no longer downloaded for every nightly run.
 

@@ -124,6 +124,7 @@ A finance agent is only as good as the data and tools it can call. This chapter 
 - [Financial Evidence](https://github.com/beepboop2025/financial-evidence-skills) - Free, read-only MCP server and Python SDK for money-market, bank and BTC liquidity data, with source links, dates and units on every row.
 - [Finance MCP](https://finance-mcp.com) - Hosted MCP server with 13 finance data tools for US stocks, US macro, crypto spot, options, SEC filings and fundamentals, and prediction markets, from OKX, Deribit, SEC EDGAR, FMP, FRED, Polymarket, Tiingo, and Finnhub. Connect over OAuth or an API key. Never charges money; each account gets 1,000 free credits.
 - [Firecrawl](https://github.com/firecrawl/firecrawl-mcp-server) - Official MCP server for web search, scraping, and crawling, with SEC EDGAR filings and 10-K/10-Q item sections through Firecrawl Alexandria.
+- [Redstone Markets](https://github.com/mihaitv/redstone-mcp) - Public read-only MCP for return and risk analytics on US stocks and ETFs.
 
 ### Official broker and exchange agent kits
 
@@ -151,6 +152,7 @@ A finance agent is only as good as the data and tools it can call. This chapter 
 - [agentii-investment-intelligence](https://github.com/agentii-ai/agentii-investment-intelligence) - 25 equity-research skills built on SEC filings, XBRL financials, and market data.
 - [JoelLewis/finance_skills](https://github.com/JoelLewis/finance_skills) - 81 Claude Code skills across 7 financial-services plugins (wealth, compliance, operations, and more).
 - [quant-buddy-skills](https://github.com/pseudo-longinus/quant-buddy-skills) - 🇨🇳 Quant analysis skills across A/HK/US equities, futures, macro, and ETFs.
+- [Siebly Agent Skills](https://github.com/sieblyio/agent-skills) - Agent skill that teaches coding agents to build Node.js and TypeScript integrations with crypto exchange REST and WebSocket APIs (Binance, Bybit, OKX, Kraken, Hyperliquid and more) using Siebly's MIT-licensed SDKs.
 
 ### Pitfall Tip
 
@@ -197,6 +199,7 @@ Research agents read filings, transcripts, news, and data rooms, then produce so
 - [vibe-astock](https://github.com/simonlin1212/vibe-astock) - 🇨🇳 A-share short-term review workbench: anomaly watch, sentiment review, AI recaps, trade journal.
 - [hunter-community](https://github.com/agentpit-io/hunter-community) - 🇨🇳 Self-hosted multi-agent research terminal for A/HK/US equities: screener, stock deep dives, watchlists, and holdings, with your own model key.
 - [folio](https://github.com/helsome/folio) - Local-first AI investment research workbench with evidence-backed theses, portfolio risk, and a Pi agent copilot.
+- [OpenAlpha](https://github.com/alex2loop/openalpha) - Self-hosted AI investment research assistant for US and Vietnam stocks, ETFs, gold, and crypto: a bull/bear council debates each suggestion, every figure cites its source, a forward track record grades past calls, and nothing trades without approval.
 
 ### Pitfall Tip
 

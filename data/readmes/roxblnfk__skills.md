@@ -4,7 +4,7 @@
 
 <div align="center">
 
-[![Vibe Index](https://img.shields.io/static/v1?label=Vibe+Index&message=2.2&color=1cba95&style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI%2BPHBhdGggZD0iTTkgNCBROSAxMyAxOCAxMyBROSAxMyA5IDIyIFE5IDEzIDAgMTMgUTkgMTMgOSA0IFoiLz48cGF0aCBkPSJNMTkgMSBRMTkgNiAyNCA2IFExOSA2IDE5IDExIFExOSA2IDE0IDYgUTE5IDYgMTkgMSBaIi8%2BPHBhdGggZD0iTTIwIDE0IFEyMCAxOCAyNCAxOCBRMjAgMTggMjAgMjIgUTIwIDE4IDE2IDE4IFEyMCAxOCAyMCAxNCBaIi8%2BPC9zdmc%2B)](https://github.com/roxblnfk/action-vibe-index)
+[![Vibe Index](https://img.shields.io/static/v1?label=Vibe+Index&message=2.6&color=1bbb9f&style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI%2BPHBhdGggZD0iTTkgNCBROSAxMyAxOCAxMyBROSAxMyA5IDIyIFE5IDEzIDAgMTMgUTkgMTMgOSA0IFoiLz48cGF0aCBkPSJNMTkgMSBRMTkgNiAyNCA2IFExOSA2IDE5IDExIFExOSA2IDE0IDYgUTE5IDYgMTkgMSBaIi8%2BPHBhdGggZD0iTTIwIDE0IFEyMCAxOCAyNCAxOCBRMjAgMTggMjAgMjIgUTIwIDE4IDE2IDE4IFEyMCAxOCAyMCAxNCBaIi8%2BPC9zdmc%2B)](https://github.com/roxblnfk/action-vibe-index)
 [![Support on Boosty](https://img.shields.io/static/v1?style=for-the-badge&label=&message=Sponsorship&logo=Boosty&logoColor=white&color=%23F15F2C)](https://boosty.to/roxblnfk)
 
 </div>
@@ -397,7 +397,9 @@ once — Claude Code at `.claude/skills`, Cursor at `.cursor/skills`, plus an ag
 `aliases` keeps **one** real directory (`target`) and creates additional paths as
 OS-level mirrors:
 
-- **POSIX** — symbolic links via `symlink(2)`.
+- **POSIX** — symbolic links via `symlink(2)` with a relative target
+  (`.claude/skills -> ../.agents/skills`), so an alias keeps working when the project is
+  moved or mounted at another path, e.g. synced inside a container and used on the host.
 - **Windows** — directory **junctions** via `mklink /J`. Junctions work without
   admin/dev-mode privilege, unlike `SeCreateSymbolicLink`. Cross-volume junctions are
   refused with a non-zero exit; the plugin never silently degrades to a copy.
@@ -419,6 +421,12 @@ through any path see the same files.
 - **Non-destructive.** If the alias path already exists as a real directory, the run fails
   with a non-zero exit and leaves the directory untouched. To convert it, remove the
   directory manually and re-run — the plugin never destroys user content.
+- **Stray links are re-pointed.** A symlink or junction at the alias path that leads
+  anywhere but the target — into a copy of the project, a path from another mount point, or
+  nowhere at all — is replaced; the directory it led to is left as it was. On POSIX an
+  absolute symlink to the target is rewritten in the relative form too. The output names
+  the old value: `[link] … (replaced link to …)`, and `skills:show` flags such an alias as
+  `[relink: was → …]`.
 - **Stale aliases not pruned.** Removing an entry from `aliases` does not delete the
   junction/symlink on disk. Clean it up manually if needed.
 - **CLI override is total.** `--alias=PATH` (repeatable) replaces the configured `aliases`

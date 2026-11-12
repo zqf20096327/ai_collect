@@ -46,7 +46,8 @@ decode); `place` checks the model fits and prints each node's layer cap; `serve`
 plans, launches one pipeline rank per node through its token-authed agent, and
 serves the gateway on :8020. `stop` stops the run; `guard` watches memory and
 stops when a node crosses its safety thresholds. `status` and `hub` show nodes,
-pinned routes and 1 Hz liveness. `--engine llamacpp` spreads a GGUF over RPC servers with
+pinned routes and 1 Hz liveness; the hub also serves a browser page at `/` that draws
+the nodes as cards (chip, memory, load) joined by their pinned links. `--engine llamacpp` spreads a GGUF over RPC servers with
 per-node memory budgets measured from the real heaps. All commands and flags:
 [docs/cli.md](docs/cli.md).
 
@@ -71,7 +72,14 @@ Realistic expectations:
   there as memory allows, but a naive even split can be five to ten times slower
   than a good one.
 - Other GPU work on a Mac can slow its node several-fold; `GET /status` reports it.
-- One request at a time. Concurrent requests queue and add no throughput.
+- Concurrent requests: the llama.cpp engine serves them in llama-server's slots (4 by
+  default). In a one-machine test with a 0.5B model, four at once gave 1.58 times the
+  tokens per second of one at a time on the CPU path and 4.06 times on Metal
+  ([receipt](receipts/2026-11-12-concurrent-serving)). Vulkan, multi-machine RPC and
+  larger models are not measured yet. The MLX ring
+  engine runs one request at a time; the others queue. `serve --max-concurrent N`
+  (default 4) sets how many requests the gateway passes on at once; the rest wait,
+  and a request that waits 10 minutes gets HTTP 503 with `Retry-After`.
 - Sampling is greedy only: the gateway rejects requests with a temperature other
   than 0.
 - Ranks agree on every token within one backend. Metal and Vulkan can differ by a
@@ -106,6 +114,20 @@ python3 -m venv ~/mlx && ~/mlx/bin/pip install mlx mlx-lm git+https://github.com
 
 `install-agent` starts the node agent on :8025 and writes a token to
 `~/.config/omarchy-cluster/token`.
+
+From a machine that already has a token, add new nodes over ssh in one command:
+
+```sh
+omarchy-cluster bootstrap me@node2 me@node3
+```
+
+For each node, `bootstrap` detects Linux or macOS, checks `python3` is 3.9 or newer,
+installs Avahi on Linux when it is missing (`sudo -n`, so it needs passwordless sudo),
+copies this package and your cluster token, runs `install-agent`, waits for the agent
+to answer, and prints the name the node shows up under in `omarchy-cluster discover`.
+It uses the node's system `python3` and installs no MLX: macOS nodes that run MLX
+ranks still need `mlx` and `mlx-lm` in a Python the agent can use. Use ssh keys;
+`bootstrap` never asks for a password.
 
 ## Security
 
@@ -155,6 +177,10 @@ curl -s http://127.0.0.1:8020/v1/chat/completions \
        "messages":[{"role":"user","content":"Write a haiku about shared memory."}],
        "max_tokens":64,"temperature":0}'
 ```
+
+Or chat in the terminal: `omarchy-cluster chat` talks to the gateway on :8020
+(`--gateway URL` for another one), keeps the conversation, and prints the speed
+of each reply in tokens per second. `/reset` starts over, `/exit` leaves.
 
 `omarchy-cluster stop` stops everything. For a model bigger than one node, pick
 the split yourself so a machine you use for other work keeps free memory, for

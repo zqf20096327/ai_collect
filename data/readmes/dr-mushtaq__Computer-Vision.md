@@ -484,6 +484,8 @@ delve into the realm of zero-shot learning in computer vision, covering aspects 
 |[**✅5- AI-ML-Roadmap-from-scratch**](https://github.com/Rishabh-creator601/Books/tree/master)|A curated collection of books and references for Computer Vision, Machine Learning, Deep Learning, NLP, Python, and more.
 |[**✅6- Dive into Deep Learning**](https://d2l.ai/)|Antonio Torralba, Phillip Isola, and William Freeman|---|
 |[**✅7- 2026_KFCA_Computer_Vision**](https://github.com/KAUST-Academy/2026_KFCA_Computer_Vision/tree/master)|Antonio Torralba, Phillip Isola, and William Freeman|---|
+|[**✅8- Comprehensive Study Resources **](https://github.com/Rishabh-creator601/Books)|A curated collection of books and references for Computer Vision, Machine Learning, Deep Learning, NLP, Python, and more.|---|
+
 
 |---|
 
@@ -507,4 +509,4 @@ delve into the realm of zero-shot learning in computer vision, covering aspects 
 |---|---|---|
 |[**✅1- Top Computer Vision Google Colab Notebooks**](https://www.qblocks.cloud/creators/computer-vision-google-colab-notebooks)|Here is a list of the top google colab notebooks that use computer vision to solve a complex problem such as object detection, classification etc:|---|
 |[**✅2-roboflow/Notebooks**](https://github.com/roboflow/notebooks)|This repository offers a growing collection of computer vision tutorials. Learn to use SOTA models like YOLOv11, SAM 2, Florence-2, PaliGemma 2, and Qwen2.5-VL for tasks ranging from object detection, segmentation|---|
-|[**✅3-Machine Learning Notbook by google colab**](https://colab.research.google.com/github/ageron/handson-mlp/blob/main/index.ipynb#scrollTo=34_v1D3ttbDn)|This repository offers a growing collection of computer vision tutorials. 
+|[**✅3-Machin

@@ -5,7 +5,7 @@
 **Website and documentation: <https://raphaelmansuy.github.io/opengenie/>** — the tour, the install
 guide, the evidence page and the design notes. The source is on
 [GitHub](https://github.com/raphaelmansuy/opengenie); the current release is
-[v1.0.0](https://github.com/raphaelmansuy/opengenie/releases/tag/v1.0.0).
+[v1.1.0](https://github.com/raphaelmansuy/opengenie/releases/tag/v1.1.0).
 
 Genie Code is the best coding agent for data engineering because it can see your workspace: Unity
 Catalog, SQL warehouses, notebooks, jobs. What it does not let you do is choose the model, or control
@@ -14,10 +14,10 @@ of workspace context and hands those two decisions back to you.
 
 [![Site](https://img.shields.io/badge/site-raphaelmansuy.github.io%2Fopengenie-4C6EF5?style=flat-square)](https://raphaelmansuy.github.io/opengenie/)
 [![Docs](https://img.shields.io/badge/docs-install%20%C2%B7%20tour%20%C2%B7%20evidence-4C6EF5?style=flat-square)](https://raphaelmansuy.github.io/opengenie/install/)
-[![Version](https://img.shields.io/badge/version-v1.0.0-37B24D?style=flat-square)](https://github.com/raphaelmansuy/opengenie/releases)
+[![Version](https://img.shields.io/badge/version-v1.1.0-37B24D?style=flat-square)](https://github.com/raphaelmansuy/opengenie/releases)
 [![Licence](https://img.shields.io/badge/licence-Apache--2.0-37B24D?style=flat-square)](LICENSE)
 [![Evidence](https://img.shields.io/badge/evidence-11%20graded%20tasks-E8590C?style=flat-square)](exams/results)
-[![Tests](https://img.shields.io/badge/tests-1303%20python%20%C2%B7%20959%20front--end%20%C2%B7%20162%20site%20views-37B24D?style=flat-square)](apps/coding-agent/tests)
+[![Tests](https://img.shields.io/badge/tests-2061%20python%20%C2%B7%201233%20front--end%20%C2%B7%20180%20site%20views-37B24D?style=flat-square)](apps/coding-agent/tests)
 
 <img src="specs/006-databricks/e2e/home/deployed-1440-home.png" width="1440"
      alt="The OpenGenie shell at 1440 px: sessions and files in the left rail, a notebook in the centre, and the assistant docked on the right, labelled with the notebook it is bound to.">
@@ -60,10 +60,11 @@ locally, it acts as the owner of the token you give it.
 | Notebooks | reads, searches, writes and runs notebooks; reports the first failing cell | `dbx_read_notebook`, `dbx_grep_notebook`, `dbx_write_notebook`, `dbx_run_notebook` |
 | Jobs | creates and runs jobs under the session prefix, checks the latest run succeeded | `dbx_create_job`, `dbx_run_job`, `dbx_job_run_status` |
 | Lakebase and Apps | creates a Lakebase instance, runs SQL on it, scaffolds a Databricks App | `dbx_lakebase_*`, `dbx_create_app` |
-| Skills | four playbooks: notebook authoring, ETL pipelines, Lakebase, Databricks Apps | `dbx_skill` |
+| SQL editor | reads, updates and runs the attached query draft; retrieves the same execution in the editor | `dbx_read_query`, `dbx_update_query`, `dbx_run_query`, `dbx_query_run_status` |
+| Skills | five playbooks: SQL queries, notebook authoring, ETL pipelines, Lakebase, Databricks Apps | `dbx_skill` |
 
-That is the 28-tool `core` profile the app starts. The server
-([`tools/databricks_notebook_mcp.py`](apps/coding-agent/tools/databricks_notebook_mcp.py)) has 41;
+That is the 32-tool `core` profile the app starts. The server
+([`tools/databricks_notebook_mcp.py`](apps/coding-agent/tools/databricks_notebook_mcp.py)) has 45;
 the `full` profile adds catalogue and schema listings, lineage, grants, pipelines and warehouses.
 
 ## Three rules the server enforces
@@ -115,7 +116,7 @@ agent ran; or you want to read, change and self-host the code.
 | Deploy it | [**Install**](https://raphaelmansuy.github.io/opengenie/install/): what to change, Lakebase, then `make deploy` |
 | Try it without deploying | [**The tutorial**](docs/tutorial.md): about 30 minutes, from a notebook, no local shell |
 | Check the numbers | [**The evidence**](https://raphaelmansuy.github.io/opengenie/evidence/): every score with its fraction and caveat |
-| Track changes | [**Releases**](https://github.com/raphaelmansuy/opengenie/releases): what v1.0.0 contains, and what comes next |
+| Track changes | [**Releases**](https://github.com/raphaelmansuy/opengenie/releases): what v1.1.0 contains, and what comes next |
 | Read the design | [001](specs/001-databricks-coding-agents/README.md) app · [005](specs/005-llm-models/README.md) models · [006](specs/006-databricks/README.md) Genie Code parity · [010](specs/010-long-running/README.md) durable sessions · [011](specs/011-ux-coding-mission/README.md) missions |
 | Read the architecture | [**Architecture**](docs/08-architecture.md) context, containers, deployment · [**Security**](docs/09-security.md) authn, authz, the fence · [**Data model**](docs/10-data-model.md) what is stored |
 
@@ -143,7 +144,7 @@ make -C apps/coding-agent deploy           # sync -> deploy -> verify the live U
 cd apps/coding-agent
 make setup && make dev                     # scripted agent on http://127.0.0.1:8062
 make dev-real                              # the real opencode agent and model on http://127.0.0.1:8071
-make check                                 # TypeScript types, 1303 Python tests and 959 front-end tests; no network
+make check                                 # TypeScript types, 2061 Python tests and 1233 front-end tests; no network
 ```
 
 `make dev` replaces the model with a deterministic agent that plays scripted scenarios, which is how the
@@ -196,7 +197,7 @@ python3 site/build.py && python3 site/check.py   # rebuild the site; fails if a 
 apps/coding-agent/   the application: FastAPI, React 19 + CodeMirror 6, opencode over ACP
   api/               domain (pure rules), ports, adapters, routers, services
   web/src/           the front end and its tests
-  tools/             the MCP tool server (41 tools, 28 in the core profile) and its skills
+  tools/             the MCP tool server (45 tools, 32 in the core profile) and its skills
   seed/              the model catalogue the app ships with
 exams/               the exam harness: 11 graded missions and every saved run
 docs/                tutorial, big picture, setup, safety, results, decision guide

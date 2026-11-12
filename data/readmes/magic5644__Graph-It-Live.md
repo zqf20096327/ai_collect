@@ -32,6 +32,18 @@ It walks through the file graph with Louvain import clusters, the Dependency Str
 
 It replays how this repository fixed issue #434, with real outputs. You see a circular import in the live dependency graph (ReactFlow) and units in layers with their cycle in the Architecture view, both on `tests/fixtures/workspaces-project`. Then come the call graph, the matrix cycle between `analyzer` and `shared`, and `graph-it check-architecture` failing on 12 violations. Next, the REPL walks the importers, an AI agent extracts interfaces into `src/shared` through the MCP server to invert the dependency, and the review gate scores the pull request. The check ends green.
 
+**From a messy repository to a clean architecture in 2 minutes**
+
+[![graph-it init on a legacy shop: the generated rules, with callouts explaining that each folder may import only what it imports today](media/graph-it-live-init-poster.png)](media/graph-it-live-init.mp4)
+
+It cleans up `tests/demo/legacy-shop`, a small shop with no rules, two cycles and dead code, using real outputs and one step at a time.
+
+1. `graph-it init` writes `graphit.architecture.json` from today's imports, and `graph-it check-architecture` passes on day one.
+2. `graph-it check` lists the dead code with its confidence. Deleting it removes one cycle, and a second scan finds what only the deleted code used.
+3. The quick wins point at the import behind the last cycle; moving one file fixes it.
+4. The rules are tightened to match the clean code.
+5. A pull request that brings a cycle back fails the Graph-It Review Gate (`graph-it review-pr`). The fix turns it green.
+
 ## Table of Contents
 
 - [What it does](#what-it-does)
@@ -66,7 +78,7 @@ Use the same graph data to navigate code, review refactors, generate codemaps, a
 
 ### VS Code extension
 
-**Requirements:** VS Code 1.96 or later. Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=magic5644.graph-it-live) or [Open VSX](https://open-vsx.org/extension/magic5644/graph-it-live).
+**Requirements:** VS Code 1.101 or later. Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=magic5644.graph-it-live) or [Open VSX](https://open-vsx.org/extension/magic5644/graph-it-live).
 
 1. Open a project.
 2. Open the Graph-It-Live view from the Activity Bar.

@@ -172,6 +172,7 @@ In this step, we will learn that there is no single best model. The right choice
 
 In this step, we will learn the fastest and cheapest way to improve results for a customer: giving the model better instructions and better context. In most FDE engagements, this is where the first big win comes from.
 
+- [How does Prompt Engineering work?](https://outcomeschool.com/blog/prompt-engineering)
 - [How does Chain-of-Thought (CoT) Prompting work?](https://outcomeschool.com/blog/how-does-chain-of-thought-prompting-work)
 - [How does Prompt Chaining work?](https://outcomeschool.com/blog/how-does-prompt-chaining-work)
 - [How does Tree of Thoughts work?](https://outcomeschool.com/blog/how-does-tree-of-thoughts-work)

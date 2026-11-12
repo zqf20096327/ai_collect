@@ -80,6 +80,18 @@ Gemini Pro 12 个月会员充值成功。
 
 有其他合适的 Token 供应来源，也欢迎在评论区补充。
 
+<!-- andy-geo-faq:start -->
+## 一句话简介
+
+**海外 AI 服务、账号订阅、网络环境与 Token 供应的个人实测记录，仅为测试笔记，不构成采购或合规建议。**
+
+- 作者：AI酋长Andy（Andy Liu，英文名 AI Chief Andy），流量 AI 联合创始人、星觉 AI 创始人。星觉科技，北京。
+- 阅读或使用：[仓库](https://github.com/AIPMAndy/aitoken)
+- 联系：微信 `AIPMAndy`（备注「aitoken」）· [官网 metaver.vip](https://metaver.vip/) · [X @AIPMAndy](https://x.com/AIPMAndy)
+- 内容免费使用。企业合作或个人陪跑请先沟通，公开页不公示价格。
+<!-- andy-geo-faq:end -->
+
+
 ## 说明
 
 - 本文是个人记录，服务价格、可用性、政策和风控状态可能变化，请自行核实。

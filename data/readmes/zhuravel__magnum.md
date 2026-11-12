@@ -835,7 +835,8 @@ replies started it and why none was Magnum's to answer (none in its threads, or 
 answer); it never needs your attention. A changed verdict posts one short review, as any round does. A push
 meanwhile wins: the re-review of the new head reads the replies too. After two of Magnum's rebuttals in
 a thread, an answer marks the thread `stop`: the judge replies there no more, `post-review` refuses to,
-and the board flags the PR for you (`pr.stalemate`; `reviewed · argued` in STATE) until you act on it
+and the board flags the PR for you (`pr.stalemate`; `reviewed · argued` in STATE), as do `magnum status`'s
+ATTENTION, the dashboard's and `magnum tui --needs-me`, until you act on it
 (`magnum review`, a verdict, a mute). The judge still decides the finding, and writes the stopped threads
 whose finding it keeps open as `stops_open` in its result: a thread whose answer it accepts is not
 flagged, and a later round that settles a flagged thread clears the flag (so does the continued turn of a
@@ -1175,5 +1176,4 @@ herdr numbers its workspaces and panes from the start again after it restarts, s
 name the new panes of another PR. Magnum never closes, reuses or parks away a pane or a workspace that a
 starting or live session of another PR records (of two live sessions with one pane, the newer owns it): an
 old parked, closed or lost session of the PR that records one has its herdr ids dropped, which one
-`agents.herdr_ids_reused` event says, and nothing of it is closed; its conversation still resumes, in a new
-pane. What no registry row records, an eval replay's panes (a rep
+`agents.herdr_ids_reused` event says, and nothing of it is closed; its conversation still re

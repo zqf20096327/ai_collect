@@ -11,7 +11,8 @@ Calibrated decisions for any text.
 [Website](https://samratduttaofficial.github.io/WaterSheep/) ·
 [Demo](https://huggingface.co/spaces/samratduttaofficial/WaterSheep) ·
 [Model](https://huggingface.co/samratduttaofficial/WaterSheep) ·
-[Video](https://youtu.be/VjSiBecOiRI)
+[Video](https://youtu.be/VjSiBecOiRI) ·
+[Blog](https://samratduttaofficial.github.io/WaterSheep/blog/calibrated-yes-no.html)
 
 WaterSheep answers yes/no, single-choice, rating and multi-label questions about any text, with a
 probability for every option.
@@ -145,6 +146,35 @@ watersheep --model samratduttaofficial/WaterSheep --question "Which team should 
 
 `--serve` runs a local HTTP API on port 8766.
 
+## Use with LangChain and LlamaIndex
+
+```bash
+pip install "watersheep[langchain,llamaindex] @ git+https://github.com/SamratDuttaOfficial/WaterSheep"
+```
+
+A LangChain Runnable, so it fits in any chain:
+
+```python
+from watersheep.integrations.langchain import WaterSheepRunnable
+
+route = WaterSheepRunnable("samratduttaofficial/WaterSheep",
+                           question="Which team should handle this?", options=["billing", "shipping", "support"])
+route.invoke("I was charged twice.")
+```
+
+A LlamaIndex node postprocessor that drops retrieved passages the model judges irrelevant to the query:
+
+```python
+from watersheep.integrations.llamaindex import WaterSheepRelevanceFilter
+
+engine = index.as_query_engine(similarity_top_k=10,
+                               node_postprocessors=[WaterSheepRelevanceFilter(url="http://127.0.0.1:8766", threshold=0.5)])
+```
+
+Each takes a model (anything `WaterSheep.load` accepts) or `url=` for a running `watersheep --serve`.
+For agents, `watersheep_tool` (LangChain) and `watersheep_function_tool` (LlamaIndex) answer yes/no and
+classification questions with a probability for every option.
+
 ## Evaluation
 
 | Evaluation | Accuracy | ECE |
@@ -212,6 +242,40 @@ git clone https://github.com/SamratDuttaOfficial/WaterSheep
 cd WaterSheep
 ./scripts/run.sh
 ```
+
+### Fine-tune existing WaterSheep weights on local decision records
+
+WaterSheep can warm-start from an existing WaterSheep export or Hugging Face model and train on
+local WaterSheep-format NDJSON without copying that data into the repository.
+
+A typed semantic graph can first be projected into relation-completion decisions:
+
+```bash
+python tools/semantic_graph_to_records.py \
+  --nodes /path/to/concepts.json \
+  --edges /path/to/relations.json \
+  --out /path/to/semantic-records.jsonl \
+  --source-name my-semantic-graph
+```
+
+Then fine-tune the published WaterSheep weights on those local records:
+
+```bash
+python -m watersheep.run \
+  --set use_public_sources=false \
+  --set record_imports=/path/to/semantic-records.jsonl \
+  --set init_model=samratduttaofficial/WaterSheep \
+  --set audit_per_source=0 \
+  --set synth_target=0
+```
+
+`record_imports` are explicit local inputs: a missing, empty, or malformed configured import stops the sources stage. The files are fingerprinted
+for stage invalidation, and their contents are not added to this repository. Imported records are taken as supplied and are not teacher-audited. The graph converter only
+projects edges already present in the supplied graph; it does not infer or verify new semantic claims.
+
+For a serious generalization benchmark, separate held-out semantic families before conversion rather
+than treating the pipeline's random train/validation/test split as evidence of relational transfer.
+
 
 Use `scripts\run.bat` on Windows.
 

@@ -10,6 +10,7 @@
 <p align="center">
   <a href="https://github.com/ExplosiveCoderflome/AI-Novel-Writing-Assistant/releases/latest"><img src="https://img.shields.io/github/v/release/ExplosiveCoderflome/AI-Novel-Writing-Assistant?style=flat-square&amp;label=Windows%20%E6%A1%8C%E9%9D%A2%E7%89%88&amp;color=17556b" alt="最新桌面版本" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-17556b?style=flat-square" alt="AGPL-3.0 许可证" /></a>
+  <a href="https://linux.do/"><img src="https://img.shields.io/badge/LINUX%20DO-%E7%A4%BE%E5%8C%BA-FDD835?style=flat-square&amp;labelColor=222" alt="LINUX DO 社区" /></a>
   <a href="./package.json"><img src="https://img.shields.io/badge/Monorepo-pnpm%20workspace-3C873A?style=flat-square" alt="Monorepo · pnpm workspace" /></a>
 </p>
 
@@ -49,27 +50,25 @@
 
 ## 最新更新
 
-### 2026-11-11 · v0.7.5
+### 2026-11-13 · v0.8.0
 
-桌面版本 `v0.7.5` 新增任务记录删除与运行中任务停止，补发 Mac 安装包（Intel 与 Apple Silicon），并加快测试与发布检查。
+桌面版本 `v0.8.0` 把按大纲创作的工作台和开书流程合入正式版，保留文档站「落笔成书」新首页，并修复短卷章纲被抬到 12 章、节奏板因重叠无法落库的问题。原稿修订入口默认关闭。
 
 #### 新增
 
-- 运行记录、导演推进和拆书分析支持逐条确认删除已结束记录，保留已保存的小说、章节、分析内容与来源资料。
-- 导演推进、拆书分析、写法提取及封面和角色图片生成可直接停止运行中的任务；排队或运行中的记录会提示先停止再删除。
+- 独立大纲工作台：可建立大纲项目，导入、编辑、查看修订历史，并使用 AI 修改提案。
+- 按已采用的大纲开书：支持确认开书、桌面交接和逐章写作保护，未绑定大纲的全自动写作路径保持不变。
+- 文档站首页「落笔成书」开场动画（含 Safari 遮挡修复）、安装与文档页面更新，以及 README 页首 LINUX DO 徽章。
+- 原稿修订（导入原稿、反推原纲、逐章诊断修文等）已纳入代码，默认关闭；需要时打开 `VITE_MANUSCRIPT_REVISION_ENABLED`。手机端不展示这些入口。
 
 #### 修复
 
-- 修复 Mac 平台上质量隔离测试因临时目录符号链接路径不一致而失败，导致 v0.7.3、v0.7.4 未能产出 Mac 安装包的问题；本版本起提供 Intel 与 Apple Silicon 的 Mac 安装包。
+- 已确定章数的短卷，章纲节奏板不再被自动抬到 12 章，也不会被强制加上续卷钩子。
+- 短卷节奏板允许更少节拍和同章重叠，按实际覆盖的章数校验，重叠不再被加总后误拒。
 
-#### 优化
+写作内核 v2 仍默认关闭。大纲反馈、更完整的原稿修订后续能力、短篇适配与创作承接合同不在本版本。
 
-- 测试按批次复用进程，减少逐文件启动开销，默认开发测试只运行 fast 分组，集成测试单独运行。
-- 发布前检查会复用同一提交已通过的测试记录，避免重复运行完整测试；提交变化或工作区有改动时仍会重新运行，也可用 `--force-tests` 强制重跑。
-
-完整历史更新见 [版本更新说明](./docs/releases/release-notes.md)。
-
----
+[查看完整更新历史](docs/releases/release-notes.md)
 
 ## 现在已经能做什么
 
@@ -489,6 +488,18 @@ V2 内核位于 `server/src/modules/director/`，业务能力由应用层接入�
 
 提交贡献前请阅读 [CONTRIBUTING.md](./CONTRIBUTING.md) 与 [CLA.md](./CLA.md)，并说明第三方代码、素材及其许可证。感谢参与测试、提出建议和提交修复的朋友，也感谢贡献者 [@ystyleb](https://github.com/ystyleb)。
 
+### 友情链接
+
+<p align="center">
+  <a href="https://linux.do/"><img src="https://img.shields.io/badge/LINUX%20DO-%E7%A4%BE%E5%8C%BA-FDD835?style=flat-square&amp;labelColor=222" alt="LINUX DO 社区" /></a>
+</p>
+
+<p align="center">
+  <a href="https://linux.do/"><strong>LINUX DO</strong></a>
+  ·
+  <a href="https://linux.do/t/topic/2738271">本项目讨论帖</a>
+</p>
+
 ### 交流与支持
 
 <details>
@@ -514,4 +525,4 @@ V2 内核位于 `server/src/modules/director/`，业务能力由应用层接入�
 - 服务型商用：将本项目或其修改版本作为后端，以 SaaS、托管等形式向第三方提供服务，须通过作者获取商业授权许可。
 - 新贡献默认按 [CLA.md](./CLA.md) 提交，可随项目按 AGPL-3.0-only 分发，也可纳入维护者另行提供的商业授权。
 
-[贡献与授权说明](./CONTRIBUTING.md) · [LINUX DO](https://linux.do/)
+[贡献与授权说明](./CONTRIBUTING.md)

@@ -77,6 +77,7 @@ Also, a leaderboard should be included if only:
 
 | Name | Description |
 | ---- | ----------- |
+| [agentstats](https://github.com/RishabhPande/agentstats) | agentstats analyzes repeated AI-agent benchmark runs with significance tests, run-count planning and leaderboard uncertainty audits; it does not execute agents. |
 | [Benchmark Radar](https://github.com/ktwu01/benchmark-radar) | A living database and search engine for AI benchmarks and evaluation, tracking 42,331+ records from 40 public sources with linked evidence and daily updates. |
 | [Demo Leaderboard Backend](https://huggingface.co/spaces/demo-leaderboard-backend/backend) | Demo leaderboard backend helps users manage the leaderboard and handle submission requests, check [this](https://huggingface.co/docs/leaderboards/leaderboards/building_page) for details. |
 | [Evaluation Results on the Hub](https://huggingface.co/docs/hub/en/eval-results) | Evaluation Results on the Hub enables model authors to store and display evaluation results in model cards by embedding structured metadata, making benchmark scores publicly accessible and comparable across models. |
@@ -133,6 +134,7 @@ Also, a leaderboard should be included if only:
 | [LLM-Perf Leaderboard](https://huggingface.co/spaces/optimum/llm-perf-leaderboard) | LLM-Perf Leaderboard aims to benchmark the performance of LLMs with different hardware, backends, and optimizations. |
 | [LLMPerf](https://github.com/ray-project/llmperf-leaderboard) | LLMPerf is a tool to evaluate the performance of LLMs using both load and correctness tests. |
 | [ModelBenchmark](https://modelbenchmark.io) | Modelbenchmark provides independent AI model rankings and comparisons, scoring hundreds of models using a composite metric built from public benchmarks alongside side-by-side pricing, context window, and release date details. |
+| [Models Rank](https://modelsrank.org/en/) | Models Rank is a bilingual (English/Chinese) leaderboard that compiles public third-party evaluations, mainly the Artificial Analysis Intelligence Index, to compare AI models on intelligence, cost per task and speed, with per-model pages that cite sources and check dates, updated weekly. |
 | [MSNP Leaderboard](https://huggingface.co/spaces/evilfreelancer/msnp-leaderboard) | MSNP Leaderboard tracks and evaluates quantized GGUF models' performance on various GPU and CPU combinations using single-node setups via Ollama. |
 | [oobabooga](https://oobabooga.github.io/benchmark.html) | Oobabooga is a benchmark to perform repeatable performance tests of LLMs with the oobabooga web UI. |
 | [PinchBench](https://pinchbench.com) | PinchBench is a benchmark for evaluating and comparing AI agents in the OpenClaw environment across diverse tasks. |
@@ -514,6 +516,7 @@ Also, a leaderboard should be included if only:
 | [ScienceQA](https://scienceqa.github.io/leaderboard.html) | ScienceQA is a benchmark used to evaluate the multi-hop reasoning ability and interpretability of AI systems in the context of answering science questions. |
 | [SciGraphQA](https://github.com/findalexli/SciGraphQA?tab=readme-ov-file#leaderboard) | SciGraphQA is a benchmark to evaluate the MLLMs in scientific graph question-answering. |
 | [SEED-Bench](https://huggingface.co/spaces/AILab-CVC/SEED-Bench_Leaderboard) | SEED-Bench is a benchmark to evaluate the text and image generation of multimodal models. |
+| [Spicy Lab](https://spicyapi.app) | Spicy Lab is an independent comparison and benchmark site (by the SpicyAPI team) that ranks NSFW AI image, video, and chat models using the same intensity levels, side-by-side test runs, and a published methodology; it is not a generator (data updated 2026-11-07: 160 models, 3,854 runs). |
 | [URIAL](https://huggingface.co/spaces/allenai/URIAL-Bench) | URIAL is a benchmark to evaluate the capacity of language models for alignment without introducing the factors of fine-tuning (learning rate, data, etc.), which are hard to control for fair comparisons. |
 | [UPD Leaderboard](https://huggingface.co/spaces/MM-UPD/MM-UPD_Leaderboard) | UPD Leaderboard is a platform to evaluate the trustworthiness of MLLMs in unsolvable problem detection. |
 | [Vibe-Eval](https://github.com/reka-ai/reka-vibe-eval?tab=readme-ov-file#leaderboard-) | Vibe-Eval is a benchmark to evaluate MLLMs for challenging cases. |
@@ -577,6 +580,7 @@ Also, a leaderboard should be included if only:
 | [AgentBoard](https://hkust-nlp.github.io/agentboard/static/leaderboard.html) | AgentBoard is a benchmark for multi-turn LLM agents, complemented by an analytical evaluation board for detailed model assessment beyond final success rates. |
 | [Agents' Last Exam](https://agents-last-exam.org/leaderboard) | Agents' Last Exam is a benchmark for evaluating generalist AI agents on long-horizon, economically valuable professional workflows. |
 | [AgentStudio](https://skyworkai.github.io/agent-studio) | AgentStudio is an integrated solution featuring in-depth benchmark suites, realistic environments, and comprehensive toolkits. |
+| [airbench](https://airbench.ai/leaderboard) | airbench is a leaderboard to compare AI agents as people actually run them (model + harness, local or hosted), on pass-or-fail vision, code and computer-use challenges, with the quantization, GPU and harness recorded for each run. |
 | [AssistantBench](https://huggingface.co/spaces/AssistantBench/leaderboard) | AssistantBench aims to evaluate the ability of web agents to assist with real and time-consuming tasks. |
 | [BenchClaw](https://www.p2pclaw.com/app/benchmark) | BenchClaw is a benchmark to evaluate AI agents on autonomous scientific paper writing and peer review using a multi-judge evaluation process. |
 | [BrowseComp](https://www.kaggle.com/benchmarks/openai/browsecomp) | BrowseComp is a benchmark to evaluate the ability of AI agents to locate hard-to-find information. |
@@ -609,17 +613,4 @@ Also, a leaderboard should be included if only:
 | [WebArena](https://docs.google.com/spreadsheets/d/1M801lEpBbKSNwP-vDBkC_pF7LdyGU1f_ufZb_NWNBZQ) | WebArena is a standalone, self-hostable web environment to evaluate autonomous agents. |
 | [WebsiteBench](https://website-bench.com/#results) | Leaderboard for agents reconstructing full-stack websites through browser exploration; read the historical cohort and protocol with each result. [Code](https://github.com/TIGER-AI-Lab/WebsiteBench). |
 | [WildClawBench](https://internlm.github.io/WildClawBench) | WildClawBench is an in-the-wild benchmark to evaluate AI agents in the OpenClaw Environment. |
-| [YC-Bench](https://collinear-ai.github.io/yc-bench/#leaderboard) | YC-Bench is a long-horizon deterministic benchmark for LLM agents, where agents play CEO of an AI startup over a simulated 1–3 year run, managing decisions across prestige specialisation, employee allocation, cash flow, and deadline risk. |
-| [τ-Bench](https://github.com/sierra-research/tau-bench?tab=readme-ov-file#leaderboard) | τ-bench is a benchmark that emulates dynamic conversations between a language model-simulated user and a language agent equipped with domain-specific API tools and policy guidelines. |
-
-### Research
-
-| Name | Description |
-| ---- | ----------- |
-| [DeepResearch-Bench Leaderboard](https://huggingface.co/spaces/muset-ai/DeepResearch-Bench-Leaderboard) | DeepResearch-Bench Leaderboard evaluates AI models on deep research tasks. |
-
-### Business
-
-| Name | Description |
-| ---- | ----------- |
-| [AI Stock-Picking League](https://www.alphabazaar.ai/league) | AI Stock-Picking League is a daily paper-trading benchmark in which Google's Gemini and Gemma models each make one US stock trade or a pass every weekday from the same candidates and data, scored against SPY and ranked with no-AI baselines (a random pick, SPY buy-and-hold an
+| [YC-Bench](https://collinear-ai.github.io/yc-bench/#leaderbo

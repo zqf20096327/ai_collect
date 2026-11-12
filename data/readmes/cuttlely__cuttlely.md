@@ -3,7 +3,7 @@ English | [日本語](./README.ja.md) | [한국어](./README.ko.md) | [繁體中
 <p align="center">
 <picture>
 <source media="(prefers-color-scheme: dark)" srcset="./assets/brand/readme/cuttlely-readme-header-dark.png">
-<img src="./assets/brand/readme/cuttlely-readme-header-light.png" alt="Cuttlely. Your applications deserve agents. The open-source agent platform for applications." width="880">
+<img src="./assets/brand/readme/cuttlely-readme-header-light.png" alt="Cuttlely. Context-aware agent orchestration. Open source, Apache-2.0." width="880">
 </picture>
 </p>
 
@@ -27,7 +27,9 @@ Node 20+ and Docker
 
 [Get started in 10 minutes](https://cuttlely.com/quickstart/) · [Star on GitHub](https://github.com/cuttlely/cuttlely) · [Already have flows? Bring them over](https://cuttlely.com/flowise/)
 
-Latest stable is **1.7.2**. Pin image `1.7.2` or install `cuttlely@1.7.2`. [1.7.2 release notes](https://github.com/cuttlely/cuttlely/releases/tag/v1.7.2) · [Changelog](./CHANGELOG.md).
+**1.7.3 keeps the page you are on when a request gets no answer, and keeps imported connections when only a handle type name changed.** The page says the server could not be reached instead of showing **Something went wrong**. Brief connection drops while you edit are retried quietly, a save no longer marks later edits as saved, and self-hosted installs behind a reverse proxy keep idle connections open longer.
+
+Latest stable is **1.7.3**. Pin image `1.7.3` or install `cuttlely@1.7.3`. [1.7.3 release notes](https://github.com/cuttlely/cuttlely/releases/tag/v1.7.3) · [Changelog](./CHANGELOG.md).
 
 **1.7.0 is a security-exception release. If you're upgrading from an earlier version, it needs action.** Back up the database, encryption key and settings, then read [operator onboarding and recovery](./docs/how-to/instance-operator.md) before you deploy, so you don't lock yourself out of browser administration. The full checklist, including the host-log claim, `CUTTLELY_INSTANCE_OPERATOR`, and access-key enforcement staying off by default, is in [Upgrade warnings](./docs/upgrading.md) (section "1.7.0 security-exception upgrade") and the [changelog](./CHANGELOG.md). The setup code creates only the first account, and only when local sign-in is already on at the host (Docker and `npx cuttlely start` turn this on by default). It cannot configure the service, and it does not designate the instance operator. [Sign in](./docs/how-to/sign-in.md) · [Your first 10 minutes](#your-first-10-minutes).
 
@@ -103,7 +105,7 @@ Roles, separate teams, sign-in and an audit log, on a server you run.
 
 -   [Roles and permissions](./docs/how-to/roles-and-permissions.md). Teams, the built-in roles, and the permission key for each page and route.
 -   [Sign in](./docs/how-to/sign-in.md). Create the first account. A team can sign in with local users (`CUTTLELY_LOCAL_USERS`) and no AuthKit. AuthKit can be turned on later, and a verified email links to an existing local user.
--   [Users without AuthKit](./docs/how-to/users-without-authkit.md). Local users, invite and reset links, the built-in Owner, Admin, Builder, and Viewer roles, and sessions. An active owner can cancel another pending owner invitation and revoke its links; active owners stay read-only. An invited person joins only through their own one-time invite link, with or without AuthKit: [Invite people](./docs/how-to/sign-in.md#invite-people).
+-   [Users without AuthKit](./docs/how-to/users-without-authkit.md). Local users, invite and reset links, the built-in Owner, Admin, Builder, and Viewer roles, and sessions. An active owner or an Admin (`users:manage`) can cancel a pending invitation, including another pending owner invitation, and revoke its links. Removing an active or disabled person from the organization stays owner-only. Active owners stay read-only. An invited person joins only through their own one-time invite link, with or without AuthKit: [Invite people](./docs/how-to/sign-in.md#invite-people).
 -   [Audit log](./docs/how-to/audit-log.md). Sign-in, lockout, invite, reset, role change, user disable, and settings changes.
 -   [Server settings](./docs/how-to/server-settings.md). Host-designate an [instance operator](./docs/how-to/instance-operator.md) to change sign-in, the database, storage and other service-wide settings from **Admin**. Without a valid designation browser service administration is closed; host/CLI recovery remains available. **Agent runtime** > **Limits** > **Agent run time** sets the specialist wait: four minutes by default, 300 seconds for five minutes, or 0 for unlimited; save and restart to apply. A shorter **Turn time limit** still applies. Runtime settings apply without a restart: Testing and Limits, security limits, invite and reset expiry, the SMTP host, port, secure flag, and user, `SENDER_EMAIL`, invite delivery, the settings-history cap, and `CUTTLELY_AUDIT_RETENTION_DAYS`. Env-only values, including secrets, `PORT`, the data folder, and the SMTP password, show only Set or Not set. The list is [Startup options](./docs/reference/startup-options.md).
 

@@ -70,6 +70,18 @@ every call goes to an audit log, and an administrator can disable MCP by policy.
 Enable it in Settings → "LLM assistants (MCP)" → "Allow the MCP server"; the same section shows ready-made client config snippets.
 Details: [guide chapter](docs/guide/en/llm-mcp.md).
 
+**Agent tab.** GigaCode, Qwen Code or Claude Code can run right inside Glafira: the "Agent" row in the sidebar (⌘T on
+macOS, Ctrl+T on Windows and Linux) opens a tab with a built-in terminal (xterm.js over a pseudo terminal, ConPTY on
+Windows) where your own agent runs with its own settings, model and sign-in. It reaches Glafira through the
+`glafira-kafka` server from its settings like any other client; if the server is missing or points to another program,
+a bar above the terminal offers "Add" or "Replace" and then "Restart". The agent, its program and the working folder
+are chosen in the "Agent" block of the same section, and "Add to Qwen Code / GigaCode / Claude Code" in "Connect a
+client" adds the server with `<client> mcp add -s user`. The "Review with agent" button on a cluster check finding
+opens an agent tab with a request line: the agent reviews the finding and leaves an LLM note with its conclusion on the same
+object. Up to 10 agents run at once; quitting Glafira stops them all. The MCP policy (`mcpEnabled = false`) hides the
+tab.
+Details: [guide chapter, "Agent tab"](docs/guide/en/llm-mcp.md#agent-tab).
+
 **Catalog build for MCP registries.** Registries such as Glama start a server in a container and ask it for its
 tools. The real server lives inside the desktop app, so the crate also ships `glafira-mcp-catalog`: the same server
 over stdio with the real tool list, where every call answers `desktop_app_required` with a link to the installers.

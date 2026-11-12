@@ -13,10 +13,6 @@ app's process: a sandboxed workspace the agent reads and writes, tools from your
 and subagents, hooks and policy around every tool call, and durable sessions. Bring any OpenAI- or
 Anthropic-compatible model.
 
-> **0.5.0 is not published yet.** This branch uses the new Thread / Turn / Item API. Build from source or run
-> `./gradlew publishToMavenLocal` and add `mavenLocal()` to your repositories. Maven Central still has 0.4.0;
-> its API differs from these examples. See the [migration guide](CHANGELOG.md#unreleased-050).
-
 ## What you get
 
 - **The agent loop, on the device.** Native tool calling with streaming, thinking, prompt caching and server-side web
@@ -36,7 +32,7 @@ Anthropic-compatible model.
 
 ```kotlin
 dependencies {
-    implementation(platform("cc.noharry:agent-bom:0.5.0-SNAPSHOT"))
+    implementation(platform("cc.noharry:agent-bom:0.5.0"))
     implementation("cc.noharry:agent-runtime-android") // an Android app
     // implementation("cc.noharry:agent-runtime")      // the JVM: a server, a desktop tool, tests
 }
@@ -103,17 +99,65 @@ of your own (a scripted one standing in for an on-device model), tools from your
 | `agent-runtime` | The runtime and host facade (plain JVM): `AgentRuntimeBuilder`, OpenAI- and Anthropic-compatible model clients, MCP, `functionTools`, skills, subagents, sessions and memory, web search and fetch, hooks and policy, and the workspace's virtual file system |
 | `agent-runtime-android` | The Android layer: `AndroidAgentRuntime.builder(context)`, SQLite sessions, the app-private event log, and mounting a folder the user picks through the Storage Access Framework |
 | `agent-api` | Android-neutral Thread / Turn / Item contracts and stable model, tool, hook and event-log extension interfaces |
-| `agent-exec-js` | Optional: `exec_js`, sandboxed JavaScript (QuickJS through Zipline) that can call tools |
-| `agent-device-capabilities` | Optional: calendar, notification and media tools |
-| `agent-android-use` | Optional: observe and operate the screen through an accessibility service |
-| `agent-a2a` | Optional (plain JVM): delegate tasks to remote A2A agents over a direct JSON-RPC/SSE transport, and expose the agent as a local A2A endpoint |
-| `agent-a2a-client-official` | Optional: the same client over the official A2A Java SDK |
+| `agent-exec-js` | Optional: `exec_js`, sandboxed JavaScript (QuickJS through Zipline) that can call tools; the app server's scripts (plugin packages' tools written in JavaScript) need it too |
+| `agent-device-capabilities` | Optional: calendar, notification and media tools; with the app server, also their plugin (`device-tools`), loaded by default |
+| `agent-android-use` | Optional: observe and operate the screen through an accessibility service; with the app server, also its plugin (`android-use`), loaded by default |
+| `agent-a2a` | Optional (plain JVM): delegate tasks to remote A2A agents, and expose the agent as a local A2A endpoint. Two clients: a direct JSON-RPC/SSE one speaking A2A 0.3, and one over the official A2A Java SDK speaking A2A 1.0, whose SDK the app adds ([below](#the-official-a2a-client)) |
 | `agent-acp` | Optional (plain JVM): serve the agent's threads over the Agent Client Protocol (ACP) to editors and other ACP clients, on stdio or any stream |
-| `agent-bom` | One version for all of the above |
+| `agent-bom` | One version for all of the above and the app server's three artifacts below |
 
 An Android app depends on `agent-runtime-android`; a server, desktop tool or test uses `agent-runtime`. Optional
 modules depend at most on `agent-api`. The loop implementation is internal to `agent-runtime`; `samples/minimal`
 shows a host with only a model.
+
+**The app server** (experimental) makes an Android app an agent: one runtime behind a JSON-RPC protocol of threads,
+turns and items, which every front end reaches as a client, and a plugin kernel the rest comes through. Its guide for
+hosts is [agent-app-server/README.md](agent-app-server/README.md); `samples/agent-app-sample*` are four apps on it.
+
+| Artifact | What it is |
+|---|---|
+| `agent-app-protocol` | The protocol (plain JVM): requests, notifications and approvals over threads, turns and items, the state a front end renders, and its client (`ServerClient`) |
+| `agent-app-server` | The server (Android): sessions, models, MCP, skills, subagents and usage behind the protocol, the plugin kernel (`AppServerPlugin`, `PluginHost`) and plugin packages a person installs; a host installs it with an `AppServerConfig` |
+| `agent-app-models` | Optional (Android): the model services' plugin, loaded by default once on the classpath: DeepSeek (with its balance, search and relay check), OpenAI, Anthropic, Google Gemini, xAI, OpenRouter, Groq, Moonshot (Kimi), Zhipu (GLM), Alibaba Cloud Model Studio (Qwen), Volcengine Ark (Doubao), MiniMax and SiliconFlow: where each is reached, its models' facts and prices, how its failures read |
+
+The core speaks the wire protocols (OpenAI Chat Completions and Responses, the Anthropic Messages API) and knows no
+service: with it alone a profile reaches any compatible service, with conservative defaults. Three published modules
+bring a plugin that the server loads once the app depends on them, unlisted: `agent-app-models`, and
+`agent-android-use` and `agent-device-capabilities` for operating the screen and the device's tools (those two only
+compile against the server, so an app with the runtime alone gets their tools without it). A host's own plugins are its
+code (`AppServerPlugin`). The other first-party ones (cards, drawn pages, memory, pictures, plans, A2A) are source
+modules of the [Bothy](https://github.com/NoHarry/bothy) app, built into it rather than published as Maven artifacts,
+so they change without a release of this one; their source is published with Bothy's next release.
+The core names no plugin's package and no model service, and carries none of the runtime modules only a plugin brings
+(`agent-a2a`, `agent-android-use`, `agent-device-capabilities`, `agent-app-models`;
+`checkAppServerLayering`, part of `ciCheck`).
+
+### The official A2A client
+
+`agent-a2a` is compiled against the official A2A Java SDK 1.1.0.Final without carrying it, so the direct client
+(`DirectA2aClientModule`) needs nothing more. An app that uses `OfficialA2aClientModule` adds the SDK, without its
+`a2a-java-sdk-common` (`agent-a2a` has its own copy, which Android accepts); on Android the SDK's jakarta jars carry the
+same notice files, of which the app keeps one:
+
+```kotlin
+dependencies {
+    implementation("cc.noharry:agent-a2a")
+    implementation("org.a2aproject.sdk:a2a-java-sdk-client:1.1.0.Final") {
+        exclude(group = "org.a2aproject.sdk", module = "a2a-java-sdk-common")
+    }
+    implementation("org.a2aproject.sdk:a2a-java-sdk-http-client-android:1.1.0.Final") {
+        exclude(group = "org.a2aproject.sdk", module = "a2a-java-sdk-common")
+    }
+}
+
+android {
+    packaging { resources.pickFirsts += setOf("META-INF/LICENSE.md", "META-INF/NOTICE.md", "META-INF/beans.xml") }
+}
+```
+
+Without the SDK, `OfficialA2aClientModule()` throws an `IllegalStateException` naming these artifacts, and a release
+shrunk by R8 that names it does not build. The SDK's R8 rules come in `agent-a2a`'s jar. Below Android 7.0 the SDK
+needs core library desugaring, as the runtime does below 8.0.
 
 ## API stability
 
@@ -122,6 +166,9 @@ stable. Advanced diagnostic and tuning APIs remain experimental. The [changelog]
 
 - Declarations marked `@ExperimentalAgentRuntimeApi` or `@ExperimentalA2aClientApi` are the likeliest to change, and
   ask for an opt-in (without one, the runtime's are a compile error and the A2A client's a warning).
+- The app server's artifacts (`agent-app-protocol`, `agent-app-server`, `agent-app-models`) are experimental as a whole; their entry points
+  (`ServerClient`, `AppServer`, `AppServerConfig`, `AppServerPlugin`) carry `@ExperimentalAppServerApi`, whose opt-in,
+  without one, is a warning.
 - Declarations marked `@InternalAgentRuntimeApi` are not API: they are there for the runtime's own modules and tests,
   and may change or go in any release.
 - The public API of every module is recorded in its `api/*.api`, which CI compares with the code, so no change to it

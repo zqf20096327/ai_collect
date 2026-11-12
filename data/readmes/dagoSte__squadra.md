@@ -60,6 +60,20 @@ https://github.com/user-attachments/assets/69f512be-775c-40ae-95c2-e1e403b3f5d1
 - **Claude, Codex and Cursor together**, and open to community plugins.
 - **One view of what every AI window spends.** Tokens per window, model and task across Claude Code and Codex, with advice on which window or model should take the next task, computed on your computer.
 
+### Model and effort for each window
+
+Each new window first asks whether to enable automatic model and effort selection. Turn it on or off from the CLI; role aliases share the choice and a replacement session asks again.
+
+```sh
+squadra models --actor builder
+squadra models --actor builder --auto on
+squadra models --actor builder --auto off
+```
+
+With automatic selection enabled, small work bounded by a valid light-route contract can use the economy profile; complex or uncertain work and independent reviews use the quality profile. Profiles are configurable. The CLI shows the requested model, effort and reason for the selection or fallback; existing proof, review, permission and budget rules still apply.
+
+This applies to new turns managed by `squadra run`. An interactive session already running keeps its settings. The Windows, Usage and Balance views show observed client model/effort with source and time, separately from requested settings and token totals. These are client settings, not a measurement of cognitive work or model quality. [Commands, profiles and limits](references/models.md).
+
 <a id="start"></a>
 ## Installation
 
@@ -530,7 +544,7 @@ The sections below keep the full working examples. Open the topic you need; the 
 | Follow a task from assignment to closure | [Task workflow](#workflow) |
 | Trace an instruction or record a decision | [Briefs, messages and decisions](#decision-reference) |
 | Save work or resume a session | [Checkpoints and recovery](#checkpoints) |
-| Look up a command or its plain-language prompt | [All 66 commands](#commands) |
+| Look up a command or its plain-language prompt | [All 67 commands](#commands) |
 
 [Skill](SKILL.md) · [Setup](references/start.md) · [Work/proof/review](references/work.md) · [Native runners](references/runtime.md) · [Recovery/context handover](references/recovery.md) · [Challenges/benchmark](references/benchmark.md) · [Plugins](references/plugins.md) · [Plugin authoring](references/plugin-authoring.md)
 
@@ -859,10 +873,10 @@ manual deletion of an active cache degrades candidate integrity. See
 
 You do not have to type these commands: **asking your window in plain words is the recommended way**, as in the *Or just ask* column and the [example prompts](#prompts), and the window runs the command for you. The commands are what the windows run, and what you can type yourself to check.
 
-Every command, grouped by purpose: **66 subcommands**, plus `--version`. Use `squadra <command> --help` for the flags; registry commands accept `--root` or `SQUADRA_ROOT`. «Coordinator only» marks what only the coordinator can record: `task`, `route`, `supersede`, `reassign`, `replace`, `brief`, `close`, `ask`, `decision` (including `--extend-budget`), `lanes --apply`, `settings`, `pause`, `resume`, `save`, `standby`, `ping --all`, `ping --sweep`, and the receipt that `restore-check` writes into the live registry. Without installing, the same commands run as `python3 -B scripts/squadra.py <command>`.
+Every command, grouped by purpose: **67 subcommands**, plus `--version`. Use `squadra <command> --help` for the flags; registry commands accept `--root` or `SQUADRA_ROOT`. «Coordinator only» marks what only the coordinator can record: `task`, `route`, `supersede`, `reassign`, `replace`, `brief`, `close`, `ask`, `decision` (including `--extend-budget`), `lanes --apply`, `settings`, `pause`, `resume`, `save`, `standby`, `ping --all`, `ping --sweep`, and the receipt that `restore-check` writes into the live registry. Without installing, the same commands run as `python3 -B scripts/squadra.py <command>`.
 
 <details>
-<summary><strong>All 66 commands and their prompts, grouped by purpose</strong></summary>
+<summary><strong>All 67 commands and their prompts, grouped by purpose</strong></summary>
 
 ### Start and team
 
@@ -933,6 +947,7 @@ Every command, grouped by purpose: **66 subcommands**, plus `--version`. Use `sq
 | `board` | Show progress by window with measured approximate elapsed time, in Italian or English with `--lang`; the coordinator adds labelled estimates of remaining or total task time. | “Show me the progress by window, with the time spent.” |
 | `forecast` | Compare an open task with similar completed work: observed elapsed times and a route suggestion; read-only, no figures below three complete samples. | “How long did work like T5 take before, and does the light route suit it?” |
 | `balance` | Suggest windows and models by load, quota and similar work, with the numbers behind each suggestion; read-only, assigns nothing, Claude quota only as a labelled estimate. | “Which window or model should take the next task?” |
+| `models` | Inspect or enable/disable automatic economy/quality model and effort profiles for this window; show the reason for the choice. [Details](references/models.md). | “Use an economical model for small work and the quality profile for complex work.” |
 | `usage` | Read local token usage by window, model and task, with coverage and optional user-priced estimates; [details](references/usage.md). | “How many tokens has each window and model used?” |
 | `context` | Prepare a bounded read-only task resume packet for native compaction or a fresh session; [details](references/context.md). | “Give me the essential recorded state for T5 without the conversation history.” |
 
@@ -998,6 +1013,10 @@ Static, behavioral and dependency checks, excluding `tests/`. Passing means no H
 
 <a id="news"></a>
 ## What's new
+
+**Latest on main — model and effort profiles for each window**
+
+Opt in at the first question or from the CLI: economy for bounded small work, quality for complex or uncertain work, with reasons shown in the CLI. The dashboard reports observed settings; choices survive role aliases, and replacement windows ask again. [How it works](references/models.md).
 
 **3.15.1 (includes 3.15.0) — a tired window is replaced without losing anything, and the squad is simpler to run**
 

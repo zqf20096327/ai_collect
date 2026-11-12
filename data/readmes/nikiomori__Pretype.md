@@ -80,15 +80,16 @@ To reject a suggestion, continue to type. You can change the accept key to <kbd>
 | Feature | What it does |
 |---|---|
 | **All text fields** | Native apps, Electron apps (VS Code, Slack, Claude Desktop), and web pages. In Terminal, iTerm2, and the VS Code terminal, only the prompts that you type to an AI agent, for example Claude Code. There, the file names and the symbols that the agent shows complete at once. |
-| **Typo fixes** | A pill shows above a misspelled word. The macOS spell checker finds the error in the language of the text. |
-| **Rewrites** (<kbd>⌥Tab</kbd>) | The local model fixes grammar, typos, and phrasing. It keeps your tone. The best model fixes 69% of noisy lines exactly. |
+| **Typo fixes** | A pill shows above a misspelled word. The macOS spell checker finds the error in the language of the text. A word typed on the wrong keyboard layout gets a fix, and so does a missed space or hyphen. As an option, Pretype types a sure fix without a key, and <kbd>⌘Z</kbd> brings your word back. A word that you keep two times gets no more pills. |
+| **Rewrites** (<kbd>⌥Tab</kbd>) | The local model fixes grammar, typos, and phrasing. It keeps your tone. The best model fixes 79% of noisy lines exactly. |
 | **Reply drafts** (<kbd>⌥⇧Tab</kbd>) | The local model writes your next message from the conversation on the screen. With the best model, 90% of the replies are on topic. An independent model rates them. In the prompt of an AI agent, the draft answers the agent's session. It reads the terminal text and needs no Screen Recording. With **Offer replies in chats** on, the draft comes when the agent finishes its turn. |
 | **Emoji and symbols** | `:shrug:` gives 🤷, `:rocket:` gives 🚀, `:cmd:` gives ⌘. |
 | **Arithmetic** | `12*7=` gives 84. |
+| **Text from the screen** *(optional, off)* | Drag over text anywhere on the screen, and Pretype puts it on the clipboard. Use **Copy Text from Screen** in the menu, or <kbd>⇧⌘2</kbd> after you turn it on in **Settings → General**. The text is read on the Mac. Needs Screen Recording. |
 | **Speed** | A suggestion takes 17–81 ms on the local models. |
 | **Your style** | A persona, and a style for each app and each website. Pretype also learns from a local journal. You can clear the journal or disable it. |
 | **Shared app styles** | Styles from the community. One click adds the styles for the apps on your Mac. To share your style, add [one text file](AppStyles/README.md). |
-| **Hosted models** *(optional, off)* | OpenAI, Anthropic, Google Gemini, Groq, Mistral, OpenRouter, DeepSeek, or a local server such as Ollama or LM Studio. Keys stay in your keychain. See [Hosted models](docs/models.md#hosted-models-api). |
+| **Hosted models** *(optional, off)* | OpenAI, Anthropic, Google Gemini, Groq, Mistral, OpenRouter, DeepSeek, or a local server such as Ollama or LM Studio. Keys stay in your keychain. You can also sign in with your ChatGPT plan. That needs no API key. On the plan, suggestions stay in Words on your Mac, unless you turn on **Suggestions on ChatGPT**. See [Hosted models](docs/models.md#hosted-models-api). |
 | **One switch for each feature** | Suggestions, fixes, replies and dictation each have a switch in **Settings → General**. Typo fixes, emoji and arithmetic also have their own switches. With suggestions off, Pretype loads a model only for a fix or a reply. |
 | **Words** *(optional)* | Pretype completes only the word that you type, from your own words and the macOS dictionary of the language that you type. No model loads. Select **Words** in **Settings → General → Suggestions**. On a Mac with 8 GB, Words is the default. When memory pressure unloads the model, suggestions use Words for two minutes. |
 | **18 interface languages** | The interface uses the language of macOS. You can change it in **Settings → General**. |

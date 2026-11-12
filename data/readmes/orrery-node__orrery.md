@@ -226,7 +226,9 @@ orrery · claude-todo-app-1111-0834
   each answer paid from your wallet to the node that served it
 ```
 
-It names the network model outright (`gpt-oss-120b` unless you pass `--model`), tags every request with the job and its budget, and hands Claude Code a placeholder key. A key or token already in your environment is not passed on. Arguments after `--` go to Claude Code.
+It names the network model outright (`gpt-oss-120b` unless you pass `--model`), tags every request with the job and its budget, and hands Claude Code a placeholder key. A key or token already in your environment is not passed on. Arguments after `--` go to Claude Code. Without `--budget` the job gets a dollar (from 0.1.13; on 0.1.12 always pass `--budget`).
+
+Any other tool that reads `OPENAI_BASE_URL` or `ANTHROPIC_BASE_URL` runs the same way (from 0.1.13): `orrery run --budget 0.25 -- aider --model openai/gpt-oss-120b`. The job and its budget ride in the API key the tool is handed, `orrery/<task>/<budget>`, because a key is the one thing every tool lets you set. You can write such a key yourself in Cursor, Continue or an SDK and get the same job budget with no wrapper.
 
 By hand, on any version: Claude Code asks for Claude model names, so give the router an alias and point Claude Code at it:
 
@@ -396,6 +398,7 @@ WantedBy=multi-user.target
 ```
 </details>
 
+- **Keep the data folder.** Between redemptions, what routers signed to you exists only in the ledger in `dataDir` (default `~/.orrery/provider`): up to `redeem.minUnits` per channel. In a container, mount a disk there. `orrery provider check` flags a temporary folder or a container's own disk, and the node says so when it starts (in main, next release).
 - **Your wallet stays cold.** The node runs on its own key (`~/.orrery/provider/node.json`), which can redeem and post enclave claims but can never send what you earn anywhere except your wallet's USDC account. Give it ~0.01 SOL for redemption fees.
 - **Private nodes on AMD SEV-SNP.** In `provider.json`, `"tee": { "mode": "snp", "report": "report.bin", "vcek": "vcek.der" }` serves the report your CPU signed for the node's encryption key, with the chip's certificate. The node refuses to start on a report made for another key (it prints the report data to ask for) or on a VM launched with debugging allowed. Routers verify the report themselves against AMD's roots before they seal a prompt to you; check your own with `orrery enclave verify`.
 - **Your upstream key is safe.** Only standard chat fields reach your upstream; fallback model lists, plugins, provider routing and `n` are dropped, so a caller cannot spend your key on something your price list does not cover.
@@ -462,7 +465,7 @@ The program has **not been audited yet**. Read [SECURITY.md](SECURITY.md) for wh
 | `orrery provider init` | find a local model server and write a starting provider.json |
 | `orrery provider register \| show \| start \| attest \| redeem --config provider.json` | run a provider |
 
-Task budgets: send `x-orrery-task: <name>` on every request of a job and `x-orrery-task-budget: 0.05` on the first. The router keeps one running total per task, answers with `x-orrery-task-spent` and `x-orrery-task-left`, and refuses the next request once the budget is gone (`GET /orrery/tasks` lists them; over MCP, `task` and `task_budget`). Budgets are kept in `~/.orrery/router/tasks.json`, so they survive a restart, and `orrery spend --by task` adds up what each job cost from the router's own log. `orrery sealed` lists every private answer with the enclave the router had verified.
+Task budgets: send `x-orrery-task: <name>` on every request of a job and `x-orrery-task-budget: 0.05` on the first. A tool that cannot add headers can say the same in its API key: `orrery/<task>/<budget>` (from 0.1.13). The router keeps one running total per task, answers with `x-orrery-task-spent` and `x-orrery-task-left`, and refuses the next request once the budget is gone with a 402 that carries the same two headers from 0.1.15 (`GET /orrery/tasks` lists them; over MCP, `task` and `task_budget`). Budgets are kept in `~/.orrery/router/tasks.json`, so they survive a restart, and `orrery spend --by task` adds up what each job cost from the router's own log. `orrery sealed` lists every private answer with the enclave the router had verified.
 
 Router flags: `--route`, `--deposit` (2), `--top-up-below` (0.25), `--daily-cap` (5), `--min-reputation` (0.2), `--port` (7171), `--refresh` (60), `--enclave-images`, `--alias` (`claude-*=llama-3.3-70b`: answer other model names with a network model). Environment: `ORRERY_WALLET`, `ORRERY_RPC_URL`, `ORRERY_HOME` (`~/.orrery`), `ORRERY_ALIASES`.
 
@@ -486,7 +489,7 @@ assets/    brand and README media
 
 ```bash
 cd program && anchor build --arch v2 && cargo test -p orrery   # 2 unit + 13 LiteSVM tests on the compiled program
-cd node && pnpm install && pnpm test                            # 122 tests
+cd node && pnpm install && pnpm test                            # 136 tests
 pnpm e2e                                                        # full local rehearsal, 57 checks
 cd web && pnpm install && pnpm dev                              # http://localhost:3870
 ```
@@ -590,9 +593,25 @@ OpenAI Chat Completions (`/v1/chat/completions`, streaming or not), the OpenAI R
 - [x] A receipt on every private answer (`x-orrery-enclave` headers, kept in the router's log, `orrery sealed`), `orrery enclave verify --node` to audit a private node check by check, a `--private-only` router, a bill per job (`orrery spend --by task`, budgets that survive a restart), `orrery provider price` (0.1.10)
 - [x] Wire sealing: every request encrypted to the node's own key, signed by the node key on its listing (`x-orrery-wire`), and enclave verifiers that read AMD's and Intel's revocation lists (0.1.11)
 - [x] End-user ids dropped by the router before a request leaves (`user`, `safety_identifier`, a cache key, Anthropic `metadata.user_id`), no `user` passed upstream by a node, and `orrery run claude` with a budget and a bill (0.1.12)
-- [x] Revocation lists in the built-in verifiers: AMD's and Intel's signed lists are fetched from the chip maker, verified against the pinned roots and checked for the chip's certificates (in main, next release)
-- [x] Wire sealing: every request is encrypted to the node's own key (signed by the node key on chain), so a host, load balancer or firewall in front of a node sees ciphertext (in main, next release)
-- [ ] Firmware (TCB) status in the built-in verifiers; NVIDIA GPU attestation
+- [x] Revocation lists in the built-in verifiers: AMD's and Intel's signed lists are fetched from the chip maker, verified against the pinned roots and checked for the chip's certificates (0.1.13)
+- [x] Wire sealing: every request is encrypted to the node's own key (signed by the node key on chain), so a host, load balancer or firewall in front of a node sees ciphertext (0.1.13)
+- [x] Intel's patch level (TCB) in the TDX verifier: the platform's microcode and TDX module versions are read from the quote, Intel's signed TCB list for that platform family is fetched and verified against the pinned root, and a platform Intel lists as out of date, revoked or unsupported is refused (`--allow-outdated` to look anyway; 0.1.13)
+- [x] AMD's firmware level in the SEV-SNP verifier: the level the report states must be the one the chip key was issued for (AMD derives a different key per level) and the certificate must be for that very chip; `--min-firmware 3.0.8.115` or `ORRERY_SNP_MIN_FIRMWARE` holds it to a minimum of yours (AMD publishes no signed list of current levels; 0.1.13)
+- [x] A proxy for everything a router sends (`orrery router --proxy http://host:port`): nodes and the Solana RPC see the proxy's address and not yours, the proxy carries requests it cannot read, transactions are confirmed without the RPC's websocket, and a proxy that is down fails the request instead of letting it out directly (0.1.13)
+- [ ] AMD firmware on Turin (its level is laid out differently); NVIDIA GPU attestation
+- [x] SOCKS5 proxies (`--proxy socks5://host:port`, with a name and password when given): the proxy is sent the host's name, so the lookup happens there (0.1.14)
+- [x] Tunnels through the proxy are kept and reused between requests (0.1.14)
+- [x] A node listed by an IPv6 address, through either kind of proxy (in main, next release)
+- [x] Requests padded to a size class before sealing, so their length on the wire shows the class and not the prompt's length (in main, next release)
+- [ ] Answers padded the same way (their length and timing still show)
+- [x] The proxy checked from the far side: a node answers `GET /v1/seen` with the address it saw, and `orrery doctor` asks it through your proxy and prints a `seen as` line, which fails when the node saw one of this computer's own addresses (0.1.15)
+- [x] One connection to a node carries answer after answer, with or without a proxy (0.1.15)
+- [x] A router that lost its records and cannot reach the node does not open a second channel beside the first (in main, next release)
+- [x] A router told to stop (Ctrl-C, SIGTERM) lets answers in flight finish and hands over the vouchers still on their way before it exits (in main, next release)
+- [x] A node that is away for a moment: the request waits and goes round again (`--patience`, 8 seconds by default, or `x-orrery-patience: <seconds>` on one request), and a cooldown no longer refuses a model's only node (in main, next release)
+- [x] A router behind a proxy asks a node what it sees before it pays for anything, shows it on `/orrery/status`, and does not send while the node sees this computer's own public address (in main, next release)
+- [x] A node does not redeem dust: with no `redeem.minUnits` set, a channel is redeemed once five cents are waiting on it (0.1.15)
+- [ ] A run through Tor itself
 - [ ] $OREY bonds live on mainnet
 
 ## Contributing
