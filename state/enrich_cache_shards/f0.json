@@ -1,10 +1,10 @@
 {
  "unclecode/crawl4ai": {
-  "commit_7d": 7,
-  "commit_90d": 195,
+  "commit_7d": 0,
+  "commit_90d": 186,
   "rel_ver": "v0.9.5",
   "rel_pub": "2026-10-14",
-  "rel_days": 23,
+  "rel_days": 30,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -28,21 +28,21 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "jeecgboot/JeecgBoot": {
-  "commit_7d": 21,
-  "commit_90d": 99,
+  "commit_7d": 1,
+  "commit_90d": 97,
   "rel_ver": "v3.9.6",
   "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -67,10 +67,10 @@
    "TypeScript": 0,
    "Python": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -101,12 +101,12 @@
   }
  },
  "presenton/presenton": {
-  "commit_7d": 18,
-  "commit_90d": 493,
+  "commit_7d": 1,
+  "commit_90d": 403,
   "rel_ver": "v0.9.12-beta",
   "rel_pub": "2026-10-26",
-  "rel_days": 11,
-  "rel_n90": 12,
+  "rel_days": 18,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -121,10 +121,10 @@
    "CSS": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -151,11 +151,11 @@
   }
  },
  "genkit-ai/genkit": {
-  "commit_7d": 71,
-  "commit_90d": 476,
+  "commit_7d": 16,
+  "commit_90d": 462,
   "rel_ver": "py/v0.13.0",
   "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -171,21 +171,21 @@
    "Shell": 1,
    "CSS": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "lucidrains/x-transformers": {
-  "commit_7d": 1,
-  "commit_90d": 50,
+  "commit_7d": 11,
+  "commit_90d": 60,
   "rel_ver": "2.16.1",
   "rel_pub": "2026-02-12",
-  "rel_days": 267,
+  "rel_days": 274,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -197,23 +197,23 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "infiniflow/infinity": {
-  "commit_7d": 7,
-  "commit_90d": 27,
-  "rel_ver": "v0.7.5",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 8,
+  "commit_90d": 35,
+  "rel_ver": "nightly",
+  "rel_pub": "2026-01-20",
+  "rel_days": 297,
   "rel_n90": 2,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -227,10 +227,10 @@
    "Yacc": 1,
    "TypeScript": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -267,12 +267,12 @@
   }
  },
  "pipeshub-ai/pipeshub-ai": {
-  "commit_7d": 294,
-  "commit_90d": 3768,
+  "commit_7d": 245,
+  "commit_90d": 3975,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-10-27",
-  "rel_days": 10,
-  "rel_n90": 7,
+  "rel_days": 17,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 2,
@@ -290,10 +290,10 @@
    "HTML": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -426,8 +426,8 @@
   }
  },
  "basicmi/AI-Chip": {
-  "commit_7d": 206,
-  "commit_90d": 206,
+  "commit_7d": 374,
+  "commit_90d": 592,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -438,10 +438,10 @@
   "lang": {
    "PHP": 100
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

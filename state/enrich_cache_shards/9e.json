@@ -26,12 +26,12 @@
   }
  },
  "TykTechnologies/tyk": {
-  "commit_7d": 8,
-  "commit_90d": 69,
-  "rel_ver": "v5.13.5",
-  "rel_pub": "2026-10-30",
+  "commit_7d": 2,
+  "commit_90d": 66,
+  "rel_ver": "v5.8.20",
+  "rel_pub": "2026-11-06",
   "rel_days": 7,
-  "rel_n90": 6,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -46,21 +46,21 @@
    "JavaScript": 0,
    "Java": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "chuspeeism/dashi-ppt-skill": {
-  "commit_7d": 0,
-  "commit_90d": 3,
+  "commit_7d": 1,
+  "commit_90d": 5,
   "rel_ver": "readme-assets-v1",
   "rel_pub": "2026-07-07",
-  "rel_days": 122,
+  "rel_days": 129,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -76,10 +76,10 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4333,13 +4333,16 @@
    "JavaScript": 5,
    "CSS": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
    "release": "20261106",
    "security": "20261106",
    "contrib": "20261106",
-   "lang": "20261106"
-  }
+   "lang": "20261106",
+   "commit": "20261113"
+  },
+  "commit_90d": 16,
+  "commit_7d": 1
  },
  "HemashreeVI/TriageIQ": {
   "rel_ver": null,
@@ -4524,6 +4527,52 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "fendouai/ViralForge": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 50,
+   "JavaScript": 26,
+   "CSS": 18,
+   "Python": 5,
+   "HTML": 1
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "ChinaYouShen/ai-short-drama": {
+  "rel_ver": "v1.5.9",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

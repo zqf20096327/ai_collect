@@ -28,12 +28,12 @@
   }
  },
  "zhayujie/CowAgent": {
-  "commit_7d": 78,
-  "commit_90d": 2132,
+  "commit_7d": 55,
+  "commit_90d": 2121,
   "rel_ver": "2.2.2",
   "rel_pub": "2026-10-30",
-  "rel_days": 7,
-  "rel_n90": 7,
+  "rel_days": 14,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -50,21 +50,21 @@
    "HTML": 2,
    "CSS": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "openclaw/Peekaboo": {
-  "commit_90d": 832,
-  "commit_7d": 11,
+  "commit_90d": 658,
+  "commit_7d": 2,
   "rel_ver": "v4.9.8",
   "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -80,22 +80,22 @@
    "Python": 0,
    "C": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "dathere/qsv": {
-  "commit_90d": 775,
-  "commit_7d": 50,
+  "commit_90d": 779,
+  "commit_7d": 60,
   "rel_ver": "28.0.0",
   "rel_pub": "2026-11-02",
-  "rel_days": 4,
-  "rel_n90": 7,
+  "rel_days": 11,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -110,10 +110,10 @@
    "JavaScript": 4,
    "PowerShell": 4
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -199,11 +199,11 @@
   }
  },
  "study8677/repobrain": {
-  "commit_90d": 33,
-  "commit_7d": 0,
+  "commit_90d": 29,
+  "commit_7d": 2,
   "rel_ver": "v0.3.1",
   "rel_pub": "2026-07-10",
-  "rel_days": 106,
+  "rel_days": 126,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -218,10 +218,10 @@
    "Batchfile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

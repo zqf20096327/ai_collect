@@ -26,11 +26,11 @@
   }
  },
  "huggingface/pytorch-image-models": {
-  "commit_7d": 6,
-  "commit_90d": 246,
+  "commit_7d": 0,
+  "commit_90d": 238,
   "rel_ver": "v1.0.31",
   "rel_pub": "2026-11-03",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -44,10 +44,10 @@
    "MDX": 13,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -231,11 +231,11 @@
   }
  },
  "1186258278/OpenClawChineseTranslation": {
-  "commit_7d": 1,
-  "commit_90d": 31,
-  "rel_ver": "v2026.10.9-zh.1",
-  "rel_pub": "2026-10-30",
-  "rel_days": 7,
+  "commit_7d": 11,
+  "commit_90d": 42,
+  "rel_ver": "v2026.11.3-zh.1",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -251,10 +251,10 @@
    "TypeScript": 11,
    "CSS": 9
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

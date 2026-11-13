@@ -10,21 +10,21 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "FlorianBruniaux/claude-code-ultimate-guide": {
-  "commit_7d": 30,
-  "commit_90d": 434,
+  "commit_7d": 33,
+  "commit_90d": 466,
   "rel_ver": "v3.45.2",
   "rel_pub": "2026-11-01",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -40,10 +40,10 @@
    "TypeScript": 12,
    "Shell": 10
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -80,11 +80,11 @@
   }
  },
  "yvgude/lean-ctx": {
-  "commit_7d": 25,
-  "commit_90d": 1251,
-  "rel_ver": "v3.12.2",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 46,
+  "commit_90d": 1224,
+  "rel_ver": "v3.12.4",
+  "rel_pub": "2026-11-13",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -100,10 +100,10 @@
    "JavaScript": 2,
    "TypeScript": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4694,6 +4694,31 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "hackathon-hq-team/nightwatch": {
+  "rel_ver": "v1.0-hackathon",
+  "rel_pub": "2026-10-30",
+  "rel_days": 14,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 98,
+   "PowerShell": 2,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

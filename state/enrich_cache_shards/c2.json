@@ -1,11 +1,11 @@
 {
  "tt-a1i/archify": {
-  "commit_7d": 8,
-  "commit_90d": 1628,
-  "rel_ver": "v3.2.0",
-  "rel_pub": "2026-10-19",
-  "rel_days": 18,
-  "rel_n90": 9,
+  "commit_7d": 3,
+  "commit_90d": 1617,
+  "rel_ver": "archify-dsh-v1.1.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 5,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,22 +20,22 @@
    "Astro": 1,
    "TypeScript": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "netdata/netdata": {
-  "commit_7d": 99,
-  "commit_90d": 1017,
+  "commit_7d": 92,
+  "commit_90d": 1060,
   "rel_ver": "v2.12.3",
   "rel_pub": "2026-11-04",
-  "rel_days": 2,
-  "rel_n90": 6,
+  "rel_days": 9,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 10,
@@ -59,10 +59,10 @@
    "Python": 3,
    "Shell": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -96,10 +96,10 @@
  },
  "skorch-dev/skorch": {
   "commit_90d": 8,
-  "commit_7d": 0,
+  "commit_7d": 1,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-05-14",
-  "rel_days": 176,
+  "rel_days": 183,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -114,10 +114,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -152,7 +152,7 @@
   "commit_7d": 1,
   "rel_ver": "v1.0.0",
   "rel_pub": "2024-05-20",
-  "rel_days": 900,
+  "rel_days": 907,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -168,10 +168,10 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5107,6 +5107,49 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "inscora/radiance-tui": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 91,
+   "Shell": 9
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "dhrandy/ampero-bridge": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 72,
+   "JavaScript": 20,
+   "HTML": 7,
+   "CSS": 2,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

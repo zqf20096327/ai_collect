@@ -1,10 +1,10 @@
 {
  "microsoft/graphrag": {
-  "commit_7d": 1,
-  "commit_90d": 21,
+  "commit_7d": 0,
+  "commit_90d": 14,
   "rel_ver": "v3.3.0",
   "rel_pub": "2026-10-08",
-  "rel_days": 29,
+  "rel_days": 36,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "PaddlePaddle/Paddle": {
-  "commit_7d": 12,
-  "commit_90d": 149,
+  "commit_7d": 8,
+  "commit_90d": 144,
   "rel_ver": "v3.4.0",
   "rel_pub": "2026-09-11",
-  "rel_days": 56,
+  "rel_days": 63,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -50,21 +50,21 @@
    "CMake": 1,
    "Shell": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "teableio/teable": {
-  "commit_7d": 2,
-  "commit_90d": 14,
-  "rel_ver": "release.2026-11-05T12-40-53Z.3790",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 3,
+  "commit_90d": 17,
+  "rel_ver": "release.2026-11-10T05-38-53Z.3830",
+  "rel_pub": "2026-11-10",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -89,10 +89,10 @@
    "PLpgSQL": 0,
    "ANTLR": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -155,11 +155,11 @@
   }
  },
  "RunanywhereAI/runanywhere-sdks": {
-  "commit_7d": 66,
-  "commit_90d": 305,
+  "commit_7d": 0,
+  "commit_90d": 229,
   "rel_ver": "cpp-desktop-v0.20.43",
   "rel_pub": "2026-10-28",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -175,10 +175,10 @@
    "Swift": 8,
    "Kotlin": 7
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -217,11 +217,11 @@
   }
  },
  "thewh1teagle/vibe": {
-  "commit_7d": 0,
-  "commit_90d": 157,
-  "rel_ver": "v3.3.0",
-  "rel_pub": "2026-10-29",
-  "rel_days": 8,
+  "commit_7d": 10,
+  "commit_90d": 167,
+  "rel_ver": "v3.3.2",
+  "rel_pub": "2026-11-13",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -237,10 +237,10 @@
    "C++": 5,
    "C": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -324,8 +324,8 @@
   }
  },
  "huggingface/notebooks": {
-  "commit_7d": 1,
-  "commit_90d": 90,
+  "commit_7d": 2,
+  "commit_90d": 78,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -339,10 +339,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4729,6 +4729,32 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "Agentic-System-Lab/harness-relay": {
+  "rel_ver": "2026-11-13",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 90,
+   "JavaScript": 6,
+   "CSS": 2,
+   "HTML": 2
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

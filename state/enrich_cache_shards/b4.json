@@ -30,12 +30,12 @@
   }
  },
  "agent0ai/agent-zero": {
-  "commit_7d": 50,
-  "commit_90d": 540,
+  "commit_7d": 0,
+  "commit_90d": 485,
   "rel_ver": "v2.15",
   "rel_pub": "2026-11-01",
-  "rel_days": 5,
-  "rel_n90": 7,
+  "rel_days": 12,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -50,21 +50,21 @@
    "CSS": 2,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "neuml/txtai": {
-  "commit_7d": 25,
-  "commit_90d": 264,
+  "commit_7d": 19,
+  "commit_90d": 270,
   "rel_ver": "v9.14.0",
   "rel_pub": "2026-10-06",
-  "rel_days": 31,
+  "rel_days": 38,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -78,10 +78,10 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -118,12 +118,12 @@
   }
  },
  "YILS-LIN/short-video-factory": {
-  "commit_7d": 2,
-  "commit_90d": 35,
-  "rel_ver": "v1.3.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 21,
-  "rel_n90": 1,
+  "commit_7d": 9,
+  "commit_90d": 44,
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 4,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -138,10 +138,10 @@
    "SCSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

@@ -30,11 +30,11 @@
   }
  },
  "DayuanJiang/next-ai-draw-io": {
-  "commit_7d": 18,
-  "commit_90d": 133,
+  "commit_7d": 69,
+  "commit_90d": 198,
   "rel_ver": "v0.5.1",
   "rel_pub": "2026-10-31",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -52,10 +52,10 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -89,11 +89,11 @@
   }
  },
  "anthropics/claude-code-action": {
-  "commit_7d": 3,
+  "commit_7d": 16,
   "commit_90d": 108,
-  "rel_ver": "v1.0.268",
-  "rel_pub": "2026-11-04",
-  "rel_days": 2,
+  "rel_ver": "v1.0.275",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
@@ -110,10 +110,10 @@
    "Shell": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4884,6 +4884,33 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "Mobile-IoT-Security-Lab/LLMObfuscDetection": {
+  "rel_ver": "1.0",
+  "rel_pub": "2026-08-12",
+  "rel_days": 93,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 60,
+   "Python": 25,
+   "Jupyter Notebook": 14,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

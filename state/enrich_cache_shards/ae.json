@@ -29,11 +29,11 @@
   }
  },
  "Trusted-AI/adversarial-robustness-toolbox": {
-  "commit_7d": 34,
-  "commit_90d": 127,
+  "commit_7d": 4,
+  "commit_90d": 133,
   "rel_ver": "1.20.1",
   "rel_pub": "2025-07-07",
-  "rel_days": 487,
+  "rel_days": 494,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -48,10 +48,10 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -83,11 +83,11 @@
   }
  },
  "NVIDIA/DALI": {
-  "commit_7d": 32,
-  "commit_90d": 127,
+  "commit_7d": 12,
+  "commit_90d": 131,
   "rel_ver": "v2.4.0",
   "rel_pub": "2026-10-26",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -103,10 +103,10 @@
    "CMake": 2,
    "C": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -114,10 +114,10 @@
  },
  "PetoiCamp/OpenCat-Quadruped-Robot": {
   "commit_7d": 0,
-  "commit_90d": 10,
+  "commit_90d": 7,
   "rel_ver": "1.2.6beta",
   "rel_pub": "2025-08-05",
-  "rel_days": 437,
+  "rel_days": 465,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -131,21 +131,21 @@
    "Python": 27,
    "C": 27
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "chaitin/MonkeyCode": {
-  "commit_7d": 30,
-  "commit_90d": 735,
+  "commit_7d": 17,
+  "commit_90d": 672,
   "rel_ver": "v26072801",
   "rel_pub": "2026-07-28",
-  "rel_days": 101,
+  "rel_days": 108,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -161,10 +161,10 @@
    "JavaScript": 2,
    "CSS": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4401,11 +4401,11 @@
   }
  },
  "feder-cr/Jobs_Applier_AI_Agent": {
-  "commit_90d": 537,
-  "commit_7d": 118,
-  "rel_ver": "jobs-20261105-080345",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_90d": 721,
+  "commit_7d": 184,
+  "rel_ver": "jobs-20261108-084120",
+  "rel_pub": "2026-11-08",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -4419,10 +4419,10 @@
    "Shell": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"

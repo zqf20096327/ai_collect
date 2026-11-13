@@ -1,9 +1,9 @@
 {
  "langchain-ai/deepagents": {
-  "commit_7d": 99,
-  "commit_90d": 1415,
-  "rel_ver": "deepagents==0.7.34",
-  "rel_pub": "2026-11-05",
+  "commit_7d": 78,
+  "commit_90d": 1420,
+  "rel_ver": "deepagents==0.7.37",
+  "rel_pub": "2026-11-12",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -23,10 +23,10 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4499,6 +4499,33 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "NguyenTriBaoThang/LocalExplorerAI": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 29,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 57,
+   "TypeScript": 34,
+   "CSS": 7,
+   "JavaScript": 1,
+   "Jupyter Notebook": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

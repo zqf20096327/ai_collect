@@ -1,10 +1,10 @@
 {
  "streamlit/streamlit": {
-  "commit_7d": 95,
-  "commit_90d": 932,
+  "commit_7d": 72,
+  "commit_90d": 964,
   "rel_ver": "1.67.0",
   "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -26,21 +26,21 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "nocobase/nocobase": {
-  "commit_7d": 78,
-  "commit_90d": 1272,
-  "rel_ver": "nocobase-v3-beta/2026-11-05.2",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 109,
+  "commit_90d": 1382,
+  "rel_ver": "v2.3.0-beta.24",
+  "rel_pub": "2026-11-13",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -65,23 +65,23 @@
    "HTML": 0,
    "Go Template": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "xerrors/Yuxi": {
-  "commit_7d": 65,
-  "commit_90d": 618,
-  "rel_ver": "v0.8.0.beta5",
-  "rel_pub": "2026-10-28",
-  "rel_days": 9,
-  "rel_n90": 3,
-  "rel_pre": true,
+  "commit_7d": 25,
+  "commit_90d": 604,
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 3,
+  "rel_n90": 4,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 2,
   "sec_worst": "critical",
@@ -98,10 +98,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4992,13 +4992,16 @@
    "JavaScript": 1,
    "TypeScript": 1
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261113",
   "dim_ts": {
    "release": "20261108",
    "security": "20261108",
    "contrib": "20261108",
-   "lang": "20261108"
-  }
+   "lang": "20261108",
+   "commit": "20261113"
+  },
+  "commit_90d": 85,
+  "commit_7d": 63
  },
  "felippeomgt/mymeshy": {
   "rel_ver": null,
@@ -5048,6 +5051,33 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "samukbg/Jarvis-Live": {
+  "rel_ver": "desktop-v1.1.60",
+  "rel_pub": "2026-11-10",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 37,
+   "TypeScript": 33,
+   "Python": 26,
+   "HTML": 2,
+   "Batchfile": 1
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

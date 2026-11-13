@@ -1,10 +1,10 @@
 {
  "mrexodia/ida-pro-mcp": {
-  "commit_7d": 0,
-  "commit_90d": 50,
+  "commit_7d": 2,
+  "commit_90d": 28,
   "rel_ver": "1.4.0",
   "rel_pub": "2025-10-06",
-  "rel_days": 375,
+  "rel_days": 403,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -18,10 +18,10 @@
    "C": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -50,8 +50,8 @@
   }
  },
  "Anil-matcha/AI-Youtube-Shorts-Generator": {
-  "commit_90d": 11,
-  "commit_7d": 1,
+  "commit_90d": 15,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -62,10 +62,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -118,11 +118,11 @@
   }
  },
  "enactic/openarm": {
-  "commit_90d": 73,
-  "commit_7d": 6,
+  "commit_90d": 71,
+  "commit_7d": 3,
   "rel_ver": "1.1",
   "rel_pub": "2025-10-31",
-  "rel_days": 371,
+  "rel_days": 378,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -138,10 +138,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

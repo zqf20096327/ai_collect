@@ -74,11 +74,11 @@
   }
  },
  "basicmachines-co/basic-memory": {
-  "commit_7d": 59,
-  "commit_90d": 905,
+  "commit_7d": 42,
+  "commit_90d": 888,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-10-29",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -94,21 +94,21 @@
    "Just": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ai-robots-txt/ai.robots.txt": {
-  "commit_7d": 8,
-  "commit_90d": 86,
+  "commit_7d": 1,
+  "commit_90d": 87,
   "rel_ver": "v2.1",
   "rel_pub": "2026-10-17",
-  "rel_days": 20,
+  "rel_days": 27,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -120,10 +120,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -214,8 +214,8 @@
   }
  },
  "knowsuchagency/mcp2cli": {
-  "commit_7d": 2,
-  "commit_90d": 90,
+  "commit_7d": 6,
+  "commit_90d": 100,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -226,10 +226,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2269,13 +2269,16 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261113",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261113"
+  },
+  "commit_90d": 806,
+  "commit_7d": 67
  },
  "joseferben/hands-please": {
   "rel_ver": null,

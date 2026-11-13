@@ -89,12 +89,12 @@
   }
  },
  "huggingface/datasets": {
-  "commit_7d": 6,
-  "commit_90d": 79,
-  "rel_ver": "5.1.0",
-  "rel_pub": "2026-10-05",
-  "rel_days": 32,
-  "rel_n90": 1,
+  "commit_7d": 11,
+  "commit_90d": 88,
+  "rel_ver": "5.2.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 4,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -106,10 +106,10 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -196,11 +196,11 @@
   }
  },
  "vespa-engine/vespa": {
-  "commit_90d": 2145,
-  "commit_7d": 212,
+  "commit_90d": 2106,
+  "commit_7d": 115,
   "rel_ver": "v8.781.11",
   "rel_pub": "2026-11-02",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -218,10 +218,10 @@
    "CMake": 1,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

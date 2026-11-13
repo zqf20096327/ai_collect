@@ -1,7 +1,7 @@
 {
  "punkpeye/awesome-mcp-servers": {
-  "commit_7d": 2,
-  "commit_90d": 3887,
+  "commit_7d": 3,
+  "commit_90d": 3764,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -10,10 +10,10 @@
   "sec_ids": [],
   "contrib_n": 446,
   "lang": {},
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -230,11 +230,11 @@
   }
  },
  "letta-ai/letta-code": {
-  "commit_90d": 994,
-  "commit_7d": 77,
-  "rel_ver": "v0.34.41",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_90d": 1026,
+  "commit_7d": 106,
+  "rel_ver": "v0.34.58",
+  "rel_pub": "2026-11-13",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -250,10 +250,10 @@
    "Python": 0,
    "MDX": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -381,11 +381,11 @@
   }
  },
  "apconw/Aix-DB": {
-  "commit_90d": 26,
-  "commit_7d": 6,
+  "commit_90d": 29,
+  "commit_7d": 3,
   "rel_ver": "v1.2.4",
   "rel_pub": "2026-04-11",
-  "rel_days": 209,
+  "rel_days": 216,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -401,10 +401,10 @@
    "Vue": 7,
    "CSS": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4524,13 +4524,16 @@
    "CSS": 1,
    "HTML": 0
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261113",
   "dim_ts": {
    "release": "20261105",
    "security": "20261105",
    "contrib": "20261105",
-   "lang": "20261105"
-  }
+   "lang": "20261105",
+   "commit": "20261113"
+  },
+  "commit_90d": 18,
+  "commit_7d": 11
  },
  "identArk/identark-js": {
   "rel_ver": null,
@@ -4761,6 +4764,46 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "DavidTorro/gdg-uam-ml-contest-2026": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 55,
+   "Jupyter Notebook": 45
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "GodsBoy/hermes-tuneup": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "JavaScript": 4
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

@@ -1,9 +1,9 @@
 {
  "modelscope/FunASR": {
-  "commit_7d": 78,
-  "commit_90d": 529,
-  "rel_ver": "v1.4.22",
-  "rel_pub": "2026-11-05",
+  "commit_7d": 50,
+  "commit_90d": 557,
+  "rel_ver": "v1.4.26",
+  "rel_pub": "2026-11-12",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -20,10 +20,10 @@
    "C++": 6,
    "JavaScript": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -93,10 +93,10 @@
   "sec_ids": [],
   "contrib_n": 9,
   "lang": {},
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -133,13 +133,13 @@
   }
  },
  "xerj-org/xerj": {
-  "commit_90d": 3292,
-  "commit_7d": 180,
-  "rel_ver": "v1.0.0-rc.101",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_90d": 2951,
+  "commit_7d": 43,
+  "rel_ver": "pack-rust-vulns-2026-11-09",
+  "rel_pub": "2026-11-09",
+  "rel_days": 4,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -153,10 +153,10 @@
    "Python": 4,
    "Shell": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -186,11 +186,11 @@
   }
  },
  "modelscope/evalscope": {
-  "commit_90d": 343,
-  "commit_7d": 33,
+  "commit_90d": 361,
+  "commit_7d": 39,
   "rel_ver": "v1.14.1",
   "rel_pub": "2026-10-26",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -206,10 +206,10 @@
    "Jinja": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

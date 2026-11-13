@@ -1,7 +1,7 @@
 {
  "ahmedkhaleel2004/gitdiagram": {
-  "commit_7d": 3,
-  "commit_90d": 444,
+  "commit_7d": 25,
+  "commit_90d": 467,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -56,13 +56,13 @@
   }
  },
  "aipoch/open-science": {
-  "commit_90d": 2655,
-  "commit_7d": 103,
-  "rel_ver": "nightly",
-  "rel_pub": "2026-09-03",
-  "rel_days": 64,
+  "commit_90d": 2595,
+  "commit_7d": 181,
+  "rel_ver": "v1.2.1",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -76,22 +76,22 @@
    "CSS": 0,
    "R": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "LazyAGI/LazyLLM": {
-  "commit_90d": 70,
-  "commit_7d": 10,
-  "rel_ver": "v1.5.2a0",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
-  "rel_n90": 10,
+  "commit_90d": 75,
+  "commit_7d": 8,
+  "rel_ver": "v1.5.2a3",
+  "rel_pub": "2026-11-13",
+  "rel_days": 0,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -106,10 +106,10 @@
    "CMake": 0,
    "TeX": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

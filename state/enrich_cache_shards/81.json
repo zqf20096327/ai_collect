@@ -1,10 +1,10 @@
 {
  "pydantic/pydantic-ai": {
-  "commit_7d": 265,
-  "commit_90d": 2485,
+  "commit_7d": 225,
+  "commit_90d": 2644,
   "rel_ver": "clai2-bleeding",
   "rel_pub": "2026-10-06",
-  "rel_days": 31,
+  "rel_days": 38,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -29,21 +29,21 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "BlockRunAI/ClawRouter": {
-  "commit_7d": 32,
-  "commit_90d": 270,
-  "rel_ver": "v0.12.309",
-  "rel_pub": "2026-11-06",
-  "rel_days": 0,
+  "commit_7d": 30,
+  "commit_90d": 294,
+  "rel_ver": "v0.12.312",
+  "rel_pub": "2026-11-10",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -59,22 +59,22 @@
    "CSS": 2,
    "PowerShell": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "NVIDIA/nccl": {
-  "commit_7d": 0,
-  "commit_90d": 273,
-  "rel_ver": "v2.32.3-1",
-  "rel_pub": "2026-09-17",
-  "rel_days": 50,
-  "rel_n90": 5,
+  "commit_7d": 3,
+  "commit_90d": 560,
+  "rel_ver": "v2.32.6-1",
+  "rel_pub": "2026-11-09",
+  "rel_days": 4,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -89,10 +89,10 @@
    "Python": 9,
    "Cython": 3
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3079,11 +3079,11 @@
   }
  },
  "esimov/caire": {
-  "commit_90d": 39,
-  "commit_7d": 0,
+  "commit_90d": 61,
+  "commit_7d": 16,
   "rel_ver": "v1.5.0",
   "rel_pub": "2025-04-27",
-  "rel_days": 558,
+  "rel_days": 565,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -3097,10 +3097,10 @@
    "Shell": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261023",
    "contrib": "20261023",
    "lang": "20261023"
@@ -4429,11 +4429,11 @@
   }
  },
  "EthanYoQ/Pagekin": {
-  "commit_90d": 3094,
-  "commit_7d": 386,
+  "commit_90d": 3711,
+  "commit_7d": 654,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-10-29",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -4449,10 +4449,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"

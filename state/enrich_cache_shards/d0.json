@@ -1,10 +1,10 @@
 {
  "openai/codex-security": {
-  "commit_7d": 247,
-  "commit_90d": 1615,
-  "rel_ver": "npm-v0.8.3",
-  "rel_pub": "2026-11-03",
-  "rel_days": 3,
+  "commit_7d": 221,
+  "commit_90d": 1739,
+  "rel_ver": "npm-v0.10.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "Rust": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -52,11 +52,11 @@
   }
  },
  "Giskard-AI/giskard-oss": {
-  "commit_90d": 130,
-  "commit_7d": 5,
+  "commit_90d": 113,
+  "commit_7d": 8,
   "rel_ver": "giskard-agents/v1.0.6",
   "rel_pub": "2026-10-25",
-  "rel_days": 12,
+  "rel_days": 19,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -75,10 +75,10 @@
    "Jinja": 4,
    "Makefile": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -116,10 +116,10 @@
  },
  "google-deepmind/mujoco_menagerie": {
   "commit_90d": 25,
-  "commit_7d": 5,
+  "commit_7d": 1,
   "rel_ver": "assets",
   "rel_pub": "2026-09-04",
-  "rel_days": 63,
+  "rel_days": 70,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -134,10 +134,10 @@
    "Makefile": 2,
    "OpenSCAD": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

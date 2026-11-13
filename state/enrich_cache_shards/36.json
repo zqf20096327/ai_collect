@@ -1,10 +1,10 @@
 {
  "hpcaitech/ColossalAI": {
-  "commit_7d": 14,
-  "commit_90d": 87,
+  "commit_7d": 10,
+  "commit_90d": 112,
   "rel_ver": "v0.5.0",
   "rel_pub": "2025-06-04",
-  "rel_days": 520,
+  "rel_days": 527,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "C++": 1,
    "Shell": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -87,7 +87,7 @@
   }
  },
  "frankbria/ralph-claude-code": {
-  "commit_7d": 9,
+  "commit_7d": 0,
   "commit_90d": 23,
   "rel_ver": null,
   "rel_none": true,
@@ -101,10 +101,10 @@
    "Python": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -124,10 +124,10 @@
    "Python": 68,
    "Shell": 32
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -164,7 +164,7 @@
  },
  "pytorch/tutorials": {
   "commit_7d": 1,
-  "commit_90d": 17,
+  "commit_90d": 18,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -179,10 +179,10 @@
    "Shell": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -219,10 +219,10 @@
   }
  },
  "open-pencil/open-pencil": {
-  "commit_7d": 186,
-  "commit_90d": 1379,
-  "rel_ver": "v0.17.0-beta.2",
-  "rel_pub": "2026-11-04",
+  "commit_7d": 162,
+  "commit_90d": 1438,
+  "rel_ver": "v0.17.0-beta.4",
+  "rel_pub": "2026-11-11",
   "rel_days": 2,
   "rel_n90": 9,
   "rel_pre": true,
@@ -241,10 +241,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4717,6 +4717,54 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "HnDK0/MiruTime": {
+  "rel_ver": "nightly",
+  "rel_pub": "2026-11-04",
+  "rel_days": 9,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 100,
+   "HTML": 0,
+   "AIDL": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "summerway/model-gateway": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 81,
+   "HTML": 16,
+   "CSS": 2,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

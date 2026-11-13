@@ -1,10 +1,10 @@
 {
  "HKUDS/DeepTutor": {
-  "commit_7d": 208,
-  "commit_90d": 2306,
-  "rel_ver": "v1.7.1",
-  "rel_pub": "2026-10-31",
-  "rel_days": 6,
+  "commit_7d": 2,
+  "commit_90d": 2571,
+  "rel_ver": "v1.7.2",
+  "rel_pub": "2026-11-06",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,18 +20,18 @@
    "CSS": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "xai-org/x-algorithm": {
-  "commit_7d": 4,
-  "commit_90d": 61,
+  "commit_7d": 5,
+  "commit_90d": 63,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -46,21 +46,21 @@
    "Java": 6,
    "C++": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "EthicalML/awesome-production-machine-learning": {
-  "commit_7d": 1,
-  "commit_90d": 22,
+  "commit_7d": 5,
+  "commit_90d": 25,
   "rel_ver": "release-2026-11-01",
   "rel_pub": "2026-11-01",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -70,10 +70,10 @@
   "sec_ids": [],
   "contrib_n": 204,
   "lang": {},
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -110,10 +110,10 @@
   }
  },
  "MoonshotAI/kimi-code": {
-  "commit_7d": 51,
-  "commit_90d": 687,
-  "rel_ver": "@moonshot-ai/kimi-code@2.5.1",
-  "rel_pub": "2026-11-05",
+  "commit_7d": 76,
+  "commit_90d": 700,
+  "rel_ver": "@moonshot-ai/kimi-code@2.6.0",
+  "rel_pub": "2026-11-12",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -130,10 +130,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4089,6 +4089,50 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "pjmbatman/batang": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "codemistake/human-writing": {
+  "rel_ver": "v1.3.1",
+  "rel_pub": "2026-09-10",
+  "rel_days": 64,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 86,
+   "PowerShell": 7,
+   "Shell": 7
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

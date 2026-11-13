@@ -26,12 +26,12 @@
   }
  },
  "xming521/WeClone": {
-  "commit_7d": 46,
-  "commit_90d": 148,
-  "rel_ver": "v1.0.1",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
-  "rel_n90": 1,
+  "commit_7d": 34,
+  "commit_90d": 182,
+  "rel_ver": "v1.0.4",
+  "rel_pub": "2026-11-09",
+  "rel_days": 4,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -45,10 +45,10 @@
    "CSS": 4,
    "HTML": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -81,8 +81,8 @@
   }
  },
  "trailhq/Trail-Code": {
-  "commit_7d": 4,
-  "commit_90d": 410,
+  "commit_7d": 71,
+  "commit_90d": 432,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -97,10 +97,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -167,11 +167,11 @@
   }
  },
  "Osmantic/ODS": {
-  "commit_90d": 4489,
-  "commit_7d": 83,
+  "commit_90d": 4472,
+  "commit_7d": 1,
   "rel_ver": "v3.0.0",
   "rel_pub": "2026-09-24",
-  "rel_days": 43,
+  "rel_days": 50,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -193,10 +193,10 @@
    "PowerShell": 5,
    "CSS": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

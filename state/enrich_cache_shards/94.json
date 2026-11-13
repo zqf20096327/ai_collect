@@ -56,11 +56,11 @@
   }
  },
  "ggml-org/ggml": {
-  "commit_7d": 69,
-  "commit_90d": 877,
+  "commit_7d": 1,
+  "commit_90d": 843,
   "rel_ver": "v0.29.0",
   "rel_pub": "2026-11-04",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -76,22 +76,22 @@
    "Metal": 3,
    "GLSL": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "google/ax": {
-  "commit_7d": 8,
-  "commit_90d": 80,
+  "commit_7d": 14,
+  "commit_90d": 82,
   "rel_ver": "v0.3.1",
   "rel_pub": "2026-09-25",
-  "rel_days": 42,
-  "rel_n90": 3,
+  "rel_days": 49,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -105,10 +105,10 @@
    "Python": 1,
    "Makefile": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -145,11 +145,11 @@
   }
  },
  "tensorflow/datasets": {
-  "commit_7d": 1,
-  "commit_90d": 19,
+  "commit_7d": 3,
+  "commit_90d": 22,
   "rel_ver": "v4.9.10",
   "rel_pub": "2026-05-08",
-  "rel_days": 182,
+  "rel_days": 189,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -165,21 +165,21 @@
    "NewLisp": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "CortexReach/memory-lancedb-pro": {
-  "commit_7d": 0,
+  "commit_7d": 6,
   "commit_90d": 23,
   "rel_ver": "v1.1.0-beta.10",
   "rel_pub": "2026-03-23",
-  "rel_days": 228,
+  "rel_days": 235,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -194,10 +194,10 @@
    "Python": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4672,6 +4672,23 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "mlightcad/awesome-cad-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

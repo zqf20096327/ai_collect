@@ -1,9 +1,9 @@
 {
  "OpenHands/OpenHands": {
-  "commit_7d": 132,
-  "commit_90d": 942,
-  "rel_ver": "v1.36.0",
-  "rel_pub": "2026-11-05",
+  "commit_7d": 143,
+  "commit_90d": 1052,
+  "rel_ver": "v1.40.0",
+  "rel_pub": "2026-11-12",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -22,10 +22,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -63,10 +63,10 @@
  },
  "microsoft/data-formulator": {
   "commit_7d": 0,
-  "commit_90d": 26,
+  "commit_90d": 5,
   "rel_ver": "0.8b1",
   "rel_pub": "2026-08-15",
-  "rel_days": 83,
+  "rel_days": 90,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -82,10 +82,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4730,6 +4730,54 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "Classic298/mistral-gateway": {
+  "rel_ver": "v1.0.6",
+  "rel_pub": "2026-11-08",
+  "rel_days": 5,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "makhatib/paperless-arabic-stack": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-17",
+  "rel_days": 27,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 69,
+   "Python": 30,
+   "Go Template": 2
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

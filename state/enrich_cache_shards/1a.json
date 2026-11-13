@@ -57,11 +57,11 @@
   }
  },
  "google/adk-python": {
-  "commit_7d": 129,
-  "commit_90d": 1557,
-  "rel_ver": "v2.13.0",
-  "rel_pub": "2026-10-23",
-  "rel_days": 14,
+  "commit_7d": 75,
+  "commit_90d": 1496,
+  "rel_ver": "v2.14.1",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -77,23 +77,23 @@
    "JavaScript": 0,
    "HCL": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "iii-hq/iii": {
-  "commit_7d": 16,
-  "commit_90d": 254,
-  "rel_ver": "iii/v0.25.1",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 33,
+  "commit_90d": 286,
+  "rel_ver": "iii/v0.26.1-rc.1",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -107,10 +107,10 @@
    "Go": 2,
    "CSS": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

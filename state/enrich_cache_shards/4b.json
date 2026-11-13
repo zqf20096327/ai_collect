@@ -1,10 +1,10 @@
 {
  "CopilotKit/CopilotKit": {
-  "commit_7d": 199,
-  "commit_90d": 4956,
-  "rel_ver": "v1.84.1",
-  "rel_pub": "2026-11-03",
-  "rel_days": 3,
+  "commit_7d": 303,
+  "commit_90d": 4976,
+  "rel_ver": "v1.87.1",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "C#": 2,
    "JavaScript": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "carla-simulator/carla": {
-  "commit_7d": 41,
-  "commit_90d": 416,
+  "commit_7d": 55,
+  "commit_90d": 404,
   "rel_ver": "0.9.16",
   "rel_pub": "2025-09-16",
-  "rel_days": 416,
+  "rel_days": 423,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "C": 3,
    "CMake": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -61,10 +61,10 @@
  },
  "isl-org/Open3D": {
   "commit_7d": 0,
-  "commit_90d": 13,
+  "commit_90d": 11,
   "rel_ver": "v0.20.0",
   "rel_pub": "2026-09-16",
-  "rel_days": 51,
+  "rel_days": 58,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -80,10 +80,10 @@
    "CMake": 2,
    "C": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -177,11 +177,11 @@
   }
  },
  "Agenta-AI/agenta": {
-  "commit_90d": 9624,
-  "commit_7d": 927,
-  "rel_ver": "v0.128.8",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_90d": 9109,
+  "commit_7d": 396,
+  "rel_ver": "v0.128.13",
+  "rel_pub": "2026-11-13",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -203,21 +203,21 @@
    "MDX": 1,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "mcmonkeyprojects/SwarmUI": {
-  "commit_90d": 229,
-  "commit_7d": 10,
+  "commit_90d": 217,
+  "commit_7d": 9,
   "rel_ver": "0.9.8-Beta",
   "rel_pub": "2026-02-06",
-  "rel_days": 273,
+  "rel_days": 280,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -233,10 +233,10 @@
    "HTML": 4,
    "CSS": 4
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -329,8 +329,8 @@
   }
  },
  "binance/binance-skills-hub": {
-  "commit_90d": 36,
-  "commit_7d": 6,
+  "commit_90d": 34,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -343,10 +343,10 @@
    "JavaScript": 46,
    "Shell": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3915,6 +3915,33 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "Cameleering/cameleer": {
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 91,
+   "HTML": 7,
+   "Python": 1,
+   "Shell": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

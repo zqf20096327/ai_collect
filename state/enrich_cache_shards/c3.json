@@ -1,10 +1,10 @@
 {
  "ultralytics/ultralytics": {
-  "commit_7d": 75,
-  "commit_90d": 963,
-  "rel_ver": "v8.4.203",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 98,
+  "commit_90d": 981,
+  "rel_ver": "v8.4.211",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -19,18 +19,18 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "KKKKhazix/AIHOT": {
-  "commit_90d": 217,
-  "commit_7d": 51,
+  "commit_90d": 283,
+  "commit_7d": 66,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 2,
@@ -47,10 +47,10 @@
    "PLpgSQL": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4530,6 +4530,31 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "XiaoZheBrother/dsh-live-studio": {
+  "rel_ver": "v0.2.0-alpha.3",
+  "rel_pub": "2026-11-08",
+  "rel_days": 5,
+  "rel_n90": 3,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 60,
+   "JavaScript": 21,
+   "HTML": 18
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

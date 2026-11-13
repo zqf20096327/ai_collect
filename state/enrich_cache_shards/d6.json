@@ -1,10 +1,10 @@
 {
  "weaviate/weaviate": {
-  "commit_7d": 309,
-  "commit_90d": 3562,
-  "rel_ver": "v1.40.4",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 128,
+  "commit_90d": 3419,
+  "rel_ver": "v1.40.5",
+  "rel_pub": "2026-11-10",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -22,10 +22,10 @@
    "Shell": 0,
    "C": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -92,12 +92,12 @@
   }
  },
  "PriorLabs/TabPFN": {
-  "commit_7d": 5,
-  "commit_90d": 131,
+  "commit_7d": 8,
+  "commit_90d": 120,
   "rel_ver": "v9.2.0",
   "rel_pub": "2026-10-12",
-  "rel_days": 25,
-  "rel_n90": 6,
+  "rel_days": 32,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -108,10 +108,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4675,6 +4675,27 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "thesysdev/opendashboards": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "TypeScript": 99,
+   "CSS": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

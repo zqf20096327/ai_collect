@@ -207,11 +207,11 @@
   }
  },
  "keinsaasforever/better-chatbot": {
-  "commit_90d": 19,
-  "commit_7d": 16,
+  "commit_90d": 21,
+  "commit_7d": 2,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-11-04",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -226,10 +226,10 @@
    "Dockerfile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

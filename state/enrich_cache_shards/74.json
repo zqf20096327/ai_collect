@@ -1,10 +1,10 @@
 {
  "firecrawl/firecrawl": {
-  "commit_7d": 60,
-  "commit_90d": 716,
+  "commit_7d": 65,
+  "commit_90d": 757,
   "rel_ver": "v2.11.0",
   "rel_pub": "2026-06-19",
-  "rel_days": 140,
+  "rel_days": 147,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -25,21 +25,21 @@
    "Java": 3,
    "PHP": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "shadcn-ui/ui": {
-  "commit_7d": 16,
-  "commit_90d": 269,
+  "commit_7d": 11,
+  "commit_90d": 251,
   "rel_ver": "shadcn@4.23.0",
   "rel_pub": "2026-10-27",
-  "rel_days": 10,
+  "rel_days": 17,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -55,18 +55,18 @@
    "JavaScript": 0,
    "Astro": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "github/awesome-copilot": {
-  "commit_7d": 79,
-  "commit_90d": 879,
+  "commit_7d": 130,
+  "commit_90d": 1004,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -81,10 +81,10 @@
    "CSS": 6,
    "HTML": 4
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -121,11 +121,11 @@
   }
  },
  "microsoft/agent-framework": {
-  "commit_7d": 104,
-  "commit_90d": 1120,
-  "rel_ver": "python-1.24.0",
-  "rel_pub": "2026-10-30",
-  "rel_days": 7,
+  "commit_7d": 101,
+  "commit_90d": 1187,
+  "rel_ver": "python-1.25.0",
+  "rel_pub": "2026-11-07",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -145,20 +145,20 @@
    "HTML": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "langchain-ai/open-swe": {
-  "commit_7d": 200,
-  "commit_90d": 2137,
-  "rel_ver": "desktop-ui-893c86e881c4149a9cc9fd82199f8e924690e35f",
-  "rel_pub": "2026-11-06",
+  "commit_7d": 281,
+  "commit_90d": 2348,
+  "rel_ver": "desktop-v0.3.16-nightly.20261113022037",
+  "rel_pub": "2026-11-13",
   "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": true,
@@ -177,21 +177,21 @@
    "Jinja": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "catboost/catboost": {
-  "commit_7d": 11,
-  "commit_90d": 260,
+  "commit_7d": 14,
+  "commit_90d": 258,
   "rel_ver": "node-package-v1.27.0",
   "rel_pub": "2026-02-21",
-  "rel_days": 258,
+  "rel_days": 265,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -207,21 +207,21 @@
    "CMake": 3,
    "Scala": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "smol-machines/smolvm": {
-  "commit_90d": 911,
-  "commit_7d": 33,
-  "rel_ver": "v1.33.0",
-  "rel_pub": "2026-11-01",
-  "rel_days": 5,
+  "commit_90d": 926,
+  "commit_7d": 54,
+  "rel_ver": "v1.34.1",
+  "rel_pub": "2026-11-10",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -237,10 +237,10 @@
    "C": 0,
    "HTML": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -448,11 +448,11 @@
   }
  },
  "aws-samples/bedrock-chat": {
-  "commit_90d": 47,
-  "commit_7d": 3,
+  "commit_90d": 37,
+  "commit_7d": 2,
   "rel_ver": "v3.18.0",
   "rel_pub": "2026-10-19",
-  "rel_days": 12,
+  "rel_days": 25,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -468,10 +468,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

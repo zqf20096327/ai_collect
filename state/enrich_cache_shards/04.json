@@ -1,10 +1,10 @@
 {
  "heygen-com/hyperframes": {
-  "commit_7d": 386,
-  "commit_90d": 3066,
-  "rel_ver": "v0.9.18",
-  "rel_pub": "2026-11-06",
-  "rel_days": 0,
+  "commit_7d": 256,
+  "commit_90d": 3203,
+  "rel_ver": "v0.9.40",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "Python": 0,
    "CSS": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -45,21 +45,21 @@
    "PowerShell": 13,
    "JavaScript": 9
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261029",
-   "release": "20261029",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "jundot/omlx": {
-  "commit_7d": 96,
-  "commit_90d": 1478,
-  "rel_ver": "v0.7.4.dev1",
-  "rel_pub": "2026-11-04",
-  "rel_days": 2,
+  "commit_7d": 95,
+  "commit_90d": 1494,
+  "rel_ver": "v0.8.0rc1",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -75,10 +75,10 @@
    "C++": 3,
    "JavaScript": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4271,6 +4271,33 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "enriqxxx/53on-harness": {
+  "rel_ver": "v1.0.95",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 90,
+   "HTML": 5,
+   "NSIS": 4,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

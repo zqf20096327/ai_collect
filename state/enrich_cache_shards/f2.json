@@ -25,12 +25,12 @@
   }
  },
  "ray-project/ray": {
-  "commit_7d": 161,
-  "commit_90d": 1161,
+  "commit_7d": 90,
+  "commit_90d": 1162,
   "rel_ver": "ray-2.60.0",
   "rel_pub": "2026-11-04",
-  "rel_days": 2,
-  "rel_n90": 7,
+  "rel_days": 9,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 4,
@@ -50,21 +50,21 @@
    "Starlark": 1,
    "TypeScript": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "agno-agi/agno": {
-  "commit_7d": 28,
-  "commit_90d": 398,
-  "rel_ver": "v3.1.12",
-  "rel_pub": "2026-10-29",
-  "rel_days": 8,
+  "commit_7d": 39,
+  "commit_90d": 429,
+  "rel_ver": "v3.2.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -84,21 +84,21 @@
    "Batchfile": 0,
    "TypeScript": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Dokploy/dokploy": {
-  "commit_7d": 51,
-  "commit_90d": 790,
-  "rel_ver": "v0.31.0",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 127,
+  "commit_90d": 772,
+  "rel_ver": "v0.31.2",
+  "rel_pub": "2026-11-13",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -123,10 +123,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -163,12 +163,12 @@
   }
  },
  "open-compass/opencompass": {
-  "commit_90d": 75,
-  "commit_7d": 8,
-  "rel_ver": "0.5.4",
-  "rel_pub": "2026-08-26",
-  "rel_days": 72,
-  "rel_n90": 1,
+  "commit_90d": 89,
+  "commit_7d": 18,
+  "rel_ver": "0.5.5",
+  "rel_pub": "2026-11-06",
+  "rel_days": 7,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -179,10 +179,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -216,11 +216,11 @@
   }
  },
  "online-ml/river": {
-  "commit_90d": 78,
-  "commit_7d": 18,
+  "commit_90d": 82,
+  "commit_7d": 7,
   "rel_ver": "0.26.1",
   "rel_pub": "2026-08-21",
-  "rel_days": 77,
+  "rel_days": 84,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -234,22 +234,22 @@
    "Rust": 7,
    "Makefile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "torchgeo/torchgeo": {
-  "commit_90d": 228,
-  "commit_7d": 22,
+  "commit_90d": 190,
+  "commit_7d": 8,
   "rel_ver": "v0.10.1",
   "rel_pub": "2026-09-29",
-  "rel_days": 38,
-  "rel_n90": 2,
+  "rel_days": 45,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -263,10 +263,10 @@
    "Python": 100,
    "Batchfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5291,6 +5291,63 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "tonhowtf/omniget": {
+  "commit_90d": 205,
+  "commit_7d": 0,
+  "rel_ver": "v0.10.1",
+  "rel_pub": "2026-09-21",
+  "rel_days": 53,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 27,
+  "lang": {
+   "Rust": 79,
+   "TypeScript": 11,
+   "JavaScript": 7,
+   "CSS": 1,
+   "Python": 1
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "commit": "20261113",
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "Wayn-Git/Amethyst": {
+  "rel_ver": "v0.1.7-beta",
+  "rel_pub": "2026-11-09",
+  "rel_days": 4,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 43,
+   "JavaScript": 35,
+   "CSS": 16,
+   "TypeScript": 6,
+   "Java": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

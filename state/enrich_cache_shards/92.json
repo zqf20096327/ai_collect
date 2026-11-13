@@ -1,10 +1,10 @@
 {
  "affaan-m/ECC": {
-  "commit_7d": 5,
-  "commit_90d": 1923,
+  "commit_7d": 2,
+  "commit_90d": 1860,
   "rel_ver": "v2.2.3",
   "rel_pub": "2026-10-01",
-  "rel_days": 36,
+  "rel_days": 43,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "Shell": 2,
    "TypeScript": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -88,11 +88,11 @@
   }
  },
  "steipete/summarize": {
-  "commit_7d": 5,
-  "commit_90d": 164,
+  "commit_7d": 0,
+  "commit_90d": 150,
   "rel_ver": "v0.26.0",
   "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -108,21 +108,21 @@
    "HTML": 1,
    "Shell": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "koharu-rs/koharu": {
-  "commit_7d": 24,
-  "commit_90d": 627,
+  "commit_7d": 30,
+  "commit_90d": 503,
   "rel_ver": "0.83.5",
   "rel_pub": "2026-09-22",
-  "rel_days": 45,
+  "rel_days": 52,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -138,10 +138,10 @@
    "C++": 4,
    "MDX": 3
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -149,10 +149,10 @@
  },
  "feyninc/chonkie": {
   "commit_7d": 0,
-  "commit_90d": 16,
+  "commit_90d": 13,
   "rel_ver": "v1.7.0",
   "rel_pub": "2026-07-07",
-  "rel_days": 122,
+  "rel_days": 129,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -166,10 +166,10 @@
    "Dockerfile": 0,
    "Mako": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -206,11 +206,11 @@
   }
  },
  "Atmosphere/atmosphere": {
-  "commit_7d": 14,
-  "commit_90d": 915,
-  "rel_ver": "atmosphere-4.0.76",
-  "rel_pub": "2026-10-22",
-  "rel_days": 15,
+  "commit_7d": 33,
+  "commit_90d": 917,
+  "rel_ver": "atmosphere-4.0.77",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
@@ -226,10 +226,10 @@
    "Kotlin": 2,
    "Vue": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

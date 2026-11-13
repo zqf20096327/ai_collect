@@ -1,10 +1,10 @@
 {
  "NVIDIA/Megatron-LM": {
-  "commit_7d": 67,
-  "commit_90d": 963,
+  "commit_7d": 77,
+  "commit_90d": 964,
   "rel_ver": "core_v0.20.0",
   "rel_pub": "2026-10-29",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "C++": 0,
    "Cuda": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "leon-ai/leon": {
-  "commit_7d": 178,
-  "commit_90d": 886,
+  "commit_7d": 177,
+  "commit_90d": 1030,
   "rel_ver": "tcp-server_v2.0.0",
   "rel_pub": "2026-02-19",
-  "rel_days": 260,
+  "rel_days": 267,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "Sass": 2,
    "SCSS": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -61,7 +61,7 @@
  },
  "n8n-io/self-hosted-ai-starter-kit": {
   "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -70,10 +70,10 @@
   "sec_ids": [],
   "contrib_n": 15,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4575,6 +4575,53 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "jmix-framework/jmix-docai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 96,
+   "CSS": 2,
+   "JavaScript": 2,
+   "HTML": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "weekday-lab/Tuesday-0.1B": {
+  "rel_ver": "纯研究使用",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Jinja": 2
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

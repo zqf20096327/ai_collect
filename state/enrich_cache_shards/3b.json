@@ -1,10 +1,10 @@
 {
  "lightgbm-org/LightGBM": {
-  "commit_7d": 4,
-  "commit_90d": 54,
+  "commit_7d": 1,
+  "commit_90d": 53,
   "rel_ver": "v4.7.0",
   "rel_pub": "2026-07-18",
-  "rel_days": 111,
+  "rel_days": 118,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "Cuda": 8,
    "C": 3
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -135,12 +135,12 @@
   }
  },
  "IBM/mcp-context-forge": {
-  "commit_7d": 25,
-  "commit_90d": 277,
-  "rel_ver": "v1.1.0",
-  "rel_pub": "2026-10-20",
-  "rel_days": 17,
-  "rel_n90": 6,
+  "commit_7d": 32,
+  "commit_90d": 285,
+  "rel_ver": "v1.1.1",
+  "rel_pub": "2026-11-10",
+  "rel_days": 3,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 19,
@@ -164,10 +164,10 @@
    "Rust": 2,
    "Makefile": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5082,5 +5082,14 @@
    "contrib": "20261112",
    "lang": "20261112"
   }
+ },
+ "ythx-101/paper-reader": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": null
  }
 }

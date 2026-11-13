@@ -1,10 +1,10 @@
 {
  "zylon-ai/private-gpt": {
-  "commit_7d": 0,
-  "commit_90d": 51,
+  "commit_7d": 14,
+  "commit_90d": 62,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-06-18",
-  "rel_days": 141,
+  "rel_days": 148,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,20 +20,20 @@
    "Jinja": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "trycua/cua": {
-  "commit_7d": 311,
-  "commit_90d": 2132,
-  "rel_ver": "cua-spacesd-v0.12.1",
-  "rel_pub": "2026-11-05",
+  "commit_7d": 606,
+  "commit_90d": 2592,
+  "rel_ver": "sandbox-v0.10.2",
+  "rel_pub": "2026-11-12",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -50,10 +50,10 @@
    "Swift": 10,
    "Go": 3
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -86,11 +86,11 @@
   }
  },
  "NVIDIA/NemoClaw": {
-  "commit_7d": 47,
-  "commit_90d": 2306,
+  "commit_7d": 30,
+  "commit_90d": 1969,
   "rel_ver": "ci-native-podman-e2e-2026-10-01",
   "rel_pub": "2026-10-01",
-  "rel_days": 36,
+  "rel_days": 43,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -106,21 +106,21 @@
    "Dockerfile": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "triggerdotdev/trigger.dev": {
-  "commit_7d": 22,
-  "commit_90d": 859,
-  "rel_ver": "v4.8.3",
-  "rel_pub": "2026-10-30",
-  "rel_days": 7,
+  "commit_7d": 153,
+  "commit_90d": 949,
+  "rel_ver": "v4.8.5",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -145,22 +145,22 @@
    "CSS": 0,
    "ANTLR": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "apache/doris": {
-  "commit_7d": 148,
-  "commit_90d": 1473,
+  "commit_7d": 34,
+  "commit_90d": 1432,
   "rel_ver": "4.1.5-release",
   "rel_pub": "2026-10-15",
-  "rel_days": 22,
-  "rel_n90": 4,
+  "rel_days": 29,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -175,10 +175,10 @@
    "Shell": 1,
    "Thrift": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -242,11 +242,11 @@
   }
  },
  "pydantic/logfire": {
-  "commit_7d": 20,
-  "commit_90d": 325,
-  "rel_ver": "v5.4.0",
-  "rel_pub": "2026-10-26",
-  "rel_days": 11,
+  "commit_7d": 48,
+  "commit_90d": 356,
+  "rel_ver": "v5.6.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -260,10 +260,10 @@
    "JavaScript": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4511,13 +4511,16 @@
    "Cuda": 5,
    "TypeScript": 3
   },
-  "enriched_at": "20261101",
+  "enriched_at": "20261113",
   "dim_ts": {
    "release": "20261101",
    "security": "20261101",
    "contrib": "20261101",
-   "lang": "20261101"
-  }
+   "lang": "20261101",
+   "commit": "20261113"
+  },
+  "commit_90d": 51,
+  "commit_7d": 0
  },
  "genmilab/Guide-Guard": {
   "rel_ver": null,
@@ -4880,6 +4883,78 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "sumit-1/tokenshark": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 67,
+   "JavaScript": 29,
+   "CSS": 3,
+   "HTML": 1,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "OwlHugo/tacet": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-02",
+  "rel_days": 11,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 96,
+   "CSS": 3,
+   "Shell": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "ranajahanzaib/retail-demand-forecasting": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 58,
+   "TypeScript": 32,
+   "CSS": 10,
+   "Makefile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

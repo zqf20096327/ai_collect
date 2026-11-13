@@ -1,10 +1,10 @@
 {
  "gradio-app/gradio": {
-  "commit_7d": 5,
-  "commit_90d": 160,
-  "rel_ver": "gradio@6.31.0",
-  "rel_pub": "2026-10-28",
-  "rel_days": 9,
+  "commit_7d": 8,
+  "commit_90d": 142,
+  "rel_ver": "gradio@6.32.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -29,10 +29,10 @@
    "mdsvex": 2,
    "CSS": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

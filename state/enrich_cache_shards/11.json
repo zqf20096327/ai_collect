@@ -1,9 +1,9 @@
 {
  "HumanSignal/label-studio": {
-  "commit_7d": 43,
-  "commit_90d": 396,
+  "commit_7d": 49,
+  "commit_90d": 408,
   "rel_ver": "nightly",
-  "rel_pub": "2026-11-06",
+  "rel_pub": "2026-11-13",
   "rel_days": 0,
   "rel_n90": 3,
   "rel_pre": true,
@@ -29,22 +29,22 @@
    "CSS": 8,
    "HTML": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "GetStream/Vision-Agents": {
-  "commit_7d": 2,
-  "commit_90d": 12,
+  "commit_7d": 4,
+  "commit_90d": 13,
   "rel_ver": "v0.6.9",
   "rel_pub": "2026-08-13",
-  "rel_days": 85,
-  "rel_n90": 1,
+  "rel_days": 92,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -58,21 +58,21 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "InternLM/xtuner": {
-  "commit_7d": 7,
-  "commit_90d": 145,
+  "commit_7d": 17,
+  "commit_90d": 148,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-05-15",
-  "rel_days": 175,
+  "rel_days": 182,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -86,10 +86,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -482,11 +482,11 @@
   }
  },
  "microsoft/Biodiversity": {
-  "commit_7d": 0,
-  "commit_90d": 5,
+  "commit_7d": 4,
+  "commit_90d": 9,
   "rel_ver": "pw_v1.3.0",
   "rel_pub": "2026-04-22",
-  "rel_days": 185,
+  "rel_days": 205,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -501,10 +501,10 @@
    "HTML": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4521,6 +4521,32 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "joshsegatt/SeniorOS": {
+  "rel_ver": "v0.10.1",
+  "rel_pub": "2026-11-10",
+  "rel_days": 3,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 78,
+   "TypeScript": 22,
+   "HTML": 0,
+   "Tape": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

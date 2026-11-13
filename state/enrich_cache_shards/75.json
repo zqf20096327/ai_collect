@@ -30,12 +30,12 @@
   }
  },
  "InsForge/InsForge": {
-  "commit_7d": 5,
-  "commit_90d": 249,
+  "commit_7d": 3,
+  "commit_90d": 138,
   "rel_ver": "v2.3.5",
   "rel_pub": "2026-10-23",
-  "rel_days": 14,
-  "rel_n90": 5,
+  "rel_days": 21,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -50,10 +50,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -110,11 +110,11 @@
   }
  },
  "opengeos/segment-geospatial": {
-  "commit_7d": 5,
-  "commit_90d": 14,
+  "commit_7d": 0,
+  "commit_90d": 10,
   "rel_ver": "v1.4.2",
   "rel_pub": "2026-08-22",
-  "rel_days": 76,
+  "rel_days": 83,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -129,10 +129,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4555,6 +4555,54 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "microsoft/SPARROW-Playground": {
+  "rel_ver": "v1.3.1",
+  "rel_pub": "2026-10-21",
+  "rel_days": 23,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Jupyter Notebook": 91,
+   "Python": 5,
+   "Shell": 2,
+   "C": 2
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "ace-builder/Robbi": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 92,
+   "HTML": 4,
+   "JavaScript": 4,
+   "Shell": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

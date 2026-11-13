@@ -1,10 +1,10 @@
 {
  "microsoft/onnxruntime": {
-  "commit_7d": 110,
-  "commit_90d": 968,
+  "commit_7d": 94,
+  "commit_90d": 963,
   "rel_ver": "v1.30.1",
   "rel_pub": "2026-10-29",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "Cuda": 2,
    "Assembly": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "xbtlin/ai-berkshire": {
-  "commit_7d": 12,
-  "commit_90d": 305,
+  "commit_7d": 2,
+  "commit_90d": 278,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-04-07",
-  "rel_days": 213,
+  "rel_days": 220,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "Roff": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -88,11 +88,11 @@
   }
  },
  "FailproofAI/failproofai": {
-  "commit_7d": 14,
-  "commit_90d": 248,
+  "commit_7d": 1,
+  "commit_90d": 224,
   "rel_ver": "v1.0.13",
   "rel_pub": "2026-11-02",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -108,10 +108,10 @@
    "Rust": 9,
    "JavaScript": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4655,6 +4655,33 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "yincongcyincong/mcp-client-go": {
+  "commit_90d": 3,
+  "commit_7d": 2,
+  "rel_ver": "v0.0.25",
+  "rel_pub": "2025-07-31",
+  "rel_days": 470,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 99,
+   "Makefile": 1
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "commit": "20261113",
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

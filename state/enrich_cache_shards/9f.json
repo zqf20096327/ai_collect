@@ -1,9 +1,9 @@
 {
  "Graphify-Labs/graphify": {
-  "commit_7d": 243,
-  "commit_90d": 1514,
-  "rel_ver": "v0.9.103",
-  "rel_pub": "2026-11-05",
+  "commit_7d": 159,
+  "commit_90d": 1596,
+  "rel_ver": "v0.9.108",
+  "rel_pub": "2026-11-12",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -20,22 +20,22 @@
    "TypeScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "harvard-edge/cs249r_book": {
-  "commit_7d": 255,
-  "commit_90d": 6785,
-  "rel_ver": "mlsysim-v0.3.0",
-  "rel_pub": "2026-10-25",
-  "rel_days": 12,
-  "rel_n90": 6,
+  "commit_7d": 169,
+  "commit_90d": 6633,
+  "rel_ver": "vol2-v0.3.1",
+  "rel_pub": "2026-11-06",
+  "rel_days": 7,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -50,10 +50,10 @@
    "TypeScript": 3,
    "HTML": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -90,11 +90,11 @@
   }
  },
  "py-why/EconML": {
-  "commit_7d": 2,
+  "commit_7d": 0,
   "commit_90d": 5,
   "rel_ver": "v0.17.0",
   "rel_pub": "2026-08-04",
-  "rel_days": 94,
+  "rel_days": 101,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -110,20 +110,20 @@
    "TeX": 0,
    "R": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "kirodotdev/KiroCrew": {
-  "commit_7d": 2591,
-  "commit_90d": 14185,
-  "rel_ver": "v0.12.0",
-  "rel_pub": "2026-11-05",
+  "commit_7d": 2792,
+  "commit_90d": 16201,
+  "rel_ver": "v0.12.2",
+  "rel_pub": "2026-11-12",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -142,10 +142,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4875,6 +4875,54 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "LesterTown/qq-auto-reply": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 91,
+   "Swift": 6,
+   "Shell": 3
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "UselessCreates/PiratesShip": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 9,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 62,
+   "Makefile": 24,
+   "JavaScript": 12,
+   "CSS": 1,
+   "Rust": 1
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

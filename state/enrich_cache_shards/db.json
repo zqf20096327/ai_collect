@@ -1,7 +1,7 @@
 {
  "Developer-Y/cs-video-courses": {
   "commit_7d": 4,
-  "commit_90d": 29,
+  "commit_90d": 33,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -10,21 +10,21 @@
   "sec_ids": [],
   "contrib_n": 117,
   "lang": {},
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "mastra-ai/mastra": {
-  "commit_7d": 385,
-  "commit_90d": 5043,
+  "commit_7d": 471,
+  "commit_90d": 5164,
   "rel_ver": "@mastra/core@1.82.0",
   "rel_pub": "2026-11-04",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -43,10 +43,10 @@
    "Shell": 0,
    "MDX": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -79,11 +79,11 @@
   }
  },
  "flwrlabs/flower": {
-  "commit_90d": 508,
-  "commit_7d": 40,
+  "commit_90d": 460,
+  "commit_7d": 26,
   "rel_ver": "framework-1.43.0",
   "rel_pub": "2026-11-04",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -99,23 +99,23 @@
    "Shell": 1,
    "C++": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "lemonade-sdk/lemonade": {
-  "commit_90d": 376,
-  "commit_7d": 34,
-  "rel_ver": "candidate-v2026.46.1",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_90d": 345,
+  "commit_7d": 18,
+  "rel_ver": "v2026.46.2",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -129,20 +129,20 @@
    "CSS": 3,
    "CMake": 3
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "TabularisDB/tabularis": {
-  "commit_90d": 1077,
-  "commit_7d": 44,
-  "rel_ver": "nightly-20261105-dc919d0",
-  "rel_pub": "2026-11-05",
+  "commit_90d": 1053,
+  "commit_7d": 79,
+  "rel_ver": "nightly-20261112-066e41c",
+  "rel_pub": "2026-11-12",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
@@ -162,23 +162,23 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "qixing-jk/all-api-hub": {
-  "commit_90d": 490,
-  "commit_7d": 30,
-  "rel_ver": "v4.9.0",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_90d": 471,
+  "commit_7d": 33,
+  "rel_ver": "nightly",
+  "rel_pub": "2026-03-15",
+  "rel_days": 243,
   "rel_n90": 11,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -192,10 +192,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4705,6 +4705,29 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "ai-maker-lab/YareLampGo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 72,
+   "JavaScript": 19,
+   "CSS": 4,
+   "HTML": 4,
+   "Swift": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

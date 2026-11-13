@@ -60,11 +60,11 @@
   }
  },
  "theonedev/onedev": {
-  "commit_7d": 25,
-  "commit_90d": 447,
-  "rel_ver": "v17.1.2",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 22,
+  "commit_90d": 439,
+  "rel_ver": "v17.2.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -89,10 +89,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -273,10 +273,10 @@
    "Python": 95,
    "Jupyter Notebook": 5
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4369,6 +4369,30 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "codevibe-technology/ai-bot-access": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 95,
+   "JavaScript": 5
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

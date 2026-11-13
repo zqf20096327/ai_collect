@@ -1,12 +1,12 @@
 {
  "BerriAI/litellm": {
-  "commit_7d": 425,
-  "commit_90d": 13247,
-  "rel_ver": "v1.108.1",
-  "rel_pub": "2026-11-05",
+  "commit_7d": 436,
+  "commit_90d": 12898,
+  "rel_ver": "v1.110.0-rc.2",
+  "rel_pub": "2026-11-12",
   "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 17,
   "sec_worst": "critical",
@@ -29,10 +29,10 @@
    "HTML": 1,
    "Go": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -54,21 +54,21 @@
    "Batchfile": 3,
    "Dockerfile": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "microsoft/SkillOpt": {
-  "commit_7d": 8,
-  "commit_90d": 147,
+  "commit_7d": 21,
+  "commit_90d": 131,
   "rel_ver": "v0.2.0",
   "rel_pub": "2026-07-02",
-  "rel_days": 127,
+  "rel_days": 134,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -84,22 +84,22 @@
    "Shell": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "citrolabs/ego-lite": {
-  "commit_7d": 5,
-  "commit_90d": 301,
+  "commit_7d": 0,
+  "commit_90d": 295,
   "rel_ver": "v2.2.0",
   "rel_pub": "2026-11-05",
-  "rel_days": 1,
-  "rel_n90": 12,
+  "rel_days": 8,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -112,10 +112,10 @@
    "TypeScript": 40,
    "Shell": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -154,11 +154,11 @@
   }
  },
  "astrid-runtime/astrid": {
-  "commit_7d": 4,
-  "commit_90d": 262,
+  "commit_7d": 5,
+  "commit_90d": 245,
   "rel_ver": "v2026.10.1",
   "rel_pub": "2026-10-15",
-  "rel_days": 22,
+  "rel_days": 29,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -174,10 +174,10 @@
    "Swift": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -185,11 +185,11 @@
  },
  "replicate/cog": {
   "commit_7d": 0,
-  "commit_90d": 24,
+  "commit_90d": 15,
   "rel_ver": "v0.23.1",
   "rel_pub": "2026-10-20",
-  "rel_days": 17,
-  "rel_n90": 3,
+  "rel_days": 24,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -204,10 +204,10 @@
    "Python": 5,
    "TypeScript": 5
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -270,11 +270,11 @@
   }
  },
  "echo-loop/Echo-Loop": {
-  "commit_7d": 67,
-  "commit_90d": 468,
-  "rel_ver": "v1.0.45",
-  "rel_pub": "2026-11-01",
-  "rel_days": 5,
+  "commit_7d": 81,
+  "commit_90d": 522,
+  "rel_ver": "v1.0.47",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -290,10 +290,10 @@
    "Shell": 0,
    "C++": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5520,6 +5520,27 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "N1nEmAn/nvwabase": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 82,
+   "HTML": 11,
+   "Shell": 6
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

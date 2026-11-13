@@ -1,11 +1,11 @@
 {
  "open-webui/open-webui": {
-  "commit_7d": 182,
-  "commit_90d": 2429,
-  "rel_ver": "v0.13.0",
-  "rel_pub": "2026-11-03",
-  "rel_days": 3,
-  "rel_n90": 11,
+  "commit_7d": 196,
+  "commit_90d": 2565,
+  "rel_ver": "v0.13.3",
+  "rel_pub": "2026-11-08",
+  "rel_days": 5,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 30,
@@ -29,10 +29,10 @@
    "TypeScript": 6,
    "CSS": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -40,11 +40,11 @@
  },
  "bmad-code-org/BMAD-METHOD": {
   "commit_7d": 11,
-  "commit_90d": 340,
+  "commit_90d": 329,
   "rel_ver": "v6.12.4",
   "rel_pub": "2026-10-14",
-  "rel_days": 23,
-  "rel_n90": 6,
+  "rel_days": 30,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -59,10 +59,10 @@
    "CSS": 1,
    "Astro": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -73,7 +73,7 @@
   "commit_90d": 1,
   "rel_ver": "2025.10.30",
   "rel_pub": "2025-11-04",
-  "rel_days": 367,
+  "rel_days": 374,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -83,10 +83,10 @@
   "sec_ids": [],
   "contrib_n": 57,
   "lang": {},
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4566,6 +4566,40 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "ythx-101/antigravity-bridge": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": null
+ },
+ "HiQ-AI/dingtalk-dsh-assistant": {
+  "rel_ver": "v2.3.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 13,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 99,
+   "PowerShell": 1,
+   "Java": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

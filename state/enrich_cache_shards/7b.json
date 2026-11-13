@@ -61,11 +61,11 @@
   }
  },
  "huggingface/transformers.js": {
-  "commit_7d": 0,
-  "commit_90d": 23,
+  "commit_7d": 1,
+  "commit_90d": 24,
   "rel_ver": "4.3.2",
   "rel_pub": "2026-10-28",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -79,10 +79,10 @@
    "TypeScript": 5,
    "Vim Snippet": 3
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -172,11 +172,11 @@
   }
  },
  "dmMaze/BallonsTranslator": {
-  "commit_7d": 16,
-  "commit_90d": 384,
-  "rel_ver": "v1.5.20",
-  "rel_pub": "2026-10-18",
-  "rel_days": 19,
+  "commit_7d": 4,
+  "commit_90d": 334,
+  "rel_ver": "v1.5.21",
+  "rel_pub": "2026-11-09",
+  "rel_days": 4,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -192,21 +192,21 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "clidey/whodb": {
-  "commit_7d": 29,
-  "commit_90d": 677,
+  "commit_7d": 31,
+  "commit_90d": 666,
   "rel_ver": "0.138.0",
   "rel_pub": "2026-10-28",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -231,21 +231,21 @@
    "Python": 3,
    "Rust": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "JabRef/jabref": {
-  "commit_7d": 83,
-  "commit_90d": 886,
+  "commit_7d": 65,
+  "commit_90d": 908,
   "rel_ver": "v6.0-beta.1",
   "rel_pub": "2026-09-21",
-  "rel_days": 46,
+  "rel_days": 53,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -264,10 +264,10 @@
    "XSLT": 1,
    "Python": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4759,6 +4759,37 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "ythx-101/agent-sop": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": null
+ },
+ "brysontang/iiama2.c": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C": 67,
+   "Python": 30,
+   "Makefile": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

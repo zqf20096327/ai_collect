@@ -303,11 +303,11 @@
   }
  },
  "dagucloud/dagu": {
-  "commit_7d": 225,
-  "commit_90d": 817,
-  "rel_ver": "v2.25.8",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 156,
+  "commit_90d": 940,
+  "rel_ver": "helm-dagu-2.0.7",
+  "rel_pub": "2026-11-09",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -330,10 +330,10 @@
    "PowerShell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5058,6 +5058,86 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "pingdotgg/t3code": {
+  "commit_90d": 8346,
+  "commit_7d": 1344,
+  "rel_ver": "v0.1.10-nightly.20261113.4616",
+  "rel_pub": "2026-11-13",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 478,
+  "lang": {
+   "TypeScript": 97,
+   "MDX": 2,
+   "Astro": 0,
+   "CSS": 0,
+   "Kotlin": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "commit": "20261113",
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "yhdmgf/AiVerse": {
+  "rel_ver": "v1.0.3-rc3",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
+  "rel_n90": 7,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Kotlin": 93,
+   "Java": 5,
+   "Python": 1,
+   "Shell": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "ranajahanzaib/llm-feedback-finetuning-pipeline": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 64,
+   "TypeScript": 28,
+   "CSS": 7,
+   "Makefile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

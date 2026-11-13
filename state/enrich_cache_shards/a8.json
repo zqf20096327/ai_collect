@@ -52,11 +52,11 @@
   }
  },
  "langchain-ai/langchainjs": {
-  "commit_7d": 28,
-  "commit_90d": 236,
-  "rel_ver": "langchain@1.6.2",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 27,
+  "commit_90d": 248,
+  "rel_ver": "langchain@1.6.5",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -78,10 +78,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -145,11 +145,11 @@
   }
  },
  "haris-musa/excel-mcp-server": {
-  "commit_90d": 151,
-  "commit_7d": 11,
-  "rel_ver": "v2.2.6",
-  "rel_pub": "2026-10-31",
-  "rel_days": 6,
+  "commit_90d": 172,
+  "commit_7d": 21,
+  "rel_ver": "v2.3.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -171,10 +171,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

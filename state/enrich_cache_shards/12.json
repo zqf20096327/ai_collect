@@ -30,11 +30,11 @@
   }
  },
  "flipped-aurora/gin-vue-admin": {
-  "commit_7d": 2,
-  "commit_90d": 26,
+  "commit_7d": 4,
+  "commit_90d": 30,
   "rel_ver": "v2.9.2-stable",
   "rel_pub": "2026-07-17",
-  "rel_days": 105,
+  "rel_days": 119,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "Go Template": 5,
    "SCSS": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -208,10 +208,10 @@
  },
  "modelscope/ms-agent": {
   "commit_7d": 1,
-  "commit_90d": 58,
+  "commit_90d": 54,
   "rel_ver": "v1.6.0",
   "rel_pub": "2026-03-23",
-  "rel_days": 228,
+  "rel_days": 235,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -227,10 +227,10 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4300,6 +4300,25 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "physicalreasoning/causal-jepa": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

@@ -1,9 +1,9 @@
 {
  "thedotmack/claude-mem": {
-  "commit_7d": 195,
-  "commit_90d": 1581,
-  "rel_ver": "v15.10.0",
-  "rel_pub": "2026-11-05",
+  "commit_7d": 641,
+  "commit_90d": 2218,
+  "rel_ver": "v15.18.3",
+  "rel_pub": "2026-11-12",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -20,21 +20,21 @@
    "HTML": 1,
    "Shell": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "hypit-ai/hypit": {
-  "commit_7d": 3,
-  "commit_90d": 1375,
-  "rel_ver": "v0.3.1",
-  "rel_pub": "2026-10-09",
-  "rel_days": 28,
+  "commit_7d": 5,
+  "commit_90d": 1166,
+  "rel_ver": "v0.3.2",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -50,18 +50,18 @@
    "Python": 1,
    "PowerShell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "georgezouq/awesome-ai-in-finance": {
-  "commit_7d": 0,
-  "commit_90d": 53,
+  "commit_7d": 19,
+  "commit_90d": 68,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -70,22 +70,22 @@
   "sec_ids": [],
   "contrib_n": 97,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "haifengl/smile": {
-  "commit_7d": 49,
-  "commit_90d": 932,
-  "rel_ver": "v7.1.0",
-  "rel_pub": "2026-10-20",
-  "rel_days": 17,
-  "rel_n90": 3,
+  "commit_7d": 57,
+  "commit_90d": 962,
+  "rel_ver": "v7.2.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 4,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -100,10 +100,10 @@
    "Jupyter Notebook": 1,
    "Kotlin": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4219,6 +4219,27 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "satriazoid/antitextai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 88,
+   "PowerShell": 6,
+   "Shell": 6
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

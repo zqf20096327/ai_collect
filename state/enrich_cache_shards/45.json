@@ -1,11 +1,11 @@
 {
  "voicepaw/so-vits-svc-fork": {
-  "commit_7d": 2,
-  "commit_90d": 64,
-  "rel_ver": "v4.2.30",
-  "rel_pub": "2026-02-02",
-  "rel_days": 277,
-  "rel_n90": 0,
+  "commit_7d": 5,
+  "commit_90d": 63,
+  "rel_ver": "v4.3.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 5,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,10 +20,10 @@
    "Nix": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -80,11 +80,11 @@
   }
  },
  "Ontos-AI/knowhere": {
-  "commit_90d": 593,
-  "commit_7d": 18,
-  "rel_ver": "v1.2.44",
-  "rel_pub": "2026-11-02",
-  "rel_days": 4,
+  "commit_90d": 666,
+  "commit_7d": 116,
+  "rel_ver": "v1.2.55",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -100,10 +100,10 @@
    "Makefile": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4554,5 +4554,39 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "rmellis/open-publisher": {
+  "rel_ver": "5.20.3",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 88,
+   "CSS": 8,
+   "HTML": 4
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "ythx-101/x-profile-analyzer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": null
  }
 }

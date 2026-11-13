@@ -1,10 +1,10 @@
 {
  "docmost/docmost": {
-  "commit_7d": 25,
-  "commit_90d": 133,
+  "commit_7d": 35,
+  "commit_90d": 158,
   "rel_ver": "v0.97.0",
   "rel_pub": "2026-10-25",
-  "rel_days": 12,
+  "rel_days": 19,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -29,10 +29,10 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -65,11 +65,11 @@
   }
  },
  "netease-youdao/LobsterAI": {
-  "commit_7d": 9,
-  "commit_90d": 1127,
-  "rel_ver": "2026.10.30",
-  "rel_pub": "2026-10-31",
-  "rel_days": 6,
+  "commit_7d": 11,
+  "commit_90d": 1148,
+  "rel_ver": "2026.11.6",
+  "rel_pub": "2026-11-06",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -85,10 +85,10 @@
    "PowerShell": 1,
    "NSIS": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -126,8 +126,8 @@
  },
  "Lightricks/ComfyUI-LTXVideo": {
   "commit_7d": 2,
-  "commit_90d": 25,
-  "rel_ver": "v1.1.0",
+  "commit_90d": 24,
+  "rel_ver": "v1.1.1",
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -138,17 +138,17 @@
    "Python": 93,
    "JavaScript": 7
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   },
-  "rel_pub": "2026-10-20",
-  "rel_days": 3,
-  "rel_n90": 1,
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
+  "rel_n90": 2,
   "rel_pre": false
  },
  "pnnbao97/VieNeu-TTS": {
@@ -4821,6 +4821,31 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "incredible404-rgb/Colab-yoga": {
+  "rel_ver": "v0.5.2",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 54,
+   "Go": 45,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

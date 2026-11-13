@@ -1,9 +1,9 @@
 {
  "deepseek-ai/deepseek-harness": {
-  "commit_7d": 486,
-  "commit_90d": 15446,
-  "rel_ver": "dsh-v0.2.2-rc.1",
-  "rel_pub": "2026-11-04",
+  "commit_7d": 509,
+  "commit_90d": 14225,
+  "rel_ver": "dsh-v0.2.2-rc.2",
+  "rel_pub": "2026-11-11",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": true,
@@ -20,21 +20,21 @@
    "JavaScript": 1,
    "Swift": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "pytorch/pytorch": {
-  "commit_7d": 425,
-  "commit_90d": 5045,
+  "commit_7d": 400,
+  "commit_90d": 5103,
   "rel_ver": "v2.15.0",
   "rel_pub": "2026-10-28",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -56,22 +56,22 @@
    "C": 1,
    "Objective-C++": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "1Panel-dev/1Panel": {
-  "commit_7d": 49,
-  "commit_90d": 307,
-  "rel_ver": "v2.4.2",
-  "rel_pub": "2026-10-30",
-  "rel_days": 7,
-  "rel_n90": 6,
+  "commit_7d": 72,
+  "commit_90d": 372,
+  "rel_ver": "v2.5.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 16,
@@ -95,10 +95,10 @@
    "Makefile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -135,11 +135,11 @@
   }
  },
  "NVIDIA/SkillSpector": {
-  "commit_7d": 169,
-  "commit_90d": 1599,
+  "commit_7d": 350,
+  "commit_90d": 2645,
   "rel_ver": "v2.13.4",
   "rel_pub": "2026-11-04",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -155,10 +155,10 @@
    "YARA": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -195,11 +195,11 @@
   }
  },
  "SciSharp/LLamaSharp": {
-  "commit_90d": 120,
-  "commit_7d": 19,
+  "commit_90d": 123,
+  "commit_7d": 3,
   "rel_ver": "v0.30.0",
   "rel_pub": "2026-10-17",
-  "rel_days": 20,
+  "rel_days": 27,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -214,10 +214,10 @@
    "HTML": 1,
    "CSS": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -311,11 +311,11 @@
   }
  },
  "apioo/fusio": {
-  "commit_90d": 17,
-  "commit_7d": 3,
+  "commit_90d": 19,
+  "commit_7d": 2,
   "rel_ver": "v7.2.1",
   "rel_pub": "2026-10-21",
-  "rel_days": 10,
+  "rel_days": 23,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -328,10 +328,10 @@
    "PHP": 100,
    "HTML": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4526,13 +4526,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261113",
   "dim_ts": {
    "release": "20261112",
    "security": "20261112",
    "contrib": "20261112",
-   "lang": "20261112"
-  }
+   "lang": "20261112",
+   "commit": "20261113"
+  },
+  "commit_90d": 8,
+  "commit_7d": 3
  },
  "JiaRan027/PersonalMemoryX": {
   "rel_ver": "alpha-channel",

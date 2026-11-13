@@ -1,10 +1,10 @@
 {
  "onyx-dot-app/onyx": {
-  "commit_7d": 153,
-  "commit_90d": 1892,
-  "rel_ver": "helm/onyx-0.9.31",
-  "rel_pub": "2026-11-03",
-  "rel_days": 3,
+  "commit_7d": 195,
+  "commit_90d": 1960,
+  "rel_ver": "v5.1.2",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -26,21 +26,21 @@
    "HCL": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "tbphp/gpt-load": {
-  "commit_7d": 12,
-  "commit_90d": 542,
-  "rel_ver": "v2.0.0-rc.62",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 11,
+  "commit_90d": 472,
+  "rel_ver": "v2.0.0-rc.63",
+  "rel_pub": "2026-11-08",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -60,10 +60,10 @@
    "Python": 0,
    "CSS": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -100,11 +100,11 @@
   }
  },
  "kubewall/kubewall": {
-  "commit_7d": 0,
-  "commit_90d": 28,
+  "commit_7d": 1,
+  "commit_90d": 19,
   "rel_ver": "v0.0.23",
   "rel_pub": "2026-09-01",
-  "rel_days": 60,
+  "rel_days": 73,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -120,10 +120,10 @@
    "JavaScript": 0,
    "Go Template": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4096,6 +4096,30 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "Nadercr7/tapetum": {
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 82,
+   "HTML": 18
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

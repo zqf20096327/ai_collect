@@ -1,10 +1,10 @@
 {
  "QwenLM/qwen-code": {
-  "commit_7d": 320,
-  "commit_90d": 3687,
-  "rel_ver": "v0.26.8",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 404,
+  "commit_90d": 3879,
+  "rel_ver": "v0.27.3",
+  "rel_pub": "2026-11-13",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,23 +20,23 @@
    "JavaScript": 4,
    "C": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Kilo-Org/kilocode": {
-  "commit_7d": 146,
-  "commit_90d": 5318,
-  "rel_ver": "v7.8.27",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 110,
+  "commit_90d": 5038,
+  "rel_ver": "jetbrains/v7.2.1-rc.3",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -50,21 +50,21 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "elie222/inbox-zero": {
-  "commit_7d": 104,
-  "commit_90d": 1199,
-  "rel_ver": "desktop-v0.1.23",
-  "rel_pub": "2026-11-04",
-  "rel_days": 2,
+  "commit_7d": 111,
+  "commit_90d": 1215,
+  "rel_ver": "desktop-v0.1.26",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -83,10 +83,10 @@
    "PLpgSQL": 0,
    "CSS": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -122,12 +122,12 @@
   }
  },
  "CodeWithCJ/SparkyFitness": {
-  "commit_90d": 4544,
-  "commit_7d": 313,
-  "rel_ver": "v1.11.0",
-  "rel_pub": "2026-10-30",
-  "rel_days": 7,
-  "rel_n90": 11,
+  "commit_90d": 4499,
+  "commit_7d": 76,
+  "rel_ver": "v1.12.1",
+  "rel_pub": "2026-11-10",
+  "rel_days": 3,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 6,
@@ -149,21 +149,21 @@
    "JavaScript": 0,
    "Python": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "dramaclaw/dramaclaw": {
-  "commit_90d": 526,
-  "commit_7d": 7,
+  "commit_90d": 518,
+  "commit_7d": 12,
   "rel_ver": "v2.1.3",
   "rel_pub": "2026-10-29",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -179,10 +179,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4484,6 +4484,29 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "HXHakf/easyeda-schematic-orchestrator": {
+  "rel_ver": "v0.2.1",
+  "rel_pub": "2026-11-02",
+  "rel_days": 11,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

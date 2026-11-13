@@ -1,11 +1,11 @@
 {
  "arc53/DocsGPT": {
-  "commit_7d": 246,
-  "commit_90d": 2701,
+  "commit_7d": 182,
+  "commit_90d": 2798,
   "rel_ver": "1.1.0",
   "rel_pub": "2026-10-25",
-  "rel_days": 12,
-  "rel_n90": 5,
+  "rel_days": 19,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 12,
@@ -29,21 +29,21 @@
    "PowerShell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Canner/WrenAI": {
-  "commit_7d": 3,
-  "commit_90d": 123,
-  "rel_ver": "wren-v0.17.1",
-  "rel_pub": "2026-10-30",
-  "rel_days": 7,
+  "commit_7d": 11,
+  "commit_90d": 125,
+  "rel_ver": "wren-v0.18.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4767,6 +4767,30 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "AllenCell/SubCellSeg": {
+  "rel_ver": "weights-v1",
+  "rel_pub": "2026-11-05",
+  "rel_days": 8,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 97,
+   "Shell": 3
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

@@ -54,13 +54,13 @@
   }
  },
  "invoke-ai/InvokeAI": {
-  "commit_7d": 66,
-  "commit_90d": 3651,
-  "rel_ver": "v6.14.4",
-  "rel_pub": "2026-11-03",
-  "rel_days": 3,
+  "commit_7d": 70,
+  "commit_90d": 3447,
+  "rel_ver": "v7.0.0-beta.1",
+  "rel_pub": "2026-11-09",
+  "rel_days": 4,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -74,10 +74,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

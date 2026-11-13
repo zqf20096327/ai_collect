@@ -1,10 +1,10 @@
 {
  "github/spec-kit": {
-  "commit_7d": 61,
-  "commit_90d": 629,
-  "rel_ver": "v1.3.1",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 64,
+  "commit_90d": 633,
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -18,10 +18,10 @@
    "Shell": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -97,11 +97,11 @@
   }
  },
  "the-open-agent/openagent": {
-  "commit_90d": 98,
-  "commit_7d": 3,
+  "commit_90d": 99,
+  "commit_7d": 1,
   "rel_ver": "v2.95.1",
   "rel_pub": "2026-10-05",
-  "rel_days": 32,
+  "rel_days": 39,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -117,10 +117,10 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

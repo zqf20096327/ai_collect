@@ -1,9 +1,9 @@
 {
  "huggingface/transformers": {
-  "commit_7d": 117,
-  "commit_90d": 1064,
-  "rel_ver": "v5.22.1",
-  "rel_pub": "2026-10-30",
+  "commit_7d": 108,
+  "commit_90d": 1133,
+  "rel_ver": "v5.22.2",
+  "rel_pub": "2026-11-06",
   "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
@@ -20,10 +20,10 @@
    "Makefile": 0,
    "HCL": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -54,11 +54,11 @@
   }
  },
  "huggingface/peft": {
-  "commit_7d": 16,
-  "commit_90d": 226,
+  "commit_7d": 21,
+  "commit_90d": 230,
   "rel_ver": "v0.21.2",
   "rel_pub": "2026-10-01",
-  "rel_days": 36,
+  "rel_days": 43,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -74,18 +74,18 @@
    "Cuda": 0,
    "C++": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "stas00/ml-engineering": {
-  "commit_7d": 2,
-  "commit_90d": 119,
+  "commit_7d": 1,
+  "commit_90d": 83,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -100,21 +100,21 @@
    "CSS": 1,
    "Cuda": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "lsdefine/GenericAgent": {
-  "commit_7d": 28,
-  "commit_90d": 125,
+  "commit_7d": 0,
+  "commit_90d": 111,
   "rel_ver": "v0.2.1",
   "rel_pub": "2026-10-19",
-  "rel_days": 18,
+  "rel_days": 25,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -130,21 +130,21 @@
    "PowerShell": 1,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "BuilderIO/agent-native": {
-  "commit_7d": 232,
-  "commit_90d": 4692,
-  "rel_ver": "v0.1.291",
-  "rel_pub": "2026-11-06",
-  "rel_days": 0,
+  "commit_7d": 270,
+  "commit_90d": 4838,
+  "rel_ver": "v0.1.295",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -160,10 +160,10 @@
    "JavaScript": 1,
    "HTML": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -215,12 +215,12 @@
   }
  },
  "crmne/ruby_llm": {
-  "commit_7d": 122,
-  "commit_90d": 1120,
-  "rel_ver": "v2.1.1",
-  "rel_pub": "2026-10-11",
-  "rel_days": 26,
-  "rel_n90": 7,
+  "commit_7d": 186,
+  "commit_90d": 1161,
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 3,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -234,18 +234,18 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "tigerless-labs/agent-memory": {
-  "commit_7d": 28,
-  "commit_90d": 342,
+  "commit_7d": 29,
+  "commit_90d": 381,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -256,10 +256,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

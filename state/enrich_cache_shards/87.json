@@ -1,9 +1,9 @@
 {
  "openai/openai-node": {
-  "commit_7d": 37,
-  "commit_90d": 877,
-  "rel_ver": "v7.52.0",
-  "rel_pub": "2026-11-05",
+  "commit_7d": 20,
+  "commit_90d": 684,
+  "rel_ver": "v7.56.0",
+  "rel_pub": "2026-11-12",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -20,10 +20,10 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -60,11 +60,11 @@
   }
  },
  "huggingface/huggingface_hub": {
-  "commit_90d": 265,
-  "commit_7d": 11,
+  "commit_90d": 257,
+  "commit_7d": 3,
   "rel_ver": "v2.4.0",
   "rel_pub": "2026-10-29",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -79,10 +79,10 @@
    "PowerShell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4340,6 +4340,84 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "Boom-Vitt/obserp": {
+  "rel_ver": "v1.0.3",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "TypeScript": 54,
+   "PLpgSQL": 24,
+   "Go": 14,
+   "JavaScript": 3,
+   "Dart": 2
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "AkshatTm/Vidura-IPO-X-Ray": {
+  "rel_ver": "v1.1",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 75,
+   "TypeScript": 17,
+   "Jupyter Notebook": 7,
+   "JavaScript": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "xycu/agent-smith": {
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

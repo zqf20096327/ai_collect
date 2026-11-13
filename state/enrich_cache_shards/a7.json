@@ -1,7 +1,7 @@
 {
  "asgeirtj/system_prompts_leaks": {
-  "commit_7d": 14,
-  "commit_90d": 215,
+  "commit_7d": 20,
+  "commit_90d": 232,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,20 +16,20 @@
    "Jinja": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "langchain-ai/langgraph": {
-  "commit_7d": 35,
-  "commit_90d": 245,
-  "rel_ver": "1.2.20",
-  "rel_pub": "2026-11-05",
+  "commit_7d": 23,
+  "commit_90d": 264,
+  "rel_ver": "1.2.21",
+  "rel_pub": "2026-11-12",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -55,10 +55,10 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2005,13 +2005,16 @@
   "lang": {
    "Roff": 100
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261113",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261113"
+  },
+  "commit_90d": 37,
+  "commit_7d": 0
  },
  "simonprovost/Auto-Sklong": {
   "rel_ver": "0.0.9",
@@ -4585,6 +4588,30 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "lygsam75-buddy/intel-arc-local-ai": {
+  "rel_ver": "xpu-runtime-sycl9-20261102",
+  "rel_pub": "2026-11-02",
+  "rel_days": 11,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Shell": 2
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

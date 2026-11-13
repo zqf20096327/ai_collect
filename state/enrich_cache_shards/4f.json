@@ -29,12 +29,12 @@
   }
  },
  "fivetran/great_expectations": {
-  "commit_7d": 7,
-  "commit_90d": 162,
-  "rel_ver": "1.24.1",
-  "rel_pub": "2026-10-22",
-  "rel_days": 15,
-  "rel_n90": 7,
+  "commit_7d": 19,
+  "commit_90d": 163,
+  "rel_ver": "1.25.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -49,21 +49,21 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "zhouxiaoka/autoclip": {
-  "commit_7d": 28,
+  "commit_7d": 0,
   "commit_90d": 1208,
   "rel_ver": "v1.5.8",
   "rel_pub": "2026-11-02",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -79,22 +79,22 @@
    "CSS": 1,
    "HTML": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "MakazhanAlpamys/Soup": {
-  "commit_7d": 246,
-  "commit_90d": 1874,
+  "commit_7d": 219,
+  "commit_90d": 2010,
   "rel_ver": "v0.77.2",
   "rel_pub": "2026-11-05",
-  "rel_days": 1,
-  "rel_n90": 12,
+  "rel_days": 8,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 2,
@@ -112,10 +112,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -148,12 +148,12 @@
   }
  },
  "agentscope-ai/ReMe": {
-  "commit_7d": 20,
-  "commit_90d": 197,
+  "commit_7d": 16,
+  "commit_90d": 194,
   "rel_ver": "v0.4.2.2",
   "rel_pub": "2026-11-05",
-  "rel_days": 1,
-  "rel_n90": 11,
+  "rel_days": 8,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -168,10 +168,10 @@
    "CSS": 1,
    "HTML": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5052,6 +5052,26 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "dinhqhuy7/notebook-model-host": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 88,
+   "Python": 12
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

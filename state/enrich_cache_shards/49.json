@@ -1,10 +1,10 @@
 {
  "teambit/bit": {
-  "commit_7d": 39,
-  "commit_90d": 475,
+  "commit_7d": 27,
+  "commit_90d": 478,
   "rel_ver": "v2.2.164",
   "rel_pub": "2026-10-28",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "SCSS": 2,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -60,11 +60,11 @@
   }
  },
  "espnet/espnet": {
-  "commit_7d": 56,
-  "commit_90d": 1787,
+  "commit_7d": 176,
+  "commit_90d": 2052,
   "rel_ver": "v.202611",
   "rel_pub": "2026-10-23",
-  "rel_days": 14,
+  "rel_days": 21,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -84,10 +84,10 @@
    "MATLAB": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -175,7 +175,7 @@
   "commit_7d": 0,
   "rel_ver": "1.3.0",
   "rel_pub": "2026-09-24",
-  "rel_days": 43,
+  "rel_days": 50,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -191,21 +191,21 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "arxhr007/Aliens_eye": {
-  "commit_90d": 44,
-  "commit_7d": 2,
-  "rel_ver": "v2.7.5",
-  "rel_pub": "2026-10-25",
-  "rel_days": 12,
+  "commit_90d": 52,
+  "commit_7d": 8,
+  "rel_ver": "v2.10.1",
+  "rel_pub": "2026-11-09",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -218,10 +218,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -252,11 +252,11 @@
   }
  },
  "code-yeongyu/lazycodex": {
-  "commit_90d": 89,
-  "commit_7d": 8,
-  "rel_ver": "v5.1.61",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_90d": 95,
+  "commit_7d": 7,
+  "rel_ver": "v5.1.69",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -272,10 +272,10 @@
    "Shell": 1,
    "CSS": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5243,6 +5243,32 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "andrewman2035/octopus-kb": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 14,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "JavaScript": 1,
+   "HTML": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

@@ -1,11 +1,11 @@
 {
  "emcie-co/parlant": {
-  "commit_7d": 80,
-  "commit_90d": 81,
-  "rel_ver": "v4.0.2",
-  "rel_pub": "2026-11-04",
-  "rel_days": 2,
-  "rel_n90": 1,
+  "commit_7d": 47,
+  "commit_90d": 128,
+  "rel_ver": "v4.0.5",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,22 +20,22 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "yzhao062/pyod": {
-  "commit_7d": 1,
-  "commit_90d": 54,
-  "rel_ver": "v3.6.7",
-  "rel_pub": "2026-10-12",
-  "rel_days": 17,
-  "rel_n90": 5,
+  "commit_7d": 17,
+  "commit_90d": 65,
+  "rel_ver": "v3.6.8",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -47,10 +47,10 @@
    "Python": 94,
    "Jupyter Notebook": 6
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261029",
-   "release": "20261029",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

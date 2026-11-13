@@ -1,11 +1,11 @@
 {
  "LibreChat-AI/LibreChat": {
-  "commit_7d": 23,
-  "commit_90d": 1673,
+  "commit_7d": 204,
+  "commit_90d": 1858,
   "rel_ver": "v0.8.9-rc1",
   "rel_pub": "2026-10-26",
-  "rel_days": 11,
-  "rel_n90": 6,
+  "rel_days": 18,
+  "rel_n90": 5,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 29,
@@ -29,10 +29,10 @@
    "Go": 0,
    "Handlebars": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -64,7 +64,7 @@
  },
  "nmap/nmap": {
   "commit_7d": 5,
-  "commit_90d": 190,
+  "commit_90d": 172,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -79,10 +79,10 @@
    "Shell": 5,
    "Python": 4
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -119,11 +119,11 @@
   }
  },
  "openvinotoolkit/openvino": {
-  "commit_7d": 119,
-  "commit_90d": 1114,
+  "commit_7d": 55,
+  "commit_90d": 1090,
   "rel_ver": "2026.4.1",
   "rel_pub": "2026-10-01",
-  "rel_days": 36,
+  "rel_days": 43,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -139,10 +139,10 @@
    "CMake": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

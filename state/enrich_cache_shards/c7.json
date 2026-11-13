@@ -1,10 +1,10 @@
 {
  "TEN-framework/ten-framework": {
-  "commit_7d": 9,
-  "commit_90d": 58,
+  "commit_7d": 5,
+  "commit_90d": 62,
   "rel_ver": "0.11.75",
   "rel_pub": "2026-11-03",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "TypeScript": 12,
    "Rust": 11
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -86,11 +86,11 @@
   }
  },
  "simonlin1212/Vibe-Research": {
-  "commit_90d": 129,
-  "commit_7d": 7,
-  "rel_ver": "v2.2.6",
-  "rel_pub": "2026-10-29",
-  "rel_days": 2,
+  "commit_90d": 124,
+  "commit_7d": 2,
+  "rel_ver": "v2.2.7",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -106,10 +106,10 @@
    "CSS": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

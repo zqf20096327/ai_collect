@@ -60,11 +60,11 @@
   }
  },
  "activepieces/activepieces": {
-  "commit_7d": 148,
-  "commit_90d": 1360,
-  "rel_ver": "0.87.3-hotfix.1",
-  "rel_pub": "2026-10-29",
-  "rel_days": 8,
+  "commit_7d": 99,
+  "commit_90d": 1396,
+  "rel_ver": "0.93.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -89,10 +89,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -183,11 +183,11 @@
   }
  },
  "agentgateway/agentgateway": {
-  "commit_7d": 60,
-  "commit_90d": 842,
+  "commit_7d": 20,
+  "commit_90d": 809,
   "rel_ver": "v1.7.0",
   "rel_pub": "2026-10-27",
-  "rel_days": 10,
+  "rel_days": 17,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -209,21 +209,21 @@
    "CSS": 1,
    "Shell": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "microsoft/SynapseML": {
-  "commit_7d": 2,
-  "commit_90d": 237,
+  "commit_7d": 22,
+  "commit_90d": 241,
   "rel_ver": "v1.1.3",
   "rel_pub": "2026-04-07",
-  "rel_days": 213,
+  "rel_days": 220,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -239,10 +239,10 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -305,11 +305,11 @@
   }
  },
  "laravel/boost": {
-  "commit_7d": 4,
-  "commit_90d": 123,
+  "commit_7d": 6,
+  "commit_90d": 127,
   "rel_ver": "v2.10.4",
   "rel_pub": "2026-10-29",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -324,10 +324,10 @@
    "PHP": 76,
    "Blade": 24
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

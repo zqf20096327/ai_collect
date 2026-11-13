@@ -1,10 +1,10 @@
 {
  "codexu/note-gen": {
-  "commit_7d": 28,
-  "commit_90d": 262,
+  "commit_7d": 3,
+  "commit_90d": 259,
   "rel_ver": "note-gen-v0.39.2",
   "rel_pub": "2026-11-01",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "Kotlin": 0,
    "Swift": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "pytorch/executorch": {
-  "commit_7d": 201,
-  "commit_90d": 1813,
-  "rel_ver": "v1.5.1",
-  "rel_pub": "2026-09-23",
-  "rel_days": 44,
+  "commit_7d": 207,
+  "commit_90d": 1923,
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "C": 2,
    "Objective-C++": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

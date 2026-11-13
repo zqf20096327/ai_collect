@@ -159,8 +159,8 @@
   }
  },
  "WeThinkIn/AIGC-Interview-Book": {
-  "commit_7d": 31,
-  "commit_90d": 507,
+  "commit_7d": 68,
+  "commit_90d": 609,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -171,10 +171,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -207,11 +207,11 @@
   }
  },
  "NVIDIA/TransformerEngine": {
-  "commit_7d": 23,
-  "commit_90d": 296,
-  "rel_ver": "v2.20.2",
-  "rel_pub": "2026-10-05",
-  "rel_days": 32,
+  "commit_7d": 27,
+  "commit_90d": 299,
+  "rel_ver": "v2.21.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 3,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -227,10 +227,10 @@
    "C": 1,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4507,6 +4507,78 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "FlowShift-in/IRIS-Mini": {
+  "rel_ver": "v1.1.1",
+  "rel_pub": "2026-05-13",
+  "rel_days": 184,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 95,
+   "JavaScript": 2,
+   "HTML": 1,
+   "CSS": 1,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "OrygnsCode/discord-mcp": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 55,
+   "JavaScript": 45,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
+  }
+ },
+ "pastdotdev/benchmarks": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 94,
+   "Shell": 6
+  },
+  "enriched_at": "20261113",
+  "dim_ts": {
+   "release": "20261113",
+   "security": "20261113",
+   "contrib": "20261113",
+   "lang": "20261113"
   }
  }
 }

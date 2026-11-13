@@ -1,10 +1,10 @@
 {
  "reactive-resume/reactive-resume": {
-  "commit_7d": 622,
-  "commit_90d": 1288,
+  "commit_7d": 343,
+  "commit_90d": 1603,
   "rel_ver": "v6.1.0",
   "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -22,10 +22,10 @@
    "PLpgSQL": 0,
    "HTML": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -52,8 +52,8 @@
   }
  },
  "We5ter/Scanners-Box": {
-  "commit_7d": 2,
-  "commit_90d": 29,
+  "commit_7d": 1,
+  "commit_90d": 28,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -62,21 +62,21 @@
   "sec_ids": [],
   "contrib_n": 10,
   "lang": {},
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "inkeep/open-knowledge": {
-  "commit_90d": 1344,
-  "commit_7d": 27,
-  "rel_ver": "v0.89.3",
-  "rel_pub": "2026-11-04",
-  "rel_days": 2,
+  "commit_90d": 1243,
+  "commit_7d": 9,
+  "rel_ver": "v0.89.5",
+  "rel_pub": "2026-11-12",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -92,10 +92,10 @@
    "Shell": 0,
    "Rust": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

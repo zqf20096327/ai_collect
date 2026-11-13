@@ -54,13 +54,13 @@
   }
  },
  "agentscope-ai/QwenPaw": {
-  "commit_7d": 44,
-  "commit_90d": 613,
-  "rel_ver": "v2.3.0-beta.2",
-  "rel_pub": "2026-11-02",
-  "rel_days": 4,
+  "commit_7d": 45,
+  "commit_90d": 584,
+  "rel_ver": "v2.3.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 2,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -74,10 +74,10 @@
    "Rust": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

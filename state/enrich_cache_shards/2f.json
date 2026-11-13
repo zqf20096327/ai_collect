@@ -1,10 +1,10 @@
 {
  "rohitg00/ai-engineering-from-scratch": {
-  "commit_7d": 43,
-  "commit_90d": 989,
-  "rel_ver": "v2026.11.1",
-  "rel_pub": "2026-11-03",
-  "rel_days": 3,
+  "commit_7d": 29,
+  "commit_90d": 1014,
+  "rel_ver": "v2026.11.2",
+  "rel_pub": "2026-11-09",
+  "rel_days": 4,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "TypeScript": 5,
    "Go": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -107,13 +107,13 @@
   }
  },
  "dyad-sh/dyad": {
-  "commit_7d": 23,
-  "commit_90d": 346,
-  "rel_ver": "v1.23.0-beta.1",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 13,
+  "commit_90d": 333,
+  "rel_ver": "v1.23.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 4,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 4,
   "sec_worst": "critical",
@@ -132,21 +132,21 @@
    "Python": 0,
    "CSS": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "googleapis/mcp-toolbox": {
-  "commit_7d": 21,
-  "commit_90d": 227,
-  "rel_ver": "v1.16.0",
-  "rel_pub": "2026-11-05",
-  "rel_days": 1,
+  "commit_7d": 23,
+  "commit_90d": 221,
+  "rel_ver": "v1.17.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 0,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -162,10 +162,10 @@
    "HTML": 1,
    "Shell": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -228,8 +228,8 @@
   }
  },
  "huggingface/blog": {
-  "commit_7d": 5,
-  "commit_90d": 71,
+  "commit_7d": 13,
+  "commit_90d": 77,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -242,10 +242,10 @@
    "Python": 0,
    "TypeScript": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261113",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261113",
+   "release": "20261113",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
