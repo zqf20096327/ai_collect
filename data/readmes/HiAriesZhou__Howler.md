@@ -36,7 +36,7 @@
 
 Press **⌥H** anywhere. A letter settles at the top of the screen, already sealed in wax.
 
-- **Parchment, not a text box.** The paper has deckled edges, fibers and a fold crease. Your question sits on a ruled line, and the answer is set in a book face below it. The sheet grows with the answer up to an A4 page, then follows the quill.
+- **Parchment, not a text box.** The paper has deckled edges, fibers and a fold crease. The newest question and its answer sit just below the writing line, with earlier exchanges beneath them. The sheet grows downward up to an A4 page or the available screen height, then stays in place as the answer continues below the fold. Scroll down to read more; sending a question returns to the top.
 - **A quill that writes.** Answers stream in at a hand's pace. Fresh ink glows gold before it settles to sepia, and the quill rests after the last word. While the model thinks, the quill hovers and counts the seconds.
 - **Wax seals.** The crimson seal names the model writing to you. Paste a long text or a picture, or capture a region of the screen, and it is sealed into an amber seal cut with runes instead of filling your question.
 - **Burn after reading.** Press Esc or click the flame in the bottom-right corner, and the letter catches fire at its bottom edge. Scorch, embers and sparks climb to the seal, and the conversation goes with them. Nothing is saved.
@@ -137,6 +137,8 @@ Capture and Explain sends your selected region to the configured model immediate
 Further screenshots add introductions to the same queue. The input shows which screenshot a question refers to and lets you change it. A new capture does not silently change existing drafts or queued questions. Click the amber seal to preview the selected image.
 
 Settings has three tabs: General, Prompt and Shortcut. All three shortcuts can be changed or cleared in Shortcut. Click the clear button, or press Delete while recording, to disable that global shortcut; an empty field stays empty after restart. Restore its default with the reset button. Recording and resetting check conflicts against other configured shortcuts. Menu actions and manual capture in Attach remain available, and existing replies continue. The menu bar menu uses complete, left-aligned text labels without icons.
+
+The Shortcuts app can start the same capture without a keyboard shortcut. Add the Open URLs action with exactly `howler://capture`, then run that shortcut from the menu bar, Control Center or the Dock. Howler asks you to drag a region and does not read the screen until you do. A link with a question, image or any other parameter does nothing. If Howler is not running, the shortcut opens it and then starts the selection.
 
 Settings › General › Reply language follows your macOS preferred language by default, regardless of the screenshot language, or lets you choose a language. An explicit language request in a question overrides the default for that turn. Custom system instructions may affect how well the model follows it.
 

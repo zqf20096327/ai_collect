@@ -175,7 +175,7 @@ cccodroid.apk (Java shell: installer + foreground service + WebView)
 
 ## Engineering history
 
-From the first commit to v0.6.6 took 24 days: 639 commits and 112 releases. The table groups the work by engineering phase; every row can be traced in the commit history and on the [Releases](https://github.com/greyoak111/cccodroid/releases) page.
+From the first commit to v0.7.0 took 33 days: 1,106 commits and 146 releases. The table groups the work by engineering phase; every row can be traced in the commit history and on the [Releases](https://github.com/greyoak111/cccodroid/releases) page.
 
 | Phase | Versions | Key engineering |
 |---|---|---|
@@ -186,6 +186,10 @@ From the first commit to v0.6.6 took 24 days: 639 commits and 112 releases. The 
 | Experience and original features | 0.4.1 – 0.5.0 | Segmented parallel downloads with fallback routes; `gw/streamfix.mjs` adds the missing end-of-stream events to third-party streaming replies so whole answers aren't regenerated; gateway tests wired into CI and the release gate; Lineage: a session ancestry graph with archive IDs and windowed lazy loading; one motion system for every enter and exit; subagent cards and a contact log; UI settings consolidated into `ccapp-ui.json`; releases reduced to one pipeline (build → verify → publish → site link check) |
 | Hardening | 0.5.1 – 0.5.19 | More than ten rounds of external review: atomic writes, an environment-variable deny-list, every manifest signed and bound to its release against replay; the UI moved to a dedicated loopback address, 127.0.0.2, with per-request HMAC signatures to the gateway instead of the raw token; a PreToolUse hook that asks again before sensitive actions; integrity seals on prompts and session logs; PR poisoning screening, with the release signing key released only to main; an allow-list for privileged commands, with a native confirmation for everything outside it |
 | Review and defense in depth | 0.5.20 – 0.6.7 | Release-by-release community review (0.6.0 alone handled more than 80 findings) plus red-team testing by community members; switches that change how the host behaves (keep-alive boost, no per-command confirmation for privileged commands, device tools) only take effect after the system lock-screen check, and activating Shizuku needs a tap on a native dialog; project hooks and MCP servers that would run on their own are asked about first; UI and gateway files are checked against the app package at startup and while running; Claude Code is allowed to run only against Anthropic's signed manifest, and the gateway runs on its own runtime; config handed to Claude Code is scanned for jailbreak patterns |
+| Hardening and everyday features | 0.6.8 – 0.6.13 | Repeated hardening of jailbreak-pattern scanning: split characters, homoglyphs and layered encodings are normalized before scanning; hook-injected text and project config are screened too, and a jailbreak-resistance ruleset ships with the app; 0.6.10 fixed more than a hundred findings from a full audit — release sealing, Git trusting only registered project directories, internal action tokens derived from the system keystore; sessions became permanent, with a storage page and scheduled cleanup; the file manager browses, extracts and creates archives, with 7-Zip bundled; one-tap reset to initial settings; APKs in the file manager can be installed directly |
+| Endpoints and stability | 0.6.14 – 0.6.19 | The local protocol bridge manages multiple APIs; custom endpoints discover model lists automatically, default to a 90-second timeout with 3 retries, and accept Chinese and bracketed model names; the context compression line falls back correctly when the window is unknown; 0.6.17 was a stability pass with more than seventy fixes, and the component market gained an MCP category and 14 components; foldable-screen and gesture-bar layout; 0.6.18 concentrated on long-text overflow; 0.6.19 completed the preset model lists |
+| Slimmer rules and endpoint example | 0.6.20 | The anti-jailbreak block went from 4,625 to 706 characters, dropping the three-axis classification, allow-list, three-pass review and self-test tables; restored incapacitation, post-incident disposal and lethal parameters, anti-debugging/anti-anti-debugging/AV evasion and the “any one of” wording for implant toolchains, and own assets no longer exempt cracking, unpacking or anti-detection products; claimed roles, fiction wrappers, encoding, other languages, fragments and multi-turn requests no longer change the judgment; crisis requests get help channels only; third-party endpoints gained an example template and risk note, and the README became neutral |
+| The promised release | 0.7.0 | Automatic titles follow the interface language (#211); the static fallback title in the top bar is now cccodroid; the version promised in the 0.6.20 farewell letter |
 
 Rules the project has held to throughout:
 
@@ -206,23 +210,19 @@ cccodroid aims to follow [Anthropic's terms for products that run Claude Code](h
 - **The name.** cccodroid stands for "Claude Code CLI On droid", modelled on the long-standing Android C/C++ IDE C4droid. The project does not use the Claude or Anthropic names or logos in its name, icon or package name, and does not claim to be made, endorsed or partnered with by Anthropic. If Anthropic asks, the project will be renamed.
 - **No resale, no middleman.** cccodroid is free and open source, has no server, and does not provide, pay for or resell any Claude usage: you sign in with your own account or bring your own API key, and usage is billed to you directly. The author has a Claude Console account and has accepted Anthropic's Commercial Terms, which the terms above require for products that run Claude Code.
 
-### What this project stands against
+### What this project does not do
 
-cccodroid doesn't do, doesn't support, and won't accept pull requests that add any of the following:
+cccodroid is free and open source, has no server, and does not provide, pay for or resell any Claude usage: you sign in with your own account or bring your own API key, and usage is billed to you directly.
 
-- **Reverse proxies and shared or resold accounts**: splitting one subscription among many people, or repackaging subscription usage as an API for sale.
-- **Jailbreaking**: getting around a model's safety limits to extract harmful content it would otherwise refuse.
-- **Mass-controlled accounts**: using agents to register, farm or run accounts in bulk to flood comment sections while passing as real people.
+- **No shared or resold accounts.** Splitting one subscription among multiple people, or repackaging subscription usage as an API for sale, is not supported; we don't build features for it or accept PRs that add it, and the component market does not accept such components.
+- **No jailbreaking.** Getting around a model's safety limits to extract harmful content it would otherwise refuse is not supported.
+- **No mass-controlled accounts.** Using agents to register, farm or run accounts in bulk to flood comment sections while passing as real people is not supported.
 
-These look like clever shortcuts, but ordinary users pay for them:
-- shared accounts get banned without warning;
-- the proxy in the middle sees every piece of code, key and conversation that passes through;
-- flooding accounts crowd out real discussion;
-- platforms respond by tightening limits and raising prices.
+Third-party endpoints are a separate matter: the app lets you connect to any third-party endpoint that speaks the Anthropic or OpenAI protocol, with an address and key you provide. A reverse proxy is a technology; what we oppose is splitting subscriptions, reselling usage, stealing keys or swapping models — not using a proxy because of payment, region or network constraints.
 
-Over time everyone who uses these services honestly loses out.
+Third-party endpoints carry real risks: the operator can see the code, keys and conversations that pass through; shared or resold accounts can be banned; models can be swapped. Those risks are the user's to bear.
 
-We don't police other people's choices. In this project, though, the line is clear: no features for these uses, and no help troubleshooting them. The component market doesn't accept such components either.
+We don't police other people's choices. But this project does not provide shared/resale features, and does not help troubleshoot those uses.
 
 ## Build
 

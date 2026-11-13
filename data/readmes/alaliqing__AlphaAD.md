@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--12-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1404-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--13-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1407-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1404 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1407 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 224 | 2026-11-10 | [View papers](#category-perception-sensor-fusion) |
+| Perception & Sensor Fusion | 223 | 2026-11-10 | [View papers](#category-perception-sensor-fusion) |
 | Prediction & World Models | 111 | 2026-11-08 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 96 | 2026-11-10 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 58 | 2026-11-10 | [View papers](#category-control-vehicle-dynamics) |
+| Planning & Decision-Making | 95 | 2026-11-10 | [View papers](#category-planning-decision-making) |
+| Control & Vehicle Dynamics | 60 | 2026-11-11 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 51 | 2026-10-29 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 161 | 2026-11-10 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 208 | 2026-11-08 | [View papers](#category-safety-security-verification) |
+| End-to-End & VLA | 161 | 2026-11-12 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 208 | 2026-11-11 | [View papers](#category-safety-security-verification) |
 | Systems, Deployment & Connectivity | 155 | 2026-11-10 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 29 | 2026-11-06 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 311 | 2026-11-08 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 314 | 2026-11-12 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -46,24 +46,24 @@ Each paper has one primary topic and may carry several method or resource tags. 
 | Tag | Papers | Filter |
 |:--|--:|:--|
 | Dataset | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Benchmark | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
 | Simulation | 190 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 33 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 113 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
-| VLA | 87 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
+| Cooperative / V2X | 112 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| VLA | 86 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
 | World Model | 119 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 134 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
-| Imitation Learning | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
+| Reinforcement Learning | 136 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| Imitation Learning | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 100 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
-| Explainability | 111 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
+| Explainability | 109 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
 | Human Interaction | 17 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 224 papers
+## Perception & Sensor Fusion · 223 papers
 
 <a id="paper-2611-14003"></a>
 
@@ -108,7 +108,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2611-07613"></a>
 
-### Towards Real-Time Full-Waveform LiDAR Transformers via Intensity-Guided Token Reduction and Physics-Aware Augmentation ![New](https://img.shields.io/badge/New-red)
+### Towards Real-Time Full-Waveform LiDAR Transformers via Intensity-Guided Token Reduction and Physics-Aware Augmentation ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Kotaro Oishi, Kazuma Ikeda, Ryosei Hara, Ryo Yoshida, Mariko Isogawa, et al.<br>
 **Published:** 2026-11-05<br>
@@ -461,7 +461,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-18686"></a>
 
-### RadarGSOcc: Doppler-Aware 3D Semantic Occupancy Prediction Using 4D Radar Tensor with Geometric-Semantic Feature Extraction ![Recent](https://img.shields.io/badge/Recent-orange)
+### RadarGSOcc: Doppler-Aware 3D Semantic Occupancy Prediction Using 4D Radar Tensor with Geometric-Semantic Feature Extraction ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Christofel Rio Goenawan, Dong-Hee Paek, Seung-Hyun Kong<br>
 **Published:** 2026-10-13<br>
@@ -472,7 +472,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-18741"></a>
 
-### Context-aware Bayesian Fusion for Multimodal Object Detection ![Recent](https://img.shields.io/badge/Recent-orange)
+### Context-aware Bayesian Fusion for Multimodal Object Detection ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Arunachalam Venkatachalam, Mhafuzul Islam, Marwan Yusuf, David Van Hamme, Ben Stoffelen, et al.<br>
 **Published:** 2026-10-13<br>
@@ -482,7 +482,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-18417"></a>
 
-### Resource-Efficient 3D Shape and Orientation Estimation of Road Users using Roadside RGB Camera and 3D Radar ![Recent](https://img.shields.io/badge/Recent-orange)
+### Resource-Efficient 3D Shape and Orientation Estimation of Road Users using Roadside RGB Camera and 3D Radar ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Shiva Agrawal, Savankumar Bhanderi, Gordon Elger<br>
 **Published:** 2026-10-13<br>
@@ -1180,7 +1180,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-14767"></a>
 
-### NARRATE: A Multimodal Real-World Australian Driving Dataset for Human-Centred Explanations in Automated Driving ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### NARRATE: A Multimodal Real-World Australian Driving Dataset for Human-Centred Explanations in Automated Driving
 
 **Authors:** Ashkan Yousefi Zadeh, Zishuo Zhu, Xiaomeng Li, Andry Rakotonirainy, Sebastien Glaser, et al.<br>
 **Published:** 2026-08-14<br>
@@ -1191,7 +1191,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-14428"></a>
 
-### GhostPoint: Self-Supervised Representation Learning by Hallucinating Occluded LiDAR Structure ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### GhostPoint: Self-Supervised Representation Learning by Hallucinating Occluded LiDAR Structure
 
 **Authors:** Mohamed Abdelsamad, Bin Yang, Michael Ulrich, Miao Zhang, Yakov Miron, et al.<br>
 **Published:** 2026-08-14<br>
@@ -1201,7 +1201,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-14394"></a>
 
-### IRGNN: Efficient Invariant Radar Graph Neural Network for Radar Point Cloud Object Detection ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### IRGNN: Efficient Invariant Radar Graph Neural Network for Radar Point Cloud Object Detection
 
 **Authors:** Xiao Guo, Wanke Xia, Lili Yang, Caicong Wu<br>
 **Published:** 2026-08-14<br>
@@ -1656,4 +1656,6 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Published:** 2026-07-04<br>
 **Links:** [arXiv abstract](https://arxiv.org/abs/2607.04098) | [PDF](https://arxiv.org/pdf/2607.04098.pdf) | [↑ BackToTop](#browse-by-topic)
 
-**Abstract:** In recent years, 4D imaging radar has gained wide
+**Abstract:** In recent years, 4D imaging radar has gained wide attention in autonomous driving for its robustness against harsh weather and ability to output target velocity. Nevertheless, mainstream 4D...
+
+<a id="p

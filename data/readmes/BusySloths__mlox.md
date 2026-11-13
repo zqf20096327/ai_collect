@@ -5,11 +5,11 @@
 </p>
 
 <p align="center">
-  <strong>Deploy and manage ML/AI infrastructure on your own servers. Slothfully simple.</strong>
+  <strong>Ditch the cloud. Your infrastructure. Your rules.</strong>
 </p>
 
 <p align="center">
-  Servers, Docker, Kubernetes, databases, workflows, model serving, data services, tracking, and monitoring, with your product at the center. Managed in one place and connected by design.
+  An opinionated platform for interconnected services on infrastructure you control. Bring deployment, project knowledge, and AI-assisted operations together. Slothfully simple.
 </p>
 
 <p align="center">
@@ -23,15 +23,17 @@
 
 ## What is MLOX?
 
-ML/AI infrastructure is fragmented. Setup is painful, managed platforms are expensive, and vendor lock-in limits your choices.
+Running your own infrastructure means assembling services, connecting dependencies, and keeping everything healthy. MLOX brings that work into one inspectable system, with you in control of your data and operational decisions.
 
 MLOX brings the infrastructure around your product into one connected system. It manages servers, sets up Docker and Kubernetes clusters, deploys open-source services, stores secrets, and wires dependencies across databases, workflows, experiment tracking, model serving, data services, and monitoring.
 
-Use the CLI or TUI to operate the same inspectable, configuration-driven core. MLOX is built for solopreneurs, startups, and small teams that want to focus on their product instead of assembling and maintaining infrastructure.
+Use the CLI or TUI to operate the same configuration-driven core. Keep project knowledge alongside infrastructure, observe workloads, and use advisory agent workspaces to investigate operational evidence.
+
+Start with your own infrastructure or work with a small team. The direction is broader: AI as a first-class participant, interconnected applications and services, and room to grow. See the [vision and long-term ambitions](docs/DOCTRINE.md#vision--long-term-ambitions) for where MLOX is heading.
 
 It's for engineers who prefer thoughtful systems over chaos. Backed by open source. Powered by sloths.
 
-> **Status, roadmap, and decisions** — see [docs/DOCTRINE.md](docs/DOCTRINE.md), the single point of truth.
+> **Vision, status, roadmap, and decisions** — see [docs/DOCTRINE.md](docs/DOCTRINE.md), the single point of truth.
 
 ## See It In Action
 
@@ -64,18 +66,19 @@ We welcome contributors, users, and honest feedback. If you hit something broken
 | **Connectors** | Integrate externally hosted services such as BigQuery, Cloud Storage, Sheets, and GCP Secret Manager |
 | **Applications** | Import repositories and deploy your product alongside its supporting services |
 | **Knowledge** | Keep notes, wiki pages, FAQs, todos, and markdown kanban boards inside the encrypted project |
-| **Operations** | Observe workload runs, keep incident evidence, plan work, and consult advisory agent workspaces |
+| **AI & Operations** | Observe workload runs, keep incident evidence, plan work, and consult advisory agent workspaces; see [current boundaries and direction](docs/DOCTRINE.md#2-ai--operations) |
 | **Code** | `busysloths-mlox` PyPI package: the `ProjectWorkspace` SDK plus per-service client helpers |
 
 ---
 
 ## Services Catalog
 
-MLOX bundles a growing set of self-hosted services and connectors (MLflow,
-Airflow, Milvus, Feast, Kafka, LiteLLM, OpenBao, GCP, and more). The exhaustive,
-authoritative list — generated directly from the YAML plugin configs — lives in
-[**docs/SERVICES_CATALOG.md**](docs/SERVICES_CATALOG.md). Per-component maturity
-status is tracked in [docs/DOCTRINE.md](docs/DOCTRINE.md).
+Explore the self-hosted services, external connectors, and server configurations
+in [**docs/SERVICES_CATALOG.md**](docs/SERVICES_CATALOG.md). This authoritative
+catalog is generated directly from the YAML plugin configs.
+Per-component maturity status is tracked in [docs/DOCTRINE.md](docs/DOCTRINE.md).
+Everyday apps and a public marketplace are part of the
+[catalog direction](docs/DOCTRINE.md#3-catalog--placement).
 For MLflow setup, model serving, and focused integration tests, see the
 [MLflow service guide](mlox/services/mlflow/README.md).
 
@@ -154,6 +157,9 @@ See the [Installation Guide](docs/INSTALLATION.md) for user and developer setup 
 
 ## Project Structure
 
+Selected source directories and modules; see the [Architecture Guide](docs/ARCHITECTURE.md)
+for responsibilities and dependency boundaries.
+
 ```
 mlox/
 ├── mlox/                    # The busysloths-mlox package
@@ -162,15 +168,20 @@ mlox/
 │   ├── project/             # ProjectWorkspace, WorkspaceState, SQLCipher repository,
 │   │                        #   embedded secrets, knowledge entries, operations records
 │   ├── application/         # Frontend-independent use cases returning OperationResult
+│   ├── contracts/           # Domain-grouped service and server capability interfaces
 │   ├── infra.py             # Infrastructure topology: bundles of servers and services
-│   ├── server.py            # AbstractServer and backend/capability mixins
-│   ├── service.py           # AbstractService lifecycle contract and capability ABCs
+│   ├── server.py            # Server lifecycle/connection models + contract re-exports
+│   ├── service.py           # Service lifecycle model + contract re-exports
 │   ├── servers/             # Ubuntu (native/Docker/Kubernetes), local, and connector servers
 │   ├── services/            # Built-in services: YAML config, class, manifests, client.py
 │   ├── config.py            # YAML config loading and plugin entry-point discovery
-│   ├── execution/           # Target-agnostic execution base + Docker/K8s/Git/firewall helpers
-│   ├── executors.py         # UbuntuTaskExecutor, the current (Fabric/SSH) executor
+│   ├── execution/           # Execution base + runtime, filesystem, security, and host helpers
+│   ├── executors.py         # UbuntuTaskExecutor composing execution mixins
 │   ├── secret_manager.py    # Secret manager interface and TinySecretManager
+│   ├── object_storage.py    # Common binary object-storage client contract
+│   ├── logs.py              # Backend-neutral log retrieval contract
+│   ├── logging_config.py    # Shared logging configuration
+│   ├── terminal.py          # External terminals for interactive SSH sessions
 │   ├── ui/                  # Frontend handler registry
 │   ├── assets/              # Cloud-init and Multipass helper scripts
 │   └── resources/           # Logos and README media
@@ -244,7 +255,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the issue, milestone, and PR workflow
 
 | Document | Description |
 |----------|-------------|
-| [Doctrine](docs/DOCTRINE.md) | Status, roadmap, and binding decisions (single point of truth) |
+| [Doctrine](docs/DOCTRINE.md) | Vision, status, roadmap, and binding decisions (single point of truth) |
 | [Services Catalog](docs/SERVICES_CATALOG.md) | Generated service/server catalog |
 | [Architecture](docs/ARCHITECTURE.md) | Codebase walkthrough and invariants |
 | [Python API](docs/PYTHON_API.md) | Supported `ProjectWorkspace` SDK contract |

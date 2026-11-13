@@ -2,115 +2,179 @@
 
 <br/>
 
-# THE BIG BROTHER · V7.0 (NEXUS)
+<img width="2048" height="768" alt="The Big Brother VX_ Classified OSINT Command Center" src="https://github.com/user-attachments/assets/090a87c1-172f-4860-9b8c-e36b635ae2c3" />
+
 <br/>
-<a href="https://thebigbrother.cloud/">
-  <img width="1584" height="672" alt="TheBigBrother" src="https://github.com/user-attachments/assets/98768f61-c5fb-4cfe-a3d1-092c4f7c17e5">
-</a>
 
+**Premium OSINT & Threat-Intelligence Console · 76 Engines · 24-Engine Keyless Arsenal · Unified Intelligence Result Surface**
 
-**Advanced OSINT Framework · Premium Glassmorphism Console · 52 Dual-Engine Tactical Modules Across 26 Tabs**
+[![Version](https://img.shields.io/badge/version-10.1.0--SOVEREIGN-E8C87A.svg?style=for-the-badge&logo=v&logoColor=white)](https://github.com/chadi0x/the-big-brother/releases)
+[![License](https://img.shields.io/badge/license-MIT-5EEAD4.svg?style=for-the-badge)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10+-93C5FD.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/docker-ready-E8C87A.svg?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![Status](https://img.shields.io/badge/STATUS-OPERATIONAL-5EEAD4.svg?style=for-the-badge)](https://github.com/chadi0x/)
 
-[![Version](https://img.shields.io/badge/version-7.0.0--NEXUS-00f0ff.svg?style=for-the-badge&logo=v&logoColor=white)](https://github.com/chadi0x/the-big-brother/releases)
-[![License](https://img.shields.io/badge/license-MIT-00f0ff.svg?style=for-the-badge)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.10+-ff0050.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Docker](https://img.shields.io/badge/docker-ready-00f0ff.svg?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![Status](https://img.shields.io/badge/STATUS-OPERATIONAL-00ff8c.svg?style=for-the-badge)](https://github.com/chadi0x/)
-
-[`★ WHAT'S NEW`](#-whats-new-in-v70-nexus) · [`★ 52 DUAL-ENGINE MATRIX`](#-52-dual-engine-tactical-matrix) · [`★ NEXUS CANVAS`](#-nexus-graph-canvas) · [`★ INSTALL`](#-installation) · [`★ PREMIUM`](#-premium-projects) · [`★ TELEGRAM`](https://t.me/hisoka0morow)
+[`★ WHAT'S NEW`](#-whats-new-in-vx1-sovereign) · [`★ 24 NEW ENGINES`](#-the-vx-arsenal--24-new-engines) · [`★ RESULT SURFACE`](#-the-unified-intelligence-result-surface) · [`★ INSTALL`](#-installation) · [`★ PREMIUM`](#-premium-projects) · [`★ TELEGRAM`](https://t.me/hisoka0morow)
 
 </div>
 
 ---
----
+<a href="https://thebigbrother.cloud/">
+  <img width="1584" height="672" alt="The Big Brother VX Sovereign" src="https://github.com/user-attachments/assets/26176b6c-ef32-473b-95f5-68b2d63e52fd">
+</a>
+
 
 > [!IMPORTANT]
-> ### ⚡ ANNOUNCEMENT & PROJECT UPDATE FROM THE ARCHITECT (`CHADI0X`)
-> 
-> **Notice regarding The Big Brother Engine V7.0 (NEXUS) Enterprise Edition:**
-> 
-> Please be aware that there is an **exclusive private version** of The Big Brother OSINT engine that is significantly more powerful than the open-source release. Because this unreleased suite relies on private breach databases, specialized servers, and proprietary premium APIs, it cannot be open-sourced directly.
-> 
-> 🌐 **NEED DEEP INVESTIGATIVE INTEL ON A PERSON, COMPANY, OR GROUP?**
-> 
-> For anyone looking to perform deep-vector reconnaissance on an individual name, phone number, email, company, or target group — **our live surveillance portal is UP AND RUNNING!** 
-> 
-> Our team will execute the deep reconnaissance scan using our unreleased God-EYE Enterprise framework and provide you with a full, confidential PDF intelligence dossier report containing all requested information at the best price available.
-> 
-> 👉 **[ACCESS LIVE OSINT PORTAL & SUBMIT RECON FORMULA](https://thebigbrother.cloud)**
-> 
-> *Thank you all for your support!*
-> 
-> *— `@Chadi0x` walking out... 🎬 [Dramatic Music Plays]* 🕶️
+> ### ⚡ VX.1 IS A GROUND-UP REBRAND AND A 24-ENGINE EXPANSION
+>
+> The Big Brother has moved from the VX.0 **NEXUS** console to the **VX.1 SOVEREIGN** release:
+>
+> - **A completely new visual system** — obsidian surfaces, champagne/jade/ice accents, Sora + Manrope + IBM Plex Mono typography, refined navigation, and a full redesign of every card, form, badge, table and result deck.
+> - **A brand-new VX Arsenal** with **24 keyless, production-grade engines** across DNS/CT, edge security, cloud exposure, token forensics, breach-aware password auditing, CVE/EPSS/KEV correlation, attack-surface scoring, origin unmasking, GraphQL and supply-chain auditing.
+> - **A unified Intelligence Result Surface** — every new engine returns a structured envelope with a risk score, severity-ranked findings, extracted indicators and a navigable data model rendered as premium evidence cards.
+> - **Hardened legacy engines** — SSL Sentinel, EXIF Analyzer, Dork Studio, Sky Radar and Crypto Analyzer were rebuilt with richer logic, safer fallbacks and no silent mock data.
 
 ---
 
 ## ⟦ OVERVIEW ⟧
 
-**The Big Brother V7.0 (NEXUS)** is a state-of-the-art cyber-operations OSINT and threat intelligence platform engineered for Red Teams, SOC Analysts, Geolocation Experts, and Defense Investigators. 
+**The Big Brother VX.1 (SOVEREIGN)** is a cyber-operations OSINT and threat-intelligence platform for Red Teams, SOC analysts, geolocation investigators, brand-protection teams and defensive researchers.
 
-V7.0 introduces the **Dual-Engine Tactical Subtool Switcher**: every single tab in the workspace now features **two full-power operational tools** (`[TOOL 1: PRIMARY]` and `[TOOL 2: COMPANION ENGINE]`), delivering an unprecedented arsenal of **52 specialized intelligence engines** accessible with zero page reloads and instant tactile feedback.
+The platform now exposes **76 engines** (52 dual-engine tactical tools + 24 VX Arsenal engines) through three complementary surfaces:
+
+1. **The legacy Dual-Engine Tactical Matrix** — 26 workspace tabs, each with a primary and companion engine.
+2. **The VX Arsenal** — 24 brand-new keyless engines in a dynamic, filterable workspace.
+3. **The Nexus Graph Canvas** — live relationship topology built from real scan payloads.
+
+> **Indexed modules:** 60 (36 primary legacy modules + 24 VX engines). Companion engines are exposed through the dual-engine switcher and counted in the 76-engine total.
 
 ```text
-   ┌─────────────────────────────────────────────────────────────────┐
-   │  52 TACTICAL ENGINES  ·  26 WORKSPACE TABS  ·  DUAL-ENGINE HUD   │
-   │  NEXUS GRAPH CANVAS   ·  DEFCON INCIDENT RADAR  ·  DOCKER STACK │
-   └─────────────────────────────────────────────────────────────────┘
+   ┌──────────────────────────────────────────────────────────────────────────┐
+   │  76 TACTICAL ENGINES · 26 WORKSPACE TABS · 24 VX ENGINES · NEXUS CANVAS  │
+   │  UNIFIED RESULT ENVELOPE · RISK GRADING · SEVERITY-RANKED FINDINGS       │
+   │  ZERO API KEYS FOR THE VX ARSENAL · DOCKER-READY · PURE-PYTHON FALLBACKS │
+   └──────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🆕 WHAT'S NEW IN V7.0 (NEXUS)
+## 🆕 WHAT'S NEW IN VX.1 (SOVEREIGN)
 
-### 1. Dual-Engine Architecture Across All 26 Tabs
-Every tab is equipped with a zero-reload `.subtool-switcher-bar` allowing operators to alternate instantaneously between the **Primary Reconnaissance Tool** and a dedicated **Companion Power Engine**.
+### 1. Full UI/UX Rebrand — "Obsidian Sovereign"
+A structural and visual rebuild (`sovereign.css`) replaces the old three-column war-room with an Aurora command layout:
 
-### 2. Pure-Python Zero-Dependency Forensics
-All 22 new companion power modules operate with **zero third-party dependencies**, utilizing pure-Python standard libraries (`urllib`, `ssl`, `math`, `struct`, `wave`, `socket`, `hashlib`) for lightning-fast, crash-proof execution in any container or bare-metal environment.
+- **New palette:** obsidian black, electric mint, cyan, lime, amber and violet.
+- **New typography:** Sora (display), Manrope (interface), IBM Plex Mono (telemetry).
+- **New top bar:** brand, global search, live CPU/MEM/latency chips, inspector, audio and operator identity — no wrapping or misplaced elements.
+- **New left rail:** clean expanded navigation and a proper icon-only collapsed mode with centered icons, active indicator and hover labels.
+- **Permanent right rail removed:** threat, coverage, ledger, correlation and dossier export now live in a slide-over **Intelligence Inspector**.
+- **New full-width dashboard:** bento-style command center with hero, engine mesh, live vitals, threat score, intel wire, markets, exploit/tech feeds and an operator launchpad.
+- **Mobile-first navigation drawer** with scrim and keyboard/Escape support.
+- **Rebuilt cards, forms, badges, tables, result decks and dialogs**, plus responsive layouts for 1600px, 1280px, 1024px, tablet and mobile widths.
 
-### 3. Nexus Graph Canvas Dynamic Overhaul
-The Nexus Graph Canvas (`#btn-mode-nexus`) has been completely overhauled with **zero mock data**. It is restricted strictly to relationship-capable tabs and dynamically generates authentic topological nodes and edges directly from live scan payloads with Force-Directed (COSE), Concentric, and Circle layouts.
+### 2. The VX Arsenal — 24 New Keyless Engines
+Every engine is available from a dynamic registry, so the UI builds its own forms, labels, source badges and run controls. No HTML edits are required to add a tool.
 
-### 4. Code Hunter Telemetry & Key Harvester Fixed
-Enhanced `code_hunter` with precise data extraction:
-- Fixed `followers`, `following`, `company / org`, and `public gists` extraction.
-- Cross-references public `PushEvent` payloads and commit histories to extract **unmasked author/committer emails**.
-- Extracts SSH public keys, GPG signing keys, and programming language distributions.
+### 3. Unified Intelligence Result Surface
+Every VX result is a structured envelope:
+
+```json
+{
+  "status": "success",
+  "tool": "dns_intel",
+  "target": "example.com",
+  "risk_score": 23,
+  "risk_tier": "GUARDED",
+  "grade": "B",
+  "summary": "Human-readable executive summary.",
+  "findings": [
+    {"severity": "high", "title": "...", "detail": "...", "recommendation": "..."}
+  ],
+  "iocs": [{"type": "domain", "value": "example.com"}],
+  "data": {"...": "structured evidence model"},
+  "sources": ["Cloudflare DoH", "Google DoH"]
+}
+```
+
+The renderer displays a **risk ring**, **letter grade**, **severity chips**, **finding cards**, **IOC tags**, **recursive data tables/cards** and a **raw JSON inspector** — with copy/export actions.
+
+### 4. Legacy Result Decks Elevated
+A `MutationObserver` wraps every existing `.result-deck` in the VX result toolbar, adds copy/collapse controls, and applies the premium result styling without touching the legacy render functions.
+
+### 5. Hardened Legacy Logic
+- **SSL Sentinel** — graded TLS posture, certificate chain, expiry window, SAN matching, forward secrecy, cipher/key analysis and recommendations.
+- **EXIF Analyzer** — URL + uploaded bytes, GPS decimal conversion, camera fingerprint, software provenance, hashes, risk verdict.
+- **Dork Studio** — expanded operator matrix across Google, GitHub, Shodan, Censys, FOFA, VirusTotal, Pastebin and LinkedIn with severity and rationale.
+- **Sky Radar** — latitude-corrected bbox, airborne filtering, emergency squawk classification, military/VIP heuristics, distance/bearing and country stats.
+- **Crypto Analyzer** — auto-detection across BTC/ETH/LTC/TRX/SOL, Blockchair multi-provider fallback, fiat valuation and explicit provenance.
 
 ---
 
-## ⚡ 52 DUAL-ENGINE TACTICAL MATRIX
+## ⚡ THE VX ARSENAL — 24 NEW ENGINES
 
-Every workspace tab features two complementary intelligence power engines:
+| # | Engine | Discipline | What It Does |
+|:--|:---|:---|:---|
+| **01** | **DNS Intelligence** | Network | Full A/AAAA/MX/NS/TXT/SOA/CAA/SRV matrix, SPF/DKIM/DMARC/MTA-STS/BIMI, DNSSEC signal, wildcard detection and provider attribution. |
+| **02** | **Certificate Transparency** | Passive | Harvest every subdomain from CT logs, resolve live hosts, detect wildcard SANs, issuer distribution and stale attack surface. Falls back to OTX/HackerTarget passive DNS. |
+| **03** | **Typosquat Radar** | Brand defense | Omission, repetition, transposition, keyboard, IDN homograph and TLD-swap permutations; resolves and fingerprints live lookalikes; excludes same-infrastructure defensive registrations. |
+| **04** | **HTTP Security Audit** | Hardening | Header grading, CSP directive inspection, cookie flags, CORS, HSTS, TLS, HTTP→HTTPS redirect, server disclosure and technology fingerprinting. |
+| **05** | **WAF & CDN Fingerprint** | Active probe | Cloudflare, Akamai, Imperva, F5, Sucuri, AWS, Azure, Fastly, DDoS-Guard, Vercel, Netlify and Bunny signatures, plus a harmless XSS canary to verify blocking. |
+| **06** | **IP Intelligence** | Multi-source | Geo/ASN, RDAP registry, PTR, internet-exposed ports, CVEs, CPEs and hosting/proxy classification via Shodan InternetDB. |
+| **07** | **Cloud Bucket Hunter** | Cloud exposure | Brand-derived candidate names tested against AWS S3, Google Cloud Storage and Azure Blob for public listings and private existence. |
+| **08** | **Exposed Files Hunter** | Exposure | 50 high-signal paths (.git, .env, keys, SQL dumps, Spring actuators, source maps, backups) validated against content signatures to suppress soft-404 noise. |
+| **09** | **Link Forensics** | Phishing defense | Shortener expansion, full redirect chain, punycode/@ tricks, raw-IP destinations, high-abuse TLDs, open-redirect parameters, tracking residue and sanitized URL. |
+| **10** | **JWT Analyzer** | Token forensics | Header/claim decode, exp/nbf/lifetime audit, `alg=none`, `jku/x5u` key injection, PII/privilege claims and an HMAC dictionary attack for HS256/384/512. |
+| **11** | **Pwned Password Audit** | Credential hygiene | Local entropy/pattern model + HIBP Pwned Passwords k-anonymity range lookup. The plaintext is never returned or logged. |
+| **12** | **Gravatar Surface** | Identity | Resolve email-hash or username profiles, linked verified accounts, public phone numbers, location, biography and avatar artifacts. |
+| **13** | **CVE Intelligence** | Threat intel | NVD/MITRE correlation with CISA KEV, known ransomware use and FIRST EPSS; accepts CVE IDs or vendor/product keywords. |
+| **14** | **IOC Enrichment** | Threat intel | IP/domain/URL/email/hash enrichment with OTX pulses, malware families, adversaries, passive DNS, URLhaus records, geo and TLS context. |
+| **15** | **VIN Provenance** | Vehicle OSINT | Check-digit validation, WMI country, NHTSA vPIC decode (make/model/trim/engine/plant/safety) and recall campaigns. |
+| **16** | **Card BIN Intelligence** | Financial OSINT | Network/type/brand/prepaid, issuing bank, country, Luhn validation and local IIN prefix fallback. Only the first 8 digits are transmitted. |
+| **17** | **Bluesky Intelligence** | Social surface | Handle/DID resolution, profile metrics, account age, follow ratio, posting rhythm, hashtags, links, labels and scam-language signals. |
+| **18** | **Reddit Intelligence** | Social surface | Karma breakdown, account age, recent posts/comments, top subreddits/domains, UTC posting histogram, NSFW ratio and bot/spam signals. Arctic Shift fallback when Reddit blocks datacenter IPs. |
+| **19** | **Discord Invite Intel** | Social surface | Server identity/age, member vs online counts, verification level, features, inviter, expiration, NSFW and scam-language signals. |
+| **20** | **Telegram Intelligence** | Social surface | Public channel/group/profile resolution, subscriber/member counts, verification, recent posts, links, hashtags and scam signals. |
+| **21** | **Attack Surface Scorecard** | Flagship | Runs six VX engines in parallel (DNS, CT, HTTP, WAF, exposed files, cloud buckets) and produces one weighted Attack Surface Index, letter grade, category breakdown, critical findings and quick wins. |
+| **22** | **Origin IP Unmasker** | CDN bypass | Correlates current DNS, OTX passive DNS, HackerTarget, CT subdomains, MX and origin-style hostnames; validates candidates with Host-header probes and title/body/server fingerprint matching. |
+| **23** | **GraphQL Inspector** | AppSec | Discovers GraphQL endpoints, runs introspection, inventories queries/mutations, flags sensitive and destructive fields, and tests batching, GET queries, GraphiQL and field-suggestion leaks. |
+| **24** | **Supply Chain Auditor** | AppSec | Audits npm and PyPI packages for typosquatting, install-time scripts, deprecation, direct-URL dependencies, provenance gaps and suspicious setup.py execution primitives — including source-distribution inspection. |
 
-| # | Tab ID | Tool 1: Primary Engine | Tool 2: Companion Power Engine | Tactical Capability & Data Sources |
-|:--|:---|:---|:---|:---|
-| **01** | `tab-home` | 🏠 **Command Center** | 🚨 **Incident Tracker & DEFCON** | Global threat ticker, live DEFCON posture, CISA KEV zero-day catalog, undersea cable fiber breaks, hyperscaler latency. |
-| **02** | `tab-analyst` | 🤖 **AI Analyst** | ♟️ **Playbook Simulator** | Cross-module synthesis, Diamond Model mapping, MITRE ATT&CK kill-chain emulation, automated Sigma & YARA-L rule generation. |
-| **03** | `tab-chaintracer` | 🔗 **Chain Tracer** | 🍯 **Honeypot Auditor** | Multi-chain wallet tracking (BTC/ETH/TRX), OFAC sanctions screening, token contract drainer / honeypot detection, buy/sell tax audits. |
-| **04** | `tab-pixelforge` | 🧪 **Pixel Forge** | 🕵️ **Stego Hunter & Carver** | 9-engine media ELA & clone detection, LSB steganography detection, embedded PKZip/ELF/PE binary payload extraction. |
-| **05** | `tab-hudsonrock` | 🛡️ **Hudson Rock Cavalier** | 📂 **Stealer Log Parser** | Infostealer compromise search via Hudson Rock Cavalier API, deep parsing of raw RedLine, Vidar, Raccoon, and Lumma credential archives. |
-| **06** | `tab-shadowclone` | 🪞 **Shadow Clone** | ✍️ **Stylometry Profiler** | 40+ username mutation & typosquatting scans across 80+ platforms, forensic linguistic comparison, punctuation and vocabulary fingerprinting. |
-| **07** | `tab-spidercrawl` | 🕷️ **Spider Crawl** | ⛏️ **Param Miner & OpenAPI** | Recursive web crawling, 25+ API secret key regexes, Swagger/OpenAPI manifest discovery, debug parameter injection and reflection fuzzing. |
-| **08** | `tab-docautopsy` | 📑 **Doc Autopsy** | 💣 **Document Detonator** | Office/PDF revision histories & metadata, shellcode NOP sled detection, malicious VBA macros, risky PDF stream detonation. |
-| **09** | `tab-voiceprint` | 🎙️ **Voice Print** | ⚡ **ENF Acoustic Profiler** | AI voice deepfake vocoder analysis, 50Hz (EU) / 60Hz (US) Electrical Network Frequency grid-hum extraction, acoustic room size estimation. |
-| **10** | `tab-orbitaleye` | 🛰️ **Orbital Eye** | 🌌 **Star Solver & Astro-Geo** | High-res Sentinel-2 multispectral imagery, constellation visibility solver, Polaris altitude latitude inference, lunar illumination phase. |
-| **11** | `tab-evmsol` | ⚡ **EVM & Solana Tracer** | 🥪 **DEX Arbitrage & MEV Tracer** | Cross-chain transaction & token flows, Uniswap V2/V3 liquidity drains, flash-loan reentrancy, MEV sandwich attack signatures. |
-| **12** | `tab-shadowai` | 🧠 **Shadow AI** | 🔓 **Model Inversion Prober** | LLM prompt injection & jailbreak vulnerability scanner, LLM training data memorization auditor, private data extraction risk rating. |
-| **13** | `tab-telemetry` | 📡 **Telemetry Hunter** | 🔖 **Favicon Murmur3 & JARM** | Apex domain ad-tracker & analytics fingerprint mapper, MurmurHash3 favicon hashing, active TLS certificate SANs, origin IP unmasking. |
-| **14** | `tab-ransom` | 🏴‍☠️ **Ransom Disclose** | 🤝 **Ransom Negotiator & Decryptors** | Live dark-web ransomware extortion feed monitor, cartel negotiation intelligence, known public decryptors catalog. |
-| **15** | `tab-camvector` | 📹 **Cam Vector** | 🏭 **SCADA / ICS Radar** | Exposed public IP camera & RTSP surveillance locator, critical infrastructure port radar (Modbus 502, S7 102, BACnet 47808, MQTT 1883). |
-| **16** | `tab-canary` | 🐤 **Canary Sentinel** | 🪤 **Tripwire Honeytoken Vault** | Zero-pixel web bugs & URL token tracking, generation of decoy AWS credentials, Kubeconfigs, and SQL honeytokens with webhook alerts. |
-| **17** | `tab-profiler` | 🔍 **Target Profiler** | 👤 **Biometric Face Matcher** | 200+ social enclave enumeration, pure-Python facial landmark vector hash comparison, perceptual identity similarity scoring. |
-| **18** | `tab-breach` | 🔓 **Breach Vault** | 💥 **Hashcat Fast De-Hasher** | Keyless breach audit via XposedOrNot with HIBP/DeHashed key vault, hash type auto-identification, instant cryptographic dictionary lookup. |
-| **19** | `tab-footprint` | 👣 **Digital Footprint** | 📶 **HLR Carrier & SIM-Swap** | Phone and email service enumeration via Holehe, E.164 standardization, international IMSI/HLR carrier lookup, SIM-swap risk metrics. |
-| **20** | `tab-mailtracer` | 📨 **Mail Tracer** | ✉️ **RFC 822 Header Infiltrator** | SMTP hop geolocation & SPF/DMARC posture, hop-by-hop Received header parser, forged originating IP detection, DKIM signature audits. |
-| **21** | `tab-codehunter` | 🐙 **Code Hunter** | 🔑 **Gitleaks Secret Scanner** | GitHub user intelligence & unmasked commit email harvesting, offline regex scanner for cloud secrets (AWS, Slack, GitHub, RSA keys). |
-| **22** | `tab-deepidentity` | 🎭 **Deep Identity** | 📋 **Persona Synthesizer** | Synthetic avatar forensics (StyleGAN / Diffusion detector), cross-platform timeline synthesis, alias correlation, operational OPSEC scoring. |
-| **23** | `tab-oracle` | 🌐 **Domain Oracle** | 🚧 **Zone Transfer & Takeover** | Deep domain RDAP WHOIS & DNS history, AXFR DNS zone transfer prober, dangling CNAME subdomain takeover scanner across 15+ cloud services. |
-| **24** | `tab-network` | 🕸️ **Network Mapper** | 🔐 **TLS & Cipher Auditor** | Async port scanner & PyVis network topological map, TLS 1.0–1.3 cipher suite auditor, weak cipher flags (RC4, 3DES, CBC). |
-| **25** | `tab-geoint` | 🗺️ **GEOINT Spy** | 📐 **MGRS & Satellite Pass** | Tactical multi-engine satellite map & coordinate matrix, Military Grid Reference System (MGRS), solar azimuth/elevation, Sentinel-2 passes. |
-| **26** | `tab-flight` | ✈️ **Sky Radar** | 🆘 **Emergency Squawk 7700** | Live ADS-B airspace transponder map (OpenSky API), emergency squawk monitor (7700 Mayday, 7600 Radio Loss, 7500 Hijack), VIP callsigns. |
+> **All 24 engines are keyless.** Engines that depend on public feeds degrade gracefully and report upstream diagnostics instead of crashing.
+
+### Flagship additions in VX.1
+
+- **Attack Surface Scorecard** — the “one click, whole perimeter” engine. It orchestrates six engines, merges their findings, and gives an operator a single weighted index with category-level risk.
+- **Origin IP Unmasker** — one of the most requested CDN-bypass workflows: historical DNS + CT + Host-header validation with evidence and confidence scores.
+- **GraphQL Inspector** — aimed at bug-bounty and AppSec teams: schema inventory, sensitive fields, destructive mutations and batching/GET/GraphiQL checks.
+- **Supply Chain Auditor** — npm/PyPI typosquat detection, install-script analysis and PyPI sdist execution-primitive inspection.
+
+
+---
+
+## 🧠 THE UNIFIED INTELLIGENCE RESULT SURFACE
+
+The VX renderer is intentionally generic: any engine that returns the envelope contract gets the same premium output.
+
+```text
+   ┌──────────────────────────────────────────────────────────────────────┐
+   │  RISK RING 64/100   JWT // HIGH // GRADE D // 29ms                  │
+   │  Weak secret recovered · no expiry · PII embedded                   │
+   ├──────────────────────────────────────────────────────────────────────┤
+   │  SEVERITY-RANKED FINDINGS                                           │
+   │  [CRITICAL] JWT signed with a weak secret                           │
+   │             FIX // Rotate the signing key to a 256-bit secret       │
+   │  [HIGH]     No expiration claim                                     │
+   │  [MEDIUM]   PII embedded in token                                   │
+   ├──────────────────────────────────────────────────────────────────────┤
+   │  STRUCTURED INTELLIGENCE MODEL                                      │
+   │  Header · Payload · Claims · Algorithm · Signature entropy          │
+   ├──────────────────────────────────────────────────────────────────────┤
+   │  EXTRACTED INDICATORS                                               │
+   │  RAW ENVELOPE // COPY · EXPORT                                      │
+   └──────────────────────────────────────────────────────────────────────┘
+```
+
+The same surface is applied to legacy results through a non-invasive enhancement layer, so existing tools immediately benefit from the new visual language.
 
 ---
 
@@ -118,10 +182,10 @@ Every workspace tab features two complementary intelligence power engines:
 
 The **Nexus Graph Canvas** (`#btn-mode-nexus`) provides interactive relationship network visualization powered by Cytoscape.js:
 
-- **Selective Tab Capability:** Visible strictly on the 12 relationship-centric tabs (Command Center, AI Analyst, Chain Tracer, EVM/Solana, Breach Vault, Shadow Clone, Spider Crawl, Network Scanner, Code Hunter, Hudson Rock, Telemetry Hunter, Ransom Disclose). Automatically hidden on single-asset, media, and geoint tabs.
-- **Auto-Revert Logic:** Smoothly reverts to Tactical Grid mode if an operator navigates from an active graph view to an ineligible tab.
-- **Zero-Mock Topology:** Topologies are constructed in real-time from actual scan results cached via `window.recordModuleResult()`.
-- **Topological Layouts:** Switch instantly between **Force-Directed (COSE)**, **Concentric**, and **Circle** layouts with custom cyber-tactical color tokens.
+- **Selective tab capability** across relationship-centric modules.
+- **Auto-revert logic** when navigating to a non-graph tab.
+- **Zero-mock topology** built from real scan results cached via `window.recordModuleResult()`.
+- **Force-directed (COSE), Concentric and Circle layouts.**
 
 ---
 
@@ -138,8 +202,8 @@ cd TheBigBrother
 docker-compose up --build -d
 ```
 
-> ▸ **Access Interface:** `http://localhost:8000`  
-> ▸ **Stop Stack:** `docker-compose down`  
+> ▸ **Access Interface:** `http://localhost:8000`
+> ▸ **Stop Stack:** `docker-compose down`
 > ▸ **Live Logs:** `docker-compose logs -f`
 
 ### ⟦ PROTOCOL B · Bare-Metal Deployment ⟧
@@ -155,8 +219,70 @@ source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 playwright install chromium
 
-# 3. Launch The Big Brother V7.0
+# 3. Launch The Big Brother VX.1
 uvicorn the_big_brother.gui.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+### ⟦ Protocol C · VX Arsenal only (optional) ⟧
+
+The Arsenal is pure-stdlib first. If you only want the 24 new engines, import them directly:
+
+```python
+import asyncio
+from the_big_brother.modules.arsenal import run_tool, get_registry
+
+async def main():
+    result = await run_tool("dns_intel", {"target": "example.com"})
+    print(result["risk_score"], result["summary"])
+
+asyncio.run(main())
+```
+
+---
+
+## 🧪 QUICK API EXAMPLES
+
+```bash
+# Registry (tool metadata + dynamic form schema)
+curl http://localhost:8000/api/arsenal/registry
+
+# Run any VX engine
+curl -X POST http://localhost:8000/api/arsenal/cert_transparency \
+  -H 'Content-Type: application/json' \
+  -d '{"target":"cloudflare.com"}'
+
+# CVE correlation
+curl -X POST http://localhost:8000/api/arsenal/cve_intel \
+  -H 'Content-Type: application/json' \
+  -d '{"target":"CVE-2024-3400"}'
+
+# JWT audit (local only)
+curl -X POST http://localhost:8000/api/arsenal/jwt_analyzer \
+  -H 'Content-Type: application/json' \
+  -d '{"target":"eyJhbGciOiJub25lIn0.eyJzdWIiOiJhZG1pbiJ9."}'
+
+# Flagship: one-click attack surface scorecard
+curl -X POST http://localhost:8000/api/arsenal/attack_surface \
+  -H 'Content-Type: application/json' \
+  -d '{"target":"example.com"}'
+
+# GraphQL schema audit
+curl -X POST http://localhost:8000/api/arsenal/graphql_inspector \
+  -H 'Content-Type: application/json' \
+  -d '{"target":"https://countries.trevorblades.com/graphql"}'
+
+# npm / PyPI supply-chain audit
+curl -X POST http://localhost:8000/api/arsenal/supply_chain_audit \
+  -H 'Content-Type: application/json' \
+  -d '{"target":"loadsh"}'
+```
+
+The universal dispatcher also accepts Arsenal IDs:
+
+```bash
+curl -X POST http://localhost:8000/api/modules/ip_intel \
+  -H 'Content-Type: application/json' \
+  -d '{"target":"1.1.1.1"}'
 ```
 
 ---
@@ -164,7 +290,22 @@ uvicorn the_big_brother.gui.main:app --host 0.0.0.0 --port 8000 --reload
 ## 📸 SCREENSHOTS
 
 <div align="center">
-<img width="1666" height="854" alt="x" src="https://github.com/user-attachments/assets/d917e140-efa7-4e93-bec3-72a793ec12ce" />
+
+### Command Center
+<img width="1600" alt="VX Sovereign Command Center" src="docs/screenshots/command-center.png">
+
+### VX Arsenal
+<img width="1600" alt="VX Arsenal — 24 keyless engines" src="docs/screenshots/vx-arsenal.png">
+
+### Attack Surface Scorecard
+<img width="1600" alt="Attack Surface Scorecard with weighted index, findings and category data" src="docs/screenshots/attack-surface.png">
+
+### Supply Chain Auditor
+<img width="1600" alt="Supply Chain Auditor result with typosquat and install-script findings" src="docs/screenshots/supply-chain.png">
+
+### Unified Intelligence Result Surface
+<img width="1600" alt="VX result surface with risk ring, findings and structured data" src="docs/screenshots/result-surface.png">
+
 </div>
 
 ---
@@ -174,33 +315,46 @@ uvicorn the_big_brother.gui.main:app --host 0.0.0.0 --port 8000 --reload
 ```text
   ┌─────────────────────────────────────────────────────────────────────────┐
   │                         FASTAPI ASYNC BACKEND                           │
-  │   /api/dispatch/{module_id}  ·  /api/scan  ·  Multipart Upload Enpoints  │
+  │   /api/dispatch/{module_id} · /api/scan · /api/arsenal/{tool_id}        │
   └────────────────────────────────────┬────────────────────────────────────┘
                                        │
             ┌──────────────────────────┴──────────────────────────┐
             ▼                                                     ▼
   ┌───────────────────────────────┐     ┌───────────────────────────────────┐
-  │      26 PRIMARY ENGINES       │     │    26 COMPANION POWER ENGINES     │
-  │  ChainTracer, SpiderCrawl...  │     │  StegHunter, ParamMiner, MGRS...  │
+  │      52 LEGACY DUAL-ENGINES        │     │      24 VX ARSENAL ENGINES        │
+  │  ChainTracer, SpiderCrawl...  │     │  DNS/CT, WAF, IP, JWT, CVE...    │
   └───────────────┬───────────────┘     └─────────────────┬─────────────────┘
                   │                                       │
                   └───────────────────┬───────────────────┘
                                       │
                                       ▼
   ┌─────────────────────────────────────────────────────────────────────────┐
-  │                   TACTICAL FRONTEND ( GOTHAM HUD)                       │
-  │.subtool-switcher-bar  ·  Subtool Decks · Nexus Graph Canvas (Cytoscape) │
+  │              SOVEREIGN FRONTEND (OBSIDIAN HUD)                          │
+  │  sovereign.css · VX Arsenal registry · Unified Result Renderer          │
+  │  Legacy result enhancement · Nexus Graph · Command Palette              │
   └─────────────────────────────────────────────────────────────────────────┘
 ```
 
 | Layer | Technologies & Implementations |
 |:---|:---|
 | **Core Backend** | FastAPI · Python 3.10+ · AsyncIO orchestration · Uvicorn ASGI |
-| **Forensic Engines** | Pure-Python standard library (`urllib`, `ssl`, `math`, `struct`, `wave`, `socket`, `hashlib`) · Pillow · aiohttp |
-| **Interface** | Semantic HTML5 · CSS3 Glassmorphic design tokens · Obsidian Dark palette · Vanilla JS (ES6+) |
-| **Visualization** | Cytoscape.js (Topological graphs) · Leaflet (Tactical maps & ADS-B) · Three.js (Background particles) |
-| **Web Crawling** | Playwright (Headless Chromium) · Beautiful Soup 4 · DuckDuckGo API |
+| **VX Arsenal** | Pure-stdlib transport (`urllib`), DoH, manual redirect chains, bounded payloads, graceful upstream diagnostics |
+| **Forensic Engines** | `urllib`, `ssl`, `math`, `struct`, `wave`, `socket`, `hashlib`, Pillow, aiohttp |
+| **Interface** | Semantic HTML5 · Sora/Manrope/IBM Plex Mono · Sovereign design tokens · Vanilla JS (ES6+) |
+| **Visualization** | Cytoscape.js (topology) · Leaflet (maps/ADS-B) · Three.js (ambient WebGL) |
+| **Web Crawling** | Playwright (headless Chromium) · Beautiful Soup 4 · DuckDuckGo API |
 | **Deployment** | Docker · Multi-stage build · Docker Compose |
+
+---
+
+## 🔐 OPERATIONAL SAFETY
+
+- The VX Arsenal is **read-only reconnaissance** unless a tool explicitly states otherwise (WAF probe sends a harmless XSS canary; exposed-files hunter performs GET probes).
+- The password audit sends only the **first five characters of a SHA-1 hash** (HIBP k-anonymity) and never returns or logs plaintext.
+- JWT analysis is **100% local**; tokens are not transmitted.
+- BIN lookup transmits only the first 8 digits.
+- Results are retained in memory only and are never written to a database by the console.
+- You are responsible for authorization and lawful use.
 
 ---
 
@@ -249,7 +403,7 @@ This software is strictly intended for **educational purposes, defensive cyberse
 ◆ ─────────────────────────────────────────────────── ◆
 ```
 
-**V7.0 (NEXUS) · THE EYE THAT NEVER BLINKS · ◇**  
+**VX.1 (SOVEREIGN) · THE EYE THAT NEVER BLINKS · ◇**
 *Engineered by CHADI0X · Tactical Cyber-Surveillance Grid*
 
 </div>

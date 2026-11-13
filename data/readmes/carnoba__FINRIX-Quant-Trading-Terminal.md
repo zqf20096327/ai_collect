@@ -5,7 +5,7 @@
 > investment advice and does not execute live orders without a separately
 > installed and explicitly authorized broker bridge.
 
-[![PyPI](https://img.shields.io/badge/PyPI-v1.0.6-blue?style=flat&logo=pypi)](https://pypi.org/project/finrix/)
+[![PyPI](https://img.shields.io/badge/PyPI-v1.0.7-blue?style=flat&logo=pypi)](https://pypi.org/project/finrix/)
 [![Pytest](https://img.shields.io/badge/pytest-207%20passed-brightgreen)](https://github.com/carnoba/FINRIX-Quant-Trading-Terminal)
 [![License](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
@@ -110,7 +110,7 @@ Live RSS headlines processed via **FinBERT** NLP model with dovish/hawkish net s
 | **1** | Instant Execution Card -- Kelly Position Sizing, dynamic Entry bounds, Dynamic SL (exact pip distance), Risk:Reward ratios |
 | **2** | Daily Price Path & Signals -- 30-day forward forecast with quantile monotonicity ($q_{10} \le q_{50} \le q_{90}$) |
 | **3** | Monthly Macro Horizon -- 22-day outlook & weekly pivots with dynamic bias calculation |
-| **4** | Yearly Regime Trend Shift -- 252-day forecast with volatility envelopes, $q_{90}$ capped at 6500 |
+| **4** | Yearly Regime Trend Shift -- 252-day forecast with volatility envelopes.|
 | **5** | Macro News & FinBERT Sentiment -- Live RSS headline aggregation, Dovish/Hawkish score cancellation |
 | **6** | Risk & Position Sizing Calculator -- Custom market price overrides, pip distance math, zero static hardcoded outputs |
 | **7** | Historical Strategy Backtester -- All 14 strategies across 15m, 1h, 4h, 1D timeframes, dynamic lot sizing |
@@ -185,7 +185,7 @@ macro_forecast_engine/
     └── feature_request.md # Feature request template
 .github/PULL_REQUEST_TEMPLATE.md   # PR checklist template
 CONTRIBUTING.md    # Open-source guidelines
-FINRIX_Institutional_Project_Report.docx   # Project Report
+FINRIX_Project_Report.docx   # Project Report
 requirements.txt
 .env.example
 README.md (this file)

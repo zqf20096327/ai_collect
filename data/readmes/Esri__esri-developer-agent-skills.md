@@ -2,38 +2,44 @@
 
 Esri Developer Agent Skills provides an installable plugin, reusable skills, and an Esri-hosted MCP server for official ArcGIS developer documentation. The skills guide agents through ArcGIS application requirements, authentication, and development with ArcGIS SDKs, APIs, and supported open-source libraries. The plugin bundles the skills and MCP server for compatible clients.
 
-This repo complies with the [Agent Plugins 1.0 specification](https://agent-plugins.org/).
+_This repo complies with the [Agent Plugins 1.0 specification](https://agent-plugins.org/)._
 
 ## What's Included
 
 This repository includes the following:
 
-- **Esri Developer Agent Skills marketplace** (`esri-developer-agent-skills`): The repository-hosted marketplace where compatible clients discover the plugin. The plugin bundles the skills and MCP server; the skills themselves provide guidance for requirements, authentication, and ArcGIS development.
+- **Esri Developer Agent Skills Marketplace** (`esri-developer-agent-skills`): Provides an entry for compatible clients to discover the ArcGIS SDKs and APIs plugin.
 
-- **ArcGIS SDKs and APIs plugin** (`arcgis-sdks-and-apis-plugin`): Bundles all 16 developer skills and the Esri MCP server for developer documentation for installation in compatible clients.
+- **ArcGIS SDKs and APIs plugin** (`arcgis-sdks-and-apis-plugin`): Packages the developer skills and Esri MCP server for developer documentation as a single installable unit. The skills guide agents through ArcGIS development, application requirements, and authentication.
 
 - **Esri MCP server for developer documentation** (`esri-mcp-server-for-developer-documentation`): Esri-hosted MCP server for agents to search for official ArcGIS developer documentation. This MCP server supports the agent skills.
 
-**Note:** For additional information about these components and how to use them in your agentic workflows, go to the [ArcGIS agentic developer toolkit guide](https://developers.arcgis.com/ai/arcgis-agentic-developer-toolkit/).
+**Developer guide**: For additional information about how these components work together, setup guidance, prompts, and use cases, go to the [ArcGIS agentic developer toolkit](https://developers.arcgis.com/ai/arcgis-agentic-developer-toolkit/).
 
-## Installation
+## Plugin installation
 
-1. Follow your client's installation documentation below to add this repository as a plugin marketplace.
-2. Install `arcgis-sdks-and-apis-plugin` from the `esri-developer-agent-skills` repo. Adding the marketplace alone does not install or enable the plugin. Additional steps are typically required to install the skills and MCP server.
+1. Follow your client's documentation to add this repository as a marketplace plugin.
+2. From the marketplace, install `arcgis-sdks-and-apis-plugin`. 
 
-### Install individual skills
+Note: Adding the marketplace only makes the plugin available; it does not install or enable it. Complete any client-specific setup to activate the bundled skills and configure the MCP server.
 
-Choose this option to install selected skills without the full plugin. To get the complete skills bundle and MCP server together, install the plugin instead.
+### Manual skills installation
 
-Use your client's skill installation workflow, or copy the chosen skill's entire folder from `skills/` into a supported skill directory. Keep any bundled `references/`, scripts, and assets with the skill.
+Use this option to install selected skills without the full plugin. To get the complete skills bundle and MCP server together, install the plugin instead.
+
+The recommended way to install selected skills is with the following npx command:
 
 ```
 npx skills add Esri/esri-developer-agent-skills
 ```
 
+If you prefer, use your client's skill installation workflow or manually copy the chosen skill's entire folder from `skills/` into a supported skill directory. Keep any bundled `references/`, scripts, and assets with the skill.
+
 ### Manual MCP server installation
 
-Installing an individual skill does not install the plugin or configure **Esri MCP server for developer documentation**. Add the remote server at `https://developers-mcp.arcgis.com/mcp` using your client's MCP settings and its supported Streamable HTTP configuration. The plugin's [mcp.json](./mcp.json) provides the bundled configuration, but a link to that file in a skill does not register the server automatically.
+Installing an individual skill does not configure **Esri MCP server for developer documentation**. Add `https://developers-mcp.arcgis.com/mcp` in your client's MCP settings using Streamable HTTP. The plugin's [mcp.json](./mcp.json) provides the configuration, but linking to it from a skill does not register the server. 
+
+After configuring it, start or enable the MCP server in your client.
 
 Example:
 ```
@@ -50,7 +56,7 @@ Example:
 
 ### Additional client installation documentation
 
-Installation steps and support for skills, MCP servers, and agent extensions vary by client. These links describe each client's installation or extension workflow.
+Installation steps and support for skills, MCP servers, and agent extensions vary by client. See the documentation below for client-specific instructions:
 
 - [GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/plugins-finding-installing)
 - [VS Code](https://code.visualstudio.com/docs/agent-customization/agent-plugins#_install-a-plugin-from-source)
@@ -63,6 +69,11 @@ After installation, start a new agent session and the CLI to verify and list the
 
 ## Skills catalog
 
+**Core skills**
+- [Gather ArcGIS application requirements](skills/gather-arcgis-application-requirements/SKILL.md)
+- [Follow ArcGIS authentication patterns](skills/follow-arcgis-authentication-patterns/SKILL.md)
+
+**SDK/API skills**
 - [Build with ArcGIS and CesiumJS](skills/build-with-arcgis-and-cesiumjs/SKILL.md)
 - [Build with ArcGIS and OpenLayers](skills/build-with-arcgis-and-openlayers/SKILL.md)
 - [Build with ArcGIS API for Python](skills/build-with-arcgis-api-for-python/SKILL.md)
@@ -71,14 +82,11 @@ After installation, start a new agent session and the CLI to verify and list the
 - [Build with ArcGIS Maps SDK for Flutter](skills/build-with-arcgis-maps-sdk-for-flutter/SKILL.md)
 - [Build with ArcGIS Maps SDK for JavaScript](skills/build-with-arcgis-maps-sdk-for-javascript/SKILL.md)
 - [Build with ArcGIS Maps SDK for Kotlin](skills/build-with-arcgis-maps-sdk-for-kotlin/SKILL.md)
-- [Build with ArcGIS Maps SDK for Qt](skills/build-with-arcgis-maps-sdk-for-qt/SKILL.md)
 - [Build with ArcGIS Maps SDK for Swift](skills/build-with-arcgis-maps-sdk-for-swift/SKILL.md)
 - [Build with ArcGIS Maps SDK for Unity](skills/build-with-arcgis-maps-sdk-for-unity/SKILL.md)
 - [Build with ArcGIS Maps SDK for Unreal Engine](skills/build-with-arcgis-maps-sdk-for-unreal-engine/SKILL.md)
 - [Build with ArcGIS REST JS](skills/build-with-arcgis-rest-js/SKILL.md)
 - [Build with Calcite Design System](skills/build-with-calcite-design-system/SKILL.md)
-- [Follow ArcGIS authentication patterns](skills/follow-arcgis-authentication-patterns/SKILL.md)
-- [Gather ArcGIS application requirements](skills/gather-arcgis-application-requirements/SKILL.md)
 
 ## Issues
 

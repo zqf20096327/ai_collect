@@ -17,6 +17,13 @@
   <a href="LICENSE.md"><img src="https://img.shields.io/badge/license-AGPL--3.0-B9553A?style=flat-square" alt="License: AGPL-3.0"></a>
   <img src="https://img.shields.io/badge/macOS%20%C2%B7%20Windows%20%C2%B7%20Linux-6b6b6b?style=flat-square" alt="macOS, Windows and Linux">
   <img src="https://img.shields.io/badge/status-early%20access-D9822B?style=flat-square" alt="Status: early access">
+  <a href="https://www.reddit.com/user/astrolafi"><img src="https://img.shields.io/badge/Reddit-u%2Fastrolafi-FF4500?style=flat-square&logo=reddit&logoColor=white" alt="Follow u/astrolafi on Reddit"></a>
+</p>
+
+<p align="center">
+  <video src="https://github.com/user-attachments/assets/20fd0765-a471-4f6f-87be-39ccd13d7d93" controls muted playsinline></video>
+  <br><sub><b>90 seconds, no voice.</b> A whole course end to end: the lesson, an exercise checked as you answer, the
+mistakes notebook, flashcards and the mock exam. If the player doesn't start, <a href="docs/media/demo/aula-demo-90s.mp4">watch the file</a></sub>
 </p>
 
 <p align="center">
@@ -49,8 +56,8 @@ API key) or with a free model that runs on your own machine. There's no account 
   make or change a course just by asking. [Talking to Aula](#talking-to-aula)
 - **Always on, if you want.** It checks your school platform and your calendar, reminds you of deadlines and leaves a
   short review ready before an exam. It only reads: it never submits anything for you. [Everything else](#everything-else)
-- **On your iPad and iPhone.** Your courses stay on your Mac and you study from your own devices.
-  [Devices](docs/DEVICES.md)
+- **On your iPad, iPhone and Android.** Your courses stay on your Mac, or on a server of your own with no Mac at all,
+  and you study from your own devices. [Devices](docs/DEVICES.md) · [Server](docs/SERVER.md)
 - **Private and yours.** No account, no tracking, your data on your computer, and the AI you choose, including a free
   one that runs offline. [Privacy](#privacy)
 
@@ -69,10 +76,11 @@ Download the file for your system from the [latest release](https://github.com/l
 
 | System | File | First launch |
 | --- | --- | --- |
-| macOS 13 or later (Apple Silicon and Intel) | `Aula-0.2.3-mac.dmg` | Open the .dmg and drag Aula to *Applications*. Aula isn't notarized by Apple yet, so macOS asks you to confirm the first time. On macOS 15 or later, try to open it, then go to *System Settings → Privacy & Security* and click *Open Anyway*. On macOS 13 and 14, right-click Aula and choose *Open*. |
-| Windows 10 and 11 (x64 and ARM, one installer) | `Aula-Setup-0.2.3.exe` | Run the installer (it doesn't need admin rights). If SmartScreen shows up, click *More info → Run anyway*. Aula isn't code-signed yet. |
-| Linux x64 | `Aula-0.2.3-linux-x86_64.AppImage` or `Aula-0.2.3-linux-amd64.deb` | AppImage: make it executable (`chmod +x Aula-*.AppImage`) and open it. Debian or Ubuntu: `sudo apt install ./Aula-0.2.3-linux-amd64.deb`. |
-| Linux ARM64 | `Aula-0.2.3-linux-arm64.AppImage` | Make it executable (`chmod +x`) and open it. |
+| macOS 13 or later (Apple Silicon and Intel) | `Aula-0.2.4-mac.dmg` | Open the .dmg and drag Aula to *Applications*. Aula isn't notarized by Apple yet, so macOS asks you to confirm the first time. On macOS 15 or later, try to open it, then go to *System Settings → Privacy & Security* and click *Open Anyway*. On macOS 13 and 14, right-click Aula and choose *Open*. |
+| Windows 10 and 11 (x64 and ARM, one installer) | `Aula-Setup-0.2.4.exe` | Run the installer (it doesn't need admin rights). If SmartScreen shows up, click *More info → Run anyway*. Aula isn't code-signed yet. |
+| Linux x64 | `Aula-0.2.4-linux-x86_64.AppImage` or `Aula-0.2.4-linux-amd64.deb` | AppImage: make it executable (`chmod +x Aula-*.AppImage`) and open it. Debian or Ubuntu: `sudo apt install ./Aula-0.2.4-linux-amd64.deb`. |
+| Linux ARM64 | `Aula-0.2.4-linux-arm64.AppImage` | Make it executable (`chmod +x`) and open it. |
+| Android 8 or later (phones and tablets) | `Aula-0.2.4-android.apk` | Open it on your phone and allow installing from that app when Android asks. It is a window to Aula on your Mac or on [a server of your own](docs/SERVER.md): see [Devices](docs/DEVICES.md). |
 
 > **Updating from 0.1.x:** install the current version by hand this one time (download it here and install it over
 > your copy; your courses and settings stay). Aula 0.1.x will say the new version's signature isn't valid: since 0.2.0
@@ -232,7 +240,11 @@ answer away.
   with a code. From there you can also open Aula's browser live: sign in to your platform away from home, or do an
   assignment yourself and hand it to Aula to review before you submit it. A linked device can also open Settings for
   the daily-use part (which AI to use among those ready on the Mac, appearance, language, *Aula always on*, memory);
-  keys, platforms and your data are managed on the Mac. See [docs/DEVICES.md](docs/DEVICES.md).
+  keys, platforms and your data are managed on the Mac. See [docs/DEVICES.md](docs/DEVICES.md). The Android app works
+  the same way ([native/android](native/android/README.md)).
+- **Aula as a server** (optional): run Aula without a window on a computer that is always on (a home server, a NAS, a
+  Linux container: `ghcr.io/luumlabs/aula-server`) and use it only from your devices. The first device you link is its
+  owner and manages the AI, platforms and devices from there. See [docs/SERVER.md](docs/SERVER.md).
 - **Memory**: Aula remembers what helps it teach you, like how you prefer explanations or what you find hard. You can
   see, edit, pause or export all of it in *Settings → What Aula remembers*.
 - **Search**: <kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>K</kbd> finds screens, courses and tools, and anything inside your
@@ -336,6 +348,11 @@ over one typed IPC channel, with `contextIsolation`, a sandbox and a strict CSP.
 [`CLAUDE.md`](CLAUDE.md).
 
 Pull requests are welcome. Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) first.
+
+## Community
+
+Aula grows in public. If you want to follow along, see how it's going or ask something that isn't a bug, I'm on
+Reddit as [u/astrolafi](https://www.reddit.com/user/astrolafi).
 
 ## Support Aula
 

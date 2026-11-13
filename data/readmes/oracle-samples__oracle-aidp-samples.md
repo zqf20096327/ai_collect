@@ -2,6 +2,8 @@
 
 This repository contains a curated collection of sample notebooks demonstrating how to build data pipelines, run machine learning workloads, and integrate AI capabilities using **Oracle AI Data Platform (AIDP) Workbench** — a unified, governed workspace for data engineering, ML, and AI development powered by Apache Spark.
 
+For private workspace network testing, start with the [Private Workspace Connectivity guide](getting-started/private-workspace-connectivity/README.md). It helps you choose among four standalone use-case notebooks, each with customer network prerequisites, a routing diagram, and validation steps. See the [connectivity sample catalog](#private-workspace-connectivity) below.
+
 ## What is Oracle AI Data Platform Workbench?
 
 Oracle AI Data Platform Workbench is a unified, governed workspace for building, managing, and deploying AI and data-driven solutions. It brings together notebooks, agent development, orchestration, and catalog management in a single collaborative platform — empowering teams to explore data, fine-tune models, and operationalize AI with trust and speed.
@@ -16,7 +18,8 @@ Oracle AI Data Platform Workbench is a unified, governed workspace for building,
 oracle-aidp-samples/
 ├── getting-started/          # Foundational notebooks for new users
 │   ├── Delta_Lake/           # Delta Lake feature walkthroughs
-│   └── migration/            # Migrating workloads to AIDP
+│   ├── migration/            # Migrating workloads to AIDP
+│   └── private-workspace-connectivity/ # Customer network setup, diagrams, and tests
 ├── data-engineering/
 │   ├── ingestion/            # Connectors and data loading patterns
 │   │   └── landing-zone-auto-ingestion/
@@ -56,6 +59,24 @@ Foundational examples to help you get up and running on AIDP Workbench.
 | [Parameterize Notebooks with Native Widgets](getting-started/Native_Notebook_Widgets.ipynb) | Native notebook widgets (text, dropdown, combobox, multiselect), job and `notebook.run` parameter overrides, and a fail-fast check for job parameters a widget silently ignores. |
 
 The native Iceberg sample uses an existing AIDP Standard catalog. The Hadoop catalog sample under Data Engineering registers a separate Spark catalog on OCI Object Storage. Delta UniForm samples create Delta tables that publish Iceberg-compatible metadata.
+
+#### Private Workspace Connectivity
+
+Use the [customer connectivity guide](getting-started/private-workspace-connectivity/README.md) as the entry point: choose a use case, prepare your network and service resources, then import its notebook into AIDP Workbench. Each notebook is self-contained and includes network setup, a routing diagram, customer-supplied configuration, expected outcomes, and independent evidence checks.
+
+For the four customer connectivity scenarios, open [Start here](getting-started/private-workspace-connectivity/00_START_HERE.ipynb) for numbered actions, configuration examples, expected results and restoration steps.
+
+V01–V03 cover explicit Advanced DNS connectivity scenarios. V04 establishes existing private database connectivity without adding a database DNS entry, then repeats the same query across unrelated DNS edits. Live checks are disabled by default; enable them only after completing the selected notebook's prerequisites. The samples use resources you provide and do not provision cloud infrastructure. Record DNS resolution, connectivity, and application results separately when assessing a run.
+
+The guide distinguishes [DNS resolution paths](getting-started/private-workspace-connectivity/docs/dns-resolution-paths.md) and explains [what the four use cases validate](getting-started/private-workspace-connectivity/docs/advanced-dns-validation.md), with [example IAM policies, routes, and security rules](getting-started/private-workspace-connectivity/docs/network-and-iam-examples.md) for preparing your environment. These details are also embedded in the applicable notebooks.
+
+| Connectivity notebook | Description |
+|---|---|
+| [Start here - customer DNS walkthroughs](getting-started/private-workspace-connectivity/00_START_HERE.ipynb) | Choose V01-V04 and follow the customer setup, execution, expected-result and restoration steps. |
+| [V01 — Amazon S3 through customer egress](getting-started/private-workspace-connectivity/V01_Amazon_S3.ipynb) | Read a small private S3 object from an AIDP workspace through your approved outbound network path. |
+| [V02 — Bucket and ADB access from the customer VCN](getting-started/private-workspace-connectivity/V02_Customer_Network_Source.ipynb) | Verify bucket Network Source enforcement and an ADB public VCN ACL with controlled allow/deny/restore tests. |
+| [V03 — Cross-region OCI Object Storage](getting-started/private-workspace-connectivity/V03_Cross_Region_Object_Storage.ipynb) | Read a dataset in one OCI region while your AIDP workspace runs in another. |
+| [V04 — Private database before and after DNS edits](getting-started/private-workspace-connectivity/V04_Service_Private_Endpoint.ipynb) | Establish private database connectivity, then verify that unrelated Advanced DNS edits preserve the same database connection. |
 
 #### Delta Lake
 
@@ -187,6 +208,7 @@ Combines Delta liquid clustering with UniForm-generated Iceberg metadata for cro
 | [ADW External Table on Delta UniForm](data-engineering/adw-ext-table-on-uniform/README.md) | Automates recreating an ADW Iceberg external table against the latest UniForm-generated metadata file when a UniForm-enabled Delta table evolves — ADW + Python + a stored procedure that resolves the newest `vN.metadata.json`. Start here to learn the pattern on one table; to automate a whole catalog across a fleet of ADWs on a schedule, see [ADW Iceberg External Table Sync](data-engineering/adw-iceberg-external-table-sync/README.md). |
 | [Delta UniForm Metadata Doctor](data-engineering/delta-uniform-metadata-doctor/README.md) | Scheduled health check and repair job for the Iceberg metadata that Delta UniForm generates — the layer every Iceberg consumer (ADW external tables, Spark Iceberg reads) depends on. Runs as an AIDP job parameterized by catalog: classifies every UniForm table as healthy / lagging / stuck / broken using the `delta-version` completion signal recorded in the Iceberg metadata, tolerates a configurable conversion lag (default 30 min), and in repair mode regenerates metadata that is no longer usable (for example after a table rename: Iceberg metadata records absolute paths, so it references the previous folder until regenerated) by moving `metadata/` to a timestamped backup — never deleting — and triggering a full regeneration with a data-free commit ladder. Report mode writes nothing and fails loudly, so the workflow's alerting is the notification channel. |
 | [ADW Iceberg External Table Sync](data-engineering/adw-iceberg-external-table-sync/README.md) | Scheduled, fleet-scale automation that keeps an entire AIDP catalog queryable from N Autonomous Databases as read-only Iceberg external tables — no data copy, no catalog service in the read path. Runs as an AIDP job parameterized by catalog: fingerprints the Iceberg metadata so only schema-drifted tables are recreated (steady state issues zero DDL against the fleet), reads every credential through the AIDP Credential Store (the service account natively, the per-ADW secrets from OCI Vault), reinstalls the ADW-side credential when the API key rotates, connects with or without an mTLS wallet, preserves consumer grants across recreates, and keeps sync state in a per-catalog registry. Measured at 4,777 tables × 2 ADWs. Start from the single-table sample above if the pattern is new to you. |
+| [Streaming from an Iceberg Source into ADW](data-engineering/streaming-from-iceberg-source/README.md) | Stream a native Iceberg table into ADW with `readStream.format("iceberg")` and a staging-table MERGE, then update, delete, overwrite, merge, evolve, compact and expire the source while the streams run, to show what each change and each `streaming-*` read option does on AIDP's Iceberg 1.8 and how to catch skipped changes up from the changelog. |
 
 #### Other Utilities
 

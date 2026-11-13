@@ -60,6 +60,7 @@ python pod.py down               # pulls, then terminates: billing stops
 | `logs [pod]` | Follows the log again until `READY` |
 | `open [pod]` | Opens ComfyUI in your browser |
 | `push [pod] FILES` | Copies files into ComfyUI's input folder. `--dataset NAME` sends files and folders into `/workspace/dataset/NAME`, for training |
+| `push [pod] URL` | The pod downloads a web address itself: one file, or every file that a folder page lists. `--frames 480-600` keeps the frames of that range, `--into NAME` names the folder under ComfyUI's input. With `--dataset NAME`, the files go to `/workspace/dataset/NAME` |
 | `pull [pod]` | Downloads every new file of the pod's output folder into `outputs/<pod name>/` |
 | `down [pod]` | Pulls, terminates, then gives the pod's cost and the credit left. `--all` for every pod recorded here, `--no-pull` to skip the download |
 | `ssh [pod]` | A terminal on the pod |
@@ -105,7 +106,7 @@ Three ways to change a value, from the most lasting to the most temporary:
 | Variable | Default | What it sets |
 |---|---|---|
 | `AINVFX_PROFILE` | `image` | The profiles to download. `up <profiles>` sets it for you |
-| `AINVFX_COMFY_TAG` | `v0.44.0` | The ComfyUI release: a git tag, or a branch (`master` for the latest commit) |
+| `AINVFX_COMFY_TAG` | `v0.45.3` | The ComfyUI release: a git tag, or a branch (`master` for the latest commit) |
 | `AINVFX_PYTHON` | `3.13` | The Python of the pod's environment, installed by uv |
 | `AINVFX_TORCH` | `torch torchvision torchaudio` | The PyTorch packages, with pip flags if wanted (`--pre ...` for nightlies) |
 | `AINVFX_TORCH_INDEX` | `https://download.pytorch.org/whl/cu130` | The wheel index PyTorch comes from (`.../whl/nightly/cu130` for nightlies) |
@@ -137,9 +138,25 @@ Some repositories are **gated**: Hugging Face serves their files only to an acco
 
 - **Workflows** (`.json`): drag them onto the ComfyUI canvas.
 - **Images and videos in**: the upload button of a Load Image or Load Video node, or `python pod.py push file1 file2`.
+- **Files from a web address**: `python pod.py push URL`. The pod downloads them itself, so nothing passes through your own connection ([Files from a web address](#files-from-a-web-address)).
 - **A training dataset in**: `python pod.py push --dataset NAME FOLDER` ([Training a LoRA](#training-a-lora)).
 - **Results out**: the Assets panel in ComfyUI, or `python pod.py pull`. It downloads every file of the pod's output folder that you do not have yet, subfolders kept: images, videos, 3D files, and files a node saves without showing them, such as a trained LoRA. Results go to `outputs/<pod name>/` next to the script, or to the folder named in the `AINVFX_OUTPUTS` environment variable. Without JupyterLab, `pull` gets only the files that ComfyUI's history lists. `down` runs the same pull first.
 - **Many files at once**: JupyterLab, from the link of the `READY` line. Its terminal is under File, New, Terminal.
+
+### Files from a web address
+
+```bash
+python pod.py push https://example.org/plates/shot_010.exr                                   # one file, into input/
+python pod.py push https://example.org/plates/shot_010/                                      # a folder page: every file it lists, into input/shot_010/
+python pod.py push https://example.org/plates/shot_010/ --frames 480-600 --into shot_010     # only frames 480 to 600, into input/shot_010/
+```
+
+- **A file's address** gives that file. A Google Drive, Dropbox or GitHub share link of one file works too.
+- **A folder's address** gives every file the page lists, not its subfolders. The page must be a plain list of links, as web servers write for a folder. A share page drawn by a script (a Drive or Dropbox folder) lists nothing: send its files one by one, or as local files.
+- **`--frames FIRST-LAST`** keeps the frames of that range. `push` finds the frame number in the file names: the last number before the extension, in the largest set of names that differ only by that number. It names the sequence it found (`shot_####.exr`). When the names carry no such numbering, it says so and sends nothing: run the command again without `--frames` to send the whole folder.
+- **`--into NAME`** names the folder under ComfyUI's input. Without it, a folder keeps its own name and a single file goes to the top of the input folder.
+- **Run it again** after an interruption: files already there with the same size are skipped.
+- The download runs through the pod's JupyterLab, so the pod must be `READY`.
 
 ## Training a LoRA
 
@@ -205,7 +222,7 @@ The musubi-tuner recipes repeat settings proven on RTX PRO 6000 pods. The `moss`
 
 1. It reads Runpod's catalog: every GPU type in stock on hosts with CUDA 13.0 or newer (driver 580 or newer, which the course's int8 models need).
 2. It tries the profile's GPU on **Secure Cloud** (Runpod's own data centers), nearest first: your country, then your region, then the other region. Your country comes from your computer's clock (`America/Toronto` gives Canada); `setup --region EU --country FR` changes it.
-3. When that GPU has no stock, it proposes the cheapest GPU in stock that fits the profile: the profile's memory (32 GB for `image` and `3d`, 96 GB for `video` and `train`), a Blackwell chip or newer, and never a 1g MIG slice (the smallest share of a larger GPU: one was seven times slower than an RTX 5090 in our tests). It never takes more than 2.50 USD per hour on its own (`--max-price` changes it).
+3. When that GPU has no stock, it proposes the cheapest GPU in stock that fits the profile: the profile's memory (32 GB for `image` and `3d`, 96 GB for `video` and `train`), a Blackwell chip or newer, and never a 1g MIG slice (the smallest share of a larger GPU: one was seven times slower than an RTX 5090 in our tests). On its own, it never takes a GPU that costs more than the course's dearest one, the RTX PRO 6000, at its price of the day in Runpod's catalog. No price is written in the toolkit: `up` reads them all at each launch. `--max-price` sets a ceiling of your own.
 4. Below the GPUs that fit, it lists up to six others in stock, Blackwell first, then cheapest: whole GPUs with 32 GB or more that miss the profile's rule, such as an RTX 5090 for `video` or an H100, each with what it misses. `up` creates one only when you choose it.
 5. It creates a pod only where the catalog shows stock, and always names the data center: left to choose, Runpod twice placed a pod on a host that was being removed.
 6. Right after creation, it checks the host. A host with maintenance under way, or due within 24 hours, is terminated at once (a few seconds billed), and the next machine is tried.

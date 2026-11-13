@@ -78,18 +78,18 @@ pnpm update -g @hostinger/mcp
 
 This package installs the following MCP server commands:
 
-- `hostinger-api-mcp` — unified server over every operation (414 total)
+- `hostinger-api-mcp` — unified server over every operation (424 total)
 - `hostinger-agency-hosting-mcp` — 43 operations for agency-hosting
 - `hostinger-agent-readiness-mcp` — 4 operations for agent-readiness
 - `hostinger-billing-mcp` — 10 operations for billing
 - `hostinger-dns-mcp` — 9 operations for dns
 - `hostinger-domains-mcp` — 43 operations for domains
 - `hostinger-ecommerce-mcp` — 30 operations for ecommerce
-- `hostinger-gpu-mcp` — 5 operations for gpu
+- `hostinger-gpu-mcp` — 13 operations for gpu
 - `hostinger-horizons-mcp` — 7 operations for horizons
 - `hostinger-hosting-mcp` — 59 operations for hosting
 - `hostinger-mail-mcp` — 39 operations for mail
-- `hostinger-reach-mcp` — 71 operations for reach
+- `hostinger-reach-mcp` — 73 operations for reach
 - `hostinger-vps-mcp` — 68 operations for vps
 - `hostinger-wordpress-mcp` — 41 operations for wordpress
 
@@ -1835,12 +1835,107 @@ What's new and what's coming at Hostinger: list entries of the public Hostinger 
 - **Method**: `custom`
 - **Path**: `custom`
 
+#### gpu_instances_get
+
+Retrieve detailed information about a specified GPU instance, including its SSH keys.
+
+Use this endpoint to follow the instance `status` after creating or deleting it.
+
+- **Method**: `GET`
+- **Path**: `/api/gpu/v1/instances/{instanceId}`
+
+#### gpu_instances_delete
+
+Delete a specified GPU instance.
+
+The instance is destroyed asynchronously: a successful request returns immediately and the instance
+`status` moves to `destroying`. Deleting fails while the instance is in `created`, `destroying`,
+`destroyed` or `abuse` status, or while another action is in progress on it.
+
+Use this endpoint to stop billing for a GPU instance you no longer need.
+
+- **Method**: `DELETE`
+- **Path**: `/api/gpu/v1/instances/{instanceId}`
+
+#### gpu_exposed-services_delete
+
+Delete a specified exposed service of a GPU instance.
+
+The service is removed asynchronously: a successful request returns immediately and the service
+stops being reachable from the internet shortly after.
+
+Use this endpoint to close public access to a service on your GPU instance.
+
+- **Method**: `DELETE`
+- **Path**: `/api/gpu/v1/instances/{instanceId}/exposed-services/{exposedServiceId}`
+
+#### gpu_exposed-services_list
+
+Retrieve the services exposed on a specified GPU instance.
+
+A newly created service is listed once it gets its public hostname and external port.
+
+Use this endpoint to find the public address of services running on your GPU instance.
+
+- **Method**: `GET`
+- **Path**: `/api/gpu/v1/instances/{instanceId}/exposed-services`
+
+#### gpu_exposed-services_create
+
+Expose a service running on a specified GPU instance to the internet.
+
+The service is exposed asynchronously: a successful request returns immediately, and the service
+appears in the exposed services list once it gets its public hostname and external port.
+Fails when the instance already has the maximum of 4 exposed services.
+
+Use this endpoint to make an application on your GPU instance publicly reachable.
+
+- **Method**: `POST`
+- **Path**: `/api/gpu/v1/instances/{instanceId}/exposed-services`
+
+#### gpu_instances_list
+
+Retrieve all GPU instances of your account.
+
+Use this endpoint to view your GPU instances with their status, pool, instance type and OS template.
+
+- **Method**: `GET`
+- **Path**: `/api/gpu/v1/instances`
+
+#### gpu_instances_create
+
+Create a new GPU instance.
+
+Pick `pool_instance_id` from the pool instance types list and `os_template_id` from the OS templates
+available for that instance type. Your account must have enough credits to run the instance for its
+first hour.
+
+The instance is created asynchronously: a successful request returns immediately, and the instance
+appears in the instance list while its `status` moves from `created` through `creating` to `running`.
+
+Use this endpoint to provision GPU compute.
+
+- **Method**: `POST`
+- **Path**: `/api/gpu/v1/instances`
+
+#### gpu_instances_metrics
+
+Retrieve utilisation metrics of a specified GPU instance for the last hour.
+
+Each data point contains CPU, memory and GPU utilisation, used GPU memory and GPU throughput.
+The list is empty until the instance is provisioned.
+
+Use this endpoint to monitor GPU instance load.
+
+- **Method**: `GET`
+- **Path**: `/api/gpu/v1/instances/{instanceId}/metrics`
+
 #### gpu_catalog_pool-groups
 
 Retrieve GPU pool groups, ordered by name.
 
 Each group bundles the pools of one GPU model and lists its currently available pools,
-whether any of them is available and the lowest hourly price among its instance types.
+whether any of them is available and the lowest hourly price, in credits, among its instance types.
 The price is returned even when the group is out of stock.
 
 Use this endpoint to show which GPU models can be ordered and from what price.
@@ -2279,73 +2374,4 @@ containing secrets (e.g. credential files) — none of these are returned by thi
 #### hosting_git_delete-auto-deployment-settings
 
 Removes the Git auto-deployment settings of the website. Files already deployed stay on the
-website; pushes stop deploying until settings are saved again. Succeeds also when nothing is
-configured.
-
-- **Method**: `DELETE`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/git/auto-deployments/settings`
-
-#### hosting_git_deploy-website-repository
-
-Clones a Git repository into a directory of the website, or pulls it again. An empty or missing
-directory gets a clone of the branch. A directory that already holds this repository and branch is
-reset to its last commit and pulled: changes made on the server to files the repository tracks are
-discarded, files it does not track stay. A directory that holds other files, including another
-repository or another branch of this one, is rejected. `composer install` runs after the clone or
-pull when the repository has a `composer.json`.
-
-The call waits for the deployment and returns its log. `is_success` false means Git or composer
-failed and the log says why. A second call for the same directory is rejected while the first is
-still waiting for the server. If the request times out, the deployment may still finish on the
-server; calling again later with the same repository and branch pulls.
-
-Private repositories need an SSH URL and the account's Git SSH key from `Generate Git SSH key`,
-added to the repository as a deploy key.
-
-- **Method**: `POST`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/git/repositories/deploy`
-
-#### hosting_git_list-website-repositories
-
-Lists the Git repositories linked to directories of the website, with
-`Deploy website Git repository` or in the Git section of hPanel: clone URL, branch and directory of
-each one. A repository whose clone failed stays listed; deploying it again retries the clone. GitHub
-and GitLab auto-deployments are not listed here; see `Get Git auto-deployment settings`.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/git/repositories`
-
-#### hosting_git_ssh-public-key
-
-Returns the public SSH key of the hosting account. `Deploy website Git repository` uses this key to
-clone and pull over SSH, so a private repository works once the key is added to it as a deploy key
-on the Git host. `public_key` is null when the account has no key yet.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/git/ssh-key`
-
-#### hosting_git_generate-ssh-key
-
-Creates the SSH key pair of the hosting account and returns the public key. When the account already
-has a key, returns that key unchanged. One key serves every website of the account; add the public
-key to a private repository as a deploy key before deploying it.
-
-- **Method**: `POST`
-- **Path**: `/api/hosting/v1/accounts/{username}/git/ssh-key`
-
-#### hosting_headless_submit-build-report
-
-Submits the build report the headless skill writes at the end of a run (including early
-stops), so Hostinger can learn where builds get stuck. Send one report per call, with the
-report JSON as the request body, unchanged.
-
-The report must match report.schema.json v1; an invalid report returns 422 and is not
-stored. The report is linked to the authenticated account, so do not add account details
-to it.
-
-- **Method**: `POST`
-- **Path**: `/api/hosting/v1/headless/agent-reports`
-
-#### hosting_nodejs_list-environment-variables
-
-Lists the Node.js environment variables currently set for the websit
+website; pushes stop deploying until settings are saved again. Succeeds also when not

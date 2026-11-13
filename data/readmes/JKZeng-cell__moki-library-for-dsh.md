@@ -55,9 +55,9 @@ Tested on **Windows with DSH Desktop 0.2.2-rc.1**. Declared compatibility: `>=0.
 Please install the MOKI Library plugin in my current DSH Desktop, including the download, installation and version verification.
 
 Repository: https://github.com/JKZeng-cell/moki-library-for-dsh
-Version: 0.1.68
-Package: https://github.com/JKZeng-cell/moki-library-for-dsh/releases/download/v0.1.68/dsh-moki-library-0.1.68.tgz
-SHA256 checksum manifest: https://github.com/JKZeng-cell/moki-library-for-dsh/releases/download/v0.1.68/SHA256SUMS.txt
+Version: 0.1.73
+Package: https://github.com/JKZeng-cell/moki-library-for-dsh/releases/download/v0.1.73/dsh-moki-library-0.1.73.tgz
+SHA256 checksum manifest: https://github.com/JKZeng-cell/moki-library-for-dsh/releases/download/v0.1.73/SHA256SUMS.txt
 
 Follow these steps:
 1. Check the operating system, DSH version and the Node.js runtime it uses. The plugin requires DSH >=0.2.2-rc.1 <0.3.0 and Node.js >=22.19. Windows Desktop is the primary verified environment.
@@ -67,7 +67,7 @@ Follow these steps:
    dsh plugin --profile desktop add "dsh-moki-library@file:<absolute-archive-path>" --allow-build=sharp
 5. Check the installed version:
    dsh plugin --profile desktop list dsh-moki-library --depth 0
-   Confirm that desktop lists version 0.1.68 (or the newer version retained above). Preserve existing plugins, configuration and library data.
+   Confirm that desktop lists version 0.1.73 (or the newer version retained above). Preserve existing plugins, configuration and library data.
 6. Report the archive location, actual CLI, profile and version-check result. Then ask me to save my work, fully quit DSH and reopen it manually. Keep the current DSH conversation running while the installation task is in progress.
 
 If this conversation cannot download files or execute a terminal, the environment is incompatible, or installation fails, explain the specific cause and next step. Report installation status from the actual command results.
@@ -81,12 +81,12 @@ If this conversation cannot download files or execute a terminal, the environmen
 
 ### Option 2: Install manually in a terminal
 
-1. Open DSH Desktop once to initialize its desktop profile, then fully quit it. Download `dsh-moki-library-0.1.68.tgz` from the [release](https://github.com/JKZeng-cell/moki-library-for-dsh/releases/tag/v0.1.68).
+1. Open DSH Desktop once to initialize its desktop profile, then fully quit it. Download `dsh-moki-library-0.1.73.tgz` from the [release](https://github.com/JKZeng-cell/moki-library-for-dsh/releases/tag/v0.1.73).
 2. In PowerShell, replace the first two paths with the actual CLI and archive paths. If the desktop uses a custom `DSH_HOME`, use the same value in this terminal.
 
 ```powershell
 $mokiDshCli = 'C:\Path\To\DeepSeek Harness\resources\runtime\cli\bin\dsh.cmd'
-$mokiArchive = 'C:\Downloads\dsh-moki-library-0.1.68.tgz'
+$mokiArchive = 'C:\Downloads\dsh-moki-library-0.1.73.tgz'
 $mokiArchive = (Resolve-Path -LiteralPath $mokiArchive).Path.Replace('\', '/')
 & $mokiDshCli plugin --profile desktop add "dsh-moki-library@file:$mokiArchive" --allow-build=sharp
 ```
@@ -115,11 +115,15 @@ Text previews, PDF text, the text editor and Office editors support quick select
 
 ### Review before saving
 
+Use **Refresh preview** in the file toolbar to reload the original file. If a draft is unsaved, choose to keep editing, save and refresh, or discard the draft and refresh. Pending AI edits still require review before saving. DSH source-file updates are distinct from draft changes: identical content already saved elsewhere is acknowledged without rewriting it. Text/HTML saves can reconcile strictly separated edits against a verified baseline; overlapping edits remain protected. Office saves compare document contents rather than modification time alone and recheck the source after export.
+
+Text/HTML acceptance remains compatible when an updated preview connects to an older DSH plugin host. If DSH has already saved the exact draft, acceptance verifies the current contents and clears the review without rewriting the file. Different contents retain the draft and conflict notice.
+
 AI edits to text, Word, Excel and PowerPoint are highlighted. Expand the review bar to see locations and before/after content. Highlights are temporary decorations, never saved document formatting. **Accept saves the current result to the original file without reloading or leaving the editor.** The current slide, sheet, selection and view stay in place. If saving fails, the pending edits remain available for retry.
 
 The Office editor stays loaded while AI work is in progress. Progress updates and read-only tool calls preserve the current selection instead of reopening the editor. Incoming changes appear in the existing view; actual pending edits still require review.
 
-You can ask DSH to continue editing before accepting an earlier edit. Each new edit builds on the visible draft and adds a review record. Choose **Accept all**, or **Undo latest edit** repeatedly to step back while retaining earlier pending edits. Selection, copying and AI collaboration remain available; manual input and saving wait until review is resolved. Pending records recover with the draft. If another window changes that draft, cancellation reports the conflict and preserves the current content.
+You can ask DSH to continue editing before accepting an earlier edit. Each new edit builds on the visible draft and adds a review record. Choose **Accept all**, **Undo latest edit** to step back one edit, or **Discard all** to restore the draft before the first pending AI edit while preserving earlier manual changes. Discarding does not overwrite the original file. Selection, copying and AI collaboration remain available; manual input and saving wait until review is resolved. Pending records recover with the draft. If another window changes that draft, cancellation reports the conflict and preserves the current content.
 
 ### Practical examples
 
@@ -142,6 +146,18 @@ The [illustrated usage demos](docs/usage-demos.md) include exact steps, sample p
 The whale opens the same compact selection input as MOKI Canvas. After sending in the side workspace, the current main conversation receives focus so the file stays beside the chat. The DSH conversation button and Alt+D still open the conversation directly. Main-window and standalone previews use a floating conversation with DSH's native input, moving/resizing and session creation/switching. A standalone preview keeps its conversation inside that window. Moving back to the side workspace routes quotes to the current main session instead of a previously selected floating history session.
 
 Default context text is bounded to 4,000 characters; composer quotes to 1,000. Truncation is marked. Tools can request more content when needed. Selection references are scoped to the conversation/editor, expire after ten minutes, and reject stale or reused edits.
+
+### HTML selections, folder colors and generated files
+
+Select text in a rendered HTML preview and click the whale to enter instructions with optional attachments. The selection is mapped to exact source text nodes, so repeated text elsewhere is preserved. Inline markup stays intact; replacements are escaped as text. HTML scripts remain disabled. AI edits are highlighted for review; accepting saves without reloading the preview or resetting its scroll position. Switch to source view for structural or style edits.
+
+Enable **Select modules** in an HTML preview to identify page modules under the pointer. Hover shows a boundary; clicking keeps the module highlighted and reveals the whale for quick instructions. The reference includes the module's text, element location and a bounded HTML excerpt. **Alt+↑** expands to the parent module and **Esc** clears the selection. Scrolling keeps highlights aligned. Links are selected without navigating in this mode; turning it off restores normal text selection.
+
+New folders offer six colors (violet, blue, green, amber, rose and slate) with matching light and dark palettes. The choice persists and can also be changed from the folder context menu.
+
+DSH generated-file cards and change review pages offer a **Library** button; file context menus include **Open in MOKI Library**. The original file is mapped under **DSH task files** once, independently of the automatic-mapping setting. Existing mappings are reused. Preview preferences determine the destination; automatic mode opens a new side tab when the library is already docked. Explicitly choosing the library overrides a system-app default and opens the library's main window.
+
+To choose where to file an output, right-click it and select **Add to MOKI Library**. Browse or search library folders, or create a named folder with a color, then choose **Add to this folder**. Root and mapped folders are supported. This adds a reference to the original file, without moving or copying it. Repeated additions to the same folder reuse its reference; references in other folders remain intact. This action works even when automatic mapping and the composer picker are disabled.
 
 ## Preview and editing formats
 

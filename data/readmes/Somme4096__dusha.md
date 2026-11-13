@@ -10,15 +10,28 @@
 > [!IMPORTANT]
 > This README.md is proudly written by a human (˶>⩊<˶)❤️
 
-*Dusha* (Russian: душа, [dʊˈʂa], "soul") is a small HTTP API / proxy that stores messages, identity, memories, affect—basically anything makes your LLM companion yours—outside your harness. Any client that can add a custom provider are able to use it, so you can hop between harnesses (or even use multiple at once!) and still get the same soul on the other side.
+**Dusha** (_Rus:_ душа, [dʊˈʂa], "soul") is a lightweight python API that:
 
-Almost everything is configurable through JSON. For things that aren't, I also built dusha on [everything-is-a-plugin](https://github.com/deepseek-ai/deepseek-harness) architecture, so you can easily wire an external memory provider or do fun things like writing your own emotion system~!
+1) stores messages, memories, affect state, anything you want
+2) injects those contexts at every LLM call (any provider is supported)
+3) has an extensible MCP and CLI to let you add any tools.
+
+Because it's just a hackable python API, you can do **literally anything**. Including:
+
+- hop between harnesses and get the same soul on the other side
+- write your own emotion system
+- call weather API and feed it to the model real-time (so they know it's raining outside)
+- feed them your browser history
+- let your companion play music on any device through built-in `relay` plugin
+- integrate an external memory provider like [Supermemory](https://github.com/supermemoryai/supermemory) and add tools to Dusha MCP
+
+See [dusha-plugin-collections](https://github.com/Somme4096/dusha-plugin-collections).
 
 ## Quickstart
 
 
 ```sh
-uv tool install dusha
+uv tool install dusha # docker image available. See below
 dusha init <name> --serve # Also you can use --proxy for proxy setup, or without flags for generating both
 dusha serve <name>
 ```
@@ -64,9 +77,22 @@ INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8766 (Press CTRL+C to quit)
 ```
 
-Now in your harness or app, point your endpoint at the URL `provider add` gave you: in this case, `http://127.0.0.1:8766/302ai` and you're good to go!
+Now in your harness or app, point your endpoint at the URL `provider add` gave you: in this case, `http://127.0.0.1:8766/302ai` and you're good to go. Now every request routes through dusha proxy.
 
-Optionally (but I highly recommend it), add [MCP](https://github.com/Somme4096/dusha/blob/main/docs/api.md#mcp).
+Optionally (highly recommended), add [MCP](https://github.com/Somme4096/dusha/blob/main/docs/api.md#mcp).
+
+### Docker (and Podman)
+
+Prefer a container? The image is `ghcr.io/somme4096/dusha`. We have compose at home:
+
+```sh
+mkdir dusha && cd dusha
+curl -O https://raw.githubusercontent.com/Somme4096/dusha/main/deploy/compose.yaml
+touch .env # Put EMBEDDING_API_KEY=... here if you use one.
+docker compose up -d # podman and podman-compose also works.
+```
+
+Detail in [Deployment](https://github.com/Somme4096/dusha/blob/main/docs/guide.md#deployment).
 
 ## How it works
 
@@ -77,11 +103,11 @@ Dusha adds context "after" each message so cache can hit.
 <details>
 <summary>How do messages, memory, affect, and identity work in stock dusha?</summary>
 
-- **Messages:** Basic SQLite FTS5 plus optional embedding search. An plugin can do everything you can imagine if that's not enough.
+- **Messages:** Basic SQLite FTS5 plus optional embedding search. A plugin can do everything you can imagine if that's not enough.
 - **Evergreen:** Long-term facts that you edit from the CLI and your companion edits through integration tools. No automatic extraction.
   - Think of it as a `USER.md` but with proper lifecycle management and duplication prevention.
 - **Affect:** A deterministic emotion engine that uses values like `{"anger": 0.35}` and shifts over time, including when the user goes unresponsive. Of course, you can make your own!
-  - Side note is that Message intent analysis can also be an external plugin. drop the [system_one](https://github.com/Somme4096/dusha-plugin-collections/tree/main/system_one) plugin or any other classifier plugin into the plugins directory, and its `decide` listener picks which emotion each user message moves.
+  - Message intent analysis can also be an external plugin. drop the [system_one](https://github.com/Somme4096/dusha-plugin-collections/tree/main/system_one) plugin or any other classifier plugin into the plugins directory, and its `decide` listener picks which emotion each user message should provoke.
 - **Identity:** `identity.md`, or custom name.
 
 </details>
@@ -90,7 +116,7 @@ Dusha adds context "after" each message so cache can hit.
 
 Everything is a plugin in dusha! Identity, memory, evergreen, memo, affect, and proactive are built in that you can alter/disable. 
 
-See [Plugin](https://github.com/Somme4096/dusha/blob/main/docs/plugins.md) for list of build-in plugins and how to build your own plugin. If you like, you can also take a look at [dusha-plugin-collections](https://github.com/Somme4096/dusha-plugin-collections) which contain dusha plugins I use daily.
+See [Plugin](https://github.com/Somme4096/dusha/blob/main/docs/plugins.md) for list of built-in plugins and how to build your own plugin. If you like, you can also take a look at [dusha-plugin-collections](https://github.com/Somme4096/dusha-plugin-collections) which contain dusha plugins I use daily.
 
 ## See Also
 
@@ -100,7 +126,7 @@ See [Plugin](https://github.com/Somme4096/dusha/blob/main/docs/plugins.md) for l
 - [docs/plugins.md](https://github.com/Somme4096/dusha/blob/main/docs/plugins.md): the built-in plugins, their commands and tools, and the Plugin API.
 - [dusha-plugin-collections](https://github.com/Somme4096/dusha-plugin-collections): My daily-driving dusha plugins. Useful as reference implementation.
 
-## Verisioning
+## Versioning
 
 With version `1.0.21`, dusha entered `5:Stable/Production` on PyPI. I will avoid breaking changes in minor and patch releases and deprecate features before removing them.
 

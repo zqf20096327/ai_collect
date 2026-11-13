@@ -67,15 +67,15 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 - [Scoring & Ranking](categories/scoring-ranking.md) — 44 entries
 - [Agent Decisions](categories/agent-decisions.md) — 69 entries
 - [Data Labeling & Curation](categories/data-labeling-curation.md) — 12 entries
-- [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 50 entries
-- [Calibration & Research](categories/calibration-research.md) — 57 entries
-- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 131 entries
+- [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 51 entries
+- [Calibration & Research](categories/calibration-research.md) — 59 entries
+- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 132 entries
 - [Game & Simulation](categories/game-simulation.md) — 29 entries
 - [Robotics & Physical](categories/robotics-physical.md) — 11 entries
 - [Finance & Trading](categories/finance-trading.md) — 10 entries
 - [Compliance & Legal](categories/compliance-legal.md) — 7 entries
 - [Content Moderation](categories/content-moderation.md) — 15 entries
-- [Related Practices / Discussions](categories/related-practices-discussions.md) — 108 entries
+- [Related Practices / Discussions](categories/related-practices-discussions.md) — 109 entries
 
 ### Open categories still being seeded
 

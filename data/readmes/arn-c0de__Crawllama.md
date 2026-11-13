@@ -14,7 +14,7 @@
 [Project Website](https://arn-c0de.github.io/Crawllama/)
 
 **AI Research Agent with OSINT and Multi-Hop Reasoning** 
-Current Version: `1.4.11` (Refactor & Code Quality)
+Current Version: `1.4.12` (Logic Fixes & Refactor)
 New in `1.4.8`: [Company Intelligence Developer Documentation](docs/osint/COMPANY_INTELLIGENCE.md)
 
 ## Table of Contents
@@ -223,7 +223,7 @@ Note: Model sizes vary significantly depending on the provider, format (FP16, IN
 ### Option 2: Manual Installation
 
 **Prerequisites:**
-- Python 3.11+ ([python.org](https://www.python.org/downloads/))
+- Python 3.11.5+ ([python.org](https://www.python.org/downloads/))
 - Git ([git-scm.com](https://git-scm.com/downloads))
 - Ollama ([ollama.ai/download](https://ollama.ai/download))
 

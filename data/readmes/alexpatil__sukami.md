@@ -26,19 +26,19 @@ Sukami is an open-source AI infrastructure proxy in pure Go. It prunes prompt bl
 
 ---
 
-- **Zero dependencies** — Built exclusively with the Go standard library, packaged as a single static binary.
-- **Drop-in integration** — Works with official OpenAI SDKs by changing only the `base_url`.
-- **In-memory cache** — Cosine vector similarity with semantic collision guards.
-- **Low latency** — Sub-millisecond in-process overhead and fast cache retrieval.
-- **Smart routing** — Upstream-aware dynamic model routing to economy tiers while preserving flagship intelligence.
+- **Zero dependencies**: Built exclusively with the Go standard library, packaged as a single static binary.
+- **Drop-in integration**: Works with official OpenAI SDKs by changing only the `base_url`.
+- **In-memory cache**: Cosine vector similarity with semantic collision guards.
+- **Low overhead**: Pruning, cache lookup, and routing run in-process with no extra network hop.
+- **Smart routing**: Opt-in routing of simple prompts to a cheaper model on the same upstream. Complex prompts keep the model you requested.
 
 ---
 
 ## Quickstart
 
-### Option A: Run with Docker (Fastest — 5 Seconds)
+### Option A: Run with Docker
 
-Run instantly without cloning the repository or installing Go:
+Run without cloning the repository or installing Go:
 
 ```bash
 docker run -d -p 8080:8080 -e UPSTREAM_URL=https://api.openai.com/v1 ghcr.io/alexpatil/sukami:latest
@@ -166,14 +166,14 @@ For complete technical specifications, see [docs/ARCHITECTURE.md](docs/ARCHITECT
 
 ## Features
 
-- **Prompt Pruning** — Strips conversational filler and redundant whitespace. Code blocks and markdown indentation are unconditionally preserved.
-- **In-Memory Semantic Cache** — Caches responses using vector similarity matching (>0.85). Built-in entity and opposites guards prevent false matches between distinct concepts (such as `Docker` vs `Kubernetes` or `encrypt` vs `decrypt`).
-- **Automatic Transient Error Retries** — Transparently retries transient rate limits (`HTTP 429`) and server overloads (`502`, `503`, `504`) with jittered exponential backoff and `Retry-After` header respect. Configurable via `UPSTREAM_MAX_RETRIES` or per-request with `X-Sukami-Max-Retries`.
-- **Smart Model Routing (Opt-in)** — Evaluates prompt complexity in-process without external API calls. Routes simple queries to economy models while preserving flagship models for complex code and multi-step reasoning.
-- **Cloud Security Mode** — Set `SUKAMI_API_KEY` to protect the proxy on public networks. Rejects unauthenticated callers before cache access to prevent unauthorized cache inspection.
-- **Multi-Tenant Keys** — Create tenant keys with dedicated rate limits and usage tracking via `/api/keys`.
-- **Headless Infrastructure** — Headless reverse proxy with zero frontend dependencies; provides JSON service status at `GET /` and Prometheus metrics at `GET /metrics`.
-- **Prometheus Metrics** — Exports standard Prometheus metrics at `GET /metrics`.
+- **Prompt pruning**: Strips conversational filler and redundant whitespace. Code blocks and markdown indentation are unconditionally preserved.
+- **In-memory semantic cache**: Caches responses using vector similarity matching (>0.85). Built-in entity and opposites guards prevent false matches between distinct concepts (such as `Docker` vs `Kubernetes` or `encrypt` vs `decrypt`).
+- **Automatic retries on transient errors**: Transparently retries transient rate limits (`HTTP 429`) and server overloads (`502`, `503`, `504`) with jittered exponential backoff and `Retry-After` header respect. Configurable via `UPSTREAM_MAX_RETRIES` or per-request with `X-Sukami-Max-Retries`.
+- **Smart model routing (opt-in)**: Evaluates prompt complexity in-process without external API calls. Routes simple queries to economy models while preserving flagship models for complex code and multi-step reasoning.
+- **Cloud security mode**: Set `SUKAMI_API_KEY` to protect the proxy on public networks. Rejects unauthenticated callers before cache access to prevent unauthorized cache inspection.
+- **Multi-tenant keys**: Create tenant keys with dedicated rate limits and usage tracking via `/api/keys`.
+- **Headless**: No frontend. `GET /` returns JSON service status.
+- **Prometheus metrics**: Exports standard Prometheus metrics at `GET /metrics`.
 
 ---
 
@@ -208,23 +208,18 @@ UPSTREAM_API_KEY=                       # Default upstream API key fallback
 
 ## Benchmarks
 
-Workload: technical comparison (PostgreSQL vs. MongoDB).
-
-| Execution Path | Output Tokens | Latency | Finish Reason | Cost vs. Direct |
-| :--- | :---: | :---: | :---: | :---: |
-| **Direct Upstream (Raw)** | 3,072 | 7.33s | `length` (truncated) | 100% (Baseline) |
-| **Via Sukami (Pruned)** | 1,979 | 4.50s | `stop` (complete) | **~64% (−35.6%)** |
-| **Semantic Cache Hit** | 0 | < 10ms | `stop` (instant) | **0% (−100%)** |
-
-To reproduce against upstream providers:
+`cmd/sukami-bench` sends one fixed prompt directly to your upstream and through the proxy, then prints token counts and latency for each path, including a cache hit and the opt-in output density mode.
 
 ```bash
-# Set your upstream key (in .env or terminal)
-export UPSTREAM_API_KEY="your-api-key"
+# In .env or the environment
+UPSTREAM_URL=https://your-provider.example/v1
+UPSTREAM_API_KEY=your-api-key
+BENCH_MODEL=the-model-to-test
+
 go run ./cmd/sukami-bench
 ```
 
-For detailed empirical methodology, see [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
+Recorded results and how to read them are in [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
 ---
 

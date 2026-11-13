@@ -4,9 +4,11 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/adkit/ads-mcp?style=flat&logo=github&color=f97316)](https://github.com/adkit/ads-mcp/stargazers) [![Latest release](https://img.shields.io/github/v/release/adkit/ads-mcp?color=f97316)](https://github.com/adkit/ads-mcp/releases) [![MCP Registry](https://img.shields.io/badge/MCP-Registry-f97316)](https://registry.modelcontextprotocol.io) [![Glama score](https://glama.ai/mcp/servers/adkit/ads-mcp/badges/score.svg)](https://glama.ai/mcp/servers/adkit/ads-mcp) [![License: MIT](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
 
-Hosted at `mcp.adkit.so` · [Overview and setup guides](https://adkit.so/features/ads-mcp)
+Hosted at `mcp.adkit.so`. [Overview and setup guides](https://adkit.so/features/ads-mcp).
 
-**Ads MCP** is a Model Context Protocol (MCP) server for managing ad campaigns across **Google Ads, Meta Ads, TikTok Ads, LinkedIn Ads, Microsoft Ads, Reddit Ads, and X Ads** from any MCP-compatible AI agent — Claude, Claude Code, ChatGPT, Cursor, and Codex. Create campaigns, analyze performance, and spy on competitor ads without leaving your chat. _(Pinterest and Snapchat coming soon.)_
+**Install in one click:** [Claude](https://claude.ai/directory/adkit) or [ChatGPT](https://chatgpt.com/apps/adkit/asdk_app_6a1e848decdc8191a4974b315c51661f). Other apps: see [Install](#install).
+
+**Ads MCP** is a Model Context Protocol (MCP) server for managing ad campaigns across **Google Ads, Meta Ads, TikTok Ads, LinkedIn Ads, Microsoft Ads, Reddit Ads, and X Ads** from any MCP-compatible AI agent — Claude, Claude Code, ChatGPT, Cursor, and Codex. Create campaigns, analyze performance, and spy on competitor ads without leaving your chat. _(Pinterest Ads in beta, Snapchat coming soon.)_
 
 > **Draft-first:** every change starts as a draft — nothing goes live without your explicit approval. Multi-account for agencies and teams.
 
@@ -29,7 +31,8 @@ Hosted at `mcp.adkit.so` · [Overview and setup guides](https://adkit.so/feature
 | **Microsoft Ads** (Bing) | Campaign creation and performance analysis |
 | **Reddit Ads** | Campaign creation and performance analysis |
 | **X Ads** | Campaign creation and performance analysis |
-| **Pinterest Ads · Snapchat Ads** | _Coming soon_ |
+| **Pinterest Ads** (beta) | Campaign reports and changes through the Pinterest API |
+| **Snapchat Ads** | _Coming soon_ |
 
 ## Tools
 
@@ -75,11 +78,13 @@ claude mcp add --transport http adkit https://mcp.adkit.so
 
 ### Claude (desktop & web)
 
-Settings → **Connectors** → **Add custom connector** → URL: `https://mcp.adkit.so` → sign in on first use.
+- **One click:** [install AdKit from the Claude directory](https://claude.ai/directory/adkit).
+- **By hand:** Settings → **Connectors** → **Add custom connector** → URL: `https://mcp.adkit.so` → sign in on first use.
 
 ### ChatGPT
 
-Settings → **Connectors** → **Add custom connector** → URL: `https://mcp.adkit.so`
+- **One click:** [add the AdKit app](https://chatgpt.com/apps/adkit/asdk_app_6a1e848decdc8191a4974b315c51661f).
+- **By hand:** Settings → **Connectors** → **Add custom connector** → URL: `https://mcp.adkit.so`
 
 ### Cursor
 
@@ -129,15 +134,20 @@ The plugin connects to the AdKit MCP server, which manages your ad accounts acro
 
 ## Learn more
 
-- [Google Ads MCP](https://adkit.so/features/ads-mcp/google) — connect Google Ads to your AI agent
-- [Meta Ads MCP](https://adkit.so/features/ads-mcp/meta) — connect Facebook & Instagram Ads
-- [TikTok Ads MCP](https://adkit.so/features/ads-mcp/tiktok) — connect TikTok Ads
-- [LinkedIn Ads MCP](https://adkit.so/features/ads-mcp/linkedin) — connect LinkedIn Ads
-- [Microsoft Ads MCP](https://adkit.so/features/ads-mcp/microsoft) — connect Microsoft (Bing) Ads
-- [Reddit Ads MCP](https://adkit.so/features/ads-mcp/reddit) — connect Reddit Ads
-- [X Ads MCP](https://adkit.so/features/ads-mcp/x) — connect X Ads
+- Google Ads MCP: [connect Google Ads to your AI agent](https://adkit.so/features/ads-mcp/google)
+- Meta Ads MCP: [connect Facebook & Instagram Ads](https://adkit.so/features/ads-mcp/meta)
+- TikTok Ads MCP: [connect TikTok Ads](https://adkit.so/features/ads-mcp/tiktok)
+- LinkedIn Ads MCP: [connect LinkedIn Ads](https://adkit.so/features/ads-mcp/linkedin)
+- Microsoft Ads MCP: [connect Microsoft (Bing) Ads](https://adkit.so/features/ads-mcp/microsoft)
+- Reddit Ads MCP: [connect Reddit Ads](https://adkit.so/features/ads-mcp/reddit)
+- X Ads MCP: [connect X Ads](https://adkit.so/features/ads-mcp/x)
+- Pinterest Ads MCP: [connect Pinterest Ads (beta)](https://adkit.so/features/ads-mcp/pinterest)
 - [Claude integration](https://adkit.so/integrations/claude) — full setup guide for Claude
 - [AdKit Dashboard](https://adkit.so) — account management and documentation
+
+## One platform only
+
+Each platform also has its own server, with only that platform's tools: [Meta Ads](https://github.com/adkit/meta-ads-mcp), [Google Ads](https://github.com/adkit/google-ads-mcp), [TikTok Ads](https://github.com/adkit/tiktok-ads-mcp), [LinkedIn Ads](https://github.com/adkit/linkedin-ads-mcp), [Microsoft Ads](https://github.com/adkit/microsoft-ads-mcp), [Reddit Ads](https://github.com/adkit/reddit-ads-mcp), [X Ads](https://github.com/adkit/x-ads-mcp) and [Pinterest Ads](https://github.com/adkit/pinterest-ads-mcp).
 
 ## Strategy skills
 
@@ -145,7 +155,11 @@ For campaign planning and platform-specific strategy, pair this plugin with the 
 
 ## Connect
 
-[Website](https://adkit.so) · [X](https://x.com/TryAdkit) · [YouTube](https://www.youtube.com/@TryAdKit) · [LinkedIn](https://linkedin.com/company/adkit-ads) · [Facebook](https://www.facebook.com/TryAdkit)
+[Website](https://adkit.so) | [X](https://x.com/TryAdkit) | [YouTube](https://www.youtube.com/@TryAdKit) | [LinkedIn](https://linkedin.com/company/adkit-ads) | [Facebook](https://www.facebook.com/TryAdkit)
+
+## Docs server
+
+[`docs-server/`](./docs-server/index.mjs) is a small local MCP server that answers questions about AdKit from this README and the skills: setup per AI app, hosted tools, ad platforms, example prompts. It needs no login and does not manage ads; for that, connect the hosted server above. Run it with `npm start` or the Dockerfile.
 
 ## License
 

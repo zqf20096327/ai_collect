@@ -461,6 +461,7 @@ Also, a leaderboard should be included if only:
 | [Terminal-Bench](https://www.tbench.ai/leaderboard) | Terminal-Bench is a benchmark to measure the capabilities of AI agents in a terminal environment. |
 | [Turing Machine Programming Benchmark](https://mng.quest/leaderboard/ai) | Measures LLMs' ability to solve algorithmic tasks by programming a Turing machine. | 
 | [UI-I2E-Bench](https://microsoft.github.io/FIVE-UI-Evol) | UI-I2E-Bench is a benchmark for GUI visual grounding. It incorporates implicit instructions and long-tail UI element types, with element-to-screen size ratios that better reflect real-world scenarios. |
+| [VibeToolRank](https://vibetoolrank.com/) | VibeToolRank runs the same standard tasks on AI coding tools (app builders, editors, CLI agents, and review bots) and publishes scores, timings, and free-tier limits. |
 | [WebApp1K](https://huggingface.co/spaces/onekq-ai/WebApp1K-models-leaderboard) | WebApp1K is a benchmark to evaluate LLMs on their abilities to develop real-world web applications. |
 | [WebDev Arena](https://web.lmarena.ai/leaderboard) | WebDev Arena hosts a chatbot arena where various LLMs compete based on website development. |
 | [WeirdML](https://htihle.github.io/weirdml.html) | WeirdML is a benchmark to evaluate LLMs on their ability to solve novel and unusual machine learning tasks through iterative code generation, debugging, and optimization. |
@@ -612,5 +613,4 @@ Also, a leaderboard should be included if only:
 | [VisualWebArena](https://jykoh.com/vwa) | VisualWebArena is a benchmark to evaluate the performance of multimodal web agents on realistic visually grounded tasks. |
 | [WebArena](https://docs.google.com/spreadsheets/d/1M801lEpBbKSNwP-vDBkC_pF7LdyGU1f_ufZb_NWNBZQ) | WebArena is a standalone, self-hostable web environment to evaluate autonomous agents. |
 | [WebsiteBench](https://website-bench.com/#results) | Leaderboard for agents reconstructing full-stack websites through browser exploration; read the historical cohort and protocol with each result. [Code](https://github.com/TIGER-AI-Lab/WebsiteBench). |
-| [WildClawBench](https://internlm.github.io/WildClawBench) | WildClawBench is an in-the-wild benchmark to evaluate AI agents in the OpenClaw Environment. |
-| [YC-Bench](https://collinear-ai.github.io/yc-bench/#leaderbo
+| [W

@@ -70,6 +70,7 @@ bash deploy/up.sh
 | <img src="docs/images/icons/layers.svg" width="20" align="top"/> | **诊断技能可插拔** | 技能就是一个 SKILL.md 文件——告警命中自动装载，Agent 只执行技能预授权的只读命令；GitHub 一键导入，命中与采用次数可查 |
 | <img src="docs/images/icons/database.svg" width="20" align="top"/> | **案例库越用越聪明** | 每次诊断沉淀为向量案例，下次同类故障 AI 直接召回"上次怎么修的" |
 | <img src="docs/images/icons/zap.svg" width="20" align="top"/> | **5 分钟部署** | 一条 compose 命令，向量检索内置在数据库里，不额外装 Milvus/Pinecone |
+| **账号体系完整** | 界面里就能建账号/改角色/重置密码（admin/member/demo 三档权限），命令行也有 `deploy/create-user.sh` |
 
 ## 它做什么 / 不做什么
 
@@ -138,7 +139,7 @@ python3 -c "import secrets;print(secrets.token_urlsafe(48))"
 > **启动要等**：平台的启动顺序是「数据库就绪 → 迁移 → 起 HTTP 服务」，首次 40~180 秒。
 > 这期间 `curl` 报 `Connection reset`、`grep 管理员` 没输出、数据库显示 `Restarting`
 > ——都是**正常现象**。`up.sh` 已替你等；分步执行时用 `bash deploy/wait-ready.sh`。
-> 想要固定的初始密码：`.env` 里加 `ADMIN_PASSWORD=你的密码`（不设则随机生成并打印在日志里）。
+> 初始口令默认 `admin123`（与早期版本一致）；**公网部署**请在 `.env` 里设 `ADMIN_PASSWORD=你的密码`，或首登后立刻改（`.env` 里的值只在首次创建管理员时生效）。
 
 ### 验证是否成功
 
@@ -156,10 +157,10 @@ python3 tools/smoke_mainflow.py --base http://127.0.0.1:8848 --no-llm
 > ④ 冒烟测试：5 段 29 项（写操作全部幂等自清理；只用 Python 标准库，无需装依赖）
 > 期望：退出码 0
 
-**部署完成后你会在日志里看到这三行**（首次启动才有，初始密码随机生成）：
+**部署完成后你会在日志里看到这三行**（首次启动才有；初始口令默认 `admin123`，可用 `.env` 的 `ADMIN_PASSWORD` 覆盖）：
 
 ```
-WARNING  已创建管理员账号 admin，初始密码 = xxxxxxxxxxxx（请立即登录修改；需要固定密码可在 .env 里设 ADMIN_PASSWORD）
+WARNING  已创建管理员账号 admin，初始密码 = admin123（公网部署请在 .env 设 ADMIN_PASSWORD 覆盖，或首登后立即修改）
 WARNING  已创建只读演示账号 demo/demo（仅用于体验，无处置权限）
 WARNING  平台就绪 → http://127.0.0.1:8848（管理员 admin，初始密码见上方启动日志）
 ```
@@ -180,7 +181,21 @@ bash deploy/faults/cpu_spike.sh
 > 灌 7 天演示数据（指标 + 规则 + 历史事件 + 案例卡）
 > 触发一次真实故障（5 种：探活失败 / CPU / 磁盘 / 内存 / 进程假死，各一条命令，自动恢复）
 
-### 常见问题
+### 从旧版本升级
+
+已经用旧版本部署过？一条命令升级（**自动备份数据**，数据/告警/案例都保留）：
+
+```bash
+cd <部署目录>
+bash deploy/upgrade.sh
+```
+
+老版本没有这个脚本的，或升级后数据库报 `Password.Incorrect` 无限重启——
+见 [从旧版本升级](docs/04-交付与运营/从旧版本升级.md)（含手工步骤与回滚）。
+
+---
+
+## 常见问题
 
 | 现象 | 原因与解法 |
 |---|---|
@@ -236,25 +251,26 @@ docker compose --env-file .env -f deploy/docker-compose.yaml down -v
 
 欢迎提 Issue 和 Pull Request。这个项目最需要的不是「提个功能」，而是**把你在真机上踩到的坑修掉**——每一条真实故障、每一个误报、每一次护栏误拦，都是最有价值的贡献。
 
-**Issue**：报 bug 请附上「环境 + 复现步骤 + 期望 vs 实际 + 相关日志」（平台日志用 `docker logs aiops-platform`，Agent 日志在目标机的 agent 输出里）；提需求先搜一下有没有重复。
+### 流程：**先开 Issue，再动手**
 
-**Pull Request**：
+```
+① 开 Issue（现象 / 根因 / 影响） → ② 建 fix/<issue号>-<短描述> 分支 → ③ 提 PR（Closes #N）→ ④ 合并
+```
+
+**Issue**：用内置[缺陷模板](https://github.com/qsumm/TestOPS/issues/new/choose)，填「现象（贴真实日志）+ 复现步骤 + 期望 vs 实际 + 环境 + 严重度」。提需求先搜重复。
+
+**分支命名**：`fix/123-metric-name-overflow`（一个分支只修一个缺陷，修多个不相关的会让 review 无法进行）
+
+**PR 正文必须包含**：现象（贴日志）→ 根因（定位到 `文件:行号`）→ 修复（为什么这么改）→ 验证（测试结果/前后对比），并以 `Closes #123` 结尾。
+
+> 完整规范（提交信息格式、自动化守卫清单、手册生成、发布同步）：**[CONTRIBUTING.md](.github/CONTRIBUTING.md)**
 
 ```bash
 git clone https://github.com/qsumm/TestOPS.git && cd TestOPS
 ./.venv/bin/python -m pytest backend/tests -q
 ```
 
-> 开发环境：后端 FastAPI + SQLite/SeekDB 二选一，前端免构建
-> 全量测试必须全绿
-
-几条硬性约定：
-
-1. **前端免构建**：`static/js/pages/*.js` 是 ESM 直载，改完刷新即生效，没有打包步骤——不要引入构建链
-2. **改了前端必过语法门禁**：`./.venv/bin/python -m pytest backend/tests/test_d3_frontend_assets.py -q`（一个括号错会让整个模块图加载失败、页面白屏且无报错）
-3. **改了后端补测试**：新增/修复逻辑都要有对应用例，`backend/tests/` 按 `test_d<序号>_<主题>.py` 命名
-4. **不要提交任何真实资产**：真实 IP、真实主机名、API Key、告警截图、内部文档一律不入库；演示数据一律用 `demo-*` 假名
-5. **提交前过一遍敏感扫描**：`python tools/oss_export.py` 会检查导出包，一旦命中敏感词会直接拒绝导出——本地也请先跑一次
+> 全量测试必须全绿（除已知的 d143 环境项）。
 
 **安全漏洞**不要开公开 Issue，走 GitHub 安全通告（Security Advisories）私下报告。
 

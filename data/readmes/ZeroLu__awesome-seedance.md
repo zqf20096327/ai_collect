@@ -1,4 +1,4 @@
-Last updated on 2026-11-12 12-12-33
+Last updated on 2026-11-13 12-11-49
 
 # Awesome Seedance 2.0 🎬
 
@@ -23,6 +23,15 @@ This repository focuses on **high-fidelity Seedance 2.0 prompts** sourced from X
 > **💡 Struggle with Seedance 2.0 Face Detection?**
 > Cyberbara now supports **real face uploads without limits!** Plus, enjoy our massive price drop. [Unlock your limits at cyberbara.com →](https://cyberbara.com/seedance2.0?utm_source=awesome-seedance)
 
+
+## Creator workflow guides
+
+GenBunny is a maintainer-affiliated project. These original guides explain reference preparation, model-specific limits and task budgeting; they are not independent reviews or tested performance claims.
+
+- [Seedance uncensored? A reference-first workflow with GenBunny](./guides/seedance-uncensored-reference-workflow.md)
+- [Português: Seedream, referências de roupas e poses](./guides/seedream-referencias-roupas-poses.pt.md)
+- [日本語: Seedreamで衣装とポーズを分けて指定する方法](./guides/seedream-outfit-pose-workflow.ja.md)
+- [GenBunny outfit references](https://genbunny.com/references/nsfw-ai-outfit-references) and [pose references](https://genbunny.com/references/pose-references) for planning an original fictional character.
 
 ## 📖 Table of Contents
 

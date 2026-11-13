@@ -2,7 +2,7 @@
 
 # DSH Mobile
 
-Case study on the website: <https://logachev.net/#case-dsh-mobile> · Technical write-ups (in Russian) on Habr: [the plugin and pairing](https://habr.com/ru/articles/1099110/), [task notifications without Google push](https://habr.com/ru/articles/1103324/)
+Case study on the website: <https://logachev.net/projects/#case-dsh-mobile> · Technical write-ups (in Russian) on Habr: [the plugin and pairing](https://habr.com/ru/articles/1099110/), [task notifications without Google push](https://habr.com/ru/articles/1103324/)
 
 [![Latest release](https://img.shields.io/github/v/release/pavel-logachev/dsh-mobile?style=flat-square&labelColor=0b0f14&label=release&color=c3f451)](https://github.com/pavel-logachev/dsh-mobile/releases/latest) [![CI checks](https://img.shields.io/github/actions/workflow/status/pavel-logachev/dsh-mobile/ci.yml?branch=main&style=flat-square&labelColor=0b0f14&label=CI)](https://github.com/pavel-logachev/dsh-mobile/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/pavel-logachev/dsh-mobile?style=flat-square&labelColor=0b0f14&label=license&color=7f99ad)](<LICENSE>)
 
@@ -50,7 +50,7 @@ The current release is **0.9.3** (8 November 2026): app 0.9.3 (versionCode 20) a
 - **Open chats from all projects.** Search chats and filter them by project. The project list follows the DSH sidebar and updates without re-pairing.
 - **Assign tasks.** Pick a project and a preset and write the task right away: the app creates a chat and sends the text once.
 - **Send photos and files.** A shot from the camera, photos through the system photo picker (Photo Picker), files through the system file picker. Uploading starts as soon as you pick them. One message can carry up to 20 attachments with a total size of up to 200 MiB, each file up to 20 MiB. The agent receives PNG, JPEG, WebP and GIF images as images; files are handed to the DSH attachment store at the moment of sending. Unsent uploads expire on the computer after 10 minutes and never reach DSH.
-- **Read the reply in real time.** Markdown, tables, code blocks with a copy button. Images from messages appear right in the conversation; tap one to open a full-screen viewer where you can zoom in, send it via Share or save it. Files from messages can be downloaded — up to 20 MiB. Service events are collapsed into an “Agent activity” line — the full text opens on tap. A long compacted chat whose older history cannot be restored within the limits opens with the latest messages and a note that the history is truncated.
+- **Read the reply in real time.** Markdown, tables, code blocks with a copy button. Images from messages appear right in the conversation; tap one to open a full-screen viewer where you can zoom in, send it via Share or save it. Files from messages can be downloaded – up to 20 MiB. Service events are collapsed into an “Agent activity” line – the full text opens on tap. A long compacted chat whose older history cannot be restored within the limits opens with the latest messages and a note that the history is truncated.
 - **Add messages and steer while the agent works.** By default a message joins the DSH queue and reaches the agent on its next turn. “Steer” delivers it at the agent's next step without stopping the current turn: hold the send button or tap ↳ on a queued message. You can also remove a message from the queue.
 - **Answer the agent's questions.** Pick one or more options, write your own answer or skip the question. The option the agent recommends is marked but not preselected. Approvals of agent actions stay on the computer.
 - **Rename a chat and change its model.** Both actions are in the ⋯ menu. The new model applies from the next model request, possibly as early as the next step of the running turn; a request that is already in progress is not switched.
@@ -84,7 +84,7 @@ The agent is working and you add a message: to the queue, or “Steer” at the 
 
 ![Attachments in a message](docs/images/0.8/attachments.png)
 
-Camera photos, gallery pictures and files — in one message to the agent.
+Camera photos, gallery pictures and files – in one message to the agent.
 
 ![Agent question](docs/images/0.8/question.png)
 
@@ -190,7 +190,7 @@ You can hand the detailed [setup guide](<docs/SETUP.md>) to your DSH agent. It c
    node $cli pair --config $config --read all --ttl 300 --qr
    ```
 
-   Or read access **and running tasks** in all of these projects — only if you agree to give the phone these rights:
+   Or read access **and running tasks** in all of these projects – only if you agree to give the phone these rights:
 
    ```powershell
    node $cli pair --config $config --read all --execute all --ttl 300 --qr
@@ -268,9 +268,9 @@ No. DSH Mobile is a companion to the DeepSeek Harness host, not a purchase of a 
 - [Signing and releasing the Android APK](<docs/ANDROID_RELEASE.md>)
 - [Contributing](<CONTRIBUTING.md>)
 
-## Need something similar?
+## Author
 
-This project was built by [Pavel Logachev](https://github.com/pavel-logachev). I build websites, web services, Telegram bots, apps and automation for your task. AI agents write the code under my direction. I scope the task, review and ship. 20 years in IT: first as an engineer, then as a project manager. Tell me about your task [by email](mailto:pavel@logachev.net) or [on Telegram](https://t.me/pavel_logachev) — a 20–30 minute review is free, and you do not need a ready-made specification. Prices and other projects are on [logachev.net](https://logachev.net/) and [in my profile](https://github.com/pavel-logachev).
+Built by [Pavel Logachev](https://github.com/pavel-logachev). I build AI agents for sales and procurement: [logachev.net](https://logachev.net/).
 
 ## License
 

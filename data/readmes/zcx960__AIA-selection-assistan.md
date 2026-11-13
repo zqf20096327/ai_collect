@@ -4,7 +4,7 @@
 
   <h1>AIA划词助手</h1>
 
-  <p>划词、截图、问 AI——少切几次窗口，多省几次复制粘贴。</p>
+  <p>划词、截图、录屏、问 AI、调用本地 Agent——少切几次窗口，多省几次复制粘贴。</p>
 
   <p>
     <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Windows-2f6fed?style=flat-square" alt="Platform" />
@@ -27,29 +27,53 @@ AIA划词助手是一个常驻菜单栏 / 系统托盘的小工具。在任意�
 
 除了划词，它还内置区域截图：拖拽框选一块屏幕，可以画线、画箭头标注，笔刷粗细随手拉滑杆调整。截完可以保存 PNG、复制到剪贴板、钉在桌面，或者直接交给 AI 识图。钉住的截图能滚轮缩放、拖拽搬位置、调整透明度，右键还能再次唤起 AI 识图。
 
+需要记录操作过程时，可以点击设置页的录屏按钮，框选屏幕区域，倒计时后开始录制。停止后直接播放预览，复制视频文件或保存为 MP4；默认快捷键为 `CommandOrControl+Shift+R`。当前仅录制画面，不录声音。
+
 返回窗口本身就是个独立对话——回答完了可以接着追问，AI 看得到之前的上下文；也能把划词内容作为引用带进对话，或者直接把图片发出去，图片会保留在会话历史里，追问时依然看得到。输出是流式的，可以随时打断。思考型模型回复时，思维链会实时显示：推理内容自动换行，在几行高的窗口里滚动展示最新进展，结束后折叠成「思考了 Xs」的摘要，不占正文篇幅。需要查实时信息时打开联网搜索，AI 会自己抓网页，并在回答里附上来源链接。
 
-模型这边可接 **OpenAI-compatible**（自建 endpoint、OpenAI、DeepSeek、月之暗面、智谱、各类第三方代理都行）或 **Anthropic** 官方 API。多套模板可一键切换 endpoint / Key / 模型，每个动作也可以指定自己的模板；API Key 只存在本地。界面支持亮 / 暗 / 跟随系统主题，中英双语都有，结果窗口的默认尺寸、字体和字号也可以在设置里调整。
+模型这边可接 **OpenAI-compatible**（自建 endpoint、OpenAI、DeepSeek、月之暗面、智谱、各类第三方代理都行）、**Anthropic** 官方 API，或通过 **ACP stdio** 连接本机 Agent。多套模板可一键切换服务和模型，每个动作也可以指定自己的模板；API Key 只存在本地。界面支持亮 / 暗 / 跟随系统主题，中英双语都有，结果窗口的默认尺寸、字体和字号也可以在设置里调整。
 
 目前支持 macOS 与 Windows。
 
 ## 下载
 
-最新发布版本 **v0.8.2**，可点击直接下载对应平台的安装包：
+最新发布版本 **v0.10.2**，可点击直接下载对应平台的安装包：
 
 | 平台 | 包类型 | 下载 |
 | --- | --- | --- |
-| macOS (Apple Silicon) | `.dmg` | [AIA-Selection-Assistant-0.8.2-arm64.dmg](https://github.com/zcx960/AIA-selection-assistan/releases/download/v0.8.2/AIA-Selection-Assistant-0.8.2-arm64.dmg) |
-| macOS (Apple Silicon) | `.zip` | [AIA-Selection-Assistant-0.8.2-arm64-mac.zip](https://github.com/zcx960/AIA-selection-assistan/releases/download/v0.8.2/AIA-Selection-Assistant-0.8.2-arm64-mac.zip) |
-| Windows x64 | 安装版 | [AIA-Selection-Assistant-Setup-0.8.2.exe](https://github.com/zcx960/AIA-selection-assistan/releases/download/v0.8.2/AIA-Selection-Assistant-Setup-0.8.2.exe) |
-| Windows x64 | 便携版 | [AIA-Selection-Assistant-Portable-0.8.2.exe](https://github.com/zcx960/AIA-selection-assistan/releases/download/v0.8.2/AIA-Selection-Assistant-Portable-0.8.2.exe) |
+| macOS (Apple Silicon) | `.dmg` | [AIA-Selection-Assistant-0.10.2-arm64.dmg](https://github.com/zcx960/AIA-selection-assistan/releases/download/v0.10.2/AIA-Selection-Assistant-0.10.2-arm64.dmg) |
+| macOS (Apple Silicon) | `.zip` | [AIA-Selection-Assistant-0.10.2-arm64-mac.zip](https://github.com/zcx960/AIA-selection-assistan/releases/download/v0.10.2/AIA-Selection-Assistant-0.10.2-arm64-mac.zip) |
+| Windows x64 | 安装版 | [AIA-Selection-Assistant-Setup-0.10.2.exe](https://github.com/zcx960/AIA-selection-assistan/releases/download/v0.10.2/AIA-Selection-Assistant-Setup-0.10.2.exe) |
+| Windows x64 | 便携版 | [AIA-Selection-Assistant-Portable-0.10.2.exe](https://github.com/zcx960/AIA-selection-assistan/releases/download/v0.10.2/AIA-Selection-Assistant-Portable-0.10.2.exe) |
 
-### v0.8.2 更新
+### v0.10.2 更新
 
-- 修复 Windows **便携版开机自启指向临时解压目录**导致的启动失败（#9）：便携版每次运行都会把自己解压到 `%TEMP%\<随机目录>`，而自启项原先跟着 `process.execPath` 写成了这个临时路径；临时目录被系统清理后，下次登录启动到的是一份残缺副本，主进程在 ESM 解析 `package.json` 阶段就抛 `ENOENT`，连窗口都起不来。现在自启项指向你双击的那个 `.exe`，旧版本写坏的注册表项会在新版本启动时自动覆写
-- 打包流程加入原生模块完整性校验：`selection-hook` / `uiohook-napi` 的 `package.json`、JS 入口或目标平台的 `.node` 若没正确落到 `app.asar.unpacked`，构建直接失败，避免问题包出厂
+- 移除本地 ACP Agent 的连接提示，Agent 状态不再误显示为「联网搜索」。
+- 聊天、划词结果、截图识图只在实际搜索时显示搜索提示，并在回答、思考、完成、失败或手动停止后及时清除。
+- 保留思考与错误信息；174 项自动化测试及类型检查、生产构建通过。
 
-v0.8.1 的主要更新（Windows 图标四角白块修复）见 [CHANGELOG](./CHANGELOG.md)。
+### v0.10.1 更新
+
+- 录屏时选区正常显示、外侧实时压暗，边框放在录制范围外；遮罩穿透鼠标，停止、取消或异常时自动清理。
+- 截图工具栏新增「录屏」按钮，直接录制当前框选区域，保留 3 秒倒计时，无需再次选择；截图标注不会进入视频。
+- 截图工具栏优化按钮点击区域、键盘操作、窄屏换行和边缘定位。
+- 174 项测试通过，并在 macOS 验证实际录制、底层应用操作及 H.264 MP4 输出。
+
+### v0.10.0 更新
+
+- 新增本地 Agent / ACP：自动识别常见的 Claude Code、Codex、CodeBuddy、Pi、Antigravity、Gemini CLI、Copilot、Cursor、OpenCode、Qwen、Kimi、Goose、Droid、Kiro、Cline、Kilo、OpenClaw 等约 30 类入口。
+- 通过 ACP stdio 直接调用本机 Agent，支持模型列表、流式输出、思考片段、取消和图片上下文；已有划词动作与对话窗口可以直接使用。
+- 设置页显示 `available`、`adapter-needed`、`cli-only` 和 `not-found` 状态，可配置命令、参数、工作目录、环境变量和模型。
+- 工具调用默认拒绝；需要时可逐次允许一次。检测不会读取凭据、启动 Agent 或自动下载适配器。
+
+### v0.9.0 更新
+
+- 新增区域录屏：设置页、托盘和全局快捷键启动，支持框选区域或整屏、3 秒倒计时和停止后播放预览。
+- 支持复制视频文件和保存 H.264 MP4，最高 4K / 30 fps；当前不录制声音，单次最长 60 分钟。
+- 控制面板避开录制区域；锁屏或所录显示器配置变化时停止，临时视频保留 7 天，请及时另存。
+- Mac 与 Windows Release 构建均在打包前执行测试，并保留原生模块完整性校验。
+
+v0.8.2 的 Windows 便携版自启修复及更早更新见 [CHANGELOG](./CHANGELOG.md)。
 
 历史版本与全部产物：[GitHub Releases](https://github.com/zcx960/AIA-selection-assistan/releases)。
 
@@ -67,6 +91,8 @@ v0.8.1 的主要更新（Windows 图标四角白块修复）见 [CHANGELOG](./CH
 - 选中文本后弹出悬浮工具栏，直接触发常用动作
 - 支持系统 TTS 朗读选中文本，macOS 与 Windows 均可用
 - 内置区域截图，可直接钉图、复制、保存或交给 AI 识图
+- 内置区域录屏，支持预览、复制视频文件和保存 H.264 MP4
+- 自动发现常见本地 Agent，通过 ACP stdio 复用其模型与登录状态
 - 独立 AI 对话窗口，支持多轮上下文与流式追问
 - 划词内容可作为引用带入对话，对话支持发图并保留图片上下文
 - 润色结果可一键「替换」回原应用被选中的位置（Windows x64，仅润色动作）
@@ -126,6 +152,30 @@ v0.8.1 的主要更新（Windows 图标四角白块修复）见 [CHANGELOG](./CH
 - 截完可选：AI 识图、复制到剪贴板、保存为 PNG，或钉在桌面
 - 钉住的图片支持滚轮缩放、拖拽移动、右键菜单调整透明度 / 重置 / 关闭
 - 钉图右键也能直接「AI 识图」，把图片送进识图对话
+
+### 区域录屏
+
+- 点击设置页右上角的录屏图标，或从菜单栏 / 托盘选择「区域录屏」
+- 也可先截图框选，在截图工具栏点击「录屏」，直接对当前区域倒计时录制，无需再次框选；截图标注不会进入视频
+- 录制时选区内保持正常亮度，选区外压暗，并用外侧红框标出边界；遮罩不拦截鼠标，可继续操作屏幕，停止或取消后自动移除
+- 默认快捷键为 `CommandOrControl+Shift+R`，可在「划词 → 快捷键」修改；再次按下停止录制
+- 在任意显示器拖动框选，或选择整个屏幕；`Enter` 开始，`Esc` 取消，倒计时 3 秒后录制
+- 控制面板放在所选区域外；整屏录制无可用空间时自动隐藏，可从托盘或快捷键停止
+- 停止后预览视频，选择「复制视频」或「保存 MP4」。复制的是文件，可粘贴到支持文件的应用，具体接收能力由目标应用决定
+- 仅录制画面（无声音），30 fps，输出 H.264 MP4，最高 4K；单次最长 60 分钟
+- 临时视频在应用数据目录的 `recordings` 文件夹保留 7 天，之后启动录屏时清理过期文件；需要长期保留请另存
+- macOS 首次使用需允许屏幕录制权限；锁屏或显示器配置变化时停止录制
+
+### 本地 Agent / ACP
+
+1. 在「设置 → API 配置」中扫描本地 Agent；扫描覆盖 PATH、Homebrew、npm/pnpm、nvm/fnm 和部分编辑器 Agent 目录。
+2. `available` 表示找到可配置的 ACP 入口；`adapter-needed` 表示发现 CLI，但还需要 ACP 适配器；`cli-only` 表示仅检测到普通 CLI，不能直接当作 ACP 服务；`not-found` 表示未找到入口。识别到某个 CLI 不代表它原生支持 ACP。
+3. 添加为服务后，确认命令与参数，按需填写工作目录、环境变量，并获取模型列表或测试连接。也可以新建自定义 ACP 服务，连接未列出的兼容 Agent。
+4. 在动作或对话中选择该服务即可使用。Agent 需要先在其终端中完成登录；AIA 不读取、复制或管理 CLI 凭据。图片是否可用取决于 Agent 声明的能力。
+
+Claude Code 和 Codex 等入口通常需要对应 ACP 适配器。扫描本身不执行命令，也不自动安装；选择使用 `npx` 等适配器命令后，首次连接可能联网下载相应包。Antigravity 等仅检测到 CLI 的入口需要另行配置兼容的 ACP server。
+
+工具权限默认拒绝；开启逐次确认后，只能允许当前一次，不接受永久授权。AIA 不提供文件或终端客户端工具，但 Agent 仍可能使用自身工具；实际权限和沙箱取决于所选 Agent 的配置。请确认启动命令和工作目录后再连接。
 
 ### AI 对话与追问
 
@@ -206,6 +256,7 @@ pnpm dist:win
 - OpenAI-compatible：使用 `/chat/completions` 与 `/models`
 - OpenAI-compatible 的 Base URL 建议填到 API 根路径（例如 `https://api.example.com/v1`）；如果粘贴了完整 `/chat/completions` 或 `/models` endpoint，应用会自动归一化
 - Anthropic：使用 `/v1/messages` 与 `/v1/models`
+- 本地 Agent / ACP：使用 ACP v1 JSON-RPC stdio，支持自动发现和自定义启动命令
 - Anthropic 模式下，Base URL 只需要填基础地址，不用手动补 `/v1`
 
 ### API 模板
@@ -251,7 +302,7 @@ pnpm dist:win
 - 替换回填目前仅 Windows x64，且只覆盖润色动作
 - Linux 目前还不是正式支持平台
 - 某些输入法或特殊应用环境下，划词位置和窗口跟随效果可能不完全一致
-- 目前只支持 OpenAI-compatible 和 Anthropic 两类接口
+- 支持 OpenAI-compatible、Anthropic 和本地 Agent / ACP；普通 CLI 需先提供兼容的 ACP 入口
 
 ## 贡献
 

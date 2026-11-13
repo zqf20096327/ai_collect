@@ -99,7 +99,9 @@ is the [Setup guide](docs/SETUP.md).
 pip install doberman-core
 ```
 
-After installing, run `doberman --install-completion` to enable shell tab completion.
+After installing, run `doberman --install-completion` to enable shell tab completion. If your shell
+can't find `doberman` (a `pip install --user` on Windows often leaves its Scripts folder off PATH),
+`python -m doberman` runs the same CLI.
 
 > **Note**
 > Run `doberman uninstall --global` to remove Doberman from the whole machine. It removes the
@@ -141,7 +143,9 @@ Doberman now reviews every tool call your agent makes. Confirm it with `doberman
 real verdicts with `doberman demo`. MCP-proxy wiring, the dashboard, the TUI, scan, and 2FA
 (two-factor authentication) are in the [Setup guide](docs/SETUP.md). Pending-approval cards in the
 dashboard can copy their already-redacted decision details as JSON for review handoffs without
-exposing raw targets or paths.
+exposing raw targets or paths. A script the agent writes and runs can answer its own prompts
+([Limitations](docs/LIMITATIONS.md)); `doberman doctor` checks whether Claude Code's sandbox keeps
+your 2FA secret out of its reach, and [Setup §4](docs/SETUP.md) shows the settings.
 
 Terminal explanations wrap to 60–78 columns. Paths and URLs remain intact, while other overlong
 tokens are split to stay within the configured width.

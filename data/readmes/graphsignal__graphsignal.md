@@ -7,7 +7,7 @@ Graphsignal is a GPU profiler for AI agents to autonomously optimize inference p
 * GPU activity profiles via CUPTI/ROCm injection: cumulative time per kernel, per CUDA graph, and per memcpy/memset/synchronization kind, plus transfer byte counters.
 * GPU probes: a vendorable C++ header to instrument code and kernels — by hand, or by an agent.
 * GPU telemetry via NVML (NVIDIA) and AMD SMI (ROCm): utilization, memory, power, temperature, clocks, throttling, NVLink/PCIe throughput, XID and ECC errors.
-* Process and host metrics: CPU, memory, command lines, runtimes.
+* Process and host metrics: CPU time per thread (which thread is the bottleneck, and whether it waited for a core), context switches, page faults, cgroup CPU throttling, memory, command lines, runtimes.
 * Inference engine metrics imported from Prometheus endpoints (vLLM, SGLang, TensorRT-LLM).
 * Error capture from engine console output, including crashes and tracebacks.
 * Local `/signals` HTTP endpoint serving metric statistics, recent errors, and resources as JSON, and `/metrics` serving the metrics in Prometheus format.
@@ -66,8 +66,8 @@ Options (before the command):
 | --- | --- |
 | `--version` | Print the profiler version and exit. |
 | `--metrics-port PORT` | Port to scrape the engine's Prometheus metrics on (default: derived from the engine's `--port`). |
-| `--listen-host HOST` | Host to bind the `/signals` and `/metrics` endpoint to (default: `127.0.0.1`). Set e.g. `0.0.0.0` to expose it for remote access — anything on that network can then read it. |
-| `--listen-port PORT` | Port for the `/signals` and `/metrics` endpoint (default: `18259`). |
+| `--listen-host HOST` | Host to bind the `/signals` and `/metrics` endpoint to (default: `127.0.0.1`). Set e.g. `0.0.0.0` to expose it for remote access — anything on that network can then read it. Set `GRAPHSIGNAL_LISTEN_TOKEN` in the environment of `graphsignal-run` to require `Authorization: Bearer <token>` on `/signals` and `/metrics` (`401` without it; `/health` stays open); `graphsignal-top` reads the same variable. The endpoint is plain HTTP, so the token is not encrypted in transit. |
+| `--listen-port PORT` | Port for the `/signals` and `/metrics` endpoint (default: `18259`). If the port is busy, `graphsignal-run` exits with an error instead of starting the workload. |
 | `--cuda-graph-trace {graph\|node}` | Granularity for CUDA graph launches (default: `graph`). `graph` times each replay as a whole into `cuda_graphs_nanoseconds`; `node` times the kernels inside the graph individually into `cuda_kernels_nanoseconds`. Also settable via `GRAPHSIGNAL_CUDA_GRAPH_TRACE`; the flag wins. |
 | `--rocm-kernel-trace {none\|all}` | Per-kernel tracing on ROCm (default: `none`). `all` times every kernel dispatch into `rocm_kernels_nanoseconds`. rocprofiler-sdk charges tens of microseconds per dispatch for it, so this is an investigation mode, not for production (see [Overhead](#overhead)). Also settable via `GRAPHSIGNAL_ROCM_KERNEL_TRACE`; the flag wins. |
 
@@ -113,7 +113,7 @@ Metric tags and the run's context tags become labels (`process.pid` → `process
 topk(20, rate(cuda_kernels_nanoseconds_total[1m]))
 ```
 
-See the [Prometheus Metrics guide](https://graphsignal.com/docs/guides/prometheus-metrics/) for the scrape config, label rules, and caveats.
+See the [Prometheus Metrics guide](https://graphsignal.com/docs/reference/prometheus-metrics/) for the scrape config, label rules, and caveats.
 
 ## Live view
 
@@ -125,7 +125,7 @@ graphsignal-top
 
 <img src="assets/graphsignal-top.png" alt="graphsignal-top: GPU utilization and memory, engine throughput and latency, GPU time breakdown, and kernels ranked by time for Qwen3-32B on two RTX PRO 6000s under SGLang" width="100%">
 
-Per GPU: utilization over time, memory, power, temperature, clocks, PCIe traffic, XID errors and throttling, all from the NVML (or AMD SMI) telemetry. The engine block comes from the scraped Prometheus metrics: running and waiting requests, KV-cache usage, token throughput over time, and TTFT / TPOT / end-to-end latency quantiles. Rates and the kernel ranking cover the last 5 seconds (`--window`). Kernels are named by a built-in taxonomy; the details view (`⏎`) shows the full mangled symbol, the totals since start, and the per-process split. `g`, `m` and `s` switch the table to CUDA graph replays, memory transfers and host synchronization.
+Per GPU: utilization over time, memory, power, temperature, clocks, PCIe traffic, XID errors and throttling, all from the NVML (or AMD SMI) telemetry. The engine block comes from the scraped Prometheus metrics: running and waiting requests, KV-cache usage, token throughput over time, and TTFT / TPOT / end-to-end latency quantiles. Rates and the kernel ranking cover the last 5 seconds (`--window`). Kernels are named by a built-in taxonomy; the details view (`⏎`) shows the full mangled symbol, the totals since start, and the per-process split. `g`, `m` and `s` switch the table to CUDA graph replays, memory transfers and host synchronization; `t` shows the host side — every process's threads ranked by CPU time as a share of one core, so a scheduler loop pinned at 100% while the GPU idles is one keystroke away.
 
 A workload on another machine is one flag away, provided its profiler was started with `--listen-host`:
 
@@ -238,7 +238,7 @@ What each mode costs, measured, and the method behind the numbers: [Profiler Ove
 
 ## Security and privacy
 
-The profiler runs as a sidecar process and does not require root or elevated privileges. Its `/signals` and `/metrics` endpoint binds to `127.0.0.1` by default — when no listen host is specified, it is not reachable from outside the machine. Binding another host with `--listen-host` is an explicit opt-in that exposes the endpoint for remote access; it is read-only but unauthenticated, so restrict access at the network level.
+The profiler runs as a sidecar process and does not require root or elevated privileges. Its `/signals` and `/metrics` endpoint binds to `127.0.0.1` by default — when no listen host is specified, it is not reachable from outside the machine. Binding another host with `--listen-host` is an explicit opt-in that exposes the endpoint for remote access; it is read-only but unauthenticated, so restrict access at the network level, or set `GRAPHSIGNAL_LISTEN_TOKEN` to require `Authorization: Bearer <token>` on `/signals` and `/metrics` (`graphsignal-top` reads the same variable). The values of credential flags on profiled command lines (`--api-key`, `--hf-token`, `--password`, …) are replaced with `[redacted]`. `graphsignal-run` binds the listen address before it starts the workload and exits with an error, without launching it, when the port is taken.
 
 Signals are uploaded only when `GRAPHSIGNAL_API_KEY` is set, and only to the server it reports to. Without the key, no profiling data ever leaves the machine. Remote commands are not possible in any configuration.
 

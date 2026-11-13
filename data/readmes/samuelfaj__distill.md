@@ -18,111 +18,92 @@ OpenAI-compatible protocol.
 
 ----
 
-## Modes
+## One prompt, five modes
 
-Each session runs in one execution mode. Auto is the default. Switch with a
-slash command in the TUI, or pass a flag to headless prompts.
-
-<table>
-<tr>
-<td width="25%" valign="top">
-
-### UltraSave
-
-<!-- benchmarks:ultrasave:begin -->
-# 94–99% cheaper
-
-UltraSave cost **0.0105x–0.0571x the estimated cost of Normal** with the mode pinned on the requested cohort: Astra (GPT-6 Astra + GPT-6 Luna), Sol (GPT-6.1 Sol + GPT-6 Luna), Opus (Opus 5.5 + Haiku 5.5); 27/27 runs passed against Normal's 27/27. Source: [summary](tools/task_cost_eval/results/requested-20261112-summary.json), 2026-11-12; distill 2.0.9 (39f1c6fe0bf8).
-<!-- benchmarks:ultrasave:end -->
-
-It leads on your cheaper worker model when you have one, keeps effort at high
-or lower, and compacts a long session early. Required checks still run before
-a task counts as done.
-
-`/ultrasave on` or `--ultrasave`
-
-</td>
-<td width="25%" valign="top">
-
-### UltraFast
-
-<!-- benchmarks:ultrafast:begin -->
-# 19–59% less time
-
-UltraFast took **0.411x–0.814x the wall time of Normal** with the mode pinned on the requested cohort: Astra (GPT-6 Astra + GPT-6 Luna), Sol (GPT-6.1 Sol + GPT-6 Luna), Opus (Opus 5.5 + Haiku 5.5); 27/27 runs passed against Normal's 27/27. Source: [summary](tools/task_cost_eval/results/requested-20261112-summary.json), 2026-11-12; distill 2.0.9 (39f1c6fe0bf8).
-<!-- benchmarks:ultrafast:end -->
-
-It goes straight to the work on your own model: no subagent, no waiting on
-side decisions, effort set once per turn at medium or lower. Verification
-steps stay.
-
-`/ultrafast on` or `--ultrafast`
-
-</td>
-<td width="25%" valign="top">
-
-### UltraCode
-
-<!-- benchmarks:ultracode:begin -->
-# No quality gain measured
-
-UltraCode passed **27/27 runs against Normal's 27/27** at **2.19x–3.17x the estimated cost** and **1.5x–2.02x the wall time of Normal** with the mode pinned on the requested cohort: Astra (GPT-6 Astra + GPT-6 Luna), Sol (GPT-6.1 Sol + GPT-6 Luna), Opus (Opus 5.5 + Haiku 5.5). Source: [summary](tools/task_cost_eval/results/requested-20261112-summary.json), 2026-11-12; distill 2.0.9 (39f1c6fe0bf8).
-<!-- benchmarks:ultracode:end -->
-
-It puts correctness first: effort is never lowered for a routine round, file
-reads stay whole, and after a turn that changed code an independent reviewer
-checks the patch. The final message ends with `Verification: REVIEWED` or
-`UNVERIFIED`. The cohort above is made of tasks every mode already passes, so
-it shows what the review costs, not what it catches.
-
-`/ultracode on` or `--ultracode`
-
-</td>
-<td width="25%" valign="top">
-
-### Auto
-
-<!-- benchmarks:auto:begin -->
-# 51–59% cheaper, 0.833x–1.18x Normal's time
-
-Distill took **0.414x–0.491x the estimated cost** and **0.833x–1.18x the wall time of Normal** under Auto on the requested cohort: Astra (GPT-6 Astra + GPT-6 Luna), Sol (GPT-6.1 Sol + GPT-6 Luna), Opus (Opus 5.5 + Haiku 5.5); 27/27 runs passed against Normal's 27/27. Source: [summary](tools/task_cost_eval/results/requested-20261112-summary.json), 2026-11-12; distill 2.0.9 (39f1c6fe0bf8).
-<!-- benchmarks:auto:end -->
-
-It picks a mode for each request and only moves up inside it, when the work
-turns out harder. Subagents inherit Auto and adapt independently.
-
-`/mode auto` or `--mode auto`
-
-</td>
-</tr>
-</table>
-
-### One prompt, five modes
-
-The same prompt in each mode, with DeepSeek V4.1 Flash Ultrafast as the main
-model and GLM 5.3 Flash Ultrafast as the worker (both through OpenGateway):
+The same prompt in each mode, with Claude Opus 5.5 as the main model and
+DeepSeek V4.1 Flash Ultrafast as the worker:
 
 > Create a view of moon surface and the sky, photorealistic. in three.js
 
+Open any scene from the table to run it in your browser, or find all five on
+the [Distill page](https://www.samuelfaj.com/en/distill/#benchmarks).
+
 | Mode | Result | Cost | Time | Tokens | Model calls |
 | --- | --- | ---: | ---: | ---: | --- |
-| **UltraSave** | <img src="docs/images/moon/ultrasave.webp" width="320" alt="UltraSave: grey terrain under a starfield"> | **$0.0019** (0.013x) | **2 min 5 s** (0.047x) | 0.39M | 21 GLM |
-| **UltraFast** | <img src="docs/images/moon/ultrafast.webp" width="320" alt="UltraFast: cratered terrain with low-sun shadows and Earth"> | $0.0873 (0.62x) | 31 min 9 s (0.71x) | 15.9M | 143 DeepSeek |
-| **UltraCode** | <img src="docs/images/moon/ultracode.webp" width="320" alt="UltraCode: boulder field with long shadows, Earth and a faint Milky Way"> | $0.2070 (1.46x) | 63 min 36 s (1.44x) | 41.8M | 200 DeepSeek |
-| **Auto** | <img src="docs/images/moon/auto.webp" width="320" alt="Auto: rock-strewn plain with Earth in the sky"> | $0.0620 (0.44x) | 22 min 43 s (0.52x) | 9.2M | 90 DeepSeek |
-| **Normal** | <img src="docs/images/moon/normal.webp" width="320" alt="Normal: craters and boulders under the Milky Way with Earth"> | $0.1417 (1.00x) | 44 min 4 s (1.00x) | 30.1M | 175 DeepSeek |
+| [**UltraSave**](https://www.samuelfaj.com/files/distill/moon/ultrasave/) | <a href="https://www.samuelfaj.com/files/distill/moon/ultrasave/"><img src="docs/images/moon/ultrasave.webp" width="320" alt="UltraSave: cratered plain with boulders, the Sun and a crescent Earth"></a> | **$0.058** (0.40x) | 16 min 18 s (3.57x) | 6.2M | 86 DeepSeek |
+| [**UltraFast**](https://www.samuelfaj.com/files/distill/moon/ultrafast/) | <a href="https://www.samuelfaj.com/files/distill/moon/ultrafast/"><img src="docs/images/moon/ultrafast.webp" width="320" alt="UltraFast: large boulders casting shadows under a starfield with Earth"></a> | $0.577 (4.00x) | 8 min 7 s (1.77x) | 0.5M | 18 Opus |
+| [**UltraCode**](https://www.samuelfaj.com/files/distill/moon/ultracode/) | <a href="https://www.samuelfaj.com/files/distill/moon/ultracode/"><img src="docs/images/moon/ultracode.webp" width="320" alt="UltraCode: rugged craters in low sunlight with the Sun and a crescent Earth"></a> | $1.011 (7.00x) | 15 min 29 s (3.39x) | 7.8M | 19 Opus, 73 DeepSeek |
+| [**Auto**](https://www.samuelfaj.com/files/distill/moon/auto/) | <a href="https://www.samuelfaj.com/files/distill/moon/auto/"><img src="docs/images/moon/auto.webp" width="320" alt="Auto: bright regolith plain with distant craters and Earth"></a> | $0.508 (3.52x) | 15 min 29 s (3.39x) | 6.0M | 8 Opus, 77 DeepSeek |
+| [**Normal**](https://www.samuelfaj.com/files/distill/moon/normal/) | <a href="https://www.samuelfaj.com/files/distill/moon/normal/"><img src="docs/images/moon/normal.webp" width="320" alt="Normal: rolling terrain with rocks and Earth above the horizon"></a> | $0.145 (1.00x) | **4 min 34 s** (1.00x) | 1.9M | 5 Opus, 32 DeepSeek |
 
 Ratios are against Normal. One run per mode, all five started at the same time
-on 2026-11-12 with distill 2.0.9 (39f1c6fe0bf8); each finished with exit code 0.
-Cost uses OpenGateway's billed prices that day (DeepSeek $0.09/M input,
-$0.36/M output, $0.0018/M cached; GLM $0.015/M, $0.05/M, $0.003/M) and leaves
-out the Jev routing calls, which have no published price. UltraCode ended with
-`Verification: UNVERIFIED`. Thumbnails are frames captured in headless Chrome
-at 1280×720.
+on 2026-11-12 with distill 2.0.9 (9bbf0aafec73), the commit of v2.0.72; each
+finished with exit code 0. A single run per mode carries run-to-run variation:
+here Normal handed the build to the worker once and accepted the first result,
+so it finished first, while UltraFast kept all 18 rounds on Opus. UltraSave led
+on the worker, and UltraCode ended with `Verification: REVIEWED`. Cost is an
+estimate: Opus at list API prices ($4/M input, $0.20/M cached, $5/M cache
+write, $20/M output; the runs used a Claude subscription) and DeepSeek at
+OpenGateway's billed prices ($0.09/M input, $0.36/M output, $0.0018/M cached),
+without the Jev routing calls, which have no published price. Thumbnails are
+frames captured in headless Chrome at 1280×720.
 
-Details:
-[UltraSave](docs/ultrasave.md), [UltraFast](docs/ultrafast.md) and
-[UltraCode](docs/ultracode.md).
+### Paris, 1888
+
+A harder prompt, with Claude Opus 5.5 as the main model and Claude Sonnet 5.5
+as the worker: a 14-second deterministic voxel animation. Each scene plays on
+its own when you open it.
+
+<details>
+<summary>Prompt</summary>
+
+```text
+Build a single self-contained three.js HTML page that renders a 14-second animation (1280x720, 30fps, deterministic: expose window.renderAt(t) so every frame can be captured).
+
+Scene: a floating voxel diorama island - Paris, 1888, the Eiffel Tower under construction. Everything is already moving on frame 1.
+
+Island:
+- floating chunk with layered rock underside, the Seine curving across the front with stone quays and an arched bridge
+- Champ de Mars: dirt work yard, stacks of iron girders, wooden sheds, a steam engine with a smoking chimney
+- around it: rows of Haussmann buildings with cream walls, grey zinc roofs, chimneys, tiny trees along the boulevards
+
+The tower (the hero):
+- dark reddish-brown wrought iron lattice made of thin voxel beams with real X-bracing, not solid blocks
+- four curved legs and the first platform finished, the second level half built, the top section only a skeleton
+- wooden scaffolding towers under the legs, small creeper cranes on the structure lifting girders on chains
+- glowing orange rivet sparks where workers hammer, small puffs of steam
+
+Life (hundreds of tiny voxel people, ~3 voxels tall):
+- riveting teams on every level with hammers swinging, workers walking along beams
+- girders hoisted by cranes swinging slowly into place
+- horse-drawn carts carrying iron across the yard, crowds of onlookers in 1880s clothes with top hats and parasols
+- a riverboat with a smoking funnel moving along the Seine, carriages crossing the bridge, pigeons circling the tower
+
+Camera and look:
+- wide view of the whole island, slow orbit (~25 degrees) with a gentle push-in toward the tower
+- warm late-afternoon sun, soft shadows, ambient occlusion, light haze, rounded voxels, ACES tone mapping, soft bloom on sparks
+```
+
+</details>
+
+| Mode | Result | Cost | Time | Tokens | Model calls |
+| --- | --- | ---: | ---: | ---: | --- |
+| [**UltraSave**](https://www.samuelfaj.com/files/distill/eiffel/ultrasave/) | <a href="https://www.samuelfaj.com/files/distill/eiffel/ultrasave/"><img src="docs/images/eiffel/ultrasave.webp" width="320" alt="UltraSave: floating voxel island with a tall brick-red tower, crowds and parasols"></a> | **$3.66** (0.69x) | 45 min 15 s (0.75x) | 2.5M | 35 Sonnet |
+| [**UltraFast**](https://www.samuelfaj.com/files/distill/eiffel/ultrafast/) | <a href="https://www.samuelfaj.com/files/distill/eiffel/ultrafast/"><img src="docs/images/eiffel/ultrafast.webp" width="320" alt="UltraFast: voxel Paris island with Haussmann blocks, the Seine and the iron tower"></a> | **$1.29** (0.24x) | **10 min 0 s** (0.17x) | 0.5M | 11 Opus |
+| [**UltraCode**](https://www.samuelfaj.com/files/distill/eiffel/ultracode/) | <a href="https://www.samuelfaj.com/files/distill/eiffel/ultracode/"><img src="docs/images/eiffel/ultracode.webp" width="320" alt="UltraCode: voxel island with sparks around the tower base, crowds and a riverboat"></a> | $10.94 (2.07x) | 2 h 23 min 59 s (2.38x) | 4.0M | 32 Opus, 43 Sonnet |
+| [**Auto**](https://www.samuelfaj.com/files/distill/eiffel/auto/) | <a href="https://www.samuelfaj.com/files/distill/eiffel/auto/"><img src="docs/images/eiffel/auto.webp" width="320" alt="Auto: floating island with the half-built tower, the Seine, a bridge and boats"></a> | $9.13 (1.73x) | 1 h 32 min 37 s (1.53x) | 7.5M | 23 Opus, 74 Sonnet |
+| [**Normal**](https://www.samuelfaj.com/files/distill/eiffel/normal/) | <a href="https://www.samuelfaj.com/files/distill/eiffel/normal/"><img src="docs/images/eiffel/normal.webp" width="320" alt="Normal: hazy voxel island with the tower lit by rivet sparks and circling pigeons"></a> | $5.29 (1.00x) | 1 h 0 min 26 s (1.00x) | 2.8M | 9 Opus, 31 Sonnet |
+
+Ratios are against Normal. One run per mode, all five started at the same time
+on 2026-11-13 with distill 2.0.9 (9bbf0aafec73), the commit of v2.0.72; each
+finished with exit code 0, and UltraCode ended with `Verification: REVIEWED`.
+Here the worker cost more than the main model working alone: Sonnet wrote
+290,000 to 830,000 output tokens per run, most of it reasoning before each
+command, and rounds of up to 16 minutes, while Opus alone in UltraFast wrote
+44,000 and finished first. Cost is an estimate at Anthropic's list API prices
+(Opus $4/M input, $0.20/M cached, $5/M cache write, $20/M output; Sonnet $2,
+$0.10, $2.50 and $10; the runs used a Claude subscription), without the Jev
+routing calls. Thumbnails are the frame at 7 s, from `window.renderAt(7)`.
 
 ## Benchmarks
 

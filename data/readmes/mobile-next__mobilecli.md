@@ -163,6 +163,9 @@ Note that screencapture is one way. You will have to use `io tap` commands to ta
 # Boot an offline emulator or simulator
 mobilecli device boot --device <device-id>
 
+# Boot it with a visible window
+mobilecli device boot --device <device-id> --headed
+
 # Shutdown a running emulator or simulator
 mobilecli device shutdown --device <device-id>
 
@@ -225,6 +228,27 @@ Caveats per platform:
 | Android Emulator | Uses the emulator console. It has no way to undo a fix, so `clear` sets the location back to the coordinates an emulator boots with (the Googleplex), not to a real one |
 | Android Real Device | Runs an on-device agent as a mock location provider, granting the `mock_location` appop to `com.android.shell`. Some OEM ROMs ignore mock providers, and apps checking `Location.isFromMockProvider()` or Play Integrity can tell |
 
+### VoiceOver ♿
+
+Drive VoiceOver and read what it speaks, to check an app's accessibility labels and focus order. Needs iOS 27 or later, on a simulator or a real device.
+
+```bash
+# Turn VoiceOver on or off, or read its state
+mobilecli device voiceover set --device <device-id> on
+mobilecli device voiceover get --device <device-id>
+
+# What VoiceOver speaks for the focused element, e.g. "Add Favorites, button"
+mobilecli device voiceover speech --device <device-id>
+
+# Move to the next or previous element and print what VoiceOver speaks there
+mobilecli device voiceover move --device <device-id> next
+mobilecli device voiceover move --device <device-id> previous
+
+mobilecli device voiceover set --device <device-id> off
+```
+
+VoiceOver stays on after mobilecli exits, so turn it off when done. While it is on, `io tap` focuses an element instead of activating it. `move in` and `move out` need VoiceOver's Navigation Style set to Groups.
+
 ### Supported Hardware Buttons
 
 - `HOME` - Home button
@@ -244,6 +268,12 @@ mobilecli apps foreground --device <device-id>
 
 # Launch an app
 mobilecli apps launch <bundle-id> --device <device-id>
+
+# Launch an app with arguments and environment variables (iOS)
+mobilecli apps launch <bundle-id> --device <device-id> --arg -FeatureX --arg YES --env API_URL=https://staging.example.com
+
+# Launch an app with string intent extras (Android, each --arg is key=value and becomes --es key value)
+mobilecli apps launch <package-name> --device <device-id> --arg featureX=true --arg apiUrl=https://staging.example.com
 
 # Terminate an app
 mobilecli apps terminate <bundle-id> --device <device-id>

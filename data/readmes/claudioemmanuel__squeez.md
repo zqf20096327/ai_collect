@@ -11,7 +11,7 @@
 [![DCO](https://img.shields.io/badge/contributions-DCO_signed--off-green.svg)](CONTRIBUTING.md#license--contributor-sign-off)
 [![Changelog](https://img.shields.io/badge/changelog-📋-blue.svg)](CHANGELOG.md)
 
-End-to-end token optimizer for seven AI CLI hosts — Claude Code, GitHub Copilot CLI, OpenCode, Gemini CLI, OpenAI Codex CLI, Pi, and Hermes. Compresses bash output up to **95%**, collapses redundant calls, preserves exact identifiers through every summary, refuses net-loss compressions, and injects a terse prompt persona — automatically, with zero new runtime dependencies.
+End-to-end token optimizer for seven AI CLI hosts — Claude Code, GitHub Copilot CLI, OpenCode, Gemini CLI, OpenAI Codex CLI, Pi, and Hermes. Compresses bash output up to **95%**, collapses redundant calls, preserves exact identifiers through every summary, refuses net-loss compressions, and injects a terse prompt persona — automatically, with zero new runtime dependencies. Compression is **reversible** (what a large compression drops is stashed, one `squeez_retrieve` away) and **cheap**: one static binary, a pipeline linear in output size with fixed-size caches (see [Benchmarks](#benchmarks)).
 
 ---
 
@@ -135,8 +135,8 @@ squeez update --insecure  # skip checksum (not recommended)
 | **Bash compression** | Intercepts every command via `PreToolUse` hook, applies smart filter → dedup → log-template → relevance-truncation. Up to 95% reduction. (Per-dir grouping stays reserved for `git status`, where the path list is the payload.) |
 | **Reversible compression** | When a large output is compressed, the verbatim original is stashed in a content-addressed blob and a `[squeez: … call squeez_retrieve with key="<id>"]` marker is emitted. The model recovers any dropped detail via the `squeez_retrieve` MCP tool — so compression can be aggressive without losing information. TTL-pruned, zero-dep. |
 | **Log-template compaction** | Collapses near-identical log lines that differ only by a timestamp, id, hex hash, or `1ms`-style value into one `[×N] <template>` line — what `dedup` (exact-only) leaves on the table. |
-| **Relevance-aware truncation** | When the generic handler must truncate, it keeps the highest-relevance lines (error/signal words + terms drawn from the command) instead of a blind head — so a buried error survives. |
-| **Context engine** | Cross-call redundancy with two paths: exact-hash match (FNV-1a, fast) **and** fuzzy trigram-shingle Jaccard ≥0.85 (whitespace, timestamps, single-line edits no longer defeat dedup). |
+| **Relevance-aware truncation** | When the generic handler must truncate, it keeps the highest-relevance lines (error/signal words + terms drawn from the command) instead of a blind head — so a buried error survives. Each line is scored once and the top N selected in linear time. |
+| **Context engine** | Cross-call redundancy with two paths: exact-hash match (FNV-1a, fast) **and** fuzzy trigram-shingle Jaccard ≥0.85 (whitespace, timestamps, single-line edits no longer defeat dedup). The sketch is built in one streamed pass — O(n) time, O(k) memory, no per-trigram allocation. |
 | **Summarize fallback** | Outputs exceeding 500 lines are replaced with a ≤40-line dense summary (top errors, files, test result, tail). **Benign outputs get 2× the threshold** so successful builds stay verbatim. |
 | **Identifier factsheet** | Exact identifiers in the region a summary drops — git SHAs, UUIDs, ticket codes, versions, large ids — ride along in every dense summary (`ids_preserved:` / `"ids":[...]`). Deterministic, budget-capped (16 facts / 256 chars), so lossy summarization never silently loses a hash or ticket number. |
 | **Net-win gate** | The `# squeez` header itself costs ~15–25 tokens. When applied compression saves less than `net_win_min_tokens` (default 24), the call becomes a verbatim passthrough with zero savings recorded — no net-loss invocations. |
@@ -155,7 +155,7 @@ squeez update --insecure  # skip checksum (not recommended)
 | **Memory-file compression** | `squeez compress-md` compresses CLAUDE.md / AGENTS.md / copilot-instructions.md in-place — pure Rust, zero LLM. i18n-aware: set `lang = pt` (or `--lang pt`) for pt-BR article/filler/phrase dropping and Unicode-correct matching. |
 | **Session memory** | On `SessionStart`, injects a structured summary of the previous session: files investigated, learned facts (errors + git events), completed work (builds, test passes), and next steps (unresolved errors, failing tests). Summaries carry temporal validity (`valid_from`/`valid_to`) and, when the host provides one, the id and working directory of the host session they came from (`host_session_id`/`cwd`). |
 | **Token tracking** | Every `PostToolUse` result (Bash, Read, Grep, Glob, Monitor, SubagentStop) feeds a `SessionContext` so squeez knows what the agent has already seen. Read/Grep/Glob/Monitor outputs are also rewritten via `updatedToolOutput` (Claude Code v2.1.119+) when content is redundant or oversized. |
-| **Token economy** | Sub-agent cost tracking (~200K tokens/spawn), burn rate prediction (`[budget: ~N calls left]`), session efficiency scoring, tool result size budgets. |
+| **Token economy** | Sub-agent cost measured from the host transcript's real `usage` (the flat `agent_spawn_cost` estimate is only the fallback), spawns counted at dispatch with a ceiling, burn rate prediction (`[budget: ~N calls left]`), session efficiency scoring, tool result size budgets. |
 | **Auto-calibration** | `squeez calibrate` runs benchmarks on install and generates an optimized `config.ini` (aggressive / balanced / conservative profiles). |
 
 ---
@@ -175,7 +175,16 @@ There are now several token-reduction tools targeting AI coding CLIs. They make 
 | [LLMLingua-2](https://github.com/microsoft/LLMLingua) (Microsoft) | Neural prompt compressor that removes 50-80% of a prompt while preserving meaning | API / library | Python, transformers | Strong on long static prompts | Latency + model dep; not a CLI hook. |
 | [TOON](https://github.com/toon-format/toon) | Schema-aware JSON replacement (`users[100]{id,name,role}:`) — ~40% fewer tokens on arrays of uniform objects | Library, not a CLI | TypeScript SDK | Lossless on the right shape; squeez [embeds a TOON encoder](https://github.com/jhonatanjunio/squeez/pull/4) for `gh`/`kubectl`/`aws`/`gcloud`/`az` JSON outputs | Only helps on uniform JSON shapes. |
 
-If you want a CLI hook that just works, never needs a Python runtime, and never silently inflates your output tokens, squeez is the safe default. If you can run an LLM next to your shell and want task-aware filtering, KRLabsOrg/squeez is worth a look as a complement. The two squeez projects share a name but are independent.
+**Why squeez is the safe default for a CLI hook** — it combines properties the other approaches trade away:
+
+- **Nothing to run beside it.** No model, no proxy in front of your API traffic, no daemon. The compressor is one static Rust binary (`libc` only on Unix); every hook script only finds that binary and runs `squeez hook <event>`, so no hook needs Python or any other interpreter (the Hermes plugin is Python because Hermes is).
+- **Lossless where it matters, reversible everywhere else.** Exact identifiers survive every summary; what a large compression drops is stashed and one `squeez_retrieve` away.
+- **Refuses net-loss compressions.** The net-win gate passes output through verbatim when compressing would cost more than it saves, and the preservation guard keeps the original when navigation anchors don't survive.
+- **Fails open.** Risky and bypassed commands run unwrapped under the host's own permission rules; if squeez can't stash or compress safely, you get the raw output.
+- **Cheap per call.** Linear-time pipeline, fixed-size caches, command exit detected within ~10 ms — `squeez benchmark` reproduces the [Benchmarks](#benchmarks) on your machine.
+- **Seven hosts, one config.** Same pipeline and session memory on Claude Code, Copilot CLI, OpenCode, Gemini CLI, Codex CLI, Pi and Hermes.
+
+If you can run an LLM next to your shell and want task-aware filtering, KRLabsOrg/squeez is worth a look as a complement. The two squeez projects share a name but are independent.
 
 ---
 
@@ -231,52 +240,52 @@ Measured on macOS (Apple Silicon). Token count = `chars / 4` (matches Claude's ~
 
 | Scenario | Before | After | Reduction | Latency |
 |----------|--------|-------|-----------|---------|
-| `curl_json` | 18,904 tk | 36 tk | **-100%** | 1.1 ms |
-| `az_json` | 23,479 tk | 74 tk | **-100%** | 583 µs |
-| `summarize_huge` | 82,257 tk | 467 tk | **-99%** | 88.3 ms |
-| `xcode_build` | 1,881 tk | 17 tk | **-99%** | 290 µs |
-| `go_test_ndjson_failures` | 7,176 tk | 106 tk | **-99%** | 1.1 ms |
-| `read_reread_distant` | 717 tk | 17 tk | **-98%** | 10.1 ms |
-| `rsync_transfer` | 912 tk | 26 tk | **-97%** | 204 µs |
-| `repetitive_output` | 4,692 tk | 134 tk | **-97%** | 403 µs |
-| `pytest_failures` | 3,402 tk | 108 tk | **-97%** | 300 µs |
-| `jest_json_failures` | 5,643 tk | 218 tk | **-96%** | 794 µs |
-| `systemctl_status` | 732 tk | 41 tk | **-94%** | 192 µs |
-| `ps_aux` | 40,373 tk | 2,338 tk | **-94%** | 1.0 ms |
-| `cargo_test_failures` | 1,934 tk | 157 tk | **-92%** | 234 µs |
-| `git_log_200` | 2,692 tk | 275 tk | **-90%** | 399 µs |
-| `tsc_errors` | 731 tk | 101 tk | **-86%** | 231 µs |
-| `eslint_json_failures` | 1,553 tk | 233 tk | **-85%** | 402 µs |
-| `pip_install` | 407 tk | 62 tk | **-85%** | 192 µs |
-| `high_context_adaptive` | 4,418 tk | 729 tk | **-84%** | 1.6 ms |
-| `cargo_build_noisy` | 2,106 tk | 439 tk | **-79%** | 505 µs |
-| `bundle_install` | 121 tk | 28 tk | **-77%** | 175 µs |
-| `docker_logs` | 665 tk | 181 tk | **-73%** | 232 µs |
-| `curl_html_response` | 2,181 tk | 626 tk | **-71%** | 236 µs |
-| `git_status` | 50 tk | 16 tk | **-68%** | 172 µs |
-| `ruff_json_failures` | 1,261 tk | 494 tk | **-61%** | 371 µs |
-| `verbose_app_log` | 4,957 tk | 1,978 tk | **-60%** | 821 µs |
-| `npm_install` | 524 tk | 218 tk | **-58%** | 222 µs |
-| `crosscall_redundancy_3x` | 486 tk | 222 tk | **-54%** | 52.6 ms |
-| `ls_la` | 1,782 tk | 872 tk | **-51%** | 241 µs |
-| `mypy_errors` | 650 tk | 349 tk | **-46%** | 184 µs |
-| `shellcheck_run` | 335 tk | 187 tk | **-44%** | 169 µs |
-| `agent_directory_output` | 3,348 tk | 1,937 tk | **-42%** | 938 µs |
-| `env_dump` | 441 tk | 287 tk | **-35%** | 189 µs |
-| `agent_heavy` | 2,306 tk | 1,514 tk | **-34%** | 689 µs |
-| `git_copilot` | 640 tk | 421 tk | **-34%** | 281 µs |
-| `find_deep` | 424 tk | 279 tk | **-34%** | 197 µs |
-| `adversarial_tiny_output` | 4 tk | 3 tk | **-25%** | 160 µs |
-| `md_prose` | 187 tk | 142 tk | **-24%** | 120 µs |
-| `md_claude_md` | 316 tk | 270 tk | **-15%** | 231 µs |
-| `claude_md_overhead` | 717 tk | 635 tk | **-11%** | 168 µs |
-| `next_build_output` | 902 tk | 884 tk | **-2%** | 233 µs |
-| `git_diff` | 502 tk | 497 tk | **-1%** | 213 µs |
-| `jest_failures` | 451 tk | 448 tk | **-1%** | 216 µs |
-| `state_first_simulation` | 182 tk | 181 tk | **-1%** | 159 µs |
-| `kubectl_pods` | 1,513 tk | 1,513 tk | **-0%** | 213 µs |
-| `adversarial_dense_json` | 485 tk | 485 tk | **-0%** | 173 µs |
-| `adversarial_reread_tiny` | 4 tk | 4 tk | **-0%** | 7.8 ms |
+| `curl_json` | 18,904 tk | 36 tk | **-100%** | 658 µs |
+| `az_json` | 23,479 tk | 74 tk | **-100%** | 349 µs |
+| `summarize_huge` | 82,257 tk | 467 tk | **-99%** | 19.6 ms |
+| `xcode_build` | 1,881 tk | 17 tk | **-99%** | 171 µs |
+| `go_test_ndjson_failures` | 7,176 tk | 106 tk | **-99%** | 679 µs |
+| `read_reread_distant` | 717 tk | 17 tk | **-98%** | 7.7 ms |
+| `rsync_transfer` | 912 tk | 26 tk | **-97%** | 120 µs |
+| `repetitive_output` | 4,692 tk | 134 tk | **-97%** | 230 µs |
+| `pytest_failures` | 3,402 tk | 108 tk | **-97%** | 168 µs |
+| `jest_json_failures` | 5,643 tk | 218 tk | **-96%** | 454 µs |
+| `systemctl_status` | 732 tk | 41 tk | **-94%** | 118 µs |
+| `ps_aux` | 40,373 tk | 2,338 tk | **-94%** | 684 µs |
+| `cargo_test_failures` | 1,934 tk | 157 tk | **-92%** | 143 µs |
+| `git_log_200` | 2,692 tk | 275 tk | **-90%** | 250 µs |
+| `tsc_errors` | 731 tk | 101 tk | **-86%** | 129 µs |
+| `eslint_json_failures` | 1,553 tk | 233 tk | **-85%** | 238 µs |
+| `pip_install` | 407 tk | 62 tk | **-85%** | 108 µs |
+| `high_context_adaptive` | 4,418 tk | 729 tk | **-84%** | 667 µs |
+| `cargo_build_noisy` | 2,106 tk | 439 tk | **-79%** | 279 µs |
+| `bundle_install` | 121 tk | 28 tk | **-77%** | 95 µs |
+| `docker_logs` | 665 tk | 181 tk | **-73%** | 144 µs |
+| `curl_html_response` | 2,181 tk | 626 tk | **-71%** | 145 µs |
+| `git_status` | 50 tk | 16 tk | **-68%** | 119 µs |
+| `ruff_json_failures` | 1,261 tk | 494 tk | **-61%** | 213 µs |
+| `verbose_app_log` | 4,957 tk | 1,978 tk | **-60%** | 517 µs |
+| `npm_install` | 524 tk | 218 tk | **-58%** | 137 µs |
+| `crosscall_redundancy_3x` | 486 tk | 222 tk | **-54%** | 2.5 ms |
+| `ls_la` | 1,782 tk | 872 tk | **-51%** | 148 µs |
+| `mypy_errors` | 650 tk | 349 tk | **-46%** | 108 µs |
+| `shellcheck_run` | 335 tk | 187 tk | **-44%** | 89 µs |
+| `agent_directory_output` | 3,348 tk | 1,937 tk | **-42%** | 476 µs |
+| `env_dump` | 441 tk | 287 tk | **-35%** | 107 µs |
+| `agent_heavy` | 2,306 tk | 1,514 tk | **-34%** | 329 µs |
+| `git_copilot` | 640 tk | 421 tk | **-34%** | 165 µs |
+| `find_deep` | 424 tk | 279 tk | **-34%** | 112 µs |
+| `adversarial_tiny_output` | 4 tk | 3 tk | **-25%** | 85 µs |
+| `md_prose` | 187 tk | 142 tk | **-24%** | 73 µs |
+| `md_claude_md` | 316 tk | 270 tk | **-15%** | 144 µs |
+| `claude_md_overhead` | 717 tk | 635 tk | **-11%** | 97 µs |
+| `next_build_output` | 902 tk | 884 tk | **-2%** | 137 µs |
+| `git_diff` | 502 tk | 497 tk | **-1%** | 134 µs |
+| `jest_failures` | 451 tk | 448 tk | **-1%** | 117 µs |
+| `state_first_simulation` | 182 tk | 181 tk | **-1%** | 87 µs |
+| `kubectl_pods` | 1,513 tk | 1,513 tk | **-0%** | 114 µs |
+| `adversarial_dense_json` | 485 tk | 485 tk | **-0%** | 99 µs |
+| `adversarial_reread_tiny` | 4 tk | 4 tk | **-0%** | 6.6 ms |
 
 ### Aggregate
 
@@ -287,8 +296,8 @@ Measured on macOS (Apple Silicon). Token count = `chars / 4` (matches Claude's ~
 | Markdown / context files | **-18.1%** |
 | Wrap / cross-call engine | **-99.2%** |
 | Quality (signal terms preserved) | **46 / 46 pass** |
-| Latency p50 (filter mode) | **3.8 ms** |
-| Latency p95 (incl. wrap/summarize) | **10 ms** |
+| Latency p50 (filter mode) | **< 0.3 ms** |
+| Latency p95 (incl. wrap/summarize) | **7 ms** |
 
 ### Estimated cost savings — Claude Sonnet 4.6 · $3.00 / MTok input
 
@@ -599,12 +608,14 @@ The ruleset is adapted from the MIT-licensed
 
 ### Compression pipeline
 
-Each bash command passes through four strategies in order:
+Output a dedicated handler doesn't claim passes through four strategies in order, each a single linear pass:
 
 1. **smart_filter** — strips ANSI codes, progress bars, spinner chars, timestamps, and tool-specific noise (npm download lines, stack frame noise, etc.)
 2. **dedup** — lines appearing ≥ `dedup_min` times are collapsed to one entry annotated `[×N]`
-3. **grouping** — files in the same directory (≥5 siblings) are collapsed to `dir/  N modified  [squeez grouped]`
-4. **truncation** — `Head` (keep first N) or `Tail` (keep last N) depending on handler; truncated portion noted
+3. **log_template** — near-identical lines that differ only by a timestamp, id or counter collapse to one `[×N] <template>` line
+4. **relevance truncation** — over the line limit, the highest-scoring lines (error/signal words, terms from the command, head/tail bias) are kept in original order; the full original stays retrievable
+
+Per-directory **grouping** (≥5 siblings → `dir/  N modified`) is reserved for `git status`, where the path list is the payload.
 
 ### Supported handlers
 

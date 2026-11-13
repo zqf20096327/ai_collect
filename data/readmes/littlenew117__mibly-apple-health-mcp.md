@@ -14,7 +14,9 @@
 
 # Apple Health MCP — Mibly Receiver
 
-An open-source **Apple Health MCP server**: bring your Apple Health (HealthKit) data — sleep, steps, heart rate, HRV, workouts, weight, body fat, and more — into Claude Desktop/Code, Codex, or any other AI agent you build or run yourself (anything that speaks MCP).
+An open-source **Apple Health MCP server** for your Personal Agent: bring your Apple Health (HealthKit) data — sleep, steps, heart rate, HRV, workouts, weight, body fat, and more — into the agent you already use.
+
+**Works with:** OpenClaw · Hermes Agent · Claude · your own bot — plus coding agents like Claude Code, Codex, Cursor, Gemini CLI and GitHub Copilot. Anything that speaks MCP.
 
 **Local mode: your data never touches Mibly's servers.** No account, no cloud, no telemetry. It is stored encrypted on a machine you control, and this repository is the code that does it.
 

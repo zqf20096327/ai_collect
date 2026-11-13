@@ -43,6 +43,74 @@ others; choose the API and acknowledgement policy before measuring a workload.
 | **LLM context and agent memory** | Conversations, resources, entities, reusable memory, retrieval, and token-budgeted context assembly | [Context guide](https://github.com/matrixarkai/TemporalStore/blob/main/docs/context_management_on_temporalstore.md) |
 | **Collections, blobs, and streams** | Membership/deduplication, sorted sets, lists, multipart blobs, range reads, and batch/stream ingestion | [Command surface](https://github.com/matrixarkai/TemporalStore/blob/main/docs/redis_compatibility_matrix.md) |
 
+### Feast API support
+
+The [native Feast provider](integrations/feast/feast_temporalstore_command/README.md)
+is an online store and materialization target, not an offline training store.
+
+| API or workflow | Support |
+|---|---|
+| `get_online_features` and its async form | Latest-value serving through bounded compact projections; compatible views share entity planning. |
+| `online_write_batch` and its async form | Materialization with timestamp suppression, optional TTL, and bounded requests; atomic timestamp checks apply to the eligible latest-only route. |
+| `query_feature_aggregate` / `query_feature_aggregates` | Provider extensions for retained history; numeric reducers require integer features and the selected history layout. |
+| Precomputed vector read/write | Store and fetch vector-valued features; this does not provide provider vector search. |
+| `update` / `teardown` | Schemaless updates and tracked cleanup; exact teardown requires key tracking before materialization. |
+
+Feast async calls change client scheduling, not the node's persistence policy.
+See [latency, amplification, and allocation choices](integrations/feast/feast_temporalstore_command/README.md#latency-amplification-and-allocations)
+before comparing latest-only serving, history queries, or another backend. Provider
+vector-search hooks and offline point-in-time retrieval are not implemented here.
+
+### Configure Feast
+
+Start the data node with the [quick start](#quick-start). From this checkout,
+install Feast and enable the native provider on Python's import path:
+
+```bash
+pip install feast msgpack
+export PYTHONPATH="$PWD/integrations/feast${PYTHONPATH:+:$PYTHONPATH}"
+```
+
+In your existing Feast repository, keep its project, registry, provider, entity
+definitions, and offline sources. Set its `feature_store.yaml` online-store block:
+
+```yaml
+online_store:
+  type: feast_temporalstore_command.TemporalStoreCommandOnlineStore
+  host: 127.0.0.1
+  port: 17102
+  shard_id: 1
+  max_batch_commands: 512
+  max_write_batch_commands: 4096
+  max_batch_request_bytes: 4194304
+  skip_dedup: false
+  adaptive_timestamp_prefetch: true
+  key_ttl_seconds: null
+  write_feature_history: false
+  track_keys_for_teardown: false
+```
+
+Use the reachable data-node address and assigned shard for your deployment.
+The configuration above selects latest-value serving without history, expiry,
+or teardown tracking. Set a positive `key_ttl_seconds` to enable whole-key expiry;
+enable `track_keys_for_teardown` before writing if exact cleanup is required.
+History and tracking add storage work and can change the write route.
+
+Run Feast's normal workflow from that repository, with the provider import path
+still exported:
+
+```bash
+feast apply
+feast materialize-incremental "$(date -u +%Y-%m-%dT%H:%M:%S)"
+```
+
+Read using `FeatureStore(repo_path=".").get_online_features(...)` with your
+registered feature names and entity rows. TemporalStore serves the materialized
+online values; Feast's configured offline source and materialization engine
+remain responsible for loading them. Async API calls do not relax the node's
+durability policy. See the [provider configuration and API guide](integrations/feast/feast_temporalstore_command/README.md)
+for history, aggregates, async calls, older-node behavior, and cleanup limits.
+
 ### Choose a Feast materialization path
 
 Use the [native provider guide](integrations/feast/feast_temporalstore_command/README.md)

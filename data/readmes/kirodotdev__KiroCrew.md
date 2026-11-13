@@ -278,8 +278,11 @@ kirocrew telemetry status         # print both switches and exactly what would b
 Turn off and `kirocrew telemetry disable` write the same settings, so either
 one sticks across restarts and upgrades. `KIROCREW_TELEMETRY_DISABLED` and
 `DO_NOT_TRACK` override them: when one is set, the dashboard toggle is disabled
-and says so. When the Privacy screen's text changes, existing users see it once
-more at their next dashboard load while local recording is on.
+and says so. An existing install that turned the heartbeat off, wrote
+`telemetry.enabled: false`, or sets `DO_NOT_TRACK` keeps local recording off
+after an upgrade and is not asked again. When the Privacy screen's text changes,
+existing users see it once more at their next dashboard load while local
+recording is on.
 
 **Exactly these five fields are sent, at most once per day, and nothing else:**
 
@@ -339,7 +342,10 @@ would not take effect:
 See [docs/system-specs/modules/governance.md](docs/system-specs/modules/governance.md).
 
 This is separate from `telemetry.enabled`, which controls **local-only**
-performance metrics that never leave your machine. See
+performance metrics. They are on by default, stay on your machine, are capped at
+30 days and 100 MB, and turn off with the same Turn off button,
+`kirocrew telemetry disable`, `KIROCREW_TELEMETRY=0` or `DO_NOT_TRACK=1`. A
+terminal-only install prints a one-line notice about them on its first start. See
 [docs/system-specs/modules/metrics.md](docs/system-specs/modules/metrics.md).
 
 ## Docs and contributing
@@ -864,7 +870,4 @@ make this tool possible:
 <a href="https://github.com/KiroCrew" title="KiroCrew"><img src="https://github.com/KiroCrew.png?size=64" width="64" height="64" alt="KiroCrew" /></a>
 <a href="https://github.com/KiroCrewCaptain" title="KiroCrewCaptain"><img src="https://github.com/KiroCrewCaptain.png?size=64" width="64" height="64" alt="KiroCrewCaptain" /></a>
 <a href="https://github.com/kishoreb95" title="Kishore Baskar"><img src="https://github.com/kishoreb95.png?size=64" width="64" height="64" alt="Kishore Baskar" /></a>
-<a href="https://github.com/Kive1ru" title="Jiahao Guo"><img src="https://github.com/Kive1ru.png?size=64" width="64" height="64" alt="Jiahao Guo" /></a>
-<a href="https://github.com/kkautenburger" title="Kasey Kautenburger"><img src="https://github.com/kkautenburger.png?size=64" width="64" height="64" alt="Kasey Kautenburger" /></a>
-<a href="https://github.com/kkourmousis" title="Konstantinos Kourmousis"><img src="https://github.com/kkourmousis.png?size=64" width="64" height="64" alt="Konstantinos Kourmousis" /></a>
-<a href="https://github.com/koenvinc
+<a href="https://github.com/Kive1ru" title="Jiahao Guo"><img src="https://github.com/Kive1ru.png?size=64" width="64" height="64" alt="

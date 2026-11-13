@@ -587,6 +587,59 @@ recorded outputs with `--mode recorded`. Details and measured boundaries live
 in [eval/known-gaps.md](eval/known-gaps.md) and
 [eval/reports/2026-09-19-baseline-live.md](eval/reports/2026-09-19-baseline-live.md).
 
+#### Re-measured on 2026-11-13 (v0.4.7)
+
+Same runner, current default model **MiniCPM-V 4.7 (1B)** via the bundled
+llama-server on Apple silicon. Different model and pipeline from the 2026-09-19
+row above, so the two are **not** a like-for-like improvement claim:
+
+| Golden set (100 entries) | Result |
+|--------|--------|
+| NL to LaTeX structural pass rate | **59/95 (62.1%)** |
+| Compile layer | 92/100 |
+| Render layer | 98/100 |
+| Trace layer | 98/100 |
+| Deterministic repair pass rate | 53/53 (100%) |
+| Latency p50 / p95 | 1.5s / 4.2s |
+
+Seven of the 95 anchor-checkable entries are answered by deterministic rules
+(glossary / preset / transcription) with zero tokens; the rest are model runs.
+
+Two golden entries (`010`, `073`) are refused by the computation-scope gate
+instead of transcribed; they are listed separately in the baseline report and
+kept out of the denominators. `062` (`u 除以 v 的求导法则`) used to be refused too
+and is fixed in v0.4.8 by treating `求导法则/公式/规则/表` as nouns. The remaining
+two are documented as a deliberate boundary in
+[eval/known-gaps.md](eval/known-gaps.md) (G-016): `010` asks for a factorisation
+*result*, and `073` cannot be separated from a real differentiation request by
+pattern alone.
+
+The new real-world corpus (`eval/real_world_set.yaml`, 52 entries from real
+study notes, exam explanations and run logs) measures a different axis —
+inputs the 100-entry set does not contain:
+
+| Real-world corpus | Pass |
+|--------|------|
+| Overall | **47/52 (90.4%)** |
+| `named-formula` (only a theorem name, e.g. 格林公式) | **20/20** (served by the glossary) |
+| `lecture-sentence` (exam/lecture sentences) | 6/8 |
+| `common-mistake` (classic wrong forms) | 5/7 |
+| `no-solving` (must not be evaluated) | 6/6 (refused by the scope gate) |
+| `completion` (half-finished / mistyped LaTeX) | 10/11 |
+
+`named-formula` no longer measures the model. A bare theorem name is answered by
+the curated glossary (`src/texada/core/glossary.py`, 24 entries) under the
+existing `nl_canonical_concept` rule, in ~12 ms with zero tokens; 21 of the 52
+entries are served that way. Before the glossary the same 1B model scored 5/20
+on this slice — that gap is knowledge recall, not transcription. The remaining
+failures are genuine model results.
+
+Reproduce with `python eval/run_real_world.py --base-url ... --output ...`;
+per-case verdicts and reasons are in [eval/real-world-baseline.json](eval/real-world-baseline.json),
+and the raw run is in [eval/reports/2026-11-13-baseline-live.md](eval/reports/2026-11-13-baseline-live.md).
+Named theorems are the weakest slice: the 1B model often answers a different
+theorem or just echoes `\text{...}`.
+
 ### Quality Gate
 
 The current `main` branch has no known blocking issue after the latest audit pass. That means tests and static checks pass; it is not a mathematical promise that no software bug can exist. Maintainer validation details live in [Contributing](.github/CONTRIBUTING.md), [Source audit](docs/audit.md), and GitHub Actions.
@@ -1100,6 +1153,50 @@ Linux 尚未实现系统光标自动键入；点击公式后需手动粘贴。Wa
 输出回放：`--mode recorded`。细节与实测边界见
 [eval/known-gaps.md](eval/known-gaps.md) 与
 [eval/reports/2026-09-19-baseline-live.md](eval/reports/2026-09-19-baseline-live.md)。
+
+#### 2026-11-13 复测（v0.4.7）
+
+同一套 runner，当前默认模型 **MiniCPM-V 4.7（1B）**，跑在 Apple 芯片上的内置
+llama-server。模型与管线都和上面 2026-09-19 那次不同，**不能当作同口径提升**：
+
+| 100 条 goldenset | 结果 |
+|------|------|
+| NL 转 LaTeX 结构通过率 | **59/95（62.1%）** |
+| 编译层 | 92/100 |
+| 渲染层 | 98/100 |
+| 轨迹层 | 98/100 |
+| 确定性修复通过率 | 53/53（100%） |
+| 延迟 p50 / p95 | 1.5s / 4.2s |
+
+95 条可判条目里有 7 条由确定性规则（词表/预设/转写）零 token 直出，其余是模型跑出来的。
+
+其中 `010`、`073` 两条被计算范围门禁拒绝而不是转写，基线报告里单列、不计入
+分母。`062`（`u 除以 v 的求导法则`）此前也被误拒，v0.4.8 已修——`求导法则/
+公式/规则/表` 现在按名词处理。剩下两条是**有意的产品边界**，登记在
+[eval/known-gaps.md](eval/known-gaps.md) G-016：`010` 要的是因式分解**结果**，
+`073` 无法用正则与真实的求导请求区分。
+
+新增的真实语料（`eval/real_world_set.yaml`，52 条，取自本机讲义、真题详解与
+运行日志）测的是 100 条集里没有的那一档输入：
+
+| 真实语料 | 通过 |
+|------|------|
+| 合计 | **47/52（90.4%）** |
+| `named-formula`（只给定理名，如格林公式） | **20/20**（由词表直出） |
+| `lecture-sentence`（讲义/真题整句） | 6/8 |
+| `common-mistake`（易混写法） | 5/7 |
+| `no-solving`（只转写不解答） | 6/6（由范围门禁拒绝） |
+| `completion`（半截/拼错 LaTeX） | 10/11 |
+
+`named-formula` 这一档**不再测模型**：只给术语名时由受控词表
+（`src/texada/core/glossary.py`，24 条）沿既有 `nl_canonical_concept` 规则直出，
+约 12 ms、零 token；52 条里有 21 条走这条路。加词表前同一个 1B 模型在这档是
+5/20——差的是"记不记得住定理"，不是"会不会转写"。其余失败项仍是模型真实结果。
+
+复现：`python eval/run_real_world.py --base-url … --output …`；逐条判定与理由见
+[eval/real-world-baseline.json](eval/real-world-baseline.json)，原始报告见
+[eval/reports/2026-11-13-baseline-live.md](eval/reports/2026-11-13-baseline-live.md)。
+术语名是最弱的一档：1B 模型经常答成另一个定理，或只吐一句 `\text{...}`。
 
 
 ### 质量门禁

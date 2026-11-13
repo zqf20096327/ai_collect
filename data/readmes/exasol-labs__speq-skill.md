@@ -19,13 +19,13 @@
 ## Getting Started
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/exasol-labs/speq-skill/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/exasol-labs/speq-skill/main/setup.sh | bash
 ```
 
 Then open Claude Code or Codex and start with the matching trigger: `/speq:mission` in Claude Code, or `$speq:mission` in Codex.
 
 <details>
-<summary>What does the installer do?</summary>
+<summary>What does the setup script do?</summary>
 
 - Downloads a pre-built `speq` binary for your platform (Linux x86_64/ARM64, macOS Apple Silicon). On other platforms it stops and points to the [source build](./docs/installation.md#install-from-source)
 - Installs the CLI to `~/.local/bin/speq`
@@ -90,7 +90,6 @@ For a small fix or tweak, `/speq:patch` skips the plan and applies the change in
 | [CLI Reference](./docs/cli-reference.md)       | All CLI commands                                             |
 | [MCP Servers](./docs/mcp-servers.md)           | Optional Serena and Context7 setup                           |
 | [Semantic Anchors](./docs/semantic-anchors.md) | Named methodologies grounding each skill                     |
-| [Hooks](./docs/hooks.md)                       | Repo-local `.speq/<name>-hook.md` customizations             |
 
 ---
 

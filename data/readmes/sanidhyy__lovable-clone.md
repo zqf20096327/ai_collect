@@ -295,11 +295,11 @@ Useful resources and dependencies that are used in Vibe.
 - [@clerk/themes](https://www.npmjs.com/package/@clerk/themes): ^2.4.57
 - [@e2b/code-interpreter](https://www.npmjs.com/package/@e2b/code-interpreter): ^2.8.0
 - [@eslint/eslintrc](https://www.npmjs.com/package/@eslint/eslintrc): ^3.3.7
-- [@hookform/resolvers](https://www.npmjs.com/package/@hookform/resolvers): ^7.0.1
+- [@hookform/resolvers](https://www.npmjs.com/package/@hookform/resolvers): ^7.0.5
 - [@ianvs/prettier-plugin-sort-imports](https://www.npmjs.com/package/@ianvs/prettier-plugin-sort-imports): ^4.7.1
 - [@inngest/agent-kit](https://www.npmjs.com/package/@inngest/agent-kit): ^0.13.2
 - [@next/eslint-plugin-next](https://www.npmjs.com/package/@next/eslint-plugin-next): ^16.4.2
-- [@prisma/adapter-pg](https://www.npmjs.com/package/@prisma/adapter-pg): ^7.10.0
+- [@prisma/adapter-pg](https://www.npmjs.com/package/@prisma/adapter-pg): ^7.10.1
 - [@prisma/client](https://www.npmjs.com/package/@prisma/client): ^7.9.1
 - [@radix-ui/react-collapsible](https://www.npmjs.com/package/@radix-ui/react-collapsible): ^1.2.1
 - [@radix-ui/react-dialog](https://www.npmjs.com/package/@radix-ui/react-dialog): ^1.3.1
@@ -308,7 +308,7 @@ Useful resources and dependencies that are used in Vibe.
 - [@radix-ui/react-separator](https://www.npmjs.com/package/@radix-ui/react-separator): ^1.2.0
 - [@radix-ui/react-slot](https://www.npmjs.com/package/@radix-ui/react-slot): ^1.3.3
 - [@radix-ui/react-tabs](https://www.npmjs.com/package/@radix-ui/react-tabs): ^1.1.17
-- [@radix-ui/react-tooltip](https://www.npmjs.com/package/@radix-ui/react-tooltip): ^1.2.16
+- [@radix-ui/react-tooltip](https://www.npmjs.com/package/@radix-ui/react-tooltip): ^1.4.1
 - [@t3-oss/env-nextjs](https://www.npmjs.com/package/@t3-oss/env-nextjs): ^0.13.11
 - [@tailwindcss/postcss](https://www.npmjs.com/package/@tailwindcss/postcss): ^4.3.3
 - [@tanstack/react-query](https://www.npmjs.com/package/@tanstack/react-query): ^5.104.0
@@ -337,7 +337,7 @@ Useful resources and dependencies that are used in Vibe.
 - [inngest](https://www.npmjs.com/package/inngest): ^4.26.2
 - [lucide-react](https://www.npmjs.com/package/lucide-react): ^1.61.0
 - [mprocs](https://www.npmjs.com/package/mprocs): ^0.9.6
-- [next](https://www.npmjs.com/package/next): 16.4.1
+- [next](https://www.npmjs.com/package/next): 16.4.6
 - [next-themes](https://www.npmjs.com/package/next-themes): ^0.4.6
 - [openai](https://www.npmjs.com/package/openai): ^7.5.0
 - [pg](https://www.npmjs.com/package/pg): ^8.23.1
@@ -346,7 +346,7 @@ Useful resources and dependencies that are used in Vibe.
 - [prisma](https://www.npmjs.com/package/prisma): ^7.10.0
 - [prismjs](https://www.npmjs.com/package/prismjs): ^1.30.0
 - [random-word-slugs](https://www.npmjs.com/package/random-word-slugs): ^0.1.7
-- [rate-limiter-flexible](https://www.npmjs.com/package/rate-limiter-flexible): ^11.2.1
+- [rate-limiter-flexible](https://www.npmjs.com/package/rate-limiter-flexible): ^11.4.0
 - [react](https://www.npmjs.com/package/react): 19.3.0
 - [react-dom](https://www.npmjs.com/package/react-dom): 19.3.0
 - [react-error-boundary](https://www.npmjs.com/package/react-error-boundary): ^6.1.6

@@ -47,10 +47,10 @@ This is **not** a batch tool that opens a project, runs a script, and exits. It'
 ## Features
 
 - **~600 tools on the default Altium backend** (600+ with both registered) across application, project, library, schematic/general, PCB, and design-agent categories
-- **Generic primitives** (`obj_query`, `obj_modify`, `obj_create`, `obj_delete`, `obj_run_process`) that work on almost any schematic or PCB object type via late-binding, avoiding per-type handler proliferation
-- **Every tool takes a list**: give nearly any tool `items`, a list of its own arguments, and the whole list is one call, one request to Altium and one undo step (`pcb_place_arc(items=[...])` places twenty arcs that one Undo takes back). The reply gives each item's result in order. Some tools take their list directly: `pcb_place_tracks`, `pcb_place_vias`, `pcb_move_components`, `sch_place_wires`, `sch_place_components`, `sch_set_components_parameters`, `lib_add_pins`, `proj_get_connectivity_many`, `sim_attach_primitives`. Typical wall-time savings: 10 to 100x on multi-item edits
+- **Generic primitives** (`obj_query`, `obj_modify`, `obj_create`, `obj_delete`, `obj_run_process`) that work on almost any schematic or PCB object type via late-binding, avoiding per-type handler proliferation (`obj_create` makes schematic objects only). On a board, a filter on an exact `Net=`, `Component=`, `Layer=` or `BoundsLeft`/`BoundsBottom` goes straight to its objects; any other condition is checked on every object of the type
+- **Every tool takes a list**: give nearly any tool `items`, a list of its own arguments, and up to 200 items are one call, one request to Altium and one undo step (`pcb_place_arc(items=[...])` places twenty arcs that one Undo takes back; in a PcbLib each pad is its own undo step). The reply gives each item's result in order. Some tools take their list directly: `pcb_place_tracks`, `pcb_place_vias`, `pcb_place_arcs`, `pcb_place_pads`, `pcb_move_components`, `sch_place_wires`, `sch_place_components`, `sch_set_components_parameters`, `lib_add_pins`, `proj_get_connectivity_many`, `sim_attach_primitives`. `obj_modify` with `items` sends one request, but each item is its own search and edit. Typical wall-time savings: 10 to 100x on multi-item edits
 - **Design review snapshot**: `design_review_snapshot` bundles 8 to 12 review reads (project info, components, nets, rules, diff, messages, stats, unrouted, BOM) into a single call. One LLM turn instead of a dozen
-- **Design-lint sweep**: `design_lint_report` runs 31 audit checks in one IPC pass and returns a structured violation list - schematic-side (component-parameter visibility per class, power-port orientation, floating ports, multi-output / no-driver nets, duplicate designators, off-grid components) and PCB-side (DNP variant components, tented-via ratio, near-miss track endpoints, signal vias without nearby return via, via antennas, removed pad shapes, components outside outline, pads too close to board edge, invalid polygon regions, optional DRC). Each check is also exposed as a standalone `audit_*` MCP tool; the dashboard's Status → Health subtab has a one-click Lint panel that calls `/api/lint` and groups results by Schematic / PCB
+- **Design-lint sweep**: `design_lint_report` runs 31 audit checks in one IPC pass and returns a structured violation list - schematic-side (component-parameter visibility per class, power-port orientation, floating ports, multi-output / no-driver nets, duplicate designators, off-grid components) and PCB-side (DNP variant components, tented-via ratio, near-miss track endpoints, signal vias without nearby return via, via antennas, removed pad shapes, components outside outline, pads too close to board edge, invalid polygon regions, optional DRC). Each check is also reachable on its own as `audit(kind=...)`; the dashboard's Status → Health subtab has a one-click Lint panel that calls `/api/lint` and groups results by Schematic / PCB
 - **Canonical circuit blocks**: `design_add_circuit_block` folds a whole block into a `DesignPlan` in one call, allocating refdes, wiring every pin to the right net and tagging power / ground and roles. Twelve of them: `decoupling`, `pullup`, `pulldown`, `series_resistor`, `voltage_divider`, `rc_lowpass`, `rc_highpass`, `led_indicator`, `crystal`, `pi_filter`, `mosfet_low_side`, `mosfet_high_side`. Naming-agnostic: you supply the part identities, it owns only the wiring pattern. `design_list_circuit_blocks` returns each one's parameter contract, so the planner never guesses a parameter name
 - **Datasheet-first discipline**: every component-surfacing response (`pcb_get_components`, `proj_get_bom`, `proj_get_component_info_many`, `proj_find_component`, `lib_search`, `design_review_snapshot`, `sim_get_readiness`) carries a `_datasheet_guidance` block with per-part vendor search queries. `app_attach` / `app_ping` carry a `_system_reminder` on their first call and every 10th after it (`EDA_AGENT_REMINDER_EVERY` sets the interval), so every MCP client that connects sees the rule at session start and again later. LLM-fabricated datasheet values are forbidden; WebFetch/WebSearch are called out by name
 - **Sch <-> PCB netlist crossref**: `obj_crossref_net(net_name)` compares the schematic pin list against the PCB pad list for the same net. Catches ECO drift, stale post-fabrication routing, phantom nets from port/sheet-entry rename conflicts. `in_sync` flag + `sch_only` / `pcb_only` diff
@@ -88,23 +88,33 @@ The server picks a backend at startup (`EDA_AGENT_BACKEND`, default `altium`), s
 
 ## Installation
 
+From PyPI, into an environment of its own so its dependencies never clash with your other Python tools:
+
 ```bash
-git clone https://github.com/salitronic/eda-agent
-cd eda-agent
-python -m pip install -e .
+pipx install eda-agent
 ```
 
-or, from PyPI:
+or `uv tool install eda-agent` with [uv](https://docs.astral.sh/uv/). Either puts the `eda-agent` command on your `PATH` (run `pipx ensurepath` once if pipx says it is not). Without pipx or uv, plain pip works too:
 
 ```bash
 python -m pip install eda-agent
 ```
 
-A clone gets every commit as it lands and is updated with `server_update`; a PyPI install gets tagged releases and is updated with `python -m pip install --upgrade eda-agent`. Each looks for updates where it came from.
+That installs tagged releases. To run the latest commits on `main` instead, install from GitHub (no clone needed):
 
-Use `python -m pip` rather than a bare `pip`. It works even when pip's `Scripts` folder is not on your `PATH`, which is common when Python was installed for you by IT, and it guarantees the package goes into the same Python you will run it with.
+```bash
+pipx install "git+https://github.com/salitronic/eda-agent"
+```
 
-Register the server with your MCP client. The binary is `eda-agent` and runs on stdio; consult your client's docs for how to add a local stdio-based server. Everywhere this README says `eda-agent`, `python -m eda_agent` does exactly the same thing and does not depend on `PATH`.
+or `python -m pip install "git+https://github.com/salitronic/eda-agent"`.
+
+Each copy looks for updates where it came from and, when there are some, says the command that upgrades it: `pipx upgrade eda-agent`, `uv tool upgrade eda-agent`, or `python -m pip install --upgrade` with the same source. A clone you install yourself is for working on eda-agent; see [Development](#development).
+
+Two optional parts are compiled, and come as ready-built wheels (no Rust needed): `eda-agent[route]` makes the board router's path search several times faster, and `eda-agent[render3d]` adds the path tracer for `pcb_render_3d`. Without them the same tools run on numpy and scipy.
+
+With pip, use `python -m pip` rather than a bare `pip`. It works even when pip's `Scripts` folder is not on your `PATH`, which is common when Python was installed for you by IT, and it guarantees the package goes into the same Python you will run it with.
+
+Register the server with your MCP client. The binary is `eda-agent` and runs on stdio; consult your client's docs for how to add a local stdio-based server. For a pip install, everywhere this README says `eda-agent`, `python -m eda_agent` does exactly the same thing and does not depend on `PATH`. A pipx or uv install has its own Python, so use `eda-agent` there.
 
 ### Claude Code
 
@@ -118,7 +128,7 @@ Adds `eda-agent` as an MCP server named `altium` to your Claude Code project con
 claude mcp add -s user altium eda-agent
 ```
 
-If `eda-agent` isn't on your `PATH` ("'eda-agent' is not recognized"), register it through Python instead. This needs no path at all:
+If `eda-agent` isn't on your `PATH` ("'eda-agent' is not recognized") after a pip install, register it through Python instead. This needs no path at all:
 
 ```bash
 claude mcp add -s user altium -- python -m eda_agent
@@ -162,7 +172,7 @@ The polling loop starts and your MCP client can drive Altium.
 
 ### Updating
 
-For as long as it runs, the server looks once an hour, in the background, whether this repository has new commits; the look is a cheap check that the branch has moved, and a full check follows only when it has. When there are new commits, the next tool reply says so and lists them, `app_ping` and `app_context` repeat it, and the assistant asks you before installing anything. A check that fails is reported once too. A copy installed with pip from this repository compares the commit it was installed from with the latest one; any other pip install compares its version with the one here. Either says how to upgrade. If you agree, `server_update(apply=True)` fast-forwards your clone, reinstalls when the dependencies changed, copies the Altium scripts again when they changed and restarts the polling loop. Then reconnect the server (`/mcp` in Claude Code) to run the new Python. From a terminal, the same thing is:
+For as long as it runs, the server looks once an hour, in the background, whether this repository has new commits; the look is a cheap check that the branch has moved, and a full check follows only when it has. When there are new commits, the next tool reply says so and lists them, `app_ping` and `app_context` repeat it, and the assistant asks you before installing anything. A check that fails is reported once too. A copy installed with pip from this repository compares the commit it was installed from with the latest one; any other pip install compares its version with the one here. Either says how to upgrade. If you agree, for a clone, `server_update(apply=True)` fast-forwards it, reinstalls when the dependencies changed, copies the Altium scripts again when they changed and restarts the polling loop. Then reconnect the server (`/mcp` in Claude Code) to run the new Python. From a terminal, the same thing is:
 
 ```bash
 eda-agent update          # shows what is new, then asks
@@ -235,7 +245,8 @@ Only families of tools that differ by a mode are advertised as one tool each:
 the calculators (`pcb_calc`), the audits (`audit`), the dimension and 3D body
 kinds, the menu runners, the dialog drivers and the checkpoints. Each takes a
 `kind` and that kind's arguments. Every member keeps its own name,
-description and schema, which `tool_catalog` returns and `tool_invoke` runs.
+description and schema; `tool_catalog` returns its summary line and schema,
+and `tool_invoke` runs it.
 Everything else keeps a tool of its own; collapsing whole areas into
 `pcb(action=...)` style entry points would lose the per-tool descriptions a
 model finds the right operation by.
@@ -267,7 +278,9 @@ managed library, and can publish, release and change parameters (only with
 `confirm=True`). Two routes: the workspace's own API, with
 `EDA_AGENT_ALTIUM365_DOMAIN` and a token made under Admin > Developer in
 `EDA_AGENT_ALTIUM365_TOKEN`; or Nexar, with your Nexar app's client id in
-`EDA_AGENT_NEXAR_APP_ID` and `eda-agent altium365-login` once (`eda-agent altium365-logout` forgets it).
+`EDA_AGENT_NEXAR_APP_ID`, its secret in `EDA_AGENT_NEXAR_CLIENT_SECRET` (a
+Nexar portal app refuses a sign-in without it) and `eda-agent altium365-login`
+once (`eda-agent altium365-logout` forgets it).
 `EDA_AGENT_ALTIUM365_WORKSPACES` limits the tools to the workspaces it
 lists. Nothing Altium 365 returns is written to disk.
 `altium365_check_setup` says which route is set up.
@@ -350,7 +363,7 @@ That last one uses `pcb_get_rule_properties`, which returns the actual numeric g
 >
 > *"Move C1-C20 into this 200-mil grid layout pattern."*
 
-A list given to `obj_modify`, `pcb_move_components` or `sch_place_components` (or as `items` to any other tool) finishes the whole operation in one call and one undo step.
+A list given to `pcb_move_components` or `sch_place_components` (or as `items` to most other tools) finishes the whole operation in one call and one undo step. `obj_modify` with `items` is one call, but each item is its own search and its own edit.
 
 ## Known limitations
 
@@ -399,11 +412,9 @@ This is an ongoing reliability effort. Every identified crash is either fixed or
 
 A UNC path (`\\server\team\board.PrjPcb`) opens like any other with the current scripts. Scripts deployed before the fix drop one leading backslash, so the file is not found and the error names a path that looks almost right. Run `eda-agent install-scripts --force` to update them, or use a mapped drive letter (`Z:\team\board.PrjPcb`) in the meantime.
 
-### Text above Latin-1 becomes question marks
+### A few Altium fields hold only Latin-1 text
 
-Altium's DelphiScript strings are single-byte, so the bridge carries text as one byte per character. Any character above U+00FF is replaced with `?` on the way in, silently. Accented Latin, the micro sign, and the degree sign are all below that boundary and survive; the ohm sign and any CJK text do not, so `10Ω` arrives as `10?`.
-
-This shows up most often on imported parts: LCSC descriptions are frequently Chinese, and `lib_easyeda_import` passes the description straight through. If you need those fields readable, set them to a transliteration before importing, or edit them in Altium afterwards.
+Requests reach Altium as UTF-8, so the ohm sign and CJK text arrive intact (`10Ω` stays `10Ω`). A few of Altium's own stores keep one byte per character whatever is sent: an embedded data record's description (`pcb_embedded_data`) refuses characters above U+00FF rather than storing `?`.
 
 ### Altium tool buttons relying on internal scripting pause while the server is running
 
@@ -563,10 +574,16 @@ Coordinates throughout the API are in **mils** (1 mil = 0.0254 mm).
 
 ## Development
 
+To work on eda-agent, install a clone in editable mode, so the code you edit is the code that runs:
+
 ```bash
-pip install -e ".[dev]"
+git clone https://github.com/salitronic/eda-agent
+cd eda-agent
+python -m pip install -e ".[dev]"
 python -m pytest tests/ -q
 ```
+
+An editable install reads the code from the clone, but pip records the version when it installs: after a `git pull`, run `python -m pip install -e ".[dev]"` again, or `pip list` keeps showing the old version and new dependencies are missing. `server_update` does both for you. Keep the clone where it is; moving or deleting the folder breaks the install.
 
 The test suite includes a Python Altium simulator for end-to-end integration tests, Free Pascal cross-validation that runs the actual DelphiScript functions against Python mirrors, and a regression suite for previously encountered edge cases.
 

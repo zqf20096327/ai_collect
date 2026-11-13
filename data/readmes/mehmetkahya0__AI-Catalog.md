@@ -42,7 +42,7 @@
 <div align="center">
   <strong>⭐ If you find this catalog helpful, please consider giving it a star! ⭐</strong>
   <br><br>
-  <i>Last updated: November 11, 2026 | Next goal: 500 stars 🎯</i>
+  <i>Last updated: November 13, 2026 | Next goal: 500 stars 🎯</i>
   <br><br>
   <i>🤖 Thanks to Claude Sonnet 4 for write .sh files! </i>
 </div>
@@ -109,7 +109,7 @@ Welcome to the most comprehensive AI tools catalog! This repository contains **5
 ### 📊 Quick Stats
 - **Total Tools**: 500+
 - **Categories**: 40+
-- **Last Updated**: November 11, 2026
+- **Last Updated**: November 13, 2026
 - **Contributors**: Open for PRs!
 - **Next Goal**: ⭐️ 500 stars
 
@@ -469,6 +469,9 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[looot](https://looot.ai)** 💰 - Pay-per-call business data API and MCP server for AI agents
 - **[OneTag AI](https://onetagai.com)** 🔄 - Add AI to any static site with one script tag, no backend
 - **[HopBase](https://hop-base.com)** 💰 - AI API gateway: one base URL for Claude, GPT, Gemini, DeepSeek plus image and video models
+- **[CloudGPU](https://cloudgpu.app)** 💰 - Per-minute RTX 4090/5090 GPU rental, OpenAI-compatible model API and MCP server
+- **[Vectoree](https://vectoree.ai)** 💰 - Hosted backend for coding agents with one OpenAI-compatible project key, auth, Postgres and storage
+- **[Agentik](https://www.agentik.cc)** 💰 - One MCP connection to 3,500+ paid tools for AI agents, price shown before each call
 
 ## Low Code - no code Tools
 - Magicform
@@ -533,6 +536,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Pixwit](https://pixwit.ai)** 🔄 - Multi-model text-to-video, image-to-video and image generation
 - **[Seedance Now](https://seedancenow.com)** 🔄 - Independent multi-model text and image to video studio with 1080p output
 - **[Imagera](https://imagera.ai)** 💰 - Multi-model AI video and image studio with Character IDs for consistent faces and products
+- **[H3 MiniMax](https://h3minimax.com/)** 🔄 - Turn a text prompt or a photo into a short AI video with the MiniMax H3 model
 
 #### 🎬 Content Creation
 - **[Synthesia](https://synthesia.io)** 💰 - AI avatar video generation
@@ -885,6 +889,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Kamply](https://kamplyapp.com)** 💰 - Mac marketing crew that builds posts, reels, ads and decks with Claude Code or Codex
 - **[Pulse](https://pulsecorp.co)** 💰 - AI-moderated market research platform that runs customer interviews at scale
 - **[BulkPublish](https://www.bulkpublish.com)** 🔄 - Social media scheduler for 15 platforms with AI captions and an MCP server
+- **[Wavegrain](https://wavegrain.com)** 🆕 - TikTok slideshows and Instagram carousels for a brand, made, scheduled and posted
 
 ## AI Productivity
 > AI tools to enhance personal and professional productivity
@@ -978,6 +983,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - [Vidu](https://mp.weixin.qq.com/s/xAEYGIoJ0EzhszfmXno3UA)
 - [Lumalabs.ai](https://lumalabs.ai/dream-machine)
 - [Vivideo](https://vivideo.ai/tools/text-to-video)
+- **[AI Rap Video](https://rapaivideo.net)** 🔄 - Turns two selfies into a lip-synced rap music video with AI lyrics and beat
 
 ## Image to Video
 - [Lumalabs.ai DreamMachine](https://lumalabs.ai/dream-machine)

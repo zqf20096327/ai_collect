@@ -9,9 +9,9 @@
 [![LMCache](https://img.shields.io/badge/LMCache-v0.5.6-blue.svg)](https://github.com/LMCache/LMCache)
 [![NIXL](https://img.shields.io/badge/NIXL-v1.4.1-blue.svg)](https://github.com/ai-dynamo/nixl)
 [![hsa-snoop](https://img.shields.io/badge/hsa--snoop-v1.2.0-blue.svg)](https://github.com/sbates130272/hsa-snoop)
-[![rocjitsu](https://img.shields.io/badge/rocjitsu-f2d13fb-red.svg)](https://github.com/sbates130272/batesste-ci-images/tree/main/ubuntu-rocm-rocjitsu)
-[![qemu-vfu](https://img.shields.io/badge/qemu--vfu-d757fa6-red.svg)](https://github.com/sbates130272/batesste-ci-images/tree/main/ubuntu-qemu-libvfio-user)
-[![rocjitsu-guest](https://img.shields.io/badge/guest-resolute%2F54cc234-red.svg)](https://github.com/sbates130272/batesste-ci-images/tree/main/ubuntu-qcow2-gen)
+[![rocjitsu](https://img.shields.io/badge/rocjitsu-98f6a72-red.svg)](https://github.com/sbates130272/batesste-ci-images/tree/main/ubuntu-rocm-rocjitsu)
+[![qemu-vfu](https://img.shields.io/badge/qemu--vfu-f91f120-red.svg)](https://github.com/sbates130272/batesste-ci-images/tree/main/ubuntu-qemu-libvfio-user)
+[![rocjitsu-guest](https://img.shields.io/badge/guest-resolute%2Fc079195-red.svg)](https://github.com/sbates130272/batesste-ci-images/tree/main/ubuntu-qcow2-gen)
 [![Spelling](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-spell-check.yml/badge.svg)](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-spell-check.yml)
 [![Lint](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-lint-check.yml/badge.svg)](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-lint-check.yml)
 [![Export Tarball](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-export-tarball.yml/badge.svg)](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-export-tarball.yml)
@@ -21,8 +21,11 @@
 [![Nightly Cliff](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-self-hosted-nightly-cliff-test.yml/badge.svg)](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-self-hosted-nightly-cliff-test.yml)
 [![Nightly Wheels](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-nightly-wheels-publication.yml/badge.svg)](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-nightly-wheels-publication.yml)
 [![Check PRs + Patches](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-check-prs-and-patches.yml/badge.svg)](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-check-prs-and-patches.yml)
+[![vLLM Emul Test](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-emulate-test.yml/badge.svg)](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-emulate-test.yml)
+[![vLLM Emul Perf](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-vllm-emul-performance.yml/badge.svg)](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-vllm-emul-performance.yml)
 [![Metrics Reference](https://img.shields.io/badge/Prometheus-Metrics_Reference-E05D00?logo=prometheus&logoColor=white)](https://rocm.github.io/rocm-aic/prometheus/)
 [![Cliff Perf Dashboard](https://img.shields.io/badge/Cliff-Perf_Dashboard-2980b9?logo=github&logoColor=white)](https://rocm.github.io/rocm-aic/cliff/)
+[![vLLM Emul Dashboard](https://img.shields.io/badge/vLLM_Emul-Perf_Dashboard-7c3aed?logo=github&logoColor=white)](https://rocm.github.io/rocm-aic/vllm-emul-performance/)
 
 > [!CAUTION]
 > This release is an *early-access* software technology preview. Running

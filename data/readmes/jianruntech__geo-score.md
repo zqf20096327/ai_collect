@@ -41,7 +41,7 @@ citation results are reported beside it and never added to it.
 [![PyPI](https://img.shields.io/pypi/v/geo-score?color=1E5C46)](https://pypi.org/project/geo-score/)
 [![Latest release](https://img.shields.io/github/v/release/jianruntech/geo-score?display_name=tag&color=A9854C)](https://github.com/jianruntech/geo-score/releases/latest)
 
-> **Version:** the current release is `geo-score==1.8.3` on [PyPI](https://pypi.org/project/geo-score/), with its tag,
+> **Version:** the current release is `geo-score==1.8.4` on [PyPI](https://pypi.org/project/geo-score/), with its tag,
 > wheel and checksums on [GitHub Releases](https://github.com/jianruntech/geo-score/releases); what changed is in the
 > [changelog](CHANGELOG.md). Every install line on this page is pinned to that release (`scripts/release.py --bump`
 > moves them together), so the tool you run is the one these pages describe. The rubric is versioned separately, and
@@ -203,6 +203,13 @@ Their content is there, a browser sees it, and a crawler gets an empty shell. Th
 almost certainly did not choose it. At a further 12 the server refuses crawler user-agents (unverified
 probes from the auditor's address).
 
+**Correction (2026-11-07).** 72 sites have a gate check at zero, not 73, and 19 of them through `robots.txt`, not 20.
+The run's tool (1.5.0) misread figma.com's `robots.txt`: its group for five retrieval crawlers opens the homepage with
+`Allow: /$` and ends in `Disallow: /`, and 1.5.0 closed a site on any `Disallow: /`, whatever `Allow` stood beside it.
+Read as RFC 9309 section 2.2.2 does (fixed in 1.8.4), figma.com scores 51 (Growing) on the same stored report, not 40.
+The rows stay as measured, and the median, mean and quartiles do not change
+([the correction](benchmark/README.md#a-quarter-of-the-field-is-unreadable-to-ai-crawlers)).
+
 Median **55** (95% CI 51–58, [stats.py](benchmark/stats.py)). Range 11 to 96. 66 sites were scored on
 fewer than four pages; without them the median is 59.
 
@@ -286,7 +293,7 @@ Python 3.8+, standard library only, nothing to install. It reads public URLs and
 a score against a **published, versioned rubric** — not a black box.
 
 ```bash
-curl -sL https://raw.githubusercontent.com/jianruntech/geo-score/v1.8.3/cli/geo_score.py \
+curl -sL https://raw.githubusercontent.com/jianruntech/geo-score/v1.8.4/cli/geo_score.py \
   | python3 - stripe.com --brief
 ```
 
@@ -351,14 +358,14 @@ All three levels. Levels 2 and 3 need `cli/geo_watch.py` next to `cli/geo_score.
 both; a clone, or both files downloaded, works too. Neither line below needs git or a build step.
 
 ```bash
-uvx geo-score@1.8.3 example.com            # run it without installing (needs uv)
-pipx install geo-score==1.8.3              # or install the geo-score command
+uvx geo-score@1.8.4 example.com            # run it without installing (needs uv)
+pipx install geo-score==1.8.4              # or install the geo-score command
 geo-score example.com --explain            # every check, with the evidence behind it
 ```
 
 Without access to PyPI, install the same wheel from the release:
-`pipx install https://github.com/jianruntech/geo-score/releases/download/v1.8.3/geo_score-1.8.3-py3-none-any.whl`.
-From source (needs git): `pipx install git+https://github.com/jianruntech/geo-score@v1.8.3`.
+`pipx install https://github.com/jianruntech/geo-score/releases/download/v1.8.4/geo_score-1.8.4-py3-none-any.whl`.
+From source (needs git): `pipx install git+https://github.com/jianruntech/geo-score@v1.8.4`.
 Standard library only, whichever you pick. Release downloads carry a `SHA256SUMS` file, and the wheel and
 sdist on PyPI match it byte for byte ([how to check](.github/SECURITY.md#verifying-a-download)).
 
@@ -367,7 +374,7 @@ sdist on PyPI match it byte for byte ([how to check](.github/SECURITY.md#verifyi
 
 **CLI** — level 1 is one file with no dependencies, and every report records how long its run took
 (`elapsed_s`). Levels 2 and 3 add `cli/geo_watch.py` from the same release. With the package from PyPI,
-`uvx geo-score@1.8.3` (or `geo-score`, after `pipx install geo-score==1.8.3`) takes the place of
+`uvx geo-score@1.8.4` (or `geo-score`, after `pipx install geo-score==1.8.4`) takes the place of
 `python3 cli/geo_score.py` below, all three levels included.
 
 ```bash
@@ -412,7 +419,7 @@ npx skills add jianruntech/geo-score     # add -g for a global install
 repository, `geo-score`, and copies the whole repository (about 9 MB) as it is on the default branch, main,
 into `.claude/skills/geo-score` for Claude Code. Without Node.js, or for the release rather than main, clone the
 release tag into your own skills folder instead:
-`git clone --branch v1.8.3 --depth 1 https://github.com/jianruntech/geo-score ~/.claude/skills/geo-score`.
+`git clone --branch v1.8.4 --depth 1 https://github.com/jianruntech/geo-score ~/.claude/skills/geo-score`.
 
 How close the CLI comes without the skill: [How accurate is it?](#how-accurate-is-it)
 
@@ -420,23 +427,23 @@ How close the CLI comes without the skill: [How accurate is it?](#how-accurate-i
 
 `geo-score-mcp` is a local MCP server (stdio, Python standard library only). It gives an agent the
 same three levels as the CLI: score a site for free, ask the AI engines one question, and track a
-question set week over week. `uvx geo-score@1.8.3 mcp` runs it from PyPI (`geo-score-mcp` after a pipx install), and
+question set week over week. `uvx geo-score@1.8.4 mcp` runs it from PyPI (`geo-score-mcp` after a pipx install), and
 `python3 cli/geo_score.py mcp` runs it from a clone.
 
 <!-- BEGIN MCP:install -->
-<!-- Generated by scripts/mcp_docs.py for version 1.8.3; edit the script, not this block. -->
+<!-- Generated by scripts/mcp_docs.py for version 1.8.4; edit the script, not this block. -->
 
-[![Add geo-score to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=geo-score&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyJnZW8tc2NvcmVAMS44LjMiLCJtY3AiXX0%3D)
-[![Install geo-score in VS Code](https://img.shields.io/badge/VS_Code-Install_Server-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522geo-score%2522%252C%2522command%2522%253A%2522uvx%2522%252C%2522args%2522%253A%255B%2522geo-score%25401.8.3%2522%252C%2522mcp%2522%255D%257D)
-[![Install geo-score in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install_Server-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect?url=vscode-insiders%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522geo-score%2522%252C%2522command%2522%253A%2522uvx%2522%252C%2522args%2522%253A%255B%2522geo-score%25401.8.3%2522%252C%2522mcp%2522%255D%257D)
-[![Add geo-score to LM Studio](https://img.shields.io/badge/LM_Studio-Install_Server-4338CA?style=flat-square)](https://lmstudio.ai/install-mcp?name=geo-score&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyJnZW8tc2NvcmVAMS44LjMiLCJtY3AiXX0%3D)
+[![Add geo-score to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=geo-score&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyJnZW8tc2NvcmVAMS44LjQiLCJtY3AiXX0%3D)
+[![Install geo-score in VS Code](https://img.shields.io/badge/VS_Code-Install_Server-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522geo-score%2522%252C%2522command%2522%253A%2522uvx%2522%252C%2522args%2522%253A%255B%2522geo-score%25401.8.4%2522%252C%2522mcp%2522%255D%257D)
+[![Install geo-score in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install_Server-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect?url=vscode-insiders%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522geo-score%2522%252C%2522command%2522%253A%2522uvx%2522%252C%2522args%2522%253A%255B%2522geo-score%25401.8.4%2522%252C%2522mcp%2522%255D%257D)
+[![Add geo-score to LM Studio](https://img.shields.io/badge/LM_Studio-Install_Server-4338CA?style=flat-square)](https://lmstudio.ai/install-mcp?name=geo-score&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyJnZW8tc2NvcmVAMS44LjQiLCJtY3AiXX0%3D)
 
-The buttons and the lines below run geo-score **1.8.3** from PyPI with `uvx`, which needs only [uv](https://docs.astral.sh/uv/): no git and no build step. They add no keys of their own, but a server started from a shell that exports a provider key (Claude Code passes its environment on) can use it. For a server that cannot spend, add `--read-only` after `mcp`.
+The buttons and the lines below run geo-score **1.8.4** from PyPI with `uvx`, which needs only [uv](https://docs.astral.sh/uv/): no git and no build step. They add no keys of their own, but a server started from a shell that exports a provider key (Claude Code passes its environment on) can use it. For a server that cannot spend, add `--read-only` after `mcp`.
 
 **Claude Code**
 
 ```bash
-claude mcp add --scope user geo-score -- uvx geo-score@1.8.3 mcp
+claude mcp add --scope user geo-score -- uvx geo-score@1.8.4 mcp
 ```
 
 **Standard config** (no keys in the file) for any client that reads an `mcpServers` file:
@@ -446,7 +453,7 @@ claude mcp add --scope user geo-score -- uvx geo-score@1.8.3 mcp
   "mcpServers": {
     "geo-score": {
       "command": "uvx",
-      "args": ["geo-score@1.8.3", "mcp"]
+      "args": ["geo-score@1.8.4", "mcp"]
     }
   }
 }
@@ -454,9 +461,9 @@ claude mcp add --scope user geo-score -- uvx geo-score@1.8.3 mcp
 
 Claude Desktop does not read your shell's `PATH`: put the full path that `which uvx` prints in `command`.
 
-Without access to PyPI, the release wheel: `uvx --from https://github.com/jianruntech/geo-score/releases/download/v1.8.3/geo_score-1.8.3-py3-none-any.whl geo-score-mcp`
+Without access to PyPI, the release wheel: `uvx --from https://github.com/jianruntech/geo-score/releases/download/v1.8.4/geo_score-1.8.4-py3-none-any.whl geo-score-mcp`
 
-From source (needs git): `uvx --from git+https://github.com/jianruntech/geo-score@v1.8.3 geo-score-mcp`
+From source (needs git): `uvx --from git+https://github.com/jianruntech/geo-score@v1.8.4 geo-score-mcp`
 <!-- END MCP:install -->
 
 <details>
@@ -530,7 +537,7 @@ you, your competitors, or the third-party pages (forums, review sites) the engin
 instead. Keys are read from the environment; geo-score never writes them anywhere.
 
 ```bash
-git clone --branch v1.8.3 --depth 1 https://github.com/jianruntech/geo-score && cd geo-score/cli
+git clone --branch v1.8.4 --depth 1 https://github.com/jianruntech/geo-score && cd geo-score/cli
 export OPENAI_API_KEY=… PERPLEXITY_API_KEY=…         # any subset of engines works
 python3 geo_score.py acme.com --ask "invoicing app for freelancers"        # level 2
 python3 geo_score.py watch init --brand Acme --domain acme.com --competitor "Rival=rival.com"
@@ -577,8 +584,8 @@ Repeat consistency of cited domains (per engine; descriptive, not read by diff)
 
 Least consistent questions (up to 3 per engine):
   id   question                         engine          answers that cite  Jaccard
-  q02  ai video tool with no watermark  chatgpt-api     2                  0.50
-  q01  best free ai video generator     perplexity-api  2                  0.50
+  q02  power station with solar panels  chatgpt-api     2                  0.50
+  q01  best portable power stations     perplexity-api  2                  0.50
 
 - Repeat consistency: for each question an engine answered more than once in this run, the overlap of the domains two of its answers cite, shared domains over all domains of the two (Jaccard), for every two answers, averaged per question; the median over questions per engine. 1: every ask cited the same domains; 0: no domain in common. Domains are read as everywhere in this report, www dropped; the order of citations is not compared.
 - Answers that cite nothing are left out: two empty lists are not agreement, and one empty list is not a 0. On an engine, a question with fewer than two answers that cite is not measured. Lowest: up to 3 questions per engine whose answers did not all cite the same domains, lowest first.
@@ -600,16 +607,16 @@ Sources the engines cite most (not yours)
 
 Questions where a competitor is cited and you are not (1)
   id   question                    cited instead
-  q03  cheapest text to video app  Pixa
+  q03  cheapest power station kit  Pixa
 
 Who is named for each question
   id   question                         answers  Lumo (you)             Pixa               no tracked brand named  searched yes/no/unknown  most cited
-  q01  best free ai video generator     4        cited 3/4 · named 3/4  cited 2 · named 4  0/4                     2/0/2                    Lumo (you)
-  q02  ai video tool with no watermark  4        cited 1/4 · named 1/4  cited 2 · named 4  0/4                     2/0/2                    Pixa
-  q03  cheapest text to video app       4        cited 0/4 · named 0/4  cited 2 · named 4  0/4                     2/0/2                    Pixa
+  q01  best portable power stations     4        cited 3/4 · named 3/4  cited 2 · named 4  0/4                     2/0/2                    Lumo (you)
+  q02  power station with solar panels  4        cited 1/4 · named 1/4  cited 2 · named 4  0/4                     2/0/2                    Pixa
+  q03  cheapest power station kit       4        cited 0/4 · named 0/4  cited 2 · named 4  0/4                     2/0/2                    Pixa
   q04  lumo vs pixa                     4        cited 4/4 · named 4/4  cited 2 · named 4  0/4                     2/0/2                    Lumo (you)
   q05  pixa alternatives                4        cited 2/4 · named 2/4  cited 2 · named 4  0/4                     2/0/2                    —
-  q06  鹿末视频免费吗                   3        cited 3/3 · named 3/3  cited 2 · named 3  0/3                     2/0/1                    —
+  q06  鹿末电源多少钱                   3        cited 3/3 · named 3/3  cited 2 · named 3  0/3                     2/0/1                    —
 
 - An answer given without a web search cannot cite anything.
 - "No tracked brand named" counts answers that name none of the brands in your config; they may name others.
@@ -624,12 +631,12 @@ By question type
 
 What the engines searched for (from 12 answers that show it)
   times  search
-  2      best free ai video generator
-  2      ai video tool with no watermark
-  2      cheapest text to video app
+  2      best portable power stations
+  2      power station with solar panels
+  2      cheapest power station kit
   2      lumo vs pixa
   2      pixa alternatives
-  2      鹿末视频免费吗
+  2      鹿末电源多少钱
 
 - Of 12 searches: 0 contain a year, 6 contain a ranking or comparison word.
 

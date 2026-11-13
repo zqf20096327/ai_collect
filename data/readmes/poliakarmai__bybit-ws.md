@@ -1,13 +1,17 @@
 # bybit-ws — AI-Native Trading Engine
 
+**Русский** · [English](README.en.md)
+
 **24/7 автотрейдинг на фьючерсах Bybit. Bollinger Grid + AI-фильтры. Подключил — зарабатывает.**
 
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://python.org)
-[![Tests](https://img.shields.io/badge/tests-52%2F52-brightgreen)](./test_smoke.py)
+[![Tests](https://img.shields.io/badge/pytest-passing-brightgreen)](./AGENTS.md) [![Smoke](https://img.shields.io/badge/smoke-52%2F52-brightgreen)](./test_smoke.py)
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](./LICENSE)
-[![Phase 11](https://img.shields.io/badge/phase-11-blue)](./CHANGELOG.md)
+[![Phase 11.5](https://img.shields.io/badge/phase-11.5-blue)](./CHANGELOG.md)
 
 ---
+
+> **English readers — start here.** The design is written up in English: [bybit-ws: a trading tool, an analyst, and an assistant](https://dev.to/alexey_polyakov_cfe2095e3/bybit-ws-a-trading-tool-an-analyst-and-an-assistant-12al). Code comments and the rest of the docs are in Russian; the file-by-file map is in [AGENTS.md](./AGENTS.md). If you think a part of this design is wrong, say so in [issues](../../issues) — the pinned issue lists five things I'm not sure about, and a one-line "you'll regret this, because X" is more useful than a star.
 
 ## Что это
 
@@ -18,23 +22,25 @@
 - Защищает депозит: Circuit Breaker, BlackSwan, Anti-ludomania, корреляционный блок
 - Самообучается: LSTM-классификатор рынка, Thompson Sampling, Dynamic Bandit, Drift Detector, Ensemble (20+ механик)
 
-Работает **24/7 на VPS за $5/мес**. 52 smoke-теста, атомарный деплой.
+Работает **24/7 на VPS за $5/мес**. pytest-набор + 52 smoke-проверки, атомарный деплой.
 
 ---
 
-## Результаты (на v11.4)
+## Результаты
 
-> **Важно:** результаты конкретной инсталляции (авто-трейдинг, `strategy='auto'`, `manual=0`). Не гарантия доходности. Backtest на своих параметрах через `paper_trade`.
+Статистику здесь не держим: она меняется несколько раз в день, а статичный снимок в README
+через сутки врёт. Живые числа — из самого бота:
 
-| Метрика | Значение |
-|--------|----------|
-| Авто-сделки (manual=0) | 243 / +$210 / WR 74% / PF 1.34 |
-| LONG | 162 / +$297 / WR 78% / PF 1.83 |
-| SHORT | 81 / −$87 / WR 67% / PF 0.65 |
+```bash
+curl -s localhost:8766/metrics          # сделки, входы, SL/TP за день
+curl -s localhost:8766/positions        # открытые позиции + PnL (Bearer)
+python3 -m bybit_ws.reconcile --days 30 # сходимость state.db с биржей
+python3 -m bybit_ws.paper_trade SOLUSDT --days 90   # бэктест на своих параметрах
+```
 
-> **Срез после Фазы 9.1 (15.08+, manual=0):** LONG — PF **1.83** (WR 78%, +$297) — основная прибыль. SHORT — PF 0.65 (WR 67%): avg_loss $9.65 vs avg_win $4.54 — дисбаланс остался. Ручные входы (AKE −$367, ZEC −$44) исключены из self-learn через `trade_history.manual`.
-
-*Авто-трейдинг Bollinger Grid LONG/SHORT. Всего 390 закрытых сделок (274 auto: 243 авто-чистых + 31 ручных).*
+> **Не гарантия доходности.** Цифры конкретной инсталляции (`strategy='auto'`, `manual=0`) —
+> не обещание. `trade_history.side` — сторона **закрытия** (`Buy`=закрыл SHORT), в `/positions`
+> наоборот: сырой Bybit.
 
 ---
 
@@ -51,18 +57,18 @@ pip install -r requirements.txt
 ### 2. Добавь ключи Bybit
 
 ```bash
-cp config.example.yaml ~/.config/bybit-ws/config.yaml
 mkdir -p ~/.config/bybit-ws
+cp config.example.yaml ~/.config/bybit-ws/config.yaml
 
-# Создай .env с API-ключами (chmod 600!)
-cat > ~/.config/bybit-ws/.env << 'EOF'
+# Создай env с API-ключами (chmod 600!)
+cat > ~/.config/bybit-ws/env << 'EOF'
 BYBIT_API_KEY=your_key
 BYBIT_API_SECRET=your_secret
 RPC_TOKEN=your_random_token_32_chars
 TG_BOT_TOKEN=optional_telegram_bot_token
 TG_CHAT_ID=optional_chat_id
 EOF
-chmod 600 ~/.config/bybit-ws/.env
+chmod 600 ~/.config/bybit-ws/env
 ```
 
 ### 3. Запусти
@@ -72,11 +78,51 @@ chmod 600 ~/.config/bybit-ws/.env
 python3 -m bybit_ws.paper_trade SOLUSDT --days 30
 
 # Боевой запуск
-python3 test_smoke.py          # 52 теста → PASS
+python3 test_smoke.py            # 52 проверки → PASS
+python3 -m pytest -q             # весь набор (должно быть зелёным)
+python3 -m pytest tests/ -q      # только tests/
 bash deploy.sh                 # атомарный деплой с canary-проверкой
 ```
 
 Готово. Движок работает. Позиции открываются автоматически при сигналах.
+
+---
+
+## Установка для AI-агентов (MCP)
+
+`bybit-ws` — не библиотека, а движок; MCP-сервер — тонкая обёртка над его RPC.
+Ставится **на машину, где работает движок** (или на машину, которой доступен его RPC).
+
+> ⚠️ Имя `bybit-ws` в PyPI **занято** официальным WS-клиентом Bybit — `pip install bybit-ws`
+> поставит чужой пакет. Ставить из git:
+
+```bash
+pip install "git+https://github.com/poliakarmai/bybit-ws.git"
+```
+
+Подключение (Claude Desktop / Cursor / Codex / Hermes) — запись в `mcpServers`:
+
+```json
+{
+  "mcpServers": {
+    "bybit-ws": {
+      "command": "bybit-ws-mcp",
+      "env": {
+        "BYBIT_RPC_URL": "http://127.0.0.1:8766",
+        "RPC_TOKEN": "<токен из ~/.config/bybit-ws/env>"
+      }
+    }
+  }
+}
+```
+
+Инструменты: `get_positions`, `get_risk_status`, `scan_market`, `place_entry`, `get_metrics`,
+`get_journal`, `backtest_run`, `validation_report`, `experiment_list`, `vpn_status`.
+
+`place_entry` — реальный ордер. Держи `RPC_TOKEN` в env, не в конфиге MCP-клиента в открытом виде.
+
+Проверка: агент вызывает `get_positions` → позиции с uPnL. Пусто/ошибка подключения —
+сначала подними движок: `systemctl --user start bybit-ws-async`, затем `curl -s 127.0.0.1:8766/health`.
 
 ---
 
@@ -85,9 +131,9 @@ bash deploy.sh                 # атомарный деплой с canary-пр�
 ### 🤖 Авто-трейдинг
 - **Bollinger Grid** LONG/SHORT на дневном таймфрейме
 - **9-метричный скоринг**: BB%, объём, падающие дни, фондинг, волатильность, качество + ML Gate
-- **LSTM-классификатор** рынка (82.3% точность, 5 режимов)
-- **Авто-входы** с MTF-подтверждением, orderbook-анализом и Entry Judge (DeepSeek → Qwen → Nemotron, fail-closed)
-- **Auto-TP**: 20% на Middle BB + 80% на Upper BB
+- **LSTM-классификатор** рынка (5 классов) — **не в строю**: `val_accuracy 0.653`, режим залипает (два значения за 22 дня), требует переобучения
+- **Авто-входы** с MTF-подтверждением, orderbook-анализом и Entry Judge (DeepSeek, fail-closed, fail-open только при длительном отказе LLM)
+- **Auto-TP**: ATR-adaptive, 3 ноги `[0.40, 0.35, 0.25]` (% размера), множители ATR по режиму. BB 20% Middle / 80% Upper — fallback, когда ATR недоступен
 - **Unified SL**: 5 механизмов → один приоритетный (tight > simple > hard > BE > default)
 
 ### 🛡️ Защита депозита
@@ -104,22 +150,22 @@ bash deploy.sh                 # атомарный деплой с canary-пр�
 - Метрики: Sharpe, макс. просадка, profit factor, винрейт
 
 ### 🔌 Интерфейсы
-- **RPC API** (порт 8766): `/scan`, `/enter`, `/close`, `/positions`, `/metrics`
-- **JSON-RPC** для ботов и интеграций
+- **RPC API** (порт 8766): `/health`, `/scan`, `/enter`, `/close`, `/positions`, `/metrics`, `/risk`, `/balance` — полный список путей в `do_GET`/`do_POST` (`rpc.py`)
+- **HTTP RPC** для ботов и интеграций (`http.server`, не JSON-RPC)
 - **MCP Server** для AI-агентов (Claude Code, Hermes, Codex)
 - **Telegram-алерты**: входы, SL, TP, DCA, пампы, ошибки
 - **One-click trading** через Hermes-чат: «просканируй SOL» → «бери 5%»
 
 ### 🧠 AI & Self-Learning (v10 — 20+ механик)
 - **Thompson Sampling**: Dynamic Bandit — авто-прунинг + генерация рук, Uncertainty-aware selection
-- **Ensemble Learning**: отдельный bandit для каждого режима рынка (6 режимов)
+- **Ensemble Learning**: отдельный bandit на режим — 6 (5 классов LSTM + `CHOPPY`)
 - **Drift Detector**: per-regime окна с EMA baseline, Causal inference (market vs parameters)
 - **Stress Testing**: 4 исторических backtest-сценария + 1000 Pareto Monte Carlo симуляций
 - **Composite Score**: WR+PF+Sharpe+MaxDD+AvgHold с adaptive per-regime весами и exponential decay
 - **Micro-updates**: обучение после каждой сделки с outlier-защитой (>3σ)
-- **Canary mode**: Bayesian A/B тест, адаптивный 5-20%, авто-rollback
-- **Entry Judge**: cross-model validation (DeepSeek → Qwen → Nemotron), fail-closed
-- **LSTM Market Regime**: 5 классов, авто-адаптация LONG/SHORT (82.3% точность)
+- **Canary mode**: Bayesian A/B тест, адаптивный 5-20%, авто-rollback. ⚠️ В проде выключен (`CANARY_ENABLED=False`) — код жив, но к live-входам не применяется.
+- **Entry Judge**: одна модель (DeepSeek, fail-closed); Qwen убран 17.10, Nemotron в коде вызова нет
+- **LSTM Market Regime**: 5 классов, авто-адаптация LONG/SHORT (82.3% — заявлено, не перезамерялось)
 - **LSTM World Model**: multi-task OHLCV prediction для скоринга входов
 
 ---
@@ -152,9 +198,9 @@ bash deploy.sh                 # атомарный деплой с canary-пр�
 │  • correlation.py    — корреляционная матрица      │
 │  • dca.py            — DCA-докупки                 │
 │                                                     │
-│  Раз в 24 часа (self-learn):                        │
+│  Self-learn (event-driven: ≥10 сделок И ≥6ч, иначе 24ч):│
 │  • self_learn.py     — Dynamic Bandit, Drift, Ensemble│
-│  • canary mode       — Bayesian A/B-тест параметров │
+│  • canary mode       — Bayesian A/B (выключен в проде)│
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -170,7 +216,7 @@ bash deploy.sh                 # атомарный деплой с canary-пр�
 | [@Gridbolbot](https://t.me/Gridbolbot) | Telegram-бот сигналов (Pro-подписка: безлимит + алерты) |
 | [hermes-trader](https://github.com/poliakarmai/hermes-trader) | Встроенный трейдинг в Hermes Agent |
 | [Paper Trading](bybit_ws/paper_trade.py) | Бэктестинг на истории |
-| [OpenWiki](openwiki/quickstart.md) | Детальная документация |
+| [docs/INDEX.md](docs/INDEX.md) | Карта документации: что актуально, что архив |
 
 ---
 
@@ -180,7 +226,8 @@ bash deploy.sh                 # атомарный деплой с canary-пр�
 |------|-----------|
 | [ONBOARDING.md](ONBOARDING.md) | **Пошаговая инструкция:** от нуля до первой сделки |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Архитектура, потоки данных, Mermaid-диаграммы |
-| [docs/API.md](docs/API.md) | RPC API: 20 эндпоинтов, curl-примеры |
+| [docs/API.md](docs/API.md) | RPC API: реальный список эндпоинтов из `rpc.py`, curl-примеры |
+| [docs/INDEX.md](docs/INDEX.md) | Карта документации + статус каждого файла |
 | [docs/SECURITY.md](docs/SECURITY.md) | Безопасность: секреты, модель угроз, аудит |
 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Решение проблем: 60+ причин |
 | [docs/PRD-one-click.md](docs/PRD-one-click.md) | One-click trading через чат |
@@ -200,10 +247,10 @@ bash deploy.sh                 # атомарный деплой с canary-пр�
 
 ## Безопасность
 
-- API-ключи через `.env` (chmod 600) — никогда в коде
+- API-ключи через `env` (chmod 600) — никогда в коде
 - RPC write-эндпоинты требуют Bearer-токен
 - IP-whitelist на уровне Bybit
-- Атомарный деплой: 6 pre-deploy проверок + 8 canary checks
+- Атомарный деплой: 3 pre-deploy шага (чистота репо → logic → smoke) + 8 canary-проверок
 - Kill Switch: мгновенное закрытие всех позиций
 
 [Подробнее →](docs/SECURITY.md)

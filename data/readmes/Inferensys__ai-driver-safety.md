@@ -13,6 +13,31 @@ We present a **driver monitoring system** for assisted and autonomous vehicle ca
 > Research and demo software only. This is not certified automotive safety software.
 
 
+## Bulwark: a custom video model trained for driver monitoring
+
+We have developed [**Bulwark**](https://github.com/Inferensys/bulwark), a custom video
+model trained for driver monitoring. This repository detects driver states with
+hand-tuned rules on top of general-purpose face and object models; Bulwark learns them
+directly from driver video. It reads 2-second clips from a driver-facing camera and
+returns eye closure, PERCLOS, blinks, yawns, phone use, eating, drinking and the driver's
+activity, all from one network.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Inferensys/bulwark/v0.1.0/docs/media/bulwark-b1-demo.webp" width="720" alt="An AI-generated clip of a driver reaching for a phone and texting, with Bulwark-B1's outputs for each 2-second window: a phone alert in one window, at 0.48 against a threshold of 0.37.">
+</p>
+
+- **[Bulwark-B1](https://huggingface.co/Inferensys/bulwark-b1-driver-monitoring)**: Meta's
+  V-JEPA 2.1 video encoder with LoRA adapters, fine-tuned on four driver datasets
+  (Drive&Act, DMD, MRL Eye, AUC Distracted Driver).
+- **[Bulwark-E1](https://huggingface.co/Inferensys/bulwark-e1-driver-monitoring-onnx)**: a
+  small ONNX version for CPU. Its first version scores well below B1.
+- Scored per person on held-out drivers, with a camera position it never trained on
+  ([evaluation](https://github.com/Inferensys/bulwark/blob/v0.1.0/docs/evaluation.md)).
+
+The code is Apache-2.0. The weights are free for non-commercial research (CC BY-NC 4.0).
+For products, Inferensys builds commercially licensed models for your cameras and use case:
+[contact us](https://inferensys.com/contact).
+
 ## Implementation
 
 Using Computer Vision & Deep Learning, we can analyze the driver’s behavior and detect signs of fatigue, distraction, or other unsafe conditions. The system can monitor the driver’s eye movements, facial expressions, and body posture to identify potential risks. For example, if the driver’s eyes are closed for an extended period or if they are yawning frequently, the system can alert them to take a break. Additionally, if the driver is using their phone while driving, the system can detect this behavior and provide warnings to encourage safer driving habits.

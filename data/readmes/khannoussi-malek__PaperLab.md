@@ -7,8 +7,9 @@
 
 > **Why this project exists:** I built PaperLab to learn how research really works, from finding papers to
 > writing them up, to grow my knowledge, and to find a strong, lasting way to keep developing it. I use it for my
-> own research, and I hope it helps me find a PhD, ideally in software engineering and AI. If you work in that
-> area and have an opening, or just want to talk research, I'd be glad to hear from you:
+> own research, and I want to give something back to the research community by helping as many researchers as I
+> can with the skills I have now. If you have an idea, a problem PaperLab could solve, or just want to talk research,
+> I'd be glad to hear from you:
 > [my website](https://www.malekkhannoussi.tn/) · [Gmail](mailto:khannoussimalek@gmail.com) ·
 > [LinkedIn](https://www.linkedin.com/in/khannoussi-malek)
 
@@ -88,6 +89,10 @@ back to the browser.
 
 - Group papers into workspaces (a paper can be in several), see all their notes in one place, and chat with a whole
 workspace: answers cite passages from its papers and your notes.
+- Export a workspace as one `.paperlab` file (its papers, tags, and every note with its highlights, with or without the
+PDFs) and import it on another PaperLab: a supervisor or co-author sees what you saw, and AI notes stay marked AI. Its
+screening record comes along as a file you can read. An imported workspace opens read-only; **Make it editable**
+turns it into a normal one.
 
 **Read and highlight**
 
@@ -198,6 +203,14 @@ the newest answer until you press ×.
 - Select part of an answer and click **Save as note**. The note is anchored on the passage it cites and marked AI.
 - Ask for notes ("create notes to help me understand the method") and each note the answer suggests shows as a card
 with **Save**. A saved note is marked AI, keeps the answer's exact words, and belongs to the papers it cites.
+- Press the microphone to **ask out loud** and hear the answer. Speak over it and it stops, and only the part you heard
+is saved. Turn it on in **Settings → Voice** in the desktop app, on macOS, Windows or Linux. With the two-command
+install, run `docker compose --profile voice up -d` in your PaperLab folder instead. The first time, it downloads two
+speech models, about 600 MB (keep 3 GB of disk free), and Docker needs about 2 GB more memory while voice is on. Your
+speech is turned into text on your computer and never leaves it. The answer still comes from the model you picked in
+the chat panel. **Settings → Voice** also shows how fast each step has been. Wear headphones if your speakers feed back
+into the microphone. The voice program comes as its own image because it includes espeak-ng, which is GPL-licensed
+(see `voice/NOTICE`). It's new, so tell us what feels slow or wrong.
 
 **Run a systematic review**
 
@@ -273,9 +286,15 @@ A DOI check is opt-in.
 and notes, find the papers in your library connected to one (a shared workspace, note, author or topic, or a
 citation), and save a note on a passage it quotes.
 - A note it saves is marked AI, like a note saved from chat, and is highlighted on the lines it quoted.
+- It can read what you've gathered around a paper: its references and citing works (with the ones in your library
+marked), the tables and numbers you captured, and past chat answers, marked as AI.
 - It can also run searches and snowballs, read screening suggestions and record the decisions you ask for, build
 evidence cards, check a claim against the papers it cites, and write and compile manuscripts. Each manuscript write
 keeps an earlier version you can restore.
+- The Connect Claude page lists every tool call Claude made, and a switch there turns off its changes (adding,
+tagging, writing, deleting) while it can still search and read.
+- Your skills appear there as prompts too: pick one, give it a paper or a workspace, and Claude works through that
+task with PaperLab's tools. Hidden skills aren't offered.
 
 **Install it as an app**
 
@@ -326,6 +345,8 @@ None of these sources receive PDFs, notes or a paper's text.
 DBLP is off by default. When enabled, Find papers and Workspace Search send DBLP search title words
 and pagination parameters, never PDFs, notes, contact email or API keys. DBLP supplies no PDFs; existing
 arXiv and Unpaywall resolution still applies.
+OpenReview is off by default and receives the search text, a title filter and paging, never an email or key.
+ACL Anthology is on by default and receives nothing from your searches: PaperLab downloads its public metadata file once a week, and searches run on that copy.
 API keys stay in your local database and are never sent back to the browser. Adding a paper downloads its PDF from the
 free link found. Importing from Zotero fetches free copies exactly like adding a paper by DOI; it's on by default and
 you can turn it off for an import. None of them send a paper's text.
@@ -725,13 +746,13 @@ stable test hooks listed there.
 PaperLab is built by **Malek Khannoussi** ([malekkhannoussi.tn](https://www.malekkhannoussi.tn/),
 [LinkedIn](https://www.linkedin.com/in/khannoussi-malek/)).
 
-I started it on my way to a PhD. I wanted a tool that let me read papers properly, where every note stays attached to
+I started it because I wanted a tool that let me read papers properly, where every note stays attached to
 the passage it came from and every answer can be checked against the page it came from. It didn't exist, so I built it,
 and it has been what I work on every day since.
 
-**I am looking for a PhD position.** If you supervise research, or you know a group where this kind of work would fit,
-I would be glad to hear from you. A pointer to an opening, an introduction, or an honest opinion on the work would all
-help, and any of them would mean a lot.
+**I want PaperLab to be useful to the research community.** I'm putting the skills I have now into helping as many
+researchers as I can. If you use it, or tried it and it didn't fit your work, I would be glad to hear from you. A bug
+report, a feature idea, or an honest opinion on the work all help, and any of them would mean a lot.
 
 The [PaperLab page on LinkedIn](https://www.linkedin.com/company/os-paperlab) posts a weekly breakdown of how one
 feature works: follow along there. This repository usually runs a few months ahead of what is posted, so what you see

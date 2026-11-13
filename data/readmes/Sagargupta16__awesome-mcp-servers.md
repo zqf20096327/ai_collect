@@ -298,6 +298,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Telegram Archive MCP](https://github.com/GeiserX/telegram-archive-mcp)                                                                          | Search and read archived Telegram history from a Telegram-Archive instance       | Go                |
 | [Telegram MCP](https://github.com/chigwell/telegram-mcp)                                                                                         | Telegram messaging                                                               | Python            |
 | [TextKit](https://jointextkit.com/docs/mcp)                                                                                                      | Send and receive SMS, verify phone numbers, buy US and Canada numbers            | Remote            |
+| [Wassenger WhatsApp MCP](https://github.com/wassengerhq/whatsapp-mcp) | Official WhatsApp Business API: messages, templates, chats, campaigns, inbox | TypeScript |
 | [Zulip MCP](https://github.com/zulip/zulipmcp)                                                                                                   | Official Zulip streams, messages and mentionable bot agents                      | Python            |
 
 ### File Systems & Storage
@@ -495,8 +496,4 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Spotify Play Count MCP](https://github.com/GeminiGeorge22/spotify-play-count-mcp)                                                               | Spotify play counts per track, plus artist monthly listeners                     | Python            |
 | [TMDB MCP](https://github.com/Laksh-star/mcp-server-tmdb)                                                                                        | The Movie Database (TMDB)                                                        | TypeScript        |
 | [YouTube MCP](https://github.com/ZubeidHendricks/youtube-mcp-server)                                                                             | YouTube API videos and analytics                                                 | TypeScript        |
-| [YouTube Transcript MCP](https://github.com/kimtaeyoon83/mcp-server-youtube-transcript)                                                          | Download YouTube video transcripts                                               | TypeScript        |
-
-### Travel & Location
-
-| Server                                                                             
+| [YouTube Transcript MCP](https://github.com/kimtaeyoon83/mcp-server-youtube-transcript)                                                          | Download YouTube video transcripts            

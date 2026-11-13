@@ -468,6 +468,19 @@ You can load environment variables from .env files using the `:load-env` paramet
 
 The .env files should contain variables in the format `KEY=value`, with one variable per line. Comments (lines starting with `#`) and empty lines are ignored.
 
+**** Resolving values when the agent starts
+
+Values are normally evaluated when your config loads. To look one up each time an agent starts instead (for example, a secret from a password store that may still be locked when Emacs starts), pass a function as the value:
+
+#+begin_src emacs-lisp
+  (setq agent-shell-anthropic-claude-environment
+        (agent-shell-make-environment-variables
+         "MY_SECRET" (lambda ()
+                       (auth-source-pick-first-password :host "example.org"))))
+#+end_src
+
+If a function signals an error or returns nil, the variable is left out of the agent's environment and a warning is shown in the shell.
+
 *** Anthropic Claude
 
 For login-based authentication (default):
@@ -1483,7 +1496,4 @@ always go to Evil modes if you need to with ~C-z~).
 |                                                       | agent-shell-viewport-reply                              | Reply as a follow-up and compose another prompt/query.                        |
 |                                                       | agent-shell-viewport-reply-1                            | Reply with "1" and send immediately.                                          |
 |                                                       | agent-shell-viewport-reply-2                            | Reply with "2" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply-3                            | Reply with "3" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply-4                            | Reply with "4" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply-5                            | Reply with "5" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply-6                            | Reply with "6" and send immed
+|                                                       | agent-shell-viewport-reply

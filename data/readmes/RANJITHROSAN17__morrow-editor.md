@@ -24,7 +24,7 @@ Morrow is a Windows text and code editor designed to be approachable for everyda
 > to contribute. See [CONTRIBUTING.md](CONTRIBUTING.md) for exactly which work needs Windows.
 
 > [!IMPORTANT]
-> **Early preview, not a production release.** Keep backups and test with non-critical files first. The Windows installer is unsigned, and consumer Windows 10/11, full accessibility and security audits, and performance benchmarks remain outstanding.
+> **Early preview, not a production release.** Keep backups and test with non-critical files first. Current tagged releases produced by the Windows workflow state whether their installer is signed or an explicit unsigned preview; consumer Windows 10/11, full accessibility and security audits, and performance benchmarks remain outstanding. See the [release verification and rollback guide](docs/RELEASE-VERIFICATION.md).
 
 ![Morrow's dark editor showing a Python sample, folder sidebar, tabs, and lavender accents](docs/images/morrow-browser-preview.png)
 
@@ -32,11 +32,11 @@ Morrow is a Windows text and code editor designed to be approachable for everyda
 
 ## Choose your first run
 
-- **Use the Windows app:** [download the latest preview and its checksum file](https://github.com/RANJITHROSAN17/morrow-editor/releases/latest). No Node.js or Rust is needed for a packaged installer. It is unsigned; keep backups and use non-critical files.
+- **Use the Windows app:** [download the latest preview and its verification assets](https://github.com/RANJITHROSAN17/morrow-editor/releases/latest). No Node.js or Rust is needed for a packaged installer. Check its signing mode and checksum before running it; keep backups and use non-critical files.
 - **Evaluate the UI or contribute without Windows:** use the [browser UI preview](#browser-ui-preview); it does not verify native desktop behavior.
 - **Build the native app:** follow [Windows app from source](#windows-app-from-source) and its toolchain prerequisites.
 
-For your first desktop session, open a disposable text file, edit, save and reopen it before enabling optional AI features. Compare the installer’s SHA-256 against the attached `SHA256SUMS.txt`; in PowerShell use `Get-FileHash .\Morrow_0.4.0_x64-setup.exe -Algorithm SHA256`. A matching checksum verifies the downloaded bytes against that release’s checksum, not publisher identity or safety.
+For your first desktop session, open a disposable text file, edit, save and reopen it before enabling optional AI features. Compare the installer’s SHA-256 against the attached `SHA256SUMS.txt`; in PowerShell use `Get-FileHash .\Morrow_0.4.0_x64-setup.exe -Algorithm SHA256`. A matching checksum verifies the downloaded bytes against that release’s checksum, not publisher identity or safety. The [verification guide](docs/RELEASE-VERIFICATION.md) also covers Authenticode, provenance, WinGet, rollback and reinstall.
 
 ## Features
 
@@ -45,7 +45,10 @@ For your first desktop session, open a disposable text file, edit, save and reop
 - **Folders and navigation:** add multiple folders to a workspace, create files and folders, search saved files across roots, and use quick open to navigate.
 - **Review before applying:** compare a pasted replacement with a selected range, explicitly accept it, and undo it. Applying a change does not automatically save the file.
 - **AI on your terms:** optional inline suggestions, **reviewable AI actions on a selection** (improve, fix, shorten, expand, summarize, bullets, explain), a browser-first Arena workflow, and a separate optional Arena API panel. Replace actions always show a diff before anything changes. See [AI and privacy](#ai-and-privacy) before sharing text.
+- **A writing surface for notes:** live words/characters/reading time, an optional daily word goal, a click-to-jump minimap, and focus / typewriter / zen modes. Markdown shortcuts for bold, italic, links, lists, quotes, code blocks and headings, plus line operations and optional smart typography.
+- **A notes layer over your own files:** an outline of the current note, tags from `#tag` and front matter, `[[wiki links]]` with backlinks and orphans, quick capture, daily notes and templates. The index is built locally on demand, reads only folders you opened, and can be cleared.
 - **Recovery and file awareness:** optional session recovery and checks for external file changes. Recovery is unencrypted and is **not a backup**.
+- **One picture of the product:** [Morrow at a glance](docs/MORROW-AT-A-GLANCE.md).
 
 Morrow is not yet a full IDE: it does not provide a debugger, integrated terminal, extension marketplace, or language-server features. See the [full guide](docs/USER-GUIDE.md) for file formats, limits, shortcuts, and safety details.
 
@@ -73,13 +76,13 @@ npm run tauri build -- --target x86_64-pc-windows-msvc
 
 The NSIS installer is written to `src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/`. Windows may warn about an unknown publisher. If WebView2 is missing, its bootstrapper may need internet access.
 
-[**Download v0.4.0 for Windows**](https://github.com/RANJITHROSAN17/morrow-editor/releases/latest) — a 3.6 MB NSIS installer, no Rust toolchain required. It is unsigned, so Windows will warn about an unknown publisher; that warning is accurate. `SHA256SUMS.txt` is attached, and checking the download against it takes one command:
+[**Download v0.4.0 for Windows**](https://github.com/RANJITHROSAN17/morrow-editor/releases/latest) — a 3.6 MB NSIS installer, no Rust toolchain required. For releases produced by the current workflow, `SIGNING-MODE.txt` is authoritative: `signed` means its Authenticode publisher and timestamp were verified; `unsigned-preview` means Windows may warn about an unknown publisher, and that warning is accurate. `SHA256SUMS.txt` is attached, and checking the download against it takes one command:
 
 ```bash
 sha256sum Morrow_0.4.0_x64-setup.exe
 ```
 
-This is a **preview**, not a production release: it has not had consumer Windows testing, an accessibility audit or a security audit. What has and has not been verified is written down in [`docs/IMPLEMENTATION-0.4.0.md`](docs/IMPLEMENTATION-0.4.0.md#verification-and-limits).
+This is a **preview**, not a production release: it has not had consumer Windows testing, an accessibility audit or a security audit. What has and has not been verified is written down in [`docs/IMPLEMENTATION-0.4.0.md`](docs/IMPLEMENTATION-0.4.0.md#verification-and-limits). For release files, signatures, provenance, the package-manager route and rollback instructions, read [`docs/RELEASE-VERIFICATION.md`](docs/RELEASE-VERIFICATION.md).
 
 ### Browser UI preview
 
@@ -119,6 +122,11 @@ Morrow does **not** embed the Arena website, transfer cookies or login sessions,
 | Go to line / command palette | `Ctrl+G` / `Ctrl+Shift+P` |
 | Settings | `Ctrl+,` |
 | Request / accept / dismiss an AI suggestion | `Ctrl+Shift+Space` / `Tab` / `Esc` |
+| Quick capture / today's note / notes panel | `Ctrl+Alt+N` / `Ctrl+Alt+D` / `Ctrl+Alt+B` |
+| Bold / italic / link | `Ctrl+B` / `Ctrl+I` / `Ctrl+K` (bold applies to a Markdown selection; elsewhere `Ctrl+B` still toggles the sidebar) |
+| Heading 1–6 / quote / bullets | `Ctrl+Shift+1…6` / `Ctrl+Shift+Q` / `Ctrl+Shift+U` |
+| Focus / typewriter / zen | `F8` / `F9` / `F11` |
+| Zoom in / out / reset | `Ctrl++` / `Ctrl+-` / `Ctrl+0` |
 
 ## Development and testing
 

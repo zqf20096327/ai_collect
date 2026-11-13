@@ -429,6 +429,11 @@ lookups work by default.
 API keys and proxy settings are not inherited; pass required variables via
 `Workspace.local(..., env={...})`.
 
+In a git work tree, `grep_files` and globbed `list_files` skip what git
+ignores (`node_modules/`, `dist/`) — naming an ignored directory still
+searches it. `write_file` and `edit_file` refuse a file that changed on disk
+(or was deleted) since the session last read it, and ask for a fresh read.
+
 The workspace can also be a directory in a running container or on an SSH
 host — `Workspace.remote(RemoteHost.ssh("box"), "/srv/project")` — with the
 same tools and the same policy, enforced over there. The host needs
@@ -459,7 +464,9 @@ agent = Agent(
 - **`Todo()`** — gives the model a checklist for multi-step work; the current
   list is re-shown every turn without growing the transcript.
 - **`Skills(dir)`** — reusable instruction bundles (`SKILL.md` + files): a
-  one-line index stays in the prompt, full content loads on demand.
+  one-line index stays in the prompt, full content loads on demand. A
+  message that starts with `/name` asks for that skill by name; the web
+  composer lists them as you type `/`.
 - **`MCP(server)`** — tools from Model Context Protocol servers, stdio or
   HTTP, with per-server name prefixes and approval gates. For web research,
   try the [Parallel Search MCP recipe](https://cymoo.github.io/lovia/mcp/#web-research-with-parallel).
@@ -509,15 +516,17 @@ serve(create_app(agent, db_path="lovia.db"), host="127.0.0.1", port=8000)
 - **Full chat out of the box** — SSE streaming, sessions you can branch from
   any reply, messages that steer a running run or queue until it completes,
   approvals, schedules, a memory editor (notes about you, and per project)
-  and file attachments; runs survive
-  browser disconnects.
-- **Settings without restarts** — `lovia web` keeps models and its agents in
+  and file attachments; `@` in the composer mentions a workspace file by
+  path; runs survive browser disconnects.
+- **Settings without restarts** — `lovia web` keeps models, MCP servers
+  (paste the usual `mcpServers` JSON) and its agents in
   Settings: each agent has its own prompt, model, permission mode, switches
   and run limits, and a new chat picks one in the composer. A change
   applies from the next run. Settings, chat history and memory live in one
   home (`~/.lovia`, or `--home DIR`), never in the launch directory; a
   project's own `AGENTS.md` and `.agents/skills` load in every chat working
-  there. Each chat works in a folder of its own — the
+  there (in a Git repository, every `AGENTS.md` from its root down to the
+  chat's folder). Each chat works in a folder of its own — the
   sidebar groups chats by folder, and each picks its permission mode
   (`create_app(workspaces=WorkspaceSwitch())` in your own app). The folder
   can be on an SSH host or in a running container: pick it in the add

@@ -37,12 +37,12 @@ _No Python. No ONNX. No external services. Just_ **AI, in a jar.**
 
 | Module | What it is | One-liner |
 |--------|------------|-----------|
-| [`jinfer`](./jinfer) | AI inference engine | **Local AI inference for the JVM.** Chat, vision, audio, embeddings, reranking, text-to-speech |
+| [`jinfer`](./jinfer) | AI inference engine | **Local AI inference for the JVM.** Chat, vision, audio, embeddings, reranking, decisions, text-to-speech |
 | [`toknroll`](./toknroll) | LLM tokenization | **Token-perfect.** Fast tokenizers for LLMs, pure Java, zero dependencies |
 | [`jam`](./jam) | Quantized matrix multiplication | **Just a matmul.** Native implementations for several CPU ISAs |
 | [`jota`](./jota) | Tensor engine | **Write once, accelerate everywhere.** Java, C, CUDA, HIP, Metal, OpenCL, Mojo |
 | [`gguf`](./gguf) | GGUF reader/writer | llama.cpp's model format, pure Java, zero dependencies |
-| [`safetensors`](./safetensors) | Safetensors reader/writer | HuggingFace's model format, pure Java, zero dependencies |
+| [`safetensors`](./safetensors) | Safetensors reader/writer | Hugging Face's model format, pure Java, zero dependencies |
 | [`json`](./json) | JSON parser and printer | RFC 8259, ~25 KB, zero dependencies, zero reflection |
 
 ## Demos

@@ -1,114 +1,154 @@
-# Hadamard: Agents as an Engineering Team
+# Hadamard Harness & Canvas
 
 [![CI](https://github.com/DeconBear/hadamard/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/DeconBear/hadamard/actions/workflows/ci.yml)
 [![Publish npm Package](https://github.com/DeconBear/hadamard/actions/workflows/publish-npm.yml/badge.svg?branch=main)](https://github.com/DeconBear/hadamard/actions/workflows/publish-npm.yml)
-[![npm version](https://img.shields.io/npm/v/actoviq-agent-sdk)](https://www.npmjs.com/package/actoviq-agent-sdk)
+[![npm version](https://img.shields.io/npm/v/hadamard-canvas)](https://www.npmjs.com/package/hadamard-canvas)
+[![Hcanvas](https://img.shields.io/badge/hcanvas-0.1.2-6d5bd0)](https://github.com/DeconBear/hadamard/releases)
 [![Docs](https://img.shields.io/badge/docs-github%20pages-0f766e)](https://deconbear.github.io/hadamard/)
 
 [English](./README.md) | [Chinese](./README-zh.md)
 
-LLM harnesses are powerful but hard to manage on real engineering and research work — shipping software, running AI-for-Science (AI4S) pipelines, training neural networks and steering experiments. Contexts overflow, tool calls sprawl, runs drift from the plan, and a single agent loop never gets a second opinion.
+**Hadamard Canvas (Hcanvas)** is a local-first, AI-native canvas for engineering and research work. It is the standalone canvas product in the Hadamard repository: one document model for humans and agents, a desktop app, and a small CLI/HTTP surface that agents can read and patch directly.
 
-**Hadamard** exists to make agent engineering and research controllable. Multiple agents on different providers talk to each other — investigating, reviewing, and dispatching in parallel — so problems get considered more thoroughly. One TypeScript runtime provides tools, skills, durable sessions, memory, and MCP, plus a bridge that manages installed agent CLIs (Claude Code, Codex, Cursor, Pi, CodeWhale, Reasonix, Crush) as child processes; the same runtime ships with a terminal UI and a desktop GUI.
-
-Inspired by Claude Code, Codex, Deepagents, and the broader agent ecosystem. Hadamard remains independent with its own public API and documentation.
+Hadamard is a family of tools built around LLM harnesses: **Hadamard Harness** provides the agent runtime, workflows and bridges for engineering and research, while **Hadamard Canvas** is the standalone visual workspace. Other complementary tools can sit alongside them. Install and development notes for the harness have moved to [docs/en/hadamard-harness.md](./docs/en/hadamard-harness.md).
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/DeconBear/hadamard/main/docs/assets/screenshots/gui-home.png" alt="Hadamard desktop GUI — projects overview" width="49%">
-  <img src="https://raw.githubusercontent.com/DeconBear/hadamard/main/docs/assets/screenshots/gui-chat.png" alt="Hadamard desktop GUI — chat with a model" width="49%">
+  <img src="./docs/assets/screenshots/hcanvas-canvas.png" alt="Hadamard Canvas — Canvas page with Markdown, HTML, code and shape blocks, page inspector, and agent plugin surfaces" width="100%">
 </p>
-<p align="center">
-  <img src="https://raw.githubusercontent.com/DeconBear/hadamard/main/docs/assets/screenshots/tui-home.png" alt="Hadamard TUI — terminal startup screen" width="90%">
-</p>
-<p align="center"><em>The desktop GUI (top: projects overview and a chat session) and the terminal UI (bottom).</em></p>
+<p align="center"><em>Hcanvas: a local document where people and agents edit the same pages, blocks and HTML.</em></p>
 
-> **Package name:** the published npm package is [`actoviq-agent-sdk`](https://www.npmjs.com/package/actoviq-agent-sdk). Product, repo, CLI, and config paths use **Hadamard** (`hadamard-*`, `~/.hadamard`, `.hadamard/`).
+## Why Hcanvas
 
-## Install
+Most visual tools end up either human-only or agent-only. Hcanvas keeps a single local document model:
 
-Node.js 22.13+ or Node.js 24 is required.
+- **Humans** get direct manipulation, real typography, HTML/CSS, shapes, images and presentation.
+- **Agents** get a JSON-first CLI/HTTP protocol with stable IDs, patches, revisions and execution proposals.
+- **Both** work on the same pages without exporting to a second format.
 
-```bash
-npm install actoviq-agent-sdk zod
-```
+Hcanvas runs as its own app and keeps its own version (0.1.2) and release tags (hcanvas-v*); it is independent from the Hadamard desktop GUI and its legacy canvas module.
 
-The `npm install` above is for SDK usage (import from `'actoviq-agent-sdk'`); the CLIs are then available through `npx` (for example `npx hadamard-tui`). To run `hadamard-tui` / `hadamard-gui` / `hadamard` / `actoviq` directly on your PATH, install globally instead:
+## Quick start with AI Agents
 
-```bash
-npm install -g actoviq-agent-sdk
-```
+If a user asks you to install or configure Hcanvas, use this checklist. The npm path installs both the CLI and the optional Electron desktop launcher.
 
-Put your provider settings at `~/.hadamard/settings.json` — any Anthropic-compatible or OpenAI-compatible provider works.
+Copy this prompt into your agent:
 
-## Quick Start
+~~~text
+Set up Hadamard Canvas for me. Read the "Quick start with AI Agents" section at https://github.com/DeconBear/hadamard#quick-start-with-ai-agents, detect my OS, install Node.js 22.13+ if needed, install the CLI, verify it, and report the result. Ask before installing system packages or changing my PATH.
+~~~
 
-### SDK
+1. Check `node --version` is >=22.13.0; Node 24 is also supported.
+2. Install the CLI with `npm install -g hadamard-canvas`.
+3. Verify `hcanvas` prints its command list, then launch `hcanvas desktop --workspace <dir>` (or `hcanvas app --workspace <dir>` for browser mode).
+4. Use a writable workspace (default `~/.hcanvas`) and do not delete existing documents.
+5. Report the Node/npm and `hadamard-canvas` versions, workspace path and launch mode.
 
-```ts
-import { createAgentSdk, loadDefaultHadamardSettings } from 'actoviq-agent-sdk';
+Desktop installers from [GitHub Releases](https://github.com/DeconBear/hadamard/releases) include the GUI only; install the CLI separately with the npm command above when needed.
 
-await loadDefaultHadamardSettings();   // reads ~/.hadamard/settings.json
-const sdk = await createAgentSdk();
+## Highlights
 
-const result = await sdk.run('What is compare-and-swap?');
-console.log(result.text);
+### Pages that fit the work
 
-await sdk.close();
-```
+- **HTML pages** rendered in a sandbox, editable in place or in a source editor.
+- **Canvas pages** with a fixed-size slide/page surface.
+- **Infinite pages** with unbounded coordinates and pan/zoom.
+- **Markdown document pages** for long-form notes, papers and reports.
+- Drag-to-reorder page deck, page thumbnails and page masters.
 
-Run the same example from the repository with `npm run example:hadamard-quickstart`.
+### A real content toolbox
 
-### Terminal UI (`hadamard-tui`)
+- HTML, text, Markdown, code, images, LaTeX/MathML formulas and 66 PPT-style shapes.
+- Curve, arrow, freehand, frame and connector tools with native points and bindings.
+- Markdown rich editing, formula editing and source mode.
+- Live inline color picker with saturation/hue controls and screen eyedropper.
+- Bundled **Inter**, **Source Serif 4** and **JetBrains Mono**, plus system font choices.
+- Built-in **Slider** component and declarative plugin blocks; page-template plugins.
 
-```bash
-npx hadamard-tui [work-dir]
-```
+### Agent-native by design
 
-Type a message and press Enter — you are chatting with the agent in a Claude Code-style terminal REPL. `/` opens the slash-command menu (`/team`, `/bridge`, `/plan`, `/mcp`, `/doctor`, …). Common flags: `--model`, `--permission-mode`, `--resume <session-id>`, `--continue`.
+- A CLI-first protocol for reading, patching and reviewing documents.
+- Stable data-hc-id targets for HTML and block-level IDs for canvas content.
+- Live agent presence and cursor tracking.
+- Proposals that can be reviewed before applying.
+- Bounded revision history with restore and diff.
 
-### Desktop GUI (`hadamard-gui`)
+### Built for delivery
 
-```bash
-npx hadamard-gui [work-dir]
-```
+- HTML, PDF, PNG, visual PPTX, editable PPTX and DOCX export.
+- Full-screen presentation with speaker notes and a reading layout for documents.
+- Local files, assets and project folders; no cloud account required.
+- English and Chinese UI, switchable from the **Projects** page.
+- Configurable global data location, kept outside the install directory.
 
-Opens an Electron chat window backed by a localhost-only server — send a message to start your first conversation. The visual Agent graph editor is still iterating; prefer saved teams and `/team` for production workflows.
+## Run Hcanvas
 
-Hadamard can also be launched as a dedicated module window:
+### Desktop installers
 
-```bash
-npx hadamard-harness [work-dir]   # agent-only interface
-npx hadamard-canvas [work-dir]    # canvas-only interface
-# or: npx hadamard-gui --surface harness|canvas [work-dir]
-```
+Download the standalone Hcanvas build from [GitHub Releases](https://github.com/DeconBear/hadamard/releases) — look for the hcanvas-v0.1.2 release:
 
-The main app composes every enabled module; configure **Harness** / **Canvas** under **Settings → Personalization → Modules**. See [docs/en/surfaces-and-modules.md](./docs/en/surfaces-and-modules.md).
+- **Windows:** Hadamard-Canvas-Setup-*.exe (installer) or Hadamard-Canvas-*-portable.exe
+- **macOS:** Hadamard-Canvas-*.dmg or Hadamard-Canvas-*.zip (x64 and arm64)
+- **Linux:** Hadamard-Canvas-*.AppImage or Hadamard-Canvas-*.deb (x64)
 
-## Demo
+The desktop installers include the Electron app only. They do **not** add `hcanvas` / `hadamard-canvas` to your PATH. If you want the CLI and agent-facing commands, install the npm package separately (next section).
 
-A 50-second walkthrough of the desktop GUI: open the Chats view, start a new conversation, ask a question, and watch the streamed reply with the thinking indicator and code rendering. ([Full-resolution MP4](https://raw.githubusercontent.com/DeconBear/hadamard/main/docs/assets/screenshots/gui-demo.mp4))
+### npm
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/DeconBear/hadamard/main/docs/assets/screenshots/gui-demo.gif" alt="Hadamard desktop GUI demo — a chat from New chat to a streamed reply with a code block" width="90%">
-</p>
+Node.js 22.13+ or Node.js 24 is required when running Hcanvas from npm or source.
+
+~~~bash
+npm install -g hadamard-canvas
+hcanvas desktop --workspace C:\Users\<you>\hcanvas
+~~~
+
+Or run it through npm without a global install:
+
+~~~bash
+npx hadamard-canvas desktop --workspace C:\Users\<you>\hcanvas
+~~~
+
+The `hadamard-canvas` package exposes the `hadamard-canvas`, `hcanvas` and `hcanvas-desktop` CLI entries. It also provides the browser workflow:
+
+~~~bash
+hcanvas app --workspace <dir>       # local server + browser UI
+hcanvas serve --workspace <dir> --port 4319
+~~~
+
+### From source
+
+~~~bash
+npm install
+npm run build
+node bin/hcanvas-desktop.js --workspace ./hcanvas-demo
+~~~
+
+### Data and projects
+
+By default Hcanvas stores documents under ~/.hcanvas. The **Projects** page can register project folders, open them in separate windows and change the global data location. On Windows, app settings live under:
+
+~~~text
+%APPDATA%\Hadamard Canvas\hcanvas-settings.json
+~~~
+
+Each project keeps its data in .hcanvas/ inside the project folder.
 
 ## Documentation
 
+- Hcanvas full guide: [docs/en/hadamard-canvas.md](./docs/en/hadamard-canvas.md)
+- Hcanvas 中文文档: [docs/zh/hadamard-canvas.md](./docs/zh/hadamard-canvas.md)
+- Hadamard harness installation and development: [docs/en/hadamard-harness.md](./docs/en/hadamard-harness.md) · [中文](./docs/zh/hadamard-harness.md)
 - Docs site: https://deconbear.github.io/hadamard/
-- English tutorial: [docs/en/README.md](./docs/en/README.md) · Chinese tutorial: [docs/zh/README.md](./docs/zh/README.md)
-- External CLI bridge guide (provider flags, credentials, `HADAMARD_<PROVIDER>_PATH`): [docs/en/05-bridge-runtime.md](./docs/en/05-bridge-runtime.md)
-- Optional Canvas module (off by default; Excalidraw-powered design canvas, AI-model architecture pack, agent tools, proposals): [docs/en/canvas-module.md](./docs/en/canvas-module.md)
-- Standalone Hadamard Canvas (hcanvas): [docs/en/hadamard-canvas.md](./docs/en/hadamard-canvas.md)
-- Examples: [hadamard-quickstart.ts](./examples/hadamard-quickstart.ts), [hadamard-workflow.ts](./examples/hadamard-workflow.ts), [hadamard-agent-helpers.ts](./examples/hadamard-agent-helpers.ts)
+- Harness tutorial: [docs/en/README.md](./docs/en/README.md) · [docs/zh/README.md](./docs/zh/README.md)
 - Security policy: [SECURITY.md](./SECURITY.md)
 
-## Development
+## Hadamard Harness
 
-```bash
-npm run typecheck   # TypeScript checks
-npm test            # Vitest suite
-npm run build       # clean + compile
-```
+**Hadamard Harness** is the experimental agent harness in the Hadamard family: a TypeScript runtime with durable sessions, tools, skills, memory, MCP, multi-agent workflows, a bridge to installed agent CLIs (Claude Code, Codex, Cursor, Pi, CodeWhale, Reasonix, Crush), and terminal/desktop surfaces.
+
+It is intentionally exploratory — APIs and surfaces are still moving. Hcanvas is one of the tools in the same family; if you are looking for the runtime layer, SDK, TUI or desktop harness, start here:
+
+- [Hadamard harness: installation and development](./docs/en/hadamard-harness.md)
+- [Hadamard harness 中文文档](./docs/zh/hadamard-harness.md)
 
 ## Contributing
 

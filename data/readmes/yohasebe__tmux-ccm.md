@@ -6,7 +6,7 @@
 <br clear="left">
 <br>
 
-[![tested](https://img.shields.io/badge/tested-Claude%20Code%20v2.1.321-brightgreen)](https://docs.anthropic.com/en/docs/claude-code)
+[![tested](https://img.shields.io/badge/tested-Claude%20Code%20v2.1.323-brightgreen)](https://docs.anthropic.com/en/docs/claude-code)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![tmux](https://img.shields.io/badge/tmux-3.2%2B-blue)](https://github.com/tmux/tmux)
 
@@ -52,7 +52,7 @@ One **project** = one **folder** = one **tmux window**. A window holds any numbe
 - jq
 - fzf
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) **v2.1.107+**
-  (tested against v2.1.321 — see the badge at the top of this page)
+  (tested against v2.1.323 — see the badge at the top of this page)
 
 ## Installation
 
@@ -203,6 +203,12 @@ ccm auto-detects it on `PATH` and uses it preferentially. No configuration neede
 
 > [!IMPORTANT]
 > The first time `terminal-notifier` sends a notification, macOS may show a permission dialog — accept it. If you don't see ccm notifications afterwards, open `System Settings → Notifications → terminal-notifier` and confirm "Allow Notifications" is on. Notifications are delivered under terminal-notifier's own bundle id (independent of which terminal emulator you use), so the grant is one-time and works the same on Terminal.app / iTerm2 / WezTerm / kitty / ghostty.
+
+If macOS never lets `terminal-notifier` post (it cannot get notification permission), have ccm send through `osascript` instead:
+
+```tmux
+set -g @ccm-notify-transport "osascript"   # default: auto (terminal-notifier when installed)
+```
 
 To bulk-clear ccm notifications from Notification Center (requires `terminal-notifier`):
 
@@ -401,7 +407,7 @@ ccm setup-claude-md               Add ccm section to ~/.claude/CLAUDE.md
 ccm remove-claude-md              Remove ccm section from ~/.claude/CLAUDE.md
 ccm statusline                    Print one-line status (used by tmux status bar)
 ccm inject-status                 Update tmux status bar (called internally)
-ccm debug trace <target> [interval] Live state-detection trace; target is a project or tmux pane/window (read-only)
+ccm debug trace <target> [interval] Live state-detection trace; target is a project, tmux pane/window, or session:index (read-only)
 ccm errors [--clear]              View / clear the silent-exception log
 ccm reset <name>                  Clear stuck runtime state (last-resort recovery)
 ccm ignore [project]              Hide a pane (default: current) or project from ccm

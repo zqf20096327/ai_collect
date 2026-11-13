@@ -1,6 +1,6 @@
 <!--
-  android reader, novel reader android, manga reader android, video player android, light novel reader, ranobe reader, epub reader android, fb2 reader android, tts reader, llm translation
-  андроид читалка, читалка ранобэ андроид, читалка манги андроид, видеоплеер андроид, читалка новелл, epub читалка андроид, озвучка книг, перевод книг llm
+  android reader, novel reader android, manga reader android, video player android, light novel reader, ranobe reader, epub reader android, fb2 reader android, pdf reader android, opds catalog, audiobook player android, tts reader, llm translation
+  андроид читалка, читалка ранобэ андроид, читалка манги андроид, видеоплеер андроид, читалка новелл, epub читалка андроид, fb2 читалка андроид, pdf читалка андроид, opds каталог, озвучка книг, перевод книг llm
 -->
 <div align="center">
 <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" width="88" height="88" alt="MiruTime"/>
@@ -16,9 +16,10 @@ Free and open source reader for novels, manga and video on Android.
 [![License: GPL-3.0](https://img.shields.io/github/license/HnDK0/MiruTime?style=flat-square&labelColor=27303D&color=0D1117)](LICENSE)
 [![Android 8.0+](https://img.shields.io/badge/Android-8.0%2B-brightgreen?style=flat-square&labelColor=27303D&color=3DDC84&logo=android&logoColor=white)](https://github.com/HnDK0/MiruTime/releases/latest)
 
-> ⭐️ **If you find MiruTime useful, please consider giving it a star!** It helps the project grow.
-
 </div>
+
+> [!WARNING]
+> ⭐️ **If you find MiruTime useful, please consider giving it a star!** It helps the project grow.
 
 ---
 
@@ -41,7 +42,9 @@ git clone https://github.com/HnDK0/MiruTime
 
 - Sources as Lua plugins, installed from a repository or a local `.lua` file
 - Source catalog with filters, pinned sources and search
-- Local EPUB and FB2 library — single books or bulk import
+- Local EPUB, FB2 and PDF library — single books or bulk import; PDFs read page by page
+- OPDS catalogues as library sources — Atom 1.2 (XML) and OPDS 2.0 (JSON), with facets, search, paging and optional Basic auth
+- Audiobooks from OPDS catalogues — streamed track by track in the player, with saved progress
 - Reader with font, theme, background and line-spacing settings
 - In-reader translation with standard and parallel (original next to translation) modes
 - Translation for a single book or selected chapters without touching global settings
@@ -57,7 +60,7 @@ git clone https://github.com/HnDK0/MiruTime
 - Import of NoveLA backup files
 - Shelves and library updates, dashboard with reading activity
 - EPUB export from the book screen
-- Two interface languages: English and Russian
+- Eleven interface languages: English, Russian, Spanish, Portuguese, French, German, Italian, Turkish, Vietnamese, Indonesian and Arabic
 - Light and dark themes, Material 3
 
 ---

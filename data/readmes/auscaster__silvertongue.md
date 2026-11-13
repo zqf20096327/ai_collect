@@ -8,7 +8,7 @@
 
 <h3>Write like anyone famous.</h3>
 
-An open catalogue of famous writing voices for your agent and your browser.<br>
+An open catalogue of famous writing voices for your agent, your browser and your pull requests.<br>
 Pick a voice. Switch any time. Keep your point.
 
 [![CI](https://img.shields.io/github/actions/workflow/status/auscaster/silvertongue/ci.yml?branch=main&style=flat-square&label=ci&labelColor=111&color=111)](https://github.com/auscaster/silvertongue/actions/workflows/ci.yml)
@@ -16,11 +16,36 @@ Pick a voice. Switch any time. Keep your point.
 [![Code: Apache-2.0](https://img.shields.io/badge/code-Apache--2.0-111?style=flat-square)](LICENSE)
 [![Profiles: CC BY 4.0](https://img.shields.io/badge/profiles-CC%20BY%204.0-111?style=flat-square)](PROFILE-LICENSE.md)
 
-[How it works](#how-it-works) · [Example](#an-example-side-by-side) · [Why it wins](#why-it-beats-write-like) · [The catalogue](#the-catalogue) · [Use it everywhere](#use-it-everywhere) · [Add a voice](#add-a-voice) · [Remove or correct a voice](#remove-or-correct-a-voice)
+[Review pull requests](#review-pull-requests) · [How it works](#how-it-works) · [Example](#an-example-side-by-side) · [Why it wins](#why-it-beats-write-like) · [The catalogue](#the-catalogue) · [Use it everywhere](#use-it-everywhere) · [Add a voice](#add-a-voice) · [Remove or correct a voice](#remove-or-correct-a-voice)
 
 </div>
 
 <br>
+
+## Review pull requests
+
+**Let Gordon Ramsay or Marcus Aurelius school your sloppy PRs, or Tony Hinchcliffe or Ricky Gervais roast them.** Or hand them to Shakespeare, Brainrot, or any voice here. [Silvertongue Celebrity PR Review](action/README.md) is a GitHub Action for AI code review: Claude uses the official code-review workflow and OpenAI uses native Codex review; Gemini uses the existing custom audit. The original findings stay visible beneath the voice presentation. It runs on your Claude subscription with no API bill, or on an Anthropic, OpenAI or Gemini key.
+
+```yaml
+- uses: auscaster/silvertongue@v1
+  with:
+    voice: gordon-ramsay
+    claude-code-oauth-token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+```
+
+> I went looking for something to be furious about and found manners. Disgusting.
+>
+> **Ricky Gervais**, approving a clean pull request
+
+> That's not cleanup, that's a mob hit where the second guy shoots a body already in the trunk.
+>
+> **Tony Hinchcliffe**, on a temp folder deleted twice
+
+> That's not a new helper, mate. That's the old one in a hat.
+>
+> **Ricky Gervais**, on a test helper copied to take one more parameter
+
+[Set it up](action/README.md#set-it-up) · [Pick your reviewer](action/README.md#pick-your-reviewer) · [See a real review](action/README.md#what-lands-on-your-pull-request)
 
 ## How it works
 
@@ -140,6 +165,7 @@ Featured voices. All 50 public profiles are listed in [`profiles/`](profiles/REA
 | **Gemini CLI** | `gemini extensions install https://github.com/auscaster/silvertongue` | Now |
 | **Any MCP client** | `https://mcp.silvertongue.dev/mcp`, with voice switching mid-thread | Now |
 | **Your browser** | [Get the browser extensions](https://silvertongue.dev/#get) and rewrite in the text box where you work | Now |
+| **Pull requests** | The GitHub Action, `uses: auscaster/silvertongue@v1`: [set it up](action/README.md) | Now |
 
 Start now with any voice:
 

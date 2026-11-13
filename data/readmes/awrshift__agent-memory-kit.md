@@ -1,23 +1,44 @@
-![Claude Memory Kit](.github/assets/og-banner-claude-code.png)
+![Multi-Agent Driven Development: you talk to one main session; it sends brief files to three window sessions, each with its own subagents; files and memory underneath](.github/assets/10-team-of-sessions.svg)
 
-# Claude Memory Kit
+# Multi-Agent Driven Development Kit
 
-**An agent that remembers where you stopped — and a working method for checking its "done".**
+**You talk to one agent. It runs the team.**
 
-Claude Memory Kit is a plugin for Claude Code. Install it in a repository and you get three things:
+*Formerly Claude Memory Kit — the plugin id `memory-kit` and every command name stay the same for compatibility.*
 
-- **Every session opens where the last one ended.** The agent keeps short dated notes and a handoff as plain files in
-  your repository and reads them at the next start. You stop re-explaining the project.
-- **Dangerous commands are stopped before they run.** A force push, `reset --hard`, a read of `.env`, an edit that
-  weakens a test — blocked or asked about first.
-- **A method for handing work to helper agents, so that "done" means checked.** The helper builds from a written spec;
-  the main agent verifies the helper's report before it tells you "done"; a fix made after a review is itself reviewed
-  by an agent that did not write it; a mistake that shows up three times is turned into a check. It is a method, not an
-  automatic gate: `setup` offers one short always-loaded rule file, and the rest is reference the agent opens when the
-  work calls for it.
+A plugin and a working method for Claude Code. The scarcest resource in agent-driven work is your attention, so the
+method spends it in one place: **you talk to one agent only — the main session.** It holds the whole picture, so you
+decide with one counterpart instead of five; it splits the work across the other sessions and their helpers. You
+never talk to the windows or the helpers, never relay a brief, never read their raw output: decisions, evidence and
+questions reach you from one place.
 
-Nothing becomes a rule without your yes. No database, no service, no API key — text files you can read and diff.
-An independent project, not made or endorsed by Anthropic.
+**The team is two levels deep.** You → main → three windows → their subagents.
+
+- **Main** plans the round, writes the specs, rules on every finding, accepts work on evidence, and is the only one
+  that acts outward (a push, a PR, a reply others will see).
+- **Three windows are full Claude Code sessions, not subagents** — each opened by you in its own terminal, visible,
+  with its own context, tools, hooks and memory, holding one task to its stop points.
+- **Each window calls its own subagents** (a builder, a reviewer, a fact-gatherer), each with an explicit model.
+
+**Why sessions, and not only subagents.** A subagent lives inside its caller's session: it works in its own context
+and hands back a summary, it cannot ask you a question, and its permission prompts surface in the caller's terminal
+(Claude Code docs, [subagents](https://code.claude.com/docs/en/sub-agents)). A window is a session you can watch and
+that starts like any session — your `CLAUDE.md`, the hooks, this kit's memory and handoff — so it can hold a task
+across several stops and reviews and still survive main being cleared. Claude Code's own
+[agent teams](https://code.claude.com/docs/en/agent-teams) also run teammates as full sessions, but let you talk to
+any teammate directly; this method keeps you talking to main only.
+
+**What crosses each level is a file.** A brief, a spec, a report, a ruling, an acceptance record — committed to the
+repository. Messages only point at files, five lines at most.
+
+**Who decides what.** You: product scope, and money above the cap you set. Main: architecture, acceptance, every
+outward action. Windows: build to a spec and report; they never decide.
+
+**Memory is the foundation.** Short dated notes and a handoff, as plain files in your repository, read at every
+start — so main, each window, and you after a day away all pick up where the work stopped after a cleared context.
+Dangerous commands are stopped before they run: a force push, `reset --hard`, a read of `.env`, an edit that weakens
+a test. Nothing becomes a rule without your yes. No database, no service, no API key. An independent project, not
+made or endorsed by Anthropic.
 
 **Why the method matters.** In one project, in five of six pieces of work the fix made after a review reached acceptance
 with nobody reviewing the fix itself; checked afterwards, two of those five carried a defect serious enough to block. A
@@ -28,7 +49,7 @@ small sample from one project — a reason to look at your own fixes, not a prov
 [![Claude Code plugin](https://img.shields.io/badge/Claude_Code-plugin-CFEF4A)](#install)
 
 **On this page:** [How it works](#how-it-works) · [Install](#install) · [The method](#the-method-in-one-screen) ·
-[What is inside](#what-is-inside) · [Reference](#reference--read-on-demand) ·
+[Team of sessions](#working-as-a-team-one-main-session-and-three-windows) · [What is inside](#what-is-inside) · [Reference](#reference--read-on-demand) ·
 [What it writes](#what-it-writes-in-your-repository) · [Privacy and cost](#privacy-and-cost) ·
 [Proof status](#proof-status)
 
@@ -39,9 +60,9 @@ small sample from one project — a reason to look at your own fixes, not a prov
    a rule?»), writes what you approve, and leaves a handoff note.
 3. **The next session starts already knowing** — memory, the handoff and the list of knowledge articles are loaded
    by a hook.
-4. **When you delegate,** the kit gives the agent a method to follow: a spec file first, a review of every diff, a
-   record of what was accepted and why. This half is optional: take it when you hand work to helper agents or run
-   several sessions at once.
+4. **When the work outgrows one session,** main runs the team: a spec file first, a brief file per window, a review of
+   every diff, a record of what was accepted and why ([below](#working-as-a-team-one-main-session-and-three-windows)).
+   Memory works on its own; take the team half when you hand work to helpers or run several sessions at once.
 
 ## Install
 
@@ -60,7 +81,7 @@ your files. In a repository that never ran `setup`, the hooks inject one pointer
 
 ## The method in one screen
 
-![Agent-orchestrated work: the main session writes a spec file, the agents work from it, and a report is input, never a fact](.github/assets/07-orchestrated-work-v73.png)
+![The method: main writes the spec file; windows build with their subagents and leave a report; every diff, fix rounds included, is reviewed by an agent that did not write it; main accepts on evidence with a gate receipt; a report is input, never a fact](.github/assets/12-method.svg)
 
 This is a method the agent follows, not something the hooks enforce. The main session designs, decides and integrates;
 helpers build or gather facts from a spec file. The always-loaded invariants live in `templates/rules/orchestration.md`
@@ -73,6 +94,71 @@ helpers build or gather facts from a spec file. The always-loaded invariants liv
 | 3. Review, fix rounds included | Every nontrivial diff, and every fix round's diff, reviewed by an agent that did not write it; findings triaged to the owning layer; a fix round may not redesign | `reference/review-loop.md` §0–§1 · `reference/review-classes.md` · `reference/acceptance.md` |
 | 4. Acceptance record | One file per accepted head: spec, rounds, review, gates re-run on that tree, one ruling per finding | `reference/acceptance.md` · `ACCEPTANCE-TEMPLATE.md` · `reference/orchestrator-fact-check.md` |
 | 5. Findings registry | Each confirmed finding logged by class and family; a family seen three times is promoted into a check | `reference/review-loop.md` §2 |
+
+## Working as a team: one main session and three windows
+
+The way the maintainer works daily: you talk to ONE session — main — and main runs three more Claude Code sessions
+(windows) on the same repository. Work crosses between them as files; messages only point at files.
+
+```
+                         you
+                          │  talk only here
+                   ┌──────┴──────┐
+                   │    main     │  plans the round · specs · rulings · acceptance · memory
+                   └──┬───┬───┬──┘
+       brief file ↓   │   │   │   ↑ report file + message ≤ 5 lines
+               ┌──────┘   │   └──────┐
+             ┌─┴──┐    ┌──┴─┐     ┌──┴─┐
+             │ w1 │    │ w2 │     │ w3 │   one task per life · own helpers underneath
+             └─┬──┘    └──┬─┘     └──┬─┘
+   ────────────┴──────────┴──────────┴──────────────────────────────────────────────
+   repository files: specs · briefs · reports · rulings · acceptance records · memory
+```
+
+1. **Open four terminals on the repository** and name each session: `claude --name main`, then `claude --name w1`,
+   `w2`, `w3`. Keep all four visible — you watch the work; you type only in main.
+2. **Main plans the round.** It reads the handoff, writes the specs, commits a **coverage map** (every piece of the
+   source → a window, a later session, or «not taken because …»), runs the depth pass on each spec and has a
+   **prebuild reader** — a helper that did not write it — check the spec against the code first, ruling each finding.
+3. **Main sends the briefs itself.** It finds the windows with `ListAgents` and sends each one message by
+   `SendMessage` with `notify_when_idle: true`: the brief's path, its commit, the first stop point. You never paste a
+   brief.
+4. **Each window holds one task per life.** It reads its brief file and the spec, checks the premises marked «from a
+   report», builds (calling its own helpers with an explicit model), stops at each named stop point, and reports in at
+   most five lines pointing at a committed report. When finished it writes a short **retro** file, and you clear it
+   with `/clear` before its next task. A fix round after a review is a new life, not a continuation.
+5. **Main decides and accepts.** It rules on every finding one by one, reads one real artifact itself, and accepts a
+   block on a **gate receipt** — the gates run once by a script on the exact tree accepted. Main never hands off
+   talking to you, a push, a PR, or a reply others will see. A window never sends you to itself: a refused command goes
+   to main, and main asks you in main.
+6. **Money.** A paid step has a cap line («N units, ~cost, cap»), a committed launcher that loads keys inside itself,
+   and a free dry run plus a free probe of every vendor key shown before the yes. Below your money line main approves;
+   above it you approve each run.
+7. **Close when the round is done:** every window reports and is accepted, main writes the handoff, you clear the
+   windows, then main. Each window's state lives in one place — the round file's windows table, updated when a brief
+   is sent, a stop arrives, a result is accepted or a window is cleared — and the handoff only points at it. The next
+   main checks each open row against the window's own commits before it messages anyone.
+
+### The relay: work that outlives every context
+
+A context window ends; the work does not. Every session — main and each window — carries the work in files, so any of
+them can be cleared and the next one picks the baton up without loss:
+
+![The relay: main tells the windows it is leaving, commits the handoff, memory and the plan, is cleared, starts from the files and tells the windows it is back; each window does one task, commits a report and a retro, is cleared and reads its next brief from files](.github/assets/11-relay.svg)
+
+- **Nothing lives only in a context.** Each step is committed as it ends; a brief, a spec, a report, a ruling, the
+  handoff and the plan are files. A cleared session reads them back; it never relies on what a previous one remembers.
+- **Main can close while windows keep working.** It says so first, so no stop message is lost, and says so again when
+  it returns. Windows are cleared after each task the same way, and main keeps handing out the next one.
+- **When to close is set by the work, not by a token count.** Main lives one round (plan, briefs, acceptance, close);
+  you can say «close now» at any moment. No prompt carries a context budget: a budget in the prompt changes how the
+  model works. The chain that makes it hold — memory, the handoff, the plan file, the rules, the brief and acceptance
+  files — is what this kit ships.
+
+Background sessions were tried for the third slot and are not the default: visible windows are, so you see the work
+and every stop reaches a person. Depth: `reference/window-cycle.md` (the cycle, the brief's lines, the retro) ·
+`WINDOW-BRIEF-TEMPLATE.md` · `reference/spec-depth.md` (prebuild reader, case tables, paid runs) ·
+`reference/acceptance.md` (gate receipt) · `reference/helper-roster.md` (roles and models).
 
 ## What is inside
 
@@ -87,7 +173,7 @@ Wired in `hooks/hooks.json`. What each injects or blocks, and how to turn it off
 |---|---|---|---|
 | SessionStart (startup · clear · resume · compact · fork) | `session-start.py`, run as `--part 1..6` (each part under Claude Code's 10,000-character cap on one hook's context) | Injects the working agreement `context/identity.md`, the nudges that fire (memory over its caps, session-headed blocks, a path in memory that no longer exists, specs `assumed` or `building` too long, a «Rails:» line for missing permission rails, a project hook that is a copy of a kit hook), session stats, `MEMORY.md`, the newest handoff and `knowledge/index.md`. `compact` gets back what compaction dropped; `resume` gets only nudges and stats | `CMK_INJECT_BUDGET` (48000) · `CMK_MEMORY_LINE_CAP` (180) · `CMK_MEMORY_BYTE_CAP` (32768) · `CMK_MEMORY_MAXLINE_CAP` (3000) · `CMK_SPEC_STALE_DAYS` (14) |
 | PreCompact | `pre-compact.sh` | A manual `/compact` is blocked until `MEMORY.md` was written in the last 2 minutes and sits inside its caps. An automatic compaction is never blocked; when it ran over unsaved memory, the next context opens with «save memory now» | none (no-op in an unadopted repository) |
-| PreToolUse (Edit · Write) | `protect-tests.py` | Asks before an edit that can weaken an existing test (an assertion changed or removed, `.skip` / `.only` added) and before any hand edit of a `.snap`. Files created in this session pass | `CMK_ALLOW_TEST_EDITS=1` |
+| PreToolUse (Edit · Write) | `protect-tests.py` | Asks before an edit that can weaken an existing test (an assertion changed or removed, `.skip` / `.only` added) and before any hand edit of a `.snap`. Files created in this session, and test files the base branch does not have, pass | `CMK_ALLOW_TEST_EDITS=1` |
 | PreToolUse (Bash) | `guard-git.py` | Blocks force push, `push --mirror`, `reset --hard`, `clean -f`, `branch -D`, `checkout .`, `restore .` in a real git command; `--force-with-lease` passes | `CMK_GIT_GUARD=off` |
 | PreToolUse (Bash) | `guard-zsh-split.py` | zsh only: blocks a command that relies on bash word-splitting of an unquoted variable, or an unbraced `$NAME:` that zsh reads as a history modifier | `# zsh-split-ok` in the command · `CMK_ZSH_GUARD=off` |
 | PreToolUse (Read · Edit · Write · Bash) | `guard-secrets.py` | Blocks reading or writing `.env` files, keys and certificates by a file tool, a shell command or a redirection; one literal `echo` / `printf` appending a line to `.env` passes | `CMK_SECRETS_GUARD=off` |
@@ -124,7 +210,7 @@ All are `/memory-kit:<name>` and also trigger from plain words; until a skill ru
 |---|---|---|
 | `executor` | Opus | Builds to a decided spec in its own worktree; never redesigns, reports any deviation, stops on a value with no source |
 | `recon` | Sonnet | Read-only facts with file and line; official sources for anything outside the repo |
-| `idea-validator` | Opus | Isolated critic with none of your conversation |
+| `idea-validator` | Fable | Isolated critic with none of your conversation, on a different model from the Opus author |
 | `qa` | Sonnet | One QA lens on the running product; observes, never fixes |
 
 **Role templates** — `templates/agents/`, copied into your `.claude/agents/` only on a yes (`setup` offers them), then
@@ -146,18 +232,18 @@ the roster and the rule «judges → the stronger model, collects or counts → 
 | File | Open it when |
 |---|---|
 | `reference/adoption.md` | After an install or upgrade: what to take as is, what to adapt, what to skip |
-| `reference/spec-depth.md` | Writing a spec: depth pass, fresh-checked practice, review by stake, the pre-build read, paid runs with a cap |
+| `reference/spec-depth.md` | Writing a spec: depth pass, fresh-checked practice, review by stake, the pre-build read, paid runs (launcher, dry run, key probe, money line), deciding rules as case tables |
 | `reference/orchestrator-fact-check.md` | Accepting anyone's report, or telling the user how things are now: the claim → check table |
 | `reference/review-loop.md` | Handling findings: triage and the fix spec's family line, the diff gate, the findings registry |
-| `reference/acceptance.md` | You accept a helper's build after a review round (in trial) |
+| `reference/acceptance.md` | You accept a helper's build after a review round: the record, the gate receipt (in trial) |
 | `reference/review-classes.md` | Reviewing a diff or writing a checklist: defect classes one backend project met, each with its check (one project's practice) |
 | `reference/parallel-development.md` | Fanning work out: worktrees, one integrator, held work that drifts, flow limits |
-| `reference/window-cycle.md` | You run more than one interactive session on one repository (one project's practice) |
+| `reference/window-cycle.md` | You run one main session and three windows on one repository: the cycle, the brief's lines, the retro (one project's practice) |
 | `reference/helper-roster.md` | You delegate to helpers often: a role and an explicit model per call (in trial) |
 | `reference/measurement-lessons.md` | Before a bar on a count or a model's judgment deciding a change (counts from one project) |
 | `reference/reporting.md` | Writing a status, a close report or an answer to the user's comment (one project's practice) |
 | `reference/rules-subtraction.md` | Your always-loaded instructions grew one line per incident and need cutting |
-| `reference/doc-governance.md` | Keeping docs true: one home per fact, derived state not kept by hand, archive moves |
+| `reference/doc-governance.md` | Keeping docs true: one home per fact, derived state not kept by hand, stale docs deleted (git keeps the past) |
 | `reference/decisions-log.md` | Recording a product or architecture decision in a lean ledger |
 | `reference/project-extensions.md` | Adding your own rule, skill, hook or agent; what each costs idle; ideas measured and not built |
 | `reference/harness-measurement.md` | Changing settings, hooks or rules: probes before and after; dated harness notes |

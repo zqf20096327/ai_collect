@@ -51,7 +51,7 @@ Ordered by how much a failure usually costs you, not by how many rules each one 
 | Site Integrity | 9 | Signs the site has been compromised: injected doorway pages, phishing kit signatures, obfuscated scripts, brand impersonation, cloaking, known-malicious URLs |
 | Security | 24 | Transport and header hygiene: HTTPS and HSTS, CSP, cookie flags, mixed content, subresource integrity, leaked secrets, tokens in web storage, unprotected and downgraded forms, open GraphQL introspection and mutations over GET |
 | Links | 15 | Internal and external link health: broken and dead links, in-page anchors whose target is gone, redirect chains, anchor-text quality, orphan and dead-end pages, pages linked only from sitewide chrome, HTTPS downgrades |
-| Content | 26 | Text quality and honesty: common misspellings, duplicate titles and descriptions, title-template consistency, readability, word count, freshness, heading hierarchy, keyword stuffing, hidden text, placeholder media and contact details, encoding damage |
+| Content | 27 | Text quality and honesty: common misspellings, duplicate titles and descriptions, title-template consistency, readability, voice consistency, word count, freshness, heading hierarchy, keyword stuffing, hidden text, placeholder media and contact details, encoding damage |
 | Performance | 32 | Core Web Vitals and delivery: LCP, CLS and INP hints, TTFB, compression, caching, render-blocking resources, DOM size, font delivery, legacy and unminified JS/CSS |
 | Reliability | 5 | Scripts, stylesheets and fonts that fail to load (a first-party bundle that answers 404 or 500 after a deploy, third-party and font failures), and forms that lose submissions |
 | Images | 16 | Alt text, modern formats, responsive `srcset`, intrinsic dimensions and aspect-ratio mismatches, lazy loading above versus below the fold, file weight |
@@ -69,6 +69,8 @@ Ordered by how much a failure usually costs you, not by how many rules each one 
 | Blocking | 3 | Content, links and trackers that ad blockers and privacy filters strip for a large share of your visitors |
 
 **Total: 300+ rules across 22 categories**
+
+Cloud audits also run ten [third-party rules](https://docs.squirrelscan.com/cloud/third-party) (compromised, proxied and unpinned vendor scripts, session replay and tag managers on sign-in and checkout pages, vendor counts). They are cloud-only and are not counted above.
 
 See the [rules reference](https://docs.squirrelscan.com/rules) for full details.
 
@@ -297,3 +299,5 @@ If squirrelscan caught something your agent missed, a [star on GitHub](https://g
 ## License
 
 The CLI and the repository contents are licensed under the [MIT License](LICENSE). squirrelscan names and logos are covered by [TRADEMARKS.md](TRADEMARKS.md).
+
+The CLI bundles the DB-IP IP to Country Lite and IP to ASN Lite databases (snapshot 2026-11) for offline hosting-country and edge-provider lookups, with the CDN providers' published IP ranges: [IP Geolocation by DB-IP](https://db-ip.com), licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

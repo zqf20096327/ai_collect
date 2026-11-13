@@ -56,6 +56,9 @@ OR
 #### Biopharma AI
 - [Elicit - AI for Pharma - November 2026](https://elicit.com/ai-for-pharma?utm_source=awesome-ai-market-maps)
 
+#### AI Compute
+- [Siddharth Ramakrishnan & Jonas Ciplickas — Scale Venture Partners - Inference providers have their heads in the clouds - November 2026](https://www.scalevp.com/blog/inference-providers-have-their-head-in-the-clouds?utm_source=awesome-ai-market-maps)
+
 #### AI Data
 - [AI Circle - AI Circle Human Data Landscape - November 2026](https://www.ai-circle.org/ai-circle-human-data-landscape?utm_source=awesome-ai-market-maps)
 
@@ -72,6 +75,7 @@ OR
 - [Will Howard Davies - The 2026 Physical AI Market Map - November 2026](https://lnkd.in/p/gnJpnz5m?utm_source=awesome-ai-market-maps)
 
 #### Top AI 
+- [Bessemer Venture Partners + Newcomer - The AI 100 - November 2026](https://ai100.newcomer.co/?utm_source=awesome-ai-market-maps)
 - [Leonis Capital - The 2026 Leonis AI 100 - November 2026](https://www.leoniscap.com/research/the-2026-leonis-ai-100?utm_source=awesome-ai-market-maps)
 
 #### Everything Else
@@ -1152,10 +1156,4 @@ OR
 - [Yoko Li — a16z - A Deep Dive Into MCP and the Future of AI Tooling - March 2025](https://a16z.com/a-deep-dive-into-mcp-and-the-future-of-ai-tooling/?utm_source=awesome-ai-market-maps)
 - [Auchenberg - AI Tools and Integrations Market Map - March 2025](https://github.com/auchenberg/ai-tools-integrations-market-map?utm_source=awesome-ai-market-maps)
 - [Thomvest Ventures - Market Map: 130+ companies transforming the AI Software Development market - March 2025](https://blog.thomvest.com/market-map-130-companies-transforming-the-ai-software-development-market-1e8ef2179439?utm_source=awesome-ai-market-maps)
-- [Yujian Tang - LLM Stack Market Map - March 2025](https://www.linkedin.com/posts/yujiantang_seattlestartupsummit-activity-7310753598353592321-qYZY?utm_source=awesome-ai-market-maps)
-
-#### Foundation Models
-- [Leonis Capital - Zero or Hero: A Technical Framework for Valuing AI Companies (Part I: Foundation Models) - March 2025](https://www.leoniscap.com/deep-dives/zero-or-hero-a-technical-framework-for-valuing-ai-companies-(part-i-foundation-models)?utm_source=awesome-ai-market-maps)
-
-#### GenAI 
-- [a16z - T
+- [Yujian Tang - LLM Stack Market Map - March 2025](https://www.linkedin.com/posts/yujiantang_seattlestartupsumm

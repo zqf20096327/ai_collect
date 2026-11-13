@@ -54,6 +54,7 @@ The public-facing website is based on the open-source [Directory Website Templat
 - [Developer Tools & Benchmarks (2)](#developer-tools--benchmarks)
 - [Developer Tools & Libraries (3)](#developer-tools--libraries)
 - [Embedded and Edge Vector Databases (4)](#embedded-and-edge-vector-databases)
+- [Embedded Vector Libraries (2)](#embedded-vector-libraries)
 - [Evaluation & Observability (2)](#evaluation--observability)
 - [Experimental & Learning Vector DBs (1)](#experimental--learning-vector-dbs)
 - [Federated Vector DBs (1)](#federated-vector-dbs)
@@ -71,6 +72,7 @@ The public-facing website is based on the open-source [Directory Website Templat
 - [Multimodal Vector Databases (6)](#multimodal-vector-databases)
 - [Multimodal Vector DBs (2)](#multimodal-vector-dbs)
 - [Open Source Vector Databases (19)](#open-source-vector-databases)
+- [Postgres Vector Extensions (2)](#postgres-vector-extensions-1)
 - [Quantum-Safe Vector DBs (3)](#quantum-safe-vector-dbs)
 - [RAG Frameworks & Pipelines (2)](#rag-frameworks--pipelines)
 - [Relational Vector Extensions (10)](#relational-vector-extensions)
@@ -85,6 +87,7 @@ The public-facing website is based on the open-source [Directory Website Templat
 - [security-governance (1)](#security-governance)
 - [serverless-managed-vector-dbs (1)](#serverless-managed-vector-dbs)
 - [Tools (6)](#tools)
+- [Vector Database (2)](#vector-database)
 - [Vector Indexing Libraries (2)](#vector-indexing-libraries)
 - [Wasm/Edge Runtime VDBs (1)](#wasmedge-runtime-vdbs)
 
@@ -332,7 +335,7 @@ The public-facing website is based on the open-source [Directory Website Templat
 - [jina-embeddings-v3](https://jina.ai/models/jina-embeddings-v3/) - Frontier multilingual text embedding model with 570M parameters and 8192 token-length, featuring task-specific LoRA adapters and outperforming OpenAI and Cohere embeddings on MTEB benchmark. ([Read more](/details/jina-embeddings-v3.md)) `multilingual` `embedding` `Open Source`
 - [jina-embeddings-v5](https://huggingface.co/jinaai/jina-embeddings-v5-text-small) - Jina AI's latest embedding model achieving the highest multilingual performance among models under 1B parameters with 71.7 average MTEB score and 67.7 MMTEB score. ([Read more](/details/jina-embeddings-v5.md)) `Embeddings` `multilingual` `Open Source`
 - [Llama-Embed-Nemotron-8B](https://huggingface.co/nvidia/llama-embed-nemotron-8b) - Universal text embedding model from NVIDIA achieving state-of-the-art performance on MMTEB leaderboard, optimized for retrieval, reranking, semantic similarity, and classification with 4,096-dimensional embeddings. ([Read more](/details/llama-embed-nemotron-8b.md)) `Embeddings` `multilingual` `Nvidia`
-- [mGTE](https://www.alibabacloud.com/blog/gte-multilingual-series-a-key-model-for-retrieval-augmented-generation_601776) - Generalized long-context text representation and reranking models from Alibaba supporting 75 languages and context length up to 8192. Built on transformer++ encoder with RoPE and GLU for enhanced multilingual retrieval. ([Read more](/details/mgte.md)) `multilingual` `long-context` `alibaba`
+- [mGTE](https://www.alibabacloud.com/blog/gte-multilingual-series-a-[redacted secret]) - Generalized long-context text representation and reranking models from Alibaba supporting 75 languages and context length up to 8192. Built on transformer++ encoder with RoPE and GLU for enhanced multilingual retrieval. ([Read more](/details/mgte.md)) `multilingual` `long-context` `alibaba`
 - [Mistral Embed](https://docs.mistral.ai/capabilities/embeddings) - State-of-the-art embedding model from Mistral AI that generates 1024-dimensional vectors for text, supporting semantic search, clustering, and retrieval-augmented generation applications. ([Read more](/details/mistral-embed.md)) `Embeddings` `multilingual` `api`
 - [Mixedbread AI](https://www.mixedbread.com/) - AI startup providing state-of-the-art embedding and reranking models through accessible APIs, offering both open-source and proprietary models optimized for various use cases. ([Read more](/details/mixedbread-ai.md)) `Embeddings` `re-ranking` `api`
 - [ModernBERT Embed](https://huggingface.co/nomic-ai/modernbert-embed-base) - Open-source embedding model from Nomic AI based on ModernBERT-base with 149M parameters. Supports 8192 token sequences and Matryoshka Representation Learning for 3x memory reduction. ([Read more](/details/modernbert-embed.md)) `Open Source` `Embeddings` `nlp`
@@ -351,5 +354,4 @@ The public-facing website is based on the open-source [Directory Website Templat
 - [Snowflake Arctic Embed](https://huggingface.co/Snowflake/snowflake-arctic-embed-l-v2.0) - Suite of high-quality multilingual text embedding models optimized for retrieval performance, developed by Snowflake and available as open-source for commercial use. ([Read more](/details/snowflake-arctic-embed.md)) `Embeddings` `multilingual` `Open Source`
 - [SPLADE](https://www.pinecone.io/learn/splade/) - Sparse Lexical and Expansion Model using BERT for learned sparse retrieval, combining the interpretability of lexical search with the semantic power of neural models for enhanced keyword search. ([Read more](/details/splade.md)) `sparse-vectors` `retrieval` `bert`
 - [stella_en](https://huggingface.co/dunzhang/stella_en_1.5B_v5) - A family of English text embedding models distilled from state-of-the-art embedding models using a novel multi-stage distillation framework. Stella models support multiple dimensions (512 to 8192) through Matryoshka Representation Learning, offering flexible embedding sizes for different use cases. ([Read more](/details/stella-en-embedding.md)) `Embeddings` `matryoshka` `distillation` `Open Source`
-- [text-embedding-3-large](https://platform.openai.com/docs/guides/embeddings) - OpenAI's flagship text embedding model with up to 3,072 dimensions, offering best-in-class performance and accuracy for English tasks with adjustable output sizes to optimize storage costs. ([Read more](/details/text-embedding-3-large.md)) `openai` `Embeddings` `api`
-- [text-embedding-3-small](https://platform.openai.com/docs/models/text-embedding-3-small) - OpenAI's 
+- [text-embedding-3-large](https://platform.openai.com/docs/guides/embeddings) - OpenAI's flagship text embedding model with up to 3,072 dimensions, offering best-in-class performance and accuracy for English tasks with adjustable output sizes to optimize storage costs. ([Read more](/details/text-embedding-3-large

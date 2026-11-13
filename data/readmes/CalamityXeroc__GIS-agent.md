@@ -5,33 +5,33 @@
 ## 架构概览
 
 单一引擎：**有界观察-决策-执行循环** + 原生 tool calling + 代码自修复 + 强制验收。
-（早期那套 plan-then-execute 引擎已从本包移除。）
+（早期那套 plan-then-execute 引擎已下线，代码在 `legacy/`，不参与打包。）
 
 ```
 src/gis_cli/
 ├── engine/              # 新引擎：循环 / 工具 / 验收 / 自修复
 │   ├── loop.py          # 有界循环：观察 → 决策 → 执行，含预算与守卫
-│   ├── tools.py         # 17 个工具（含 web_search / create_map / run_recipe / delegate）
+│   ├── tools.py         # 16 个工具（含 web_search / create_map / run_recipe）
 │   ├── llm_client.py    # 模型客户端：流式 / 熔断 / 降级 / 用量统计
 │   ├── tool_codec.py    # 工具协议自适应（原生 tool calling ↔ JSON）
 │   ├── repair.py        # 代码自修复（traceback 回喂）
 │   ├── verifier.py      # 验收：结构断言 + 语义核对 + 图面识图
 │   ├── project_log.py   # 项目日志（相关性 + 最近 混合检索）
-│   ├── subagent.py      # 子代理（delegate）：子任务进独立上下文，只回结论
 │   └── runner.py        # 装配入口 build_engine()
 ├── runtime/             # ArcPy 运行时
 │   ├── kernel.py        # 持久 Jupyter 内核（一次 import，跨步状态）
 │   ├── code_runner.py   # 内核优先 + 子进程兜底 + 覆盖前自动备份
-│   ├── gdb.py           # GDB 路径识别：真库 / 假 .gdb（普通目录）
 │   ├── error_memory.py  # 常见故障 → 修复建议
 │   └── hygiene.py       # 交付卫生（过程文件 / 重做残留）
 ├── cartography/         # 制图：facts → design → render → qc
 ├── datacatalog/         # SQLite 数据目录（字段名 / 坐标系 / 范围）
 ├── recipes/             # 48 个 GIS 方法论配方（自带验证断言）
 ├── ui/                  # 终端界面（转录 / 状态行 / 输入框 / 命令）
+├── web/                 # Web 控制台后端（FastAPI + SSE，前端产物随包走）
 ├── trace/               # 每次 run 的 JSONL + Markdown 报告
 ├── requirements/        # 需求抽取（任务书 → 可验收清单）
 ├── skills/              # SKILL.md 技能（渐进披露，run_skill 读全文）
+├── legacy/              # 旧引擎（已下线，不参与打包）
 └── agent/               # CLI 入口（chat / loop）
 ```
 
@@ -60,8 +60,6 @@ src/gis_cli/
 - **可验证**：验收不通过就不算完成（`completed` ≠ 过验收）
 - **可归因**：每次 run 都有 trace，`scripts/latency_report.py --cost` 看耗时与用量
 - **可恢复**：`ask_user` 暂停后 `resume()` 续跑（含 trace 续写）
-- **写前守卫**：往假 `.gdb`（普通目录）里写要素类会先被拦下，而不是等 arcpy 报 `UnicodeDecodeError`
-- **可隔离**：自包含子任务可交给子代理（`delegate`），不污染父会话上下文（默认关）
 
 ## 当前已实现能力
 
@@ -69,29 +67,15 @@ src/gis_cli/
 - 有界观察-决策-执行循环，原生 tool calling（不支持的模型自动降级 JSON 协议）
 - 代码失败自动修复：traceback + 数据目录 + 配方提示一起回喂
 - 持久 Jupyter 内核：一次 import arcpy，跨步保留变量（每步 ~60ms）
-- 内核 CWD 跟着工作区走，**无论成败**都回到启动目录（相对路径不会落到上一次的目录）
-- 看门狗真的能杀掉卡死的内核（`shutdown_kernel(now=True)` + 清掉 manager，不再留僵尸进程攥文件句柄）
 - ZMQ 执行串行化（修过并发写坏 wire 协议的崩溃）
 - 覆盖写入前自动备份（GDB 成员走 `CopyFeatures` 导出，普通文件走 `shutil`）
 - 模型熔断：连续失败进冷却、冷却时长指数升级；`fallback_models` 自动切换
-- 子代理（`delegate`）：把预计 >10 轮、能独立验收的子任务放进独立对话，只回结构化结论，
-  父会话峰值 prompt 降 34%；默认关，详见 `docs/subagent.md`
-
-**写前守卫**
-- 往假 `.gdb`（`os.makedirs` 留下的普通目录）写要素类：**执行前**就拦下并给修复 hint，
-  不再等 arcpy 把库里的二进制表当文本读、抛 `UnicodeDecodeError`
-- 判据是 AST 意图识别（不是字符串匹配）：`CreateFeatureclass` / `CopyFeatures` / `CopyRaster`
-  等写入目标指向假库才拦；删库 / 清库（`rmtree` / `Delete_management`）放行，
-  外壳包一层（`abspath` / `str(Path)` / `Path()/`）也认得
-- 拦的是「往库里写」，不是「库里被提到」：删库内子路径、注释里写库名都不算清理意图
 
 **验收**
 - 结构断言：存在性 / 坐标系 WKID / 字段 / 要素数 / 栅格非常量 / 图片非空白
 - 语义核对：对照需求清单逐条判定（带证据，可 PARTIAL）
 - 图面识图：批量调用识图模型看地图（中文是否方框、图例是否被裁、图面是否空白）
 - 交付卫生：过程文件（`.pkl/.tmp/.bak`）、重做残留（同前缀重复件）、体积比
-- **否定结论有复核**：内核说「不存在」时，再拿 ArcGIS Pro 子进程问一次，以它为准
-  （内核会话脏了会集体报假阴性，实测一次能误杀 4 条 GDB 断言）
 
 **制图**
 - rules-based 设计引擎：采集数据事实 → 出 LayoutSpec → 渲染 → 版面体检
@@ -117,55 +101,8 @@ src/gis_cli/
 - 交互式终端：转录 / 状态行 / 输入框 / `@` 文件补全 / `/` 命令 / Esc 中断
 - 运行中再输入 = 排队，本轮结束自动合并继续
 - 会话可续（`--continue` / `--resume`）、导出 Markdown
+- Web 控制台：浏览器里看实时运行、管队列、查数据资产、改模型配置（`gis-agent web`）
 - CI：只跑不依赖 ArcGIS 的部分（`pytest -m "not arcpy"`，约 35s）
-
-**上手与交付（P0）**
-- `gis-agent doctor` 环境自检：7 项（Pro 安装 / arcpy 可导入 / 版本 ≥3.2 / 9 个核心包 / 路径空格 / 路径非 ASCII / 内核启动），失败直接给可执行命令；**不检查许可证**（既无用又冒犯）
-- 数据接入：CSV/Excel → 点图层（自动认经纬度列、坏坐标跳过并计数、`007` 这类编码保留为文本、数字列落 `Double`）；KML / GPKG 直读；行政区边界与底图带缓存
-- 分析计划卡：执行前 5 行人话确认（做什么 / 用什么 / 输出 / 怎么验 / 合规），TTY 下按 s / e / q 确认或改一句，非 TTY 自动通过、**不阻塞脚本与 CI**
-- 成果包：验收通过后自动生成**单文件 HTML**（图、图层、方法、数据来源、验证全部内联，断网可看、可直接发微信）；PDF 走 `report-pdf` 技能（浏览器无头打印，中文正常、零新依赖）
-
-**双后端（P0-1）**
-- 9 个配方同时有 arcpy 与 GDAL 两套实现：`buffer_dissolve` / `aggregate_to_zones` /
-  `attribute_join_table` / `polygon_to_raster` / `project_to_crs` / `raster_calculator` /
-  `point_buffer_raster_sum` / `zonal_statistics` / `zonal_statistics_raster`
-- 配方用 `backend: [arcpy, gdal]` 声明，`recipes/store.py` 按声明路由；**缺后端就明确报错**，
-  一行配方代码都不执行（不是跑到一半才炸）
-- GDAL 侧只依赖 `pip install gis-task-cli[gdal]`（自带 GDAL 二进制的 wheel），不需要 OSGeo4W
-- 双端一致性有实测口径：整数指标（`COUNT`/`AREA`/行数）**严格相等**，浮点指标相对差 **≤1e-6**；
-  方形像元承诺逐像元一致，非方像元只承诺分区级（arcpy 会把非方像元拉方，面积口径差约 0.37%，
-  别拿分区 `SUM` 直接比）
-
-**成果溯源卡（P1-4）**
-- 数据 → 步骤 → 参数 → 验证结果，一页可审计，随成果包一起交付（`report/provenance.py`）
-- `generated_at` 精确到秒、`_step_gap` 记录步骤间空档；**零外链**（断网可看）
-
-**成果质量分（P1-3）**
-- `cartography/score.py`：规范性 / 可读性 / 正确性三维 + 扣分明细（`deductions` 逐条给原因）
-- 每条扣分项都有合成用例；同一缺陷重复出现**分数单调不增**
-- 实测：合格成品图 100/100；注入「比例尺非整数刻度」后 92 分且 `deductions` 明确指出那一条
-
-**地图合规闸门（P1-2）**
-- `compliance/` 包：YAML 规则库 + 检测器 + 分级输出（**阻断 / 警告 / 提示**）
-- 四条规则：国界与敏感要素、边界数据来源未登记、未送审水印缺失、审图号缺失
-- 落点两处：`create_map` 出图后自检、`finish` 前汇总进 `verify_outputs`
-- **只做提示 + 阻断，不做合规判定**——责任边界写在卡片与文案里
-- 实测：20 个合成样本 **0 漏报、误报 0%**，单图自检 **<1 ms**
-
-**民生模板库（P1-1）**
-- `templates/<id>/manifest.yaml`：数据清单 + 配方链 + 断言集 + 后端声明；工具 `list_templates` / `run_template`
-- 6 个业务模板：社区适老化评估、绿地公平性、服务价值排序、地图质量评价、城市热点、普查指标相似度
-- 参数可引用上游产物（`$step.out`），引用不存在的步骤**当场报错**
-- 实测：12/12 次冷启动全绿；GDAL-only 机器上 4/4 在**预检阶段**就报「需 ArcGIS」，
-  0 次配方调用、0 个文件
-
-**分析正确性双复核（P1-5）**
-- `review/` 包：复核 subagent **只看「数据 + 结论」**，看不到主轨迹（`ReviewClaim` 没有
-  methodology 字段，工具收窄为 5 个只读），避免被主代理的推理带着走
-- 15 条纯函数断言：守恒 / 拓扑 / 量纲各 5 条；缺事实记 `skipped`、断言写错记 `errors`，
-  **两者都不算通过**
-- 只在交付级任务开启（token 会翻倍），开关进 `requirements`，默认关
-- 实测：25 个任务注入 20 个错误，抓出 **25/25**、误杀 **0/30**
 
 ## 快速开始
 
@@ -248,11 +185,10 @@ gis-agent chat --continue
 # Agent 将引导你完成专题图制作流程
 ```
 
+> 启动时会在后台自动拉起 Web 控制台（`pythonw` 无窗口、单实例、日志在 `workspace/.gis_agent/web.log`），地址见启动输出里的 `控制台: http://127.0.0.1:8760/?token=…` 一行；`GIS_NO_WEB=1` 或 `--no-web` 可关掉，`gis-agent web --stop` 停止后台面板（自己手动 `gis-agent web` 起的实例同样会落 `workspace/.gis_agent/web.pid`，`--stop` 一样能停）。
+>
 > CLI 细节（快捷键、斜杠命令、配色、会话续聊）见 [docs/cli.md](docs/cli.md)。
 > 启动为何很快、流式输出、以及各段耗时的实测数字见 [docs/performance.md](docs/performance.md)。
-> 合规闸门的规则库与分级口径见 [docs/compliance.md](docs/compliance.md)；
-> 民生模板库的 manifest 写法见 [docs/templates.md](docs/templates.md)；
-> 分析正确性双复核的开关与断言库见 [docs/review.md](docs/review.md)。
 
 #### 使用工作区
 
@@ -313,7 +249,7 @@ Agent 支持通过 LLM API 理解任意自然语言，不局限于 GIS 关键词
 
 ```bash
 # 复制配置示例
-cp config/llm_config.json.example config/llm_config.json
+cp config/llm_config.example.json config/llm_config.json
 
 # 编辑配置，填入真实 API Key
 ```
@@ -351,30 +287,44 @@ cp config/llm_config.json.example config/llm_config.json
   实测交互轮用 `low`：首字 5.11s→2.37s、总耗时 8.72s→5.80s，输出质量相当；
   规划/验收类任务刻意保留 `medium`。
 
-### 子代理（delegate）与识图开关
+## Web 控制台
 
-```json
-{
-  "engine": {
-    "subagent_enabled": false,
-    "subagent_max_per_run": 3,
-    "subagent_max_turns": 30,
-    "subagent_timeout_seconds": 900,
-    "subagent_exec_timeout_seconds": 300,
-    "subagent_result_max_chars": 4000,
-    "vision_mode": "auto"
-  }
-}
+除了终端，还有一套浏览器界面（`gis-agent web`）：同一个引擎、同一份 workspace、
+同一批 trace，只是把「看过程 / 管运行 / 查数据 / 改配置」搬到了页面上。
+
+```powershell
+pip install -e ".[web]"    # 控制台依赖（fastapi / uvicorn / starlette），可选
+
+gis-agent web              # 默认 127.0.0.1:8760，自动开浏览器（URL 自带 token）
+gis-agent web --stop       # 停掉后台面板
 ```
 
-- **子代理默认关**。它买的是上下文与轮次预算，不是 token：每个子代理要重发一份 system prompt，
-  3~5 步的小活儿反而更贵。关掉时 `delegate` 直接从工具表剔除（而不是留着报错）。
-  什么时候值得拆、实测 A/B 数据与已知限制见 [`docs/subagent.md`](docs/subagent.md)。
-- `subagent_exec_timeout_seconds` 要**比父的 `kernel_exec_timeout_seconds` 短一档**：
-  父子共享同一个内核，子代理的 GP 卡死会连带惩罚父会话。
-- `vision_mode`：`auto`（按模型名判断，默认）/ `on` / `off`。上游对看不见图的模型通常
-  **不报错**，只会白烧 token 并让模型分心解释「我看不到图」，所以默认按模型能力自动关。
-  图面质检开关是另一个键 `vision_check`（`warn` / `block` / `off`）。
+`gis-agent chat` 启动时会在后台自动拉起面板（无窗口、单实例、端口被占自动顺延、
+日志在 `workspace/.gis_agent/web.log`）；不想拉就设 `GIS_NO_WEB=1` 或加 `--no-web`。
+不装 `[web]` 时其余命令照常工作，只有 `gis-agent web` 会提示缺依赖。
+
+| 页面 | 能干什么 |
+|---|---|
+| 概览 `/` | 成功率 / 耗时 / token / 验收缺口的聚合视图，口径全部来自 trace |
+| 运行历史 `/runs` | 筛选回溯所有 trace，下载原始 `.jsonl` / `.md` |
+| 新建运行 `/runs/new` | 提交任务进单 worker 队列排队 |
+| 运行详情 `/runs/<id>` | SSE 实时时间线（模型增量 / 工具调用 / 验收 / 计划卡），可停止、插话、续跑 |
+| 数据资产 `/data` | catalog 里的矢量/栅格：坐标系、范围、字段画像、离线预览 |
+| 成果包 `/packages` | `output/` 的成果包与溯源卡，内嵌预览 + 下载原件 |
+| 配置模型 `/config` | 10 个角色的模型路由与引擎预算；写前自动备份、可回滚、密钥脱敏 |
+| 环境自检 `/env` | 占位页，尚未实现 |
+
+为什么队列是串行的：`ArcpyKernel` 单例 + `llm_max_concurrency=1` + ArcGIS 单实例，
+并发跑两个 run 不是更快而是互相踩，所以队列**可见**、单 worker 执行。
+
+安全模型很简单：只绑 `127.0.0.1`，靠 `<workspace>/.gis_agent/web_token` 放行，
+带路径的接口一律 `resolve()` 后限制在 workspace 内，不提供执行任意代码 / shell 的端点。
+
+前端是 React 19 + Vite + Tailwind 4 + shadcn/ui，**构建产物已进仓**
+（`src/gis_cli/web/static/`），所以用界面不需要装 Node；改前端才需要
+`cd web && npm ci && npm run build`。
+
+参数、状态文件、API 一览与常见问题见 [docs/web-ui.md](docs/web-ui.md)。
 
 ## 直接出图 / 自动化 ArcGIS Pro（推荐）
 
@@ -416,7 +366,7 @@ cp config/llm_config.json.example config/llm_config.json
 
 ## 测试覆盖
 
-约 **1069 个测试**（`pytest -m "not arcpy"` 约 66s，CI 用的就是这条）。
+约 **460 个测试**（全量约 60s；CI 只跑不依赖 ArcGIS 的部分，约 35s）。
 
 ```powershell
 # 全量
@@ -432,12 +382,6 @@ pytest tests/test_engine_*.py
 主要覆盖：
 - 引擎循环 / 工具协议自适应 / 代码自修复 / 验收器
 - 内核往返、ZMQ 串行化、覆盖前备份、GDB 存在性判断
-- 假 `.gdb` 写前守卫（AST 意图识别：该拦的拦、清理该放行的放行）
-- 子代理 delegate（隔离上下文、超时、结果截断、崩了不抛异常）
-- 双后端路由与一致性（缺后端零执行、整数严格 / 浮点 1e-6、非方像元的面积口径差）
-- 合规闸门（四条规则的正例 / 反例 / 边界，0 漏报、误报 0%）
-- 模板库（manifest 解析、参数绑定、冷启动跑通、GDAL-only 预检即拦）
-- 双复核断言库（守恒 / 拓扑 / 量纲；`skipped` 与 `errors` 都不算通过）
 - 制图设计引擎（可用假 facts 跑，不需要 ArcGIS）
 - 数据目录增量扫描 / 项目日志相关性检索
 - 终端界面（含无 ANSI 终端的回归）
@@ -455,20 +399,14 @@ pytest tests/test_engine_*.py
 - SKILL.md 技能渐进披露
 - 流式输出、模型熔断、前缀缓存命中率统计
 - 内核往返合并、只读工具并发、覆盖写入自动备份
-- 配方沉淀闭环（`distill`：候选 → 静态门禁 → 回放验证 → 采纳）
-- 假 `.gdb` 写前守卫（AST 意图识别，写入前拦 + 给修复 hint）
-- 子代理 `delegate`（上下文隔离，默认关）
-- 内核 CWD 归位（无论成败）+ 看门狗真能硬杀卡死内核
-- Describe 否定结论用 Pro 子进程复核（脏会话不再误判）
 - 交互式终端（排队合并、会话续聊、导出）
+- Web 控制台（概览 / 运行历史 / 实时时间线 / 数据资产 / 成果包 / 模型配置）
 - CI（只跑无 ArcGIS 部分）
-- **P0 上手与交付**：`doctor` 环境自检 / 数据接入（CSV·Excel·KML·GPKG·边界·底图）/ 分析计划卡（5 行确认）/ 成果包（单文件 HTML + `report-pdf` 技能出 PDF）
 
 ### 剩余候选 📋
+- 从历史成功 run 中自动沉淀配方（经验固化闭环）
 - 工具输出按类型瘦身（现在统一按字符数截断）
 - 需求抽取合流进首轮对话（省一次往返；以稳定性为前提）
 - 跨 run 的失败归因统计（哪类失败最常见）
 - 断点续跑（从 `runs/*.json` 恢复，而不只是 `ask_user` 暂停）
 - 更多配方覆盖（空间统计、网络分析）
-- 验收侧两条校验路径（栅格取值 / 版面体检）也补上 Pro 子进程复核与可诊断的失败原因
-- 自动修复环加累计时长预算（目前单个 cell 可连续修到 15 分钟）

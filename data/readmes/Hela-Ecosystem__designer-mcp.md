@@ -1,7 +1,7 @@
 # The Designer MCP
 
 <!-- hela:version:start -->
-**MCP server:** `hela-phenotype` · **Version:** `3.0.0` · **Canonical tools:** 28. [Current tool reference](docs/TOOLS.md).
+**MCP server:** `hela-phenotype` · **Version:** `3.0.1` · **Canonical tools:** 28. [Current tool reference](docs/TOOLS.md).
 <!-- hela:version:end -->
 
 > **Part of the [HeLa MCP Ecosystem](https://github.com/Hela-Ecosystem/hela-mcp-ecosystem)** — This server is **HeLa Phenotype (`hela-phenotype`)** — the _Design_ component of the HeLa cellular architecture. See the [ecosystem docs](https://github.com/Hela-Ecosystem/hela-mcp-ecosystem) for profiles, workflows, and multi-client setup.

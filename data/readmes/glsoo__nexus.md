@@ -68,7 +68,7 @@ These are instructions for planning and verification—not a guarantee of model 
 - **Review before keeping:** inspect diffs, Keep/Undo changes, rewind a prompt or fork another chat. Source control provides branches, commits and history.
 - **Work in parallel:** delegate to specialist agents, optionally in separate Git worktrees, and review their returned branches.
 - **Bring your setup:** existing project instructions, agents, skills and MCP servers. Marketplace adds more; inspect third-party code and endpoints first.
-- **Use your preferred model:** Claude, GPT, Gemini, OpenRouter and other compatible providers, or local models. Cloud providers receive the context sent to them; local execution does not make cloud inference private to your PC.
+- **Use your preferred model:** Claude, GPT, Gemini, OpenRouter and other compatible providers, or local models. Add custom OpenAI-compatible endpoints in Settings without editing files. Cloud providers receive the context sent to them; local execution does not make cloud inference private to your PC.
 - **Control unattended work:** budgets, request limits, scheduled tasks and optional autopilot. Autopilot approves actions on your behalf—use it deliberately. Cost displays are estimates, not billing guarantees.
 - **See why something failed:** provider messages, status/code/type, request IDs and connection causes where available, with request credentials redacted. Chat/subagent errors stay in history; AI buttons offer Copy/Close details.
 
@@ -102,7 +102,7 @@ Skills also appear as `/commands`. Use a skill without arguments, or with `help`
 - An optional shell sandbox is available on Linux with bubblewrap and macOS with sandbox-exec. **No native Windows sandbox is available yet.** It primarily restricts filesystem writes; reads remain open and network blocking is optional. It does not isolate every Nexus tool, and your explicit `!command` and `/check` commands bypass it.
 - Back up project `.nexus` folders and user `~/.nexus` privately. Chats, compaction archives and tool output can contain sensitive information; never commit environment files or credentials.
 - Put provider keys in **Settings → Models**, not chat. Environment keys override keys saved there. Budgets are checked between model invocations and may not be an exact spending ceiling.
-- Failed or incomplete compaction keeps the original model history. Large histories can require multiple summarization calls; [limits and storage details](docs/configuration.md#long-chats-and-storage) explain the trade-offs.
+- Failed or incomplete compaction keeps the original model history. Settings provides the automatic token trigger and a soft summary-budget slider up to 256k characters; a valid longer summary is kept. Large histories can require multiple summarization calls; [limits and storage details](docs/configuration.md#long-chats-and-storage) explain the trade-offs.
 
 ## Updates and development
 

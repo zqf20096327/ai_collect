@@ -218,8 +218,8 @@ debt, cash and share observations plus explicit scenario assumptions.
 
 Still pending: applying/testing migrations on a live PostgreSQL instance; provider
 account smoke tests; a larger independently reviewed company corpus; full XBRL
-context/taxonomy coverage; a security master; historical/as-of query APIs; raw HTTP
-archives; automatic restatement/reconciliation workflows; verified quote metadata;
+context/taxonomy coverage; a security master; full historical memo APIs; raw HTTP
+archives; broader accounting/restatement reconciliation workflows; verified quote metadata;
 and a financially reviewed valuation methodology. The existing price, macro, and
 estimates pipelines have not been converted into this financial-statement model.
 The stored filing dates and timezone-aware acceptance timestamps do not by
@@ -615,7 +615,8 @@ capitalization dates. Offline replay verifies the registered bridge arithmetic a
 with captured documents, the original provider payloads.
 
 Target SEC annual/interim contexts already extracted by the pipeline are reused.
-For up to five peers, the pipeline now extracts the latest SEC 10-K and 10-Q as well
+For up to five peers, the pipeline extracts a SEC annual anchor and the bounded
+quarterly history described below, as well
 as fetching the existing annual and discrete-quarter vendor data. Explicit SEC
 start/end durations provide genuine cumulative YTD contexts; the application does
 not relabel vendor discrete cash-flow or income rows as YTD. Original context
@@ -638,9 +639,308 @@ peer ingestion, frontend contracts and a database persistence round-trip test.
 
 Pending: live provider/account validation and current PostgreSQL integration tests;
 financial expert review and independently reconciled company examples; automated
-restatement/accounting-policy reconciliation across annual/interim filings; earlier
-10-Q history when the latest reports lack needed prefixes; richer 52/53-week and
+broader accounting-policy reconciliation across annual/interim filings and
+SEC history beyond the bounded ingestion window; richer 52/53-week and
 non-US fiscal-transition coverage; additional cash-flow metrics, FX and share-class
 handling. Source/period/chronology checks do not prove cross-filing accounting
 comparability. That limitation is explicitly shown in reconstruction warnings rather
 than implied to be fully verified.
+
+
+## Historical 10-K/10-Q ingestion and filing-version reconciliation
+
+Both the target and up to five peers ingest bounded SEC annual and quarterly history,
+including `10-K/A` and `10-Q/A` amendments in one shared submissions walk.
+Discovery reads `filings.recent` and follows the
+historical pages listed in `filings.files` through the
+[SEC submissions API](https://www.sec.gov/search-filings/edgar-application-programming-interfaces).
+It does not assume the recent array contains every needed quarter.
+
+Defaults are a 2,192-day (approximately six-year) filing-date lookback, at most
+96 filings total (annual, quarterly, originals and amendments), and at most ten
+historical archive pages. `fetch_period_bridge_inputs` accepts `as_of`,
+`lookback_days`, `max_filings`, `max_archive_files`, and `refresh`. These parameters
+also reach `fetch_historical_filings`; dedicated `fetch_historical_10ks` and
+`fetch_historical_10qs` wrappers filter forms with default budgets of 32 and 64
+filings respectively. Requests can expand to 14,610 days (approximately forty
+years), 400 filings and 100 archive pages. Requests beyond those bounds fail
+before network access. The filing-date interval is relative to the requested
+cutoff, so an older cutoff walks relevant archive pages rather than substituting
+today's latest annual filing. Annual and interim facts then use the same immutable
+extraction cache, availability filters, source verification and reconciliation.
+
+Discovery batches expose `requested_start`, `as_of`, `forms`,
+`archive_pages_available`, `archive_pages_loaded`, `filings_discovered`, and
+`coverage_complete`. Completeness means all relevant pages advertised by the SEC
+index were read and valid discovered filings fit within the requested budget; it
+is scoped to that filing-date interval and form set, not proof of complete XBRL
+coverage or every historical accounting period. Empty discoveries remain flagged.
+A discovered amendment excluded by the filing budget is unresolved and blocks
+quantitative reuse. Only warning-free discoveries are cached. Duplicate identical
+archive-index entries do not consume extra retrieval slots. Limits, inaccessible
+pages, malformed arrays,
+conflicting accession metadata and excluded rows produce explicit partial-coverage
+warnings. Requested cutoffs exclude later filing/acceptance dates. A late amendment
+to an older report remains a distinct accession; it does not replace unrelated
+quarters. Safe archive filenames are restricted to the requested CIK and the fixed
+SEC submissions host. Aligned required arrays and primary-document names are checked
+before constructing filing URLs.
+
+Normalized submissions snapshots are retained in the existing immutable source
+archive. Filing metadata and each original XBRL fact version remain stored under
+their existing identities. Extraction runs with concurrency two. A shared
+per-event-loop SEC request gate permits at most eight requests per second; it also
+paces retries. Distributed/multi-worker rate coordination is not implemented.
+Successful discoveries cache for five minutes; partial discoveries are retried.
+
+An accession-level 24-hour extraction cache reuses retained original observations
+only when all listed IDs, ticker, accession, filing date, document URL, acceptance
+time, payload hashes and source values still match. Missing/corrupt records trigger
+source extraction again. Failures and empty/nonmatching results are not marked as
+successes; `refresh=True` bypasses reuse. This is a processing-success marker, not a
+claim that every possible financial context or custom taxonomy has been extracted.
+
+An amended filing with failed extraction, or known malformed/conflicting amendment
+metadata, is unresolved. It cannot silently authorize the old quantitative inputs:
+target calculations/reported snapshot are withheld, and an affected peer is excluded.
+A target whose essential revenue becomes unresolved does not publish a memo. A
+successful amendment still carries a scope warning: extracted numerical contexts
+are not a formal accounting restatement review. Original observations are retained
+in every case; a nonfinancial amendment is not automatically assumed harmless.
+
+`latest-available-overlap-v1` adds a reproducible selection audit:
+
+1. Group retained SEC facts by exact ticker, normalized metric, complete interval or
+   instant, duration basis, units, currency and dimensions. Different fiscal windows
+   and currencies are never merged; segmented/unknown contexts are outside this
+   initial automatic policy.
+2. Select the latest available filing for each context at the explicit cutoff.
+   Acceptance timestamps resolve same-day order only when known for all competing
+   latest versions. Conflicting values in tied filings or within one accession are
+   ambiguous; fetching a payload later does not resolve them. Identical aliases or
+   re-presented values can be treated as equivalent with a deterministic source ID.
+3. Keep all original/superseded observations and distinguish `single`, `equivalent`,
+   `revised` and `ambiguous` contexts. `revised` means a changed reported value in the
+   retained numerical data, not a diagnosis that the company formally restated.
+4. Replace matching candidate/vendor contexts with the selected SEC version. Keep
+   unresolved alternatives visible so the calculation selector cannot bypass an
+   ambiguity by silently choosing a vendor number or an older convenient period.
+5. Independently check overlaps. A selected older annual/YTD aggregate spanning a
+   changed interval from another filing is withheld without a compatible basis,
+   even if that aggregate was filed later. Complete, contiguous selected quarters
+   may instead reconcile to the latest changed cumulative amount when their exact
+   sum matches it. Mismatches or incomplete coverage withhold the calculation.
+   A matching aggregate sum does not establish the truth of every individual
+   accounting component.
+
+The policy is applied separately at each market-cap date. A revision available at
+the later report date cannot leak into an earlier-dated comparable. Current research
+financial calculations use the analysis cutoff. Reported annual snapshot observations
+are also updated to selected versions, with confidence downgraded and review warnings;
+ambiguous values are removed instead of being passed to the writer as current facts.
+Existing annual/Q4/YTD arithmetic recipes keep their previous behavior when replayed
+without the new policy metadata.
+
+`CalculationTrace.reconciliation` pins the cutoff, exact source-universe IDs and
+context/version decisions. `reconciliation_checks` retains explicit quarter-sum vs
+reported-value checks. Both fields participate in the calculation identity. Before
+publication, the verifier independently reloads **all** required original, selected
+and superseded source records, verifies retained passages and replays selection and
+arithmetic. Modifying an audit, cutoff, reported overlap value or source version fails
+verification. An old report is not reinterpreted using today's newly arrived filings:
+the record's source snapshot is explicit and immutable.
+
+The report UI and PDF expose the selected and retained alternative values, accessions,
+filing/acceptance dates, reasons and overlap checks. JSON downloads retain the complete
+audit and source evidence; offline replay works with the same retained documents.
+Alternative source passages are labeled in the synthesis prompt so they are not
+presented as the currently selected fact. The audit scope is
+`retained-sec-contexts-only`; it does not certify exhaustive SEC coverage, accounting
+policy compatibility, issuer identity history, or historical investability.
+
+No dependency or database migration is added. The existing source, observation and
+calculation stores retain the additional data in their existing JSON fields. New
+metadata is omitted when absent so legacy record JSON, IDs and replay remain
+compatible. Existing migrations through `0005` remain necessary. Run a fresh analysis
+to ingest historical annual and interim filings; an initialized PostgreSQL/Redis environment, SEC
+contact User-Agent and existing provider credentials are still required.
+
+Tests cover archive discovery, amendments, duplicate/conflicting metadata, as-of and
+resource bounds, unsafe archive links, request pacing, extraction reuse and failures;
+exact-context selection, unknown intraday order and same-accession conflicts;
+changed cumulative overlaps, stale aggregate rejection, earlier market-cap cutoffs,
+source/audit tampering, reported snapshot updates, publication, offline replay,
+frontend contracts and database round-trip retention of original/revised versions.
+
+Pending: live SEC/sec-api/FMP account validation and current PostgreSQL integration
+checks; on-demand backfill beyond configured budgets and full historical research memo APIs;
+financial-expert examples and review of non-reliance notices, amendment purpose,
+custom taxonomies, reclassifications and accounting-policy changes; an explicit
+analyst reconciliation/approval workflow for blocked cross-filing aggregates;
+security-master/CIK changes and a complete point-in-time data system; durable
+operational ingestion ledgers, monitoring and distributed request coordination.
+These checks establish known-version numerical consistency, not a full restatement
+or audit opinion.
+
+
+Historical annual coverage tests additionally exercise old cutoffs when the latest
+10-K is in the future, 10-K/A extraction failures and malformed metadata, UTC
+acceptance-date boundaries, requests beyond the former ten-year/40-filing limits,
+and original/amended annual growth calculations with exact source-linked replay.
+Historical filing ingestion alone does not make full reports point-in-time:
+market prices, issuer identities, news and vendor snapshots still need historical
+availability coverage. A cutoff is a UTC date (end-of-day), not an intraday timestamp.
+
+## Historical financial analysis API
+
+`POST /api/v1/historical-analyses` submits SEC financial analysis at an explicit
+UTC end-of-day cutoff. It uses historical 10-K/10-Q originals and amendments;
+it does not invoke the live memo pipeline, agents, vector search, current vendor
+fundamentals or the company-wide observation archive. No current prices, news or
+estimates are substituted. This endpoint produces financial facts and replayable
+calculations, not a full historical investment memo.
+
+Example request:
+
+```json
+{
+  "ticker": "AAPL",
+  "as_of": "2024-06-30",
+  "lookback_days": 2192,
+  "max_filings": 96,
+  "max_archive_files": 10,
+  "refresh": false
+}
+```
+
+The `202` response includes `job_id`, `as_of`, `analysis_kind` and `result_url`.
+Poll `GET /api/v1/jobs/{job_id}` for progress; historical jobs expose their cutoff
+and result URL. Read `GET /api/v1/historical-analyses/{job_id}` when terminal.
+Results remain readable when their analysis status is `failed`, so callers can
+inspect coverage and failure reasons. Pending, unknown or expired results return
+`404`; the shared jobs endpoint distinguishes pending from unknown jobs.
+Historical jobs do not expose a live memo or live exports through `/memos`.
+
+The result contains:
+
+- `filing_coverage`: requested filing-date interval/form set, discovered filings,
+  manifest document IDs, advertised/loaded archive-page counts, discovered/returned
+  filing counts, unresolved amendments and discovery warnings. A complete discovery
+  does not certify successful extraction, continuous financial periods or full SEC
+  accounting coverage.
+- `extractions`: per-accession extraction status, observation count and failure
+  reason. `retained_sources` contains the eligible verified versions, including
+  superseded facts; `financial_facts` contains selected unambiguous contexts.
+- `reconciliation`: exact-context availability/version selection at the requested
+  cutoff. `calculations` contains independently source-verified recipe records with
+  all required original/superseded observations, exact passages and replay traces.
+  Only the discovered filing universe feeds these outputs. Observation and accepted
+  filing dates are checked again before calculation. Unresolved amendments or failed
+  source verification withhold financial outputs instead of falling back to older
+  sources. A normal extraction failure remains visible as incomplete coverage.
+- `missing_data`: structured `code`, `message`, optional `accession_no` and `metric`.
+  Codes identify discovery/ingestion/extraction failures, partial filing coverage,
+  missing annual/interim filings, unsupported observations, unresolved amendments,
+  source/calculation verification failures, ambiguous contexts, missing annual
+  revenue or matching income/cash-flow contexts, stale annual data, unavailable
+  calculations and unsupported historical research inputs. Annual data is flagged
+  stale when its latest verified revenue period ended over 550 days before cutoff;
+  the exact filing and financial-period dates are also returned.
+- `financial_coverage_complete`: scoped to discovery, extraction, supported annual
+  financial contexts and growth/margin/TTM calculation coverage. An omitted DCF
+  scenario does not alone make this flag false. It never certifies a complete
+  investment-research dataset. Overall status is always `partial` or `failed`
+  because full historical research inputs are not implemented.
+
+Optional `dcf_scenario` has the same explicit assumptions contract as live analysis.
+DCF remains unavailable when required source-linked debt, cash, shares or revenue
+history are missing. Caller-supplied assumptions are labeled as supplied now, not
+proven available at the cutoff. Market-cap comparables are not fetched in this mode.
+
+Source passages link to
+`GET /api/v1/historical-analyses/{job_id}/evidence/{document_id}`. Only source
+snapshots and discovery manifests referenced by that result and belonging to its
+company can be downloaded; unrelated documents return `404`. Raw discovery
+manifests are captured today and can list filings after the cutoff; those filings
+are excluded from the analysis inputs. The snapshot is evidence of the discovery
+response, not a historical-time snapshot of the SEC service.
+
+Cutoffs must be `YYYY-MM-DD` between the operational lower bound `1994-01-01` and
+today (UTC); timestamps, future cutoffs, unknown fields and out-of-range retrieval
+budgets return `422`. Filing availability is date-based, not intraday. The live
+`POST /analyze` now rejects unknown fields, including `as_of`, so an accidental
+historical request cannot silently run live analysis. Use the separate endpoint.
+
+Historical analysis requires PostgreSQL, Redis, `SEC_API_KEY` and a real SEC contact
+`EDGAR_USER_AGENT`; LLM, embedding and FMP credentials are not required. Existing
+migrations through `0005` suffice. No dependency or migration was added. OpenAPI,
+generated TypeScript contracts and `startHistoricalAnalysis`/`getHistoricalAnalysis`
+client helpers cover the endpoints. The historical UI described below uses the
+same endpoints and cutoff/coverage contracts.
+
+Operational limits remain: jobs run through FastAPI `BackgroundTasks`; job/results
+expire from Redis after 24 hours, while verified source and calculation records
+remain in PostgreSQL. Durable historical job/result storage, restart-safe worker
+queues, cancellation, access controls, resumable backfill and ingestion monitoring
+remain pending. Current ticker-to-CIK mapping and data retrieved today do not prove
+historical issuer identity or contemporaneous vendor availability. Historical
+prices/currencies/share classes, news, estimates, transcripts, macro inputs and
+full historical memo generation remain pending, along with live SEC/sec-api and
+PostgreSQL deployment validation.
+
+
+## Historical-analysis UI
+
+Open `/historical` from the **History** navigation item or the home-page historical
+financials link. Select a ticker and UTC end-of-day availability cutoff. The form
+validates real calendar dates from `1994-01-01` through today (UTC), normalizes the
+ticker, and exposes bounded lookback/filing/archive-page limits and an optional
+refresh. Zero archive pages is valid and can yield disclosed partial discovery.
+Submission/configuration failures appear inline and retain the chosen inputs.
+
+Successful submission opens `/historical/{jobId}`. Queued/running jobs show the
+chosen cutoff and processing progress, explicitly distinguished from coverage.
+Partial **and failed** terminal jobs load their historical result so missing-data
+reasons remain inspectable. An accidental historical job opened through the live
+analysis route links to its historical result and does not fetch a live memo.
+
+The result view separates filing discovery from supported financial coverage,
+shows requested filing-date interval/forms/budgets, advertised and loaded archive
+pages, discovered and returned filings, actual report/filing/acceptance dates and
+per-accession extraction outcomes. Structured missing-data reasons are visible
+before the financial outputs, including metric/accession context; processing and
+calculation warnings remain expandable. Missing discovery metadata is labeled
+unavailable, rather than presented as zero or complete coverage.
+
+Selected financial contexts retain exact decimal strings, reporting windows, units,
+currencies and provenance. Existing calculation views expose formula steps, filing
+selection audits, source passages and trace JSON downloads. Discovery manifests
+and retained financial source passages link to the historical result's scoped
+evidence endpoint. Only supported result-scoped snapshot paths are linked to the
+configured API origin. Runtime validation rejects missing coverage flags, warning
+arrays, inconsistent ticker/cutoff metadata and misleading `complete` responses.
+
+The UI labels its SEC-only scope, sources retrieved now, current ticker-to-CIK
+mapping limitation and 24-hour result retention. Historical market data and full
+research memos are not presented as available. Polling stops at terminal states;
+expired/missing jobs and unavailable/invalid results offer explicit errors and
+retry/new-analysis actions.
+
+Validation includes Node tests for cutoff/date/budget rules, historical versus
+live job handling, strict response contracts, safe evidence paths, and server
+rendering of the actual result component for partial, failed and missing-coverage
+responses. The fixture in `frontend/tests/fixtures/historical-analysis.json` is
+fictional TEST data validated by the backend response model; it is test-only and
+is not exposed as live research. A test-only TypeScript loader uses the existing
+compiler to render TSX without adding dependencies. Browser checks with a local
+fixture cover cutoff persistence, queued-to-terminal polling, partial/failed
+results, source inspection, actionable configuration errors and a 375px layout.
+Live-account end-to-end validation and a broader automated browser/accessibility
+suite remain pending.
+
+Other pending work includes historical run comparison, saved/cross-session history
+beyond job links, durable restart-safe jobs/results, resumable backfills and a
+scenario editor within the historical form (the API already accepts explicit DCF
+scenarios). Historical prices, market caps, news and estimates still require their
+own point-in-time data foundation before full historical research is supported.
+No dependency, API schema or database migration is added by this UI stage.

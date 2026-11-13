@@ -58,7 +58,9 @@ What it does:
   drive it from a slider, per request, or by a tag-matched policy. Speaks
   [hotwire-vllm](https://github.com/moudrkat/hotwire-vllm)'s steering spec
   (`{"id", "layer", "scale", "decode_only"}`, incl. the `vllm_xargs` wire
-  format) — **calibrate here, deploy there**: `python -m
+  format, and `"mode": "project"`, which pushes against each token's own
+  component along the direction on the layer's MLP output, as hotwire does)
+  — **calibrate here, deploy there**: `python -m
   brainscope.export_hotwire` ships vectors with a regime passport, and
   `POST /replay` A/Bs any conversation under a spec, showing per-layer
   cosine and which words the vector suppressed
@@ -333,9 +335,16 @@ fitted on. brainscope reads the decoder layer whose output that is
 
 ```bash
 jq '{probes: [{name: "intent", vector: .direction, bias: .bias,
-               hidden_state: .hidden_state, threshold: 0, ema: 0.2}]}' probe.json \
+               hidden_state: .hidden_state, threshold: 0, ema: 0.2, reads: "prompt"}]}' probe.json \
   | curl -s localhost:8010/probes -H 'Content-Type: application/json' -d @-
 ```
+
+`reads` says what the probe looks at: `"prompt"` (the user's message only),
+`"answer"` (only what the model writes) or `"both"` (the default). A probe
+trained on requests should read the prompt only: on the model's own answer it
+is out of its training distribution, and its alarms there mean nothing. Under
+the line the page prints the user's message with each token coloured by the
+level the probe had reached there.
 
 On the request above that probe gives a mean logit of −3.44 over the whole
 message, a pass, while the smoothed level crosses 0 at the same " everything":

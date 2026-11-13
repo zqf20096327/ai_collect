@@ -40,7 +40,7 @@
 </p>
 
 > [!NOTE]
-> The book is available in **English** at [ml4sci.com/en](https://ml4sci.com/en/) and in **Korean** at [ml4sci.com](https://ml4sci.com). The Korean manuscript is the original, and the English edition is a full translation: every chapter, quiz and exercise.
+> The book is available in **English** at [ml4sci.com/en](https://ml4sci.com/en/) and in **Korean** at [ml4sci.com](https://ml4sci.com).
 
 ## 🔁 The learning loop
 
@@ -78,7 +78,7 @@ Every chapter is built around the same loop. You read an idea, try it with your 
 
 ## 🧭 Curriculum
 
-Twelve tracks are arranged in seven layers. A track builds only on tracks in the same layer or a lower one, and this rule is checked automatically against every chapter's prerequisites.
+Twelve tracks are arranged in seven layers. A track builds only on tracks in the same layer or a lower one.
 
 <p align="center">
   <picture>

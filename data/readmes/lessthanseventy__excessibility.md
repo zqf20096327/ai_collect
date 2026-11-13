@@ -20,7 +20,7 @@ queries it ran, and the patterns that stand out.
 ```elixir
 def deps do
   [
-    {:excessibility, "~> 0.21", only: [:dev, :test]},
+    {:excessibility, "~> 0.22", only: [:dev, :test]},
     {:igniter, "~> 0.7", only: [:dev, :test], runtime: false}
   ]
 end
@@ -135,6 +135,8 @@ Excessibility does not pull in storybook.
   digest, the analyzers, the MCP server and the skills.
 - [Telemetry Analysis](docs/telemetry-analysis.md): writing an enricher or a pattern analyzer
   of your own.
+- [Demo app](demo/): a runnable Phoenix app whose pages trip the accessibility rules and the
+  performance analyzers on purpose.
 
 ## License
 

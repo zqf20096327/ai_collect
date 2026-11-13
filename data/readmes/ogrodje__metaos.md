@@ -13,7 +13,7 @@ own, which renders the pages anyone may see from MetaOS's API, so search engines
 Cloudflare caches them; the browser then carries on as a single-page app. Both sign in with [Keycloak], and MetaOS
 checks their tokens with Keycloak's keys. MetaOS keeps its data in Postgres, where every change is logged, and works
 with Google Drive, Koofr and Dropbox as Ogrodje's bot account. It also lists Slovenia's tech, developer and startup events,
-which it gets from [Goo](https://goo.ogrodje.si)'s public timeline, as ogrodje.si's Dogodki page did. Postgres also
+which it gets from [Goo](https://goo.ogrodje.si)'s public timeline, as the old ogrodje.si's Dogodki page did. Postgres also
 tells MetaOS what changed, which it passes on to the open pages, so they show it without being reloaded. Pictures everyone may see, like episodes'
 thumbnails from Dropbox and people's avatars from Hygraph, MetaOS copies to its public bucket in Google Cloud Storage,
 from which browsers load them at media.ogrodje.si, cached by Cloudflare; the team uploads an episode's artwork from
@@ -46,19 +46,19 @@ The diagram is drawn in [`architecture.svg`](architecture.svg); `just architectu
 Claude Code (then `/mcp` → ogrodje → Authenticate):
 
 ```bash
-claude mcp add --transport http --scope user ogrodje https://metaos.ogrodje.si/mcp
+claude mcp add --transport http --scope user ogrodje https://ogrodje.si/mcp
 ```
 
 Claude, on claude.ai or in the desktop app: Settings → Connectors → Add custom connector, with
-`https://metaos.ogrodje.si/mcp`, then Connect. Its phone apps use it once it's connected.
+`https://ogrodje.si/mcp`, then Connect. Its phone apps use it once it's connected.
 
 Codex (CLI, IDE extension and app; signs in right away, `codex mcp login ogrodje` signs in again):
 
 ```bash
-codex mcp add ogrodje --url https://metaos.ogrodje.si/mcp
+codex mcp add ogrodje --url https://ogrodje.si/mcp
 ```
 
-ChatGPT, on chatgpt.com in a browser: Plugins → Add → Add custom MCP server, with `https://metaos.ogrodje.si/mcp`,
+ChatGPT, on chatgpt.com in a browser: Plugins → Add → Add custom MCP server, with `https://ogrodje.si/mcp`,
 OAuth and Dynamic Client Registration (DCR). The front-end's Usage page (`/usage`) has the steps for each.
 
 ## Development && Infrastructure notes

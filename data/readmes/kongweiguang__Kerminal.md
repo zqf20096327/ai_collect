@@ -5,7 +5,7 @@
   <h1>Kerminal</h1>
   <p><strong>把终端、远程服务器、文件传输、容器运维与 AI Agent 放进同一个原生桌面工作台。</strong></p>
   <p>
-    <a href="https://github.com/kongweiguang/Kerminal/releases/tag/v0.4.0-beta.5">下载 GPUI 测试版</a>
+    <a href="https://github.com/kongweiguang/Kerminal/releases/tag/v0.4.0-beta.6">下载 GPUI 测试版</a>
     ·
     <a href="#快速开始">快速开始</a>
     ·
@@ -13,7 +13,7 @@
     ·
     <a href="#源码开发">源码开发</a>
   </p>
-  <p><sub>0.4.0-beta.5 · Rust + GPUI · Windows / Linux / macOS</sub></p>
+  <p><sub>0.4.0-beta.6 · Rust + GPUI · Windows / Linux / macOS</sub></p>
 </div>
 
 ![Kerminal GPUI 完整应用窗口：本机终端与已进入会话的 Codex AI 助手](docs/assets/kerminal-hero.png)
@@ -42,16 +42,16 @@ Kerminal 是一个本地优先的桌面终端和远程运维工作台。围绕�
 
 ## 下载与安装
 
-前往 [GitHub Releases](https://github.com/kongweiguang/Kerminal/releases) 选择 **GPUI beta**，不要用只指向稳定版的 `releases/latest` 判断 0.4 版本。当前 `v0.4.0-beta.5` 的下载入口：
+前往 [GitHub Releases](https://github.com/kongweiguang/Kerminal/releases) 选择 **GPUI beta**，不要用只指向稳定版的 `releases/latest` 判断 0.4 版本。当前 `v0.4.0-beta.6` 的下载入口：
 
 | 平台 | 安装包 |
 | --- | --- |
-| Windows x64 | [NSIS 安装程序](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.5/kerminal_0.4.0-beta.5_x64-setup.exe)（当前用户安装） |
-| Linux x64 | [AppImage](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.5/kerminal_0.4.0-beta.5_x86_64.AppImage) / [DEB](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.5/kerminal_0.4.0-beta.5_amd64.deb) |
-| macOS Apple Silicon | [DMG](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.5/Kerminal_0.4.0-beta.5_aarch64.dmg) |
-| macOS Intel | [DMG](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.5/Kerminal_0.4.0-beta.5_x64.dmg) |
+| Windows x64 | [NSIS 安装程序](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.6/kerminal_0.4.0-beta.6_x64-setup.exe)（当前用户安装） |
+| Linux x64 | [AppImage](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.6/kerminal_0.4.0-beta.6_x86_64.AppImage) / [DEB](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.6/kerminal_0.4.0-beta.6_amd64.deb) |
+| macOS Apple Silicon | [DMG](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.6/Kerminal_0.4.0-beta.6_aarch64.dmg) |
+| macOS Intel | [DMG](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.6/Kerminal_0.4.0-beta.6_x64.dmg) |
 
-- 下载后可对照同一 Release 的 [`SHA256SUMS.txt`](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.5/SHA256SUMS.txt) 校验文件。
+- 下载后可对照同一 Release 的 [`SHA256SUMS.txt`](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.6/SHA256SUMS.txt) 校验文件。
 - 当前 beta 为未签名构建，Windows 可能提示 SmartScreen，macOS 可能被 Gatekeeper 拦截；请先核实下载来源，不要全局关闭系统保护。
 - **本 beta 未配置更新器签名与更新 feed，不会自动更新。** 后续测试版请从 Releases 手动下载。
 - Linux AppImage 仍依赖宿主的 glibc 和图形环境；当前 DEB 的基础要求为 glibc 2.35 及相应图形运行库。
@@ -64,7 +64,7 @@ Kerminal 是一个本地优先的桌面终端和远程运维工作台。围绕�
 点击左栏底部的添加按钮，选择连接类型并填写信息；也可以直接点击标签栏的 `+` 打开默认本地终端。
 
 - 左栏单击主机只选择，双击或按 Enter 才连接；同一主机可以打开多个独立终端。
-- SSH 首次连接先核对服务端指纹。密码、私钥口令与代理凭据进入加密 Vault，主机配置只保存引用。
+- SSH 默认信任服务端主机密钥并在后台尽力记录 `known_hosts`，不要求用户确认指纹。密码、私钥口令与代理凭据进入加密 Vault，主机配置只保存引用。
 - 本地主机可从 Profile 复制 Shell、参数、工作目录与环境；保存后是独立连接，修改模板不会重写已保存主机。
 - 独立 SFTP 只提供文件能力，不提供 Shell、tmux、容器或隧道；Telnet / Serial 使用原生协议适配，RDP 交给对应平台客户端，不嵌入远程桌面画面。
 

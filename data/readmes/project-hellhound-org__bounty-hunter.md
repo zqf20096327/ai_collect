@@ -10,19 +10,18 @@
 </p>
 
 <p align="center">
+  <a href="#what-is-this">What Is This?</a> ·
+  <a href="#how-it-works">How It Works</a> ·
+  <a href="#installation--setup">Installation</a> ·
   <a href="#quick-start">Quick Start</a> ·
-  <a href="#installation--setup">Installation & Setup</a> ·
-  <a href="#two-tier-neural-routing">Two-Tier AI Routing</a> ·
-  <a href="#commands">Commands</a> ·
-  <a href="#the-recon--triage-arsenal">Arsenal</a> ·
-  <a href="#what-it-finds">What It Finds</a> ·
-  <a href="#hunting-methodology-skills">Skills</a> ·
-  <a href="#recent-upgrades">Recent Upgrades</a> ·
+  <a href="#capabilities">Capabilities</a> ·
   <a href="#roadmap--whats-next">Roadmap</a> ·
+  <a href="#contributing">Contributing</a> ·
   <a href="#license">License</a>
 </p>
 
 <p align="center">
+  <a href="https://github.com/project-hellhound-org/bounty-hunter/stargazers"><img src="https://img.shields.io/github/stars/project-hellhound-org/bounty-hunter?style=flat-square&color=gold" alt="GitHub Stars"/></a>
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10+-blue?style=flat-square&logo=python&logoColor=white" alt="Python Version"/></a>
   <a href="https://github.com/project-hellhound-org/bounty-hunter/releases"><img src="https://img.shields.io/badge/Release-v13.21-red?style=flat-square" alt="Release Version"/></a>
   <img src="https://img.shields.io/badge/AI--Powered-Ollama%20%7C%20NVIDIA%20NIM%20%7C%20Claude%20%7C%20Gemini%20%7C%20OpenAI-red?style=flat-square" alt="AI Support"/>
@@ -34,7 +33,7 @@
 ---
 
 > [!WARNING]
-> ### ⚠️ Project Status — Where It Actually Stands
+> ### Project Status — Where It Actually Stands
 > **Bounty Hunter — "Beast" — is under active development.** Here's an honest read of how it performs across the environments it's run against, so you know what to expect before you point it at anything:
 >
 > - **PortSwigger Web Security Academy labs** — solves them **autonomously, end to end**, across multiple vulnerability classes: password-reset poisoning via host-header injection, deleting a user through an exposed API-documentation endpoint, reflected / stored / DOM-based XSS (confirmed by firing a real `alert()` in a headless browser), CORS, and SSRF. Not just recon — the full exploit.
@@ -47,13 +46,20 @@
 
 ## What Is This?
 
-**Bounty Hunter** is the autonomous bug bounty reconnaissance and vulnerability triage framework developed by **Project Hellhound**. Built for security researchers, penetration testers, and CTF practitioners, Bounty Hunter autonomously maps attack surfaces, verifies discovered assets, spiders dynamic Single Page Applications (SPAs) for hidden APIs and secrets, captures visual screenshot evidence via Gowitness, executes security audits through an unconditional scope gate, and writes submission-ready reports for HackerOne, Bugcrowd, and private engagements.
+**Bounty Hunter** (nickname **"Beast"**) is an **autonomous AI agent for bug bounty and penetration testing**, built by **Project Hellhound**. Give it a target and a goal in plain English — it runs the recon, finds *and exploits* the vulnerability, and writes a submission-ready report, all behind a scope gate that can't be bypassed. Built for bug-bounty hunters, pentesters, and CTF players.
 
-It features **persistent target memory and an automated artifact blackboard**—harvested tokens, credentials, session cookies, open ports, crawl trees, visual screenshots, and triage notes are automatically retained in isolated per-target workspaces (`~/.hellhound/targets/<target>/`) so hunts seamlessly resume across sessions without token loss or "lost-in-the-middle" reasoning drops.
+**What makes it different:**
 
-Works across two flexible interfaces:
-- **Interactive Terminal**: An interactive terminal environment with real-time token streaming, live progress feedback, and inline command autocompletion (`beast`).
-- **Headless CLI Runner**: Direct one-line command execution for quick scripts and CI/CD pipelines (`beast -p "prompt"`).
+- **It exploits, not just scans.** It proves DOM and stored XSS by firing a real `alert()` in a headless browser, forges JWTs, and chains IDOR into account takeover — then runs a live `verify_finding` check before recording anything. You get confirmed bugs, not a wall of maybes.
+- **It refuses to fabricate findings.** A "privileged access" or "solved" claim is rejected unless the captured HTTP responses actually back it. No hallucinated criticals, no reports that collapse at triage.
+- **It remembers.** A persistent per-target blackboard (tokens, credentials, cookies, open ports, crawl trees, screenshots) under `~/.beast/targets/<target>/` lets hunts resume across sessions with no context loss.
+- **Unconditional scope gate.** Every network call is scope-checked before a packet leaves; out-of-scope targets are blocked, always.
+- **Free to run.** Works on free NVIDIA NIM credits, commercial APIs (Claude, Gemini, OpenAI), or fully offline via Ollama.
+
+**Two ways to drive it:**
+
+- **Interactive terminal** (`beast`) — a full-screen TUI with live streaming, collapsible tool cards, a findings browser, and a command palette.
+- **Headless** (`beast -p "..."`) — one-line runs for scripts and CI pipelines.
 
 ---
 
@@ -142,7 +148,7 @@ The automated installer will:
 Beast runs two roles — an **Orchestrator** (selects/runs tools) and a **Synthesizer** (writes the researcher-facing report). You point each at a model with `/model orchestrator <provider> <id>` and `/model synthesizer <provider> <id>` (or `/model both <provider> <id>` to set both at once). Pick a provider below.
 
 > [!TIP]
-> ### 💡 Which model should I use?
+> ### Which model should I use?
 > - **Free (recommended):** **NVIDIA NIM** — one free API key works against *any* model it serves (`nvidia/nemotron-3-ultra-550b-a55b`, `meta/llama-3.3-70b-instruct`, …; browse current IDs at [build.nvidia.com/models](https://build.nvidia.com/models), NVIDIA periodically retires old ones). Generous free credits, frontier-class reasoning, zero local GPU.
 > - **Paid:** Anthropic **Claude 3.5 Sonnet**, Google **Gemini 2.0 Flash / Pro**, or **OpenAI GPT-4o**.
 > - **Local (Ollama):** 32B+ models (`qwen2.5:32b`, `deepseek-r1:32b`) — small local models under 14B struggle with multi-stage IDOR chaining and strict JSON tool-calling.
@@ -280,80 +286,24 @@ No prior security tooling knowledge needed — you talk to it in plain English.
 3. **Watch it work** — long scans appear as live cards on the right. Press **`Ctrl+P`** any time to browse every command, **`Ctrl+F`** to see findings so far.
 4. **Review what it found** — run `/report` for a self-contained HTML report. **Always read a finding before you trust or submit it.**
 
-> **Working a real program with many in-scope domains?** Group them once: `/program create acme example.com,api.example.com`, then `/program select acme` to enter it and `/list` to see its hosts. Everything you do from then on is saved under that program. Not sure what a command does? **`Ctrl+P`** fuzzy-searches them all.
+> **Working a real program with many in-scope domains?** Group them once: `/program create acme example.com,api.example.com`, then `/program select acme` to enter it and `/list` to see its hosts. Everything you do from then on is saved under that program.
+
+For the full command reference, run `/help` inside the console (or `beast --help`). Not sure what a command does? Press **`Ctrl+P`** to fuzzy-search them all.
 
 ---
 
-## Commands
+## Capabilities
 
-All actions can be triggered via slash commands or natural language:
+Bounty Hunter coordinates **86 scope-gated tools** and **30 methodology skills**, both loaded on demand by the orchestrator — you rarely call anything by name.
 
-### Core Slash Commands
+- **Recon** — subdomain and DNS enumeration, port and TLS scanning, passive URL harvesting (Wayback, OTX, urlscan, VirusTotal), cloud-asset discovery, WAF fingerprinting.
+- **Crawling** — SPA spider, katana, content and vhost fuzzing, JavaScript endpoint and secret mining.
+- **Browser** — a persistent headless Playwright browser that runs real JS (how DOM and stored XSS are *proven*, not guessed), auth-flow capture/replay, and screenshots.
+- **Exploitation** — SQLi, XSS, SSRF, SSTI, CORS, IDOR, JWT forgery, GraphQL introspection, mass-assignment, host-header injection, 403-bypass, and race conditions — each confirmed by a live `verify_finding` check.
+- **Takeover & exposure** — dangling-CNAME subdomain takeovers, leaked API keys and bearer tokens, PII and internal-endpoint disclosure in client-side code and API responses.
+- **Reporting** — evidence-backed finding records with pre-submission re-verification and self-contained HTML/Markdown export.
 
-| Command | Aliases | Description | Usage |
-| :--- | :--- | :--- | :--- |
-| `/recon` | `/surface`, `/spider` | Run scoped reconnaissance pipeline against target | `/recon <target> [--json]` |
-| `/hunt` | `/auto` | Autonomous, scope-aware multi-stage hunt and triage | `/hunt [target] [--json]` |
-| `/scan` | `/strike` | Execute a specific discovery or audit module | `/scan <module> [target] [key=val...]` |
-| `/howl` | `/correlate`, `/graph` | Correlate discoveries or generate visual attack graph | `/howl [--graph] [target]` |
-| `/scope` | `/rules` | View, clear, or configure program scope rules | `/scope [show \| clear \| <rules_text>]` |
-| `/program` | `/programs`, `/engagement` | Group an engagement's in-scope domains under one shared scope; select/switch between them; mark private | `/program [select \| switch <name> [host] \| list [all] \| create <name> [domains] \| add <domain...> \| scope <text> \| private \| public \| rename <old> <new>]` |
-| `/list` | `/ls`, `/hosts` | Metasploit-style view of the **current** program — its worked targets + in-scope hosts you can jump to | `/list` |
-| `/output` | `/tail`, `/show-output` | Show the full captured output of the last long-running tool call | `/output [stderr] [N]` |
-| `/skills` | `/skill` | Search or list loaded methodology skills & checklists | `/skills [query] [--json]` |
-| `/model` | `/ai` | Inspect/switch active model for orchestrator/synthesizer | `/model [orchestrator\|synthesizer] <model-id>` |
-| `/headers` | `/head` | Manage custom HTTP request & BugBounty identity headers | `/headers [Header: Value \| --clear]` |
-| `/setup` | `/health`, `/doctor` | Check AI connectivity, tool dependencies & auto-install | `/setup [tools [auto-install on\|off]]` |
-| `/report` | `/loot` | Generate structured bug bounty reconnaissance report | `/report [--format html\|json]` |
-| `/ask` | `/chat` | Query co-pilot with session context and tool access | `/ask <question>` |
-| `/help` | `/?` | Show all available slash commands and usage | `/help` |
-
----
-
-## The Recon & Triage Arsenal
-
-Bounty Hunter coordinates **86 scope-gated tools** into one execution pipeline. The orchestrator picks the right one for the job — you rarely call any by name. In brief, they cover:
-
-- **Recon** — subdomain/DNS enumeration, port & TLS scanning, passive URL harvesting (Wayback/OTX/urlscan/VirusTotal), cloud-asset discovery, WAF fingerprinting.
-- **Crawling & content discovery** — SPA spider, katana, content/vhost fuzzing, JS endpoint & secret mining.
-- **Browser & visual** — a persistent headless Playwright browser that runs real JS (how DOM/stored XSS is *proven*, not guessed), auth-flow capture/replay, gowitness screenshots.
-- **Exploitation & validation** — SQLi, XSS/SSRF/SSTI/CORS/IDOR probes with a live `verify_finding` check, JWT forging, GraphQL introspection, mass-assignment, host-header poisoning, 403-bypass, race conditions.
-- **Session & workspace** — identity capture/swap, scope & program management, an out-of-band `listener`, `parallel`/`background_task` execution, `delegate` sub-agents, hypotheses & campaign plans.
-- **Reporting** — finding recording with pre-submission re-verification and self-contained HTML export.
-
-How they work: each runs behind the unconditional scope gate and rate limiter, writes evidence to the per-target artifact ledger, and feeds its result back to the orchestrator for the next decision. For the exact, live list and what any one does, just ask the agent (*"what tools do you have for X?"*) or run `self_audit` — that always reflects the real registry instead of a snapshot that drifts.
-
----
-
-## What It Finds
-
-### 1. Attack Surface Discovery
-- **Subdomains**: Passive OSINT (`subfinder`) -> Permutations (`alterx`) -> MassDNS brute-forcing (`shuffledns`) -> Candidate resolving (`dnsx`).
-- **Infrastructure**: TLS/SAN extraction (`tlsx`), Virtual host fuzzing (`vhost_fuzz`), and open port mapping (`naabu`).
-- **Web & SPA Attack Surface**: Deep SPA DOM rendering, background XHR/Fetch request interception, dynamic route discovery, OpenAPI/Swagger specifications, and GraphQL endpoints.
-- **Visual Mapping**: Automated browser screenshots via `gowitness` indexed directly into the target workspace.
-
-### 2. Vulnerability & Exposure Indicators
-- **Broken Access Control & IDOR**: Direct object reference leaks in client-side state (`window.__INIT_PROFILE__`), authorization bypass via parameter swapping, and privilege escalation.
-- **Authentication & Delegation Flaws**: Leaked auth tokens, impersonation handler bypasses, JWT algorithm confusion, and session fixation.
-- **Dangling CNAME Takeovers**: Detection of orphaned DNS pointers to unclaimed S3 buckets, GitHub Pages, Azure services, and Heroku apps.
-- **Sensitive Data & Secrets**: API keys, bearer tokens, PII leaks, internal endpoints, and CTF flag formats in client-side code and API responses.
-
----
-
-## Hunting Methodology Skills
-
-Bounty Hunter includes **30 specialized methodology skills**, loaded dynamically into the agent's reasoning context only when a turn actually needs one — not injected all at once.
-
-| Category | Skills |
-| :--- | :--- |
-| **Access Control & Auth** | `access-control` `auth-bypass` `authentication` `idor` `credential-attack` `403-bypass` |
-| **Web Vulnerability Classes** | `web2-vuln-classes` `xss` `ssrf` `ssti` `insecure-deserialization` `prototype-pollution-mass-assignment` `server-side-parameter-pollution` `cors-misconfig` `race-condition` |
-| **Recon & Methodology** | `web2-recon` `bb-methodology` `bug-bounty` `exposed-source-recon` `argus` `security-arsenal` `graphql-audit` |
-| **Specialized Targets** | `web3-audit` `meme-coin-audit` `mobile-pentest` `client-reverse` `cicd-security` `llm-prompt-injection` |
-| **Validation & Reporting** | `triage-validation` `report-writing` |
-
-You don't need to invoke these yourself — the agent pulls in whichever one a turn actually needs on its own.
+Everything runs behind the unconditional scope gate and rate limiter and writes to a per-target artifact ledger. For the exact live tool and skill list, run `/help` or just ask the agent (*"what tools do you have for X?"*).
 
 ---
 
@@ -384,6 +334,22 @@ The real gap between "runs tools well" and "hunts like a pro" is architecture, n
 2. **Burp/Caido ↔ identity bridge** — push/pull live sessions through the already-integrated MCP tools.
 3. **Passive → active fusion** — the passive tools exist; wiring their output *automatically* into the probing/fuzzing loop (dedup, JS sourcemap → secrets → endpoints → fuzzer) is the remaining glue.
 4. **A playbook engine** — conditional branching workflows, not just sequential tool chaining.
+
+---
+
+## Contributing
+
+Contributions are welcome, and one kind is especially valuable: **experienced bug-bounty hunters and penetration testers.** If you've worked real programs, found and been paid for real bugs, and know what actually lands in the wild, that field knowledge is exactly what makes Beast sharper. The methodology, the exploitation chains, the "this is how you'd really pivot it" instincts — that's hard to get from documentation, and it's the highest-impact thing you can bring. You can improve almost anything the agent uses: the methodology skills, the orchestrator's reasoning, recon depth, the exploitation tooling, or reporting.
+
+Good first contributions:
+- **Methodology skills** — encode a technique you've used on a real program under `hellhound/skills/`.
+- **Sharper tools** — add a recon or exploitation tool, or improve an existing one's accuracy.
+- **Findings quality** — help close false-positive and over-claim gaps; a report is only worth anything if it survives triage.
+- **Failure reports** — tell us where it broke on a real target or a lab, with the transcript, so it can be fixed.
+
+Start with [CONTRIBUTING.md](CONTRIBUTING.md), and point any AI coding assistant at [AGENTS.md](AGENTS.md).
+
+**One hard line, no exceptions:** nothing that weakens or bypasses the safety posture gets merged — the unconditional scope gate, the "authorized targets only" enforcement, and the evidence/verification gates are non-negotiable, no matter how reasonable a change around them sounds. Beast exists for authorized security testing, bug bounty programs, and CTF/lab training; contributions must keep it that way.
 
 ---
 

@@ -22,7 +22,7 @@
   <a href="#-features">Features</a> ·
   <a href="#-data">Data</a> ·
   <a href="#-citation">Citation</a> ·
-  <a href="#-license">License</a>
+  <a href="#license">License</a>
 </p>
 
 </div>
@@ -78,10 +78,10 @@ the sliders, and wire models from blocks and watch them learn.
 
 Release 2.0 holds **3,400 cells** (Li-ion, Na-ion, Zn-ion) with 10.0 M cycles and 17.0 G samples, and **1,513
 devices** with 336 M samples, at each source's own time resolution. Every record was converted and checked one by
-one: one column naming rule, one cycle definition, one SOH definition, nothing deleted, and the source's licence kept
+one: one column naming rule, one cycle definition, one SOH definition, nothing deleted, and the source's license kept
 with the data.
 
-- [DATASETS.md](DATASETS.md): every dataset with its source, licence and the article to cite
+- [DATASETS.md](DATASETS.md): every dataset with its source, license and the article to cite
 - [DATA_FORMAT.md](DATA_FORMAT.md): the schema, column by column
 - [client/](client): the Python package for approved downloads
 
@@ -102,10 +102,12 @@ If you use Batang, please cite it **and the original datasets you use** ([DATASE
 }
 ```
 
+<a id="license"></a>
+
 ## ⚖️ License
 
-- **Data** keeps the licence of its original source, listed per dataset in [DATASETS.md](DATASETS.md) with whether
-  commercial use is allowed. Batang does not relicense any dataset. Where a source states no licence, use it for
+- **Data** keeps the license of its original source, listed per dataset in [DATASETS.md](DATASETS.md) with whether
+  commercial use is allowed. Batang does not relicense any dataset. Where a source states no license, use it for
   research with citation and ask its authors before anything more.
 - **This documentation**: [CC BY 4.0](LICENSE). **The Python package** in [`client/`](client): MIT.
 

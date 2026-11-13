@@ -1,194 +1,97 @@
 <div align="center">
 
-<img src="./README/source/APIX-bar.jpeg"  width="300" height="200" style="border-radius: 12px; display: block; margin: 0 auto;">
+<img src="https://raw.githubusercontent.com/JJJJSTIYYYY/alira/develop/docs/image/alira.png" alt="Alira" height="300">
 
-# APIX — 开源 AI Agent 协作平台
+[![PyPI](https://img.shields.io/pypi/v/alira-harness.svg)](https://pypi.org/project/alira-harness/)
+![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat&logo=python)
+[![License](https://img.shields.io/badge/License-GPL%203.0-blue?style=flat)](https://github.com/JJJJSTIYYYY/alira/blob/develop/LICENSE)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Us-5865F2?style=flat&logo=discord&logoColor=white)](https://discord.gg/tUCQthwK5)
+[![QQ群](https://custom-icon-badges.demolab.com/badge/QQ群-639459172-00BFFF?style=flat&logo=tencent-qq)](https://qun.qq.com/universal-share/share?ac=1&authKey=ommoQrT2zhzHU%2FUxv8pfGCJbNifW%2BJyUAFBkNdzkHTPUxdxCnlgxm5aNgGslTmdE&busi_data=eyJncm91cENvZGUiOiI2Mzk0NTkxNzIiLCJ0b2tlbiI6Im9ZZkdNUWZnSVV1Y2REeUhKNnlTbWEwc05Bb093djRzUXdXNE55dklBVnlBQk9XbGNpS0ZXSDlzK3orSW1sQ3YiLCJ1aW4iOiIzMTI5NDI0NTcyIn0%3D&data=OGTchcr80RAQg8Z8_GZTdvBb7kZDeM9B3hHcNqLaAX2ZK_KYq260C4CubblEBT1bK5fP6zgtnCk2D8fIoph1ZQ&svctype=4&tempid=h5_group_info)
 
-中文文档 | [English](./README_en.md)
-
-![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat&logo=python)
-![Electron](https://img.shields.io/badge/Electron-37-47848F?style=flat&logo=electron)
-![Vue](https://img.shields.io/badge/Vue-3.5-4FC08D?style=flat&logo=vue.js)
-![License](https://img.shields.io/badge/License-GPL%203.0-blue?style=flat)
-[![Discord](https://img.shields.io/badge/Discord-Join%20Us-5865F2?style=flat&logo=discord&logoColor=white)](https://discord.gg/bsTqEzJmJ)
-![QQ群](https://custom-icon-badges.demolab.com/badge/QQ群-639459172-00BFFF?style=flat&logo=tencent-qq)
-
-**不只是聊天。构建、协作、执行——让 AI Agent 真正为你工作。**
+[快速开始](https://github.com/JJJJSTIYYYY/alira/blob/develop/README.md#快速开始) · [模块文档](https://github.com/JJJJSTIYYYY/alira/blob/develop/docs/README.md) · [问题反馈](https://github.com/JJJJSTIYYYY/alira/issues)
 
 </div>
 
----
+Alira 为构建 AI Agent 应用提供模型调用、上下文管理、工具接入与消息存储能力。
+通过模块组合所需功能，让同一套运行时适应不同的应用场景。
 
-## APIX 3.0 正在开发中！
+项目处于早期开发阶段，接口与功能仍在演进。
 
-- 将重构底层 Agent Loop；
-- 更清晰的项目目录结构；
-- 更自由的系统拓展点；
-- 引入内存型数据库，并设置可关闭缓存；
-- 更便捷的安装部署方式；
-- 更小的项目依赖；
-- 将支持一键pip安装；
+## 主要能力
 
-[前往 >APIX 3.0](https://github.com/JJJJSTIYYYY/Apix/tree/NEXT_3.0)
+- **模块化运行**：按需选择启动模块，自动加载前置模块，依赖在部署时显式安装。
+- **Agent 编排**：基于 [Apixis](https://github.com/JJJJSTIYYYY/apixis) 的事件与图执行能力，组织 Agent 的执行流程。
+- **工具接入**：支持函数工具与 MCP，扩展 Agent 可调用的能力。
+- **消息与存储**：提供上下文管理、消息持久化与可选的 SQLite 向量检索。
 
----
+## 快速开始
 
-## 🎯 这是什么？
-
-APIX 是一个**全栈的 AI Agent 协作平台**。它是一套完整的 Agent 运行时——支持多智能体并行协作、安全代码执行、知识库检索。
-
-它可以帮你完成包括但不限于代码编写、PPT生成、汇报整理以及各种自动化操作。
-
----
-
-## ✨ 核心特性
-
-<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
-  <tr>
-    <td align="center" width="33%">🤖<br><b>多智能体协作</b><br>Leader 调度多个子代理并行工作，复杂任务自动分解，实现Agent文件访问冲突检测</td>
-    <td align="center" width="33%">🔧<br><b>完整工具生态</b><br>代码执行、文件管理、网络搜索、知识检索开箱即用</td>
-    <td align="center" width="33%">🧠<br><b>完善的记忆系统</b><br>以工作区划分记忆容器，人为可控的多级自动上下文压缩机制</td>
-  </tr>
-  <tr>
-    <td align="center">🐳<br><b>代码安全沙箱</b><br>Docker 隔离执行，不用担心代码命令破坏系统</td>
-    <td align="center">🔌<br><b>多模型供应商兼容</b><br>OpenAI / DeepSeek / MoonShot / Ollama / 自定义供应商任意切换</td>
-    <td align="center">🎨<br><b>支持自定义任务流</b><br>卡片化任务流编辑，定制属于您的自动化任务流</td>
-  </tr>
-  <tr>
-    <td align="center">👤<br><b>角色卡支持</b><br>自定义您的助手身份，定制一个独属于您的个人助理</td>
-    <td align="center">⚒️<br><b>多协议MCP兼容</b><br>支持多种协议的MCP服务，并且可以自定义您的会话生命周期</td>
-    <td align="center">💬<br><b>消息节点化管理</b><br>您可以在任意位置编辑或者删除您已发送的信息，并自动生成新的分支</td>
-  </tr>
-</table>
-
----
-
-## 🖥️ 界面速览
-
-<table border="0" cellpadding="6" cellspacing="6" style="border-collapse: collapse; width: 100%;">
-  <tr>
-    <td align="center" width="50%"><b>聊天界面展示</b><br><img src="./README/source/main-page.png"  style="border-radius: 6px;"></td>
-    <td align="center" width="50%"><b>编辑器页面演示</b><br><img src="./README/source/editor-page.png"  style="border-radius: 6px;"></td>
-  </tr>
-  <tr>
-    <td align="center"><b>资源管理页展示</b><br><img src="./README/source/src-page.png"  style="border-radius: 6px;"></td>
-    <td align="center"><b>设置页展示</b><br><img src="./README/source/setting-page.png"  style="border-radius: 6px;"></td>
-  </tr>
-</table>
-
----
-
-## 🚀 快速开始
-
-### 一键安装攻略
-
-对于windows用户，我们使用powershell:
+需要 Python 3.12+ 和 [uv](https://docs.astral.sh/uv/)。从源码启动：
 
 ```bash
-Set-ExecutionPolicy Bypass -Scope Process -Force
-.\setup.ps1
+git clone https://github.com/JJJJSTIYYYY/alira.git
+cd alira
+uv sync --locked
+uv run alira add web
+uv run alira --modules web
 ```
 
-对于macos和linux，我们使用命令行终端:
+默认可访问 <http://localhost:2712/health> 检查服务状态。
+启动仅校验已部署依赖，不联网安装。
 
-```bash
-chmod +x setup.sh
-./setup.sh
+PyPI 发行包名为 `alira-harness`，Python 导入名和命令均为 `alira`。
+
+## 常用命令
+
+| 命令 | 用途 |
+| --- | --- |
+| `uv run alira` | 只启动内核 |
+| `uv run alira --help` | 查看命令与启动参数 |
+| `uv run alira list` | 只列出模块目录，不导入模块或读取依赖记录 |
+| `uv run alira sync` | 全量重建依赖记录，同步环境并清理不再需要的包 |
+| `uv run alira sync --no-install` | 只解析依赖并更新记录 |
+| `uv run alira add web` | 管理已有 web 模块及前置模块的 Python 依赖 |
+| `uv run alira add web --no-install` | 只更新指定模块的依赖记录 |
+| `uv run alira remove web` | 移除依赖管理记录并清理独占依赖，保留源码 |
+| `uv run alira install ./example.zip` | 安装模块源码并自动执行 add |
+| `uv run alira install https://github.com/owner/repo --ref v1.0.0` | 从 GitHub 安装模块及依赖 |
+| `uv run alira install -r package.yml` | 批量安装清单中的模块，再一次性执行全量 sync |
+| `uv run alira uninstall example` | 清理依赖并将模块源码送入系统回收站 |
+| `uv run alira --modules web` | 启动 web，自动加载前置模块 |
+| `uv run alira --modules web --install-missing` | 显式先部署选定模块依赖，再启动 web |
+
+批量安装清单示例（本地 ZIP 路径相对于 `package.yml`）：
+
+```yaml
+modules:
+  - source: ./packages/example.zip
+  - source: https://github.com/owner/another-module
+    ref: v1.0.0
 ```
 
-> 一键安装过程中请确保网络保持畅通
+命令会先检查全部源码和前置模块，再安装源码、统一同步依赖。解析失败会撤回新增源码；安装中断后运行 `uv run alira sync` 补齐。
+源码安装被强制中断时，重跑同一清单即可继续，内容不同的已有模块会报错并保留。
 
-### 方式二：Docker Compose 一键启动（推荐）
+## 文档
 
-如果您希望所有后端服务都运行在 Docker 中，可在执行完 `setup.ps1` / `setup.sh` 后运行：
+[模块开发与依赖管理](https://github.com/JJJJSTIYYYY/alira/blob/develop/docs/README.md)：了解模块声明、依赖关系和生命周期。
 
-**Windows:**
+## 社区
 
-```powershell
-.\start-docker.ps1
+[QQ群](https://qun.qq.com/universal-share/share?ac=1&authKey=ommoQrT2zhzHU%2FUxv8pfGCJbNifW%2BJyUAFBkNdzkHTPUxdxCnlgxm5aNgGslTmdE&busi_data=eyJncm91cENvZGUiOiI2Mzk0NTkxNzIiLCJ0b2tlbiI6Im9ZZkdNUWZnSVV1Y2REeUhKNnlTbWEwc05Bb093djRzUXdXNE55dklBVnlBQk9XbGNpS0ZXSDlzK3orSW1sQ3YiLCJ1aW4iOiIzMTI5NDI0NTcyIn0%3D&data=OGTchcr80RAQg8Z8_GZTdvBb7kZDeM9B3hHcNqLaAX2ZK_KYq260C4CubblEBT1bK5fP6zgtnCk2D8fIoph1ZQ&svctype=4&tempid=h5_group_info) · [Discord](https://discord.gg/tUCQthwK5)
+
+欢迎通过 [Issues](https://github.com/JJJJSTIYYYY/alira/issues) 反馈问题、讨论想法，或提交 Pull Request。
+
+## 许可证
+
+[GNU GPL v3.0](https://github.com/JJJJSTIYYYY/alira/blob/develop/LICENSE)
+
+```Alira
+
 ```
 
-**macOS / Linux:**
+<div align="center">
 
-```bash
-chmod +x start-docker.sh
-./start-docker.sh
-```
+<img src="https://raw.githubusercontent.com/JJJJSTIYYYY/alira/develop/docs/image/alira-icon.png" alt="Alira" height="150">
 
-启动后，Electron 客户端仍在宿主机运行，服务端口保持不变：
-
-- AGENT: `http://127.0.0.1:5091`
-- TASK: `http://127.0.0.1:5090`
-- MEMORY: `http://127.0.0.1:5093`
-- FILE: `http://127.0.0.1:5094`
-
-如需使用 RAG 向量库 Milvus，请加上 `--profile milvus`：
-
-```bash
-docker compose --profile milvus up -d --build
-```
-
-### 方式三：本地启动后端服务
-
-执行完 `setup.ps1` / `setup.sh` 后，如果不需要 Docker，可以直接启动四个本地后端服务：
-
-**Windows:**
-
-```powershell
-.\start-local.ps1
-```
-
-**macOS / Linux:**
-
-```bash
-chmod +x start-local.sh
-./start-local.sh
-```
-
-### 如果您想自定义安装
-
-可以参考我们的部署文档:
-
-* [中文部署文档](./README/README_zh.md)
-* [English Docs](./README/README_en.md)
-
----
-
-## 🗺️ 路线图
-
-- [x] 多智能体运行时
-- [x] MCP 集成支持
-- [x] 可视化线性工作流编辑器
-- [x] Docker 安全沙箱
-- [x] 事件系统
-- [x] 定时任务系统
-- [ ] 插件系统与钩子
-- [ ] 多平台接入
-- [ ] 插件市场
-- [ ] 单元测试补齐
-- [ ] 图任务流编辑
-- [ ] 工作区时间旅行
-
-## 🗺️ 版本日志 (Version 2.2.2)
-
-- 线形任务流编辑相关代码已损坏，将在后续版本中修复 (低优先级)
-- 新增定时任务系统（支持设置时间与周期或设置Linux Cron表达式）
-- 修复部分情况下页面无法收到后台推送的事件的问题
-- !!! 下一代APIX正在筹备中 (底层重构)
-
----
-
-## 📄 许可证
-
-本项目基于 **GNU GPL v3.0** 协议开源。
-
----
-
-__🫵 加入社区__
-
-[QQ群](https://qun.qq.com/universal-share/share?ac=1&authKey=ommoQrT2zhzHU%2FUxv8pfGCJbNifW%2BJyUAFBkNdzkHTPUxdxCnlgxm5aNgGslTmdE&busi_data=eyJncm91cENvZGUiOiI2Mzk0NTkxNzIiLCJ0b2tlbiI6Im9ZZkdNUWZnSVV1Y2REeUhKNnlTbWEwc05Bb093djRzUXdXNE55dklBVnlBQk9XbGNpS0ZXSDlzK3orSW1sQ3YiLCJ1aW4iOiIzMTI5NDI0NTcyIn0%3D&data=OGTchcr80RAQg8Z8_GZTdvBb7kZDeM9B3hHcNqLaAX2ZK_KYq260C4CubblEBT1bK5fP6zgtnCk2D8fIoph1ZQ&svctype=4&tempid=h5_group_info) | [Discord](https://discord.gg/bsTqEzJmJ)
-
-
-> 🌟 如果您喜欢我们的项目，欢迎您的Star!
-
-> 已通过ApiFox进行模块测试
+</div>

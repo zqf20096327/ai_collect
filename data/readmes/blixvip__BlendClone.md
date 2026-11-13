@@ -18,6 +18,8 @@ compare the render side by side, refine it in plain English, and export the `.bl
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
 ![Status](https://img.shields.io/badge/status-experimental-orange)
 
+🛠 **Built in the open** — 4 contributors · 12 good first issues · we review PRs within 24h → [start here](https://github.com/blixvip/BlendClone/issues/14)
+
 </div>
 
 ---
@@ -147,7 +149,7 @@ py -3.12 -m venv .venv
 ## Verify
 
 ```powershell
-.venv\Scripts\python.exe -m pytest -q                 # 165 contract / API / pipeline tests
+.venv\Scripts\python.exe -m pytest -q                 # 168 contract / API / pipeline tests
 .venv\Scripts\python.exe scripts\renderer_check.py     # renders the synthetic ball drop in Blender
 .venv\Scripts\python.exe scripts\browser_check.py      # UI at 5 widths (app must be running)
 .venv\Scripts\python.exe scripts\fidelity_selftest.py  # fidelity scorer sanity check
@@ -156,7 +158,7 @@ py -3.12 -m venv .venv
 
 `scripts\showcase.py` re-renders the gallery scenes and rebuilds the README media (needs Blender + FFmpeg).
 
-The 9 tests that shell out to FFmpeg (all of `tests\test_reference.py` plus two in `tests\test_complex_scenes.py`) are skipped automatically when `ffmpeg`/`ffprobe` are not on `PATH` (reason: `needs FFmpeg + ffprobe on PATH`). CI installs FFmpeg, so all 165 tests run there.
+The 9 tests that shell out to FFmpeg (all of `tests\test_reference.py` plus two in `tests\test_complex_scenes.py`) are skipped automatically when `ffmpeg`/`ffprobe` are not on `PATH` (reason: `needs FFmpeg + ffprobe on PATH`). CI installs FFmpeg, so all 168 tests run there.
 
 `scripts\export_check.py PROJECT_ID` rebuilds a finished project's ZIP in a fresh folder, reopens the `.blend`, and recaptures the comparison.
 
@@ -176,7 +178,7 @@ The 9 tests that shell out to FFmpeg (all of `tests\test_reference.py` plus two 
 | `web/` | Single-page workspace: import, library, compare, revise |
 | `examples/` | Gallery scenes (turntable, cascade, neon, island) and the ball-drop fixture |
 | `scripts/` | Renderer / browser / export / fidelity / pilot tooling |
-| `tests/` | 165 pytest tests |
+| `tests/` | 168 pytest tests |
 | `docs/` | Architecture, plans, benchmarks, audits |
 
 ## Safety model
@@ -203,7 +205,20 @@ See [docs/ROADMAP.md](docs/ROADMAP.md). The next major direction is stylized cha
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Licensed under [MIT](LICENSE).
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/blixvip/BlendClone?quickstart=1)
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) — its "Your first PR in 10 minutes" section gets you from zero to a pull request. The Codespace comes with Python 3.12, FFmpeg and all dependencies installed, so `python -m pytest` runs straight away (Blender is not included; the tests don't need it). Licensed under [MIT](LICENSE).
+
+<!-- discord-incentive:start -->
+### 💬 Why join the Discord first
+
+**[discord.gg/grokbot](https://discord.gg/grokbot)** is the one server for every blixvip repo, and it gets you more than a chat window:
+
+- 🟢 **Claim an issue and it is yours.** Say which one in `#contributors` and it is assigned to you, so two people never build the same thing twice.
+- 🏷️ **A contributor role** on the server the moment your first pull request is merged.
+- 🗺️ **A say in what gets built.** The roadmap is argued out there before it turns into issues.
+- 🙋 **A human to ask.** Stuck on setup, or unsure whether an idea is even wanted? Faster than waiting on an issue thread.
+<!-- discord-incentive:end -->
 
 ## Contributors
 
@@ -217,6 +232,6 @@ Thank you to everyone who has contributed to BlendClone! New here? Read [CONTRIB
 
 ## Community and contributing
 
-[![Join the contributor Discord](https://img.shields.io/badge/Discord-Join%20the%20open%20source%20community-5865F2?logo=discord&logoColor=white)](https://discord.gg/wJfHQXfEMM)
+[![Join the contributor Discord](https://img.shields.io/badge/Discord-Join%20the%20open%20source%20community-5865F2?logo=discord&logoColor=white)](https://discord.gg/grokbot)
 
-**Want to send a PR? Join the [blix open source Discord](https://discord.gg/wJfHQXfEMM) first.** It's the one server for everyone contributing to any blixvip repo: questions, ideas, PR discussion, help, and release news.
+**Want to send a PR? Join the [blix open source Discord](https://discord.gg/grokbot) first.** It's the one server for everyone contributing to any blixvip repo: questions, ideas, PR discussion, help, and release news.

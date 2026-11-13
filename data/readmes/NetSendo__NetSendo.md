@@ -6,7 +6,7 @@
 
 **Professional Email Marketing & Automation Platform**
 
-[![Version](https://img.shields.io/badge/version-2.11.3-blue.svg)](https://github.com/NetSendo/NetSendo/releases)
+[![Version](https://img.shields.io/badge/version-2.11.4-blue.svg)](https://github.com/NetSendo/NetSendo/releases)
 [![PHP](https://img.shields.io/badge/PHP-8.5-purple.svg)](https://php.net)
 [![Laravel](https://img.shields.io/badge/Laravel-13-red.svg)](https://laravel.com)
 [![Vue.js](https://img.shields.io/badge/Vue.js-3.5-green.svg)](https://vuejs.org)
@@ -104,7 +104,7 @@ curl -fsSL https://raw.githubusercontent.com/NetSendo/NetSendo/main/install.sh |
 The script creates a `netsendo/` folder with the compose file, its config files and a `.env` with a new `APP_KEY` and a random database password, then starts the stack on http://localhost:5029 (`HTTP_PORT=8080` in front of `bash` picks another port). It also gives Reverb its own random `REVERB_APP_KEY` and `REVERB_APP_SECRET`. To install a specific version:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/NetSendo/NetSendo/main/install.sh | VERSION=2.11.3 bash
+curl -fsSL https://raw.githubusercontent.com/NetSendo/NetSendo/main/install.sh | VERSION=2.11.4 bash
 ```
 
 **Option 2: Manual Production Deployment**
@@ -123,7 +123,7 @@ sed -i.bak "s|^APP_KEY=.*|APP_KEY=base64:$(openssl rand -base64 32)|" .env && rm
 docker compose up -d
 
 # Or specify a version
-NETSENDO_VERSION=2.11.3 docker compose up -d
+NETSENDO_VERSION=2.11.4 docker compose up -d
 ```
 
 | Service      | Address               | Description                                  |
@@ -425,7 +425,7 @@ Check for available updates:
 2. **Update the configuration files.** `docker-compose.yml` mounts your own copies of `docker/php/docker-entrypoint.sh`, `docker/php/uploads.ini` and `docker/nginx/default.conf` over the ones in the image, so `docker compose pull` alone does not bring their changes. In a git checkout run `git pull`. In a folder made by `install.sh`, or with downloaded copies:
 
    ```bash
-   V=v2.11.3   # the release you update to, or main for the newest
+   V=v2.11.4   # the release you update to, or main for the newest
    for f in docker-compose.yml docker/php/docker-entrypoint.sh docker/php/uploads.ini docker/nginx/default.conf; do
      cp "$f" "$f.bak" 2>/dev/null
      curl -fsSL "https://raw.githubusercontent.com/NetSendo/NetSendo/$V/$f" -o "$f"
@@ -452,7 +452,7 @@ No frontend rebuild or cache clearing is needed: the image brings the built asse
 **Update to specific version:**
 
 ```bash
-NETSENDO_VERSION=2.11.3 docker compose up -d
+NETSENDO_VERSION=2.11.4 docker compose up -d
 ```
 
 Use the `docker-compose.yml` of the version you pin: versions before 2.11.0 have no `mta-` image, so the compose file of 2.11.0 or newer cannot start them.
@@ -460,6 +460,24 @@ Use the `docker-compose.yml` of the version you pin: versions before 2.11.0 have
 ## 📖 For detailed instructions, see [DOCKER_INSTALL.md](DOCKER_INSTALL.md)
 
 ## 🔧 Troubleshooting
+
+### AI connector: AI apps cannot sign in (403 on `/.well-known/`)
+
+`docker compose pull` does not update `docker/nginx/default.conf`: the installation keeps its own copy. Some copies deny every path that starts with a dot, which also blocks the connector's discovery documents. Check it on the server:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:${HTTP_PORT:-5029}/.well-known/oauth-protected-resource/mcp
+```
+
+`403` means the rule is there. Take the current file and reload nginx:
+
+```bash
+cp docker/nginx/default.conf docker/nginx/default.conf.bak
+curl -fsSL https://raw.githubusercontent.com/NetSendo/NetSendo/main/docker/nginx/default.conf -o docker/nginx/default.conf
+docker compose exec webserver nginx -t && docker compose exec webserver nginx -s reload
+```
+
+The current file also sends scripts and styles compressed. Details: [docs/MCP_CONNECTOR.md](docs/MCP_CONNECTOR.md#reverse-proxy).
 
 ### Container Won't Start
 

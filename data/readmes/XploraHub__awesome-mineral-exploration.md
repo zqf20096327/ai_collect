@@ -77,6 +77,8 @@ How the methods work: [geological modelling](https://xplorahub.com/methods/geolo
 - [fractoolbox](https://github.com/ICWallis/fractoolbox) - <img src="assets/icons/python.svg" alt="Python" height="16"> Structural geology and borehole image analysis of fractures. Apache-2.0.
 - [structuralGeology](https://github.com/nfcd/structuralGeology) - <img src="assets/icons/python.svg" alt="Python" height="16"> Jupyter notebooks for structural geology, from a university course. MIT.
 - [OpenGeode-Geosciences](https://github.com/Geode-solutions/OpenGeode-Geosciences) - <img src="assets/icons/cplusplus.svg" alt="C++" height="16"> <img src="assets/icons/python.svg" alt="Python" height="16"> Data structures for geological models and geological objects, built on the OpenGeode framework. MIT.
+- [OpenGeode-GeosciencesIO](https://github.com/Geode-solutions/OpenGeode-GeosciencesIO) - <img src="assets/icons/cplusplus.svg" alt="C++" height="16"> <img src="assets/icons/python.svg" alt="Python" height="16"> Reads and writes GOCAD (TS, PL, VS, VO, WL, ML, LSO), OMF, GeoTIFF, DEM, GRDECL, shapefiles and well files for OpenGeode models; its sister module [OpenGeode-Inspector](https://github.com/Geode-solutions/OpenGeode-Inspector) checks meshes and models for topology errors, intersections and degenerate elements. MIT.
+- [ferreus_rbf](https://github.com/graphic-goose/ferreus_rbf_rs) - <img src="assets/icons/rust.svg" alt="Rust" height="16"> <img src="assets/icons/python.svg" alt="Python" height="16"> Fast global radial basis function interpolation and isosurface extraction for millions of points in 1D, 2D and 3D, with Python bindings. MIT.
 
 ## Drillholes and logging
 
@@ -86,12 +88,14 @@ How the methods work: [diamond and RC drilling](https://xplorahub.com/methods/di
 - [lasio](https://github.com/kinverarity1/lasio) - <img src="assets/icons/python.svg" alt="Python" height="16"> Read and write Log ASCII Standard (LAS) files for downhole logs. MIT.
 - [omfvista](https://github.com/pyvista/omfvista) - <img src="assets/icons/python.svg" alt="Python" height="16"> Loads Open Mining Format (OMF) files into PyVista for 3D viewing. BSD-3-Clause.
 - [GeoSuite](https://github.com/ghoziankarami/geosuite) - <img src="assets/icons/javascript.svg" alt="JavaScript" height="16"> Browser and Windows app that validates and desurveys drillhole data, composites assays and builds a screening block model. GPL-3.0.
-- [Baselode](https://github.com/darkmine-oss/baselode) - <img src="assets/icons/python.svg" alt="Python" height="16"> <img src="assets/icons/javascript.svg" alt="JavaScript" height="16"> Python and JavaScript toolkit for loading, desurveying and viewing drillhole data in 1D, 2D and 3D. GPL-3.0.
+- [Baselode](https://github.com/darkmine-oss/baselode) - <img src="assets/icons/python.svg" alt="Python" height="16"> <img src="assets/icons/javascript.svg" alt="JavaScript" height="16"> Python and JavaScript toolkit for loading, desurveying and viewing drillhole data in 1D, 2D and 3D, with potential-field and radiometric processing. GPL-3.0.
 - [OpenGeoPlotter](https://github.com/bsomps/OpenGeoPlotter) - <img src="assets/icons/python.svg" alt="Python" height="16"> Desktop app for drillhole cross-sections, strip logs, 3D views and alpha-beta conversion. GPL-3.0.
 - [Geoscience for QGIS](https://github.com/rolandhill/geoscience) - <img src="assets/icons/python.svg" alt="Python" height="16"> QGIS plugin that desurveys drillholes and draws them in plan and section. GPL-3.0.
 - [corelab](https://github.com/kevinalexandr19/corelab) - <img src="assets/icons/python.svg" alt="Python" height="16"> 2D and 3D plots of drillhole data in Python. MIT.
 - [DrillHoles.jl](https://github.com/JuliaEarth/DrillHoles.jl) - <img src="assets/icons/julia.svg" alt="Julia" height="16"> Drillhole desurveying and compositing for the GeoStats.jl framework. MIT.
 - [CoreSpecViewer](https://github.com/Russjas/CoreSpecViewer) - <img src="assets/icons/python.svg" alt="Python" height="16"> Desktop app for processing and viewing hyperspectral drill core scans. GPL-3.0.
+- [Baselode Viewer](https://github.com/darkmine-oss/baselode-frontend) - <img src="assets/icons/javascript.svg" alt="JavaScript" height="16"> Desktop app for Windows, macOS and Linux that shows drillholes, samples and geophysics on a map, in 3D and as strip logs, built on Baselode. GPL-3.0.
+- [Darkmine Data Skills](https://github.com/darkmine-oss/darkmine-data-skills) - <img src="assets/icons/python.svg" alt="Python" height="16"> Skills for AI agents and the command line that work on Baselode drillhole and surface-sample data. GPL-3.0.
 
 ## Geostatistics and resource estimation
 
@@ -131,6 +135,7 @@ Background: [AI in mining](https://xplorahub.com/guides/ai-in-mining).
 - [GPlately](https://github.com/GPlates/gplately) - <img src="assets/icons/python.svg" alt="Python" height="16"> Reconstructs points, lines and rasters through deep time and queries plate kinematics, such as subduction rates, on top of pyGPlates. GPL-2.0.
 - [STAMP PNG](https://github.com/EarthByte/STAMP_PNG) - <img src="assets/icons/jupyter.svg" alt="Jupyter" height="16"> Spatio-temporal prospectivity modelling of porphyry systems in Papua New Guinea and the Solomon Islands, from EarthByte. Apache-2.0.
 - [Porphyry prospectivity, Americas](https://github.com/EarthByte/porphyry-prospectivity-americas) - <img src="assets/icons/jupyter.svg" alt="Jupyter" height="16"> Spatio-temporal copper prospectivity in the American Cordillera, using positive-unlabelled learning on plate-model data, from EarthByte. Apache-2.0.
+- [MPM Lachlan Porphyry](https://github.com/EarthByte/MPM_Lachlan_Porphyry) - <img src="assets/icons/jupyter.svg" alt="Jupyter" height="16"> Machine-learning prospectivity for Cu-Au porphyry mineralisation in the Lachlan Orogen, New South Wales, from EarthByte. MIT.
 
 ## Open data
 

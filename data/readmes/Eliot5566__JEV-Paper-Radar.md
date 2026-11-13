@@ -2,11 +2,15 @@
 
 # ◎ Paper Radar
 
-**Jev reads every new paper on arXiv each morning. You read the few that matter.**
+**Turn your research interests into a shorter paper list, with a reason for every pick.**
 
-Also runs on [Claude (Haiku)](#use-claude-instead-of-jev) — same daily page, self-reported probabilities, [first-look calibration](docs/claude-calibration.md).
+**[Try the examples in your browser](https://eliot5566.github.io/JEV-Paper-Radar/try/)** · **[繁體中文試用入口](https://eliot5566.github.io/JEV-Paper-Radar/try/?lang=zh)** — preview the output, prepare a prompt, or download an abstract template before installing anything. Examples are fictional and clearly labelled.
 
-Plain-English interests · calibrated probabilities · about 6 cents a day for *all* of arXiv · fork and go, no server
+**Use inside Claude:** [Download the upload ZIP](https://github.com/Eliot5566/JEV-Paper-Radar/releases/download/claude-skill-v0.1.0/paper-radar-claude.zip) · [Install guide / 安裝教學](docs/claude-install.md). Upload and enable the skill to try its offline demo or rank supplied abstracts in the current conversation, without pip or a separate API key. Normal Claude plan usage applies.
+
+For scheduled Claude API judging: **[API quickstart](docs/claude-quickstart.md)** · **[繁體中文教學](docs/claude-quickstart.zh-TW.md)** · [Ready-to-fork example](https://github.com/Eliot5566/paper-radar-claude-example). Scores are self-reported; see the [first-look limitations](docs/claude-calibration.md).
+
+Plain-English interests · per-interest scores · pages and RSS · Claude conversations or automated Jev/Claude API workflows
 
 [Quick start](#quick-start-5-minutes-no-server) · [Try the demo](#try-it-in-10-seconds) · [How it works](#how-it-works) · [Benchmark](#measured-against-real-reviewers-decisions) · [繁體中文](README.zh-TW.md)
 
@@ -103,7 +107,8 @@ benchmark numbers in this README are Jev-only**: the Cochrane screening
 result (96.9% recall, 78% work saved on 19,447 records) was measured with
 Jev and does not apply to Claude. The API is also billed separately from a
 Claude Pro/Max subscription, and costs more per paper than Jev; set
-`jev.price_per_mtok` to roughly 0.15 for a Haiku cost estimate, and lower
+`jev.price_per_mtok = 0.10` and `jev.output_price_per_mtok = 0.50`
+for the Haiku 5.5 ≤100K prompt tier checked on 2026-11-13, and lower
 `jev.requests_per_minute` if you are on a low API tier.
 
 There is now a first-look calibration for the Claude backend — see
@@ -119,7 +124,18 @@ the Jev thresholds are defaults from the repo's first commit and the only
 ground-truth measurement in the repo is the screening benchmark — so this is
 the first labelled measurement for either backend on the daily radar.
 
-After that it runs on weekdays at 02:00 UTC, right after arXiv's daily announcement. Your radar is at `https://<you>.github.io/<repo>/` and the feed at `/feed.xml`.
+After that it runs on weekdays at 06:00 UTC. The schedule leaves time for feed updates; GitHub scheduled runs can be delayed. Your radar is at `https://<you>.github.io/<repo>/` and the feed at `/feed.xml`.
+
+### Inspect usage and cost
+
+Version 0.2.0 records judging attempts in `data/usage.jsonl`, including
+repair responses and failed judgements. Input, output and cache tokens are kept
+separately; unset rates or missing usage produce **cost unknown**, not a zero bill.
+Historical figures above are the measurements or estimates described with them,
+not reconstructed provider invoices. Optional TL;DR generation is outside this
+auditing scope. Configure the rates for your model and prompt-length tier;
+[usage and cost accounting](docs/usage-and-cost.md) explains the fields and limits.
+Releases before 0.2.0 do not include the new audit.
 
 ### Use as a GitHub Action
 
@@ -129,7 +145,7 @@ No fork needed: any repository with a `radar.toml` can run Paper Radar as one st
 # .github/workflows/radar.yml
 on:
   schedule:
-    - cron: "0 2 * * 1-5"   # 02:00 UTC, weekdays
+    - cron: "0 6 * * 1-5"   # 06:00 UTC, weekdays; allow time for feed updates
   workflow_dispatch:
 
 jobs:
@@ -137,7 +153,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: Eliot5566/JEV-Paper-Radar@v0.1.5
+      - uses: Eliot5566/JEV-Paper-Radar@v0.2.0
         with:
           config: radar.toml
           typesafe-api-key: ${{ secrets.TYPESAFE_API_KEY }}
@@ -147,12 +163,18 @@ jobs:
 
 Pin to a release tag — `@v0.1.2` is the first tag that contains `action.yml` (`@v0.1.1` predates it, so it cannot work). Other inputs: `command` (`run` or `screen`), `backend` (`typesafe`, `openrouter`, `claude`, `mock`), and `args` for extra flags such as `--rejudge --no-notify`. Keys are passed as secrets and are never printed in the log.
 
+### Use with Claude
+
+For use inside a Claude conversation, [upload the complete skill ZIP](docs/claude-install.md). It bundles the CLI and fictional demo, plus an exporter for scores made in the current chat. No separate API key is needed for these modes; chat usage and cost are unavailable to the exporter. In a Claude web conversation with Opus 5.5, the uploaded skill completed the 44-paper demo and a three-paper fictional chat-report export. Other clients and live API connectivity are not covered by that check.
+
+For daily feed automation, use the [API guide](docs/claude-quickstart.md): a 20-paper starter profile, private API setup, request-usage inspection and checks against your own labels. API judging is separately billed. [Setup help](https://github.com/Eliot5566/JEV-Paper-Radar/issues/new?template=setup-help.yml) and [experience reports](https://github.com/Eliot5566/JEV-Paper-Radar/discussions) are welcome.
+
 ## Try it in 10 seconds
 
 No key needed. The demo uses fictional papers and a keyword heuristic in place of Jev, so you can see the output before you set anything up.
 
 ```bash
-pip install git+https://github.com/Eliot5566/JEV-Paper-Radar
+python -m pip install "paper-radar==0.2.0"
 paper-radar demo          # writes ./paper-radar-demo/site/index.html
 ```
 

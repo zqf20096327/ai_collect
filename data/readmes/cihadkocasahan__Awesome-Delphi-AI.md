@@ -1,6 +1,6 @@
 # Awesome Delphi AI [![Awesome](https://awesome.re/badge.svg)](https://awesome.re) [![Verified Tools](https://img.shields.io/badge/Projects-103%2B%20Verified-blue?style=flat-square)](https://github.com/cihadkocasahan/Awesome-Delphi-AI) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](https://github.com/cihadkocasahan/Awesome-Delphi-AI/pulls) [![Last Commit](https://img.shields.io/github/last-commit/cihadkocasahan/Awesome-Delphi-AI?style=flat-square)](https://github.com/cihadkocasahan/Awesome-Delphi-AI/commits)
 
-<a href="README.md"><img src="https://flagcdn.com/20x15/gb.png" width="20" height="15" alt="English"> **English**</a> &nbsp;·&nbsp; <a href="README.tr.md"><img src="https://flagcdn.com/20x15/tr.png" width="20" height="15" alt="Türkçe"> **Türkçe** <img src="https://flagcdn.com/20x15/tr.png" width="20" height="15" alt="Türkçe"></a>
+<a href="README.md"><img src="https://flagcdn.com/20x15/gb.png" width="20" height="15" alt=""> <strong>English</strong></a> &nbsp;·&nbsp; <a href="README.tr.md"><img src="https://flagcdn.com/20x15/tr.png" width="20" height="15" alt=""> Türkçe</a>
 
 > A comprehensive open-source directory and catalog of tools, libraries, MCP servers, LSP implementations, and AI-driven workflows for modern Delphi and Object Pascal development.
 >
@@ -198,4 +198,4 @@ This directory focuses on modernizing the **development experience (DevEx) and e
 | Projects & Architecture Details |
 | :--- |
 | &nbsp;<br>**[BoxedLLaMA](https://github.com/tinyBigGAMES/BoxedLLaMA)**<br>Delphi applications for Windows toolkit that automates llama.cpp server installation, updates, and GGUF model management from Hugging Face.<hr>[![Stars](https://img.shields.io/github/stars/tinyBigGAMES/BoxedLLaMA?style=flat-square)](https://github.com/tinyBigGAMES/BoxedLLaMA/stargazers) [![Last Commit](https://img.shields.io/github/last-commit/tinyBigGAMES/BoxedLLaMA?style=flat-square)](https://github.com/tinyBigGAMES/BoxedLLaMA/commits) &nbsp; [![#llama.cpp](https://img.shields.io/badge/%23-llama.cpp-555555?style=flat-square)](https://github.com/topics/llama-cpp) [![#Local AI](https://img.shields.io/badge/%23-Local%20AI-6f42c1?style=flat-square)](https://github.com/topics/local-ai) [![#Delphi](https://img.shields.io/badge/%23-Delphi-107C41?style=flat-square)](https://github.com/topics/delphi)<br>&nbsp; |
-| &nbsp;<br>**[VindexLLM](https:/
+| &nbsp;<br>**[VindexLLM](https://github.com/tinyBigGAMES/VindexLLM)**<br>Native Delphi GPU inference engine executing

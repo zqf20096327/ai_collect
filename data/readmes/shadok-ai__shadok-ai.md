@@ -171,7 +171,10 @@ Enter to skip; you can add it later from the web UI).
   Claude** button right there signs you in again without waiting for the lapse,
   and in the last **48 hours** (or once it has lapsed) a reminder **banner**
   carries the same one-click re-login — so your agents never quietly start
-  hitting `401` because nobody renewed the session.
+  hitting `401` because nobody renewed the session. On a multi-tenant instance
+  the rows describe what the **agents** authenticate with (the long-lived token
+  or their space's claude.ai login, and its expiry) rather than the server's own
+  sign-in, and the re-login button renews that credential.
 - **Secret vault** — stored under `~/.shadok-ai`, never in your repo, injected
   as env vars into the agents that need them. Add or **update** a secret from the
   panel, tick the **profiles** it should feed right there, and reload the running
@@ -643,6 +646,86 @@ Enter to skip; you can add it later from the web UI).
   `SHADOK_CONNECT_BROKER` (default `https://connect.shadok.ai`). LinkedIn
   sunsets API versions, so `LINKEDIN_VERSION` in `src/linkedin.ts` must be
   bumped about once a year, or posting stops working.
+- **Connected accounts (Google)** — the same idea for a Google account: connect
+  it once, then ask an agent to *"put a review with Bob on Thursday at 10"*,
+  *"draft a reply to that"* or *"write this up in a Doc"*. **Connect Google**
+  (shown only when the broker offers Google) opens a small dialog where you
+  tick what agents may work with — **Calendar** (read, add, change and delete
+  events), **Drive files** (the Docs and Sheets the cockpit creates — never the
+  rest of your Drive), **Gmail** (write drafts and send email) and **Read
+  Gmail** (search and read your mailbox — a separate chip, **unticked by
+  default**, shown once the broker offers it; add it later with *Reconnect*) —
+  then Google asks you to confirm each one. With *Read Gmail* an agent can
+  `gmail search` (Gmail's own search syntax, 50 results at most) and
+  `gmail read` a message or a thread as plain text; it cannot change or delete
+  mail, nor download attachments. Email is **untrusted content**: the skill
+  hands it to the agent inside a fence saying it is data, never instructions,
+  and replying still goes through the Mail setting. Every search (its query)
+  and every message opened (its id and subject, never its content) is written
+  to the account's log. **All of Drive** is a fifth chip, also **unticked by
+  default** and shown once the broker offers it: with it an agent can
+  `drive search` every file you can reach (yours and those shared with you) and
+  `drive read` one — a Doc or a Slides deck as text, a Sheet as rows, a small
+  text file as it is; a PDF or another binary shows its details only, nothing
+  is downloaded. File content is untrusted like email (same fence) and every
+  search and file opened is logged (query, file id and name — never content).
+  It can also **add to files the cockpit did not create** (`doc append`,
+  `sheet append`, `sheet update` of a range): because other people may see
+  those files, that follows a third setting, **Drive edits** — *ask first* by
+  default, with an approval card showing the file, its link and owner, and the
+  exact text or rows. Files the cockpit created are still edited at once.
+  An agent can also `drive download` a file into its own working directory
+  (Docs, Sheets and Slides exported as `docx`/`xlsx`/`pptx`, or `pdf`/`csv`
+  with `--format`; 50 MB at most; logged), and `drive delete` (to the **bin**
+  only — restorable for about 30 days, never a permanent delete), `drive move`
+  and `drive rename` a file. Those three ask first under *Drive edits* on ANY
+  file, the cockpit's own included; the card shows the file, where it is now
+  and exactly what will happen, and approving does nothing if the file was
+  renamed or moved in the meantime. It can also **edit the content** of a Slides deck, a Doc or a Sheet
+  (`slides edit`, `doc edit`, `sheet edit`): one batch of up to 50 checked
+  operations — replace or insert text, add / delete / reorder slides, style
+  text and headings, tables, images from a public `https` address, cell
+  values and formulas, tabs, rows, columns, formats — applied all together or
+  not at all. On a file the cockpit created it is applied at once; on any other
+  file it asks under *Drive edits*, with a card listing every operation on its
+  own line, text and values included. If the file changes before you approve,
+  nothing is applied and the card asks again. No new Google permission is
+  needed. Sharing and permanent deletion are never available.
+  The account row
+  shows the areas Google actually granted, the same *Shared with* / *Profiles*
+  chips as LinkedIn, and **its own settings** instead of one posting policy:
+  **Mail** (sending email), **Events** (any event added, changed or
+  deleted, with or without attendees) and — on an account that holds a Drive
+  area — **Drive edits**, each *ask first* (the default) or *on
+  its own* — only the account's owner can switch one to automatic, after a
+  confirmation that says what it means. The agent uses the seeded
+  `shadok-google` skill (`google.mjs accounts`, `calendar list|create|update|delete`,
+  `drive list|search|read|download|delete|move|rename`, `doc create|read|append|edit`, `sheet create|read|append|update|edit`, `slides create|read|edit`,
+  `gmail search|read|draft|send` — content on stdin, never argv) and never sees the token.
+  What it may do falls in four classes: **reads** and **writes in your own
+  files and drafts** (a Gmail draft, a Doc, a Sheet) are done at once;
+  **sending mail** follows the Mail setting and **calendar changes** the Events
+  setting. With approval, an email becomes a **real draft in your Gmail** plus
+  an approval card showing from, to, cc, bcc, subject, the exact body and the
+  attachments by name; you may edit it in Gmail first — on *Send* the server
+  re-reads the draft, sends it if it is what the card showed, and otherwise
+  refreshes the card (*"Edited in Gmail since — send this version?"*) so you
+  always send what you are looking at. Deleting the draft in Gmail closes the
+  card and tells the agent; *Discard* deletes the Gmail draft too; the agent
+  cannot rewrite a draft that is waiting for you. An event card shows title,
+  start and end with their time zone, the attendees Google will email,
+  location, the colour it will have, and description. Agents read and set an
+  event's colour by name (Lavender … Tomato, Google's own palette). The log keeps a line per action — recipients and
+  subject, an event's title and time, a file's name — and **never a mail
+  body**. **While the shadok Google app is in Testing** (it is, for now) only
+  Google accounts on the app's test list can connect, and Google makes the
+  authorisation last **7 days**: the row says *Test app — reconnect weekly*
+  with the deadline, the owner is warned 2 days ahead, and an expired account
+  refuses with *"needs a reconnect"*. The whole Drive is deliberately not
+  offered here; agents that need it use the claude.ai connectors (the `login`
+  agent-auth mode). Operator setup for Google (Cloud
+  project, consent screen, the two broker secrets) is in
+  [`broker/README.md`](broker/README.md).
 - **Self-update** — polls npm and can update and reload itself in place.
 
 ### Telegram (optional)
@@ -991,7 +1074,8 @@ travels over `/ws`, and the page itself is static HTML, so a proxy that drops
 connects. In nginx:
 
 ```nginx
-location / {
+# The WebSocket — the ONLY path that upgrades, and the only one that may wait.
+location = /ws {
     proxy_pass http://127.0.0.1:3789;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
@@ -999,9 +1083,28 @@ location / {
     proxy_set_header Host $host;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  # see below
     proxy_set_header X-Forwarded-Proto $scheme;                   # Secure cookies
+    # proxy_read_timeout 3600s;   # optional, and ONLY here — see "Idle timeout"
+}
+
+# Everything else: ordinary requests, ordinary (default, 60s) read timeout.
+location / {
+    proxy_pass http://127.0.0.1:3789;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  # see below
+    proxy_set_header X-Forwarded-Proto $scheme;                   # Secure cookies
     client_max_body_size 50m;   # match the server's paste limit
 }
 ```
+
+Two locations, because the two kinds of traffic want opposite things from the
+proxy: `/ws` is one long-lived socket that may legitimately stay quiet, and
+everything under `/` is a short request that should fail fast when the server
+does not answer. `/ws` is the only WebSocket path the server has, so the
+`Upgrade`/`Connection` headers — and any long timeout — belong there and nowhere
+else. Both locations carry the `Host` / `X-Forwarded-*` lines on purpose: each
+`location` is configured on its own, and the server needs the client address
+and scheme on the socket as much as on a plain request.
 
 **Forward the client address.** An agent authenticates to its own server with a
 session key that never expires, so the server accepts that key **only from this
@@ -1036,8 +1139,19 @@ idle-close a quiet socket (nginx `proxy_read_timeout`, 60s by default;
 Cloudflare ~100s) — the symptom is a cockpit that keeps flashing
 "reconnecting…" even though nothing is wrong. The server sends a WebSocket ping
 every 25s (tunable with `SHADOK_WS_PING_MS`) to keep the connection warm, so no
-proxy change is normally needed; if your proxy still cuts it, raise
-`proxy_read_timeout` above the ping interval.
+proxy change is normally needed — nginx's default 60s is already more than
+twice the ping interval. If your proxy still cuts it, raise `proxy_read_timeout`
+above the ping interval **in `location = /ws` only, never in `location /`**.
+
+A long read timeout is right for a resting agent's silent socket and wrong for
+everything else. On a plain `GET`, it is how long the proxy keeps holding a
+request the server never answers — and the browser holds its end for just as
+long. A browser opens only about six HTTP/1.1 connections to one host, so a
+handful of unanswered requests is enough to occupy them all and freeze that
+cockpit's own updates for the whole timeout, while the proxy and the server
+keep those connections open too. With the default, the same failure clears in a
+minute. If your `location /` carries a raised `proxy_read_timeout` today, move
+it to `location = /ws`.
 
 **Sleep / wake / network blips.** When the machine comes back (an `online`
 event, the tab becoming visible, a back/forward-cache restore), the cockpit
@@ -1430,118 +1544,4 @@ client, or immediately on an explicit `stop` (which ends it for everyone).
 | `{type:"tokens", tokens}` / `{type:"context", pct}` | token usage / context fill |
 | `{type:"social-draft", draft}` | a post waiting for approval, or its new state (published with URL, discarded, expired, failed) — the approval card. Also replayed inside `history` on reload. Never carries a token |
 | `{type:"parent", parent}` | the channel's parent changed (broadcast, so every tab follows) |
-| `{type:"prompt-echo", text, origin?, from?}` | prompt sent by another client of the session. `from` is resolved SERVER-side for a web, agent or peer prompt (the signed-in account / the calling agent's tab name / the peer's name); a frame's `from` is believed only from the Telegram bridge |
-| `{type:"dialog", question, options:[{n,label,hint,checked?}], multi}` | choice pending |
-| `{type:"history", turns:[…]}` | transcript replayed when resuming/attaching |
-| `{type:"screen", text, working}` | rendered TUI screen (whenever it changes) |
-| `{type:"pace-blocked"}` / `{type:"pace-hold"}` / `{type:"pace-resumed"}` | quota guardrail |
-| `{type:"auto-retry"}` / `-cancelled` / `-gave-up` | transient API error being retried |
-| `{type:"version", …}` / `{type:"server-reload", version}` | update available / server updated, reload |
-| `{type:"term-data", data}` | **experimental** — raw pane output (base64) for a client-side terminal emulator |
-| `{type:"gone"}` / `{type:"error", message, code?}` / `{type:"exited", code}` / `{type:"stopped"}` | session lost, errors, termination. `error.code` is `"busy"` for a prompt refused mid-turn and `"logged-out"` for a spawn refused because the instance isn't signed in, `"resume-refused"` for a `resume` whose shortened id matches no agent or several, `"unresponsive"` for a prompt that could not be delivered because the agent's terminal stopped taking input and the automatic restart did not recover it — so a machine client needn't match on the message text |
-
-HTTP endpoints (same auth): `/usage`, `/live`, `/sessions`, `/recover`,
-`/diff`, `/channels` (its GET adds a **derived** `crons` field, and `closes` — how many schedules and webhooks closing that agent would delete — never stored),
-`/channels/glance` (GET — each visible row's last-message time and context %,
-read from the transcript's tail so the list fills before the agents resume),
-`/channel` (DELETE), `/groups`, `/groups/ssh` (GET — the SSH **public** key to
-register per group, filtered like `/groups`), `/crons` (+ POST `/crons/:id/run` — fire a schedule now, its next slot unchanged), `/webhooks` (GET; POST create, PATCH/DELETE `/webhooks/:id`, POST `/webhooks/:id/rotate` — writes browser person only, the token is returned only by create/rotate; the call itself, `POST /hooks/:id`, sits before the password gate and authenticates with the webhook's own token), `/timezone`, `/title` (GET/PUT — the
-cockpit's name, per launch directory: click the header brand to rename it, so
-several cockpits stay apart in the tab bar; an empty PUT reverts to the default),
-`/theme` (GET/PUT — the cockpit's colour palette, per launch directory: an accent
-key picked from the ⋯ menu, e.g. `emerald`; unknown/`amber` reverts to default.
-The default palette (stored key `amber`, labelled *Shadok*) is the Teams purple in
-light mode and an indigo in dark mode; light mode follows Microsoft Teams, dark
-mode a neutral near-black.
-Light/dark **mode** is an orthogonal, **per-browser** choice in the same menu
-(default dark; stored in `localStorage`, applied before first paint) and needs no
-endpoint — the accent is the instance's shared identity, the mode is personal),
-`/profiles`, `/secrets`, `/secrets/audit` (GET, **admin only** — the secret
-audit log: who created/updated/deleted a secret, which profile it was attached
-to, and which agent **received** it at spawn or in a cron guard, with the person
-or door that caused it; names only, never a value; filters `secret`, `action`,
-`actor`, `agent`, `since`, `limit`. Also in the vault panel → *Audit log*, and
-🕘 on each secret), `/telegram`, `/defaults`, `/first-agent` (GET —
-`{pending, reason}`: whether this instance's lead agent is being started
-right now), `/version`, `/autoupdate`,
-`/connect/status` (GET — `{available}`: is the broker reachable/configured),
-`/connect/linkedin/start` · `/connect/linkedin/complete` (POST, browser person
-only — the OAuth hand-back; `/connect/linkedin/done` (GET) is the page the
-broker returns the browser to), `/connected-accounts` (GET — the accounts
-you may use, never a token, plus `softLayer`; your own accounts also carry
-`expiringSoon` / `expired`, for the banner; `GET /:id/log` — that account's
-last 50 publication-log entries, newest first; `PUT /:id` changes share/policy,
-`DELETE /:id` disconnects — owner or admin, browser only),
-`/social/accounts` (GET) and `/social/posts` (POST) — the **agent** side,
-authenticated by `x-shadok-session-key` —, and `/social/drafts/:id/publish` ·
-`/social/drafts/:id/discard` (POST, browser person only),
-`/update-channel` (POST `{channel}` — `alpha` or `beta`), `/permission-mode`, `/tweak/prepare` (POST — clone/refresh shadok-ai's own source,
-returns the cwd to start the tweak agent in). The instance-wide writes —
-`/autoupdate`, `/update-channel`, `/permission-mode`, `POST /ledger`, a bare
-`POST /restart-all`, the Claude sign-in (`POST /auth/login`, `/auth/code`,
-`DELETE /auth/login`), `PUT /title`, `PUT /theme`, `/tweak/prepare` and
-`DELETE /profiles` — are **admin only, from the browser**; a member sees those
-controls disabled. `PUT /profiles` is admin only on a multi-tenant instance
-(profiles are global there), and `POST /restart-all {sessions:[…]}` stays open,
-narrowed to the agents the caller may drive. Also `/media/<name>` and
-`/media/g-<group>/<name>` (GET — serves a pasted/dropped or Telegram attachment
-back for inline display; sandboxed, never a symlink, a group's directory only to
-someone who can see that group), and the sign-in group: `/auth` (GET
-— `{loggedIn, email?, subscriptionType?, tokenExpiresAt?, accessExpiresAt?, backend?, backendModel?}`;
-the expiries come from the credentials store, never a token value; `backend:
-"custom"` when the instance runs on another model), `/auth/login`
-(POST — start a flow, returns `{url}`; DELETE — cancel it), `/auth/code`
-(POST `{code}`); and the model-backend group (admin, browser only for writes):
-`/backend` (GET — the backend in use without its key, plus the presets; PUT —
-`{baseUrl, model, authToken?, contextWindow?}` or `{clear: true}`),
-`/backend/test` (POST — one real `/v1/messages` round trip) and
-`/backend/models` (POST — the models a server offers).
-
-## Library
-
-```js
-import { PtyPilot } from "shadok-ai";
-
-const pilot = new PtyPilot({ cwd: "/my/project" });
-pilot.start();
-await pilot.waitForIdle();                 // TUI ready
-
-await pilot.submit("Fix the bug in auth.ts");
-await pilot.waitForIdle({ timeoutMs: 600_000 });
-console.log(pilot.screen());               // rendered screen (visible transcript)
-
-await pilot.submit("Now add a test");      // same session, second turn
-await pilot.waitForIdle();
-
-await pilot.stop();                        // clean /exit, kill as fallback
-```
-
-Main API:
-
-| Method | Purpose |
-|---|---|
-| `start()` / `stop()` / `kill()` | process lifecycle |
-| `submit(text)` | types a prompt + Enter, with verification and retries |
-| `write(text)` / `press(key)` | low-level keystrokes (`enter`, `escape`, `up`, `tab`, `ctrl-c`…) |
-| `screen()` / `fullBuffer()` | rendered screen / full buffer |
-| `waitForIdle({stableMs, timeoutMs, settleOn?})` | waits for the end of a turn; `settleOn(screen)` names a dialog (or `null`) so a dialog that never holds still — a ticking countdown — still ends the wait |
-| `waitFor(predicate)` | waits for an arbitrary screen condition (dialogs, permissions…) |
-| `isWorking()` | true while Claude is working |
-| `onData(cb)` / `onExit(cb)` | raw ANSI stream (mirror mode) / process exit |
-
-`TmuxPilot` exposes the same surface and additionally survives a server
-restart. `examples/two-turns.mjs` shows a two-turn conversation;
-`debug/probe.mjs` logs the terminal sequences exchanged (useful when a CLI
-update breaks the detection).
-
-## Known limits
-
-- Every session launched consumes your Claude quota like a normal session.
-- Profile guardrails are **soft**: agents run as the same OS user. It prevents
-  misfires, it is not a sandbox.
-- Agent worktrees are branched at spawn and never rebased, so a long-running
-  agent drifts from a moving main branch. A design for this exists and was
-  deliberately deferred:
-  `docs/superpowers/specs/2026-07-28-worktree-rebase-drift-design.md`.
-- The interactive terminal (xterm.js over the raw pane stream) is
-  **experimental** and requires tmux; with node-pty the engine room is all
+| `{type:"prompt-echo", text, origin?, from?}` | prompt sent by another client of the session. `f

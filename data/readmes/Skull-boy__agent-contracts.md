@@ -23,7 +23,15 @@ MCP and A2A standardize how agents communicate with tools and each other. Scyver
 
 > **Try it, read nothing first:** `pip install scyvera && scyvera audit .`
 >
-> **Version status:** PyPI `1.4.0` ships the full platform: the audit funnel, Blast Radius report, contract drafts, and Policy Packs, plus Tier 0/1 conformance, the hash-chained registry with identity pinning and the re-seal ritual, v1.2 guardrails, the trace/eval harness, unified reports, `scyvera self-check` with signed release attestation, the `scyvera-gate` Action, and `scyvera serve-mcp`. The v1.4 production gate is satisfied on four of its five conditions; the remaining distribution-reach condition — the `scyvera-harness` skill (M3.1) and per-target packaging (M3.2) — is not shipped, so the project stays **beta-serious**, not production-certified.
+> **Version status:** PyPI `1.4.0` ships the full platform: the audit funnel, Blast Radius
+> report, contract drafts, and Policy Packs, plus Tier 0/1 conformance, the hash-chained registry
+> with identity pinning and the re-seal ritual, v1.2 guardrails, the trace/eval harness, unified
+> reports, `scyvera self-check` with signed release attestation, the `scyvera-gate` Action,
+> `scyvera serve-mcp`, the `scyvera-governance` harness skill, and per-target adoption kits.
+> **The v1.4 production gate is satisfied on all five conditions** (2026-11-13: install
+> verification, provable history, CI gating, bounded behavior, runtime reach — see
+> `docs/roadmap.md`, Production-Defensibility Program). The positioning is **production-gated**:
+> every word of that claim is machine-checkable, and the honest-limits section below stays.
 
 ---
 
@@ -110,6 +118,8 @@ Draft contract written to contract.yaml (validate with: scyvera validate contrac
 The scan writes one schema-valid v1.1 contract. `scyvera validate contract.yaml` and `scyvera lint contract.yaml` both pass with 0 warnings, and a permanent fixture sweep enforces that for every audit corpus. `--force` overwrites an existing file; nothing else is ever written.
 
 That draft is the input to the enforcement layer below: `ContractEnforcer.load("contract.yaml")` turns the scanned boundary into a runtime gate.
+
+For a ready-made boundary for a shipped runtime, start from a per-target [adoption kit](./kits/) (`n8n`, `langgraph`) instead of a blank template.
 
 ### e. Start from a policy, not a blank page
 
@@ -605,6 +615,7 @@ See [`examples/v1.1/`](./examples/v1.1) for runnable, validated v1.1 contracts a
 | [`docs/policy-packs.md`](./docs/policy-packs.md) | Policy Pack format, merge semantics, and how to add one. |
 | [`docs/evals.md`](./docs/evals.md) | Trace-driven eval case format, agent factory, and the four scoring axes. |
 | [`docs/mcp.md`](./docs/mcp.md) | MCP server mode: host configuration, the five tools, and the scope note. |
+| [`docs/harness-skill.md`](./docs/harness-skill.md) | Install the `scyvera-governance` harness skill, verify its hash lock, and read its scope note. |
 | [`docs/terminology.md`](./docs/terminology.md) | Shared vocabulary. |
 | [`docs/vision.md`](./docs/vision.md) | Strategic direction. |
 | [`docs/workflow-engineering.md`](./docs/workflow-engineering.md) | Engineering philosophy. |

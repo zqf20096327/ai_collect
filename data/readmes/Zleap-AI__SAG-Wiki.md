@@ -25,7 +25,7 @@
 
 https://github.com/user-attachments/assets/e9c5499d-6057-4add-ac7e-f57eae381a2f
 
-Version 0.2.6 adds a Quick Search popup with a global shortcut, cross-language retrieval in Q&A, built-in documents indexed by default and revised conversion and indexing memory budgets. See the [changelog](CHANGELOG.md) and [bilingual documentation](docs-site/README.md). The download link below points to the latest stable GitHub Release.
+PDF basic text can become searchable before background OCR and table enhancement finish. Independent basic indexing keeps supported local Office/RTF documents moving, while PDF segments reuse loaded models. See the [changelog](CHANGELOG.md) for release-specific changes and the [bilingual documentation](docs-site/README.md) for usage. The download link below points to the latest published stable Release.
 
 ## Contents
 
@@ -56,9 +56,11 @@ The installer size excludes optional document conversion components and recognit
 
 Add a folder to make your documents, notes, and code searchable. Find a passage, ask a question across files, open the source behind an answer, or give your coding agent access to the same knowledge base.
 
-- **Light:** just **14 MB** to download, with no separate database to install.
+- **Light:** no separate database to install; optional recognition components download separately.
 - **Fast:** index a million characters in approximately **200 ms**, with no LLM calls for indexing or retrieval.
 - **Precise:** our original **SAG2** retrieval technology outperforms RAG, GraphRAG, and other approaches.
+
+The indexing figure above concerns text indexing, excluding document conversion, OCR and table recognition; it is not a whole-PDF completion-time estimate.
 
 Read and edit Markdown, preview HTML, explore related documents, or search from the terminal. PDF, Office, and EPUB documents convert out of the box; image recognition and audio/video transcription are optional components.
 
@@ -103,8 +105,8 @@ https://github.com/user-attachments/assets/bcdf9dbf-7535-41d6-bd22-bde0ea824525
 | Feature | What you need |
 | --- | --- |
 | File indexing and quick search | Add a folder; no API key needed |
-| SAG2 semantic retrieval | Configure a Jev service; supply an API key when required |
-| Cited Q&A | Configure an answer model and API key; SAG2 retrieval also requires Jev configuration |
+| SAG2 semantic retrieval | Configure a decision model; supply an API key when required |
+| Cited Q&A | Configure an answer model and API key; SAG2 retrieval also requires a decision model |
 
 SAG-Wiki itself is free and open source. External service charges depend on your chosen provider. Original files stay on your machine; in-depth retrieval and Q&A send the required questions, document passages, or context to the services you configure.
 
@@ -120,9 +122,9 @@ Install and open SAG-Wiki, switch the sidebar to **Folders**, then click **+** b
 
 ### 2. Search your files
 
-Once indexing finishes, use **Search** to find passages and preview the source. Quick search works locally; configure Jev in **Settings → Models** for in-depth semantic retrieval.
+Use **Search** as soon as basic text is indexed. For mixed or scanned PDFs, OCR and table enhancement continue in the background; file-list states show whether basic text is searchable, enhancement is pending/running, or enhancement failed. Existing text remains searchable after an enhancement failure; image-only scans become searchable only after recognized text is indexed. Wait for completion and check the original for full coverage. Quick search works locally; configure a decision model in **Settings → Models** for in-depth semantic retrieval.
 
-For a local Jev service, select **Custom** and enter its model name and base URL (for example, `http://127.0.0.1:8000/v1`), or its complete `/systemone` or `/decisions` endpoint. Choose **No authentication** under **Jev authentication** if the service does not require an API key; this omits the authorization header and removes the saved Jev key. The service must implement Jev’s `state`, `questions`, and `answers.*.noul` protocol. For the CLI, run `sag config --url http://127.0.0.1:8000/v1 --model YOUR_MODEL --auth none`. To switch back to a keyed service, use `--auth bearer --key-stdin` and enter that service’s key.
+For a local Jev-compatible decision model, select **Custom** and enter its model name and base URL (for example, `http://127.0.0.1:8000/v1`), or its complete `/systemone` or `/decisions` endpoint. Choose **No authentication** under **Decision model authentication** if the service does not require an API key; this omits the authorization header and removes the saved decision model key. The service must implement Jev’s `state`, `questions`, and `answers.*.noul` protocol. For the CLI, run `sag config --url http://127.0.0.1:8000/v1 --model YOUR_MODEL --auth none`. To switch back to a keyed service, use `--auth bearer --key-stdin` and enter that service’s key.
 
 <p align="center">
   <img src="docs/assets/readme/product-search-en.png" alt="Search results with the matching source passage" width="940" />
@@ -152,7 +154,7 @@ Give your agent this one sentence:
 Install https://github.com/Zleap-AI/SAG-Wiki/blob/main/cli/skills/sag/SKILL.md and follow its setup flow for my current project.
 ```
 
-SAG supports **Claude Code, Codex, and OpenCode**. The Skill includes CLI installation, configuration, project indexing and verification. **The CLI works without SAG Wiki desktop** and shares its settings and knowledge base when the desktop is installed. Existing settings are reused; API-key-authenticated semantic search needs your own Jev key, entered privately in a terminal. The GitHub Skill link is the canonical installation entry; the agent retrieves its supporting files from the same directory.
+SAG supports **Claude Code, Codex, and OpenCode**. The Skill includes CLI installation, configuration, project indexing and verification. **The CLI works without SAG Wiki desktop** and shares its settings and knowledge base when the desktop is installed. Existing settings are reused; API-key-authenticated semantic search needs your own decision model key, entered privately in a terminal. The GitHub Skill link is the canonical installation entry; the agent retrieves its supporting files from the same directory.
 
 With Node.js 18 or later installed:
 
@@ -160,12 +162,12 @@ With Node.js 18 or later installed:
 npm install -g @zleap-ai/sag
 ```
 
-The [published npm package](https://www.npmjs.com/package/@zleap-ai/sag) includes **macOS Apple Silicon and Windows x64** binaries. It requires no Rust toolchain or source compilation. Installing the CLI does not install the desktop app.
+The [published npm package](https://www.npmjs.com/package/@zleap-ai/sag) includes **macOS Apple Silicon, Windows x64 and Linux ARM64 / x86_64** binaries (Linux verified on Ubuntu 24.04 and Debian 12). It requires no Rust toolchain or source compilation. Installing the CLI does not install the desktop app.
 
 <details>
 <summary>Manual installation and usage</summary>
 
-If `sag` is already installed, reuse it. Otherwise run the npm command above, then verify the command and complete first-time Jev setup in a terminal:
+If `sag` is already installed, reuse it. Otherwise run the npm command above, then verify the command and complete first-time decision model setup in a terminal:
 
 ```sh
 sag --version
@@ -187,6 +189,8 @@ sag add
 sag check
 sag "Where is permission checked?" . -m 5
 ```
+
+For a large folder, use `sag add --timeout 3600` to increase the wait limit. An expired wait does not remove the folder or stop background indexing; use `sag list --json` to inspect progress.
 
 See the Skill's [setup guide](cli/skills/sag/references/setup.md#first-use-setup) for the complete agent workflow and the [CLI guide](docs/en/cli-and-harness.md) for other commands.
 

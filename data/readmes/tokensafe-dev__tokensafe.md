@@ -163,9 +163,11 @@ When an operation is blocked, the agent sees an explicit, constructive message:
 
 **Clean context, better code**
 
-- `tokensafe:smart_read_file` returns the target function plus its 1-hop dependencies instead of the whole file. 10+ languages, with CSS design tokens preserved so agents never invent colors or font rules.
-- `tokensafe:graph` maps architectural hotspots and dependency topology in under 250 tokens instead of a full repository crawl.
-- The command sanitizer strips lockfile noise and stack dumps down to the failing assertion, and forces JS test runners into run-once mode so background tests never hang.
+- `tokensafe:smart_read_file` returns the target function plus its 1-hop dependencies instead of the whole file. 11 languages (Python, TypeScript/JavaScript, Go, Rust, Java, C#, C/C++, PHP, Kotlin, Ruby, Swift), with CSS design tokens preserved so agents never invent colors or font rules.
+- `tokensafe:smart_bundle` reads 3–8 related symbols across files as one merged bundle — shared imports deduplicated, 1-hop signatures unified, a single roundtrip instead of chained reads.
+- OpenAPI/Swagger, Prisma, GraphQL and SQL files are auto-sliced: pass a spec path, model, type, or table as `symbol` and get that entry plus its 1-hop references — a 5,000-line migration drops from ~30k tokens to a few hundred.
+- `tokensafe:graph` maps architectural hotspots and dependency topology in under 250 tokens instead of a full repository crawl — and teams share the result: the indexed graph and API surface are cached per repo state in the Team Symbol Index, so the 19 developers after the first one skip the crawl entirely.
+- The command sanitizer strips lockfile noise and stack dumps down to the failing assertion, caps `git status`/`git diff` floods and docker build tails, and forces JS test runners into run-once mode so background tests never hang. Malformed JSON tool arguments from small local models are repaired in-flight instead of failing the call.
 - The loop guard halts agents stuck repeating the same broken edit.
 
 **Local-first guardrails**
@@ -180,6 +182,7 @@ When an operation is blocked, the agent sees an explicit, constructive message:
 - The Context Budget HUD shows live window usage with a breakdown (tools / history / prompts) before quality drops.
 - The shared L3 team cache gives teammates and CI runners warm 0ms hits on repeated reads and prompts.
 - Managed cloud distillation compacts prompts with zero API keys for developers.
+- The dashboard's live savings strip streams anonymized per-machine savings (tokens and USD) over SSE — you see what the team saves right now, not at the end of the week.
 - The Friday per-seat ROI digest reports each engineer's savings with the `measured` / `estimated` split; inactive seats show `—`, never guessed figures.
 
 Deeper mechanics (language matrix, context tax math, cache tiers, governor) live in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
@@ -271,13 +274,14 @@ All hook adapters fail open: an internal error never stalls your agent. Failures
 ## Reference
 
 <details>
-<summary><b>Local MCP tools (12)</b></summary>
+<summary><b>Local MCP tools (13)</b></summary>
 
 | Tool | What it does |
 |---|---|
-| `get_architecture_graph` | Architectural hotspots and dependency topology before multi-file reading |
+| `get_architecture_graph` | Architectural hotspots and dependency topology before multi-file reading; shared team symbol index reuse |
 | `get_api_surface` | Compact markdown map of all exported interfaces, classes, and types |
-| `smart_read_file` | AST-skeletonized file read preserving a target symbol and 1-hop dependencies |
+| `smart_read_file` | AST-skeletonized file read preserving a target symbol and 1-hop dependencies; OpenAPI/Prisma/GraphQL/SQL files auto-slice (symbol = spec path / model / type / table) |
+| `smart_bundle` | 3–8 related symbols across files in one call: merged skeletons, deduplicated shared imports, unified 1-hop signatures |
 | `scoped_search` | Token-bounded symbol and text search with line-numbered matches |
 | `list_dir` | Clean directory tree without permissions, timestamps, or lockfiles |
 | `slice_diff` | Unified diff slicing omitting lockfiles and minimizing context lines |
@@ -324,7 +328,8 @@ tokensafe guard audit [path]        Recursive source audit for secrets & vulnera
 tokensafe doctor                    Audit MCP tool overhead and context token tax
 tokensafe digest [--send]           Compile (and optionally dispatch) the weekly team digest
 tokensafe mcp list|disable|enable   Manage configured MCP servers
-tokensafe proxy [port]              Local transparent AI proxy (0.0.0.0:8765/v1)
+tokensafe proxy [port]              Local transparent AI proxy (127.0.0.1:8765/v1; host via TOKENSAFE_HOST)
+tokensafe proxy on/off/status       Daemon + agent wiring with one-command rollback
 tokensafe install / setup [--all]   Configure detected agent environments
 tokensafe update / check-update     Self-update / check for a newer version
 tokensafe activate <KEY>            Activate a Team or Solo license key
@@ -338,6 +343,34 @@ tokensafe reset                     Reset all local token metrics
 tokensafe --version                 Print version and exit
 ```
 </details>
+
+### Proxy mode & agent coverage (v3.0.0)
+
+One command wires everything it safely can:
+
+```bash
+tokensafe proxy on      # installs a keep-alive daemon (launchd/systemd), wires Claude Code, prints manual steps for the rest
+tokensafe proxy status  # health, wiring state, last traffic
+tokensafe proxy off     # rollback: unwires agents (previous base URL restored) and removes the daemon
+```
+
+The daemon keeps the proxy alive on `127.0.0.1:8765`, `on` rewires agents only after a verified `/health` answer (a dead proxy never bricks an agent), and every wiring is backed up for `off`. `tokensafe install` and `tokensafe update` ask interactively whether to enable the proxy (skipped in non-TTY/scripted runs); prefer manual? Run `tokensafe proxy` in a terminal and point your agent's base URL at `http://127.0.0.1:8765` yourself:
+
+| Agent | Route through proxy? | How |
+|---|---|---|
+| Claude Code | ✅ auto (`tokensafe proxy on`) | `ANTHROPIC_BASE_URL=http://127.0.0.1:8765` — the proxy ingests native Anthropic `/v1/messages` shape |
+| Cline / Roo Code | ✅ manual | API Provider → OpenAI-compatible → Base URL `http://127.0.0.1:8765/v1` |
+| Aider | ✅ manual | `--openai-api-base http://127.0.0.1:8765/v1` |
+| Cursor (custom models) | ✅ manual | Add an OpenAI-compatible model with override base URL |
+| Cursor (built-in models) | ❌ | Routed via Cursor's own backend — hooks only |
+| Antigravity / ZCode | ❌ | Hooks only (lifecycle adapters) |
+| Codex CLI | ❌ | stdio MCP + AGENTS.md (no proxy transport) |
+
+What runs where:
+
+- **Proxy-only (A/B/D)**: Tool Result Ledger (folds aged tool results in-flight, `TOKENSAFE_TOOL_LEDGER=0` to disable), session-stable cold-tool pruning (opt-in: `TOKENSAFE_TOOL_PRUNING=1`, `TOKENSAFE_TOOL_PRUNE_KEEP`, `TOKENSAFE_TOOL_PRUNE_ALLOWLIST`), managed-cloud history distillation (paid, opt-in: `TOKENSAFE_HISTORY_DISTILL=1`).
+- **Hooks (all agents)**: PostToolUse stdout compaction, PreToolUse shell/secret guards, Output Guard steering full-file writes to surgical edits, prompt compaction, history folding.
+- Folded originals are archived under `~/.tokensafe/data/tool_ledger/` and every fold carries a deterministic re-hydration anchor — nothing is destroyed, and already-folded results are never re-processed (KV-cache stable).
 
 More documentation: [docs/AGENT_SETUP.md](docs/AGENT_SETUP.md) · [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/API.md](docs/API.md) · [METRICS.md](METRICS.md) · [BENCHMARK_REPORT.md](BENCHMARK_REPORT.md)
 

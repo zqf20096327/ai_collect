@@ -232,7 +232,10 @@ Ask your AI assistant to:
 
 ### 🔍 Code Intelligence
 
-- **Content Search** — Search for strings within files with context lines
+- **Content Search** — Search for strings within files with context lines; plain line-mode matches carry their enclosing symbol
+- **Structural Outline** — `flags: "s"` lists the declarations of a file or tree, bodies elided
+- **Symbol Navigation** — `symbol: "name"` finds definitions, `flags: "r"` their references
+- **AST Search** — `ast: true` matches an ast-grep pattern against the syntax tree
 - **Line Extraction** — Copy specific line ranges from one file to another
 
 ### 🖥️ Shell & System
@@ -346,7 +349,7 @@ view path="ssh://deploy@example.com/etc/nginx/nginx.conf"
 
 ## MCP Tools Reference
 
-### `view` — Read files, list directories, search content
+### `view` — Read files, list directories, search content, navigate code
 
 **File reading:** (`path` is a single path; `start`/`end` are line numbers or line ids)
 ```json
@@ -356,7 +359,13 @@ view path="ssh://deploy@example.com/etc/nginx/nginx.conf"
 {"path": "src/main.rs", "start": 80}             // line 80 → end of file
 {"path": "src/main.rs", "start": -20}            // last 20 lines
 {"path": "src/main.rs", "start": "12:a3", "end": "20:f1"}  // line ids from prior output
+{"path": "src/main.rs", "ranges": [{"start": 10, "end": 20}, {"start": 80, "end": 95}]}  // several spans in one read
 ```
+
+`ranges` reads several spans of one file in one call. Each span takes the same values
+as `start`/`end`, and both are required. Spans are sorted, overlapping or adjacent ones
+are merged, and each gap shows as `[... N lines omitted]`. `ranges` cannot be combined
+with `start`/`end` or `content`.
 
 Output renders every line as `N:hh|content` — the `N:hh` prefix is the line id
 that `batch_edit` and `extract_lines` take as targets.
@@ -380,8 +389,8 @@ removed lines collapsed to their old id range — or
 `[unchanged since you last viewed or edited it: N lines. Pass full: true to re-read.]`.
 Octofs' own edits keep the cache current, so a re-view after your own `batch_edit`
 costs one line. Ranged views and content search always render exactly what was asked.
-`full` has no effect on ranges or searches; omit `start`/`end` and content search to
-force a complete file read. It does not change output limits.
+`full` has no effect on ranges or searches; omit `start`/`end`/`ranges` and content search
+to force a complete file read. It does not change output limits.
 ```json
 {"path": "src/main.rs", "full": true}   // force the complete file (e.g. after context compaction)
 ```
@@ -431,6 +440,56 @@ files and directories when `content` is set. The roots are not regexes: as with
 rg's positional path arguments, each one must exist. A real path containing `|`
 takes precedence over this shorthand. Root lists must be single-line, contain no
 duplicates, and are limited to 32 roots and 8192 UTF-8 bytes.
+
+In the default line mode, matches in a file with a grammar are preceded by the
+enclosing symbol (e.g. `[impl Store › fn flush]`), once per symbol change. The
+compact modes (`c`, `l`, `o`), inverted searches and files without a grammar
+render without them.
+
+**Structural outline:** (`flags: "s"` — alone; no `content`, no `start`/`end`/`ranges`, no other flags)
+```json
+{"path": "src/main.rs", "flags": "s"}
+{"path": "src/", "flags": "s", "pattern": "**/*.rs", "max_depth": 2}
+```
+Returns the declarations of a file — or of every supported file under a directory,
+locally or over `ssh://` — with their bodies elided. Each line keeps its `N:hh` id,
+so the outline feeds `batch_edit` like any other view. Markdown files yield their
+headings. A directory outline honours `pattern`, `max_depth` and `include_hidden`.
+Supported languages: Rust, Python, JavaScript, TypeScript, Go, Java,
+C/C++, PHP, Bash, Ruby, Lua, JSON, Swift, Svelte, CSS, Elixir, Markdown.
+
+**Symbol navigation:** (`symbol: "<name>"` — `*` wildcards allowed)
+```json
+{"path": "src", "symbol": "handle_*"}
+{"path": "src/main.rs", "symbol": "flush", "flags": "r"}
+{"path": "src", "symbol": "flush", "flags": "c"}
+```
+Returns the definitions of a name in a file or under a directory, locally or over
+`ssh://`; `flags: "r"` returns its references instead. `flags: "c"` counts the hits
+per file, `flags: "l"` lists the matching files. A directory lookup honours
+`pattern`, `max_depth`, `include_hidden` and `context`. An exact name renders the
+whole definition when it is short enough; wildcard matches render a preview with
+the omitted range. Markdown files yield their headings, Svelte files the symbols
+of their `<script>` blocks. CSS and JSON files name no navigable symbol: a single
+file fails with that guidance, a directory skips them. `symbol` cannot be combined
+with `content` or `start`/`end`/`ranges`, and the `s`, `o` and `v` flags are rejected with
+it; `r` needs `symbol`, and `c`/`l` keep their search meanings.
+
+**AST search:** (`ast: true` — `content` holds the ast-grep pattern)
+```json
+{"path": "src", "ast": true, "content": "fn $NAME($$$ARGS)"}
+{"path": "src/main.rs", "ast": true, "content": "$OBJ.unwrap()"}
+```
+Matches the pattern against the syntax tree instead of the text: `$NAME` matches one
+node, `$$$ARGS` a sequence, `$_` any single node. The pattern must be complete, valid
+code in the target language — a Python pattern may omit the body together with
+the colon (`def $F($$$A)`); a trailing colon without a body (`def $F($$$A):`)
+matches nothing. It works on a file or a directory, locally or over
+`ssh://`, and honours `pattern`, `max_depth`, `include_hidden`, `context` and the
+`c`/`l` flags. It cannot be combined with `regex`, `symbol`, `start`/`end`/`ranges` or the
+`s`/`v`/`o` flags. Zero matches return a diagnostic naming the parsed kind, the
+metavariables and the plain-text fallback. CSS, JSON and Markdown files are not
+AST-searchable.
 
 Directory listings annotate each file as `path<TAB>NL<TAB>~Nt` (line count + estimated tokens) so you can budget reads before opening files; binary files show `path<TAB>(binary)`.
 
@@ -619,11 +678,20 @@ octofs/
 │   │       ├── file_ops.rs      # view_file_spec, create_file_spec
 │   │       ├── text_editing.rs  # str_replace, batch_edit, undo, per-file locking
 │   │       ├── directory.rs     # Directory listing + content search
-│   │       ├── search.rs        # search_content
+│   │       ├── search.rs        # literal/regex matcher, symbol breadcrumbs
+│   │       ├── structure.rs     # Structural outline mode (flags: "s")
+│   │       ├── symbols.rs       # Symbol navigation mode (symbol, flags: "r")
+│   │       ├── ast.rs           # AST-pattern search mode (ast: true)
 │   │       ├── shell.rs         # Command execution, background, process cleanup
 │   │       ├── workdir.rs       # Working directory management
 │   │       ├── remote.rs        # SSH/SFTP path abstraction, SshHandler, SFTP pool
 │   │       └── fs_tests.rs      # Integration tests (cfg(test))
+│   ├── structural/              # Tree-sitter grammars: outline, symbols, AST search
+│   │   ├── mod.rs               # Outline entry point, extension → language map
+│   │   ├── signature_extractor.rs # Signature spans, Markdown headings
+│   │   ├── symbols.rs           # Definitions, references, symbol breadcrumbs
+│   │   ├── ast_search.rs        # ast-grep pattern search over the grammars
+│   │   └── languages/           # One grammar + outline rules per language
 │   └── utils/
 │       ├── mod.rs               # Module re-exports
 │       ├── line_hash.rs         # Composite line ids (N:hh), FNV-1a hashes, endpoint parsing

@@ -8,7 +8,7 @@ Replaces Cowrie · Galah · OpenCanary · Endlessh — with a single Node.js ser
 
 [![CI](https://github.com/martidu4/honey-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/martidu4/honey-ai/actions)
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 [![Ollama](https://img.shields.io/badge/AI-Ollama-blue)](https://ollama.ai)
 [![Docker](https://img.shields.io/badge/Docker-ready-2496ED)](docker-compose.yml)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -72,7 +72,7 @@ Every attacker IP is automatically reported to **5 threat intelligence platforms
 
 ### Requirements
 
-- **Node.js** ≥ 18
+- **Node.js** ≥ 20
 - **[pnpm](https://pnpm.io)** — install with `npm install -g pnpm`
 - **[Ollama](https://ollama.ai)** running locally (or any OpenAI-compatible API)
 - A model pulled: `ollama pull qwen2.5:0.5b` (fast, 400MB RAM) or `qwen2.5:1.5b` (better, 1GB RAM)
@@ -354,19 +354,19 @@ sudo journalctl -u honey-ai -f
 HoneyAI runs on high ports by default. Use `iptables` to redirect standard ports:
 
 ```bash
-# Redirect :22 → :2226 (SSH honeypot)
-sudo iptables -t nat -A PREROUTING -p tcp --dport 22 -j REDIRECT --to-port 2226
+# Redirect :22 → :2222 (SSH honeypot)
+sudo iptables -t nat -A PREROUTING -p tcp --dport 22 -j REDIRECT --to-port 2222
 
 # Redirect :21 → :2121 (FTP), :23 → :2323 (Telnet), :25 → :2525 (SMTP)
 sudo iptables -t nat -A PREROUTING -p tcp --dport 21 -j REDIRECT --to-port 2121
 sudo iptables -t nat -A PREROUTING -p tcp --dport 23 -j REDIRECT --to-port 2323
 sudo iptables -t nat -A PREROUTING -p tcp --dport 25 -j REDIRECT --to-port 2525
 
-# Redirect :3306 → :33060 (MySQL), :6379 → :63790 (Redis)
-sudo iptables -t nat -A PREROUTING -p tcp --dport 3306 -j REDIRECT --to-port 33060
-sudo iptables -t nat -A PREROUTING -p tcp --dport 6379 -j REDIRECT --to-port 63790
+# MySQL (3306), Redis (6379), Git (9418), VNC (5900) and RDP (3389) listen on their
+# standard ports (above 1024): no redirect needed.
 
 # Redirect :1433 → :14330 (MSSQL), :161 → :16100 (SNMP), :3128 → :8180 (HTTP Proxy)
+# (set the matching protocols.<name>.port in config.yaml)
 sudo iptables -t nat -A PREROUTING -p tcp --dport 1433 -j REDIRECT --to-port 14330
 sudo iptables -t nat -A PREROUTING -p udp --dport 161 -j REDIRECT --to-port 16100
 sudo iptables -t nat -A PREROUTING -p tcp --dport 3128 -j REDIRECT --to-port 8180
@@ -395,7 +395,7 @@ HoneyAI includes built-in CPU protection for high-traffic deployments:
 - **Per-IP session budget** — First 5 unknown commands per attacker use AI, then static fallback. The attacker gets engaged with realistic AI responses initially, but prolonged bot sessions don't burn CPU infinitely.
 - **Concurrency gate** — Only 1 LLM inference runs at a time (configurable in `engine.js`).
 - **Scanner path filter** — 40+ common scanner paths (phpinfo, Yii2 debug, Symfony profiler, etc.) return static responses without touching the LLM.
-- **Fast model unload** — `keep_alive: 5s` ensures the model releases CPU quickly between request bursts.
+- **Fast model unload** — `keep_alive` defaults to 2h (configurable with `ai.keep_alive`), so the model stays loaded between attacker requests instead of paying a reload on each one. Set it to a few seconds on very small machines to free memory quickly.
 
 ---
 

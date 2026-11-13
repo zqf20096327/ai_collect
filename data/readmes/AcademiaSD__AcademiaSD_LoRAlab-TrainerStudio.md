@@ -8,6 +8,18 @@
 
 What was added, newest first. Each entry links to its commit.
 
+**2026-11-13**
+
+- <img src="https://img.shields.io/badge/NEW%20TRAINER-ff2d55?style=for-the-badge" alt="NEW TRAINER" height="22"> **MiniMax-H3 Image, image LoRAs (experimental)** — for the 6-step distilled MiniMax-H3-Image. The LoRA trains on MiniMax-H3-Image itself with a frozen de-distillation adapter that is not used when generating, downloaded by itself from `AcademiaSD/MiniMax-H3-Image-NF4-for-LoRA-Training`. On a face dataset it reached 40% face likeness at strength 1.0 and 44.5% at 1.3, against 28% when the LoRA is trained on the MiniMax-H3 video model and used on H3-Image. 1200 steps by default; Stop halts at once, and when the VRAM runs short training moves blocks back to RAM instead of slowing down. The LoRAs load in ComfyUI [`b608eeb`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/b608eeb) [`297fedc`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/297fedc) [`db7622b`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/db7622b)
+- **MiniMax-H3: sharp previews** — image previews are decoded by the MiniMax-H3-Image VAE (only its 2.2 GB `vae/` folder, downloaded the first time), and the video VAE no longer leaves horizontal stripes, an orange cast or a broken grid on images and clips [`311008c`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/311008c) [`f3ce0e0`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/f3ce0e0)
+- Captions in any encoding: `.txt` files saved by Notepad in the Windows code page no longer crash the pre-cache or show up empty (#71), from the Fibo 2.0 fix by [@Synergyart](https://github.com/Synergyart) [`350a410`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/350a410) [`9b9db6e`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/9b9db6e)
+- `Install_Triton&SageAtten220.bat` is now `Install_Triton_SageAtten220.bat`: the `&` broke it when started from a terminal (#74) [`40008f5`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/40008f5)
+- New cover images for every trainer card [`dbd1870`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/dbd1870)
+
+**2026-11-12**
+
+- Krea 2 LoKr: no more dtype error in the timestep embedding, and previews with the Turbo LoRA hook all 269 layers instead of 34 (also on Wan 2.2), by [@Synergyart](https://github.com/Synergyart) [`616d8d1`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/616d8d1) [`8d8a3bd`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/8d8a3bd)
+
 **2026-11-04**
 
 - <img src="https://img.shields.io/badge/NEW%20TRAINER-ff2d55?style=for-the-badge" alt="NEW TRAINER" height="22"> **FLUX.1 Dev, image LoRAs** — LoRA and LoKr on the transformer and T5-XXL in NF4, downloaded ready from `diffusers/FLUX.1-dev-bnb-4bit` with no token. 800 steps at 512² take about 16 minutes and peak at ~10 GB of VRAM on an RTX 5080 ([details](#flux1-dev--image-loras)) [`21965bb`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/21965bb)
@@ -308,7 +320,7 @@ git clone https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio.git
 Then, inside the folder:
 
 1. Double-click **`Install_LoRAlab-TrainerStudio.bat`**. It installs Git if it is missing (Windows asks for permission), Python 3.13.1 if it is missing, and one `venv` shared by every trainer: PyTorch 2.14 (CUDA 13.0), Diffusers from GitHub, Transformers, PEFT, bitsandbytes, Flask and the rest. It takes a while; at the end it shows the detected GPU and versions.
-2. *(Optional)* Double-click **`Install_Triton&SageAtten220.bat`** for Triton and SageAttention 2.2.
+2. *(Optional)* Double-click **`Install_Triton_SageAtten220.bat`** for Triton and SageAttention 2.2.
 
 Pick a disk with plenty of free space: every model is downloaded into this folder.
 
@@ -819,31 +831,4 @@ On Windows a sample that does not fit in VRAM is left out with a message instead
 
 ### MiniMax-H3 — video, audio and RefMods
 
-MiniMax-H3 is a 33B model that generates **video and audio together**. The official checkpoint is 498.5 GB; this trainer uses a 41 GB NF4 version and fits in 8 GB of VRAM with **block swap**.
-
-- **Datasets:** images, video clips (`.mp4`, `.mov`, `.mkv`, `.webm`), audio (`.wav`, `.mp3`, `.flac`, `.m4a`) or a mix, each with its `.txt`. Images teach appearance; clips teach how something **changes over time**.
-- **Prepare clips:** one button leaves every clip at **24 fps** with a valid **17n+5** frame count, stretching time slightly instead of cutting the end. Originals are kept in `_originals\`.
-- **Captioner:** Qwen3-VL-4B (4-bit, ~4.2 GB VRAM, ~6 s per image), with one prompt per content type (image, video, audio).
-- **VRAM profiles** for 32 / 24 / 16 / 12 / 10 / 8 GB cards size the block swap to your resolution and captions; choosing a smaller card than yours simulates it. Parked blocks can live in RAM, on disk (for 16 GB of RAM) or switch automatically.
-- **RefMod:** encodes a few reference stills or clips into a file that ComfyUI's `MiniMaxH3ReferenceToVideo` node uses as a native reference. No training: seconds instead of hours.
-- **Audio** as part of video clips trains well. **Audio-only training is still experimental:** past a point it degrades the video branch.
-- fp32 LoRA and optimizer (8-bit optimizers lose the fine facial detail on this model), deterministic sampling across resumes, and a full log in `train_log.txt`.
-
-| Verified starting point | Images | Video clips |
-| :--- | :--- | :--- |
-| Resolution | 576×576 | 192×192, 124 frames |
-| Rank / Alpha | 16 / 16 | 8 / 8 |
-| Learning rate | 2e-4 | 2e-4 |
-| Steps | 600 (~37 min on 16 GB) | 600 (~1 h 10 min on 16 GB) |
-
-Rank 16 matters for characters: with rank 8 the likeness is just as good, but the model starts ignoring the prompt (ask for a beach, get a bedroom). On an 8 GB card the same image run takes ~80 minutes instead of 37.
-
----
-
-### YuE2-3B — song LoRAs (voice AR + phrasing NAR) · ⚠ Experimental / Beta
-
-> [!WARNING]
-> **This trainer is experimental and in beta.** The settings below — defaults, "verified starting point", steps, rank and learning rates — are **not final** and should not be taken too seriously: they come from a handful of runs on one dataset. **Check every result by ear and keep adjusting it**; expect the recipe to change.
-
-> [!IMPORTANT]
-> **Real tests: the AR LoRA clones the singer's voice; the NAR LoRA does not.** To get an artist's voice, train the **`ar`** stage (or `both`) and load the AR LoRA in ComfyUI. A NAR LoRA alone changes how the codes are rendered, but the voice 
+MiniMa

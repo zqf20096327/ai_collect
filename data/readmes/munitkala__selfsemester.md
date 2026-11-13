@@ -13,7 +13,7 @@ of handwritten working back to Claude for marking against a rubric. Final marks 
 
 You can also write a course yourself in the **course builder**, with no Claude at all, and run it the same way.
 
-> **Status: early (0.6.0).** It works end to end but has had little real-world use. Expect rough edges.
+> **Status: early (0.7.0).** It works end to end but has had little real-world use. Expect rough edges.
 
 <p align="center"><img src="assets/screenshots/04-today.png" width="860" alt="The Today page in a SelfSemester window"></p>
 
@@ -25,6 +25,10 @@ You can also write a course yourself in the **course builder**, with no Claude a
 - **Lessons you can hear**: language, music and other courses where sound matters play every word, tone, phrase or
   chord right where it's taught, using free recordings by native speakers from Wikimedia Commons, with the computer's
   own voice or synthesised notes when no recording exists
+- **Figures you can try**: sliders, small simulations and self-checking drills inside the lesson, each sealed off
+  from the internet, your files and the rest of the app
+- **Tools you choose**: geometry, sheet music, 3D molecules and world maps for the subjects you study, picked after
+  installing or in Settings; a course that needs something more asks first
 - **Write your own course from documents you already have**: attach PDFs, Word files or slides to any lesson or
   piece of work, start with just one lesson, and add weeks, quizzes and exams while the course runs
 - **A classroom for every course**: home, weekly modules, syllabus, gradebook and your own materials
@@ -45,8 +49,10 @@ by the app and all the themes.
 
 ## What's new
 
-Version 0.6.0 lets you build a course from your own documents: attach PDFs, Word files or slides to any lesson or
-piece of work, start with just a name and a first lesson, and keep adding weeks and work while the course runs.
+Version 0.7.0 makes lessons something you can hear and try: language and music lessons play every word, tone and
+chord, lessons can have interactive figures, and you choose the tools for what you study (geometry, sheet music, 3D
+molecules, world maps), with a course asking before it installs anything else. Version 0.6.0 lets you build a course
+from your own documents.
 Version 0.5.0 added figures in lessons, themes, an Insights page, clearer feedback and layouts that fit any window. The full list is in
 [CHANGELOG.md](CHANGELOG.md), and what's planned is in [ROADMAP.md](ROADMAP.md).
 
@@ -57,7 +63,7 @@ Version 0.5.0 added figures in lessons, themes, an Insights page, clearer feedba
 | --- | --- |
 | Windows 10 or 11, 64-bit | Uses Microsoft Edge WebView2, which Windows 11 already has (the installer adds it on Windows 10 if needed). |
 | [Claude Code](https://claude.com/claude-code) | Installed and signed in **with a Claude subscription** (Pro or Max). SelfSemester runs your own copy of Claude Code; there's no API key to enter. |
-| Internet | Needed while a course is being built, while lesson sounds are being fetched, and whenever work is marked. Reading lessons and doing work happen offline. |
+| Internet | Needed while a course is being built, while lesson sounds or tools are being downloaded, and whenever work is marked. Reading lessons and doing work happen offline. |
 
 To build from source instead of downloading the installer, you also need Node.js 22.17+, Rust 1.85+ and the Visual
 Studio C++ build tools (see [Install](#install)).
@@ -99,7 +105,8 @@ Everything stays on your computer. The app has no server and no account system. 
 prompts, your course materials, your submitted work and review questions to Anthropic to generate and mark courses,
 under your agreement with Anthropic. The only other thing the app contacts is Wikimedia Commons, to find and download
 recordings for lesson sounds: it sends the word, phrase or sound it's looking for and nothing about you. You can turn
-that off in Settings, Lesson sounds. SelfSemester never reads, stores or sends your Claude sign-in.
+that off in Settings, Lesson sounds. When you install a tool, the app downloads its files from this project's GitHub
+releases; nothing about you is sent. SelfSemester never reads, stores or sends your Claude sign-in.
 Courses you write in the course builder never leave your computer, unless you ask Claude about one in review mode.
 
 | Folder | Contents |
@@ -203,6 +210,8 @@ src/                      SvelteKit interface (Today, Courses, Insights, course 
   lib/markdown.ts         lessons: Markdown, LaTeX maths (KaTeX) and figures
   lib/figures.ts          plots drawn from the maths, and cleaned SVG diagrams, with numbered captions
   lib/audio.ts            play buttons for lesson sounds
+  lib/widgets.ts          interactive figures: fills each slot with a sandboxed frame
+  lib/ToolList.svelte     Settings, Tools; lib/ToolSetup.svelte is the first-run picker
   lib/prefs.svelte.ts     themes and display settings
 src-tauri/src/
   claude/                 runs `claude -p` with a JSON schema, reads the result, spots usage limits
@@ -216,6 +225,9 @@ src-tauri/src/
     builder.rs            the course builder: drafts, publishing, folder export and import
     seal.rs               encrypted answer keys and exams
     audio.rs              lesson sounds: free recordings from Wikimedia Commons, computer voices, synthesised notes
+  widget.rs               serves interactive figures from their own address with a no-network policy
+  tools.rs                optional tools: catalog, checked downloads, install and remove
+tools/catalog.json        the tool list; scripts/pack-tools.mjs builds the files for a GitHub release
   db/                     SQLite schema, migrations, job queue
   worker.rs               background thread: runs one Claude job at a time and ticks the clock
                           (a second thread fills lesson sounds)

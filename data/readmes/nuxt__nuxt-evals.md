@@ -49,6 +49,7 @@ Unit tests for the token extraction and pricing in `scripts/cost.ts`.
 | `claude-opus-5.5` | `vercel-ai-gateway/claude-code` | `anthropic/claude-opus-5.5` |
 | `claude-fable-5` | `vercel-ai-gateway/claude-code` | `anthropic/claude-fable-5` |
 | `claude-fable-5.1` | `vercel-ai-gateway/claude-code` | `anthropic/claude-fable-5.1` |
+| `claude-fable-5.2` | `vercel-ai-gateway/claude-code` | `anthropic/claude-fable-5.2` |
 | `claude-sonnet-4.5` | `vercel-ai-gateway/claude-code` | `anthropic/claude-sonnet-4.5` |
 | `claude-sonnet-4.6` | `vercel-ai-gateway/claude-code` | `anthropic/claude-sonnet-4.6` |
 | `claude-sonnet-5` | `vercel-ai-gateway/claude-code` | `anthropic/claude-sonnet-5` |
@@ -58,6 +59,7 @@ Unit tests for the token extraction and pricing in `scripts/cost.ts`.
 | `deepseek-v4-pro` | `vercel-ai-gateway/opencode` | `vercel/deepseek/deepseek-v4-pro-0813` |
 | `gemini-3.1-pro-preview` | `vercel-ai-gateway/opencode` | `vercel/google/gemini-3.1-pro-preview` |
 | `gemini-4-argon` | `vercel-ai-gateway/opencode` | `vercel/google/gemini-4-argon` |
+| `gemini-4-carbon` | `vercel-ai-gateway/opencode` | `vercel/google/gemini-4-carbon` |
 | `glm-5.3` | `vercel-ai-gateway/opencode` | `vercel/zai/glm-5.3` |
 | `gpt-5.3-codex-xhigh` | `vercel-ai-gateway/codex` | `openai/gpt-5.3-codex?reasoningEffort=xhigh` |
 | `gpt-5.4-xhigh` | `vercel-ai-gateway/codex` | `openai/gpt-5.4?reasoningEffort=xhigh` |
@@ -70,6 +72,7 @@ Unit tests for the token extraction and pricing in `scripts/cost.ts`.
 | `kimi-k2.6` | `vercel-ai-gateway/opencode` | `vercel/moonshotai/kimi-k2.6` |
 | `kimi-k2.7-code` | `vercel-ai-gateway/opencode` | `vercel/moonshotai/kimi-k2.7-code` |
 | `kimi-k3` | `vercel-ai-gateway/opencode` | `vercel/moonshotai/kimi-k3` |
+| `kimi-k3.1-pro` | `vercel-ai-gateway/opencode` | `vercel/moonshotai/kimi-k3.1-pro` |
 | `minimax-m2.7` | `vercel-ai-gateway/opencode` | `vercel/minimax/minimax-m2.7` |
 | `minimax-m3` | `vercel-ai-gateway/opencode` | `vercel/minimax/minimax-m3` |
 
@@ -108,13 +111,30 @@ evals/nuxt-000-fix-data-fetching/
 3. Add broken or suboptimal starter code in `app/` for the agent to fix
 4. Add `EVAL.ts` with vitest assertions that check for the correct fix and reject anti-patterns
 5. Add `package.json` with `"type": "module"` and `"build": "nuxt build"`
-6. Run `pnpm run eval` — it will automatically run the new eval for all models
+6. Run it for tier-1 models only (see [Model retention policy](#model-retention-policy)). Tier-2 models keep their last measurement and are not rerun
 
 ## Adding a new model
 
 1. Create a config in `experiments/` (e.g., `experiments/my-model.ts`)
 2. Add the display name to `MODEL_NAMES` in `scripts/export-results.ts`
 3. Run `pnpm run eval` — it will automatically run all evals for the new model
+4. Decide its tier and update `TIER_ONE_EXPERIMENTS` in `scripts/tier-one.ts` (see below)
+
+## Model retention policy
+
+Mirrors [nextjs.org/evals](https://github.com/vercel/next-evals-oss#model-retention-policy). The published board has two tiers:
+
+- **Tier 1 (current)**: models with a complete run of the current eval set. Tier 1 carries the **latest model of each product line**, and a new version moves its predecessor to tier 2 right away. Sibling lines count separately, but only flagship or coding-focused models are measured: no budget or fast variants. A tier-1 model that goes stale because the eval set moved on gets rerun, not left on old measurements.
+- **Tier 2 (previously measured)**: every other model keeps its last measured results for reference, dated by its `timestamp`, and is not rerun.
+
+Tier 1 is scored over the full current eval set: an eval it never ran exports with `notAvailable: true` and counts as not passed until it is rerun. Tier 2 is scored over the evals it was measured on, so adding an eval doesn't lower it. An eval that changed since a model's last run keeps that last result.
+
+`TIER_ONE_EXPERIMENTS` in `scripts/tier-one.ts` is the list, and each experiment exports a `tier` field. When the eval set changes, rerun only tier 1:
+
+```bash
+pnpm run eval:tier1:status   # what each tier-1 experiment is missing
+pnpm run eval:tier1          # run it
+```
 
 ## Publishing to nuxt.com/evals
 
@@ -131,7 +151,7 @@ cp agent-results.json <path-to-nuxt.com>/agent-results.json
 
 ## Current evals
 
-### Nuxt (21)
+### Nuxt (22)
 
 | Eval | Type | Tests |
 |------|------|-------|
@@ -156,6 +176,7 @@ cp agent-results.json <path-to-nuxt.com>/agent-results.json
 | nuxt-018-nuxt5-migration | fix | Opt into compatibilityVersion 5 and update deprecated data fetching |
 | nuxt-019-nuxt5-runtime-semantics | fix | Reserve client-only space with ClientOnly and target Vite environments |
 | nuxt-020-fix-nuxt-module | fix | Fix a local module's meta, namespacing, config merging, and dependencies |
+| nuxt-021-custom-fetch-client | fix | Replace a `globalThis.$fetch` override with a provided `$fetch.create` client |
 
 ### Nuxt Content (2)
 

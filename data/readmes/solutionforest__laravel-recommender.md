@@ -3,7 +3,7 @@
 <p align="center"><strong>Build a “for you” feed from the interactions your Laravel app already records.</strong></p>
 <p align="center">
   <img src="https://img.shields.io/badge/PHP-8.3%2B-777BB4?logo=php&logoColor=white" alt="PHP 8.3+">
-  <img src="https://img.shields.io/badge/Laravel-11%E2%80%9313-FF2D20?logo=laravel&logoColor=white" alt="Laravel 11–13">
+  <img src="https://img.shields.io/badge/Laravel-10%E2%80%9313-FF2D20?logo=laravel&logoColor=white" alt="Laravel 10–13">
   <a href="https://phpstan.org/"><img src="https://img.shields.io/badge/PHPStan-level%208-brightgreen.svg?logo=php&amp;logoColor=white" alt="PHPStan level 8"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
   <a href="https://github.com/solutionforest/laravel-recommender/actions/workflows/tests.yml"><img src="https://github.com/solutionforest/laravel-recommender/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
@@ -16,21 +16,21 @@ Your users view, like, or purchase things. This package reads those events from 
 Your interactions → scheduled score updates → ranked items → JSON or Blade
 ```
 
-**You provide:** item and interaction tables, visibility rules, and the fields to display. **The package provides:** ranking, cached lists, a shared trending feed, and tools to inspect results. It does not record interactions for you. New or sparse data may produce trending results or an empty feed.
+**You provide:** item and interaction tables, visibility rules, and the fields to display. **The package provides:** ranking, cached lists, a shared trending feed, and tools to inspect results. Your app decides when to record interactions; the package also offers an explicit write helper. New or sparse data may produce trending results or an empty feed.
 
 ## How we recommend
 
 Imagine a reader likes post A. If other readers interacted with both A and B, post B can become a suggestion. Popular recent posts can also appear, and you can add your own rules.
 
 1. **Learn from activity:** scheduled commands update trending scores and find items that users interacted with together (called neighbours).
-2. **Build a list:** sources suggest candidates; the package filters out disallowed items, combines their scores, and can apply optional boosts, exploration and diversity rules.
+2. **Build a list:** sources suggest candidates; the package filters out disallowed items, combines their scores, and can apply optional boosts, randomness (`jitter`), exploration and diversity rules.
 3. **Serve the feed:** the ranked list and cards are cached. Guests use a shared trending list; users with little history may see mostly trending items. If there are no eligible items, the feed can be empty.
 
-Your app records the interactions (or lets `$post->recordInteraction($user, 'like')` write them with your feed's mapping) and controls visibility and card fields. Cards are shared across viewers, so add viewer-specific fields separately. The package stores derived scores, daily counters and neighbours in four `rec_*` tables. When ranked and trending items run out, feeds with a model continue with the newest items, so scrolling does not hit a wall. See [how it works](docs/how-it-works.md) for the full flow and [operations](docs/operations.md) for cache and production details.
+Your app records the interactions (or lets `$post->recordInteraction($user, 'like')` write them with your feed's mapping) and controls visibility and card fields. Cards are shared across viewers, so add viewer-specific fields separately. The package stores derived scores, daily counters and neighbours in four `rec_*` tables. When ranked and trending items run out, feeds with a model can continue with the newest eligible items. See [how it works](docs/how-it-works.md) for the full flow and [operations](docs/operations.md#seen-memory-and-impressions) for memory and impression costs.
 
 ## Your first feed
 
-Requires PHP 8.3+ and Laravel 11, 12, or 13. In an app with a `Post` model and interaction tables (`post_likes`, `post_views` with `user_id`, `post_id`, `created_at`):
+Requires PHP 8.3+ and Laravel 10, 11, 12, or 13. Laravel 10 is past its end of life (no more security fixes from Laravel), so its support here is best-effort and will be dropped in a future minor release; plan your upgrade. In an app with a `Post` model and interaction tables (`post_likes`, `post_views` with `user_id`, `post_id`, `created_at`):
 
 **1. Install and set up**
 
@@ -80,6 +80,8 @@ That's it. The response is Laravel's paginator JSON (with `next_cursor` for infi
 ],
 ```
 
+For a related-posts block, `$post->similar(6)` returns the cards of the posts most often liked together with this one. See [similar items](docs/reference.md#similar-items-related-posts).
+
 **[Follow the first-feed tutorial →](docs/tutorial.md)** for other table shapes, custom classes and troubleshooting.
 
 ## Choose your next step
@@ -94,6 +96,7 @@ That's it. The response is Laravel's paginator JSON (with `next_cursor` for infi
 | Look up methods, contracts and configuration | [Reference](docs/reference.md) |
 | Monitor feeds in the browser | [Dashboard](docs/dashboard.md) |
 | Run, monitor or rebuild in production | [Operations](docs/operations.md) |
+| See measured speed, load and concurrency results | [Performance](docs/performance.md) |
 | Explore the formulas | [Maths](docs/maths.md) (optional) |
 | Adapt an integration | [Examples](examples/) — blog, products, events and reviews |
 

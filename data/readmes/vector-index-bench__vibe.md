@@ -274,7 +274,7 @@ Deprecated datasets will remain available, but their benchmark results will not 
 | [Jasper](https://github.com/saltsystemslab/Jasper) | git+23647b9 |
 | [LVQ (SVS)](https://github.com/intel/ScalableVectorSearch) | 0.4.0 |
 | [LeanVec (SVS)](https://github.com/intel/ScalableVectorSearch) | 0.4.0 |
-| [LoRANN](https://github.com/ejaasaari/lorann) | 1.0 |
+| [LoRANN](https://github.com/ejaasaari/lorann) | 1.0.1 |
 | [MLANN](https://github.com/ejaasaari/mlann) | git+de8f9d6 |
 | [MRPT](https://github.com/vioshyvo/mrpt) | 2.0.4 |
 | [NGT-ONNG](https://github.com/yahoojapan/NGT/) | 2.7.4 |
@@ -284,6 +284,7 @@ Deprecated datasets will remain available, but their benchmark results will not 
 | [PDX](https://github.com/cwida/PDX) | git+93531b9 |
 | [PUFFINN](https://github.com/puffinn/puffinn) | git+fd86b0d |
 | [PyNNDescent](https://github.com/lmcinnes/pynndescent) | 0.6.0 |
+| [QA-ScaNN](https://github.com/HNSWbeatsLSH/QA-ScaNN) | 0.1.1 |
 | [RoarGraph](https://github.com/matchyc/RoarGraph) | git+f2b49b6 |
 | [ScaNN](https://github.com/google-research/google-research/tree/master/scann) | 1.4.2 |
 | [SymphonyQG](https://github.com/VectorDB-NTU/RaBitQ-Library) | 0.3.7 |

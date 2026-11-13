@@ -68,8 +68,12 @@ macOS (Apple silicon, macOS 11 or later) or Linux (x86_64, glibc 2.35 or later, 
 curl -fsSL https://raw.githubusercontent.com/mtr1920/opstrellis/main/install.sh | bash
 ```
 
-That's it. Run the same command again any time to update; your settings, history, models and keys
-are kept. To check the installed version, run `opstrellis --version` or open Settings → About.
+That's it. To update, open Settings → About, click **Check for updates**, then **Download update**
+and **Restart to update** once it's downloaded; the update is signed, and checked before it's
+installed. Running the same command again also updates. A `.deb` install is updated by installing
+the new `.deb` from the [releases page](https://github.com/mtr1920/opstrellis/releases) (the command
+would add a second copy, an AppImage). Your settings, history, models and keys are kept either way. To check the installed version, run
+`opstrellis --version` or open Settings → About.
 
 <details>
 <summary>What the installer does, and other options</summary>
@@ -166,7 +170,7 @@ are kept. To check the installed version, run `opstrellis --version` or open Set
 | Style per app | Personal, work, email, AI prompts and other categories, each formal, casual, very casual or excited, with optional "how you write here" notes for AI polish. The category comes from the focused app and window title; Style → Apps lets you correct it. |
 | AI prompts | Dictating to ChatGPT, Claude, Cursor or an AI agent in a terminal (Claude Code, Codex, Aider, Gemini CLI) gets prompt cleanup: instructions kept, file names, paths and flags written as code, and optional light structure (Goal, Context, Constraints) for long prompts. |
 | Auto action | Optional, per app category: run an action such as "Polish" or "Make formal" on every dictation before it's inserted. Off by default; never in a plain terminal shell. |
-| Command mode | Select text, hold the command shortcut and say what to do, or name a saved action (Library → Actions). With nothing selected, it writes new text. Actions can copy their result instead: select a message and say "reply saying Thursday works" or "summarize". By default, before a rewrite of long text (over 280 characters) replaces your selection, the pill shows it: **Enter** inserts it, **Esc** discards it (Paste last still inserts it); Settings → AI polish → Review AI rewrites (only long text, always or never; not on Wayland). |
+| Command mode | Select text, hold the command shortcut and say what to do, or name a saved action (Library → Actions). With nothing selected, it writes new text; a built-in action named alone ("polish") asks you to select the text first. Actions can copy their result instead: select a message and say "reply saying Thursday works" or "summarize". By default, before a rewrite of long text (over 280 characters) replaces your selection, the pill shows it: **Enter** inserts it, **Esc** discards it (Paste last still inserts it); Settings → AI polish → Review AI rewrites (only long text, always or never; not on Wayland). |
 | Snippets | A spoken trigger expands to saved text, with `{date}`, `{weekday}`, `{time}` and `{clipboard}` placeholders. |
 | Auto-learn dictionary | Optional: correct a dictation in History and misheard words become dictionary entries (`Karl → Karol`). Changes that don't sound like mis-hearings are learned only when you make them twice; common words are never turned into replacements; Undo restores the dictionary. |
 | Tech terms and term packs | About 330 developer and workplace terms (`kubectl`, `PostgreSQL`, `Next.js`, `Jira`, `OKR`, `Claude Code`, `Codex`). Common mis-hearings are fixed (`cube control → kubectl`); your own dictionary and snippets always win. Optional packs for data and ML, product and design, and finance, or import your own (Style → Term packs, with a preview of what it replaces). A pack's terms are sent as hints, so the transcriber prefers their spellings: a built-in pack's even before you say them, an imported pack's once you have. The tech pack's distinctive product names (Claude, Codex, Gemini, DeepSeek, Supabase, Vercel…) are hints from the first dictation, and local Parakeet models are steered toward hints as they decode. [Contribute a pack](CONTRIBUTING.md#contributing-a-term-pack). |
@@ -279,6 +283,9 @@ other software running as you can read OpsTrellis's files directly.
 - Optional update check (off by default, Settings → About): once a day OpsTrellis asks github.com
   for the latest version number. The request carries no account, device or usage data (GitHub sees
   your IP address, as with any request), and nothing is installed automatically.
+- Only when you click **Download update** does OpsTrellis download the update from github.com (the
+  release's `latest.json`, then the build for your system). It is installed when you click
+  **Restart to update**.
 
 ## OpsTrellis Cloud (optional, self-hosted)
 

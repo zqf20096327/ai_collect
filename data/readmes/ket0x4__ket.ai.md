@@ -1,13 +1,14 @@
 # Ket AI - Telegram Bot
 
 Ket is an AI bot that joins Telegram groups and chats like a fun, opinionated
-buddy rather than a formal assistant. It is powered by Google Gemini, follows
-the conversation, remembers context, and can jump in on its own.
+buddy rather than a formal assistant. It is powered by any OpenAI API-compatible
+LLM endpoint, follows the conversation, remembers context, and can jump in on
+its own.
 
 ## Features
 
-- Gemini-backed replies (`gemini-3.8-flash` / `gemini-3.5-flash-lite`) with
-  conversation context.
+- Replies through any OpenAI-compatible API (OpenAI, llama-server, vLLM, etc.)
+  with conversation context.
 - Hybrid vector memory (RAG) per group: up to 10,000 facts, indexed by user,
   ranked by similarity plus recency, with TTL categories and automatic
   replacement of outdated facts.
@@ -19,9 +20,9 @@ the conversation, remembers context, and can jump in on its own.
   data, edit, and send results back to Telegram.
 - Spontaneous mode: occasionally joins the chat on its own (configurable
   probability).
-- Agentic tool use with safeguards: `web_search`, `fetch_url`,
-  `execute_code` / `execute_bash`, workspace tools (`list`, `search`, `read`,
-  `edit`, `write`, `send`, `reset`), and `update_plan`. The loop tracks a run
+- Agentic tool use with safeguards: `fetch_url`, `execute_code` /
+  `execute_bash`, workspace tools (`list`, `search`, `read`, `edit`, `write`,
+  `send`, `reset`), and `update_plan`. The loop tracks a run
   budget, suppresses repeated identical tool calls, escalates on repeated tool
   failures, and compacts long context.
 - Concurrent processing with `/stop` cancellation and an agent timeout.
@@ -34,7 +35,7 @@ the conversation, remembers context, and can jump in on its own.
 - Runtime: Bun
 - Language: TypeScript
 - Database: `bun:sqlite`
-- AI: `@google/genai` (Google Gemini)
+- AI: `openai` SDK (any OpenAI-compatible endpoint)
 - Telegram: grammY (long polling)
 - Containerization: Docker (distroless binary)
 
@@ -45,13 +46,23 @@ Create a `config.json` in the project root:
 ```json
 {
   "telegram_bot_token": "YOUR_TELEGRAM_BOT_TOKEN",
-  "gemini_api_key": "YOUR_GEMINI_API_KEY",
-  "gemini_model": "gemini-3.8-flash",
+  "openai_api_key": "YOUR_OPENAI_API_KEY",
+  "openai_base_url": "http://localhost:8080/v1",
+  "openai_model": "default",
+  "openai_embedding_model": "text-embedding-3-small",
+  "openai_embedding_base_url": "",
+  "openai_embedding_api_key": "",
   "bot_owner_id": 123456789,
   "chat_history_limit": 8,
   "default_reply_probability": 0.05
 }
 ```
+
+Embeddings can use a separate OpenAI-compatible endpoint and key with
+`openai_embedding_base_url` and `openai_embedding_api_key`. When either is
+omitted or empty, the main `openai_base_url` / `openai_api_key` is used.
+`openai_embedding_model` selects the embedding model independently of the chat
+model.
 
 See `config.example.json` for all options. You also need a `system.txt` file in
 the project root that defines the bot's persona and instructions.
@@ -85,5 +96,5 @@ The Dockerfile compiles the app into a standalone distroless binary.
 
 ## License
 
-Developed for private use. Follow the Telegram API and Google API terms of
+Developed for private use. Follow the Telegram API and OpenAI API terms of
 service when using it.

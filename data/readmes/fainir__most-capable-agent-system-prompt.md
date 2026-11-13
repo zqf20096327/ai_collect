@@ -30,6 +30,7 @@ For AI and ML news, [read MyFeed's public topic feed](https://myfeed.space/ai?ut
 ## Contents
 
 - [Quick start](#quick-start)
+  - [Try one task with a check](#try-one-task-with-a-check)
   - [Try a prompt regression offline](#try-a-prompt-regression-offline)
   - [Test the first click in a browser](#test-the-first-click-in-a-browser)
 - [How to use it](#how-to-use-it)
@@ -55,6 +56,12 @@ curl -fsSL https://raw.githubusercontent.com/fainir/most-capable-agent-system-pr
 
 On Linux, replace `| LANG=en_US.UTF-8 pbcopy` with `| xclip -selection clipboard` or `| wl-copy`. To save it to a file instead, replace it with `> prompt.md`.
 
+### Try one task with a check
+
+In a new project folder, paste the system prompt into your coding agent. Then [try a six-row CSV cleanup](examples/verified-first-task.md) as its first task. The exercise gives the agent a concrete output to verify before it calls the task done.
+
+**Try a screen-reading task on Android.** Handy AI uses Claude and needs Android 11 or later and Accessibility permission. [Install Handy AI from Google Play](https://play.google.com/store/apps/details?id=com.claudeagent.phone&utm_source=github&utm_campaign=mcasp_handy_screen_read), then [follow the setup guide](https://gethandyai.app/#install). Open a screen with text you know and are comfortable sharing. Say or type “Read the text on this screen,” then check that Handy AI reads a line that is actually there.
+
 ### Try a prompt regression offline
 
 [Run the RegressGuard quick start](https://github.com/fainir/regressguard#quick-start) with Python 3.11 or later. Run the same three cases against two sets of saved model replies. The baseline passes all three. The changed replies fail two and return exit code `1`. The stub runs locally without an API key.
@@ -69,14 +76,9 @@ For interview prep, the [Interview Quick Review Pack](https://fainir.gumroad.com
 
 [Walk through the OpenWorld startup repair](examples/openworld-first-play.md). Fail a single Three.js request, recover with Retry, and check that the game reaches its controls. Use the same sequence to test an agent’s claim that a UI fix works.
 
-For a file upload, use a synthetic export in a signed-out browser. Save these two lines as `pocket-test.csv` and open [the KeepFinding guest importer](https://keepfind.ing/pocket?utm_source=github&utm_medium=readme&utm_campaign=mcasp-pocket-preview).
+To test a file upload, open [pocket-test.csv](examples/pocket-test.csv). On desktop, choose **Download raw file**. On a phone, open **Edit and raw actions** and choose **Download**. In a signed-out browser, open [the KeepFinding guest importer](https://keepfind.ing/pocket?utm_source=github&utm_medium=readme&utm_campaign=mcasp-pocket-preview).
 
-```csv
-title,url,time_added,tags,status
-Sample bookmark,https://example.com/,1761955200,qa,unread
-```
-
-Select **Import your Pocket export** and choose the file. The preview should say **1 link · read as Pocket export**. For this test, stop at the preview.
+Select **Import your Pocket export** and choose the sample file. The preview should say **1 link · read as Pocket export**. For this test, stop at the preview.
 
 ## How to use it
 
@@ -2727,14 +2729,4 @@ Once the core system is working, consider adding advanced capability-building la
 - automatic eval generation from real failures, incidents, and human corrections
 - workflow compilers that turn successful repeated work into reusable recipes
 - simulation or sandbox environments for testing risky workflows before touching production systems
-- shadow-mode business operations where the system proposes actions without executing them
-- shadow-mode scientific programs where the system generates hypotheses and plans before running expensive experiments
-- internal red-team agents that attack prompts, policies, and workflows to expose failure modes
-- adversarial reviewer or judge profiles for high-risk changes
-- consensus or voting mechanisms when important decisions benefit from multiple perspectives
-- environment snapshotting so complex tasks can resume cleanly after interruption
-- worktree or branch isolation per task when git is available
-- local caches for documentation, research, and repeated external queries
-- knowledge freshness monitors that detect stale facts and force revalidation
-- workflow chain builders that automatically launch follow-up tasks after specific triggers
-- ano
+- 

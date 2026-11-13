@@ -40,7 +40,7 @@ in [`docs/BENCHMARKS.md`](docs/BENCHMARKS.md).
 
 | | |
 |---|---|
-| **Install** | `pip install tinydoc` (0.3.0) · `pip install 'tinydoc[pdf,ui]'` for multipage + local UI |
+| **Install** | `pip install tinydoc` (0.3.1) · `pip install 'tinydoc[pdf,ui]'` for multipage + local UI |
 | **Runtime** | Local Ollama; Python 3.9+; no API key |
 | **Readers** | `qwen2.5vl:3b` (quality) · `qwen3-vl:2b-instruct` (fast) |
 | **Output** | Schema-valid JSON + per-field quote/bbox + confidence + optional overlay PNG |
@@ -242,6 +242,14 @@ with no completion reason, and one valid JSON with no total. The 0.3.0 wheel on
 PyPI does **not** contain the fix. Method, exact intervals, residual categories,
 and artifacts:
 [`evaluation/invoice/PT_REAL_RESULTS.md`](evaluation/invoice/PT_REAL_RESULTS.md).
+
+A validated targeted tax retry is also in progress on `main`: on a fresh
+100-document set (seed 44) it moves tax 51/82 → 61/82 and field accuracy
+401/570 → 411/570 (+10 fields, +1.8 pp), fully correct 19 → 21, with no field
+regression. It re-reads only the final page at 2400 px on ~23% of documents,
+triggered by a structurally implausible printed tax, and accepts a candidate
+only when the implied VAT rate is 1.0–27.5%. See
+[`evaluation/invoice/PT_TAX_RETRY.md`](evaluation/invoice/PT_TAX_RETRY.md).
 
 **DocVQA reading probe** — 200 public images, one question per image, 768 px
 mirror, one reference answer. Qwen3-VL-2B-Instruct scores **0.829 ANLS** and

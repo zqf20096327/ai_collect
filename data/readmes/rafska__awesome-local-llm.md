@@ -280,6 +280,7 @@ A curated list of awesome platforms, tools, practices and resources that helps r
 
 ### Agent Frameworks
 
+- <img src="https://img.shields.io/github/stars/nousresearch/hermes-agent?style=social" height="17" align="texttop"/> [hermes-agent](https://github.com/nousresearch/hermes-agent) - the agent that grows with you
 - <img src="https://img.shields.io/github/stars/Significant-Gravitas/AutoGPT?style=social" height="17" align="texttop"/> [AutoGPT](https://github.com/Significant-Gravitas/AutoGPT) - a powerful platform that allows you to create, deploy, and manage continuous AI agents that automate complex workflows
 - <img src="https://img.shields.io/github/stars/langflow-ai/langflow?style=social" height="17" align="texttop"/> [langflow](https://github.com/langflow-ai/langflow) - a powerful tool for building and deploying AI-powered agents and workflows
 - <img src="https://img.shields.io/github/stars/langchain-ai/langchain?style=social" height="17" align="texttop"/> [langchain](https://github.com/langchain-ai/langchain) - build context-aware reasoning applications
@@ -289,6 +290,7 @@ A curated list of awesome platforms, tools, practices and resources that helps r
 - <img src="https://img.shields.io/github/stars/microsoft/autogen?style=social" height="17" align="texttop"/> [autogen](https://github.com/microsoft/autogen) - a programming framework for agentic AI
 - <img src="https://img.shields.io/github/stars/crewAIInc/crewAI?style=social" height="17" align="texttop"/> [crewAI](https://github.com/crewAIInc/crewAI) - a framework for orchestrating role-playing, autonomous AI agents
 - <img src="https://img.shields.io/github/stars/FlowiseAI/Flowise?style=social" height="17" align="texttop"/> [Flowise](https://github.com/FlowiseAI/Flowise) - build AI agents, visually
+- <img src="https://img.shields.io/github/stars/pingdotgg/t3code?style=social" height="17" align="texttop"/> [t3code](https://github.com/pingdotgg/t3code) - an agent harness control surface
 - <img src="https://img.shields.io/github/stars/run-llama/llama_index?style=social" height="17" align="texttop"/> [llama_index](https://github.com/run-llama/llama_index) - the leading framework for building LLM-powered agents over your data
 - <img src="https://img.shields.io/github/stars/agno-agi/agno?style=social" height="17" align="texttop"/> [agno](https://github.com/agno-agi/agno) - a full-stack framework for building Multi-Agent Systems with memory, knowledge and reasoning
 - <img src="https://img.shields.io/github/stars/simstudioai/sim?style=social" height="17" align="texttop"/> [sim](https://github.com/simstudioai/sim) - open-source platform to build and deploy AI agent workflows
@@ -346,13 +348,16 @@ A curated list of awesome platforms, tools, practices and resources that helps r
 - <img src="https://img.shields.io/github/stars/block/goose?style=social" height="17" align="texttop"/> [goose](https://github.com/block/goose) - an open-source, extensible AI agent that goes beyond code suggestions
 - <img src="https://img.shields.io/github/stars/Aider-AI/aider?style=social" height="17" align="texttop"/> [aider](https://github.com/Aider-AI/aider) - AI pair programming in your terminal
 - <img src="https://img.shields.io/github/stars/continuedev/continue?style=social" height="17" align="texttop"/> [continue](https://github.com/continuedev/continue) - create, share, and use custom AI code assistants with our open-source IDE extensions and hub of models, rules, prompts, docs, and other building blocks
-- <img src="https://img.shields.io/github/stars/TabbyML/tabby?style=social" height="17" align="texttop"/> [tabby](https://github.com/TabbyML/tabby) -  an open-source GitHub Copilot alternative, set up your own LLM-powered code completion server
+- <img src="https://img.shields.io/github/stars/TabbyML/tabby?style=social" height="17" align="texttop"/> [tabby](https://github.com/TabbyML/tabby) - an open-source GitHub Copilot alternative, set up your own LLM-powered code completion server
+- <img src="https://img.shields.io/github/stars/QwenLM/qwen-code?style=social" height="17" align="texttop"/> [qwen-code](https://github.com/QwenLM/qwen-code) - an open-source AI coding agent that lives in your terminal
 - <img src="https://img.shields.io/github/stars/voideditor/void?style=social" height="17" align="texttop"/> [void](https://github.com/voideditor/void) - an open-source Cursor alternative, use AI agents on your codebase, checkpoint and visualize changes, and bring any model or host locally
 - <img src="https://img.shields.io/github/stars/charmbracelet/crush?style=social" height="17" align="texttop"/> [crush](https://github.com/charmbracelet/crush) - the glamourous AI coding agent for your favourite terminal
 - <img src="https://img.shields.io/github/stars/Kilo-Org/kilocode?style=social" height="17" align="texttop"/> [kilocode](https://github.com/Kilo-Org/kilocode) - open source AI coding assistant for planning, building, and fixing code
 - <img src="https://img.shields.io/github/stars/RooCodeInc/Roo-Code?style=social" height="17" align="texttop"/> [Roo-Code](https://github.com/RooCodeInc/Roo-Code) - a whole dev team of AI agents in your code editor
 - <img src="https://img.shields.io/github/stars/humanlayer/humanlayer?style=social" height="17" align="texttop"/> [humanlayer](https://github.com/humanlayer/humanlayer) - the best way to get AI coding agents to solve hard problems in complex codebases
 - <img src="https://img.shields.io/github/stars/openchamber/openchamber?style=social" height="17" align="texttop"/> [openchamber](https://github.com/openchamber/openchamber) - Agentic Development Environment based on OpenCode AI agent
+- <img src="https://img.shields.io/github/stars/SWE-agent/mini-swe-agent?style=social" height="17" align="texttop"/> [mini-swe-agent](https://github.com/SWE-agent/mini-swe-agent) - the 100 line AI agent that solves GitHub issues or helps you in your command line
+- <img src="https://img.shields.io/github/stars/moonshotai/kimi-code?style=social" height="17" align="texttop"/> [kimi-code](https://github.com/moonshotai/kimi-code) - the starting point for next-gen agents
 - <img src="https://img.shields.io/github/stars/ThePrimeagen/99?style=social" height="17" align="texttop"/> [99](https://github.com/ThePrimeagen/99) - neovim AI agent done right
 - <img src="https://img.shields.io/github/stars/carlrobertoh/ProxyAI?style=social" height="17" align="texttop"/> [ProxyAI](https://github.com/carlrobertoh/ProxyAI) - the leading open-source AI copilot for JetBrains
 

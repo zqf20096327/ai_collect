@@ -39,7 +39,9 @@
 
 **Latest**
 
-- **v0.2.40, November 10 — Flash-Next decodes 24 % faster with the same tokens, uses the whole card, and always reads images:** at `--gpus 2 --ctx 262000 --parallel 4 --spec` one conversation at 33–39K tokens decodes at **37.3 → 46.2 tok/s** (**36.6 → 44.9 tok/s** at temperature 1.0) and its 33.4K-token prompt reads in 33.1 s instead of 37.0, every greedy reply byte-identical to v0.2.39. Found with a [profile](#new-in-v0240): the card no longer idles while a missed expert uploads, the speculation guard re-tries rounds after 6 steps instead of 48, and three changes give the expert cache memory that sat unused — the token embedding moved to system RAM, the context buffers grow with the conversation, and the cards are filled to a real 1 GiB margin instead of leaving ~4 GiB free (**304 / 280 expert slots a layer, were 203 / 165**). The image encoder is now part of every Flash-Next load. One lane (`--parallel 1`): 38.2 → 45.9 tok/s.
+- **v0.2.42, November 13 — DeepSeek-V4.1's VRAM expert set follows the conversation too:** a hot RAM expert trades places with the coldest expert of the fixed VRAM set, about once a token and card, with no extra memory: **16.4 → 17.7 tok/s** on one conversation, **13.8 → 17.2 tok/s** with three requests at once, greedy replies identical on and off. Also: Flash-Next honours `--no-prompt-cache` at one request lane and says when it does not take `--prefill-chunk`, a contributed container build (`Containerfile.b70`), and the first four-card numbers measured by a user. [Details](#new-in-v0242).
+- **v0.2.41, November 12 — DeepSeek-V4.1 and MiMo-V2.6 keep the experts the conversation is using in fast memory:** both models held a fixed set of experts in VRAM and RAM, chosen by a ranking file. On real traffic expert use is strongly recent, so the sets now follow it. **DeepSeek-V4.1** (default on): an expert read from the NVMe tier takes the RAM place of the layer's coldest RAM expert, with no extra memory: one conversation of prose / code / prose turns decodes at **12.4 / 6.9 / 10.6 → 14.1 / 13.1 / 14.6 tok/s**, and greedy replies are identical with it on and off. **MiMo-V2.6** (opt-in, `IE_MIMO26_ADAPTIVE=1`, 34 GiB more RAM): every VRAM slot follows recent use: **19.0 → 23.9 tok/s**. [Details](#new-in-v0241). Also in v0.2.41: a Flash-Next load without its image encoder file is text-only again, not an error: v0.2.40 refused to load Flash-Next when no mmproj file was beside the model. The encoder is still loaded at the start whenever the file is there; without it the model now loads text-only with a warning that says what to add. `IE_VISION_REQUIRED=1` keeps v0.2.40's behaviour for a deployment where a model that cannot see must not load, and a file `ie.env` beside the `ie` binary can hold such `IE_NAME=value` defaults for one machine.
+- **v0.2.40, November 10 — Flash-Next decodes 24 % faster with the same tokens, uses the whole card, and always reads images:** at `--gpus 2 --ctx 262000 --parallel 4 --spec` one conversation at 33–39K tokens decodes at **37.3 → 46.2 tok/s** (**36.6 → 44.9 tok/s** at temperature 1.0) and its 33.4K-token prompt reads in 33.1 s instead of 37.0, every greedy reply byte-identical to v0.2.39. Found with a [profile](#new-in-v0240): the card no longer idles while a missed expert uploads, the speculation guard re-tries rounds after 6 steps instead of 48, and three changes give the expert cache memory that sat unused — the token embedding moved to system RAM, the context buffers grow with the conversation, and the cards are filled to a real 1 GiB margin instead of leaving ~4 GiB free (**304 / 280 expert slots a layer, were 203 / 165**). The image encoder loads with every Flash-Next load that has its file. One lane (`--parallel 1`): 38.2 → 45.9 tok/s.
 - **v0.2.39, November 10 — long conversations stop re-reading themselves:** on the request lanes (`--parallel N`) one changed token anywhere in a conversation's history used to re-read the whole prompt — 53 times and 7,711 seconds in one 37-hour session. Every lane now keeps [restart points](#new-in-v0239): a prompt with one word changed 85 % in reads in **14.6 s instead of 38.3 s**, a rewritten last turn reads 30 tokens instead of 33,609, replies byte-identical. Also: a reference check for [any architecture and any quant](#new-in-v0239) that found and fixed five engine defects, dense models on Intel GPUs without a matrix engine, and a 40-minute soak gate.
 - **v0.2.38, November 8 — Flash-Next on four cards reads prompts up to 60 % faster:** on three or more cards every stage of the [layer split](#new-in-v0238) now reads its part of the prompt on its own thread; before, stages 1 … N − 1 read one after another. A 12,069-token prompt on four stages (two per card here) reads **572 → 910 tok/s**, and **610 → 975** with the request lanes, with byte-identical replies. The scheduling is a small header with its own race test, and two cards are unchanged. [Details](#new-in-v0238)
 - **v0.2.37, November 8 — Qwen 4's possible shapes tested before the weights exist, and Flash-Next decodes 12 % faster:** a new [mini end-to-end check](#new-in-v0237) builds small random models from the Hugging Face reference code in 15 shapes a Qwen 4 tier may take (dense, hidden 5120, 4 KV heads, no sparse-attention indexer, fused expert banks, …), writes them in llama.cpp's layout and compares the engine's output with the reference. It found that hidden 5120 lost the GPU and that dense and indexer-less files were refused; all fixed. Fused gate/up expert banks load. Flash-Next's hyper-connection mixing reads 8-bit and its expert routing runs on the GPU when that pays: two cards **44.4 → 49.7 tok/s**, the tokens unchanged. [Details](#new-in-v0237)
@@ -221,6 +223,92 @@ class ([New in v0.2.6](#new-in-v026)).
 
 ---
 
+<a id="new-in-v0242"></a>
+## 🆕 New in v0.2.42
+
+### DeepSeek-V4.1: the fixed VRAM expert set follows the conversation
+
+v0.2.41 let the RAM set follow the traffic (an expert read from NVMe takes the coldest RAM expert's place). The VRAM set was still fixed by the ranking file: its experts have no copy in RAM, and RAM is full, so they cannot simply be made replaceable. Now, at the end of a decode step, the hottest RAM expert the step found in a replaceable slot trades places with the coldest fixed-set expert the step did not use: the old one is read back into the newcomer's place in RAM, the newcomer is copied into the fixed slot. A step's uploads also go to the experts used most lately. No extra RAM or VRAM. Default on; `IE_DS41_EXCHANGE=0` turns it off.
+
+Measured on 2 × Arc Pro B70 + 256 GB RAM, `--gpus 2 --ctx 265000 --parallel 4 --slot-ctx 75000 --prefill-chunk 2048 --thinking on --reasoning-effort high`, temperature 1.0, the v0.2.41 conversation (a 7.7K-token document, then prose / code / prose turns of 450 tokens). Single runs; both columns were measured the same day (the v0.2.41 section's 13.9 tok/s was a slower day for the whole machine).
+
+| | v0.2.41 | v0.2.42 |
+|---|---|---|
+| Decode, all three turns | 16.4 tok/s | **17.7 tok/s** |
+| Experts computed on the CPU per token | 58 | 45 |
+| Three requests at once (different tasks, two turns each), together | 13.8 tok/s | **17.2 tok/s** |
+
+With the CPU leg off (`IE_DS41_CPU_MISS=0`, the bit-exact mode) and greedy sampling, the replies are identical with the exchange on and off (2,458 exchanges in that run).
+
+What did not work, for the record: the first version exchanged whenever a candidate had twice the recent use, about six times a token. Each exchange costs about 0.8 ms of the card, so it took back five of the six milliseconds the better set saved (16.4 → 16.6 tok/s). The replay of the recorded trace found the settings that keep the set nearly as good with a fifth of the exchanges (four times the recent use, a longer memory, eight steps of rest for a layer after one) and predicted the 0.9 exchanges a token that the real run then showed.
+
+MiMo-V2.6 can use the same exchange (`IE_DS41_EXCHANGE=1`) when the RAM for `IE_MIMO26_ADAPTIVE=1` is not there: 19.5 → 21.0 tok/s, against 25.7 for adaptive residency.
+
+### Flash-Next: two flags that were dropped without a word
+
+Both were found by a user on a four-card box ([issue #3](https://github.com/Red-Weasel/machx-inference-engine/issues/3#issuecomment-6805091553)).
+
+- `--no-prompt-cache` at one request lane now reads every prompt from its first token. It was ignored: a prompt that continued the previous one still reused it. With `--parallel` above 1 a lane still continues its own conversation, and the load says so; the per-request log line states the cached tokens either way.
+- `--prefill-chunk N` is not used by Flash-Next, which reads in chunks of 4096 (the fastest measured). The load now says so and names `IE_Q4E_PREFILL_CHUNK=N`, the switch that does change it.
+
+### A container build, and the first four-card numbers
+
+`Containerfile.b70` at the top of the tree is a contributed, pinned container build (oneAPI 2026.0.0, compute-runtime 26.35.39758.10, IGC 2.41.5) with a slim runtime image: `podman build -f Containerfile.b70 -t machx-b70 .`. It is shipped as its author built and ran it on four Arc Pro B70 cards with v0.2.39; we have not built it in our own CI yet.
+
+The same user measured v0.2.39 on four physical B70 cards (Flash-Next Q8_0, one stage a card, one request lane, no draft head, ctx 262144), from the server's own log lines with 0 cached tokens. Their caveats apply: single observations per arm, warm caches, not a general speedup estimate.
+
+| Prompt | Deep pipeline (default) | `IE_Q4E_NO_DEEP_PIPE=1` |
+|---|---|---|
+| Prose, 33,804 tokens | 564 / 549 tok/s | 414 / 432 tok/s |
+| Code, 8,768 tokens | 599 / 564 tok/s | 416 / 427 tok/s |
+| Code, 34,370 tokens | 836 / 824 tok/s | 494 / 503 tok/s |
+| Filler with a hidden code, 195,432 tokens | 1,171 tok/s | 499 tok/s |
+
+Replies were byte-identical across the arms, decode ran at about 31 tok/s, and the hidden code was returned at every length up to 195K tokens. The device loss they reported on v0.2.38 happened with `IE_Q4E_NO_PIN_BANKS=1`, the case v0.2.39 moved onto pinned staging by itself; their v0.2.39 runs showed no fault.
+
+---
+
+<a id="new-in-v0241"></a>
+## 🆕 New in v0.2.41
+
+### DeepSeek-V4.1 and MiMo-V2.6: the expert sets follow the conversation
+
+Both models are larger than the two cards, so each layer's experts live in three places: VRAM, pinned system RAM (computed on the CPU or uploaded when needed) and, for DeepSeek-V4.1, the NVMe drive. Until now a ranking file fixed which expert lives where, on the reasoning that training equalises expert use and no replacement policy can beat a fixed set. A recorded trace of real decode traffic says otherwise: expert use is strongly recent, and a change of subject (prose to code) moves it.
+
+`IE_DS41_PICK_TRACE=<prefix>` records every expert a decode step uses and where it lived; `scripts/ds41_cache_sim.py` replays the record through other policies without a GPU. The replay predicted the MiMo result below within 1.5 points before any engine code was written.
+
+**DeepSeek-V4.1, default on** (`IE_DS41_PROMOTE=0` turns it off). A decode step that reads an expert from the NVMe tier already holds its bytes; when that expert has been used more lately than the layer's coldest RAM expert, the bytes are copied into that expert's place in RAM and the two trade tiers. No extra RAM, no extra read.
+
+Measured on 2 × Arc Pro B70 + 256 GB RAM, `--gpus 2 --ctx 265000 --parallel 4 --slot-ctx 75000 --prefill-chunk 2048 --thinking on --reasoning-effort high`, temperature 1.0, one conversation: a 7.7K-token document, then three turns of 450 tokens (prose, C++ code, prose). Single runs.
+
+| | v0.2.40 | v0.2.41 |
+|---|---|---|
+| Decode, prose / code / prose turn | 12.4 / 6.9 / 10.6 tok/s | **14.1 / 13.1 / 14.6 tok/s** |
+| Decode, all three turns | 9.4 tok/s | **13.9 tok/s** |
+| Expert uses served from NVMe, card 0 / card 1 | 7.2 / 5.6 % | 1.3 / 0.6 % |
+| Prompt reading (7.7K tokens) | 238 tok/s | 244 tok/s |
+
+The code turn's first 100 tokens ran at 8.6 tok/s and the rest at 15.5: the set adapts within about a hundred tokens of a change of subject. With the CPU leg off (`IE_DS41_CPU_MISS=0`, the bit-exact mode) and greedy sampling, the three replies are identical with promotion on and off (3,581 promotions in that run).
+
+**MiMo-V2.6, opt-in** (`IE_MIMO26_ADAPTIVE=1`). No fixed VRAM set: every slot starts from the ranking file and is then replaced by recency; the uploads a decode step already made go to the experts used most lately; a prompt read may only replace the 8 coldest slots of a layer, so reading does not flush the set. The cost is system RAM: every expert keeps a pinned copy (149.8 GiB, about 34 GiB more than before), which is why it is not the default. When RAM is short at load the engine says so and serves on the fixed set.
+
+| `--gpus 2 --parallel 1`, same conversation | fixed set | `IE_MIMO26_ADAPTIVE=1` |
+|---|---|---|
+| Experts not in VRAM when a step needs them, card 0 / card 1 | 52.0 / 42.6 % | 36.4 / 24.9 % |
+| Decode, greedy, ctx 200000 | 21.0 tok/s | **27.6 tok/s** |
+| Decode, temperature 1.0, thinking on, ctx 250000 | 19.0 tok/s | **23.9 tok/s** |
+| Prompt reading (8.2K tokens) | 646 tok/s | 653 tok/s |
+
+Single runs on one conversation; MiMo's output is not deterministic run to run (its CPU expert leg), so the texts of the two arms differ. Raising the share of misses that is uploaded did not help with it on (0.4: 24.4 tok/s, 0.6: 18.9).
+
+Not built yet: the same exchange between VRAM and RAM for DeepSeek-V4.1, where RAM is too full for MiMo's "every expert has a RAM copy" (the replay: experts not in VRAM 44 → 33 % and 34 → 26 %).
+
+### A Flash-Next load without its image encoder file is text-only again
+
+v0.2.40 refused to load Flash-Next when no mmproj file was beside the model. The encoder is still loaded at the start whenever the file is there; without it the model loads text-only with a warning that says what to add, and image requests are refused by name. `IE_VISION_REQUIRED=1` keeps v0.2.40's behaviour, and a file `ie.env` beside the `ie` binary can hold `IE_NAME=value` defaults for one machine (the environment wins).
+
+---
+
 <a id="new-in-v0240"></a>
 ## 🆕 New in v0.2.40
 
@@ -265,7 +353,7 @@ v0.2.39 lost ground past 8 conversations (every awake lane took expert slots fro
 
 ### Flash-Next always reads images
 
-The image encoder is part of the load at every lane count: its weights go up before the expert cache of its card is sized and its scratch is reserved, so the first picture allocates nothing. A Flash-Next load without an mmproj file beside the model (or `--mmproj`) now **fails**, naming the files to add — there is no load that cannot see.
+The image encoder is part of the load at every lane count: its weights go up before the expert cache of its card is sized and its scratch is reserved, so the first picture allocates nothing. Without an mmproj file beside the model (or `--mmproj`) the model loads text-only and says so; `IE_VISION_REQUIRED=1` makes that load fail instead, naming the files to add (v0.2.40 failed it always; v0.2.41 made that a choice).
 
 ### Measuring it
 
@@ -629,163 +717,4 @@ at `--parallel 1`; `--spec-k` still sets it.
 - **Checks:** every `--spec` reply has the same text and token count as plain decoding (lanes and `--parallel 1`,
   Q4_K_M, Q6_K and Q8_0, both Q4 files); the kernel unit test checks Q4_K, Q5_K and Q6_K rows against one row bit for
   bit. Four Q8_0 lanes with `--spec`: 8 of 8 replies the same as plain and as v0.2.28 (63.8 tok/s together). Every
-  other model gives v0.2.28's tokens (Flash-Next, the 35B-A3B class, the 27B at Q8_0, MiMo, Laguna, and V4.1 with its CPU
-  expert leg off); no GPU fault in any run.
-
-### Qwen3.8-27B: four request lanes keep sharing steps
-
-In v0.2.28, one of seven four-lane runs fell to 44.3 tok/s together: the lanes fell out of step and stayed in one-lane
-steps. Card 1 holds the output head, so every finished token hands card 0 one lane at a time, and nothing gathered
-them again. Card 0 now waits up to 50 ms for the next lane to land before starting a step that would leave three or
-more lanes rotating alone, as the 35B-A3B class has done since v0.2.8 (`IE_QWEN35_GROUP_WAIT_US`; `IE_QWEN35_REGROUP=0`
-turns it off). Sixteen requests of mixed lengths, four at a time, Q8_0 `--spec`: 53.9–57.9 tok/s together without the
-wait, 59.0–59.1 with it, the same replies.
-
-### What is still slow, and not checked
-
-- For one request, `--parallel 1 --spec` is still slower than one lane of `--parallel 2` (Q4_K_M 38.9 against 41.9).
-- The MTP checks still cost about 20 µs a row on `ffn_down`. An XMX (DPAS) kernel for the rows was built and measured:
-  correct, but slower than this release's kernel on one row and faster only on `ffn_down`, so it is not shipped.
-- Q5_K 27B files are covered by the kernel test only, not run end to end.
-- The V4.1 expert ranking is still the one profiled on the September weights (see v0.2.28).
-
-<a id="new-in-v0228"></a>
-## 🆕 New in v0.2.28
-
-Everything since [v0.2.27](https://github.com/Red-Weasel/machx-inference-engine/releases/tag/v0.2.27). Measured
-October 21, 2026, on two Arc Pro B70 cards.
-
-### DeepSeek-V4.1-Flash: the October 17 weights
-
-DeepSeek's 1017 update of V4.1-Flash keeps the architecture, the tokenizer and the tensor layout and replaces every
-weight file (the routers and the embedding change). Mach X runs it unchanged. Measured on a community FP8 build of the
-1017 weights: perplexity **1.538** on 4,096 wikitext tokens (layer split, CPU expert leg off; the September weights
-1.517, a paired difference of +0.014 nats at t = 1.27, 94.4 % the same top token), the picture probes answered right
-(also after a 6,651-token prompt), tool calls structured 4 of 4.
-
-Two files the engine makes from the weights now record which weight files they were made from (each shard's size and
-modification time):
-
-- **The disk prompt cache.** Entries written under other weights are not restored. Before, the key held only the
-  embedding's first MiB, so an update or fine-tune that kept the embedding would have restored KV the old weights wrote.
-- **The NVMe expert file** (`ie_experts_tail.ieslot`). A file written from other weight files is skipped with a warning
-  (the tail then reads the shards: slower, and right). A file written before v0.2.28 has no record and keeps the
-  one-expert check, which stops the load when that expert differs; the message now says to rebuild the file or set
-  `IE_DS41_EXPERT_FILE=0`. **After a weight update, rebuild it** with `ie-ds41-expert-file`.
-  `ie-ds41-expert-file <model> <ranking> --verify --rebind` re-records a file whose bytes still match (a copy of the
-  model that did not keep the files' times); `--verify` alone exits 6 for such a file.
-
-### DeepSeek-V4.1-Flash tensor parallel reads long prompts faster
-
-`IE_DS41_TP=1` now runs 4096-token forwards: its two all-reduces a layer and its expert streams are paid once a
-forward, so a long prompt pays them half as often.
-
-| 23,581-token prompt, two cards | v0.2.27 | v0.2.28 |
-|---|---|---|
-| tensor parallel | 280–288 tok/s | **325–352** (six runs, both weight sets) |
-| layer split (unchanged) | 490–513 | 505 |
-
-- The layer split keeps 2048-token forwards: at 4096 it read 384 tok/s (505 at 2048).
-- **Checks:** perplexity on 8,192 wikitext tokens of the 1017 weights, CPU expert leg off: tensor parallel with
-  4096-token forwards 1.72309, the layer split 1.72277 (paired +0.0002 nats, within the noise). Short prompts give the
-  same replies as v0.2.27 under tensor parallel and in the layer split (CPU leg off, four runs each). `IE_DS41_MAX_FWD`
-  overrides the forward size; `IE_DS41_CPU_CONT_ROWS` now takes up to 4096 (the CPU leg's largest prompt chunk;
-  at 4096 it measured no faster under tensor parallel, so the default stays 2048).
-
-### Qwen3.8-27B: three drafted rows on Q8_0
-
-Without `--spec-k`, the request lanes' MTP rounds now check 3 rows on a Q8_0 file (2 on the K-quants, as before).
-
-| Qwen3.8-27B Q8_0, `--spec`, two cards, 256 tokens a reply | v0.2.27 | v0.2.28 |
-|---|---|---|
-| one request | 27.4 tok/s | **30.6** |
-| two at once, together | 49.0 | **53.1** |
-
-- Q4_K_M stays at 2: with 3 rows one request wrote 37.9 tok/s but two together 60.9 (63.1 at 2); 4 rows 34.5.
-- **Checks:** every `--spec` reply has the same text and token count as the plain lanes' (two lanes at Q8_0 and
-  Q4_K_M, four at Q8_0: 52 replies over eight runs). Four lanes at Q8_0 write 63.9–65.0 tok/s together, as v0.2.27 and
-  plain (64.8). Every other model gives the same tokens as v0.2.27 (Flash-Next, the 35B-A3B class, the 27B, MiMo,
-  Laguna; no GPU fault in any run).
-
-### GLM-5.3-Flash: a reply cut inside a tool call no longer ends the conversation
-
-When `max_tokens` cut a reply inside a tool call, the raw call went out as text, and the next request carrying that
-history was refused ("glm5next: incomplete assistant tool history"). The cut call now stays in the history as the
-model wrote it. Covered by `glm5_server_test` (it fails on the old code); not run against a loaded GLM in this
-release's checks.
-
-### What is still slow, and not checked
-
-- Tensor parallel still reads long prompts slower than the layer split on two cards (325–352 vs 505 tok/s). Real
-  four-card speed is not measured.
-- One of seven four-lane runs of the 27B fell to 44.3 tok/s together: the lanes fell out of step and stopped sharing
-  steps (same replies). The 35B-A3B class has a regroup wait for this; the 27B does not yet.
-- The shipped V4.1 expert ranking ([results/ds41-chat-ranking-2026-09-16](results/ds41-chat-ranking-2026-09-16)) was
-  profiled on the September weights; the 1017 routers differ, so expert placement may be less good until it is
-  re-profiled (`IE_DS41_PROFILE_OUT=<file>` on your own traffic). Replies are not affected.
-- The 27B's MTP checks pay for every extra row on Q4_K_M (3 rows about as fast as 2, 4 rows slower), which keeps the
-  gain near 1.4×. A decode kernel that reads each weight once for several rows is the next step.
-- DeepSeek-V4.1 with its CPU expert leg on (the default) is not repeatable token for token at long context; with
-  `IE_DS41_CPU_MISS=0` it is.
-
-<a id="new-in-v0227"></a>
-## 🆕 New in v0.2.27
-
-Everything since [v0.2.26](https://github.com/Red-Weasel/machx-inference-engine/releases/tag/v0.2.26). Measured
-October 20–21, 2026, on two Arc Pro B70 cards.
-
-### Qwen3.8-27B: MTP drafts on the request lanes (`--spec --parallel N`)
-
-Until now `--spec` turned the 27B's request lanes off: the model's MTP draft head ran only at `--parallel 1`. Now the
-lanes draft with it. While at most one lane a card decodes, a lane's next step checks the head's draft in the same
-step as its next token (`--spec-k` rows); with more lanes decoding they share the cards in row groups, as without
-`--spec`.
-
-| greedy, 256 tokens a reply, two cards | plain | `--spec` |
-|---|---|---|
-| Q4_K_M, one request | 27.2 tok/s | **36.0–40.2** |
-| Q4_K_M, two at once, together | 51.8 | **63.1** |
-| Q4_K_M, four at once, together | 91.1 | 90.7 (row groups) |
-| Q8_0, one request | 17.4 | **26.7–28.0** |
-| Q8_0, four at once, together | 64.8 | 63.9 (row groups) |
-
-- **Checks:** every reply above has the same text and token count as the plain server's: 39 replies, pictures
-  included (the streamed chunks differ: a round sends two tokens at once). `--spec` at `--parallel 1` gives the same
-  replies at the same speed as before the change (the code it shares with the lanes moved). 68–71 % of the drafts were
-  kept. No kernel GPU fault in any run.
-- `--spec` is near-lossless, not lossless: on a rare near-tie the checking step can pick a different token than plain
-  decoding (see [v0.2.25](#new-in-v0225)). Run without `--spec` for bit-exact output.
-- About 0.14 GiB a lane on each card (checked against free memory at load; if it does not fit, the lanes run without
-  drafts and the load says why). Switches: `IE_QWEN35_LANES_MTP=0` turns the rounds off, `IE_QWEN35_LANES_MTP_MAX`
-  sets how many decoding lanes may run them (default: the card count).
-
-### Qwen3.8-27B: Q4_K_M on the fast path
-
-The 27B's Q4_K files ran on an older kernel; they now take the same path as Q8_0, Q6_K and Q5_K.
-
-| Qwen3.8-27B Q4_K_M | v0.2.26 | v0.2.27 |
-|---|---|---|
-| decode, two cards | 22.8 tok/s | **27.5** |
-| decode, one card | 19.1 | **27.8** |
-| reading a 3,382-token prompt, two cards | 1,232 tok/s | **1,393** |
-| reading a 3,382-token prompt, one card | 390 | **1,045** |
-| decode with `--spec` (one request) | | **37.1–39.6** |
-
-- Q6_K reads that prompt at 1,330 tok/s (was 965) with the same replies; Q8_0 and the 35B-A3B class give the same
-  replies at the same speed.
-- **Checks:** perplexity on 4,096 wikitext tokens 5.8107 (old kernel 5.8133); one of three test replies differs from
-  v0.2.26 after a near-tie (a different summation order); one card and two cards give the same replies.
-- Measured on a Q4_K_M made from the Q8_0 file (`llama-quantize --allow-requantize`). Pictures on it are answered right
-  in our probes, including after 16.7K tokens; a 640 px synthetic picture got "Sorry, I need..." on 3 of 9 (the Q8_0
-  file 9 of 9). That is a near-tie in the twice-quantized file: the GPU encoder matches the CPU one, and the old kernel
-  fails a different picture.
-
-### Pictures on the request lanes: Qwen3.8-27B and the 35B-A3B class
-
-`ie serve --parallel N --mmproj <projector>` now takes images on every lane (before: `--parallel 1` only, and `/props`
-said vision was not ready). Each lane keeps its own picture rows and M-RoPE positions. An image request skips the
-prompt cache and the reuse paths (sticky lane checkpoints, restart points).
-
-- **Checks** (four lanes, Q4_K_M and Q8_0 27B, 35B-A3B Q6_K): every answer right; four at once give the same replies as
-  each alone; a lane's picture reply is byte-identical to `--parallel 1`'s; text requests unchanged.
-- The vision encoder's scratch leaked on every growth (270 MiB on car
+  other model gives v0.2.28's tokens (Flash-Next, the 35B-A3B class, the 27B 

@@ -95,7 +95,7 @@ leaklens doctor
 leaklens --version
 ```
 
-CSV and JSON input, dataset audit, code scanning, and `--explain` / `--intelligence` / `--ai` / `--sarif` / `--html` / `--badge` / `doctor` work with the base install.
+CSV and JSON input, dataset audit, code scanning, and `--explain` / `--intelligence` / `--ai` / `--sarif` / `--html` / `--badge` / `--manifest` / `verify` / `doctor` work with the base install.
 
 ### `leaklens doctor`
 
@@ -210,6 +210,7 @@ leaklens train.csv --target label --ai             # experimental, offline AI hy
 | `--sarif` | Write SARIF 2.1.0 for GitHub code scanning |
 | `--html` | Write a shareable single-file HTML report |
 | `--badge` | Write a shields.io endpoint JSON with the trust score |
+| `--manifest` | Write an unsigned, offline-verifiable audit manifest (`leaklens verify`) |
 | `--fail-under` | Exit with code 1 if trust score is below N |
 | `--version` | Print version and exit |
 
@@ -244,11 +245,28 @@ Exit code is 1 when a high-severity finding is present, so it gates CI.
 
 ### `leaklens images TRAIN_DIR TEST_DIR`
 
-Find near-duplicate images across train/test folders (64-bit dHash, `--max-distance` default 6). Needs the `images` extra.
+Find near-duplicate images across train/test folders (64-bit dHash, `--max-distance` default 6). Needs the `images` extra. Decoding is bounded per file and per audit; refused files are reported by reason, separately from `unreadable` (see [IMAGE_DECODE_BUDGETS.md](docs/IMAGE_DECODE_BUDGETS.md)). A refused image is not compared, so an all-refused run can still score 100/100.
+
+Every run also groups images: byte-identical files form exact groups (SHA-256 of the file bytes, so a re-encode is never "exact"), and perceptual near-duplicates form connected-component clusters. Clusters are not cliques — a member is not necessarily within the threshold of every other member — and a cluster is evidence for review, not proof of leakage. The supported transformation envelope, the known blind spots (colour-only differences, crops beyond 5%, letterboxing) and the calibration are in [VISION_AUDIT.md](docs/VISION_AUDIT.md) and [VISION_BENCHMARK.md](docs/VISION_BENCHMARK.md).
 
 ```sh
 leaklens images data/train data/test
 leaklens images data/train data/test --max-distance 10 --samples 5 --json
+```
+
+### `leaklens verify MANIFEST`
+
+`--manifest audit.json` writes a deterministic, **unsigned** digest manifest of
+an audit: declared input digests, result-affecting options, the detector
+catalogue, findings, policy outcome, trust score and gate decision.
+`leaklens verify audit.json` recomputes it offline with the standard library and
+reports a changed score, changed evidence, changed detector version, or a
+missing/modified input. It proves content integrity, not who wrote the manifest.
+See [`docs/AUDIT_MANIFEST.md`](docs/AUDIT_MANIFEST.md).
+
+```sh
+leaklens data.csv --target is_fraud --manifest audit.json
+leaklens verify audit.json
 ```
 
 ### `leaklens init`

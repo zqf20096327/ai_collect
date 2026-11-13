@@ -133,7 +133,7 @@ Python 3.11+, Node.js 22.19+, the Pi agent, ripgrep and fd:
 
 ```sh
 uv tool install git+https://github.com/National-Compute/sentrytower@v0.1.1    # or: pipx install git+https://...@v0.1.1
-npm install -g @earendil-works/pi-coding-agent@0.84.1                        # the agent runtime
+npm install -g @earendil-works/pi-coding-agent@1.5.0                         # the agent runtime
 brew install ripgrep fd                                                      # or: apt install ripgrep fd-find
 
 sentrytower setup
@@ -181,7 +181,7 @@ opens `report.html` in your browser when it ends (`--no-open` turns this off):
 | File | What it holds |
 | --- | --- |
 | `report.html` | The report as one web page: the findings by severity, each with its location, explanation and CWE link |
-| `findings.json` | Each finding with its title, severity, CWE, locations, evidence and exploit conditions ([schema](docs/output-format.md)) |
+| `findings.json` | Each finding with its title, severity, CWE, locations, explanation and evidence class, in the Finding format of the National Compute data contracts ([schema](docs/output-format.md)) |
 | `findings.sarif` | SARIF 2.1.0 for GitHub code scanning and any SARIF viewer |
 | `report.md` | A readable report to share or attach to a ticket |
 | `run.json` | The result of the run (its status, why it stopped, the spend and the checked units), the route, the models, the tokens and the timings |

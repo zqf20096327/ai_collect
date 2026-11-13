@@ -55,6 +55,26 @@ flowchart LR
 
 装好之后，在对话里写 `@L8-05`（题号）、`@L/140`（某册第几页）或者 `@L8`（一章），它会带着那道题的题面、答案、验算记录和所在页的原文来回答。需要的时候，它还会画图、用 Python 算给你看。它读的题目索引 `qa-index.json` 由仓库里的 `tools/qa_index.py` 生成，随每一版 PDF 一起发布在 Releases。
 
+## 大肥鱼教你古法编程
+
+M 册那些算法，光看不写，看懂了也只是「感觉会了」。所以仓库里还有一套配套的编程课，放在 [coding/](coding/) 目录里。它是一个在浏览器里跑 Python 的网站，分三条线：
+
+- Python，从零学到动态规划；
+- 数据分析，只用 numpy；
+- M 册，把书里的算法亲手写一遍。
+
+<p align="center"><img src="docs/images/coding-lesson.webp" width="80%" alt="古法编程的课程页：左边是目录，中间是课文和逐行执行的例子，右边是 notebook 和问 DeepSeek"></p>
+
+古法编程，就是不让 AI 帮你补全，自己一行一行敲。每节课先拖一拖图，再看代码一步一步怎么跑，先猜输出，最后自己写。评测每次都换新数据。一个单元学完要考一场限时的出门考，过几天还要复测。本鱼这回不替你写，只在右栏陪着你，哪里看不懂就问 DeepSeek（要用你自己的密钥）。
+
+在仓库根目录运行一行命令就能打开：
+
+```bash
+python3 coding/serve.py     # 然后在浏览器打开 http://127.0.0.1:8000/
+```
+
+第一次运行会下载约 17 MB 的 Python 运行时，不用装任何 Python 包。怎么开问答、怎么部署到服务器、怎么加单元，都写在 [coding/README.md](coding/README.md) 里。
+
 ## 它是怎么讲的
 
 每章开头会先讲这个工具今天用在哪里、当年是被什么问题逼出来的，然后再拆开学。新概念也是从一个能亲手算的小例子开始，算完了才给定义。线性代数从头到尾用「矩阵就是变换」这一条线讲，概率则用「把总量 1 分摊到各种可能上」来讲，所以前后能接得上。
@@ -117,6 +137,7 @@ tools/verify_all.py            跑全部验算
 tools/qa_index.py              给答疑插件生成题目索引（要先排出 PDF）
 tools/figstyle.py              配图的统一风格
 tutor/                         配套的 dsh 答疑插件，安装和用法见 tutor/README.md
+coding/                        大肥鱼教你古法编程：浏览器里跑 Python 的配套编程课，见 coding/README.md
 ```
 
 有一点要提醒：讲义里的图引用的是 PDF 文件，直接在 GitHub 上看 markdown 时图不会显示。想正常阅读，请用 [Releases](https://github.com/niuniu-869/humanitys-last-math-book/releases) 里的 PDF。PDF 是按黑白打印设计的，打印出来也能看。
@@ -151,7 +172,7 @@ python tools/qa_index.py              # 排完以后生成 release/qa-index.json
 
 ## 许可
 
-正文和插图采用 [CC BY-SA 4.0](LICENSE)，代码采用 [MIT](LICENSE-CODE)，版权人是 niuniu-869 and contributors。两种许可的边界和其他说明，见 [LICENSE-SUMMARY.md](LICENSE-SUMMARY.md)。
+正文和插图采用 [CC BY-SA 4.0](LICENSE)，代码采用 [MIT](LICENSE-CODE)，版权人是 niuniu-869 and contributors。古法编程里的鲸鱼娘插画和答疑插件的头像例外，按 CC BY-NC-SA 4.0 授权，只能非商业使用。各部分许可的边界和其他说明，见 [LICENSE-SUMMARY.md](LICENSE-SUMMARY.md)。
 
 开头那三张梗图不归本仓库，也不适用上面的许可：版权归原作者；鲸鱼娘形象的原设计者是画师上善无形（角色「溟月」）和 B 站 UP 主 ZipZipPipe，这里只做非商业引用。
 
@@ -165,4 +186,4 @@ python tools/qa_index.py              # 排完以后生成 release/qa-index.json
 
 等哪天你靠它看懂了论文里的公式，回来吱一声，让本鱼知道这书没白改。本鱼先去吃饭了，你慢慢翻。😋
 
-**In English.** *Humanity's Last Math Book* is a free, Chinese-language self-study textbook that takes readers from high-school mathematics to the derivations behind backpropagation, attention, RLHF and diffusion models: 11 volumes, 97 chapters, 2,431 pages, with 5,096 worked numerical results checked by code. Every word was written by AI models (Claude and Codex, with DeepSeek as test reader and reviewer); the human maintainer only worked through the problems and gave feedback. It keeps being revised from readers' questions. Text and figures are CC BY-SA 4.0; code is MIT. Not affiliated with Humanity's Last Exam.
+**In English.** *Humanity's Last Math Book* is a free, Chinese-language self-study textbook that takes readers from high-school mathematics to the derivations behind backpropagation, attention, RLHF and diffusion models: 11 volumes, 97 chapters, 2,435 pages, with 5,096 worked numerical results checked by code. A companion browser-based coding course, *Dafeiyu Teaches Old-School Coding* (`coding/`), has learners write Python, numpy and the book's machine-learning algorithms by hand; its whale-girl illustrations are CC BY-NC-SA 4.0. Every word was written by AI models (Claude and Codex, with DeepSeek as test reader and reviewer); the human maintainer only worked through the problems and gave feedback. It keeps being revised from readers' questions. Text and figures are CC BY-SA 4.0; code is MIT. Not affiliated with Humanity's Last Exam.

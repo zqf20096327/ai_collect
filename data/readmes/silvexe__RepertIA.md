@@ -18,16 +18,16 @@
 
 ![RepertIA: a simulated demo flight animated on the local map](docs/media/repertia-demo.gif)
 
-🎬 **Watch the demo** (test data from a public image by Josh Hickman and a simulated flight, declared in the video). Download: [English](https://github.com/silvexe/RepertIA/releases/download/v3.0.2/RepertIA-demo-3.0.2-en.mp4) · [Italian](https://github.com/silvexe/RepertIA/releases/download/v3.0.2/RepertIA-demo-3.0.2-it.mp4)
+🎬 **Watch the demo** (test data from a public image by Josh Hickman and a simulated flight, declared in the video). Download: [English](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-demo-3.0.4-en.mp4) · [Italian](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-demo-3.0.4-it.mp4)
 
-https://github.com/user-attachments/assets/01ccfccf-8893-4bf9-be96-a6fd0de9568d
+https://github.com/user-attachments/assets/68d625e6-56ce-40e6-846f-564f1489c70c
 
-📘 **Illustrated guide:** [Italian and English, one page](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/RepertIA-guida-3.0.3.html)
+📘 **Illustrated guide:** [Italian and English, one page](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-guida-3.0.4.html)
 
 RepertIA analyses forensic images (E01, raw/dd, dmg), from 2.20 full file system extractions of iPhones and Android
 phones, from 3.0 drone flight logs and, from 3.0.2, logical sources (zip, tar, 7z and rar archives, FTK Imager AD1
-logical images, ISO and UDF CD/DVD images or a folder) from a single local web interface, on Apple Silicon Macs, Windows
-or Linux (experimental). It uses established forensic tools (The Sleuth Kit, libewf, plaso, PhotoRec, bulk_extractor,
+logical images, ISO and UDF CD/DVD images or a folder) and, from 3.0.4, RAM memory dumps of Windows computers, from a
+single local web interface, on Apple Silicon Macs, Windows or Linux (experimental). It uses established forensic tools (The Sleuth Kit, libewf, plaso, PhotoRec, bulk_extractor,
 ExifTool, libyal) and gathers their results into a case you can browse with filters, timelines and previews. An optional
 language model running on the analyst's own computer answers questions in English or Italian, citing files, offsets and
 inodes.
@@ -66,12 +66,19 @@ This is not a certification: NIST and Joshua Hickman did not test RepertIA. We u
 
 From 3.0.2 also **🗂️ Logical source**: files already collected by others (zip, tar, tar.gz, 7z, rar, FTK Imager AD1 logical images with FTK's hashes checked file by file, ISO 9660 and UDF CD/DVD images, a folder).
 
+From 3.0.4 also **RAM memory dumps** of Windows computers (raw, mem, vmem, crash dump), from the same page as mass storage: processes, network connections, modules, drivers, scheduled tasks, services and users read with MemProcFS, plus the Windows artifacts from the registry still in memory. Nothing is downloaded from the internet while a case is open.
+
+| Choosing the dump | Processes in memory |
+|---|---|
+| <img src="docs/img/en/load-ram.jpg" alt="Choosing a RAM memory dump" width="420"> | <img src="docs/img/en/ram.jpg" alt="Processes read from a RAM memory dump" width="420"> |
+| The dump is chosen like a forensic copy, with the box "It is a RAM memory dump" | Every process with PID, command line, parent process and user (public test dump) |
+
 <details>
 <summary><b>More screenshots</b></summary>
 
 <br>
 
-**Timeline**: activity chart and events, with filters by date, event and source.
+**Timeline**: from 3.0.4 on a page of its own, from the button in the top bar; activity chart and events, with filters by date, event and source.
 
 <img src="docs/img/en/timeline.jpg" alt="Timeline" width="800">
 
@@ -79,7 +86,7 @@ From 3.0.2 also **🗂️ Logical source**: files already collected by others (z
 
 <img src="docs/img/en/search.jpg" alt="Search" width="800">
 
-**Chats**: conversations with database, table and row of each message. Here a decrypted WhatsApp backup (fake backup and key).
+**Chats**: conversations with database, table and row of each message. Here iMessage from a public test image.
 
 <img src="docs/img/en/chat.jpg" alt="Chat view" width="800">
 
@@ -101,14 +108,14 @@ From 3.0.2 also **🗂️ Logical source**: files already collected by others (z
 
 | System | File |
 |---|---|
-| Windows (installer) | [RepertIA-3.0.3-Setup.exe](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/RepertIA-3.0.3-Setup.exe) |
-| Windows (portable) | [RepertIA-3.0.3-Windows.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/RepertIA-3.0.3-Windows.zip) |
-| Mac (Apple Silicon) | [RepertIA-3.0.3-Mac.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/RepertIA-3.0.3-Mac.zip) |
-| Linux x86_64 (experimental) | [RepertIA-3.0.3-Linux.tar.gz](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/RepertIA-3.0.3-Linux.tar.gz) |
-| Acceptance test (*collaudo*) | [RepertIA-collaudo.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/RepertIA-collaudo.zip) |
-| SHA-256 checksums | [SHA256SUMS.txt](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/SHA256SUMS.txt) |
-| Checksum signature | [SHA256SUMS.txt.minisig](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/SHA256SUMS.txt.minisig) |
-| Illustrated guide (HTML) | [Italian and English](https://github.com/silvexe/RepertIA/releases/download/v3.0.3/RepertIA-guida-3.0.3.html) |
+| Windows (installer) | [RepertIA-3.0.4-Setup.exe](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-3.0.4-Setup.exe) |
+| Windows (portable) | [RepertIA-3.0.4-Windows.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-3.0.4-Windows.zip) |
+| Mac (Apple Silicon) | [RepertIA-3.0.4-Mac.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-3.0.4-Mac.zip) |
+| Linux x86_64 (experimental) | [RepertIA-3.0.4-Linux.tar.gz](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-3.0.4-Linux.tar.gz) |
+| Acceptance test (*collaudo*) | [RepertIA-collaudo.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-collaudo.zip) |
+| SHA-256 checksums | [SHA256SUMS.txt](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/SHA256SUMS.txt) |
+| Checksum signature | [SHA256SUMS.txt.minisig](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/SHA256SUMS.txt.minisig) |
+| Illustrated guide (HTML) | [Italian and English](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-guida-3.0.4.html) |
 
 All versions: <https://github.com/silvexe/RepertIA/releases>
 
@@ -129,10 +136,11 @@ button downloads only the source code, not the program to install.
 | Encrypted volumes | Detection of BitLocker, LUKS, FileVault, VeraCrypt (high entropy); decryption of BitLocker, LUKS1 and APFS with the key (never stored) |
 | Windows artifacts | For every installation on the disk (including Windows.old): accounts and logons (SAM and event logs), Prefetch, Amcache, UserAssist, ShimCache, BAM, SRUM, LNK files and jump lists, ShellBags, Activity History, NTFS journal `$UsnJrnl`, events (services, power on/off, Remote Desktop, Defender, USB), networks, Recycle Bin, browsers; from 3.0.2 Windows Search index (`Windows.edb`), Internet Explorer history (`WebCacheV01.dat`), Sticky Notes, Google Drive |
 | macOS artifacts | Data volume, quarantine, launch items, TCC, iMessage, recent documents, Safari, KnowledgeC, Bluetooth, Time Machine |
+| RAM memory (3.0.4) | Memory dumps of Windows computers (raw, mem, vmem, crash dump) read with MemProcFS, the same engine on Mac, Windows and Linux: processes, network connections, loaded modules, drivers, scheduled tasks, services, users and the memory timeline; Windows artifacts from the registry hives still in memory; files still in memory copied into the case as derived copies. Debug symbols on request, with no case open and after consent, for the running state of services; no network request while a case is open |
 | Logical source (3.0.2) | zip, tar, tar.gz, 7z, rar, FTK Imager AD1 (also segmented; FTK's MD5/SHA-1 recalculated for every file), ISO 9660 and UDF CD/DVD images including multi-session CD-Rs with VAT (files only in previous VATs shown as deleted), or a folder; phone databases recognised by name, KML/GPX as map layers |
 | Smartphones (2.20) | iPhone and Android full file system extractions (zip from Cellebrite, GrayKey and others, tar, tar.gz, folder) read without copying; WhatsApp, iMessage/SMS and SMS/MMS chats with a bubble view (also in the portable report), address books, attachments linked to the files and previewed over the chat, chat export (HTML/CSV with SHA-256); iLEAPP and ALEAPP included, with the chats of the other apps and a Calls view derived from their results; optional iOS keychain acquired separately (e.g. GrayKey) passed to iLEAPP, secret values hidden by default; iOS sysdiagnoses (one or more) read with a second iLEAPP run |
 | Cited files (2.20) | File paths and names cited by artifacts, chat attachments, timeline rows and agent answers found in the image or extraction (phone, Windows and macOS paths; folder and name fields joined; by path, hash or name and size), one box per file with the result in three levels (✅ found with certainty, ⚠️ probable with the candidates, ❌ not present) and a preview, also in the Word/PDF report; WhatsApp attachments verified with their SHA-256, thumbnail from the database when the file is missing |
-| Timeline | File system + plaso; dates in UTC, Italian time or the device's time zone (detected); FAT/exFAT converted correctly |
+| Timeline | File system + plaso, from 3.0.4 on a page of its own; dates in UTC, Italian time or the device's time zone (detected), with the time zone label next to every value; FAT/exFAT converted correctly |
 | Content | Document text with full-text search, OCR (Tesseract), EXIF/GPS metadata, archives, PST/OST/MBOX/EML mail |
 | Recovery | Carving with PhotoRec, bulk_extractor features, File Explorer thumbnail cache |
 | Anomalies | Fake extensions and disguised executables (deleted files are verified to avoid false positives), encrypted files and containers |
@@ -292,6 +300,11 @@ from their version. It permits nothing else: all the rest of the program stays u
 
 The packages in the Releases include third-party components under their own licenses: list, versions and sources in
 [THIRD_PARTY_LICENSES.en.md](THIRD_PARTY_LICENSES.en.md).
+
+## Who works on the project
+
+- **Author and maintainer:** [silvexe](https://github.com/silvexe).
+- **Contributor:** [nannib](https://github.com/nannib) — ideas and advice to improve the tool.
 
 ## How it was developed
 

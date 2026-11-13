@@ -46,12 +46,28 @@ Query: "tech + music"
 
 An embedding model determines the vector dimension, while your similarity semantics determine the metric. Both are fixed when a collection is created; to change either, create a new collection and re-index your documents.
 
-**Give your agent a persistent memory — three more commands:**
+**Give your agent a persistent memory — the guided installer:**
+
+```bash
+python3 scripts/velesdb_install_wizard.py            # interactive: boxed plan + menu [1] apply [2] JSON [3] quit
+python3 scripts/velesdb_install_wizard.py --apply    # non-interactive apply (CI)
+python3 scripts/velesdb_install_wizard.py --json     # machine-readable plan
+```
+
+The wizard detects your platform (macOS / Linux / Windows) and which harnesses are installed (Claude Code, Codex, Cursor, Cline, Zed, OpenCode, Claude Desktop, Windsurf, Devin, Vibe), checks whether the memory store is already locked by a running process (`VELES-031`), and picks single-client stdio or one shared local daemon accordingly — in daemon mode it really starts the daemon (`scripts/install-memory-daemon.sh|.ps1`) and only rewires your harnesses once `https://127.0.0.1:18090/health` answers. Every config write is backed up and atomic; `--apply` exits non-zero if any step fails.
+
+**No Python?** Download the packaged installer from Releases — `velesdb-install-wizard.exe` (Windows), `VelesDB Install Wizard.app` / `.dmg` (macOS), `velesdb-install-wizard` binary or `.tar.gz` (Linux), all signed by **WiScale** — and verify it before running:
+
+```bash
+python3 scripts/validate_package.py dist/velesdb-install-wizard.exe   # sha256 manifest + embedded WiScale signature
+```
+
+Prefer the manual commands? `cargo install velesdb-memory`, then `claude mcp add velesdb-memory -- ~/.cargo/bin/velesdb-memory`, and install the skills from a verified release with the repo script:
 
 ```bash
 cargo install velesdb-memory                                    # the local MCP memory server
 claude mcp add velesdb-memory -- ~/.cargo/bin/velesdb-memory    # any MCP client works
-curl -L https://github.com/cyberlife-coder/VelesDB/releases/latest/download/velesdb-skills.tar.gz | tar -xz -C ~/.claude/skills/
+python3 scripts/sync-skills.py --install --client all          # skills from this checkout
 ```
 
 No Rust toolchain? `npm i @wiscale/velesdb-memory-node`, or grab a prebuilt `.mcpb` bundle from the [official MCP Registry](https://registry.modelcontextprotocol.io/?q=velesdb-memory) (`io.github.cyberlife-coder/velesdb-memory`).
@@ -245,6 +261,29 @@ Tool parity per surface is published honestly — including where a surface is s
 > **Full API reference:** [docs/reference/api-reference.md](docs/reference/api-reference.md) | **OpenAPI spec:** [docs/openapi.yaml](docs/openapi.yaml) | **Server security:** [docs/guides/SERVER_SECURITY.md](docs/guides/SERVER_SECURITY.md)
 
 </details>
+
+## Repository map — every component has its own AGENTS.md
+
+AI agents (and humans) working in this repo should read the root [`AGENTS.md`](AGENTS.md) first, then the `AGENTS.md` of the component they touch — on conflict, the file closest to the code wins. Harnesses differ in nested-file support (Codex loads each level from the working directory; recent Claude Code attaches a nested `AGENTS.md` on @-mention; others read the root only), so the component list is the map:
+
+| Component | Path | Component AGENTS.md |
+|---|---|---|
+| Engine (VelesQL, HNSW/BM25/ColumnStore, SIMD, storage) | `crates/velesdb-core` | [`AGENTS.md`](crates/velesdb-core/AGENTS.md) |
+| Agent memory MCP server + context compiler | `crates/velesdb-memory` | [`AGENTS.md`](crates/velesdb-memory/AGENTS.md) |
+| REST server (Axum) | `crates/velesdb-server` | [`AGENTS.md`](crates/velesdb-server/AGENTS.md) |
+| CLI / interactive VelesQL REPL | `crates/velesdb-cli` | [`AGENTS.md`](crates/velesdb-cli/AGENTS.md) |
+| Python SDK (PyO3 + NumPy) | `crates/velesdb-python` | [`AGENTS.md`](crates/velesdb-python/AGENTS.md) |
+| Node binding (napi) | `crates/velesdb-node` | [`AGENTS.md`](crates/velesdb-node/AGENTS.md) |
+| Browser / edge (WASM) | `crates/velesdb-wasm` + `sdks/typescript` | [`AGENTS.md`](crates/velesdb-wasm/AGENTS.md) · [`AGENTS.md`](sdks/typescript/AGENTS.md) |
+| Mobile (UniFFI: iOS/Android) | `crates/velesdb-mobile` | [`AGENTS.md`](crates/velesdb-mobile/AGENTS.md) |
+| Desktop app embedding (Tauri) | `crates/tauri-plugin-velesdb` | [`AGENTS.md`](crates/tauri-plugin-velesdb/AGENTS.md) |
+| Bulk migration loaders | `crates/velesdb-migrate` | [`AGENTS.md`](crates/velesdb-migrate/AGENTS.md) |
+| rustdoc link guard | `crates/velesdb-rustdoc-guard` | [`AGENTS.md`](crates/velesdb-rustdoc-guard/AGENTS.md) |
+| Python integrations (Haystack, LangChain, LangGraph, LlamaIndex, shared utils) | `integrations/` | [`AGENTS.md`](integrations/AGENTS.md) + one per package (`agent-hooks`, `common`, `haystack`, `langchain`, `langgraph`, `llamaindex`) |
+| Agent session hooks | `integrations/agent-hooks` | [`AGENTS.md`](integrations/agent-hooks/AGENTS.md) |
+| CI guards, checks, release + install scripts | `scripts/` | [`AGENTS.md`](scripts/AGENTS.md) |
+
+Architecture in one paragraph: [ARCHITECTURE.md](docs/reference/ARCHITECTURE.md) · storage layout: [STORAGE_FORMAT.md](docs/STORAGE_FORMAT.md) · contributing & CI: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## How it compares
 

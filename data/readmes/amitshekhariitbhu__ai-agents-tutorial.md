@@ -1197,6 +1197,48 @@ Let's get started: [What are audio frames and chunk sizes in a real-time voice p
 
 ---
 
+## Why do sample rates like 8 kHz, 16 kHz, and 24 kHz matter for voice agents?
+
+In this blog, we will learn about why sample rates like 8 kHz, 16 kHz, and 24 kHz matter for voice agents. We will also see how a computer turns sound into numbers, what a sample rate really is, how much of our voice each sample rate keeps, where 8 kHz, 16 kHz, and 24 kHz are used inside a voice agent, what goes wrong when the sample rates do not match, and how to pick the right one for each part of the agent.
+
+We will cover the following:
+
+- How Does a Computer Store Sound?
+- What is a Sample Rate?
+- How Much of Our Voice Does a Sample Rate Keep?
+- 8 kHz: The Phone Call Sample Rate
+- 16 kHz: The Speech Recognition Sample Rate
+- 24 kHz: The Voice Output Sample Rate
+- How Sample Rates Flow Through a Voice Agent
+- What Happens When Sample Rates Do Not Match?
+- Sample Rate and the Size of the Audio
+- How to Pick the Right Sample Rate
+
+Let's get started: [Why do sample rates like 8 kHz, 16 kHz, and 24 kHz matter for voice agents?](https://outcomeschool.com/blog/sample-rates-for-voice-agents)
+
+---
+
+## How do WebRTC and WebSocket differ for voice AI agents?
+
+In this blog, we will learn about how WebRTC and WebSocket differ for voice AI agents. We will also see what a voice AI agent needs from the network, how WebSocket carries audio, how WebRTC carries audio, why a lost packet hurts one of them more than the other, what extra work WebRTC does for voice, and when to use which one.
+
+We will cover the following:
+
+- What a voice AI agent needs from the network
+- How audio travels over the internet
+- What is WebSocket?
+- How a voice agent uses WebSocket
+- What is WebRTC?
+- How a voice agent uses WebRTC
+- What happens when a packet is lost
+- The extra work WebRTC does for voice
+- WebRTC vs WebSocket
+- When to use which one
+
+Let's get started: [How do WebRTC and WebSocket differ for voice AI agents?](https://outcomeschool.com/blog/webrtc-vs-websocket-for-voice-ai)
+
+---
+
 ## More blogs and videos coming soon!
 
 ### License

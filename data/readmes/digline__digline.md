@@ -1,0 +1,449 @@
+# digline
+
+[![PyPI](https://img.shields.io/pypi/v/digline)](https://pypi.org/project/digline/)
+[![Downloads](https://static.pepy.tech/badge/digline/month)](https://pypistats.org/packages/digline)
+[![Python 3.12+](https://img.shields.io/pypi/pyversions/digline)](pyproject.toml)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
+[![CI](https://github.com/digline/digline/actions/workflows/ci.yml/badge.svg?event=merge_group)](https://github.com/digline/digline/actions/workflows/ci.yml?query=event%3Amerge_group)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/14570/badge)](https://www.bestpractices.dev/projects/14570)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/digline/digline/badge)](https://scorecard.dev/viewer/?uri=github.com/digline/digline)
+
+<sub>CI is the merge queue's latest run — the gate a change passes on its way to `main`; a red can mean the queue turned a pull request away while `main` did not move.</sub>
+
+```bash
+pip install digline
+```
+
+---
+
+**Did my change make the agent, or the prompt, worse?**
+
+An agent calls a model, chooses tools, calls again; an application
+calls a model with three prompts. You change one thing and run it
+twice: two different outputs, so reading a few of them cannot tell a
+regression from the model's own noise.
+
+digline records what the agent or the prompt sends and receives,
+without changing your code, proposes a first suite from the
+recordings, and freezes a run you approved as the reference. Every
+later run is compared with it: answers, steps, the order of the tools,
+the cost. One suite per prompt, one verdict each.
+
+```python
+from digline.core import Contains
+from digline.run import Case, Response, Suite
+
+suite = Suite(
+    tenant="acme",
+    environment="dev",
+    name="hello",
+    assertions=[Contains(needle="hello")],
+    cases=[Case(id="greet")],
+)
+
+
+def target(case: Case) -> Response:
+    return Response(output="hello world")
+```
+
+```console suite=hello
+$ digline run --suite suite.py
+digline: tenant 'acme' · 1 case × 1 sample = 1 call to the target
+digline: target: 1 call · counts: none · cost: not known
+2026-10-31T13-26-55-593090-00-00-f849e1e676ebb535
+digline: recorded .digline/acme/runs/hello/2026-10-31T13-26-55-593090-00-00-f849e1e676ebb535.json
+digline: next: digline promote --suite suite.py --run latest --replacing none  # keeps this run as the reference
+
+$ digline promote --suite suite.py --run latest --replacing none
+tenant 'acme' · hello baseline set to 2026-10-31T13-26-55-593090-00-00-f849e1e676ebb535
+
+$ digline run --suite suite.py
+digline: tenant 'acme' · 1 case × 1 sample = 1 call to the target
+digline: target: 1 call · counts: none · cost: not known
+2026-10-31T13-26-55-896575-00-00-f849e1e676ebb535
+digline: recorded .digline/acme/runs/hello/2026-10-31T13-26-55-896575-00-00-f849e1e676ebb535.json
+digline: next: digline compare --suite suite.py --run latest  # says whether anything got worse
+
+$ digline compare --suite suite.py --run latest
+Nothing got worse compared with the reference. Every case could be judged. No case is suspended. The suite is unchanged from the reference.
+tenant 'acme', against baseline 2026-10-31T13-26-55-593090-00-00-f849e1e676ebb535
+```
+
+The reference is a file in your repo, reviewed like any other change. The
+answer is an exit code, so the same commands run in CI.
+
+Coming from an agent or an application that already exists? Five
+[walkthroughs](https://digline.dev/product/walkthroughs/?ref=github)
+take one from the first recorded call to a gate, every step run: an
+agent, from the IDE over MCP, Java on Quarkus with Bedrock, Node,
+Python with three prompts.
+
+## Why digline
+
+Most evaluation tools tell you whether an output is below a threshold. digline
+also tells you whether it is *worse than it was* — the drift from 0.91 to 0.78
+that trips no threshold and is the first thing a user feels.
+
+The suite is **Python, not YAML**: a judge is an object, a target is a function,
+and what may leave a perimeter is declared in code — none of which a
+configuration file expresses without reinventing a language. Where a suite *is*
+plain data it can be TOML instead, and the two forms build the same objects —
+what TOML cannot express, it refuses by name rather than half-supporting. Built
+for teams shipping LLM features for someone else, who have to show a customer
+what was tested, when, under which commit, and who approved it.
+
+Wondering how digline differs from promptfoo, DeepEval, or observability
+platforms? See [How digline compares](https://digline.dev/comparison/?ref=github).
+
+## Quickstart
+
+With uv (recommended):
+
+```bash
+uv init && uv add digline
+```
+
+or with pip in an existing environment: `pip install digline`.
+
+**Requires Python 3.12+**, which uv fetches for you if you do not have it. On
+the pip path an older interpreter says `ERROR: No matching distribution found`
+with `from versions: none`, which does not say why — that is what it means.
+
+If you use Claude Code, digline also installs as a plugin with an MCP server — see
+[Claude Code and MCP](#claude-code-and-mcp) below.
+
+`suite.py` — complete and runnable, no API key:
+
+```python
+"""suite.py — complete and runnable: no API key, nothing else to install."""
+
+from digline.core import Contains, CostBudget, JudgeReply, LlmRubric
+from digline.run import Case, Response, Suite
+
+ANSWERS = {
+    "where-is-my-order": "Order 4821 ships Thursday. — Northwind Support",
+    "how-do-i-return": "Any item, within 30 days, unused. — Northwind Support",
+}
+
+
+def judge(prompt: str) -> JudgeReply:
+    """Your judge. digline composes `prompt` from the rubric, the question and
+    the answer; it wants a score in [0, 1] and a reason back."""
+    signed = "Northwind Support" in prompt
+    concise = len(prompt.split()) <= 60
+    return JudgeReply(
+        score=0.4 + 0.3 * signed + 0.3 * concise,
+        reason=f"signed={signed}, concise={concise}",
+    )
+
+
+def target(case: Case) -> Response:
+    """Your application, called once per case. Canned here so this runs as is."""
+    text = ANSWERS[case.id]
+    return Response(output=text, cost_usd=0.004 + 0.001 * len(text) / 100)
+
+
+suite = Suite(
+    tenant="northwind",
+    environment="staging",
+    name="support",
+    assertions=[
+        Contains(needle="Northwind Support"),
+        LlmRubric(
+            rubric="Does the reply answer the question in at most three sentences?",
+            judge=judge,
+            threshold=0.7,
+            tolerance=0.05,
+        ),
+        CostBudget(max_usd=0.02, tolerance=0.05),
+    ],
+    cases=[Case(id="where-is-my-order"), Case(id="how-do-i-return")],
+)
+```
+
+`tenant="northwind"` is ours, like every tenant in this repository's examples,
+and it has to become yours before the first run. A tenant is one customer: one
+perimeter, and the directory your store is keyed on, `.digline/<tenant>/`.
+Name it after the customer the suite is for. A suite copied to the next
+customer with this line unchanged files that customer's runs in the first
+one's directory, compares them against the first one's reference and promotes
+over it, each with exit `0`.
+
+When your judge is a real model, add a provider plugin:
+`uv add digline-anthropic` (or `pip install digline-anthropic`), likewise
+`digline-openai` and `digline-bedrock`.
+
+```console suite=support
+$ digline run --suite suite.py
+2026-08-26T15-44-09-282929-00-00-e7421ec503ccefe8
+
+$ digline promote --suite suite.py --run latest --replacing none
+tenant 'northwind' · support baseline set to 2026-08-26T15-44-09-282929-00-00-e7421ec503ccefe8
+```
+
+Now make it worse — delete `— Northwind Support` from the second answer —
+and ask again:
+
+```console suite=support
+$ digline run --suite suite.py
+2026-08-26T15-44-09-492722-00-00-e7421ec503ccefe8
+
+$ digline compare --suite suite.py --run latest
+2 checks got worse compared with the reference. Every case could be judged. No case is suspended. The suite is unchanged from the reference.
+
+how-do-i-return · llm_rubric · Score fell from 1.000000 to 0.700000.
+how-do-i-return · contains · Went from passing to failing (1.000000 → 0.000000).
+
+$ echo $?
+1
+```
+
+The exit code is the answer: `0` fine, `1` got worse, `2` the numbers are not
+what they look like. A case that could not be judged is one cause of `2` among
+several, and [`docs/api.md`](docs/api.md), *The exit code*, lists them all.
+None of the three is a failure of digline: a wrapper that treats a non-zero
+exit as a crash is reading a verdict as an error. Two more are not verdicts.
+`64` is the command refusing what it was asked: a missing baseline, a document
+it cannot read, an `--out` it cannot write, a suite that exits while it loads.
+`70` is a failure nobody anticipated.
+Everything lands in `.digline/<tenant>/` — `baselines/` committed, `runs/`
+git-ignored through a `.gitignore` digline writes for you, and says so when one
+you already had leaves `runs/` out.
+
+## What it checks
+
+**Per case** — pure functions `(inputs) -> Verdict`, no I/O, callable on their own:
+
+| Assertion | Use it when |
+|---|---|
+| `Equals`, `Contains`, `NotContains`, `Affix`, `Regex` | the output must, or must not, contain something specific |
+| `IsJson`, `JsonSchema` | the output is structured |
+| `Length` | answers are growing, or must fit a channel |
+| `Levenshtein` | "close enough" to `Case.expected`, graded rather than binary |
+| `LlmRubric` | the criterion is a judgement — is it polite, does it stay on policy |
+| `Faithfulness` | RAG: is the answer supported by the retrieved context |
+| `FromAutoevals` | you already have an `autoevals` scorer and want it under a baseline |
+| `PiiAbsent` | the output reaches a person — IBAN, codice fiscale, partita IVA, email, phone, checksum-verified where one exists |
+| `ToolsCalled` | the target is an agent — a function, or an OpenAI, Anthropic or Bedrock target, whose plugins record every tool call — which tools it called, in order: an answer produced without the lookup that should have produced it |
+| `ToolCalledWith` | the other half of a trajectory: the arguments a tool was called with — the right tool asked the wrong question |
+| `Subsequence` | these tools in this order, with anything between them: the lookup came before the refund |
+| `Before` | no call to one tool without a call to another before it: no refund of an order nobody looked up |
+| `Never` | a tool that must not be called: the account is never deleted |
+| `MaxSteps` | at most so many of the model's turns, or of its tool calls: an agent that loops is caught |
+| `CostBudget`, `LatencyBudget` | always. Graded, so a cost creeping up *within* budget is still visible |
+| `Repeated` | the judge oscillates: grade the same output `n` times and fold the votes |
+
+A suite pointed at an OpenAI-compatible endpoint, a gateway or a self-hosted
+model declares what it actually charges — `[target.pricing]` in TOML,
+`override()` in Python — so a `CostBudget` reads your prices rather than the
+plugin's list.
+
+**Per run** — one verdict on the whole suite, the kind that goes in a contract:
+
+| Aggregate | Use it when |
+|---|---|
+| `Precision` | false positives are what your users see |
+| `Recall` | what is missed is what your users miss |
+| `Accuracy`, `F1` | you need a single number for both |
+
+Every assertion carries a **threshold that can fail** — there is no default that
+passes vacuously, and `Contains("")` is a `ValueError` when the suite loads
+rather than a green run — and a **tolerance** below which a difference from the
+baseline is noise. Where a number is really "k out of n", write it as one:
+`min_agreement="2/3"`, and a float no `k/n` can produce is refused at
+construction.
+
+One card each — parameters, typical values, what to watch out for — in
+[`docs/metrics.md`](docs/metrics.md). Custom assertion? Subclass
+`AssertionBase`, or `RunAssertionBase` for an aggregate: [`docs/api.md`](docs/api.md).
+
+## How it thinks
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/flow/digline-flow.svg">
+  <img src="docs/assets/flow/digline-flow-light.svg" alt="digline in a coding agent's flow: the agent edits the repository, digline gates the change before it goes further" width="960">
+</picture>
+
+- **The judge is yours.** The core never calls a model API: you inject a
+  function or a provider plugin's judge, and in your tests a deterministic one.
+- **Three states, not two** — `pass`, `fail`, `error`. An error is neither green
+  nor a regression: it means *could not judge*, and a run containing one cannot
+  become the baseline.
+- **Two kinds of noise, two answers.** `Suite.samples` asks the target more than
+  once — the same input answered differently. `Repeated` grades the same output
+  more than once — the judge changing its mind. `min_agreement` becomes
+  mandatory as soon as you sample.
+- **A tolerance is declared; a noise floor is declared too.** Where a check
+  declares `floor_standard_errors`, the baseline's judged samples set a floor
+  either side of its score — that width times √2 times their standard deviation
+  over the square root of their number, the √2 because what moves is a
+  difference of two means — and a drop inside it is reported as unchanged rather
+  than as a regression: a tool that cries wolf on its own measurement error
+  teaches people to promote past it. A run aggregate keeps the range its samples
+  spanned instead. It never rescues a flip and never invents an interval it does
+  not have, so you see one once you have promoted a sampled baseline and
+  declared a width.
+- **Measuring is mechanical; approving is not.** An agent can run the suite and
+  tell you what moved, but the MCP server exposes no tool that promotes, and a
+  probe among the examples proves each cycle that `promote` is still absent.
+  `promote` is a signature, and a signature is a person's.
+- **An alias is a pointer, and pointers roll.** `compare` names the model the
+  provider said answered when it changes, `digline log` reads that down every
+  stored run, and a `Case(canary=True)` watches behaviour where the provider
+  says nothing: if it moves at all, the headline says the model under the alias
+  likely changed and the run exits `1`.
+- **Set the threshold where the system measurably is**, not where you want it:
+  the gate protects against getting worse, and raising the bar is a visible
+  change in a pull request.
+- **Promote the median of several runs**, not the first green one — `digline
+  view` is the table you pick it from. Cases diagnose, aggregates gate.
+
+Worked through with real numbers in [`docs/guide.md`](docs/guide.md); the
+reasoning behind every fixed decision is in [`docs/adr/`](docs/adr/).
+
+## Claude Code and MCP
+
+digline also installs as a Claude Code plugin. What it ships first is the
+judgement layer. The [`operating-digline`](plugins/digline/skills/operating-digline/SKILL.md)
+skill carries the same rules as [`AGENTS.md`](AGENTS.md), and loads when the
+agent is about to run a suite or read a comparison. Beside it is the MCP server,
+which measures, reads and explains, and cannot promote a baseline. Two lines
+plus one dependency: the server imports your suite, so it runs from your
+project's `.venv`.
+
+```bash
+uv add --dev digline-mcp
+claude plugin marketplace add digline/digline
+claude plugin install digline@digline --scope project
+```
+
+The agent's own shell commands are not the server. A bare `digline` typed
+there resolves through the `PATH` of the shell Claude Code started, which comes
+from your login profile and from whatever environment was active when you
+launched it, and it can be another project's install at another version.
+`uv run digline` resolves through your project's environment.
+
+What it installs, and what its hook does and does not guarantee:
+[`plugins/digline/README.md`](plugins/digline/README.md).
+
+In another agent, the skill alone installs through [skills.sh](https://skills.sh):
+`npx skills add digline/digline --skill operating-digline`. That is the skill
+without the MCP server or the hook, taken from `main` rather than a release.
+
+## Commands
+
+| Command | |
+|---|---|
+| `digline run` | execute the suite, write the run, print its key — refused before the first call if the baseline is at a schema this digline cannot read and `--accepting-baseline-schema` does not name it. A run killed part way through is finished with `--resume`, which re-pays for the cases nobody has an answer to and nothing else — [`docs/api.md`](docs/api.md#the-run-that-was-killed) |
+| `digline compare` | headline plus the lines that got worse; `--json`, `--json full` for CI |
+| `digline diff` | what differs between two runs, neither of them a baseline — for "should I switch?" rather than "did it get worse?". Always exits 0: it is a report, not a verdict — [`docs/diff.md`](docs/diff.md) |
+| `digline promote` | make a run the baseline — refused if the tenant differs, the configuration changed, any check errored, the baseline moved since the comparison (`--replacing` names the one it replaces), a pinned file drifted or lost its path and `--accepting-pin` does not name exactly those paths, or the run holds other cases than the suite declares (`--exclude CASE --by NAME` leaves out a case the suite dropped) |
+| `digline register` | record what a person decided about a comparison — `--disposition accepted`, `rejected` or `unsure` — as one line under `.digline/<tenant>/register/`, committed like a baseline. Counts and keys only: the reason goes in the message of the commit that adds the line. A person's act, never an agent's or a schedule's — [`docs/register.md`](docs/register.md) |
+| `digline report` | self-contained HTML for readers who do not read code; `--locale` mandatory, `--redacted` keeps the verdicts and drops the payload. With no baseline yet it renders the run on its own and says so, so the first run is readable before anything is promoted |
+| `digline explain` | the same facts read back at length, in prose: what ran, what moved, against which measured interval, what differed underneath. Compares when there is a baseline and reads the run alone when there is not. `--json` emits the fact list the prose is rendered from. It states, and never advises — [`docs/explain.md`](docs/explain.md) |
+| `digline log` | which model answered, read down the stored runs: what each side sent, what the provider said answered, the rolls between them, and every run that recorded nothing named for what it is. A roll is declared by the record, never deduced from scores. Never a gate: it exits 0 whatever it finds — [`docs/log.md`](docs/log.md) |
+| `digline rejudge` | judge a stored run's recorded answers again — a changed judge, rubric or threshold, over the same answers, at no cost to the target; refused before the first judge is paid, as `run` is, on a baseline this digline cannot read. The run it writes declares where the answers came from and cannot be promoted — [`docs/rejudge.md`](docs/rejudge.md) |
+| `digline list` | stored runs, newest first, baseline marked |
+| `digline view` | local browser UI — [`docs/view.md`](docs/view.md) |
+| `digline migrate` | bring stored runs forward across schema versions — [`docs/migrate.md`](docs/migrate.md) |
+| `digline record` | switch the recorder on or off for a tenant (`record on`, `record off`), or read what it has kept (`record status`, `--json`): whether it records, with which sample and ceiling, how many recordings each suite has, and whether it stopped at the ceiling. `record import` lists a suite's recorded answers, grouped by the shape of the output (`--json`: the counts and shapes, no recorded word), and writes only the ones a person names, `--good ID` or `--bad ID` with `--by NAME`, as reviewed answers into the file its capture source declares; it commits nothing. `record compare` shows a suite's recorded answers by case and by setup, two setups side by side with `--setup A B`, and judges nothing and writes nothing. The switch is `.digline/<tenant>/recorder.toml`, ignored by git; the recorder itself is `digline.recorder.wrap`, around the application's own client — [`docs/record.md`](docs/record.md) |
+| `digline suggest` | propose a first suite from what the recordings hold, into `suite.proposed.toml` beside the suite: the checks every recording holds, limits from the runs or placeholders that fail until written, a counterexample and a calibration skeleton. It chooses no case, marks nothing, and no command reads the file; the commit is yours — [`docs/suggest.md`](docs/suggest.md) |
+| `digline where` | where the project is, read from `.digline/`: the first of eleven states that holds, from *nothing recorded yet* to *the newest run exits N*, the counts that put it there, the command for the next step and the page that says more. `--json` for a program; the MCP server's `where` returns the same. It reads, writes nothing and runs nothing — [`docs/view.md`](docs/view.md#where-you-are) |
+| `digline delete` | remove a run, its journal legs and its replays across the tenant, by a key written out (`latest` is refused). Refused for the run under the current baseline: promote another first. It removes from `.digline/<tenant>/runs/` and nowhere else — not the baseline, not the register, not git history, backups or reports — so it is not an erasure — [`docs/delete.md`](docs/delete.md) |
+
+The same comparison reaches an agent through [`digline-mcp`](docs/mcp.md) —
+thirteen tools that read and measure, and no `promote` to call — and Claude Code
+through [the plugin](plugins/digline/README.md), which ships that server with
+the judgement layer beside it. It reaches a test run through
+[`pytest-digline`](docs/pytest.md), one row per check, a pull request through
+[`digline/digline-action`](https://github.com/digline/digline-action), and CI
+without a Python toolchain through `ghcr.io/digline/digline`.
+
+From here: the [examples](#examples) below each run with no API key, the
+reasoning behind every rule is in [`docs/adr/`](docs/adr/), and
+[`CONTRIBUTING.md`](CONTRIBUTING.md) says how to set up the repository, run the
+tests, and what a change has to show before it lands.
+
+## Examples
+
+The projects in [`examples/`](examples/) each answer a question somebody
+actually arrives with. Every one runs with no API key, carries its committed
+`report.html`, and is a standalone project: copy the directory anywhere and
+`uv sync` works.
+
+- [**I have a classifier: how do I keep it under control?**](examples/classifier/) — labelled cases, an agreement check, `Precision` and `Accuracy` as the gate
+- [**I'm writing a prompt and have no application yet**](examples/prompt-first/) — a prompt in a file, and the report showing its diff next to what it moved
+- [**I have a RAG: how do I check it doesn't make things up?**](examples/rag/) — frozen retrieval, `Faithfulness`, `PiiAbsent`
+- [**My application is Java: can I use this?**](examples/external-app/) — `HttpTarget` against a service digline cannot import
+- [**My app is LangChain4j: what do I put in my repo?**](examples/langchain4j/) — the walkthrough: one endpoint, three files, the CI gate
+- [**My pipeline is LangChain: what changed when I upgraded it?**](examples/langchain/) — the chain called in process, `FakeListChatModel` in CI, one line to a real model
+- [**My agent calls the right tools, but with the right arguments?**](examples/langgraph/) — a LangGraph agent judged on its trajectory: `Before` and `Subsequence` for the order, `Never` and `MaxSteps` on the steps, `ToolCalledWith` for the arguments, the tools real and the model scripted
+- [**My RAG is LlamaIndex: is it still answering from the right page?**](examples/llamaindex/) — a live query engine, retrieval measured by `Faithfulness` against the page each case declares
+- [**My team does not write Python: can we still gate a prompt?**](examples/quickstart-toml/) — a `suite.toml` and a `cases.json`, no code in the suite
+- [**My suite is green today: who watches it on Thursday?**](examples/operator/) — the operator loop: a scheduled re-run, draw told from drift, a declared policy that decides who is woken, and a probe proving each cycle that `promote` is still absent
+- [**My agent uses an MCP server I don't control: how do I know its tool descriptions haven't changed?**](examples/mcp-tools/) — a canonical `tools/list` dump declared as an artifact, and one added clause that stops a tool being called
+
+## What digline is not
+
+- **Not an observability platform.** Dashboards over production traces are a
+  served market. digline asks for none of that: what it needs from the system
+  under test is a function or an HTTP endpoint. What it keeps inside *your*
+  perimeter is narrower: the recorder keeps your application's calls, and an
+  agent's turn as one episode with its steps, and `digline record import`
+  writes the ones a person names, with their yes or no, as cases a suite loads
+  ([`docs/record.md`](docs/record.md)). Judging production responses as they
+  arrive is designed and not yet built.
+- **Not a red-teaming tool.** digline generates no attacks. Once one is found,
+  it becomes a `Case`, and the suite makes sure it never works again.
+- **Not YAML.** The suite is Python — or, within declared limits, TOML: cases
+  were always data, and now the rules can be too. A judge with rules of its own,
+  a computed request body and a custom assertion stay Python, and the loader
+  names the wall you hit rather than half-supporting it.
+- **Not a funnel.** Two commitments, by design and for good: no hosted service
+  that receives your payloads, and no data collection. The baseline lives in
+  your repo; the runs happen on your machines. If digline ever grows paid
+  features, they will run inside your perimeter too. How digline treats its own
+  attack surface — the published advisories and the delta-pass every minor
+  release gets — is in [`SECURITY.md`](SECURITY.md).
+
+## Status
+
+`1.3.0`. The offline cycle — write the suite, run, compare, promote,
+report, and commit what a person decided — is complete, covered by tests, and
+used daily on a real project, and
+since 0.5.0 the suite may be written as data as well as in Python. From 1.0.0 a
+minor release does not break a public Python signature; the `--json` output and
+the stored baseline keep versions of their own, `OUTPUT_VERSION` and
+`SCHEMA_VERSION`, which may still move in a minor, and the baseline migrates. The
+production store, the bridge from production failures back to committed cases,
+and the reactive side are designed in
+[ADR 0002](docs/adr/0002-three-worlds-and-where-the-data-lives.md) and not
+written yet.
+
+Python 3.12+. One runtime dependency: `jsonschema`.
+
+## Docs
+
+- [`docs/guide.md`](docs/guide.md) — how to reason with digline, in eight chapters
+  and the order the problems arrive: baseline, judge noise, sampling, tolerance,
+  threshold, which run to promote, what to gate on, what to maintain
+- [`docs/metrics.md`](docs/metrics.md) — a card per assertion and aggregate: when
+  to reach for it, what it produces, what it will do to you if you are not looking
+- [`docs/api.md`](docs/api.md) — what is imported from where, every assertion
+  and its parameters, custom assertions, and the complete example in
+  [`examples/quickstart/`](examples/quickstart/), which a test runs on every build
+- [`docs/declarative.md`](docs/declarative.md) — the suite as data: the TOML
+  format, key by key, what it deliberately cannot say, and how to move a suite
+  between the two forms without losing its baseline
+- [`docs/diff.md`](docs/diff.md) · [`docs/explain.md`](docs/explain.md) · [`docs/rejudge.md`](docs/rejudge.md) · [`docs/view.md`](docs/view.md) · [`docs/migrate.md`](docs/migrate.md) — each command with a surface of its own
+- [`docs/mcp.md`](docs/mcp.md) · [`docs/pytest.md`](docs/pytest.md) — the two front ends that are not the CLI
+- [`AGENTS.md`](AGENTS.md) — how a coding agent should operate digline in your repo
+- [`plugins/digline/`](plugins/digline/README.md) — the same rules as a Claude Code
+  plugin, with the MCP server and a hook that asks a person before `promote`,
+  `register`, `view --allow-promote`, an import that writes a yes or no, and
+  `record on`
+- [`docs/adr/`](docs/adr/) — the architectural decisions, numbered, with the reasoning
+
+## License
+
+Apache-2.0.

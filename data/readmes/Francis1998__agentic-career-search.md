@@ -22,6 +22,8 @@ Job-search automation usually fails in practice because it:
   state machine with cooperative cancellation and an ordered event log;
 - **leaves results in a terminal** → JobSpy-style search, CSV/JSONL export and an Atom
   feed for Slack, Teams or any feed reader;
+- **can't tell what fits *you*** → `POST /jobs/match` ranks the captured feed against your
+  resume text with matched and missing skills — deterministic, and the resume is never stored;
 - **can't be asked about** → a read-only MCP server lets Claude Desktop, Claude Code,
   VS Code or Cursor search your feed and explain any score;
 - **depends on one LLM** → enrichment is optional and works with the current OpenAI,
@@ -36,11 +38,12 @@ flowchart LR
     W --> AD["119 source adapters<br/>Greenhouse · Lever · Workday · JSON-LD …"]
     AD --> SCORE["Deterministic scoring<br/>+ planning"]
     SCORE --> DT["Decision trace<br/>agent_decision + run events"]
-    SCORE -. optional .-> LLM["LLM enrichment<br/>GPT-6 · Claude 5.5 · Gemini 3.8 · Kimi K3.1"]
+    SCORE -. optional .-> LLM["LLM enrichment<br/>GPT-6 · Claude 5.5 / Fable 5.2<br/>Gemini 3.8 / 4 · Kimi K3.1"]
     LLM -.-> DT
     DT --> DB[("Jobs + run events")]
     DB --> API["Search · export · Atom feed<br/>GET /jobs …"]
     DB --> MCP["Read-only MCP server<br/>career-search-mcp (stdio)"]
+    DB --> MATCH["Resume match<br/>POST /jobs/match"]
 ```
 
 Every step is observable through `GET /runs/{run_id}/events`, and every stored job carries
@@ -71,6 +74,19 @@ curl -sS -OJ 'localhost:8000/jobs/export?format=csv&min_score=0.7'    # spreadsh
 curl -sS 'localhost:8000/jobs/feed.atom?remote=true' | head -20       # Atom feed
 ```
 
+Rank the same feed against a resume (plain text; the sample is synthetic):
+
+```bash
+jq -n --rawfile resume docs/guides/RESUME_JOB_MATCH_SAMPLE_RESUME.txt '{resume_text: $resume, remote: true}' \
+  | curl -sS localhost:8000/jobs/match -H 'content-type: application/json' -d @- \
+  | jq -c '.jobs[] | [.rank, .match_score, .title, .missing_skills]'
+```
+
+![Resume-to-job match — real terminal session](assets/demo/resume-job-match.gif)
+
+[RESUME_JOB_MATCH_GUIDE.md](docs/guides/RESUME_JOB_MATCH_GUIDE.md) covers the skill lexicon,
+`sort=blend`, CSV output, limits and privacy.
+
 For live data, start the API with the worker enabled (omit `ENABLE_WORKER=false`), then
 register a public board and start a run:
 
@@ -88,10 +104,10 @@ end to end, and [QUICKSTART.md](QUICKSTART.md) covers setup details.
 
 `career-search-mcp` is a read-only [Model Context Protocol](https://modelcontextprotocol.io)
 server (stdio; protocol 2026-07-28 plus the 2025-11-25 / 2025-06-18 handshake). Assistants
-get six tools — `search_jobs`, `get_job`, `explain_job_score`, `list_runs`, `get_run`,
-`list_sources` — over the jobs your runs already captured, scored and deduplicated, so
-*"show me this week's best-fit remote roles and why the top one ranks first"* needs no
-scraping, keys or writes. For example, in Claude Code:
+get seven tools — `search_jobs`, `get_job`, `explain_job_score`, `list_runs`, `get_run`,
+`list_sources`, `match_resume_to_jobs` — over the jobs your runs already captured, scored
+and deduplicated, so *"show me this week's best-fit remote roles and why the top one ranks
+first"* needs no scraping, keys or writes. For example, in Claude Code:
 
 ```bash
 claude mcp add --transport stdio career-search -- \
@@ -110,8 +126,9 @@ Cursor configuration examples, every tool, the audit log and a recorded session.
 | Runs | Queue, worker, cooperative cancel, ordered run events | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Decisions | Deterministic score, priority tier, matched terms, rationale, plan steps per job | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Search & export | Filters, `X-Total-Count` paging, cross-board dedupe, OWASP-safe CSV, JSON Lines, Atom 1.0 | [Search & export guide](docs/guides/JOB_SEARCH_EXPORT_GUIDE.md) |
+| Resume match | `POST /jobs/match` and MCP `match_resume_to_jobs`: rank jobs against resume text with a 254-skill alias-aware lexicon (`k8s` → `kubernetes`); match score, matched/missing skills, explanation, `sort=match\|blend`, CSV; resume never stored or logged | [Resume match guide](docs/guides/RESUME_JOB_MATCH_GUIDE.md) |
 | AI assistants (MCP) | Read-only stdio MCP server: search, decision traces, plain-language score explanations, runs and events; audit log with hashed arguments | [MCP server guide](docs/guides/MCP_SERVER_GUIDE.md) |
-| LLM enrichment | Optional summaries from GPT-6, Claude 5.5, Gemini 3.8 or Kimi K3.1 | [CONFIGURATION.md](CONFIGURATION.md) |
+| LLM enrichment | Optional summaries from GPT-6, Claude 5.5 / Fable 5.2, Gemini 3.8 / 4 or Kimi K3.1 models | [CONFIGURATION.md](CONFIGURATION.md) |
 | Alerts | Fail-soft webhook for high-priority jobs (Slack, Discord, custom) | [CONFIGURATION.md](CONFIGURATION.md) |
 | Career toolkit | 175+ offline, human-in-the-loop helpers (fit, salary bands, interview prep, offer and benefit gap advisors) | [Use-case catalog](docs/USE_CASE_CATALOG.md) |
 | Operations | Health probes, Alembic migrations, CI (ruff, mypy, pytest), weekly security scan | [DEPLOYMENT.md](docs/DEPLOYMENT.md) |
@@ -119,19 +136,32 @@ Cursor configuration examples, every tool, the audit log and a recorded session.
 ## LLM enrichment (current model stack)
 
 Provider integration is built into the code path and is optional: deterministic scoring
-and decision traces work without any key. Defaults track the current model line-ups
-(verified 2026-11-06):
+and decision traces work without any key. Each default is a provider's cost-efficient
+current model (line-ups verified 2026-11-12 on the linked provider pages):
 
 | Provider | `LLM_PROVIDER` | Default model | Request shape |
 |---|---|---|---|
-| [OpenAI](https://developers.openai.com/api/docs/guides/latest-model) | `gpt` | `gpt-6-luna` | Chat Completions; `reasoning_effort` from `OPENAI_REASONING_EFFORT` (`none`, so `temperature` is allowed); `gpt-6.1-sol` / `gpt-6-astra` need `low` or higher |
-| [Anthropic](https://platform.claude.com/docs/en/models/overview) | `claude` | `claude-haiku-5-5` | Messages API; `output_config.effort` from `CLAUDE_EFFORT` (`low`); no sampling parameters (Claude 5.5 returns 400 for them) |
-| [Google](https://aistudio.google.com/docs/models) | `gemini` | `gemini-3.8-flash` | `generateContent`; `thinkingLevel: LOW` on Gemini 3+; no sampling parameters |
+| [OpenAI](https://developers.openai.com/api/docs/models) | `gpt` | `gpt-6-luna` | Chat Completions; `reasoning_effort` from `OPENAI_REASONING_EFFORT` (`none`, so `temperature` is allowed); `gpt-6.1-sol` / `gpt-6-astra` need `low` or higher |
+| [Anthropic](https://platform.claude.com/docs/en/models/overview) | `claude` | `claude-haiku-5-5` | Messages API; `output_config.effort` from `CLAUDE_EFFORT` (`low`); no sampling parameters (Claude 5.5 and Fable 5.2 return 400 for custom values) |
+| [Google](https://aistudio.google.com/docs/models) | `gemini` | `gemini-3.8-flash` | `generateContent`; `thinkingLevel: LOW` on Gemini 3+ (required on Gemini 4); Gemini 4 keeps Google's default output limit; no sampling parameters |
 | [Moonshot Kimi](https://platform.kimi.ai/docs/api/models-overview.md) | `kimi` | `kimi-k3.1-pro` | OpenAI-compatible; `reasoning_effort: low`; `temperature` is fixed at 1.0 by K3 and never sent |
 
-Larger options: `gpt-6.1-sol` / `gpt-6-astra`, `claude-sonnet-5-5` / `claude-opus-5-5`,
-`gemini-4-argon`, `kimi-k3.1-pro-highspeed`. Kimi K2 models are being retired. See each
-provider's page for pricing.
+Other current models:
+
+- OpenAI: `gpt-6.1-terra`, `gpt-6.1-sol`, `gpt-6-astra` (flagship).
+- Anthropic: `claude-sonnet-5-5`, `claude-opus-5-5` (Anthropic's recommended starting
+  point), `claude-fable-5-2` (demanding reasoning and long-horizon agentic work; needs
+  30-day data retention).
+- Google: `gemini-3.5-flash-lite` (cheapest),
+  [`gemini-4-hydrogen`](https://aistudio.google.com/docs/whats-new-gemini-4-hydrogen)
+  (released 2026-11-12; Google's recommended upgrade from Gemini 3.8 Flash, at twice its
+  price until the 3.8 Flash introductory rate ends on 2026-12-31), `gemini-4-argon`,
+  `gemini-4-carbon` (strongest reasoning).
+- Kimi: `kimi-k3.1-pro-highspeed` (same intelligence, about 2-3x the speed).
+  Kimi K2 models are retiring by the end of December 2026 and closed to new users on
+  2026-10-31 ([Moonshot](https://platform.kimi.ai/docs/models)).
+
+See each provider's page for pricing.
 
 Enable provider enrichment:
 
@@ -154,6 +184,7 @@ Then set matching API keys in `.env` (see `CONFIGURATION.md`).
 - `GET /jobs/{job_id}` inspect one job
 - `GET /jobs/export?format=csv|jsonl` stream filtered results as a download
 - `GET /jobs/feed.atom` subscribe to new matches (Atom 1.0)
+- `POST /jobs/match` rank jobs against resume text (JSON body: `resume_text` + the `GET /jobs` filters, `sort=match|blend`, `limit`, `min_match`); matched/missing skills; `?format=csv`
 - `GET /health/live` and `GET /health/ready`
 
 MCP (stdio, read-only): `career-search-mcp` / `python -m autoapply_agent.mcp` — see the
@@ -167,6 +198,7 @@ MCP (stdio, read-only): `career-search-mcp` / `python -m autoapply_agent.mcp` �
 | [docs/guides/PORTFOLIO_WALKTHROUGH.md](docs/guides/PORTFOLIO_WALKTHROUGH.md) | One real job search, end to end |
 | [docs/guides/JOB_SEARCH_EXPORT_GUIDE.md](docs/guides/JOB_SEARCH_EXPORT_GUIDE.md) | Filters, CSV/JSONL export, Atom feed |
 | [docs/guides/MCP_SERVER_GUIDE.md](docs/guides/MCP_SERVER_GUIDE.md) | Read-only MCP server for AI assistants: client setup, tools, privacy |
+| [docs/guides/RESUME_JOB_MATCH_GUIDE.md](docs/guides/RESUME_JOB_MATCH_GUIDE.md) | Resume-to-job match: API + MCP reference, skill lexicon, ranking, privacy |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Components, run lifecycle, events |
 | [docs/API.md](docs/API.md) | HTTP API reference |
 | [CONFIGURATION.md](CONFIGURATION.md) | Environment variables and provider profiles |

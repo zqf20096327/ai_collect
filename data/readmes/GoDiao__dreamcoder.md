@@ -56,7 +56,7 @@ Provider settings and API keys are stored in local files. When you use a cloud m
 
 ### 1. Native Desktop Experience
 *   **Smoother session management**: Visual history, a sidebar with several ways to organize sessions, and a full-height side panel per session.
-*   **A side panel of tabs**: Changes, the file tree, single files, web pages, terminals and pages each open as a tab from the new tab page. Each session keeps its own tabs, and they come back after a restart (terminals excepted).
+*   **A side panel of tabs**: Changes, Files (a file tree beside a preview of the selected file), web pages, terminals and pages each open as a tab from the new tab page; a single file can also get its own tab from the file tree's menu. Each session keeps its own tabs, and they come back after a restart (terminals excepted).
 *   **Terminal built into the workflow**: Built-in PTY (PowerShell/Bash/Zsh) with xterm.js.
 *   **Settings you can manage visually**: Configure providers, API keys, and preferences without editing JSON files.
 
@@ -218,14 +218,7 @@ To learn how a coding agent works under the hood, read the [Coding Agent Impleme
 
 ## 📅 Roadmap
 
-- [x] **Phase 1**: Desktop GUI implementation + Multi-Provider System + Project Workspace
-- [x] **Phase 2**: CLI Backend Integration + Computer Use + MCP + Skills + Agent Teams
-- [x] **Phase 2.5**: Performance — bundle splitting, polling throttle, terminal LRU, sessionStore refactor
-- [x] **Phase 3**: H5 LAN Access (access desktop sessions from a phone/browser after enabling it)
-- [ ] **Phase 4**: Release Automation + Auto-update
-- [ ] **Phase 5**: Remote Agent Backend (run the agent on a remote host over SSH / WebSocket)
-
-See [ROADMAP](docs/general/ROADMAP_en.md)
+What DreamCoder has, what is being built, and what is planned or dropped: see the [Feature overview](https://github.com/GoDiao/dreamcoder/issues/244).
 
 ---
 

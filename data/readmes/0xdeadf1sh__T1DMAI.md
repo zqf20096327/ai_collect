@@ -10,7 +10,7 @@ My model is a small transformer that forecasts blood glucose 2 hours ahead. I've
 which use DILATE and MSE loss for training, respectively. D16 refers to the width of the model (16). They are both
 trained on synthetic traces, and then a LoRA adapter is added for light fine-tuning, but I also test them without the adapter.
 
-Feast thine eyes on some of their forecasts (these have been trained on synthetic traces and no adapter is used for predictions):
+Feast thine eyes on some of their forecasts (these have been trained on synthetic traces, then fine-tuned with a LoRA adapter on my training split):
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="screenshots/personal-days-d16-dilate-1-dark.png">
@@ -310,6 +310,16 @@ closed-loop pumps whose future insulin reacts to glucose the model hasn't seen.
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="screenshots/metabonet-traces-dark.png">
   <img alt="Example forecasts on MetaboNet" src="screenshots/metabonet-traces.png">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/personal-clarke-dark.png">
+  <img alt="Clarke error grid by horizon, my data" src="screenshots/personal-clarke.png">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/metabonet-clarke-dark.png">
+  <img alt="Clarke error grid by horizon, MetaboNet" src="screenshots/metabonet-clarke.png">
 </picture>
 
 <picture>

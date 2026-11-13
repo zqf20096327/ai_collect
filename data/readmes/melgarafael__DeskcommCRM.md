@@ -21,7 +21,7 @@
 
 [![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/melgarafael)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-170-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-206-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [**⚡ Instalar**](#-instalar-na-sua-vps-o-caminho-principal) · [**📖 Curso visual**](https://deskcomm.com.br/curso) · [**🔄 Atualizar**](#-atualizar) · [**🧭 Visão**](VISION.md) · [**🏗️ Arquitetura**](ARCHITECTURE.md) · [**🤝 Contribuir**](CONTRIBUTING.md) · [**🗺️ Roadmap**](#%EF%B8%8F-roadmap)
 
@@ -502,7 +502,7 @@ Quer apoiar o projeto de outro jeito? [Patrocine no GitHub Sponsors](https://git
   <tbody>
     <tr>
       <td align="center" valign="top" width="12.5%"><a href="https://github.com/melgarafael"><img src="https://avatars.githubusercontent.com/u/119944436?v=4?s=64" width="64px;" alt="Rafael Melgaço"/><br /><sub><b>Rafael Melgaço</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=melgarafael" title="Code">💻</a> <a href="#maintenance-melgarafael" title="Maintenance">🚧</a> <a href="#ideas-melgarafael" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="12.5%"><a href="https://github.com/webtecnica"><img src="https://avatars.githubusercontent.com/u/75556242?v=4?s=64" width="64px;" alt="webtecnica"/><br /><sub><b>webtecnica</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=webtecnica" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/webtecnica"><img src="https://avatars.githubusercontent.com/u/75556242?v=4?s=64" width="64px;" alt="webtecnica"/><br /><sub><b>webtecnica</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=webtecnica" title="Code">💻</a> <a href="https://github.com/melgarafael/DeskcommCRM/commits?author=webtecnica" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="12.5%"><a href="https://github.com/paulolimajr77"><img src="https://avatars.githubusercontent.com/u/60278689?v=4?s=64" width="64px;" alt="Paulo Lima Jr"/><br /><sub><b>Paulo Lima Jr</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=paulolimajr77" title="Code">💻</a></td>
       <td align="center" valign="top" width="12.5%"><a href="https://github.com/jmpo"><img src="https://avatars.githubusercontent.com/u/23352109?v=4?s=64" width="64px;" alt="Marcelo Pompa"/><br /><sub><b>Marcelo Pompa</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=jmpo" title="Code">💻</a></td>
       <td align="center" valign="top" width="12.5%"><a href="https://github.com/Tong-bit-art"><img src="https://avatars.githubusercontent.com/u/239565928?v=4?s=64" width="64px;" alt="ordinary being"/><br /><sub><b>ordinary being</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=Tong-bit-art" title="Code">💻</a></td>
@@ -713,114 +713,45 @@ Quer apoiar o projeto de outro jeito? [Patrocine no GitHub Sponsors](https://git
     <tr>
       <td align="center" valign="top" width="12.5%"><a href="https://github.com/ViktorHugodev"><img src="https://avatars.githubusercontent.com/u/85125378?v=4?s=64" width="64px;" alt="Victor H Correa"/><br /><sub><b>Victor H Correa</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=ViktorHugodev" title="Code">💻</a></td>
       <td align="center" valign="top" width="12.5%"><a href="https://github.com/ygorl"><img src="https://avatars.githubusercontent.com/u/105249488?v=4?s=64" width="64px;" alt="ygorl"/><br /><sub><b>ygorl</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=ygorl" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/bfs2021"><img src="https://avatars.githubusercontent.com/u/101915083?v=4?s=64" width="64px;" alt="zgy"/><br /><sub><b>zgy</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=bfs2021" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/ricagui"><img src="https://avatars.githubusercontent.com/u/63175361?v=4?s=64" width="64px;" alt="Ricardo Mendes"/><br /><sub><b>Ricardo Mendes</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=ricagui" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/ZvisionAutomations"><img src="https://avatars.githubusercontent.com/u/263388721?v=4?s=64" width="64px;" alt="ZvisionAutomations"/><br /><sub><b>ZvisionAutomations</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=ZvisionAutomations" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/jhometal"><img src="https://avatars.githubusercontent.com/u/86752996?v=4?s=64" width="64px;" alt="jhometal"/><br /><sub><b>jhometal</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/issues?q=author%3Ajhometal" title="Bug reports">🐛</a> <a href="#ideas-jhometal" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/juniorpagedown"><img src="https://avatars.githubusercontent.com/u/81428565?v=4?s=64" width="64px;" alt="juniorpagedown"/><br /><sub><b>juniorpagedown</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/issues?q=author%3Ajuniorpagedown" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/nemyasalmeida"><img src="https://avatars.githubusercontent.com/u/298016233?v=4?s=64" width="64px;" alt="nemyasalmeida"/><br /><sub><b>nemyasalmeida</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/issues?q=author%3Anemyasalmeida" title="Bug reports">🐛</a></td>
     </tr>
-  </tbody>
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
----
-
-## 🐛 Reportando bugs
-
-Abra uma [issue](https://github.com/melgarafael/DeskcommCRM/issues/new/choose) — o template pede o que precisamos (ambiente, `/api/v1/health`, steps). Rodar `bash hostgator-setup-kit/healthcheck.sh` e colar a saída ajuda muito.
-
-Pra **vulnerabilidades de segurança**, **NÃO abra issue pública** — use o [relato privado de vulnerabilidades](https://github.com/melgarafael/DeskcommCRM/security/advisories/new). Detalhes em [`SECURITY.md`](SECURITY.md).
-
----
-
-## 🗺️ Roadmap
-
-### ✅ Entregue
-
-- **Fundação & plataforma** — auth (MFA pra admin), multi-tenancy com RLS + teste de isolamento, RBAC 4 papéis, audit log append-only, onboarding de tenant.
-- **Atendimento WhatsApp** — inbox 3 painéis em tempo real, conexões multi-número por **QR (WAHA)** ou **canal oficial da Meta** (templates aprovados e sincronizados), mídia via Storage, anti-banimento (throttle + jitter + janela de horário), STOP detection.
-- **CRM & pedidos** — kanban com vocabulário configurável por nicho (fractional indexing), gestão de funis pela tela, customer 360, contatos, tags, integração Nuvemshop.
-- **IA nativa** — agentes com RAG por tenant (pgvector), **skills** que o agente executa sozinho, **memória da organização**, roteador de intenção por número, análise de sentimento, handoff IA→humano, teto de gasto por org, MCP server interno.
-- **Escolha de provedor de IA** — OpenRouter, Anthropic ou OpenAI, decidido na instalação e trocável por parte do sistema pela tela.
-- **Follow-up vivo** — retomada de conversa esfriada com tempo adaptativo, gatilhos por etapa do funil e por caso, fila com rodízio, e o Radar do que corre risco de morrer sem resposta.
-- **LGPD** — export e redact via workers, anonimização em cascata, consentimento auditado.
-- **Self-host** — `hostgator-setup-kit` (app + WhatsApp + banco com 1 comando), `baseline.sql` auto-curativo, **atualização pela tela** com backup automático, runbook de produção.
-- **Webhooks & automação** — fontes de captação + regras QUANDO/SE/ENTÃO + gatilhos pra sistemas externos.
-- **Governança de atendimento** — RBAC server-side em toda a API, atribuição e transferência auditadas (IA como assignee de 1ª classe), visualização por papel (RLS) + métricas por atendente, roteamento automático com fila e painel de gestão, e contrato de governança pra agentes de IA externos ([`docs/specs/14`](docs/specs/14-contrato-governanca-agentes-externos.md)).
-- **Operação visível** — motivo da retenção anti-ban traduzido na conversa, central de avisos com severidade, aviso de mensagem presa, controle de proteção de envio (janela/ritmo/teto), capacidades declaradas do agente e propostas do flywheel aplicáveis como versão nova (com gate humano).
-
-### 🔮 Próximo
-
-- **MCP público** — capabilities do CRM expostas pro ecossistema de agentes: plugue o agente que quiser e ele opera o Deskcomm.
-- **Templates por nicho** — pipelines e vocabulários prontos pra clínica, imobiliária, infoproduto e serviços (e-commerce já entregue).
-- **Integrações** — VTEX e Shopify via adapter pattern (Nuvemshop já entregue).
-- **Identity probabilística** — unificação de contatos entre canais.
-
----
-
-## 💬 Comunidade
-
-- **Discussões:** [GitHub Discussions](https://github.com/melgarafael/DeskcommCRM/discussions) — pra perguntas, ideias, showcase.
-- **Issues:** [GitHub Issues](https://github.com/melgarafael/DeskcommCRM/issues) — bugs e tasks.
-- **Instagram:** [@melgarafael](https://www.instagram.com/melgarafael)
-- **YouTube:** [youtube.com/@melgarafael](https://www.youtube.com/@melgarafael)
-
----
-
-## 📜 Licença
-
-Distribuído sob a licença **MIT** — veja [`LICENSE`](LICENSE). Você pode usar, modificar
-e distribuir livremente, inclusive comercialmente. O software é fornecido **"como está",
-sem garantias** (ver cláusula de isenção no `LICENSE`).
-
----
-
-## 🛟 Suporte & responsabilidades (self-host)
-
-Este é um projeto **self-host**: cada pessoa roda o CRM na **própria infraestrutura**
-(VPS, banco Supabase e chave de IA próprios). Isso implica:
-
-- **Suporte é comunitário e "as-is".** Dúvidas e bugs entram como
-  [Issues](https://github.com/melgarafael/DeskcommCRM/issues) ou
-  [Discussions](https://github.com/melgarafael/DeskcommCRM/discussions). Não há SLA nem
-  suporte garantido — é open source mantido por boa vontade.
-- **Você é responsável pela sua instalação.** Atualizações não são automáticas (você clica
-  ou roda `update.sh` quando quiser), e manter/backup do seu servidor é com você.
-- **LGPD — atenção:** quem **hospeda** a instância é o **controlador** dos dados pessoais
-  ali tratados (clientes, conversas, pedidos), com as obrigações legais decorrentes. Os
-  mantenedores do projeto **não são** controladores nem operadores da sua instância, e não
-  têm acesso ao seu banco, ao seu WhatsApp nem ao seu storage. A única coisa que pode sair
-  da sua máquina para nós é o relatório de erro descrito abaixo — e só se você deixar.
-- **Telemetria (Sentry):** o `install.sh` **pergunta** durante a instalação e respeita a
-  sua resposta; em modo não-interativo, sem `SENTRY_DSN` definido, a telemetria fica
-  **desligada**. Se você aceitar o Sentry da comunidade, o que é enviado são **relatórios
-  de erro** (stack trace) com CPF, telefone e e-mail substituídos, cabeçalhos sensíveis
-  removidos, e token de webhook/convite redigido da URL — **sem** rastreamento de
-  performance e **sem** replay de sessão contínuo, que ficam em 0 nesse caminho. Vai
-  junto do erro a gravação dos instantes que o antecederam, com texto e mídia mascarados,
-  as mesmas URLs redigidas e nenhuma gravação nas páginas com credencial na URL
-  ([`lib/sentry/replay.ts`](lib/sentry/replay.ts)). Para desligar a
-  qualquer momento: `SENTRY_DSN=off` no `.env`. Para mandar ao **seu** Sentry (aí sim com
-  performance e replay): `SENTRY_DSN=<seu-dsn>`. O que é redigido, e por quê, está em
-  [`lib/sentry/scrub.ts`](lib/sentry/scrub.ts); a resolução do DSN em
-  [`lib/sentry/dsn.ts`](lib/sentry/dsn.ts).
-
----
-
-## 🙏 Agradecimentos
-
-- **WAHA** ([devlikeapro](https://waha.devlikeapro.com/)) — engine WhatsApp.
-- **Supabase** — Postgres + Auth + Storage + Realtime numa stack só.
-- **HostGator** — parceria de infraestrutura que tornou o self-host de 1 comando possível.
-- **Anthropic**, **OpenAI** e **OpenRouter** — os provedores de IA que o CRM sabe usar.
-- **shadcn/ui** — base de componentes.
-- A comunidade que nos levou do e-commerce pra clínicas, imobiliárias, infoprodutos e além — vocês definiram o que este projeto é.
-
----
-
-<div align="center">
-
-**Built with ☕ in Brasil** · **Made for the community**
-
-Siga o desenvolvimento: [Instagram](https://www.instagram.com/melgarafael) · [YouTube](https://www.youtube.com/@melgarafael)
-
-</div>
+    <tr>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/hudson-souza-mkt"><img src="https://avatars.githubusercontent.com/u/173297369?v=4?s=64" width="64px;" alt="hudson-souza-mkt"/><br /><sub><b>hudson-souza-mkt</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=hudson-souza-mkt" title="Code">💻</a> <a href="https://github.com/melgarafael/DeskcommCRM/issues?q=author%3Ahudson-souza-mkt" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/NeroSued"><img src="https://avatars.githubusercontent.com/u/250192521?v=4?s=64" width="64px;" alt="Nero Sued"/><br /><sub><b>Nero Sued</b></sub></a><br /><a href="#ideas-NeroSued" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/aerosuiteapp"><img src="https://avatars.githubusercontent.com/u/284125218?v=4?s=64" width="64px;" alt="Danilo Costa"/><br /><sub><b>Danilo Costa</b></sub></a><br /><a href="#ideas-aerosuiteapp" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/melgarafael/DeskcommCRM/issues?q=author%3Aaerosuiteapp" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/frankjohann"><img src="https://avatars.githubusercontent.com/u/184155572?v=4?s=64" width="64px;" alt="Frank Johann"/><br /><sub><b>Frank Johann</b></sub></a><br /><a href="#ideas-frankjohann" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/tec7alex"><img src="https://avatars.githubusercontent.com/u/101949364?v=4?s=64" width="64px;" alt="tec7alex"/><br /><sub><b>tec7alex</b></sub></a><br /><a href="#ideas-tec7alex" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/shu-chen-dot-ca"><img src="https://avatars.githubusercontent.com/u/338845574?v=4?s=64" width="64px;" alt="Shu Chen"/><br /><sub><b>Shu Chen</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=shu-chen-dot-ca" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/renatomprado"><img src="https://avatars.githubusercontent.com/u/216311270?v=4?s=64" width="64px;" alt="Renato Prado"/><br /><sub><b>Renato Prado</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=renatomprado" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/Villa-Nova-Cont"><img src="https://avatars.githubusercontent.com/u/216889679?v=4?s=64" width="64px;" alt="Villa-Nova-Cont"/><br /><sub><b>Villa-Nova-Cont</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=Villa-Nova-Cont" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="12.5%"><a href="https://seax.com.br/"><img src="https://avatars.githubusercontent.com/u/344303443?v=4?s=64" width="64px;" alt="Seax"/><br /><sub><b>Seax</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=seax-trophy" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/routeti"><img src="https://avatars.githubusercontent.com/u/150551659?v=4?s=64" width="64px;" alt="routeti"/><br /><sub><b>routeti</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=routeti" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://codenome.com/"><img src="https://avatars.githubusercontent.com/u/7620822?v=4?s=64" width="64px;" alt="Ricardo Souza"/><br /><sub><b>Ricardo Souza</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=Riicksouzaa" title="Code">💻</a> <a href="https://github.com/melgarafael/DeskcommCRM/issues?q=author%3ARiicksouzaa" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/rglucchini-ai"><img src="https://avatars.githubusercontent.com/u/294623315?v=4?s=64" width="64px;" alt="rglucchini-ai"/><br /><sub><b>rglucchini-ai</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=rglucchini-ai" title="Code">💻</a> <a href="#ideas-rglucchini-ai" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://asishkumar.com/"><img src="https://avatars.githubusercontent.com/u/87874775?v=4?s=64" width="64px;" alt="Asish Kumar"/><br /><sub><b>Asish Kumar</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=officialasishkumar" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/mindflowai1"><img src="https://avatars.githubusercontent.com/u/212163253?v=4?s=64" width="64px;" alt="mindflowai1"/><br /><sub><b>mindflowai1</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=mindflowai1" title="Code">💻</a> <a href="https://github.com/melgarafael/DeskcommCRM/issues?q=author%3Amindflowai1" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/jay23606"><img src="https://avatars.githubusercontent.com/u/4602056?v=4?s=64" width="64px;" alt="Jay"/><br /><sub><b>Jay</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=jay23606" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://hanbintan.com/"><img src="https://avatars.githubusercontent.com/u/48960067?v=4?s=64" width="64px;" alt="Hanbin Tan"/><br /><sub><b>Hanbin Tan</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=hskl18" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/felipehenriquess"><img src="https://avatars.githubusercontent.com/u/141957140?v=4?s=64" width="64px;" alt="Felipe Henrique"/><br /><sub><b>Felipe Henrique</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=felipehenriquess" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/betoloko1970"><img src="https://avatars.githubusercontent.com/u/204420278?v=4?s=64" width="64px;" alt="betoloko1970"/><br /><sub><b>betoloko1970</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=betoloko1970" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/berrub00"><img src="https://avatars.githubusercontent.com/u/269054991?v=4?s=64" width="64px;" alt="berrub00"/><br /><sub><b>berrub00</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=berrub00" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/zeroaiproject"><img src="https://avatars.githubusercontent.com/u/355486270?v=4?s=64" width="64px;" alt="Zero AI"/><br /><sub><b>Zero AI</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=zeroaiproject" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/World2576"><img src="https://avatars.githubusercontent.com/u/202460698?v=4?s=64" width="64px;" alt="World2576"/><br /><sub><b>World2576</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=World2576" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/wanjinhao1"><img src="https://avatars.githubusercontent.com/u/34562501?v=4?s=64" width="64px;" alt="Kratos"/><br /><sub><b>Kratos</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=wanjinhao1" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/Denispds"><img src="https://avatars.githubusercontent.com/u/151410339?v=4?s=64" width="64px;" alt="Denis pereira dos santos Araújo"/><br /><sub><b>Denis pereira dos santos Araújo</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=Denispds" title="Code">💻</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/gabriel-lima-git-hub"><img src="https://avatars.githubusercontent.com/u/306846636?v=4?s=64" width="64px;" alt="gabriel-lima-git-hub"/><br /><sub><b>gabriel-lima-git-hub</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/commits?author=gabriel-lima-git-hub" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/lucas-nobrega"><img src="https://avatars.githubusercontent.com/u/38710249?v=4?s=64" width="64px;" alt="Lucas"/><br /><sub><b>Lucas</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/issues?q=author%3Alucas-nobrega" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/WaldineyGodoy"><img src="https://avatars.githubusercontent.com/u/163134445?v=4?s=64" width="64px;" alt="WaldineyGodoy"/><br /><sub><b>WaldineyGodoy</b></sub></a><br /><a href="#ideas-WaldineyGodoy" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/brunno-soaress"><img src="https://avatars.githubusercontent.com/u/318511864?v=4?s=64" width="64px;" alt="brunno-soaress"/><br /><sub><b>brunno-soaress</b></sub></a><br /><a href="https://github.com/melgarafael/DeskcommCRM/issues?q=author%3Abrunno-soaress" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="12.5%"><a href="https://github.com/gleisaum"><img src="https://avatars.githubusercontent

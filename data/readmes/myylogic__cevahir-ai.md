@@ -91,7 +91,7 @@ The training system includes source-aware train/validation splitting, grouping o
 
 [The unified interface](model/cevahir.py) exposes encoding, decoding, generation and cognitive processing. Generation includes temperature sampling, greedy decoding, top-k/top-p controls, repetition handling, EOS limits, beam search and incremental KV caching.
 
-[The cognitive system](cognitive_management) provides direct, think, debate and Tree of Thoughts workflows; context assembly, tool execution, critic stages, vector-memory integration, response caching and tracing. These are orchestration components whose response quality depends on the trained model, tools and retrieval setup. The built-in calculator executes restricted arithmetic; external tools can be registered through the tool interface.
+[The cognitive system](cognitive_management) provides direct, think, debate and Tree of Thoughts workflows; context assembly, tool execution, critic stages, vector-memory integration, response caching and tracing. These are orchestration components whose response quality depends on the trained model, tools and retrieval setup. The built-in calculator executes restricted arithmetic; external tools can be registered through the tool interface. By default the layer runs a lean profile: each message gets one answer generation, at most one critic revision and one entropy probe, with no think/debate/ToT steps, self-consistency samples, constitutional critique or outbound fact-check requests. `CognitiveManagerConfig.full()` switches all of these back on, including claim lookups on en.wikipedia.org; with a counting fake model that costs 16–18 generation calls per plain message (about 70 generation and 52 scoring calls on a Tree of Thoughts route) instead of 2. When the model reports a violation of every constitutional principle, the full profile adds one suggestion call per principle and a revision: 15 more calls, 31–33 per plain message. Vector memory is on in both profiles: if the optional `sentence-transformers` package is installed, its encoder model is downloaded from Hugging Face on first use unless it is already cached. A failed entropy measurement now sends the message down the direct path and is no longer read as zero uncertainty: the answer's token budget and temperature use the middle of the entropy scale instead.
 
 The [cognitive module guide](docs/modules/cognitive_management/README-en.md) explains strategy execution, synchronous/asynchronous differences and open development boundaries.
 
@@ -136,6 +136,8 @@ My recent infrastructure work has strengthened the connections between these par
 
 The broader question is how operating experience can persistently, controllably and generally change a system's future computation and behavior. The [book's research laboratory](docs/book/tr/11-arastirma-laboratuvari.md) connects the subsequent work on acquired rules, representation growth, interference, state transport, learned update behavior and recurrent state discovery. The [new correction-state experiment](docs/research/living_learning_correction_2026_09_20/REPORT_TR.md) examines what must survive to revise earlier experience. The general problem remains open; retesting and computation routing are parts of that inquiry.
 
+The [in-network paradigm study (CEV-11)](docs/research/living_learning_paradigm_2026_11_13/REPORT_TR.md) moved this question inside Cevahir's own decoder. In a 3.4M-parameter model trained on an invented Turkish world, a ROME-style rank-one write into one feed-forward projection, made from a single inflected sentence, reached the entity's other case forms written with an apostrophe 24.3 percentage points more often than the same forms written without it. The shortfall sat in forms where root and suffix fuse into one token, and the write also leaked to names sharing the last root token. All three preregistered primary hypotheses were supported in all eight confirmatory worlds, but they describe a write configuration that failed both preregistered leakage constraints in discovery. **No secondary hypothesis was supported:** variant-averaged keys added only 3.1 points (refuted), the prefix-averaging comparison was inconclusive, the predicted decline of the root-final key's similarity to its neighbors with depth was refuted, and the lifelong-ledger hypothesis was not run (the discovery lives had collapsed at every preregistered λ, and the confirmatory lives were deferred when compute was reassigned); the confirmatory binding-site map and causal tracing were not run either. In discovery, only the suffix-token write and the fine-tuning arms met both leakage constraints, and fine-tuning reached informal forms more often than the name-site writes (a descriptive observation, not a test). The model is tiny, the world synthetic and templated, one tokenizer was used, and each edit was applied alone.
+
 I'm testing whether externally verified experience can help Cevahir choose how to spend computation on a request. The [experience-conditioned computation record](docs/research/EXPERIENCE_CONDITIONED_COMPUTE.md) describes three optional mechanisms:
 
 - **Scoped feedback and strategy support:** experience stays within the same user/session, model and tokenizer identity. Strategy preferences require support from distinct, externally evaluated examples; corrections and forgetting update that support. `research.mode="off"` is the default. Budget, shadow and adaptive modes can be enabled explicitly.
@@ -148,17 +150,18 @@ The earlier [representation witness audit](docs/research/REPRESENTATION_WITNESS_
 
 ## Getting started
 
-Run commands from the repository root. The recorded lightweight verification environment is **Windows, Python 3.14.3 and PyTorch 2.10.0+cpu**. The repository currently has no root-level `requirements.txt` or `pyproject.toml`; [database/requirements.txt](database/requirements.txt) covers only the database module.
+Run commands from the repository root. The lightweight checks have been recorded on **Windows, Python 3.14.3 and PyTorch 2.10.0+cpu** and on **Linux, Python 3.13 and PyTorch 2.15 (CPU)**. Dependencies are grouped in root-level manifests: [requirements.txt](requirements.txt) (model, tokenizer, training), [requirements-dev.txt](requirements-dev.txt) (tests, including the HTTP contract tests), [requirements-api.txt](requirements-api.txt) (HTTP services and database) and [requirements-optional.txt](requirements-optional.txt) (monitoring, vector memory, data collection).
 
 For the small core example below, create an environment and install the core dependencies. PowerShell:
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install torch numpy
+python -m pip install --index-url https://download.pytorch.org/whl/cpu "torch>=2.5"
+python -m pip install -r requirements.txt
 ```
 
-On Linux/macOS, activate it with `source .venv/bin/activate`. Additional dependencies depend on the subsystem: tokenizer/document paths use packages such as `tqdm`, `regex` and `python-docx`; training monitoring uses packages such as `psutil`, `matplotlib` and `tensorboard`; HTTP services use Flask, Flask-Cors, Flask-Limiter, SQLAlchemy and PyJWT. These groups are an orientation, not a complete locked installation manifest.
+On Linux/macOS, activate it with `source .venv/bin/activate`. The manifests give lower bounds, not a locked environment. Optional subsystems switch themselves off with a warning when their packages are missing.
 
 ### Run a small model on CPU
 
@@ -237,6 +240,15 @@ Architecture configuration is normalized by [config_schema.py](model_management/
 
 The integrated Flask entry point is [api.app_factory.create_app](api/app_factory.py). It wires the model, ChattingManager, services, authentication, health checks and database access. Configure the database, an explicit `JWT_SECRET_KEY`, model path and matching tokenizer before starting the application. Model overrides can be supplied through `CEVAHIR_MODEL_CONFIG` in the factory configuration. The older `api/app.py` retains an obsolete configuration import and is not the recommended entry point.
 
+Requests are attributed to a user only through a verified `Authorization: Bearer <JWT>` header. The API verifies tokens but does not issue them: there is no login, registration or token endpoint, so your own code must create tokens with `api.security.jwt.create_access_token` and the same `JWT_SECRET_KEY`. [api/api_config.py](api/api_config.py) selects the mode from `FLASK_ENV`; any other value is an error:
+
+- **Unset or `default`:** debug off, rate limiting on, CORS limited to `http(s)://localhost`, `127.0.0.1` and `[::1]` origins on any port.
+- **`development`:** Flask's `DEBUG` setting on and rate limiting off for local work; CORS as in the default. Adding `CEVAHIR_TRUST_X_USER_ID=1` makes the unauthenticated `X-User-ID` header act as the caller's identity, with a warning logged on every use. Any caller can then act as any user, so the setting is accepted only in `development` and `testing`; in other modes the configuration refuses to load.
+- **`testing`:** for test runs: `DEBUG` on, rate limiting and metrics off; `CEVAHIR_TRUST_X_USER_ID=1` is accepted as in `development`.
+- **`production`:** refuses to load unless `PRODUCTION_SECRET_KEY` and `JWT_SECRET_KEY` are two different values of at least 32 characters; placeholders such as `change-me-in-production` are rejected. Whether a value is random cannot be checked, so generate both, for example with `python -c "import secrets; print(secrets.token_urlsafe(48))"`. Rate limiting is always on, and browsers get cross-origin access only for origins listed in `CORS_ORIGINS`.
+
+A comma-separated `CORS_ORIGINS` replaces the default origins; each entry is an exact origin (an IPv6 host goes in brackets, as in `http://[::1]:3000`) or a regular expression that must match the whole `Origin`. A non-matching `Origin` receives no CORS headers. `*`, and any pattern that matches every origin such as `.*`, is sent as a literal `*`, and credentials are never allowed. Rate limits are kept in process memory unless `RATELIMIT_STORAGE_URI` names a shared store. The unauthenticated `/api/v3/health/detailed` returns only generic component messages; error details go to the server log. `python api/app_factory.py` starts Flask's development server on `127.0.0.1:5000` with debug off in every mode, `development` included; `--host`/`CEVAHIR_API_HOST`, `--port`/`PORT` and `--debug`/`CEVAHIR_API_DEBUG=1` change that, and debug is refused in production. Real deployments still need a production WSGI server and TLS in front of the API. These behaviors are covered by the contract tests in [tests/evolution/test_api_security.py](tests/evolution/test_api_security.py); they have not been checked against a deployed service or by a penetration test.
+
 ## Repository map
 
 | Directory | Responsibility |
@@ -263,12 +275,13 @@ I've shared examples from my model training above. In current engineering checks
 For a small lifecycle verification group and a separate core measurement:
 
 ```powershell
-python -m pip install pytest
+python -m pip install -r requirements-dev.txt
 python -m pytest tests/evolution/test_lower_layer_contracts.py tests/evolution/test_checkpoint_lifecycle.py -q
+python -m pytest
 python benchmarks/core.py --label local --output benchmarks/results/core_local.json
 ```
 
-See [benchmark instructions](benchmarks/README.md) for dependencies and broader verification. My reported results cover targeted checks; I have not established that the entire historical test suite passes. I still have open work on lossless Unicode tokenization, full-record training alignment checks, near-duplicate data separation, concurrent model replacement/generation, and retrieval/critic/ToT quality evaluation. GPU execution, distributed training, long-context quality and real compilation performance require separate validation; the presence of helper modules does not imply integration into the active training path.
+See [benchmark instructions](benchmarks/README.md) for broader verification. `python -m pytest` runs the `tests/` suite: on 13 November 2026 it gave 529 passed, 11 skipped and 1 expected failure (Linux, Python 3.13, CPU, about 4 minutes). The skipped tests need a trained checkpoint or a generated training cache, which the repository does not ship; the expected failure pins a known checkpoint-loading bug. GitHub Actions runs this suite on every push and fails if a test leaves files in the checkout. Older test folders inside the packages (for example `src/neural_network_module/test`) still contain tests for removed modules and are not part of this run. I still have open work on bringing lossless Unicode tokenization into the main training path (a lossless byte-level BPE backend now exists in [tokenizer_management/byte_bpe.py](tokenizer_management/byte_bpe.py), separate from the shipped tokenizer), full-record training alignment checks, near-duplicate data separation, concurrent model replacement/generation, and retrieval/critic/ToT quality evaluation. GPU execution, distributed training, long-context quality and real compilation performance require separate validation; the presence of helper modules does not imply integration into the active training path.
 
 ## Documentation, contribution and contact
 

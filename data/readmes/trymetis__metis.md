@@ -31,27 +31,27 @@ Metis Suite is an open-source mail, calendar and drive client. It connects to th
 - **One app for every account.** Several Gmail, Outlook, Zoho and IMAP inboxes in one merged list, with their calendars and drives beside them.
 - **AI on your terms.** Bring your own model from OpenAI, Anthropic, or anything with an OpenAI-compatible API, including one you host. AI is off until you turn it on, and the assistant asks before it sends or deletes anything.
 - **Private by default.** Remote images and trackers are blocked, stored passwords and tokens are encrypted, and everyone signs in with two-factor authentication.
-- **Yours to run.** One script installs it, a dashboard configures it, and updates roll back on their own if something fails.
+- **Yours to run.** One command installs it, a dashboard configures it, and updates roll back on their own if something fails.
 
 ## Get started
 
 **Metis Cloud.** We run a private instance for you, on your own domain or a `metis-suite.app` subdomain. [Get started](https://console.trymetis.email).
 
-**Self-host.** Free under the AGPL. You need an Ubuntu server with root access; the script installs Docker and everything else:
+**Self-host.** Free under the AGPL. You need a Linux server (amd64 or arm64) with root access; on Debian and Ubuntu the `metis` CLI installs Docker too:
 
 ```bash
 curl -fsSL https://sh.trymetis.email/bootstrap -o bootstrap.sh
-sudo -E bash bootstrap.sh --interactive
+sudo sh bootstrap.sh
 ```
 
-The script generates every secret, starts the latest release and prints a setup code. Then:
+`metis setup` asks a few questions, generates every secret, starts the newest release and prints a setup code. Then:
 
 1. Back up `METIS_ENCRYPTION_KEY` from `/opt/metis-suite/.env`. If you lose it, every user has to reconnect every account.
-2. Point a domain at the server and run `sudo bash bootstrap.sh domain example.com` to get HTTPS.
+2. Point a domain at the server and run `sudo metis domain example.com` to get HTTPS.
 3. Open `https://example.com/setup`, enter the setup code and create your account.
 4. In **Dashboard → System**, add at least one provider (a Google, Microsoft or Zoho app, or your own mail and file servers), then connect your accounts.
 
-Everything after the install, from AI models to updates and rollbacks, happens in the owner dashboard. The [self-hosting guide](https://docs.trymetis.email/self-hosting) covers requirements, installing with plain Docker Compose, every setting, backups and troubleshooting.
+Everything after the install, from AI models to updates and rollbacks, happens in the owner dashboard. `metis add` and `metis remove` turn on workers, object storage and the mail gateways. The [self-hosting guide](https://docs.trymetis.email/self-hosting) covers requirements, every setting, backups and troubleshooting.
 
 ## Features
 
@@ -66,15 +66,15 @@ Everything after the install, from AI models to updates and rollbacks, happens i
 
 ## Supported providers
 
-| Provider                                                                                           | Mail | Calendar | Drive |
-| -------------------------------------------------------------------------------------------------- | :--: | :------: | :---: |
-| Google                                                                                             |  ✅  |    ✅    |  ✅   |
-| Microsoft 365 / Outlook                                                                            |  ✅  |    ✅    |  ✅   |
-| Zoho                                                                                               |  ✅  |    ✅    |       |
-| IMAP / SMTP                                                                                        |  ✅  |          |       |
-| CalDAV                                                                                             |      |    ✅    |       |
-| S3, WebDAV, FTP, SFTP                                                                              |      |          |  ✅   |
-| Cloudflare Email, Resend ([mail gateways](https://docs.trymetis.email/self-hosting/mail-gateways)) |  ✅  |          |       |
+| Provider                                                                                                       | Mail | Calendar | Drive |
+| -------------------------------------------------------------------------------------------------------------- | :--: | :------: | :---: |
+| Google                                                                                                         |  ✅  |    ✅    |  ✅   |
+| Microsoft 365 / Outlook                                                                                        |  ✅  |    ✅    |  ✅   |
+| Zoho                                                                                                           |  ✅  |    ✅    |       |
+| IMAP / SMTP                                                                                                    |  ✅  |          |       |
+| CalDAV                                                                                                         |      |    ✅    |       |
+| S3, WebDAV, FTP, SFTP                                                                                          |      |          |  ✅   |
+| Cloudflare Email, Resend, Amazon SES ([mail gateways](https://docs.trymetis.email/self-hosting/mail-gateways)) |  ✅  |          |       |
 
 The instance owner decides which of these are offered. [Supported providers](https://docs.trymetis.email/guide/reference/supported-providers) lists how they differ.
 
@@ -91,7 +91,7 @@ flowchart LR
     app -. "only when AI is on" .-> llm["Your AI model"]
 ```
 
-Everything runs in Docker Compose on one server. Scheduled sends, snooze and workflows run inside the app by default, so the server has to stay on; on serverless hosts, use an external scheduler or a separate worker instead ([Background work](https://docs.trymetis.email/self-hosting/configure/background-work)).
+Everything runs in Docker containers on one server, installed and managed by the `metis` CLI. Scheduled sends, snooze and workflows run inside the app by default, so the server has to stay on; on serverless hosts, use an external scheduler or a separate worker instead ([Background work](https://docs.trymetis.email/self-hosting/configure/background-work)).
 
 ## Develop locally
 
@@ -113,19 +113,19 @@ Open <http://localhost:3000/setup> and enter your setup code. The local SQLite f
 
 This is a Bun workspace with Turborepo, and every command runs from the repository root.
 
-| Path                                                                                               | What it is                                            |
-| -------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| [`apps/web`](apps/web)                                                                             | The Metis Suite app (Next.js)                         |
-| [`apps/desktop`](apps/desktop), [`apps/mobile`](apps/mobile)                                       | Desktop (Electron) and mobile (Expo) apps             |
-| [`apps/docs`](apps/docs)                                                                           | The [documentation site](https://docs.trymetis.email) |
-| [`apps/www`](apps/www)                                                                             | The [website](https://www.trymetis.email)             |
-| [`apps/gateway-cloudflare`](apps/gateway-cloudflare), [`apps/gateway-resend`](apps/gateway-resend) | Mail gateways for Cloudflare Email and Resend         |
-| [`apps/updater`](apps/updater)                                                                     | The updater service (Go)                              |
-| [`packages/ui`](packages/ui)                                                                       | Shared components and theme                           |
-| [`packages/shell-core`](packages/shell-core)                                                       | Logic the desktop and mobile apps share               |
-| [`packages/gateway-contract`](packages/gateway-contract)                                           | The API between the app and its mail gateways         |
-| [`packages/updater-proto`](packages/updater-proto)                                                 | The updater's protocol, generated for TypeScript      |
-| [`e2e`](e2e)                                                                                       | End-to-end tests                                      |
+| Path                                                                                                                                       | What it is                                                |
+| ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
+| [`apps/web`](apps/web)                                                                                                                     | The Metis Suite app (Next.js)                             |
+| [`apps/desktop`](apps/desktop), [`apps/mobile`](apps/mobile)                                                                               | Desktop (Electron) and mobile (Expo) apps                 |
+| [`apps/docs`](apps/docs)                                                                                                                   | The [documentation site](https://docs.trymetis.email)     |
+| [`apps/www`](apps/www)                                                                                                                     | The [website](https://www.trymetis.email)                 |
+| [`apps/gateway-cloudflare`](apps/gateway-cloudflare), [`apps/gateway-resend`](apps/gateway-resend), [`apps/gateway-ses`](apps/gateway-ses) | Mail gateways for Cloudflare Email, Resend and Amazon SES |
+| [`apps/cli`](apps/cli)                                                                                                                     | The `metis` server CLI and updater (Go)                   |
+| [`packages/ui`](packages/ui)                                                                                                               | Shared components and theme                               |
+| [`packages/shell-core`](packages/shell-core)                                                                                               | Logic the desktop and mobile apps share                   |
+| [`packages/gateway-contract`](packages/gateway-contract)                                                                                   | The API between the app and its mail gateways             |
+| [`packages/updater-proto`](packages/updater-proto)                                                                                         | The updater's protocol, generated for TypeScript          |
+| [`e2e`](e2e)                                                                                                                               | End-to-end tests                                          |
 
 [AGENTS.md](AGENTS.md) and [`agent-docs/`](agent-docs) explain the architecture and the rules every change follows.
 

@@ -46,6 +46,31 @@ evo_strat()
 # can also specify checkpoint_every at init and select the one with your favored fitness score for continued policy gradient learning etc
 ```
 
+## Preventing Catastrophic Forgetting (Anchored Weight Decay)
+
+Continuing from a pretrained checkpoint, ES random-walks in directions the new task barely constrains, which can erode prior capabilities. [Anchored Weight Decay (AWD)](https://arxiv.org/abs/2605.30148) from Schweighofer et al. (2026) pulls weights toward their init snapshot without changing the optimizer. This is the L2 form, equivalent to L2 Init (Kumar et al., 2023). Weights are snapshotted at construction:
+
+```python
+evo_strat = EvoStrategy(
+    pretrained_model,
+    environment = environment,
+    num_generations = 100,
+    noise_population_size = 32,
+    learning_rate = 3e-3,
+    anchored_weight_decay_rate = 10.   # L2 AWD penalty factor (paper's lambda); lr * rate is pulled toward the anchor each generation
+)
+
+evo_strat()
+
+# after interleaving with gradient-based training (e.g. PPO -> ES -> PPO -> ES), re-anchor to the latest weights
+evo_strat.reanchor_()
+
+# or anchor to an explicit checkpoint / module
+evo_strat.set_init_anchor_(torch.load('earlier.pt'))
+```
+
+`anchored_weight_decay_rate` is optimizer agnostic and also works with `use_optimizer = False` and custom optimizers. In `EvoStrategy` the pull per step is `learning_rate * anchored_weight_decay_rate`; `CMAEvoStrategy` applies the rate directly once per base update, so it requires `freeze_base = False` or `merge_every`. When using the default SGD optimizer, a positive rate turns off zero-targeting weight decay.
+
 ## CMA-ES
 
 `CMAEvoStrategy` implements full-covariance CMA-ES over a low-rank adapter, so an `(m, n)` weight costs `r * (m + n)` dimensions instead of `m * n`:
@@ -223,6 +248,27 @@ Special thanks to [Pollen Robotics 🤗](https://www.pollen-robotics.com/) for t
     pages     = {373--380},
     year      = {2014},
     doi       = {10.1145/2576768.2598258}
+}
+```
+
+```bibtex
+@article{schweighofer2026overcoming,
+    title   = {Overcoming Forgetting in LLM Fine-Tuning with Evolution Strategies},
+    author  = {Kajetan Schweighofer and Conor F. Hayes and Roberto Dailey and Risto Miikkulainen and Xin Qiu},
+    journal = {ArXiv},
+    year    = {2026},
+    volume  = {abs/2605.30148},
+    url     = {https://arxiv.org/abs/2605.30148}
+}
+```
+
+```bibtex
+@article{kumar2023maintaining,
+    title   = {Maintaining Plasticity in Continual Learning via Regenerative Regularization},
+    author  = {Saurabh Kumar and Henrik Marklund and Benjamin Van Roy},
+    journal = {ArXiv},
+    year    = {2023},
+    url     = {https://arxiv.org/abs/2308.11958}
 }
 ```
 

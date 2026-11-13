@@ -132,6 +132,8 @@ npm i -g docguard-cli
 docguard diagnose
 ```
 
+> **Strict is the default.** `docguard guard` exits 4 when a check that applies to your project examined nothing (for example no API reference although you have routes), and prints what to add. A check that does not apply is skipped, and a layout DocGuard cannot read is reported without failing the run. Upgrading and seeing a red build? Read [Upgrading to Strict](https://raccioly.github.io/docguard/upgrading-to-strict) (also in [`docs/upgrading-to-strict.md`](docs/upgrading-to-strict.md)). To stay on the earlier behavior, set `"enforcement": "standard"` in `.docguard.json`; under strict a `"validators": { "<key>": false }` entry no longer switches a check off.
+
 ### Python (PyPI)
 
 ```bash
@@ -166,7 +168,7 @@ The server is **read-only**: it only reads the mounted project.
   ```yaml
   repos:
     - repo: https://github.com/raccioly/docguard
-      rev: v0.47.0
+      rev: v0.48.0
       hooks: [{ id: docguard-guard }]   # docguard-guard-full for pre-push
   ```
 - **MCP** (Claude, Cursor, any MCP client) — `claude mcp add docguard -- npx -y docguard-cli mcp`; read-only tools to check docs (guard, score, diagnose, …) and to navigate them one bounded section at a time — the full list is in [docs/ai-integration.md](docs/ai-integration.md). Registry manifest ships in-repo (`server.json`, Smithery-ready).
@@ -350,7 +352,7 @@ DocGuard ships **28 commands** (the "Daily 5" + 23 situational tools, including 
 | `specs` | Maintain the versioned spec registry, preflight new specs, and apply evidence-gated completion transactions with bounded outcomes and active-context regeneration. Verified living specs can record later reviewed maintenance without reopening or duplicating the specification. `specs require` is the spec-first gate: a change to governed paths must name its spec or declare `Spec-Exempt: <kind> — <reason>`. |
 | `specs --check` / `specs --write` | Validate or refresh `.docguard-specs.json`, the byte-stable index of immutable spec IDs, reviewed lifecycle/lineage/scope, artifact digests, task state, explicitly scoped test evidence, and archive tombstones. Refreshes preserve the reviewed block. |
 | `specs preflight [--path <spec>]` | Before specification, print current spec lifecycle and evidence. Before planning, check the generated draft for structural blockers and report semantic overlap as review-only evidence. |
-| `specs approve --id <spec-id>` | Record a person's approval of a spec in the registry, and with `--delivery` its `planned`, `in_progress` or `implemented` state. Plans by default; `--write` records it. Verification stays with `specs complete`. |
+| `specs approve --id <spec-id>` | Record a person's approval of a spec in the registry, and with `--delivery` its `planned`, `in_progress` or `implemented` state. Plans by default; `--write` records it. `--persistence` and a repeatable `--canonical-doc` record the reviewed scope. Verification stays with `specs complete`. |
 | `mcp` | MCP server — exposes checking (guard, score, explain, verify, report, diagnose) and exact doc navigation (docs for a file, document outline, one section, task context) as native tools for Claude, Cursor, and any MCP client; `docguard_guard` returns each fact once unless called with `detail: "full"`. Stdio: `claude mcp add docguard -- npx docguard-cli mcp`. Team-shared HTTP: `docguard mcp --transport http --port 8585` (loopback by default; non-loopback binds require `--api-key`) |
 | `report` | Compliance-evidence bundle for audits — combined readiness, guard verdict, structural maturity, ALCOA+ attributes, and fix history, stamped with git commit and a tamper-evident sha256 integrity hash (`--format json`, `--out <file>`). Evidence, not a gate: always exits 0 |
 | `ci` | Pipeline gate: guard + structural maturity in one command with READY/ATTENTION/BLOCKED assessment — never scaffolds or touches source; its only write is its own `.docguard/history.jsonl` (opt out: `--no-history`). `--threshold <n>` fails below a score, `--fail-on-warning` for strict mode, `--format json` for parsers |
@@ -512,7 +514,7 @@ DocGuard runs **36 automated validators** on every `guard` check. Source-facing 
 | 32 | **Path-Scoped-Rules** | Agent instruction files per harness (nested AGENTS.md/CLAUDE.md, Claude Code rules and skills, Cursor `.mdc`, Copilot `.instructions.md`, OpenHands skills): scope globs that match no tracked file, pointers to missing paths (including routing tables), instructions loaded for one path over the byte budget, and scopes a harness cannot read | ✅ On |
 | 33 | **Doc-Ownership** | With an `ownership` map in `.docguard.json`: source directories no doc section owns, two equally specific owners, patterns that match nothing, entries naming missing docs; also lints a committed `.devin/wiki.json` against Devin's limits and for paths that are gone | ✅ On |
 | 34 | **Suppressions** | Suppressions of any kind whose `expires:` date has passed (they no longer suppress anything), whose expiry is not a calendar date, or, with `suppressions.requireReason`, that have no `# reason` | ✅ On |
-| 35 | **Requirement-Anchors** | With `.docguard-anchor-lock.jsonl` or `anchors.enabled`: reviewed code→requirement links whose code or requirement changed since review (ANC001/ANC002), reviewed links whose tag is gone (ANC003), tags citing an undeclared or retired requirement (ANC007/ANC008), lock problems (ANC005/ANC009) and files read below their exact tier (ANC010). `docguard anchors` lists every link; `anchors accept` records a review | ✅ On |
+| 35 | **Requirement-Anchors** | With `.docguard-anchor-lock.jsonl` or `anchors.enabled`: reviewed code→requirement links whose code or requirement changed since review (ANC001/ANC002), reviewed links whose tag is gone (ANC003), tags citing an undeclared or retired requirement (ANC007/ANC008), an unreadable lock (ANC005) and files read below their exact tier (ANC010). `docguard anchors` lists every link; `anchors accept` records a review | ✅ On |
 | 36 | **Decision-Records** | ADR status, one-way or dangling supersession, index/record mismatches, and unanswered clarifications or `[Answer]:` tags (DEC001–DEC006). Informational by default | ✅ On |
 | 37 | **AIDLC** | AWS AI-DLC workspaces (`aidlc/spaces/…`, legacy `aidlc-docs/`): traceability targets that no longer exist (AID001), gaps left in completed stages (AID002), unit deliverables removed after the unit (AID003), unreadable records (AID004). Informational by default | ✅ On |
 
@@ -782,7 +784,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
-      - uses: raccioly/docguard@v0.47.0
+      - uses: raccioly/docguard@v0.48.0
         with:
           command: guard
 ```
@@ -818,7 +820,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-      - uses: raccioly/docguard@v0.47.0
+      - uses: raccioly/docguard@v0.48.0
         with: { command: fix, auto-commit: 'true', comment-on-pr: 'true' }
 ```
 

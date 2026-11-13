@@ -36,6 +36,10 @@ wiretruth has this case recorded as `truncation.structured-output` on `openai-ch
 | pydantic-ai 2.61.0 | Retries once, then raises `UnexpectedModelBehavior("Exceeded maximum output retries (1)")`. The `length` finish is only in the messages that `capture_run_messages()` keeps. | ~ LOSSY |
 | Vercel AI SDK 7.0.153 | Raises `NoObjectGeneratedError` with `finishReason: "length"` and the token usage. | ✓ PASS |
 
+pydantic-ai 2.68.0 raises `OutputTokenLimitExceeded` on the first response instead, naming the token limit, and
+grades PASS ([pydantic/pydantic-ai#12399](https://github.com/pydantic/pydantic-ai/issues/12399)); the cut-off text
+and the usage are still only in the captured messages.
+
 pydantic-ai's grades for structured output use `NativeOutput`, the provider's own JSON mode, because that is how
 the fixtures were recorded. It is opt-in: by default pydantic-ai asks for a forced tool call instead on every API
 here except Anthropic, and no scenario covers that path yet. On `gpt-6-luna` that default request is rejected with the same 400
@@ -215,16 +219,10 @@ any-llm 1.40.2: 100 cells, 87 PASS, 6 LOSSY, 6 WRONG, 1 UNSUPPORTED
 stderr: .wiretruth/runs/20261109T005301.682490Z
 ```
 
-The LiteLLM run grades its 100 cells 90 PASS, 9 WRONG and 1 UNSUPPORTED. Every cell, with its evidence, is in
-[`results/litellm/1.109.0.json`](https://github.com/kartsan03/wiretruth/blob/main/results/litellm/1.109.0.json).
-The pydantic-ai run grades its 100 cells 63 PASS, 16 LOSSY, 6 WRONG and 15 UNSUPPORTED (native Ollama), in
-[`results/pydantic-ai/2.61.0.json`](https://github.com/kartsan03/wiretruth/blob/main/results/pydantic-ai/2.61.0.json).
-The Vercel AI SDK run grades its 100 cells 84 PASS and 16 UNSUPPORTED (native Ollama, and the Anthropic
-forced-tool fixture, since current Claude models get native structured output), in
-[`results/vercel-ai/7.0.153.json`](https://github.com/kartsan03/wiretruth/blob/main/results/vercel-ai/7.0.153.json).
-The TanStack AI run grades its 100 cells 50 PASS, 1 LOSSY, 1 WRONG and 48 UNSUPPORTED, in
-[`results/tanstack-ai/1.4.0.json`](https://github.com/kartsan03/wiretruth/blob/main/results/tanstack-ai/1.4.0.json).
-Its `chat()` always requests a streamed response, so the non-streamed fixtures don't apply to it.
+Every library's grades, with each cell's evidence, are in the [results matrix](https://kartsan03.github.io/wiretruth/),
+rebuilt from `results/` on every push to `main`. A weekly workflow runs each library's latest releases and
+proposes the new results as a pull request. TanStack AI's `chat()` always requests a streamed response, so the
+non-streamed fixtures don't apply to it.
 
 No API keys are needed. Everything runs against stored responses on `127.0.0.1`. The first run downloads the
 selected library: a Python library into `.wiretruth/envs/`, a JavaScript library into `node_modules` next to its
@@ -233,7 +231,7 @@ which must pass every cell. The scenarios, fixtures and shims live in this repos
 clone.
 
 Releases are also on [PyPI](https://pypi.org/project/wiretruth/) (`pip install wiretruth`). The package is the
-command only, so run it inside a checkout of the matching release tag (for example `v0.3.0`); on `main`, use
+command only, so run it inside a checkout of the matching release tag (for example `v0.4.0`); on `main`, use
 `uv run` as above.
 
 ## Add your library

@@ -1,5 +1,8 @@
 # AI 应用开发面试模拟器
 
+> [!IMPORTANT]
+> 此 skill 已迁移至 [面试准备 Skills 仓库](https://github.com/Hazenix/backend-interview-simulator)。安装、更新和提交反馈请前往新仓库。完整文件位于 [`skills/ai-dev-interview-simulator/`](https://github.com/Hazenix/backend-interview-simulator/tree/main/skills/ai-dev-interview-simulator)。
+
 使用自然语言与 AI 面试官互动，模拟真实中国大厂（字节、腾讯、阿里、美团、快手）AI 应用开发岗位面试。支持按求职者身份和面试官风格定制，全程记录状态并输出结构化评估报告。
 
 ---
@@ -53,17 +56,17 @@
 
 ### 方式一：让 AI 帮你装（推荐）
 
-把下面这句话连同本仓库链接一起发给 AI（QClaw / WorkBuddy / AutoClaw / Claude Code 都支持）：
+把下面这句话发给支持 skills 的 AI 工具：
 
 ```
-帮我安装这个 skill：https://github.com/Hazenix/ai-dev-interview-simulator
+请从 https://github.com/Hazenix/backend-interview-simulator 安装 skills/ai-dev-interview-simulator/ 目录下的 skill。
 ```
 
-AI 会自动拉取仓库、放到正确的 skills 目录、确认安装成功。然后你就可以直接说"开始模拟面试"触发。
+安装后可以说“开始一场 AI 应用开发模拟面试”。
 
 ### 方式二：手动安装（仅本地 Claude Code）
 
-将仓库中 `SKILL.md` 和 `references/` 目录复制到 Claude Code 的 skills 目录：
+将新仓库的 [`skills/ai-dev-interview-simulator/`](https://github.com/Hazenix/backend-interview-simulator/tree/main/skills/ai-dev-interview-simulator) 完整复制到 Claude Code 的 skills 目录：
 
 - Windows：`C:\Users\<你的用户名>\.claude\skills\ai-dev-interview-simulator\`
 - macOS/Linux：`~/.claude/skills/ai-dev-interview-simulator/`
@@ -75,7 +78,7 @@ AI 会自动拉取仓库、放到正确的 skills 目录、确认安装成功。
 安装完成后，在对话中直接表达面试意图即可：
 
 ```
-开始一场模拟面试
+开始一场 AI 应用开发模拟面试
 我是应届生，想练习 AI 应用开发面试，温和鼓励型
 帮我准备 AI 应用开发岗位面试
 ```
@@ -154,6 +157,8 @@ ai-dev-interview-simulator/
 ---
 
 ## 贡献指南
+
+请在[新仓库](https://github.com/Hazenix/backend-interview-simulator)提交 Issue 或 Pull Request。此 skill 位于 `skills/ai-dev-interview-simulator/`。
 
 欢迎提交补充，以下是几个优先方向：
 

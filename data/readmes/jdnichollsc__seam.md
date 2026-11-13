@@ -39,10 +39,15 @@ model runs on your machine and every take can be reopened, inspected and re-run 
 - **360° orbit** (optional, your GPU only): turn a generated shot into a full orbit around its subject, drag to the
   angle you want and use that frame as a first or last shot or in a sequence. It appears once its models are installed.
 - **Sequences**: more than two shots? Put them in order, pick an effect per hand-off, and Seam renders each
-  transition and joins them into one video (clips play in full at their place). A bad hand-off gets a new take on
+  transition and joins them into one video (clips play in full at their place). A hand-off can also be a **Cut**:
+  nothing renders and the shots meet with a hard cut, so your own clips (up to 60 s between cuts) and images (2 s
+  each) can sit in any order; a sequence of only cuts joins at once, free. A bad hand-off gets a new take on
   its own; the others are reused. Or grow a story shot by shot: **Continue** a finished two-shot take with a new
   shot, then keep adding; only the new transition renders, and every transition starts from your own shot, so the
-  story stays as consistent as the shots you bring.
+  story stays as consistent as the shots you bring. The next shot can be a new file, an image from **Generate
+  Shot**, or a **transition you already made**, which comes in as a clip without rendering again.
+- **Links that keep your place**: the open sequence or take is in the address (`/sequences/<id>`, `/takes/<id>`),
+  so a reload, Back/Forward and a pasted link land where you were.
 - **Ask the helper**: a chat on the local Gemma-4 E2B explains the app, knows what you have open, and prepares a new take you start with a click. It never renders or deletes by itself. It reads concrete requests best, like *transition 2 to Smoke at 10 seconds*; free phrasing often gets a question or a description instead. It runs on your GPU only.
 - **Generate shots**: a prompt, an aspect, a quality, a model, up to 4 images, on your GPU or Comfy Cloud. They stay in a collection like Midjourney's: every image shows its prompt and settings, and any of them can be reused, varied, or dropped into a transition or a sequence.
 - **Rough cut**: see a sequence's order and pacing in seconds, before spending any GPU time or credits. Shots, clips and a card naming each transition; nothing renders.
@@ -231,6 +236,7 @@ browser / CLI / agent (MCP)
 | [FLUX.2 Klein 4B](https://huggingface.co/black-forest-labs/FLUX.2-klein-base-4B) | optional: a model of Generate shots, when your ComfyUI or Comfy Cloud has it; Seam does not download it | Apache 2.0 |
 | MiniMax-H3 Ref2VA + ORB360 LoRA | optional: the 360° orbit of Generate shots, when your ComfyUI has them; Seam does not download them | MiniMax H3 Community License; ORB360: see its model card |
 | [Juggernaut XL v9](https://huggingface.co/RunDiffusion/Juggernaut-XL-v9) | optional: a model of Generate shots, when your ComfyUI or Comfy Cloud has it; Seam does not download it | CreativeML OpenRAIL-M (use restrictions apply) |
+| [MiniMax H3 Image](https://huggingface.co/MiniMaxAI/MiniMax-H3-Image) + Qwen3-VL | optional: a model of Generate shots, one image at a time; needs ComfyUI 0.45.3 or newer | MiniMax H3 Image Community License |
 
 Seam's code is MIT ([LICENSE](LICENSE)). The models keep their own licenses; read them before commercial use.
 The effect presets are our own text, inspired by common transition concepts — no third-party prompts or media.

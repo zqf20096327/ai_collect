@@ -8,7 +8,7 @@
 像人一样遗忘，也像人一样回忆。</p>
 
 <p>
-  <img src="https://img.shields.io/badge/version-0.7.1-6d5efc?style=flat-square" alt="version" />
+  <img src="https://img.shields.io/badge/version-0.8.0-6d5efc?style=flat-square" alt="version" />
   <img src="https://img.shields.io/badge/license-MIT-1fc8b3?style=flat-square" alt="license" />
   <img src="https://img.shields.io/badge/node-%E2%89%A5%2024-339933?style=flat-square&logo=node.js&logoColor=white" alt="node" />
   <img src="https://img.shields.io/badge/dependencies-0-52525b?style=flat-square" alt="zero dependencies" />
@@ -150,6 +150,22 @@ sceneOverrides:
 
 设置页的「场景」标签页可以增删改这些覆盖，不用手写 YAML。
 
+## 🕰 时间线：线索按发生顺序排列
+
+折叠时会把线索在会话里的位置（`turn`、`session_seq`）一起存下来。回忆时不再按“相关度”堆在一起，
+而是按会话里的先后顺序重排，并标出轮次：
+
+```
+1. [2026-10-23 · 第1轮] 线索词：数据库,sqlite｜残留片段：…
+2. [2026-10-24 · 第3轮] 线索词：memory.db,WAL｜残留片段：…
+```
+
+提示词里也会明确要求“按时间顺序还原”。这样模型回忆的是「先怎样 → 后来改了什么主意 → 最后到哪一步」，
+而不是一堆互不相干的碎片。
+
+旧库没有这两列也能读：当作“时间未知”排在最后；DSH 打开库时会自动 `ALTER TABLE` 补列，
+`flm` / `memory.py` 也会自动补齐。
+
 ## 👥 群聊记忆隔离（Phase 3）
 
 DSH 把一个 QQ 群当成**一个 Session**，默认是「全群共用一份记忆」——群友 A 说的话，B 一问就可能被召回，这就是串台。
@@ -238,6 +254,8 @@ QQ 消息 ──► AstrBot ──► astrbot/ 插件 ──► memory.py (sqlit
 
 配置里把 `db_path` 指到 DSH 用的同一个库即可（留空默认 `~/.dsh/full-life-memory/memory.db`）。
 命中触发词（记得 / 上次 / 之前…）时回忆一次并注入 `system_prompt`，同一个群友 120 秒内只查一次。
+默认 `isolation: user+scene`：QQ 群只回忆 QQ 群的事，桌面工作记忆不会被召回。
+`/recall` 是管理员命令，精确匹配并只返回线索摘要。
 
 也可以用 **`flm` CLI** 自己接别的平台：
 

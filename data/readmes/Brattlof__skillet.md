@@ -1,0 +1,255 @@
+<div align="center">
+
+<img src="assets/banner.webp" alt="skillet - package manager for MCP servers and Agent Skills for Claude Code, Cursor, Codex, and more" width="640">
+
+# skillet
+
+**A tiny, zero-dependency package manager for MCP servers, Agent Skills, and Claude Code commands, hooks, subagents, and output styles.**
+
+*Search a curated registry and install MCP servers, skills, slash commands, hooks, subagents, and output styles with one command - into Claude Code, Cursor, Codex, Gemini CLI, Copilot, and Cline.*
+
+[![CI](https://github.com/Brattlof/skillet/actions/workflows/ci.yml/badge.svg)](https://github.com/Brattlof/skillet/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+![Go](https://img.shields.io/badge/go-1.23%2B-00ADD8?logo=go)
+![GitHub stars](https://img.shields.io/github/stars/Brattlof/skillet?style=social)
+
+</div>
+
+skillet installs **MCP servers** (Model Context Protocol), **Agent Skills** (the open
+`SKILL.md` standard), and Claude Code slash commands, hooks, subagents, and output styles into
+Claude Code, Cursor, OpenAI Codex, Gemini CLI, Copilot, and Cline - from a curated, verified
+registry of 370+ entries. One static Go binary, no Node or npm.
+
+<div align="center">
+  <img src="assets/demo.gif" alt="skillet demo: search a registry and install a skill or MCP server into Claude Code with one command" width="700">
+</div>
+
+```console
+$ skillet search example
+NAME         DESCRIPTION                                                   TAGS
+hello-skill  Minimal example skill that ships with skillet - install i...  example,starter,docs
+
+$ skillet add hello-skill
+Installing hello-skill from https://github.com/Brattlof/skillet ...
+Installed hello-skill -> ~/.claude/skills/hello-skill
+
+$ skillet add hello-skill --target agents
+Installed hello-skill -> ~/.agents/skills/hello-skill   # Cursor, Codex, Gemini, Copilot
+
+$ skillet list
+NAME         KIND   INSTALLED  SOURCE                       STATUS
+hello-skill  skill  a1b2c3d    github.com/Brattlof/skillet  tracking
+```
+
+---
+
+## Why use skillet?
+
+Copy-pasting skill folders by hand, hunting through random repos, never knowing what's worth
+installing. `skillet` fixes that: search a curated registry and install with one command.
+
+- One static binary, no dependencies. The registry ships embedded - no backend, no account.
+- Curated from official and widely-used sources, with every link and package verified. No
+  dead-link slop. Contributed entries follow the one rule: you've actually used it.
+- Skills use the open [Agent Skills](https://agentskills.io) `SKILL.md` format, so they work
+  across tools. Install for Claude Code (default) or for the shared `~/.agents/skills`
+  directory with `--target agents`, which Cursor, Codex, Gemini CLI, and Copilot all read.
+
+## Supported tools
+
+skillet installs for Claude Code by default (`~/.claude/skills`, plus its commands, hooks,
+subagents, and output styles). Add `--target agents` and skills go to the shared
+`~/.agents/skills` directory that Cursor, OpenAI Codex, Gemini CLI, and GitHub Copilot all read.
+MCP servers install into each client's own config (Claude Code, Cursor, Windsurf, Gemini CLI,
+and Cline). Commands, hooks, subagents, and output styles are Claude Code specific; skills and
+MCP servers are the cross-tool part.
+
+## Install
+
+```bash
+# Go users
+go install github.com/Brattlof/skillet/cmd/skillet@latest
+
+# Or grab a binary from Releases
+# https://github.com/Brattlof/skillet/releases
+```
+
+> Building from source: `git clone` this repo, then `go build -o skillet ./cmd/skillet`.
+
+## Usage
+
+```text
+skillet add <name>[@ref]   Install any registry entry (optionally pinned)
+skillet add <owner/repo/skill>
+                           Install a community skill from skills.sh
+skillet install            Restore everything from skillet.lock
+skillet install --frozen   Verify the install matches skillet.lock (no changes)
+skillet lock               Write skillet.lock from what is installed
+skillet update [name]      Update an installed item, or all of them
+skillet doctor             Check installed items for problems
+skillet remove <name>      Remove an installed item
+skillet list               List installed items
+skillet search <query>     Search the registry, then skills.sh (--kind, --tag)
+skillet info <name>        Show details of a registry entry or community skill
+skillet trending           Show trending skills on skills.sh (--limit N)
+skillet hot                Show skills rising on skills.sh in the last hour
+skillet registry           Show every registry entry
+skillet publish            How to publish your own skill
+skillet completion <sh>    Output a bash, zsh, or fish completion script
+skillet self-update        Update the skillet binary to the latest release
+```
+
+Add `--target agents` to any command to use `~/.agents/skills` instead of
+`~/.claude/skills`, or set `SKILLET_TARGET=agents`. skillet never overwrites a file or
+folder it did not install; pass `--replace` to `add` or `install` to allow it.
+
+### Skills, commands, hooks, agents, output styles, and MCP servers
+
+A registry entry has a `kind`: `skill` (the default), `command`, `hook`, `agent`,
+`output-style`, or `mcp`. skillet installs each into the place the tool reads:
+
+- a **skill** is a folder copied to `~/.claude/skills/<name>/` (or `~/.agents/skills/<name>/`
+  with `--target agents`, the shared location Cursor, Codex, Gemini CLI, and Copilot read),
+- a **command** is a single `.md` file copied to `~/.claude/commands/<name>.md`,
+- a **hook** is a script copied to `~/.claude/hooks/`, and skillet registers it in
+  `~/.claude/settings.json` under the event from the entry's `hook` block (and
+  un-registers it on `remove`),
+- an **agent** (subagent) is a single `.md` file copied to `~/.claude/agents/<name>.md`,
+- an **output style** is a single `.md` file copied to `~/.claude/output-styles/<name>.md`,
+- an **MCP server** is registered into a client's MCP config; `--target` picks the client.
+
+Commands, hooks, agents, and output styles are Claude Code specific. Skills and MCP servers work across tools:
+
+```bash
+skillet add context7 --target cursor     # -> ~/.cursor/mcp.json
+skillet add context7 --target windsurf   # -> ~/.codeium/windsurf/mcp_config.json
+skillet add context7 --target claude     # -> ./.mcp.json (project scope)
+skillet remove context7 --target cursor
+```
+
+Supported MCP clients: claude, cursor, windsurf, gemini, cline. skillet merges the
+server into the existing config and leaves every other entry untouched.
+
+### Shell completion
+
+```bash
+# bash (current shell)
+source <(skillet completion bash)
+# zsh
+skillet completion zsh > "${fpath[1]}/_skillet"
+# fish
+skillet completion fish > ~/.config/fish/completions/skillet.fish
+```
+
+Completion suggests subcommands, the `--target` and `--dir` flags, and skill names pulled
+from the local index, so it stays instant and works offline.
+
+Choose where skills install, per-command or globally:
+
+```bash
+skillet add hello-skill --target agents          # ~/.agents/skills (cross-tool)
+export SKILLET_TARGET=agents                      # make it the default
+skillet add hello-skill --dir ~/somewhere/else    # an exact directory
+```
+
+### Community skills from skills.sh
+
+The curated registry is small on purpose. For everything else, skillet also searches
+[skills.sh](https://skills.sh), Vercel's open directory of Agent Skills:
+
+```console
+$ skillet search pdf
+NAME  KIND   DESCRIPTION                                   TAGS
+pdf   skill  Fill, create, merge, split, and extract ...  pdf,documents
+
+From skills.sh (community, not reviewed by skillet):
+SKILL                                       INSTALLS
+openai/skills/pdf                           13.6k
+github/awesome-copilot/pdftk-server         10.0k
+
+$ skillet add openai/skills/pdf
+audit: Gen Agent Trust Hub pass, Socket pass, Snyk warn (Risk: MEDIUM · 1 issue), ...
+Installed openai/skills/pdf -> ~/.claude/skills/pdf (from skills/.curated/pdf)
+
+$ skillet trending      # or: skillet hot
+```
+
+- `skillet add owner/repo/skill` (or a pasted `https://skills.sh/...` URL) clones the
+  GitHub repo, finds the folder whose `SKILL.md` names that skill, and installs it. It
+  shows the same security audit as the skill's skills.sh page (Pass, Warn, or Fail from
+  each scanner) and refuses a Fail unless you pass `--force`; `update` and `install`
+  re-check it. `list`, `doctor`, and
+  `skillet.lock` track community installs too.
+- `skillet trending` and `skillet hot` read a snapshot that CI rebuilds every hour from
+  the skills.sh leaderboards. Install counts there are self-reported telemetry and easy to
+  inflate, so the snapshot drops forks, archived repos, repos under 10 stars, trending
+  entries with more than 50 installs per star (unless skills.sh marks them official), and
+  anything with a failed audit. It is a filter, not a review.
+- Only GitHub-hosted skills install; skills.sh entries served from a website are skipped.
+  `SKILLET_OFFLINE=1` keeps every command off skills.sh.
+
+## Reproducible installs
+
+Pin an install to an exact version with `skillet add <name>@<ref>` (a commit SHA or
+tag). `skillet lock` writes a `skillet.lock` capturing every installed item at its
+resolved commit and checksum, and `skillet install` (no arguments) restores exactly
+that set. Restore prunes anything skillet installed that is no longer in the
+lockfile, so the result matches the lock; a hand-placed file is left alone.
+`skillet install --frozen` reports whether the install already matches the lockfile
+without changing anything, which is what you want in CI. Point the lockfile
+elsewhere with `SKILLET_LOCKFILE`.
+
+## Environment
+
+- `SKILLET_REGISTRY_URL` - override the registry index URL.
+- `SKILLET_OFFLINE=1` - never hit the network; use the cached or embedded index.
+- `SKILLET_TARGET` - default install target (`claude` or `agents`).
+- `SKILLET_SKILLS_DIR` - override the skills directory (skills kind only).
+- `SKILLET_CACHE_DIR` - override where the fetched index is cached.
+- `SKILLET_LOCKFILE` - override the lockfile path (default: `./skillet.lock`).
+- `SKILLET_TRENDING_URL` - override the trending snapshot URL.
+- `SKILLET_SKILLSSH_URL` - override the skills.sh origin (for testing or a mirror).
+
+## How it works
+
+1. Each entry is one file under the directory for its kind - [`skills/`](skills),
+   [`commands/`](commands), [`hooks/`](hooks), [`agents/`](agents),
+   [`output-styles/`](output-styles), or [`mcp/`](mcp) - sharded by first letter
+   (`commands/c/changelog.json`). The folder sets the kind. CI compiles them into an index
+   published on the `gh-pages` branch. `skillet` fetches that index, caches it locally with
+   ETag revalidation, and falls back to a copy embedded in the binary when it is offline.
+2. `skillet add` clones the entry's repo (pinned to its `ref` when set), copies just that
+   artifact into the right directory, verifies its checksum when set, and cleans up. No `.git`.
+3. Contributing is a PR that adds one file under the kind's directory - see below.
+
+Point `skillet` at a different index with `SKILLET_REGISTRY_URL`, or force the cached/embedded
+copy with `SKILLET_OFFLINE=1`.
+
+## Security
+
+A skill runs with your agent's privileges, so only install skills you trust. Community
+skills from skills.sh are not reviewed by skillet; skillet shows their skills.sh audit and
+blocks a failed one by default. skillet warns when you install an unpinned skill; pin to an exact version with `skillet add <name>@<ref>`
+and audit installs with `skillet doctor`. See [SECURITY.md](SECURITY.md) for the full trust
+model and how to report a vulnerability.
+
+## Compatibility
+
+skillet follows semantic versioning; see [COMPATIBILITY.md](COMPATIBILITY.md) for what stays
+stable across the 1.x series.
+
+## Contributing
+
+The registry is only as good as the people keeping it honest. The one rule: **you've actually
+used the skill you're adding.** See [CONTRIBUTING.md](CONTRIBUTING.md). PRs welcome.
+
+## Roadmap
+
+- [ ] MCP servers for more clients (OpenAI Codex, VS Code, Continue)
+- [ ] A browsable web registry
+- [ ] Statusline support
+
+## License
+
+[MIT](LICENSE)

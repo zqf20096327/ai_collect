@@ -151,7 +151,7 @@ Girth's core is a plain binary and an [Agent Skills](https://agentskills.io/spec
 | Claude Code | ✓ | `.claude/skills` | native (the mod) | ✓ |
 | Codex CLI 0.164 | ✓ | `.agents/skills` | ✓ `girth import` | ✓ |
 | GitHub Copilot CLI 1.0.106 | ✓ | `.agents/skills` | ✓ `girth import` (per prompt on 1.0.95+, else per session stretch; with premium requests) | ✓ |
-| OpenCode 1.17 | ✓ | `.agents/skills` | ✓ `girth import` (through `opencode db`, with its own costs) | ✓ |
+| OpenCode 1.17–2.2 | ✓ | `.agents/skills` | ✓ `girth import` (v1 through `opencode db`, v2 through `sqlite3`; with its own costs) | ✓ |
 | Antigravity CLI 1.5 | ✓ | `.agents/skills` | ✓ `girth import` (through `sqlite3`) | ✓ |
 | Gemini CLI 0.65 | ✓ | `.agents/skills` | ✓ `girth import` | not yet (its free tier moved to Antigravity) |
 | Cursor, Amp, Goose | ✓ | `.agents/skills` | — (no usable token data on disk) | not yet |
@@ -189,12 +189,14 @@ You don't need Rust. The first time the skill runs, it downloads (one time, abou
 - **Settings:** pin skills (or server ids such as `claude_ai_Figma`) with `{"lens": {"keep": ["name"]}}` in `.girth/config.json` or `~/.girth/config.json`. Turn Lens off with `{"lens": {"enabled": false}}`, or with `GIRTH_LENS=off` for one session. `GIRTH_LENS_KINDS=skills` limits it to the skill list.
 - **Limit:** on machines where an organization manages Claude Code, a plugin you install yourself can't rewrite the list, so Lens stays off there.
 
-**X-ray:** run `/girth-xray` to see what your last request was made of, part by part, with each part's share, what Lens removed and what it costs. Tool parameter schemas aren't visible to plugins, so they aren't counted.
+**X-ray:** run `/girth-xray` to see what your last request was made of, part by part, with each part's share, what Lens removed and what it costs. Tool schemas aren't among its parts; Meter counts MCP tool schemas from Claude Code's context breakdown.
 
 **Meter** records each turn's real token usage in your local ledger (numbers and a model id only). Run `/girth-meter` or `girth stats --meter` to see:
 - your usage for the project;
 - an estimated cost;
 - how much Lens kept out of the prompt;
+- what each kind of subagent cost (`Explore`, `general-purpose`, a plugin's agents): agents, turns, cost and model, the view Claude Code 2.1.323 took out of its status line;
+- **MCP tool schemas sent with every request,** per server: estimated tokens, requests, how often its tools were called, and an estimated cost. With tool search on (Claude Code's default) schemas wait until a tool is needed. With `ENABLE_TOOL_SEARCH=false`, one short prompt with 11 servers connected grew from 23,740 to 148,717 tokens, 6.3× (`examples/mcpcost/RESULTS.md`). `girth advise` names the servers never called. The figures are Claude Code's own estimates, from its `/context` breakdown;
 - **side queries,** the requests Claude Code sends outside the conversation:
   - background agents' progress summaries (`agent_summary`), sent about every 30 s with none of their input cached
   - prompt suggestions, session titles, compaction
@@ -232,6 +234,14 @@ The estimate prices the main conversation's cache writes at the 1-hour rate Clau
 
 Girth keeps a local, append-only ledger (`~/.girth/ledger.jsonl`) of which skills you use, which sections of which source skills your crafted skills keep or drop, and your 👍/👎. Ask *"girth stats"* to see which installed skills actually earn their place, or *"girth review captions"* to remove sections you don't want. Removals become signal too.
 
+**Trials: does a crafted skill help?** `girth trial .claude/skills/girth-pdf --task task.md --check "cargo test -q"` runs the task with and without the skill, three runs each by default. Each run starts from a fresh clone at HEAD, and the check grades it.
+- A task counts as won or lost only when chance would give its gap at most 1 time in 20 (Fisher's exact test), so more runs sharpen the verdict. In our SkillsBench pilot, a single-run difference turned out to be noise in both directions.
+- A skill that never fired decides nothing.
+- Cost is shown but not judged.
+- The verdict (admit, reject or undecided) goes to the ledger and shows in `girth stats`.
+- It uses headless Claude Code by default, with Bash pre-approved, so trial only skills you'd let run.
+- `--agent` takes another harness's command-line agent; the skill goes in `.agents/skills` too (verified with Codex).
+
 **Sharing is opt-in and anonymous.** Girth asks once. If you allow it, only **content hashes of public skill sections plus counts** (used / kept / removed / up / down) would be shared, never names, paths, text, notes or anything from your project. Nothing is uploaded until the Girth index launches. Run `girth share preview` to see exactly what would be sent.
 
 ## Taste memory
@@ -254,6 +264,7 @@ target/release/girth search "caption timing" --json
 target/release/girth validate .claude/skills/girth-captions   # also records to the ledger
 target/release/girth drift .claude/skills/girth-captions      # source sections changed since then? exit 1 if so
 target/release/girth stats                                      # what the ledger says
+target/release/girth trial .claude/skills/girth-pdf --task task.md --check "make test"   # with vs without the skill
 target/release/girth share preview                              # exactly what would be shared
 target/release/girth taste add launch-video "End on the logo with the URL."
 target/release/girth made launch-video palette=paper-ink music=lo-fi

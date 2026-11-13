@@ -136,6 +136,7 @@ python main.py run --limit 10 --dry-run
 # Real run: saves drafts to Gmail and records each company so it is never drafted twice
 python main.py run --limit 5
 python main.py run --limit 5 --source yc          # all | yc | launchhn | hn | producthunt
+python main.py run --limit 5 --digest digest.md   # also write a short summary: roles to apply for, founders to reach
 
 # Queue your own list; the next `run` processes these before sourced leads
 python main.py add-target site1.com site2.io
@@ -154,10 +155,18 @@ Then open Gmail > Drafts, review each draft, and send the ones you like yourself
 - **YC directory** (`yc`): Y Combinator companies marked as hiring, active and small (25 people or fewer,
   `YC_MAX_TEAM_SIZE`), remote-friendly ones first, then the newest batches. Data comes from the
   community-maintained [yc-oss](https://github.com/yc-oss/api) mirror of YC's public directory.
+  To keep only some regions, set `YC_REGIONS`, for example `YC_REGIONS=India,Remote`. Use YC's own
+  region names: `India`, `South Asia`, `Remote`, `Fully Remote`, `Partly Remote`, `America / Canada`,
+  `Europe` and so on. A name that no company uses is reported as a warning, so typos don't go unnoticed.
 - **Launch HN** (`launchhn`): startups announcing their launch on Hacker News in the last 120 days
   (`LAUNCHHN_LOOKBACK_DAYS`), using the company link from the post.
 - **Mixing** (`all`, the default): sources take turns, so one run draws on all of them, and no company is
   processed twice in a run.
+- **Ranking by region** (`PREFER_REGIONS`, off by default): list regions most wanted first, for example
+  `PREFER_REGIONS=India,Remote`. Companies listing the first come first, then the second, then the rest;
+  nothing is dropped (use `YC_REGIONS` to drop). Only YC lists regions, using the names above; Hacker News
+  roles are remote-only, so they count as `Remote`; Launch HN and Product Hunt leads count as the rest.
+  A YC company listing both `India` and `Remote` ranks as `India`.
 - **Hacker News** (`hn`): finds the latest two "Ask HN: Who is hiring?" threads, then searches their comments for
   remote roles mentioning backend, Python, AI/ML, intern, forward-deployed or systems. Links to job boards
   are ignored; only the company's own site is used. (The `whoishiring` account only posts the thread, so
@@ -167,12 +176,33 @@ Then open Gmail > Drafts, review each draft, and send the ones you like yourself
 - **Extraction**: the LLM must return JSON matching a Pydantic schema (company, summary, domain, founder
   name, one-sentence technical hook). Invalid output is retried once, and busy errors are retried with
   backoff. Founder names are only taken if the site states them (About and Team pages are fetched too).
-- **Email finding**, best first: Apollo-verified (if you set a key), the founder's own address on the site,
+- **Company size (optional, with an Apollo key)**: before reading a site, seedreach asks Apollo how many
+  people the company has and skips anything over `MAX_EMPLOYEES` (100 by default), so a large company costs
+  no LLM call. Companies Apollo doesn't know are kept. The funding stage and headcount it finds are shown
+  next to each draft ("Seed, ~7 people"). This uses Apollo's organization lookup, which the free plan
+  allows. `MAX_EMPLOYEES=0` turns it off.
+- **Email finding**, best first: Apollo-verified (if you set a key; this needs a paid Apollo plan, and on
+  the free plan seedreach notices the refusal once and stops asking), the founder's own address on the site,
   the founder's name in the format the site's addresses use (`first.last@`), anyone's address on the site,
   then a generic inbox (`hello@`). A bare `{first}@domain` guess is **not drafted**: the company is listed
   under *Needs a contact* in `status` so you can find an address and retry with `target <url> --force`
   (`ALLOW_GUESSED_EMAILS=1` restores the old behaviour). A founder the model names is only used if the
   site itself names them.
+- **Generic inboxes**: when the site names a founder but the only address is a generic one (`hello@`,
+  `info@`, `contact@`, `team@`), the company goes under *Needs a contact* instead of being drafted, because
+  those inboxes rarely reach the founder. `status` lists the founder with a LinkedIn search link, so you can
+  reach them directly. Without a named founder, the generic inbox is still drafted ("Hi Acme team,").
+  `founders@` always counts as the founders' own. `GENERIC_INBOX=always` restores the old behaviour, and
+  `GENERIC_INBOX=never` never drafts to one.
+- **Open internships**: if the company's site links to a public Greenhouse, Lever or Ashby job board (on any
+  page read, or on its careers page), seedreach reads the board and, when an engineering, AI or data
+  internship is open, names it in the draft ("I saw your Backend Engineering Intern opening."). Other
+  internships, such as finance or sales, aren't mentioned. Set `CHECK_JOB_BOARDS=0` to turn this off.
+  Boards only list open postings, but an opening can stay up for months or years after anyone reads
+  applications, so internships first posted more than 60 days ago (`MAX_ROLE_AGE_DAYS`, 0 for no limit)
+  aren't named. Among the rest the newest wins, and the digest shows when it was posted. A role whose
+  board gives no date is kept. "Open" means the company hasn't taken the posting down, not that it's
+  still reading applications.
 - **Email copy**: short by default (about 100–130 words): the opener, who you are, the first sentence of your
   project for the company's domain, one ask and two links. `"email_style": "long"` adds your role pitch, every
   matching project, experience, stack, closing and all links.
@@ -202,6 +232,9 @@ Model: `gemini-flash-lite-latest`, 3 runs, 2026-11-01.
 The opening lines in this run haven't been checked by hand yet (the last check found every claim true in
 93% of them), so "ready to send" counts only the rule checks and is a little high.
 
+These numbers predate v0.3.1, which stopped drafting for news articles and job-board pages (3 of the 30
+leads pointed at one). They'll be re-measured for v0.4.0.
+
 How it got here, on the same 30 startups:
 
 | Change | Founder correct | Invented founder | Ready to send |
@@ -214,8 +247,8 @@ Known gaps, each the subject of a follow-up:
 
 - **Board members**: one site lists a real co-founder only under "Board of Directors", and the model
   sometimes names him anyway.
-- **Wrong websites**: 3 of the 30 leads pointed at a news article or a job board, and seedreach drafted
-  for them anyway.
+- **Company fit**: real runs still draft to companies that are past the early stage or don't make
+  software at all (for example, a mobile-MRI service). Fixes are planned in [#2](https://github.com/Poushali-02/seedreach/issues/2) and [#46](https://github.com/Poushali-02/seedreach/issues/46).
 - **Domains**: reading more pages made the domain slightly less accurate and less stable; consumer and
   health companies are sometimes filed as B2B SaaS or AI Agents.
 
@@ -252,7 +285,9 @@ It must be private: Actions logs and the database contain founder email addresse
    gh secret set PROFILE_JSON      -R you/seedreach-runner < profile.json
    gh secret set GEMINI_API_KEY    -R you/seedreach-runner      # paste the key when prompted
    ```
-   Optional: `ANTHROPIC_API_KEY`, `APOLLO_API_KEY`, and repo variables `LLM_PROVIDER` / `GEMINI_MODEL`.
+   Optional: `ANTHROPIC_API_KEY`, `APOLLO_API_KEY`, and repo variables `LLM_PROVIDER` / `GEMINI_MODEL` /
+   `YC_REGIONS` / `PREFER_REGIONS` (for example `gh variable set PREFER_REGIONS -R you/seedreach-runner
+   --body "India,Remote"`).
 5. **Test it:** Actions tab > seedreach > Run workflow, with "dry run" ticked.
 
 The template pins `SEEDREACH_REF` to a release's commit ID (with the version as a comment) rather than
@@ -260,6 +295,16 @@ running `main` or a tag. The job holds your Gmail token, so it should only ever 
 and a tag can be moved to different code while a commit can't. The GitHub Actions it uses are pinned by
 commit too. To upgrade, read the new release's notes, get its commit with `git rev-parse vX.Y.Z^{commit}`,
 put that in `SEEDREACH_REF`, push, and do a dry run.
+
+**On your phone:** each run posts a short digest as a comment on one issue in the runner repo, titled
+*seedreach: apply and reach out*, and @-mentions you, so the GitHub mobile app notifies you. It lists open
+internships with apply links, founders to reach on LinkedIn (when only a generic or guessed address was
+found) and drafts to review. It has company names and links only, never email addresses. Nothing to report
+means no comment.
+
+For a one-line summary on Telegram or Discord as well ("3 new drafts: HillStar, Alter · 2 skipped"), add
+the secrets `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`, and/or `DISCORD_WEBHOOK_URL`. It lists company
+names and counts only, never founder addresses or draft text.
 
 Control: change the `cron:` line for timing, use **Run workflow** for an on-demand run with its own
 limit and source, and **Disable workflow** to pause. GitHub emails you when a run fails (for example,

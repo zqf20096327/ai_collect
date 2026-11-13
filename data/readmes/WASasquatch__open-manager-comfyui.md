@@ -98,7 +98,9 @@ manager, and Desktop Mode, the file browser and the resource monitor switched on
 no command line:
 
 1. Open the [ComfyUI with Open Manager](https://cloud.vast.ai/?ref_id=285284&creator_id=285284&name=ComfyUI%20with%20Open%20Manager)
-   template on Vast.ai.
+   template on Vast.ai, or
+   [ComfyUI with Open Manager CUDA 13](https://cloud.vast.ai/?ref_id=285284&creator_id=285284&name=ComfyUI%20with%20Open%20Manager%20CUDA%2013)
+   for machines with a CUDA 13.2 driver.
 2. Pick a GPU and a disk size, and rent it.
 3. Click **Open** on the instance, then **ComfyUI**.
 
@@ -150,6 +152,7 @@ Without one, a pack page shows its star count only.
 | Workflow gaps | Missing nodes, and which pack won a duplicate name |
 | Import failures | Each failed pack's error from ComfyUI's log, its traceback a click away |
 | Workflow packs | Each pack the open workflow uses, with node ids to copy |
+| Node Audit | Every saved workflow read for the packs and nodes it uses and how often, the packs missing nodes come from, and the packs none use, to select and switch off or uninstall. A [program](docs/DESKTOP.md#programs) on the Start menu |
 | Folders and tags | Installed packs grouped in folders of your own and tagged, from a pack's menu; `#tag` in the search lists a tag's packs |
 | Every `custom_nodes` folder | Packs in each `custom_nodes` path `extra_model_paths.yaml` adds are listed and managed where they are; new installs go to ComfyUI's first |
 | Themes | Gradients, icons, backdrops |

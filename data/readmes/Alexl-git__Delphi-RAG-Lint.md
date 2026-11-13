@@ -724,7 +724,7 @@ drag-lint schema --db myapp.sqlite --format json        # schema_version + table
 
 When no verb answers the question you actually have, query the index directly.
 `sql` is read-only by construction -- an sqlite3 authorizer refuses ATTACH,
-PRAGMA, DDL and every write, a row cap and a wall-clock cap bound the answer,
+PRAGMA, DDL and every write, a row cap (default 200; `--limit 0` = none; `--output <file>` without `--limit` writes every row; `--json` reports `truncated`, `total_rows` and `row_limit`) and a wall-clock cap bound the answer,
 and exactly one statement is allowed:
 
 ```
@@ -878,7 +878,7 @@ be written and writes nothing. This verb replaces `Register-DragLintProtocol.ps1
 |---|---:|---|
 | [Indexing](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#indexing) | 11 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#indexing) |
 | [Search and navigation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#search-and-navigation) | 37 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#search-and-navigation) |
-| [Linting](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#linting) | 44 (+ 315 rules, 110 fixable) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#linting) |
+| [Linting](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#linting) | 46 (+ 317 rules, 110 fixable) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#linting) |
 | [Documentation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#documentation) | 12 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#documentation) |
 | [Refactoring and code generation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#refactoring-and-code-generation) | 21 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#refactoring-and-code-generation) |
 | [Component conversion](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#component-conversion) | 25 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#component-conversion) |
@@ -1058,7 +1058,7 @@ Win64 build.
 
 #### Lint
 
-**315 rules across 18 categories -- 221 built-in + 94 external `.scm`, 262
+**317 rules across 18 categories -- 223 built-in + 94 external `.scm`, 263
 enabled by default, 110 with an auto-fix.**
 
 | Command | What it does | Notable flags |
@@ -1132,4 +1132,4 @@ write and rolls every edited file back when the build fails: the whole run is al
 
 | Command | What it does | Notable flags |
 |---|---|---|
-| `rename --kind symbol --name <q> --to <new> --db <db>` | Cross-unit rename (declaration + every reference). Refuses (exit 2, naming the file) when the old name is used in an indexed `.inc` include: refs inside `{$I}` text are not indexed until extractor 1.22. Renaming an event handler also rewrites its `OnClick = Name` binding in the form's text `.dfm`; a binary `.dfm` that holds the name refuses (exit 2, naming the `.dfm`). `--json` reports each edit at the identifier it replaces **`--apply` is proved and gated (1.44.1):** every identifier token of the old name is decided as an edit, another symbol's (binding, or the receiver's static type via `ref_types` + `ref_receivers`), or a named refusal (exit 2, nothing written); every token of the new name is checked for capture, because a rename that compiles can still bind differently. A method renames with its overloads, overrides and implementers. `--plan [--json]` reports it all, exit 0. A write needs `--project <X.dproj>` (or a DB at `<folder>\_D-RAG\<base>.sqlite`, whose project it is) and passes the compile gate: baseline build, all-or-nothing write, after build, rollback. `--no-compile` is refused with `--apply`. | `--apply`, `--no-backup`, `--json
+| `rename --kind symbol --name <q> --to <new> --db <db>` | Cross-unit rename (declaration + every reference). Refuses (exit 2, naming the file) when the old name is used in an indexed `.inc` include: refs inside `{$I}` text are not indexed until extractor 1.22. Renaming an event handler also rewrites its `OnClick = Name` binding in the form's text `.dfm`; a binary `.dfm` that holds the name refuses (exit 2, naming the `.dfm`). `--json` reports each edit at the identifier it replaces **`--apply` is proved and gated (1.44.1):** every identifier token of the old name is decided as an edit, another symbol's (binding, or the receiver's static type via `ref_types` + `ref_receivers`), or a named refusal (exit 2, nothing written); every token of the new name is checked for capture, because a rename that compiles can still bind differently. A method renames with its overloads, overrides and implementers. `--plan [--json]` reports it all, exit 0. A write needs `--project <X.dproj>` (or a DB at `<folder>\_D-RAG\<base>.sqlite`, whose project it is) and passes the comp

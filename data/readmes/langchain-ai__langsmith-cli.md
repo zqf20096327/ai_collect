@@ -34,7 +34,10 @@ scoop install langsmith-cli
 
 ### PyPI
 
-The CLI is published to PyPI as `langchain-langsmith-cli`, with a wheel per platform that contains the same binary as the other install methods. No Python code runs when you use it.
+> [!NOTE]
+> PyPI publishing is coming soon: `langchain-langsmith-cli` is not on PyPI yet. Until the first release there, use one of the other install methods.
+
+The CLI will be published to PyPI as `langchain-langsmith-cli`, with a wheel per platform that contains the same binary as the other install methods. No Python code runs when you use it.
 
 ```bash
 # As a standalone tool (recommended)
@@ -130,6 +133,9 @@ langsmith --workspace <workspace-id> trace list --project my-app
 ## Quick Start
 
 ```bash
+# Give your coding agents (Claude Code, Cursor, Codex) the LangSmith skills and MCP server
+langsmith setup
+
 # List tracing projects
 langsmith projects list
 
@@ -148,6 +154,10 @@ langsmith datasets list
 # List experiments for a dataset
 langsmith experiments list --dataset my-eval-set
 ```
+
+## For coding agents
+
+[docs/agent-reference.md](docs/agent-reference.md) is a task-oriented reference for coding agents (Claude Code, Codex, Cursor and others): which commands to use for traces, datasets, experiments, prompts, evaluators, feedback and annotation queues, with key flags, JSON output, paging and safety notes. It is generated from the command tree, so it matches this version of the CLI; `langsmith docs agents` prints the same reference for the installed binary.
 
 ## Product feedback
 
@@ -557,6 +567,33 @@ Installs from the `install.sh`/`install.ps1` scripts or a direct GitHub Releases
 are updated in place as usual. Pass `--force` to update in place regardless of how
 langsmith was installed.
 
+### `setup` — Install LangSmith skills and MCP into coding agents
+
+Detects Claude Code, Cursor, and Codex on this machine and installs the
+[LangSmith skills](https://github.com/langchain-ai/langsmith-skills) and the hosted
+LangSmith MCP server into each one. It prints the plan, asks before writing, and a
+second run changes nothing. It never replaces an MCP entry named `langsmith` or a
+skill directory it didn't write unless you pass `--force`. No API key is written:
+each agent signs in to the MCP server with OAuth.
+
+| Agent | Skills | MCP server |
+|-------|--------|------------|
+| Claude Code | `langsmith-skills` plugin, via `claude plugin install` | user-scope `langsmith`, via `claude mcp add` |
+| Cursor | `~/.cursor/skills/<skill>` | `mcpServers.langsmith` in `~/.cursor/mcp.json` |
+| Codex | `$CODEX_HOME/skills/<skill>` | `[mcp_servers.langsmith]` in `$CODEX_HOME/config.toml` |
+
+```bash
+langsmith setup                        # detect agents, preview, confirm
+langsmith setup --dry-run              # show the plan only
+langsmith setup --agent cursor --yes   # one agent, no prompt (repeat --agent for more)
+langsmith setup --no-skills            # MCP server only (or --no-mcp for skills only)
+langsmith setup --mcp-url https://ls.example.com/api/mcp
+```
+
+The MCP URL follows the selected profile or `--api-url`: `https://api.smith.langchain.com/mcp`
+by default, `https://<host>/api/mcp` for a self-hosted install. To send agent sessions to
+LangSmith as traces, use `langsmith trace setup` below.
+
 ### `trace setup` — Trace coding agents to LangSmith
 
 Configure Claude Code or Codex to send full-content traces (prompts, responses, tool
@@ -652,7 +689,7 @@ Ensure `~/.local/bin` is in your `PATH` before `~/go/bin`. This way commands lik
 
 ## Releasing
 
-Releases work as in the langsmith SDK repos. [`release-please.yml`](.github/workflows/release-please.yml) keeps a release PR open on langsmith-cli with the next version and its changelog, built from the conventional commit titles of the changes Copybara exports (`test` and `ci` commits are left out). Merging that PR tags the version, creates the GitHub Release, and dispatches [`publish-binaries.yml`](.github/workflows/publish-binaries.yml): GoReleaser cross-compiles linux/darwin/windows on amd64+arm64 and attaches the archives and `checksums.txt`, and the Homebrew tap gets a bump PR.
+Releases work as in the langsmith SDK repos. [`release-please.yml`](.github/workflows/release-please.yml) keeps a release PR open on langsmith-cli with the next version and its changelog, built from the conventional commit titles of the changes Copybara exports (`test` and `ci` commits are left out). Merging that PR tags the version, creates the GitHub Release, and dispatches [`publish-binaries.yml`](.github/workflows/publish-binaries.yml): GoReleaser cross-compiles linux/darwin/windows on amd64+arm64 and attaches the archives and `checksums.txt`, the Homebrew tap gets a bump PR, and [`scripts/build_wheels.py`](scripts/build_wheels.py) repackages the archives as platform wheels and publishes them to PyPI as `langchain-langsmith-cli`. The PyPI job uses Trusted Publishing from the `pypi` environment, so it needs no token, and it skips files PyPI already has, so a failed run can be rerun.
 
 A release must use a released `langsmith-go`, so merge a release PR only while `go.mod` requires a released tag. CI in langchainplus, where this module is developed, fails a change whose `go.mod` requires an unreleased `langsmith-go` (a pseudo-version or pre-release) or has a `replace`. The release is the release PR's merge commit, and the workflow refuses to release a commit whose `go.mod` uses a pseudo-version or a `replace`. If one is merged anyway, the workflow fails with the way out: release `langsmith-go` and update `go.mod`, then revert the release PR and remove its `autorelease: pending` label, and release-please opens a new release PR.
 

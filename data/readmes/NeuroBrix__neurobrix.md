@@ -51,9 +51,9 @@ neurobrix run --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 --prompt "Write a Pytho
 Three things to try, one command each:
 
 ```bash
-neurobrix run --model hexgrad/Kokoro-82M --prompt "Hello from my own GPU." --output speech.wav   # text to speech
-neurobrix run --model openai/whisper-large-v3-turbo --audio recording.wav                        # speech to text
-neurobrix run --model ostris/Flex.1-alpha --prompt "a lighthouse at dusk" --output lighthouse.png  # text to image
+neurobrix run --model hexgrad/Kokoro-82M --prompt "Hello from my own GPU." --speaker af_heart --output speech.wav  # text to speech
+neurobrix run --model openai/whisper-large-v3-turbo --audio recording.wav                                          # speech to text
+neurobrix run --model ostris/Flex.1-alpha --prompt "a lighthouse at dusk" --output lighthouse.png                  # text to image
 ```
 <!-- Commands and flags from "## Usage by family" below (checked against 0.6.11, 2026-11-12). -->
 
@@ -100,7 +100,7 @@ ready-made containers from the hub.
 ## Install and first run
 
 NeuroBrix needs Python 3.10 or newer. The current release is
-**0.6.13** ([release notes](https://github.com/NeuroBrix/neurobrix/releases/tag/v0.6.13)).
+**0.6.15** ([release notes](https://github.com/NeuroBrix/neurobrix/releases/tag/v0.6.15)).
 
 It has two engines. The **Triton engine** (`--triton`) runs on
 [nbxtensor](https://github.com/NeuroBrix/nbxtensor) and Triton and needs no PyTorch. The
@@ -200,9 +200,9 @@ through it, `run` uses it when it serves the same model, and `stop` unloads it:
 
 ```bash
 neurobrix serve --model TinyLlama/TinyLlama-1.1B-Chat-v1.0
-neurobrix chat                       # interactive multi-turn chat (/new, /context, /status, /quit)
-neurobrix run --prompt "Hello"       # --model can be omitted while a daemon is running
-neurobrix stop                       # stop the daemon and free GPU memory
+neurobrix chat                                # interactive multi-turn chat (/new, /context, /status, /quit)
+neurobrix run --prompt "What is a KV cache?"  # --model can be omitted while a daemon is running
+neurobrix stop                                # stop the daemon and free GPU memory
 ```
 
 Whether the weights stay on the device between requests (warm) depends on the plan Prism chooses for the machine;
@@ -355,14 +355,13 @@ neurobrix run --model mistralai/Voxtral-Mini-3B-2507 --audio meeting.wav \
     --prompt "Summarize this call."
 
 # Text-to-speech
-neurobrix run --model hexgrad/Kokoro-82M --prompt "Hello from NeuroBrix." --output speech.wav
+neurobrix run --model hexgrad/Kokoro-82M --prompt "Hello from NeuroBrix." --speaker af_heart --output speech.wav
 
 # Vision-language: image plus a question
 neurobrix run --model zai-org/GLM-4.1V-9B-Thinking --input-image photo.jpg \
     --prompt "What is in this image?"
 
-# Multimodal models take --mode (text or image)
-neurobrix run --model deepseek-ai/Janus-Pro-7B --mode text --input-image photo.jpg --prompt "Describe this image."
+# Multimodal models take --mode: the mode their container was built for (Janus-Pro-7B's build: image)
 neurobrix run --model deepseek-ai/Janus-Pro-7B --mode image --prompt "a red apple on a wooden table"
 
 # Image generation

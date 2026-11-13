@@ -1,3 +1,6 @@
+
+
+
 <div align="center">
 
 <img src="docs/assets/banner.svg" width="100%" alt="aisync: Multi-Agent Context Management, Coordination & Observability"/>
@@ -29,10 +32,21 @@ aisync is **agent-agnostic at its core**. It provides native hooks for Claude Co
 >
 > File claims are **cooperative**, not OS-enforced locks: agents must use the claim protocol. Hash-chain verification detects changes to recorded events; it does not prove every claimed action occurred.
 
-
 ## Who it's for
 
 Developers running **two or more AI coding agents** across one or multiple repositories—especially when agents work concurrently, hand tasks off, or need a shared record of decisions and blockers. aisync is not another coding agent or a task orchestrator: it is the **shared context and coordination layer** those agents can use.
+
+## See it
+
+<div align="center">
+
+### The Agent Swarm Floor
+
+https://github.com/user-attachments/assets/b28bed86-c262-4efa-b92d-9eeca2bf5b73
+
+
+https://github.com/user-attachments/assets/dcba3452-a9bd-4fe4-8d2a-12a457b6e8f4
+
 
 ## Integrations: native hooks are not the compatibility boundary
 
@@ -64,13 +78,15 @@ curl -fsSL https://maxont.github.io/aisync/install.sh | bash
 Needs Python 3.11+ and git, on macOS or Linux. Nothing else: aisync uses only the standard library.
 
 
-## See it
+### Two agents, one file
 
 <img src="docs/assets/demo.gif" width="100%" alt="A real terminal: aisync demo prints a hub's status, claude-code claims app/api/refunds.py, codex claims the same file and is refused with OVERLAP and exit 3, codex logs a blocker, claude-code hears it through aisync news, releases the file, and codex's claim then succeeds"/>
 
 <sub>A real terminal run: `aisync demo` (synthetic data), then two tools reach for the same file.
 Step by step: [how it works](https://maxont.github.io/aisync/how-it-works/) · the same demo hub as a
 [status board](https://maxont.github.io/aisync/board/).</sub>
+
+</div>
 
 | Multi-agent need | What aisync provides |
 |---|---|
@@ -245,3 +261,18 @@ comes from [`.github/refine/how-it-works.stages.json`](.github/refine/how-it-wor
 credits above from [`.github/refine/lineage.json`](.github/refine/lineage.json). All demo data is synthetic.
 
 MIT licensed.
+
+
+## More Videos if you like!
+
+https://github.com/user-attachments/assets/5ea7928b-4985-4700-8551-90477a84df40
+
+https://github.com/user-attachments/assets/91385ac4-714c-4a16-908b-1859ef1c78e2
+
+
+https://github.com/user-attachments/assets/bf661d5c-b7b1-4876-8469-2e11dd95b232
+
+
+
+https://github.com/user-attachments/assets/d32f3abd-2986-4fbf-83a2-be287f0185a7
+

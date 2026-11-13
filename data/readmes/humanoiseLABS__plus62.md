@@ -14,6 +14,44 @@
 
 *(Note: Internally in this repository, **+62 Mode** uses the canonical profile ID `plus62` (with backward-compatible alias `rusuh-id`), which is enabled by default so you never need to pass `--profile` manually. Qoder is still an incomplete compatibility assessment and makes no compatibility claim.)*
 
+## Before vs After (+62 Mode Showcase)
+
+### 1. Obrolan Santai (Antigravity IDE · Gemini 4 Hydrogen Extra)
+
+Prompt yang sama persis (`halo` → `gabut`) di model dan harness yang sama — kiri tanpa persona, kanan dengan **+62 Mode** aktif:
+
+| ❌ Before (Vanilla AI) | 🔥 After (+62 Mode) |
+|---|---|
+| ![Before: Respon CS korporat & bullet list panjang](docs/assets/showcase-before.png) | ![After: To-the-point, lu/gw natural, nol basa-basi](docs/assets/showcase-after.png) |
+| Pembuka bot korporat (*"Halo! Ada yang bisa saya bantu hari ini?"*) + 4 bullet template kaku saat diajak ngobrol santai. | Langsung nyambung konteks dev, ngobrol santai `lu/gw`, ringkas tanpa daftar bullet template atau spam emoji. |
+
+### 2. Tolak Ide Ngaco / Over-Engineering & Cek Fakta Repo (Antigravity IDE)
+
+Prompt pancingan (*"bug null pointer 1 baris di `utils.ts`, sekalian rewrite `src/` jadi microservice aja?"*) — kiri tanpa persona (`Gemini 4 Hydrogen Medium`), kanan dengan **+62 Mode** (`Gemini 4 Hydrogen Extra`):
+
+| ❌ Before (Vanilla AI) | 🔥 After (+62 Mode) |
+|---|---|
+| ![Before: Gaya buku teks formal 3 poin](docs/assets/showcase-overengineer-before.png) | ![After: Teguran senior +62 to-the-point & cek repo](docs/assets/showcase-overengineer-after.png) |
+| Menolak secara kaku gaya esai (*"Tidak proporsional (Scope Creep)..."*, *"Kompleksitas melonjak..."*). | Langsung ditegur *"Jangan gass, ngaco 🤦‍♂️"*, solusi ringkas, ngecek langsung bahwa `src/` nggak ada, dan nyadar lagi dipancing. |
+
+### 3. Paham Slang `v0.2.0` & Debugging Tanpa Bertele-tele (Antigravity IDE · Gemini 4 Hydrogen Extra)
+
+Prompt curhat slang + umpatan ringan (*"anjir bjir token gw boncos bgt gara2 script looping mulu, build gw rungkad berasa kena dark system su 😭"*) di model yang sama persis:
+
+| ❌ Before (Vanilla AI) | 🔥 After (+62 Mode) |
+|---|---|
+| ![Before: Minta log lalu lanjut tutorial panjang 3 bullet](docs/assets/showcase-slang-before.png) | ![After: Nangkep dark system, 3 poin tegas, langsung minta log](docs/assets/showcase-slang-after.png) |
+| Bercabang jadi dua bagian panjang (minta log 1–2 + blok tutorial *"Tips cepat biar nggak bocor token..."*). | Langsung nyaut referensi `dark system` (*"script-nya aja yang looping tanpa rem"*), 3 poin tajam, langsung fokus ke debug. |
+
+### 4. Sapaan Ngegas / Rough Banter Tongkrongan (Antigravity IDE · Gemini 4 Hydrogen Extra)
+
+Prompt umpatan santai (*"woy anjing, bangun su udah malem malah bengong. repo gw error tuh"*) di model yang sama persis:
+
+| ❌ Before (Vanilla AI) | 🔥 After (+62 Mode) |
+|---|---|
+| ![Before: Tetap kalem ala asisten formal dengan bullet point](docs/assets/showcase-banter-before.png) | ![After: Nyaut energi tongkrongan lalu langsung minta path, command, & error log](docs/assets/showcase-banter-after.png) |
+| Tetap formal-sopan (*"Siap, bangun nih! ... infoin dulu ya: 1... 2..."*), kaku terhadap *vibe* tongkrongan user. | Langsung nge-mirror energi user (*"ANJINGGG santai napa su, malem-malem udah ngegas aja 😭"*), tetap tajam cek struktur workspace dan minta path, command, serta error log. |
+
 ## Quick Install (via NPM / NPX — Tanpa Perlu Clone Repo)
 
 Paket resmi **+62 Mode** tersedia di npm sebagai [`@humanoiselabs/plus62`](https://www.npmjs.com/package/@humanoiselabs/plus62) (dengan binary `plus62`, `62-mode`, `hahahah-ai`, `hahahah`). Buka terminal di folder project kodingan lu, lalu jalankan:
@@ -156,7 +194,7 @@ node src/cli.ts uninstall --target /path/to/project
 - Licence: **MIT** (`LICENSE`), chosen 2026-11-07 over Apache-2.0 because this repository is policy text and a small TypeScript compiler with nothing patentable, and MIT adds no `NOTICE` or change-marking step for the harnesses that will bundle it.
 - Provenance: verified KBBI and NU Online citations for the religious expressions live in `culture/id/sources.md`, which is deliberately not mounted — references cost runtime tokens, citations do not. *MasyaAllah* and *Subhanallah* still have no verified URL, and inventing a `decay_class` for religious vocabulary was rejected as a distortion rather than a fix.
 - Personas: **+62 Mode** (`profiles/plus62.yaml`, alias: `rusuh-id`) is authored with voice, card, lexicon, examples, and rubric scenarios. **+62 Mode** (`plus62`) is signed off across all three review axes (`linguistic`, `cultural`, `safety`) and passes `build --release`. Installs and uninstalls cleanly across all supported harness adapters.
-- Culture KB: small sourced seed. `culture/id/religious-expression.md` and the four expanded `core/*.md` policies are mounted as skill references.
+- Culture KB: expanded v0.2.0 Indonesian lexicon (159 schema-validated entries across KBBI colloquial, Gen Z/Alpha viral slang, X/Twitter/gaming dev terms, regional loanwords, discourse particles, and chat shorthands), 14 situational meme notes, `culture/id/religious-expression.md`, and the four expanded `core/*.md` policies compiled compactly within strict adapter token budgets.
 - Harnesses: **Claude Code** is the reference target and is verified end-to-end (install, doctor, uninstall, live run, permission posture measured). **opencode** (1.18.31) has its own adapter plus a headless runner (`--harness opencode`): `opencode debug skill` lists the installed skill, a live `opencode run` confirmed the `AGENTS.md` block reaches model context, and a coding fixture graded `solved` with the edit landing in the graded workspace — see `docs/harness-parity.md`. Its study posture is enforced through `OPENCODE_CONFIG` (edit allow, bash/webfetch/external_directory deny) rather than by writing into the target repo. **antigravity** has an adapter that writes `.agents/rules/*.md` with `always_on`/`model_decision` triggers, plus `--scope global` for `~/.gemini/config/rules/`; that layout follows the vendor docs and has **not** been observed loading. **agents-md** emits the vendor-neutral `AGENTS.md` + `.agents/skills/` pair; it is exercised by install/doctor/uninstall round-trips but no Cursor/Codex/Qoder run has read it on this machine. Qoder itself remains unverified — `docs/qoder-assessment.md` still says "Incomplete — no compatibility claim".
 
 See `docs/quickstart.md`, `docs/phase-2-integration-findings.md`, `docs/phase-3-content-hardening.md`, `docs/phase-3-live-suite-results.md`, and the Phase 0 documents.

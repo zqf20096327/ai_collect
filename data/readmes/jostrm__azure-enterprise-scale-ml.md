@@ -7,6 +7,11 @@
 ![Header](documentation/v2/10-19/images/header.png)
 See <a href="https://jostrm.github.io/azure-enterprise-scale-ml/architectures/" target="_blank"><b>Architecture library</b></a> for all three designs similar as below.
 ![](./documentation/v2/10-19/images/14-eslz-full-1.png)
+## Per environment (Dev, Stage, Prod) - zoomed in
+<p align="center">
+<a href="https://jostrm.github.io/azure-enterprise-scale-ml/architectures/" target="_blank"><img src="./documentation/v2/20-29/images/esaf-architecture-external-hub.png" width="100%" alt="ESAF with an external hub: the project and common resource groups of the AI Factory with every Azure resource it supports, connected to your hub, Microsoft 365, Power Platform, SharePoint and Fabric."></a><br>
+<sub><b>ESAF with an external hub</b>, with every Azure resource the factory supports. Select the image for the numbered code templates, and for the designs <b>Standalone - Own Hub</b> and <b>Standalone</b>.</sub>
+</p>
 
 <p align="center">
 <b>Private, WAF-aligned full stack landing zones with AI on Azure, used since 2019.</b><br>

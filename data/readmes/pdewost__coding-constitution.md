@@ -42,7 +42,15 @@ models from other labs than the author's, with every finding reproduced as a fai
 source, and [`publish_scan.py`](publish_scan.py) enforces the pre-publish secrets gate as code —
 after a measurement found 6 of 8 published files had silently drifted from their originals. The gate reads your
 private terms from an untracked `.publish_scan_terms`; without that file it refuses to pass, unless
-`PUBLISH_SCAN_NO_PRIVATE_TERMS=1` says you have none.
+`PUBLISH_SCAN_NO_PRIVATE_TERMS=1` says you have none. Options: `--root <repo>` scans another git repository, without
+this repository's built-in exceptions or its public identity class (a file there named `publish_scan.py` gets no
+self-exemption either); `--terms <file>` reads the private terms from a file kept outside the scanned tree (missing or
+unreadable: exit 2); `--generic` adds shape patterns (MAC address, private IPv4/IPv6 address, UUID, HomeKit setup code,
+serial-like token; documentation ranges never count); `--exceptions <file>` reads reviewed exceptions, one
+`<path><TAB><pattern class><TAB><exact line | sha256:hex>` per line, each clearing that one class on that one line, and
+an entry that clears nothing fails the run; `--counts-only` prints per-pattern and per-file counts and never the matched
+text. Exit 2 means the run could not start (an empty, missing or malformed `--root`, `--terms` or `--exceptions`, or an
+unknown pattern class). Its tests: `python3.12 -m pytest tests`.
 
 ---
 
@@ -241,7 +249,7 @@ with size bounds the validator enforces — so context never silently rots.
 `python3.12` by name (without it the `.py` syntax check is disabled and one self-test case fails). The install tools
 alone run on 3.10 or later. The adversarial-review scripts also need PyYAML (`pip install pyyaml`).
 The unit suite runs with `python3.12 -m pytest adapters/claude-code _skills`; it needs pytest and PyYAML, and optionally
-zsh, node and osacompile for the tests that call them.
+zsh, node and osacompile for the tests that call them. The scanner's tests run with `python3.12 -m pytest tests` (git only).
 Three hook tests build their fixtures under `~/Library/Caches/hooks_batch2_tests` (a macOS-style path, used on any system), on purpose: the close-out gate exempts
 temp folders, so a fixture there would test nothing. Set `OUTCOME_TEST_BASE` to another folder outside your temp folder to
 move them.
@@ -409,6 +417,7 @@ _skills/
 reviews/                        # scrubbed review records
 redaction_map.yaml              # every intentional difference from the private source
 publish_scan.py                 # the pre-publish secrets gate, as code
+tests/                          # tests of publish_scan.py's options
 LICENSE                         # MIT (code) + CC BY 4.0 (docs)
 ```
 
@@ -455,6 +464,12 @@ next change that adds a line must remove one or amend the budget, per Art. 11):
   v2 receipt still does not prove. The CLOSEOUT gate reads the whole transcript and blocks with TRANSCRIPT READ
   INCOMPLETE when it cannot. The self-test grows from 37 to 54 fire/no-fire cases (the four hooks that had none), and
   `neocortex_manifest.py --init` writes the five STATUS sections the spec requires.
+- **Release v0.14.1** (2026-11-13): the publish scanner gains five options: `--generic` adds shape patterns (MAC address,
+  private IP address, UUID, HomeKit setup code, serial-like token; documentation ranges never count), `--root` scans
+  another git repository without this one's built-in exceptions, `--terms` reads the private terms from a named file
+  (missing or unreadable: exit 2), `--exceptions` reads reviewed entries that each clear one pattern class on one line (an
+  entry that clears nothing fails the run), and `--counts-only` prints counts, never the matched text. Its tests are in
+  `tests/`. No hook or verify_gate change.
 - **Constitution** — v1.0, ratified 2026-06-10 after line-by-line + adversarial review; the Independence Preamble was added
   2026-06-20 and four changes were ratified 2026-10-27 (see Reviews). **NEOCORTEX_SPEC** and **UNIVERSAL_SKILL_SPEC** state
   their own versions and ratification dates in their headers.

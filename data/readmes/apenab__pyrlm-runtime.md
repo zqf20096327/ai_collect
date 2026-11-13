@@ -33,6 +33,7 @@ RLMs solve the long-context problem: instead of sending huge contexts directly t
 - [REPL Backends](#repl-backends)
 - [REPL Functions Available to the LLM](#repl-functions-available-to-the-llm)
 - [Retrieval Integration](#retrieval-integration)
+- [MCP Server](#mcp-server)
 - [Extending the REPL](#extending-the-repl)
 - [Parallel Subcalls](#parallel-subcalls)
 - [Multi-Turn Conversation History](#multi-turn-conversation-history)
@@ -64,6 +65,12 @@ pip install "pyrlm-runtime[rich]"
 ```
 
 **Requirements:** Python 3.12+
+
+To serve retrieval to MCP clients (see [MCP Server](#mcp-server)):
+
+```bash
+pip install "pyrlm-runtime[mcp]"
+```
 
 **Optional:** For the secure Monty REPL backend (Rust sandbox):
 
@@ -400,8 +407,8 @@ Auto-retries on 429, 500, 502, 503, 504 with exponential backoff. Supports conte
 
 #### VertexAIAdapter
 
-Google Cloud Vertex AI (Gemini). Requires `google-cloud-aiplatform` / `vertexai`
-and GCP credentials (ADC or a service account).
+Google Cloud Vertex AI (Gemini), called through the `google-genai` SDK. Requires
+GCP credentials (ADC or a service account).
 
 ```python
 from pyrlm_runtime.adapters import VertexAIAdapter
@@ -410,17 +417,30 @@ adapter = VertexAIAdapter(
     project_id="my-gcp-project",
     location="us-central1",
     model="gemini-2.5-pro",
-    api_transport="rest",   # default; use "grpc" to opt back into gRPC
+    timeout=600,     # seconds per call, on any thread
+    max_retries=3,
 )
 ```
 
-`api_transport` defaults to **`"rest"`**: REST honors `HTTPS_PROXY` and the
-system CA bundle (`REQUESTS_CA_BUNDLE` / `SSL_CERT_FILE`) — required behind
-corporate proxies with a self-signed TLS certificate — and is immune to the
-gRPC pollset deadlock that long-running loops hit. Pass `api_transport="grpc"`
-to restore the previous gRPC transport. The transport is configured via
-`vertexai.init`, which is **process-global SDK state**: do not mix transports
-across multiple adapters in the same process — the last `init` wins.
+The SDK speaks REST over HTTPS. It honors `HTTPS_PROXY`, and it trusts a custom
+CA bundle from `SSL_CERT_FILE`. The adapter also honors `REQUESTS_CA_BUNDLE`
+when `SSL_CERT_FILE` is unset. Set one of them behind a corporate proxy that
+re-signs TLS with its own certificate. Each adapter owns its own client, so
+adapters with different projects or regions can share a process.
+
+`api_transport` is kept so existing callers keep working, but REST is the only
+transport. `"rest"` (the default) is silent. Any other value, such as `"grpc"`,
+emits a `DeprecationWarning` and the adapter uses REST.
+
+`timeout` (default `600` seconds) is a per-call timeout that holds on any
+thread, so calls made from worker threads (for example an MCP server's) cannot
+hang forever. The adapter sends it as `HttpOptions(timeout=...)`. The HTTP
+client applies it to the connect and to every read, so a server that stops
+replying fails within `timeout`, and Vertex receives it as `X-Server-Timeout`.
+A response that keeps sending bytes can take longer. `None` or `<= 0` disables
+it. A timed-out call is retried like 429, 503 and 504 errors, up to
+`max_retries` attempts in total. If the last attempt times out, `complete`
+raises `TimeoutError`.
 
 The adapter normalizes Gemini's finish reasons to the loop's vocabulary
 (`MAX_TOKENS` → `"length"`, `STOP` → `"stop"`) in `ModelResponse.meta`, skips
@@ -879,6 +899,40 @@ es_get(doc_id)                                    # Fetch full document
 ```
 
 The retrieval layer is **backend-agnostic**: any object implementing the `RetrieverProtocol` (with `search`, `vector_search`, `hybrid_search`, `get` methods) works as a drop-in backend.
+
+## MCP Server
+
+`pyrlm_runtime.mcp_server` publishes your retriever as tools of an
+[MCP](https://modelcontextprotocol.io) server, so Claude Code, Claude Desktop,
+Cursor, kagent or any other MCP client can search and read your index without
+writing Python. The tools are read-only and call no LLM:
+
+- `search(query, mode=None, top_k=10, filters=None, include_content=False)`
+  returns ranked hits with a short preview. `mode` is `hybrid`, `lexical` or
+  `semantic`.
+- `get_document(doc_id, offset=0, max_chars=None)` reads one hit in slices.
+- `get_pages(logical_doc_id, pages, radius=0)` reads pages of one document. It
+  is published only when the retriever has a `get_pages` method.
+
+```bash
+pip install "pyrlm-runtime[mcp,elasticsearch]"
+PYRLM_MCP_ES_HOST=https://my-cluster:9200 PYRLM_MCP_ES_INDEX=docs pyrlm-mcp
+```
+
+The default transport is stdio. Streamable HTTP is opt-in with
+`PYRLM_MCP_TRANSPORT=streamable-http`, and a non-loopback host needs a bearer
+token and a Host allowlist. A custom retriever plugs in with
+`PYRLM_MCP_RETRIEVER_FACTORY=pkg.module:callable`, or in Python:
+
+```python
+from pyrlm_runtime.mcp_server import ServerConfig, build_server, run_server
+
+config = ServerConfig()
+run_server(build_server(retriever=my_retriever, config=config), config)
+```
+
+Configuration, tool arguments, limits and security notes:
+**[docs/MCP.md](docs/MCP.md)**.
 
 ## Extending the REPL
 

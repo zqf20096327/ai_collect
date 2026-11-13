@@ -73,7 +73,6 @@ CreativeField picks one model per job instead of offering a long list. On your c
 | **FLUX 3 Klein** | Creates images; also camera angles and relight |
 | **Fibo 2.0** | Edits images: multi-picture edits, masked edits, Ad Studio and Remix variations |
 | **Qwen Image 2.1** | The first choice for AI edits in FotoField; also creates images, turns objects to new angles, and is the fallback for FLUX 3 Klein |
-| **Pruna P-H3** | Creates and edits images as a further choice |
 
 Online, on Comfy Router: FLUX 2 Pro (pictures, angles, relight), Seedance 2.5 and MiniMax H3 (video, keyframes, effects), Kling V3 Omni (new look, swaps, copied moves), Kling Lip Sync, FLUX video upscale, Bria upscale and background removal.
 
@@ -177,7 +176,7 @@ Keep generated runtime configuration, credentials, account profiles, project dat
 
 - **FotoField is not Photoshop.** It has layers, masks, smart objects, selections, blend modes, crop and transform, but no CMYK, no raw development, no plug-in ecosystem and fewer filters and adjustment layers.
 - **Replace character is experimental.** Reference fidelity, multi-person replacement, the still-to-video handoff and overlay cleanup need further visual qualification.
-- **Online routes need qualification per account.** The menus only show tools with a Comfy Router contract, but a contract is not proof that every model succeeds for your account and credits. Storyboard and the local-only workflows (HyperFlow, Wan, SCAIL, Qwen, Fibo, Pruna, FLUX 3 Klein, 3D generation) are not online yet.
+- **Online routes need qualification per account.** The menus only show tools with a Comfy Router contract, but a contract is not proof that every model succeeds for your account and credits. Storyboard and the local-only workflows (HyperFlow, Wan, SCAIL, Qwen, Fibo, FLUX 3 Klein, 3D generation) are not online yet.
 - **3D:** the native Image to 3D panel is integrated; other 3D tools remain editor/template entry points. This UI work did not requalify model outputs.
 - **Not yet rehearsed:** a clean install on a fresh machine, and macOS or Linux.
 

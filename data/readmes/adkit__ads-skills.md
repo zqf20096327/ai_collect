@@ -9,7 +9,7 @@ These skills teach your agent how to run ads. They cover advertising strategy fo
 Install once, and your agent plans campaigns using real frameworks instead of hallucinating settings.
 
 ```bash
-npx skills add adkit/ads-skills --all -y -g
+npx skills add adkit/ads-skills --skill '*'
 ```
 
 Works with Claude Code, Cursor, Copilot, Windsurf, OpenAI Codex, and any agent that support skills.
@@ -34,6 +34,21 @@ Then install the **AdKit Ads Skills** plugin. The skills show up in chat and in 
 | Analysis           | Agent reads numbers          | Agent diagnoses issues and recommends specific fixes                   |
 
 ## Skills
+
+### Platform skills
+
+Each skill tells your agent how to run one ad platform with [AdKit](https://adkit.so/features/ads-mcp): the steps, the platform's rules, and examples. They all use the same AdKit connector, `https://mcp.adkit.so`.
+
+| Skill                                    | Platform             | Page                                                          |
+| ---------------------------------------- | -------------------- | ------------------------------------------------------------- |
+| [meta-ads](./skills/meta-ads/)           | Facebook & Instagram | [How to connect](https://adkit.so/features/ads-mcp/meta)      |
+| [google-ads](./skills/google-ads/)       | Google Ads           | [How to connect](https://adkit.so/features/ads-mcp/google)    |
+| [tiktok-ads](./skills/tiktok-ads/)       | TikTok               | [How to connect](https://adkit.so/features/ads-mcp/tiktok)    |
+| [linkedin-ads](./skills/linkedin-ads/)   | LinkedIn             | [How to connect](https://adkit.so/features/ads-mcp/linkedin)  |
+| [microsoft-ads](./skills/microsoft-ads/) | Microsoft (Bing)     | [How to connect](https://adkit.so/features/ads-mcp/microsoft) |
+| [reddit-ads](./skills/reddit-ads/)       | Reddit               | [How to connect](https://adkit.so/features/ads-mcp/reddit)    |
+| [x-ads](./skills/x-ads/)                 | X (Twitter)          | [How to connect](https://adkit.so/features/ads-mcp/x)         |
+| [pinterest-ads](./skills/pinterest-ads/) | Pinterest            | [How to connect](https://adkit.so/features/ads-mcp/pinterest) |
 
 ### Strategy skills
 

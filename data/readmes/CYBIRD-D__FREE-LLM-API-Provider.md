@@ -1,7 +1,7 @@
 # Free LLM API Provider
 
 [**English**](./readme.md) | [简体中文](./README.zh-CN.md) | [日本語](./README.ja.md) | [Português (Brasil)](./README.pt-BR.md)
-> Last reviewed: **2026-11-02** 
+> Last reviewed: **2026-11-13** 
 
 This directory tracks **free LLM inference APIs**, their account requirements and rate limits (including CN providers).  
 
@@ -52,7 +52,7 @@ You may also want to read my other posts:
   - [Google/Gemini & Gemma 4](#google-gemini--gemma-4)
     - [★AI Studio to API Adapter](https://github.com/iBUHub/AIStudioToAPI/blob/main/README_EN.md)
   - [★Nvidia(40RPM)](#nvidia)
-  - [Ollama](#ollama)
+  - [~~Ollama~~](#ollama)
   - [★Groq](#groq)
   - [~~Cerebras~~](#cerebras)
   - [OpenRouter](#openrouter)
@@ -68,6 +68,7 @@ You may also want to read my other posts:
   - [Scaleway (1M free token/per account)](#scaleway-1m-free-tokenper-account-no-refresh)
 - [中国大陆平台](#cn-platform)
   - [AMD Radeon Cloud Token Factory](#amd-radeon-cloud-token-factoryamd-免费模型-api)
+  - [Index-Translate (bilibili)](#index-translate-bilibili)
   - [魔搭社区（ModelScope）](#魔搭社区modelscope)
   - [硅基流动（SiliconFlow）](#硅基流动siliconflow)
   - [腾讯云 TokenHub](#腾讯云-tokenhub)
@@ -83,7 +84,7 @@ You may also want to read my other posts:
 ## Global Platform
 
 ### AMD Radeon Cloud Token Factory (China site)
-> Last checked: **2026-11-02**   
+> Last checked: **2026-11-13**   
 > **Free shared-model API with a daily renewable usage cap**
 
 - **Official links:** [Token Factory console](https://developer.amd.com.cn/radeon/tokenfactory) · [Documentation](https://amd-aim.github.io/radeon-cloud-docs/guides/token-factory/) · [Rate limits](https://amd-aim.github.io/radeon-cloud-docs/api/rate-limits/) · [Usage and quota](https://amd-aim.github.io/radeon-cloud-docs/api/usage/) · [Terms](https://amd-aim.github.io/radeon-cloud-docs/api/terms/)
@@ -109,7 +110,7 @@ You may also want to read my other posts:
 | MiniCPM5-2B                  | 0.035 | 0.07 |                       **19.05M** |
 | MiniCPM-V-4.7-1B             | 0.035 | 0.07 |                       **19.05M** |
 | MiniCPM-V-4.7-35B-A3B        | 0.035 | 0.07 |                       **19.05M** |
-| Gemma-4-31B-IT               | 0.035 |  0.0 |                **19.05M**        |
+| Gemma-4-31B-IT               | 0.035 |  0.07 |                **19.05M**        |
 
 
 </details>
@@ -117,7 +118,7 @@ You may also want to read my other posts:
 -------------------
 
 ### AMD AI Developer Program (one-time cloud credits)
-> Last checked: **2026-11-02**  
+> Last checked: **2026-11-13**  
 > **Promotional credits, not a recurring free LLM API tier**
 
 - **Official links:** [Join AMD AI Developer Program](https://developer.amd.com/ai-developer-program/) · [Benefits, FAQ and credit terms](https://developer.amd.com/resources/)
@@ -129,7 +130,7 @@ You may also want to read my other posts:
 ---
 
 ### Google Gemini / Gemma 4
-> Last checked: **2026-10-30**
+> Last checked: **2026-11-13**
 
 - [Free-tier model pricing](https://ai.google.dev/gemini-api/docs/pricing) · [Rate limits](https://ai.google.dev/gemini-api/docs/rate-limits) · [Your project's limits in AI Studio](https://aistudio.google.com/rate-limit)
 - Endpoint: `https://generativelanguage.googleapis.com`
@@ -276,32 +277,14 @@ z-ai/glm-5.3-flash
 
 --------
 
-### Ollama
-> Last checked: **2026-10-30**
+### ~~Ollama~~
+> ~~Last checked: **2026-11-13**~~
+
+**No Free Cloud API — Pay-as-you-go only (since 2026-11-09）**
 
 - [Official pricing and cloud plans](https://ollama.com/pricing) · [Cloud models](https://ollama.com/search?c=cloud) · [2026-08-31 pricing transition](https://ollama.com/blog/transparent-pricing)
-- **Pay as you go ($0/month)** means **no subscription**, not free inference: cloud token usage consumes purchased credits. The old blanket list of “free models” and **3-hour session resets** no longer describes the current published plans.
+- **Pay as you go ($0/month)** means **no subscription**, not free inference: cloud token usage consumes purchased credits. 
 - Running local models on your own hardware incurs no Ollama cloud token charges.
-- Cloud concurrency: **3** for Pay as you go and Pro; **10** for Max and Team. Some legacy accounts may have different conditions.
-
-> **Free** model list
-
-- Gemma4: 31b
-- gpt-oss 20b/120b
-- nemotron-3-nano 30B/super 120B-A12B/ultra 550B-A55B
-- Reflection Beam 501B （limit time)
-
-> **Session usage** reset in 3hours
-
-
-
-| Plan | Subscription | Included cloud usage |
-|---|---:|---:|
-| Pay as you go | $0/month | None advertised; purchase usage credits |
-| Pro | $20/month ($200/year) | $60/month |
-| Max | $100/month | $300/month |
-| Team | $500/month | $1,000/month shared |
-| Enterprise | Custom | Custom |
 
 <details>
 <summary>Current cloud model pricing (USD per 1M input / 1M output tokens)</summary>
@@ -336,7 +319,7 @@ Off-peak pricing applies to eligible models outside **12:00–18:00 UTC on weekd
 -------
 
 ### Groq
-> Last checked: **2026-10-30**
+> Last checked: **2026-11-13**
 
 The published free rate-limits table includes GPT-OSS 20B/120B and Qwen3.8 27B. Your account may have different limits.
 
@@ -380,7 +363,7 @@ Endpoint: https://api.cerebras.ai
 ---------
 
 ### OpenRouter
-> Last checked: **2026-10-30** </br>
+> Last checked: **2026-11-13** </br>
 
 https://openrouter.ai/collections/free-models </br>
 https://openrouter.ai/pricing </br>
@@ -403,7 +386,7 @@ Endpoint (OpenAI-compatible): https://openrouter.ai/api/v1
 
 ### Cloudflare
 > Official pricing page last updated: **2026-10-20** </br>
-> Last Check: **2026-09-23** </br>
+> Last Check: **2026-11-13** </br>
 
 
 https://developers.cloudflare.com/workers-ai/platform/pricing/#llm-model-pricing </br>
@@ -428,16 +411,13 @@ Models list </br>
     - Mistral-7b-intruct-v0.1
     - Mistral-small-3.1b-24b
 - deepseek-r1-distill-qwen-32b
-- deepseek V4 flash/pro and V4.1 flash 1017 
 - Gemma
   - gemma-3-12b
   - **gemma-4-26B-A4B**
   - gemma-sea-lion-v4-27b-it
 - granite-4.0-h-micro
 - **glm-4.7-flash**
-- **glm-5.2 / glm-5.3 / glm-5.3-flash**
 - **nemotron-3-120b-a12b**
-- **kimi-k2.5/k2.6/k2.7-code**
     
  <details>
   <summary>Full list with token cost</summary>  
@@ -501,7 +481,7 @@ Models list </br>
 
 ### Cohere
 > Last web updated: **2026-06-09**</br>
-> Last Check: **2026-10-30** </br>
+> Last Check: **2026-11-13** </br>
 
 https://docs.cohere.com/docs/rate-limits
 
@@ -529,7 +509,7 @@ Endpoint: https://api.cohere.ai/compatibility
 
 ### Z.ai (GLM-4.5/4.7-Flash)
 
-> Last Check: **2026-10-30** </br>
+> Last Check: **2026-11-13** </br>
 
 https://docs.z.ai/guides/overview/pricing </br>
 
@@ -690,12 +670,26 @@ https://support.together.ai/articles/1862638756-changes-to-free-tier-and-billing
 
 </details>
 
+--------
+
+### Index-Translate (bilibili)
+
+> **Updated: November 13, 2026**
+
+**Official links:** [GitHub repository](https://github.com/bilibili/Index-Translate) · [Free API guide](https://github.com/bilibili/Index-Translate#option-1-free-online-api-zero-gpu-setup) · [Official Python client](https://github.com/bilibili/Index-Translate/blob/main/inference/llm/call_api.py) · [Online demo](https://index-translate.bilibili.com/)
+
+**API base URL (OpenAI-compatible):** `https://index-translate.bilibili.com/v1`
+
+- **Models:** `Index-Translate-35B-A3B` is the default free API model. The official script also shows image-translation requests for `Index-Translate-2B` and `Index-Translate-9B`; check actual endpoint availability.
+- **API key:** The official examples don't require a real API key. If your client insists on one, enter a placeholder.
+- **Rate limit:** Typically around **30 RPM** (an observed guideline, **not an officially guaranteed limit**).
+- **What it does:** Text translation across roughly **150 languages**, plus image translation, glossaries, formatting rules and translation instructions. **Built for translation, not general-purpose chat.**
+- **API formats:** OpenAI-compatible Chat Completions (`/v1/chat/completions`) and Responses (`/v1/responses`). Image translation uses the `image_url` format.
+- **Third-party apps:** Browser extensions may run into CORS or WAF restrictions. The official `python inference/llm/call_api.py --serve` command starts a local bridge at `http://127.0.0.1:8080/v1` for tools such as Immersive Translate. For direct requests, the image-translation guide recommends the `User-Agent: Index-Translate-Client/1.0` header.
+- **Long texts:** Users have reported repetition, premature endings and truncation with longer inputs to the public 35B API ([issue report](https://github.com/bilibili/Index-Translate/issues/20)). Splitting long documents into smaller chunks is safer; limits observed in individual tests are not official universal caps.
+
 
 ---
-
-> **最后核查：2026 年 10 月 30 日**
->
-> 本节区分**持续免费推理**、**定期发放的额度**、**一次性试用 Token/代金券**和**非模型 API 的产品积分**。免费模型、使用限制、活动及地区政策可能随时变化，请以登录后的平台控制台为准。本次核查依据平台文档及公告，**未使用实际账号逐一测试 API**。
 
 ### 魔搭社区（ModelScope）
 

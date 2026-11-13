@@ -10,7 +10,7 @@
 
 [![License](https://img.shields.io/badge/LICENSE-GPL--3.0-FACC15?style=flat-square&labelColor=111111&logo=opensourceinitiative&logoColor=FACC15)](LICENSE)
 [![Manifest](https://img.shields.io/badge/MANIFEST-V3-FACC15?style=flat-square&labelColor=111111&logo=googlechrome&logoColor=FACC15)](https://developer.chrome.com/docs/extensions/develop/migrate/what-is-mv3/)
-[![Release](https://img.shields.io/badge/RELEASE-V3.9.4-FACC15?style=flat-square&labelColor=111111&logo=semanticrelease&logoColor=FACC15)](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.4)
+[![Release](https://img.shields.io/badge/RELEASE-V3.9.5-FACC15?style=flat-square&labelColor=111111&logo=semanticrelease&logoColor=FACC15)](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.5)
 [![MCP](https://img.shields.io/badge/PROTOCOL-MCP-FACC15?style=flat-square&labelColor=111111&logo=modelcontextprotocol&logoColor=FACC15)](https://modelcontextprotocol.io/)
 
 </div>
@@ -77,12 +77,12 @@ VS Code's MCP server is configured locally by `start.bat`; it detects the open V
 
 Prefer not to load an extension or run the bridge yourself? **Snapgent App** is a standalone desktop app (Electron) with a built-in AI browser, a toolbar, and the bridge built in. It needs no Chrome/Edge, no `start.bat`, no Python and no Node.js.
 
-**Download** (pre-release `app-v0.1.0`): [Releases > app-v0.1.0](https://github.com/herdodp/snapgent-connector/releases/tag/app-v0.1.0)
+**Download** (`app-v0.1.1`): [Releases > app-v0.1.1](https://github.com/herdodp/snapgent-connector/releases/tag/app-v0.1.1)
 
 | File | Use |
 |---|---|
-| `Snapgent.Setup.0.1.0.exe` | Installer (recommended) |
-| `Snapgent-0.1.0-win-x64.zip` | Portable: extract the whole folder, then run `Snapgent.exe` |
+| `Snapgent.Setup.0.1.1.exe` | Installer (recommended) |
+| `Snapgent.Setup.0.1.1.exe.blockmap` | Update metadata, not needed for a normal install |
 
 **How to use**
 
@@ -90,7 +90,7 @@ Prefer not to load an extension or run the bridge yourself? **Snapgent App** is 
 2. Click the workspace button in the toolbar and choose your project folder.
 3. Chat as usual. The agent bar appears on the page and runs the commands in the selected folder.
 
-**Known limitations (0.1.0)**
+**Known limitations (0.1.1)**
 
 - The exe is **not code-signed**, so Windows SmartScreen may warn. Click **More info**, then **Run anyway**.
 - **Google sign-in has not been fully tested.** If it fails, log in with email and password on the Claude page.
@@ -145,7 +145,7 @@ npm run dist     # build the Windows installer into dist/
 
 **① Load the extension**
 
-1. Download and extract the [latest SnapgentV3 release](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.4).
+1. Download and extract the [latest SnapgentV3 release](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.5).
 2. Open `edge://extensions` (Edge) or `chrome://extensions` (Chrome).
 3. Enable **Developer mode**.
 4. Click **Load unpacked** and select the `snapgent-extension` folder.
@@ -302,6 +302,6 @@ snapgent-full/
 
 **Built for creators who want to spend more time making.**
 
-[Latest release V3.9.4](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.4) · [Issues](https://github.com/herdodp/snapgent-connector/issues) · [License](LICENSE)
+[Latest release V3.9.5](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.5) · [Issues](https://github.com/herdodp/snapgent-connector/issues) · [License](LICENSE)
 
 </div>

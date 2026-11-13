@@ -40,7 +40,7 @@ Enjoying the extension? [Buy me a coffee](https://www.buymeacoffee.com/dliedke) 
 
 - **On Agent Finish** — Optionally play a sound, show a notification (with duration, plus token count for Claude Code), and run an action (build/rebuild, run, tests, a script, or a follow-up command) when the agent goes idle. Configured per solution. Configure via *⚙ → Settings...*.
 
-- **Pull before sending** — Runs `git pull` in the solution’s repository before your first prompt, so the agent never edits a file that is already out of date on the remote. Conflicts from that pull are handed to the agent to resolve. On by default; turn it off via *⚙ → Settings... → Automation*.
+- **Pull before sending** — Runs `git pull` in the solution’s repository before your first prompt, so the agent never edits a file that is already out of date on the remote. If the incoming changes would conflict with your local work, nothing is pulled and you are told why. Off by default; turn it on via *⚙ → Settings... → Automation*.
 
 - **TFVC checkout** — In TFVC-bound solutions, Claude Code in native mode has read-only files checked out through Visual Studio before it edits them. On by default; turn it off via *⚙ → Settings... → Automation*.
 
@@ -197,6 +197,16 @@ A huge thank you to every developer who took the time to improve this extension 
 - [@wluisdev](https://github.com/wluisdev) — 1 PR
 
 ## Version History
+
+### Version 309.0
+- **Pull from git before the first prompt** is now off by default, and is turned off once for existing installs. If you want it, turn it back on in *⚙ → Settings... → Automation*.
+- Multi-line prompts sent to Claude Code through the Command Prompt terminal no longer show stray `[200~` and `[201~` text on Windows 11 24H2 and later.
+- Thanks to [@jalpizarTechnosoft](https://github.com/jalpizarTechnosoft) for reporting (#264).
+
+### Version 308.0
+- **Pull from git before the first prompt** no longer creates merge conflicts: when the incoming changes touch files you have edited locally, or would conflict with your local commits, nothing is pulled and a notice names the files instead.
+- With the embedded terminal, the auto-pull result now shows as a Visual Studio notification, with a link to turn the option off.
+- Thanks to [@jalpizarTechnosoft](https://github.com/jalpizarTechnosoft) for reporting (#264).
 
 ### Version 307.0
 - With the Windows Terminal terminal type, dragging the mouse in another application that covers the Claude Code panel no longer holds down Shift in that application.
@@ -1599,45 +1609,4 @@ Native mode now in beta phase
 - Major diff view performance fix for repositories with many changes.
 
 ### Version 6.0
-- **Cursor Agent native Windows** support (previous renamed "Cursor Agent (WSL)").
-
-### Version 5.9
-- Improved WSL path conversion logic.
-
-### Version 5.8
-- Fixed WSL UNC path conversion bug.
-
-### Version 5.7
-- Diff view encoding fixes and auto-scroll improvements.
-
-### Version 5.6
-- Diff view performance improvements and search box.
-
-### Version 5.5
-- **Auto-open Changes on Send** option.
-- Improved file change detection and auto-scroll behavior.
-
-### Version 5.4
-- Diff view available only for Git projects.
-
-### Version 5.3
-- Repository-wide diff tracking.
-- **Auto-Scroll** for the diff view.
-- Performance improvements for large repositories.
-
-### Version 5.2
-- Fix extension description.
-
-### Version 5.1
-- Diff tool performance optimizations.
-- **Ctrl+Scroll** zoom on the diff view (50%–300%).
-- More tracked file types (`.csproj`, `.sln`, etc.).
-
-### Version 5.0
-- **Integrated Diff Tool** — built-in diff view in a new tab.
-
-### Version 4.2
-- Clarified free-for-commercial-use license.
-- Data privacy documentation.
-
-### Versi
+- **Cursor Agent native Windows** support (previous renamed "Cursor 

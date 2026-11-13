@@ -13,9 +13,78 @@ Explore ways to create imaginative images, videos, motion graphics and 3D scenes
 
 **See the effect, then find the method.** GIFs play inline. Open any preview or its Skill / Prompt link to see how it is made.
 
-[Animated previews](#animated) · [Creative images & design](#images) · [Art animation & styles](#animation) · [3D worlds & product visuals](#worlds) · [Ads & commercial films](#ads) · [Cinematic & story films](#films)
+[Films made with code: from a sample to its scene](#code-video-lab) · [November II: moon phases, crayon diagrams and sticker grids](#november-picks-2) · [November picks: paper films, candid photos and reaction GIFs](#november-picks) · [Animated previews](#animated) · [Creative images & design](#images) · [Art animation & styles](#animation) · [3D worlds & product visuals](#worlds) · [Ads & commercial films](#ads) · [Cinematic & story films](#films)
 
-[Browse all 2,054 visual previews →](gallery/README.md) · [Find tools](#find-tools) · [Make a style your own](#custom-styles)
+[Browse all 2,087 visual previews →](gallery/README.md) · [Find tools](#find-tools) · [Make a style your own](#custom-styles)
+
+<a id="code-video-lab"></a>
+
+## Films made with code: from a sample to its scene
+
+[Explore all 10 additions by use case →](docs/new-2026-11-13-code-video.md)
+
+<table>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/leodavincs--kalem.md"><img src="https://raw.githubusercontent.com/leodavincs/kalem/ba19c9f20b816ab00c8bb3445e3ddf597f26ae6d/motorlar/levha/demo.gif" width="300" alt="Animated mechanism plates" loading="lazy"></a><br><a href="projects/leodavincs--kalem.md"><b>Animated mechanism plates</b></a><br><sub><a href="skills/a1b245b49c218cf3.md">Skill</a> · <a href="https://raw.githubusercontent.com/leodavincs/kalem/ba19c9f20b816ab00c8bb3445e3ddf597f26ae6d/motorlar/levha/demo.gif">GIF</a> · <a href="https://github.com/leodavincs/kalem/blob/ba19c9f20b816ab00c8bb3445e3ddf597f26ae6d/motorlar/levha/mekanizma.py">Scene code</a> · <a href="projects/leodavincs--kalem.md">How to make it</a></sub><br><sub><a href="https://github.com/leodavincs/kalem/blob/ba19c9f20b816ab00c8bb3445e3ddf597f26ae6d/README.md">leodavincs/kalem</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/syedbahjat--claude-stickman-shorts.md"><img src="https://raw.githubusercontent.com/SyedBahjat/claude-stickman-shorts/2fb64aa5c3e8a1df59a7cdd1651126cdc9cc2d9e/assets/lasttrain-p1.gif" width="300" alt="Last Train stick-figure short" loading="lazy"></a><br><a href="projects/syedbahjat--claude-stickman-shorts.md"><b>Last Train stick-figure short</b></a><br><sub><a href="skills/50af05b2ef94f71c.md">Skill</a> · <a href="https://raw.githubusercontent.com/SyedBahjat/claude-stickman-shorts/2fb64aa5c3e8a1df59a7cdd1651126cdc9cc2d9e/assets/lasttrain-p1.gif">GIF</a> · <a href="https://github.com/SyedBahjat/claude-stickman-shorts/blob/2fb64aa5c3e8a1df59a7cdd1651126cdc9cc2d9e/src/stories/last-train/LastTrainP1.tsx">Scene code</a> · <a href="projects/syedbahjat--claude-stickman-shorts.md">How to make it</a></sub><br><sub><a href="https://github.com/SyedBahjat/claude-stickman-shorts/blob/2fb64aa5c3e8a1df59a7cdd1651126cdc9cc2d9e/README.md">SyedBahjat/claude-stickman-shorts</a></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/mojomast--hyperrizz.md"><img src="https://raw.githubusercontent.com/mojomast/hyperrizz/35c482e22413ee43c74955bd6da7fe7b053cdd9b/docs/examples/broadcast-lab.png" width="300" alt="Pixel broadcast ident" loading="lazy"></a><br><a href="projects/mojomast--hyperrizz.md"><b>Pixel broadcast ident</b></a><br><sub><a href="skills/a966fa6550880f7a.md">Skill</a> · <a href="https://github.com/mojomast/hyperrizz/blob/35c482e22413ee43c74955bd6da7fe7b053cdd9b/templates/broadcast-lab/scenes/01-signal.js">Scene code</a> · <a href="projects/mojomast--hyperrizz.md">How to make it</a></sub><br><sub><a href="https://github.com/mojomast/hyperrizz/blob/35c482e22413ee43c74955bd6da7fe7b053cdd9b/README.md">mojomast/hyperrizz</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/6space7--autozoom-demo-skill.md"><img src="https://raw.githubusercontent.com/6space7/autozoom-demo-skill/75ed2192a2272b2c4181eaec61888111763e0b10/media/preview.jpg" width="300" alt="AutoZoom product walkthrough" loading="lazy"></a><br><a href="projects/6space7--autozoom-demo-skill.md"><b>AutoZoom product walkthrough</b></a><br><sub><a href="skills/02b5b55a573e6b7b.md">Skill</a> · <a href="https://github.com/6space7/autozoom-demo-skill/blob/75ed2192a2272b2c4181eaec61888111763e0b10/skills/autozoom-demo-scenes/assets/remotion-template/src/Demo.tsx">Scene code</a> · <a href="projects/6space7--autozoom-demo-skill.md">How to make it</a></sub><br><sub><a href="https://github.com/6space7/autozoom-demo-skill/blob/75ed2192a2272b2c4181eaec61888111763e0b10/README.md">6space7/autozoom-demo-skill</a></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/artemnovitckii--claude-animation-skills.md"><img src="https://raw.githubusercontent.com/artemnovitckii/claude-animation-skills/5dbea55c23aa6a5c93dc3cfb5583840513b56b94/docs/skills.jpg" width="300" alt="Animated map route" loading="lazy"></a><br><a href="projects/artemnovitckii--claude-animation-skills.md"><b>Animated map route</b></a><br><sub><a href="skills/4d87472c022889d1.md">Skill</a> · <a href="https://github.com/artemnovitckii/claude-animation-skills/blob/5dbea55c23aa6a5c93dc3cfb5583840513b56b94/skills/map-route/template.html">Scene code</a> · <a href="projects/artemnovitckii--claude-animation-skills.md">How to make it</a></sub><br><sub><a href="https://github.com/artemnovitckii/claude-animation-skills/blob/5dbea55c23aa6a5c93dc3cfb5583840513b56b94/README.md">artemnovitckii/claude-animation-skills</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/brewed-ops--talking-explainer.md"><img src="https://raw.githubusercontent.com/brewed-ops/talking-explainer/3a19bbce0c97dcdd3120c7e3c4b10ddc3e13f1d5/docs/talking.gif" width="300" alt="Talking cartoon presenter" loading="lazy"></a><br><a href="projects/brewed-ops--talking-explainer.md"><b>Talking cartoon presenter</b></a><br><sub><a href="skills/1178f2b0fe6ee9e3.md">Skill</a> · <a href="https://raw.githubusercontent.com/brewed-ops/talking-explainer/3a19bbce0c97dcdd3120c7e3c4b10ddc3e13f1d5/docs/talking.gif">GIF</a> · <a href="https://github.com/brewed-ops/talking-explainer/blob/3a19bbce0c97dcdd3120c7e3c4b10ddc3e13f1d5/skills/talking-explainer/template/apple/scene-starter.html">Scene code</a> · <a href="projects/brewed-ops--talking-explainer.md">How to make it</a></sub><br><sub><a href="https://github.com/brewed-ops/talking-explainer/blob/3a19bbce0c97dcdd3120c7e3c4b10ddc3e13f1d5/README.md">brewed-ops/talking-explainer</a></sub></td>
+</tr>
+</table>
+
+[Keep exploring visually →](gallery/README.md)
+
+<a id="november-picks-2"></a>
+
+## November II: moon phases, crayon diagrams and sticker grids
+
+[Explore all 12 additions by use case →](docs/new-2026-11-13-round-2.md)
+
+<table>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/seeyouintokyo--science-video-skill.md"><img src="https://raw.githubusercontent.com/seeyouintokyo/science-video-skill/0659cb177534acad5142da3f9d57f31205bf64f6/assets/moon-full.gif" width="300" alt="Moon phases in SVG" loading="lazy"></a><br><a href="projects/seeyouintokyo--science-video-skill.md"><b>Moon phases in SVG</b></a><br><sub><a href="skills/f8d24f7f7eba21b7.md">Skill</a> · <a href="https://raw.githubusercontent.com/seeyouintokyo/science-video-skill/0659cb177534acad5142da3f9d57f31205bf64f6/assets/moon-full.gif">GIF</a> · <a href="projects/seeyouintokyo--science-video-skill.md">How to make it</a></sub><br><sub><a href="https://github.com/seeyouintokyo/science-video-skill/blob/0659cb177534acad5142da3f9d57f31205bf64f6/README.md">seeyouintokyo/science-video-skill</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/deenukhan--animation-styles.md"><img src="https://raw.githubusercontent.com/deenukhan/animation-styles/7f7afbd4c5a216135e51be354cb245dcfabedb3a/media/thumbs/02_chalkboard.webp" width="300" alt="One kettle, 39 visual styles" loading="lazy"></a><br><a href="projects/deenukhan--animation-styles.md"><b>One kettle, 39 visual styles</b></a><br><sub><a href="skills/5900200d9c986e33.md">Skill</a> · <a href="projects/deenukhan--animation-styles.md">How to make it</a></sub><br><sub><a href="https://github.com/deenukhan/animation-styles/blob/7f7afbd4c5a216135e51be354cb245dcfabedb3a/README.md">deenukhan/animation-styles</a></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/deer-flow--crayon-diagrams.md"><img src="https://raw.githubusercontent.com/deer-flow/crayon-diagrams/c3a2b6c265123f64c5b16b991d1ef9699ad0d80f/examples/kanban-snapshot/preview.webp" width="300" alt="Crayon diagrams for mobile" loading="lazy"></a><br><a href="projects/deer-flow--crayon-diagrams.md"><b>Crayon diagrams for mobile</b></a><br><sub><a href="skills/56b76e62a6e5e753.md">Skill</a> · <a href="projects/deer-flow--crayon-diagrams.md">How to make it</a></sub><br><sub><a href="https://github.com/deer-flow/crayon-diagrams/blob/c3a2b6c265123f64c5b16b991d1ef9699ad0d80f/README.md">deer-flow/crayon-diagrams</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/kers701--bride-series-skill.md"><img src="https://raw.githubusercontent.com/kers701/bride-series-skill/b2d48ec268d4230d0fc075d5320c7003e0a366b9/example/example-qipao-bride.jpg" width="300" alt="Character-consistent bridal portraits" loading="lazy"></a><br><a href="projects/kers701--bride-series-skill.md"><b>Character-consistent bridal portraits</b></a><br><sub><a href="skills/a83c5352d036dbb0.md">Skill</a> · <a href="projects/kers701--bride-series-skill.md">How to make it</a></sub><br><sub><a href="https://github.com/kers701/bride-series-skill/blob/b2d48ec268d4230d0fc075d5320c7003e0a366b9/README.md">kers701/bride-series-skill</a></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/daaihq--da-motion-sticker-skill.md"><img src="https://raw.githubusercontent.com/daaihq/da-motion-sticker-skill/909241387830a83b91e11d553cb2efafdcc897db/assets/preview_gif/01.gif" width="300" alt="Nine animated character reactions" loading="lazy"></a><br><a href="projects/daaihq--da-motion-sticker-skill.md"><b>Nine animated character reactions</b></a><br><sub><a href="skills/ecc57610e6f2ffea.md">Skill</a> · <a href="https://raw.githubusercontent.com/daaihq/da-motion-sticker-skill/909241387830a83b91e11d553cb2efafdcc897db/assets/preview_gif/01.gif">GIF</a> · <a href="projects/daaihq--da-motion-sticker-skill.md">How to make it</a></sub><br><sub><a href="https://github.com/daaihq/da-motion-sticker-skill/blob/909241387830a83b91e11d553cb2efafdcc897db/README.md">daaihq/da-motion-sticker-skill</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/aimanplay--manman-ai-sticker.md"><img src="https://raw.githubusercontent.com/aimanplay/manman-ai-sticker/f60c2011c8addb6e4f2bb73a5640525ce70e80bc/assets/%E7%A4%BA%E4%BE%8B_B_%E5%A4%8D%E7%8E%B0%E4%BA%86_240.gif" width="300" alt="A research engineer’s reaction GIFs" loading="lazy"></a><br><a href="projects/aimanplay--manman-ai-sticker.md"><b>A research engineer’s reaction GIFs</b></a><br><sub><a href="skills/28f96b6d3f3d5317.md">Skill</a> · <a href="https://raw.githubusercontent.com/aimanplay/manman-ai-sticker/f60c2011c8addb6e4f2bb73a5640525ce70e80bc/assets/%E7%A4%BA%E4%BE%8B_B_%E5%A4%8D%E7%8E%B0%E4%BA%86_240.gif">GIF</a> · <a href="projects/aimanplay--manman-ai-sticker.md">How to make it</a></sub><br><sub><a href="https://github.com/aimanplay/manman-ai-sticker/blob/f60c2011c8addb6e4f2bb73a5640525ce70e80bc/README.md">aimanplay/manman-ai-sticker</a></sub></td>
+</tr>
+</table>
+
+[Keep exploring visually →](gallery/README.md)
+
+<a id="november-picks"></a>
+
+## November picks: paper films, candid photos and reaction GIFs
+
+[Explore all 15 additions by use case →](docs/new-2026-11-13.md)
+
+<table>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/cooperchx--paper-cutout-story.md"><img src="https://raw.githubusercontent.com/cooperchx/paper-cutout-story/9899d4dd52352ff0ed656226041cdb6a7aafcbca/media/gifs/shanghai-v2.gif" width="300" alt="Shanghai paper-cut city walk" loading="lazy"></a><br><a href="projects/cooperchx--paper-cutout-story.md"><b>Shanghai paper-cut city walk</b></a><br><sub><a href="skills/b88bd11f4f3a7ddf.md">Skill</a> · <a href="https://raw.githubusercontent.com/cooperchx/paper-cutout-story/9899d4dd52352ff0ed656226041cdb6a7aafcbca/media/gifs/shanghai-v2.gif">GIF</a> · <a href="projects/cooperchx--paper-cutout-story.md">How to make it</a></sub><br><sub><a href="https://github.com/cooperchx/paper-cutout-story/blob/9899d4dd52352ff0ed656226041cdb6a7aafcbca/README.md">cooperchx/paper-cutout-story</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/fantuan-lab--animated-sticker-studio.md"><img src="https://raw.githubusercontent.com/fantuan-lab/animated-sticker-studio/b74963f80b365865c41ed1b2664f5abcda4efab2/examples/onigiri-cat/gif/001-%E6%94%B6%E5%88%B0.gif" width="300" alt="Onigiri-cat reaction GIFs" loading="lazy"></a><br><a href="projects/fantuan-lab--animated-sticker-studio.md"><b>Onigiri-cat reaction GIFs</b></a><br><sub><a href="skills/bad6f6344e488fcf.md">Skill</a> · <a href="https://raw.githubusercontent.com/fantuan-lab/animated-sticker-studio/b74963f80b365865c41ed1b2664f5abcda4efab2/examples/onigiri-cat/gif/001-%E6%94%B6%E5%88%B0.gif">GIF</a> · <a href="projects/fantuan-lab--animated-sticker-studio.md">How to make it</a></sub><br><sub><a href="https://github.com/fantuan-lab/animated-sticker-studio/blob/b74963f80b365865c41ed1b2664f5abcda4efab2/README.md">fantuan-lab/animated-sticker-studio</a></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/howoneai--xiaolin-explainer-packaging.md"><img src="https://raw.githubusercontent.com/howoneai/xiaolin-explainer-packaging/e304b066e281a2ab79fe07be65c0aaac2a45315e/docs/demo_map.gif" width="300" alt="Animated map explainer" loading="lazy"></a><br><a href="projects/howoneai--xiaolin-explainer-packaging.md"><b>Animated map explainer</b></a><br><sub><a href="skills/f651b783efaab55e.md">Skill</a> · <a href="https://raw.githubusercontent.com/howoneai/xiaolin-explainer-packaging/e304b066e281a2ab79fe07be65c0aaac2a45315e/docs/demo_map.gif">GIF</a> · <a href="projects/howoneai--xiaolin-explainer-packaging.md">How to make it</a></sub><br><sub><a href="https://github.com/howoneai/xiaolin-explainer-packaging/blob/e304b066e281a2ab79fe07be65c0aaac2a45315e/README.md">howoneai/xiaolin-explainer-packaging</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/sanshengai--sansheng-image.md"><img src="https://raw.githubusercontent.com/sanshengai/sansheng-image/d65a0dd2639f13a5881654be6a00b40b60bc8467/assets/readme/article-story.webp" width="300" alt="Cohesive editorial illustrations" loading="lazy"></a><br><a href="projects/sanshengai--sansheng-image.md"><b>Cohesive editorial illustrations</b></a><br><sub><a href="skills/e7e4bf72e3c048d3.md">Skill</a> · <a href="projects/sanshengai--sansheng-image.md">How to make it</a></sub><br><sub><a href="https://github.com/sanshengai/sansheng-image/blob/d65a0dd2639f13a5881654be6a00b40b60bc8467/README.md">sanshengai/sansheng-image</a></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/lortbyron--gpt-image-realism-engine.md"><img src="https://raw.githubusercontent.com/Lortbyron/gpt-image-realism-engine/4176e06a7d27ba88a5d4369bd9fb58525ef99204/assets/escena-calle.jpg" width="300" alt="Candid street photography" loading="lazy"></a><br><a href="projects/lortbyron--gpt-image-realism-engine.md"><b>Candid street photography</b></a><br><sub><a href="skills/6ce608535788fdd7.md">Skill</a> · <a href="projects/lortbyron--gpt-image-realism-engine.md">How to make it</a></sub><br><sub><a href="https://github.com/Lortbyron/gpt-image-realism-engine/blob/4176e06a7d27ba88a5d4369bd9fb58525ef99204/README.md">Lortbyron/gpt-image-realism-engine</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/alchaincyf--huashu-selfie-sticker.md"><img src="https://raw.githubusercontent.com/alchaincyf/huashu-selfie-sticker/c55236fe943d2804d033c3d5c877de5525785dcd/assets/demo.gif" width="300" alt="Eight reactions from one selfie" loading="lazy"></a><br><a href="projects/alchaincyf--huashu-selfie-sticker.md"><b>Eight reactions from one selfie</b></a><br><sub><a href="skills/aeb34f4da6df73dd.md">Skill</a> · <a href="https://raw.githubusercontent.com/alchaincyf/huashu-selfie-sticker/c55236fe943d2804d033c3d5c877de5525785dcd/assets/demo.gif">GIF</a> · <a href="projects/alchaincyf--huashu-selfie-sticker.md">How to make it</a></sub><br><sub><a href="https://github.com/alchaincyf/huashu-selfie-sticker/blob/c55236fe943d2804d033c3d5c877de5525785dcd/README.md">alchaincyf/huashu-selfie-sticker</a></sub></td>
+</tr>
+</table>
+
+[Keep exploring visually →](gallery/README.md)
 
 <a id="animated"></a>
 
@@ -217,12 +286,12 @@ The creator’s example keeps the Swiss grid, beat and typography, turning flat 
 
 ## Found an effect you like? Start creating
 
-**In the collection** · **441** projects · **772** Skills · **1843** prompt / style texts · **2204** cases
+**In the collection** · **478** projects · **806** Skills · **1856** prompt / style texts · **2204** cases
 
 | Entry | Contents |
 |---|---|
 | [Visual catalogue](gallery/README.md) | Browse more image, video and tool previews |
-| [Complete catalogue](catalog/README.md) | 14 creative categories |
+| [Complete catalogue](catalog/README.md) | 15 creative categories |
 | [Prompt text](catalog/prompts/README.md) | Copyable text, sources and corresponding effects |
 | [Skill text](catalog/skills/README.md) | Individual Skill pages and upstream dependencies |
 | [Cases & effects](catalog/cases/README.md) | Posters, videos and prompt availability |
@@ -257,17 +326,18 @@ The creator’s example keeps the Swiss grid, beat and typography, turning flat 
 | [Education & hand-drawn explainers](catalog/education.md) | 62 |
 | [Editing, captions & avatars](catalog/editing.md) | 94 |
 | [Storytelling, animation & music videos](catalog/storytelling.md) | 30 |
-| [Video frameworks & code rendering](catalog/video-frameworks.md) | 68 |
+| [Video frameworks & code rendering](catalog/video-frameworks.md) | 88 |
 | [Ads & product demos](catalog/product-videos.md) | 69 |
 | [SVG & motion graphics](catalog/motion-graphics.md) | 30 |
 | [Prompts & directing](catalog/directing.md) | 26 |
 | [Blender & 3D modelling](catalog/blender.md) | 11 |
 | [Three.js & WebGPU](catalog/web-3d.md) | 7 |
-| [Image generation & visual design](catalog/image-generation.md) | 16 |
+| [Image generation & visual design](catalog/image-generation.md) | 25 |
 | [Collections & inspiration](catalog/collections.md) | 10 |
 | [ComfyUI & model workflows](catalog/comfyui.md) | 5 |
 | [Game assets & pixel art](catalog/game-assets.md) | 11 |
 | [Gaussian splatting & simulation](catalog/simulation.md) | 2 |
+| [Reaction GIFs & sticker packs](catalog/stickers.md) | 8 |
 
 ## How to use
 

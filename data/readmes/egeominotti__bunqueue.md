@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  High-performance job queue for Bun. Memory or one-file SQLite; PostgreSQL 15–18 multi-broker when you scale.<br/>
+  High-performance job queue for Bun. Memory or one-file SQLite; PostgreSQL 16–18 multi-broker when you scale.<br/>
   DLQ, cron, SQLite S3 backups, and native MCP. Built for AI agents and automation. No Redis.
 </p>
 
@@ -131,8 +131,9 @@ POSTGRES_PASSWORD='replace-me' \
 It starts two brokers against one database/namespace. PostgreSQL is server-only;
 embedded mode keeps using memory/SQLite. Supply both Compose values when the
 password changes, percent-encoding reserved characters in the URL only. MySQL
-is not supported. CI validates PostgreSQL 15, 16, 17, and the pinned/recommended
-18.6 release. See the
+is not supported. CI validates PostgreSQL 16, 17, and the pinned/recommended
+18.6 release; PostgreSQL 15 is no longer tested and the minimum supported
+version is 16. See the
 [storage guide](https://bunqueue.dev/guide/databases/).
 
 ### Docker images
@@ -153,10 +154,10 @@ Choose a Linux distribution with the same tags on either registry:
 
 | Variant | Version tag | Moving tag | Runtime base |
 |---|---|---|---|
-| Alpine (default) | `2.9.21-alpine` | `alpine`, `latest` | Alpine 3.22, musl |
-| Debian | `2.9.21-debian` | `debian` | Debian 13 |
-| Debian slim | `2.9.21-slim` | `slim` | Debian 13 slim |
-| Distroless | `2.9.21-distroless` | `distroless` | Debian 13, no shell or package manager |
+| Alpine (default) | `2.9.22-alpine` | `alpine`, `latest` | Alpine 3.22, musl |
+| Debian | `2.9.22-debian` | `debian` | Debian 13 |
+| Debian slim | `2.9.22-slim` | `slim` | Debian 13 slim |
+| Distroless | `2.9.22-distroless` | `distroless` | Debian 13, no shell or package manager |
 
 **Which variant should I use?**
 
@@ -182,18 +183,18 @@ user permission to install packages at runtime.
 docker run -d --name bunqueue --restart unless-stopped \
   -p 127.0.0.1:6789:6789 -p 127.0.0.1:6790:6790 \
   -v bunqueue-data:/app/data \
-  egeominotti/bunqueue:2.9.21-alpine
+  egeominotti/bunqueue:2.9.22-alpine
 
 curl --fail http://127.0.0.1:6790/health
 ```
 
-This example exposes the APIs only on your machine. Replace `2.9.21-alpine` with
-`2.9.21-debian`, `2.9.21-slim`, or `2.9.21-distroless` to choose another base.
+This example exposes the APIs only on your machine. Replace `2.9.22-alpine` with
+`2.9.22-debian`, `2.9.22-slim`, or `2.9.22-distroless` to choose another base.
 Moving tags such as `alpine` follow newer releases; version tags identify a
 release, while a digest pins the exact image even across base-image rebuilds.
 
 Every variant supports both architectures, runs as UID/GID `1001:1001`, and
-stores SQLite data in `/app/data`. Unsuffixed tags such as `2.9.21` stay on Alpine.
+stores SQLite data in `/app/data`. Unsuffixed tags such as `2.9.22` stay on Alpine.
 Production images contain the compiled server and required system libraries;
 development dependencies and a separate Bun installation stay out of the image.
 The built-in health check uses `/app/bunqueue healthcheck`, including on distroless.
@@ -281,7 +282,7 @@ Framework Integrations.
 
 - **Zero external infrastructure by default** — memory by default; one SQLite
   file when local persistence is configured
-- **PostgreSQL 15–18 multi-broker mode** — PostgreSQL 18.6 is recommended;
+- **PostgreSQL 16–18 multi-broker mode** — PostgreSQL 18.6 is recommended;
   database-authoritative claims, fenced
   leases, shared limits, cron, workers, job-state/lifecycle metrics, and failover state
   ([tested three-broker Docker example](https://bunqueue.dev/examples/postgres-multibroker/))
@@ -312,7 +313,7 @@ the queue store. If you already run Redis and BullMQ works for you, keep it.
 | **Setup**        | `bun add bunqueue`                                             | `docker run` or `bunqueue start`                         |
 | **Performance**  | 186K jobs/sec on-disk `addBulk`; 729K internal in-memory batch | SQLite: 159K TCP `PUSHB`; 17K jobs/sec worker drain      |
 | **Best for**     | Single-process apps, CLIs, serverless                          | Multiple workers, separate producer/consumer             |
-| **Scaling**      | Same process only                                              | Multiple clients; multiple brokers with PostgreSQL 15–18 |
+| **Scaling**      | Same process only                                              | Multiple clients; multiple brokers with PostgreSQL 16–18 |
 
 ### Embedded
 
@@ -396,7 +397,7 @@ queries, and fair round-robin claims. Native batches support minimum size,
 timeout, group affinity, and selective `job.setAsFailed(error)`. Processor
 timeouts and explicit cancellation abort the second-argument `AbortSignal`;
 Promise handlers remain cooperative, while structural Observable handlers are
-unsubscribed. These contracts are identical with SQLite and PostgreSQL 15–18.
+unsubscribed. These contracts are identical with SQLite and PostgreSQL 16–18.
 BullMQ Pro telemetry and NestJS integration are intentionally not included.
 
 [Job Groups guide →](https://bunqueue.dev/guide/queue/job-groups/) ·
@@ -413,7 +414,7 @@ from Python. Language-specific capabilities are tracked in the
 | Where your code runs                                | Install                                                                                |
 | --------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | **Node.js ≥ 20, Deno ≥ 2, Bun, Cloudflare Workers** | [`npm install bunqueue-client`](https://www.npmjs.com/package/bunqueue-client)         |
-| **Python ≥ 3.9**                                    | [`pip install bunqueue-client`](https://pypi.org/project/bunqueue-client/)             |
+| **Python ≥ 3.10**                                   | [`pip install bunqueue-client`](https://pypi.org/project/bunqueue-client/)             |
 | **PHP ≥ 8.1**                                       | [`composer require bunqueue/client`](https://packagist.org/packages/bunqueue/client)   |
 | **Go ≥ 1.26.5**                                     | `go get github.com/egeominotti/bunqueue/sdk/go`                                        |
 | **Rust ≥ 1.85**                                     | [`cargo add bunqueue-client`](https://crates.io/crates/bunqueue-client)                |

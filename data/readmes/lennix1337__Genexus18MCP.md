@@ -114,6 +114,14 @@ an upgrade, run `npx genexus-mcp@latest clients add --clients antigravity` again
 `genexus-mcp clients` reports a stale launcher. Other clients keep the `npx genexus-mcp@latest`
 launcher unless you use the fixed-path installer below.
 
+`npx genexus-mcp@latest` is resolved by npm on every client start, and a new release is
+downloaded while the client waits for `initialize`. To register an exact version instead,
+add `--pin` to `init` or `clients add` (for example `npx genexus-mcp@latest init --pin`):
+the client then runs `npx -y genexus-mcp@<version>` and never changes version by itself.
+The trade-off is that a pinned install is not updated by restarting the client: when
+`genexus-mcp update` reports a newer release, re-run `clients add --clients <ids> --force --pin`
+(the command is printed for you), or register without `--pin` to follow `@latest` again.
+
 ### Step 2 — Check the client registration
 
 Step 1 auto-registers every supported client it detects, including Claude Desktop, Claude Code, Cursor, Antigravity, Gemini CLI, OpenCode, Codex CLI, and VS Code. Run `npx genexus-mcp clients` to confirm. If yours wasn't detected, register it manually — see the [client setup guide](TROUBLESHOOTING.md#client-setup).
@@ -420,6 +428,7 @@ Not every client should load 60 schemas up front. New configurations written by 
 |---|---:|---|
 | `standard` | 20 | Recommended default: core read/search/lifecycle, create, structure, variable, properties, and IO tools |
 | `core` | 15 | Read, search, inspect, edit, and lifecycle essentials |
+| `adaptive` | 15 + 1 | `core` plus `genexus_tools`, a tiny meta tool that lists tool groups and enables them per session (`list_changed` is sent; unlisted tools still run). Opt-in, not combinable |
 | `authoring` | 35 | Core plus the full object-authoring and refactoring surface |
 | `devops` | 37 | Core plus build, versioning, deployment, diagnostics, and worker operations |
 | `ui` | 23 | Core plus layout, form, browser, and WorkWithPlus tools |

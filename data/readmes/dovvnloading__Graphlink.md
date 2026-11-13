@@ -171,6 +171,37 @@ Loads a GGUF file directly (not an Ollama model store). Configure the chat model
 
 OpenAI-Compatible, Anthropic Claude, and Google Gemini are supported, with per-task model selection. Image generation works with OpenAI-Compatible and Google Gemini providers (not Anthropic Claude). Anthropic Claude accepts image attachments but not audio (use Gemini or Ollama for audio).
 
+### Fal Media Studio on the canvas
+
+Add **Fal Media Studio** from the plugin picker under **Build & Execution**.
+Choose Image, Video or Audio for common workflows, or **All models** for
+3D, transcription, training and other categories. The Studio includes a
+searchable live Fal model catalog, persistent favorites, economy-to-premium
+sorting **by comparable billing unit**, model-specific controls from Fal's
+OpenAPI schemas and an explicit priced confirmation before any paid call.
+Queue status, cancellation and a playable media gallery are part of the node;
+drafts and completed results survive session reloads.
+
+See the [Fal Media Studio guide](docs/FAL_MEDIA_STUDIO.md) for its complete
+workflow, privacy boundaries and billing safeguards.
+
+### Fal.ai — universal media and model inference
+
+**Settings > Fal.ai** provides API-key configuration, arbitrary model IDs
+(including nested routes), **live model discovery, published OpenAPI schemas,
+up-to-date unit pricing, and cost estimates**, synchronous inference and queued jobs for images,
+video, audio, speech, 3D and other Fal-hosted endpoints. Supply the model's
+native JSON arguments and options; manage queued jobs with status refresh,
+result retrieval and cancellation. Generated media URLs and bounded results
+remain available in job history across restarts. **Builder and Workspace Agent**
+can inspect a model’s exact inputs and outputs and pass a previous job’s
+asset, transcript or structured data into the next model by reference.
+Each paid stage and workspace upload requires fresh approval.
+
+For large media, install the optional upload/realtime SDK with
+`pip install -e ".[fal]"`. See the [Fal.ai integration guide](docs/FAL_AI.md)
+for setup, cost/privacy considerations, advanced request controls and examples.
+
 ### Environment variables
 
 The app reads these as fallbacks when no key is saved in Settings, or for model discovery. The in-app Settings flow is the primary configuration surface; these mostly matter during development.
@@ -180,6 +211,7 @@ The app reads these as fallbacks when no key is saved in Settings, or for model 
 | `GRAPHLINK_OPENAI_API_KEY` / `OPENAI_API_KEY` | OpenAI-Compatible key |
 | `GRAPHLINK_ANTHROPIC_API_KEY` / `ANTHROPIC_API_KEY` | Anthropic Claude key |
 | `GRAPHLINK_GEMINI_API_KEY` / `GEMINI_API_KEY` | Google Gemini key |
+| `GRAPHLINK_FAL_API_KEY` / `FAL_KEY` | Fal.ai inference and media key (separate from chat mode) |
 | `LLAMA_CPP_MODELS` | Root folder scanned for GGUF files in Llama.cpp mode |
 | `OLLAMA_MODELS` | Override for Ollama's model storage root during model discovery |
 

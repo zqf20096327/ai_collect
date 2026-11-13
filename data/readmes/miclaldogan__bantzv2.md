@@ -384,7 +384,7 @@ src/bantz/
 │   ├── job_scheduler.py APScheduler wrapper
 │   ├── affinity_engine.py bonding score + persona tier
 │   ├── ghost_loop.py    wake→capture→STT→dispatch cycle
-│   ├── wake_word.py     Porcupine always-on listener
+│   ├── wake_word.py     always-on listener (openWakeWord default, Porcupine fallback)
 │   ├── voice_capture.py WebRTC VAD recording
 │   ├── stt.py           faster-whisper transcription
 │   ├── tts.py           Piper + aplay synthesis
@@ -414,7 +414,7 @@ src/bantz/
 │   ├── persona.py       system prompt persona layer
 │   ├── bonding.py       interaction scoring
 │   └── greeting.py      morning briefing generation
-├── auth/                Google OAuth2 PKCE flow
+├── auth/                Google OAuth2 PKCE flow (redirect on :8766)
 └── i18n/
     └── bridge.py        MarianMT translation bridge
 ```
@@ -447,7 +447,8 @@ Core (always installed):
 - `mempalace` — ChromaDB + KG memory stack
 
 Optional (install as needed):
-- `pvporcupine`, `pyaudio` — wake word detection
+- `openwakeword`, `pyaudio` — local wake word detection (default engine)
+- `pvporcupine` — optional Porcupine wake engine (`BANTZ_WAKE_ENGINE=porcupine`)
 - `webrtcvad` — voice activity detection
 - `faster-whisper` — local STT
 - `piper` (binary) — local TTS

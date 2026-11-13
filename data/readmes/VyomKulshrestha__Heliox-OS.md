@@ -70,7 +70,7 @@ v0.16.0 adds a to-do list, "tell me when" watchers, repeating reminders and remi
 | Assistance co-adaptation | 3/3 policy agency audits passed on two simulated tuning families, five simulated people per family | In-sample simulation only; the adaptive engine does not beat the plain interface for every family; no human accuracy claim |
 | Long-term memory | [Memory Bench](docs/MEMORY.md): 11/11 probes after weeks of scripted use, 0 stale facts, also with twice the filler at budgets of 1,500 to 4,000 tokens; 3 of the first 8 passed before the fixes (9 November 2026) | Checks what reaches the prompt, not how a model uses it; scripted sessions |
 | Live companion, own data | 29 sentences against a fixed week of calendar, to-dos and reminders: code alone 11/13 contradictions caught, 0 false alarms; with qwen3.5:4b in Ollama 12/13, 0 false alarms, 2.07 s median per model call on a laptop CPU (9 November 2026) | Authored sentences and one synthetic week; [raw results](docs/evidence/live-grounded-eval-2026-11-09.json) |
-| Live companion timing | [Live Bench](docs/LIVE_BENCH.md), three typing personas: personal timing 63/63 catches, 0 false alarms, 2 interruptions; fixed 1.2 s rules 63/63, 3 false alarms, 15 interruptions (9 November 2026) | 34 scripted scenarios and simulated people, not recordings of real sessions |
+| Live companion timing | [Live Bench](docs/LIVE_BENCH.md), three typing personas: personal timing 165/168 catches, 0 false alarms, 3 interruptions; first week, before anything is learned (3.0 s mid-sentence wait), 165/168, 0 false alarms, 0 interruptions; the 3 misses are the same spoken slip, once per persona (the known recogniser case) (12 November 2026) | 105 scripted scenarios and simulated people, not recordings of real sessions |
 | Plugins              | 6 manifests in the generated public catalog                                                   | Marketplace and local plugins remain capability-constrained                                    |
 | CI                   | Python, frontend, visual, Rust, marketplace, and installer gates                              | CI does not prove camera, microphone, speaker, EEG, or human accuracy                          |
 | Windows signing      | SignPath test-policy workflow signs and verifies EXE, MSI, and embedded application artifacts | The production certificate is pending; current public installers are not yet production-signed |
@@ -227,7 +227,7 @@ Read [SECURITY.md](SECURITY.md) for the threat model, rollback boundaries, super
 
 1. Open the [latest GitHub release](https://github.com/VyomKulshrestha/Heliox-OS/releases).
 2. Download the package for your system:
-   - Windows: `Heliox-OS_<version>_x64-setup.exe` or `.msi`
+   - Windows: `Heliox-OS_<version>_x64-setup.exe` (recommended), or `.msi`. The `.exe`'s uninstaller stops Heliox's background service and says what it leaves in your home folder. The `.msi`'s uninstall does neither: before uninstalling it, use Settings > "Remove Heliox's files", or sign out of Windows so the service stops ([FIRST_RUN.md](docs/FIRST_RUN.md#removing-helioxs-files)).
    - macOS Apple Silicon: `Heliox-OS_<version>_aarch64.dmg`
    - macOS Intel: `Heliox-OS_<version>_x64.dmg`
    - Linux: `.AppImage`, `.deb`, or `.rpm`
@@ -259,7 +259,7 @@ To run the native desktop shell:
 
 ```bash
 cd Heliox-OS/tauri-app
-npm install
+npm ci
 npm run tauri dev
 ```
 

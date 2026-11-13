@@ -57,19 +57,26 @@ This application allows users to call a Twilio number and interact with an AI as
 4. Configure your Twilio phone number's voice webhook. In the Twilio console, navigate to your number's settings and under "A CALL COMES IN", set the webhook to your ngrok URL with the `/twiml` endpoint (e.g., https://your-ngrok-forwarding-url.ngrok-free.app/twiml).
 5. Call your Twilio number and start talking to your new Gemini-powered voice assistant!
 
+Try asking: "What time does the Chicago store close on Saturday?" Gemini will
+call the local `get_store_hours` tool and turn its result into a natural spoken
+answer.
+
 ## How It Works
 
 1. When a user calls the Twilio number, Twilio makes an HTTP request to the /twiml endpoint.
 2. The application returns TwiML, which instructs Twilio to establish a WebSocket connection to the server at /ws.
 3. Voice input from the user is transcribed by Twilio and sent to the server as JSON messages over the WebSocket.
 4. The server sends the transcribed text to the **Google Gemini API** and gets a response.
-5. The AI-generated text response is sent back to Twilio through the WebSocket.
-6. Twilio's built-in Text-to-Speech (TTS) engine converts the text to audio and plays it for the user.
-7. The conversation continues until the call is disconnected.
+5. When the caller asks about store hours, Gemini calls the Python function in `tools.py` and uses its result to compose the answer.
+6. The AI-generated text response is sent back to Twilio through the WebSocket.
+7. Twilio's built-in Text-to-Speech (TTS) engine converts the text to audio and plays it for the user.
+8. The conversation continues until the call is disconnected.
 
 ## Project Structure
 
 - `main.py`: The main application file containing the FastAPI server, WebSocket handler, and **Google Gemini integration**.
+
+- `tools.py`: Local business functions that Gemini can call, including the sample store-hours lookup.
 
 - `requirements.txt`: A file listing the Python dependencies.
 

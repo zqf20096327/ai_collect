@@ -48,7 +48,7 @@ The browser surface needs an installed Chromium; desktop Computer Use is under d
 
 ### Desktop app
 
-Download the **Golder GUI** package for your system from [Releases](https://github.com/getan/golder/releases): a macOS `.dmg` (arm64 for Apple Silicon or amd64 for Intel), Windows installer, or Linux package/archive. The GUI is installed separately from the CLI. See [GUI packaging and platform requirements](docs/gui-packaging.md).
+Download the **Golder GUI** package for your system from [Releases](https://github.com/getan/golder/releases): a macOS Apple Silicon `.dmg`, Windows installer, or Linux package/archive. New official GUI releases do not include a macOS Intel build; the separate CLI continues to support macOS Intel. The GUI is installed separately from the CLI. See [GUI packaging and platform requirements](docs/gui-packaging.md).
 
 **macOS Gatekeeper notice:** newer GUI releases are Developer ID signed and Apple-notarized. macOS may still ask you to confirm opening an app downloaded from the internet the first time. Accessibility, Screen Recording and other permission or security prompts may also appear. Older releases may not be notarized. Download only from the official Releases page. See [macOS installation details](docs/gui-packaging.md#macos-what-makes-it-double-clickable-elsewhere).
 
@@ -199,6 +199,13 @@ pass `--no-update-check` to disable startup checks. Homebrew installs use
 updating by their original installation method. A custom standalone location
 can be identified by setting `GOLDER_INSTALL_DIR` to its absolute directory.
 Successful updates never restart Golder automatically: rerun the command.
+
+Long-running TUI sessions also check once per hour without interrupting input or
+tasks. A newer release adds a small `/update` hint near the composer, not a popup.
+Run `/update` for upgrade instructions, **Do not remind again this session**, or
+**Skip this version**; `/update check` explicitly refreshes metadata. Automatic
+hourly checks honor the same opt-outs above. No background download or install
+is performed. GUI and TUI share the hourly scheduler and version comparison.
 
 ### Build from source
 

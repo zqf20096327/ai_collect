@@ -17,27 +17,35 @@ Function key in the browser. See [scope, privacy, and integration handoff](site/
 → [CI regression gates](site/src/content/docs/guides/ci-cd.mdx).
 Mock success checks the harness, not agent quality or live service safety.
 
-**Version boundary (November 6, 2026):** the published standalone CLI is
-`v0.40.1` ([release](https://github.com/microsoft/waza/releases/tag/v0.40.1)). Scenario authoring, preflight, selected-file evidence,
+**Version boundary (November 13, 2026):** the published standalone CLI is
+`v0.41.0` ([release](https://github.com/microsoft/waza/releases/tag/v0.41.0)). Scenario authoring, preflight, selected-file evidence,
 assurance profiles, controlled release policies, recorded reliability, and the
 opt-in dashboard Lab were introduced in `v0.39.0` and remain included.
 Install the published binary or run `waza update`; a source build is optional.
 Platform, explicit opt-in, evidence, and paid-call restrictions still apply. See the
 [feature/platform matrix](site/src/content/docs/reference/releases.mdx#upcoming-main-only-capabilities).
 
-The unreleased [logical execution-attempt embedding API](docs/EXECUTION_ATTEMPTS.md)
+Released in v0.41.0, the [logical execution-attempt embedding API](docs/EXECUTION_ATTEMPTS.md)
 adds immutable reservations and explicit verified reuse without changing
-`runner run`. Public submission commands and Lab lineage integration remain
-pending; this is not available in installed v0.40.1 artifacts.
-The [checkpoint embedding preview](docs/EXECUTION_CHECKPOINTS.md) adds compatible
-whole-unit recovery. Its unreleased source CLI adds `runner checkpoint create`
+`runner run`. The commands `runner submit` and `runner lineage`
+record distinct, retry and reuse attempts and print ordered lineage with
+derived [lifecycle state](docs/EXECUTION_LIFECYCLE.md) (cancellation, deadline,
+orphan detection and advisory retry eligibility).
+The [checkpoint embedding API](docs/EXECUTION_CHECKPOINTS.md) adds compatible
+whole-unit recovery. The v0.41.0 CLI adds `runner checkpoint create`
 and `runner checkpoint resume`, with protected HTTP create/resume operations.
-The source Lab can create/resume checkpoints and export protected results.
+The Lab can create/resume checkpoints and export protected results.
 Ordered evaluation-level lineage and full platform acceptance remain pending.
-For 1.0 results containing a report, the Lab reader labels statuses as unverified
-claims: native canonical-report checks are not performed in the browser.
+For 1.0 results containing a report, the Lab reader re-encodes the report like
+the native canonical writer; reports with evidence it cannot re-encode exactly
+are labeled unverified claims.
 
-**v0.40.0 adds** bounded
+**v0.41.0 adds** durable execution: logical attempts and lineage, checkpoints,
+lifecycle and evidence states, standalone aggregation, and optimizer adapters.
+Read [Waza v0.41.0: recover durable work, keep the evidence](https://microsoft.github.io/waza/releases/v0-41-0/)
+for the release story, publication record and known limits.
+
+**v0.40.0 added** bounded
 runner/text execution, selected AgentV assertion conversion, task-level MCP
 mocks, program-grader context, host lifecycle evidence, and Lab conversations.
 Read [Waza v0.40.0: run exactly the work you declared](https://microsoft.github.io/waza/releases/v0-40-0/)
@@ -54,6 +62,11 @@ The exact-unit runner deadlines do not fix the legacy multi-trial timeout issue
 [#865](https://github.com/microsoft/waza/issues/865). The later timeout/persistence
 fix [#870](https://github.com/microsoft/waza/pull/870) is post-v0.40.0 source behavior,
 not included in the published v0.40.0 artifacts.
+
+**v0.41.0 adds** durable execution, recovery and aggregation, the optimizer
+adapter contract, native question callbacks, and dashboard, capture, build and
+CI improvements; see the [changelog](CHANGELOG.md#0410---2026-11-13) and
+[release reference](site/src/content/docs/reference/releases.mdx).
 
 ## Installation
 
@@ -84,22 +97,21 @@ Requires Go 1.26+, Git LFS, Make, Node.js 22.23.4+ on the 22.x line or Node.js 2
 Note: due to the use of LFS artifacts you cannot install waza using `go install`. To install waza outside of a normal release, clone the repository:
 
 ```bash
-git clone --branch v0.40.1 https://github.com/microsoft/waza.git
+git clone --branch v0.41.0 https://github.com/microsoft/waza.git
 cd waza
 
 # ensure git LFS-based artifacts are available (for embedded copilot binaries)
 git lfs install
 git lfs pull
 
-make build VERSION=0.40.1
+make build VERSION=0.41.0
 ./waza <waza command line>
 ```
 
-The verified `v0.40.1` tag resolves to
-`e0c251df896bee4e0f9b38a693a6105bf7eadd19`. The immutable tag's
-`version.txt` and `extension.yaml` remain `0.39.1`. The release workflow updates
-those files only in a later version-sync branch, not in the tag.
-`make build` defaults to `VERSION=0.1.0`, so pass `VERSION=0.40.1` explicitly
+The verified `v0.41.0` tag resolves to
+`d537bf00d4d442a1935ceba2fbc664b9ccb497b2`. Unlike the historical v0.40.1 tags, the
+tag's `version.txt` and `extension.yaml` already carry `0.41.0`.
+`make build` defaults to `VERSION=0.1.0`, so pass `VERSION=0.41.0` explicitly
 when building this tag. Official release builds inject the version from the
 tag with linker flags. A locally stamped binary is not a verified release asset,
 and does not prove extension registry synchronization.
@@ -124,16 +136,14 @@ azd waza --help
 The extension has its own version and artifact history; a command prefix does
 not establish parity with standalone main. Check `azd waza --version` and
 `azd waza --help` before following examples. The registry currently lists
-through `0.40.1`, matching the separately published `0.40.1` extension artifact.
-The [separate v0.40.1 extension artifact](https://github.com/microsoft/waza/releases/tag/azd-ext-microsoft-azd-waza_0.40.1)
+through `0.41.0`, matching the separately published `0.41.0` extension artifact.
+The [separate v0.41.0 extension artifact](https://github.com/microsoft/waza/releases/tag/azd-ext-microsoft-azd-waza_0.41.0)
 is published with six platform archives, and this repository's registry and
-version metadata are synchronized to `0.40.1`. The standalone v0.40.0 additions
-below are not included in a v0.39.1 extension installation. Artifact publication
+version metadata are synchronized to `0.41.0`. The standalone v0.41.0 additions
+are not included in a v0.40.1 extension installation. Artifact publication
 and registry synchronization are separate gates; check the installed version.
-The source URL above follows `main`, not this branch. Before
-[release-sync PR #908](https://github.com/microsoft/waza/pull/908) merges, that URL
-still serves `0.40.0`; after the merge it includes `0.40.1`. Updating an
-installation before the merge cannot select `0.40.1` from that source.
+The source URL above follows `main`. The v0.41.0 registry update merged in
+[release-sync PR #987](https://github.com/microsoft/waza/pull/987).
 For supported commands, for example:
 
 ```bash
@@ -257,6 +267,9 @@ waza grade eval.yaml --results results.json
 # Compare results across models
 waza compare results-gpt4.json results-sonnet.json
 
+# Optimize a skill or context candidate with held-out qualification (v0.41.0+)
+waza optimize run eval.yaml --seed ./my-skill --optimization-tag train --qualification-tag holdout
+
 # Capture snapshots during a run and inspect offline consistency
 waza run eval.yaml --snapshot ./snapshots/
 waza replay ./snapshots/my-task-run1.json
@@ -296,7 +309,7 @@ canonical workflow, target-specific validation steps, and a reusable delegation 
 
 ## Commands
 
-### `waza aggregate` (unreleased v0.41 source preview)
+### `waza aggregate` (v0.41.0+)
 
 Aggregate explicit completed public manifests from an existing local immutable
 store without starting agents or requiring the original worker:
@@ -316,7 +329,7 @@ diagnostics and the exact JSON download.
 See [worked examples](site/src/content/docs/guides/manifest-aggregation.mdx) and
 [ordering, compatibility and migration](docs/MANIFEST_AGGREGATION.md).
 
-### `waza artifact` (unreleased v0.41 source preview)
+### `waza artifact` (v0.41.0+)
 
 Publish immutable artifact manifests without executing agents. The opt-in store
 is separate from legacy mutable result files; content verification is not
@@ -336,6 +349,26 @@ of `--store`, with existing credentials and no automatic login. Lab can discover
 stored declaration pointers and inspect current integrity. Unreadable publication
 or an ambiguous finalization write reports `unknown`, not observed marker absence. See
 [declaration, publication, recovery and migration](docs/IMMUTABLE_ARTIFACTS.md).
+
+### `waza optimize` (v0.41.0+)
+
+An optimizer adapter proposes skill or context candidates, and Waza evaluates
+each one with the normal harness against a pinned suite. A candidate is
+accepted only if it improves the optimization split and does not regress on a
+held-out qualification split:
+
+```bash
+waza optimize capabilities
+waza optimize run examples/optimizer/eval.yaml \
+  --target context-overlay --seed examples/optimizer/seed \
+  --optimization-tag optimization --qualification-tag qualification \
+  --adapter fake --fake-script examples/optimizer/fake-script.json
+```
+
+The adapters are `fake` (offline), `command` (any executable using JSON on
+stdin and stdout) and `copilot-reflect` (paid). Paid adapters and non-mock
+executors require `--allow-paid-calls`. Spend is reported, never capped.
+See [Optimizer Adapters](site/src/content/docs/guides/optimizer-adapters.mdx).
 
 <span id="waza-interop-source-build-preview"></span>
 
@@ -417,10 +450,12 @@ The task entry must be eval-relative, and successful adaptation passes shared
 offline admission within the complete 4 MiB emitted-byte limit.
 See the [compatibility table and before/after examples](site/src/content/docs/guides/runner-compatibility.mdx).
 
-**Unreleased checkpoint source preview:** `waza runner checkpoint create --store
+**Checkpoint commands (released in v0.41.0):** `waza runner checkpoint create --store
 .waza-artifacts < submission.json` publishes whole-unit checkpoints;
 `waza runner checkpoint resume CHECKPOINT_SHA256 --store .waza-artifacts <
-submission.json` admits compatible recovery. These commands require a clean
+submission.json` admits compatible recovery. `waza runner checkpoint availability
+CHECKPOINT_SHA256` checks the same inputs read-only first and explains why a
+checkpoint cannot be resumed. These commands require a clean
 VCS-stamped CLI and a captured submission wrapper, not a bare runner request.
 Ordinary results remain strict schema `1.0`; sanitized pre-store and store-close
 operational failures use schema `1.1`, status `operation_error`, exit code `2`,
@@ -433,6 +468,14 @@ Consumers must keep these levels separate: a store-close failure can have
 top-level exit `2` while the preserved completed or reused submission still has
 nested exit `0`.
 See the [checkpoint workflow and limits](site/src/content/docs/guides/immutable-artifacts.mdx#checkpoint-public-source-preview).
+
+**External execution adapters (unreleased, v0.42.0):** `waza runner adapter
+translate < descriptor.json` translates one external work descriptor offline
+into exactly one public runner call, and `waza runner adapter dispatch --store
+.waza-artifacts < descriptor.json` (or `--endpoint URL`) performs that call once
+and returns the mapped status and manifest digest. Scheduler fields such as
+queue, priority or placement are rejected (exit 6) rather than dropped; Waza
+stays translation-only. See [portable external execution adapters](site/src/content/docs/guides/runner-adapters.mdx).
 
 The [local container reference](site/src/content/docs/guides/runner-container.mdx)
 keeps the default scratch image mock-only and provides an explicit
@@ -1890,14 +1933,4 @@ mcp_mocks:
 
 Inline responses support exact full-argument matching (`match`), JSON Schema matching (`match_schema`), and per-field regex matching (`match_regex`). Unknown tools and unmatched calls fail loudly with an MCP tool error that names the missing fixture.
 
-Fixture entries must be regular JSON files; symlinks to regular files remain supported. On Unix, fixture admission uses nonblocking opens and checks the opened file, rejecting FIFOs without waiting for a writer so `after_run` can execute. This is not a deadline for unresponsive filesystems or a race-free/nonblocking opening guarantee on Windows.
-
-Unmatched MCP diagnostics omit argument values to avoid exposing credentials or private payloads. In scenario evals (`scenario` plus exact `schemaVersion: "2.0"`), a response may use a finite `sequence` of at most 100 `return` or `error` steps, optionally delayed up to 300,000 ms. Each matching call consumes one step; exhaustion returns an MCP error and never falls through to a live server. This can simulate an upstream timeout error, but not transport cancellation. Mock responses verify controlled interactions, not the external server implementation.
-
-**Added in v0.40.0:** A task can declare its own `mcp_mocks` when one case needs a different answer. Published `v0.39.1` does not apply task-level MCP mocks. Each task entry replaces the eval mock with the same name for that task only, a new name adds a mock, and the other eval mocks still apply. This keeps a case-specific response, such as approving one question, out of every other task. Task mocks follow the enclosing eval's `schemaVersion` and require `executor: copilot-sdk`; relative `fixtures` paths resolve from the eval directory. An empty task list is rejected; omit the field to use the eval mocks.
-
-In v0.40.0, task loading and filter errors are reported before engine startup. The runner repeats admission after engine initialization and after each new pass's `before_run` setup (including the second baseline pass), retaining trigger-only dependencies and returning detected configuration errors before task execution without repeating hooks. Inline mock `input_schema` declarations are validated offline during admission, including declarations on replaced eval mocks; use self-contained schemas (internal `$ref` values are supported), or omit the schema for the default.
-
-Admission also validates selected fixture-backed tool `input_schema` declarations, including eval fixtures needed only by trigger tests. Omitted/null schemas retain the default; whole-tool overrides and genuinely unused fixture metadata remain excluded.
-
-The CLI discovers `trigger_tests.yaml` after `before_run` and before engine startup, and uses that sam
+Fixture entries must be regular JSON files; symlinks to regular files remain supported. On Unix, fixture admission uses nonblocking opens and

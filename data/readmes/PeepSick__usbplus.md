@@ -38,7 +38,7 @@ and delivers inspectable artifacts across agent runtimes.
 </p>
 
 <p align="center">
-  <sub>v1.0.8 · 529 skills · 16 runtime targets · Trust Layer: <code>secscan</code> + <code>mcprobe</code> · MIT</sub>
+  <sub>v1.1.0 · 529 skills · 16 runtime targets · Trust Layer: <code>secscan</code> + <code>mcprobe</code> · MIT</sub>
 </p>
 
 ---
@@ -65,7 +65,7 @@ Real installer output — not mocked up (`web-dev` = 8 domains × 8 workflows + 
 
 ```bash
 $ usb install web-dev --target=claude
-✅ universal-skill-bridge-catalog v1.0.8 installed for target: claude (73 skills)
+✅ universal-skill-bridge-catalog v1.1.0 installed for target: claude (73 skills)
 📦 Portable pack: ~/.ai-skills/universal-skill-bridge-catalog
 🔌 Target files: ~/.claude/skills
 📝 Local registry: ~/.ai-skills/universal-skill-bridge-catalog/installed.json
@@ -105,13 +105,14 @@ closes the second.
 
 ## The Trust Layer
 
-Installing a skill is easy; trusting one is not. The v1 series adds two
-commands that answer the two questions the install surface alone cannot:
+Installing a skill is easy; trusting one is not. The v1 series adds commands
+that answer the questions the install surface alone cannot:
 
 | | Question | Tool | Nature |
 |---|---|---|---|
 | **Contracts** | *Does this skill do what it declares?* | `usb secscan` | Static, deterministic — never executes what it scans |
 | **Runtime** | *What does this MCP server actually do when it starts?* | `usb mcprobe` | Live observation, explicit consent — never calls a tool |
+| **Integrity** | *Is the installed skill still exactly what was installed?* | `usb verify` · `usb lock` · `usb diff` | Local SHA-256 re-hash — no network, no execution |
 
 ### secscan — Skill Contract Verifier
 
@@ -320,6 +321,95 @@ deterministic and never runs anything; mcprobe runs, is consented, and is
 honestly non-deterministic. Design details and the full report contract
 are in [docs/mcprobe.md](docs/mcprobe.md).
 
+### verify / lock / diff — Integrity of what you installed
+
+secscan tells you what a skill *claims and does*; it cannot tell you whether
+the copy on your disk is still the one you installed. The integrity commands
+close that gap, entirely offline. At install time USB writes a SHA-256
+manifest (`usb-manifest.json`) plus a per-target ledger next to the pack;
+`usb verify` re-hashes the installed files and compares:
+
+```bash
+usb verify                    # every installed pack + target, [OK]/[WARN]/[ERROR] per skill
+usb verify intent-router      # one skill
+usb verify --all --json       # machine-readable (CI-friendly)
+```
+
+It reports **modified**, **missing** and **unexpected** files and exits `0`
+clean, `1` drift, `2` operational error. **Integrity is not safety:** verify
+proves the bytes did not change, not that the content is benign — that is
+still secscan's job. The two are complementary, not interchangeable.
+
+`usb lock` pins the installed versions into `usb.lock.json` so a team can
+reproduce the exact same install; `usb install --locked` re-downloads the
+catalog into a sandbox, compares every locked hash, and installs **only if
+nothing drifted** — otherwise it refuses and writes nothing:
+
+```bash
+usb lock                      # pin installed skills (from the manifest, or trust-on-first-use)
+usb lock-show                 # inspect what a lock pins
+usb install --locked          # reproducible install; drift => refuse, install nothing
+```
+
+`usb diff` shows what an update would change in **capabilities and
+permissions**, so a version bump is a reviewed decision, not a surprise:
+
+```bash
+usb diff intent-router        # installed copy vs. the latest catalog version
+usb diff old.md new.md        # any two local skill files or directories
+usb diff old.md new.md --patch --json
+```
+
+`usb repair` closes the loop: it restores drifted skill files **byte-for-byte**.
+The manifest only stores hashes, so the original bytes come from the catalog —
+each drifted skill is staged in a sandbox and restored only if the staged file's
+hash equals the manifest's, i.e. it is exactly what you installed. If the catalog
+has moved on, repair **refuses** (that is an update: `usb diff`, then
+`usb install`). Pack/router files and unexpected files are reported, never
+rewritten.
+
+```bash
+usb repair --dry-run          # what would be restored
+usb repair                    # restore, then re-verify
+usb repair intent-router      # one skill
+```
+
+**Catch drift without remembering to look.** `usb hook install` adds a Claude
+Code `SessionStart` hook that runs `usb verify --hook`: silent when everything
+is intact, one warning line when installed skills drifted. It is local-only (no
+network, even if the engines are not cached yet), always exits `0`, and never
+blocks a session. `usb hook status` / `usb hook uninstall` manage it; your other
+hooks and settings are preserved (a one-time `settings.json.usb-bak` is kept).
+
+**Signed engines for curl installs.** The python engines ship in the npm
+package. A single-file `curl … -o usb` install has no engines next to it, so
+`verify`, `lock`, `diff`, `repair`, `secscan` and `mcprobe` fetch them on first use
+from `/engines/` into `~/.ai-skills/engines/` — but only after an **Ed25519
+signature** over `engines.json` and a SHA-256 per file check out. The public key
+is embedded in `usb`; the private key never touches the server, so a compromised
+host or CDN cannot make `usb` run code it chose. The cache is re-verified on
+every use. `usb engines status|update` shows and refreshes it. Self-hosters sign
+with their own key (`node scripts/sign-engines.mjs`) and export
+`USB_SIGNING_PUBKEY=<hex>`.
+
+**GitHub Code Scanning.** `usb secscan --sarif out.sarif` writes findings as
+SARIF 2.1.0 (stable fingerprints, deterministic output); stdout and exit codes
+are unchanged. The repo root ships a ready-made Action:
+
+```yaml
+permissions: { contents: read, security-events: write }
+steps:
+  - uses: actions/checkout@v4
+  - uses: PeepSick/usbplus@main     # pin a tag or commit SHA once released
+    with:
+      path: .claude/skills
+      # baseline: .usb-secscan-baseline.json   # gate only on NEW findings
+```
+
+It reuses the secscan engine to name added/removed observed capabilities,
+declared categories and tools, plus frontmatter and verdict changes. Exit
+codes: `0` identical, `1` differences, `2` error.
+
 ## How it works
 
 Two lanes share one skill record: **verify** what a capability claims against
@@ -397,12 +487,16 @@ Already trust the publisher? One line, no review step: `curl -fsSL https://usbpl
 | `usb install` | Install the whole pack (529 skills) |
 | `usb install --target=<name>` | Force a specific provider target |
 | `usb install --dry-run` | Print the install script without executing it |
+| `usb install --locked` | Reproducible install from `usb.lock.json` — refuses and installs nothing on drift |
 | `usb uninstall <slug>` | Remove an installed skill from a runtime target — offline, frontmatter-verified, `--dry-run` supported |
 | `usb search <query>` | Search the skill catalog |
 | `usb list` | List every skill in the catalog |
 | `usb info <skill>` | Show details for one skill |
 | `usb secscan [paths\|--system\|--repo]` | Skill Contract Verifier — security-scan skills (see **The Trust Layer** above) |
 | `usb mcprobe [target]` | Runtime observation of MCP servers (interactive consent) |
+| `usb verify [slug\|--all\|--json]` | Re-hash installed skills against the install-time SHA-256 manifest (integrity, not safety) |
+| `usb lock` / `usb lock-show` | Pin installed skill versions into `usb.lock.json` / inspect a lock |
+| `usb diff <slug>` / `usb diff <old> <new>` | Capability & permission changes: installed vs latest, or two local versions |
 | `usb mcp` | Start the stdio MCP server for AI agents |
 | `usb version` | Print version, latest release, and update check (`/api/version`) |
 
@@ -503,7 +597,7 @@ PR; a second workflow repeats the live-site checks daily on a schedule.
 
 ### Status
 
-**v1.0.8** — current release. Universal Systems Bridge: the 529-skill catalog, the
+**v1.1.0** — current release. Universal Systems Bridge: the 529-skill catalog, the
 16-target installer, and the Trust Layer (`secscan` contract verification,
 `mcprobe` runtime observation, MCP server). **Lineage:** the project shipped v0.x
 as Universal Skill Bridge; that line is frozen and stays online at
@@ -592,4 +686,4 @@ forks must use a different name. See [TRADEMARK.md](./TRADEMARK.md).
 
 </details>
 
-<sub>USB · Universal Systems Bridge v1.0.8 · Building in public · Pre-incorporation · No legal entity formed yet · 2026</sub>
+<sub>USB · Universal Systems Bridge v1.1.0 · Building in public · Pre-incorporation · No legal entity formed yet · 2026</sub>

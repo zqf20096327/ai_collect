@@ -222,6 +222,43 @@ print(results)
 
 ![Prototyping Job Result](./assets/terminal-4.png)
 
+## Download large Batch results
+
+SDK **0.2.0** gives result URL preparation a separate total deadline of
+180 seconds. Preparing a cold Parquet download can take more than 45 seconds
+when it includes a large input dataset. Upgrade older clients for this case:
+
+```bash
+pip install --upgrade "sutro>=0.2.0"
+```
+
+```python
+path = so.download_job_results(
+    job_id,
+    output_path="results.parquet",
+    include_inputs=True,
+    preparation_timeout=180,
+)
+```
+
+`preparation_timeout` may be lowered to any positive finite number up to 180
+seconds. It includes the connection, response headers and bounded URL metadata
+body. A timeout, HTTP error or interruption does not automatically repeat the
+export request or create a new Batch job. The server may finish its cached
+artifact after a client disconnects; use the same job and options when checking
+again. An intermediary may return an earlier HTTP error.
+
+The signed file transfer starts after the URL is ready. Its separate connection
+and read-inactivity limits remain 10 and 120 seconds; this is not a total limit
+on the file's download duration. Interrupted transfers retain their `.part`
+file and validate its ETag before a later Range resume. API credentials are
+never added to requests to signed file URLs.
+
+Deployments should use the paired service release for the bounded preparation
+and export-concurrency fixes. Existing API servers retain the same results URL
+protocol. SDK 0.1.71 and earlier keep their 45-second URL wait, so large cold
+downloads with inputs can still time out until those clients upgrade.
+
 ## Move to Production
 
 Sutro supports two Batch priorities today:
@@ -376,6 +413,14 @@ For security, deployment, or procurement questions, contact [team@sutro.sh](mail
 ## Contributing
 
 We welcome contributions and feedback. Please reach out at [team@sutro.sh](mailto:team@sutro.sh) before larger changes so we can coordinate.
+
+Maintainers normally publish from the accepted, clean release checkout with
+`make -C sutro publish` and configured uv credentials. If those credentials are
+unavailable, the SDK-only manual trusted publisher is a fallback. Its default
+`verify-only` mode checks the existing protected PyPI identity without uploading.
+Publication requires exact reviewed distribution hashes and a matching service
+acceptance receipt after the service rollout. See
+[SDK publisher recovery](https://github.com/sutro-sh/foundation/blob/main/ROLLOUT.md#sdk-only-trusted-publisher).
 
 ## License
 

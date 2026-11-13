@@ -399,10 +399,11 @@ reports.
 |---|---|
 | handshake | the server does not start, finish the MCP handshake or list its tools in time |
 | schemas | a tool name is invalid or repeated, or an input/output schema is not valid JSON Schema |
-| descriptions | a name, description or parameter carries **tool poisoning**: invisible Unicode (decoded and shown), `<IMPORTANT>` blocks, "do not tell the user", requests to read `~/.ssh` or send data to a URL |
+| descriptions | a name, description or parameter carries **tool poisoning**: invisible Unicode (decoded and shown), terminal escape sequences (concealed text read back, cursor tricks, hyperlink targets, clipboard writes), `<IMPORTANT>` blocks, "do not tell the user", requests to read `~/.ssh` or send data to a URL |
 | annotations | a tool is marked both read-only and destructive (a missing `readOnlyHint` is a warning) |
-| stability | the tool definitions change between two connections, or differ from the lock file (a **rug pull**) |
+| stability | the tool definitions change between two connections, or differ from the lock file (a **rug pull**). The lock also records the server's name and version, the launch command, the image build and the hosts it reached; a renamed server fails, and the other changes are warnings |
 | robustness | with `--probe`: input the tool's own schema forbids is accepted, or the server stops answering |
+| pinning | a warning when the launch command runs whatever was published last (`npx -y pkg`, `uvx pkg`, a docker tag): pin `pkg@1.2.3`, `--from pkg==1.2.3` or `image@sha256:...` |
 | isolation | a warning, not a failure, when the server ran on this machine instead of in the sandbox |
 
 Nothing is called unless `--probe` is given, and probes only send input the schema rejects. A stdio server gets only a
@@ -573,6 +574,7 @@ It scans committed config, skill provenance and eval reports, and runs in CI on 
 - **[Architecture](ARCHITECTURE.md)**: System design, subsystems, end-to-end execution flow, and trust boundaries.
 - **[AI Usage Disclosure](AI_USAGE.md)**: Complete inventory of every file and function where open-weight model outputs are programmatically consumed and validated.
 - **[Scope & Limitations](LIMITATIONS.md)**: What multi-gate verification proves, what it does not prove, and system boundaries.
+- **[Security policy](SECURITY.md)**: How to report a vulnerability privately, what is in scope, and how releases are built and signed.
 
 ## Status and roadmap
 

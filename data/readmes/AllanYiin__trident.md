@@ -72,6 +72,13 @@ a
 
 ## How To Use
 
+### Native PyTorch language-model training
+
+Optional fluent Pretrain/SFT/LoRA/DPO, distillation, GRPO/CISPO/PPO, bounded tool-use rollouts,
+full-state resume and Hugging Face export are documented in
+[the runnable language examples](examples/language/README.md).
+Install the optional `llm` extra; existing vision and TensorFlow entry points are unchanged.
+
 #### Step 0: Install
 
 Simple installation from PyPI
@@ -138,3 +145,7 @@ If you want to cite the framework feel free to use this:
   year={2020}
 }
 ```
+## JPEG dataset check
+
+Before training on a folder of JPEG images, run `python scripts/audit_jpegs.py PATH_TO_DATASET --report bad-jpegs.txt`.
+The command exits with status 1 and lists every file for which OpenCV reports a decode error or libjpeg warning (including `Corrupt JPEG data: premature end of data segment`). Replace those files from the original source or exclude their paths and corresponding labels before training. Re-encoding a damaged image may hide the warning while retaining damaged pixels.

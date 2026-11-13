@@ -54,7 +54,7 @@ You do not need the whole collection. Start with one task and one skill. Read it
 | Create or improve a reusable skill | [skill-smith](docs/skills/skill-smith.md) | A scoped authoring route or a read-only assessment |
 | Coordinate agents through a shared folder | [agent-mailbox](docs/skills/agent-mailbox.md) | Messages, durable dispositions and explicit continuity limits |
 
-This table describes the **3.1.1** source. Check the [published releases](https://github.com/allemaar/open-skills/releases) for a frozen version and read the [upgrade notes](#current-source-and-releases) before updating.
+This table describes the **3.1.2** source. Check the [published releases](https://github.com/allemaar/open-skills/releases) for a frozen version and read the [upgrade notes](#current-source-and-releases) before updating.
 
 The [full catalog](SKILLS.md) groups all skills by family. The [glossary](GLOSSARY.md) explains shared terms, and [scope](SCOPE.md) explains what belongs here. The [guides](docs/README.md) explain when each skill is useful, when to avoid it, what to ask and what it returns. Inside an agent, /skills-help reads its bundled taxonomy and the skills installed beside it. It leaves unknown third-party skills visible under Unclassified.
 
@@ -272,7 +272,9 @@ The optional [skills CLI](docs/installation.md#optional-skills-cli) can discover
 
 ## Current source and releases
 
-The **3.1.1** source tightens installation and handoff recovery. I select required sibling skills explicitly; the installer reports missing dependencies before copying. Forced replacements keep recovery copies outside skill discovery and stop on observed intervening edits. Handoff fallbacks retain premise and command-authorization checks, while the receiver carries its retro schema locally. The [patch notes](CHANGELOG.md) explain the smaller contract and documentation fixes. All 92 skills remain. Check the release page for publication status.
+The **3.1.2** source refreshes the headless model map for November 2026: Fable 5.2 as the special Claude role, `best` resolving like `opus`, Fable 5.2 and Gemini 4 Hydrogen rates, and current Codex, Claude Code, Antigravity and Grok Build catalogs. Newly listed models are catalog-only until tested. The [patch notes](CHANGELOG.md) list per-source dates. All 92 skills remain. Check the release page for publication status.
+
+The **3.1.1** release tightened installation and handoff recovery. I select required sibling skills explicitly; the installer reports missing dependencies before copying. Forced replacements keep recovery copies outside skill discovery and stop on observed intervening edits. Handoff fallbacks retain premise and command-authorization checks, while the receiver carries its retro schema locally. The [patch notes](CHANGELOG.md) explain the smaller contract and documentation fixes. All 92 skills remain. Check the release page for publication status.
 
 The **3.1.0** release added implement-task for one authorized outcome and update-open-skills for preserving an existing installation during an update. All 92 skills have richer guides explaining how they work, where they fit, practical questions and useful results. The glossary, scope and shared installation guide make the collection easier to navigate. Check the release page for publication status.
 

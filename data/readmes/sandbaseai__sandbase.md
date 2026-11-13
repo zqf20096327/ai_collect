@@ -5,7 +5,7 @@
 <h3 align="center">One API Key. Build Your Personal Agent.</h3>
 
 <p align="center">
-  <!-- counts:en --><b>2,000+ models &amp; APIs</b> · 500+ AI models · 1,900+ data APIs from 100+ platforms<br><b>100 free API calls / day</b> · <b>Free sandboxes</b> · <b>Free agents</b><!-- /counts:en -->
+  <!-- counts:en --><b>2,000+ models &amp; APIs</b> · 500+ AI models · 2,000+ data APIs from 150+ platforms<br><b>100 free API calls / day</b> · <b>Free sandboxes</b> · <b>Free agents</b><!-- /counts:en -->
 </p>
 
 <p align="center">
@@ -187,11 +187,11 @@ Open [`examples/http/sandbase.http`](examples/http/sandbase.http) and click *Sen
 |---|---|---|
 | **AI models** | 500+ | 100+ LLMs, 150+ video, 150+ image, 30+ audio: Alibaba, Google, OpenAI, Kling, ByteDance, MiniMax, Black Forest Labs, xAI, … |
 | Social & content | 1,200+ | Douyin, TikTok, Instagram, Xiaohongshu, Weibo, YouTube, Zhihu, Bilibili, Kuaishou, LinkedIn, … |
-| Search, SEO & web data | 200+ | DataForSEO, Similarweb, Brave, Google, Firecrawl, Artificial Analysis, Bing, DuckDuckGo, Exa, Scholar, … |
-| E-commerce, apps & reviews | 100+ | 1688, Amazon, GetApp, Taobao, TikTok Shop, Clutch, Google Play, JD.com, Trustpilot, G2, … |
+| Search, SEO & web data | 200+ | DataForSEO, Google, Similarweb, Brave, Bing, DuckDuckGo, Firecrawl, Artificial Analysis, Exa, Scholar, … |
+| E-commerce, apps & reviews | 150+ | 1688, Amazon, GetApp, Google Maps, Taobao, TikTok Shop, Clutch, Google Play, JD.com, Trustpilot, … |
 | Finance, crypto & markets | 150+ | Polymarket, FRED, Financial Datasets, CoinGecko, Nasdaq, MarketBeat, SECForm4, StockAnalysis, Yahoo Finance, Kalshi, … |
-| Companies, people & jobs | 40+ | Web3.career, Apollo, Levels.fyi, Y Combinator, Wellfound, Crunchbase, Hunter, Built In, Indeed, … |
-| More | 100+ | Semrush, IMDb, AAA, Open-Meteo, IQAir, Shopify, AccuWeather, Best Buy, Mercari, ASOS, … |
+| Companies, people & jobs | 40+ | Web3.career, Apollo, Levels.fyi, Y Combinator, Wellfound, Crunchbase, Glassdoor, Hunter, Indeed, Built In, … |
+| More | 150+ | Semrush, IMDb, AAA, Open-Meteo, Tendata, Finviz, Google Hotels, Naver, Foreplay, Google Flights, … |
 <!-- /inside:en -->
 
 Every entry has a page with its schema, price and code in four languages. See [all models &amp; APIs](docs/INDEX.md) or [browse by platform](docs/platforms/README.md): [TikTok](docs/platforms/tiktok.md) · [Instagram](docs/platforms/instagram.md) · [YouTube](docs/platforms/youtube.md) · [LinkedIn](docs/platforms/linkedin.md) · [Reddit](docs/platforms/reddit.md) · [Douyin](docs/platforms/douyin.md) · [Xiaohongshu](docs/platforms/xiaohongshu.md) · [DataForSEO](docs/platforms/dataforseo.md) · [Polymarket](docs/platforms/polymarket.md) · [OpenAI](docs/platforms/openai.md) · [Google](docs/platforms/google.md) · [Kling](docs/platforms/kwaivgi.md)

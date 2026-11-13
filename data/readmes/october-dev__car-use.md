@@ -69,11 +69,24 @@ Your agent installs car-use, learns how to use it, shows you a practice diagnosi
 car-use config set device tcp://192.168.0.10:35000                       # Wi-Fi adapter (join its Wi-Fi first)
 car-use config set device "serial:///dev/cu.usbserial-XXXX?baud=38400"   # USB adapter (needs car-use[serial])
 
-car-use doctor          # is everything connected? tells you the one fix if not
-car-use dongle-doctor   # what adapter did you actually buy? graded A to D
+car-use doctor                   # is everything connected? tells you the one fix if not
+car-use dongle-doctor            # what adapter did you actually buy? graded A to D
+car-use dongle-doctor --report   # anonymised JSON to share (WMI and model year, not the full VIN).
+                                 # Takes ten minutes with the ignition on and prints its JSON at the end;
+                                 # --soak-seconds 30 takes a quick sample instead
 ```
 
 Longer notes for Wi-Fi, USB, Windows and Bluetooth, plus which adapters are worth buying: [setup/](setup/).
+
+### Buying a used car?
+
+```bash
+car-use inspect --expect-vin <the-VIN-from-the-windshield>   # red / amber / green scan
+car-use inspect --sim cleared-codes --html scan.html         # try it on a virtual car
+car-use inspect --md scan.md                                 # save the markdown too
+```
+
+This is an OBD scan, not a mechanical inspection: codes, self-checks, identity and charging voltage. It does not compare odometer readings across modules yet. The report includes the full VIN, so don't post it publicly.
 
 ## No car? Use a virtual one.
 
@@ -98,12 +111,20 @@ PY
 | `ignition-off` | The adapter has power but the car doesn't answer. | Easy |
 | `kwp2000` | Older car on KWP2000, not CAN. Several codes, slow to wake. | Medium |
 | `iso9141` | Older car on ISO 9141-2. One code. | Medium |
+| `p0128` | Thermostat stuck open. Coolant stays low after a long idle. | Easy |
+| `p0442` | Small evap leak. The car drives normally. | Easy |
+| `dpf-regen` | Diesel filter regenerating. Idle and fuel use are high. | Medium |
+| `hybrid-12v` | Hybrid with a weak 12 V battery. The engine is not running. | Easy |
+| `cng-bifuel` | CNG car. The usual sensors look like a petrol car. | Tricky |
+| `obd-2b` | 2025 scooter on OBD Stage II-B. Only a few sensors answer. | Easy |
+| `healthy-ev` | Illustrative EV profile, not a real model. Almost no engine data, and nothing is wrong. | Tricky |
+| `two-ecu` | Engine and transmission both answer. Codes stay with the ECU that sent them. | Medium |
 
 Each virtual car can also pretend to be a different adapter: a genuine ELM327, a cheap clone, or an OBDLink. Run one as a Wi-Fi adapter with `car-use sim p0171 --port 35000` and point any OBD app at it. You can write your own in `~/.car-use/scenarios/`.
 
 ## How agents use it
 
-Your agent sends short Python scripts. The helpers are already loaded:
+Your agent sends short Python scripts. The helpers are already loaded. An agent with no shell can use the [MCP server](setup/mcp.md) instead.
 
 ```bash
 car-use <<'PY'
@@ -120,7 +141,7 @@ PY
 | `car()` | The connected car. `.describe()` gives a summary |
 | `manifest()` | Everything this car can report and do |
 | `signals()` | The live readings this car supports, with names and units |
-| `read(name)` / `read_many(names)` | One or more readings, e.g. `"rpm"`, `"Vehicle.Speed"` |
+| `read(name)` / `read_many(names)` | One or more readings, e.g. `"rpm"`, `"Vehicle.Speed"`. `read(name, ecu="7E9")` asks one ECU |
 | `watch(names, seconds)` | Readings over time, with min, max, average and how often they swing |
 | `dtcs()` | Error codes in plain English, and whether the check engine light is on |
 | `freeze_frame()` | What the car was doing when the code appeared |
@@ -192,9 +213,9 @@ Built in the open. See the [Roadmap](https://github.com/october-dev/car-use/issu
 ## Contributing
 
 The most useful things right now:
-- `dongle-doctor` reports from adapters you own;
+- `dongle-doctor --report` output from adapters you own, via the [Adapter report](https://github.com/october-dev/car-use/issues/new?template=adapter-report.yml) form (see [adapter compatibility](docs/compatibility.md));
 - virtual cars for problems you've fixed;
-- maker-specific data for your car.
+- maker-specific data for your car ([vehicle packs](packs/README.md)).
 
 ```bash
 git clone https://github.com/october-dev/car-use && cd car-use

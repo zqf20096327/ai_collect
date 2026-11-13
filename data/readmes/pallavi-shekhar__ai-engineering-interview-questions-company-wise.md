@@ -147,7 +147,7 @@
   - Answer: [Decoding InstructGPT](https://outcomeschool.com/blog/decoding-instructgpt) and [Reinforcement Learning from Human Feedback (RLHF)](https://outcomeschool.com/blog/reinforcement-learning-from-human-feedback-rlhf) and [How does Pretraining work?](https://outcomeschool.com/blog/llm-pretraining)
 - Compare greedy, beam search, top-k, top-p and temperature sampling. When does each fail?
   - Asked at: [Google DeepMind](#google-deepmind-and-google-ai), [Apple](#apple), [Perplexity](#perplexity)
-  - Answer: [How does Temperature control LLM output?](https://outcomeschool.com/blog/how-does-temperature-control-llm-output) and [How do Top-k and Top-p Sampling work?](https://outcomeschool.com/blog/how-do-top-k-and-top-p-sampling-work)
+  - Answer: [How does Temperature control LLM output?](https://outcomeschool.com/blog/how-does-temperature-control-llm-output) and [How do Top-k and Top-p Sampling work?](https://outcomeschool.com/blog/how-do-top-k-and-top-p-sampling-work) and [How do Greedy Decoding and Beam Search differ?](https://outcomeschool.com/blog/greedy-decoding-vs-beam-search)
 - What is the lost-in-the-middle problem in long contexts and how do you address it?
   - Asked at: [Moonshot AI](#moonshot-ai-kimi)
   - Answer: [The Lost in the Middle Problem in LLMs](https://outcomeschool.com/blog/lost-in-the-middle-problem-in-llms)
@@ -1301,4 +1301,4 @@
 
 > **Roles this covers:** Machine Learning Engineer, Senior/Staff MLE, Applied Scientist, ML Platform Engineer, GenAI Engineer.
 >
-> **Interview loop, as publicly reported:** A consistent shape across all of them: coding screen → onsite with two coding rounds, one ML system design round (the differentiator), one ML breadth/depth round, and behavioural. GenAI rounds have been added to most of these loops sin
+> **Interview loop, as publicly reported:** A consistent shape across all of them: coding screen → onsite with two coding rounds, one ML system design round (the d

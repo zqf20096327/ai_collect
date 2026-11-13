@@ -1,18 +1,114 @@
-# 班长全家桶 · ComfyUI 自定义节点包
+[English](#english) | [中文](#中文)
 
-用 MiniMax H3 视频模型生成视频的 ComfyUI 中文插件。主打三采工作流，6GB 显存也能跑高清视频。
+# English
+
+A Chinese-language ComfyUI custom node pack for video generation with the MiniMax H3 model. Built around the "three-pass" workflow — high-definition video even on a 6 GB GPU.
+
+Includes multi-segment continuation, Director Studio, the AI Producer Hub, pin-frame drift control, VRAM management, plus text and subtitle tools.
+
+## Support the Author
+
+If this pack saves you time, buying the author a coffee is always appreciated — entirely optional, and it unlocks nothing extra.
+
+The codes below are **donation QR codes**; the WeChat QR code in "Contact & Updates" is for adding friends — they are different.
+
+<table>
+  <tr>
+    <td align="center">WeChat Pay<br><a href="wechat-reward.png"><img src="wechat-reward.png" width="200" alt="WeChat Pay"></a></td>
+    <td align="center">Alipay<br><a href="alipay-reward.jpg"><img src="alipay-reward.jpg" width="200" alt="Alipay"></a></td>
+  </tr>
+</table>
+
+## Installation
+
+1. Put this repository into `ComfyUI/custom_nodes/ComfyUI-Banzhang-All`.
+2. **Fully restart ComfyUI** (refreshing the web page is not enough). If files under `js/` were changed, press `Ctrl+F5` as well.
+3. Python dependencies: see `requirements.txt`.
+
+## UI Preview
+
+**H3 Director Studio**: multi-segment continuation, final-film monitor, timeline and parameters in one place.
+
+<a href="director-studio.jpg"><img src="director-studio.jpg" width="560" alt="H3 Director Studio"></a>
+
+**H3 Desk + Media Rack**: segmented script editing and reference asset management.
+
+<a href="desk-media-rack.png"><img src="desk-media-rack.png" width="560" alt="H3 Desk & Media Rack"></a>
+
+**Music-video production**: 4-segment continuation with audio waveform alignment, beat-based shot planning and per-segment preview.
+
+<a href="mv-studio.png"><img src="mv-studio.png" width="560" alt="MV production"></a>
+
+## External Components & Licenses
+
+- **Model mirror (Quark netdisk)**: the author keeps all models required by this pack in one place, ready to download:
+  [https://pan.quark.cn/s/70186cdde3ab?pwd=Lqse](https://pan.quark.cn/s/70186cdde3ab?pwd=Lqse) (extraction code included in the link).
+- **ComfyUI-H3-Motion-Context** (GPLv3): Director Studio's latent-continuation math, tensor slicing and grid checks depend on it. A copy ships in `_h3mc/` under its own `LICENSE`; replace it with an upstream update if needed.
+- **MiniMax H3 model weights** (MiniMax H3 Community License, with territory and revenue restrictions), **NVIDIA VFX / DLSS / Topaz proprietary engines and binaries**, and **fonts** are not distributed with this repository; obtain them under their own licenses. Related nodes stay inactive without those engines.
+
+## License
+
+This repository is released under **GPL-3.0-or-later**; see `LICENSE` for the full text.
+
+Sources and licenses of bundled third-party components are listed in `NOTICE.md`; upstream `LICENSE` / `NOTICE` files are kept inside each vendored directory.
+
+## Commercial Use
+
+This repository is provided under GPL-3.0-or-later; GPL-compliant use needs no further contact.
+
+**Content you create with this pack is yours to monetize** — short dramas, ads, music videos, commissions, platform revenue. Such videos, images and audio are your own works, not bound by the GPL: **no extra license, no payment required**. The GPL governs how the code is distributed, not how the output is used.
+
+The only case needing a separate agreement: bundling the code (or a modified version) **into your own closed-source software or product for distribution or sale** while keeping changes private. Reach the author via GitHub Issues or the WeChat QR code below.
+
+Note: model weights carry their own license — the MiniMax H3 Community License has territory and revenue thresholds; confirm before commercial use. Third-party components listed in `NOTICE.md` (notably `_h3mc/`, GPLv3) are outside this authorization and keep their own terms.
+
+## Changelog
+
+### 2026-11-13
+
+- New: H3 Image image-model support in the Image Studio — video-latent static-frame channel layout (24ch, 5-dim with T=1). The prompt-rewrite path needs an external text model (same mechanism as the Desk).
+- Asset pool identity migrated from alias to content hash (SQLite schema v5, idempotent self-check with automatic backfill and rebuild).
+- Media Rack fallback: when no Desk is on the canvas, the Image Studio now reads the prompts fed by the Media Rack.
+- Media Rack drag-sort and reference feeding improvements; new hash selftest for the asset pool.
+
+### v2.1.1 — 2026-11-12
+
+- First public release: 100 nodes.
+- Fixed: `core/` subpackage was missing from the release, which made 6 CGlide nodes (Director Studio, Media Rack, Desk, Tail Ref, Join, Legacy Director) fail to load as a group.
+- Release integrity: a relative-import completeness check now blocks any release that is missing referenced modules or directories.
+- Retired 7 node groups: Topaz Starlight, H3 Clip Archive, Veda sparse attention, H3 Tweaks, Universal Slider, Ignore Groups, Color Picker.
+- RelayVSR: downstream-consumer detection — errors are only raised when a downstream node actually consumes the output.
+- Model mirror on Quark netdisk added to the README.
+
+## Contact & Updates
+
+- Bilibili: [Banzhang captain](https://space.bilibili.com/15838129?spm_id_from=333.788.0.0)
+- WeChat: scan the QR code below to add the author as a friend.
+
+<a href="wechat-qr.png"><img src="wechat-qr.png" width="285" alt="WeChat QR"></a>
+
+## Feedback
+
+Please open a GitHub Issue and include your ComfyUI version plus the last lines of the terminal log.
+
+---
+
+# 中文
+
+一个面向 MiniMax H3 视频模型视频生成的 ComfyUI 中文插件。主打三采工作流，6GB 显存也能跑高清视频。
 
 内置多段续写、导演台、AI 制片中枢、钉帧漂移控制、显存管理、文本与字幕工具。
 
 ## 支持一下
 
 如果这套节点省了时间，欢迎请作者喝杯咖啡。完全自愿，与功能无关。
+
 下面是**打赏码**；后文「联系与更新」里的微信二维码用于加好友，两者不同。
 
 <table>
   <tr>
-    <td align="center">微信支付<br><a href="wechat-reward.png"><img src="wechat-reward.png" width="200" alt="微信支付打赏码"></a></td>
-    <td align="center">支付宝<br><a href="alipay-reward.jpg"><img src="alipay-reward.jpg" width="200" alt="支付宝打赏码"></a></td>
+    <td align="center">微信支付<br><a href="wechat-reward.png"><img src="wechat-reward.png" width="200" alt="微信支付"></a></td>
+    <td align="center">支付宝<br><a href="alipay-reward.jpg"><img src="alipay-reward.jpg" width="200" alt="支付宝"></a></td>
   </tr>
 </table>
 
@@ -46,6 +142,7 @@
 ## 许可
 
 本仓库整体采用 **GPL-3.0-or-later**，全文见 `LICENSE`。
+
 第三方组件的来源与各自许可见 `NOTICE.md`；各 vendor 目录内也保留了上游原始 `LICENSE` / `NOTICE`。
 
 ## 商业授权
@@ -58,6 +155,24 @@
 
 注意：模型权重有独立许可，MiniMax H3 Community License 含地域与营收门槛等限制，商用前请自行确认；`NOTICE.md` 所列第三方组件（尤其 `_h3mc/`，GPLv3）也不在可授权范围内，仍须遵守各自许可。
 
+## 更新日志
+
+### 2026-11-13
+
+- 新增：图像编辑台支持 H3 Image 图像模型 —— 视频潜空间静态帧通道（24 通道、5 维含 T=1）；提示词改写需外接独立文本模型（同文案台机制）。
+- 素材池身份从 alias 迁移到内容哈希（数据库 schema v5，幂等自检，自动补填与重建）。
+- 媒体架兜底：画布上没有文案台时，图像编辑台改读媒体架喂入的提示词。
+- 媒体架拖拽排序与引用喂入优化；素材池新增哈希自测。
+
+### v2.1.1 — 2026-11-12
+
+- 首次公开版本：100 个节点。
+- 修复：发布包缺 `core/` 子包，导致导演台、媒体架、文案台、参照图替换、续接合成、经典版导演台整组加载失败。
+- 发布完整性：新增相对导入完整性检查，缺被引用的模块/目录会拒绝发布。
+- 注销 7 组节点：Topaz 星光、H3 续拍存档、Veda 稀疏注意力、H3 画面微调、万能滑条、忽略多组、取色器。
+- RelayVSR：新增下游消费检测，仅在下游真的接线时才报错。
+- README 增加模型网盘链接。
+
 ## 联系与更新
 
 - B 站主页：[班长captain](https://space.bilibili.com/15838129?spm_id_from=333.788.0.0)
@@ -67,4 +182,4 @@
 
 ## 问题反馈
 
-请用 GitHub Issues。提交时附上 ComfyUI 版本与终端最后几行报错。
+请用 GitHub Issues，提交时附上 ComfyUI 版本与终端最后几行报错。

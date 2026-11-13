@@ -26,7 +26,7 @@
 - **Built-in AI Protocols:** Asks which AI coding tools you use (Claude Code, Cursor) and sets up [**ViraStack AI**](https://github.com/virastack/ai) for them — architecture rules in each tool's native format, `AGENTS.md`, and design skills from [**Emil Kowalski**](https://github.com/emilkowalski/skills) and [**Jakub Krehel**](https://github.com/jakubkrehel/skills) — giving your coding agents a strict "constitution" from day one.
 - **End-to-End Type Safety:** Strict TypeScript rules, Zod validation, and native package manager alignment (pnpm, npm, yarn, bun).
 - **Ecosystem Integration:** Add optional ViraStack tools (`@virastack/mask`, `@virastack/password`, `@virastack/address`) seamlessly.
-- **Modules:** Add a working feature (`users`, `checkout-address`, `checkout-card`) to your project, and remove it again, with one command.
+- **Modules:** Add a working feature (`users`, `checkout-address`, `checkout-card`, `products`, `cart`) to your project, and remove it again, with one command.
 
 ## Quick Start
 
@@ -102,6 +102,7 @@ Select none to get plain rules in `.agents/rules/` that any agent can read throu
 | `--tools <list>` | Comma-separated tools (`mask,password,address`) |
 | `--agent <list>` | AI coding tools: `claude`, `cursor` (comma separated) or `none`. Default with `--yes`: both |
 | `--i18n` / `--no-i18n` | Enable or disable the i18n template |
+| `--no-pages` | With `add`: leave a module's pages out, for a project with its own |
 | `--yes`, `-y` | Non-interactive mode (flags + defaults) |
 | `--skip-install` | Skip dependency install (AI rules and skills are still added) |
 | `--tr` | Turkish prompts |
@@ -116,10 +117,11 @@ pnpm dlx virastack add address
 pnpm dlx virastack add ai
 pnpm dlx virastack add ai --agent cursor
 pnpm dlx virastack add users
+pnpm dlx virastack add products
 pnpm dlx virastack remove users
 ```
 
-`add` installs a module's feature and creates no page. It prints the import line and a link with the steps for your framework. See the [module docs](https://virastack.com/start/docs/modules).
+`add` installs a module's feature. A module with pages of its own, such as `products`, brings them too and lists their URLs; it stops, writing nothing, when the project already has a route there, and `--no-pages` installs the feature alone. A module without pages prints the import line and a link with the steps for your framework. See the [module docs](https://virastack.com/start/docs/modules).
 
 ## Included by default
 

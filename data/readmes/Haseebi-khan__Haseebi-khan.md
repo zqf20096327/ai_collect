@@ -82,6 +82,12 @@ Most student AI portfolios stop at a notebook with a validation curve. Mine does
 
 ---
 
+<a href="https://www.credly.com/badges/c2ff44d9-ad2a-43ef-b66b-771f4d73d343/public_url">
+  <img src="./assets/credly-badge.png" width="150" alt="Credly Badge">
+</a>
+
+---
+
 <div align="center">
 
 Open to AI/ML role and research collaborations — especially anything that involves making a model run somewhere it wasn't supposed to fit: a GPU cluster, an edge board, or a flight controller.

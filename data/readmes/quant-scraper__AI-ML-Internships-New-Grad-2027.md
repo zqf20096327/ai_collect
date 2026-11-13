@@ -4,22 +4,22 @@ Every open internship and graduate role at 31 AI labs and AI & machine learning 
 
 From **[QuantScraper](https://quant-scraper.com/ai?for=students)**, where you can filter these by city, firm and focus, and see experienced roles too. Also: [2027 Quant Internships & Graduate Roles](https://github.com/quant-scraper/Quant-Student-Roles) · [2027 Big Tech Internships & Graduate Roles](https://github.com/quant-scraper/Big-Tech-Student-Roles).
 
-**38** internships · **30** graduate roles · updated 2026-11-12 22:44 UTC
+**37** internships · **30** graduate roles · updated 2026-11-13 22:40 UTC
 
 ## Where the roles are
 
 | | Americas | Europe, Middle East & Africa | Asia Pacific | All |
 |---|---:|---:|---:|---:|
 | Research | [19](https://quant-scraper.com/ai?for=students&discipline=research&region=AMER) | [5](https://quant-scraper.com/ai?for=students&discipline=research&region=EMEA) | — | [22](https://quant-scraper.com/ai?for=students&discipline=research) |
-| Engineering & technology | [31](https://quant-scraper.com/ai?for=students&discipline=technology&region=AMER) | [11](https://quant-scraper.com/ai?for=students&discipline=technology&region=EMEA) | [4](https://quant-scraper.com/ai?for=students&discipline=technology&region=APAC) | [46](https://quant-scraper.com/ai?for=students&discipline=technology) |
+| Engineering & technology | [30](https://quant-scraper.com/ai?for=students&discipline=technology&region=AMER) | [11](https://quant-scraper.com/ai?for=students&discipline=technology&region=EMEA) | [4](https://quant-scraper.com/ai?for=students&discipline=technology&region=APAC) | [45](https://quant-scraper.com/ai?for=students&discipline=technology) |
 
 <sub>A role open in several regions counts once in each.</sub>
 
 ## Contents
 
-- [Internships](#internships) (38)
+- [Internships](#internships) (37)
   - [Research](#research--internships) (21)
-  - [Engineering & technology](#engineering--technology--internships) (17)
+  - [Engineering & technology](#engineering--technology--internships) (16)
 - [Graduate roles](#graduate-roles) (30)
   - [Research](#research--graduate-roles) (1)
   - [Engineering & technology](#engineering--technology--graduate-roles) (29)
@@ -56,7 +56,6 @@ From **[QuantScraper](https://quant-scraper.com/ai?for=students)**, where you ca
 
 | Company | Role | Location | Focus | Salary | Posted |
 |---|---|---|---|---|---|
-| **[Vercel](https://quant-scraper.com/companies/vercel)** | [Software Engineering Intern - Summer '27](https://job-boards.greenhouse.io/vercel/jobs/6181759004) | San Francisco | Software | — | Nov 6 |
 | **[xAI](https://quant-scraper.com/companies/xai)** | [Spring 2027 Software Engineering Internship/Co-op](https://job-boards.greenhouse.io/xai/jobs/5252108007) | Palo Alto | Software | USD 62k–83k | Nov 5 |
 | ↳ | [Summer 2027 Software Engineering Internship/Co-op](https://job-boards.greenhouse.io/xai/jobs/5255111007) | Palo Alto | Software | USD 62k–83k | Nov 5 |
 | **[Together AI](https://quant-scraper.com/companies/together)** | [Technical Writer Intern, Developer Experience (Summer 2027)](https://job-boards.greenhouse.io/togetherai/jobs/5271149007) | San Francisco | Software | USD 85k | Nov 3 |

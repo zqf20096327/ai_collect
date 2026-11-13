@@ -2,6 +2,8 @@
 
 Jmix DocAI is a reference document management system with AI, built on [Jmix](https://www.jmix.io) 3.1. It shows developers how to build a document management system on Jmix and how to add AI to it: filling document cards from their files, assistants that answer from the documents, and search by meaning. You can clone it, run it locally with demo data in English or Russian, and read the code as an example.
 
+![Jmix DocAI: the dashboard, an upload by drag and drop, Fill with AI, the assistant of a document and the search by meaning](docs/promo/jmix-docai-readme.gif)
+
 ## 📑 Table of Contents
 
 - [Overview](#-overview)
@@ -221,6 +223,8 @@ The repository ships the [Jmix Agent Toolkit](https://github.com/jmix-framework/
 ## 🎲 Demo Data
 
 At the first start, an empty database gets the demo set that `DOCAI_DEMO_DATA` names: `en`, `ru` or `none`. Both sets hold the same folders, people and scenes: 46 documents with versions, types, fields, statuses, tags, comments and access, favorites of each user, and a few items in the trash.
+
+The history of a set, its uploads, versions, comments and deletions, moves to the days before the first start, so the last change happened yesterday; the dates of the documents and of their fields, and the texts of their files, stay as written.
 
 | Folder | Access | What to try |
 |---|---|---|

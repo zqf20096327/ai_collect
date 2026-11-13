@@ -34,7 +34,7 @@
 
 <p align="center">
   <a href="https://github.com/ExplosiveCoderflome/AI-Novel-Writing-Assistant/releases/latest"><strong>下载 Windows 桌面版</strong></a> ·
-  <a href="https://explosivecoderflome.github.io/AI-Novel-Writing-Assistant/">项目介绍与文档</a> ·
+  <a href="https://ai-novel-writing-assistant.mintlify.site">项目介绍与文档</a> ·
   <a href="#快速开始">第一次使用</a> ·
   <a href="#源码运行">源码运行</a> ·
   <a href="https://github.com/ExplosiveCoderflome/AI-Novel-Writing-Assistant/issues">问题反馈</a>
@@ -50,23 +50,13 @@
 
 ## 最新更新
 
-### 2026-11-13 · v0.8.0
+### 2026-11-13 · v0.8.1
 
-桌面版本 `v0.8.0` 把按大纲创作的工作台和开书流程合入正式版，保留文档站「落笔成书」新首页，并修复短卷章纲被抬到 12 章、节奏板因重叠无法落库的问题。原稿修订入口默认关闭。
-
-#### 新增
-
-- 独立大纲工作台：可建立大纲项目，导入、编辑、查看修订历史，并使用 AI 修改提案。
-- 按已采用的大纲开书：支持确认开书、桌面交接和逐章写作保护，未绑定大纲的全自动写作路径保持不变。
-- 文档站首页「落笔成书」开场动画（含 Safari 遮挡修复）、安装与文档页面更新，以及 README 页首 LINUX DO 徽章。
-- 原稿修订（导入原稿、反推原纲、逐章诊断修文等）已纳入代码，默认关闭；需要时打开 `VITE_MANUSCRIPT_REVISION_ENABLED`。手机端不展示这些入口。
+桌面版本 `v0.8.1` 修复新书空白占位卷被误判为用户固定单卷导致长篇小说无法生成多卷的问题。
 
 #### 修复
 
-- 已确定章数的短卷，章纲节奏板不再被自动抬到 12 章，也不会被强制加上续卷钩子。
-- 短卷节奏板允许更少节拍和同章重叠，按实际覆盖的章数校验，重叠不再被加总后误拒。
-
-写作内核 v2 仍默认关闭。大纲反馈、更完整的原稿修订后续能力、短篇适配与创作承接合同不在本版本。
+- 新书的初始空白占位卷（`legacy-volume-1`，内容为「待补全」）不再被当作用户确认的单卷规划，200 章目标小说可以正常建议并生成多卷结构，避免被固定为单卷。
 
 [查看完整更新历史](docs/releases/release-notes.md)
 
@@ -342,7 +332,7 @@ V1 与 V2 分别编排这条链，已保存的小说资料可以复用。章节�
 | 原理、模块边界与开发规范 | [开发 Wiki](./docs/wiki/README.md) · [文档目录](./docs/README.md) · [协作规则](./AGENTS.md) |
 | 历史更新与后续方向 | [完整更新记录](./docs/releases/release-notes.md) · [当前路线图](./TASK.md) |
 
-也可以在[在线文档站](https://explosivecoderflome.github.io/AI-Novel-Writing-Assistant/)搜索模块与使用问题。
+也可以在[在线文档站](https://ai-novel-writing-assistant.mintlify.site)搜索模块与使用问题。
 
 ## 源码运行
 

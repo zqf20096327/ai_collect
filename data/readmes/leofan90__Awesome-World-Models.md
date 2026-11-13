@@ -229,6 +229,7 @@ Generation via World Model", **`arxiv 2025.05`**. [[Paper](https://arxiv.org/abs
 
 ---
 ## General World Models
+* **FlockWorld**: "FlockWorld: Toward Population-Scale Multi-Agent Video World Models through Artificial Life Simulation", **`NeurIPS 2026`**. [[Paper](https://arxiv.org/abs/2610.34564)] [[Code](https://github.com/wangyz1999/flockworld)]
 * "AlayaVista: Streaming World Modeling from Panoramic States to Perspective Video", **`arxiv 2026.09`**. [[Paper](https://arxiv.org/abs/2609.14462)]
 * "World in World: Explore the World with World Models", **`arxiv 2026.09`**. [[Paper](https://arxiv.org/abs/2609.11548)]
 * "Programmable World Model", **`arxiv 2026.09`**. [[Paper](https://arxiv.org/abs/2609.10540)]
@@ -618,5 +619,4 @@ Agent, and World Models for Reasoning and Planning (LAW)`**. [[Paper](https://ar
 * "Continual Reinforcement Learning by Planning with Online World Models", **`ICML 2025 Spotlight`**. [[Paper](https://arxiv.org/abs/2507.09177)]
 * **AirScape**: "AirScape: An Aerial Generative World Model with Motion Controllability", **`arxiv 2025.07`**. [[Paper](https://arxiv.org/abs/2507.08885)] [[Website]( https://embodiedcity.github.io/AirScape/)]
 * **Geometry Forcing**: "Geometry Forcing: Marrying Video Diffusion and 3D Representation for Consistent World Modeling", **`arxiv 2025.07`**. [[Paper](https://arxiv.org/abs/2507.07982)] [[Website](https://GeometryForcing.github.io)]
-* **Martian World Models**: "Martian World Models: Controllable Video Synthesis with Physically Accurate 3D Reconstructions", **`arxiv 2025.07`**. [[Paper](https://arxiv.org/abs/2507.07978)] [[Website](https://marsgenai.github.io)]
-* "What Has a Foundation Model Found? Using Inductive Bias to Probe for Wo
+* **Martian World Models**: "Martian World Models: Controllable Vide

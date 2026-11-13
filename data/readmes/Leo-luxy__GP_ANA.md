@@ -1,6 +1,6 @@
 # GP_ANA — A 股 AI 综合分析系统
 
-**当前版本：v1.5.0**
+**当前版本：v1.6.0**
 
 **中文** ｜ [English](README_EN.md)
 
@@ -434,23 +434,30 @@ AI 走本地 Ollama，也**不需要**任何云端 API key。
 
 **1）申请**：注册并登录 <https://tushare.pro/> → 「个人主页 → 接口 TOKEN」→ 复制你的 token
 
-**2）填进两个文件**（注意是**两个**）：
+**2）填进一个文件**：项目根目录的 `tushare_client.py`
 
 ```python
-# stocks_filter/step1_daily.py 第 15 行
-TUSHARE_TOKEN = "YOUR_TUSHARE_TOKEN"     # ← 替换成你的真实 token
+# tushare_client.py
+PRIMARY_TOKEN = "YOUR_TUSHARE_TOKEN"     # ← 替换成你的真实 token
+BACKUP_TOKENS = [
+    # 可选：填入其它账号的 token；主 token 命中"频率超限"时会自动切换
+]
 ```
 
-```python
-# stocks_filter/step2_daily_basic.py 第 14 行
-TUSHARE_TOKEN = "YOUR_TUSHARE_TOKEN"     # ← 换成同一个 token
-```
+> 💡 **为什么只有一个文件**：token 集中在 `tushare_client.py` 管理，选股脚本通过 `TusharePool`
+> 调用接口，不再各自写死 token。命中「频率超限」时会自动换下一个 token 重试同一请求；
+> 所有 token 都限流才回退。也可以用环境变量覆盖，完全不改文件：
+>
+> ```bash
+> export GP_TUSHARE_TOKENS="主token,备用token"
+> ```
 
 **3）注意 Tushare 积分**：全市场日线接口（`pro.daily()`）需要 **120 积分以上**。
 新账号默认积分不够，会提示权限不足，需先在 Tushare 官网完成积分任务。
 
-> ⚠️ **安全提醒**：这两个文件**是被 git 跟踪的**。如果你打算把自己的改动提交回公开仓库，
-> 请务必先把 token 改回 `YOUR_TUSHARE_TOKEN`，或改用环境变量注入。详见 [安全注意事项](#-安全注意事项)。
+> ⚠️ **安全提醒**：`tushare_client.py` **是被 git 跟踪的**。若你要把改动提交回公开仓库，
+> 请务必先把 token 改回 `YOUR_TUSHARE_TOKEN`，或改用 `GP_TUSHARE_TOKENS` 环境变量注入。
+> 详见 [安全注意事项](#-安全注意事项)。
 
 ---
 
@@ -598,8 +605,7 @@ python sector_data_collector.py --type industry --top 30
 |:---|:---|:---|:---:|
 | **`config.py`** | 复制 `config.example.py` | ① `STOCK_TICKERS` 填股票代码<br>② `AI_CONFIG.model` 填模型名 | ✅ **必须** |
 | **`trading_records.py`** | 复制 `trading_records.example.py` | 按格式填真实买卖记录 | 建议 |
-| **`stocks_filter/step1_daily.py`** | 仓库自带 | 第 15 行 `TUSHARE_TOKEN` | 仅市场选股 |
-| **`stocks_filter/step2_daily_basic.py`** | 仓库自带 | 第 14 行 `TUSHARE_TOKEN` | 仅市场选股 |
+| **`tushare_client.py`** | 仓库自带 | `PRIMARY_TOKEN`（可选 `BACKUP_TOKENS`） | 仅市场选股 |
 | **`watchlist.py`** | 仓库自带 | 关注股票列表（建议用 Web 界面改） | 否 |
 | `data/`、`log/` | 手动创建 | —— | ✅ **必须** |
 
@@ -721,15 +727,14 @@ app.run(host='127.0.0.1', port=8081, debug=False)   # 仅本机可访问，关�
 
 **2）Tushare token 不要提交到公开仓库**
 
-`stocks_filter/step1_daily.py` 和 `stocks_filter/step2_daily_basic.py` **是被 git 跟踪的文件**。
+`tushare_client.py` **是被 git 跟踪的文件**（token 已从各脚本集中到这里）。
 填入真实 token 后一旦 `git commit`，token 就永久留在了 commit 历史里。
 
-- 提交前务必改回 `"YOUR_TUSHARE_TOKEN"`
-- 更稳妥的写法是改用环境变量：
+- 提交前务必改回 `"YOUR_TUSHARE_TOKEN"`，备用 token 列表清空
+- 更稳妥的做法是用环境变量覆盖，完全不改文件：
 
-```python
-import os
-TUSHARE_TOKEN = os.environ.get("TUSHARE_TOKEN", "")
+```bash
+export GP_TUSHARE_TOKENS="主token,备用token"
 ```
 
 - 若已误提交，请立即到 Tushare 官网**重置 token**
@@ -797,10 +802,27 @@ python stocks_filter/batch_backtest_filter.py # 4. 批量回测 → final_holdin
 
 ---
 
+## 📮 反馈与联系
+
+使用过程中遇到问题、发现 bug，或者有功能建议，欢迎直接发邮件给我：
+
+**📧 [luxy20061016@gmail.com](mailto:luxy20061016@gmail.com)**
+
+为了更快定位问题，来信时建议附上：
+
+- 操作系统与 Python 版本（例如 macOS 14 / Python 3.10.15）
+- 出问题的功能（选股 / 回测 / 个股分析 / 板块分析 …）以及页面提示的截图
+- 终端报错的最后 20 行（如果有）
+- `data/` 目录里对应生成的日志或状态文件名
+
+> 这是个人维护的开源项目，我会尽量回复；也可以直接在 GitHub 提 [Issue](https://github.com/Leo-luxy/GP_ANA/issues)。
+
+---
 ## 📄 版本历史
 
 | 版本 | 日期 | 主要变更 |
 |------|------|---------|
+| **v1.6.0** | 2026-11 | 选股整批统一交易日与每日留存、回测产物身份校验（参数/来源/内容指纹）、失败可观测与降级闭环、Tushare 主备 token 自动切换、策略参数单一来源、296 项回归测试 |
 | **v1.5.0** | 2026-09 | 文档体系重构为 README + Introduction 两册、回测页默认显示最新报告、任务状态持久化、依赖清单修正、清理冗余脚本 |
 | **v1.4.0** | 2026-06 | 市场选股+自选股管理、KDJ/板块时效性修复、回测增强（关注列表+公司名）、超时控制 |
 | **v1.3.0** | 2026-06 | 板块分析：四大类型 AI 分析、新浪财经数据源、sector API |
@@ -812,6 +834,16 @@ python stocks_filter/batch_backtest_filter.py # 4. 批量回测 → final_holdin
 
 ---
 
+## 👥 贡献者
+
+| 角色 | 成员 |
+|:---|:---|
+| 作者 / 维护者 | **[Leo-luxy](https://github.com/Leo-luxy)** — 需求设计、策略与工程实现、数据验证 |
+| 开发协作 | **dsh**（DeepSeek Harness）— 代码梳理、测试补强与文档整理 |
+
+如果你也用过这个项目、提过建议或反馈过问题，欢迎通过上面的邮箱告诉我，我会把你加进这里。
+
+---
 ## 📚 相关文档
 
 | 文档 | 说明 |

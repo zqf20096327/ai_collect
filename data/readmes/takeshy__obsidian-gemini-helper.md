@@ -400,6 +400,35 @@ This is useful for quickly running workflows without navigating to the workflow 
 
 ![Workflow History](docs/images/workflow_history.png)
 
+## Branching with AI decisions
+
+Choose **Boolean, Noul, Score, Choice, or Multiple questions**. Score/Noul preserve raw numbers and branch at a threshold; Choice routes each choice to its own node. Multiple questions share one API request and save named JSON results for later conditions such as `{{result.urgency}} >= 1.5`. See the [node reference](docs/okf/gemini-helper-help/features/workflow-nodes.md#decision-branching) for configuration and examples.
+
+A `decision` node evaluates `input` using its `prompt`, then follows `trueNext` or `falseNext`. Both fields support `{{variables}}`; for Boolean, optional `saveTo` stores `"true"` or `"false"`. A saved Gemini API key is sufficient; evaluation always uses `gemini-decision-1`, independently of the chat model. API failures, invalid responses, and cancellation stop execution without selecting a branch. Cloud API charges apply.
+
+```hub-workflow
+name: Decision routing
+nodes:
+  - id: input
+    type: variable
+    name: text
+  - id: judge
+    type: decision
+    prompt: "Does this message request urgent action?"
+    input: "{{text}}"
+    saveTo: isUrgent
+    trueNext: urgent
+    falseNext: normal
+  - id: urgent
+    type: dialog
+    message: "Urgent request"
+    next: end
+  - id: normal
+    type: dialog
+    message: "Normal request"
+    next: end
+```
+
 ## AI-Powered Workflow & Skill Creation
 
 **You don't need to learn YAML syntax or node types.** Simply describe your workflow in plain language:
@@ -607,7 +636,10 @@ Configure your Google Gemini API key and API plan in Gemini Helper, then select 
 ### Paid Plan
 | Model | Description |
 |-------|-------------|
-| Gemini 3.7 Flash | Latest fast model, 1M context (recommended) |
+| Gemini 4 Argon | Efficient frontier reasoning, 1M unified context |
+| Gemini 4 Carbon | Deep reasoning for complex tasks, 1M unified context |
+| Gemini 4 Hydrogen | Fast agentic model, 1M unified context, thinking up to `xhigh` |
+| Gemini 3.8 Flash | Fast model, 1M context |
 | Gemini 3.1 Pro Preview | Latest flagship model, 1M context (recommended) |
 | Gemini 3.1 Pro Preview (Custom Tools) | Optimized for agentic workflows with custom tools and bash |
 | Gemini 3.5 Flash Lite | Low-latency, cost-effective model, 1M context |
@@ -615,12 +647,15 @@ Configure your Google Gemini API key and API plan in Gemini Helper, then select 
 | Gemini 3.1 Flash (Image) | Fast, low-cost image generation |
 | Gemini 3.1 Flash Lite (Image) | Fastest, lowest-cost image generation, 1K |
 
-> **Thinking mode:** For supported Gemini models, choose the thinking level in the selector beside the model picker (`default` / `minimal` / `low` / `medium` / `high`). `default` leaves the choice to the Gemini API. **Gemini 3.1 Pro** cannot disable thinking, so it offers `low` as its lowest level; Gemma 4 and image models have no thinking selector. The setting is remembered per model, and prompts no longer change the thinking level automatically.
+> **Thinking mode:** Choose a model's supported thinking level in the selector beside the model picker. **Gemini 4 Hydrogen** offers `default` / `low` / `medium` / `high` / `xhigh`; `default` uses the API default of `high`. Other supported Gemini models offer levels up to `high`, with `minimal` where available. **Gemini 3.1 Pro** cannot disable thinking, so its lowest level is `low`; Gemma 4 and image models have no thinking selector. The setting is remembered per model, and prompts no longer change the thinking level automatically.
+
+Gemini 4 Argon and Carbon require a paid API key. Both offer `default` / `low` / `medium` / `high`, with `default` using the API default of `medium`. Gemini 4 models cannot disable thinking; the legacy workflow thinking OFF option uses `low`.
 
 ### Free Plan
 | Model | Vault Operations |
 |-------|------------------|
-| Gemini 3.7 Flash | ✅ |
+| Gemini 4 Hydrogen | ✅ |
+| Gemini 3.8 Flash | ✅ |
 | Gemini 3.5 Flash Lite | ✅ |
 | Gemma 4 (31B, 26B A4B MoE) | ✅ |
 

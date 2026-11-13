@@ -21,7 +21,7 @@ Pass multiple URLs to merge brand tokens across pages: `npx brandmd https://site
 Outputs to whatever your stack reads:
 
 - **`DESIGN.md`** (default): for Claude Code, Cursor, Gemini CLI, Codex, Stitch
-- **`--json`**: raw extracted tokens for scripts, MCP servers, and agent toolchains
+- **`--json`**: raw extracted tokens, in brandmd's internal shape (it can change in a 1.x release, see [Stability](#stability))
 - **`--css`**: CSS custom properties, drop into any project
 - **`--tailwind`**: Tailwind v4 `@theme` block
 - **`--html`**: visual, shareable brand guide
@@ -30,7 +30,7 @@ Combine with:
 
 - **`--agent`**: also writes `.cursor/rules/brand.mdc` and `SKILL.md` to both `.agents/skills/brand-style/` (the universal Agent Skills path used by [skills.sh](https://skills.sh) across 50+ agents) and `.claude/skills/brand-style/` (backward-compat for direct Claude Code users). No manual wiring. Picked up automatically by Claude Code, Cursor, Codex, Gemini CLI, Kiro CLI, and the rest of the skills.sh ecosystem. Schema-compatible with [Anthropic Claude Code Skills](https://docs.anthropic.com/en/docs/claude-code/skills), [google/skills](https://github.com/google/skills), and [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills).
 - **`--dark`**: also extract dark mode tokens
-- **`--vision`**: adds illustration style, photography mood, copywriting voice, and microcopy patterns from a screenshot. Requires `GEMINI_API_KEY` (free at [aistudio.google.com/apikey](https://aistudio.google.com/apikey)). Uses `gemini-3.8-flash`; set `BRANDMD_VISION_MODEL` to pick another model. If the screenshot or the vision call fails the CSS-only `DESIGN.md` is still written and the run exits 1.
+- **`--vision`**: adds illustration style, photography mood, copywriting voice, and microcopy patterns from a screenshot. Requires `GEMINI_API_KEY` or `GOOGLE_API_KEY` (free at [aistudio.google.com/apikey](https://aistudio.google.com/apikey)). Uses `gemini-3.8-flash`; set `BRANDMD_VISION_MODEL` to pick another model. If the screenshot or the vision call fails the CSS-only `DESIGN.md` is still written and the run exits 1.
 
 Or let your agent run it. `brandmd mcp` is an MCP server with one tool, `extract_design_md`, so Claude Code, Cursor, or any MCP client can pull a site's DESIGN.md in the middle of a task ("make this page look like linear.app"):
 
@@ -50,7 +50,7 @@ A call runs for at most 180 seconds (set `BRANDMD_MCP_TIMEOUT` in seconds to cha
 
 Works as brand context for Claude Code, Cursor rules, Gemini CLI, Codex, Google Stitch, MCP servers, and any coding agent that reads markdown.
 
-Real examples: [Stripe](examples/stripe.md) · [Linear](examples/linear.md) · [GitHub](examples/github.md) · [Vercel](examples/vercel.md) · [Notion](examples/notion.md) · [Cursor](examples/cursor.md) · [Anthropic](examples/anthropic.md) · [Figma](examples/figma.md) · [Supabase](examples/supabase.md) · [Raycast](examples/raycast.md) · [+20 more in the gallery](examples/README.md)
+Real examples: [Stripe](examples/stripe.md) · [Linear](examples/linear.md) · [GitHub](examples/github.md) · [Vercel](examples/vercel.md) · [Notion](examples/notion.md) · [Cursor](examples/cursor.md) · [Figma](examples/figma.md) · [Supabase](examples/supabase.md) · [Raycast](examples/raycast.md) · [+20 more in the gallery](examples/README.md)
 
 <p align="center">
   <img src="demo.gif" alt="brandmd extracting Stripe into DESIGN.md for Claude Code, Cursor, and Google Stitch" width="700">
@@ -100,6 +100,7 @@ That installs 5 brandmd-generated skills (Tailwind CSS, shadcn/ui, Vercel, Mintl
 <details>
 <summary>Release notes</summary>
 
+- **v1.0:** Stable release. A stated 1.x contract (see [Stability](#stability)), bounded MCP calls, buttons read from the page's real call to action, a palette that no longer depends on colour order, and one refusal rule for every page and theme.
 - **v0.14:** Spec + truth release. Emits the official [DESIGN.md format](https://github.com/google-labs-code/design.md) (YAML frontmatter + canonical sections) that passes `@google/design.md lint` clean. Fail-closed refusals with a distinct exit code (`--allow-blocked` to override), atomic writes, gradient-stop parsing, honest CTA/button selection, shadow values in DESIGN.md, and a fixed generate/parse/diff round trip.
 - **v0.13:** Detects block / access-denied pages (Akamai, PerimeterX, WAF 403s) and warns instead of emitting a garbage design system. Notes when a site uses motion (canvas, WebGL, Lottie, rAF).
 - **v0.12:** Trust-repair: evidence-based visual character, tiered palette, HSL color naming, no more scientific-notation radii, clustered type scale.
@@ -116,7 +117,7 @@ See [CHANGELOG.md](CHANGELOG.md) for the full history.
 
 ## Examples
 
-**[See all 30 DESIGN.md examples in the gallery →](examples/README.md)**
+**[See all 29 DESIGN.md examples in the gallery →](examples/README.md)**
 
 Flagship deep links (DESIGN.md):
 
@@ -126,7 +127,6 @@ Flagship deep links (DESIGN.md):
 - [Vercel](examples/vercel.md)
 - [Notion](examples/notion.md)
 - [Cursor](examples/cursor.md)
-- [Anthropic](examples/anthropic.md)
 - [Figma](examples/figma.md)
 - [Supabase](examples/supabase.md)
 - [Raycast](examples/raycast.md)
@@ -216,7 +216,7 @@ Pass `--allow-blocked` to force output anyway; whatever the refusal was, the art
 
 ## Gallery
 
-[See 5 real DESIGN.md snapshots in the browser](https://yuvrajangadsingh.github.io/brandmd/) (Stripe, Vercel, Linear, Anthropic, Mintlify), or scan the [`examples/`](./examples) folder for all 30. Each snapshot is generated from a single public page visit and is observed, not canonical.
+[See 4 real DESIGN.md snapshots in the browser](https://yuvrajangadsingh.github.io/brandmd/) (Stripe, Vercel, Linear, Mintlify), or scan the [`examples/`](./examples) folder for all 29. Each snapshot is generated from a single public page visit and is observed, not canonical.
 
 ## Check (drift detection in CI)
 
@@ -246,6 +246,7 @@ Colours are compared **by role**, not as a set of hexes. One hex legitimately fi
 | `--fail-on <level>` | `major` (default), `any`, or `none` |
 | `--allow-blocked` | compare anyway if the page is refused (blocked, thin, or a login wall) |
 | `--cf-wait-ms <ms>` | how long to wait for a Cloudflare challenge (default `20000`) |
+| `--debug` | print the raw error instead of a one-line remediation |
 | `--viewport <WxH>` | pin the viewport (default `1440x900`) |
 | `--locale <tag>` | pin the browser locale |
 | `--reduced-motion` | request `prefers-reduced-motion: reduce` |
@@ -258,7 +259,7 @@ A blocked page, an evidence-thin page, or a login-wall landing **refuses with ex
 
 Worth knowing before you rely on it:
 
-- **Component drift is reported but never fails a build.** Background, text colour and radius are compared on the machine-token components; height and padding are not, because the representative button is picked by frequency and a transparent nav button can win over the real CTA. Opt in with `--fail-on any` once that improves.
+- **Component drift is reported but does not fail a build by default.** Background, text colour and radius are compared on the machine-token components; height and padding are not. Components are the least certain part of an extraction (a button that fades in, or one that paints no fill at rest, is missed; see [Known limits](#known-limits)), so component drift is always `minor`. Opt in with `--fail-on any`.
 - **`secondaryFont` is unreliable.** The live side is round-tripped through the same generator and parser as a written `DESIGN.md`, which keeps both sides honestly comparable but drops fields the markdown does not carry cleanly. A secondary-font change can pass unnoticed.
 - **Majors can flip on sites that change between visits.** Each colour cluster is led by its most-used colour, so the order a page lists its colours in no longer changes the palette or the text roles, but rotating hero imagery or an A/B test that changes how often a colour is used can still repaint a role. On static marketing pages runs are byte-identical; on dynamic ones, re-run before believing a surprising major.
 
@@ -278,7 +279,7 @@ Exit `3` fails the job on drift; `1` and `2` still mean the tool errored or refu
 brandmd diff examples/stripe.md examples/vercel.md --out BRAND_DIFF.md
 ```
 
-Compares two `DESIGN.md` files and writes a markdown diff: shared and unique colors, typography table, spacing and radii table, per-component property diff, and a "what to copy / what to avoid" synthesis. Local files only in v0.11. See [`examples/diff-stripe-vs-vercel.md`](./examples/diff-stripe-vs-vercel.md) for the output format.
+Compares two `DESIGN.md` files and writes a markdown diff: shared and unique colors, typography table, spacing and radii table, per-component property diff, and a "what to copy / what to avoid" synthesis. Local files only. See [`examples/diff-stripe-vs-vercel.md`](./examples/diff-stripe-vs-vercel.md) for the output format.
 
 ## Output formats
 
@@ -318,7 +319,7 @@ A self-contained dark-themed HTML page with color swatches, font specimens, spac
 
 ### JSON (`--json`)
 
-Raw extracted tokens for programmatic use.
+Raw extracted tokens for programmatic use. The shape is brandmd's internal one and can change in any 1.x release; see [Stability](#stability).
 
 ## Multi-page extraction
 
@@ -338,7 +339,7 @@ Extract dark theme tokens as a separate section:
 brandmd https://github.com --dark
 ```
 
-Adds a "Dark Theme Overrides" section to the DESIGN.md with the dark color palette. Uses `prefers-color-scheme: dark` via Playwright, so it captures what users actually see in dark mode. Only affects DESIGN.md output (ignored for `--css`, `--tailwind`, `--html`).
+Adds a "Dark Mode Overrides" section to the DESIGN.md with the dark color palette. Uses `prefers-color-scheme: dark` via Playwright, so it captures what users actually see in dark mode. Affects DESIGN.md and `--json` output (ignored for `--css`, `--tailwind` and `--html`).
 
 ## What it extracts
 
@@ -347,7 +348,12 @@ Adds a "Dark Theme Overrides" section to the DESIGN.md with the dark color palet
 - **Typography** with role-aware Primary detection (display > heading > body), per-role font breakdown, and a full "all detected fonts" frequency list. Skips monospace, default fallbacks, and icon fonts when picking Primary.
 - **Spacing scale** and base grid unit
 - **Border radii** and shadow styles
-- **Component patterns** (buttons, cards, inputs)
+- **Component patterns** (buttons, cards, inputs). A button is a `<button>`, a `role="button"`, or a link classed or painted like one (a fill, a gradient or a border other than an underline, with a short visible label); hidden and off-page controls, skip links and controls inside a `<table>` (a sample email, a data grid) are left out, unless every control on the page sits in a table, and a control with no label text (an icon-only launcher, or only an icon font's glyphs) is never the primary button. The primary button is the most repeated fill with real colour (LCH chroma), unless that colour appears once and a neutral fill repeats more; then, as when every fill is neutral, it is the neutral that stands out most against the page. `colors.primary` is that button's fill as the page shows it (a translucent fill composited over the page, a gradient button's first stop); with no solid button, or one in the page's own colour, it falls back to the most vivid accent colour. The prose names the element each button was sampled from.
+
+### Known limits
+
+- A hero button that fades in as the page loads or scrolls can be missed. A headless capture may never run the page's reveal, so the button stays at opacity 0 and is left out, and the primary comes from the other buttons.
+- A page whose buttons paint no fill at rest (transparent until hovered) has no primary button to sample. Unless another accent colour stands out on the page, `colors.primary` falls back to the page colour and the output says it is low confidence. [clerk.com](examples/clerk.md) is one in the gallery.
 
 ## How it works
 
@@ -375,6 +381,27 @@ Then tell your agent: "extract the design system from https://linear.app"
 If brandmd saved you time, consider [starring the repo](https://github.com/yuvrajangadsingh/brandmd).
 
 Built by [Yuvraj Angad Singh](https://yuvrajangadsingh.com). Also: [vibecheck](https://github.com/yuvrajangadsingh/vibecheck) (catch AI-generated code smells) and [vemb](https://github.com/yuvrajangadsingh/vemb) (embeddings from the command line). [Follow on GitHub](https://github.com/yuvrajangadsingh) for new dev-tool experiments.
+
+## Stability
+
+From 1.0.0 brandmd follows [semver](https://semver.org/) for the parts below. A 1.x release can add to them (a flag, a section, a tool input); removing or changing one waits for 2.0.
+
+Covered:
+
+- **Commands and flags.** `brandmd <urls...>`, `brandmd diff`, `brandmd check` and `brandmd mcp`, with every flag their `--help` lists: `-o`, `--json`, `--css`, `--tailwind`, `--html`, `--dark`, `--vision`, `--agent`, `--allow-blocked`, `--debug`, `--cf-wait-ms`, `--viewport`, `--locale` and `--reduced-motion`; `diff --out`; `check --against`, `--report` and `--fail-on`.
+- **Exit codes.** `0`, `1`, `2` and `3`, as in the [table above](#refusals-and-exit-codes).
+- **The DESIGN.md shape.** The frontmatter keys `version`, `name`, `description`, `colors`, `typography`, `rounded`, `spacing` and `components`, and the sections Overview, Colors, Typography, Layout, Elevation & Depth, Shapes, Components and Do's and Don'ts, plus Dark Mode Overrides with `--dark` and Visual Identity Beyond CSS with `--vision`. The linter it is checked against is `@google/design.md@0.3.0`: CI fails on any error or warning it reports for generated test files, and every example in the gallery lints clean. A later linter version counts as supported once a brandmd release says so.
+- **The MCP tool.** `extract_design_md`, its `urls` and `dark` inputs, and its result: the DESIGN.md as the first text block, warnings as a second one, and refusals and failures as tool errors carrying the CLI's message.
+- **Environment variables.** `GEMINI_API_KEY` or `GOOGLE_API_KEY` and `BRANDMD_VISION_MODEL` for `--vision`, and `BRANDMD_MCP_TIMEOUT` for the MCP server.
+- **Node 20 or newer.**
+
+Not covered, so any 1.x release can change them:
+
+- **The values.** brandmd measures a live page, so a site change or a better extraction changes colours, fonts and components. Pin the brandmd version and commit the `DESIGN.md` when you need the same file twice.
+- **The JSON from `--json` and `check --report`.** Both are internal JSON formats (`--json` prints the extracted tokens, `--report` the drift list), so field names and nesting can change. The MCP tool returns DESIGN.md, not this JSON. When a script needs something stable, read the DESIGN.md, or `check`'s exit code.
+- **What `--css`, `--tailwind` and `--html` print.** The flags stay; the variable names and layout follow the page.
+- **Wording.** Prose sentences, warnings and error messages.
+- **The MCP limits.** Today a call runs for at most 180 seconds (`BRANDMD_MCP_TIMEOUT`), two run at once, and a cancelled or timed-out call stops its run and closes its browser on macOS and Linux. Every extraction's scroll pass stops after 50 screens and starts no new screen after 15 seconds. These numbers can be tuned.
 
 ## License
 

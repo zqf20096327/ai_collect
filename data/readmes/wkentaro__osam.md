@@ -43,7 +43,8 @@ onnxruntime-gpu 1.23, it runs on the CPU, and `device="cuda"` raises an error.
 For other GPUs (AMD, Intel, or NVIDIA without the CUDA libraries), install
 `osam[webgpu]`; osam then uses the GPU without `--device`. It runs on Vulkan,
 Direct3D 12 or Metal, and needs Python 3.11 or later. On Linux it also needs
-the system Vulkan loader (`libvulkan.so.1`).
+the system Vulkan loader (`libvulkan.so.1`). `osam[cpu]` includes it on Apple
+silicon with macOS 14 or later.
 
 ## Quickstart
 
@@ -136,6 +137,18 @@ your machine. Its New image column is image encoding plus the model's default
 prompt.
 See [docs/benchmark.md](docs/benchmark.md) for SAM3 per prompt, load times
 and CPU/CoreML parity.
+
+#### Video tracking (ms per frame)
+
+| Model | CPU<br>i9-12900K | CUDA<br>RTX 3080 Ti | WebGPU<br>RTX 3080 Ti | CPU<br>Apple M5 | CoreML<br>Apple M5 | WebGPU<br>Apple M5 |
+| ---------------- | ---: | ---: | ---: | ---: | ---: | ---: |
+| SAM3 | 12267 | 266 | 890 | 12987 | 1775 | 3407 |
+
+Measured with osam 0.11.2 on the first 40 frames of SAM 2's `bedroom.mp4`
+(960x540), tracking the 2 people a text prompt of "person" finds, with
+onnxruntime 1.30.0 and onnxruntime-ep-webgpu 0.5.0 (onnxruntime-gpu 1.31.1 for
+CUDA). CoreML runs SAM3's image encoder and memory attention, and WebGPU the
+rest.
 
 ### Custom download endpoint
 
@@ -285,8 +298,9 @@ ymax, or finds every match of `texts`, `example_boxes`, or both, such as
 `client.segment("sam3", image, texts=["dog"])`. `example_box_labels` marks an
 example box 0 to exclude what it covers. Coordinates are in pixels. Each
 annotation's `mask` covers its `bounding_box`, and is `None` from YOLO-World.
-`client.load(model, keep_alive=-1)` loads a model ahead of time, and
-`keep_alive=0` unloads it.
+`client.load(model, keep_alive=-1)` loads a model ahead of time and returns it
+as `client.ps()` lists it, with the `device` it runs on, and `keep_alive=0`
+unloads it and returns `None`.
 
 `osam.non_maximum_suppression` keeps the best of
 overlapping boxes, given as (N, 4) boxes and (N, C) per-class scores, on CPU.
@@ -296,7 +310,8 @@ when your program exits, so each program keeps its model and image embeddings
 loaded between calls. Further prompts on the same image skip the image encoder.
 A frozen application, such as a PyInstaller bundle, must call
 `multiprocessing.freeze_support()` first. `osam.Client(host="gpu-box:11368")`, or
-`OSAM_HOST`, uses a running `osam serve` instead; it checks that both run the
+`OSAM_HOST` for a client given no `device`, `max_loaded_models` or `auto_pull`,
+uses a running `osam serve` instead; it checks that both run the
 same minor version of osam. Errors from the server raise `osam.ResponseError`.
 `timeout=600` raises `TimeoutError` when a response takes longer, and restarts
 a private server, so a hung model stops.
@@ -355,7 +370,8 @@ base64 < examples/_images/dogs.jpg \
 ```
 
 `/api/segment` takes the model, the image base64-encoded, and the keyword
-arguments of `client.segment`. `/api/load` takes `model` and `keep_alive`.
+arguments of `client.segment`. `/api/load` takes `model` and `keep_alive`, and returns the model as `/api/ps`
+lists it, or `null` once unloaded.
 `osam serve --device` picks the execution device for every
 request. The server keeps one model loaded. An application using two passes
 `--max-loaded-models 2`, or `osam.Client(max_loaded_models=2)` for its private
@@ -375,8 +391,9 @@ across releases, and `osam.ResponseError.code` holds it. Unknown request and
 prompt fields return 422 instead of being ignored. `/api/models`,
 `/api/pull` and `DELETE /api/models/{name}` match `osam list`, `osam pull` and
 `osam rm`; each model in `/api/models` also lists its `capabilities`, such as
-`"segment"`, and the `prompt_kinds` it takes, such as `"points"` and
-`"texts"`. `/api/pull` streams NDJSON lines such as
+`"segment"`, the `prompt_kinds` it takes, such as `"points"` and
+`"texts"`, and its `download_size` in bytes for the server's device, known
+before a pull. `/api/pull` streams NDJSON lines such as
 `{"status": "pulling encoder.onnx", "completed": 524288, "total": 24799761}` and
 ends with `{"status": "success"}` or `{"error": "...", "code": "pull_failed"}`. The full schema is at
 <http://127.0.0.1:11368/docs>.

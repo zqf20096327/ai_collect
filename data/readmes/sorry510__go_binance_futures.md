@@ -35,7 +35,7 @@
 ./go_binance_futures
 ```
 
-**当前二进制数据库 Schema 要求 v24**（唯一代码真源：`appversion.DatabaseSchemaVersion`）。本机 MySQL 5.6 隔离库已验证新建与重复 `sync db`；**生产 MySQL 8 的真实结构、性能、旧 Main 数据无损升级及 Binance 交易 Gate 尚未验证**，不得以本地 Mock/SQLite/空表结果替代。
+**当前二进制数据库 Schema 要求 v25**（以 `appversion.DatabaseSchemaVersion` 为唯一代码真源；发布前还须核对 v25 物理表结构，不能只检查版本号）。本机 MySQL 5.6 隔离库已验证新建与重复 `sync db`；**生产 MySQL 8 的真实结构、性能、旧 Main 数据无损升级及 Binance 交易 Gate 尚未验证**，不得以本地 Mock/SQLite/空表结果替代。
 
 正常启动**不会再自动执行数据库 Schema 或版本迁移**。如果数据库尚未初始化，或数据库版本低于当前二进制要求，程序会提示先运行 `go_binance_futures sync db`。生产环境升级时建议先备份数据库，并在服务停止状态下执行同步命令。
 
@@ -76,7 +76,7 @@ UI 可在 `合约交易 → 策略模板` 中维护技术指标和策略方法�
 
 | 菜单 | 页面与用途 |
 | --- | --- |
-| 配置中心 | 使用与 AI 配置一致的 Card/折叠布局管理非 AI 运行参数；Card 标题只显示名称和状态 Tag，实际开关位于 Card 内容区。`合约交易`、`快速波动`、`强平`、`市场趋势`、`测试策略` 均为独立 Card，另包含抢新、币种提醒、市场监听、资金费率监听、调试推送和外部链接；基础 WebSocket 为系统强制启用，不提供关闭开关 |
+| 配置中心 | 使用与 AI 配置一致的 Card/折叠布局管理非 AI 运行参数；Card 标题只显示名称和状态 Tag，实际开关位于 Card 内容区。`合约交易`、`现货量化交易`、`快速波动`、`强平`、`市场趋势`、`测试策略` 均为独立 Card，另包含抢新、币种提醒、市场监听、资金费率监听、调试推送和外部链接；基础 WebSocket 为系统强制启用，不提供关闭开关 |
 | AI → 对话 | 统一 Agent 多轮对话、Symbol 选择、模型切换和多 Skill 挂载入口 |
 | AI → 市场分析 | **单币分析 / 机会发现** 两个标签；结构化 TradingPlan、历史分析和机会审核、受控交易提议 |
 | AI → 业务 Workflow | 五种业务流程手动执行；其中「策略草案验证」只做表达式编译及模拟场景验证，**不等于历史回测**；手动市场扫描的合格候选异步衔接机会分析 |
@@ -92,12 +92,46 @@ UI 可在 `合约交易 → 策略模板` 中维护技术指标和策略方法�
 | 合约交易 → 策略模板 | 新增和维护技术指标、策略方法模板 |
 | 合约交易 → 测试结果 | 查询实时模拟交易结果，可按币种和时间筛选 |
 | 合约交易 → 历史回测 | 使用历史 1m 行情、Funding 与 MarketCondition 回放策略；支持标准 1m 与自适应精度模式，并查看交易、权益曲线、审计事件和高精度下钻统计 |
+| 现货量化交易 → 现货量化交易 | 独立现货币种配置与 LONG / CLOSE_LONG 自定义策略，支持币种筛选、技术指标和启停；不使用合约杠杆、做空或保证金 |
+| 现货量化交易 → 本地现货账户 | 独立的本地策略仓位、订单、真实逐笔成交 Fill 与分报价币盈亏；过期行情或未折价手续费不显示完整净收益 |
+| 现货量化交易 → 现货策略模板 | 现货专用策略/技术指标模板管理，与合约模板分离 |
+| 现货量化交易 → 仓位与受控交易 | 查看本系统持仓及异常、手动重算本地汇总；页面手动卖出、撤单与交易所对账暂不开放；与自动策略执行开关分离 |
 | 币种提醒 → 现货提醒 / 合约提醒 | 配置到价提醒和可选的自动交易 |
 | 市场监听 → 现货监听 / 合约监听 | 配置 K 线、阈值、技术指标和自定义策略监听 |
 | 资金费率监听 | 查看资金费率并配置自动交易 |
 | 抢新配置 | 配置现货、挖矿币和合约的新币抢购 |
 | 系统配置 | 在线编辑 `conf/app.conf`，并提供保存、重启服务和停止服务按钮 |
 | 日志 | 查看 `web.commend_log` 命令返回的服务日志 |
+
+
+### 现货量化自动交易（06-7）
+
+现货量化已接入原有 **2 秒策略轮询**，使用独立 Spot 币种、技术指标、`LONG → BUY` / `CLOSE_LONG → SELL` 规则；**只有原有两个业务开关**，不需要第三个模式、额外环境变量或任务中心。
+
+**1. 配置交易环境（`conf/app.conf` 的 `[binance]`）**
+
+| `testnet` | Spot REST | 使用的 API 凭据 | 说明 |
+| --- | --- | --- | --- |
+| `true` | `https://testnet.binance.vision` | `testnet_spot_api_key` / `testnet_spot_api_secret` | Spot Testnet；**不使用**合约测试网 `testnet_api_key` / `testnet_api_secret` |
+| `false` | `https://api.binance.com` | `api_key` / `api_secret` | **Spot 正式网：真实资金与真实订单** |
+
+测试网的 `testnet_binance_spot_base_url` 设置为 `https://testnet.binance.vision`，**不要追加 `/api/v3`**（由 SDK 自动拼接）。`testnet` 是既有 Binance 环境设置，修改 `app.conf` 后须**重启服务**；同时检查同一进程里其他使用此环境选项的功能。
+
+**2. 开启自动交易**
+
+1. **配置中心 → 现货量化交易**：打开总开关（`config.spot_quant_enable=1`）。
+2. **现货量化交易 → 现货量化交易**：为币种设置报价资产预算（`usdt`）、技术指标、`long` / `close_long` 策略及止盈止损，再开启对应币种开关（`spot_symbols.spot_quant_enabled=1`）。
+3. 两个开关都开启后，只有签名用户数据 WS 已就绪、策略信号成立且余额、数量精度、交易所规则校验通过，才会自动提交 BUY/SELL。关闭任一开关会停止**新的自动交易**，**不会强制卖出已有策略仓位**。
+
+**注意**：默认的 `profit=100`、`loss=100` 指 **+100% / −100% 无杠杆 ROI**，不是常用的 +8%/−6%。`close_long` 是达到退出 ROI 阈值后的卖出许可，**仅有规则为 true 不意味着立即平仓**；开启前核实阈值与预算。
+
+**3. 订单记录与异常恢复**
+
+自动策略复用 `spotexecution.Processor` 和独立 Spot Fill 账本，只根据已核实的交易所成交计算持仓，**不把手工买入的现货当作本策略库存卖出**。UNKNOWN、部分成交、手续费/dust、查单失败等不确定情况优先拒单和对账；只有经 REST 核实为取消/过期/拒绝且**零 Fill** 的 SELL 可最多受控补卖一次，来源不明的旧 `sq4` 订单需人工核对。在「本地现货账户」查看持仓、订单、Fill 和盈亏；页面手动操作是否可用与自动策略开关是两回事。
+
+**验证与发布状态（2026-11-13）**：Spot Testnet **真实小额 BUY → SELL → CLOSED**、成交记录和签名 WS 联调已通过，Go 回归、Race、Vet/Build 以及临时 MySQL 8 兼容性验证通过。**主网真实成交、生产库 v25 物理结构/性能、Linux/ARM 部署及回滚仍未验收**。代码具备连接主网的能力不代表已在服务器发布。部署前备份、核对物理 Schema；数据库升级仅在确认目标后使用 `./go_binance_futures sync db`。
+
+详细说明：[06-7 自动策略方案](doc/trade/开发方案-06-7-现货量化自动策略执行链路.md) · [06-7-ALL 整改复评](doc/trade/CODE_REVIEW_06-7-ALL-rereview.md) · [生产只读预检 SQL](doc/trade/开发方案-06-7-4-生产只读预检.sql)。
 
 #
 #### 合约订单历史管理（Schema v24）
@@ -125,7 +159,7 @@ BINANCE_ORDER_HISTORY_T0_LEAD_MS=<已批准的 Lead 启用 UTC Unix 毫秒>
 
 ## 合约带单（Lead 账户，Stage 6 / Stage 7-1～7-4）
 
-> **当前交付状态：管理界面和独立账户基础设施已完成代码与 Mock/Race 验证；真实 Lead Portfolio、MySQL 8 Schema v24、私有 WS、Algo 条件单和资金交易尚未完成真实环境 Gate。Lead 实盘执行仍锁定。** 这不是普通 AI 受控交易，也不是复制跟随者成交的保证。
+> **当前交付状态：管理界面和独立账户基础设施已完成代码与 Mock/Race 验证；真实 Lead Portfolio、MySQL 8 Schema v25 物理结构、私有 WS、Algo 条件单和资金交易尚未完成真实环境 Gate。Lead 实盘执行仍锁定。** 这不是普通 AI 受控交易，也不是复制跟随者成交的保证。
 
 访问 `合约交易 → 合约带单`（`/futures/lead`）。页面采用六个 Card：
 
@@ -155,7 +189,7 @@ BINANCE_LEAD_AUDIT_FILE=/private/lead/operations.jsonl
 - `BINANCE_LEAD_CREDENTIAL_KEY` 必须是**32 个随机字节的标准 Base64 编码**，由运维人员安全生成并长期保存。丢失或更换主密钥会导致旧加密凭证无法解密。
 - 三个文件路径均须为**仓库外的绝对路径**；父目录需由部署用户控制，权限建议 `0700`，目标文件为 `0600`，不允许符号链接。应用不会隐式创建私有目录或生成主密钥。
 - 配好上述环境并部署新版后端后，再通过 UI 保存 Lead 专用凭证、查看只读验证结果和保存独立风险限额。未配置存储时，凭证/配置保存会安全拒绝，**不应修改 `app.conf` 来绕过检查**。
-- 应在备份、停机并确认目标数据库版本/数据后，才由人工单独执行 `./go_binance_futures sync db`。当前代码要求 **Schema v24**（以 `appversion.DatabaseSchemaVersion` 为准）；离线 SQLite/Mock PASS **不能证明实际 MySQL 8 已完成迁移**。
+- 应在备份、停机并确认目标数据库版本/数据后，才由人工单独执行 `./go_binance_futures sync db`。当前代码要求 **Schema v25**（以 `appversion.DatabaseSchemaVersion` 为准；生产 v25 物理结构须单独只读核验）；离线 SQLite/Mock PASS **不能证明实际 MySQL 8 已完成迁移**。
 
 #### 只读观察器：明确选择才会连接真实 Binance
 

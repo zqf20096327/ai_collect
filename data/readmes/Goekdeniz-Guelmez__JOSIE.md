@@ -53,6 +53,11 @@ Click a picture to play the clip.
     <td width="33%" align="center" valign="top"><a href="docs/videos/josie-embedding-map-3d.mp4"><img src="docs/videos/josie-embedding-map-3d-poster.jpg" alt="The Library's 3D embedding map: hovering a node shows its title, then the map orbits (mockup)"></a><br><sub>▶ Your Library as a 3D embedding map (mockup)</sub></td>
     <td width="33%" align="center" valign="top"><a href="docs/videos/josie-menu-bar-api.mp4"><img src="docs/videos/josie-menu-bar-api-poster.jpg" alt="The menu bar extra: the API Server switch turns on, shows the local address and a green dot, then turns off (mockup)"></a><br><sub>▶ Menu bar extra with the local API server (mockup)</sub></td>
   </tr>
+  <tr>
+    <td width="33%" align="center" valign="top"><a href="docs/videos/josie-ios-orb-idle.mp4"><img src="docs/videos/josie-ios-orb-idle-poster.jpg" alt="The orb breathing on the iPhone while JOSIE waits (real capture)"></a><br><sub>▶ The orb, idle on the iPhone (real capture)</sub></td>
+    <td width="33%" align="center" valign="top"><a href="docs/videos/josie-sky-day-to-night.mp4"><img src="docs/videos/josie-sky-day-to-night-poster.jpg" alt="The real sky behind the orb from dawn through midday and sunset into night (real capture)"></a><br><sub>▶ The sky from morning to night (real capture)</sub></td>
+    <td width="33%" align="center" valign="top"><a href="docs/videos/josie-sky-night-shooting-stars.mp4"><img src="docs/videos/josie-sky-night-shooting-stars-poster.jpg" alt="The night sky behind the orb with twinkling stars and the occasional shooting star (real capture)"></a><br><sub>▶ Night sky with shooting stars (real capture)</sub></td>
+  </tr>
 </table>
 
 ### Screenshots
@@ -174,6 +179,30 @@ Click a picture to play the clip.
 
 </details>
 
+<details open>
+<summary><b>Mac · Voice call engines</b> (7, real captures)</summary>
+<br>
+
+Native call engines run fully on your Mac and are experimental. These are screenshots of the current app.
+
+<table>
+  <tr>
+    <td width="33%" align="center" valign="top"><a href="docs/images/mac-call-engine-picker-1600.webp"><img src="docs/images/mac-call-engine-picker-800.webp" alt="The Call engine picker: Cascaded Pipeline, LFM3, Nemotron VoiceChat, Moshi, Realtime Venus, Caramel-1, Awaken and Haru (real capture)"></a><br><sub>Pick a call engine, from the cascaded pipeline to Haru. (real capture)</sub></td>
+    <td width="33%" align="center" valign="top"><a href="docs/images/mac-haru-engine-1600.webp"><img src="docs/images/mac-haru-engine-800.webp" alt="Haru 4B engine settings: full-duplex every 133 ms, up to 60 minutes of call context, your selected voice and a precision picker (real capture)"></a><br><sub>Haru 4B: full duplex in your chosen voice. (real capture)</sub></td>
+    <td width="33%" align="center" valign="top"><a href="docs/images/mac-venus-model-picker-1600.webp"><img src="docs/images/mac-venus-model-picker-800.webp" alt="Realtime Venus with the Venus-Omni 9B model picker and its delegation switches (real capture)"></a><br><sub>Realtime Venus hands hard work to your LLM. (real capture)</sub></td>
+  </tr>
+  <tr>
+    <td width="33%" align="center" valign="top"><a href="docs/images/mac-moshi-model-picker-1600.webp"><img src="docs/images/mac-moshi-model-picker-800.webp" alt="Moshi model picker: Moshiko, Moshika, Seamless and RAG, plus Add custom (real capture)"></a><br><sub>Moshi and its model variants. (real capture)</sub></td>
+    <td width="33%" align="center" valign="top"><a href="docs/images/mac-lfm3-model-picker-1600.webp"><img src="docs/images/mac-lfm3-model-picker-800.webp" alt="LFM3 model picker with Audio 2B and Omni 2B and Add custom entries (real capture)"></a><br><sub>LFM3 Audio and Omni. (real capture)</sub></td>
+    <td width="33%" align="center" valign="top"><a href="docs/images/mac-native-add-custom-1600.webp"><img src="docs/images/mac-native-add-custom-800.webp" alt="The empty Add custom form for a Hugging Face repository with an Inspect and add button (real capture)"></a><br><sub>Add your own model from Hugging Face. (real capture)</sub></td>
+  </tr>
+  <tr>
+    <td width="33%" align="center" valign="top"><a href="docs/images/mac-native-memory-1600.webp"><img src="docs/images/mac-native-memory-800.webp" alt="Moshi engine page: how long a call it remembers and experimental guidance (real capture)"></a><br><sub>How much of a call each engine remembers. (real capture)</sub></td>
+  </tr>
+</table>
+
+</details>
+
 <details>
 <summary><b>Mac · Onboarding</b> (1)</summary>
 <br>
@@ -208,7 +237,23 @@ On iPhone, calls use OpenAI GPT-Live or your own compatible server; no models ru
 
 </details>
 
-<sub>Every screenshot and clip here is a mockup rendered from the app's source with demo content, not a capture of a running build. Real captures will replace them.</sub>
+<details open>
+<summary><b>iPhone · Chat, menu and settings</b> (5, real captures)</summary>
+<br>
+
+<table>
+  <tr>
+    <td width="20%" align="center" valign="top"><a href="docs/images/ios-chat-empty.webp"><img src="docs/images/ios-chat-empty.webp" alt="iPhone chat, empty, with the composer (real capture)" width="160"></a><br><sub>Chat on the iPhone. (real capture)</sub></td>
+    <td width="20%" align="center" valign="top"><a href="docs/images/ios-menu.webp"><img src="docs/images/ios-menu.webp" alt="The iPhone menu under the avatar (real capture)" width="160"></a><br><sub>Everything under your avatar. (real capture)</sub></td>
+    <td width="20%" align="center" valign="top"><a href="docs/images/ios-settings.webp"><img src="docs/images/ios-settings.webp" alt="iPhone Settings overview (real capture)" width="160"></a><br><sub>Settings. (real capture)</sub></td>
+    <td width="20%" align="center" valign="top"><a href="docs/images/ios-settings-conversation.webp"><img src="docs/images/ios-settings-conversation.webp" alt="iPhone Settings, Conversation (real capture)" width="160"></a><br><sub>Conversation settings. (real capture)</sub></td>
+    <td width="20%" align="center" valign="top"><a href="docs/images/ios-settings-tools.webp"><img src="docs/images/ios-settings-tools.webp" alt="iPhone Settings, Tools (real capture)" width="160"></a><br><sub>Tools on the iPhone. (real capture)</sub></td>
+  </tr>
+</table>
+
+</details>
+
+<sub>Pictures and clips marked (mockup) are rendered from the app's source with demo content; ones marked (real capture) are recorded from the running app.</sub>
 
 ## Gets things done
 

@@ -22,6 +22,8 @@ decode or a packet list can't show, the agent extends the viewer itself.
   selected.
   Right-click packets to ask the agent about them without leaving the view. You check its
   findings in the packets instead of taking a summary on trust.
+  When you want the result written up, the agent marks and comments the packets that carry it
+  and writes a findings report.
 - **The agent extends the viewer.** Traffic Wireshark doesn't know, such as a company's sensor
   stream or a game's protocol, shows up as "Data". The agent writes a Lua dissector for it from
   the bytes or a spec, tests it against the open capture and reloads the view, which then
@@ -53,12 +55,27 @@ The viewer itself works like Wireshark:
 - **Export Objects** as in Wireshark's File menu: list the files carried in HTTP, email (IMF),
   SMB, TFTP, DICOM and FTP traffic, go to their packets, and save them, each save into a new
   folder; the agent hears where, so you can ask it about them.
+- **Marks with a note:** Mark Packet (Ctrl+M) is the quick toggle; **Mark Packet with Note…** (the
+  packet list's menu and Edit) asks for a note, and on a marked packet reads **Edit Mark's Note…**.
+  The note shows in the row's tooltip, the first line of the packet's details, Go › Marked
+  Packets, exports and the findings report, and the agent hears of it.
 - **Packet comments** as in Wireshark's Edit › Packet Comments: add, edit and delete them, for
   you and the agent alike; the packet list marks commented packets, and pcapng exports (Save As)
   write the comments as edited.
+- **The investigation stays with the capture:** marks with their notes, time references and
+  packet comments edited in the viewer are kept in WireBuddy's data folder and come back when
+  you open the capture (or a copy of it) again, also after another capture or a restart; File ›
+  Forget Kept Marks and Comments… goes back to what the capture file holds.
+- **A findings report:** File › Write Findings Report… (or the agent's `write_findings`) writes
+  what an investigation found as one Markdown file: your or the agent's summary, the capture's
+  facts, a table of the marked packets with their notes, and the packets with comments, in the
+  rules of an export (a new `.md` file); text from the capture is written escaped, so it reads as
+  text and renders as nothing else.
 - **Live capture** with traffic sparklines per interface, promiscuous mode, a capture filter
   checked as you type, new files automatically, a ring buffer and stop conditions; the view
-  updates about once a second.
+  updates about once a second. On a loopback interface or `any`, WireBuddy's own traffic (the
+  page and the agent talking to its server, TCP on its port) is left out of the capture, or it
+  would record itself; your capture filter is combined with that, and says so when you start.
 
 ![WireBuddy screenshot: a reassembled HTTP response, with frames marked by the agent](docs/screenshot.png)
 
@@ -105,6 +122,9 @@ WireBuddy is for working on a capture together with the agent:
   On macOS it needs read access to `/dev/bpf*`, which Wireshark's ChmodBPF sets up.
 
 - **Node.js ≥ 22**
+
+- **An ordinary user for extensions and Decode As**: Wireshark's `sharkd` loads no Lua plugins
+  when it runs as root, so as root they are unavailable and WireBuddy says so.
 
 Developed on Ubuntu 22.04 with Wireshark 4.6.6; CI runs on Ubuntu 24.04 with the current stable
 Wireshark from the PPA. Other Linux distributions should work; macOS, live capture
@@ -275,7 +295,11 @@ question, prints it and exits, which wakes Claude.
 To ask about packets without switching to the chat, right-click them in the packet list and
 choose **Ask Claude about This Packet…** (or **Ask Claude about These N Packets…**). The question
 goes to Claude with the packet numbers and wakes it if its watch is running (the dialog says
-whether it is); otherwise it comes with Claude's next step. Claude answers in the chat.
+whether it is); otherwise it comes with Claude's next step. Claude answers in the chat, and with
+`answer_question` in the page: a line under its banner says the question is waiting until it does,
+then the answer takes its place until you dismiss it, and **Tools › Questions to Claude…** (the
+page puts the attached agent's name there and in **Ask … about This Packet…**, "Agent" when it gave
+none) lists this session's questions with their answers (a click selects the packet a question was about).
 
 When you notice something during a live capture (the app froze, a reply was slow, a light
 flickered), press **Now**: the flag in the toolbar, or N in the packet list. A tap asks what just
@@ -362,11 +386,13 @@ solution; `solution/ctseries` is the panel.
 | `expert_info` | Expert Information grouped by severity and message, with example frames |
 | `io_graph` | Packets/bytes/bits over time for up to 4 filters: peaks, empty stretches, a downsampled series |
 | `export_packets` | Write matching, displayed, marked, selected or ranged packets to a new capture file, with their packet comments as edited and marks as comments (pcapng) |
+| `write_findings` | Write the findings report to a new Markdown file: the agent's summary, the capture's facts, the marked packets with their notes and the packets with comments |
 | `export_objects` | List the files carried in the traffic (HTTP, email, SMB, TFTP, DICOM, FTP), or save them to a new folder |
 | `check_display_filter` | Validate a filter; hints when capture-filter (BPF) syntax was used |
 | `set_display_filter` | Apply a filter in the user's view |
 | `goto_frame` | Select and scroll to a frame |
-| `mark_frames` / `clear_marks` | Highlight frames with a note (listed under Go → Marked Packets) |
+| `answer_question` | Answer a question the user asked from the page (Ask Agent, Now) in the page, with a packet to select if it helps |
+| `mark_frames` / `clear_marks` | Highlight frames with a note (first line of the packet's details, listed under Go → Marked Packets) |
 | `time_references` | Set or unset time references (`*REF*`), which the Time column counts from, or clear them |
 | `packet_comments` | Add, replace or delete packet comments in the user's view (kept by exports to pcapng) |
 | `set_columns` | Show fields as extra columns in the user's packet list |
@@ -419,9 +445,9 @@ the questions you asked it.
 - The MCP tools can start and stop captures on the interfaces `dumpcap` may capture on, always
   into WireBuddy's capture folder. They can open any capture file you can read, read packets,
   change the filter, marks, time references, packet comments, selection, columns and Decode As
-  entries, open and close panels, open Wireshark, and write new `.pcap`/`.pcapng` exports where
-  you can write; an existing file is never replaced unless the agent exported it itself in the
-  same session.
+  entries, open and close panels, open Wireshark, and write new `.pcap`/`.pcapng` exports and
+  `.md` findings reports where you can write; an existing file is never replaced unless the
+  agent wrote it itself in the same session.
 - File › Export Objects and `export_objects` save files from the traffic, whose names and
   contents a sender chose, only into a new folder they create (`http-objects`, `http-objects-2`,
   …) in a directory you or the agent name, under names of their own (`f12-report.pdf`). No other
@@ -439,6 +465,13 @@ the questions you asked it.
 - Live captures, exports and saved objects are readable only by you (files `0600`, folders
   `0700`), and so are the slices of big live captures, written to a hidden folder next to the
   capture and removed once it is read in full.
+- Marks with their notes, time references and edited packet comments, also the agent's, are
+  written to `~/.local/share/wirebuddy/investigations` (`$XDG_DATA_HOME` if set), one file
+  (`0600`) per capture in a folder (`0700`) that must be your own and not a link, never next to
+  the capture where another user could put a forged one. They stay on disk until you clear them.
+  A file there that doesn't check out (unknown version, a wrong field, too many entries) is
+  ignored whole and the agent hears why; it is set aside as `<name>.unreadable`, not overwritten,
+  once something new is kept for that capture.
 - Extensions are Lua code that runs as you inside `sharkd` and the Wireshark WireBuddy opens. The
   MCP tools can test, reload and switch extensions, not write them: an agent writes them with its
   own file tools, so it needs file access anyway. Extensions another user could have changed are
@@ -489,12 +522,25 @@ plugins don't change the results. The capture checks in `npm test` need `dumpcap
   from the first packet, not from the time references. In a filter, `frame.ref_time` stands for
   the references' frame numbers: it works only as a test of its own, not inside a function or
   with `#` or `@`, and for a few hundred scattered references at most (about 4 KB of numbers).
-- Packet comments added, edited or deleted in the viewer stay there until the capture is closed
-  or another one opened, also when a live capture goes on in a new file (ring buffer, new file
-  after …; WireBuddy says when that discards edits); only an export to pcapng (File › Save As)
-  keeps them, and "Open in Wireshark" opens the file without them. Display filters on
-  `frame.comment`, Expert Information and the agent's `query_packets` fields read the comments in
-  the file: edits reach them once exported and that file opened.
+- Packet comments added, edited or deleted in the viewer, marks and time references are kept
+  with the capture in WireBuddy's data folder, not in the capture file: only an export to pcapng
+  (File › Save As) writes the comments (and, if you choose, the marks) into a capture file, and
+  "Open in Wireshark" opens the file without them. Display filters on `frame.comment`, Expert
+  Information and the agent's `query_packets` fields read the comments in the file: edits reach
+  them once exported and that file opened.
+- A capture is known by its first 4096 bytes: a copy shares what was kept, and so does another
+  capture that starts with the same bytes; a capture that is shorter now loses what was kept for
+  packets it no longer has once something changes. When a live capture goes on in a new file
+  (ring buffer, new file after …), what was set in the earlier file stays with that file. A live
+  capture's first moments, until 4096 bytes are written, are kept only once it stops. At most the
+  200 captures changed last are kept, and at most 4 MiB for one (WireBuddy tells the agent when
+  that is exceeded; they then stay only until the capture is closed, and Open, Close and Start
+  Capture ask before they discard edited comments, as they do whenever they can't be kept). File ›
+  Forget Kept Marks and Comments… drops all of it for the open capture, so that its packets read as
+  the capture file has them again (its own comments too, after they were edited or deleted with
+  Delete All Packet Comments). A kept file WireBuddy can't read (one of a newer version, say) is
+  left as it is; before anything new is kept for that capture it is moved to `<name>.unreadable`
+  next to it.
 - In the Wireshark window that "Open in Wireshark" starts, the interface list stays empty until
   Capture → Refresh Interfaces (F5): Wireshark skips the scan when it starts with a file.
 - A Decode As entry is one TCP, UDP or TLS port or one RTP payload type, at most 50 of them, and

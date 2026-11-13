@@ -14,7 +14,7 @@
 **The personal OS that grows with you.** Track how you feel, plan your day, keep your life
 organised, and let an agent connect the dots. Local first, encrypted if you want, no account needed.
 
-[Quick start](#quick-start) · [Tool reference](docs/TOOLS.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
+[Quick start](#quick-start) · [Tool reference](docs/TOOLS.md) · [Command line](docs/CLI.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
 
 > Built for the NousResearch "Show us what Hermes Agent can do" hackathon.
 
@@ -187,6 +187,18 @@ hermes-life-os --mode morning --provider anthropic
 Prefer running from source instead of installing? Clone the repo and use
 `python demo/demo_life_os.py ...` in place of `hermes-life-os ...` above
 (same flags, same behavior) - see [Project Structure](#project-structure).
+
+### Use it without an AI model
+
+Every tool also runs straight from the shell, with no language model and no API key:
+
+```bash
+hermes-life-os-tool run add_task text="Pay rent" due=friday priority=high
+hermes-life-os-tool run plan_my_day
+hermes-life-os-tool list --match calendar
+```
+
+See [docs/CLI.md](docs/CLI.md) for arguments, scripting and cron examples.
 
 ### Or run it with Docker - zero Python setup
 
@@ -2203,6 +2215,18 @@ phrased as a nudge, nothing more.
 
 ## What's New
 
+**v1.52.0 - Tools From the Shell**
+- New **`hermes-life-os-tool`** command: run any of the tools straight from the terminal with
+  no language model and no API key. `list` (with `--match`), `show <tool>` and
+  `run <tool> key=value ...` or `--json`. Handy for scripts, shortcuts and cron jobs; see
+  [docs/CLI.md](docs/CLI.md).
+- `--version` for `hermes-life-os` and `hermes-life-os-tool`.
+- Fixed the package `__version__`, which still said 1.13.0; a test now keeps it equal to
+  the version in `pyproject.toml`.
+- Fixed an invalid escape sequence in the calendar export (a warning on Python 3.12 and later) and made the
+  command accept `key=value` arguments after `--json` on Python 3.10 and 3.11, which the CI matrix caught.
+- 11 new tests - suite grew from 5054 to 5065.
+
 **v1.51.0 - Projects and Waiting For**
 - New **projects**: `add_project`, `get_projects`, `get_project`, `update_project`,
   `add_project_task`, `delete_project`. A project is an outcome that needs several tasks;
@@ -2222,21 +2246,4 @@ phrased as a nudge, nothing more.
 - New **flashcards** with spaced repetition (Leitner boxes): `add_flashcards`,
   `review_flashcards`, `reveal_flashcard`, `answer_flashcard`, `get_flashcard_stats`,
   `delete_flashcard`. A correct answer moves a card up a box (it returns after 1, 3, 7, 16 and
-  35 days), a wrong one sends it back to box 1 for tomorrow. The agenda and a nudge show how
-  many cards are due.
-- New **net worth**: `set_account_balance`, `get_net_worth`, `get_net_worth_trend`,
-  `delete_account`. Record what you own and owe whenever you look at it; Hermes keeps each
-  account's history and shows net worth today, the change since the last update and a
-  month-by-month trend. A nudge appears after five weeks without an update.
-- Recently deleted now labels flashcards by their front and weekly reviews by their week.
-- Doctor, repair suggestions, search, backup, restore, export and recently deleted cover the
-  two new stores.
-- 39 new tests - suite grew from 4978 to 5017.
-
-**v1.49.0 - Inbox and Weekly Review**
-- New **inbox**: `add_to_inbox`, `get_inbox`, `process_inbox_item`, `delete_inbox_item`.
-  Capture anything the moment it crosses your mind, then turn it into a task, a note, a
-  library item or one of today's priorities. The agenda shows what is unsorted and a nudge
-  appears when items have waited three days or the inbox reaches ten.
-- New **weekly review**: `start_weekly_review`, `save_weekly_review`, `get_weekly_reviews`,
-  `delete_weekly_review`. A guided end
+  35 days), a wrong one sends it back to 

@@ -236,10 +236,17 @@ elements.
 Selector values may also be wrapped in matching single quotes, double quotes,
 or backticks (including `role=...`, `action:...`, and `#id` forms); surrounding
 whitespace is ignored.
-Use `selector="label:<text>"` or `selector="label=<text>"` for
+Use `selector="label:<text>"` or `selector="label=<text>"` (or the
+shorter `text:<text>`, `text=<text>`, `name:<text>`, `name=<text>`, and
+`placeholder:<text>` / `placeholder=<text>` aliases) for
 case-insensitive accessible-label/text matching on regions and elements;
 element matching also falls back to `aria-label`, `title`, `placeholder`, and
-`alt` attributes when a compiled label is unavailable;
+`alt` attributes when a compiled label is unavailable; use `alt:<text>` or
+`alt=<text>` for an image-focused query. Use `testid:<text>` or
+`testid=<text>` (also `data-testid:<text>`) to match compiled stable test
+hooks. The explicit
+`description:<text>` / `description=<text>`, `aria-description`, and
+`accessible-description` aliases also match compiled description metadata;
 whitespace is normalized so labels split across lines still match.
 Element selectors also accept common HTML tag aliases: `a`/`area`/`areas`/`anchor`/`anchors`/`hyperlink`/`hyperlinks`/`link`/`links`,
 `p`/`s`/`ins`/`del`/`mark`/`paragraph`, and `ul`, `ol`, `dl`, or `menu`/`list`/`lists` (plus the explicit

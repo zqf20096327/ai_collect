@@ -26,6 +26,19 @@ Run it on your Claude subscription and extend it with your own MCP servers, skil
 
 https://github.com/user-attachments/assets/84012a4d-4ca1-475e-b82d-1db45634a5e3
 
+## How it compares
+
+| Option | Why hermitd |
+|--------|-------------|
+| [Hermes Agent](https://github.com/NousResearch/hermes-agent), [OpenClaw](https://github.com/openclaw/openclaw) | hermitd runs directly inside Claude Code as a plugin, without a wrapper or separate agent loop. Your native tools, permissions, skills, plugins, and MCP stay in use. |
+| [Claude Projects](https://code.claude.com/docs/en/claude-projects.md) | Run an ongoing agent on your host, handling chat requests and watching local systems. Watches return after restarts, reports go back to the right chat, and tasks stay open until confirmed, verified, or cancelled. In Monitor mode, [prechecks](plugins/hermitd/docs/routine-authoring.md) can skip scheduled runs without using model tokens. |
+| [Claude Tag](https://claude.com/docs/claude-tag/concepts/how-it-works) | Use Discord, Telegram, iMessage, or custom Claude Code channels, and continue the same session in the Claude app or terminal. Tag currently documents Slack, including with self-hosted runners; [Microsoft Teams is announced](https://claude.com/form/claude-tag-teams-waitlist). |
+| [Claude Duet](https://support.claude.com/en/articles/17631495-get-started-with-claude-duet), [ChatGPT Dots](https://learn.chatgpt.com/docs/dots), [Grok Bot](https://docs.x.ai/grok-bot/overview) | Run the agent itself on your machine or server, beside your files, databases, and local services. Keep your Claude Code tools and choose its model and effort. Duet, Dots, and Grok Bot provide managed cloud agents. |
+
+You keep the host running and maintain its sign-ins. Claude inference still runs in the cloud.
+
+Sources checked November 12 and 13, 2026.
+
 <a id="quick-start"></a>
 
 ## Set up
@@ -35,7 +48,7 @@ https://github.com/user-attachments/assets/84012a4d-4ca1-475e-b82d-1db45634a5e3
 <details open>
 <summary>Already run Claude Code? Install the plugin</summary>
 
-With Claude Code 2.1.322+ and Bun 1.4+ installed:
+With Claude Code 2.1.323+ and Bun 1.4+ installed:
 
 ```bash
 claude plugin install hermitd --marketplace gtapps/hermitd --scope local
@@ -286,7 +299,7 @@ You can run separate agents for different responsibilities, each with its own wo
 
 **Sign-in renewal from chat.** When your agent’s Claude sign-in needs renewing, use `/relogin` from your connected chat. Open the link in your browser, sign in, and send the code back in chat.
 
-**Tool sign-ins from chat.** Anyone admitted may ask to reconnect a tool or claude.ai connector; an admin finishes the sign-in. The account used serves every chat and routine, so prefer a dedicated account over a personal login. Paste the callback address in a chat that reaches the agent; forward the sign-in link if the tool belongs to someone else's account.
+**Tool sign-ins.** Anyone admitted may ask to reconnect a tool or claude.ai connector; the agent tells an admin, who finishes the sign-in with `/mcp` at the agent's terminal. The account used serves every chat and routine, so prefer a dedicated account over a personal login, and forward the link `/mcp` shows if the tool belongs to someone else's account.
 
 **Scheduled backups.** Optional backups preserve the agent’s knowledge, session reports, settings, and Claude Code memory in Git, with an optional private remote copy. Backups run without model tokens.
 
@@ -317,7 +330,7 @@ See the [Upgrade guide](plugins/hermitd/docs/upgrading.md) for details.
 - **Configure:** the [Config Reference](plugins/hermitd/docs/config-reference.md) covers the full schema and tuning details.
 - **Use:** [Getting Started](plugins/hermitd/docs/how-to-use.md) and the [Owner's Guide](plugins/hermitd/docs/owners-guide.md) cover everyday work, decisions, and controls.
 - **Automate:** [Routine Authoring](plugins/hermitd/docs/routine-authoring.md) covers schedules and prechecks. [Channel configuration](plugins/hermitd/docs/config-reference.md#channels) includes third-party channel plugins.
-- **Observe:** [Artifacts](plugins/hermitd/docs/artifacts.md) explains the dashboard, pending decisions, and weekly reviews.
+- **Observe:** [Artifacts](plugins/hermitd/docs/artifacts.md) explains the dashboard, pending decisions, and weekly reviews. [OpenTelemetry](plugins/hermitd/docs/opentelemetry.md) explains how to export each step to a collector you run. Event names and attributes are in [Claude Code's monitoring docs](https://code.claude.com/docs/en/monitoring-usage).
 - **Maintain:** [Upgrading](plugins/hermitd/docs/upgrading.md), [Backup](plugins/hermitd/docs/backup.md), [Troubleshooting](plugins/hermitd/docs/troubleshooting.md), and [Uninstalling](plugins/hermitd/docs/how-to-use.md#install).
 - **Understand:** [Architecture](plugins/hermitd/docs/architecture.md), [Security](plugins/hermitd/docs/security.md), and [FAQ](plugins/hermitd/docs/faq.md).
 

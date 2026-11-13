@@ -6,6 +6,10 @@ Turn your own PDF textbooks into an AI-searchable knowledge base and structured,
 
 [繁體中文說明 → README.zh-TW.md](README.zh-TW.md)
 
+**New here? → [5-minute quickstart](examples/quickstart.md)**: convert a bundled sample chapter and have Claude answer from it with page citations. Skills as a plugin: [Install as a Claude Code plugin](#install-as-a-claude-code-plugin).
+
+> 🧋 Saved you some time? [Buy me a drink](https://drpwchen.com/en/support/).
+
 ## Why I built this
 
 I've loved taking notes since med school, and over the years I've built up thousands of them — but I can no longer keep every one at the same quality by hand. In an age of information overload, trustworthy high-quality sources become the precious thing, and textbooks are among the best; yet my specialty alone has 40+ designated reference books, with a single concept scattered across chapters in many of them. Reading them all cover to cover just isn't realistic. LLMs are great at long context, but you can't dump hundreds of books on one at once — so the real unlock is pairing good search and a database with teaching the AI my own note-making process, so it produces grounded, structured notes I only have to absorb.
@@ -24,12 +28,16 @@ problem; you can move up later without redoing anything.
 |---|---|---|
 | **A · Converter only** | Your PDFs/EPUBs as clean, greppable markdown with page markers, tables, and figure-reference markers. Search with `grep`. | `pip install -r requirements.txt`, then `converter/convert.py`. Nothing else — no GPU, no ollama, no index. |
 | **B · A + the note workflow** | An AI writes structured, per-claim-cited notes from that corpus, with figures extracted through a QC gate. | A, plus the two skills in [`skills/`](skills/) and [`workflows/note-writing.md`](workflows/note-writing.md). |
-| **C · B + semantic search** | Cross-book retrieval by meaning rather than keyword — worth it once "which book was that in?" stops being obvious. | B, plus an indexer: the companion repo [vault-search](https://github.com/drpwchen/vault-search), a local embedding model, and `INDEXER_SCRIPT`. |
+| **C · B + semantic search** | Cross-book retrieval by meaning rather than keyword — worth it once "which book was that in?" stops being obvious. | B, plus the companion repo [ask-your-library](https://github.com/drpwchen/ask-your-library) and a local embedding model. Then three commands: `convert.py` → `convert.py --resplit <output> --out <corpus>` → `corpus.py add <corpus>` (run in ask-your-library). |
 
-**This repo ships no indexer.** Profile C's semantic search comes from vault-search (or any
-indexer exposing the same `--incremental` / `--book <name>` CLI); `post_convert.py --index`
-is only the hook that calls it. Profile A is a fully supported end state, not a degraded one —
-for a few dozen books, grep over the converted markdown is genuinely enough.
+**This repo ships no indexer and calls none.** It produces a corpus folder; making that folder
+searchable is an opt-in step done by ask-your-library with one command, `server/corpus.py add
+<corpus>`. `--resplit` is what turns converted output into such a corpus (a per-book
+`_manifest.json` and a root `corpus.json`, format
+[`t2n-corpus/1`](https://github.com/drpwchen/ask-your-library/blob/main/docs/corpus-format.md)).
+Profiles A and B need no RAG at all — no index, no embedding model, no ask-your-library. Profile A
+is a fully supported end state, not a degraded one — for a few dozen books, grep over the
+converted markdown is genuinely enough.
 
 If you're having an AI set this up, tell it which profile you want; [`AGENTS.md`](AGENTS.md)
 asks this first and then skips the steps your profile doesn't need.
@@ -60,12 +68,15 @@ PyMuPDF text extraction at ~130 ms/page. Two non-obvious pieces:
 
 - **Silent-failure detection** — a native text layer can *lie* (CID/Identity-H fonts, PUA codepoints). We score glyph-garble ratio, character density, and font risk to catch pages that "extracted fine" but didn't, and route only those to OCR.
 - **Column-aware reading order** — line-level column clustering reconstructs true reading order on two-column layouts, with an exact-fallback path so single-column pages are byte-identical to the trivial extraction. (`T2N_COLUMN_SORT=0` to disable.)
+- **No empty chapter files from same-page bookmarks** — a Part bookmark and its first chapter usually point at the same page, which used to leave a 0-byte `chNN_*.md` for the Part. Bookmarks that land on the same page now collapse into one chapter file; surviving files keep their names and bytes, so `chNN` numbering has gaps. Measured on 37 real books: 1,220 empty files → 1 (an out-of-order bookmark, deliberately left as is). (`T2N_SPLIT_SAME_PAGE_MERGE=0` restores the old output.)
+- **Re-conversion clears its own old chapter files** — `--batch-dir` used to write a re-converted book's new chapter files over the old ones by name only, so any chapter the new split no longer produces stayed on disk and kept being indexed. After `full_text.md` is rewritten, the book's previous split files (`chNN*.md`, `pages_NNNN-NNNN.md`, only directly in that book's folder) are deleted first; a failed conversion leaves them in place, and the run log names every removed file. Measured on 39 real books: a re-conversion would have left 1,214 stale files behind, all of them without text. (`T2N_CLEAR_STALE_CHAPTERS=0` to disable.)
+- **Re-split an existing corpus without re-converting** — `convert.py --resplit <corpus> --out <new dir> --pdf-root <dir>` re-splits every book's `full_text.md` by its PDF outline into a *new* directory (the source corpus and the PDFs are never written; it refuses an `--out` that overlaps either). Each book gets a `_manifest.json` — every file's PDF page range, the **real chapter number taken from the title** (not the bookmark's position), its kind (body / references / front / back), the PDF's printed page labels when it has them, and every outline entry — and is checked by a validator (no empty chapter, no page claimed by two files or skipped, chapter numbers increasing without gaps, each chapter's first pages match its title, chapter count equals the outline's). Books whose outline is broken are fixed by a per-book entry in `_split_config.json` (which outline level is the chapter, a title regex, a page offset, locating chapters by title in the text, …; every entry needs a `reason`), never by code. On the author's corpus (several hundred books): 0-byte chapter files 5,046 → 0, every book passes the validator, and a hand check of 100 random chapters found the chapter number right in 99; the miss was a book whose outline, merged from per-chapter PDFs, numbered every chapter +7 without failing any check — fixed by its config entry. `python converter/split_manifest.py --validate <dir>` re-runs the checks. `post_convert.py` holds a book that fails them alone under `_held/` (out of search; every other book is still indexed) with a `_fix_request.md` an AI agent can work from ([docs/corpus-maintenance.md](docs/corpus-maintenance.md#when-a-resplit-book-fails-validation)). Optional: `T2N_SPLIT_DEEP_HEADINGS=1` also writes outline entries below the split level into the chapter files as `##` / `###` headings (default off).
 - **Table pass, gated** — `pdfplumber`'s table detection is the slowest part of conversion. We gate it behind a cheap `fitz` pre-check (ruling-line signature incl. three-line tables, plus multilingual "Table"/表 keywords), so table-sparse books convert **~3.4× faster** without missing tables. (`T2N_TABLE_GATE=0` to disable.)
 - **Cross-page table merge** — textbook tables often run past a page break. Opt in with `T2N_TABLE_MERGE=1` to stitch a table that ends near a page bottom to a geometrically-matching table at the top of the next page (same column count / x-edges, no intervening heading), deduping a repeated header row and leaving a `<!-- table continues from page N -->` trace comment. Same exact-fallback discipline: default OFF ⇒ byte-identical output.
-- **Page-frame pseudo-table rejection** — a page's decoration (a content frame plus the rule under the running header) gives `pdfplumber` enough intersecting edges to "find" a table covering the whole page body, with 1 column and every word on the page dumped into a single cell. That output is worse than a missing table: a real multi-column table arrives with its columns interleaved line by line, carrying its caption and every value, so it reads as clean citable data while the row↔column binding is destroyed. Candidates of one column whose largest cell exceeds 500 characters, or whose bbox alone covers half the page, are dropped and replaced by a `<!-- ⚠️ page-frame pseudo-table rejected on page N -->` comment — the page's own prose already carries the text. Measured at **9.9% of extracted tables across 128 books**; on a hand-read sample of 34 pages from 10 books, 28 were genuine defects and the 6 legitimate boxed lists lost nothing (100% of their tokens are present in the page prose). Default **ON** — this corrects wrong output; `T2N_TABLE_FRAME_REJECT=0` restores the old behaviour.
+- **Page-frame pseudo-table rejection** — a page's decoration (a content frame plus the rule under the running header) gives `pdfplumber` enough intersecting edges to "find" a table covering the whole page body, with 1 column and every word on the page dumped into a single cell. That output is worse than a missing table: a real multi-column table arrives with its columns interleaved line by line, carrying its caption and every value, so it reads as clean citable data while the row↔column binding is destroyed. Candidates of one column whose largest cell exceeds 500 characters, or whose bbox alone covers half the page, are dropped and replaced by a `<!-- ⚠️ page-frame pseudo-table rejected on page N -->` comment — the page's own prose already carries the text. Measured at **9.9% of extracted tables across more than a hundred books**; on a hand-read sample of 34 pages from 10 books, 28 were genuine defects and the 6 legitimate boxed lists lost nothing (100% of their tokens are present in the page prose). Default **ON** — this corrects wrong output; `T2N_TABLE_FRAME_REJECT=0` restores the old behaviour.
 - **Out-of-band review queue for misbinding** — the QC gate catches *structural* damage, but it cannot see a **misbinding**: a value merged into the **wrong row** of an otherwise clean grid (a corticosteroid dose fused into the next drug's row on a table's continuation page, a lab value's interpretation on the wrong condition). Nothing is structurally off, so the gate passes it — and it reads as clean, citable data. There's no safe automatic fix (the right value-to-row assignment is exactly what's in doubt), so instead of guessing we **flag the high-risk subset for a second opinion**: continuation-page tables (where orphan-row fusion lives) and dosage/threshold tables (`mg`, `mL`, `mg/kg`, `IU`, dose ranges — a wrong value here is the worst output the tool can produce). Each gets a `<!-- ⚠️ table needs out-of-band review … verify against PDF page N -->` marker and a queue entry; the second opinion is a bring-your-own-model pass (fast text model first, vision as escalation). In testing, ~**1 in 6** continuation×dose tables carried a high-severity misbinding versus ~0 in a random table sample — the danger concentrates exactly where both triggers meet. Opt in with `T2N_REVIEW_QUEUE=1` (default OFF; recommended ON for clinical corpora). Details, the failure mode, and a hazard-primed verifier prompt: [`docs/table-review.md`](docs/table-review.md).
 - **Spanned category-header collapse** — dense drug×attribute grids (rehab pharmacology references are the worst case) carry section headers like "Corticosteroids: Used to reduce inflammation." that the extractor broadcasts across *every* column, producing a phantom full-width data row that shifts the alignment of the real rows. A genuine data row never repeats one sentence-length string across all its columns, so the signature is unambiguous: any row whose ≥3 non-empty cells are the identical ≥15-char string is re-cast as a single header cell. Structural only — it never moves a value between rows, so it cannot create a misbinding. Measured on one book: **130 of 232 tables (56%)** carry the pattern. Default **ON** — corrects wrong output; `T2N_TABLE_HEADER_COLLAPSE=0` restores byte-identical output.
-- **Whole-book table-failure warning** — table loss is bimodal: a book either extracts tables fine or silently loses every one. If `pdfplumber` parses 0 pages while `fitz` opens the file, or a book yields 0 tables despite ≥10 table captions, the conversion report and the markdown itself get a loud warning instead of nothing at all. Detection only — extraction is unchanged. Fires on 22 of 34 zero-table books in our corpus and on none of the 226 that extract tables. **Partial loss is caught too**: a book that recovers some tables but fewer than `BOOK_PARTIAL_TABLE_RATIO` (0.20) per caption is warned about as well — measured over 171 converted books the median tables:captions ratio is 0.99 and 42 books sit below 0.20, including large references the zero-rule never flagged. (`T2N_BOOK_TABLE_CHECK=0` to disable.)
+- **Whole-book table-failure warning** — table loss is bimodal: a book either extracts tables fine or silently loses every one. If `pdfplumber` parses 0 pages while `fitz` opens the file, or a book yields 0 tables despite ≥10 table captions, the conversion report and the markdown itself get a loud warning instead of nothing at all. Detection only — extraction is unchanged. Fires on 22 of 34 zero-table books in our corpus and on none of the books that extract tables. **Partial loss is caught too**: a book that recovers some tables but fewer than `BOOK_PARTIAL_TABLE_RATIO` (0.20) per caption is warned about as well — measured over 171 converted books the median tables:captions ratio is 0.99 and 42 books sit below 0.20, including large references the zero-rule never flagged. (`T2N_BOOK_TABLE_CHECK=0` to disable.)
 - **Book-level table-reliability banner** — some books are just hostile to table extraction: when a large fraction of a book's tables trip a structural QC flag, the individual `⚠️` markers don't convey that the *whole book*'s tables are unreliable. The QC gate sees structure, not value-on-wrong-row misbinding, so a high flag rate is a proxy for "don't trust any table here without the PDF". The trigger is **content loss**, not any QC flag: measured across a 6-book pilot, any-flag rates cluster at 39-64% for every dense clinical book, so they separate nothing, while content-retention (text on the page that reached no cell) runs 40/27/17/12/2/0%. If ≥`BOOK_CONTENT_LOSS_RATE` (25%) of a book's tables (given ≥10 of them) lost content, a `> [!caution]` banner is hung at the top of the markdown telling the downstream LLM to verify every table against the source PDF, and `reliability_flagged` / `content_loss_rate` / `flag_rate` land in the per-book stats. Detection only.
 
 Scanned and font-broken books fall through an **OCR ladder** — Surya → PaddleOCR-VL → local vision model → frontier vision as the true last resort. The *detection* signals are per-page (character density, font-risk flags, domain-pattern miss); the *routing* decision, as shipped, is **per book**: if a PDF trips the check during a `--batch-dir` run, the whole file goes to OCR rather than a page at a time. Per-page routing is future work, so don't read the ladder as already mixing engines inside one book. A **reference OCR adapter ships** (`converter/surya_adapter.py`, targeting Surya 0.22.x) behind a documented interface, so a different engine can take that rung without touching the converter — see [`docs/surya-adapter.md`](docs/surya-adapter.md), which also carries the server memory caps you want set *before* your first run. See [`docs/ocr-ladder.md`](docs/ocr-ladder.md) for the ladder itself, including a **hardware-tier model-selection table** (no-GPU / Apple Silicon / NVIDIA 8GB / 16GB+) so you pick an engine and ollama model that actually fit your VRAM instead of OOMing mid-book.
@@ -76,7 +87,7 @@ A table of contents is too coarse (one topic spans many chapters); manual tags d
 
 ### 3 · Retrieve — find the right book among dozens
 
-Cross-book search runs on the same engine as its sibling project [**vault-search**](https://github.com/drpwchen/vault-search) — local LanceDB + `bge-m3` embeddings, nothing leaves your machine. On top of plain similarity we add **source weighting**: boost your most-trusted references (exam-designated texts, official society textbooks) and down-weight by edition age, so on any topic the AI reaches for the source *you* trust first.
+Cross-book search runs on the same engine as its sibling project [**ask-your-library**](https://github.com/drpwchen/ask-your-library) — local LanceDB + `qwen3-embedding:0.6b` embeddings (its default for textbook corpora), nothing leaves your machine. On top of plain similarity we add **source weighting**: boost your most-trusted references (exam-designated texts, official society textbooks) and down-weight by edition age, so on any topic the AI reaches for the source *you* trust first.
 
 ### 4 · Write — a note-writing algorithm, not a prompt
 
@@ -112,6 +123,19 @@ You're probably here to have *your* AI set this up — that's the intended path:
 
 [`AGENTS.md`](AGENTS.md) is written for the agent: dependency install, configuration, converting a first book, installing the two Claude Code skills, running the note workflow, plus token guardrails so a naive agent doesn't burn a million tokens reading a whole book into context.
 
+## Install as a Claude Code plugin
+
+The two skills also ship as a Claude Code plugin, and this repo is its own marketplace. In Claude Code:
+
+```
+/plugin marketplace add drpwchen/textbook-to-note
+/plugin install textbook-to-note@drpwchen
+```
+
+The skills load as `/textbook-to-note:textbook-to-md` and `/textbook-to-note:figure-remap` and point at the plugin's own copy of the scripts, so there is no `{REPO}` placeholder to replace. The plugin installs no Python packages: the skills run `python`, which needs the converter's dependencies (`pip install -r requirements.txt` from a clone). Semantic search is not part of the plugin — it is the optional ask-your-library step of the [quickstart](examples/quickstart.md#5--optional-semantic-search-with-ask-your-library-23-min).
+
+Use the GitHub form above. A local-path marketplace (`/plugin marketplace add <folder>`) copies the whole folder into Claude Code's plugin cache — including `.venv/`, `output/` and `corpus/` if you have run the converter there (312 MB in one test) — so to try the plugin from disk, point it at a clean `git clone`, not your working copy.
+
 ## Repo layout
 
 ```
@@ -121,24 +145,37 @@ citations/    chapter-reference lint — proves every "Author Ch.N" points at a 
 skills/       drop-in Claude Code skill definitions (textbook-to-md, figure-remap)
 workflows/    the note-writing algorithm (adapt to your own note system)
 docs/         architecture, OCR ladder + hardware tiers, OCR adapter contract
-examples/     a sample output note showing the target format
+examples/     quickstart, a sample chapter to convert (OpenStax, CC BY 4.0), a sample output note
 shared/       env-driven configuration (config.py)
 ```
 
 ## Requirements
 
-- Python 3.10+, `pip install -r requirements.txt`
+- Python 3.10+, `pip install -r requirements.txt` (or `pip install -e .` for the `t2n-convert` / `t2n-post-convert` commands)
 - **CPU-only is a first-class path** for born-digital PDFs (the common case) — no GPU needed
-- Optional, for scanned books (OCR ladder) and semantic search: an NVIDIA GPU or Apple Silicon + [Surya OCR](https://github.com/VikParuchuri/surya), [ollama](https://ollama.com) with a small vision model and `bge-m3` for embeddings — all local, nothing leaves your machine. Figure extraction and its QC gate need none of this (pure computation since 0.7.1). See the hardware-tier table in [`docs/ocr-ladder.md`](docs/ocr-ladder.md).
+- Optional, for scanned books (OCR ladder) and semantic search: an NVIDIA GPU or Apple Silicon + [Surya OCR](https://github.com/VikParuchuri/surya), [ollama](https://ollama.com) with a small vision model and `qwen3-embedding:0.6b` for embeddings — all local, nothing leaves your machine. Figure extraction and its QC gate need none of this (pure computation since 0.7.1). See the hardware-tier table in [`docs/ocr-ladder.md`](docs/ocr-ladder.md).
 - Tested on Windows 11 and macOS; Windows-specific gotchas are handled in code (cp950 subprocess decoding, atomic-ish path ops)
+
+## Cost
+
+The converter is free and runs locally; it spends no LLM tokens. The only money is the note-writing step (stage 4), which runs inside whatever AI coding agent you already use (for example a Claude Code subscription) and is metered by that agent, not by this repo. OCR and semantic search use local models, so they cost electricity and disk, not API fees.
+
+## Limitations
+
+- Figure extraction (stage 5) is still experimental and does not handle every book; it refuses rather than guesses when its QC gate fails.
+- OCR routing is per book, not per page, so a mostly-clean book with a few scanned pages goes through OCR as a whole.
+- The QC gate sees table structure, not a value placed on the wrong row. High-risk tables are flagged for review (opt-in), not fixed automatically; verify dosages and thresholds against the PDF.
+- Converted text quality depends on the PDF. Scanned or font-broken books need the OCR ladder and a GPU or Apple Silicon to be practical.
+- It ships no textbook content and no indexer; semantic search needs ask-your-library.
+- PyMuPDF, a required dependency, is AGPL-3.0 (see the license note below).
 
 ## Bring your own books
 
-This tool ships **no textbook content**. It operates on PDFs you already own — purchased ebooks, institutional-access downloads, open-licensed texts ([OpenStax](https://openstax.org)), or scans of your own paper books where your local law permits. Respect your books' licenses.
+This tool ships **no textbook content** apart from one openly licensed sample chapter for the [quickstart](examples/quickstart.md) ([attribution](examples/sample/ATTRIBUTION.md)). It operates on PDFs you already own — purchased ebooks, institutional-access downloads, open-licensed texts ([OpenStax](https://openstax.org)), or scans of your own paper books where your local law permits. Respect your books' licenses.
 
 ## Related
 
-- [**vault-search**](https://github.com/drpwchen/vault-search) — the local semantic-search engine stage 3 builds on.
+- [**ask-your-library**](https://github.com/drpwchen/ask-your-library) (formerly *vault-search*) — the local semantic-search engine stage 3 builds on.
 - [**openevidence-tools**](https://github.com/drpwchen/openevidence-tools) — the OpenEvidence ask + verify pair that plugs into the Bonus stage.
 - [**note-supplement**](https://github.com/drpwchen/note-supplement) — the other direction: merges new source material into notes you *already* wrote, with conflict detection and tier-gated writes.
 

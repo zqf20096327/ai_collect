@@ -94,6 +94,10 @@ apfel --schema person.schema.json "Extract the person: Alice is 30." | jq .name
 # One-shot multi-turn: conversation JSON in, next assistant turn out
 jq '. += [{"role":"user","content":"and in German?"}]' conv.json | apfel --messages -
 
+# Batch: JSONL records in, one JSON result line per record out (fresh session each)
+jq -c '{custom_id:(.id|tostring),prompt:("Classify as billing, bug, or question: " + .text)}' tickets.jsonl \
+  | apfel --batch | jq -c 'select(.status=="ok") | {id:.custom_id,category:.content}'
+
 # Preflight token budget before a large prompt
 apfel --count-tokens -f README.md "Summarize this"
 
@@ -225,6 +229,7 @@ alias apfel=apfel-run                 # optional, every apfel flag still works
 |---------|--------|-------|
 | `POST /v1/chat/completions` | Supported | Streaming + non-streaming |
 | `POST /v1/responses` | Supported | OpenAI Responses API: string/message input, `instructions`, streaming (canonical event sequence), `text.format` (incl. `json_schema`), function tools (non-streaming). Stateful features (`previous_response_id`, `store: true`, `background`, `reasoning`, hosted tools) return honest 501s |
+| `POST /v1/responses/input_tokens` | Supported | Token preflight (`client.responses.input_tokens.count(...)`): exact count from Apple's tokenizer, no generation; 501 below macOS 26.4 instead of an estimate. See [docs/openai-api-compatibility.md](docs/openai-api-compatibility.md#token-preflight-v1responsesinput_tokens) |
 | `GET /v1/models` | Supported | Returns `apple-foundationmodel` |
 | `GET /health` | Supported | Model availability, context window, languages, reported model capabilities (`capabilities`, `capabilities_reported`) |
 | `GET /v1/logs`, `/v1/logs/stats` | Debug only | Requires `--debug` |
@@ -239,7 +244,8 @@ alias apfel=apfel-run                 # optional, every apfel flag still works
 | CORS | Supported | Enable with `--cors` |
 | `POST /v1/completions` | 501 | Legacy text completions not supported |
 | `POST /v1/embeddings` | 501 | Embeddings not available on-device |
-| `logprobs=true`, `n>1`, `stop`, `presence_penalty`, `frequency_penalty` | 400 | Rejected explicitly. `n=1` and `logprobs=false` are accepted as no-ops |
+| `stop` | Supported | String or up to 4 strings; plain text only (400 with tools in scope or `json_object`/`json_schema`). Applied on the output side, identical streaming and non-streaming. See [docs/openai-api-compatibility.md](docs/openai-api-compatibility.md#stop-sequences) |
+| `logprobs=true`, `n>1`, `presence_penalty`, `frequency_penalty` | 400 | Rejected explicitly. `n=1` and `logprobs=false` are accepted as no-ops |
 | Multi-modal (images) | Supported on macOS 27 | `image_url` parts as base64 data URLs go to the on-device model natively (20 MB base64 cap, longest side downscaled to 4096 px). Remote `http(s)` URLs and file paths are always 400 - apfel never fetches images and never reads files for an HTTP client. On macOS 26: 400 with a clear error. See [docs/openai-api-compatibility.md](docs/openai-api-compatibility.md) |
 | `Authorization` header | Supported | Required when `--token` is set. See [docs/server-security.md](docs/server-security.md) |
 
@@ -249,7 +255,7 @@ Full API spec: [openai/openai-openapi](https://github.com/openai/openai-openapi)
 
 When `max_tokens` is omitted, **CLI and OpenAI-compatible server behave identically**: the value flows through as `nil` and the model uses whatever room is left in the context window. This is drop-in OpenAI semantics - no arbitrary fallback constant.
 
-The on-device context window holds input *and* output combined: **4096 tokens on macOS 26 and on M1/M2 Macs, 8192 tokens on macOS 27 with an M3 or newer chip and 12 GB+**. apfel reads the real size at runtime via `SystemLanguageModel.contextSize` - check yours with `apfel --model-info`. If generation runs into the ceiling, the response ends cleanly with `finish_reason: "length"` and the partial content is returned (server: HTTP 200; CLI: exit 0 with a stderr warning). Pass `max_tokens` explicitly when you want a tighter latency budget or a known cap for your client.
+The on-device context window holds input *and* output combined: **4096 tokens on macOS 26 and on M1/M2 Macs, 8192 tokens on macOS 27 with an M3 or newer chip and 12 GB+**. apfel reads the real size at runtime via `SystemLanguageModel.contextSize` - check yours with `apfel --model-info`. If generation runs into the ceiling, the response ends cleanly with `finish_reason: "length"` and the partial content is returned (server: HTTP 200; CLI: exit 0 with a stderr warning, or exit 8 with `--require-complete` - see [docs/cli-reference.md](docs/cli-reference.md)). Pass `max_tokens` explicitly when you want a tighter latency budget or a known cap for your client.
 
 ### Examples
 

@@ -10,9 +10,10 @@ SPDX-License-Identifier: Apache-2.0
 
 ### AI-powered Infrastructure as Code, governed by your rules
 
-Turn natural-language requests into validated Opentofu/Terraform pull requests.
-Kumoss generates infrastructure, corrects drift, enforces your policies and keeps
-humans in control of high-impact or not compliant changes.
+AI assistant that helps developers manage day-two infrastructure through plain-language requests.
+It creates Terraform/OpenTofu pull requests with validated plans and drift corrections, 
+enforces your policies, and keeps humans in control—all within your existing ecosystem.
+
 
 **[Quickstart](https://inditextech.github.io/kumoss/stable/main/quickstart/)** ·
 **[Documentation](https://inditextech.github.io/kumoss/stable/)** ·
@@ -80,8 +81,8 @@ The result is **developer autonomy for infrastructure operations**: developers c
 ### 🏢 Designed to integrate with your existing infrastructure ecosystem
 
 - **Works with what you already have.** Use your existing IaC repositories, Terraform state, and Git provider (GitHub, Azure DevOps, or GitLab).
-- **Authorization is an extension point requiring an implementation. **
-- ** LLM Model and identity provider are configured externally. **
+- **Authorization is an extension point requiring an implementation.**
+- **LLM Model and identity provider are configured externally.**
 - **Multicloud.** AWS, Azure, Google Cloud, Oracle Cloud Infrastructure, Kubernetes, and VMware vSphere.
 - **Your rules, your definition of critical.** You decide what is allowed, what is high risk, and which compliance checks apply. Critical can mean special projects, every production environment, changes above a cost threshold, or any rule you write.
 - **Full traceability.** An admin panel shows users, sessions, and roles, all stored in a database.

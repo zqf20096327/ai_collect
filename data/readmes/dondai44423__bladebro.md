@@ -471,7 +471,7 @@ Six layers, all on by default, no config needed:
 
 | Test | Result |
 |---|---|
-| 111-check local suite + boot self-check + drift stamp (`bladebro audit`) | 111/111 pass, stamps stable |
+| Stealth vector suite + boot self-check + drift stamp (`bladebro audit`) | every vector passes at the suite's own total, stamps stable |
 | Differential oracle vs stock Chrome on the same display (`tools/diff_oracle`) | 99 probes: identical or documented mask surface in every profile state, **0 divergent** |
 | Real-browser lane vs stock Chrome (`oracle.py --lane real`) | 99 probes: **all identical, 0 expected, 0 divergent** — the lane carries no page patches |
 | CreepJS | **headless: 0%, stealth: 0%** (stock Chrome on the same lane: 0%/0%) |
@@ -646,6 +646,7 @@ Everything optional; configuration is environment variables.
 
 | Var | Default | What it does |
 |---|---|---|
+| `BLADE_NO_ACTIVATE` | unset | `1` = never raise the browser window: clicks, navigation and vision act on the page in place (`Page.bringToFront` is skipped even for a background tab) |
 | `BLADE_PACE` | on | `off` = disable the pacing governor (human inter-action gaps) |
 | `BLADE_NO_COMPRESS` | unset | `1` = disable context pruning |
 | `BLADE_NO_WARMING` | unset | `1` = skip first-run profile warming |
@@ -663,14 +664,14 @@ Data root resolution (Unix): `BLADE_HOME` → `$XDG_STATE_HOME/blade` → `$HOME
 
 **Raspberry Pi OS trixie (arm64):** issue [#45](https://github.com/dondai44423/bladebro/issues/45) reports Chromium's regular-profile network service hanging even on loopback. On a detected Raspberry Pi running Debian/Raspbian trixie, the agent lane automatically uses one managed incognito context. Other hosts keep their persistent profile, and an explicit `BLADE_PROFILE_DIR` keeps its chosen mode. Set `BLADE_INCOGNITO=1` to request this compatibility path elsewhere, or `0` to disable automatic selection. The real-browser and external-attach lanes keep their existing behavior. Incognito cookies still persist through Bladebro's login snapshot; named `state save`/`load` sessions restore cookies and storage. History, cache and automatic localStorage persistence are unavailable in this mode; launch diagnostics and `doctor` disclose that tradeoff. The reporter verified the Pi workaround; the release regression suite exercises the context, tabs, HTTP navigation and persistence contracts on Linux x64.
 
-**Flatpak browsers (SteamOS, Bazzite, Fedora Silverblue):** when no native Chrome/Chromium is found, discovery uses an installed Flatpak export — `org.chromium.Chromium`, then `com.google.Chrome`, `com.brave.Browser`, `com.microsoft.Edge`, `com.vivaldi.Vivaldi`, `io.github.ungoogled_software.ungoogled_chromium` — from the user installation (`FLATPAK_USER_DIR`, else `~/.local/share/flatpak`) before the system one (`/var/lib/flatpak`). Install one with `flatpak install flathub org.chromium.Chromium`. The agent lane starts an export (found or given as `CHROME_PATH`) with `flatpak run --filesystem=<session profile>`, so the sandbox writes cookies and storage to bladebro's profile; it needs the desktop session's D-Bus and Flatpak portal. The downloads dir is shared too, so `act download` writes where the host expects; upload paths are not shared, so uploads under Flatpak are untested. The real-browser lane is unchanged.
+**Flatpak browsers (SteamOS, Bazzite, Fedora Silverblue):** when no native Chrome/Chromium is found, discovery uses an installed Flatpak export — `org.chromium.Chromium`, then `com.google.Chrome`, `com.brave.Browser`, `com.microsoft.Edge`, `com.vivaldi.Vivaldi`, `io.github.ungoogled_software.ungoogled_chromium` — from the user installation (`FLATPAK_USER_DIR`, else `~/.local/share/flatpak`) before the system one (`/var/lib/flatpak`). Install one with `flatpak install flathub org.chromium.Chromium`. The agent lane starts an export (found or given as `CHROME_PATH`) with `flatpak run`, sharing the session profile, the downloads dir and a per-process upload staging dir (`<data root>/uploads/<pid>`) into the sandbox, so cookies, storage and downloads reach the host; it needs the desktop session's D-Bus and Flatpak portal. The sandbox reads nothing else (at most your home dir, per the app's manifest), so `act upload` copies the file into the staging dir and hands Chrome the copy; copies are removed when the browser closes. A wrapper script around an export runs without these shares. The real-browser lane is unchanged.
 
 ## 🔄 Maintenance
 
 | Command | What it does |
 |---|---|
-| `bladebro -doc` / `bladebro doctor` | System check — Chrome, display, profile hygiene, logins, data root, network, version |
-| `bladebro audit` | Stealth audit — 111-check suite + boot self-check + cross-restart drift stamp, against your setup |
+| `bladebro -doc` / `bladebro doctor` | System check — Chrome, display and its window manager, profile hygiene, logins, data root, network, version |
+| `bladebro audit` | Stealth audit — the vector suite + boot self-check + cross-restart drift stamp, against your setup |
 | `bladebro -v` | Version + update status (check only) |
 | `bladebro -u` | Self-update: check, download, SHA-256-verify, swap — non-npm installs |
 | `bladebro --rollback` | Restore the previous version (from the pre-update backup) |
@@ -696,7 +697,7 @@ Bladebro is free and open source. Sponsoring keeps development independent.
 
 ## 🤝 Contributing
 
-PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Before submitting: `cargo clippy --release -- -D warnings` and `cargo test --release`.
+PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Before submitting: `cargo clippy --release -- -D warnings` and `cargo test --profile gate`.
 
 Using a coding agent? Point it at [AGENTS.md](AGENTS.md) — repo mechanics, house rules and verification instruments in one file.
 

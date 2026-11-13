@@ -106,7 +106,7 @@ using the configured scope, gates, and observe entries.
 
    > Set up AutoHelix to improve [goal]. [Optional instructions.]
 
-   The agent proposes the experiment, shows the complete `autohelix.yaml`, and
+   The agent proposes the experiment, shows the complete config file, and
    walks through its choices without launching. Review what can change, what
    must pass (gates), what is observed, and the effective budgets.
 
@@ -127,16 +127,20 @@ and existing skill folders are preserved unless you pass `--force`.
 See the [conversational walkthroughs](docs/getting-started.md#with-your-coding-agent)
 and [skill installation and export](docs/cli.md#autohelix-skill).
 
-For manual setup, create the configuration template:
+Or start from the project itself:
 
 ```bash
 cd my-project
-autohelix init
+autohelix setup
 ```
 
-Edit `autohelix.yaml` using the [configuration reference](#configuration), review
-and commit the intended setup changes, then launch with `autohelix run`. Other
-commands are described in the [CLI reference](docs/cli.md).
+In a terminal it offers to start Claude Code, Codex or OpenCode with the
+bundled setup skill (nothing is installed), or writes the commented template
+`autohelix.yaml`. Edit it using the [configuration reference](#configuration),
+review and commit the intended setup changes, then launch with `autohelix run`.
+For several loops in one project, `autohelix setup perf` writes
+`autohelix/perf.yaml`, which `autohelix run perf` runs. Other commands are
+described in the [CLI reference](docs/cli.md).
 
 ## Examples
 
@@ -207,7 +211,8 @@ sequence length on a 27B model.
 
 ## Configuration
 
-A run is defined by a single `autohelix.yaml`. Every field is documented in
+A run is defined by a single config file, `autohelix.yaml` (or
+`autohelix/<name>.yaml`, one per loop). Every field is documented in
 [docs/config.md](docs/config.md).
 
 <p align="center">
@@ -264,19 +269,19 @@ their replacement; see [Old → new](docs/config.md#old--new).
 
 ```
 my-project/
-├── autohelix.yaml       # your config
-└── .autohelix/          # runtime state (gitignored)
-    ├── current          # selected run id
+├── autohelix.yaml       # your config (or autohelix/<name>.yaml, one per loop)
+└── .autohelix/          # run state (gitignored)
     ├── runs/<id>/       # one persistent state directory per run
     │   ├── run.json     # identity, starting commit, target branch
-    │   ├── history.jsonl # results and each model call's usage/log
+    │   ├── history.jsonl # one record per iteration: results and each model call's usage/log
     │   ├── notes/       # agent's persistent notes
-    │   ├── observations/ # each observe entry's output, by iteration and name
     │   ├── hints.md     # messages from `autohelix hint`
-    │   ├── logs/        # iter-N/call-*/ prompts and transcripts
-    │   ├── output/      # report.md and report.html
-    │   └── runtime/     # live status and per-run settings
-    └── runtime/         # helper scripts and lock files
+    │   ├── report.md    # the run summary (and report.html, the run page)
+    │   ├── iterations/NNN/ # one folder per iteration (000 is the baseline): record.json,
+    │   │                #   prompt.md, agent.log, gates/<k>/, observe/<name>/, stop/<k>/
+    │   ├── logs/        # run logs per invocation
+    │   └── .internal/   # live status, usage, notes versions, superseded attempts
+    └── .internal/       # selected run id, helper scripts and lock files
 ```
 
 Temporary per-phase candidate copies live outside the project, in
@@ -297,7 +302,7 @@ files. See [CLI reference](docs/cli.md#autohelix-run).
 <summary><b>Report</b></summary>
 
 When a run finishes, an agent reads the run's history, notes, logs and commits and
-writes a short summary to `.autohelix/runs/<id>/output/report.md`. `autohelix report` writes it on
+writes a short summary to `.autohelix/runs/<id>/report.md`. `autohelix report` writes it on
 demand, e.g. after an interrupted run. See [Configuration → Report](docs/config.md#report).
 
 </details>
@@ -320,9 +325,9 @@ zero. See [Concepts → Reviews](docs/concepts.md#reviews) and
 
 `autohelix view` follows a run in the terminal: its status and iterations, with the
 agent's live output below; `autohelix dashboard` lists all runs. `autohelix view --web`
-serves a live page for a run on 127.0.0.1: status, metric chart, iterations with gates,
-notes, diffs, observations (reviews included) and agent activity, and the run summary once it is written. When a run stops, AutoHelix saves the same page as one file,
-`.autohelix/runs/<id>/output/report.html`, to open in a browser or share. See
+serves a live page for a run on 127.0.0.1: status, metric chart, iterations with gates
+(and their output), notes, diffs, observations (reviews included), stop checks and agent activity, and the run summary once it is written. When a run stops, AutoHelix saves the same page as one file,
+`.autohelix/runs/<id>/report.html`, to open in a browser or share. See
 [Concepts → Run page](docs/concepts.md#run-page).
 
 </details>
@@ -363,7 +368,7 @@ at the start of its next iteration. Useful to steer a run without stopping it. S
 <details>
 <summary><b>Full customization</b></summary>
 
-Beyond `autohelix.yaml`, you can replace the full per-iteration prompt template
+Beyond the config file, you can replace the full per-iteration prompt template
 (`prompt_template:`, with a documented set of variables) and control how the agent
 organizes its persistent notes. See [Concepts → Prompt](docs/concepts.md#prompt) and
 [Concepts → Notes](docs/concepts.md#notes).

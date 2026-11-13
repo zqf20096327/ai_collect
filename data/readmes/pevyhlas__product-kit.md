@@ -177,6 +177,8 @@ bash .product-kit/scripts/init.sh --harness claude,opencode
 
 A fresh install defaults to `claude` + `agents`, and adds `opencode` or `codex` when the project already uses them. With no slash commands at all, ask the agent to read `.prdkit/workflows/protocol.md`. See [harness support](docs/harnesses.md) for what is tested.
 
+Optional subsystems install only on request. `--with agent-tiers` adds tier-based agent definitions and their renderer ([agent lifecycle](docs/agent-lifecycle.md)); later upgrades keep the choice, and a project that already has agent definitions keeps them without the flag. `--without agent-tiers` drops them.
+
 </details>
 
 <details>
@@ -190,9 +192,9 @@ A fresh install defaults to `claude` + `agents`, and adds `opencode` or `codex` 
 | `AGENTS.md` | A section between markers; your own text is never touched |
 | `.prdkit/workflows/` | Neutral playbooks every agent can follow |
 | `.prdkit/templates/`, `.prdkit/scripts/bash/` | Spec templates and helper scripts |
-| `.prdkit/memory/` | Your settings: `constitution.md`, `agents.md`, `config.md`, `task-ledger.md` |
-| `.prdkit/.manifest` | Version, harnesses and file hashes, so upgrades know what you edited |
-| `.gitignore` | `.prdkit/ledger/`, `.prdkit/cache/`, `.prdkit/retrospective/`, `.worktrees/` |
+| `.prdkit/memory/` | Your settings: `constitution.md`, `agents.md`, `config.md` |
+| `.prdkit/.manifest` | Version, harnesses, optional subsystems and file hashes, so upgrades know what you edited |
+| `.gitignore` | `.prdkit/cache/`, `.worktrees/`, and `.prdkit/ledger/` and `.prdkit/retrospective/` for local data from kits before 2.0 |
 
 `specs/` is yours. The installer never creates or edits anything there.
 
@@ -212,7 +214,7 @@ bash .prdkit/scripts/bash/doctor.sh --strict   # spec integrity, reading budgets
 
 | Tier | When                                           | Independent reviewers        |
 | ---- | ---------------------------------------------- | ---------------------------- |
-| T0   | Docs only, no behavior change                  | None                         |
+| T0   | Docs only (trusted `review-t0-paths`)          | None                         |
 | T1   | Inside one part, no interface change           | 1                            |
 | T2   | Several parts, an interface, security or data  | 1 per applicable concern     |
 | T3   | Product (L0) edit or architecture one-way door | Design review plus the owner |
@@ -249,7 +251,7 @@ L2  specs/parts/<part>.md       one box: why it exists, components, behaviors, i
     code and tests              the exact implementation; tests cite the IDs they prove
 ```
 
-Around it: open changes in `specs/changes/` (implementation records finalize in their own PR), one line per closed change in `specs/log.md`, owner direction and open questions in `specs/inbox.md`, and holds, waivers and deployments in `specs/records.md`. A small project can keep everything in one `specs/SPEC.md`.
+Around it: open changes in `specs/changes/` (implementation records finalize in their own PR), one line per closed change in `specs/log.md` (written as `specs/log/<id>.md`, folded in at compaction), owner direction and open questions in `specs/inbox.md`, and holds, waivers and deployments in `specs/records.md`. A small project can keep everything in one `specs/SPEC.md`.
 
 <details>
 <summary><b>Example: a product page and a journey</b> (from <a href="examples/request-service"><code>examples/request-service</code></a>)</summary>
@@ -384,7 +386,7 @@ Upgrade, then run one cutover between changes with `/prdkit-init`. See [migratin
 bash tests/run.sh
 ```
 
-jq 1.6+ is needed for the optional-enrichment tests; CI adds ShellCheck. [Behavioral evals](tests/evals/README.md) run real agents locally.
+The tests need jq 1.6+; CI adds ShellCheck. [Behavioral evals](tests/evals/README.md) run real agents locally.
 
 Issues and draft pull requests are welcome; only the maintainer merges. See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md) and the [code of conduct](CODE_OF_CONDUCT.md).
 

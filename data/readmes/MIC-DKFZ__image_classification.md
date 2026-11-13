@@ -53,6 +53,9 @@ The files new users will touch most often are:
 - `glovita_train`: installed training command
 - `glovita_infer`: installed checkpoint-based evaluation command
 - `glovita_extract_features`: installed feature extraction command
+- `glovita_extract_bags`, `glovita_extract_slice_bags`: installed MIL bag extraction commands (3D patches, 2D slices)
+- `glovita_explain`: installed explanation command for trained runs (MIL and end-to-end; see [docs/explain.md](docs/explain.md))
+- `glovita_preprocess`: runs a dataset preprocessing script by name, e.g. `glovita_preprocess panorama preprocess ...` (see [docs/preprocessing_3d.md](docs/preprocessing_3d.md))
 - `glovita_plot_umap`: installed embedding-plotting command
 - [src/glovita/configs](src/glovita/configs): all typed user-facing config blocks
 - [src/glovita/datasets/factory.py](src/glovita/datasets/factory.py): dataset and dataloader assembly
@@ -67,6 +70,7 @@ src/glovita/
 ├── augmentation/
 ├── configs/
 ├── datasets/
+├── explain/
 ├── logging/
 ├── metrics/
 ├── models/
@@ -86,11 +90,13 @@ for your machine:
 pip install -e .
 ```
 
-Optional logger backends:
+Optional extras:
 
 ```bash
-pip install -e .[wandb]
-pip install -e .[mlflow]
+pip install -e .[wandb]          # Weights & Biases logger
+pip install -e .[mlflow]         # MLflow logger
+pip install -e .[explain]        # glovita_explain readers for NIfTI and TIFF/whole-slide images (incl. TiffSlide region reads)
+pip install -e .[preprocessing]  # dataset preprocessing scripts (SimpleITK, nnU-Net resampling)
 ```
 
 Notes:
@@ -98,73 +104,46 @@ Notes:
 - base installation does not require `wandb`
 - base installation does not require `mlflow`
 - the selected logger backend is imported lazily at runtime
-- `pip install -e .` installs these commands:
-  - `glovita_train`
-  - `glovita_infer`
-  - `glovita_extract_features`
-  - `glovita_plot_umap`
+- after updating the repository, re-run `pip install -e .` so new commands and
+  dependencies are installed
 
 ## Installed Commands
 
-After installation, use:
+| command | purpose |
+|---|---|
+| `glovita_train` | train a run (one or several CV folds) |
+| `glovita_infer` | evaluate checkpoints, ensemble folds, save predictions |
+| `glovita_extract_features` | extract encoder features to HDF5 (pretrained or from a run) |
+| `glovita_extract_bags` | MIL bags of 3D patch features from volumes ([docs/mil.md](docs/mil.md)) |
+| `glovita_extract_slice_bags` | MIL bags of 2D slice features from volumes ([docs/mil.md](docs/mil.md)) |
+| `glovita_plot_umap` | UMAP plots of extracted features |
+| `glovita_explain` | explanations of trained runs ([docs/explain.md](docs/explain.md)) |
+| `glovita_preprocess` | dataset preprocessing scripts by name, e.g. raw 3D volumes to `generic_3d_dataset` ([docs/preprocessing_3d.md](docs/preprocessing_3d.md)) |
 
-```bash
-glovita_train
-glovita_infer
-glovita_extract_features
-glovita_plot_umap
-```
-
-## Training: The Two CLI Styles
+## Training: The CLI
 
 The CLI is generated from the pydantic config schema with `tyro`.
 
-There are two equally valid ways to run things:
-
-- explicit field style
-- subcommand shorthand for discriminated unions
-
-The runtime uses underscore-style flags consistently.
-
-### 1. Explicit Field Style
-
-This is the most readable style once you understand the config tree:
-
-```bash
-glovita_train \
-  --data.dataset cifar10 \
-  --data.data_root_dir ./data \
-  --model.encoder.encoder_type timm \
-  --model.encoder.type resnet50.a1_in1k \
-  --model.encoder.no_pretrained \
-  --model.head.head_type classification \
-  --peft.method full_finetuning \
-  --dataloading.batch_size 128
-```
-
-Use this style when:
-
-- you want to see the full config path being overridden
-- you are scripting runs
-- you are new to the project and want the structure to stay obvious
-
-### 2. Subcommand Shorthand
-
-Discriminated-union config blocks can also be selected as subcommands:
+Blocks that choose between alternatives (the dataset, the encoder, the head,
+the PEFT method and the logger) are selected with a subcommand, followed by
+that block's options:
 
 ```bash
 glovita_train \
   --dataloading.batch_size 128 \
-  data:cifar10-config --data.data_root_dir ./data \
-  model.encoder:timm-encoder-config --model.encoder.type resnet50.a1_in1k --model.encoder.no_pretrained \
-  model.head:classification-head-config \
-  peft:full-finetuning-config
+  data:cifar10_config --data.data_root_dir ./data \
+  model.encoder:timm_encoder_config --model.encoder.type resnet50.a1_in1k --model.encoder.no_pretrained \
+  model.head:classification_head_config \
+  peft:full_finetuning_config
 ```
 
-Use this style when:
-
-- you already know which config subclass you want
-- you want shorter commands for common runs
+- `data:...` picks the dataset config, `model.encoder:...` / `model.head:...`
+  the model parts, `peft:...` the adaptation method, `logger:...` the logger
+- options of a block come after its subcommand; plain blocks (`training`,
+  `optimizer`, `task`, `dataloading`) can be set anywhere before the first subcommand
+- `glovita_train --help` lists the subcommands; `glovita_train data:cifar10_config --help`
+  lists the options of that choice (and the next subcommands)
+- the runtime uses underscore-style flags consistently
 
 ## How To Read The Config Tree
 
@@ -214,7 +193,8 @@ Use it when your data is a standard image dataset and you want to avoid writing
 a custom `Dataset` class.
 
 For preprocessed 3D volumes (`.b2nd`), use `generic_3d_dataset`; see
-[docs/nnfoundation.md](docs/nnfoundation.md).
+[docs/nnfoundation.md](docs/nnfoundation.md). Raw volumes (NIfTI, ...) are converted
+into that format as described in [docs/preprocessing_3d.md](docs/preprocessing_3d.md).
 
 ## Important CLI Patterns
 
@@ -264,7 +244,11 @@ Use:
 glovita_train --help
 glovita_infer --help
 glovita_extract_features --help
+glovita_extract_bags --help
+glovita_extract_slice_bags --help
 glovita_plot_umap --help
+glovita_explain --help
+glovita_preprocess --help
 ```
 
 ## A Practical Training Walkthrough
@@ -273,14 +257,11 @@ glovita_plot_umap --help
 
 ```bash
 glovita_train \
-  --data.dataset cifar10 \
-  --data.data_root_dir ./data \
-  --model.encoder.encoder_type timm \
-  --model.encoder.type resnet50.a1_in1k \
-  --model.encoder.no_pretrained \
-  --model.head.head_type classification \
   --training.epochs 2 \
-  --dataloading.batch_size 128
+  --dataloading.batch_size 128 \
+  data:cifar10_config --data.data_root_dir ./data \
+  model.encoder:timm_encoder_config --model.encoder.type resnet50.a1_in1k --model.encoder.no_pretrained \
+  model.head:classification_head_config
 ```
 
 ### Change Only The Augmentation Strength
@@ -289,11 +270,15 @@ Dataset configs define defaults, but you can override them directly:
 
 ```bash
 glovita_train \
-  --data.dataset chestxray14 \
-  --data.data_root_dir /data/ChestXray14 \
+  data:chest_x_ray14_config --data.data_root_dir /data/ChestXray14 \
   --data.augmentation.train_policy default_2d_4 \
-  --data.augmentation.test_policy shared_default_2d
+  --data.augmentation.test_policy shared_default_2d \
+  model.encoder:timm_encoder_config --model.encoder.type resnet50.a1_in1k \
+  model.head:classification_head_config
 ```
+
+Train and test policies must agree on output size and normalisation; a mismatch
+is reported when the transforms are built.
 
 ### Use A Different Logger Backend
 
@@ -301,26 +286,55 @@ The default logger backend is `wandb`. To use MLflow:
 
 ```bash
 glovita_train \
-  --data.dataset cifar10 \
-  --data.data_root_dir ./data \
-  --model.encoder.encoder_type timm \
-  --model.encoder.type resnet50.a1_in1k \
-  --model.head.head_type classification \
-  logger:mlflow-logger-config
+  data:cifar10_config --data.data_root_dir ./data \
+  model.encoder:timm_encoder_config --model.encoder.type resnet50.a1_in1k \
+  model.head:classification_head_config \
+  logger:mlflow_logger_config
 ```
 
 If `--logger.tracking_uri` is unset, MLflow currently defaults to a local store
-under `./experiments/mlflow`.
+under `./experiments/mlflow`. Local file stores are opted into automatically
+(`MLFLOW_ALLOW_FILE_STORE=true`), which MLflow >= 3 otherwise refuses; pass a
+`sqlite:///...` or server URI to use a database backend instead.
 
 ### Select The Best-Checkpoint Metric Explicitly
 
 ```bash
 glovita_train \
-  ... \
-  --training.best_checkpoint_metric F1
+  --training.best_checkpoint_metric F1 \
+  ...
 ```
 
-The metric name must match the actual logged validation metric key.
+Accepted names are the metric (`F1`, `f1`, `AUROC`, `MSE`, ...), its logged key
+(`val_F1`) or `loss` / `val_loss`, case-insensitive. Loss, MSE and MAE are
+minimised, all other metrics maximised. Without the option, `best.pt` follows the
+first entry of `--task.metrics` (or the validation loss if that metric is
+per-class only). Unknown names are rejected when training starts.
+
+### Class Imbalance, Binary Tasks And Resuming
+
+- `--task.class_weights balanced` (or one weight per class) weights the
+  cross-entropy loss; `--task.pos_weight balanced` (or a float / one value per
+  label) weights BCE for multilabel and single-logit binary tasks. `balanced`
+  uses the inverse class frequency of the training split.
+- `--dataloading.sampler class_balanced` draws training samples with
+  inverse-class-frequency weights instead (multiclass, binary and multilabel).
+- `--data.num_classes 1` with a classification task trains a single-logit
+  binary classifier (BCE on the logit, binary metrics on its sigmoid).
+- `--training.resume` continues an interrupted run from its `last.pt` (model,
+  optimizer, scheduler, scaler, RNG states, data and sampler seeds, GPS masks,
+  AdaLoRA rank-allocation state and metrics history): `True` resumes the run of
+  the given `--logger.group`, or pass a run directory, a `last.pt` or a CV group
+  directory (finished folds are skipped; a fold interrupted during its final
+  full validation only reruns that). The same command can be resubmitted: with
+  `True` and no `last.pt` yet the fold starts from scratch in that directory.
+  W&B and MLflow continue the same run (id kept in `logger_run.json`). A resumed
+  run reproduces the uninterrupted one exactly on the same hardware, also with
+  persistent DataLoader workers: training workers reseed before every batch from
+  the run's data seed, the epoch and the batch's sample indices, and shuffling
+  is seeded per epoch.
+- `--task.metric_computation_mode stepwise` shows running metrics in the
+  progress bar; logged metrics are always computed over the whole epoch.
 
 ## How Dataset Defaults Work
 
@@ -332,7 +346,10 @@ Each dataset config defines:
 - `num_classes`
 - task type and subtask
 - default augmentation policy selection
-- optional default `data_fraction`
+
+`data_fraction` defaults to the full training split; set it explicitly (e.g.
+`--data.data_fraction 0.1`) for few-shot experiments. Labels are checked against
+`num_classes` when the datasets are built.
 
 That means a user can inspect one file and answer:
 
@@ -344,7 +361,7 @@ That means a user can inspect one file and answer:
 Example:
 
 - `Cifar10Config` defaults to `train_policy="randaugment"` and `test_policy="default"`
-- `ChestXRay14Config` defaults to `train_policy="default_2d_2"` and `test_policy="shared_default_2d"`
+- `ChestXRay14Config` (multilabel, 14 findings) defaults to `train_policy="dataset_specific"` and `test_policy="shared_default_2d"`
 
 This is deliberate. User-facing defaults belong in config, not buried in factory
 logic.
@@ -401,20 +418,23 @@ experiments/
         checkpoints/
           last.pt
           best.pt
-          epoch_0000.pt
-          ...
 ```
 
 Notes:
 
-- `group` is shared across folds of the same CV run
+- `group` is shared across folds of the same CV run; `config.json` of each fold
+  run records that fold in `data.fold`
 - the `checkpoints/` directory contains only checkpoints
+- only `last.pt` (with the full training state for `--training.resume`) and
+  `best.pt` are kept; `--training.keep_epoch_checkpoints` also writes per-epoch
+  `epoch_XXXX.pt` files
 - config snapshots stay one level above `checkpoints/`
 
 This layout is used by:
 
 - `glovita_infer`
 - `glovita_extract_features`
+- `glovita_explain`
 
 when reconstructing models from checkpoints.
 
@@ -435,26 +455,29 @@ For the repo’s custom datasets, split membership usually comes from a
 }
 ```
 
-Fold-aware datasets may use numeric string keys such as:
+Cross-validation folds are either a list of such split dicts (fold `k` is the
+`k`-th entry) or a dict keyed by fold name:
 
 ```json
-{
-  "0": [...],
-  "1": [...]
-}
+[
+  {"train": [...], "val": [...], "test": [...]},
+  {"train": [...], "val": [...], "test": [...]}
+]
 ```
 
-Important detail:
+Rules, the same for every dataset:
 
-- the framework passes the fold identifier through `data.fold`
-- the meaning of those keys is dataset-specific
-- the dataset implementation owns the split logic
+- `data.fold` selects the fold; `--training.cv_folds k` trains folds `0..k-1`
+- a single split counts as fold `0`; a file with several folds needs `data.fold`
+- an unknown fold, or a fold on a dataset without folds, is an error
+- without a `test` split the test loader is `None` and `glovita_infer --split test`
+  says so (CIFAR and ImageNet use their official val set as test, by design)
 
 ### Generic Image Dataset
 
 For common image datasets, you can use:
 
-- `--data.dataset generic_image_dataset`
+- `data:generic_image_dataset_config`
 
 instead of writing a custom dataset class.
 
@@ -465,8 +488,12 @@ This path is intended for standard scalar-label image datasets and supports:
 - `label_source="folder"`
 - `label_source="json"`
 - `label_source="csv"`
-- scalar-label classification
+- scalar-label classification (integer labels, or class names mapped through
+  `class_names` / sorted names)
 - scalar regression (`--data.task Regression --data.subtask regression --data.num_classes 1`)
+- 8- and 16-bit and multi-channel images: `--data.channels rgb` (default; 16-bit
+  is rescaled, never clipped) or `native` (all stored channels as float), with
+  `--data.intensity` (`dtype`, `minmax`, `raw`)
 
 Two common layouts are:
 
@@ -495,14 +522,13 @@ Example:
 
 ```bash
 glovita_train \
-  --data.dataset generic_image_dataset \
+  data:generic_image_dataset_config \
   --data.data_root_dir /data/MyDataset \
   --data.num_classes 2 \
   --data.split_source subdirs \
   --data.label_source folder \
-  --model.encoder.encoder_type timm \
-  --model.encoder.type resnet50.a1_in1k \
-  --model.head.head_type classification
+  model.encoder:timm_encoder_config --model.encoder.type resnet50.a1_in1k \
+  model.head:classification_head_config
 ```
 
 This generic path is deliberately limited to common image cases. You should
@@ -543,6 +569,7 @@ Current encoder families include:
 - `transformer`
 - `dinov2`
 - `dinov3`
+- `curia`
 - `residual_encoder`
 - `primus`
 - `nnfoundation`
@@ -553,6 +580,7 @@ Current head families include:
 - `classification`
 - `regression`
 - `clam`
+- `bag_pool`
 - `framewise_decoder_1d`
 
 Feature aggregation options are configured via:
@@ -566,6 +594,10 @@ with values:
 - `sum`
 - `mean_all`
 - `joint`
+
+Register and distillation tokens are never pooled, and `cls_token` / `joint`
+need an encoder with a CLS token (use `avg` otherwise). Encoders that return
+pooled features (CNNs, Swin, attention-pool heads) are used as they are.
 
 ## Augmentations
 
@@ -584,7 +616,9 @@ Shared policies currently include:
 
 - 2D:
   - `default_2d_1` to `default_2d_5`
-  - `default_2d_randaugment`
+  - `default_2d_randaugment` (like the CIFAR / ImageNet RandAugment and
+    AutoAugment policies, except `timm_randaugment`, it runs on float tensors and
+    accepts any channel count and bit depth)
 - 3D:
   - `default_3d_1` to `default_3d_4`
   - `default_nnunet`
@@ -630,7 +664,7 @@ Do this if your dataset is a normal image dataset with:
 
 In that case, you do not need to write dataset code at all. You only need:
 
-1. `--data.dataset generic_image_dataset`
+1. `data:generic_image_dataset_config`
 2. the right `split_source` / `label_source` settings
 3. normal augmentation/model/PEFT settings
 
@@ -694,6 +728,7 @@ cases in detail:
 - [docs/mil.md](docs/mil.md): MIL / CLAM / bag-of-features path
 - [docs/video.md](docs/video.md): video encoder and framewise-head path
 - [docs/nnfoundation.md](docs/nnfoundation.md): nnFoundation (nnssl ResEnc / PRIMUS) fine-tuning on 3D volumes
+- [docs/preprocessing_3d.md](docs/preprocessing_3d.md): preprocessing raw 3D volumes into the generic 3D dataset
 - [docs/precomputed_features.md](docs/precomputed_features.md): HDF5 feature loading and extraction
 - [docs/augmentation/policies.md](docs/augmentation/policies.md): augmentation layout and policy extension
 - [docs/datasets/DATASET_STRUCTURE.md](docs/datasets/DATASET_STRUCTURE.md): dataset structure and split conventions

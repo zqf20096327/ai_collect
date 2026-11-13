@@ -27,10 +27,16 @@ made with it, shot by shot.
 - **Try fast, finish large.** Drafts are small and quick. Finals are refined at
   up to 1920 pixels, with a realism LoRA for natural skin.
 - **Pick the model, per project or per clip.** HyperFlow H3 Flash, MiniMax H3,
-  its Turbo LoRA, Singularity, DaSiWa and 10Eros Max are built in, and a clip
+  its Turbo LoRA, Singularity, DaSiWa, 10Eros Max and PRISM are built in, and a clip
   can render on a different one than the rest of the project. Any other H3
   checkpoint works too: pick its file, set its steps, sampler and scheduler,
   and save it as a preset for every project.
+- **Let a language model write.** Describe the video and it writes the shots as
+  clips, or rewrites one clip from what you ask for. It is sent the cast's
+  pictures, and any picture you add, such as a place or a frame of the cut, so
+  a model that can see writes from them. It uses the model you name: a text
+  model run by ComfyUI itself, or any OpenAI-compatible endpoint, Anthropic,
+  Gemini or Ollama.
 - **Bring your LoRAs.** Add LoRAs trained on MiniMax H3 to a project, or to one
   clip, set each one's strength, and choose whether it runs on every step or
   only after the first ones have set the framing.
@@ -144,7 +150,7 @@ show. If a clip they join changes, they are marked: render them again. An empty
 space between two rendered clips shows a plus that generates the bridge.
 
 **First and last frames.** Give a clip an exact first or last frame by
-uploading a picture, or press **Use playhead frame**.
+dropping a picture on it, uploading one, or pressing **Use playhead frame**.
 
 **Picture to a track.** A clip can hold a recorded sound, and its picture is
 generated to it. Extend forward carries on with the next part of the same
@@ -158,6 +164,26 @@ the cut at the playhead, on a lane of its own. Drag it to move it, up or down to
 change its lane, and drag its ends to trim it; its volume is in the panel on
 the right. The export mixes it under the clips' own sound.
 
+**Notes on frames.** Stop on a frame and press **N**, or **Note** under the
+viewer. Pin a spot, drag a box or draw on the picture, and write what should
+change. With a range marked by I and O, the note covers the range. Notes show
+on the ruler and in the Project tab, stay on their frame when clips move, and
+are how you tell an agent exactly what to fix: it reads each note with a
+picture of its frame.
+
+**Checks.** The editor measures every rendered cut from its pictures: jump
+cuts, takes that cut, fade, freeze or go still inside, clips that are soft
+next to the rest, and extensions that drift from where their shot began. Each
+finding is marked on the timeline, and the chip at the top counts them and
+lists them, worst first; click one to go to it.
+
+**Right-click.** A clip on the timeline or in the Clips panel, a VFX clip, a
+sound, a cast member and the viewer each have a menu of what can be done to
+them, such as render, rewrite, extend, split or use the frame as a first frame.
+
+**Help in the panel.** The **?** at the end of the panel's tabs shows the
+explanations under each setting; with it off, each one is the setting's tip.
+
 **The Clips panel.** Click a clip to play it on its own, whether or not it is on
 the timeline; click the timeline to go back to the cut. File clips in bins with
 the folder button and drag clips onto them. Delete a clip with the trash button
@@ -170,7 +196,10 @@ for this clip**. See [models and quality](docs/models.md).
 
 **Projects.** Projects live in `h3take_projects` in ComfyUI's output folder.
 The menu beside the project list renames, duplicates or deletes the open one; a
-deleted project is moved to a `.trash` folder there, never erased. Renders run
+deleted project is moved to a `.trash` folder there, never erased. **Download
+as zip** in the same menu packs a project into one file, with every take, only
+the takes the cut uses, or no renders, and **Open a project zip** opens it as a
+new project, here or on another machine such as a cloud GPU. Renders run
 on the server, so closing the editor never loses one. Every change is a
 revision you can go back to, and two editors, or an editor and an agent, can
 work on one project at once.
@@ -215,7 +244,7 @@ Press ? in the editor for this list.
 | "HyperFlow H3 Flash GGUF files need the gguf Python package" | The same |
 | Finals come out at 768x1344 or 1344x768 | Add the latent upscaler. The Model hint says so too |
 | The live preview is a still | Add `taeh3.safetensors` |
-| ComfyUI runs out of memory | Pick a smaller **Final size** in the Project tab, or try one of HyperFlow's GGUF files, which come in smaller sizes. So far the editor has been tested on one 96 GB GPU only |
+| ComfyUI runs out of memory | Pick a smaller **Final size** in the Project tab, try one of HyperFlow's GGUF files, which come in smaller sizes, or render the finals on a Colab GPU with `colab/h3_editor.ipynb`. So far the editor has been tested on one 96 GB GPU only |
 
 ## Develop
 

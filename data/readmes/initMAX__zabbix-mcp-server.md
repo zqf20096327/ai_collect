@@ -839,6 +839,22 @@ Configured in the admin portal under **Settings -> Report Delivery** (or in `con
 
 Asking for a channel the operator has not configured returns a plain explanation of what is missing, not a stack trace. See `config.example.toml` for the full block.
 
+**Per token** (since 1.42.4, admin portal under **Tokens**, or in `config.toml`): `save_to_file` and `email_to` are writes, so a read-only token gets the report as a link only. Two switches decide what a token may do with reports, independently of its read-only setting:
+
+| Key | Default | What it allows |
+|---|---|---|
+| `allow_report` | `true` | `report_generate` at all (the report reads with the token's own read rights) |
+| `allow_report_email` | `false` | `email_to` to the `allowed_recipients` above, without any other write; a read-only token stays read-only, `save_to_file` still needs a token that may write |
+
+```toml
+[tokens.reports]
+name = "Monthly SLA mail"
+read_only = true
+allow_report_email = true
+```
+
+Report generation, report mail and refused deliveries are written to the audit log (who, which report, the recipients; never the report itself). An OAuth login follows the user's role: report mail needs a role that may write.
+
 ```python
 # Async PDF generation via Tasks API. Requires a client that advertises
 # tasks support in initialize() - the official `mcp` Python SDK does.
@@ -1062,7 +1078,7 @@ Every `*_get` tool spells these out for **its own method** in `tools/list`: whic
 
 The same contract guards the request: a sort field the method cannot sort by, a `filter` on a text property, an unknown `selectXxx` or `output` property, or a parameter from a newer release than the server runs is refused **before** the call, with the allowed values in the message. Zabbix would reject some of these and silently ignore the rest, which is worse for a model, since it believes it filtered. When Zabbix itself rejects a call, its validation message (`Invalid parameter "/sortfield/1": value must be one of "name", "lastaccess", "status"`) is returned to the model, marked as untrusted text; transport and internal errors stay generic. `zabbix_raw_api_call` is not validated against the contract, so it remains the way to send a parameter the catalog does not know.
 
-**The contract is in the JSON Schema too** ([#106](https://github.com/initMAX/zabbix-mcp-server/issues/106)), not only in the descriptions, for clients that build the call from the schema: a structured-output decoder of a local model, or a JSON Schema validator in front of the tool call. In `tools/list`, `sortfield` is an enum of the sortable fields (`problem_get`: `eventid` and nothing else; a list for several), `sortorder` is `ASC` / `DESC` (or one per sort field), `output` is `extend` / `count` or a list whose items are the object's properties, `filter` and `search` are objects whose keys are limited to the properties the method filters or searches on (`propertyNames`), and `extra_params` takes only the method's native parameters and `selectXxx` (no key at all where the method has none beyond the typed ones). A typed parameter with a documented closed set of values is an enum (`history_get` `history`: 0 to 6), the period of an extension tool has a pattern. The names are the contract's: the ones the description lists, plus the few it no longer lists because they left in Zabbix 6.0 or earlier. `tests/test_schema_constraints.py` checks both directions for every tool: the schema offers nothing the server refuses, and refuses nothing the server takes. What the schema does not carry: the release (one catalog serves servers of several releases, so the call is still checked against the server it goes to), and the properties a `selectXxx` may project (not measured yet). "One of these two arguments is required" stays in the description, because several model APIs refuse `anyOf` at the top level of a tool schema. The schema is stricter than the server: a comma-separated string still works for callers that send one. `[server].schema_constraints = false` returns the plain `string` / `object` types.
+**The contract is in the JSON Schema too** ([#106](https://github.com/initMAX/zabbix-mcp-server/issues/106)), not only in the descriptions, for clients that build the call from the schema: a structured-output decoder of a local model, or a JSON Schema validator in front of the tool call. In `tools/list`, `sortfield` is an enum of the sortable fields (`problem_get`: `eventid` and nothing else; a list for several), `sortorder` is `ASC` / `DESC` (or one per sort field), `output` is `extend` / `count` or a list whose items are the object's properties, `filter` and `search` are objects whose keys are limited to the properties the method filters or searches on (`propertyNames`), and `extra_params` takes only the method's native parameters and `selectXxx` (no key at all where the method has none beyond the typed ones). A typed parameter with a documented closed set of values is an enum (`history_get` `history`: 0 to 6), the period of an extension tool has a pattern. The names are the contract's: the ones the description lists, plus the few it no longer lists because they left in Zabbix 6.0 or earlier. `tests/test_schema_constraints.py` checks both directions for every tool: the schema offers nothing the server refuses, and refuses nothing the server takes. Since v1.43 a `selectXxx` whose list Zabbix checks itself is typed as well: `extend` / `count`, or a list of the fields it takes, measured on 5.0 to 8.0 (`scripts/audit_select_fields_live.py`, 160 selects of 37 methods); the server checks such a list against the release it calls and names the fields (`selectHosts` of `hostgroup_get`: `proxyid` on 7.0+, `proxy_hostid` before). A select that takes any name and ignores the unknown ones (5.x takes any; `selectOperations` of `action_get`) stays open. What the schema does not carry: the release (one catalog serves servers of several releases, so the call is still checked against the server it goes to). "One of these two arguments is required" stays in the description, because several model APIs refuse `anyOf` at the top level of a tool schema. The schema is stricter than the server: a comma-separated string still works for callers that send one. `[server].schema_constraints = false` returns the plain `string` / `object` types.
 
 **`false` for a Zabbix flag is not sent.** Zabbix has two kinds of yes/no get parameters. A boolean reads its value: `item_get` with `with_triggers: false` returns the items used in no trigger. A *flag* is on as soon as it is present, whatever its value: `trigger.get` with `only_true: false` returns the triggers in problem state, exactly as with `true`. A model that fills in `false` to say "no" got the opposite of what it asked for. Measured on 6.0 to 8.0, forty parameters behave that way on at least one release, twenty-five of them from 6.2 on: `trigger_get` `only_true`, `monitored`, `active` and the three `with...Events`, `host_get` and `template_get` `with_items` / `with_triggers` / `with_graphs`, `host_get` `templated_hosts`, `usermacro_get` `globalmacro`, and on 6.0 every `with_*` of `hostgroup_get`. The server leaves a `false` flag out of the call, whether it is typed or arrives in `extra_params` (whose description lists the method's switches); a boolean keeps its `false`. `scripts/audit_get_flags_live.py` asks a running server about every flag and boolean of every get method (left out, `true`, `false`) and compares the answer with what the server does.
 
@@ -1290,33 +1306,4 @@ public_url = "https://mcp.example.com:8080"            # what clients actually u
 
 ## TLS / HTTPS
 
-The server supports native HTTPS via `tls_cert_file` and `tls_key_file` in `config.toml`.
-
-**Certificate requirements depend on your MCP client:**
-
-| Client type | Self-signed cert | Publicly trusted cert (Let's Encrypt, etc.) |
-|---|---|---|
-| Local CLI clients (Claude Code, Cursor, etc.) | Works | Works |
-| Remote MCP connections (Claude Desktop cloud, web clients) | **Does not work** | Required |
-
-> **Why?** Remote MCP connections from Claude Desktop are brokered through Anthropic's cloud infrastructure — the request comes from Anthropic's servers to your MCP server, not from your local machine. Self-signed certificates will be rejected because they can't be verified by a trusted Certificate Authority.
-
-**Two production paths, equally good - pick whichever fits your stack:**
-
-**Option A - reverse proxy terminates TLS (Caddy / nginx / Cloudflare):**
-
-```
-Client → Caddy (HTTPS, Let's Encrypt) → MCP Server (HTTP, localhost:8080)
-```
-
-The MCP server runs plain HTTP on localhost; the reverse proxy handles TLS termination with a publicly trusted certificate. Caddy provisions Let's Encrypt automatically; for nginx see the snippet in [`docs/OAUTH.md`](docs/OAUTH.md).
-
-**Option B - native TLS in the MCP server, cert from Let's Encrypt one-liner:**
-
-```bash
-sudo ./deploy/install.sh request-tls \
-    --hostname mcp.example.com \
-    --email you@example.com
-```
-
-The installer runs `certbot certonly` (auto-detects standalone vs webroot 
+The server supports native HTTPS via `tls_cert_file` and `tls_key_

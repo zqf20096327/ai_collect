@@ -2,6 +2,12 @@
 
 Welcome to antiGen, a model that predicts future mutations to viral proteins based on inferred phylogenetic trees. This repository is intended for (1) generating training data from phylogenetic trees, (2) training antiGen on said data, (3) querying substitution probabilities predicted by antiGen, (4) running the evaluations reported in the antiGen manuscript, and (5) reproducing the manuscript figures.
 
+**Where to start.** To score mutations relative to BA.2.86 (or your own spike) with the
+pretrained model, follow the [tutorial](https://github.com/evo-design/antiGen/blob/main/TUTORIAL.md).
+To generate data and train and evaluate your own models, continue with this README: the
+Quickstart, then Parts 1–5. To regenerate the paper's evaluations and figures, see
+[REPRODUCE.md](https://github.com/evo-design/antiGen/blob/main/REPRODUCE.md).
+
 ## Install
 
 Install the modeling package and its command-line tools from PyPI (Python ≥ 3.10):
@@ -41,106 +47,152 @@ accelerates training and data generation but is optional. The software has been 
 
 ## Quickstart (generate → train → infer, runs on CPU)
 
-Runs the whole pipeline on a toy example: **generate** training data from a tiny
-Nextstrain-format mutation-annotated tree and MSA using the included `antiGen-data` tool, then **train** a model and **score** substitutions.
-No GPU is required for this example.
+Runs the whole pipeline on a toy example in under a minute: **generate** a train corpus
+and a test tree with the included [`antiGen-data`](antiGen-data/) tool, then **train** a
+model and **score** substitutions. No GPU is required.
+
+The train and test data come from **two separate `antiGen-data` runs**, exactly as in the
+paper:
+
+* the **train corpus**: an *earlier* tree (a build from before the cutoff) plus only the
+  sequences collected before the cutoff;
+* the **test tree**: a *later* tree plus the sequences collected up to a later date, each
+  record labelled with the cutoffs it falls after.
+
+Never train on any record of the test tree, including its pre-cutoff records: the later
+tree and the sequences placed on it carry information from after the cutoff.
+`antiGen-train` refuses a file that holds any post-cutoff record.
 
 ```bash
-# 1. build the data-generation tool (make auto-selects nvcc if present, else g++)
+# 1. build the data-generation tool (C++17 + OpenMP)
 cd antiGen-data && make && cd ..
+E=antiGen-data/example
 
-# 2. generate training data from the toy Nextstrain JSON + MSA (~ms; GPU if present, else CPU)
-antiGen-data/antiGen-data antiGen-data/example/out 0.6 toy \
-    antiGen-data/example/ref.json antiGen-data/example/tree.json \
-    antiGen-data/example/metadata.tsv antiGen-data/example/seqs.fasta
+# 2. TRAIN corpus: the earlier tree (a 2020-06-01 build) plus the sequences dated
+#    before the 2020-08-15 cutoff
+antiGen-data/antigen prepare --tree $E/tree.json --root-seq $E/root-sequence.json \
+    --fasta $E/seqs.fasta --metadata $E/metadata.tsv \
+    --date-cutoff 2020-08-15 --no-clock --out train_prepared.tsv
+antiGen-data/antigen place --tree $E/tree.json --root-seq $E/root-sequence.json \
+    --prepared train_prepared.tsv --out train_tree.tsv --out-examples train_examples.txt
 
-# 3. (optional) sanity-check the generated examples file
-antiGen-validate-examples antiGen-data/example/out/examples_cutoff_0.6.txt
+# 3. TEST tree: the later tree (a 2020-11-15 build) plus every sequence dated before
+#    2020-11-15; records first sampled on or after 2020-08-15 are the test set
+antiGen-data/antigen prepare --tree $E/tree_late.json --root-seq $E/root-sequence.json \
+    --fasta $E/seqs.fasta --metadata $E/metadata.tsv \
+    --date-cutoff 2020-11-15 --no-clock --out test_prepared.tsv
+antiGen-data/antigen place --tree $E/tree_late.json --root-seq $E/root-sequence.json \
+    --prepared test_prepared.tsv --post-cutoff 2020-08-15 \
+    --out test_tree.tsv --out-examples test_examples.txt
 
-# 4. train a small from-scratch transformer on it
-antiGen-train --model-type transformer \
-    --examples antiGen-data/example/out/examples_cutoff_0.6.txt \
+# 4. (optional) sanity-check both files
+antiGen-validate-examples train_examples.txt --alphabet ACDEFGHIKLMNPQRSTVWY
+antiGen-validate-examples test_examples.txt --split-date 2020-08-15 --alphabet ACDEFGHIKLMNPQRSTVWY
+
+# 5. train a small from-scratch transformer on the train corpus (and only on it)
+antiGen-train --examples train_examples.txt --model-type transformer \
     --d-model 32 --num-layers 1 --epochs 3 --batch-size 4 --output-dir ./checkpoints
 
-# 5. score substitutions for the toy query sequences
-antiGen-infer ./checkpoints/fitness_*.pt antiGen-data/example/seqs.fasta -o scores.csv
+# 6. score substitutions for the toy query sequences
+antiGen-infer ./checkpoints/fitness_*.pt $E/seqs.fasta -o scores.csv
 ```
+
+The train corpus holds 5 records, every one of them training data. The test tree holds 7,
+of which the 2 on or after 2020-08-15 are the test set; its other 5 are never used. The
+evaluations in Part 4 score a model on the test records of the test tree.
 
 ---
 
 # 1. Generating training data
 
-antiGen training data is produced by the included **[`antiGen-data/`](antiGen-data/)** tool, a
-C++/CUDA application that grows a mutation-annotated phylogeny by parsimonious attachment and returns training/testing examples, as well as position-specific scoring matrices
-(PSSMs) for the training window and at various cutoff times in the testing window. To build it, cd into the antiGen-data sub-directory and run `make` (needs a C++17 compiler; `nvcc` is optional, for GPU support).
-
-The raw inputs (reference sequences, mutation-annotated trees, metadata, and MSAs) for the four datasets analyzed in the paper are archived on Zenodo at [doi:10.5281/zenodo.21842015](https://doi.org/10.5281/zenodo.21842015).
-
-Run it as:
+Training and test corpora come from **[`antiGen-data/`](antiGen-data/)**, a C++17/OpenMP
+tool that reads a Nextstrain mutation-annotated tree, computes parsimony-consistent allele
+sets, places newer aligned sequences on it by parsimony, and writes the examples antiGen
+trains and is evaluated on, plus residue count matrices. Build it with `make` in that
+directory; `./antigen` prints every command and option.
 
 ```bash
-antiGen-data <output_dir> <cutoff> <dataset_type> <ref_json> <tree_json> <metadata_tsv> <alignment_files...> [max_seqs] [--cpu]
+antigen prepare --tree <dataset.json> --root-seq <root-sequence.json> \
+    --fasta <aligned.fasta> --metadata <strain_date.tsv> --date-cutoff <D> --out prepared.tsv
+antigen place   --tree <dataset.json> --root-seq <root-sequence.json> --prepared prepared.tsv \
+    --out tree.tsv --out-examples examples.txt [--post-cutoff D1,D2,...] [--variant BA.2]
 ```
 
-- `output_dir` — where outputs are written (created if absent).
-- `cutoff` — train/test split, in **years after the tree's root date**: examples dated before `root + cutoff` are labeled `TRAINING`, later ones `TESTING`.
-- `dataset_type` — one of `sc2`, `h3n2`, `rsv_a`, `rsv_b`, `denv2`, or `toy`; selects the alphabet, segment layout, and evaluation region.
-- `ref_json`, `tree_json`, `metadata_tsv` — the reference sequence, guide phylogeny, and per-strain dates (formats under **Input files** below).
-- `alignment_files` — one or more MSA FASTAs of the sequences to attach, one per segment (1 for most datasets; 3 for H3N2 HA).
-- `max_seqs` *(optional)* — cap on how many sequences to attach.
-- `--cpu` *(optional)* — force the CPU path; a GPU is used automatically when present.
+**Inputs.** A Nextstrain v2 dataset JSON (nodes carry `node_attrs.num_date.value` and
+`branch_attrs.mutations`, e.g. `"S": ["D614G"]`), its root-sequence sidecar
+(`{"S": "MFVF…*"}`), an aligned FASTA of the sequences to place (protein, in the sidecar's
+frame), and a `strain`⇥`date` metadata TSV.
 
-**Input files.** The three inputs follow the Nextstrain convention; see
-[`antiGen-data/example/`](antiGen-data/example/) for a complete, runnable set.
+**Alphabet.** `--alphabet` picks how stops and gaps are read. Give the same value to every
+command of a run (`place` refuses a queue `prepare`d under another):
 
-- `ref_json` — root sequence per segment, e.g. `{"S": "MFVF…"}`.
-- `tree_json` — a Nextstrain tree whose nodes carry `node_attrs.num_date.value` (decimal year) and `branch_attrs.mutations`, one list per segment of `<ref><pos><alt>` strings, 1-indexed (e.g. `"S": ["A222V", "D614G"]`).
-- `metadata_tsv` — `strain`⇥`date` (ISO `YYYY-MM-DD`) for each sequence in the alignment(s).
+* `--alphabet 20` (**the default**, and what the paper's corpora use): the 20 standard
+  amino acids. A stop (`*`) or a gap (`-`) is treated like `X`, as missing or ambiguous
+  data at that site, never as a residue of its own.
+* `--alphabet 22`: stop and gap are states like the other 20, so the alphabet has 22
+  tokens and only `X` is missing. A run of `-` longer than `prepare --max-gap-run`
+  (default 10), or one touching either end of the gene, is still read as missing
+  coverage rather than a deletion.
 
-Each run writes to `<output_dir>/`, formatted as follows:
+Train on the same alphabet the corpus was built with (Part 2, *Alphabet*).
 
-```
-output_<dataset>/
-  examples_cutoff_<value>.txt     # training/testing examples (one entry per inferred ancestral genotype; see below)
-  pssms/root.csv                  # PSSM of all sequences in the training window
-  pssms/<variant>/time_*.csv      # PSSM of all sequences in the testing window up through the cutoff time specified in the file name
-```
+**Train and test come from two separate runs.** For a cutoff D:
 
-Each example within `examples_cutoff_*.txt` holds a sequence, its `TRAINING`/`TESTING` designation, whether it is the root example of or is descended from a supplied variant of interest, and the substitutions observed in that sequence's children (the training target).
-`antiGen-validate-examples <file> [--variant V]` checks a file is well-formed (single consistent
-sequence length, alphabet `ACDEFGHIKLMNPQRSTVWY*-`, in-range positions, ≥1 training example). The
-Quickstart above generates a miniature example of this format from the toy inputs in
-[`antiGen-data/example/`](antiGen-data/example/).
+* the **train corpus** is an *earlier* tree, the last build before D, plus only the
+  sequences collected before D (`prepare --date-cutoff D`; `place` without
+  `--post-cutoff`). Every one of its records is training data.
+* the **test tree** is a *later* tree plus the sequences collected up to a later date,
+  placed with `--post-cutoff` listing the cutoffs. Each record lists the cutoffs it falls
+  after, and the test set at D is the records that list D.
+
+Every model, the statistical baselines included, is trained or fitted on the train
+corpus alone. No record of the test tree is training data, including its pre-cutoff
+records: the later tree and the sequences placed on it carry information from after D.
+`antiGen-train` and the evaluations refuse any training file that holds a post-cutoff
+record. The Quickstart above is this procedure in miniature.
+
+**The examples file.** One record per internal node: its sequence, the mutation from its
+parent, its `POST_CUTOFF` cutoffs, variant flags, and the mutations to its children (the
+training target; a mutation listed twice is a count of two). Positions are 0-based.
+`antiGen-validate-examples <file>` checks a file (add `--split-date D` for a test tree).
+
+**The paper's corpora.** `antiGen-data/slurm/` holds the drivers. `run_series.sbatch`
+builds a train corpus per quarterly cutoff (2020-04-01 … 2026-01-01), `run_all.sbatch`
+builds the shared test tree (plus `counts_ba2/`, the BA.2-clade residue counts after each
+cutoff), and `run_2021.sbatch` and `place_full.sbatch` build the 2021-01-01 arm. The input
+trees and sidecars are fetched by `fetch_trees.py` and `fetch_snapshots.py`, and
+[`antiGen-data/PROVENANCE.md`](antiGen-data/PROVENANCE.md) documents every file's source
+and integrity checks. See [`antiGen-data/README.md`](antiGen-data/README.md).
 
 ---
 
 # 2. Training antiGen
 
-**Pointing antiGen at data.** Give an explicit file with `--examples <path>` (works for any
-dataset with no code edits), or use a built-in dataset shortcut which resolves
-`examples_cutoff_<cutoff>.txt` under `$FITNESS_DATA_ROOT` (or an explicit `--data-dir`). These
-shortcuts only build a local path — the data is never downloaded, so you must have generated it
-first (Part 1) and placed it under `$FITNESS_DATA_ROOT`:
-
-| Flag | Dataset | Variant | `--cutoff` | Eval region |
-|------|---------|---------|------------|-------------|
-| *(default)* | SARS-CoV-2 spike | BA.2 (or `--variant`) | 1, 4, or 5 | RBD (330–530, 0-indexed) |
-| `--flu` | Influenza HA | J or K | 12 | full sequence |
-| `--rsv-a` | RSV-A F | A.D.1.6 | 74 | full sequence |
-| `--denv2` | Dengue 2 envelope | 2II_F.1.1.2_annotated | 191 | full sequence |
+**Pointing antiGen at data.** `--examples` names the train corpus of the cutoff (Part 1),
+and is required. Every model in the paper was trained this way; for example the
+2023-01-01 base model:
 
 ```bash
-# built-in dataset: resolve the file from $FITNESS_DATA_ROOT via a shortcut
-export FITNESS_DATA_ROOT=/path/to/antiGen-data      # holds output1/, output_flu_full_cutoff12/, ...
-antiGen-train --flu --cutoff 12 --model-type transformer --output-dir ./checkpoints
-
-# your own data: point --examples straight at a file you generated in Part 1
-# (no $FITNESS_DATA_ROOT, no shortcut — works for any protein/pathogen). seq_len is read from
-# the file (alphabet is the standard 22 AAs); add --variant <label> if it has a variant of interest.
-antiGen-train --examples ./mydata/examples_cutoff_5.txt \
-    --model-type transformer --d-model 128 --num-layers 2 \
-    --epochs 64 --batch-size 64 --lr 1e-4 --output-dir ./checkpoints
+antiGen-train --examples $CORPORA/sc2-2023-01-01/train/examples_2023-01-01_cur.txt \
+    --model-type transformer --d-model 128 --num-layers 2 --epochs 32 --batch-size 64 \
+    --variant BA.2 --ignore-dead-ends --output-dir ./checkpoints
 ```
+
+`python reproduce/train_commands.py` prints the exact command behind every checkpoint the
+figures use, read back from the `train_args` each checkpoint stores
+([`REPRODUCE.md`](REPRODUCE.md)).
+
+**Validation.** By default every record of the train corpus trains, for a fixed number of
+epochs. `--val-mode random --val-frac 0.1 --save-best` instead holds out a random tenth
+of the train corpus and keeps the epoch that scores best on it. The paper's antiGen
+(CV ×10) is ten such models (`--split-seed 0…9`, `--seed 100…109`, 256 epochs), combined
+as the mean of their log-probabilities. Validation never reads the test tree.
+
+**Alphabet.** antiGen trains over the **20 standard amino acids** by default, with no gap
+and no stop column, matching antiGen-data's default `--alphabet 20` (Part 1).
+`--alphabet ACDEFGHIKLMNPQRSTVWY*-` trains in the 22-token frame, for a corpus built with
+`--alphabet 22`. A checkpoint stores its alphabet, so
+`antiGen-infer` and `antiGen-eval` reload it without being told.
 
 ## Model architectures (`--model-type`)
 
@@ -149,29 +201,35 @@ antiGen-train --examples ./mydata/examples_cutoff_5.txt \
 | Transformer | `transformer` | — (core) | Small transformer trained from scratch. **Default; no downloads.** |
 | ESM-2 | `esm2` | `.[esm]` | ESM-2 protein LM (default `esm2_t12_35M_UR50D`), frozen/partial/full finetune |
 | BLOSUM62 | `blosum62` | — (core) | Static BLOSUM62 substitution matrix (no training, eval only) |
+| Codon | `codon` | — (core) | Single-nucleotide accessibility under the standard genetic code (no training, eval only) |
 | PSSM | `pssm` | — (core) | Per-position `log(count+1)` from the root PSSM (no training, eval only) |
 | Gated | `gated` | — (core) | Learnable per-position blend of two predictors (`--gate-partner-a/-b`, `--gate-variant`) |
-| EVcouplings | `evcouplings` | `.[dca]` + `plmc` | DCA Potts model fit from a pandemic MSA via `plmc` (pseudo-likelihood; eval only) |
-| EVE | `eve` | — (core) | EVE VAE (frozen or finetuned) trained on a pandemic MSA |
+| EVcouplings | `evcouplings` | `.[dca]` + `plmc` | DCA Potts model fit from an MSA via `plmc` (pseudo-likelihood; eval only) |
+| EVE | `eve` | — (core) | EVE VAE (frozen or finetuned) trained on an MSA |
 | Tranception | `tranception` | — (core) | Tranception autoregressive scorer (frozen or finetuned) |
 
-For the pretrained ESM-2 backbone, we provide three finetuning strategies: **frozen**
+For the pretrained ESM-2 backbone there are three finetuning strategies: **frozen**
 (`--freeze-backbone`, head only), **partial** (`--freeze-backbone --finetune-layers N`), and
-**full** (no freeze flags). MSA models (`evcouplings`/`eve`/`tranception`) additionally need
-`--msa` / `--metadata`; their date cutoff is derived from the dataset MRCA + `--cutoff` (or
-`--date-cutoff`).
+**full** (no freeze flags). The MSA models (`evcouplings`/`eve`/`tranception`) also take
+`--msa`: the alignment of the train corpus's own sequences, all dated before the cutoff,
+which antiGen-data writes alongside it (`antiGen-data/slurm/msa_2023-01-01.sbatch`). The
+paper's commands, all on the 2023-01-01 train corpus (`TRAIN=$CORPORA/sc2-2023-01-01/train`):
 
 ```bash
-# from-scratch transformer (the default)
-antiGen-train --model-type transformer --d-model 128 --num-layers 2 \
-    --epochs 64 --batch-size 64 --lr 1e-4 --flu --output-dir ./checkpoints
+# ESM-2 35M, partial finetune of the last 4 layers
+antiGen-train --examples $TRAIN/examples_2023-01-01_cur.txt --model-type esm2 \
+    --freeze-backbone --finetune-layers 4 --epochs 32 --variant BA.2 --ignore-dead-ends
 
-# ESM-2, partial finetune of the last 4 layers
-antiGen-train --model-type esm2 --freeze-backbone --finetune-layers 4 --lr 1e-4 --flu
+# EVE, frozen, on the train corpus's alignment
+antiGen-train --examples $TRAIN/examples_2023-01-01_cur.txt --model-type eve \
+    --freeze-backbone --epochs 32 --msa $TRAIN/msa_2023-01-01_cur.fasta --max-seqs 351410 \
+    --variant BA.2 --ignore-dead-ends
 
-# gated blend of a from-scratch transformer and the root PSSM
-antiGen-train --model-type gated --gate-partner-a fitness_predictor --gate-partner-b pssm \
-    --gate-variant static --flu
+# gated blend of a from-scratch transformer and the root PSSM of the train corpus
+# (pssm_root.csv from reproduce/tools/counts_to_pssm_csv.py on counts_2023-01-01_cur.tsv)
+antiGen-train --examples $TRAIN/examples_2023-01-01_cur.txt --model-type gated \
+    --gate-partner-b pssm --pssm-path pssm_root.csv --d-model 128 --num-layers 2 \
+    --epochs 32 --batch-size 64 --variant BA.2 --ignore-dead-ends
 ```
 
 Checkpoints are written to `--output-dir` as `fitness_<run_prefix>.pt`, alongside a
@@ -199,8 +257,8 @@ toy_root,0,M,C,0.00164760
 ```
 
 `prob` is the inferred probability of each possible amino acid substitution relative to the
-query (including premature stop codons `*` and gaps `-`, i.e. point indels). Use `--format wide`
-for a position × amino-acid matrix, and `--drop-gap-stop` to exclude the `-`/`*` columns.
+query. Use `--format wide` for a position × amino-acid matrix. `--drop-gap-stop` excludes the
+`-`/`*` columns, and is a no-op on a model trained over the 20 standard residues.
 
 **Length / alignment.** antiGen operates on a **fixed, aligned coordinate frame**: provide
 query sequences aligned to the training reference (same length and alignment).
@@ -209,33 +267,55 @@ query sequences aligned to the training reference (same length and alignment).
 
 # 4. Running the manuscript evaluations
 
-`antiGen-eval` scans a directory of checkpoints, groups them by model, and writes unified
-per-variant comparison CSVs against a set of fixed baselines.
+`antiGen-eval` scores every checkpoint in a directory, plus the statistical baselines and
+the fixed external maps in `data/baselines/`, on the post-cutoff records of a test tree:
 
 ```bash
-antiGen-eval --dataset sc2 --data-dir $FITNESS_DATA_ROOT/output1 \
-    --checkpoint-dir ./checkpoints --output-dir ./evals_sc2
+antiGen-eval --dataset sc2 --alphabet ACDEFGHIKLMNPQRSTVWY \
+    --train-examples $CORPORA/sc2-2023-01-01/train/examples_2023-01-01_cur.txt \
+    --test-examples  $CORPORA/sc2-test/examples_all_cur.txt --split-date 2023-01-01 \
+    --root-counts    $CORPORA/sc2-2023-01-01/train/counts_2023-01-01_cur.tsv \
+    --checkpoint-dir ./checkpoints --output-dir ./evals
 ```
 
-It produces two metric families per variant: **quantile hit-rate** (how often observed mutations
-fall in the model's top-q% predictions) and **variant-emergence** (across top-q quantiles
-q = 0.1 … 1.0). These are termed next-mutation recall and PSSM precision in the paper, respectively. Baselines come from `data/baselines*/` plus two built from the root PSSM
-(`pssm_root` and the position-only `pssm_root_position`). Ties at a top-q boundary are broken
-**fractionally** (the expected value under random tie-breaking).
+It reports **next-mutation recall** (how often the mutations that occur next fall in a
+model's top-q predictions) per mutation, and `antiGen/list_macro.py` reports it per cell
+(each (site, residue) counted once) over a mutation list or every cell of a region. The
+statistical baselines are fitted on the train corpus only, the data the checkpoints saw.
+Ties at a top-q boundary are counted fractionally (the expected value under random
+tie-breaking).
 
-The SLURM scripts used for the manuscript runs are in [`examples/slurm/`](examples/slurm/); they
-embed lab-specific paths/partitions and are meant to be copied and edited for your environment.
+The paper's evaluations, one named step per figure family, are in
+[`reproduce/eval.sh`](reproduce/eval.sh) (Slurm; paths and partitions in
+`reproduce/config.sh`):
+
+```bash
+bash reproduce/stage_checkpoints.sh          # check the checkpoint directories the evals read
+bash reproduce/eval.sh                       # list the steps
+bash reproduce/eval.sh rbd_2023              # submit one; outputs under $OUT/rbd_2023-01-01/
+bash reproduce/stage.sh                      # outputs -> antiGen-figures/data/
+```
+
+[`REPRODUCE.md`](REPRODUCE.md) maps every figure to its staged data, the step that
+produces it, the checkpoints it reads and the published output it reproduces.
+`python reproduce/train_commands.py` prints the `antiGen-train` command behind every
+checkpoint. The training recipes are in [`reproduce/slurm/`](reproduce/slurm/).
 
 ---
 
 # 5. Reproducing the paper figures
 
-[`antiGen-figures/`](antiGen-figures/) is R code that plots the evaluation outputs into the
-manuscript figures (it trains and evaluates nothing). From that directory, `Rscript run_all.R`
-regenerates everything into `figs/` (PNG) and `figs_vector/` (PDF), or `Rscript figures/<script>.R`
-runs a single figure; the inputs it reads live in `antiGen-figures/data/` and sibling directories.
-Requires R with ggplot2, cowplot, reshape2, dplyr, tidyr, tibble, forcats, magick, ggtext,
-jsonlite, and scales.
+[`antiGen-figures/`](antiGen-figures/) is R code that draws the staged evaluation outputs
+into the manuscript figures; it trains and evaluates nothing, and everything it reads is
+committed. From that directory:
+
+```bash
+bash render_all.sh                    # every current figure -> figs/*.png, figs_vector/*.pdf
+bash render_all.sh supp_cd1_series    # one figure
+```
+
+It needs R (4.5.3 was used) with cowplot, dplyr, forcats, ggpattern, ggplot2, ggtext,
+magick, reshape2, scales, tibble and tidyr.
 
 ---
 

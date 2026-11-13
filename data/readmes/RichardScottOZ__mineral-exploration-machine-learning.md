@@ -822,6 +822,7 @@ A Joint Multi-Scale Graph Attention and Classify-Driven Autoencoder Framework fo
   * [Videos](https://www.youtube.com/c/SoftwareUnderground/videos)
     * [Transform 2022](https://www.youtube.com/playlist?list=PLgLft9vxdduDFkG9gtuNicNmb2YUzWqSQ)
   * [Awesome Open Geoscience](https://github.com/softwareunderground/awesome-open-geoscience )[note Oil and Gas Biased]
+  * [Awesome Mineral Exploration](https://github.com/XploraHub/awesome-mineral-exploration) - Curated list of open-source software for mineral exploration
   * [Transform 2021 Hacking Examples](https://github.com/RichardScottOZ/Transform-2021)
   * [Segysak 2021 Tutorial](https://github.com/trhallam/segysak-t21-tutorial)
   * [T21 Seismic Notebook](https://github.com/stevejpurves/t21-seismic-notebook)
@@ -1112,7 +1113,8 @@ https://pubs.usgs.gov/of/2005/1294/e/OF05-1294-E.pdf
  * [Geoscience Australia Geophysics thredds](https://dapds00.nci.org.au/thredds) -> OpendDAP and https access
  * [MORPH gdb](https://github.com/Neil-Symington/MORPH_gdb) -> Officer Musgrave drilling data
 ### CSIRO
-* [CSIRO Data Access Portal](https://data.csiro.au/)
+* [Data Access Portal](https://data.csiro.au/)
+* [XT Exploration Toolkit](https://data.exploration.tools/)
  * [Regolith Depth](https://data.csiro.au/collection/csiro:11393)
  * [TWI](https://data.csiro.au/collection/csiro:5588?_st=browse&_str=1&_si=1&browseType=kw&browseValue=Topographic%20Wetness%20Index) -> Topographic Wetness Index
 * [ASTER Geoscience Maps](https://confluence.csiro.au/public/SpecSens/aster-geoscience-maps) -> Website
@@ -1202,6 +1204,4 @@ https://pubs.usgs.gov/of/2005/1294/e/OF05-1294-E.pdf
 
 ## Europe
 * [EGDI](https://www.europe-geology.eu/) -> European Geological Data Infrastructure Pan-European geological data portal with 800+ map layers including mineral occurrences and critical raw materials; OGC WFS/WMS services at https://www.europe-geology.eu/data-tools/
-  * [WFS](https://data.geus.dk/egdi/wfs/help/?layers=egdi_mineraloccurr_base_metals)
-  * [Promine](https://servicesvectoriels.atlas.gouv.qc.ca/IDS_SGM_WMS/service.svc/get) -> Quebec-Atlas-hosted WMS for ProMine European mineral occurrence data
-* [Insp
+  * [WFS](https://data.geus.dk/egdi/wfs/he

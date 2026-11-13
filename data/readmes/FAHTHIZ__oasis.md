@@ -47,7 +47,7 @@ curl -fsSL https://raw.githubusercontent.com/FAHTHIZ/oasis/main/scripts/install.
 | From source | `git clone https://github.com/FAHTHIZ/oasis.git && cd oasis && npm install && npm install --global .` |
 | Desktop app | Installers for Windows, macOS and Linux on [GitHub Releases](https://github.com/FAHTHIZ/oasis/releases) (not yet code-signed, see [Desktop](docs/DESKTOP.md)) |
 
-One package gives you the terminal agent and the web app. It needs Node.js 22.15+ and Git. The install scripts take the latest stable release, ask before changing anything, and finish with `oasis doctor`. Every release ships the npm tarball, the desktop installers and a `SHA256SUMS` file. See [Downloads and releases](docs/RELEASES.md).
+One package gives you the terminal agent and the web app. It needs Node.js 22.19+ and Git. The install scripts take the latest stable release, ask before changing anything, and finish with `oasis doctor`. Every release ships the npm tarball, the desktop installers and a `SHA256SUMS` file. See [Downloads and releases](docs/RELEASES.md).
 
 </details>
 
@@ -194,6 +194,7 @@ oasis -p --permission-mode auto --goal "npm test passes"              # keeps go
 oasis plugin marketplace add anthropics/claude-plugins-official
 oasis plugin install superpowers@claude-plugins-official
 oasis add BuilderIO/skills            # Codex plugins and Gemini CLI extensions, converted on install
+oasis plugin validate ./my-plugin     # Claude Code or OASIS plugin; list, update and uninstall cover both
 ```
 
 **Apps in one step.** Say "connect GitHub" or type `/connect linear` and a Connect card appears in the conversation. Approve access on the service's own page and its tools are ready in the same turn. 48 apps are built in, and any other remote MCP server works by name from the official MCP Registry or by URL.

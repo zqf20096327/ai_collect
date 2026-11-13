@@ -89,7 +89,11 @@ sidecar mapping each scenario's step chapters (step → timecode). The timecodes
 from the video's first frame (`"timing": "trace"`); when a trace cannot be read they are estimated from the step
 durations (`"timing": "estimated"`). A run with a session, Basic Auth, environment secrets, a mailbox or API flows keeps no
 trace, since Playwright would write them into it in the clear: its timecodes are estimated, and in the first
-scenario of a worker they can run seconds late. It's a review-gate affordance — watch what the agent did before
+scenario of a worker they can run seconds late. Each entry of a generated test also carries its case's
+`"stableId"` (the one in `testcases/<id>.md`), so a tool matches a screencast to its case by id rather than by the test
+title, which the model picks: cairn writes the id onto the test as a Playwright annotation (`type: "stableId"`), and
+reads it back from the run. A hand-written spec, or a test the model did not map to a listed case, has no `stableId`;
+`test` (the title) stays in every entry. It's a review-gate affordance — watch what the agent did before
 approving a case. Off by default; the recorded `.webm` paths are linked from the run summary and the TUI result screen.
 
 ### Watch a run offline: `cairn view`
@@ -201,7 +205,7 @@ const result = await runDesign({ url, config, sessionName: "myapp", checklistTex
 ## Documentation
 
 - **[Getting started](docs/getting-started.md)** — step-by-step onboarding (session → design → review → promote → automate → validate).
-- **[Authenticated targets](docs/sessions.md)** · **[Configuration & role routing](docs/configuration.md)** · **[Prompts & styles](docs/prompts-and-styles.md)** · **[Interactive TUI](docs/tui.md)** · **[MCP server](docs/mcp.md)**
+- **[Authenticated targets](docs/sessions.md)** · **[Configuration & role routing](docs/configuration.md)** · **[Prompts & styles](docs/prompts-and-styles.md)** · **[Interactive TUI](docs/tui.md)** · **[MCP server](docs/mcp.md)** · **[Test an MCP server](docs/mcp-test.md)**
 - **[Metrics](docs/metrics.md)** · **[Cost benchmark](docs/cost.md)** · **[Langfuse](docs/langfuse.md)**
 - **[Decision layer](docs/decider.md)** — an optional System One model (Jev in the cloud, Laya on your machine) for repair triage, checklist coverage and healing a broken locator; off by default, with a shadow mode to judge it first.
 - **[Architecture overview](docs/architecture/overview.md)** — the plain async pipeline, locator grounding, self-improvement.

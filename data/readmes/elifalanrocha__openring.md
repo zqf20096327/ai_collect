@@ -9,7 +9,7 @@
 OpenRing runs AI phone agents, voice AI agents and AI receptionists that answer and place calls over Twilio, Telnyx,
 Plivo, Vonage or any SIP trunk, with your own provider keys or a free, 100% local stack (Whisper, Ollama, Kokoro).
 
-<sub>Latest release 0.1.7 · README updated November 11, 2026</sub>
+<sub>Latest release 0.1.7 · README updated November 13, 2026</sub>
 
 [![CI](https://github.com/elifalanrocha/openring/actions/workflows/ci.yml/badge.svg)](https://github.com/elifalanrocha/openring/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/openring?color=e8590c&label=npm)](https://www.npmjs.com/package/openring)
@@ -134,7 +134,7 @@ Every request takes `Authorization: Bearer $OPENRING_API_KEY`, and the JSON is V
 [docs/api.md](docs/api.md):
 
 - [Assistants](docs/api.md#assistants), [names the transcriber should get right](docs/api.md#names-the-transcriber-should-get-right) and [recording calls](docs/api.md#recording-calls)
-- [Phone calls](docs/api.md#phone-calls), [campaigns](docs/api.md#campaigns), [Telnyx](docs/api.md#telnyx), [Plivo](docs/api.md#plivo), [Vonage](docs/api.md#vonage), [Genesys Cloud](docs/api.md#genesys-cloud) and [SIP trunks](docs/api.md#sip-trunks)
+- [Phone calls](docs/api.md#phone-calls), [campaigns](docs/api.md#campaigns), [Telnyx](docs/api.md#telnyx), [Plivo](docs/api.md#plivo), [Vonage](docs/api.md#vonage), [Genesys Cloud](docs/api.md#genesys-cloud), [SIP trunks](docs/api.md#sip-trunks) and [WhatsApp calls](docs/api.md#whatsapp-calls)
 - [Tools](docs/api.md#tools), [server messages](docs/api.md#server-messages), [knowledge bases](docs/api.md#knowledge-base) and [squads](docs/api.md#squads)
 - [Provider fallback](docs/api.md#provider-fallback), [model routes](docs/api.md#model-routes) and [what a call costs](docs/api.md#what-a-call-costs)
 
@@ -201,13 +201,15 @@ blueprint; [docs/deploy.md](docs/deploy.md) covers those, Railway and a plain VP
 ## ❓ FAQ
 
 **Can I move my Vapi assistants to OpenRing?** Yes. OpenRing reads the same assistant JSON, provider names, tools
-and webhooks. Point your client at your server's base URL, or press **Import** to copy an account's assistants,
+and webhooks, and Vapi's official Python SDK works against it: 34 of the 38 calls we try pass
+([the list](docs/api.md#checked-with-vapis-sdk)). Point your client at your server's base URL, or press **Import** to copy an account's assistants,
 tools, squads and Twilio numbers.
 
 **Can I run a voice AI agent for free?** Yes, on your own computer: Whisper for speech-to-text, a model through
 Ollama and the Kokoro voice cost nothing per minute. Only a phone line costs money; browser test calls don't.
 
-**Which phone providers work?** Twilio, Telnyx, Plivo, Vonage, Genesys Cloud and SIP trunks. Only Twilio has taken
+**Which phone providers work?** Twilio, Telnyx, Plivo, Vonage, Genesys Cloud and SIP trunks, and WhatsApp calls
+through Wavoip (unofficial: WhatsApp may ban a number used that way). Only Twilio has taken
 real calls so far; the others are tested against simulated carriers, and each one's section says what's left to confirm.
 The [comparison](#-how-it-compares) says what each one does today.
 
