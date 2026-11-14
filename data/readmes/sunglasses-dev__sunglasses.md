@@ -9,7 +9,7 @@
 [![installs (incl. mirrors)](https://img.shields.io/pypi/dm/sunglasses?label=installs%20%28incl.%20mirrors%29)](https://pypistats.org/packages/sunglasses)
 [![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/sunglasses-dev/sunglasses)
 
-**Open source input firewall for AI agents, beta.** A local scanner checks text, code, PDFs, images, QR codes, audio and video with 1,492 patterns that carry a matcher (1,563 are listed) across 117 listed categories and reports findings and incomplete scans. When the scanner cannot read part of an input, it says so and exits 3; an incomplete scan is never reported as clean. A Claude Code hook blocks secret material in tool calls and the paths and hosts your policy lists, before a tool runs, best effort under its 10 second timeout.
+**Open source input firewall for AI agents, beta.** A local scanner checks text, code, PDFs, images, QR codes, audio and video with 1,494 patterns that carry a matcher (1,565 are listed) across 117 listed categories and reports findings and incomplete scans. When the scanner cannot read part of an input, it says so and exits 3; an incomplete scan is never reported as clean. A Claude Code hook blocks secret material in tool calls and the paths and hosts your policy lists, before a tool runs, best effort under its 10 second timeout.
 
 **What works today**
 - Scan text, files, PDFs, images and QR codes from the CLI or from Python
@@ -352,7 +352,7 @@ Use SUNGLASSES alone, or use it alongside cloud tools. We even built an **adapte
 
 ## Privacy
 
-This section is about the MCP server, `python -m sunglasses.mcp`, the process an agent or a Claude plugin starts.
+This section is about the MCP server, `sunglasses-mcp`, the process an agent or a Claude plugin starts.
 
 The server reads only the text you pass to `scan_text` and the file you name in `scan_file`. The scan runs on your machine. The server opens no network connection and sends nothing anywhere, except that a deep audio or video scan downloads its Whisper model when the scan needs it and no intact copy is cached. It keeps no copy of what it scans. It collects no data, so there is nothing to store, share or retain.
 
@@ -735,7 +735,7 @@ print(result.latency_ms)   # milliseconds; grows with input length
 
 ### Connect the MCP server
 
-The root `mcp.json` starts the server with `command` set to `python3` and `args` set to `["-m", "sunglasses.mcp"]`. A desktop client may not use the same PATH as your terminal, so set `command` to the absolute path of the Python that has Sunglasses installed. In a virtual environment that is `/absolute/path/to/.venv/bin/python`. CI runs on Linux. Windows is not supported. Proxy, doctor, receipts, install, uninstall and init refuse to run there, and scan is untested. Keep `args` as it is.
+The simplest start is `sunglasses-mcp`, the script `pip install sunglasses` puts next to your Python. A desktop client may not use the same PATH as your terminal, so set `command` to the absolute path of that script. In a virtual environment that is `/absolute/path/to/.venv/bin/sunglasses-mcp`, with `args` set to `[]`. The root `mcp.json` is the fallback: it sets `command` to `python3` and `args` to a short start-up line that runs the same server without putting the current folder on Python's import path. Set `command` to the absolute path of the Python that has Sunglasses installed and keep `args` as it is. Starting the server with `python -m sunglasses.mcp` in a folder you do not trust puts that folder first on the import path, so use the script or the start-up line there. CI runs on Linux. Windows is not supported. Proxy, doctor, receipts, install, uninstall and init refuse to run there, and scan is untested.
 
 To check the connection, confirm that your client lists `scan_text`, `scan_file` and `scanner_info`. Call `scanner_info` with `{}`. Then call `scan_text` with `{"text": "The team lunch is at noon on Friday."}`. The answer has `isError` false. Its result reads `"decision": "allow"`, `"inspection_complete": true` and `"is_clean": true`. `scan_file` takes an absolute path on the machine that runs the server.
 
@@ -776,7 +776,7 @@ result = scanner.scan_auto("any_file.ext")
 | Scan latency, typical attack string (median of 38) | ~3.8 ms |
 | Scan latency, real README (median of 77, median size 8,246 bytes) | ~134 ms |
 | Sustained throughput | ~54 KB/sec, single threaded |
-| Patterns | 1,492 carry a matcher (1,563 listed) |
+| Patterns | 1,494 carry a matcher (1,565 listed) |
 | Keywords | 6,964 unique declared (7,864 entries across all patterns); the prescreen index holds 6,675 (289 generic keywords are deliberately excluded from it). `engine.info()` reports all three (`keywords_declared`, `keyword_entries`, `keywords`) |
 | Languages | English first. Full ruleset in English · 2 dedicated patterns each in 13 languages · keyword level only in 7 · none in Persian/Bengali. [Measured breakdown](#language-coverage-measured) |
 | Attack categories | 117 listed |
@@ -788,7 +788,7 @@ result = scanner.scan_auto("any_file.ext")
 | Core dependencies | Zero for text scan; optional deps for media |
 | Platforms | CI runs on Linux. Windows is not supported. Proxy, doctor, receipts, install, uninstall and init refuse to run there, and scan is untested. |
 
-The Patterns count is the rules that carry a regex or a keyword matcher. The ruleset lists 1,563; the other 71 carry neither. Carrying a matcher is not proof that a rule fires. `engine.info()` reports both numbers (`patterns_with_matcher` and `listed_patterns`), and `sunglasses info` prints the difference.
+The Patterns count is the rules that carry a regex or a keyword matcher. The ruleset lists 1,565; the other 71 carry neither. Carrying a matcher is not proof that a rule fires. `engine.info()` reports both numbers (`patterns_with_matcher` and `listed_patterns`), and `sunglasses info` prints the difference.
 
 _Performance numbers are regenerated by `tools/gen_perf_stats.py` against a public corpus in the repo (no network, no randomness) and written to `stats/current.json` with the machine and timestamp they were measured on. Reproduce with `python3 tools/gen_perf_stats.py`. Measured 2026-10-30 on the published sunglasses 0.6.16 wheel, Apple M3 Max (48GB), macOS 27, Python 3.14, 3 quiet runs, median run shown; 77-document corpus. Your hardware will differ._
 
@@ -812,7 +812,7 @@ Both runs print which engine they measured. `--installed` refuses to run when th
 
 Labeled dataset shipped in this repo. It holds 38 real agent input attacks (positives) + 77 famous open source READMEs (react, kubernetes, numpy, ollama…) that must stay clean (negatives). No randomness, no network, no LLM judge (same clone + same command → byte identical results, sealed by a SHA-256 of the metrics block).
 
-| Metric (v0.6.21) | Value |
+| Metric (v0.6.23) | Value |
 |--------|-------|
 | Precision | 86.1% |
 | Recall | 97.4% (37/38) |
@@ -845,7 +845,7 @@ language contributions welcome; see `KNOWN_VERSION_GAPS.md` for the measured det
 
 ## What Works Today
 
-- ✅ **Text scanning.** 1,492 patterns that carry a matcher (1,563 listed), 6,675 indexed keywords (6,964 declared), 117 listed categories (English first, see [Language coverage](#language-coverage-measured))
+- ✅ **Text scanning.** 1,494 patterns that carry a matcher (1,565 listed), 6,675 indexed keywords (6,964 declared), 117 listed categories (English first, see [Language coverage](#language-coverage-measured))
 - ✅ **Mechanism layer.** 11 shape based rules that match an attack's *structure* rather than its wording (e.g. *something sensitive + somewhere to send it*), how well that generalises to unseen paraphrases is measured, not asserted (see [Benchmark](#benchmark-the-receipts)
 - ✅ **Structural validators.** A rule that needs a parse instead of a pattern runs as a validator (`sunglasses/validators.py`), counted apart from the pattern count. The first, `GLS-STRUCT-001`, reads a JSON hooks block and the words of each hook command, and flags a command that reads as downloading code and handing it to a shell or interpreter, judged from its words (it is not run). It does not model code that never runs (functions, conditions), other downloaders, interpreter native fetches, array form commands, or hook formats that are not JSON. `GLS-STRUCT-004` reads a Claude Code settings file as one JSON document and reports, as a notice only, the permission prompts switched off, an allow list that lets every shell command run, or an API base URL at a public IP address or a tunnel host; the host is judged by the address parser, and a settings object inside prose, a schema or another object is not read. `GLS-STRUCT-005` reads Python (a whole Python text, or each fenced python block of a document) and reports, for review, code that prints, logs, writes or sends every environment variable with its value; one named variable, names only, a filtered loop, and shell or Node text are not reported. `GLS-STRUCT-006` reads the words of a shell script (a whole text, or each fenced shell block) and reports, for review, a `config set` command or a write to a package manager's own config file (`.npmrc`, `.yarnrc`, `pip.conf`, `.pypirc`) that points npm, pnpm, yarn or pip at a registry that is not a public one; the host is parsed from the URL, and a mirror a team really uses is reported the same way as a redirect, since a script cannot be told apart from its documentation. The `--registry` flag of one install, environment variables, config files shown alone, and Python or Node code that writes the file are not read
 - ✅ Browser demo at <https://sunglasses.dev/scan>: text, GitHub repos, and images (client side OCR)
@@ -859,7 +859,7 @@ language contributions welcome; see `KNOWN_VERSION_GAPS.md` for the measured det
 - ✅ **CLI.** `sunglasses scan`, `sunglasses check`, `sunglasses demo`, `sunglasses info`, `sunglasses report`
 - ✅ **Python API.** `SunglassesEngine` for text, `SunglassesScanner` for media
 - ✅ LangChain + CrewAI integrations
-- ✅ MCP scanning server. Run `python -m sunglasses.mcp` in the Python environment where Sunglasses is installed. It speaks over stdio and exposes `scan_text`, `scan_file` and `scanner_info`, which your client calls explicitly. The root `mcp.json` holds the client configuration. [Connect the MCP server](#connect-the-mcp-server) shows how to check it
+- ✅ MCP scanning server. Run `sunglasses-mcp` in the Python environment where Sunglasses is installed. It speaks over stdio and exposes `scan_text`, `scan_file` and `scanner_info`, which your client calls explicitly. The root `mcp.json` holds the client configuration. [Connect the MCP server](#connect-the-mcp-server) shows how to check it
 - ✅ SARIF 2.1.0 output for CI integration
 - ✅ Measured on a shipped dataset, recall 97.4% (37/38) and precision 86.1%, reproduce with `python3 tests/benchmark/precision_recall.py`
 - ✅ Local scanning with zero telemetry. Only audio and video need a download, the Whisper model on first use
@@ -1009,8 +1009,8 @@ private key files are named individually and matching is boundary aware, so
 - **The WARN lane is off by default**, and the reasons are measurements, not
   taste. A few ordinary tool calls escalate (a plain `curl -s pypi.org` has read
   as a dangerous shell command), and the lane adds time to every call, about
-  94 ms per tool call with it on against 30 ms with it
-  off, measured on 0.6.21, 2026-11-11 (ledger entry). Enable with
+  87 ms per tool call with it on against 27 ms with it
+  off, measured on 0.6.23, 2026-11-14 (ledger entry). Enable with
   `touch ~/.sunglasses/warn-lane` if you want it anyway.
 - **On older Pythons one regex can outrun the WARN lane clock.** The 7 second
   budget is a timer signal, and before Python 3.11.6 and 3.12.1 the regex engine
@@ -1090,10 +1090,10 @@ private key files are named individually and matching is boundary aware, so
 
 ### Cost
 
-About 30 ms per tool call with the pattern lane off (the default) and about
-94 ms with it on (the installed hook command, whole process, min of 15 runs,
-a benign Bash call, measured on 0.6.21, 2026-11-11, on an Apple silicon Mac (arm64, macOS); bare Python
-startup is 22 ms of that). Zero network calls (nothing about your work leaves the
+About 27 ms per tool call with the pattern lane off (the default) and about
+87 ms with it on (the installed hook command, whole process, min of 15 runs,
+a benign Bash call, measured on 0.6.23, 2026-11-14, on an Apple silicon Mac (arm64, macOS); bare Python
+startup is 18 ms of that). Zero network calls (nothing about your work leaves the
 machine). An invocation appends two lines when both writes succeed, one when the check
 starts and one when it decides, to `~/.sunglasses/receipts/YYYY-MM-DD.jsonl`,
 recording a SHA-256 of the tool input and never the input itself. A hook killed

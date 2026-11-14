@@ -1,0 +1,131 @@
+<p align="center">
+  <img src="plugin/assets/logo.png" width="96" height="96" alt="">
+</p>
+
+<h1 align="center">Context Attachment Manager</h1>
+
+<p align="center"><b>A local plugin for image-heavy chats in Codex, Claude Code and other agents.</b><br>Earlier images stop going out with every message. The model fetches the one it needs by its ID, also after the chat is compacted.</p>
+
+<p align="center">
+  <a href="https://github.com/chipfighter/context-attachment-manager/releases"><img src="https://img.shields.io/github/v/release/chipfighter/context-attachment-manager?include_prereleases" alt="Release"></a>
+  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey" alt="Platform: Windows, macOS, Linux">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License: MIT"></a>
+</p>
+
+<p align="center"><b>English</b> · <a href="README_CN.md">简体中文</a> · <a href="README_JA.md">日本語</a> · <a href="README_KO.md">한국어</a> · <a href="README_ES.md">Español</a> · <a href="README_PT_BR.md">Português (Brasil)</a> · <a href="README_FR.md">Français</a> · <a href="README_DE.md">Deutsch</a></p>
+
+<p align="center">
+  <img src="docs/images/loop.gif" alt="The panel on a task with fifteen keyframes. With auto-select on, earlier images turn grey and the next request drops from 7.5 MB to 1.7 MB." width="100%">
+</p>
+
+## What it does
+
+An agent normally sends every earlier image again with each message, so a long chat with many images gets slow and can stop going through. This plugin numbers each image (`IMG-001`, `IMG-002`, …) and sends earlier ones as short placeholders instead:
+
+- **The model fetches what it needs**: when it has to look at an earlier image again, it gets the original back by its ID.
+- **It can tell images apart**: the model notes one line on what each image shows, plus your comments on it. These stay in the placeholders, also after the chat is compacted.
+- **The cache keeps working**: a placeholder is written once and then stays the same, so the earlier chat is still read from the model's prompt cache. See [the design](#design-keep-the-cache-working).
+- **Nothing is deleted**: your original images and chat history stay as they are.
+
+It is on by default; you do not need to open the panel. Typical uses: image and video creation, scanned documents, computer and browser use.
+
+## Install
+
+Send this to your agent. It identifies its platform and installs the right setup:
+
+```text
+Install Context Attachment Manager for me, following https://github.com/chipfighter/context-attachment-manager/blob/main/INSTALL.md
+```
+
+Then restart the agent (in Claude Desktop, start a new Code session). See [supported agents](#works-with) and [installation, updates and uninstall](INSTALL.md).
+
+## The panel, when you want control
+
+<p align="center">
+  <img src="docs/images/hero.png" alt="The panel: automatically manage earlier images, search by what you remember, and preview an image." width="100%">
+</p>
+
+- **Find an image** by a detail or a comment you remember, like "rainy night" or "best face".
+- **Keep a reference in view**: open an image and check **Send every turn**.
+- **Choose images yourself**: turn off **Auto-select** and pick what goes with your next message.
+
+In **Codex**, open **Context Assets** in the task's side panel. In **Claude Desktop's Code tab**, the panel opens automatically when there are images; type `/cam` to bring it back.
+
+## Privacy
+
+The plugin runs locally. Your original images and chat history stay on your computer; requests go to the service your agent already uses.
+
+## How we tested
+
+In Codex, a chat with nine keyframes grew to 42.4 MB and could not be sent after a restart or a compaction; with the plugin the same requests were 0.12 MB. See the [Codex comparison](eval/README.md) and [Claude Code long-task comparison](eval/long-task/README.md) for the results and reproduction steps.
+
+## Design: keep the cache working
+
+Model services cache the start of a chat. When a request begins exactly like the one before, that part is read from the cache, which is faster and much cheaper. When something early in the chat changes, everything after the change is processed again.
+
+Any way of making a long chat smaller has to change something. The plugin makes its change as late in the chat as it can:
+
+<p align="center">
+  <img src="docs/images/cache-compare.svg" alt="Four ways to handle a long chat with images, each drawn as the next request. Sending everything keeps the cache but sends every image again. Shrinking the images or dropping early history makes nearly the whole chat be processed again. With the plugin's placeholders, only the rest of the previous turn is processed again." width="100%">
+</p>
+
+- **A placeholder is written once**: an image becomes a placeholder in the turn after it appeared, so only the rest of that one turn is processed again. After that the placeholder stays the same from request to request.
+- **Fetching changes nothing earlier**: the original is added at the end of the current turn, and its placeholder stays where it is. Whichever image the model picks, and however many the chat holds, everything before the current turn is still read from the cache.
+- **The model gets the original back**: not a smaller copy, and not a summary of it.
+
+<p align="center">
+  <img src="docs/images/cache-fetch.svg" alt="When the model fetches IMG-001, the original is attached at the end of the current turn and the placeholder in turn 1 stays as it is, so every earlier turn is read from the cache. In the next turn the fetched copy becomes a one-line note, and only what came after it is processed again." width="100%">
+</p>
+
+This is not free. After a turn with images, the rest of that turn is processed again once, and the model writes a short line for each new image. Changing an old image in the panel (unchecking it, checking it again, **Send every turn**) changes the chat at that image, so what follows it is processed again once. In our [long-task comparison in Claude Code](eval/long-task/README.md), 87% of the input was read from the cache with the plugin and 91% without it.
+
+The third row of the first figure is also what an agent's own compaction does, and what clearing old tool results on the API side does (Anthropic's context editing, for example): early content is removed, and what follows is processed again.
+
+## Works with
+
+Codex and Claude Code are tested, and Codex and Claude Desktop also have the panel. The other agents below are supported through adapters written from their code and docs, but we have not tested them live yet. If you use one of them, please [tell us how it went](https://github.com/chipfighter/context-attachment-manager/issues), whether it worked or not.
+
+| Agent | What it is | Support |
+|---|---|---|
+| [Codex](https://github.com/openai/codex) | OpenAI's coding agent, desktop and CLI | Auto-select + panel, tested |
+| [Claude Code](https://github.com/anthropics/claude-code) | Anthropic's coding agent, desktop and CLI | Auto-select + panel (desktop), tested |
+| [WorkBuddy](https://www.workbuddy.cn) | Tencent's desktop AI work assistant, with CodeBuddy inside | Auto-select, not tested yet |
+| [OpenCode](https://github.com/anomalyco/opencode) | Open-source terminal coding agent for any model provider | Auto-select, not tested yet |
+| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | Google's open-source terminal agent | Auto-select, not tested yet |
+| [pi](https://github.com/earendil-works/pi) | Minimal, extensible terminal coding agent | Auto-select (pi extension), not tested yet |
+| [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) | DeepSeek's agent harness where everything is a plugin | Auto-select (dsh plugin), not tested yet |
+| [Qwen Code](https://github.com/QwenLM/qwen-code) | Qwen's open-source terminal agent | Auto-select, not tested yet |
+| [Cline](https://github.com/cline/cline) | Open-source coding agent for VS Code, JetBrains and the terminal | Auto-select, not tested yet |
+| [Kilo Code](https://github.com/Kilo-Org/kilocode) | Open-source coding agent for VS Code, JetBrains and the terminal | Auto-select, not tested yet |
+| [goose](https://github.com/aaif-goose/goose) | Open-source agent for desktop and terminal, extended with MCP | Auto-select, not tested yet |
+| [Cherry Studio](https://github.com/CherryHQ/cherry-studio) | Open-source desktop chat client for many models | Auto-select, not tested yet |
+
+Setup for these agents: [INSTALL.md](INSTALL.md#other-agents). To connect another agent, see [ADAPTERS.md](ADAPTERS.md).
+
+## FAQ
+
+### Why do Codex and Claude Code get slow in a long chat with many images?
+
+The agent sends every earlier image again with each message, so a long chat with many images gets slow and can stop going through. In Codex, a chat with nine keyframes grew to 42.4 MB and could not be sent after a restart or a compaction; with Context Attachment Manager the same requests were 0.12 MB.
+
+### Does Context Attachment Manager break the prompt cache?
+
+Only a little. A placeholder is written once and then stays the same, and a fetched image is added at the end of the current turn, so earlier turns are still read from the cache. After a turn with images, the rest of that turn is processed again once. In our long-task comparison in Claude Code, 87% of the input was read from the cache with the plugin and 91% without it.
+
+### How is it different from compaction, or from shrinking the images?
+
+Compaction and dropping early history remove the early part of the chat, and shrinking the images changes it. Either way nearly the whole chat is processed again, and the model is left with a summary or a smaller copy. With Context Attachment Manager, only the rest of the previous turn is processed again, and the model gets the original image back by its ID.
+
+### Can the model still see an earlier image?
+
+Yes. Every image has an ID such as `IMG-001`, and the model fetches the original when it needs to look at it again, also after the chat is compacted.
+
+### Are my images deleted, or sent anywhere else?
+
+No. The plugin runs on your computer. Your original images and chat history stay as they are, and requests go to the service your agent already uses.
+
+### Which agents does it work with, and is it free?
+
+Codex and Claude Code are tested. WorkBuddy, OpenCode, Gemini CLI, pi, DeepSeek Harness, Qwen Code, Cline, Kilo Code, goose and Cherry Studio are supported through adapters that we have not tested live yet. It is free and open source under the MIT license.
+
+<p align="center"><sub><a href="CHANGELOG.md">Changelog</a> · <a href="CONTRIBUTING.md">Contributing</a> · <a href="LICENSE">MIT License</a></sub></p>

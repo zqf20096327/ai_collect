@@ -2,7 +2,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
   <a href="https://code.claude.com/docs/en/plugins"><img src="https://img.shields.io/badge/Claude%20Code-plugin-orange.svg" alt="Claude Code Plugin" /></a>
-  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.32-green.svg" alt="Version 1.4.32" /></a>
+  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.33-green.svg" alt="Version 1.4.33" /></a>
   <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/gtapps/hermitd/_gh_traffic_stats/.github/badges/clones.json" alt="Downloads" />
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" />
   <a href="https://discord.gg/54sJqAxhUh"><img src="https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white" alt="Join" /></a>
@@ -10,17 +10,17 @@
 
 # Like Claude Tag, but local.
 
-Run an always-on Claude Code agent on your own machine, for you or your team.
+Run an **always-on Claude Code agent** on your own machine, for **you** or **your team**.
 
-Start and orchestrate sessions from chat in any project it can reach. Take over the same session in the Claude app or the CLI. Tasks, saved watches, and pending decisions survive a restart.
+**Multi-project orchestration**: The agent can start and orchestrate sessions from any projects it can reach. Take over the same session in the Claude app or the CLI. Tasks, saved watches, and pending decisions survive a restart.
 
-Connect Discord, Telegram, iMessage, or a custom Claude Code [channel](https://code.claude.com/docs/en/channels). Use the Claude app via [Remote Control](https://code.claude.com/docs/en/remote-control), or your terminal.
+Connect **Discord, Telegram, iMessage, or a custom Claude Code [channel](https://code.claude.com/docs/en/channels)**. Use the Claude app via [Remote Control](https://code.claude.com/docs/en/remote-control), or your terminal.
 
-The agent has its own browser ([agent-browser](https://github.com/vercel-labs/agent-browser)). Take over and Hand back when you want, for example a login. Or use [Chrome on your laptop](https://code.claude.com/docs/en/chrome), including when the agent runs on another machine.
+The agent has its **own browser ([agent-browser](https://github.com/vercel-labs/agent-browser))**. Take over and Hand back when you want, for example a login. Or use [Chrome on your laptop](https://code.claude.com/docs/en/chrome), including when the agent runs on another machine.
 
 Give it ongoing responsibilities: maintain research, monitor systems, run routines, and follow up on unfinished work. Between requests, it checks those responsibilities, carries progress across sessions, and reaches you when something needs attention.
 
-Run it on your Claude subscription and extend it with your own MCP servers, skills, and plugins.
+Run it on your **Claude subscription** and extend it with your own MCP servers, skills, and plugins.
 
 **It's Claude Code.** hermitd is a plugin for Claude Code, no new harness, no wrapper around Claude Code. You get all of Claude Code.
 
@@ -30,14 +30,11 @@ https://github.com/user-attachments/assets/84012a4d-4ca1-475e-b82d-1db45634a5e3
 
 | Option | Why hermitd |
 |--------|-------------|
-| [Hermes Agent](https://github.com/NousResearch/hermes-agent), [OpenClaw](https://github.com/openclaw/openclaw) | hermitd runs directly inside Claude Code as a plugin, without a wrapper or separate agent loop. Your native tools, permissions, skills, plugins, and MCP stay in use. |
-| [Claude Projects](https://code.claude.com/docs/en/claude-projects.md) | Run an ongoing agent on your host, handling chat requests and watching local systems. Watches return after restarts, reports go back to the right chat, and tasks stay open until confirmed, verified, or cancelled. In Monitor mode, [prechecks](plugins/hermitd/docs/routine-authoring.md) can skip scheduled runs without using model tokens. |
-| [Claude Tag](https://claude.com/docs/claude-tag/concepts/how-it-works) | Use Discord, Telegram, iMessage, or custom Claude Code channels, and continue the same session in the Claude app or terminal. Tag currently documents Slack, including with self-hosted runners; [Microsoft Teams is announced](https://claude.com/form/claude-tag-teams-waitlist). |
-| [Claude Duet](https://support.claude.com/en/articles/17631495-get-started-with-claude-duet), [ChatGPT Dots](https://learn.chatgpt.com/docs/dots), [Grok Bot](https://docs.x.ai/grok-bot/overview) | Run the agent itself on your machine or server, beside your files, databases, and local services. Keep your Claude Code tools and choose its model and effort. Duet, Dots, and Grok Bot provide managed cloud agents. |
-
-You keep the host running and maintain its sign-ins. Claude inference still runs in the cloud.
-
-Sources checked November 12 and 13, 2026.
+| [Hermes Agent](https://github.com/NousResearch/hermes-agent), [OpenClaw](https://github.com/openclaw/openclaw) | hermitd runs directly inside Claude Code as a plugin, without a wrapper or separate agent loop. You get Claude.ai, Artifacts, the Claude app, [Remote Control](https://code.claude.com/docs/en/remote-control), and the rest of Claude Code, with your tools, permissions, skills, plugins, and MCP. |
+| [Claude Projects](https://code.claude.com/docs/en/claude-projects.md) | **Multi-project orchestration**, with your CLIs and tools. Chat through any Claude Code [channel](https://code.claude.com/docs/en/channels). **Significant cheaper** on routines: [Monitor](https://code.claude.com/docs/en/tools-reference#monitor-tool) and a [precheck](plugins/hermitd/docs/routine-authoring.md) can skip a run without model tokens. |
+| [Claude Tag](https://claude.com/docs/claude-tag/concepts/how-it-works) | Use any **Claude Code channels: Discord, Telegram, iMessage, or a custom channel**, and continue the same session in the Claude app or terminal. |
+| [Claude Duet](https://support.claude.com/en/articles/17631495-get-started-with-claude-duet), [ChatGPT Dots](https://learn.chatgpt.com/docs/dots), [Grok Bot](https://docs.x.ai/grok-bot/overview) | It runs locally, **fully customizable**. Routines can be **significant cheaper**. |
+| [Self-hosted Claude Managed Agents](https://claude.com/resources/articles/self-hosted-claude-managed-agents) | hermitd runs on **your Claude subscription** rather than API usage, which can be 10x cheaper. |
 
 <a id="quick-start"></a>
 
@@ -167,6 +164,7 @@ Tune from a terminal with `/hermit-settings`, or change permitted settings from 
 | `context_hygiene.compact` | compact long-running active context: **enabled**, `100000` compactible tokens / `4h` cooldown |
 | `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | auto-compact at % of context: **`65`** |
 | `MAX_THINKING_TOKENS` | thinking-token cap per turn: **`10000`** |
+| `CLAUDE_CODE_DISABLE_AGENT_PROGRESS_SUMMARIES` | skips subagent spinner-label requests: **`1`** |
 | `watchdog.scheduler_enabled` | OS scheduler for the watchdog tick: **`true`** on tmux always-on (auto-installed at boot); `false` or `hermitd-watchdog uninstall` opts out |
 | `watchdog.enabled` | recovery/restart tier: **`false`** until first scheduler registration (or `/docker-setup`); hygiene still runs |
 
@@ -343,6 +341,14 @@ Join the [Discord community](https://discord.gg/54sJqAxhUh) for setup help and d
 ## Credits
 
 [Andrej Karpathy](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) inspired the `raw/` → `compiled/` knowledge system.
+
+[Building always-on agents](https://claude.com/resources/articles/building-always-on-agents) describes the surrounding architecture: an event inbox, timers, memory, permissions, and an outbox.
+
+[The components of agent memory](https://www.anthropic.com/research/components-of-agent-memory) describes a small index loaded every session, with the detail behind it.
+
+[Continual-ARC](https://arxiv.org/abs/2611.14505) measures skill acquisition over a working lifetime for agent harnesses (Lenton, Arif, and Mahmood, 11 Nov 2026). The authors' write-up is [Why we built Continual-ARC](https://unify.ai/blog/why-we-built-continual-arc).
+
+[Securing persistent agents like OpenClaw at OpenAI](https://developers.openai.com/blog/securing-persistent-agents-like-openclaw-at-openai) describes how OpenAI isolates, sandboxes, and identifies the persistent agents in its own deployment.
 
 [Hermes Agent](https://github.com/NousResearch/hermes-agent) and [OpenClaw](https://github.com/openclaw/openclaw) are other open source agents.
 

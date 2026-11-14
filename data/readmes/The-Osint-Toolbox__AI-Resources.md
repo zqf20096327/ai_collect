@@ -104,6 +104,8 @@
 </table>
 <div id="aitranslation"></div>
 <ul>
+ <li><a href="https://getyoutubetranscript.com/">GetYouTubeTranscript</a></li> 
+  <p>Paste a YouTube link to get the transcript with timestamps, exportable as SRT, VTT, JSON, CSV, Markdown or TXT, with AI summary and chat.</p>  
  <li><a href="https://lmstudio.ai/">LM Studio</a></li>
   <p>Discover, download, and run local LLMs.</p>
  <li><a href="https://otter.ai/">Otter.ai</a></li>
@@ -115,7 +117,7 @@
  <li><a href="https://github.com/bellingcat/whisperbox-transcribe">Whisper Transcribe</a></li>  
   <p>Bellingcat - Easy to deploy API for transcribing / translating video and audio using OpenAI's Whisper model and more.</p>
  <li><a href="https://youtubetranscript.com/">YouTube Transcript</a></li> 
-  <p>Create youtube video summaries and more.</p>  
+  <p>Create youtube video summaries and more.</p> 
 </ul>
 </div>
 <br></br> 
@@ -148,6 +150,8 @@
    <p>The free, Open Source alternative to OpenAI, Claude and others. Self-hosted and local-first.</p>  
   <li><a href="https://www.promptimizeai.com/">Promptimize</a></li> 
    <p>Promptimize is a browser extension that gives anyone the powers of an expert prompt engineer.</p>  
+  <li><a href="https://isthisaigenerated.app/site/">isthisaigenerated.app</a></li>
+   <p>Free warning-signal checker for AI-generated images, sampled video, text and documents (PDF, DOCX, HTML, TXT, Markdown) in NL/EN/ID. Publishes measured accuracy slices and false-positive limits, requires no account, and states that every result is triage for human review rather than proof of origin. Self-submission, disclosed in this PR.</p>
 </ul>
 </div>
  <table>

@@ -25,7 +25,7 @@
 
 ## Introduction
 
-FacePlugin **Face Liveness Detection SDK for iOS** is a fully on-device anti-spoofing engine for KYC and remote identity verification. **iBeta level 2–class** passive liveness detects printed photos, video replay, 3D masks, and deepfake-style attacks — no extra hardware, no cloud.
+FacePlugin **Face Liveness Detection SDK for iOS** is a fully on-device anti-spoofing engine for KYC and remote identity verification. Passive liveness, tested internally following ISO/IEC 30107-3 methodology, detects printed photos, video replays and 3D masks, and adds protection against deepfake-style attacks — no extra hardware, no cloud.
 
 All processing stays on the iPhone. **No** biometric data leaves the device.
 

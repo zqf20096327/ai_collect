@@ -33,12 +33,16 @@
 
 The iPhone and iPad app connects to the same gateway and is maintained separately.
 
-The current release is **0.17.7** for all four packages. It requires protocol **101**
-clients and gateway configuration version **30**. Gateways already on 0.17.2
+This checkout prepares **0.17.10** for all four packages. It requires protocol **103**
+clients and gateway configuration version **30**. Protocol 102 clients, including the
+0.17.8 macOS app and 0.17.9 CLI, cannot connect;
+update clients before upgrading a gateway. Gateways already on 0.17.2
 can upgrade in place. Existing 0.16.x gateways require an offline configuration
 conversion that preserves usage history in `usage.json`. See the
-[upgrade notes](https://github.com/citizenhicks/mobius/releases/tag/mobius-gateway-v0.17.7)
-for client compatibility and rollout details.
+[0.17.10 upgrade notes](.github/release-notes/mobius-gateway-v0.17.10.md)
+for client compatibility and rollout details, and the
+[0.17.7 notes](https://github.com/citizenhicks/mobius/releases/tag/mobius-gateway-v0.17.7)
+for older configuration conversions.
 
 ## Quick start
 
@@ -70,7 +74,7 @@ Other ways to install (the [CLI guide](https://github.com/citizenhicks/mobius/bl
 - **Prebuilt archive:** download `mobius-<version>-<target>.tar.gz` from
   [Releases](https://github.com/citizenhicks/mobius/releases) for Apple Silicon macOS
   (`aarch64-apple-darwin`) or 64-bit Intel/AMD Linux (`x86_64-unknown-linux-gnu`).
-- **Cargo:** `cargo install --locked mobius-cli`. This needs Rust 1.99.0 or newer, and
+- **Cargo:** `cargo install --locked mobius-cli`. This needs Rust 1.100.0 or newer, and
   `cloudflared` installed separately if you want Quick Connect.
 
 On Linux, sandboxed command execution requires **Bubblewrap**.
@@ -94,14 +98,7 @@ beta and optional.
 
 ## How it fits together
 
-```mermaid
-flowchart LR
-    Terminal["Terminal · mobius"] <--> Gateway["Your gateway"]
-    Apple["iPhone, iPad, Mac"] <--> Gateway
-    Gateway --> Agents["Bots · chats · routines"]
-    Gateway --> Work["Workspaces · Git · saved conversations"]
-    Gateway --> Models["Your model providers"]
-```
+<p align="center"><img src="assets/gateway.svg" width="640" alt="A message from the terminal reaches a bot on your gateway, goes to a model provider and back, runs a tool in the workspace, and the result streams to the Mac, terminal and iPhone at once."></p>
 
 The gateway is where files, commands, provider credentials, and agent sessions live.
 Clients send requests and render the same event stream, so work continues while the
@@ -160,7 +157,9 @@ just complexity                                 # Clippy, warnings denied
 just rules                                      # project rules Clippy cannot express
 ```
 
-Rust 1.99.0 is pinned in `rust-toolchain.toml`. Linux sandbox tests need Bubblewrap.
+Rust 1.100.0 is pinned in `rust-toolchain.toml`. The shared Cargo configuration uses
+`RUSTC_BOOTSTRAP` for the experimental eight-worker compiler frontend; Cargo also
+builds independent crates in parallel. Linux sandbox tests need Bubblewrap.
 
 | Path | Owns |
 | --- | --- |

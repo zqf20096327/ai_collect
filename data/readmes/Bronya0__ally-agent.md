@@ -4,7 +4,7 @@
 
 Ally Agent 是一款轻量的原生桌面 AI 编程助手，使用 Go 与 [MyGo](https://github.com/egoist/mygo) 构建，支持 Windows、macOS 和 Linux。通过对话理解项目、修改代码、运行命令，也可以授权 SSH 节点，把工作交给远程主机。
 
-**极低资源占用、多工作区并行开发、并行子代理、可选模型服务，还有一只陪你写代码的大肥鱼。**
+**极低资源占用、多工作区并行开发、并行子代理、无头运行与本地 HTTP API、可选模型服务，还有一只陪你写代码的大肥鱼。**
 
 ⭐ 如果 Ally 帮到了你，欢迎在 GitHub 点个 Star，这是对项目最大的支持，谢谢！
 
@@ -18,8 +18,6 @@ Ally Agent 是一款轻量的原生桌面 AI 编程助手，使用 Go 与 [MyGo]
 </p>
 
 前往 [Releases 页面](https://github.com/Bronya0/ally-agent/releases)下载 Windows、macOS 或 Linux 安装包。
-
-![代码认真写，大肥鱼认真陪](docs/imgs/companion.png)
 
 ![Ally Agent 实际运行演示（7.5 秒）](docs/imgs/preview-7.5s.gif)
 
@@ -53,7 +51,7 @@ Ally Agent 是一款轻量的原生桌面 AI 编程助手，使用 Go 与 [MyGo]
 ### 原生桌面体验
 
 - 主界面与常规页面由 Go 和 [MyGo](https://github.com/egoist/mygo) 原生绘制；插件与 HTML、Mermaid、媒体预览按需使用受控 WebView。
-- 支持深色、浅色和按本地时间自动切换的主题，以及多种配色；“青禾”在浅色模式下使用官网同款的浅灰绿背景、纸白卡片与墨绿强调色。阅读字号和聊天背景图透明度也可调整。
+- 支持深色、浅色和按本地时间自动切换的主题，以及多种配色；阅读字号和聊天背景图透明度也可调整。
 - 欢迎页与桌宠提供大肥鱼、小机器人等内置形象，也可上传自己的图片。
 - Windows 与 macOS 支持自动下载更新并提示重启，Linux 提供版本检测与手动更新。
 - 可跟随 Windows 或 macOS 系统代理，也可手动配置 HTTP/HTTPS/SOCKS5 代理，统一应用到模型、HTTP 工具、MCP、命令和后台服务。

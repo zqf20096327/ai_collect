@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/roloVibes/Halo-Harness/releases"><img alt="version 3.4.1.2" src="https://img.shields.io/badge/version-3.4.1.2-5b4bd6"></a>
+  <a href="https://github.com/roloVibes/Halo-Harness/releases"><img alt="version 3.5.0.0" src="https://img.shields.io/badge/version-3.5.0.0-5b4bd6"></a>
   <a href="https://github.com/roloVibes/Halo-Harness/actions/workflows/suites.yml"><img alt="CI" src="https://github.com/roloVibes/Halo-Harness/actions/workflows/suites.yml/badge.svg"></a>
   <img alt="python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-3776ab">
   <img alt="Linux, macOS, Windows" src="https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-2b2b2b">
@@ -126,13 +126,13 @@ place, permission rules use Claude Code's grammar, and your claude.ai connectors
 ## Install
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/roloVibes/Halo-Harness/v3.4.1.2/scripts/install-halo.sh | bash
+curl -fsSL https://raw.githubusercontent.com/roloVibes/Halo-Harness/v3.5.0.0/scripts/install-halo.sh | bash
 ```
 
 Windows:
 
 ```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/roloVibes/Halo-Harness/v3.4.1.2/scripts/install-halo.ps1 | iex"
+powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/roloVibes/Halo-Harness/v3.5.0.0/scripts/install-halo.ps1 | iex"
 ```
 
 The installer is fetched from a release tag and installs the newest tag; `--ref <tag>` (`-Ref` on Windows) pins
@@ -165,7 +165,6 @@ The core is what the five above need. The rest ships as packs, off until you tur
 |---|---|
 | `first-run` | The guided first run: `halo start`, one real goal run that rehearses your lineup on a sample repo |
 | `coach` | The post-run coach: suggestions from a finished run, Apply after one confirm, `halo improve` |
-| `fleet` | Several halos joined to one hub: every machine's agents on Live, one attention queue, missions across machines |
 | `design` | Prototypes, pages, decks and logos on artboards in Studio, made by a Halo turn |
 | `signal` | Halo on your phone as a chat: a text message starts or continues a session (it runs signal-cli) |
 | `concord` | Joins a repo's Concord workspace, so a session claims work and trades messages with other agents |

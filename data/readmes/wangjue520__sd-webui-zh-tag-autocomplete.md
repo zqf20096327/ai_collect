@@ -130,6 +130,10 @@ black thighhighs, twintails, (hatsune miku:1.2), artoria pendragon \(fate\), <lo
 | DeepSeek API Key | 空 | 留空则读环境变量 `DEEPSEEK_API_KEY`；Key 会保存在 WebUI 的 `config.json` 里 |
 | DeepSeek 接口地址 / 模型名 | `https://api.deepseek.com` / `deepseek-flash` | 也可填其他 OpenAI 兼容接口 |
 
+在线翻译超时、断网或接口报错时，界面会显示「无网络连接，已切换本地翻译，不影响出图」，并自动进入纯本地模式 60 秒。期间不再连续请求在线接口，本地词典补全和翻译照常可用，未收录的中文保留原文；60 秒后自动尝试恢复在线翻译。
+
+代理设置作用于运行 WebUI 的 Python 后端，不等同于浏览器代理。谷歌连不上时可填写本机代理地址（例如 `http://127.0.0.1:7890`）；关闭「字典里没有的中文用机器翻译」可彻底只使用本地词典。
+
 ---
 
 ## 中文输入法说明

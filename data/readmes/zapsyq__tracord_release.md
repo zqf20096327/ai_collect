@@ -3,7 +3,7 @@
 [简体中文](README.md) · [English](README.en)
 
 <br/>
-<img src="competition_docs/logo/tracord_logo.svg" width="180" alt="迹录 Tracord Logo"/>
+<img src="frontend\assets\icon\tracord_icon_1024.png" width="180" alt="迹录 Tracord Logo"/>
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 

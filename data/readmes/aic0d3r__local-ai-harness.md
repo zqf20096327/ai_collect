@@ -4,7 +4,7 @@ Run a coding agent on a local model, on any hardware. Built on [pi](https://gith
 Windows (beta). Tuned and measured on AMD Strix Halo.
 
 - **Detects your GPU and RAM**, recommends an engine and model, and sizes limits to your context window.
-- **Switches engines:** Strata, llama.cpp, vLLM, Ollama, LM Studio, halogen, gufo, or a cloud model.
+- **Switches engines:** Strata, llama.cpp, vLLM, Ollama, LM Studio, halogen, gufo, osmos (DeepSeek-V4.1-Flash at 1M context), or a cloud model.
 - **Cuts tokens:** compressed command output, symbol-level code tools, search by meaning.
 - **Resumes after a crash:** relaunch, say "continue".
 
@@ -35,8 +35,9 @@ On Windows, see [Windows (beta)](#windows-beta).
 
 ## Install
 
-You need pi (setup installs it with npm if missing) and `uvx` from [uv](https://docs.astral.sh/uv) for semantic and web
-search.
+You need pi installed first (`curl -fsSL https://pi.dev/install.sh | sh`; setup stops at "pi not found" and installs nothing
+for it) and `uvx` from [uv](https://docs.astral.sh/uv) for semantic and web search. The symbol tools are optional:
+`uv tool install -p 3.13 serena-agent` (setup warns when it is missing but does not install it on Linux).
 
 ```sh
 git clone https://github.com/aic0d3r/local-ai-harness && cd local-ai-harness
@@ -101,8 +102,10 @@ Measured speeds for halogen, gufo and Strata: [BENCHMARKS.md](docs/BENCHMARKS.md
 ./harness monitor         # live prefill/decode dashboard for the active engine
 ```
 
-Private by default: no API key, halogen makes no outbound calls, and only the DuckDuckGo search tool reaches the
-internet. Cloud models are a supported [hybrid](docs/ENGINES.md#cloud-models-are-a-supported-hybrid); screening, search
+Private by default: no API key, and the weights and your code stay on this machine. halogen is launched with no download
+setting, but it is a closed image, so that is configuration, not a network sandbox. What reaches the internet: the
+DuckDuckGo search tool (and Jina if you add a key), a once-a-day `git fetch` of this repo to tell you about updates
+(`HARNESS_NO_UPDATE_CHECK=1` turns it off), the engine release check if you enable it, and the downloads you confirm. Cloud models are a supported [hybrid](docs/ENGINES.md#cloud-models-are-a-supported-hybrid); screening, search
 and compaction stay on-device either way. All commands, daily use and uninstall: [docs/SETUP.md](docs/SETUP.md).
 
 ## Efficiency
@@ -123,8 +126,8 @@ Every lever and how it was measured: [BENCHMARKS.md](docs/BENCHMARKS.md#efficien
 Kill pi or the server mid-task, relaunch `./start.sh` in the same directory and say "continue": `progress-tracker` wrote a
 checkpoint and the fresh session picks it up. Verified across six scenarios, including `kill -9` at response 1, server
 death mid-task and 15-deep compaction chains (reliable to ~8-10 compactions). Limits: one pi task per repo (set
-`PI_PROGRESS_FILE` per task for parallel work), and a stale checkpoint is data, not instructions, so `rm PROGRESS.md`
-when switching tasks.
+`PI_PROGRESS_FILE` per task for parallel work), and a stale checkpoint is data, not instructions, so run `/progress-reset`
+when switching tasks. Checkpoints are kept under `~/.pi/agent/progress/`, not in your project folder.
 
 ## Strix Halo reference setup
 

@@ -30,7 +30,7 @@ pdd setup
 1. `npm install -g github:promptdriven/pdd` installs the `pdd` command.
 2. `npx skills add promptdriven/pdd -g --skill '*'` adds all the PDD skills for your agents. `--skill '*'` selects every PDD skill. Without it, the installer shows the list "Select skills to install" with no skill selected: select all of them, then press Enter. Then the installer asks which agents get the skills: select the agents that you use. It can say `Failed to install` for an agent that cannot have global skills. That agent still gets them.
 3. The installer also shows security ratings from outside scanners. Some PDD skills get a warning because they read GitHub issues and pull requests, and anyone can write those. The skills treat that text as data. Autopilot gives its agents only the text of trusted people: the owner, people with write access and the names in `trust`.
-4. `pdd --version` must print `0.1.31`. When your skills are older than pdd, it also prints the command that updates them.
+4. `pdd --version` must print `0.1.32`. When your skills are older than pdd, it also prints the command that updates them.
 5. `pdd setup` adds a short PDD block to `AGENTS.md`, or to `CLAUDE.md` when the repo has one. Then every agent chat in the repo knows that the project uses PDD. In a Git repo, it also adds the line `.pdd/` to `.gitignore`, because `pdd test` keeps its local cache there. Setup checks for a ready agent first, installs missing skills or updates eligible marked copies, and previews MCP configuration changes for your approval.
 
 To update, run the 2 install commands and `pdd setup` again, then start a new agent chat. After `npx skills add`, `npx skills update -g` also updates the skills.
@@ -270,7 +270,7 @@ Code space is the PDD compiler: your agent writes the code from the approved pro
 1. **Prompt space.** The prompts, the Stories and the tests. The pull request starts with a readable summary and checks; its Details section includes `Prompt tests` lines and report links.
 2. **Code space.** The code. To get it, say so in the chat, or run `pdd workflow approve 42`. The agent runs the unchanged tests from prompt space on the code and records the results, mutation control and formal check. pdd validates the source identity and report structure and shows missing or stale evidence as **BLOCKED**. These are agent-reported results, not independent proof of execution.
 
-The pdd CLI has no merge command. In manual workflows, ask your agent to merge under [RUNBOOK §2](RUNBOOK.md#2-the-files). In Autopilot `auto` mode, Autopilot merges its own pull request after CI, a fresh review and the full test suite pass; required human approvals still apply.
+The pdd CLI has no merge command. In manual workflows, ask your agent to merge under [RUNBOOK §2](skills/pdd-prompting/runbook/files-and-runtime-block.md#2-the-files). In Autopilot `auto` mode, Autopilot merges its own pull request after CI, a fresh review and the full test suite pass; required human approvals still apply.
 
 ## Commands
 
@@ -310,7 +310,7 @@ The [CLI reference](docs/cli.md) has every command and option.
 
 **AI-call budgets.** A budget is a limit, not a price. You are charged only for calls that run. A check gives each test file 12 calls for each step, at least 18 and at most 1000. A new simulation has 400 calls. `--max-calls N` sets another limit, from 1 to 1000, for a check or a new simulation.
 
-**Fakes.** The interpreter never touches your real database, files or services. The prompt declares each one as a resource, the test gives its starting data, and the interpreter fakes it. See [RUNBOOK §5](RUNBOOK.md#5-saved-data).
+**Fakes.** The interpreter never touches your real database, files or services. The prompt declares each one as a resource, the test gives its starting data, and the interpreter fakes it. See [RUNBOOK §5](skills/pdd-prompting/runbook/cli-and-ports.md#5-saved-data).
 
 **Scoped uploads.** A check sends only the files that the selected Stories need. Each file must be visible to Git. pdd refuses files with secret-like names. `pdd test --files` shows the list.
 
@@ -327,7 +327,7 @@ The skills and the other commands run on your computer; `pdd lint --local` is of
 | `Your GitHub account does not have PDD interpreter access yet. Sign up at https://promptdriven.ai/login with GitHub; you can use the interpreter when your account is approved.` (exit code 5) | PDD Cloud has not approved your GitHub account. See [Access](#access). |
 | `PDD Cloud could not confirm your access. Try again in a minute.` (exit code 5) | PDD Cloud could not check your account. Run the command again in a minute. |
 | `Please update pdd: …` | Your pdd is too old for the PDD interpreter. Do the install steps again. |
-| `REFUSED` / `no verdict` (exit code 3, 4 or 5) | A file rule or the AI service prevented a verdict. Read the reason and next step under the line. Run `pdd lint` before a check. [RUNBOOK §11](RUNBOOK.md#11-pdd-test) lists the usual refusals. |
+| `REFUSED` / `no verdict` (exit code 3, 4 or 5) | A file rule or the AI service prevented a verdict. Read the reason and next step under the line. Run `pdd lint` before a check. [RUNBOOK §11](skills/pdd-prompting/runbook/testing-and-simulation.md#11-pdd-test) lists the usual refusals. |
 | `FAILED` (exit code 1) | Read the failed step and the report. A person decides expected values. The agent may propose a change, and never makes it. |
 | `UNKNOWN` or `Still running` (exit code 3) | The check can still run on the server. Run `pdd test --read` later. Do not send the same check again. |
 | `STOPPED … took more than 10 minutes and was stopped.` | Make the test step smaller, then check that Story again. |
@@ -335,7 +335,7 @@ The skills and the other commands run on your computer; `pdd lint --local` is of
 | `The runtime is busy. Try again later.` (exit code 5), or `Too many Try links are open.` | Wait a few minutes, then run the command again. To close a simulation that you do not use, run `pdd simulate --stop STORY`. |
 | `This Try has ended` | The simulation used all its AI calls or its 24 hours. Run `pdd simulate STORY --new`. |
 | `Autopilot did not start: it works only on the issues that you mark with an opt-in label.` | Mark issues with `pdd autopilot add N`, then run `pdd autopilot start --label pdd:autopilot`. |
-| `pdd --version` does not print `0.1.31` | Another `pdd` comes first on your PATH. Run `"$(npm prefix -g)/bin/pdd" --version`. On a conflict it shows the `export PATH=…` line that puts this pdd first. |
+| `pdd --version` does not print `0.1.32` | Another `pdd` comes first on your PATH. Run `"$(npm prefix -g)/bin/pdd" --version`. On a conflict it shows the `export PATH=…` line that puts this pdd first. |
 
 The [usage guide](docs/USAGE.md#13-troubleshooting) has more.
 

@@ -7,20 +7,49 @@
   <a href="INDEX/catalog.md"><picture><source media="(prefers-reduced-motion: reduce) and (max-width: 600px)" srcset="assets/brand/hero-mobile-static.svg" /><source media="(prefers-reduced-motion: reduce)" srcset="assets/brand/hero-static.svg" /><source media="(max-width: 600px)" srcset="assets/brand/hero-mobile.svg" /><img src="assets/brand/hero.svg" alt="Everything Skills — a connected atlas of Agent Skills" width="1200" /></picture></a>
 </p>
 
-<p align="center"><strong>Find skills by task. Connect them into workflows. Install by volume.</strong></p>
+<p align="center"><strong>Combine focused skills for a task. Inspect the inputs, deliverables and checks.</strong></p>
 
 <p align="center">
   <a href="INDEX/catalog.md">Skill catalog</a> · <a href="INDEX/graph.md">Knowledge graph</a> · <a href="INDEX/skill-repos.md">Skill repositories</a> · <a href="CONTRIBUTING.md">Contributing</a>
 </p>
 
+<details>
+<summary>Library coverage</summary>
+
 <p align="center">
-  <picture><source media="(max-width: 600px)" srcset="assets/brand/stats-mobile.svg" /><img src="assets/brand/stats.svg" alt="1115 skills · 11 volumes · 6795 relation edges · 4441 indexed entries" width="1200" /></picture>
+  <picture><source media="(max-width: 600px)" srcset="assets/brand/stats-mobile.svg" /><img src="assets/brand/stats.svg" alt="1115 skills · 11 volumes · 6797 relation edges · 4523 indexed entries" width="1200" /></picture>
 </p>
+</details>
 <!-- END GENERATED:brand -->
 
-Find skills for a task, combine them into a workflow, and install the volumes you need.
+Start with a deliverable you can inspect: a diagnosis, a reviewed patch, or a checked report. Use focused agent skills, with inputs, evidence and limits visible.
 
 **[Search skills online](https://findscripter.github.io/everything-skills/)** · **[Try a worked example](examples/README.md)** · [Full catalog](INDEX/catalog.md) · [Relationships](INDEX/graph.md)
+
+## Start with a real result
+
+**An empty Nix skill package: 0 → 1,116 exported paths.** The same fixed source was replayed before and after an existing source-rule override. Real Nix evaluation passed, and one representative package built with byte-identical instructions. The total includes **1,094 active entries, 21 archived and one template**.
+
+[![Real distribution repair and its verification scope](assets/demos/nix-discovery-result.svg)](examples/nix-discovery/README.md)
+
+**[Inspect inputs, patch and checks](examples/nix-discovery/README.md)** · [Proposed upstream fix](https://github.com/sudosubin/agents.nix/pull/137800) · [Share your task result](https://github.com/findscripter/everything-skills/issues/new?template=workflow-result.yml)
+
+Use `systematic-debugger` → `code-reviewer`: reproduce and verify a repair, then statically review the exact patch. This is a real maintainer case with disclosed skill-use timing, not an external-user study or a model-success benchmark. Check the linked proposal for current upstream status.
+
+```sh
+node bin/everything-skills.mjs compose skill-distribution-audit --json
+```
+
+The command returns a plan. Give your agent the repository, failure and allowed test scope. The [case guide](examples/nix-discovery/README.md) includes the prompt, actual scanner replay and offline evidence check.
+
+<details>
+<summary>Watch the actual result page: evidence, replay scope and skill search</summary>
+
+![Captured result page, evidence links, replay limits and skill search](assets/demos/nix-discovery-walkthrough.gif)
+
+[Recording scope](assets/demos/README.md) · This page walkthrough does not show the scanner or Nix running.
+
+</details>
 
 <details>
 <summary>Watch the 33-second catalog walkthrough</summary>
@@ -31,7 +60,7 @@ Find skills for a task, combine them into a workflow, and install the volumes yo
 
 </details>
 
-## 1. Pick a task and a skill combination
+## 1. Explore other task combinations
 
 | Your task | Start with | Then add |
 | --- | --- | --- |
@@ -59,15 +88,16 @@ Then supply your OpenAPI file or API specification and start with:
 
 Each volume below is a separate plugin; install several when your task needs them.
 
-### Install one skill for Codex with the skills CLI
+### Install the debugging/review pair for Codex
 
 With Node.js **22.20.0 or later**, run this from the project where you want the skill available:
 
 ```sh
-npx skills@1.7.4 add findscripter/everything-skills --skill codebase-onboarding-doc --agent codex --copy
+npx skills@1.7.4 add findscripter/everything-skills --skill systematic-debugger --agent codex --copy
+npx skills@1.7.4 add findscripter/everything-skills --skill code-reviewer --agent codex --copy
 ```
 
-This installs the selected skill files at project scope. Read their runtime prerequisites before using them for a task. To discover the default public set without installing, use a separate command:
+These commands install the two selected skills at project scope. Read their runtime prerequisites before using them for a task. To discover the default public set without installing, use a separate command:
 
 ```sh
 npx skills@1.7.4 add findscripter/everything-skills --list
@@ -120,7 +150,7 @@ node bin/everything-skills.mjs show api-design-reviewer --json
 
 Volume plugins offer **1094 current skills**. The catalog also retains **21 archived entries** for source history and migration, making **1115 bundled skill folders** in total. Their bodies retain their native language.
 
-**4441 external repository entries** provide discovery metadata for upstream projects. Their skill bodies are not included in the volume plugins. Daily repository collection expands this directory; bundled skill additions and revisions follow a separate curation workflow.
+**4523 external repository entries** provide discovery metadata for upstream projects. Their skill bodies are not included in the volume plugins. Daily repository collection expands this directory; bundled skill additions and revisions follow a separate curation workflow.
 
 The [catalog](INDEX/catalog.md), [tags](INDEX/tags.md), [graph](INDEX/graph.md), [search.json](INDEX/search.json), and [quality.json](INDEX/quality.json) are generated navigation and evidence views. Review status, freshness, licenses, and runtime dependencies are separate facets; `unknown` or `unreviewed` is not a verification claim. Read the selected skill's prerequisites and [source/license record](INDEX/sources.md) before running it.
 
@@ -135,16 +165,16 @@ Missing a useful skill or found a broken workflow? [Open an issue](https://githu
 <!-- BEGIN GENERATED:skill-repos -->
 ## Skill repos directory
 
-Browse **4441** indexed entries for external GitHub skill libraries, marketplaces, and curated lists. Their skill bodies are not bundled here.
+Browse **4523** indexed entries for external GitHub skill libraries, marketplaces, and curated lists. Their skill bodies are not bundled here.
 
 Open a category below for the complete tables, including summaries, licenses, recorded stars, and review status. [Full repository index](INDEX/skill-repos.md).
 
 | Category | Indexed entries |
 | --- | ---: |
-| [Official](INDEX/skill-repos.md#1-official) | 543 |
-| [Collections](INDEX/skill-repos.md#2-collections) | 750 |
-| [Domain skills](INDEX/skill-repos.md#3-vertical) | 2012 |
-| [Installers / registries / infrastructure](INDEX/skill-repos.md#4-infra) | 913 |
+| [Official](INDEX/skill-repos.md#1-official) | 547 |
+| [Collections](INDEX/skill-repos.md#2-collections) | 759 |
+| [Domain skills](INDEX/skill-repos.md#3-vertical) | 2066 |
+| [Installers / registries / infrastructure](INDEX/skill-repos.md#4-infra) | 928 |
 | [Other skill libraries](INDEX/skill-repos.md#5-other) | 24 |
 | [Names without skill / agent](INDEX/skill-repos.md#6-unnamed-repo-name-lacks-skill--agent) | 199 |
 

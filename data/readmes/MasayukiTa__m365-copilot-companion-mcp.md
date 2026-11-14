@@ -7,6 +7,28 @@ M365 Copilot を、**あなたの PC を操作できる自律エージェント*
 API 契約は不要。会社アカウントのまま。管理者権限も不要。
 ファイルを読むだけだった Copilot に「手」を生やして、実際に作業させます。
 
+## Submitting work to the fleet and where agents work
+
+**Submit a goal without the MCP connector.** From a clone, run the intake CLI directly; it
+calls `fleet_submit()` for you and prints the job id (no connector, no admin rights):
+
+```
+python tools/fleet_intake.py submit --goal "<the whole standalone instruction>"
+```
+
+The goal is the entire instruction, standalone -- whatever runs it never sees your shell or
+this README. A long goal is fine; it is spilled to a brief file and the worker is handed a
+pointer to it. Add `--priority` to jump the pending queue, `--note "..."` for a reviewer-only
+note. A bare job id means it was queued; a `[...]` line means it was refused (with the reason).
+
+**Where agents work: `work/<name>/`.** Agents clone, build and write scratch under the in-repo
+`work/` folder -- resolved relative to the repository root, so it travels with the clone and
+needs no hard-coded path. The folder is present on a fresh clone (one tracked placeholder) and
+everything created under it is git-ignored. In code, get a named subdirectory with
+`relay.work_home.work_dir("<name>")`; a single sweep (`relay/fleet_retention.py`,
+`workspace_work`) bounds it. See `work/README.md` and the "Where agents work" section of
+`AGENTS.md` for the full convention.
+
 > **English TL;DR** — This turns Microsoft 365 Copilot into an autonomous agent that operates your own PC — files, Excel, OCR, Python, local/corporate databases — with no API contract, on your normal work account, without admin rights. A small Python MCP server on your laptop exposes the tools; the relay drives the Copilot web UI unattended. **To install: double-click `quickstart.bat` and follow the prompts.** The one manual step (registering the MCP tool in Copilot Studio) is walked through with screenshots below. Full English guide: see the [English guide](#english-guide) section at the bottom.
 
 ---

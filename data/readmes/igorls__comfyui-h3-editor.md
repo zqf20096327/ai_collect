@@ -95,7 +95,9 @@ repository: `qwen3vl_32b_minimax_h3_int8_convrot.safetensors` (25 GB) and
 `qwen3vl_32b_minimax_h3_bf16.safetensors` (48 GB), and
 `minimax_h3_video_vae_int8_convrot.safetensors` (2.6 GB). Any one of each is
 enough: the editor renders with what it finds, and with more than one installed
-you pick in the Project tab.
+you pick in the Project tab. A Qwen3-VL 4B or 8B can also stand in for the 32B text
+encoder, in about a third of the memory: see
+[a smaller text encoder](docs/models.md#a-smaller-text-encoder).
 
 These are optional, and worth having:
 
@@ -141,6 +143,13 @@ voice. Choose who is in each clip, and write @Name in **What happens** to place
 them, or drag their card into the text. Write @Name in **Who speaks** to use
 their voice. A voice can be uploaded, or taken from a clip on the timeline.
 
+**The cast catalog.** Press **Save** beside **Catalog** on a cast member to keep
+them for every project, with their pictures and voice. In another project,
+**Add**, **From the catalog** brings in a copy. When you change someone and save
+them to the catalog again, the other projects show **Newer in the catalog**
+with an **Update** button, or you can bring every project up to date at once from
+the catalog. A copy you changed in its project is never overwritten without you.
+
 **Joining shots.** Select a clip on the timeline, open **Generate** and choose **Extend forward** or
 **Extend back** to generate what happens next or before. **Bridge to next**
 generates what connects it to the following clip, and **Merge with next**
@@ -150,7 +159,8 @@ show. If a clip they join changes, they are marked: render them again. An empty
 space between two rendered clips shows a plus that generates the bridge.
 
 **First and last frames.** Give a clip an exact first or last frame by
-dropping a picture on it, uploading one, or pressing **Use playhead frame**.
+dropping a picture on it, uploading one, or using the frame at the playhead,
+with the buttons beside each frame in the Shot tab.
 
 **Picture to a track.** A clip can hold a recorded sound, and its picture is
 generated to it. Extend forward carries on with the next part of the same
@@ -244,7 +254,7 @@ Press ? in the editor for this list.
 | "HyperFlow H3 Flash GGUF files need the gguf Python package" | The same |
 | Finals come out at 768x1344 or 1344x768 | Add the latent upscaler. The Model hint says so too |
 | The live preview is a still | Add `taeh3.safetensors` |
-| ComfyUI runs out of memory | Pick a smaller **Final size** in the Project tab, try one of HyperFlow's GGUF files, which come in smaller sizes, or render the finals on a Colab GPU with `colab/h3_editor.ipynb`. So far the editor has been tested on one 96 GB GPU only |
+| ComfyUI runs out of memory | Pick a smaller **Final size** in the Project tab, try one of HyperFlow's GGUF files, which come in smaller sizes, use [a smaller text encoder](docs/models.md#a-smaller-text-encoder), or render the finals on a Colab GPU with `colab/h3_editor.ipynb`. So far the editor has been tested on one 96 GB GPU only |
 
 ## Develop
 

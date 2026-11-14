@@ -15,7 +15,7 @@ Maven:
 <dependency>
   <groupId>io.pinecone</groupId>
   <artifactId>pinecone-client</artifactId>
-  <version>6.3.0</version>
+  <version>6.3.1</version>
 </dependency>
 ```
 
@@ -23,12 +23,12 @@ Maven:
 
 Gradle:
 ```
-implementation "io.pinecone:pinecone-client:6.3.0"
+implementation "io.pinecone:pinecone-client:6.3.1"
 ```
 
 [comment]: <> (^ [pc:VERSION_LATEST_RELEASE])
 
-Alternatively, you can use our standalone uberjar [pinecone-client-6.3.0-all.jar](https://repo1.maven.org/maven2/io/pinecone/pinecone-client/6.3.0/pinecone-client-6.3.0-all.jar), which bundles the Pinecone
+Alternatively, you can use our standalone uberjar [pinecone-client-6.3.1-all.jar](https://repo1.maven.org/maven2/io/pinecone/pinecone-client/6.3.1/pinecone-client-6.3.1-all.jar), which bundles the Pinecone
 SDK and all dependencies together. You can include this in your classpath like you do with any 3rd party JAR without
 having to obtain the *pinecone-client* dependencies separately.
 
@@ -134,7 +134,7 @@ public class DisableTLSExample {
 
 #### Capturing response metadata for observability
 
-The SDK can report response metadata for upsert, query, fetch, update, delete and list calls made through an index connection. Other calls, such as `describeIndexStats` and `fetchByMetadata`, do not report it. This enables you to track latency metrics and integrate with observability tools like OpenTelemetry, Prometheus, or Datadog.
+The SDK can report response metadata for upsert, query, fetch, fetch-by-metadata, update, delete and list calls made through an index connection. Other calls, such as `describeIndexStats` and `upsertRecords`, do not report it. This enables you to track latency metrics and integrate with observability tools like OpenTelemetry, Prometheus, or Datadog.
 
 ```java
 import io.pinecone.clients.Pinecone;
@@ -166,13 +166,13 @@ index.queryByVectorId(3, "article-1", "articles-en");
 // Prints, for example: Operation: query | Client: 45ms | Server: 32ms | Network: 13ms
 ```
 
-The client calls the listener after each of these calls completes, on every index connection obtained from that `Pinecone` instance. An exception thrown by the listener is logged and does not fail the call.
+The client calls the listener after each of these calls completes, on every index connection obtained from that `Pinecone` instance. Anything the listener throws, including an `Error`, is logged and does not fail the call.
 
 The `ResponseMetadata` object provides:
 
 | Method | Description |
 |--------|-------------|
-| `getOperationName()` | Operation type: upsert, query, fetch, update, delete, list |
+| `getOperationName()` | Operation type: upsert, query, fetch, fetchbymetadata, update, delete, list |
 | `getClientDurationMs()` | Total round-trip time measured by the client |
 | `getServerDurationMs()` | Server processing time from the `x-pinecone-response-duration-ms` header, or null if the server did not send it |
 | `getNetworkOverheadMs()` | Client duration minus server duration, or null if the server duration is unknown |
@@ -181,7 +181,7 @@ The `ResponseMetadata` object provides:
 | `isSuccess()` | Whether the operation succeeded |
 | `getGrpcStatusCode()` | gRPC status code |
 | `getErrorType()` | Error category when failed |
-| `getReadUnits()` | Read units consumed (available on query, fetch, list) |
+| `getReadUnits()` | Read units consumed (available on query, fetch, fetchbymetadata, list) |
 | `getUpsertedCount()` | Number of vectors upserted (available on upsert) |
 | `getMatchedRecords()` | Number of matched records (available on update) |
 
@@ -466,7 +466,7 @@ pinecone.deleteIndex("product-catalog");
 
 ## Scale replicas
 
-The following example changes the number of replicas for a pod-based index. Every `configurePodsIndex` and `configureServerlessIndex` call also sets deletion protection, so pass the value the index should keep.
+The following example changes the number of replicas for a pod-based index. Passing `null` for deletion protection in any `configurePodsIndex` or `configureServerlessIndex` call keeps the current setting.
 
 ```java
 import io.pinecone.clients.Pinecone;
@@ -476,9 +476,9 @@ Pinecone pinecone = new Pinecone.Builder(System.getenv("PINECONE_API_KEY")).buil
 
 String indexName = "product-catalog";
 int newNumberOfReplicas = 4;
-String deletionProtection = "disabled";
 
-pinecone.configurePodsIndex(indexName, newNumberOfReplicas, deletionProtection);
+// null keeps the current deletion protection setting
+pinecone.configurePodsIndex(indexName, newNumberOfReplicas, null);
 ```
 
 ## Enable deletion protection for pod index
@@ -525,7 +525,7 @@ Pinecone pinecone = new Pinecone.Builder(System.getenv("PINECONE_API_KEY")).buil
 
 // Parameters: indexName, deletionProtection, tags, embed, readCapacityMode, nodeType, shards, replicas
 IndexModel indexModel = pinecone.configureServerlessIndex(
-    "product-catalog", "disabled", null, null, "Dedicated", "t1", 3, 2);
+    "product-catalog", null, null, null, "Dedicated", "t1", 3, 2);
 ```
 
 ## Describe index statistics

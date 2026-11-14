@@ -175,11 +175,12 @@ kiss cache-usage --provider anthropic
 kiss cache-usage --session <session-id-or-jsonl-file>
 ```
 
-KISS also protects valuable prompt caches during long-running work when a
-refresh is expected to save money. This is automatic.
+KISS also protects valuable prompt caches during long-running work, and for
+up to 30 minutes while you decide what to do next, when a refresh is expected
+to save money. This is automatic.
 
 To change this behavior, set `cacheWarming` to `off` to disable refreshes, or
-to `idle` to protect the cache while you decide what to do next.
+to `streaming` to refresh only while the agent works.
 
 ### Choose a decision model
 
@@ -338,8 +339,9 @@ your browser, then select an OpenAI model. KISS saves the login and refreshes
 it automatically when needed.
 
 You can also use an OpenAI API key. For a server or SSH session, use
-`kiss login openai-codex --device-auth` to sign in through the legacy Codex
-provider.
+`kiss login openai-codex --device-auth` to sign in through the OpenAI Codex
+provider. `kiss auth login <provider>` and `kiss auth logout <provider>` work
+like `kiss login` and `kiss logout`, as in Pi.
 
 ```bash
 kiss login openai
@@ -1322,6 +1324,30 @@ configuration only after you trust the project.
 Open `/settings` for common TUI settings. Run `kiss --help` for all command-line
 options. Custom themes live in `~/.kiss/agent/settings.json`.
 
+### Custom status line
+
+Replace the interactive footer with the output of your own command, using the
+same contract as Claude Code. Existing `~/.claude/statusline.sh` scripts work
+with little or no modification:
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh"
+  }
+}
+```
+
+The command receives a JSON payload on stdin (`cwd`, `session_id`,
+`transcript_path`, `model.id`, `model.display_name`, `workspace`,
+`cost.total_cost_usd`, `context_window` usage, plus kiss extras under `kiss`)
+and its stdout, ANSI colors included, becomes the footer (up to 5 lines).
+The command re-runs only when that payload changes, debounced by `debounceMs`
+(default 300) and killed after `timeoutMs` (default 5000). Optional `padding`
+adds leading spaces to each line. A failing or silent command keeps the
+previous output; before the first success the default footer shows.
+
 ### Tool selection
 
 Choose which tools are available when a session starts with `defaultTools` in
@@ -1373,7 +1399,7 @@ reduce provider cache reuse and increase cost.
 
 ## Compatibility
 
-KISS tracks [Pi v1.5.0](https://github.com/earendil-works/pi/releases/tag/v1.5.0).
+KISS tracks [Pi v1.5.2](https://github.com/earendil-works/pi/releases/tag/v1.5.2).
 You can continue compatible Pi sessions and use the updated model catalog,
 core commands, and conversation compaction. KISS also supports OpenAI
 Responses over WebSocket.

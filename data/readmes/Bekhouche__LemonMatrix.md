@@ -61,6 +61,24 @@ range for the multi-machine fleet case. Lemonade has no
 announce/broadcast mechanism, so this is a bounded port scan, not magic
 discovery -- capped at 1024 hosts per scan.
 
+## What a model run measures
+
+Each trial sends the same prompt with `cache_prompt: false`, so llama.cpp
+processes the whole prompt every time instead of serving it from its prompt
+cache, while the model stays loaded (warmups are real warmups). TTFT and
+prefill therefore time the prompt, not a cache hit. Each trial records the
+server's `cache_tokens`; a run where any measured trial still reused cached
+prompt tokens is marked invalid. Results from LemonMatrix 0.1.0 and earlier
+did not do this, so their TTFT and prefill are cache-assisted (decode is not
+affected).
+
+A run also records whether any other model stayed loaded on the instance
+while it was measured (`validity.other_models_resident`). An idle model still
+holds memory: on a 32 GB R9700 with Qwen3.5-35B-A3B and Qwen3.5-9B idle,
+Qwen3-4B decoded at 21 tok/s instead of 171. Such a run is not ranked.
+`--unload-others` on `run` and `sweep` unloads everything first; it is off by
+default because a profile can point at a server other people are using.
+
 ## Router cost runs
 
 A `collection.router` that mixes local and cloud candidates answers one
@@ -90,6 +108,43 @@ of a small local model for the same prompt. The extra requests run outside the
 measured window; `--estimate-baseline` skips them and reuses the routed
 model's token counts, and the result's `baseline_method` says which was used.
 
+## Omni workflow runs
+
+A Lemonade `collection.omni` model (for example `LMX-Omni-5.5B-Lite`: an LLM
+planner plus image, speech and transcription models) takes a chat request and
+runs the tool loop itself, returning images and audio embedded in the answer.
+`lemonmatrix omni` sends it a fixed task set (`omni-basic`: text, image,
+speech, and image plus speech) and measures each task end to end:
+
+```bash
+lemonmatrix omni --profile my-machine --model LMX-Omni-5.5B-Lite --power-state plugged --unload-others
+```
+
+The result has the success rate (did the answer contain the image and/or
+audio the task asked for), latency per category and tasks per minute. The
+omni model's components count as the run's own models; anything else loaded
+makes the run invalid, as for every other run. Results go to
+`results/<profile>/omni/`.
+
+## Ryzen AI NPU and hybrid runs
+
+Lemonade's `ryzenai-llm` recipe has one backend, `ryzenai-llm-npu`, and the
+model's name says where it runs: `-Hybrid` (NPU and iGPU), `-NPU` or `-CPU`.
+FastFlowLM (`flm-npu`) runs every model on the NPU. LemonMatrix takes the
+engine from the model, so a run whose `--engine` contradicts it is refused,
+and `lemonmatrix sweep` without `--engine` runs each of these models on its
+own engine:
+
+```bash
+lemonmatrix sweep --profile my-laptop --backend ryzenai-llm-npu \
+  --model Llama-3.2-1B-Instruct-Hybrid --model Llama-3.2-1B-Instruct-NPU \
+  --model Llama-3.2-1B-Instruct-CPU --power-state plugged
+```
+
+Lemonade reports the device `npu` for every `ryzenai-llm` model, whatever
+its deployment, so for `-Hybrid` and `-CPU` models the device check cannot
+confirm the engine; the result is still ranked and its notes say so.
+
 ## Submitting results
 
 `lemonmatrix submit results/my-machine/<run_id>.json` opens a pull request
@@ -97,7 +152,9 @@ that adds the file to the public leaderboard
 ([LemonMatrix/lemonmatrix.github.io](https://github.com/LemonMatrix/lemonmatrix.github.io)).
 It validates the file against the same schemas the leaderboard's CI uses, forks
 the repo (or reuses your fork), keeps the file's `results/<profile>/...` path,
-pushes and opens the PR with the GitHub CLI. `--dry-run` shows the PR without
+pushes and opens the PR with the GitHub CLI. Each run's per-trial file
+(`results/<profile>/trials/<run_id>.json`) goes along with it, so its page on
+the leaderboard can show the trials. `--dry-run` shows the PR without
 touching GitHub.
 
 ## Importing other tools' results
@@ -106,7 +163,10 @@ touching GitHub.
 [lemonade_lab](https://github.com/skywalk1411/lemonade_lab) (as published in
 amdaibenchmarks) and [LemonMetrics](https://github.com/lemonmetrics/lemonmetrics)
 `report.json` files, which carry Ryzen AI NPU/hybrid rows and energy
-estimates. Each file is normalized into `results/imported/<tool>/` and listed
+estimates. It also reads a saved copy of Lemonade's own bench site
+(`curl -s https://bench.lemonade-server.ai/api/benchmarks > bench-site.json`),
+which becomes one document per machine because the list mixes machines.
+Each file is normalized into `results/imported/<tool>/` and listed
 with `lemonmatrix imported-results`. These numbers did not go through
 LemonMatrix's validity checks, so they are marked `validated: false` and never
 appear on the leaderboard. Host names, commands, URLs and raw power samples are

@@ -11,6 +11,7 @@
 
 <p align="center">
   <a href="https://arxiv.org/abs/2607.11487"><img src="https://img.shields.io/badge/arXiv-2607.11487-b31b1b?logo=arxiv&logoColor=white" alt="arXiv"></a>
+  <img src="https://img.shields.io/badge/AAAI%202027%20Demo-Accepted-1f6feb" alt="AAAI 2027 Demo">
   <a href="https://huggingface.co/papers/2607.11487"><img src="https://img.shields.io/badge/HuggingFace-Paper-yellow?logo=huggingface&logoColor=white" alt="Hugging Face Paper"></a>
   <a href="https://arxiv.org/abs/2609.00551"><img src="https://img.shields.io/badge/EM%C2%B2Mem-2609.00551-b31b1b?logo=arxiv&logoColor=white" alt="EM²Mem paper"></a>
   <img src="https://img.shields.io/badge/EMNLP%202026%20Findings-Accepted-blueviolet" alt="EMNLP 2026 Findings">
@@ -51,6 +52,7 @@
 - [🎬 Demo](#demo)
 - [🎯 Why LightMem-Ego](#why)
 - [🚀 Quick Start](#quick-start)
+- [🧠 Memory Workspace](#workspace)
 - [💬 What You Can Ask](#scenarios)
 - [🏗️ How It Works](#architecture)
 - [📊 Results](#results)
@@ -70,6 +72,7 @@
 
 ## 📢 News
 
+- **[2026-11]** 🎉🎉🎉 [**LightMem-Ego: Your AI Memory for Everyday Life**](https://arxiv.org/abs/2607.11487) has been accepted to **AAAI 2027 Demo**!
 - **[2026-09]** ✨ Multi-session support, online memory editing, and streaming answers land in the backend and web UI.
 - **[2026-08]** 🎉🎉🎉 [**EM²Mem: Event-Centric Multimodal Memory for Large Language Models**](https://arxiv.org/abs/2609.00551) — the long-term memory engine behind this backend — has been accepted to **EMNLP 2026 Findings**!
 - **[2026-07-13]** 📄 [**LightMem-Ego: Your AI Memory for Everyday Life**](https://arxiv.org/abs/2607.11487) is released on arXiv.
@@ -277,6 +280,58 @@ Details: [`src/backend/README.md`](src/backend/README.md) and [`DEPLOYMENT.md`](
 
 ---
 
+<span id="workspace"></span>
+
+## 🧠 Memory Workspace
+
+An answer is only as good as the memory behind it, so the web UI ships a memory workspace: the same sessions, opened up — so you can see what was stored, fix what is wrong, and move memory in and out.
+
+- 🗂️ **Every tier in one place** — episodic events, semantic facts, visual records and the long-term `M_lt` catalog, browsable per session; open a 30-second cell to read its caption, transcript, keyframes and timestamps.
+- 🕸️ **Walk the graphs** — episodic and semantic graphs as interactive node-link views; click an event, fact or entity to read its description, scene, critical speech, triples and first/last-seen time, with the evidence that links the two graphs.
+- ✏️ **Correct memory in place** — edit a 30-second episodic record and save; coarser summaries, semantic memories, graphs and retrieval indexes regenerate, and any earlier version can be rolled back.
+- 🏷️ **Rename sessions** — retitle a session without touching the media behind it.
+- 📦 **Export and import** — export records, or import a `.json` / `.txt` memory file (≤ 10 MiB) and follow the build task through to a ready query service.
+- 🎞️ **Upload a video, then ask** — drop in an MP4/MOV/WebM/MKV/AVI clip (≤ 95 MiB), let the backend build its full memory offline, then replay it and ask. The whole stack, tested without the glasses.
+- 🎨 **Reads the way you like** — light and dark themes, English or 中文, and three text sizes, remembered per browser on every page.
+
+> [!NOTE]
+> Editing controls unlock with an administrator passcode, so a shared demo link stays read-only while owners can still correct their own memory.
+
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./figs/memory_management_dark.png">
+    <img src="./figs/memory_management.png" width="100%" alt="The Memories page: a global M_lt catalog listing every session with its M_lt, episodic, semantic and visual versions, next to the current session memory panel">
+  </picture>
+</div>
+
+*One catalog per session. Every session keeps its own `M_lt`, episodic, semantic and visual versions side by side, and any of them opens without leaving the page.*
+
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./figs/graph_visualize_dark.png">
+    <img src="./figs/graph_visualize.png" width="100%" alt="The episodic graph laid out as an event timeline with entities expanded, beside the semantic graph of facts with support-weighted edges">
+  </picture>
+</div>
+
+*Both graphs at once. The episodic graph lays a session out as an event timeline, and selecting an event expands its entities; the semantic graph holds the stable facts, with edge width showing how much evidence supports each relation.*
+
+<table align="center">
+  <tr>
+    <td align="center" width="50%">
+      <picture><source media="(prefers-color-scheme: dark)" srcset="./figs/episodic_dark.png"><img src="./figs/episodic.png" width="100%" alt="An episodic event opened to its description, visual summary, scene and visual objects"></picture>
+      <br><b>Open any event</b><br>Description, visual summary, scene,<br>and the objects it contains
+    </td>
+    <td align="center" width="50%">
+      <picture><source media="(prefers-color-scheme: dark)" srcset="./figs/graph_dark.png"><img src="./figs/graph.png" width="100%" alt="Session memory records with per-tier counts, readiness tags and a JSON export button"></picture>
+      <br><b>Read the records</b><br>Per-tier counts, readiness,<br>and one-click JSON export
+    </td>
+  </tr>
+</table>
+
+The workspace lives at `/memories/` next to the live view, and the saved-video flow at `/history-demo/`; the [frontend README](src/frontend/README.md) covers both in detail.
+
+---
+
 <span id="scenarios"></span>
 
 ## 💬 What You Can Ask
@@ -421,7 +476,7 @@ Representative commercial assistants, text-based memory systems, and egocentric 
 | Path | What's inside | Docs |
 | :--- | :--- | :--- |
 | [`src/ai_glass_app/`](src/ai_glass_app/) | Android app for Rokid AI Glasses (Kotlin, Jetpack Compose, CameraX) | [README](src/ai_glass_app/README.md) |
-| [`src/frontend/`](src/frontend/) | Vite + React web UI for capture, sessions, QA, and evidence review | [README](src/frontend/README.md) |
+| [`src/frontend/`](src/frontend/) | Vite + React 19 web UI: live capture, Q&A, and a memory workspace with episodic and semantic graph views | [README](src/frontend/README.md) |
 | [`src/backend/`](src/backend/) | FastAPI service plus the online worker pipeline (ASR, memory, retrieval, QA) | [README](src/backend/README.md) |
 | [`research/em2mem/`](research/em2mem/) | Offline EM²Mem research implementation, preprocessing, and evaluation code | [README](research/em2mem/README.md) |
 | [`compose.yaml`](compose.yaml), [`deploy/`](deploy/) | Docker Compose stack and deployment notes | [DOCKER.md](deploy/DOCKER.md) |
@@ -432,12 +487,12 @@ Representative commercial assistants, text-based memory systems, and egocentric 
 
 ## 🗺️ Roadmap
 
+- [x] Memory workspace — browse every memory tier per session, inspect the episodic and semantic graphs, edit records with rollback, rename sessions, and import or export memory.
+- [x] Light and dark themes, English or 中文, and three text sizes across the web UI.
+- [x] Video upload and replay, so the whole pipeline can be tested without the glasses.
+- [x] Pluggable ASR, VLM, and embedding backends beyond the current defaults.
+- [x] Release the end-to-end evaluation dataset and reproducibility scripts ([artifacts on Google Drive](https://drive.google.com/drive/folders/1YZCp8O7Sje-kh3mFpcwnzz19x0tUvELD)).
 - [ ] Ship a native phone app — today the phone client is the web frontend in a mobile browser.
-- [ ] Release the end-to-end evaluation dataset and reproducibility scripts.
-- [ ] Pluggable ASR, VLM, and embedding backends beyond the current defaults.
-- [ ] Support wearable devices beyond Rokid AI Glass.
-- [ ] On-device filtering and user-controlled memory editing for privacy-sensitive capture.
-- [ ] One-click deployment template for a full cloud deployment.
 
 ---
 

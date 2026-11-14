@@ -9,7 +9,7 @@
 Contexta reads a codebase, keeps the files that matter for the task, fits them into the token budget you set, and strips likely secrets before anything leaves your machine. Paste the pack into any assistant, or serve it over MCP to Claude Code, Cursor, and Windsurf.
 
 [![Python](https://img.shields.io/badge/python-3.11%2B-12211c?style=flat-square)](https://python.org)
-[![License: MIT](https://img.shields.io/badge/license-MIT-12211c?style=flat-square)](LICENSE)
+[![License: AGPL v3](https://img.shields.io/badge/license-AGPL--3.0--or--later-12211c?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-12211c?style=flat-square)]()
 [![Version](https://img.shields.io/badge/version-2.2.1-12211c?style=flat-square)]()
 [![MCP](https://img.shields.io/badge/MCP-compatible-12211c?style=flat-square)]()
@@ -403,4 +403,6 @@ See [CHANGELOG.md](CHANGELOG.md)
 
 ## License
 
-[MIT](LICENSE) © [pablokaua03](https://github.com/pablokaua03)
+[AGPL-3.0-or-later](LICENSE) © [Pablo Kauã Pereira Silva](https://github.com/kkauaps)
+
+Releases before this commit remain under the MIT License. This commit and later releases are licensed under the GNU Affero General Public License v3.0 or later.

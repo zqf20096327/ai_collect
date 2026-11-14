@@ -31,6 +31,10 @@ adds immutable reservations and explicit verified reuse without changing
 record distinct, retry and reuse attempts and print ordered lineage with
 derived [lifecycle state](docs/EXECUTION_LIFECYCLE.md) (cancellation, deadline,
 orphan detection and advisory retry eligibility).
+The main-branch command `runner telemetry` (not yet in a release) derives correlated, payload-free
+OpenTelemetry traces, metrics and logs from those documents and exports them as
+OTLP/JSON files or to any OTLP/HTTP collector; see
+[execution telemetry](docs/EXECUTION_TELEMETRY.md).
 The [checkpoint embedding API](docs/EXECUTION_CHECKPOINTS.md) adds compatible
 whole-unit recovery. The v0.41.0 CLI adds `runner checkpoint create`
 and `runner checkpoint resume`, with protected HTTP create/resume operations.
@@ -370,6 +374,24 @@ stdin and stdout) and `copilot-reflect` (paid). Paid adapters and non-mock
 executors require `--allow-paid-calls`. Spend is reported, never capped.
 See [Optimizer Adapters](site/src/content/docs/guides/optimizer-adapters.mdx).
 
+### `waza isolation preflight` (unreleased, v0.42.0)
+
+Probe the isolation boundaries a host declaration claims (filesystem,
+environment/secrets, network, subprocesses, remote tools) by attempting each
+violation, then match them against a request. Waza enforces nothing itself and
+reports a boundary as restricted only when a probe proved it; the Copilot-native
+sandbox (#544) is reported absent. The host provider can prove only off-host network
+and remote-tool boundaries; filesystem, environment and subprocess restrictions
+are reported unavailable. Exit 0 admitted, 1 rejected, 2 invalid input.
+
+```bash
+waza isolation preflight --request request.json --host host.json -o isolation.json
+waza run eval.yaml --isolation-request request.json --isolation-host host.json --isolation-report isolation.json
+```
+
+`run` refuses to start (exit 2) when a requested boundary is unavailable. See
+[Execution isolation](docs/EXECUTION_ISOLATION.md).
+
 <span id="waza-interop-source-build-preview"></span>
 
 ### `waza interop` (v0.40.0)
@@ -403,7 +425,14 @@ waza runner capabilities
 waza runner negotiate < examples/runner/negotiation.json
 waza runner validate < examples/runner/unit.json
 waza runner run < examples/runner/unit.json
+waza runner budgets   # main-only, after v0.41.0: per-OS budget matrix
 ```
+
+Builds from `main` (after v0.41.0) accept optional request `budgets` (wall time, model
+turns, tool calls, CPU, memory, disk, process count). Limits the host cannot
+enforce are rejected before execution (exit 5, `unsupported_budget`); enforced
+limits that are exceeded end the attempt (`budget_exceeded`), and the terminal
+`budget` field reports measured usage. See [execution budgets](docs/EXECUTION_BUDGETS.md).
 
 The v0.40.0 release implements `negotiation`, `exact-unit`, `inline.mock-text`,
 `terminal-result` and opt-in `inline.copilot-text`.
@@ -476,6 +505,24 @@ into exactly one public runner call, and `waza runner adapter dispatch --store
 and returns the mapped status and manifest digest. Scheduler fields such as
 queue, priority or placement are rejected (exit 6) rather than dropped; Waza
 stays translation-only. See [portable external execution adapters](site/src/content/docs/guides/runner-adapters.mdx).
+
+**Provenance commands (unreleased, planned for v0.42.0):** `waza runner provenance
+generate` writes a signed in-toto/DSSE bundle binding the canonical request,
+runner image digest, Waza version, runner API, policy, runtime/model, artifact
+chain and terminal outcome; `waza runner provenance verify --bundle DIR
+--public-key KEY.pem` checks it offline (exit 0 verified, 1 failed).
+`waza runner provenance keygen` creates a local Ed25519 key; keyless and
+managed-KMS signing report an explicit unavailable state (exit 5). See
+[execution provenance](docs/EXECUTION_PROVENANCE.md).
+
+**Component inventory commands (unreleased, planned for v0.42.0):** `waza runner
+inventory generate` writes a CycloneDX inventory bound to a runner image or
+plugin sha256 digest; `waza runner inventory verify --inventory FILE
+--image-digest sha256:<hex>` (or `--plugin FILE`) checks offline that it
+describes exactly what you consumed (exit 0 verified, 1 failed). Reference
+images publish a signed inventory attestation, and provenance bundles bind it
+with `--bind component-inventory=PATH` and `verify --require-inventory`. See
+[component inventories](docs/COMPONENT_INVENTORY.md).
 
 The [local container reference](site/src/content/docs/guides/runner-container.mdx)
 keeps the default scratch image mock-only and provides an explicit
@@ -1914,23 +1961,4 @@ checks reject group/world-writable cache parents and private children with
 group/other mode bits. These retained-root checks do not certify Windows ACLs,
 cache confidentiality or whole-filesystem ancestry.
 
-A source build currently emits `results.json` at `schemaVersion` `1.9`; published `v0.39.1` writes `1.7`. Version `1.1` added per-turn checkpoints (`runs[].checkpoints[]`, see #358) and the normalized `runs[].tool_events[]` array (`turn`, `sequence`, `tool_call_id`, `tool_name`, `args`, `result`, `success`, `error`, `duration_ms`; see #366). Version `1.2` added `runs[].snapshot_path` for `waza run --snapshot` artifacts (#367) and the eval-level `adversarial:` block consumed by `waza adversarial --spec` (#365). Version `1.3` adds `session_digest.tool_policy_mode` and `tool_policy_denials` (#585). Version `1.4` adds sanitized `runs[].command_invocations` for declarative CLI mocks (#634). Version `1.5` adds `tasks[].stats.pass_rate_ci` and `summary.statistics.success_rate_ci` and `pass_hat_k`, and stops writing `is_significant`. Version `1.6` adds optional `runs[].evidence` and `runs[].requirement_explanations`. Version `1.7` adds optional frozen `runs[].judge_evidence`, metadata-only `runs[].prompt_judging` observations and separate current-regrade `regrade_usage.sessions` for evidence-enabled prompt graders, plus configured live/mocked `runs[].dependency_modes`. Version `1.8` adds optional `runs[].host_lifecycle` model-turn and host shell evidence projected from structured native session events (omitted when unavailable). Version `1.9` adds optional `runs[].user_input_requests` records for native SDK question callbacks (`config.native_user_input`). The saved bundle contains sanitized evidence, whereas API/report metadata does not copy its bodies. See [docs/PRD](docs/PRD.md) and [schema-changes](site/src/content/docs/reference/schema-changes.md) for details.
-
-The dashboard displays these recorded Wilson intervals and pass^k estimates separately from bootstrap weighted-score intervals, with available trial counts. Missing historical statistics show **Not assessed**; readers never infer them from scores or successful outcomes. None of these intervals is a significance test between runs.
-
-For custom `.agent.md` targets, `copilot-sdk` enforces the selected agent's `tools:` declaration on initial and resumed turns: omitted means unrestricted, `[]` denies all tools, and a populated list allows only named tools. Runtime enforcement and the implicit `tool_constraint` grader share built-in aliases such as `fileRead`/`readFile`/`view`. Denials fail the run and appear in results, `--session-log` run events, and the dashboard trajectory digest. This is a tool boundary, not host filesystem or network sandboxing. See [custom agent policies](site/src/content/docs/guides/custom-agents.mdx) for MCP names, task overrides, and limitations.
-
-### MCP Mock Servers
-
-Use top-level `mcp_mocks` with `schemaVersion: "1.1"` for deterministic Copilot SDK evals that need MCP tools without live services. Waza launches each mock as a local stdio MCP server, so CI runs do not need network ports, external credentials, or real service state. Waza exposes every tool declared by each mock to the Copilot CLI automatically; do not add a separate `tools` allowlist.
-
-```yaml
-schemaVersion: "1.1"
-mcp_mocks:
-  - name: github
-    fixtures: fixtures/mcp/github
-```
-
-Inline responses support exact full-argument matching (`match`), JSON Schema matching (`match_schema`), and per-field regex matching (`match_regex`). Unknown tools and unmatched calls fail loudly with an MCP tool error that names the missing fixture.
-
-Fixture entries must be regular JSON files; symlinks to regular files remain supported. On Unix, fixture admission uses nonblocking opens and
+A source build currently emits `results.json` at `schemaVersion` `1.9`; published `v0.39.1` writes `1.7`. Version `1.1` added per-turn checkpoints (`runs[].checkpoints[]`, see #358) and the normalized `runs[].tool_events[]` array (`turn`, `sequence`, `tool_call_id`, `tool_name`, `args`, `result`, `success`, `error`, `duration_ms`; see #366). Version `1.2` added `runs[].snapshot_path` for `waza run --snapshot` artifacts (#367) and the eval-level `adversarial:` block consumed by `waza adversarial --spec` (#365). Version `1.3` adds `session_digest.tool_policy_mode` and `tool_policy_denials` (#585). Version `1.4` adds sanitized `runs[].command_invocations` for declarative CLI mocks (#634). Versio

@@ -26,3 +26,7 @@ Proprietary.
 This repository does not accept external contributions (no pull requests).
 
 If a recipe appears incorrect or outdated, or you would like to request support for another model or hardware configuration, please open an issue.
+
+## Notice and disclaimer
+
+NOTICE AND DISCLAIMER: This interface presents the option of accessing AI models.  Those materials are governed solely by separate terms, conditions and licenses.  You are solely responsible for finding, reviewing and complying with all applicable terms, conditions, and licenses, and for verifying the security, integrity and suitability of any retrieved materials for your specific use case. They are presented "AS IS", without warranty of any kind. The author makes no representations or warranties regarding any retrieved materials, and assumes no liability for any losses, damages, liabilities or legal consequences from your use or inability to use any retrieved materials. Use the retrieved materials at your own risk.

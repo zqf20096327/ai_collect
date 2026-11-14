@@ -460,6 +460,7 @@ A cluster of papers from March 2026 focusing on the OpenClaw AI agent framework,
 
 | Tool | Maintainer | Description |
 |------|------------|-------------|
+| [affixio-agent-guard](https://github.com/AffixIO/affixio-agent-guard) | AffixIO | Free local-first guard for LLM agents; checks tool calls against policy BEFORE execution (TypeScript, zero deps, zero network). Pairs with AffixIO host-side ACTION attestation ([affixio](https://www.npmjs.com/package/affixio)) |
 | [LlamaFirewall](https://github.com/meta-llama/PurpleLlama/tree/main/LlamaFirewall) | Meta | Multi-layer runtime protection: PromptGuard 2 (injection/jailbreak), Agent Alignment Checks (CoT auditor), CodeShield (dangerous code detection in agent outputs) |
 | [NeMo Guardrails](https://github.com/NVIDIA/NeMo-Guardrails) | NVIDIA | Programmable topical/safety/dialog rails for LLM-based systems; composable with LangChain/LlamaIndex |
 | [Guardrails AI](https://github.com/guardrails-ai/guardrails) | Guardrails AI | Python framework with 50+ validators for PII, schema conformance, injection, toxicity; structured output enforcement |
@@ -526,6 +527,7 @@ A cluster of papers from March 2026 focusing on the OpenClaw AI agent framework,
 | Prisma AIRS | Palo Alto Networks | AI agent discovery, behavior monitoring, RAG data inspection, supply chain security |
 | Cisco AI Defense | Cisco | Developer tools for model resilience testing; DefenseClaw open-source secure agent framework |
 | Cisco Duo (Agent Identity) | Cisco | Agent identity management with human-owner mapping and MCP policy enforcement |
+| [Speakeasy MCP Gateway](https://www.speakeasy.com/product/mcp-gateway) | Speakeasy | MCP gateway with SSO and RBAC, runtime guardrails, tool-call inspection for prompt injection, and audit logs |
 | Lakera Guard | Lakera | Real-time prompt injection and data leak detection API |
 | Prompt Security | Prompt Security | Enterprise platform for MCP security risk management |
 | Reco | Reco | SaaS security platform with AI agent discovery and permission auditing |
@@ -601,14 +603,4 @@ Contributions are welcome! Please submit a PR with:
 1. **Incidents**: Date, brief description, impact, and a verifiable source link
 2. **CVEs**: CVE ID, affected product, CVSS score, and concise description
 3. **Papers**: arXiv/venue link, venue/date, and a one-sentence TL;DR
-4. **Tools**: Repository link, maintainer, and what it does/defends against
-
-Please ensure all entries have **verifiable sources**. Unverified or purely speculative entries will not be merged.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines.
-
----
-
-## License
-
-[MIT License](LICENSE) — Copyright (c) 2026 Hideaki Takahashi
+4

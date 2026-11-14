@@ -98,10 +98,10 @@ Fresh 2026 work that is already drawing attention.
   - [📚 Surveys & Position Papers (62)](#surveys)
   - [🏗️ Agent Architectures & Frameworks (54)](#architectures)
 - **🧱 Part I: Core Components**
-  - [🧠 Planning & Reasoning (55)](#planning)
-  - [💾 Memory (60)](#memory)
+  - [🧠 Planning & Reasoning (56)](#planning)
+  - [💾 Memory (61)](#memory)
   - [🔧 Tool Use (51)](#tools)
-  - [🤝 Multi-Agent Systems (57)](#multi-agent)
+  - [🤝 Multi-Agent Systems (59)](#multi-agent)
 - **🌍 Part II: Agents in Context**
   - [🌐 Interactive Environments (60)](#environments)
   - [🚀 Applications (60)](#applications)
@@ -254,11 +254,11 @@ Fresh 2026 work that is already drawing attention.
 ## 🧱 Part I: Core Components
 
 <a id="planning"></a>
-### 🧠 Planning & Reasoning (55)
+### 🧠 Planning & Reasoning (56)
 *Corresponds to §4 (Planning and Reasoning).*
 
 <details>
-<summary><b>Show 55 papers</b></summary>
+<summary><b>Show 56 papers</b></summary>
 
 - **[Chain-of-Thought Prompting Elicits Reasoning in Large Language Models](https://arxiv.org/abs/2201.11903)** (Wei et al., NeurIPS 2022) - *The foundational technique underlying virtually all LLM-agent reasoning/planning modules; the starting point for the whole CoT/ToT/ReAct lineage.*
 - **[Self-Consistency Improves Chain of Thought Reasoning in Language Models](https://arxiv.org/abs/2203.11171)** (Wang et al., ICLR 2023) - *Standard inference-time ensembling/verification strategy widely reused inside agent reasoning and planning pipelines.*
@@ -316,16 +316,17 @@ Fresh 2026 work that is already drawing attention.
 - **[LLM Value Functions for Credit Assignment in Agentic RL](https://arxiv.org/abs/2610.15840)** (Zhu et al., arXiv 2026) - *Uses a frozen LLM as the critic in agent RL: shown summaries of other rollouts on the same task, and anchored to the group success rate at the start and the observed reward at the end, it scores every intermediate state in one query, and the value differences become per-step advantages that sum to the group-relative return; with Claude Opus 4.6 as critic, Qwen3-8B reaches 26.3% on AppWorld and 20.2% on SWE-bench Verified against 19.8% and 12.0% for GRPO, but the gain depends on the critic, and with Qwen3-235B in that role Qwen3-4B reaches only 9.8% on AppWorld against 24.3% with Opus.*
 - **[Judged Useless, Queried Anyway: Tool-Using Agents Rarely Turn Their Own Evidence Judgments into Stopping Decisions](https://arxiv.org/abs/2610.06191)** (Zhang et al., arXiv 2026) - *Separates what a tool-using agent concludes about its evidence from what it does next, on HotpotQA with a search source made to fail: the seven agents call the failing source's results useless 97 to 100% of the time, yet after five such judgments in a row unaided Qwen3-8B answers on 1 of 292 questions, and a stopping rule written into the prompt is followed at most partly; a rule enforced by the harness that forces an answer after five useless results raises success over six failure regimes by 0.026 to 0.097 for four open models and Claude Haiku 4.5, with the failures simulated.* [[code](https://github.com/bennidict23/judged-useless-queried-anyway)]
 - **[Thinking Before Thinking: Scaling Agentic Inference Through Meta-Reasoning](https://arxiv.org/abs/2609.38147)** (Dahal et al., arXiv 2026) - *Separates an agent's control from its work: workers do the task while a controller, in each cycle, updates a compact record of progress, proposes next steps, weighs them against the remaining call budget and dispatches workers, with full outputs kept in memory for reuse; against a direct-control agent with the same workers and budget it scores higher in all 12 model and benchmark pairings, by 3.6 to 4.2 points on average per benchmark, and reaches 71.5% on ProgramBench with GPT-5.5 against 58.0% for Codex and 63.7% for direct control, but with Opus 4.8 at 400 calls it trails direct control, 56.6% to 62.7%.*
+- **[Think Twice, Act Once: Verifier-Guided Action Selection For Embodied Agents (VegAS)](https://arxiv.org/abs/2605.12620)** (Singhi et al., CVPR Findings 2026) - *At every step of an MLLM agent acting in simulated homes, samples 16 candidate actions and executes the one a generative verifier scores highest over five verdicts each, leaving the policy unchanged; the verifier, the same Qwen2.5-VL-3B as the policy, is fine-tuned on failed trajectories that OpenAI o3 synthesizes from successful ones, with wrong objects, wrong receptacles and skipped preconditions. On LangR in Habitat 2.0 it raises average success from 65% for the chain-of-thought policy to 71%, and on multi-object tasks from 25% to 34%, while the same model used as a zero-shot verifier scores 64%; on EB-ALFRED it goes from 44% to 49%, and from 48% to 51% with Gemma-3-4B, the 3B verifier lifts the zero-shot Qwen2.5-VL-72B policy from 30% to 38%, and it scales better than self-consistency at the same number of calls. All tests are in simulators with high-level actions, each step takes 96 model calls and 8 seconds against 3 for a single action, on EB-ALFRED the visual-appearance tasks fall from 48% to 41%, a verifier that never sees the image does as well on LangR (71% both) and nearly as well on EB-ALFRED (47.5% against 49%), and the code is not yet released.*
 </details>
 
 <sub><a href="#contents">↑ Back to Contents</a></sub>
 
 <a id="memory"></a>
-### 💾 Memory (60)
+### 💾 Memory (61)
 *Corresponds to §5 (Memory).*
 
 <details>
-<summary><b>Show 60 papers</b></summary>
+<summary><b>Show 61 papers</b></summary>
 
 - **[RET-LLM: Towards a General Read-Write Memory for Large Language Models](https://arxiv.org/abs/2305.14322)** (Modarressi et al., arXiv 2023) - *Early and influential structured/triplet-based read-write memory design, a precursor to graph- and KG-based agent memory systems.*
 - **[MemoryBank: Enhancing Large Language Models with Long-Term Memory](https://arxiv.org/abs/2305.10250)** (Zhong et al., AAAI 2024) - *One of the first systems to bring a psychologically grounded (human-memory-inspired) forgetting/consolidation mechanism into LLM agent memory.* [[code](https://github.com/zhongwanjun/MemoryBank-SiliconFriend)]
@@ -388,20 +389,4 @@ Fresh 2026 work that is already drawing attention.
 - **[Reliable Memory from Unstable Growth: Curating Self-Written Agent Playbooks with Randomized Experiments](https://arxiv.org/abs/2610.18427)** (Pham et al., arXiv 2026) - *Decides which lessons in an agent's self-written playbook to keep by experiment rather than by the agent's own judgment: related lessons are grouped into blocks, each block is switched on or off at random during practice tasks, a regression of success estimates each block's effect, and the curated playbook is served only if it beats the whole and the empty one on fresh practice; over 19 settings with ACE and Dynamic Cheatsheet on AppWorld, WebShop and ALFWorld it averages 66.9 against 55.5 for the whole playbook and 53.8 for the agent's own picks, though simply choosing between the whole and the empty playbook already reaches 66.4.*
 - **[Can Agents Forget When Asked? A Benchmark for Memory Unlearning in LLM Agents](https://arxiv.org/abs/2610.18052)** (Xie et al., arXiv 2026) - *Tests whether agent memory systems can delete what a user asks them to forget: 50 synthetic multi-session dialogues carry 135 forget requests of six types and 1,742 questions, and each has a control version without the requests, so a system earns credit for forgetting only what it had stored; across Mem0, A-MEM, LangMem, LightMem, SimpleMem, naive RAG and a full-context LLM, no system passes more than 1.5% of requests end to end, because each either leaves the information extractable under simple attacks or deletes far more than was asked.* [[code](https://github.com/Nboxff/bemula-benchmark)]
 - **[Not All Experience Belongs in the Weights: Component Routing for Self-Improving GUI Agents](https://arxiv.org/abs/2610.01787)** (Wu et al., arXiv 2026) - *Splits a GUI agent's own experience into locators, procedures, state facts and lessons, and tests each one both in the weights, by fine-tuning, and in the context, as retrieved notes: locators gain 4.9 points more in the weights and lessons 1.5, a margin whose interval includes zero in half the cells, while procedures and state facts gain 4.2 and 4.1 more in the context; routing each component by a rule based on how often it recurs and whether it depends on the current state beats the better single destination by 3.5 points on average, over three 7 to 8B backbones on MobileGym and AndroidWorld.*
-</details>
-
-<sub><a href="#contents">↑ Back to Contents</a></sub>
-
-<a id="tools"></a>
-### 🔧 Tool Use (51)
-*Corresponds to §6 (Tool Use and Action Execution).*
-
-<details>
-<summary><b>Show 51 papers</b></summary>
-
-- **[TALM: Tool Augmented Language Models](https://arxiv.org/abs/2205.12255)** (Parisi et al., arXiv 2022) - *Early, influential formulation of self-supervised bootstrapping for tool use in LMs, directly anticipating Toolformer's self-supervised approach.*
-- **[API-Bank: A Comprehensive Benchmark for Tool-Augmented LLMs](https://arxiv.org/abs/2304.08244)** (Li et al., EMNLP 2023) - *One of the earliest and most cited dedicated benchmarks for evaluating and training tool-augmented dialogue LLMs.* [[code](https://github.com/AlibabaResearch/DAMO-ConvAI)]
-- **[Chameleon: Plug-and-Play Compositional Reasoning with Large Language Models](https://arxiv.org/abs/2304.09842)** (Lu et al., NeurIPS 2023) - *Prominent example of natural-language-planned tool composition/orchestration across heterogeneous tool types, widely cited in tool-use and compositional-reasoning literature.* [[code](https://github.com/lupantech/chameleon-llm)]
-- **[Large Language Models as Tool Makers](https://arxiv.org/abs/2305.17126)** (Cai et al., arXiv 2023) - *Foundational for the tool-creation (as opposed to tool-use) direction, showing LLMs can author their own reusable tools rather than only calling pre-existing ones.* [[code](https://github.com/ctlllll/LLM-ToolMaker)]
-- **[GPT4Tools: Teaching Large Language Model to Use Tools via Self-instruction](https://arxiv.org/abs/2305.18752)** (Yang et al., NeurIPS 2023) - *Widely used reference for open-source instruction-tuning approaches to multimodal tool use, complementing proprietary-model tool-use papers.* [[code](https://github.com/StevenGrove/GPT4Tools)]
-- **[ToolkenGPT: Augmenting Frozen Language Models with Massive Tools via Tool Embeddings](https://arxiv.org/abs/2305.11554)** (Hao et al., NeurIPS 2023) - *An influential alternative architecture for scalable tool selection that avoids the context-length bottleneck 
+- **[Who Remembers What? Multi-Granularity Memory Extraction for Multi-User, Multi-Agent Interaction](https://arxiv.org/abs/2611.10439)** (Wang et al., arXiv 2026) - *Splits each user-agent trajectory into a reusable and a protected stream that go to separate writers, and files every lesson under a user-agent pair, a user, an agent or a global scope, so lessons reach other users and agents while private content stays with its owner; the authors' CrossLearnBench plants survey-based private facts and document preferences of synthetic users into tasks from seven agent benchmarks. With five users and seven agent setups across Claude Code, Codex, Hermes and OpenClaw, over three scheduled rounds and three runs, the LLM writer wit

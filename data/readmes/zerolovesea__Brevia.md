@@ -1,6 +1,6 @@
 <h1 align="center"><img src="docs/assets/brevia-hero.gif" width="100%" alt="Brevia · 言录" /></h1>
 
-<p align="center"><strong>Brevia 2.0 · 本地 AI 会议助手</strong><br />会中看双语字幕、记下决定，会后从纪要回到每一句原话。</p>
+<p align="center"><strong>Brevia 2.1 · 本地 AI 会议助手</strong><br />会中看双语字幕、记下决定，会后从纪要回到每一句原话。</p>
 
 <p align="center">
   <a href="https://github.com/zerolovesea/Brevia/releases/latest"><img src="https://img.shields.io/github/v/release/zerolovesea/Brevia?style=flat-square" alt="Latest release" /></a>
@@ -18,18 +18,21 @@
 | 设备    | 下载                                                                                                 | 系统要求                     |
 | ------- | ---------------------------------------------------------------------------------------------------- | ---------------------------- |
 | Mac     | [macOS 版][download-mac]                                                                             | Apple Silicon · macOS 14+    |
-| Windows | [Windows 版][download-windows]                                                                       | Windows 10 / 11 · x64 · AVX2 |
+| Windows | [Windows 版][download-windows] · [CUDA](https://brevia.work)                                         | Windows 10 / 11 · x64 · AVX2 |
+| Linux   | [CPU · CUDA](https://brevia.work)                                                                    | Ubuntu 24.04 · x86-64 · AVX2 |
 | iPhone  | [App Store](https://apps.apple.com/app/id6819869442)                                                 | iOS 15+                      |
 | Android | [APK](https://modelscope.cn/models/zyaztec/brevia-release/resolve/master/android/Brevia-android.apk) | Android 7+                   |
 
-[download-mac]: https://modelscope.cn/models/zyaztec/brevia-release/resolve/master/Brevia-WebKit-2.0.3-arm64.dmg
-[download-windows]: https://modelscope.cn/models/zyaztec/brevia-release/resolve/master/Brevia-2.0.3-x64-setup.exe
+[download-mac]: https://modelscope.cn/models/zyaztec/brevia-release/resolve/master/Brevia-WebKit-2.1.0-arm64.dmg
+[download-windows]: https://modelscope.cn/models/zyaztec/brevia-release/resolve/master/Brevia-2.1.0-x64-setup.exe
+
+Ubuntu 24.04 x86-64 桌面版提供 CPU 和 NVIDIA CUDA 两种 deb 构建，见 [Linux 安装与打包说明](DEVELOPMENT.md#linux-桌面开发与打包)。
 
 [GitHub Releases](https://github.com/zerolovesea/Brevia/releases) · [官网](https://brevia.work)
 
 Mac 版安装包约 **43 MiB**（45.5 MB），Windows 版约 **38 MB**。首次使用时，按需要下载语言模型。
 
-> 当前版本 macOS 使用 MLX 作为推理后端，Windows 使用 sherpa-onnx。macOS 版目前在性能和功耗表现上更好，Windows 版持续优化中。路线图计划设计通用推理引擎，并为 CUDA 提供加速推理。 语音识别模型库按系统提供模型：macOS 仅显示 MLX，Windows 仅显示 ONNX；模型使用原名称显示。
+> Windows 和 Linux 各提供 CPU 和 NVIDIA CUDA 两种安装包。macOS 与 Linux 使用 MLX 转写，Windows 使用 sherpa-onnx。
 
 ## 从录音到会议纪要
 
@@ -39,7 +42,9 @@ Mac 版安装包约 **43 MiB**（45.5 MB），Windows 版约 **38 MB**。首次�
 
 ### 会议纪要与鱼骨图
 
-生成七章会议纪要，在右侧原因图核对字幕原话并回听录音。纪要和原因分析可以分别导出。逐字稿支持按说话人筛选，也可以一次修改该说话人在本场会议中的名字。
+较长的中英文会议可按业务议题生成纪要，并逐项核对原话；其他情况保留七章结构。在右侧原因图核对字幕原话并回听录音。纪要和原因分析可以分别导出。逐字稿支持按说话人筛选，也可以一次修改该说话人在本场会议中的名字。
+
+术语库保存工作区或通用词条，可确认 AI 发现的名词、释义与替换词。纪要中的术语可查看释义或恢复原词；原始逐字稿保持不变。
 
 [![会议回看：左侧是纪要，右侧鱼骨图展开了结论对应的发言](docs/assets/showcase/desktop/zh/summary.png)](docs/assets/showcase/desktop/zh/summary.gif)
 

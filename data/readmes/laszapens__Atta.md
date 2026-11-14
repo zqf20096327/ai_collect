@@ -10,7 +10,13 @@ part as a rebuildable spec, Atta computes the geometry in deterministic Python,
 to guess a shape from a screenshot, and it can prove the result is a closed solid
 before claiming it is done.
 
-Ten tools, 23 recipes, 25 feature ops. Blender is optional.
+**Release: atta-1.2.2beta** (`1.2.2b3` in Python, `1.2.2-beta.3` in plugin packages).
+Twelve geometry tools, 23 recipes, 47 feature ops. Blender is optional.
+
+This beta adds rational NURBS patches, exact CAD fillets/chamfers with same-source STEP,
+bounded fields, oriented module assembly and bio-inspired morphology ops. Camera, texture and look work live in the
+separate `basid` program (bridge notes: [BASID.md](docs/BASID.md)). See the
+[1.2.2beta release notes](docs/RELEASE-1.2.2beta.md) for capabilities and limits.
 
 ## Why it is different
 
@@ -80,7 +86,7 @@ closed=yes; genus=1; comps=1; convex=0.19; sym=y; holes~1; dih95=3.7
 ..###############..###..
 ```
 
-## The ten tools
+## The twelve tools
 
 Every verb is also an agent tool with the same name (`atta_` prefix).
 
@@ -96,6 +102,23 @@ Every verb is also an agent tool with the same name (`atta_` prefix).
 | `atta_preview` | Studio/diagnostic renders plus image analysis. Needs Blender. |
 | `atta_deliver` | Verify, then export GLB/OBJ/STL/BLEND (+ analytic STEP for a graph subset) with a manifest. |
 | `atta_run` | Run a multi-step pipeline in one call, threading `model_id` between steps. |
+| `atta_conjure` | Invent a parameterized build from an archetype, with explicit provenance. |
+| `atta_design` | Inspect design heuristics and process constraints separately from geometry verification. |
+
+## Geometry beyond primitives
+
+- **Exact CAD** — geometric edge selection, shared OCCT tessellation, and STEP
+  from the same `fillet`/`chamfer` construction. See [CAD_FEATURES.md](docs/CAD_FEATURES.md).
+- **NURBS and fields** — sampled rational patches and bounded composable fields,
+  with explicit error and budget reporting. See [NURBS.md](docs/NURBS.md) and
+  [FIELD_TREE.md](docs/FIELD_TREE.md).
+- **Modules and assemblies** — oriented ports, deterministic attach, mates/DOF,
+  collision gates, and mixed exact/mesh STEP. See [MODULE_ASSEMBLY.md](docs/MODULE_ASSEMBLY.md).
+- **Bio morphology** — capsid, diatom, neuron, valve, lattice-shell and ring-stack
+  graph ops. Geometry, not biological simulation.
+- **Look pipeline** — texture sets, cameras and textured export are provided by
+  the separate `basid` package through the optional [atta.look](docs/BASID.md)
+  bridge; Atta stays geometry-only.
 
 The CLI adds two conveniences that are not tools: `perceive` (a shortcut for
 `describe --perceive`) and `tool <name> --args-file`, the bridge the host plugins
@@ -146,12 +169,14 @@ python3 -m atta model --spec-file examples/bracket/spec.json
 python3 -m atta deliver --formats step          # analytic B-rep, no Blender needed
 ```
 
-The 25 ops are `box`, `cylinder`, `sphere`, `cone`, `torus`, `revolve`, `loft`,
-`sweep`, `coons`, `gordon`, `extrude`, `thicken`, `lobes`, `union`, `difference`,
-`intersection`, `mirror`, `pattern_linear`, `pattern_polar`, `transform`, plus
-`offset`, `gyroid`, `sdf`, `text_engrave` and `text_emboss`. Arguments may use
-`{"$param": "w"}` or `{"$expr": "w/2 + 4"}`. `atta_catalog --verbose` documents
-every op's required and optional keys.
+There are 47 ops: primitives, `revolve`/`loft`/`loft2`/`sweep`/`sweep2`, Coons and
+Gordon patches, `nurbs_surface`, `extrude`, `thicken`, booleans, patterns,
+`transform`/`mirror`, `fillet`/`chamfer`, `offset`/`repair`/`subdivide`, implicit
+`gyroid`/`sdf`/`sdf_blend`/`field_tree`, text, and the bio morphology set
+(`capsid`, `branch_tree`, `pyramidal_neuron`, `diatom_frustule`, `perforated_valve`,
+`perforated_cylinder`, `lattice_shell`, `pore_field_shell`, `ring_stack`).
+Arguments may use `{"$param": "w"}` or `{"$expr": "w/2 + 4"}`. `atta_catalog --verbose`
+documents every op's required and optional keys.
 
 The third kind, `assembly`, adds `parts[]`, ports and 13 mate types, solved in
 SE(3) with DOF from the Jacobian rank — see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) §8.
@@ -254,11 +279,6 @@ directly — use `describe --perceive` instead when Blender is missing.
 Atta finds Blender on `PATH`; set `ATTA_BLENDER=/path/to/blender` to pin a
 specific build (it is authoritative — if it does not resolve, Atta reports no
 Blender rather than silently using another one). `doctor` shows what it found.
-
-Workspace state — `models.json`, previews, exports — lives under
-`$ATTA_HOME/_atta/`, defaulting to the current directory. Point `ATTA_HOME` at a
-project directory to keep runs separate, and add `_atta/` to that project's
-`.gitignore`.
 
 ## Troubleshooting
 

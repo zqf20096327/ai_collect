@@ -1,0 +1,1487 @@
+# XBrain (`xbrain`)
+
+![Quality](https://github.com/VGonPa/xbrain/actions/workflows/quality.yml/badge.svg)
+![Python](https://img.shields.io/badge/python-3.12%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
+> Your X bookmarks and posts, turned into a second brain.
+
+You bookmark a sharp thread, a research paper, a tool someone shipped over the
+weekend — and a small part of your brain checks a box: *handled, I have that
+now.* Then you never see it again. A bookmark folder is not a library; it is a
+graveyard with good intentions.
+
+XBrain digs it up. It extracts your X bookmarks and your own posts, stores them
+as structured JSON, and generates a layered, cross-linked Obsidian wiki you can
+actually navigate, search and think with — in the same vault, the same graph,
+as the notes you already keep.
+
+It runs locally. The LLM work needs **no paid API** — a Claude Code session does
+it through a worksheet hand-off (see [Execution modes](#execution-modes)).
+
+---
+
+## Table of contents
+
+- [Why XBrain](#why-xbrain)
+- [What you get](#what-you-get)
+- [Quick start](#quick-start)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Authentication](#authentication)
+- [Configuration](#configuration)
+- [The pipeline](#the-pipeline)
+- [Commands](#commands)
+- [Search & retrieval](#search--retrieval)
+- [Execution modes](#execution-modes)
+- [Snapshots & safety](#snapshots--safety)
+- [How it works](#how-it-works)
+- [Project structure](#project-structure)
+- [Development](#development)
+- [Responsible use](#responsible-use)
+- [Documentation](#documentation)
+
+---
+
+## Why XBrain
+
+A personal knowledge base — a "second brain" — captures everything you
+**produce**: your notes, your drafts, your decisions.
+
+But it is worthless if it does not capture what you **consume** — the articles
+you read, the threads you save, the posts you write on a platform that is not
+your vault. That gap is real, and it is shaped exactly like everything you found
+worth keeping.
+
+Months of bookmarks are not noise. Every one was a decision that *this is worth
+coming back to* — a quiet, honest signal about what you care about and how your
+thinking moves. Left inside X, that signal is just a pile you walk away from.
+XBrain pulls the consumption side of your brain into the same place as the
+production side, so your bookmarks and your notes finally link to each other.
+
+**Who it is for** — anyone who uses X as a feed of things worth keeping and
+already thinks in a tool like Obsidian. If you have a bookmark graveyard of your
+own, you already have the raw material.
+
+---
+
+## What you get
+
+A **three-layer wiki** inside your Obsidian vault. Each layer is denser than the
+one below it — read top-down for the map, or bottom-up for a single post.
+
+All three layers are markdown notes inside a single Obsidian vault, under
+`learnings/x-knowledge/`. Each layer is denser than the one below it: many
+posts → fewer topics → one index.
+
+**Example layout — three notes side by side, as they appear in the vault:**
+
+<table>
+<tr>
+<th align="center" width="33%">📄 Items</th>
+<th align="center" width="33%">📑 Topics</th>
+<th align="center" width="34%">🗺️ Index</th>
+</tr>
+<tr>
+<td align="center"><sub>one per saved post · scales with your X corpus</sub></td>
+<td align="center"><sub>one per topic · ~30 by default (configurable)</sub></td>
+<td align="center"><sub>one note · the map</sub></td>
+</tr>
+<tr>
+<td valign="top">
+
+```text
+┌──────────────────┐
+│ Code Is Cheap... │
+│                  │
+│ @codestirring    │
+│ tags: ai-coding  │
+│                  │
+│ ▸ Summary        │
+│ ▸ Tweet text     │
+│ ▸ Linked article │
+│   (fetched in    │
+│    full)         │
+│                  │
+│ Topics:          │
+│  [[ai-coding]]   │
+│  [[software-..]] │
+└──────────────────┘
+```
+
+</td>
+<td valign="top">
+
+```text
+┌──────────────────┐
+│ ai-coding (299)  │
+│                  │
+│ ▸ Overview       │
+│   "The arc from  │
+│    vibe coding   │
+│    to agent      │
+│    orchestration │
+│    over 16 mo."  │
+│                  │
+│ ▸ Primary (103)  │
+│   - [[post 1]]   │
+│   - [[post 2]]   │
+│                  │
+│ ▸ Also relevant  │
+│   (196)          │
+└──────────────────┘
+```
+
+</td>
+<td valign="top">
+
+```text
+┌──────────────────┐
+│ XBrain           │
+│                  │
+│ ▸ Summary        │
+│   1884 items     │
+│   1123 bookmarks │
+│   761 own tweets │
+│                  │
+│ ▸ Topics         │
+│   [[ai-coding]]  │
+│         (299)    │
+│   [[ai-industry]]│
+│         (225)    │
+│   ...            │
+└──────────────────┘
+```
+
+</td>
+</tr>
+<tr>
+<td valign="top"><sub>The original post, the linked article fetched and stored inline, an LLM summary, and the topics it belongs to.</sub></td>
+<td valign="top"><sub>A synthesised essay across every post in this theme — where your thinking started, how it moved — plus links back to every post.</sub></td>
+<td valign="top"><sub>Every topic ranked by size, links to everything. Open this first.</sub></td>
+</tr>
+</table>
+
+### Layer 1 — Items
+
+One note per bookmark or own-tweet: the original text, the link, the **linked
+article fetched and stored inline**, an LLM summary and its topics. A saved link
+stops being a URL that will quietly rot and becomes a saved *article*. This now
+includes an X long-form **Article you bookmarked directly** (not just one linked
+inside a tweet): `extract` detects the Article and threads it into the same fetch
+pipeline as any other x.com link. `fetch` then captures the Article as a
+**structured, ordered body** — its paragraphs and inline images in the order the
+author wrote them; if that structured capture can't be read, it **falls back to
+text-only** extraction (no images), exactly as before. [`media`](#commands) then
+**downloads those inline images** locally alongside the item's own photos (under
+`data/media/<id>/article/`), and [`generate`](#commands) **renders the Article as
+a blogpost** — the body prose with its inline images embedded in the author's
+order (the text-only fallback still renders the article text).
+
+A **bookmarked video** gets the same treatment: run [`digest-video`](#commands)
+and its transcript is attached to the item, so the video flows through the *same*
+`enrich → topics → generate` pipeline as an article. The note gains a real
+`primary_topic` (video items used to show `—`, because enrich only ever saw the
+2-line tweet) and appears on its topic page(s). The **full** transcript — and, with
+`--frames`, the slide **frame descriptions** — also feed `enrich` and `topics`, so
+what the video *says* and what it *shows* both count toward its topics and summary.
+
+Then run [`video-digest`](#commands) to turn the raw transcript + frames into a
+**readable long-form digest** (what it is · key points · why it matters).
+`generate` renders that digest as the **headline** of the note's **`## Video
+digest`** section, with the raw transcript and slide frames demoted into a
+collapsible `<details>` block below it — a 72-minute talk you never watched becomes
+a readable, searchable, topic-linked note. Before you run `video-digest` (or for a
+video with no digest yet) the section falls back to the raw transcript inline,
+exactly as before. A clip with neither speech nor frames degrades gracefully to a
+one-line "silent video" note instead of an empty digest.
+
+For **slide/screen/demo-heavy** talks and **silent clips**, add the opt-in
+`--frames` flag to `digest-video`: xbrain extracts the key frames, describes each
+with an **external** vision model, and records the descriptions on the video
+source — they feed the digest, `enrich` and `topics`, and embed into the
+`<details>` evidence block next to the transcript, so the visual content is
+captured too, not just the audio. It is content-aware: slides are described; an
+interview / talking-head video is skipped only when it has speech (the transcript
+already carries it), so you never waste vision calls on camera cuts; a silent
+non-slide video (a screen recording, a robot, a GIF) is described as footage,
+capped by `[frames].footage_max_frames`, because its frames are all there is. A
+run prints `Hollow (no speech, no frames): N` when an item still ends up with
+neither speech nor frames.
+
+*Example:*
+
+```markdown
+---
+id: "2010040815176085621"
+source: bookmark
+author: codestirring
+tags: [x-knowledge, ai-coding, software-engineering, ai-economy]
+---
+
+# Code Is Cheap Now. Software Isn't.
+
+Links an article arguing that code itself has become cheap but software has
+not: Claude Code and Opus 4.5 democratise software creation and open the era
+of personal, throwaway software...
+
+**Topics:** [[ai-coding]] · [[software-engineering]] · [[ai-economy]]
+
+## Tweet
+Code Is Cheap Now. Software Isn't.  https://t.co/J9m5RzQNbW
+
+## Content: Code Is Cheap Now. Software Isn't.
+<the full text of the linked article, fetched and stored inline>
+```
+
+Everything above the `xbrain:generated` marker is regenerated on every run;
+anything *you* write below it is preserved.
+
+> Set `[output] topic_style = "hashtag"` in `config.toml` to render the
+> in-body `**Topics:**` line as `#ai-coding #software-engineering` instead of
+> wikilinks — useful if you navigate primarily via Obsidian's tag pane. The
+> frontmatter `tags:` are native Obsidian tags in either mode.
+
+### Layer 2 — Topics
+
+The layer that makes XBrain more than a tidy backup. **A topic page is not a
+list of links — it is an essay.** XBrain reads every post filed under a theme
+and writes one synthesis: where the thinking started, how it moved, what it kept
+circling back to. Then it lists the posts — the ones the topic is *about*
+(primary), and the ones that merely touch it (also-relevant).
+
+*Example:*
+
+```markdown
+---
+topic: ai-coding
+posts: 299
+primary_posts: 103
+---
+
+# ai-coding
+
+> Building software with AI: vibe coding, the shift in how code gets written,
+> and AI as a pair-programmer.
+
+## Overview
+
+The largest topic in the corpus, narrating — almost month by month — how the
+craft of programming has been transformed under the pressure of AI. The arc
+is sharp: from autocomplete and vibe coding in 2025 to agentic engineering
+in 2026...
+
+## Key notes
+- ...
+
+## Primary posts (103)
+- `2026-01-10` · @codestirring · [[items/...|Code Is Cheap Now. Software Isn't.]]
+
+## Also relevant (196)
+- ...
+```
+
+The overview is plain prose — the LLM writes the synthesis, the *code* writes
+every link (see [How it works](#how-it-works)), so regenerating never breaks one.
+
+### Layer 3 — Index
+
+`_index.md` is the map — the corpus counts and every topic ranked by size.
+`log.md` is the full chronology.
+
+*Example:*
+
+```markdown
+# XBrain
+
+## Summary
+- Total items: 1884
+- Bookmarks: 1123 · Own tweets: 761
+- Enriched: 1884
+
+## Topics
+- [[ai-coding]] (299)
+- [[ai-industry]] (225)
+- [[ai-and-work]] (220)
+  ...
+```
+
+The markdown is **derived and disposable** — regenerate it any time. The source
+of truth is `data/items.json`.
+
+> The examples above are shown in English for clarity. Today the output language
+> (summaries, overviews, section headers like "Topics" / "Content") is fixed by
+> the rubrics in `src/xbrain/rubrics/` — Spanish on the live system; a config
+> parameter to switch languages is on the roadmap ([#16](https://github.com/VGonPa/xbrain/issues/16)).
+
+### Plus — the dashboard
+
+`generate` also writes a self-contained interactive `dashboard.html` next to the
+notes, and links it from `_index.md` by an absolute `file://` URI so one click in
+Obsidian opens it in your browser (Obsidian neither lists nor renders a raw
+`.html`).
+
+Nine panels over the same `items.json`: corpus growth over time, monthly cadence,
+the bookmarks-vs-own-posts split, posts per topic, long-form captured (saved vs.
+failed), photo and video counts, your most-bookmarked authors, your top linked
+domains, and `verify` coverage — outputs judged vs. unjudged, with stale verdicts
+in their own bucket so "judged" is never read as "verified". Every chart is
+clickable: the drawer behind it lists the posts underneath, each with a link to
+the tweet and an `obsidian://open` deep link back to its note.
+
+It is **one file** — ECharts is vendored into it and the photo thumbnails are
+inlined as data URIs (~1.8 MB on a 2,300-item corpus). Only two things still come
+off the network when you open it, the Google Fonts stylesheet and the X video
+posters; both degrade to a plain-font, no-poster page offline.
+
+It is a secondary artefact and `generate` treats it as one: if building it
+raises, the failure is logged and every note is still written.
+
+---
+
+## Quick start
+
+```bash
+# 1. Install
+uv venv
+uv pip install -e ".[dev]" --index-url https://pypi.org/simple
+uv run playwright install chromium
+
+# 2. Configure
+cp config.toml.example config.toml      # then edit: vault path + X handle
+
+# 3. Authenticate (log in to X in Chrome first)
+uv pip install browser-cookie3 --index-url https://pypi.org/simple
+.venv/bin/python scripts/import_chrome_session.py
+# → "auth_token: OK"  means you are ready
+
+# 4. Build the wiki
+uv run xbrain sync       # extract + fetch + generate
+uv run xbrain status     # see the counts
+```
+
+`sync` builds the mechanical layers. The LLM layers (`vocab`, `enrich`,
+`topics`) are run explicitly — see [The pipeline](#the-pipeline).
+
+> **New to XBrain?** The [**Tutorial**](docs/tutorial.md) walks through the whole
+> thing end-to-end — pull your posts, add topics, download + describe media, and
+> digest a bookmarked talk — with the output you should see at each step.
+
+---
+
+## Prerequisites
+
+| Requirement | Version | Notes |
+|-------------|---------|-------|
+| Python | 3.12+ | |
+| [`uv`](https://docs.astral.sh/uv/) | latest | Package manager and runner. |
+| Chromium | — | Installed via `uv run playwright install chromium`. |
+| An Obsidian vault | — | Or any folder — XBrain just writes markdown. |
+| An X account | — | Yours. XBrain reads *your* bookmarks and tweets. |
+| `ANTHROPIC_API_KEY` | — | **Optional.** Only for the `api` execution mode. |
+| `FIRECRAWL_API_KEY` | — | **Optional.** Fallback fetcher for JavaScript-heavy pages. |
+| ffmpeg, `parakeet-mlx`, `mlx-vlm` | — | **Optional — only for `digest-video`** (video → transcript/slide digests). External, not pulled by `uv pip install`. See [Local models for `digest-video`](#local-models-for-digest-video-apple-silicon). |
+
+Neither API key is required: the default execution mode uses a Claude Code
+session and costs nothing.
+
+---
+
+## Installation
+
+```bash
+uv venv
+uv pip install -e ".[dev]" --index-url https://pypi.org/simple
+uv run playwright install chromium
+```
+
+The `[dev]` extra also installs the quality-gate tools (`poe`, `ruff`, `mypy`
+and the rest). `--index-url https://pypi.org/simple` is only needed if your
+machine has a private package index configured.
+
+---
+
+## Authentication
+
+XBrain needs a logged-in X session, stored at `auth/storage_state.json` (Playwright
+format, git-ignored). The reliable path is **importing cookies from a browser you
+are already logged in to** — pick the one that matches your browser:
+
+```bash
+uv pip install browser-cookie3 --index-url https://pypi.org/simple
+
+# You use Chrome — log in to x.com in Chrome, then:
+.venv/bin/python scripts/import_chrome_session.py
+
+# You use Safari — log in to x.com in Safari, then grant your terminal
+# "Full Disk Access" (System Settings → Privacy & Security), then:
+.venv/bin/python scripts/import_safari_session.py
+```
+
+A successful import prints `auth_token: OK`. Re-run it whenever the session
+expires (X sessions are short-lived).
+
+> `xbrain login` (an in-app Playwright login) also exists, but it is unreliable
+> with accounts that sign in through Google/SSO — Google blocks the automated
+> browser. The cookie import is the recommended path.
+
+---
+
+## Configuration
+
+Copy `config.toml.example` to `config.toml` (git-ignored) and edit:
+
+```toml
+[paths]
+vault = "/absolute/path/to/your/obsidian/vault"
+output_subdir = "learnings/x-knowledge"   # wiki folder, relative to the vault
+data_dir = "data"                         # JSON store, relative to the repo
+
+[x]
+handle = "your_handle"                    # without the @
+
+[enrich]
+executor = "claude-code"                  # claude-code | api | manual
+model = "claude-haiku-4-5-20251001"        # used only by the `api` executor
+
+[vocab]
+target_count = 45                         # how many topics to induce
+
+[topics]
+resynth_threshold = 25                    # re-synthesise an overview after N new posts
+
+[output]
+language = "English"                      # English | Spanish
+topic_style = "wikilink"                  # wikilink | hashtag (in-body Topics: line)
+
+[transcribe]
+command = "parakeet-mlx"                  # external transcriber for `digest-video`
+# model = "parakeet-tdt-0.6b-v2"          # optional; omit for the tool default
+
+[vision]
+# command = "vlm-describe"                # external vision model for `digest-video --frames`
+# model = "qwen2-vl-7b"                   # optional; omit for the tool default
+
+[index]                                   # the whole section is optional
+# dir = "index"                           # under data/; must resolve INSIDE data/
+# max_matches_per_item = 3                # fragments one item may cite in a search
+# get_char_budget = 40000                 # per-response ceiling before truncate + cursor
+```
+
+| Section | Key | Default | Purpose |
+|---------|-----|---------|---------|
+| `[paths]` | `vault` | — | Absolute path to your Obsidian vault. |
+| `[paths]` | `output_subdir` | — | Wiki folder inside the vault. |
+| `[paths]` | `data_dir` | — | JSON store, relative to the repo. |
+| `[x]` | `handle` | — | Your X handle, no `@`. |
+| `[enrich]` | `executor` | `claude-code` | Default [execution mode](#execution-modes) for the LLM stages. |
+| `[enrich]` | `model` | `claude-haiku-4-5` | Model for the `api` executor. |
+| `[vocab]` | `target_count` | `30` | Number of topics the `vocab` stage induces. |
+| `[topics]` | `resynth_threshold` | `25` | Post growth that marks a topic overview stale. |
+| `[output]` | `language` | `English` | Output language for LLM summaries/overviews AND wiki section headers. `English` or `Spanish`. |
+| `[output]` | `topic_style` | `wikilink` | How the in-body `**Topics:**` line is rendered: `wikilink` (`[[slug]] · [[slug]]`) or `hashtag` (`#slug #slug`). Frontmatter `tags:` are unaffected. |
+| `[describe]` | `model` | `claude-sonnet-4-6` | Vision model for `xbrain describe`. Override per run with `--model`. |
+| `[describe]` | `version` | `v1` | Tag persisted on every described photo. Bumping invalidates existing descriptions so the next `xbrain describe` re-describes stale entries. |
+| `[transcribe]` | `command` | `parakeet-mlx` | External transcriber `xbrain digest-video` shells out to (the ASR lives outside xbrain core). May be a multi-token wrapper. **On a multilingual corpus point it at `scripts/xbrain-transcribe-auto`**, which detects the language and routes English to parakeet and everything else to whisper — parakeet-mlx does not fail on non-English audio, it fabricates fluent English. |
+| `[transcribe]` | `model` | — | Optional model id passed to the transcriber (`--model`). Omit for the tool default. |
+| `[vision]` | `command` | — (unset) | External vision model `xbrain digest-video --frames` shells out to (describes key-frame slides; lives outside xbrain core). No bundled default — `--frames` errors until it is set. May be a multi-token wrapper. |
+| `[vision]` | `model` | — | Optional model id passed to the vision command (`--model`). Omit for the tool default. |
+| `[index]` | `dir` | `index` | Where `data/index/` lives, relative to `data_dir`. Validated on load: an absolute path, a `..` or an escaping symlink is refused, because `index build --force` deletes and recreates whatever it finds there. |
+| `[index]` | `max_matches_per_item` | `3` | How many fragments of one item `search` may cite. What stops a long transcript filling the top ten with ten adjacent windows of itself. |
+| `[index]` | `get_char_budget` | `40000` | Per-response character ceiling for `get`. Above it the bundle truncates **declaring it** and returns a cursor, never silently. |
+
+Switching `[output].language` after the corpus is already enriched is supported
+— but does not retroactively translate existing summaries. To convert the
+whole corpus to the new language, run `xbrain vocab --regenerate` (it clears
+every enrichment; the next `xbrain enrich` re-enriches in the new language) and
+`xbrain topics --resynth` (both auto-snapshotted, see
+[Snapshots & safety](#snapshots--safety)). Otherwise new items get the new
+language while old summaries stay as they were.
+
+Secrets (`ANTHROPIC_API_KEY`, `FIRECRAWL_API_KEY`) live in the **environment
+only** — never in `config.toml`, never in the repo.
+
+### Local models for `digest-video` (Apple Silicon)
+
+`digest-video` shells out to external tools — xbrain core carries no ML or ffmpeg
+dependency. None of this is needed unless you run `digest-video`. On an
+Apple-Silicon Mac:
+
+```bash
+# 1. ffmpeg — frame extraction (--frames) + the transcribe wrapper's audio probe.
+brew install ffmpeg                    # gives ffmpeg + ffprobe on your PATH
+
+# 2. ASR (always needed for digest-video) — Parakeet TDT via mlx, isolated tool:
+uv tool install parakeet-mlx           # gives `parakeet-mlx` on your PATH
+
+# 2b. If ANY of your bookmarked videos is not in English, you also need whisper.
+#     The router (step 4) detects the language and dispatches — see below for WHY.
+brew install openai-whisper            # detection + the portable CPU fallback
+#     (the GPU backend, mlx-whisper, is pulled on demand by `uv run --with`:
+#      nothing to install, first call downloads the wheel and the model.)
+
+# 3. Vision (only for --frames) — mlx-vlm powers the local backend of the selector:
+uv tool install mlx-vlm
+
+# 4. Point config.toml at the wrappers (absolute paths survive any PATH):
+#    [transcribe]
+#    command = "/path/to/xbrain/scripts/xbrain-transcribe-auto"  # multilingual (recommended)
+#    # command = "/path/to/xbrain/scripts/xbrain-transcribe"     # English-only corpus
+#    [vision]
+#    command = "/path/to/xbrain/scripts/xbrain-vision"
+#    model   = "qwen-7b"
+```
+
+Models download on first use and cache under `~/.cache/huggingface`: the ASR
+model (`parakeet-tdt-0.6b`, ~600 MB) and, for `--frames`, the vision model you
+select (`qwen-7b` ≈ 5 GB; `qwen-3b` ≈ 2 GB; `qwen-32b` ≈ 18 GB — needs ~20 GB
+RAM). Pre-pull a large vision model once before a `--frames` run so the first
+frame doesn't hit the per-frame timeout. Cloud vision (`--vision-model opus`)
+needs only `ANTHROPIC_API_KEY`, no local install.
+
+**Transcriber wrapper — `scripts/xbrain-transcribe`.** Points `[transcribe]` at a
+thin parakeet-mlx wrapper: parakeet writes no file for a video with **no audio
+track** (silent clips, GIFs, muted screencasts), which xbrain would otherwise
+count as a failure. The wrapper checks with `ffprobe` and emits the empty-speech
+JSON so such videos attach as `has_speech=false` ("silent video"), while a real
+parakeet failure on an audio-bearing file still surfaces. You can point
+`[transcribe].command` straight at `parakeet-mlx` if you don't need this.
+
+**Language router — `scripts/xbrain-transcribe-auto`.** Point `[transcribe]` here
+instead if your bookmarks are not all in English. It samples the first 30 seconds
+of audio, has whisper report the language, and dispatches: English to parakeet
+(fast), **anything else — or any uncertainty at all — to whisper**. It prefers
+`xbrain-transcribe-mlx` (mlx-whisper on the Apple GPU) and falls back to
+`xbrain-transcribe-whisper` (the brew whisper CLI, CPU, portable) when the GPU
+path cannot run; the two were verified character-identical on a real clip, so the
+fallback costs time and nothing else.
+
+This changes what you install, so it is worth knowing why. parakeet-mlx is
+English-only, and on Spanish audio it does not **fail** — it **fabricates**. It
+exits 0 and emits fluent, broken English that never reproduces what was said.
+A noisy failure shows up in a log; this one passes the whole pipeline, feeds the
+digest and every summary downstream, and lands in a note as a quotation. By the
+time you read the transcript you can no longer tell "the video said that" from
+"parakeet made it up" — so the backend has to be chosen *before* transcription,
+not after. Every uncertain path in the router therefore lands on whisper: a
+missing ffmpeg, a whisper that fails, an unreadable result. Whisper on English is
+slower than it needed to be; parakeet on non-English is a transcript of something
+nobody said.
+
+Tuning, all optional env vars: `XBRAIN_ASR_DETECT_MODEL` (default `base`;
+`tiny` roughly halves detection time on a large backlog),
+`XBRAIN_ASR_DETECT_SECONDS` (30), `XBRAIN_ASR_FORCE` (`parakeet` | `whisper`, to
+pin one backend and skip detection) and `XBRAIN_TRANSCRIBE_{PARAKEET,MLX,WHISPER}`
+to override each binary's path.
+
+**Vision model selector — `scripts/xbrain-vision`.** One `[vision].command`
+serves both local and cloud models; the `--model` name is routed by a registry:
+
+| Name | Backend | Runs on | Cost / privacy |
+|------|---------|---------|----------------|
+| `qwen-3b` (default), `qwen-7b`, `qwen-32b`, or any `hf/repo` | local (mlx-vlm) | your Mac's Neural Engine/GPU | free, fully offline |
+| `opus`, `sonnet`, `haiku`, or any `claude-<id>` | cloud (Anthropic REST, stdlib — no SDK) | Anthropic API | needs `ANTHROPIC_API_KEY`; frames leave the machine |
+
+Pick per run without editing config:
+
+```bash
+xbrain digest-video --all-pending --frames                       # default (qwen-3b, local)
+xbrain digest-video --ids <slide-heavy-id> --frames --vision-model opus   # cloud, top quality
+xbrain digest-video --topic ai-coding --frames --vision-model qwen-7b     # better local
+```
+
+`--vision-model` overrides `[vision].model` for that run only (and requires
+`--frames`). Local mlx models download once and cache; the **local** backend
+reads `XBRAIN_VISION_MLX_PYTHON` only if mlx-vlm is not at the uv-tool default
+(`~/.local/share/uv/tools/mlx-vlm`). Pre-pull a **large** local model once before
+a `--frames` run — a cold `qwen-32b` (~18 GB) download can exceed the 300 s
+per-frame vision timeout and fail the first run (a re-run uses the cache).
+
+xbrain also sets `XBRAIN_VISION_PROMPT` in the command's environment, carrying
+the frame-caption rubric it renders (transcribe on-screen text verbatim, never
+translated). The argv contract `<command> [--model M] <image-path>` is
+deliberately unchanged, so a command that ignores the variable still works — it
+just gets no caption discipline, and its captions will not ground what the
+digest says about the screen. A custom command SHOULD read it and use it as the
+prompt.
+
+---
+
+## The pipeline
+
+Six stages. `data/items.json` is the hub — every stage reads it, enriches it,
+and writes it back. The wiki is generated from it at the end.
+
+```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'fontFamily': 'ui-sans-serif, system-ui, -apple-system, sans-serif',
+    'fontSize': '14px',
+    'lineColor': '#64748b',
+    'background': 'transparent',
+    'edgeLabelBackground': '#f8fafc'
+  }
+}}%%
+flowchart TB
+    X((X / Twitter)) --> E1("① extract")
+    E1 --> E2("② fetch")
+    E2 --> E3("③ vocab")
+    E3 --> E4("④ enrich")
+    E4 --> E5("⑤ topics")
+    E5 --> E6("⑥ generate")
+
+    E1 -.->|writes| Items[("data/items.json")]
+    E2 -.->|mutates| Items
+    E3 -.->|writes| Vy[("data/vocab.yaml")]
+    E4 -.->|mutates| Items
+    E5 -.->|writes| Tj[("data/topics.json")]
+
+    subgraph KB["🧠 Obsidian knowledge base"]
+        direction TB
+        ItemsMd("📄 items/*.md<br/><sub>one note per post</sub>")
+        TopicsMd("📑 topics/*.md<br/><sub>one note per topic</sub>")
+        IndexMd("🗺️ _index.md")
+    end
+
+    E6 ==> ItemsMd
+    E6 ==> TopicsMd
+    E6 ==> IndexMd
+
+    classDef stage fill:#1e293b,stroke:#475569,stroke-width:1.5px,color:#fff,font-weight:500
+    classDef artifact fill:#fef3c7,stroke:#b45309,stroke-width:1.5px,color:#451a03
+    classDef ext fill:#0ea5e9,stroke:#0369a1,stroke-width:1.5px,color:#fff,font-weight:500
+    classDef wiki fill:#d1fae5,stroke:#047857,stroke-width:1.5px,color:#064e3b
+    class E1,E2,E3,E4,E5,E6 stage
+    class Items,Vy,Tj artifact
+    class X ext
+    class ItemsMd,TopicsMd,IndexMd wiki
+```
+
+Six stages, top to bottom. The chain on the left is the order of execution;
+the cylinders on the right are the `data/` files each stage writes; the box
+at the bottom is what ends up inside your Obsidian vault — three kinds of
+plain markdown notes.
+
+- **`data/items.json`** is the hub. Three stages mutate it (`extract`,
+  `fetch`, `enrich`); every later stage reads it.
+- **`data/vocab.yaml`** is the closed taxonomy. Read by `enrich` (to assign
+  topics from it), `topics` (to know which pages to synthesise) and
+  `generate` (for the tags).
+- **`data/topics.json`** is the synthesised topic overviews. Read by
+  `generate`.
+
+`⑥ generate` is the only stage that writes into the vault. It turns
+`items.json` into `items/*.md`, `topics.json` into `topics/*.md`, and writes
+the `_index.md`. Delete the whole vault and `xbrain generate` rebuilds it
+bit-for-bit from `data/`.
+
+| # | Stage | Mechanical / LLM | Writes to | What it does |
+|---|-------|------------------|-----------|--------------|
+| ① | `extract` | mechanical | `items.json` + `state.json` | Pulls new bookmarks + own tweets from X (incremental — stops at known ids). |
+| ② | `fetch` | mechanical | `items.json` | Downloads linked article bodies, expands threads, fetches linked X content. Records structured evidence for broken links. |
+| ③ | `vocab` | **LLM** | `vocab.yaml` | Induces the controlled topic taxonomy from the whole corpus. |
+| ④ | `enrich` | **LLM** | `items.json` | Per item: a summary + a primary topic + 1-4 topics, all from the taxonomy. |
+| ⑤ | `topics` | **LLM** | `topics.json` | Synthesises each topic page's overview; builds the mechanical post lists. |
+| ⑥ | `generate` | mechanical | the Obsidian vault | Renders the three-layer wiki: `items/*.md`, `topics/*.md`, `_index.md` — plus the interactive `dashboard.html`. |
+
+Every stage is **idempotent and incremental** — re-running it only processes
+what is new. `vocab --regenerate` is the deliberate exception: it re-induces the
+taxonomy and marks every item for re-enrichment.
+
+A typical full run:
+
+```bash
+uv run xbrain extract
+uv run xbrain fetch
+uv run xbrain vocab          # → fill the worksheet → xbrain vocab --apply
+uv run xbrain enrich         # → fill the worksheet → xbrain enrich --apply
+uv run xbrain topics         # → fill the worksheet → xbrain topics --apply
+uv run xbrain generate
+```
+
+---
+
+## Commands
+
+```bash
+uv run xbrain <command> [options]
+```
+
+| Command | Description |
+|---------|-------------|
+| `extract` | Extract bookmarks and/or own tweets from X. `--source bookmarks\|tweets\|all`. |
+| `import-archive <zip>` | Backfill the full own-tweet history from the official X data archive. |
+| `fetch` | Download linked article content, expand threads, fetch linked X content. By default, items whose only previous failures were transient (`timeout`, `dns_error`) are re-fetched automatically; terminal failures (`not_found`, `paywall`, `forbidden`, `js_required`, `empty_content`, `blocked_interstitial`) stay skipped until `--force`. `--force` re-fetches every external_article source regardless of state.  **`--retry-failed`** re-fetches ONLY the links whose *recorded* failure a retry could actually repair — transient ones, plus `js_required` / `empty_content` / `blocked_interstitial` still at `attempts < 2`, when a Firecrawl key is resolvable — `FIRECRAWL_API_KEY`, or the `firecrawl` CLI's own stored credentials, unless `XBRAIN_NO_FIRECRAWL` opts out. Those three are exactly what `extract_article` escalates to the fallback, and a failure still at `attempts=1` never got that pass. Unlike `--force` it does not re-download the links that already succeeded. `--dry-run` reports the plan — retryable · blocked-on-the-key · terminal — without touching the store. Mutating runs auto-snapshot (`pre-fetch-retry-failed`). Mutually exclusive with `--force`.  **`--revalidate`** re-judges the article bodies **already in the store** and demotes the ones that are not articles — a cookie/login wall, an anti-bot challenge, pure page chrome — to a `blocked_interstitial` failure. Local, no network. A junk body accepted as a *success* is invisible to `--retry-failed` (which selects recorded FAILURES), so without this it keeps being served to the judge as `[Linked article]` evidence forever; demoting loses nothing, because it was never evidence. Report-only by default — it prints the count and the offending domains, worst first, and does not touch the store. **`--write`** applies the demotions (auto-snapshot `pre-fetch-revalidate`). Not combinable with `--force` or `--retry-failed`.  ||
+| `media` | Download X-post photos referenced in `Item.media` **and the inline images of a bookmarked X Article** (stored under `data/media/<id>/article/<n>`, separate from the item's own photos), reusing the one photo-download engine for both. `--limit` is a combined budget; the SUMMARY reports article images separately. Item photos and the downloaded Article images both render inline in the wiki — `generate` embeds each Article image in the author's order (see the blogpost render). `--force`, `--limit N`, `--items <a,b,c>`, `--verbose`. See [Local media storage](#local-media-storage). |
+| `describe` | Describe downloaded photos with a vision LLM (Claude Sonnet 4.6 by default) and feed the prose into `enrich` + `topics`. `--force`, `--limit N`, `--items <a,b,c>`, `--model`, `--batch-size`, `--verbose`. Idempotent — re-runs skip already-described photos unless `[describe].version` is bumped in `config.toml`. |
+| `refresh-quoted` | Backfill the **quoted post** — its body *and* its author — onto the quote-tweets already in the store. They were saved carrying nothing but a `quoted_id`, so the generator saw a bare reaction ("Read this and you'll understand") with nothing to summarise, and filled the hole by inventing. **Start with `--from-store`**: an offline join of `quoted_id` against the store itself — no browser, no network, instant, re-runnable — which reaches every quoted post you happen to have captured in its own right (measured on the corpus this was built against: 222 of 816 quote-tweets, 27%). Without the flag it re-captures the full X history for the rest, at **no extra request per item**: X embeds the quoted post in the *same* timeline payload as the tweet quoting it, so this walks the whole timeline (no stopping at known ids) and re-parses. The scroll is human-paced and takes minutes. Touches only `quoted_tweet` sources — articles, transcripts, threads and every enrichment are preserved; idempotent (a readable quoted post is left alone, a failed one retried). Items that gain evidence bump `content.fetched_at`, so the next `enrich` re-generates exactly those summaries and no others. Destructive → auto-snapshot; on the network path, re-seeing 0 known items (expired session / GraphQL drift) aborts without saving unless `--force`. `--source bookmarks\|tweets\|all`, `--from-store`, `--force`. |
+| `reextract` | Re-run the parser over the **raw GraphQL payloads already on disk** — offline, no network, no rate limits, no dependence on the tweet still existing. This is how a parse fix gets validated before it is applied: the **dry run is the default** and prints exactly what would change across the whole corpus, field by field, before anything is written. `--apply` writes and auto-snapshots. Items ingested before payload persistence have no payload and are listed **explicitly**, so "cannot be re-extracted" is never allowed to look like "re-extracted cleanly". |
+| `refetch-truncated` | List — or with `--apply`, repair — the items whose tweet text was **truncated at ingest**. `legacy.full_text` is capped at 280 chars: X cuts a long post mid-word and appends a t.co self-link, and the generator, told to summarise half a sentence, finishes the sentence itself. Unlike `reextract` this is **not** a free re-parse — those payloads predate persistence, so `--apply` re-fetches each affected tweet from X through a logged-in browser: deliberately human-paced work, hours of it, checkpointed as it goes so a session that expires three quarters of the way through does not discard the three quarters already repaired. The id list is written to `data/truncated-items.json` on every run, `--apply` or not. Destructive → auto-snapshot; a repaired text invalidates its summary, so re-run `enrich` afterwards. |
+| `payload-stats` | **Read-only** answer to "what does keeping every raw payload cost me?", measured on the payloads actually on disk rather than on a fixture: how many there are, their raw and gzipped size, the mean bytes per item, and that mean projected to 10k and 100k items. They are stored gzipped and they are small — measured on the corpus this was built against, 3,344 payloads are 25.9 MB raw / 7.8 MB on disk, a mean of 2.3 KB an item, which projects to roughly 232 MB at 100k items. Writes nothing, takes no snapshot. |
+| `refresh-media` | Re-capture X and backfill the **playable video URL + bitrate + duration** onto items whose video is still poster-era (incremental `extract` + non-overwriting merge never refresh existing videos). Video-only — photos and enrichment/description state are preserved, and a good video is never degraded back to its poster if X drifts. Scrolls the full history (slow); destructive → auto-snapshot; prints a download-size estimate. Does **not** download video (that is `download-videos`). Re-seeing 0 known items on a non-empty store (likely expired session / GraphQL drift) aborts without saving unless `--force`. `--source bookmarks\|tweets\|all`, `--force`. |
+| `download-videos` | Download the actual **mp4 bytes** for backfilled videos and embed them inline in the wiki — the video counterpart to `media`. mp4 only: HLS (`.m3u8`) needs ffmpeg and is a deferred follow-up (skipped + counted); poster-era entries (run `refresh-media` first) are skipped too. Prints a `~X.X GB` size estimate and asks for confirmation **unless `--yes`**. `--max-size 500MB\|2GB` skips videos whose estimated size exceeds the cap. Validates the response is really a video (rejects HTML/JSON interstitials served as 200). Destructive → auto-snapshot; idempotent (re-runs skip downloaded videos unless `--force`). `--source bookmarks\|tweets\|all`, `--limit N`, `--items <a,b,c>`, `--max-size <size>`, `--force`, `--yes`. See [Local media storage](#local-media-storage). |
+| `knowledge inspect` | **Read-only** view of the unified knowledge contract for one item (`xbrain knowledge inspect <id>`) or one topic (`--topic <slug>`). Shows the read projection, and with `--surfaces` / `--chunks` every emitted surface with its `origin`, `trust_class`, `attribution`, `locator` and `fingerprint`. `--json` emits a stable document. It is the cheapest verification layer there is: a quoted post's real author sits right beside the poster's, so a mis-attribution is visible in two seconds without any judge. Never truncates an article body (unlike the LLM prompts), returns **every** source of a kind (not just the first), and hydrates verification verdicts from the live store so a revoked FAIL is never shown as the old PASS. Writes nothing, takes no snapshot. |
+| `index build` | Build the persistent retrieval index into `data/index/` (SQLite + FTS5) and seal it with a manifest. **`data/index/` is derived and reconstructible** — never versioned, never backed up, deleting it costs one rebuild — which is why every incompatibility here is answered by a refusal plus `--force` rather than by a repair. Writes nothing but `data/index/`; takes no snapshot, because there is nothing of yours to lose. `--force` rebuilds over an existing index (manifest deleted first, database second, so an interrupted rebuild never leaves a manifest standing over an empty base). `--dry-run` counts what it would write. `--json`. |
+| `index update` | Put the index back in step with the store, touching **only** what changed — one transaction for the whole run, so an interrupted update leaves the previous state rather than half of a change nobody can name. This is the normal path after `enrich`, `topics`, `vocab`, `fetch` or `digest-video`. `--dry-run`, `--json`. |
+| `index status` | What the index holds and how far behind the store it is: versions, counts, what was skipped, items added/changed/removed, topics whose membership moved, and whether the cheap staleness signal has tripped. **It is the command that answers when the others refuse** — `search` and `update` reject an absent or incompatible index; this one reports it, and names the same command they name. `build` is not among them: it is the ONE door allowed to create the database, so an absent index is the input it exists for — what plain `build` refuses is an index that already **exists**, and there it names `--force`. Nor is `get`: it never opens `data/index/` — a bare `get` opens no database at all, and `get --query` opens one that exists nowhere on disk, a scratch `sqlite3(":memory:")` over that item's own chunks — so an absent index is nothing for it to refuse either. It also pays for `PRAGMA quick_check`, which the query doors deliberately do not, so it sees corruption on pages no query reads. `--json`. |
+| `search` | Ranked items with the fragments that matched, each carrying its `origin`, `trust_class` and locator — and, when the match landed on generated text, the exact `xbrain get` that fetches the underlying source. Read-only (`mode=ro`), no network, no LLM. All eight filters are pushed into SQL **before** scoring: `--from`/`--to`, `--source`/`--mine`, `--author`, `--topic`, `--kind`, `--origin`, `--has-surface` (each repeatable where plural). Matches are grouped by item and capped at `[index].max_matches_per_item`, so a long transcript yields one result with three fragments, not ten of the top ten. Chunks whose fingerprint does not recompute, or whose surface no longer resolves, are **withheld and counted** in `corrupt_chunks_excluded`. The response declares its own degradations — `index_behind_store`, `no_embeddings`, `<strategy>_not_implemented` — rather than answering as if they did not apply. `--limit`, `--cursor`, `--strategy`, `--json`. |
+| `get` | One item's evidence — topics, fetch failures, unfetched links, verification verdicts, and the surfaces you ask for — **read from the live store, never from the index**, so it works with `data/index/` deleted. An index able to answer this would be a second copy of the corpus that nothing invalidates, and the day the two disagreed there would be no way to know which one the reader was shown. **A bare `get` is the index card, not the dump**: metadata, topics, the `summary` body and the *list* of available surfaces. Every other body — article, transcript, thread, frame descriptions — is asked for by name with `--surface` (repeatable; an unknown one is refused listing what the item actually has), so *complete* means every surface is reachable by selection and pagination, not everything in one call. Never truncates silently: above `[index].get_char_budget` it truncates **declaring it** and returns a cursor. That cursor is an offset into the sequence the REQUEST defined — the chunks of the selected surfaces, or their ranking under `--query` — and the bundle does not carry the request back, so **a continuation must repeat the same `--surface` flags, in the same order, and the same `--query`**; without them the cursor resumes inside the default selection or is refused outright. The truncation line prints the whole command, flags and all. `--query` to prioritise the fragments that score for it, `--cursor`, `--json`. |
+| `eval` | Evaluate retrieval against `eval/golden-set.yaml` (tracked in Git) and publish `data/eval-report.{json,md}` (not tracked — it carries corpus excerpts). Metrics per **strategy × stratum × provenance**, never one global figure. A stratum with no cases is reported as *sin cobertura*, never as 0.0, and a case whose filters the strategy cannot apply is reported as **not measured** rather than as a failure. **That is now a rule without a live instance:** the harness builds through the same writer `index build` drives, so all eight filters reach `WHERE` and the two `filtros` cases are scored — the earlier "no date/source columns until the persisted index exists" condition is satisfied. The rule stays for Plan 03's vector strategy, which arrives with no filter columns of its own. **Report-only**: never writes `items.json`, never snapshots. Without `--min-recall` it reports without judging (the spec fixes merge thresholds *after* the baseline runs); with it, the command becomes a gate and exits non-zero naming the bucket that fell short — or, when the threshold could not be compared against a single bucket, naming that count, so a gate that measured nothing fails closed instead of reporting PASS. Cases that retrieved nothing at all are counted per bucket (`empty`), because a 0.0 from an empty result set is a different fault from a 0.0 from a bad ranking. `--strategy`, `--k`, `--golden-set`, `--report`, `--json`. |
+| `list-videos` | **Read-only** catalog of every video referenced in `items.json` — one row per video entry with its state (`downloaded` / `failed` / `pending` / `poster-era`), estimated size (exact once downloaded, `unknown` without bitrate/duration), the item's `primary_topic` and a text snippet. Filters: `--topic`, `--status`, `--max-size`, `--source`, `--limit`. Human table by default; `--json` emits a stable machine array (`id, url, state, topic, size_bytes\|null, mp4_url, text`) an agent can parse to choose which videos to fetch. Writes nothing, takes no snapshot. |
+| `fetch-video` | **Ephemeral** download of the real mp4 for selected videos to `--to <dir>/<id>.mp4`, for agent-side processing (transcription/analysis is external — see below). Select with `--ids a,b` and/or `--topic <t>` (+ `--max-size`, `--limit`, `--source`). Reuses `download-videos`' content-validation, failure classification, atomic write and mp4/HLS/poster discriminator; HLS and poster-era are skipped + counted. **Deliberately non-persisting:** never mutates `items.json`, never snapshots, never touches `data/media/` — it writes only under `--to`. `--json` for machine output. |
+| `digest-video` | Turn bookmarked videos into text: **ephemeral** fetch → **external** transcriber (`[transcribe].command`, default `parakeet-mlx` — the ASR is *not* bundled in xbrain) → attach the transcript to the item as an `x_video` content source → discard the bytes. **Dedups by video identity** (the stable `amplify_video`/`ext_tw_video`/`tweet_video` id from the mp4 path, not the signed URL): on the default path, N bookmarks of one video → **one** fetch+transcribe, every item gets the transcript. With `--keep-transcript`, one video is partitioned by each item's stored `(text, has_speech, language, title)` plus one missing-transcript batch: one fetch per batch, zero ASR for stored batches, one ASR for the missing batch. No-speech / no-audio videos attach with empty text + `has_speech=false` (never a hard failure). Idempotent — skips items already carrying an `x_video` source unless `--force`. Destructive (rewrites `items.json`) → auto-snapshot. Select with `--ids a,b`, `--topic <t>`, or `--all-pending` (+ `--source`, `--limit`, `--language`). **`--frames`** (opt-in visual layer, needs `[vision].command`): it extracts key frames (ffmpeg scene detection + interval sampling so the whole video is covered), describes them via the **external** vision model, records the descriptions on the `x_video` source, and embeds the images into the note like downloaded photos. Slides are described (cap `[frames].max_frames`); a talking-head is skipped (logged) only when the video has speech, since the transcript carries it; a silent non-slide video is described as footage (cap `[frames].footage_max_frames`). Any run appends `Hollow (no speech, no frames): N` to its summary when N > 0 items are left with neither speech nor frames; `--frames --force --keep-transcript` re-digests them with each item's own stored transcript instead of re-running the ASR. A completed forced run replaces the visual layer even when vision fails or reclassifies the video, so prior frames and the long-form digest can be removed. The automatic `pre-digest-video` snapshot manages the store files **`items.json`, `state.json`, `vocab.yaml`, and `topics.json`**: it restores those present in the snapshot (and removes a live one absent there), but never contains `data/media/` or frame PNGs. The selected items' `data/media/<id>/frames/` directories have already been deleted or overwritten by then. Before re-digesting items that currently have frames, copy those directories aside and restore them with the snapshot if needed. Without that copy, restored metadata can point to missing files or different pixels. Hollow items have no prior frames and are not exposed to this loss. The transcript then flows through the normal `enrich → topics → generate` pipeline. |
+| `video-digest` | Generate the long-form **readable digest** per bookmarked video — the "what it is · key points · why it matters" synthesis of its transcript + slide-frame descriptions, written into the `x_video` source's `digest` field. Worksheet flow like the LLM stages: `--executor manual\|claude-code` exports `data/video-digest-worksheet.json`; fill it (Claude Code session or by hand) and `--apply <file>` writes every digest back to `items.json`. `generate` then renders the digest as the **headline** of the `## Video digest` section, with the raw transcript + slide frames demoted into a collapsible `<details>`. Auto-snapshots on `--apply` (the store write). Defaults to `[enrich].executor`; worksheet tracks only (no `api`). |
+| `redescribe-frames` | Re-caption video key frames **already on disk** (`data/media/<id>/frames/`) with the current caption rubric — zero network, zero X, zero ffmpeg. Exists because the caption RUBRIC can change (it did in #90: captions were found translating on-screen text instead of transcribing it verbatim) while the pixels never do, so a corpus-wide fix does not need to re-fetch a single video. Staleness is a **contract comparison**, not a timestamp: every `x_video` source remembers the caption contract its frames were captioned under, and anything but the current one is re-described (`--force` re-describes everything regardless), so re-running this on an already-current corpus costs zero vision calls. Stamping is **all-or-nothing per source**: a video is marked current only once every one of its frames re-describes cleanly, so one permanently-missing frame image leaves the whole video stale forever — every future run re-pays for its surviving frames too, and because the vision model is non-deterministic that also keeps re-triggering `enrich`/`video-digest` downstream. A per-frame vision failure (bad exit / timeout / empty output) is logged and keeps the frame's old caption without aborting the run; an unconfigured `[vision].command` aborts it (an operator error, not a per-frame one); and a run where every attempted frame fails raises instead of reporting a silent success. **`--dry-run` needs no `[vision].command` at all** and calls the model zero times — it previews the same described/failed split a real run would hit (a missing frame file previews as a failure) without describing a single pixel. With no selector set, every stale video in the corpus is targeted; `--ids a,b,c`, `--topic <t>`, `--source bookmarks\|tweets\|all` and `--limit N` narrow that scope (an unknown id in `--ids` is echoed as a warning, not silently dropped). Fixes translation, not an OCR misread — the stored frames are 640px wide and that resolution is not recoverable here. Destructive (rewrites `items.json`) → auto-snapshots, but only when at least one caption was actually re-described. See [`docs/digest-video.md`](docs/digest-video.md#fixing-stale-captions--redescribe-frames) — including the **required manual step** for already-described tweet photos, which this command does not touch. |
+| `vocab` | Induce the topic taxonomy. `--executor`, `--apply <file>`, `--regenerate`. |
+| `enrich` | Enrich items with a summary + topics. `--executor`, `--apply <file>`. |
+| `topics` | Synthesise topic pages. `--executor`, `--apply <file>`, `--resynth`. |
+| `verify` | **Semantic verification** of the generated enrichment (an LLM-as-judge ensemble, mirroring `cv-guardrail`): scores each `summary` / `digest` / `topics` output for **faithfulness** (does it invent facts/numbers the source does not support?) and **rubric-adherence**, emitting a per-output verdict **PASS / REVIEW / FAIL** + cited flags (each tagged with its `axis`). **Report-only by default** — writes `data/verify-report.{json,md}`, worst-first, and never mutates the store. **Opt-in `--write-verdicts`** (valid only alongside `--apply`) additionally persists each verdict onto its item as a `VerificationVerdict` (keyed by target) together with a **sha256 fingerprint of the exact judged output** + `verified_at`, so `generate` can badge it. The fingerprint is **stamped at worksheet export** and threaded through the filled worksheet — and, on the audit path, through the report record and the audit worksheet — to the writer, never a recompute against the live store, so a regeneration in the export→judge→(audit)→write window can't bind a verdict to output it never judged. This mutates `items.json`, auto-snapshots `data/` first (label `pre-verify-write-verdicts`), and echoes a written/skipped tally (a dropped verdict is never silent). Keyless worksheet flow: `xbrain verify --target summary\|digest\|topics\|all` exports `data/verify-worksheet.json` → copy it once per judge, fill `judgments` → `xbrain verify --apply ws1.json --apply ws2.json …` aggregates (worst-faithfulness wins, divergence flagged) into the report. **`--audit`** runs the judge≠party second pass over ONLY the consequential (FAIL/divergent) verdicts: `xbrain verify --audit` exports an audit worksheet (source + output + the judges' flags) for a single independent auditor to CONFIRM/REVOKE each flag with a `confidence` (0–1) and cited `reason`; `xbrain verify --audit --apply audit.json` merges it back and **deterministically re-verdicts** under one invariant — *a verdict lowers only when the specific cited evidence that produced it is explicitly revoked; guards only escalate*. Three code-enforced backstops: a **confidence gate** (a REVOKE applies only at `confidence ≥ 0.7`, else it is kept and surfaced), **axis scoping** (revoking an adherence note never clears a faithfulness FAIL), and a **mass-revocation guard** (if one run would clear a suspiciously high share of the FAILs, all such revocations are suppressed and kept FAIL). So a confirmed flag keeps the FAIL, an all-faithfulness-flags-revoked record drops to REVIEW (or PASS if no adherence issue remains), an added confirmed flag re-establishes a FAIL the auditor tried to clear, and a divergent tie is resolved by the auditor — with an `## Audit` report section listing every washed/gated/unmatched decision (and any invariant anomaly). The audit is a **single pass** over the full consequential set: a second `--audit --apply` on an already-audited report is refused (it would let split revocations bypass the mass-revocation guard) unless `--force`. **`--force` may not be combined with `--write-verdicts`**: a forced re-audit re-renders the report from the merged records, so the FAIL set shrinks and N single-revoke runs would launder every FAIL into the store without ever tripping the mass-revocation guard (it needs ≥2 FAILs) — forced re-audits stay available report-only. An **absent `audits` key is rejected** (a judge worksheet fed to the audit path would otherwise persist the un-audited aggregate), as is a `--write-verdicts` run whose audit matched **no** record while consequential verdicts remain. The store is written **before** the report, so a failed write never leaves the report marked `audited`. **The audited verdict is the one that reaches the store**: `xbrain verify --audit --apply audit.json --write-verdicts` persists the MERGED, post-audit verdicts (a revoked FAIL lands lowered and badges nothing; a confirmed — or auditor-added — failure lands as FAIL with its confirmed flags), consuming the merge's guarded output rather than re-deriving anything. `--executor manual\|claude-code`. Defaults to `[enrich].executor`; worksheet tracks only (no `api`). |
+| `verify-entities` | **Deterministic and token-free** sweep of every generated output for named entities that no evidence surface supports. There is no LLM in it, so it cannot inherit the judge ensemble's blind spot, and it sweeps the **whole corpus** rather than a sample. Matching is variant-aware (squashed spacing, acronym↔expansion, handle abbreviation, bounded fuzzy) because the evidence is often ASR output — an exact-string matcher flags precisely the names the generator got *right* (`open ai` → `OpenAI`). **Read what it is blind to before quoting any number from it:** it checks that PROPER NOUNS APPEAR somewhere on the evidence. It never checks what is asserted about them and never looks at a single number, so "Sam Altman said he will fire half the staff" against a source where he discusses hiring extracts `Sam Altman`, finds it grounded and passes clean. **A clean verdict means "no unknown proper nouns", not "not hallucinated".** `--verdicts data/verify-report.json` cross-references a `verify` run and reports how many flagged outputs the judges had passed **unanimously**. Read that as a lower bound, and only over the outputs carrying a verdict at all: the two sets have to overlap before the count says anything about the judges. As this is written they barely do — the report on disk holds 7 judged summaries against 140 confidently flagged outputs and the intersection is empty, so it prints zero because nothing has been judged where this check is looking, not because the judges caught everything. Outputs whose only evidence is the low-precision uncertain tier (ambiguous capitalisation, typically sentence-initial) get their own line rather than being folded into the headline. Read-only: writes `data/entity-report.{json,md}` and never touches the store. `--target digest\|summary` (default `digest`). `topics` is **refused**, not scanned: topic slugs are lowercase kebab-case, so the extractor would find no entity in any of them and return a confident clean bill of health from a check structurally unable to find anything. |
+| `generate` | Render the wiki into the vault. Renders a localized **verification badge** (❌ FAIL / ⚠️ REVIEW; a PASS is left unbadged) under a summary / topics / video-digest **only when its stored verdict is still current** — it recomputes the sha256 fingerprint of the item's current output and badges only on a match, silently skipping a **stale** verdict (the output was re-generated since it was judged). So a FAIL whose output was fixed afterwards never shows a ❌. |
+| `sync` | `extract` + `fetch` + `generate`, in order. |
+| `status` | Counts and last-run timestamps. |
+| `snapshot` | Manage `data/` snapshots: `create`, `list`, `show`, `restore`, `prune`. See [Snapshots & safety](#snapshots--safety). |
+| `diff` | Compare two snapshots (or one snapshot vs. the live `data/`). Surfaces reassigned items, topic growth, overview drift, vocab changes. `--format text\|json`. |
+| `login` | Open a browser to log in to X (see [Authentication](#authentication) — prefer the cookie import). |
+
+Every stage accepts `--since` / `--until` (ISO dates) to narrow the date window.
+The window is inclusive at both ends: a date-only `--until 2025-12-31` covers the
+whole of Dec 31 (up to `23:59:59.999999` UTC). Pass an explicit time
+(`--until 2025-12-31T09:00:00`) to cut off mid-day instead.
+Run `uv run xbrain <command> --help` for the full option list.
+
+---
+
+## Search & retrieval
+
+Once `enrich` and `topics` have run, build the index and query it. Real output
+from a corpus of 2,474 items:
+
+```bash
+uv run xbrain index build
+# → 2474 items · 45 topics · 10570 surfaces · 22933 chunks · 2474 profiles
+# →   skipped: decorative 14 · empty_text 0 · failed_sources 65 · no_speech 111
+# →   3.1s
+
+uv run xbrain search "transformer attention" --limit 2
+# → "transformer attention" · strategy lexical
+# → · Lexical strategy (no embeddings): retrieves proper nouns, numbers and
+# →   exact phrases, not conceptual similarity.
+# →
+# → 1. 2051242195298968041  @xiathis (xIA) · 2026-05-04
+# →    https://x.com/xiathis/status/2051242195298968041
+# →    topics: llm-foundations, frontier-models
+# →    summary (llm): Clase de Stanford que recorre las decisiones de …
+# →    · [video_transcript] origin=asr trust=machine_extracted · via lexical
+# →      ly talking about changing here is you know, where the norms go, …
+# →    · [video_transcript] origin=asr trust=machine_extracted · via lexical
+# →      do kind of position dependence and incorporate information from …
+# →    · [video_transcript] origin=asr trust=machine_extracted · via lexical
+# →      hyperparameter. Um I always found this to be very strange when s…
+# →    → verify with: xbrain get 2051242195298968041 --surface video_transcript
+# →
+# → [excerpt: result 2 is omitted; a truncation line, when there is one, is
+# →  printed under the header, above result 1, not here]
+```
+
+**`origin` and `trust` travel with every fragment**, so a consumer never has to
+infer them: `origin=asr` means a machine heard it, `origin=llm` means xbrain
+wrote it. When the match is generated text, the last line names the surface that
+can actually settle the claim — and `get` hands it over in full:
+
+```bash
+uv run xbrain get 2051242195298968041 --surface video_transcript
+```
+
+`--json` on either command returns the same content as a stable document
+(`SearchResponse` / `EvidenceBundle`): the human view and the JSON are two
+renderings of **one** response model, so the two cannot disagree and there is no
+human-only fact. The containment runs one way only — the human view *selects*,
+and turns some fields into prose, so the JSON carries fields it never prints
+(`schema_version`, `manifest_version`, `built_at`, and per match the `chunk_id`,
+`title`, `score`, `lexical_rank`, `vector_rank` and `locator`). The echoed
+`filters` are **not** among them: a truncated result spells every one back as a
+flag of the continuation command it prints, because a cursor is an offset into
+the ranking the query *and* the filters define, and a continuation that dropped
+one would resume inside a different ranking. Judge a result in the human view;
+consume one from `--json`.
+
+```bash
+uv run xbrain search "agents" --topic ai-agents --from 2026-01-01 --kind x_article
+uv run xbrain search "agents" --mine --has-surface video_transcript --json
+```
+
+**The index does not update itself.** Indexing is manual by decision, so every
+stage that writes the store leaves it behind — and rather than quietly serving
+stale evidence, `search` says so and names the fix:
+
+```
+⚠ The index is behind the store: `items.json`, `vocab.yaml` or `topics.json`
+  changed after it was built. The evidence may be stale — update it with
+  `xbrain index update`.
+```
+
+```bash
+uv run xbrain index status    # what it holds, how far behind, what changed
+uv run xbrain index update    # 0.8s when nothing moved
+```
+
+Two limits, declared rather than discovered later. There is **no stemming** —
+FTS5 has no multilingual stemmer and the English one would wreck a Spanish
+corpus, so `agente` and `agentes` are different words; on the corpus above their
+top tens shared **zero** items. And it is **lexical, not semantic**: proper
+nouns, figures and exact phrases, not conceptual similarity. Every response
+declares the second (`degraded: ["no_embeddings"]`). Diacritics, on the other
+hand, fold — `atencion` and `atención` rank identically.
+
+Costs, staleness, error messages and the rest of the limits:
+**[docs/knowledge-index.md](docs/knowledge-index.md)**.
+
+---
+
+## Local media storage
+
+`xbrain media` downloads X-post photos **and the inline images of a
+bookmarked X Article** and persists the bytes locally. Item photos are then
+shown inline in the generated wiki; the downloaded Article images are embedded
+in the note by `generate`, in the author's order, as a blogpost.
+
+**Layout**
+
+```
+data/
+└── media/
+    ├── 1234567890/        # one directory per item id
+    │   ├── 0.jpg          # one file per photo, indexed by media position
+    │   ├── 1.jpg
+    │   ├── 2.png
+    │   └── article/       # inline images of an X Article (#39), namespaced
+    │       ├── 0.jpg      #   so they never collide with the item's photos
+    │       └── 1.png
+    └── ...
+```
+
+Item photos are stored under `data/media/<item-id>/<index>.<ext>` and Article
+inline images under `data/media/<item-id>/article/<n>.<ext>` (both via the
+same download engine); the extension matches the format the X CDN sent us
+(`.jpg`, `.png`, or `.webp`). `data/` is gitignored — the bytes never enter
+the repo.
+
+**Vault rendering**
+
+`xbrain generate` mirrors each downloaded photo from `data/media/` into
+`<vault>/<output_subdir>/_media/<item-id>/<index>.<ext>` at render time
+and emits Obsidian wikilink embeds (`![[_media/<id>/<n>.<ext>]]`) so the
+vault is fully self-contained. No symlinks, no Obsidian config needed.
+
+**Disk budget (approximate)**
+
+X serves `name=orig` JPEGs typically in the 1-2 MP range, averaging
+~300 KB per photo on our corpora. A library of ~2,000 items with roughly
+one photo per item lands in the ballpark of 300-500 MB on disk —
+comfortably within personal-machine scale. Use `--limit N` to throttle
+the first backfill.
+
+**Throttling**
+
+The downloader sleeps 0.5 s between requests by default and uses a
+browser-style User-Agent. pbs.twimg.com tolerates that pattern; bursting
+from a fresh IP earns a 429.
+
+**Failure handling**
+
+Failures are categorised on the item itself
+(`MediaPhotoFailed.failure_reason`):
+- `http_4xx`, `format_error` — permanent; only `--force` retries.
+- `http_5xx`, `timeout`, `unknown_error` — transient; auto-retried on
+  the next `xbrain media` run.
+
+Run `xbrain diff <snapshot>` after a media run to see how many photos
+moved from `pending` / `failed` into `downloaded` (or, after `xbrain
+describe`, into `described`).
+
+**Vision descriptions**
+
+Once `xbrain media` has the bytes on disk, `xbrain describe` runs every
+photo through Claude vision and stores a short prose description on
+the entry (transitioning `MediaPhotoDownloaded` → `MediaPhotoDescribed`).
+Descriptions are 1-3 sentences, faithful, in the configured
+`output_language`. Decorative photos (avatars, reaction memes,
+abstract backgrounds) are classified as such and persisted with an
+empty description so they introduce no topic noise downstream.
+
+`xbrain enrich` and `xbrain topics` consume the descriptions
+automatically, on **both** the API and the worksheet (`claude-code` /
+`manual`) tracks: an item with content-bearing photos gets an
+`Images in this post:` block in the API enrichment prompt and an
+`image_descriptions` field in the worksheet; topic-page synthesis sees
+the flat list of content image descriptions across the topic's posts on
+either track. This is how a tweet that is mostly a screenshot of a
+paper becomes searchable by what the screenshot was actually about —
+even when the pipeline runs entirely on the Claude Code subscription.
+
+These descriptions flow whenever `enrich` / `topics` next run for an
+item. To back-fill items that were already enriched *before* the
+describe pass (a one-time LLM cost), force the re-run: `xbrain vocab
+--regenerate` (clears enrichments) then `xbrain enrich`, and `xbrain
+topics --resynth`.
+
+Describing the full corpus costs about $3-5 with the default model
+(Sonnet 4.6, 5 images per call). Bump `[describe].version` in
+`config.toml` to invalidate stored descriptions when you change the
+rubric — the next `xbrain describe` run re-describes stale entries
+automatically without `--force`.
+
+**Video media**
+
+A video entry carries the playable stream URL, the poster `thumbnail_url`, and
+the chosen `bitrate` + `duration_millis` (so a download can estimate size
+without fetching a byte). Getting a video's bytes onto disk is two steps:
+`refresh-media` backfills the playable URL onto poster-era records, then
+`download-videos` fetches the mp4 bytes.
+
+Because `extract` is incremental and the store merge never overwrites,
+videos captured before the playable-stream capability landed are
+**poster-era**: their stored URL is the poster image and the bitrate /
+duration are blank. They are never refreshed by a normal `xbrain extract`.
+`xbrain refresh-media` is the backfill: it re-captures the full X history,
+swaps each poster-era video entry for the freshly-parsed one (playable URL
++ bitrate + duration) **in place**, and leaves photos and enrichment
+untouched. It only upgrades — if X has drifted and serves no usable stream
+(a poster fallback), the existing record is kept, so a re-run never degrades
+a good video back to its poster. It auto-snapshots `data/` first
+(destructive) and prints a download-size estimate (`~X.X GB across N videos;
+M with unknown size`) so you can size the video download.
+
+If a run re-sees **0** known items against a non-empty store — the symptom of
+an expired X session or a GraphQL parser drift, where the capture comes back
+empty without raising — `refresh-media` treats that as a failed run: it warns
+and aborts **without saving** (nothing was matched, so `data/` is untouched
+and the pre-snapshot already exists). Pass `--force` to save anyway.
+
+```bash
+xbrain refresh-media                      # backfill bookmarks + own tweets
+xbrain refresh-media --source bookmarks   # bookmarks only
+xbrain refresh-media --force              # save even if 0 known items re-seen
+```
+
+**Downloading video**
+
+Once `refresh-media` has populated the playable URLs, `xbrain download-videos`
+fetches the actual bytes — the video counterpart to `xbrain media` for photos.
+It downloads **mp4 only** this stage: a real progressive mp4 stream advances
+`video_pending → video_downloaded` (bytes under `data/media/<id>/<n>.mp4`,
+embedded as `![[_media/<id>/<n>.mp4]]` in the note, which Obsidian renders as an
+inline player) or `video_failed` (categorised, with the same transient-retry
+contract as `media`). HLS (`.m3u8`) manifests need ffmpeg to mux into a playable
+file — they are **skipped and counted**, deferred to a follow-up. Poster-era
+entries (not yet backfilled) are skipped too; run `refresh-media` first.
+
+Video files are large, so `download-videos` prints a **size gate** before
+fetching — e.g. `About to download ~1.2 GB across 8 videos (3 HLS skipped, 1
+already downloaded).` — and asks for confirmation. Pass `--yes` to skip the
+prompt (non-interactive runs). For a per-video cap, `--max-size` skips any video
+whose **estimated** size exceeds it (accepts `500MB` / `2GB`; a bare number is
+MB). With a cap set, videos of unknown size (no bitrate/duration) can't be
+verified under it and are skipped too — without the cap they download normally.
+The size estimate and the "N videos / ~X GB" line always reflect only the
+under-cap set you're about to fetch.
+
+Because a 200 status isn't trust — a CDN/captcha/auth-wall page can come back as
+200 with an HTML or JSON body — the downloaded bytes are validated (a `video/*`
+content-type or an mp4 `ftyp` signature; a body that starts with HTML/JSON markup
+is rejected even under a `video/*` header) before being written. A non-video
+response is recorded as a **transient** failure (no corrupt `.mp4` is written) so
+the next run retries automatically once the rate-limit or session clears. A
+mid-download connection drop or an out-of-memory body is likewise recorded and
+the batch continues — one bad video never aborts the whole run.
+
+The run is idempotent (already-downloaded videos are skipped unless `--force`),
+auto-snapshots `data/` first (destructive), and a Ctrl-C between videos leaves
+`items.json` coherent.
+
+```bash
+xbrain download-videos                     # size gate + confirm, then download
+xbrain download-videos --yes               # non-interactive (CI / scripts)
+xbrain download-videos --max-size 500MB    # skip videos estimated over 500 MB
+xbrain download-videos --source bookmarks  # bookmarks only
+xbrain download-videos --limit 5 --items 123,456   # scope the run
+xbrain download-videos --force             # re-download + retry permanent failures
+```
+
+**Selecting and fetching video for agent-side processing**
+
+`download-videos` keeps the mp4 in the store (`data/media/`) to embed inline. But
+the whole corpus is far too large to keep on disk to *process* — the diagnostic
+from the video-capture work was **225 mp4s ≈ 140 GB**. When the goal is to turn a
+saved talk into a readable digest, the video is a means, not an end: you want the
+*transcript*, not 140 GB of bytes. `list-videos` + `fetch-video` are the
+**ephemeral, agent-driven** surface for exactly that — one video at a time, bytes
+discarded after the text is extracted.
+
+xbrain stays **mechanical**: it *lists* and *fetches*. The heavy ML — ASR
+(transcription) and any vision — is **external / agent-side tooling**, not baked
+into the CLI (no bundled MLX/CoreML/ML *library* in xbrain core — ffmpeg and the
+vision model are shelled out as external subprocesses, used only by `--frames`).
+The agent loop is
+**list → fetch → analyze → discard**:
+
+```bash
+# 1. List — machine-readable catalog the agent picks from (read-only).
+xbrain list-videos --topic ai --status pending --json
+# → [{"id":"2068…","url":"https://x.com/…","state":"pending",
+#     "topic":"ai","size_bytes":81600000,"mp4_url":"https://video.twimg.com/…",
+#     "text":"a great talk on …"}, …]
+
+# 2. Fetch — the chosen videos land as ephemeral files under --to (nothing else).
+xbrain fetch-video --ids 2068…,2069… --to /tmp/xbrain-videos
+# → /tmp/xbrain-videos/2068….mp4  (items.json untouched, no snapshot)
+
+# 3. Analyze — the agent runs its own local transcriber (e.g. parakeet-mlx /
+#    whisper) over each mp4. Transcription is EXTERNAL to xbrain by design.
+# 4. Discard — delete /tmp/xbrain-videos when done; the store never grew.
+```
+
+`list-videos` writes nothing and takes no snapshot. `fetch-video` is deliberately
+**non-persisting**: it never mutates `items.json`, never snapshots, and never
+writes to `data/media/` — it only writes `<--to>/<id>.mp4`. That is *why*
+`fetch-video` is intentionally **not** in the destructive auto-snapshot set: it
+has nothing destructive to protect against.
+
+**`digest-video` — the built-in transcript path.** `list-videos` + `fetch-video`
+give an agent the raw surface; `digest-video` is the batteries-included command
+that does the whole loop for you and *attaches* the result:
+
+```bash
+# Default path: one video, N bookmarks, one transcript — dedup handles the fan-out.
+xbrain digest-video --ids 2068…,2069…      # both reference the same talk → fetched + transcribed once
+xbrain digest-video --topic ai             # every ai-topic video
+xbrain digest-video --all-pending          # every fetchable pending video
+```
+
+It fetches each video ephemerally, shells out to the **external** transcriber you
+configure in `[transcribe]` (default `parakeet-mlx`; the ASR is *not* bundled —
+xbrain core carries no MLX/CoreML dependency), attaches the transcript to the item
+as an `x_video` content source, and discards the bytes — never more than one video
+on disk. It **dedups by video identity** (the stable id in the mp4 path, not the
+rotating signed URL). On the default path, N bookmarks of the same video are
+fetched + transcribed **once** and all of them get the transcript. With
+`--keep-transcript`, one video is split by each item's stored `(text,
+has_speech, language, title)` plus one batch for items without a transcript: each
+batch fetches once, stored batches make zero ASR calls, and only the missing batch
+is transcribed. The extra fetches keep one item's transcript from crossing into
+another. Silent / no-audio videos attach with empty text + a `has_speech=false`
+marker (recorded, never a crash). It is
+idempotent (skip items already carrying an `x_video` source unless `--force`)
+and destructive (it rewrites `items.json`), so it **auto-snapshots** first. From
+there the transcript flows through the normal `enrich → topics → generate`
+pipeline, turning the once-unwatchable bookmark into a topic-linked note — see the
+[digest module](https://github.com/VGonPa/xbrain/issues/44).
+
+```bash
+# Opt-in visual layer for slide-heavy talks and silent clips (needs [vision].command configured):
+xbrain digest-video --topic ai --frames    # describe + embed key frames where they carry content
+```
+
+**When `--frames` pays off.** For a slide/screen/demo talk the visual carries as
+much as the audio, so `--frames` extracts the key slides (ffmpeg scene detection,
+with interval sampling so a long static tail is still covered), describes each via
+the **external** vision model you configure in `[vision].command` (like the
+transcriber, *not* bundled — no vision/ML dependency in core), records the
+descriptions on the `x_video` source, and embeds the slide images into the note
+exactly like downloaded photos. It is **content-aware**: slides are described; a
+talking-head / interview video has its visual layer skipped (logged, never
+silently) only when it has speech — the transcript already carries it, so you don't
+spend vision calls on camera-cut noise; a silent non-slide video (a screen
+recording, a robot, a GIF) is described as footage, capped by
+`[frames].footage_max_frames` (default 6), because its frames are the only record
+of what it shows. A run prints `Hollow (no speech, no frames): N` when an item still
+ends up with neither speech nor frames —
+[docs/digest-video.md](docs/digest-video.md#finding-and-re-digesting-hollow-items)
+shows how to find and re-digest them. A completed forced visual re-digest replaces
+the old source even if frame extraction/vision fails or the clip is reclassified
+as a talking-head: old frames and the long-form digest are removed. The automatic
+`pre-digest-video` snapshot manages the store files **`items.json`, `state.json`,
+`vocab.yaml`, and `topics.json`**: it restores those present in the snapshot (and
+removes a live one absent there), but never contains `data/media/` or frame PNGs.
+The selected items' `data/media/<id>/frames/` directories have already been
+deleted or overwritten by then. Before re-digesting items that currently have
+frames, copy those directories aside and restore them with the snapshot if needed. Without
+that copy, restored metadata can point to missing files or different pixels.
+Hollow items have no prior frames and are not exposed to this loss. `--frames` is
+fully opt-in — a normal `digest-video` run never touches ffmpeg or the vision model.
+
+---
+
+## Snapshots & safety
+
+Destructive commands (`vocab --regenerate`, `topics --resynth`, `fetch --force`)
+**auto-snapshot** `data/` before they touch anything. The snapshot is a complete
+copy of `items.json`, `state.json`, `vocab.yaml` and `topics.json` under
+`data/snapshots/<UTC-timestamp>-pre-<command>/`, with a `snapshot.json` manifest
+capturing counts and the running `xbrain` version. If a re-run produces worse
+output, a single `xbrain snapshot restore <name>` brings the previous good
+state back.
+
+```bash
+xbrain snapshot list                        # newest first
+xbrain snapshot create --name pre-rubric-v2 # mark a known-good state
+xbrain snapshot restore <name>              # roll back data/ (run `generate` next)
+xbrain snapshot prune --keep-last 10        # cap disk use
+```
+
+The Obsidian vault is **not** snapshotted — it is fully derived from `data/`
+via `xbrain generate`. `restore` rolls back `data/`; you run `xbrain generate`
+to rebuild the wiki from it.
+
+After a destructive run, `xbrain diff <pre-snapshot>` shows exactly what
+moved — items whose `primary_topic` was reassigned, topic memberships that
+grew or shrank, overview text that drifted, and vocab slugs added or
+removed. The B side defaults to the live `data/`, so the common case is one
+short command. Add `--format json` to pipe the report into `jq` or a CI
+gate.
+
+```bash
+xbrain diff 2026-05-22T18-30-15Z-pre-vocab-regenerate    # vs. live data/
+xbrain diff <snap-a> <snap-b>                            # two named snapshots
+xbrain diff <snap-a> --format json | jq '.summary.reassigned_pct'
+```
+
+---
+
+## Execution modes
+
+`vocab`, `enrich`, `topics`, `video-digest` and `verify` need an LLM. XBrain never
+embeds a Claude subscription token — instead the LLM work is **pluggable**, with
+three modes, selected by `--executor` or `config.toml`'s `[enrich].executor`. All
+five stages read that one `[enrich].executor` default; `video-digest` and `verify`
+have no config section of their own and run **only** their worksheet / `claude-code`
+tracks (never `api`).
+
+| Mode | Cost | When you reach for it |
+|------|------|----------------------|
+| **`claude-code`** *(default)* | None | You have Claude Code open. Day-to-day enrichment. |
+| **`api`** | Pay per token (cheap on Haiku) | Unattended runs (cron, CI, future `/schedule`). No human in the loop. |
+| **`manual`** | None | Spot fixes, hand-curating a few items, fallback when the others fail. |
+
+All three modes end the same way — `xbrain` validates the judgments against the
+rubrics and `guardrails.yaml`, then writes them into `data/items.json`. They
+only differ in *how the LLM judgment gets produced*.
+
+### Mode 1 — `claude-code` *(default)*
+
+**What it does.** The CLI exports a worksheet (`data/enrich-worksheet.json`).
+You open a Claude Code session, the `enriching-x-knowledge` skill (in
+`.claude/skills/`) fills the worksheet's judgments using the rubrics. You run
+`xbrain enrich --apply` to validate and persist.
+
+**Why this mode exists.** Most XBrain users already have a Claude Code
+subscription. Spending another budget on the Anthropic API to do the same
+work is wasteful — this mode lets the existing subscription do the LLM work
+at zero extra cost.
+
+**When to use it.** Default for interactive runs. You are at your machine,
+Claude Code is open, you want to enrich a batch.
+
+```mermaid
+%%{init: {
+  'theme':'base',
+  'themeVariables':{
+    'fontFamily':'ui-sans-serif, system-ui, sans-serif',
+    'fontSize':'13px',
+    'background':'transparent',
+    'actorBkg':'#1e293b',
+    'actorBorder':'#475569',
+    'actorTextColor':'#fff',
+    'actorLineColor':'#cbd5e1',
+    'noteBkgColor':'#fef3c7',
+    'noteBorderColor':'#b45309',
+    'noteTextColor':'#451a03',
+    'signalColor':'#475569',
+    'signalTextColor':'#1f2937',
+    'labelBoxBkgColor':'#0ea5e9',
+    'labelBoxBorderColor':'#0369a1',
+    'labelTextColor':'#fff',
+    'sequenceNumberColor':'#fff'
+  }
+}}%%
+sequenceDiagram
+    autonumber
+    actor U as You
+    participant CLI as xbrain CLI
+    participant CC as Claude Code session
+    participant Data as data/
+
+    U->>CLI: xbrain enrich --executor claude-code
+    CLI->>Data: write enrich-worksheet.json
+    Data-->>CC: open the worksheet
+    CC->>CC: fill judgments using the skill
+    CC->>Data: save filled worksheet
+    U->>CLI: xbrain enrich --apply worksheet.json
+    CLI->>CLI: validate against rubrics and guardrails
+    CLI->>Data: write items.json with enrichment
+```
+
+### Mode 2 — `api`
+
+**What it does.** The CLI loops over every pending item, calls the Anthropic
+API once per item with the rubric, item content and vocab. Each judgment is
+validated, then a single store write at the end persists everything.
+
+**Why this mode exists.** The `claude-code` mode needs a human present. A
+scheduled job, a cron, or a CI run cannot pop open a Claude Code session.
+The `api` mode runs end-to-end with zero interaction — the trade is that
+you pay per token.
+
+**When to use it.** Unattended runs. The future `/schedule` integration
+([#7](https://github.com/VGonPa/xbrain/issues/7)) builds on this mode.
+
+```mermaid
+%%{init: {
+  'theme':'base',
+  'themeVariables':{
+    'fontFamily':'ui-sans-serif, system-ui, sans-serif',
+    'fontSize':'13px',
+    'background':'transparent',
+    'actorBkg':'#1e293b',
+    'actorBorder':'#475569',
+    'actorTextColor':'#fff',
+    'actorLineColor':'#cbd5e1',
+    'noteBkgColor':'#fef3c7',
+    'noteBorderColor':'#b45309',
+    'noteTextColor':'#451a03',
+    'signalColor':'#475569',
+    'signalTextColor':'#1f2937',
+    'labelBoxBkgColor':'#0ea5e9',
+    'labelBoxBorderColor':'#0369a1',
+    'labelTextColor':'#fff',
+    'loopTextColor':'#475569',
+    'sequenceNumberColor':'#fff'
+  }
+}}%%
+sequenceDiagram
+    autonumber
+    actor U as You
+    participant CLI as xbrain CLI
+    participant API as Anthropic API
+    participant Data as data/
+
+    U->>CLI: xbrain enrich --executor api
+    loop for each pending item
+        CLI->>API: prompt with rubric, item and vocab
+        API-->>CLI: summary, primary topic, topics
+        CLI->>CLI: validate against rubrics and guardrails
+    end
+    CLI->>Data: write items.json with enrichment
+```
+
+### Mode 3 — `manual`
+
+**What it does.** Identical worksheet plumbing as `claude-code`, but you fill
+the judgments by hand instead of letting an LLM do it.
+
+**Why this mode exists.** Two reasons. First, escape hatch: if the LLM keeps
+producing wrong judgments for a corner of the corpus, you can fix those items
+yourself without rewriting the rubric. Second, the same worksheet format means
+the manual path is the lowest common denominator the system always supports —
+no API, no Claude Code, just JSON in / JSON out.
+
+**When to use it.** Spot fixes, corrections, hand-curating a handful of items
+that need editorial judgment beyond what the rubric captures.
+
+```mermaid
+%%{init: {
+  'theme':'base',
+  'themeVariables':{
+    'fontFamily':'ui-sans-serif, system-ui, sans-serif',
+    'fontSize':'13px',
+    'background':'transparent',
+    'actorBkg':'#1e293b',
+    'actorBorder':'#475569',
+    'actorTextColor':'#fff',
+    'actorLineColor':'#cbd5e1',
+    'noteBkgColor':'#fef3c7',
+    'noteBorderColor':'#b45309',
+    'noteTextColor':'#451a03',
+    'signalColor':'#475569',
+    'signalTextColor':'#1f2937',
+    'labelBoxBkgColor':'#0ea5e9',
+    'labelBoxBorderColor':'#0369a1',
+    'labelTextColor':'#fff',
+    'sequenceNumberColor':'#fff'
+  }
+}}%%
+sequenceDiagram
+    autonumber
+    actor U as You
+    participant CLI as xbrain CLI
+    participant Data as data/
+
+    U->>CLI: xbrain enrich --executor manual
+    CLI->>Data: write enrich-worksheet.json
+    Note over U: You fill the worksheet by hand
+    U->>CLI: xbrain enrich --apply worksheet.json
+    CLI->>CLI: validate against rubrics and guardrails
+    CLI->>Data: write items.json with enrichment
+```
+
+---
+
+## How it works
+
+> For the full picture — every stage, every artifact, the rubrics, the executors and the invariants — see [ARCHITECTURE.md](ARCHITECTURE.md). The summary below is the 5-minute version.
+
+**One hard rule** runs through the whole design: the **LLM emits only judgment** —
+a summary, a topic choice, an overview. It never produces a filename, a wikilink
+or any structural identifier. The *code* generates every id and link; a
+**mechanical validator** rejects any LLM output that is not pure judgment. This
+is why regenerating the wiki never breaks a link.
+
+- **`data/items.json`** is the single source of truth. The markdown wiki is
+  derived — safe to delete and regenerate.
+- **Your notes are preserved.** Anything you write below the `xbrain:generated`
+  marker in an item note survives every regeneration.
+- **Broken links are demonstrable.** A failed fetch records the HTTP status, a
+  categorised reason and the attempt count — not a vague error.
+- **`data/` is git-ignored.** Your bookmarks, tweets and session never leave
+  your machine.
+
+The data stores in `data/`:
+
+| File | Role |
+|------|------|
+| `items.json` | Every item — the source of truth. |
+| `state.json` | Extraction cursors (for incremental `extract`). |
+| `vocab.yaml` | The induced topic taxonomy. Hand-editable. |
+| `topics.json` | The synthesised topic-page overviews. |
+
+---
+
+## Project structure
+
+```
+xbrain/
+├── src/xbrain/
+│   ├── cli.py            # Typer CLI — every command
+│   ├── config.py         # config.toml loading
+│   ├── models.py         # pydantic data models (Item, Enrichment, Topic, ...)
+│   ├── store.py          # JSON load/save for items + topic pages
+│   ├── snapshot.py       # the data/ snapshot lifecycle — the auto-snapshot recovery boundary
+│   ├── diff.py           # `diff`: structured comparison of two snapshots
+│   ├── media.py          # `media`: photo + X-Article-image download (CDN size fallback)
+│   ├── describe.py       # `describe`: vision-LLM photo descriptions, fed into enrich
+│   ├── refresh.py        # refresh-media backfill: video media swap + size estimate
+│   ├── video_media.py    # download-videos: mp4 byte download (reuses media.py)
+│   ├── video_select.py   # list-videos: read-only video catalog (VideoRow)
+│   ├── video_fetch.py    # fetch-video: ephemeral mp4 fetch, non-persisting
+│   ├── transcribe.py     # digest-video: external transcriber subprocess (no ML in core)
+│   ├── video_frames.py   # digest-video --frames: ffmpeg key-frame extraction + classify (no ML)
+│   ├── vision.py         # digest-video --frames: external vision subprocess (no ML in core)
+│   ├── digest.py         # digest-video: fetch → transcribe (+ optional frames) → attach x_video
+│   ├── video_digest.py   # video-digest: the long-form per-video digest worksheet hand-off
+│   ├── extract/          # X extraction (Playwright + GraphQL interception)
+│   │   ├── browser.py    #   session / browser context
+│   │   ├── graphql.py    #   parse X's internal GraphQL responses
+│   │   ├── extractor.py  #   scroll + capture loop
+│   │   ├── article.py    #   parse an X Article body (Draft.js blocks + entityMap)
+│   │   ├── video.py      #   build a playable video entry (live parser + archive)
+│   │   └── threads.py    #   expand own-tweet threads
+│   ├── payloads.py       # persist the raw X payload so `reextract` can re-parse it offline
+│   ├── fetch.py          # external article fetch + Firecrawl fallback
+│   ├── fetch_x.py        # fetch linked X tweets / articles
+│   ├── archive.py        # import the official X data archive
+│   ├── vocab.py          # the `vocab` stage (taxonomy induction)
+│   ├── enrich.py         # the `enrich` stage
+│   ├── executors/        # the `api` executor (the LLM-judgment seam)
+│   ├── worksheet.py      # the enrich worksheet hand-off
+│   ├── llm_json.py       # shared helper: pull a JSON object out of an LLM reply
+│   ├── topic_synth.py    # topic-overview synthesis (api + worksheet)
+│   ├── topics.py         # topic-page computation + rendering
+│   ├── knowledge/        # the READ contract + the persistent index (`search` / `get`)
+│   │   ├── surfaces.py   #   the emitter: Item/Content/Topic → KnowledgeSurface
+│   │   ├── chunking.py   #   the structural chunker (atomic surfaces beat MAX_CHARS)
+│   │   ├── contracts.py  #   SearchResponse / EvidenceBundle — the frozen envelopes
+│   │   ├── lexical_fts.py#   ONE FTS5 tokenizer + bm25, shared by index and harness
+│   │   ├── index_schema.py #  data/index/ DDL, the open door, drift + corruption checks
+│   │   ├── index_build.py  #  build/update/status + the manifest that seals them
+│   │   ├── index_store.py  #  opening FOR A QUERY: read-only, degradation, fail-closed rows
+│   │   ├── search_service.py # `search`: filter → score → group → hydrate
+│   │   ├── get_service.py    # `get`: evidence from the STORE — named surfaces, budget, cursor
+│   │   ├── render.py     #   the human view of the SAME model `--json` serialises
+│   │   └── evaluation.py #   `eval`: per-stratum retrieval metrics, report-only
+│   ├── evidence.py       # ONE definition of what counts as evidence for a generated output
+│   ├── verification.py   # the `verify` stage: the LLM-as-judge ensemble
+│   ├── verification_audit.py  # `verify --audit`: the judge≠party second pass
+│   ├── entity_grounding.py    # `verify-entities`: the deterministic, token-free check
+│   ├── validate.py       # the mechanical validator (guardrails)
+│   ├── rubrics.py        # load the declarative rubrics + guardrails
+│   ├── rubrics/          # rubric-*.md (the processing rules)
+│   ├── guardrails.yaml   # the declarative guardrails the validator enforces
+│   ├── i18n.py           # the wiki's own UI strings, keyed by output language
+│   ├── generate.py       # render item notes + topic notes + index + log + dashboard.html
+│   ├── dashboard.py      # build the self-contained interactive dashboard.html
+│   ├── resources/        # dashboard.template.html + the vendored echarts.min.js
+│   ├── notes_io.py       # shared markdown helpers
+│   └── gate_audit.py     # does the `quality` gate DO what it reports? (pure; called by CI)
+├── scripts/
+│   ├── import_chrome_session.py    # cookie import — Chrome
+│   ├── import_safari_session.py    # cookie import — Safari
+│   ├── xbrain-transcribe           # [transcribe].command → parakeet-mlx (English only)
+│   ├── xbrain-transcribe-auto      # [transcribe].command → language router (multilingual)
+│   ├── xbrain-transcribe-mlx       #   router backend: mlx-whisper on the Apple GPU
+│   ├── xbrain-transcribe-whisper   #   router backend: the whisper CLI, CPU, portable
+│   ├── xbrain-vision               # [vision].command → local mlx-vlm or cloud Claude
+│   ├── check.sh                    # the ten-check quality gate (same script locally and in CI)
+│   ├── audit_gate_issue.sh         # raise/stand down the alarm when the gate is caught lying
+│   └── announce_red_branch.sh      # file/resolve the issue for a RED gated branch
+├── tests/                # pytest suite (test-first; one test file per module)
+├── config.toml.example   # configuration template
+└── pyproject.toml        # deps, tooling, `poe` tasks
+```
+
+---
+
+## Development
+
+```bash
+uv run pytest -v          # run the test suite
+uv run poe check          # the full quality gate (run before any PR)
+uv run poe test           # individual gate steps: test, lint, types, ...
+```
+
+`poe check` runs ten checks — ruff (lint + format), mypy, bandit, vulture,
+interrogate, detect-secrets, deptry, and pytest with coverage. CI runs the same
+gate on every pull request. The project is built test-first: every module has a
+matching `tests/test_*.py`.
+
+---
+
+## Responsible use
+
+XBrain reads X through X's internal (non-public) endpoints. Use it for personal
+purposes, with **your own** X account and **your own** data, at your own risk.
+It does not use a paid API by default and it does not redistribute anyone else's
+content. The extractor scrolls slowly, with randomised pauses, to be a polite
+client. Respect X's Terms of Service.
+
+---
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [docs/tutorial.md](docs/tutorial.md) | **Start here** — end-to-end walkthrough from install to a searchable wiki. |
+| [docs/digest-video.md](docs/digest-video.md) | Worked example: turn a bookmarked talk into transcript + slide notes. |
+| [docs/knowledge-index.md](docs/knowledge-index.md) | Operating the search index: when to rebuild, measured cost, and what the lexical baseline cannot do. |
+| [docs/troubleshooting.md](docs/troubleshooting.md) | Common failures & fixes (auth, PATH, digest-video, index, iCloud). |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | How XBrain is shaped: pipeline stages, artifacts, rubrics, executors, invariants. |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute — including PRs written with AI agents. |
+| [LICENSE](LICENSE) | MIT. |
+
+PRs written with AI agents are welcome, at the same quality bar as any other
+code. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+---
+
+*Last updated: 2026-09-12*

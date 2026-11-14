@@ -391,6 +391,9 @@ Recent news of this GitHub repo are listed as follows.
     - ***You Don’t Need All That Attention:*** Surgical Memorization Mitigation in Text-to-Image Diffusion Models [[Paper]](https://raw.githubusercontent.com/mlresearch/v306/main/assets/zhao26as/zhao26as.pdf) [[Code]](https://github.com/kairanzhao/GUARD)
     - ***GASS:*** Geometry-Aware Spherical Sampling for Disentangled Diversity Enhancement in Text-to-Image Generation [[Paper]](https://raw.githubusercontent.com/mlresearch/v306/main/assets/zhu26ai/zhu26ai.pdf) [[Code]](https://github.com/L-YeZhu/GASS_T2I)
     - ***MAMBO-G:*** Magnitude-Aware Mitigation for Boosted Guidance [[Paper]](https://raw.githubusercontent.com/mlresearch/v306/main/assets/zhu26al/zhu26al.pdf)
+  - **SIGGRAPH**
+    - ***Composing People Together:*** Iterative Pose-Image Generation for Multi-Person Interaction Scenes [[Paper]](https://dl.acm.org/doi/10.1145/3799902.3811129)
+    - On-the-fly Repulsion in the Contextual Space for Rich Diversity in Diffusion Transformers [[Paper]](https://dl.acm.org/doi/10.1145/3799902.3811074)
   - **AAAI**
     - ***Plot’n Polish:*** Zero-Shot Story Visualization and Disentangled Editing with Text-to-Image Diffusion Models [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/37147)
     - ***DOS:*** Directional Object Separation in Text Embeddings for Multi-Object Image Generation [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/37235)
@@ -656,6 +659,4 @@ Recent news of this GitHub repo are listed as follows.
     - ***One-Prompt-One-Story:*** Free-Lunch Consistent Text-to-Image Generation Using a Single Prompt [[Paper]](https://openreview.net/forum?id=cD1kl2QKv1)
     - You Only Sample Once: Taming One-Step Text-to-Image Synthesis by Self-Cooperative Diffusion GANs [[Paper]](https://openreview.net/forum?id=T7bmHkwzS6)
     - Rethinking Artistic Copyright Infringements In the Era Of Text-to-Image Generative Models [[Paper]](https://openreview.net/forum?id=0OTVNEm9N4)
-    - Erasing Concept Combination from Text-to-Image Diffusion Model [[Paper]](https://openreview.net/forum?id=OBjF5I4PWg)
-    - Cross-Attention Head Position Patterns Can Align with Human Visual Concepts in Text-to-Image Generative Models [[Paper]](https://openreview.net/forum?id=1vggIT5vvj)
-    - ***TIGeR:*** Unifying Text-to-Image Generation and Retrieval with Large Multimodal Models [[Paper]](https://openreview.net/foru
+    - Erasing Concept Combination from Text-to-Image Diffusion Model [[Paper]](https://open

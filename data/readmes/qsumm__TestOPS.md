@@ -30,7 +30,7 @@ bash deploy/up.sh
 > 记得先把 `.env` 里的 `JWT_SECRET` / `KEY_STORE_SECRET` / `DB_PASSWORD` 换成随机值
 > （`python3 -c "import secrets;print(secrets.token_urlsafe(48))"` 跑三次）。
 > 首次构建约 2~4 分钟（pip 走阿里云镜像）；GitHub 连不上时用镜像加速 clone，见下文「部署 → 前置条件」。
-> 慢镜像源上构建卡住？见 [自建部署加速指引](docs/04-交付与运营/自建部署加速指引.md)（换源 / 离线 wheel / 预构建镜像三档解法）。
+> 慢镜像源上构建卡住？见 [自建部署加速指引](docs/部署与升级/自建部署加速指引.md)（换源 / 离线 wheel / 预构建镜像三档解法）。
 
 </div>
 
@@ -102,7 +102,7 @@ bash deploy/up.sh
 | 内存 | **建议 ≥ 4GB**（最低 2GB 可用） | SeekDB 官方要求**可用内存 ≥ 2GB**。2GB 机器必须没有其它数据库/Java 服务同机，否则数据库起不来（见「数据库一直 Restarting」） |
 | 磁盘 | **≥ 20GB 空闲**（SeekDB 官方要求数据盘 **>15GB**） | 数据库镜像 820MB + 依赖层 + SeekDB 数据/日志预分配。**磁盘不足是数据库静默起不来的头号原因** |
 | 端口 | 8848（平台）、2891（数据库） | 被占用就在 `.env` 里设 `PLATFORM_PORT` / `DB_HOST_PORT`（**不用改文件**，平台日志里打印的访问地址会跟着变） |
-| 网络 | 首次构建需能访问镜像源与 pypi | 已默认走国内源，无需自备梯子；**慢源构建卡住**见 [自建部署加速指引](docs/04-交付与运营/自建部署加速指引.md)（换源 / 离线 wheel / 预构建镜像） |
+| 网络 | 首次构建需能访问镜像源与 pypi | 已默认走国内源，无需自备梯子；**慢源构建卡住**见 [自建部署加速指引](docs/部署与升级/自建部署加速指引.md)（换源 / 离线 wheel / 预构建镜像） |
 
 ### 三步部署
 
@@ -134,7 +134,7 @@ python3 -c "import secrets;print(secrets.token_urlsafe(48))"
 
 > **构建耗时**：首次约 2~4 分钟（numpy/scipy/sklearn ≈ 90MB 已移出主依赖），之后重建**秒级**
 > （BuildKit pip 缓存层）。慢镜像源上首次可能十几分钟——见
-> [自建部署加速指引](docs/04-交付与运营/自建部署加速指引.md)：换源 / 离线 wheel（不联网，25 秒）/ 预构建镜像。
+> [自建部署加速指引](docs/部署与升级/自建部署加速指引.md)：换源 / 离线 wheel（不联网，25 秒）/ 预构建镜像。
 
 > **启动要等**：平台的启动顺序是「数据库就绪 → 迁移 → 起 HTTP 服务」，首次 40~180 秒。
 > 这期间 `curl` 报 `Connection reset`、`grep 管理员` 没输出、数据库显示 `Restarting`
@@ -187,11 +187,16 @@ bash deploy/faults/cpu_spike.sh
 
 ```bash
 cd <部署目录>
+curl -fsSL https://gh-proxy.com/https://raw.githubusercontent.com/qsumm/TestOPS/main/deploy/upgrade.sh -o deploy/upgrade.sh
+curl -fsSL https://gh-proxy.com/https://raw.githubusercontent.com/qsumm/TestOPS/main/deploy/wait-ready.sh -o deploy/wait-ready.sh
+chmod +x deploy/upgrade.sh deploy/wait-ready.sh
 bash deploy/upgrade.sh
 ```
 
+> 前两行是老版本（v1.8.x）没有 `upgrade.sh`，先从仓库取脚本；最后一条执行升级。
+
 老版本没有这个脚本的，或升级后数据库报 `Password.Incorrect` 无限重启——
-见 [从旧版本升级](docs/04-交付与运营/从旧版本升级.md)（含手工步骤与回滚）。
+见 [从旧版本升级](docs/部署与升级/从旧版本升级.md)（含手工步骤与回滚）。
 
 ---
 

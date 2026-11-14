@@ -5,6 +5,7 @@ USB is an open-source trust layer for AI capabilities.
 **Does this skill or MCP server actually do what it claims?** USB discovers skills,
 MCP servers, agents, and commands inside repositories, compares declared behavior
 with observable evidence using `secscan`, observes live MCP servers with `mcprobe`,
+keeps installed skills tamper-evident with `verify` / `lock` / `diff` / `repair`,
 and delivers inspectable artifacts across agent runtimes.
 
 <p align="center">
@@ -38,7 +39,7 @@ and delivers inspectable artifacts across agent runtimes.
 </p>
 
 <p align="center">
-  <sub>v1.1.0 · 529 skills · 16 runtime targets · Trust Layer: <code>secscan</code> + <code>mcprobe</code> · MIT</sub>
+  <sub>v1.2.0 · 529 skills · 16 runtime targets · Trust Layer: <code>secscan</code> + <code>mcprobe</code> + <code>verify</code>/<code>lock</code>/<code>diff</code>/<code>repair</code>/<code>update</code>/<code>sbom</code> + policy · MIT</sub>
 </p>
 
 ---
@@ -65,7 +66,7 @@ Real installer output — not mocked up (`web-dev` = 8 domains × 8 workflows + 
 
 ```bash
 $ usb install web-dev --target=claude
-✅ universal-skill-bridge-catalog v1.1.0 installed for target: claude (73 skills)
+✅ universal-skill-bridge-catalog v1.2.0 installed for target: claude (73 skills)
 📦 Portable pack: ~/.ai-skills/universal-skill-bridge-catalog
 🔌 Target files: ~/.claude/skills
 📝 Local registry: ~/.ai-skills/universal-skill-bridge-catalog/installed.json
@@ -80,6 +81,7 @@ you run is the next:
 ```bash
 usb secscan   # declared vs. observed — verdicts with file:line evidence, exit codes for CI
 usb mcprobe   # observe MCP servers at startup — consented, never calls a tool
+usb verify    # is what's on disk still what you installed? (+ usb repair, usb hook install)
 ```
 
 <p align="center">
@@ -112,7 +114,7 @@ that answer the questions the install surface alone cannot:
 |---|---|---|---|
 | **Contracts** | *Does this skill do what it declares?* | `usb secscan` | Static, deterministic — never executes what it scans |
 | **Runtime** | *What does this MCP server actually do when it starts?* | `usb mcprobe` | Live observation, explicit consent — never calls a tool |
-| **Integrity** | *Is the installed skill still exactly what was installed?* | `usb verify` · `usb lock` · `usb diff` | Local SHA-256 re-hash — no network, no execution |
+| **Integrity** | *Is the installed skill still exactly what was installed?* | `usb verify` · `usb lock` · `usb diff` · `usb repair` · `usb hook` | Local SHA-256 re-hash — no network, no execution |
 
 ### secscan — Skill Contract Verifier
 
@@ -374,6 +376,64 @@ usb repair                    # restore, then re-verify
 usb repair intent-router      # one skill
 ```
 
+`usb update` is the reviewed way to move forward. It stages the latest catalog
+copy of every installed skill in a sandbox and classifies each change with the
+diff + secscan engines: **SAFE** (content changed, no new capability or tool, verdict
+not worse) is applied; **REVIEW** (a new observed/declared capability or tool, a
+worse verdict, or local edits that would be overwritten) is applied only with
+`--yes` or an interactive confirm; **BLOCKED** (violates your policy) is never
+applied. Skills living in claude's catalog/router layout are reported, not
+half-updated. An existing `usb.lock.json` is re-pinned after an update.
+
+```bash
+usb update --dry-run          # classified plan, nothing written
+usb update                    # apply SAFE, list what needs review
+usb update --yes              # also apply REVIEW (never BLOCKED)
+usb update intent-router      # one skill
+```
+
+**Your own rulebook: `usb.policy.json`.** `usb policy init` writes a sample; the
+policy is enforced by `usb install`, `usb install --locked` and `usb update`
+(found via `--policy FILE`, `$USB_POLICY`, `./usb.policy.json`, then
+`~/.ai-skills/usb.policy.json` — no file, no change). Candidates are staged,
+analyzed by the secscan engine and refused on a violation; `--ignore-policy`
+skips it. Unknown keys or categories are errors, so a typo can never silently
+weaken a policy.
+
+```json
+{
+  "schema": 1,
+  "deny_capabilities": ["secrets-access", "destructive-commands", "persistence-hooks"],
+  "block_verdicts": ["purpose-mismatch"],
+  "deny_undeclared": false,
+  "require_signed_catalog": false,
+  "allow": { "web-research": ["network-egress"] }
+}
+```
+
+**Signed installers.** The catalog server signs every installer it generates
+(Ed25519 over the exact bytes, sent as `X-USB-Signature`); `usb` verifies it
+before running anything. A **bad signature is always refused** — a CDN, cache or
+proxy altered the script, or a different server answered. An *unsigned* installer
+(self-hosted or older server) still works by default; set
+`USB_REQUIRE_SIGNATURE=1` or `"require_signed_catalog": true` in `usb.policy.json`
+to refuse those too. This protects the delivery path; it cannot help if the
+server itself is compromised (that key necessarily lives there — the engine key
+does not). Self-hosters sign with their own key (`USB_CATALOG_SIGNING_KEY_FILE`
+on the server, `USB_CATALOG_PUBKEY=<hex>` on the client).
+
+**SBOM.** `usb sbom` emits a software bill of materials for what is installed —
+CycloneDX 1.5 (default) or SPDX 2.3 JSON, offline: SHA-256 per skill from the
+install manifest, the targets it lives in, and (unless `--no-analysis`) the
+secscan verdict and observed/declared capabilities as properties.
+`SOURCE_DATE_EPOCH` makes the document reproducible.
+
+```bash
+usb sbom --out usb.cdx.json
+usb sbom --format spdx --out usb.spdx.json
+usb sbom --no-analysis        # hashes only (fast)
+```
+
 **Catch drift without remembering to look.** `usb hook install` adds a Claude
 Code `SessionStart` hook that runs `usb verify --hook`: silent when everything
 is intact, one warning line when installed skills drifted. It is local-only (no
@@ -493,10 +553,17 @@ Already trust the publisher? One line, no review step: `curl -fsSL https://usbpl
 | `usb list` | List every skill in the catalog |
 | `usb info <skill>` | Show details for one skill |
 | `usb secscan [paths\|--system\|--repo]` | Skill Contract Verifier — security-scan skills (see **The Trust Layer** above) |
+| `usb secscan --sarif <file>` | Also write findings as SARIF 2.1.0 for GitHub Code Scanning (root `action.yml` wraps it) |
 | `usb mcprobe [target]` | Runtime observation of MCP servers (interactive consent) |
 | `usb verify [slug\|--all\|--json]` | Re-hash installed skills against the install-time SHA-256 manifest (integrity, not safety) |
 | `usb lock` / `usb lock-show` | Pin installed skill versions into `usb.lock.json` / inspect a lock |
 | `usb diff <slug>` / `usb diff <old> <new>` | Capability & permission changes: installed vs latest, or two local versions |
+| `usb sbom [--format spdx] [--out F]` | SBOM of installed skills (CycloneDX 1.5 or SPDX 2.3): hashes, targets, capabilities — offline |
+| `usb update [slug...] [--dry-run\|--yes]` | Update installed skills: SAFE applied, REVIEW (new capabilities) needs `--yes`, BLOCKED by policy never; re-pins `usb.lock.json` |
+| `usb policy init\|show` | Create/inspect `usb.policy.json` — enforced by install, `install --locked` and update (`--ignore-policy` skips) |
+| `usb repair [slug] [--dry-run]` | Restore drifted skill files byte-for-byte; refuses when the catalog moved on (that is an update) |
+| `usb hook install\|uninstall\|status` | Claude Code `SessionStart` hook: one warning line when installed skills drift, silent otherwise |
+| `usb engines [status\|update]` | Signed python engines a single-file curl install fetches on first use (Ed25519 + SHA-256) |
 | `usb mcp` | Start the stdio MCP server for AI agents |
 | `usb version` | Print version, latest release, and update check (`/api/version`) |
 
@@ -509,7 +576,7 @@ less <(usb install --dry-run web-dev)  # dry-run a preset and pipe to less
 
 | Endpoint | Purpose |
 |---|---|
-| `/api/install?target=<name>` | Render the install script for a target |
+| `/api/install?target=<name>` | Render the install script for a target. When the server has a signing key it adds `X-USB-Signature` (Ed25519 over the exact body) and `X-USB-Key-Id`; the CLI verifies it |
 | `/api/install-sha256?target=<name>` | sha256 of the above, for verification |
 | `/api/skills` | Browse the skill catalog |
 | `/api/audit/<slug>` | Audit a single skill definition |
@@ -554,6 +621,14 @@ On first boot a one-shot `migrate` service waits for Postgres and runs
 the app starts — `/api/install` works straight away. Re-bootstrap from scratch
 with `docker compose down -v`.
 
+**Signing your own catalog.** The public instance signs installers with a key the
+CLI has embedded. A self-hosted instance is unsigned by default (the CLI accepts
+that unless told otherwise). To sign: generate a key with
+`node scripts/sign-engines.mjs --gen-key ./catalog.pem`, run the app with
+`USB_CATALOG_SIGNING_KEY_FILE=./catalog.pem` (or `USB_CATALOG_SIGNING_KEY` with the
+PEM text), and point clients at it with `USB_BASE_URL=<your host>` and
+`USB_CATALOG_PUBKEY=<the printed public key>`.
+
 If 5433 (Postgres) or 3000 (web) are already taken on your machine, override
 the host ports: `USB_PG_HOST_PORT=5544 USB_WEB_PORT=3001 docker compose up -d`.
 
@@ -597,7 +672,7 @@ PR; a second workflow repeats the live-site checks daily on a schedule.
 
 ### Status
 
-**v1.1.0** — current release. Universal Systems Bridge: the 529-skill catalog, the
+**v1.2.0** — current release. Universal Systems Bridge: the 529-skill catalog, the
 16-target installer, and the Trust Layer (`secscan` contract verification,
 `mcprobe` runtime observation, MCP server). **Lineage:** the project shipped v0.x
 as Universal Skill Bridge; that line is frozen and stays online at
@@ -686,4 +761,4 @@ forks must use a different name. See [TRADEMARK.md](./TRADEMARK.md).
 
 </details>
 
-<sub>USB · Universal Systems Bridge v1.1.0 · Building in public · Pre-incorporation · No legal entity formed yet · 2026</sub>
+<sub>USB · Universal Systems Bridge v1.2.0 · Building in public · Pre-incorporation · No legal entity formed yet · 2026</sub>

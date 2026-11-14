@@ -54,8 +54,8 @@ helpers only).
 | [code/voice-form/](code/voice-form/) | Speak a form in Marathi or Hindi (ASHA visit, enumeration, service ticket); offline speech to text, plain-code numbers and dates, a small model that must quote its evidence, confirm before save | built; extraction measured on script text |
 | [code/workflow-agent/](code/workflow-agent/) | A LangGraph intake workflow with parallel checks, a draft sub-graph and a repair loop, plus a small helpline demo | built; first measurements |
 | [code/finetune-slm/](code/finetune-slm/) | LoRA fine-tuning of small models on a CPU: a 135M intent router and a Marathi question-answering study | built; measured, one seed |
-| [code/dhir-server/](code/dhir-server/) | A local OpenAI-style server for the Indian model Dhir 2B (ZenteiQ), which LM Studio cannot load | built; speed, memory and answer check measured |
-| [code/demo/](code/demo/) | The offline live demo page for the talk: base model against base model plus retrieval, with the measured score | built; ready for the talk |
+| [code/dhir-server/](code/dhir-server/) | How to run the Indian model Dhir 2B (ZenteiQ) from its GGUF file with llama-server, which LM Studio cannot load | recipe; speed, memory and answer check measured |
+| `Code/frugal/demo` in the TeachingDataScience repo | The offline live demo page for the talk: base model against base model plus retrieval, with the measured score. It sits beside the deck and shows the projects here | built; ready for the talk |
 
 ### Vision and sensors (proof of concept on a laptop, deployment on a Raspberry Pi)
 
@@ -101,7 +101,6 @@ Numbers appear here only after they are measured and recorded under `code/common
 | Main PC, same, GPU-assisted | Gemma 2 2B (Q5_K_M) via LM Studio | 12.2 median (9.6 to 13.8, n=15) | 2.9 GB (engine only, 2944 MB) | 2026-10-19 | GeForce MX570 (2 GB) used by LM Studio, model only partly fits, so the gain over CPU is small |
 | Old Dell laptop (CPU only) | pending | pending | pending | pending | not measured, parked (see ROADMAP.md) |
 | Raspberry Pi 3 Model B (vision, owned) | pending | pending | pending | pending | gesture-switch not yet run on it; frames per second, latency and temperature are the planned columns |
-| Raspberry Pi 5 (language models, to buy) | pending | pending | pending | pending | not owned yet (see docs/upgrade-report.md) |
 
 ## Outlook
 

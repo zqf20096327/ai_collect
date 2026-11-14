@@ -175,7 +175,7 @@ OpenCode includes the `pc` device control CLI, accessible directly from the agen
 
 ## 🇪🇸 Crafted with Passion in Spain
 
-**OpenCode APK for Android** is conceived, engineered, and published from Madrid, Spain 🇪🇸 by **Zar-Manah**.
+**OpenCode APK for Android** is conceived, engineered, and published from Spain 🇪🇸 by **Zar-Manah**.
 
 Our vision is to break the hardware boundary of modern software engineering: empowering developers, students, researchers, and creators worldwide to carry a complete, self-sustaining AI software engineering powerhouse directly in their pocket.
 

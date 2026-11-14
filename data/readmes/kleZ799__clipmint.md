@@ -126,11 +126,17 @@ busy. A real run reached chunk 9 of 12 and started getting `503 UNAVAILABLE`,
 with an 11.9 GB download and a 29-minute transcription already paid for.
 
 Retrying Google does not fix Google being busy. So there is a fallback ladder:
-**Gemini → Groq → OpenRouter → OpenAI**, free before paid, switching on a spent quota *or* on
+**Gemini → Groq → OpenRouter → OpenAI → Claude**, free before paid, switching on a spent quota *or* on
 the retry budget running out. A [free Groq key](https://console.groq.com) takes a
 minute and no card, and is the single best insurance for a long run.
 [OpenRouter](https://openrouter.ai/keys) is one key in front of models from every
 lab; it defaults to its free router, so it costs nothing either.
+
+Would rather rank with **Claude**? Pick it under **Settings → Model** and paste
+an [Anthropic API key](https://platform.claude.com/settings/keys). It is the
+one provider here with no free tier: every request is billed to your Anthropic
+account, so the picker shows what each model costs. It reads frames as well as
+text, so titles written from what is on screen work on it too.
 
 Got more than one Gemini key? Paste the spares under **Settings → Model**, one
 per line. Each Google project has its own free day, so when one key's runs out
@@ -691,6 +697,8 @@ Every link fetches the newest release. Nothing else to install: no Python, no ff
 | **Linux**, x86-64 | [**⬇ ClipMint-linux-x86_64**](https://github.com/kleZ799/clipmint/releases/latest/download/ClipMint-linux-x86_64) | 280 MB | **Untested** on a desktop. Updates itself. |
 
 Older versions and release notes are on the [releases page](https://github.com/kleZ799/clipmint/releases).
+The Windows build is not code-signed yet; the [code signing policy](docs/code-signing-policy.md)
+says how it is built and what a signature will cover.
 Setup for each platform follows below.
 
 > ### ⚠️ Read this before you download the Mac build
@@ -936,9 +944,45 @@ To run it: **More info → Run anyway**.
 </details>
 
 <details>
+<summary>Smart App Control blocked it, and there is no "Run anyway"</summary>
+
+That is a different Windows feature from the SmartScreen warning above, and a
+stricter one. **Smart App Control** blocks any program that is not code-signed
+and that Microsoft's cloud does not already recognise, and it has no exception
+for a single app: [Microsoft's own FAQ](https://support.microsoft.com/windows/smart-app-control-faq-285ea03d-fa88-4d56-882e-6698afdb7003)
+says there is no way to allow one. So on a PC with it switched on,
+`ClipMint.exe` cannot start, and nothing inside the app can change that. It
+needs a signature from a certificate Windows trusts, and this project does not
+have one yet. Getting one is tracked in [#19](https://github.com/kleZ799/clipmint/issues/19),
+and the [code signing policy](docs/code-signing-policy.md) is what it will be signed under.
+
+It usually appears out of nowhere: Windows runs Smart App Control in a silent
+evaluation mode on a fresh install, and an update can switch it on.
+
+What you can do until there is a signed build:
+
+- **Run the Linux build inside WSL.** Smart App Control checks Windows
+  programs, not Linux ones running in the Windows Subsystem for Linux. Install
+  WSL (`wsl --install` in a terminal), then follow the Linux steps above inside
+  it. The app opens in your Windows browser. It transcribes on the CPU, and I
+  have not been able to try this on a PC with Smart App Control on, so tell me
+  if it does not work.
+- **Turn Smart App Control off**: Windows Security → App & browser control →
+  Smart App Control. SmartScreen and Defender stay on. Check one thing first:
+  recent Windows 11 updates let you turn it back on afterwards, but older
+  builds only allow that by resetting Windows.
+- **Wait for the signed build.** Subscribe to [#19](https://github.com/kleZ799/clipmint/issues/19) and it
+  will tell you.
+
+Unblocking the file in its Properties does not help; that clears the
+"downloaded from the internet" mark, which is not what Smart App Control reads.
+
+</details>
+
+<details>
 <summary>First-run details</summary>
 
-- **Windows will warn you.** The exe isn't code-signed, so SmartScreen shows *"Windows protected your PC"*. Click **More info → Run anyway**. On a Mac it is Gatekeeper instead — see above.
+- **Windows will warn you.** The exe isn't code-signed, so SmartScreen shows *"Windows protected your PC"*. Click **More info → Run anyway**. If the message is from **Smart App Control** and has no such button, see the section above. On a Mac it is Gatekeeper instead — see above.
 - **First launch is slow.** It's a single file that unpacks itself each time. The mac app is a normal bundle and starts faster.
 - **Where things go.** The key lives at `%APPDATA%\ClipMint\settings.json`; clips go to `%USERPROFILE%\Videos\ClipMint`, changeable in Settings. On a Mac: `~/Library/Application Support/ClipMint/settings.json` and `~/Movies/ClipMint`.
 - **No key, no run.** Picking the best moments needs the free API key, so **Generate** without one opens the key box instead of starting a run that would stop after the download.
@@ -1486,7 +1530,7 @@ The knobs that change output quality most, in order:
 | `STAGE_ATTEMPTS` / `CLIP_ATTEMPTS` | `webapp/jobs.py` | How many times a stage, or one clip's render, is tried before a run gives up, `3` each |
 | Processor | Under the live preview, or `PROCESSOR` in `.env` | `auto` (default), `gpu` or `cpu` — what encodes video and runs transcription. `LOCAL_WHISPER_DEVICE`, if set, still pins transcription |
 | `SCORE_THRESHOLD` | `shorts_generator/faces.py` | How sure YuNet must be to count a face, `0.7`. Raise it if a crop keeps catching faces in the game |
-| Provider | Settings | Gemini, Groq, OpenRouter or OpenAI. Add a **free Groq key** as a fallback so a busy Gemini cannot end a run, and spare Gemini keys to use in turn |
+| Provider | Settings | Gemini, Groq, OpenRouter, OpenAI or Claude. Add a **free Groq key** as a fallback so a busy Gemini cannot end a run, and spare Gemini keys to use in turn |
 | Channel profile | Settings | Which channel's sign-in, logo and edit choices are in use. Add one per channel |
 | `LOCAL_WHISPER_MODEL` | `.env` | `base` is plenty for ranking. `small` reads better and hallucinates less — and on a GPU it is *faster* than `base`, so use it if you have one |
 | Spoken language | Render panel | English by default. Pinning it is the fix for whisper inventing text in another language |
@@ -1602,7 +1646,7 @@ shorts_generator/
 └── local/
     ├── downloader.py      # yt-dlp + download cache
     ├── transcriber.py     # faster-whisper + .srt cache
-    ├── llm.py             # Gemini / Groq / OpenRouter / OpenAI, spare keys, text and vision
+    ├── llm.py             # Gemini / Groq / OpenRouter / OpenAI / Claude, spare keys, text and vision
     ├── clipper.py         # face-following crop on a planned camera path
     ├── speaker.py         # with two people in shot, which one is talking
     └── gaming_layout.py   # webcam-over-gameplay stack (streams)
@@ -1616,67 +1660,4 @@ sentence boundaries and ranked partly on what the audio did.
 
 ## Staying in sync with upstream
 
-This repo is standalone, but it keeps a link back to the project it grew out of, so upstream fixes can be pulled in whenever they're worth having.
-
-One-time setup after cloning:
-
-```bash
-git remote add upstream https://github.com/Anil-matcha/AI-Youtube-Shorts-Generator.git
-```
-
-Then, whenever you want upstream's changes:
-
-```bash
-git fetch upstream
-git merge upstream/main
-```
-
-Conflicts, when they happen, land almost entirely in `highlights.py` — upstream edits the generic virality prompt while this repo runs the stream-aware one. **Keep `CRITERIA_BY_KIND` routing each kind to its own criteria** and take upstream's changes everywhere else. `local/gaming_layout.py` doesn't exist upstream, so it never conflicts.
-
----
-
-## License
-
-MIT — see [LICENSE](LICENSE). Upstream work © Anil Chandra Naidu Matcha; modifications © Parth Bhadana.
-
-The published `ClipMint.exe` also carries ffmpeg and ffprobe (the
-[gyan.dev](https://www.gyan.dev/ffmpeg/builds/) essentials build), which are licensed under the
-GPL v3 — not MIT. That covers the bundled binaries only; this repository's own
-source stays MIT, and building from source pulls in no ffmpeg at all.
-
----
-
-## Credits
-
-**[Anil Chandra Naidu Matcha](https://github.com/Anil-matcha)** — the original
-project this forks. The CLI pipeline and the highlight-ranking idea are his, and
-1,175 of his lines survive here. Worth being precise about where: the largest
-blocks are in `highlights.py`, `local/clipper.py`, `pipeline.py` and `muapi.py`.
-
-**[Arael Espinosa](https://github.com/cl8dep)** — *"add gemini local llm and
-local caches"*. 87 lines in `local/transcriber.py`, 65 in `local/downloader.py`,
-29 in `local/llm.py`. That commit is the seed of local mode: the Gemini path
-this app still runs on, and the one the Groq fallback was later built beside.
-
-**LathissKhumar** — two commits hardening local mode: 77 lines making the
-highlight JSON parsing survive bad model output, plus the VAD-off default and a
-CUDA fallback in `local/transcriber.py`. The VAD default is still what ships.
-
-Their work is in this repository because it earned its place, and the MIT
-licence keeps their names on it. Everything else — the desktop application, the
-stream-aware ranking, the renderers, the job runner, the interface, the
-packaging — is mine.
-
-**The footage in the screenshots** is from my own *Dying Light* stream on
-[my channel](https://www.youtube.com/@ParthBhadana799). The clips, captions,
-scores, titles and view counts are what ClipMint actually made of it and what
-YouTube actually counted; nothing was written for the demo. *Dying Light* is
-Techland's game.
-
----
-
-## Author
-
-**Parth Bhadana**
-
-[YouTube](https://www.youtube.com/@ParthBhadana799) &middot; [GitHub](https://github.com/kleZ799) &middot; [L
+This repo is standalone, but it keeps a link back to the project it 

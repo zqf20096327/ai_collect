@@ -293,6 +293,21 @@ This controls dispatch by tool name, not equivalent actions through other tools:
 
 #### Configuration Options
 
+Relative filesystem paths in a JSON config file resolve from the directory containing that file, not the server's working directory. This applies only to these fields:
+
+| Config field | Paths resolved from the config directory |
+| --- | --- |
+| Top level | `outputDir` |
+| `browser` | `userDataDir`, each `allowedUploadDirs` entry, `cdpLaunch.cwd` |
+| `browser.launchOptions` | `executablePath`, `downloadsPath`, `tracesDir`, `artifactsDir` |
+| `browser.contextOptions` | String `storageState`, `recordHar.path`, `recordVideo.dir`, each `clientCertificates` entry's `certPath`, `keyPath`, `pfxPath` |
+
+For example, `/project/config/scanner.json` with `"outputDir": "./reports"` writes to `/project/config/reports`, regardless of where the server starts. Session logs and server-managed traces also use `outputDir`. Upload roots must still exist and are canonicalized after merging.
+
+Absolute paths and `storageState` objects are unchanged. Commands such as `browser.cdpLaunch.command`, launch arguments, profile names, URLs and URL filters are not rewritten. Relative CLI and environment paths still use the server's working directory, as do programmatic `Config` paths. Precedence remains **CLI > environment > config file**, so an override is never rebased against the config directory. The `--config` filename itself is still relative to the server's working directory.
+
+**Migration:** Earlier versions resolved file-configured relative paths from the server's working directory. If your config relied on that behavior, adjust those paths relative to the config file's directory or use absolute paths. CLI and environment values need no migration.
+
 Create a `config.json` file with the following options:
 
 ```json
@@ -885,9 +900,4 @@ After returning to the default provider, list tools again to refresh the availab
 Closes a session opened with `browser_session_open` and releases its browser resources.
 - Parameters: `browserSessionId` (the handle to close)
 
-Closing is refused with a tool error while a tool call is still running in that session — a close that disposed the browser mid-call would fail the running tool; wait for it to finish and retry.
-
-If a pending download fails while a session closes, the response includes the download error alongside the confirmation that the session was closed. That session handle has already been removed.
-
-Sessions that stay idle expire automatically after 30 minutes; the timer is refreshed on every use and while a tool is running in the session (overlapping calls each count, so the session survives until the last one finishes), so a long `audit_site` crawl is never expired mid-run. Set `PLAYWRIGHT_MCP_BROWSER_SESSION_TTL_MS` to override the idle TTL in milliseconds (`0` or a negative value disables expiry). Passing an unknown or expired handle produces a tool error pointing back to `browser_session_open`; the error deliberately does not list other open sessions' handles, since handles are bearer tokens that route tool calls into their sessions. With `--save-session`, logged tool calls record the `browserSessionId` they were routed with (`webmcp_*` calls, routed by request metadata, record it in a separate `Metadata` block so page arguments stay unchanged), and recorded user actions from an explicit session carry the same `browserSessionId` in their logged args, so entries from different sessions stay distinguishable (default-session entries stay untagged). Because handles are bearer tokens, the log records each one as a stable `bs_redacted_<8 hex>` label derived from it, never the live handle, including in `browser_session_open`'s logged result.
-
+Closin

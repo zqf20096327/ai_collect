@@ -4,6 +4,10 @@
 
 Cost Guard analyzes [OpenCode](https://opencode.ai/) usage, relative model costs and quotas locally, with real-time Watch.
 
+Development: [source tests and tooling](development/README.md);
+[private architecture, backlog and journal](https://github.com/qstoffe/cost-guard-backlog).
+Private development access is not required to build, test or run Cost Guard.
+
 [Synthetic CLI text](development/tests/fixtures/token-categories/120.txt): Watch, Normal, history and detail—not Web screenshots.
 
 ## At a glance
@@ -18,7 +22,7 @@ Cost Guard analyzes [OpenCode](https://opencode.ai/) usage, relative model costs
 
 ## Quick start
 
-Use **current `main`** (v81.44, 2026-11-13), the supported distribution.
+Use **current `main`** (v81.56, 2026-11-14), the supported distribution.
 
 Without Git: [repository](https://github.com/qstoffe/cost-guard) → **main → Code → Download ZIP**. Preserve the extracted structure; download again to update.
 
@@ -124,7 +128,7 @@ Normal: model comparisons/account quotas. [Synthetic 160-column CLI text](develo
 - Optional Copilot quota reuses OpenCode OAuth in memory, without login, credential writes or GitHub CLI.
 - Optional OpenAI subscription quota is fail-soft. Read-only V2 accounts take priority; legacy `auth.json` applies only without V2 rows. Credentials are never refreshed, rotated or written.
 - Configured OpenAI/Anthropic API accounts are distinct from **Claude Code subscriptions**, discovered through the optional installed `claude` CLI. Cost Guard never reads/copies Claude credentials or attributes current login to history.
-- Claude Code quotas use optional experimental SDK-control metadata (no prompts, transcript scans or new dependencies); accounts stay visible when quotas fail. Successful retrieval does not guarantee current upstream values. Diagnostics separates retrieval, value changes and Watch publication with bounded observations. See [Claude integration and limitations](development/architecture/modules/claude-code.md).
+- Claude Code quotas use optional experimental SDK-control metadata (no prompts, transcript scans or new dependencies); accounts stay visible when quotas fail. Successful retrieval does not guarantee current upstream values. Diagnostics separates retrieval, value changes and Watch publication with bounded observations. See [Claude integration and limitations](https://github.com/qstoffe/cost-guard-backlog/blob/main/development/architecture/modules/claude-code.md).
 - OpenRouter/DeepSeek accounts reuse configured OpenCode API keys through maintained read-only HTTPS endpoints. MiniMax Token Plan uses its dedicated subscription integration; generic API keys do not establish subscription entitlement.
 - No third-party Python packages are required.
 
@@ -215,7 +219,7 @@ Publisher rows pool the same requests at original model/tier CCost. Unknown manu
 
 - `Prompts`: distinct contributing user prompts per model. Mixed-model prompts count on multiple rows; counts are not additive.
 - `Calls`: attributed model requests, including tool-loop, subagent and compaction work. Both counts indicate sample size.
-- `Tokens`: known I/C/W/O (Output includes reasoning); K/M/B display, exact Web sorting. `?` partial; `N/A` unknown.
+- `Tokens`: known I/C/W/O (Output includes reasoning); plain K/M/B subtotal display, exact Web sorting; `N/A` unknown.
 - Deleted or pruned history is not reconstructed; no private ledger exists. Rows never imply which account or subscription served a model.
 - If current model availability cannot be established, all historically used models are shown with a warning (fail open).
 
@@ -241,7 +245,7 @@ Passing a session ID prints one snapshot and exits, even with active work; use `
 | Column | Meaning |
 | --- | --- |
 | `Prompt` | Local time, prompt number and preview. Separate `Model:` and `[ABORTED]` timeline rows provide history context. `/compact` is shown as its own event. |
-| `CCost` | Reference token valuation of the prompt/event, independent of billing; `?` marks a partial subtotal. |
+| `CCost` | Reference token valuation, not billing. Plain known subtotals; unavailable amounts display selected-unit zero, without claiming free work. |
 | `Calls` | Completed causal model requests belonging to the prompt/event. |
 | `Duration` | Prompt/compaction execution wall-clock time, using the same compact format and rounding as Watch. |
 | `~Ictx` | Incoming context or `Δctx -> Next Ictx` when the chronological context state is available. |
@@ -292,9 +296,9 @@ Watch's first view never waits for quotas. An account-only scheduler refreshes h
 
 [Watch activity](docs/watch-activity.md): yellow `Skills (N)` lists confirmed exact IDs, newest first; red `[N tool call failures]` requires direct evidence, never load recency. Native errors and recognized Toolkit error contracts count once; cancellations and exit codes alone do not. Narrow rows preserve total/failures and whole skill IDs with `+N more`; the metric table keeps fixed geometry.
 
-Session `Σ` sums its displayed prompt/event CCost before rounding, preserving `?`/`N/A`. Native non-billable compactions contribute zero with blank row cost. Rounded row strings need not sum to the subtotal.
+Session `Σ` sums canonical prompt/event CCost before rounding. Unknown amounts display zero; already qualified same-scope costs survive incomplete refresh. Numeric subtotals have no uncertainty prefix. Native non-billable compactions display zero. Rounded row strings need not sum to the subtotal.
 
-`Token Mix % · N prompts` shows run-scoped unique prompts, shares and CCost of priced requests only. Startup-running requests, between-poll completions, child work and compactions qualify; completed pre-Watch history does not. `CCost · Watch: <run> · Total today: <day>` retains run usage across eviction, disappearance, resync and moves (zero when empty; `?` when partly priced). Today combines available local-day history with deduplicated requests observed and retained by this Watch. Requests deleted before observation cannot be reconstructed; restart uses available history, not a ledger. From local midnight until 03:00, `Total today` reads `Total YYYY-MM-DD`, even while idle. Row `Σ` can differ: startup mid-prompt may show row/Σ `78` but run `59`.
+`Token Mix % · N prompts` shows run-scoped unique prompts, shares and CCost of priced requests only. Startup-running requests, between-poll completions, child work and compactions qualify; completed pre-Watch history does not. `CCost · Watch: <run> · Total today: <day>` retains run usage across eviction, disappearance, resync and moves (zero when empty; plain known subtotal when partly priced). Today combines available local-day history with deduplicated requests observed and retained by this Watch. Requests deleted before observation cannot be reconstructed; restart uses available history, not a ledger. From local midnight until 03:00, `Total today` reads `Total YYYY-MM-DD`, even while idle. Row `Σ` can differ: startup mid-prompt may show row/Σ `78` but run `59`.
 
 First daily accounting may show Pending; refreshes/failures retain the complete same-day value until atomic replacement, allowing corrections. Midnight starts a new scope. Bounded enrichment is quota-independent; Today needs no month scan. All running candidates remain discoverable; scoped Watch keeps global Today.
 
@@ -380,9 +384,9 @@ Bundles omit prompts/titles, raw payloads/auth, tokens and account labels/IDs; s
 
 ## Current version
 
-**v81.44 (2026-11-13):** Recursive CCost preserves independent parallel subagent requests and honest partial-usage subtotals. Full/Mini Watch shows individual agent model, effort, Calls and cost help; session totals distinguish main and linked work. [Counting and coverage](docs/usage-and-cost.md#what-cost-guard-counts).
+**v81.56 (2026-11-14):** Claude Agent model labels use the exact-location live OpenCode catalog first, then a bundled frozen catalog when historical locations are unavailable. These are catalog-based estimates, not proof of historical execution; recorded selections and unsupported-price/usage uncertainty remain intact.
 
-Earlier changes: [version history](VERSION_HISTORY.md). [Live-proof limits](development/architecture/modules/history-loading.md#startup-presentation-and-launcher-evidence). Claude quotas remain experimental.
+Earlier changes: [version history](VERSION_HISTORY.md). [Live-proof limits](https://github.com/qstoffe/cost-guard-backlog/blob/main/development/architecture/modules/history-loading.md#startup-presentation-and-launcher-evidence). Claude quotas remain experimental.
 
 Versions identify code, not tags, ZIPs or GitHub Releases. Packaged Releases remain paused; resuming them requires an explicit policy decision, never a version-number trigger.
 
@@ -392,7 +396,7 @@ Development workflow and Feature Request guidelines: [development/README.md](dev
 
 Installed OpenCode Toolkit skills own `/repo-backlog` workflow. Verify the working tree, not ZIPs; development-only changes require no product tests, validator or versioning.
 
-[Code/test map and inventory review](development/architecture/modules/CODE_MAP.md); refresh with `python development/tools/code_inventory.py --json`.
+[Code/test map and inventory review](https://github.com/qstoffe/cost-guard-backlog/blob/main/development/architecture/modules/CODE_MAP.md); refresh with `python development/tools/code_inventory.py --json`.
 
 ```text
 python development/tools/run_tests.py --suite quick

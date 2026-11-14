@@ -202,6 +202,8 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
     - Answer: [Learning Rate](https://www.linkedin.com/posts/amit-shekhar-iitbhu_ml-ai-activity-7438148910260404224-0bxL)
 - How does the learning rate affect model training?
     - Answer: [Learning Rate](https://www.linkedin.com/posts/amit-shekhar-iitbhu_ml-ai-activity-7438148910260404224-0bxL)
+- What is learning rate scheduling? Why is warmup used?
+    - Answer: [How do learning rate schedules and warmup work?](https://outcomeschool.com/blog/learning-rate-schedules-and-warmup)
 - How do you approach hyperparameter tuning?
 - What is model quantization, and when would you use it?
     - Answer: [Quantization](https://outcomeschool.com/blog/how-does-model-quantization-work)
@@ -338,6 +340,7 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - What is computer vision, and why is it important?
 - What is image segmentation, and what are its applications?
 - What is object detection, and how does it differ from image classification?
+    - Answer: [How does Object Detection work?](https://outcomeschool.com/blog/object-detection)
 - What are the steps to build an image recognition system?
 - What are the challenges in real-time object tracking?
 - What is feature extraction in computer vision?

@@ -47,9 +47,10 @@ See the full [implementation directory](docs/languages/index.md) and the
 
 - Registry introduction: [REGISTRY.md](https://github.com/axisvela/praxo-core/blob/main/REGISTRY.md)
 - Machine-readable entry: [llms.txt](https://github.com/axisvela/praxo-core/blob/main/llms.txt) and [llms.md](https://github.com/axisvela/praxo-core/blob/main/llms.md)
-- [Examples](examples/): runnable language-specific examples.
+- [Examples](https://github.com/axisvela/praxo-core/tree/main/examples): runnable language-specific examples.
 - Coding-agent contract: [docs/getting-started/coding-agents.md](https://github.com/axisvela/praxo-core/blob/main/docs/getting-started/coding-agents.md)
 - Registry: [Language Release Index](docs/languages/registry-status.md)
+- Community: [X](https://x.com/axisvela) · [Weibo](https://weibo.com/u/1936025761)
 
 ## Go Reference Quickstart
 
@@ -57,7 +58,7 @@ Go is the reference implementation; use the language table above for other
 runtimes.
 
 ```bash
-go get github.com/axisvela/praxo-core/v2@v2.7.0
+go get github.com/axisvela/praxo-core/v2@v2.8.0
 ```
 
 First verify the [independent Go consumer](docs/getting-started/consumer-go.md):
@@ -158,7 +159,7 @@ other declared implementations are optional. See the
 
 | Goal | Example |
 | --- | --- |
-| Run a published package against a real model | [Live model](examples/live-model) |
+| Run a published package against a real model | [Live model](language/go/examples/live-model) |
 | Produce validated JSON | [Python](language/python/examples/structured-output), [TypeScript](language/typescript/examples/structured-output), [Java](language/java/examples/structured-output), [C#](language/csharp/examples/structured-output) |
 | Build a read-only workspace agent | [Workspace agent](examples/workspace-agent) |
 | Embed Core in an HTTP service | [Embedded service](examples/embedded-service) |
@@ -199,12 +200,12 @@ or [optional AxisVela integrations](docs/integrations/ecosystem.md). See the
 
 ## Releases and Contributing
 
-Core `2.7.0` is a minor release adding long-running operation service, verifier,
-lease, metrics, and credential-rotation recipes, published-package upgrade
-checks, and additional integration and adoption evidence. Optional adapters and
-Core implementations are versioned independently.
+Core `2.8.0` is a minor release adding opt-in `RequirePolicy` and
+`RequireToolScope` safe-default guards, HITL and multi-turn checkpoint examples,
+and a Go discovery mirror. Optional adapters and Core implementations are
+versioned independently.
 
-- [Latest release notes](docs/releases/2.7.0.md)
+- [Latest release notes](docs/releases/2.8.0.md)
 - [Release history](docs/releases/index.md)
 - [Language Release Index](docs/languages/registry-status.md)
 - [Compatibility policy](docs/project/compatibility-policy.md)
@@ -215,6 +216,11 @@ Core implementations are versioned independently.
 
 GitHub Latest Release represents only the Go Reference Core (`vX.Y.Z`). Language
 and adapter releases use independent tags and registry versions, not Latest.
+
+## Community
+
+- X: <https://x.com/axisvela>
+- Weibo: <https://weibo.com/u/1936025761>
 
 ## License
 

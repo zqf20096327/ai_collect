@@ -4,14 +4,17 @@
 
 <p align="center">
   <b>A dependency-free C inference engine for Liquid AI's LFM2 / LFM2.5 / LFM3 models.</b><br>
-  Terminal chat, an OpenAI-compatible server, a web agent and a terminal agent, all in one executable.
+  Terminal chat, an OpenAI-compatible server, a web agent, a terminal agent and a voice, all in one executable.
 </p>
 
 <p align="center">
+  <a href="https://github.com/benmaster82/Pithos/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/benmaster82/Pithos?label=release&color=3b82f6"></a>
   <img alt="C11, no dependencies" src="https://img.shields.io/badge/C11-no%20dependencies-7c5cf6">
   <img alt="Windows, Linux, macOS" src="https://img.shields.io/badge/Windows%20%7C%20Linux%20%7C%20macOS-x86--64%20%26%20ARM64-ec5c8c">
   <img alt="Xbox One in Developer Mode" src="https://img.shields.io/badge/Xbox%20One-Developer%20Mode-107c10">
   <img alt="GPU: OpenCL, Direct3D 12 or Vulkan, optional" src="https://img.shields.io/badge/GPU-OpenCL%20%7C%20Direct3D%2012%20%7C%20Vulkan%2C%20optional-f5a05a">
+  <a href="#lfm3-audio-2b-speech-input-and-output-experimental"><img alt="Speech in and out with LFM3-Audio" src="https://img.shields.io/badge/speech-LFM3--Audio%20in%20%26%20out-14b8a6"></a>
+  <a href="#server-and-web-chat"><img alt="OpenAI-compatible API: chat and audio" src="https://img.shields.io/badge/API-OpenAI--compatible%20chat%20%26%20audio-6b7280"></a>
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-2ea043"></a>
 </p>
 
@@ -21,6 +24,7 @@
   <a href="#screenshots">Screenshots</a> ·
   <a href="#results">Results</a> ·
   <a href="#terminal-agent">Terminal agent</a> ·
+  <a href="#lfm3-audio-2b-speech-input-and-output-experimental">Speech</a> ·
   <a href="#xbox-one">Xbox One</a> ·
   <a href="#adding-mcp-servers">MCP</a> ·
   <a href="ROADMAP.md">Roadmap</a>
@@ -31,6 +35,7 @@
 | **About 1.9× faster than llama.cpp** | 17–22 tok/s against 11 tok/s with CUDA, on the same laptop and model ([head-to-head](#head-to-head-with-llamacpp-v04-2026-10-24)) |
 | **Runs a 13.5 GB model on 16 GB of RAM** | experts stream from disk, the hot ones live in a 4 GB GPU |
 | **Agents included** | Pandora in the browser, and a terminal agent that runs commands, fixes code and checks its own work |
+| **Hears and speaks** | with LFM3-Audio-2B: transcription and translation in 18 languages, streamed speech (WAV, PCM, MP3) and voice conversations on the `/talk` page ([speech](#lfm3-audio-2b-speech-input-and-output-experimental)) |
 | **Runs on an Xbox One** | an OpenAI-compatible server for your home network, with LFM3-1.7B on the console's GPU: 29.5 tok/s generation, ~140 tok/s prompt ([Xbox One](#xbox-one)) |
 
 Pithos is an inference engine written from scratch in C11 with **no dependencies**: no external
@@ -40,6 +45,8 @@ Liquid AI's LFM2 / LFM2-MoE / LFM3 architectures and is tuned for `LFM2.5-24B-A2
 are validated too: [LFM2.5-8B-A1B](#lfm25-8b-a1b-the-middle-ground), a mixture of experts that fits
 in 8 GB of RAM (about 22 tokens per second on the CPU alone), and the small
 [LFM3-1.7B](#lfm3-17b-small-and-fast): about 80 tokens per second with the GPU, 20 on the CPU alone.
+[LFM3-Audio-2B](#lfm3-audio-2b-speech-input-and-output-experimental) (experimental) adds speech: it
+transcribes, translates, speaks and holds voice conversations.
 
 **Pithos** is the engine and the server (in the myth, the *pithos* is Pandora's jar: it holds the
 model). **Pandora** is the agent in the web interface.
@@ -58,6 +65,9 @@ model). **Pandora** is the agent in the web interface.
   on the TV.
 - Works with models larger than the free RAM (asynchronous read-ahead, expert prediction).
 - OpenAI-compatible HTTP server with prompt reuse across turns, also after a restart.
+- **Speech** with LFM3-Audio-2B: `/v1/audio/transcriptions`, `/v1/audio/translations` and
+  `/v1/audio/speech` (WAV, PCM or MP3, streamed), spoken answers, dictation and a voice mode in
+  Pandora, and the `/talk` page for voice conversations.
 - [Reasoning levels](#server-and-web-chat): high, medium, low or off, from the command line,
   the API or a selector in Pandora.
 - **Pandora**, a single-file web chat with an agent mode: web search, files, calculator and any
@@ -107,7 +117,7 @@ ones (Raspberry Pi 3 / 4). Otherwise build from source:
 1. **Get the model** (see [Downloading the model](#downloading-the-model) below).
    On Linux, `bash build.sh --download-model` can handle both the build and this download
    (`--download-model=lfm2.5-8b` or `--download-model=lfm3-1.7b` for the smaller models,
-   `--list-models` for the choices).
+   `--download-model=lfm3-audio-2b` for the speech model, `--list-models` for the choices).
 2. **Build.** On Windows run `build.cmd`; on Linux run `bash build.sh`; on macOS run `make`
    (see [Building](#building)). You can compile before downloading the model.
 3. **Run.**
@@ -132,6 +142,10 @@ Three models are validated. Choose by the memory of your computer:
 | [LFM2.5-24B-A2B](#downloading-the-model) (the reference, MoE) | 13.5 GiB | 16 GB | the deepest answers; it also runs when the model does not fit in RAM, from disk |
 | [LFM2.5-8B-A1B](#lfm25-8b-a1b-the-middle-ground) (MoE) | 4.8 GiB | 8 GB | a larger model on the CPU: it fits in RAM and generates as fast as LFM3-1.7B there |
 | [LFM3-1.7B](#lfm3-17b-small-and-fast) (dense) | 1.0 GiB | 4 GB | modest hardware, the fastest with a GPU (the whole model in VRAM), the Xbox One |
+
+For speech, [LFM3-Audio-2B](#lfm3-audio-2b-speech-input-and-output-experimental) (experimental,
+1.2 GiB with its audio projector, 4 GB of RAM) transcribes, translates, speaks and holds voice
+conversations.
 
 Pithos uses by default the file **`LFM2.5-24B-A2B-Q4_K_M.gguf`** from Liquid AI's public repository
 [LiquidAI/LFM2.5-24B-A2B-GGUF](https://huggingface.co/LiquidAI/LFM2.5-24B-A2B-GGUF). No account
@@ -263,6 +277,81 @@ build/pithos -m models/LFM3-1.7B-Q4_K_M.gguf -i
 build/pithos -m models/LFM3-1.7B-Q4_K_M.gguf --server --open
 ```
 
+### LFM3-Audio-2B: speech input and output (experimental)
+[LiquidAI/LFM3-Audio-2B](https://huggingface.co/LiquidAI/LFM3-Audio-2B) is LFM3 with a speech
+encoder and a speech decoder: it hears audio and speaks, in 18 languages, Italian included. Pithos
+transcribes speech, answers questions about it or translates it, reads text aloud with a female or
+male voice, and holds spoken conversations: [Pandora's voice page](#voice-conversation-talk) at
+`/talk`. Two files are
+needed: the model, whose text part is the same architecture as LFM3-1.7B and runs on the same GPU
+paths, and its audio projector (`mmproj-...`), which Pithos looks for next to the model (the
+table below has their sizes and SHA-256). On Linux `bash build.sh --download-model=lfm3-audio-2b`
+downloads and verifies both; elsewhere:
+
+```powershell
+curl.exe -L -C - -o models\LFM3-Audio-2B-Q4_K_M.gguf https://huggingface.co/LiquidAI/LFM3-Audio-2B-GGUF/resolve/main/LFM3-Audio-2B-Q4_K_M.gguf
+curl.exe -L -C - -o models\mmproj-LFM3-Audio-2B-Q4_K_M.gguf https://huggingface.co/LiquidAI/LFM3-Audio-2B-GGUF/resolve/main/mmproj-LFM3-Audio-2B-Q4_K_M.gguf
+server.cmd -m models\LFM3-Audio-2B-Q4_K_M.gguf     # Pandora with a microphone, /talk for voice conversations
+```
+
+(`curl` instead of `curl.exe` and `/` in the paths on Linux and macOS.) Once the server runs, the
+chat, the microphone and the voice page work in the browser; the command line:
+
+```
+build\pithos.exe -m models\LFM3-Audio-2B-Q4_K_M.gguf --audio speech.wav -s "Perform ASR in English."
+build\pithos.exe -m models\LFM3-Audio-2B-Q4_K_M.gguf --audio speech.wav -s "Translate the following speech from English to Italian in text form."
+build\pithos.exe -m models\LFM3-Audio-2B-Q4_K_M.gguf --audio speech.wav -p "What is happening in this recording?"
+```
+
+These are the system prompts of the model card: `-s "Perform ASR."` lets the model detect the
+language; for questions the card suggests `-s "Answer questions about the provided audio clip.
+Base every answer only on what can be heard."`. Without a system prompt the model would rather
+answer with speech, so in text answers its speech tokens are turned off, as the card does for
+text-only answers (spoken answers are below). With `-i` the audio goes into the first message of the chat. The WAV
+can be PCM (8, 16, 24 or 32-bit) or 32-bit float, at any sample rate and with any number of
+channels: Pithos mixes it to mono and resamples it to 16 kHz.
+
+#### Voice conversation (`/talk`)
+With LFM3-Audio the server also serves a page for spoken conversations at
+**http://127.0.0.1:8080/talk** (a button next to the context counter in Pandora opens it). Press
+Start and talk: Pandora notices when you stop, answers aloud and listens again; speaking while it
+talks interrupts it. In English the model answers in speech directly (its interleaved mode: text
+and speech alternate as it generates), so the voice starts about a second after you stop. The
+model's spoken chat is English only, so in other languages (Italian, French, German... chosen in
+the page's settings, or the browser's language) Pandora transcribes what you say, writes a short
+answer and speaks it a sentence at a time, about two seconds after you stop. The page needs the
+microphone, which browsers give to `localhost` or https pages only.
+
+Over the API, a spoken answer is a chat completion with `"modalities": ["text", "audio"]` and
+`"stream": true`: the events carry the text as `delta.content` and the speech as
+`delta.audio.data` (base64 of 16-bit 24 kHz mono PCM), as in OpenAI's audio chat. The model card
+recommends the system prompt `Respond with interleaved text and audio.`
+
+**Speech output.** `--tts` speaks a text into a WAV file (24 kHz):
+
+```
+build\pithos.exe -m models\LFM3-Audio-2B-Q4_K_M.gguf --tts "Buongiorno a tutti!" --tts-lang it --tts-voice male -o saluto.wav
+```
+
+Each step of the model gives a frame of 12 codes for 80 ms of speech (a small depth decoder picks
+them in three passes), and the codec turns the frames into sound. On the reference laptop speech
+comes out 2.7 times faster than real time with Vulkan (8.9 s of speech in 3.2 s), 1.2 times on the
+CPU alone; OpenCL runs the text part of each step on the CPU here, as the speech decoder needs the
+model's hidden state. The voices are those of the model card: `female` (default) and `male`.
+
+| | Model | Audio projector |
+|---|---|---|
+| File | `LFM3-Audio-2B-Q4_K_M.gguf` | `mmproj-LFM3-Audio-2B-Q4_K_M.gguf` |
+| From | [LiquidAI/LFM3-Audio-2B-GGUF](https://huggingface.co/LiquidAI/LFM3-Audio-2B-GGUF) | the same repository |
+| Size | 1,099,626,016 bytes (1.0 GiB) | 172,418,048 bytes (164 MiB) |
+| SHA-256 | `9a773289bd321ed879cd3a76545f6aca506e403851a45fb315420aee45625be2` | `1a3a895160aad17c1f52117a6ee4cea8e68988651ea5a33c5b990539e8eae81d` |
+
+The encoder runs on the CPU, about 30 times faster than real time on the reference laptop (54 s
+of speech in 1.7 s); the transcription itself then runs like any prompt, on the GPU if there is
+one. On test recordings in English and Italian (16, 22 and 44.1 kHz, up to a minute) the
+transcriptions are the same as llama.cpp's on the CPU, OpenCL and Vulkan, and what Pithos says is
+transcribed back word for word.
+
 ## Results
 
 Reference machine: i5-10500H (6 cores, AVX2), 16 GB DDR4-2933, GTX 1650 Max-Q 4 GB, NVMe SSD.
@@ -347,6 +436,7 @@ bash build.sh --download-model   # also download/verify the reference 24B model
 bash build.sh --download-model=lfm2.5-8b              # the 8B MoE instead (4.8 GiB)
 bash build.sh --download-model=lfm3-1.7b              # the small model instead (1.0 GiB)
 bash build.sh --download-model=lfm3-1.7b,lfm2.5-24b   # two of them
+bash build.sh --download-model=lfm3-audio-2b          # the speech model and its audio projector (1.2 GiB)
 bash build.sh --no-install       # build without installing anything (offline/CI)
 bash build.sh --yes --test       # allow missing-package installation without prompting
 bash build.sh --native --jobs 4  # optimize for this CPU; not for distributing binaries
@@ -367,7 +457,8 @@ Use `bash build.sh --download-model` (or combine it with `--test`) to fetch the
 listed by `--list-models`. The list lives in **`models.tsv`**: one line per model with its
 file name, exact size, SHA-256, a revision-pinned https URL and a status (`validated` models
 were checked against a reference; `experimental` ones are only downloaded when named).
-Adding a model is one line there. For every model the script pins the Hugging Face revision,
+Adding a model is one line there; a model's projector is the line `ID.mmproj` after it, and it
+is downloaded with the model. For every model the script pins the Hugging Face revision,
 checks free disk space, resumes interrupted transfers in a `.gguf.part` file, and
 verifies the exact size and SHA-256 before renaming it to `.gguf`. An existing valid
 model is verified and reused; an invalid existing model is preserved and reported
@@ -582,6 +673,13 @@ dependency-free HTTP server (Winsock / POSIX sockets) with:
   - multi-turn conversations saved in the browser;
   - streaming answers with Markdown (tables, code with a Copy button) and a collapsible reasoning section;
   - a reasoning level selector next to the message box (High, Medium, Low, Off);
+  - with [LFM3-Audio](#lfm3-audio-2b-speech-input-and-output-experimental), a microphone button for dictation:
+    speak, click again, and the transcription lands in the message box to check before sending
+    (browsers allow the microphone on `localhost` or https only);
+  - and a **Voice** mode: the answer is read aloud with the model's voice while it streams, a
+    sentence at a time, what you dictate is sent at once, and hands-free (Settings, on by default)
+    the microphone opens again after each answer and stops by itself after a pause. Clicking the
+    microphone or typing interrupts the voice;
   - prompt-processing progress, stop, regenerate, edit the last message;
   - system prompt and sampling parameters, light/dark theme.
 
@@ -592,11 +690,32 @@ dependency-free HTTP server (Winsock / POSIX sockets) with:
     `chat_template_kwargs.preserve_thinking`, the reasoning controls described below;
   - `POST /v1/completions` and `GET /v1/models`;
   - like llama-server, also `GET /health`, `GET /props`, `POST /tokenize`, `POST /apply-template`
-    and the `timings` / `prompt_progress` fields (`return_progress: true`).
+    and the `timings` / `prompt_progress` fields (`return_progress: true`);
+  - with [LFM3-Audio](#lfm3-audio-2b-speech-input-and-output-experimental) and its projector next to it, speech:
+    `input_audio` parts (base64 WAV) in chat messages; `POST /v1/audio/transcriptions` (form
+    fields `file`, `language` as an ISO code such as `it`, `response_format` `json`, `text` or
+    `verbose_json`, `temperature`); `POST /v1/audio/translations` (the same fields: the speech as
+    English text; `language`, optional, names the language spoken); `POST /v1/audio/speech`
+    (`input`, `voice` `female` or `male`, `language`, `response_format` `wav`, `pcm` or `mp3`,
+    `stream_format` `audio` or `sse`). `GET /props` says so under `modalities`.
+
+    The speech streams: a `pcm` or `mp3` body grows as it is generated, so a player starts about
+    half a second after the request instead of after the whole text; with `"stream_format": "sse"`
+    the audio comes as `speech.audio.delta` events (base64 of PCM, or of MP3 frames) and ends with
+    `speech.audio.done`, as in OpenAI's API. A `wav` body comes at once (its header holds the
+    length). MP3 (24 kHz mono, 48 kbit/s) uses the system's encoder, so the build needs no library:
+    Media Foundation on Windows (not in N editions without the Media Feature Pack), libmp3lame
+    elsewhere (the `libmp3lame0` or `lame` package).
 
 ```
 curl http://127.0.0.1:8080/v1/chat/completions -H "Content-Type: application/json" \
      -d '{"messages":[{"role":"user","content":"Hello!"}]}'
+curl http://127.0.0.1:8080/v1/audio/transcriptions -F file=@speech.wav -F language=en
+curl http://127.0.0.1:8080/v1/audio/translations -F file=@parole.wav
+curl http://127.0.0.1:8080/v1/audio/speech -H "Content-Type: application/json" \
+     -d '{"input":"Ciao!","language":"it"}' -o ciao.wav
+curl -N http://127.0.0.1:8080/v1/audio/speech -H "Content-Type: application/json" \
+     -d '{"input":"Hello there!","response_format":"mp3"}' | ffplay -nodisp -autoexit -
 ```
 
 **Reasoning levels.** None of the models has official effort levels: LFM3 has an on/off switch in its
@@ -803,6 +922,10 @@ checkpoint and only processes the rest:
 | `-p TEXT` / `-f FILE` | single prompt with the model's chat template |
 | `-i` | interactive chat (default without a prompt). Commands `/reset`, `/exit` |
 | `-s TEXT` | system prompt |
+| `--audio FILE` | a WAV file the model hears before the prompt (LFM3-Audio); without `-p`, the audio alone is the message |
+| `--mmproj FILE` | the audio projector (default: `mmproj-<model name>*.gguf` next to the model) |
+| `--tts TEXT`, `-o FILE` | speak TEXT into a 24 kHz WAV file (LFM3-Audio; default `speech.wav`) |
+| `--tts-voice V`, `--tts-lang L`, `--tts-temp F` | `female` (default) or `male`; the language as an ISO code (`en`, `it`, `fr`, ...); the temperature of the speech codes (default 1.0) |
 | `--raw` | plain text completion without the template |
 | `-n N` | max tokens per answer (default 4096, reasoning included) |
 | `-c N` | context in tokens (default 8192, max 131072) |
@@ -927,10 +1050,14 @@ for each of the 30 convolution layers.
 | `src/platform.c` | mmap, thread pool, prefetch, system info (Win32 / POSIX) |
 | `src/sampler.c`, `src/main.c` | sampling, CLI, terminal chat |
 | `src/server.c`, `src/json.c` | HTTP server, OpenAI API, chat template, tool calls, JSON |
+| `src/audio.c` | LFM3-Audio speech input: WAV, resampling, log-mel features, the speech encoder and projector |
+| `src/speech.c` | LFM3-Audio speech output: the depth decoder (MaskGIT), the LiquidCodec decoder, inverse STFT, WAV |
+| `src/mp3.c` | MP3 output through the system's encoder, loaded at run time (Media Foundation, libmp3lame) |
 | `src/pcache.c` | prompt reuse: recurrent-state checkpoints, sessions on disk |
 | `src/tools.c`, `src/proc.c` | agent tools (files, web, shell commands, background processes), MCP client (JSON-RPC over stdio), child processes with pipes |
 | `src/agent.c` | terminal agent: conversation, approvals, safe / autonomous modes (talks to the server in-process) |
 | `web/index.html` | web interface (embedded into `src/webui_html.h` by `tools/embed.py`) |
+| `web/talk.html` | the voice conversation page `/talk` (embedded into `src/talk_html.h`) |
 | `web/brand/` | Pandora logo: vector mark (`currentColor`), dark version for light UIs and light version for dark UIs (SVG, 512 px PNG), original in `pandora-logo.jpg` |
 
 ### CPU optimizations
@@ -1048,6 +1175,17 @@ for each of the 30 convolution layers.
 - Tokenizer identical to Hugging Face `tokenizers` (each model's `tokenizer.json`) and to
   `llama-tokenize`, on texts with accents, numbers, spaces, code, CJK, emoji and special tokens.
 - Perplexity compared with `llama-perplexity` (table above).
+- LFM3-Audio-2B: log-mel features against the model's feature extractor (torch.stft and
+  transformers' Slaney filters): mean difference 1e-6. Encoder and projector against a float64
+  PyTorch implementation written from `modeling_lfm3_audio.py` on the same dequantized weights:
+  downsampler output within 0.01% once the reference rounds its inputs to int8 as Pithos does,
+  encoder output within 0.4%, embeddings within 2% (cosine 0.9997; the projector multiplies in
+  float, because int8 inputs would add about 7% there). Transcriptions equal to llama.cpp's.
+  Speech output against the same kind of reference, written from `modeling_lfm3_audio.py` and
+  `modeling_liquid_codec.py`: depth decoder logits within 1.7% (the same most likely code in 94% of
+  the cases; the rest are near ties); codec output within 1.3%, as far as the reference itself
+  moves when it rounds its inputs to int8 like Pithos; inverse STFT exact (141 dB). The spoken
+  test sentences transcribe back word for word.
 - LFM3-1.7B: perplexity against an independent PyTorch implementation written from the model's
   `modeling_lfm3.py`, on the same dequantized weights: 4.45 vs 4.39 with 256-token windows, 3.65
   vs 3.62 with 1024 (sliding window active). The gap is the int8 activations and the f16 KV cache.
@@ -1100,6 +1238,8 @@ for each of the 30 convolution layers.
 | `PITHOS_VK_MAXBUF=MB` | Vulkan: a lower buffer size limit, to test the splitting of large matrices |
 | `PITHOS_VK_FAIL=N` | Vulkan: simulate a GPU failure at the Nth whole-pass submit, to test the fallback to the CPU |
 | `PITHOS_CL_FAIL=N` | OpenCL: simulate a GPU failure at the Nth generated token, to test the fallback to the CPU |
+| `PITHOS_SPEECH_DUMP=PREFIX`, `PITHOS_SPEECH_ORDER=fixed`, `PITHOS_SPEECH_PROFILE=1` | `--tts`: write the hidden states, codes, logits, codec output and audio of every frame (`PREFIX.hid`, `.codes`, `.logits`, `.polar`, `.pcm`); reveal the codebooks in a fixed order (for comparisons); print the time per frame of each part |
+| `PITHOS_AUDIO_DUMP=PREFIX` | `--audio`: write the log-mel features, the encoder input and output and the embeddings as raw f32 files `PREFIX.mel`, `.pre`, `.hid`, `.emb` |
 
 ## Limitations
 Planned improvements, in order of priority, are in [ROADMAP.md](ROADMAP.md).
@@ -1125,7 +1265,11 @@ Planned improvements, in order of priority, are in [ROADMAP.md](ROADMAP.md).
 - The server handles one request at a time and the others wait in a queue, because the context and
   the expert cache are shared.
 - Web interface conversations live in the browser's `localStorage`.
-- Text only: the vision and audio LFM models are not supported.
+- LFM3-Audio: speech comes in as WAV only (no MP3 / Opus / WebM input) and goes out as WAV, PCM or
+  MP3; one audio request at a time (others wait). The model's own spoken answers are English only;
+  other languages go through transcription and speech synthesis. In a spoken conversation the
+  model hears the last three exchanges again at each turn (their audio is not kept in the prompt
+  cache). No vision models.
 
 ## License
 Pithos is released under the [MIT License](LICENSE). The license covers the engine's code only; the

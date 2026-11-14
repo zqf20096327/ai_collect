@@ -22,7 +22,7 @@
 
 ---
 
-> 🌳 **Stable and in production.** loomcycle is past v1.0 (currently v1.152) — feature-complete, hardened, and distribution-ready (Homebrew, multi-arch Docker, a Claude Code plugin, TS + Python adapters, a TrueNAS app). **Validated by two months of continuous production operation at JobEmber.ai** under real user load, with multi-replica HA on Postgres. Development since v1.0 has been new primitives plus hardening — see [`REVISIONS.md`](REVISIONS.md) for recent releases and [the releases page](https://github.com/denn-gubsky/loomcycle/releases) for the full history. Apache-2.0. We welcome bug reports, security disclosures, feature contributions, downstream consumers, and forks. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+> 🌳 **Stable and in production.** loomcycle is past v1.0 (currently v1.153) — feature-complete, hardened, and distribution-ready (Homebrew, multi-arch Docker, a Claude Code plugin, TS + Python adapters, a TrueNAS app). **Validated by two months of continuous production operation at JobEmber.ai** under real user load, with multi-replica HA on Postgres. Development since v1.0 has been new primitives plus hardening — see [`REVISIONS.md`](REVISIONS.md) for recent releases and [the releases page](https://github.com/denn-gubsky/loomcycle/releases) for the full history. Apache-2.0. We welcome bug reports, security disclosures, feature contributions, downstream consumers, and forks. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ---
 
@@ -115,11 +115,22 @@ curl -L https://github.com/denn-gubsky/loomcycle/releases/latest/download/loomcy
 ## Quick start (seconds, authenticated)
 
 ```sh
-loomcycle init --with-token   # writes config + mints a token to ~/.config/loomcycle/auth.env (0600)
-export ANTHROPIC_API_KEY=sk-...   # (or OPENAI_API_KEY / DEEPSEEK_API_KEY) — at least one provider key
-loomcycle doctor              # verify env + keys + storage + the just-minted token
-loomcycle                     # starts on 127.0.0.1:8787 (auto-loads auth.env — no shell-rc edit)
+loomcycle init --with-token       # writes a short config + mints a token to ~/.config/loomcycle/auth.env (0600)
+export ANTHROPIC_API_KEY=sk-...   # (or OPENAI_API_KEY / DEEPSEEK_API_KEY / GEMINI_API_KEY); none if you run Ollama
+loomcycle doctor                  # verify env + keys + storage + the just-minted token
+loomcycle                         # starts on 127.0.0.1:8787 (auto-loads auth.env)
 ```
+
+**Two ways to run it, each with a ready configuration.** A preset is a named stack of config built into the binary; `loomcycle presets` lists them.
+
+| Profile | For | Start from |
+|---|---|---|
+| `personal` | One person on one machine: local models, cloud models or both; SQLite. | [`examples/profiles/personal/`](examples/profiles/personal/), or `loomcycle init` |
+| `server` | A shared installation: Postgres, traces to a collector, sign-in gates, tenants. | [`examples/profiles/server/`](examples/profiles/server/) (compose file included), or `loomcycle init --profile server` |
+
+`loomcycle init` writes the profile's short `loomcycle.yaml`: one line, `presets: [personal]`, names the preset that supplies the agents and the model routing, and the rest holds only what is yours. `LOOMCYCLE_PRESETS`, when set, selects instead of that line. `loomcycle init --full` writes the long, fully-commented reference config instead, which needs no preset.
+
+[`docs/CONFIGURATION.md`](docs/CONFIGURATION.md) opens with a start page for each profile (what to set, in order), one table of which settings are environment variables and which are yaml keys, and the names the secrets file has in each install path.
 
 `init --with-token` prints the Web UI URL (`http://127.0.0.1:8787/ui`). Open it, then paste the token from `~/.config/loomcycle/auth.env` at the login prompt. (The token is kept in the `0600` file and never embedded in a URL. A `?token=` link would leak the bearer into browser history and into any fronting proxy's logs.) `loomcycle` and `loomcycle doctor` both auto-load `auth.env` from the config dir; a real `export LOOMCYCLE_AUTH_TOKEN=…` always overrides it.
 
@@ -132,9 +143,9 @@ Pick the tier that fits. Each is a superset of the one above. **Auth is enforced
 No token, no flags. Fastest way to kick the tires on `127.0.0.1`.
 
 ```sh
-loomcycle init               # config only — no secret written
-export ANTHROPIC_API_KEY=sk-...
-loomcycle                    # open mode: /v1/* + /ui pass through unauthenticated (logs a warning)
+export LOOMCYCLE_PRESETS=personal   # no config file needed: the preset is the config
+export ANTHROPIC_API_KEY=sk-...     # or none, with Ollama running locally
+loomcycle                           # open mode: /v1/* + /ui pass through unauthenticated (logs a warning)
 open http://127.0.0.1:8787/ui
 ```
 
@@ -201,16 +212,22 @@ been primitives plus hardening: memory, documents, teams, sandboxing, retention
 and erasure. The agentic-memory subsystem and the document surfaces built on it
 remain the main direction.
 
-The most recent line (v1.152.0) fixes what a measurement of knowledge-base
-agents found: summaries that named their document by another document's code,
-search hits that did not say where their document is, a spawned run's usage
-that counted only its last model call, and a long `spawn_runs` join that a
-client could give up on. Every annotation is rewritten once after the upgrade.
+The most recent line (v1.153.0) gives every setting one place. 150 environment
+variables are no longer read: policy and tuning moved to the yaml, limits
+nobody changed became fixed values, and seven feature switches are gone. Two
+presets, `personal` and `server`, stand for a whole installation. It also adds
+a knowledge-base question router with read-only tool grants, conversion
+workers that take file conversion out of the runtime's process (off by
+default), and a fix to the pacing of password sign-ins sent together. This
+release stops the boot for some existing configurations: read its upgrade
+notes in [`REVISIONS.md`](REVISIONS.md) and
+[`docs/SETTINGS_MIGRATION.md`](docs/SETTINGS_MIGRATION.md) first.
 
-Before it, v1.151.0 let a tenant send its own traces and metrics to its own
-OpenTelemetry collector and made a paused run resume the way a run starts.
+Before it, v1.152.0 fixed what a measurement of knowledge-base agents found
+and rewrote every annotation once.
 
-Earlier, v1.150.0 made `loomcycle-media` the image for voice and a browser
+Earlier, v1.151.0 let a tenant send its own traces and metrics to its own
+OpenTelemetry collector, v1.150.0 made `loomcycle-media` the image for voice and a browser
 together, v1.149.0 let a tenant scrape its own metrics and finished the panic
 net for background goroutines, and v1.148.0 added two layers and the operator's view of
 both. Annotations give every section, document and folder of a tenant knowledge

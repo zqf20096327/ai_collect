@@ -1,5 +1,7 @@
 <div align="center">
 
+<p><img src="./docs/images/itsm-logo.svg" alt="ITSM" width="280" height="60"></p>
+
 # AI-Native ITSM
 
 一个面向国内企业的开源 IT 服务管理系统，覆盖 ITIL 核心流程，支持 BPMN 工作流编排、CMDB、SLA、知识库和多租户。
@@ -8,13 +10,41 @@
 [![Next.js](https://img.shields.io/badge/Next.js-15.5-black?logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-Apache--2.0-green)](./LICENSE)
+
+[![Release](https://img.shields.io/github/v/release/heidsoft/itsm?label=Release)](https://github.com/heidsoft/itsm/releases)
 [![Backend CI](https://github.com/heidsoft/itsm/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/heidsoft/itsm/actions/workflows/backend-ci.yml)
 [![Frontend CI](https://github.com/heidsoft/itsm/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/heidsoft/itsm/actions/workflows/frontend-ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/heidsoft/itsm)](https://goreportcard.com/report/github.com/heidsoft/itsm)
+[![Docker](https://img.shields.io/badge/Container-GHCR-blue?logo=docker&logoColor=white)](https://github.com/heidsoft/itsm/pkgs/container)
+[![Last Commit](https://img.shields.io/github/last-commit/heidsoft/itsm)](https://github.com/heidsoft/itsm/commits/main)
 [![Stars](https://img.shields.io/github/stars/heidsoft/itsm?style=flat)](https://github.com/heidsoft/itsm/stargazers)
 
 [简体中文](./README.md) · [English](./README.en.md)
 
 </div>
+
+## 社区信号
+
+<p align="center">
+  <a href="https://github.com/heidsoft/itsm/graphs/contributors"><img src="https://img.shields.io/github/contributors/heidsoft/itsm?style=for-the-badge&label=%F0%9F%A4%9D%20Contributors&color=informational" alt="Contributors"></a>
+  <a href="https://github.com/heidsoft/itsm/discussions"><img src="https://img.shields.io/badge/%F0%9F%92%AC%20Discussions-参与讨论-2ea44f?style=for-the-badge" alt="Discussions"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/heidsoft/itsm/stargazers"><img src="./docs/images/star-history.svg" alt="Star 增长趋势" width="560"></a>
+</p>
+
+<p align="center">
+  <!-- CONTRIBUTORS-WALL:START -->
+<a href="https://github.com/heidsoft" title="heidsoft · 818 commits"><img src="https://avatars.githubusercontent.com/u/1329974?v=4&amp;s=64" width="56" height="56" alt="heidsoft" style="border-radius:50%;margin:4px;vertical-align:middle;"></a>
+<!-- CONTRIBUTORS-WALL:END -->
+</p>
+
+<p align="center">
+  🤝 社区驱动 · ⭐ Star 持续增长 —— <a href="./COMMUNITY.md">了解社区与联系</a> · <a href="https://github.com/heidsoft/itsm/discussions">参与讨论</a>
+</p>
+
+---
 
 ## 目录
 
@@ -562,9 +592,15 @@ git push origin feature/your-feature
 
 - [查看贡献者](https://github.com/heidsoft/itsm/graphs/contributors)
 
-## Star 趋势
+## 社区与联系
 
-[![GitHub Star 增长趋势](./docs/images/star-history.svg)](https://github.com/heidsoft/itsm/stargazers)
+ITSM 是社区驱动的开源项目，欢迎所有关注、使用与贡献的朋友加入：
+
+- 🤝 **社区主交流区**：[GitHub Discussions](https://github.com/heidsoft/itsm/discussions)（公告 / 问答 / Show and tell）
+- 🐛 **问题反馈**：[Issues](https://github.com/heidsoft/itsm/issues)
+- 🌐 **官网 / 博客**：[cloudmesh.top](https://cloudmesh.top)
+- 📱 **微信公众号**：「云与数字化」（AI / 云原生 / ITSM 实践分享）
+- 📖 **社区与联系文档**：[COMMUNITY.md](./COMMUNITY.md)（含沟通渠道、参与方式与 Star 致谢名单）
 
 ## License
 

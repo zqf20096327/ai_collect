@@ -18,7 +18,7 @@
 
 <h3 align="center">Library of Primitives from__Robot__to__AI__ </h3>
 
-<p align="center"><strong>A library for online learning on trading, AI and sensor streams, one sample at a time. Pre-trade risk with a tamper-evident decision log, drift and anomaly detection on returns, neural network training with continual learning, robust time-series models, safe commands for drones and robots. Built to run inside the loop, and to be defended in front of a reviewer.</strong></p>
+<p align="center"><strong>A low-level learning toolkit on three levels: online learning one sample at a time, deep learning, and machine learning on a whole dataset. With a graph ontology, audio, vision and video, robot motion control, drift and anomaly detection, and finance blocks with a tamper-evident decision log. Built to run inside the loop, and to be defended in front of a reviewer.</strong></p>
 
 <p align="center">📖 <a href="https://tatopenn-cell.github.io/Dense-Armor/"><strong>Full documentation, API reference, quick guide →</strong></a></p>
 
@@ -63,7 +63,7 @@ In this library, *shielding* means cleaning the data a model sees — NaN, spike
 
 ## What it does
 
-Dense-Armor is a Python machine learning library with an online part. Every online estimator learns one sample at a time, at control-loop speed, on JAX, and the machine learning classes of `dense_armor.ml` read a whole dataset with `fit`. The same `learn_one` / `predict_one` / `transform_one` contract runs on a market tick, a neural network mini-batch, a drone sensor stream, a robot joint stream, a video frame, a token stream, and a shield can sit in front of any of them. On top of that, `dense_armor.core.deep.neural` has the deep-learning pieces — layers, attention, convolutional and recurrent blocks, batch and streaming training, continual learning with EWC, GEM and A-GEM, memory consolidation with vector quantization, product quantization and a residual tree — and `dense_armor.core.signals.stats` and `.timeseries` have the robust models: Student-t, Gaussian mixture, GARCH, and the AR, VAR and Kalman families.
+Dense-Armor is a low-level learning toolkit on three levels: online learning, deep learning and machine learning. Every online estimator learns one sample at a time, at control-loop speed, on JAX, and the machine learning classes of `dense_armor.ml` read a whole dataset with `fit`. The same `learn_one` / `predict_one` / `transform_one` contract runs on a market tick, a neural network mini-batch, a drone sensor stream, a robot joint stream, a video frame, a token stream. On top of that, `dense_armor.core.deep.neural` has the deep-learning pieces — layers, attention, convolutional and recurrent blocks, batch and streaming training, continual learning with EWC, GEM and A-GEM, memory consolidation with vector quantization, product quantization and a residual tree — and `dense_armor.core.signals.stats` and `.timeseries` have the robust models: Student-t, Gaussian mixture, GARCH, and the AR, VAR and Kalman families.
 
 ---
 
@@ -160,6 +160,7 @@ pip install dense-armor                 # core: numpy + jax
 pip install "dense-armor[vision]"       # + camera (OpenCV), image folder (Pillow), in-memory
 pip install "dense-armor[ros]"          # + rosbag readers
 pip install "dense-armor[audio,data]"   # + WAV, HDF5, NetCDF
+pip install "dense-armor[graph]"        # + networkx, for page rank and to_networkx()
 pip install "dense-armor[mcp]"          # + MCP server for LLM agents
 pip install "dense-armor[quantum]"      # + Dense-Evolution (NISQ simulator)
 pip install "dense-armor[sklearn]"      # + scikit-learn bridge
@@ -173,7 +174,7 @@ Works on Python 3.10+. JAX is the backend for every estimator.
 
 ## Features
 
-Dense-Armor provides online implementations of the following families of algorithms:
+Dense-Armor provides the following families of algorithms, online unless a line says otherwise:
 
 - Linear models, with a wide array of optimizers
 - Decision trees (including FIMT-DD regression model trees), online forests (adaptive random forest, aggregated Mondrian forests, online extra trees) and rule sets (adaptive model rules)
@@ -192,6 +193,8 @@ Dense-Armor provides online implementations of the following families of algorit
 - Imbalanced learning
 - [Vision](https://tatopenn-cell.github.io/Dense-Armor/vision/) (video files, frame features, patches, vocabulary, online reduction, motion, tracking, registration, dense flow)
 - [Deep learning](https://tatopenn-cell.github.io/Dense-Armor/neural/) (layers, attention, convolutional and recurrent blocks, batch and streaming training, continual learning with EWC, GEM, A-GEM, memory consolidation with VQ, PQ, residual tree, dual and archival memory, a decoder language model with RMSNorm, rotary attention and SwiGLU, and generation against a static key/value cache)
+- [Audio](https://tatopenn-cell.github.io/Dense-Armor/audio/) (sound as a value, WAV files and live input, filters, effects, synthesis, pitch, time and pitch change, mel and MFCC, event detection, and one adapter that gives sound to every estimator, detector and scaler)
+- [Ontology](https://tatopenn-cell.github.io/Dense-Armor/ontology/) (a typed graph with rules and actions, graph spectrum and filters, an execution DAG of estimators with a hash-chained provenance, anomaly and root-cause scores, recovery and learning of a graph, online graph estimation with `AdaCGP`, causal effects)
 - Robot control (rate limits, control barrier functions, trajectories, kinematic tracking)
 - Robot dynamics (URDF, passivity + CBF controllers)
 - Shielding (1D series cleanup, input/output shield, per-point routing)
@@ -296,7 +299,7 @@ Contributions are welcome. The library is built to be extended one estimator at 
 ```bibtex
 @software{pennacchio_dense_armor,
   author    = {Pennacchio, Salvatore},
-  title     = {Dense-Armor: Robot-AI Online Shielding \& Learning},
+  title     = {Dense-Armor: Low-Level Learning toolkit},
   year      = 2026,
   publisher = {Zenodo},
   doi       = {10.5281/zenodo.24030156}
@@ -341,7 +344,7 @@ Dense-Armor takes inspiration from [River](https://riverml.xyz) (Montiel et al.,
 
 ## References
 
-Dense-Armor builds on 188 works across online learning, streaming statistics, robot control, deep learning and finance. The full list is in [REFERENCES.md](REFERENCES.md).
+Dense-Armor builds on 236 works across online learning, streaming statistics, robot control, deep learning and finance. The full list is in [REFERENCES.md](REFERENCES.md).
 
 Key references: [River](https://riverml.xyz) (Montiel et al., 2020, [arXiv:2012.04740](https://arxiv.org/abs/2012.04740)), [scikit-learn](https://scikit-learn.org) (Buitinck et al., 2013), [CASPER](https://arxiv.org/abs/2303.01300) (Kayan et al., 2023), ADWIN (Bifet & Gavaldà, 2006), CBF (Ames et al., 2019), EWC (Kirkpatrick et al., 2017).
 

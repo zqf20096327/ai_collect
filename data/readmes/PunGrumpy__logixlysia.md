@@ -10,6 +10,8 @@
 bun add logixlysia
 ```
 
+Works with Elysia 1.4 and the Elysia 2 prereleases. To try Elysia 2, install it from its `rc` tag (`bun add elysia@rc`); [what changes on Elysia 2](https://logixlysia.vercel.app/docs/usage#elysia-2-beta).
+
 ## `📝` Usage
 
 Add the plugin, then log from a handler with `log`. Fields you add with `log.mergeContext` land on that request's access line.
@@ -65,6 +67,21 @@ const app = new Elysia({
   })
 
 app.listen(3000)
+```
+
+#### Choosing which routes are logged
+
+`logFilter` takes path globs, so health checks and static assets stay out of your logs. A request whose pathname matches `exclude`, or misses a non-empty `include`, writes nothing: no access line, no `log.*` lines from its handler, no error line, no WebSocket lines. `exclude` wins over `include`. `**` crosses `/`; `*` and `?` do not.
+
+```ts
+logixlysia({
+  config: {
+    logFilter: {
+      include: ['/api/**'],
+      exclude: ['/api/internal/**']
+    }
+  }
+})
 ```
 
 ## `✨` Features

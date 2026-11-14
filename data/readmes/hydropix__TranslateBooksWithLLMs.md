@@ -1,5 +1,5 @@
+https://github.com/user-attachments/assets/d13dd95f-10ec-4873-96d4-0828ed54238f
 
-https://github.com/user-attachments/assets/4afc5f90-18d8-4586-ba73-626ae681ba57
 <div align="center">
   <h1>TBL - Translate Books with LLMs</h1>
   <p>翻译书籍 · 本を翻訳する · 책을 번역하다 · किताबों का अनुवाद · Перевод книг · แปลหนังสือ · Μετάφραση βιβλίων · ترجمة الكتب</p>

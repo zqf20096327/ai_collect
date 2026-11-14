@@ -141,6 +141,64 @@ Six worked recipes: [`COOKBOOK.md`](COOKBOOK.md).
 The same commands are in [`QUICKSTART.md`](QUICKSTART.md), which is what a pip user should
 read — this README also documents the experiments behind the numbers.
 
+### Spiking LM (from scratch)
+
+A separate, small product line: LIF neurons, synaptic currents and a runnable
+HTTP server. It is a research model, not a general assistant.
+
+```bash
+streamft spiking tokenize --text stories.txt --out data/stories.pt
+streamft spiking train --data data/ts_train.pt --max-tokens 5000000 \
+  --valid data/ts_valid.pt --out checkpoints/spiking_4m \
+  --steps 300 --dim 256 --layers 1 --adapt 0.1
+streamft spiking generate --model checkpoints/spiking_4m --prompt "Once upon a time"
+streamft spiking serve --model checkpoints/spiking_4m --port 8011
+streamft spiking ingest --model checkpoints/spiking_4m_10k \
+  --text new_data.txt --old-data data/ts_train.pt --old-valid data/ts_valid.pt \
+  --out checkpoints/ingest_demo --replay-fraction 0.2
+streamft spiking ingest-watch --inbox data/inbox \
+  --model checkpoints/spiking_4m_10k --old-data data/ts_train.pt \
+  --old-valid data/ts_valid.pt --out checkpoints/watch --once
+streamft spiking grow --model checkpoints/spiking_4m_10k \
+  --out checkpoints/spiking_4m_grown_21m --dim 1152
+```
+
+It supports checkpointed resume sessions, safe incremental ingest with replay
+and an accept gate, an inbox watcher that promotes only accepted versions,
+truth-gated knowledge, function-preserving width growth, a `/generate` endpoint,
+an OpenAI-shaped `/v1/chat/completions` endpoint and optional online
+per-synapse rollback. See
+[`docs/SPIKING_PRODUCT.md`](docs/SPIKING_PRODUCT.md),
+[`docs/SPIKING_INGEST.md`](docs/SPIKING_INGEST.md),
+[`docs/SPIKING_WATCH.md`](docs/SPIKING_WATCH.md),
+[`docs/SPIKING_KNOWLEDGE.md`](docs/SPIKING_KNOWLEDGE.md),
+[`docs/SPIKING_GROW.md`](docs/SPIKING_GROW.md),
+[`docs/SPIKING_50M.md`](docs/SPIKING_50M.md) and
+[`research/SPIKING_SHIFT.md`](research/SPIKING_SHIFT.md).
+
+### Parked experiment: Qwen verified assistant
+
+**Not the active direction.** The project direction is the from-scratch spiking
+research line. This Qwen + retrieval experiment is kept as a parked product
+prototype, not as the target model.
+
+```bash
+streamft assistant ask \
+  --model models/Qwen2.5-1.5B-Instruct \
+  --db data/knowledge.db \
+  --question "What is the speed of light?"
+streamft assistant serve \
+  --model models/Qwen2.5-1.5B-Instruct \
+  --db data/knowledge.db --port 8014
+```
+
+The server exposes `/health`, `/metrics`, `/v1/models`,
+`/v1/chat/completions` and `/knowledge/search`. Answers carry source citations
+from verified documents only. A 10-question held-out smoke eval scored 1.00
+answer accuracy, 1.00 citation rate and 1.00 strict accuracy; the local server
+runs at `http://127.0.0.1:8014`. See
+[`docs/LOCAL_ASSISTANT.md`](docs/LOCAL_ASSISTANT.md).
+
 **From a source checkout only** (not part of the wheel): `tools/finetune.py` is a wrapper
 that encodes the VRAM presets, `scripts/compare_peft.py` reproduces the engine comparison,
 `scripts/verify_gradients.py` the gradient check, `scripts/e2e_wheel.py` the clean-venv
@@ -482,6 +540,37 @@ URLs. The engine lived at `experiments/exp54_disk_qlora.py` + `lcsa/` until the 
 - [Behavioral epistasis: a watermark that works alone dies in every merge](https://dev.to/mycute_97b39c4e34027570f9/behavioral-epistasis-a-watermark-that-works-alone-dies-in-every-merge-1j9f)
 - [The watermark's logit rises smoothly; its generation falls off a cliff](https://dev.to/mycute_97b39c4e34027570f9/the-watermarks-logit-rises-smoothly-its-generation-falls-off-a-cliff-4j0c)
 - [Joint training did not fix the watermark merge: 8/8 alone, 0/8 at 0.75](https://dev.to/mycute_97b39c4e34027570f9/joint-training-did-not-fix-the-watermark-merge-88-alone-08-at-075-1hka)
+
+**Spiking prototype:** a 4.3M-parameter LIF language model with synaptic current dynamics
+learns TinyStories at 2.05 bpb after 300 steps and 1.94 after 1000 steps on the 6 GB card;
+adding spike-frequency adaptation reaches 1.84. The rate control is weaker and saturates.
+This is the from-scratch starting point for the brain-like line, not a claim that spiking
+beats transformers. [`research/SPIKING_LM.md`](research/SPIKING_LM.md)
+
+**Spiking rollback:** after a TinyStories -> WikiText shift, restoring the top 10% of
+phase-A synapses by Fisher importance recovers 95.0%/94.1% of the old-task performance
+while keeping 18.3% of the new-task gain on two seeds. Global rollback restores the old
+task but discards all new learning. [`research/SPIKING_SHIFT.md`](research/SPIKING_SHIFT.md)
+
+**Scaling check:** a 20.97M model trained for 10,000 steps / 164M tokens reached
+1.327 bpb; the 4.3M model reached 1.336 on the same budget, and the larger model was
+slightly worse on a fixed sample-quality probe. More parameters did not buy quality at
+this budget; the next attempt needs 500M+ tokens. [`docs/SPIKING_PRODUCT.md`](docs/SPIKING_PRODUCT.md)
+
+**Sleep-like replay:** during a TinyStories -> WikiText phase, mixing 20% old windows
+into every batch keeps old bpb at **2.079** (phase-A 2.077; naive 2.632) and retains
+**99.2%** of the new-task gain. Replay is much better than post-hoc shadow rollback
+here. [`research/SPIKING_REPLAY.md`](research/SPIKING_REPLAY.md)
+
+**Replay + rollback:** controlled seed-1 arms confirm the mechanisms are not
+additive. Replay alone keeps **98.9%** of the new gain; replay followed by Fisher
+rollback keeps only **16.0%**. Replay prevents the forgetting; rollback after it
+spends the new learning. [`research/SPIKING_REPLAY_ROLLBACK.md`](research/SPIKING_REPLAY_ROLLBACK.md)
+
+**21M, two seeds:** replay-first holds at 21M. Replay keeps **99.6-99.8%** of the
+new-task gain; replay+rollback keeps **6.5-12.0%**; replay+EWC keeps **99.3%**.
+EWC is safe but does not beat simple replay.
+[`research/SPIKING_REPLAY_EWC_21M.md`](research/SPIKING_REPLAY_EWC_21M.md)
 
 ## License
 

@@ -8,9 +8,19 @@
 
 What was added, newest first. Each entry links to its commit.
 
+**2026-11-14**
+
+- **Preview Every = 0 stays off** in every trainer: a saved 0 was replaced by the field's default when the trainer opened (50 in Fibo 2.0). The label now reads *Preview Every (0 = off)* and the **2b. Training Previews** header shows *every N steps* or *off*, also while collapsed [`b80d1f5`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/b80d1f5) ([#78](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/issues/78))
+- **Start Training checks the pre-cache** in every trainer: with no pre-cache, or with images or captions added, edited, removed or renamed after it, it says so and offers **Pre-cache, then train** (or **Train with the old cache**); the training waits in the queue until its pre-cache finishes well ([how it works](#-job-queue)). MiniMax-H3 and MiniMax-H3 Image now re-encode the samples whose caption or image changed instead of skipping them [`22fbe63`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/22fbe63) ([#79](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/issues/79))
+- <img src="https://img.shields.io/badge/MAJOR%20UPDATE-7c3aed?style=for-the-badge" alt="MAJOR UPDATE" height="22"> **MiniMax-H3 Image, edit LoRAs** — pairs `name_before` / `name_after` with the instruction in `name.txt`, packed as the official MiniMax-H3-Image edit pipeline does: the text encoder sees the before image as Picture 1 and the DiT gets it as a reference. Choose **LoRA Type → Edit** in the Pre-Cache panel. The edit pre-cache fits 16 GB by parking the language layers in RAM while the vision tower runs: ~0.7 s per pair instead of 30-46 s ([details](#minimax-h3-image--image-and-edit-loras---experimental)) [`565bfcc`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/565bfcc)
+- **MiniMax-H3 Image: new defaults** from the first run with good likeness: LR 4e-4, rank 16 / alpha 32, constant with 50 warmup steps, 1500 steps. On a face dataset the previews averaged 45 % face match over the last 300 steps, with a best of 53.6 % [`4131db8`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/4131db8) [`0e54da5`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/0e54da5)
+- **MiniMax-H3 Image: Preview LoRA Strength**, like the LoRA strength in ComfyUI, changeable while training [`a562106`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/a562106)
+- **MiniMax-H3 Image: VRAM guard** measured on the step's real peak, so it no longer reports a full card that is not full; after 20 steps the log says how many more resident blocks fit [`f2dfbf4`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/f2dfbf4)
+- New launcher image [`fffe716`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/fffe716)
+
 **2026-11-13**
 
-- <img src="https://img.shields.io/badge/NEW%20TRAINER-ff2d55?style=for-the-badge" alt="NEW TRAINER" height="22"> **MiniMax-H3 Image, image LoRAs (experimental)** — for the 6-step distilled MiniMax-H3-Image. The LoRA trains on MiniMax-H3-Image itself with a frozen de-distillation adapter that is not used when generating, downloaded by itself from `AcademiaSD/MiniMax-H3-Image-NF4-for-LoRA-Training`. On a face dataset it reached 40% face likeness at strength 1.0 and 44.5% at 1.3, against 28% when the LoRA is trained on the MiniMax-H3 video model and used on H3-Image. 1200 steps by default; Stop halts at once, and when the VRAM runs short training moves blocks back to RAM instead of slowing down. The LoRAs load in ComfyUI [`b608eeb`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/b608eeb) [`297fedc`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/297fedc) [`db7622b`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/db7622b)
+- <img src="https://img.shields.io/badge/NEW%20TRAINER-ff2d55?style=for-the-badge" alt="NEW TRAINER" height="22"> **MiniMax-H3 Image, image LoRAs (experimental)** — for the 6-step distilled MiniMax-H3-Image. The LoRA trains on MiniMax-H3-Image itself with a frozen de-distillation adapter that is not used when generating, downloaded by itself from `AcademiaSD/MiniMax-H3-Image-NF4-for-LoRA-Training`. On a face dataset it reached 40% face likeness at strength 1.0 and 44.5% at 1.3, against 28% when the LoRA is trained on the MiniMax-H3 video model and used on H3-Image. 1500 steps by default; Stop halts at once, and when the VRAM runs short training moves blocks back to RAM instead of slowing down. The LoRAs load in ComfyUI [`b608eeb`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/b608eeb) [`297fedc`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/297fedc) [`db7622b`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/db7622b)
 - **MiniMax-H3: sharp previews** — image previews are decoded by the MiniMax-H3-Image VAE (only its 2.2 GB `vae/` folder, downloaded the first time), and the video VAE no longer leaves horizontal stripes, an orange cast or a broken grid on images and clips [`311008c`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/311008c) [`f3ce0e0`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/f3ce0e0)
 - Captions in any encoding: `.txt` files saved by Notepad in the Windows code page no longer crash the pre-cache or show up empty (#71), from the Fibo 2.0 fix by [@Synergyart](https://github.com/Synergyart) [`350a410`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/350a410) [`9b9db6e`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/9b9db6e)
 - `Install_Triton&SageAtten220.bat` is now `Install_Triton_SageAtten220.bat`: the `&` broke it when started from a terminal (#74) [`40008f5`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/40008f5)
@@ -218,6 +228,7 @@ New trainers are added **here**. One `Update_LoRAlab-TrainerStudio.bat` brings t
 | **SDXL** | Image LoRAs for SDXL Base, Pony, Illustrious, NoobAI, Juggernaut, RealVis or your own SDXL checkpoint | **4 GB** (NF4) / 12 GB (BF16) |
 | **LTX-2.3** (also LTX-2.5) | Character and style LoRAs for the LTX video model, trained from images | 12 GB |
 | **MiniMax-H3** | Video LoRAs from images, clips and audio, plus training-free **RefMods** | 8 GB |
+| **MiniMax-H3 Image** *(experimental)* | Image LoRAs (characters, objects, styles) **and edit LoRAs** (before → after) on the 6-step distilled MiniMax-H3-Image, trained with a de-distillation adapter; 33B in NF4 with block swap | 8 GB (image LoRAs) / 10 GB (edit LoRAs), estimated from the VRAM plan with Resident Blocks on 0 |
 | **Wan 2.2 (T2V-A14B)** | Video and image LoRAs from images and clips, for the **high noise** and/or **low noise** expert | **12 GB** (images at 448×448 with image previews), **16 GB** (17-frame clips at 480p), measured |
 | **YuE2-3B** *(experimental / beta)* | Song LoRAs: the AR clones the singer's voice, the NAR learns lyrics and phrasing | ~8 GB (NF4, measured on NAR) |
 
@@ -241,6 +252,8 @@ New trainers are added **here**. One `Update_LoRAlab-TrainerStudio.bat` brings t
 **Linux:** ya tiene soporte para Linux. Cada `.bat` tiene su `.sh` equivalente; la instalación y el uso están en [docs/Linux.md](docs/Linux.md). Gracias a **[Jonathan Hecl (@jonathanhecl)](https://github.com/jonathanhecl)** por aportarlo.
 
 **FLUX.1 Dev:** nuevo entrenador de LoRAs de imagen para **FLUX.1 [dev]** de Black Forest Labs (FLUX.1 [dev] Non-Commercial License). Se descarga ya en **NF4** (13,5 GB, sin token) y los dos text encoders solo se usan en el pre-caché. Detalles en la sección *FLUX.1 Dev*.
+
+**MiniMax-H3 Image:** nuevo entrenador (experimental) de LoRAs de imagen y de edición (antes → después) para **MiniMax-H3-Image**, el modelo de imagen destilado a 6 pasos. El LoRA se entrena sobre el propio H3-Image con un adaptador de des-destilación congelado, que no se usa al generar. Para editar, elige **LoRA Type → Edit** en el panel de Pre-Cache y usa pares `nombre_before` / `nombre_after` con la instrucción en `nombre.txt`, por ejemplo `Edit <Picture 1>. Make it TOSTIOK style.`. El pre-caché de edición cabe en 16 GB porque aparca las capas de lenguaje en la RAM mientras corre la torre de visión. Detalles en la sección *MiniMax-H3 Image*.
 
 **FLUX.3 Image Klein:** nuevo entrenador de LoRAs normales y de edición (antes → después) para FLUX.3 Image Klein Base, desde 8 GB de VRAM. El captioner escribe en los formatos propios de FLUX.3 (prosa detallada, y opcionalmente con tabla de cajas `<id>`; en edición, la instrucción con `<ref_image_0>`). Necesita la versión nueva de diffusers: ejecuta **`Update_LoRAlab-TrainerStudio.bat`** antes de abrirlo. Detalles en la sección *FLUX.3 Image Klein*.
 
@@ -274,6 +287,7 @@ Each trainer downloads **only what it uses**, already quantized. The table compa
 | **LTX-2.3** | 101.3 | 111.1 | **32.2** | The BF16 transformer (38.0 GB) and the FP32 Gemma 3 text encoder (48.8 GB) are replaced by NF4 versions (9.8 GB + 7.8 GB). |
 | **Qwen-Image 2.1** | ~32 (BF16) | 21.9 | **21.9 / 14.4 / 11.0** | Only the text encoder you pick is downloaded: BF16 (exact, default) / INT8 / NF4. |
 | **MiniMax-H3** | 498.5 | 41.4 | **41.4** | The 33B model ships in NF4 from the start. |
+| **MiniMax-H3 Image** | 204.0 | — | **38.4** | New trainer: the 33B transformer in NF4 (17.2 GB), its VAE (2.3 GB) and the de-distillation adapter (0.5 GB) from `AcademiaSD/MiniMax-H3-Image-NF4-for-LoRA-Training`, plus the Qwen3-VL text encoder in NF4 (18.4 GB) from the MiniMax-H3 NF4 repo. If MiniMax-H3 is already installed, the text encoder is not downloaded again (~20 GB). |
 | **Z-Image** | 20.5 | — | **5.9** | New trainer: the 6B transformer (12.3 GB) and the Qwen3-4B text encoder (8.0 GB) in NF4 (3.4 GB + 2.7 GB). |
 | **Anima** | 5.6 | — | **5.6** | New trainer: the official diffusers version of Anima-Base. The 2B model trains in BF16, or in NF4 quantized when loading (nothing extra to download). |
 | **SDXL** | ~7 per model | — | **~7 per model** | New trainer: only the preset you pick is downloaded (one `.safetensors` file); your own checkpoint downloads nothing. |
@@ -296,7 +310,7 @@ The automatic captioner adds, only the first time you use it: **nothing** for Kr
 | | Minimum | Recommended |
 | :--- | :--- | :--- |
 | **OS** | Windows 10 / 11, or 64-bit Linux ([docs/Linux.md](docs/Linux.md)) | Windows 11 |
-| **GPU** | NVIDIA **RTX 20xx / GTX 16xx or newer** (compute capability 7.5+) with **8 GB VRAM** (4 GB for Anima and SDXL in NF4, 12 GB for LTX-2.3, FLUX.2 Klein 9B, Ideogram 4, SDXL in BF16 and Wan 2.2 with images at 448×448, 16 GB for Wan 2.2 with video) | 12–24 GB VRAM |
+| **GPU** | NVIDIA **RTX 20xx / GTX 16xx or newer** (compute capability 7.5+) with **8 GB VRAM** (4 GB for Anima and SDXL in NF4, 10 GB for MiniMax-H3 Image edit LoRAs, 12 GB for LTX-2.3, FLUX.2 Klein 9B, Ideogram 4, SDXL in BF16 and Wan 2.2 with images at 448×448, 16 GB for Wan 2.2 with video) | 12–24 GB VRAM |
 | **AMD GPU** *(experimental)* | Radeon **RX 7000 / RX 9000** or Ryzen AI Max (Strix Halo) with 16 GB of VRAM, using the AMD installer (see *Installation*). Confirmed on an RX 7800 XT 16 GB under Windows with MiniMax-H3 | — |
 | **Driver** | NVIDIA **580 or newer** (CUDA 13). AMD: a recent Adrenalin driver on Windows, or `amdgpu` on Linux | Latest |
 | **RAM** | 16 GB | 32 GB |
@@ -364,6 +378,7 @@ Also in every trainer:
 Queue trainings and pre-caches, from one trainer or several, and they run one after another on the GPU.
 
 - **Adding jobs.** While something is training, **Start / Resume** or **Start Pre-Cache** in any trainer asks *Add to queue?* instead of starting. The job keeps a copy of the settings saved at that moment, so you can go on changing that trainer for the next one. With the GPU free, a training starts at once as before, and it shows in the queue too.
+- **Missing or outdated pre-cache.** **Start / Resume** checks the project's pre-cache against its dataset. With no pre-cache, or with images or captions added, edited, removed or renamed after it, it lists what changed and offers **Pre-cache, then train**: the pre-cache starts and the training waits in the queue until it finishes well (if it fails, the training keeps waiting until you retry it). **Train with the old cache** trains anyway. Without the launcher the page itself waits for the pre-cache, so keep it open.
 - **Training after its pre-cache.** While a trainer runs its pre-cache, its **Start / Resume** stays available: the training goes to the queue and starts as soon as the pre-cache finishes.
 - **Editing a waiting job.** **✎** on a job of the queue opens its trainer with that job's settings, and its start button becomes **💾 Save changes to the queue**. The job does not start while you edit it; **Cancel** leaves it as it was.
 - **Another trainer while one trains.** Click its card in the launcher: it opens on another port without closing the one that trains.
@@ -763,72 +778,4 @@ The official image-edit task works at 1024: 512 and 768 are out of its distribut
   A LoRA works best on the model it was trained on and on models derived from it: train on Illustrious v0.1 for Illustrious-based checkpoints such as WAI or NoobAI.
 - **Captioner:** Qwen3-VL-8B NF4 (shared), with **natural language** or **Danbooru tags**. Long captions are encoded in blocks of 75 tokens (up to 225), as kohya does.
 - **Model Precision:** *BF16* or *NF4*, which quantizes the transformer blocks to 4 bits when loading and fits in a **4 GB GPU**. The first training run on a model saves its converted UNet in `Models/SDXL-Models/unet_cache/` (~5 GB on disk); from then on it loads with ~5.5 GB of RAM instead of ~14 GB.
-- **Training:** the UNet with gradient checkpointing, noise prediction with Min-SNR weighting (γ = 5). **LoRA Targets:** *Blocks* (attention, MLP and projections of the transformer blocks, kohya's default) or *All* (+ the resnet convolutions, LoCon).
-- **Quality prefix in captions** (Pony, Illustrious, NoobAI; off by default): puts the preset's prefix (`score_9, score_8_up, score_7_up` for Pony) before every caption and the preview prompt. Off, the previews show the LoRA alone; on, use the LoRA with that prefix in ComfyUI.
-- **Previews:** Euler, 28 steps, with the preset's negative prompt. **Preview CFG 0** uses the preset's recommended value.
-- The LoRA is exported in **kohya format** (`lora_unet_…`), which ComfyUI, Forge, A1111 and CivitAI load.
-- **Grad Accum** multiplies the steps: with Grad Accum 4, 800 steps are only 200 LoRA updates. Style LoRAs on SDXL usually need around 1,000–3,000 updates.
-
-| Tested on Pony (Greg Rutkowski style, 153 images) | BF16 | NF4 (low VRAM) |
-| :--- | :--- | :--- |
-| Resolution | 1024×1024 | 512×512 |
-| Rank / Alpha | 16 / 16 | 8 / 8 |
-| Steps / Grad Accum / LR | 1000 / 1 / 1e-4 | same (quality not yet compared) |
-| Speed | ~1.1 s/step | ~1.5 s/step |
-| VRAM | ~10.8 GB with the previews | ~3.5 GB, previews at 768² included |
-| RAM | ~5.5 GB | ~5.5 GB |
-
-The LoRA works at strength 0.8–1.2; at 2.0 it breaks anatomy.
-
-### Wan 2.2 (T2V-A14B) — video and image LoRAs (high / low noise)
-
-Wan 2.2 A14B splits the denoising steps between two 14B experts: **high noise** (the first steps, σ ≥ 0.875: layout and motion) and **low noise** (the rest: detail, faces, style). *Train Expert* picks which one learns:
-
-- **Low noise**: enough for characters, objects and styles.
-- **High noise**: for new motions, choreographies or camera moves.
-- **Both** (default): one LoRA for each in the same run; the waiting expert stays in RAM and they swap on the GPU.
-
-Each expert exports its own LoRA, named `_high_noise` / `_low_noise`. In ComfyUI each one goes on its own model.
-
-- **Datasets:** images, video clips (`.mp4`, `.mov`, `.mkv`, `.webm`, `.avi`) or a mix, each with its `.txt`. Clips are read at **16 fps** from their start, up to *Max Frames* (4k+1: 17, 33, 49, 81…); a shorter clip uses all it has.
-- **Model:** the first run downloads each expert it needs already in NF4 (~7.6 GB) from `AcademiaSD/Wan22-T2V-A14B-NF4-for-LoRA-Training`. If that repo does not have it, it downloads the original **one shard at a time** (57 GB in FP32), converts it to NF4 and deletes the shard; if it stops, it continues from the next shard. The other expert is only downloaded when you train it.
-- **Captioner:** Qwen3-VL-8B NF4 (shared with the other trainers), with one prompt for images and another for clips. Of each clip it sees only the part that is trained.
-- **Activation Offload** (on by default) keeps the activations in RAM, and the checkpoint works in half blocks: that is what lets clips fit in 16 GB.
-- **Previews:** an image (1 frame) or an `.mp4`, generated with both experts like ComfyUI when the other one is converted. *Turbo LoRA* (on by default) uses Kijai's lightx2v distill LoRA: 12 steps at CFG 1, high noise for the first 4 and low noise for the rest, about 2 minutes for a 17-frame clip instead of 9. Previews are off until you set *Preview Every*.
-
-| Default starting point | |
-| :--- | :--- |
-| Resolution | 832×480 (480p) |
-| Max frames per clip | 17 (1 s at 16 fps) |
-| Rank / Alpha | 8 / 8 |
-| Learning rate | 1e-4 |
-| Steps | 1000 |
-
-| Measured on an RTX 5080 16 GB (low noise, rank 16, 480p) | s/step | Peak VRAM |
-| :--- | ---: | ---: |
-| Image | ~3 | 10.0 GB |
-| Clip, 17 frames | ~18.5 | 12.0 GB |
-| Clip, 33 frames | ~43 | 14.3 GB (does not fit next to a desktop on 16 GB; lower the resolution or use a bigger card) |
-
-**12 GB cards:** pre-cache at **448 x 448** and keep the previews at 1 frame. Measured with rank 8 / alpha 8 and both experts: 10.4 GB peak while training, a bit less for an image preview. A 17-frame video preview goes slightly over 12 GB. 480 x 480 is in between; 512 x 512 is just over 12 GB.
-
-On Windows a sample that does not fit in VRAM is left out with a message instead of letting the driver spill into system RAM, where a step takes 30 times longer. More in [docs/README_Wan22.md](docs/README_Wan22.md).
-
-### LTX-2.3 — character and style LoRAs for the LTX video model
-
-- Works with **LTX-2.3 and LTX-2.5**.
-- Trains from **images** (single frames) to teach a character or a style to the video model.
-- The 22B transformer and the Gemma 3 text encoder come pre-quantized in NF4; the BF16 / FP32 originals are never downloaded (see the table above).
-- **Captioner:** Qwen3-VL-8B NF4 (~5.5 GB VRAM, ~13 s per image).
-- Paged 8-bit AdamW and gradient checkpointing.
-
-| Default starting point | |
-| :--- | :--- |
-| Resolution | 768×768 (448 / 576 / 512 for less VRAM) |
-| Rank / Alpha | 32 / 32 |
-| Learning rate | 1e-4 |
-| Steps | 800 |
-
-### MiniMax-H3 — video, audio and RefMods
-
-MiniMa
+- **Training:** the UNet with gradient checkpointing, noise prediction with Min-SNR weighting (γ = 5). **LoRA Targets:** *Blocks* (attention, MLP and projections of the transformer blocks, kohya's default) or *All* (+ the resnet convolu

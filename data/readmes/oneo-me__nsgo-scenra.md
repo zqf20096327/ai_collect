@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/Icon.png" alt="Scenra" width="128">
+  <img src="cmd/scenra/assets/Icon.png" alt="Scenra" width="128">
 </p>
 
 <h1 align="center">Scenra</h1>
@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <img src="assets/Preview.png" alt="Scenra">
+  <img src="cmd/scenra/assets/Preview.png" alt="Scenra">
 </p>
 
 ## The name
@@ -45,8 +45,8 @@ Scenra is a coined word: *scene*, the screens an app is made of, joined by *-ra*
 Scenra needs [Go](https://go.dev/dl/). From the repository root:
 
 ```sh
-go tool nsgo dev            # run
-go tool nsgo build          # build macOS, Windows and Linux into dist/
+go tool nsgo dev cmd/scenra     # run
+go tool nsgo build cmd/scenra   # build macOS, Windows and Linux into cmd/scenra/dist/
 ```
 
 On macOS, `.scenra` files open with the app from the Finder; on Windows and Linux, a Scenra file given on the command line opens at start.
@@ -64,6 +64,26 @@ The [`flowfile` package comment](flowfile/) describes the file format.
 ## Usage statistics
 
 Release builds send anonymous usage statistics to Umami: how often and how long the app is used, under a random install ID. No chart, message, file path or API key is sent. Turn them off under **Settings** → **Statistics**. Builds of `nsgo dev` and tests send nothing.
+
+## Use in your app
+
+`scenraview` gives other NSGo apps Scenra's editor for `.scenra` files: an `Editor` of open files and views of it, the `Window` as Scenra shows it, or a `TabBar`, `Sidebar`, `Workspace` and `Assistant` to lay out themselves.
+
+```sh
+go get github.com/oneo-me/nsgo-scenra
+```
+
+```go
+nsgo.Run(func(cx *core.Scope) core.Node {
+	e := scenraview.New(cx, scenraview.Options{Provider: myProvider})
+	e.OpenPath("app.scenra")
+	return core.View{Style: core.Style{Direction: core.Row, FlexGrow: 1}, Children: []core.Node{
+		scenraview.Sidebar{Editor: e}, scenraview.Workspace{Editor: e},
+	}}
+})
+```
+
+`flowfile` reads and writes the format without NSGo, and `agent` is the assistant's model client and tools.
 
 ## Development
 

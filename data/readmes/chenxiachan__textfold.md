@@ -9,7 +9,7 @@
   <img src="https://raw.githubusercontent.com/chenxiachan/textfold/main/docs/assets/banner.webp" width="880" alt="Fold it, instead of summarizing it. AI decides what each level leaves out. Every paragraph opens back to the author's words. What TextFold reads: arXiv, PubMed Central, bioRxiv, medRxiv, Wikipedia, GitHub READMEs, any web page, PDF, Word, PowerPoint, Excel, EPUB, HTML, pictures, Markdown, text, CSV and an agent's replies, folded from the full text down to a few words">
 </picture>
 
-🚀 **New: [TextFold in your browser](#works-in-your-browser)!** One click on the browser extension transfers the page you are reading to TextFold.<br>
+🚀 **New: [TextFold in your browser](#works-in-your-browser)!** One click on the browser extension transfers the page you are reading to TextFold. **[Add it from the Chrome Web Store →](https://chromewebstore.google.com/detail/textfold/lkfemlafmabkdjedldmjebdpccdaeglf)**<br>
 For Chrome · Edge · Brave
 
 <img alt="Python 3.9+" src="https://img.shields.io/badge/python-3.9%2B-6B5CE7?style=flat-square">
@@ -56,14 +56,13 @@ A button for Chrome, Edge and Brave sends the page you are reading to TextFold a
 
 <img src="https://raw.githubusercontent.com/chenxiachan/textfold/main/docs/assets/browser.gif" width="880" alt="A Wikipedia article in Chrome, sent to TextFold with one click on its button, then folded level by level from the full text into a map of its sections">
 
-**Install it from GitHub.** The button is in review for the Chrome Web Store; until it is there:
+**Install it from the Chrome Web Store.**
 
 1. **Install TextFold 0.10.40 or later** ([download](https://chenxiachan.github.io/textfold/#download)) and open it. It connects itself to Chrome, Edge, Brave and Chromium each time it starts. With the Python package instead: `python3 -m pip install -U textfold`, then `python3 -m textfold capture install` once.
-2. **Get the `extension` folder.** Download the repository [as a ZIP](https://github.com/chenxiachan/textfold/archive/refs/heads/main.zip) and unzip it, or `git clone https://github.com/chenxiachan/textfold.git`. The folder is ready as it is: nothing to build.
-3. **Load it.** Open `chrome://extensions` (`edge://extensions` in Edge), turn on **Developer mode**, choose **Load unpacked**, and pick the `extension` folder.
-4. **Click it on a page.** Pin the TextFold button from the extensions menu (the puzzle piece) and click it on any page. A ✓ says the page is in your library. If the browser cannot reach TextFold, the button opens a page that says what to do.
+2. **Add the button.** Open [TextFold in the Chrome Web Store](https://chromewebstore.google.com/detail/textfold/lkfemlafmabkdjedldmjebdpccdaeglf) and click **Add to Chrome**. Brave adds it the same way; Edge first asks you to allow extensions from other stores.
+3. **Click it on a page.** Pin the TextFold button from the extensions menu (the puzzle piece) and click it on any page. A ✓ says the page is in your library. If the browser cannot reach TextFold, the button opens a page that says what to do.
 
-Keep the folder where it is: the browser loads the button from it. To update, download it again into the same place and click ↻ on the button's card in `chrome://extensions`. Once the button is in the Chrome Web Store, remove this copy before installing it from there. To see the levels, [connect a model ↓](#connect-a-model).
+The store keeps the button up to date. Loaded it from the repository's `extension` folder before? Remove that copy in `chrome://extensions` first, so that there is one TextFold button. To see the levels, [connect a model ↓](#connect-a-model).
 
 The button reads a page only when you click it, and hands it to TextFold on this computer and to nothing else ([privacy policy](https://chenxiachan.github.io/textfold/privacy.html)). [docs/web-capture.md](https://github.com/chenxiachan/textfold/blob/main/docs/web-capture.md) tells how it works.
 
@@ -129,7 +128,7 @@ Open `http://localhost:3017`. The first time, [connect a model](#connect-a-model
 | Paste or drop | What TextFold reads |
 |---|---|
 | A paper's link or DOI: arXiv, PubMed Central, bioRxiv, medRxiv | its text as the site structures it (an arXiv paper without an HTML version is read from its PDF; another DOI needs an open full text in Europe PMC) |
-| Any other web page | its article, without the menus, the adverts, or the text it hides from its readers |
+| Any other web page | its article, without the menus, the adverts, or the text it hides from its readers; an interactive figure that is a page of its own (as many research blogs embed them) runs in its place, and a formula written for MathJax or KaTeX is drawn as written |
 | A page open in your browser | the page as you see it, signed in or subscribed, with what its scripts drew: click TextFold's button. [Works in your browser ↑](#works-in-your-browser) |
 | A Wikipedia article, a GitHub repository | the article; the README, with its pictures |
 | A PDF | the paper online when the PDF names one, with your file beside it; any other PDF, on your computer: read by TextFold itself, figures included, or more completely by the PDF engine (MinerU, about 3.4 GB, installed once from the landing), which a scanned PDF needs |
@@ -160,7 +159,7 @@ TextFold uses a model you already have, and there is no account to create. It lo
 
 | You have | What to do |
 |---|---|
-| Claude Code, Codex, Pi or WorkBuddy | Nothing. TextFold finds it and uses it. WorkBuddy (experimental) brings its models, on your WorkBuddy sign-in; CodeBuddy's own CLI works too. |
+| Claude Code, Codex, Pi, WorkBuddy or Antigravity | Nothing. TextFold finds it and uses it. WorkBuddy (experimental) brings its models, on your WorkBuddy sign-in; CodeBuddy's own CLI works too. Antigravity's CLI, agy (experimental), runs on your Google sign-in. |
 | A ChatGPT plan | Click **Use my ChatGPT plan**. A small bridge starts on your computer and signs in with your account (needs Node.js). |
 | Nothing yet | Click **OpenRouter in one click**. Authorize once, and free models are ready. |
 | An API key | **Settings › Add provider**: Anthropic, OpenAI, DeepSeek, Qwen, Zhipu GLM, Kimi, MiniMax, Google, Ollama, or any OpenAI-compatible endpoint. |
@@ -175,13 +174,14 @@ Your questions can go to a stronger model than the one that writes the levels: *
 | `1` to `5` | jump to a level |
 | **Cards** or **Map**, beside the levels at Topic | the sections and their topics as cards, or as a mind map |
 | Click a paragraph | open just that paragraph |
-| Click a figure | see it enlarged |
+| Click a figure | see it enlarged; **−** and **+**, ⌘ / Ctrl + scroll or a pinch zoom into it, a click zooms where you click, and you drag it to see the rest |
 | **Original**, at the top | read beside the paper's PDF |
 | **Save**, at the top | keep the page as one file, as Markdown at the level you read, or only your notes |
 | **Aa**, at the top | light or dark, the default or paper style, the text's size, serif or sans-serif, the line spacing, the column's width, and which margins show |
 | `F` | focus: the text alone, the bars back at the screen's edge |
 | **Full screen**, in **Aa** | the window fills the screen (⌃⌘F on a Mac, F11 on Windows) |
 | Select text | highlight, write a note, or ask |
+| Select text, then **Edit text** | put the words right; in a translation, **Edit translation** opens the whole translation there instead, one sentence a line: save it only, or have its shorter levels written again from your sentences. Your corrections are kept when the text is translated again |
 | **Ask the paper**, bottom right | ask about the whole text (**Look it up on the web**, beside the question: an agent on your computer searches the web too) |
 | `L` | next language |
 | `⌘F` (Ctrl+F) | find words in the text: at the level you read, and in the author's words that level leaves out (the paragraph opens at Full while you are there); Enter and ⇧Enter step through them |
@@ -382,6 +382,7 @@ TextFold is a tool, and its license covers its code. When you share a file, foll
 <a href="https://github.com/xieguaiwu" title="@xieguaiwu"><img src="https://github.com/xieguaiwu.png?size=80" width="40" height="40" alt="@xieguaiwu" /></a>
 <a href="https://github.com/ShiTan-677" title="@ShiTan-677"><img src="https://github.com/ShiTan-677.png?size=80" width="40" height="40" alt="@ShiTan-677" /></a>
 <a href="https://github.com/SockingPanda" title="@SockingPanda"><img src="https://github.com/SockingPanda.png?size=80" width="40" height="40" alt="@SockingPanda" /></a>
+<a href="https://github.com/Ekuboh" title="@Ekuboh"><img src="https://github.com/Ekuboh.png?size=80" width="40" height="40" alt="@Ekuboh" /></a>
 
 Contributions are welcome: start with [CONTRIBUTING.md](https://github.com/chenxiachan/textfold/blob/main/CONTRIBUTING.md).
 

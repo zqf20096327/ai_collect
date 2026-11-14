@@ -102,7 +102,7 @@
 > **📦 Offline Deployment**: For offline or air-gapped environments, see the [Offline Deployment Guide](./docs/OfflineDeployment.md) for instructions on pre-installing all dependencies and cache files.
 
 > [!WARNING]
-> **Secure the server before you start it on a shared network.** `lightrag-server` binds to all interfaces (`HOST=0.0.0.0`) and ships with authentication off, so on a cloud host every endpoint is public — and spends your LLM quota. Before the first start, either bind to a private address in `.env` (`HOST=127.0.0.1`, or a VPN / tunnel address), or configure authentication: `LIGHTRAG_API_KEY`, or `AUTH_ACCOUNTS` together with `TOKEN_SECRET` (generate one with `openssl rand -hex 32`). The Ollama-compatible `/api/*` routes stay open by default for client compatibility; set `WHITELIST_PATHS=/health` to require auth on them too. This applies to every installation method below.
+> **Secure the server before you start it on a shared network.** `lightrag-server` binds to all interfaces (`HOST=0.0.0.0`) and ships with authentication off, so on a cloud host every endpoint is public — and spends your LLM quota. Before the first start, either bind to a private address in `.env` (`HOST=127.0.0.1`, or a VPN / tunnel address), or configure authentication: `LIGHTRAG_API_KEY`, or `AUTH_ACCOUNTS` together with `TOKEN_SECRET` (generate one with `openssl rand -hex 32`). Once `LIGHTRAG_API_KEY` is set, the Ollama-compatible `/api/*` routes require it too (Ollama clients send it as `Authorization: Bearer <key>`); without a key they stay open for client compatibility. This applies to every installation method below.
 
 ### Install from PyPI
 
@@ -567,11 +567,15 @@ Entries marked 🇨🇳 also ship a Chinese translation as `*-zh.md` in the same
 
 ### Maintenance Tools (`lightrag/tools/`)
 
-Storage-facing tools read `.env` and environment variables exactly like the server does, so run them from the project root with the same configuration. Several of them rewrite storage in place — check the linked guide for whether the server (and any other writer) has to be stopped first; `rebuild_vdb` requires it.
+Storage-facing tools read `.env` and environment variables exactly like the server does, so run them from the project root with the same configuration. Several of them rewrite storage in place — check the linked guide for whether the server (and any other writer) has to be stopped first; `rebuild_vdb` and `clear_storage` require it.
 
 **`rebuild_vdb.py`** — `lightrag-rebuild-vdb` — [README_REBUILD_VDB.md](./lightrag/tools/README_REBUILD_VDB.md)
 
 Drops and rebuilds every vector storage from its authoritative source (graph nodes/edges and the `text_chunks` KV store). The recovery path after a failed vector write, and after changing the embedding model or dimension. Also offers a read-only consistency check.
+
+**`clear_storage.py`** — `lightrag-clear-storage` — [README_CLEAR_STORAGE.md](./lightrag/tools/README_CLEAR_STORAGE.md)
+
+Drops every data storage of one workspace offline, exactly as the WebUI *Clear* button does, after showing what it is about to delete and requiring a typed confirmation. The way out of a startup refusal over an empty or unreadable vector index when the data is disposable and a rebuild would be wasted. Never touches the LLM response cache. Requires the server to be stopped.
 
 **`clean_llm_query_cache.py`** — `lightrag-clean-llmqc` — [README_CLEAN_LLM_QUERY_CACHE.md](./lightrag/tools/README_CLEAN_LLM_QUERY_CACHE.md)
 
@@ -579,7 +583,7 @@ Deletes query-mode LLM cache entries (`mix:*`, `hybrid:*`, `local:*`, `global:*`
 
 **`migrate_llm_cache.py`** — `python -m lightrag.tools.migrate_llm_cache` — [README_MIGRATE_LLM_CACHE.md](./lightrag/tools/README_MIGRATE_LLM_CACHE.md)
 
-Migrates default-mode caches (extraction, summary, multimodal analysis) between KV storage backends, preserving workspace isolation.
+Migrates default-mode caches (extraction, summary, multimodal analysis, smart-heading) between KV storage backends, preserving workspace isolation.
 
 **`kg_integrity_repair.py`** — `python -m lightrag.tools.kg_integrity_repair [--apply]` — [README_KG_INTEGRITY_REPAIR.md](./lightrag/tools/README_KG_INTEGRITY_REPAIR.md)
 

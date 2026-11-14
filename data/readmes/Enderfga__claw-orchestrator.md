@@ -42,6 +42,8 @@ https://github.com/user-attachments/assets/5bf9bea8-e5ac-4632-a292-a80a45831dff
 
 ## News
 
+- **[2026-11]** v7.23.0: Antigravity sessions follow agy 1.5.9: every permission mode is passed explicitly, and
+  Gemini 4 models are registered, with `agy-pro` on Gemini 4 Argon.
 - **[2026-11]** v7.22.0: Claude sessions can run under several Claude accounts and move to the next one when
   an account reaches its usage limit, continuing the same conversation.
 - **[2026-11]** v7.21.0: the plugin loads when OpenClaw installs it, with no native module to build.
@@ -146,9 +148,9 @@ engine, so one dropdown switches between Claude, Codex, Antigravity and Grok mod
 
 | Engine      | CLI        | Tested version                  |
 | ----------- | ---------- | ------------------------------- |
-| Claude Code | `claude`   | 2.1.322                         |
-| Codex       | `codex`    | 0.167.0                         |
-| Antigravity | `agy`      | 1.5.3                           |
+| Claude Code | `claude`   | 2.1.325                         |
+| Codex       | `codex`    | 0.169.0                         |
+| Antigravity | `agy`      | 1.5.9                           |
 | Grok Build  | `grok`     | 1.0.77                          |
 | OpenCode    | `opencode` | 1.19.5                          |
 | ACP agent   | any        | Kimi Code 2.3.1, dsh 0.2.1-rc.2 |

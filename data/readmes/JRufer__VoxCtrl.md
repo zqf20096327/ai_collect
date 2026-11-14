@@ -20,6 +20,7 @@ VoxCtrl acts as an intelligent desktop voice gateway, routing speech to any dest
   * **Parakeet TDT**: Ultra-fast non-autoregressive transcription via NVIDIA Parakeet ONNX models (including the 1.58-bit Redux variant). CPU by default; optional WebGPU acceleration.
   * **One GPU switch per engine, and a Speed test**: every engine has the same *GPU acceleration* checkbox and a chip showing the device in use. **Settings → Engine → Speed test** times each engine on the CPU and GPU on your machine and recommends the faster one — the GPU is several times faster for some engines and slower for others.
   * **Remote Speech Engine**: Offload transcription to any OpenAI-compatible `/v1/audio/transcriptions` network endpoint (Faster-Whisper, vLLM, Whisper standalone, or cloud APIs) with zero local RAM/VRAM overhead.
+  * **VoxCtrl Server**: Run VoxCtrl's own engines (whisper.cpp, Moonshine, Parakeet) on another machine with `voxctrl-server`, in Docker or as a systemd service, and point the app's Remote Speech Engine at it. See [docs/server.md](docs/server.md).
 * **On-Device S1-mini Dictation Cleanup**:
   * Intelligent text normalization powered by Superwhisper's [s1-mini](https://huggingface.co/superwhisper/s1-mini-GGUF) (~480 MB download).
   * Runs in an isolated `voxctrl-llm-sidecar` process using `llama.cpp` with Vulkan GPU offload (switchable to CPU in Settings) and automatic CPU fallback.
@@ -30,7 +31,7 @@ VoxCtrl acts as an intelligent desktop voice gateway, routing speech to any dest
   * **Spoken Voice Commands**: Say *"VoxCtrl notes, meeting recap"* to dynamically dispatch text to the command named **notes**.
   * **Multi-Target Broadcasting**: Bind a single hotkey gesture to broadcast a single dictation sequentially to multiple output targets.
 * **Neural Text-to-Speech (TTS) Suite**:
-  * 6 offline voice engines: **Breeze-TTS-2** (voice cloning), **VoxCPM2** (OpenBMB voice cloning), **Pocket-TTS** (voice cloning from reference clip), **Piper** (high-quality ONNX), **Inflect-Micro-v2** (ultra-lightweight 38 MB ONNX), and **eSpeak-NG** (instant fallback).
+  * 7 offline voice engines: **Kitten TTS 2** (multilingual built-in voices and voice cloning), **Breeze-TTS-2** (voice cloning), **VoxCPM2** (OpenBMB voice cloning), **Pocket-TTS** (voice cloning from reference clip), **Piper** (high-quality ONNX), **Inflect-Micro-v2** (ultra-lightweight 38 MB ONNX), and **eSpeak-NG** (instant fallback).
   * **On-Demand Memory Mode**: Automatically unloads heavy TTS neural models from RAM/VRAM after a configurable idle period (`tts.idle_unload_secs`).
 * **Heads-Up HUD Overlay & Visuals**:
   * Transparent, click-through, voice-reactive animated HUD overlays with 8 distinct styles: **Ocean Wave** (tide pool with bobbing buoy), **Voice Card** (holographic card with 20×6 VU meter), **Waveform** (oscilloscope CRT trace), **Pulse Ring** (sonar radar dial), **Mono Bars**, **Neon Spectrum**, **Retro Terminal** and **Analog VU**.
@@ -71,7 +72,7 @@ VoxCtrl turns your voice into a programmable router via `targets.toml`:
 
 ## 🛠️ Architecture
 
-VoxCtrl is designed with strict modularity, memory isolation, and high concurrency across 15 specialized Rust workspace crates:
+VoxCtrl is designed with strict modularity, memory isolation, and high concurrency across 16 specialized Rust workspace crates:
 
 ![VoxCtrl Audio Pipeline Architecture](assets/audio-pipeline-diagram.svg)
 
@@ -87,7 +88,7 @@ VoxCtrl is designed with strict modularity, memory isolation, and high concurren
 | **`voxctrl-llm`** | IPC client communicating with `voxctrl-llm-sidecar` and external OpenAI-compatible LLM endpoints. |
 | **`voxctrl-routing`** | 11-way delivery router, voice command prefix matcher, and multi-target dispatch. |
 | **`voxctrl-hotkeys`** | XDG Desktop Portal `GlobalShortcuts` integration and gesture state machine. |
-| **`voxctrl-tts`** | Neural TTS orchestration (Breeze-TTS-2, VoxCPM2, Pocket-TTS, Piper, Inflect, eSpeak) and idle memory unloading. |
+| **`voxctrl-tts`** | Neural TTS orchestration (Kitten TTS 2, Breeze-TTS-2, VoxCPM2, Pocket-TTS, Piper, Inflect, eSpeak) and idle memory unloading. |
 | **`voxctrl-inject`** | Text delivery: paste (with clipboard restore) or typing; shortcut choice per focused window; key sending via XTEST, `wtype`, `ydotool`, the RemoteDesktop portal, `xdotool`. |
 | **`voxctrl-clipboard`** | Full-format clipboard backup/restore on Windows, X11 and Wayland. |
 | **`voxctrl-winput`** | Windows `SendInput`: Unicode typing, paste shortcuts, focused-window class. |
@@ -96,6 +97,7 @@ VoxCtrl is designed with strict modularity, memory isolation, and high concurren
 | **`voxctrl-text`** | Text normalization, filler-word sanitization, and regex replacement filters. |
 | **`voxctrl-update`** | GitHub release checking, SHA-256 verification, and atomic self-updating. |
 | **`voxctrl-bugreport`**| Allowlist-redacted diagnostic bundle generation and GitHub issue submission. |
+| **`voxctrl-server`** | Headless speech server: runs one STT model and serves it to VoxCtrl clients over an OpenAI-compatible HTTP API ([docs/server.md](docs/server.md)). |
 
 ---
 

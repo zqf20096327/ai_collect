@@ -24,6 +24,19 @@
 </a>
 
 
+
+> [!IMPORTANT]
+> # 🚀 WANT TO USE THE BIG BROTHER WITHOUT INSTALLING ANYTHING?
+>
+> **You can access The Big Brother directly from your browser. No downloads, no installation, no local setup, and no configuration required.**
+>
+> <h2 align="center">⚡ <a href="https://thebigbrother.cloud/">LAUNCH THE BIG BROTHER ONLINE</a></h2>
+>
+>
+> **Just open the website and start exploring.**
+>
+> ---
+
 > [!IMPORTANT]
 > ### ⚡ VX.1 IS A GROUND-UP REBRAND AND A 24-ENGINE EXPANSION
 >
@@ -33,7 +46,6 @@
 > - **A brand-new VX Arsenal** with **24 keyless, production-grade engines** across DNS/CT, edge security, cloud exposure, token forensics, breach-aware password auditing, CVE/EPSS/KEV correlation, attack-surface scoring, origin unmasking, GraphQL and supply-chain auditing.
 > - **A unified Intelligence Result Surface** — every new engine returns a structured envelope with a risk score, severity-ranked findings, extracted indicators and a navigable data model rendered as premium evidence cards.
 > - **Hardened legacy engines** — SSL Sentinel, EXIF Analyzer, Dork Studio, Sky Radar and Crypto Analyzer were rebuilt with richer logic, safer fallbacks and no silent mock data.
-
 ---
 
 ## ⟦ OVERVIEW ⟧
@@ -365,10 +377,10 @@ For specialized operations requiring private databases, custom satellite scraper
 - 👁️ **TheBigBrother God-EYE Enterprise** · Private breach index · real-time SSN/DOB records · zero-key carrier lookups
 - 🐦 **X GodMode** · Twitter/X algorithmic automation & sentiment engineering
 - 🎵 **Amplifior** · Autonomous multi-channel social media automation
-- 🎣 **Psychopath** · Conversational AI adversary emulation & red-team campaign framework
+- 🎣 **Psychopath** · Conversational AI adversary emulation & red-team campaign framework · **NOW OPEN SOURCE & FREE!** 🚀 [Explore on GitHub](https://github.com/chadi0x/Psychopath) · Clone it, explore it, and enjoy.
 - 🛠️ **Custom Builds** · Tailored intelligence frameworks and military OSINT platforms on request
 
-<div align="center">
+
 
 **[▸ CONTACT ARCHITECT · Telegram @hisoka0morow](https://t.me/hisoka0morow)**
 

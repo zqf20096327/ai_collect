@@ -4,7 +4,7 @@
 
 🚀 **Ship whole changes with AI, not one prompt at a time.**
 
-A Claude Code plugin that runs your [10xDevs](https://10xdevs.pl) or [OpenSpec](https://github.com/Fission-AI/OpenSpec) workflow end to end: plan, review, implement, verify, fix. One command, every step in its own subagent, on the right model.
+A Claude Code plugin that runs 10xDevs and OpenSpec workflows end to end through explicit slash commands. Each step runs in its own subagent, with model and effort routing based on earlier results. [10xDevs](https://10xdevs.pl) · [OpenSpec](https://github.com/Fission-AI/OpenSpec)
 
 ## ✨ Why you'll love it
 
@@ -28,6 +28,18 @@ A Claude Code plugin that runs your [10xDevs](https://10xdevs.pl) or [OpenSpec](
 ```
 
 Needs Claude Code 2.1.292 or later: `${CLAUDE_SKILL_DIR}` in skill content needs 2.1.69 and the `effort` parameter of the Agent tool needs 2.1.292.
+
+Fable compatibility checked 2026-11-14. Fable 5.2 requires Claude Code 2.1.321+. With `ANTHROPIC_DEFAULT_FABLE_MODEL` unset, `fable` resolves to Fable 5 in Claude apps gateway sessions and Fable 5.2 elsewhere. Before opting in, check the version requirement for the resolved model, environment/provider mapping, exposed Agent model alias and effort parameters, and account access. The router performs no version or capability detection. [Model configuration](https://code.claude.com/docs/en/model-config) · [Subagents](https://code.claude.com/docs/en/sub-agents)
+
+### Codex and OpenAI steps
+
+The shared `10x-pipeline` and `openspec-pipeline` skills also support Codex hosting OpenAI steps, and Claude Code hosting a mixed Claude/OpenAI ladder. Codex CLI 0.169.0 is the verified runner contract. Node.js 24+, authenticated model access, project trust and separately installed upstream toolkit skills are required. Confirm that a fresh CLI child can discover those skills from the run worktree.
+
+Use the existing compatibility package for a Claude-plugin archive import into OpenAI, then select the installed pipeline skill through Codex's skill picker. Clean installation and live execution on both hosts remain acceptance checks. [Compatibility import guide](https://developers.openai.com/plugins/guides/submit-claude-plugin.md)
+
+Merge `skills/10x-pipeline/codex-policy.json` into `context/foundation/agent-smith-policy.json` for the opt-in GPT ladder. Existing overrides need a deliberate merge because arrays replace whole. The preset preserves tier positions and supplies an initial capability ordering. A Claude-hosted mixed ladder tags each OpenAI rung with `"provider": "openai"`. A Codex host needs an OpenAI-only ladder.
+
+Existing Codex configuration is the default. Optional `codex.profile` selects an existing named configuration. The runner checks Git filesystem capability before launching a model and respects managed requirements and outer host restrictions. Native sandbox can force legacy `sandbox_mode` settings read-only and prevent verification. Execpolicy and hook behavior still need live acceptance. See the reference for the execution protocol and limits. [Codex execution](docs/REFERENCE.md#codex-and-provider-dispatch)
 
 ## 🏁 Quick start
 
@@ -59,6 +71,22 @@ Needs: the skills `10x-plan`, `10x-plan-review`, `10x-goal-implement` and `10x-i
 
 💡 Each run works in its own worktree on the branch `agent-smith/<change-id>`, and ends with that branch pushed and a pull request open for human review. agent-smith never merges it. Needs a `github.com` remote and `gh` for the pull request. Running without a worktree (no push, no pull request): see [Run isolation](docs/REFERENCE.md).
 
+### Claude Code invocation
+
+Start deliberately with `/agent-smith:10x-pipeline <change-id>` or `/agent-smith:openspec-pipeline <change-name>`. Both skills set `disable-model-invocation: true` so you control when the side-effecting run starts. Claude Code keeps their descriptions out of model context and disables automatic loading from plain-language requests such as `pipeline this change`. Direct user commands remain available. These invocation controls are Claude Code-specific. [Invocation control](https://code.claude.com/docs/en/skills#control-who-invokes-a-skill)
+
+| Entry point for either pipeline | Documented behavior |
+| --- | --- |
+| Direct slash command | Loads the selected skill. |
+| Plain-language request | Automatic loading is disabled. |
+| `claude -p "/agent-smith:10x-pipeline <change-id>"` or the OpenSpec equivalent | Expands the user-invoked skill command in print mode. |
+| `/loop 5m /agent-smith:10x-pipeline <change-id>` or the OpenSpec equivalent | A scheduled fire delivers the prompt as plain text with automatic skill expansion disabled. |
+| Another skill using the Skill tool | Requires the matching slash command as a separate word in the current user message. |
+
+A matching command at the start of the message invokes the skill directly. A separate command word after prose authorizes Claude to call it through the Skill tool for that message. Integrations need that current-message authorization. [Command placement](https://code.claude.com/docs/en/skills#where-you-write-the-skills-name)
+
+These compatibility statements follow Anthropic documentation reviewed on 2026-11-14. Print mode supports user-invoked skill commands and waits for background work subject to an idle ceiling. The reference's immediate-exit prediction is historical and explicitly unverified. Version-specific live invocation acceptance and full headless pipeline completion remain pending. [Headless commands](https://code.claude.com/docs/en/headless) · [Background tasks at exit](https://code.claude.com/docs/en/headless#background-tasks-at-exit) · [Scheduled prompts](https://code.claude.com/docs/en/scheduled-tasks#run-a-prompt-repeatedly-with-loop) · [Historical hypothesis](docs/REFERENCE.md)
+
 ## 🎛️ Options
 
 | Flag | Effect |
@@ -73,10 +101,14 @@ Needs: the skills `10x-plan`, `10x-plan-review`, `10x-goal-implement` and `10x-i
 Override any policy key per project in `context/foundation/agent-smith-policy.json`. Defaults live in `skills/10x-pipeline/policy.json`; the OpenSpec chain's steps and prompts live in `skills/openspec-pipeline/policy.json`, which the router merges with it. The always-true step rules live in `skills/10x-pipeline/rules/` and `skills/openspec-pipeline/rules/`; no override reaches them (ADR-023, `skills/10x-pipeline/rules/README.md`).
 
 ```json
-{ "prices": { "usdPerMillionTokens": { "opus": 30, "sonnet": 6, "haiku": 2 } } }
+{ "prices": { "usdPerMillionTokens": { "opus": 30, "sonnet": 6, "haiku": 2, "fable": 12 } } }
 ```
 
-That one adds a dollar estimate to every report. 💰
+All numbers above are illustrative user-supplied blended rates. Supply current rates for your deployment. Pricing is a separate opt-in, with `prices: null` as the default. The estimate uses `totalTokens * rate / 1e6`, with one rate per model key across providers and efforts and no input/output/cache split. Omit unknown prices, since `0` is a real zero rate. Estimates carry no billing or savings guarantee.
+
+Eligible Claude hosts can merge the complete opt-in fable ladder and four selected ceilings into their project override. Arrays replace whole, so preserve unrelated keys deliberately. The shipped rigor floors remain supported. A custom `xhigh` floor skips the high rung and can exceed a lower ceiling, while a custom `max` floor exhausts this extension at xhigh. A Codex host requires an OpenAI-only ladder. Combining this example with the GPT overlay requires a deliberate provider and ladder redesign. [Opt-in fable ladder](docs/REFERENCE.md#opt-in-fable-ladder)
+
+With a price table missing fable, status gives its step cost as `null`, the report cell is `-` and the summary names `no price for: fable`. Compare adds `cost-incomplete:routed` while preserving the token verdict. All-unpriced status totals are `null`. With prices off, status/report omit costs and compare side costs stay `null`.
 
 Opt-in extras: restricted step agents, advisor prompts, confirmation review rounds. All in the [reference](docs/REFERENCE.md).
 

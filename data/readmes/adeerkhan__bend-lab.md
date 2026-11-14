@@ -140,9 +140,38 @@ make setup                                               # toolchain, lock, envi
 bendenv run -- bend examples/diffusion/vit/main.bend     # train and sample the ViT
 make check                                               # the gate: proofs, kernels, twins, comparisons
 make trace TASK=glm53-hybrid128 STEPS=20                 # one JSON line per step, written as it runs
-make dash TASK=glm53-hybrid128                           # loss, step time, tokens/s, the stage split
+make dash TASK=glm53-hybrid128                           # terminal: loss, step time, tokens/s, the stage split
 make dash TASK=glm53-hybrid128 WATCH=1                   # follow a run while it writes
+make dashboard PORT=8787                                 # every run, CPU/RAM/GPU, live sessions
+./scripts/dashboard.sh start                             # the same page in the background
+make session TASK=check-fast CMD="make check-fast"        # any test as a dashboard session
 ```
+
+## The dashboard
+
+![The run dashboard](docs/assets/dashboard.png)
+
+`make dashboard PORT=8787` (or `./scripts/dashboard.sh start` for a background
+server) serves the in-house W&B view at `http://127.0.0.1:8787/`: every run in
+`scripts/batch.sh` (or `make batch`) runs the full matrix through the same
+sessions and writes one summary, `results/batch-<date>.md`.
+
+`results/runs.sqlite3`, live sessions, host CPU, RAM, GPU utilization and GPU
+memory, each run's parameter count and configuration, and the selected run's
+train and eval loss, step time, extra signals, system samples, steps and
+record. A run's CPU is its **share of the host** with the core count beside
+it; RAM is **PSS** over the process tree, so shared libraries are counted
+once; GPU usage comes from `nvidia-smi`. The loss panel has `train`, `eval`
+and `log` toggles; `?run=ID` opens a run directly.
+
+The page follows the Bend cream, charcoal and purple identity. The sun/moon
+button in the header switches between light and dark; the choice is saved in
+the browser. `?theme=dark` (or `?theme=light`) is a shareable override.
+
+Training runs register through `make trace` (the GLM trace now also records the
+final held-out `val_loss`), tests through `make session TASK=... CMD="..."`,
+and `make experiment` registers itself. A run that is not in the store is not
+in the page.
 
 `make check` is the gate. It checks the proofs and the kernel with Lean, runs
 the programs that must be refused, and compares every measured number with a
@@ -203,7 +232,9 @@ README figures are generated from those result files with `make figures`.
 
 ## The GPU lane
 
-`bend.toml` pins `bendtorch@1.1.1.0` and `bendtorch-gpu@1.1.1.0`. The ViT builds
+`bend.toml` pins `bendtorch@2.1.0.0`, `bendtorch-gpu@2.1.0.0`,
+`bend-ml-tensor-array@0.1.20.0` and `bend-ml-tensor-gpu@0.1.5.2` (the array
+and GPU versions BendTorch 2.1.0.0 itself imports). The ViT builds
 with eight `LinearNBF` and one `F.Attention`, links `libnvrtc`, and executes on
 an RTX 5060. `nvidia-smi` shows the process with 104 MiB on the card, and the
 frozen values are bit-identical to the CPU lane.
@@ -289,9 +320,13 @@ Stage C integrates linear + sparse attention in a 4,168-parameter model gated at
 **56/64** on both splits, with `reverse` at **0/8** and every seen family at **8/8**
 (`results/glm53-corpus128-holdout-reverse`). The 4-block/4-head hybrid is implemented and its N=8
 forward matches the reference attention modules at 1e-7; one training iteration measures **1.14 s**
-for 128 tokens with forward **45.0%** and backward **63.8%** of it, so the 1.6M-token budget is
-**12,800 steps / about 3.5 h** (an extrapolation, not a run); see
-`results/glm53-hybrid128/run.json`. `make trace` and `make dash` render a run's steps live.
+in the stage record (median **1.9 s** over 1,398 run steps) with forward **45.0%** and backward
+**63.8%**, and a 192-position evaluation is **5.6 h per split** at 6.48 s a forward, so the
+vectorized attention comes first; see `results/glm53-hybrid128/run.json` and
+`training-partial.json`. `make trace` and `make dash` render a run's steps live. The reference itself, run on this
+machine, reaches **64/64** seen; with `reverse` removed from pretraining it is **56/64** and
+**0/8** on that family, the same pattern as the 74k port
+(`results/glm53-reference/run.json`).
 
 ## Licence
 

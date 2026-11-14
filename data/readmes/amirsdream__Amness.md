@@ -20,7 +20,7 @@ npm install -g amness                 # gives you the `amness` and `amness-deskt
 cd ~/your-project && amness           # first start: pick a provider and paste your key (see below)
 ```
 
-Prefer a window? `amness-desktop` opens the same agent as a [desktop app](docs/desktop.md).
+Prefer a window? `amness-desktop` opens the same agent as a [desktop app](docs/desktop.md). Want it running all the time, from your phone or from scripts? `amness serve` gives the same app in any browser and an [HTTP API](docs/api.md). Tools from [MCP servers](docs/mcp.md) work in all of them, and so does Claude Code's `.mcp.json`.
 
 Or try it without installing: `npx amness`. To run the latest `main` from source (or to work on Amness), see [Run from source](#run-from-source).
 
@@ -64,11 +64,21 @@ Update the npm version with `npm install -g amness@latest`. Contributors: see [D
 
 <p align="center"><img src="docs/images/approval.png" alt="An edit waiting for your approval, with the diff" width="780"></p>
 
-The same agent as a desktop app (`amness-desktop`): the step happening now is open, finished steps fold, and the side panel shows the agent loop, context, cost and changes.
+This is the screen you will see most. The agent wants to change a file, shows you the exact diff, and waits.
 
-<p align="center"><img src="docs/images/desktop.png" alt="The Amness desktop app during a turn" width="780"></p>
+The same agent as a desktop app (`amness-desktop`): a finished turn folds to one line with the changed files, and the side panel shows the agent loop, context, cost and changes.
 
-This is the screen you will see most. The agent wants to change a file, shows you the exact diff, and waits. More screenshots (subagents, the loop view, themes) are in the [step-by-step guide](docs/getting-started.md).
+<p align="center"><img src="docs/images/desktop.png" alt="The Amness desktop app after a fix: the folded turn, the answer and the side panel" width="780"></p>
+
+Tools from [MCP servers](docs/mcp.md): yours, and the project's `.mcp.json` once you trust the project. `/mcp` shows each one's state.
+
+<p align="center"><img src="docs/images/mcp.png" alt="The /mcp view: two connected servers and one waiting for trust" width="780"></p>
+
+`amness serve` runs it as a service: the same app in a browser, on your phone too, and an [HTTP API](docs/api.md) for scripts, CI and other agents.
+
+<p align="center"><img src="docs/images/serve-phone.png" alt="Amness in a phone-sized browser through amness serve" width="300"></p>
+
+More screenshots (subagents, the loop view, themes) are in the [step-by-step guide](docs/getting-started.md).
 
 ## Examples
 

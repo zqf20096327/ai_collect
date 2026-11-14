@@ -302,8 +302,8 @@ Sections group related components, and metadata labels **Fictional data**, assum
 
 **Safety and limits**
 
-- **Hermes inline widgets.** When the agent writes an HTML file and replies with `::preview{file="…html"}`, Herm shows the widget live in the reply, in the same offline sandbox, sized to its content. Buttons using `hermes.send` or `data-hermes-send` send their prompt as a message in that chat (one per second, 500 characters max). Other files show the usual attachment card.
-- **MCP Apps.** An MCP tool that ships its own view (the MCP Apps standard) shows an app card under the turn's activity. Click **Open** to run it in the same offline sandbox; it receives the tool's input and result and can open HTTPS links. Network access a view requests is listed but not granted, and views cannot call tools yet.
+- **Hermes inline widgets.** When the agent writes an HTML file and replies with `::preview{file="…html"}`, Herm shows the widget live in the reply, in the same offline sandbox, sized to its content. Requests using `hermes.send` or `data-hermes-send` require native confirmation before sending a prompt in that chat (one per second, 500 characters max). Other files show the usual attachment card.
+- **MCP Apps.** An MCP tool that ships its own view (the MCP Apps standard) shows an app card under the turn's activity. Click **Open** to run it in the same offline sandbox; it receives the tool's input and result and can request HTTPS links, each requiring native confirmation. Network access a view requests is listed but not granted, and views cannot call tools yet.
 - Interactive HTML runs only after you click **Open interactive view**, in an offline sandbox with no network, storage, files, credentials, tools, downloads, popups, or device access. Closing it, switching session or profile, or restarting Herm resets it; changing the theme reloads it.
 - A reply is limited to 1 MiB, 100 blocks, and 1,000 rows or points per block. Invalid or oversized replies show **Visual reply unavailable** with their readable text, the reason, and the source. While a reply streams, visual content waits until it finishes.
 
@@ -947,4 +947,4 @@ The session inspector's **Browser** tab is a real Chromium browser that you and 
 - **Page dialogs** (alerts, confirmations, prompts, "Leave this page?") appear as a card in the panel, so a page can't stay frozen waiting for an answer. If Hermes answers a dialog itself, the card closes.
 - **Annotate** (cursor icon): click any element, describe the change, and Herm sends the element's selector, styles, HTML and a screenshot to the chat. The popup uses your Herm theme.
 - **One browser per profile.** Each Hermes profile (and bot profile) runs one agent Chrome, matching Hermes' profile-wide browser connection. Its sessions share it and its sign-ins; each session returns to the tab it last showed, and switching sessions doesn't reconnect Hermes. Switching sessions or closing the inspector keeps live pages and form state without reloading. The browser quits once no session of that profile remains open.
-- **Sign-ins stay within a profile.** Sessions of one Hermes profile sh
+- **Sign-i

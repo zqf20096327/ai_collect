@@ -64,7 +64,66 @@ The MLX-backed path still depends on `mlx-c`; “Zig-controlled” does not mean
 
 ## Quick start
 
-### Requirements
+### One-command install (macOS, Apple Silicon)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/zouyee/dmlx/main/scripts/install.sh | bash
+```
+
+This downloads the latest [release](https://github.com/zouyee/dmlx/releases),
+verifies the sha256, installs into `~/.local/share/dmlx`, and links the CLI to
+`~/.local/bin/dmlx`. The tarball bundles `libmlxc`, `libmlx`, and
+`mlx.metallib` — nothing else to install, no Zig required.
+
+### What runs on your Mac
+
+Measured on an Apple M4 Pro with 48GB unified memory; see
+[Benchmarks](#benchmarks) for protocols and raw artifacts.
+
+| Model | Memory needed | Measured speed | Notes |
+|---|---:|---:|---|
+| Qwen3.8-27B-4bit + MTP drafter | fits in 48GB | **43.2 tok/s** decode (non-thinking), 0.28s TTFT | speculative decoding, flagship path |
+| DeepSeek V4 Flash 4bit (284B MoE) | ~20.3GiB RSS + SSD for cold experts | **1.24 tok/s** effective completion | 284B model under a 48GB budget via expert streaming |
+| Llama / Mistral / Qwen2/3 / Gemma / GLM / Phi registry models | model-dependent | compatibility paths | see [Choose a path](#choose-a-path) |
+
+### Models the easy way
+
+`dmlx pull` downloads a registered model from Hugging Face with resumable
+transfers and SHA256 verification; `dmlx doctor` checks hardware, Metal, and
+installed models. Model aliases work anywhere `--model` takes a path.
+
+```bash
+./dmlx/bin/dmlx doctor
+./dmlx/bin/dmlx pull qwen3.8-27b-4bit        # target model
+./dmlx/bin/dmlx pull qwen3.8-27b-mtp-4bit    # MTP drafter for speculative decode
+./dmlx/bin/dmlx serve --model qwen3.8-27b-4bit --speculative-mtp 7 --port 8080
+```
+
+Pulled models land in `~/.cache/dmlx/models/` (override with
+`DMLX_MODEL_HOME`). Registered aliases: `qwen3.8-27b-4bit`,
+`qwen3.8-27b-mtp-4bit`, `deepseek-v4-flash-4bit`.
+
+### Install from a release (no Zig required)
+
+Download the latest `dmlx-*-macos-arm64.tar.gz` from
+[GitHub Releases](https://github.com/zouyee/dmlx/releases) and unpack it:
+
+```bash
+tar -xzf dmlx-*-macos-arm64.tar.gz
+./dmlx/bin/dmlx version
+```
+
+The tarball bundles `libmlxc`, `libmlx`, and `mlx.metallib`; nothing else
+needs to be installed. The binary is ad-hoc signed, so on first run macOS may
+require `xattr -dr com.apple.quarantine dmlx/` or right-click → Open.
+
+A Homebrew tap formula lives in
+[`packaging/homebrew/dmlx.rb`](packaging/homebrew/dmlx.rb) and can be copied
+into a `homebrew-tap` repository for `brew install` distribution.
+
+### Build from source
+
+Requirements:
 
 - macOS on Apple Silicon
 - Zig 0.16 or newer

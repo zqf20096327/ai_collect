@@ -11,6 +11,20 @@ CrispEmbed service integrations.
 
 ---
 
+## Shared catalogue engine
+
+The `crates/crispcat` library is the explicitly MIT-licensed, UI-independent
+Cathy/Catfish catalogue engine; the application keeps its existing licence.
+CAF v8 round trips now preserve explicit empty directories and directory
+modification timestamps. Scans capture those directory records. Legacy v1–v6
+zero-size provenance is exposed separately from exact v7/v8 zero-byte files.
+Cooperative read/write cancellation leaves an existing output untouched.
+CrispCloud reuses this format slice behind its Rust/SQLite catalogue API;
+CAF remains an interoperability export rather than a second live database.
+The primary application CLI is `crispsorter`; the small catalogue-only companion
+is `crispcat`. No new app release tag is required to consume a pinned crate
+checkpoint from source.
+
 ## How it works
 
 1. **Ingest** — drag in files or an entire folder tree
@@ -1043,3 +1057,5 @@ articles already present in the index. The import is read-only: articles
 removed from Wallabag are not automatically removed locally. The account is not
 continuously synchronised, and each run requires credentials to be entered or explicitly loaded again. Large
 libraries take longer when vector embeddings are enabled.
+
+The standalone `crates/crispcat-format` library exposes the CAF codec and metadata types with only serde at runtime. It builds outside the application workspace and can be consumed as a pinned Git dependency; `crispcat` keeps compatible re-exports. Existing MIT notices are retained. Registry publication is a separate step.

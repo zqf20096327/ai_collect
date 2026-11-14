@@ -12,6 +12,8 @@
 
 A comprehensive CLI/TUI/Library application for detecting, managing, installing, and updating AI development CLI agents across macOS, Linux, and Windows.
 
+**Website:** [kevinelliott.github.io/agentmanager](https://kevinelliott.github.io/agentmanager/)
+
 > **Catalog:** 309 agents and counting. See the full list in [Supported Agents](#supported-agents).
 
 ## Features
@@ -33,23 +35,70 @@ A comprehensive CLI/TUI/Library application for detecting, managing, installing,
 
 Pick whichever method fits your setup. After installing, verify with `agentmgr doctor`.
 
+### Install script (macOS / Linux)
+
+```bash
+curl -fsSL https://kevinelliott.github.io/agentmanager/install.sh | sh
+```
+
+The script downloads the release archive for your OS and architecture, verifies its
+SHA-256 against the release's `checksums.txt`, and installs `agentmgr` to
+`/usr/local/bin` when that is writable, or `~/.local/bin` otherwise. It never calls
+`sudo`. Re-run it at any time to move to the latest release.
+
+```bash
+# Install a specific release, or into a directory of your choice
+curl -fsSL https://kevinelliott.github.io/agentmanager/install.sh | sh -s -- --version v1.6.0
+curl -fsSL https://kevinelliott.github.io/agentmanager/install.sh | sh -s -- --dir ~/bin
+```
+
+Prefer to read it first? The script is [`install.sh`](install.sh) in this repository.
+
 ### Homebrew (macOS / Linux)
 
 ```bash
 brew install kevinelliott/tap/agentmanager
 ```
 
+Installs the prebuilt binary and shell completions. Upgrade with `brew upgrade agentmanager`.
+
 ### Go Install
 
-Requires Go 1.25+. Installs the latest tagged release into `$(go env GOPATH)/bin`:
+Requires Go 1.25+. Installs the latest tagged release into `$(go env GOPATH)/bin`
+(make sure that directory is on your `PATH`):
 
 ```bash
 go install github.com/kevinelliott/agentmanager/cmd/agentmgr@latest
 ```
 
+The CLI is pure Go, so no C compiler is needed.
+
+### Prebuilt binaries and packages
+
+Every [release](https://github.com/kevinelliott/agentmanager/releases/latest) ships
+archives for macOS (Intel and Apple silicon), Linux (amd64 and arm64), and Windows
+(amd64), plus `.deb`, `.rpm`, and `.apk` packages and a `checksums.txt`. On Windows,
+download the `.zip` and put `agentmgr.exe` on your `PATH`.
+
+### Desktop app
+
+AgentManager also has a desktop app: a tray icon plus a window for browsing the
+catalog and installing, updating and removing agents.
+
+- **macOS**: download `AgentManager-<version>-macos-universal.dmg` from the release
+  and drag AgentManager to Applications. It includes the `agentmgr` CLI, which you
+  can install from Settings.
+- **Windows**: the release `.zip` includes `agentmgr-helper.exe`. Run it to get the
+  tray icon; the window opens in Edge or Chrome.
+- **Linux**: the amd64 release archive includes `agentmgr-helper`. The window opens
+  in Chrome or Chromium when installed, otherwise in your default browser.
+
+With the app running, `agentmgr helper open` opens the window from a terminal.
+
 ### From Source
 
-Requires Go 1.25+ and `make`:
+Requires Go 1.25+ and `make`. The system tray helper (`agentmgr-helper`) also needs
+cgo, and on Linux the `libayatana-appindicator3-dev` package:
 
 ```bash
 # Clone the repository (creates ./agentmanager)
@@ -185,6 +234,7 @@ agentmgr config path             # Show config file path
 ```bash
 agentmgr helper start            # Start systray helper
 agentmgr helper stop             # Stop systray helper
+agentmgr helper open             # Open the desktop window
 agentmgr helper status           # Check helper status
 ```
 
@@ -566,7 +616,7 @@ in an interactive terminal with the required privileges.
 AgentManager consists of two binaries:
 
 1. **`agentmgr`** - Main CLI/TUI application for interactive use
-2. **`agentmgr-helper`** - Background systray helper with notifications
+2. **`agentmgr-helper`** - Background systray helper with a desktop window and notifications
 
 ### Library Usage
 
@@ -650,6 +700,24 @@ make check
 # Run tests with coverage
 make test-coverage
 ```
+
+To build the macOS app locally:
+
+```bash
+make build-macos-app          # bin/AgentManager.app for this Mac
+./scripts/package-macos.sh    # universal app + dist/*.dmg
+go run ./scripts/genicons     # regenerate the app, tray and window icons
+```
+
+`package-macos.sh` signs with the Developer ID named in `MACOS_SIGN_IDENTITY` and
+notarizes with an App Store Connect API key when `APPLE_API_KEY_PATH` (the
+`.p8` file), `APPLE_API_KEY_ID` and `APPLE_API_ISSUER_ID` are also set; without
+them it produces an ad-hoc signed build for local use. The release workflow
+reads `MACOS_CERTIFICATE_P12` (the base64 of the exported certificate),
+`MACOS_CERTIFICATE_PASSWORD`, `APPLE_TEAM_ID`, `APPLE_API_KEY_P8` (the base64 of
+the `.p8` file), `APPLE_API_KEY_ID` and `APPLE_API_ISSUER_ID` from repository
+secrets. `scripts/set-notarization-secrets.sh` stores the three API key
+secrets. A release fails rather than publish an app that is not notarized.
 
 ### Performance checks
 

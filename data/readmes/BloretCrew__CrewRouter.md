@@ -18,7 +18,7 @@
 [![最新正式版](https://img.shields.io/github/v/release/BloretCrew/CrewRouter?label=%E6%9C%80%E6%96%B0%E6%AD%A3%E5%BC%8F%E7%89%88)](https://github.com/BloretCrew/CrewRouter/releases)
 ![Docker](https://img.shields.io/badge/Docker-detritalw%2Fcrewrouter-2496ED?logo=docker&logoColor=white)
 
-**团队级 AI 模型统一网关** · OpenAI / Anthropic 双协议 · 自托管
+**团队级 AI 模型统一网关** · OpenAI / Anthropic / Gemini 多协议 · 自托管
 
 [演示控制台](https://crewrouter.bloret.net/) · [部署指南](docs/deployment.md) · [架构说明](docs/ARCHITECTURE.md) · [API 文档](docs/API.md)
 
@@ -44,14 +44,14 @@
 
 ## 它是什么
 
-CrewRouter 把多家上游模型供应商收成 **一个 OpenAI / Anthropic 兼容端点**。团队成员只拿网关下发的 Key，用 Claude Code、Codex、Cursor、OpenCode、Cherry Studio 等工具时，只需改 `base_url`。供应商密钥留在网关里，成员有使用权、没有所有权。
+CrewRouter 把多家上游模型供应商收成 **一个 OpenAI / Anthropic / Gemini 兼容端点**。团队成员只拿网关下发的 Key，用 Claude Code、Codex、Cursor、OpenCode、Cherry Studio、Gemini CLI 等工具时，只需改 `base_url`。供应商密钥留在网关里，成员有使用权、没有所有权。
 
-应用 → **CrewRouter** → OpenAI / Anthropic / DeepSeek / 更多…
+应用 → **CrewRouter** → OpenAI / Anthropic / Gemini / DeepSeek / 更多…
 
 ## 核心功能
 
-- [x] **多供应商聚合** — OpenAI、Anthropic、DeepSeek 等，一个端点全部接入
-- [x] **协议自动转换** — OpenAI ↔ Anthropic 双向转换，用 OpenAI SDK 调 Claude，或反过来
+- [x] **多供应商聚合** — OpenAI、Anthropic、Gemini、DeepSeek 等，一个端点全部接入
+- [x] **协议自动转换** — OpenAI / Anthropic / Gemini generateContent / Interactions 双向转换，Gemini 客户端可调其它上游，OpenAI/Anthropic 客户端也可调 Gemini 上游
 - [x] **智能路由** — 按团队分配模型，支持别名、上游映射和自定义规则
 - [x] **Fusion 模式** — 同一请求并发多个模型，裁判模型评估并综合最优回答
 - [x] **实时统计** — 请求量、Token、延迟、成本；按模型 / Key / 时间下钻
@@ -70,7 +70,7 @@ CrewRouter 把多家上游模型供应商收成 **一个 OpenAI / Anthropic 兼�
 - [x] **全站国际化** — 中英双语，译文托管实时拉取
 - [x] **注入提示词** — 按 key/全局条目化，Claude Code 风格注入，响应自动净化
 - [x] **客户端事件上报** — CrewRouterHelper 上报 + 实时活动看板
-- [x] **OAuth 2.0 授权服务** — PKCE 授权码、刷新令牌与 AI 客户端授权
+- [x] **OAuth 2.0 授权服务** — PKCE 授权码、刷新令牌，支持 Desktop / Helper / CLI 与第三方公共/机密客户端
 - [x] **模型库增强** — 收藏、全局搜索、Key 拖拽排序、队列回退
 - [x] **自定义提示词指纹** — 调用记录标记 CLAUDE.md/AGENTS.md 等
 - [x] **会话总结** — 会话标签、生成总结
@@ -79,7 +79,7 @@ CrewRouter 把多家上游模型供应商收成 **一个 OpenAI / Anthropic 兼�
 
 只需更换 `base_url`，无需改业务代码：
 
-Claude Code · Claude Desktop · Codex · OpenCode · OpenClaw · Hermes Agent · Grok Build · DeepSeek Harness · Kilo Code · Cline · Cherry Studio · Qwen Code · Cursor · 以及一切走 OpenAI Chat Completions / OpenAI Responses/ Anthropic Messages 协议的工具，以及安装了对应插件的任意客户端
+Claude Code · Claude Desktop · Codex · OpenCode · OpenClaw · Hermes Agent · Grok Build · DeepSeek Harness · Kilo Code · Cline · Cherry Studio · Qwen Code · Cursor · Gemini CLI / google-genai（Native Gemini + Interactions） · Antigravity CLI (agy) · Pi · Kimi Code · Qoder CLI · ZCode · 以及一切走 OpenAI Chat Completions / OpenAI Responses / Anthropic Messages / Gemini generateContent 协议的工具，以及安装了对应插件的任意客户端
 
 ```bash
 # 只需更换 base_url
@@ -103,6 +103,50 @@ resp = client.chat.completions.create(
     messages=[{"role": "user", "content": "Hello!"}],
 )
 ```
+
+## SDK
+
+除了直接改 `base_url`，也可以使用 CrewRouter SDK 获得流式解析、统一错误、重试与管理接口封装。
+
+| 形态 | 包 | 状态 |
+|------|-----|------|
+| Node/TypeScript 客户端 | npm `crewrouter-sdk` | 0.1.0 可用 |
+| Python 客户端 | PyPI `crewrouter-sdk` | 0.1.0 可用 |
+| Go 客户端 | `github.com/BloretCrew/CrewRouter/sdk/go` | 0.1.0 可用 |
+| 可嵌入服务端 SDK | `crewrouter/embedded` | 预览可用（Node） |
+
+```bash
+npm install crewrouter-sdk
+```
+
+```ts
+import { CrewRouter } from 'crewrouter-sdk';
+
+const client = new CrewRouter({
+  baseUrl: process.env.CREWROUTER_BASE_URL,
+  apiKey: process.env.CREWROUTER_API_KEY,
+});
+
+const response = await client.gateway.chat.completions.create({
+  messages: [{ role: 'user', content: 'Hello!' }],
+});
+```
+
+所有 SDK 均与主项目一样使用 **GPL-3.0**。完整文档见 [docs/sdk/README.md](docs/sdk/README.md)。
+
+## 命令行与 TUI（`cr`）
+
+仓库内置零依赖的 CrewRouter CLI，既支持非交互式子命令，也支持可直接鼠标点击的全屏 TUI；可以连接远程实例，也可以从本机启动 CrewRouter 服务。
+
+```bash
+npm link          # 激活 cr 命令
+cr                # 打开 TUI
+cr connect https://router.example.com
+cr login
+cr status
+```
+
+常用命令：`cr overview`、`cr providers`、`cr models`、`cr keys`、`cr usage`、`cr sessions`、`cr start/stop/logs`、`cr doctor`。完整说明见 [docs/cli.md](docs/cli.md)。
 
 ## 快速开始
 
@@ -189,9 +233,13 @@ npm start          # 开发可用 npm run dev
 |------|------|
 | [docs/deployment.md](docs/deployment.md) | 直接运行 / Docker / 更新 |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 目录结构、路由与适配器 |
-| [docs/API.md](docs/API.md) | HTTP API |
+| [docs/API.md](docs/API.md) | HTTP API 索引与 OpenAPI |
+| [docs/api/reference.md](docs/api/reference.md) | 由路由生成的全量接口表 |
 | [docs/integration-guide.md](docs/integration-guide.md) | 接入现有应用 |
-| [LOG_SPEC.md](LOG_SPEC.md) | 运行日志约定 |
+| [docs/sdk/README.md](docs/sdk/README.md) | SDK 总览（English） |
+| [docs/cli.md](docs/cli.md) | 命令行与鼠标交互 TUI（`cr`） |
+| [docs/sdk/quickstart-node.md](docs/sdk/quickstart-node.md) | Node SDK 快速开始 |
+| [LOG_SPEC.md](docs/LOG_SPEC.md) | 运行日志约定 |
 
 ## 技术栈
 

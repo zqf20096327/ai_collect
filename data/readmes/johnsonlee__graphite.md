@@ -4,7 +4,7 @@
 
 English · [简体中文](README.zh.md)
 
-**Structured codebase context for LLMs.** Graphite turns JVM bytecode and compiled JavaScript artifacts into a queryable program graph — so AI agents can understand your codebase without reading every file.
+**Structured codebase context for LLMs.** Graphite builds queryable program graphs from JVM bytecode, compiled JavaScript artifacts, and Swift/Objective-C projects — so AI agents can understand your codebase without reading every file.
 
 [Production scale](#production-scale) · [Run the demo](docs/quickstart-demo.md) · [Quick start](#quick-start) · [Connect an AI agent](#mcp-integration) · [Kotlin API](#kotlin-api)
 
@@ -201,10 +201,13 @@ so building a graph requires no separate Node.js, Bun or npm installation. Saved
 the same Rust query/server and `.graphite` container commands. TS/TSX/JSX sources and `tsconfig.json` are rejected.
 See [setup, artifact semantics and end-to-end validation](docs/typescript-frontend.md).
 
-**In progress:** [Swift / iOS support (#154)](https://github.com/johnsonlee/graphite/pull/154)
-adds an Apple frontend for Swift packages and Xcode projects, feeding the shared
-program graph through Graph IR. This work is not yet merged. Language frontends
-extend the input paths to Graphite's structured context and query tools.
+The **Apple frontend** supports Swift packages and Xcode projects/workspaces,
+including mixed Swift and Objective-C applications. It reads compiler index stores
+and source declarations, imports the graph through Graph IR, and supports the same
+native query and server commands. Swift packages can be built with a compatible
+Swift toolchain on macOS or Linux; Xcode and iOS application builds require macOS
+and the application's Xcode toolchain. See [the Swift frontend guide](#the-apple-frontend-swift-and-objective-c)
+and [the iOS application walkthrough](docs/ios-app-build.md).
 
 ## Quick Start
 
@@ -214,11 +217,8 @@ brew tap johnsonlee/tap
 brew install johnsonlee/tap/graphite
 graphite --version
 
-# Build a graph from your JAR
+# Build app-graph.graphite and its .sha256 sidecar from your JAR
 graphite build app.jar -o /data/app-graph --include com.example
-
-# Build and pack into /data/app-graph.graphite (with a .sha256 sidecar)
-graphite build app.jar -o /data/app-graph --include com.example --pack
 
 # Build a graph from an Android APK
 graphite build app.apk \
@@ -226,17 +226,17 @@ graphite build app.apk \
   --include com.example
 
 # Query with Cypher
-graphite query /data/app-graph \
+graphite query /data/app-graph.graphite \
   "MATCH (c:IntConstant)-[:DATAFLOW*]->(cs:CallSiteNode)
    WHERE cs.callee_class =~ 'com.example.*'
    RETURN c.value, cs.callee_name"
 
 # JSON output (for LLM consumption)
-graphite query --format json /data/app-graph \
+graphite query --format json /data/app-graph.graphite \
   "MATCH (n:CallSiteNode) RETURN n.callee_name LIMIT 10"
 
-# Launch the web UI
-graphite serve --id app /data/app-graph --port 8080
+# Launch the web UI (graph id defaults to app-graph)
+graphite serve /data/app-graph.graphite --port 8080
 
 # Serve every .graphite file in a directory, each under its file name
 # (/data/graphs/orders.graphite is served as `orders`).
@@ -258,6 +258,32 @@ curl -X PUT http://localhost:8080/api/graphs/orders \
   -d '{"path":"/data/graphs/orders-graph-v2"}'
 ```
 
+`graphite serve [OPTIONS] [GRAPH]` accepts a graph directory or a `.graphite` file.
+For a positional graph, `--id` defaults to the directory's basename or the archive's
+basename without `.graphite`: `graphite serve app.graphite` serves it as `app`.
+Use `--id` to override the inferred name, including when the basename is not a valid
+graph ID. The same positional-graph default applies to `graphite mcp`.
+
+`graphite serve` now listens on `127.0.0.1` by default, allowing connections only
+from the same host. **Migration:** earlier versions listened on all IPv4 interfaces;
+remote deployments must now explicitly set `--bind-address`. For example:
+
+```bash
+graphite serve --bind-address 0.0.0.0 --id app /data/app-graph --port 8080
+```
+
+Use a specific local interface IP to limit listening to that interface, or `::1`
+for IPv6 loopback. Binding to `0.0.0.0` permits connections on all IPv4 interfaces;
+it does not authenticate clients. `::` listens on all IPv6 interfaces and may also
+accept IPv4 connections, depending on the operating system's dual-stack settings.
+The Docker image explicitly binds `0.0.0.0` inside the container; publish with
+`-p 127.0.0.1:8080:8080` for host-local access. This default change applies to the
+native CLI; legacy `graphite.jar serve` still listens on all interfaces.
+Remote HTTP access requires external access
+controls, such as a firewall restricting trusted clients or an authenticated reverse
+proxy with direct access to Graphite blocked. For local MCP clients, prefer
+`graphite mcp` over stdio, which opens no HTTP listener.
+
 ### What the formula installs
 
 `graphite` is a native binary (Rust). It carries `query` and `serve` itself and runs
@@ -271,24 +297,50 @@ arguments after `--` to the frontend as positional inputs. Run `graphite help bu
 for shell options and `graphite build --help` or `graphite build --lang js --help`
 for frontend options.
 
-When no JVM options are supplied, `graphite build` checks whether the selected
-JVM supports the following G1 configuration and uses it for the JAR frontend,
-including JAR and APK inputs. The maximum heap remains 8 GiB:
+When no JVM options are supplied, `graphite build` automatically sizes the JVM
+frontend's maximum heap from the input's class count. It budgets 112 KiB per
+class, rounded up to 2 GiB, then clamps the result to **8 GiB through the smaller
+of 31 GiB and physical memory minus 8 GiB**. Container memory limits further
+restrict this budget. This reserves 8 GiB outside the Java heap; it does not set
+`-Xms` or preallocate the maximum heap. Current free memory does not change the
+chosen range. Unknown capacity or less than 16 GiB of physical/container memory
+stops automatic sizing with an explanation; configure Java options explicitly
+on these systems.
+
+APK sizing validates DEX headers and class-table bounds. Malformed or encrypted
+assets do not discard counts from valid DEX entries. JAR/WAR sizing counts class
+entries and, with `--include-libs`, enabled nested library archives. Directory
+inputs include their JARs. Nested archive inspection uses bounded temporary-file
+storage; when a library cannot be inspected, a warning and conservative archive
+bound replace an unbounded extraction. Filters may reduce what is analyzed, so
+library counts are conservative. Android platform classes remain outside the
+estimate.
+
+This is a conservative heuristic, not a guarantee that every input will fit or
+that future system memory pressure cannot occur. Explicit JVM options remain
+available to adjust it. Automatic build sizing may exceed 8 GiB; benchmark
+workloads keep their explicit fixed heap limits.
+
+The CLI checks whether the selected JVM supports this G1 configuration, using
+the estimated heap (shown here for an 8 GiB input):
 
 ```text
 -Xmx8g -XX:+UseG1GC -XX:+UnlockExperimentalVMOptions -XX:G1MaxNewSizePercent=30 -XX:MinHeapFreeRatio=20 -XX:GCTimeRatio=4
 ```
 
 The check runs once per build command, including a two-pass fold build. A JVM
-that does not confirm support keeps the previous `-Xmx8g` fallback. Executable
-frontend launchers manage their own settings.
+that does not confirm G1 support receives only the estimated `-Xmx` option.
+Executable frontend launchers manage their own settings.
 
 Explicit nonempty `JAVA_TOOL_OPTIONS`, `JAVA_OPTS`, `JDK_JAVA_OPTIONS` or
-`_JAVA_OPTIONS` bypass this check and automatic GC tuning. The CLI preserves
+`_JAVA_OPTIONS` bypass automatic heap sizing and GC tuning. The CLI preserves
 `JAVA_TOOL_OPTIONS` precedence over `JAVA_OPTS`; the JVM handles its own
-`JDK_JAVA_OPTIONS` and `_JAVA_OPTIONS`. For example, use `JAVA_OPTS='-Xmx2g'`
-for a smaller heap when `JAVA_TOOL_OPTIONS` is unset. These settings do not tune
-native `query` or `serve`. Maximum heap is separate from peak process RSS.
+`JDK_JAVA_OPTIONS` and `_JAVA_OPTIONS`. With either native option variable alone,
+the CLI retains its legacy `-Xmx8g` fallback: a non-heap property does not shrink
+the heap to JVM ergonomics, while an explicit heap setting in either variable
+takes precedence in HotSpot. For example, use `JAVA_OPTS='-Xmx16g'`
+when `JAVA_TOOL_OPTIONS` is unset. These settings do not tune native `query`
+or `serve`. Maximum heap is separate from peak process RSS.
 
 The matched performance evidence for this G1 configuration uses HotSpot 17 on
 macOS ARM64 with Kotlin compiler 2.0.21 and Tika 2.9.2 JARs. See the
@@ -311,15 +363,18 @@ It finds `java` through `GRAPHITE_JAVA`, `JAVA_HOME`, then `PATH`. The release a
 
 ### Inputs by language
 
-`graphite build` picks the frontend by its input. A build artifact goes to the JVM
-frontend; a Swift package or an Xcode index store goes to the Apple frontend.
-`--lang jvm|apple` (aliases `swift`, `ios`, `macos`) overrides the detection and
-`--frontend <executable>` names a frontend directly.
+`graphite build` detects Swift packages and Xcode projects/workspaces; other inputs
+use the JVM frontend by default. `--lang jvm|apple|js` overrides detection; `swift`,
+`ios` and `macos` are aliases for `apple`, while `ts` and `es` are aliases for `js`.
+Use `--lang apple` when supplying an existing `--index-store` without a project,
+and `--lang js` for JavaScript artifacts. `--frontend <executable>` selects an
+executable directly.
 
 | Language / platform | Input | Frontend | Notes |
 |---|---|---|---|
 | Java, Kotlin (JVM) | `.jar`, `.war`, a class directory | jvm | `--include com.example` limits the packages; build the artifact first (`./gradlew assemble`, `mvn package`) |
 | Android | `.apk`, `.aar` | jvm | `--android-sdk`, or the SDK lookup below |
+| JavaScript artifacts | `.js`, `.mjs`, `.cjs`, or an artifact directory | js | explicitly select `--lang js`; compile TypeScript/JSX inputs first |
 | Swift package | `Package.swift`, or a directory holding one | apple | runs `swift build`, graphs every built target the manifest lists (custom `path:` included) from its index store; `--skip-build` when it is already built |
 | Swift app (Xcode) | `.xcodeproj`, `.xcworkspace` | apple | runs `xcodebuild` on the project's only scheme (`--scheme` otherwise), with `--destination`, `--configuration`, `--derived-data`; or `--index-store` + `--sources` for a store Xcode already wrote |
 
@@ -337,7 +392,7 @@ Graphite searches in this order:
    - Windows: `%USERPROFILE%\AppData\Local\Android\Sdk`
 3. SDK roots inferred from `adb`, `emulator`, or `sdkmanager` on `PATH`.
 
-### Other languages: the Swift frontend
+### The Apple frontend: Swift and Objective-C
 
 Swift inputs go to the **Apple frontend**, `graphite-frontend-apple`, a Swift binary
 that indexes the package with the compiler's index store, SwiftSyntax and
@@ -411,16 +466,27 @@ creates) and spelled as Clang spells them, nullability included (`NSString * _No
 `instancetype _Nullable`, `void (^ _Nonnull)(BOOL)`, `NSDictionary<NSString *, id> *`,
 `char *const`; under `NS_ASSUME_NONNULL_BEGIN` an unannotated pointer is `_Nonnull`), the
 header's declaration before the `.m`'s definition, and a call site into Objective-C
-carries the same descriptor as the declaration. Objective-C call sites carry no literal arguments yet
-(the Swift syntax pass reads Swift only), and data flow through variables and returns
-(SIL) is the next step.
+carries the same descriptor as the declaration.
 
-Type enrichment uses a lightweight source parser and does not evaluate preprocessor
-conditionals. Conditional branches with unmatched braces in the unprocessed source,
-and C declarations wrapped in `extern "C"` blocks, can retain empty type information
-even when their indexed declarations and calls are present. Validation against Signal
-and Swift Package Manager, including these remaining limits, is recorded in
+For supported Swift function bodies, a bare, lexically bound formal parameter used
+as a call argument has an `ASSIGN` edge from its `Parameter` node to the argument
+reference, followed by `PARAMETER_PASS` to the call site. An explicit return of a
+direct call has a `RETURN_VALUE` edge when both signatures establish a value result.
+Assignments through local variables, field flow and complete interprocedural
+propagation remain unsupported; Objective-C call sites do not yet carry expression
+literals. These boundaries are detailed in the [iOS application guide](docs/ios-app-build.md#current-analysis-boundary).
+
+Type enrichment uses a lightweight source parser, including C++ language-linkage
+blocks, rather than a complete preprocessor. Indexed explicit Objective-C method
+signatures can be recovered at verified source anchors when conditional bodies
+prevent a whole-file parse; macro-dependent or split signatures can remain unknown.
+Validation against Signal and Swift Package Manager is recorded in
 [the Apple frontend validation report](docs/apple-frontend-validation.md).
+
+Use `--resource-bundle` to inventory an explicitly selected built `.app` or `.appex`
+product's supported `Info.plist` and localized `.strings` values. Unsupported values
+produce partial-graph status; resource-to-code lookup edges are not inferred. See
+[resource inventory and its limits](docs/ios-app-build.md#inventory-a-selected-built-applications-resources).
 
 ### Upgrading a legacy installation
 
@@ -601,7 +667,7 @@ Warning: no fold rule folded any call; the graph is the same as a build without 
 ```
 
 `--fold-strict` turns a rule that matched no call into a build failure. `graph.folds.json` in
-the output directory repeats every rule in the file's own shape and adds, per rule, the
+the output archive (extract it with `graphite unpack`) repeats every rule in the file's own shape and adds, per rule, the
 preview query, the calls folded, the calling methods with their statement counts before and
 after, the calls it matched but could not fold with the reason, and the near misses; it is
 itself a fold file (`--fold graph.folds.json` reads the rules and drops the rest). Methods
@@ -921,7 +987,7 @@ graphite/
 │   │   ├── webgraph/       # WebGraph disk persistence (BVGraph + LAW tools)
 │   │   ├── query/          # `graphite.jar`: build and import, plus legacy query/serve
 │   │   └── explore/        # Legacy Kotlin Explorer server
-│   └── apple/              # Swift frontend: index store + SwiftSyntax → Graph IR
+│   └── apple/              # Swift/Objective-C frontend: compiler index store + source analysis → Graph IR
 ├── backend/                # Rust backend
 │   ├── storage/            # mmap reader of the persisted graph, indexes, columns
 │   ├── cypher/             # Cypher parser, planner, executor
@@ -929,7 +995,8 @@ graphite/
 │   └── bench/              # Kotlin-vs-Rust differential harness and benchmarks
 ├── cli/                    # `graphite` CLI (Rust): build, import, query, serve, mcp, frontend
 ├── benchmark/              # Rust benchmark runner and shared JVM validation
-├── Cargo.toml              # Cargo workspace: backend/*, cli and benchmark
+├── tck/                    # openCypher compatibility test runner
+├── Cargo.toml              # Cargo workspace: storage, cypher, explore, cli, benchmark, tck
 └── docs/
 ```
 
@@ -958,15 +1025,18 @@ deterministic: the manifest's SHA-256 is the graph's fingerprint. A `.sha256` fi
 with standard tools; the fingerprint says what the graph is, the file digest whether these
 are the bytes that were built.
 
-Use `graphite build app.jar -o app --pack` to automatically pack after a successful
-build. `--pack` appends `.graphite` to the output path unless it already has that
-extension: `-o app.v1 --pack` writes `app.v1.graphite`, while `-o app.graphite --pack`
-writes `app.graphite`. It requires `-o`/`--output` and works with all build frontends.
-Like `-o app.graphite`, an existing verified archive and its sidecar are rebuilt
+`graphite build` always produces a `.graphite` archive after a successful build.
+The output path gains `.graphite` unless it already has that extension:
+`-o app` writes `app.graphite`, `-o app.v1` writes `app.v1.graphite`, and
+`-o app.graphite` writes `app.graphite`. This applies to all build frontends;
+no packing flag is needed. An existing verified archive and its sidecar are rebuilt
 in place. The build uses a temporary staging directory; no `app/` output directory
 is created. Ambiguous output filenames such as `.graphite` or names ending in `.`
-are rejected. Place `--pack` before the `--` separator; arguments after the separator
-are frontend inputs.
+and paths ending in a directory separator are rejected. When the suffix is appended,
+build prints the archive path and warns if a directory still exists at the original
+path: that directory is no longer updated. Point query, serve and MCP readers at
+the new archive. To obtain a graph directory, run `graphite unpack app.graphite app/`.
+Direct frontend commands and `graphite import` retain their existing output behavior.
 
 A container moved without its sidecar can be rebuilt after its internal manifest and
 entry checksums verify. If a sidecar exists, it must match. For a rebuild both frontends claim
@@ -1074,6 +1144,17 @@ repositories {
 
 ## MCP Integration
 
+Choose the command by how the client connects:
+
+| Command | How it runs | Interfaces |
+|---|---|---|
+| `graphite serve app.graphite` | Start a persistent HTTP server; clients connect by URL | Web UI at `/`, REST at `/api`, MCP at `/mcp` (default port 8080) |
+| `graphite mcp app.graphite` | An MCP client launches it as a subprocess and exchanges messages over stdin/stdout | MCP over stdio; no HTTP listener or web UI |
+
+Both commands load the graphs themselves. Configure a client for either stdio or
+HTTP; a stdio client does not need a separate `serve` process. Both accept graph
+directories and `.graphite` files, and default the positional graph's ID to its basename.
+
 The `graphite` binary is a [Model Context Protocol](https://modelcontextprotocol.io)
 server: the thirteen tools the `graphite-mcp` npm package used to expose (`graphs`,
 `cypher`, `node`, `outgoing`, `incoming`, `annotations`, `endpoints`, `resources`,
@@ -1085,19 +1166,17 @@ patterns -- in milliseconds, so an agent reads it before writing Cypher instead 
 discovering the graph with `MATCH (n) RETURN labels(n), keys(n), count(*)` probes. Those
 probes are answered per type as well (see the partitioned evaluation in
 `backend/cypher/src/engine/partition.rs`), but one call is cheaper than a conversation.
-Two ways to connect:
+HTTP clients use `POST /mcp` (Streamable HTTP).
 
-- **stdio**, for local clients (Claude Code, Claude Desktop, Cursor): `graphite mcp`
-  opens the graphs itself; no server to start first.
-- **HTTP**, for remote or shared setups: every `graphite serve` also answers MCP at
-  `POST /mcp` (Streamable HTTP).
+For local clients, prefer stdio. The HTTP listener defaults to `127.0.0.1`;
+remote access requires an explicit `--bind-address` and external access controls.
 
 For **Claude Code**, run this from your project directory after building a graph.
-Replace `/data/app-graph` with the absolute path to your saved graph:
+Replace `/data/app-graph.graphite` with the absolute path to your saved graph:
 
 ```bash
 claude mcp add --transport stdio --scope project graphite -- \
-  graphite mcp --graph app:/data/app-graph
+  graphite mcp --graph app:/data/app-graph.graphite
 ```
 
 This creates or updates `.mcp.json` at the project root. Open Claude Code, approve
@@ -1114,13 +1193,13 @@ entry in the client's MCP configuration file. Repeat `--graph` to load more grap
   "mcpServers": {
     "graphite": {
       "command": "graphite",
-      "args": ["mcp", "--graph", "app:/data/app-graph", "--graph", "billing:/data/billing-graph"]
+      "args": ["mcp", "--graph", "app:/data/app-graph.graphite", "--graph", "billing:/data/billing-graph.graphite"]
     }
   }
 }
 ```
 
-Alternatively, start `graphite serve --id app /data/app-graph` and connect Claude
+Alternatively, start `graphite serve --id app /data/app-graph.graphite` and connect Claude
 Code over HTTP:
 
 ```bash
@@ -1132,7 +1211,10 @@ can connect to `http://localhost:8080/mcp` using their Streamable HTTP settings.
 `/mcp` validates the `Origin` header (DNS-rebinding protection): requests without one are
 accepted, loopback origins are accepted, any other origin is refused with 403 unless listed
 with `graphite serve --mcp-allowed-origin https://tools.example.com` (repeatable; `*` allows
-all). The REST API is unaffected.
+all). This check is not authentication or a restriction on client network addresses:
+other hosts can send requests without `Origin`. It does not replace external network
+access controls when remote access is enabled, and the REST API is not protected by
+this check.
 
 For query dialect selection, see [Cypher compatibility](#cypher-compatibility).
 
@@ -1151,7 +1233,7 @@ For HTTP connections, start the Explorer first; stdio opens the graph directly:
 # Start Explorer
 graphite serve --id app /path/to/saved-graph
 
-# The serve command defaults to --load-mode MAPPED for multi-graph heap stability.
+# --load-mode is a compatibility label; all values use the same native file reader.
 ```
 
 You can also start with no initial graph and hot-load services later (a `.graphite`

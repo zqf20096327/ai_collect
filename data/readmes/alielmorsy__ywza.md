@@ -7,7 +7,7 @@
 <p align="center">
   <b>Let an AI model use your PC, from anywhere.</b><br>
   <a href="#demo">Demo</a> •
-  <a href="#build">Build</a> •
+  <a href="#install">Install</a> •
   <a href="#quick-start">Quick start</a> •
   <a href="#control-it-from-another-device">Pairing</a> •
   <a href="#use-it-from-an-mcp-client">MCP</a> •
@@ -53,7 +53,24 @@ ywza works perfectly on Windows. Linux works on X11.
   </tr>
 </table>
 
-## Build
+## Install
+
+### Windows
+
+In PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/alielmorsy/ywza/main/scripts/install.ps1 | iex
+```
+
+This downloads the latest installer and runs it. It installs the desktop app, the `ywza-agent` service and the
+`ywza` CLI, and puts them on your PATH.
+
+### Releases
+
+Windows, Linux and Android builds are on the [releases page](https://github.com/alielmorsy/ywza/releases).
+
+## Build from source
 
 You need a recent [Rust toolchain](https://rustup.rs). On Windows, the MSVC build tools that rustup asks for are enough.
 
@@ -75,6 +92,17 @@ Put both on your PATH, or install them with cargo:
 ```bash
 cargo install --path crates/ywza-agent
 cargo install --path crates/ywza-cli
+```
+
+### Desktop and phone app
+
+The app needs [Node.js](https://nodejs.org) and Yarn on top of Rust, plus the
+[Tauri prerequisites](https://tauri.app/start/prerequisites/) for your platform.
+
+```bash
+yarn install
+yarn build                                     # desktop app; on Windows, the installer
+yarn android:build --apk --target aarch64      # Android APK, needs the Android SDK and NDK
 ```
 
 ### OCR
@@ -130,8 +158,28 @@ ywza pair 123456 --name desktop
 ywza -d desktop prompt "Take a screenshot and tell me what's open"
 ```
 
+`ywza-agent pair` also prints a QR code, and the phone app can scan it instead of typing the digits.
 The code works once and expires after 10 minutes. On Windows, if the connection times out, run
 `dist/windows-firewall.bat` as administrator with the path to `ywza-agent.exe`.
+
+## Secrets
+
+Keep passwords and tokens away from the model with the vault on the machine that types them:
+
+```bash
+ywza-agent vault set github   # reads the value from stdin
+ywza-agent vault list
+```
+
+The model types `{{vault:github}}`. The agent fills in the value as it types. Tool results show the placeholder
+instead of the value, and screenshots blur the value and password fields. Secrets live in `vault.toml` next to
+`config.toml`.
+
+## Token receipt
+
+Each agent run ends with a receipt in the app and the CLI. It shows the tokens used and an estimate of what a
+screenshot-based agent would have used for the same steps. To show cost as well, set `price_in` and `price_out`
+under `[llm]` in `config.toml`, in USD per million tokens.
 
 ## Use it from an MCP client
 

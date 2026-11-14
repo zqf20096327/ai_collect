@@ -4,7 +4,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/PHP-8.3%2B-777BB4?logo=php&logoColor=white" alt="PHP 8.3+">
   <img src="https://img.shields.io/badge/Laravel-10%E2%80%9313-FF2D20?logo=laravel&logoColor=white" alt="Laravel 10–13">
-  <a href="https://phpstan.org/"><img src="https://img.shields.io/badge/PHPStan-level%208-brightgreen.svg?logo=php&amp;logoColor=white" alt="PHPStan level 8"></a>
+  <a href="https://phpstan.org/"><img src="https://img.shields.io/badge/PHPStan-level%2010-brightgreen.svg?logo=php&amp;logoColor=white" alt="PHPStan level 10"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
   <a href="https://github.com/solutionforest/laravel-recommender/actions/workflows/tests.yml"><img src="https://github.com/solutionforest/laravel-recommender/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
   <a href="https://github.com/solutionforest/laravel-recommender/releases"><img src="https://img.shields.io/github/v/release/solutionforest/laravel-recommender?label=release" alt="Latest release"></a>
@@ -28,9 +28,20 @@ Imagine a reader likes post A. If other readers interacted with both A and B, po
 
 Your app records the interactions (or lets `$post->recordInteraction($user, 'like')` write them with your feed's mapping) and controls visibility and card fields. Cards are shared across viewers, so add viewer-specific fields separately. The package stores derived scores, daily counters and neighbours in four `rec_*` tables. When ranked and trending items run out, feeds with a model can continue with the newest eligible items. See [how it works](docs/how-it-works.md) for the full flow and [operations](docs/operations.md#seen-memory-and-impressions) for memory and impression costs.
 
+## Supported versions
+
+| Laravel | PHP 8.3 | PHP 8.4 | PHP 8.5 | Laravel security fixes until | Supported here until | Notes |
+|---|:---:|:---:|:---:|---|---|---|
+| 13.x | ✅ | ✅ | ✅ | Q1 2028 | No end date | Also tested on MySQL 8 and with a Redis cache store |
+| 12.x | ✅ | ✅ | ✅ | 24 Feb 2027 | First release after **31 Mar 2027** | Use 12.60 or newer for Laravel's own security fixes; plan an upgrade to 13 |
+| 11.x | ✅ | ✅ | ✅ | **Ended** 12 Mar 2026 | First release after **31 Mar 2027** | Open advisories that will not be fixed (`composer audit`); upgrade to 13. On PHP 8.5, Laravel 11 itself prints deprecation notices |
+| 10.x | ✅ | ✅ | ⚠️ | **Ended** 4 Feb 2025 | First release after **31 Mar 2027** | Best-effort. On PHP 8.5 CI only checks that the package installs and loads: Laravel 10's test tools do not run on PHP 8.5 |
+
+✅ = the full test suite runs in [CI](.github/workflows/tests.yml) on every push (SQLite). "Laravel security fixes until" is Laravel's own [support policy](https://laravel.com/docs/releases#support-policy); "Supported here until" is when this package drops that version. PHP 8.2 and older are not supported. Other databases (PostgreSQL, MariaDB) and cache stores with locks should work but are not tested in CI.
+
 ## Your first feed
 
-Requires PHP 8.3+ and Laravel 10, 11, 12, or 13. Laravel 10 is past its end of life (no more security fixes from Laravel), so its support here is best-effort and will be dropped in a future minor release; plan your upgrade. In an app with a `Post` model and interaction tables (`post_likes`, `post_views` with `user_id`, `post_id`, `created_at`):
+In an app with a `Post` model and interaction tables (`post_likes`, `post_views` with `user_id`, `post_id`, `created_at`):
 
 **1. Install and set up**
 
@@ -39,7 +50,7 @@ composer require solutionforest/laravel-recommender
 php artisan recommender:bootstrap posts
 ```
 
-`bootstrap` migrates, asks for your tables, writes the feed, builds the first scores and checks everything:
+`bootstrap` migrates, asks for your tables, writes the feed, builds the first scores, checks everything (tables, columns, indexes, classes) and times each part once on real data, so a slow scope or a missing index shows up before any user hits it:
 
 ![recommender:bootstrap](art/screenshots/terminal-bootstrap.png)
 
@@ -112,7 +123,7 @@ It is open in the `local` environment. In production, choose who can see it:
 Gate::define('viewRecommender', fn ($user) => $user->is_admin);
 ```
 
-`php artisan recommender:doctor` runs the same checks in the terminal and fails a deploy when something is wrong:
+`php artisan recommender:doctor` runs the same checks in the terminal and fails a deploy when something is wrong. Both also warn about **slow parts in your own code** — a source, a `recommendable` scope or cards slower than 200 ms, SQL slower than 1 s while the jobs run, or an interaction table without the indexes the jobs need; add `--probe` to time every part once before going live:
 
 ![recommender:doctor](art/screenshots/terminal-doctor.png)
 

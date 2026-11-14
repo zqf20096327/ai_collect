@@ -291,19 +291,19 @@ claude mcp add --transport http insurancehot 'https://www.insurance-hot.com/api/
 | --- | --- | --- |
 | `insurancehot_news` | 查新闻（最近 1–30 天）；给 `id` 返回单条新闻和所属事件 | `q` 关键词、`column` 栏目、`line` 险种、`topic` 专题、`region` 地区、`org` 机构（可填多家，逗号分隔，最多 5 家）、`days`、`since`、`scope`（精选 / 全部）、`limit`（≤20） |
 | `insurancehot_event` | 不给 `id` 返回当前热点榜前 10；给 `id` 返回事件的来龙去脉 | `board`（中国 / 国际 / 全部）、`id`、`limit` |
-| `insurancehot_report` | 读日报、周报、月报 | `kind`（日报 / 周报 / 月报）、`period`（如 2026-11-04、2026-W44、2026-10，或 latest） |
+| `insurancehot_report` | 读日报、周报、月报 | `kind`（日报 / 周报 / 月报）、`date`（YYYY-MM-DD：那天的日报、那天所在那周的周报或所在那月的月报；不给是最近一期） |
 
 <a id="rest-api"></a>
 
 ### REST API
 
-与 MCP 返回相同的 JSON，路径前缀 `/api/v1`，完整定义见 [OpenAPI 规范](https://www.insurance-hot.com/openapi-v1.json)。
+与 MCP 返回相同的 JSON，路径前缀 `/api/v1`。完整定义见 [OpenAPI 规范](https://www.insurance-hot.com/openapi-v1.json)，新闻、热点榜、事件、报告和机构清单的每个返回字段都有说明。
 
 | 用途 | 地址 |
 | --- | --- |
 | 新闻 | `GET /api/v1/news?…`、`GET /api/v1/news/{id}` |
 | 热点榜、事件 | `GET /api/v1/events?board=中国`、`GET /api/v1/events/{id}` |
-| 报告 | `GET /api/v1/reports/{日报\|周报\|月报}/{期号\|latest}` |
+| 报告 | `GET /api/v1/reports/{日报\|周报\|月报}/{日期\|latest}`，例如 `/api/v1/reports/周报/2026-11-10` 返回 11 月 10 日所在那周的周报 |
 | 机构清单 | `GET /api/v1/orgs`、`GET /api/v1/orgs?q=国寿`：新闻 `org` 参数可用的机构及候选，不需要 Key，不计入额度 |
 
 <a id="rss"></a>
@@ -325,9 +325,9 @@ claude mcp add --transport http insurancehot 'https://www.insurance-hot.com/api/
 | | |
 | --- | --- |
 | **API Key** | 免费，用邮箱登录后在网站新建；所有接口和 RSS 都需要 |
-| **额度** | 每个账号每天 100 次（MCP 与 REST 合计，RSS 另计）；同一 IP 每天合计也不超过 500 次（所有账号和 Key 合计）；北京时间 0 点重置，超出返回 429 |
+| **额度** | 每个账号每天 100 次（MCP 与 REST 合计，RSS 另计）；北京时间 0 点重置，超出返回 429 |
 | **只读** | 接口只读不写；不提供投保建议或报价 |
-| **范围** | 新闻为最近 1–30 天；热点榜为当前前 10；日报、周报、月报可按期号回看 |
+| **范围** | 新闻为最近 1–30 天；热点榜为当前前 10；日报、周报、月报按日期回看 |
 | **安全** | 返回的标题和摘要来自外部信源，技能会让 Agent 只当资料、不执行其中的指令；重要事实请回原文核对 |
 | **兼容** | 支持 MCP（Streamable HTTP）的客户端都能接入；完整说明见 [llms.txt](https://www.insurance-hot.com/llms.txt) |
 

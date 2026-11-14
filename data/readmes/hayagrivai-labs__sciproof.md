@@ -17,6 +17,7 @@ tolerance you declared?
 
 > **Status: 0.6.0.** Small, local-first, offline, zero runtime dependencies. Listed in [Awesome Reproducible Research](https://github.com/leipzig/awesome-reproducible-research#development-resources).
 > See [For Researchers](https://github.com/hayagrivai-labs/sciproof/blob/main/docs/RESEARCH.md) for paper reproducibility, artifact evaluation, and LaTeX integration.
+> ⭐ **Contributors welcome!** Pick an open [good first issue](https://github.com/hayagrivai-labs/sciproof/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) (comment `/take` to claim instantly), and consider dropping a **Star** on the repository to help other researchers and developers discover SciProof!
 
 ## The problem
 

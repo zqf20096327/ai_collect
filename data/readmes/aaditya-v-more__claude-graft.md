@@ -6,7 +6,7 @@
 
 <p>
   <b>1× is less but 5× is too much.</b> <i>(Or 20× is less, lol.)</i><br>
-  One Claude login is never quite the right amount.
+  Run multiple Claude accounts on one Mac, at once.
 </p>
 
 <p>
@@ -29,12 +29,15 @@
 
 <br>
 
-<img src="docs/images/00-shared-usage.png" width="820" alt="A Claude lending Claude Code usage from Claude 2 and another account">
+<img src="docs/images/00-shared-usage.png" width="820" alt="Claude Graft's window, with a Claude drawing Claude Code usage from Claude 2 and another account">
 
 </div>
 
-Claude Graft runs every Claude account you have side by side, each signed in
-on its own profile, and lets them share their usage. It lives in the menu bar.
+One Claude login is never quite the right amount. Claude Graft runs all your
+Claude accounts at the same time, each in its own Claude Desktop and signed in
+on its own, so switching never means signing out. They share their usage too:
+when one account nears its five-hour or weekly limit, Claude Code carries on
+with another's. It lives in the menu bar, and it is free and open source.
 
 ## Install
 
@@ -50,8 +53,8 @@ not notarised, so the first open needs **System Settings › Privacy & Security*
 
 ## Shared usage
 
-When one account runs out, Claude Code carries on with another's allowance,
-without leaving the Claude you are in. Under **Shared usage**, add another of
+When one account nears its five-hour or weekly limit, Claude Code carries on
+with another's allowance, without leaving the Claude you are in. Under **Shared usage**, add another of
 your Claudes or sign in to an account. Only the model's answers come from the
 other account; your chats, files and connectors stay where they are.
 
@@ -62,9 +65,11 @@ first, the relay puts each Claude back as it closes, then stops.
 
 ## A Claude for every account
 
-**New Shortcut** makes a small app that opens Claude on a profile of its own.
-Sign in once and it stays signed in. A new Claude has its own chats; reading
-another Claude's chats is a choice you make.
+**New Shortcut** makes a small app that opens Claude Desktop on a profile of its
+own, so every account runs at the same time, side by side. Sign in once and it
+stays signed in. It opens the Claude Desktop you already have, so there is no
+second copy of Claude to keep up to date. A new Claude has its own chats;
+reading another Claude's chats is a choice you make.
 
 <img src="docs/images/01-claudes.png" width="820" alt="Graft's window with Claude 2 selected">
 

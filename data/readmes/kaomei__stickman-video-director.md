@@ -159,6 +159,8 @@ in plain language, with examples I can copy.
 Based on what I want to make, tell me what is missing and exactly what to do next.
 ```
 
+Installation timed out? See [installation troubleshooting](skills/directing-stickman-videos/references/installation-troubleshooting.md) for macOS/Linux and Windows.
+
 <a id="director-start"></a>
 
 ### A · Director Mode: scene-by-scene video prompts
@@ -427,7 +429,7 @@ A countdown. A late-night call. A rule you must never break. Ordinary places bec
   </tr>
   <tr>
     <td align="center">Brian narration · Story-synced SFX · A cliffhanger choice</td>
-    <td align="center">Brian narration · A chilling visual hook · Impactful text animation</td>
+    <td align="center">A chilling visual hook · Impactful text animation</td>
   </tr>
 </table>
 
@@ -472,9 +474,7 @@ Give your favorite avatar a starring role—permission is required to use well-k
 
 Expressive meme faces, loose hand-drawn lines and soft colors turn unusual stories into lively short cartoons. Wide scenes give characters, props and camera moves room to play.
 
-**Works best in portrait (9:16).**
-
-- **Visuals**: Irregular ink lines, matte painted colors and soft light; faces and bodies share the same hand-drawn style.
+- **Visuals**: Ink lines of varying weight, matte paint and soft lighting keep the head, body and scenery in a consistent hand-drawn style, **with better results in portrait**.
 - **Motion**: Lateral tracking, layered depth, handoffs and reaction close-ups follow the story, with clear pauses for each visual punchline.
 - **Best for**: Historical oddities, con stories, absurd comedy and short stories with a twist.
 
@@ -488,8 +488,8 @@ Expressive meme faces, loose hand-drawn lines and soft colors turn unusual stori
     <td width="50%" align="center"><a href="assets/readme/b6-dynamic-meme-hong-kong-v90-20s.mp4"><img src="https://cdn.jsdelivr.net/gh/kaomei/stickman-video-director@7d611fb27f103aebc38a656d29edc1b1181cbd62/assets/readme/previews/b6-dynamic-meme-hong-kong-v90-20s.gif" alt="Example 2: 1990s Hong Kong · Buns and Arcades" width="360"></a></td>
   </tr>
   <tr>
-    <td align="center">16:9 · 63.2 seconds · English narration and captions</td>
-    <td align="center">16:9 · 20 seconds · English narration and captions</td>
+    <td align="center">Expressive faces · Hand-drawn character animation · Story twists</td>
+    <td align="center">The Pharaoh 3 narration · Character interactions · Scene changes</td>
   </tr>
 </table>
 
@@ -624,9 +624,8 @@ No. You do not need a high-end RTX graphics card or coding knowledge.
 - [x] **3,000 Stars**: Shipped AutoPilot Mode for 1-click video generation
 - [x] **6,000 Stars**: Shipped 10+ high-quality new visual styles
 - [ ] **🔥 10,000 Stars**:
-  - 1,000+ viral YouTube script prompt vault
-  - 200+ royalty-free, Content-ID safe SFX and transitions
-  - 1-click batch editor for YouTube Shorts & TikTok
+  - 1,000+ YouTube script prompts shared by modes A and B
+  - [B audio library](skills/directing-stickman-videos/references/b-audio-library.md): 774 SFX/transitions + 31 music tracks + 85 short musical stingers, with B-style/beat recommendations, offline export, item-level licenses and required credits
 - [ ] **20,000 Stars**:
   - Launch Stickman AI Studio — from idea to finished video, on autopilot
   - More surprises ahead — let’s discover them together

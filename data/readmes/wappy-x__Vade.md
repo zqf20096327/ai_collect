@@ -17,7 +17,7 @@ curl -fsSL https://vade.lol/install.sh | sh
 
 If you want to check the script before you run it, its SHA-256 is at https://dl.vade.lol/install.sh.sha256.
 
-Then get the model with `vade pull` and run `vade up`. The engine is ready for any OpenAI client, and for `vade chat`, a coding agent in your terminal.
+Then get the model with `vade pull nvidia/Qwen3.8-Flash-Next-FP4-Local@b9ce18a6887e18c089fdea8509a33e63429a3300` and run `vade up`. [Quick start](#quick-start) gives the full commands. The engine is ready for any OpenAI client, and for `vade chat`, a coding agent in your terminal.
 
 <a id="what-it-is"></a>
 
@@ -35,7 +35,7 @@ Then get the model with `vade pull` and run `vade up`. The engine is ready for a
 
 ## Quick start
 
-You need a DGX Spark with curl, a driver with CUDA 13.0 or newer, and nothing else using the GPU. Only a build from source also needs a C compiler (`cc`).
+You need a DGX Spark with curl, a driver with CUDA 13.0 or newer, nothing else using the GPU, and 112 GB of free disk. Only a build from source also needs a C compiler (`cc`).
 
 Run these three commands on the Spark. Allow time for the download and the first full model check.
 
@@ -47,7 +47,7 @@ vade up
 
 1. **Install** checks the GPU and the driver, then installs the prebuilt Vade build. It does not need sudo. It does not change your shell profile. Follow its PATH advice before you run the next command. When a login shell finds Vade, it prints `Open a new terminal, then run: vade up`. Otherwise, run its `export PATH="$HOME/.vade/bin:$PATH"` line. Pull the model before you run `vade up`.
 2. **Pull** downloads the model (102 GB) and checks every file. The long hash after `@` pins the exact revision we tested. If the download stops, run the same command again. It continues where it stopped.
-3. **Up** starts the engine on this Spark. `vade launch` starts it and opens the coding agent in the current folder. `vade down` stops it.
+3. **Up** starts the engine on this Spark. `vade launch` starts it and opens the coding agent in the current folder. On the Spark, the agent reads, searches and edits files, but it does not run shell commands. `vade down` stops it.
 
 The chat hint uses `vade launch` when a login shell finds Vade.
 Otherwise, it uses `~/.vade/bin/vade launch`. A custom `VADE_HOME` uses its own `bin/vade` path.
@@ -61,11 +61,13 @@ Next steps:
 - Two or four Sparks: [Two and more Sparks](docs/INSTALL.md#two-and-more-sparks).
 - FP8: [FP8 install](docs/install-fp8.md).
 - A build from a clone, and every setting: [INSTALL.md](docs/INSTALL.md).
-- A coding agent is doing the setup for you: give it the [agent quickstart](docs/agents/quickstart.md).
+- The same steps on one short page, with a check and the way to remove Vade: [Quickstart](docs/quickstart.md).
+- A coding agent is doing the setup for you: give it the [install page for agents](docs/agents/install.md), then the [agent quickstart](docs/agents/quickstart.md).
 
 ## Use the API
 
 The engine serves the OpenAI protocol on the Spark at port 18080, so the client you already use can talk to it. Point it at `http://127.0.0.1:18080/v1` with any API key.
+If port 18080 was in use at the first start, Vade took another free port and keeps it. `vade status` shows the port.
 
 ```python
 from openai import OpenAI
@@ -79,7 +81,7 @@ reply = client.chat.completions.create(
 print(reply.choices[0].message.content)
 ```
 
-The model thinks before it answers unless you turn that off, as this example does. The [OpenAI API](docs/openai-api.md) page lists every endpoint and field. [INSTALL.md](docs/INSTALL.md) shows how to reach the engine from another computer. The [client setup guide](harness/docs/passthrough-matrix.md) walks through Claude Code, Codex, Hermes, OpenCode and Pi.
+The model thinks before it answers unless you turn that off, as this example does. The [OpenAI API](docs/openai-api.md) page lists every endpoint and field. The engine listens only on the Spark itself. [INSTALL.md](docs/INSTALL.md#from-a-windows-computer) shows the SSH port forward that reaches it from another computer. The [client setup guide](harness/docs/passthrough-matrix.md) walks through Claude Code, Codex, Hermes, OpenCode and Pi.
 
 <a id="benchmark-results"></a>
 
@@ -94,7 +96,7 @@ The numbers are tokens per second (tok/s). Drafting is Vade's speculative decodi
 | Setup | One chat | One chat, drafting off | Eight chats at once (total) |
 | :---: | :---: | :---: | :---: |
 | FP4-Local · 1 Spark | 42.1 | 27.9 | 179.8 |
-| FP4-Local · 2 Sparks | 55.2 | 36.9 | 231.3 |
+| FP4-Local · 2 Sparks | 54.5 | 36.1 | 230.9 |
 | FP4-Local · 4 Sparks | 61.9 | 41.8 | 243.5 |
 | FP8 · 2 Sparks | 39.5 | 28.4 | 106.4 |
 | FP8 · 4 Sparks | 52.6 | 36.9 | 136.2 |
@@ -103,8 +105,7 @@ The numbers are tokens per second (tok/s). Drafting is Vade's speculative decodi
 
 These rows come from separate main revisions:
 
-- **FP4-Local, two Sparks.** We measured main `2de87be` on the afternoon of 2026-11-02. The [afternoon results](docs/results.md#fp4-local-rates-main-2de87be-2026-11-02-afternoon) name the private card folders and give the exact values.
-- **FP4-Local, one and four Sparks.** We measured main `8976c4f` on the morning of 2026-11-02. The [receipts](bench/receipts/2026-11-02/README.md) hold the raw records.
+- **FP4-Local.** We measured main `8976c4f` on the morning of 2026-11-02. The [receipts](bench/receipts/2026-11-02/README.md) hold the raw records.
 - **FP8.** We measured main `acb49bc` on the afternoon of 2026-11-01. The [receipts](bench/receipts/2026-11-01/README.md) hold the raw records.
 
 One chat writes prose of up to 8192 tokens. Every row is one server start.
@@ -113,7 +114,7 @@ Drafting on means a fixed draft depth: 3 for FP4-Local and 2 for FP8. A default 
 
 <!-- bench-docs:end -->
 
-The [2026-11-02 16:39 CST card run](docs/results.md#fp4-local-cached-turn-main-2de87be-2026-11-02-afternoon) measures a 32K-token chat with FP4-Local on two Sparks. Its cached second question has a median first-token time of 0.395 s. The same section gives the cold times and the raw samples.
+The [32K-token chat](docs/results.md#fp4-local-32k-token-chat) of the same FP4-Local starts gives the cached second question its first token in 0.366 s on one Spark, 0.767 s on two and 1.058 s on four. The same section gives the cold times and links the receipts.
 
 [Results](docs/results.md) has every cell of these runs, with the build, the server commands and the request settings. [Benchmark history](docs/benchmarks.md) keeps every earlier run.
 
@@ -165,6 +166,8 @@ To check your own engine, run `vade verify`. [Token IDs](docs/results.md#token-i
 | Page | What it is for |
 | :---: | :---: |
 | [INSTALL.md](docs/INSTALL.md) | The full install, settings and recovery |
+| [Quickstart](docs/quickstart.md) | One Spark, from nothing to a first answer, on one short page |
+| [Install page for agents](docs/agents/install.md) | The install commands, their JSON, exit codes and failures |
 | [Agent quickstart](docs/agents/quickstart.md) | Setup steps written for coding agents |
 | [FP8 install](docs/install-fp8.md) | FP8 on two or more Sparks |
 | [CLI reference](cli/README.md) | Every `vade` command |

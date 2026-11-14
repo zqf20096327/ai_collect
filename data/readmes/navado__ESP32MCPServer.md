@@ -15,7 +15,7 @@ Connect an AI agent directly to your hardware: query I2C sensors, parse NMEA 018
 | Capability | Details |
 |---|---|
 | **MCP Protocol** | JSON-RPC 2.0 over WebSocket, resource discovery & subscriptions |
-| **I2C Sensors** | Auto-scan + drivers for BME280, MPU6050, ADS1115, SHT31, BH1750, INA219 |
+| **I2C Sensors** | Auto-scan + drivers for BME280, MPU6050, ADS1115, SHT31, AHT20, BH1750, INA219 |
 | **NMEA 0183** | GGA, RMC, VTG, GSV, MWV, DBT, DPT, HDG, HDT with XOR checksum validation |
 | **NMEA 2000 / CAN** | 29-bit PGNs: position, heading, speed, depth, wind, attitude, water temp |
 | **OBD-II / CAN** | Standard 11-bit OBD-II service 01/09 PID decoding (60+ PIDs) |
@@ -43,7 +43,7 @@ Connect an AI agent directly to your hardware: query I2C sensors, parse NMEA 018
 | **Adafruit HUZZAH32** | `adafruit-huzzah32` | Xtensa LX6 × 2 @ 240 MHz | 4 MB | 520 KB | ✓ | ✗¹ | ✓ | — |
 | **M5Stack Core ESP32** | `m5stack-core` | Xtensa LX6 × 2 @ 240 MHz | 16 MB | 520 KB | ✓ | ✗¹ | ✗ | — |
 
-¹ 4 MB-flash boards: the BLE stack + the MCP WebSocket server + OTA cannot all fit the 1.25 MB OTA app slot, so BLE is compiled out (the hardware still supports it). BLE is available on the ESP32-S3 (8 MB flash). `esp32-devkitc`, `adafruit-huzzah32` and `m5stack-core` also use a larger-app partition table (`partitions_4mb_ota.csv`): **upgrading an existing board requires one USB flash and re-uploading the filesystem** — see the board pages in [`docs/boards/`](docs/boards/) and the [CHANGELOG](CHANGELOG.md).
+¹ 4 MB-flash boards: the BLE stack + the MCP WebSocket server + OTA cannot all fit the 1.25 MB OTA app slot, so BLE is compiled out (the hardware still supports it). BLE is available on the ESP32-S3 (8 MB flash). `esp32-devkitc`, `esp32-c3-devkitm-1`, `adafruit-huzzah32` and `m5stack-core` also use a larger-app partition table (`partitions_4mb_ota.csv`): **upgrading an existing board requires one USB flash and re-uploading the filesystem** — see the board pages in [`docs/boards/`](docs/boards/) and the [CHANGELOG](CHANGELOG.md).
 
 ² PSRAM mode (octal vs quad) is fixed at build time, so modules with 8 MB octal PSRAM (N8R8/N16R8; `esptool.py chip_id` reports "Embedded PSRAM 8MB") need the `-n16r8` env. Do not flash that env on DevKitC-1 variants without PSRAM or with quad PSRAM (N8R2).
 
@@ -270,7 +270,67 @@ pio run -t upload -e nrf52840-dk
 2. Connect to that AP and open **`http://192.168.4.1`**.
 3. Enter your WiFi credentials and click Save.
 4. The board joins your network and prints its IP address on the serial console.
-5. Connect an MCP client to **`ws://<IP>:9000`**.
+5. Connect an MCP client to **`http://<IP>/mcp`** (Streamable HTTP, see [Connecting an MCP client](#connecting-an-mcp-client)), or the legacy WebSocket **`ws://<IP>:9000`**. MCP authentication is **off by default**, so the examples below work as-is on a trusted network. To require a token, type `auth on` on the serial console (or build with `-D MCP_AUTH_DEFAULT=1`); see [Security](#security).
+6. On first boot the serial console prints a generated **OTA password** (`ota show` prints it again).
+
+---
+
+## Security
+
+The device is meant for a **trusted LAN**. MCP authentication is **optional and off by default**: out of the box any host that can reach the device can use it, exactly as before. Turn it on for anything but a lab bench. There is no TLS yet (see below).
+
+**Turning authentication on or off** (NVS namespace `security`, key `auth`):
+
+| How | Effect |
+|---|---|
+| Serial console `auth on` | Require a token. A full-control token is generated and printed if none exists. Reboots |
+| Serial console `auth off` | Accept clients without a token again (stored tokens are kept). Reboots |
+| `-D MCP_AUTH_DEFAULT=1` build flag | Ship boards with authentication on (used when the `auth` key is absent) |
+| NVS image | Pre-provision `auth`, `token` and `ro_token` like the WiFi credentials |
+
+When authentication is off every client has full control. Rate limits, the client limit and the Origin check stay active either way.
+
+**Threat model.** With authentication off, any host that can reach port 9000 could open BLE connections to nearby devices, read sensor, bus and metrics data, clear logs, and tie up the server. Turning it on stops an unauthenticated host on the network from doing any of that. It does **not** protect against someone who can sniff the traffic: the token and all data travel in clear text over `ws://`, and the OTA password over plain HTTP Basic Auth. Physical access to the USB serial console is trusted: it can show and change every secret.
+
+**MCP access tokens** (NVS namespace `security`; used only when authentication is on):
+
+| Token | Key | Access |
+|---|---|---|
+| Full control | `token` | Every method |
+| Read-only (optional) | `ro_token` | Observation only, nothing that changes shared state: `initialize`, `resources/*`, `sensors/read`, `metrics/*`, `logs/query`, `bus/history/read`, `bus/history/config/get`, `ble/scan/poll`, `ble/connect/results`. Starting or stopping the shared BLE scan (`ble/scan`, `ble/scan/stop`, `ble/scan/results`, `ble/scan/payloads`), `sensors/i2c/scan` (it writes init commands to devices), `ble/connect`, `ble/services/*`, `ble/disconnect`, `logs/clear`, `bus/history/config/set` and any method not on the list need full control |
+
+- When authentication is on and no token exists, a random 128-bit token is generated and printed on the serial console (`token show` prints it again).
+- Clients send it as `Authorization: Bearer <token>` or, from browsers (which cannot set WebSocket headers), as `?token=<token>`.
+- A connection without a valid token is closed with WebSocket close code **4401** before any message is processed. A read-only client calling a full-control method gets `-32020` (`data.required: "full"`).
+
+**Serial console** (115200 baud on UART0; on the ESP32-S3-DevKitC-1 that is the USB port labelled **UART/COM**, not the native USB port; type `help`):
+
+| Command | Effect |
+|---|---|
+| `auth status` / `auth on` / `auth off` | Show / require / stop requiring a token; on and off reboot |
+| `token show` | Print both tokens |
+| `token rotate` / `token set <value>` | New random / chosen (≥ 16 chars) full-control token; reboots to apply |
+| `token ro rotate` / `token ro clear` | New / remove the read-only token; reboots |
+| `ota show` / `ota rotate` | Print / replace the OTA password (rotate reboots) |
+
+Tokens can also be pre-provisioned in an NVS image, like the WiFi credentials.
+
+**Resource limits.**
+
+| Limit | Default | Build flag | When exceeded |
+|---|---|---|---|
+| Concurrent MCP clients | 4 | `MCP_MAX_CLIENTS` | Close code **4429** |
+| Requests per client | burst 20, then 10/s | `MCP_RATE_BURST`, `MCP_RATE_PER_SEC` | `-32021 Rate limited` with `data.retryAfterMs` |
+| Idle clients | ping every 15 s | — | Dropped after 2 missed pongs |
+
+**OTA.**
+- There is no compiled-in default password. A random per-device password is generated on first boot, and also on a device that still holds the old `admin` default. It is printed once on the serial console.
+- After 5 consecutive wrong logins **from one IP address**, that address gets `429` (with `Retry-After`) for 30 s, doubling up to 5 minutes per further failure. Other hosts are not affected, so a guessing host can't lock the owner out. Up to 32 source addresses are tracked. Beyond that, the remaining sources share one lockout, so rotating addresses doesn't buy extra guesses. The tradeoff: an attacker with more than 32 failing LAN addresses can delay OTA logins from new hosts for a few minutes. USB flashing and the serial console are never affected.
+
+**Not covered yet.**
+- **TLS.** Neither transport is encrypted: the WebSocket library has no server-side TLS on ESP32, and the HTTP server used for `/mcp` doesn't either. On the 4 MB boards there is no flash headroom for TLS at all. Use a trusted network, or a TLS-terminating proxy or VPN.
+- The other port-80 HTTP endpoints (dashboard, WiFi setup, `/bus-history`) are unauthenticated. `/mcp` requires the token when authentication is on.
+- OAuth 2.1 (MCP authorization for HTTP transports) doesn't fit on the device. `/mcp` takes the same static bearer token, which MCP clients can send as a configured `Authorization` header.
 
 ---
 
@@ -301,19 +361,92 @@ A browser-based dashboard is served from flash at **`http://<IP>/app`**.
 
 ---
 
-## MCP API Reference (WebSocket port 9000)
+## MCP API Reference
 
-All methods use **JSON-RPC 2.0** over WebSocket.
+All methods use **JSON-RPC 2.0**. No access token is needed unless authentication is turned on (see [Security](#security)). Two transports serve the same methods:
+
+| Transport | Endpoint | Use it for |
+|---|---|---|
+| **Streamable HTTP** (MCP standard) | `POST http://<IP>/mcp` | Standard MCP clients: Claude Code, Claude Desktop through `mcp-remote`, the MCP Inspector, the official SDKs |
+| WebSocket (legacy) | `ws://<IP>:9000` | The web dashboard and existing WebSocket clients; supports push notifications (`resources/subscribe`) |
+
+### Connecting an MCP client
+
+Claude Code:
+
+```bash
+claude mcp add --transport http esp32 http://<IP>/mcp
+# with authentication on:
+claude mcp add --transport http esp32 http://<IP>/mcp --header "Authorization: Bearer <token>"
+```
+
+Claude Desktop, or any stdio-only client, through [`mcp-remote`](https://www.npmjs.com/package/mcp-remote):
+
+```json
+{
+  "mcpServers": {
+    "esp32": {
+      "command": "npx",
+      "args": ["mcp-remote", "http://<IP>/mcp", "--allow-http"]
+    }
+  }
+}
+```
+
+With authentication on, add `"--header", "Authorization:${MCP_AUTH}"` to `args` and `"env": { "MCP_AUTH": "Bearer <token>" }`.
+
+MCP Inspector: `npx @modelcontextprotocol/inspector`, then choose transport *Streamable HTTP*, URL `http://<IP>/mcp` (add the `Authorization` header when authentication is on).
+
+### Streamable HTTP details
+
+- `POST /mcp` takes one JSON-RPC message and returns `application/json`. Notifications get `202 Accepted`.
+- `initialize` (sent without a session id) returns an `Mcp-Session-Id` header that every later request must carry.
+- Unknown or expired sessions get `404`; the client should re-initialize. Sessions expire after 10 minutes idle, and `DELETE /mcp` ends one.
+- Up to 4 sessions at a time, separate from the 4 WebSocket clients. When all 4 are taken, a new `initialize` replaces the least recently used session that has been idle for at least 30 s, because many clients, such as the MCP Inspector CLI, never send `DELETE`. Its client gets `404` on its next request and starts over. Some sessions are never replaced: one that owns a BLE scan, link or subscription, and a full-control session when the new one is read-only.
+- With authentication on, every request needs `Authorization: Bearer <token>` (`401` otherwise). A browser `Origin` must match the device's host (`403` otherwise), which protects against DNS rebinding.
+- `GET /mcp` returns `405`: the server doesn't open SSE streams, so HTTP clients get no push notifications and `resources.subscribe` is `false` for them.
+- Requests are limited to 16 KB.
+
+### Protocol and capabilities
+
+- **Versions:** `2025-06-18` (preferred), `2025-03-26` and `2024-11-05`. A supported requested version is echoed back; otherwise the server answers with `2025-06-18`. A non-string version is `-32602`.
+- **Capabilities:** `resources: {subscribe, listChanged: false}` and `tools: {listChanged: false}`.
+- **Lifecycle:** `ping`, `notifications/initialized` and `notifications/cancelled` are handled. Notifications never get a response, and string request ids are supported.
+
+### Tools
+
+`tools/list` exposes the device's methods as MCP tools, with JSON Schema inputs and the annotations `readOnlyHint`, `destructiveHint`, `idempotentHint` and `openWorldHint`.
+- `tools/call` returns the method's result in `structuredContent`, plus a JSON text block (results over 4 KB get a one-line text summary to save RAM).
+- A method error (e.g. `Feature busy`) comes back as `isError: true` with the error in `structuredContent.error`.
+- Tools inherit the authorization of the method they wrap. A read-only token only sees and calls the read-only tools.
+
+| Tool | Method |
+|---|---|
+| `sensors_scan`, `sensors_read` | `sensors/i2c/scan`, `sensors/read` |
+| `bus_history_read`, `bus_history_config_get`, `bus_history_config_set` | `bus/history/*` |
+| `metrics_list`, `metrics_get`, `metrics_history`, `logs_clear` | `metrics/*`, `logs/clear` |
+| `system_features` | `system/features` |
+| `ble_scan`, `ble_scan_poll`, `ble_scan_results`, `ble_scan_payloads`, `ble_scan_stop` | `ble/scan*` (BLE boards only) |
+| `ble_connect`, `ble_connect_results`, `ble_services_start`, `ble_services_results`, `ble_services_stop`, `ble_disconnect` | `ble/connect*`, `ble/services/*`, `ble/disconnect` |
+| `ble_write`, `ble_subscribe`, `ble_unsubscribe`, `ble_notifications` | `ble/write`, `ble/subscribe`, `ble/unsubscribe`, `ble/notifications` |
+
+The JSON-RPC methods below remain callable directly.
+
+**Not implemented yet:** progress notifications, cancellation of running scans or enumerations, `logging/setLevel`, pagination cursors, `resources/templates/list`, prompts, completion and elicitation.
 
 ### Protocol
 
 | Method | Params | Description |
 |---|---|---|
-| `initialize` | — | Server info, protocol version, capabilities |
+| `initialize` | `protocolVersion?` | Server info, negotiated protocol version, capabilities |
+| `ping` | — | Liveness check; empty result |
+| `tools/list` | — | MCP tools (see [Tools](#tools)) |
+| `tools/call` | `name`, `arguments?` | Call a tool |
 | `resources/list` | — | List registered MCP resources |
 | `resources/read` | `uri` | Read a resource by URI |
 | `resources/subscribe` | `uri` | Subscribe to push updates for a resource |
 | `resources/unsubscribe` | `uri` | Cancel a subscription |
+| `system/features` | — | Feature availability, state, owner and conflicts, plus the active memory plan (see [Features and structured errors](#features-and-structured-errors)) |
 
 ### Sensors
 
@@ -546,11 +679,51 @@ After subscribing the server pushes unsolicited `notifications/resources/updated
 {"jsonrpc":"2.0","method":"notifications/resources/updated","params":{"uri":"sensor://i2c/bme280_0x76"}}
 ```
 
+### Features and structured errors
+
+Some features cannot run at the same time (for example BLE and an OTA flash), and some are not built for every board.  `system/features` reports the live state of each one; the same document is published as the resource `device://features`, so a client can `resources/subscribe` to it and get `notifications/resources/updated` whenever a feature changes state.
+
+OTA takes priority over BLE: an authenticated firmware upload stops a running scan and drops the GATT link, and BLE requests are refused with `-32010` (`blockedBy: "ota"`) until the upload ends.
+
+```json
+{"jsonrpc":"2.0","method":"system/features","id":30}
+```
+```json
+{"jsonrpc":"2.0","id":30,"result":{
+  "features":[
+    {"id":"ota","available":true,"state":"idle","conflictsWith":["ble.central.scan","ble.central.gatt","ble.peripheral"]},
+    {"id":"ble.central.scan","available":true,"state":"active","detail":"scanning","owner":"client#2","conflictsWith":["ota","ble.peripheral"]},
+    {"id":"ble.central.gatt","available":true,"state":"idle","conflictsWith":["ota","ble.peripheral"]},
+    {"id":"ble.peripheral","available":false,"reason":"not implemented","state":"idle","conflictsWith":["ota","ble.central.scan","ble.central.gatt"]},
+    {"id":"sensors.i2c","available":true,"state":"idle","conflictsWith":[]},
+    {"id":"bus.can","available":true,"state":"idle","conflictsWith":[]}
+  ],
+  "memoryPlan":{"mode":"psram","busHistoryInPsram":true,"busHistoryCap":1048576,"bleMaxDevices":64,"bleCaptureBytes":49152},
+  "board":"ESP32-S3-DevKitC-1"}}
+```
+
+`state` is `idle`, `active` (with a `detail` such as `scanning`, `connecting`, `connected`, `discovering` or `flashing`) or `blocked` (with `blockedBy`).  A feature started by a client is **owned** by it, and is released when that client disconnects: its scan is stopped and its GATT link dropped, so a vanished client cannot hold the radio.
+
+A request that cannot run gets a structured error instead of a bare `started:false`.  The codes are stable:
+
+| Code | Message | Meaning | `data` |
+|---|---|---|---|
+| `-32010` | Feature busy | The feature is already running, or a conflicting feature is | `feature`, `blockedBy`, `state`, `owner?`, `retryAfterMs`, `resolve?` (method that clears the blocker) |
+| `-32011` | Feature unavailable | Compiled out, no hardware, or not implemented. Used for every `ble/*` method on boards without BLE, instead of `-32601` | `feature`, `reason` |
+| `-32012` | Resource limit | Reserved: memory-plan or buffer caps reached | — |
+| `-32013` | Feature not ready | A precondition is missing (e.g. `ble/services/start` while not connected) | `feature`, `reason`, `resolve?` |
+
+```json
+{"jsonrpc":"2.0","id":14,"error":{"code":-32010,"message":"Feature busy",
+ "data":{"feature":"ble.central.scan","blockedBy":"ble.central.scan","state":"scanning",
+         "owner":"client#2","retryAfterMs":3400,"resolve":"ble/scan/stop"}}}
+```
+
 ### Bluetooth (BLE)
 
 The ESP32-S3 acts as a **BLE central** controlled over MCP: it captures what nearby devices broadcast (useful for reverse-engineering advertising formats) and can connect to a device to enumerate and read its GATT database.  Every call is **non-blocking or time-bounded**, so a slow or misbehaving peer can never hang the MCP server.
 
-**Supported boards:** `esp32-s3-devkitc-1` and `esp32-s3-devkitc-1-n16r8` (PSRAM).  On the 4 MB-flash boards the BLE stack cannot fit alongside the WebSocket server and OTA, so the `ble/*` methods are not compiled there; the nRF52 targets have no MCP server.
+**Supported boards:** `esp32-s3-devkitc-1` and `esp32-s3-devkitc-1-n16r8` (PSRAM).  On the 4 MB-flash boards the BLE stack cannot fit alongside the WebSocket server and OTA, so the `ble/*` methods are not compiled there and return `-32011 Feature unavailable`; the nRF52 targets have no MCP server.
 
 #### Capabilities
 
@@ -562,26 +735,32 @@ The ESP32-S3 acts as a **BLE central** controlled over MCP: it captures what nea
 | **Capture filters** | `minRssi`, `manufacturerId`, `serviceUuid`, `macPrefix` decide what is stored, so the device of interest is not crowded out in a busy RF environment |
 | **Connect** | Asynchronous GATT connect with an enforced timeout; public, random static and resolvable private addresses (address type taken from the scan, or given explicitly); repeatable connect / disconnect / reconnect |
 | **Enumerate & read** | All primary/secondary services and characteristics with properties (up to 512 attributes); every readable value read (hex + printable text, first 64 bytes) |
-| **Notifications** | Subscribes to notify/indicate characteristics and captures the latest value within a bounded window (≤ 10 s) |
+| **Notifications** | During enumeration: subscribes to every notify/indicate characteristic and captures the latest value within a bounded window (≤ 10 s) |
+| **Write** | `ble/write` writes a characteristic (with or without response, up to 512 bytes), addressed by handle or UUID. Needs the full-control token |
+| **Subscribe** | `ble/subscribe` enables notifications or indications on one characteristic for as long as needed (up to 8 at once). Values are pushed to WebSocket clients as `notifications/ble/value`; HTTP clients read them with `ble/notifications` (32-value queue, oldest dropped and counted) |
 | **Memory-aware limits** | Capture limits follow the boot-time memory plan: 64 devices / 48 KB with PSRAM, 24 devices / 16 KB without; least-recently-heard devices are evicted first |
 
-**Not supported (yet):** writing characteristics, pairing/bonding (encrypted characteristics will fail to read), more than one connection at a time, BLE 5 extended advertising and Coded PHY (only legacy advertising is received), and acting as a peripheral/advertiser.
+**Not supported (yet):** descriptor writes other than the CCCD; pairing/bonding (encrypted characteristics fail to read or write); more than one connection at a time; MTU negotiation (stored values are truncated to 64 bytes; writes are not); BLE 5 extended advertising and Coded PHY (only legacy advertising is received); and acting as a peripheral/advertiser.
 
 **Verified on hardware** (ESP32-S3-DevKitC-1 N16R8) against an nRF52840 peripheral (random static address), an Android phone (rotating random address) and a BlueZ peripheral (public address): connect median 0.43 s (15/15), 47 connect/disconnect cycles with clean teardown on the peer, full enumeration of a phone (7 services / 37 characteristics) with ≥ 49 KB internal heap free throughout.
 
 | Method | Params | Description |
 |---|---|---|
-| `ble/scan` | `durationMs?`, `minRssi?`, `manufacturerId?`, `serviceUuid?`, `macPrefix?` | Start a scan (default 5000 ms; 0 = continuous until `ble/scan/stop`); returns immediately. If a scan is already running: `{started:false, scanning:true, remainingMs}`. The optional **capture filter** decides which devices are *stored* (AND-combined; `manufacturerId` is a hex prefix of the manufacturer data with the company id little-endian, e.g. `0xDEAD` → `"adde"`), so ambient traffic cannot crowd out the device of interest. Device count and capture size follow the boot-time memory plan (64 devices / 48 KB with PSRAM, 24 / 16 KB without); when full, the least-recently-heard device is evicted |
+| `ble/scan` | `durationMs?`, `minRssi?`, `manufacturerId?`, `serviceUuid?`, `macPrefix?` | Start a scan (default 5000 ms; 0 = continuous until `ble/scan/stop`); returns immediately. If a scan is already running, or an OTA update is in progress: `-32010 Feature busy` with `retryAfterMs` (time left on a timed scan) and `resolve: "ble/scan/stop"`. The optional **capture filter** decides which devices are *stored* (AND-combined; `manufacturerId` is a hex prefix of the manufacturer data with the company id little-endian, e.g. `0xDEAD` → `"adde"`), so ambient traffic cannot crowd out the device of interest. Device count and capture size follow the boot-time memory plan (64 devices / 48 KB with PSRAM, 24 / 16 KB without); when full, the least-recently-heard device is evicted |
 | `ble/scan/results` | `mac?`, `serviceUuid?`, `manufacturerId?`, `macPrefix?` | Stop the scan (if running) and return captured devices; optional case-insensitive `mac` returns only that device with its **full** payload history; optional AND-combined response filters (`serviceUuid`, `manufacturerId` hex, `macPrefix`) never affect capture. Also returns `evicted` (devices dropped this scan to stay within the limits), `maxDevices`, and per-device `lastSeen` |
 | `ble/scan/payloads` | — | Stop the scan and return the **MAC-independent payload registry**: distinct payloads across ALL broadcasters, first-seen order, with `count` + `firstSeen`/`lastSeen` (ms since scan start), plus `dropped`: distinct payloads discarded because the registry (64 entries) was full. The primary artifact for protocol reverse-engineering — survives per-MAC MAC-rotation churn |
 | `ble/scan/poll` | — | Live read of the payload registry WITHOUT stopping the scan (stateless; diff by `firstSeen`) |
 | `ble/scan/stop` | — | Stop a continuous scan early |
-| `ble/connect` | `mac`, `timeoutMs?`, `addrType?` | Begin an **asynchronous** GATT connect to a peer MAC (default timeout 5000 ms). `addrType` is `public`, `random`, `rpa-public` or `rpa-random`; when omitted, the type recorded by the last scan for that MAC is used (public if it was not seen). Most phones, watches and sensors use random addresses and cannot be opened as public |
+| `ble/connect` | `mac`, `timeoutMs?`, `addrType?` | Begin an **asynchronous** GATT connect to a peer MAC (default timeout 5000 ms). `addrType` is `public`, `random`, `rpa-public` or `rpa-random`; when omitted, the type recorded by the last scan for that MAC is used (public if it was not seen). Most phones, watches and sensors use random addresses and cannot be opened as public. A malformed `mac` is `-32602`; a link that is already connecting, connected, enumerating or closing (or an OTA in progress) is `-32010` with the GATT `state` and `resolve: "ble/disconnect"` |
 | `ble/connect/results` | — | Poll the outcome of the last async connect |
 | `ble/disconnect` | — | Drop the GATT link |
-| `ble/services/start` | — | Enumerate services/characteristics (background task); returns immediately |
+| `ble/services/start` | — | Enumerate services/characteristics (background task); returns immediately. Not connected (or still connecting / closing): `-32013 Feature not ready` with `resolve`; an enumeration already running: `-32010` with `resolve: "ble/services/results"` |
 | `ble/services/results` | `notifyCaptureMs?` | Wait for enumeration + notified values (default 3000 ms, capped at 10000 ms) |
 | `ble/services/stop` | — | Unsubscribe from notifications and close the link |
+| `ble/write` | `handle` or `uuid`, `value` (hex), `withResponse?` (default true), `timeoutMs?` (≤ 5000) | Write a characteristic and wait for the write response. `handle` comes from `ble/services/results`; a `uuid` found in several services returns `-32602` with the candidate `handles`. The characteristic must have the `write` (or, without response, `write-no-response`) property. Not connected or not enumerated yet: `-32013`; another write in flight: `-32010`; GATT failure: `-32000` with `gattStatus` |
+| `ble/subscribe` | `handle` or `uuid`, `indicate?` | Enable notifications (default when supported) or indications. Result says `delivery: "push"` (WebSocket) or `"poll"` (HTTP) |
+| `ble/unsubscribe` | `handle` or `uuid` | Disable them again |
+| `ble/notifications` | — | Values notified since the last call: `{values:[{handle, uuid, valueHex, valueText, ts}], dropped, subscriptions, connected}` |
 
 #### `ble/scan` / `ble/scan/results`
 
@@ -648,7 +827,7 @@ Notes for reverse engineering:
   "jsonrpc":"2.0","id":19,
   "result":{"connected":true,"services":[
     {"uuid":"00001800-0000-1000-8000-00805f9b34fb","characteristics":[
-      {"uuid":"00002a00-0000-1000-8000-00805f9b34fb","properties":"read",
+      {"handle":3,"uuid":"00002a00-0000-1000-8000-00805f9b34fb","properties":"read",
        "valueHex":"4c452d4844203335304254","valueText":"LE-HD 350BT"}
     ]}
   ]}
@@ -657,9 +836,22 @@ Notes for reverse engineering:
 
 GATT enumeration runs in the background so a slow or uncooperative peer cannot block the MCP server.  Every operation is time-bounded: the open handshake (`timeoutMs`), service discovery (10 s cap), characteristic reads (5 s for the whole read phase), and the notified-value capture window (`notifyCaptureMs`, default 3000 ms, capped at 10000 ms because the call blocks the MCP task while it waits).  `ble/services/stop` (or `ble/disconnect`) closes the link, tearing down any in-flight work safely.
 
-### TypeScript client example
+### Client libraries and examples
 
-See [`examples/client/client.ts`](examples/client/client.ts) for a complete typed client.
+| File | What |
+|---|---|
+| [`examples/client/client.ts`](examples/client/client.ts) | Typed WebSocket client: `request()`, tools, and BLE helpers: `bleScanAndCollect`, `bleDevices`, `blePayloads`, `bleConnect` (waits for the link), `bleEnumerate`, `bleWrite`, `bleSubscribe(target, onValue)`, `bleNotifications`, `bleDisconnect`. Errors are `MCPError` with the server's `code` and `data` |
+| [`examples/client/ble_example.ts`](examples/client/ble_example.ts) | Scan → connect → enumerate → subscribe walk-through (`npx tsx ble_example.ts [mac]`) |
+| [`examples/client/mcp_ble.py`](examples/client/mcp_ble.py) | Dependency-free Python client over Streamable HTTP, with a CLI: `scan`, `enumerate <mac>`, `write <mac> <handle> <hex>`, `watch <mac> <handle>`, `tools` |
+
+Example GATT write and subscription with the Python CLI:
+
+```bash
+export MCP_URL=http://192.168.1.50   # and MCP_TOKEN=<token> if authentication is on
+python3 examples/client/mcp_ble.py enumerate aa:bb:cc:dd:ee:ff --addr-type random
+python3 examples/client/mcp_ble.py write aa:bb:cc:dd:ee:ff 32 01ff --addr-type random
+python3 examples/client/mcp_ble.py watch aa:bb:cc:dd:ee:ff 34 --seconds 10 --addr-type random
+```
 
 ---
 
@@ -671,6 +863,7 @@ See [`examples/client/client.ts`](examples/client/client.ts) for a complete type
 | **MPU6050** | 0x68, 0x69 | `accel_x/y/z`, `gyro_x/y/z`, `temperature` | g, °/s, °C |
 | **ADS1115** | 0x48–0x4B | `ch0_V`, `ch1_V`, `ch2_V`, `ch3_V` | V (±4.096 range) |
 | **SHT31** | 0x44, 0x45 | `temperature`, `humidity` | °C, %RH |
+| **AHT20** | 0x38 | `temperature`, `humidity` | °C, %RH |
 | **BH1750** | 0x23, 0x5C | `light_lux` | lux |
 | **INA219** | 0x40–0x4F | `bus_voltage_V`, `shunt_mV`, `current_mA`, `power_mW` | V, mV, mA, mW |
 

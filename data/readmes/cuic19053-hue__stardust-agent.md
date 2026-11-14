@@ -8,7 +8,7 @@
 
 项目提供 35 个领域指南。后端使用 Python 和 FastAPI，支持 Ollama 本地模型和 OpenAI 兼容接口。这里的覆盖指指南与赛道目录，各赛道的模型写作、模板、图表和导出支持程度不同，尚未完成全部场景的端到端验收。仓库改动不代表已经在线上部署。
 
-[![GitHub stars](https://img.shields.io/github/stars/cuic19053-hue/stardust-agent?style=social)](https://github.com/cuic19053-hue/stardust-agent/stargazers) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/cuic19053-hue/stardust-agent?style=social)](https://github.com/cuic19053-hue/stardust-agent/stargazers) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE) [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/) [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/) [![MCP Protocol](https://img.shields.io/badge/MCP-Protocol-blue.svg)](https://modelcontextprotocol.io/) [![Online Platform](https://img.shields.io/badge/Online-agent.stardust.website-7952CC.svg)](https://agent.stardust.website)
 
 [打开在线工作台](https://agent.stardust.website) · [查看大创 Word 样例](./examples/demos/demo_innovation_research.docx) · [Agent 设计说明](./docs/design/AGENT_REFACTOR.md) · [English](./README_EN.md)
 
@@ -170,7 +170,17 @@ ollama pull bge-m3
 
 ## 项目与社区
 
-项目源自团队参加挑战杯、反复修改申报书的实践。感谢完成了本项目绝大部分编写工作的 [@richyhu](https://github.com/richyhu)。欢迎通过 Issue 提供学校模板的差异、更新的申报要求和能够复现的问题。[项目演示视频](https://www.douyin.com/video/7692700167341985051) · [贡献指南](./CONTRIBUTING.md) · [作者联系方式](./assets/contact_qr.png)
+项目源自团队参加挑战杯、反复修改申报书的实践。感谢完成了本项目绝大部分编写工作的 [@richyhu](https://github.com/richyhu)。欢迎通过 Issue 提供学校模板的差异、更新的申报要求和能够复现的问题。[项目演示视频](https://www.douyin.com/video/7692700167341985051) · [贡献指南](./CONTRIBUTING.md)
+
+### 交流与合作
+
+- **大学生科创交流群**：交流大创、挑战杯、大学生创新大赛备赛与申报材料准备。
+- **合作咨询**：交流立项思路、技术路线、商业计划书等具体需求。
+
+<div align="center">
+  <img src="./assets/contact_qr.png" width="200" alt="作者微信二维码">
+  <p>👉 扫码加微信（进群备注 <b>进群</b> ｜ 合作私聊 <b>合作+具体需求</b>）</p>
+</div>
 
 <details>
 <summary>社区路线图</summary>

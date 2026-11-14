@@ -12,8 +12,8 @@
 repository against a local mock of the provider APIs with fake keys.</sub>
 
 - **0 lines of app code changed** — SDKs keep calling the real provider; nothing to import, wrap or redeploy.
-- **~67 µs of agent CPU per LLM call** at 200 calls/s, 31 MB RSS plus 19 MB of BPF maps, and −6.5% throughput at
-  ~11k calls/s, measured with and without the agent in v0.2.0 ([benchmark](docs/benchmark.md)).
+- **~53 µs of agent CPU per LLM call** at 200 calls/s, 32 MB RSS plus 19 MB of BPF maps, and −6.7% throughput at
+  ~11k calls/s, measured with and without the agent in v0.3.0 ([benchmark](docs/benchmark.md)).
 - **11 built-in provider APIs** — OpenAI, Anthropic, Gemini, Amazon Bedrock, Azure OpenAI, Google Vertex AI, Meta.
 - **10 kernels in CI** — Linux 5.10 through 7.2 and RHEL 8.10 / 9.6 / 9.7, probes loaded and attached on x86-64
   (arm64 on 5.15 and 6.1 runs too, not yet required to pass).
@@ -29,13 +29,16 @@ latest release and watch LLM calls per pod:
 
 ```bash
 kubectl create namespace honeybeepf
-helm install honeybeepf-llm oci://ghcr.io/honeybee-studio/charts/honeybeepf-llm --version 0.2.0 \
+helm install honeybeepf-llm oci://ghcr.io/honeybee-studio/charts/honeybeepf-llm --version 0.3.1 \
   -n honeybeepf --set builtinProbes.llm.enabled=true
 kubectl logs -n honeybeepf ds/honeybeepf-llm -f | grep 'LLM SUCCESS'
 ```
 
 The chart in `charts/` on `main` can expect a newer agent than the latest release image, so install it only together
 with an image built from the same commit.
+
+No LLM traffic in the cluster yet? [`examples/demo/demo.sh up`](examples/demo) runs a mock provider, clients in
+three team namespaces and Grafana, with no API keys.
 
 ![Agent log on k3s: LLM calls from pods in team-a (OpenAI), team-b (Anthropic) and team-c (Gemini), each line showing the model and the token counts the agent recorded](docs/images/demo.svg)
 
@@ -102,9 +105,9 @@ the dashboards ship in [docs/grafana/](docs/grafana/).
 
 ## Roadmap
 
-![Roadmap: released in v0.2.0, v0.3.0 next, and the backlog, with the issue for each item](docs/images/roadmap.svg)
+![Roadmap: released in v0.2.0 and v0.3.0, v0.4.0 next, and the backlog, with the issue for each item](docs/images/roadmap.svg)
 
-Each section is a milestone: [v0.2.0](https://github.com/honeybee-studio/honeybeepf-llm/milestone/1) · [v0.3.0](https://github.com/honeybee-studio/honeybeepf-llm/milestone/2) · [Backlog](https://github.com/honeybee-studio/honeybeepf-llm/milestone/3). The milestones have no dates yet;
+Each section is a milestone: [v0.2.0](https://github.com/honeybee-studio/honeybeepf-llm/milestone/1) · [v0.3.0](https://github.com/honeybee-studio/honeybeepf-llm/milestone/2) · [v0.4.0](https://github.com/honeybee-studio/honeybeepf-llm/milestone/4) · [Backlog](https://github.com/honeybee-studio/honeybeepf-llm/milestone/3). The milestones have no dates yet;
 open them for the current progress.
 
 ## Contributing

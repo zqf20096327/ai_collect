@@ -72,10 +72,10 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 - [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 132 entries
 - [Game & Simulation](categories/game-simulation.md) — 29 entries
 - [Robotics & Physical](categories/robotics-physical.md) — 11 entries
-- [Finance & Trading](categories/finance-trading.md) — 10 entries
+- [Finance & Trading](categories/finance-trading.md) — 11 entries
 - [Compliance & Legal](categories/compliance-legal.md) — 7 entries
 - [Content Moderation](categories/content-moderation.md) — 15 entries
-- [Related Practices / Discussions](categories/related-practices-discussions.md) — 109 entries
+- [Related Practices / Discussions](categories/related-practices-discussions.md) — 110 entries
 
 ### Open categories still being seeded
 

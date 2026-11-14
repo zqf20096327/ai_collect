@@ -100,7 +100,7 @@ docker run -d --name sage \
   ghcr.io/l33tdawg/sage:latest
 ```
 
-Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.7`.
+Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.8`.
 
 The SAGE server stays in that container. To give a local MCP client a stdio
 bridge, start a second process **inside the same running container**:
@@ -317,7 +317,29 @@ uses re-enrollment; historical memory authorship is preserved.
 ---
 
 <details>
-<summary>Recent release notes (v11.25.7 and earlier)</summary>
+<summary>Recent release notes (v11.25.8 and earlier)</summary>
+
+## What's New in v11.25.8
+
+**RFC #443 Phase A now ships node-self-minted link cards and the fleet QR JOIN
+gate.** Org policy v2 binds `peer_allow_list` entries to enrollee agent keys,
+while signed rosters and cards provide the local transport facts needed for a
+manual JOIN. Each enrolled node mints its own card from runtime identity and
+transport state, and the durable card floor rejects rollback, equivocation and a
+changed policy generation.
+
+A fleet-managed manual QR JOIN now checks the peer against every enrolled org's
+current policy on both host and guest at request, approval and pre-tx
+boundaries. When policy denies the peer, a current Root may sign a bounded,
+expiring local exception; both storing and listing exceptions require that Root
+through localhost, and every use is audited. Nodes without an enrollment keep
+the existing JOIN behavior.
+
+This release does not activate Phase B roster-introduced links, the owner
+envelope or the durable introduction state machine. No consensus version change,
+chain reset, or data migration. `latest` and automatic upgrade voting remain
+app29; app30 remains explicit. Container:
+`ghcr.io/l33tdawg/sage:11.25.8`. SDK 11.25.8.
 
 ## What's New in v11.25.7
 
@@ -961,14 +983,4 @@ Container: `ghcr.io/l33tdawg/sage:11.19.22`. SDK 11.19.22.
 
 **A co-commit can no longer re-commit bytes the quorum already rejected.** A co-commit commits on block inclusion and never runs the voter, so the content-hash dedup that keeps a rejected memory's exact bytes out was skipped on that one write path: a jointly-signed envelope could re-admit content that had been deprecated, under a fresh memory id, while the same bytes submitted through `POST /v1/memory/submit` were refused as a duplicate. `POST /v1/cocommit/submit` now consults the same lookup before it broadcasts and refuses a tombstoned hash with `409 Tombstoned content`; the envelope's own `SharedID` is excluded so an idempotent re-send still works. It is a submission-boundary check rather than a consensus rule — the consensus path deliberately reads no off-chain state — so a node that broadcasts a co-commit transaction directly, bypassing its own REST surface, is not covered by it.
 
-**The MCP client stopped keeping its own duplicate rule.** `sage_remember`, `sage_observe` and `sage_reflect` used to drop a write when more than 60% of its significant words appeared inside one of the first 50 committed memories in the domain — silently, order-dependently, and only on MCP, so the same write over REST or the SDK landed. They now report the node's own verdict: `POST /v1/memory/pre-validate` runs the same dedup, quality and consistency checks the vote applies, an exact duplicate comes back as `status: "skipped"` carrying the node's reason, and a memory that merely shares vocabulary with an existing one is stored instead of discarded.
-
-Also in this release: the `validated` status is documented as declared-but-unwritten (nothing has ever produced it, and recall would hide such a row), an unused `ValidateMemoryRecord` that duplicated the REST validator is gone, and the reference docs state plainly that knowledge triples and `access_logs` are write-only.
-
-No consensus change or chain migration; app-v27 remains the ceiling.
-
-Container: `ghcr.io/l33tdawg/sage:11.19.21`. SDK 11.19.21.
-
-## What's New in v11.19.20
-
-**Dedup rejection is sticky.** Content that was rejected, challenged, or forgotten can no longer be re-admitted by submitting the identical bytes again: the voter's dedup lookup now matches any *other* memory that has left `proposed`, not just committed ones, while a candidate can never match its own row (the v10.1 self-match fix stays 
+**The MCP client stopped keeping its own duplicate rule.** `sage_remember`, `sage_observe` and `sage_reflect` used to drop a write when more than 60% of its significant words appeared inside one of the first 50 committed memories in the domain — silently, order-dependently, and only on MCP, so 

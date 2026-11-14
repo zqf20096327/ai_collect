@@ -118,6 +118,7 @@ Frameworks for running multiple agents, coordinating workflows, or building your
 - [Agent Coordinator](https://github.com/alanhoff/agent-coordinator) 🟢 — Per-user Codex skill for bounded work graphs, revisioned local state, and reconciliation before retry, using optional specialist agents or the same node lifecycle inline.
 - [AgentBridge](https://github.com/raysonmeng/agent-bridge) 🟢 🆓 — Local CLI that keeps Claude Code and Codex as live peers in one session for mid-turn review and quota-boundary handoff.
 - [Agentlas OS](https://github.com/agentlas-ai/Agentlas-OS) 🟢 🏠 — Apache-2.0 local-first environment for building portable coding-agent teams and routing them across supported hosts with MCP/A2A and verification gates.
+- [Althar](https://github.com/AltharIDE/althar) 🟢 — Desktop ADE that turns requests into tasks, assigns coding agents, and has another model review the changes.
 - [Aura](https://github.com/Naridon-Inc/aura) 🟢 — Open-source VCS layer for reviewing AI-agent code changes with semantic diffs and provenance.
 - [AUTOMATER.ai](https://automater.ai) 🆓 💰 — Tray app for Windows, macOS and Linux that keeps track of every AI coding agent you run, with a searchable library of past sessions, a flag when an agent is waiting on you, and usage across 9 providers in one panel.
 - [Carbon Forge](https://carbonforge.dev/) 🆓 💰 — Hosted source control for coding agents working in parallel: each agent opens a lane over the trunk instead of a worktree, lands its change as one all-or-nothing changeset, and reads and writes the record over MCP.
@@ -259,6 +260,7 @@ Frontier and open-weight models with strong code performance.
 
 ## Learning Resources
 
+- [AIHOT Coding Model Leaderboard](https://aihot.news/leaderboard/category/coding) 🆓 — Chinese-language comparison of coding models using published third-party benchmark results for software engineering and terminal tasks.
 - [Anthropic's Building Effective Agents](https://www.anthropic.com/research/building-effective-agents) — Patterns for production agents.
 - [Fair PR Review Checklist](https://github.com/gustavojstrevisani/fair-pr-review-checklist) 🟢 🆓 — Evidence-first AI-assisted pull request review prompt and ship checklist focused on correctness, tests, data, and delivery risk.
 - [STOP conditions for AI agent PRs](https://chopragunji.gumroad.com/l/zpnmdn) 🆓 — One-pager of merge-blocking checks for AI-authored pull requests (secrets, blast radius, mixed concerns, rollback, prompt/tool surfaces).

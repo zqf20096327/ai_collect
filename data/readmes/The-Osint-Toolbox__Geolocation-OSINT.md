@@ -46,6 +46,8 @@
    <p>Dual maps combine Google Maps, Birds Eye Imagery and Google Street View into one embeddable control. Dual Maps are free to use. No registration is required.</p>
  <li><a href="https://earthkit.app/sift">EarthKit</a></li>
    <p>A Nifty toolkit that helps you Geolocate faster with AI.</p>
+  <li><a href="https://github.com/minimallyexceptional/exif-hound">EXIF Hound</a></li>
+    <p>Free, open-source desktop app (macOS, Windows, Linux) to inspect image EXIF metadata locally, map GPS-tagged photos, import KML, and export CSV/JSON. No uploads, no telemetry.</p>
  <li><a href="https://demo.f4map.com/#camera.theta=0.9">F4 Maps</a></li>
   <p>Explore the World in 3D.</p>
  <li><a href="https://www.flickr.com/map/">Flickr Map</a></li>
@@ -58,6 +60,8 @@
   <p>The Geograph Britain and Ireland project aims to collect geographically representative photographs and information for every square kilometre of Great Britain and Ireland.</p>
  <li><a href="https://geohints.com/">GeoHints</a></li>
   <p>GeoHints is a website that provides information about things like traffic lights, utility poles, bollards etc. for different regions of the world to help geolocate a location.</p>
+ <li><a href="https://geoinfer.com/">GeoInfer</a></li>
+  <p>GeoInfer predicts where a photo was taken from its visual content alone, with no EXIF or GPS metadata needed. Web app with a free daily trial, plus an API.</p>
  <li><a href="https://www.geonames.org/">GeoNames</a></li>
   <p>The GeoNames geographical database covers all countries and contains over eleven million placenames.</p>
  <li><a href="https://geospy.ai/">Geospy</a></li>
@@ -100,6 +104,8 @@
    <p>Map source aggregator.</p>
  <li><a href="https://neshan.org/">Neshan</a></li>
    <p>Persian / Iranian version of Google Maps</p>
+  <li><a href="https://oceanir.ai/">Oceanir</a></li>
+   <p>Oceanir estimates where a photo was taken using visual clues, even when GPS metadata is unavailable. Estimates should be independently verified.</p>
  <li><a href="https://omaps.worldofo.com/gmaps.php">Omaps</a></li>
    <p>Orienteering Maps.</p>  
  <li><a href="https://openaerialmap.org/">Open Aerial Map</a></li>

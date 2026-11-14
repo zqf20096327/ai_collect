@@ -1,7 +1,7 @@
 # The Designer MCP
 
 <!-- hela:version:start -->
-**MCP server:** `hela-phenotype` · **Version:** `3.0.1` · **Canonical tools:** 28. [Current tool reference](docs/TOOLS.md).
+**MCP server:** `hela-phenotype` · **Version:** `3.0.2` · **Canonical tools:** 28. [Current tool reference](docs/TOOLS.md).
 <!-- hela:version:end -->
 
 > **Part of the [HeLa MCP Ecosystem](https://github.com/Hela-Ecosystem/hela-mcp-ecosystem)** — This server is **HeLa Phenotype (`hela-phenotype`)** — the _Design_ component of the HeLa cellular architecture. See the [ecosystem docs](https://github.com/Hela-Ecosystem/hela-mcp-ecosystem) for profiles, workflows, and multi-client setup.
@@ -44,6 +44,7 @@ A **Design-Theory-as-a-Service** Model Context Protocol (MCP) server for product
 - **Color Palette Hunter** — Live palettes from Color Hunt with format conversion.
 - **Brand Design References** — `brand_fetch_design_md` resolves DESIGN.md from the full 328+ brand getdesign catalog (Stripe, Vercel, Notion, Claude, Tesla, etc.); `brand_list` returns the 62-brand curated subset shipped locally.
 - **Stitch Canvas & Visual Workflow Integration** — six canonical tools: `stitch_resource` (`get` / `edit` / `delete` / `url`), `stitch_find`, `stitch_create`, `stitch_generate`, `stitch_sync_design_system`, and `stitch_screen_audit`.
+- **Brand Architecture** — the in-tree `brand-architecture` skill maps portfolio relationships, naming hierarchy, identity linkage, migration, governance, and measurement before visual production.
 - **Logo & Brand-Mark Design** — the in-tree `logo-design` skill plus `logo_workflow` with eight actions: audit, library search, renderer inspection, rendering, delivery variants, concept sheets, preview sheets, and presentation boards.
 
 ## Tools
@@ -276,12 +277,13 @@ PATH, and warns instead of blocking when neither exists.
 
 ## Architecture
 
-`designer-mcp` operates on a multi-tier architecture. An MCP server on its own is just an API; by pairing the MCP with four companion AI skills, the AI gets both the tools (the MCP) and the instruction manual (the skills).
+`designer-mcp` operates on a multi-tier architecture. An MCP server on its own is just an API; by pairing the MCP with companion AI skills, the AI gets both the tools (the MCP) and the instruction manual (the skills).
 
 - **`ui-designer` skill**: Provides the design intelligence, heuristics, and brand context so the AI knows _what_ to ask the MCP to generate.
 - **`color-palette-hunter` skill**: Handles external palette sourcing and feeds them into the OKLCH token engine.
 - **`motion-designer` skill**: Defines SOTA animation heuristics, spring physics logic, and `motion.dev` best practices.
 - **`logo-design` skill**: Professional logo and brand-mark design, brief to production files, plus a searchable library of 1,432 real-world SVG logos for category research.
+- **`brand-architecture` skill**: Portfolio strategy, brand relationship models, naming systems, migration, governance, and measurement planning.
 
 ```text
 src/
@@ -308,6 +310,7 @@ skills/
   color-palette-hunter/ # Palette CLI scripts (git submodule)
   motion-designer/      # Motion/physics heuristics (in-tree)
   logo-design/          # Logo/brand-mark design skill (in-tree, origin in ATTRIBUTION.md)
+  brand-architecture/   # Portfolio strategy, naming, governance, and migration (in-tree)
   video/                # Canonical upstream HyperFrames v0.8.77 packages (byte-stable)
 test/
   designer-envelope.test.mjs  # envelope shape, side-effect contract
@@ -319,7 +322,7 @@ examples/
 ```
 
 Skills live here in two forms. `ui-designer` and `color-palette-hunter` are git submodules
-pointing at standalone repos; `motion-designer` and `logo-design` are in-tree because they are
+pointing at standalone repos; `motion-designer`, `logo-design`, and `brand-architecture` are in-tree because they are
 tied to this server's tools. See [Development](#development) for the rules that follow from that.
 
 ## Logo design

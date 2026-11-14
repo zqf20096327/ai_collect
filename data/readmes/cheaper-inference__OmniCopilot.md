@@ -1,4 +1,6 @@
-<h1 align="center">OmniRoute for GitHub Copilot Chat</h1>
+<h1 align="center">OmniRoute by Cheaper Inference for GitHub Copilot Chat</h1>
+
+<p align="center"><strong>Created by <a href="https://github.com/diegosouzapw">Diego Souza</a></strong></p>
 
 <p align="center">
   <img src="assets/icon.png" alt="OmniCopilot" width="128">
@@ -15,14 +17,14 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/diegosouzapw/OmniRoute">🌐 OmniRoute on GitHub</a> •
-  <a href="https://github.com/diegosouzapw/OmniCopilot">🔌 Extension source</a> •
-  <a href="https://github.com/diegosouzapw/OmniRoute/issues">🐛 Issues</a>
+  <a href="https://github.com/cheaper-inference/OmniRoute">🌐 OmniRoute on GitHub</a> •
+  <a href="https://github.com/cheaper-inference/OmniCopilot">🔌 Extension source</a> •
+  <a href="https://github.com/cheaper-inference/OmniRoute/issues">🐛 Issues</a>
 </p>
 
 ---
 
-**Don't replace Copilot — power it up.** No new sidebar to learn, no new chat UI. This extension drops every model from your [OmniRoute](https://github.com/diegosouzapw/OmniRoute) server — Kimi, Claude, GPT, Gemini, GLM, DeepSeek, Qwen, Llama and hundreds more across **340+ providers, 90+ of them with free tiers that stay free** — straight into the model picker of the Copilot Chat you already use. Including **VS Code Insiders**.
+**Don't replace Copilot — power it up.** No new sidebar to learn, no new chat UI. This extension drops every model from your [OmniRoute](https://github.com/cheaper-inference/OmniRoute) server — Kimi, Claude, GPT, Gemini, GLM, DeepSeek, Qwen, Llama and hundreds more across **340+ providers, 90+ of them with free tiers that stay free** — straight into the model picker of the Copilot Chat you already use. Including **VS Code Insiders**.
 
 > 🆓 **No Copilot subscription required.** Since VS Code 1.122, provider models work without a GitHub sign-in and without any Copilot plan. VS Code + OmniRoute + this extension = a fully working AI chat with agent mode, for free.
 
@@ -35,7 +37,7 @@
 - **Online at a glance.** A status-bar dot and an Activity Bar panel show whether your OmniRoute server is reachable, how many models it serves, and where to configure everything — URL and API key included.
 - **Speaks your language.** The UI ships in 42 languages, mirroring OmniRoute's own catalog — VS Code picks the one matching your display language automatically.
 - **Configure your other tools too.** One command configures Codex CLI, Claude Code, Cline, Continue, Cursor, Aider and more to use OmniRoute — powered by the `omniroute` CLI under the hood.
-- **Secure by default.** The API key lives in VS Code's SecretStorage (OS keychain), never in `settings.json`.
+- **Secure by default.** The API key lives in VS Code's SecretStorage (OS keychain), never in `settings.json`, and it is only sent to the server you saved it for. A repository you open cannot point the extension somewhere else.
 
 ## Getting started
 
@@ -46,7 +48,7 @@ npm install -g omniroute
 omniroute        # dashboard at http://localhost:20128
 ```
 
-Add your providers/keys in the dashboard — or use the built-in free ones. Full guide: [github.com/diegosouzapw/OmniRoute](https://github.com/diegosouzapw/OmniRoute).
+Add your providers/keys in the dashboard — or use the built-in free ones. Full guide: [github.com/cheaper-inference/OmniRoute](https://github.com/cheaper-inference/OmniRoute).
 
 Already running OmniRoute somewhere else (home server, VPS, tunnel)? Point the extension at it — see below.
 
@@ -55,7 +57,7 @@ Already running OmniRoute somewhere else (home server, VPS, tunnel)? Point the e
 Search for **"OmniRoute"** in the VS Code Extensions view — it resolves from the
 [Marketplace](https://marketplace.visualstudio.com/items?itemName=diegosouzapw.omnicopilot) on VS Code
 and from [Open VSX](https://open-vsx.org/extension/diegosouzapw/omnicopilot) on forks like Cursor,
-Windsurf and VSCodium. Or grab the `.vsix` from the [releases](https://github.com/diegosouzapw/OmniCopilot/releases).
+Windsurf and VSCodium. Or grab the `.vsix` from the [releases](https://github.com/cheaper-inference/OmniCopilot/releases).
 
 ### 3. Pick a model
 
@@ -73,6 +75,30 @@ Click the **OmniRoute icon in the Activity Bar** (or run `OmniRoute: Manage Conn
 - **API key** — only if your OmniRoute requires one (`REQUIRE_API_KEY`); stored in the OS keychain
 - **Save & Test** — instant feedback with the live model count
 
+Two rules keep the connection yours:
+
+- **The server URL comes from your user settings.** In a remote window (WSL, SSH, a dev container) the remote machine's settings count too. A value in a workspace's `.vscode/settings.json` is ignored, so opening a repository cannot point the extension at another server.
+- **The API key is tied to the server it was saved for.** If the URL changes, the key stays put until you approve the new server, with **Save & Test** or **Use the key here** on the warning. A server reached over plain `http://` outside your own machine gets a one-time warning before the key travels.
+
+### Troubleshooting the connection
+
+When the server cannot be reached, the panel says why instead of only "Offline":
+
+| The panel says | Usual cause |
+| --- | --- |
+| Nothing is listening (connection refused) | OmniRoute is not running, or the URL points at the wrong machine or port |
+| No answer within a few seconds | A firewall, or a host that is down |
+| The network cannot reach the address | No route from this machine: a VPN that is off, or another subnet |
+| The host name could not be resolved | A typo in the URL, or DNS |
+| The request failed at a proxy | VS Code sent the request through a proxy. Add the host to `http.noProxy` |
+| The TLS certificate was rejected | A self-signed or expired certificate on an `https://` server |
+| Answered HTTP *n*, which is not what an OmniRoute server answers | Something else is listening at that address |
+
+Two situations explain most reports:
+
+- **Remote windows.** In WSL, over SSH, in a dev container or a Codespace, the extension runs on the remote machine. `localhost` is that machine, not your own computer. Use an address the remote can reach, and set it in the panel from that window.
+- **Proxies.** VS Code routes extension requests through its proxy settings, LAN addresses included. If `curl` reaches the server from a terminal and the extension does not, add the host to `http.noProxy`, for example `"http.noProxy": ["192.168.2.4"]`.
+
 ## Configure your coding CLIs
 
 Run **`OmniRoute: Configure Coding CLI`** and pick a tool — the extension drives the `omniroute` CLI to generate ready-to-use profiles:
@@ -82,37 +108,40 @@ Run **`OmniRoute: Configure Coding CLI`** and pick a tool — the extension driv
 | Codex CLI | `codex --profile glm52` style profiles in `~/.codex` |
 | Claude Code | `omniroute launch --profile <name>` launch profiles |
 | Cline / Roo / Kilo | Extension settings pointed at OmniRoute |
-| Continue / Cursor / Aider / Goose / Crush / OpenCode / Qwen Code | Tool-native config |
+| Continue / Cursor / Aider / Goose / Crush / OpenCode / Qwen Code / Gemini CLI / Zed / WhyCodes / 5dive | Tool-native config |
 
 ## Settings
 
 | Setting | Default | Description |
 | --- | --- | --- |
-| `omnicopilot.baseUrl` | `http://localhost:20128` | OmniRoute server root (local or remote) — `/v1` is appended automatically |
+| `omnicopilot.baseUrl` | `http://localhost:20128` | OmniRoute server root (local or remote) — `/v1` is appended automatically. Read from your user settings; a workspace value is ignored |
 | `omnicopilot.modelFilter` | *(empty)* | Substring/regex to limit which models are listed |
 | `omnicopilot.maxOutputTokens` | `16384` | Output budget reserved per response |
 | `omnicopilot.defaultContextLength` | `128000` | Context assumed when the catalog omits it |
 | `omnicopilot.statusBar` | `true` | Show the connection dot |
 | `omnicopilot.healthCheckIntervalSeconds` | `30` | Probe frequency |
 | `omnicopilot.dashboardOpen` | `external` | Open the dashboard in the browser, or in a VS Code tab (`editor`) — see below |
-| `omnicopilot.defaultReasoningEffort` | *(unset)* | Effort for models with extended thinking — `none`/`low`/`medium`/`high`/`xhigh`; see below |
-| `omnicopilot.cliPath` | `omniroute` | Path to the OmniRoute CLI |
+| `omnicopilot.defaultReasoningEffort` | *(unset)* | Effort for models with extended thinking — `none`/`low`/`medium`/`high`/`xhigh`/`max`; see below |
+| `omnicopilot.cliPath` | `omniroute` | Path to the OmniRoute CLI (a machine setting; put a path with spaces in quotes) |
 | `omnicopilot.exposeToAgentsWindow` | `false` | Experimental: also list the models in the Copilot Agents window — see below |
 
 ### Reasoning effort
 
 Models with extended thinking (GPT-5.x, Claude with thinking, DeepSeek R1, Gemini
-Thinking…) accept a reasoning tier. When VS Code shows an effort control next to the model,
-that choice is forwarded to OmniRoute as `reasoning_effort` — you do not have to configure
-anything.
+Thinking…) accept a reasoning tier.
 
-`omnicopilot.defaultReasoningEffort` covers the case where the editor exposes no control. It
-uses OmniRoute's canonical vocabulary — `none`, `low`, `medium`, `high`, `xhigh` — and the
-server downshifts a tier a model does not implement, so asking for `xhigh` is always safe.
+On VS Code 1.120 and newer those models get a **Thinking effort** menu in the model picker,
+with the tiers the model offers: Off, Low, Medium, High, Extra high and Max. Pick one and it is
+sent to OmniRoute as `reasoning_effort` on every request to that model.
+
+`omnicopilot.defaultReasoningEffort` sets what is used until you pick something, and covers
+editors that show no menu. It uses OmniRoute's vocabulary (`none`, `low`, `medium`, `high`,
+`xhigh`, `max`), and the server steps down a tier a model does not implement, so asking for
+`max` is always safe.
 
 The default is applied **only** to models the catalog marks as reasoning-capable: sending the
 field to a model without thinking support is ignored at best and rejected with a 400 at worst.
-An explicit choice from the chat UI always wins over the setting.
+A choice made in the picker always wins over the setting.
 
 ### Agents window (experimental)
 
@@ -140,6 +169,9 @@ of each provider connection (Codex, Claude, OpenCode…) side by side.
 It reads the self-service endpoint `GET /api/usage/om-usage?format=json` with your connection's
 API key — the same data as the terminal `@@om-usage` command, never the management surface.
 
+Each line shows what is left and when it resets. A quota that is a prepaid balance (DeepSeek,
+Kilo, Lyceum…) shows the money left, such as `$0.37 left`, instead of a percentage.
+
 Three states are normal and distinct:
 
 - **"Usage is not enabled for this key"** — the key lacks the `allowUsageCommand` flag, which
@@ -158,13 +190,13 @@ Requires OmniRoute with the usage JSON endpoint (v3.8.50+). See
 Set `omnicopilot.dashboardOpen` to `editor` to open the OmniRoute dashboard in a VS Code tab
 instead of your browser. This needs the server to allow embedding, which is opt-in via
 **`DASHBOARD_ALLOW_EMBED=vscode`** (landed in
-[OmniRoute #10273](https://github.com/diegosouzapw/OmniRoute/issues/10273)).
+[OmniRoute #10273](https://github.com/cheaper-inference/OmniRoute/issues/10273)).
 
 ⚠️ That flag is read at **build time** — Next.js bakes the response headers into the route
 manifest — so exporting it in front of an already-installed server does nothing. It works on a
 build from source (`DASHBOARD_ALLOW_EMBED=vscode npm run build`), not on the prebuilt
 `npm install -g omniroute` package or the official Docker image. Full matrix in the
-[OmniRoute guide](https://github.com/diegosouzapw/OmniRoute/blob/main/docs/guides/VSCODE-COPILOT.md#dashboard-inside-a-vs-code-tab).
+[OmniRoute guide](https://github.com/cheaper-inference/OmniRoute/blob/main/docs/guides/VSCODE-COPILOT.md#dashboard-inside-a-vs-code-tab).
 
 Without an embed-enabled build the page refuses to frame; the extension detects that from the
 response headers and falls back to the external browser, so nothing breaks either way.
@@ -178,13 +210,17 @@ mode, the non-chat filter and the free/keyless providers, with measured numbers.
 ## Good to know
 
 - **Chat, agent mode and utility tasks** run through your OmniRoute models. Inline code completions and embeddings-based features are outside VS Code's provider API and still require GitHub Copilot.
+- **Temporary errors are retried.** A rate limit or a busy provider is retried up to twice before you see an error, as long as nothing has been shown in the chat yet.
+- **Long tool names work.** MCP tool names over 64 characters are shortened on the wire and restored on the way back, so OpenAI-format providers accept them.
 - On **Copilot Business/Enterprise**, admins can disable third-party model providers via the "Bring Your Own Language Model Key" policy.
 - Requires VS Code **1.104+** (older versions than 1.122 also need a signed-in Copilot plan — that's a VS Code rule, not ours).
 
 ## Free & open source
 
-OmniRoute is MIT-licensed and free forever — ⭐ [star it on GitHub](https://github.com/diegosouzapw/OmniRoute) and join the project. This extension is MIT too; issues and PRs welcome at [diegosouzapw/OmniCopilot](https://github.com/diegosouzapw/OmniCopilot). Maintainers publishing a new version: see [`docs/PUBLISHING.md`](docs/PUBLISHING.md) (Marketplace + Open VSX).
+OmniRoute is MIT-licensed and free forever — ⭐ [star it on GitHub](https://github.com/cheaper-inference/OmniRoute) and join the project. This extension is MIT too; issues and PRs welcome at [cheaper-inference/OmniCopilot](https://github.com/cheaper-inference/OmniCopilot). Maintainers publishing a new version: see [`docs/PUBLISHING.md`](docs/PUBLISHING.md) (Marketplace + Open VSX).
 
 ---
+
+<p align="center">© 2026 OmniRoute · A Cheaper Inference product · MIT License · Created by <a href="https://github.com/diegosouzapw">Diego Souza</a></p>
 
 *OmniRoute is an independent open-source project, not affiliated with GitHub or Microsoft. GitHub Copilot is a trademark of GitHub, Inc.*

@@ -137,7 +137,7 @@ Girth's core is a plain binary and an [Agent Skills](https://agentskills.io/spec
 
 - **Finds skills wherever your harnesses keep them.** It searches each skill folder that exists, for all 79 harnesses in the [`skills` CLI's table](https://github.com/vercel-labs/skills/blob/main/docs/agents.md), plus folders their own docs name (`~/.codex/skills`, `.cursor/skills`, `.github/skills`, `.opencode/skills`, `.gemini/skills`), plus DeepSeek Harness, which the table doesn't list yet (`.dsh/skills`, `~/.dsh/skills`).
 - **Writes crafted skills where your harness reads them:** `.agents/skills`, which Codex, Cursor, Copilot, Gemini CLI, Antigravity, OpenCode, Cline, Amp and most others read. Under Claude Code it writes `.claude/skills` instead. `girth validate` then links each crafted skill into the other folder, so a skill crafted in one harness loads in all of them, and the project cache keeps compounding when you switch harnesses.
-- **Counts what other harnesses spend.** `girth import` reads the local session logs of Codex, GitHub Copilot CLI, OpenCode, Gemini CLI and Antigravity CLI. `girth advise --harness codex` (or `copilot`, `opencode`, `gemini`, `antigravity`) ranks them with that harness's own fixes. On the author's machine, each total matched an independent sum to the cent:
+- **Counts what other harnesses spend.** `girth import` reads the local session logs of Codex, GitHub Copilot CLI, OpenCode, Gemini CLI, Antigravity CLI, Hermes Agent and Goose. `girth advise --harness codex` (or `copilot`, `opencode`, `gemini`, `antigravity`, `hermes`, `goose`) ranks them with that harness's own fixes. On the author's machine, each total matched an independent sum to the cent:
   - 140 Codex turns, $173.00 at OpenAI list prices;
   - 103 Copilot turns, $618.16 at list prices (one per prompt where Copilot 1.0.95+ logs each request, otherwise one per session stretch);
   - 11 OpenCode turns, $0.28 by OpenCode's own per-request cost;
@@ -154,7 +154,9 @@ Girth's core is a plain binary and an [Agent Skills](https://agentskills.io/spec
 | OpenCode 1.17–2.2 | ✓ | `.agents/skills` | ✓ `girth import` (v1 through `opencode db`, v2 through `sqlite3`; with its own costs) | ✓ |
 | Antigravity CLI 1.5 | ✓ | `.agents/skills` | ✓ `girth import` (through `sqlite3`) | ✓ |
 | Gemini CLI 0.65 | ✓ | `.agents/skills` | ✓ `girth import` | not yet (its free tier moved to Antigravity) |
-| Cursor, Amp, Goose | ✓ | `.agents/skills` | — (no usable token data on disk) | not yet |
+| Hermes Agent 0.19 | ✓ | `.agents/skills` | ✓ `girth import` (its `state.db` usage totals through `sqlite3`, with its own costs) | not yet (tested against its v0.19.0 schema; no provider set up here) |
+| Goose (schema 18+) | ✓ | `.agents/skills` | ✓ `girth import` (session totals through `sqlite3`, cache split out of its input, with its own costs; older databases are skipped with a note) | not yet (the local install predates schema 18) |
+| Cursor, Amp | ✓ | `.agents/skills` | — (no usable token data on disk) | not yet |
 | The other 70 or so harnesses in the `skills` table | ✓ | per their table row | — | not yet |
 
 Lens, Meter, the keeper and idle compaction use Claude Code's mods API, so they work only in Claude Code.
@@ -216,16 +218,32 @@ The estimate prices the main conversation's cache writes at the 1-hour rate Clau
   - On a subscription the saving is in plan usage rather than dollars. Girth can't verify that plans weigh cache reads and writes the way the API prices them.
 - **Settings:** pings only happen for conversations of 20,000 tokens or more. Change that with `{"keeper": {"max_pings": 3, "min_context": 20000}}`. Turn it off with `{"keeper": {"enabled": false}}`, or `GIRTH_KEEPER=off` for one session.
 
+**Plan line:** when a 5-hour or 7-day plan window is 80% used or more, the first answer of a session says so, with when it resets. Once Girth has readings spanning an hour or more, it adds whether the recent pace runs the window out before the reset, and when. Otherwise it stays quiet.
+
+**Pane:** `/girth-pane` opens a live panel beside the chat, drawn from Claude Code's own figures. It never opens unasked, and redraws each minute while it's shown.
+- this session's spend;
+- the context size;
+- how long the prompt cache stays warm;
+- what Girth does next (a keeper ping or an idle compaction, and when);
+- the plan's 5-hour and 7-day usage;
+- the last compaction.
+
 **Doctor:** when a turn had to write the cache again, Girth says why under the answer, for example: `girth: the prompt cache had expired (idle 3h 12m); this turn re-wrote 450K tokens (≈ $3.60)`. `girth stats --meter` totals these rewrites and the keeper's pings.
 
-**Idle compaction (opt-in)** makes the most expensive conversations cheaper to come back to.
+**Idle compaction (on by default since 0.26)** makes the most expensive conversations cheaper to come back to.
 - **The problem:** every request re-reads the whole conversation. On the author's machine, those re-reads were **62% of spend**, and the median request carried 387K tokens.
 - **What Girth does:** when a conversation of at least 150,000 tokens has sat idle for 55 minutes, Girth compacts it (the same as `/compact`) while its cache is still warm. For that conversation, this replaces the keeper's pings.
   - You come back to a ~50K conversation instead of a ~580K one.
   - The first answer after your return says so, for example: `compacted this conversation while you were away (583K → 21K tokens)`.
-  - On the author's history, this would have saved about $1.8K at API prices, including compactions of sessions never returned to (`examples/compact/analyze-idle-compaction.py` measures yours, locally).
-- **The trade-off:** compaction keeps a summary, not every detail. That's why it stays off until you turn it on.
-- **Settings:** turn it on with `{"compact": {"idle": true}}`, and change the threshold with `"min_context"`. `"idle": false` in any config file, or `GIRTH_COMPACT=off`, turns it off.
+  - **The saving:** on the author's last 7 days (2026-11-07 to 11-14), it would have saved about $440 net of $1,825 at API prices. That's 77 compactions, about $9 in total (`examples/compact/idle_sim.py` measures yours, locally).
+  - Most of the rest ($552 of cache reads) came during continuous work, which no idle lever touches. `girth advise` names the levers for that.
+- **Why it's on by default:** it only fires after 55 minutes with no turn, so never in the middle of your work, and only on the main conversation.
+  - Checked live on Claude Code 2.1.325: a session went from 42K to 16K tokens while idle, and the next answer still knew the earlier exchange.
+- **The trade-off:** compaction keeps a summary, not every detail. The first compaction says how to turn it off.
+- **Settings:** change the threshold with `{"compact": {"min_context": 150000}}`. `"idle": false` in any config file, or `GIRTH_COMPACT=off`, turns it off.
+- **What every compaction is told to keep:** your own `/compact` text comes first. Girth then adds a keep-list (the task and what's left, decisions, exact paths and errors), plus the lines where you stated a rule (always, never, must…), word for word.
+  - This covers Claude Code's own auto-compaction too.
+  - In an 8-rule A/B (`examples/compact/keep_ab.sh`, 3 runs each, Haiku), both arms recalled 23 of 24 rules. Claude Code's own summary already kept short, clearly stated rules, so no gain was shown on that test.
 - **Interactive sessions only.** Claude Code doesn't let plugins compact `claude -p` or SDK sessions.
 
 **Subagent model (opt-in):** `{"agents": {"model": "sonnet"}}` runs built-in subagents (general-purpose, Explore and the like) on that model. A model Claude or the agent's definition chose is kept, as are plugins' agents and forks. On the author's machine subagents were 6% of spend, so expect a modest saving. `/girth-meter` shows each turn's model.
@@ -239,7 +257,7 @@ Girth keeps a local, append-only ledger (`~/.girth/ledger.jsonl`) of which skill
 - A skill that never fired decides nothing.
 - Cost is shown but not judged.
 - The verdict (admit, reject or undecided) goes to the ledger and shows in `girth stats`.
-- It uses headless Claude Code by default, with Bash pre-approved, so trial only skills you'd let run.
+- It uses headless Claude Code by default, with permissions bypassed inside each throwaway clone (a headless run can't answer a prompt), so trial only skills you'd let run.
 - `--agent` takes another harness's command-line agent; the skill goes in `.agents/skills` too (verified with Codex).
 
 **Sharing is opt-in and anonymous.** Girth asks once. If you allow it, only **content hashes of public skill sections plus counts** (used / kept / removed / up / down) would be shared, never names, paths, text, notes or anything from your project. Nothing is uploaded until the Girth index launches. Run `girth share preview` to see exactly what would be sent.

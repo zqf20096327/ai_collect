@@ -65,6 +65,7 @@ WORKER=spark2 ./run-recipe.sh llm/qwen3.8-flash-next-fp4-vllm-tp2 --stop
 | `ripple-65b-preview-nvfp4-dflash2-vllm` | Ripple-65B Preview, dense, NVFP4 (Ricursive), with Ricursive's DFlash2 draft | vLLM nightly 4fab5a07 | 1 | 18-29 tok/s on JSON, code, rewrites; 7.7 on stories |
 | `qwen3.8-27b-bf16-dspine-sglang` | Qwen3.8-27B, BF16, with Tencent's DSpine draft (16 tokens), patched for GPUs without FA3 | SGLang 0.5.22 + DSpine 0cc92d8 | 1 | 29-31 tok/s on JSON, code, rewrites; 8 on stories |
 | `arete-27b-nvfp4-vllm` | Arete-27B (Nous Research's Qwen3.8-27B fine-tune), NVFP4 ([atakans](https://huggingface.co/atakans/Arete-27B-NVFP4)) | vLLM nightly 4fab5a07 | 1 | 13.2 tok/s, 9.1 at 128K |
+| `minimax-h3-image-pe-sglang` | MiniMax-H3-Image-PE (prompt expansion for MiniMax-H3-Image, a Qwen3.8-27B fine-tune), MiniMax's FP4 | SGLang nightly 7e31007a | 1 | a 200-300 word prompt in 44-47 s |
 
 ### Image (`image/`)
 
@@ -73,6 +74,8 @@ WORKER=spark2 ./run-recipe.sh llm/qwen3.8-flash-next-fp4-vllm-tp2 --stop
 | `qwen-image-2.1-turbo` | Qwen-Image 2.1 Turbo, BF16, 8 steps | diffusers 0.41.0 | 1 | 55.5 s per 2048² image |
 | `qwen-image-2.1-base` | Qwen-Image 2.1, BF16, 40 steps | diffusers 0.41.0 | 1 | 257 s per 2048² image |
 | `flux-3-klein` | FLUX 3 Klein, BF16 and NVFP4 | ComfyUI v0.41.0 | 1 | 7.2 s per 1 MP image (NVFP4) |
+| `minimax-h3-image-sglang` | MiniMax-H3-Image, BF16, 6 steps (server) | SGLang nightly 7e31007a | 1 | 81 s per 4096² image, 16 s per 2048² |
+| `minimax-h3-image-mxfp8-sglang` | MiniMax-H3-Image, online MXFP8, 6 steps (server) | SGLang nightly 7e31007a | 1 | 66 s per 16 MP image; 34 GiB free with the prompt model loaded |
 
 ### Video (`video/`)
 
@@ -97,6 +100,64 @@ WORKER=spark2 ./run-recipe.sh llm/qwen3.8-flash-next-fp4-vllm-tp2 --stop
 | `yolo26-deepstream` | YOLO26s, TensorRT FP16, NvSORT, N videos in one pipeline | DeepStream 9.2, TensorRT 10.16.1 | 1 | 16 videos at 33.4 FPS each |
 
 ## CHANGELOG
+
+### 2026-11-14
+
+#### MiniMax-H3-Image: a 4096×4096 image in 81 s
+
+`image/minimax-h3-image-sglang` serves MiniMax-H3-Image (a 33.1B DiT, distilled to 6 steps, text to image and image
+editing) on SGLang's nightly image of 2026-11-13, pinned by digest and used as it ships. Everything stays on the GPU
+in BF16; SGLang precomputes the AdaLN projections on the GB10 and asks for 106 GiB of available memory at the start,
+so run it with nothing else loaded. The text encoder is the one of MiniMax-H3: `--setup` downloads 69 GB of the
+204 GB image repo and the 67 GB `text_encoder/` folder of `MiniMaxAI/MiniMax-H3`. For this a recipe can now give
+`include:` glob patterns, and `extra:` with `extra_revision:` and `extra_include:` for a second repo (`{extra}` in
+`args`).
+
+The model's license (MiniMax-H3-Image Community License) does not cover the EU, the UK, South Korea and the US.
+
+Measured on one Spark from this command: the server is ready 8.3 min after the start; a 4096×4096 image takes
+81-82 s and a 2048×2048 one 15.9 s (warm requests, with the PNG). The first request compiles kernels and takes 70 s
+at 2K. Lowest free memory 22.8 GiB. SGLang's own cookbook gives 16.2 s at 2K and 85 s at 4736×3552 for the Spark.
+
+```bash
+./run-recipe.sh image/minimax-h3-image-sglang --setup
+curl -s http://127.0.0.1:8000/v1/images/generations -H 'Content-Type: application/json' \
+  -d '{"prompt": "a red fox in fresh snow, documentary photo", "size": "4096x4096", "seed": 7, "response_format": "b64_json"}' \
+  | jq -r '.data[0].b64_json' | base64 -d > fox.png
+./run-recipe.sh image/minimax-h3-image-sglang --stop
+```
+
+Not in the recipe: `--quantization mxfp8 --component-quantizations.text_encoder mxfp8` (online MXFP8) gave 65-69 s at
+4096×4096 and 11.8 s at 2K in the lab, with 49.8 GiB free; the same seed then gives the same scene with other details.
+
+#### MiniMax-H3-Image with its prompt expansion model on one Spark
+
+MiniMax ships a second model for MiniMax-H3-Image: MiniMax-H3-Image-PE, a Qwen3.8-27B fine-tune that turns a short
+request into a long image prompt and picks an aspect ratio. Both fit on one Spark when the image model runs with
+online MXFP8: `image/minimax-h3-image-mxfp8-sglang` is the recipe above with
+`--quantization mxfp8 --component-quantizations.text_encoder mxfp8`, and `llm/minimax-h3-image-pe-sglang` serves
+MiniMax's own FP4 checkpoint (17 GB) with the flags from its card. One flag is mine: `--max-mamba-cache-size 8`.
+SGLang sizes that state cache for 101 requests by default, which is 14.3 GB for this model; 8 requests need 1.3 GB.
+
+`scripts/h3-image-pe.py` sends a request through both servers. It reads MiniMax's task prompt, system prompt and
+request parameters (thinking on, JSON schema answer) from the model's folder in the Hugging Face cache; `--setup`
+does not download the repo's own Python script. The image is about 16 MP in the ratio that the model picked.
+
+Measured on one Spark from these commands: both servers are ready 12.7 min after the first command (7.7 min for
+the image model, then 4.9 min for the prompt model). A prompt of 200-300 words takes 44-47 s (613-649 tokens with
+the thinking), a 4992×3328 image 66-67 s; the first image compiles kernels and takes 109 s. Lowest free memory
+34.0 GiB. Start the image server first: SGLang checks the available memory when it places that model.
+
+```bash
+./run-recipe.sh image/minimax-h3-image-mxfp8-sglang --setup
+PORT=8001 ./run-recipe.sh llm/minimax-h3-image-pe-sglang --setup
+python3 scripts/h3-image-pe.py "An old watchmaker at his workbench." watchmaker.png
+./run-recipe.sh image/minimax-h3-image-mxfp8-sglang --stop
+PORT=8001 ./run-recipe.sh llm/minimax-h3-image-pe-sglang --stop
+```
+
+Both models are under the MiniMax-H3-Image Community License, which does not cover the EU, the UK, South Korea and
+the US.
 
 ### 2026-11-10 (2)
 

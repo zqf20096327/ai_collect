@@ -1,0 +1,64 @@
+# [CasanovoGUI](https://doi.org/10.1021/acs.jproteome.6c00617)
+
+![Downloads](https://img.shields.io/github/downloads/Noble-Lab/CasanovoGUI/total.svg) ![Release](https://img.shields.io/github/release/Noble-Lab/CasanovoGUI.svg)![Downloads](https://img.shields.io/github/downloads/Noble-Lab/CasanovoGUI/latest/total)
+
+CasanovoGUI is a cross-platform desktop application for
+[Casanovo](https://github.com/Noble-Lab/casanovo) — *de novo* peptide sequencing
+from MS/MS spectra with a transformer model. Configure your inputs and parameters
+in a simple form, click **Run Casanovo**, and watch the output stream live in the
+console. The GUI wraps Casanovo's command-line sub-commands — *de novo* sequencing,
+database search, evaluation, and training — each as its own tab, plus a **View** tab
+to explore your results: map peptides to a reference proteome, inspect score
+distributions and per-residue confidence, and open spectra in
+[PDV](https://github.com/wenbostar/PDV) for annotated-spectrum visualization.
+
+<img src="docs/images/CasanovoGUI.png" alt="CasanovoGUI" width="70%">
+
+## Installation
+
+Download the installer for your platform from the
+[**Releases page**](https://github.com/Noble-Lab/CasanovoGUI/releases/latest):
+
+| OS | Download | How to run |
+|----|----------|------------|
+| **Windows** | `CasanovoGUI-<version>-windows-x64.zip` | Unzip and run `CasanovoGUI.exe` |
+| **macOS** (Apple Silicon) | `CasanovoGUI-<version>-macos-arm64.dmg` | Open and drag to Applications |
+| **Linux** | `CasanovoGUI-<version>-linux-x86_64.deb` or `…-linux-x86_64.tar.gz` | Install with `sudo apt install ./CasanovoGUI-<version>-linux-x86_64.deb`, then launch from the desktop menu or run `casanovogui`; or extract the `.tar.gz` (no root) and run `CasanovoGUI/bin/CasanovoGUI` |
+
+**No manual tool installation is needed.** The installers bundle their own Java
+runtime, so you do **not** have to install Java. And the first time you start an
+analysis, if Casanovo isn't already on your machine the GUI offers to **install it
+for you** — it downloads a private Python and Casanovo automatically (no Python or
+`pip` setup required). Just download, launch, and run.
+
+> **Intel Macs:** use the cross-platform `CasanovoGUI-<version>.jar` from the
+> Releases page instead (it needs a Java 23+ runtime installed).
+
+### Tested configurations
+
+We have tested CasanovoGUI on the operating systems and computers listed below.
+
+| | Configuration |
+|---|---|
+| **Windows workstation** | Windows 11 (build 26200) · Intel Core Ultra 7 265K, 20 cores · 127 GB RAM · NVIDIA RTX 5000 Ada Generation · PyTorch 2.5.1 (CUDA 12.1) |
+| **Linux server** (remote execution) | Ubuntu 22.04.5 LTS · Intel Core i9-10980XE, 18 cores / 36 threads · 125 GB RAM · NVIDIA RTX A4000 16 GB (driver 560.35) |
+| **macOS laptop** (M5) | macOS Tahoe 26.6.2 · MacBook Air (15-inch, M5) · Apple M5 · 16 GB RAM |
+| **macOS laptop** (M4 Pro) | macOS Sequoia 15.7.4 · MacBook Pro (14-inch, 2024) · Apple M4 Pro · 48 GB RAM |
+| **Windows server** | Windows Server 2022 Standard, 21H2 (build 20348) · 2 × Intel Xeon Gold 6354 @ 3.00 GHz · 512 GB RAM |
+
+
+## Documentation
+
+For a complete guide to using CasanovoGUI — installing it, running each task
+(*de novo* sequencing, database search, evaluation, and training), and exploring
+your results in the **View** tab — see
+**[Getting Started: Graphical User Interface](https://casanovo.readthedocs.io/en/latest/getting_started_gui.html)**
+in the [Casanovo documentation](https://casanovo.readthedocs.io/en/latest/).
+
+How long a run takes on a GPU or a CPU, and how much memory it needs, is
+measured for each major Casanovo release in **[Performance](docs/performance.md)**.
+
+
+## How to cite
+
+Bo Wen, Kai Li, Michael Riffle, Michael J. MacCoss, Wout Bittremieux, William Stafford Noble; [CasanovoGUI: A Cross-Platform Desktop Application for Deep Learning-Based De Novo Peptide Sequencing with Casanovo](https://doi.org/10.1021/acs.jproteome.6c00617). *J. Proteome Res.* 2026; https://doi.org/10.1021/acs.jproteome.6c00617

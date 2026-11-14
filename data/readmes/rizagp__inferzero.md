@@ -54,6 +54,12 @@ You need:
 Discrete Arc B-series cards (Xe2) work too, experimentally. A user runs 1-4 Arc Pro B60s, and one model can be split
 over several of them (`--gpus N`). See [Discrete GPUs](#discrete-arc-gpus-experimental).
 
+**Linux** (Ubuntu 24.04 or newer): download `inferzero-<version>-linux-x64.tar.gz` from the same release, unpack it,
+and run `./zero-launcher.sh` (a terminal menu that downloads a model and starts the headless server). It needs Intel's
+GPU runtime and Python 3: [docs/install.md](docs/install.md#linux).
+
+On Windows:
+
 1. Download `inferzero-<version>-win64.zip` (6 MB) from the
    **[latest release](https://github.com/rizagp/inferzero/releases/latest)** and unpack it anywhere.
 2. Double-click `zero-launcher.cmd` (Windows may ask once: "More info", "Run anyway").
@@ -67,19 +73,26 @@ builds everything, downloads the models you pick and connects the [Pi](https://p
 ([docs/install.md](docs/install.md)). Day-to-day use, the web UI, Pi and the server's options:
 **[USAGE.md](USAGE.md)**.
 
-## Results at a glance (2026-10-25)
+## Results at a glance
 
-| Model | Prompt | Generation | KL vs f32 reference |
-|---|---|---|---|
-| Qwen3.6 35B-A3B UD-IQ4_XS (MoE, experts on the SSD) | 604 tok/s (32K prompt), 324 (128K) | 20.6 tok/s; code 49.9 with DFlash2; 12.6 at 128K depth | 0.004-0.008 |
-| Qwen3.8 27B IQ3_S (dense) | ~135 tok/s | 4.9 tok/s; code 18.1 with DFlash2 + MTP | 0.0003-0.0004 |
-| Qwen3.8 27B-AP IQ4_XS, GPU + NPU (`--npu on`, 2026-10-25) | 153.8 tok/s (2K; off 133.5), 152.6 (11K; off 132.7), 131.3 (34K; off 116.2) | unchanged (~3.8 tok/s) | 0.0028-0.0031 (off 0.00066) |
-| Qwen3.8 Flash Next IQ3_S (512 experts on the SSD) | ~164 tok/s (4K), 163 (32K), 123 (125K) | 6-7 tok/s | 0.0143 / 0.0147 (363 tokens); 0.0186 / 0.0177 at 3.5K (QSA); `-Precise` 0.0127 / 0.0132 (prompt / decode) |
-| Qwen3.5 4B | 911 tok/s (2K) | 17.6 tok/s | 0.0021 |
-| Gemma 4 E4B (Google QAT) | 724 tok/s (4K), 615 (14K) | 32 tok/s with its drafter | 0.00088 |
-| Gemma 4 12B (Google QAT) | 137 tok/s (4K), 102 (14K); +10 % with `--npu on` | 19.0 tok/s with its drafter | 0.0002 (two-pass int8 activations) |
-| Gemma 4 31B (Google QAT, dense; 32 GB laptop: ~2K context, see docs/models.md) | ~48 tok/s (2K) | 3.6 tok/s; 7.8 with its drafter | 0.00000 (two-pass int8 activations) |
-| Gemma 4 26B-A4B (Google QAT, MoE, experts on the SSD) | 252 tok/s (4K), 210 (14K) | ~25 tok/s with its drafter; 14 after a 14K prompt without | 0.0042 (two-pass int8 activations) |
+On the laptop (Core Ultra 5 125H, 32 GB, Windows 11; `bench/website_bench.ps1`, 2026-11-09, the 27B's 131K row and
+Gemma's KL again on 2026-11-10). Prompt in tok/s with the wait for the first token; generation in tok/s for 256
+tokens, plain and with the model's drafters; KL on 480 tokens of USAGE.md:
+
+| Model | 8K prompt | 32K prompt | 131K prompt | Generation | With drafting | KL vs f32 |
+|---|---|---|---|---|---|---|
+| Qwen3.6 35B-A3B (MoE, experts on the SSD) | 851, 9.6 s | 637, 51 s | 324, 6.7 min | 21.6 | 38.1 (MTP + DFlash2) | 0.0040 |
+| Qwen3.8 Flash Next (MoE, 52 GB of experts on the SSD) | 205, 40 s | 174, 3.1 min | 146, 15 min | 6.3 | 7.6 (DFlash2) | 0.0117 |
+| Qwen3.8 27B (dense) | 135, 61 s | 125, 4.4 min | 81, 27 min | 5.1 | 12.9 (MTP + DFlash2) | 0.0005 |
+| Gemma 4 26B-A4B (MoE) | 232, 35 s | 124, 4.4 min | 44, 50 min | 19.8 | – | 0.0048 |
+| Qwen3.5 9B | 487, 17 s | 435, 75 s | 278, 7.8 min | 11.8 | 21.6 (MTP) | 0.0014 |
+| Gemma 4 E4B | 707, 12 s | 494, 66 s | 222, 9.8 min | 19.1 | 41.8 (drafter) | 0.0027 |
+| Qwen3.5 4B | 896, 9.2 s | 705, 47 s | 366, 6.0 min | 21.0 | 35.8 (MTP) | 0.0010 |
+
+Flash Next's precise mode (`-Precise`) lowers its KL on prose to 0.0060 (3,584 tokens, 0.0105 by default) at about
+half the prompt speed. The discrete cards' numbers: [Discrete GPUs](#discrete-arc-gpus-experimental).
+
+Against llama.cpp on the same files and laptop (2026-10-25):
 
 | vs llama.cpp (same file, same laptop) | inferzero | llama.cpp Vulkan | llama.cpp SYCL |
 |---|---|---|---|
@@ -98,12 +111,13 @@ these rows: [docs/models.md](docs/models.md).
 
 | Family | Models | Input | Drafts tokens with |
 |---|---|---|---|
-| Qwen3.5 / 3.6 / 3.8 | 0.8B-27B dense, 35B-A3B MoE, Flash Next (512 experts) | text, images (`mmproj`) | MTP block, DFlash2 |
+| Qwen3.5 / 3.6 / 3.8 | 0.8B-27B dense, 35B-A3B MoE, Flash Next (512 experts; also with Intel's AutoRound INT4 experts, `setup -Models flash-ar4`) | text, images (`mmproj`) | MTP block, DFlash2 |
+| DeepSeek-V4.1 | Flash (384 experts: ISTA's GSQ-RCO IQ2_XS, Unsloth's UD-Q8_K_XL), one GPU or several | text | |
 | Gemma 4 | E4B, 12B, 26B-A4B MoE, 31B (Google's QAT Q4_0) | text, images, audio | Gemma 4 assistant drafters |
 | OCR | Xiaomi-OCR-0 | images, PDFs | |
 | Speech to text | Qwen3-ASR, Whisper large-v3 | audio, video | |
 
-GGUF files as they are (IQ1-IQ4, Q2_K-Q8_0, F16 / BF16 small matrices); the architectures, weight types and each
+GGUF files as they are (IQ1-IQ4, Q2_K-Q8_0, Q5_1, MXFP4, F16 / BF16 small matrices); the architectures, weight types and each
 model's details: [docs/models.md](docs/models.md).
 
 ## The engine
@@ -118,22 +132,37 @@ engines the prompt GEMMs run on them after a start-up check against the DP4a ker
 ## Discrete Arc GPUs (experimental)
 
 Arc B-series cards (Xe2: B580, Pro B60, Pro B70) run the same engine, with switches of their own in `zero/xe2/` that
-the iGPUs never take. Measured by a user on Arc Pro B60s
-([issue #4](https://github.com/rizagp/inferzero/issues/4)):
-- Qwen3.8 27B IQ3_S, one B60: 4K prompt 1,292 tok/s (H8, on by default since 2026-11-08; 1,024 before the rotation reuse and the swiglu skip of 2026-11-12, 1,081 before the wide-tile GEMM became the default on 2026-11-13), 23.2 tok/s generation,
-  49.3 with MTP; over 2 cards 1,292, over 4 cards 1,624.
-- Qwen3.6 35B-A3B, one B60: 4K prompt 3,232 tok/s, 78.8 tok/s generation, 113.7 with MTP; over 4 cards 4,290 with
-  `ARC_TP_ATT_QSPLIT=1`.
-- **One model over several GPUs** (`runz` / `serverz --gpus N`, tensor parallel, sums through host memory since
-  B60s have no peer access): 27B generation 35.7 tok/s on 2 GPUs, 43 on 3, 53 on 4 (run of 2026-10-31, before the
-  newer one-card defaults).
+the iGPUs never take. Measured by users (Qwen3.8 27B GSQ-RCO IQ3_S unless named):
+- **One Pro B60** ([issue #4](https://github.com/rizagp/inferzero/issues/4)): 4K prompt 1,522 tok/s (release
+  2026.11.14.09, which prefetches the weights by default; 1,322 before), generation 22.7-23.3 tok/s (two runs, 2026.11.14.09), 51.6 with MTP
+  (2026.11.13.11). Qwen3.6 35B-A3B: 4K prompt 3,536 tok/s (2026.11.14.09), generation 82.4 tok/s, 111.9 with MTP
+  (2026.11.13.11). The switches still off by default (`ARC_X16`, `ARC_GV_IQ3S`, `ARC_H8_NORM`, H8 on MoE models,
+  `--chunk 8192`) were measured there on 2026-11-14 and none is faster: [docs/xe2-tuning.md](docs/xe2-tuning.md).
+- **One Pro B70** ([issue #12](https://github.com/rizagp/inferzero/issues/12), release 2026.11.13.06, before the weight
+  prefetch; a rerun is asked for): 4K prompt 2,105 tok/s, generation 32.2 tok/s, 75.2 with MTP.
+- **Arc 140T** (the Core Ultra 9 285H's iGPU, [issue #5](https://github.com/rizagp/inferzero/issues/5)): 4K prompt
+  330 tok/s (release 2026.11.13.11, its default 32x16 XMX tiles with H8; 302 on 2026.11.11).
+- **One model over several GPUs** (`runz` / `serverz --gpus N`, tensor parallel):
+  - 4 Pro B60s on Windows (issue #4; no peer access there, so the sums go through host memory): the 27B's 4K prompt
+    1,597 / 1,724 / 1,888 tok/s over 2 / 3 / 4 cards (2026.11.13.05 and .11, before the weight prefetch), generation
+    35.7 / 43 / 53 tok/s (run of 2026-10-31). Long prompts over 4 (2026.11.14.05, the middle of three passes):
+    64K / 131K / 262K tokens at 2,152 / 1,267 / 700 tok/s (the 35B), 1,258 / 970 / 640 (the 27B) and 948 / 778 / 526
+    (Flash Next); after 131K the 27B generates 32 tok/s. The 35B's 4K
+    prompt over 4: 4,264 tok/s (2026-11-02).
+  - 2 Pro B60s on Linux (scenic6942, [issue #17](https://github.com/rizagp/inferzero/issues/17), PCIe 4.0 x8 each):
+    the sums go straight from GPU to GPU (`ARC_TP_P2P`, chosen at load since 2026.11.14.06): 4K prompt 1,630 tok/s
+    against 1,442 through host memory, generation 37.8 tok/s, the same logits.
+  - DeepSeek-V4.1-Flash over 4 Pro B60s with 1 TB of RAM (issue #4, release 2026.11.14.09): ISTA's IQ2_XS generates
+    10.3 / 18.0 / 16.6 / 17.6 tok/s on 1 / 2 / 3 / 4 cards, its 512-token prompt 171 / 227 tok/s over 3 / 4; Unsloth's
+    UD-Q8_K_XL 109 / 7.6 over 3 ([docs/multi-gpu.md](docs/multi-gpu.md)).
+  - A slow link sets the pace: with one card in an x4 slot at 2.4 GB/s (issue #19, the 27B UD-Q5_K_XL) the prompt over
+    2 cards is half of one card's (620 against 1,223 tok/s). A layer split for such links is planned, not built.
   - Batched slots work over a split model.
   - A GPU that hangs makes the request fail and `/health` answer 503; the server itself stays up.
   - A model that cannot be split loads on one GPU.
 
 In progress:
 - an f16 XMX prompt GEMM (`ARC_X16=1`, off until measured);
-- GPU-side sums between cards;
 - MTP / DFlash2 on a split model.
 
 How to measure on such a card, and every switch: [docs/xe2-tuning.md](docs/xe2-tuning.md). The split model and

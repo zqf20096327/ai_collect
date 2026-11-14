@@ -17,6 +17,8 @@
 
 A single statically-linked `scout` binary gives you a CLI, an MCP server with browser automation tools (so any MCP-aware agent — Claude Desktop, Cursor, Cline, custom — has a browser), a conversational chat UI, and a Go library with Gin-like middleware composition. Same engine, four access points.
 
+The current release is [v1.16.2](https://github.com/klarlabs-studio/scout/releases/tag/v1.16.2). It confirms browser tab targets have closed before reporting success and flushes held-key releases before a session closes. See the [changelog](CHANGELOG.md) for the full release history.
+
 ```bash
 brew install --cask klarlabs-studio/tap/scout-mcp
 ```
@@ -195,7 +197,7 @@ scout mcp serve --profile=core # or: scout observe https://example.com
 
 Replace `google-chrome` with the executable name or full path for your Chrome/Chromium installation. The first page operation attaches to an existing page when one is available. Navigation reuses that tab. Scout disconnects from a remote browser when its session closes or resets; it leaves the remote browser process and attached tab open. Keep the debugging endpoint bound to loopback and use a trusted endpoint; it grants browser control to any process that can reach it.
 
-MCP sessions are named and isolated. `create_session` starts a separate browser and activates it; `switch_session` returns to another live session; `clone_session` copies the active page URL, cookies, and localStorage into a new session; `close_session` releases one. Names allow 1-64 letters, numbers, hyphens, underscores, and periods. `list_sessions` shows the active session. Sessions live for the MCP server process.
+MCP sessions are named and isolated. `create_session` starts a separate browser and activates it; `switch_session` returns to another live session; `clone_session` starts a separate Chrome process and copies the active page URL, cookies, and localStorage into it; `close_session` releases one and cleans up its Chrome process and temporary profile. Names allow 1-64 letters, numbers, hyphens, underscores, and periods. `list_sessions` shows the active session. Idle sessions expire after one hour by default; active tool calls finish before cleanup. Set `SCOUT_SESSION_IDLE_TIMEOUT` to a Go duration such as `30m`, or to `off` to keep sessions until explicitly closed or the MCP server exits.
 
 The `save_profile` and `load_profile` tools persist the current page URL, browser cookies, and that page origin's localStorage to a JSON file with owner-only permissions. Profile files contain authentication secrets. Loading a profile opens its saved URL, restores cookies and localStorage, and reloads the page. Existing profile JSON files without a saved URL can still be applied to the current page. Profiles do not include sessionStorage, open tabs, browser extensions, or other origins' localStorage. Use profiles to restore a session after restarting Scout; cloning does not copy open tabs or sessionStorage.
 
@@ -426,7 +428,7 @@ The one-shot CLI, `watch`, `pipe`, `record`, `reconcile`, and `session` commands
 block loopback and private IP destinations by default. Add `--allow-private-ips`
 only when those commands need to reach a trusted local-development target.
 
-To close inactive MCP browser sessions automatically, set `SCOUT_SESSION_IDLE_TIMEOUT` to a Go duration such as `30m` before starting the server. The default is disabled. A configured value must be a positive duration; malformed, zero, or negative values fail startup instead of silently turning expiration off. `list_sessions` reports `idle_timeout_ms`, `last_activity`, and `idle_deadline` when enabled. Set `SCOUT_MAX_SESSIONS` to a positive integer to cap sessions per MCP HTTP client (or across the stdio server); it is disabled by default. A configured value must be a positive integer or startup fails. `list_sessions` reports the live count, in-progress startups, pending or failed cleanup by session, and configured cap. A full cap returns `SCOUT_SESSION_LIMIT` with guidance to close a session or wait for idle expiration. The cap includes concurrent startups and browser cleanup in progress. If cleanup fails, Scout keeps that slot reserved because the browser's final state is uncertain. Cleanup is not retryable in-process; restart the Scout server to release the reservation, and inspect `cleanup_error` to diagnose the failure. An idle Scout-launched browser is closed and its in-memory page state is lost; a remote CDP session is disconnected without closing the browser. Save cookies and localStorage with `save_profile` first if they need to be restored later. In-flight tool calls are allowed to finish before the idle session is closed.
+MCP sessions expire after one idle hour by default; override this with `SCOUT_SESSION_IDLE_TIMEOUT` set to a Go duration such as `30m`, or set it to `off` to retain sessions until explicit close or server shutdown. A configured duration must be positive; malformed, zero, or negative values fail startup. `list_sessions` reports `idle_timeout_ms`, `last_activity`, and `idle_deadline`. Set `SCOUT_MAX_SESSIONS` to a positive integer to cap sessions per MCP HTTP client (or across the stdio server); it is disabled by default. A configured value must be a positive integer or startup fails. `list_sessions` reports the live count, in-progress startups, pending or failed cleanup by session, and configured cap. A full cap returns `SCOUT_SESSION_LIMIT` with guidance to close a session or wait for idle expiration. The cap includes concurrent startups and browser cleanup in progress. If cleanup fails, Scout keeps that slot reserved because the browser's final state is uncertain. Cleanup is not retryable in-process; restart the Scout server to release the reservation, and inspect `cleanup_error` to diagnose the failure. An idle Scout-launched browser is closed and its in-memory page state is lost; a remote CDP session is disconnected without closing the browser. Save cookies and localStorage with `save_profile` first if they need to be restored later. In-flight tool calls are allowed to finish before the idle session is closed.
 
 ### Screen Recording (video)
 
@@ -678,8 +680,10 @@ record in `options.recovery_record` or its base64-encoded JSON form in
 `options.recovery_record_base64`. Requests may set `timeout_ms` to bound one
 operation; `press_key` accepts an optional `expected_postcondition`, and held
 keys should be paired with `key_up` (Scout releases any held keys on reset or
-shutdown). If a dispatched mutation times out, preserve its returned recovery
-record and reconcile it before retrying. A `batch` request supplies the normal
+shutdown). A key action without a postcondition reports dispatch only; it does
+not establish that the page handled the key or shortcut. If a dispatched
+mutation times out, preserve its returned recovery record and reconcile it
+before retrying. A `batch` request supplies the normal
 `execute_batch` fields in an `actions` array; it accepts up to 100 actions and
 returns the same evidence counts and per-step receipts. If a batch deadline
 interrupts execution, the response includes completed steps under

@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/theasbug/reprocase/releases"><strong>Download for Windows</strong></a> ·
+  <a href="https://github.com/theasbug/reprocase/releases"><strong>Download (Windows · macOS · Linux)</strong></a> ·
   <a href="#docker-linux-macos-windows">Docker</a> ·
   <a href="integrations/burp/">Burp extension</a> ·
   <a href="https://github.com/theasbug/reprocase/releases/download/v1.1.0-beta.1/ReproCase-demo-56s-en.mp4">56s demo</a> ·
@@ -44,15 +44,42 @@ Every run ends in exactly one verdict: **`reproduced`**, **`not_reproduced`**, o
 - **Triagers and program owners.** Rerun a report with your own test accounts in seconds.
 - **AppSec teams.** Keep the case as a regression check and rerun it after the fix.
 
+## Prove your own finding in four steps
+
+**Quick proof** learns how your target works by watching it, so you never write JSON Pointers:
+
+1. **Accounts:** enter the target origin and connect two test accounts you control. **Sign in** in a separate browser window, or paste a header, Bearer token or cookie from DevTools.
+2. **Identity:** ReproCase calls common "who am I" endpoints (`/me`, `/api/v1/profile`, …) with both accounts and finds the account ID and organization fields by comparing the answers. If a guess is wrong, click the right field.
+3. **Requests:** paste the request that creates the object and the vulnerable request that reads it by ID, straight from Burp or DevTools. Headers are ignored, so captured cookies are never stored.
+4. **Result:** ReproCase creates one object as account A, finds the new ID, the owner field and a text field for the marker, detects CSRF if the creation is rejected, previews account B's access, deletes the object and saves the case. You review the policy, approve and run.
+
+<p align="center"><img src="docs/images/quick-proof-identity.png" alt="Quick proof found the identity endpoint and fields by comparing two accounts" width="49%"> <img src="docs/images/quick-proof-result.png" alt="Quick proof result: what was learned about the target and a preview" width="49%"></p>
+
+The verdict still comes from the normal run: a fresh object, a unique marker, verified accounts and the three outcomes. Quick proof currently covers read IDORs with the object ID in the URL path; use **Advanced case** for write IDORs.
+
+### Triagers: verify a report on your own site
+
+Import the reporter's `.reprocase.json`. The **Verify on my site** dialog asks for your API origin and one credential per test account. If your identity endpoint or fields differ from the reporter's, ReproCase finds them and saves a new case revision, so there's no JSON to edit. The reporter's policy acknowledgement is reset: you read the claim and approve it yourself.
+
 ## Try it in two minutes
 
-### Windows portable
+### Desktop app (Windows, macOS, Linux)
 
-1. Download the newest **`ReproCase-<version>-Windows-x64.zip`** from [Releases](https://github.com/theasbug/reprocase/releases) and extract the **whole** archive into a writable folder.
-2. Open `ReproCase.exe` and load the built-in local demo. Review the accounts and the access policy, approve, then run. The expected result is **Reproduced**.
-3. Choose **Fresh identities** and run again (still **Reproduced**). Switch to **Secure target** and run again (**Not reproduced**).
+Download the newest file for your computer from [Releases](https://github.com/theasbug/reprocase/releases):
 
-The app bundles Electron and Chromium, so you do not need Node.js, Python or Docker. The executable is **not code-signed yet**. Check the archive before you run it ([how to verify](#verify-a-download)).
+| Your computer | File | How to open |
+|---|---|---|
+| Windows | `ReproCase-<version>-Windows-x64.zip` | Extract the **whole** archive and open `ReproCase.exe`. |
+| Mac with Apple silicon (M1–M4) | `ReproCase-<version>-macOS-arm64.zip` | Unzip, move **ReproCase** to Applications, then **right-click → Open** the first time. |
+| Mac with Intel | `ReproCase-<version>-macOS-x64.zip` | Same as above. |
+| Linux (x64) | `ReproCase-<version>-Linux-x64.tar.gz` | Extract and run `./ReproCase` inside the folder. |
+
+Then load the built-in local demo, approve and run (**Reproduced**). Choose **Fresh identities** and run again (still **Reproduced**), then switch to **Secure target** (**Not reproduced**).
+
+The app bundles Electron and Chromium, so you do not need Node.js, Python or Docker. It is **not code-signed yet**, so check the archive before you run it ([how to verify](#verify-a-download)).
+
+- **macOS:** because the app is unsigned, macOS blocks a normal double-click the first time. Right-click → **Open** → **Open**, or run `xattr -dr com.apple.quarantine /Applications/ReproCase.app` once.
+- **Linux:** on Ubuntu 24.04 and newer, Electron apps need permission to use their sandbox. If ReproCase doesn't start, see [Linux notes](docs/DESKTOP.md#linux).
 
 ### Docker (Linux, macOS, Windows)
 
@@ -102,6 +129,17 @@ Start from a template in [`templates/`](templates/): horizontal IDOR (read and w
 ### From Burp Suite in one click
 
 Install the [ReproCase Burp extension](integrations/burp/), then right-click any request in Proxy history or Repeater and choose **Send to ReproCase**. The selection becomes a case draft. Nothing is sent to the target until you bind your accounts and run it.
+
+### From Arjun and ffuf: find the IDOR leads worth proving
+
+Paste [Arjun](https://github.com/s0md3v/Arjun) (`-oJ`) or [ffuf](https://github.com/ffuf/ffuf) (`-of json`) output into **Import evidence**. ReproCase ranks the results by identifier signals, such as `order_id` parameters, numeric or UUID path segments after `/users/`, and fuzzed IDs that returned 2xx. One click turns a lead into a case draft. Parsing is offline, and captured cookies or tokens are never copied.
+
+<p align="center"><img src="docs/images/idor-candidates.png" alt="Arjun output ranked into IDOR candidates, each with a Create draft button" width="720"></p>
+
+~~~sh
+npm run cli -- candidates arjun.json            # list ranked leads
+npm run cli -- candidates ffuf.json --draft 1   # create a case draft from lead #1
+~~~
 
 ## What is inside
 
@@ -158,7 +196,7 @@ TypeScript · npm workspaces · Fastify · React/Vite · Zod · SQLite · Playwr
 npm run typecheck && npm test && npm run test:e2e
 ~~~
 
-GitHub Actions tests the source on Linux and Windows, then packages and smoke-tests the Windows executable. Desktop details are in [docs/DESKTOP.md](docs/DESKTOP.md) and release checks in [docs/RELEASE-CHECKS.md](docs/RELEASE-CHECKS.md).
+GitHub Actions tests the source on Linux and Windows and packages and smoke-tests the Windows and Linux apps on every change; releases also build and smoke-test both macOS apps. Desktop details are in [docs/DESKTOP.md](docs/DESKTOP.md) and release checks in [docs/RELEASE-CHECKS.md](docs/RELEASE-CHECKS.md).
 
 **About how it is built.** ReproCase is developed with heavy use of AI coding assistants. Verdicts come from deterministic, tested core checks, and [VERIFICATION.md](docs/VERIFICATION.md) separates what has been tested from what has not. Reviews and bug reports are especially welcome.
 

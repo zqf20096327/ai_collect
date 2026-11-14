@@ -252,13 +252,16 @@ parameters. Data-dependent values are expected to be computed from the data rath
 [`docs/ROUTINES_DESIGN.md`](docs/ROUTINES_DESIGN.md).
 
 The routine is saved with a verification state. When the original data is available, *run zero*
-re-executes the method and compares its recorded `RESULT` lines. A version still verifying, or one that
-fails verification, cannot run. If the original data is unavailable, the version is marked
-**unverified** and can run without a verified run zero. The routine keeps the chain's code as written,
-with the adjustable inputs in place. A model-free check then tries a shorter run of only the statements
-the tracked results and figures depend on, and keeps it for later runs when it reproduces the same
-results and figures. For Intervals.icu data, the method is also tried on a day, a week and a month of
-the original data, so you can see what a shorter interval will return before running one.
+re-executes the method and compares its recorded `RESULT` lines. A version still verifying, or one
+that fails verification, cannot run. If the original data is unavailable, the version is marked
+**unverified** and can run without a verified run zero. A chain that used no dataset, such as a
+simulation, is verified the same way and its routine runs without data: the inputs are the values
+the code starts from, such as starting conditions, parameters or a seed. The routine keeps the
+chain's code as written, with the adjustable inputs in place. A model-free check then tries a
+shorter run of only the statements the tracked results and figures depend on, and keeps it for later
+runs when it reproduces the same results and figures. For Intervals.icu data, the method is also
+tried on a day, a week and a month of the original data, so you can see what a shorter interval will
+return before running one.
 
 The routine script runs without an LLM. Select an Intervals.icu athlete and a date window or calendar
 interval (day, week, month or year), or a file from the Dataset cache, supply the inputs and run the
@@ -267,9 +270,10 @@ script runs one statement at a time: a step that cannot be computed on the new d
 results that depend on it, which are left blank with the reason, and a window with no data is recorded
 as an empty run. BambooAI records results, figures and differences from the previous run for the same
 athlete (or from run zero). Differences are classified against the previous result interval (outside,
-within, or not computed). The first run has no comparison; results are never compared across athletes.
-Upload-based runs without an athlete form a single comparison group. Cached data is reused when it
-covers the requested window.
+within, or not computed). The first run has no comparison; differences are never calculated across
+athletes. Upload-based runs without an athlete form a single comparison group. In the Summary,
+**All athletes** shows each athlete's results for the same week, month or dates side by side, and
+offers the run for an athlete who has none. Cached data is reused when it covers the requested window.
 
 ## Configuration
 

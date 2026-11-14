@@ -36,8 +36,8 @@ xln/
 ├── rscore/           Rust implementation of the canonical financial machines
 ├── brainvault/       standalone deterministic wallet-derivation package
 ├── jurisdictions/    Solidity settlement and dispute contracts
-├── ui/               React wallet; presentation and user input
-├── frontend/         existing Svelte client; presentation and user input
+├── ui/               React wallet at /ui/; presentation and user input
+├── frontend/         Svelte wallet at /app; presentation and user input
 ├── tests/            browser and full-stack E2E evidence
 ├── docs/             canonical documentation and immutable release evidence
 ├── scripts/          build, release, and operator tools
@@ -52,9 +52,9 @@ deterministic state-machine transitions.
 
 ## BrainVault: standalone module used by XLN
 
-[BrainVault V1](brainvault/readme.md) is an independently packable, installable,
+[BrainVault V1](brainvault/README.md) is an independently packable, installable,
 and auditable memory-hard wallet-derivation module. It has its own package,
-frozen [byte specification](brainvault/SPEC-V1.md), vectors, native sources,
+frozen [byte specification](brainvault/docs/spec-v1.md), vectors, native sources,
 binaries, manifest, CLI, and tests entirely inside `brainvault/`; it does not
 import XLN runtime, storage, network, frontend, or consensus code.
 
@@ -72,7 +72,7 @@ bun ./brainvault
 ```
 
 The exact minimal and expanded reading paths are in BrainVault's
-[audit surface](brainvault/readme.md#exact-audit-surface). Coding agents must
+[audit surface](brainvault/README.md#auditor-entrance-five-files-603-lines). Coding agents must
 also load its package-local [contract](brainvault/AGENTS.md).
 
 ## Quick start

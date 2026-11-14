@@ -8,6 +8,45 @@ An AI copilot for electronics design: describe a circuit in plain language and i
 
 **▶ Try it online: [pcbgo.site](https://pcbgo.site)**: nothing to install. The **🔑 Connect AI** window walks you through getting a free Google Gemini or Ollama Cloud key in about a minute (Claude, OpenAI, OpenRouter and others work too). Your key stays in your browser. Then describe your circuit. Projects are saved in your browser. For local models, knowledge folders and Claude Code control, run the desktop version (below).
 
+## How to install and run
+
+Pick one of the three options. You need an AI key for the copilot. A free Google Gemini key takes about a minute at [aistudio.google.com/apikey](https://aistudio.google.com/apikey); the **🔑 Connect AI** window in the app walks you through it.
+
+### 1. Easiest: Windows app (nothing else to install)
+
+1. Download **[CircuitPilot-Windows.zip](https://github.com/Abdelhayali/CircuitPilot/releases/latest/download/CircuitPilot-Windows.zip)** from the [latest release](https://github.com/Abdelhayali/CircuitPilot/releases/latest).
+2. Unzip it anywhere, for example on your Desktop.
+3. Double-click **CircuitPilot.exe**. Windows may warn that the app is not code-signed: click **More info → Run anyway**.
+4. Choose how you want to design:
+   - **With Claude Desktop (recommended, no AI key needed):** install [Claude Desktop](https://claude.com/download) and sign in. Then in CircuitPilot press **⚙ Settings → Claude Desktop → Connect** (or run `CircuitPilot.exe --connect-claude`). Quit Claude Desktop completely (also from the system tray) and open it again. Claude Desktop now controls CircuitPilot's design tools: start a chat, pick **Design a board with CircuitPilot** from the **+** menu or just describe the board, and the CircuitPilot window follows along. CircuitPilot starts by itself when Claude needs it.
+   - **With the built-in copilot:** press **🔑 Connect AI** and paste a free Google Gemini key, then type what you want to build in the AI Copilot box and press **Send**.
+
+Windows 10 or 11, 64-bit. Your projects are saved in `%LOCALAPPDATA%\CircuitPilot`.
+
+### 2. Run from the source code
+
+You need **Python 3** (no extra packages to install). Git is optional.
+
+1. Get the code: `git clone https://github.com/Abdelhayali/CircuitPilot.git`, or on the GitHub page click **Code → Download ZIP** and unzip it.
+2. Open a terminal in the `CircuitPilot` folder.
+3. Start the server:
+
+   ```bash
+   python server.py 5173
+   ```
+
+   On macOS or Linux, use `python3`. On Windows you can double-click **`start.bat`** instead.
+4. Open **http://localhost:5173** in your browser.
+5. Choose how you want to design:
+   - **With Claude Desktop (recommended, no AI key needed):** install [Claude Desktop](https://claude.com/download) and sign in, then press **⚙ Settings → Claude Desktop → Connect** (or, in the folder, run `node mcp/install-claude-desktop.mjs`; this needs [Node.js](https://nodejs.org) installed). Quit Claude Desktop completely and open it again. Claude now controls CircuitPilot's design tools: pick **Design a board with CircuitPilot** from the **+** menu or just describe the board.
+   - **With the built-in copilot:** press **🔑 Connect AI** and paste your key (or add it under **⚙ Settings**).
+
+Stop the server with **Ctrl+C**. To protect it with a password, add `--password YOUR_PASSWORD` to the command in step 3.
+
+### 3. Use the online version (no install)
+
+Open **[pcbgo.site](https://pcbgo.site)**, press **🔑 Connect AI**, paste your key and start designing. It also works on a phone or tablet. Your projects are kept in this browser, so export the `.json` file from the Export menu to back them up.
+
 ## See it in action
 
 **From one prompt to a routed board and a 3D-printed case** — the copilot (Gemini Flash Lite) designs an ESP32 board from *"create PCB for ESP"*: real JLCPCB parts, schematic, placement, rip-up autorouting (21/21 nets, DRC 0 errors), GND pours, then a fitted enclosure and a Whoop-style wristband pod (sped up 5×).
@@ -351,6 +390,7 @@ Live feedback: the coordinate bar shows X/Y, layer, width, net, and warns when t
 | CNC milling (3018 Pro …) | **CNC ⤓** makes GRBL G-code to mill the board yourself on a desktop CNC: `1_isolation.nc` (V-bit rings around the copper — pours, clearances and keep-outs exactly as in the Gerbers), `2_drill_<size>.nc` (one file per bit), `3_cutout.nc` (holes bigger than the end mill, then the outline in steps with holding tabs), `preview.svg` (toolpaths), `result-2d.svg` / `result-3d.html` (the finished board as milled, flat and in 3D with the parts on their side — **Parts** shows or hides them — also the **Result 2D / Result 3D** tabs of the dialog, to check it before you start) and a README with the bit order and set-up. SMD pads on the GND pour get a milled outline with 4 spokes (rule `smdPadRelief`, on in the CNC and home presets; dialog: *SMD pads on pour*), so each pad is a visible solder spot. Settings: V-bit angle / tip, depth (default 0.2 mm; the groove width follows), passes, the drill bits you have (default 0.8 and 1.0 mm: each hole gets the smallest bit that fits, bigger holes are drilled then widened in a small circle), feeds, end mill, step down, tabs, board thickness, **Parts go on**: bare side (through-hole parts from the side without copper → milled mirrored) or copper side (not mirrored); the AI passes `parts_side` and asks you when it does not know and X0 Y0 (default the PCB's lower-left corner, or the job corner); Z0 = copper surface. No pour and no copper under SMD parts (the copper between the pads of a 1206 and in keep-outs such as the antenna end is milled away). It checks its own toolpaths (no shorts with a narrower groove, no net cut in two with a wider one) and warns about vias (wire links). Design for it with **⚙ Rules → CNC milling — 3018** (`set_design_rules {preset: "cnc3018"}`): 1 layer, 0.9 mm tracks (power 1.0), 0.4 mm gaps, 0.6 mm pour gap, 1.5 mm from the edge, holes ≥ 0.8 mm, rings ≥ 0.35 mm; DRC then refuses vias and tracks on both layers and warns about pin pitch under 1.2 mm and pads smaller than 0805. On one layer, auto-size makes the board 25 % bigger when the first layout does not route. Claude / MCP: `export_cnc_gcode {out_dir}`. See [docs/CNC_MILLING.md](docs/CNC_MILLING.md). |
 | JLCPCB assembly (BOM + CPL) | **Export ▾ → BOM for JLCPCB assembly** and **Export ▾ → Pick-and-place / CPL for JLCPCB**: the two .csv files JLCPCB asks for under *Bill of Materials* (Add BOM File / Add CPL File). CPL = each part's centre (the middle of its pads, Gerber coordinates from the lower-left corner), layer and rotation counted counter-clockwise as JLCPCB / EasyEDA do; check the rotations in JLCPCB's placement preview. Claude / MCP: `export_project {include: ["jlcpcb"]}`. |
 | Pin-1 marks | ICs and every part with 3 or more pads get a 0.5 mm silkscreen dot at pin 1: outside the outline at the pin-1 corner, beside pin 1, or inside the outline when the corner is off the board or on copper (Gerber, 2D, 3D, PDF). |
+| Save to GitHub | **⌥ GitHub** (top bar, next to Google sign-in) or **Export ▾ → Save to GitHub…**: sign in with GitHub (on pcbgo.site) or paste a token, then choose an existing repository or create a private one by name. Every design is saved in its own folder in that repository (project file, Gerbers, BOM + CPL, EasyEDA import zip with the schematic and the PCB, netlist, images, PDFs, README). Only changed files are committed. **Auto-save after changes** sends the design a few seconds after each save. **⇅ Load all designs from GitHub & sync** loads every design folder into this PC (a design changed both here and on GitHub is kept and reported, not overwritten) and then saves the open design. |
 | Export everything | **Export ▾ → Everything (.zip)** puts every file of the project in one zip: project file (.circuit.json), Gerbers + drill (also zipped for the fab), JLCPCB BOM + pick-and-place (CPL), BOM, netlist, schematic / PCB SVG, enclosure STL + OpenSCAD, EasyEDA schematic + PCB, PCB drawing PDF, datasheet PDF and images (schematic sheets, 2D PCB, 3D angled / top / bottom, enclosure). Claude Desktop / Claude Code: `export_project` writes the same files into `Documents/CircuitPilot exports/<project>/` (or `out_dir`), with a README listing them. `include` picks only some, e.g. `["gerbers", "jlcpcb"]`. PDFs and images are drawn by the CircuitPilot window, which is opened on the project if needed. |
 
 ## Mill your board on a desktop CNC

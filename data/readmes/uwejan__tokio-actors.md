@@ -606,6 +606,37 @@ sys.stuck_actors();         // every actor over the threshold, longest first
 
 This is observation only: it never interrupts a callback or changes how a stop resolves, and `actor_status` still reports the status the actor holds (`Initializing`, `Running` or `Stopping`) for a wedged actor - `turn_elapsed` and `stuck_actors` are how to tell. While no threshold is set, `turn_elapsed` returns `None` for every actor and `stuck_actors` is empty. While one is set, each callback costs one extra monotonic clock read. With the `tracing` feature, a background check logs one warning for each callback it finds over the threshold. It runs every quarter of the threshold (never more often than every 50 ms, and at least every second). It runs on the runtime that was current when it started and ends with that runtime. It starts once a threshold is in effect and a runtime with the time driver is current: at the call that sets the threshold, or else at a later actor registration, and again the same way after its runtime was dropped. A callback that ends before a check finds it over the threshold is not logged, even if it ran longer than the threshold.
 
+### Telemetry
+
+The `telemetry` module defines typed events about the actors of a system: spawns and refused spawns, starts, stop requests, ends, supervision decisions, restart attempts, kill progress, helper tasks, turns, runs, timer ticks, waiting senders, stuck turns, mailbox backlogs, wait cycles and trace entries, and two about telemetry itself, detached handlers and dropped events. The subject of an event, when it has one, is an `ActorRef`: the actor's id, its incarnation and its ancestors.
+
+```rust
+use tokio_actors::telemetry::{Filter, KindSet, Scope, TelemetryEvent};
+
+// A handler is a plain closure. It must not block: hand slow work to a channel.
+let (tx, mut rx) = tokio::sync::mpsc::channel::<TelemetryEvent<'static>>(1024);
+sys.attach_telemetry("export", KindSet::cold(), move |event| {
+    let _ = tx.try_send(event.to_static());
+});
+// A task of yours reads `rx` and does the slow work there.
+
+// A subscription, made inside a callback: the selected events arrive as this actor's own messages.
+let id = ctx.subscribe(Filter::new(Scope::System), Msg::Event);
+
+// A record of every registered actor that has not ended, read without asking any of them.
+for record in sys.snapshot() {
+    println!("{}: {:?}, mailbox {} of {}", record.actor.id(), record.status, record.mailbox_len, record.mailbox_capacity);
+}
+```
+
+**Handlers.** `ActorSystem::attach_telemetry(id, kinds, handler)` attaches a handler, a plain closure, and `detach_telemetry(id)` removes it. A helper task of the system runs the handlers, with two exceptions: the turn event of a `handle` turn that went on, the run event and trace entries run them on the actor's own task between turns while the helper holds no event about that actor, and a `HandlerDetached` event runs the remaining handlers on the thread of the handler that panicked. A handler that blocks delays the events behind it, so hand slow work to a bounded channel with `try_send`, sending the owned copy `TelemetryEvent::to_static()` makes. An event that finds the helper's queue full is dropped and counted, and the count is reported to the handlers that take `Dropped` events.
+
+**Subscriptions.** `ctx.subscribe(filter, map)` sends an actor the events it selects: `map` turns each `Delivery` into one of the actor's own messages. A `Filter` names a `Scope` (the whole system, one actor id, or one actor id and every actor below it) and a `KindSet`; turn, run, timer tick and trace events go to handlers only. Each subscription has its own bounded queue, so the code that raises an event never waits for the subscriber: an event that finds the queue full is dropped and counted, and the next `Delivery` carries the count in `missed_before`, or a `SubscriptionNotice::Overflow` notice carries it when the queue runs empty first. An actor is never sent an event whose subject is itself, and a subscription ends when its actor stops or restarts, when its `map` panics, or at `ctx.unsubscribe(id)`.
+
+**Snapshot, monitor and switches.** `ActorSystem::snapshot()` reads an `ActorRecord` of every registered actor that has not ended without asking any of them, so a stuck actor does not delay it, and `ctx.set_label` names an actor in it. `system_monitor` makes one actor the system's monitor, told about long turns and long mailboxes as the monitor process of `erlang:system_monitor/2` is; a task of the system samples both, so a report comes some time after the crossing. `set_turn_tracking` and `set_wait_cycle_detection` (also `SystemConfig` fields) switch on turn timing and wait-cycle search, both off by default, and `is_quiescent` says whether a system is idle (`None` unless turn tracking is on and stays on during the call).
+
+**Reports.** With the `tracing` feature, log statements about one actor carry `actor_id`, `actor_name`, `incarnation` and `system`, with the exceptions the `telemetry` module's docs name; each actor's task runs inside a debug-level span named `actor`, created at the spawn when a subscriber is interested in it; an actor that ends with a failure, or with its supervisor's death, writes a crash report on the `tokio_actors::crash` target, and a supervisor writes `child_terminated`, `start_error`, `reached_max_restart_intensity` and `progress` reports on the `tokio_actors::supervisor` target, as the reports of Erlang/OTP's supervisor are.
+
 ### Blocking Work
 
 A `handle` invocation runs to completion before the actor observes anything else, so blocking inside it blocks that actor, and on a busy runtime it can starve its neighbors. Three tools cover it, all from the runtime you already own. For bounded CPU or blocking work, move it off the turn: `tokio::task::spawn_blocking(move || work()).await`. For a blocking call that needs `&mut self`, wrap it in `tokio::task::block_in_place(|| self.conn.execute(..))` (multi-threaded runtimes only). For an actor that is always busy, give it its own small runtime: an actor runs on whichever runtime is current when `.spawn().await` is called, so spawning it from inside a second runtime isolates it completely while abort, timers, and supervision keep working. A supervised child runs on its supervisor's runtime unless `spawn_child(..).on_runtime(&rt)`, with `rt` a `tokio::runtime::Handle`, places it on that runtime: every restart and every child of the child then runs there too, the supervisor keeps the stop ladder (the shutdown window, the kill grace and the settle) and the restart decisions, while a kill raised from outside that ladder waits its kill grace on the child's runtime, so that runtime needs the time driver. If the placed runtime is dropped, the child is killed and each restart fails and charges the restart budget; if it is alive but nothing drives it, no incarnation starts: `stop_child` and `terminate_child` answer `ChildUnresponsive` for a child spawned onto it once its window, kill grace and settle have passed, and a restart stays pending, charged once when it begins and not again while it waits, with `stop_child` and `terminate_child` answering `ChildRestarting` for it. To detect a wedged actor without any setup, probe it: `tokio::time::timeout(limit, handle.get_status())` times out when the actor has been inside one turn for longer than `limit`. A handler that never yields cannot be force-stopped by any of these; it surfaces as `ChildUnresponsive`. On a current-thread runtime it holds the only worker, so a neighbor gets no turn until it returns; on a multi-thread runtime it holds one worker and the others keep running.
@@ -721,43 +752,4 @@ A spawn waits for `pre_start` and `on_started` before it resolves, so spawning m
 | `status()` | Instant lifecycle phase from the runtime plane (answers even for a hung actor) |
 | `wait_stopped()` | Awaits the actor's terminal state and returns its stop reason |
 | `observe_subtree()` | Returns a `SubtreeObserver` for this incarnation's subtree, before or after the actor's end; its `wait_ended()` waits for the actor's end and then for every actor below it, and answers `Ended`, or `Unresponsive` when the stop budgets the subtree carries ran out with an actor still running; the answer is for the caller alone, and the wait records no verdict on any supervisor |
-| `is_alive()` | Check if actor is still running: false from the moment its message loop is done (the return of `on_stopped`, or the loop's end under a `Kill`), through the teardown of the actor's children, while `status()` reads `Stopping` until `Stopped` (`Running` until `Stopped` when a `Kill` ended the loop) |
-| `mailbox_len()` | Slots in use: queued messages plus slots senders have reserved and not yet filled |
-| `mailbox_available()` | Free space in mailbox |
-| `mailbox_capacity()` | Total mailbox capacity |
-| `notify_priority(msg)` | Fire-and-forget on the priority lane (degrades to `notify` without one) |
-| `try_notify_priority(msg)` | Non-blocking fire-and-forget on the priority lane |
-| `send_priority(msg)` | Request-response on the priority lane |
-| `send_priority_timeout(msg, dur)` | Request-response on the priority lane bounded by one deadline |
-| `priority_len()` | Priority lane slots in use: queued messages plus reserved, unfilled slots (0 without a lane) |
-| `priority_capacity()` | Total priority lane capacity (0 without a lane) |
-| `id()` | Get actor ID |
-| `incarnation()` | The incarnation token of this actor's current run; a supervised restart gives a new token |
-
-### ActorContext Methods
-
-| Method | Description |
-|--------|-------------|
-| `spawn_child(factory)` | Returns a `ChildSpawnBuilder` - chain `.named()`, `.restart_type()`, `.shutdown()`, `.kill_grace()`, `.on_runtime(&rt)`, `.with_config()`, `.start_timeout()`, `.unbounded_start()`, `.significant(bool)`, `.await_init()`; `.on_runtime` runs the child, every restart of it and everything it spawns on another Tokio runtime, which needs the time driver unless that runtime has already ended (without the driver, awaiting the builder panics before the factory runs or anything is registered, unless the call is refused first as not a supervisor, as made from a final `on_child_stopped` delivery of a stopping supervisor, or as a child name the supervisor already holds) |
-| `children()` | Introspection info for all supervised children |
-| `terminate_child(id)` | Stop a child WITHOUT restart (spec kept for later revival, unless the child is `Temporary` or its supervisor is `SimpleOneForOne`) |
-| `restart_child(id)` | Revive a terminated child from its stored spec |
-| `delete_child(id)` | Remove a terminated child's spec |
-| `begin_stop_child(id)` | `stop_child` committed and returned at once, without waiting for the child; returns the same `StopChildOutcome` |
-| `begin_terminate_child(id)` | `terminate_child` committed and returned at once, without waiting for the child |
-| `stop_child(id)` | Stop a child, restarting per policy (budget-free bounce); returns `StopChildOutcome::Absorbed` for a `Permanent` member of a pending group restart that has still to restart it, `ChildRestarting` once that restart has restarted it for good or released it, and stops a non-`Permanent` member as `terminate_child` does |
-| `schedule(msg)` | Returns a `ScheduleBuilder` - chain `.at(instant)`, `.after(delay)`, or `.every(interval)` |
-| `cancel_timer(id)` | Cancel specific timer |
-| `cancel_all_timers()` | Cancel all active timers |
-| `active_timer_count()` | Number of active timers |
-| `add_stream(stream)` | Attach an external stream to the mailbox |
-| `cancel_stream(id)` | Cancel a specific stream |
-| `cancel_all_streams()` | Cancel all active streams |
-| `active_stream_count()` | Number of active streams |
-| `self_handle()` | Get handle to this actor |
-| `stop(reason)` | Stop this actor from inside its own callback; returns `Result<(), StopError>` |
-| `monitor(target, map)` | Watch an actor by handle, id or name; `map` turns its `Down` into a message of this actor; returns `Result<MonitorId, MonitorError>` (`Stopping` once the actor is stopping) |
-| `monitor_priority(target, map)` | `monitor` with the `Down` delivered on the priority lane (the normal lane without one) |
-| `demonitor(id)` | Cancel a monitor; `true` means no `Down` will arrive for it, `false` for a foreign, unknown or spent id, or when the `Down` is already queued (it is still handled, and delivered once at a stop) |
-| `demonitor_flush(id)` | `demonitor` that also drops a `Down` already queued; `false` when a flush was needed |
-| `link(target)` | Link this actor to an actor by handle, id or name, as Erlang/OTP's `link/1`; returns `Result<(), LinkError>`, and linking an actor to itself does nothing. When the peer ends, a non-trapping actor ends with the peer's reason (`Graceful` is ignored), and a trapping one is handed a `LinkExit`. A link to an actor that has ended or does not
+| `is_alive()` | Check if actor is still running: false from the moment its message loop is done (the return of `on_stopped`, or the loop's end under a `Kill`), through the teardown of the actor's children, while `status()` reads `Stopping` until `Stopped`

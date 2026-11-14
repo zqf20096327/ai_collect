@@ -5,7 +5,7 @@
 
 For more carefully curated articles, you can refer to this [repository](https://github.com/bansky-cl/Diffusion_NLP_Papers).
 
-## Updated on 2026.11.14
+## Updated on 2026.11.15
 
 ![Monthly Trend](imgs/trend.png)
 

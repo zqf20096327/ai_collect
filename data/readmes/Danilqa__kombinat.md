@@ -59,6 +59,7 @@ The daemon serves a dashboard at http://localhost:7433.
 - **Calendar.**
 - **Runs.**
 - **Daemon status.**
+- **Search.** ⌘K or Ctrl K finds routines, runs by what they said, and pages.
 
 ### In the terminal
 
@@ -163,6 +164,7 @@ timeoutMinutes: 55
 - `agent` is `claude` (default), `codex` or `command`.
 - `timeoutMinutes` stops the run after this time. Default 55.
 - `before` is an optional shell command that runs first. If it fails or takes more than 3 minutes, the run fails.
+- `after` is an optional shell command that runs last, whatever the outcome, for example to post failures to Slack. It gets the finished run on stdin and cannot change it, see [docs/hooks.md](docs/hooks.md).
 - `enabled: false` keeps the file but stops the schedule.
 - `webhook: true` lets other apps start the routine with a request, see [docs/webhook.md](docs/webhook.md).
 
@@ -188,6 +190,7 @@ A setting the agent does not support fails validation.
 
 ## Scheduling
 
+- On macOS, the installed daemon keeps the Mac awake while it is on power. On battery the Mac sleeps as usual, and a laptop with a closed lid can still sleep. macOS has a system-wide switch that turns sleep off, `sudo pmset -a disablesleep 1`, which Kombinat does not touch.
 - If the Mac was asleep, each routine runs once for its latest missed time, up to 7 days back.
 - A routine never runs twice at the same time. If it is still running at its next time, that run is skipped.
 - At most 3 routines run at once.
@@ -215,6 +218,7 @@ Up to 0.2.2, Kombinat was published as `@danilqa/kombinat`. To move to `kombinat
 | `KOMBINAT_TICK_SECONDS`   | `30`                  | how often the daemon checks routines   |
 | `KOMBINAT_PULL_MINUTES`   | `5`                   | auto `git pull` interval, 0 to disable |
 | `KOMBINAT_PULL_BRANCH`    | `main`                | branch the daemon pulls                |
+| `KOMBINAT_KEEP_AWAKE`     | on when installed     | Mac stays awake on power, 0 to disable |
 | `CLAUDE_BIN`              | `~/.local/bin/claude` | Claude Code binary                     |
 | `CODEX_BIN`               | `codex`               | Codex binary                           |
 

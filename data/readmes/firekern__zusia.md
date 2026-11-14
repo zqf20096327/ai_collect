@@ -17,7 +17,7 @@
 
 **TL;DR**
 
-- 💬 A chat **next to the PDF** that reads the **whole paper**, in its own panel on the left of the window.
+- 💬 A chat **next to the PDF** that reads the **whole paper**, in its own panel at the side of the window.
 - ✏️ Answers with **LaTeX**, **drawings** and numbered **theorem boxes**.
 - 🔑 Uses **Claude Code, Codex or Antigravity** with your own login. No API keys.
 - ⏱️ Install in 2 minutes: [jump to Install](#install).
@@ -26,13 +26,11 @@
 
 ## 1. Ask about the paper
 
-> **Open a paper and ask.** Zusia is the panel on the left of the window, beside your library and the PDF. It follows the paper you select or open; drag its edge to resize it, and **⌥Z** (Alt+Z) hides it and brings it back. Turn on *Drawing* and *LaTeX* for a diagram and real maths.
+> **Open a paper and ask.** Zusia is the panel on the right of the window, beside your library and the PDF. It follows the paper you select or open; drag its edge to resize it, and **⌥Z** (Alt+Z) hides it and brings it back. Turn on *Drawing* and *LaTeX* for a diagram and real maths.
 >
-> The recordings on this page were made with the chat in Zotero's item pane, on the right. It can still live there: **Settings → Zusia → Chat → *Where the chat is***.
->
-> Real recording: Zotero on a Mac, *Attention Is All You Need*, a live answer from Claude. 27 seconds, with the wait sped up.
+> Recorded in a real Zotero on a Mac: *Attention Is All You Need*, a live answer from Claude. 22 seconds, with the wait sped up.
 
-<p align="center"><img src="docs/videos/zusia-chat.gif" alt="In Zotero, open the side pane on Attention Is All You Need, turn on Drawing and LaTeX, ask how Q, K and V flow and why attention divides by the square root of d_k, and read Claude's answer with its diagram and lemmas" width="100%"></p>
+<p align="center"><img src="docs/videos/zusia-chat.gif" alt="In Zotero, open Zusia's panel beside Attention Is All You Need, turn on Drawing and LaTeX, ask how Q, K and V flow and why attention divides by the square root of d_k, and read Claude's answer with its diagram and lemmas" width="100%"></p>
 
 <p align="center"><a href="docs/videos/zusia-chat.mp4">▶ Watch in full quality (MP4)</a></p>
 
@@ -44,7 +42,7 @@
 
 > **Then everything else in Settings → Zusia.** Style, buddy, pattern, accent colour, background image and button labels, all updating live in the chat. Glass, corners, font, answer length, level, tone and the system prompt are there too.
 
-<p align="center"><img src="docs/videos/zusia-style.gif" alt="In Zotero Settings, switch glass and flat, buddy and pattern, pick the red accent and a background illustration while the sidebar updates live to red and black" width="100%"></p>
+<p align="center"><img src="docs/videos/zusia-style.gif" alt="In Zotero Settings, switch glass and flat, buddy and pattern, pick the red accent and a background illustration while the panel beside it updates live to red and black" width="100%"></p>
 
 <p align="center"><a href="docs/videos/zusia-style.mp4">▶ Watch in full quality (MP4)</a></p>
 
@@ -56,7 +54,7 @@
 
 > **Turn on *LaTeX*.** Definitions, lemmas and theorems come back as numbered boxes, and every `\ref` is a link: click to jump, **Back** (⌥←) to return.
 
-<p align="center"><img src="docs/videos/zusia-proof.gif" alt="In Zotero on the Adam paper, ask for the assumptions and regret bound of Theorem 4.1; the answer arrives as numbered lemmas with links, and clicking one jumps to it" width="100%"></p>
+<p align="center"><img src="docs/videos/zusia-proof.gif" alt="In Zotero on the Adam paper, ask for Theorem 4.1 in a theorem box and its proof as lemmas; the answer arrives as a numbered theorem and lemmas that link to each other, clicking a link jumps to its lemma and Back returns" width="100%"></p>
 
 <p align="center"><a href="docs/videos/zusia-proof.mp4">▶ Watch in full quality (MP4)</a></p>
 
@@ -64,7 +62,7 @@
 
 > **One button under every answer.** It comes back with the intuition first, then the steps, an example and the usual trap.
 
-<p align="center"><img src="docs/videos/zusia-explain-better.gif" alt="In Zotero on the BERT paper, a dense one-sentence answer, then the Explain better button produces intuition, steps and an example" width="100%"></p>
+<p align="center"><img src="docs/videos/zusia-explain-better.gif" alt="In Zotero on the BERT paper, a dense answer about the masked language model, then the Explain better button produces the intuition, the steps and a worked example" width="100%"></p>
 
 <p align="center"><a href="docs/videos/zusia-explain-better.mp4">▶ Watch in full quality (MP4)</a></p>
 
@@ -91,14 +89,14 @@
 | 🟤 | **Memory** | `/remember` a note, `/forget` one; click the paper chip above the message box to see, edit or reset what Zusia keeps |
 | 🟡 | **Printed pages** | Ask about "page 18" and the assistant reads the page printed 18, whatever its PDF number |
 | ⚫ | **Setup** | A visual wizard on first run, including the assistant's voice: a preset or your own system prompt |
-| ⚪ | **Left panel** | ⌥Z / Alt+Z shows and hides it; drag its edge to resize, double-click the edge to reset; or move the chat to the item pane in Settings |
+| ⚪ | **Side panel** | ⌥Z / Alt+Z shows and hides it; drag its edge to resize, double-click the edge to reset; put it on the left, the right or in the item pane in Settings |
 
 ## Install
 
 1. **Install one assistant CLI** and sign in: [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [Codex](https://github.com/openai/codex) or Antigravity (`agy`).
 2. **Download `zusia.xpi`** from the [latest release](https://github.com/firekern/zusia/releases/latest).
 3. **In Zotero:** Tools → Plugins → ⚙ → *Install Plugin From File…* → pick the `.xpi`. Restart if asked.
-4. **Open a paper.** Zusia appears in a panel on the left and starts the setup wizard. To have it in Zotero's item pane instead, choose **Settings → Zusia → Chat → *Where the chat is***.
+4. **Open a paper.** Zusia appears in a panel on the right and starts the setup wizard. To have it on the left or in Zotero's item pane instead, choose **Settings → Zusia → Chat → *Where the chat is***.
 
 Updates arrive on their own after that: Zotero checks the release feed.
 
@@ -140,9 +138,11 @@ npm run test:zotero          # the checks inside a real, headless Zotero (macOS 
 npm run test:zotero:linux    # the same in Docker, against the official Linux build
 npm run test:zotero:windows  # the same in the Windows build under Wine, in Docker
 ZUSIA_BACKGROUND=path/to/illustration.jpg npm run videos   # re-records the README videos (macOS)
+INSIDE=1 ZUSIA_BACKGROUND=path/to/illustration.jpg npm run videos     # the same, filmed from inside Zotero: no permissions
+REHEARSE=1 ZUSIA_BACKGROUND=path/to/illustration.jpg npm run videos   # walks the same scenes without recording
 ```
 
-The videos are recorded in a real Zotero with its own demo profile and library, so your library is never used. The scenes move the real pointer: don't touch the Mac while they run. Needs `ffmpeg`, `cliclick`, the `claude` CLI, and Screen Recording and Accessibility permission for the terminal.
+The videos are recorded in a real Zotero with its own demo profile and library, so your library is never used. The scenes move the real pointer: don't touch the Mac while they run. Needs `ffmpeg`, `cliclick`, the `claude` CLI, and Screen Recording and Accessibility permission for the app the terminal runs in. With `INSIDE=1` neither permission is needed, nor `cliclick`: Zotero draws its own window into every frame, clicks and typing reach it as events, and the pointer and the window's buttons are drawn into the film afterwards, so the Mac's pointer stays yours; keep the demo window uncovered while it runs. The videos on this page were made this way. With `REHEARSE=1` nothing is recorded, the pointer stays where it is and no assistant is called, so neither permission is needed: every scene is walked through with events sent to Zotero and a canned answer, and what the window shows at each step is saved under `~/.cache/zusia-demo/rehearsal/`. Run it after the interface changes, to see that the scenes still find their way.
 
 ## Release
 

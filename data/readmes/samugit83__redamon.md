@@ -6,7 +6,7 @@
   <b><i><big><big>Unmask the hidden before the world does</big></big></i></b>
 </p>
 <p align="center" style="font-size: 120%;">
-  <b>RedAmon is an open-source, self-hosted AI penetration testing framework</b> that maps your attack surface into a graph, autonomously exploits it from a Kali sandbox with human approval gates, and opens pull requests that fix what it finds. From first packet to merged patch, with human oversight at every critical step.
+  <b>RedAmon is a next-generation, enterprise-grade platform for AI-driven penetration testing, at the forefront of agentic offensive security.</b> It is self-hosted and supports multiple users and tenants, with role-based access control, Rules of Engagement enforcement and append-only audit trails. Security teams can run full-scope assessments on infrastructure they control: the attack surface mapped as a graph, exploitation driven by an agent behind human approval gates, and fixes delivered as pull requests. Local models are supported when data must not leave your environment.
 </p>
 
 <br/>
@@ -26,7 +26,7 @@
 
 <p align="center">
   <a href="https://github.com/samugit83/redamon/stargazers"><img height="24" src="https://img.shields.io/github/stars/samugit83/redamon?style=flat&color=2E8B57&label=Stars" alt="GitHub Stars"/></a>
-  <img height="24" src="https://img.shields.io/badge/v7.7.2-release-2E8B57?style=flat" alt="Version 7.7.2"/>
+  <img height="24" src="https://img.shields.io/badge/v7.8.0-release-2E8B57?style=flat" alt="Version 7.8.0"/>
   <img height="24" src="https://img.shields.io/badge/WARNING-SECURITY%20TOOL-B22222?style=flat" alt="Security Tool Warning"/>
   <img height="24" src="https://img.shields.io/badge/LICENSE-MIT-4169A1?style=flat" alt="MIT License"/>
   <img height="24" src="https://img.shields.io/badge/AI-AUTONOMOUS%20AGENT-6A5ACD?style=flat&logo=openai&logoColor=white" alt="AI Powered"/>
@@ -185,7 +185,7 @@ At the end of the install (and on every `./redamon.sh up` or `./redamon.sh updat
 
 - **Admin name** -- display name shown in the UI (e.g. `Admin`, your name, anything you want).
 - **Admin email** -- used to log in at `http://localhost:3000/login`.
-- **Admin password** -- minimum 12 characters.
+- **Admin password** -- 12 characters to 72 bytes (bcrypt reads no further); the installer asks again for one outside that range.
 
 After creation, open **http://localhost:3000** and sign in with the email and password you just set.
 
@@ -195,7 +195,7 @@ After creation, open **http://localhost:3000** and sign in with the email and pa
 > ./redamon.sh create-admin
 > ```
 >
-> It waits for the webapp, then prompts for the same details. It is safe to re-run: reusing an existing admin's email resets that password, a new email adds another admin.
+> It waits for the webapp, then prompts for the same details. It is safe to re-run: reusing an existing admin's email resets that password and revokes that admin's MCP tokens (re-entering the same password changes nothing), a new email adds another admin. A member's email is refused: to promote that member on purpose, run `FORCE_PROMOTE=1 ./redamon.sh create-admin`.
 
 **What the admin can do:**
 - Switch between all users via the user dropdown in the header (including users without a password).
@@ -213,7 +213,17 @@ If you forget the admin password, reset it from the terminal:
 ./redamon.sh create-admin     # create the first admin, or reset an admin by re-entering its email
 ```
 
-Use `create-admin` when no admin exists yet (it upserts on email); `reset-password` only updates a user that already exists.
+Use `create-admin` when no admin exists yet; `reset-password` only updates a user that already exists, never changes its role, and revokes its MCP tokens. Both resets also sign that account out everywhere and re-enable it if it was disabled.
+
+**Root.** The first admin is the instance's Root: the one account no other admin can demote, disable, reset or act as, and the only one that manages other admins (with `RBAC_IDENTITY_ENABLED=true` in `.env`, the default; set it to `false` to turn it off). An install that already had admins gets one at the update (the oldest admin with a password), and `./redamon.sh update` confirms it. To make another account Root, or to get back in when Root's account is lost:
+
+```bash
+./redamon.sh set-root you@example.com
+```
+
+See [Identity & Access Management](https://github.com/samugit83/redamon/wiki/Identity-and-Access-Management) for Root, invites, account status and sessions.
+
+The lists above are the behaviour with the default permission sets. Identity (`RBAC_IDENTITY_ENABLED`), permission sets (`RBAC_PERMISSIONS_ENABLED`), project sharing (`RBAC_SHARING_ENABLED`, `RBAC_SHARING_WRITE_ENABLED`) and the IAM console (`RBAC_GOVERNANCE_ENABLED`) are on by default: `./redamon.sh` writes all five `true` into `.env` when they are missing and keeps any value you set, so `false` turns one off for good. Sharing also needs Root to turn on the sharing policy in the IAM console (**Instance**), which is off until then: see [Sharing Projects](https://github.com/samugit83/redamon/wiki/Sharing-Projects) and [IAM Console](https://github.com/samugit83/redamon/wiki/Admin-Console), and the [Changelog](CHANGELOG.md) for the order to turn them on.
 
 ### 3. Configure
 
@@ -257,6 +267,8 @@ All lifecycle management is handled by a single script:
 | `./redamon.sh clean` | Remove containers + images, keep data |
 | `./redamon.sh create-admin` | Create the admin login (or reset it) -- use if no prompt appeared at install |
 | `./redamon.sh reset-password` | Reset an existing user's password from the terminal |
+| `./redamon.sh set-root <email>` | Make that account the instance's Root, or confirm it (break-glass; moving Root signs both accounts out) |
+| `./redamon.sh update --preview` | Pull and build like `update`, print what it changes for the accounts, and restart nothing |
 | `./redamon.sh supply-chain-sync [ecosystems]` | Populate the offline OSV database for the supply-chain feature (default: `npm`; e.g. `npm PyPI Go`) |
 | `./redamon.sh purge` | Remove everything including all data |
 
@@ -828,6 +840,12 @@ Detects known-malicious (`MAL-`) and known-vulnerable (`CVE`/`GHSA`) packages **
   <img src="docs/assets/settings.gif" alt="RedAmon Project Settings" width="100%"/>
 </p>
 
+### Identity & Access Management
+
+One instance for the whole team: a protected Root account, administrators and members, invited by link and disabled, reset or signed out everywhere when needed. Permission sets, per-account overrides and admin profiles decide what each person may do, and projects are shared at Read or Read + Write, with the owner's consent before anyone spends their credentials. Administrators run it all from **IAM** in the header, with every action in the audit log.
+
+> **[Wiki: Identity & Access Management](https://github.com/samugit83/redamon/wiki/Identity-and-Access-Management)**
+
 ### Rules of Engagement (RoE)
 
 Upload a RoE document (PDF, TXT, MD, DOCX) to auto-configure project settings and enforce engagement constraints. Enforcement at both the recon pipeline (excluded hosts, rate limits, time windows) and AI agent (prompt injection, severity phase cap, tool restrictions) layers.
@@ -946,45 +964,4 @@ flowchart TB
     Agent -->|API| Anthropic
     Agent -->|API| LocalLLM
     Agent -->|API| OpenRouter
-    Agent -->|API| Bedrock
-    Agent --> Neo4j
-    Agent -->|MCP Protocol| NetworkRecon
-    Agent -->|MCP Protocol| Nuclei
-    Agent -->|MCP Protocol| Metasploit
-    Agent -->|MCP Protocol| Nmap
-    Recon --> Neo4j
-    GVM -->|Reads Recon Output| Recon
-    GVM --> Neo4j
-    GVM --> Target
-    GVM --> GuineaPigs
-    NetworkRecon --> Target
-    Nuclei --> Target
-    Metasploit --> Target
-    Nmap --> Target
-    NetworkRecon --> GuineaPigs
-    Nuclei --> GuineaPigs
-    Metasploit --> GuineaPigs
-    Nmap --> GuineaPigs
-```
-
-> **Full architecture diagrams** (data flow, Docker containers, recon pipeline, agent workflow, MCP integration): **[ARCHITECTURE.md](docs/readmes/ARCHITECTURE.md)**
->
-> **Technology stack** (70+ technologies across frontend, backend, AI, databases, security tools): **[TECH_STACK.md](docs/readmes/TECH_STACK.md)**
-
----
-
-## Components
-
-| Component | Description | Documentation |
-|-----------|-------------|---------------|
-| **Reconnaissance Pipeline** | Parallelized fan-out/fan-in OSINT and vulnerability scanning pipeline | [README.RECON.md](docs/readmes/README.RECON.md) |
-| **Recon Orchestrator** | Container lifecycle management via Docker SDK | [README.RECON_ORCHESTRATOR.md](docs/readmes/README.RECON_ORCHESTRATOR.md) |
-| **Docker Socket Broker** | Filtering reverse-proxy for the Docker socket: spawned scan containers reach the daemon through it, so they can only create the known tool images (allowlisted, no host mounts / privileged / arbitrary images) | n/a |
-| **Graph Database** | Neo4j attack surface mapping with multi-tenant support | [README.GRAPH_DB.md](docs/readmes/README.GRAPH_DB.md) · [GRAPH.SCHEMA.md](docs/readmes/GRAPH.SCHEMA.md) |
-| **MCP Tool Servers** | Security tools via Model Context Protocol (Kali sandbox) | [README.MCP.md](docs/readmes/README.MCP.md) |
-| **AI Agent Orchestrator** | LangGraph-based autonomous agent with ReAct pattern | [README.AGENTIC_SYSTEM.md](docs/readmes/README.AGENTIC_SYSTEM.md) |
-| **CypherFix Agents** | Automated triage + code fix + GitHub PR | [README.CYPHERFIX_AGENTS.md](docs/readmes/README.CYPHERFIX_AGENTS.md) |
-| **Web Application** | Next.js dashboard for visualization and AI interaction | [README.WEBAPP.md](docs/readmes/README.WEBAPP.md) |
-| **GVM Scanner** | Greenbone/OpenVAS network vulnerability scanner (170K+ NVTs) | [README.GVM.md](docs/readmes/README.GVM.md) |
-| **Secret Multiscanner** | Deep secret scanning across 14 source kinds (git, GitHub, GitLab, Docker, Hugging Face, S3, GCS, filesystem, Jenkins, Elasticsearch, Postman, CI) with 1060 detectors, live-credential verification, and one hardened container per source running in parallel | [Wiki: Secret Multiscanner](https://github.com/samugit83/redamon/wiki/Secret-Multiscanner) |
-| **Supply-Chain Scanner** | Offline malicious/vulnerable package detection (OSV-Scanner + GuardDog + retire.js) with a hardened DIRTY/CLEAN split; 3 layers (agent tools, standalone SBOM scan, live-target recon) | [README.SUPPLY_C
+  

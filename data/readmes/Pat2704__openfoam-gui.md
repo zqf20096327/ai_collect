@@ -27,8 +27,8 @@ want it to start:
 
 | | |
 |---|---|
-| **`OpenFOAMStudio-v5.9.2-folder.zip`** | **Recommended.** Unzip once, anywhere, then run `OpenFOAMStudio.exe` from the folder. **The window is up in about a tenth of a second.** |
-| **`OpenFOAMStudio-v5.9.2-portable.exe`** | One single file, nothing to unzip. Costs about half a minute at every launch: the portable format unpacks the whole app into TEMP each time it starts. |
+| **`OpenFOAMStudio-v5.9.3-folder.zip`** | **Recommended.** Unzip once, anywhere, then run `OpenFOAMStudio.exe` from the folder. **The window is up in about a tenth of a second.** |
+| **`OpenFOAMStudio-v5.9.3-portable.exe`** | One single file, nothing to unzip. Costs about half a minute at every launch: the portable format unpacks the whole app into TEMP each time it starts. |
 
 Either way nothing is installed and nothing is written to the registry — put it
 on the Desktop or a USB stick and double-click.
@@ -39,7 +39,7 @@ saying so. The app checks on startup and tells you if files are missing, but
 extracting with PowerShell avoids the problem:
 
 ```powershell
-Expand-Archive OpenFOAMStudio-v5.9.2-folder.zip -DestinationPath OpenFOAMStudio
+Expand-Archive OpenFOAMStudio-v5.9.3-folder.zip -DestinationPath OpenFOAMStudio
 ```
 
 Windows SmartScreen will warn on first run because the executable is unsigned:
@@ -197,7 +197,7 @@ found once you add its folder under **Search folders** in the same dialog.
   representation.
 
   ![The ParaView tab: a cavity case rendered as surface with edges and coloured by velocity, with the pipeline browser and the mesh regions of the case on the left and ParaView's own display, coloring and render-view properties on the right](screenshots/paraView.png)
-- **Applications / Src** — browse the installed OpenFOAM sources.
+- **Etc / Applications / Src** — browse the installation's `$FOAM_ETC` (bashrc, caseDicts, templates) and the installed OpenFOAM sources.
 
 <details>
 <summary>Four more: the command panel, the file editor, the applications and source browsers</summary>

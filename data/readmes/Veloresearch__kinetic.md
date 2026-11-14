@@ -45,8 +45,9 @@ told us what broke. This is what we know about and are working on for Beta 2:
 - **Tool calls with thinking on** can come back inside the reasoning
   ([#5](https://github.com/Veloresearch/kinetic/issues/5)). Until the fix, send
   `"chat_template_kwargs": {"enable_thinking": false}`.
-- **macOS on Apple Silicon** is coming from a community pull request
-  ([#4](https://github.com/Veloresearch/kinetic/pull/4)).
+- **macOS on Apple Silicon** is on main, from a community pull request
+  ([#4](https://github.com/Veloresearch/kinetic/pull/4)), and ships with Beta 2. Until then,
+  build it from source.
 - **AMD on Vulkan:** older integrated GPUs with 64-wide subgroups are refused
   ([#2](https://github.com/Veloresearch/kinetic/issues/2)), and we have a crash report on
   the RX 9070 under Linux.
@@ -741,8 +742,9 @@ more architectures are coming. Other models run on the CPU on those machines.
 <details>
 <summary><b>Does it run on a Mac?</b></summary>
 
-No. Kinetic supports Windows and Linux on x86-64 and is not planned for
-macOS.
+Not in 0.1.0. Apple Silicon support, on the CPU and on the GPU through Metal,
+is on main and ships with Beta 2; until then, build it from source. Intel
+Macs are not planned.
 
 </details>
 

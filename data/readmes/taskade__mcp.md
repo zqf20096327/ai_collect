@@ -14,7 +14,9 @@ Set up Taskade for me: https://www.taskade.com/SKILL.md
 
 [![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=taskade&config=eyJ1cmwiOiJodHRwczovL3d3dy50YXNrYWRlLmNvbS9tY3AifQ%3D%3D)
 [![Install in VS Code](https://img.shields.io/badge/Install_in-VS_Code-007ACC?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=taskade&config=%7B%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Fwww.taskade.com%2Fmcp%22%7D)
-[![Connect in Claude](https://img.shields.io/badge/Connect_in-Claude-D97757?style=flat-square)](#claude-web-desktop-and-mobile)
+[![Connect in Claude](https://img.shields.io/badge/Connect_in-Claude-D97757?style=flat-square)](https://claude.ai/directory/taskade-ai)
+
+**Claude Code:** `claude mcp add --transport http taskade https://www.taskade.com/mcp`
 
 [![npm](https://img.shields.io/npm/v/@taskade/mcp-server?style=flat-square&color=FF2D60)](https://www.npmjs.com/package/@taskade/mcp-server)
 [![GitHub stars](https://img.shields.io/github/stars/taskade/mcp?style=flat-square)](https://github.com/taskade/mcp)
@@ -33,11 +35,11 @@ This repo holds the Taskade [agent plugin](#agent-plugin-for-claude-code-codex-c
 
 ## Agent plugin for Claude Code, Codex, Copilot, Gemini CLI and Cursor
 
-The `taskade` plugin connects your AI tool to your Taskade workspace through the hosted server, and adds 7 skills: a front door (`taskade`) and six jobs (`getting-started`, `import-spreadsheet`, `fix-my-app`, `app-report`, `backup-my-app`, `plan-new-app`). The skills tell the agent which tools to call, in which order, and what to check before it reports back.
+The `taskade` plugin connects your AI tool to your Taskade workspace through the hosted server, and adds skills: a front door (`taskade`) and the job skills (`getting-started`, `import-spreadsheet`, `fix-my-app`, `app-report`, `backup-my-app`, `plan-new-app`). The skills tell the agent which tools to call, in which order, and what to check before it reports back.
 
 - **Plan:** MCP access is part of every paid Taskade plan (Starter and up). Sign in once with your Taskade account.
 - **What it does:** imports a spreadsheet into a project, fixes a Taskade Genesis app one checked change at a time, reports on your projects and automations, backs up an app to a folder, and plans a new app.
-- **What stays in Taskade:** the plugin cannot create or edit an automation, build or publish an app, or set who can use an app. For those jobs, it writes the request for you to paste into Taskade EVE.
+- **What stays in Taskade:** the plugin cannot build an app, add fields to a project, or create or edit an automation. For those jobs, it writes the request for Taskade EVE. For a new app, it gives you a link that fills in the request and starts nothing. You publish an app and connect a domain in Taskade. For who can use an app, Taskade EVE proposes the setting and you apply it.
 
 | Host | Install |
 |---|---|
@@ -47,11 +49,13 @@ The `taskade` plugin connects your AI tool to your Taskade workspace through the
 | Gemini CLI | `gemini extensions install https://github.com/taskade/mcp` |
 | VS Code | See below |
 | Cursor | See below |
-| Any other agent | `npx skills add https://github.com/taskade/mcp` installs the skills only. Then add the hosted server `https://www.taskade.com/mcp` to the agent and sign in (see the [quick start](#taskade-mcp-server-quick-start)). |
+| Any other agent | `npx skills add taskade/mcp` installs the skills only. Then add the hosted server `https://www.taskade.com/mcp` to the agent and sign in (see the [quick start](#taskade-mcp-server-quick-start)). |
 
 **VS Code:** turn on the `chat.plugins.enabled` setting. Then run **Chat: Install Plugin From Source** from the Command Palette and enter `https://github.com/taskade/mcp`.
 
 **Cursor:** the Cursor plugin `taskade` (`.cursor-plugin/`) in this repository adds the same hosted server and skills.
+
+**Claude directory:** the directory listing reads the plugin from `plugins/taskade/`, a copy of the root plugin files. The other hosts read the root files.
 
 To add only the hosted server to Codex, run `codex mcp add taskade --url https://www.taskade.com/mcp`, then `codex mcp login taskade`.
 
@@ -65,7 +69,7 @@ To add only the hosted server to Codex, run `codex mcp add taskade --url https:/
 - [Example prompts](#example-prompts)
 - [Troubleshooting](#troubleshooting)
 - [Local package (stdio)](#local-package-stdio)
-- [Local package tools (62)](#local-package-tools-62)
+- [Local package tools (66)](#local-package-tools-66)
 - [Why Taskade MCP?](#why-taskade-mcp)
 - [Agent Recipes](#agent-recipes)
 - [OpenAPI Codegen](#openapi-codegen)
@@ -103,6 +107,8 @@ MCP-powered Taskade agent running inside Claude Desktop by Anthropic:
 An `initialize` request without a token returns `401` on purpose. The `401` tells your client where to start the OAuth sign-in.
 
 ### Claude (web, Desktop and mobile)
+
+Select **Connect in Claude** at the top of this page to open **Taskade AI** in the [Claude directory](https://claude.ai/directory/taskade-ai). To add the server as a custom connector instead:
 
 1. In Claude, go to [**Customize > Connectors**](https://claude.ai/customize/connectors) and select **Add custom connector**. On a Team or Enterprise plan, an Owner first adds the connector in **Organization settings > Connectors** (**Add**, then **Custom**).
 2. Enter the name `Taskade` and the URL `https://www.taskade.com/mcp`, then select **Add**.
@@ -191,11 +197,12 @@ Every hosted tool declares MCP tool annotations. Claude can run a read-only tool
 
 | Area | Read-only tools | Write tools |
 |---|---|---|
-| Workspaces | `list_spaces`, `list_folders`, `list_media`, `list_templates`, `inspect_space` | `write_file` (Genesis app source in `app/`) |
+| Workspaces | `list_spaces`, `list_folders`, `list_media`, `list_templates`, `inspect_space` | `write_file` (Taskade Genesis app source in `app/`) |
 | Automations | `list_automations`, `get_flow_runs` | `run_flow` |
 | Projects | `list_projects`, `list_my_projects`, `get_project`, `read_project`, `list_fields`, `list_blocks`, `list_project_members`, `get_share_link` | `create_project`, `create_project_from_template`, `copy_project`, `complete_project`, `restore_project`, `enable_share_link` |
 | Tasks | `list_tasks` | `create_task`, `update_task`, `complete_task`, `uncomplete_task`, `delete_task`, `move_task`, `set_task_note`, `delete_task_note`, `set_task_date`, `delete_task_date`, `assign_task`, `unassign_task`, `set_task_field_value`, `delete_task_field_value` |
 | AI agents | `list_agents`, `get_agent`, `list_conversations`, `get_conversation` | `create_agent`, `update_agent`, `delete_agent`, `prompt_agent`, `add_knowledge_project`, `remove_knowledge_project`, `add_knowledge_media`, `remove_knowledge_media` |
+| App kits | `list_my_kits` | `publish_kit_version` |
 
 - `get_flow_runs`: reads the recent runs of one automation, newest first. Each run has its status and times. A failed run also names the failed step and a short error. It needs edit rights on automations.
 - `run_flow`: starts one run of an automation that is On and starts "When asked". Every run is real: it counts toward the monthly automation runs of the plan, and AI steps use credits.
@@ -214,7 +221,7 @@ The server also serves the resource `taskade://getting-started`, a short guide f
    Tools: `create_agent`, `add_knowledge_project`, `prompt_agent`.
 4. **Close out a sprint.** "In the Sprint 42 project, mark every task that mentions 'shipped' as complete, then mark the project as completed."
    Tools: `list_tasks`, `complete_task`, `complete_project`.
-5. **Edit a Genesis app.** "In my CRM app, read `app/src/App.tsx` and change the page title to Acme CRM."
+5. **Edit a Taskade Genesis app.** "In my CRM app, read `app/src/App.tsx` and change the page title to Acme CRM."
    Tools: `inspect_space`, `write_file`.
 
 ---
@@ -343,7 +350,7 @@ The local package runs over stdio only. It has no HTTP or SSE mode. For a client
 
 ---
 
-## Local package tools (62)
+## Local package tools (66)
 
 The local package has its own tool names. They map to the Taskade public API v1 and v2.
 
@@ -370,6 +377,8 @@ The local package has its own tool names. They map to the Taskade public API v1 
 | `projectShareLinkEnable` | Enable the share link |
 | `projectBlocksGet` | Get all blocks in a project |
 | `projectTasksGet` | Get all tasks in a project |
+| `listTasks` | List tasks in a project, with a filter for open or completed tasks (API v2) |
+| `renameProject` | Rename a project (API v2) |
 | `folderProjectsGet` | List projects in a folder |
 
 ### Tasks
@@ -378,6 +387,7 @@ The local package has its own tool names. They map to the Taskade public API v1 
 |------|-------------|
 | `taskGet` | Get task details |
 | `taskCreate` | Create one or more tasks |
+| `createTask` | Create 1 to 20 tasks (API v2) |
 | `taskPut` | Update a task |
 | `taskDelete` | Delete a task |
 | `taskComplete` | Mark task as complete |
@@ -394,7 +404,8 @@ The local package has its own tool names. They map to the Taskade public API v1 
 | `taskNoteDelete` | Delete task note |
 | `taskFieldsValueGet` | Get all field values |
 | `taskFieldValueGet` | Get a specific field value |
-| `taskFieldValuePut` | Set a field value |
+| `taskFieldValuePut` | Set a text, number or Select field value |
+| `setTaskFieldValue` | Set a text, number, Select or date field value (API v2) |
 | `taskFieldValueDelete` | Delete a field value |
 
 ### AI Agents
@@ -469,7 +480,7 @@ Taskade MCP gives your AI assistant **access to your workspace** — projects, t
                          ↓
   ┌──────────────────────────────────┐
   │     Taskade MCP Server           │
-  │     (62 tools, 8 categories)     │
+  │     (66 tools, 8 categories)     │
   └──────────────────────────────────┘
        ↓              ↓            ↓
   folderCreateAgent  agentKnowledge  agentPublicAccess
@@ -496,7 +507,7 @@ Taskade MCP gives your AI assistant **access to your workspace** — projects, t
 
 ### Why Taskade MCP Over Other MCP Servers?
 
-Taskade MCP includes **AI agent management** (create, train, deploy agents), **knowledge base training** (attach docs, projects, media), and **OpenAPI codegen** (generate MCP tools from any API spec). 62 tools across 8 categories.
+Taskade MCP includes **AI agent management** (create, train, deploy agents), **knowledge base training** (attach docs, projects, media), and **OpenAPI codegen** (generate MCP tools from any API spec). 66 tools across 8 categories.
 
 ---
 
@@ -693,7 +704,7 @@ See [open issues](https://github.com/taskade/mcp/issues) for planned features an
 
 **Recently shipped (v0.1.0):** Agent chat (`promptAgent`) and webhook triggers, live now via the [Taskade API v2 tool layer](#agent-chat--webhooks-api-v2-beta).
 
-- **Automation tools**: the hosted server lists automations, reads their runs and runs a "When asked" automation (`list_automations`, `get_flow_runs`, `run_flow`). Create, enable and manage automations through MCP are on the roadmap.
+- **Automation tools**: the hosted server lists automations, reads their runs and runs an automation that is On and starts "When asked" (`list_automations`, `get_flow_runs`, `run_flow`). Create, enable and manage automations through MCP are on the roadmap.
 - **`agent.js`** — Open-source autonomous agent toolkit (coming soon)
 - **TaskOS** — Agent platform at [docs.taskade.com](https://docs.taskade.com)
 

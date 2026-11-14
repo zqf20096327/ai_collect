@@ -39,6 +39,11 @@ existence-trace is the missing half: a journal your AI actually reads, in files 
 
 It does not replace Claude or ChatGPT. It gives them something worth remembering.
 
+##See it
+
+https://github.com/user-attachments/assets/af186670-92f3-4ed9-8670-6417c1acf194
+
+
 ## Built-in chat memory vs. existence-trace
 
 | | Built-in chat memory | existence-trace |
@@ -225,3 +230,12 @@ please reach out to a qualified professional or a local crisis line.
 Your data lives only in your data directory, outside this repository. Email carries only the
 context a question needs, never the full journal. Credentials are read from files you name in
 `trace.toml` and never written into config, logs or prompts.
+
+## More videos if you like!
+
+https://github.com/user-attachments/assets/75af8f18-e94c-441b-993b-06e973801d1b
+
+
+https://github.com/user-attachments/assets/2581502f-3c5f-4bce-8d25-f0dcc528a40b
+
+

@@ -90,19 +90,20 @@ Every plugin is a directory under `aifred/plugins/tools/` or `aifred/plugins/cha
 ### 🎩 Multi-Agent System
 
 - **Agents** — 🎩 AIfred (butler & scholar), 🏛️ Sokrates (critic), 👑 Salomo (judge), 📷 Vision, plus shipped custom agents 🔥 Pater Tuck, 🤖 Codine (code & sandbox), 🔴 HAL 9000, 🕎 Rabbi Shmuel — and as many of your own as you like: name, emoji, role, bilingual prompts, own memory, own model and voice, created in the **Agent Editor**
-- **Five discussion modes**
+- **Six discussion modes**
 
   | Mode | Flow | Who decides? |
   |---|---|---|
   | **Standard** | One agent answers | — |
   | **Critical Review** | AIfred → Sokrates (critique + pro/contra) | You |
+  | **Recensio** | Code review: the auctor's work is read and tested by a censor, the auctor fixes, N rounds | Censor (`[LGTM]`) |
   | **Auto-Consensus** | AIfred → Sokrates → Salomo, N rounds | Salomo (votes) |
   | **Tribunal** | AIfred ↔ Sokrates, N rounds → Salomo | Salomo (verdict) |
   | **Symposion** | 2+ chosen agents discuss, reflection layer from round 2 | Nobody — many perspectives |
 
 - **Sub-agents (delegation)** — any agent can hand a self-contained task to a sub-agent via `delegate_task`: a fresh model run with its own context and tool loop. Only the report returns to the caller; the full transcript sits collapsed in the chat bubble. A task can also go to another main agent with its persona, model and tools — measured with Qwen3.8-27B, AIfred's prompt shrinks from 31,730 to 17,449 tokens per turn (≈ 45 % less prefill). See [Sub-Agents](docs/en/guides/plugins/subagent.md)
 - **Address agents by name** — "Sokrates, what do you think…?" — in every channel; mode switches by voice or text ("Start a tribunal and discuss X") in any language
-- **Every agent sees the conversation from its own perspective**, prompts are assembled from up to ten layers (identity, reasoning, roles, task, memory, personality, tools, …)
+- **Every agent sees the conversation from its own perspective**, prompts are assembled from up to twelve layers (identity, reasoning, roles, situation, memory, personality, tools, …)
 
 Details — flows, prompt files, perspectives, labels: [Multi-Agent System](docs/en/architecture/multi-agent.md).
 
@@ -166,7 +167,7 @@ Details: [Vision / Vigilantia plugin](docs/en/guides/plugins/vision.md).
 - **Automatic context calibration** — VRAM-aware context sizing per model with a greedy cascade (fill the fastest GPU class first, spill to the next), binary search, RoPE scaling, tensor-split optimisation, speed variants with fewer GPUs; hardware-agnostic, no hand-tuned GPU lists. A 2D picker calibrates each combination of VLM and TTS engine as its own profile, with a capacity guard for the shared side-channel GPU. Algorithm: [Calibration Strategy](docs/de/architecture/calibration-strategy.md) (German) · vLLM: [vLLM Calibration](docs/en/architecture/calibration-vllm.md)
 - **Zero-config models** — `ollama pull …` or `hf download …`, then `llama-swap-restart`: the autoscan finds the model, tests it, writes the YAML entry, groups and VRAM cache. See [llama.cpp setup](docs/en/guides/llamacpp-setup.md)
 - **Per-agent tuning** — model, sampling, reasoning prompt 💭 and thinking 🧠 separately, reasoning effort, context size and speed variant per agent
-- **History compression** — at 70 % context utilisation the oldest messages become summaries: conversations of unlimited length
+- **History compression** — at 85 % context utilisation the oldest messages become summaries, also inside a turn's tool loop: conversations of unlimited length
 - **Distributed inference** — llama.cpp RPC across machines in the LAN
 - **Clearing the cards before a load** — [GPU-Orc](https://github.com/Peuqui/GPU-Orc), a small service per machine, asks the speech services and llama-swap's helper models to let go of the cards a model needs and checks that they did (status and memory per card); it never ends a process itself. Set up by the installer: [Deployment → GPU-Orc](docs/en/guides/deployment.md#9c-clearing-the-cards-gpu-orc)
 

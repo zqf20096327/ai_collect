@@ -10,23 +10,23 @@
 <h1 align="center">Awesome Vibe Coding Websites</h1>
 
 <p align="center">
-  <b>269 original website templates and 552 live demos built by AI coding agents — each with the exact prompt and a DESIGN.md.</b><br>
+  <b>269 original website templates and 556 live demos built by AI coding agents — each with the exact prompt and a DESIGN.md.</b><br>
   Pick one, swap the <code>[VARIABLES]</code>, paste it into Claude Code, Cursor or Codex, and ship your own.
 </p>
 
 <p align="center">
   <a href="https://awesome.re"><img src="https://awesome.re/badge-flat2.svg" alt="Awesome"></a>
   <a href="https://vibefather.ai/templates?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=badge"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fvibefather.ai%2Fapi%2Fv1%2Fbadge%3Fm%3Dtemplates&style=flat-square" alt="269 templates"></a>
-  <a href="https://vibefather.ai/templates?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=badge"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fvibefather.ai%2Fapi%2Fv1%2Fbadge%3Fm%3Dsites&style=flat-square" alt="552 live demos"></a>
+  <a href="https://vibefather.ai/templates?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=badge"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fvibefather.ai%2Fapi%2Fv1%2Fbadge%3Fm%3Dsites&style=flat-square" alt="556 live demos"></a>
   <a href="https://vibefather.ai/models?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=badge"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fvibefather.ai%2Fapi%2Fv1%2Fbadge%3Fm%3Dmodels&style=flat-square" alt="8 AI models"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/prompts-CC_BY--NC_4.0-111?style=flat-square" alt="CC BY-NC 4.0"></a>
 </p>
 
 <p align="center">
-  <a href="https://vibefather.ai/?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=top-cta"><b>▶ Browse all 552 live demos</b></a> &nbsp;·&nbsp; <a href="README.zh-CN.md">简体中文</a> &nbsp;·&nbsp; <a href="#use-it-with-your-ai-coding-agent">Use with your agent</a>
+  <a href="https://vibefather.ai/?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=top-cta"><b>▶ Browse all 556 live demos</b></a> &nbsp;·&nbsp; <a href="README.zh-CN.md">简体中文</a> &nbsp;·&nbsp; <a href="#use-it-with-your-ai-coding-agent">Use with your agent</a>
 </p>
 
-**Awesome Vibe Coding Websites** is a free, open library of 269 original vibe coding website templates and 552 live demos, built by 8 AI models — Gemini 4 Carbon, Kimi K3.1 Pro, GPT-6.1 Sol, Claude Opus 5.5, Grok 4.7, Claude Sonnet 5.5, DeepSeek V4.1 Flash and GLM-5.3. Every template ships the exact prompt that built its demo and a DESIGN.md, so you can paste it into Claude Code, Cursor, Codex or any other AI coding tool and get the same kind of site: landing pages, SaaS sites, portfolios, online stores, dashboards, 3D scenes and browser games. Preview every site live on [VibeFather](https://vibefather.ai/?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=intro).
+**Awesome Vibe Coding Websites** is a free, open library of 269 original vibe coding website templates and 556 live demos, built by 8 AI models — Gemini 4 Carbon, Kimi K3.1 Pro, GPT-6.1 Sol, Claude Opus 5.5, Grok 4.7, Claude Sonnet 5.5, DeepSeek V4.1 Flash and GLM-5.3. Every template ships the exact prompt that built its demo and a DESIGN.md, so you can paste it into Claude Code, Cursor, Codex or any other AI coding tool and get the same kind of site: landing pages, SaaS sites, portfolios, online stores, dashboards, 3D scenes and browser games. Preview every site live on [VibeFather](https://vibefather.ai/?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=intro).
 
 **Categories:** [Landing Pages & Product Launches](#landing-pages--product-launches) <sub>13</sub> · [SaaS, AI & App Sites](#saas-ai--app-sites) <sub>43</sub> · [Games, 3D & Interactive Toys](#games-3d--interactive-toys) <sub>37</sub> · [Interactive Explainers & Slides](#interactive-explainers--slides) <sub>22</sub> · [Portfolios, Studios & Blogs](#portfolios-studios--blogs) <sub>33</sub> · [E-commerce & Product Pages](#e-commerce--product-pages) <sub>30</sub> · [Local Business & Services](#local-business--services) <sub>65</sub> · [Restaurants, Hotels & Travel](#restaurants-hotels--travel) <sub>12</sub> · [Events & Communities](#events--communities) <sub>10</sub> · [More Landing Pages](#more-landing-pages) <sub>4</sub>
 
@@ -421,7 +421,7 @@ Each pair below was built from the identical prompt by two different models — 
 
 | Template | What it is | Built with | |
 |---|---|---|---|
-| [Used Car Dealership Website](templates/used-car-dealership-website) <sup>PRO</sup> | A modern graphite-and-yellow dealership site with real inventory filters, a payment calculator and three-car compare. | GLM-5.3 | [Live demo](https://vibefather.ai/templates/used-car-dealership-website?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-ecommerce) · [Prompt](templates/used-car-dealership-website/prompt.md) |
+| [Used Car Dealership Website](templates/used-car-dealership-website) <sup>PRO</sup> | A modern graphite-and-yellow dealership site with real inventory filters, a payment calculator and three-car compare. | GLM-5.3, Kimi K3.1 Pro | [Live demo](https://vibefather.ai/templates/used-car-dealership-website?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-ecommerce) · [Prompt](templates/used-car-dealership-website/prompt.md) |
 | [Generative Art Studio Website](templates/generative-art-studio-website) | A studio site where every background is seeded code, with a live gallery and a framed print shop. | Claude Opus 5.5, Claude Sonnet 5.5, Gemini 4 Carbon | [Live demo](https://vibefather.ai/templates/generative-art-studio-website?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-ecommerce) · [Prompt](templates/generative-art-studio-website/prompt.md) |
 | [Sticker Shop Website](templates/sticker-shop-website) | A cherry-and-lemon sticker shop with original art, product photos, a six-slot pack builder, and local cart. | GPT-6.1 Sol, GLM-5.3 | [Live demo](https://vibefather.ai/templates/sticker-shop-website?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-ecommerce) · [Prompt](templates/sticker-shop-website/prompt.md) |
 | [Running Shoe Product Launch Page](templates/running-shoe-product-launch-page) <sup>PRO</sup> | An electric blue and volt shoe launch with original 3D rotation, product photography, and honest demo tools. | GPT-6.1 Sol, GLM-5.3 | [Live demo](https://vibefather.ai/templates/running-shoe-product-launch-page?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-ecommerce) · [Prompt](templates/running-shoe-product-launch-page/prompt.md) |
@@ -452,4 +452,4 @@ Each pair below was built from the identical prompt by two different models — 
 
 ### Local Business & Services
 
-<sub>65 templates · Clinics, studios, 
+<sub>65 templates · Cli

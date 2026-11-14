@@ -32,7 +32,7 @@
 
 - **Annotate once, all platforms updated** — add `@AILocked` to `PaymentProcessor` and every AI tool's guardrail file is regenerated on the next compile. No more per-developer copy-pasting across [every generated config file](#project-facts).
 - **Derived from the code, not separate from it** — guardrails live next to the code they protect. When the code moves, the rules move with it.
-- **Granular rules keep the always-loaded context slim** — opt a platform's scoped-rules directory in (`.claude/rules/`, `.cursor/rules/`, `.windsurf/rules/`, `.github/instructions/`, `.gemini/rules/`) and its aggregate file collapses to an index: only the safety buckets (`@AILocked`, `@AICore`, `@AIPrivacy`, `@AIIgnore`, `@AIAudit`, `@AISecure`) stay inline, and the per-element detail loads on demand when the matching source file is opened (Gemini CLI does not read `.gemini/rules/` itself, so `GEMINI.md`'s index tells the agent to open the file). This repository dogfoods it — the generated block in its own `CLAUDE.md` is 71 lines, with 370 lines of per-element detail sitting in `.claude/rules/` until they are relevant. Without it, that file grows linearly with every annotated element. See [USAGE.md](USAGE.md#-granular-rules-cursor-trae-zoo-code).
+- **Granular rules keep the always-loaded context slim** — opt a platform's scoped-rules directory in (`.claude/rules/`, `.cursor/rules/`, `.windsurf/rules/`, `.github/instructions/`, `.gemini/rules/`) and its aggregate file collapses to an index: only the safety buckets (`@AILocked`, `@AICore`, `@AIPrivacy`, `@AIIgnore`, `@AIAudit`, `@AISecure`) stay inline, and the per-element detail loads on demand when the matching source file is opened (Gemini CLI does not read `.gemini/rules/` itself, so `GEMINI.md`'s index tells the agent to open the file). This repository dogfoods it — the generated block in its own `CLAUDE.md` is 71 lines, with 374 lines of per-element detail sitting in `.claude/rules/` until they are relevant. Without it, that file grows linearly with every annotated element. See [USAGE.md](USAGE.md#-granular-rules-cursor-trae-zoo-code).
 - **Zero runtime cost** — `RetentionPolicy.SOURCE` annotations are erased at compile time; nothing reaches the JVM.
 - **CI-enforceable** — opt-in check mode (`-Avibetags.check=true`) fails the build when guardrail files have drifted from the annotations, and the [locked-files GitHub Action](action/locked-files/README.md) fails any PR whose diff touches `@AILocked` code. See [USAGE.md](USAGE.md#check-mode--ci-drift-enforcement-opt-in).
 
@@ -80,7 +80,7 @@ model: [evals/consumer/README.md](evals/consumer/README.md).
         <dependency>
             <groupId>se.deversity.vibetags</groupId>
             <artifactId>vibetags-bom</artifactId>
-            <version>1.4.1</version>
+            <version>1.4.2</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -104,7 +104,7 @@ model: [evals/consumer/README.md](evals/consumer/README.md).
                     <path>
                         <groupId>se.deversity.vibetags</groupId>
                         <artifactId>vibetags-processor</artifactId>
-                        <version>1.4.1</version>
+                        <version>1.4.2</version>
                     </path>
                 </annotationProcessorPaths>
             </configuration>
@@ -128,7 +128,7 @@ touch CLAUDE.md .cursorrules AGENTS.md   # Claude, Cursor, Codex CLI — add whi
 Or let the companion CLI do it (and `vibetags doctor` checks your setup afterwards):
 
 ```bash
-jbang se.deversity.vibetags:vibetags-cli:1.4.1 init --platforms claude,cursor
+jbang se.deversity.vibetags:vibetags-cli:1.4.2 init --platforms claude,cursor
 ```
 
 **3. Annotate your first class:**
@@ -157,8 +157,8 @@ mvn compile
 
 ```groovy
 dependencies {
-    implementation platform('se.deversity.vibetags:vibetags-bom:1.4.1')
-    annotationProcessor platform('se.deversity.vibetags:vibetags-bom:1.4.1')
+    implementation platform('se.deversity.vibetags:vibetags-bom:1.4.2')
+    annotationProcessor platform('se.deversity.vibetags:vibetags-bom:1.4.2')
 
     compileOnly 'se.deversity.vibetags:vibetags-annotations'
     annotationProcessor 'se.deversity.vibetags:vibetags-processor'
@@ -204,8 +204,8 @@ plugins {
 }
 
 dependencies {
-    implementation(platform("se.deversity.vibetags:vibetags-bom:1.4.1"))
-    kapt(platform("se.deversity.vibetags:vibetags-bom:1.4.1"))
+    implementation(platform("se.deversity.vibetags:vibetags-bom:1.4.2"))
+    kapt(platform("se.deversity.vibetags:vibetags-bom:1.4.2"))
 
     compileOnly("se.deversity.vibetags:vibetags-annotations")
     kapt("se.deversity.vibetags:vibetags-processor")
@@ -270,8 +270,8 @@ plugins {
 }
 
 dependencies {
-    implementation(platform("se.deversity.vibetags:vibetags-bom:1.4.1"))
-    ksp(platform("se.deversity.vibetags:vibetags-bom:1.4.1"))
+    implementation(platform("se.deversity.vibetags:vibetags-bom:1.4.2"))
+    ksp(platform("se.deversity.vibetags:vibetags-bom:1.4.2"))
 
     compileOnly("se.deversity.vibetags:vibetags-annotations")
     ksp("se.deversity.vibetags:vibetags-ksp")
@@ -571,8 +571,8 @@ without
 installing anything:
 
 ```bash
-jbang se.deversity.vibetags:vibetags-cli:1.4.1 init --list
-jbang se.deversity.vibetags:vibetags-cli:1.4.1 doctor
+jbang se.deversity.vibetags:vibetags-cli:1.4.2 init --list
+jbang se.deversity.vibetags:vibetags-cli:1.4.2 doctor
 ```
 
 The platform list and marker rules are read from `vibetags-processor` at runtime, so the CLI
@@ -607,7 +607,7 @@ The recommended setup uses the BOM (`vibetags-bom`) to manage both versions in o
         <dependency>
             <groupId>se.deversity.vibetags</groupId>
             <artifactId>vibetags-bom</artifactId>
-            <version>1.4.1</version>
+            <version>1.4.2</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -632,7 +632,7 @@ The recommended setup uses the BOM (`vibetags-bom`) to manage both versions in o
                     <path>
                         <groupId>se.deversity.vibetags</groupId>
                         <artifactId>vibetags-processor</artifactId>
-                        <version>1.4.1</version>
+                        <version>1.4.2</version>
                     </path>
                 </annotationProcessorPaths>
             </configuration>
@@ -650,8 +650,8 @@ The recommended setup uses the BOM (`vibetags-bom`) to manage both versions in o
 **Gradle:**
 ```groovy
 dependencies {
-    implementation platform('se.deversity.vibetags:vibetags-bom:1.4.1')
-    annotationProcessor platform('se.deversity.vibetags:vibetags-bom:1.4.1')
+    implementation platform('se.deversity.vibetags:vibetags-bom:1.4.2')
+    annotationProcessor platform('se.deversity.vibetags:vibetags-bom:1.4.2')
 
     compileOnly 'se.deversity.vibetags:vibetags-annotations'
     annotationProcessor 'se.deversity.vibetags:vibetags-processor'
@@ -665,15 +665,15 @@ dependencies {
 <dependency>
     <groupId>se.deversity.vibetags</groupId>
     <artifactId>vibetags-annotations</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
 </dependency>
 <!-- vibetags-processor goes in <annotationProcessorPaths> as shown above -->
 ```
 
 **Gradle:**
 ```groovy
-compileOnly 'se.deversity.vibetags:vibetags-annotations:1.4.1'
-annotationProcessor 'se.deversity.vibetags:vibetags-processor:1.4.1'
+compileOnly 'se.deversity.vibetags:vibetags-annotations:1.4.2'
+annotationProcessor 'se.deversity.vibetags:vibetags-processor:1.4.2'
 ```
 
 > **Backwards compatibility:** Existing 0.5.x setups that depended on `vibetags-processor:<version>` directly continue to work — the processor pulls `vibetags-annotations` transitively. New projects should prefer the split pattern above.

@@ -17,7 +17,7 @@ For a complete list of supported formats and their available modes, see [docs/fi
 
 ## Requirements
 
-- Go 1.27.3 (or download a pre-built binary)
+- Go 1.27.4 (or download a pre-built binary)
 - API key for any OpenAI-compatible provider (OpenAI, Azure OpenAI, Ollama, etc.)
 
 **Note:** Qdrant is **no longer required**. The default vector store is **Chromem** (built-in, in-memory with optional persistence). Qdrant is available as an optional external store for production deployments.
@@ -272,6 +272,7 @@ The agent will now search the knowledge base before answering any question.
 | `/profile [name]` | — | Show or switch profile |
 | `/readonly` | — | Toggle read-only mode |
 | `/timing [on\|off]` | — | Show or toggle the execution time after each answer |
+| `/tools` | `/t` | List all available tools and their descriptions |
 | `/confluence.edit <url> <content>` | — | Edit a Confluence page by URL with Markdown content |
 | `/idxtab <file>` | — | Index multiple documents from a JSON lines file |
 | `/session.save <file>` | — | Save conversation to a JSON file |

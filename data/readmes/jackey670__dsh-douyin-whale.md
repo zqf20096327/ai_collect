@@ -191,6 +191,8 @@ node scheduler/scheduler.mjs --watch-now
 
 # 手动跑一次记忆固化（先停调度器）
 node scheduler/scheduler.mjs --memory-consolidate
+# 手动跑一次周反思（先停调度器）
+node scheduler/scheduler.mjs --memory-reflect
 ```
 
 状态和记忆都在 `~/.dsh/`：
@@ -201,7 +203,7 @@ node scheduler/scheduler.mjs --memory-consolidate
 | `douyin-whale-state.json` | 内容队列、已回复 id、今日计数、上次主动分享时间 |
 | `whale-mood.json` | 精力 / 想念 / 无聊、上次互动时间、作息中的睡眠标记 |
 | `whale-pet-state.json` | 桌宠气泡限流时间、睡觉状态（没装桌宠就不生成） |
-| `memory/episodes.jsonl` / `profile.json` / `index.json` | 分层长期记忆：情节、稳定事实、检索索引（v1.14.0） |
+| `memory/episodes.jsonl` / `profile.json` / `arcs.json` / `index.json` | 分层长期记忆：情节、稳定事实、叙事线、检索索引（v1.14.0–v1.14.3） |
 | `douyin-whale-scheduler.log` | 运行日志 |
 | `memory/dm-<昵称>.json` | 每位联系人的对话记忆（只存本机，不进仓库和日志） |
 | `whale-diary.md` / `whale-diary-private.md` | 公开 / 私人日记 |
@@ -232,6 +234,18 @@ node scheduler/scheduler.mjs --memory-consolidate
 **记忆固化（v1.14.1）**：迁移之后的新私信/日记，≥10 条消息或凌晨 3–7 点触发一次；
 模型抽 facts/episodes，**证据必须对上原话**，私人日记来源标 private，日志只记条数。
 手动：`node scheduler/scheduler.mjs --stop` 后跑 `--memory-consolidate`。
+
+**召回评测与面板（v1.14.2）**：`node tools/memory-eval.mjs` 跑内置 30 题
+（合成语料，事实/事件/私人/负例四类），输出 hit@1、hit@4、MRR、预算与耗时；
+`--real` 用本机记忆做索引冒烟，`--questions` 用手写问题集（文件别入库）。
+面板「记忆」卡可搜索、置顶、删除、采纳/忽略待确认；搜索结果默认不含私人条目。
+配置里的 `preferences.like/dislike` 首次启动会写成置顶事实；固化时 confidence
+低于 0.75 的事实进 `profile.pending`，人工采纳后才进档案。
+
+**周反思（v1.14.3）**：最近 7 天的情节归纳成 1–2 条叙事线（`memory/arcs.json`），
+每轮以【最近这几周】注入；只引用已有情节，不产生新事实。默认 7 天一次、
+至少 5 条情节；引用私人日记的叙事线标 private，默认不注入。手动：
+`node scheduler/scheduler.mjs --stop` 后跑 `--memory-reflect`。
 
 ### 值班大脑（发布版，不依赖 ZCode）
 
@@ -326,6 +340,11 @@ llm-pi-ai:
 | GET | `/login/qr.png` | 内嵌二维码（只在扫码进程活着且路径安全时下发） |
 | POST | `/login/qr` | 起一个无头扫码进程 |
 | GET | `/gate`、`/memory` | 发送闸剩余冷却 / 记忆占用 |
+| GET | `/memory/overview` | 记忆统计 + 事实 + 待确认 + 最近情节（摘要） |
+| GET | `/memory/search?q=&private=1` | 本机记忆搜索（默认过滤私人；不返回原话） |
+| POST | `/memory/pin` | 事实置顶/取消置顶 |
+| POST | `/memory/pending` | 采纳/忽略待确认事实 |
+| DELETE | `/memory/item?id=` | 删除事实（软删）或情节（原文保留） |
 
 ### 不装 DSH 先看面板
 
@@ -341,7 +360,7 @@ npm run preview          # 打开 http://127.0.0.1:7701
 （gitignored，从 npmmirror 下载）。
 
 ```bash
-npm test                 # 47 项离线断言：安全 / 回读 / 发送闸 / 记忆 / 面板状态 / API 路由
+npm test                 # 离线断言：安全 / 回读 / 发送闸 / 记忆分层与固化 / 召回评测 / 面板 API
 ```
 
 ## 环境要求
@@ -734,6 +753,7 @@ dsh-douyin-whale/
 │   ├── pet_bridge.js            # 桌宠气泡 / 睡觉起床（独立通道，不碰 work-status）
 │   ├── memory_layers.js         # 四层记忆：迁移、索引、检索、预算注入
 │   ├── memory_consolidate.js    # 记忆固化：新素材 → facts/episodes（证据校验）
+│   ├── memory_reflect.js        # 周反思：最近 7 天情节 → 叙事线（arcs）
 │   └── normalize.js             # 响应归一化（缺失即 null）
 ├── scheduler/
 │   ├── scheduler.mjs            # 定时看私信 → 唤醒 agent → 回读确认
@@ -752,6 +772,7 @@ dsh-douyin-whale/
 │   ├── export_login_state.py    # 有头扫码登录 → 写入持久化 profile
 │   ├── login_headless.py        # 无头出二维码（截图给人扫）
 │   ├── run-py.mjs               # npm scripts 里选 .venv 的 Python
+│   ├── memory-eval.mjs          # 记忆召回评测（合成 30 题 / 本机冒烟 / 手写问题集）
 │   ├── panel-preview/           # 不装 DSH 的本地面板预览（模拟宿主）
 │   └── probe_im.py              # DOM 探测（前端改版后对照选择器）
 ├── tests/

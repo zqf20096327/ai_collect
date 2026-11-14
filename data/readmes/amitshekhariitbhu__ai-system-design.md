@@ -1235,7 +1235,7 @@ Even with good chunking, a chunk can lose its context. A chunk that says "Revenu
 
 Vector search is great at finding meaning. But it is bad at exact-match queries like "Order ID 12345" or "Section 4.2.1".
 
-For exact-match, the old keyword search (**BM25** - Best Matching 25) is much better.
+For exact-match, the old keyword search (**BM25** - Best Matching 25) is much better. Keyword search finds documents fast using an inverted index, which maps each word to the list of documents that contain it. We have a detailed blog on [How does an Inverted Index work?](https://outcomeschool.com/blog/inverted-index).
 
 So in production RAG, we use [**Hybrid Search**](https://outcomeschool.com/blog/how-does-hybrid-search-work): run both vector search and BM25, combine the scores, and return the best results from both.
 
@@ -1541,4 +1541,4 @@ But there is a deeper problem. The maximum context window is the size we are _al
 
 As we fill the context with more tokens, three things happen, and they all hurt quality.
 
-**1. Context Rot.** As the number of tokens in the context grows, the model's ability to recall information from anywhere in that context drops. Long-context evaluations (such as **Needle-in-a-Haystack** style tests and the more recent RULER and LongBench benchmarks) show that even models that advertise very long context windows start losing accuracy well before they hit that limit. So a large advertised conte
+**1. Context Rot.** As the number of tokens in the context grows, the model's ability to recall information from anywhere in that context drops. Long-context evaluations (such as 

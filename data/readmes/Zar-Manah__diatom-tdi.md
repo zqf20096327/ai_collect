@@ -6,7 +6,6 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23108803.svg)](https://doi.org/10.5281/zenodo.23108803)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![WFD Compliant](https://img.shields.io/badge/WFD%20Directive-2000%2F60%2FEC-06B6D4.svg)](https://environment.ec.europa.eu/topics/water/water-framework-directive_en)
 [![Offline Privacy](https://img.shields.io/badge/Privacy-100%25%20Offline%20%2F%20Zero%20Cloud-success.svg)](#privacy--data-sovereignty)
@@ -132,7 +131,7 @@ Neural weights and reproducible artifacts are available via GitHub Releases and 
 - **Detritus Noise Signature Vector:** `checkpoints/f2_edited/detritus_vector.pt`
 - **Biological Morphometric Priors:** `data/morphometric_prior_101.json`
 - **Baseline Model:** `checkpoints/f2/best.pt` (SHA-256: `8d4fd7c61b6a1e11f329847db902830bee8623862f53d7a521ebe6943f7676c1`)
-- **Zenodo DOI:** [10.5281/zenodo.23108803](https://doi.org/10.5281/zenodo.23108803)
+- **Repository:** [github.com/Zar-Manah/diatom-tdi](https://github.com/Zar-Manah/diatom-tdi)
 
 ---
 
@@ -145,9 +144,8 @@ Neural weights and reproducible artifacts are available via GitHub Releases and 
 
 ## 👤 Author & Affiliation
 * **Author:** Zar Manah
-* **Affiliation:** Independent Researcher, Madrid, Spain
-* **ORCID:** [0009-0007-8443-8999](https://orcid.org/0009-0007-8443-8999)
-* **Correspondence:** `teabiskot@gmail.com`
+* **Affiliation:** Independent Researcher
+* **Correspondence:** GitHub issues
 
 ---
 
@@ -159,10 +157,10 @@ If you use this software or empirical error damping findings in your research, p
 @article{manah2026bridging,
   title={Bridging Computer Vision and Freshwater Biomonitoring: Deep Learning-Driven Trophic Diatom Index Estimation, Closed-Form Weight-Space Surgery, and Empirical Error Damping Across 294 Natural River Assemblages},
   author={Manah, Zar},
-  affiliation={Independent Researcher, Madrid, Spain},
+  affiliation={Independent Researcher},
   journal={Zenodo Preprints},
   year={2026},
-  doi={10.5281/zenodo.23108803}
+  url={https://github.com/Zar-Manah/diatom-tdi}
 }
 ```
 

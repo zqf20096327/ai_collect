@@ -282,7 +282,7 @@ The log format is documented in [docs/log-format.md](docs/log-format.md) and des
 
 - Windows is supported and tested in CI (Python 3.11–3.13 on `windows-latest`). Process-tree termination uses `taskkill /F /T` to kill runaway commands and all their children. The Docker backend runs as user `1000:1000` in the container (override with `DockerSandbox(user=...)`); Docker Desktop with Linux containers is required. The local backend automatically discovers Git Bash (in Program Files, LocalAppData, or on PATH), using `python` instead of Unix `python3`.
 - Detector thresholds are initial values, not calibrated on real agent traces.
-- No network capture yet (the sandbox simply has no network).
+- Network egress: outbound connections are filtered by domain and recorded as signed audit events; full HTTP/HTTPS request and response payload capture is not recorded.
 - No semantic drift detection yet; detection is command and state based.
 - Error signatures cover Python, Node.js and Go only. Other languages use a generic fallback.
 
@@ -299,9 +299,10 @@ The log format is documented in [docs/log-format.md](docs/log-format.md) and des
 - [x] Sandbox resource and crash events (Docker backend)
 - [x] Public-key signing so third parties can verify logs ([#23](https://github.com/Agentboxx-dev/Agentboxx/issues/23))
 - [x] Validate against a live model ([#5](https://github.com/Agentboxx-dev/Agentboxx/issues/5))
-- [ ] Network egress capture (design in [docs/network-egress.md](docs/network-egress.md))
+- [x] Network egress filtering proxy & connection audit events ([#24](https://github.com/Agentboxx-dev/Agentboxx/issues/24))
+- [x] Session replay UI ([#29](https://github.com/Agentboxx-dev/Agentboxx/issues/29))
+- [ ] First-class MCP tool-call recording ([#50](https://github.com/Agentboxx-dev/Agentboxx/issues/50))
 - [ ] Semantic drift detector
-- [ ] Session replay UI
 - [ ] Threshold calibration on recorded sessions
 
 ## Live Model Execution & Task Contracts

@@ -78,7 +78,7 @@ Edit `profile.json`. It is git-ignored, so your details stay on your machine.
 | `portfolio`, `github`, `linkedin`, `resume`, `phone` | no | Shown at the bottom. Blank ones are left out. |
 | `subject` | no | Subject line; `{company}` is replaced with the company name. |
 | `closing` | no | The closing line before your links. (long emails) |
-| `email_style` | no | `short` (default, about 100–130 words: opener, who you are, one project, one ask, two links) or `long` (every section above). |
+| `email_style` | no | `short` (default, about 100–130 words: opener, who you are, one project, one ask, two links and your resume) or `long` (every section above). |
 | `ask` | no | The short email's last line; `{company}` is replaced. Default: *Would you be open to a remote intern at {company}? I'd be glad to start with a short trial task.* |
 
 Plain text only: emails must not contain `*`, `#` or backticks, and the generator refuses to build a draft
@@ -187,7 +187,11 @@ Then open Gmail > Drafts, review each draft, and send the ones you like yourself
   then a generic inbox (`hello@`). A bare `{first}@domain` guess is **not drafted**: the company is listed
   under *Needs a contact* in `status` so you can find an address and retry with `target <url> --force`
   (`ALLOW_GUESSED_EMAILS=1` restores the old behaviour). A founder the model names is only used if the
-  site itself names them.
+  site itself names them. For YC companies whose site names no founder, the founders listed on the
+  company's YC page are used instead (the CEO first).
+- **Support inboxes are never drafted to**: addresses like `refunds@`, `loansupport@`, `billing@`,
+  `customercare@` or `support@` reach a help desk, not a founder, so they're ignored even when they're the
+  only address on the site.
 - **Generic inboxes**: when the site names a founder but the only address is a generic one (`hello@`,
   `info@`, `contact@`, `team@`), the company goes under *Needs a contact* instead of being drafted, because
   those inboxes rarely reach the founder. `status` lists the founder with a LinkedIn search link, so you can
@@ -204,11 +208,36 @@ Then open Gmail > Drafts, review each draft, and send the ones you like yourself
   board gives no date is kept. "Open" means the company hasn't taken the posting down, not that it's
   still reading applications.
 - **Email copy**: short by default (about 100–130 words): the opener, who you are, the first sentence of your
-  project for the company's domain, one ask and two links. `"email_style": "long"` adds your role pitch, every
+  project for the company's domain, one ask, two links and your resume link (always included when `resume`
+  is set). `"email_style": "long"` adds your role pitch, every
   matching project, experience, stack, closing and all links.
 - **Wrong pages**: a lead that points at a news article or a job-board posting is skipped, not drafted. Known
   hosts are skipped before scraping; the model labels the rest. The reason names the company, so you can add
   its real site with `target`.
+- **Not software**: while reading the site, the model also says what the company mainly sells. A company is
+  skipped, before any email lookup, only when it clearly doesn't sell software (a laundry service, a clinic,
+  a reactor maker) **and** fits none of the software domains; the reason says what it does. A company that
+  sells software to any industry counts as software, and so does an AI device filed under AI Agents or one
+  the model isn't sure about. `SKIP_NON_SOFTWARE=0` keeps them all.
+- **Job-alert emails** (`JOB_ALERTS=1`, off by default): portals such as Naukri forbid scraping, but they
+  email you the roles matching the alerts you set up there. With this on, each `run` reads those emails
+  from the last 3 days (`JOB_ALERT_DAYS`) and lists every new internship in the digest under *From your
+  job alerts*, with the company, role, place and apply link. Each opening is listed once.
+  - It needs Gmail's **read-only** permission on top of drafts, so the first run after you turn it on
+    opens the browser to sign in again. Only emails from the alert senders are searched for, in your own
+    inbox; nothing else is opened and nothing is sent anywhere except your digest. In Google Cloud
+    Console, first add `https://www.googleapis.com/auth/gmail.readonly` next to the compose scope (step 5
+    of *Set up Gmail access* above). You don't need to delete `token.json`: seedreach notices it can't
+    read mail and signs you in again.
+  - Naukri (`naukrialerts@naukri.com`) is read today. Other portals need one small parser each, written
+    from a real alert email (`src/sourcing/job_alerts.py`).
+  - These openings are for you to apply to. They don't become drafts, because an alert names a company
+    but not its website. To also write to one, add its site: `python main.py add-target <url>`.
+  - Only titles that say intern, internship, new grad or co-op are kept. `JOB_ALERT_INTERNSHIPS_ONLY=0`
+    keeps every role the portal sent.
+  - Apply links are saved without their tracking part, which carries your portal user id.
+  - Alert emails often land in Spam, which is searched too. A Gmail filter with "Never send it to Spam"
+    for the sender keeps them where you can see them.
 - **Dedupe**: one row per registrable domain, plus a unique index on drafted emails. Drafted and skipped
   companies are never processed again (use `target <url> --force` to retry a skipped one). LLM or Gmail
   outages are not recorded as skips, so those companies are retried next time.
@@ -217,23 +246,23 @@ Then open Gmail > Drafts, review each draft, and send the ones you like yourself
 
 Measured on 30 real startups that seedreach found, each checked by hand against its website (company
 name, domain, every founder the site names, and whether every claim in the opening line is true).
-Model: `gemini-flash-lite-latest`, 3 runs, 2026-11-01.
+Model: `gemini-flash-lite-latest`, 2 runs, 2026-11-14 (v0.5.0).
 
 | Metric | Score | What it means |
 |---|---|---|
 | Company name | 96% | Right name for the company |
-| Domain | 85–89% | Right category, so the right project of yours gets pitched |
-| Founder correct | 93–100% | One of the site's founders, or correctly none when the site names no founder |
-| Invented founder | 0–4% | Named someone the site doesn't call a founder (the worst mistake: a wrong name in the greeting) |
-| Opening line follows the rules | 93–96% | One sentence, no flattery, no markdown |
-| Same answers on every run | 83% | Same domain and founder each time on the same page |
-| Ready to send | 63–70% | Everything above right at once, on the right website |
+| Domain | 89–93% | Right category, so the right project of yours gets pitched |
+| Founder correct | 89–93% | One of the site's founders, or correctly none when the site names no founder |
+| Invented founder | 4–7% | Named someone the site doesn't call a founder (the worst mistake: a wrong name in the greeting) |
+| Opening line follows the rules | 100% | One sentence, no flattery, no markdown |
+| Wrong website caught | 100% | A news article or job posting is recognised and skipped, not drafted |
+| Software startups skipped | 0 | Real software startups wrongly skipped as "not software" (must stay 0) |
+| Same answers on every run | 93% | Same domain and founder each time on the same page |
+| Ready to send | 70–73% | Everything above right at once, on the right website |
 
-The opening lines in this run haven't been checked by hand yet (the last check found every claim true in
-93% of them), so "ready to send" counts only the rule checks and is a little high.
-
-These numbers predate v0.3.1, which stopped drafting for news articles and job-board pages (3 of the 30
-leads pointed at one). They'll be re-measured for v0.4.0.
+The opening lines in these runs haven't been checked by hand (the last check found every claim true in
+93% of them), so "ready to send" counts only the rule checks and is a little high. With 30 startups, one
+company is about 3–4 points, so differences of a point or two between versions are noise.
 
 How it got here, on the same 30 startups:
 
@@ -247,8 +276,9 @@ Known gaps, each the subject of a follow-up:
 
 - **Board members**: one site lists a real co-founder only under "Board of Directors", and the model
   sometimes names him anyway.
-- **Company fit**: real runs still draft to companies that are past the early stage or don't make
-  software at all (for example, a mobile-MRI service). Fixes are planned in [#2](https://github.com/Poushali-02/seedreach/issues/2) and [#46](https://github.com/Poushali-02/seedreach/issues/46).
+- **Company fit**: companies that clearly don't build software are skipped since v0.5.0 (#46), but
+  without an Apollo key, larger companies from Hacker News threads can still get drafts. A fix is planned
+  in [#2](https://github.com/Poushali-02/seedreach/issues/2).
 - **Domains**: reading more pages made the domain slightly less accurate and less stable; consumer and
   health companies are sometimes filed as B2B SaaS or AI Agents.
 
@@ -304,7 +334,21 @@ means no comment.
 
 For a one-line summary on Telegram or Discord as well ("3 new drafts: HillStar, Alter · 2 skipped"), add
 the secrets `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`, and/or `DISCORD_WEBHOOK_URL`. It lists company
-names and counts only, never founder addresses or draft text.
+names and counts only, never founder addresses or draft text. It's sent after real runs, not dry runs.
+
+- **Telegram**: message [@BotFather](https://t.me/BotFather), send `/newbot` and follow the prompts; it
+  replies with the bot token. Send any message to your new bot, then open
+  `https://api.telegram.org/bot<token>/getUpdates` in a browser: the number after `"chat":{"id":` is your
+  chat ID.
+- **Discord**: in your server, Server Settings > Integrations > Webhooks > New Webhook, then Copy Webhook URL.
+
+Save each one as a secret (paste the value when prompted; don't put it in a file in the repo):
+
+```bash
+gh secret set TELEGRAM_BOT_TOKEN -R you/seedreach-runner
+gh secret set TELEGRAM_CHAT_ID -R you/seedreach-runner
+gh secret set DISCORD_WEBHOOK_URL -R you/seedreach-runner
+```
 
 Control: change the `cron:` line for timing, use **Run workflow** for an on-demand run with its own
 limit and source, and **Disable workflow** to pause. GitHub emails you when a run fails (for example,

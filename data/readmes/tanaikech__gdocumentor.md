@@ -3,19 +3,19 @@
 
 ![gdocumentor Overview Infographic](images/gdocumentor_infographic.jpg)
 
-[![Version](https://img.shields.io/badge/Version-v1.0.0-10b981.svg)](https://github.com/tanaikech/gdocumentor)
+[![Version](https://img.shields.io/badge/Version-v1.1.0-10b981.svg)](https://github.com/tanaikech/gdocumentor)
 [![Go Version](https://img.shields.io/badge/Go-1.27%2B-00ADD8?logo=go)](https://go.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Google Docs API v1](https://img.shields.io/badge/Google%20Docs%20API-v1-4285F4?logo=googledocs)](https://developers.google.com/workspace/docs/api)
-[![Gemini API](https://img.shields.io/badge/Gemini%20API-3.8--flash%20%7C%204--argon-8E75B2?logo=googlegemini)](https://ai.google.dev/)
+[![Gemini API](https://img.shields.io/badge/Gemini%20API-3.8--flash%20%7C%204--hydrogen%20%7C%204--carbon%20%7C%204--argon-8E75B2?logo=googlegemini)](https://ai.google.dev/)
 
 **[👤 Individual Setup (`INSTALL_INDIVIDUAL.md`)](INSTALL_INDIVIDUAL.md)** | **[🤖 Multi-Agent & Windows 11 ↔ WSL2 Guide (`INSTALL_AI_AGENTS.md`)](INSTALL_AI_AGENTS.md)** | **[🏫 School & Organization Setup (`INSTALL_ORGANIZATION.md`)](INSTALL_ORGANIZATION.md)** | **[⚡ 21 One-Command Test Cookbook (`TEST_COMMANDS.md`)](TEST_COMMANDS.md)** | **[🧪 End-to-End Verification Guide (`TESTING_GUIDE.md`)](TESTING_GUIDE.md)** | **[🤖 Agent Skill Specification (`skills/documentor-ai/SKILL.md`)](skills/documentor-ai/SKILL.md)** | **[📋 JSON I/O Schema (`skills/documentor-ai/references/json_schema.md`)](skills/documentor-ai/references/json_schema.md)**
 
-**gdocumentor (`v1.0.0`, `DocuMentor AI`)** is a high-performance Golang CLI tool, **Global Model Context Protocol (MCP) Server (`gdocumentor mcp`)**, and **Google Antigravity Agent Skill / Plugin** that transforms Generative AI from a passive "ghostwriter" into an interactive **Writing & Code Review Coach**—featuring a **Dual AI Execution Architecture**:
+**gdocumentor (`v1.1.0`, `DocuMentor AI`)** is a high-performance Golang CLI tool, **Global Model Context Protocol (MCP) Server (`gdocumentor mcp`)**, and **Google Antigravity Agent Skill / Plugin** that transforms Generative AI from a passive "ghostwriter" into an interactive **Writing & Code Review Coach**—featuring a **Dual AI Execution Architecture**:
 - **Standalone CLI Mode (`gdocumentor`)**: Directly calls the **Gemini API (`GEMINI_API_KEY`)** in-process for fast, self-contained 1-command terminal, batch script, and CI/CD execution—supporting both **Google Docs Native Suggesting Mode (`WriteMode.SUGGEST` & `insertComment`)** (with a Google OAuth2 Access Token) and **Access-Token-Free Local File & Public URL Mode (`--no-auth` / `-o <file>`)**.
-- **MCP Server Mode (`gdocumentor mcp`)**: Leverages the **client-side AI Agent's own LLM (Host AI)**—such as **Google Antigravity (`agy`)**, Claude Desktop, Cursor, or Windsurf—**without requiring `GEMINI_API_KEY` inside `gdocumentor`**, while `gdocumentor` handles all deterministic workspace/dependency/RAG resolution, surrogate-pair-safe UTF-16 coordinate matching, and Google Docs API `batchUpdate` automation (with optional fallback to internal Gemini API via `useInternalGemini: true`).
+- **MCP Server Mode (`gdocumentor mcp`)**: Leverages the **client-side AI Agent's own LLM (Host AI)**—such as **Google Antigravity (`agy`)**, Claude Desktop, Cursor, or Windsurf—**without requiring `GEMINI_API_KEY` inside `gdocumentor`**, while `gdocumentor` handles all deterministic workspace/dependency/RAG resolution, surrogate-pair-safe UTF-16 coordinate matching, optimistic revision locking & concurrent edit re-anchoring, and Google Docs API `batchUpdate` automation (with optional fallback to internal Gemini API via `useInternalGemini: true`).
 
-Ported from and extending the original Google Apps Script [DocuMentor AI](https://github.com/tanaikech/DocuMentorAI), this Go edition (`v1.0.0`) adds native **Pageless Google Docs** conversion for `.md`/`.txt`/`.pdf`/`.docx` (with parallel Base64 local image embedding), script insertion for source code files, deterministic line and character range scoping (`--target`, `--range`), automatic cross-file dependency resolution (`--auto-deps`), full `sync.WaitGroup` pipeline concurrency, custom AI Coach Persona via RAG rulebooks (`# AIの位置づけ` / `--persona`), **Coach Impact & Decision Record** tracking, a dedicated **Google Docs Coaching Summary Tab (`--summary-tab`)**, direct zero-token Google Docs editing (`edit`), and a triple interface: **Graphical CLI TUI**, **Strict Pure JSON (`--json`)**, and **Global MCP Server (`gdocumentor mcp`)**.
+Ported from and extending the original Google Apps Script [DocuMentor AI](https://github.com/tanaikech/DocuMentorAI), this Go edition (`v1.1.0`) adds native **Pageless Google Docs** conversion for `.md`/`.txt`/`.pdf`/`.docx` (with parallel Base64 local image embedding), script insertion for source code files, deterministic line and character range scoping (`--target`, `--range`), automatic cross-file dependency resolution (`--auto-deps`), full `sync.WaitGroup` pipeline concurrency, **Zero-Overhead Optimistic Revision Control & Context-Aware UTF-16 Re-Anchoring (`WriteControl.requiredRevisionId`)** for safe real-time collaborative editing, custom AI Coach Persona via RAG rulebooks (`# AIの位置づけ` / `--persona`), **Coach Impact & Decision Record** tracking, a dedicated **Google Docs Coaching Summary Tab (`--summary-tab`)**, direct zero-token Google Docs editing (`edit`), and a triple interface: **Graphical CLI TUI**, **Strict Pure JSON (`--json`)**, and **Global MCP Server (`gdocumentor mcp`)**.
 
 ---
 
@@ -70,7 +70,7 @@ While the GAS add-on **[DocuMentor AI](https://github.com/tanaikech/DocuMentorAI
 2. **💻 Software Engineering Teams, Multi-File Code Reviews & Overcoming "Vibe Coding":**
    - Developers working in a terminal or IDE can review specific line ranges (`-t "internal/cli/app.go:15-80"`) with automatic import/package dependency resolution (`--auto-deps`) and team architecture rules (`-r design.md`). `gdocumentor` either creates a Pageless Google Document with GitHub-style line-by-line `WriteMode.SUGGEST` code edits and rationale comments for team review, or outputs a local coaching report (`-o review.md`) so the developer or AI coding agent can inspect the architectural rationale before applying changes.
 3. **🔬 Academic Laboratories & Collaborative Manuscript Verification:**
-   - Research groups writing papers in Markdown, LaTeX/text, Word (`.docx`), or Google Docs can run `gdocumentor` with `--model gemini-4-argon` to verify cross-modal consistency across narrative claims, statistical tables (`TABLE_1`), embedded figures (`VISUAL_1`), and journal submission guidelines (`-r`), while tracking how many AI suggestions were accepted, refined, or rejected across revisions via the **Coach Impact & Decision Record**.
+   - Research groups writing papers in Markdown, LaTeX/text, Word (`.docx`), or Google Docs can run `gdocumentor` with `--model gemini-4-carbon`, `--model gemini-4-hydrogen`, or `--model gemini-4-argon` to verify cross-modal consistency across narrative claims, statistical tables (`TABLE_1`), embedded figures (`VISUAL_1`), and journal submission guidelines (`-r`), while tracking how many AI suggestions were accepted, refined, or rejected across revisions via the **Coach Impact & Decision Record**.
 4. **🤖 AI-Assisted Explanation via Access-Token-Free Local Reports (`--no-auth` / `-o`) & Google Docs Summary Tabs (`--summary-tab`):**
    - Whether operating with a Google OAuth2 Access Token (visualizing inline suggestions, comments, and a persistent **`🎓 DocuMentor AI Summary`** tab inside Google Docs) or without an Access Token (`--no-auth`, outputting a structured Markdown report to a local file via Gemini API alone), generative AI agents can read the resulting report or summary tab to provide deeper, personalized follow-up tutoring to the user.
 
@@ -104,8 +104,8 @@ Reading these articles sparked the idea that programmatic Google Docs suggestion
    - **Zero-Latency Inline XML Context**: Local text/Markdown/JSON/YAML/DOCX files and Google Docs/Drive text RAG rulebooks are structured into `<organization_rules>`, `<reference_context_files>`, and `<target_files>` inline text parts without File API upload overhead.
    - **Parallel Gemini File API Resumable Upload & Guaranteed `defer` Cleanup**: Binary RAG rulebooks (PDFs), embedded Google Docs figures/charts (`VISUAL_1`, `VISUAL_2`, ... fetched in parallel from `inlineObjects` / `positionedObjects` `contentUri` / `sourceUri` with automatic OAuth2 Bearer fallback), and oversized contexts (>2 MB) are uploaded in parallel via `/upload/v1beta/files` and **100% deleted via `defer`** immediately after inference.
    - **3-Tier Element Anchor Fallback**: Attaches review comments to figures/charts (`VISUAL_N`) and tables (`TABLE_N`) after re-fetching post-edit coordinates, falling back from the exact element range -> containing paragraph range -> nearest settled text block.
-6. **Flexible Gemini Model Selection**:
-   - Defaults to **`gemini-3.8-flash`** for fast interactive reviews and **`gemini-4-argon`** (`--model gemini-4-argon` or `--model argon`) for deep multi-file architectural and editorial reasoning. Any arbitrary model name passed via `--model` or `DOCUMENTOR_MODEL` is forwarded transparently to the Gemini API endpoint.
+6. **Flexible Gemini Model Selection (`gemini-3.8-flash`, `gemini-4-hydrogen`, `gemini-4-carbon`, `gemini-4-argon`, & Custom IDs)**:
+   - Defaults to **`gemini-3.8-flash`** (`--model flash`) for fast interactive reviews, and natively supports **Gemini 4 Hydrogen (`--model gemini-4-hydrogen` or `--model hydrogen`)** for high-speed, cost-efficient agentic coaching, **Gemini 4 Carbon (`--model gemini-4-carbon` or `--model carbon`)** for frontier deep reasoning on complex system architectures and academic manuscripts, and **Gemini 4 Argon (`--model gemini-4-argon` or `--model argon`)**—automatically filtering internal `thought: true` reasoning parts, omitting deprecated `temperature` sampling parameters on Gemini 4 models, and forwarding any newly released model identifier via `--model` or `DOCUMENTOR_MODEL` without recompiling.
 7. **📈 Coach Impact & Decision Record (`Accepted` / `Edited` / `Rejected` / `Expired` + Provenance Isolation & Local Persistent Store)**:
    - **Local Persistent Store for Non-GAS Environments (`~/.config/gdocumentor/decision_records/<docId>.json`)**: Because the Google Docs REST API v1 does not expose GAS `PropertiesService.getDocumentProperties()`, `gdocumentor` persists per-document Decision Records (`DOCUMENTOR_DECISION_RECORD_V1`-compatible JSON) locally in `$DOCUMENTOR_CONFIG_DIR/decision_records/<docId>.json` (defaulting to `<os.UserConfigDir()>/gdocumentor/decision_records/<docId>.json`).
    - **Cross-Environment Suggestion Hydration & Stateless Fallback**: When opening a Google Document containing active or resolved suggestions created on another machine or via the GAS Add-on, `gdocumentor` automatically detects the `[DocuMentor AI | ...]` / `【DocuMentor AI｜...】` comment signature, hydrates active AI suggestions into `Pending` (reconstructing `orig`, `sug`, `cat`, and `ctxBefore`/`ctxAfter` anchors from the live document), and credits resolved AI threads once via `reconciledThreadIds`.
@@ -121,6 +121,10 @@ Reading these articles sparked the idea that programmatic Google Docs suggestion
 10. **Dedicated Google Docs Coaching Summary Tab (`--summary-tab` / `--summary-tab-name <title>`)**:
    - Optionally creates or updates a dedicated **Google Docs Document Tab** (default title: **`🎓 DocuMentor AI Summary`**) inside the target Google Document via the Google Docs REST API v1 (`addDocumentTab` / tab-scoped `batchUpdate`), formatted in Pageless mode with `HEADING_1` / `HEADING_2` sections (Coach Impact & Decision Record, Core Writing Habits, Key Takeaways, Actionable Next Steps, and Coaching Items Digest).
    - On subsequent runs against the same Google Document (`-d <docId>`), `gdocumentor` searches `tabs[]` for the existing summary tab title, updates it in-place without duplicating tabs, and automatically excludes the summary tab from manuscript extraction so the main document body remains 100% untouched.
+11. **🔒 Optimistic Revision Control & Context-Aware UTF-16 Re-Anchoring (`WriteControl.requiredRevisionId`)**:
+   - **Zero-Overhead Optimistic Locking**: Binds all coordinate-dependent `batchUpdate` operations (`WriteMode.SUGGEST`, `--mode hint` `insertComment`, direct `edit` operations, and `--summary-tab`) to Google Docs API v1 `WriteControl.requiredRevisionId`—incurring **zero extra `documents.get` API calls** when no concurrent edit has occurred, while keeping coordinate-free `addCommentReply` requests unbound.
+   - **Two-Pass Surrogate-Pair-Safe Re-Anchoring on Concurrent Edits**: If a collaborator modifies the Google Document during LLM inference or between 2-step MCP Host-AI calls (`HTTP 400 FAILED_PRECONDITION` or `revisionId` advance), `gdocumentor` automatically fetches the latest settled document buffer (`SettledUTF16Buffer`, excluding pending `suggestedInsertionIds` and `suggestedDeletionIds`), verifies exact coordinates + cross-line 32-UTF-16-unit context anchors (`CtxBefore` / `CtxAfter`), re-anchors shifted items via length-weighted bigram Dice similarity, re-projects `--range` / `-t` selection scopes (`ScopeBoundaryAnchor`), and re-sorts all surviving edits in strictly descending `StartIndex` order.
+   - **Fail-Closed Stale Skipping & Immutable Visual Tracking**: Safely skips sentences already rewritten or deleted by a collaborator (`stale_superseded` / `stale_ambiguous` / `stale_out_of_scope`) without corrupting surrounding UTF-16 offsets or inflating `DecisionRecord.Cumulative.Issued`, tracks figures (`VISUAL_N`) by immutable `inlineObjectId` / `positionedObjectId` (`kix.xxx`) and tables (`TABLE_N`) by structural `TableSignature`, and persists ephemeral 30-minute Stage 1 snapshots (`prepared_snapshots`, `--base-revision-id`) for stateless 2-step MCP / `--prepare-only` continuity.
 
 ---
 
@@ -141,24 +145,24 @@ flowchart TD
 
     subgraph S2["Stage 2: Hybrid Gemini Context & Multimodal Inference"]
         A7 --> B1{"Payload Type &\nSize Check"}
-        B1 -->|"Text Target, Context & Rules (< 2MB)"| B2["Zero-Latency Inline XML Tags\n<organization_rules>\n<reference_context_files>\n<target_files>"]
+        B1 -->|"Text Target, Context & Rules (< 2MB)"| B2["Zero-Latency Inline XML Tags\n(organization_rules / reference_context_files / target_files)"]
         B1 -->|"Binary PDFs, VISUAL_N Figures,\nor Overflow Context (> 2MB)"| B3["Parallel Resumable Upload\nPOST /upload/v1beta/files\n+ Guaranteed defer DELETE"]
-        B2 --> B4["Gemini API (gemini-3.8-flash / gemini-4-argon)\nresponseMimeType: application/json + responseSchema"]
+        B2 --> B4["Gemini API (gemini-3.8-flash / gemini-4-hydrogen / gemini-4-carbon / gemini-4-argon)\nresponseMimeType: application/json + responseSchema"]
         B3 --> B4
     end
 
-    subgraph S3["Stage 3: Deterministic UTF-16 Coordinate Matching"]
-        B4 --> C1["Fail-Closed Selection Scope Filter\n(Editable Target Blocks Only)"]
-        C1 --> C2["Surrogate-Pair Safe UTF-16 Matcher\n+ Duplicate Range Avoidance (usedRanges)"]
+    subgraph S3["Stage 3: Deterministic UTF-16 Coordinate Matching & Context Snapshot"]
+        B4 --> C1["Fail-Closed Selection Scope Filter\n(Editable Target Blocks + ScopeBoundaryAnchor)"]
+        C1 --> C2["Surrogate-Pair Safe UTF-16 Matcher\n+ Cross-Line 32-Unit CtxBefore/CtxAfter"]
         C2 --> C3["Bottom-to-Top Sort (StartIndex Descending)\nto Prevent Index Shift"]
     end
 
-    subgraph S4["Stage 4: Two-Phase Google Docs Batch Application & Output"]
-        C3 --> D1{"Coaching Mode"}
-        D1 -->|"Suggest Mode (--mode suggest)"| D2["Phase 1A: batchUpdate (writeMode: SUGGEST)\ndeleteContentRange + insertText"]
-        D2 --> D3["Phase 1B: Extract createdSuggestionIds\n& Attach addCommentReply (Reason + Learning Point)"]
-        D1 -->|"Hint-Only Mode (--mode hint)"| D4["Phase 1C: Anchored insertComment\n(Flagged Phrase + Socratic Hint)"]
-        D3 --> D5["Phase 2: Re-fetch Fresh UTF-16 Coordinates\n& Apply VISUAL_N / TABLE_N Comments (3-Tier Fallback)"]
+    subgraph S4["Stage 4: Optimistic Revision-Locked Batch Application & Output"]
+        C3 --> D1{"Coaching Mode\n(WriteControl.requiredRevisionId)"}
+        D1 -->|"Suggest Mode (--mode suggest)"| D2["Phase 1A: batchUpdate (writeMode: SUGGEST + requiredRevisionId)\nAuto Re-Anchor on Concurrent Edit (400 FAILED_PRECONDITION)"]
+        D2 --> D3["Phase 1B: Extract createdSuggestionIds\n& Attach Coordinate-Free addCommentReply"]
+        D1 -->|"Hint-Only Mode (--mode hint)"| D4["Phase 1C: Anchored insertComment (requiredRevisionId)\n+ Auto Re-Anchor on Concurrent Edit"]
+        D3 --> D5["Phase 2: Re-fetch Fresh UTF-16 Coordinates\n& Match VISUAL_N by ObjectID / TABLE_N by Signature"]
         D4 --> D5
         D5 --> D6["Output Stream Router"]
         D6 -->|"Interactive Terminal"| D7["Rich ANSI TUI Report\nWriting Coach Summary + Clickable Doc URL"]
@@ -206,14 +210,14 @@ sequenceDiagram
         CLI->>Gemini: DELETE /v1beta/files/{name} (100% Guaranteed Cleanup)
     end
 
-    CLI->>CLI: MatchSuggestionsToBlocks (UTF-16 Surrogate-Safe) & Sort StartIndex DESC
-    CLI->>GDocs: POST /v1/documents/{id}:batchUpdate (writeMode: SUGGEST, deleteContentRange + insertText)
-    GDocs-->>CLI: suggestionResponses (createdSuggestionIds)
-    CLI->>GDocs: POST /v1/documents/{id}:batchUpdate (addCommentReply with Reason & Learning Point)
+    CLI->>CLI: MatchSuggestionsToBlocksWithBuffer (UTF-16 + 32-Unit Context) & Sort StartIndex DESC
+    CLI->>GDocs: POST /v1/documents/{id}:batchUpdate (writeMode: SUGGEST, requiredRevisionId, deleteContentRange + insertText)
+    GDocs-->>CLI: suggestionResponses (createdSuggestionIds; auto re-anchor on 400 FAILED_PRECONDITION)
+    CLI->>GDocs: POST /v1/documents/{id}:batchUpdate (Coordinate-free addCommentReply with Reason & Learning Point)
 
     opt Has Figure (VISUAL_N) or Table (TABLE_N) Suggestions
-        CLI->>GDocs: GET /v1/documents/{id} (Re-fetch post-edit UTF-16 coordinates)
-        CLI->>GDocs: POST /v1/documents/{id}:batchUpdate (insertComment with 3-Tier Anchor Fallback)
+        CLI->>GDocs: GET /v1/documents/{id} (Re-fetch post-edit UTF-16 coordinates & revisionId)
+        CLI->>GDocs: POST /v1/documents/{id}:batchUpdate (insertComment matched by ObjectID / TableSignature + requiredRevisionId)
     end
 
     CLI-->>User: Render Writing Coach & Learning Summary + Google Docs URL (or Pure JSON on stdout)
@@ -229,7 +233,7 @@ To use `gdocumentor` with Google Workspace, ensure the following APIs are enable
 | :--- | :--- | :--- |
 | **Google Docs API v1** | `docs.googleapis.com` | Create documents, fetch `SUGGESTIONS_INLINE` / `COMMENTS_VIEW_MODE_INCLUDED` structure, and execute `batchUpdate` (`WriteMode.SUGGEST`, `addCommentReply`, `insertComment`, `acceptSuggestion`, `rejectSuggestion`, `deleteComment`). |
 | **Google Drive API v3** | `drive.googleapis.com` | Create documents inside specific folders (`--parent-folder`) and load organization RAG rulebooks (`--drive-rag`) from Google Drive folders/files. |
-| **Generative Language API** | `generativelanguage.googleapis.com` | Run `generateContent` (`gemini-3.8-flash`, `gemini-4-argon`, etc.) and temporary `/upload/v1beta/files` multimodal uploads. |
+| **Generative Language API** | `generativelanguage.googleapis.com` | Run `generateContent` (`gemini-3.8-flash`, `gemini-4-hydrogen`, `gemini-4-carbon`, `gemini-4-argon`, etc.) and temporary `/upload/v1beta/files` multimodal uploads. |
 
 ### Required OAuth 2.0 Scopes
 
@@ -250,7 +254,7 @@ For detailed step-by-step instructions tailored to your environment, see:
 ### Prerequisites
 - **Go (Optional if using pre-compiled Release binaries)**: `1.27` or later if building from source or installing via `go install`. **Not required** if you download a pre-compiled binary from [GitHub Releases](https://github.com/tanaikech/gdocumentor/releases).
 - **Gemini API Key (`GEMINI_API_KEY`) — Required for Standalone CLI Mode; NOT Required for MCP Server Mode**:
-  - **Standalone CLI Mode (`gdocumentor -i ...`, `gdocumentor -d ...`)**: Exported as `GEMINI_API_KEY` (or passed via `--api-key`) so the CLI can directly call the Gemini API (`gemini-3.8-flash`, `gemini-4-argon`, etc.).
+  - **Standalone CLI Mode (`gdocumentor -i ...`, `gdocumentor -d ...`)**: Exported as `GEMINI_API_KEY` (or passed via `--api-key`) so the CLI can directly call the Gemini API (`gemini-3.8-flash`, `gemini-4-hydrogen`, `gemini-4-carbon`, `gemini-4-argon`, etc.).
   - **MCP Server Mode (`gdocumentor mcp`)**: **Not required!** When invoked as an MCP server from an AI agent (such as **Google Antigravity CLI (`agy`)**, Claude Desktop, Cursor, or Windsurf), `gdocumentor` uses the **client-side AI agent's own LLM (Host AI)** to generate all proofreading suggestions, Socratic hints, summaries, and drafts (`aiResult`, `aiSummaryResult`, `generatedDraft`) while `gdocumentor` performs all deterministic workspace/RAG/dependency resolution, UTF-16 indexing, and Google Docs API `batchUpdate` operations.
 - **Google OAuth2 Access Token / `gcloud` CLI (Required only for Google Docs & Drive Integration Mode; NOT needed with `--no-auth`)**: Configured via Application Default Credentials (`gcloud auth application-default login`) or `GOOGLE_OAUTH_ACCESS_TOKEN`.
   - **If `gcloud` CLI is not installed yet**, you can install it in one step (and if `gcloud` is missing when required at runtime, `gdocumentor` will also automatically display these installation instructions in the terminal):
@@ -436,7 +440,7 @@ go install github.com/tanaikech/gdocumentor@latest
 
 | Dimension | 💻 **Standalone CLI Mode (`gdocumentor`)** | 🤖 **MCP Server Mode (`gdocumentor mcp`)** |
 | :--- | :--- | :--- |
-| **Who Performs AI Reasoning** | **Internal Gemini API (`GEMINI_API_KEY`)**: `gdocumentor` directly calls `/v1beta/models/{model}:generateContent` (`gemini-3.8-flash`, `gemini-4-argon`, etc.) in-process. | **Client-Side AI Agent (Host AI)**: The MCP client agent (e.g., **Google Antigravity `agy`**, Claude Desktop, Cursor, Windsurf) performs the reasoning using its own active LLM (`model: "agent-ai"`). |
+| **Who Performs AI Reasoning** | **Internal Gemini API (`GEMINI_API_KEY`)**: `gdocumentor` directly calls `/v1beta/models/{model}:generateContent` (`gemini-3.8-flash`, `gemini-4-hydrogen`, `gemini-4-carbon`, `gemini-4-argon`, etc.) in-process. | **Client-Side AI Agent (Host AI)**: The MCP client agent (e.g., **Google Antigravity `agy`**, Claude Desktop, Cursor, Windsurf) performs the reasoning using its own active LLM (`model: "agent-ai"`). |
 | **`GEMINI_API_KEY` Requirement** | **Required** (`export GEMINI_API_KEY="..."` or `--api-key`). | **Not Required!** Works out of the box with whatever AI model/provider your agent uses (no separate Gemini API key needed). When using an AI agent (`agy`), `gdocumentor` is only executed as a CLI tool (using `GEMINI_API_KEY`) if your prompt **explicitly instructs to use `gdocumentor` as a CLI tool rather than via the MCP server**. |
 | **Execution Flow** | **Single-Command End-to-End Pipeline**: Resolves workspace/RAG ➔ calls Gemini API ➔ matches UTF-16 coordinates ➔ updates Google Docs / local report in one pass. | **1-Step (`aiResult` passed directly)** for local files already read by the agent, or **2-Step (`prepareOnly` ➔ `aiResult` + `skipDocInsert: true`)** when `gdocumentor` first fetches an existing Google Doc (`docId`), Drive RAG, or `--auto-deps`. |
 | **Deterministic Engine (Shared 100%)** | Surrogate-pair-safe bottom-up UTF-16 indexing (`utf16idx`), Pageless Google Docs conversion, `WriteMode.SUGGEST` inline edits, Socratic `--hint` comments, `🎓 DocuMentor AI Summary` tab, and Coach Decision Record. | **Identical 100% deterministic engine**: `gdocumentor` guarantees zero index drift, Markdown-stripped fallback matching on converted Docs, and non-duplicating Phase 2 application. |
@@ -448,7 +452,7 @@ go install github.com/tanaikech/gdocumentor@latest
 > ```bash
 > export GEMINI_API_KEY="your-gemini-api-key"
 > # Or pass --api-key "your-gemini-api-key" on the command line
-> # Optional: set a default model (defaults to gemini-3.8-flash)
+> # Optional: set a default model ("gemini-3.8-flash" default; or "gemini-4-hydrogen", "gemini-4-carbon", "gemini-4-argon")
 > export DOCUMENTOR_MODEL="gemini-3.8-flash"
 > ```
 > You can obtain a Gemini API key from [Google AI Studio (`https://aistudio.google.com/apikey`)](https://aistudio.google.com/apikey). *(When using `gdocumentor mcp` from an AI agent like Antigravity `agy`, `GEMINI_API_KEY` is not required because the agent's own AI generates the coaching payload.)*
@@ -606,7 +610,7 @@ COACHING & AI MODEL FLAGS:
   -m, --mode <suggest|hint>   "suggest" (WriteMode.SUGGEST + educational reply) or "hint" (Socratic coaching comments)
       --include-resolved      Include resolved/accepted/rejected review threads as coaching context (default: true)
       --no-include-resolved   Exclude resolved review threads from AI context
-      --model <name>          Gemini model: "gemini-3.8-flash" (default), "gemini-4-argon" (deep), or any model ID
+      --model <name>          Gemini model: "gemini-3.8-flash" (default), "gemini-4-hydrogen", "gemini-4-carbon", "gemini-4-argon", or any model ID
   -l, --lang <code>           Coaching feedback & comment language: "en" (default), "ja", "de", "fr", "es", "zh", "ko", "auto", etc.
   -p, --prompt <text>         Custom focus instructions for proofreading or topic outline for draft generation
 
@@ -657,10 +661,12 @@ AUTHENTICATION, MCP SERVER & AGENT SKILL FLAGS:
       --use-internal-gemini   Force internal Gemini API (GEMINI_API_KEY) even when running in MCP mode
       --prepare-only          Phase 1 Host-AI mode: resolve document/RAG/deps and return preparedContext without calling Gemini
       --skip-doc-insert       Phase 2 Host-AI mode: reconcile local line/file mapping against an already-populated Google Doc
+      --base-revision-id <id> Optional Google Docs revisionId from Phase 1 (--prepare-only) for concurrent edit re-anchoring
       --ai-result <json|@f>   Pre-computed ProofreadResult JSON from the Host AI agent (skips internal Gemini API call)
       --ai-summary-result <j> Pre-computed SummaryResult JSON from the Host AI agent (skips internal Gemini API call)
       --generated-draft <txt> Pre-computed draft text from the Host AI agent (skips internal Gemini API call)
       --api-key <key>         Gemini API key (overrides GEMINI_API_KEY environment variable)
+      --gemini-base-url <url> Optional custom Gemini API endpoint / reverse proxy URL (overrides GEMINI_BASE_URL)
       --access-token <token>  Google OAuth2 access token (overrides ADC / gcloud)
       --quota-project <id>    Google Cloud Quota Project ID for X-Goog-User-Project header
       --input-json <json|@f>  Pass all options as a structured JSON string or @file.json
@@ -869,18 +875,36 @@ Add `-m hint` (or `--hint` / `--hint-only`) to withhold direct text replacements
 ./gdocumentor -d "https://docs.google.com/document/d/1abc123XYZ.../edit" -m hint -l ja
 ```
 
-### 13. Using Future or Custom Gemini Models (`--model <model-name>` & `DOCUMENTOR_MODEL`)
+### 13. Selecting Gemini 4 Models (`gemini-4-hydrogen`, `gemini-4-carbon`, `gemini-4-argon`) or Any Future/Custom Model (`--model` & `DOCUMENTOR_MODEL`)
 - **🔑 Required Credentials:** `GEMINI_API_KEY`: **Required** | Google Docs / Drive OAuth2 Access Token: **Required** (unless `--no-auth` is added)
 
-`gdocumentor` does **not** restrict model names to a hardcoded allowlist. While `gemini-3.8-flash` (fast default) and `gemini-4-argon` (deep reasoning) are built-in defaults, any newly released or custom Gemini model identifier is passed transparently to the Gemini API endpoint (`/v1beta/models/{model}:generateContent`) without recompiling:
+`gdocumentor` natively supports Google's latest **Gemini 4** model family alongside `gemini-3.8-flash` (the fast default), and does **not** restrict model names to a hardcoded allowlist—any newly released or custom Gemini model identifier is passed transparently to `/v1beta/models/{model}:generateContent` without recompiling:
+
+| Model Identifier | Shorthand Alias | Recommended Workload |
+| :--- | :--- | :--- |
+| **`gemini-3.8-flash`** *(default)* | `--model flash` | Fast, everyday interactive prose proofreading and quick single-file checks. |
+| **`gemini-4-hydrogen`** | `--model hydrogen` | High-speed, cost-efficient **Gemini 4** execution model for iterative coding, coaching, and batch reviews. |
+| **`gemini-4-carbon`** | `--model carbon` | Frontier **Gemini 4** deep-reasoning model for complex system architectures, subtle bug analysis, and academic manuscripts. |
+| **`gemini-4-argon`** | `--model argon` | Deep multi-file reasoning across codebases and organization rulebooks. |
+| **`<any-model-id>`** | `--model <id>` | Any future, preview, or fine-tuned Gemini API model identifier. |
+
+> **Gemini 4 Reasoning Compatibility (`v1.0.1+`):** When any `gemini-4-*` model (`gemini-4-hydrogen`, `gemini-4-carbon`, `gemini-4-argon`) is selected, `gdocumentor` automatically omits deprecated `temperature` sampling parameters in `generationConfig`, filters out internal `thought: true` reasoning blocks so only clean structured JSON or draft text is applied to Google Docs, and uses an extended `600s` HTTP timeout (configurable via `DOCUMENTOR_HTTP_TIMEOUT`, e.g., `export DOCUMENTOR_HTTP_TIMEOUT="900s"`) for deep multi-file thinking.
 
 ```bash
-# Pass any future or preview Gemini model directly via --model
-./gdocumentor -i article.md --model gemini-5.0-pro -l ja
+# 1. High-speed Gemini 4 Hydrogen coaching (full ID or shorthand "hydrogen")
+./gdocumentor -i article.md --model gemini-4-hydrogen -l ja
+./gdocumentor -i article.md --model hydrogen -l ja
 
-# Or set DOCUMENTOR_MODEL in your shell profile to change the default model globally
-export DOCUMENTOR_MODEL="gemini-5.0-pro"
+# 2. Frontier Gemini 4 Carbon deep multi-file architectural & manuscript review (full ID or shorthand "carbon")
+./gdocumentor -t "internal/cli/app.go:1-120" --auto-deps --model gemini-4-carbon -l ja
+./gdocumentor -i manuscript.md -r "./sample/rules/" --model carbon --summary-tab -l ja
+
+# 3. Set DOCUMENTOR_MODEL in your shell profile to use Gemini 4 Hydrogen or Carbon globally by default
+export DOCUMENTOR_MODEL="gemini-4-hydrogen"
 ./gdocumentor -t "internal/cli/app.go:1-100" -l ja
+
+# 4. Pass any newly released or preview Gemini model ID transparently without recompiling
+./gdocumentor -i article.md --model <any-new-gemini-model-id> -l ja
 ```
 
 ### 14. Testing the Coach Impact & Decision Record (`Accepted` / `Edited` / `Rejected` / `Expired` & `--reset-record`)
@@ -1036,41 +1060,4 @@ export GEMINI_API_KEY="your-gemini-api-key"
 
 # === B. WITH a Google OAuth2 Access Token + Local File Output (-o <file> or --save-local) ===
 # 6. Dual Output: Create a Pageless Google Doc with inline suggestions AND save the local Markdown report
-./gdocumentor -i sample/sample_article.md -o ./dual_proofread_report.md -l ja
-# (Or pass --save-local to auto-name the local file `./sample_article_proofread.md` alongside the Google Doc)
-./gdocumentor -i sample/sample_article.md --save-local -l ja
-
-# 7. Dual Output on an existing Google Document (-d) for `proofread` or `summary`
-./gdocumentor -d "1abc123XYZ..." -o ./existing_doc_review.md -l ja
-./gdocumentor summary -d "1abc123XYZ..." -o ./existing_doc_summary.md -l ja
-```
-
-### 18. Direct Google Docs Editing (`edit` Subcommand: Create, Delete, Rich Markdown Insertion, Image Insert/Replace/Delete, Text Replace & Range Delete — 0 Gemini Tokens)
-- **🔑 Required Credentials:** `GEMINI_API_KEY`: **Not Required** (`0` Gemini tokens) | Google Docs / Drive OAuth2 Access Token: **Required**
-
-In addition to AI-powered proofreading and coaching, `gdocumentor edit` lets you directly create, modify, convert & insert Markdown, manage images, replace text, and delete content in Google Documents from your terminal or shell scripts **without consuming any Gemini API tokens (0 tokens)**:
-
-- **Create & Delete Google Documents**:
-  - Create a new blank Pageless Google Doc (`--create-doc --title "..."` and optional `--parent-folder`), or create a new Doc pre-populated from text/files.
-  - Permanently delete an existing Google Doc from Google Drive (`gdocumentor edit -d <docId> --delete-doc` or `gdocumentor manage -d <docId> --delete-doc`).
-- **Write / Insert Plain Text or Rich Markdown at Any Location (`--prepend`, `--append`, `--at`, `--index`, `--before`, `--after`, `--before-paragraph`, `--after-paragraph`)**:
-  - Accepts input via **`--text "..."`**, **file (`-i <file>` / `--file <file>`)**, **pipe (`|`)**, **here-string (`<<<`)**, **here-document (`<<EOF`)**, or **file redirect (`< file.txt`)**.
-  - Insert at the beginning (`--prepend` / `--pos start`), at the end (`--append` / `--pos end`), at an exact 1-based UTF-16 index (`--at "@150"` or `--index 150`), before/after a 1-based paragraph number (`--before-paragraph 3` / `--after-paragraph 3`), or immediately before/after any matching text phrase (`--before "Heading"` / `--after "Heading"`).
-  - **Rich Markdown Conversion (`--markdown` / `--md`, or automatic when `-i <file.md>` is passed)**: Converts `#`..`######` headings (`HEADING_1`..`HEADING_6`), `**bold**`, `*italic*`, `***bold-italic***`, `~~strikethrough~~`, `` `inline code` `` (while preserving `snake_case_identifiers`), `[links](url)`, nested bulleted/numbered/task lists (`- `, `1. `, `- [x] `), blockquotes (`>`), fenced code blocks (```` ``` ````), horizontal rules (`---`), Markdown tables (`| A | B |` with column alignment and reverse-index cell population), and embedded local/remote images (`![alt](path_or_url)`) into native Google Docs elements at the target location.
-  - Add `--style HEADING_2` (or `HEADING_1`..`HEADING_6`, `TITLE`, `NORMAL_TEXT`) for plain-text heading styles, or `--suggest` to propose text edits in Google Docs Suggestion Mode (`WriteMode.SUGGEST`).
-- **Insert, Replace, and Delete Images (`--insert-image`, `--replace-image`, `--with-image`, `--delete-image`)**:
-  - **Inspect Images & Tables (`gdocumentor inspect -d <docId>`)**: Lists every image (`VISUAL_1`, `objectId`, `@start:end`, inline vs. positioned) and table (`TABLE_1`, `@start:end`) in the document.
-  - **Insert Image (`--insert-image <local-file-or-url>`)**: Inserts a local image (`.png`, `.jpg`, `.gif`, `.webp` via temporary Google Drive upload + `=s2048` high-res thumbnail + automatic `defer DELETE` cleanup) or public image URL at any target location (`--prepend`, `--append`, `--after-paragraph N`, `--before-paragraph N`, `--after "phrase"`, `--at "@index"`), with optional `--image-width <pt>` and `--image-height <pt>`.
-  - **Replace Image (`--replace-image <VISUAL_1|N|objectId|@idx|all> --with-image <local-file-or-url>`)**: Replaces an existing inline or positioned image in-place (preserving frame size via `replaceImage`, or resizing when `--image-width`/`--image-height` is specified).
-  - **Delete Image (`--delete-image <VISUAL_1|N|objectId|@idx|all>`)**: Deletes inline images (`deleteContentRange`, automatically removing standalone image paragraph newlines so no blank line remains) and positioned images (`deletePositionedObject`).
-- **Replace Text, Ranges, or Entire Document Body (`--find` & `--replace`, `--replace-range`, `--replace-body`)**:
-  - Search and replace across the document (`--find "old" --replace "new"`, or pass replacement text/Markdown via `-i <file>` / pipe / here-string / heredoc / redirect), optionally scoped to `--range` or `--occurrence N` or `--ignore-case`.
-  - Replace a specific paragraph or UTF-16 range (`--replace-range "2-3"` or `--replace-range "@100:250"`, optionally with `--markdown`).
-  - Replace the entire document body in-place while preserving the Document ID and URL (`--replace-body`, optionally with `--markdown`).
-- **Delete Arbitrary Ranges, Text, or Clear the Body (`--delete-range`, `--delete-text`, `--clear`)**:
-  - Delete specific paragraphs or UTF-16 ranges (`--delete-range "3"`, `--delete-range "2-4"`, or `--delete-range "@100:250"`).
-  - Delete all or specific occurrences of a substring/phrase (`--delete-text "[DRAFT]"`).
-  - Clear the entire body of the document tab (`--clear`).
-
-```bash
-# 1. Create a new blank G
+./gdocumentor -i sample/sample_article.md -o ./dual_proofre

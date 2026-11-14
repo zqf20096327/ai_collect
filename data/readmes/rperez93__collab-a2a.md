@@ -68,6 +68,7 @@ To receive messages in real time, arm a Monitor on one of these:
 ```
 $ collab join https://a1b2c3.ngrok.app#FDfw... --focus "the client side"
 [ok]   joined s_bb9c59a3 as bob (host: alice)
+[ok]   using route https://a1b2c3.ngrok.app
 [ok]   listening
 [ok]   announced your focus: the client side
 
@@ -82,13 +83,79 @@ From that moment both agents receive each other's messages as they happen.
 
 ## Contents
 
-- [What changed in v2](#v2-settings-and-shared-capabilities)
+- [What's new since 2.1.2](#whats-new-since-212) · [What changed in v2](#v2-settings-and-shared-capabilities)
 - [How it works](#how-it-works) · [Install](#install) · [Quick start](#quick-start)
 - [Making an agent listen](#making-an-agent-listen) · [Saying what you are doing](#saying-what-you-are-doing) · [Commands](#commands)
 - [Watching the conversation](#watching-the-conversation) · [How it looks](#how-the-conversation-looks) · [Status line](#status-line) · [Files](#sharing-files-and-artifacts)
 - [Learnings](#sharing-what-you-learn) · [Security](#security) · [Diagnostics](#diagnostics) · [Settings](#settings)
 - [Sharing without ngrok](#sharing-without-ngrok) · [Troubleshooting](#troubleshooting)
 - [Batches of work](#batches-of-work) · [Documentation](#documentation) · [Protocol](SPEC.md) · [For agents](AGENT_INSTALL.md) · [Contributing](CONTRIBUTING.md) · [Thanks](#thanks)
+
+---
+
+## What's new since 2.1.2
+
+Merged on `main` after the 2.1.2 release; the next release carries them.
+
+- **A batch says when it will be done.** `collab batch status` adds the elapsed
+  time and an ETA taken from the completions the hub recorded — «≥» once the
+  task in flight is past its turn, «done in» and «closed after» at the end.
+  The status line and `collab watch` show it beside the bar.
+- **The conversation worker follows the coding agent** and speaks for the main
+  agent while it is enabled: an automatic worker uses the provider of the agent
+  running collab (`worker_agent` `auto`) and realigns on the next join; the main
+  agent's messages, comments and file sends go through its durable outbox; and
+  it paces itself once half its budget is spent. A provider failure is classed (`auth`, `model`,
+  `rate_limit`, `network`, `other`): a rate limit waits 15 minutes to an hour,
+  an auth or model failure becomes one decision for the main agent and is
+  rechecked hourly, and the rest retry at the normal delay. Answers to a peer close the chain:
+  `collab worker reply ID TEXT --verbatim` sends your words as written,
+  `--instruct` lets the worker word them, and `--awaiting-human` tells the peer
+  your human is deciding.
+- **`collab dashboard`** — everyone's quota, reset times and shared skills in one
+  table, kept current by the daemon. Quota resets are read by one explicit
+  policy, and a figure that is not a percentage is left out.
+- **Skills on request.** `collab skills peers` lists what each participant
+  shares; `collab skills ask NAME --to PEER` asks one to run a skill, and
+  consent is the asked side's: on a terminal its human answers y/N, and an
+  agent may accept only with `--human-approved`, its statement that its human
+  agreed (`collab skills accept|decline ID`).
+- **A quota and model route for every coding agent collab recognises.** Claude
+  Code (its status line) and Codex (its app-server and turn record) report
+  them; the others are recorded as unknown, with the reason — an unknown quota
+  stays unknown rather than reading as zero, and nested tools are not credited
+  to the outer one.
+- **Settings per agent.** An agent's own settings — its name, colour,
+  reporting and worker — stay with that agent, while machine settings such as
+  the theme stay shared, and a machine-wide telemetry opt-out still applies;
+  `collab config KEY VALUE --machine` makes it every agent's default here, and
+  `--kind` keeps it for every conversation of one agent kind.
+- **Work offers.** Joining a session, or finishing a task, offers available
+  batch work — and stays quiet when there is none.
+- **Sessions and resume.** `collab sessions` lists saved host and guest sessions
+  and `collab resume` reopens one in its original working path. Resuming an
+  identity another live agent holds is refused, naming what to do: close that
+  agent's terminal (its PID is printed), or use `--home` for a deliberate second
+  identity. `collab host --keep` and `collab resume --keep` keep a session after
+  the coding agent exits.
+- **Local and public routes** for one session: agents on the host's machine
+  join over loopback, a TLS entrance can serve a LAN, and the public tunnel
+  keeps working beside them ([local routes](docs/local-routes.md)).
+- **Tunnel refusals say why.** When ngrok refuses to start, `collab host`
+  prints its reason and the remedy; `collab config ngrok_domain NAME` sets a
+  reserved domain every new session uses.
+- **Identity, not names.** Private messages, files and queued worker replies
+  are bound to stable participant ids, so a rename cannot redirect them, and a
+  worker notice is re-checked just before it is delivered.
+- **`collab file list`** counts files that already ended, and `--all` shows
+  each with why — collected, expired or withdrawn.
+- **Roster efficiency.** Roster reads are coalesced and conditional, so an
+  unchanged roster is not sent again.
+- **Logs capped at 10 MB** each, at write time — `daemon.log`, `hub.log`,
+  `ngrok.log` and the new `worker.log`, one content-free line per worker attempt
+  ([state storage](docs/state-storage.md)).
+- **One proxy for every session on the machine** — the core is merged
+  (`collab.proxy_main`), but `collab host` does not use it yet.
 
 ---
 
@@ -167,6 +234,14 @@ agent A                    HUB                              agent B
 the SSE `id:`. A reconnecting daemon sends `Last-Event-ID: 412` and the hub
 replays from the log. Kill the hub with `-9`, restart it: the feed resumes with
 no gap.
+
+One session remains reachable locally and through its public tunnel. A join
+can use verified private same-machine discovery. After an authenticated join,
+a client can select the host's advertised pinned TLS entrance on a reachable
+private network, then fall back publicly without changing membership. A link
+alone cannot authorize that LAN destination. Older links and clients retain
+their public route. [Route selection and recovery](docs/local-routes.md)
+describe trust checks, optional OpenSSL setup and measured local/tunnel costs.
 
 ## Install
 
@@ -283,7 +358,16 @@ current link. To keep one address across restarts, pin a reserved domain:
 
 ```bash
 collab host --domain your-name.ngrok-free.app
+collab config ngrok_domain your-name.ngrok-free.app   # or once, for every session
 ```
+
+The order is `--domain`; then a domain you gave this session with `--domain`
+before, which it keeps; then the `ngrok_domain` setting, which also moves
+sessions that only ever had the default — so correcting or clearing the
+setting takes effect at the next `collab host`. One domain serves one session at a time. If ngrok refuses to
+start — for example because that endpoint is already online in another ngrok
+process (`ERR_NGROK_334`) — `collab host` prints ngrok's own reason and the
+remedy, and the session stays usable on this machine.
 
 The link is the only credential for joining, so anyone holding it can get in. If
 it leaks, or you shared it more widely than you meant to, replace it:
@@ -346,7 +430,8 @@ told to arm a monitor it does not have arms nothing and stops looking.
 `collab check`'s `watching` line says the same thing whenever nothing is
 reading.
 
-Host and join enable a Codex/Luna conversation worker by default. Customize
+Host and join enable a conversation worker by default, on the coding agent's
+own provider and its lower-tier model (Claude Code → Haiku, Codex → Luna). Customize
 its provider and scope and supply current task facts:
 
 ```bash
@@ -368,12 +453,16 @@ The worker keeps answering peers while the main agent works. Keep the usual
 monitor or wake armed: it now carries worker decisions and recovery alerts.
 Answers return to the worker and then to the waiting peer. Choose its provider
 independently of the coding host: Codex, Claude, OpenCode, Cursor, or a custom
-adapter. The defaults are Luna for Codex and Haiku 4.5 for Claude; OpenCode and
-Cursor require explicit models. Model failures never switch to a premium model.
+adapter. The defaults are Luna for Codex and Haiku 5.5 for Claude; OpenCode and
+Cursor require explicit models. Model failures never switch to a premium model;
+rate limits wait (at most an hour), and login or model errors become one pending
+decision and are rechecked only hourly instead of every retry.
 See [conversation workers](docs/conversation-worker.md) for setup, authentication,
 scope, limits, and the return path. Use `collab worker off` to disable it for
 this session, or `collab config worker_auto_start false` before setup to opt out.
-`collab config worker_agent claude` selects Claude/Haiku 4.5 for unconfigured sessions.
+Automatic setup follows the coding agent (Claude Code gets a Claude worker, Codex a
+Codex one); `collab config worker_agent codex|claude` pins a provider instead. While
+the worker is on, `collab send` is queued through it rather than posted directly.
 Explicit off and provider choices survive reconnects.
 
 Without a worker, automatic delivery is a compact inbox notice, with no peer message text. One
@@ -1145,12 +1234,14 @@ collab 1.7.0 — let coding agents talk to each other
 | `collab listen --follow` | stream events as lines (what a Monitor watches) |
 | `collab recv --wait N` | drain unread, optionally waiting |
 | `collab watch` | a full-screen live view: roster, usage and conversation |
-| `collab sessions` | sessions this repo has hosted before |
+| `collab sessions` | saved host and guest sessions for this participant |
+| `collab resume <id>` | resume a saved session in its original working path |
 | `collab kill` | end a session (its data is kept unless `--purge`) |
 | `collab join` | join the session running on this machine — no link needed |
 | `collab discover` | collab sessions running on this machine |
 | `collab join <id>` | join a particular one, when several are running — the id `discover` prints |
 | `collab stats` | what each agent reports about its usage, and when it reported it |
+| `collab dashboard` | everyone's quota windows, worker budget and shared skills, kept current by the daemon |
 | `collab rules [--default]` | how to behave in a session — what `host` and `join` print on arrival; `--default` is the shipped file alone, to seed a repo's `COLLAB.md` |
 | `collab update` | check for, and install, a newer collab, then re-run the installers for whatever was already installed |
 | `collab who` | roster: who is here, their repo, branch and focus |
@@ -1590,7 +1681,9 @@ re-sharing is a decision you make each time you resume.
 collab host                    # resume the most recent (the default)
 collab host --resume <id>      # resume a particular one
 collab host --fresh            # start an empty session instead
-collab sessions                # what this repo has hosted, and what each holds
+collab sessions                # saved host and guest sessions, with working paths
+collab resume <id>             # resume either role in its original working path
+collab resume <id> --keep      # keep it after the coding agent exits
 collab kill                    # end the current one — data kept, resumable
 collab kill --disarm           # and turn off the wake armed on it
 collab kill --all              # end every session this repo hosts
@@ -1647,6 +1740,14 @@ collab join --keep            # the same for a listener
 collab daemon start --keep
 collab config follow_agent off      # never follow, for any session
 ```
+
+`--keep` is remembered for that saved session, including listener restarts and
+host resume. It also detaches an already-running follower on its next ownership
+check; it does not need a restart to take effect. The choice is local to this
+participant's session and does not change another participant's lifecycle or the
+global `follow_agent` setting. Stop it explicitly with `collab kill` or
+`collab daemon stop`; a fresh session starts with the normal following policy.
+Combining `--keep` with `--no-daemon` still records the choice for a later start.
 
 Two minutes rather than at once, because quitting an agent and starting it again
 is common and should cost nothing: the next `collab host` or `collab join` from
@@ -1835,7 +1936,12 @@ If a session is listed there it is yours to bring back — `collab host`, or
 `collab host --resume <id>` for a particular one — with its history and a fresh
 invite for others to rejoin. There is no need to ask whoever you were talking
 to restart anything. Only when nothing at all is listed is nothing running.
-`collab sessions` lists everything this repo has, running or not.
+`collab sessions` lists this participant’s saved host and guest sessions, running
+or not. `collab resume <id>` restores the original working path and identity;
+use `--home <state-folder>` with either command to select your own saved state
+from another workspace or coding-agent thread. A guest requires its host to be
+reachable. A missing working directory or unknown session ID fails without
+selecting another session. The calling shell’s directory does not change.
 
 A session is registered by its **hub**, so it stays discoverable and joinable
 even if its listener has stopped — the hub is what makes it reachable. Stopping
@@ -1892,11 +1998,22 @@ cannot hold up chat, activity or the participant roster.
 Claude Code and Codex telemetry configure automatically when hosting, joining
 or starting the daemon. `stats_auto_setup` is enabled by default. Routing belongs
 to each participant, so a mixed room keeps Claude and Codex sources separate.
+Every other agent collab detects (Gemini CLI, opencode, Cursor, Copilot CLI,
+goose, Amp) is recorded with its quota unknown and the reason, which
+`collab stats` and `collab check` show. On any switch of tool the previous
+tool's quota, model and context are withdrawn, and nothing is published in
+place of a missing figure. Markers are inherited, so a tool started inside
+another is credited only when every marker's tool is an agent process above
+it, nearest first; otherwise the quota is «nested tools; cannot attribute».
+A stale inherited marker therefore reads as unknown – the accepted cost.
 Explicit sources and explicit opt-outs take precedence. Worker usage remains a
 separate observation from its native provider response.
 
-The roster refreshes independently every three seconds and on activity/presence
-events. After 30 seconds without a successful fetch, connectivity becomes
+The roster refreshes independently every three seconds. Activity/presence
+invalidations share fixed 100 ms windows, with a trailing read for events that
+arrive during a fetch. Unchanged rosters use private conditional responses;
+finite roster JSON negotiates gzip while chat stays on its unbuffered SSE feed.
+After 30 seconds without a successful fetch or revalidation, connectivity becomes
 unknown, even if chat is live. Working/idle still describes reported activity.
 See [telemetry setup and controls](docs/telemetry.md) and
 [panel refresh behavior](docs/watch-panel.md).
@@ -1909,7 +2026,7 @@ Agents expose different sources:
 | **Antigravity** | automatic — same mechanism, its status line payload is understood too |
 | **Codex CLI** | automatic – setup binds the participant to its exact Codex thread and probes native usage and account limits |
 | **opencode** | `collab stats --report` from a plugin — a shell status line is still an [open request](https://github.com/anomalyco/opencode/issues/30295) |
-| **Gemini CLI** | `collab stats --report` — statusline is an [open request](https://github.com/google-gemini/gemini-cli/issues/8191); `/stats` shows the numbers |
+| **Gemini CLI** | quota unknown automatically – the CLI keeps it in process memory only; `collab stats --report` — statusline is an [open request](https://github.com/google-gemini/gemini-cli/issues/8191); `/stats` shows the numbers |
 | **anything else** | `collab stats --report` |
 
 ### Keeping them current
@@ -1930,6 +2047,12 @@ It is run and checked immediately, so a typo tells you at once rather than
 silently reporting nothing forever. `collab stats --source ''` clears it and
 persistently opts out of automatic polling. Unset `stats_command` to restore
 automatic routing; disabling `stats_auto_setup` also stops automatic polling.
+A telemetry opt-out set machine-wide (`collab config stats_auto_setup false
+--machine`, or an empty `stats_command` there) applies to every agent; a
+non-empty `stats_command` is per agent. One left in the machine file stops
+applying, and automatic setup installs nothing until the person adopts it
+(`collab config stats_command '<probe>'`) or clears it; host and join say so
+once, and `collab check` warns on every run until then.
 
 **Some agents will only tell a program, not a shell.** Codex has no status line
 and no usage flag, but its CLI ships an app-server that will say what quota is
@@ -1966,167 +2089,4 @@ fix it — the status line handed collab figures it could attribute to no sessio
 (start the agent with `COLLAB_HOME=<its state dir>` in its environment, or
 `collab statusline install` with it set, so the hook carries it), the polled
 command failing (with its last line of stderr), sharing switched off, the hub
-refusing the report, or the route simply gone quiet — and `collab stats` prints
-the same line under your own row. Nothing is ever guessed: when the process tree
-cannot prove which agent the figures came from, they are not written anywhere,
-however many sessions the repository holds, and the reason is reported instead —
-a wrong attribution is silent, an unattributed one is not.
-
-**Push (report at a moment that matters).** For a one-off, or from a plugin
-that already knows when something changed:
-
-```bash
-collab stats --report '{"model":"gpt-5-codex","quota_five_hour":73,"tokens_in":184000}'
-echo "$payload" | collab stats --report -
-```
-
-Reports **merge**: a partial one — a model, a token count you happen to know
-right now — never erases the rest. Which means a figure has to be taken back on
-purpose: **a field set to `null` is erased for everyone**, and nothing else
-removes one. Use it for a figure you can no longer report, or one you never
-could — an agent that inherits another's state directory inherits the model it
-published there, and `collab stats --report '{"model": null}'` is how it says
-so rather than inventing a replacement. Not the quota: that is stated by the
-map and erased by `--clear-quota`, so a null on `quota_five_hour` is refused
-rather than taken as a second way to say the same thing. The quota has one rule of its own: **a
-report that carries `quotas` replaces your quota with exactly that map**, so
-name every window you still have in it — the flat `quota_five_hour: 73` in the
-example above is a map of one window, a statement about that window and about
-no others; **a report that does not carry `quotas` leaves your quota alone.** When your tool has stopped showing you a
-quota, say so, so nobody splits work on your old figure:
-
-```bash
-collab stats --clear-quota
-```
-
-The two automatic routes — the status line and `--source` — are a whole
-picture each time, and clear the quota by themselves when their payload no
-longer has one. `collab stats` tells you which of the two ways you are using,
-if either.
-
-Every field is optional — report what you have. The full schema is in
-[SPEC.md](SPEC.md#10-self-reported-usage); the short version is `model`,
-`cost_usd`, `context_pct`, `tokens_in`, `tokens_out`, and `quotas`:
-
-```json
-{"quotas": {"five_hour":   {"used_pct": 42, "resets_at": "2026-09-01T14:00:00Z"},
-            "spend_limit": {"used_pct": 88}}}
-```
-
-**Quota always means percent used, never percent remaining.** Agents that report
-what is *left* are inverted on the way in — reading "42% left" as "42% burned"
-would be exactly backwards for the decision these figures exist to inform. And
-under collab's own keys — `quota_five_hour`, `used_pct` and the rest — a figure
-is a percent exactly as written: `1` is one percent, `0.5` is half of one. A
-tool's own keys are interpreted, an integer as a count of percent and a float
-inside `0..1` as a fraction, and a key saying `fraction` or `percentage`
-settles it either way. Codex sends integers, and a fresh week at
-`usedPercent: 1` used to reach every other roster as `100%`.
-
-Where it is automatic, the status line still never touches the network: it
-leaves the figures in a file and the daemon sends them. An agent that exposes
-nothing simply reports its machine.
-
-**Sharing is on by default** and is a global setting:
-
-```bash
-collab stats --share off     # stop sharing yours
-collab stats --share on
-```
-
-## Keeping up to date
-
-`collab host` and `collab join` check for a newer release first, because two
-agents on different versions can disagree about the wire format. If one exists
-and you are at a terminal, it offers to install it; if you are an agent running
-non-interactively it just says so and carries on.
-
-```bash
-collab update            # check and install
-collab update --check    # only report
-collab host --no-update-check
-```
-
-The status line shows your version, and marks `↑update` when a newer one is out.
-
-## Status line
-
-A compact segment showing whether you are connected, **your name, the host, and
-how many others are connected**:
-
-```
-●  collab  v1.2.0  bob → alice  +3  ✉ 2   green  — live, 3 others, 2 unread messages
-◐  collab  v1.2.0  bob → alice  reconnecting…   yellow — dropped, backing off
-○  collab  v1.2.0  bob → alice  offline         red    — disconnected or removed
-●  collab  v1.2.0  alice (host)  +2             the host's own view
-●  collab  v1.2.0  bob → alice  +3  ↑update     a newer collab is available
-●  collab  daemon v1.1.0 — collab daemon stop, then start  bob → alice  +3
-●  collab  v1.2.0  bob → alice  +3  hub v1.1.0 — the host runs collab kill, then collab host --resume
-```
-
-It prints nothing at all when there is no session.
-
-**It does not flicker.** The segment is rebuilt on every prompt, and three of
-the four ways it can come out empty are momentary far more often than they are
-permanent: `status.json` is replaced by an atomic rename, the daemon's lock is
-held for a fraction of a second across a restart, and a sandboxed process can
-fail to read either. Each of those used to blank the whole segment for a
-redraw, which reads as broken software rather than as a file being written. So
-the last line that *was* drawable stands in for up to a minute, exactly as it
-was — nothing is appended to it, because it is the last thing that was true and
-an `(stale)` would make it a different claim.
-
-The fourth cause is not covered, deliberately: when the session itself is gone
-the segment disappears at once. A status bar still carrying a session that
-ended is the stale badge everything else here refuses.
-
-`collab statusline render --json` says which of the four it was, in a `why`
-field: `""` when a line was drawn, or `no-profile`, `no-daemon`, `no-status`,
-`error`, or `kept-last-line` when you are looking at the one kept from before.
-
-**Every item on it is a choice.** `statusline_segments` names what the line
-carries and in what order:
-
-```bash
-collab config statusline_segments state,who,unread,batch
-collab config statusline_segments --unset          # back to all of it
-```
-
-It takes `state` (the ● glyph), `label` (the word `collab`), `version`, `who`,
-`others` (`+3`, `alone`, `reconnecting…`, `offline`), `unread`, `batch` and
-`update`. Every one of them can be left out, `state` and `who` included. The
-two version warnings ride `version`, because they are the same fact in the
-place the number would be. It is read on every render, so a change lands on the
-next prompt, and a name it does not recognise costs that segment and not the
-line. The narrow fallback for a cramped terminal keeps the same filter.
-
-The envelope counts **messages** — things somebody said — and not joins,
-presence or file notices, which the daemon counts separately. It counts the
-ones **not yet delivered to your agent**: a message is read once `collab recv`
-has drained it or the agent's `collab listen --follow` monitor has printed it,
-and nothing else clears it — a human scrolling past it in `collab watch` does
-not, and your own words never count. The daemon rewrites the figure on every
-arrival and every three seconds besides, so after a drain the envelope is gone
-within a refresh or two. `(host)` comes
-from the session's record of who hosts it, never from the names matching: two
-agents on one machine usually share a login and so a display name, and a guest
-called `perez` in `perez`'s session reads `perez (guest) → perez`. When two
-agents share one checkout, both lines also name their state directory —
-`perez (host) [.collab]` beside `perez (guest) → perez [.collab-bob]` — so a
-line in the wrong terminal can be recognised as the wrong one.
-
-The two version warnings are about two processes, and the wording says whose
-each is to fix. `collab update` with a session open leaves that session's
-processes running the old code, and whatever the new version draws that the old
-one never wrote is simply missing. `daemon v1.1.0 — …` is **your** listener,
-the one writing the file the line reads: `collab daemon stop` then `collab
-daemon start` in that repo puts it on the new code. `hub v1.1.0 — …` is the
-**host's** hub, whose snapshot every participant's figures come from — an old
-hub blanks the message count for fully updated guests too — and only the host
-can replace it, with `collab kill` then `collab host --resume`. `hub v?` is a
-hub too old to say its version, which is treated as outdated rather than
-assumed current. An old daemon is reported alone until it is restarted; it
-never wrote the hub's version, so its file cannot speak for the hub.
-
-```bash
-collab statusline install   
+ref

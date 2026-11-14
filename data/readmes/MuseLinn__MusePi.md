@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="banner.png" width="1280" alt="MusePi — desktop-first AI coding agent">
+  <img src="assets/readme-banner.png" width="1280" alt="MusePi — desktop-first AI coding agent">
 </p>
 
 <p align="center">
@@ -24,7 +24,7 @@
 
 ---
 
-MusePi combines a coding agent, an Electron workbench, a terminal UI, and remote clients. The desktop app includes an editable file workspace, review tools, a managed browser, a desktop pet, and a capability center for first-party and third-party Cordis plugins. MusePi is independently versioned; reference projects and upstream lineage are recorded in [UPSTREAM.md](UPSTREAM.md).
+MusePi combines a coding agent, an Electron workbench, a terminal UI, and remote clients. The desktop app includes an editable file workspace, review tools, a managed browser, a desktop pet, and a capability center for first-party and third-party Cordis plugins. MusePi is independently versioned; reference projects and upstream lineage are recorded in [docs/archive/upstream-lineage.md](docs/archive/upstream-lineage.md).
 
 ## Install
 
@@ -109,15 +109,16 @@ flowchart LR
 
 | Area | Responsibility |
 | --- | --- |
-| `packages/desktop-app` | Electron shell, desktop renderer, official GUI plugins, installer and updater |
+| `apps/desktop` | Electron shell, desktop renderer, official GUI plugins, installer and updater |
 | `packages/client-core` | Shared React components, transcript, widgets, i18n, and collab web UI |
-| `packages/coding-agent` | CLI, daemon, sessions, tools, bundled Cordis plugins, and extension runtime |
-| `packages/mobile`, `packages/harmony` | Android and HarmonyOS shells |
+| `packages/coding-agent` | CLI, daemon (L2 host services over one RPC dispatcher), sessions, tools, bundled Cordis plugins, and extension runtime |
+| `apps/mobile`, `apps/harmony` | Android and HarmonyOS shells |
 | `packages/collab-proto`, `packages/wire`, `packages/sdk` | Transport, persisted contracts, and client SDK |
 | `packages/agent`, `packages/ai`, `packages/catalog` | Agent loop, provider client, and model catalog |
 | `packages/tui` | Terminal UI |
 | `packages/utils`, `packages/natives`, `crates/` | Shared utilities and native implementations |
-| Other packages | Hashline edits, compaction, memory, tool selection, statistics, and test harnesses |
+| `tools/` | Benchmark and harness workspaces (metaharness, TypeScript edit benchmark) |
+| Other packages | Hashline edits, compaction, memory, tool selection, and statistics |
 
 Contracts and extension boundaries: [`docs/capability-seams.md`](docs/capability-seams.md), [`docs/extensions-dev.md`](docs/extensions-dev.md), [`docs/gui-design.md`](docs/gui-design.md), and [`docs/gui-implementation.md`](docs/gui-implementation.md).
 
@@ -138,7 +139,7 @@ Useful entry points:
 ```sh
 bun run musepi
 bun --cwd=packages/coding-agent src/cli.ts serve --port 8300
-bun run --cwd=packages/desktop-app desktop
+bun run --cwd=apps/desktop desktop
 ```
 
 Do not edit `packages/catalog/src/models.json` directly; update its generator and regenerate. Tests and smoke runs must use isolated configuration and daemon directories. See `AGENTS.md` and `.agents/rules/` for engineering and verification rules.
@@ -155,4 +156,4 @@ Run the release workflow only for an explicit release request. Version and chang
 
 - [`docs/`](docs/): product and implementation documentation, with bilingual pairs where required.
 - [`packages/coding-agent/CHANGELOG.musepi.md`](packages/coding-agent/CHANGELOG.musepi.md): release notes.
-- [`UPSTREAM.md`](UPSTREAM.md): upstream lineage and reference-absorption history.
+- [`docs/archive/upstream-lineage.md`](docs/archive/upstream-lineage.md): upstream lineage and reference-absorption history.

@@ -9,7 +9,7 @@
 <h1 align="center">VelesDB</h1>
 <p align="center">
   <strong>One ~14 MB binary fuses vector + graph + columnar under a single query language — with an agent memory that shows its evidence and a deterministic context compiler that cuts your real, billed token spend.</strong><br/>
-  Local-first: nothing leaves the machine, no LLM and no API key in the memory path. Every number below links to a committed harness you can rerun.
+  Local-first: your data never leaves the machine, and there is no LLM and no API key in the memory path. The only outbound call is the server's and CLI's opt-out version check, which sends no stored data — version, edition, OS, architecture, binary name, a CI flag and a hashed install id (<a href="docs/guides/CONFIGURATION.md#update-check-and-telemetry">what it sends, how to turn it off</a>). Every number below links to a committed harness you can rerun.
 </p>
 <p align="center">
   <a href="https://github.com/cyberlife-coder/VelesDB/actions/workflows/ci.yml"><img src="https://github.com/cyberlife-coder/VelesDB/actions/workflows/ci.yml/badge.svg" alt="CI"></a> <a href="https://crates.io/crates/velesdb-core"><img src="https://img.shields.io/crates/v/velesdb-core.svg?cacheSeconds=3600" alt="Crates.io"></a> <a href="https://pypi.org/project/velesdb/"><img src="https://img.shields.io/pypi/v/velesdb.svg?cacheSeconds=3600" alt="PyPI"></a> <a href="https://www.npmjs.com/package/@wiscale/velesdb-sdk"><img src="https://img.shields.io/npm/v/@wiscale/velesdb-sdk.svg?cacheSeconds=3600" alt="npm"></a> <a href="https://app.codacy.com/gh/cyberlife-coder/VelesDB/dashboard"><img src="https://img.shields.io/codacy/coverage/58c73832dd294ba38144856ae69e9cf2?branch=main" alt="Codacy coverage"></a> <a href="https://github.com/cyberlife-coder/VelesDB/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-VelesDB_Core_1.0-blue" alt="License"></a><br/>
@@ -46,7 +46,19 @@ Query: "tech + music"
 
 An embedding model determines the vector dimension, while your similarity semantics determine the metric. Both are fixed when a collection is created; to change either, create a new collection and re-index your documents.
 
-**Give your agent a persistent memory — the guided installer:**
+**Give your agent a persistent memory — the guided installer, one line per OS:**
+
+```bash
+# Linux · macOS
+curl -fsSL https://raw.githubusercontent.com/cyberlife-coder/VelesDB/main/scripts/install-wizard.sh | sh
+```
+
+```powershell
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/cyberlife-coder/VelesDB/main/scripts/install-wizard.ps1 | iex
+```
+
+They work from the first `velesdb-memory-v*` release that publishes the wizard; until then they say so, and the checkout commands below do the same job. Each one downloads the newest `velesdb-memory-v*` release's wizard for your machine, checks its `.sha256` sidecar, and runs it; nothing is left behind but what the wizard installs. Pass wizard flags with `| sh -s -- --dry-run` (Windows: `& ([scriptblock]::Create((irm …/install-wizard.ps1))) --dry-run`). From a checkout, the same wizard runs with Python 3.9+:
 
 ```bash
 python3 scripts/velesdb_install_wizard.py            # interactive: boxed plan + menu [1] apply [2] JSON [3] quit
@@ -54,13 +66,15 @@ python3 scripts/velesdb_install_wizard.py --apply    # non-interactive apply (CI
 python3 scripts/velesdb_install_wizard.py --json     # machine-readable plan
 ```
 
-The wizard detects your platform (macOS / Linux / Windows) and which harnesses are installed (Claude Code, Codex, Cursor, Cline, Zed, OpenCode, Claude Desktop, Windsurf, Devin, Vibe), checks whether the memory store is already locked by a running process (`VELES-031`), and picks single-client stdio or one shared local daemon accordingly — in daemon mode it really starts the daemon (`scripts/install-memory-daemon.sh|.ps1`) and only rewires your harnesses once `https://127.0.0.1:18090/health` answers. Every config write is backed up and atomic; `--apply` exits non-zero if any step fails.
+The wizard detects your platform (macOS / Linux / Windows) and which harnesses are installed (Claude Code, Codex, Cursor, Cline, Zed, OpenCode, Claude Desktop, Windsurf, Devin, Vibe), checks whether the memory store is already locked by a running process (`VELES-031`), and picks single-client stdio or one shared local daemon accordingly. A missing `velesdb-memory` is installed from the latest `velesdb-memory-v*` release archive (sha256-verified; `cargo install` as fallback). In daemon mode it runs `scripts/install-memory-daemon.sh|.ps1` (launchd on macOS, a systemd user unit on Linux, a Scheduled Task on Windows) and only rewires your harnesses once `https://127.0.0.1:18090/health` answers. It then installs the skills and the [agent hooks](integrations/agent-hooks/README.md) — working-context load/save, recall-before-edit and the context compiler for oversized tool results — for every harness that has them; the hooks need `bash` and `jq`, and without them the wizard installs none and says what to add. It also settles the embedding model, whose dimension is fixed by the store: by default the one the store records (rewiring never switches a store back to `hash`), or one you pick — menu `[4]`, or `--embedder ollama --embedder-model bge-m3` (also `all-minilm` 384d, `nomic-embed-text` 768d, `mxbai-embed-large` 1024d, or any local Ollama embedding model). It offers to install Ollama and pull the model, probes the model's real dimension, and re-embeds an incompatible store with `velesdb-memory migrate-embeddings` only with your consent (`--yes` under `--apply`). Every config write is backed up and atomic; `--apply` exits non-zero if any step fails.
 
-**No Python?** Download the packaged installer from Releases — `velesdb-install-wizard.exe` (Windows), `VelesDB Install Wizard.app` / `.dmg` (macOS), `velesdb-install-wizard` binary or `.tar.gz` (Linux), all signed by **WiScale** — and verify it before running:
+**Release assets.** Every `velesdb-memory-v*` release built by the current release workflow carries the wizard as a self-contained build — no Python needed: `velesdb-install-wizard-x86_64-pc-windows-msvc.exe` (Windows x64, also run by Windows on ARM), `…-aarch64-apple-darwin.tar.gz` and `.dmg` with a double-click Terminal launcher (Apple Silicon), `…-x86_64-unknown-linux-gnu.tar.gz` and `…-aarch64-unknown-linux-gnu.tar.gz` (glibc 2.35+), and `velesdb-install-wizard-src.tar.gz` for everything else, Intel Macs included (Python 3.9+). Each asset has a `.sha256` sidecar and an embedded **WiScale** publisher signature; to check a download by hand:
 
 ```bash
-python3 scripts/validate_package.py dist/velesdb-install-wizard.exe   # sha256 manifest + embedded WiScale signature
+python3 scripts/validate_package.py velesdb-install-wizard-x86_64-unknown-linux-gnu.tar.gz   # sha256 sidecar + embedded WiScale signature
 ```
+
+The checksum proves the transfer, not the publisher: the sidecar comes from the same release. To build one yourself, `python3 scripts/package_wizard.py --apply` packages the wizard for the machine it runs on (`--source` for the source bundle).
 
 Prefer the manual commands? `cargo install velesdb-memory`, then `claude mcp add velesdb-memory -- ~/.cargo/bin/velesdb-memory`, and install the skills from a verified release with the repo script:
 
@@ -237,7 +251,7 @@ No figure here is an estimate from a slide; each links to the log or script in t
 |---|---|---|
 | Try it in one file | [`velesdb`](https://pypi.org/project/velesdb/) (Python 3.9+) | Fastest onboarding path |
 | Embed the engine | [`velesdb-core`](https://crates.io/crates/velesdb-core) (Rust) | The engine itself |
-| Give my agent memory | [`velesdb-memory`](crates/velesdb-memory) | MCP server + context compiler, any MCP client; `.mcpb` bundles on the [MCP Registry](https://registry.modelcontextprotocol.io/?q=velesdb-memory) |
+| Give my agent memory | [`velesdb-memory`](crates/velesdb-memory) | MCP server + context compiler, any MCP client; [one-line guided install](#getting-started-in-60-seconds); `.mcpb` bundles on the [MCP Registry](https://registry.modelcontextprotocol.io/?q=velesdb-memory) |
 | Call it from Node | [`@wiscale/velesdb-memory-node`](https://www.npmjs.com/package/@wiscale/velesdb-memory-node) | Memory wedge ([full engine via server + TS SDK](crates/velesdb-node/README.md#need-the-full-engine)) |
 | Run it in a browser | [`@wiscale/velesdb-sdk`](https://www.npmjs.com/package/@wiscale/velesdb-sdk) | WASM, ~710 KB gzipped, fully client-side |
 | Serve it over HTTP | [`velesdb-server`](https://crates.io/crates/velesdb-server) | 54 REST endpoints — [API reference](docs/reference/api-reference.md) · [OpenAPI](docs/openapi.yaml) · [server security](docs/guides/SERVER_SECURITY.md) |
@@ -320,7 +334,7 @@ The items below are deliberate trade-offs or Premium-tracked features, **not cor
 | 1 | **Single writer per collection** — WAL is serialized; concurrent writers contend on the same fsync lock. | Design trade-off (local-first, crash-safe by default). Read throughput is unaffected. | Concurrent WAL writer planned for [Premium](#velesdb-premium--the-enterprise-control-plane). See [docs/CONCURRENCY_MODEL.md](docs/CONCURRENCY_MODEL.md). |
 | 2 | **No distributed replication** — single-node; no Raft, no sharding, no automatic failover in Core. | Deliberate: the sweet spot is local-first / embedded. | Raft-based replication tracked for Premium. |
 | 3 | **No advanced RBAC / multi-tenant isolation in Core** — Core ships the `DatabaseObserver` enforcement seam — live on every HTTP read path since 3.10.0 and still current in 4.0.0 — not the policy engine. | Core ships the hook, not the policy engine. | [Premium](#velesdb-premium--the-enterprise-control-plane) feature. |
-| 4 | **WASM MATCH limited to 2 hops** — 3+ hop `MATCH` works fully in native builds. | Browser-build scope limit, not a correctness issue. | Tracked. |
+| 4 | **WASM MATCH: one fixed-length pattern** — any number of hops, but multi-pattern `MATCH` and variable-length relationships (`[*1..3]`) are rejected with a clear error; both work in native builds. | Browser-build scope limit, not a correctness issue. | Tracked. |
 | 5 | **SIFT1M fingerprint sidecar not yet committed** — the loader falls back to TOFU mode until the reference machine commits the pinned hashes. | Not a correctness issue — shape validation still applies. | Bootstrap shipped; sidecar pending. |
 | 6 | **No head-to-head Docker Compose benchmark vs Qdrant / Chroma / FAISS yet** — SIFT1M already gives literature-comparable numbers. | Side-by-side numbers need infrastructure not frozen yet. | Tracked. |
 | 7 | **Context-compiler tool parity varies by surface** — the MCP server and Rust have the full set; Node, Python and WASM are partially behind, and the WASM working contexts are intra-session only. | Binding scope, not an engine gap; MCP covers any client meanwhile. | Per-surface table in the [memory crate README](crates/velesdb-memory/README.md). |

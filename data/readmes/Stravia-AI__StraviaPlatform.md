@@ -74,7 +74,7 @@ docker run --rm \
 
 Alternatively, download a platform archive from Releases (verify against `SHA256SUMS`).
 
-**Nix / NixOS (Linux Server only):** Build this checkout with `nix build .#stravia-server`, or import `nixosModules.default` and enable `services.stravia`. See [Nix deployment](docs/design/architecture.md#nix-server-与-nixos-服务).
+**Nix / NixOS (Linux Server only):** Build this checkout with `nix build .#stravia-server`, or import `nixosModules.default` and enable `services.stravia`. Nix builds preinstall all official plugins and update compatible bundled versions with the package. See [Nix deployment](docs/design/architecture.md#nix-server-与-nixos-服务).
 
 **Upgrading an existing instance:** Stop and back up the complete data directory and any external database first. The Route output-purpose migration makes **all historical Routes nonexecutable until individually reconfigured**, on both SQLite and PostgreSQL. See [upgrade and recovery](docs/design/media-generation.md#4-route-与-codex-接入); rollback requires restoring the backup. The history-storage upgrade rewrites existing conversation and request history once at startup; it takes longer and needs more temporary space the larger the history is, and older binaries cannot read the upgraded database.
 
@@ -102,7 +102,6 @@ curl http://127.0.0.1:23471/v1/chat/completions \
 | ------------------------- | ------------------------------------------------------ |
 | OpenAI Chat Completions   | `POST /v1/chat/completions`                            |
 | Open Responses 2026-04-24 | `POST /v1/responses` (JSON, SSE, WebSocket)            |
-| OpenAI Embeddings         | `POST /v1/embeddings`                                  |
 | Anthropic Messages        | `POST /v1/messages`                                    |
 | Gemini GenerateContent    | `POST /v1beta/models/{model}:generateContent`          |
 | Gemini streaming          | `POST /v1beta/models/{model}:streamGenerateContent`    |

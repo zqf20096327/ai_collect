@@ -76,7 +76,7 @@ Useful checks:
 
 ```powershell
 npm run typecheck    # type check both processes
-npm run test:unit    # 539 unit tests
+npm run test:unit    # 573 unit tests
 npm run test:e2e     # 86 Electron flows (builds first)
 npm run verify       # type check, UI audit, docs, suite, unit and Electron
 npm run dist:final   # rebuild the two release executables

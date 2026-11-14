@@ -13,7 +13,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/alok-108/phantom?style=social)](https://github.com/alok-108/phantom/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/alok-108/phantom?style=social)](https://github.com/alok-108/phantom/network/members)
 
-> **Contributors welcome.** New here? Pick a [good first issue](https://github.com/alok-108/phantom/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22), read the [Contributor Guide](docs/CONTRIBUTOR_GUIDE.md), and say hello in [Discussions](https://github.com/alok-108/phantom/discussions). Adding a new instruction takes four code edits. Issues labelled `mentor available` come with maintainer help. [Open in a Codespace](https://codespaces.new/alok-108/phantom) for a ready-to-go environment.
+> **Contributors welcome.** New here? ⭐ **Star this repository** to bookmark it, pick a [good first issue](https://github.com/alok-108/phantom/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) (comment `/take` to claim instantly!), read the [Contributor Guide](docs/CONTRIBUTOR_GUIDE.md), and say hello in [Discussions](https://github.com/alok-108/phantom/discussions). Adding a new instruction takes four code edits. Issues labelled `mentor available` come with maintainer help. [Open in a Codespace](https://codespaces.new/alok-108/phantom) for a ready-to-go environment.
 
 **Phantom** is a dual-layer programming concept: ordinary Python source plus a second, structured *instruction layer* embedded in comments (or in whitespace / zero-width blocks), with no Phantom imports, decorators or wrappers in your code.
 

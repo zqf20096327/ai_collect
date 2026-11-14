@@ -934,6 +934,47 @@ has no changes and none of its commits is missing from the remotes (a person wen
 pushed), the guard takes it as the checkout Magnum expects (a `slot.head_recorded` event) and the round goes
 on; any other moved HEAD is held as before.
 
+What the guard lets go as Magnum's residue is saved before it goes. Before a step drops a slot's tracked
+changes (the switch of a checkout or a resync, the release's reset, the abort of a merge, rebase, cherry-pick or
+revert left in progress) or removes a per-PR worktree with what it holds, Magnum saves the tree into a folder of
+its own in the PR's folder of reports, `reviews/<owner>/<repo>/<N>/saves/<time>-<slot>/` in its data directory
+(`~/.local/share/magnum`; a slot that holds no PR saves under `saves/<slot>/` there): `changes.diff`, the binary
+patch of the tracked changes against HEAD (`git -C <slot> apply <save>/changes.diff` on a checkout at that HEAD
+puts them back), and `saved.txt`, which says from where, at which HEAD and before what, how to put it back, and
+what it left out. A switch, a reset and an abort keep the untracked files, so their save only names them in
+`saved.txt`; a removal deletes them, so its save copies them into `untracked/`, every untracked file git does not
+ignore at its path, with its owner's permission bits and a symlink as the link (never what it points to), but not
+the files Magnum wrote there: the local mise file it renders, the copy_files of the `[[repo]]` or the `[[pool]]`
+(of a copied folder, the files that are the main clone's there, byte for byte; a file you add or change in it is
+yours), and what the first setup over a worktree its provisioning made wrote, the untracked files there after it
+that were not before it (`cp -R <save>/untracked/. <slot>` puts them back). Over a worktree kept from an earlier
+attempt, and by a setup that runs again (a failed one resumed or retried, the way a pool slot's is), what the setup
+wrote is saved as yours, since you may have written a file there while it ran; a pool slot's setup that cannot read
+or delete the record that its provisioning made the worktree does not run (its step fails and is retried), so that
+record never outlives the first setup, and a per-PR worktree's runs as over a kept worktree, as its retry would. A
+file a copy_files entry names (a
+key, as a rule) that you edited since, one that differs from the main clone's, is not saved either, but named
+"magnum's own, edited, not saved". A file the removal cannot read (a mode-000 file, one gone meanwhile) is left out
+and named with the reason, and the removal goes on; a write into the save that fails (a full disk, a quota, a name
+the save's folder refuses), or a read or a comparison with the main clone's copy that fails for the whole process
+(too many open files, no memory), fails the save, and the removal deletes nothing.
+A save keeps at most 50 MB: git is stopped at the cap, the patch then goes path by path and a file is left out,
+each named with its size, as is a repository inside the tree (untracked files whose names alone pass 8 MB are
+none saved, and the save says so); files git ignores are never saved. The `slot.discarded` event names the save
+and what it left out (`magnum logs <slot>`). A save that copies no file and repeats the slot's last save in that
+folder, one of the last 7 days (the same patch, the same files left out and kept in the tree), is not kept: the
+event names that earlier save, so a lockfile Magnum's own setup rewrites is saved once a week, not at every round.
+Saves are kept 14 days: the next save in a folder and each daemon's prune (the review daemon at each reconcile,
+the factory hourly) delete the older ones. A save or a listing of the changes that fails fails the step, which
+then discards nothing and retries at its next attempt; the first failure of a slot is raised once, a
+`slot.save_failed` event and a toast, and `magnum doctor` names the slot until a save works or the slot is
+removed. A forced removal goes on over a save that fails: its `slot.discarded` event, a warning written before
+git deletes anything, names what it deletes and says "forced, not saved"; a save that failed part way keeps what
+it copied, and its `saved.txt`, which the warning names, lists every file it does not hold, a wholly untracked
+folder's one by one (a folder git cannot list is named whole). When that `saved.txt` cannot be written either (a
+full disk fails it too), or the save cannot make its folder, the warning says so, and the first 20 paths it names
+are all that names what the removal deleted.
+
 A round that fails three times on one head (a timeout, an error, a setup failure charged to the PR) parks
 its PR in needs attention. When the cause was Magnum's own (an unknown role, a launch line that broke), the
 fix is a new build, config or prompts, so the attention records what the daemon ran (the build's commit
@@ -1007,7 +1048,14 @@ from the next Codex session magnum or you run, and apply again if it is still at
 the soft cap is not overruled. `magnum status` says so on its codex line (`lifted by magnum resume 11:20:
 the caps wait for Codex's next reading`; `overruled_at` in the JSON), and a round's wait names the
 command (`magnum resume --tool codex` lifts the pause; at the soft cap, it overrules a reading made stale
-by a switch of Codex account).
+by a switch of Codex account). The factory follows the same overrule, which it reads in magnum's registry:
+while Codex's newest reading is from before your resume, its local review runs, its stages launch their
+Codex roles on Codex and its launches start them, as under the caps, and the first reading after the resume
+decides again. Each of its waits on Codex's reading, on the factory screen and in `magnum factory status`,
+ends with the command (`usage: codex at 96%, at or past [usage] codex_soft 95%: the local review yields to
+magnum's reviews; `magnum resume --tool codex` overrules a stale reading`); a wait on the usage limit a
+factory run hit, which the resume does not lift, does not. A mark the factory cannot read leaves its waits as
+they were, logged once.
 
 A Codex process keeps the login it started with, so after a switch of Codex account (clauth makes
 `~/.codex/auth.json` a symlink to a profile's file) a live session goes on spending the old account's
@@ -1125,55 +1173,4 @@ that pane, and a read of the screen right before the key must show no dialog and
 between its two rules, as a bare prompt mark (nothing typed, no placeholder, no draft). Otherwise nothing
 more is sent (a screen that is not bare at the start gets no key at all), the park fails busy and the
 session waits for the PR's park. A kind without `exit_keys` gets two ctrl+c. It ends as the PR's park
-does: once the pane is an idle shell, the pane is closed and only then is the session parked, a pane that
-runs something by then being left for a later close; each session's park records `pr.session_park_begin`,
-then `pr.session_parked` ("quit with its exit keys" when they quit it) or `pr.session_park_failed`. This
-covers a reviewed PR, an ineligible one (a draft, a mute or a skip after its review), and a PR whose review
-or re-review waits behind `magnum pause`, a drain, the daily cap, or anything else that ends more than
-`park_idle_after` from now. A PR that needs attention keeps its agents, since its pane shows what went
-wrong, and so do pinned or held slots and PRs you typed into within `human_cooldown`; nothing parks while a
-round, a fix job or a whiteboard job holds the PR, or while one of its agents works or is blocked.
-The fixer's session is parked with the others; the next fix job resumes its conversation. A park closes the
-panes it parked (see below), and a resume starts the conversation in a new pane; `o` and `magnum open` open
-what is live, so a role whose pane is gone focuses a live agent pane of the PR, the judge's first. A park that
-fails, for example because an agent does not quit on ctrl+c, is not tried on every tick. The next try waits
-twice as long as the last wait: two ticks after the first failure, then four, eight and so on, up to 12
-hours. A new round of the PR or a change in its sessions starts the wait over, and so does the PR's park
-after an early park failed, so a reviewer that will not quit does not hold the judge's park. An early park
-never uses the hard mode: an agent that ignores its exit keys too stays live, nothing closed, and waits for
-the PR's park. The first failure of each cause records a `pr.park_failed` warning with the cause's class
-(`quit_timeout`, `busy`, `herdr` or `error`) and the wait. Later failures of the same cause record
-nothing, and a park that works records `pr.parked` as usual. A park that cannot quit one agent still quits
-the PR's others and reports the
-failures together. When the failure was an agent that did not quit (`quit_timeout`), the idle park's next
-try, once the wait has passed, parks in the hard mode described below, and its `pr.parked` event says
-"(hard: an agent did not quit at the plain park)". A failure of another class keeps the plain park, and a
-restart forgets the record, so the first try after it is plain again.
-
-A fresh start (`magnum review --fresh`, a full or audit pass, a new identity) parks every agent of the PR
-first. When an agent stays in its pane through ctrl+c, that park waits like any busy agent: a minute at a
-time, no attempt charged, and the board and the card count the tries (`retry 2/3 agent busy`). The second
-try parks in the hard mode. Magnum sends the kind's `exit_keys` (Claude: `/exit`), waits again, and then
-closes that pane alone, never the workspace, whose other panes may be yours. The session is closed, not
-parked, and a `pr.park_forced` event names the role and the pane. A park that waits for a run of the PR (a
-fixer or another round at work) is never forced, and `magnum abort` parks the same hard way on its last of
-three tries. The release of a Codex-flagged PR keeps the plain park and its backoff.
-Once any park worked (the idle park, a fresh start's, a hard one, `magnum abort`, `magnum release`, the
-release of a Codex-flagged PR, an eviction), magnum closes the panes of the sessions it parked or closed, so
-the workspace keeps one pane per role of the round plus the panes magnum does not own. The pane of a session
-that was lost (its agent exited) is closed at the tick that sees it, unless a round holds the PR, and the
-reconcile closes what is left for every PR, at the daemon's start and every `reconcile_interval`. A pane is
-closed only when a parked, closed or lost session of the PR recorded it, it shows an idle shell and no
-starting or live session of the PR still uses it, so a shell you opened in the workspace, which no session
-recorded, stays, and a workspace left with no pane at all is closed. A
-`pr.panes_closed` event says how many and of which roles, and, of a lost session's pane, the error line the
-CLI printed before it died (`last_lines`, by role; a line that starts at column 0 with error, fatal or panic,
-redacted), read before the pane closes; a reconcile with nothing to close records nothing.
-A parked or lost conversation is kept: the role's next start resumes it in a new pane, unless the directory it
-worked in no longer exists (the slots moved to another `slot_path`): its conversation names files there, so
-the role starts fresh.
-herdr numbers its workspaces and panes from the start again after it restarts, so old sessions' ids can
-name the new panes of another PR. Magnum never closes, reuses or parks away a pane or a workspace that a
-starting or live session of another PR records (of two live sessions with one pane, the newer owns it): an
-old parked, closed or lost session of the PR that records one has its herdr ids dropped, which one
-`agents.herdr_ids_reused` event says, and nothing of it is closed; its conversation still re
+does: once the pane is an idle shell, the pane is closed and only then is

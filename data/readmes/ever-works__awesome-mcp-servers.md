@@ -84,6 +84,7 @@ The public-facing website is based on the open-source [Directory Website Templat
 - [Analytics (4)](#analytics)
 - [Analytics & Business Intelligence (1)](#analytics--business-intelligence)
 - [API & OpenAPI MCP Servers (6)](#api--openapi-mcp-servers)
+- [API & OpenAPI MCP Servers (3)](#api--openapi-mcp-servers-1)
 - [Api Integration Mcp Servers (14)](#api-integration-mcp-servers-1)
 - [API Integration Mcp Servers (57)](#api-integration-mcp-servers-2)
 - [API Integration MCP Servers (41)](#api-integration-mcp-servers-3)
@@ -568,4 +569,4 @@ The public-facing website is based on the open-source [Directory Website Templat
 - [Milvus](https://milvus.io) - MCP server for searching, querying, and interacting with data in Milvus Vector Database, enabling AI agents to perform vector similarity searches. ([Read more](/details/milvus.md)) `Vector Database` `Semantic Search` `Similarity`
 - [Milvus MCP Server](https://github.com/tailabs/mcp-milvus) - Official Model Context Protocol server for Milvus vector database enabling AI assistants to search, query, and interact with vector data for semantic search and similarity matching applications. ([Read more](/details/milvus-mcp-server.md)) `Vector Database` `Semantic Search` `Embeddings`
 - [MongoDB](https://github.com/mongodb-js/mongodb-mcp-server) - MCP server supporting both MongoDB Community Server and MongoDB Atlas, enabling AI agents to manage and query MongoDB databases through natural language. ([Read more](/details/mongodb.md)) `Document Database` `Nosql` `Atlas`
-- [MongoDB Lens](https://github.com/furey/mongodb-lens) - Full featured MCP server for MongoDB databases, providing comprehensive database interaction capabilities through Model Conte
+- [MongoDB Lens](https://github.com/furey/mongodb-lens) - Full featured MCP server for MongoDB databases, providing comp

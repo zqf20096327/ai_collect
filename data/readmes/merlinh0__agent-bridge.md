@@ -31,6 +31,7 @@ flowchart LR
 - **Pick up existing sessions.** Discover omp and Claude Code sessions already running in any Tern window and drive them in place. Saved sessions can be reopened in a new tab with their full history.
 - **Hands-off monitoring.** `wait_for_agents` returns when a turn ends. You get each agent's final report (a `## Report` section), its commits, and a full diff that includes uncommitted edits. The server warns you when an agent looks stuck on an approval or dialog.
 - **Live view.** Every agent is a normal Tern tab: watch it work, or type into it yourself.
+- **An Agents panel in Tern.** The optional [Tern plugin](tern-plugin/) lists your agents with their state, model and report, jumps to an agent's tab, shows its diff, and adds a widget counting them.
 
 ## Quick start
 
@@ -133,6 +134,16 @@ Default thinking is `low`, `medium` and `high` respectively. Run `list_models(re
 - `tiers` pins the model a tier stands for, instead of the automatic pick.
 - With an allowlist, an agent started without a model gets `auto:balanced` from the allowed models instead of the engine's default.
 - Disallowed models are refused when an agent starts, resumes or switches model.
+
+## Tern plugin
+
+```sh
+tern plugin install github.com/merlinh0/agent-bridge/tern-plugin
+```
+
+Then **Show agents** in the palette (`cmd+alt+shift+a`) opens the Agents panel: every agent with its state, model, reasoning level and last activity, and for the selected one its branch, commits, how to merge it and its last message. `Enter` goes to the agent's tab, `d` shows its diff. Place the **Agents** widget in the widget bar (palette › Edit widgets…) for a `3 agents · 1 working · 1 needs you` count. See [tern-plugin/](tern-plugin/).
+
+The command line behind it is usable on its own: `agent-bridge status` (or `--json`) and `agent-bridge diff <agent>`.
 
 ## Notifications
 

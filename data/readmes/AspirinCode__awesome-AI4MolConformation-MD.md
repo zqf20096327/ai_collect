@@ -1084,6 +1084,13 @@ Wang, Han, Linfeng Zhang, Jiequn Han, and E. Weinan.
 
 
 
+* **Atomistic simulations of electrochemical systems with machine learning potentials** [2026]  
+Marialore Sulpizi, Jörg Behler.  
+  [arXiv:2611.15939(2026)](https://doi.org/10.48550/arXiv.2611.15939)  
+
+* **Distilling Large-Scale Machine Learning Interatomic Potentials to Predict Long-Timescale Electrolyte Transport Properties** [2026]  
+Ishan Amin, Yue Jian, Nitesh Kumar, Christine Zhang, Jianwei Lai, Casey S. Mezerkor, Aaron M. Melemed, Jonathan R. Thurston, Neil P. Dasgupta, J. David Bazak, Ethan J. Crumlin, Samuel Blau, Aditi S. Krishnapriyan.  
+  [arXiv:2610.39513(2026)](https://doi.org/10.48550/arXiv.2610.39513)  
 
 * **A thermodynamic correction layer for machine learning interatomic potentials** [2026]  
 Sarath Menon, Braulio Sanchez Ortega, Ralf Drautz.  
@@ -1510,13 +1517,4 @@ Maruf, Moin Uddin, Sungmin Kim, and Zeeshan Ahmad.
 [J. Phys. Chem. Lett. (2025)](https://doi.org/10.1021/acs.jpclett.5c02352) | [code](https://github.com/ahmad-research-group/nequip-charge/tree/charge-encoding)  
 
 * **Graph atomic cluster expansion for foundational machine learning interatomic potentials** [2025]  
-Lysogorskiy, Y., Bochkarev, A. & Drautz, R.  
-  [npj Comput Mater 12, 114 (2026)](https://doi.org/10.1038/s41524-026-01979-1) | [code](https://github.com/ICAMS/grace-tensorpotential)  
-
-* **A critical review of machine learning interatomic potentials and Hamiltonian** [2025]  
-Li, Y.; Zhang, X.; Liu, M.; Shen, L.  
-  [J. Mater. Inf. (2025)](http://dx.doi.org/10.20517/jmi.2025.17)  
-
-* **PIL-Net: a physics-informed graph convolutional network for predicting atomic multipoles** [2025]  
-Dario Coscia, Pim de Haan, Max Welling.  
-[arXiv:2508.14022 (2025)](https://arxiv.org/abs/2508.14022) | [code](https://github.com/dario-coscia/blip) 
+Lysogorski

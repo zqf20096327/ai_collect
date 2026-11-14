@@ -22,11 +22,11 @@ Our most popular models: no refusals, no "I can't help with that". Same API, sam
 | `glm-5.3-abliterated` | $1.40 | $1.40 | $0.40 | 1000k | ✅ |
 | `deepseek-v4.1-flash-1017-abliterated` | $0.30 | $0.30 | $0.12 | 1000k | ✅ |
 | `glm-5.3-uncensored` | $0.35 | $0.35 | $0.10 | 1000k | ✅ |
+| `deepseek-v4.1-flash-abliterated` | $0.30 | $0.30 | $0.10 | 1000k | ✅ |
+| `deepseek-v4-pro-uncensored` | $0.50 | $0.50 | $0.10 | 1000k | ✅ |
 | `glm-5.3-flash-uncensored` | $0.10 | $0.10 | $0.009 | 1000k | ✅ |
 | `glm-5.3-flash-abliterated` | $0.34 | $0.34 | $0.034 | 1000k |  |
 | `deepseek-v4.1-flash-abliterated-fast` | $1.40 | $1.40 | $0.32 | 1000k | ✅ |
-| `deepseek-v4-pro-uncensored` | $0.50 | $0.50 | $0.10 | 1000k | ✅ |
-| `deepseek-v4.1-flash-abliterated` | $0.30 | $0.30 | $0.10 | 1000k | ✅ |
 | `qwen3-abliterated` | $0.49 | $2.37 | $0.49 | 33k |  |
 | `qwen3-uncensored` | $0.49 | $2.37 | $0.49 | 33k |  |
 | `gemma-4-31b-abliterated` | $0.24 | $0.72 | $0.24 | 33k |  |
@@ -37,7 +37,7 @@ Full list with every model: [MODELS.md](MODELS.md) · Live prices: https://apixo
 ## What you get
 
 - 🔓 **12 uncensored & abliterated models** — fewer content filters, built for coding agents, creative writing and research.
-- 🔑 **One key, 44+ models** — switch model by changing one string. Live list: [MODELS.md](MODELS.md).
+- 🔑 **One key, 46+ models** — switch model by changing one string. Live list: [MODELS.md](MODELS.md).
 - 🔌 **Works with your tools** — Claude Code, OpenCode, Cline, Roo Code, Kilo Code, Cursor, Continue, Codex CLI, the OpenAI & Anthropic SDKs, LangChain, LiteLLM, curl.
 - 🧾 **Both API formats** — `/v1/chat/completions`, `/v1/responses` and `/v1/messages`. Streaming, tool calling, images and reasoning work as usual.
 - 💸 **Pay as you go** — prepaid balance, per-token billing, up to 95% below official API prices on many models. Cached tokens are billed at the lower cache price.

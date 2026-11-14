@@ -74,7 +74,7 @@ pi install npm:@edgehero/pi-dispatch-admin
 
 ```bash
 mkdir my-dispatch && cd my-dispatch
-npx --yes --ignore-scripts @edgehero/pi-dispatch@5.2.0 up --console
+npx --yes --ignore-scripts @edgehero/pi-dispatch@5.2.1 up --console
 ```
 
 It checks the folder first, then lists what it will do and asks before it starts anything. It installs into that folder and
@@ -84,7 +84,7 @@ opens your browser on the checklist, already signed in.
 
 ```bash
 mkdir my-dispatch && cd my-dispatch && npm init -y
-npm install --save-exact @edgehero/pi-dispatch@5.2.0 @edgehero/pi-dispatch-admin@5.2.0 @earendil-works/pi-coding-agent@1.5.2 --omit=dev --omit=optional --ignore-scripts --no-audit --no-fund
+npm install --save-exact @edgehero/pi-dispatch@5.2.1 @edgehero/pi-dispatch-admin@5.2.1 @earendil-works/pi-coding-agent@1.5.2 --omit=dev --omit=optional --ignore-scripts --no-audit --no-fund
 ./node_modules/.bin/pi-dispatch up --console
 ```
 
@@ -116,11 +116,10 @@ server for good has [its own steps](#set-up-a-host).
 
 ## Open the web page
 
-The web page, which the rest of this README calls the console, runs on your own machine at `http://127.0.0.1:4790`. Bookmark it.
-Right after you sign in, the page asks whether to remember this browser. Choose **Remember this browser**, and it stays signed
-in: closing it, a restart of the console or days away do not sign you out. (Signing in with a token instead, tick **Remember this
-trusted device** under it.) Without it, a sign in lasts up to 12 hours, and an hour with nothing happening ends it sooner. Missed
-the question? Sign out, sign in again, and it is asked again.
+The web page, which the rest of this README calls the console, runs on your own machine at `http://pi-dispatch.localhost:4790`. Bookmark it.
+Once you sign in, the browser remembers you: closing it, a restart of the console or days away do not sign you out. (Signing in
+with a token instead, leave **Remember this trusted device** ticked under it.) A browser that is not remembered stays signed in
+for up to 12 hours, and an hour with nothing happening ends it sooner.
 
 To sign in, or to add another browser:
 
@@ -128,6 +127,7 @@ To sign in, or to add another browser:
 |---|---|
 | In a terminal, in the folder you installed into | `./pi-dispatch console` starts the page if it stopped, opens it and signs you in. Where it cannot open a browser it prints a link instead, which works once within 60 seconds |
 | In pi, started in that folder | `/dispatch console` opens the page and signs you in, while the page runs |
+| In another browser | `./node_modules/.bin/pi-dispatch-console link` prints a link and a short code such as `K7QX-9M2D`. Open the link within 60 seconds, or type the code on the sign-in page within 5 minutes |
 | On a server | Forward a port, and make the link on the server ([how](#set-up-a-host)) |
 | On Windows | One time links do not work there, so paste a token ([how](docs/console.md#create-the-first-token)) |
 
@@ -954,7 +954,7 @@ These forges have one auth source each, a token you create, so setting theirs to
 **Watching and steering:** [steering](docs/steering.md), [chat](docs/chat.md), [sessions](docs/sessions.md),
 [durable runs](docs/durable-runs.md), [approval gates](docs/approval-gates.md), [answer rules](docs/answer-rules.md),
 [Zero touch](docs/zero-touch.md), [watch](docs/watch.md), [watch decisions](docs/watch-decisions.md),
-[reasons](docs/reasons.md).
+[reasons](docs/reasons.md), [job limits](docs/job-limits.md).
 
 **Triggers and flows:** [triggers](docs/triggers.md), [workflows](docs/workflows.md), [wait for](docs/wait-for.md),
 [pause windows](docs/pause-windows.md), [replicas](docs/replicas.md), [canary](docs/canary.md),

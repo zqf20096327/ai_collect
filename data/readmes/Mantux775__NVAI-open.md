@@ -6,24 +6,26 @@ A studio for whole videos, plus images, video with sound, speech, music and 3D m
 
 | | |
 |---|---|
-| Windows 10/11, NVIDIA or AMD Radeon | [NVAI-open-Setup-0.5.26.exe](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.26/NVAI-open-Setup-0.5.26.exe) |
+| Windows 10/11, NVIDIA or AMD Radeon | [NVAI-open-Setup-0.5.27.exe](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.27/NVAI-open-Setup-0.5.27.exe) |
 | macOS 15+ on Apple Silicon, signed and notarized | [NVAI-open-0.5.5.dmg](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.24/NVAI-open-0.5.5.dmg) |
 
 Install, open, download a model under "Models", generate. The setup brings everything else along. [Installation details](docs/INSTALL.md) · [All releases](https://github.com/Mantux775/NVAI-open/releases)
 
 ## What's new? / Was gibt's Neues?
 
-November 2026: NVAI-open 0.5.26 for Windows ([release notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.26)); the Mac app stays at 0.5.5
+November 2026: NVAI-open 0.5.27 for Windows ([release notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.27)); the Mac app stays at 0.5.5
 
-- **Spoken lines no longer cut off:** a video that follows a given sound (`audio_asset_id`, or a character speaking in the Studio) is now rounded up to the next frame and the rest filled with silence; before, up to 0.29 s of the end could be missing. In the Studio a speaking clip fills its whole scene, and LTX-2.5 and Wan clips no longer leave black frames at the end of a scene whose length doesn't fit the frame grid.
+- **Start image in the Studio:** a video scene's properties now have a "Start image" field. Drag an image from the media list onto it or pick one from the project folder. The clip begins with it, so a character looks the same in every shot. Before, only Claude Code could set it over MCP. [Details](docs/STUDIO.md#step-by-step)
+- **Spoken lines no longer cut off** (0.5.26): a video that follows a given sound (`audio_asset_id`, or a character speaking in the Studio) is now rounded up to the next frame and the rest filled with silence; before, up to 0.29 s of the end could be missing. In the Studio a speaking clip fills its whole scene, and LTX-2.5 and Wan clips no longer leave black frames at the end of a scene whose length doesn't fit the frame grid.
 - **Kandinsky 6 Pro and Lite, with sound** (0.5.25): two more video models that make picture and sound in one pass, 5 s at 864 × 480, from text or a start image (NVIDIA only). What can be heard goes into its own "Sound" field. In the test Pro kept the action and the face, but it takes about 17 minutes for 5 s. **The sound may not be used commercially, and its video VAE is not licensed in the EU.** [Details](docs/MODELS.md#other-video-models)
 - **Your own LoRAs** (0.5.24): "Models" → "Add LoRA file" takes a LoRA you trained yourself or got elsewhere. NVAI-open reads the file header first and shows which models it fits; you confirm or change the assignment, also later. When generating, "+ Add your own LoRA file" sits right in the LoRA list. On the Mac for FLUX.2 Klein 4B. [All about LoRAs](docs/LORAS.md)
 - **Characters in the Studio** (0.5.24): a character bundles a look (one or more LoRAs) and a voice. Picture scenes show it, voice scenes speak with its voice, and on Windows a video scene with LTX-2.5 speaks a voice line with its lips. [Details](docs/STUDIO.md#characters)
 - **MiniMax H3, with a license warning** (since 0.5.18): video with stereo sound, 9 seconds in about 7 minutes. **Its license forbids any use in the EU, the UK, South Korea and the USA without a separate license from MiniMax, and nothing made with it may be published.** The app marks it in red. [Details](docs/MODELS.md#minimax-h3-since-0518)
 
-Neu in 0.5.26 (Mac bleibt 0.5.5):
+Neu in 0.5.27 (Mac bleibt 0.5.5):
 
-- **Kein abgeschnittenes Satzende mehr:** Ein Video, das einem vorgegebenen Ton folgt (`audio_asset_id` oder eine sprechende Figur im Studio), wird jetzt auf das nächste Bild aufgerundet und der Rest mit Stille gefüllt; vorher konnten bis zu 0,29 s vom Ende fehlen. Im Studio füllt ein sprechender Clip seine ganze Szene, und Clips mit LTX-2.5 und Wan lassen am Ende einer Szene, deren Länge nicht auf das Bildraster passt, keine schwarzen Bilder mehr.
+- **Startbild im Studio:** In den Eigenschaften einer Videoszene gibt es jetzt das Feld „Startbild“. Ein Bild aus dem Material darauf ziehen oder aus dem Projektordner wählen. Der Clip beginnt damit, so sieht eine Figur in jeder Einstellung gleich aus. Bisher ging das nur über Claude Code per MCP. [Einzelheiten](docs/de/STUDIO.md#schritt-für-schritt)
+- **Kein abgeschnittenes Satzende mehr** (0.5.26): Ein Video, das einem vorgegebenen Ton folgt (`audio_asset_id` oder eine sprechende Figur im Studio), wird jetzt auf das nächste Bild aufgerundet und der Rest mit Stille gefüllt; vorher konnten bis zu 0,29 s vom Ende fehlen. Im Studio füllt ein sprechender Clip seine ganze Szene, und Clips mit LTX-2.5 und Wan lassen am Ende einer Szene, deren Länge nicht auf das Bildraster passt, keine schwarzen Bilder mehr.
 - **Kandinsky 6 Pro und Lite, mit Ton** (0.5.25): zwei weitere Videomodelle, die Bild und Ton in einem Durchgang machen, 5 s in 864 × 480, aus Text oder einem Startbild (nur NVIDIA). Was zu hören ist, kommt in ein eigenes Feld „Ton“. Pro hielt im Test Handlung und Gesicht, braucht aber rund 17 Minuten für 5 s. **Der Ton ist nicht kommerziell nutzbar, und die Video-VAE ist in der EU nicht lizenziert.** [Einzelheiten](docs/de/MODELLE.md#weitere-videomodelle)
 - **Eigene LoRAs** (0.5.24): „Modelle“ → „LoRA-Datei hinzufügen“ nimmt eine LoRA, die du selbst trainiert oder anderswo gefunden hast. NVAI-open liest zuerst den Dateikopf und zeigt, zu welchen Modellen sie passt; du bestätigst oder änderst die Zuordnung, auch später. Beim Generieren steht „+ Eigene LoRA-Datei hinzufügen“ direkt in der LoRA-Liste. Auf dem Mac für FLUX.2 Klein 4B. [Alles zu LoRAs](docs/de/LORAS.md)
 - **Figuren im Studio** (0.5.24): Eine Figur bündelt Aussehen (eine oder mehrere LoRAs) und Stimme. Bildszenen zeigen sie, Sprecher-Szenen sprechen mit ihrer Stimme, und unter Windows spricht eine Videoszene mit LTX-2.5 einen Satz mit den Lippen. [Einzelheiten](docs/de/STUDIO.md#figuren)
@@ -76,11 +78,15 @@ The Studio is the first tab when NVAI-open starts. At the top you compose: scene
 
 Step by step: [docs/STUDIO.md](docs/STUDIO.md)
 
+**The short film with the rabbit:** Suomi began as a quick hand sketch. FLUX 3 made a character of it and, as an edit, gave him a tired mood; each shot got a start image, Qwen3-TTS spoke his line, Stable Audio 3 made the music, and LTX-2.5 animated the shots in the Studio, the line with his lips. Claude Code operated the app over MCP, every decision was made by a person, and the 30 seconds took about 50 minutes on one graphics card. [Step by step with screenshots](docs/SHORT_FILM.md) · [The film on YouTube](https://www.youtube.com/watch?v=cDhmiLMU6WQ)
+
+![The short film in the Studio: the shots on the Picture lane, the voice line below shot 4, the music across the whole film; below, the edit with the chosen takes](docs/images/short-film-studio.jpg)
+
 <p align="center">
-  <a href="https://www.youtube.com/shorts/1RiL-IfDdgs"><img src="https://i.ytimg.com/vi/1RiL-IfDdgs/maxresdefault.jpg" width="400" alt="YouTube Short: the NVAI Studio in action"></a>
+  <a href="https://www.youtube.com/watch?v=UYrT4YY8gDo"><img src="https://i.ytimg.com/vi/UYrT4YY8gDo/maxresdefault.jpg" width="400" alt="YouTube: a tutorial made completely on a local GPU with the NVAI Studio"></a>
   <a href="https://www.youtube.com/watch?v=xseQ42CFneY"><img src="https://i.ytimg.com/vi/xseQ42CFneY/maxresdefault.jpg" width="400" alt="YouTube: NVAI update, the Studio for Mac with new local AI models"></a>
 </p>
-<p align="center"><sub>The Studio in action (YouTube Short) and the update with the Studio for Mac and new local AI models (YouTube).</sub></p>
+<p align="center"><sub>A tutorial made completely on a local GPU with the Studio, and the update with the Studio for Mac and new local AI models (YouTube).</sub></p>
 
 ### From a portrait to a video
 
@@ -241,11 +247,20 @@ The code is under the [MIT License](LICENSE): do whatever you want with it. Thir
 - [docs/STUDIO.md](docs/STUDIO.md): the Studio, whole videos from scenes
 - [docs/CLAUDE_CODE.md](docs/CLAUDE_CODE.md): using NVAI-open from Claude Code
 - [docs/MAKING_OF.md](docs/MAKING_OF.md): how Claude built a video in the Studio
+- [docs/SHORT_FILM.md](docs/SHORT_FILM.md): a short film from a hand sketch, step by step with screenshots
 - [photocraft-addon/](photocraft-addon/): source of the PhotoCraft add-on
 
 ---
 
 ## Video
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=cDhmiLMU6WQ"><img src="https://i.ytimg.com/vi/cDhmiLMU6WQ/maxresdefault.jpg" width="480" alt="YouTube: a short film with the rabbit Suomi, made in the NVAI Studio"></a>
+</p>
+
+<p align="center">A short film with the rabbit Suomi, from a hand sketch to the export in the Studio, on YouTube (<a href="docs/SHORT_FILM.md">how it was made</a>).<br>
+Ein Kurzfilm mit dem Hasen Suomi, von der Handskizze bis zum Export im Studio, auf YouTube (<a href="docs/de/KURZFILM.md">wie er entstand</a>).<br>
+<a href="https://www.youtube.com/watch?v=cDhmiLMU6WQ">youtube.com/watch?v=cDhmiLMU6WQ</a></p>
 
 <p align="center">
   <a href="https://www.youtube.com/shorts/e9jSTwgwnrI"><img src="docs/images/video-short.jpg" width="320" alt="YouTube Short: NVAI-open and the PhotoCraft add-on"></a>
@@ -256,12 +271,12 @@ NVAI-open und das PhotoCraft-Add-on in Aktion, ein kurzes Video auf YouTube.<br>
 <a href="https://www.youtube.com/shorts/e9jSTwgwnrI">youtube.com/shorts/e9jSTwgwnrI</a></p>
 
 <p align="center">
-  <a href="https://www.youtube.com/shorts/1RiL-IfDdgs"><img src="https://i.ytimg.com/vi/1RiL-IfDdgs/maxresdefault.jpg" width="480" alt="YouTube Short: the NVAI Studio in action"></a>
+  <a href="https://www.youtube.com/watch?v=UYrT4YY8gDo"><img src="https://i.ytimg.com/vi/UYrT4YY8gDo/maxresdefault.jpg" width="480" alt="YouTube: a tutorial made completely on a local GPU with the NVAI Studio"></a>
 </p>
 
-<p align="center">The Studio in action, a short on YouTube.<br>
-Das Studio in Aktion, ein kurzes Video auf YouTube.<br>
-<a href="https://www.youtube.com/shorts/1RiL-IfDdgs">youtube.com/shorts/1RiL-IfDdgs</a></p>
+<p align="center">The Studio in action: a tutorial made completely on a local GPU, on YouTube.<br>
+Das Studio in Aktion: ein Tutorial, komplett auf der eigenen Grafikkarte gemacht, auf YouTube.<br>
+<a href="https://www.youtube.com/watch?v=UYrT4YY8gDo">youtube.com/watch?v=UYrT4YY8gDo</a></p>
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=xseQ42CFneY"><img src="https://i.ytimg.com/vi/xseQ42CFneY/maxresdefault.jpg" width="480" alt="YouTube: NVAI update, the Studio for Mac with new local AI models"></a>
@@ -316,11 +331,15 @@ Das Studio ist der erste Reiter, wenn NVAI-open startet. Oben komponierst du: Sz
 
 Schritt für Schritt: [docs/de/STUDIO.md](docs/de/STUDIO.md)
 
+**Der Kurzfilm mit dem Hasen:** Suomi begann als schnelle Handskizze. FLUX 3 machte daraus eine Figur und gab ihr als Bearbeitung eine müde Stimmung; jede Einstellung bekam ein Startbild, Qwen3-TTS sprach seinen Satz, Stable Audio 3 machte die Musik, und LTX-2.5 bewegte die Einstellungen im Studio, den Satz mit seinen Lippen. Claude Code bediente die App über MCP, die Entscheidungen traf ein Mensch, und die 30 Sekunden brauchten rund 50 Minuten auf einer Grafikkarte. [Schritt für Schritt mit Bildern](docs/de/KURZFILM.md) · [Der Film auf YouTube](https://www.youtube.com/watch?v=cDhmiLMU6WQ)
+
+![Der Kurzfilm im Studio: die Einstellungen in der Bahn Bild/Video, der Satz unter Einstellung 4, die Musik über den ganzen Film; darunter der Schnitt mit den gewählten Takes](docs/images/short-film-studio-de.jpg)
+
 <p align="center">
-  <a href="https://www.youtube.com/shorts/1RiL-IfDdgs"><img src="https://i.ytimg.com/vi/1RiL-IfDdgs/maxresdefault.jpg" width="400" alt="YouTube Short: das NVAI-Studio in Aktion"></a>
+  <a href="https://www.youtube.com/watch?v=UYrT4YY8gDo"><img src="https://i.ytimg.com/vi/UYrT4YY8gDo/maxresdefault.jpg" width="400" alt="YouTube: ein Tutorial, komplett auf der eigenen Grafikkarte mit dem NVAI-Studio gemacht"></a>
   <a href="https://www.youtube.com/watch?v=xseQ42CFneY"><img src="https://i.ytimg.com/vi/xseQ42CFneY/maxresdefault.jpg" width="400" alt="YouTube: NVAI-Update, das Studio für den Mac mit neuen lokalen KI-Modellen"></a>
 </p>
-<p align="center"><sub>Das Studio in Aktion (YouTube Short) und das Update mit dem Studio für den Mac und neuen lokalen KI-Modellen (YouTube).</sub></p>
+<p align="center"><sub>Ein Tutorial, komplett auf der eigenen Grafikkarte mit dem Studio gemacht, und das Update mit dem Studio für den Mac und neuen lokalen KI-Modellen (YouTube).</sub></p>
 
 ### Vom Porträt zum Video
 
@@ -481,4 +500,5 @@ Der Code steht unter der [MIT-Lizenz](LICENSE): Jeder darf damit machen, was er 
 - [docs/de/STUDIO.md](docs/de/STUDIO.md): das Studio, ganze Videos aus Szenen
 - [docs/CLAUDE_CODE.md](docs/CLAUDE_CODE.md): NVAI-open aus Claude Code nutzen (englisch)
 - [docs/de/MAKING_OF.md](docs/de/MAKING_OF.md): wie Claude ein Video im Studio gebaut hat
+- [docs/de/KURZFILM.md](docs/de/KURZFILM.md): ein Kurzfilm von der Handskizze an, Schritt für Schritt mit Bildern
 - [photocraft-addon/](photocraft-addon/): Quelltext des PhotoCraft-Add-ons

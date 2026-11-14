@@ -5,12 +5,16 @@
 Not guides. Not courses. *Skills* — packaged expertise your AI coding agent loads and follows.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Skills](https://img.shields.io/badge/Skills-23%20Free%20%2B%2010%20Pro-green.svg)](#available-skills)
+[![Skills](https://img.shields.io/badge/Skills-20%20Free-green.svg)](#available-skills)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Native-blueviolet.svg)](#installation)
-[![Also Works](https://img.shields.io/badge/Also%20Works-OpenClaw%20%7C%20Copilot%20%7C%20Cursor-gray.svg)](#compatibility)
-[![Updated](https://img.shields.io/badge/Updated-Mar%2014%202026-brightgreen.svg)](./CHANGELOG.md)
+[![Also Works](https://img.shields.io/badge/Also%20Works-Codex%20%7C%20ChatGPT%20%7C%20Meta%20Muse%20%7C%20Grok%20%7C%20Cursor-gray.svg)](#compatibility)
+[![Updated](https://img.shields.io/badge/Updated-Nov%2014%202026-brightgreen.svg)](./CHANGELOG.md)
 
-> **March 2026 — v3.1:** All 19 free skills now support `quick|standard|deep` execution modes. Get fast answers or deep audits from the same skill — no extra prompting. [See what changed →](./CHANGELOG.md)
+> **November 2026 — v4.1:** All 20 skills now support `quick|standard|deep` modes. Founder Intelligence gets its full 15-lens library back. [See what changed →](./CHANGELOG.md)
+>
+> **November 2026 — v4.0:** The premium skills are now free. Founder Intelligence, Competitor Intel Brief, Brand Voice Extractor, Brand Positioning Audit and the full AI Discoverability Audit (previously $9-$19) are in the library below. [See what changed →](./CHANGELOG.md)
+>
+> **March 2026 — v3.1:** The original 16 free skills gained `quick|standard|deep` execution modes. Get fast answers or deep audits from the same skill — no extra prompting. [See what changed →](./CHANGELOG.md)
 
 ---
 
@@ -55,7 +59,7 @@ Core positioning framework for founders and marketers. Clarify who you're for, w
 ---
 
 #### 🔍 AI Discoverability Audit
-Audit how a brand appears in AI-powered search and recommendation systems (ChatGPT, Perplexity, Claude, Gemini).
+The full Signal Audit (formerly the $19 paid version): score how ChatGPT, Perplexity, Claude and Gemini describe and recommend a brand, see which sources they cite, then get a prioritized fix list. Includes a worksheet and a prep script.
 
 **Use when:** "How do I show up in ChatGPT?", "AI search visibility", "AEO audit"
 
@@ -71,6 +75,25 @@ Apply timeless marketing and business principles from the masters (Drucker, Ogil
 → [marketing-principles/SKILL.md](./marketing-principles/SKILL.md)
 
 ---
+
+#### 🧠 Founder Intelligence
+High-judgment advice on a strategic decision, routed through specific founder and operator lenses (Drucker, Helmer, Buffett and more) to a concrete recommendation. Includes a 15-lens library (9 core, 6 specialist) and a lens-router script.
+
+**Use when:** "Should we narrow our market?", "pricing decision", "what would a great operator do here?"
+
+→ [founder-intelligence/SKILL.md](./founder-intelligence/SKILL.md)
+
+---
+
+#### 🧭 Brand Positioning Audit
+Diagnose positioning problems (ICP clarity, differentiation, proof) with a scored audit and specific fixes. Includes a competitor scan script.
+
+**Use when:** "Our positioning is generic", "what makes us different?", "we struggle to explain what we do"
+
+→ [brand-positioning-audit/SKILL.md](./brand-positioning-audit/SKILL.md)
+
+---
+
 
 ### Content & Authority
 
@@ -95,18 +118,20 @@ Generate content ideas based on your positioning and ICP. Multiple frameworks fo
 #### 🎙️ Voice Extractor
 Extract and document someone's authentic writing voice from samples. Create voice guides for AI training or ghostwriting.
 
+**Which voice skill?** Voice Extractor gives you a fast, one-page voice spec from a few samples. Brand Voice Extractor is the full profile for a team or several AI tools, and can build a voice from scratch.
+
 **Use when:** "Capture my voice", "Voice guide", "Write like me", "Train AI on my style"
 
-→ [voice-extractor/SKILL.md](./voice-extractor/SKILL.md) | [$9 premium version on Claw Mart →](https://www.shopclawmart.com/listings/voice-extractor-f1578cb8)
+→ [voice-extractor/SKILL.md](./voice-extractor/SKILL.md)
 
 ---
 
-#### 🧹 De-AI-ify
-Remove AI-generated jargon and restore human voice to text. Built from analyzing 1,000+ AI vs human content pieces.
+#### 🗣️ Brand Voice Extractor
+The deep version of Voice Extractor. Two modes: Extract (analyze writing you are proud of) or Build (construct a voice from scratch). Outputs a voice profile any AI can follow, plus before/after rewrites.
 
-**Use when:** "This sounds like AI", "Make it human", "Remove AI voice", "De-robotify this"
+**Use when:** "Make AI sound like me", "build our brand voice", "document our tone"
 
-→ [de-ai-ify/SKILL.md](./de-ai-ify/SKILL.md)
+→ [brand-voice-extractor/SKILL.md](./brand-voice-extractor/SKILL.md)
 
 ---
 
@@ -121,39 +146,21 @@ Generate platform-specific social post variants (Twitter, LinkedIn, Reddit) from
 
 ### Research & Intelligence
 
-#### 🔬 Last 30 Days Research
-Research any topic across Reddit, X, and web from the last 30 days. Current trends, real community sentiment, and actionable insights in 7 minutes vs 2 hours manual research.
-
-**Use when:** "What are people saying about X?", "Current trends in Y", "Market research", "Community sentiment"
-
-→ [last30days/SKILL.md](./last30days/SKILL.md)
-
----
-
-#### 🔎 Reddit Insights
-Search and analyze Reddit content using semantic AI search. Find user pain points, discover niche markets, validate business ideas with real user feedback.
-
-**Use when:** "Search Reddit for...", "What does Reddit think about?", "Find pain points", "Validate this idea"
-
-→ [reddit-insights/SKILL.md](./reddit-insights/SKILL.md)
-
----
-
-#### 🎬 YouTube Summarizer
-Fetch YouTube video transcripts, generate structured summaries with key insights and metadata. Supports full transcript delivery.
-
-**Use when:** "Summarize this YouTube video", "Get transcript from...", "Key takeaways from this video"
-
-→ [youtube-summarizer/SKILL.md](./youtube-summarizer/SKILL.md)
-
----
-
 #### 🔗 LinkedIn Profile Optimizer
 Audit and rewrite your LinkedIn profile to attract the right people. Scores each section, rewrites headline and about copy, and includes an AI visibility checklist for ChatGPT/Perplexity/Claude search.
 
 **Use when:** "Optimize my LinkedIn", "Rewrite my about section", "LinkedIn profile help", "AI search visibility"
 
 → [linkedin-profile-optimizer/SKILL.md](./linkedin-profile-optimizer/SKILL.md)
+
+---
+
+#### ⚔️ Competitor Intel Brief
+A structured teardown of a real competitor: positioning, ICP, pricing signals, channel patterns, moat, vulnerabilities, and a clear angle of attack.
+
+**Use when:** "Tear down this competitor", "where are they weak?", "how do we beat X?"
+
+→ [competitor-intel-brief/SKILL.md](./competitor-intel-brief/SKILL.md)
 
 ---
 
@@ -197,30 +204,39 @@ Systematically gather and format client testimonials for social proof.
 
 ### Productivity & Operations
 
-#### 📅 Plan My Day
-Generate an energy-optimized, time-blocked daily plan based on circadian rhythm research and GTD principles.
+#### 📝 Daily Briefing Builder
+Generate a clean morning brief: today's priorities, unposted content, and weather from your notes.
 
-**Use when:** "Plan my day", "Time block today", "What should I work on?", "Daily schedule"
+**Use when:** "Build my morning brief", "what matters today?"
 
-→ [plan-my-day/SKILL.md](./plan-my-day/SKILL.md)
-
----
-
-#### 📧 Newsletter Creation & Curation
-Industry-adaptive B2B newsletter creation with stage, role, and geography-aware workflows.
-
-**Use when:** "Create a newsletter", "Curate content for newsletter", "B2B newsletter", "Weekly digest"
-
-→ [newsletter-creation-curation/SKILL.md](./newsletter-creation-curation/SKILL.md)
+→ [daily-briefing-builder/SKILL.md](./daily-briefing-builder/SKILL.md)
 
 ---
 
-#### 🚀 Go Mode
-Deep work execution mode. When you have a clear task and need to execute without distraction.
+#### 🤝 Meeting Prep
+A pre-meeting brief: participant research, context from your notes, an agenda, and sharp questions.
 
-**Use when:** "Go mode", "Execute this", "Let's build", "Ship it"
+**Use when:** "Prep for this meeting", "I have a call with..."
 
-→ [go-mode/SKILL.md](./go-mode/SKILL.md)
+→ [meeting-prep/SKILL.md](./meeting-prep/SKILL.md)
+
+---
+
+#### 🐦 Tweet Draft Reviewer
+Score tweet drafts 1-10 against 8 voice rules and rewrite anything below 7.
+
+**Use when:** "Review this tweet", "tighten this post"
+
+→ [tweet-draft-reviewer/SKILL.md](./tweet-draft-reviewer/SKILL.md)
+
+---
+
+#### 🗄️ Vault Cleanup Auditor
+Audit an Obsidian vault for stale drafts, empty folders, duplicate filenames, and incomplete files. Saves a dated report.
+
+**Use when:** "Clean up my vault", "audit my notes"
+
+→ [vault-cleanup-auditor/SKILL.md](./vault-cleanup-auditor/SKILL.md)
 
 ---
 
@@ -234,13 +250,12 @@ cd ai-marketing-claude-code-skills
 bash scripts/install.sh
 ```
 
-Auto-detects Claude Code, OpenClaw, Cursor, and Windsurf. Walks you through the rest.
+Auto-detects Claude Code, Cursor, and Windsurf. Walks you through the rest.
 
 **Flags:**
 ```bash
 bash scripts/install.sh --all              # install to every detected platform
 bash scripts/install.sh --platform=cursor  # specific platform only
-bash scripts/install.sh --include-pro      # include pro/ skills (if purchased)
 bash scripts/install.sh --dry-run          # preview without writing files
 ```
 
@@ -249,12 +264,10 @@ bash scripts/install.sh --dry-run          # preview without writing files
 | Platform | Install Location | File Used | Notes |
 |----------|-----------------|-----------|-------|
 | **Claude Code** | `~/.claude/skills/` | `SKILL.md` | Full detail, all phases |
-| **OpenClaw** | `~/.openclaw/skills/` | `SKILL-OC.md` ¹ | Token-efficient edition |
 | **Cursor** | `.cursor/rules/` (project) | `SKILL.md` → `.mdc` | Converted with rule frontmatter |
 | **Windsurf** | `.windsurf/rules/` (project) | `SKILL.md` → `.md` | Converted with rule frontmatter |
 | **Generic** | `./ai-marketing-skills/` | `SKILL.md` | Plain copy, any tool |
 
-> ¹ **Dual-file system:** Each skill ships two versions — `SKILL.md` (Claude Code, verbose, all phases) and `SKILL-OC.md` (OpenClaw, condensed, ~200 lines, token-efficient). The installer automatically routes the right file to the right platform. If `SKILL-OC.md` isn't present yet for a skill, it falls back to `SKILL.md`.
 
 ### List Available Skills
 
@@ -276,30 +289,18 @@ bash scripts/convert.sh --all   # convert for all platforms into ./converted/
 | Platform | Status | Notes |
 |----------|--------|-------|
 | **Claude Code** | ✅ Native | Primary target |
-| **OpenClaw** | ✅ Compatible | Works as-is, [optimized version available](https://github.com/BrianRWagner/ai-marketing-openclaw-skills) |
+| **OpenAI Codex** | ✅ Compatible | Copy the skill folder into Codex's skills directory (e.g. `~/.agents/skills/`) |
 | **GitHub Copilot** | ✅ Compatible | Via .github/skills |
 | **Cursor** | ✅ Compatible | Via rules/context |
-| **ChatGPT** | ⚠️ Manual | Paste SKILL.md content |
-| **Claude.ai** | ⚠️ Manual | Paste SKILL.md content |
+| **Claude.ai** | ⚠️ Manual | Upload as a skill, or paste SKILL.md |
+| **ChatGPT (incl. Dots)** | ⚠️ Manual | Upload or paste SKILL.md into a Project or custom GPT |
+| **Meta Muse** | ⚠️ Manual | Paste SKILL.md as the instructions |
+| **Grok** | ⚠️ Manual | Paste or upload SKILL.md as the instructions |
+
+> Every skill is plain markdown instructions, so any assistant that can follow a written brief can run it. Claude Code is the native target; the others work by giving the assistant the SKILL.md.
 
 ---
 
-## 🔥 Premium Skills (Gumroad)
-
-Full Claude Code editions with structured reasoning phases, self-critique loops, and output precision.
-
-→ [Browse all on Gumroad](https://brianrwagner.gumroad.com)
-
-| Skill | Price | Link |
-|-------|-------|------|
-| AI Marketing Bundle (all 7) | $49 | [Buy →](https://brianrwagner.gumroad.com/l/brw-cc-marketing-bundle) |
-| AI Discoverability Audit v2 | $19 | [Buy →](https://brianrwagner.gumroad.com/l/ai-discoverability-audit) |
-| Founder Intelligence | $15 | [Buy →](https://brianrwagner.gumroad.com/l/brw-founder-intelligence) |
-| Competitor Intel Brief | $12 | [Buy →](https://brianrwagner.gumroad.com/l/brw-competitor-intel-brief) |
-| Morning Brief System | $14 | [Buy →](https://brianrwagner.gumroad.com/l/brw-morning-brief-system) |
-| Brand Voice Extractor | $9 | [Buy →](https://brianrwagner.gumroad.com/l/brand-voice-extractor) |
-| AI Employee Onboarding | $9 | [Buy →](https://brianrwagner.gumroad.com/l/brw-ai-employee-onboarding) |
-| Brand Positioning Audit | $9 | [Buy →](https://brianrwagner.gumroad.com/l/brw-brand-positioning-audit) |
 ## About
 
 Created by **Brian Wagner** — AI Marketing Architect

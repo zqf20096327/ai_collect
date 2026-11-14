@@ -88,8 +88,8 @@ LynxHub consolidates your AI workflow into a single, unified workspace.
 
 | Channel          | Version                                                         | Release Date |
 | ---------------- | --------------------------------------------------------------- | ------------ |
-| **Insider**      | [V3.6.2](https://www.patreon.com/collection/1557749)            | 2026-09-20   |
-| **Early Access** | [V3.6.2](https://www.patreon.com/collection/714004)             | 2026-09-20   |
+| **Insider**      | [V3.7.0](https://www.patreon.com/collection/1557749)            | 2026-11-14   |
+| **Early Access** | [V3.7.0](https://www.patreon.com/collection/714004)             | 2026-11-14   |
 | **Public**       | [V3.6.1](https://github.com/TheLynxHub/LynxHub/releases/latest) | 2026-10-09   |
 
 > [!TIP]  

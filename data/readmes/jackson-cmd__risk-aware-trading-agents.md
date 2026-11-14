@@ -2,15 +2,19 @@
 
 <div align="center">
 
-<img src="site/assets/banner.svg" alt="Risk-Aware Trading Agents · 风险感知交易智能体: AI trading agents for US stocks, with news backtests that cannot see the future" width="100%">
+<img src="site/assets/banner.svg" alt="Risk-Aware Trading Agents · 风险感知交易智能体: a benchmark and leaderboard for LLM trading agents with news replayed by the minute it was published, and AI trading agents for US stocks" width="100%">
 
-**AI trading agents for US stocks that check the macro calendar, the fear index and verified news before they buy.**
+## A benchmark for LLM trading agents, with news replayed by the minute it was published
 
-Market regimes from VIX and the FOMC / CPI calendar · dip buying with an earnings check · a 30% cash floor · cross-verified news · paper-trading agents ranked against SPY · news backtests that cannot see the future · a frozen 2026 dataset for research · LLM agents over MCP · paper and live trading on 10 brokers.
+Most news backtests join headlines to prices by calendar date, so a headline published after the close is traded at that close. Here every headline arrives at the minute it was published and orders fill at the next open, through three frozen markets: the 2020 crash, the 2022 bear market and 2026. Llama, GPT, Claude and Gemini trade them blind and with names, three seeds each, scored apart before and after each model's training cutoff. The results are public; the headlines behind them are licensed and not distributed, so the replay runs on news you bring: the free SEC 8-K filings, a news API key of your own or any CSV.
 
-[🌐 Website](https://jackson-cmd.github.io/risk-aware-trading-agents/) · [中文说明 → README_zh.md](README_zh.md) · [🚀 Quick start](#-quick-start) · [🆕 What's new](#-whats-new) · [🔬 Research kit](#-research-kit) · [🔗 MCP](#-mcp-server) · [📸 Screenshots](#-screenshots) · [Changelog](CHANGELOG.md)
+**The same package is also a set of AI trading agents for US stocks that check the macro calendar, the fear index and verified news before they buy.**
 
-[![CI](https://github.com/jackson-cmd/risk-aware-trading-agents/actions/workflows/ci.yml/badge.svg)](https://github.com/jackson-cmd/risk-aware-trading-agents/actions/workflows/ci.yml) [![PyPI 0.7.2](https://img.shields.io/badge/pypi-0.7.2-e5534b.svg)](https://pypi.org/project/risk-aware-trading-agents/) [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776ab.svg)](https://www.python.org/) [![License: MIT](https://img.shields.io/badge/license-MIT-2ea043.svg)](LICENSE) [![MCP server](https://img.shields.io/badge/MCP-server-24292f.svg)](#-mcp-server) [![Docker image](https://img.shields.io/badge/docker-ghcr.io-2496ed.svg)](https://github.com/jackson-cmd/risk-aware-trading-agents/pkgs/container/risk-aware-trading-agents) [![Dataset on Hugging Face](https://img.shields.io/badge/dataset-Hugging%20Face-ffcc4d.svg)](https://huggingface.co/datasets/jacksonwangpro1/point-in-time-market-data-2026) [![English and Chinese](https://img.shields.io/badge/docs-English%20%7C%20%E4%B8%AD%E6%96%87-e3b341.svg)](README_zh.md)
+Market regimes from VIX and the FOMC / CPI calendar · dip buying with an earnings check · a 30% cash floor · cross-verified news · paper-trading agents ranked against SPY · news backtests that cannot see the future · a public leaderboard of LLM trading agents · frozen 2020, 2022 and 2026 markets for research · LLM agents over MCP · paper and live trading on 10 brokers.
+
+[🌐 Website](https://jackson-cmd.github.io/risk-aware-trading-agents/) · [🏆 LLM leaderboard](https://jackson-cmd.github.io/risk-aware-trading-agents/leaderboard.html) · [中文说明 → README_zh.md](README_zh.md) · [🚀 Quick start](#-quick-start) · [🆕 What's new](#-whats-new) · [🔬 Research kit](#-research-kit) · [🔗 MCP](#-mcp-server) · [📸 Screenshots](#-screenshots) · [Changelog](CHANGELOG.md)
+
+[![CI](https://github.com/jackson-cmd/risk-aware-trading-agents/actions/workflows/ci.yml/badge.svg)](https://github.com/jackson-cmd/risk-aware-trading-agents/actions/workflows/ci.yml) [![PyPI 0.7.2](https://img.shields.io/badge/pypi-0.8.0-e5534b.svg)](https://pypi.org/project/risk-aware-trading-agents/) [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776ab.svg)](https://www.python.org/) [![License: MIT](https://img.shields.io/badge/license-MIT-2ea043.svg)](LICENSE) [![MCP server](https://img.shields.io/badge/MCP-server-24292f.svg)](#-mcp-server) [![Docker image](https://img.shields.io/badge/docker-ghcr.io-2496ed.svg)](https://github.com/jackson-cmd/risk-aware-trading-agents/pkgs/container/risk-aware-trading-agents) [![Dataset on Hugging Face](https://img.shields.io/badge/dataset-Hugging%20Face-ffcc4d.svg)](https://huggingface.co/datasets/jacksonwangpro1/rta-bench-llm-trading-benchmark) [![English and Chinese](https://img.shields.io/badge/docs-English%20%7C%20%E4%B8%AD%E6%96%87-e3b341.svg)](README_zh.md)
 
 <img src="site/assets/demo_en.gif" alt="A 16-second tour: the market regime, today's signals, how a decision was made, paper-trading agents ranked against SPY, a backtest, the news a backtest saw, cross-verified news, and a research run with its look-ahead check" width="100%">
 
@@ -39,6 +43,7 @@ riskaware agents init                 # four starter paper-trading agents
 riskaware agents run                  # let them trade once now
 riskaware agents schedule --install   # ...and every trading day from now on
 riskaware research run -s swing_trend # a strategy on the frozen 2026 market, with a look-ahead check
+riskaware research run -s swing_trend --period 2022   # the same in the 2022 bear market
 ```
 
 No account or API key is needed for any of these. Add `--lang zh` to any command for Chinese output. For the newest code before it is released, use `pip install "risk-aware-trading-agents[dashboard,mcp] @ git+https://github.com/jackson-cmd/risk-aware-trading-agents"`; to change the code, clone the repository and run `pip install -e ".[dashboard,mcp]"`.
@@ -58,27 +63,28 @@ For the daily paper-trading scheduler as well, put `riskaware.yaml` (from `riska
 
 - You trade **US stocks over days to weeks** and want rules you can read: buy quality names on pullbacks, keep cash, and never sell in a panic.
 - You want **backtests that cannot cheat**: news replayed as it was published, orders at the next open, and a look-ahead check on every research run.
-- You **study LLM trading agents** and need data and a setup that others can repeat: a frozen 2026 market, a blind mode, and a saved record of every run.
+- You **study LLM trading agents** and need data and a setup that others can repeat: three frozen markets (the 2020 crash, the 2022 bear market, 2026), a blind mode, a saved record of every run, and a [public leaderboard](https://jackson-cmd.github.io/risk-aware-trading-agents/leaderboard.html) you can submit to.
 - You use **Claude, Codex or Gemini** and want them to test a strategy you describe in words, on your own plan, with no API key.
 - You want to **paper trade first**: several strategies side by side on simulated money, ranked against SPY every trading day.
 - You read **English or Chinese**: the CLI, the dashboard, the reports and the docs come in both.
 
-<sub>If you were looking for an AI trading bot for US stocks, a backtester with historical news and no look-ahead bias, a point-in-time dataset of 2026 prices, VIX and headlines, a benchmark for LLM trading agents, an MCP server for trading research, or paper-trading agents for Alpaca and other brokers: it is all here, open source.</sub>
+<sub>If you were looking for an AI trading bot for US stocks, a backtester with historical news and no look-ahead bias, a point-in-time dataset of prices, VIX and headlines for 2020, 2022 and 2026, a benchmark and leaderboard for LLM trading agents, an MCP server for trading research, or paper-trading agents for Alpaca and other brokers: it is all here, open source.</sub>
 
 ---
 
 ## Contents
 
 - [🚀 Quick start](#-quick-start) · [Is it for you?](#is-it-for-you) · [🆕 What's new](#-whats-new) · [💡 The idea](#-the-idea) · [Four ways to use it](#four-ways-to-use-it)
-- [✨ Feature tour](#-feature-tour): [How it works](#-how-it-works) · [Cross-verified news](#-cross-verified-news) · [Paper-trading agents](#-paper-trading-agents) · [MCP server](#-mcp-server) · [Strategy lab](#-strategy-lab) · [Research kit](#-research-kit) · [Backtest](#-backtest) · [Strategy library](#-strategy-library) · [Write your own strategy](#-write-your-own-strategy)
+- [✨ Feature tour](#-feature-tour): [How it works](#-how-it-works) · [Cross-verified news](#-cross-verified-news) · [Paper-trading agents](#-paper-trading-agents) · [MCP server](#-mcp-server) · [Strategy lab](#-strategy-lab) · [LLM leaderboard](#-llm-trading-agent-leaderboard) · [Research kit](#-research-kit) · [Backtest](#-backtest) · [Strategy library](#-strategy-library) · [Write your own strategy](#-write-your-own-strategy)
 - [📸 Screenshots](#-screenshots) · [🔌 Brokers](#-brokers) · [🔒 Safety](#-safety) · [🔧 Configuration](#-configuration) · [🧰 Under the hood](#-under-the-hood): [CLI](#-cli) · [Project layout](#-project-layout)
 - [❓ FAQ](#-faq) · [🧭 Roadmap](#-roadmap) · [🤝 Contributing](#-contributing) · [📝 Citation](#-citation) · [❗ Disclaimer](#-disclaimer) · [📜 License](#-license)
 
 ## 🆕 What's new
 
+- **0.8.0** · 🏆 **LLM trading agent leaderboard, rta-bench-1**: six models trade 2026, the 2022 bear market and the 2020 crash, blind and with names, with news replayed by publication time and realistic costs. Scored after each model's training cutoff, Claude Haiku 4.5 leads 2026 with **+7.2%**, still behind SPY's +12.1%. [Leaderboard →](https://jackson-cmd.github.io/risk-aware-trading-agents/leaderboard.html) Also new: the frozen 2022 and 2020 periods, realistic costs, return attribution (exposures and alpha), news factors, short selling and margin, a memory probe and prompt tests. The licensed headlines are no longer distributed with the package; the results and numbers stay public. Releases are no longer archived on Zenodo.
 - **0.7.2** · 🔗 **One step into Claude and other MCP clients**: the server is on the official MCP Registry, `uvx risk-aware-trading-agents mcp` starts it with nothing installed first, and every release carries a Claude Desktop extension (`.mcpb`) that installs when you open it. [How →](#-mcp-server)
 - **0.7.1** · 📦 **On PyPI and Docker**: `pip install risk-aware-trading-agents`, or run the dashboard or the MCP server from `ghcr.io/jackson-cmd/risk-aware-trading-agents` without installing Python; GitHub Codespaces opens the repository with everything installed. [How →](#-quick-start)
-- **0.7.0** · 🔬 **A frozen 2026 market for research**: point-in-time prices, VIX and news for the whole year ship with the package. Ask what was known at any close, let Claude turn a strategy you describe into code and test it, or let an LLM trade the year step by step. Every run gets a look-ahead check and a record for papers; trend following made **+21.1%** against SPY's +12.1%. [How →](#-research-kit)
+- **0.7.0** · 🔬 **A frozen 2026 market for research**: point-in-time prices and VIX for the whole year ship with the package, and news is replayed by the minute it was published (the licensed headlines are not distributed after 0.7.2: bring your own). Ask what was known at any close, let Claude turn a strategy you describe into code and test it, or let an LLM trade the year step by step. Every run gets a look-ahead check and a record for papers; trend following made **+21.1%** against SPY's +12.1%. [How →](#-research-kit)
 - **0.6.3** · ⏳ **Long runs keep going in the background**: scans, backtests, agent runs and news fetches go on when you switch pages or reload, and a bar takes you back to the result.
 
 <details>
@@ -86,12 +92,12 @@ For the daily paper-trading scheduler as well, put `riskaware.yaml` (from `riska
 
 - **0.6.2** · ❓ **Every number explains itself**: a ? next to every card, column and field says what it is, how it is calculated and how to use it, in English and 中文. [See it →](#-screenshots)
 - **0.6.1** · 🔎 **The news behind every backtest trade**: pick a trade and see the headlines the backtest had at that close and the order it placed. [How →](docs/news-history.md#see-what-a-backtest-saw)
-- **0.6.0** · 🗞️ **2026 news in the box**: 16,945 headlines and SEC filings for the 64 built-in stocks, so `riskaware backtest --news` works with nothing to download. The agent with news made **+15.9%** against SPY's +12.1%, with a **-5.3%** drawdown against -8.9%. [Results →](#2026-so-far-with-news)
+- **0.6.0** · 🗞️ **2026 news replay**: 16,945 headlines and SEC filings for the 64 built-in stocks (bundled until 0.7.2; licensed, so no longer distributed). The agent with news made **+15.9%** against SPY's +12.1%, with a **-5.3%** drawdown against -8.9%. [Results →](#2026-so-far-with-news)
 - **0.6.0** · 🧪 **Describe a strategy, the AI writes and tests it**: over MCP, Claude, Codex or Gemini write the strategy as code; it is checked for look-ahead and side effects and runs in a separate process. [How →](#-strategy-lab)
 - **0.6.0** · 🔭 **No peeking at the future**: each backtest day sees only news published before its close, and a strategy cannot reach later prices. [Details →](docs/news-history.md#how-the-backtest-avoids-look-ahead)
 - **0.5.0** · 🔑 **No API key needed**: agent reviews run on your Claude, ChatGPT or Gemini plan with `--llm claude-cli`, `codex-cli` or `gemini-cli`. [How →](docs/agents.md#no-api-key-use-your-plan)
 - **0.5.0** · 🔌 **MCP in one command**: `riskaware mcp-setup claude-desktop` (or `claude-code`, `codex`, `gemini`, `antigravity`). [Set it up →](#-mcp-server)
-- **0.5.0** · 🗄️ **Your own news archive** for other years: SEC 8-K filings for free, your Benzinga key, or any CSV, replayed the same way. [How →](docs/news-history.md)
+- **0.5.0** · 🗄️ **Your own news archive** for other years: SEC 8-K filings for free, a news API key of your own, or any CSV, replayed the same way. [How →](docs/news-history.md)
 - **0.4.0** gave each agent its own LLM review with every decision on record, **0.3.0** added daily paper-trading agents, the MCP server and the new dashboard, and **0.2.0** added options backtests and four stock strategies.
 
 The full history is in the [changelog](CHANGELOG.md).
@@ -103,7 +109,7 @@ The full history is in the [changelog](CHANGELOG.md).
 
 Most trading bots either chase every signal or need a quant team to configure. This one follows a simple, explainable discipline that long-term investors already use: buy quality stocks when they pull back to their moving averages, add when fear is high and the earnings still hold up, trim when prices run too far, never panic-sell into uncertainty, and always keep a cash reserve. Four agents check the market, the calendar, the company and the news; a deterministic risk manager has the final word on every order.
 
-**How it did.** On 2026 so far, reading the news that ships with the package, the agent made **+15.9%** against SPY's +12.1%, with a Sharpe ratio of 1.70 against 0.77, and its worst drop was **-5.3%** against SPY's -8.9% ([details](#2026-so-far-with-news)). From 2018 to 2026 it earned less than SPY in the long bull market, 10.4% a year against 14.1%, and fell about half as far, -18.2% against -33.7% ([details](#-backtest)).
+**How it did.** On 2026 so far, reading the 2026 headlines (licensed, not distributed), the agent made **+15.9%** against SPY's +12.1%, with a Sharpe ratio of 1.70 against 0.77, and its worst drop was **-5.3%** against SPY's -8.9% ([details](#2026-so-far-with-news)). From 2018 to 2026 it earned less than SPY in the long bull market, 10.4% a year against 14.1%, and fell about half as far, -18.2% against -33.7% ([details](#-backtest)).
 
 > Not financial advice. It starts in paper mode, and live trading needs three explicit switches.
 
@@ -112,7 +118,7 @@ Most trading bots either chase every signal or need a quant team to configure. T
 | | **Dashboard** | **Command line** | **AI assistants (MCP)** | **Python** |
 |---|---|---|---|---|
 | Start with | `riskaware dashboard` | `riskaware scan` | `riskaware mcp-setup claude-desktop --apply` | `from riskaware.research import run_experiment` |
-| What you do | watch the regime, the signals, the agents and the backtests, in English or 中文 | scan, backtest, paper trade, and schedule the agents | describe a strategy in words; Claude, Codex or Gemini write it, test it and explain the result | run experiments on the frozen 2026 market and keep a record for a paper |
+| What you do | watch the regime, the signals, the agents and the backtests, in English or 中文 | scan, backtest, paper trade, and schedule the agents | describe a strategy in words; Claude, Codex or Gemini write it, test it and explain the result | run experiments on the frozen 2020, 2022 and 2026 markets and keep a record for a paper |
 | Needs | the `dashboard` extra | nothing else | the `mcp` extra; runs on your plan, no API key | nothing else |
 
 ```python
@@ -230,35 +236,49 @@ Describe a strategy in plain words and let the AI build it. Over MCP, Claude, Co
 
 `save_as` keeps a strategy that works: it then shows up on the dashboard and can run as a paper agent. For code from anywhere else, `riskaware lab my_strategy.py --preset tech` does the same checks and backtest. More in [docs/strategy-lab.md](docs/strategy-lab.md).
 
+### 🏆 LLM trading agent leaderboard
+
+[**rta-bench-1**](https://jackson-cmd.github.io/risk-aware-trading-agents/leaderboard.html) ranks LLMs as trading agents on the same game: the 56 large caps, after every fifth close, through 2026 to date, the 2022 bear market and the 2020 crash, each played blind and with real names, on news replayed by the minute it was published and with realistic fill costs. A model's training cutoff decides which scores count: periods after the cutoff are ranked, periods it may remember are listed apart. For each model the board shows how it made its money (market and style exposure against stock picking, sectors, holding periods, trades set off by news) and a memory score, next to the five rule strategies, SPY and the equal-weight list. An entry is one JSON file with the model's replies, so anyone can replay it without calling the model; to add a model, run `riskaware research submit` and open a pull request. More in [docs/leaderboard.md](docs/leaderboard.md).
+
 ### 🔬 Research kit
 
-The whole of 2026 ships with the package, frozen, for experiments that anyone can repeat: daily prices since 2024 for the 64 stocks and 25 ETFs, the VIX term structure, 16,945 headlines and SEC filings, and every indicator and regime reading the agents use, each as it was known at that day's close. The same data is also on [Hugging Face](https://huggingface.co/datasets/jacksonwangpro1/point-in-time-market-data-2026), as Parquet with a data viewer and the original files.
+Three very different years ship with the package, frozen, for experiments that anyone can repeat: **2026** to date (a rising market), **2022** (the rate-hike bear market: SPY -18.2%) and **2020** (the COVID crash: SPY -34% in 23 days, then a new high). Each has daily prices for the 64 stocks and 25 ETFs from two years before it, the VIX term structure, and every indicator and regime reading the agents use, each as it was known at that day's close. The results were also made with that year's headlines, which are licensed and not distributed (below).
+
+| Period | Test window | Headlines behind the results (not distributed) |
+|---|---|---|
+| `2026` (default) | 2026-01-02 to 2026-11-11 | 16,945 headlines and SEC 8-K filings |
+| `2022` | the whole year | 29,300 headlines |
+| `2020` | the whole year | 19,618 headlines |
+
+The headlines are licensed, so they are not distributed: the conclusions and numbers here were made with them, and each period's manifest keeps the SHA-256 of its headline file, so whoever has a copy can check it is the same data (`riskaware research data`). To replay news yourself, build an archive under the same rules from the free SEC 8-K filings, a news API key of your own or any CSV ([how](docs/news-history.md)). The prices of the three periods are also on [Hugging Face](https://huggingface.co/datasets/jacksonwangpro1/rta-bench-llm-trading-benchmark), as Parquet with a data viewer and the original files.
 
 ```bash
 riskaware research day 2026-04-08 --symbols NVDA,TSLA           # everything known at that close
 riskaware research run --strategy swing_trend --split 2026-07-01
-riskaware research trade --llm ollama:qwen2.5:3b --universe core --blind
+riskaware research run --strategy swing_trend --period 2022     # the bear market
+riskaware research trade --llm ollama:qwen2.5:3b --universe core --blind --period 2020
 ```
 
 - **Point in time.** Signals at the close, orders at the next open: swing trading on daily bars. A headline counts only after it was published, and indicators only look back.
-- **A look-ahead check on every run.** The run is repeated with every price and headline after three cut days replaced by random ones, and the decisions before each cut must not change.
+- **A look-ahead check on every run.** The run is repeated with every price and headline after three cut days replaced by random ones, and the decisions before each cut must not change. For an LLM it replays the model's replies and checks that what the model was shown before each cut did not change, so the model is not asked twice.
 - **A record for papers.** Each run saves its data hashes, code, settings, metrics, bootstrap intervals, trades and every decision.
-- **Made for LLMs.** Over MCP, describe a strategy and Claude writes and tests it (`run_experiment`), looks at any day (`market_day`), or trades the year step by step (`trading_session_start`), blind if you like: no tickers, company names or dates.
+- **Made for LLMs.** Over MCP, describe a strategy and Claude writes and tests it (`run_experiment`), looks at any day (`market_day`), or trades a period step by step (`trading_session_start`), blind if you like: no tickers, company names or dates.
 
-Five common swing strategies, 2026-01-02 to 2026-11-11 on the 56 megacaps, at most 10 equal positions:
+Five common swing strategies on the 56 megacaps, at most 10 equal positions; return without news / with news:
 
-| Strategy | Without news | With news | Sharpe | Max drawdown |
-|---|---:|---:|---:|---:|
-| Trend following (EMA20 / EMA50 cross) | **+21.1%** | +19.6% | **1.44** | **-4.7%** |
-| Post-news drift (without news: the same trade on a price jump) | +15.7% | +4.4% | 1.01 | -9.8% |
-| Connors RSI(2) | +12.7% | +10.8% | 0.85 | -7.9% |
-| Pullback in an uptrend | +2.3% | +1.7% | -0.13 | -4.4% |
-| 20-day breakout | -0.3% | -3.5% | -0.15 | -15.6% |
-| SPY buy and hold | +12.1% | | 0.77 | -8.9% |
+| Strategy | 2026 (to Nov 11) | 2022 | 2020 |
+|---|---:|---:|---:|
+| Trend following (EMA20 / EMA50 cross) | **+21.1%** / +19.6% | -6.0% / -5.0% | +36.6% / **+68.4%** |
+| Post-news drift (without news: the same trade on a price jump) | +15.7% / +4.4% | -13.3% / -14.1% | +9.4% / +28.4% |
+| Connors RSI(2) | +12.7% / +10.8% | -2.2% / -5.7% | +14.0% / +12.7% |
+| Pullback in an uptrend | +2.3% / +1.7% | **-4.7% / -4.0%** | +2.3% / +3.3% |
+| 20-day breakout | -0.3% / -3.5% | -12.8% / -13.7% | +33.1% / +30.4% |
+| SPY buy and hold | +12.1% | -18.6% | +17.2% |
+| Equal weight, the same 56 stocks | +11.4% | -12.4% | +40.1% |
 
 <img src="site/assets/research_baselines.png" width="820" alt="Five swing strategies in 2026, with and without news">
 
-Sharpe and drawdown are without news. Trend following beat SPY with half its drawdown. The news filter made every strategy slightly worse, and buying on positive headlines did worse than buying the same price move without them. Every interval overlaps, and every run passed the look-ahead check. Definitions, the full table with 95% intervals, and advice for papers in [docs/research.md](docs/research.md).
+No rule wins every year. Trend following led in the two rising years; in 2022 every strategy lost money, all of them less than SPY, and the pullback rule lost least. The news filter cut returns in 2026 and seemed to help in 2020, but the 2020 gain is one position: with news, a free slot let trend following buy Tesla in April 2020 and hold it to the end of the year. The equal-weight row shows the survivorship bias of today's large caps, largest in 2020. Every interval overlaps, and every run passed the look-ahead check. Definitions, the full tables with 95% intervals, and advice for papers in [docs/research.md](docs/research.md).
 
 ### 📊 Backtest
 
@@ -288,7 +308,7 @@ Every run writes a self-contained HTML report (metrics, equity and drawdown char
 
 #### 2026 so far, with news
 
-The same agent and settings on 2026, from January 2 to November 11, now reading the news that ships with the package: 15,542 Benzinga headlines and 605 SEC filings for these 56 stocks, each day only what was out before its close.
+The same agent and settings on 2026, from January 2 to November 11, now reading the 2026 news: 15,542 headlines and 605 SEC filings for these 56 stocks (licensed, not distributed with the package), each day only what was out before its close.
 
 | January 2 – November 11, 2026 | risk_aware + news | risk_aware, no news | SPY buy & hold |
 |---|---|---|---|
@@ -300,16 +320,14 @@ The same agent and settings on 2026, from January 2 to November 11, now reading 
 
 <img src="site/assets/backtest_2026_news_en.png" width="820" alt="2026 equity and drawdown of the risk-aware agent with news versus SPY, with regime shading">
 
-The agent beat SPY by 3.8 points while holding stocks with 60% of its money on average, and its worst drop was 60% of SPY's: in the March sell-off it fell 5.3% while SPY fell 8.9%. News added half a point of return this year. Ten months is a short test, so the 2018–2026 table above is still the better guide. Reproduce it with `riskaware backtest --preset megacap --start 2026-01-02 --end 2026-11-11 --news`.
+The agent beat SPY by 3.8 points while holding stocks with 60% of its money on average, and its worst drop was 60% of SPY's: in the March sell-off it fell 5.3% while SPY fell 8.9%. News added half a point of return this year. Ten months is a short test, so the 2018–2026 table above is still the better guide. Reproduce it with `riskaware backtest --preset megacap --start 2026-01-02 --end 2026-11-11 --news` and a copy of the 2026 headline file in `~/.riskaware/data/news`; with an archive of your own the rules are the same and the numbers will differ.
 
 #### News in backtests
 
-A backtest may only use news it would have seen on that day, so it needs each item's publication time. News for 2026 ships with the package: 16,945 items for the 64 stocks of the built-in lists (Benzinga headlines, titles only, and SEC 8-K filings, January 1 to November 11, 2026). For other years, `riskaware news-history` keeps an archive on your own machine (`~/.riskaware/news`, never in the repository). `--news` replays both through the same clustering and two-source check used in live trading. Each day sees only items published before its close (16:00 New York, 13:00 on early-close days), and orders fill the next day.
+A backtest may only use news it would have seen on that day, so it needs each item's publication time. The results in this README were made with headlines for 2020, 2022 and 2026 for the 64 stocks of the built-in lists: 19,618, 29,300 and 16,945 items (headlines, titles only; for 2026 also SEC 8-K filings, January 1 to November 11). They are licensed, so the package does not distribute them; the manifests keep their SHA-256. `riskaware news-history` keeps an archive on your own machine (`~/.riskaware/news`, never in the repository): SEC 8-K filings for free, headlines from a news API with your own key, or any CSV. `--news` replays it through the same clustering and two-source check used in live trading. Each day sees only items published before its close (16:00 New York, 13:00 on early-close days), and orders fill the next day.
 
 ```bash
-riskaware backtest --strategy examples/strategies/news_earnings_drift.py --preset megacap --start 2026-01-02 --news   # 2026: nothing to download
 riskaware news-history build --preset core --contact-email you@example.com   # SEC 8-K filings since 2018
-riskaware news-history build --symbols AAPL,NVDA --source benzinga             # with your own BENZINGA_API_KEY
 riskaware news-history import my_news.csv --tz America/New_York               # timestamp, symbol, headline[, source, url, sentiment]
 riskaware news-history status
 riskaware news-history show NVDA --date 2024-05-22                             # what the backtest saw at that close
@@ -318,14 +336,11 @@ riskaware backtest --strategy examples/strategies/news_earnings_drift.py --prese
 
 | Source | What goes into the archive | Cost |
 |---|---|---|
-| Bundled with the package | 2026 Benzinga headlines (titles only) and SEC 8-K filings for the 64 stocks of the built-in lists | free, already installed |
 | SEC EDGAR | every 8-K (earnings, officer changes, deals, impairments, restatements) with SEC's acceptance time | free; SEC asks for a contact email |
-| Benzinga | headlines from your own news API key | your Benzinga plan |
+| A news API | headlines with your own key ([sources](docs/news-history.md#sources)) | your plan |
 | CSV | any news you have the right to use | — |
 
-The `core` preset is SPY, QQQ, AAPL, MSFT, NVDA, AMZN, GOOGL, META and TSLA. SPY and QQQ are funds, not companies, so the SEC archive has little or nothing for them; the FOMC, CPI and jobs calendar already drives the regime in every backtest. Benzinga counts as one publisher, so a Benzinga-only story stays single-source until an SEC filing or a second publisher backs it. What you download or import stays on your machine. Details: [docs/news-history.md](docs/news-history.md).
-
-**More history.** We keep a much larger archive, about 3.2 million Benzinga headlines from 2011 to 2026. It is far too big to ship in the package, so the package carries 2026 for the built-in lists. If you need more years or more stocks, open an issue and we will look at how to provide them, for example as a separate download.
+The `core` preset is SPY, QQQ, AAPL, MSFT, NVDA, AMZN, GOOGL, META and TSLA. SPY and QQQ are funds, not companies, so the SEC archive has little or nothing for them; the FOMC, CPI and jobs calendar already drives the regime in every backtest. A news API counts as one publisher, so a story from it alone stays single-source until an SEC filing or a second publisher backs it. What you download or import stays on your machine. Details: [docs/news-history.md](docs/news-history.md).
 
 ### 📚 Strategy library
 
@@ -478,10 +493,10 @@ llm:
 | `riskaware run [--dry-run] [--live]` | one trading cycle |
 | `riskaware schedule [--print-cron]` | run every trading day at `execution.run_time` (New York) |
 | `riskaware portfolio` | account, positions, open orders |
-| `riskaware backtest [--news]` | backtest and compare strategies (`--news` replays the news; 2026 ships with the package) |
+| `riskaware backtest [--news]` | backtest and compare strategies (`--news` replays your news archive) |
 | `riskaware lab FILE [--check-only] [--save NAME]` | check a strategy for look-ahead and side effects, then backtest it in a separate process |
 | `riskaware news-history build / import / status / show` | local point-in-time news archive for backtests |
-| `riskaware research day / run / baselines / trade / runs / data` | the frozen 2026 market: any day's data, experiments with a look-ahead check, LLM trading |
+| `riskaware research day / run / baselines / trade / runs / data` | the frozen 2020, 2022 and 2026 markets (`--period`): any day's data, experiments with a look-ahead check, LLM trading |
 | `riskaware strategies` / `new-strategy` | list built-ins / create a strategy file |
 | `riskaware brokers` | supported brokers and their requirements |
 | `riskaware halt` / `resume` | kill switch |
@@ -499,8 +514,8 @@ src/riskaware/      the package
   risk.py           the risk manager (cash floor, caps, tranches, regime rules)
   engine.py         paper / live cycle, guards, journal, state
   backtest/         backtester, metrics, HTML report
-  research/         the frozen 2026 market, point-in-time days, experiments, look-ahead check, LLM trading sessions
-  news/             Finviz + RSS + SEC sources, relevance filter, cross-source verification, the 2026 news file
+  research/         the frozen 2020, 2022 and 2026 markets, point-in-time days, experiments, look-ahead check, LLM trading sessions
+  news/             Finviz + RSS + SEC sources, relevance filter, cross-source verification, the 2020, 2022 and 2026 news files
   data/             prices (Yahoo, CSV, synthetic), FOMC/BLS/BEA calendar, fundamentals, CNN Fear & Greed
   brokers/          paper + 9 broker adapters
   options/          option pricing and contract selection for backtests
@@ -513,7 +528,7 @@ src/riskaware/      the package
 tests/              offline test suite (pytest)
 docs/               guides and design notes; docs/zh/ holds the Chinese guides and changelog
 examples/           example configs, example strategies, .env.example
-scripts/            rebuild the bundled market and news data, release notes, the Claude Desktop extension, the privacy check and its git hook
+scripts/            rebuild the bundled market data and your own headline files, check a built package, release notes, the Claude Desktop extension, the privacy check and its git hook
 server.json         the MCP Registry entry that each release publishes
 site/               bilingual project website and guides (GitHub Pages)
 docker/             Dockerfile and docker-compose.yml
@@ -533,15 +548,15 @@ Run `riskaware backtest --news`, or `riskaware research run` for a record you ca
 
 ### Where can I get historical news data for backtesting?
 
-2026 ships with the package: 16,945 news items for 64 large-cap US stocks, Benzinga headlines (titles only) and SEC 8-K filings, each with its publication time. For other years, `riskaware news-history build` downloads SEC 8-K filings for free, and Benzinga headlines with your own API key; a CSV with a time, a ticker and a headline works too. See [docs/news-history.md](docs/news-history.md).
+Build it yourself: `riskaware news-history build` downloads SEC 8-K filings for free, and headlines from a news API with your own key; a CSV with a time, a ticker and a headline works too. Each item keeps its publication time, and backtests replay it point in time. The published results used 2020, 2022 and 2026 headlines for 64 large-cap US stocks (19,618, 29,300 and 16,945 items); those are licensed and not distributed, but the same rules run on yours. See [docs/news-history.md](docs/news-history.md).
 
 ### Is there a free point-in-time dataset of US stock prices, VIX and news?
 
-Yes. The research kit's frozen market holds daily bars from January 2024 to November 2026 for 64 stocks and 25 ETFs, the VIX term structure (VIX9D, VIX, VIX3M, VVIX) and the 2026 news, with SHA-256 hashes so that a paper can cite the exact data. `riskaware research day 2026-04-08` shows everything that was known at that close. See [what ships](docs/research.md#what-ships).
+Yes. The research kit holds three frozen periods, 2026 to date, 2022 and 2020, each with daily bars for 64 stocks and 25 ETFs from two years before it and the VIX term structure (VIX9D, VIX, VIX3M, VVIX), with SHA-256 hashes so that a paper can cite the exact data. The news is the exception: the headlines are licensed and not distributed, and the manifests keep their SHA-256 so that a copy can be checked. `riskaware research day 2022-06-13` shows everything that was known at that close. See [what ships](docs/research.md#what-ships).
 
 ### How do I evaluate an LLM trading agent fairly?
 
-Let it trade the frozen 2026 market one decision at a time with `riskaware research trade --llm ...`, or with `trading_session_start` over MCP. Each observation holds only what was known at that close, orders fill at the next open, and the run is saved with every order and its metrics against SPY. Blind mode replaces tickers, company names and dates, so the model cannot recall how a stock did. See [LLM agents](docs/research.md#let-an-llm-trade-the-year).
+Let it trade a frozen period (2026, 2022 or 2020) one decision at a time with `riskaware research trade --llm ...`, or with `trading_session_start` over MCP. Each observation holds only what was known at that close, orders fill at the next open, and the run is saved with every order and its metrics against SPY. Blind mode replaces tickers, company names and dates, so the model cannot recall how a stock did. See [LLM agents](docs/research.md#let-an-llm-trade-a-period).
 
 ### Can Claude, ChatGPT (Codex) or Gemini backtest my strategy?
 
@@ -572,17 +587,14 @@ Issues and pull requests are welcome: new brokers, data sources, strategies, tra
 
 ## 📝 Citation
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24202496.svg)](https://doi.org/10.5281/zenodo.24202496)
-
-If you use the package or its frozen 2026 market in your research, please cite it. Every release is archived on Zenodo; [10.5281/zenodo.24202496](https://doi.org/10.5281/zenodo.24202496) always resolves to the latest version, and each release page there has its own DOI. GitHub's **Cite this repository** button gives other formats ([CITATION.cff](CITATION.cff)); for the data, add the version and SHA-256 from `src/riskaware/research/data/manifest.json`.
+If you use the package or its frozen markets in your research, please cite the repository for now; once the benchmark paper is out, cite the paper. GitHub's **Cite this repository** button gives other formats ([CITATION.cff](CITATION.cff)); for the data, add the period, its version and the SHA-256 from its manifest in `src/riskaware/research/data/`.
 
 ```bibtex
 @software{risk_aware_trading_agents,
   title   = {Risk-Aware Trading Agents: AI trading agents for US stocks with point-in-time news backtesting},
   author  = {{Risk-Aware Trading Agents contributors}},
   year    = {2026},
-  version = {0.7.2},
-  doi     = {10.5281/zenodo.24202496},
+  version = {0.8.0},
   url     = {https://github.com/jackson-cmd/risk-aware-trading-agents}
 }
 ```

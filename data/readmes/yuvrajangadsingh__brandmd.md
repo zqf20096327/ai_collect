@@ -44,6 +44,12 @@ For Cursor, Claude Desktop, and other clients that read an `mcpServers` config:
 { "mcpServers": { "brandmd": { "command": "npx", "args": ["-y", "brandmd", "mcp"] } } }
 ```
 
+Or in one click, which adds that same config:
+
+[![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=brandmd&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsImJyYW5kbWQiLCJtY3AiXX0%3D) [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_Server-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=brandmd&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22brandmd%22%2C%22mcp%22%5D%7D)
+
+It is also in the [MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.yuvrajangadsingh/brandmd`.
+
 The tool takes one or more pages of a site (`urls`) and an optional `dark` flag, and refuses block pages and login walls the same way the CLI does. It renders pages in Playwright's headless Chromium; if that browser is missing, the call fails with the command that installs it.
 
 A call runs for at most 180 seconds (set `BRANDMD_MCP_TIMEOUT` in seconds to change it), and at most two run at once (a third gets an error asking it to retry). Cancelling a call, or running out of time, stops it and closes its browser on macOS and Linux. On Windows the run is ended outright and the browser may be left open (untested).
@@ -179,8 +185,8 @@ brandmd https://github.com --dark
 # (CSS can't see these; Gemini reads the screenshot.)
 export GEMINI_API_KEY=your-key-here  # free: https://aistudio.google.com/apikey
 brandmd https://linear.app --vision
-# Cloudflare-protected sites: brandmd waits up to 20s for the JS challenge
-# to auto-resolve. If your site needs longer, pass --cf-wait-ms 30000.
+# Sites behind Cloudflare or AWS WAF: brandmd waits up to 20s for the JS
+# challenge to auto-resolve. If your site needs longer, pass --cf-wait-ms 30000.
 # If the challenge persists, brandmd refuses (exit 2) rather than writing garbage tokens.
 
 # CSS custom properties
@@ -245,7 +251,7 @@ Colours are compared **by role**, not as a set of hexes. One hex legitimately fi
 | `--report <file>` | write the drift as JSON for CI annotations |
 | `--fail-on <level>` | `major` (default), `any`, or `none` |
 | `--allow-blocked` | compare anyway if the page is refused (blocked, thin, or a login wall) |
-| `--cf-wait-ms <ms>` | how long to wait for a Cloudflare challenge (default `20000`) |
+| `--cf-wait-ms <ms>` | how long to wait for a Cloudflare or AWS WAF challenge (default `20000`) |
 | `--debug` | print the raw error instead of a one-line remediation |
 | `--viewport <WxH>` | pin the viewport (default `1440x900`) |
 | `--locale <tag>` | pin the browser locale |

@@ -1,10 +1,14 @@
 # 拾趣
 
-用拾趣，把中国古典故事变成你自己的连环画。内置 24 部书籍、15 种画风，支持电脑与手机阅读，以及 PDF、PNG 长图和 ZIP 导出。故事、图片和阅读进度保存在你的电脑上。
+用拾趣，把中国古典故事变成你自己的连环画。内置 26 部书籍、15 种画风，支持电脑与手机阅读，以及 PDF、PNG 长图和 ZIP 导出。故事、图片和阅读进度保存在你的电脑上。
 
 [![拾趣作品《黛玉葬花与宝黛释疑》第 15–18 幅：宝玉兜着落花走近花冢，黛玉葬花吟诗、掩面落泪](.docs/assets/hero-story.webp)](https://yysun.github.io/awesome-shiqu/books/红楼梦/黛玉葬花与宝黛释疑/)
 
 [在线阅读拾趣好故事 →](https://yysun.github.io/awesome-shiqu/)
+
+## 从故事卡中找故事
+
+应用随包带有 26 本书的 **12,024 张故事卡**。系统会调用已配置的生成模型，分批核对故事卡标题和梗概，匹配相关主题或情节。如果连接本机 Ollama 嵌入模型（如 qwen3-embedding:0.6b），即可按书建立保存在本地书库中的向量索引，按主题或情节进行语义检索。
 
 
 ## 快速开始制作
@@ -84,7 +88,7 @@ $shiqu 从《庄子》中找一个关于善意与误解的故事，用水墨写�
 
 ## 更多说明
 
-[使用指南](.docs/user-guide.md) · [使用前了解](.docs/user-guide.md#使用前了解) · [升级到 0.11.2](.docs/user-guide.md#升级到-0112) · [书库说明](data/README.md) · [画风](.docs/user-guide.md#画风) · [手机阅读](.docs/user-guide.md#在手机上阅读) · [常见问题](.docs/user-guide.md#常见问题)
+[使用指南](.docs/user-guide.md) · [使用前了解](.docs/user-guide.md#使用前了解) · [升级到 0.12.0](.docs/user-guide.md#升级到-0120) · [书库说明](data/README.md) · [画风](.docs/user-guide.md#画风) · [手机阅读](.docs/user-guide.md#在手机上阅读) · [常见问题](.docs/user-guide.md#常见问题)
 
 ## 开发者
 

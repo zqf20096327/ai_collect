@@ -30,7 +30,7 @@ answer for exfiltration links, personal data and a leaked canary before the
 answer reaches your users. It is written in Go, runs as two services next to Postgres, and has
 been built and evaluated for **English and Vietnamese**.
 
-Status: **v0.7.0, pre-1.0.** The API and the database schema can still
+Status: **v0.8.0, pre-1.0.** The API and the database schema can still
 change. Read [Security model and limitations](#security-model-and-limitations)
 before you rely on it.
 
@@ -329,7 +329,7 @@ scripts/quickstart.sh
    existing `.env` is never overwritten;
 2. runs `docker compose -f docker-compose.yml up -d` with
    `ghcr.io/guard-spec/guard-spec-gateway` and `-control-plane` at
-   `GUARDSPEC_VERSION` (default `0.7.0`). Before the gateway starts, the
+   `GUARDSPEC_VERSION` (default `0.8.0`). Before the gateway starts, the
    `models-init` service pulls the recommended models (about 270 MB, SHA-256
    verified) into `./models/cache`; on later starts it finds them and does
    nothing;
@@ -639,10 +639,10 @@ in a second table.
 | `SCAN_CACHE_BACKEND` | `memory` | Where the scan cache is shared: `memory` (each replica alone), `postgres` (the `scan_cache` table of the gateway's database) or `redis`. The in-process cache stays in front of either |
 | `SCAN_CACHE_REDIS_URL` | — | `redis://` or `rediss://` URL with the password, for `SCAN_CACHE_BACKEND=redis`. Keep that Redis private and authenticated |
 | `SCAN_CACHE_TIMEOUT` | `50ms` | Bound on each call to the shared backend; an error or a timeout means the content is scanned, never a failed request |
-| `OUTPUT_GUARD` | `on` | `off` passes responses through unchanged |
+| `OUTPUT_GUARD` | `on` | `off` passes responses through unchanged (values that `input_pii_action: tokenize` replaced still come back). An org's `output_pii_action` cannot turn the guard on |
 | `OUTPUT_LINK_ALLOWLIST` | empty | Comma-separated hosts (and their subdomains) whose images and links are kept |
-| `OUTPUT_PII_REDACT` | `true` | Redact e-mail, phone, CCCD and card numbers |
-| `OUTPUT_PII_IPV4` | `false` | Also redact IPv4 addresses |
+| `OUTPUT_PII_REDACT` | `true` | Redact e-mail, phone, CCCD and card numbers. An org can override it (`output_pii_action` in guard settings). See [Output guard](#output-guard) |
+| `OUTPUT_PII_IPV4` | `false` | Also redact IPv4 addresses. An org's `output_pii_kinds` replaces the kinds |
 | `OUTPUT_CANARY` | `off` | `block` or `redact` injects a canary and acts when it leaks |
 | `OUTPUT_REASONING` | `guard` | `drop` removes `reasoning` / `reasoning_content` instead of guarding them |
 | `OUTPUT_UNKNOWN_BLOCKS` | `refuse` | `/v1/messages`: a response content block of a type the output guard does not know (a server tool other than web search and web fetch, say) is refused (502, or an error event in a stream); `/v1/responses`: likewise an output item other than `message`, `function_call`, `custom_tool_call`, `reasoning` and `web_search_call` (image generation, code interpreter, MCP, shell, computer use...), a content part, or a stream event with content of a type it does not know; `pass` passes such blocks, items and events on unchanged and unchecked |
@@ -732,7 +732,7 @@ URL tried before Hugging Face: `<mirror>/<name>/<version>/<file>`).
 | `GATEWAY_PORT`, `METRICS_PORT` | `8080`, `9090` | Host ports of the gateway |
 | `CONTROL_PLANE_PORT`, `CONTROL_PLANE_METRICS_PORT` | `18081`, `9091` | Host ports of the control plane |
 | `POSTGRES_PORT` | `5432` | Host port of Postgres (dev override only) |
-| `GUARDSPEC_VERSION` | `0.7.0` | Tag of the `ghcr.io/guard-spec/guard-spec-*` images in `docker-compose.yml` (the dev override builds from source instead) |
+| `GUARDSPEC_VERSION` | `0.8.0` | Tag of the `ghcr.io/guard-spec/guard-spec-*` images in `docker-compose.yml` (the dev override builds from source instead) |
 | `MODELS_UID`, `MODELS_GID` | `0` | Owner of files written by `models-init` and `models-pull` |
 | `QUICKSTART_TIMEOUT` | `600` | `scripts/quickstart.sh`: seconds to wait for `/readyz` |
 
@@ -757,6 +757,7 @@ or `x-api-key: gs_...`.
 | `POST /guardrail/scan` | Score `text` and/or `documents[]` without calling a model |
 | `POST /guardrail/scan/tools` | Score MCP tool definitions (a `tools/list` result) |
 | `POST /guardrail/sanitize` | Return the sanitized text and the sanitizer report |
+| `GET`/`POST`/`PUT`/`PATCH`/`DELETE /v1/backend/{upstream}/{path}` | An organization's own JSON API (an upstream of provider `custom`): the method and path are checked against its configuration (405, 403), the declared request fields are scanned like chat, and an allowed request is forwarded unchanged; declared answer fields go through the output guard. [docs/integrations.md](docs/integrations.md#custom-backend) |
 
 A refused request gets HTTP 400 with
 `{"error":{"message":"...","type":"invalid_request_error","code":"content_filter"}}`.
@@ -1387,18 +1388,4 @@ How to read them, and their limits:
 - **Vietnamese teencode and no-diacritics benign text was the known weak
   spot** of the model layers. With L1+L2+L3, classifier v2 blocks 1.4% of
   teencode and 3.0% of no-diacritics benign rows (v1: 7.0% and 3.8%). The
-  cost is English: EN benign FPR at block rose from 1.1% to 2.2% (8 of 364
-  rows instead of 4). Overall FPR at block is 2.0% (v1 2.7%), still above the
-  1.5% target; TPR at block is 0.933 (v1 0.939), and at an equal 1% FPR v2
-  catches more (0.922 vs 0.915).
-- **Latency** is the sanitizer plus the detector for one row at a time, in
-  process, measured by `cmd/eval`. It is not end-to-end HTTP latency through
-  the gateway and does not include the upstream model. The table above was
-  measured on a laptop; Linux numbers are below.
-- The set is small. Do not read small differences between configurations,
-  or between small groups such as `en/data_exfiltration` (29 rows), as
-  signal.
-
-### Comparison with other detectors
-
-[docs/benchmark.md](docs/benchma
+  cost is English: EN benign FPR at block rose from 1.1% to 2.2% (8 of 36

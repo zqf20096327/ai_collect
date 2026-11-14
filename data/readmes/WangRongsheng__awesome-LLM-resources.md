@@ -31,14 +31,14 @@
 </tr>
 </table>
 
-<table>
+<!-- <table>
 <tr>
 <td width="180"><a href="https://www.packyapi.ai/"><img src="assets/cache/logo-ck.png" alt="packyapi.ai" width="150"></a></td>
 <td>PackyCode 是一家稳定、高效的 API 中转服务商，一句话接入主流大模型。统一域名、统一密钥、智能容灾切换，97% 可用性。人民币1:1充值，无汇率无手续费坑，新用户首充立享折扣 + $1免费体验额度，多分组折扣低至 2 折起，提供专属Codex/Claude Code高速通道。
 
 </br><a href="https://www.packyapi.ai/register?aff=b4Vf">点此链接注册 ，立即开始使用！</a> </td>
 </tr>
-</table>
+</table> -->
 
 <!-- <table>
 <tr>
@@ -670,6 +670,8 @@ To speed up Long-context LLMs' inference, approximate and dynamic sparse calcula
 - Mage-Flow: https://huggingface.co/collections/microsoft/mage
 - Qwen-Image-2.1: https://huggingface.co/Qwen/Qwen-Image-2.1
 - Ming-Image-0.1: https://huggingface.co/inclusionAI/Ming-Image-0.1-Design
+- MiniMax-H3-Image: https://huggingface.co/MiniMaxAI/MiniMax-H3-Image
+- MOSS-Image: https://github.com/openmoss/moss-image
 
 #### 编辑
 
@@ -1039,6 +1041,7 @@ To speed up Long-context LLMs' inference, approximate and dynamic sparse calcula
 55. [NanoChat](https://github.com/karpathy/nanochat): The best ChatGPT that $100 can buy.
 56. [斯坦福CS146S: The Modern Software Developer](https://themodernsoftware.dev/)
 57. [Reinforcement Learning of Large Language Models](https://ernestryu.com/courses/RL-LLM.html)
+58. [MoE 训练终极手册](https://huggingface.co/spaces/fat-pig/moe-blogpost-zh#s-1)
 
 <div align="right">
     <b><a href="#Contents">↥ back to top</a></b>
@@ -1447,6 +1450,4 @@ MCP工具聚合：
 3. [What We Learned from a Year of Building with LLMs (Part III): Strategy](https://www.oreilly.com/radar/what-we-learned-from-a-year-of-building-with-llms-part-iii-strategy/)
 4. [轻松入门大语言模型（LLM）](https://www.bilibili.com/video/BV1pF4m1V7FB/?spm_id_from=333.999.0.0&vd_source=c739db1ebdd361d47af5a0b8497417db)
 5. [LLMs for Text Classification: A Guide to Supervised Learning](https://www.striveworks.com/blog/llms-for-text-classification-a-guide-to-supervised-learning)
-6. [Unsupervised Text Classification: Categorize Natural Language With LLMs](https://www.striveworks.com/blog/unsupervised-text-classification-how-to-use-llms-to-categorize-natural-language-data)
-7. [Text Classification With LLMs: A Roundup of the Best Methods](https://www.striveworks.com/blog/text-classification-with-llms-a-roundup-of-the-best-methods)
-8. [LLM Pricing](https://docs.googl
+6. [Unsupervised Text Classification: Categorize Natural Language With LLMs](https://www.striveworks.com/blog/unsupervised-text-classification-how-to-use-llms-to-categorize-natural-la

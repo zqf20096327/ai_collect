@@ -19,8 +19,8 @@ Everything about where the mod stands is in five places:
 
 | | |
 |---|---|
-| **[Release](https://github.com/AyoItzKye/project-proving-grounds/releases/latest)** | Version **0.2.3**, last updated **November 13, 2026**. Download it from the Releases page. <!-- release --> |
-| **[Updates](docs/UPDATES.md)** | What changed in each version (new, fixed, changed, known problems), newest first. |
+| **[Release](https://github.com/AyoItzKye/project-proving-grounds/releases/latest)** | Version **0.2.3**, last updated **November 14, 2026**. Download it from the Releases page. <!-- release --> |
+| **[Updates](docs/UPDATES.md)** | What was added and fixed in each version, newest first. |
 | **[Known bugs](docs/KNOWN_BUGS.md)** | Everything known to be broken, by game, and every bug reported on GitHub with its status. |
 | **[Bot status sheet (PDF)](docs/BOT_STATUS.pdf)** | An honest rating of every game, mode and vehicle, from green (good to go) to red (not working yet). |
 | **[LiDAR maps](lidar-maps/)** | Map scans by game: the author's own (Author Provided Scans, one zip per game) and the ones players share. Import them from the launcher's **LiDAR scans**. |
@@ -80,14 +80,14 @@ leave parts of the map unused. Scan each map once before you play it (or all of 
 2. Scan the maps:
    - **One map**: **Pick a map**, then watch. The bots walk every floor, try the jumps and drops, and stop on their
      own once the map is covered.
-   - **A whole game**: set **Every map runs** to the game (for example Halo 3), then press **Every map**. Each map of
-     that game is scanned in turn, with its Forge layouts. Leave it running; **Max** speed is the quickest. Stopped
+   - **A whole game**: set **Every run scans** to **Maps** and the game (for example Halo 3), then press **Every map**.
+     Each map of that game is scanned in turn. Leave it running; **Max** speed is the quickest. Stopped
      part way, the button reads "Continue (N maps left)" next time and goes on with the maps left; **Skip to next map** moves on
      from a map that takes too long (what it mapped is saved).
-3. **Forge layouts and custom maps** need one match first: the simulator only knows a layout once the bots have been
-   in a match on it. In MCC, start a match on the layout with **LiDAR mapping** turned on in the BOTS panel (top
-   right). Mapping bots join your team and walk the whole layout while you watch; end the match when they stop
-   finding new floor. After that, play it normally, or improve the scan in the simulator.
+3. **Layouts**: every other version of a map that MCC lists for custom games (your Forge saves and MCC's built-in
+   versions, such as Halo 3's MLG layouts and Sandtrap's SAND TARP) is listed under its map, and each is a scan of its own. Open
+   the map's entry in the list and pick one, or set **Every run scans** to **Layouts** and press **Every layout** for a
+   whole game's. A layout you play on also learns from your matches (**LiDAR mapping** in the BOTS panel, top right).
 4. Optional: open **Tools > LiDAR Viewer** to see a map's scan in 3D.
 
 A map changed by a game update, or bots that still stumble somewhere: scan it again. More in
@@ -271,11 +271,13 @@ The **LiDAR Simulator** in the launcher runs the same bots on a map's level data
 map the floor and call jumps, 8 aircraft fly the air over the walked floor up to the map's ceiling. Its **Simulator**
 panel (bottom right):
 
-- **Pick a map**: the Maps list opens; click a map's picture (or its **Simulate** button). Forge layouts the bots have
-  played on are listed under their map. Picking another map while one runs stops it (what it mapped is saved).
-- **Every map**: all of them in turn, each saved when it finishes. Stopped part way, it goes on from where it stopped
-  next time (**Start over from the first map** begins again); **Skip to next map** ends a slow map and moves on.
-  Tick **Only maps not scanned yet** first to run just the maps the simulator has never scanned.
+- **Pick a map**: the Maps list opens; click a map's picture (or its **Simulate** button). A map's layouts (your Forge
+  saves and MCC's built-in versions such as MLG) are listed under it, each its own scan. Picking another map while one runs stops it (what
+  it mapped is saved).
+- **Every map** / **Every layout** (by **Every run scans**): all of them in turn, each saved when it finishes; maps and
+  layouts are separate runs. Stopped part way, it goes on from where it stopped next time (**Start over from the first
+  map** begins again); **Skip to next map** ends a slow one and moves on. Tick **Only those not scanned yet** first to
+  run just the ones the simulator has never scanned.
 - **Speed**: 1x (real time) to 16x, or **Max** (as fast as this PC runs it). The panel shows the speed actually
   reached: big maps with 16 bots and 8 aircraft run slower than asked on most PCs.
 - **Pause** / **Resume** and **Stop** (it saves what was mapped).

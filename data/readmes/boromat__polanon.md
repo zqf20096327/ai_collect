@@ -86,6 +86,7 @@ and the restored answer matter as much as the numbers.
 | Also places, and names and organisations no rule can see | `pip install "polanon[ner]"` then `python -m spacy download pl_core_news_md` |
 | The stage-2 judges (a local Ollama model, or a remote one) | `pip install "polanon[judge]"` |
 | Components for [Haystack 3](#with-haystack) pipelines | `pip install "polanon[haystack]"` |
+| A [gateway](#a-gateway-for-any-openai-compatible-tool) for tools that use the OpenAI API | `pip install "polanon[gateway]"` |
 
 Then use `default_guards()` with the model, or `default_guards(with_ner=False)` without it.
 Another spaCy model is one argument away: `default_guards(spacy_model="pl_core_news_lg")`.
@@ -403,6 +404,65 @@ component receives, and the masker receives the originals. A run that fails keep
 the error's snapshot, written to disk with `HAYSTACK_PIPELINE_SNAPSHOT_SAVE_ENABLED`. Both are off
 by default.
 
+## A gateway for any OpenAI-compatible tool
+
+Tools such as Hermes Agent, n8n, Open WebUI or LibreChat talk to a model through the OpenAI API.
+`polanon-gateway` stands between such a tool and the provider, on the machine of whoever runs it:
+every message is masked before it leaves, and the answer comes back with the original values,
+streamed or not, tool calls included.
+
+```bash
+pip install "polanon[gateway,ner]"
+python -m spacy download pl_core_news_md
+polanon-gateway --upstream https://api.openai.com/v1
+```
+
+Then point the tool's base URL at `http://127.0.0.1:8787/v1` and keep its API key: the gateway
+passes it on to the provider. A local model works the same way, `--upstream
+http://localhost:11434/v1` for Ollama.
+
+| Tool | Where the base URL goes |
+|---|---|
+| Hermes Agent | `base_url` of the model or of a named provider in `config.yaml` |
+| n8n | the Base URL of the OpenAI credential |
+| Open WebUI | the URL of an OpenAI API connection |
+| LibreChat | the `baseURL` of a custom endpoint in `librechat.yaml` |
+
+What it does with a call:
+
+- It serves `/v1/chat/completions` and the Responses API, `/v1/responses`, streamed or not,
+  `/v1/embeddings` and `/v1/models`, and refuses every other endpoint, so nothing it cannot mask
+  leaves as it came.
+- With the Responses API the whole conversation comes with every call, as Hermes Agent sends it
+  with `store: false`. A call that leaves it at the provider, with `previous_response_id` or
+  `conversation`, or asks for a `background` response to fetch later, would bring back tokens no
+  one can restore, and is refused. Encrypted reasoning passes as it is: the provider sealed it from
+  masked text.
+- Every message, tool result and earlier tool call is masked, and so is the prose of the tools and
+  of an answer format: descriptions, titles and example values. Tool names, types and parameter
+  names stay, so the tools keep working. A participant's `name` is left out.
+- An image, a file or audio cannot be masked, so the call is refused; `--drop-unsupported` leaves
+  such content out and sends the rest.
+- Before anything leaves, the payload is searched once more for every original value, and the call
+  is refused if one is still there.
+- A note telling the model what the tokens are joins the system message: `--instructions en`, or
+  `none` to leave it out.
+- It keeps nothing on disk. A tool sends the whole conversation with every call, and each call is
+  masked and restored on its own. With `POLANON_KEY` set to 64 hexadecimal characters, a person
+  keeps one token in every call and in every grammatical case.
+
+Keys stay with whoever runs the gateway, and come from the environment only. By default the
+tool's own key is passed on; `POLANON_UPSTREAM_KEY` sends another one instead. The gateway listens
+on `127.0.0.1`. To reach it from another machine, set `--host` and `POLANON_GATEWAY_KEY`, which
+every client must then send: without the key it refuses to start. The log names the path, the
+status, the time and how many values of each type were masked, never a value.
+
+There is no hosted service: the gateway runs where it is installed, and whoever runs it answers
+for that machine, its keys and the provider the calls go to. Not supported yet: Anthropic's
+Messages API. The
+[threat model](https://github.com/boromat/polanon/blob/main/docs/THREAT_MODEL.md#the-gateway) says
+what the gateway protects and what it does not.
+
 ## What it detects
 
 Checksum-validated Polish identifiers (PESEL, NIP, REGON, ID card, IBAN, payment cards), KRS numbers
@@ -422,11 +482,11 @@ letter plus an accent, no-break spaces and en dashes inside numbers, and invisib
 characters do not hide a value. The mapping keeps each value as it was first written.
 
 On the annotated sample documents in the repository, the rules alone fully mask 86% of the
-values and the rules with `pl_core_news_md` mask 98%, with nothing left half-masked. Eleven short
+values and the rules with `pl_core_news_md` mask 98%, with nothing left half-masked. Twelve short
 documents are a regression check, not a research benchmark: see the
 [benchmark notes](https://github.com/boromat/polanon/blob/main/benchmarks/README.md) for what is
-missed and why, and for Presidio on the same documents with the same model: 66% fully masked, 76%
-at its most lenient.
+missed and why, and for Presidio on the first eleven of them with the same model: 66% fully
+masked, 76% at its most lenient.
 
 ## Worth knowing
 
@@ -442,9 +502,15 @@ second.anonymized  # "Ten sam PESEL <PESEL_1>"
 mapping = second.mapping  # everything so far, for the next turn
 ```
 
-**A token restores the form it replaced.** Masking happens on the text as written, so a name masked
-in the genitive comes back in the genitive. Ask the model to keep tokens where the grammar allows it
-("dla <OSOBA_1>"), or restore into a template you control. Spellings that differ only in letter
+**A token restores the form it replaced, unless the model names a case.** Masking happens on the
+text as written, so a name masked in the genitive comes back in the genitive. The model may write
+the case its own sentence needs after a colon, and a person's name comes back declined:
+`Szanowny Panie <OSOBA_1:wołacz>` gives "Szanowny Panie Janie Kowalski" where the text said "Jana
+Kowalskiego". `token_instructions("pl")` asks for it, and every restore understands it, streams and
+the gateway included. Declined are names of one or two words the rules read for sure: a listed
+first name and a surname such as Kowalski, Nowak, Bednarek, Mickiewicz or Duda. A surname alone
+that may be a man's or a woman's, a foreign name, a company and a place come back as written, and
+the case is dropped. Spellings that differ only in letter
 case, in the kind of whitespace (a no-break space, a line break, a run of spaces) or in invisible
 characters are the same value, and so are an identifier's groups written apart or together: they
 share its token, and restore writes the spelling seen first. Passwords and custom types are the
@@ -570,6 +636,7 @@ values a conversation has already masked stay masked.
 | `pseudonyms.py` | computes stable tokens from a secret key, the same in every document and process |
 | `index.py` | masks documents and questions for a search index, with the store of what tokens hide |
 | `integrations/haystack.py` | Haystack components that mask documents and questions and restore answers |
+| `gateway/` | a gateway compatible with the OpenAI API, run on the operator's own machine |
 | `output_sweep.py` | flags invented tokens and personal data the answer introduced |
 
 ## Adding a detector
@@ -602,10 +669,11 @@ anonymizer.anonymize_sync("Wniosek EMP-11111").anonymized  # "Wniosek <EMPLOYEE_
 ```
 
 The score decides who wins where detections overlap: 1.0 for a value a checksum, a label or an
-official format vouches for, 0.85 for a statistical guess; the judge's findings score 0.5. A secret
-is masked whole, with whatever was detected inside it. A span outside the text, a type spelled any
-other way, or one spelled like a built-in token label (`OSOBA`, `DATA`) raises `ValueError` naming
-your guard.
+official format vouches for, 0.85 for a statistical guess; the judge's findings score 0.5. A Polish
+name with its surname scores 0.9 and a first name alone 0.8, so a guess of a place wins over it. A
+secret is masked whole, with whatever was detected inside it. A span outside the text, a type
+spelled any other way, or one spelled like a built-in token label (`OSOBA`, `DATA`) raises
+`ValueError` naming your guard.
 
 ## Before you rely on it
 

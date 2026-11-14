@@ -1,5 +1,5 @@
 # MemoryMesh
-[![Release](https://img.shields.io/badge/Release-v0.4.0-blue.svg)](./CHANGELOG.md)
+[![Release](https://img.shields.io/badge/Release-v0.6.0-blue.svg)](./CHANGELOG.md)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC.svg?logo=typescript&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![GitHub Stars](https://img.shields.io/github/stars/CheMiguel23/MemoryMesh.svg?style=social)
@@ -24,7 +24,7 @@ The memory is a graph of **nodes** and **edges**:
 A **schema** describes one type of node. For a schema named `add_npc`, MemoryMesh creates three tools:
 
 - `add_npc` creates an NPC. Fields marked as relationships also create edges to the nodes they name.
-- `update_npc` changes the fields you pass and keeps everything else. Passing `metadata` replaces the whole list.
+- `update_npc` changes the fields you pass and keeps everything else. Passing an empty list (`[]`) clears a field, and passing `metadata` replaces the whole list.
 - `delete_npc` removes the NPC and its edges.
 
 Every call is all-or-nothing: if anything is wrong (a missing required field, a link to a node that doesn't exist), nothing is saved, and the AI gets a clear error it can act on.
@@ -58,11 +58,11 @@ Each schema is a JSON file ending in `.schema.json`. This is the `npc` example t
 | `description` | Description of the `add_` tool, shown to the AI. |
 | `properties` | The fields. Each has a `type` (`string` or `array`) and a `description`, plus optionally: |
 | ↳ `required` | `true` if the AI must provide this field. Keep this to a minimum, or the AI will invent values it doesn't know. |
-| ↳ `enum` | A list of allowed values. |
-| ↳ `relationship` | Creates an edge (`edgeType`) to each node named in this field. Those nodes must already exist. |
+| ↳ `enum` | A list of allowed values. Anything else is rejected. |
+| ↳ `relationship` | Creates an edge (`edgeType`) to each node named in this field. Those nodes must already exist. Updating the field replaces every edge of that `edgeType` going out from the node, so give each relationship field its own `edgeType`. |
 | `additionalProperties` | `true` (default) saves fields not listed above as extra metadata; `false` rejects them. |
 
-If a schema file is invalid, MemoryMesh skips it, logs the reason, and starts with the others.
+If a schema file is invalid, MemoryMesh skips it, logs the reason, and starts with the others. It also logs a warning for a schema that loads but probably won't behave as you expect, such as two relationship fields sharing an `edgeType`.
 
 The [SchemaManager](https://github.com/CheMiguel23/MemoryMesh/blob/main/SchemaManager.html) lets you create and edit schemas visually ([guide](https://github.com/CheMiguel23/MemoryMesh/discussions/3)).
 
@@ -86,15 +86,15 @@ These are always available, whatever schemas you use:
 | Tool | Purpose |
 |---|---|
 | `read_graph` | Return the whole graph |
-| `search_nodes` | Find nodes by name, type or metadata, with their direct neighbours |
+| `search_nodes` | Find nodes that contain every word of the query in their name, type or metadata, with their direct neighbours |
 | `open_nodes` | Return specific nodes by name, with their direct neighbours |
-| `add_nodes`, `update_nodes`, `delete_nodes` | Work with nodes of any type |
+| `add_nodes`, `update_nodes`, `delete_nodes` | Work with nodes of any type. `update_nodes` can also rename a node (`newName`): its edges, and metadata of linked nodes that names it, follow |
 | `add_edges`, `update_edges`, `delete_edges` | Work with edges |
 | `add_metadata`, `delete_metadata` | Add or remove individual metadata entries |
 
 ## Installation
 
-You need [Node.js](https://nodejs.org/) 18 or newer and an MCP client such as [Claude Desktop](https://claude.ai/download).
+You need [Node.js](https://nodejs.org/) 22 or newer and an MCP client such as [Claude Desktop](https://claude.ai/download).
 
 1. Download and build MemoryMesh:
 
@@ -141,11 +141,13 @@ npm install
 
 Then restart your MCP client. Updating keeps your memory file and any schemas you edited.
 
+If your memory file is still in `dist/data/memory.json` (the old default), MemoryMesh keeps using it but logs a warning, because deleting `dist/` would delete your memory. To fix it, quit your MCP client and move the file to `.memorymesh/memory.json` in your home folder.
+
 ## Configuration
 
 | Environment variable | What it sets | Default |
 |---|---|---|
-| `MEMORYMESH_MEMORY_FILE` | Path of the memory file | `dist/data/memory.json` |
+| `MEMORYMESH_MEMORY_FILE` | Path of the memory file | `.memorymesh/memory.json` in your home folder |
 | `MEMORYMESH_SCHEMAS_DIR` | Folder containing `.schema.json` files | `dist/data/schemas` |
 
 Set them in your Claude Desktop config:
@@ -161,13 +163,13 @@ Set them in your Claude Desktop config:
 }
 ```
 
-Keeping your schemas and memory in a folder of your own keeps them separate from the MemoryMesh code. You can also run several MemoryMesh entries with different folders, for example one per campaign or project.
+Keeping your schemas and memory in a folder of your own keeps them separate from the MemoryMesh code. You can also run several MemoryMesh entries with different folders, for example one per campaign or project. Several MCP clients can also share one memory file: each change locks the file briefly, so they don't overwrite each other.
 
 **Docker:** `docker build -t memorymesh .` then `docker run -i --rm -v memorymesh-data:/data memorymesh`. The memory file is `/data/memory.json` inside the container.
 
 ## Viewing your memory
 
-The memory file stores one JSON object per line. The [MemoryViewer](https://github.com/CheMiguel23/MemoryMesh/blob/main/MemoryViewer.html) displays it as a searchable table with stats ([guide](https://github.com/CheMiguel23/MemoryMesh/discussions/15)): open it in Chrome or Edge, click **Select Memory File**, and pick your `memory.json`.
+The memory file stores one JSON object per line. The [MemoryViewer](https://github.com/CheMiguel23/MemoryMesh/blob/main/MemoryViewer.html) displays it as a searchable table with stats ([guide](https://github.com/CheMiguel23/MemoryMesh/discussions/15)): open it in Chrome or Edge, click **Select Memory File**, and pick your `memory.json`. Its path is in the first lines of the [log](#troubleshooting). The default `.memorymesh` folder is hidden on macOS and Linux: press `Cmd+Shift+.` in the macOS file dialog to show it.
 
 ## Tips
 

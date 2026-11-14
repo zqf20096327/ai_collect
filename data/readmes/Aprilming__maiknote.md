@@ -7,7 +7,7 @@
   <p>一款 macOS 原生的 AI Markdown 悬浮便签应用</p>
   <p>
     <img src="https://img.shields.io/badge/Platform-macOS-black?style=flat-square&logo=apple" />
-    <img src="https://img.shields.io/badge/Tauri-2.x-blue?style=flat-square" />
+![img.png](img.png)    <img src="https://img.shields.io/badge/Tauri-2.x-blue?style=flat-square" />
     <img src="https://img.shields.io/badge/Vue-3.x-42b883?style=flat-square&logo=vue.js" />
     <img src="https://img.shields.io/badge/iCloud-同步-0071e3?style=flat-square&logo=icloud" />
     <img src="https://img.shields.io/github/v/release/Aprilming/maiknote?style=flat-square&label=Version" />
@@ -27,7 +27,7 @@
 **召之即来，挥之即去** · 全局快捷键随时唤起 / 隐藏 ｜ **所见即所得** · 实时渲染 Markdown，无需切换预览 ｜ **如无必要，勿增实体** · 极简界面，专注内容本身
 
 ## 主要界面
-
+![img.png](resources/img.png)
 ![主界面](resources/demo1.webp)
 ![深色](resources/demo1-dark.webp)
 

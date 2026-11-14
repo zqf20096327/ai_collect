@@ -27,7 +27,7 @@ and `velvet` (a full arrangement).
 
 Other commands: `npm run check` (parse patterns, no audio),
 `npm run export -- <track>` (render to WAV), `npm run display` (lanes and
-playhead in the browser).
+playhead in the browser, plus a **spatial** tab: where the sound sits round the listener).
 
 The packages are on GitHub Packages, which requires a token with
 `read:packages` in `NPM_TOKEN` (see [Status](#status)).
@@ -230,8 +230,41 @@ under [The CLI](#the-cli) below, scoped to this one project):
 npm run check                     # parses every part, prints events — no audio needed
 npm run export -- velvet          # renders to exports/velvet.wav
 npm run test -- velvet --from 32  # flags any part that's effectively silent
-npm run display                   # lanes + playhead in the browser
+npm run display                   # lanes + playhead in the browser; keys 1 lanes, 2 spatial (the sphere)
 ```
+
+### The spatial view
+
+`npm run display` has two tabs, **lanes** (the punchcard) and **spatial** (keys `1` and `2`): the sound field
+round the listener, as a cloud of points. Front is up the screen from the head at the centre (the orange stem
+is its nose, the dots either side its ears), left and right are the sides, behind is down the screen. Drag to
+look from another side.
+
+- Each part (each orbit) is drawn in its own colour, with a lobe pointing where it sounds: `.pan`, `.sphere`,
+  `.azim`, `.spin`, `.roll`, `.elev` and the echoes thrown into the sphere by `.space`.
+- The legend lists every part with a level meter and where it sits (`front`, `90° L`, `back ↑12°`, `diffuse`).
+  Point at a part to see it alone, click to pin it. A hit lights its part up; a steady sound settles to a dim bed.
+- Round the head: the horizon ring with front/left/back/right ticks, a ring overhead, the up-down rings, and the
+  ±30° wedge ahead. Sound behind you is dimmer and cooler. Each directed part gets a dot where it sits, a
+  line down to the horizon plane when it's above or below it, and a ring spreading out from it on every hit.
+  The white needle leans where the amplitude-weighted sum of all the parts' directions points: off-centre
+  means the mix leans that way, short means it's wide or diffuse.
+- Camera: keys `p` (3/4), `t` (top, left/right spread), `s` (side, height), `l` (low behind on the left) and `f` (from
+  ahead) fly there, as do the buttons top left. Cinematic shots, where the camera moves itself: `v` is point of view,
+  inside the head with a wide lens, turning to the loudest or latest-hit part; `o` is over the shoulder, behind the
+  head looking past it at that part; `z` pushes in with the lens closing, `b` pulls back with it opening, `c` cranes up
+  and round. A chosen shot repeats over eight bars, going in and coming back out.
+- `a` is auto: it cuts on bar lines between all of those, each shot lasting 4, 8, 12 or 16 bars, and sways slowly in
+  the orbit views. A bar always gets the same shot, so a loop repeats. Dragging, wheeling or choosing a view pauses it
+  for 8 seconds.
+- Masking: when two parts sit close together (a wide sound counts as closer) and share a register
+  (each orbit's power is split into below 200 Hz, 200–2000 and above), a pulsing arc joins them, amber going to
+  crimson as it crowds. A kick and a centred bass both live low and front, so they get one: that's the real
+  overlap, not a fault. `m` or the button toggles it.
+- It measures the real sound: `superdirt/space.scd` sends each orbit's first-order ambisonic field 60 times a second
+  (UDP, `DSTUDIO_FIELD_PORT`), so it needs `npm run dirt` restarted after updating and `DIRT_SPACE` not `off`.
+  With no field arriving (dirt not running, or `off`) it places things from the score instead, with no legend.
+- It's drawn with [ogl](https://github.com/oframe/ogl) (WebGL2); only the tab you're on runs.
 
 ## Packages
 
@@ -300,7 +333,7 @@ d-studio test -- velvet --from 32   # solo-renders each part, flags any effectiv
                                      # (for an arranged track, point --from at a section where
                                      # every part should be active — not bar 0, which may be a
                                      # quiet intro by design)
-d-studio display          # lanes + playhead in the browser, following d-studio play's clock
+d-studio display          # lanes + spatial (the ambisonic sphere) in the browser, following d-studio play's clock
 ```
 
 `d-studio play`/`check` with no track named use `tracks/.default` (one line,
@@ -344,10 +377,11 @@ packages/create/
 
 ## Environment
 
-| Variable       | Default                                                 | What                                                                         |
-| -------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `DIRT_LATENCY` | `0.4`                                                   | seconds events go out ahead                                                  |
-| `DIRT_PORT`    | `57120`                                                 | where the engine sends OSC                                                   |
-| `DIRT_SPACE`   | `binaural`                                              | `binaural`, `stereo` or `off`                                                |
-| `SCLANG`       | `/Applications/SuperCollider.app/Contents/MacOS/sclang` | where sclang lives                                                           |
-| `STUDIO_URL`   | `http://localhost:5173`                                 | where `d-studio display`'s dev server runs; the engine posts its clock there |
+| Variable             | Default                                                 | What                                                                                        |
+| -------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `DIRT_LATENCY`       | `0.4`                                                   | seconds events go out ahead                                                                 |
+| `DIRT_PORT`          | `57120`                                                 | where the engine sends OSC                                                                  |
+| `DIRT_SPACE`         | `binaural`                                              | `binaural`, `stereo` or `off`                                                               |
+| `SCLANG`             | `/Applications/SuperCollider.app/Contents/MacOS/sclang` | where sclang lives                                                                          |
+| `STUDIO_URL`         | `http://localhost:5173`                                 | where `d-studio display`'s dev server runs; the engine posts its clock there                |
+| `DSTUDIO_FIELD_PORT` | `57130`                                                 | UDP port the dirt side sends the spatial view's field to, and `d-studio display` listens on |

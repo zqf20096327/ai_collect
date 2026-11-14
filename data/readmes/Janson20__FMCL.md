@@ -6,7 +6,7 @@
 ![Downloads](https://img.shields.io/github/downloads/Janson20/FMCL/total?color=orange)
 ![Stars](https://img.shields.io/github/stars/Janson20/FMCL?style=social)
 
-一个基于 `CustomTkinter` 的**现代 Minecraft 启动器**，集 **版本管理、多模组加载器（Forge/Fabric/NeoForge/Quilt 等8种）、国内 BMCLAPI 镜像加速、模组与整合包管理、服务器一键开服、P2P 陶瓦联机、存档备份、AI Agent 助手、音乐播放器、性能监控悬浮窗、动态主题、成就系统、崩溃分析、安全加密、插件系统、多语言、自动更新** 于一身——用开源的力量，打造真正全能的游戏伴侣。
+一个基于 **Qt Quick（QML，PySide6）** 的**现代 Minecraft 启动器**，集 **版本管理、多模组加载器（Forge/Fabric/NeoForge/Quilt 等8种）、国内 BMCLAPI 镜像加速、模组与整合包管理、服务器一键开服、P2P 陶瓦联机、存档备份、AI Agent 助手、音乐播放器、性能监控悬浮窗、动态主题、成就系统、崩溃分析、安全加密、插件系统、多语言、自动更新** 于一身——用开源的力量，打造真正全能的游戏伴侣。旧 `CustomTkinter` 界面已于 4.2 删除，回滚使用上一版安装包。
 
 ---
 
@@ -22,25 +22,25 @@
 | 🔎 在线资源 | Modrinth + CurseForge 双源搜索（模组 / 资源包 / 光影），AI 关键词扩展，安装到指定实例 | 两页：**资源浏览**（进入即显示热门；类型 + 关键词 + 游戏版本/加载器筛选 + 卡片结果 + 本地分页 + 直接安装；筛选按来源版本**自动填好**）→ **资源详情**（版本选择、依赖预览、按所选版本安装含依赖递归）；合并搜索不切来源；AI 需登录净读账号，未登录时自动退化为普通搜索 |
 | 📦 整合包 | 支持 Modrinth / CurseForge / MultiMC / HMCL / MCBBS / 通用压缩包 安装与开服（QML 界面，阶段 3.8） | 两页：**在线浏览**（搜索 / AI 搜索 / 结果 / 分页 → 按 Minecraft 版本分组的版本选择，每次追加 50 条）与**安装**（客户端六种格式 / 服务器只收 .mrpack）；文件选择、元数据、可选组件、服务器命名、**安装前实例命名（默认整合包名，冲突/非法名禁用开始安装）**、并行进度（文件与原版 90% + 加载器 10%）、完成/失败重试；装完客户端自动刷新版本列表，服务器安装发 `serverInstalled` 供服务器列表刷新；固定使用页面内进度，不再读旧 Tk 窗口的私有进度字典 |
 | 🖥 服务器管理 | 服务器列表 / 生命周期 / 安装 / 控制台 / 配置编辑器 / 模组与资源包（QML 界面，阶段 3.9 ~ 3.12） | 已安装服务器列表 + 数量 + 运行状态；详情页启动 / 停止 / 加入服务器、打开目录、删除二次确认；**每服独立最大内存**（1G~16G，写 `.fmcl_server.json`）；安装页支持版本 ID 手输 + 正式版快速选择（每页 10 条、分页、回填）+ 真实安装进度（客户端 85% + 服务端 jar 15%，失败可重试）；**列表行可直接启动/停止**，**允许多台服务器同时运行**；**端口自动防冲突**（25565 被占用时顺延到空闲端口并回写 `server.properties`，不再杀占用端口的进程），实际端口非 25565 时用 Toast 与列表/详情标签明确告知；退出启动器时自动关闭由本进程启动的全部服务器；启动服务器显式传 `nogui`（run.bat / run.sh 原本漏了），Windows 下不弹服务器窗口；整合包开服入口；服务器安装完成后列表自动刷新（含 3.8 整合包开服发出的 `serverInstalled`）；自动同意 EULA、智能 Java 管理、端口提示；**控制台页**按路由指定的服务器隔离日志（复用 LogView：只读、自动滚底、不换行、最近 5000 行）、运行状态三态、在线玩家（joined/left，沿用 20 人上限）、每 2 秒 psutil 内存采样、命令输入（回车/发送，成功触发 `server_admin` 成就）、清屏、日志导出，以及退出质量确认（**任意页面**都会弹：仅在非主动停止时询问，选「否」复用 `services/crash_service.py` 做 AI 分析）；详情页入口带服务器名路由参数；**服务器配置编辑器**按 7 类展示 49 条 `server.properties` + 内存/EULA/目录（共 52 项），支持跨分类搜索、BOOL/INT/STR/ENUM/内存/只读六类控件、高级项徽标与范围提示、单项/当前范围恢复默认、INT 校验（弹窗 + 输入框红字）、原始文本读写（规范化换行 + 二次确认）、EULA/运行状态/文件缺失提示，以及页面级未保存离开守卫（顶栏返回、侧栏跳转、关闭按钮都会先确认）；保存会写回 properties、每服内存并同步详情页下拉；**服务器模组与资源包**按服务器目录管理本地 `mods/` / `resourcepacks/`（搜索、分页、拖拽与文件框安装、启停/删除、导出模组清单、检查与批量更新、剔除纯客户端模组），服务端模组在线浏览走 Modrinth 单源（AI 搜索 / 后端分页 / 安装到当前服务器）；整合包开服筛选出的“待人工确认”模组会在安装成功后弹窗列出，可逐项勾选禁用或跳到模组管理逐条处理 |
-| 崩溃诊断 | 游戏客户端异常退出检测 + AI 分析弹窗（QML 界面，阶段 3.10 补充） | 退出码非 0，**或退出码 0 但本次启动后新生成崩溃报告 / hs_err** 时弹窗（旧报告按启动时间过滤，不会误判）：退出码、崩溃报告/游戏日志标签、最多 3 条本地诊断（Mixin / 模组 / 内存等）、打开报告与日志、**导出崩溃报告 ZIP**（崩溃报告 + 游戏/debug 日志 + JVM hs_err + 启动器日志 + 系统信息，原子写入）、**上传游戏日志到 LogShare.CN 并自动复制分享链接**（复制失败时显示可选中链接）、净读 AI 异步分析（结果可滚动；未登录时按钮禁用并提示）；正常退出与强杀不弹 |
+| 崩溃诊断 | 游戏客户端异常退出检测 + AI 分析弹窗（QML 界面，阶段 3.10 补充，阶段 3.25 补齐 H 组） | 退出码非 0，**或退出码 0 但本次启动后新生成崩溃报告 / hs_err** 时弹窗（旧报告按启动时间过滤，不会误判）：退出码、崩溃报告/游戏日志/JVM 崩溃日志标签（三种现场文件都没有时提示「仍可尝试导出或分析」）、最多 3 条本地诊断（Mixin / 模组 / 内存等）、打开报告与日志、**导出崩溃报告 ZIP**（崩溃报告 + 游戏/debug 日志 + JVM hs_err + 启动器日志 + 系统信息，原子写入）、**上传游戏日志到 LogShare.CN 并自动复制分享链接**（复制失败时显示可选中链接）、净读 AI 异步分析（结果可滚动，并按 Markdown 渲染标题/列表/表格/代码块 —— 复用 AGENT 的渲染件；未登录时按钮禁用并提示；没有任何现场文件时仍可用系统信息 + 启动器日志分析）、**分析结果保存为 TXT**（UTF-8 无 BOM、先写临时文件再替换；成功/失败都会在弹窗与状态条提示）；正常退出与强杀不弹；AI 隐私同意统一由启动链协议负责，崩溃弹窗内不重复弹 |
+| 💥 崩溃分析 | 智能诊断 + 净读 AI 深度分析 | 识别 11 种崩溃类型，支持导出报告 ZIP、上传日志分享、AI 修复建议与**结果保存为 TXT** |
 | 🌐 陶瓦联机 | 基于 EasyTier P2P 虚拟组网，局域网广播模拟（QML 界面，阶段 3.13） | 环境检测与一键安装 EasyTier（多镜像并发测速、安装后旧版本目录清理先确认）；登录前置校验；创建/加入陶瓦大厅（U/ 编号）、编号复制；大厅状态、主机 5 秒就绪、客机 3 秒建连与最多 2 次寻找房主、EasyTier 运行状态；成员列表（主机优先）与访客延迟；TCP 端口转发 + 局域网广播；局域网世界扫描（3.5 秒、结果只显示不点击）；EasyTier 日志（5000 行上限、切页不丢）；退出大厅与异常退出收尾；首次联机/创建大厅/加入大厅成就；非 Windows 显示不支持提示 |
 | 💾 存档备份 | 手动/自动备份，一键恢复，压缩/校验/导出（QML 界面，阶段 3.14） | 左侧存档列表（全局 `saves` + 版本隔离目录，刷新自动重扫）；备份表显示时间/大小/版本/备注，支持恢复（二次确认）、校验、导出 ZIP、删除（二次确认）；备注输入 + 真实压缩进度；自动备份开关启动前/退出后立即写配置；备份设置页支持存储路径（浏览/重置）、压缩等级 1/3/6/9、每存档保留 5/10/20/30/50/不限、恢复时旧存档处理（重命名/覆盖/回收站）；备份时间按本地时区显示；索引记录与旧版兼容 |
 | ⛏ 基岩版 | 基岩版（Bedrock Edition）下载与启动（QML 界面，阶段 3.15；Windows 10 19041+） | 已安装卡片（名称/版本/UWP 或 GDK/正式/预览/测试）+ 启动/删除/详情/打开版本目录；版本库搜索 + 全部/UWP/GDK 筛选 + 每页 20 + 分页；安装前 MCAPPX 条款同意、GDK 的 .NET 10 SDK 检测与官方下载引导、GDK 认证组件同意与官方 NuGet 按需下载；微软设备码登录（代码展示/复制/打开链接/轮询）；安装使用真实下载进度并显示在页内；基于 BedrockBoot 方案：McAppx 多源版本库，GDK XVD 解压、UWP AppX 注册，环境自动检测修复（开发者模式/GameService/VC 运行时/GameInput，Gaming Services 缺失时下载前自动用 winget 安装），多线程断点下载 + MD5 校验；GDK 启动优先用户所选版本，启动失败再回退已安装 Xbox 版本 |
 | 💬 AGENT 助手 | 自然语言控制启动器，33 个工具可供 AI 调用（QML 界面，阶段 3.22） | 三栏对话：会话列表 / 消息流 / 待办面板；会话新建、切换、重命名、删除；Markdown 标题/段落/列表/表格/围栏代码块（QML 原生富文本，不依赖 WebEngine）；思考块折叠；工具调用卡片（参数收起、结果展开/复制）；SSE 流式输出 + 停止 + 重新生成 + 复制；未登录引导与 Token 过期提示；高危命令、文件修改、ask_user 的二次确认；语音输入按钮（模型就绪时可用）；顶栏输入框（原搜索框，Enter 发送并自动跳转 AGENT）。净读 DeepSeek 代理走 `https://jingdu.org/api/deepseek/v1/chat/completions`，Bearer Token；工具联网搜索优先走 Bing 网页（DDG 仅兜底）。3.23 补：四类提供商与模型选择（净读/OpenAI/Anthropic/自定义，含 API Key/端点/自定义模型）、思考开关与强度、33 个工具的 allow/ask/deny 三级权限、Skills 列表/新建/打开/编辑、语音模型下载进度与 ZIP 导入；处理中关闭窗口需确认；消息流用 Flickable + Column 全量布局（变高委托的 ListView contentHeight 估算会落空，表现为对话区白屏） |
 | 🎙 语音输入 | AGENT 输入框与主界面顶部输入框一键语音输入 | 基于 SenseVoice-Small 离线识别模型（自带标点与数字转换），DirectML/CPU 自适应加速，首次使用自动下载模型，可在设置中手动导入本地模型压缩包（GitHub 下载过慢时），点击开始/停止录音，识别结果自动填入输入框 |
-| 🎵 音乐播放器 | 发现首页 + 歌单管理 + 本地音乐 + 在线搜索 + 播放队列 + 桌面歌词（QML 界面，阶段 3.16~3.19） | 后端从 tmp/FusionMusicPlayer 移植：QMediaPlayer 流式播放（不先整首下载）、单一队列、四种播放模式、进度/音量/静音/淡入淡出、播放状态恢复；发现首页（每日推荐 / 推荐歌单 / 排行榜 / 最新音乐，默认进入）；本地文件夹扫描（标签/内嵌封面/时长/递归）、扫描进度、曲库列表与「播放全部」；播放队列跳转/上移/下移/移除（队列与其它列表共用 TrackListModel）；所有曲目列表共用 FmMusicTrackRow + FmMusicTrackList，单击播放、复制与加入歌单行为一致；歌词（LRC/翻译/罗马音）与全屏展开播放页（带事件遮罩，点不穿）；7 组全局热键；旧 data/music.json 只读迁移到 data/music/；在线搜索带联想词，按音源逐个返回结果而不是等全部搜完；5 个主搜索音源（网易云 / QQ / 酷我 / 酷狗 / 咪咕），B站只做跨源兜底；结果带音源标签、原唱徽章、播放量、自动最高音质（不再手动选择）、分页与加入歌单，播放失败跨源回退并提示；在线歌词由播放核心自动抓取解析；歌单管理（3.18）：左侧「全部歌曲 / 我喜欢的音乐 / 最近播放 / 自建歌单 / 网易云歌单」+ 歌曲数，新建 / 重命名 / 删除（系统歌单禁编辑、删除前确认），右键菜单点空白 / Escape / 5 秒关闭；排序支持加入时间升降序与歌名（中文按拼音首字母），播放全部按整张歌单上下文，曲目行带序号与来源标签、可移除；「加入歌单」浮层勾选已在歌单中的曲目并置灰，无歌单时就地新建并加入；网易云远程歌单分组、20 首/页、加载失败可重试、同步失败标记；歌单立即原子落盘到 data/music/ 且保留 30 秒兜底，播放历史上限 200；音乐页侧边栏按钮与「设置 → 网易云音乐账号」都有扫码登录入口，3.19 补 VIP 档位/可用音质、凭据有效期与续期；桌面歌词三行滚动、开关、锁定/透明度/位置持久化；设置页与在线搜索共用百度百科原唱兜底开关与原唱错标反馈外链；音效按用户 2026-11-07 裁决不做（旧 Tk 音效仅旧界面保留），SMTC 仍在 3.28 |
-| 🔧 工具集 | 垃圾清理、端口检测、Hash 计算、坐标转换、今日人品、冷知识、知识问答、多线程下载 | 8 个工具各自独立二级页（阶段 3.20）：垃圾按目录分组复选、系统目录保护、清理确认；TCP + MC Server List Ping（MOTD / 版本 / 人数 / 玩家样本 / favicon）；MD5 / SHA1 / SHA256 / SHA512 分块计算；主世界与下界坐标互转；人品按日期种子评级并持久化最近 60 天历史；40 条冷知识；AI 问答题库持久化、剩余不超过 5 题时自动补充；分片下载支持暂停、取消清理与跨进程断点续传（.fmcl-resume.json） |
+| 🎵 音乐播放器 | 发现首页 + 歌单管理 + 本地音乐 + 在线搜索 + 播放队列 + 桌面歌词（QML 界面，阶段 3.16~3.19） | 后端从 tmp/FusionMusicPlayer 移植：QMediaPlayer 流式播放（不先整首下载）、单一队列、四种播放模式、进度/音量/静音/淡入淡出、播放状态恢复；发现首页（每日推荐 / 推荐歌单 / 排行榜 / 最新音乐，默认进入）；本地文件夹扫描（标签/内嵌封面/时长/递归）、扫描进度、曲库列表与「播放全部」；播放队列跳转/上移/下移/移除（队列与其它列表共用 TrackListModel）；所有曲目列表共用 FmMusicTrackRow + FmMusicTrackList，单击播放、复制与加入歌单行为一致；歌词（LRC/翻译/罗马音）与全屏展开播放页（带事件遮罩，点不穿）；7 组全局热键；旧 data/music.json 只读迁移到 data/music/；在线搜索带联想词，按音源逐个返回结果而不是等全部搜完；5 个主搜索音源（网易云 / QQ / 酷我 / 酷狗 / 咪咕），B站只做跨源兜底；结果带音源标签、原唱徽章、播放量、自动最高音质（不再手动选择）、分页与加入歌单，播放失败跨源回退并提示；在线歌词由播放核心自动抓取解析；歌单管理（3.18）：左侧「全部歌曲 / 我喜欢的音乐 / 最近播放 / 自建歌单 / 网易云歌单」+ 歌曲数，新建 / 重命名 / 删除（系统歌单禁编辑、删除前确认），右键菜单点空白 / Escape / 5 秒关闭；排序支持加入时间升降序与歌名（中文按拼音首字母），播放全部按整张歌单上下文，曲目行带序号与来源标签、可移除；「加入歌单」浮层勾选已在歌单中的曲目并置灰，无歌单时就地新建并加入；网易云远程歌单分组、20 首/页、加载失败可重试、同步失败标记；歌单立即原子落盘到 data/music/ 且保留 30 秒兜底，播放历史上限 200；音乐页侧边栏按钮与「设置 → 网易云音乐账号」都有扫码登录入口，3.19 补 VIP 档位/可用音质、凭据有效期与续期；桌面歌词三行滚动、开关、锁定/透明度/位置持久化；设置页与在线搜索共用百度百科原唱兜底开关与原唱错标反馈外链；音效按用户 2026-11-07 裁决不做（旧 Tk 音效仅旧界面保留）；3.28 补主窗底部音乐控制条（K-15/A-12）、Windows SMTC（元数据/状态/进度/媒体键）与 B站风控验证 UI + 验证后自动重试；播放器迷你模式按用户裁决不做 |
+| 🔧 工具集 | 垃圾清理、端口检测、Hash 计算、坐标转换、今日人品、冷知识、知识问答、多线程下载、相关网站 | 9 张入口卡片（8 个工具各自独立二级页，阶段 3.20；相关网站为 3.26）：垃圾按目录分组复选、系统目录保护、清理确认；TCP + MC Server List Ping（MOTD / 版本 / 人数 / 玩家样本 / favicon）；MD5 / SHA1 / SHA256 / SHA512 分块计算；主世界与下界坐标互转；人品按日期种子评级并持久化最近 60 天历史；40 条冷知识；AI 问答题库持久化、剩余不超过 5 题时自动补充；分片下载支持暂停、取消清理与跨进程断点续传（.fmcl-resume.json）；**相关网站**收录 29 条 MC 官网 / 社区 / 资源站 / 工具站，名称、描述与标签四语言，卡片可一键打开或复制链接 |
 | ⏱ 性能监控 | Ctrl+Shift+M 悬浮窗，CPU/内存/GPU 实时监控 | 顶栏监视器按钮与全局热键 Ctrl+Shift+M 双入口；80% 半透明置顶窗口、无边框、增量拖拽、默认右上角并持久化位置；CPU 占用/频率、内存占用/已用/总量/交换、GPU 名称/利用率/显存/温度（pynvml/nvidia-smi/rocm-smi/amd-smi/gpu-detector 多厂商探测）；按钮打开时显示 10 秒快捷键提示；无 GPU 数据时显示占位 |
 | 🎨 动态主题 | 5 种预设 + 自定义 Hex + 版本动态颜色 | 支持导入 .json 主题，主题持久化保存 |
 | 🏆 成就系统 | 47 项成就，9 大分类，Toast 通知，云存档同步 | 成就总览 / 分类 / 详情 / 云端四条二级路由（阶段 3.21）；总进度、上次同步时间与未登录引导；9 大分类入口与每类 n/m；成就卡阶段进度、解锁/满级徽章；阶段阈值与逐阶段解锁状态；解锁 Toast + 自动推送云存档；手动同步、重置云存档、重置本地成就（危险确认 + 输入短语，不匹配不关窗）；阶段名按当前语言生成，不再显示定义表里的中文 stage_names；每日签到与启动期同步沿用 F-09 |
 | 净读账号 | 设置 → 净读账号登录（阶段 3.21 补充） | 用户名 / 密码登录，登录中禁用、账号密码 / HTTP / 网络 / 无 Token 分类错误；登录后展示用户名、UUID、等级、个性签名与 AI 积分，可刷新信息或退出；**HTTP 401 Token 过期时提示“登录已过期，请重新登录”并清掉本地 Token**；Token 写 config.jdz_token（Fernet 加密落盘），用户名加密保存，用户信息只做内存缓存；登录即时生效，不属于设置草稿 |
-| 💥 崩溃分析 | 智能诊断 + 净读 AI 深度分析 | 识别 11 种崩溃类型，支持导出报告 ZIP、上传日志分享和 AI 修复建议 |
 | 🔒 安全 | SSL 验证、Fernet 加密、输入防注入、SHA 校验 | 密钥文件可迁移，断点续传，原子写入，安装回滚 |
-| 🧩 插件系统 | 插件管理器 + 权限分级 + 钩子扩展 + 热加载 + 在线市场 | 支持 .fmpl 格式，本地安装/在线市场/权限管理，20+ 钩子点 |
+| 🧩 插件系统 | 插件管理器 + 权限分级 + 钩子扩展 + 热加载 + 在线市场 + QML 页面（UI API v2） | 支持 .fmpl 格式，本地安装/在线市场/权限管理，20+ 钩子点；插件可用 QML 提供一级导航页面并通过 `Plugins.call` 取数 |
 | 🎮 等待小游戏 | 下载/安装时在浏览器游玩「深渊快线」 | 自动在底部显示入口按钮，完成后自动隐藏 |
 | 💬 状态提示 | 底部状态栏即时反馈操作结果 | 成功/失败/警告等提示 10 秒后自动清空，加载中状态常驻 |
 | 🌐 多语言 | 简体中文 / English / 繁體中文 / 日本語 | 自动检测系统语言，设置内一键切换即时生效 |
-| ⬆ 自动更新 | GitHub Release 检测 + 静默安装 | 自动识别平台下载对应安装包，可配置开关 |
+| ⬆ 自动更新 | GitHub Release 检测 + 静默安装 | 自动识别平台下载对应安装包；设置 → 关于 可手动检查/下载/安装，启动期自动检查发现新版本会提示；安装程序启动后走正常退出链，并解锁 `advanced_updater` |
 
 > 完整功能列表详见 [docs/FEATURES.md](docs/FEATURES.md)
 
@@ -81,10 +81,8 @@
 |------|------|
 | Python 3.10+ | 运行启动器 |
 | Java 8+ | 运行 Minecraft（启动器自动扫描系统 Java，推荐版本由 MC 版本决定） |
-| Linux: `python3-tk` | 系统包（Ubuntu/Debian: `sudo apt install python3-tk python3-venv`） |
-| ffmpeg（可选） | **仅旧 Tk 界面（退役中）** 的音乐音效（EQ / 混响 / 变调 / 变速）需要的外部解码器；QML 界面按用户 2026-11-07 裁决不做音效，不依赖它。**不是 Python 包**，`uv sync` 装不了它，需要自己装（Windows: `winget install --id Gyan.FFmpeg` 或 `choco install ffmpeg`；Debian/Ubuntu: `sudo apt install ffmpeg`；macOS: `brew install ffmpeg`）。没装时启动器照常运行，旧界面的音效会记日志并改播原文件；探测方式是 `shutil.which` |
-
-> **关于 ffmpeg**：旧 Tk 界面的音频效果链靠 pydub 调外部 ffmpeg 完成解码与编码，所以它属于「装了才有音效」的可选依赖；QML 界面已按 2026-11-07 的用户裁决移除音效，不再依赖它。装好后要**重启旧界面**（可用性在启动时探测一次，探测方式就是 `shutil.which("ffmpeg")`）。项目自身不随附、也不下载任何来源不明的 ffmpeg 二进制，请从上面的官方渠道安装。
+| Linux: Qt 6 运行库 / 构建工具 | 源码构建需要 C++ 编译器、cmake、ninja、OpenGL/XCB 头文件与 Qt 6.7.3 SDK；`scripts/install.sh` 会自动安装（Debian/Ubuntu: `build-essential cmake ninja-build libgl1-mesa-dev ...`） |
+| ffmpeg | 旧 Tk 界面的音效链已随 4.2 删除；QML 界面按用户 2026-11-07 裁决不做音效，不再需要 ffmpeg |
 
 ---
 
@@ -96,13 +94,18 @@
 
 | 平台 | 文件 | 说明 |
 |------|------|------|
-| Windows | `FMCL-Setup-x.x.x.exe` | NSIS 安装包，双击运行 |
+| Windows x64 | `FMCL-Setup-x.x.x.exe` | NSIS 安装包，双击运行 |
+| Windows x64（不含 .NET SDK） | `FMCL-Setup-x.x.x-without-dotnetsdk.exe` | 体积更小；GDK 版首次使用时可另行引导安装 .NET 10 SDK |
+| Linux x86_64 | `FMCL-x.x.x-linux-x86_64.tar.gz` | 目录产物（`FMCL/FMCL` + `_internal/`）；也可用 `scripts/install.sh` 安装 |
 
-> **注意**：自 **v2.10.3** 起，不再通过 GitHub Actions 构建并发布 macOS（`.dmg`）与 Linux（`.deb` / `.AppImage`）二进制包。Linux 用户请使用下方「方式二：Linux 一键安装」脚本进行安装；macOS 用户请参考「方式三：从源码运行」。
+> QML 版只提供 **64 位** Windows 产物（PySide6 6.7.3 没有 win32 轮子）。32 位用户继续使用
+> 2.12.6 旧安装包，数据目录与新版相同。
+
+> **注意**：macOS（`.dmg`）二进制包暂不随发布提供，macOS 用户请参考「方式三：从源码运行」。Linux 现在提供 x86_64 目录产物 tarball，并可用下方「方式二：Linux 一键安装」脚本安装。
 
 #### 安装说明
 
-- **Windows**: 双击 `.exe` 安装包，按向导完成安装。安装包已内置 7-Zip（26.02 版本），无需联网即可自动安装。安装器按当前用户安装到 `%LOCALAPPDATA%\Programs\FMCL`，**全程无需管理员权限**，安装后直接双击快捷方式即可正常使用
+- **Windows x64**: 双击 `.exe` 安装包，按向导完成安装。安装包已内置 7-Zip（26.02 版本），无需联网即可自动安装；完整版还内置 .NET 10 SDK。安装器按当前用户安装到 `%LOCALAPPDATA%\Programs\FMCL`，**全程无需管理员权限**，安装后直接双击快捷方式即可正常使用。QML 产物是目录（`FMCL.exe` + `_internal/`），卸载时只删程序文件，保留 `config.json`、`.minecraft`、账号、歌单与成就等用户数据
 - **Linux**: 请使用下方「方式二：Linux 一键安装」脚本
 - **macOS**: 请参考下方「方式三：从源码运行」
 
@@ -114,10 +117,17 @@
 curl -fsSL https://raw.githubusercontent.com/Janson20/FMCL/main/scripts/install.sh | bash
 ```
 
-脚本自动完成：安装系统依赖 → 安装 uv → 克隆项目 → uv sync → 注册 `fmcl` 命令。
+脚本默认从源码构建 QML 目录产物：安装系统依赖 → 安装 uv → 克隆项目 → `uv sync` → 拉取第三方源码 → 用 aqtinstall 安装 Qt 6.7.3 SDK → 编译 FluentUI 插件 → PyInstaller 构建 `dist/FMCL` → 安装到 `<安装目录>/runtime` → 注册 `fmcl` 命令。
 
 支持 Debian / Ubuntu / Fedora / RHEL / CentOS / Arch / openSUSE，安装完成后直接运行 `fmcl` 即可启动。
 自定义安装目录：`./scripts/install.sh ~/.local/share/fmcl`
+
+也支持直接安装 CI / Release 产出的 tarball（不编译）：
+
+```bash
+bash scripts/install.sh /opt/fmcl --version x.x.x
+bash scripts/install.sh /opt/fmcl --tarball ./FMCL-x.x.x-linux-x86_64.tar.gz
+```
 
 ### 方式三：从源码运行
 
@@ -142,12 +152,12 @@ uv run python main.py -A              # 交互模式
 
 > 💡 Windows 上也可以直接用虚拟环境里的解释器：`.\.venv\Scripts\python.exe main.py`
 > **Linux 用户注意**：
-> - 首次运行前请安装系统依赖：`sudo apt install python3-tk python3-venv`（Debian/Ubuntu）或 `sudo dnf install python3-tkinter`（Fedora）
+> - 首次运行前请安装系统依赖：`sudo apt install python3-venv libegl1 libgl1 libxkbcommon-x11-0 libxcb-cursor0`（Debian/Ubuntu）或对应的 Qt 运行库（Fedora）。4.2 起已删除 Tk，不再需要 `python3-tk`
 > - 配置文件存储在 `~/.config/fmcl/config.json`，日志存储在 `~/.local/share/fmcl/fmcl.log`
 > - 全局热键（音乐播放器/性能监控）在非 root 用户下不可用，不影响其他功能
 > - 音乐静音使用 `Ctrl+Shift+Alt+M`；`Ctrl+Shift+M` 已归性能监控悬浮窗，避免一次按键同时触发两个功能
 
-> **Python 版本要求**：本项目仅支持 Python >= 3.10, < 3.12。pygame 在 Windows Python 3.12+ 上无可用二进制包。
+> **Python 版本要求**：本项目仅支持 Python >= 3.10, < 3.12（依赖与 PySide6 6.7.3 的锁定范围一致）。
 
 #### UI 依赖组（PySide6）
 
@@ -232,13 +242,8 @@ FMCL/
 │   ├── multimc_types.py    # MultiMC 数据模型定义
 │   ├── predownload.py      # 资源包预下载
 │   └── verify.py          # 并发文件校验
-├── ui/                    # 经典界面（CustomTkinter）
-│   ├── app.py             # 主窗口（12 Mixin 组合模式）
-│   ├── agent/             # AI 助手界面部分（业务实现在 services/agent/）
-│   ├── windows/           # 15 个独立子窗口
-│   ├── static/            # 静态资源（等待小游戏等）
-│   ├── theme_engine.py    # 动态主题引擎
-│   └── i18n.py            # 国际化（4 语言）
+├── ui/                    # 共享数据：locales/（4 语言）与 static/（等待小游戏）
+│                          # 旧 CustomTkinter 代码已于 4.2 删除
 ├── plugin_manager/        # 插件系统（热加载、权限分级、20+ 钩子点）
 ├── downloader.py          # 多线程/异步下载器
 ├── modrinth.py            # Modrinth API 集成
@@ -255,7 +260,6 @@ FMCL/
 ├── cli_agent.py           # Agent CLI 核心逻辑
 ├── agent_cli.py           # 独立控制台入口
 ├── qml/                   # QML 界面（PySide6）：pages / components / shell / assets
-│                          # 与 ui/ 并存，见 docs/ARCHITECTURE.md
 ├── scripts/               # 构建/发布/安装脚本 + 分层与契约静态检查器
 ├── tests/                 # 测试
 └── docs/                  # 文档
@@ -321,10 +325,10 @@ uv run pytest -q
 ### 构建
 
 ```bash
-make build            # PyInstaller 构建可执行文件（经典界面，单文件 dist/FMCL.exe）
-make build-qml        # QML 界面（目录产物 dist/FMCL-QML/，含 Qt 运行时与 QML 模块）
-make build-installer  # Windows NSIS 安装包 (需要 NSIS)
-make build-qml-installer  # QML 界面安装包（装目录产物，与经典版可并存）
+make build            # PyInstaller 构建 QML 目录产物 dist/FMCL/（含 Qt 运行时与 QML 模块）
+make build-qml        # 兼容旧命令，等价于 make build
+make build-installer  # Windows x64 NSIS 安装包 (需要 NSIS)
+make build-qml-installer  # 同 build-installer，保留旧命令
 make build-dmg        # macOS DMG 磁盘映像 (仅 macOS)
 make build-deb        # Linux DEB 包
 make build-appimage   # Linux AppImage
@@ -333,8 +337,14 @@ make build-appimage   # Linux AppImage
 > QML 产物有个**不入库**的构建前置：`third_party/` 下自编译的 FluentUI 模块（体积原因只入库
 > 来源记录与脚本）。缺了它 `build.spec` 会**直接报错停下**并打印补救命令，而不是产出一个
 > "看着正常、一启动就没有界面"的包。补齐方式：
+>
+> Windows：
 > `powershell -NoProfile -ExecutionPolicy Bypass -File third_party/fetch_sources.ps1`
-> 然后 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build_fluentui.ps1`。
+> 然后 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build_fluentui.ps1 -QtDir <Qt6.7.3>`。
+>
+> Linux：
+> `bash scripts/fetch_sources_linux.sh`
+> 然后 `bash scripts/build_fluentui_linux.sh --qt-dir "$HOME/Qt/6.7.3/gcc_64"`。
 
 > 构建问题排查请参考 [docs/BUILD_FIXES.md](docs/BUILD_FIXES.md)
 
@@ -345,7 +355,9 @@ make build-appimage   # Linux AppImage
 3. 创建标签：`git tag vX.X.X`
 4. 推送：`git push origin main --tags`
 
-GitHub Actions 会自动构建 Windows 安装包并创建 Release（自 v2.10.3 起不再自动构建 macOS / Linux 二进制包，如需可使用上方 `make build-dmg` / `make build-deb` / `make build-appimage` 在对应平台本地构建）。
+GitHub Actions 在 tag 推送时会构建 Windows x64 安装包 + Linux x86_64 tarball 并创建 Release；
+手动触发 `workflow_dispatch` 只构建并上传 Actions artifacts，**不会创建 Release**，可用于测试安装包和 Linux 构建。
+macOS 二进制包暂不随发布提供。
 
 详见：[CONTRIBUTING.md](CONTRIBUTING.md) | [docs/SETUP.md](docs/SETUP.md)
 

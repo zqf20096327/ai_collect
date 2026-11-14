@@ -444,6 +444,22 @@ In the interactive UI on Unix, a leading `cd <cwd> &&` in a Bash command is show
 
 When the sandbox is on (see `/jail`), filesystem tools refuse paths outside the session cwd, except that `read` and `glob` can access loaded extension directories. `bash` applies best-effort command checks. Jail mode is an accident-prevention guardrail, not a security boundary.
 
+### Shell execution timeout
+
+Set an optional maximum execution time in seconds in `$ZOT_HOME/config.json`:
+
+```json
+{
+  "shell_timeout_seconds": 120
+}
+```
+
+Restart zot after editing this setting. Omitted or `0` means unlimited. Positive integers up to 9223372036 are accepted. Negative, fractional, and overflowing values are rejected. The limit applies to the built-in `bash` and optional `powershell` tools, including shell calls from codemode and subagents, interactive `!` commands, and .zot agent shell pre-hooks. Continuous workers use their own config.
+
+A tool call's optional `timeout` argument can shorten the configured limit, but cannot extend or disable it. The execution timer starts after permission checks, not while waiting for approval. Caller cancellation and earlier caller deadlines still apply. Expired commands return an error with `timed_out` status and captured output. Other tools, MCP servers, and extension subprocesses are unaffected.
+
+On Unix, cancellation targets the local process group. On Windows, it terminates the direct shell and bounds output draining, but does not guarantee descendant termination. Commands running inside containers or on remote hosts may continue after the local client stops. This is not a security boundary.
+
 ### Configured shell and container execution
 
 Set `shell` in `$ZOT_HOME/config.json` to an argv prefix. zot appends each command as one final argument, without splitting or interpolating the configured arguments. For a local shell:
@@ -1042,8 +1058,4 @@ Copilot's dollar display is an API-equivalent estimate, not a GitHub invoice or 
 
 Claude Sonnet 5.5 is the default for direct Anthropic when no model is selected (`--provider anthropic --model claude-sonnet-5-5`). It supports a 1,000,000-token context window and up to 128,000 output tokens. Adaptive thinking is always on with the same `low` through `max` effort levels as Opus 5.5, and `off` or `minimum` requests use `low`. Temperature is not sent. Catalog prices per million tokens are $2 input, $10 output, $0.20 cache reads, and $2.50 cache writes.
 
-The direct Anthropic catalog omits retired Opus 4/4.1, Sonnet 4, Sonnet 3.5/3.7, Haiku 3.5, and Opus 3 entries. A saved selection of a removed model follows the normal recovery path: zot warns, selects Sonnet 5.5, and repairs the saved model. An unavailable explicit `--model` selection also falls back with a warning, but does not overwrite the saved selection. Sonnet 4.5 is still explicitly selectable, but is no longer the default. Anthropic schedules its retirement for November 30, 2026. Partner-provider catalogs and defaults are unchanged because their retirement schedules can differ. See [Anthropic model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations).
-
-Claude Haiku 5.5 is available directly through Anthropic (`--provider anthropic --model claude-haiku-5-5`) with a 1,000,000-token context window and up to 128,000 output tokens. It supports adaptive thinking from `low` through `max`, while `off` explicitly disables thinking. Temperature is not sent. Catalog prices per million tokens are $0.10 input, $0.50 output, $0.01 cache reads, and $0.125 cache writes. Above 100,000 input tokens, these rates become $0.50, $2.50, $0.05, and $0.625 respectively.
-
-On Amazon Bedrock, Claude Sonnet 5.5 (`anthropic.claude-sonnet-5-5`) has `us.`, `eu.`, and `global.` inference profiles. Claude Haiku 5.5 (`anthropic.claude-haiku-5-5`) also has `au.` and `jp.` profiles. Bare IDs are selection aliases, not in-region Converse endpoints. Zot automatically selects US profiles in US commercial and Canadian regions, EU profiles in European regions, and Haiku's AU/JP profiles in Sydney/Melbourne and Tokyo/Osaka respectively. In other regions, select an explicit supported inferenc
+The direct Anthropic catalog omits retired Opus 4/4.1, Sonnet 4, Sonnet 3.5/3.7, Haiku 3.5, and Opus 3 entries. A saved selection of a removed model follows the normal recovery path: zot warns, selects Sonnet 5.5, and repairs the saved model. An unavailable explicit `--model` selection also falls back with a warning, but does not overwrite the saved selection. Sonnet 4.5 is still explicitly selectable, but is no longer the default. Anthropic sc

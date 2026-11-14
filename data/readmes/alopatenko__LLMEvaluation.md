@@ -225,6 +225,7 @@ in tech media and blog posts and podcasts from companies
 - Hamel Dev March 2024, [Your AI Product Needs Eval. How to construct domain-specific LLM evaluation systems](https://hamel.dev/blog/posts/evals/)
 ---
 ### Frontier models
+- SMB Bench: Measuring AI's ability to learn from delayed consequences, Nov 2026, [report and leaderboard](https://oroagents.com/benchmarks/smb-bench) [dataset](https://huggingface.co/datasets/oro-agents/smb-bench)
 - Chartography: A Benchmark for Professional Chart Understanding, Aug 2026, [arxiv](https://arxiv.org/abs/2608.10677)
 - OSWorld 2.0: Benchmarking Computer Use Agents on Long-Horizon Real-World Tasks, Jun 2026, [arxiv](https://arxiv.org/abs/2606.29537)
 - Agents' Last Exam, Jun 2026, [arxiv](https://arxiv.org/abs/2606.05405)
@@ -779,5 +780,4 @@ Agentic Tasks
 - DeliveryBench: Can Agents Earn Profit in Real World?, Dec 2025, [arxiv](https://arxiv.org/abs/2512.19234)
 - Crumbling Under Pressure: PropensityBench Reveals AI’s Weaknesses, Nov 2025, [arxiv](https://scale.com/blog/propensitybench)
 - AdvancedIF: Rubric-Based Benchmarking and Reinforcement Learning for Advancing LLM Instruction Following, Nov 2025, [arxiv](https://arxiv.org/abs/2511.10507)
-- MCPVerse: An Expansive, Real-World Benchmark for Agentic Tool Use, Oct 2025, [arxiv](https://arxiv.org/abs/2508.16260v1)
-- CookBench: A Long-Horizon Embodied Planning Benchmark for Complex Cooking Scenarios, aug 2025, [arxiv](h
+- MCPVerse: An

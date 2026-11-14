@@ -435,7 +435,7 @@ Not every client should load 60 schemas up front. New configurations written by 
 | `db` | 19 | Core plus database and data-view tools |
 | `all` | 60 | Every canonical tool |
 
-Profiles combine with `+` (for example `standard+db`). Set `Server.ToolProfile` in `config.json` or `GXMCP_PROFILE` in the process environment, then restart the client. Calling a tool outside the active profile returns `ToolNotInProfile` with the profile that exposes it. Details: [LLM CLI/MCP playbook](docs/llm_cli_mcp_playbook.md#tool-profiles-and-schema-budgets).
+Profiles combine with `+` (for example `standard+db`). Set `Server.ToolProfile` in `config.json` or `GXMCP_PROFILE` in the process environment, then restart the client. Calling a tool outside the active profile returns `ToolNotInProfile` with the profile that exposes it. Every profile except `all` lists only the common inputs of `genexus_edit`, `genexus_lifecycle`, `genexus_io` and `genexus_create`; the advanced ones are still accepted and are documented in `genexus://kb/tool-help/<tool>`. Details: [LLM CLI/MCP playbook](docs/llm_cli_mcp_playbook.md#tool-profiles-and-schema-budgets).
 
 **Orientation & health**
 - `genexus_whoami` — KB context, version, worker/index/database health, self-update check, next-step hints
@@ -940,7 +940,7 @@ Want to run a local dev build?
 1. Clone this repo on Windows.
 2. Run `.\build.ps1` to restore and build the C# components and package the local artifacts. The script checks for the required .NET SDK and GeneXus 18 installation.
 3. If GeneXus is installed outside the default path, set `$env:GX_PATH` to its installation folder before running the build. A Knowledge Base is only needed for runtime testing.
-4. GxWire (needed for `genexus_wire` and `genexus-mcp wire`) is a Rust engine in `src/gxwire`. Install the Rust toolchain (`cargo`). `build.ps1` builds it in release mode and copies `gxwire.exe` into `publish/`. Without `cargo` that step is skipped without a message, and the tool returns `GxwireNotFound`. The Gateway looks for `gxwire.exe` next to itself, in `publish/`, in `src/gxwire/target/release/`, and on `PATH`. The CLI also honours `GENEXUS_MCP_GXWIRE_EXE`.
+4. GxWire (needed for `genexus_wire` and `genexus-mcp wire`) is a Rust engine in `src/gxwire`. Install the Rust toolchain (`cargo`). `build.ps1` builds it in release mode and copies `gxwire.exe` into `publish/`. Without `cargo` that step is skipped without a message, and the tool returns `GxwireNotFound`. The Gateway looks for `gxwire.exe` next to itself, in `publish/`, in `src/gxwire/target/release/`, and on `PATH`. The CLI also honours `GENEXUS_MCP_GXWIRE_EXE`. A clean checkout compiles `gxwire.exe` and `gx-engine.exe` from scratch; if you build the same commit in several worktrees or against several GeneXus installations, `.\build.ps1 -RustArtifactCache <directory>` keeps both binaries keyed by the committed crate source and the toolchain and reuses them. A crate with uncommitted changes is always compiled, and the switch is refused for release builds.
 5. To point your AI clients at the local build, run `.\install.ps1` instead: it builds, then registers every writable client against `publish\GxMcp.Gateway.exe`.
 
 ### Bundled AI skills (`.gemini/skills/`)

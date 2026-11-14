@@ -8,7 +8,7 @@
 
 Inspect, plan, build, and validate Unreal Engine worlds through MCP. Native editor checks keep agent work accountable to the state of the project.
 
-**[Install Hayba 0.4.1 on Windows with Unreal Engine 5.9, step by step](INSTALL.md)**
+**[Download the Hayba 0.4.2 installers](https://github.com/zajalist/hayba/releases/tag/v0.4.2)** (Windows, Unreal Engine 5.9)
 
 [Explore the architecture](docs/ARCHITECTURE.md) | [Browse the tools](docs/wiki/) | [Changelog](CHANGELOG.md) | [Contribute](CONTRIBUTING.md)
 
@@ -16,20 +16,32 @@ Inspect, plan, build, and validate Unreal Engine worlds through MCP. Native edit
 
 Hayba connects MCP-capable agents to Unreal Editor. It gives them a wide tool library, a focused in-editor workspace, and a native safety boundary for changes to a shared project.
 
-> **Release status:** `v0.4.1` is the latest release. It is tested on Unreal Engine 5.9 (5.7 and 5.8 may work but were not tested for this release) and ships the new editor workspace, multi-agent editor leases and the editor safety train. See the [changelog](CHANGELOG.md) and [versioning](docs/VERSIONING.md).
+> **Release status:** `v0.4.2` is the latest release. It is tested on Unreal Engine 5.9 (5.7 and 5.8 may work but were not tested for this release) and ships the new editor workspace, multi-agent editor leases and the editor safety train. See the [changelog](CHANGELOG.md) and [versioning](docs/VERSIONING.md).
 
-<table>
-  <tr>
-    <td width="50%"><img src="docs/media/chat-development-preview.png" alt="Hayba's quiet in-editor Chat workspace in a scratch Unreal project" /></td>
-    <td width="50%"><img src="docs/media/world-mesh-splat-preview.png" alt="World preview of sampled mesh surfaces in a synthetic scratch scene" /></td>
-  </tr>
-  <tr>
-    <td><strong>Chat</strong><br />One place to ask, inspect, and follow a task.</td>
-    <td><strong>World</strong><br />A scene-derived spatial view of the loaded meshes.</td>
-  </tr>
-</table>
+The development workspace now opens directly into Chat, with searchable threads,
+model and access controls, context attachments, delegated-agent results, Fab
+browsing and media connections. The old World/semantic-map tab is removed;
+scene inspection remains available to agents through the tool catalog.
+See the [workspace guide](unreal/HaybaMCPToolkit/README.md) for the unreleased UI
+and the [changelog](CHANGELOG.md) for its verification scope.
 
-*Actual scratch-editor captures of the editor workspace. Chat shows the empty workspace; it does not demonstrate a connected conversation. World shows 130,048 sampled points from 1,024 synthetic actors, not an entire unloaded project.*
+## Install (Windows, Unreal Engine 5.9)
+
+No Git, npm, Node or Visual Studio needed. Node and the MCP server are bundled. Both installers run without admin rights and add an uninstaller under **Settings > Apps**.
+
+**Option 1: Plugin + MCP** (use Hayba from Claude Code, Claude Desktop or Cursor, and in the editor)
+
+1. Download **Hayba-Setup-0.4.2-Plugin+MCP.exe** from the [latest release](https://github.com/zajalist/hayba/releases/latest) and close your project in Unreal.
+2. Run it, choose your `.uproject`, tick the apps to connect, and click **Install**.
+3. Open the project in Unreal 5.9, then restart your AI app and ask it to "check the Hayba Unreal connection".
+
+**Option 2: Plugin only** (in-editor chat, no external AI apps)
+
+1. Download **Hayba-Setup-0.4.2-Plugin.exe** from the [latest release](https://github.com/zajalist/hayba/releases/latest) and close your project in Unreal.
+2. Run it, choose your `.uproject`, and click **Install**.
+3. Open the project, then **Tools > Hayba MCP Toolkit > Settings**: pick a provider, paste your API key, and click **Save**. The key is stored encrypted with Windows DPAPI.
+
+Any Unreal 5.9.x launcher install works. Other engine versions are refused with a clear message and no changes. For a source build, see [INSTALL.md](INSTALL.md).
 
 ## See the workflow
 
@@ -43,7 +55,7 @@ A typical request is concrete: *“Inspect this level, propose a route to the fo
 | **Shared-editor coordination** | Owner-bound leases and busy-asset rules turn competing writes into explicit refusals. Bounded batches stop when editor state changes. The orchestrator can respond instead of guessing what happened. | Available in `0.4.1` |
 | **Native crash and state guards** | A contained native fault leaves the editor in a sticky unsafe state. Play, dirty Blueprints, read-only saves, and unattended execution receive checks at the editor boundary. | Available in `0.4.1` |
 | **Reviewable changes** | Plan Mode can require approval before destructive steps. Supported operations use Unreal undo transactions; structured results expose refusals and partial work. | Available; expanded in `0.4.1` |
-| **A scene-derived World view** | The development preview samples loaded meshes and first-visible depth. Agents can capture local geometry tiles on demand, page authored sources and provisional spatial relations, and inspect coverage gaps; most depth points remain unattributed. | Development branch |
+| **Asset workflows in chat** | Search Fab, open its native library, attach imported selections, inspect Chooser tables and validate bounded asset sets. Media providers support explicit generation requests. | Development branch; optional plugins/providers required |
 
 The [tool reference](docs/wiki/) covers individual operations. Optional [GAS and MetaSound plugins](docs/adr/0008-satellite-plugins-earn-their-place.md) extend the core. The distinction is how the tools work together under a shared editor's live constraints.
 
@@ -58,16 +70,6 @@ The [TypeScript MCP server](mcp-tools/hayba-mcp/) routes requests to the [C++ ed
 Release `0.4.1` includes a coordinated set of protections: sticky refusal after a contained native fault, PIE and asset-busy checks, guarded save paths, owner-bound leases with recovery, and bounded batch execution. These address a shared editor's real failure modes: one agent can hold a resource while another reads stale state, Play can begin during a build, or a native fault can leave the editor unsafe for more writes. [The scratch-host safety guide](docs/SAFETY-scratch-host-and-leases.md) records the live verification boundaries.
 
 Hayba does not treat every refusal as failure. A structured refusal tells the agent whether to wait, refresh state, request a lease, stop Play, or return control to the user. Plan Mode requires approval for destructive commands when enabled; owner-bound leases, PIE and editor-health guards apply independently. Native undo covers supported operations, with documented exceptions. [Read the safety model](docs/safety-model.md) · [Security policy](SECURITY.md) · [Decision records](docs/adr/)
-
-## World, from scene evidence
-
-The current preview progressively scans loaded static meshes. The scratch-editor capture above shows 130,048 surface samples from 1,024 synthetic actors, with source links for those mesh samples. A [second scratch capture](docs/media/world-depth-scratch-preview.png) includes 37,277 depth-derived points from a 256×256 capture of first-visible surfaces. A [zoom-local tile](docs/media/world-tile-scratch-preview.png) adds 8,192 points sampled from mesh triangles. An agent can start a loaded-world tile capture with `world_tile_capture`, then inspect its bounded geometry, source nodes, and authored semantic groups with `world_semantic_snapshot`. The latest depth observation also has queryable pages with a capture ID, camera, coverage, and gaps. Uncaptured regions report `not_captured`. The depth pass covers one editor-camera view, not an entire level; only sparse depth-matched collision labels identify possible sources. Unloaded cells and occluded surfaces remain unknown.
-
-[Open the World capture](docs/media/world-mesh-splat-preview.png) · [Zoom-local mesh detail](docs/media/world-tile-scratch-preview.png) · [Read the World model](docs/world-intelligence.md)
-
-## The next World layer
-
-The next layer will use that evidence to compare scene composition and production options: sightlines, routes, streaming and NPC pressure, memory, texel density, PCG placement, and hand-placed focal assets. It should score alternatives with measured constraints and call out unknowns. **That decision layer is planned work, not a shipped capability.** [Read the World direction](docs/world-intelligence.md).
 
 ## Install
 

@@ -7,10 +7,13 @@
 Windows · macOS · iOS 客户端补丁 ｜ [自开发 Android App（非官方）](#android-客户端) ｜ **Linux 服务端支持 x86_64 和 ARM64** ｜ OpenAI Chat / OpenAI Responses / Anthropic Messages
 
 <p>
-  <img alt="Windows 0.71.2" src="https://img.shields.io/badge/Windows-0.71.2_x64-0078D4?logo=windows&logoColor=white">
-  <img alt="macOS 0.71.2" src="https://img.shields.io/badge/macOS-0.71.2-111111?logo=apple&logoColor=white">
-  <img alt="iOS 1.16.0" src="https://img.shields.io/badge/iOS-1.16.0-111111?logo=apple&logoColor=white">
-  <img alt="Android 9+" src="https://img.shields.io/badge/Android-9%2B-3DDC84?logo=android&logoColor=white">
+<!-- client-badges:start -->
+  <a href="#client-versions"><img alt="Windows 官方 1.1.0 x64 (与此补丁不兼容)" src="https://img.shields.io/badge/Windows%20%E5%AE%98%E6%96%B9-1.1.0%20x64%20(%E4%B8%8E%E6%AD%A4%E8%A1%A5%E4%B8%81%E4%B8%8D%E5%85%BC%E5%AE%B9)-0078D4?logo=windows&logoColor=white"></a>
+  <a href="#client-versions"><img alt="Windows 补丁仅接受 0.71.2 x64" src="https://img.shields.io/badge/Windows%20%E8%A1%A5%E4%B8%81%E4%BB%85%E6%8E%A5%E5%8F%97-0.71.2%20x64-237E55?logo=windows&logoColor=white"></a>
+  <a href="#client-versions"><img alt="macOS 官方 1.1.0 ARM64" src="https://img.shields.io/badge/macOS%20%E5%AE%98%E6%96%B9-1.1.0%20ARM64-111111?logo=apple&logoColor=white"></a>
+  <a href="#client-versions"><img alt="iOS 官方 1.25.0" src="https://img.shields.io/badge/iOS%20%E5%AE%98%E6%96%B9-1.25.0-111111?logo=apple&logoColor=white"></a>
+  <a href="#client-versions"><img alt="Android shell 1.1.0" src="https://img.shields.io/badge/%E8%87%AA%E5%BC%80%E5%8F%91%20Android-1.1.0-237E55?logo=android&logoColor=white"></a>
+<!-- client-badges:end -->
   <img alt="Host d0a4baa" src="https://img.shields.io/badge/Host-d0a4baa-2496ED?logo=docker&logoColor=white">
   <img alt="Noncommercial License" src="https://img.shields.io/badge/License-Noncommercial-6B7280">
   <a href="https://linux.do"><img alt="LINUX DO" src="https://img.shields.io/badge/Community-LINUX%20DO-F5A623"></a>
@@ -19,6 +22,21 @@ Windows · macOS · iOS 客户端补丁 ｜ [自开发 Android App（非官方�
 **简体中文** · [English](README.en.md)
 
 </div>
+
+<a id="client-versions"></a>
+<!-- client-versions:start -->
+**安装时选哪一版？** 官方稳定通道核对日期：2026-11-14。请使用右栏的原包；左栏是厂商版本，不代表 Plus 已兼容。
+
+| 平台 | 官方最新 | 本项目接受的原包 / 外壳 |
+| --- | --- | --- |
+| Windows x64 | [1.1.0](https://api2.cursor.sh/updates/api/download/stable/win32-x64-user/sand)（补丁在输入校验时拒绝了该安装包；未测试原生客户端聊天） | 0.71.2 |
+| macOS ARM64 | [1.1.0](https://api2.cursor.sh/updates/api/download/stable/darwin-arm64/sand) | 0.71.2；无 Mac 真机测试 |
+| iOS | [1.25.0](https://apps.apple.com/us/app/grok-bot/id6794501026) | 1.16.0 (23152)；无 iPhone / iPad 真机测试 |
+| Android 9+（自开发，非官方） | 不使用官方 Android APK | 外壳 **1.1.0**（构建 10100），界面来自 Windows **0.71.2** |
+| Linux Host / 执行桌面 | 无可核对的最新镜像映射 | Host `d0a4baa`；执行桌面 `9d2ac1b`（amd64） |
+
+[ProkBot Plus 的最新发布包](https://github.com/ferretgeek/prokbot-plus/releases/latest)使用项目自己的版本号；上游 ProkBot 基线是 `3e9fe8c`。
+<!-- client-versions:end -->
 
 <p align="center">
   <img src="docs/images/windows-chat.png" alt="Windows 客户端：Bot 联网查询香山红叶的观赏时间并给出来源，同时画了一张 16:9 的水彩画" width="880">
@@ -48,10 +66,10 @@ Plus 在此基础上补了这些：**Windows 和 Android 客户端**；**Anthrop
 | --- | --- | --- |
 | 服务端 | Linux x86_64 或 ARM64 | x86_64 已在 Ubuntu 24.04 + Docker 29 实测。甲骨文 Ampere A1 原生运行 Host、搭配独立 amd64 桌面，已验证两轮聊天和 VNC 操作。只有一台 ARM 机器时，模拟桌面仍属实验模式。[选部署方式](docs/AI-INSTALL.md#先选部署方式) |
 | Windows 客户端 | Windows 10 / 11，x64 | **本版本新增。** 便携版和安装包，不需要管理员权限 |
-| Mac 客户端 | Apple Silicon，Grok Bot 0.71.2 | 来自上游 |
-| iOS 客户端 | Grok Bot 1.16.0（23152） | 来自上游。需要自备砸壳 IPA 和签名证书 |
-| Android 客户端 | Android 9 及以上 | **本版本新增。** 用官方桌面版的界面加本项目的外壳生成 APK，在 Windows、Mac 或 Linux 电脑上生成 |
-| Linux 桌面 | 不支持 | 官方没有对应的客户端 |
+| Mac 客户端 | Apple Silicon，Grok Bot 0.71.2 | 本轮没有 Mac 测试设备。已测试与 Windows 共用的桌面代码，未在 macOS 上验证客户端安装、启动、配对或聊天。 |
+| iOS 客户端 | Grok Bot 1.16.0（23152） | 本轮没有 iPhone 或 iPad 测试设备。已测试补丁工具，未验证真机签名安装、配对或聊天。自行安装仍需自备已解密的 IPA 和签名证书。 |
+| Android 客户端 | Android 9 及以上 | 自开发非官方外壳，从 Windows 固定原包生成 APK。请保留原签名密钥。 |
+| Linux 桌面客户端 | 本项目不提供补丁 | [官方提供 Linux 客户端](https://docs.x.ai/grok-bot/deployment)。它不是服务端使用的 amd64 执行桌面镜像。 |
 
 ## 这个版本新增了什么
 
@@ -84,7 +102,7 @@ Plus 在此基础上补了这些：**Windows 和 Android 客户端**；**Anthrop
 <p align="center">
   <img src="docs/images/android-chat-zh.png" alt="Android 客户端真实聊天：用户问番茄蛋炒饭先炒什么，饭点回复先炒蛋；用户追问米饭结块怎么办，饭点建议用湿手捏散。" width="380">
 </p>
-<p align="center"><sub>Android 15 模拟器实拍：在 App 里问「先炒什么」，再追问「那米饭结块了怎么办」。两轮回复均由连接到自部署 Host 的模型实际生成。</sub></p>
+<p align="center"><sub>固定桌面界面 0.71.2 的历史实拍（Android 15 模拟器）：在 App 里问「先炒什么」，再追问「那米饭结块了怎么办」。两轮回复均由连接到自部署 Host 的模型实际生成。</sub></p>
 
 官方 Android 版带有防篡改保护，不能修改。Plus 换了一种做法：把官方**桌面版**的界面（和 Windows、Mac 客户端同一套，取自你自己下载的官方 Windows 安装包）装进一个本项目编写的 Android 外壳，生成 APK：
 
@@ -146,11 +164,11 @@ APK 用只属于你的密钥签名。不支持 Tailcat，外网使用请用 VPN�
   - Webhook 触发任务；
   - 自己写应用（插件）；
   - 多台 Host 之间的 Bot 协作；
-  - 整机备份恢复。
+  - 受管数据卷的备份和恢复（不含镜像或宿主系统）。
 
 **代价**
 
-- 要有一台 Linux 服务器（8 GB 内存、30 GB 磁盘起步），自己负责升级和备份。
+- 要有一台 Linux 服务器，自己负责升级和备份。各部署模式的实测限制见下表。
 - 版本是固定的：客户端 0.71.2、iOS 1.16.0、Host `d0a4baa`。官方更新后，要等补丁跟进才能升级，也没有自动更新。
 - 效果取决于你选的模型。官方针对自家模型做过调校，换成别的模型，体验可能有差距。
 - 部分官方功能被关掉或换掉：
@@ -164,9 +182,24 @@ APK 用只属于你的密钥签名。不支持 Tailcat，外网使用请用 VPN�
 
 ## 部署需要什么
 
+**已发布包和实测边界（2026-11-14）**
+
+- Plus 发布包按平台分发工具。`v1.0.0` 没有 Android 包；1.1.0 新增独立 Android 工具 ZIP。首页保留的是该外壳的历史真实聊天截图，不是新版桌面界面的验收证据。
+- 官方下载版本和本项目可接受原包见[客户端版本表](#client-versions)。更新客户端工具不要求升级或重装现有 Host。
+
+| 部署模式 | 最低实测 | 推荐实测 | 磁盘 | 已测负载与限制 |
+| --- | --- | --- | --- | --- |
+| x86_64：Host 和 amd64 桌面同机 | 未定档 | 未定档 | 50 GiB 是早期测试盘，不是最低需求 | 两次 2 核 2 GB 限时聊天未全部按时送达；2 核 4 GB、4 核 8 GB 只有新装功能记录，没有三轮一小时容量数据。 |
+| ARM64 Host + 独立 amd64 桌面 | 两台均未定档 | 两台均未定档 | 两台分别预留镜像、数据与备份，均未定档 | 历史上走通过聊天与桌面控制；不等于当前候选的 ARM64 Docker 构建、升级或双机持续负载。 |
+| ARM64 同机模拟 amd64 桌面 | 未定档 | 未定档 | 未定档 | 实验模式，没有可用于容量评级的整机数据。 |
+| 仅 Host，无执行节点 | 未定档 | 未定档 | 未定档 | 只能核对管理与设置；没有启用的执行节点时，聊天核心不启动，不能算完整聊天部署。 |
+
+外部模型推理不计入以上客体；本机推理要另算资源。旧手册的 8 GB 内存、30 GB 磁盘是规划预留，不是实测最低值。备份覆盖受管数据卷，不包含镜像、实例 `.env` 或宿主系统。没有完成同版本的升级与失败恢复演练时，不承诺旧数据无损。
+
+
 | 必需 | 要求 |
 | --- | --- |
-| 服务器 | 64 位 Linux、Docker Compose v2、Python 3.10+。同机运行桌面建议至少 8 GB 内存、30 GB 空闲磁盘，首次下载约 8 GB；ARM 单机还需要 QEMU/binfmt |
+| 服务器 | 64 位 Linux、Docker Compose v2、Python 3.10+。具体配置见上表；构建缓存和备份另留空间；ARM 单机还需要 QEMU/binfmt |
 | 模型接口 | 任意一种：Anthropic Messages、OpenAI Responses、OpenAI Chat Completions。要支持工具调用；想让 Bot 操作电脑，还要支持图片输入 |
 | 生成客户端的电脑 | Windows 客户端在 Windows 10/11 x64 上生成，Mac 客户端在 Apple Silicon Mac 上生成，Android 客户端在 Windows、Mac、Linux 上都能生成，都需要 Node.js 22.12+。iOS 需要砸壳 IPA 和签名证书 |
 
@@ -192,7 +225,7 @@ AI 会先列出你要准备的东西，然后一步步部署服务端、配置�
 
 想自己动手的话，照着 [AI 部署手册](docs/AI-INSTALL.md) 做就行。它是写给 AI 的，但每一步都写了命令和检查方法，人照着做也完全没问题。
 
-[Releases](https://github.com/ferretgeek/prokbot-plus/releases) 按平台分发补丁工具。`v1.0.0` 不含 ARM64 Host 和 Android 工具；部署 ARM64 请使用 `main` 分支，生成 Android App 见 [Android 客户端说明](android/README.md)。Releases **不提供**包含官方程序的成品客户端。
+[最新 Release](https://github.com/ferretgeek/prokbot-plus/releases/latest) 按平台提供 Host、Windows、Mac、iOS、Android 工具和 `SHA256SUMS.txt`。选择对应 ZIP；不分发官方程序、IPA 或打好补丁的客户端。
 
 ## 文档
 

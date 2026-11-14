@@ -14,7 +14,7 @@
 
 ## Overview
 
-FacePlugin **Face Recognition SDK** is a fully **on-premise face recognition SDK** for KYC, access control, and identity verification. It is paired with an **iBeta Level 2** class **liveness detection SDK** that safeguards against **printed photos, video replay, 3D masks, and deepfake threats**.
+FacePlugin **Face Recognition SDK** is a fully **on-premise face recognition SDK** for KYC, access control, and identity verification. It's paired with a passive liveness detection SDK, tested internally following ISO/IEC 30107-3 methodology, that guards against printed photos, video replays and 3D masks, with added protection against deepfake threats.
 
 You get **face detection** (box, landmarks, pose, attributes), **ICAO-style face quality**, **template extraction**, **1:1 match**, and **1:N identify** — on the phone or on your server.
 

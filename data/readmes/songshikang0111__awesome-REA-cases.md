@@ -8,9 +8,9 @@
 
 A curated collection of **AI-assisted reverse-engineering projects, experiments, and ideas** for device interoperability, app rebuilding and game preservation—including failed attempts and author corrections.
 
-# 2225 cases & projects
+# 2257 cases & projects
 
-**Latest case update:** November 14, 2026, 04:09 · **Last maintained:** November 14, 2026, 04:09 · Beijing time (UTC+8). Counts as of this maintenance; source dates and the continuous evidence cutoff are separate.
+**Latest case update:** November 15, 2026, 00:15 · **Last maintained:** November 15, 2026, 00:15 · Beijing time (UTC+8). Counts as of this maintenance; source dates and the continuous evidence cutoff are separate.
 
 Updates **6× daily** · [Full index](INDEX.en.md) · [Browse categories](#browse-by-category)
 
@@ -22,18 +22,18 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 ## Recent picks
 
-**10 worth reading**: probe a device, recover game behavior and distinguish a rebuild from complete source recovery. Author reports and documented limits sit alongside concrete uses. Dates identify sources or author updates, not collection dates.
+**10 worth reading**: make devices useful again, preserve old software, and study a drama shot by shot. Dates identify sources or author updates, not collection dates.
 
-1. **[Ember mug: probe Bluetooth, build a personal controller](cases/en/dmitriy-ember-mug-codex-bluetooth-probing-report.md)** · `2026-11-14` author report — Dmitriy says **Codex probed characteristics against the iOS app** and built temperature/light controls in about an hour. The author prohibited web lookup, not independently enforced; coffee-level accuracy and code unchecked. `Unverified here`
-2. **[Fujifilm X half: camera to Mac without the phone](cases/en/fujifilm-x-half-opus-wireless-mac-import-report.md)** · `2026-11-12` author report — **Opus reportedly identifies Bluetooth/Wi-Fi protocol differences** for JPEG imports and Google Photos uploads. Incremental camera tests, not an iteration-free build; code and traces unchecked here. `Unverified here`
-3. **[Anker recorder: ask an agent for last week's conversation](cases/en/berryxia-anker-recorder-rea-mcp-knowledge-app.md)** · `2026-11-12` author report — **REA Bluetooth research and MCP recording retrieval**, with local Qwen ASR or online transcription. Berryxia plans source release after refinement/testing; code and device path unchecked here. `In progress`
-4. **[Lemmings for Windows 95: match functions, not headlines](cases/en/lemmings-win95-human-led-ai-reconstruction-report.md)** · `2026-11-12` report; `2026-11-09` pinned docs — Human-led REA/Claude/Codex work reports **696/696 matched functions across eight modules**. Whole EXE/DLL files still differ; portable builds and original-compiler matching are separate. Bring your own game assets; not built here. `In progress`
-5. **[decompdecomp: byte matching with an assembly fallback](cases/en/decompdecomp-local-agent-byte-matching-workbench.md)** · `2026-11-14` report; `2026-11-13` pinned docs — **Agents write C/C++, original compilers judge the bytes.** This independent decomp.wtf continuation reports no whole game decompiled; exports retain assembly, and chosen cloud models may receive game material. Not run here. `In progress`
-6. **[hexgrab: study PowerToys, build a smaller picker](cases/en/hexgrab-powertoys-colorpicker-rea-study.md)** · `2026-10-29` report; `2026-10-12` investigation — Claude/REA studies binaries; an author/source comparison finds **8 of 9 claims correct, one partial**. Hotkey registration in another binary exposed a blind spot. Public .NET 10 implementation, one monitor tested; not rerun here. `Analysis test`
-7. **[ZigZag: from SVG to a Brother embroidery machine](cases/en/kath-korevec-brother-chatgpt-embroidery-report.md)** · `2026-11-13` report and pinned docs — **Skitch PP1 Bluetooth upload and MCP-assisted design**, with project-reported hardware tests. NOTICE credits the protocol to Respira; the earlier ChatGPT origin story remains secondary, not independent discovery. Not run here. `Unverified here`
-8. **[MousePods: AirPods as a Linux mouse and head tracker](cases/en/airpods3-claude-remotehid-linux-head-mouse-report.md)** · `2026-11-11` reports; `2026-11-10` pinned docs — **Claude-assisted RemoteHID research and reported AirPods 3/Pro 2 hardware checks.** No earbud flash, but Proton integration changes prefixes. MTU/device-identity effects were not isolated; not run here. `Unverified here`
-9. **[Fable animation: what browser traffic can—and cannot—show](cases/en/ganesh-fable-animation-rea-traffic-teardown.md)** · `2026-11-13` report, author clarification and pinned skill — **Claude/REA studies a story-generation run, retaining field names.** Ganesh explicitly says character-model training was inferred, not observed. Public workflow; raw traffic unchecked here. `Analysis test`
-10. **[TimeSplitters 2: PS2 behavior to a PC port](cases/en/destinity-timesplitters2-claude-native-pc-recompile.md)** · `2026-11-10` author report; `2026-11-09` pinned docs — **Claude-assisted MIPS-to-C++ with PCSX2 frame/state comparisons** and a reported Linux/Steam Deck first-level playthrough. Still uses PCSX2 graphics/audio; later levels and internet play need checks. Self-supplied disc; not built here. `In progress`
+1. **[borland-reborn: recover a 1991 compiler](cases/en/borland-reborn-bcc20-exhume-byte-matching.md)** · `2026-11-14` report and pinned docs — Exhume's Claude Code skills support **reportedly byte-identical BCC.EXE/CPP.EXE rebuilds**. A separate modding build has 1,836 compile comparisons and 83% coverage, not every path or uniquely recovered original source. Not rebuilt here. `Unverified here`
+2. **[Ember mug: probe Bluetooth, build a personal controller](cases/en/dmitriy-ember-mug-codex-bluetooth-probing-report.md)** · `2026-11-14` author report — Dmitriy says **Codex probed characteristics against the iOS app** and built temperature/light controls in about an hour. The no-web rule was author-imposed; coffee-level accuracy and code unchecked. `Unverified here`
+3. **[Fujifilm X half: camera to Mac without the phone](cases/en/fujifilm-x-half-opus-wireless-mac-import-report.md)** · `2026-11-12` author report — **Opus reportedly identifies Bluetooth/Wi-Fi differences** for JPEG imports and Google Photos uploads. Incremental camera tests, not an iteration-free build; code and traces unchecked here. `Unverified here`
+4. **[Anker recorder: ask an agent for last week's conversation](cases/en/berryxia-anker-recorder-rea-mcp-knowledge-app.md)** · `2026-11-12` author report — **REA Bluetooth research and MCP recording retrieval**, with local Qwen ASR or online transcription. Source release is planned after refinement/testing; code and device path unchecked here. `In progress`
+5. **[Fallout Van Buren: six years of research meet REA](cases/en/fallout-van-buren-kran-rea-human-guided-reconstruction.md)** · `2026-11-14` author thread — Kran credits **manual research, shenmarukai's decompilation and an IDA database**, not a from-zero agent. DX9 migration is reported; 64-bit remains a goal for this tech demo, not a complete game. Not built here. `In progress`
+6. **[Lemmings for Windows 95: match functions, not headlines](cases/en/lemmings-win95-human-led-ai-reconstruction-report.md)** · `2026-11-12` report; `2026-11-09` pinned docs — Human-led REA/Claude/Codex work reports **696/696 functions matched across eight modules**. Whole EXE/DLL files still differ; portable builds and original-compiler matching are separate. Own assets required; not built here. `In progress`
+7. **[Mario Kart World: translate code, measure each change](cases/en/mkw-recomp-claude-aarch64-c-port.md)** · `2026-11-14` report and pinned docs — **Claude-assisted AArch64-to-C, same-run A/B and console-image checks** bring reported PC racing. Not original-source recovery; menus, AMD hangs and no online play remain. Own game required; not built here. `In progress`
+8. **[Donkey Kong Bananza: a Switch 2 game on PC](cases/en/dkb-pc-recomp-claude-switch2-port.md)** · `2026-11-14` report; `2026-11-13` pinned docs — **Claude Code work checked with game runs and Unicorn comparisons**, built on TotK Recomp and community shader research. GPU crashes and later-area defects remain; Linux/macOS are previews. Own game required; not built here. `In progress`
+9. **[Pixel 9 bigwave: from stock-decoder data to an initial run](cases/en/llsswssw-pixel9-bigwave-claude-decoder-attempt.md)** · `2026-11-14` author update — llsswssw3243 says **Claude collected Android decoder data through Waydroid** and hardware decoding now runs. Many problems and extensive testing remain; no code, format coverage or measured output checked here. `In progress`
+10. **[rea-toon: read a short drama's script and shots](cases/en/rea-toon-short-drama-shot-script-analysis-project.md)** · `2026-11-14` introduction and pinned docs — **Character, dialogue and shot analysis with replayable evidence and VIDEO.md exports.** Built on rea-video; model-tagged emotions are not ground truth. Not run here; noncommercial license. `Related project`
 
 ## Classic cases
 
@@ -49,10 +49,10 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 | Category | Entries |
 | :--- | ---: |
-| [Games & preservation](categories/en/games.md) | **441** |
-| [Hardware & interoperability](categories/en/hardware.md) | **595** |
-| [Applications & clients](categories/en/apps.md) | **923** |
-| [Algorithms & feature recovery](categories/en/algorithms.md) | **266** |
+| [Games & preservation](categories/en/games.md) | **449** |
+| [Hardware & interoperability](categories/en/hardware.md) | **600** |
+| [Applications & clients](categories/en/apps.md) | **937** |
+| [Algorithms & feature recovery](categories/en/algorithms.md) | **271** |
 
 [**View all cases →**](INDEX.en.md) · [Contribute (中文)](CONTRIBUTING.md) · [Maintenance (中文)](MAINTENANCE.md)
 

@@ -177,10 +177,10 @@ inherit the manager's launch capability.
 - **semantic-edit-historical-cap-boundary**: historical capped a/b observation at 20k/200k ops shows a 29.329% reduction; this is a capped historical sample, not eligible as a live guarantee.
 - **context-bundle-v2-structural-only**: structural-only validation; live fleet remeasurement pending.
 
-## What's new in 0.12.98
+## What's new in 0.13.0
 
-- Workers see only what a card allows: Linux read roots through Landlock, a `deny_read` glob list enforced on Landlock and Windows AppContainer, an optional one-time `workspace_prepare` hook per worktree, and a visibility receipt in the review packet.
-- A hub host validation stage runs a card's host commands and test sweep on a full candidate tree in the background before accept, and the manager can amend a pending card or accept with a small correction of confirmed findings.
+- Quality reviewer launches start reliably in large working trees: the read-only reviewer workspace copies the tracked canonical delta plus only the untracked files the review names, instead of every untracked file, and launch progress names the workspace materialize phase.
+- Lower RAM and token use: the dashboard snapshot halves its memory peak by indexing only the process-event fields the cost ledger reads, Claude workers receive only the built-in tools their card needs, and failed model probes are cached instead of re-run every snapshot.
 - The full release history is in [CHANGELOG.md](CHANGELOG.md).
 
 ## Documentation

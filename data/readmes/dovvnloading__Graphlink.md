@@ -1,297 +1,139 @@
-<div align="center">
+# <img src="assets/branding/icon-h2-branch-chevron.svg" width="36" height="36" alt=""> Graphlink
 
-# GraphLink
+**A local-first desktop workspace for branching AI conversations.** Ask a question, fork a reply into two lines of inquiry, then bring their answers together. Each branch keeps its own conversation history. Notes, sources, code, charts, and model replies sit next to the question they came from.
 
-![License](https://img.shields.io/badge/License-MIT-green)
-![Python](https://img.shields.io/badge/Python-3.12%2B-blue)
-![Stack](https://img.shields.io/badge/Stack-FastAPI%20%2B%20React-blue)
-![Local First](https://img.shields.io/badge/Local--First-AI%20Workspace-orange)
-![GitHub stars](https://img.shields.io/github/stars/dovvnloading/Graphlink?style=social)
+[Install Graphlink](#getting-started) · [Connect a model](#connect-a-model) · [Build your first graph](#build-your-first-graph) · [API providers](#api-providers) · [Developer guide](#development)
 
-<img alt="Graphlink canvas: a production incident investigated as a graph - three competing hypotheses branched from one question, a SQL run with its output, cited web research, two charts of the regression, and the Builder run that bisected the deploy" src="assets/screenshots/canvas-branching.png" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/node-detail.png">
+  <img src="assets/screenshots/node-detail-light.png" alt="One incident question branches into three replies suggesting a database investigation, a response-path check, and a rollback.">
+</picture>
 
-**A local-first, graph-based AI workspace for branching reasoning, tool use, and multi-provider workflows.**
+*In this example, a deploy pushed p99 latency from 180 ms to 1.4 s. Follow the database branch to see the query plan and the charts that verified the fix.* [View the full incident canvas](assets/screenshots/canvas-branching.png).
 
-</div>
+## Getting started
 
----
+Graphlink opens a native desktop window backed by a local server. For a source install, use **Python 3.12** (the version used for the dependency lock), **Node.js 24**, npm, and Git. Windows uses the WebView2 Runtime. Linux needs GTK, WebKitGTK, and PyGObject. macOS uses Cocoa and WebKit through PyObjC. [Native desktop setup by OS](docs/PLATFORM_GUI_INSTALL.md).
 
-Graphlink replaces the linear chat window with a visual canvas of connected nodes. Instead of forcing every interaction into a single timeline, it lets you branch: conversations, code generation, web research, drafting, and execution each live as their own node, and every branch can follow its own line of inquiry with its own model and context.
+Clone the repository on any platform.
 
-It is built with a Python (FastAPI) backend and a Vite/React/TypeScript single-page app, launched as one native desktop window via `pywebview` — not a browser tab, not Qt. It runs entirely on your machine, and works with local model runtimes (Ollama, llama.cpp) as well as hosted APIs (OpenAI-compatible, Anthropic Claude, Google Gemini).
+```sh
+git clone https://github.com/dovvnloading/Graphlink.git
+cd Graphlink
+```
 
-> Graphlink is the second generation of the **Graphite** project, renamed to avoid collision with unrelated software. The rename is complete: modules, folders, and the UI all use the `graphlink` name.
-
-## Demo
-
-[![Watch the Graphlink demo](assets/screenshots/canvas-branching.png)](https://www.youtube.com/watch?v=16v0our6ZoI)
-
-## Table of Contents
-
-- [Demo](#demo)
-- [Features](#features)
-- [Screenshots](#screenshots)
-- [The Builder](#the-builder)
-- [Plugins](#plugins)
-- [Getting Started](#getting-started)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [Architecture](#architecture)
-- [Contributing](#contributing)
-- [Troubleshooting](#troubleshooting)
-- [Limitations](#limitations)
-- [License and Security](#license-and-security)
-
-## Features
-
-- **Visual branching canvas** — build parallel thought paths, experiments, and delivery tracks in one view instead of one scrolling thread.
-- **The Builder** — give it a goal and it plans a checklist, then constructs it on your canvas one supervised step at a time, under hard step/token/time budgets (see [The Builder](#the-builder)).
-- **Multiple model backends** — run locally with Ollama or direct GGUF loading via `llama-cpp-python`, or switch to API Endpoint mode for OpenAI-compatible, Anthropic Claude, or Google Gemini. The active mode is switchable in Settings.
-- **Per-branch model routing** — pin a specific model to a node or a whole branch, on top of the per-task model defaults.
-- **Plugin nodes** — attach specialist nodes for web research, code execution, drafting, and repository-aware changes (see [Plugins](#plugins)), plus a plugin SDK with per-plugin capability grants and optional MCP server integration.
-- **The workspace agent** — point it at a folder and give it a task; it reads and writes files there, runs shell commands and Python, and asks before anything that changes your machine. Bounded by a per-task turn budget, and it reads an `AGENTS.md` if the workspace has one.
-- **Repository-aware editing** — Gitlink loads a GitHub repo into structured context, previews file-level changes, and only writes after explicit approval.
-- **Knowledge base and search** — ingest documents into a local knowledge store, search it from a node, and search across every workspace at once.
-- **Workspaces and library** — organize graphs into workspaces with favorites, tags, and archiving; reopen any of them from the Library.
-- **Undo that understands agents** — full undo/redo over canvas history, including "undo this build", which reverts everything one agent run did as a single action.
-- **Charts** — generate a chart from any node's content and export it as PNG or SVG.
-- **Attachments** — stage images, audio, or documents onto a message; the backend classifies and extracts them.
-- **Themes and canvas controls** — light and dark themes, plus grid, connection routing, node font, and pan-sensitivity controls.
-- **Local-first persistence** — conversations, notes, navigation pins, and graph layout are stored locally in SQLite, with crash recovery.
-- **Diagnostics** — a token and cost counter, a command palette, and an exportable diagnostic bundle for troubleshooting.
-- **Export** — save the whole canvas as a PNG, or export individual nodes: Chat as Markdown, Code as a source file (extension inferred from language), Image as PNG.
-
-Built-in node kinds on the graph surface: **Chat**, **Code**, **Document**, **Thinking**, **HTML**, **Image**, **Conversation**, **Web Research**, **Plan** (the Builder's checklist), **Agent** (the workspace agent's card), **Artifact**, **Gitlink**, **Code Sandbox**, **Note**, and **Chart** — plus Frames, Containers, and Navigation Pins for organizing them.
-
-## Screenshots
-
-**One investigation, as a graph.** A p99 regression worked end to end: competing hypotheses as sibling branches (one rejected, one superseded), the `pg_stat_statements` run that found the seq scan, cited research on why the b-tree could not serve the prefix query, the incident's shape in two charts, and the Builder run that bisected the deploy - all on one canvas, all still connected to the question that started it.
-
-**Launching a build.** Pick a recipe (its steps are previewed before you commit), choose how much oversight you want, and set the budgets.
-
-<img alt="The Builder launch dialog over the incident graph: a recipe with its two steps previewed, co-pilot selected, and the Standard budget preset" src="assets/screenshots/builder-launcher.png" />
-
-## The Builder
-
-The Builder takes a goal and builds it on your canvas, rather than describing how you could.
-
-1. **It plans first.** The goal becomes a short checklist that lands as a real node — review it, edit it, and only then start the run.
-2. **It works one step at a time,** using the same tools available to you: creating and editing nodes, running Python, generating replies and charts, running web research, and searching your knowledge base.
-3. **You choose the oversight.** *Co-pilot* asks you to approve every mutating step. *Autopilot* runs to completion within its budgets. Network access asks every time, in either mode.
-4. **Budgets are hard limits.** Steps, tokens, and wall time are capped before the run starts; a breach pauses the build with its state intact instead of losing progress.
-5. **Everything is reversible and resumable.** The plan node *is* the resume point, so a paused, stopped, or failed build picks up where it left off — even after restarting the app. "Undo build" reverts everything the run did in one action.
-6. **Finished builds become recipes.** Save a build's plan and reuse it; two recipes ship built in.
-
-Every tool call a run makes is recorded on the plan node with its outcome and timing, so a build is auditable after the fact rather than opaque.
-
-## Plugins
-
-Attach these specialist nodes to a branch from the plugin picker:
-
-| Plugin | Category | What it does |
-| --- | --- | --- |
-| System Prompt | Branch Foundations | Attaches a branch-scoped system prompt that shapes model behavior for that path only. |
-| Conversation Node | Branch Foundations | A self-contained linear chat inside a single node. |
-| Web Research | Reasoning & Research | Web retrieval, summarization, and source capture for real-time information. |
-| Gitlink | Build & Execution | Loads a GitHub repo into structured context, previews file-level changes, and writes only after approval. |
-| Review Lens | Reasoning & Research | Fetches a GitHub pull-request diff, reviews added-line evidence, and surfaces source-linked findings and provisional suggestions. |
-| Virtual Environment Runner | Build & Execution | Runs Python in a per-node virtualenv with declared dependencies (isolates installed packages, not the OS or filesystem/network access). |
-| HTML Renderer | Build & Execution | Renders HTML from a parent branch directly inside the app. |
-| Artifact / Drafter | Workflow & Drafting | A split-pane surface for drafting and refining long-form Markdown. |
-
-Use the search field at the top of the plugin picker to find plugins across all categories by name or task. Use the Up/Down arrows to move between results, Enter to launch a result, or Escape to close the picker. Plugin permissions are still checked by the backend.
-
-**Review Lens:** Paste a pull-request URL, **Fetch Diff**, then **Run Review**. Findings anchored to visible added lines include actual source excerpts. Claims without a matching added-line anchor are explicitly marked as provisional **Needs Verification** suggestions, not treated as confirmed high-severity errors. The **Inspect diff** action opens the matching file and hunk in the Walkthrough tab (with a full-diff fallback when the location is unavailable). Truncated diffs or file listings never receive an overall quality score/verdict. A line anchor verifies that the location exists in the diff, **not** that a model's diagnosis is correct; review the source before acting.
-
-**HTML Renderer:** Edit the **Source** pane, then press **Render** or **Ctrl+Enter** (**Cmd+Enter** on macOS) inside the editor. An **out-of-date** indicator distinguishes the saved preview from unsent edits; clicking Render again also restarts interactive HTML/JavaScript previews without creating an extra source edit. Resize Source and Preview using the divider with the mouse or focus it and use Arrow keys (5% steps), PageUp/PageDown (20% steps), or Home/End. The iframe remains isolated with its existing strict Content Security Policy: inline scripts can run inside the preview but cannot access Graphlink's origin or make network requests through the document's restricted resource policies. Do not use the preview for trusted browsing or unrestricted website testing.
-
-## Getting Started
-
-### Requirements
-
-- Python 3.12 or newer. Windows is the primary development target today.
-- Node.js 22 or newer (`web_ui/.nvmrc` pins 24, the exact version this project is developed against), needed only to build the frontend once.
-- Internet access is optional, and only needed for API Endpoint mode, GitHub-backed plugins, and web research.
-
-### Install and run
+**Windows (PowerShell)**
 
 ```powershell
-git clone <your-repo-url> graphlink
-cd graphlink
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+npm --prefix web_ui ci
+npm --prefix web_ui run build
+.\.venv\Scripts\python.exe graphlink_desktop.py
+```
 
-py -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install --upgrade pip
-pip install -r requirements.txt
+**Linux or macOS**
 
-cd web_ui
-npm install
-npm run build
-cd ..
+Prepare a Python environment with the native desktop bindings for your OS. The Linux instructions include the GTK packages and the venv option that exposes them to Python. [Platform setup](docs/PLATFORM_GUI_INSTALL.md).
 
+From the repository root with that environment active, build and launch the app.
+
+```sh
+python -m pip install -r requirements.txt
+npm --prefix web_ui ci
+npm --prefix web_ui run build
 python graphlink_desktop.py
 ```
 
-`graphlink` above is the repo root (containing `requirements.txt` and `graphlink_desktop.py`). Dependencies — FastAPI, uvicorn, pywebview, the provider SDKs, web-search/spellcheck/charting/audio helpers, and the export/parsing libraries — install from `requirements.txt` in a single step. `llama-cpp-python` is optional (only needed for Llama.cpp local mode; Ollama is the built-in local path) — install it separately with `pip install llama-cpp-python`. Building the frontend (`npm run build`, inside `web_ui/`) only needs to be redone when `web_ui/` changes.
+On first launch, choose **Load Sample Workspace** in the welcome wizard to explore a small graph without a model or API key. To send your own prompts, connect a model below. To reopen the app, run the last command again. Rebuild the frontend after updating its source.
 
-> `graphlink_desktop.py` starts the Python backend, waits for it to report healthy, then opens a single native window (via `pywebview`) pointed at it — there is no separate frontend dev server to run and no browser tab involved. From a source checkout, it requires `web_ui/dist/app/index.html` to already exist; installable wheels bundle this built frontend.
+## Connect a model
 
-**Linux / macOS desktop users:** plain `pip install -r requirements.txt` does not supply every native window-engine prerequisite. Linux must use GTK (not Qt); the required WebKitGTK and PyGObject packages are OS-specific. Standalone macOS Python may need PyObjC. See [Platform GUI installation](docs/PLATFORM_GUI_INSTALL.md) for tested commands, the `linux-gtk` / `macos-cocoa` package extras, and troubleshooting. Windows requires WebView2 Runtime.
-
-On first launch, Graphlink creates `~/.graphlink/` to hold your sessions and settings (see [Architecture](#architecture)).
-
-### Choose a model backend
-
-Ollama (Local) is the default. All three modes are configurable *and* switchable in **Settings**.
-
-- **Ollama (Local)** — the default. Best for local-first use with Ollama-managed models.
-- **Llama.cpp (Local)** — direct GGUF loading through `llama-cpp-python`, with runtime controls.
-- **API Endpoint** — OpenAI-compatible providers, Anthropic Claude, or Google Gemini.
-
-## Configuration
-
-Model selection and provider settings live in **Settings**. Every per-task model is configurable there and persists across launches — nothing is permanently hardcoded.
-
-### Ollama (Local)
-
-Nothing is preconfigured — `qwen3:8b` and `deepseek-coder:6.7b` were an earlier version's hardcoded defaults and are now treated as legacy markers, not live ones. There is no model until you assign one:
-
-```powershell
-ollama serve
-ollama pull qwen3:8b
-```
-
-Then open **Settings > Ollama**, run **Scan** to discover locally-pulled models, and assign one to each task (chat, naming, chart generation; web research falls back to your chat model). Sending a message before a task has an assigned model raises "No Ollama model configured for task: ...".
-
-### Llama.cpp (Local)
-
-Loads a GGUF file directly (not an Ollama model store). Configure the chat model file, an optional naming model, reasoning mode, and runtime controls (`n_ctx`, `n_gpu_layers`, `n_threads`, optional `chat_format`) in Settings. Text chat and title generation are supported; image and audio attachments are not available in this mode, and image generation remains API-only.
-
-### API providers
-
-OpenAI-Compatible, Anthropic Claude, and Google Gemini are supported, with per-task model selection. Image generation works with OpenAI-Compatible and Google Gemini providers (not Anthropic Claude). Anthropic Claude accepts image attachments but not audio (use Gemini or Ollama for audio).
-
-### Fal Media Studio on the canvas
-
-Add **Fal Media Studio** from the plugin picker under **Build & Execution**.
-Choose Image, Video or Audio for common workflows, or **All models** for
-3D, transcription, training and other categories. The Studio includes a
-searchable live Fal model catalog, persistent favorites, economy-to-premium
-sorting **by comparable billing unit**, model-specific controls from Fal's
-OpenAPI schemas and an explicit priced confirmation before any paid call.
-Queue status, cancellation and a playable media gallery are part of the node;
-drafts and completed results survive session reloads.
-
-See the [Fal Media Studio guide](docs/FAL_MEDIA_STUDIO.md) for its complete
-workflow, privacy boundaries and billing safeguards.
-
-### Fal.ai — universal media and model inference
-
-**Settings > Fal.ai** provides API-key configuration, arbitrary model IDs
-(including nested routes), **live model discovery, published OpenAPI schemas,
-up-to-date unit pricing, and cost estimates**, synchronous inference and queued jobs for images,
-video, audio, speech, 3D and other Fal-hosted endpoints. Supply the model's
-native JSON arguments and options; manage queued jobs with status refresh,
-result retrieval and cancellation. Generated media URLs and bounded results
-remain available in job history across restarts. **Builder and Workspace Agent**
-can inspect a model’s exact inputs and outputs and pass a previous job’s
-asset, transcript or structured data into the next model by reference.
-Each paid stage and workspace upload requires fresh approval.
-
-For large media, install the optional upload/realtime SDK with
-`pip install -e ".[fal]"`. See the [Fal.ai integration guide](docs/FAL_AI.md)
-for setup, cost/privacy considerations, advanced request controls and examples.
-
-### Environment variables
-
-The app reads these as fallbacks when no key is saved in Settings, or for model discovery. The in-app Settings flow is the primary configuration surface; these mostly matter during development.
-
-| Variable | Purpose |
+| Where the model runs | How to get your first reply |
 | --- | --- |
-| `GRAPHLINK_OPENAI_API_KEY` / `OPENAI_API_KEY` | OpenAI-Compatible key |
-| `GRAPHLINK_ANTHROPIC_API_KEY` / `ANTHROPIC_API_KEY` | Anthropic Claude key |
-| `GRAPHLINK_GEMINI_API_KEY` / `GEMINI_API_KEY` | Google Gemini key |
-| `GRAPHLINK_FAL_API_KEY` / `FAL_KEY` | Fal.ai inference and media key (separate from chat mode) |
-| `LLAMA_CPP_MODELS` | Root folder scanned for GGUF files in Llama.cpp mode |
-| `OLLAMA_MODELS` | Override for Ollama's model storage root during model discovery |
+| **Ollama** on your machine | Start Ollama and pull a chat model with `ollama pull MODEL`, replacing `MODEL` with an Ollama model tag. Open **Settings → Ollama (Local) → System Scan**. Leave **Chat Model** on **Auto** to use a compatible installed model, or pick one by name. Ollama is the default on a fresh install. |
+| **Llama.cpp** on your machine | In Graphlink’s Python environment, install `llama-cpp-python` with `python -m pip install llama-cpp-python`. Open **Settings → Llama.cpp (Local)**, choose a GGUF under **Chat Model File**, then **Save Settings**. Choose **Use This Provider** if it is inactive. |
+| **Hosted API** or a **custom endpoint** | Open **Settings → API Endpoint**. Pick a provider, supply its credential and any requested **Base URL**, then choose **Load available models** or type the exact ID into **Default text model**. Select **Save and activate**. |
 
-> The legacy `GRAPHITE_*`-prefixed names (e.g. `GRAPHITE_OPENAI_API_KEY`) from before the app was renamed still work as a fallback, below the `GRAPHLINK_*` names in priority.
+The composer shows the active route. Use its model picker to switch models on that connection. Under **Per-task models** in API Endpoint settings, you can assign a different model for naming, charts, or web research. To pin the currently selected model to a branch, open the branch root’s chat card menu and choose **Pin to Current Model**. Switch back to that provider before continuing a cloud-pinned branch.
 
-## Usage
+## Build your first graph
 
-- **Start** with a chat node or a starter prompt.
-- **Branch** by selecting a node and adding a plugin from the picker or controls; each new node begins a more specialized path (research, code, drafting, execution).
-- **Delegate** a multi-step task to the Builder — it plans a checklist, then constructs it on the canvas under your chosen level of oversight (see [The Builder](#the-builder)).
-- **Deliver** with build-oriented nodes — Gitlink for repo-aware change proposals, Virtual Environment Runner for running code, Artifact / Drafter for documents.
-- **Attach** images, audio, or documents to a message from the composer; staged attachments are classified and extracted on the backend, and can be reviewed before sending.
-- **Ingest** documents into the local knowledge base, then search it from a node — or search across every workspace at once with Global Search.
-- **Undo** anything, including a whole agent run in one action.
-- **Export** the whole canvas as a PNG, or export individual nodes — Chat as `.md`, Code as a source file (extension inferred from language, falling back to `.txt`), Image as `.png`.
+1. On an empty canvas choose **Write a message**. Ask *“Search got slower after a deploy. What should I check first?”* Your question and the reply appear as connected cards.
+2. Right-click the **reply’s header** and choose **Branch from Here**. Ask *“How would I test whether a database query regressed?”* Return to the **same original reply**, branch again, and ask *“How would I test the application layer?”* The two follow-ups now share an ancestor. Each can continue independently.
+3. Click the header of the first branch’s answer, then **Ctrl-click** the second (**Cmd-click** on macOS). Open the command palette with **Ctrl+K** or **Cmd+K**, choose **Synthesize Branches**, and send *“Give me one test that distinguishes these explanations.”* The resulting card records both source branches.
+4. Use **Fit All** to see the whole graph. **Save** keeps it in the **Chat Library**. To share an editable workspace, choose **Export Workspace…** in the Library. To share a snapshot, use **Export Canvas as PNG** in the command palette.
 
-Gitlink's **Proposal** tab offers **All files / individual file** diff review and **per-file approval checkboxes**. All files start selected. Uncheck individual files (or use **Select all / Select none**), then **Apply selected** to write only the chosen files. The confirmation names the exact selection; **unchecked changes are discarded after a successful Apply** so regenerate the proposal to apply them later. The backend verifies the fingerprint of the full, server-held proposal, freezes only the selected rows, and never accepts replacement file content from the UI. When a local checkout is configured during generation, Gitlink records byte-exact original-file baselines and rechecks every selected target before writing. If a selected file has changed, appeared, or disappeared since review, Apply stops without overwriting it. Older saved proposals without baselines must also be regenerated before applying.
+### Connect text to a note
 
-## Headless automation (MCP)
+To count the words in a draft, add a plain note using **Add Note** in the command palette. Open **Text input** on that note, choose the Drafter document as the **Text source**, select **Word count**, and choose **Connect**. **Run text input** writes the count into the note. After you edit the draft, the note marks its input as changed and keeps the previous count. Run it again when you want a fresh count.
 
-Graphlink can run its backend without a desktop window and expose
-**read-only** workspace/graph/canvas inspection through a local MCP stdio
-server. The MCP adapter uses a limited, **read-only** capability token
-which cannot authorize WebSocket intents or other backend API actions. It
-connects to the same backend rather than opening a second copy of the
-application or database. Both the desktop and headless launchers now
-refuse a second process using the same data directory, even on different
-TCP ports.
-Optional permission-scoped canvas editing is available with
-`--allow-mcp-writes` on the backend and a **separate write-token-file**
-on the stdio adapter. It requires scene revisions and operation IDs;
-the default remains read-only.
-See [Headless Graphlink and MCP setup](docs/HEADLESS_MCP.md) for the CLI,
-client configuration, permissions and current limitations.
+You can also use a chat message or another plain note as the source. To copy its text exactly, drag its right-hand text port to the note’s left-hand port and choose **Run text input**. You can connect one source to several notes. Each destination runs separately. Disconnecting keeps its last result, and saving the graph keeps the connections for the next session. [View a connected word-count note](assets/screenshots/note-text-input.png).
 
-## Architecture
+### Build a chart and report from the same table
 
-Graphlink is a Python (FastAPI) backend paired with a Vite/React/TypeScript single-page app, launched as one native desktop window via `pywebview` — not a browser tab, not Qt.
+Choose **Add a table** on an empty canvas or **Add Table** in the command palette. To use an existing CSV, open **Edit CSV**, choose **Import CSV file**, then **Save table**. The starter table records 2 hours for Design, 4 for Engineering, and another 3 for Design. Choose **Team** under **Group by** and **Hours** under **Sum column**. **Create chart** and **Create report** produce a bar chart and an editable Drafter document from the same grouped totals. Choose **Fit All** to see all three cards.
 
-- **`graphlink_desktop.py`** (repo root) is the native window shell: it starts the backend in a background thread, waits for it to report healthy, then opens a single OS webview window (WebView2 on Windows) pointed at the backend's own URL. The backend serves the built frontend, the REST API, and the WebSocket on that one origin.
-- **`backend/`** holds all real application and domain logic: the FastAPI app factory and a WebSocket pub/sub event bus, the node-graph/canvas model (every node kind, connections, autosave, crash recovery), an undoable command layer, LLM dispatch, the agent tool-use loop behind the Builder, the knowledge store and search, settings, chat-library/workspace management, and session load/save.
-- **`web_ui/`** is the React SPA (built with Vite) — the entire UI: the canvas surface, the app bar and composer chrome, and dialogs/overlays. It talks to the backend over the REST API and the WebSocket.
-- **`contracts/`** is build-time-only codegen that generates the TypeScript types and JSON Schemas for WebSocket payloads from the backend's Python dataclasses, keeping the two sides in sync.
-- **`graphlink_plugins/`** holds the domain logic behind the plugin nodes (web research, Gitlink, Virtual Environment Runner) — no UI code, no Qt.
-- **`plugins/`** holds the plugin *packages* themselves — one directory per plugin with a `plugin.py` and a `plugin.toml`, discovered at startup. This is the extension point: the built-ins live here alongside the SDK's example plugins.
+In **Edit table**, change the first Design entry from 2 to 7 and choose **Save table**. Each output marks its input as changed and keeps its previous result. Choose **Rerun from table** on the chart to update Design to 10 while the report still shows 5. Rerun the report when ready. **Compare versions** lets you inspect the previous result and restore it. On a current result, **Inspect source rows** shows the original data row numbers and cell values behind each group. For Design, rows 1 and 3 contribute 7 and 3. Saving and reopening the graph preserves these versions and their source connections. [View the chart and report after a table edit](assets/screenshots/table-workflow.png).
 
-Your data lives entirely on your machine:
+### Run connected outputs together
 
-```text
-~/.graphlink/chats.db      graph sessions, workspaces, notes, pins, and the knowledge store
-~/.graphlink/session.dat   local settings and saved credentials
-~/.graphlink/running.lock  crash-detection sentinel, written on launch and removed on clean exit
-~/.graphlink/graphlink.log rotating application log (2 MB cap)
-```
+To add a shared intermediate step, choose **Create grouped table** on the source, then create the chart and report from the grouped table. After editing the original table, open **Plugins → Graph Runner**, choose **Whole graph**, and select **Preview run**. The preview shows the order of the steps and which outputs need updating. The chart and report still show their old totals until you choose **Run graph**. If a report feeds a word-count note, the runner uses the updated report to calculate the count. Choose **Selected nodes** to limit the run to a branch and the inputs it needs.
 
-For a detailed, current map of where behavior lives in the codebase, see [GRAPHLINK_REPO_NAVIGATION.md](GRAPHLINK_REPO_NAVIGATION.md).
+Open Graph Runner again to inspect the saved result. If the app closed during execution, reopen the graph from the **Chat Library** and choose **Resume run**. Each completed step and its output were saved together. All transforms run locally. Existing chat replies can supply text to a workflow. [See the completed three-step run](assets/screenshots/graph-runner.png).
 
-## Contributing
+To run a local AI model explicitly, start **Ollama** on your own machine and install a chat model. In **Plugins → Graph Runner**, expand **Run a local model into a note**, select an existing chat or note as input and a separate unbound plain note as the output, and enter the installed model's exact ID (for example `qwen3:8b`). Choose **Preview model step**, review the source and destination, then choose **Run local model**. This one-shot call records its model and request identity before execution and saves the reply into the note. If execution is interrupted, Graph Runner preserves an uncertain request for inspection rather than automatically replaying it. Only loopback Ollama is permitted for this operation: paid cloud models, connected model graph nodes, and external tools are not yet available here. [Local-model guide](docs/GRAPH_RUN_LOCAL_MODEL.md).
 
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, development conventions, branch/PR workflow, and pull-request expectations. The `pytest` suite spans the whole repo now (`backend/tests/`, `contracts/tests/`, and the root-level `tests/`); run it with `python -m pytest -q` from the repo root. CI (`.github/workflows/ci.yml`) runs four jobs on every PR, all on `windows-latest`: **Python checks** (compile, `ruff`, `mypy`, `pytest` with a coverage floor, plus `pip-audit`), **Frontend checks** (`npm run check` inside `web_ui/` — schema-drift check, typecheck, lint, Vitest, and build), **E2E** (a Playwright boot-smoke suite against the real backend serving the real built SPA), and a **Build check** (the wheel builds, installs into a clean venv, and imports).
+## API providers
 
-## Troubleshooting
+The directory includes **26 named providers** and a **Custom endpoint** for OpenAI Chat Completions-compatible servers. Search by service or model family, such as Claude, Grok, Kimi, or Qwen. You can browse another provider’s settings while your current connection stays active.
 
-| Symptom | Things to check |
+| Directory group | Providers |
 | --- | --- |
-| App does not start | Dependencies installed from `requirements.txt`; the frontend is built (`web_ui/dist/app/index.html` exists — run `cd web_ui && npm run build` if not); launched with `python graphlink_desktop.py` from the repo root; Python 3.12+. |
-| Ollama features fail | Ollama installed and running; the selected model has been pulled and exists locally. |
-| Llama.cpp features fail | `llama-cpp-python` installed; the configured path points to a real `.gguf`; try a `chat_format` override or lower runtime settings. Use Ollama or API mode for image/audio. |
-| API mode fails | API key present; base URL correct for OpenAI-compatible mode; the selected models exist on the endpoint. |
-| GitHub plugins fail | A valid token is saved in Settings and can access the target repository, branch, and path. |
-| Export fails | Destination is writable; the node or canvas has content to export. |
+| Model labs | OpenAI, Anthropic Claude, Google Gemini, xAI, Meta, Mistral AI, DeepSeek, Cohere, Moonshot AI, Z.AI, MiniMax, Baidu Qianfan, ByteDance ModelArk, Tencent Hunyuan |
+| Cloud platforms | Alibaba Cloud Model Studio, Amazon Bedrock, Azure OpenAI, Google Vertex AI, NVIDIA, Groq, Cerebras, Together AI, Fireworks AI |
+| Model gateways | OpenRouter, Hugging Face Inference Providers, Perplexity |
 
-## Limitations
+If **Load available models** is unavailable or your deployment is missing from the list, enter its ID directly. Model discovery, tool calling, and media support vary by provider and model. The provider’s **Setup guide** links to its API documentation.
 
-- Windows is the primary target today, though much of the Python is portable; CI is pinned to `windows-latest` specifically because secrets-at-rest testing exercises real Windows DPAPI.
-- API keys and GitHub tokens are encrypted at rest with Windows DPAPI, scoped to your Windows user account; on non-Windows platforms, or if DPAPI is unavailable, they fall back to plain application state (see [Security](#license-and-security)).
-- Automated coverage is strongest at the unit and component level (`pytest` for backend/contracts domain logic, Vitest for React components). Browser-driven coverage exists but is deliberately narrow: a Playwright boot-smoke suite that drives the real built SPA against a real backend, not a full UI regression suite.
+<details>
+<summary>Cloud deployment details and provider directory screenshot</summary>
 
-## License and Security
+- **Azure OpenAI** takes your resource URL and deployment name.
+- **Google Vertex AI** takes your project and location endpoint and a Google Cloud OAuth access token. Replace the token when it expires.
+- **Amazon Bedrock** takes a regional endpoint and a Bedrock API key. For Runtime, use `https://bedrock-runtime.<region>.amazonaws.com/openai/v1` and enter a model or inference-profile ID. For Mantle, use `https://bedrock-mantle.<region>.api.aws/v1` for catalog discovery. Some models use the `/openai/v1` path on the same host.
+- **Custom endpoint** accepts a local server without an API key on loopback. For remote services, enter a key for that URL.
 
-Licensed under the [MIT License](LICENSE).
+![Graphlink’s provider picker filtered to cloud platforms in API Endpoint settings.](assets/screenshots/cloud-providers.png)
 
-Secrets (API keys, GitHub tokens) are stored in `~/.graphlink/session.dat`, encrypted at rest with Windows DPAPI (`CryptProtectData`/`CryptUnprotectData`) and bound to your Windows user account — a copied `session.dat` cannot be decrypted on another machine or account. On non-Windows platforms, or if the DPAPI call fails, secrets fall back to plain text in that same file, so review that fallback before distributing packaged builds or using Graphlink in a shared or non-Windows environment. Legacy plaintext secrets from older versions are migrated to encrypted form automatically on first launch. If you find a security-sensitive issue, please avoid posting exploit details publicly before the maintainer can review and patch it; see [SECURITY.md](SECURITY.md).
+</details>
+
+## Tools on the canvas
+
+| When you want to… | Use |
+| --- | --- |
+| Research a claim or draft a document | **Web Research** gathers sources on a branch. **Artifact / Drafter** opens a Markdown document you can revise alongside the conversation. You can also search documents you’ve ingested into the local knowledge base. |
+| Work with a repository | **Review Lens** reviews a GitHub pull request and links findings to lines in the diff. **Gitlink** previews proposed file changes and lets you apply selected files to a local checkout. |
+| Run code or preview a page | **Virtual Environment Runner** runs Python with per-node dependencies and your user account’s permissions. **HTML Renderer** opens a separate source and preview surface. |
+| Generate media | **Fal Media Studio** browses Fal’s live catalog from a canvas node. Configure **Settings → Fal.ai**, review the price, and confirm each paid generation. The node tracks the job and shows its results. [Studio guide](docs/FAL_MEDIA_STUDIO.md) · [Fal API and agent workflows](docs/FAL_AI.md) |
+| Give one branch its own instructions | Add a **System Prompt** from **Plugins**, or use a **Conversation Node** to keep a linear exchange inside one card. |
+
+### The Builder and the workspace agent
+
+Open **Builder** to give the graph a goal. Choose **Plan the build**, edit the checklist on its plan card, then choose **Start build**. **Co-pilot** asks before edits to the canvas. **Autopilot** can make ordinary canvas edits on its own within your step, token, and time budgets. Python execution and web fetches still require approval. A paused or interrupted build can resume from its plan card. **Stop** ends the run. [View the Builder and a recipe](assets/screenshots/builder-launcher.png).
+
+Open **Agent** for tasks that need files. It starts in a private scratch folder, or you can choose an existing project with **Choose folder…**. The agent can read files, propose edits, and request approval to run shell commands or Python. Its activity appears on the canvas.
+
+## Local data and privacy
+
+Graphs and workspaces live in `~/.graphlink/chats.db`. The knowledge base has its own database at `~/.graphlink/knowledge/knowledge.db`, and stored images live under `~/.graphlink/assets/`. Local models can answer offline once installed. Hosted inference sends conversation context to the selected provider. Web research, GitHub integrations, and Fal media jobs also contact their respective services.
+
+Saved keys and GitHub tokens live in `~/.graphlink/session.dat`. Graphlink uses account-bound Windows DPAPI when available. On macOS, Linux, or when DPAPI fails, saved credentials are plaintext. For providers that support them, Settings shows the environment variables you can use in place of a saved key. [Asset storage and cleanup](docs/ASSET_MAINTENANCE.md) · [Security policy](SECURITY.md).
+
+## Development
+
+The [desktop launcher](graphlink_desktop.py) starts FastAPI on loopback and opens the native webview. The Python backend owns the graph and persists edits. The React and TypeScript frontend renders the canvas and sends actions over a WebSocket. Shared types are generated from Python contracts. [Backend](backend) · [Frontend](web_ui/src/app) · [Wire contracts](contracts) · [Plugin examples](plugins).
+
+For automation, run `python -m backend.headless --port 8765` and connect the local MCP stdio adapter. Inspection is read-only by default. Canvas edits require explicit opt-in and a separate write token. The desktop and headless launchers share the same single-instance lock for each data directory. [Headless and MCP setup](docs/HEADLESS_MCP.md).
+
+[Contributor setup and checks](CONTRIBUTING.md) · [Codebase map](GRAPHLINK_REPO_NAVIGATION.md) · [MIT license](LICENSE)

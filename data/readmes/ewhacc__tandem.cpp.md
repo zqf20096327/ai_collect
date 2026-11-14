@@ -23,7 +23,15 @@ We tuned for Qwen3.8 only, but other MoE models that do not fit in VRAM gain too
 
 For a big card serving many concurrent streams, use [Tandem-vLLM](https://github.com/ewhacc/tandem) instead; tandem.cpp is for one user on a 16–32 GB card with the experts in RAM.
 
-## What's new (2026-11-13)
+## What's new (2026-11-15)
+
+- **Faster GPU work between the routing steps, on NVIDIA and AMD.** Three kernel changes in the shared CUDA/HIP code: the
+  routing results come back to the CPU in one copy instead of three, a faster hyper-connection mixing kernel, and fused
+  state copies. Qwen3.8 with one user, A/B on the same PC: RX 7900 XTX +2.5%, RTX 5070 Ti +1.3%. The 7900 XTX same-day table below now
+  reads 68.6 tok/s (65.6 on 11-12).
+  Exact; no setting needed (`LLAMA_MOE_RB_PACK=0` / `GGML_CUDA_CPY_RUN=0` turn two of them off).
+
+## Earlier (2026-11-13)
 
 - **Big models on small PCs are much faster.** When a model is far larger than your RAM, tandem.cpp now uses VRAM and RAM
   together as one large expert cache, so far less has to come from the SSD. It switches on by itself; nothing to set.
@@ -74,7 +82,7 @@ Tested with CUDA 13.0–13.4 on Ubuntu 22.04 and 24.04, sm_89 (RTX 4090, RTX 600
 
 ### AMD GPUs (ROCm)
 
-The patch builds with HIP. We use the same code as on CUDA, but we have not tuned it for AMD:
+The patch builds with HIP. We use the same code as on CUDA; kernel work is done once in that shared code and measured on an RX 7900 XTX too:
 
 ```
 git clone https://github.com/ggml-org/llama.cpp tandem && cd tandem && git checkout f5222f25c
@@ -87,16 +95,16 @@ Set `GPU_TARGETS` to your card (gfx1100 = RX 7900 series). `-DGGML_HIP_GRAPHS=ON
 launched one by one. For `-ot`, use the ROCm device name, `ROCm0`, where the examples say `CUDA0`. `tandem-run.py` supports NVIDIA only.
 
 Tested on one PC: i7-8700 (6 cores), 64 GB DDR4, RX 7900 XTX 24 GB on PCIe 3.0, Ubuntu 26.04 with its ROCm 7.1 packages.
-Qwen3.8-Flash-Next + MTP, greedy, the first 40 GSM8K questions, same day (2026-11-12), decode tok/s:
+Qwen3.8-Flash-Next + MTP, greedy, the first 40 GSM8K questions, same day (2026-11-15), decode tok/s:
 
 | Engine, quant | tok/s |
 |---|---|
-| tandem.cpp IQ3_S | 65.6 |
-| Strata v0.2.9 IQ3_S | 70.4 |
-| Strata's RDNA3 fork IQ3_S | 80.2 |
-| Avalon IQ3_KS (its own quant) | 83.4 |
+| tandem.cpp IQ3_S | 68.6 |
+| Strata v0.2.9 IQ3_S | 69.7 |
+| Strata's RDNA3 fork IQ3_S | 80.1 |
+| Avalon IQ3_KS (its own quant) | 83.6 |
 
-On this 6-core CPU the AMD-specific engines are ahead. Most of the gap is the CPU's work on missed experts: IQ3_S is costly to
+Stock Strata and tandem.cpp are level; on this 6-core CPU the AMD-specific engines are ahead. Most of that gap is the CPU's work on missed experts: IQ3_S is costly to
 decode on a CPU, and Avalon's own quant types decode cheaply.
 
 ## Quick start
@@ -222,6 +230,8 @@ The server applies these when the variable is unset (logged at startup); `VAR=0`
 | `GGML_CUDA_GRAPH_KEY_SHAPE` | `1` | one CUDA graph per batch shape |
 | `GGML_CUDA_MMVF_MAX` | `8` | vector kernel for float weights up to 8 columns |
 | `GGML_CUDA_Q8_CACHE` | `1` | reuse quantized activations across matvecs |
+| `GGML_CUDA_CPY_RUN` | `1` | consecutive same-shape copies in one kernel |
+| `LLAMA_MOE_RB_PACK` | `1` | the routing results read back to the CPU in one copy |
 | `LLAMA_GRAPH_POOL` | `6` | keep allocated graphs for alternating small batch shapes; with `--moe-cache-mib auto` fewer (or none) at long contexts |
 | `LLAMA_GRAPH_POOL_MIB` | `256` | VRAM those pooled graphs may take, measured at the full context and left out of the auto cache size |
 | `LLAMA_SRV_USER_BREAK` | `0` | no prompt-cache checkpoint at every user message |
@@ -353,7 +363,7 @@ With the defaults off the patch computes exactly what llama.cpp does; the defaul
 - Greedy output is not repeatable run to run with an expert cache: which experts are cached, and which misses the CPU computes, depends on timing, and the CPU and GPU round differently. Accuracy is unchanged. A fixed share (e.g. `LLAMA_MOE_CPU=0.2`) makes it repeatable.
 - Built for one user at a time. Concurrent requests work (tested at 2 and 4, accuracy unchanged) but gain less, and with a small cache several requests together can be slower in total than one.
 - Multi-GPU: only `-sm layer` (the default) works with the cache; checked for correctness on 2 GPUs, not tuned for speed.
-- Linux only. Tuned and tested on NVIDIA (CUDA). AMD (ROCm) works, but it is untuned and was tested on one RX 7900 XTX ([above](#amd-gpus-rocm)).
+- Linux only. Tuned and tested on NVIDIA (CUDA). AMD (ROCm) works and gets the shared kernel work, but it has had less tuning and was tested on one RX 7900 XTX ([above](#amd-gpus-rocm)).
 - Qwen3.8 GGUFs converted with a current llama.cpp may be a little slower than the ISTA files we measured (one fusion does not apply to their layout).
 - Known issues, to be fixed:
   - models much larger than RAM (read from the SSD) depend on the drive (see the gaming-PC rows for a PCIe 4.0 drive);

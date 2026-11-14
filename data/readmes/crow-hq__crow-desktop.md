@@ -10,7 +10,7 @@ Crow finds your PDFs, Word files, slides and spreadsheets by itself, files them 
 and answers your questions citing the notes it used.</p>
 
 <p align="center">
-  <a href="#download"><b>Download Crow 1.0.0</b></a> ·
+  <a href="#download"><b>Download Crow 1.0.1</b></a> ·
   <a href="#install-crow-the-builds-are-not-signed-yet">Install help for macOS and Windows</a> ·
   <a href="#faq">FAQ</a>
 </p>
@@ -35,8 +35,11 @@ account and nothing leaving it.
 - **Files them into a wiki that organizes itself.** Each document becomes a note in a folder about its subject. A new
   document on a subject updates the note already there instead of adding a copy, and a folder that grows is split into
   subfolders. Filing goes oldest first, so the newest facts win; files already filed, and duplicates, cost nothing again.
-- **Lets you chat with your documents, with sources.** Answers cite the notes they come from, and those notes light up
-  in the brain, the graph of everything you filed. Follow-up questions are understood in context.
+- **Lets you chat with your documents, with sources.** Answers appear as they are written, with the notes they come
+  from listed under them, and those notes light up in the brain, the graph of everything you filed. Follow-up questions
+  are understood in context.
+- **Speaks English and Italian.** Settings → Language switches the whole app, and an answer is written in the language
+  of the question.
 - **Remembers.** A chat forgets when it ends; the wiki doesn't. Every document you add makes the notes you already
   have better, and you can drop a new file onto a folder of the brain to file it there.
 - **Keeps it in plain Markdown you own.** The wiki is a folder of Markdown files on your computer, in Google's
@@ -76,19 +79,19 @@ The screenshots show a sample wiki made up for them. [All the screenshots](asset
 
 ## Download
 
-Crow 1.0.0, released 12 November 2026:
+Crow 1.0.1, released 14 November 2026:
 
 | System | For | Download | Size |
 |---|---|---|---|
-| **macOS** | Apple silicon (M1 and later) | [Crow_1.0.0_aarch64.dmg](https://github.com/crow-hq/crow-desktop/releases/download/v1.0.0/Crow_1.0.0_aarch64.dmg) | 31 MB |
-| **macOS** | Intel | [Crow_1.0.0_x64.dmg](https://github.com/crow-hq/crow-desktop/releases/download/v1.0.0/Crow_1.0.0_x64.dmg) | 33 MB |
-| **Windows** | Installer (.exe) | [Crow_1.0.0_x64-setup.exe](https://github.com/crow-hq/crow-desktop/releases/download/v1.0.0/Crow_1.0.0_x64-setup.exe) | 30 MB |
-| **Windows** | Installer for IT (.msi) | [Crow_1.0.0_x64_en-US.msi](https://github.com/crow-hq/crow-desktop/releases/download/v1.0.0/Crow_1.0.0_x64_en-US.msi) | 32 MB |
-| **Linux** | AppImage, any distribution | [Crow_1.0.0_amd64.AppImage](https://github.com/crow-hq/crow-desktop/releases/download/v1.0.0/Crow_1.0.0_amd64.AppImage) | 119 MB |
-| **Linux** | Debian, Ubuntu (.deb) | [Crow_1.0.0_amd64.deb](https://github.com/crow-hq/crow-desktop/releases/download/v1.0.0/Crow_1.0.0_amd64.deb) | 41 MB |
-| **Linux** | Fedora, openSUSE (.rpm) | [Crow-1.0.0-1.x86_64.rpm](https://github.com/crow-hq/crow-desktop/releases/download/v1.0.0/Crow-1.0.0-1.x86_64.rpm) | 41 MB |
+| **macOS** | Apple silicon (M1 and later) | [Crow_1.0.1_aarch64.dmg](https://github.com/crow-hq/crow-desktop/releases/download/v1.0.1/Crow_1.0.1_aarch64.dmg) | 31 MB |
+| **macOS** | Intel | [Crow_1.0.1_x64.dmg](https://github.com/crow-hq/crow-desktop/releases/download/v1.0.1/Crow_1.0.1_x64.dmg) | 33 MB |
+| **Windows** | Installer (.exe) | [Crow_1.0.1_x64-setup.exe](https://github.com/crow-hq/crow-desktop/releases/download/v1.0.1/Crow_1.0.1_x64-setup.exe) | 31 MB |
+| **Windows** | Installer for IT (.msi) | [Crow_1.0.1_x64_en-US.msi](https://github.com/crow-hq/crow-desktop/releases/download/v1.0.1/Crow_1.0.1_x64_en-US.msi) | 33 MB |
+| **Linux** | AppImage, any distribution | [Crow_1.0.1_amd64.AppImage](https://github.com/crow-hq/crow-desktop/releases/download/v1.0.1/Crow_1.0.1_amd64.AppImage) | 119 MB |
+| **Linux** | Debian, Ubuntu (.deb) | [Crow_1.0.1_amd64.deb](https://github.com/crow-hq/crow-desktop/releases/download/v1.0.1/Crow_1.0.1_amd64.deb) | 41 MB |
+| **Linux** | Fedora, openSUSE (.rpm) | [Crow-1.0.1-1.x86_64.rpm](https://github.com/crow-hq/crow-desktop/releases/download/v1.0.1/Crow-1.0.1-1.x86_64.rpm) | 41 MB |
 
-Every file of this version is on its [release page](https://github.com/crow-hq/crow-desktop/releases/tag/v1.0.0); older versions are under
+Every file of this version is on its [release page](https://github.com/crow-hq/crow-desktop/releases/tag/v1.0.1); older versions are under
 [Releases](https://github.com/crow-hq/crow-desktop/releases). Crow gets new versions from here: Settings → About →
 **Check for updates**.
 
@@ -122,7 +125,8 @@ want in your second brain.
 
 ### Windows: "Windows protected your PC"
 
-On Windows 10 and 11:
+When the table above has a **Microsoft Store** row, Crow from the Store installs with no warning and the Store
+keeps it up to date. The installer below works too, on Windows 10 and 11:
 
 1. Download `Crow_…_x64-setup.exe`. If Microsoft Edge says it *isn't commonly downloaded*, click **…** next to it →
    **Keep** → **Show more** → **Keep anyway**. In Chrome, click **Keep**.
@@ -148,6 +152,9 @@ On Windows 10 and 11:
    or an expiry; later, Settings → OpenRouter → **Manage this key on OpenRouter** opens it again, and **Sign out** makes
    Crow forget it.
 3. Choose a model, check the cost, and start. You can chat with the wiki while it grows.
+
+No OpenRouter account? On the Connect screen choose **On this computer** (beta): one button downloads Crow's local
+models, and nothing is paid (see [Which AI models can I use?](#which-ai-models-can-i-use-can-i-run-it-offline-or-with-ollama)).
 
 <p align="center"><img src="assets/gifs/onboarding.gif" width="760" alt="Crow's first run: the welcome screen, the documents it found by folder with a date filter, connecting OpenRouter, the cost estimate, and the wiki starting to build"></p>
 
@@ -268,8 +275,8 @@ you chose through OpenRouter, or to no one with local models (see [Privacy](#pri
 
 ### Which AI models can I use? Can I run it offline or with Ollama?
 
-On OpenRouter: Gemini 3.8 Flash (the default), Claude Sonnet 5.5, DeepSeek V4.1 Flash, or any other model, under
-Advanced settings; a small classifier model, Jev, decides where each document goes.
+On OpenRouter: DeepSeek V4.1 Flash (the default since Crow 1.0.1), Gemini 3.8 Flash, Claude Sonnet 5.5, or any other
+model, under Advanced settings; a small classifier model, Jev, decides where each document goes.
 
 Offline, since Crow 1.0: choose **On this computer** on the Connect screen. One button downloads Crow's local model
 package (Ollama and three small open models: LFM3 1.7B, Tev1 0.8B and EmbeddingGemma 2; 2.6 to 4 GB depending on the

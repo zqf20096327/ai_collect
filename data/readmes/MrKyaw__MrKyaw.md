@@ -33,7 +33,7 @@
 
 > **PRIME: Production-Ready, Rapid, Intelligent, Measurable, and Efficient AI Engineering.** My approach combines delivery speed with evaluation, cost control, human oversight, and reliable operations.
 
-| Letter | Meaning | Professional value |
+| Letter | Meaning | Professional Value |
 |:---:|---|---|
 | **P** | Production-Ready | Reliable, secure, scalable enterprise AI |
 | **R** | Rapid | Faster delivery and engineering execution |
@@ -47,28 +47,28 @@
 
 ## 🔍 Selected Proof — Public and Clickable
 
-Runnable projects and architecture references. Signals below summarize repository-reported tests, evaluations, or capabilities; prototype results do not establish production performance.
+Runnable projects and architecture references. Results below summarize the latest available local records reviewed on November 14, 2026, with validation scope noted where available. Coverage, test pass rates and evaluation accuracy measure different things; prototype results do not establish production business impact. Checks were not rerun for this profile update.
 
-| Project | What it demonstrates | Signal |
+| Project | What it demonstrates | Results & Validation |
 |---|---|---|
-| **[AgentForge Enterprise AI Platform](https://github.com/MrKyaw/AgentForge-Enterprise-AI-Platform)** | Governed agent runtime: hybrid RAG, multi-provider model routing, tenant entitlements, human approvals, hash-chained audit, and cost controls | 269 tests · 20/20 golden evaluation cases |
-| **[Agentic Ops Services Platform](https://github.com/MrKyaw/Agentic-Ops-Services-Platform)** | Multi-tenant agentic AI foundation: MCP-governed API boundaries, ReAct/ReWOO orchestration, Python/FastAPI, Angular, graph and hierarchical retrieval, and AWS Terraform definitions | 132 backend tests · 93% line coverage · locally validated |
-| **[Agentic Project Management Advisor](https://github.com/MrKyaw/Agentic-Project-Agnostic-Management-Advisor)** | CrewAI + local Ollama agents for planning, estimation, resource allocation, and forecasting | 42% faster planning · 91% structured-output compliance |
-| **[Agentic Usage Billing Engine](https://github.com/MrKyaw/Agentic-Usage-Billing-Engine)** | Event-driven, idempotent usage-based billing: ingest → rate → aggregate → reconcile → MCP; serverless on AWS | 291 gating tests · 100% line and branch coverage |
-| **[CognitiveMirror-Jev-MCP](https://github.com/MrKyaw/CognitiveMirror-Jev-MCP)** | Cognitive middleware for personal and enterprise agents: 14 MCP tools, REST API, memory, guardrails, approval workflows | 62 unit tests · 100% statement and branch coverage |
-| **[ConversaFlow AI](https://github.com/MrKyaw/ConversaFlow-AI)** | Tenant-aware conversational runtime: calibrated intent classification, explicit dialogue graphs, typed tools, cited knowledge retrieval, REST/WebSocket APIs, and a TypeScript SDK | 171 Python tests · 94.44% intent accuracy on synthetic held-out data |
-| **[Enterprise AI Reference Architecture](https://github.com/MrKyaw/Enterprise-AI-Reference-Architecture)** | Vendor-neutral architecture knowledge base: AI/ML lifecycle gates, reference designs, reusable patterns, security controls, standards, and architecture decision records | 24 lifecycles · 8 reference architectures · 13 pattern catalogs |
-| **[Industrial Agent Intelligence](https://github.com/MrKyaw/Industrial-Agent-Intelligence)** | Evidence-grounded industrial agents: facility ontology, policy-checked tools, numeric grounding checks, human escalation, and deterministic behavioural evaluations | 119 tests · 22/22 behavioural evaluation cases |
-| **[Med Foundation Models](https://github.com/MrKyaw/Med-Foundation-Models)** | Whole-body MRI research framework: self-supervised learning with MAE, SimCLR, DINO and JEPA; Vision Transformers, multimodal fusion, and downstream fine-tuning | 132 tests · self-supervised and multimodal research framework |
-| **[MGIIA — Mobility Assistant](https://github.com/MrKyaw/Mobility-Guided-Intelligent-Information-Assistant)** | YOLOv8 + DeepLabV3 + Llama 3.2 Vision for hands-free road-scene understanding | 94.7% detection accuracy · 40% fewer false positives |
-| **[Quant Pulse Processor](https://github.com/MrKyaw/Quant-Pulse-Processor)** | Python/NumPy quantum toolkit: statevector simulation, five canonical algorithms checked against exact references, and pulse-level transmon modelling | 250 tests · 15/15 acceptance checks |
-| **[Sentry-AI](https://github.com/MrKyaw/Sentry-AI)** | Offline cybersecurity signal-processing demo: telemetry replay, statistical baselines, noisy-OR risk fusion, hysteresis | Explainable, reproducible detection |
-| **[TrustMed AI Fabric](https://github.com/MrKyaw/TrustMed-AI-Fabric)** | Governed content and AI reference implementation: evidence-backed claims, approval and expiry controls, provenance, MCP tools, cited retrieval, and hash-chained audit | 96 tests · 30 golden evaluation cases |
+| **[AgentForge Enterprise AI Platform](https://github.com/MrKyaw/AgentForge-Enterprise-AI-Platform)** | Governed agent runtime: hybrid RAG, multi-provider model routing, tenant entitlements, human approvals, hash-chained audit, and cost controls | 96% combined coverage · 269 tests passed · 100% offline golden-case pass rate (20/20) |
+| **[Agentic Ops Services Platform](https://github.com/MrKyaw/Agentic-Ops-Services-Platform)** | Multi-tenant agentic AI foundation: MCP-governed API boundaries, ReAct/ReWOO orchestration, Python/FastAPI, Angular, graph and hierarchical retrieval, and AWS Terraform definitions | 91% backend line coverage · 136 backend tests passed · local validation; production-scale testing pending |
+| **[Agentic Project Management Advisor](https://github.com/MrKyaw/Agentic-Project-Agnostic-Management-Advisor)** | CrewAI + local Ollama agents for planning, estimation, resource allocation, and forecasting | Previously reported: 42% faster planning · 91% structured-output compliance; supporting local benchmark record not located |
+| **[Agentic Usage Billing Engine](https://github.com/MrKyaw/Agentic-Usage-Billing-Engine)** | Event-driven, idempotent usage-based billing: ingest → rate → aggregate → reconcile → MCP; serverless on AWS | 100% line and branch coverage · 291 gating + 3 performance tests passed |
+| **[CognitiveMirror-Jev-MCP](https://github.com/MrKyaw/CognitiveMirror-Jev-MCP)** | Cognitive middleware for personal and enterprise agents: 14 MCP tools, REST API, memory, guardrails, approval workflows | 100% statement and branch coverage · 62 unit tests passed · live PostgreSQL and container checks recorded |
+| **[ConversaFlow AI](https://github.com/MrKyaw/ConversaFlow-AI)** | Tenant-aware conversational runtime: calibrated intent classification, explicit dialogue graphs, typed tools, cited knowledge retrieval, REST/WebSocket APIs, and a TypeScript SDK | 94.44% intent accuracy · 94.50% macro F1 (72 synthetic held-out examples) · 171 tests passed |
+| **[Enterprise AI Reference Architecture](https://github.com/MrKyaw/Enterprise-AI-Reference-Architecture)** | Vendor-neutral architecture knowledge base: AI/ML lifecycle gates, reference designs, reusable patterns, security controls, standards, and architecture decision records | 72 starter-kit smoke tests passed · 171 Markdown files and 62 diagrams checked; architecture guidance, no measured business-impact percentage |
+| **[Industrial Agent Intelligence](https://github.com/MrKyaw/Industrial-Agent-Intelligence)** | Evidence-grounded industrial agents: facility ontology, policy-checked tools, numeric grounding checks, human escalation, and deterministic behavioural evaluations | 100% behavioural-case pass rate (22/22) · 79.94% combined coverage · 119 tests passed |
+| **[Med Foundation Models](https://github.com/MrKyaw/Med-Foundation-Models)** | Whole-body MRI research framework: self-supervised learning with MAE, SimCLR, DINO and JEPA; Vision Transformers, multimodal fusion, and downstream fine-tuning | 100% recorded test pass rate (132/132); clinical accuracy and downstream model gains not established |
+| **[MGIIA — Mobility Assistant](https://github.com/MrKyaw/Mobility-Guided-Intelligent-Information-Assistant)** | YOLOv8 + DeepLabV3 + Llama 3.2 Vision for hands-free road-scene understanding | Previously reported: 94.7% detection accuracy · 40% fewer false positives; supporting local benchmark record not located |
+| **[Quant Pulse Processor](https://github.com/MrKyaw/Quant-Pulse-Processor)** | Python/NumPy quantum toolkit: statevector simulation, five canonical algorithms checked against exact references, and pulse-level transmon modelling | 96% coverage · 100% acceptance pass rate (15/15) · 250 tests passed; simulator validation |
+| **[Sentry-AI](https://github.com/MrKyaw/Sentry-AI)** | Offline cybersecurity signal-processing demo: telemetry replay, statistical baselines, noisy-OR risk fusion, hysteresis | 100% recorded test pass rate (7/7) · two synthetic attack replays reach ALERT; real-data precision/recall not evaluated |
+| **[TrustMed AI Fabric](https://github.com/MrKyaw/TrustMed-AI-Fabric)** | Governed content and AI reference implementation: evidence-backed claims, approval and expiry controls, provenance, MCP tools, cited retrieval, and hash-chained audit | 100% deterministic golden-case pass rate (30/30), citation validity and refusal accuracy · 90% branch-aware coverage · 96 tests |
 
 ---
 
-## 🤝 Community Contributions
 
+## 💻 Community Contributions
 | Project | Status |
 |---|---|
 | [DeepEval](https://github.com/confident-ai/deepeval) | Two open PRs awaiting review/merge: [#3390](https://github.com/confident-ai/deepeval/pull/3390) — five LLM-free production metrics; [#3411](https://github.com/confident-ai/deepeval/pull/3411) — retrieval, streaming, security, agent and text evaluation metrics. Tests and documentation included; neither PR merged yet. |
@@ -78,11 +78,11 @@ Runnable projects and architecture references. Signals below summarize repositor
 
 ---
 
-## 📈 Enterprise AI & MLOps Impact
+## 📈 Proven Enterprise AI & MLOps Impact
 
 Selected delivery outcomes and implementation checks. Test-gate results are identified separately from business outcomes.
 
-| Domain | Work | Measured outcome |
+| Domain | Work | Measured Outcome |
 |---|---|---|
 | **Healthcare AI** | **Springer Nature** case study — Top-tier hospital ED capacity | 30% fewer LWBS · 20% faster door-to-doctor · 14% lower discharged-patient LOS · 2,500–3,000 added visits/year |
 | **Clinical Decision Intelligence** | North American clinical organization — QEMIDP / Pulse ED — MIMIC-IV + CXR, LangGraph 6-stage pipeline, 5 guardrail layers, HITL, local-first Ollama | 100% evidence attachment (test gate) · 100% guardrail reason-code traceability (test gate) · 5 guardrail layers · 6-stage pipeline · HITL + audit trace |

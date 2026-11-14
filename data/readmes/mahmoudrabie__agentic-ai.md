@@ -41,8 +41,8 @@ If this saves you research time, starring the repo helps more builders discover 
 | Domain | Researches | Focus |
 | --- | ---: | --- |
 | [🔬 Research](README-research.md) | 67 | AI scientists, deep research, autonomous discovery |
-| [⚙️ Framework](README-framework.md) | 67 | Agent runtimes, memory, tools, orchestration |
-| [🛡️ Security](README-security.md) | 59 | Prompt injection, red teaming, cyber agents, defenses |
+| [⚙️ Framework](README-framework.md) | 68 | Agent runtimes, memory, tools, orchestration |
+| [🛡️ Security](README-security.md) | 60 | Prompt injection, red teaming, cyber agents, defenses |
 | [🧠 Reasoning](README-reasoning.md) | 26 | Inference, deliberation, cognitive architectures |
 | [🧪 Testing](README-testing.md) | 27 | Benchmarks, harnesses, evaluation methodology |
 | [💊 Healthcare](README-healthcare.md) | 16 | Medical agents, diagnosis, pharma, biomedical research |
@@ -72,8 +72,8 @@ Counts use the recorded affiliations in all section tables: one count per unique
 | Company/Institution | Section Names | Count |
 | --- | --- | ---: |
 | [Stanford University](https://www.linkedin.com/school/stanford-university/) | [Ethics and Safety], [Framework], [Gaming], [Healthcare], [Planning], [Reasoning], [Research], [Security], [Software Engineering], [Testing] | 27 |
-| [University of Illinois Urbana-Champaign](https://www.linkedin.com/school/university-of-illinois-urbana-champaign/) | [Design], [Framework], [Healthcare], [Physical AI/Robotics], [Reasoning], [Recommendation], [Research], [Security], [Testing] | 25 |
-| [Google](https://www.linkedin.com/company/google/) | [Automation], [Framework], [Healthcare], [Reasoning], [Research], [Security], [Software Engineering], [Testing] | 23 |
+| [University of Illinois Urbana-Champaign](https://www.linkedin.com/school/university-of-illinois-urbana-champaign/) | [Design], [Framework], [Healthcare], [Physical AI/Robotics], [Reasoning], [Recommendation], [Research], [Security], [Testing] | 26 |
+| [Google](https://www.linkedin.com/company/google/) | [Automation], [Framework], [Healthcare], [Reasoning], [Research], [Security], [Software Engineering], [Testing] | 24 |
 | [Microsoft](https://www.linkedin.com/company/microsoft/) | [Automation], [Ethics and Safety], [Foundation Models], [Framework], [Reasoning], [Research], [Security], [Software Engineering], [Testing] | 21 |
 | [University of California, Berkeley](https://www.linkedin.com/school/uc-berkeley/) | [Foundation Models], [Framework], [Physical AI/Robotics], [Research], [Security], [Testing] | 21 |
 | [National University of Singapore](https://www.linkedin.com/school/national-university-of-singapore/) | [Foundation Models], [Framework], [Healthcare], [Physical AI/Robotics], [Reasoning], [Research], [Security], [Testing] | 18 |
@@ -84,10 +84,10 @@ Counts use the recorded affiliations in all section tables: one count per unique
 | [Georgia Institute of Technology](https://www.linkedin.com/school/georgia-institute-of-technology/) | [Automation], [Ethics and Safety], [Foundation Models], [Framework], [Reasoning], [Research], [Testing] | 13 |
 | [University of Washington](https://www.linkedin.com/school/university-of-washington/) | [Ethics and Safety], [Foundation Models], [Framework], [Healthcare], [Research], [Security], [Testing], [Vision] | 13 |
 | [Amazon](https://www.linkedin.com/company/amazon/) | [Framework], [Reasoning], [Recommendation], [Research], [Security], [Testing] | 12 |
+| [Princeton University](https://www.linkedin.com/school/princeton-university/) | [Framework], [Healthcare], [Reasoning], [Recommendation], [Research], [Security], [Testing] | 12 |
 | [Tsinghua University](https://www.linkedin.com/school/tsinghua-university/) | [Design], [Framework], [Healthcare], [Reasoning], [Recommendation], [Research], [Security] | 12 |
 | [University of California, San Diego](https://www.linkedin.com/school/ucsandiego/) | [Framework], [Healthcare], [Networking], [Planning], [Reasoning], [Recommendation], [Research], [Security], [Testing] | 12 |
 | [Alibaba Group](https://www.linkedin.com/company/alibaba-group/) | [Automation], [Framework], [Reasoning], [Research], [Software Engineering], [Testing] | 11 |
-| [Princeton University](https://www.linkedin.com/school/princeton-university/) | [Framework], [Healthcare], [Reasoning], [Recommendation], [Research], [Security], [Testing] | 11 |
 | [Zhejiang University](https://www.linkedin.com/school/zhejiang-university/) | [Framework], [Hardware Design], [Reasoning], [Research], [Security] | 10 |
 | [Harvard University](https://www.linkedin.com/school/harvard-university/) | [Framework], [Healthcare], [Reasoning], [Research], [Testing] | 9 |
 | [Massachusetts Institute of Technology](https://www.linkedin.com/school/mit/) | [Design], [Framework], [Healthcare], [Research], [Security], [Testing] | 9 |
@@ -167,6 +167,7 @@ Counts use the recorded affiliations in all section tables: one count per unique
 | [Tencent](https://www.linkedin.com/company/tencentglobal/) | [Automation], [Vision] | 3 |
 | [The University of Tokyo](https://www.linkedin.com/school/university-of-tokyo/) | [Foundation Models], [Framework], [Testing] | 3 |
 | [Tongji University](https://www.linkedin.com/school/tongji-university/) | [Framework], [Reasoning] | 3 |
+| [University of California, Davis](https://www.linkedin.com/school/uc-davis/) | [Framework], [Security], [Vision] | 3 |
 | [University of Chinese Academy of Sciences](https://www.linkedin.com/school/university-of-chinese-academy-of-sciences/) | [Automation], [Reasoning], [Research] | 3 |
 | [University of Illinois Chicago](https://www.linkedin.com/school/thisisuic/) | [Framework], [Healthcare], [Research] | 3 |
 | [University of Massachusetts Amherst](https://www.linkedin.com/school/umassamherst/) | [Framework], [Testing] | 3 |
@@ -208,7 +209,6 @@ Counts use the recorded affiliations in all section tables: one count per unique
 | [The University of Texas at Dallas](https://www.linkedin.com/school/university-of-texas-at-dallas/) | [Framework] | 2 |
 | [UK AI Security Institute](https://www.linkedin.com/company/ai-security-institute/) | [Security] | 2 |
 | [University of British Columbia](https://www.linkedin.com/school/universityofbc/) | [Research] | 2 |
-| [University of California, Davis](https://www.linkedin.com/school/uc-davis/) | [Framework], [Vision] | 2 |
 | [University of California, Irvine](https://www.linkedin.com/school/university-of-california-irvine/) | [Security], [Testing] | 2 |
 | [University of Colorado Anschutz Medical Campus](https://www.linkedin.com/school/cuanschutz/) | [Research], [Testing] | 2 |
 | [University of Colorado Boulder](https://www.linkedin.com/school/cuboulder/) | [Framework], [Testing] | 2 |
@@ -435,6 +435,7 @@ Counts use the recorded affiliations in all section tables: one count per unique
 | [U.S. National Institutes of Health](https://www.linkedin.com/company/national-institutes-of-health/) | [Testing] | 1 |
 | [UMass Chan Medical School](https://www.linkedin.com/school/umasschan/) | [Testing] | 1 |
 | [UNINOVA](https://www.linkedin.com/company/uninova/) | [Automation] | 1 |
+| [Uniphore](https://www.linkedin.com/company/uniphore/) | [Security] | 1 |
 | [University College Cork](https://www.linkedin.com/company/school-of-computer-science-information-technology-ucc/) | [Framework] | 1 |
 | [University of Aberdeen](https://www.linkedin.com/school/university-of-aberdeen/) | [Framework] | 1 |
 | [University of Alberta](https://www.linkedin.com/school/university-of-alberta/) | [Framework] | 1 |

@@ -248,7 +248,7 @@ Get-NetFirewallApplicationFilter | Where-Object { $_.Program -match 'uv\\python'
 - **改前端时**：`npm --prefix apps/web run dev`（5173，热更新，`/v1` 自动代理到 8000）
 
 页面能力：变体下拉 + 按 `manifest.yaml` 的 `inputs` 自动生成表单 + 任务列表（2s 轮询、可取消）
-+ 作品墙。`type: image` 的参数是「选文件即上传」，表单里存 `asset_id`，worker 执行前解析成绝对路径
++ 作品墙（每页 12 件可翻历史，卡片上直接复制当次提示词）。`type: image` 的参数是「选文件即上传」，表单里存 `asset_id`，worker 执行前解析成绝对路径
 （超分这类能力就靠它）。`type: mask` 不出文件选择框，而是在原图上给一块涂抹画布（见「蒙版重绘」）。生成结果不满意可以直接删：任务行末尾的「删除」和作品缩略图右上角的 `×`，
 删的是任务记录 + 磁盘产物文件，不可恢复，会先弹确认框。`prompt` 输入框以 `{` 开头时按 Layout JSON 解析
 （排版控制，见 `docs/moss-image-integration.md`），否则按普通文本发送。
@@ -290,6 +290,49 @@ wait_job("job_yyy")  → succeeded + <仓库>\data\artifacts\job_yyy\matting_000
 ```
 
 > 参数名和类型不是猜的：先 `list_capabilities`，`submit` 传错的键会被后端直接拒绝（422 原样回给 Agent）。
+
+## OpenAI 兼容接口
+
+给现成的 OpenAI 客户端用（Cherry Studio / Dify / LangChain / openai-python 这类）：
+base_url 填 `http://<本机IP>:8000/v1`，api_key 随便写（平台无鉴权）。只适配了两条端点，
+其余能力仍走原生 `/v1/jobs`。
+
+| 端点 | 映射到 | 说明 |
+|---|---|---|
+| `POST /v1/audio/speech` | `audio.tts/*` | 返回 mp3（默认）或 wav / flac / aac / opus / pcm |
+| `POST /v1/images/generations` | `image.txt2img/*` | `response_format` 支持 `url` 与 `b64_json` |
+| `GET /v1/models` | 已适配的能力变体 | 客户端配对地址后靠它列候选 |
+
+```python
+from openai import OpenAI
+
+c = OpenAI(base_url="http://192.168.1.10:8000/v1", api_key="x")
+
+c.audio.speech.create(
+    model="cosyvoice3-segmented", voice="alloy",
+    input="你好，这是语音合成测试。", response_format="mp3",
+).write_to_file("a.mp3")
+
+c.images.generate(model="z-image-turbo", prompt="a red lantern on snow", size="512x512")
+```
+
+**模型名怎么填**：平台变体名（`z-image-turbo`）和全名（`image.txt2img/z-image-turbo`）都认；
+`tts-1` / `gpt-4o-mini-tts` / `dall-e-3` / `gpt-image-1` 这类官方名按前缀兜到默认变体
+（`PLATFORM_OPENAI_TTS_VARIANT` / `PLATFORM_OPENAI_IMAGE_VARIANT`），不传 `model` 也用默认。
+
+四条与 OpenAI 行为不同的地方，不是 bug：
+
+1. **同步阻塞**：请求会等到任务跑完才返回（上限 `PLATFORM_OPENAI_WAIT_SEC`，默认 600 s）。
+   超时返回 504，但任务仍在队列里跑，用 `GET /v1/jobs/{id}` 跟进。客户端主动断开则任务被取消，
+   不会白占 GPU。
+2. **不做流式**：`stream_format=sse` 直接 400。TTS 产物是引擎进程结束后一次性落盘的，
+   边生成边播需要引擎侧逐句 flush + 绕开队列的执行路径，不在这一层。
+3. **音色按默认兜底**：OpenAI 的 `alloy` / `onyx` 跟本机音色没有对应关系；命中本机音色名就直接用，
+   否则一律落到 `PLATFORM_OPENAI_DEFAULT_VOICE`（留空则优先取名为 `default` 的音色），日志留一行。
+4. **mp3 需要 ffmpeg**：TTS 只出 wav，其他格式现转；没装 ffmpeg 时非 wav 一律 501。
+
+实测（RTX 3060）：`z-image-turbo` 512×512 首跑 41 s（含 ComfyUI 冷加载），模型热了 4.4 s；
+`cosyvoice3-segmented` 一句中文 19 s（每次都要重新加载模型）。
 
 ## 能力清单（当前）
 

@@ -33,9 +33,11 @@ The tool currently supports various popular image matching algorithms, namely:
 
 | Algorithm        | Supported | Conference/Journal | Year | GitHub Link |
 |------------------|-----------|--------------------|------|-------------|
+| FlexGlue       | ✅ | ARXIV   | 2026 | [Link](https://github.com/cvg/FlexGlue) |
 | LoMa           | ✅ | ECCV    | 2026 | [Link](https://github.com/davnords/LoMa) |
 | RaCo           | ✅ | 3DV     | 2026 | [Link](https://github.com/cvg/RaCo) |
-| FlexGlue       | ✅ | ARXIV   | 2026 | [Link](https://github.com/cvg/FlexGlue) |
+| REDI-Match     | ✅ | ARXIV   | 2026 | [Link](https://github.com/YinjiGe/REDI-Match) |
+| RIPE++         | ✅ | ECCV    | 2026 | [Link](https://github.com/fraunhoferhhi/RIPEpp) |
 | RIPE           | ✅ | ICCV    | 2025 | [Link](https://github.com/fraunhoferhhi/RIPE)  |
 | RDD            | ✅ | CVPR    | 2025 | [Link](https://github.com/xtcpete/rdd)  |
 | LiftFeat       | ✅ | ICRA    | 2025 | [Link](https://github.com/lyp-deeplearning/LiftFeat) |
@@ -68,7 +70,7 @@ The tool currently supports various popular image matching algorithms, namely:
 | DKM            | ✅ | CVPR    | 2023 | [Link](https://github.com/Parskatt/DKM) |
 | NCMNet         | ❌ | CVPR    | 2023 | [Link](https://github.com/xinliu29/NCMNet) |
 | TopicFM        | ✅ | AAAI    | 2023 | [Link](https://github.com/Vincentqyw/TopicFM) |
-| AspanFormer    | ✅ | ECCV    | 2022 | [Link](https://github.com/Vincentqyw/ml-aspanformer) |
+| ASpanFormer    | ✅ | ECCV    | 2022 | [Link](https://github.com/Vincentqyw/ml-aspanformer) |
 | LANet          | ✅ | ACCV    | 2022 | [Link](https://github.com/wangch-g/lanet) |
 | LISRD          | ✅ | ECCV    | 2022 | [Link](https://github.com/rpautrat/LISRD) |
 | REKD           | ❌ | CVPR    | 2022 | [Link](https://github.com/bluedream1121/REKD) |

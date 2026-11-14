@@ -3,14 +3,20 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.7.0-1A6CFF?style=flat-square" alt="Version 1.7.0">
+  <a href="https://github.com/heshengtao/ai-daw/releases"><img src="https://img.shields.io/github/v/release/heshengtao/ai-daw?style=flat-square&color=1A6CFF" alt="GitHub release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-1A6CFF?style=flat-square" alt="License: Apache-2.0"></a>
-  <img src="https://img.shields.io/badge/platforms-Windows%20/%20macOS%20/%20Linux-1A6CFF?style=flat-square" alt="Platforms: Windows, macOS, Linux">
+  <img src="https://img.shields.io/badge/platforms-Windows%20/%20macOS%20/%20Linux%20/%20Web-1A6CFF?style=flat-square" alt="Platforms: Windows, macOS, Linux, Web">
+  <a href="https://hub.docker.com/r/ailm32442/ai-daw"><img src="https://img.shields.io/docker/pulls/ailm32442/ai-daw?style=flat-square&color=1A6CFF" alt="Docker pulls"></a>
 </p>
 
 <p align="center">
   <a href="README_zh.md"><b>简体中文</b></a> ·
   <a href="README.md"><b>English</b></a>
+</p>
+
+<p align="center">
+  <a href="https://hub.docker.com/r/ailm32442/ai-daw"><b>Docker Hub</b></a> ·
+  <a href="https://github.com/heshengtao/ai-daw/releases">Download</a>
 </p>
 
 ## What is AI DAW?
@@ -182,6 +188,72 @@ pnpm build:aidaw      # build the aidaw CLI (see tools/build-aidaw.sh)
 > **Intel Macs are not supported yet.** ONNX Runtime publishes no prebuilt binaries for
 > `x86_64-apple-darwin`, so the local AI models cannot be linked for Intel macOS.
 
+## Browser access & headless
+
+AI DAW can run **without a window** and serve the same interface to any browser on your
+network. The desktop app and the browser client drive the *same* session — same project,
+same undo history, same audio engine.
+
+### Docker (pre-built image)
+
+```bash
+docker run -d --name ai-daw -p 28430:28430 -v ai-daw-data:/data ailm32442/ai-daw
+```
+
+Open <http://localhost:28430> and start working — **no login, no token, no cookie check**.
+The headless build is meant for machines without a display; access control is the
+deployment's job (LAN, container network, or a reverse proxy in front of it).
+
+### Docker (build from source)
+
+```bash
+git clone https://github.com/heshengtao/ai-daw.git
+cd ai-daw
+docker build -t ai-daw .
+docker run -d -p 28430:28430 -v ai-daw-data:/data ai-daw
+```
+
+### Headless binary
+
+```bash
+npm run build                                                # produces dist/
+cargo run -p ai-daw-daemon --no-default-features --bin aidawd -- \
+  --data-dir ~/.ai-daw --port 28430 --web-dir dist
+```
+
+### Environment variables
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `AIDAW_DATA_DIR` | `/data` in the image | sessions, presets, models |
+| `AIDAW_WEB_DIR` | `/web` in the image | built frontend to serve |
+| `AIDAW_NO_AUDIO` | unset | skip opening an audio device (containers without ALSA) |
+| `AIDAW_MCP_URL` | auto-discovered | where the `aidaw` CLI looks for the running app |
+
+### HTTP API
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `POST` | `/rpc/{command}` | 96 commands, same names and arguments as the app's IPC |
+| `GET` | `/events` | Server-Sent Events: engine edits and transport state |
+| `GET` | `/audio` | WebSocket: live PCM (48 kHz stereo float32, ~10 ms blocks) |
+| `GET` | `/health` | liveness + whether an audio device is available |
+| `GET` | `/commands` | every command name the server exposes |
+
+## Architecture
+
+```
+src-tauri/          Tauri shell: windows, native plugin editors, auto-updater
+crates/daemon/      the whole backend: project engine, audio host, MCP, HTTP
+crates/engine/      DSP + scheduling + rendering (no Tauri dependency)
+crates/ipc/         the command/event schema shared by app, CLI and MCP
+src/                Vue 3 frontend — identical for desktop and browser
+```
+
+The frontend never talks to Rust directly: `src/api/ipc.ts` picks a transport (`Tauri IPC`
+or `HTTP + SSE + WebSocket`), so every screen works in both shells. That is why the browser
+build is not a port — it is the same app talking to the same backend over the network.
+
 ## FAQ
 
 ### Is AI DAW free?
@@ -209,6 +281,42 @@ VST3 and CLAP on Windows, macOS and Linux; **Audio Units (AU / AUv3)** as well o
 ### Do I need the app running to let an agent drive it?
 
 Yes. The Skill and the `aidaw` CLI talk to a running AI DAW over MCP, so start the app first (`aidaw status` will tell you if it is up).
+
+## Support
+
+### Please star us!
+⭐ Your support is the driving force for us to move forward!
+
+### Tips Welcome!
+<div align="center" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/agentparty)
+[![爱发电](https://img.shields.io/badge/爱发电-支持我们-946ce6?style=for-the-badge&logo=affine&logoColor=white)](https://afdian.com/a/agentparty)
+
+</div>
+
+### Follow us
+<div align="center">
+  <a href="https://space.bilibili.com/26978344">
+    <img src="screenshots/B.png" width="100" height="100" style="border-radius: 80%; overflow: hidden;" alt="bilibili"/>
+  </a>
+  <a href="https://www.youtube.com/@agentParty">
+    <img src="screenshots/YT.png" width="100" height="100" style="border-radius: 80%; overflow: hidden;" alt="youtube"/>
+  </a>
+</div>
+
+### Join the Community
+If you have any questions or issues with the project, you are welcome to join our community.
+
+1. QQ Group: `931057213` (Full) / `902882342` (Group 2)
+
+2. Discord: [Discord link](https://discord.gg/f2dsAKKr2V)
+
+## Contributors
+
+<a href="https://github.com/heshengtao/ai-daw/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=heshengtao/ai-daw" alt="Contributors to heshengtao/ai-daw" />
+</a>
 
 ## License
 

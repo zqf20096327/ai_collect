@@ -19,7 +19,7 @@ Agents (智能体) 精选资源合集，持续更新中
 |[AI Agents大爆发：软件2.0雏形初现，OpenAI的下一步](https://mp.weixin.qq.com/s/Jb8HBbaKYXXxTSQOBsP5Wg)|Lilian Weng 的个人博客文章，Lilian 现在是 OpenAI 的 Head of Safety Systems，之前还领导过 OpenAI 的 Applied AI 团队。AI Agent 被认为是 OpenAI 发力的下一个方向。OpenAI 的联合创始人 Andrej Karpathy 在近期的一次公开活动上提到“相比模型训练方法，OpenAI 内部目前更关注 Agent 领域的变化，每当有新的 AI Agents 论文出来的时候，内部都会很兴奋并且认真地讨论”，而在更早之前，Andrej  还评价 AutoGPT 是 Prompt Engineering 下一阶段的探索方向。|[英文原文](https://lilianweng.github.io/posts/2023-06-23-agent/)|
 |[《综述：全新大语言模型驱动的Agent》——4.5万字详细解读复旦NLP和米哈游最新Agent Survey](https://zhuanlan.zhihu.com/p/656676717)|复旦NLP团队和米哈游一起出的《TITLE：The Rise and Potential of Large Language Model Based Agents: A Survey》论文一个翻译版本，作者同时对部分内容进行了删繁就简，总结概括。|[论文原文](https://arxiv.org/pdf/2309.07864v1.pdf)|
 |[AI Agent的千亿美金问题：如何重构10亿知识工作职业，掀起软件生产革命？](https://mp.weixin.qq.com/s/JYu_oXWbWbasT1fcBRo-cA)|作者认为 agent 产品需要具备的特性是，要给产品设计者和用户提供干预空间。目前实践中最具代表性的有两类：中间层的 Agent Framework 和垂直领域的 Vertical Agent。|-|
-|[LangChain Agents - Joining Tools and Chains with Decisions](https://www.youtube.com/watch?v=ziu87EXZVUE&ab_channel=SamWitteveen)|LangChain Agents--将工具和任务链与决策结合起来|英文 Youtube 视频，LangChain 项目官方对预置的 agents 介绍。|-|
+|[LangChain Agents - Joining Tools and Chains with Decisions](https://www.youtube.com/watch?v=ziu87EXZVUE&ab_channel=SamWitteveen)|LangChain Agents--将工具和任务链与决策结合起来|英文 Youtube 视频，LangChain 项目官方对预置的 agents 介绍。|
 
 
 ## 论文
@@ -35,16 +35,19 @@ Agents (智能体) 精选资源合集，持续更新中
 |[ClawBench: Can AI Agents Complete Everyday Online Tasks?](https://arxiv.org/abs/2604.08523)|面向真实线上任务的浏览器智能体评测框架，包含 153 个日常任务并覆盖 144 个真实网站；通过隔离容器、多种可选 agent harness，以及回放、动作、网络和消息轨迹支持可复现实验与失效分析。|[项目主页](https://claw-bench.com/) · [GitHub](https://github.com/TIGER-AI-Lab/ClawBench)|
 |[awesome-llm-agent-papers](https://github.com/js-lee-AI/awesome-llm-agent-papers)| 《LLM Agents: A Survey》综述的配套论文清单，按规划与推理、记忆、工具使用、多智能体协作以及评测与安全分类整理| ![GitHub Repo stars](https://badgen.net/github/stars/js-lee-AI/awesome-llm-agent-papers)|
 |[awesome-agent-loop-papers](https://github.com/js-lee-AI/awesome-agent-loop-papers)| 《The Agent Loop》综述的配套论文清单，以智能体循环为主线，涵盖循环范式、终止与验证、agentic RL、技能（skills）与 harness| ![GitHub Repo stars](https://badgen.net/github/stars/js-lee-AI/awesome-agent-loop-papers)|
+|[Agon: An Autonomous Large-Scale Omnidisciplinary Research System Built on Prompt Economy](https://arxiv.org/abs/2606.24177)|基于 Prompt Economy 的全学科自动科研系统。在所有 autoresearch 系统中提示词量最小：18 个角色的 prompt 一共 230.6 KiB。|[GitHub 开源地址](https://github.com/AutoResearch-Factory/Agon)|
+|[PerspectiveGap: A Benchmark for Multi-Agent Orchestration Prompting](https://arxiv.org/abs/2606.08878)|首个评测 LLM 多 agent 提示词写作的 benchmark。10 种拓扑，110 个场景，测 LLM 能不能把上下文片段分配给对的 subagent。33 个商业模型的平均通过率只有 17.2%。|[GitHub 开源地址](https://github.com/WhymustIhaveaname/PerspectiveGap) · [Hugging Face](https://huggingface.co/datasets/sun1245/PerspectiveGap)|
 
 
 ## 2024-2026 重要项目
 
-本仓库早期内容主要覆盖 2023 年的 Agent 生态。以下为 2024-2026 年间崛起并经验证仍活跃的重要项目与协议（2026-08 更新：新增 deepseek-harness、Codex CLI、OpenClaw、Hermes、pi、Agent Skills）。
+本仓库早期内容主要覆盖 2023 年的 Agent 生态。以下为 2024-2026 年间崛起并经验证仍活跃的重要项目与协议（2026-08 更新：新增 deepseek-harness、Codex CLI、OpenClaw、Hermes、pi、Agent Skills；2026-11 更新：新增 FrontierAgent、nanoMuse、OpenGCUA、LightAgent、AnyModelBot、ClickHouse Loom）。
 
 |名称|Stars|简介|
 |---|---|---|
 |[LangGraph](https://github.com/langchain-ai/langgraph)|![GitHub Repo stars](https://badgen.net/github/stars/langchain-ai/langgraph)|LangChain 团队推出的有状态、多角色 Agent 编排框架，以图 (Graph) 的方式构建可控、可循环的 Agent 工作流。|
 |[CrewAI](https://github.com/crewAIInc/crewAI)|![GitHub Repo stars](https://badgen.net/github/stars/crewAIInc/crewAI)|面向角色协作的多 Agent 框架，让多个扮演不同角色的智能体像团队一样协同完成复杂任务。|
+|[LightAgent](https://github.com/wanxingai/LightAgent)|![GitHub Repo stars](https://badgen.net/github/stars/wanxingai/LightAgent)|轻量级 Python Agent 框架，支持工具、记忆、MCP、Skills 与流式输出，提供 LightSwarm 多 Agent 协作、LightFlow 检查点工作流及带产物验证的持久化动态 DAG（LightDAG）。|
 |[OpenAI Agents SDK](https://github.com/openai/openai-agents-python)|![GitHub Repo stars](https://badgen.net/github/stars/openai/openai-agents-python)|OpenAI 官方推出的轻量级多 Agent 编排 SDK，内置 handoffs, guardrails 与 tracing，是 Swarm 的生产级继任者。|
 |[OpenHands](https://github.com/OpenHands/OpenHands)|![GitHub Repo stars](https://badgen.net/github/stars/OpenHands/OpenHands)|原 OpenDevin，能够编写代码, 运行命令, 浏览网页的自主软件工程 Agent 平台。|
 |[Orkas](https://github.com/Orkas-AI/Orkas)|![GitHub Repo stars](https://badgen.net/github/stars/Orkas-AI/Orkas)|开源、本地优先的 AI 团队桌面应用，由 Commander 将目标转成可执行计划，并在一个对话中协调专业 Agent 并行或串行完成复杂工作。|
@@ -75,6 +78,11 @@ Agents (智能体) 精选资源合集，持续更新中
 |[oh-my-agent](https://github.com/first-fluke/oh-my-agent)|![GitHub Repo stars](https://badgen.net/github/stars/first-fluke/oh-my-agent)|不绑定厂商的编码 Agent harness：给 Claude Code、Codex CLI、Cursor 等现有 Agent 加上规划、开发、审查、调试的角色分工，技能放在一个 `.agents/` 目录里共用；长任务可以设门禁，你自己的测试脚本不通过就不能结束。|
 |[PlaceCall](https://github.com/voygr-tech/placecall)|![GitHub Repo stars](https://badgen.net/github/stars/voygr-tech/placecall)|给 Agent 一部电话：通过远程 MCP 服务器和 Agent Skill（客户端 MIT 开源），让 Claude Code、Codex、Cursor 等 Agent 替用户给美国商家拨打真实电话（订位、预约、询价），可处理语音菜单、等待和转接，通话中能把问题转回给用户，结束后返回结构化结果、文字记录和录音。通话服务为托管付费服务，仅限美国号码。|
 |[Frink](https://github.com/benord-labs/frink)|![GitHub Repo stars](https://badgen.net/github/stars/benord-labs/frink)|桌面优先的开源（MIT）应用，可在你已经在用的各家 AI 编程服务商上运行并行智能体，以及由定时调度、Webhook 或 Linear、Sentry 等工具的事件触发的多步骤自定义工作流。工作流除了智能体、命令和审批步骤之外，还可以包含你自己用代码编写的步骤。官网 [frink.dev](https://frink.dev)。|
+|[AnyModelBot](https://github.com/modelflare-ai/AnyModelBot)|![GitHub Repo stars](https://badgen.net/github/stars/modelflare-ai/AnyModelBot)|开源（MIT）桌面 AI 助手，开箱即用的 DeepSeek Super Agent：后台任务、一句话写成的定时规则和集中的「需要你」收件箱；设计参考 DeepSeek 的 dsh-superagent 原型（研究原型），运行在 DeepSeek Harness 上，可在应用、微信、飞书中使用，通过 Modelflare 账号调用 70+ 模型。|
+|[ClickHouse Loom](https://github.com/ClickHouse/loom)|![GitHub Repo stars](https://badgen.net/github/stars/ClickHouse/loom)|ClickHouse 开源（Apache-2.0）的自托管 MCP 服务器：为多个 Agent 提供共享的长期记忆（版本历史、冲突标记、审计与擦除）、带引用的文档检索、代码仓库索引和多 Agent 任务交接，支持 Claude Code、Codex 插件和 Python/TypeScript SDK，数据存储在 ClickHouse 中。|
+|[FrontierAgent](https://github.com/ApodexAI/FrontierAgent)|![GitHub Repo stars](https://badgen.net/github/stars/ApodexAI/FrontierAgent)|Apodex 开源的 Agent 运行时、终端产品与评测套件（Apache-2.0），面向长程研究与文件类工作：ReAct 单 Agent 模式与 Agent Team 模式（协调者维护任务板、并行子 Agent 汇报后综合），同一工作流引擎也用于其模型评测。|
+|[nanoMuse](https://github.com/nano-muse/nanoMuse)|![GitHub Repo stars](https://badgen.net/github/stars/nano-muse/nanoMuse)|开源（GPL-3.0）的跨设备个人 Agent：手机、桌面、Web 控制台和中继服务都在同一仓库，可自托管、自选模型；定位为 Meta Muse 个人 Agent 的低成本开源替代。|
+|[OpenGCUA](https://github.com/Tongyi-MAI/OpenGCUA)|![GitHub Repo stars](https://badgen.net/github/stars/Tongyi-MAI/OpenGCUA)|通义实验室开放的通用 Computer-Use Agent 研究栈（Apache-2.0，2026-10 研究预览）：把 GUI 操作写成代码并与辅助功能树、应用 API、Shell 组合，附 OSWorld 集成示例、8 个前沿模型评测轨迹与跨设备 SDK。|
 
 
 ## 前沿项目
@@ -94,7 +102,7 @@ Agents (智能体) 精选资源合集，持续更新中
 |[Tura](https://github.com/Tura-AI/tura)|![GitHub Repo stars](https://badgen.net/github/stars/Tura-AI/tura)|A local-first open-source coding agent with terminal and graphical interfaces.|使用 Rust 编写的编程 Agent，提供 CLI、TUI 与 GUI，支持项目级规则、检查点、内置验证流程和公开基准测试。|
 |[goose](https://github.com/aaif-goose/goose)|![GitHub Repo stars](https://badgen.net/github/stars/aaif-goose/goose)|An open source, extensible AI agent that goes beyond code suggestions.|Block(Square 母公司)开源的本地可扩展 AI Agent，支持 MCP，可自动构建、执行和调试任务。|
 |[DeerFlow](https://github.com/bytedance/deer-flow)|![GitHub Repo stars](https://badgen.net/github/stars/bytedance/deer-flow)|A community-driven Deep Research framework.|字节跳动开源的深度研究 Agent 框架，基于 LangGraph，结合搜索、爬取与代码执行完成自动化研究报告。|
-|[Suna](https://github.com/kortix-ai/suna)|![GitHub Repo stars](https://badgen.net/github/stars/kortix-ai/suna)|Open source generalist AI agent.|开源通用型 AI Agent（对标 Manus），可自主浏览网页、执行命令、操作文件完成真实世界任务。|
+|[Suna](https://github.com/kortix-ai/CompanyOS)|![GitHub Repo stars](https://badgen.net/github/stars/kortix-ai/CompanyOS)|Open source generalist AI agent.|开源通用型 AI Agent（对标 Manus），可自主浏览网页、执行命令、操作文件完成真实世界任务。|
 
 
 ## Agents 开发平台

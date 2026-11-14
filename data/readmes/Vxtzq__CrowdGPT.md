@@ -32,10 +32,9 @@
   <strong>The best 0$ AI.</strong>
 </p>
 
-# CrowdGPT v3.1 changelog
-- Allowed training and uploading at the same time
-- Enhanced CLI client version
-- Reduced weight decay and increased learning rate on server
+# CrowdGPT v3.3 changelog
+- Merged numerous pull requests
+- Prepared ground for Crowd-v2
  
 ## What is CrowdGPT?
 
@@ -101,7 +100,8 @@ On a server or over SSH, run without a window:
 
 ```bash
 crowdgpt --headless                      # reuses the login saved by the app
-CROWDGPT_PASSWORD=... crowdgpt --headless --user NAME
+export CROWDGPT_PASSWORD= "<your password>"
+crowdgpt --headless --user NAME
 crowdgpt --headless --anon               # train without an account
 crowdgpt --headless --rounds 5           # stop after 5 rounds
 ```
@@ -119,6 +119,15 @@ Prefer the hidden prompt. Passing `--password` is intended for automation and ma
 leave the value in shell history or the process list. Registration saves the session
 token in `checkpoints/auth_token.json`, so the next `crowdgpt --headless` run can
 reuse it. Registration exits without training.
+
+Log in to an existing account and save the session, again without the desktop app:
+
+```bash
+crowdgpt --login --user NAME
+# prompts for the password without echoing it
+```
+
+`--login` also accepts `CROWDGPT_PASSWORD` or `--password`, with the same caveat as above. It saves the session in `checkpoints/auth_token.json` and exits without training.
 
 ### Diagnostics
 

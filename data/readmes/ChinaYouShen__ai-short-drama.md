@@ -35,20 +35,33 @@ ai-short-drama/
 │   ├── continuity-ledger.md    # 多集作品的连续性台账模板（伏笔·人物·道具·规则）
 │   └── reference-manifest.md   # 参考素材清单模板（图·音频·视频的编号与绑定）
 ├── scripts/
-│   ├── validate.py             # 交付自检：字段·时间码·镜长·末镜·单段15秒·多段总账·台词·主色·法相·编号·景别·特效层
-│   └── audit_vfx.py            # 特效主体体检：133 条招式逐条查是否画得出来
+│   ├── validate.py             # 交付自检：字段·时间码·镜长·末镜·单段15秒·多段总账·一镜一动作·净稿·命中结果·终结起势·台词·主色·法相·编号·景别·特效层
+│   └── audit_vfx.py            # 特效主体体检：221 条招式逐条查是否画得出来、破坏三栏是否写全，并校验打击面取值
 └── references/
     ├── triggers.md             # 触发词与各平台写法
     ├── cinematography.md       # 景别·运镜·焦距与稳定性
     ├── h3-official.md          # H3 官方硬限制·运镜词表·模型脾气·生成后核对
     ├── h3-format.md            # MiniMax H3 字段与参考标签规范
     ├── optimization.md         # 已有提示词的优化流程与不可生成写法清单
-    ├── production/             # 选题·大纲·节奏·一致性·多段拼接·人物·场景·道具·站位·剧本·分镜·图片·漫剧·小说改编
+    ├── models-compare.md       # 跨模型对照：时长档位·素材上限·声音字段·换模型改三处
+    ├── production/             # 选题·大纲·节奏·一致性·多段拼接·平台发行·人物·场景·道具·站位·剧本·分镜·图片·漫剧·小说改编
     ├── wenxi/                  # 文戏：对白·表演·关系·多人调度·风格·分镜
-    └── wuxi/                   # 武戏：招式·位移·兵器·能力·可生成性·连续性·分镜
+    └── wuxi/                   # 武戏：动作导演·招式·位移·兵器·能力·可生成性·连续性·分镜
+        ├── action-directing.md  # 动作导演：角色动作档案·交锋因果·状态延续·配速预算·素材职责·净稿
         ├── catalog/            # 武戏体系分类：六大类·门派与阵营·逐层单选与返回·武侠四家武学谱
         └── ultimate/           # 必杀技：五范式·法相·配色·爆发收束·成套武学的连段编排·角色招式库与逐镜样板
 ```
+
+## 选之前先看六件事
+
+| 看什么 | 本包的答案 |
+| --- | --- |
+| 交回什么 | 到**分镜与提示词**：集纲、剧本、分镜表、可直接贴进 H3 的提示词与校验报告；不代你调接口出片 |
+| 适配哪个模型 | 主口径 MiniMax H3（4～15 秒整数、六段全参考）；换 Seedance、可灵、Veo 前先查 `references/models-compare.md` |
+| 支持哪些 agent | 任何读 SKILL.md 的 agent；接入写法见 `adapters/`（含 WorkBuddy、Codex、Cursor、豆包、文心等） |
+| 什么语言 | 中文写正文、英文字段名；出海可直接改成英文正文 |
+| 能不能商用 | GPL-3.0：可商用、可修改，衍生作品同样开源 |
+| 还维护吗 | 自检 20 项常绿（含文档同步检查）、221 条招式特效与破坏体检 0 问题，每次改动都跑门禁并同步文档 |
 
 ## 快速开始
 
@@ -150,3 +163,16 @@ ai-short-drama/
 ---
 
 © 2026 酉神。Licensed under GPL-3.0.
+
+## 样例
+
+`samples/` 四份文件可直接跑，全部过检：
+
+| 文件 | 是什么 | 怎么跑 |
+| --- | --- | --- |
+| `kanglong_youhui.txt` | 亢龙有悔 12 秒 5 镜，Ref2VA 三图 | `python3 scripts/validate.py --prompt samples/kanglong_youhui.txt --method 降龙十八掌` |
+| `fight15.txt` | 雨夜巷战 15 秒单段，纯动作转特效写法 | `python3 scripts/validate.py --prompt samples/fight15.txt` |
+| `fight_ref2va.txt` | 多参考路线的双人对打 | `python3 scripts/validate.py --prompt samples/fight_ref2va.txt` |
+| `storyboard_sample.json` | 分镜 JSON，字段与资产绑定齐备 | `python3 scripts/validate.py samples/storyboard_sample.json` |
+
+仓库带 GitHub Actions：每次 push 自动跑自检、招式体检与这四份样例，不通过即标红。

@@ -15,7 +15,7 @@
 
 Most AI character apps eventually forget who you are. Their relationships reset to whatever fits in a prompt, and their personalities drift as the conversation grows. `eros-engine` makes those parts durable: a companion remembers you across sessions, the relationship changes through interaction, and each reply is chosen in character rather than improvised by a generic assistant.
 
-The engine has nine foundations:
+The engine has ten foundations:
 
 - 🧠 **Two-layer memory** — stable facts about the user live alongside the story of each relationship: a running arc, dated episodes, and a journal of moments that come back on their anniversaries. → [Memory layers](docs/memory-layers.md)
 - 💞 **Evolving affinity** — six relationship dimensions move on graded, damped writes and decay with time, shaping tone, depth, and even whether the companion replies. → [Affinity model](docs/affinity-model.md) · [Ghost mechanics](docs/ghost-mechanics.md)
@@ -25,6 +25,7 @@ The engine has nine foundations:
 - 🎙️ **A voice turn path built for interruption** — a lean, low-latency turn endpoint on its own channel, with barge-in: the client stops playback and reports what was actually spoken, so history records what the user *heard* rather than what the model produced. A turn lost to a dropped connection can be regenerated instead of stranded. → [API reference](docs/api-reference.md#post-compvoicesession_idturnstream)
 - 🌍 **A simulated world** — personas have an off-screen life. A scheduled world director evolves a shared relationship graph and daily scripts; a feed lets personas post and comment on one another; per-persona stories keep work, romance, and daily living consistent over time. Fully opt-in and layered behind independent switches — an unconfigured deployment runs zero queries and spawns zero sweepers. → [World system](docs/world-system.md)
 - 🗓️ **Life events and needs** — the persona has a day of her own. When the caller asks, the engine draws what happens in it: incidents of up to a few hours, and trips or illnesses that last days, shaped by per-persona settings and cooldowns. Some take her offline — asleep, busy, away from the phone: she goes quiet, then explains. With the LLM judge she also has six basic needs (hunger, company, energy, being cared about, going out, letting loose) that drift between ratings and tilt what happens. → [Life events and needs](docs/life-events-needs.md)
+- 🥂 **Dates** — the user can ask the persona out: a place, a plan, an hour or four. If she says yes, the two of them talk in a conversation of their own while the main chat waits. When the date ends it is judged once as a whole, moves each line of the relationship by at most one tier, and is remembered as one episode with its milestones. → [Activities](docs/activities.md)
 - 👥 **Group chat** — one user and up to three personas in a single conversation. A director call picks who answers and in what order; each speaker replies in its own voice with its own 1:1 relationship, and later speakers hear the earlier ones. A group reads affinity but never writes it. → [Group chat](docs/group-chat.md)
 
 This is not a generic agent framework. It is the stateful core for products where one persona gets to know the same person over time: companions, journals, coaches, tutors, and character chat.
@@ -59,9 +60,9 @@ cargo add eros-engine-core eros-engine-store eros-engine-llm
 
 ```toml
 [dependencies]
-eros-engine-core  = "2.6"
-eros-engine-store = "2.6"   # optional: Postgres + pgvector persistence
-eros-engine-llm   = "2.6"   # optional: model and embedding clients
+eros-engine-core  = "2.7"
+eros-engine-store = "2.7"   # optional: Postgres + pgvector persistence
+eros-engine-llm   = "2.7"   # optional: model and embedding clients
 ```
 
 `eros-engine-server` is not published to crates.io; run it as a Docker image instead.
@@ -71,14 +72,14 @@ eros-engine-llm   = "2.6"   # optional: model and embedding clients
 Multi-architecture images are published to GitHub Container Registry for every `v*` tag:
 
 ```bash
-docker pull ghcr.io/etherfunlab/eros-engine:2.6.6
+docker pull ghcr.io/etherfunlab/eros-engine:2.7.0
 # Or follow the latest tagged release
 docker pull ghcr.io/etherfunlab/eros-engine:latest
 ```
 
 ```bash
 docker run --rm -p 8080:8080 --env-file .env \
-  ghcr.io/etherfunlab/eros-engine:2.6.6 serve
+  ghcr.io/etherfunlab/eros-engine:2.7.0 serve
 ```
 
 Bring your own Postgres and `.env`; the same `docker/Dockerfile` can be deployed to any container host. See [Deploying](docs/deploying.md).

@@ -18,7 +18,7 @@ and the engine turns it into audio.
 Design principle: **the engine owns the deterministic "audio truth", the AI owns "intent translation", and the interface layer is the contract between them.**
 
 Audio is powered by [manguebyte](https://github.com/alessonqueirozdev-hub/manguebyte) (a Rust audio framework),
-vendored as a git submodule.
+a regular dependency from crates.io.
 
 ---
 
@@ -86,7 +86,7 @@ muser is open source and free. Every piece of the *Electric Sheep* suite was mad
 - **ABC export**: `muser abc song.muser.json` writes the score as standard multi-voice ABC 2.1 for models and notation tools that read ABC; `--yue2` writes the native score dialect of [YuE2](https://github.com/multimodal-art-projection/YuE) (Vocal/Ins melodies with chord symbols) for its `full` / `melody` modes. The key is taken from the clips' ABC or estimated, and chord symbols are estimated from the accompaniment
 - **Choosing sounds without ears**: `muser sounds list` lists every sound on this machine (built-in, SFZ on `MUSER_SFZ_PATH`, instrument plugins); `muser sounds describe` renders probe notes and writes a text card (brightness, attack, sustain, release, range, velocity response, stereo width, pitch), cached locally; `--keys` maps a loop kit or drum kit key by key (which keys sound, loop length in bars, density). SKILLS.md teaches agents to keep what they hear in the user's own skill
 - **Plugin sounds and a local sound library**: `muser sounds presets` lists a plugin's built-in sounds — VST3 `.vstpreset`s, Surge XT patches, Serum 2 presets and Serum 2 FX effect chains, factory or from installed sound packs (loaded directly), Kontakt instruments with library / category / tags; sounds that only load in the plugin's own window are captured once (by a person, or an agent with computer use) into `~/.config/muser/sound-library` and used by name from then on (`sounds state` / `capture` / `save` / `identify`)
-- **Plugin windows (macOS)**: `muser plugin edit` opens a plugin's own editor with live audio; in `muser view`, 🎛 opens a sound drawer — built-in instruments and SFZ (searchable, one click), plugins with their usable sounds, or load a new one in the plugin's window, audition the track and sync the state into the project. Kontakt loop kits follow the project tempo, so tempo-locked loops work at any speed
+- **Plugin windows (macOS, Windows)**: `muser plugin edit` opens a plugin's own editor with live audio; in `muser view`, 🎛 opens a sound drawer — built-in instruments and SFZ (searchable, one click), plugins with their usable sounds, or load a new one in the plugin's window, audition the track and sync the state into the project. Kontakt loop kits follow the project tempo, so tempo-locked loops work at any speed
 - **Per-note pitch bend** (`"bend"`: guitar bends, scoops, falls, on their own MIDI channel) and **effect bypass** (`"bypass": true`, toggled by clicking the effect in `muser view`)
 - `muser play`: play a project through the sound card and exit — quick listening for the sketch-first workflow
 - Two AI interfaces: **CLI** (shell calls) and **MCP server** (direct tool calls from the agent)
@@ -181,20 +181,14 @@ To run `muser` from any folder, add the unpacked folder to your `PATH`.
 
 ### Build from source (for developers)
 
-#### 1. Clone (with submodules)
-
-muser depends on the vendored manguebyte submodule, so clone recursively:
+#### 1. Clone
 
 ```bash
-git clone --recurse-submodules https://github.com/claw-works/muser.git
+git clone https://github.com/claw-works/muser.git
 cd muser
 ```
 
-If you already cloned without it, fetch the submodule:
-
-```bash
-git submodule update --init --recursive
-```
+manguebyte comes from crates.io, so Cargo fetches it on the first build.
 
 #### 2. Build
 
@@ -415,7 +409,7 @@ muser/
 
 The documents below are written in Chinese, except the plugin skills under `skills/plugins/`.
 
-- [ARCHITECTURE.md](ARCHITECTURE.md) — layered architecture, data flow, project file format, vendoring strategy, roadmap
+- [ARCHITECTURE.md](ARCHITECTURE.md) — layered architecture, data flow, project file format, the manguebyte dependency, roadmap
 - [SKILLS.md](SKILLS.md) — how the AI expresses musical intent (entry point: workflow, cheat sheet, instrument and effect index)
 - [skills/](skills/) — parameters, scene presets and common mistakes for each instrument family and effect; automation, routing, sustain pedal
 - [TOOLS.md](TOOLS.md) — CLI commands and MCP tools
@@ -423,4 +417,4 @@ The documents below are written in Chinese, except the plugin skills under `skil
 
 ## License
 
-The code in this repository is dual-licensed under MIT / Apache-2.0. The vendored manguebyte is also MIT / Apache-2.0.
+The code in this repository is dual-licensed under MIT / Apache-2.0. manguebyte is also MIT / Apache-2.0.
