@@ -243,12 +243,12 @@
   }
  },
  "Card-Forge/forge": {
-  "commit_7d": 281,
-  "commit_90d": 1560,
+  "commit_7d": 111,
+  "commit_90d": 1547,
   "rel_ver": "daily-snapshots",
   "rel_pub": "2025-02-20",
-  "rel_days": 625,
-  "rel_n90": 1,
+  "rel_days": 632,
+  "rel_n90": 2,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -263,10 +263,10 @@
    "Shell": 0,
    "AppleScript": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -341,22 +341,22 @@
    "CSS": 5,
    "Shell": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "karust/openserp": {
-  "commit_7d": 1,
-  "commit_90d": 13,
-  "rel_ver": "v0.8.17",
-  "rel_pub": "2026-10-28",
-  "rel_days": 10,
-  "rel_n90": 3,
+  "commit_7d": 2,
+  "commit_90d": 15,
+  "rel_ver": "v0.8.19",
+  "rel_pub": "2026-11-11",
+  "rel_days": 3,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -370,10 +370,10 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -462,10 +462,10 @@
   }
  },
  "matthiasn/lotti": {
-  "commit_7d": 105,
-  "commit_90d": 1106,
-  "rel_ver": "1.1.87+4477",
-  "rel_pub": "2026-11-06",
+  "commit_7d": 86,
+  "commit_90d": 1117,
+  "rel_ver": "1.1.100+4490",
+  "rel_pub": "2026-11-13",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
@@ -482,21 +482,21 @@
    "TLA": 1,
    "TypeScript": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Derpyu520/qq-bridge": {
-  "commit_7d": 31,
-  "commit_90d": 125,
+  "commit_7d": 2,
+  "commit_90d": 127,
   "rel_ver": "v0.2.2-rc1",
   "rel_pub": "2026-11-06",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 10,
   "rel_pre": true,
   "rel_none": false,
@@ -510,10 +510,10 @@
    "HTML": 18,
    "Batchfile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4237,11 +4237,11 @@
   }
  },
  "a2ui-project/a2ui": {
-  "commit_90d": 761,
-  "commit_7d": 128,
-  "rel_ver": "python/a2ui-core/v0.5.0",
-  "rel_pub": "2026-11-02",
-  "rel_days": 5,
+  "commit_90d": 828,
+  "commit_7d": 103,
+  "rel_ver": "cli-v0.3.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -4259,10 +4259,10 @@
    "Swift": 10,
    "JavaScript": 3
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"

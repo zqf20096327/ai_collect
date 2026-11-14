@@ -88,12 +88,12 @@
   }
  },
  "onehumanbeing/esp32-iphone-agent": {
-  "commit_90d": 169,
-  "commit_7d": 89,
-  "rel_ver": "cli-v0.1.2",
-  "rel_pub": "2026-11-05",
-  "rel_days": 2,
-  "rel_n90": 5,
+  "commit_90d": 197,
+  "commit_7d": 28,
+  "rel_ver": "v1.0.6",
+  "rel_pub": "2026-11-13",
+  "rel_days": 1,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -108,10 +108,10 @@
    "C++": 3,
    "JavaScript": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4021,12 +4021,12 @@
   }
  },
  "antvis/AVA": {
-  "commit_90d": 89,
-  "commit_7d": 19,
-  "rel_ver": "v4.0.0",
-  "rel_pub": "2026-11-04",
-  "rel_days": 3,
-  "rel_n90": 5,
+  "commit_90d": 107,
+  "commit_7d": 18,
+  "rel_ver": "v4.0.3",
+  "rel_pub": "2026-11-13",
+  "rel_days": 1,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4041,10 +4041,10 @@
    "CSS": 3,
    "Python": 2
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
@@ -4183,13 +4183,16 @@
    "HTML": 55,
    "Python": 45
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261114",
   "dim_ts": {
    "release": "20261112",
    "security": "20261112",
    "contrib": "20261112",
-   "lang": "20261112"
-  }
+   "lang": "20261112",
+   "commit": "20261114"
+  },
+  "commit_90d": 117,
+  "commit_7d": 117
  },
  "Spectra010s/git-aic": {
   "rel_ver": "v1.4.2",
@@ -4240,6 +4243,46 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "sidvvkk/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "ciprianburdujanumarul1-cell/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

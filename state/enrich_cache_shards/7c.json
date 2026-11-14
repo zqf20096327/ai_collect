@@ -208,8 +208,8 @@
   }
  },
  "tsingyuai/growth-lab": {
-  "commit_90d": 42,
-  "commit_7d": 0,
+  "commit_90d": 4,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -224,10 +224,10 @@
    "Makefile": 1,
    "Dockerfile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -283,11 +283,11 @@
   }
  },
  "nilearn/nilearn": {
-  "commit_90d": 173,
-  "commit_7d": 9,
+  "commit_90d": 172,
+  "commit_7d": 3,
   "rel_ver": "0.14.1",
   "rel_pub": "2026-09-04",
-  "rel_days": 64,
+  "rel_days": 71,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -303,10 +303,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1821,13 +1821,16 @@
    "Python": 43,
    "Shell": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261114",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261114"
+  },
+  "commit_90d": 162,
+  "commit_7d": 0
  },
  "AdesholaAfolabi/slik_python_package": {
   "rel_ver": null,

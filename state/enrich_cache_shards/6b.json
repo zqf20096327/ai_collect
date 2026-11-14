@@ -4261,5 +4261,32 @@
    "contrib": "20261112",
    "lang": "20261112"
   }
+ },
+ "kingcharleslzy-ai/DSH-Spicy": {
+  "rel_ver": "v3.1.3",
+  "rel_pub": "2026-11-13",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 55,
+   "Python": 36,
+   "JavaScript": 8,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }

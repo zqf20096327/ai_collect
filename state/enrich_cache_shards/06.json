@@ -48,11 +48,11 @@
   }
  },
  "rlaope/oh-my-hermes": {
-  "commit_90d": 5334,
-  "commit_7d": 898,
-  "rel_ver": "v4.0.6",
-  "rel_pub": "2026-11-05",
-  "rel_days": 2,
+  "commit_90d": 6395,
+  "commit_7d": 1292,
+  "rel_ver": "omher-v0.2.8",
+  "rel_pub": "2026-11-13",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -68,10 +68,10 @@
    "HTML": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -140,10 +140,10 @@
   "lang": {
    "Shell": 100
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -205,12 +205,12 @@
   }
  },
  "kubeshop/testkube": {
-  "commit_90d": 441,
-  "commit_7d": 20,
-  "rel_ver": "2.15.0",
-  "rel_pub": "2026-10-29",
-  "rel_days": 9,
-  "rel_n90": 7,
+  "commit_90d": 432,
+  "commit_7d": 15,
+  "rel_ver": "2.15.2",
+  "rel_pub": "2026-11-12",
+  "rel_days": 2,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -225,10 +225,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4005,6 +4005,63 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "lloweryfn-rgb/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "sours3s/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "Crestnearplay/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

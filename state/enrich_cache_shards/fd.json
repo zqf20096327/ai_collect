@@ -75,12 +75,12 @@
   }
  },
  "magefree/mage": {
-  "commit_90d": 1149,
-  "commit_7d": 97,
+  "commit_90d": 1153,
+  "commit_7d": 95,
   "rel_ver": "xmage_1.4.63V1",
   "rel_pub": "2026-10-31",
-  "rel_days": 7,
-  "rel_n90": 3,
+  "rel_days": 14,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -95,10 +95,10 @@
    "Go Template": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -129,10 +129,10 @@
  },
  "coder-hxl/x-crawl": {
   "commit_90d": 6,
-  "commit_7d": 1,
+  "commit_7d": 0,
   "rel_ver": "v10.1.0",
   "rel_pub": "2025-04-06",
-  "rel_days": 580,
+  "rel_days": 587,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -145,10 +145,10 @@
    "TypeScript": 98,
    "JavaScript": 2
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -243,12 +243,12 @@
   }
  },
  "wzyn20051216/solidworks-automation-skill": {
-  "commit_90d": 185,
-  "commit_7d": 13,
-  "rel_ver": "v2.0.1",
-  "rel_pub": "2026-11-04",
+  "commit_90d": 193,
+  "commit_7d": 8,
+  "rel_ver": "v2.1.1",
+  "rel_pub": "2026-11-11",
   "rel_days": 3,
-  "rel_n90": 3,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -263,22 +263,22 @@
    "CSS": 3,
    "JavaScript": 3
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "agents-flex/agents-flex": {
-  "commit_90d": 212,
-  "commit_7d": 14,
+  "commit_90d": 187,
+  "commit_7d": 12,
   "rel_ver": "v2.3.2",
   "rel_pub": "2026-10-28",
-  "rel_days": 10,
-  "rel_n90": 5,
+  "rel_days": 17,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -289,10 +289,10 @@
   "lang": {
    "Java": 100
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4401,6 +4401,46 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "PrathmeshYa/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "Edutzuu2001/ai--manus": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

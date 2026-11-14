@@ -248,12 +248,12 @@
   }
  },
  "BehaviorTree/BehaviorTree.CPP": {
-  "commit_7d": 0,
-  "commit_90d": 55,
-  "rel_ver": "4.9.0",
-  "rel_pub": "2026-02-11",
-  "rel_days": 269,
-  "rel_n90": 0,
+  "commit_7d": 29,
+  "commit_90d": 84,
+  "rel_ver": "4.11.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 6,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -267,10 +267,10 @@
    "Python": 0,
    "Shell": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -397,10 +397,10 @@
   }
  },
  "jgravelle/jcodemunch-mcp": {
-  "commit_7d": 54,
-  "commit_90d": 1132,
-  "rel_ver": "v1.108.422",
-  "rel_pub": "2026-11-06",
+  "commit_7d": 76,
+  "commit_90d": 1121,
+  "rel_ver": "v1.108.444",
+  "rel_pub": "2026-11-13",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -417,10 +417,10 @@
    "PowerShell": 0,
    "Rust": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -457,11 +457,11 @@
   }
  },
  "Nano-Collective/nanocoder": {
-  "commit_7d": 65,
-  "commit_90d": 1214,
+  "commit_7d": 150,
+  "commit_90d": 1271,
   "rel_ver": "v1.32.0",
   "rel_pub": "2026-11-04",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -477,10 +477,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -565,11 +565,11 @@
   }
  },
  "sunlabuiuc/PyHealth": {
-  "commit_7d": 27,
-  "commit_90d": 130,
+  "commit_7d": 52,
+  "commit_90d": 181,
   "rel_ver": "v2.1.0",
   "rel_pub": "2026-10-16",
-  "rel_days": 22,
+  "rel_days": 29,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -583,10 +583,10 @@
    "Cython": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -613,13 +613,13 @@
   }
  },
  "sgl-project/sglang-omni": {
-  "commit_7d": 97,
-  "commit_90d": 1018,
-  "rel_ver": "voxt-v2.0.0",
-  "rel_pub": "2026-11-06",
-  "rel_days": 1,
+  "commit_7d": 122,
+  "commit_90d": 1059,
+  "rel_ver": "voxt-v2.0.4-beta.20261114.47",
+  "rel_pub": "2026-11-14",
+  "rel_days": 0,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -633,22 +633,22 @@
    "C++": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "giuseppe99barchetta/SuggestArr": {
-  "commit_7d": 7,
-  "commit_90d": 280,
-  "rel_ver": "v3.3.0",
-  "rel_pub": "2026-10-31",
-  "rel_days": 7,
-  "rel_n90": 9,
+  "commit_7d": 39,
+  "commit_90d": 316,
+  "rel_ver": "v3.4.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 5,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -663,10 +663,10 @@
    "JavaScript": 4,
    "HTML": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5221,6 +5221,32 @@
    "security": "20261113",
    "contrib": "20261113",
    "lang": "20261113"
+  }
+ },
+ "viktoriasemaan/data-engineering": {
+  "commit_90d": 8,
+  "commit_7d": 8,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 64,
+   "Python": 13,
+   "JavaScript": 11,
+   "CSS": 7,
+   "HTML": 3
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

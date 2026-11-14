@@ -215,11 +215,11 @@
   }
  },
  "Pinvou/pinvou-agent": {
-  "commit_7d": 24,
-  "commit_90d": 526,
-  "rel_ver": "v0.10.17",
-  "rel_pub": "2026-11-04",
-  "rel_days": 3,
+  "commit_7d": 1,
+  "commit_90d": 457,
+  "rel_ver": "v0.10.18",
+  "rel_pub": "2026-11-12",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -235,10 +235,10 @@
    "MDX": 2,
    "Shell": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -271,11 +271,11 @@
   }
  },
  "hashintel/hash": {
-  "commit_7d": 76,
-  "commit_90d": 788,
+  "commit_7d": 86,
+  "commit_90d": 848,
   "rel_ver": "@hashintel/petrinaut@0.0.23",
   "rel_pub": "2026-10-29",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -291,10 +291,10 @@
    "MDX": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -351,11 +351,11 @@
   }
  },
  "datawhalechina/torch-rechub": {
-  "commit_7d": 5,
-  "commit_90d": 92,
+  "commit_7d": 4,
+  "commit_90d": 96,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-11-06",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -368,21 +368,21 @@
    "Jupyter Notebook": 97,
    "Python": 3
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "kennss/SiliconScope": {
-  "commit_7d": 3,
-  "commit_90d": 130,
-  "rel_ver": "v4.8.1",
-  "rel_pub": "2026-11-02",
-  "rel_days": 5,
+  "commit_7d": 2,
+  "commit_90d": 118,
+  "rel_ver": "v4.8.2",
+  "rel_pub": "2026-11-11",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -398,10 +398,10 @@
    "TypeScript": 1,
    "C": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4248,11 +4248,11 @@
   }
  },
  "magiksoft/aider-desk": {
-  "commit_90d": 833,
-  "commit_7d": 59,
-  "rel_ver": "v0.90.0",
-  "rel_pub": "2026-11-02",
-  "rel_days": 5,
+  "commit_90d": 876,
+  "commit_7d": 79,
+  "rel_ver": "v0.91.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -4268,10 +4268,10 @@
    "SCSS": 1,
    "Python": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
@@ -4367,6 +4367,26 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "meirz911/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

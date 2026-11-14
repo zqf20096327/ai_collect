@@ -182,7 +182,7 @@
   }
  },
  "huhusmang/Awesome-LLMs-for-Vulnerability-Detection": {
-  "commit_7d": 8,
+  "commit_7d": 7,
   "commit_90d": 82,
   "rel_ver": null,
   "rel_none": true,
@@ -194,10 +194,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4152,5 +4152,23 @@
    "contrib": "20261113",
    "lang": "20261113"
   }
- }
+ },
+ "ApparitionBowyerPort/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "Desiredrutuck/ai--manus": {}
 }

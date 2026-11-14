@@ -242,10 +242,10 @@
   }
  },
  "Barca0412/Introduction-to-Quantitative-Finance": {
-  "commit_7d": 5,
-  "commit_90d": 81,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_7d": 17,
+  "commit_90d": 178,
+  "rel_ver": "radar-data",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -254,14 +254,18 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
-  }
+  },
+  "rel_pub": "2026-11-13",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "datawhalechina/key-book": {
   "commit_7d": 0,
@@ -4109,6 +4113,60 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "SandyPandyMandy/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "colorsphasekink/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "Courtplethink/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

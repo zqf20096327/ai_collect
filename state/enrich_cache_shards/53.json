@@ -23,8 +23,8 @@
   }
  },
  "Arindam200/awesome-ai-apps": {
-  "commit_7d": 2,
-  "commit_90d": 49,
+  "commit_7d": 1,
+  "commit_90d": 50,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -39,10 +39,10 @@
    "JavaScript": 6,
    "HTML": 3
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -160,8 +160,8 @@
   }
  },
  "google/mantis": {
-  "commit_90d": 139,
-  "commit_7d": 14,
+  "commit_90d": 189,
+  "commit_7d": 51,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -174,10 +174,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -185,10 +185,10 @@
  },
  "xuanyustudio/LocalMiniDrama": {
   "commit_90d": 25,
-  "commit_7d": 3,
+  "commit_7d": 1,
   "rel_ver": "v1.2.9",
   "rel_pub": "2026-10-16",
-  "rel_days": 22,
+  "rel_days": 29,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -204,10 +204,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4584,6 +4584,26 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "MelleVM/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

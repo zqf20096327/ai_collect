@@ -390,13 +390,13 @@
   }
  },
  "Syngnat/GoNavi": {
-  "commit_90d": 2415,
-  "commit_7d": 188,
-  "rel_ver": "v1.2.2",
-  "rel_pub": "2026-11-06",
+  "commit_90d": 2402,
+  "commit_7d": 118,
+  "rel_ver": "dev-latest",
+  "rel_pub": "2026-11-13",
   "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -410,10 +410,10 @@
    "Python": 1,
    "HTML": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -450,8 +450,8 @@
   }
  },
  "koreainvestment/open-trading-api": {
-  "commit_90d": 17,
-  "commit_7d": 2,
+  "commit_90d": 18,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -466,22 +466,22 @@
    "C": 1,
    "CSS": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "skforecast/skforecast": {
-  "commit_90d": 486,
-  "commit_7d": 0,
-  "rel_ver": "v0.26.0",
-  "rel_pub": "2026-10-08",
-  "rel_days": 30,
-  "rel_n90": 3,
+  "commit_90d": 1067,
+  "commit_7d": 234,
+  "rel_ver": "v0.27.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 3,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -495,10 +495,10 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -535,12 +535,12 @@
   }
  },
  "FalkorDB/GraphRAG-SDK": {
-  "commit_90d": 516,
-  "commit_7d": 59,
-  "rel_ver": "v1.6.0",
-  "rel_pub": "2026-11-02",
-  "rel_days": 5,
-  "rel_n90": 3,
+  "commit_90d": 510,
+  "commit_7d": 13,
+  "rel_ver": "v1.5.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 23,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -553,10 +553,10 @@
    "Jupyter Notebook": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4160,6 +4160,73 @@
    "security": "20261113",
    "contrib": "20261113",
    "lang": "20261113"
+  }
+ },
+ "ForeactLabs/OpenExecutive": {
+  "commit_90d": 916,
+  "commit_7d": 105,
+  "rel_ver": "v0.7.3",
+  "rel_pub": "2026-11-12",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 21,
+  "lang": {
+   "Python": 85,
+   "TypeScript": 13,
+   "JavaScript": 2,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "lloweryfn-rgb/ai--manus": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "AvenueBudgieShop/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

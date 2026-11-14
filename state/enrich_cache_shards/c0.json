@@ -114,11 +114,11 @@
   }
  },
  "ermig1979/Simd": {
-  "commit_90d": 500,
-  "commit_7d": 28,
+  "commit_90d": 462,
+  "commit_7d": 4,
   "rel_ver": "v8.0.167",
   "rel_pub": "2026-11-06",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -134,18 +134,18 @@
    "C": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Vincentqyw/cv-arxiv-daily": {
-  "commit_90d": 35,
-  "commit_7d": 4,
+  "commit_90d": 36,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -156,10 +156,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4527,5 +4527,43 @@
    "contrib": "20261113",
    "lang": "20261113"
   }
- }
+ },
+ "datrify/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "Analogflitempo/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "DeckhandFlue/ai--manus": {}
 }

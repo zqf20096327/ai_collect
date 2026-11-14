@@ -28,8 +28,8 @@
   }
  },
  "huggingface/candle": {
-  "commit_7d": 3,
-  "commit_90d": 61,
+  "commit_7d": 0,
+  "commit_90d": 51,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -44,10 +44,10 @@
    "C++": 6,
    "HTML": 2
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -383,10 +383,10 @@
  },
  "yeahhe365/Gemini-Nexus": {
   "commit_90d": 25,
-  "commit_7d": 3,
-  "rel_ver": "v5.5.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 3,
+  "commit_7d": 1,
+  "rel_ver": "v5.7.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 1,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -401,10 +401,10 @@
    "HTML": 0,
    "TypeScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4080,13 +4080,16 @@
    "CSS": 2,
    "TypeScript": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261114",
   "dim_ts": {
    "release": "20261106",
    "security": "20261106",
    "contrib": "20261106",
-   "lang": "20261106"
-  }
+   "lang": "20261106",
+   "commit": "20261114"
+  },
+  "commit_90d": 113,
+  "commit_7d": 4
  },
  "DespiteVoltcloud/InterviewCopilot-rpocket-team": {
   "rel_ver": null,

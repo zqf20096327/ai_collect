@@ -152,12 +152,12 @@
   }
  },
  "griptape-ai/griptape": {
-  "commit_90d": 39,
-  "commit_7d": 1,
+  "commit_90d": 36,
+  "commit_7d": 2,
   "rel_ver": "v1.13.0",
   "rel_pub": "2026-08-26",
-  "rel_days": 73,
-  "rel_n90": 2,
+  "rel_days": 80,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -171,21 +171,21 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "chrisryugj/kordoc": {
-  "commit_90d": 1325,
-  "commit_7d": 149,
-  "rel_ver": "v4.24.49",
-  "rel_pub": "2026-11-06",
-  "rel_days": 1,
+  "commit_90d": 1471,
+  "commit_7d": 148,
+  "rel_ver": "v4.24.77",
+  "rel_pub": "2026-11-14",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -201,21 +201,21 @@
    "Java": 2,
    "PowerShell": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "PurpleDoubleD/locally-uncensored": {
-  "commit_90d": 2284,
-  "commit_7d": 151,
+  "commit_90d": 2218,
+  "commit_7d": 1,
   "rel_ver": "v3.0.10",
   "rel_pub": "2026-11-05",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -231,10 +231,10 @@
    "Python": 1,
    "Shell": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4623,6 +4623,23 @@
    "security": "20261113",
    "contrib": "20261113",
    "lang": "20261113"
+  }
+ },
+ "CourierAmend/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

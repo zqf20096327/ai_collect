@@ -1,7 +1,7 @@
 {
  "rasbt/LLMs-from-scratch": {
-  "commit_7d": 7,
-  "commit_90d": 30,
+  "commit_7d": 1,
+  "commit_90d": 29,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -14,10 +14,10 @@
    "Python": 27,
    "Dockerfile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -239,13 +239,13 @@
   }
  },
  "vllm-project/vllm-ascend": {
-  "commit_90d": 1965,
-  "commit_7d": 189,
-  "rel_ver": "v0.30.0",
-  "rel_pub": "2026-10-29",
-  "rel_days": 9,
-  "rel_n90": 7,
-  "rel_pre": false,
+  "commit_90d": 2003,
+  "commit_7d": 143,
+  "rel_ver": "v0.32.0rc1",
+  "rel_pub": "2026-11-10",
+  "rel_days": 4,
+  "rel_n90": 8,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -259,10 +259,10 @@
    "Shell": 1,
    "C": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4238,5 +4238,26 @@
    "contrib": "20261113",
    "lang": "20261113"
   }
- }
+ },
+ "alphafalcongamer-creator/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "DenCentipede/ai--manus": {}
 }

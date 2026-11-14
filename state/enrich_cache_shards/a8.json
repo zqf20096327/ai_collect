@@ -210,11 +210,11 @@
   }
  },
  "xyproto/algernon": {
-  "commit_90d": 85,
-  "commit_7d": 8,
+  "commit_90d": 83,
+  "commit_7d": 5,
   "rel_ver": "v1.17.13",
   "rel_pub": "2026-11-05",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -239,10 +239,10 @@
    "Shell": 1,
    "Roff": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -329,11 +329,11 @@
   }
  },
  "pnoker/iot-dc3": {
-  "commit_90d": 471,
-  "commit_7d": 0,
+  "commit_90d": 524,
+  "commit_7d": 73,
   "rel_ver": "v2026.10.10",
   "rel_pub": "2026-10-19",
-  "rel_days": 19,
+  "rel_days": 26,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -349,22 +349,22 @@
    "PLpgSQL": 2,
    "Python": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "MyoHub/myosuite": {
-  "commit_90d": 166,
-  "commit_7d": 0,
-  "rel_ver": "v3.0.0",
-  "rel_pub": "2026-10-11",
-  "rel_days": 27,
-  "rel_n90": 1,
+  "commit_90d": 311,
+  "commit_7d": 83,
+  "rel_ver": "v3.1.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 3,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -378,10 +378,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -443,8 +443,8 @@
   }
  },
  "legeling/awesome-codex-pet": {
-  "commit_90d": 713,
-  "commit_7d": 37,
+  "commit_90d": 697,
+  "commit_7d": 38,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -459,10 +459,10 @@
    "CSS": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4762,10 +4762,10 @@
   }
  },
  "ccch1mneyyy/dsh-Go": {
-  "commit_90d": 764,
-  "commit_7d": 754,
-  "rel_ver": "v1.0.12",
-  "rel_pub": "2026-11-06",
+  "commit_90d": 1927,
+  "commit_7d": 1163,
+  "rel_ver": "v1.0.16",
+  "rel_pub": "2026-11-13",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -4782,10 +4782,10 @@
    "Python": 2,
    "TypeScript": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031"
@@ -5097,6 +5097,23 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "CraftsmanStrip/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

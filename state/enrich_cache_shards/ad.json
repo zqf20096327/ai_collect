@@ -266,10 +266,10 @@
    "C#": 5,
    "Kotlin": 3
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -306,11 +306,11 @@
   }
  },
  "uccl-project/uccl": {
-  "commit_90d": 53,
-  "commit_7d": 14,
+  "commit_90d": 79,
+  "commit_7d": 29,
   "rel_ver": "v0.1.1",
   "rel_pub": "2026-05-10",
-  "rel_days": 181,
+  "rel_days": 188,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -326,21 +326,21 @@
    "Jupyter Notebook": 4,
    "Shell": 3
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "alibaba/rtp-llm": {
-  "commit_90d": 151,
-  "commit_7d": 9,
+  "commit_90d": 154,
+  "commit_7d": 14,
   "rel_ver": "v0.2.0",
   "rel_pub": "2025-10-31",
-  "rel_days": 372,
+  "rel_days": 379,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -356,10 +356,10 @@
    "Java": 11,
    "Starlark": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -418,10 +418,10 @@
   }
  },
  "zylos-ai/zylos-core": {
-  "commit_90d": 65,
-  "commit_7d": 20,
-  "rel_ver": "v0.9.5",
-  "rel_pub": "2026-11-03",
+  "commit_90d": 63,
+  "commit_7d": 8,
+  "rel_ver": "v0.9.6",
+  "rel_pub": "2026-11-10",
   "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
@@ -438,10 +438,10 @@
    "Python": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -568,12 +568,12 @@
   }
  },
  "LibreYOLO/libreyolo": {
-  "commit_90d": 814,
-  "commit_7d": 100,
-  "rel_ver": "v1.7.2",
-  "rel_pub": "2026-11-03",
-  "rel_days": 4,
-  "rel_n90": 5,
+  "commit_90d": 623,
+  "commit_7d": 6,
+  "rel_ver": "v1.7.4",
+  "rel_pub": "2026-11-07",
+  "rel_days": 7,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -586,10 +586,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

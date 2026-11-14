@@ -320,10 +320,10 @@
   }
  },
  "Bitterbot-AI/bitterbot-desktop": {
-  "commit_7d": 18,
-  "commit_90d": 574,
-  "rel_ver": "v1.12.0",
-  "rel_pub": "2026-11-01",
+  "commit_7d": 13,
+  "commit_90d": 533,
+  "rel_ver": "v1.13.0",
+  "rel_pub": "2026-11-08",
   "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
@@ -343,22 +343,22 @@
    "Rust": 1,
    "Shell": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "learnhouse/learnhouse": {
-  "commit_7d": 160,
-  "commit_90d": 540,
-  "rel_ver": "cli-1.6.0",
-  "rel_pub": "2026-10-30",
-  "rel_days": 8,
-  "rel_n90": 8,
+  "commit_7d": 24,
+  "commit_90d": 525,
+  "rel_ver": "1.4.4",
+  "rel_pub": "2026-11-11",
+  "rel_days": 3,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -373,10 +373,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -413,11 +413,11 @@
   }
  },
  "fancydirty/mediary-scout": {
-  "commit_7d": 8,
-  "commit_90d": 108,
+  "commit_7d": 2,
+  "commit_90d": 107,
   "rel_ver": "v2026.11.05",
   "rel_pub": "2026-11-05",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -433,10 +433,10 @@
    "Python": 2,
    "Shell": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1364,13 +1364,16 @@
    "CSS": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261114",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261114"
+  },
+  "commit_90d": 1039,
+  "commit_7d": 80
  },
  "RagView/RagView": {
   "rel_ver": null,

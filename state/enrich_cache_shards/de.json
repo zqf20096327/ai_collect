@@ -369,12 +369,12 @@
   }
  },
  "samchon/nestia": {
-  "commit_7d": 2,
-  "commit_90d": 96,
-  "rel_ver": "v14.1.0",
-  "rel_pub": "2026-10-23",
-  "rel_days": 15,
-  "rel_n90": 11,
+  "commit_7d": 5,
+  "commit_90d": 100,
+  "rel_ver": "v14.3.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 2,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -391,10 +391,10 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -454,11 +454,11 @@
   }
  },
  "HelgeSverre/ollama-gui": {
-  "commit_7d": 0,
-  "commit_90d": 35,
+  "commit_7d": 3,
+  "commit_90d": 38,
   "rel_ver": "v2.0.5",
   "rel_pub": "2026-10-23",
-  "rel_days": 15,
+  "rel_days": 22,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -474,10 +474,10 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4252,10 +4252,10 @@
   }
  },
  "OpenByteInc/QuantDinger": {
-  "commit_90d": 283,
+  "commit_90d": 293,
   "commit_7d": 11,
-  "rel_ver": "v5.8.4",
-  "rel_pub": "2026-11-06",
+  "rel_ver": "v5.8.8",
+  "rel_pub": "2026-11-13",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -4272,10 +4272,10 @@
    "PowerShell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
@@ -4405,6 +4405,25 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "StormBrawlerSack/legwork-osint-ai-investigator": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

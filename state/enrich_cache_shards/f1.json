@@ -36,7 +36,7 @@
   "commit_90d": 0,
   "rel_ver": "v2.1.0-vscode",
   "rel_pub": "2026-06-19",
-  "rel_days": 140,
+  "rel_days": 148,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -52,10 +52,10 @@
    "Python": 2,
    "Rust": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -186,12 +186,12 @@
   }
  },
  "lightly-ai/lightly": {
-  "commit_90d": 43,
-  "commit_7d": 0,
-  "rel_ver": "v1.6.0",
-  "rel_pub": "2026-10-26",
-  "rel_days": 12,
-  "rel_n90": 1,
+  "commit_90d": 40,
+  "commit_7d": 4,
+  "rel_ver": "v1.6.1",
+  "rel_pub": "2026-11-10",
+  "rel_days": 4,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -203,21 +203,21 @@
    "Python": 99,
    "Makefile": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ainfosec/FISSURE": {
-  "commit_90d": 46,
-  "commit_7d": 4,
+  "commit_90d": 44,
+  "commit_7d": 1,
   "rel_ver": "Python3_20260921",
   "rel_pub": "2026-09-29",
-  "rel_days": 39,
+  "rel_days": 46,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -233,10 +233,10 @@
    "C": 2,
    "CMake": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -293,11 +293,11 @@
   }
  },
  "zanllp/infinite-image-browsing": {
-  "commit_90d": 49,
-  "commit_7d": 14,
+  "commit_90d": 54,
+  "commit_7d": 5,
   "rel_ver": "v1.10.1",
   "rel_pub": "2026-10-31",
-  "rel_days": 7,
+  "rel_days": 14,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -313,10 +313,10 @@
    "Rust": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4462,13 +4462,16 @@
   "lang": {
    "CMake": 100
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
    "release": "20261107",
    "security": "20261107",
    "contrib": "20261107",
-   "lang": "20261107"
-  }
+   "lang": "20261107",
+   "commit": "20261114"
+  },
+  "commit_90d": 1,
+  "commit_7d": 0
  },
  "SysAdminDoc/Bookmark-Organizer-Pro": {
   "rel_ver": "v6.16.0",
@@ -4605,13 +4608,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261114",
   "dim_ts": {
    "release": "20261111",
    "security": "20261111",
    "contrib": "20261111",
-   "lang": "20261111"
-  }
+   "lang": "20261111",
+   "commit": "20261114"
+  },
+  "commit_90d": 8,
+  "commit_7d": 3
  },
  "mabdullahb/Locus": {
   "rel_ver": "v1.0.0",
@@ -4778,6 +4784,26 @@
    "security": "20261113",
    "contrib": "20261113",
    "lang": "20261113"
+  }
+ },
+ "Hade6556/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

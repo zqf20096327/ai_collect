@@ -61,11 +61,11 @@
  },
  "modelcontextprotocol/ext-apps": {
   "commit_90d": 51,
-  "commit_7d": 2,
-  "rel_ver": "v2.0.4",
-  "rel_pub": "2026-10-27",
-  "rel_days": 11,
-  "rel_n90": 5,
+  "commit_7d": 1,
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 4,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -78,10 +78,10 @@
    "MDX": 19,
    "JavaScript": 4
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -146,10 +146,10 @@
   }
  },
  "webbrain-one/webbrain": {
-  "commit_90d": 4013,
-  "commit_7d": 102,
-  "rel_ver": "v46.1.0",
-  "rel_pub": "2026-11-05",
+  "commit_90d": 3837,
+  "commit_7d": 227,
+  "rel_ver": "systray-v0.1.4",
+  "rel_pub": "2026-11-12",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -166,18 +166,18 @@
    "TypeScript": 0,
    "Python": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "kernel/kernel-images": {
-  "commit_90d": 106,
-  "commit_7d": 8,
+  "commit_90d": 108,
+  "commit_7d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -192,10 +192,10 @@
    "Vue": 4,
    "JavaScript": 2
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

@@ -213,10 +213,10 @@
   }
  },
  "kodustech/kodus-ai": {
-  "commit_90d": 2883,
-  "commit_7d": 356,
-  "rel_ver": "2.2.12",
-  "rel_pub": "2026-11-05",
+  "commit_90d": 2935,
+  "commit_7d": 143,
+  "rel_ver": "2.2.14",
+  "rel_pub": "2026-11-12",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -233,21 +233,21 @@
    "Python": 0,
    "CSS": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "fancyboi999/ai-engineering-from-scratch-zh": {
-  "commit_90d": 96,
-  "commit_7d": 3,
+  "commit_90d": 105,
+  "commit_7d": 9,
   "rel_ver": "_gh-attach-assets",
   "rel_pub": "2026-10-29",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 2,
   "rel_pre": true,
   "rel_none": false,
@@ -263,10 +263,10 @@
    "HTML": 5,
    "Go": 2
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

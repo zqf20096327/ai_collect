@@ -334,11 +334,11 @@
   }
  },
  "root-project/root": {
-  "commit_7d": 80,
-  "commit_90d": 1351,
+  "commit_7d": 110,
+  "commit_90d": 1427,
   "rel_ver": "v6-42-00-rc1",
   "rel_pub": "2026-10-29",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 3,
   "rel_pre": true,
   "rel_none": false,
@@ -354,10 +354,10 @@
    "Python": 2,
    "CMake": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -460,8 +460,8 @@
   }
  },
  "zhnt/loushang": {
-  "commit_7d": 188,
-  "commit_90d": 2765,
+  "commit_7d": 227,
+  "commit_90d": 2864,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -476,10 +476,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4129,6 +4129,26 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "derBelonix/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

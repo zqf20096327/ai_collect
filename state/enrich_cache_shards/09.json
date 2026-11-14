@@ -142,10 +142,10 @@
   }
  },
  "drl990114/MarkFlowy": {
-  "commit_7d": 29,
-  "commit_90d": 305,
-  "rel_ver": "v1.2.3",
-  "rel_pub": "2026-10-31",
+  "commit_7d": 27,
+  "commit_90d": 303,
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-11-07",
   "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
@@ -162,10 +162,10 @@
    "CSS": 2,
    "Shell": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -284,11 +284,11 @@
   }
  },
  "nano-muse/nanoMuse": {
-  "commit_7d": 487,
-  "commit_90d": 2524,
+  "commit_7d": 144,
+  "commit_90d": 2668,
   "rel_ver": "v1.0.9",
   "rel_pub": "2026-10-29",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -304,10 +304,10 @@
    "TypeScript": 9,
    "C": 4
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4358,6 +4358,23 @@
    "security": "20261113",
    "contrib": "20261113",
    "lang": "20261113"
+  }
+ },
+ "decaagentcolonnade/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

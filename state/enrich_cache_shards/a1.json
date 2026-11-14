@@ -50,11 +50,11 @@
   }
  },
  "samugit83/redamon": {
-  "commit_90d": 1492,
-  "commit_7d": 121,
+  "commit_90d": 1457,
+  "commit_7d": 40,
   "rel_ver": "v7.5.1",
   "rel_pub": "2026-11-03",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -73,10 +73,10 @@
    "CSS": 2,
    "JavaScript": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -183,8 +183,8 @@
   }
  },
  "sgl-project/SpecForge": {
-  "commit_90d": 402,
-  "commit_7d": 15,
+  "commit_90d": 691,
+  "commit_7d": 295,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -197,10 +197,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

@@ -186,7 +186,7 @@
   "commit_90d": 0,
   "rel_ver": "v1.3.1",
   "rel_pub": "2024-12-20",
-  "rel_days": 687,
+  "rel_days": 694,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -202,21 +202,21 @@
    "JavaScript": 2,
    "Jupyter Notebook": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "777genius/agent-teams-ai": {
-  "commit_7d": 88,
-  "commit_90d": 2690,
-  "rel_ver": "v2.18.6",
-  "rel_pub": "2026-11-05",
-  "rel_days": 2,
+  "commit_7d": 174,
+  "commit_90d": 2862,
+  "rel_ver": "v2.18.7",
+  "rel_pub": "2026-11-11",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -232,10 +232,10 @@
    "CSS": 0,
    "SCSS": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -269,11 +269,11 @@
   }
  },
  "doobidoo/mcp-memory-service": {
-  "commit_7d": 102,
-  "commit_90d": 734,
-  "rel_ver": "v12.6.0",
-  "rel_pub": "2026-11-05",
-  "rel_days": 2,
+  "commit_7d": 76,
+  "commit_90d": 793,
+  "rel_ver": "v12.9.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -298,10 +298,10 @@
    "Shell": 3,
    "CSS": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -309,11 +309,11 @@
  },
  "Gsync/jobsync": {
   "commit_7d": 0,
-  "commit_90d": 284,
+  "commit_90d": 253,
   "rel_ver": "v1.2.0",
   "rel_pub": "2026-10-30",
-  "rel_days": 8,
-  "rel_n90": 8,
+  "rel_days": 15,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -328,10 +328,10 @@
    "PowerShell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4187,6 +4187,60 @@
    "security": "20261113",
    "contrib": "20261113",
    "lang": "20261113"
+  }
+ },
+ "mtn-imran-khan/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "ColonyProduction/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "DarkSunMultiply3/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

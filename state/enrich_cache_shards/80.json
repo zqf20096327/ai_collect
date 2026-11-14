@@ -402,11 +402,11 @@
   }
  },
  "kantord/SeaGOAT": {
-  "commit_7d": 41,
-  "commit_90d": 93,
+  "commit_7d": 8,
+  "commit_90d": 101,
   "rel_ver": "v1.6.1",
   "rel_pub": "2026-10-25",
-  "rel_days": 13,
+  "rel_days": 20,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -419,10 +419,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -430,10 +430,10 @@
  },
  "extropic-ai/thrml": {
   "commit_7d": 1,
-  "commit_90d": 6,
+  "commit_90d": 7,
   "rel_ver": "v0.1.4",
   "rel_pub": "2026-08-04",
-  "rel_days": 95,
+  "rel_days": 102,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -448,10 +448,10 @@
    "CSS": 11,
    "JavaScript": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5014,6 +5014,93 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "plynx-team/plynx": {
+  "commit_90d": 2,
+  "commit_7d": 2,
+  "rel_ver": "v1.11.1",
+  "rel_pub": "2023-06-04",
+  "rel_days": 1259,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 49,
+   "Python": 42,
+   "CSS": 8,
+   "JavaScript": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "rambotronado112-sudo/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "datrify/ai--manus": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "Cthulhuieturbine/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

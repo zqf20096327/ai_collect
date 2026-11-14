@@ -271,8 +271,8 @@
   }
  },
  "yibie/awesome-jev": {
-  "commit_7d": 1,
-  "commit_90d": 917,
+  "commit_7d": 21,
+  "commit_90d": 941,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -284,21 +284,21 @@
    "Python": 77,
    "Shell": 23
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "langgraph4j/langgraph4j": {
-  "commit_7d": 53,
-  "commit_90d": 590,
-  "rel_ver": "v1.9.8",
-  "rel_pub": "2026-11-03",
-  "rel_days": 4,
+  "commit_7d": 21,
+  "commit_90d": 582,
+  "rel_ver": "v1.8.28",
+  "rel_pub": "2026-11-13",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -314,20 +314,20 @@
    "TypeScript": 3,
    "Mustache": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "agentlas-ai/Agentlas-OS": {
-  "commit_7d": 38,
-  "commit_90d": 472,
-  "rel_ver": "os-v1.2.87",
-  "rel_pub": "2026-11-06",
+  "commit_7d": 12,
+  "commit_90d": 441,
+  "rel_ver": "v1.2.97",
+  "rel_pub": "2026-11-13",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -344,10 +344,10 @@
    "Go Template": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -384,7 +384,7 @@
   }
  },
  "e2b-dev/e2b-cookbook": {
-  "commit_7d": 4,
+  "commit_7d": 13,
   "commit_90d": 181,
   "rel_ver": null,
   "rel_none": true,
@@ -398,18 +398,18 @@
    "JavaScript": 22,
    "Python": 8
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "ArcadeAI/arcade-mcp": {
-  "commit_7d": 5,
-  "commit_90d": 44,
+  "commit_7d": 7,
+  "commit_90d": 46,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 1,
@@ -425,10 +425,10 @@
    "Jinja": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

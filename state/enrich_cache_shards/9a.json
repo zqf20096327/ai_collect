@@ -208,11 +208,11 @@
   }
  },
  "YanWenKun/ComfyUI-Docker": {
-  "commit_90d": 13,
+  "commit_90d": 12,
   "commit_7d": 1,
   "rel_ver": "v6.0",
   "rel_pub": "2025-10-15",
-  "rel_days": 388,
+  "rel_days": 395,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -225,10 +225,10 @@
    "Dockerfile": 52,
    "Shell": 48
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -265,12 +265,12 @@
   }
  },
  "moyangzhan/langchain4j-aideepin": {
-  "commit_90d": 80,
-  "commit_7d": 10,
-  "rel_ver": "v3.31.0",
-  "rel_pub": "2026-11-04",
-  "rel_days": 3,
-  "rel_n90": 2,
+  "commit_90d": 97,
+  "commit_7d": 12,
+  "rel_ver": "v3.32.0",
+  "rel_pub": "2026-11-07",
+  "rel_days": 7,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -287,10 +287,10 @@
    "PLpgSQL": 3,
    "Less": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -376,11 +376,11 @@
   }
  },
  "rockbenben/subtitle-translator": {
-  "commit_90d": 77,
-  "commit_7d": 6,
+  "commit_90d": 80,
+  "commit_7d": 13,
   "rel_ver": "v3.2.1",
   "rel_pub": "2026-09-17",
-  "rel_days": 51,
+  "rel_days": 58,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -396,10 +396,10 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4390,6 +4390,43 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "aaeriih/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "CockatriceDeputy/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

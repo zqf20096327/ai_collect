@@ -190,11 +190,11 @@
   }
  },
  "anthropics/anthropic-sdk-go": {
-  "commit_90d": 456,
-  "commit_7d": 62,
-  "rel_ver": "v2.7.0",
-  "rel_pub": "2026-11-05",
-  "rel_days": 2,
+  "commit_90d": 483,
+  "commit_7d": 23,
+  "rel_ver": "v2.9.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -208,10 +208,10 @@
    "Shell": 0,
    "Ruby": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4666,6 +4666,23 @@
    "security": "20261113",
    "contrib": "20261113",
    "lang": "20261113"
+  }
+ },
+ "AdmiralEmporium/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

@@ -250,11 +250,11 @@
   }
  },
  "snapotter-hq/SnapOtter": {
-  "commit_90d": 1704,
-  "commit_7d": 114,
+  "commit_90d": 1730,
+  "commit_7d": 43,
   "rel_ver": "v2.3.0",
   "rel_pub": "2026-11-03",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -274,10 +274,10 @@
    "Shell": 1,
    "Astro": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -311,11 +311,11 @@
   }
  },
  "0Chencc/clawgod": {
-  "commit_90d": 75,
+  "commit_90d": 73,
   "commit_7d": 0,
   "rel_ver": "v2.3.0",
   "rel_pub": "2026-10-19",
-  "rel_days": 19,
+  "rel_days": 26,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -331,10 +331,10 @@
    "HTML": 10,
    "CSS": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1619,13 +1619,16 @@
    "TypeScript": 94,
    "JavaScript": 6
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261114",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261114"
+  },
+  "commit_90d": 288,
+  "commit_7d": 10
  },
  "tamzid958/claude-architect": {
   "rel_ver": "v.2.0.0",
@@ -4715,6 +4718,43 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "mohamedhamdytaha/ai--manus": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "TealAgentRevive/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

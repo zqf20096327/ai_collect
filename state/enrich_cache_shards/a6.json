@@ -26,12 +26,12 @@
   }
  },
  "ifixai-ai/iFixAi": {
-  "commit_7d": 20,
-  "commit_90d": 276,
+  "commit_7d": 24,
+  "commit_90d": 294,
   "rel_ver": "v4.3.0",
   "rel_pub": "2026-10-22",
-  "rel_days": 15,
-  "rel_n90": 7,
+  "rel_days": 23,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -45,10 +45,10 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -222,8 +222,8 @@
  "zhimaAi/chatwiki": {
   "commit_7d": 3,
   "commit_90d": 21,
-  "rel_ver": "v2.10.0",
-  "rel_pub": "2026-11-06",
+  "rel_ver": "v2.10.1",
+  "rel_pub": "2026-11-13",
   "rel_days": 1,
   "rel_n90": 7,
   "rel_pre": false,
@@ -240,10 +240,10 @@
    "Python": 2,
    "TypeScript": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -275,11 +275,11 @@
   }
  },
  "robustmq/robustmq": {
-  "commit_7d": 1,
-  "commit_90d": 35,
+  "commit_7d": 3,
+  "commit_90d": 36,
   "rel_ver": "v0.4.11",
   "rel_pub": "2026-07-31",
-  "rel_days": 99,
+  "rel_days": 106,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -295,10 +295,10 @@
    "Python": 1,
    "Go": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -330,11 +330,11 @@
   }
  },
  "Nixtla/mlforecast": {
-  "commit_7d": 10,
-  "commit_90d": 67,
+  "commit_7d": 3,
+  "commit_90d": 65,
   "rel_ver": "v1.1.0",
   "rel_pub": "2026-07-10",
-  "rel_days": 120,
+  "rel_days": 127,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -349,21 +349,21 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "google/agentmesh": {
-  "commit_7d": 69,
-  "commit_90d": 1410,
+  "commit_7d": 4,
+  "commit_90d": 1304,
   "rel_ver": "v0.2.0",
   "rel_pub": "2026-11-02",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -383,10 +383,10 @@
    "Shell": 5,
    "Dart": 2
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4993,6 +4993,40 @@
    "security": "20261113",
    "contrib": "20261113",
    "lang": "20261113"
+  }
+ },
+ "Shardclamove/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "Crackonrouter/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

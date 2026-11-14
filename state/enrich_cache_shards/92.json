@@ -60,12 +60,12 @@
   }
  },
  "mlfoundations/open_clip": {
-  "commit_7d": 8,
-  "commit_90d": 71,
-  "rel_ver": "v4.2.1",
-  "rel_pub": "2026-11-06",
-  "rel_days": 1,
-  "rel_n90": 1,
+  "commit_7d": 4,
+  "commit_90d": 73,
+  "rel_ver": "v4.2.2",
+  "rel_pub": "2026-11-10",
+  "rel_days": 4,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -78,10 +78,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -262,12 +262,12 @@
   }
  },
  "felinics/Memoh": {
-  "commit_7d": 36,
-  "commit_90d": 520,
-  "rel_ver": "v1.0.1",
-  "rel_pub": "2026-11-01",
+  "commit_7d": 32,
+  "commit_90d": 533,
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2026-11-08",
   "rel_days": 6,
-  "rel_n90": 7,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -282,10 +282,10 @@
    "PLpgSQL": 1,
    "Shell": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -293,11 +293,11 @@
  },
  "Kritt-ai/open-kritt": {
   "commit_7d": 0,
-  "commit_90d": 72,
+  "commit_90d": 59,
   "rel_ver": "v1.4.1",
   "rel_pub": "2026-08-16",
-  "rel_days": 83,
-  "rel_n90": 2,
+  "rel_days": 90,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -312,10 +312,10 @@
    "CSS": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -488,7 +488,7 @@
   "commit_90d": 205,
   "rel_ver": "26.10.2",
   "rel_pub": "2026-10-24",
-  "rel_days": 14,
+  "rel_days": 21,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -504,10 +504,10 @@
    "Go Template": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4350,6 +4350,46 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "sofixleon-arch/ai--manus": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "dmymelnyk-ai/ai--manus": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

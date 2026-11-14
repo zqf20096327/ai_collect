@@ -245,11 +245,11 @@
   }
  },
  "trymirai/uzu": {
-  "commit_7d": 26,
-  "commit_90d": 284,
+  "commit_7d": 28,
+  "commit_90d": 294,
   "rel_ver": "0.6.17",
   "rel_pub": "2026-11-04",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -265,10 +265,10 @@
    "Python": 6,
    "Metal": 5
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -364,10 +364,10 @@
   }
  },
  "localgpt-app/localgpt": {
-  "commit_7d": 92,
-  "commit_90d": 355,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_7d": 49,
+  "commit_90d": 404,
+  "rel_ver": "desktop-v0.5.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -380,14 +380,18 @@
    "HTML": 2,
    "C": 2
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
-  }
+  },
+  "rel_pub": "2026-11-10",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "datawranglerai/self-host-n8n-on-gcr": {
   "commit_7d": 0,
@@ -4751,6 +4755,23 @@
    "security": "20261113",
    "contrib": "20261113",
    "lang": "20261113"
+  }
+ },
+ "BeigeExecutiveFix/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

@@ -272,8 +272,8 @@
   }
  },
  "Haidra-Org/AI-Horde": {
-  "commit_90d": 302,
-  "commit_7d": 109,
+  "commit_90d": 334,
+  "commit_7d": 32,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -288,10 +288,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -366,12 +366,12 @@
   }
  },
  "data-goblin/power-bi-agentic-development": {
-  "commit_90d": 153,
-  "commit_7d": 16,
-  "rel_ver": "v26.40.9",
-  "rel_pub": "2026-10-26",
-  "rel_days": 12,
-  "rel_n90": 11,
+  "commit_90d": 154,
+  "commit_7d": 1,
+  "rel_ver": "v26.45",
+  "rel_pub": "2026-11-07",
+  "rel_days": 7,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -386,10 +386,10 @@
    "Shell": 7,
    "PowerShell": 3
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -448,11 +448,11 @@
   }
  },
  "strelov1/freehire": {
-  "commit_90d": 2724,
-  "commit_7d": 331,
-  "rel_ver": "web-v0.1.2",
-  "rel_pub": "2026-11-02",
-  "rel_days": 5,
+  "commit_90d": 2675,
+  "commit_7d": 266,
+  "rel_ver": "extension-v0.1.14",
+  "rel_pub": "2026-11-12",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -468,10 +468,10 @@
    "HTML": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4878,6 +4878,40 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "BannerCatbird/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "ConeLeopardSpout/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

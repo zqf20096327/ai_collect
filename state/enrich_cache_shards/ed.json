@@ -22,12 +22,12 @@
   }
  },
  "jeecgboot/jimureport": {
-  "commit_7d": 4,
-  "commit_90d": 44,
+  "commit_7d": 3,
+  "commit_90d": 39,
   "rel_ver": "v2.5.6.1",
   "rel_pub": "2026-11-03",
-  "rel_days": 4,
-  "rel_n90": 4,
+  "rel_days": 11,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 2,
@@ -42,10 +42,10 @@
    "Java": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -320,10 +320,10 @@
  },
  "datastax/jvector": {
   "commit_7d": 3,
-  "commit_90d": 34,
+  "commit_90d": 35,
   "rel_ver": "4.0.2",
   "rel_pub": "2026-10-19",
-  "rel_days": 19,
+  "rel_days": 26,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -339,10 +339,10 @@
    "C": 1,
    "Shell": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -483,8 +483,8 @@
   }
  },
  "anthropics/oss-scanner": {
-  "commit_7d": 252,
-  "commit_90d": 907,
+  "commit_7d": 56,
+  "commit_90d": 997,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -496,10 +496,10 @@
    "Dockerfile": 72,
    "Python": 28
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4579,6 +4579,43 @@
    "security": "20261113",
    "contrib": "20261113",
    "lang": "20261113"
+  }
+ },
+ "luA822/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "avenuemistravage47/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

@@ -178,11 +178,11 @@
  },
  "liaohch3/claude-tap": {
   "commit_7d": 0,
-  "commit_90d": 23,
+  "commit_90d": 19,
   "rel_ver": "v0.1.146",
   "rel_pub": "2026-10-17",
-  "rel_days": 21,
-  "rel_n90": 4,
+  "rel_days": 28,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -197,10 +197,10 @@
    "CSS": 2,
    "Shell": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -293,11 +293,11 @@
   }
  },
  "NVIDIA-NeMo/Curator": {
-  "commit_7d": 2,
-  "commit_90d": 152,
+  "commit_7d": 5,
+  "commit_90d": 145,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-10-09",
-  "rel_days": 29,
+  "rel_days": 36,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -313,22 +313,22 @@
    "CSS": 0,
    "TypeScript": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "gi-dellav/zerostack": {
-  "commit_7d": 4,
-  "commit_90d": 137,
-  "rel_ver": "v1.8.5",
-  "rel_pub": "2026-10-10",
-  "rel_days": 28,
-  "rel_n90": 6,
+  "commit_7d": 26,
+  "commit_90d": 163,
+  "rel_ver": "v1.8.6",
+  "rel_pub": "2026-11-11",
+  "rel_days": 3,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -343,10 +343,10 @@
    "Nix": 0,
    "Ruby": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4476,6 +4476,23 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "CoatFlameVice/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

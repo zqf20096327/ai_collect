@@ -166,11 +166,11 @@
   }
  },
  "NeptuneHub/AudioMuse-AI": {
-  "commit_7d": 18,
-  "commit_90d": 384,
+  "commit_7d": 12,
+  "commit_90d": 343,
   "rel_ver": "v3.7.1",
   "rel_pub": "2026-11-05",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -186,10 +186,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -302,7 +302,7 @@
   }
  },
  "tinyfish-io/agentql": {
-  "commit_7d": 2,
+  "commit_7d": 1,
   "commit_90d": 20,
   "rel_ver": null,
   "rel_none": true,
@@ -316,18 +316,18 @@
    "JavaScript": 30,
    "Makefile": 14
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "jxzhangjhu/Awesome-LLM-RAG": {
-  "commit_7d": 3,
-  "commit_90d": 37,
+  "commit_7d": 1,
+  "commit_90d": 38,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -336,21 +336,21 @@
   "sec_ids": [],
   "contrib_n": 25,
   "lang": {},
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Team-Commonly/commonly": {
-  "commit_7d": 605,
-  "commit_90d": 2419,
+  "commit_7d": 452,
+  "commit_90d": 2816,
   "rel_ver": "v3.0.0",
   "rel_pub": "2026-10-28",
-  "rel_days": 10,
+  "rel_days": 17,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -374,20 +374,20 @@
    "CSS": 3,
    "HTML": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "aws/deep-learning-containers": {
-  "commit_7d": 25,
-  "commit_90d": 304,
-  "rel_ver": "v2.18-pt-ec2-2.10.0-tr-cpu-py313",
-  "rel_pub": "2026-11-06",
+  "commit_7d": 23,
+  "commit_90d": 302,
+  "rel_ver": "v2.8-pt-sagemaker-2.10.0-tr-py313",
+  "rel_pub": "2026-11-13",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -404,10 +404,10 @@
    "JavaScript": 0,
    "Jinja": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4284,6 +4284,23 @@
    "security": "20261113",
    "contrib": "20261113",
    "lang": "20261113"
+  }
+ },
+ "assassinswandemolish/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

@@ -149,11 +149,11 @@
   }
  },
  "zai-org/ZCode": {
-  "commit_90d": 8,
-  "commit_7d": 1,
+  "commit_90d": 11,
+  "commit_7d": 3,
   "rel_ver": "v3.17.2",
   "rel_pub": "2026-11-04",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -169,10 +169,10 @@
    "MDX": 0,
    "CSS": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -353,8 +353,8 @@
   }
  },
  "amitshekhariitbhu/ai-engineering-interview-questions": {
-  "commit_90d": 54,
-  "commit_7d": 9,
+  "commit_90d": 66,
+  "commit_7d": 14,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -365,10 +365,10 @@
   "lang": {
    "Markdown": 100
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -483,8 +483,8 @@
   }
  },
  "WASasquatch/was-node-suite-comfyui": {
-  "commit_90d": 80,
-  "commit_7d": 4,
+  "commit_90d": 102,
+  "commit_7d": 22,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -497,22 +497,22 @@
    "JavaScript": 27,
    "CSS": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Open-Source-Legal/OpenContracts": {
-  "commit_90d": 537,
-  "commit_7d": 15,
+  "commit_90d": 531,
+  "commit_7d": 28,
   "rel_ver": "v3.1.1",
   "rel_pub": "2026-09-10",
-  "rel_days": 58,
-  "rel_n90": 3,
+  "rel_days": 65,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -527,21 +527,21 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "goodroot/hyprwhspr": {
-  "commit_90d": 313,
-  "commit_7d": 22,
-  "rel_ver": "v1.52.1",
-  "rel_pub": "2026-11-05",
-  "rel_days": 2,
+  "commit_90d": 327,
+  "commit_7d": 17,
+  "rel_ver": "v1.53.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -557,20 +557,20 @@
    "Nix": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "tensorlakeai/tensorlake": {
-  "commit_90d": 143,
+  "commit_90d": 138,
   "commit_7d": 8,
-  "rel_ver": "cli-v0.5.163",
-  "rel_pub": "2026-11-06",
+  "rel_ver": "cli-v0.5.165",
+  "rel_pub": "2026-11-13",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -594,10 +594,10 @@
    "JavaScript": 1,
    "Just": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -752,12 +752,12 @@
   }
  },
  "NVIDIA/SkillEvaluator": {
-  "commit_90d": 395,
-  "commit_7d": 110,
-  "rel_ver": "v0.5.0",
-  "rel_pub": "2026-10-06",
-  "rel_days": 11,
-  "rel_n90": 4,
+  "commit_90d": 431,
+  "commit_7d": 159,
+  "rel_ver": "v0.9.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 1,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -772,10 +772,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5026,6 +5026,46 @@
    "security": "20261113",
    "contrib": "20261113",
    "lang": "20261113"
+  }
+ },
+ "stancaedy10-glitch/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "n0-name0/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

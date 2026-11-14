@@ -113,11 +113,11 @@
   }
  },
  "apache/burr": {
-  "commit_90d": 83,
-  "commit_7d": 17,
+  "commit_90d": 78,
+  "commit_7d": 0,
   "rel_ver": "v0.43.0-incubating",
   "rel_pub": "2026-08-29",
-  "rel_days": 70,
+  "rel_days": 77,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -133,10 +133,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -222,11 +222,11 @@
   }
  },
  "yakhyo/uniface": {
-  "commit_90d": 22,
-  "commit_7d": 3,
-  "rel_ver": "v4.2.1",
-  "rel_pub": "2026-10-26",
-  "rel_days": 12,
+  "commit_90d": 24,
+  "commit_7d": 5,
+  "rel_ver": "v4.3.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 4,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -238,21 +238,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "BindsNET/bindsnet": {
-  "commit_90d": 48,
-  "commit_7d": 2,
+  "commit_90d": 54,
+  "commit_7d": 6,
   "rel_ver": "0.3.5",
   "rel_pub": "2026-10-29",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -267,10 +267,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4681,6 +4681,40 @@
    "security": "20261113",
    "contrib": "20261113",
    "lang": "20261113"
+  }
+ },
+ "Cityoepurify/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "deciemperorlaud/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }

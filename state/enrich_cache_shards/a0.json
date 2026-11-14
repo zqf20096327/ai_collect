@@ -272,7 +272,7 @@
   "commit_7d": 7,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-02-28",
-  "rel_days": 252,
+  "rel_days": 259,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -287,10 +287,10 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -323,11 +323,11 @@
   }
  },
  "Besty0728/Unity-Skills": {
-  "commit_90d": 229,
-  "commit_7d": 6,
-  "rel_ver": "v2.9.1",
-  "rel_pub": "2026-10-16",
-  "rel_days": 22,
+  "commit_90d": 359,
+  "commit_7d": 50,
+  "rel_ver": "v3.0.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -340,10 +340,10 @@
    "C#": 98,
    "Python": 2
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -378,11 +378,11 @@
   }
  },
  "ginlix-ai/LangAlpha": {
-  "commit_90d": 2199,
-  "commit_7d": 297,
-  "rel_ver": "desktop-v0.3.0",
-  "rel_pub": "2026-10-24",
-  "rel_days": 14,
+  "commit_90d": 2482,
+  "commit_7d": 318,
+  "rel_ver": "desktop-v0.3.1",
+  "rel_pub": "2026-11-09",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -398,10 +398,10 @@
    "CSS": 1,
    "Jinja": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -544,11 +544,11 @@
   }
  },
  "uxlfoundation/scikit-learn-intelex": {
-  "commit_90d": 124,
-  "commit_7d": 13,
+  "commit_90d": 126,
+  "commit_7d": 7,
   "rel_ver": "2026.2.0",
   "rel_pub": "2026-10-19",
-  "rel_days": 19,
+  "rel_days": 26,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -564,10 +564,10 @@
    "Cython": 1,
    "CMake": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4564,5 +4564,6 @@
    "contrib": "20261113",
    "lang": "20261113"
   }
- }
+ },
+ "DamSageRecover/ai--manus": {}
 }

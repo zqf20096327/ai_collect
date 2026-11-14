@@ -300,11 +300,11 @@
   }
  },
  "TanStack/ai": {
-  "commit_90d": 621,
-  "commit_7d": 69,
-  "rel_ver": "@tanstack/ai-vercel-gateway@1.1.2",
-  "rel_pub": "2026-11-06",
-  "rel_days": 1,
+  "commit_90d": 619,
+  "commit_7d": 30,
+  "rel_ver": "@tanstack/ai-muse@0.1.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -320,21 +320,21 @@
    "Svelte": 0,
    "Shell": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "frgfm/torch-cam": {
-  "commit_90d": 70,
-  "commit_7d": 8,
+  "commit_90d": 72,
+  "commit_7d": 3,
   "rel_ver": "v0.5.0",
   "rel_pub": "2026-10-03",
-  "rel_days": 35,
+  "rel_days": 42,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -347,20 +347,20 @@
    "Python": 99,
    "Makefile": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "theopenco/llmgateway": {
-  "commit_90d": 1285,
+  "commit_90d": 1250,
   "commit_7d": 85,
-  "rel_ver": "v1.24.0",
-  "rel_pub": "2026-11-02",
+  "rel_ver": "v1.25.0",
+  "rel_pub": "2026-11-09",
   "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
@@ -386,10 +386,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -418,11 +418,11 @@
   }
  },
  "ashhart/TensorFold": {
-  "commit_90d": 6706,
-  "commit_7d": 1561,
-  "rel_ver": "v1.2.3",
-  "rel_pub": "2026-11-05",
-  "rel_days": 2,
+  "commit_90d": 8178,
+  "commit_7d": 1472,
+  "rel_ver": "v1.2.8",
+  "rel_pub": "2026-11-13",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -438,10 +438,10 @@
    "Python": 3,
    "Cuda": 2
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -505,12 +505,12 @@
   }
  },
  "ZHangZHengEric/Sage": {
-  "commit_90d": 608,
-  "commit_7d": 13,
-  "rel_ver": "v2.1.1",
-  "rel_pub": "2026-10-19",
-  "rel_days": 19,
-  "rel_n90": 3,
+  "commit_90d": 676,
+  "commit_7d": 74,
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 1,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -525,18 +525,18 @@
    "JavaScript": 8,
    "Rust": 4
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "currenjin/site-for-developers": {
-  "commit_90d": 48,
-  "commit_7d": 8,
+  "commit_90d": 57,
+  "commit_7d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -545,18 +545,18 @@
   "sec_ids": [],
   "contrib_n": 41,
   "lang": {},
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "garylab/MakeMoneyWithAI": {
-  "commit_90d": 70,
-  "commit_7d": 7,
+  "commit_90d": 79,
+  "commit_7d": 15,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -567,10 +567,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

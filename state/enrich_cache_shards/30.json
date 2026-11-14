@@ -258,11 +258,11 @@
   }
  },
  "brightdata/brightdata-mcp": {
-  "commit_90d": 106,
-  "commit_7d": 42,
-  "rel_ver": "v4.6.0",
-  "rel_pub": "2026-11-05",
-  "rel_days": 2,
+  "commit_90d": 119,
+  "commit_7d": 14,
+  "rel_ver": "v4.8.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -275,10 +275,10 @@
    "JavaScript": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -368,10 +368,10 @@
   }
  },
  "androoAGI/starnet": {
-  "commit_90d": 10198,
-  "commit_7d": 0,
-  "rel_ver": "v0.14.2",
-  "rel_pub": "2026-10-31",
+  "commit_90d": 10729,
+  "commit_7d": 11,
+  "rel_ver": "v0.15.0",
+  "rel_pub": "2026-11-07",
   "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
@@ -388,21 +388,21 @@
    "Rust": 1,
    "Python": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "tensorflow/text": {
-  "commit_90d": 20,
-  "commit_7d": 2,
+  "commit_90d": 23,
+  "commit_7d": 3,
   "rel_ver": "v2.21.1",
   "rel_pub": "2026-09-09",
-  "rel_days": 59,
+  "rel_days": 66,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -418,21 +418,21 @@
    "Shell": 0,
    "Linker Script": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "EvolvingLMMs-Lab/LLaVA-OneVision-2": {
-  "commit_90d": 100,
+  "commit_90d": 97,
   "commit_7d": 7,
   "rel_ver": "2.0",
   "rel_pub": "2026-08-06",
-  "rel_days": 93,
+  "rel_days": 100,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -448,21 +448,21 @@
    "Cuda": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Folkbench/folkbench": {
-  "commit_90d": 68,
-  "commit_7d": 3,
+  "commit_90d": 70,
+  "commit_7d": 2,
   "rel_ver": "switch-v0.1.0-beta.6",
   "rel_pub": "2026-11-01",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 6,
   "rel_pre": true,
   "rel_none": false,
@@ -478,10 +478,10 @@
    "CSS": 4,
    "Astro": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261114",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261114",
+   "release": "20261114",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4923,6 +4923,60 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "kazim768/manus--ai": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "commit": "20261114",
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "Lowbydemodulator/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "Archiveeutrough/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
   }
  }
 }
