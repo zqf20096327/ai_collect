@@ -6008,5 +6008,28 @@
    "contrib": "20261114",
    "lang": "20261114"
   }
+ },
+ "Recusive/agentsdk": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 86,
+   "CSS": 7,
+   "MDX": 6,
+   "Rust": 1,
+   "Astro": 0
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }

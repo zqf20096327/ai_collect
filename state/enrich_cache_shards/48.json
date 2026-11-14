@@ -4479,5 +4479,74 @@
    "contrib": "20261112",
    "lang": "20261112"
   }
+ },
+ "gitcommit90/1Helm": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "JavaScript": 72,
+   "TypeScript": 14,
+   "HTML": 10,
+   "CSS": 3,
+   "Python": 1
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "Automate-Workflow/n8n-projects": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "talgent-work/workbench": {
+  "rel_ver": "v0.4.2",
+  "rel_pub": "2026-11-13",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 78,
+   "TypeScript": 18,
+   "Shell": 2,
+   "CSS": 1,
+   "Python": 1
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }

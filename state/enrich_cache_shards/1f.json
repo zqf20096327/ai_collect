@@ -4220,5 +4220,55 @@
    "contrib": "20261114",
    "lang": "20261114"
   }
+ },
+ "TSPstudio/kotensor": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 2,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 100
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "juanluisrto/boltbar": {
+  "rel_ver": "v0.7.4",
+  "rel_pub": "2026-10-27",
+  "rel_days": 18,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Swift": 76,
+   "JavaScript": 15,
+   "CSS": 5,
+   "HTML": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }

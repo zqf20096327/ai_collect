@@ -5294,5 +5294,54 @@
    "contrib": "20261114",
    "lang": "20261114"
   }
+ },
+ "ntars/Ondra": {
+  "rel_ver": "v1.3.0-alpha",
+  "rel_pub": "2026-11-14",
+  "rel_days": 0,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 81,
+   "JavaScript": 14,
+   "CSS": 3,
+   "Rust": 1,
+   "NSIS": 0
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "merlinh0/agent-bridge": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 87,
+   "Luau": 12,
+   "TypeScript": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }

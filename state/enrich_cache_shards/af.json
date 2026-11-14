@@ -4391,5 +4391,30 @@
    "contrib": "20261114",
    "lang": "20261114"
   }
+ },
+ "johnohhh1/ollama-webchat-ubuntu": {
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 67,
+   "Python": 25,
+   "Shell": 9
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }

@@ -4756,5 +4756,31 @@
    "contrib": "20261114",
    "lang": "20261114"
   }
+ },
+ "hpsonghyun/notework-ai": {
+  "rel_ver": "0.4.8",
+  "rel_pub": "2026-10-08",
+  "rel_days": 37,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 98,
+   "Python": 1,
+   "HTML": 1,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }

@@ -4323,5 +4323,74 @@
    "contrib": "20261113",
    "lang": "20261113"
   }
+ },
+ "Drakebenstrait/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "lopadova/jarvis-desktop": {
+  "rel_ver": "v0.1.4",
+  "rel_pub": "2026-10-04",
+  "rel_days": 41,
+  "rel_n90": 5,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 80,
+   "Rust": 13,
+   "JavaScript": 6,
+   "CSS": 1,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "AtharvGogia/Inkling-for-Windows": {
+  "rel_ver": "v0.4.6",
+  "rel_pub": "2026-11-12",
+  "rel_days": 2,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 99,
+   "Inno Setup": 1,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }

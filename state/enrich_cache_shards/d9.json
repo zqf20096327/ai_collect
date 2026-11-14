@@ -4284,5 +4284,32 @@
    "contrib": "20261114",
    "lang": "20261114"
   }
+ },
+ "YumeshioAmami/yumeFriend-open": {
+  "rel_ver": "v7.28.1",
+  "rel_pub": "2026-11-13",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 71,
+   "TypeScript": 26,
+   "JavaScript": 3,
+   "PowerShell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }

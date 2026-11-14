@@ -5102,5 +5102,49 @@
    "contrib": "20261114",
    "lang": "20261114"
   }
+ },
+ "DragonGiraffeGive/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "ZelotsNullzwei/whale-pod": {
+  "rel_ver": "v0.4.6",
+  "rel_pub": "2026-11-04",
+  "rel_days": 10,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 99,
+   "PowerShell": 0,
+   "Batchfile": 0,
+   "Python": 0,
+   "VBScript": 0
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }

@@ -4756,5 +4756,49 @@
    "contrib": "20261114",
    "lang": "20261114"
   }
+ },
+ "Goldenlodepict/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "kimmingul/NanumPlayer": {
+  "rel_ver": "v1.13.3",
+  "rel_pub": "2026-10-18",
+  "rel_days": 27,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Lua": 43,
+   "C++": 25,
+   "MDX": 10,
+   "Inno Setup": 10,
+   "Python": 9
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }

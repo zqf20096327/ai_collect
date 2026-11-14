@@ -4604,5 +4604,55 @@
    "contrib": "20261114",
    "lang": "20261114"
   }
+ },
+ "theRizwan/community-claude-code": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 95,
+   "JavaScript": 2,
+   "PowerShell": 2,
+   "Shell": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "edwin-hao-ai/Awareness-SDK": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 70,
+   "HTML": 17,
+   "TypeScript": 7,
+   "Python": 6,
+   "CSS": 0
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }

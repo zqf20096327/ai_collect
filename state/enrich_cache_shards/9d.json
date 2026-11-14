@@ -4343,5 +4343,32 @@
    "contrib": "20261114",
    "lang": "20261114"
   }
+ },
+ "IsValorum/V-Agent": {
+  "rel_ver": "components-1.0.9-r4",
+  "rel_pub": "2026-11-14",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 79,
+   "JavaScript": 13,
+   "CSS": 5,
+   "HTML": 1,
+   "Rust": 1
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }

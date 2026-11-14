@@ -4608,5 +4608,49 @@
    "contrib": "20261114",
    "lang": "20261114"
   }
+ },
+ "freebarddesignate/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "Enoa-devteam/Stella_project": {
+  "rel_ver": "v6.3.0",
+  "rel_pub": "2026-10-24",
+  "rel_days": 21,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 82,
+   "HTML": 8,
+   "Rust": 4,
+   "Vue": 3,
+   "TypeScript": 2
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }

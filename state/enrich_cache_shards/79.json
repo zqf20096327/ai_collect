@@ -5162,5 +5162,29 @@
    "contrib": "20261111",
    "lang": "20261111"
   }
+ },
+ "jim-ww/janitor-scraper": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-07-19",
+  "rel_days": 118,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 88,
+   "Nix": 12
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }

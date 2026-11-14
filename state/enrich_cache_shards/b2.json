@@ -4902,5 +4902,81 @@
    "contrib": "20261114",
    "lang": "20261114"
   }
+ },
+ "Faceplugin-ltd/FaceRecognition-DotNet-MAUI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 89,
+   "Objective-C": 5,
+   "Java": 4,
+   "Shell": 1,
+   "C": 1
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "youranreus/TokChan": {
+  "rel_ver": "v1.1.2",
+  "rel_pub": "2026-10-15",
+  "rel_days": 30,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 47,
+   "Python": 42,
+   "Shell": 7,
+   "TypeScript": 5
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "hBouanane/papers": {
+  "rel_ver": "v0.3.2",
+  "rel_pub": "2026-11-12",
+  "rel_days": 2,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 45,
+   "JavaScript": 36,
+   "CSS": 18,
+   "HTML": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }

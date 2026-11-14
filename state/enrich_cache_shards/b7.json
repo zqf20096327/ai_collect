@@ -4811,5 +4811,51 @@
    "contrib": "20261113",
    "lang": "20261113"
   }
+ },
+ "aaivu/In21-S7-CS4681-AML-Research-Projects": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 89,
+  "lang": {
+   "Jupyter Notebook": 94,
+   "Python": 5,
+   "Cuda": 0,
+   "Shell": 0,
+   "C": 0
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
+ },
+ "ismail-ashraf/Lexi-Core": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 58,
+   "TypeScript": 36,
+   "CSS": 5,
+   "Mako": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261114",
+  "dim_ts": {
+   "release": "20261114",
+   "security": "20261114",
+   "contrib": "20261114",
+   "lang": "20261114"
+  }
  }
 }
