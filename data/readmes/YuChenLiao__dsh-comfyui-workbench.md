@@ -18,11 +18,11 @@
 | `comfyui-workbench:gallery` | 面板 | 资产库：列表、筛选、缩略图、删除、批量导出工作流 ZIP |
 | `comfyui-workbench:workflow` | 面板 | 工作流管理：列表、`enabled` 开关、用途备注，外加 `/run`、`/rerun`、`/config`、服务托管接口 |
 | `comfyui-workbench:tags` | 面板 | 标签库：搜索四类标签、按语义大类筛、一键复制 tag；浏览只读，「更新标签」按钮会从上游刷新数据 |
-| `comfyui-workbench:poses` | 面板 + 工具 | 姿势库：288 组人体姿势 / 1439 个角度，搜索与体系、分类筛选，取线稿存进 uploads 当工作流输入图；另出 `comfyui_pose_search`、`comfyui_pose_fetch` 两个工具 |
-| `comfyui-workbench:costumes` | 面板 + 工具 | 衣装库：1407 套现实衣装（图中无人物），搜索与分类筛选，**每条都带英文关键词**，取图存进 uploads 当参考图；另出 `comfyui_costume_search`、`comfyui_costume_fetch` |
-| `comfyui-workbench:generate` | 工具 | `comfyui_workflow_list`、`comfyui_workflow_inspect`、`comfyui_run`、`comfyui_run_batch`、`comfyui_rerun`、`comfyui_runs`、`comfyui_node_search`、`comfyui_compose` |
+| `comfyui-workbench:poses` | 面板 + 工具 | 姿势库：288 组人体姿势 / 1439 个角度，搜索与体系、分类筛选，取线稿存进 uploads 当工作流输入图；另出 `comfyui_pose` 一个工具（给 `query` 搜、给 `id` 取图） |
+| `comfyui-workbench:costumes` | 面板 + 工具 | 衣装库：**面板只展示写实版**（1407 套实拍照风）；另有一批 1320 套二次元版，经 `comfyui_costume { source: "anime" }` 使用。两批都不含人物，搜索与分类筛选，**每条都带英文关键词**，取图存进 uploads 当参考图；另出 `comfyui_costume` 一个工具（给 `query` 搜、给 `id` 取图） |
+| `comfyui-workbench:generate` | 工具 | `comfyui_workflow`、`comfyui_run`、`comfyui_run_batch`、`comfyui_rerun`、`comfyui_runs`、`comfyui_node_search`、`comfyui_compose` |
 | `comfyui-workbench:edit` | 工具 | `comfyui_workflow_edit` |
-| `comfyui-workbench:danbooru` | 工具 | `danbooru_lookup`、`danbooru_lookup_batch`、`danbooru_sync`：角色 / 画师 / 作品 / 通用标签库（含中文名，四类共 99372 条）。不碰 ComfyUI 运行时，可单独关 |
+| `comfyui-workbench:danbooru` | 工具 | `danbooru_lookup`、`danbooru_sync`：角色 / 画师 / 作品 / 通用标签库（含中文名，四类共 99372 条）。不碰 ComfyUI 运行时，可单独关 |
 | `comfyui-workbench:terminal` | 面板 | ComfyUI 终端：展示子进程输出或 `user/comfyui.log`，可在面板上直接拉起服务 |
 
 关掉某一条只影响它自己：例如关掉 `gallery`，资产库路由随之 404，工作流管理与工具照常（两个例外：批量导出工作流 ZIP 要读图与 sidecar，依赖相册；关掉 `core` 等于关掉整个插件——HTTP API 与浏览器端都会消失）。
@@ -73,21 +73,17 @@ dsh plugin --profile desktop add link:D:/dsh/dsh-comfyui-workbench
 
 | 工具 | 作用 |
 | --- | --- |
-| `comfyui_workflow_list` | 列出**可用的**工作流：id、标题、用途备注、底模、输入种类、输出形状。被停用的不列出（`hiddenCount` 告知藏了几条）。拿不到 `/object_info` 时不标缺模型，避免把"离线"说成"缺模型" |
-| `comfyui_workflow_inspect` | 不传 `nodeId` 给 IO 面与节点清单；传了给单节点完整配置。顺带报告缺节点、缺模型与可用的替代 |
-| `comfyui_run` | **默认异步**：提交后立即返回 `promptId`，后台盯着并在出图后主动通知对话。支持 `wait: true` 同步等、`promptId` 续查。停用的工作流直接拒绝。**服务没在跑会自动拉起**（等到 `/system_stats` 通为止，默认上限 `readyTimeoutMs` 3 分钟），提交排在拉起之后 —— 不需要先手动启动 ComfyUI，也不该在它加载 / 下载模型时 kill 进程 |
+| `comfyui_workflow` | 工作流的**四档只读视角**：不给参数列可用工作流（id、标题、用途、底模、输入种类、输出形状；被停用的不列出，`hiddenCount` 告知藏了几条）；给 `workflowId` 看 IO 面与节点清单（顺带报缺节点、缺模型与替代建议）；再加 `nodeId` 看单节点完整配置；给 `audit: true` 体检全库。拿不到 `/object_info` 时不标缺模型，避免把"离线"说成"缺模型" |
+| `comfyui_run` | **默认异步**：提交后立即返回 `promptId`，后台盯着并在出图后主动通知对话。支持 `wait` 同步等（`true` 或直接给毫秒数，一参两用）、`promptId` 续查。停用的工作流直接拒绝。**服务没在跑会自动拉起**（等到 `/system_stats` 通为止，默认上限 `readyTimeoutMs` 3 分钟），提交排在拉起之后 —— 不需要先手动启动 ComfyUI，也不该在它加载 / 下载模型时 kill 进程 |
 | `comfyui_workflow_edit` | 改标题 / 说明 / 标签，以及单节点参数。默认只影响下一次运行，写回模板需 `persist` + `expectHash`。被变量绑定的参数不能在这里改（会报 `param_bound`），变量请经 `comfyui_run` 的 `vars` 传 |
 | `comfyui_node_search` | 按类名 / 显示名 / 别名 / 分类 / 输入输出类型 / 包名搜索本机节点，四档排序。默认只回一行摘要，`detail` 才给输入输出 |
 | `comfyui_rerun` | 用某个产物当时的参数再跑一次（或做几张变体）。参数从产物旁的 sidecar 读，不必手抄 seed / prompt |
 | `comfyui_runs` | 查任务状态：正在跑（`state: running`）、排队中（带 `queuePosition`）、最近完成或失败的。进度只落记录、**不进对话**，所以不打断当前回合。`progress` 字段只在开启 `progressStream` 时出现，而且**只对面板 `/run`、`/rerun` 提交的运行有**（工具提交的没有）——缺这个字段不代表异常；开启后百分比按采样节点重置，会回跳 |
 | `comfyui_run_batch` | 一次提交多个任务（同一工作流跑多组参数，或不同工作流各跑一次）。逐条报结果，**一条失败不影响其它条**；默认全部异步 |
-| `danbooru_lookup` | 按中文名 / 日文名 / Danbooru tag 查**角色、画师、作品、通用**四类标签（`kind` 可限定），**只返回 tag**。写提示词前用它对齐名字，能少跑偏。查「长发」→`long_hair`、「东方Project」→`touhou` |
-| `danbooru_lookup_batch` | 一次查多个名字（上限 50），**只查本地不联网** —— 缺哪个再用单条 `danbooru_lookup` 补（那个会自动走在线） |
+| `danbooru_lookup` | 把名字转成 Danbooru tag，**两条路径**：给 `query` 查单个（走本地库，没命中自动联网兜底）；给 `queries` 查一批（上限 50，**只查本地不联网** —— 一次查几十个还逐个联网会慢且容易限流，缺哪个再用 `query` 补）。`kind` 可限定角色 / 画师 / 作品 / 通用四类。查「长发」→`long_hair`、「东方Project」→`touhou` |
 | `danbooru_sync` | 把角色 / 画师标签（含中文名）抓到本地库。几千次请求，只在用户明确要求时调用 |
-| `comfyui_pose_search` | 在姿势参考库里找人体姿势（288 组 / 1439 角度）：按中文名、编号或分类搜，返回 `id` 与角度数，**不含图片**。默认全给，`onlySafe` 才收窄到常规 98 组 |
-| `comfyui_pose_fetch` | 把某个角度（或某个姿势的正面）的线稿下载到本机 uploads，返回路径，可直接作为工作流的图片输入（ControlNet / 图生图） |
-| `comfyui_costume_search` | 在衣装库里找服装（1407 套）：按中文描述、标签、英文关键词或编号搜，返回 `id` 与 **`keywords`**——后者可直接拼进提示词 |
-| `comfyui_costume_fetch` | 把某套服装的图下载到本机 uploads，返回路径与关键词，用作服装参考图 |
+| `comfyui_pose` | 姿势库的**两条路径**：给 `query` 搜索（288 组 / 1439 角度，按中文名、编号、分类；返回 `id` 与角度数，不含图片；默认全给，`onlySafe` 才收窄到常规 98 组）；给 `id` 取图（某个角度或正面的线稿落进 uploads，可直接当 ControlNet / 图生图的输入图） |
+| `comfyui_costume` | 衣装库的**两条路径**：给 `query` 搜索（1407 套，按中文描述、标签、英文关键词或编号；返回 `id` 与 **`keywords`**，后者可直接拼进提示词）；给 `id` 取图（落进 uploads，当服装参考图） |
 | `comfyui_compose` | 把素材整理成**一次可直接交给 `comfyui_run` 的调用**：选工作流、把图落进 uploads、按槽位语义填 vars、拼好提示词。它自己不出图；`assumptions` 写清每条推断，不对就用 `extraVars` 覆盖 |
 
 工作流的"可用"由 `<id>.meta.json` 的 `enabled` 决定（缺省 `true`），面板与 `comfyui_workflow_edit` 写同一份文件。
@@ -221,7 +217,7 @@ echo '{"tag":"mika_(blue_archive)","kind":"character","postCount":16024,"names":
 - **取一次就算数**：内存 32 张 + 磁盘缓存（上限 256 MB，按最久未用清理），同一个视角的并发请求只打一次上游。上游连着失败几次会短路 30 秒，面板显示「线稿暂时取不到」而不是让几十个缩略图各自挂 20 秒超时。
 - **五个角度**：正面 / 斜侧 / 侧面 / 俯视 / 仰视，卡片上直接切。287 组有满 5 个角度，1 组只有 4 个。
 - **默认全给**：288 组都在，不做内容筛选。标了成人向的 190 组（性感系 + 双人体系，加两个明确分类）只在卡片上有个小标记；想收窄就勾「只看常规」，那是使用者自己的选择。
-- **拿它出图**：点「取原图」把线稿存进 uploads，返回的路径就是工作流的图片输入；模型侧用 `comfyui_pose_search` 找、`comfyui_pose_fetch` 取。这个面板不自己调生图 API —— 出图只有 `comfyui_run` 一条路。
+- **拿它出图**：点「取原图」把线稿存进 uploads，返回的路径就是工作流的图片输入；模型侧用 `comfyui_pose`：给 `query` 找、给 `id` 取。这个面板不自己调生图 API —— 出图只有 `comfyui_run` 一条路。
 - 检索是本地线性扫 288 组（微秒级）。**这里不做倒排索引**：标签库 99372 条才值得建 2-gram，288 条建索引是负优化。
 - 关掉组件：`disabledComponents: ["panel.poses"]`。数据更新：`npm run poses:import`。
 

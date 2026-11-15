@@ -28,6 +28,7 @@ India's open geo data in one place: browse, filter and download curated layers, 
 - [Downloads and formats](#downloads-and-formats)
 - [Use it from an AI assistant (MCP)](#use-it-from-an-ai-assistant-mcp)
 - [API](#api)
+- [Releases and the Census 2011 ↔ LGD crosswalk](#releases-and-the-census-2011--lgd-crosswalk)
 - [Data principles and attribution](#data-principles-and-attribution)
 - [Architecture](#architecture)
 - [Project layout](#project-layout)
@@ -61,19 +62,20 @@ bharatlas is a catalog of India's open geo layers, from the national boundary do
 
 ## Layers and sources
 
-The live catalog lists 109 layers (`GET /api/v1/layers`, checked 12 November 2026), plus community submissions (`GET /api/v1/submissions`). Counts by category, from `GET /api/v1/categories`:
+The live catalog lists 148 layers (`GET /api/v1/layers`, checked 15 November 2026), plus community submissions (`GET /api/v1/submissions`). Counts by category, from `GET /api/v1/categories`:
 
 | Category | Layers | Examples |
 |---|---:|---|
-| Boundaries | 20 | `lgd_states` to `lgd_villages`; SOI, Bhuvan and geoBoundaries alternates; PMGSY blocks and habitations |
-| City wards | 34 | `wards_bengaluru_gba`, `wards_chennai`, `wards_mumbai`, `wards_delhi`; BDA jurisdiction and layouts |
-| Water | 19 | WRIS rivers, canals, basins, dams, reservoirs; CGWB aquifers and groundwater extraction; India Flood Inventory; NDEM floods 1998-2022 |
-| Infrastructure and utilities | 12 | pincode polygons, VEDAS power plants and transmission lines, Overture places |
-| Environment | 10 | wildlife sanctuaries and national parks, eco-sensitive zones, SOI forests, seismic zones, landslides, earthquakes, cyclone tracks |
-| People and places | 6 | parliament and assembly constituencies, high courts, NGT zones, NCLT benches |
+| Boundaries | 22 | `lgd_states` to `lgd_villages`; SOI, Bhuvan and geoBoundaries alternates; PMGSY blocks and habitations; town and city boundaries (SBM); West Bengal town boundaries (AMRUT) |
+| City wards | 41 | `wards_bengaluru_gba`, `wards_chennai`, `wards_mumbai`, `wards_delhi`; BDA jurisdiction and layouts; `sbm_wards` (about 3,300 towns and cities); Kalyan-Dombivli wards; Pune 2025 administrative wards; zones for Greater Bengaluru, Pune and Chennai; West Bengal wards (AMRUT, 52 towns) |
+| Water | 22 | WRIS rivers, canals, basins, dams, reservoirs; CGWB aquifers and groundwater extraction; groundwater quality pre- and post-monsoon (Bhuvan); Amrit Sarovar ponds; India Flood Inventory; NDEM floods 1998-2022 |
+| Infrastructure and utilities | 13 | pincode polygons, VEDAS power plants and transmission lines, Jal Jeevan Mission facilities, Overture places |
+| Environment | 21 | forest circles, divisions, ranges and beats (FSI); wildlife sanctuaries, reserves and corridors; eco-sensitive zones; Coastal Regulation Zones 2019; geology, coal blocks, critical minerals and lineaments (GSI); seismic zones, landslides, earthquakes, cyclone tracks |
+| People and places | 13 | parliament and assembly constituencies, high courts, NGT zones, NCLT benches; police station jurisdictions (Andhra Pradesh, Bihar, Delhi, Tamil Nadu, Telangana, marine) |
 | Agriculture and land use | 4 | agro-ecological and agro-climatic zones, soil health, land use by block |
-| Transport and mobility | 3 | highways, airports, PMGSY roads |
-| Health and education | 1 | NIC HealthGIS health facilities |
+| Transport and mobility | 5 | highways, airports, PMGSY roads; Indian Railways stations and tracks |
+| Health and education | 4 | NIC HealthGIS health facilities; NHP hospital directory and NIN health facilities (2025); UDISE schools (2.9 million) |
+| Economy and finance | 3 | MGNREGA by district (2025-26): spending, wages, persondays, households, women, SC and ST work, with yearly spend since 2018-19; city finances from CityFinance.in: income and expenditure by account head for about 3,000 towns and cities; state economy and finance: GSDP, per-capita NSDP, debt, GST and direct tax, MUDRA, KCC and Jan Dhan accounts |
 
 The full catalog, with each layer's source, licence, row count, freshness and download sizes, lives in [`catalog.json`](./catalog.json) and on [bharatlas.com](https://bharatlas.com). Known data caveats (name spellings across sources, coverage gaps, polygon precision) are on [/about#caveats](https://bharatlas.com/about#caveats).
 
@@ -184,10 +186,26 @@ curl 'https://bharatlas.com/api/v1/nearby?lat=12.9716&lng=77.5946&layer=nic_heal
 
 collect has its own token-authenticated write API at `https://collect.bharatlas.com/api/collect/v1`.
 
+## Releases and the Census 2011 ↔ LGD crosswalk
+
+Dated, immutable releases, each named by a code `bharatlas-<dataset>-<year>.<month>` that is never reused and pinned by SHA-256 (`<code>+sha256:<hex>`, the hex being the SHA-256 of the release's `SHA256SUMS`). The index is [`/releases/index.json`](https://bharatlas.com/releases/index.json) (also `GET /api/v1/releases`); each release lives at `https://bharatlas.com/releases/<code>/` with `manifest.json` (per file: SHA-256, bytes, rows, licence; the source credited first with its version and fetch date), `CHANGES.md` and `SHA256SUMS`. The numbering follows the schemes register (`schemes-register-2026.11`): the month a release is cut, so one release per dataset a month.
+
+- **`bharatlas-cw-…`**: the Census 2011 ↔ LGD crosswalk, one table per level (`cw_states`, `cw_districts`, `cw_subdistricts`, `cw_blocks`, `cw_villages`; CSV and Parquet), built by [`scripts/build_crosswalks.py`](./scripts/build_crosswalks.py) from the Census 2011 codes the LGD layers already carry. Each row is an LGD code, its name, the 2011 code, and a relation derived from how the codes repeat (1:1, split, merge, split+merge, post-2011 code, no 2011 code, no LGD code). The source gives districts made after 2011 a code past 640 instead of their parent's, so a new district's parent is not in this data; splits show at the subdistrict, block and village levels. Each table keeps its LGD layer's licence.
+- **`bharatlas-catalog-…`**: the dated catalogue record ([`scripts/catalog_record.py`](./scripts/catalog_record.py)): per layer the source, the source's own version (a GitHub release asset's digest where there is one), fetch date, SHA-256 of the served file, licence and source link.
+
+Cut with [`scripts/release.py`](./scripts/release.py): manifests are committed under `web/public/releases/<code>/`; data files go to R2 at `releases/<code>/` and `/releases/<code>/<file>` redirects there. A re-run with the same files changes nothing; different files under an existing code are refused. No DOIs for now; `w3id.org/bharatlas/<dataset>/<year>.<month>` is the proposed persistent address.
+
+```bash
+python3 scripts/build_crosswalks.py                 # -> data/release-staging/cw/
+python3 scripts/catalog_record.py                   # -> data/release-staging/catalog/ (downloads every served file once; cached, resumable)
+python3 scripts/release.py data/release-staging/cw data/release-staging/catalog   # prints the R2 upload commands
+```
+
 ## Data principles and attribution
 
 - **Downloads are the source layer as published.** A layer's files keep the attributes its source published. bharatlas does not edit, correct or rename boundaries or place names.
 - **View-only enrichment lives in sidecars.** Extras that help people read a map, such as the OpenStreetMap area names shown on number-only ward maps, are kept in separate sidecar files (`web/public/ward-index/<layer>.json`), credited to their own source, and are not in the downloads.
+- **How sources are chosen.** Curated layers come from Indian government bodies, public institutions, open-data communities (DataMeet, OpenCity) and openly licensed research and industry datasets, favouring data a map app doesn't have: official jurisdictions, regulatory zones, measured records. Publicly funded government geodata is republished with full credit to the publishing department (National Geospatial Guidelines 2021, National Geospatial Policy 2022), including where a portal's general website terms ask for permission. Data under an explicit non-commercial licence, privately owned data without an open licence, and personal data are left out. Where the publisher states an open licence (GODL-India, CC BY) the layer carries it; where it states none, the layer carries the republisher's licence (for example CC0 from indianopenmaps) and credits both. Publishers can ask for a correction, different credit or removal: [/about#sources-and-licensing](https://bharatlas.com/about#sources-and-licensing).
 - **Each layer keeps its own source and licence.** Curated layers carry CC0-1.0, CC-BY-4.0, CC-BY-SA-4.0, ODbL-1.0, GODL-India, MIT, or CDLA-Permissive-2.0 / Apache-2.0, depending on the upstream source. Community submissions choose from an open-licence allowlist (CC0, CC-BY, CC-BY-SA, ODbL, ODC-PDDL, GODL-India, CDLA Permissive 2.0).
 - **Credit the source when you use a layer.** Every card and view page names the layer's source and licence. `GET /api/v1/layers/<id>` and the MCP `get_layer_detail` tool return the same attribution and licence, and each `/view` page's Dataset JSON-LD carries a `creditText` to reproduce. Follow that licence's terms (for example, attribution for CC-BY, share-alike for ODbL and CC-BY-SA).
 - **Provided as-is.** Curated layers reflect the upstream source at fetch time and can lag. For legal or administrative use, go to the upstream source. Full terms: [/about#use-of-data](https://bharatlas.com/about#use-of-data).
@@ -294,12 +312,13 @@ Data sources:
 - [DataMeet](https://github.com/datameet/Municipal_Spatial_Data): community-curated municipal spatial data.
 - [datta07/INDIAN-SHAPEFILES](https://github.com/datta07/INDIAN-SHAPEFILES): metropolitan city ward shapefiles; Patna wards cleaned by Jayesh Keswani.
 - [Central Water Commission (India-WRIS)](https://indiawris.gov.in/): basins, rivers, canals, dams, reservoirs, lakes, waterbodies.
-- [ramSeraph/indianopenmaps](https://github.com/ramSeraph/indianopenmaps): selectively republished layers (WRIS waterbodies, SLUSI watersheds and soil, VEDAS power infrastructure, PMGSY roads and habitations).
+- [ramSeraph/indianopenmaps](https://github.com/ramSeraph/indianopenmaps): selectively republished layers (WRIS waterbodies, SLUSI watersheds and soil, VEDAS power infrastructure, PMGSY roads and habitations, Swachh Bharat Mission urban wards and town boundaries, NHP hospitals and NIN health facilities, UDISE schools).
 - [CoRE Stack](https://core-stack.org/): republished CGWB aquifers and groundwater extraction, WRIS canals, ICAR-NBSS agro-ecological zones, Planning Commission agro-climatic zones, Wildlife Institute of India biogeographic zones.
 - [PMGSY](https://omms.nic.in/): rural blocks, roads and habitations.
 - [PM GatiShakti](https://gis.pmgatishakti.gov.in/): wildlife sanctuaries, national parks, highways.
 - [Bharatmaps](https://bharatmaps.gov.in/) (NIC): eco-sensitive zones, dams, Ramsar sites, wetlands.
 - [NIC HealthGIS](https://healthgis.nic.in/): health facilities.
+- [Swachh Bharat Mission (Urban), MoHUA](https://sbmurban.org/): ward and town boundaries for about 3,300 urban local bodies (via ramSeraph, CC0).
 - [ISRO VEDAS Energymap](https://vedas.sac.gov.in/energymap/): power plants, refineries, oil wells, wind and solar.
 - [Geological Survey of India](https://gsi.gov.in/) and [NGDR / Bhukosh](https://bhukosh.gsi.gov.in/): landslide inventory, earthquakes.
 - [Minor Irrigation Census](https://mowr.nic.in/irrigationcensus/) (Ministry of Jal Shakti): district well counts.

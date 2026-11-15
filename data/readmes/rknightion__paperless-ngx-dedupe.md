@@ -48,6 +48,8 @@ docker compose up -d
 
 **3. Open [http://localhost:3000](http://localhost:3000)** and go to **Settings > Test Connection** to verify connectivity.
 
+The app has no login of its own, so keep it on a trusted network or behind an authenticating proxy; see the [security access model](https://m7kni.io/paperless-ngx-dedupe/security/#access-model).
+
 **4. Sync and analyze.** From the dashboard, click **Sync** to pull your documents, then **Analyze** to detect duplicates. Both run as background jobs with real-time progress.
 
 **5. Review duplicates** at `/duplicates` -- compare documents side-by-side and resolve them.
@@ -69,13 +71,14 @@ Discover tasks with `just --list`, or inspect one with `just --show <recipe>`.
 ```bash
 just setup            # Install dependencies
 just run              # Start dev server (http://localhost:5173)
+just dev-jobs         # Dev server with a core compiler watcher for background jobs
 just build            # Production build
 just typecheck        # TypeScript type checking
 just lint             # Lint
 just test             # Run tests
 ```
 
-> **Note:** Background jobs (sync, analysis, batch delete) use worker threads that run outside Vite as raw Node.js processes. These do not work with `just run` because Node.js cannot execute the TypeScript source files directly. Use `just docker-dev` for local development to test the full workflow.
+> **Note:** Background jobs load compiled core JavaScript outside Vite and need a current core build. `just docker-dev` and `just dev-jobs` keep core compiled while the dev server runs. Plain `just run` uses any existing build and does not keep it current.
 
 ## License
 

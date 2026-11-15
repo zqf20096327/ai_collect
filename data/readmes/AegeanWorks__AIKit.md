@@ -33,8 +33,9 @@
 | **Audit & Repair History**| `python aikit.py reforge <cmd>`| `start`, `audit`, `review`, `analyze`, `fix`, `run`, `stop`, `resume`, `settings`, `runs`, `status`, `report`; windows, Python AST (ADR-230, ADR-232, ADR-249, ADR-290)|
 | **Route Ideas & Reviews**| `python aikit.py idea-catcher <cmd>`| `validate`, `render`, `status`, `ideas`, `tag`, `history`, `review-idea`, `reviews`, `review-start/finish`, `revalidate`, `audit-claims`, `concepts`; a second deferral blocks an idea permanently (ADR-246, ADR-252, ADR-286)|
 | **Project Tags & Media**| `python aikit.py <cmd>`| `ui-id`, `topics --brief/--from-file`, `media init/capture/review/apply/audit`; AI-chosen tags, reviewed logos and commit-stamped screenshots (ADR-233..236)|
-| **Run Regression Suite**| `python scripts/check_test_budgets.py`| Both tiers pass; per-test average <=20ms unit, <=1000ms integration|
+| **Run Regression Suite**| `python scripts/check_test_budgets.py`| Both tiers pass; per-test average <=50ms unit, <=1000ms integration|
 | **Run One Tier**| `python -m unittest tests.test_kit` / `python -m unittest tests.test_integration`| Isolates a failing tier|
+| **Suite Digest**| `python scripts/test_digest.py [--json]`| sha256 over sorted module/class/test names plus the count; a deleted or renamed test changes it (ADR-422)|
 | **Synchronize IDE Rules**| `python scripts/sync_principles.py`| <=1,750 est. tokens/target incl. a reserved 300-token Tier 1B|
 | **Verify Rule Freshness**| `python scripts/sync_principles.py --check`| Read-only; exits 1 on rule drift, or when a principle changed since the last commit lacks an ADR naming its `--citing` set (PRINCIPLE-000 R3)|
 | **Find Principles to Read**| `python scripts/sync_principles.py --involved <paths/commands/output>`| Same answer for every agent (PRINCIPLE-001 R3)|
@@ -47,10 +48,10 @@
 | **Audit Disruption Recovery**| `python scripts/disruption_recovery.py --audit`| Clean status check; detects surviving uncommitted files|
 | **Resume Interrupted Task**| `python scripts/disruption_recovery.py --resume`| Cold-start command: every `--audit` finding, then the interrupted task, its plan and resumption phase|
 | **Record Task Checkpoint**| `python scripts/disruption_recovery.py --checkpoint <task_id> --phase-num <1-5> --desc <text>`| Appends a checkpoint (PRINCIPLE-002 R4); exits 2 when a task's first plan lacks `--why --benefits --risks --mitigation`, and warns when a task reaches Phase 3 with none (PRINCIPLE-007 R1, R6); exits 1 on credential-shaped text, or records `[REDACTED]` with `--redact` (PRINCIPLE-019 R3); `--handoff "next: ...; state: ...; failed: ...; open: ..."` records the packet `--resume` prints (PRINCIPLE-004 R2); `--agent <name>` and `--take-over` per PRINCIPLE-006 R7|
-| **Complete Task Ledger**| `python scripts/disruption_recovery.py --complete <task_id>`| Marks the active task completed in `.agents/task_ledger.json`; exits 1, changing nothing, if `<task_id>` is not the active task|
+| **Complete Task Ledger**| `python scripts/disruption_recovery.py --complete <task_id>`| Marks the active task completed in `.agents/task_ledger.json`; exits 1, changing nothing, if `<task_id>` is not the active task or its workspace has uncommitted non-bookkeeping work (ADR-418)|
 | **Reset Active Task**| `python scripts/disruption_recovery.py --reset [reason]`| Abandons/clears in-progress task in ledger|
 | **Purge Temp Buffers**| `python scripts/disruption_recovery.py --clean`| Deletes orphaned `*.tmp_*` buffers older than 60 s; younger ones may be a write in progress|
-| **Secret Scan Gate**| `python scripts/check_secrets.py --staged\|--commits <range> [--workspace <project>]`| Exits 1 on a credential pattern in the staged diff or agent memory, or when any surface could not be scanned (PRINCIPLE-019)|
+| **Secret Scan Gate**| `python scripts/check_secrets.py --staged\|--commits <range> [--exclude-remote origin] [--workspace <project>]`| Exits 1 on a credential pattern in the staged diff or agent memory, or when any surface could not be scanned; `--exclude-remote` skips history the remote already has and lists already-public lines for rotation (PRINCIPLE-019, ADR-421)|
 | **Verify the Commit Itself**| `python scripts/verify_commit.py`| Runs every gate against the commit alone in a throwaway worktree; exits 1 when the commit holds less than the tree it was tested in (PRINCIPLE-018 R7); warns on a file cut below half its size unless the message says `shrink-ok: <reason>`|
 | **Reachability Shield**| `python scripts/check_reachability.py`| No unwired capability or phantom state key (PRINCIPLE-014 R7)|
 | **Operational Dogfood Gate**| `python scripts/dogfood.py`| 5/5 tracks pass; zero host mutation (PRINCIPLE-015)|
@@ -87,6 +88,7 @@ portable_agent_kit/
 │   ├── concept_map.py
 │   ├── upstream_check.py
 │   └── version.py
+├── .gitattributes                <- LF line endings; CRLF for .bat/.cmd (ADR-454)
 ├── .gitignore                    <- Credential & local-state baseline (PRINCIPLE-019 R3)
 ├── AGENTS.md                     <- Generated Tier 1 capsules (AGENTS.md-convention hosts)
 ├── GUIDELINES.md                 <- Source of truth: every principle and rule (Tier 2)
@@ -107,6 +109,9 @@ portable_agent_kit/
 │           ├── SKILL.md          <- Claude Code runbook (native skill)
 │           ├── projects.md       <- Project command matrix (read on demand)
 │           └── delegation.md     <- Sub-agent delegation (read on demand)
+├── .kilo/
+│   └── skills/
+│       └── aikit/                <- Kilo runbook copies (generated; rest of .kilo/ ignored)
 ├── .agents/
 │   ├── rules/
 │   │   ├── principles.md         <- Antigravity / Agent IDE workspace rules
@@ -134,6 +139,7 @@ portable_agent_kit/
 │   ├── dogfood.py                <- Dogfood runner (sandbox jail + chaos tracks)
 │   ├── check_reachability.py     <- reachability shield (anti-dead-capability)
 │   ├── check_test_budgets.py     <- Test tier budget gate (per-test ceilings)
+│   ├── test_digest.py            <- sha256 over every test identity (ADR-422)
 │   ├── project_registry.py       <- Project discovery, stack detection, memory
 │   ├── project_license.py        <- License tiers and restrict
 │   ├── marked_blocks.py          <- aegean:<name> blocks a generator owns in user files
@@ -147,7 +153,9 @@ portable_agent_kit/
 │   ├── subagent_delegate.py      <- Bounded OpenCode sub-agent runs
 │   ├── project_publish.py        <- Uploads a project to its own GitHub repo
 │   ├── git_guard.py              <- pre-push guard: raw push is refused (ADR-341)
+│   ├── path_migration.py         <- aikit fix: home paths out of tracked state (ADR-446)
 │   ├── project_archive.py        <- Retires a project to projects/archive/ and archives GitHub
+│   ├── project_unarchive.py      <- Returns an archived project and unarchives GitHub (ADR-456)
 │   ├── dossier_sync.py           <- Publish-time AegeanWorks catalogue sync (ADR-308)
 │   ├── project_ui.py             <- Durable has_ui/ui_kind identifier (ADR-233)
 │   ├── project_topics.py         <- AI topic brief and validator, max 20 (ADR-236)
@@ -168,8 +176,9 @@ portable_agent_kit/
 ├── reports/                    <- Local-only research inbox (PRINCIPLE-016 R7; only README.md tracked)
 │   └── README.md               <- Inbox lifecycle: triage into the register, then delete
 ├── tests/
-│   ├── test_kit.py               <- Unit tier (<=20ms per test)
+│   ├── test_kit.py               <- Unit tier (<=50ms per test)
 │   ├── test_auto_register.py     <- Unit tier: idea registration from commits
+│   ├── test_bridge_contract.py   <- Cross-project bridge contract: one identity table
 │   └── test_integration.py       <- Integration tier: concurrency, CLI contracts
 └── knowledge/
     ├── INDEX.md                  <- Knowledge base table of contents
@@ -197,8 +206,10 @@ Open this folder in any AI host and describe what to build. Each project gets it
 python aikit.py new my-app --description "<10-350 chars>" --topic web  # new repo, .aikit/, AL-1.1 LICENSE, AIKit badge
 python aikit.py attach ../existing  # register an existing folder; adds .aikit/, ignore rules, badge
 python aikit.py list                # every project, its stack and test command
-python aikit.py status my-app       # task, changes, decision; --exit-code fails when dirty, --json for CI
+python aikit.py tasks               # active/suspended tasks across projects, with each owner's last write; --json for CI
+python aikit.py status my-app       # task, changes, decision, ahead/behind; --exit-code fails when dirty, --json for CI
 python aikit.py check my-app        # tests, checks, hygiene, guidelines, secrets; --push pushes (exit 1 if blocked)
+python aikit.py deliver my-app --task t1 [--push]  # after your commit: check --strict, complete, ledger commit, push (ADR-457)
 python aikit.py push my-app          # every gate, then push to origin (alias for check --push; never forced)
 python aikit.py check my-app --strict  # delivery gate: clean tree, map, no conflicts, no open UI task
 python aikit.py ui init my-app        # React/Vite pilot: write a conservative .aikit/ui.json
@@ -207,10 +218,11 @@ python aikit.py ui begin my-app --surface menu  # bound edits to one declared UI
 python aikit.py ui verify my-app       # scope, budget, fast + snapshot proofs, style drift
 python aikit.py ui allow my-app "Btn*" --reason "<why>"  # intended inventory removal
 python aikit.py ui finish my-app --reviewed  # close after review; a guideline can waive the human
-python aikit.py fix my-app          # restore memory/README, adopt UI, refresh map, then check
+python aikit.py fix my-app          # restore memory/README/.gitattributes, adopt UI, refresh map, then check
 python aikit.py guideline my-app "money is integer cents" --source user  # project rule
-python aikit.py publish my-app [--owner ORG] [--license auto]  # pre-push guard, repo, description, recorded AI topics
-python aikit.py archive my-app --reason "superseded by X" [--offline]  # move to projects/archive/, archive GitHub repo
+python aikit.py publish my-app [--owner ORG] [--license auto] [--dry-run]  # pre-push guard, repo, description, recorded AI topics; --dry-run checks and lists the steps, changing nothing (ADR-449)
+python aikit.py archive my-app --reason "superseded by X" [--offline] [--dry-run]  # record + banner in one commit, push, archive GitHub repo, move; resumable (ADR-434)
+python aikit.py unarchive my-app [--to DIR] [--offline] [--dry-run]  # move back, unarchive GitHub repo before pushing, clear banner + record; resumable (ADR-456)
 python aikit.py license my-app [--suggest|--set game|--restrict]  # AL-1.1, AGL-1.1 (DRM-free games) or ASL-1.1 (science)
 ```
 A project's memory is `.aikit/`; ledger commands take `--workspace projects/<name>`. `publish` installs a pre-push guard at `.git/hooks` or the repository's `core.hooksPath`: a raw `git push` is refused until the project is uploaded through AIKit (ADR-341, ADR-342); `push`, `check --push` and the online `archive` path use the same authorized push (ADR-343). Publishing also needs a 10-350 char README description; `license` picks AL-1.1, AGL-1.1 or ASL-1.1. `check` wants `checklists: passed`; deliberate hygiene findings need `hygiene: allow <reason>`. `ui` is opt-in (`.aikit/ui.json`); `finish` needs `--reviewed` (ADR-160..166). `check`/`fix`/`publish` run project commands unsandboxed: attach trusted repositories only.
@@ -310,7 +322,7 @@ The principles are strictly organized across **5 chronological execution phases*
 ### 🧭 Phase 2: Pre-Flight Orientation & Planning
 | Principle | Title | Capsule |
 |---|---|---|
-| **PRINCIPLE-005** | AI Cold-Start Readiness & Living Documentation | README <=32500 chars: prerequisites, test command, tree; user-visible changes update it same commit; `update_knowledge_base.py --check` gates it. |
+| **PRINCIPLE-005** | AI Cold-Start Readiness & Living Documentation | README <=35000 chars: prerequisites, test command, tree; user-visible changes update it same commit; `update_knowledge_base.py --check` gates it. |
 | **PRINCIPLE-006** | Incremental Progress Checkpointing & Disruption Recovery | Commit `[milestone N/M]` once Phase 4 passes under PRINCIPLE-018 R1; failing work uncommitted via `--checkpoint`; `--complete`/`--reset` before switching tasks; `--clean` stale `.tmp_*`; ledger writes name `--agent`; another agent's task needs `--take-over`. |
 | **PRINCIPLE-007** | Pre-flight Impact & Quality Checklist | Track C first plan checkpoint carries --why --benefits --risks (contract, dependency, concurrency, state) --mitigation; no TODO or stub; no change outside the plan. |
 | **PRINCIPLE-008** | Hierarchical Problem & Task Decomposition | Plan of M<=6 milestones (more: split into tasks), built bottom-up, each passing Phase 4 alone; re-plan = new `[1/M']` checkpoint; sub-agents never write the ledger. |
@@ -319,7 +331,7 @@ The principles are strictly organized across **5 chronological execution phases*
 | Principle | Title | Capsule |
 |---|---|---|
 | **PRINCIPLE-009** | Modularity & Pluggable Architecture | Every module: no junk-drawer name, roles of 1-5 methods, no import cycle (gated). At a pluggable boundary: 4 layers, registry lookup, constructor DI with default, frozen DTOs. |
-| **PRINCIPLE-010** | Performance & Resource Optimization | Stream uncontrolled input; threads only for steps >=200ms; timeout= on subprocess, with on open(); one fsync per file; `--help` <1000ms; unit <=20ms, integ <=1000ms/test. |
+| **PRINCIPLE-010** | Performance & Resource Optimization | Stream uncontrolled input; threads only for steps >=200ms; timeout= on subprocess, with on open(); one fsync per file; `--help` <1000ms; unit <=50ms, integ <=1000ms/test. |
 | **PRINCIPLE-011** | Zero-Friction Onboarding & Instant Usability | Only declared deps; creates its dirs; prompts only with `--interactive`; no `os.environ[...]` reads; exit 0/1/2/3 (`3` = gates passed, tree not delivery-ready, ADR-410); errors give `Why:`/`Fix:`; demo <10s; other software: its `aikit.py` project is the workspace (R8). |
 | **PRINCIPLE-012** | Token Frugality & Lean Code Architecture | LLM code: <=16k-char payloads, static prefix first, schema-checked replies, 429 backoff, step caps; agent: diff -U3, search <=50 hits, relative paths. |
 
@@ -327,7 +339,7 @@ The principles are strictly organized across **5 chronological execution phases*
 | Principle | Title | Capsule |
 |---|---|---|
 | **PRINCIPLE-013** | Crash Resilience, State Atomicity & Power-Loss Recovery | State files: >=10MB free, temp + fsync + os.replace (5 tries) + dir fsync, .bak, advisory locking 3s/30s stale, corrupt -> quarantine/.bak/migrate. Generated: temp + fsync + replace. |
-| **PRINCIPLE-014** | Automated Test Verification & Continuous Test Coverage | 100% test pass gate; behaviour change = failing-first test; weakening a test needs user approval + ADR naming it; unit <=20ms/test, no spawns/sleeps; integ <=1000ms/test; tempdir + addCleanup; `scripts/check_reachability.py`. |
+| **PRINCIPLE-014** | Automated Test Verification & Continuous Test Coverage | 100% test pass gate; behaviour change = failing-first test; weakening a test needs user approval + ADR naming it; unit <=50ms/test, no spawns/sleeps; integ <=1000ms/test; tempdir + addCleanup; `scripts/check_reachability.py`. |
 | **PRINCIPLE-015** | Universal Operational Dogfooding & Chaos Verification | Domain-specific interactive dogfooding via `scripts/dogfood.py` as a commit gate; golden path + chaos perturbation; non-interactive stdin parity; portable RAII process tree teardown; ephemeral safety jail; terse reporting (<=15 lines). |
 
 ### 🚀 Phase 5: Living Synchronization & Delivery

@@ -63,6 +63,12 @@ Release packages are signed with a Developer ID. Check each release's notes for 
 - Model weights download on first launch; download size depends on the selected quality tier
 - First launch prompts for microphone access — required for speech capture
 
+### What's new in 0.10.2
+
+- New A3 folded-caption app icon with native light/dark appearances and a matching menu bar mark.
+- App Sandbox packaging for the Mac App Store, with local model cache fixes.
+- Clear confirmation before sending audio or text to optional external AI services, plus in-app privacy and support links.
+
 ### What's new in 0.10.0
 
 - Stream readable translations during speech and refine provisional wording as more context arrives.
@@ -255,6 +261,19 @@ cd macos/Ora
 # Reproduce unequal English/Chinese page counts:
 ./run.sh --caption-bilingual-preview
 ```
+
+For a locally signed App Sandbox validation build:
+
+```bash
+cd macos/Ora
+DEVELOPER_ID="Developer ID Application: Your Name (TEAMID)" \
+  ./package.sh --developer-id --sandbox
+open ".sandbox/Ora Sandbox.app" --args --show-captions-on-launch
+```
+
+The validation app uses `com.wangzhangwu.ora.sandbox`, with its own settings,
+model cache, history, and recording permissions. App Store distribution signing
+and submission follow separately after validation.
 
 The recognizer still processes rolling audio snapshots, rather than decoding every
 spoken word in isolation. Update speed depends on your Mac and the selected model;

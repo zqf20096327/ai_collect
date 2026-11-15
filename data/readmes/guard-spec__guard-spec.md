@@ -222,12 +222,25 @@ Two Go services share one Postgres database:
 
 What each stage does:
 
-- **L0 sanitizer** (`internal/sanitizer`). Rejects invalid UTF-8, then repeats
-  until the text is stable (at most 8 passes): NFKC normalization, removal of
-  default-ignorable, tag-block, bidi-control, variation-selector and control
-  characters, ANSI escapes, HTML (bluemonday strict policy) and HTML entities.
-  It flags homoglyphs and computes an anomaly score; a score of 0.6 or more
-  blocks the request. Spoofed spotlighting markers are stripped.
+- **L0 sanitizer** (`internal/sanitizer`). Rejects invalid UTF-8, then makes
+  two views of each text:
+  - **Scan view**, which the detectors read. The sanitizer repeats these steps
+    until the text is stable, at most 8 passes, so that nested entity encoding
+    is unwrapped:
+    - NFKC normalization;
+    - removal of default-ignorable, tag-block, bidi-control, variation-selector
+      and control characters, and of ANSI escapes;
+    - hidden HTML is marked `[hidden]`;
+    - each tag is replaced by the text of its attributes; the content of every
+      element is kept, script and style included;
+    - one layer of HTML entities is decoded.
+  - **Forwarded view**, which goes upstream. It is the text as written, with
+    only the invisible and bidi characters, ANSI escapes, control characters
+    and spoofed markers removed. Markup, code and entities reach the model
+    intact, and the detectors have read all of it through the scan view.
+
+  The sanitizer flags homoglyphs and computes an anomaly score. A score of 0.6
+  or more blocks the request.
 - **L1 rules** (`internal/inference/skeleton`, `internal/inference/rules`).
   The text is turned into a "skeleton": diacritics, homoglyphs, fullwidth
   forms, leetspeak, spelled-out letters, repeated characters and Vietnamese
@@ -1380,12 +1393,4 @@ How to read them, and their limits:
   reviewed by AI agents, without a native-speaker review; teencode comes from
   rules and is stiffer than real chat. Many attack rows come from templates,
   so errors are correlated.
-- **Classifier v3b** (the default) blocks 1.4% of benign rows (v2 2.0%) at
-  the same TPR at block (0.932 vs 0.933): Vietnamese without diacritics falls
-  from 3.0% to 0.4% and English from 2.2% to 1.7%, but **Vietnamese teencode
-  rises from 1.4% to 3.5%**, and English leet recall falls (0.825 vs 0.875).
-  `eval/baseline-onnx.json` holds the v3b run with the L1 floor.
-- **Vietnamese teencode and no-diacritics benign text was the known weak
-  spot** of the model layers. With L1+L2+L3, classifier v2 blocks 1.4% of
-  teencode and 3.0% of no-diacritics benign rows (v1: 7.0% and 3.8%). The
-  cost is English: EN benign FPR at block rose from 1.1% to 2.2% (8 of 36
+- **Classifier v3b** (the default) blocks 1.4% of benign r

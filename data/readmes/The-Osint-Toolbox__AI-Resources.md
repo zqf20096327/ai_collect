@@ -132,6 +132,8 @@
    <p>All in one AI app.</p>
   <li><a href="https://12ft.io/">12ft</a></li>
    <p>Will attempt to show content from a paywalled site by using the cached, unpaywalled version of the page.</p>
+  <li><a href="https://aiimagedetection.app/">AI Image Detection</a></li>
+   <p>Checks whether an uploaded, pasted or linked image was likely made by AI. It reads Content Credentials (C2PA) and metadata first, then runs a detection model, and answers Likely AI, Likely real, Can't tell or Edited with AI with the reasons. Free for 3 checks a day, no account needed.</p>
   <li><a href="https://huggingface.co/spaces/JournalistsonHF/ai-scraper">AI Scraper</a></li>
    <p>Easily scrape and summarize web content using advanced AI model</p>
   <li><a href="https://aivalley.ai/">AI Valley</li>   
@@ -142,14 +144,10 @@
    <p>AI Research Pilot. Advanced search tool for investigators, reporters, and researchers conducting in-depth analysis.</p>  
   <li><a href="https://www.nomic.ai/gpt4all">GPT4All</a></lI> 
    <p>Private and Local AI Chatbot.</p>
-  <li><a href="https://github.com/luijait/DarkGPT?source=post_page-----ec099b4a0e50--------------------------------">DarkGPT</a></li> 
-   <p>DarkGPT is an OSINT assistant based on GPT-4-200K.</p>
   <li><a href="https://huggingface.co/">Hugging Faces</a></li>
    <p>The platform where the machine learning community collaborates on models, datasets, and applications.</p>
   <li><a href="https://github.com/mudler/LocalAI">Local AI</a></li> 
    <p>The free, Open Source alternative to OpenAI, Claude and others. Self-hosted and local-first.</p>  
-  <li><a href="https://www.promptimizeai.com/">Promptimize</a></li> 
-   <p>Promptimize is a browser extension that gives anyone the powers of an expert prompt engineer.</p>  
   <li><a href="https://isthisaigenerated.app/site/">isthisaigenerated.app</a></li>
    <p>Free warning-signal checker for AI-generated images, sampled video, text and documents (PDF, DOCX, HTML, TXT, Markdown) in NL/EN/ID. Publishes measured accuracy slices and false-positive limits, requires no account, and states that every result is triage for human review rather than proof of origin. Self-submission, disclosed in this PR.</p>
 </ul>

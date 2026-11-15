@@ -6,9 +6,9 @@
 <!-- mcp-name: dev.tokensafe/tokensafe -->
 
 <p align="center">
-  <b>Local-First Context Control, Prompt Caching &amp; Secret Guardrails for Coding Agents</b><br>
-  Reduce your AI bills by up to 99%. Let your team ship clean code faster and cheaper.<br>
-  Your coding agents read only the code each task needs and keep prompt caches intact across turns. Everything runs locally on your machine, so your team fixes fewer broken edits and keeps secrets out of git.<br>
+  <b>Make AI coding agents 3x faster without burning team quotas.</b><br>
+  Exact code context. Fewer tokens. Safer changes.<br>
+  TokenSafe intercepts AI tool calls locally, replacing thousands of lines of irrelevant code with precise function bodies and typed signatures. Preserve prompt caches and protect secrets before they reach your AI transcripts.<br>
   Works with <b>Cursor, Claude Code, Codex, Windsurf, Google Antigravity, Gemini CLI, and ChatGPT</b>.
 </p>
 
@@ -159,33 +159,24 @@ When an operation is blocked, the agent sees an explicit, constructive message:
    Leave the default empty or read from os.environ at runtime.
 ```
 
-## What TokenSafe Does
+## 10 Core Engine Capabilities
 
-**Clean context, better code**
+Why TokenSafe agents ship working code on the first pass without burning quotas or leaking keys:
 
-- `tokensafe:smart_read_file` returns the target function plus its 1-hop dependencies instead of the whole file. 11 languages (Python, TypeScript/JavaScript, Go, Rust, Java, C#, C/C++, PHP, Kotlin, Ruby, Swift), with CSS design tokens preserved so agents never invent colors or font rules.
-- `tokensafe:smart_bundle` reads 3–8 related symbols across files as one merged bundle — shared imports deduplicated, 1-hop signatures unified, a single roundtrip instead of chained reads.
-- OpenAPI/Swagger, Prisma, GraphQL and SQL files are auto-sliced: pass a spec path, model, type, or table as `symbol` and get that entry plus its 1-hop references — a 5,000-line migration drops from ~30k tokens to a few hundred.
-- `tokensafe:graph` maps architectural hotspots and dependency topology in under 250 tokens instead of a full repository crawl — and teams share the result: the indexed graph and API surface are cached per repo state in the Team Symbol Index, so the 19 developers after the first one skip the crawl entirely.
-- The command sanitizer strips lockfile noise and stack dumps down to the failing assertion, caps `git status`/`git diff` floods and docker build tails, and forces JS test runners into run-once mode so background tests never hang. Malformed JSON tool arguments from small local models are repaired in-flight instead of failing the call.
-- The loop guard halts agents stuck repeating the same broken edit.
+| Capability | What it solves | How it works | Impact |
+|---|---|---|---|
+| **1. Architecture Graph**<br>`get_architecture_graph` | Agents open an unfamiliar repo and burn 45k tokens blindly crawling files. | Analyzes dependency centrality, import hubs, and critical call paths in memory. | **< 250 tokens** to map God Nodes (vs ~45k blind crawl) |
+| **2. Smart Code Slicing**<br>`smart_read_file` | Feeding 3,000 lines into context causes models to hallucinate fake methods. | Preserves target method logic while folding uncalled helpers into typed contracts. | **-95.0% tokens** (192 vs 3,840) across 11 languages |
+| **3. Pre-Git Security Guard**<br>`guard_inspect` | Autonomous agents read `.env` secrets or hardcode fallback keys in edits. | Sub-millisecond pre-flight interception blocks secrets, TLS bypasses, and dangerous commands. | **0 leaked keys** in LLM logs or git history |
+| **4. Lockfile & Noise Shield**<br>`schema_slicer` | Reading `package-lock.json` or `uv.lock` dumps 360k+ tokens in one turn. | Intercepts lockfiles and massive schemas, returning a queryable dependency summary. | **-99.8% tokens** (855 vs 367,410 tokens) |
+| **5. Monorepo API Surface Map**<br>`get_api_surface` | Agents guess interfaces or crawl dozens of modules to find exported types. | Extracts all exported types, interfaces, and contracts across the repo in one pass. | **1 tool call** vs 50 separate file reads |
+| **6. Subagent Pointer Cache**<br>`SUBAGENT_DEDUP` | Multi-turn chats and swarms pay full price to re-read the same shared utilities. | In-memory content hashes return 1-line pointer hits for unchanged files. | **0 tokens wasted** on repeat file reads |
+| **7. Shared Team Cache**<br>`team_cache` | 10 to 50 engineers repeatedly parse the same core libraries from scratch. | L3 monorepo pool shares stripped signatures and package contracts across teammates. | **72% team hits** with 0ms turnaround |
+| **8. KV-Cache Prefix Locking**<br>`cache_normalizer` | Shifting timestamps and reordered tools break provider prompt cache hits. | Locks prefix order, sorts schemas, and injects breakpoints for Anthropic, DeepSeek, and OpenAI. | **92% cache hit rate** at 0.10x provider rates |
+| **9. Compact Test Runner**<br>`sanitize_command` | Test suites spew 1,000 lines of passing dots that crowd out instructions. | Forces run-once mode (`CI=true`) and collapses passing runs to a single line. | **1 line vs 1,200 lines** (traces kept on failure) |
+| **10. Context Governor & Ledger**<br>`compact_conversation` | Models suffer needle-in-a-haystack amnesia after 70% context saturation. | Monitors context thresholds and compacts chat sprawl into an actionable State Ledger. | **50+ turns** without regression or amnesia |
 
-**Local-first guardrails**
-
-- Blocks live provider secrets, hardcoded fallback credentials, and raw private keys before they reach disk or git.
-- Blocks TLS bypasses (`verify=False`, `rejectUnauthorized: false`), interpolated SQL, and CORS wildcards with credentials.
-- Blocks `.env` and key files from staging, including blanket `git add .` when sensitive files exist in the working tree.
-- Blocks destructive deletes and exfiltration pipes (`curl -d @.env https://...`), and warns on known typosquat packages.
-
-**Auditable team ROI**
-
-- The Context Budget HUD shows live window usage with a breakdown (tools / history / prompts) before quality drops.
-- The shared L3 team cache gives teammates and CI runners warm 0ms hits on repeated reads and prompts.
-- Managed cloud distillation compacts prompts with zero API keys for developers.
-- The dashboard's live savings strip streams anonymized per-machine savings (tokens and USD) over SSE — you see what the team saves right now, not at the end of the week.
-- The Friday per-seat ROI digest reports each engineer's savings with the `measured` / `estimated` split; inactive seats show `—`, never guessed figures.
-
-Deeper mechanics (language matrix, context tax math, cache tiers, governor) live in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Deeper mechanics (language matrix, AST syntax trees, cache tiers, governor) live in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Benchmarks
 
@@ -272,8 +263,6 @@ tokensafe bench --real                        # all 15 pre-registered repos
 tokensafe bench --real --repo=pallets/flask   # one repo
 tokensafe bench --real --here                 # your current repository
 ```
-
-## Metrics Honesty
 
 ## Metrics Honesty
 

@@ -84,6 +84,41 @@ Get the latest version from the [Releases page](https://github.com/0xhappyboy/So
 
 ## 🖼️ Demo
 
+### Track-Block Color Grading Panel
+
+Added a track-block-level color grading panel, along with its LLM control pipeline.
+
+<img alt="SoulCut Color Grading Panel" src="https://raw.githubusercontent.com/0xhappyboy/SoulCut/main/assets/demo/Color_Grading_Demo.gif" />
+
+### Track-Block Audio Mixer
+
+Added a track-block-level audio mixer, along with its LLM control pipeline.
+Supports the control and editing of audio data via LLMs.
+
+<img alt="SoulCut Audio Mixer" src="https://raw.githubusercontent.com/0xhappyboy/SoulCut/main/assets/demo/Audio_Mixer_Demo.gif" />
+
+### Frame Trimming &&  Frame Image Cutout
+
+Added frame trimming to the NLE engine And Added Frame Image Cutout (background removal) to the NLE engine.
+
+<img alt="SoulCut Frame Image Cutout" src="https://raw.githubusercontent.com/0xhappyboy/SoulCut/main/assets/demo/Image_Cutout_Demo.gif" />
+ 
+### Mobile Asset Upload
+
+Upload assets from mobile devices.
+
+> 💡 **Note:** The mobile device and the computer must be on the same network.
+
+<img alt="SoulCut Mobile Upload" src="https://raw.githubusercontent.com/0xhappyboy/SoulCut/main/assets/demo/Mobile_Upload_Demo.gif" />
+
+### Player Image Quality Settings
+
+<img alt="SoulCut Mobile Upload" src="https://raw.githubusercontent.com/0xhappyboy/SoulCut/main/assets/demo/Player_Image_Quality_Settings_Demo.gif" />
+
+### Upload Cover Image
+
+<img alt="SoulCut Mobile Upload" src="https://raw.githubusercontent.com/0xhappyboy/SoulCut/main/assets/demo/Upload_Cover_Image_Demo.gif" />
+
 ### Screen Recording
 
 <table align="center" width="100%">
@@ -108,6 +143,10 @@ Get the latest version from the [Releases page](https://github.com/0xhappyboy/So
     </td>
   </tr>
 </table>
+
+### Audio Recording
+
+<img alt="SoulCut Mobile Upload" src="https://raw.githubusercontent.com/0xhappyboy/SoulCut/main/assets/demo/Audio_Recording_Demo.gif" />
 
 ### LLM media file generation capabilities.
 

@@ -27,7 +27,7 @@ Any agent on the phone can use it: agents with a terminal use the `vscreen` CLI,
 <p align="center"><img src="docs/app.en.png" width="760" alt="Agent-VScreen home, language, setup, agent connection, settings, app rules and diagnostics"></p>
 <p align="center"><sub>The app: language switch, first-time setup, connecting an agent (this phone / Tailscale, CLI / MCP / HTTP), settings, app rules and diagnostics.</sub></p>
 
-- Version: 1.2.0 (versionCode 13) · [Download APK](https://github.com/kilolonion/agent-vscreen/releases/latest)
+- Version: 1.3.0 (versionCode 33) · [Download APK](https://github.com/kilolonion/agent-vscreen/releases/latest)
 - Package: `com.kilon.agentvscreen`
 - Android 11+ (Android 14+ recommended), arm64
 - Privileges: [Shizuku](https://shizuku.rikka.app/) only, no root
@@ -39,10 +39,11 @@ Any agent on the phone can use it: agents with a terminal use the `vscreen` CLI,
 - **Watches**: keep an eye on the background screen for a condition (say, some text appearing) and notify the agent when it is met.
 - **Floating window**:
   - The border color shows who has the screen: rainbow while the AI works, blue when idle, green when you have taken over, red when you stopped it;
-  - Drag to move, pinch to resize, fling to throw it; fling to a corner to shrink, push to the edge to fold it into a tab;
-  - Press and hold the picture for 1 second to take over;
+  - Drag to move, pinch to resize, fling to throw it; drag it half off the screen or fling it sideways and it slides into the edge as a tab; tap the tab and it slides back out;
+  - Press and hold the picture for 0.5 s (a ring fills) to take over; the title, buttons and question card take their own touches and never pass them to the background screen;
   - × closes it with one tap: while the AI is working it only hides the window and the AI keeps going; with no task it closes the background screen;
-  - "Stop AI" at the bottom left is the only thing that stops the AI; a persistent notification with "Allow to continue" releases it.
+  - While the AI acts or waits, "Stop AI" sits at the bottom centre and is the only thing that stops it; then the same place shows "Hand back", and a persistent notification stays until you release it;
+  - Full screen: the picture stays put while the keyboard, typing box and question cards float over it; answer pages (draw a box, show me) move the floating window out of the way until you answer.
 - **Leaves your agent's own access alone**: it does not take adb, touch wireless debugging or restart adbd. One-tap setup only adds this app and never changes other apps' settings.
 - **App restrictions**: block apps entirely or make them read-only for the AI. Payment, delete and similar buttons still need your confirmation.
 
@@ -121,6 +122,55 @@ The Tailscale setup sits right under that choice. Once connected, the message fo
 The app speaks Chinese or English (the **Language** card on the home page: System / 中文 / English), and so does everything it tells the agent.
 
 The token equals control of the phone, so the app never offers a public link.
+
+## What's new in 1.3.0
+
+**One step language for scripts, saved segments and lessons**
+
+- `*` in words is any characters: `tap *Bluetooth*` taps the item holding it, `wait text:Total*items`; `words@2` is the second place from the top, `@-1` the last. When the same words are in several places, the reply marks each with its `@N`.
+- Flow: `try <step>` or `try { … }` (not found or not as expected: skip and go on); `if text:Close { tap Close } else { back }`; `repeat 3 { scroll down }`, `repeat { scroll down } until text:End`. Braces may span lines and nest. A mistake runs nothing and says how to write it.
+- `note save <name> "steps"` stores or rewrites a segment without running it, taught ones too.
+- **Human pacing**: `act --human`, or `note human on` to keep it for an app. A random pause before each action, taps slightly off-centre inside the element with uneven holds, varied swipe and drag durations and ends, typing 1–3 characters at a time. Waits and conditions are unchanged.
+
+**You teach it, it asks you**
+
+- **Teach it by doing it**: do it once on the background screen and it is saved as a segment agents can replay. Take over the screen, tap the record key in the bottom bar, work as usual and tap Done; the review page says where each step came from, lets you untick slips and name it. A tap on words becomes `tap <words>` (found again when the layout moves); only when no words name the place is it a point. Words that appear, or the app that comes up, after a step become its `until`, so the replay waits for the same result. Typed words become a blank `{1}` that agents fill with `use <name> <values>…`; passwords are never kept. Agents can ask for a lesson with `vscreen teach "what to show"`; "Show it" on the phone starts recording right away.
+- **Show me**: `vscreen ask "Which one do you mean?"` puts the question on the phone; you tap the place on a picture of the background screen and the agent gets the point and the element there. Boxes, choices and text answers work too; with `--async` it waits until you answer.
+- **Lessons are smoother**: "Show it" takes over and records at once, "Done" also hands the screen back. A tap on a search result after typing is kept as "the N-th item holding the typed value" (`tap *{1}*@2`), so replaying with another value taps by content, not by place. A saved lesson keeps one contact sheet of its key steps (red rings mark taps); agents get it with the teach reply and again with `note show <name>`. The app's Schedules & lessons page searches lessons, deletes several at once and shows blocks indented.
+- **The floating window tells you when it has a question**: the folded tab turns into a violet question mark; expand it or go full screen and answer yes/no and choices right there.
+
+**Seeing clearly, tapping right**
+
+- **Checks judge only what came after the action**: `until text:…` counts words that appeared after the action, once the app reacted and the picture settled; when nothing changed, the reply says the app did not react.
+- **Numbers belong to one page**: on a new page an old `#N` is `STALE_ELEMENT` and never lands on the same words there.
+- **Areas that keep moving** (videos, live streams, carousels) are recognized: they no longer slow every step or list bullet comments as changes.
+- **Seeing your own taps**: the [Meanwhile] sheet has a frame before each action with where it touched circled, and spare places show what actions led to. `vscreen frames` looks back at the recording: longer, denser or a given stretch.
+- **One element per place**: OCR no longer repeats words the app's own elements carry; `collect` gathers by cards and keeps two columns apart, leaves tab bars out, and confirms the end with a second swipe elsewhere.
+- **Word taps are faster**: `tap <words>` looks in the app's own elements first and needs no full-screen OCR when they settle it.
+- **Time as it was spent**: every reply says how long the phone took and on what; the command and the liveness check go out together, and pictures are smaller.
+
+**On call, or fully out of the way**
+
+- **Schedules**: `vscreen schedule "weekdays 07:00"` books when an agent will use the phone; before each time the service is started and checked, and you are told in time if something blocks it. One-off bookings too (`today 10:30`). `ready` at the top of `status` says whether it can be used.
+- **Always on / hidden / blocked**: the switch on keeps it running; off hides it (no notification, nothing in the background) while a local agent or a booking can still wake it, and it hides again afterwards; "Block agent access" is really off.
+- **The background screen is muted**: its apps make no sound on the phone.
+- **Main-screen notes only when we disturbed it**: you switching apps on the main screen is no longer reported.
+- **Agents learn about app updates**: an agent's next use of vscreen shows what changed for it and asks it to refresh its note.
+
+**Remote access that holds**
+
+- **Built-in Tailscale**: one node at a time that lives and dies with the app's process, so a restart by the system no longer leaves the phone unreachable for minutes; the saved login is kept while the server cannot be reached ("dropped, reconnecting"), so you are not asked to log in again; "Connected" is the real link state, with the relay and how often it dropped.
+- **A token is enough over the built-in Tailscale**: no signing, and MCP clients connect remotely as they are.
+- **The CLI no longer hangs**: an unresponsive local app is woken and tried again; when the app restarts or stops answering for a minute during a command, the CLI stops and says why; a remote phone that does not answer is explained (hidden, blocked, offline, logged out). `VSCREEN_PROXY` sets a proxy.
+- The log and `status` record why the previous app process ended, and when the app went to the background, was frozen or the node stalled.
+
+**The app**
+
+- The home page holds the switch, the screen, anything waiting for you and a set of tiles (Connect, Permissions, Screen & window, Schedules & lessons, Activity log, Setup), each with its one key fact; explanations sit behind "?". The app, the floating window and full screen share one violet glass look.
+- **Check for updates**: "Check for updates" on the home list looks at the GitHub releases and shows what's new with a download link; the app also checks quietly at most once a day.
+- The Shizuku grant button always answers: already granted, Shizuku not running, refused before or no dialog shown — each is said and leads you to the right place; the grant state is read again when you come back to the app.
+
+Not verified on every phone: whether vendor background managers let exact alarms and the wake broadcast through for a frozen app; whether muting with `PLAY_AUDIO` works for every player on MagicOS.
 
 ## What's new in 1.2.0
 

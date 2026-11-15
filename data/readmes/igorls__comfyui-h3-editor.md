@@ -31,6 +31,9 @@ made with it, shot by shot.
   can render on a different one than the rest of the project. Any other H3
   checkpoint works too: pick its file, set its steps, sampler and scheduler,
   and save it as a preset for every project.
+- **Plug in speed-ups from other packs.** Sparse attention, a step cache or a
+  compile node: any installed node that takes the model and returns it can go
+  on every render of a project, with its own settings shown in the editor.
 - **Let a language model write.** Describe the video and it writes the shots as
   clips, or rewrites one clip from what you ask for. It is sent the cast's
   pictures, and any picture you add, such as a place or a frame of the cut, so
@@ -152,7 +155,9 @@ the catalog. A copy you changed in its project is never overwritten without you.
 
 **Joining shots.** Select a clip on the timeline, open **Generate** and choose **Extend forward** or
 **Extend back** to generate what happens next or before. **Bridge to next**
-generates what connects it to the following clip, and **Merge with next**
+generates what leads from it into the following clip, landing on a short run of
+its first frames, and **Bridge into its movement** holds more of them, for a
+following clip that starts in mid-movement. **Merge with next**
 replaces the join between two clips with a generated crossing. These clips hold
 39 real frames and their sound from the clips they join, so the cut does not
 show. If a clip they join changes, they are marked: render them again. An empty
@@ -202,7 +207,8 @@ in its panel, or with Delete in the Clips panel.
 **Models and LoRAs.** **Models and their settings** in the Project tab lists
 every model the project can render with, and adds your own checkpoints. The
 LoRAs section adds LoRAs for the whole project; a clip's Shot tab has **LoRAs
-for this clip**. See [models and quality](docs/models.md).
+for this clip**. **Model patches** puts nodes from your other packs on the
+model of every render. See [models and quality](docs/models.md).
 
 **Projects.** Projects live in `h3take_projects` in ComfyUI's output folder.
 The menu beside the project list renames, duplicates or deletes the open one; a
@@ -236,7 +242,7 @@ Press ? in the editor for this list.
 ## Going further
 
 - **[Models and quality](docs/models.md):** every checkpoint the editor can
-  render with, how finals are refined, and how LoRAs land.
+  render with, how finals are refined, how LoRAs land, and model patches.
 - **[The nodes](docs/nodes.md):** H3 Take and the other nodes, for building
   your own ComfyUI workflows.
 - **[For agents](skills/h3-editor/SKILL.md):** a skill that teaches an agent to

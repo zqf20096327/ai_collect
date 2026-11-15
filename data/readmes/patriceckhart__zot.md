@@ -225,11 +225,15 @@ Choose the compaction mode in `$ZOT_HOME/config.json`, then restart zot:
   This makes provider prompt-cache reuse possible, but cache hits and speedups
   depend on the provider. When recent messages are retained verbatim, only the
   older prefix is sent for summarization. Context-window or payload-size rejection
-  retries once using the side request. That fallback can still fail if it is too large.
+  retries once using the side request. An unexpected tool call retries in place once
+  with a stronger no-tools instruction, then falls back to the side request if the
+  model requests tools again. The side fallback can still fail, including if it is too large.
 
 Both modes apply to manual and automatic compaction and continuous-host summaries.
-Zot never executes local tools during summarization. An unexpected tool call fails
-the compaction without replacing history. Provider-hosted tools remain advertised
+Zot never executes local tools during summarization. Failed attempts do not replace
+history, and failed tool-call responses are not included in retries. Cancellation,
+authentication errors, and request-transform failures do not trigger recovery.
+Provider-hosted tools remain advertised
 in in-place mode and may run remotely despite the no-tools instruction. Use side
 mode to avoid advertising them. In-place mode uses the active model, not a
 separately configured compaction model. The mode is a startup setting, not a live
@@ -1058,4 +1062,4 @@ Copilot's dollar display is an API-equivalent estimate, not a GitHub invoice or 
 
 Claude Sonnet 5.5 is the default for direct Anthropic when no model is selected (`--provider anthropic --model claude-sonnet-5-5`). It supports a 1,000,000-token context window and up to 128,000 output tokens. Adaptive thinking is always on with the same `low` through `max` effort levels as Opus 5.5, and `off` or `minimum` requests use `low`. Temperature is not sent. Catalog prices per million tokens are $2 input, $10 output, $0.20 cache reads, and $2.50 cache writes.
 
-The direct Anthropic catalog omits retired Opus 4/4.1, Sonnet 4, Sonnet 3.5/3.7, Haiku 3.5, and Opus 3 entries. A saved selection of a removed model follows the normal recovery path: zot warns, selects Sonnet 5.5, and repairs the saved model. An unavailable explicit `--model` selection also falls back with a warning, but does not overwrite the saved selection. Sonnet 4.5 is still explicitly selectable, but is no longer the default. Anthropic sc
+The direct Anthropic catalog omits retired Opus 4/4.1, Sonnet 4, Sonnet 3.5/3.7, Haiku 3.5, and Opus 3 entries. A saved selection of a removed model foll

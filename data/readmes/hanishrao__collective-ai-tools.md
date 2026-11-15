@@ -165,6 +165,7 @@ Use these hashtags in search to filter out the tools
 - [PodPilot](https://www.podpilot.ai/) - PodPilot is an AI tool designed to simplify the process of creating high-quality podcast series for organizations `#paid`
 - [Remove Audio](https://remove-audio.com/tools/extract-voice-from-video) - Extracts clean dialogue or vocals from a video with an AI model that runs in the browser, so the file is not uploaded. `#freemium`
 - [Saturalabs](https://www.saturalabs.com/) - Uses text descriptions to separate a voice, instrument, or sound effect from audio and video, returning the target and remaining audio tracks. `#paid`
+- [SFXMint](https://sfxmint.com/) - CC0 library of 10,300+ AI-generated or synthesized sound effects for games, apps and videos, with a JSON API and MCP server. `#freemium` `#mcp`
 - [Transcribe Video: To The Text](https://video2text.ttt.so/) - iPhone app that transcribes video and audio files, YouTube or Vimeo links and live voice recordings, with speaker labels, a one-tap summary and TXT/DOCX export. `#freemium` `#transcription`
 - [VideoDubber](https://videodubber.ai) - Offers free video translation, dubbing,  cloning, and text-to-speech services. `#freemium`
 - [VideoToBlog](https://www.videotoblog.ai/) - Convert YouTube videos to blog content in one click `#free`
@@ -176,6 +177,7 @@ Use these hashtags in search to filter out the tools
 
 ## Avatars
 
+- [FotoApta](https://fotoapta.com/en/ai-headshot/) - Generates professional AI portraits from one selfie, with a free watermarked preview and an optional one-time HD pack. `#freemium`
 - [iFlytek Virtual Human](https://www.xfyun.cn/services/virtual_human) - Full-stack cloning and customization platform. `#paid`
 - [Never AI](https://www.never.tech) - Unlock Your Imagination with Never's Hyper-Realistic AI Images. `#paid`
 - [Qimiao Wen](https://wen.mobvoi.com/) - Interactive digital employee generation platform. `#free`
@@ -436,6 +438,7 @@ Use these hashtags in search to filter out the tools
 - [aiXcoder](https://www.aixcoder.com/) - Chinese deep learning software dev assistant. `#freemium`
 - [Archcore](https://github.com/archcore-ai/archcore) - Git-native context engineering and spec-driven development for AI coding agents. `#free` `#opensource`
 - [AskCodi](https://www.askcodi.com/) - Code generation and refactoring assistant. `#free`
+- [Atlas Cloud](https://www.atlascloud.ai) - AI API gateway with one API key for LLM, image, video and audio models, including an OpenAI-compatible chat completions endpoint. `#paid` `#api` `#llm`
 - [Augment Code](https://augmentcode.com/) - Industry-leading context engine for developers. `#paid`
 - [Better Agent](https://github.com/ofekron/better-agent) - Local workspace for Claude, Codex, and Gemini coding-agent sessions with parallel forks and restart recovery. `#free`
 - [Blackbox AI](https://www.blackbox.ai/) - AI-powered code completion and generation that works in over 20 languages. `#freemium`
@@ -449,6 +452,7 @@ Use these hashtags in search to filter out the tools
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) - Anthropic's terminal-native AI coding agent with agent skills, MCP, and extensible tool system. `#freemium`
 - [CoderPlan](https://coderplan.ai/) - LLM API Gateway with OpenAI-compatible interface. Pay-per-use access to Claude, GPT, Gemini, DeepSeek, Grok. One-line config for Claude Code, Codex CLI, Gemini CLI. `#freemium`
 - [Cline](https://cline.bot/) - AI-Powered Code assitant like Copilot in VS code. `#freemium`
+- [CloudGPU](https://cloudgpu.app/) - Per-minute GPU rental and an OpenAI-compatible model API, plus an MCP server that quotes a job and starts it only after confirmation. `#paid` `#mcp` `#api`
 - [CodeBuddy](https://codebuddy.cn/) - Tencent Cloud MCP ecosystem programming partner. `#free`
 - [Codex CLI](https://github.com/openai/codex) - OpenAI's open-source terminal AI agent that runs locally with any model. `#free` `#opensource`
 - [Codex Quota Overlay](https://github.com/cpys/codex-quota-overlay) - Independent desktop companion showing Codex quota, reset time, and reset credits beside the conversation title on Windows and macOS. `#free` `#opensource`
@@ -498,6 +502,7 @@ Use these hashtags in search to filter out the tools
 - [Keenable](https://keenable.ai) - Independent web search index for AI agents: search and page fetch over API, CLI and MCP (`https://api.keenable.ai/mcp`), with 100K free requests a month and keyless public endpoints. `#freemium` `#api` `#mcp`
 - [Keploy](https://keploy.io/) - AI-powered automation API and Unit testing, latest UTG pr agent generates unit tests after each pr. `#free`
 - [Keploy](https://www.keploy.io/) - A  developer-centric backend testing tool which makes backend tests with built-in-mocks faster than unit tests, from user traffic, making it easy to use, powerful, and extensible. `#opensource`
+- [Kling AI MCP](https://kling.ai/mcp/plugin) - Connect AI agents to Kling image/video generation via the Global plugin MCP endpoint; OAuth and paid personal credits required. [Setup guide](https://kling.ai/app/mcp/guide). `#paid` `#mcp`
 - [LangChain](https://www.langchain.com/) - Open-source framework for building LLM-powered applications and agents, with 1000+ integrations. `#free` `#opensource`
 - [Lintrule](https://www.lintrule.com/) - Supercharge Code Reviews and Policy Enforcement `#paid`
 - [Lovable](https://lovable.dev/) - Generating full-stack apps via Supabase/GitHub. `#freemium`
@@ -517,6 +522,7 @@ Use these hashtags in search to filter out the tools
 - [Omega MCP Router](https://github.com/Omega-JS-Stack/omega/tree/main/packages/mcp-router) - Stdio MCP proxy that runs many MCP servers behind one connection, serving tool schemas from a disk cache and starting each server only on its first call. `#free` `#mcp`
 - [ONE](https://one.workrr.ai/) - Free API-first commons where externally run AI agents discover collaborators, exchange reusable work, and join public discussions with human-readable live logs. `#free`
 - [OpenCode](https://github.com/anomalyco/opencode) - Open-source terminal AI coding agent with skills, MCP, and custom workflows. `#free` `#opensource`
+- [OpenHands](https://github.com/All-Hands-AI/OpenHands) - Open-source platform for autonomous AI software development agents that can write code, fix bugs, and run shell commands. `#free` `#opensource`
 - [Orbi](https://orbi.build/?ref=oss-collective-ai-tools) - Open-source agent that takes a labeled GitHub issue to a reviewed, merged pull request and a tagged release; also runs ops tickets. `#freemium` `#opensource`
 - [OrcaReplay](https://github.com/Continuum-AI-Corp/OrcaReplay) - Records a coding-agent run and replays it back to the agent with no model called, or forks a checkpoint onto other models to compare. `#free`
 - [Plandex](https://plandex.ai/) - Terminal AI agent for large-scale projects. `#free`
@@ -549,6 +555,7 @@ Use these hashtags in search to filter out the tools
 - [UberLLM](https://uberllm.dev/) - One OpenAI- and Anthropic-compatible API key for GPT, Claude, Gemini, DeepSeek and uncensored text models plus image, video, music and speech models, billed at what each provider charged. `#paid` `#api` `#llm`
 - [UI Verify](https://uiverify.ai/) - Visual regression testing for coding agents: screenshots your Storybook, Playwright or Vitest tests on each pull request, an AI judge labels each change, and an MCP server lets Claude Code, Cursor or Codex review the diffs. `#freemium` `#testing`
 - [v0](https://v0.dev/) - AI-powered UI component generator by Vercel. `#free`
+- [Vectoree](https://vectoree.ai/) - Hosted backend for coding agents with one project key for models from xAI, OpenAI, Google, Anthropic and DeepSeek through an OpenAI-compatible gateway, plus auth, Postgres, object storage, a CLI and an agent skill, billed pay-as-you-go. `#paid` `#api` `#llm`
 - [Vend](https://extract.paypercall.dev) - Pay-per-call web intel and data-extraction API: IP geolocation, domain WHOIS/DNS/SSL checks, URL health, web search, and page content extraction. Settled in Nano (XNO), no signup or API key needed. `#paid`
 - [Vercel AI SDK](https://sdk.vercel.ai/) - TypeScript toolkit for building AI-powered applications with streaming, agents, and tool calling. `#free` `#opensource`
 - [VideoGen API](https://videogen.io/videogen-api) - REST API with TypeScript and Python SDKs for creating editable marketing videos from storyboards, scripts and voiceovers, then editing and exporting projects; a VideoGen account and paid generation credits are required. `#paid` `#api`
@@ -680,6 +687,7 @@ Use these hashtags in search to filter out the tools
 ## Finance
 
 - [BeeBee AI](https://www.beebee.ai/) - Financial reports and earnings calls become easily understandable with key insights for everyday investors. `#free`
+- [BeliefState](https://beliefstate.ai/) - Gives AI assistants dated, source-linked investor theses, catalysts, risks and revisions through a research API and hosted MCP. Company coverage is free to check. `#freemium` `#mcp` `#research`
 - [Cleo](https://web.meetcleo.com/) - AI financial assistant chatbot that helps users budget, save, and manage money in a fun, conversational way. `#freemium`
 - [DisconfirmAI](https://disconfirmai.com/en) - AI investment research and reading tool that looks for evidence against your thesis before you commit, with daily source reading, filings and earnings research, condition-based change alerts and a personal investment framework. `#freemium` `#research`
 - [Durable](https://durable.co/) - Build a website in 30 seconds with AI, leveraging AI-powered design and marketing tools to boost traffic and increase revenue. `#freemium`
@@ -802,6 +810,7 @@ Use these hashtags in search to filter out the tools
 - [Clarifai](https://clarifai.com/) - Computer vision platform for image and video classification, object detection, and custom model training. `#freemium`
 - [isGenAI](https://isgenai.com/) - Checks images, links and text for recorded evidence of AI use: C2PA Content Credentials, AI labels and saved generation prompts, quoting each source. `#free`
 - [Nature GO](https://naturego.app/identify-animal-by-photo/) - Android app that suggests the species of a bird, insect, mammal or plant from an 8-second video filmed in the app, shows the visible evidence, and can also name a gallery photo. `#freemium`
+- [SightRadar Face Recognition API MCP](https://sightradar.com/mcp) - Official MCP server for the SightRadar face recognition API: index photos, find every photo of a person from one selfie, and compare or detect faces from Claude, ChatGPT, Cursor or VS Code. Add https://mcp.sightradar.com/mcp as an MCP server, or run it locally with npx. `#paid` `#mcp` `#opensource`
 
 **[⬆️ Back to Top](#table-of-contents)**
 
@@ -824,11 +833,13 @@ Use these hashtags in search to filter out the tools
 - [Meshy](https://www.meshy.ai/) - Convert text/images to 3D mesh models. `#freemium`
 - [Midjourney](https://www.midjourney.com/) - Gold standard for high-fidelity visual art. `#paid`
 - [Nano Banana](https://nanobanana.im/) - Transform any image with simple text prompts. Nano-banana's advanced model delivers consistent character editing and scene preservation that surpasses Flux Kontext. Experience the future of AI image editing. `#freemium`
+- [Nano Banana (nanobananana.com)](https://nanobananana.com/zh) - Independent third-party image creation tool for text-to-image generation, natural-language reference image editing, and multi-image blending, with a Chinese interface. `#freemium`
 - [PhotoRestore.ai](https://photorestore.ai) - AI-powered restoration of old and damaged photos — repairs scratches, fading, tears, and colorizes B&W images. `#freemium`
 - [Photoroom](https://www.photoroom.com/) - Fast enterprise-level image editing templates. `#free`
 - [PhotosStyle](https://www.photosstyle.com/art) - Online AI photo style converter for turning images into anime, sketches, line art, oil paintings, cartoons, and other creative styles. `#freemium`
 - [Photostockeditor](https://photostockeditor.com/tools/socialmedia-resize) - Intelligence Image Crop/Resize: Perfectly Tailored Social Media Images `#free`
 - [Rao Edits](https://raoedits.top/) - Generate images from text and edit reference photos for social, product, and creative workflows. `#paid`
+- [RemixThatPhoto](https://remixthatphoto.com/) - Edits a photo from a reference image or a written instruction for targeted changes. `#freemium`
 - [Remove Bg](https://www.remove-bg.dev/) - AI background remover for product photos, portraits, and logos with transparent PNG download. `#free`
 - [remove.bg](https://remove.bg/) - Online background remover (5 seconds)1. `#free`
 - [Skybox AI](https://skybox.blockadelabs.com/) - 360° virtual world panorama generation. `#freemium`
@@ -930,7 +941,7 @@ Use these hashtags in search to filter out the tools
 - [MarketMirror](https://github.com/DarkWorldCoder/market-mirror) - Tests ads, prices, emails and sales pitches on simulated buyers and returns a go / iterate / no-go report; runs locally from coding agents as an MCP server. `#free` `#opensource`
 - [MentionDesk](https://mentiondesk.com/) - Tools to optimize being quoted or referenced within AI responses and track mentions. `#paid`
 - [Qimi](https://qimi.ai/) - Game industry ad production and placement. `#free`
-- [Revenue Scout](https://revenuescout.ai/) - Finds public posts where people need what you sell and drafts replies for you to review and post. `#freemium` `#lead-generation`
+- [Revenue Scout](https://revenuescout.ai/) - Sales Prospecting Assistant that finds public posts where people need what you sell and drafts replies for you to review and post. `#freemium` `#lead-generation`
 - [SE Visible (visible.seranking.com)](https://visible.seranking.com/) - AI brand visibility tracker for search/LLM result coverage. `#paid`
 - [Socialmon](https://www.socialmon.ai/) - Find viral marketing examples and trends across topics and industries. `#paid`
 - [Sparkiz.ai](https://sparkiz.ai) - Turn a product link into a ready-to-launch AI video ad (avatars, voiceover, captions) in 60 seconds. `#freemium`
@@ -980,28 +991,4 @@ Use these hashtags in search to filter out the tools
 - [GPT-4o Mini](https://openai.com/gpt-4o-mini) - OpenAI's efficient and cost-effective model for everyday tasks `#freemium`
 - [LiteLLM](https://litellm.ai/) - An open-source library to simplify LLM completion + embedding calls. `#opensource`
 - [LLaMA](https://llama.meta.com/) - A foundational, 65-billion-parameter large language model by Meta. `#opensource`
-- [Llama 2](https://llama.meta.com/) - The next generation of Meta's open source large language model. `#opensource`
-- [Llama 3.1](https://llama.meta.com/) - Meta's latest open-source language model with improved reasoning and coding capabilities `#opensource`
-- [LLaVA](https://llava-vl.github.io/) - Large Language and Vision Assistant `#opensource`
-- [Mistral 8x22B](https://mistral.ai/) - Mixture of experts model with superior performance and efficiency `#freemium`
-- [OpenAI API](https://openai.com/api/) - OpenAI's API provides access to GPT-3 and GPT-4 models, which performs a wide variety of natural language tasks, and Codex, which translates natural language to code. `#freemium`
-- [Qwen](https://github.com/QwenLM/Qwen) - Pretrained large language model proposed by Alibaba Cloud. `#free`
-- [Qwen 2.5](https://qwenlm.github.io/) - Alibaba's latest multilingual model with enhanced capabilities `#free`
-- [Vicuna-13B](https://lmsys.org/blog/2023-03-30-vicuna/) - An open-source chatbot trained by fine-tuning LLaMA on user-shared conversations collected from ShareGPT. `#free`
-- [Z.ai](https://z.ai/) - Zhipu globally launched model experience. 58 `#free`
-
-**[⬆️ Back to Top](#table-of-contents)**
-
-
-## Music
-
-- [AIVA](https://www.aiva.ai/) - AI composer that creates original music for various purposes `#freemium`
-- [Boomy](https://boomy.com/) - Create and share AI-generated music in seconds `#freemium`
-- [Mubert](https://mubert.com/) - AI-generated music for content creators and businesses `#freemium`
-- [Riffusion](https://www.riffusion.com/) - Create music from text with styles, instruments, modifiers and genres. `#free`
-- [Songifted](https://songifted.com/) - Creates personalized AI song gifts from names and memories, with lyrics approval before recording, a free 45-second preview, and paid full songs. `#paid`
-- [Soundraw](https://soundraw.io/) - AI music generator with customizable styles and moods `#freemium`
-- [Spotify Play Count MCP](https://github.com/GeminiGeorge22/spotify-play-count-mcp) - MCP server that gives AI assistants Spotify play counts for any track, album, artist or playlist, plus artist monthly listeners and followers; runs on your own Apify token. `#opensource` `#mcp`
-- [Suno AI](https://suno.ai/) - AI-powered music creation platform that generates complete songs from text prompts `#freemium`
-- [Tera Studio](https://terastudio.co/) - Learns your singing voice from about a minute of singing, then sings any song you upload back in your voice, in any language. `#freemium`
-- [Udio](https://udio.com/) - Advanced A
+- [Llama 2](https://llama.meta.com/) - The n

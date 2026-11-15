@@ -20,14 +20,14 @@ Every breakdown is also written as **[VIDEO.md](https://videomd.github.io/videom
 [![Built on rea-video](https://img.shields.io/badge/built%20on-rea--video-6644d8)](https://github.com/JuneYaooo/rea-video)
 [![License: Noncommercial](https://img.shields.io/badge/license-noncommercial-orange)](LICENSE)
 
-[![LINUX.DO](https://img.shields.io/badge/LINUX.DO-community-1a1a1a?style=for-the-badge)](https://linux.do/) [![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/dZj8D3GqWT) [![Follow on X](https://img.shields.io/badge/Follow%20%40yao__june12106-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/yao_june12106)
+[![LINUX.DO](https://img.shields.io/badge/LINUX.DO-community-1a1a1a?style=for-the-badge)](https://linux.do/) [![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/dZj8D3GqWT) [![WeChat group](https://img.shields.io/badge/WeChat%20group-07C160?style=for-the-badge&logo=wechat&logoColor=white)](i18n/README_zh.md#社区) [![Follow on X](https://img.shields.io/badge/Follow%20%40yao__june12106-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/yao_june12106)
 
 ⭐ *Help more people find rea-toon. Star this repo!*
 
 <a href="docs/demo_en.mp4"><img src="docs/demo_en.gif" width="720" alt="Demo: the pages of a 10-episode drama after the breakdown (study, script, shot script)"></a>
 
 The pages of a 10-episode drama after the breakdown. Click for the full demo with sound (1 min).<br>
-<sub>Translated into English for this demo; rea-toon writes the pages in Chinese.</sub>
+<sub>rea-toon writes the breakdown in the language you talk to your agent in.</sub>
 
 </div>
 
@@ -50,7 +50,7 @@ Each breakdown gives you two outputs:
 - **Pages, for you**: open one `index.html`. It holds the study, the script and the shot script.
 - **[VIDEO.md](https://videomd.github.io/videomd/), for your AI**: `VIDEO.md` + `video/`, the same open format as [rea-video](https://github.com/JuneYaooo/rea-video). Ask your agent anything about the drama later, or hand it to other tools: they read this instead of watching the video again.
 
-> The pages and reports are in Chinese for now: rea-toon is made for Chinese short dramas.
+> **Your language.** The breakdown is written in the language you talk to your agent in: the summaries, per-shot notes, report, script actions and the pages' own headings. Dialogue and subtitles stay in the drama's original language. Page frames are built in for English and Chinese; for other languages the content is written in your language inside an English frame.
 
 ## What you get
 

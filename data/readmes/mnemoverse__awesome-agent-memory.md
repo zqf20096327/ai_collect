@@ -70,6 +70,7 @@ Contributions welcome. Please keep entries factual and free of marketing languag
 Reusable agent-memory workflows and templates for knowledge practices agents can adopt directly, not general prompt packs.
 
 - [memento-md](https://github.com/AndreySukhanov/memento) - Source-available license, free for non-commercial use; Claude Code plugin that organizes task memory in five Markdown files with append-only decision records, Stop-hook checks for specific memory gaps, and optional cold-read reviews by other model families.
+- [Pulse](https://github.com/muhammademanaftab/pulse) - MIT license; Claude Code Stop hook that records each session to the user's own Convex deployment, plus a nightly routine that writes Markdown daily notes and project pages and a weekly routine that writes a weekly note into the user's Git repo, with a recall skill that answers questions from those notes.
 - [Strata Sample](https://github.com/Zerokool1986/Strata-sample) - Custom license; commercial use and free redistribution with credit allowed, no resale; knowledge system for coding agents that stores typed Markdown entries with status and provenance in a Git repo, keeps superseded entries readable instead of deleting them, and includes templates, a worked example, and a five-question self-test.
 
 ## MCP memory servers

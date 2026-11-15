@@ -173,3 +173,5 @@ My Website: https://devdreaming.com/
 SmartHeadshots is my separate hosted product for [professional AI headshots](https://www.smartheadshots.ai/professional-headshots).
 
 Languages: [Deutsch](https://www.smartheadshots.ai/de/business-portrait) · [Español](https://www.smartheadshots.ai/es/foto-corporativa).
+
+For another application of AI imagery, explore [AI-powered room design](https://www.airoomdesignapp.com), my separate hosted app.

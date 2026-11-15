@@ -3,26 +3,29 @@
 [![CI](https://github.com/PansaLegrand/dojo-video-harness/actions/workflows/check.yml/badge.svg)](https://github.com/PansaLegrand/dojo-video-harness/actions/workflows/check.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-A local, English-only open-source video editor with a small TypeScript editing agent. It shares DojoClip’s Next.js App Router, React 18, Tailwind 3, and editor components, with a simpler local host.
-Bring your own LLM and transcription providers. Edit the same timeline by hand
-or through chat, see changes directly, and export through [Dojo Video Engine](https://github.com/PansaLegrand/dojo-video-engine) in your browser.
+**An open-source video editor you run locally, with a TypeScript agent you can understand and extend.** Import your footage, edit the same timeline by hand or through chat, and export an MP4 in your browser. Ordinary validated chat edits apply directly; Compare and Undo let you inspect or reverse them.
 
-The agent is intentionally understandable: a model adapter, typed function calls,
-a tool registry, Markdown skills, bounded execution, and explicit user decisions.
-The difficult video-specific rules live in the tested document and command kernel.
-The shared loop **0.1.3** supports durable checkpoints and deterministic context
-pruning; the local host owns which interrupted boundaries can safely resume.
+**Want to try the hosted product? [Open DojoClip Video Edit AI](https://dojoclip.com/en/applications/video-edit-ai).** DojoClip adds managed accounts, projects, provider jobs, storage, and payments. This repository is the smaller local editor and developer foundation; it does not install the commercial SaaS.
 
 ![The local editor with a structured pending question](docs/assets/editor-question.png)
 
 _Browser-test screenshot with synthetic model responses._
 
+## Choose the right project
+
+| Project                                                                | Use it for                                                                        | What you operate                                             |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| **This harness**                                                       | Edit local footage, study the agent, add tools or skills                          | A single-user localhost app; your own optional provider keys |
+| [Dojo Video Engine](https://github.com/PansaLegrand/dojo-video-engine) | Build scene rendering, playback, inspection, and export into your own application | TypeScript packages and browser media APIs                   |
+| [DojoClip](https://dojoclip.com/en/applications/video-edit-ai)         | Use the hosted editor and managed AI services                                     | An account in the commercial product; no local server setup  |
+
+The harness includes the shared editor UI, command validation, timeline history, captions, editable graphics, browser preview/export, and a bounded model/tool loop. It deliberately excludes commercial authentication, billing, Postgres/Prisma, Redis queues, cloud-storage configuration, production workers, and deployment credentials. Local image/video-generation adapters are not shipped; the optional BYOK music adapter is available.
+
+No DojoClip database or commercial environment file is needed. Projects and receipts use local files; imported originals use browser IndexedDB. The UI is English-only, while media text and provider-supported captions can use other languages. See [the scope and synchronization policy](docs/open-source-scope.md).
+
 ## Run locally
 
-Requirements: Git, Node **20.19+** (Node **22** recommended), npm, and a desktop
-browser with WebCodecs support (Chromium is the tested path). No database, Redis,
-DojoClip account, or cloud worker is needed. FFmpeg is required only for the
-browser acceptance test, not the app.
+Requirements: Git, Node **20.19+** (Node **22** recommended), npm, and a desktop browser with WebCodecs support. Chromium is the tested path. FFmpeg is only needed for acceptance tests.
 
 ```sh
 git clone https://github.com/PansaLegrand/dojo-video-harness.git
@@ -30,59 +33,90 @@ cd dojo-video-harness
 npm run launch
 ```
 
-`launch` installs locked dependencies when missing, creates `.env` without
-overwriting an existing file, checks the local environment, and starts the editor.
-It opens the browser automatically from an interactive terminal. Otherwise open
-**http://127.0.0.1:4310**. The engine is installed automatically from the public
-`@dojo-video-engine/*` npm packages, pinned to **1.2.3**; no separate engine clone
-or pnpm installation is needed. Node 22 is pinned in `.nvmrc`.
+`launch` installs locked dependencies when missing, creates `.env` without overwriting an existing file, checks the environment, and starts the editor. It opens a browser from an interactive terminal; otherwise open **http://127.0.0.1:4310**. The published engine packages install automatically. No sibling repository or pnpm installation is needed.
 
-Create a project and import media. Manual editing, subtitle import, preview,
-motion graphics, and MP4 export work without API keys. For chat, configure
-**Vercel AI Gateway** or a GPT-6-series provider with a compatible Responses API.
-In **Provider settings**, enter its base URL, model ID, and API key using the
-configuration below. Speech recognition has its own provider settings.
-Saves apply to new requests immediately; running jobs keep their original
-configuration. Saved keys are never returned to the browser.
-
-| What you want to do                                      | Provider credentials                         |
-| -------------------------------------------------------- | -------------------------------------------- |
-| Edit manually, import subtitles, preview, and export MP4 | None                                         |
-| Edit through chat or translate captions                  | Your GPT provider key                        |
-| Transcribe imported speech                               | Your ASR provider key, configured separately |
-
-For later starts, use `npm run dev`. Other useful commands:
+Create a project and import a short clip. **Manual editing, subtitle import, preview, and MP4 export need no API keys.** For chat or speech recognition, open **Provider settings** and configure the relevant provider below.
 
 ```sh
-npm run setup        # Install/check without starting; preserves .env
-npm run setup -- --install  # Reinstall locked dependencies
-npm run doctor       # Check Node, local storage, and port availability
+npm run dev                # Start again after initial setup
+npm run setup -- --install # Install updated locked dependencies after git pull
+npm run doctor             # Check Node, local storage, and port availability
 npm run dev -- --no-open    # Start without opening the browser
 ```
 
-After pulling repository updates, run `npm run setup -- --install` before
-starting again. This installs the updated lockfile and preserves your `.env`
-and local project data.
+The launcher supports PowerShell, macOS, and Linux. Keep the same local address: browser media belongs to its origin. An occupied port produces guidance rather than silently switching addresses. To run a production build locally, use `npm run build` then `npm start`.
 
-The setup and launcher work in PowerShell as well as macOS/Linux terminals. The
-startup CI runs on Windows, macOS, and Linux. If the port is occupied, the launcher
-explains how to open the existing editor or change `PORT` in `.env`. It does not
-silently switch addresses, because imported browser media belongs to its origin.
+## Try these workflows
 
-Advanced configuration can still use `.env` (copied from `.env.example`). Settings
-saved in the app override its provider values and are stored in the private local
-data directory as `provider-settings.json`. Keep that directory private and out
-of Git when changing `DATA_DIR`.
+These examples use capabilities exercised by the repository's tests. Chat wording is a starting point: inspect the resulting edit, and use Undo or a follow-up instruction when needed. See [verification](#verification) for the distinction between scripted tests and live-model evidence.
 
-DojoClip is the reference for shared editor and chat UI. The open-source engine
-and harness are the starting point for rendering and agent runtime changes;
-DojoClip consumes them through commercial adapters. Local persistence, provider
-keys, and usage copy stay in this harness's host adapters. See
-[synchronization and readiness](docs/synchronization-readiness-2026-11-08.md) and
-[syncing the product UI](docs/syncing-product-ui.md).
+### 1. Make a short branded clip — no keys
 
-The agent and caption translation support **GPT models through the Responses API**.
-Vercel AI Gateway is the documented, live-tested example for GPT-6:
+1. Create a project and import a video plus a PNG logo you own.
+2. Trim the imported clip on the timeline. Move the imported logo to an overlay track and align its timing with the footage.
+3. Add a text title or import an SRT/VTT subtitle file.
+4. Preview, adjust the placement, then export MP4.
+
+This is a local editing workflow. It needs neither an AI provider nor an account. Rendering and export run in the browser; supported media depends on browser codecs and admission limits.
+
+### 2. Revise a title through conversation — GPT key
+
+In an open project, choose **Whole project** scope and ask:
+
+> Add a title saying “Hello” for the first three seconds.
+
+Then send each follow-up separately:
+
+> Make it red.
+
+> Put a yellow backing behind it.
+
+> Make the text bigger.
+
+The title stays editable on the timeline. Ordinary local edits apply automatically; Compare and Undo remain available. The [bounded correction diagnostic](docs/conversational-corrections-2026-11-04.md) records a tested four-turn version of this workflow, including preserved object identity and rendered changes.
+
+### 3. Caption and translate a speech clip — GPT and ASR keys
+
+Import a short spoken clip, choose **Whole project** scope, and ask:
+
+> Add English captions to this clip, then add Spanish translations below them. Keep the original English captions.
+
+If transcript evidence is missing, the app requests source/provider consent before transcription and then continues the original instruction. Review timing, wording, and translated facts before export. Transcription uploads are capped at **25 MiB** and require genuine word timestamps. Already imported subtitle text can be edited manually without an ASR key.
+
+For an explicit multi-clip workflow, import two spoken clips named `Clip A` and `Clip B` without existing linked captions, then ask:
+
+> Join Clip A then Clip B, generate English captions, translate them to Spanish, then export.
+
+That workflow has its own review card: approve provider access, review and apply the prepared edit, then use **Export approved workflow**. The saved export is bound to the applied revision. See [workflow behavior and evidence](docs/basic-workflows-and-music-2026-11-03.md).
+
+### 4. Add an editable intro or ending — GPT key
+
+With footage on the timeline, ask:
+
+> Add a three-second 3–2–1 countdown before my footage. Move the footage after the countdown and keep its full duration.
+
+Or:
+
+> Add a two-second animated “Thanks for watching” ending after my footage.
+
+These can be native grouped graphics with editable text and animation. They do not require generating another video asset. You can move, trim, split, or edit the graphic and export it with the footage. Trimming cuts animation beats; it does not automatically retime them or ripple neighboring clips. See [the intro/outro tests and limitations](docs/intro-outro-items-2026-11-04.md).
+
+### Optional: generate background music — Kie key
+
+Configure **Background music · Kie** in `/en/settings`, then use the Background music panel or ask through chat. The panel works without a GPT key. **Generate and insert music** approves one paid job and its displayed placement, length, and volume. The first returned track is stored locally and inserted when ready. Undo removes an edit; it does not repeat generation or refund a provider charge. See [music setup and recovery](docs/basic-workflows-and-music-2026-11-03.md).
+
+## Configure only the providers you need
+
+| Operation                                          | Credentials                           |
+| -------------------------------------------------- | ------------------------------------- |
+| Manual edits, subtitle import, preview, MP4 export | None                                  |
+| Chat edits and caption translation                 | Your compatible GPT Responses API key |
+| Speech transcription                               | Your ASR key, configured separately   |
+| Optional instrumental music generation             | Your Kie music key                    |
+
+Use **Provider settings** to enter the base URL, exact model ID, and matching key. Settings take effect for new requests; active jobs keep their original configuration. Advanced defaults can use [`.env.example`](.env.example), copied to your private `.env`. App settings override those defaults.
+
+The chat adapter supports **GPT models through the Responses API with function calls and tool-result continuation**. Vercel AI Gateway is one documented provider example:
 
 ```dotenv
 LLM_BASE_URL=https://ai-gateway.vercel.sh/v1
@@ -90,324 +124,63 @@ LLM_MODEL=openai/gpt-6-sol
 LLM_API_KEY=your-vercel-ai-gateway-key
 ```
 
-Other GPT-6-series providers can use the same adapter if their `/responses`
-endpoint supports the harness's function calls and tool-result continuation.
-Set the provider's base URL (without `/responses`), exact model ID, and matching
-key. Model IDs must use the `gpt-*` or `openai/gpt-*` form; `gpt-6-sol` is the
-default when no model is configured. GPT-6 availability alone does not establish
-API compatibility; validate another endpoint with the optional live check below.
-The harness does not silently switch providers or retry paid requests.
+Other compatible endpoints can use the same adapter. Supply the base URL without `/responses` and a model ID in `gpt-*` or `openai/gpt-*` form. Availability and compatibility depend on your provider/account; a listed model name alone is not a compatibility guarantee. Non-GPT model families and Chat Completions are outside the shipped adapter's scope. There is no silent provider switching or automatic paid retry.
 
-Use the key for the endpoint you configure. The model name is sent unchanged;
-there is no automatic model switching or retry. Non-GPT model names are rejected
-before a request. Other model families and Chat Completions are outside the
-supported scope. Speech recognition supports ElevenLabs Scribe and OpenAI-compatible
-word-timestamp endpoints with its own key; configuring chat does not configure ASR.
-Choose **Use ElevenLabs** in Provider settings to select
-`https://api.elevenlabs.io/v1` and `scribe_v1`, then enter your own ElevenLabs key.
+Speech recognition supports OpenAI-compatible word-timestamp endpoints and ElevenLabs Scribe. The **Use ElevenLabs** preset selects `https://api.elevenlabs.io/v1` and `scribe_v1`; enter your own ElevenLabs key. Segment-only output is rejected rather than converted into invented word timings. Music defaults are documented in `.env.example`.
 
-ASR must provide genuine word timestamps (`verbose_json` for compatible endpoints); segment-only output
-is rejected rather than converted into invented word timings. This adapter caps
-transcription uploads at 25 MiB. Choose a smaller audio source when needed.
+Saved keys stay in the local server's private data directory and are never returned to the browser. Keep `.env` and `DATA_DIR` private and out of Git. Chat sends project context to your configured provider. Transcription sends the consented source; preview pixels require consent. Remote provider usage is billed by that provider. The local host is intended for a single user on loopback, not deployment as a public multi-user service.
 
-Saved keys stay in the local data directory and server process. `.env`, project data, uploaded sources, and
-exported videos are ignored by Git. Imported originals first live in browser
-IndexedDB. Choosing transcription explicitly copies the source to the local host
-and sends it to the configured ASR provider. Choosing chat sends project context;
-preview pixels are included only when you check the preview-image option. Provider
-usage is charged by your provider. The editor and rendering run locally; configured remote GPT and ASR providers
-receive only the context or media needed for the selected operation.
+## How it works and what stays synchronized
 
-To run the built application:
-
-```sh
-npm run build
-npm start
+```text
+Manual controls ─┐
+                 ├─ validated commands → ProjectDocument → compiled Scene → engine
+Chat + tools ────┘
 ```
 
-## What is implemented
+Both editing paths share the document and history. The host validates scope, source evidence, locks, and revisions before applying an edit. The agent can inspect sources, read skills, ask structured questions, and prepare dependent stages. Registered browser tools support consented source sampling, candidate previews, one verified correction round, and export tied to the applied revision.
 
-- The extracted DojoClip manual editor: multi-track timeline, selection, trim,
-  split, text/graphics, captions, styles, transitions, linked groups, source ranges,
-  quiet-section analysis, undo/redo, and browser recovery.
-- Dojo Video Engine preview, local proxies within admission limits, and browser MP4
-  export. The pinned engine packages include the reconciled DojoClip correctness patches.
-- Local project persistence with serialized transactions, atomic file replacement,
-  revisions, conflict detection, operation receipts, and history.
-- A framework-independent agent loop using real function calls. Inspect a project,
-  read a skill, search transcript evidence, propose an edit, or ask a question.
-- New editor runs use local-editor-v5 with paginated asset/cue readers and the completion-preflight profile: freeze a typed checklist,
-  review the complete in-memory candidate, repair failed checks, then propose
-  exactly the reviewed commands. Deterministic receipts bind the snapshot,
-  checklist, commands and preview; the host checks outcomes again after rebase.
-- Durable local model/tool checkpoints, with cumulative budgets and frozen request,
-  source, tool/skill and provider bindings. A restart can continue a saved model
-  response or completed tool boundary without requesting that response again.
-  Uncertain model or external-tool submissions stop for manual reconciliation.
-- New runs reserve serialized UTF-8 space for the complete model reply before
-  submission. Compact checkpoint storage retains original instructions and a
-  pending reply once; accepted 0.1.1 runs retain their original profile and budget.
-- Desktop chat resizes from its left edge, up to half the window width; the left
-  panel toggle stays at the bottom of the tool rail. Narrow screens retain the chat drawer.
-- Instruct and edit: ordinary local chat edits apply automatically, with selective
-  Undo and optional before/after comparison. Structured questions resolve missing
-  information; cancellation and the product’s quick-edit controls remain available. Tool events remain available through the local API.
-- Provider-backed captions and translation, with persisted source-bound receipts.
-- Speech-dependent chat pauses for explicit source/provider consent when genuine
-  transcript evidence is missing, then resumes the original instruction after
-  the source-bound receipt is available. Later styling, translation and graphic
-  steps can use that evidence in the same bounded model/tool run.
-- Readable title, lower-third and supplied-text caption preparation with explicit
-  bounds and responsive defaults; chat applies them without a confirmation click.
-  See [layout checks](docs/readable-overlays-2026-11-03.md) and
-  [bounded real-footage acceptance](docs/real-media-acceptance-2026-11-03.md).
-- Native countdowns and animated text can be separate, editable timeline clips
-  before or after footage. They are grouped graphics, not automatically generated
-  MP4 assets. Move, trim, edit their contents, and export the combined timeline.
-  See the [intro/outro behavior tests](docs/intro-outro-items-2026-11-04.md).
-- One-instruction workflows for joining imported clips, overlaying a logo, generating
-  and translating captions, then exporting the reviewed revision.
-- Approved instrumental music generation through Kie V6, with local storage and
-  automatic, exactly-once insertion into the approved audio track.
+The current local profile is **local-editor-v14**, using **agent kit 0.2.9**, **loop 0.2.0**, and published **engine 1.2.3**. Older saved runs retain their original behavior and budgets. The latest shared editing behavior is reused by the commercial host through its own adapters; commercial services are not copied into this app.
 
-This is a standalone extraction, not a claim of complete hosted-product parity.
-DojoClip billing, accounts, collaboration, hosted asset galleries, and production
-worker infrastructure are outside this local application. Image/video generation
-jobs are an extension point, not a shipped provider integration. Both ordinary
-speech-dependent chat and the combined editing workflow can prepare transcription
-after explicit source/provider consent; standalone caption controls remain available.
-Registered browser tools support consented source sampling, candidate previews,
-one receipt-bound correction and a second preview before final proposal. Export
-intents bind to guarded Apply and verified local output. See
-[current localhost adapter scope](docs/managed-ui-host-followups.md).
+- **Web → harness:** selected editor components, managed and checked by file hashes.
+- **Engine → both apps:** published rendering/playback/export packages at exact versions.
+- **Harness → commercial host:** portable agent loop, tool contracts, and skills.
+- **Editing semantics:** some shared helpers plus separate kernels checked against the same conformance cases; there is no automatic whole-product sync. [Remaining differences](docs/open-source-scope.md#remaining-source-differences) include a bounded capability-target schema description gap.
 
-## Basic workflows and background music
+See [the scope policy](docs/open-source-scope.md), [synchronization evidence](docs/synchronization-readiness-2026-11-08.md), and [UI sync instructions](docs/syncing-product-ui.md).
 
-Import clips and a logo, choose **Whole project** scope, and ask:
+## Learn or extend the implementation
 
-> Join Clip A then Clip B, add Logo, generate English captions, translate them to Spanish, then export.
+Start with [the guided walkthrough](docs/learn-the-harness.md) and [architecture](docs/architecture.md). Coding agents should read [AGENTS.md](AGENTS.md).
 
-Review the workflow card and approve provider access. After preparation, use the
-normal **Compare / Apply** controls, then **Export approved workflow**. Export is
-performed by the browser and saved locally against the applied revision. Sources
-are limited to 25 MiB each for this first transcription workflow; existing linked
-captions and unsupported steps require a separate edit rather than a partial plan.
+| Location                                             | Responsibility                                                      |
+| ---------------------------------------------------- | ------------------------------------------------------------------- |
+| `packages/agent-loop/`, `packages/agent/src/loop.ts` | Bounded model → tool → observation loop and local integration       |
+| `packages/agent-kit/`, `packages/agent/src/tools.ts` | Shared tool definitions, skills, and native host ports              |
+| `skills/`                                            | Trusted Markdown guidance for existing tools                        |
+| `packages/core/src/lib/video-project/`               | Document, validated commands, source evidence, and history          |
+| `packages/adapters/src/`                             | GPT, ASR, and music transports                                      |
+| `packages/ui/src/host/`                              | Local user, copy, and provider adapters                             |
+| `apps/server/src/`                                   | Local files, durable runs, consent, provider settings, and receipts |
 
-For music, configure **Background music · Kie** in `/en/settings` (or use
-`MUSIC_BASE_URL=https://api.kie.ai`, `MUSIC_MODEL=V6`, `MUSIC_API_KEY` privately).
-Ask for background music, or use the Background music panel without a GPT key.
-**Generate and insert music** approves one paid provider job and its exact track,
-start time, maximum length and volume. The first provider track is saved locally
-and inserted when ready. Cancellation and undo do not repeat generation or refund
-provider charges. Uncertain submissions require reconciliation with the existing
-provider task ID. A locked or changed target pauses insertion.
+A useful first extension is a read-only tool that counts clips on a track. Or add a trusted lowercase `skills/name.md` file and restart the host. Markdown guides registered tools; it cannot install executable code or authorize spending. Follow [the extension guide](docs/extending.md).
 
-A single request can prepare music and a visual edit together. The agent uses
-`prepare_background_music` with `continueEditing: true`, then returns the visual
-proposal. Review/apply the visuals before approving the separate paid music job.
-See the [presentation rehearsal](docs/presentation-rehearsal-2026-11-03.md) for a
-bounded example and its evidence.
-
-Skills stay simple: add a trusted lowercase `skills/name.md` file and restart the
-host. `SKILLS_DIR` can select another local directory. Markdown guides existing
-tools; it does not install executable tools. There is no npm plugin installer.
-See [the extension guide](docs/extending.md) and
-[implementation and evidence](docs/basic-workflows-and-music-2026-11-03.md).
-
-## Read the implementation
-
-Coding agents should begin with [the repository guide](AGENTS.md) for ownership,
-commands, invariants, and the readiness plan.
-
-Start with [the guided walkthrough](docs/learn-the-harness.md), then follow:
-
-| Location                                               | Responsibility                                               |
-| ------------------------------------------------------ | ------------------------------------------------------------ |
-| `packages/agent/src/loop.ts`                           | Bounded model → tool → observation loop                      |
-| `packages/agent/src/tools.ts`                          | Tool descriptions, runtime validation, effects               |
-| `skills/`                                              | Domain instructions loaded by the `read_skill` tool          |
-| `packages/adapters/src/`                               | LLM and ASR transports; no document mutation                 |
-| `packages/core/src/lib/video-project/`                 | Authoritative document, commands, scope, evidence, history   |
-| `packages/ui/src/components/editor/dojo-video-engine/` | Real manual editor and chat/review UI                        |
-| `app/`                                                 | English App Router pages and local API route handlers        |
-| `packages/ui/src/host/`                                | Local user, copy, and provider-request adapters              |
-| `apps/server/src/agent-service.ts`                     | Durable runs, questions, approvals, cancellation             |
-| `apps/server/src/store.ts`                             | Local transactions, receipts, revisions                      |
-| `apps/server/src/local-api.ts`                         | Local services behind Next route handlers                    |
-| `config/engine-release.json`                           | Pinned engine version, source commit, and registry integrity |
-
-There is no LangChain, Vercel agent runtime, Pi runtime, or coding-agent subprocess
-in the execution path. Pi inspired the small-core approach; a provider or runtime
-adapter can be added without giving it authority over document commits.
-
-The harness packages are source workspaces in this repository. They are not
-published npm packages. The engine is consumed from the public
-`@dojo-video-engine/*` packages at exact version 1.2.3. There is no runtime dependency on a sibling checkout. Development
-uses the product’s Next.js 15.5 family, React 18.3, Tailwind 3.4, and shared TypeScript aliases; independently packaged
-embeddable SDK distributions are a subsequent release step.
+Harness packages are source workspaces here, not a published embeddable SDK. Engine packages are published separately. Durable recovery retains completed replies and receipts; uncertain paid submissions need reconciliation. See [the current agent map](docs/agent-system.md) and [edge cases](docs/edge-cases.md) for exact limits.
 
 ## Verification
 
-The current schema/recovery update uses loop 0.1.3/kit 0.1.5. The full check passes
-598 tests, TypeScript, kit generation/integrity, 85 managed UI hashes and production
-build. All 66 actual browser checks pass under local-editor-v5, including the
-source-overview → cue-reader → dependent-edit path with one ASR and five model
-fixture calls. New local-editor-v5 runs default to sixteen model steps with existing
-tool/output allowances. Editing schemas require nonempty proposals, and nested
-review-schema references resolve against the advertised tool root. Regression
-tests resolve every advertised local reference, compile the schemas with Ajv,
-and validate a mixed-media command batch while rejecting empty/answer/retrieval
-edits. Caption context initially supplies source identity and counts; the agent
-reads exact requested-range cues before translation. The host supplies reader
-snapshot hashes. Earlier profiles retain their budgets and exact
-inventory/skill/prompt digests.
-
-New loop snapshots preserve a returned paid reply and exact reported usage when
-a provider exceeds the requested output allowance, then stop before its tools or
-answer execute. Disk replay returns the same explicit error without a provider
-request. The frozen budget remains unchanged. Timestamp validation also rejects
-missing/nonfinite speech timing before constructing immutable source evidence;
-legacy transcript normalization remains unchanged unless explicitly opted in.
-
-Readers can page beyond 500 cues; caption-pair preparation remains bounded to
-500 cues per operation. Larger assembly and general continuation remain roadmap
-work. These local gates use controlled provider HTTP; live commercial Kie
-qualification is tracked separately before release acceptance.
-
-The preceding efficient-reader update used kit 0.1.4 and passed 565 tests,
-TypeScript, kit generation/integrity, 85 managed UI hashes, production build and
-all 66 browser checks. Provided metadata is authoritative, and discovery focuses
-on missing facts for requested assets and source ranges.
-
-The earlier paginated-reader update uses loop 0.1.2/kit 0.1.3. Focused reader, range and
-completion regressions pass with frozen legacy profile digests, and the full unit
-suite passes 554 tests. The production build and all 66 browser checks also pass
-with 85 managed product UI files. Browser model/ASR responses use controlled HTTP
-fixtures while React, persistence, media, rendering and export execute normally.
-The new readers bind snapshot/filter/scope/source identity to cursor pages, retain
-UTF-8 byte bounds and expose complete/incomplete coverage. Explicit source ranges
-are prepared in a candidate and produce matching source-trim/caption commands.
-
-The earlier loop 0.1.2/kit 0.1.2 candidate passed **511 tests**. Its host
-regressions cover saved-response/tool/terminal recovery, uncertain paid outcomes,
-cumulative and unknown usage, request/source/provider/tool drift, cancellation,
-ASR receipt reuse and fresh clarification-child budgets. The host retains original
-instructions and source evidence while pruning only eligible older read context;
-it does not call an LLM to summarize the conversation. See
-[the agent system map](docs/agent-system.md) for the recovery limits.
-The byte-bound regressions cover multibyte context, host-envelope overhead,
-opaque provider output, frozen request configuration and legacy checkpoint replay.
-Completion regressions cover complete bilingual cue coverage, reciprocal pairing,
-spoken-number evidence and display holds, ending timing/text, fitted font size,
-cumulative visibility, overlap, checklist/receipt tampering and pinned-state replay.
-These checks protect declared intent and bounded layout samples; they do not
-establish universal semantic or creative quality. Provider generation remains
-host-owned external work.
-
-The [earlier release checks](https://github.com/PansaLegrand/dojo-video-harness/actions/runs/41330893940)
-passed on **2026-11-02**: 228 tests, production build, 25 browser editing/export
-checks, and startup checks on Windows, macOS, and Linux. These checks use synthetic
-providers. See the [engine migration notes](docs/startup-and-engine-packages-2026-10-31.md#npm-migration--2026-11-01).
-
-Separately, [live GPT qualification through Vercel AI Gateway](docs/gateway-readiness-report.md)
-passed all 54 baseline trials and 18 extended trials using `openai/gpt-6-sol`.
-Earlier provider failures remain recorded; the Gateway run used an explicitly selected
-endpoint, without automatic fallback or paid retries. A bounded ElevenLabs probe
-also verified genuine source-bound word timestamps; see the
-[ASR and recovery evidence](docs/readiness-report-2026-11-02.md).
-
-The editor flow is **instruct → edit → undo if needed**. Ordinary local edits use
-the existing validated save path automatically, once manual drafts are saved.
-Paid/cloud workflows retain their consent and approval steps. The earlier live
-qualification reports used explicit review mode; see the
-[direct-editing checks](docs/direct-editing-2026-11-04.md) for the current browser flow.
-Paired real-media
-human acceptance and broader editing coverage remain open. The agent can correct
-tool validation errors and perform the bounded preview workflow described in
-[the current agent map](docs/agent-system.md). New local runs select
-`local-editor-v14` with development kit 0.2.9, loop 0.2.0 and engine 1.2.3. The 0.2.8 local gate
-passed 968 tests/build and 66 browser checks. Validated `captionPairs` supply any
-missing caption-pair checks before the checklist freezes. Supplied checks remain
-intact, with at most 12 combined. The 61 focused checks include two speech sources,
-six translation batches, nine additional outcomes, native review and saved-result
-replay. Earlier profile contracts remain archived. The host retains its
-64-model-call/64-tool/32,000-output-token allowance. Live bilingual fidelity and
-creative quality have separate outcome acceptance. Public CI is pending for the
-pushed candidate.
-Follow the [readiness plan](docs/harness-readiness-plan.md) before a launch.
-
-The [focused lower-third live gate](docs/lower-third-qualification-2026-11-04.md)
-finished at 11/12 after local fixes; it is not yet qualified. The report retains
-the failures, rendering evidence, request budget and remaining placement issue.
-
-A [bounded conversational-correction diagnostic](docs/conversational-corrections-2026-11-04.md)
-passed two live four-turn conversations: add text → change its color → change its
-backing → enlarge it, with no selection or repeated target identification. It
-preserved the same object and unrelated text, and verified rendered changes.
-This covers applied edits in short conversations; pending proposals and long
-histories remain unqualified.
-
-To check your own changes:
-
 ```sh
-npm run check
+npm run check                    # OSS boundary, integrity, types, tests, build
 npx playwright install chromium
-npm run test:browser
+npm run test:browser              # Actual browser/media tests; needs ffmpeg + ffprobe
 ```
 
-An optional live GPT acceptance test uses a temporary synthetic timeline and up to
-eight paid requests. Set `LLM_BASE_URL`, `LLM_MODEL`, and `LLM_API_KEY` in the shell
-(or load your own `.env` before running); the script does not read another checkout:
+The browser suite uses synthetic provider HTTP responses while exercising real UI, storage, rendering, and decoded MP4/audio. It does not spend provider credits or use `.env` keys. Test artifacts go to ignored `test-results/`.
 
-```sh
-npm run test:live:gpt -- --live
-```
+The [readiness ledger](docs/readiness-progress.md) records version-specific local checks, public CI, separate live-model evaluations, retained failures, and remaining coverage. [The agent map](docs/agent-system.md) identifies the current build. These records do not establish universal creative quality or support for every codec, browser, provider, or arbitrarily long instruction.
 
-It verifies inspection/skill use, proposal review, explicit application, and a
-question/answer continuation. It is not part of CI and never uses customer media.
-See [the live Gateway qualification](docs/gateway-readiness-report.md) and
-[the original GPT adapter verification](docs/gpt-agent-verification-2026-10-31.md).
-
-An optional ASR probe accepts one owned recording of at most 30 seconds / 5 MiB
-and a file containing its expected spoken text. With your ASR variables set
-privately, run `npm run test:live:asr -- --live --file speech.wav --expected-file speech.txt`.
-It makes one request, checks transcription and genuine source-bound timestamps,
-and retains local evidence. It is separate from the GPT request budget and CI.
-
-The browser test needs `ffmpeg` and `ffprobe` on PATH. It starts an isolated real
-local server and synthetic LLM/ASR HTTP endpoints, uses actual browser storage and
-rendering, and decodes the exported MP4. It never uses `.env` provider credentials.
-Artifacts go to ignored `test-results/`. This verifies adapter and workflow behavior,
-not the quality or account compatibility of a live paid provider.
-
-The App Router serves the editor at `/en/applications/editor/:projectId` and the shared product home at `/en/applications/video-edit-ai`. Only English UI routes are enabled. The `/en` prefix keeps shared navigation easy to sync. Video text, speech recognition, and caption translation can still use other languages supported by your providers.
-
-See [architecture](docs/architecture.md), [extension guide](docs/extending.md),
-[edge cases](docs/edge-cases.md), and [provenance](docs/provenance.md).
-
-The [editable vector and Three.js contract](docs/vector-and-three-layers-2026-11-06.md)
-records the bounded 2D/3D workflow. [Engine 1.2.1 qualification](docs/engine-1.2.1-2026-11-07.md)
-records the published package pins, registry provenance and fresh-install browser checks.
-
-## Milestone launch checks
-
-The [harness readiness plan](docs/harness-readiness-plan.md) defines the ordered
-work, test matrix, acceptance criteria, and engine handoff for the current
-editing workflow. Its original review-mode qualification remains separately identified
-from the current direct-editing browser checks. It separates planned coverage from existing tests.
-
-Use `npm run verify:milestone` for the complete local gate. Before a launch, use
-`npm run verify:milestone -- --live` on a clean committed candidate with your GPT
-provider configured. The paid gate repeats 18 scenarios three times, including an
-eight-turn conversation, pending questions/restarts, basic edits, and hard boundaries.
-It records complete reports and requires a separate human visual/audio review.
-See [the coverage matrix, launch criteria, and commands](docs/agent-milestone-testing.md).
-
-## Engine and application ownership
-
-[dojo-video-engine](https://github.com/PansaLegrand/dojo-video-engine) owns rendering, playback, export, and low-level scene APIs. This repository owns the editor UI and agent harness. The engine no longer ships a competing editor or agent demo.
+Live provider probes are opt-in and incur your provider's charges; see [milestone testing](docs/agent-milestone-testing.md) before running them. The full release checklist lives in [the readiness plan](docs/harness-readiness-plan.md).
 
 ## License
 
-MIT for the harness and extracted editor code. Dojo Video Engine and third-party assets
-retain their own copyright notices. See [THIRD_PARTY.md](THIRD_PARTY.md).
+MIT for the harness and extracted editor code. Engine and third-party assets retain their notices. See [THIRD_PARTY.md](THIRD_PARTY.md).

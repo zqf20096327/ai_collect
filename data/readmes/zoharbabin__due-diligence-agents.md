@@ -280,7 +280,7 @@ Supports PDFs, Word, Excel, PowerPoint, and images. Scanned PDFs are handled via
        ▼
   ┌─────────────────────────────────────┐
   │        Python Orchestrator          │
-  │         38-step pipeline            │
+  │         39-step pipeline            │
   │       5 blocking quality gates      │
   └──────────────┬──────────────────────┘
                  │
@@ -407,7 +407,7 @@ _dd/forensic-dd/
 ## Installation
 
 ```bash
-pip install 'dd-agents[pdf]'      # Recommended (includes PDF extraction via pymupdf)
+pip install 'dd-agents[pdf]'      # Recommended (includes PDF extraction via pypdfium2, plus pikepdf to repair damaged PDFs)
 ```
 
 <details>
@@ -424,7 +424,7 @@ docker pull zoharbabin/due-diligence-agents:latest
 pip install dd-agents           # Core only (no PDF extraction)
 pip install 'dd-agents[vector]'   # + semantic search via ChromaDB
 pip install 'dd-agents[ocr]'      # + OCR for scanned documents (English)
-pip install 'dd-agents[glm-ocr]'  # + multilingual OCR (100+ languages, Apple Silicon)
+pip install 'dd-agents[glm-ocr]'  # + GLM-OCR for scanned, non-English pages (Apple Silicon)
 ```
 </details>
 
@@ -461,7 +461,7 @@ docker run -e ANTHROPIC_API_KEY="sk-ant-..." \
 
 ### Licensing
 
-All core dependencies use permissive open-source licenses (Apache 2.0, MIT, BSD). The optional `[pdf]` extra installs pymupdf, which is AGPL-3.0 licensed — if you redistribute software that bundles pymupdf, AGPL copyleft terms apply to your distribution. Using it internally or as a tool does not trigger copyleft.
+All core dependencies use permissive open-source licenses (Apache 2.0, MIT, BSD). The optional `[pdf]` extra installs pypdfium2 (Apache-2.0 or BSD-3-Clause) and pikepdf (MPL-2.0, used unmodified). No AGPL dependency remains.
 
 ## Documentation
 
@@ -471,6 +471,7 @@ All core dependencies use permissive open-source licenses (Apache 2.0, MIT, BSD)
 | [Deal Configuration](docs/user-guide/deal-configuration.md) | Config file structure, auto-generation |
 | [Running the Pipeline](docs/user-guide/running-pipeline.md) | Execution modes, resume, quality gates |
 | [Reading the Report](docs/user-guide/reading-report.md) | Navigating the HTML and Excel output |
+| [Sanctions Screening](docs/user-guide/screening.md) | Opt-in local screening against official sanctions lists and your own watchlists |
 | [CLI Reference](docs/user-guide/cli-reference.md) | Complete command reference |
 | [Troubleshooting](docs/user-guide/troubleshooting.md) | Common errors, exit codes, recovery steps |
 | [Search Guide](docs/search-guide.md) | Contract search for legal teams |

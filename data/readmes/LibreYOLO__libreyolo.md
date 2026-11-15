@@ -1,56 +1,32 @@
-# LibreYOLO
+<div align="center">
 
-[English](https://github.com/LibreYOLO/libreyolo/blob/release/README.md) | [简体中文](https://github.com/LibreYOLO/libreyolo/blob/release/README.zh-CN.md)
+<img src="docs/readme/banner.png" alt="LibreYOLO, MIT licensed computer vision. pip install libreyolo" width="100%">
 
-> ⭐ **Support LibreYOLO.** The best way to help is to **star the repo**. Feel free to [open an issue](https://github.com/LibreYOLO/libreyolo/issues/new) if you encounter problems or have suggestions, and code contributions are very welcome (see [CONTRIBUTING.md](https://github.com/LibreYOLO/libreyolo/blob/release/CONTRIBUTING.md)). If you want to contribute economically, that is very welcome: see the [sponsorship program](https://github.com/LibreYOLO/libreyolo/blob/release/SPONSORS.md).
+<br>
 
-[![Documentation](https://img.shields.io/badge/docs-libreyolo.com-blue)](https://www.libreyolo.com/docs)
+LibreYOLO is an MIT licensed computer vision library to train, run, and export computer vision models.
+
 [![PyPI](https://img.shields.io/pypi/v/libreyolo)](https://pypi.org/project/libreyolo/)
 [![PyPI Downloads](https://static.pepy.tech/badge/libreyolo)](https://pepy.tech/projects/libreyolo)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Documentation](https://img.shields.io/badge/docs-libreyolo.com-blue)](https://www.libreyolo.com/docs)
 [![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-LibreYOLO-yellow)](https://huggingface.co/LibreYOLO)
-[![Benchmarks](https://img.shields.io/badge/benchmarks-visionanalysis.org-purple)](https://www.visionanalysis.org/)
-[![Greptile: The War on Bugs](https://www.greptile.com/badge.svg)](https://www.greptile.com/?utm_source=oss_badge&utm_medium=readme&utm_campaign=greptile_for_open_source)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-LibreYOLO-blue?logo=linkedin)](https://www.linkedin.com/company/libreyolo/)
-[![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/LibreYOLO/libreyolo/blob/release/LICENSE)
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LibreYOLO/libreyolo/blob/release/notebooks/quickstart.ipynb)
+[![Greptile: The War on Bugs](https://www.greptile.com/badge.svg)](https://www.greptile.com/?utm_source=oss_badge&utm_medium=readme&utm_campaign=greptile_for_open_source)
 
-**An MIT-licensed computer vision library.** Detection, segmentation, pose,
-depth, OCR and a dozen more tasks behind one small API, with training and
-export included rather than sold separately. Reads common YOLO-format
-datasets, so existing workflows port over with minimal changes.
+[English](README.md) | [简体中文](README.zh-CN.md)
 
-![LibreYOLO Detection Example](https://raw.githubusercontent.com/LibreYOLO/libreyolo/release/libreyolo/assets/guggenheim-bilbao_result.jpg)
+</div>
+
+> ⭐ **Support LibreYOLO.** The best way to help is to **star the repo**. Feel free to [open an issue](https://github.com/LibreYOLO/libreyolo/issues/new) if you encounter problems or have suggestions, and code contributions are very welcome (see [CONTRIBUTING.md](CONTRIBUTING.md)). If you want to contribute economically, that is very welcome: see the [sponsorship program](SPONSORS.md).
+
+<p align="center"><img src="libreyolo/assets/guggenheim-bilbao_result.jpg" width="520" alt="LibreYOLO detection on the Guggenheim Bilbao image"></p>
 
 ## Install
 
 ```bash
 pip install libreyolo
 ```
-
-```python
-from libreyolo import LibreYOLO, SAMPLE_IMAGE
-
-model = LibreYOLO("LibreYOLO9t.pt")
-result = model(SAMPLE_IMAGE, save=True)
-```
-
-Models on the Hugging Face Hub load by repo id, on a plain install since 1.7.3:
-`LibreYOLO("LibreYOLO/LibreYOLO9t")`.
-
-<details>
-<summary><b>CPU-only install on Linux</b></summary>
-
-<br>
-
-On Linux x86_64, `pip install libreyolo` pulls the CUDA build of PyTorch, several GB
-of wheels. Without an NVIDIA GPU, install the CPU build of PyTorch first:
-
-```bash
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-pip install libreyolo
-```
-
-</details>
 
 <details>
 <summary><b>Optional extras</b></summary>
@@ -71,12 +47,10 @@ Comma-separate to combine, for example `pip install "libreyolo[rfdetr,hub-kernel
 | Sources | `stream` |
 | Everything | `pip install "libreyolo[all]"` |
 
-`executorch`, `coreai` and `neptune` are deliberately left out of `all`: they
-pin torch or protobuf in ways that would drag the rest of the environment with
-them. On Python versions an export backend publishes no wheels for (for
-example `tflite` export and `executorch` on 3.14, `paddle` on 3.13+), the
-extra skips that backend and still installs the current LibreYOLO. Full list
-and per-backend notes in the
+`executorch`, `coreai`, `paddle` and `neptune` are deliberately left out of
+`all`: they pin torch, onnx or protobuf in ways that would drag the rest of the
+environment with them. `fast-eval` and `hub-kernels` are not in `all` either.
+Full list and per-backend notes in the
 [install guide](https://www.libreyolo.com/docs/install).
 
 </details>
@@ -97,63 +71,25 @@ package. For unreleased work, `git checkout dev`.
 
 </details>
 
-## One API, twenty-two tasks
+<details>
+<summary><b>If huggingface.co is blocked (mainland China)</b></summary>
 
-The same three lines run every task. Only the checkpoint changes.
+<br>
 
-```python
-from libreyolo import LibreYOLO
-
-LibreYOLO("LibreYOLO9t.pt")("street.jpg", save=True)             # detection
-LibreYOLO("LibreDeepLabv3mv3-sem.pt")("street.jpg", save=True)   # semantic segmentation
-LibreYOLO("LibreHRNetw32-pose.pt")("street.jpg", save=True)      # pose
-LibreYOLO("LibreMiDaSs-depth.pt")("street.jpg", save=True)       # depth
-LibreYOLO("LibreFeyNobgl-matte.pt")("portrait.jpg", save=True)   # background removal
-LibreYOLO("LibreRTDETRv2n-obb.pt")("aerial.jpg", save=True)      # oriented boxes
-```
-
-Sources are not just files. Point it at a webcam, an RTSP stream, a video, a
-directory, a YouTube URL or your screen:
+Weights download from Hugging Face. LibreYOLO honours the standard
+`HF_ENDPOINT` variable, so you can point it at a mirror such as
+[hf-mirror.com](https://hf-mirror.com), a community mirror not run by
+Hugging Face or LibreYOLO:
 
 ```bash
-libreyolo predict --model yolo9-t --source 0 --show          # webcam
-libreyolo predict --model yolo9-t --source rtsp://camera/1   # network camera
-libreyolo predict --model yolo9-t --source screen            # screen capture
+export HF_ENDPOINT=https://hf-mirror.com
 ```
 
-## What ships
+Or download the file manually, for example
+`https://hf-mirror.com/LibreYOLO/LibreYOLO9t/resolve/main/LibreYOLO9t.pt`,
+and pass its local path: `LibreYOLO("path/to/LibreYOLO9t.pt")`.
 
-| Task | Models |
-| --- | --- |
-| **Detection** | YOLOv9, RF-DETR, YOLOX, YOLO-NAS, D-FINE, DEIM, RT-DETR v1/v2/v4, RTMDet, PicoDet, PP-YOLOE, YOLOv7, EfficientDet, and the classics: DETR, Deformable DETR, DINO-DETR, LW-DETR, Faster R-CNN, RetinaNet, SSD, FCOS, CenterNet |
-| **Tiny objects** | TinyFormer, Dome-DETR (aerial, drone, remote sensing) |
-| **Instance segmentation** | RF-DETR, RTMDet, D-FINE, Mask R-CNN |
-| **Promptable segmentation** | SAM, SAM 2, SAM 3, MobileSAM, EdgeTAM, PicoSAM3 |
-| **Semantic segmentation** | SegFormer, PIDNet, PP-LiteSeg, U-Net, DeepLabv3, FCN, LingBot-Vision, DINOv2, EoMT |
-| **Panoptic segmentation** | EoMT |
-| **Pose** | RF-DETR, YOLO-NAS, HRNet, DEKR, EC |
-| **Oriented boxes** | RF-DETR, RT-DETRv2, YOLO-NAS-R |
-| **3D detection** | WildDet3D, 3D-MOOD, FCOS3D, DetAny3D (separate runtime) |
-| **Classification** | MobileNetV4, ConvNeXt, EfficientNetV2, ResNet, ViT, Swin, DeiT, VGG, AlexNet, CLIP, SigLIP2, DINOv2 |
-| **Depth** | Depth Anything 3, Depth Anything V2, ZipDepth, MiDaS |
-| **Surface normals** | MoGe-2 |
-| **Depth, normals and albedo** | Marigold V2 |
-| **Edges** | DexiNed, TEED |
-| **Embeddings** | LibreFaceEmbedder, CLIP, SigLIP2, Perception Encoder (image, text, whole-video; also zero-shot classify), DINOv2 |
-| **Video embeddings** | V-JEPA 2 (clip embedding and trainable classification probe), LeVJEPA (clip and patch embeddings; CC BY-NC 4.0 weights) |
-| **Body mesh** | SAM 3D Body |
-| **Restoration** | DDColor, HVI-CIDNet, LaMa, NAFNet, QuickSRNet, Real-ESRGAN, SwinIR |
-| **Background removal** | BiRefNet, FeyNobg, BEN2, ViTMatte |
-| **OCR** | PP-OCR |
-| **Point detection** | FOMO, LocateAnything |
-| **Gaze** | L2CS |
-| **Open vocabulary and VLMs** | Grounding DINO, OWLv2, OmDet-Turbo, OV-DEIM, Florence-2, Kosmos-2, Qwen3-VL, InternVL3, LFM2-VL, North Micro Vision, SmolVLM2, Gemma 4, Moondream, Molmo2, WeVisOne-VL, MODUS |
-| **Robot actions (VLA)** | SmolVLA, ACT, Diffusion Policy |
-| **Image generation** | FLUX.2 klein, SANA-Sprint |
-| **3D generation** | Speridlabs Idol |
-
-Per-family sizes, checkpoints and parity evidence live in the
-[model reference](https://www.libreyolo.com/docs/models).
+</details>
 
 ## Train
 
@@ -168,12 +104,34 @@ model.train(data="dataset.yaml", epochs=100, imgsz=640)
 libreyolo train --model yolo9-t --data dataset.yaml --epochs 100
 ```
 
-Multi-GPU, LoRA, layer freezing, distillation, from-scratch training, and
-TensorBoard, MLflow, Weights & Biases, Comet, ClearML, Neptune and DVCLive
-logging are all supported. See the
-[training guide](https://www.libreyolo.com/docs/train).
+See the [training guide](https://www.libreyolo.com/docs/train) to read about
+multi-GPU, LoRA, layer freezing, distillation, from-scratch training,
+resume, mixed precision, early stopping and logging.
 
-## Export and deploy
+## Inference
+
+```python
+from libreyolo import LibreYOLO, SAMPLE_IMAGE
+
+model = LibreYOLO("LibreYOLO9t.pt")
+result = model(SAMPLE_IMAGE, save=True)
+```
+
+Load any model straight from Hugging Face by its repo name: `LibreYOLO("LibreYOLO/LibreRFDETRn")`.
+
+Sources are not just files. Point it at a webcam, an RTSP stream, a video, a
+directory, a YouTube URL or your screen:
+
+```bash
+libreyolo predict --model yolo9-t --source 0 --show          # webcam
+libreyolo predict --model yolo9-t --source rtsp://camera/1   # network camera
+libreyolo predict --model yolo9-t --source screen            # screen capture
+```
+
+See the [inference guide](https://www.libreyolo.com/docs/predict) to read about
+sources, results, thresholds and performance.
+
+## Export
 
 Twelve formats: ONNX, TorchScript, TensorRT, OpenVINO, CoreML, Core AI, TFLite
 (LiteRT), NCNN, MNN, RKNN, Paddle and ExecuTorch. Plus NVIDIA Triton serving
@@ -183,32 +141,173 @@ and DeepStream config generation.
 libreyolo export --model yolo9-t --format onnx
 ```
 
-Support varies by family and task, see the
+See the [export guide](https://www.libreyolo.com/docs/export) for each
+format. Support varies by family and task, see the
 [export matrix](https://www.libreyolo.com/docs/reference/export-matrix).
 
 ## Documentation
 
 - [Docs](https://www.libreyolo.com/docs) covers install, tasks, models, training, prediction, export and the CLI
-- [Benchmarks](https://www.visionanalysis.org/) for independent numbers
-- [CHANGELOG.md](https://github.com/LibreYOLO/libreyolo/blob/release/CHANGELOG.md) for what changed
+- [Benchmarks](https://www.visionanalysis.org/) on Vision Analysis
+- [CHANGELOG.md](CHANGELOG.md) for what changed
+
+## Complete list of models
+
+LibreYOLO is organized by task, such as detection, segmentation or
+classification. Each task has several models, and each model comes in several
+variants. For example, `LibreYOLO9t` is task detection, model YOLO9 and
+variant `t`, which means tiny.
+
+```mermaid
+%%{init: {"flowchart": {"htmlLabels": true, "wrappingWidth": 270, "nodeSpacing": 14, "rankSpacing": 10, "padding": 10, "diagramPadding": 6, "curve": "basis"}}}%%
+flowchart TB
+  ROOT(["<big><big><b>LibreYOLO</b></big></big><br/><small>151 model families, 23 tasks</small>"])
+  subgraph C0[" "]
+    direction TB
+    H0(["<b>SEE</b> (76)"])
+    T0_0_0["<big><b>YOLO-style detectors</b></big> <small>(12)</small><br/><b>YOLOv9</b>, <b>YOLOX</b>, <b>YOLO-#8288;NAS</b>, YOLOv7, YOLOv4, YOLOv3, YOLOv2, YOLOv1, RTMDet, PicoDet, PP-#8288;YOLOE, EfficientDet"]:::c0
+    T0_0_1["<big><b>DETR-style detectors</b></big> <small>(13)</small><br/><b>RF-#8288;DETR</b>, <b>D-#8288;FINE</b>, <b>DEIM</b>, DEIMv2, RT-#8288;DETR, RT-#8288;DETRv2, RT-#8288;DETRv4, LW-#8288;DETR, DETR, Deformable#nbsp;DETR, DINO-#8288;DETR, EdgeCrafter, GTR"]:::c0
+    T0_0_2["<big><b>Classic CNN detectors</b></big> <small>(6)</small><br/><b>Faster#nbsp;R-#8288;CNN</b>, Mask#nbsp;R-#8288;CNN, RetinaNet, SSD, FCOS, CenterNet"]:::c0
+    T0_0_3["<big><b>Open-vocabulary detectors</b></big> <small>(6)</small><br/><b>Grounding#nbsp;DINO</b>, <b>OWLv2</b>, OMDet-#8288;Turbo, OV-#8288;DEIM, LocateAnything, LibreMODUS"]:::c0
+    T0_0_4["<big><b>VLM detectors</b></big> <small>(12)</small><br/><b>Qwen3-#8288;VL</b>, <b>Florence-#8288;2</b>, Gemma#nbsp;4, Moondream, InternVL3, Kosmos-#8288;2, LFM2-#8288;VL, North#nbsp;Micro#nbsp;Vision, SmolVLM2, WeVisOne-#8288;VL, SenseNova-#8288;Vision, Falcon#nbsp;Perception"]:::c0
+    T0_0_5["<big><b>Specialised detectors</b></big> <small>(3)</small><br/><b>TinyFormer</b>, Dome-#8288;DETR, PP-#8288;DocLayoutV3"]:::c0
+    H0 ~~~ T0_0_0 ~~~ T0_0_1 ~~~ T0_0_2 ~~~ T0_0_3 ~~~ T0_0_4 ~~~ T0_0_5
+    T0_1_0["<big><b>Instance segmentation</b></big> <small>(17)</small><br/><b>RF-#8288;DETR</b>, <b>SAM#nbsp;3</b>, <b>SAM#nbsp;2</b>, <b>EoMT</b>, D-#8288;FINE, EdgeCrafter, EdgeTAM, Falcon#nbsp;Perception, GTR, Mask#nbsp;R-#8288;CNN, MobileSAM, PicoSAM3, RTMDet, SAM, SAM#nbsp;3.1, SenseNova-#8288;Vision, WeVisOne-#8288;VL"]:::c0
+    T0_1_1["<big><b>Semantic segmentation</b></big> <small>(10)</small><br/><b>SegFormer</b>, <b>EoMT</b>, <b>DeepLabv3</b>, DINOv2, FCN, GTR, LingBot-#8288;Vision, PIDNet, PP-#8288;LiteSeg, U-#8288;Net"]:::c0
+    T0_1_2["<big><b>Panoptic segmentation</b></big> <small>(2)</small><br/>EoMT, SenseNova-#8288;Vision"]:::c0
+    T0_1_3["<big><b>Oriented boxes</b></big> <small>(5)</small><br/><b>RF-#8288;DETR</b>, <b>RiO-#8288;DETRv2</b>, GTR, RT-#8288;DETRv2, YOLO-#8288;NAS"]:::c0
+    T0_1_4["<big><b>Pose</b></big> <small>(7)</small><br/><b>RF-#8288;DETR</b>, <b>HRNet</b>, <b>YOLO-#8288;NAS</b>, DEKR, EdgeCrafter, GTR, SenseNova-#8288;Vision"]:::c0
+    T0_1_5["<big><b>Pointing</b></big> <small>(9)</small><br/><b>Molmo2</b>, <b>Qwen3-#8288;VL#nbsp;grounding</b>, <b>Moondream</b>, Florence-#8288;2#nbsp;grounding, FOMO, LocateAnything, SenseNova-#8288;Vision, ShowUI, WeVisOne-#8288;VL"]:::c0
+    H0 ~~~ T0_1_0 ~~~ T0_1_1 ~~~ T0_1_2 ~~~ T0_1_3 ~~~ T0_1_4 ~~~ T0_1_5
+  end
+  subgraph C1[" "]
+    direction TB
+    H1(["<b>UNDERSTAND</b> (26)"])
+    T1_0_0["<big><b>Classification</b></big> <small>(15)</small><br/><b>DINOv2</b>, <b>ConvNeXt#nbsp;V2</b>, <b>SigLIP2</b>, <b>ViT</b>, AlexNet, CLIP, ConvNeXt, DeiT, EfficientNetV2, MobileNetV4, Perception#nbsp;Encoder, ResNet, Swin#nbsp;Transformer, V-#8288;JEPA#nbsp;2, VGG"]:::c1
+    T1_0_1["<big><b>Embeddings</b></big> <small>(8)</small><br/><b>DINOv2</b>, <b>SigLIP2</b>, <b>CLIP</b>, LeVJEPA, LibreFaceEmbedder, Perception#nbsp;Encoder, Qwen3-#8288;VL-#8288;Embedding, V-#8288;JEPA#nbsp;2"]:::c1
+    T1_0_2["<big><b>OCR</b></big> <small>(7)</small><br/><b>PP-#8288;OCRv5</b>, <b>GLM-#8288;OCR</b>, <b>DeepSeek-#8288;OCR</b>, Falcon#nbsp;OCR, PaddleOCR-#8288;VL, SenseNova-#8288;Vision, WeVisOne-#8288;VL"]:::c1
+    T1_0_3["<big><b>Gaze</b></big> <small>(1)</small><br/>L2CS-#8288;Net"]:::c1
+    H1 ~~~ T1_0_0 ~~~ T1_0_1 ~~~ T1_0_2 ~~~ T1_0_3
+  end
+  subgraph C2[" "]
+    direction TB
+    H2(["<b>GEOMETRY</b> (28)"])
+    T2_0_0["<big><b>Depth</b></big> <small>(11)</small><br/><b>Depth#nbsp;Anything#nbsp;3</b>, <b>MoGe-#8288;3</b>, <b>Video#nbsp;Depth#nbsp;Anything</b>, Depth#nbsp;Anything#nbsp;V2, GTR, LibreMODUS, Marigold#nbsp;V2, MiDaS, SenseNova-#8288;Vision, Speridlabs#nbsp;Iris-#8288;Z, ZipDepth"]:::c2
+    T2_0_1["<big><b>Surface normals</b></big> <small>(4)</small><br/>LibreMODUS, Marigold#nbsp;V2, MoGe-#8288;2, MoGe-#8288;3"]:::c2
+    T2_0_2["<big><b>Albedo</b></big> <small>(1)</small><br/>Marigold#nbsp;V2"]:::c2
+    T2_0_3["<big><b>Edges</b></big> <small>(3)</small><br/>DexiNed, LibreMODUS, TEED"]:::c2
+    H2 ~~~ T2_0_0 ~~~ T2_0_1 ~~~ T2_0_2 ~~~ T2_0_3
+    T2_1_0["<big><b>Optical flow</b></big> <small>(8)</small><br/><b>SEA-#8288;RAFT</b>, <b>WAFT</b>, <b>RAFT</b>, DPFlow, FlowSeek, MEMFOF, NeuFlow#nbsp;v2, UniMatch"]:::c2
+    T2_1_1["<big><b>3D detection</b></big> <small>(4)</small><br/>3D-#8288;MOOD, DetAny3D, FCOS3D, WildDet3D"]:::c2
+    T2_1_2["<big><b>Body mesh</b></big> <small>(2)</small><br/>InstantHMR, SAM#nbsp;3D#nbsp;Body"]:::c2
+    H2 ~~~ T2_1_0 ~~~ T2_1_1 ~~~ T2_1_2
+  end
+  subgraph C3[" "]
+    direction TB
+    H3(["<b>RESTORE AND CREATE</b> (26)"])
+    T3_0_0["<big><b>Restoration</b></big> <small>(7)</small><br/><b>Real-#8288;ESRGAN</b>, <b>SwinIR</b>, <b>LaMa</b>, DDColor, HVI-#8288;CIDNet, NAFNet, QuickSRNet"]:::c3
+    T3_0_1["<big><b>Background removal</b></big> <small>(5)</small><br/><b>BiRefNet</b>, <b>BEN2</b>, <b>ViTMatte</b>, FeyNobg, WeVisOne-#8288;VL"]:::c3
+    T3_0_2["<big><b>Image generation</b></big> <small>(6)</small><br/><b>FLUX.2#nbsp;klein</b>, <b>Speridlabs#nbsp;Iris-#8288;Z</b>, <b>SANA-#8288;Sprint</b>, Open#nbsp;Vision#nbsp;Banana, PRX, PRXPixel"]:::c3
+    T3_0_3["<big><b>3D generation</b></big> <small>(8)</small><br/><b>TRELLIS.2</b>, <b>Speridlabs#nbsp;Idol</b>, <b>TripoSR</b>, CRM, Direct3D-#8288;S2, LGM, TRELLIS, TripoSplat"]:::c3
+    H3 ~~~ T3_0_0 ~~~ T3_0_1 ~~~ T3_0_2 ~~~ T3_0_3
+  end
+  subgraph C4[" "]
+    direction TB
+    H4(["<b>ROBOTICS</b> (3)"])
+    T4_0_0["<big><b>Robot policies</b></big> <small>(3)</small><br/>ACT, Diffusion#nbsp;Policy, SmolVLA"]:::c4
+    H4 ~~~ T4_0_0
+  end
+  ROOT --> H0
+  ROOT --> H1
+  ROOT --> H2
+  ROOT --> H3
+  ROOT --> H4
+  style ROOT fill:#1f2328,stroke:#8b949e,stroke-width:1px,color:#ffffff,font-size:20px
+  classDef c0 fill:#fff8c5,stroke:#bf8700,stroke-width:1px,color:#1f2328,font-size:15px,text-align:left,rx:10,ry:10
+  style C0 fill:transparent,stroke:#bf8700,stroke-width:2px,rx:14,ry:14
+  style H0 fill:#bf8700,stroke:#bf8700,color:#ffffff,font-size:17px
+  classDef c1 fill:#dafbe1,stroke:#1a7f37,stroke-width:1px,color:#1f2328,font-size:15px,text-align:left,rx:10,ry:10
+  style C1 fill:transparent,stroke:#1a7f37,stroke-width:2px,rx:14,ry:14
+  style H1 fill:#1a7f37,stroke:#1a7f37,color:#ffffff,font-size:17px
+  classDef c2 fill:#fbefff,stroke:#8250df,stroke-width:1px,color:#1f2328,font-size:15px,text-align:left,rx:10,ry:10
+  style C2 fill:transparent,stroke:#8250df,stroke-width:2px,rx:14,ry:14
+  style H2 fill:#8250df,stroke:#8250df,color:#ffffff,font-size:17px
+  classDef c3 fill:#ffeff7,stroke:#bf3989,stroke-width:1px,color:#1f2328,font-size:15px,text-align:left,rx:10,ry:10
+  style C3 fill:transparent,stroke:#bf3989,stroke-width:2px,rx:14,ry:14
+  style H3 fill:#bf3989,stroke:#bf3989,color:#ffffff,font-size:17px
+  classDef c4 fill:#ddf4ff,stroke:#0969da,stroke-width:1px,color:#1f2328,font-size:15px,text-align:left,rx:10,ry:10
+  style C4 fill:transparent,stroke:#0969da,stroke-width:2px,rx:14,ry:14
+  style H4 fill:#0969da,stroke:#0969da,color:#ffffff,font-size:17px
+```
+
+<details open>
+<summary><b>All tasks and models</b></summary>
+
+<br>
+
+| Task | Models |
+| --- | --- |
+| **Detection** | [YOLOv9](https://www.libreyolo.com/docs/models/yolov9), [RF-DETR](https://www.libreyolo.com/docs/models/rf-detr), [YOLOX](https://www.libreyolo.com/docs/models/yolox), [YOLO-NAS](https://www.libreyolo.com/docs/models/yolo-nas), [D-FINE](https://www.libreyolo.com/docs/models/d-fine), [DEIM](https://www.libreyolo.com/docs/models/deim), [RT-DETR v1/v2/v4](https://www.libreyolo.com/docs/models/rt-detr), [RTMDet](https://www.libreyolo.com/docs/models/rtmdet), [PicoDet](https://www.libreyolo.com/docs/models/picodet), [PP-YOLOE](https://www.libreyolo.com/docs/models/ppyoloe), [YOLOv7](https://www.libreyolo.com/docs/models/yolov7), [EfficientDet](https://www.libreyolo.com/docs/models/efficientdet), and the classics: [DETR](https://www.libreyolo.com/docs/models/detr), [Deformable DETR](https://www.libreyolo.com/docs/models/deformable-detr), [DINO-DETR](https://www.libreyolo.com/docs/models/dino-detr), [LW-DETR](https://www.libreyolo.com/docs/models/lw-detr), [Faster R-CNN](https://www.libreyolo.com/docs/models/faster-rcnn), [RetinaNet](https://www.libreyolo.com/docs/models/retinanet), [SSD](https://www.libreyolo.com/docs/models/ssd), [FCOS](https://www.libreyolo.com/docs/models/fcos), [CenterNet](https://www.libreyolo.com/docs/models/centernet) |
+| **Tiny objects** | [TinyFormer](https://www.libreyolo.com/docs/models/tinyformer), [Dome-DETR](https://www.libreyolo.com/docs/models/dome-detr) (aerial, drone, remote sensing) |
+| **Instance segmentation** | [RF-DETR](https://www.libreyolo.com/docs/models/rf-detr), [RTMDet](https://www.libreyolo.com/docs/models/rtmdet), [D-FINE](https://www.libreyolo.com/docs/models/d-fine), [Mask R-CNN](https://www.libreyolo.com/docs/models/mask-rcnn) |
+| **Promptable segmentation** | [SAM](https://www.libreyolo.com/docs/models/sam), [SAM 2](https://www.libreyolo.com/docs/models/sam-2), [SAM 3](https://www.libreyolo.com/docs/models/sam-3), [MobileSAM](https://www.libreyolo.com/docs/models/mobilesam), [EdgeTAM](https://www.libreyolo.com/docs/models/edgetam), [PicoSAM3](https://www.libreyolo.com/docs/models/picosam3) |
+| **Semantic segmentation** | [SegFormer](https://www.libreyolo.com/docs/models/segformer), [PIDNet](https://www.libreyolo.com/docs/models/pidnet), [PP-LiteSeg](https://www.libreyolo.com/docs/models/ppliteseg), [U-Net](https://www.libreyolo.com/docs/models/unet), [DeepLabv3](https://www.libreyolo.com/docs/models/deeplabv3), [FCN](https://www.libreyolo.com/docs/models/fcn), [LingBot-Vision](https://www.libreyolo.com/docs/models/lingbot-vision), [DINOv2](https://www.libreyolo.com/docs/models/dinov2), [EoMT](https://www.libreyolo.com/docs/models/eomt) |
+| **Panoptic segmentation** | [EoMT](https://www.libreyolo.com/docs/models/eomt) |
+| **Pose** | [RF-DETR](https://www.libreyolo.com/docs/models/rf-detr), [YOLO-NAS](https://www.libreyolo.com/docs/models/yolo-nas), [HRNet](https://www.libreyolo.com/docs/models/hrnet), [DEKR](https://www.libreyolo.com/docs/models/dekr), [EC](https://www.libreyolo.com/docs/models/edgecrafter) |
+| **Oriented boxes** | [RF-DETR](https://www.libreyolo.com/docs/models/rf-detr), [RT-DETRv2](https://www.libreyolo.com/docs/models/rt-detr), RiO-DETRv2, [YOLO-NAS-R](https://www.libreyolo.com/docs/models/yolo-nas) |
+| **3D detection** | [WildDet3D](https://www.libreyolo.com/docs/models/wilddet3d), [3D-MOOD](https://www.libreyolo.com/docs/models/3d-mood), [FCOS3D](https://www.libreyolo.com/docs/models/fcos3d), [DetAny3D](https://www.libreyolo.com/docs/models/detany3d) (separate runtime) |
+| **Classification** | [MobileNetV4](https://www.libreyolo.com/docs/models/mobilenetv4), [ConvNeXt](https://www.libreyolo.com/docs/models/convnext), [EfficientNetV2](https://www.libreyolo.com/docs/models/efficientnetv2), [ResNet](https://www.libreyolo.com/docs/models/resnet), [ViT](https://www.libreyolo.com/docs/models/vit), [Swin](https://www.libreyolo.com/docs/models/swin), [DeiT](https://www.libreyolo.com/docs/models/deit), [VGG](https://www.libreyolo.com/docs/models/vgg), [AlexNet](https://www.libreyolo.com/docs/models/alexnet), [CLIP](https://www.libreyolo.com/docs/models/clip), [SigLIP2](https://www.libreyolo.com/docs/models/siglip2), [DINOv2](https://www.libreyolo.com/docs/models/dinov2) |
+| **Depth** | [Depth Anything 3](https://www.libreyolo.com/docs/models/depth-anything-3), [Depth Anything V2](https://www.libreyolo.com/docs/models/depth-anything-v2), Video Depth Anything, [ZipDepth](https://www.libreyolo.com/docs/models/zipdepth), [MiDaS](https://www.libreyolo.com/docs/models/midas), MoGe-3, Speridlabs Iris-Z |
+| **Surface normals** | MoGe-3, [MoGe-2](https://www.libreyolo.com/docs/models/moge-2) |
+| **Depth, normals and albedo** | [Marigold V2](https://www.libreyolo.com/docs/models/marigold-v2) |
+| **Edges** | [DexiNed](https://www.libreyolo.com/docs/models/dexined), [TEED](https://www.libreyolo.com/docs/models/teed) |
+| **Optical flow** | SEA-RAFT, NeuFlow v2, RAFT, WAFT, FlowSeek, DPFlow, UniMatch, MEMFOF |
+| **Embeddings** | [LibreFaceEmbedder](https://www.libreyolo.com/docs/models/librefacerec), [CLIP](https://www.libreyolo.com/docs/models/clip), [SigLIP2](https://www.libreyolo.com/docs/models/siglip2), [Perception Encoder](https://www.libreyolo.com/docs/models/pe) (image, text, whole-video; also zero-shot classify), [DINOv2](https://www.libreyolo.com/docs/models/dinov2) |
+| **Video embeddings** | [V-JEPA 2](https://www.libreyolo.com/docs/models/vjepa2) (clip embedding and trainable classification probe), [LeVJEPA](https://www.libreyolo.com/docs/models/levjepa) (clip and patch embeddings; CC BY-NC 4.0 weights) |
+| **Body mesh** | [SAM 3D Body](https://www.libreyolo.com/docs/models/sam-3d-body), InstantHMR |
+| **Restoration** | [DDColor](https://www.libreyolo.com/docs/models/ddcolor), [HVI-CIDNet](https://www.libreyolo.com/docs/models/hvi-cidnet), [LaMa](https://www.libreyolo.com/docs/models/lama), [NAFNet](https://www.libreyolo.com/docs/models/nafnet), [QuickSRNet](https://www.libreyolo.com/docs/models/quicksrnet), [Real-ESRGAN](https://www.libreyolo.com/docs/models/real-esrgan), [SwinIR](https://www.libreyolo.com/docs/models/swinir) |
+| **Background removal** | [BiRefNet](https://www.libreyolo.com/docs/models/birefnet), [FeyNobg](https://www.libreyolo.com/docs/models/feynobg), [BEN2](https://www.libreyolo.com/docs/models/ben2), [ViTMatte](https://www.libreyolo.com/docs/models/vitmatte) |
+| **OCR** | [PP-OCR](https://www.libreyolo.com/docs/models/pp-ocrv5), DeepSeek-OCR, DeepSeek-OCR-2, PaddleOCR-VL, GLM-OCR, Falcon OCR |
+| **Document layout** | PP-DocLayoutV3 (regions plus reading order) |
+| **Point detection** | [FOMO](https://www.libreyolo.com/docs/models/fomo), [LocateAnything](https://www.libreyolo.com/docs/models/locate-anything) |
+| **Gaze** | [L2CS](https://www.libreyolo.com/docs/models/l2cs) |
+| **Open vocabulary and VLMs** | [Grounding DINO](https://www.libreyolo.com/docs/models/grounding-dino), [OWLv2](https://www.libreyolo.com/docs/models/owlv2), [OmDet-Turbo](https://www.libreyolo.com/docs/models/omdet-turbo), [OV-DEIM](https://www.libreyolo.com/docs/models/ov-deim), [Florence-2](https://www.libreyolo.com/docs/models/florence-2), [Kosmos-2](https://www.libreyolo.com/docs/models/kosmos-2), [Qwen3-VL](https://www.libreyolo.com/docs/models/qwen3-vl), [InternVL3](https://www.libreyolo.com/docs/models/internvl3), [LFM2-VL](https://www.libreyolo.com/docs/models/lfm2-vl), [North Micro Vision](https://www.libreyolo.com/docs/models/northmicrovision), [SmolVLM2](https://www.libreyolo.com/docs/models/smolvlm2), [Gemma 4](https://www.libreyolo.com/docs/models/gemma-4), [Moondream](https://www.libreyolo.com/docs/models/moondream), [Molmo2](https://www.libreyolo.com/docs/models/molmo2), [WeVisOne-VL](https://www.libreyolo.com/docs/models/wevisone-vl), [MODUS](https://www.libreyolo.com/docs/models/libremodus) |
+| **Robot actions (VLA)** | [SmolVLA](https://www.libreyolo.com/docs/models/librevla), [ACT](https://www.libreyolo.com/docs/models/librevla), [Diffusion Policy](https://www.libreyolo.com/docs/models/librevla) |
+| **Image generation** | [FLUX.2 klein](https://www.libreyolo.com/docs/models/flux2-klein), [SANA-Sprint](https://www.libreyolo.com/docs/models/sana-sprint), PRX, PRXPixel, Speridlabs Iris-Z, Open Vision Banana |
+| **3D generation** | [Speridlabs Idol](https://www.libreyolo.com/docs/models/speridlabs-idol), TripoSplat, TRELLIS, TRELLIS.2, LGM, TripoSR, CRM, Direct3D-S2 |
+
+</details>
+
+Per-family sizes, checkpoints and parity evidence live in the
+[model reference](https://www.libreyolo.com/docs/models).
+
+## Follow us
+
+- [LinkedIn](https://www.linkedin.com/company/libreyolo/)
+- [Reddit](https://www.reddit.com/r/LibreYOLO/)
+
+## Contributors
+
+<a href="https://github.com/LibreYOLO/libreyolo/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=LibreYOLO/libreyolo" alt="LibreYOLO contributors">
+</a>
 
 ## Sponsors
 
-The code is written in free time. Training new models, such as LibreYOLO26
-and MIT retrains of families with restrictive weights, costs rented GPU time,
-and the [LibreYOLO Sponsorship Program](https://github.com/LibreYOLO/libreyolo/blob/release/SPONSORS.md) pays for it. Companies
-get their logo here from $100 a month, and from $500 a month are named in
-every release and in the model card of every weight released while they
-sponsor. Hardware manufacturers can sponsor by sending a device.
+LibreYOLO is built in free time. To take it to the next level, we want to
+train new models, such as LibreYOLO26 and MIT retrains of families with
+restrictive weights. That costs rented GPU time, and to pay for it we created
+the LibreYOLO Sponsorship Program. You can read all the details in
+[this article](https://www.libreyolo.com/sponsors).
 
 [![Sponsor](https://img.shields.io/badge/sponsor-Open%20Collective-7fadf2?logo=opencollective)](https://opencollective.com/libreyolo)
 
-No sponsors yet.
+**Supporters.** Thank you to everyone who has donated:
+
+<a href="https://github.com/picjul" title="Mattia Di Giusto"><img src="docs/readme/supporters/picjul.png" width="48" height="48" alt="Mattia Di Giusto"></a> <a href="https://github.com/Magellol" title="Thomas Lefebvre (ma.ge)"><img src="docs/readme/supporters/Magellol.png" width="48" height="48" alt="Thomas Lefebvre"></a>
 
 ## License
 
 - **Code:** MIT License.
-- **Weights:** pre-trained weights may inherit licensing from their original
-  source, and not all of them are permissive. Check the license on the
-  specific Hugging Face repo before you use one commercially. Every LibreYOLO
-  Hugging Face model states its license.
+- **Weights:** Check the license of the specific Hugging Face repo before you use one commercially. Every LibreYOLO Hugging Face model states its license.
+

@@ -24,16 +24,16 @@ scripts/build_site.sh                           # builds build/site/
 uvx zensical==0.1.1 serve -f build/mkdocs.yml   # live preview
 ```
 
-Zensical reads `mkdocs.yml` but cannot run third-party MkDocs plugins yet. So the script first exports the marimo playgrounds, then runs `scripts/stage_site.py`, which converts notebooks and citations into plain Markdown under `build/` (git-ignored). `zensical serve` watches `build/docs/`, so after editing a page under `dl/`, rerun `uv run --python 3.12 scripts/stage_site.py`.
+Zensical reads `mkdocs.yml` but cannot run third-party MkDocs plugins yet. So the script first exports the marimo playgrounds, then runs `scripts/stage_site.py`, which converts notebooks and citations into plain Markdown under `build/` (git-ignored). `zensical serve` watches `build/docs/`, so after editing a page under `dl/`, rerun `uv run --python 3.14 scripts/stage_site.py`.
 
-Notebook outputs are taken from your local, git-ignored `.ipynb` files when they exist. CI has none, so the published notebook pages show code only. Run `python3 scripts/fix_links.py` to check that every Markdown link resolves relative to its source file.
+Notebook outputs come from your local, git-ignored `.ipynb` files when they exist, otherwise from the outputs saved in `notebook-outputs/` (see below). Neither the build nor CI executes notebooks. Run `python3 scripts/fix_links.py` to check that every Markdown link resolves relative to its source file.
 
 ### Python Environment
 
-The project uses Python 3.12 (see `.python-version`) and Poetry 2 for the notebooks. Install the requirements using
+The project uses Python 3.14 (see `.python-version`) and Poetry 2 for the notebooks. If you have no Python 3.14 yet, `uv python install 3.14` or `pyenv install 3.14` provides one. Install the requirements using
 
 ```
-poetry env use 3.12
+poetry env use 3.14
 poetry install
 ```
 
@@ -43,6 +43,31 @@ The site build does not need this environment; it only uses uv.
 
 We use jupytext to sync the `.py` files to `.ipynb` files. `.ipynb` files are ignore in git.
 Please pair the `.py` file with the `.ipynb` using jupytext in jupyterlab first.
+
+To publish a notebook's outputs, run it locally, then save the outputs of your local runs and commit `notebook-outputs/`:
+
+```bash
+uv run --python 3.14 scripts/stage_site.py --save-outputs
+```
+
+This writes a cleaned, gzipped copy of each run notebook to `notebook-outputs/<name>.ipynb.gz`: progress-bar widgets and error tracebacks are dropped, long logs are trimmed and images wider than 1600 px are scaled down. The site build matches outputs to cells by their code, so a cell you changed after the run shows no output until you run and save again.
+
+### Pull Request Previews
+
+Every pull request from a branch of this repository is built and published as a preview:
+
+```text
+https://dl.leima.is/pr-preview/pr-<number>/
+```
+
+The "Publish Docs Test" workflow comments on the pull request with the link and updates the preview on every push. Each page of a preview carries a `noindex` tag and a badge in the bottom left corner with the pull request and the commit it was built from. After a push it can take a minute or two before the page updates.
+
+How it works:
+
+- Previews live in `pr-preview/pr-<number>/` on the `gh-pages` branch, next to the published site (`scripts/pr_preview.sh`). The site uses relative links, so it runs from a subfolder as built.
+- The deploy from `main` replaces the branch but carries the previews of open pull requests over (`scripts/deploy_site.sh`).
+- The "PR Preview Cleanup" workflow removes a preview when its pull request is merged or closed.
+- Pull requests from forks are built but not previewed, because their token cannot write to the repository.
 
 ### Interactive Widgets
 
@@ -63,6 +88,17 @@ Available widgets live in `dl/assets/widgets/`:
 | `backtest-windows` | Sliding vs expanding backtest folds, with a gap | `backtest-windows.js` |
 | `vega` | A Vega-Lite chart exported from Python with Altair (`data-spec="path/from/docs/root.vl.json"`) | `scripts/build_charts.py` |
 | `embed` | A click-to-load iframe, e.g. a marimo WebAssembly playground (`data-src`, `data-height`) | `playgrounds/*.py` |
+| `metrics-playground` | Five scenarios (error size, one big miss, bias, near zero, scale), each with a slider; MAE, MSE, RMSE, MAPE and sMAPE with their curves over the slider's range; forecast points can be dragged | `metrics-playground.js` |
+| `metrics-shift` | Shift truth and forecast by the same constant and see which metrics stay the same (MAE, MSE, RMSE) and which change with the level (MAPE, sMAPE, RMSLE) | `metrics-shift.js` |
+| `crps-explorer` | A normal forecast's CDF against the observed value, with the exact CRPS | `crps-explorer.js` |
+| `kl-explorer` | A Gaussian against a two-mode mixture: both densities, the pointwise contributions to the two directions of the KL divergence, and both values with their curves over the Gaussian's mean | `kl-explorer.js` |
+| `entropy-explorer` | Two distributions over six classes, and the cross entropy split into the entropy plus the KL divergence | `entropy-explorer.js` |
+| `gini-explorer` | The Gini impurity of a two-class dataset as its mix changes | `impurity-explorer.js` |
+| `split-gain` | A node split into two groups, with the entropies and the information gain | `impurity-explorer.js` |
+| `dtw-explorer` | Two series aligned by dynamic time warping: the aligned pairs, the accumulated cost matrix and its cheapest path | `dtw-explorer.js` |
+| `window-explorer` | Time delay embedding: slide input and target windows along a series and see the rows it produces. `data-gap` adds a gap slider and `data-labels="dataset"` shows the same thing as `DataFrameDataset` data points | `window-explorer.js` |
+| `positional-encoding` | The transformer's sinusoidal positional encodings as a heatmap, with the similarity between positions | `positional-encoding.js` |
+| `step-diagram` | A box-and-arrow diagram that builds up step by step, with a sentence per step (`data-diagram`: `rnn`, `attention`, `diffusion`, `vae`). Diagrams are data in the script: nodes, edges and steps | `step-diagram.js` |
 
 To add a widget:
 
@@ -70,6 +106,12 @@ To add a widget:
 2. Add the file to `extra_javascript` in `mkdocs.yml` after `assets/widgets/loader.js`.
 3. Respect `prefers-reduced-motion` (no autoplay) and check the widget in light mode, dark mode and at phone width.
 
-To regenerate Altair charts, run `uv run --python 3.12 scripts/build_charts.py`.
+To regenerate Altair charts, run `uv run --python 3.14 scripts/build_charts.py`.
 
 marimo playgrounds (`playgrounds/*.py`) are exported to WebAssembly by `scripts/build_playgrounds.sh` into the git-ignored `dl/assets/playgrounds/`. `scripts/build_site.sh` runs it, with marimo pinned there, so every build and deploy includes them. When the export is missing, the `embed` widget shows its Markdown fallback.
+
+### Reading with AI Assistants
+
+The build publishes [`llms.txt`](https://dl.leima.is/llms.txt), [`llms-full.txt`](https://dl.leima.is/llms-full.txt) and a Markdown copy of every page (`<page URL>index.md`), configured by the `llmstxt` plugin in `mkdocs.yml`. Each page also has a copy-as-Markdown icon (Zensical's `content.action.copy`) and an icon with a small menu to ask Claude, ChatGPT or Gemini about the page (`dl/assets/js/page-actions.js`); nothing is sent until the reader picks one.
+
+Conventions for AI coding agents (and people) are in [AGENTS.md](AGENTS.md), including the front matter fields. A design for an MCP server is in [design/mcp-server.md](design/mcp-server.md).

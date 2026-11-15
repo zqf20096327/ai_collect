@@ -1,6 +1,7 @@
 > **⚠️ STATUS: research-use-only software benchmark.** NOT clinically validated. NOT a medical device. NOT FDA-approved. NOT production-ready.
 > Headline: open-data cross-study AUC **0.967 ± 0.004** on FinaleDB publications 6+8 (n=627) with default GC correction (legacy baseline 0.9747 is inflated by ~0.008 of GC-axis proxy detection; both numbers reported in the table below). True-confound control collapses to ~0.50 — see [`docs/CROSS_STUDY_BENCHMARK.md`](docs/CROSS_STUDY_BENCHMARK.md).
 > Publication-by-publication readiness (FinaleDB API/S3 status) in [`docs/PUBLICATION_READINESS.md`](docs/PUBLICATION_READINESS.md).
+> External validation on held-out public publications (never trained on): **AUC 0.9915** [0.9712, 1.0] on FinaleDB publication 7 (WGS, n=31), 0.8819 pooled over the publications carrying both classes. The pooled 0.967 is a *within-cohort* number — leave-one-study-out gives 0.6805. See [`docs/EXTERNAL_VALIDATION.md`](docs/EXTERNAL_VALIDATION.md).
 > For **methods research only** — not a clinical assay, not for patient use.
 
 ---
@@ -16,6 +17,36 @@
 [![Ultra-Early Readiness](https://img.shields.io/badge/Ultra--Early-Status-yellow)](ULTRA_EARLY_READINESS.md)
 
 **DeepCatch** is an open-source computational framework for multi-cancer early detection (MCED) from cell-free DNA (cfDNA). It fuses complementary molecular modalities through a self-supervised Transformer foundation model, tracks patients longitudinally with Bayesian Kalman filtering, and predicts tissue-of-origin — all in a single two-stage CET (Capture → Enhance → Triage) pipeline.
+
+---
+
+## 🤝 Seeking wet-lab collaborators for external cohort validation
+
+**This project has the analysis pipeline; it does not have the clinical plasma.** Everything published here runs on public data (FinaleDB, TCGA, GEO) and therefore cannot say anything about performance on a real screening population. If you run cfDNA sequencing and have a cohort with cancer/control labels, **you are exactly the collaborator this project needs** — and the analysis side is already built, validated and open source.
+
+What is already in place, so a collaboration starts from a working baseline rather than from scratch:
+
+| Piece | State |
+|---|---|
+| 5-channel DELFI feature extractor (5 Mb / 100 kb ratios + coverage, FSD-196) | ready, self-contained (`src/fragmentomics/finale_features.py`) |
+| Cross-study benchmark with per-study harmonization and two confound controls | ready (`scripts/cross_study_finallydb.py`) |
+| Leave-one-study-out transfer measurement | ready (`scripts/cross_study_loso.py`) |
+| Public external-cohort fetcher (no IRB, no data-use agreement) | ready (`scripts/fetch_external_cohort.py`) |
+| Mutation-panel LLR with CADD / AlphaMissense weighting | ready (real TCGA-LUAD, AUC 0.921 @ 0.1% ctDNA) |
+| Regularized late fusion / Bayesian model averaging | ready (`src/foundation/regularized_fusion.py`) |
+
+**What a collaborator contributes**: the cohort (plasma + labels + stage), and the clinical interpretation. **What we contribute**: feature extraction, harmonization, the statistical protocol (DeLong CIs, sens@spec grids, PPV at screening prevalence, leave-one-cohort-out), and the code.
+
+Scope that would be useful, in order of what unblocks the most:
+
+1. **Unpaired plasma, cancer + non-cancer** (any tumour type) — enough to run the same external-validation protocol as the public cohort.
+2. **Serial draws** (the same patient over time) — this is what the longitudinal Stage-2 tracker cannot be evaluated on at all right now.
+3. **Stage I vs late-stage labels** — the stage breakdown is implemented and waiting for data.
+4. **Matched tumour tissue** — enables tumour-specific fragmentomics instead of tumour-agnostic ones.
+
+Everything is MIT-licensed and every number in the repository traces to a committed JSON artifact, so a collaborator can audit the analysis end to end before deciding anything. See [`TEAM.md`](TEAM.md) §2 for the contribution model and [`docs/PRODUCTION_ROADMAP.md`](docs/PRODUCTION_ROADMAP.md) for the validation plan.
+
+**How to reach us**: open a *External cohort validation (collaboration)* issue — the template asks for cohort metadata only, so no patient data ever has to leave your institution. Questions about the analysis itself are better in [Discussions](https://github.com/rollroyces/deepcatch/discussions).
 
 ---
 
@@ -57,14 +88,17 @@ Real `uvicorn api.main:app` server on `127.0.0.1:8000`. The recording shows Swag
 
 - **Multi-modal fragmentomics** — DELFI (5Mb / 100kb bin ratios), MFS, nucleosome positioning, FSD histograms, THEMIS 4-mer end-motif frequencies — fused into a per-sample ~70-feature vector.
 - **Cross-study cancer detection** — pooled 5-seed × 5-fold OOF on open-data cfDNA (FinaleDB pubs 6 + 8, n=627 samples across 8 cancer types + healthy); `scripts/cross_study_finallydb.py` with `--gc-correction` (default) and `--include-motifs` flags.
-- **Honest confound controls** — true-confound control (cancer=study A, healthy=study B) collapses to ~0.50 under per-study z-score harmonization; shuffled-label null at 0.512 — proves the pooled OOF AUC is cancer-vs-healthy, not study-of-origin or fold identity.
+- **External validation on never-trained public data** — train on FinaleDB pubs 6+8 (n=627), test on pubs 1/7/9 fetched from the public API + S3 (no IRB): **AUC 0.9915** [0.9712, 1.0] on pub 7 (WGS, n=31), 0.8819 pooled over the publications carrying both classes; the whole-exome publication does not transfer (breast 0.4119, prostate 0.3193) — an assay-platform shift, not a study shift.
+- **Honest confound controls** — true-confound control (cancer=study A, healthy=study B) collapses to ~0.50 under per-study z-score harmonization; the permuted-label null is 0.466 and its *measured* null on this paired design is 0.42 ± 0.12 (not 0.5), so the control is read against the measured null rather than against chance.
 - **Mutation-informed detection panel** — TCGA-derived panel of 5,738 LUAD mutations with CADD-PHRED-scored Top-K=20 selection; AUC 0.92 at 0.1% ctDNA on synthetic cfDNA dilution (spike-in, not clinical plasma).
 - **Tumor-naive + mutation fusion** — naive average of fragmentomics + mutation channels reaches AUC 0.989 on the 627 cohort (a what-if pairing — the mutation channel is calibrated to AUC 0.92, not paired).
-- **Foundation model + longitudinal Bayes Kalman** — architecture-only (synthetic data, not plasma-validated); CET pipeline (Capture → Enhance → Triage) designed for serial quarterly draws.
+- **Late fusion that works at this sample size** — the neural encoder scores 0.554 on the honest paired cohort against an LR baseline of 0.910; a regularized late fusion reaches **0.9825 ± 0.0094** and a Bayesian model average **0.9650 ± 0.0089** on the same folds (`src/foundation/regularized_fusion.py`).
+- **Longitudinal Bayes Kalman** — architecture-only (synthetic data, not plasma-validated); CET pipeline (Capture → Enhance → Triage) designed for serial quarterly draws.
+- **Methylation extraction on real public data — and a measured null** — FinaleMe runs end-to-end on FinaleDB fragment files (frag → BAM → per-CpG matrix → WGBS prior → HMM decode). Scored on 31 real samples (pub 7, 17 colorectal / 14 liver-transplant) the decoded β summary reaches LOO AUC 0.9444 — *exactly* the AUC of the covered-CpG count and of the observations-per-CpG count alone; at the loci both arms cover, the median cancer-minus-control difference is exactly 0.0 over 103,863 CpGs (permutation p = 1.0). The public libraries are size-selected at ~300 bp and deliver 1.09 observations per CpG, so the digestion signature FinaleMe reads is absent. The extraction path works; **the channel is not a validated feature** — see [`docs/METHYLATION_PIPELINE.md`](docs/METHYLATION_PIPELINE.md).
 
 ## Why it matters
 
-- **Only open-data cross-study MCED benchmark with two independent confound controls.** [`docs/CROSS_STUDY_BENCHMARK.md`](docs/CROSS_STUDY_BENCHMARK.md) shows the pooled 0.97 AUC survives per-study harmonization (true-confound AUC 0.50 vs no-harmonize AUC 0.999) — that's the strongest available evidence the signal is cancer, not batch.
+- **The open-data MCED benchmark with two independent confound controls *and* a real external cohort.** [`docs/CROSS_STUDY_BENCHMARK.md`](docs/CROSS_STUDY_BENCHMARK.md) shows the pooled 0.97 AUC survives per-study harmonization (true-confound AUC 0.50 vs no-harmonize AUC 0.999) — the signal is cancer, not batch. [`docs/EXTERNAL_VALIDATION.md`](docs/EXTERNAL_VALIDATION.md) then goes further: the model is trained on publications 6+8 and tested on publications it has never seen, reaching **0.9915** [0.9712, 1.0] on the held-out whole-genome publication — and, just as importantly, *failing* (0.41 / 0.32) on the held-out whole-exome one, which no internal cross-validation could have shown.
 - **GC-axis discovery in this commit (c782efc).** Legacy baseline 0.9747 was inflated ~0.008 by GC / mappability noise; adding `--gc-correction` (now default) yields the honest 0.9670 ± 0.003. [`docs/CROSS_STUDY_BENCHMARK_GC_CORRECTED.md`](docs/CROSS_STUDY_BENCHMARK_GC_CORRECTED.md) and `ablation.cast` walk through it.
 - **Reproducible from one shell script.** `paper/REPRODUCE.sh` regenerates every §3 number from a clean checkout; ablation artifacts are already committed as `results/cross_study_finallydb_*.json`.
 
@@ -80,6 +114,8 @@ Real `uvicorn api.main:app` server on `127.0.0.1:8000`. The recording shows Swag
 | **Shuffled-label null control** | **0.4657** | 0.0 | batch-and-fold-identity null floor (<0.55 = pass) — varies across seeds (0.46–0.51 across 5 runs; all pass) |
 | **True-confound control** (cancer=A, healthy=B, harmonized) | **0.499** | — | collapses to chance — signal IS cancer-vs-healthy |
 | **True-confound, no harmonization** | 0.999 | — | batch-effect ceiling (negative control) |
+| **External validation** (train 6+8 → test held-out pub 7, WGS) | **0.9915** [0.9712, 1.0] | 0.9712 | n=31, never trained on — [`docs/EXTERNAL_VALIDATION.md`](docs/EXTERNAL_VALIDATION.md) |
+| *External, whole-exome publication* (train 6+8 → test pub 9) | *0.4119 / 0.3193* | — | case-only cohort; assay shift (WES≠WGS) breaks the transfer |
 
 All numbers from [`results/cross_study_finallydb*.json`](results/) and reproducible from [`scripts/cross_study_finallydb.py`](scripts/cross_study_finallydb.py). See also: [`docs/CROSS_STUDY_BENCHMARK.md`](docs/CROSS_STUDY_BENCHMARK.md), [`docs/CROSS_STUDY_BENCHMARK_GC_CORRECTED.md`](docs/CROSS_STUDY_BENCHMARK_GC_CORRECTED.md), [`docs/CROSS_STUDY_BENCHMARK_with_motifs.md`](docs/CROSS_STUDY_BENCHMARK_with_motifs.md).
 
@@ -118,7 +154,7 @@ flowchart LR
     class LR,OOF clf
 ```
 
-**Two-stage CET** (Capture → Enhance → Triage) is the architectural proposal: Stage 1 fuses modalities through a Transformer; Stage 2 applies a Bayesian Kalman filter across serial draws; Triage compares the posterior to τ. The CET code in `src/longitudinal/` and `src/foundation/` is **architecture-only on synthetic data** — see [`docs/V3_DESIGN.md`](docs/V3_DESIGN.md) for the methylation β-value extension plan (Apple MPS GPU).
+**Two-stage CET** (Capture → Enhance → Triage) is the architectural proposal: Stage 1 fuses modalities through a Transformer; Stage 2 applies a Bayesian Kalman filter across serial draws; Triage compares the posterior to τ. The Stage-1 fusion layer now runs on real data (late fusion and Bayesian model averaging, §3.1.1 of the manuscript), and the methylation β values can be imputed from real public fragment files — but the CET Stage-2 tracker in `src/longitudinal/` is still **architecture-only on synthetic data** (see [`docs/V3_DESIGN.md`](docs/V3_DESIGN.md)), and no serial clinical draws are available to evaluate it on.
 
 ---
 
@@ -233,7 +269,7 @@ bash paper/REPRODUCE.sh    # re-runs every §3 artifact, regenerates all docs/*.
 
 ## Ultra-early readiness — what's ready today
 
-> **Bottom line:** the **fragmentomics cross-study pipeline is ready** to publish a Stage I vs late-stage honest number on the open-data cohort (n=627, pooled AUC 0.967 ± 0.004 with GC correction, shuffled-null floor 0.466, true-confound collapse to 0.499). The **panel-LLR ultra-low-VAF detector is ready** as an *in silico* benchmark at 0.1% ctDNA (AUC 0.921, sens@99% 0.49). The **multi-modal foundation fusion layer is not** — Audit-2 number is 0.554 ± 0.005 vs LR baseline 0.910.
+> **Bottom line:** the **fragmentomics cross-study pipeline is ready** to publish a Stage I vs late-stage honest number on the open-data cohort (n=627, pooled AUC 0.967 ± 0.004 with GC correction, permuted-label null 0.466, true-confound collapse to 0.499) — and it has now been validated externally on publications never used in training (AUC 0.9915 on the held-out WGS publication, [`docs/EXTERNAL_VALIDATION.md`](docs/EXTERNAL_VALIDATION.md)). The **panel-LLR ultra-low-VAF detector is ready** as an *in silico* benchmark at 0.1% ctDNA (AUC 0.921, sens@99% 0.49). The **neural foundation encoder is not** — 0.554 ± 0.005 vs LR baseline 0.910 — but the **fusion layer itself is**: a regularized late fusion reaches 0.9825 ± 0.0094 on the same folds, and the readiness check now reads that artifact rather than a hard-coded number.
 >
 > **Read the full readiness report:** [`ULTRA_EARLY_READINESS.md`](ULTRA_EARLY_READINESS.md) — every claim ties to a `results/*.json` artifact, no fabricated numbers.
 
@@ -274,7 +310,7 @@ Deep details live in each module's docstrings (e.g. `python -c "import src.fragm
 | Path | One-line | Deep docs |
 |---|---|---|
 | `src/fragmentomics/` | DELFI / MFS / nucleosome / THEMIS / FSD / tumor-naive adapter / fusion ablation | `src/fragmentomics/README.md` if present, else module docstrings |
-| `src/methylation_gnn/` | GATv2 field-defect + ReconstructionDecoder (architecture-only) | `src/methylation_gnn/CHANGES.md` (FinaleMe wiring roadmap) |
+| `src/methylation_gnn/` | GATv2 field-defect + ReconstructionDecoder — **real** β input (FinaleMe on public fragments), **synthetic** graph topology | `docs/METHYLATION_PIPELINE.md`, `src/methylation_gnn/CHANGES.md` |
 | `src/tissue_deconv/` | cfSort-style 4-layer MLP, 29 tissues | module docstrings |
 | `src/foundation/` | MultiModalEncoder + PretrainHead + FoundationDownstream + losses | `src/foundation/test_integration.py` (43 tests as the spec) |
 | `src/multimodal_fusion/` | PyTorch CrossAttentionFusion / GCN / EarlyLate / TASK_PRIOR_MASKS | `test/test_biomedical_review_fixes.py` |
@@ -335,7 +371,7 @@ The 12 deselected tests are the slow real-data foundation smoke and per-study ha
 | 4-mer end motifs (`--include-motifs`) | End 5-mer counts from .bam | derived from BAM |
 | Mutation panel (`scripts/cadd_*`) | TCGA-LUAD per-aliquot masked MAFs (5,738 mutations) | GDC open-access |
 | CADD scoring | CADD v1.7 PHRED TSV | [Kircher 2014](https://doi.org/10.1038/ng.2892), CC BY-NC-SA 4.0 |
-| GNN methylation | β-value methylation array (synthetic in repo) | TCGA, GEO, FinaleMe-imputed |
+| GNN methylation | per-CpG β values | FinaleMe-imputed from FinaleDB fragments (real); TCGA/GEO arrays not yet wired |
 | Tissue deconvolution | `cfSort` tissue atlas | [stephenrcraig/cfSort](https://github.com/stephenrcraig/cfSort) |
 
 If you don't have real cfDNA data, `MultiModalDataGenerator` (foundation) and `TissueAtlas` (deconv) ship synthetic fallbacks so the whole pipeline runs offline. **Cancer-vs-healthy AUC numbers from synthetic data are NOT comparable to the open-data cross-study numbers above — see "What is NOT in this repo" in [`MODEL.md`](MODEL.md).**
@@ -353,7 +389,7 @@ deepcatch/
 ├── Dockerfile
 ├── src/                          # Core library
 │   ├── fragmentomics/            # DELFI / MFS / nucleosome / THEMIS / FSD
-│   ├── methylation_gnn/          # GATv2 graph attention (arch-only)
+│   ├── methylation_gnn/          # GATv2 graph attention (real beta, synthetic topology)
 │   ├── tissue_deconv/            # cfSort-style DNN
 │   ├── foundation/               # MultiModalEncoder + FoundationDownstream
 │   ├── multimodal_fusion/        # CrossAttention / EarlyLate / GCN (PyTorch)
@@ -382,7 +418,8 @@ deepcatch/
 
 | Commit | What changed |
 |---|---|
-| **c782efc** (HEAD) | **GC correction + 4-mer motifs + shuffled null** cross-study (`scripts/cross_study_finallydb.py` extended, 3 new docs + 4 cached JSON results) |
+| **v2.3.0** (HEAD) | **External validation on held-out public publications** (AUC 0.9915 on pub 7 WGS, 0.8819 pooled) · leave-one-study-out (0.6805) · regularized late fusion + Bayesian model averaging replace the neural encoder (0.9825 / 0.9650 vs 0.554) · the methylation path runs end to end on real public fragments, and the channel is **measured to be a null** (0.9444 = the coverage baseline; matched-locus difference 0.0, p = 1.0) · CI repaired from 2 red jobs to 8 green |
+| **c782efc** | **GC correction + 4-mer motifs + shuffled null** cross-study (`scripts/cross_study_finallydb.py` extended, 3 new docs + 4 cached JSON results) |
 | `eb9948a` | Fix: refuse to fabricate cross-platform AUC from `synth_*` files |
 | `d9fc205` | hg19 references installed + cross-platform `data_source='both'` (synthetic-fixture) |
 | `506e14a` | Update `cross_platform_readiness.json` (fragmentomics-only verdict) |
@@ -392,7 +429,7 @@ deepcatch/
 | `0ad0033` | SensAtSpecLoss, BalancedCE, CalibrationLoss (`src/foundation/losses.py`) |
 | `ec16e0d` | REAL AlphaMissense fix (key construction bug, +0.057 AUC at K=200) |
 
-Full history: `git log --oneline` (60+ commits since v2.2.0). Notes per commit: [`docs/`](docs/).
+Full history: `git log --oneline`. What changed in v2.3.0: [`CHANGELOG.md`](CHANGELOG.md). Notes per commit: [`docs/`](docs/).
 
 ---
 
@@ -418,7 +455,7 @@ Full history: `git log --oneline` (60+ commits since v2.2.0). Notes per commit: 
                    for Early Cancer Detection from cfDNA},
   author       = {Yu Ching Lam and DeepCatch Contributors},
   year         = {2026},
-  version      = {2.2.0},
+  version      = {2.3.0},
   url          = {https://github.com/rollroyces/deepcatch},
 }
 ```

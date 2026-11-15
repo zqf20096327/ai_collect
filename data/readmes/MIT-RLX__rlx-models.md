@@ -2,7 +2,7 @@
 
 Concrete model graph builders + weight loaders for RLX — the "what actually runs" layer.
 
-**[215 model families](MODELS.md)** across 17 categories — language & multimodal LLMs, vision, speech (ASR/TTS), audio codecs, and more — each a standalone crate under `crates/`. See **[MODELS.md](MODELS.md)** for the complete catalog with per-model backend support.
+**[222 model families](MODELS.md)** across 17 categories — language & multimodal LLMs, vision, speech (ASR/TTS), audio codecs, and more — each a standalone crate under `crates/`. See **[MODELS.md](MODELS.md)** for the complete catalog with per-model backend support.
 
 Standalone repo: [github.com/MIT-RLX/rlx-models](https://github.com/MIT-RLX/rlx-models). Clone next to [`rlx`](https://github.com/MIT-RLX/rlx):
 
@@ -10,7 +10,6 @@ Standalone repo: [github.com/MIT-RLX/rlx-models](https://github.com/MIT-RLX/rlx-
 rlx-workspace/
   rlx/          # github.com/MIT-RLX/rlx
   rlx-models/   # github.com/MIT-RLX/rlx-models
-  candle/       # optional, for parity-candle
 ```
 
 ```bash
@@ -52,11 +51,11 @@ Agent-oriented quick reference: [AGENTS.md](AGENTS.md).
 
 ## Model catalog
 
-This workspace ships **215 model families** (one crate per architecture), plus 4 training crates and shared infrastructure. Highlights:
+This workspace ships **222 model families** (one crate per architecture), plus 6 training crates and shared infrastructure. Highlights:
 
 - **43 language models** — Qwen3 / 3.5 / 3.6 / 3.8 / 3.8-Flash-Next, Llama 3.2 / 4, Gemma, DeepSeek-V3 / V4 / V4.1, GLM-4.x / GLM-5.3, MiniMax, Jamba, Mamba, Phi, gpt-oss, Ling 3.0, Motif-3, MiniCPM5 / MiniCPM-SALA, Laguna, Bonsai, TinyLlama, … plus two **diffusion LMs** (DiffusionGemma, LLaDA2) and speculative-decoding drafters (EAGLE3, DFlash).
 - **14 vision-language / omni** — Fara1.5, Qwen2.5-VL, Qwen3-VL, MiniCPM-V, Llama-3.2-Vision, Llama 4, Florence-2, LocateAnything, Kimi-K3, Nemotron-Omni, Inkling, …
-- **12 vision** encoders / detection / segmentation / matting — DINOv2 / v3, SigLIP 2, V-JEPA 2, SAM 1 / 2 / 3, Grounding DINO, BiRefNet, NeuralHash — plus **5 biomedical** (incl. Carbon DNA LMs), **5 embedding** (incl. EmbeddingGemma, jina-v5), and **8 image / video / 3D generation** models (FLUX.1, FLUX.2, FLUX 3 Image Klein, Open Genmoji, TRELLIS.2, super-resolution, a Monte-Carlo render denoiser, Diamond Maps reward alignment).
+- **13 vision** encoders / detection / segmentation / matting — DINOv2 / v3, SigLIP 2, V-JEPA 2, SAM 1 / 2 / 3, Grounding DINO, BiRefNet, NeuralHash, YuNet face detection — plus **5 biomedical** (incl. Carbon DNA LMs), **5 embedding** (incl. EmbeddingGemma, jina-v5), and **9 image / video / 3D generation** models (FLUX.1, FLUX.2, FLUX 3 Image Klein, Open Genmoji, TRELLIS.2, super-resolution, a Monte-Carlo render denoiser, Diamond Maps reward alignment, Adaptive FGD).
 - **3 time-series** forecasters — Google TimesFM-3, Mistral Timestral, plus a NARMA-10 / echo-state-network parity baseline.
 - **16 ASR** and **47 TTS / speech-LM** models, **11 neural audio codecs**, and **20 speech front-end / wake-word / DSP** crates (TEN-VAD down to bare-metal RISC-V and FPGA), plus voice conversion, music generation, source separation, OCR, and robotics (VLA).
 
@@ -81,7 +80,7 @@ rlx-models/
 
 ### Crates
 
-The table below highlights shared infrastructure and a selection of model crates; for the **complete** model list (all 215 families, with backends) see **[MODELS.md](MODELS.md)**.
+The table below highlights shared infrastructure and a selection of model crates; for the **complete** model list (all 220 families, with backends) see **[MODELS.md](MODELS.md)**.
 
 | Crate | Model / role |
 |---|---|
@@ -122,6 +121,7 @@ The table below highlights shared infrastructure and a selection of model crates
 | `rlx-llada2` | LLaDA2 + TIDE offload |
 | `rlx-flux2` | FLUX.2 |
 | `rlx-vjepa2` | V-JEPA 2 |
+| [`rlx-yunet`](crates/rlx-yunet/README.md) | YuNet face detection (boxes + 5 landmarks) |
 | `rlx-wav2vec2-bert` | Wav2Vec2-BERT |
 | `rlx-wav2vec2-asr` | Wav2Vec2 CTC forced alignment (WhisperX-style word timestamps) |
 | `rlx-whisper` | OpenAI Whisper ASR (segment + word timestamps, optional diarization) |
@@ -286,7 +286,7 @@ just example-qwen3-gguf -- /path/to/model.gguf
 | `run_sam3.rs` | SAM 3 — text-conditioned detection + masks |
 | `qwen3_gguf_inference.rs` | Detailed Qwen3 GGUF walk-through |
 | `gguf_qwen3_probe.rs` | Validate `hf_to_gguf_name` against a real GGUF |
-| `qwen3_matrix.rs` | (B, L, mode) × (CPU, Metal, MLX, wgpu) parity + perf vs candle |
+| `qwen3_matrix.rs` | (B, L, mode) × (CPU, Metal, MLX, wgpu) parity + perf across backends |
 | `minicpm5_download.rs` | Fetch [openbmb/MiniCPM5-1B](https://huggingface.co/openbmb/MiniCPM5-1B) safetensors (`hf-download`) |
 | `minicpm5_gguf_download.rs` | Fetch GGUF quants (Q4_K_M / Q8_0 / F16) |
 | `run_minicpm5.rs` | `MiniCpm5Runner` prefill + greedy decode from safetensors |
@@ -331,7 +331,7 @@ just fetch-minicpm5-gguf Q4_K_M
 
 - **`qwen3`** — Qwen3 decoder LM (GQA, QK-norm, RoPE, SwiGLU, tied embeddings). Safetensors + GGUF; optional `qwen3.rlx.toml`. See [Qwen3](#qwen3).
 - **`qwen35`** — Qwen3.5 / 3.6 hybrid (gated DeltaNet + periodic attention + optional MTP). GGUF via `Qwen35Runner`; optional `qwen35.rlx.toml`. Parity: `examples/qwen35_compare.rs` with the llama.cpp reference script in `examples/`.
-- **`gemma`** — Gemma / Gemma 2 / 3 / 4 (GQA, RoPE, GeGLU, tied weights, Gemma2 softcap). Safetensors + GGUF; optional `gemma.rlx.toml`. See [crates/rlx-gemma/README.md](crates/rlx-gemma/README.md). CLI: `rlx-gemma` / `rlx-run gemma`. Parity: `just test-gemma-parity gemma2_synthetic`; backends: `just features=all-backends test-gemma-backends`.
+- **`gemma`** — Gemma / Gemma 2 / 3 / 4 (GQA, RoPE, GeGLU, tied weights, Gemma2 softcap). Safetensors + GGUF; optional `gemma.rlx.toml`. See [crates/rlx-gemma/README.md](crates/rlx-gemma/README.md). CLI: `rlx-gemma` / `rlx-run gemma`. Parity: `just test-gemma-parity gemma2_synthetic`; backends: `just features=all-backends test-gemma-backends`. Also runs [`google/embeddinggemma-2`](https://huggingface.co/google/embeddinggemma-2) text + audio embeddings and the [null-space audio head](https://bruno-hays.github.io/posts/maeb-null-space-audio/), both at HF parity on CPU, Metal and MLX (`just test-embeddinggemma2-parity`); see [crates/rlx-gemma/README.md](crates/rlx-gemma/README.md#embeddinggemma-2-text--audio-and-the-null-space-audio-head).
 - **`bert`** — BERT graph builder (MiniLM, BGE, all-MiniLM-L6-v2).
 - **`nomic`** — NomicBERT (RoPE + SwiGLU).
 - **`vision`** — NomicVision-style encoders.
@@ -345,13 +345,16 @@ just fetch-minicpm5-gguf Q4_K_M
 - **`siglip2`** — [SigLIP 2](https://huggingface.co/blog/siglip2) sigmoid-loss image + text encoder (attention-pooling MAP head, `gelu_pytorch_tanh`, multilingual Gemma tokenizer, sigmoid zero-shot). Both the **fixed-resolution** (`siglip2-base-patch16-224`, …) and **NaFlex** (variable resolution/aspect ratio) families. Pure-Rust preprocessing; HuggingFace parity (cos = 1.0) on CPU/Metal/MLX/wgpu/CUDA. CLI: `rlx-siglip2`. See [crates/rlx-siglip2/README.md](crates/rlx-siglip2/README.md).
 - **`neuralhash`** — [NeuralHash](https://github.com/AsuharietYgvar/AppleNeuralHash2ONNX) perceptual image hashing: 225-layer MobileNetV3 (instance-norm + hard-swish + squeeze-excite) → 128 floats, then a `[96, 128]` seed projection → 96-bit hash. The architecture is read natively from the  container that installs the framework (LZFSE `pbze` decoded inline) and built as an rlx-ir graph — ONNX is a validation-only path behind the `onnx-parity` feature. **Bit-identical hashes vs. an independent PyTorch reference on the shipping macOS model**, and across all 7 backends. Model files are never redistributed. PIL-exact bicubic preprocessing (99.98% bit-exact vs Pillow). CLI: `rlx-neuralhash`. See [crates/rlx-neuralhash/README.md](crates/rlx-neuralhash/README.md).
 - **`sam`**, **`sam2`**, **`sam3`** — Segment Anything encoders + mask decoders. Optional `sam.rlx.toml` next to weights (reference: `crates/rlx-sam/src/sam.rlx.toml`).
+- **`yunet`** — [YuNet](https://github.com/opencv/opencv_zoo/tree/main/models/face_detection_yunet) face detection: boxes + 5 landmarks from a lightweight 2D-BN depthwise CNN. Parity vs the official ONNX export; CPU + Metal. Library: `rlx_yunet::YuNet::load`. See [crates/rlx-yunet/README.md](crates/rlx-yunet/README.md).
 - **`flux2`** — FLUX.2 rectified-flow denoiser. `rlx-flux2` CLI; presets `flux2_dev()`, `flux2_klein_4b()`, `flux2_klein_9b()`. VAE, CFG, img2img, LoRA, `hf-download`, `rlx-flux2-serve`. GPU backends via `rlx-models` features (`metal`, `cuda`, …).
 - **`embed`** — `RlxEmbed`, registry, tokenizers, pooling. `from_pretrained` with `hf-download`.
 - **`config`**, **`weight_loader`** — HF config parsing; `WeightMap` + `GgufLoader` (K-quants, MTP isolation).
+- **`sentencepiece`** — `rlx_core::sentencepiece`: SentencePiece in Rust, with no C++ or protobuf. It reads `.model` files and Unigram `tokenizer.json` (unigram, BPE, word, char), and provides charsmap normalization with offsets, byte fallback, spans, `bos`/`eos`/`reverse`/`unk`, n-best and sampling. It matched the C++ library on 9215 of 9215 checks over 20 models (`just test-sentencepiece-parity MODEL…`). Pocket TTS, Kyutai TTS and Moshi tokenize with it. See [crates/rlx-models-core/README.md](crates/rlx-models-core/README.md#sentencepiece-sentencepiece).
 - **`fft`** — Learned butterfly FFT, mel/Welch pipelines, IO-aware Welch peak picker (`AutoWelchPeaks`), fused `Op::WelchPeaks` on GPU. CLI: `rlx-fft`. See [crates/rlx-fft/README.md](crates/rlx-fft/README.md).
 - **`mamba`** — Mamba1 SSM block (`rlx-mamba`); SSM via `rlx-ssm` + `SelectiveScan`. See [crates/rlx-mamba/README.md](crates/rlx-mamba/README.md).
 - **`lfm`** — [LiquidAI LFM2 / LFM2.5](https://huggingface.co/LiquidAI/LFM2.5-2.6B-GGUF) hybrid **ShortConv + GQA-attention** decoder. GGUF (`arch=lfm2`) via `Lfm2GgufRunner` (per-layer attn/conv routing from `attention.head_count_kv`, depthwise causal conv, SwiGLU, tied head); CLI `rlx-lfm` / example `lfm2_generate`. Text via the GGUF gpt2 BPE (`--features tokenizer`); weights stay packed (`DequantMatMul`). **Incremental O(n) decode** (per-layer conv-state + KV cache; token-identical to the O(n²) re-prefill reference) with a **cached compiled graph** (warm `generate` calls skip build + weight re-attach — ~3× faster). Build `--release`: ~5 tok/s CPU, ~7.5 tok/s Metal on LFM2.5-2.6B-Q4_K_M (F32 dequant cache is the fast path — do **not** set `RLX_DEQUANT_CACHE=0`, ~8× slower). **CPU decode defaults to the wide-matmul int8 fast path** (~2× TPS — LFM2.5-1.2B-Q4_K_M ~19 → ~29 tok/s; routes the LM head + large FFN GEMVs to a parallel int8 kernel, small matmuls stay on AMX/Accelerate). It quantizes the activation to Q8 (not bit-identical to the F32 path, can flip rare near-tie greedy tokens); override the crossover with `RLX_Q4K_FUSED_MIN_N=<n>` (set huge to disable). GPU decode keeps a **device-resident KV cache** (Metal/MLX/CUDA/ROCm; `bind_gpu_handle` + logits-only readback — no per-step KV host round-trip) and computes the tied lm_head as `embed @ hiddenᵀ` (transposes the tiny activation, not the ~512 MB embedding, each step) — bit-identical and a general win (LFM2.5-1.2B-Q4_K_M: **Metal ~65 → ~97 tok/s**). Combined with **stride-based rank-3 seq-major attention on CUDA** (no per-step KV transpose; `RLX_CUDA_ATTN_RANK4=1` reverts) this **~2×'d CUDA decode** (~17 → ~35 tok/s, → ~39 with `RLX_CUDA_Q4K_GEMV_COOP=1`). Token-identical across CPU/Metal/MLX/CUDA. Coherent on CPU/Metal/MLX/wgpu/Vulkan ("The capital of France is" ⇒ " Paris."); wgpu and Vulkan run the graph natively, and `Device::OpenGl` (the WebGL2 planner, attention legalized into matmul + softmax) matches HF on LFM2.5-230M to 5.6e-5. Legacy SSM decode path also present.
 - **`lfm3-audio`** — [LiquidAI LFM3-Audio-2B](https://huggingface.co/LiquidAI/LFM3-Audio-2B-GGUF) (LM GGUF `arch=lfm3` + mmproj `lfm3a`/`lfm3a_gen`): ASR, TTS and interleaved spoken chat. LFM3 hybrid LM (width-7 short conv, full + 256-step sliding GQA with per-head sigmoid gates, sandwich norms, half-rotary RoPE), LFM2 speech encoder, 3-layer bidirectional depth decoder sampling 12 codebooks per frame over 3 MaskGIT passes, and the Liquid codec (FSQ → LFM3 → iSTFT, 24 kHz) — all four stacks from one trunk builder. Every stage matches a torch port of the released code on CPU (arm64, x86), Metal, MLX, ROCm, CUDA, Vulkan and wgpu (`all-backends`; CUDA, Vulkan, wgpu on Q8_0); Metal Q4_K_M decodes ~60 tok/s and writes speech ~2× faster than real time after warm-up. CLI `rlx-lfm3-audio asr|tts|chat` — [crates/rlx-lfm3-audio/README.md](crates/rlx-lfm3-audio/README.md).
+- **`liquid-codec`** — [LiquidAI LiquidCodec](https://huggingface.co/LiquidAI/Liquid-Codec): 24 kHz speech ↔ 12 grouped-FSQ tokens per 80 ms frame (12.5 Hz, ≈1.65 kbps). STFT front end, 8-layer causal LFM3 encoder and 8-layer sliding-window LFM3 decoder from the `rlx-lfm3-audio` trunk builder. Streaming encode (frames out 20 ms after they end) and decode, both KV-cached step graphs giving the same codes and audio as whole-clip calls, 1.5–5 ms per 80 ms frame on CPU/Metal/CUDA; long clips encode in chunks (10 min < 1 GB). Codes identical to and audio within 8e-6 of LiquidAI's own modeling code on CPU (arm64, x86), Metal, MLX, wgpu, Vulkan, CUDA (TF32 off), ROCm and CoreML. Also reads the `audio_tokenizer/` of LFM3-Audio checkpoints. CLI `rlx-liquid-codec encode|decode|roundtrip [--stream]` — [crates/rlx-liquid-codec/README.md](crates/rlx-liquid-codec/README.md).
 - **`minimax`**, **`nemotron`** — hybrid runners using `rlx-ssm` decode-step stages.
 - **`minicpm5`** — MiniCPM5 edge LMs (Llama-shaped 1B). Wraps `Llama32Runner`; safetensors + GGUF. See [MiniCPM5](#minicpm5) and [crates/rlx-minicpm5/README.md](crates/rlx-minicpm5/README.md).
 - **`tinyllama`** — TinyLlama-1.1B (Llama-shaped; 2048 hidden, 22 layers). Wraps `Llama32Runner`; safetensors + GGUF. See [TinyLlama](#tinyllama) and [crates/rlx-tinyllama/README.md](crates/rlx-tinyllama/README.md).
@@ -384,6 +387,7 @@ Nine inference crates cover lightweight edge models through multi‑billion‑pa
 | [MOSS-TTS-Nano](crates/rlx-moss-nano/README.md) | `rlx-moss-nano` | 0.1B | 48 kHz stereo | [`eugenehp/moss-nano`](https://huggingface.co/eugenehp/moss-nano) `moss-nano.rlxp` | 18 builtin voices | — | `just fetch-moss-nano` / `just moss-nano` | production — hierarchical AR + codec; no Hub ONNX |
 | [sanoTTS](crates/rlx-sanotts/README.md) | `rlx-sanotts` | ~1.5M | 22.05 kHz | [`ampixa/sanoTTS`](https://huggingface.co/ampixa/sanoTTS) fp16 voice packs | 7 packs, 3 languages | — | `rlx-sanotts say "…" --voice-dir …` | production — host reference gated against upstream numpy; frame stack + decoder on RLX graph |
 | [Fish Audio S2-Pro](crates/rlx-fish/README.md) | `rlx-fish` | 4.5B | 44.1 kHz | HF safetensors + `codec.pth` ([`fishaudio/s2-pro`](https://huggingface.co/fishaudio/s2-pro)) | speaker-tagged dialogue + clone from reference clips | — | `just fetch-fish-s2` / `just fish-s2 "…"` | parity vs PyTorch (full model, greedy frames identical); CPU/Metal/MLX/wgpu; ~5× slower than real time on M4 Pro |
+| [Audio8-TTS-Realistic-Air](crates/rlx-fish/README.md) | `rlx-fish` | 0.6B | 44.1 kHz | HF safetensors + `codec.pth` ([`Edge0/Audio8-TTS-Realistic-Air`](https://huggingface.co/Edge0/Audio8-TTS-Realistic-Air)) | 23 languages + clone from a reference clip | — | `just fetch-audio8` / `just audio8 "…"` | parity vs the published PyTorch (full model, greedy frames identical); CPU/Metal/MLX/wgpu/CUDA/ROCm/Vulkan |
 | [Fish Audio Drama 3](crates/rlx-fish/README.md) | `rlx-fish` | 35B MoE (FP8 experts) | 44.1 kHz | HF safetensors ([`fishaudio/drama-3`](https://huggingface.co/fishaudio/drama-3), 40 GB) | speaker tags, `[cues]`, clone from reference clips | — | `just fetch-fish-drama3` / `just fish-drama3 "…"` | parity vs PyTorch (4-layer cut + full tower); experts on the host from mapped FP8; ~4 s/frame |
 | [HumeAI TADA](crates/rlx-tada/README.md) | `rlx-tada` | 1B | 24 kHz | HF safetensors ([`HumeAI/tada-1b`](https://huggingface.co/HumeAI/tada-1b) + [`HumeAI/tada-codec`](https://huggingface.co/HumeAI/tada-codec)) | zero-shot clone from a reference clip (`.tadaprompt`) | — | `just tada-prompt` / `just tada-speak` | production — Llama-3.2 backbone + flow-matching acoustic/duration head; CPU/Metal/MLX/wgpu/Vulkan/CoreML |
 | [Inflect-Nano](crates/rlx-inflect-nano/README.md) | `rlx-inflect-nano` | ~4.6M | 24 kHz | exported safetensors bundle | single speaker | — | `rlx-inflect-nano --text "…"` | production — standalone Rust frontend; vocoder on RLX graph or CoreML (ORT) |
@@ -404,8 +408,8 @@ Nine inference crates cover lightweight edge models through multi‑billion‑pa
 | KittenTTS | Smallest footprint; **native RLX default** (`kitten_tts_mini_rlx`); optional ORT via `--features onnx` / `native-fast` for Metal |
 | Orpheus | Emotive tags (`<laugh>`, …), SNAC on ANE (`--device coreml`), streaming decode, GGUF Q4_K_M |
 | NeuTTS | On-device clone; GGUF backbone via `rlx-llama32`; optional `burn-gpu` NeuCodec |
-| Kyutai TTS | Depth-multiplexed Helium + DepFormer, 32 codebooks, en/fr SPM; `KyutaiTtsSession::generate` → Mimi PCM |
-| Pocket TTS | Kyutai FlowLM + Mimi; all 27 released configs (7 languages, 2M–24-layer); teacher-forced parity ~1e-5 vs upstream |
+| Kyutai TTS | Depth-multiplexed Helium + DepFormer, 32 codebooks, en/fr SentencePiece (`rlx_core::sentencepiece`); `KyutaiTtsSession::generate` → Mimi PCM |
+| Pocket TTS | Kyutai FlowLM + Mimi; all 27 released configs (7 languages, 2M–24-layer); teacher-forced parity ~1e-5 vs upstream; Rust SentencePiece, token-identical to C++ and HF `tokenizers` |
 | TinyTTS / MeloTTS | VITS2 at 44.1 kHz; nested `graphs/*.rlxp`; monotonic alignment in Rust glue |
 | Soprano | ~80M Qwen3 AR + Vocos @ 32 kHz; nested `.rlxp`; Whisper-validated |
 | MOSS-TTS-Nano | Hierarchical AR codec-LM @ 48 kHz stereo; 18 builtin voices; nested `.rlxp` |
@@ -1127,7 +1131,7 @@ just build
 
 cargo build -p rlx-models
 cargo test  -p rlx-models
-cargo test  -p rlx-models --features parity-candle
+cargo test  -p rlx-models --features parity-pytorch
 ```
 
 burnembed (`/Users/Shared/burnembed`) re-exports `rlx_models::embed` with `--features rlx`.
@@ -1226,9 +1230,9 @@ Asset helpers: [`rlx-assets`](crates/rlx-assets/README.md) (`native-pack` featur
 | family | safetensors | rlx GGUF | GGUF on Hugging Face | parity |
 |---|---|---|---|---|
 | `bert`, `nomic`, `vision` (`embed`) | yes | yes (`bert`, `nomic-bert`, …) | **yes** — [minilm](https://huggingface.co/models?library=gguf&search=minilm) (~128), [bge](https://huggingface.co/models?library=gguf&search=bge) (~247), [nomic](https://huggingface.co/models?library=gguf&search=nomic) (~60); e.g. [nomic-embed-text-v1.5-GGUF](https://huggingface.co/nomic-ai/nomic-embed-text-v1.5-GGUF) (`nomic-bert`), [bge-small-en-v1.5-gguf](https://huggingface.co/CompendiumLabs/bge-small-en-v1.5-gguf). Vision embed: no GGUF sibling. | production (safetensors) |
-| `dinov2` | yes | yes (`dinov2`; F32 drain or K-quant/Q4_0/Q8_0 packed `DequantMatMul` when quant tensors present) | **no** for `facebook/dinov2-*` — [dinov2](https://huggingface.co/models?library=gguf&search=dinov2) (0). Community converters (dinov2.cpp) use `dinov2` arch; tensor names must match HF/candle keys. | production |
+| `dinov2` | yes | yes (`dinov2`; F32 drain or K-quant/Q4_0/Q8_0 packed `DequantMatMul` when quant tensors present) | **no** for `facebook/dinov2-*` — [dinov2](https://huggingface.co/models?library=gguf&search=dinov2) (0). Community converters (dinov2.cpp) use `dinov2` arch; tensor names must match HF keys. | production |
 | `sam`, `sam2`, `sam3` | yes | yes (`sam` / `mobile-sam` / `sam2` F32 drain). **SAM3**: F32 drain or K-quant via fused CPU `gguf_matmul` (ViT, text, detector host+IR, seg cross-attn/mask/scoring, 1×1 inst/sem `DequantMatMul` IR); 3×3 pixel conv stays packed at load (one-time dequant cache on host, materialize for tier-1 IR compile) | **SAM1 ViT-H / SAM2**: no official Hub GGUF — [segment+anything](https://huggingface.co/models?library=gguf&search=segment+anything) (0), [sam2.1](https://huggingface.co/models?library=gguf&search=sam2.1) (0). **MobileSAM**: [mobilesam](https://huggingface.co/models?library=gguf&search=mobilesam) (2), e.g. [Acly/MobileSAM-GGUF](https://huggingface.co/Acly/MobileSAM-GGUF) (`mobile-sam`). **SAM3**: [sam3](https://huggingface.co/models?library=gguf&search=sam3) (1) — [rob-laz/sam3-gguf](https://huggingface.co/rob-laz/sam3-gguf) (`sam3`). Beware [TheBloke/SAM-GGUF](https://huggingface.co/TheBloke/SAM-GGUF) — 7B **chat LM** (`llama`), not Segment Anything. | production (encoder + mask path) |
-| `qwen3` | yes | yes (Q4_K_M / Q5_K_M / Q6_K) | **yes** — [qwen3](https://huggingface.co/models?library=gguf&search=qwen3) (many); e.g. `unsloth/Qwen3-*-GGUF` | top-1 vs HF (`parity-candle` + weights) |
+| `qwen3` | yes | yes (Q4_K_M / Q5_K_M / Q6_K) | **yes** — [qwen3](https://huggingface.co/models?library=gguf&search=qwen3) (many); e.g. `unsloth/Qwen3-*-GGUF` | top-1 vs HF (with weights) |
 | `qwen35` | — | yes | **yes** — same hub space; e.g. `Qwen/Qwen3.5-0.8B-Base`, `unsloth/Qwen3.5-0.8B-GGUF`, `unsloth/Qwen3.6-27B-MTP-GGUF`, `unsloth/Qwen3.8-27B-GGUF` (VLM: text GGUF + CLIP `mmproj-*.gguf`; hybrid gated-DeltaNet + periodic attention, MTP head; Q3_K_S text generation coherent on CPU/Metal, verified vs llama.cpp; `just fetch-qwen35-08b`, `just fetch-qwen36-27b`, `just fetch-qwen38-27b`). Qwen3.8-27B is the same `qwen35` arch as Qwen3.6-27B — identical metadata, 866-tensor layout and tokenizer; see [crates/rlx-qwen35/README.md](crates/rlx-qwen35/README.md#qwen38-27b). `Doses-AI/Pestle-27B-Ternary-GGUF` also loads here (`just fetch-pestle-27b`): Qwen3.6-27B with Pestle factorized ternary projections (`Q2_0` factor pairs + `G8_0` embed/lm_head + one dense BF16 block) — greedy-identical to the `mortar.cpp` reference on Metal; both schemes + the factorized graph verified on **all 7** backends | coherent vs llama.cpp (`QWEN35_GGUF_PATH` / `parity-llama`) |
 | `qwen4exp` | yes | yes (packed projections and expert banks; host-gathered PLE) | **yes** — e.g. [`unsloth/Qwen3.8-Flash-Next-GGUF`](https://huggingface.co/unsloth/Qwen3.8-Flash-Next-GGUF), [`ggml-org/Qwen3.8-Flash-Next-GGUF`](https://huggingface.co/ggml-org/Qwen3.8-Flash-Next-GGUF) (`general.architecture = qwen4exp`; the 51 B-parameter `per_layer_token_embd` n-gram table is gathered host-side, never a graph param) | both block kinds **and decode-vs-prefill** on published weights via a 186 MB range-sliced subset (`just qwen4exp-real`); tensor manifest + orientations checked against the real 1224-tensor list for all 48 blocks; prefill / chunked prefill / decode / MTP / native ViT all run (the tower on 3 real mmproj blocks, and element-for-element against `rlx-qwen35`'s independent implementation); no end-to-end generation on the full 48-layer checkpoint |
 | `llama32` | yes | yes | **yes** — [llama-3.2](https://huggingface.co/models?library=gguf&search=llama-3.2) (~5k) | vs llama.cpp when `LLAMA32_GGUF_PATH` |
@@ -1282,6 +1286,7 @@ Multi-tenant serving (paged KV, continuous batching) lives in `rlx_runtime::page
 - Unsupported GGUF quants (Q1_0, Q2_K, IQ*, …) error cleanly.
 - **27B GGUF on Mac**: F32 dequant ≈ 108 GB; needs Metal `Op::DequantMatMul` to stay packed (~13.5 GB).
 - Pooling in `embed::pooling`.
+- **SentencePiece**: use `rlx_core::sentencepiece`, not the `sentencepiece` crate. That crate builds C++ and statically links its own protobuf, which corrupts ONNX Runtime's model parsing ("Protobuf parsing failed") in any binary that also links `ort`.
 - New arch: new crate under `crates/`, facade hook, optional parity test.
 
 ## Per-crate READMEs
@@ -1292,6 +1297,7 @@ Model-specific runbooks live next to each crate. Agent quick reference: [AGENTS.
 |-------|--------|
 | `rlx-jlens` | [crates/rlx-jlens/README.md](crates/rlx-jlens/README.md) |
 | `rlx-fgd` | [crates/rlx-fgd/README.md](crates/rlx-fgd/README.md) |
+| `rlx-tune` | [crates/rlx-tune/README.md](crates/rlx-tune/README.md) |
 | `rlx-fft` | [crates/rlx-fft/README.md](crates/rlx-fft/README.md) |
 | `rlx-qwen3-tts` | [crates/rlx-qwen3-tts/README.md](crates/rlx-qwen3-tts/README.md) |
 | `rlx-kittentts` | [crates/rlx-kittentts/README.md](crates/rlx-kittentts/README.md) |

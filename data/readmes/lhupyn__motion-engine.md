@@ -53,7 +53,7 @@ Plain ES modules, no build step. From a CDN with an import map:
   "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js/+esm",
   "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/",
   "talkinghead": "https://cdn.jsdelivr.net/gh/met4citizen/TalkingHead@1.7/modules/talkinghead.mjs",
-  "motion-engine": "https://cdn.jsdelivr.net/gh/lhupyn/motion-engine@2.1.0/src/index.js"
+  "motion-engine": "https://cdn.jsdelivr.net/gh/lhupyn/motion-engine@2.2.0/src/index.js"
 } }
 </script>
 ```
@@ -61,6 +61,13 @@ Plain ES modules, no build step. From a CDN with an import map:
 Or with a bundler: `npm i github:lhupyn/motion-engine` (not on npm yet). The catalogs load as JSON modules, which need Chrome/Edge 123+, Safari 17.2+, Firefox 138+ or Node 22+. TalkingHead is not a dependency; bring your own (1.7). TypeScript types are included (generated from the JSDoc, in `types/`).
 
 **Avatar:** TalkingHead's [requirements](https://github.com/met4citizen/TalkingHead#appendix-a-create-your-own-3d-avatar): a Mixamo-compatible rig with the 52 ARKit and 15 Oculus viseme blend shapes. The bundled poses and expression levels are fitted to the demo avatar; another avatar may need them retuned ([catalogs](#appendix-b-catalogs)).
+
+**Head posture:** two of TalkingHead's standing poses tuck the chin (`side` 11° down, `hip` 15°), and its neutral mood spends most of the time in them, so the avatar looks up from under the brows. The demo levels them with `straight`:
+
+```js
+head.poseTemplates.side.props['Head.rotation'].x = -0.05; // 0.077
+head.poseTemplates.hip.props['Head.rotation'].x = 0.1; // 0.298
+```
 
 ```js
 import { TalkingHead } from 'talkinghead';
@@ -186,6 +193,7 @@ Planned, not built yet: blending the top two expressions by Jev's probabilities 
 | --- | --- | --- |
 | `facs` | built-in `facs.json` | Expression catalog ([Appendix B](#appendix-b-catalogs)). |
 | `fade` | `400` | Mood cross-fade, ms. Beats without an `envelope` use `{ in: 300, hold: 1500, out: 600 }`. |
+| `sustain` | `0.75` | A held mood settles at this share of its recipe about 1.5 s after it peaks, over 2.5 s. `1` = off. |
 | `speechMouth` | `0.3` | While a viseme plays, mouth-opening morphs (from AU10, AU16, AU20, AU25, AU26, AU27) drop to this share, so speech doesn't over-open the mouth or bare the teeth, and p/b/m still close. `1` = off. |
 | `speechSmile` | `0.5` | The same for the lip corners (AU12, AU14: smile, dimple), which over-stretch the mouth on visemes. `1` = off. |
 
@@ -195,13 +203,13 @@ Planned, not built yet: blending the top two expressions by Jev's probabilities 
 | --- | --- | --- |
 | `gestures` | built-in `gestures.json` | Gesture catalog, `{ head, hands, poses }`. |
 | `fadeIn` | `800` | Arm transition into a pose, ms, unless the frame sets its own. |
-| `fadeOut` | `800` | Hand gesture fade-out, ms. |
+| `fadeOut` | `1100` | Hand gesture fade-out, ms. |
 | `cutFade` | `100` | Arms back to the stance when a hand gesture is stopped early (`stop()`, `interrupt()`), ms. Another hand gesture takes the arms over instead. |
 | `settle` | `1000` | Wait after a hand fade-out before the channel is free, ms. |
 
 ## Appendix B: Catalogs
 
-Both catalogs ship as package exports (`motion-engine/facs.json`, `motion-engine/gestures.json`, or `…@2.1.0/src/facs.json` on the CDN). Pass your own:
+Both catalogs ship as package exports (`motion-engine/facs.json`, `motion-engine/gestures.json`, or `…@2.2.0/src/facs.json` on the CDN). Pass your own:
 
 ```js
 import facs from './my-facs.json' with { type: 'json' };
@@ -215,7 +223,10 @@ new MotionEngine(head, { classify: systemOne({ apiKey }), face: { facs }, body: 
 - Only entries with a `description` are offered to the classifier; the rest are manual-only (`face.play` / `body.play`). Bundled manual-only: `look_left`, `look_right`, `open_mouth`, `squint`, `neutral`.
 - The description says *when* to use it: *"Warm, genuine smile: glad, pleased, friendly, good news."* A narrow one keeps a novelty for its cue: `vulcan_salute` (🖖) only on "live long and prosper" or a mention of Star Trek or Vulcans.
 - Keep options distinct: similar options split the confidence and can both fall under the threshold.
-- Check faces still and while talking; keep jaw opening out of held moods, or it fights the visemes.
+- Check faces as they will play: still, talking, and with the head pitched down, where the idle leaves it. Keep jaw opening to a touch in held moods, or it fights the visemes.
+- A smile needs the eyes: add the blendshape that raises the lower lids (often `eyeSquint`, AU7) to every smile, or it reads cold.
+- Look at the avatar's resting mouth. If its corners turn up, lowered brows over it read as a smirk: give the negative moods some AU15.
+- The [lab](lab/README.md) renders these checks as contact sheets and measures lids, teeth and gesture speeds.
 - Keep an entry named `neutral`: the director relaxes to it.
 
 ### `facs.json`
@@ -241,7 +252,7 @@ Values are illustrative.
 | `avoid` | Optional, per avatar: `[{ aus: { AU: level, … }, note }]`. No recipe may exceed every listed level at once. |
 | `expressions.<name>.description` | When to use it; without it, the classifier never picks it. |
 | `facs` | Provenance note; not used at runtime. |
-| `kind` | `'mood'` (default) holds and cross-fades; `'beat'` plays once on top. |
+| `kind` | `'mood'` (default) holds and cross-fades; `'beat'` plays once on top. Where the held mood already moves a blendshape, the beat takes it up to its own level instead of adding to it. |
 | `aus` | AU → level. `_L` / `_R` makes it one-sided. Each AU adds level × `au_map` weight to the avatar's rest level, capped at 1. |
 | `envelope` | Beats: `{ in, hold, out }` ms. |
 | `whileSpeaking` | Beats, default `true`. `false`: the director never starts it while the avatar speaks (`yawn`); `face.play` still can. |
@@ -272,7 +283,7 @@ Values are illustrative.
 }
 ```
 
-**Gestures** are TalkingHead animation templates ([TalkingHead README](https://github.com/met4citizen/TalkingHead), Appendix D): `dt` frame timings (a `[min, max]` pair is random; motion-engine times it by the midpoint), optional `rescale`, `vs` values per frame. Body only: a test keeps expression blendshapes out of `gestures.json`; only gaze (`eyeLook*`) may follow the head, as in `bow`.
+**Gestures** are TalkingHead animation templates ([TalkingHead README](https://github.com/met4citizen/TalkingHead), Appendix D): `dt` frame timings (a `[min, max]` pair is random; motion-engine times it by the midpoint), optional `rescale`, `vs` values per frame. Body only: a test keeps expression blendshapes out of `gestures.json`; only gaze (`eyeLook*`) may follow the head, as in `bow`. Head movements ease between keyframes on a gentler curve than TalkingHead's own, for their rotation tracks (`headRotateX`, `bodyRotateX`, …).
 
 **Hand frames** in `vs.gesture` are `[pose, duration, mirror, transitionMs]`:
 
@@ -359,6 +370,7 @@ The seven core emotions use the canonical EMFACS-7 AU combinations; the other ex
 ```bash
 npm install
 npm run demo     # Vite dev server for demo/
+npm run lab      # Calibration lab: expression sheets and gesture speeds on a frozen avatar (lab/README.md)
 npm test         # Vitest, incl. the adapter contract test against TalkingHead's source
 npm run build    # Build the demo into dist/
 npm run lint     # ESLint

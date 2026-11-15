@@ -1,4 +1,4 @@
-## Axiom - The unified AI workspace for modern team development
+## An agentic development environment
 
 Axiom is an AI-powered desktop application that brings full-project context to your chat. It is designed for developers who need an AI assistant that deeply understands their codebase, local environment, and daily workflow.
 

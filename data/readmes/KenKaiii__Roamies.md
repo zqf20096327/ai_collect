@@ -136,9 +136,62 @@ Windows and Linux uses [NVIDIA Parakeet TDT 0.6B v3](https://huggingface.co/nvid
    ./build.sh            # release bundle for this OS
    ```
 
+   On Windows, run these in **Git Bash** (it comes with [Git for Windows](https://git-scm.com/download/win)), not PowerShell or
+   Command Prompt: `build.sh` is a Bash script, and Windows PowerShell 5 doesn't accept `&&`.
+
 2. Open the app, follow the setup guide, pick your Roamie, and hold ⌃⌥ (Ctrl+Alt on Windows and Linux) to say hi.
 
 <sub>The first time you sign in with Claude, Roamies downloads Claude Code (about 140 MB). On Windows and Linux, the voice model (about 670 MB) downloads once at setup.</sub>
+
+## Local models
+
+Roamies can run on a model on your own computer or server instead of a cloud provider: Ollama, LM Studio, or any
+OpenAI-compatible server (llama.cpp, vLLM, oMLX and others). Connect them on the panel's **Model** page.
+
+**What a model needs to work with Roamies.** Only models that pass the first two show up in the model list:
+
+- **It sees images.** Roamies looks at your screen through screenshots.
+- **It calls tools.** Everything Roamies does, from clicking to drawing on screen, is a tool call.
+- **It points precisely.** To show you a button or click it, the model has to say where it is on a screenshot,
+  to within a few pixels. This is called GUI grounding, and it's where small models fall down: they read the screen
+  fine but point next to the thing, or at the wrong one.
+- **It has 32k tokens of context or more.** The instructions and tools alone take about 13k.
+
+**Models worth trying.** The Qwen3-VL family is the best at pointing that also chats and calls tools well. Third-party
+ScreenSpot-Pro results (a grounding test on real app screenshots) put them at about:
+
+| Model | ScreenSpot-Pro | Memory at 4-bit | Notes |
+| --- | --- | --- | --- |
+| Qwen3-VL 30B-A3B | ~60 | ~20 GB | Best pick if it fits: as fast as a 3B model |
+| Qwen3-VL 32B | ~58 | ~20 GB | Slower than 30B-A3B for about the same pointing |
+| Qwen3-VL 8B | ~55 | ~6 GB | The smallest worth using; expect it to miss small icons |
+
+Smaller models (4B and under) can chat about your screen but often point at the wrong place. Qwen3.5 and Qwen3.6
+models also work. Models made only for grounding (Holo2, MolmoPoint and the like) point better, but they
+can't hold a conversation or call tools, so they don't suit Roamies.
+
+<sub>Qwen3-VL and Qwen3.5 give positions on a 0 to 1000 grid instead of in pixels. Roamies knows this from the model's
+name and converts. A fine-tune with a different name may point in the wrong place.</sub>
+
+**Ollama:** install it from [ollama.com](https://ollama.com), run `ollama pull qwen3-vl:8b` (or `qwen3-vl:30b`), and
+press **Connect** next to Ollama. Give it enough context: in Ollama's settings set **Context length** to 32k or more,
+or start it with `OLLAMA_CONTEXT_LENGTH=32768`. Roamies warns you if it's too small.
+
+**LM Studio:** install it from [lmstudio.ai](https://lmstudio.ai), download a vision model (Qwen3-VL 8B or larger),
+turn on its server (**Developer → Start Server**, or `lms server start`), load the model with **Context Length** set to
+32k or more, and press **Connect** next to LM Studio.
+
+**Any other server:** press **Add server** next to *Another server*, then give it a name, its address (for example
+`http://127.0.0.1:8080/v1`; Roamies adds `/v1` if you leave it off), and its API key if it needs one. Most servers
+don't say whether a model can see images, so turn on **Its models can see images** when yours can (llama.cpp
+says so itself). The server has to answer before it's saved. Start it with tool calling, vision and enough context on:
+
+- **llama.cpp:** `llama-server -m model.gguf --mmproj mmproj.gguf --jinja -c 32768`
+- **vLLM:** `vllm serve Qwen/Qwen3-VL-8B-Instruct --enable-auto-tool-choice --tool-call-parser hermes --max-model-len 32768`
+
+<sub>With a model on your computer, your messages and screenshots stay on it. A server on another machine gets them
+over your network, so use `https://` or a network you trust. A server's key is saved with your other sign-ins in
+`~/.gg/auth.json` (shared with GG Coder), not in Roamies' settings file.</sub>
 
 ## Linux (beta)
 

@@ -337,8 +337,10 @@ form starts from them and can save its current values back. Admins also see the 
 with `HEALTH_DETAILS=true`).
 
 The Users page lists accounts a page at a time, pending first, with whether each email address is
-verified; search and the status, verification and "Flagged only" filters run in the database and stay in
-the link. Check rows (or "Select all" to take every match, not only the loaded page) to approve,
+verified; search and the status, verification and flag filters (any flag, or one reason such as shared ip; a
+flag chip lists everyone flagged for that reason) run in the database and stay in the link. "Group by flag"
+splits the same list into sections, one per reason and then the unflagged (folded), each with its own count,
+paging and "Select all" over just that section; an account flagged twice is in both. Check rows (or "Select all" to take every match, not only the loaded page) to approve,
 require approval again, suspend, reinstate or delete them together; each account goes through the same checks as one at a
 time (never yourself, never the last admin) and anything refused is listed with the reason. The same
 list and actions are `list_users` / `manage_users` over MCP and `reelsaw users` / `reelsaw users-bulk`
@@ -413,7 +415,7 @@ them), so a single-user box stays as it is:
   account per real mailbox (`john.doe+x@gmail.com` is `johndoe@gmail.com`); `MAX_REQUESTS_PER_MINUTE`
   / `_HOUR` cap changes (API mutations, MCP tool calls) per account, with plan and per-user
   overrides like the other quotas. An hourly pass flags accounts that
-  share a sign-up address, arrive in bursts or use a temporary domain; the Users page shows the flags ("Flagged only"), `reelsaw abuse` lists them, and nothing is
+  share a sign-up address, arrive in bursts or use a temporary domain; the Users page shows the flags, filters and groups by reason, `reelsaw abuse` lists them, and nothing is
   suspended automatically; a sign-up rule on a flag (`flag shared_ip hold`) sends new matches to approval. Every refusal is a sentence.
 - **yt-dlp from a datacentre**: YouTube refuses many cloud IPs. `YTDLP_PROXY` is one URL
   or an operator-ranked pool (a home Pi, a cheap VPS, a paid proxy). `{session}` in a URL is
@@ -617,7 +619,7 @@ schema say what it returns, whether it runs in the background and which neighbou
 | `get_queue` | Admins only: waiting, running and retrying job counts per pipeline stage with when the longest wait began (oldestWaitingAt), plus the jobs currently in flight (project title, attempt, started, and a retrying job's lastError). |
 | `list_failures` | Admins only: failed projects and clips across the instance (owner email, stage, reason, when). |
 | `retry_failures` | Admins only: retry matching failed projects and clips through the same lifecycle as retry_project / rerender_clip (never a raw queue poke). |
-| `list_users` | Admins only: accounts on this instance, pending first then newest, with status (pending, active, suspended), role, whether the email address is verified (emailVerified), abuse flags, plan, last active and all-time usage. |
+| `list_users` | Admins only: accounts, pending first then newest, with status, role, emailVerified, abuse flags, plan, last active and all-time usage. |
 | `manage_users` | Admins only: approve, hold, suspend, reinstate or delete many accounts, by ids or every match of filter (as list_users). |
 | `list_signup_rules` | Admins only: the sign-up rules in front of SIGNUP_MODE, oldest first (at most 500). |
 | `manage_signup_rules` | Admins only: add and remove sign-up rules in one call (ids from list_signup_rules). |
@@ -659,7 +661,8 @@ Run as `docker compose exec app reelsaw <command>` (from source: `pnpm --filter 
 | --- | --- |
 | `reelsaw version [--json]` | running version, latest published release, how to upgrade |
 | `reelsaw releases [--json] [--limit n]` | published versions from GitHub (reelsaw.com/releases / list_releases) |
-| `reelsaw users [--q text] [--status s] [--verified yes\|no] [--flagged yes] [--held rule] [--limit n] [--cursor c] [--json]` | list accounts a page at a time: role, status, email verified, sign-up date |
+| `reelsaw users [--q text] [--status s] [--verified yes\|no] [--flagged yes] [--flag shared_ip\|signup_burst\|disposable_email] [--held rule] [--in shared_ip\|…\|none] [--limit n] [--cursor c] [--json]` | list accounts a page at a time: role, status, email verified, sign-up date |
+| `reelsaw users --group flag [filter flags] [--limit n] [--json]` | the same list in sections, one per abuse flag then the unflagged, each with its count (Users page "Group by flag", list_users groupBy); --in <key> takes one section |
 | `reelsaw users-bulk <approve\|hold\|suspend\|reinstate\|delete> (<email…> \| --all \| filter flags) [--reason text]` | act on many accounts (same as the Users selection bar and manage_users); hold sends active ones back to approval; filter flags as for `users` (--held "ip 203.0.113.0/24": accounts that sign-up rule held); delete is forever |
 | `reelsaw approve <email>` | approve a waiting account (when email is off or the admin is locked out) |
 | `reelsaw make-admin <email>` | promote an account to admin (approves it first if needed) |
@@ -909,6 +912,4 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318   # OTLP/HTTP; traces + m
 OTEL_SERVICE_NAME=reelsaw
 ```
 
-Sentry's OTLP endpoint takes traces and logs (`…/integration/otlp`, plus `OTEL_EXPORTER_OTLP_HEADERS`). Each pino line that passes its level is exported to `/v1/logs`, with the active trace id attached; prompt, transcript and address fields stay in the local log. Sentry does not ingest OTLP metrics. With `SENTRY_DSN` set and `OTEL_METRICS_ENABLED` left on, the server sends Node runtime gauges (memory, CPU, event loop) and the metrics below through the DSN instead. Set `OTEL_METRICS_ENABLED=false` to keep traces and logs and drop those metrics.
-
-Metrics. Durations are seconds. Attributes are bounded sets (stage, proxy id, model, outcome), never a project, clip or user id. Work grows with the video, so the stage, download and transcription numbers ea
+Sentry's OTLP endpoint takes traces and logs (`…/integration/otlp`, plus `OTEL_EXPORTER_OTLP_HEADERS`). Each pino line that passes its level is exported to `/v1/logs`, with the active trace id attached; prompt, transcript 

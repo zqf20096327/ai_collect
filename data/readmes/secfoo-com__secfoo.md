@@ -6,7 +6,8 @@
 
 <p align="center">
   <strong>Turn the coding agent you already have into a disciplined security reviewer.</strong><br>
-  SAST, secret scanning, SCA, threat modeling and architecture review. Same checklist, same report shape, every run.
+  SAST, secret scanning, SCA, threat modeling and architecture review, with your design docs, Confluence and tickets as context.<br>
+  Same checklist, same report shape, every run.
 </p>
 
 <p align="center">
@@ -36,50 +37,55 @@ Antigravity, OpenCode, ...) or, if none is installed, uses the
 shell. Pass `--agent` to choose. Keep it around with `pipx install secfoo`
 or `pip install secfoo`; more channels under [Install](#install).
 
-## What it found on OWASP NodeGoat
+## Context, not just code
 
-One real, unedited run against [OWASP/NodeGoat](https://github.com/OWASP/NodeGoat)
-(Claude Code, `--depth quick`, 2026-11-14), both skills running concurrently:
+A code repository is one input. Real reviews also need the design doc, the
+threat model from last year, the runbook and the ticket that explains why the
+odd thing is there. secfoo passes that context to the agent through
+[MCP](https://modelcontextprotocol.io) and asks the skills to use it:
+the architecture review compares what is *documented* (Confluence, README,
+ADRs) with what is *implemented* and reports the gaps; secret scanning
+covers linked Confluence pages as well as code; every report ends with a
+coverage section that says which documentation sources were reached and
+which were not.
 
-| Skill | Critical | High | Medium | Low | Time | Cost |
-|---|---|---|---|---|---|---|
-| SAST — Static Code Analysis | 0 | 6 | 5 | 1 | 4 min 12 s | $2.34 |
-| Secret Scanning — Code, Confluence & Docs | 0 | 3 | 2 | 1 | 2 min 15 s | $1.39 |
-
-Among the Highs: `eval()` on a POST body (CWE-95), SSRF with the response
-reflected as HTML (CWE-918), NoSQL injection through a `$where` string
-(CWE-943), IDOR on `/allocations/:userId`, autoescaping disabled globally
-(CWE-79), an RSA private key and the session-signing secret committed to the
-repo. Every finding carries CWE, OWASP category, CVSS vector, location,
-the vulnerable code and a fix. The full reports, the SARIF and the JSONL
-export are in [examples/sample-output/nodegoat](https://github.com/secfoo-com/secfoo/blob/main/examples/sample-output/nodegoat).
-
-## Put it in CI
-
-Findings show up in GitHub's **Security** tab and as PR annotations; the job
-fails on the severity you choose.
-
-```yaml
-# .github/workflows/secfoo.yml
-permissions:
-  contents: read
-  security-events: write
-steps:
-  - uses: actions/checkout@v4
-  - uses: secfoo-com/secfoo@main
-    env:
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}   # or ANTHROPIC_API_KEY / GEMINI_API_KEY
-    with:
-      skills: sast,secret-scanning
-      fail-on: high
-      max-cost: "2.00"
+```bash
+secfoo run --skill security-architecture-review --skill threat-modeling \
+  --target https://github.com/org/payments-api \
+  --confluence https://yourcompany.atlassian.net/wiki/spaces/PAY/pages/123/Architecture \
+  --confluence https://yourcompany.atlassian.net/wiki/spaces/SEC/pages/456/Threat+Model
 ```
 
-- **GitHub Action** with SARIF upload, job summary and severity outputs: [docs/CI.md](https://github.com/secfoo-com/secfoo/blob/main/docs/CI.md#github-actions)
-- **pre-commit**: `repo: https://github.com/secfoo-com/secfoo`, hooks `secfoo-secrets` and `secfoo` ([example](https://github.com/secfoo-com/secfoo/blob/main/examples/ci/pre-commit-config.yaml))
-- **GitLab CI** job with SARIF artifact: [examples/ci/gitlab-ci.yml](https://github.com/secfoo-com/secfoo/blob/main/examples/ci/gitlab-ci.yml)
-- **Docker**: `docker run --rm ghcr.io/rakfortltd/secfoo --help`
-- **Anywhere else**: `secfoo run ... --json --fail-on high`, then `secfoo findings export --format sarif`. Exit codes `0` clean, `1` run failed, `2` findings gate, `3` cost gate.
+Connect the documentation sources once in `~/.secfoo/config.toml`; any MCP
+server works, so the same applies to SharePoint and Microsoft 365, Jira,
+Notion, Google Drive or an internal wiki:
+
+```toml
+[[mcp_servers]]
+name = "Atlassian-Rovo-MCP"          # Confluence + Jira, official Atlassian server
+command = "npx"
+args = ["-y", "mcp-remote@latest", "https://mcp.atlassian.com/v1/mcp/authv2"]
+
+[[mcp_servers]]
+name = "sharepoint"                   # any HTTP/SSE MCP server
+url = "https://mcp.example.com/sharepoint"
+transport = "http"
+headers = { Authorization = "Bearer ..." }
+```
+
+| Context | How it gets in | Used by |
+|---|---|---|
+| Confluence pages | `--confluence <url>` (repeatable) plus an Atlassian MCP server | Architecture review, threat modeling, secret scanning, compliance skills |
+| Jira, SharePoint, Notion, Google Drive, internal wikis | `[[mcp_servers]]` in config; the agent calls them as tools during the review | Every skill |
+| Vendor documents (PDF, DOCX, PPTX) and AI-BOM files | `secfoo assessment upload <id> <file>` | Third-party risk assessment, Responsible AI compliance |
+| Curated vulnerability patterns | `secfoo memory signup` (optional hosted service, exposed as an MCP server) | SAST, SCA, secret scanning |
+
+With `--agent claude` the configured servers are attached to each run
+automatically and nothing else (your global Claude config is not touched and
+the target's own `.mcp.json` is not loaded). For Gemini CLI and Cursor run
+`secfoo mcp sync --agent <agent>` once. Codex, Antigravity and the `api`
+agent cannot use MCP servers yet. Details in
+[docs/REFERENCE.md](https://github.com/secfoo-com/secfoo/blob/main/docs/REFERENCE.md#configuration-secfooconfigtoml).
 
 ## A 30-second look at the dashboard
 
@@ -104,6 +110,9 @@ Screenshots are from a real local `secfoo serve` against public vulnerable-app t
   structured prompt and a target, then collects a report in a fixed shape.
 - **One dashboard for the program.** Coverage, dispositions, STRIDE,
   design verdicts, and findings across every project you have scanned.
+- **Context-aware.** Confluence pages, tickets, design docs and uploaded
+  vendor documents reach the agent through MCP, and the report says which
+  sources it could and could not read. See [Context, not just code](#context-not-just-code).
 - **Local first.** Runs and `secfoo serve` stay on your machine. Optional
   `secfoo cloud login` syncs to an org portal that is not in this repo.
 - **Concurrent by default.** Several `--skill` flags run at the same time.
@@ -126,6 +135,7 @@ Screenshots are from a real local `secfoo serve` against public vulnerable-app t
 | Prompt Review | `prompt-review` |
 | Deployment Readiness | `deployment-readiness` |
 | Responsible AI Compliance | `responsible-ai-compliance` |
+| Third-Party Risk Assessment | `third-party-risk-assessment` |
 
 Run one, or several together. What each report actually contains is in
 [docs/REFERENCE.md](https://github.com/secfoo-com/secfoo/blob/main/docs/REFERENCE.md). Write your own skill as a
@@ -188,6 +198,51 @@ secfoo run --skill sast --target https://github.com/org/repo   # picks the api a
 Universal install scripts, standalone binaries, CI flags, spend tracking,
 and configuration live in [docs/REFERENCE.md](https://github.com/secfoo-com/secfoo/blob/main/docs/REFERENCE.md#install).
 Developing this repo: `pip install -e ".[dev]"`.
+
+## What it found on OWASP NodeGoat
+
+One real, unedited run against [OWASP/NodeGoat](https://github.com/OWASP/NodeGoat)
+(Claude Code, `--depth quick`, 2026-11-14), both skills running concurrently:
+
+| Skill | Critical | High | Medium | Low | Time | Cost |
+|---|---|---|---|---|---|---|
+| SAST — Static Code Analysis | 0 | 6 | 5 | 1 | 4 min 12 s | $2.34 |
+| Secret Scanning — Code, Confluence & Docs | 0 | 3 | 2 | 1 | 2 min 15 s | $1.39 |
+
+Among the Highs: `eval()` on a POST body (CWE-95), SSRF with the response
+reflected as HTML (CWE-918), NoSQL injection through a `$where` string
+(CWE-943), IDOR on `/allocations/:userId`, autoescaping disabled globally
+(CWE-79), an RSA private key and the session-signing secret committed to the
+repo. Every finding carries CWE, OWASP category, CVSS vector, location,
+the vulnerable code and a fix. The full reports, the SARIF and the JSONL
+export are in [examples/sample-output/nodegoat](https://github.com/secfoo-com/secfoo/blob/main/examples/sample-output/nodegoat).
+
+## Put it in CI
+
+Findings show up in GitHub's **Security** tab and as PR annotations; the job
+fails on the severity you choose.
+
+```yaml
+# .github/workflows/secfoo.yml
+permissions:
+  contents: read
+  security-events: write
+steps:
+  - uses: actions/checkout@v4
+  - uses: secfoo-com/secfoo@main
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}   # or ANTHROPIC_API_KEY / GEMINI_API_KEY
+    with:
+      skills: sast,secret-scanning
+      fail-on: high
+      max-cost: "2.00"
+```
+
+- **GitHub Action** with SARIF upload, job summary and severity outputs: [docs/CI.md](https://github.com/secfoo-com/secfoo/blob/main/docs/CI.md#github-actions)
+- **pre-commit**: `repo: https://github.com/secfoo-com/secfoo`, hooks `secfoo-secrets` and `secfoo` ([example](https://github.com/secfoo-com/secfoo/blob/main/examples/ci/pre-commit-config.yaml))
+- **GitLab CI** job with SARIF artifact: [examples/ci/gitlab-ci.yml](https://github.com/secfoo-com/secfoo/blob/main/examples/ci/gitlab-ci.yml)
+- **Docker**: `docker run --rm ghcr.io/rakfortltd/secfoo --help`
+- **Anywhere else**: `secfoo run ... --json --fail-on high`, then `secfoo findings export --format sarif`. Exit codes `0` clean, `1` run failed, `2` findings gate, `3` cost gate.
 
 ## Learn more
 

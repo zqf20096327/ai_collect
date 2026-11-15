@@ -4,6 +4,31 @@
 
 ---
 
+## Migration: KaTeX now loads on demand
+
+KaTeX is no longer bundled with `<StreamMarkdown>`. It loads the first time rendered content contains math, so apps whose content has no math no longer download or parse it (about 250 KB of JavaScript before compression). The props, slots and rendered math output are unchanged.
+
+What changes:
+
+-   **Before KaTeX has loaded, math shows as its TeX source** in a `pre`/`code` element marked `data-streamdown="math-pending"`, then re-renders as KaTeX when it arrives (usually within a frame or two of the first math).
+-   **Server-side rendering renders math as TeX source** unless KaTeX was loaded first.
+
+To render math on the first pass, as before, call `preloadMath()` and await it before rendering:
+
+```ts
+import { preloadMath } from 'streamdown-vue';
+
+await preloadMath();
+```
+
+-   **SSR / Nuxt:** call it on the server before rendering **and** on the client before hydrating, so both render the same markup (otherwise Vue reports a hydration mismatch for pages with math). See §15.9.
+-   **Tests that assert KaTeX output** from a single synchronous render: `await preloadMath()` in a `beforeAll`.
+-   **Client-only apps** need no change. Call `preloadMath()` at startup only if you want math to render without the brief TeX-source state.
+
+You still import `katex/dist/katex.min.css` yourself, as before.
+
+---
+
 ## Table of Contents
 
 1. Features
@@ -33,7 +58,7 @@
 -   KaTeX math (`remark-math` + `rehype-katex`) with extra repairs (matrices, stray `$`)
 -   Shiki syntax highlighting (light + dark themes) with reactive copy & download buttons
     and an extensible action bar (add your own buttons globally or per-instance)
--   Mermaid diagrams with caching, async render & graceful error recovery
+-   Mermaid diagrams with async rendering, readable streaming source & graceful error recovery
 -   Incremental rendering + repair of incomplete Markdown tokens while streaming
 -   Secure allow‑list based hardening of link & image URLs (blocks `javascript:` etc.)
 -   Component override layer (swap any tag / embed custom Vue components)
@@ -277,7 +302,7 @@ Why repair first? Without repair, a trailing `**` or lone ``` will invalidate th
 | `defaultOrigin`            | `string?`                  | `undefined`              | Base URL used to resolve relative links/images before allow‑list checks.                                                                                                        |
 | `allowedImagePrefixes`     | `string[]`                 | `['https://','http://']` | Allowed (lowercased) URL prefixes for `<img>`. Blocked => image dropped.                                                                                                        |
 | `allowedLinkPrefixes`      | `string[]`                 | `['https://','http://']` | Allowed prefixes for `<a href>`. Blocked => link text only.                                                                                                                     |
-| `parseIncompleteMarkdown`  | `boolean`                  | `true`                   | (Future toggle) Auto apply repair internally. Currently you repair outside using utility; prop reserved.                                                                        |
+| `parseIncompleteMarkdown`  | `boolean`                  | `true`                   | Repair incomplete Markdown while streaming. Set false for final Markdown semantics.                                                                        |
 | `shikiTheme`               | `ShikiThemeConfig`         | `undefined`              | Shiki theme (string) or dual theme object `{ light: '...', dark: '...' }`. If undefined, follows system preference (`github-light`/`github-dark`).                            |
 | `codeBlockActions`         | `Component[]`              | `[]`                     | Array of Vue components appended as action buttons in every code block header.                                                                                                  |
 | `codeBlockShowLineNumbers` | `boolean`                  | `false`                  | Show line numbers in all code fences.                                                                                                                                           |
@@ -455,6 +480,29 @@ const MyCode = defineComponent({
 ```
 
 > **Need a deeper walkthrough?** The [Shiki Language Bundling Guide](./docs/shiki-language-guide.md) covers both the batteries-included entry and the minimal core workflow.
+
+### Streaming and external highlighting
+
+`CodeBlock` keeps the latest source visible while highlighting runs. Completed
+lines retain their tokens; the mutable suffix stays escaped plaintext until a
+job finishes. Results apply only to the same language/theme and an unchanged
+source prefix. Edits, replacements, provider changes and unmount invalidate old
+jobs. Appending code preserves existing DOM nodes and text selections.
+
+For worker integration, pass `highlight(input: CodeHighlightInput): Promise<string>`
+to `CodeBlock` (or a `components.codeblock` wrapper). Return trusted Shiki HTML;
+this hook is not an HTML sanitizer. Rejections leave readable escaped source.
+Line numbers, selection controls, copy/download and themes still apply.
+
+Workers can import the DOM-free `streamdown-vue/shiki` entry. It shares the
+registry and highlighter with the renderer but does not register defaults
+automatically. Register the languages needed in that worker, then create one
+`createStreamingHighlighter(await useShikiHighlighter())` per mounted code block.
+Call it with `{ code, language, theme }` for each snapshot and release the function
+when that block leaves. It carries grammar state across complete lines and resets
+on edits, truncation, language/theme or resolved grammar changes. ANSI uses the
+full highlighter. Work still includes serializing the output HTML, so this does
+not make arbitrarily large blocks constant-cost.
 
 ### 10.1 Changing the Shiki Theme
 
@@ -701,6 +749,16 @@ The default copy button uses the Clipboard API and toggles its success icon only
 
 ## 11. Mermaid Diagrams
 
+Open Mermaid fences keep their readable source until the closing fence arrives.
+The last 32 finished diagrams are cached by source across row unmounts. Cached
+diagrams remount before paint with fresh namespaces for SVG IDs and references,
+so identical diagrams can appear together.
+The source remains during the first render; later edits retain the last successful
+SVG until its replacement is ready. There is no intermediate spinner collapse.
+`MermaidBlock` also accepts `streaming: boolean` for direct use and responds to
+code changes. A single trailing `-` after a paragraph is deferred while streaming;
+final mode retains normal Setext-heading semantics.
+
 Fenced block:
 
 ````md
@@ -712,7 +770,7 @@ graph TD;A-->B;B-->C;
 The `MermaidBlock` component handles:
 
 -   Deduplicated initialization
--   Simple hash based caching
+-   Reactive source changes with stale-result rejection
 -   Error fallback (last good diagram)
 -   Copy diagram source
 
@@ -731,6 +789,8 @@ Supported by default:
 -   Display math: `$$ ... $$`
 -   Display math: `\[ ... \]` (normalized to `$$` blocks). LaTeX inside inline code, indented code, and fenced code stays exactly as written.
 -   (If you add them) Inline math via `\( ... \)` or by providing your own `remark-math` with single‑dollar enabled.
+
+`rehype-katex` (and KaTeX) is loaded the first time math appears; until then math renders as its TeX source marked `data-streamdown="math-pending"`. Call `await preloadMath()` before rendering to have math rendered on the first pass (required for matching SSR and hydration output). See [Migration](#migration-katex-now-loads-on-demand).
 
 ### 12.2 Opting into single‑dollar inline math
 
@@ -792,11 +852,11 @@ Benchmarks and the reproducible Chromium streaming profile are documented in `do
 
 ### Streaming parse cache (automatic)
 
-`<StreamMarkdown>` keeps a small per-instance cache so append-only streaming updates do not re-run Unified/remark/rehype/KaTeX for completed blocks whose final parser input is unchanged. The cache is internal: there is no new prop, and the component still creates fresh VNodes (with current hardening, themes, code controls, and custom components) on every render.
+`<StreamMarkdown>` keeps a small per-instance cache so append-only streaming updates do not re-run Unified/remark/rehype/KaTeX for completed blocks whose final parser input is unchanged. The cache is internal: completed VNodes are reused while hardening, theme, code controls and component context remain unchanged. Custom tag overrides participate in reuse; they receive cloned property arrays when their render context changes. Treat Markdown props as read-only. Internal reactive state in custom components still updates normally. Built-in stateless tags render as native elements.
 
--   The last non-whitespace block is always reparsed; a block is only reused after a real following boundary exists.
+-   Only the growing tail is repaired for incomplete Markdown and reparsed. Completed blocks preserve literal unmatched markers such as `2 * 3 = 6` and `snake_case`; a block is only reused after a real following boundary exists.
 -   Reuse stops at the first changed or uncertain block; the rest of the document reparses normally.
--   The cache is bypassed for the whole document when it contains link reference definitions or footnotes (later definitions can reinterpret earlier blocks), when any custom `remarkPlugins`/`rehypePlugins` are present, after non-append edits or truncation, and when `parseIncompleteMarkdown` changes.
+-   The cache is bypassed for the whole document when it contains link reference definitions or footnotes (later definitions can reinterpret earlier blocks), when any custom `remarkPlugins`/`rehypePlugins` are present, and after non-append edits or truncation. A parse-mode change can retain completed blocks whose normalized final parser input is identical; the active tail always reparses.
 -   Only the current document's parsed trees are retained, and they are released on reset and unmount. Cached trees are treated as read-only.
 -   Cached and bypassed rendering are compared at every chunk in `__tests__/parse-cache.test.ts`; keep them green when changing preprocessing, block splitting/merging, or the processor pipeline.
 
@@ -955,6 +1015,18 @@ const { rendered, start } = useStreamedMarkdown('/api/chat');
 -   The stream loop runs only client-side; on first SSR render you may want a placeholder skeleton.
 -   Shiki highlighting of large code blocks happens client-side; if you need critical highlighted code for SEO, pre-process the markdown on the server and send the HTML (future enhancement: server highlight hook).
 -   Ensure Mermaid is only executed client-side (the provided plugin pattern handles this since the component executes render logic on mount).
+-   KaTeX loads on demand, so a server render shows math as TeX source unless KaTeX was loaded first. Load it on both the server and the client (before hydration) so the markup matches:
+
+```ts
+// plugins/streamdown-math.ts (runs on server and client)
+import { preloadMath } from 'streamdown-vue';
+
+export default defineNuxtPlugin(async () => {
+    await preloadMath();
+});
+```
+
+Skip this if your server-rendered pages never contain math; KaTeX then loads only when math first appears in the browser.
 
 ### 15.10 Troubleshooting
 
@@ -964,6 +1036,7 @@ const { rendered, start } = useStreamedMarkdown('/api/chat');
 | Links stripped                     | Adjust `allowed-link-prefixes` / set `default-origin` to resolve relative paths first.                                       |
 | Images missing                     | Add CDN prefix to `allowed-image-prefixes`.                                                                                  |
 | Flash of unstyled math             | Confirm KaTeX CSS loaded in client plugin before first render.                                                               |
+| Math shows as TeX source at first  | KaTeX loads on first use. `await preloadMath()` before rendering (on server and client for SSR) to render it on the first pass. |
 | High CPU on huge streams           | Throttle updates (wrap repair/render in `requestAnimationFrame` or batch by char count).                                     |
 
 That’s it—Nuxt integration is essentially drop‑in plus an optional streaming composable.
@@ -996,7 +1069,7 @@ const remarkAppend = () => (tree: any) => {
 
 **Why repair outside instead of inside the component?** Control & transparency. You can decide when to re-render; the component focuses on a deterministic AST transform.
 
-**Can I disable KaTeX or Mermaid?** For now they are bundled if you use their fences. Future option could allow toggling; PRs welcome.
+**Can I disable KaTeX or Mermaid?** Neither is bundled with the renderer: both load the first time content uses them (math, or a `mermaid` fence). Content without them never downloads them.
 
 **Does it sanitize HTML?** Inline HTML is not allowed (passed through remark/rehype with `allowDangerousHtml: false`). Add a sanitizer plugin if you purposely enable raw HTML.
 

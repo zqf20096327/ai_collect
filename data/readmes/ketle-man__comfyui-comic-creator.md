@@ -102,6 +102,7 @@ ComfyUI 上で動作するマンガページ作成 SPA（シングルページ�
 - **生成モード** — 1 頁まるごと（ページ全面へ配置）／コマ単位（各コマの縦横比で約 1MP 生成してコマへ配置）／自由サイズ（生成のみ）
 - **シード** — ランダム（既定）／固定／生成ごとに+1 を選択。直前のシードの表示と「このシードを固定」で、気に入った結果を再現できる
 - 送信されるプロンプト（MOSS-Image のレイアウト JSON）を「JSON」タブで確認でき、直接編集して送信も可能。プリセット（標準 50step／軽量 25step／高速 DMD 8step・Turbo 4step）・Skip Layer Guidance・LoRA に対応
+- **レイアウトの保存** — 左端のアセットペイン「L」（▶ で開く）に、エディタのレイアウト（枠・キャンバスサイズ・全体プロンプト）を名前を付けて保存し、サムネイルから読み込める（保存先はブラウザ内、一括バックアップにも含まれる）。開いている間は右端の生成ボタンの列を隠してエディタを広く使える
 - 「プロンプトを拡張する」で、短い指示をテキストエンコーダ（LLM）が詳細なキャプションに書き換えてから生成（公式テンプレートと同じ enable_prompt_enhancer。レイアウト使用時は無効）。レイアウトは「新規作成」で全削除、「取り込み全クリア」で取り込んだ枠だけ削除
 - 生成画像は ComfyUI 本体の `output/cc_moss` フォルダへ保存
 - **配置・連携ボタン** — 「レイアウト オーバーレイ」（1頁まるごと）／「コマへ配置」と、「Imageタブで開く」（選択画像を Image タブの新規キャンバス／新規レイヤーとして開く）
@@ -250,7 +251,15 @@ MOSS-Image タブ上部のステータスが「利用可能」になれば準備
 
 ### Ollama と画像生成で VRAM を取り合う場合
 
-設定タブの「VRAM調整（Ollama）」で、Workflow Studio 経由の画像生成（T2I・I2I・Inpaint・Outpaint）の直前に Ollama のモデルをアンロードできます。「空きが目標未満のときだけ必要な分をアンロード」（VRAM 使用量の大きいモデルから1台ずつ、目標の空き GB に届くまで）と「毎回すべてアンロード」を選べます。空き VRAM は `nvidia-smi` の実測で判定します（ComfyUI が表示する空きは Ollama の使用分を反映しないことがあるため）。対象はローカルホストの Ollama（既定の `127.0.0.1:11434`、Auto タブのローカル LLM、意思決定モデル）です。Auto タブの「モデルをアンロード」も、Ollama のときはロード中の全モデルをアンロードします。
+設定タブの「VRAM調整（Ollama）」で、Workflow Studio 経由の画像生成（T2I・I2I・Inpaint・Outpaint）の直前に Ollama のモデルをアンロードできます。「空きが目標未満のときだけ必要な分をアンロード」（VRAM 使用量の大きいモデルから1台ずつ、目標の空き GB に届くまで）と「毎回すべてアンロード」を選べます。空き VRAM は `nvidia-smi` の実測で判定します（ComfyUI が表示する空きは Ollama の使用分を反映しないことがあるため）。対象はローカルホストの Ollama（既定の `127.0.0.1:11434`、Auto タブのローカル LLM、意思決定モデル）です。Auto タブの「モデルをアンロード」も、Ollama のときはロード中の全モデルをアンロードします。VRAM を使っていないモデル（CPU 常駐にしたプロンプト翻訳のモデルなど）はアンロードせずに残します。
+
+### 日本語でプロンプトを書く（プロンプト翻訳）
+
+[ComfyUI-Workflow-Studio](https://github.com/ketle-man/ComfyUI-Workflow-Studio) v0.9.10 以降が入っていると、設定タブの「プロンプト翻訳（Workflow Studio）」で、日本語などで書いたプロンプトを Workflow Studio の翻訳機能（Ollama のローカルモデル。既定は [PLaMo 3 Translate](https://huggingface.co/pfnet/plamo-3-translate-2b-GGUF)）で英語に訳せます。対象はレイアウトタブの Generate、Image タブの I2I・Inpaint・Outpaint、スクリプトタブの半自動マンガの一括生成（コマの画像プロンプトも含む）、Nanobanana+ タブのローカルモード、Auto タブとオートレイアウトの画像生成（エンジンがローカルのとき）、MOSS-Image のプロンプトと説明（caption）です。Gemini（Nanobanana）は日本語をそのまま理解するので訳しません。
+
+- 「プロンプト翻訳を使う」をオンにすると入力欄の下に 🌐 ボタンが出ます（「原文」で戻せます）。「生成時に自動で翻訳する」（既定オン）は送る文だけを訳し、入力欄はそのまま残します。翻訳に失敗したときは生成しません。
+- カンマ・`(word:1.2)`・`<lora:...>`・`{a|b}`・`BREAK` などの記法と、「」『』の中（看板の文字など画像に描く文字）は訳しません。MOSS-Image の「描画する文字」も送りません。MOSS-Image の翻訳先は英語（既定）か中国語（簡体字）を選べます。
+- モデル・Ollama の URL・元の言語・GPU／CPU 常駐は Workflow Studio の設定を共有します（モデルの準備も Workflow Studio の設定画面で行います）。PLaMo 3 Translate は個人・非商用の利用は無料です（PLaMo Community License）。
 
 ### 依存関係（任意）
 
@@ -260,7 +269,7 @@ MOSS-Image タブ上部のステータスが「利用可能」になれば準備
 | --------------------------------- | -------------------------------------------------------------------------------------------- |
 | **comfyui-vrm-pose-editor** | レイアウトタブ・Image タブの 3D ポーズ／3D テキスト（手動インストール時はフォルダ名を `comfyui-vrm-pose-editor` にすること） |
 | **ComfyUI-VRM-Pose-Studio** | レイアウトタブ「3Dポーズ」の 🎛 Editor を VRM Pose Studio で開く（設定タブ「3Dポーズ エディタ」で切替） |
-| **ComfyUI-Workflow-Studio** | I2I 連携、Image タブの Inpaint、workflow studio タブのギャラリー埋め込み、Gallery タブからの動画（MP4）送信（動画ツール） |
+| **ComfyUI-Workflow-Studio** | I2I 連携、Image タブの Inpaint、プロンプト翻訳（v0.9.10 以降）、workflow studio タブのギャラリー埋め込み、Gallery タブからの動画（MP4）送信（動画ツール） |
 | **comfyUI-particle-pixijs** | レイアウトタブ「画像」サブタブ・Image タブの PixiJS FX（パーティクル／フィルタ効果モーダル） |
 
 ## 使い方
@@ -309,7 +318,9 @@ MOSS-Image タブ上部のステータスが「利用可能」になれば準備
 
 ## マニュアル
 
-画像なしの入門マニュアル（v1.70.0対応）を同梱しています。日本語は [docs/manual/ja/](docs/manual/ja/)、英語は [docs/manual/en/](docs/manual/en/)、中国語（簡体字）は [docs/manual/zh/](docs/manual/zh/) です。目次は各フォルダの `00_目次.md`（英語は `00_Contents.md`、中国語は `00_目录.md`）から。
+画像なしの入門マニュアル（v1.72.0対応）を同梱しています。日本語は [docs/manual/ja/](docs/manual/ja/)、英語は [docs/manual/en/](docs/manual/en/)、中国語（簡体字）は [docs/manual/zh/](docs/manual/zh/) です。目次は各フォルダの `00_目次.md`（英語は `00_Contents.md`、中国語は `00_目录.md`）から。
+
+画像入りの EPUB 版（日本語・英語・中国語）は [Google ドライブの共有フォルダ](https://drive.google.com/drive/folders/1FE3RyYejQftbsK1kBnFwEi1SEjfJHF4Z) で公開しています。
 
 ## アーキテクチャ
 

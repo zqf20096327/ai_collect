@@ -12,6 +12,11 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-blue.svg" alt="License GPL-3.0" /></a>
   <img src="https://img.shields.io/badge/Platform-Android-green.svg" alt="Android Platform" />
   <a href="https://github.com/yhdmgf/AiVerse/releases"><img src="https://img.shields.io/github/v/release/yhdmgf/AiVerse?display_name=tag&include_prereleases" alt="Latest Release" /></a>
+  <a href="https://github.com/yhdmgf/AiVerse/topics/alpine-linux"><img src="https://img.shields.io/badge/topic-alpine--linux-0078D6.svg" alt="Topic: alpine-linux" /></a>
+  <a href="https://github.com/yhdmgf/AiVerse/topics/aiverse"><img src="https://img.shields.io/badge/topic-aiverse-0078D6.svg" alt="Topic: aiverse" /></a>
+  <a href="https://github.com/yhdmgf/AiVerse/topics/agent"><img src="https://img.shields.io/badge/topic-agent-0078D6.svg" alt="Topic: agent" /></a>
+  <a href="https://github.com/yhdmgf/AiVerse/topics/android"><img src="https://img.shields.io/badge/topic-android-0078D6.svg" alt="Topic: android" /></a>
+  <a href="https://github.com/yhdmgf/AiVerse/topics/mcp"><img src="https://img.shields.io/badge/topic-mcp-0078D6.svg" alt="Topic: mcp" /></a>
 </p>
 
 <p align="center">

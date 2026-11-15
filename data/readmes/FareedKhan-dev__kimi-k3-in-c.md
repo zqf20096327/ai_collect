@@ -11,7 +11,7 @@
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square" alt="License"></a>
 <a href="Makefile"><img src="https://img.shields.io/badge/C99-portable-lightgrey?style=flat-square" alt="C99"></a>
 <a href="#requirements"><img src="https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey?style=flat-square" alt="Platform"></a>
-<a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.1.0-brightgreen?style=flat-square" alt="Version"></a>
+<a href="CHANGELOG.md"><img src="https://img.shields.io/badge/version-2.0.0-brightgreen?style=flat-square" alt="Version"></a>
 </p>
 
 <table>
@@ -70,7 +70,7 @@
 
 <hr>
 
-<sub>The macOS, Windows and NEON ports, chat mode, the <code>ultra</code> preset, the faster MXFP4 kernels and a long list of parser fixes came from the people below. <a href="CONTRIBUTORS.md">Who did what</a>.</sub>
+<sub>The macOS, Windows and NEON ports, chat mode, the <code>ultra</code> preset, the faster MXFP4 kernels, cgroup-aware memory admission and a long list of fixes, most of 2.0.0 among them, came from the people below. <a href="CONTRIBUTORS.md">Who did what</a>.</sub>
 
 <p>
 <a href="https://github.com/douglasmun"><img src="https://avatars.githubusercontent.com/u/12515041?v=4&s=96" width="48" height="48" alt="douglasmun" title="douglasmun"></a>
@@ -83,9 +83,9 @@
 <a href="https://github.com/ysgao"><img src="https://avatars.githubusercontent.com/u/1692765?v=4&s=96" width="48" height="48" alt="ysgao" title="ysgao"></a>
 <a href="https://github.com/openchat-ai"><img src="https://avatars.githubusercontent.com/u/274358245?v=4&s=96" width="48" height="48" alt="openchat-ai" title="openchat-ai"></a>
 <a href="https://github.com/arafatsolok"><img src="https://avatars.githubusercontent.com/u/58647359?v=4&s=96" width="48" height="48" alt="arafatsolok" title="arafatsolok"></a>
-<br>
 <a href="https://github.com/genesisrevelationinc-debug"><img src="https://avatars.githubusercontent.com/u/243808510?v=4&s=96" width="48" height="48" alt="genesisrevelationinc-debug" title="genesisrevelationinc-debug"></a>
 <a href="https://github.com/AuricTW"><img src="https://avatars.githubusercontent.com/u/108772778?v=4&s=96" width="48" height="48" alt="AuricTW" title="AuricTW"></a>
+<br>
 <a href="https://github.com/biokraft"><img src="https://avatars.githubusercontent.com/u/35855749?v=4&s=96" width="48" height="48" alt="biokraft" title="biokraft"></a>
 <a href="https://github.com/cablepull"><img src="https://avatars.githubusercontent.com/u/135179737?v=4&s=96" width="48" height="48" alt="cablepull" title="cablepull"></a>
 <a href="https://github.com/Avicennasis"><img src="https://avatars.githubusercontent.com/u/913872?v=4&s=96" width="48" height="48" alt="Avicennasis" title="Avicennasis"></a>
@@ -94,6 +94,9 @@
 <a href="https://github.com/FermiHart"><img src="https://avatars.githubusercontent.com/u/100219585?v=4&s=96" width="48" height="48" alt="FermiHart" title="FermiHart"></a>
 <a href="https://github.com/santhoshsathish94"><img src="https://avatars.githubusercontent.com/u/11693712?v=4&s=96" width="48" height="48" alt="santhoshsathish94" title="santhoshsathish94"></a>
 <a href="https://github.com/Irfanwani"><img src="https://avatars.githubusercontent.com/u/62456735?v=4&s=96" width="48" height="48" alt="Irfanwani" title="Irfanwani"></a>
+<a href="https://github.com/rudycelekli"><img src="https://avatars.githubusercontent.com/u/47457359?v=4&s=96" width="48" height="48" alt="rudycelekli" title="rudycelekli"></a>
+<a href="https://github.com/WaleedHU"><img src="https://avatars.githubusercontent.com/u/42546485?v=4&s=96" width="48" height="48" alt="WaleedHU" title="WaleedHU"></a>
+<a href="https://github.com/mechmind-dwv"><img src="https://avatars.githubusercontent.com/u/199835600?v=4&s=96" width="48" height="48" alt="mechmind-dwv" title="mechmind-dwv"></a>
 </p>
 
 </div>
@@ -2241,16 +2244,4 @@ fixture drives it deliberately to that exact analytic cap:
 ```
 
 A fixture that only tested the near-linear region would pass an implementation with the
-caps left out entirely, because for small inputs the tanh is almost the identity.
-
-Now the thing to remember for later. The Kimi K3 technical report describes a training
-technique called **Quantile Balancing** whose entire purpose is to flatten expert usage
-across the pool, so that no small set of experts dominates.
-
-![The hottest experts, out of 10,010 distinct ones touched](docs/images/expert_reuse.png)
-
-That is good for the model, and it is going to be very bad for the cache. Hold that
-thought.
-
-One last thing about the `continue` in the expert loop. A dropped expert means one token
-was computed with f
+caps left out entirely, because for small inputs the tanh is almost t

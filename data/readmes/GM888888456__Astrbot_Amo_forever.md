@@ -6,6 +6,238 @@
 
 > 使用手册见 [wiki/](wiki/)：安装、金融、医疗、记忆与遗忘、相片一致性、常见问题。
 
+## 12.0.5
+
+修「跨过 0 点重复订房」：一晚只扣一间（21 点后算今晚、凌晨算昨晚），`_bill_nexus` 全程只用一个时钟。测试 1006 绿。
+
+## 12.0.4
+
+住宿变成她看得见的事实（异地时提示词给三档参考价，订好写「已订、已扣」）；路上那行带票价。测试 1005 绿。
+
+## 12.0.3
+
+修 `InstantSchedule` 拿错对象（拿到 HumanState，导致锚点/穿搭/记账读不到插件）——改传插件本身。测试 999 绿。
+
+## 12.0.2
+
+接上「真实世界枢纽」：跨城车票、异地住宿、景区门票、视频/音乐会员都按现实物价计费，全部走 `charge` 幂等扣款；`nexus_billing_enable` 可一键关掉（只查价不扣钱）。车票优先问市场插件的 `ticket_quote`，没装时按里程本地估。测试 998 绿。
+
+## 12.0.1
+
+**出行时间铺满全国**：新增离线坐标包 `geo_cities.json`（584 城），`travel.py` 改最长匹配并并入离线包——小地方不再退回省会中心；贵阳→上海 1530 公里 / 飞机约 4 小时 13 分，同城「家→公司」5 公里 / 开车约 19 分钟，10 分钟跨省会被判「还在路上」。测试 988 绿。
+
+## 12.0.0
+
+**即时日程上线：不给剧本，只给事实和她自己说过的话。**
+
+- **整天骨架退役**：`schedule_engine.build_skeleton()` 与 10 个 `_*_segments` 段落工厂、`_expand` / `_fill_activities` / `_activity_for` / `_detail_for` / `_repair_details` / `_validate` / `_smooth_moods` 全删（1691 → 896 行）；`main.ensure_schedule()` 228 → 39 行（只解析位置/天气/身体，然后同步声明条目）；`current_activity()` 40 → 14 行，**不再按钟点猜「家 / 公司 / 路上」**。
+- **一致性锚**（新增 `instant_schedule.py`）：只记她这一轮说过的地点 / 活动 / 穿搭 / 时间；`[Anchor]` 下一轮当默认前提。解析不出就沿用上一条，不猜；同地点重复声明不重复记；换了地方照实说，没有冷却、没有审批。
+- **现实的移动时间**（新增 `travel.py`）：市内按城市尺度 + 地点类型估里程，跨城按城市坐标算直线距离、按高铁/自驾/飞机折分钟，下雨/暴雨/雪减速，有车优先开车。换地点先记「在路上，还有 N 分钟」，到点自动落地成「到了 X」；贵阳到上海不可能两小时到。
+- **一天一套**：`day_outfit:<日期>` 锁定当天那套；洗澡 / 换家居服 / 她自己说「换上 X」才换，跨城、回家、上车都不自动换。
+- **提示词重写**：`[Clock] / [Calendar] / [Anchor] / [Move]` + 软价值边界（陈述句）；删掉「你此刻在 X，只能按这一条说、不许改口」；主动消息那条旧硬规则同步换掉。
+- **日记 / 面板 / 工具改读锚点**：`prefill_diaries` / `warm_diaries` / `expand_hour` / `schedule_tree` / `schedule_view` / `schedule_edit` / 面板 `api_schedule*` 全部按声明条目走，没有条目就空着，不补没发生的事。
+- **补扣饭钱加间隔**：声明条目比整点格子密，`_bill_meals` 加 150 分钟间隔，一顿饭吃三句不会扣三遍。
+- **不动**：心流打分、金融账本（上限/幂等/冲突校验）、生图脸锚/发型/服装与内容边界、@ 触发与每日张数、后台泄漏与跨站校验、医疗/生理期/出行事件。
+- 测试 **965 绿**（新增 `tests/test_instant_schedule.py` 17 条；`test_trip_state` / `test_user_move` / `test_proactive_context` / `test_mount_central` 按锚点口径改写；删掉被测代码已退役的 `test_schedule_structure` / `test_schedule_detail_consistency`）。
+
+## 11.9.5
+
+- **修「照片明明在家拍，嘴上却说马上到家」**：
+  - 到达那格不再沿用出发文案（`apply_change` 以前把「收拾一下往回走，回家」原样抄到到达格），到家后改成「到家歇一会儿，换身舒服的衣服」；只有目标本来就是路上（如「来接我」）才沿用原话。
+  - 整点日程改按**该小时中点**取样：20:35 说回家、21:05 到家时，21 点那格算「到家」，不再因为整点那一秒还在路上就把整小时写成「在路上」。
+  - 到达格的环境改按目的地推断（`_zone_for`：家 → home，其余交给生图按地点匹配），不再继承出发地（从景区回家 zone 还是 scenic、从家出门到哪儿都算 home）。
+- **自我形象系统并入仓库**（此前只在服务器上跑）：她认得自己的照片（Core_Appearance 永久长相 + 12 取景窗口感知哈希档案，只在收到图那轮注入）、主动照镜子（换装后自拍进档案，不发给任何人）、`mirror_*` / `self_identity_prompt` / `self_face_memory` 配置键补进 schema。
+- 测试 963 绿（新增「到家那格用到达文案、不继承景区 zone」「整点取样按中点」）。
+
+## 11.9.4
+
+- 补 11.9.3 的一处连带：半夜醒来/起夜那格不再穿白天出去那套（按家居服）。
+
+## 11.9.3
+
+- **答应拍什么就拍什么**：承诺账本加 `look`（答应那一刻身上那套）/`style`（他要求的款式，如 JK）/`want`（他原话）。兑现时按这套拍，不再拿补拍那一刻的日程顶数；提了「白丝/白袜」优先挑带白袜那套 JK，在家就真换上再拍。
+- **同批承诺只发一张**：同一场对话里等着的好几条照片承诺，一张照片就算全部兑现（以前 18:01、18:02、18:03 一分钟发一张）。
+- **出门穿什么就穿到睡觉**：日程不再因为「到家瘫一会儿」把外出那套换掉（以前回家格一律配家居服，实测出门 JK、一到 18:00 变成汉服·轻云，在车上也被当成到家）；只有那一格明说洗澡/换家居服才换，睡觉才换寝衣。地点空着的出行格也不再被当成「在家」。
+- 测试 960 绿（新增「一天一套直到睡觉」「洗澡才换家居服」「空格子不算在家」「白丝算 JK」等）。
+
+## 11.9.2
+
+- **修面板「一寸证件照」点不动**：10.9.0 把照片卡的调用改成直连生图插件 HTTP，绕开了页面桥接那条带鉴权的路，在 App 里点拍照就会「调用失败」。现在 `callImage()` 先走桥接、桥接不通再直连兜底；终端同时恢复了 `photo/self|job|last|clear` 四条薄代理（只转发、不判定），桥接才有东西可转。
+
+## 11.9.1
+
+- **修「他明明在睡觉，她却问有没有下班」**：新增「他的状态」事实——从最近聊天里认出「他说要睡了」「他在外地/不上班」，每轮私聊带给她，明确别再问下班、到家、吃没吃，也别催照片；主动消息在他刚说要睡时**直接不发**，他在外地时「下班没/到家没」模板换成中性问句。
+- **话变短**：私聊多一条事实——他一条就十来个字、说完等你，你也一条说一件事、一句就够；断句阈值同时下调，两句会分成两条发（不再把关心、嘱咐、追问堆成一段）。
+
+## 11.9.0
+
+- **自动学习修好**：`_auto_learn` 改从画像表取「最近一小时私聊过的人」。本地 `messages` 表 11-09 之后就不再写入，学习链一直取不到人、静默停了 6 天；现在成功会打 info、取人失败会打 warning。
+- **画像备注不再乱**：老版本「Memory Companion」写进去的「记忆 N 条（Memory Companion）」这类机器统计，同步时不再推给记忆库、也不再从记忆库拉回；面板保存时直接丢弃。
+- **语音私聊也走心流**：新增 `Heartflow.voice_urge()`（想被哄 + 爱 + 想被理解 + 情绪浓度，纯数值），私聊没有心流小模型打分时用它决定要不要提示用语音；他明确要语音仍是硬要求，不受影响。
+
+## 11.8.1
+
+- 撤销上一版给心流加的「未点名插话概率」：心流逻辑回到你原来的，一行没留（`group_interject_prob` 也删了）。
+
+## 11.8.0
+
+- 修设置页不同步：`/config` 读取前先调 `_reload_config_if_changed()`，在 AstrBot 原生设置页改过、还没触发下一轮对话时，面板「设置」也能看到新值。
+
+## 11.7.0
+
+- **删掉【照片】画图演练模式（`draw_dry_run`）与画图调试日志（`draw_debug`）**：属性、两处判断、状态栏后缀、schema 键一起移除；跳过原因改走 debug 级日志，不再需要开关。
+
+## 11.6.0
+
+- **设置页签重做**：开关改用原来的紧凑行（`.setting-row`，右侧 96×30 的「关/开」双按钮），去掉标题下的解释文字。
+- **去掉重复**：「双击陪伴」「双击天气」里已有的两组（私聊、时间天气）不再出现在设置页，那两处保持原样。
+
+## 11.5.0
+
+- 撤掉我加的「设置」页签（它和双击陪伴/天气里的开关重复，而且宽窄不对）；恢复原来的三个设置入口（私聊 / 参数 / 基础），开关回到原来的分组与尺寸，标题下的说明保持原样。
+
+## 11.4.0
+
+- **生理期不再归终端**：`period_info()` 改成向医疗插件要（问不到就当非生理期），删掉自己的起点存储、阶段计算与 `set_period_settings/set_period_start`；`period_*` 与 `enable_period_simulate` 从终端设置里移除（都在医疗的「插件设置」）。
+- `/amo period set` 与配置里的 `period_start` 仍然能用，只是写进医疗。
+
+## 11.3.1
+
+- 修：`/worldview` 之前把整张 750KB 的照片塞进 JSON，世界页每次打开都要传一遍（读取超时就是它）；照片改回由面板直接向生图取。
+
+## 11.3.0
+
+- 世界页取消「双击打开二级页」：二级页里那套照片调试/演练一起下线，只剩单击证件照、三击取消。
+- 早/午/晚安三个开关合并成一个 `ritual_enabled`（schema 里三个分开关已删）。
+- 面板「设置」里的开关改回原来的「开 / 关」按钮样式。
+- 语音设置项表里删掉 `dual_output`（这个键彻底没了）。
+
+## 11.2.0
+
+- 面板新增「设置」顶栏：只放开 / 关（约 40 个开关），文字/数字/密钥这类填写项仍去 AstrBot「插件设置」。
+- 生理期卡片不再跳终端的设置页（编辑在「医疗」插件面板），显示保留。
+
+## 11.1.0
+
+- **设置项统一到 AstrBot「插件设置」**：面板不再内嵌配置表单（去掉「私聊/参数/基础」三个设置页签，点生理期等卡片改为提示去设置页）；51 个开关与全部数值项回到 AstrBot「插件设置」。
+- 面板只做展示与操作，不再内嵌配置表单（隐藏入口，DOM 保留，避免脚本报错）。
+
+## 11.0.0
+
+- **删掉终端面板里死掉的日记页**：`tab-diary` 那段 HTML（1.5KB）从来没有页签按钮、进不去，配套的 `loadDiary/readDiary/diaryDayString` 脚本（4.1KB）也一起删；面板里三处 `if (name === "diary")` 与「把日记面板搬进 sheet」那段引用同步清掉。
+- **删掉四条没人调的日记路由**：`/diary/tree`、`/diary/read`、`/diary/write`、`/diary/warm` 与对应处理函数——日记的查看已经搬到记忆面板（`Astr_Amo_data` 3.5.0 的「日记」页）。日记的**生成**还在终端（每日 10:00 与小时小日记），存储仍在记忆库。
+
+## 10.9.0
+
+- **面板照片卡直接调生图插件**：面板新增 `callImage()`（按插件名前缀走 HTTP，页面桥接只转发本插件），照片的 last/clear/job/self 四个调用改指 `Astrbot_Amo_Image`。
+- **删掉终端最后四条照片代理路由**（`/photo/last|clear|self|job`）与对应处理函数；世界页缩略图仍由终端服务端向生图取（`_image_photo_call("photo_last")`），面板无需改动。
+- 到此「相片」在终端只剩一个读取缩略图的调用，没有接口、没有状态、没有缓存。
+
+## 10.8.1
+
+- **修并发改动留下的三处悬空**（衣柜页 500 的根因）：`wardrobe.panel_data()` 还在用已删的 `self.path`（→ 面板衣柜接口 500）；`delete()`/`clear()` 还在调已删的 `_save_legacy()`（→ 删衣/清空抛异常）；`HumanState.refresh_weather` 调 `_sync_weather_city_config`（定义在插件类上，应走 `self.p.`，被 `try/except` 吞掉 → 天气城市同步一直没生效）。
+- **契约测试扩到全部模块**：类内 `self.xxx()` 必须真的有定义，扫描范围从 `HumanCorePlugin` 扩到 `main.py / wardrobe.py / outfit_engine.py / draw_engine.py` 的所有类——上面三处都是这条测试抓出来的。
+
+## 10.8.0
+
+- **相片状态迁进生图插件**（执行文档 §6「相片状态迁生图」）：自拍/证件照提示词、面板缓存（`plugin_data/Astrbot_Amo_Image/photo_cache`）、后台任务与「上次那张」全部搬到 `Astrbot_Amo_Image.photo_self / photo_job / photo_last / photo_clear`，并在生图侧注册 `/photo/*` 四条接口。
+- 终端只留四条**代理**（面板 JS 一行未改，零 UI 风险）；`api_worldview` 的世界页缩略图也改成问生图要。删掉 `_photo_job_start`、`_draw_for_panel`、`_panel_photo_dir/_file/_save/_data_url`、`_remember_panel_photo`、`_id_photo_prompt`、`ID_PHOTO_*`（共 138 行）。
+- `_selfie_prompt` 保留：它还给「答应的照片补拍」那条业务链用，属于终端的承诺账本，不是相片状态。
+- `tests/test_wardrobe.py` 里两条证件照用例移到生图 `tests/test_photo_prompts.py`（连同自拍提示词与缓存共 7 条）。
+
+## 10.7.1
+
+- 事件总线也接上链：`terminal.bus` 记 `submit`（类型/来源/金额/场景）与 `decide`（放行/拒绝/分数），回执记 `receipt`（成败/金额/余额），跨插件的事件从此也能用同一个 trace 号串起来。
+
+## 10.7.0
+
+- **插件内部链式步骤**：新增 `chain.py`（八仓库同一份），核心业务链 扣费审批链 `terminal.charge`：propose → approve → charge → receipt 的每一步都会写一行 `[chain] trace 步骤 ok/FAIL:原因 字段 (耗时ms)`；重试沿用同一个 trace 号（幂等号），`docker logs … | grep '[chain]'` 就能把一条业务链捞全。
+- 新增 `tests/test_chain.py`（格式/失败转 warning/空字段跳过/复用 trace）与 `tests/test_chain_wiring.py`（这条链的步骤不能被无声删掉）。
+
+## 10.6.1
+
+- **紧急修**：10.6.0 删掉 `_migrate_memory_source_default()` 时留下了调用点，`initialize()` 一跑就 AttributeError，插件被 AstrBot 卸掉（日志里 `Removed module ... Astrbot_Amo_forever`）。已删调用点。
+- **顺带修三个老 bug**（同一个扫描翻出来的）：`self._json(...)`（方法根本不存在，`/events` 接口一调就炸）、`self._apply_user_schedule_change(...)` 与 `self._state_on_trip()`（定义在 `HumanState` 里，应该走 `self.state.`）——前者在 `try/except` 里被静默吞掉，「她说要改日程」这条一直是哑的。
+- **新增类内调用契约测试**：AST 检查 `HumanCorePlugin` 里每个 `self.xxx()` 都有定义，这类「删了方法留调用点、测试还全绿、上线被卸」的错以后直接红。
+
+## 10.6.0
+
+- **删掉「支持市面上任意记忆插件」的整层代码（约 1000 行 / 38 个方法）**：`_memcomp_*`（我会牢牢记住你）、`_angel_*`（天使之魂）、`_livingmem_*`（LivingMemory，含直连它的 sqlite）、`_external_all_memories` / `_external_profile_memories` / `_companion_plugin` / `_companion_candidates` / `_looks_like_memory_plugin` / `_companion_memories` / `_companion_pick_profile` / `_map_companion_relation`，以及 `LEGACY_MEMORY_PLUGIN` 常量与 `_migrate_memory_source_default()` 迁移。记忆只有一处：`Astr_Amo_data`。
+- 面板同步下架「记忆来源」选择：删 `api_memory_candidates` 与两条路由、`select_memory_plugin` 控件、候选缓存与加载逻辑。
+- 8 处「记忆库没数据就再问外挂插件」的兜底全部删掉（状态页记忆条数、`c_profile` 记忆数、`c_me` 条数、面板关系页、面板记忆列表/搜索）。
+- `_star_instance` 不再猜 `service` / `memory_companion` 这些结构名，只认 `mem` / `store` / `data`。
+
+## 10.5.0
+
+- **插件解析收成单一真实名字**：数据插件 `Astr_Amo_data`、市场 `Astrbot_Amo_Marketplace`、金融 `Astrbot_Amo_Finance`、医疗 `Astrbot_Amo_Medical` 不再试多个历史名字，也删掉「扫全部插件找名字里带 amo_finance/amo_medical 的」那段；解析不到就是没装。
+- **新增 `tests/test_money_memory.py` 9 条**：没批就不扣款/不回执/不写记忆；扣款成功与失败都写一条支出记忆（「金融已扣款」/「没扣成（原因）」）；金融没给余额就不写余额（防模型自己编数字）；场景快照超过 TTL 要重新读日程。
+
+## 10.4.1
+
+- **修并发改动留下的悬空引用**：`main.py` 启动日志还在用已被删除的 `wardrobe.path`，异常被 `except` 吞成「服装库初始化失败」，导致 `self.wardrobe = None`、拍照没有衣服可穿；改成记忆库口径（`记忆库 wardrobe 表`）。
+
+## 10.4.0
+
+- **拆掉插件兼容兜底（插件是一个整体，缺了就该报错，不该找替代路径）**：
+  - `_image_plugin()`：不再遍历多个历史名字、不再「扫全部插件找名字像生图的」，按 `Astrbot_Amo_Image` 解析一次并缓存；解析不到写 `error` 日志，出图直接失败。
+  - `_image_bytes()`：删掉按 `TypeError` 三级退参数的旧插件兼容梯子，只调一次 `draw_for(... selfie/place/activity/zone)`；失败写 `error` 日志。
+  - `_data_call()`：删掉「mem 上没有就调 store 门面」和「旧版插件参数不匹配就去掉 platform/message_id 重试」两条退让；接口不存在直接 error。
+  - `wardrobe`：删掉本地 `wardrobe.json` 的读写、迁移与镜像（`_load_legacy`/`_save_legacy`/`save_local`/`self.path`），记忆库是唯一存储；读写失败一律 `error` 级日志，不再假装有衣服。
+- 保留的两处「降级」是业务默认数据与防吞消息，不是插件兜底：`outfit_engine` 的三套内置衣服、`guard_bridge` 在守护缺席/超时/报错时整条原文直发。
+
+## 10.3.0
+
+- **删 `photo_engine.py`（159 行）**：它只剩「此刻穿哪套」和「远端图先落盘」，已全部搬进 `draw_engine.py`（唯一调用方）——`schedule_outfit(plugin)` 仍只读日程那一格、日程没写才按场景现配；`localize_image()` / `fetch_image()` 负责落盘与 16 MB 上限。`main.py` 不再创建 `PhotoEngine`、不再有 `self.photo`。
+- 拍照/自拍的穿搭来源不变（日程 outfit 优先、`outfits.for_activity` 兜底），「日程穿汉服、照片穿别的」那条修复继续有效。
+- 新增 `tests/test_photo_helpers.py` 9 条（日程穿搭优先/兜底/无日程为空/落盘/超大图丢弃）；删 `tests/test_photo_engine.py`（被测模块已删），`test_engine_hardening` 的超大图用例改指向 `draw_engine.fetch_image`。
+
+## 10.2.0
+
+- **修 bug（真逻辑错误）**：`_compose_reply` 还在调 9.9.8 已删除的 `self.llm.polish()`，「延迟补话」这条路一进去就抛 AttributeError、被外层 except 吞掉，功能静默失效；已删除该调用。
+- **每轮上下文瘦身**：`_dynamic_context` 的规则块 3443 → 2382 字符。删掉【别翻旧账】【问题怎么答】【长度】【人格】等语气管教，保留并压缩四条防幻视规则（经历归属 / 引用归属 / 事实来源 / 关系核验），后台不外泄、天气一致仍保留。
+- **回复侧瘦身**：`_compose_reply` 里与每轮上下文重复的全局规则合并成三条压缩版，群聊插话/识人/咨询/私聊 prompt 各收成一句。
+- **新增契约测试** `tests/test_service_contract.py`：AST 对账 `self.llm.*` 调用与 `LLMService` 定义（这次 polish 这种「调了已删方法」的错以后会直接红），并用数据插件源码校验 `_data_call` 的接口名。
+
+## 10.1.0
+
+- **日记只存记忆库**：删 `diary_engine.py`（311 行，本地 txt 读写/目录树/导入）与对应的 `/diary/import`、`/diary/open` 两条接口、面板「导入文件夹」「打开文件夹」两个按钮；`_diary_store_put/get/tree` 全部只打记忆库 `diary_put/get/list`，记忆库不可用就返回空并发警告，不再偷偷写本地文件。
+- 删掉一次性的 `_import_diary_to_memory()`（本地 txt → 记忆库的搬家逻辑，6 篇早已搬完）。
+- 日记提示词改成只给事实骨架（聊天节选 + 生活小日记），删掉「不许编 / 不要提 / 不要分点」那批禁令，长度和口吻交给她；`DIARY_ENDING_HINTS` 改为从 `diary_lines` 正常导入。
+- 新增 `tests/test_diary_memory.py` 10 条：日期解析、提示词口径、记忆库单一路径、空库兜底。删 `tests/test_diary_engine.py`、`tests/test_diary_dir.py`（被测模块已删）。
+
+## 10.0.0
+
+- **默认开启的开关全部从面板下架**：城市跟随、独自出游、每日问候、心流、主动消息、打字延迟、日程配穿搭、日记、画图、主动分享、事件总线、群聊资金暂缓等 47 个开关不再渲染，改由代码默认 `True`；配置键与线上值保留，后台仍可用配置文件关掉。
+- **删死键**：`city_follow_weather`、`hf_enable_dynamic_threshold`、`hf_judge_include_reasoning`、`hf_enable_debounce`（代码从未读取）。
+- **修默认值**：`draw_enable` / `image_share_enable` 的代码默认值由 `False` 改成 `True`，避免 AstrBot 按 schema 重写配置后生图整体失效。
+- `_conf_schema.json` 201 → 150 键。
+
+## 9.9.9（她答应的事要记得，也要真的做）
+
+- 新增 `promise_engine.py`（承诺账本）：她说出口的「等会儿/到了再拍」「到了就去…」记成一条 kv 记录，最多 5 条、3 小时过期，兑现过的留十分钟就不再提。
+- 每一轮把还没兑现的承诺当事实注入，例如「【你答应过的事】「等我把车停稳了拍」——你还在开车，这时候做不了」。只给事实，不写台词。
+- 在开车/在路上时不再出自拍：`draw_engine.decide()` 先看日程，开车就这一轮不出图，改记成照片承诺；她自己说「到了再拍」也一样不出。
+- 车停了/到地方了，60 秒巡检真的把那张照片补拍发过去（`_run_due_promises`，夜间静默、一轮只补一张）。10:07 那种「嘴上说等停好车、图已经发出去、十分钟后又说不开车了」不会再出现。
+- 钱包标签 `Debt` 改名 `OweHim`（`[Wallet: Cash=…, Savings=…, Total=…, OweHim=6800.38]`），方向写清楚，避免把「她欠他」说成「他欠她」。
+- 【别编】补一句：他答应过什么、他欠过什么，账本和记录里没写就是没有。
+- 测试：新增 `tests/test_promise_engine.py` 19 条、`test_draw_engine.py` 加 4 条开车用例。
+
+## 9.9.8（残留清干净：私密 / 终端润色 / 分段死代码全删）
+
+- 删 `amo_will.py`（整半是私密照片判定与生图提示词，主程序早就不调用它）、`tests/test_amo_will.py`、`tests/test_private_shots.py`（import 的是 9.9.5 已删的 `private_shots`，一跑就炸）。
+- 删终端侧整套 LLM 润色：`LLMService.polish()`、原生回复润色调用点、`enable_polish` / `polish_min_chars` / `polish_native` 三个键；怎么说是守护的事。
+- 删死配置 `private_shot_enable` / `private_shot_daily_cap`，线上配置与 `config_snapshot.json` 同步清掉，启动时快照不会再补回来。
+- 删旧目录 `config/.private-companion-upgrade/`（1037 键的升级快照）。
+- 修两个还 import 已删 `segment_engine` 的测试；心流通知改成测 `send_bookkeeping.notify_heartflow`。
+- 面板用量页不再列「润色」分类；README 去掉本地分段引擎、`seg_*` 配置这些已失效的说明。
+
+## 9.9.7（睡觉不再改掉一整天）
+
+- 修 `schedule_change.apply_change`：说「睡吧 / 该睡了」只把**从现在到睡醒**（默认 07:00）改成睡觉，醒来之后的日程原样保留。
+- 睡觉格不再沿用原来的 detail / 景点 / 交通 / 交通车辆字段；以前凌晨一句「睡觉去吧」，当天 01:00–24:00 全被改成「睡觉」，小日常和衣服还是白天出门那套，面板标题与日记对不上。
+- 睡觉日程只走 `_maybe_go_sleep`（它知道醒来时间）；`_apply_user_schedule_change` / `_maybe_user_move` 不再处理 sleep，避免群里或白天一句「睡吧」改写日程。
+- 新增回归测试：凌晨 00:12 入睡到 07:00，10:00 的出门计划必须原样保留，睡觉格不带白天的 detail。
+
 ## 9.9.6（22:00 菜市场关门）
 
 - `amo_buy` 买食材、`amo_eat` 选菜遇到菜市场关门（22:00–06:00）统一回「菜市场这个点关门了，只能点外卖」。
@@ -1278,8 +1510,8 @@ data/plugins/Astrbot_Amo_forever/
   → 心流引擎（五维评分 + 动态阈值 + 沉浸模式 + 防抖 + 群聊独立配置）
   → 达到条件时设置 event.is_at_or_wake_command = True
   → AstrBot 原生 LLM 生成回复（人格、上下文都走 AstrBot）
-  → on_decorating_result 交给完整本地分段引擎
-  → 按符号分段、成对符号保护、打字延迟、群聊引用
+  → on_decorating_result 交给守护（Astrbot_Amo_Guard）
+  → 守护排版分条，逐条发送、打字延迟、群聊按概率引用
 ```
 
 私聊：
@@ -1287,15 +1519,14 @@ data/plugins/Astrbot_Amo_forever/
 ```
 健康 / 生理期 / 日程门控
   → 通过则走 AstrBot 原生回复
-  → 完整本地分段引擎发送（私聊不引用）
+  → 交给守护排版分条后逐条发送（私聊不引用）
 ```
 
-没有修改 AstrBot 核心代码，也没有替换它的回复链路；心流只负责“要不要说”，分段只负责“怎么说”。
+没有修改 AstrBot 核心代码，也没有替换它的回复链路；终端只决定“说什么”，守护只负责“怎么发出去”。
 
 ## 功能
 
 - **完整心流（内置）**：五维评分、动态阈值、沉浸模式、判断暂停、防抖、群聊独立阈值、白名单、自定义评分规则、详细日志、心流命令。
-- **完整本地分段（内置）**：强制分隔符、字数范围、超长处理、短尾合并、断句符号、标点保留、连续符号顺延、成对符号保护、排除关键词、超长跳过、固定/随机/按字/智能延迟、主动消息处理。
 - **生理期**：28 天周期可配置，月经期、卵泡期、排卵期、黄体期；影响心情、体力、疼痛、回复概率与主动求安慰。
 - **九维心情**：开心、平静、郁闷、生气、委屈、疲惫、焦虑、兴奋、依恋；直接影响语气。
 - **世界观与日程**：基于 AstrBot 人格生成世界观，再由世界观生成每日日程；天气、健康、生理期共同参与。
@@ -1303,17 +1534,18 @@ data/plugins/Astrbot_Amo_forever/
 - **长期记忆**：本插件不再自带记忆库，只读写外挂记忆插件（天使之魂 / 我会牢牢记住你 / livingmemory）；记忆会注入回复与主动消息。
 - **用户档案**：自动建立，记录名字、称呼、生日、关系、好感；相恋仅管理员可设。
 - **用户画像界面**：状态 / 用户画像 / 设置三个页签；可搜索、编辑画像、查看记忆、同步陪伴插件档案，直接调整关系（仇恨/抵触/普通/熟识/相恋）。
-- **全部开关进 WebUI**：设置页加载完整 `_conf_schema.json`，布尔开关、数字、文本、列表/模板列表都可直接改，保存后写入插件配置并重建心流/分段引擎。
+- **全部开关进 WebUI**：设置页加载完整 `_conf_schema.json`，布尔开关、数字、文本、列表/模板列表都可直接改，保存后写入插件配置并重建心流引擎。
 - **主动私聊**：概率、频率、每日上限；难受时找相恋的人撒娇，遇到有趣的事分享。
 - **九维面板**：查看心情雷达、生理期、健康、天气、日程、阈值。
 
 ## 配置
 
-配置项分为三组：
+配置项分为两组：
 
 - 基础陪伴：`period_*`、`proactive_*`、`mem_*`、`weather_*` 等；
-- 心流完整版：`hf_*`（原始心流配置名前面加 `hf_`）；
-- 本地分段完整版：`seg_*`（原始分段配置名前面加 `seg_`）。
+- 心流完整版：`hf_*`（原始心流配置名前面加 `hf_`）。
+
+> 文本后处理（润色档位、分条条数、表情上限、拟人延时）不在终端：去 `Astrbot_Amo_Guard` 面板的「文本后处理」里改。
 
 ### 心流关键配置
 
@@ -1331,27 +1563,6 @@ data/plugins/Astrbot_Amo_forever/
 | `hf_judge_rules` | 自定义五维评分规则 |
 | `hf_group_threshold_configs` | 群聊独立阈值 |
 | `hf_chat_whitelist` | 群聊白名单 |
-
-### 分段关键配置
-
-| 配置 | 说明 |
-|---|---|
-| `seg_enable` | 启用完整分段引擎，默认开 |
-| `seg_force_split_symbols` | 强制分隔符列表 |
-| `seg_min_length` / `seg_max_length` | 分段字数范围 |
-| `seg_allow_exceed_max` / `seg_hard_max_limit` | 超长处理 |
-| `seg_merge_short_tail` / `seg_short_tail_threshold` | 短尾合并 |
-| `seg_split_symbols` | 断句符号列表 |
-| `seg_keep_symbol` | 保留标点 |
-| `seg_extend_to_trailing_symbols` | 连续符号顺延 |
-| `seg_protect_paired_symbols` | `《》`、`“”`、`（）` 等内部不切 |
-| `seg_exclude_keywords` | 命中则不分段 |
-| `seg_delay_type` | `fixed` / `random` / `per_char` / `smart` |
-| `seg_random_delay_range` | 随机延迟范围 |
-| `seg_fixed_delay_seconds` | 固定延迟 |
-| `seg_per_char_delay_seconds` | 按字延迟 |
-
-> 分段是**符号列表**方案，不是正则。需要调断句符就改 `seg_split_symbols`；成对符号保护默认开启。
 
 ## 挂载记忆插件
 

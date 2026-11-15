@@ -19,7 +19,7 @@ Left alone, most agent sessions forget everything between runs, call work done w
 
 **Try a working example:** [Apps and starter projects](https://nirfeinste.in/?utm_source=github&utm_medium=readme&utm_campaign=mcasp-portfolio#projects) · [Full portfolio and concepts](https://nirfeinste.in/?utm_source=github&utm_medium=readme&utm_campaign=mcasp-portfolio#portfolio) · [Open-source tools](https://nirfeinste.in/?utm_source=github&utm_medium=readme&utm_campaign=mcasp-portfolio#open-source).
 
-**A real website QA check.** The demo site’s HTTPS page worked, and its old HTTP URL still served the page. [Watch the 30-second redirect walkthrough](https://github.com/fainir#two-things-i-built-and-tested) and [run the same free check on your site](https://betterloopai.com/check?utm_source=github&utm_medium=readme&utm_campaign=https-redirect-short).
+**Try a pre-launch website check.** The demo site served the page over both HTTP and HTTPS. [Run the free check on your public URL](https://betterloopai.com/check/from-agent-readme) without signing up. Pick one finding to verify and fix. When you rerun the check, allow the 15-minute report cache to expire. [Watch the 30-second redirect walkthrough](https://github.com/fainir#two-things-i-built-and-tested).
 
 For AI crawler access, save the public HTML and robots.txt, then verify any crawler visits in your CDN or server logs. [Follow the AI crawler access checklist](https://betterloopai.com/docs/ai-crawler-access?utm_source=github&utm_medium=readme&utm_campaign=mcasp-crawler-guide).
 
@@ -79,6 +79,10 @@ For interview prep, the [Interview Quick Review Pack](https://fainir.gumroad.com
 To test a file upload, open [pocket-test.csv](examples/pocket-test.csv). On desktop, choose **Download raw file**. On a phone, open **Edit and raw actions** and choose **Download**. In a signed-out browser, open [the KeepFinding guest importer](https://keepfind.ing/pocket?utm_source=github&utm_medium=readme&utm_campaign=mcasp-pocket-preview).
 
 Select **Import your Pocket export** and choose the sample file. The preview should say **1 link · read as Pocket export**. For this test, stop at the preview.
+
+In a fresh private browser session, open [Plainer’s editable launch checklist](https://plainer.app/try/from-agent-guide). Add a line such as “Confirm Retry restores the controls,” reload, and check that the line is still there. To save it to a free account, choose **Keep workspace** and follow the verification link in the same private session.
+
+I build Plainer. [Plainer Pro](https://plainer.app/pricing/from-agent-guide) gives you a personal allowance for its built-in assistant. The 14-day trial requires a card. The monthly plan renews at $8 a month unless cancelled.
 
 ## How to use it
 
@@ -2719,14 +2723,4 @@ Where useful, design so the system can later integrate with:
 - event buses
 - external schedulers
 
-Do not make these dependencies mandatory if the runtime does not support them.
-
-ADVANCED EXPANSION IDEAS
-
-Once the core system is working, consider adding advanced capability-building layers like:
-- a capability frontier map showing what the system can do by domain, risk level, autonomy level, and success rate
-- automatic skill extraction from successful task trajectories
-- automatic eval generation from real failures, incidents, and human corrections
-- workflow compilers that turn successful repeated work into reusable recipes
-- simulation or sandbox environments for testing risky workflows before touching production systems
-- 
+Do not 

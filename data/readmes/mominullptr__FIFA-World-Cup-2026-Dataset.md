@@ -90,9 +90,8 @@ The FIFA World Cup 2026 Master Dataset is actively cited in peer-reviewed intern
 - **Live Expected Goals (xG)**: Includes expected goals metrics for all completed matches.
 - **Match Events**: Logs every goal, assist, card, substitution, and VAR review chronologically by minute.
 - **Match Team Stats**: Per-team per-match statistics (possession, shots, corners, etc.) sourced from verified providers.
-- **Multi-Format Delivery**: Distributed simultaneously as a normalized SQLite database (`sqlite_fifa_world_cup_2026.db`), Snappy-compressed Apache Parquet files (`/parquet/`), and RFC 4180 CSV files.
-- **Interactive Updater**: Built-in interactive console application to easily record match outcomes and populate events without breaking database normalization.
-- **ML-Ready Feature Set**: A curated dataset with 65 pre-calculated features (ELO ratings, FIFA rankings, squad market values, rolling team form, and fatigue) ready to train machine learning classifiers.
+- **Multi-Format Delivery**: Distributed simultaneously as a normalized SQLite database (`data/sqlite/sqlite_fifa_world_cup_2026.db`), Snappy-compressed Apache Parquet files (`data/parquet/`), and RFC 4180 CSV files (`data/csv/`).
+- **ML-Ready Feature Set**: A curated dataset with 65 pre-calculated features (ELO ratings, FIFA rankings, squad market values, rolling team form, and fatigue) ready to train machine learning classifiers (`data/ml/`).
 
 ---
 
@@ -101,7 +100,7 @@ The FIFA World Cup 2026 Master Dataset is actively cited in peer-reviewed intern
 The dataset is described and evaluated in our formal Data Descriptor paper (*Under Review at Scientific Data, Nature Portfolio*):
 
 ### 1. 🛡️ Technical Validation & Accuracy
-- **9-Stage Programmatic Verification:** Audited via a comprehensive 9-stage programmatic verification suite ([`validate_dataset.py`](./validate_dataset.py)) achieving **100% relational compliance** across primary keys, foreign keys, lineup sizes (26-man squads, 11 starting XI), and scoreline reconciling logic.
+- **10-Stage Programmatic Verification:** Audited via a comprehensive 10-stage programmatic verification suite ([`scripts/validation/validate_dataset.py`](./scripts/validation/validate_dataset.py)) achieving **100% relational compliance** across primary keys, foreign keys, lineup sizes (26-man squads, 11 starting XI), and scoreline reconciling logic.
 - **Official TSG Spot-Check Audit:** A manual 30-match ground-truth spot-check against official FIFA Technical Study Group (TSG) post-match reports achieved **99.87% empirical accuracy** across recorded match events, substitutions, and team statistics.
 
 ### 2. 📈 Statistical Calibration (Expected Goals vs. Actual Goals)
@@ -121,18 +120,18 @@ Evaluated under a strict temporal split protocol (**Group Stage M1–M72** for t
 
 ## 🤖 ML-Ready Match Prediction Dataset & Benchmarks
 
-Skip tedious feature engineering. This repository provides pre-engineered machine learning matrices:
-- **`match_prediction_features_X.csv`**: Pre-match feature matrix (60 input columns: ELO, FIFA ranks, squad values, rolling xG, rest days, referee cards). Zero target leakage!
-- **`match_prediction_targets_y.csv`**: Match outcomes (`home_score`, `away_score`, `home_xg`, `away_xg`, `result_type`, `match_result`).
-- **`match_prediction_features.csv`**: Merged convenience dataset.
+Skip tedious feature engineering. This repository provides pre-engineered machine learning matrices in `data/ml/`:
+- **`data/ml/match_prediction_features_X.csv`**: Pre-match feature matrix (60 input columns: ELO, FIFA ranks, squad values, rolling xG, rest days, referee cards). Zero target leakage!
+- **`data/ml/match_prediction_targets_y.csv`**: Match outcomes (`home_score`, `away_score`, `home_xg`, `away_xg`, `result_type`, `match_result`).
+- **`data/ml/match_prediction_features.csv`**: Merged convenience dataset.
 
 ```python
 import pandas as pd
 from xgboost import XGBClassifier
 
 # Load isolated features (X) and targets (y)
-X = pd.read_csv("match_prediction_features_X.csv")
-y = pd.read_csv("match_prediction_targets_y.csv")
+X = pd.read_csv("data/ml/match_prediction_features_X.csv")
+y = pd.read_csv("data/ml/match_prediction_targets_y.csv")
 
 # Train on Group Stage matches (1 to 72), evaluate on Knockout Stage (73 to 104)
 train_mask = X["match_id"] <= 72
@@ -284,20 +283,22 @@ erDiagram
 
 ---
 
-## 📂 CSV Files Description
+## 📂 Core Relational & Feature Tables
 
-1. **`teams.csv`**: Information on all 48 participating countries with FIFA ranking, Elo rating, confederation, group, and manager name.
-2. **`venues.csv`**: Geolocation, capacities, and elevation details of all 16 stadiums (up to 2,240m at Estadio Azteca).
-3. **`tournament_stages.csv`**: Lookup table for stages (Group Stage, Round of 32, Round of 16, Quarter-finals, Semi-finals, Third Place, Final).
-4. **`referees.csv`**: International referees with their historical card-per-game stats.
-5. **`matches.csv`**: Match outcomes, dates, times, scores, xG metrics, and statuses using relational IDs (`stage_id`, `venue_id`, etc.) for clean database modeling.
-6. **`matches_detailed.csv`**: A denormalized, user-friendly version of `matches.csv` that displays human-readable names (e.g. `home_team_name`, `stadium_name`, `city`, `referee_name`) instead of IDs. Ideal for quick analysis without SQL joins!
-7. **`squads_and_players.csv`**: Detailed player registries (1,248 rows) containing verified player names (preserved with native accents), positions, clean club teams, market values, international caps, dates of birth (in YYYY-MM-DD format), heights in centimeters, and international goals.
-8. **`match_events.csv`**: Time-series game events (`Goal`, `Own Goal`, `Assist`, `Yellow Card`, `Red Card`, `VAR Review`, `Penalty Shootout Goal`, `Penalty Shootout Miss`) chronologically mapped to matches and players. Own goals are explicitly categorized as `Own Goal` events (14 total) linked to the player who scored into their own net.
-9. **`match_team_stats.csv`**: Per-team per-match statistics (possession %, shots, shots on target, corners, fouls, offsides, saves) with `data_source` and `last_updated` columns for full traceability. Only populated with verified data from authentic sources (FIFA, Sofascore, FBref, etc.).
-10. **`match_lineups.csv`**: Tactical lineups for all completed matches: starting XI (11 players per team) and substitutes with actual minutes played (2,704 records).
-11. **`player_stats.csv`**: Cumulative tournament statistics for each player (1,248 rows), updated continuously as matches conclude. Individual player goals (294 total) and own goals (14 total) are recorded separately. Note: Total goals scored by teams across all 104 matches equal 308 (294 individual player goals + 14 opponent own goals credited to teams on match scorelines).
-12. **`match_prediction_features.csv`**: A machine-learning-ready features dataset containing 65 pre-calculated predictive features compiled for every match of the World Cup. Features include team ratings (ELO, FIFA ranking, squad value), rolling team form (possession, shots, goals, xG, corners, saves), player fatigue (rest days), environmental factors (stadium elevation), and final target labels.
+All primary data tables are organized under `data/csv/` and `data/ml/`:
+
+1. **`data/csv/teams.csv`**: Information on all 48 participating countries with FIFA ranking, Elo rating, confederation, group, and manager name.
+2. **`data/csv/venues.csv`**: Geolocation, capacities, and elevation details of all 16 stadiums (up to 2,240m at Estadio Azteca).
+3. **`data/csv/tournament_stages.csv`**: Lookup table for stages (Group Stage, Round of 32, Round of 16, Quarter-finals, Semi-finals, Third Place, Final).
+4. **`data/csv/referees.csv`**: International referees with their historical card-per-game stats.
+5. **`data/csv/matches.csv`**: Match outcomes, dates, times, scores, xG metrics, and statuses using relational IDs (`stage_id`, `venue_id`, etc.) for clean database modeling.
+6. **`data/csv/matches_detailed.csv`**: A denormalized, user-friendly version of `matches.csv` that displays human-readable names (e.g. `home_team_name`, `stadium_name`, `city`, `referee_name`) instead of IDs. Ideal for quick analysis without SQL joins!
+7. **`data/csv/squads_and_players.csv`**: Detailed player registries (1,248 rows) containing verified player names (preserved with native accents), positions, clean club teams, market values, international caps, dates of birth (in YYYY-MM-DD format), heights in centimeters, and international goals.
+8. **`data/csv/match_events.csv`**: Time-series game events (`Goal`, `Own Goal`, `Assist`, `Yellow Card`, `Red Card`, `VAR Review`, `Penalty Shootout Goal`, `Penalty Shootout Miss`) chronologically mapped to matches and players. Own goals are explicitly categorized as `Own Goal` events (14 total) linked to the player who scored into their own net.
+9. **`data/csv/match_team_stats.csv`**: Per-team per-match statistics (possession %, shots, shots on target, corners, fouls, offsides, saves) with `data_source` and `last_updated` columns for full traceability. Only populated with verified data from authentic sources (FIFA, Sofascore, FBref, etc.).
+10. **`data/csv/match_lineups.csv`**: Tactical lineups for all completed matches: starting XI (11 players per team) and substitutes with actual minutes played (2,704 records).
+11. **`data/csv/player_stats.csv`**: Cumulative tournament statistics for each player (1,248 rows), updated continuously as matches conclude. Individual player goals (294 total) and own goals (14 total) are recorded separately. Note: Total goals scored by teams across all 104 matches equal 308 (294 individual player goals + 14 opponent own goals credited to teams on match scorelines).
+12. **`data/ml/match_prediction_features.csv`**: A machine-learning-ready features dataset containing 65 pre-calculated predictive features compiled for every match of the World Cup. Features include team ratings (ELO, FIFA ranking, squad value), rolling team form (possession, shots, goals, xG, corners, saves), player fatigue (rest days), environmental factors (stadium elevation), and final target labels.
 
 ---
 
@@ -312,29 +313,68 @@ erDiagram
 
 ---
 
+## 📁 Repository Directory Structure
+
+```plaintext
+FIFA-World-Cup-2026-Dataset/
+├── data/
+│   ├── csv/                     # 12 core 3NF relational CSV tables (matches.csv, teams.csv, etc.)
+│   ├── ml/                      # Machine learning feature matrices (features_X.csv, targets_y.csv)
+│   ├── parquet/                 # High-performance Snappy-compressed Parquet tables
+│   └── sqlite/                  # Fully normalized SQLite relational database (sqlite_fifa_world_cup_2026.db)
+├── scripts/
+│   ├── pipeline/                # Automated ETL & ingestion pipeline scripts
+│   ├── validation/              # 10-stage programmatic relational verification suite & TSG audit
+│   ├── analysis/                # Machine learning baseline benchmarks & figure rendering
+│   └── deploy/                  # Platform distribution & archive packaging tools
+├── assets/
+│   └── figures/                 # High-resolution vector & raster publication figures (DPI 300)
+├── docs/                        # Formal Data Descriptor manuscript (DATA_PAPER.md) & documentation
+├── index.html                   # Interactive web portal & database explorer
+├── robots.txt                   # Search engine crawling rules
+├── sitemap.xml                  # Website sitemap
+├── CITATION.cff                 # Formal academic citation metadata
+├── LICENSE                      # CC0-1.0 Public Domain Dedication
+├── README.md                    # Repository documentation
+└── requirements.txt             # Python dependencies
+```
+
+---
+
 ## 🛠️ Installation & Usage
 
-To generate the initial CSV dataset or regenerate it back to its default start state:
+### 1. Programmatic Validation Suite
+To audit all 10 relational verification checks across all 12 tables, Parquet, and the SQLite database:
 ```bash
-python generate_dataset.py
+python scripts/validation/validate_dataset.py
 ```
 
-### Programmatic Validation Suite
-To audit all 9 relational verification checks across all 12 tables and the SQLite database:
+### 2. TSG Ground-Truth Spot-Check Audit
+To reproduce the 30-match ground-truth audit against official FIFA Technical Study Group post-match reports:
 ```bash
-python validate_dataset.py
+python scripts/validation/audit_fifa_tsg_spotcheck.py
 ```
 
-### Daily Match Updates
-As matches conclude every day, you can update the datasets interactively:
+### 3. Machine Learning Baseline Benchmarks
+To run the standardized XGBoost, Random Forest, and Logistic Regression temporal benchmarks:
 ```bash
-python update_dataset.py
+python scripts/analysis/benchmark_ml_models.py
 ```
 
-### SQLite Database Generation
-For researchers and SQL query design, you can package all normalized CSV files into a single, query-optimized SQLite relational database file:
+### 4. Database Regeneration & Pipeline
+To regenerate the SQLite relational database from normalized CSVs:
 ```bash
-python generate_sqlite.py
+python scripts/pipeline/generate_sqlite.py
+```
+
+To compile Snappy-compressed Parquet tables:
+```bash
+python scripts/pipeline/generate_parquet.py
+```
+
+To rebuild prediction features:
+```bash
+python scripts/pipeline/generate_prediction_features.py
 ```
 
 ---

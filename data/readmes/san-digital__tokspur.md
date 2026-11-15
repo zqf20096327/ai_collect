@@ -9,7 +9,8 @@
   <a href="https://tokspur.com/">Website</a> |
   <a href="https://tokspur.com/get-started/">Get started</a> |
   <a href="https://tokspur.com/docs/">Docs</a> |
-  <a href="https://tokspur.com/engine/">Engine</a>
+  <a href="https://tokspur.com/engine/">Engine</a> |
+  <a href="https://github.com/san-digital/tokspur">GitHub</a>
 </p>
 
 Tokspur runs Qwen3.8 Flash-Next locally on a Mac. It uses a native Metal worker and serves an OpenAI-compatible chat API.
@@ -23,23 +24,33 @@ export PATH="$HOME/.local/bin:$PATH"
 
 ## Add the model
 
-Use the pinned target shards and shared Q8 sidecar from the [model guide](https://tokspur.com/docs/models/). Adoption reuses the original files. Check available space before building the local pack.
+`tokspur pull` downloads the pinned base GGUF, pre-built Planar Pack v3 and shared Q8 MTP sidecar from [`san-digital/Qwen3.8-Flash-Next-Q4_K-Tokspur-GGUF`](https://huggingface.co/san-digital/Qwen3.8-Flash-Next-Q4_K-Tokspur-GGUF), verifies every file by SHA-256 and configures local state with no extra `adopt`, `configure` or `pack build` step (see the [model guide](https://tokspur.com/docs/models/)).
 
 ```sh
-tokspur adopt --target /path/to/UD-Q4_K_XL --draft /path/to/snapshot
-tokspur configure
-tokspur pack plan --check
-tokspur pack build
-tokspur serve
+tokspur pull
+tokspur serve --speed-preset
+```
+
+If you already downloaded the repository folder separately with `hf download`, point `serve` directly at that directory:
+
+```sh
+tokspur serve /path/to/Qwen3.8-Flash-Next-Q4_K-Tokspur-GGUF --speed-preset
 ```
 
 Connect to `http://127.0.0.1:18081/v1` with model `tokspur` and the generated API key.
 
+For faster block-8 speculative decoding across code, `<think>` reasoning and multilingual workloads, pull the optional drafter [`san-digital/Qwen3.8-Flash-Next-DFlash2`](https://huggingface.co/san-digital/Qwen3.8-Flash-Next-DFlash2):
+
+```sh
+tokspur pull --dflash2
+tokspur serve --speed-preset --drafter dflash2 --shared-prefix-cache
+```
+
+Add `--dflash2-vocab-gather cjk64k --dflash2-lookup hybrid --ple-ram-resident` when serving multilingual or CJK prompts alongside `<think>` reasoning.
+
 ### Pack formats
 
-`tokspur pack build` writes the planar Pack v3 from the adopted target and MTP sidecar, and `tokspur serve` loads it. Allow about **130 GiB free** for this model's 80 GiB pack and the default 50 GiB reserve.
-
-`tokspur serve` falls back to an installed Pack v2 when no v3 pack is present. Pass `--format v2` to `pack plan` and `pack build` for the older layout, or `--pack-v3` to `serve` to refuse the fallback. You can keep both formats. The server reports the loaded format at startup.
+[`san-digital/Qwen3.8-Flash-Next-Q4_K-Tokspur-GGUF`](https://huggingface.co/san-digital/Qwen3.8-Flash-Next-Q4_K-Tokspur-GGUF) already includes Planar Pack v3 (`Qwen3.8-Flash-Next-Q4_K.tokspur.gguf`) and needs no local pack build. When adopting raw split-shard GGUF files instead, `tokspur pack build` writes the planar Pack v3 from the adopted target and MTP sidecar (`--format v2` selects the older layout, and `--pack-v3` on `serve` refuses fallback). Allow about **130 GiB free** when building a local pack from raw shards.
 
 ## Build
 

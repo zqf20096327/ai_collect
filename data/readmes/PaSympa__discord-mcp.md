@@ -13,6 +13,7 @@
 [![Install in VS Code](.github/assets/install-vscode.svg)](https://vscode.dev/redirect/mcp/install?name=discord&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22discord_token%22%2C%22description%22%3A%22Discord%20bot%20token%22%2C%22password%22%3Atrue%7D%5D&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40pasympa%2Fdiscord-mcp%22%5D%2C%22env%22%3A%7B%22DISCORD_TOKEN%22%3A%22%24%7Binput%3Adiscord_token%7D%22%7D%7D)
 [![Install in VS Code Insiders](.github/assets/install-vscode-insiders.svg)](https://insiders.vscode.dev/redirect/mcp/install?name=discord&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22discord_token%22%2C%22description%22%3A%22Discord%20bot%20token%22%2C%22password%22%3Atrue%7D%5D&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40pasympa%2Fdiscord-mcp%22%5D%2C%22env%22%3A%7B%22DISCORD_TOKEN%22%3A%22%24%7Binput%3Adiscord_token%7D%22%7D%7D&quality=insiders)
 [![Install in Cursor](.github/assets/install-cursor.svg)](https://cursor.com/en/install-mcp?name=discord&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBwYXN5bXBhL2Rpc2NvcmQtbWNwIl0sImVudiI6eyJESVNDT1JEX1RPS0VOIjoiWU9VUl9CT1RfVE9LRU4ifX0%3D)
+[![Install in Claude Desktop](.github/assets/install-claude-desktop.svg)](https://github.com/PaSympa/discord-mcp/releases/latest/download/discord-mcp.mcpb)
 
 </div>
 
@@ -71,14 +72,14 @@
 
 ## Expose only what you need
 
-The full set of 100 tools costs about 32k tokens of context when a client loads them all. Most assistants need a fraction of it: set `DISCORD_MCP_TOOLSETS` to the toolsets you want.
+The full set of 100 tools costs about 35k tokens of context when a client loads them all. Most assistants need a fraction of it: set `DISCORD_MCP_TOOLSETS` to the toolsets you want.
 
 | Profile              | `DISCORD_MCP_TOOLSETS`                           | Tools | Context     |
 | -------------------- | ------------------------------------------------ | ----- | ----------- |
-| Everything (default) | unset                                            | 100   | ~32k tokens |
-| Chat assistant       | `discovery,messages`                             | 25    | ~9k tokens  |
-| Community manager    | `discovery,messages,forums,scheduled_events`     | 42    | ~15k tokens |
-| Moderator            | `discovery,members,moderation,roles,permissions` | 31    | ~9k tokens  |
+| Everything (default) | unset                                            | 100   | ~35k tokens |
+| Chat assistant       | `discovery,messages`                             | 25    | ~10k tokens |
+| Community manager    | `discovery,messages,forums,scheduled_events`     | 42    | ~17k tokens |
+| Moderator            | `discovery,members,moderation,roles,permissions` | 31    | ~10k tokens |
 | Audit and stats      | `discovery,stats,moderation`                     | 6     | ~2k tokens  |
 
 ```json
@@ -90,7 +91,7 @@ The full set of 100 tools costs about 32k tokens of context when a client loads 
 
 Context sizes are measured on the `tools/list` response (bytes divided by 4). Toolsets: `discovery`, `messages`, `channels`, `permissions`, `members` (includes kick, ban and timeout), `roles`, `moderation` (the audit log), `screening`, `stats`, `forums`, `webhooks`, `scheduled_events`, `invites`, `dm`. A toolset brings its whole module, destructive tools included; an unknown name stops the server at startup instead of exposing everything.
 
-Set `DISCORD_MCP_READ_ONLY=true` to keep only the 35 tools annotated `readOnlyHint: true`, about 13k tokens. It narrows `DISCORD_MCP_TOOLSETS` instead of replacing it: `discovery,messages` then exposes 11 tools, about 5k tokens. A selection with no read-only tool left, such as `channels` alone, stops the server at startup.
+Set `DISCORD_MCP_READ_ONLY=true` to keep only the 35 tools annotated `readOnlyHint: true`, about 14k tokens. It narrows `DISCORD_MCP_TOOLSETS` instead of replacing it: `discovery,messages` then exposes 11 tools, about 5k tokens. A selection with no read-only tool left, such as `channels` alone, stops the server at startup.
 
 ## Safety
 
@@ -121,6 +122,10 @@ Set `DISCORD_MCP_READ_ONLY=true` to keep only the 35 tools annotated `readOnlyHi
 
 <details>
 <summary><strong>Claude Code</strong></summary>
+
+**Plugin.** In a Claude Code session, run `/plugin marketplace add PaSympa/discord-mcp`, then `/plugin install discord-mcp@pasympa`. Claude Code asks for the bot token and stores it as a secret, not in `settings.json`. If you skip that prompt, the server stays off until you set the token with `/plugin configure discord-mcp@pasympa`, which also changes the other settings. Restart Claude Code after setting or changing the token. The plugin also brings two skills, `/discord-mcp:channel-digest` and `/discord-mcp:moderation-sweep`. They read without a permission prompt, and nothing that changes Discord happens before you approve it.
+
+**Without the plugin.** You can also add the server with `claude mcp add`, as before. Keep only one of the two, or every tool loads twice.
 
 ```bash
 claude mcp add discord -e DISCORD_TOKEN=YOUR_BOT_TOKEN -- npx -y @pasympa/discord-mcp
@@ -543,7 +548,7 @@ The intent flags only change what the bot requests when it connects. Requesting 
 
 - **Every call fails with close code `4014`.** The bot requests a privileged intent that is off in the Developer Portal. Enable Server Members and Message Content there, or set `DISCORD_GUILD_MEMBERS=false` / `DISCORD_MESSAGE_CONTENT=false`.
 - **Messages come back with empty text.** Message Content is off in the portal. Enable it; the flag alone does not change what the REST API returns.
-- **A channel reads as empty.** The bot lacks Read Message History there: Discord returns an empty list rather than an error.
+- **A read fails with "lacks the Read Message History permission".** Without it, Discord returns an empty list rather than an error, so the read tools report the missing permission instead of an empty channel. Grant it in the channel, or in the parent channel of a thread.
 - **`Missing Access` or `Missing Permissions`.** The bot cannot see the channel, or the target role or member sits above the bot's highest role. Check overwrites with `discord_get_channel_permissions`.
 - **Finding IDs.** Enable **Developer Mode** in Discord (Settings, Advanced), then right-click a server, channel or user and choose **Copy ID**.
 

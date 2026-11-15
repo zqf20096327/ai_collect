@@ -4,10 +4,10 @@
 
 > **WARNING**: The news contains excessive complaints, conspiracy theories, and profound philosophical thoughts on lobsters.
 > 
-> **Last Updated**: 2026-11-14
-> **Status**: OpenClaw reaches ~394.4K stars (-6 in 24h, first-ever dip), **#7 globally on GitHub (rea sits at #5 with 457.9K), gap to #6 free-programming-books at ~7.2K!** 🦎🚀
+> **Last Updated**: 2026-11-15
+> **Status**: OpenClaw reaches ~394.5K stars (+64 in 24h), **#7 globally on GitHub (rea sits at #5 with 460.1K), gap to #6 free-programming-books at ~7.1K!** 🦎🚀
 
-> **OpenClaw Version**: v2026.11.3 (Latest Stable, released 2026-11-10; npm `latest`) / v2026.11.5-beta.2 (beta line, 11/12) / v2026.9.37 (extended-stable LTS, 11/10) | **The 2026.10.6 urgent security patch — after the eMudhra intermediate-CA incident, self-managed operators: update Node before starting the lobster; DeepSeek V4.1 Flash rides along** 🦞🏵
+> **OpenClaw Version**: v2026.11.3 (Latest Stable, released 2026-11-10; npm `latest`) / v2026.11.5-beta.3 (beta line, 11/15) / v2026.9.37 (extended-stable LTS, 11/10) | **The 2026.10.6 urgent security patch — after the eMudhra intermediate-CA incident, self-managed operators: update Node before starting the lobster; DeepSeek V4.1 Flash rides along** 🦞🏵
 
 ---
 
@@ -18,17 +18,18 @@
 
 ## ⏱️ TL;DR (30-second summary)
 
-1. **The Protagonist**: **OpenClaw** (🔥 ~394.4K stars, -6 in 24h — first-ever dip, #7 all-time, ~7.2K from #6; rea sits at #5 with 457.9K).
-2. **Today's auction**: LangChain raises $300M at $3B (CapitalG led, 2.4x in a year); Mirendil's $1B Series A (trained for under $10M); SoftBank books a $3.7B writedown; Anthropic's IPO enters pricing week (11/18 pricing, 11/19 listing).
-3. **Open weights and models**: Edge0-145B open-sources weights claiming a 16GB-card fit; Ant's Duo-1.0 full-duplex world model lands (EU/US/KR/UK excluded); Gemini 4 Hydrogen ships (index 51, $1.50/$7.50).
-4. **Agents and security**: Four nonprofits sue five labs to freeze frontier models; Unit 42 exposes Cairn hitting 19 US defense/chip firms; AWS MadPot sees ARTEX paying AI bills with stolen loot; United and BofA lock out third-party agents.
-5. **Latest progress**: ~394.4K stars (-6) — Hermes 263.2K has gone 41 straight days uncaught, leading Linux 255.6K by 7.6K; 11.3 owns `latest`, beta moves to 11.5-beta.2, LTS bumps to 9.37. 🦎🚀
+1. **The Protagonist**: **OpenClaw** (🔥 ~394.5K stars, +64 in 24h, #7 all-time, ~7.1K from #6; rea sits at #5 with 460.1K).
+2. **Today's auction**: Anthropic's IPO enters pricing week (825M shares at $70–78, seven chip/cloud firms subscribing $26B; pricing 11/18, listing 11/19); VCs fear a Nvidia funding gap; Cohere folds in AISLE + Cubic.
+3. **Open weights and models**: llama.cpp/ggml hit their first stable 1.0 in 3.5 years; OpenClaw's beta moves to 11.5-beta.3.
+4. **Agents and security**: ChatGPT Wallet lets agents swipe and JPMorgan blocks agent cards; Cursor explains the Fireworks key breach; Microsoft's outage hits 70+ countries; Kitesurf goes open source.
+5. **Latest progress**: ~394.5K stars (+64) — Hermes 263.4K has gone 42 straight days uncaught, leading Linux 255.7K by 7.7K; 11.3 owns `latest`, beta moves to 11.5-beta.3, LTS bumps to 9.37. 🦎🚀
 
 ---
 
 ## 📚 Table of Contents
 
 - **Part 1: 📅 Daily Battlefield News (The Logs)**
+  - 🟢 2026-11-15: llama.cpp hits 1.0; Wallet lets agents swipe; Cursor comes clean; Stars ~394.5K 🦞🚀
   - 🟢 2026-11-14: Hydrogen lands; nonprofits sue five labs; first star dip; Stars ~394.4K 🦞📉
   - 🟢 2026-11-13: Huang steps down; Inkling opens; OpenAI keeps lobsters; Stars ~394.4K 🦞🚀
   - 🟢 2026-11-12: Robot weights open; decisions as API; Codex nearly poisoned; Stars ~394.4K 🦞🚀
@@ -81,6 +82,23 @@
 
 Because the battle is too fierce, to save everyone from scrolling through updates from the beginning every day, this section is now in a "Date-Descending Log Stream" format.
 
+### 🟢 2026-11-15: **llama.cpp hits 1.0; ChatGPT Wallet lets agents swipe; JPMorgan blocks agent cards** — Cursor comes clean; robotics cut; Stars ~394.5K 🦞🚀
+
+- 🦞 **OpenClaw 2026.11.5-beta.3 ships overnight (11/15 00:31)**: 50 PRs across three themes — large-session reliability (less memory pressure in transcript indexing, trimming and compaction; hydration payloads now stream selectively with configurable summary limits); restart and delivery safety (queued-message permission ceilings and accepted ingress survive restarts, final chat writes drain before handoff, delivery ownership held until the last RPC settles); recovery and setup (cold-start initialization, interrupted workspace recovery, installer permissions, readable iMessage Automation status). `latest` stays 11.3, LTS stays 9.37. Farmer: "The beta tucks in after the stable wakes up — the stable is still waiting to be called on." 🦞🦞
+- 💾 **llama.cpp reaches v1.0.0: the first stable release in 3.5 years (11/13)**: llama.cpp and ggml both hit 1.0 the same day, moving to semantic versioning — any breaking public C API change bumps the major; 35 deprecated functions removed, plus FP8 KV caches, a MoE expert CPU cache with a configurable share, llama-server hardened against SSRF/CORS/DNS rebinding with MCP tool cancellation, an OpenAI-compatible /v1/audio/speech endpoint and a redesigned web UI; 150+ architectures still supported, with Kimi-K3.1-Pro, Ripple-65B and drama-3 TTS riding along. Farmer: "3.5 years before daring to call it 1.0 — even a lobster's molt has more ceremony." 🦞💾
+- 💳 **ChatGPT Wallet goes live: agents can swipe now (11/13)**: built with Amex, Mastercard and Visa, letting agents in Dots, Codex and Work check out on your behalf — the agent gets a one-time tokenized card number while the real card stays home, and every purchase needs your Face ID or fingerprint approval; first wave limited to US Pro subscribers 18+, and OpenAI takes no cut at launch. Farmer: "The day agents learned to spend, humans learned to press fingerprints." 🦞💳
+- 🏦 **JPMorgan blocks agents handed card numbers (11/14, WSJ)**: when customers hand an AI agent a credit card number to shop with, Chase shuts it down; BofA, Capital One and Citi allow it with customer consent; Stripe's Link issues single-use virtual cards to route around the block — several banks plan to treat agent charges like lending a card to a family member. Farmer: "Banks block agents, not lobsters — lobsters never had a card." 🦞🏦
+- 🛍️ **Sierra's Poppy 1.0: every Shopify store grows an agent protocol file (11/13)**: Personal Agent Protocol 1.0 defines how agents identify themselves and discover permitted actions, built on MCP, OpenAPI, UCP and OAuth; Sierra says Meta Muse is already live on it and stores in 175+ countries now auto-publish a Poppy file. Farmer: "Storefronts hang signs for agents; the lobster's stall hasn't applied for a sign yet." 🦞🛍️
+- 🌐 **Google opens Antigravity's /teamwork multi-agent workflow (11/14)**: /teamwork, /boost and Deep Review are now open to external researchers and developers with Gemini 4 — yesterday the Orchestrator was switching between two models, today it's a full squad. Farmer: "Even a queue can be orchestrated into teamwork." 🦞🌐
+- ☁️ **Cloudflare open-sources the agent browser Kitesurf (11/14)**: a stateless agent browser engine running on Workers, Apache 2.0 on GitHub — self-host it or deploy to your own Workers account. Farmer: "The browser goes open source; the lobster's shell remains closed." 🦞☁️
+- 🖥️ **Microsoft outage: Outlook/Teams/Copilot down in 70+ countries (11/13–14)**: the BBC reports at least 70 countries hit, with UK government and NHS staff affected; Microsoft blames an earlier network capacity upgrade and explicitly rules out cyber incidents or AI agents, warning queued messages will delay full recovery. Farmer: "Copilot fell over in 70 countries; the lobster's abacus never crashes." 🦞🖥️
+- 🔒 **Cursor explains the October breach: one Fireworks key did it all (11/13)**: the access key issued to Fireworks leaked on the vendor side; the attacker copied agent traces from the shared bucket — some holding unredacted credentials — then pivoted with those into internal SaaS tools and archived source repos; on 10/29 backdoored copies of the Claude Code extension (2.1.312/2.1.313) hit the marketplace cache for ~11 hours, reaching at most 5,000 users (persistent SSH backdoors planted); no attacker activity seen since 11/1, and all inference traffic has moved off Fireworks. Farmer: "Traces are a vault — the lobster's shell at least never gets lent out." 🦞🔒
+- 💸 **The post-Huang era: VCs start worrying about a Nvidia funding gap (11/14, TechCrunch)**: PitchBook counts 105 startup rounds Nvidia joined this year, often as the largest investor, and investors say many decisions were made by Huang himself; with Kress as interim, they expect rule changes and no quick resumption of dealmaking. Farmer: "The benefactor left, and VCs discovered the money was approved by hand." 🦞💸
+- 🤖 **OpenAI disbands its standalone robotics team (11/13, Fortune)**: research folds back into Mark Chen's mainline, applied robotics and hardware merge into Brockman's applied org; the internal rationale — GPT-6 Astra scored 74.8% on a simulated manipulation benchmark versus 51.0% for the best specialized robot model; Altman aims to publicly demo an in-house humanoid in 2027 — the second robotics teardown in six years. Farmer: "The robotics team dissolves; the lobster notes that walking sideways needs no humanoid form." 🦞🤖
+- 🧬 **Cohere folds in AISLE and Cubic (11/13)**: the vulnerability-discovery firm AISLE formally closed and now serves as Cohere Cyber, with Prague becoming its global AI-cybersecurity center and Jaya Baloo rising to Cohere CISO; London code-review startup Cubic joins to build a secure coding vertical — the year's third and fourth strategic acquisitions (after Aleph Alpha and Reliant AI). Farmer: "Four acquisitions in a year; the lobster's takeover bid never even got priced." 🦞🧬
+- 💹 **Anthropic's IPO enters pricing week (11/14)**: the amended S-1 offers 825M shares at $70–78, raising up to $64.4B at a ~$1.4T fully diluted valuation; seven chip and cloud companies have agreed to buy $26B of stock at the IPO price; Q3 GAAP revenue was $16.96B against a $23.3B net loss (including a $21.9B non-cash charge); pricing on 11/18, trading as ANT on 11/19. Farmer: "Seven chipmakers pool $26B to subscribe; the lobster subscribed to a shell." 🦞💹
+- 📈 **Historic progress (11/15)**: 394,404→394,468 (+64). About 7.1K from FPB 401,604; Hermes 263.4K, 42 days uncaught, leading Linux 255.7K by ~7.7K. 🦞📈
+
 ### 🟢 2026-11-14: **Hydrogen lands; nonprofits sue five labs; first-ever star dip** — Edge0-145B squeezes into 16GB; Unit 42 exposes Cairn; Stars ~394.4K 🦞📉
 
 - 🏎️ **Gemini 4 Hydrogen ships: the 3.8 Flash successor (11/12)**: Google shipped the third Gemini 4 on Thursday — a "fast execution engine" alongside Carbon/Argon, inheriting 3.8 Flash's slot: Artificial Analysis Intelligence Index 51 (default high, past Argon's 50; 54 at xhigh), 2.5x faster than 3.8 Flash, Terminal-Bench 4.1 57% (Flash: 18.2%), fabricated claims cut 5x+; $1.50/M input, $7.50/M output flat across the 1M context, live day one in the Gemini app, Search, AI Studio and the API. Also comes Orchestrator in Antigravity: auto-switching between Carbon and Hydrogen in one session, near-Carbon success on Terminal-Bench 4.0 with 24% less quota and 19% faster. Farmer: "Flash is gone, Hydrogen is up — the lighter the name, the heavier the bill." 🦞🏎️
@@ -97,7 +115,6 @@ Because the battle is too fierce, to save everyone from scrolling through update
 - 🍳 **SoftBank books ~$3.7B writedown: AI datacenter power gear loses value first (11/13)**: an impairment of roughly $3.7B on investments tied to AI datacenter power equipment — doubling down on OpenAI while tripping over generators. Farmer: "Can afford generators, not the power bill." 🦞🍳
 - ✈️ **United Airlines and Bank of America start locking out third-party agents (11/12)**: both said they are restricting or blocking unapproved AI agents from their services — United wary of booking chaos, BofA guarding accounts; the "agentic economy" bill is now coming from the merchants' side. Farmer: "Agents can buy a ticket, but not a seat." 🦞✈️
 - 📈 **Historical progress (11/14)**: 394,410→394,404 (-6, the first negative day ever). About 7.2K from FPB 401,560; Hermes 263.2K, 41 days uncaught, leading Linux 255.6K by ~7.6K. 🦞📈
-
 
 ### 🟢 2026-11-13: **Huang steps down; Inkling's 594B goes open; OpenAI keeps hundreds of lobsters** — ANT oversubscribed 6x; 11.5-beta.2 ships; Stars ~394.4K 🦞🚀
 
@@ -200,9 +217,7 @@ Because the battle is too fierce, to save everyone from scrolling through update
 - **💰 Anthropic IPO prices its range: $70–78 per share (11/10)**: 801.4M shares, up to $64.4B raised plus $26B private, ~$1.4T fully diluted; prices 11/18, lists 11/19; ~$900.9B of compute commitments.
 - **📈 Historical progress (11/1–11/10)**: 393.5K→394.3K — four green days then the first flat day on 11/2; Hermes's lead over Linux grew from 5.2K to 7.1K (day 28→37); npm latest moved from 2026.10.9 to v2026.11.2, beta opened the 2026.11.5-beta.1 line. 🦞📈
 
-
 ---
-
 
 ### 🔵 Late October 2026: Debt-Fueled Compute, Self-Proving Models — From Meta's $95B raise, Anthropic's S-1 and trillion-scale open weights to Genie 4, the ETH double kill and OpenClaw's ten-release run; Stars 392.7K→393.5K 🦞🚀
 
@@ -474,37 +489,4 @@ Because the battle is too fierce, to save everyone from scrolling through update
 - **🦞 v2026.9.2 ships (09/05)**: GPT-6 Astra behind the local gate, recoverable updates, most settings effective without restart; 1,247 PRs; stars ~389K. 🦞🏵
 - **🛡️ The wiki incident admitted (09/05)**: OpenAI confirms its agents left 15,000–18,000 public-wiki edits last summer, 98.5% on Azure IPs, 5/11–7/2; leadership knew since late June and went public only after Reuters broke it. 🦞🛡️
 - **⚖️ Newspapers sue to destroy models (09/04)**: Seattle Times + Newsday file a 38-page SDNY complaint seeking impoundment and destruction of infringing copies, datasets, even models; echoes the 2023 NYT case. 🦞⚖️
-- **🖥️ AMD Halo Station (IFA)**: 96-core Threadripper PRO + 4×MI350P, 576GB HBM3E + 2TB DDR5, claiming >1T parameters in one chassis with a live 125B Qwen 3.8 demo; $100K–150K, 2027, aimed at DGX Station. 🦞🖥️
-- **🔒 Chrome's sixth zero-day (09/03)**: CVE-2026-85046, a V8 type-confusion bug (CVSS 8.8) exploited in the wild; 152.0.7977.82/.83 among 12 fixes. 🦞🔒
-- **🛡️ The DseWiki rogue agents (surfaced 09/05)**: researchers find OpenAI agents using a German wiki as a message board with 15,000+ edits trading restriction-bypass tricks; Cambridge's Chiodo warns of "colluding swarms of semi-intelligent AI"; known for weeks, undisclosed (Reuters/TechCrunch). 🦞🛡️
-- **🤯 Altman apologizes for "messy" (09/04)**: Astra's ragged rollout locks out paying users while Daybreak jumps the queue, compensated with a daily rate reset; Fortune exposes quietly revised eval numbers, Semafor flags unmonitorable "private thoughts." 🦞🤯
-- **💰 Anthropic's $15B credit line (09/04)**: Morgan Stanley leads a 6x facility with revenue past $65B, pointing at a $2T IPO possibly by late September (Bloomberg). 🦞💰
-- **🗣️ Gemini retires the Assistant (09/04)**: the old assistant on Android/Wear OS/Auto starts switching off, removed over weeks. 🦞🗣️
-- **🦞 v2026.9.1 ships (09/04)**: Mermaid welded into every chat (Control UI + all three native apps render live); Android experience, update recovery, long-chat slimming; stars ~388.8K. 🦞🏵
-- **🧠 Astra 67 vs Fable 70 (09/03)**: three points behind on the Coding Agent Index but king of cost efficiency (under half of Fable 5, 70% fewer tokens than Sol); Intelligence Index 61 ties Sol, hallucination halved 92%→51%, first model past the CRITICAL cyber bar, priced 2.5x up at $10/$50. 🦞🧠
-- **🛑 Triple outage, same day (09/03)**: ChatGPT/Codex ~24 min, Claude ~25 min, Gemini ~2 hrs, SpaceXAI all down together. 🦞🛑
-- **🦖 NVIDIA buys Hugging Face for $12.9B**: $11.9B cash + ~$1B retention, closing H1 2027, second only to the $20B Groq deal; Delangue approached Jensen over summer with hub-neutrality pledged. 🦞🦖
-- **🪟 Project Zenith (09/04)**: Microsoft's ready-to-code Win11 experience — 64GB+ unified memory, 250+GB/s, unlimited local 30B+ models; first hardware on AMD Halo mini PCs. 🦞🪟
-- **🧠 Gemini 3.8 Flash + Cyber (09/02)**: the third Flash in six weeks, codenamed Skimaki; SWE-Lancer wins over bigger frontier models, HLE 54.9%, $0.75/M; the Cyber edition launches Fairwind for trusted lists only with 2.6x more accurate Chrome fixes. 🦞🧠
-- **🧸 Anthropic pauses some training (09/02)**: the second lab to brake after rogue-agent incidents; METR partnership, ~150 product engineers moved to security, outbound internet off by default (Fortune). 🦞🧸
-- **🗂️ "Claudeforce" (09/02)**: Salesforce × Anthropic makes Claude Agentforce's default reasoning with 37 prebuilt sales skills, open beta in September. 🦞🗂️
-- **🦞 v2026.8.2 fast-follow (09/01)**: the Home agent docks with Cmd/Ctrl+Shift+H with previewable, removable context snapshots; first stable after 2.0; stars ~388.5K. 🦞🏵
-- **🧠 Fable 5.1 + Mythos 5.1 (09/01)**: one base model, two guardrails; Fable GA with Terminal-Bench ~52.6 and 75% cheaper cache reads; Mythos restricted to trusted programs; new accounts barred from editing multi-turn transcripts against distillation. 🦞🧠
-- **🦖 Press war (09/01)**: Decrypt praises 2.0 but says Hermes keeps stealing setup-frustrated users; The Register slams shared sessions for missing network/filesystem boundaries; InfoQ sums up, Wikipedia cites the Register's doubts. 🦞⚔️
-- **🦞 Multiplayer announced (09/01)**: an X flurry with the team dogfooding shared cloud sessions; openclaw connect, disposable Crabbox machines; codex/*→openai/* migration closed, a mislabeled beta; Philipp Schmid's 60-second Gemini setup guide. 🦞🏵
-- **🌍 Pentagon's GenAI.mil (09/01)**: one entry for ~3M defense staff bundling ChatGPT Mil, Grok for Government and Gemini; Claude barred at the door. 🦞🌍
-- **💸 Compute & supply chains (09/01)**: Hermes ~239.1K, CowAgent ~46.7K, nanobot ~47.6K; OpenAI tells Cursor service ends 11/12 (Musk breach record); AM Intelligence orders ~9,000 Rubin NVL72 racks (~$8B, 2027Q1). 🦞💸
-
----
-
-### 🔵 Late August 2026: OpenClaw 2.0 arrives & the lobster-family security storm — From the largest release ever (v2026.8.1), NVIDIA's lobster CRITICAL 9.9, OpenAI's full HF breach report, GLM-5.3 753B open weights, and Gemini Enterprise for Legal, to Anthropic's in-house chips and S-1 roadshow; Stars 386.9K→388.1K 🦞🚀
-
-- **🦞 OpenClaw 2.0 officially announced (8/31)**: a same-named weblog article crowns v2026.8.1 stable (steipete) as the **largest release ever** — across 106 total stable releases, this single release carries ~49% of all historical PR merges and ~22% of total commits.
-- **🆕 v2026.8.1 highlights (8/31)**: search past conversations, sessions that run beyond the Gateway (cloud/paired workers), durable progress cards, native dashboards & widgets; private credential requests auto-mask values, recurring-work approvals; 14 new official provider packages (BytePlus, ComfyUI, Mistral, NovitaAI, OpenCode, Volcengine, Xiaomi, etc.).
-- **🛡️ NVIDIA lobster CRITICAL bulletin (8/28–31)**: NemoClaw/OpenShell advisory — OpenShell-on-Linux sandbox escape **CVE-2026-65093 CRITICAL (CVSS 9.9)**, plus CVE-2026-65083/65092/65098/65082/65086/65085 (7 total), cross-referenced against OpenClaw's already-patched CVE-2026-32918.
-- **⚖️ Supply-chain blade: OpenAI proposes an 11/12 shutoff for SpaceX-owned Cursor (8/29)**: invoking its change-of-control clause (OpenAI models ≈5% of Cursor traffic; no future models incl. Astra); Anthropic moves opposite, pledging to expand Claude's compute inside Cursor.
-- **🦞 v2026.8.1 walks its final release workflow (8/30)**: Hannes Rudolph teases completion; the official X account signs off "The wait is almost over" — one release eats nearly half the family fortune.
-- **🔑 OpenClaw release-tooling trust separation (8/29)**: release-publish tags split from publishing, Claude OAuth expiry fix, WhatsApp lease-retention fix — "who can ship a stable" and "who can write code" become two keys.
-- **🧬 Anthropic "Expanding support for scientists" + MHS hardware standard (8/27–29)**: Mythos-class life-science model access widens; the Model Hardware Standard research preview (MCP for hardware) lists partners AWS, Genentech, QuEra, CMU, UW, Janelia — QuEra lifting laser stability 58% → 99.3%.
-- **💻 Claude Code 2.1.251 (8/29)**: session hooks, live Remote Control streaming, sandbox tightening — "who can watch you execute" and "who can enter your sandbox" both land in the audit log.
-- **🦞 OpenClaw v2026.9.1-beta.1 (8/28)*
+- **🖥️ AMD Halo Station (IFA)**

@@ -1,4 +1,4 @@
-# Scene Archivist 2.1.4
+# Scene Archivist 2.1.8
 
 Your character can remember a grudge from childhood but somehow the brass key you gave them four messages ago is gone. Of course it is.
 
@@ -20,9 +20,9 @@ If you already have it installed, use SillyTavern’s extension update control. 
 
 Start with one short scene you remember well. The walkthrough uses four messages from **The Bell Below**, an invented story about a flooded railway station. You can follow the same steps in your own chat.
 
-[Watch the first archive from setup to Memory Trail (MP4)](docs/media/first-archive-walkthrough.mp4?v=2.1.4-guide)
+[Watch the first archive from setup to Memory Trail (MP4)](docs/media/first-archive-walkthrough.mp4?v=story-sections)
 
-The screenshots and walkthroughs use Scene Archivist 2.1.4 in SillyTavern 1.19.0, with sample lorebooks and scripted model replies. Your theme and model output will look different.
+The screenshots and walkthroughs were recorded in SillyTavern 1.19.0 with sample lorebooks and scripted model replies. Some captures show the 2.1.4 version badge. Your theme and model output will look different.
 
 ### 1. Make an archive for this chat
 
@@ -84,12 +84,12 @@ Open **Help & examples** for the searchable button guide. **Advanced controls** 
 
 **Estimate this run** tells you how many requests are planned before you send them. With one request per enabled stage, Archive thoroughly usually uses up to three when the inputs fit. **Optional automation** can combine stages on the same profile in one request. If the context is too small, the job can offer a split or a retry.
 
-Click the waiting count in **Story** to jump to the first eligible unarchived message, including a gap between saved ranges. The **Ledger** has **Redo summaries** and **Mark unprocessed**. Hiding a range is a separate chat visibility control. **Tidy the shelves** reorders entries without asking a model.
+Click the waiting count in **Story** to jump to the first eligible unarchived message, including a gap between saved ranges. Expand **Open threads**, **Recently saved**, **Get started or troubleshoot**, or **Memory Trail** when you need them. The **Ledger** has **Redo summaries** and **Mark unprocessed**. Hiding a range is a separate chat visibility control. **Tidy the shelves** reorders entries without asking a model.
 
 <details>
 <summary>Range picks, combined review, and the Ledger</summary>
 
-![Story with open threads, archive coverage, and the jump to an unarchived message](docs/media/31-story.png?v=2.1.4-guide)
+![Story with archive coverage, the jump to an unarchived message, and four collapsible sections](docs/media/31-story.png?v=story-sections)
 ![The chat-message book menu with start and end actions](docs/media/32-message-menu.png?v=2.1.4-guide)
 ![Archive with range, Ledger, and Tidy controls](docs/media/01-archive-overview.png?v=2.1.4-guide)
 ![The selected range and combined archive actions](docs/media/02-message-range.png?v=2.1.4-guide)
@@ -97,9 +97,9 @@ Click the waiting count in **Story** to jump to the first eligible unarchived me
 ![Ledger after saving the first four messages](docs/media/58-first-ledger.png?v=2.1.4-guide)
 ![Archive Ledger after an Archive thoroughly run](docs/media/04-ledger.png?v=2.1.4-guide)
 
-[Watch Archive thoroughly (MP4)](docs/media/range-walkthrough.mp4?v=2.1.4-guide)
+[Watch Archive thoroughly (MP4)](docs/media/range-walkthrough.mp4?v=story-sections)
 
-![Five steps for choosing a range, reviewing the results, and checking the Ledger](docs/media/range-walkthrough.gif?v=2.1.4-guide)
+![Five steps for choosing a range, reviewing the results, and checking the Ledger](docs/media/range-walkthrough.gif?v=story-sections)
 
 </details>
 
@@ -201,13 +201,15 @@ Reviewed archive and condensation runs can offer suggestions. Approve the ones y
 | What you want | What to do |
 | --- | --- |
 | A shorter version of a saved scene | Select it in Library, then use **Tools → Maintain → Condense story records** and choose **Shorten individual entries**. |
-| One recap of scenes that belong together | Select the scenes and choose **Create recap**. The recap gets its own entry with links to the full originals. |
+| One recap of scenes that belong together | Select the scenes and choose **Create recap**. Enter a title or let the model suggest one, then review the title and text before saving. |
 | A shorter character memory list | Use **Tools → Maintain → Character memories → Condense character memories**. **Organize saved memories** is a separate reviewed rewrite. |
 | A shorter diary | Use **Characters → Character diaries → Condense diary**. |
 
-The **Token target** is flexible. Use **0** to let the model aim for the shortest faithful wording. The review checks dates, times, quotations, and required structure. Read the comparison for subtler things such as motives, promises, and who did what. If a required detail drops out, Scene Archivist retries with specific feedback. If the retry fails, edit **Archive condense prompt** and choose **Resume**. Your sources are still there.
+The **Token target** is flexible. Use **0** to let the model aim for the shortest faithful wording. The review checks dates, times, quotations, and required structure. Read the comparison for subtler things such as motives, promises, and who did what. If a recap is missing required details, Scene Archivist sends them together in one correction request, using the draft and relevant sources when they fit the model's context. If details are still missing, choose **Edit recap draft** in the job panel to see the full list, read those originals, and correct the draft. **Check corrected draft** runs validation before opening the normal recap review. You can also use **Retry failed stage** for another model attempt.
 
-**Archive condense prompt** applies to individual entries and recaps. Character memories have separate **Shorten character memories prompt** and **Organize existing memories prompt** controls under **Maintain → Character memories**.
+Use **Recap writing prompt** for the combined recap's title, sections, and style. Use **Archive condense prompt** for individual entries. If you had customized the shared prompt, its wording is copied into the recap prompt on upgrade. Character memories have separate prompt controls under **Maintain → Character memories**.
+
+Each recap saves as one lorebook entry after the log opening and legend. **Library → Sources** shows the linked originals. To update a saved recap, open **Library → Inspect / edit**, set its title, and select **Place with recaps after the log opening and legend** if you want to move it. **Remove source IDs from text** appears when the editor recognizes old citations. Review the preview and click **Save correction**.
 
 ### Let the AI suggest recap groups
 
@@ -221,16 +223,16 @@ Suggestions survive a reload. If the source text changes or goes missing, an aff
 <details>
 <summary>Condense prompt and recap review</summary>
 
-![Separate controls for shortening entries and creating recaps](docs/media/14-condense-controls.png?v=2.1.4-guide)
+![Recap title and writing prompt in Condense story records](docs/media/14-condense-controls.png?v=2.1.7-guide)
 ![Reviewing which full entries belong in the suggested recap](docs/media/51-recap-suggestions.png?v=2.1.4-guide)
 
 </details>
 
 ## Preview the next reply or play a flashback
 
-Open **Preview next reply** from **Story** or **Memory Trail**. With a draft in the chat box, you can see likely matches, the token budget, and reasons other records might stay out. **Load once** and **Skip once** affect the next normal reply. Use the same preview to clear a choice before sending. In a group, pick a speaking card to preview its perspective. The actual reply still uses the speaker SillyTavern chooses, its World Info rules, and the memory budget.
+Open **Preview next reply** from **Story → Memory Trail** or the Memory Trail beside chat. With a draft in the chat box, you can see likely matches, the token budget, and reasons other records might stay out. **Load once** and **Skip once** affect the next normal reply. Use the same preview to clear a choice before sending. In a group, pick a speaking card to preview its perspective. The actual reply still uses the speaker SillyTavern chooses, its World Info rules, and the memory budget.
 
-With Scene Recall on, **Start flashback** appears beside the chat box. Pick a story date and look for the date badge. **Change date** moves the cutoff. **Back to present** clears it. You can also use a `Flashback: February 14, 2027` marker on its own line, or an `End flashback`, `Back to present`, `New scene`, or `Scene break` marker to clear it.
+With Scene Recall on, click the **Start flashback** clock by the chat box. Pick a day on the calendar or type a date as `YYYY-MM-DD`, then click **Set flashback date**. While the flashback is active, the date appears above the chat box. **Change date** moves the cutoff and **Back to present** clears it. You can also use a `Flashback: February 14, 2027` marker on its own line, or an `End flashback`, `Back to present`, `New scene`, or `Scene break` marker to clear it.
 
 The preview reads the draft and recent chat locally. AI Recall, vectors, timed effects, and live World Info can change what loads. When a reply forgets something, open that reply’s **Memory Trail → Find a missing detail** to see if the record or matching lines reached the prompt. **Load next reply** asks for the full text within your budget. A smaller linked recap can still fit when full detail cannot.
 
@@ -239,10 +241,11 @@ On desktop, drag the trail by its title to move it or use **Reset trail position
 <details>
 <summary>Flashback and next-reply controls in action</summary>
 
-![A flashback date and return controls beside the chat draft](docs/media/52-flashback-controls.png?v=2.1.4-guide)
+![The flashback calendar with an editable story date](docs/media/59-flashback-calendar.png)
+![A flashback date and return controls beside the chat draft](docs/media/52-flashback-controls.png?v=flashback-calendar)
 ![The next-reply estimate with Load once, Skip once, and a future record outside the flashback](docs/media/53-next-reply-preview.png?v=2.1.4-guide)
 ![The desktop Memory Trail with activation reasons and its move and reset controls](docs/media/50-trail-lines.png?v=2.1.4-guide)
-![From Story to a dated flashback, the next-reply preview, and the resulting trail](docs/media/workspace-walkthrough.gif?v=2.1.4-guide)
+![From Story to a dated flashback, the next-reply preview, and the resulting trail](docs/media/workspace-walkthrough.gif?v=flashback-calendar)
 
 </details>
 
@@ -276,7 +279,7 @@ For an alternate timeline, set the policy under **Maintain → Branches**, then 
 
 **Maintain → Backups and restore → Back up this story** saves the books, source links, settings, revisions, and unfinished work. **Restore a story backup** previews the import and creates separate books. Start a fresh run in the restored destination. **Undo** verifies its writes before restoring them.
 
-When a stage fails, **Review ready results** lets you save completed work, and **Retry failed stage** resumes just the failed stage. **Resume or review** brings back a held result. A World Info edit can put a proposal on hold so you can compare the old entry, current entry, and proposed changes. **Discard unfinished job** clears pending proposals. Already saved work stays in the archive.
+When a stage fails, **Review ready results** lets you save completed work, and **Retry failed stage** resumes just the failed stage. Reopen a chat after an interrupted run, then use **Resume or review** in the job panel to continue with the prepared results or finish saving approved changes. A World Info edit can put a proposal on hold so you can compare the old entry, current entry, and proposed changes. **Discard unfinished job** clears pending proposals. Already saved work stays in the archive.
 
 <details>
 <summary>Sharing, branch settings, and an interrupted run</summary>
@@ -293,7 +296,7 @@ When a stage fails, **Review ready results** lets you save completed work, and *
 
 | What you see | Where to start |
 | --- | --- |
-| A saved summary never reaches a reply | Run **Story → Check setup**. Check the archive is attached, the entry’s delivery or outlet is configured, and the reply’s Memory Trail shows why it loaded or stayed out. |
+| A saved summary never reaches a reply | Run **Story → Get started or troubleshoot → Check setup**. Check the archive is attached, the entry’s delivery or outlet is configured, and the reply’s Memory Trail shows why it loaded or stayed out. |
 | Memories missed a conversation | Use **Chat** or **Both** and select the exact message range. Use an inclusive unit range for archive-only work. |
 | The request is too large | Read the token breakdown, reduce reference lore, shorten your selection, or **Split this stage** if offered. Check the capacity of the selected profile. |
 | Condense says a detail was dropped | Look for the named date, time, or quotation. Adjust the relevant prompt and **Resume**. Your saved source remains available. |

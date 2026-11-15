@@ -18,11 +18,14 @@ Plus a video brain that transcribes, understands and searches every video you ow
 [![Electron](https://img.shields.io/badge/desktop-Electron-47848f?style=for-the-badge&logo=electron&logoColor=white)](electron/main.cjs)
 [![Ollama](https://img.shields.io/badge/models-Ollama%20%7C%20Groq%20%7C%20Gemini-f2a65a?style=for-the-badge)](#-free-model-options)
 [![CI](https://img.shields.io/github/actions/workflow/status/satiricalguru/OpenBot/ci.yml?style=for-the-badge&label=CI)](.github/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/satiricalguru/OpenBot?style=for-the-badge&label=release&color=8b6cff)](https://github.com/satiricalguru/OpenBot/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/satiricalguru/OpenBot/total?style=for-the-badge&color=222)](https://github.com/satiricalguru/OpenBot/releases)
 
-<a href="https://github.com/satiricalguru/OpenBot/releases/latest"><img src="https://img.shields.io/badge/Download%20for%20macOS-ffffff?style=for-the-badge&logo=apple&logoColor=black" alt="Download for macOS" height="40"></a>&nbsp;
-<a href="#-quick-start"><img src="https://img.shields.io/badge/Run%20from%20source-262626?style=for-the-badge&logo=github&logoColor=white" alt="Run from source" height="40"></a>
+<a href="https://github.com/satiricalguru/OpenBot/releases/latest/download/OpenBot-mac-arm64.dmg"><img src="https://img.shields.io/badge/Download%20for%20macOS-ffffff?style=for-the-badge&logo=apple&logoColor=black" alt="Download for macOS" height="40"></a>&nbsp;
+<a href="https://github.com/satiricalguru/OpenBot/releases/latest/download/OpenBot-windows-x64-setup.exe"><img src="https://img.shields.io/badge/Download%20for%20Windows-0078D4?style=for-the-badge&logo=windows&logoColor=white" alt="Download for Windows" height="40"></a>&nbsp;
+<a href="https://openbot-zeta.vercel.app"><img src="https://img.shields.io/badge/Website-8b6cff?style=for-the-badge&logo=vercel&logoColor=white" alt="OpenBot website" height="40"></a>
 
-[**Quick start**](#-quick-start) · [**Features**](#-features) · [**Screenshots**](#-screenshots) · [**Demo video**](docs/assets/demo.mp4) · [**How it works**](#-how-it-works) · [**Contributing**](CONTRIBUTING.md)
+[**Website**](https://openbot-zeta.vercel.app) · [**Quick start**](#-quick-start) · [**Features**](#-features) · [**Screenshots**](#-screenshots) · [**Demo video**](docs/assets/demo.mp4) · [**How it works**](#-how-it-works) · [**Contributing**](CONTRIBUTING.md)
 
 <br>
 
@@ -30,7 +33,16 @@ Plus a video brain that transcribes, understands and searches every video you ow
 
 <sub>▶ A real, unedited capture of the desktop app running on a laptop with a local model. <a href="docs/assets/demo.mp4">Watch the MP4</a></sub>
 
+<br><br>
+
+<a href="https://openbot-zeta.vercel.app"><img src="docs/assets/website.gif" alt="The OpenBot website: Nova follows the cursor, then splits into a line-art exploded view of its parts as you scroll" width="92%"></a>
+
+<sub>🌐 <a href="https://openbot-zeta.vercel.app"><b>openbot-zeta.vercel.app</b></a>: the download site, with a Three.js hero and a scroll-driven exploded view of a bot. <a href="docs/assets/website.mp4">MP4</a></sub>
+
 </div>
+
+> [!NOTE]
+> **New in 0.3.0:** bots drive a real browser you can watch live, you can text them from Telegram or Slack, there are native installers for **Windows** and Linux, and team mode adds sign-in. [Release notes →](https://github.com/satiricalguru/OpenBot/releases/tag/v0.3.0)
 
 ---
 
@@ -55,7 +67,17 @@ Always-on AI teammates arrived in 2026, but they sit behind expensive plans. Ope
 
 ## 🚀 Quick start
 
-**Option A: download the app.** Grab `OpenBot-…-mac-arm64.zip` from the [latest release](https://github.com/satiricalguru/OpenBot/releases/latest), unzip it, move it to Applications, then right-click → **Open** (the app is unsigned). You'll still need `ffmpeg` and a free model: `brew install ffmpeg ollama && ollama pull qwen3:8b`.
+**Option A: download the app.**
+
+Current version: **v0.3.0** (Nov 15, 2026). Every link below always points to the latest release.
+
+| Platform | Download | Size | First launch |
+|---|---|---|---|
+| **macOS** (Apple silicon) | [OpenBot-mac-arm64.dmg](https://github.com/satiricalguru/OpenBot/releases/latest/download/OpenBot-mac-arm64.dmg) · [.zip](https://github.com/satiricalguru/OpenBot/releases/latest/download/OpenBot-mac-arm64.zip) | ~228 MB | Not notarized yet: **System Settings → Privacy & Security → Open Anyway** |
+| **Windows** 10/11 (x64) | [OpenBot-windows-x64-setup.exe](https://github.com/satiricalguru/OpenBot/releases/latest/download/OpenBot-windows-x64-setup.exe) | ~219 MB | Unsigned: SmartScreen → **More info → Run anyway** |
+| **Linux** (x86_64) | [AppImage](https://github.com/satiricalguru/OpenBot/releases/latest/download/OpenBot-linux-x86_64.AppImage) · [.deb](https://github.com/satiricalguru/OpenBot/releases/latest/download/OpenBot-linux-amd64.deb) | ~448 / 361 MB | `chmod +x` the AppImage |
+
+You'll still need `ffmpeg` and a free model: `brew install ffmpeg ollama` (macOS) or `winget install Gyan.FFmpeg Ollama.Ollama` (Windows), then `ollama pull qwen3:8b`.
 
 **Option B: run from source** (macOS, Linux or Windows):
 
@@ -74,7 +96,7 @@ npm run app
 
 > [!TIP]
 > Prefer the browser? Run `npm start` and open **http://localhost:4321**.
-> To build a double-clickable **OpenBot.app**, run `npm run dist`; it lands in `dist/mac-arm64/`.
+> Build installers yourself with `npm run dist:mac`, `npm run dist:win` or `npm run dist:linux` (output in `dist/`). Pushing a `v*` tag builds all three on GitHub Actions and attaches them to a release.
 
 The first video you add downloads the open Whisper and CLIP models (~250 MB) once. After that everything runs offline.
 
@@ -99,6 +121,8 @@ Create teammates and design how they look: **shape, eyes, mouth, accessory, gaze
 
 ### 💻 Their own computer
 Every bot has a private, sandboxed workspace with a **terminal, browser and files**. Open the **Computer** panel to watch what it's doing live, browse the files it made, and read its activity log.
+
+**New:** a **real browser** (Playwright driving your Chrome/Edge) that bots can click and type in, streamed live into the Computer panel.
 
 On macOS, commands run in a Seatbelt sandbox that can only write inside the bot's workspace.
 
@@ -141,6 +165,8 @@ Upload videos or audio and OpenBot will:
 ### 🎙️ And more
 - **Voice calls** with any bot, using free in-browser speech
 - **Dark mode by default**, with Light and System themes
+- **Telegram & Slack bridges**: text your bots from your phone
+- **Team mode**: accounts with admin/member roles and sign-in
 - **Menu-bar app**: close the window and your bots keep working
 - **Search everything** with ⌘K, create a new bot with ⌘N
 - **No build step**: plain ES modules and SQLite (`node:sqlite`)
@@ -230,7 +256,9 @@ flowchart LR
 ```
 electron/          desktop shell: window, menu-bar icon, theme sync
 server/
-  agents/          agent loop (runtime.js), tools + rules (tools.js), scheduler
+  agents/          agent loop (runtime.js), tools + rules (tools.js), real browser (browser.js), scheduler
+  auth.js          team mode: accounts, sessions, roles
+  bridges.js       Telegram + Slack bridges
   video/           ffmpeg pipeline, Whisper/CLIP/MiniLM models, search & Q&A
   llm.js           Ollama + OpenAI-compatible providers
   index.js         REST API + live events
@@ -241,6 +269,7 @@ public/
   app.css          design system (dark default + light)
 scripts/
   capture.cjs      regenerates README screenshots/GIFs/video
+site/              landing page (Three.js), deployed to Vercel (openbot-zeta.vercel.app) and GitHub Pages
 docs/assets/       README media
 ```
 
@@ -254,6 +283,9 @@ docs/assets/       README media
 | `PORT` | `4321` | Server port |
 | `OPENBOT_HOST` | `127.0.0.1` | Set `0.0.0.0` to share on your network (add auth first!) |
 | `OPENBOT_DATA` | `./data` (dev) · `~/Library/Application Support/OpenBot/data` (app) | Database, videos, workspaces, models |
+| `OPENBOT_AUTH` | off | `1` requires sign-in (team mode). Always on when `OPENBOT_HOST` isn't local |
+| `OPENBOT_BROWSER` | auto-detect | Path to a Chromium-based browser for real browser control |
+| `OPENBOT_BROWSER_HEADFUL` | off | `1` shows the bot's browser window instead of running headless |
 
 </details>
 
@@ -263,6 +295,8 @@ docs/assets/       README media
 | Tool | Default rule | What it does |
 |---|---|---|
 | `web_search`, `browse` | Allow | Search DuckDuckGo, read pages |
+| `browser_open`, `browser_read`, `browser_screenshot` | Allow | Drive a real Chrome/Edge, live view in the Computer panel |
+| `browser_click`, `browser_type` | **Ask** | Click and type on pages (password fields always refused) |
 | `read_file`, `list_files`, `write_file` | Allow | Work inside the bot's own workspace |
 | `run_command` | **Ask** | Shell, sandboxed to the workspace |
 | `http_request` | **Ask** | Call APIs and webhooks |
@@ -283,17 +317,34 @@ docs/assets/       README media
 - Risky actions default to **Ask**. See [SECURITY.md](SECURITY.md).
 
 > [!WARNING]
-> OpenBot has no login. Don't expose it to the internet without putting authentication in front of it (for example Cloudflare Access or Tailscale).
+> Team mode adds sign-in, but OpenBot doesn't terminate TLS. Before exposing it beyond your network, put HTTPS in front of it (for example Cloudflare Access, Tailscale or a reverse proxy).
+
+---
+
+## 📱 Bridges: text your bots
+
+Open **Settings → Bridges**.
+
+- **Telegram**: create a bot with [@BotFather](https://t.me/BotFather) and paste its token. Message your bot once; it replies with your chat ID, which you add to *Allowed chat IDs*. Only those chats can talk to your bots.
+- **Slack**: create an app, enable **Socket Mode** (app-level token with `connections:write`), add the bot scopes `chat:write`, `im:history` and `app_mentions:read`, and subscribe to `message.im` and `app_mention`. Paste both tokens. Then DM the bot or @mention it.
+
+Both use outbound connections only, so you don't need a public URL. Anyone in your Slack workspace who can DM the app can talk to your bot, so keep risky tools on **Ask**. Conversations also show up in the bot's chat in the app, and approvals still happen there.
+
+## 👥 Team mode
+
+**Settings → Team → Set up team** creates the first admin account and turns on sign-in. Admins can add people as members or admins. Everyone shares the same crew, chats and videos; only admins can change settings, bridges and the team. Passwords are hashed with scrypt, sessions are HttpOnly cookies, and failed logins are rate-limited. Running with `OPENBOT_HOST=0.0.0.0` turns sign-in on automatically, and in that case the first admin can only be created from the machine itself.
 
 ---
 
 ## 🗺️ Roadmap
 
-- [ ] Real browser control for bots (Playwright) with a live screen view
-- [ ] Slack / Telegram bridges so you can text your bots
-- [ ] Windows & Linux installers
-- [ ] Signed macOS build
-- [ ] Multi-user mode with auth
+- [x] Real browser control for bots (Playwright) with a live screen view
+- [x] Slack / Telegram bridges so you can text your bots
+- [x] Windows & Linux installers
+- [ ] Signed macOS build: the release pipeline is ready and signs and notarizes as soon as an Apple Developer ID certificate is added as a repo secret (see [release.yml](.github/workflows/release.yml))
+- [x] Multi-user mode with auth (shared team workspace)
+- [ ] Per-user private bots and chats in team mode
+- [ ] Intel Mac and Windows on ARM builds
 
 Ideas and PRs are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 

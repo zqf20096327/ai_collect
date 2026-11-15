@@ -18,7 +18,7 @@
 | **LocalGPT**, the desktop app | `crates/app` | One window, every mode: a world from a prompt (Gen), from a Markdown document (Document) or from a song (Verse), or any `.world` package opened as a live canvas. |
 | **LocalGPT Gen**, the binary | `crates/gen` · `cargo install localgpt-gen` | The world builder on its own: its 88 tools over MCP for Claude Desktop, Claude Code, Codex, Gemini CLI and editors, a relay so an agent drives the window you are looking at, the live canvas, headless, collaborative sessions on the LAN or through a relay. |
 | **Previs** | `crates/previs` · `localgpt previs` · [localgpt.md](https://localgpt.md) | A screenplay in — PDF, Final Draft, Fountain or Markdown — and per scene a `.world` with the set, the cast and the coverage, plus a printable board and a shot list. Deterministic, no model; the same code runs in the browser tab. |
-| **`localgpt`**, the command line | `crates/cli` · `cargo install localgpt` | `localgpt world`: commit, undo, log, tips, verify, lint (what each camera sees and what is probably a mistake), find (which entities a phrase means), link (the world in a link, nothing uploaded), screenshot; `localgpt world mcp`, the shim that serves an open world's tools to any MCP agent; and `localgpt previs`, screenplay to board. No model, key or configuration file. |
+| **`localgpt`**, the command line | `crates/cli` · `cargo install localgpt` · `npm install -g localgpt` · `brew install localgpt-app/tap/localgpt` | `localgpt world`: commit, undo, log, tips, verify, lint (what each camera sees and what is probably a mistake), find (which entities a phrase means), link (the world in a link, nothing uploaded), screenshot; `localgpt world mcp`, the shim that serves an open world's tools to any MCP agent; and `localgpt previs`, screenplay to board. No model, key or configuration file. |
 | **The world crates** | `crates/world-*` | `world-types`, `world-bevy`, `world-audio`, `world-export`, `world-sync`, `world-editor`, `world-agent`: one format for every app, over the [Open World Format](https://openworldformat.org) reference crate. |
 | **The sites** | `website*/` | [localgpt.app](https://localgpt.app) (hub and the only docs site) · [localgpt.md](https://localgpt.md) (previs) · [localgpt.world](https://localgpt.world) (gallery and web viewer) · [localgpt.rs](https://localgpt.rs) (devlog) |
 
@@ -26,8 +26,8 @@
 
 ```bash
 # Prebuilt (no Rust toolchain needed)
-brew install --cask localgpt-app/tap/localgpt   # macOS: LocalGPT.app + the `localgpt` CLI
 npm install -g localgpt                         # macOS, Linux, Windows: the `localgpt` CLI and MCP shim
+brew install localgpt-app/tap/localgpt          # macOS, Linux: the same `localgpt`, through Homebrew
 
 # From crates.io
 cargo install localgpt-gen       # the world builder: MCP server, the relay, headless, sessions
@@ -205,14 +205,15 @@ Two renderers draw the conformance worlds, Bevy and three.js; `website-world`'s 
 ```bash
 cargo build                                   # the CLI (default member)
 cargo build --workspace                       # everything
-cargo test --workspace
-cargo clippy --workspace -- -D warnings       # required before commits
+# localgpt/audio is the CLI's audio models, which no default build compiles
+cargo test --workspace --features localgpt/audio
+cargo clippy --workspace --features localgpt/audio -- -D warnings   # required before commits
 cargo fmt --check
 cargo run -p localgpt-doc -- notes.md          # Document and Verse still run on their own
 cargo run -p localgpt-verse
 ```
 
-CI runs fmt, clippy and tests, the Bevy crates in their own job, a job for the opt-in feature tier (Verse's `ml`), the headless render check of the web viewer and the previs page, and cargo-deny. Releases publish every crate to crates.io from a signed `vX.Y.Z` tag through Trusted Publishing. [`CLAUDE.md`](CLAUDE.md) is the map of the workspace, [`AGENTS.md`](AGENTS.md) the tool catalog, [`docs/`](docs/) the living references and active designs, and [`world-strategy.md`](docs/world-strategy.md), the current product direction.
+CI runs fmt, clippy and tests, the Bevy crates in their own job, a job for the opt-in feature tier (Verse's `ml`), the headless render check of the web viewer and the previs page, and cargo-deny. A signed `vX.Y.Z` tag publishes every crate to crates.io and the `localgpt` package to npm, and a `desktop-vX.Y.Z` tag drafts the desktop app's release: [`docs/releasing.md`](docs/releasing.md). [`CLAUDE.md`](CLAUDE.md) is the map of the workspace, [`AGENTS.md`](AGENTS.md) the tool catalog, [`docs/`](docs/) the living references and active designs, and [`world-strategy.md`](docs/world-strategy.md), the current product direction.
 
 ## Devlog
 

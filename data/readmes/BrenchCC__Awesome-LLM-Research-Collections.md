@@ -47,6 +47,7 @@
   - [Agent Evaluation](#agent-evaluation)
   - [Memory](#memory)
 - [Vision](#vision)
+  - [Generative Visual Perception](#generative-visual-perception)
   - [Object Detection](#object-detection)
   - [OCR](#ocr)
   - [Semantic Correspondence](#semantic-correspondence)
@@ -239,6 +240,12 @@
   <a href="https://huggingface.co/deepseek-ai/DeepSeek-V2"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
 
 ## Inference
+
+- **The Value of Thinking: Learning When to Reason in Hybrid Decision Models** (2026.11) \
+  **Description**: This paper introduces a hybrid decision model that routes each request between a zero-token answer from one forward pass and full autoregressive reasoning according to the estimated value of thinking. Its calibrated decision policy optimisation trains the router from episode-level returns when per-decision labels are unavailable. \
+  <a href="https://arxiv.org/abs/2611.16961"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://github.com/zhengxuyu/HDM-code"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
+  <a href="https://huggingface.co/fredreick/HDM-blocks"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
 
 - **Thinking Inertia: LLMs Keep Thinking When Told Not To** (2026.10) \
   **Description**: This paper evaluates no-thinking behavior by separating visible pre-answer text from final answers and measuring answer-only compliance, question relevance, and explicit inference. Across six LLMs and six prompting interventions, explicit inference persists under no-thinking controls, becoming more prevalent as answer spaces open and exposing a compliance–accuracy trade-off on open-ended tasks. \
@@ -831,13 +838,4 @@
 - **Visual Planning: Let's Think Only with Images** (2025.05) \
   **Description**: This paper introduces Visual Planning, a paradigm that performs step-by-step planning through sequences of images rather than text for vision-first spatial tasks. Its Visual Planning via Reinforcement Learning (VPRL) framework uses GRPO to post-train large vision models and improves planning on FrozenLake, Maze, and MiniBehavior. \
   <a href="https://arxiv.org/abs/2505.11409"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://github.com/yix8/VisualPlanning"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
-
-## Reasoning RL
-
-- **Are Dense Rewards Worth Their Tokens in GRPO?** (2026.11) \
-  **Description**: Using a matched-compute protocol across 1,668 runs, this study finds that dense process rewards do not outperform standard GRPO once generated tokens and training time are counted, despite apparent gains per update. Selecting prompts with predicted success near one-half yields small, reproducible improvements at equal compute. \
-  <a href="https://arxiv.org/abs/2611.13560"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-
-- **Ring-Zero: Scaling Zero RL to a Trillion Parameters for Emergent Reasoning** (2026.07) \
-  **Description**: This paper scales reinforcement learning with verifiable rewards from a base model to one trillion parameters through a stable pipeline combining clipped importance sampling, tra
+  <a href="https://github.com/yix8/VisualPlanning"><img src="assets/icons/github.s

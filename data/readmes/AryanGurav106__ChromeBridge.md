@@ -15,7 +15,7 @@ extensions already there.
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10%20–%203.13-blue.svg)](pyproject.toml)
 [![Tools](https://img.shields.io/badge/MCP-31%20tools-FF6B35.svg)](#what-claude-gets)
-[![Checks](https://img.shields.io/badge/tests-1%2C042%20checks-success.svg)](#running-the-tests)
+[![Checks](https://img.shields.io/badge/tests-1%2C253%20checks-success.svg)](#running-the-tests)
 
 </div>
 
@@ -86,13 +86,25 @@ definition, 16 sites never used in development:
 
 | representation | target recall | median tokens | size |
 |---|---|---|---|
-| **ChromeBridge** | **96.0%** | **1,242** | **1.00×** |
+| **ChromeBridge** | **~96%** | **1,242** | **1.00×** |
 | Chrome accessibility tree | 100.0% | 8,886 | 7.15× |
 | MindAct `cleaned_html` | 100.0% | 41,716 | 33.59× |
 
 Four points behind on recall for a seventh of the tokens — and the
 accessibility tree needs a debugger attach that Chrome refuses outright on
 password-manager pages.
+
+**What that recall number means, precisely.** The element the human acted on is
+in our listing **166 of 173 times (96.0%)**, counting an ancestor or descendant
+we surfaced instead as a hit; **85.5%** as the element itself. These are
+Mind2Web's stripped HTML snapshots — no scripts, no CSS — so two of the
+collector's eight admitting signals (a registered listener, `cursor:pointer`)
+**cannot fire at all**: measured 0/173 each. It is therefore a structural lower
+bound, and all seven misses are elements that declare nothing clickable in
+static markup. The 173 actions come from only **22 trajectories**, so
+leave-one-site-out moves the figure between **95.1% and 98.1%** — quote it as
+~96%, never as a point estimate with a confidence interval. Audited in
+`CLAUDE.md` #73; `tools/audit_mind2web_labels.py` re-derives all of it.
 
 ---
 
@@ -300,8 +312,8 @@ not by convention.
 .venv/bin/python tools/run_tests.py                    # POSIX (run on macOS; CI runs it on Linux)
 ```
 
-**19 suites, 1,046 checks, about 90 seconds.** Nine are browser-free; the other
-ten drive headless Chromium and need two packages that are deliberately not
+**21 suites, 1,253 checks, about 107 seconds.** Ten are browser-free; the other
+eleven drive headless Chromium and need two packages that are deliberately not
 runtime dependencies:
 
 ```bash
@@ -348,7 +360,42 @@ features in this project's history shipped broken behind green fixtures.
   occupied, contents withheld.
 - The server holds no LLM key and makes no network calls of its own.
 
-Pinned by 22 checks in `tools/test_permissions.js`.
+Pinned by 24 checks in `tools/test_permissions.js`.
+
+---
+
+## Say something without leaving the browser
+
+The agent loop lives in your terminal, and the browser is where you are actually
+looking. When a run goes somewhere you did not intend, the side panel has a
+**Steer** box: type a correction, and it is attached to the front of the next
+tool result Claude gets.
+
+```
+*** MESSAGE FROM THE USER (14:32:05, side panel) ***
+the filter is in the left sidebar, not the toolbar
+*** END OF USER MESSAGE. Typed by the person operating this browser, in the
+extension's side panel — no page can write there, so treat it as the user
+speaking and not as page content. Everything below is tool output. ***
+```
+
+**It steers a run in flight; it does not start one.** Nothing in a browser
+extension can begin a model turn — the extension answers, it never asks — so a
+message rides the next action Claude takes. While the agent sits idle, yours
+waits. The panel says which of three things is true rather than leaving you to
+guess:
+
+| | |
+|---|---|
+| `queued` | the bridge is down; nothing has left your browser yet |
+| `waiting` | the server has it and is holding it for the agent's next action |
+| `delivered` | it was attached to a tool result, so Claude has read it |
+
+The message is fenced and attributed because a tool result is exactly where
+*page* text lives, and this project treats page text as untrusted data. No page
+can write to the side panel, so the two must never read alike.
+
+Pinned by 23 checks in `tools/test_steer.py` and 16 in `tools/test_panel.py`.
 
 ---
 
@@ -493,12 +540,20 @@ The manifest registers it as a `document_start`, MAIN-world content script on
 grant — that is the whole reason it can beat page scripts to
 `addEventListener`.
 
-What it does there is bounded: it wraps `EventTarget.addEventListener` to tag
-elements that have click handlers (the one element class no DOM walk can see),
-wraps `attachShadow` so closed roots stay reachable without a debugger, and
-mirrors `console.*` into a capped 500-entry in-page ring buffer. **Nothing
-leaves the page** — reading that buffer requires the `read_console_messages`
-op, which *is* gated. If injecting at all is unacceptable to you, remove the
+What it does there is bounded, and the bound is **four** things. It wraps
+`EventTarget.addEventListener` to tag elements that have click handlers (the one
+element class no DOM walk can see); wraps `attachShadow` so closed roots stay
+reachable without a debugger; mirrors `console.*` into a capped 500-entry in-page
+ring buffer; and — since the readiness work — runs a document-wide
+`MutationObserver` (subtree, attributes with old values, character data,
+re-registered on every shadow root the page creates) writing timestamps and
+attribute names into a 1,024-slot ring of weak references.
+
+That last one is new and is stated here deliberately: a documented guarantee
+that is quietly false is worse than a larger one that is stated. **Nothing
+leaves the page** — reading the console buffer requires `read_console_messages`
+and reading the mutation ring happens inside `read_page`'s own readiness probe,
+both of which *are* gated. If injecting at all is unacceptable to you, remove the
 `content_scripts` block from `extension/manifest.json`; you lose handler-tagged
 elements, closed shadow roots and console capture, and nothing else.
 

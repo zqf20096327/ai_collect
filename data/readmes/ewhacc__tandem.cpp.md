@@ -2,7 +2,7 @@
 
 tandem.cpp is a patch set for [llama.cpp](https://github.com/ggml-org/llama.cpp). It makes MoE models that don't fit in VRAM run faster in llama.cpp. It keeps the most-used experts on the GPU and lets the CPU help with the rest, for any MoE model llama.cpp supports. Single-user decode is the target.
 
-It is an independent project, not affiliated with ggml-org. Base: llama.cpp `f5222f25c` (2026-10-28, see `BASE_COMMIT`).
+It is an independent project, not affiliated with ggml-org. Base: llama.cpp `f5222f25c` (2026-10-28, see `BASE_COMMIT`). Version **v0.3.0** (2026-11-16).
 
 Decode tok/s, one user, GSM8K questions. Each row is one model on one PC. Two numbers are greedy / the model's recommended sampling, one number is greedy.
 
@@ -17,13 +17,51 @@ Decode tok/s, one user, GSM8K questions. Each row is one model on one PC. Two nu
 
 The 32 GB row is a cold start from a DRAM-less PCIe 4.0 SSD; at 64 GB DeepSeek-V4.1 is about twice the RAM and is read from a PCIe 4.0 SSD.
 
-We tuned for Qwen3.8 only, but other MoE models that do not fit in VRAM gain too: typically 1.4–2.1× (gpt-oss-120b, GLM-4.5-Air, Qwen3.6-35B-A3B, DeepSeek-V4.1), less when the model nearly fits. Prompt processing is faster as well (1.4–1.8× on a 64k-token prompt).
+We tuned for Qwen3.8 only, but other MoE models that do not fit in VRAM gain too: typically 1.4–2.1× (gpt-oss-120b, GLM-4.5-Air, Qwen3.6-35B-A3B, DeepSeek-V4.1), less when the model nearly fits. Prompts are also 4–13× faster than llama.cpp's on a 16 GB card with the experts in RAM or on the SSD ([v0.3.0](#whats-new-in-v030-2026-11-16)).
 
 [Strata](https://github.com/Niko1221/Strata) is a dedicated MoE offload engine for a few models. Its default skips low-ranked experts (`STRATA_ROUTE_TAIL_SKIP`), which is faster but approximate (127.1 tok/s in the RTX 4090 Qwen3.8 row); the tables show its exact mode (`STRATA_ROUTE_TAIL_SKIP=0`, every routed expert computed, as llama.cpp and tandem.cpp do). Full tables per machine are [below](#results).
 
 For a big card serving many concurrent streams, use [Tandem-vLLM](https://github.com/ewhacc/tandem) instead; tandem.cpp is for one user on a 16–32 GB card with the experts in RAM.
 
-## What's new (2026-11-15)
+## What's new in v0.3.0 (2026-11-16)
+
+- **Prompts 2–6× faster.** With an expert cache, prompts now run in 4096-token batches instead of 512. Each batch has to
+  bring every expert it uses into VRAM, so a 16k-token prompt used to load the experts 31 times; now 4 times. The larger
+  batch needs more VRAM for its buffers: it **borrows** that from the expert cache while a long prompt runs and gives it back
+  for decode, so decode keeps its full cache (the VRAM is remapped in place: nothing is rebuilt, ~10–100 ms per prompt). Exact.
+  Time to first token, RTX 5070 Ti 16 GB + 64 GB (i5-12400F), the same prompts for every engine:
+
+  | Prompt | llama.cpp | tandem.cpp before | **tandem.cpp v0.3.0** | Strata v0.2.9 |
+  |---|---|---|---|---|
+  | Qwen3.8 IQ3_S + MTP, 5.5k tokens | 28.9 s | 12.4 s | **4.1–7.0 s** | 6.6 s |
+  | Qwen3.8 IQ3_S + MTP, 15.8k tokens | 81.9 s | 35.1 s | **14.7–15.5 s** | 11.7 s |
+  | DeepSeek-V4.1 IQ2_XS, 5.6k tokens | 722 s | 324 s | **53–103 s** | 58 s |
+  | DeepSeek-V4.1 IQ2_XS, 15.7k tokens | 2012 s | 885 s | **189–201 s** | 57 s |
+
+  On an RTX 5090 + 128 GB, Qwen3.8 at 15.8k tokens: 19.4 → 7.4 s (Strata 2.2 s). Decode after the prompt is unchanged on the
+  5090; on the 16 GB card it is 72.1 vs 73.6 tok/s (four interleaved cells each, ~2%, near the noise). The borrowing needs
+  CUDA's virtual memory management; on AMD (ROCm builds have it off) the cache is simply sized for the larger buffers.
+  `LLAMA_MOE_UBATCH=0` restores 512-token batches.
+- **Project Maya's DeepSeek-V4.1 GGUFs run on tandem.cpp** after a one-time conversion ([`tools/maya_ds41_convert.py`](tools/maya_ds41_convert.py),
+  [below](#deepseek-v41-maya-xs-the-same-weights-on-both-engines)): the same Maya-XS files on both engines, RTX 5090 + 128 GB,
+  **tandem.cpp 60.3 / 59.4 tok/s vs Maya's 39.0 / 39.6** (1.5×; 54.9 with Maya's DSpark drafter, which tandem.cpp does not have).
+- Store mode: when the RAM store is a few slots short of holding every expert next to the VRAM cache, it now holds all but
+  those few instead of none (`LLAMA_MOE_ARENA_FILL_PART=0`: the old behaviour).
+
+## Earlier (2026-11-15, second update)
+
+- **Fixed: 128 GB of RAM with a model bigger than RAM (e.g. DeepSeek-V4.1) was killed at load or hung the PC.** On the Linux 7.0
+  kernels we tested, part of RAM is a region that pinned memory cannot use (9 GiB on a 128 GB PC), but the kernel counts it as free, and
+  the RAM store took it. The store now leaves it out and keeps 2 GiB + 1/64 of RAM free. It also switches on only where it
+  helps: when it can hold every expert, or when the experts are larger than RAM. DeepSeek-V4.1 on 128 GB + RTX 5090 runs in
+  mmap mode again (31.4 tok/s in today's check; the table row is 33.1, Strata 28.0). `LLAMA_MOE_STORE_AUTO=0` is no longer needed.
+- **A big card in a small PC: VRAM and RAM hold every expert.** When the VRAM cache plus the RAM store can hold all the
+  experts, they are placed at start (as many as fit in VRAM, the rest in RAM) and nothing is read from the SSD after that. Qwen3.8
+  IQ3_S + MTP (78 GiB) on a 32 GB PC with an RTX 5090: **147 tok/s, up from 75**, first token 0.45 s;
+  Strata 153–158 on the same PC (0.95×).
+- **Faster first token in store mode.** Each expert upload's padding was read from the file, an SSD read per expert.
+
+## Earlier (2026-11-15)
 
 - **Faster GPU work between the routing steps, on NVIDIA and AMD.** Three kernel changes in the shared CUDA/HIP code: the
   routing results come back to the CPU in one copy instead of three, a faster hyper-connection mixing kernel, and fused
@@ -220,12 +258,17 @@ The server applies these when the variable is unset (logged at startup); `VAR=0`
 | `LLAMA_MOE_PREFILL_CPU` | `auto` | the split for prompt batches |
 | `LLAMA_MOE_CPU_THREADS` | cores − 1 | CPU threads for missed experts |
 | `LLAMA_MOE_CPU_RB`, `LLAMA_MOE_CPU_DOWN_PE` | `64`, `64` | CPU expert job work-item layout |
-| `LLAMA_MOE_STORE_AUTO` | `1` | store mode (below) when the experts outside VRAM exceed 85% of the RAM and `LLAMA_MOE_ARENA_MIB` is unset |
+| `LLAMA_MOE_STORE_AUTO` | `1` | store mode (below) when `LLAMA_MOE_ARENA_MIB` is unset and either the experts outside VRAM exceed the RAM, or all experts exceed 85% of the RAM and VRAM + the block can hold every one |
 | `LLAMA_MOE_ARENA_MIB` | unset | `auto` forces store mode: the experts outside VRAM live in one pinned block of RAM (the whole RAM less the reserve), read with direct I/O |
-| `LLAMA_MOE_ARENA_RESERVE_MIB` | `2048` | store mode: RAM left free |
+| `LLAMA_MOE_ARENA_RESERVE_MIB` | 2048 + RAM/64 | store mode: RAM left free (on top of the kernel's CMA region, which pinned memory cannot use) |
+| `LLAMA_MOE_ARENA_FILL` | `1` | store mode: when VRAM + the block hold every expert, place them all at start (then every miss is uploaded, no CPU share) |
 | `LLAMA_MOE_ARENA_EXCL` | `1` | store mode: an expert is in VRAM or in the block, not both; the VRAM victim is copied back to RAM |
 | `LLAMA_MOE_ARENA_ASYNC` | `1` | store mode: decode reads from the SSD overlap the compute |
 | `LLAMA_MOE_PIN_EXPS` | auto | mmap mode: copy the mapped experts to pinned memory when the RAM holds them + 10 GiB |
+| `LLAMA_MOE_UBATCH` | `4096` | with an expert cache and `-b`/`-ub` left at their defaults, prompts run in batches of this many tokens (`0`: `-ub`, 512). Draft contexts keep 512 |
+| `LLAMA_MOE_FLEX` | `1` | one GPU with CUDA VMM: the larger prompt buffers borrow expert-cache VRAM while a prompt runs (`0`: the cache is sized for them) |
+| `LLAMA_MOE_ARENA_FILL_PART` | `1` | store mode: fill the RAM store even when it is up to 3% short (the rest stays on the SSD) |
+| `LLAMA_MOE_GATHER` | `0` | `1`: a prompt batch's expert copies in one GPU kernel (slower than the copy engines on the GPUs we tried) |
 | `GGML_SCHED_BATCH_INPUTS` | `3` | a graph's host inputs in one packed upload |
 | `GGML_CUDA_GRAPH_KEY_SHAPE` | `1` | one CUDA graph per batch shape |
 | `GGML_CUDA_MMVF_MAX` | `8` | vector kernel for float weights up to 8 columns |
@@ -262,6 +305,34 @@ about twice the RAM, so most experts are read from the SSD; at 128 GB it fits.
 
 All cells answered 39–40 of 40 correctly. Two numbers for tandem.cpp are two runs (the ratio uses the first); the 32 GB row
 splits the layers over both cards (the RTX 5060 Ti sits in an x4 slot).
+
+### DeepSeek-V4.1 Maya-XS: the same weights on both engines
+
+[Project Maya](https://github.com/mw00/project-maya) v1.1.64 (`d93d149`) is a MoE engine built for big models such as
+DeepSeek-V4.1, with its own quants. Its Maya-XS v2 GGUF (routed experts IQ1_S/IQ2_XXS, 1.63 bpw, 117 GB; Engram tables Q6_K,
+161 GB) runs on tandem.cpp after `tools/maya_ds41_convert.py` (it renames nothing in the model: it copies the three main
+shards with their split count patched and joins the two Engram tables into the one tensor llama.cpp reads). Same files,
+same PC (i5-14600KF, 128 GB DDR4-3200, RTX 5090, GPU 0 only), cold, greedy, the first 16 GSM8K questions twice, then two
+prompts at 5.6k and 15.7k tokens (the same text for both):
+
+| | decode tok/s | GSM8K | first token, 5.6k / 15.7k | decode after the long prompts |
+|---|---|---|---|---|
+| Maya, no drafting (as tandem.cpp) | 39.0 / 39.6 | 16, 15 of 16 | 7.8 / 9.5 s | 26–43 |
+| Maya with its DSpark drafter (its default here) | 54.9 | 15 of 16 | 7.9 / 9.7 s | 28–38 |
+| **tandem.cpp v0.3.0** | **60.3 / 59.4** | 15, 15 of 16 | **6.5** / 16.5 s | **63–68** |
+
+Maya's own installer and settings (reasoning effort high), DSpark off for the first row. The whole model fits in this PC's
+VRAM + RAM, so neither engine reads the SSD after loading. Maya is still faster on the 15.7k-token prompt; overlapping the
+expert uploads with the compute is next. To run it: download `peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF` (folder
+`Maya-XS/`, MIT), then
+
+```
+python3 tools/maya_ds41_convert.py --maya-dir models/Maya-XS --out models/Maya-XS-llama
+llama-server -m models/Maya-XS-llama/DeepSeek-V4.1-Flash-1017-Maya-XS-v2-IQ1_S-00001-of-00004.gguf \
+  -ngl 99 -cmoe --moe-cache-mib auto -np 1 -c 32768
+```
+
+The converted copy needs as much disk again as the download (278 GB). Maya-S has the same layout (not tested here).
 
 ### Consumer PC: i5-12400F (6 cores), 64 GB DDR4 (43 GB/s), RTX 4090 24 GB, PCIe 4.0 x16
 
@@ -363,11 +434,13 @@ With the defaults off the patch computes exactly what llama.cpp does; the defaul
 - Greedy output is not repeatable run to run with an expert cache: which experts are cached, and which misses the CPU computes, depends on timing, and the CPU and GPU round differently. Accuracy is unchanged. A fixed share (e.g. `LLAMA_MOE_CPU=0.2`) makes it repeatable.
 - Built for one user at a time. Concurrent requests work (tested at 2 and 4, accuracy unchanged) but gain less, and with a small cache several requests together can be slower in total than one.
 - Multi-GPU: only `-sm layer` (the default) works with the cache; checked for correctness on 2 GPUs, not tuned for speed.
-- Linux only. Tuned and tested on NVIDIA (CUDA). AMD (ROCm) works and gets the shared kernel work, but it has had less tuning and was tested on one RX 7900 XTX ([above](#amd-gpus-rocm)).
+- Linux only. Tuned and tested on NVIDIA (CUDA). AMD (ROCm) works and gets the shared kernel work, but it has had less tuning and was tested on one RX 7900 XTX ([above](#amd-gpus-rocm)); it does not borrow cache VRAM for prompts (no VMM in ROCm builds), so its cache is a little smaller.
 - Qwen3.8 GGUFs converted with a current llama.cpp may be a little slower than the ISTA files we measured (one fusion does not apply to their layout).
 - Known issues, to be fixed:
   - models much larger than RAM (read from the SSD) depend on the drive (see the gaming-PC rows for a PCIe 4.0 drive);
-  - DeepSeek-V4.1 with `-lm none` loads very slowly (its 103 GiB Engram tables are copied page by page); run it without `-lm none`.
+  - DeepSeek-V4.1 with `-lm none` loads very slowly (its 103 GiB Engram tables are copied page by page); run it without `-lm none`;
+  - a model whose experts are a little larger than RAM (DeepSeek-V4.1 IQ2_XS, 139 GiB, on 128 GB) runs from the page cache, and
+    long prompts read the SSD again on every batch (15.7k tokens: ~57 s on the RTX 5090 PC; Maya-XS, which fits, 16.5 s).
 
 ## Licence
 

@@ -26,7 +26,7 @@
   <a href="https://skills.sh/taxueseek/argo"><img alt="skills.sh" src="https://img.shields.io/badge/skills.sh-argo-black"></a>
   <img alt="license" src="https://img.shields.io/badge/license-Apache_2.0-blue">
   <img alt="python" src="https://img.shields.io/badge/python-3.9+-green">
-  <img alt="version" src="https://img.shields.io/badge/version-2.14.1-informational">
+  <img alt="version" src="https://img.shields.io/badge/version-2.15.0-informational">
   <img alt="engines" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Ftaxueseek%2Fargo%2Fmain%2Fassets%2Freadme%2Fcounts.json">
   <img alt="mcp" src="https://img.shields.io/badge/MCP-19%20tools-purple">
 </p>
@@ -64,6 +64,7 @@ Zero-config works out of the box (API keys are optional). Pick your client:
 - **Local CLI (recommended for long-term local use)**:
   ```bash
   curl -fsSL https://raw.githubusercontent.com/taxueseek/argo/main/scripts/install.sh | bash
+  # Windows (PowerShell): irm https://raw.githubusercontent.com/taxueseek/argo/main/scripts/install.ps1 | iex
   # or via npm: npm install -g argo-search
   ```
 - **DeepSeek Harness (DSH) Plugin**:
@@ -95,7 +96,7 @@ argo search --list-engines
 | Capability | Built-in Web Search | Commercial Search APIs (Tavily / Exa / Serper) | Argo |
 | :--- | :--- | :--- | :--- |
 | **Pricing &amp; Keys** | Tied to host quota | Paid per call; API key required | **Free &amp; keyless fallback** (optional keys boost quality) |
-| **AI Search Aggregation** | Single host backend | Single vendor index | **Unifies keyless (`tavily_free`, `felo`, `parallel_free`) + BYOK (DeepSeek Search, Tencent Yuanbao/Hunyuan, Metaso, Bocha, Tavily, Exa)** |
+| **AI Search Aggregation** | Single host backend | Single vendor index | **Unifies keyless (`tavily_free`, `parallel_free`, `anysearch`) + BYOK (DeepSeek Search, Tencent Yuanbao/Hunyuan, Metaso, Bocha, Tavily, Exa)** |
 | **Source Routing** | Single generic index | Generic web index | **Domain + 18-language routing** across academic, finance, code, news &amp; local files |
 | **Fact Verification** | Snippet only | Snippet or raw chunks | **Built-in `--verify` &amp; `--numverify`** (fetches source &amp; scores credibility) |
 | **Context Efficiency** | Verbose HTML/JSON | Raw chunks | **Agent-compact output** (`--fields agent` ~4.3 KB) |
@@ -113,7 +114,7 @@ Argo classifies each query by **domain and language** before dispatching, hittin
 - **Academic** → `arxiv`, `semantic_scholar`, `openalex`, `crossref`, `pubmed` (`--academic-deep`)
 - **Finance &amp; Macro** → `sec_edgar`, `yahoo_finance`, `sina_quote`, `eastmoney`
 - **Code &amp; Tech** → `stackoverflow`, `github`, `octen`, `context7`
-- **AI Search** → `tavily_free`, `felo`, `parallel_free`, `anysearch`, `deepseek_search`, `yuanbao`, `metaso`, `bocha`, `exa`, `tavily`, `you`
+- **AI Search** → `tavily_free`, `parallel_free`, `anysearch`, `deepseek_search`, `yuanbao`, `metaso`, `bocha`, `exa`, `tavily`, `you`
 - **Deep Research** → `python3 scripts/research.py "topic" --depth deep --json` outputs a structured **dossier** (sources, coverage gaps, quality gates)
 
 ---
@@ -143,7 +144,9 @@ Search engines optimize for clicks; agents need **verifiable facts**. Argo score
 
 ## AI Search &amp; Sub-skills
 
-### Sub-skills (4 Built-in Pipelines)
+### Sub-skills (7, Single Directory)
+
+All sub-skills live in `sub-skills/`. Four are built-in pipelines driven by the main skill; three are standalone entry points (wide research orchestration, and two scenario bundles for deep research / zero-cost local search).
 
 | Sub-skill | Capability |
 | :--- | :--- |
@@ -151,6 +154,9 @@ Search engines optimize for clicks; agents need **verifiable facts**. Argo score
 | **local-seek** | Hybrid BM25 + vector semantic search for local notes, markdown, and knowledge bases |
 | **ego-search** | Real-browser logged-in search for Zhihu, Xiaohongshu, WeChat Official Accounts (off by default) |
 | **js-run** | Sub-millisecond headless JS execution for environment probes and pure-compute pages |
+| **argo-wide-research** | Multi-track parallel deep research & forensics orchestration with citation ledger and quality gates |
+| **argo-deep-research** | Scenario entry: research dossier + multi-source fact/number verification (`research.py`, `evidence.py`, `--verify`) |
+| **argo-local-search** | Scenario entry: zero-cost keyless search bundle (`--local-first`, `seek.py`, `--include-local`) |
 
 ### 19 MCP Tools
 
@@ -161,11 +167,11 @@ Search engines optimize for clicks; agents need **verifiable facts**. Argo score
 ## DSH Plugin
 
 Argo ships a first-class **DeepSeek Harness (DSH)** plugin (`@taxueseek/argo-dsh`) with three invocation channels from one capability set:
-1. **19 `mcp__argo__*` tools** (main-package bundle, identical to full MCP).
+1. **19 `mcp__argo__*` tools** (full MCP bundle; default MCP surface exposes 4 core tools, set `ARGO_MCP_TOOLS=all` for all 19).
 2. **Search + `wide_research` parallel orchestration** (subpackage).
 3. **Host `web_search` / `web_fetch` seam replacement** (requires explicit provider pin in the web profile; see [packages/dsh-plugin/README.md](packages/dsh-plugin/README.md)).
 
-The built-in settings UI exposes **18 native first-class tools**, **28 curated engine switches**, and shares DSH's native `DEEPSEEK_API_KEY` credential store with zero plaintext echoing:
+The built-in settings UI exposes **18 native first-class tools**, **35 behaviour switches**, and shares DSH's native `DEEPSEEK_API_KEY` credential store with zero plaintext echoing:
 
 <p align="center">
   <img src="assets/readme/settings-tools.webp" width="32%" alt="DSH Tools settings tab">
@@ -181,22 +187,44 @@ The built-in settings UI exposes **18 native first-class tools**, **28 curated e
 
 | Version | Highlights |
 | :--- | :--- |
+| **v2.15.0** | Zhihu full chain, evidence-layer authority passthrough, keyless 3-tier semantic fallback, MCP generic connector (`type: mcp`), route zero-based domain scoring, 311 sources |
 | **v2.14.1** | Architecture slimming, MCP 3+1 orthogonal tools + backward-compat aliases, 304 sources, fail-closed `secret_guard.py` redaction |
 | **v2.14.0** | Parser layer consolidation, 300 sources, badcase ledger loop |
 | **v2.13.0** | Documentation consolidation, 22-state-machine SSOT, dispatch tail grace |
 
 <details>
-<summary>v2.14.1 Release Summary &amp; Capability Snapshot</summary>
+<summary>v2.15.0 Release Summary &amp; Capability Snapshot</summary>
 
-### Capabilities (v2.14.1)
+### Capabilities (v2.15.0)
 
-v2.14.1 slims the source architecture, converges MCP tools to 3+1 orthogonal core interfaces with backward-compatible aliases, expands keyless sources (Hugging Face Datasets, Maven Central, NuGet, Open-Meteo), and adds fail-closed `secret_guard.py` output redaction.
+v2.15.0 delivers the Zhihu full chain (question drill-down, curated answers, Keychain credentials, vote-quality weighting), evidence-layer `upstream_authority` passthrough, a keyless 3-tier semantic fallback (local 2-gram heuristics), the single-file research-report pipeline, route zero-based domain scoring, and the MCP generic connector (`type: mcp`, first integration grep.app). Sources 304→311, domains 306→313.
+
+### v2.15.0: Zhihu Full Chain + Evidence Authority Passthrough + MCP Connector
+
+See [docs/RELEASE_NOTES_v2.15.0.md](docs/RELEASE_NOTES_v2.15.0.md) and [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
 ### v2.14.1: Architecture Slimming + MCP 3+1 Tools + Security Redaction
 
 See [docs/RELEASE_NOTES_v2.14.1.md](docs/RELEASE_NOTES_v2.14.1.md) and [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
 </details>
+
+---
+
+> Good search is not about seeing more—it is about concluding with confidence, and knowing when you still should not.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)"
+      srcset="https://api.star-history.com/svg?repos=taxueseek/argo&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)"
+      srcset="https://api.star-history.com/svg?repos=taxueseek/argo&type=Date" />
+    <img alt="Star History Chart" width="560"
+      src="https://api.star-history.com/svg?repos=taxueseek/argo&type=Date" />
+  </picture>
+</p>
+
+If Argo has ever helped you reach a more confident conclusion, [give it a Star](https://github.com/taxueseek/argo/stargazers) to help more people find it.
 
 ## Contributing &amp; License
 

@@ -205,6 +205,12 @@ were regenerated — the timeline is identical across all three.
 
 ## Installation
 
+**Windows: [VoxaSetup.exe](https://github.com/akshinmrv/Voxa/releases/latest/download/VoxaSetup.exe).** An installer for your user alone, with no
+administrator rights: it puts Voxa, the Python it runs on and **Voxa Studio** in one folder,
+adds a Start menu shortcut, installs FFmpeg with winget if it's missing, and appears in
+*Apps & features* to uninstall. It isn't code-signed yet, so Windows may say *Windows
+protected your PC*: choose *More info*, then *Run anyway*.
+
 **One line.** No Python needed beforehand:
 
 ```powershell
@@ -458,6 +464,13 @@ voxa video.mp4 --config examples/config.json
 **Logging.** `--log-format json` emits one JSON object per line. `--verbose` raises the level
 to DEBUG and also surfaces third-party libraries.
 
+**Updates.** Once a day the console, `voxa serve` and `voxa doctor` ask PyPI which voxa-dub is
+the newest. When it's newer than yours they say so, with the way your install gets it: the new
+VoxaSetup.exe for an install that VoxaSetup.exe made, otherwise the one command for how you
+installed Voxa. PyPI sees that request as it sees any download (your IP address, and this
+Voxa's version); nothing else goes with it. Turn it off in the console's Settings → Advanced, or
+everywhere with `VOXA_NO_UPDATE_CHECK=1`.
+
 **Cost estimates.** The per-job summary reports usage and — when a price is known — an estimated
 cost. For an LLM translator, a couple of low-cost defaults are built in; set prices for the models
 you use with `--llm-prices` (best kept in the config file), since list prices change. For OpenAI
@@ -551,10 +564,16 @@ given in the link it prints (or yours, from `--token` or `VOXA_TOKEN`).
 </div>
 
 ```bash
-pipx install "voxa-dub[serve]"
-voxa studio                             # starts it and opens the console in your browser
-voxa serve                              # the same, without opening a browser
+pipx install "voxa-dub[studio]"
+voxa studio                             # starts it and opens the console in a window of its own
+voxa studio --browser                   # the same, in your browser
+voxa serve                              # just the server, at http://127.0.0.1:8000
 ```
+
+`voxa studio` shows the console in a window of its own (Edge WebView2 on Windows, WebKit on
+macOS, from the `[studio]` extra); the one-line installer sets this up, and its **Voxa Studio**
+shortcut opens no terminal. Closing the window stops the server, after asking if a dub is still
+running. Without the extra, or on Linux without GTK or Qt, it opens your browser instead.
 
 The console comes inside the package: no Node, no second terminal. Working on the console
 itself? Run `npm run dev` in [`web/`](web/) next to `voxa serve`.
@@ -679,7 +698,8 @@ server runs a permissive model such as Chatterbox (see [NOTICE](NOTICE.md#46-sel
 <summary><strong>Can it run entirely offline?</strong></summary>
 
 Yes: `--translator ollama --tts piper`. Nothing leaves your machine after the models are
-downloaded. Offline is not the same as commercially clean, though — check the voice for your
+downloaded (the console and `voxa doctor` also ask PyPI once a day whether a newer Voxa is out;
+`VOXA_NO_UPDATE_CHECK=1` stops that). Offline is not the same as commercially clean, though — check the voice for your
 language in [NOTICE.md](NOTICE.md#41-piper-voices).
 </details>
 

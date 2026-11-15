@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/License-AGPLv3-blue.svg?style=flat-square)](LICENSE)
 [![Discord](https://img.shields.io/badge/Discord-join-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.com/invite/wnBb7ZQDUC)
 
-Observer is a local-first AI agent that watches your screen, camera and audio, and takes action when something happens. It runs on local models, so your data stays **100% private**.
+Observer is an agent that deploys micro-agents that monitor your screen, camera and audio, and take action when something happens. It runs on local models, so your data stays **100% private**.
 
 <img src="./assets/demo.gif" alt="Observer demo: an agent that calls you when a Steam download finishes" />
 
@@ -72,6 +72,7 @@ if (response.includes("OBSERVER")) {
 - `getImageMemory(agentId?)`, `setImageMemory(agentId?, images)`, `appendImageMemory(agentId?, images)`
 - `startAgent(agentId?)`, `stopAgent(agentId?)`
 - `time()`, `sleep(ms)`
+- `mcp(message)`: wakes Observer's MCP with a message, as a new turn in the open chat
 
 **Notifications**
 - `sendDiscord(webhook, message, images?, videos?)`

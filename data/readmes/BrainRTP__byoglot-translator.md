@@ -4,7 +4,7 @@
 
 English | [Русский](README.ru.md)
 
-A Chrome and Firefox extension (Manifest V3) that translates web pages and selected text with a model you bring. You connect it in one of two ways: to your local [opencode](https://opencode.ai), or to your own provider with an API key (DeepSeek, OpenRouter, Ollama, LM Studio or any OpenAI-compatible URL). ByoGlot stands for "bring your own" plus "-glot": the model and the translation instructions are yours. The extension has no accounts or servers of its own and ships no keys. Your text goes only to the connection you picked.
+A Chrome and Firefox extension (Manifest V3) that translates web pages and selected text with a model you bring. You connect it in one of two ways: to your local [opencode](https://opencode.ai), or to your own provider with an API key (DeepSeek, OpenRouter, OpenAI, Mistral, Ollama, LM Studio or any OpenAI-compatible URL). ByoGlot stands for "bring your own" plus "-glot": the model and the translation instructions are yours. The extension has no accounts or servers of its own and ships no keys. Your text goes only to the connection you picked.
 
 MIT license. Free, no subscription, no ads, no telemetry. An independent project, not affiliated with the opencode team.
 
@@ -28,12 +28,12 @@ Most AI translators either lock you into their own subscription or ask for an AP
 - Site rules: bind a template to `example.com` or `*.example.com`.
 - Any model of the active connection, with its effort level (opencode calls it a variant: `none`, `low`, `high`, `max` and so on).
 - Several saved connections. Exactly one is active at a time and both pages and selections use it. Each connection remembers its own page and selection models.
-- Translation cache in IndexedDB, so repeated strings and repeat visits cost nothing.
+- Page translation cache in IndexedDB, so cached page strings and repeat visits need no new request. The translator page keeps its last result in memory; selection cards send a new request for each translation.
 - Interface in English and Russian, light and dark themes.
 
 ## Requirements
 
-- One of the two: opencode 2.x running as a background service (`opencode service start`; opencode 1.x is not supported), or an API key for an OpenAI-compatible provider. Ollama and LM Studio need no key.
+- One of the two: opencode 2.x running as a background service (`opencode service start`; opencode 1.x is not supported), or an API key for an OpenAI-compatible provider. Ollama and LM Studio need no key on loopback or LAN hosts; external hosts need a key.
 - Chrome, Edge, Brave, Arc or another Chromium browser, or Firefox, with Manifest V3.
 - For development: Node.js 24 or newer and pnpm 12 (via corepack).
 
@@ -59,17 +59,19 @@ A connection page opens on first install. Pick "opencode" or "My provider". You 
 1. Run `opencode pair` in a terminal. It prints a one-time link like `http://127.0.0.1:<port>/auth/connect/<code>`, valid for 5 minutes.
 2. Paste the link (or the whole command output) on the connection page and click "Connect".
 
-Manual mode is for an opencode server you started yourself with a password, on another port of this computer: enter the URL (`http://127.0.0.1:<port>` or `http://localhost:<port>`), username and password. Remote servers are not supported, because the extension's host permissions cover only `127.0.0.1` and `localhost`.
+Manual mode supports opencode on this computer, on a LAN, or at an external HTTPS address. Enter its URL, username and password. The password may be empty only on loopback or LAN; an external host requires a password. LAN and external hosts require browser access permission before any request, including the connection check.
 
 ### My provider
 
-Use this when you have no opencode but have an API key. The extension calls the `chat/completions` and `models` endpoints of an OpenAI-compatible API.
+Use this when you have no opencode but have an API key. The extension calls the `chat/completions` and `models` endpoints of an OpenAI-compatible API. Provider redirects are not followed.
 
-1. Choose a preset: DeepSeek, OpenRouter, Ollama, LM Studio or Custom URL. The preset fills in the base URL, and you can edit it.
-2. Paste the API key. Ollama and LM Studio do not need one.
+1. Choose a preset: DeepSeek, OpenRouter, OpenAI, Mistral, Ollama, LM Studio or Custom URL. The preset fills in the base URL, and you can edit it.
+2. Paste the API key. Ollama and LM Studio need no key on loopback or LAN, but need one on external hosts. Custom URL needs a key on LAN and external hosts; other presets always need one.
 3. Click "Save". The extension checks the provider's `/models` list and saves the connection only if the check passes.
 
-When you add a provider, the browser asks for access to that provider's site. The extension does not ask for access to all sites at install time. `localhost` and `127.0.0.1` need no request, so local Ollama and LM Studio work on any port. If you refuse, the connection is not saved. When you delete a provider, the access is released unless another connection uses the same site.
+When you add a provider, the browser asks for access to that provider's site. The extension does not ask for access to all sites at install time. `localhost` and `127.0.0.1` need no request, so local Ollama and LM Studio work on any port. Loopback also includes all of `127.0.0.0/8` and IPv6 `::1`; the browser may ask for access to addresses outside the install-time grants. LAN hosts require browser permission, including for `/models` and key checks. If you refuse, the connection is not saved. When you delete a connection or replace the opencode address, its optional access is released unless another saved connection uses the same site. A failed opencode connection attempt also releases unused access, including access granted before a local policy refusal.
+
+LAN means `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `169.254.0.0/16`, names ending in `.local`, and IPv6 `fc00::/7` or `fe80::/10`. IPv4 literals must use four decimal octets without leading zeros; short, octal, hexadecimal and integer forms count as external hosts. Desktop connections allow HTTP only for loopback and LAN. Firefox Android provider addresses require HTTPS, except loopback; the same restriction applies when platform detection fails. Saved connections are never deleted by this policy: a missing key, missing browser permission or disallowed transport blocks requests before anything is sent, with a separate message for each cause. Edit and save a provider in Settings to supply its key or grant access; the recovery button opens Settings. Reconnect opencode to update its password or access. Portable imports contain no keys or permission grants and follow the same request checks.
 
 The key is stored unencrypted in the extension's `storage.local`, like the opencode token. It never reaches web pages or content scripts, and the settings page does not show it back: leave the field empty when editing to keep the old key. If you change the base URL to another site, enter the key again.
 
@@ -79,7 +81,7 @@ For fast selection translation pick a light model with effort `none`, for exampl
 
 ## Ways to translate
 
-The extension has three flows. They share templates, models and the cache.
+Pages, selection cards and the translator page share templates and models. The persistent translation cache is used for pages only. Each provider request has a 180-second deadline, including model initialization and time in the queue. Each page batch and retry gets its own deadline, so a whole page can take longer.
 
 ### Page
 
@@ -93,18 +95,23 @@ Drag the card by its header and resize it by the corner at the bottom right. It 
 
 ### Pinned
 
-Click the pin button in the card header. The card stays open and the selection icon stops appearing. Every time you finish a mouse selection on the page, the extension translates it and puts the result at the top of a feed in the card. Each entry shows the original fragment, the translation, the languages and model, and a copy button. A failed entry shows its own "Retry" button. The translation that was open when you pinned the card becomes the first entry.
+Click the pin button in the card header. The card stays open and the selection icon stops appearing for mouse selections. Every time you finish a mouse selection on the page, the extension translates it and puts the result at the top of a feed in the card. Each entry shows the original fragment, the translation, the languages and model, and a copy button. A failed entry shows its own "Retry" button. The translation that was open when you pinned the card becomes the first entry.
 
-Selecting text inside the card does not start a translation, so you can copy part of a translation. Selecting with the keyboard does not start one either, but the hotkey and the context menu still add an entry. A template change applies to the next selections only, old entries stay as they are.
+Selecting text inside the card does not start a translation, so you can copy part of a translation. On touch screens, tap the selection icon to add the final selection; adjusting the handles never sends a request. Selecting with the keyboard does not start one either, but the hotkey and the context menu still add an entry. A template change applies to the next selections only, old entries stay as they are.
 
 Only the cross closes a pinned card. Esc and clicks outside do nothing. Closing it cancels unfinished requests and drops the feed, nothing is saved. Click the pin button again to go back to One-shot, which keeps the top entry.
 
+### Translator page
+
+Open "Translate text" from the popup or settings. Enter up to 20,000 characters, choose the languages and template, and press "Translate". "Cancel" stops the request. The last successful result is kept in this tab: the button stays disabled for the same inputs, and reverting an edit restores that result without a request. Changing or deleting the selected template refreshes the form and clears its old result. Closing or reloading the tab clears the text and result.
+
 ## Usage
 
-| Action              | macOS    | Other OS    |
-| ------------------- | -------- | ----------- |
-| Translate selection | Option+X | Alt+Shift+S |
-| Translate page      | Option+A | Alt+Shift+T |
+| Action                       | macOS    | Other OS    |
+| ---------------------------- | -------- | ----------- |
+| Translate selection          | Option+X | Alt+Shift+S |
+| Translate page               | Option+A | Alt+Shift+T |
+| Insert selection translation | Option+I | Alt+Shift+I |
 
 You can also use the "Translate page" button in the popup and the "Translate selection" item in the context menu. Change the shortcuts at `chrome://extensions/shortcuts` (Chromium) or in `about:addons`, gear menu, "Manage Extension Shortcuts" (Firefox).
 

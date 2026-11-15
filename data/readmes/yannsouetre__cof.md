@@ -10,6 +10,10 @@
 <a href="https://github.com/yannsouetre/ComfyUI-COF"><img src="docs/img/btn-comfyui.png" alt="ComfyUI nodes" width="250"></a>
 </p>
 <p align="center">
+<a href="https://yannsouetre.github.io/cof/"><img src="docs/img/btn-read-format.png" alt="Read: COF, the format in one page" width="330"></a>&nbsp;&nbsp;
+<a href="https://yannsouetre.github.io/cof/compare/"><img src="docs/img/btn-read-compare.png" alt="Read: What fits in the file? COF compared with other formats" width="330"></a>
+</p>
+<p align="center">
 <a href="https://yannsouetre.github.io/cof/psyche/"><img src="docs/img/btn-read-psyche.png" alt="Read: AI characters now have an inner life" width="330"></a>&nbsp;&nbsp;
 <a href="https://yannsouetre.github.io/cof/psyche/how-many.html"><img src="docs/img/btn-read-howmany.png" alt="Read: How many convictions make a person?" width="330"></a>
 </p>
@@ -23,7 +27,7 @@
 
 COF is an open file format (`.cof`, a ZIP container) that bundles everything that defines an AI character: personality, appearance (photos, vector code, description), voice, 3D body, motion — **and** its rights, consent and provenance. The same file opens in a chat app, an image or video generator, a game engine, Blender, or serves as the "soul" of an agent.
 
-> Status: **1.2, released on 8 November 2026** — [AI characters now have an inner life](https://yannsouetre.github.io/cof/psyche/): a psyche graph tied to the memories (RFC 0004) and people, places and objects shared by memories and psyche (RFC 0005), both open for comments until 22 November 2026; every 1.0 and 1.1 file stays valid and readable by every 1.x tool. Reference tooling `cof-cli` 1.2.0 (`pip install cof-cli`), builder 0.14.0, explorer 1.2.0, ComfyUI nodes 0.7 ([release notes](docs/release-notes-1.2.0.md)). Before: 1.1 on 30 October 2026 — [memories](https://yannsouetre.github.io/cof/memories/) (RFC 0002), gender, relations, archetype and role (RFC 0003), `COF.md` in every file; tooling 1.1.1 on 2 November 2026 — the memory graph holds a whole life ([release notes](docs/release-notes-1.1.1.md)); format 1.0 on 17 October 2026. Feedback welcome through the [issues](https://github.com/yannsouetre/cof/issues).
+> Status: **1.2, released on 8 November 2026** — [AI characters now have an inner life](https://yannsouetre.github.io/cof/psyche/): a psyche graph tied to the memories (RFC 0004) and people, places and objects shared by memories and psyche (RFC 0005), both open for comments until 22 November 2026; every 1.0 and 1.1 file stays valid and readable by every 1.x tool. Reference tooling `cof-cli` 1.2.0 (`pip install cof-cli`), builder 0.14.0, explorer 1.2.0, ComfyUI nodes 0.7 ([release notes](docs/release-notes-1.2.0.md)); tooling 1.2.2 on 15 November 2026 — the builder keeps everything it does not model, a tile view, undated memories marked in the explorer's time bar, agent hosts in `cof-cli` ([release notes](docs/release-notes-1.2.2.md)). Before: 1.1 on 30 October 2026 — [memories](https://yannsouetre.github.io/cof/memories/) (RFC 0002), gender, relations, archetype and role (RFC 0003), `COF.md` in every file; tooling 1.1.1 on 2 November 2026 — the memory graph holds a whole life ([release notes](docs/release-notes-1.1.1.md)); format 1.0 on 17 October 2026. Feedback welcome through the [issues](https://github.com/yannsouetre/cof/issues).
 
 > **Coming from Character.AI?** [Save your characters →](https://yannsouetre.github.io/cof/import/) Drop your CAI Tools or PersonaText export, check three things, download one `.cof` file: your character, and your conversations as its memories, kept private. Then take it further than a backup: looks, a voice, presets, memories with pictures and sounds, a psyche drawn as a graph — in the [builder](https://yannsouetre.github.io/cof/builder/), all of it readable in the [explorer](https://yannsouetre.github.io/cof/viewer/character-ai/). Everything happens in your browser. COF 1.2.1 (8 November 2026) adds `cof import`, the import page, builder 0.14.1 and explorer 1.2.1 ([release notes](docs/release-notes-1.2.1.md), [RFC 0006](rfcs/0006-platform-import.md), open for comments until 22 November 2026).
 
@@ -99,8 +103,11 @@ cof validate file.cof                          # a .cof file or an unpacked fold
 cof validate spec/examples/01-clara-text-only
 cof pack spec/examples/01-clara-text-only -o clara.cof
 cof export clara.cof --format png -o clara.png     # → PNG card (chara + ccv3 chunks)
+cof export clara.cof --format agent -o ./ws/       # → OpenClaw-style workspace (SOUL.md, IDENTITY.md, AGENTS.md, memories, skills)
+cof export clara.cof --format hermes -o ./hermes/  # → Hermes Agent profile (SOUL.md, memories/MEMORY.md)
+cof memory add clara.cof --from-agent ./ws/ -o lived.cof   # ← what the agent lived comes back as personal memories
 ```
-More commands (import, export to SOUL.md/IDENTITY.md, migrate, tokens…) in [`cli/README.md`](cli/README.md).
+More commands (import, migrate, tokens…) in [`cli/README.md`](cli/README.md). One character, two agent hosts, one memory: the loop is shown in the [agents note](docs/release-notes-1.2.2.md).
 
 **Use it in ComfyUI** — the [ComfyUI-COF](https://github.com/yannsouetre/ComfyUI-COF) nodes load a preset's images, prompt, LoRA, voice, poses and motion clips, with its rights and age rules enforced.
 
@@ -138,7 +145,7 @@ A `.cof` contains a valid Character Card V3 and exports to a `ccv3` PNG card, a 
 
 ## Cite
 
-Each release is archived on Zenodo. Concept DOI (all versions): [10.5281/zenodo.23434045](https://doi.org/10.5281/zenodo.23434045) · version 1.1.1: [10.5281/zenodo.23879507](https://doi.org/10.5281/zenodo.23879507) · version 1.2.1: [10.5281/zenodo.24055335](https://doi.org/10.5281/zenodo.24055335) · version 1.2.0: [10.5281/zenodo.24051451](https://doi.org/10.5281/zenodo.24051451) · version 1.1.0: [10.5281/zenodo.23805416](https://doi.org/10.5281/zenodo.23805416) · version 1.0.0: [10.5281/zenodo.23434046](https://doi.org/10.5281/zenodo.23434046). Citation metadata: [`CITATION.cff`](CITATION.cff).
+Each release is archived on Zenodo. Concept DOI (all versions): [10.5281/zenodo.23434045](https://doi.org/10.5281/zenodo.23434045) · version 1.1.1: [10.5281/zenodo.23879507](https://doi.org/10.5281/zenodo.23879507) · version 1.2.2: [10.5281/zenodo.24243775](https://doi.org/10.5281/zenodo.24243775) · version 1.2.1: [10.5281/zenodo.24055335](https://doi.org/10.5281/zenodo.24055335) · version 1.2.0: [10.5281/zenodo.24051451](https://doi.org/10.5281/zenodo.24051451) · version 1.1.0: [10.5281/zenodo.23805416](https://doi.org/10.5281/zenodo.23805416) · version 1.0.0: [10.5281/zenodo.23434046](https://doi.org/10.5281/zenodo.23434046). Citation metadata: [`CITATION.cff`](CITATION.cff).
 
 ## License
 | Part | License |

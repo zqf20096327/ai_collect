@@ -149,23 +149,25 @@ idea, applied to running AI instead of sharing files.)
 
 ## How fast is it?
 
-<!-- speeds:begin, reviewed for 0.3.288-alpha. Refreshed at every release: .claude/rules/completeness.md § "README speeds" -->
+<!-- speeds:begin, reviewed for 0.3.291-alpha. Refreshed at every release: .claude/rules/completeness.md § "README speeds" -->
 Speed is in **tokens a second**: a token is a word or part of one, and most
 people read about 5 a second. The figures are from the project's test laptop,
 with an 8 GB NVIDIA RTX 3070 graphics card and an 8-core AMD Ryzen 7 5800H
 processor, on its own or teamed up with volunteers' computers.
 
 <!-- release-check:begin -->
-<!-- from the v0.3.287 release check, timed on the downloaded release -->
+<!-- from the v0.3.290 release check, timed on the downloaded release -->
 **On one computer.** Each model reads a 1,800-token document and writes 128
-tokens about it.
+tokens about it. A summary repeats the document's words, so the model can
+guess several of them ahead; replies that repeat less, such as new prose,
+write more slowly.
 
 | Model | Runs on | Writing (tokens a second) | Reading (tokens a second) |
 |---|---|---|---|
-| Qwen2.5 Coder 7B | the graphics card | 52–53 | 1,570–1,610 |
-| Qwen2.5 14B | card and processor (too big for the card) | 13.4–14.0 | 490–520 |
-| Qwen3 30B-A3B (2-bit) | card and processor (a mixture of experts, too big for the card) | 21.0–21.5 | 220 |
-| Llama 3.2 3B | the processor only | 14.3–14.4 | 70 |
+| Qwen2.5 Coder 7B | the graphics card | 168–180 | 1,730 |
+| Qwen2.5 14B | card and processor (too big for the card) | 13.4–17.2 | 570–620 |
+| Qwen3 30B-A3B (2-bit) | card and processor (a mixture of experts, too big for the card) | 27–33 | 220 |
+| Llama 3.2 3B | the processor only | 18.8–20.8 | 70 |
 <!-- release-check:end -->
 
 **Across computers.** The same laptop, in Thailand, asking a volunteer's
@@ -407,7 +409,7 @@ SwarmLLM is built by a human developer working with Claude Code, an AI
 programming assistant: the human sets the direction, tests and reviews, and
 Claude writes the code. We say so openly so you can judge the project on its
 merits. Every change is checked by thousands of automated tests
-(4627 lib tests + 80 integration tests) before it ships, and regular
+(4649 lib tests + 80 integration tests) before it ships, and regular
 automated audits are logged in the repository. Scrutiny and contributions are
 welcome.
 

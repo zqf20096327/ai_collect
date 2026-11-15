@@ -7,7 +7,7 @@
 收藏了却没看的视频、想读的网页，用 AI 帮你读完、整理好，挑出真正要看的。
 
 [![Chrome MV3](https://img.shields.io/badge/Chrome-MV3-4285F4?logo=googlechrome&logoColor=white)](https://developer.chrome.com/docs/extensions/develop/migrate/what-is-mv3)
-[![Version](https://img.shields.io/badge/version-3.8.2-7c6cf2)](extension/manifest.json)
+[![Version](https://img.shields.io/badge/version-3.8.3-7c6cf2)](extension/manifest.json)
 [![Platforms](https://img.shields.io/badge/platforms-Bilibili%20%7C%20YouTube-fb7299)](#功能)
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
 
@@ -96,6 +96,7 @@ Agent 碰到视频通常只能看标题和封面。装了 MoonDigest，agent 能
 ## 更多
 
 - [常见问题](docs/FAQ.md)：字幕抓取失败、限流、网页读不出正文、Obsidian 连接等。
+- [官方提示词](docs/OFFICIAL_PROMPTS.md)：视频和网页的默认提示词。升级不会覆盖你改过的提示词，想换回官方的从这里复制。
 - 路线图：问 AI 从收藏夹里挑视频清单；YouTube 播放列表的批量阅览。
 - 贡献：欢迎提 [issue](https://github.com/PathGao/MoonDigest/issues)，报 bug 请写视频链接、浏览器版本和复现步骤。改代码见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 - 致谢：基于 [haixiong1997/Bilibili-Obsidian-Clipper](https://github.com/haixiong1997/Bilibili-Obsidian-Clipper)（MIT）；YouTube 字幕的取法参照 [yt-dlp](https://github.com/yt-dlp/yt-dlp)；感谢 [oil-ui](https://github.com/oil-oil/oil-ui) 在 UI 设计迭代中的支持。

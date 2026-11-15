@@ -36,10 +36,11 @@ infrastructure through real tools, and executes remediation behind approval gate
 - **Multi-source alert ingestion**: Alertmanager, PagerDuty, Grafana, Datadog, and Zabbix webhooks, plus Slack channel monitoring
 - **Agentic investigation**: every incident runs a full agent session that searches your runbooks and cross-incident memory before it touches infrastructure
 - **Approval-gated remediation**: risky actions become proposals you approve in the UI or Slack before anything executes
-- **Connectors**: one page for everything the agent connects to: tools (monitoring, Kubernetes, SSH, databases), alert webhooks, messaging (Slack; Telegram and Discord for posting) and custom remote MCP servers (URL + token, API key header or OAuth sign-in). Channels and alert webhooks live inside their connector
-- **Cron jobs**: schedule recurring agent investigations that post results to a Channel, each with its own prompt and per-cron tool allowlist
+- **Connectors**: one page for everything the agent connects to: tools (monitoring, Kubernetes, SSH, databases, ticketing, HTTP APIs), alert webhooks, messaging (Slack; Telegram, Discord and Zulip for posting) and custom remote MCP servers (URL + token, API key header or OAuth sign-in). Channels and alert webhooks live inside their connector; every enabled connector is available to every skill
+- **Guarded SSH**: hosts are read-only by default; per SSH connector you can allow specific commands (`systemctl restart nginx`) on read-only hosts and deny commands (`reboot`) on every host
+- **Agent messages**: during a run the agent can send a message to a Telegram chat of the Telegram connector (`telegram.send_message`), for example to warn the on-call team before the final answer
+- **Cron jobs**: schedule recurring agent investigations that post results to a Channel, each with its own prompt and tool access
 - **[Agent Skills](https://github.com/agentskills/agentskills) format**: skills follow the open Agent Skills specification for portability across AI agents
-- **Connectors**: connect tools (SSH, monitoring, ticketing, HTTP APIs, remote MCP servers) once; every enabled connector is available to every skill
 - **Context files**: upload reference documents the agent uses during incident analysis
 - **Web dashboard**: manage incidents, skills, tools, and settings through a modern, mobile-responsive UI
 - **Self-hosted**: your data never leaves your infrastructure
@@ -112,6 +113,18 @@ Bump `AKMATORI_VERSION` in `.env` (or leave it unset to track `latest`) and:
 docker compose pull
 docker compose up -d
 ```
+
+### Kubernetes
+
+The Helm chart ([`charts/akmatori`](charts/akmatori)) installs the same services and images. Each release publishes it to GHCR:
+
+```bash
+helm upgrade --install akmatori oci://ghcr.io/akmatori/charts/akmatori --version 0.5.0 \
+  --namespace akmatori --create-namespace --wait
+kubectl -n akmatori port-forward svc/akmatori 8080:80
+```
+
+See [docs/kubernetes.md](docs/kubernetes.md) for Ingress, external PostgreSQL, proxies and upgrades.
 
 ### Behind an HTTP proxy
 

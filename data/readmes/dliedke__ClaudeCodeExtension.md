@@ -198,6 +198,10 @@ A huge thank you to every developer who took the time to improve this extension 
 
 ## Version History
 
+### Version 310.0
+- The Claude Usage page no longer signs itself out when it thinks the Claude Code account changed, so a Google sign-in there now sticks. Change Account and the page's own Sign Out / Switch Account still sign it out.
+- Signing out of the Claude Usage page keeps your Google accounts, so signing back in is one click on the account instead of e-mail, password and 2FA again.
+
 ### Version 309.0
 - **Pull from git before the first prompt** is now off by default, and is turned off once for existing installs. If you want it, turn it back on in *⚙ → Settings... → Automation*.
 - Multi-line prompts sent to Claude Code through the Command Prompt terminal no longer show stray `[200~` and `[201~` text on Windows 11 24H2 and later.
@@ -1596,17 +1600,4 @@ Native mode now in beta phase
 ### Version 6.5
 - **Claude Code: Skip Permissions** toggle.
 
-### Version 6.4
-- Double-click a diff code line to open the file at that line.
-
-### Version 6.3
-- Opus selection automatically opens the thinking mode selector.
-
-### Version 6.2
-- Fixed file attachment for non-standard file types.
-
-### Version 6.1
-- Major diff view performance fix for repositories with many changes.
-
-### Version 6.0
-- **Cursor Agent native Windows** support (previous renamed "Cursor 
+### Version

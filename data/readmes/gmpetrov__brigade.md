@@ -392,6 +392,8 @@ How Brigade compares with the tools people weigh it against, with sources:
   teammates with jobs
 - [Brigade vs Grok Bot](https://www.brigade.lol/compare/grok-bot): AI teammates locked to Grok, versus Claude Code and
   Codex on the plans you already pay for
+- [Brigade vs Perplexity Teammates](https://www.brigade.lol/compare/perplexity-teammates): agents sold only with
+  Perplexity Max at $200 a month, versus Claude Code and Codex on the plan you already pay for
 - [Brigade vs Claude Duet](https://www.brigade.lol/compare/claude-duet),
   [vs OpenAI dots](https://www.brigade.lol/compare/dots), [vs Meta Muse](https://www.brigade.lol/compare/muse),
   [vs Instinct](https://www.brigade.lol/compare/instinct) and [vs Hark](https://www.brigade.lol/compare/hark): one

@@ -1,18 +1,24 @@
-# MikroTik MCP
-
 <!-- mcp-name: io.github.wiresage/mikrotik-mcp -->
 
-[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/jeff-nasseri-mikrotik-mcp-badge.png)](https://mseep.ai/app/jeff-nasseri-mikrotik-mcp)
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/wiresage/mikrotik-mcp/master/img/header-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/wiresage/mikrotik-mcp/master/img/header-light.svg">
+    <img alt="MikroTik MCP" src="https://raw.githubusercontent.com/wiresage/mikrotik-mcp/master/img/header-light.svg" width="480">
+  </picture>
 
-[![MCP Toplist](https://mcptoplist.com/badge/io.github.wiresage%2Fmikrotik-mcp.svg)](https://mcptoplist.com/server/io.github.wiresage%2Fmikrotik-mcp)
-[![Audited by AddonAudit](https://addonaudit.com/badges/audited.svg)](https://addonaudit.com/addon/io-github-wiresage-mikrotik-mcp/)
+  <p><b>Manage MikroTik RouterOS from any AI assistant.</b></p>
+
 [![Website](https://img.shields.io/badge/website-mikrotik--mcp.com-007ACC?style=flat-square&logo=googlechrome&logoColor=white)](https://www.mikrotik-mcp.com/)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/wiresage/mikrotik-mcp/publish.yml?branch=master&label=build&style=flat-square&color=%23007ACC)](https://github.com/wiresage/mikrotik-mcp/actions/workflows/publish.yml)
 [![Tests](https://img.shields.io/github/actions/workflow/status/wiresage/mikrotik-mcp/publish.yml?branch=master&label=tests&style=flat-square&color=%2300C853)](https://github.com/wiresage/mikrotik-mcp/actions/workflows/publish.yml)
 [![MIT License](https://img.shields.io/github/license/wiresage/mikrotik-mcp?style=flat-square&color=%23FF6B35)](https://github.com/wiresage/mikrotik-mcp/blob/master/LICENSE)
 [![Discord](https://img.shields.io/badge/Discord-Join%20us-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/kmVSpstbNU)
+[![MCP Toplist](https://mcptoplist.com/badge/io.github.wiresage%2Fmikrotik-mcp.svg)](https://mcptoplist.com/server/io.github.wiresage%2Fmikrotik-mcp)
+[![Audited by AddonAudit](https://addonaudit.com/badges/audited.svg)](https://addonaudit.com/addon/io-github-wiresage-mikrotik-mcp/)
+[![audited by mseep.ai](https://img.shields.io/badge/audited%20by-mseep.ai-2ea44f?style=flat-square)](https://mseep.ai/app/jeff-nasseri-mikrotik-mcp)
 
-## Overview
+</div>
 
 MikroTik MCP provides a bridge between AI assistants and MikroTik RouterOS devices. It allows AI assistants to interact with MikroTik routers through natural language requests, executing commands like managing VLANs, configuring firewall rules, handling DNS settings, and more.
 
@@ -59,7 +65,8 @@ review and idea.
      inistor is here for issue reports rather than merged commits, and
      lilianmoraru and Kn-ut99 for pull requests (#187, #188) that are still open,
      so the contributors API does not return them either. mkranjcic is here for
-     the pull requests #206 to #221, also still open. -->
+     the pull requests #206 to #221, also still open. tdabasinskas is here for
+     pull request #225, also still open. -->
 <p>
 <a href="https://github.com/jeff-nasseri" title="jeff-nasseri"><img src="https://avatars.githubusercontent.com/u/57312476?s=72" width="72" height="72" alt="jeff-nasseri" /></a>
 <a href="https://github.com/goto1134" title="goto1134"><img src="https://avatars.githubusercontent.com/u/9569795?s=72" width="72" height="72" alt="goto1134" /></a>
@@ -78,6 +85,7 @@ review and idea.
 <a href="https://github.com/vanelin" title="vanelin"><img src="https://avatars.githubusercontent.com/u/18135591?s=72" width="72" height="72" alt="vanelin" /></a>
 <a href="https://github.com/siderakis" title="siderakis"><img src="https://avatars.githubusercontent.com/u/1545690?s=72" width="72" height="72" alt="siderakis" /></a>
 <a href="https://github.com/mkranjcic" title="mkranjcic"><img src="https://avatars.githubusercontent.com/u/9868887?s=72" width="72" height="72" alt="mkranjcic" /></a>
+<a href="https://github.com/tdabasinskas" title="tdabasinskas"><img src="https://avatars.githubusercontent.com/u/7723360?s=72" width="72" height="72" alt="tdabasinskas" /></a>
 </p>
 
 Contributions of every kind are welcome: code, bug reports, documentation and

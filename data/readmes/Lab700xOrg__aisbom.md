@@ -125,7 +125,7 @@ xattr -d com.apple.quarantine aisbom-macos-*
 
 ### Scan targets and exit codes
 
-`scan` accepts a directory, a single model file, a `hf://` repo, or an HTTPS URL. A directory is walked recursively; a single file is scanned on its own.
+`scan` accepts a directory, a single model file, a `hf://` repo, or an HTTPS URL. A directory is walked recursively; a single file is scanned on its own. A URL must point at a model file; one that no scanner claims (a `.zip`, a web page) exits `1`.
 
 | Exit | Meaning |
 |---|---|
@@ -158,6 +158,16 @@ aisbom scan hf://google-bert/bert-base-uncased
 ```
 
 We use HTTP Range requests to inspect just the headers — scans complete in seconds and use zero disk. Verify SafeTensors compliance before you `git clone`.
+
+An `hf://` target reads every file in the repo at `main`. A model's web address works too:
+
+| You pass | Scanned as |
+|---|---|
+| `https://huggingface.co/<owner>/<repo>` or `…/tree/main` | `hf://<owner>/<repo>` |
+| `https://huggingface.co/<owner>/<repo>/blob/<rev>/<path>` (also in a dataset or Space) | that file, via `…/resolve/<rev>/<path>` |
+| `…/tree/<branch>`, `…/tree/main/<folder>`, a dataset or Space repo page | refused with exit `1` and the target to use instead |
+
+Requests to Hugging Face time out after 10 seconds without a connection or 60 seconds without data. A timeout exits `1`, so a stalled API fails the CI job rather than hanging it.
 
 ### Authentication (private & gated Hugging Face models)
 
@@ -497,20 +507,43 @@ aisbom comply ./models --framework fda --output-dir ./submission/sbom
 | `--framework` | Writes |
 |---|---|
 | `eu-ai-act` | `annex-xi-technical-documentation.md` (Annex XI skeleton), `art53-training-content-summary.md` (in the sections of the Commission's training-content template), `sbom.json`, `README.md` |
-| `fda` | `sbom.json`, `sbom.openvex.json`, `sbom.vex.cdx.json`, `component-support.csv` (support level and end-of-support date per component), `README.md` |
+| `fda` | `sbom.json`, `sbom.openvex.json`, `sbom.vex.cdx.json`, `component-support.csv` (supplier, support level and end-of-support date per component), `README.md` |
 
 A field is filled only from something the scan read, such as the model card's
-task, architecture, licence and declared datasets, file formats, hashes and
-security findings. Each value names its source. Everything else, including
-provider identity, release dates, training process, compute and lifecycle
-dates, is left as `TODO (provider)` rather than guessed.
-[docs/comply.md](docs/comply.md) lists every field and where its value comes
-from.
+task, architecture, licence, declared datasets, base model and languages, the
+parameter count, file formats, hashes and security findings. Each value names
+its source. What a card *declares* without answering the field (its
+languages, CO2 emissions, evaluation results, the repository's creation date)
+gets its own "declared" row, and readings such as modality from the task or
+supplier from the repository owner are labelled *AIsbom's mapping*. For the
+FDA pack, end-of-support dates come from
+[endoflife.date](#endoflifedate-lookups-comply---framework-fda-only) for the
+packages it tracks. Everything else, including provider identity, release
+dates, training process, compute and energy, is left as `TODO (provider)`
+rather than guessed. [docs/comply.md](docs/comply.md) lists every field and
+where its value comes from.
+
+To fill those TODOs once and keep them across runs, write a starter answers
+file, fill it in, and pass it back on every run:
+
+```bash
+aisbom comply ./models --framework eu-ai-act --write-answers-template comply.yaml
+# edit comply.yaml, then:
+aisbom comply ./models --framework eu-ai-act --answers comply.yaml
+```
+
+The template lists every field id with its label and one support entry per
+scanned component for the FDA table. Answers are tagged `(provider-supplied)`
+and never replace a value the scan read: when both exist, the pack shows both.
+A malformed file or an unknown field id stops the run with exit `1`. See
+[docs/comply.md](docs/comply.md#answers-file---answers) for the format and the
+full field-id list. The answers file is read locally and never sent anywhere.
 
 The pack describes files, not your organisation, and is not legal advice.
 A scan with an unreadable target exits `1` and writes nothing. Otherwise the
 command exits `0` whatever the findings; gate CI with `aisbom scan`. `--offline`,
-`--no-osv` and `--no-hf-lookup` work as they do for `scan`.
+`--no-osv` and `--no-hf-lookup` work as they do for `scan`; `--no-eol-lookup`
+skips the endoflife.date lookup.
 
 ---
 
@@ -730,7 +763,7 @@ Per `aisbom comply`: a `cli_comply` event with the `framework` (`eu-ai-act` or `
 
 On a scan fetch failure or unhandled exception: a `cli_error` event records the exception class name only (e.g. `JSONDecodeError`), a low-cardinality `http_status` bucket (e.g. `401`, `timeout`), a `token_present` boolean (whether an `HF_TOKEN` / `HUGGING_FACE_HUB_TOKEN` was set), and a `consecutive_failures` bucket (`1`–`9` or `10+` — how many runs in a row hit the same failure shape) — never the token value, the message, the traceback, a URL, or any file content.
 
-When the scan target itself is unusable (a path that doesn't exist, a file no scanner supports, or something that isn't a regular file or directory): a `cli_error` event with the same fields, where `error_type` is one of a fixed set — `MissingTarget`, `UnsupportedFileType`, or `NotAFileOrDirectory` — and `http_status` is `none`. Never the path, the file name, or its extension.
+When the scan target itself is unusable (a path that doesn't exist, a file or URL no scanner supports, something that isn't a regular file or directory, an `hf://` listing that hit its page cap, or a Hugging Face page URL with no exact `hf://` equivalent): a `cli_error` event with the same fields, where `error_type` is one of a fixed set — `MissingTarget`, `UnsupportedFileType`, `NotAFileOrDirectory`, `ListingTruncated`, or `UnsupportedHFPageURL` — and `http_status` is `none`. Never the path, the URL, the repo id, the file name, or its extension.
 
 ### Local state (no network)
 
@@ -744,7 +777,11 @@ When you pass `--vex`, or run `aisbom comply --framework fda`, and the scan find
 
 ### PyPI license lookups (on by default)
 
-When a scan finds exact `requirements.txt` pins and writes CycloneDX or SPDX 2.3 output (including the SBOM `aisbom score` and `aisbom comply` build), AIsbom requests each pinned **package name and version** from the public PyPI JSON API at `https://pypi.org/pypi/<name>/<version>/json` to read its declared license. Nothing else is sent: no file paths, model names, hashes, findings, or identifiers. Like the OSV lookup this is a request to a third-party service, not telemetry, so `AISBOM_NO_TELEMETRY` does not affect it; `--offline` or `AISBOM_OFFLINE=1` does. Answers are cached locally in `~/.aisbom/pypi_license_cache.json`, and deleting that file is always safe.
+When a scan finds exact `requirements.txt` pins and writes CycloneDX or SPDX 2.3 output (including the SBOM `aisbom score` and `aisbom comply` build), AIsbom requests each pinned **package name and version** from the public PyPI JSON API at `https://pypi.org/pypi/<name>/<version>/json` to read its declared license and author. Nothing else is sent: no file paths, model names, hashes, findings, or identifiers. Like the OSV lookup this is a request to a third-party service, not telemetry, so `AISBOM_NO_TELEMETRY` does not affect it; `--offline` or `AISBOM_OFFLINE=1` does. Answers are cached locally in `~/.aisbom/pypi_license_cache.json`, and deleting that file is always safe.
+
+### endoflife.date lookups (`comply --framework fda` only)
+
+When `aisbom comply --framework fda` finds exact `requirements.txt` pins, AIsbom asks the public endoflife.date API for each distinct **package name** (`https://endoflife.date/api/v1/products/<name>`) to fill end-of-support dates in `component-support.csv`. Versions are matched on your machine and are not sent, and neither are file paths, model names, hashes, findings, or identifiers. `aisbom scan` never makes this request. Like the OSV lookup this is a request to a third-party service, not telemetry, so `AISBOM_NO_TELEMETRY` does not affect it; `--no-eol-lookup`, `AISBOM_NO_EOL_LOOKUP=1` or `--offline` does. Nothing is cached.
 
 ### Hugging Face model-card lookups (local scans)
 
@@ -766,7 +803,7 @@ export AISBOM_NO_TELEMETRY=1
 AISBOM_NO_TELEMETRY=1 aisbom scan ./my-project
 ```
 
-`AISBOM_OFFLINE=1` (or `--offline` on `scan`, `score` and `comply`) goes further: it disables telemetry and also every other network request — the update check and the PyPI, OSV and Hugging Face model-card lookups.
+`AISBOM_OFFLINE=1` (or `--offline` on `scan`, `score` and `comply`) goes further: it disables telemetry and also every other network request — the update check and the PyPI, OSV, Hugging Face model-card and endoflife.date lookups.
 
 ### Where the data goes
 

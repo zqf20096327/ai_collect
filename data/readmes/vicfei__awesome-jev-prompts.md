@@ -35,16 +35,16 @@ Top 10 of the 59 GitHub projects this list references, by stars — the full ran
 
 | # | Project | Stars | Δ 7d |
 |---|---|---:|---:|
-| 1 | [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) | 122,521 | +1,233 |
-| 2 | [virattt/ai-hedge-fund](https://github.com/virattt/ai-hedge-fund) | 64,667 | +108 |
-| 3 | [HKUDS/Vibe-Trading](https://github.com/HKUDS/Vibe-Trading) | 38,204 | +329 |
-| 4 | [vllm-project/semantic-router](https://github.com/vllm-project/semantic-router) | 6,473 | +57 |
-| 5 | [typesafe-ai/skills](https://github.com/typesafe-ai/skills) | 2,899 | +13 |
-| 6 | [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | 2,586 | +30 |
-| 7 | [StartLuxLabs/Startlux-Decision](https://github.com/StartLuxLabs/Startlux-Decision) | 1,744 | +64 |
-| 8 | [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 1,074 | +16 |
-| 9 | [mode-io/vllm-jev](https://github.com/mode-io/vllm-jev) | 953 | +5 |
-| 10 | [Liuziyu77/Valen](https://github.com/Liuziyu77/Valen) | 914 | +10 |
+| 1 | [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) | 122,666 | +1,151 |
+| 2 | [virattt/ai-hedge-fund](https://github.com/virattt/ai-hedge-fund) | 64,690 | +95 |
+| 3 | [HKUDS/Vibe-Trading](https://github.com/HKUDS/Vibe-Trading) | 38,283 | +331 |
+| 4 | [vllm-project/semantic-router](https://github.com/vllm-project/semantic-router) | 6,478 | +47 |
+| 5 | [typesafe-ai/skills](https://github.com/typesafe-ai/skills) | 2,901 | +11 |
+| 6 | [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | 2,591 | +29 |
+| 7 | [StartLuxLabs/Startlux-Decision](https://github.com/StartLuxLabs/Startlux-Decision) | 1,747 | +43 |
+| 8 | [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 1,076 | +12 |
+| 9 | [mode-io/vllm-jev](https://github.com/mode-io/vllm-jev) | 953 | +3 |
+| 10 | [Liuziyu77/Valen](https://github.com/Liuziyu77/Valen) | 915 | +9 |
 <!-- leaderboard:end -->
 
 ## What is Jev?
@@ -191,6 +191,10 @@ Every entry cites its sources, and sources come in three kinds — read them bef
 
 The question-design approach in this list transfers across System One models. Notable developments:
 
+- **2026-11-13 — the first full weekly window: the finance cluster takes 89% of top-10 gains.** This list's leaderboard has now auto-refreshed daily for 12 straight days, and its first full weekly window (values as displayed on 11-13) is unambiguous: [TradingAgents](https://github.com/TauricResearch/TradingAgents) crossed the 120k mark (122,405★, +1,310 on the week), [Vibe-Trading](https://github.com/HKUDS/Vibe-Trading) +337, [ai-hedge-fund](https://github.com/virattt/ai-hedge-fund) +128 — together 89% of everything the top 10 gained. Open-weights models now hold two of the weekly top-10 slots: [StartLux-Decision](https://github.com/StartLuxLabs/Startlux-Decision) at #7 (+78) and [Valen](https://github.com/Liuziyu77/Valen) at #10. Meanwhile the commentary cycle has moved on to declaring the hype over ([The rise and fall of Jev hype](https://news.ycombinator.com/item?id=50206361), Oct 23) — the adoption curve disagrees: November brought no new engine launches, but the finance stacks kept compounding. Design impact: [signal-vs-noise screening](categories/guardrails-and-verification.md#signal-vs-noise-screening) and [research conviction scoring](categories/score-patterns.md#research-conviction-scoring) ride the steepest adoption curve in the ecosystem — thresholds fitted today get exercised at production scale tomorrow.
+
+- **2026-11-08 — decision models reach industrial visual inspection.** [VerdictAD](https://github.com/sgstq0811/VerdictAD-Jev-AD) ([arXiv 2611.02654](https://arxiv.org/abs/2611.02654)) is a training-free few-shot industrial anomaly-detection framework: it asks [Clef-Flash 9B](https://huggingface.co/Cloudflare/clef-flash) Noul questions to refine existing detectors' image scores and anomaly maps on MVTec AD, VisA and MVTec LOCO AD — per-class logs and the decision cache are public. Typed decisions are now load-bearing on factory floors, not just inside agent loops. The infrastructure layer keeps densifying alongside: [onesie](https://github.com/frodi-karlsson/onesie) sends typed Noul/Choice/Score against `/v1/systemone` with `--print-request` printing the exact wire body for audit, and [mu](https://github.com/qybaihe/mu) now ships 40 decision points. Design impact: porting a Noul gate to a new modality still means re-fitting thresholds — VerdictAD's per-class logs are exactly the calibration data [Calibration & eval](categories/calibration-and-eval.md) asks for.
+
 - **2026-10-31 — JevAny: one training pipeline, five backbones, two readouts.** [JevAny](https://github.com/SimpleJev/JevAny) (127★, Apache-2.0, bilingual) is open infrastructure for training, evaluating and deploying System 1 decision models across multiple LLM backbones — five released LoRA checkpoints (Gemma-4B, Qwen3.5-4B, Qwen3.8-27B default, Muse-Glimmer-30B), trained on 2.18M labeled decisions. Two readout methods diverge: **Pointer** (attention from input to candidate positions — options need not be single tokens) vs **Direct-token** (last-position logit readout, the inner-Jev route). Their agent-loop demos are the best visual proof of the "model proposes, Jev answers, code composes" contract: WebShop with Jev picks the right color/size in 5 actions vs 9 for LLM-only; FrozenLake in 1 LLM call vs 4. Their benchmark table reports NLL / Brier / ECE alongside accuracy — notably, hosted Jev 1.13 has the lowest ECE (0.033) but not the lowest NLL, confirming that ranking quality and probability calibration are different properties. Design impact: the Pointer/Direct-token split means question wording interacts with the readout — Pointer tolerates longer option descriptions (multi-token), Direct-token prefers terse labels; check your engine's readout before porting questions.
 
 - **2026-10-28 — decision models enter the trading-agent mainstream.** [TradingAgents](https://github.com/TauricResearch/TradingAgents) (117k★, multi-agent LLM financial trading, arXiv:2412.20138) ships optional Jev screening of social posts (v0.5.1): a Noul gate deciding whether a post is signal or noise before analysts read it. [ai-hedge-fund](https://github.com/virattt/ai-hedge-fund) (64k★, AI hedge fund team) lists TypeSafe (Jev) as a first-class model provider for its investor agents — the same tier as Anthropic, OpenAI, and DeepSeek. Combined 181k★ of trading infrastructure now treats decision models as a native component: LLM agents propose, Jev judges, code composes the trade. Design impact: the [signal-vs-noise screening](categories/guardrails-and-verification.md#signal-vs-noise-screening) and [research conviction scoring](categories/score-patterns.md#research-conviction-scoring) patterns below are the question-design layer those integrations need.
@@ -291,16 +295,16 @@ The pattern library is the drafting layer of a small toolbox — the community s
 <!-- related-lists:start -->
 | List | Focus | Stars |
 |---|---|---:|
-| [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | General list, highest-frequency updates | 2,586 |
-| [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 900+ project catalog with companion site | 1,074 |
-| [v-modal/awesome-jev-tools](https://github.com/v-modal/awesome-jev-tools) | Tools list with inclusion criteria | 756 |
-| [logicrw/awesome-jev-projects](https://github.com/logicrw/awesome-jev-projects) | Ecosystem radar web app, auto GitHub sync | 729 |
-| [AnotiaWang/awesome-decision-models](https://github.com/AnotiaWang/awesome-decision-models) | Classic minimal list (renamed from awesome-jev), open replicas & benchmarks | 715 |
-| [AbdelStark/awesome-typesafe-jev](https://github.com/AbdelStark/awesome-typesafe-jev) | Field guide with platform routing & evals | 617 |
+| [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | General list, highest-frequency updates | 2,591 |
+| [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 900+ project catalog with companion site | 1,076 |
+| [v-modal/awesome-jev-tools](https://github.com/v-modal/awesome-jev-tools) | Tools list with inclusion criteria | 761 |
+| [logicrw/awesome-jev-projects](https://github.com/logicrw/awesome-jev-projects) | Ecosystem radar web app, auto GitHub sync | 730 |
+| [AnotiaWang/awesome-decision-models](https://github.com/AnotiaWang/awesome-decision-models) | Classic minimal list (renamed from awesome-jev), open replicas & benchmarks | 717 |
+| [AbdelStark/awesome-typesafe-jev](https://github.com/AbdelStark/awesome-typesafe-jev) | Field guide with platform routing & evals | 618 |
 | [kydlikebtc/awesome-jev](https://github.com/kydlikebtc/awesome-jev) | Machine-readable catalog by decision pattern | 602 |
-| [cobanov/awesome-jev](https://github.com/cobanov/awesome-jev) | Curated list with dated review notes | 597 |
-| [walidboulanouar/awesome-jev-use-cases](https://github.com/walidboulanouar/awesome-jev-use-cases) | Demos ranked by social metrics, limits & cost | 492 |
-| [yzfly/awesome-jev-zh](https://github.com/yzfly/awesome-jev-zh) | Chinese-language curated list with an independent, skeptical voice | 94 |
+| [cobanov/awesome-jev](https://github.com/cobanov/awesome-jev) | Curated list with dated review notes | 599 |
+| [walidboulanouar/awesome-jev-use-cases](https://github.com/walidboulanouar/awesome-jev-use-cases) | Demos ranked by social metrics, limits & cost | 493 |
+| [yzfly/awesome-jev-zh](https://github.com/yzfly/awesome-jev-zh) | Chinese-language curated list with an independent, skeptical voice | 95 |
 | [Anil-matcha/awesome-jev-by-typesafe](https://github.com/Anil-matcha/awesome-jev-by-typesafe) | Use cases, starter code, design rules | 5 |
 <!-- related-lists:end -->
 
@@ -317,5 +321,5 @@ Found a pattern that works, or an anti-pattern that bit you? PRs and issues welc
 **Disclaimer:** this is an independent community resource. It is not affiliated with or endorsed by TypeSafe AI. Facts (pricing, limits, behavior) are cited from public sources and can change — always verify against the [official docs](https://docs.typesafe.ai/).
 
 <!-- last-checked:start -->
-*Last checked: 2026-11-14*
+*Last checked: 2026-11-15*
 <!-- last-checked:end -->

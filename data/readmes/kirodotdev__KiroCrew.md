@@ -280,9 +280,18 @@ one sticks across restarts and upgrades. `KIROCREW_TELEMETRY_DISABLED` and
 `DO_NOT_TRACK` override them: when one is set, the dashboard toggle is disabled
 and says so. An existing install that turned the heartbeat off, wrote
 `telemetry.enabled: false`, or sets `DO_NOT_TRACK` keeps local recording off
-after an upgrade and is not asked again. When the Privacy screen's text changes,
-existing users see it once more at their next dashboard load while local
-recording is on.
+after an upgrade and is not asked again, with one exception. Builds before
+recording was on by default wrote `telemetry.enabled: false` into every new
+config. The written value looks the same whether the old build or the person
+wrote it, so an install whose only reason for being off is a written
+`telemetry.enabled: false` sees the Privacy screen once, even if the person
+chose that value. It is an off form that names Kiro telemetry and offers Turn on
+performance metrics or Keep off. Until you turn them on, only the daily
+heartbeat and official app install receipts are sent, and no performance
+metrics are recorded. A
+terminal-only install gets one line pointing at `kirocrew telemetry enable`
+instead. When the Privacy screen's text changes, existing users see it once
+more at their next dashboard load while local recording is on.
 
 **Exactly these five fields are sent, at most once per day, and nothing else:**
 
@@ -341,12 +350,20 @@ would not take effect:
 
 See [docs/system-specs/modules/governance.md](docs/system-specs/modules/governance.md).
 
-This is separate from `telemetry.enabled`, which controls **local-only**
-performance metrics. They are on by default, stay on your machine, are capped at
-30 days and 100 MB, and turn off with the same Turn off button,
-`kirocrew telemetry disable`, `KIROCREW_TELEMETRY=0` or `DO_NOT_TRACK=1`. A
-terminal-only install prints a one-line notice about them on its first start. See
-[docs/system-specs/modules/metrics.md](docs/system-specs/modules/metrics.md).
+This is separate from `telemetry.enabled`, which controls performance metrics.
+They are on by default, are recorded on your machine, are capped at 30 days and
+100 MB, and turn off with the same Turn off button, `kirocrew telemetry disable`,
+`KIROCREW_TELEMETRY=0` or `DO_NOT_TRACK=1`. A terminal-only install prints a
+one-line notice about them on its first start.
+
+While they are on, the public build also sends the reviewed product usage metrics
+(which features are used and how long things take; no prompts, files, paths or
+credentials) to Kiro telemetry, labelled with a hashed install ID. Nothing is sent
+until the Privacy screen, or the one-line terminal notice, has named it. It is
+not sent from an enterprise (LTS) build or a CI runner, and every off switch
+above stops it. See
+[docs/guides/telemetry-otlp-export.md](docs/guides/telemetry-otlp-export.md#the-kiro-telemetry-destination)
+and [docs/system-specs/modules/metrics.md](docs/system-specs/modules/metrics.md).
 
 ## Docs and contributing
 
@@ -863,11 +880,4 @@ make this tool possible:
 <a href="https://github.com/keyejia" title="Kellen Jia"><img src="https://github.com/keyejia.png?size=64" width="64" height="64" alt="Kellen Jia" /></a>
 <a href="https://github.com/kian-zh" title="张景源"><img src="https://github.com/kian-zh.png?size=64" width="64" height="64" alt="张景源" /></a>
 <a href="https://github.com/kiavashsamadi" title="Kiavash"><img src="https://github.com/kiavashsamadi.png?size=64" width="64" height="64" alt="Kiavash" /></a>
-<a href="https://github.com/kidbrax" title="Braxton Beyer"><img src="https://github.com/kidbrax.png?size=64" width="64" height="64" alt="Braxton Beyer" /></a>
-<a href="https://github.com/kimlucky7" title="Kim @AdsAgent"><img src="https://github.com/kimlucky7.png?size=64" width="64" height="64" alt="Kim @AdsAgent" /></a>
-<a href="https://github.com/kirankumar15" title="kirankumar"><img src="https://github.com/kirankumar15.png?size=64" width="64" height="64" alt="kirankumar" /></a>
-<a href="https://github.com/kiro" title="Kiril Minkov"><img src="https://github.com/kiro.png?size=64" width="64" height="64" alt="Kiril Minkov" /></a>
-<a href="https://github.com/KiroCrew" title="KiroCrew"><img src="https://github.com/KiroCrew.png?size=64" width="64" height="64" alt="KiroCrew" /></a>
-<a href="https://github.com/KiroCrewCaptain" title="KiroCrewCaptain"><img src="https://github.com/KiroCrewCaptain.png?size=64" width="64" height="64" alt="KiroCrewCaptain" /></a>
-<a href="https://github.com/kishoreb95" title="Kishore Baskar"><img src="https://github.com/kishoreb95.png?size=64" width="64" height="64" alt="Kishore Baskar" /></a>
-<a href="https://github.com/Kive1ru" title="Jiahao Guo"><img src="https://github.com/Kive1ru.png?size=64" width="64" height="64" alt="
+<a href="https://github.com/kidbrax" title="Braxton Beyer"><img src="https://g

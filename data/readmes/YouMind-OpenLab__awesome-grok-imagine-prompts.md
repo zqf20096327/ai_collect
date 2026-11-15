@@ -68,9 +68,9 @@ Why use our gallery?
 
 | Metric | Count |
 |--------|-------|
-| 📝 Total Prompts | **3400** |
+| 📝 Total Prompts | **3410** |
 | ⭐ Featured Prompts | **3** |
-| 🔄 Last Updated | **2026-11-14** |
+| 🔄 Last Updated | **2026-11-15** |
 
 ---
 
@@ -189,6 +189,214 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 
 > 📝 Sorted by publish date (newest first)
 
+### Grok Imagine Prompt: Subtle Natural Motion
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A detailed prompt for animating a static image with subtle natural movements like blinking and breathing.
+
+#### 📝 Prompt
+
+```
+Subtle natural motion: the freckled man with slightly thinned and subtly receded hair slowly shifts his gaze, makes small head movements, and has gentle breathing and blinking, keeping the same thoughtful hand-on-chin pose, striped shirt, and dark background.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2121836872808722432/img/L2gAQEDScChL6dmU.jpg" width="600" alt="Grok Imagine Prompt: Subtle Natural Motion">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13884)**
+
+**Author:** [Fin de Lacy ( Finian JP Lacy)](https://x.com/victoriala13675) | **Source:** [Link](https://x.com/victoriala13675/status/2121836901409910804) | **Published:** Nov 15, 2026
+
+---
+### Dog Superpowers Godzilla Fight
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A humorous video prompt where a dog gains superpowers, shoots lasers, and fights Godzilla.
+
+#### 📝 Prompt
+
+```
+give this dog superpowers, shoots lasers from eyes, blows up building, fights godzilla, knock over Godzilla
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2121833110413434880/img/DIJtsx_stv06t8Qf.jpg" width="600" alt="Dog Superpowers Godzilla Fight">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13882)**
+
+**Author:** [Brian Lutz](https://x.com/IamTheNewMeta) | **Source:** [Link](https://x.com/IamTheNewMeta/status/2121833133905772744) | **Published:** Nov 15, 2026
+
+---
+### Gothic Girl Sword Dance Video Prompt
+
+![日本語](https://img.shields.io/badge/lang-日本語-green)
+
+> A detailed 15-second cinematic video prompt for Grok Imagine featuring a gothic girl performing a sword dance with Japanese katana, set against autumn leaves, including specific scene breakdowns and audio instructions.
+
+#### 📝 Prompt
+
+```
+A 15-second cinematic video of a girl maintaining strict consistency with @Image1, @Image2, and @Image3 regarding her facial features, pink-blonde long hair, purple eyes, black lace headdress and choker, gothic dress made of black and purple enamel/lace materials, Japanese katana, and the background of an autumn maple-lined path, while performing a rhythmic and magnificent sword dance.
+
+[BGM & Sound]
+Dramatic and rhythmic Japanese-style rock/electronica fusing traditional instruments (shamisen, taiko drums, shakuhachi) with heavy, fast-paced digital beats suitable for sword dancing. Sharp sound effects of the blade cutting through the air and well-defined silence during stillness.
+
+[Scene 1 (0:00-0:04) Medium Shot / Reference: @Image1]
+The screen starts from the composition of @Image1. With a dignified expression, the girl swiftly draws the Japanese katana from its sheath, steps forward sharply, and delivers a diagonal slash (1st swing). She then quickly turns around and executes a high-speed horizontal sweep flashing the blade horizontally, stopping abruptly at the moment of release to hold a sharp gaze in zanshin (awareness after attack) (2nd swing).
+
+[Scene 2 (0:04-0:08) Bust Up / Reference: @Image2]
+The camera switches to the distance sense of @Image2. From silence, the girl suddenly performs rapid consecutive cuts spinning the sword around her face, making her hair and headdress lace flutter wildly (1st swing). Then, she slows down from intense movement, transitioning smoothly into a graceful arc traced by the tip of the sword in mid-air, dancing elegantly (2nd swing).
+
+[Scene 3 (0:08-0:12) Medium Shot / Reference: @Image3]
+The screen returns to the medium angle of @Image3. Riding the rhythm with light steps, the girl flips her dress frills and spins beautifully once, delivering a sharp upward slash from a low stance (1st swing). Without killing the momentum, she rotates the sword rapidly above her head like a windmill, stops again abruptly to strike a cool pose and zanshin (2nd swing).
+
+[Scene 4 (0:12-0:15) Last Pose / Reference: @Image2]
+Zoom in again to an impressive angle similar to @Image2. As a finish, the girl takes a flowing pre-sheathing pose, gracefully re-holding the sword diagonally forward (1st swing). Immediately after, shifting from a brave expression to a cute smile, she winks cutely with just one eye towards the camera, ending with lingering atmosphere.
+
+[Video Quality]
+High definition, smooth motion, natural physics simulation for cloth and hair, beautiful lighting where sunlight filtering through maple leaves reflects off the blade, flawless finger and sword grip.
+```
+
+<img src="https://cms-assets.youmind.com/media/1794728016724_72xre1_HXIq56WaYAA1rxj.jpg" width="600" alt="Gothic Girl Sword Dance Video Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13889)**
+
+**Author:** [はる](https://x.com/HaluAIArt) | **Source:** [Link](https://x.com/HaluAIArt/status/2121807906337378544) | **Published:** Nov 15, 2026
+
+---
+### Realistic Night Beach with Milky Way and Palm Trees
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video generation prompt for a photorealistic vertical night beach scene featuring palm trees, turquoise water, and the Milky Way, emphasizing realistic wind movement in palms and gentle wave action.
+
+#### 📝 Prompt
+
+```
+Photorealistic vertical night beach scene, 9:16 format. Tropical beach at night with tall palm trees on the left, white sand, bright turquoise sea water, starry sky with the Milky Way clearly visible and distant lights on the coast. A soft breeze causing the palm trees to move realistically and organically, small waves rolling and breaking gently with realistic white foam on the shore, subtle twinkling of stars and very slow, natural movement of the Milky Way in the sky. Calm atmosphere, realistic water movement and lighting, sound
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2121785747917193216/img/dB4tkcYWgpz0JZUi.jpg" width="600" alt="Realistic Night Beach with Milky Way and Palm Trees">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13888)**
+
+**Author:** [Sin Filtro X](https://x.com/vivalilu) | **Source:** [Link](https://x.com/vivalilu/status/2121785767454245106) | **Published:** Nov 15, 2026
+
+---
+### Grok Imagine Prompt: Tetrahedral Tesseract
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> Complex geometric prompt asking for a tetrahedral tesseract with nested layers turning inside out.
+
+#### 📝 Prompt
+
+```
+A tetrahedral tesseract with 3 nested layers turning inside out and outwards in.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2121749581834641408/img/kI-lHPsTW5UJ8H7Y.jpg" width="600" alt="Grok Imagine Prompt: Tetrahedral Tesseract">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13881)**
+
+**Author:** [NateBe](https://x.com/OwlyArts) | **Source:** [Link](https://x.com/OwlyArts/status/2121749602592334040) | **Published:** Nov 14, 2026
+
+---
+### Cozy Indoors Profile Photo Transformation
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A Grok Imagine video/image prompt transforming a subject into a cozy indoors profile photo while preserving facial features.
+
+#### 📝 Prompt
+
+```
+Transform this into a cozy indoors profile photo of the exact same woman. Preserve her exact face geometry, proportions, eye shape and color, nose, mouth, jawline, skin tone with natural real skin texture (visible pores, slight natural shine, no airbrushing)
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2121705423019380736/img/Nf4d9zOc-XmWmDhO.jpg" width="600" alt="Cozy Indoors Profile Photo Transformation">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13886)**
+
+**Author:** [Vanessa Germain](https://x.com/Sasooger) | **Source:** [Link](https://x.com/Sasooger/status/2121705435245707304) | **Published:** Nov 14, 2026
+
+---
+### South Park Style Fart Explanation Video
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A prompt for generating a South Park style animated video explaining why farts smell worse in a bathtub.
+
+#### 📝 Prompt
+
+```
+A South Park style video explaining why farts smell worse if you fart in a bathtub
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2121685923910053888/img/k0GQWvxf4bJdyDW0.jpg" width="600" alt="South Park Style Fart Explanation Video">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13885)**
+
+**Author:** [NHIbyPROXY](https://x.com/NHIbyPROXY) | **Source:** [Link](https://x.com/NHIbyPROXY/status/2121685939315671153) | **Published:** Nov 14, 2026
+
+---
+### Grok Imagine Prompt: Preserve Original Sketch in Video
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A prompt for Grok Imagine to animate a video while preserving the original pencil and crayon sketch details.
+
+#### 📝 Prompt
+
+```
+Preserve the original base sketch with details in the video made from original pencil and crayon drawings!
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2121658392502484992/img/JAnEyx99uAfZ0wnA.jpg" width="600" alt="Grok Imagine Prompt: Preserve Original Sketch in Video">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13883)**
+
+**Author:** [Viswanath M. Aluru](https://x.com/vmaluru) | **Source:** [Link](https://x.com/vmaluru/status/2121658414543904852) | **Published:** Nov 14, 2026
+
+---
+### Grok Imagine Video Prompt: Rainbow Hats Replacement
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video editing/generation prompt for Grok Imagine that replaces headgear with rainbow hats and changes dialogue.
+
+#### 📝 Prompt
+
+```
+Remove head gear and replace with colorful rainbow hats. Change what he is saying to "did you restart the system ?...
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2121603598631243776/img/zsGWZbM7_wHNaRan.jpg" width="600" alt="Grok Imagine Video Prompt: Rainbow Hats Replacement">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13880)**
+
+**Author:** [Edwin Chee](https://x.com/EdwinAlephOmega) | **Source:** [Link](https://x.com/EdwinAlephOmega/status/2121603615148437639) | **Published:** Nov 14, 2026
+
+---
+### Colorize 1937 Instrument Player
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A Grok Imagine video prompt to colorize an old photo from 1937 and animate the subject playing an instrument.
+
+#### 📝 Prompt
+
+```
+Colorize for colors from 1937 and have Him play instrument challenge take old photo and bring alive
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2121519804955893760/img/HkE3bXCNay-U4pOd.jpg" width="600" alt="Colorize 1937 Instrument Player">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13887)**
+
+**Author:** [Cathy has this](https://x.com/lighthouse42f) | **Source:** [Link](https://x.com/lighthouse42f/status/2121519817299816825) | **Published:** Nov 14, 2026
+
+---
 ### Grok Imagine Prompt: Mechanical Scorpion Warrior
 
 ![English](https://img.shields.io/badge/lang-English-blue)
@@ -1012,11 +1220,11 @@ Last Frame: wide panorama of billboard canyon and crowd. All billboards show abs
 **Author:** [BMX](https://x.com/bmx_ai13) | **Source:** [Link](https://x.com/bmx_ai13/status/2119818224338661830) | **Published:** Nov 9, 2026
 
 ---
-### Grok Imagine Static Background Prompt
+### Static Background Particle Control Prompt
 
-![English](https://img.shields.io/badge/lang-English-blue)
+![日本語](https://img.shields.io/badge/lang-日本語-green)
 
-> A prompt to prevent excessive light particle effects and keep the background static in Grok Imagine video generation, useful for fixing common artifacts in R2V (Reference-to-Video) generations.
+> A technical prompt for Grok Imagine video generation to prevent excessive light particles and effects, ensuring the background remains completely static while only the character moves.
 
 #### 📝 Prompt
 
@@ -1024,7 +1232,7 @@ Last Frame: wide panorama of billboard canyon and crowd. All billboards show abs
 The background remains completely static and unchanged throughout the entire video. No particles, no sparks, no glowing dust, no floating lights, no falling light effects, no atmospheric effects. Preserve the exact background appearance from the first frame. Only the character moves.
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2119588974729760768/img/K1NxpwqY16oouErY.jpg" width="600" alt="Grok Imagine Static Background Prompt">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2119588974729760768/img/K1NxpwqY16oouErY.jpg" width="600" alt="Static Background Particle Control Prompt">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13823)**
 
@@ -1647,177 +1855,4 @@ Generate a next-level transformation sequence where the female character drops l
 
 [Event Script]
 At the start: She stands ready in her original form and dress, hand raised. 
-Principal event: She channels and drops intense laser beams from her hand straight down to the ground. The lasers impact and erupt into a massive destructive wave that obliterates everything in the environment—structures shatter, debris flies, surfaces crack and vaporize in bright flashes. Simultaneously, her dress morphs and crystallizes: fabric hardens and reforms into a sleek white and black crystal suit, with sharp crystalline facets, glowing black veins, and reflective white armor plating that fully covers her body in a powerful new form. 
-At the end: She stands empowered in the completed white and black crystal suit amid the devastated surroundings, residual laser energy fading, destruction complete.
-
-[Maintain Consistency]
-Keep her core identity, facial features, body proportions, and the transformation's destructive outcome stable throughout. The crystal suit remains white and black only. No other characters appear.
-
-Disclaimer: This video is an AI-generated fictional sci-fi concept created for entertainment purposes only.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118025342107688960/img/ADns-X_iBOBmN-bg.jpg" width="600" alt="Female Character Crystal Suit Transformation">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13551)**
-
-**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2118025535955591205) | **Published:** Nov 4, 2026
-
----
-### Grok Imagine Prompt: Spider-Man costume at MSG
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A video generation prompt for Grok Imagine featuring a Spider-Man costume wearer walking onto stage at Madison Square Garden performing Kill Tony.
-
-#### 📝 Prompt
-
-```
-Have a spider man costume guy walk out on stage at Madison Square Garden with a box of Chinese food performing kill tony
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118020441881133056/img/v3kE_4RZ4JT5ZNve.jpg" width="600" alt="Grok Imagine Prompt: Spider-Man costume at MSG">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13553)**
-
-**Author:** [Jesse Coligan](https://x.com/greenteasmokerX) | **Source:** [Link](https://x.com/greenteasmokerX/status/2118021022171459947) | **Published:** Nov 4, 2026
-
----
-### Car Driving Video Generation
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> Instructions for generating a video of a car driving with specific resolution and duration settings.
-
-#### 📝 Prompt
-
-```
-Generate me a new video using this prompt: "A car driving" with the following settings: 480p, 15s, auto.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2117961303968948224/img/4fxSAuyTQql0gi5D.jpg" width="600" alt="Car Driving Video Generation">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13546)**
-
-**Author:** [Joseph Dixon](https://x.com/JosephDixo60750) | **Source:** [Link](https://x.com/JosephDixo60750/status/2117961380464889953) | **Published:** Nov 4, 2026
-
----
-### Laser Eye Crystal Optimus Evolution
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A complex Grok Imagine prompt describing a character firing laser beams from her eyes that trigger an evolution reaction, crystallizing into a crystal-structure Optimus Prime.
-
-#### 📝 Prompt
-
-```
-[Generation Goal]
-Generate a next-level transformation sequence in which she fires a laser beam from her eyes to the ground, the laser triggers an evolution reaction, and the energy crystallizes into a crystal-structure Optimus.
-
-[Event Script]
-At the start she stands centered, eyes locked forward, body already charged with residual power from the previous stage. Both eyes suddenly emit twin high-intensity laser beams that strike the ground directly in front of her. On contact the lasers erupt into a spreading evolutionary field: the earth cracks, light cascades outward, and geometric crystal lattices rapidly grow and interlock. The forming crystal mass expands upward, facets multiplying and interlocking into a towering crystal-structure Optimus. The final form fully materializes—an imposing crystalline Optimus Prime—standing complete and stable as the residual laser energy fades.
-
-[Maintain Consistency]
-Keep her identity, eye-laser emission, and the exact evolution-to-crystal process stable; the only final entity created is the crystal-structure Optimus, with no added characters or alternate outcomes.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2117869075825332225/img/edm2usuXlYUr39lp.jpg" width="600" alt="Laser Eye Crystal Optimus Evolution">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13516)**
-
-**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2117869379568492932) | **Published:** Nov 4, 2026
-
----
-### Flying Dragons with Stardust
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A video prompt adding tiny pale green and shiny light blue dragons flying slowly with stardust effects.
-
-#### 📝 Prompt
-
-```
-Add one tiny pale green dragon and one shiny light blue dragon flying slowly around   Leaving stardust with each wing beat
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2117853828729217024/img/_UDmHIIc2gMiLSdR.jpg" width="600" alt="Flying Dragons with Stardust">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13548)**
-
-**Author:** [Lindy Hawkinson](https://x.com/HawkinsonLindy) | **Source:** [Link](https://x.com/HawkinsonLindy/status/2117853925177221209) | **Published:** Nov 4, 2026
-
----
-### Grok Imagine Future Ninja Dress Prompt
-
-![日本語](https://img.shields.io/badge/lang-日本語-green)
-
-> An image prompt for Grok Imagine describing a future kunoichi (female ninja) in a black bun hairstyle and neoninja dress against a city backdrop, intended to be animated later.
-
-#### 📝 Prompt
-
-```
-"A future kunoichi standing against a backdrop of a city lined with pink and light purple skyscrapers, wearing a black bun hairstyle and a ninja dress based on cyan and black. Aspect ratio 9:16. No text please 🥷"
-```
-
-<img src="https://cms-assets.youmind.com/media/1793865241306_98do0q_HWQXzhabwAAQF0c.jpg" width="600" alt="Grok Imagine Future Ninja Dress Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13558)**
-
-**Author:** [華月光](https://x.com/hanagekkou) | **Source:** [Link](https://x.com/hanagekkou/status/2117844350847840763) | **Published:** Nov 4, 2026
-
----
-### Grok Bag Armor Transformation
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A prompt for generating a cyberpunk video where a woman's high-tech bag initiates a nanite-based transformation into a full metallic combat armor suit.
-
-#### 📝 Prompt
-
-```
-[Generation Goal]
-Generate a pure cinematic next-level Transformations Sci-Fi cyberpunk sequence in which her bag transforms her into a full metallic combat armor suit. The core subject is the woman, and the principal event is the bag initiating a complete high-tech metamorphosis that ends with her fully clad in advanced metallic combat armor.
-
-[Event Script]
-At the start: A lone woman stands in a rain-slicked neon-drenched cyberpunk alley at night. Towering holographic advertisements and dense vertical architecture glow behind her. She wears a stylish contemporary outfit and carries a sleek high-tech bag on her shoulder. Moody cyan, magenta, and deep purple light reflects off wet pavement and glass.
-
-Principal event: The bag activates with a low-frequency energy pulse. Nanite streams and liquid-metal tendrils erupt from it, rapidly wrapping around her body in a continuous, fluid cascade. The material flows over her skin, limbs, and torso, building layered metallic plates, articulated joints, glowing energy conduits, reinforced plating, and an advanced combat helmet that forms around her head. Sparks of plasma, holographic interface fragments, and volumetric light trails spiral around her as the armor locks into place. Her posture shifts from civilian to combat-ready stance.
-
-At the end: She stands fully transformed in a complete full-body metallic combat armor suit of seamless high-tech plates with glowing cyan energy lines, helmet visor illuminated, the original bag fully integrated and gone. Rain continues to streak across the polished metal surfaces under cinematic neon lighting.
-
-[Visual Style and Mood]
-Pure cinematic next-level Sci-Fi cyberpunk aesthetic. Ultra-detailed metallic surfaces with wet reflections, volumetric god rays cutting through rain and holographic fog, high-contrast neon color grading, anamorphic lens flares, and rich atmospheric depth. The transformation feels powerful, fluid, and inevitable.
-
-[Camera]
-Begins in a dramatic medium-wide shot establishing the alley and the woman. Smooth tracking orbit circles her as the nanites activate, then pushes in tightly to capture the liquid-metal flow across her body. Dynamic low-angle heroic push-in as the final armor plates lock and the helmet seals. Ends on a powerful slow dolly-out revealing the fully armored figure silhouetted against the glowing cityscape.
-
-[Sound]
-Deep sub-bass rumble as the bag activates, layered with sharp metallic morphing and nanite swarm whooshes, crackling energy discharges, and heavy hydraulic plate-locking impacts. Ambient cyberpunk rain, distant traffic, and holographic hums. Ends with a powerful resonant armor-power-up tone and a single sustained cinematic swell.
-
-[Maintain Consistency]
-Keep the single woman as the only subject. The bag is the exclusive source of the transformation and fully integrates into the final armor. Armor is complete, metallic, full-body combat style with no partial coverage. N
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2117832745493897216/img/Xvh3ToZ7O-Hbtjpj.jpg" width="600" alt="Grok Bag Armor Transformation">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13520)**
-
-**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2117832838594896196) | **Published:** Nov 4, 2026
-
----
-### Woman Bag to Optimus
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A prompt for a transformation video where a woman drops her bag, which instantly transforms into an armored Optimus version of herself.
-
-#### 📝 Prompt
-
-```
-[Generation Goal]
-Generate a next-level transformation video of a woman who drops her bag on the ground; the bag suddenly transforms into herself as Optimus.
-
-[Event Script]
-At the start she stands holding the bag, then deliberately drops it onto the ground. The bag hits the surface and immediately begins a dramatic high-energy transformation: it expands, unfolds, metallic plating and mechanical joints emerge, glowing energy lines race across the shifting form, armor panels lock into place, and the bag fully reforms into her exact self as Optimus — standing tall, powerful, fully armored, and ready. At the end she (as Optimus) stands confidently in place of the bag, the transformation complete.
-
-[Maintain Consistency]
-She and her Optimus form remain the same single character throughout; the bag is the sole source of the transformation and completely becomes her Optimus self with no extra objects or ch
+Principal event: She channels and drops intense laser beams from her hand straight down to the ground. The lasers impact and erupt into a massive destructive wave that obliterates everything in the environment—structures shatter, debris flies, surfaces crack and vaporize in bright flashes. Simultaneously, her dress morphs and crystallizes: fabric hardens and reforms into a sleek 

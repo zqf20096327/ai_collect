@@ -41,10 +41,12 @@ are btop's. See [Credits](#credits).
 
 ## Changelog
 
-**v0.1.6 - 2026-11-08**
+**v0.1.8 - 2026-11-15**
 
-- Release firmware is silent on serial; `SERIAL_LOG 1` in `config.h` turns the log back on for troubleshooting
-- Fix three compiler warnings
+- Clock sync never overlaps a metrics request: the NTP query is sent in the gap after a poll
+- `NTP_SERVERS` and `NTP_SYNC_H` in `config.h` (defaults: `pool.ntp.org`, `time.cloudflare.com`, every 12 hours); use a local NTP server on a network without internet
+- If NTP doesn't answer, retry after 1 minute, doubling up to 1 hour
+- Comments on `CONNECT_MS` and `READ_MS` in `config.h`
 
 All releases: [`CHANGELOG.md`](CHANGELOG.md)
 
@@ -113,6 +115,9 @@ Then edit `include/config.h`:
 - Optional settings further down `config.h`: `ROTATE_S`, `POLL_MS`,
   `BRIGHTNESS_PCT` and `SERIAL_LOG` (0 = silent, the default; 1 = serial log
   for troubleshooting).
+- The header clock is set over NTP: `NTP_SERVERS` (default `pool.ntp.org`,
+  then `time.cloudflare.com`) every `NTP_SYNC_H` hours (default 12). On a
+  network without internet, put a local NTP server there.
 - Each entry in `SERVERS` is `{label, host, port}`, and there can be 1–4.
   A `nullptr` label shows the host up to its first dot.
 - Use a host name your router's DNS resolves (`gpu-box.lan`) or an IP

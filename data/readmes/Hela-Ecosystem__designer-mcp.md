@@ -46,6 +46,7 @@ A **Design-Theory-as-a-Service** Model Context Protocol (MCP) server for product
 - **Stitch Canvas & Visual Workflow Integration** — six canonical tools: `stitch_resource` (`get` / `edit` / `delete` / `url`), `stitch_find`, `stitch_create`, `stitch_generate`, `stitch_sync_design_system`, and `stitch_screen_audit`.
 - **Brand Architecture** — the in-tree `brand-architecture` skill maps portfolio relationships, naming hierarchy, identity linkage, migration, governance, and measurement before visual production.
 - **Logo & Brand-Mark Design** — the in-tree `logo-design` skill plus `logo_workflow` with eight actions: audit, library search, renderer inspection, rendering, delivery variants, concept sheets, preview sheets, and presentation boards.
+- **Modern Web Guidance** — the in-tree `modern-web-guidance` skill packages Google's agent workflow for modern HTML, CSS, browser APIs, accessibility, and performance. Its CLI and guidance snapshot are pinned; invoking it requires Node.js 22+ and network access.
 
 ## Tools
 
@@ -310,6 +311,7 @@ skills/
   color-palette-hunter/ # Palette CLI scripts (git submodule)
   motion-designer/      # Motion/physics heuristics (in-tree)
   logo-design/          # Logo/brand-mark design skill (in-tree, origin in ATTRIBUTION.md)
+  modern-web-guidance/  # Modern browser guidance skill (in-tree, pinned upstream)
   brand-architecture/   # Portfolio strategy, naming, governance, and migration (in-tree)
   video/                # Canonical upstream HyperFrames v0.8.77 packages (byte-stable)
 test/

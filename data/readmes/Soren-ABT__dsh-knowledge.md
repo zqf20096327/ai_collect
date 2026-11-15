@@ -67,6 +67,7 @@ dsh plugin --profile <name> add dsh-knowledge
 ### 3. 完成首次配置
 
 1. 点击侧边栏底部、设置旁的“知识库”入口。
+   多个页脚入口自动分配可用宽度，折叠侧边栏时纵向排列图标。桌面壳中的面板在操作按钮上方保留可拖动的标题栏区域。宿主可在文档根元素设置 `--host-titlebar-inset`（或 `--dsh-windows-titlebar-height`）；未提供时，Electron/Tauri 在 macOS 和 Windows 分别预留 38px 和 40px。DOM 全屏或根元素的 `data-fullscreen="true"` 会移除留白。
 2. 新建知识库并导入文件、目录、网页或文本。
 3. 如需本地向量检索，在“设置 > 本地模型”下载 embedding 模型；也可以配置 OpenAI 兼容服务或 Ollama。
 4. 如需识别扫描件，再下载约 21 MB 的 OCR 模型。
@@ -79,7 +80,7 @@ dsh plugin --profile <name> add dsh-knowledge
 
 ```bash
 # GitHub Release 或 npm pack 生成的 tarball
-dsh plugin --profile <name> add ./dsh-knowledge-0.5.3.tgz
+dsh plugin --profile <name> add ./dsh-knowledge-0.5.4.tgz
 
 # 本地源码目录，需要先完成构建
 dsh plugin --profile <name> add file:/path/to/dsh-knowledge
@@ -125,6 +126,7 @@ allowBuilds:
 ### 文档与来源管理
 
 - 创建、重命名、分组和删除知识库；侧边栏支持分组折叠和库间移动。
+- 删除知识库时同时清理其文档记录。启动恢复会清理旧版本删除知识库后遗留的记录，避免反复恢复无主文档；无需手动重建索引。
 - 从文件、绝对路径、目录、URL 或纯文本导入文档。目录来源保留稳定 ID、类型和原始路径，可重新扫描磁盘变化。
 - 批量上传单次最多 20 个文件、单文件最大 22 MB，并使用 5 路后台导入池。
 - 同名冲突由服务端统一检测，可选择重命名、替换或取消；内容哈希用于避免重复导入。
@@ -187,6 +189,7 @@ v0.5.2 已修复 #51：证据和读取片段裁剪不会拆开 emoji 等字符�
 - 模型缓存目录支持原生文件夹选择、打开目录和安全迁移，可把较大的本地权重移出系统盘。
 - Ollama 页面支持查看、拉取、取消和删除模型；浏览或拉取不会隐式更改当前 embedding 配置。
 - 管理面板提供知识库导航、资料表格、批量重建/删除、原文与分块预览、召回测试、全局和每库设置及 Toast 反馈。
+- 启动时的文档产物维护在后台执行，扫描不再阻塞服务就绪。当前、暂存和可恢复任务引用的 revision 均受保护，未使用的 revision 保留七天；升级后无需重建索引。
 
 **v0.5.1 修复（issue #42）：** 本地模型缓存目录的「浏览／打开目录」与 MinerU 安装目录选择兼容 DSH 0.2 的新接口及旧版接口。取消选择保留原输入；宿主缺少对应能力时，缓存目录显示提示，MinerU 隐藏选择按钮，路径仍可手动填写。
 
@@ -275,6 +278,18 @@ HTTP `POST /knowledge/search` 在 `filter` 内接受 `excludeDocIds` 和 `titleE
 - 元数据写入（知识库、文档和全局配置）共用一条写入链；`EPERM`、`EBUSY`、`EACCES` 按 20/50/100/200/400 ms 有界重试，最多写入 6 次。持续 I/O 错误会明确报错并保留之前的元数据。
 - 启动成功加载后，自愈写入失败会警告并跳过其余清理，保留可读取的持久库；后台恢复逐条处理失败，恢复状态写入失败也不会产生未处理的拒绝或中止宿主（#55）。无需格式迁移或禁用 `resumeInterruptedOnStartup`；宿主通用 `rename` 问题仍需上游修复。
 - `knowledge.json` 包含库名、文档记录和配置，不是可随意删除的缓存；仅备份 SQLite 并不完整，备份应同时保留 storage domain 元数据、SQLite 和 `knowledge-raw`。
+
+---
+
+## v0.5.4 更新重点
+
+- **分块质量（#67 / #68）**：过滤已识别的纯标记片段，在同一标题节内合并较短的智能分块，保留字面代码和正文；已完成的空索引不会在每次启动时反复恢复。
+- **启动与删除（#70 / #73 / #74）**：产物清理改为后台执行，最多四个 worker，删除前检查最新 revision，卸载时取消。删除知识库同时清理文档记录，启动恢复会移除旧版本遗留的无主记录。
+- **桌面布局（#69 / #72 / #75）**：标题和关闭按钮避让原生窗口控件，共享页脚入口自动分配宽度，折叠侧边栏时纵向排列图标。
+- **宿主依赖（#71）**：明确声明运行时使用的 `zod` peer dependency，并在发布包检查中验证。
+- **升级方式**：从 0.5.3 升级无需数据库格式迁移或重新下载模型。已有索引保持可用；需要应用新分块规则的文档可手动重建。大量历史无主记录的首次清理仍可能耗时。
+
+[查看 v0.5.4 发布说明](./docs/releases/v0.5.4.md) · [查看 CHANGELOG](./CHANGELOG.md)
 
 ---
 
@@ -493,6 +508,7 @@ dsh-knowledge 的定位是“一体化文档知识库”。下面的对照用于
 
 - **DSH**：在 [DeepSeek Harness](https://github.com/deepseek-ai/DeepSeek-Harness) 提交 `b150a55`（2026.8.21）上开发并验证。若更新版本出现问题，请在 Issue 中附上 DSH 提交号。
 - **Node.js**：`^22.19.0 || >=24.0.0`。
+- **宿主依赖**：DSH 须提供符合 `^4.4.3` peer dependency 声明的 `zod`。源码开发使用上述固定 DSH 兼容提交，保持 Zod 类型一致。
 - **平台**：Windows、Linux x64/arm64、macOS Apple Silicon 支持完整功能。
 - **Intel Mac**：onnxruntime 没有 darwin-x64 二进制，本地 embedding 与 OCR 不可用；可改用远程 OpenAI 兼容服务或 Ollama。
 - **旧 Office 格式**：`.doc`、`.ppt`、`.xls` 依赖 `@firecrawl/anydoc` 的平台原生二进制。

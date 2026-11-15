@@ -24,7 +24,7 @@ on your keys and your machine. No backend, no telemetry, no account.
 <img alt="macOS Apple Silicon" src="https://img.shields.io/badge/macOS%20Apple%20Silicon-2d333b?style=flat-square&logo=apple&logoColor=c9d1d9">
 <img alt="Windows 10" src="https://img.shields.io/badge/Windows%2010-2d333b?style=flat-square&logo=windows&logoColor=c9d1d9">
 <img alt="Built with Tauri v2" src="https://img.shields.io/badge/Tauri%20v2-2d333b?style=flat-square&logo=tauri&logoColor=c9d1d9">
-<img alt="Version 4.0.0" src="https://img.shields.io/badge/v4.0.0-2d333b?style=flat-square">
+<img alt="Version 4.5.0" src="https://img.shields.io/badge/v4.5.0-2d333b?style=flat-square">
 
 <br>
 
@@ -34,19 +34,15 @@ on your keys and your machine. No backend, no telemetry, no account.
 
 <br>
 
-<img src="docs/assets/screenshots/hero.png" alt="HashCortx 3.0 on opening: the app mark, and a start-up list for the runtime, model routing, the interface, the agents and the content security policy" width="100%">
+<table>
+<tr><td width="28%" valign="top"><b>Nothing phones home</b></td><td valign="top">No analytics, no crash reports, no update checks. Every connection is for work you asked for, and <a href="docs/SECURITY.md">SECURITY.md</a> lists each address.</td></tr>
+<tr><td width="28%" valign="top"><b>Every model, side by side</b></td><td valign="top">Twenty-one cloud providers, Ollama, and any local model app that speaks the common chat format, with your own keys. Fully local whenever you want, with a local model kept on your graphics chip and loaded between steps.</td></tr>
+<tr><td width="28%" valign="top"><b>Your documents, searched on your machine</b></td><td valign="top">A local knowledge base (RAG): your PDFs and notes are indexed and searched on this computer, by meaning and by keyword, with the search model built into the app. <a href="#your-documents-a-local-knowledge-base-rag">How</a>.</td></tr>
+<tr><td width="28%" valign="top"><b>An agent that asks first</b></td><td valign="top">Commands, deletions, web pages and anything outside your project wait for your yes. Every file change is a diff you can keep or undo.</td></tr>
+<tr><td width="28%" valign="top"><b>Readable to the last line</b></td><td valign="top">MIT. Vanilla JavaScript and Rust, no bundler, no minified app code.</td></tr>
+</table>
 
-<br>
-
-| | |
-|---|---|
-| **Nothing phones home** | No analytics, no crash reports, no update checks. Every connection is for work you asked for, and [SECURITY.md](docs/SECURITY.md) lists each address. |
-| **Every model, side by side** | Twenty-one cloud providers, Ollama, and any local model app that speaks the common chat format, with your own keys. Fully local whenever you want, with a local model kept on your graphics chip and loaded between steps. |
-| **Your documents, searched on your machine** | A local knowledge base (RAG): your PDFs and notes are indexed and searched on this computer, by meaning and by keyword, with the search model built into the app. [How](#your-documents-a-local-knowledge-base-rag). |
-| **An agent that asks first** | Commands, deletions, web pages and anything outside your project wait for your yes. Every file change is a diff you can keep or undo. |
-| **Readable to the last line** | MIT. Vanilla JavaScript and Rust, no bundler, no minified app code. |
-
-> **Version 4.0.0, shows its work.** Every agent shows what it searched and read, marks the source of each sentence and says what nothing it read supports, and HashCoder works in your git repository. [What is new](https://github.com/Hash-7777/HashCortX/releases/tag/v4.0.0).
+> **Version 4.5.0, kept whole and kept private.** HashCoder keeps every conversation whole and never looks through your own folders unless you ask, a source in a reply opens the page it came from, and chat replies are formatted as they are written. [What is new](https://github.com/Hash-7777/HashCortX/releases/tag/v4.5.0).
 
 ## See it run
 
@@ -87,15 +83,17 @@ From the Hash ecosystem: your music, your Mac's vital signs and its notices in t
 
 ## Seven workspaces
 
-| | |
-|---|---|
-| **Chats** | Every provider in one conversation, with projects, attachments, memory, a local knowledge base, a queue for messages sent while a model works, versions of every edited message and regenerated answer, and agents that show what they searched and read, with the source of each sentence marked |
-| **HashCoder** | A coding agent on your real project: file tree, diffs, terminal, Undo |
-| **Agent Swarm** | Teams of agents on any mix of models, built on a canvas or designed from your task |
-| **3D Forge** | Describe a part, get a dimensioned solid in its own colours. STL, OBJ, 3MF and STEP, in millimetres |
-| **ERP** | Describe your business; its agent builds a working app with records, stages and books, exported as one HTML file |
-| **Finance** | Statements, CSV, PDF and XLSX read into figures, every total and chart worked out by the app |
-| **Sandbox** | Agents that inspect untrusted code for malware, prompt injection and suspicious logic |
+<table>
+<tr><td width="28%" valign="top"><b>Chats</b></td><td valign="top">Every provider in one conversation, with projects, attachments, memory, a local knowledge base, a queue for messages sent while a model works, versions of every edited message and regenerated answer, and agents that show what they searched and read, with the source of each sentence marked</td></tr>
+<tr><td width="28%" valign="top"><b>HashCoder</b></td><td valign="top">A coding agent on your real project: file tree, diffs, terminal, Undo</td></tr>
+<tr><td width="28%" valign="top"><b>Agent Swarm</b></td><td valign="top">Teams of agents on any mix of models, built on a canvas or designed from your task</td></tr>
+<tr><td width="28%" valign="top"><b>3D Forge</b></td><td valign="top">Describe a part, get a dimensioned solid in its own colours. STL, OBJ, 3MF and STEP, in millimetres</td></tr>
+<tr><td width="28%" valign="top"><b>ERP</b></td><td valign="top">Describe your business; its agent builds a working app with records, stages and books, exported as one HTML file</td></tr>
+<tr><td width="28%" valign="top"><b>Finance</b></td><td valign="top">Statements, CSV, PDF and XLSX read into figures, every total and chart worked out by the app</td></tr>
+<tr><td width="28%" valign="top"><b>Sandbox</b></td><td valign="top">Agents that inspect untrusted code for malware, prompt injection and suspicious logic</td></tr>
+</table>
+
+<img src="docs/assets/screenshots/chat.png" alt="Chats: a question about SQLite journal modes answered by an agent that searched the web and read two pages, a comparison table with a numbered source mark after the sentences each source backs, how many sentences come from what it read, and the two sources it read as cards" width="100%">
 
 Plus **Agents**, nine built-in specialists and a builder for your own, **Split**, one prompt answered by two models side by side, and **Connections**: a business system you connect over MCP (Odoo, GitHub, Stripe and Supabase are ready-made), whose key never reaches a page or a model and whose every change asks you first. [How](docs/SECURITY.md#connected-systems).
 
@@ -113,10 +111,11 @@ It works on your real files. Every edit is a diff with **Keep** and **Undo**, te
 - **Keeps what you did not ask to change.** An edit that drops a function, a section or a heading is sent back, and what you say to leave alone is left alone.
 - **Works in your repository.** Its own git tools read the status and the changes, commit when you ask, signed as your commits are, and make a branch, push or pull only after asking you each time, never forced.
 - **Offers a way on when it stops short.** A run that ends stuck, at its limit or with parts of a several-part request still open offers once more with a hint, or a fresh start on a stronger model you have, from your request and what it already did.
-- **Hands off part of a big task, if you switch it on.** New, and not yet proven on real runs, so it is off until you turn it on: a strong model can start sub-agents on the same model, one that reads and reports or one that changes only the files it is given, and HashCortX checks each report before the model reads it.
+- **Hands off part of a big task, if you switch it on.** New, and not yet proven on real runs, so it is off until you turn it on: a strong model can start sub-agents on the same model, and any model at full size can when your request asks for them, one that reads and reports or one that changes only the files it is given, and HashCortX checks each report before the model reads it.
+- **Keeps out of your own folders.** It does not list or search your home folder, Desktop, Documents or Downloads unless your request asks it to look there, and a folder it makes for your request becomes the project.
 - **Asks as much as you choose.** Manual asks before every change and is where it starts; Accept edits writes project files freely; Auto adds a fixed list of read, search and check commands.
 
-<img src="docs/assets/screenshots/coder.png" alt="HashCoder: a run on a local model that added validation to a route, shown as a diff with Keep and Undo, with the passing test run said under the answer" width="100%">
+<img src="docs/assets/screenshots/coder.png" alt="HashCoder after a run on a scripted stand-in model: the request to make npm test pass, the run signal across its checking, reading, changing and checking phases, the answer, the edit to range.js with Keep and Undo, and the receipt saying npm test passed" width="100%">
 
 ## Your documents: a local knowledge base (RAG)
 
@@ -205,7 +204,7 @@ cargo test --manifest-path src-tauri/Cargo.toml --no-default-features     # and 
 Before a pull request, run what CI runs: every source check on Linux, the ones that could depend on the system (`npm run check:windows`) on Windows too, and the Rust tests on all three:
 
 ```bash
-npm run check                                     # 13,017 source checks
+npm run check                                     # 13,166 source checks
 cargo test --manifest-path src-tauri/Cargo.toml   # 267 Rust tests
 ```
 

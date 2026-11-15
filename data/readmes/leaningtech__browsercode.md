@@ -11,7 +11,7 @@
 
 [![Discord server](https://img.shields.io/discord/988743885121548329?color=%235865F2&logo=discord&logoColor=%23fff)](https://discord.gg/8ySMrQv6X)
 [![Issues](https://img.shields.io/github/issues/leaningtech/browsercode)](https://github.com/leaningtech/browsercode/issues)
-![Version](https://img.shields.io/badge/version-1.3.0-blue)
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
 
   <h1>Run AI coding CLIs and frameworks in the browser</h1>
 
@@ -38,14 +38,14 @@ BrowserCode is a browser-based coding sandbox. It's a working example of [Browse
 - A browser-contained, POSIX-like filesystem
 - Command line tools: bash, git, npm, pnpm, curl, ripgrep and fd
 - Browser sandbox isolation from the user's operating system
-- Restricted outbound networking: HTTPS only, to an allowlist that includes the npm registry, Yarn 2+, GitHub (`github.com` and `raw.githubusercontent.com`) and the major AI provider APIs
+- Restricted outbound networking: only to an allowlist that includes the npm registry, Yarn 2+, GitHub (`github.com` and `raw.githubusercontent.com`) and the major AI provider APIs
 - Instant previews over URL via BrowserPod's portal function
 - Support for Vite, Express.js, Svelte, Next, Nuxt, React and Vue (with Wasm overrides)
 - Java projects compiled and run in the browser by [CheerpJ](https://cheerpj.com/), in their own Java playground and through embeds
 
 BrowserCode started out as a way to run AI coding CLIs entirely client-side. It's since grown into a full IDE: alongside the CLIs, it can boot and preview web frameworks directly in the browser, so you can prototype an agent's output without ever leaving the tab.
 
-BrowserCode 1.3.0 is our latest beta release. It runs a full code editor, development environment, and unmodified versions of Claude Code, Codex CLI and Pi, completely client-side.
+BrowserCode 2.0.0 is our latest beta release. It runs a full code editor, development environment, and unmodified versions of Claude Code, Codex CLI and Pi, completely client-side.
 
 <h2 id="quickstart">Quickstart</h2>
 
@@ -130,7 +130,8 @@ This is BrowserCode beta. Don't be kind to it. Stretch it, bend it, find out wha
 - At launch, each agent is given an instructions file (`CLAUDE.md` for Claude Code, `AGENTS.md` for Codex CLI and Pi) so it understands it is running in a custom environment. However, it may first attempt its default behavior before referencing the file
 - Pi is installed from npm on its first launch. For Anthropic, pick **Copy code login** in `/login`: the default browser login redirects to a `localhost` callback that can't reach the pod
 - BrowserCode doesn't yet support native binaries. For more information, see the [BrowserPod documentation](https://browserpod.io/docs/guides/working-around-native-npm-dependencies)
-- Outbound connections are HTTPS-only (port 443) and limited to the allowlist: plain HTTP, SSH (so `git@github.com` remotes) and other ports are refused, and so is `localhost` from inside a pod. Portals still expose servers you start in a pod
+- Templates install and run with pnpm. A cloned repo uses pnpm when its `packageManager` names pnpm, a dependency uses the `workspace:` protocol, or `pnpm-workspace.yaml` sits at the clone root, and npm otherwise. Either way, BrowserCode swaps `esbuild` and `rollup` for their WebAssembly builds where that package manager reads overrides: `overrides` in `package.json` for npm, and `overrides` in `pnpm-workspace.yaml` for pnpm, which ignores the `package.json` field. Add your own overrides in the same place
+- Outbound connections only reach allowlisted hosts; anything else fails to resolve. HTTP, HTTPS, SSH (so `git@github.com` remotes, given a key) and other ports all work to allowed hosts. A pod can reach its own servers on `localhost`, servers must bind `0.0.0.0`. Portals expose servers you start in a pod
 - Agents and Node.js projects require WebAssembly JSPI: Chrome and Edge 137+, Firefox 153+ or Safari 27+. They also don't run on iOS or iPadOS yet, on any browser. Java projects run on CheerpJ and need neither. For maximum compatibility, please use a Chromium browser on the desktop
 
 <h2 id="roadmap">Roadmap</h2>

@@ -44,11 +44,12 @@ browser_navigate {"url":"http://localhost:3000"}
 scan_page {"annotateScreenshot":true}
 audit_keyboard {"maxTabs":30}
 audit_screen_reader {}
+audit_text_spacing {}
 ```
 
 These are MCP tool calls, not shell subcommands. For terminal use, see [interactive mode](#interactive-repl-interactive-subcommand).
 
-`scan_page` returns text findings with JSON node details and remediation links. With `annotateScreenshot: true`, it also saves a full-page annotated PNG and returns a file resource link. It does **not** save a JSON report. `audit_keyboard` and `audit_screen_reader` save JSON reports and return summaries and report links; `audit_site` and `scan_page_matrix` also save JSON reports. There is no generated HTML report dashboard. Review incomplete checks, coverage warnings and the page states you haven't tested.
+`scan_page` returns text findings with JSON node details and remediation links. With `annotateScreenshot: true`, it also saves a full-page annotated PNG and returns a file resource link. It does **not** save a JSON report. `audit_keyboard`, `audit_screen_reader` and `audit_text_spacing` save JSON reports and return summaries and report links; `audit_site` and `scan_page_matrix` also save JSON reports. There is no generated HTML report dashboard. Review incomplete checks, coverage warnings and the page states you haven't tested.
 
 To reproduce the screenshot, serve the demo from this repository with `python3 -m http.server 8765 --bind 127.0.0.1 --directory docs/assets`, navigate to `http://127.0.0.1:8765/accessibility-demo.html`, then run `scan_page` with `annotateScreenshot: true`. The screenshot used a 1000×720 viewport (`--viewport-size 1000,720`).
 
@@ -430,7 +431,7 @@ Use `--timeout-settle` or `PLAYWRIGHT_MCP_TIMEOUT_SETTLE` to override the post-a
 
 Use `--timeout-idle 300000`, `timeouts.idle`, or `PLAYWRIGHT_MCP_TIMEOUT_IDLE` to release the default browser after five idle minutes. Shared contexts stay open while any client is working; the idle window starts after the last tool call or download finishes. Explicit recordings prevent idle release until `browser_stop_recording` finishes; passive `--save-session` capture does not. Cleanup finalizes traces. The next browser tool call reopens the connection and includes a note to navigate again and refresh element references. Attached CDP, extension, and VS Code browsers are disconnected; their external pages remain open. Close and session-management tools do not relaunch an idle browser. Explicit `browser_session_open` handles keep their separate `PLAYWRIGHT_MCP_BROWSER_SESSION_TTL_MS` behavior. Zero disables this feature; blank environment values leave the existing configuration unchanged.
 
-The VS Code `browser_connect` tool accepts only `playwright` or `playwright-core` libraries and loopback WebSocket URLs. Set `PLAYWRIGHT_MCP_VSCODE_ALLOW_REMOTE=1` to allow remote endpoints, which must use `wss:`. URL userinfo credentials are rejected.
+The VS Code `browser_connect` tool accepts only `playwright` or `playwright-core` libraries and loopback WebSocket URLs. `connectionString` and `lib` are optional strings; to disconnect, omit them rather than sending `null`, which is rejected as invalid input. Set `PLAYWRIGHT_MCP_VSCODE_ALLOW_REMOTE=1` to allow remote endpoints, which must use `wss:`. URL userinfo credentials are rejected.
 
 #### HTTP Heartbeat
 
@@ -730,6 +731,44 @@ decomposed spellings such as `Café` are treated consistently.
 3. Review the accessibility findings and open the generated JSON report path
 ```
 
+#### `audit_text_spacing`
+Stress-tests the current page against WCAG 1.4.12 Text Spacing (AA). It applies the four user overrides the criterion requires content to survive, compares text geometry before and after, and reports text that ends up hidden or colliding. It then removes the overrides, so the page is left as it was. Tools like ARC Toolkit and the text-spacing bookmarklet inject the same CSS and leave the judgement to a person. This tool measures the result instead.
+
+**Overrides applied** (the values of the common text-spacing bookmarklet): `line-height: 1.5`, `letter-spacing: 0.12em`, `word-spacing: 0.16em` on every element, and `margin-bottom: 2em` on paragraphs.
+
+**Checks**
+- `text-clipped`: text that the overrides newly hide behind an `overflow: hidden`/`clip` or paint-containment box (including `content-visibility: auto`; overflow on plain inline boxes, which does not clip, is ignored), such as a fixed-height card, a fixed-width button or a one-line `text-overflow: ellipsis` label. Each finding names the element, how much of its text is hidden before and after (`hiddenPercentBefore`, `hiddenPercentAfter`), and the box that cuts it off (`clippedBy`) with the styles responsible: `overflow`, `height`/`max-height`, `width`/`max-width`, `white-space`, `text-overflow` and `-webkit-line-clamp`. The fix text points at that box.
+- `text-overlap`: text of two different elements that overlaps after the overrides but did not before, typically absolutely positioned labels or text in fixed-height rows spilling into the next one.
+
+**Parameters:**
+- `maxElements` (default `1000`, max `5000`): visible text elements measured per frame. Hidden elements (`display: none`, `visibility: hidden`, `opacity: 0`) never count toward it. Elements past the cap are reported as truncated.
+- `maxFindingsPerCheck` (default `20`): findings listed per check; the full counts are always reported.
+- `screenshot` (default `false`): also save a full-page PNG taken while the overrides are applied, returned as a resource link.
+- `reportFile`: JSON report file name (default `audit-text-spacing-{timestamp}-{token}.json`).
+
+**How it measures:** the visible text of each element (including text of `display: contents` elements, which renders in its parent's box) is measured as text line boxes (DOM `Range` rects) and intersected with every clipping ancestor, before and after the overrides, in a single pass inside the page. Clipping ancestors follow the containing-block chain: an absolutely positioned box is clipped only by `overflow` on its containing block and that block's own clipping ancestors, not by an `overflow: hidden` wrapper it escapes, and a fixed box only by ancestors that contain it (a transform, filter, layout/paint containment or `content-visibility`). Every line is checked for clipping. Overlap is compared on the first 200 painted lines of each element; an element with more than that before or after the overrides is counted once in a warning and in `elementsOverlapLinesTruncated`. Only text the overrides *newly* hide is reported: a finding needs at least 2 percentage points more of the element's text hidden, and at least a quarter of a glyph's area. Visually hidden text (a 1px `sr-only` box) and text that was already overlapping are therefore not reported. Text that was already partly truncated is reported only when the overrides hide noticeably more of it; `hiddenPercentBefore` shows how much was cut off already. Wrapping, taller boxes and a new scrollbar are not failures: `overflow: auto`/`scroll` boxes keep their content reachable, so they are not treated as clipping. Lines scrolled out of such a box are not painted outside it either, so they are not compared for overlap with the content around it. This holds for paint-contained boxes too (`contain: paint`, `content-visibility: auto`): with `overflow: auto`/`scroll` their content stays reachable, so only a non-scrolling paint-contained box counts as clipping.
+
+The overrides are applied as a constructed stylesheet (`adoptedStyleSheets`) in a uniquely named cascade layer, adopted by the document and every open shadow root. This means:
+- A page Content-Security-Policy that blocks inline `<style>` does not stop them.
+- They win over the page's own unlayered `!important` rules, whatever their specificity.
+- They cannot win over an inline `style="... !important"` or an `!important` rule in a cascade layer the page declared earlier. Rather than measure those elements as if the overrides had applied, the tool reports them under a `WARNING: the overrides did not take effect` line and in `overridesNotApplied` in the JSON report. Treat this as a gap in the audit's coverage, not a finding: the tool's stylesheet is author-level, and a user stylesheet's `!important` rules outrank author `!important`, so users may still be able to adjust spacing there.
+- Paragraph spacing is verified on every rendered `<p>`, including paragraphs whose text sits only in child elements.
+
+Every frame is measured, cross-origin iframes included, at most four at a time with a 15 s budget for the main frame and 5 s per child frame. A frame that cannot be measured is listed in a warning and in `frames.unmeasured`, and contributes no findings. If the main frame cannot be measured, or the page has no visible text at all, the tool fails instead of reporting a clean page. If the overrides cannot be removed from a frame afterwards, the result says so and asks you to reload. Overlapping `audit_text_spacing` calls on the same page run one after another, so one call never takes another's spaced page as its baseline.
+
+**What it deliberately does not detect**
+- Lost *meaning or function* beyond clipping and overlap: a control pushed under a sticky header, a menu that no longer opens, text that is technically visible but has become unreadable. A result with no findings is "no clipped or overlapping text detected", not a WCAG 1.4.12 pass, so look at the `screenshot` as well.
+- Clipping by the viewport itself (`overflow: hidden` on `html`/`body`, which propagates to the viewport), `clip-path` and masks, and text inside form controls (`<input>`/`<textarea>` values), `<svg>`, `<canvas>` and closed shadow roots.
+- Layout that page scripts would only adjust later: measurement waits two animation frames after applying the overrides, which covers `ResizeObserver` callbacks, but not timers or network-driven re-layout.
+- Shadow DOM selectors are written `host-selector >>> inner-selector`: each part is a CSS path within its own tree. Playwright CSS locators pierce open shadow roots, so the inner part alone usually works as a locator.
+
+**Example flow:**
+```text
+1. Navigate to the target page and let it fully load
+2. Run audit_text_spacing (add screenshot: true to see the page with the overrides applied)
+3. Fix the box named in each finding's clippedBy (min-height instead of height, allow wrapping) and re-run until it reports no findings
+```
+
 ### Navigation Tools
 
 #### `browser_navigate`
@@ -831,73 +870,4 @@ Inspection text is **not JSON**. Clients must not assume every result can be pas
 Take a screenshot of the current page.
 - Parameters: `filename` (optional), `type` (`png`, `jpeg`, or `webp`), `scale` (`css` or `device`, default `css`), `fullPage` (optional), `element`/`ref` pair (for element screenshots)
 - `scale: device` captures a high-resolution screenshot using device pixels (accounts for the device pixel ratio); `scale: css` keeps the image sized in CSS pixels.
-- An empty capture is an error, and its output file is removed, including automatically named files. The requested format is never silently changed. If a WebP capture is empty, reduce its dimensions or explicitly request PNG/JPEG.
-
-#### `browser_pdf_save`
-Save page as PDF.
-- Parameters: `filename` (optional, defaults to `page-{timestamp}-{token}.pdf`)
-
-Enable this tool with `--caps pdf` or `--allowed-tools browser_pdf_save`.
-
-#### `browser_install`
-Install the configured browser engine (use when browser executable is missing).
-- Parameters: none
-- A completed install reports `Browser <channel> installed successfully.` even when no tabs are open.
-
-Disabled by default. Enable it at server startup with `--caps install`, `PLAYWRIGHT_MCP_CAPS=install`, or `"capabilities": ["install"]` in the config file. Exact-name opt-in via `--allowed-tools browser_install` or `allowedTools` is also supported. Explicit `core-install` settings remain supported as a deprecated alias; use `install` in new configurations. Without this opt-in, the tool is neither listed nor callable; existing browser installations can still be used.
-
-On Windows, Chrome stable/beta installation first queries the native OS
-architecture through PowerShell, with a thirty-second timeout. ARM64 installations
-are refused because Playwright 1.65.0 selects an x64 MSI. Failed or unrecognized
-architecture detection also refuses installation. This does not install native
-ARM64 Chrome: provision it separately, then select its executable with
-`--executable-path` or `browser.launchOptions.executablePath`. Browser channels
-and existing installations are not changed automatically.
-
-This tool invokes Playwright's installer, which downloads executable code. In [Playwright 1.65.0](https://github.com/microsoft/playwright/blob/v1.65.0/packages/playwright-core/src/server/registry/oopDownloadBrowserMain.ts), browser archives still have no checksum or signature verification before extraction; the default download hosts use HTTPS. Only enable installation when you trust the download source and TLS configuration, including any custom `PLAYWRIGHT_DOWNLOAD_HOST`, browser-specific host overrides, or TLS-inspecting proxy. Do not disable TLS certificate validation.
-
-For deployments that require independently verified binaries, provision the browser through your trusted deployment process and use `--executable-path` or an existing browser connection. The capability opt-in limits MCP-triggered installation; it does not add archive verification or change manual, CI, or Docker build downloads.
-
-### Browser Management
-
-#### `browser_close`
-Close the page.
-
-#### `browser_resize`
-Resize the browser window.
-- Parameters: `width`, `height`
-
-#### `browser_emulate_media`
-Emulate CSS media features on the current page without resetting omitted features.
-- Parameters: `colorScheme` (`light` or `dark`), `reducedMotion` (`reduce` or `no-preference`), `forcedColors` (`active` or `none`), `contrast` (`more` or `no-preference`), and `media` (`screen` or `print`); provide at least one.
-
-### Tab Management
-
-#### `browser_tabs`
-Manage browser tabs in one tool.
-- Parameters: `action` (`list`, `new`, `close`, `select`), optional `index` (for `close` and `select`), and optional `isolatedContext` (upstream `@playwright/mcp` compatibility).
-- Only `"default"` (or omitting `isolatedContext`) is accepted; other names are rejected rather than ignored. For a separate browser context, use [Browser Session Tools](#browser-session-tools): call `browser_session_open` and pass the returned `browserSessionId`.
-- If the browser context closes during tab creation, the request fails. Late-created pages receive bounded close attempts that verify whether the target closed; an unresponsive target cannot hold shutdown indefinitely.
-
-### Browser Session Tools
-
-Following the MCP 2026-07-28 stateless prescription, browser state can be named by an explicit server-minted handle instead of living implicitly in the connection. Every built-in browser tool except the two session tools accepts an optional `browserSessionId` argument; when it is omitted, the tool runs in the default session and behaves exactly as before. Dynamic `webmcp_*` tools instead use request metadata for routing, as described above, so page arguments are not overwritten.
-
-#### `browser_session_open`
-Opens a separate browser session — its own browser context with its own tabs, cookies and storage — and returns its opaque handle (`bs_...`) both in the result text and as `structuredContent.browserSessionId`. Pass that handle as the `browserSessionId` argument of other browser tools to run them in this session.
-
-How the separate context is provided depends on the mode:
-
-- **Default persistent-profile mode**: each session runs in its own fresh, disposable profile (removed when the session closes or expires); only the default session uses the stable persistent profile, whose sign-in state keeps surviving restarts. This is required — one profile directory can back only one running browser at a time.
-- **`--isolated`, remote endpoints, and CDP/`--cdp-launch` with `--isolated`**: each session gets its own fresh browser context. In `--cdp-launch` mode each context launches its own instance of the configured application on its own free port — which is why combining `--cdp-launch-port` with `--isolated` also rejects `browser_session_open`: a pinned port can serve only one launched instance, so a second session would silently attach to the first session's application. A second concurrent browser context on the pinned port (e.g. from a parallel client) is likewise rejected with an error rather than attaching to the first context's application.
-- **Modes that reuse one live browser context** — CDP attach or `--cdp-launch` without `--isolated`, `--extension`, the VS Code bridge, and servers created with a custom context getter — cannot create a separate context, so `browser_session_open` is rejected with an explanation instead of handing out a handle that would share the same tabs, cookies and storage as everything else. The same applies in the default mode when `--user-data-dir` pins all browsing to one user-supplied profile.
-
-In `--vscode` serving, browser sessions are host-scoped: `browser_session_open`, `browser_session_close`, and every call carrying a `browserSessionId` always run against the default provider's session registry at the host, regardless of any `browser_connect` provider switch. A handle opened before a switch keeps working (and can be closed) while the proxy is switched to a VS Code-connected browser, and a session opened while switched is created by the default provider — the VS Code-connected browser itself reuses one live context and cannot host separate sessions. Only session-less tool calls follow the switch.
-
-After returning to the default provider, list tools again to refresh the available actions and receive its catalog-change notifications. Pending listings from the previous host-session client cannot replace that subscription.
-
-#### `browser_session_close`
-Closes a session opened with `browser_session_open` and releases its browser resources.
-- Parameters: `browserSessionId` (the handle to close)
-
-Closin
+- An empty capture is an error, and its output file is removed, including au

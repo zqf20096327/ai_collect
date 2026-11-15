@@ -1,6 +1,6 @@
 > [!TIP]
-> ### 🎉 Ambient Calculator will continue to maintain!
-> Ambient-Calculator remains under active maintenance and development.
+> ### 🎉 Thank you for 100 downloaders!!
+> As the maintainer, I deeply appreciate everyone who has taken the time to try out and use my apps. Thank you for your support!
 
 <br><br>
 

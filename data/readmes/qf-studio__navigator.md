@@ -5,7 +5,7 @@
 Sessions that last. AI that learns. Features that ship.
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-8.4.13-blue.svg)](https://github.com/qf-studio/navigator/releases)
+[![Version](https://img.shields.io/badge/version-8.6.0-blue.svg)](https://github.com/qf-studio/navigator/releases)
 
 ---
 
@@ -242,6 +242,7 @@ from the plugin root. Setup and tuning: `.agent/sops/integrations/typesafe-judge
 "Run until done: add dark mode"           → Loop mode completion
 "Deep research on WebGPU browser support"  → Cited report + graph memories
 "Show roadmaps"                            → Every roadmap doc as one table, stale flags
+"Route report"                             → Goal, roadmap with ticket state, queue, what waits for you
 "Enable judge"                             → Typed Jev judgments behind the prompt gates
 "adhd mode on"                             → Replies shaped for you, across repos
 /nav                                       → Live pane: context, cost, rejects, next leg

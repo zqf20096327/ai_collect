@@ -136,7 +136,7 @@ binaries are built with `--features full`. Cargo features add the rest:
 | Feature | Adds |
 |---|---|
 | `tui` | The terminal dashboard (bare `tokenix`). Implies `forensics` and `authoring` |
-| `forensics` | `usage`, `discover`, `conversation-audit`, `prompt-audit`, `session-audit`, `egress-audit`, `benchmark` |
+| `forensics` | `usage`, `discover`, `facts`, `conversation-audit`, `prompt-audit`, `session-audit`, `egress-audit`, `benchmark` |
 | `authoring` | `filter generate` and `filter record` |
 | `agents-extra` | `install-hook` / `remove-hook` for Copilot, Codex, OpenCode, Antigravity and `mcp` |
 | `full` | All of the above |
@@ -227,10 +227,15 @@ $ tokenix blast            # vs HEAD; use --since origin/main for a branch
 
 ### 5. When you need the raw output
 
-- A clipped successful run ends with `[tokenix: N bytes not shown — tokenix retrieve <key> …]`.
-  `tokenix retrieve <key>` prints the exact original bytes.
+- A clipped successful run ends with `[tokenix: N bytes not shown — tokenix retrieve <key> (--lines N-M / --grep PAT)]`.
+  `tokenix retrieve <key>` prints the exact original bytes, or pull only what you
+  need (`--lines 10-40`, `--head 30`, `--tail 30`, `--grep error`).
 - A failed run tees its full output, with credentials masked, to `~/.tokenix/tee/`,
   and prints the path.
+- A command that fails three times with the same output gets one extra stderr line
+  saying so (`[tokenix: this command has failed 3 times in 2m with the same output …]`).
+  The failure text is still printed in full; the line only states what already
+  happened. Turn it off with `TOKENIX_LOOP_GUARD=0`.
 - `tokenix run --raw "cmd"` (or `TOKENIX_RAW=1`) passes output through byte for byte.
   Use it when a script parses the output.
 - `TOKENIX_DISABLED=1 <cmd>` bypasses the hook for one command.
@@ -271,15 +276,15 @@ format.
 
 | Agent | Install | Integration | Guide |
 |---|---|---|---|
-| **Claude Code** | `tokenix install-hook --tool claude-code` | `PreToolUse` hook in `settings.json` | [docs/agents/claude-code.md](docs/agents/claude-code.md) |
-| **OpenAI Codex CLI** | `tokenix install-hook --tool codex` | `PreToolUse` hook for commands + `tx-read`/`tx-symbols` helpers | [docs/agents/codex.md](docs/agents/codex.md) |
+| **Claude Code** | `tokenix install-hook --tool claude-code` | `PreToolUse` + `PostToolUse` secret-redaction hooks in `settings.json` | [docs/agents/claude-code.md](docs/agents/claude-code.md) |
+| **OpenAI Codex CLI** | `tokenix install-hook --tool codex` | `PreToolUse` + `PostToolUse` hooks + `tx-read`/`tx-symbols` helpers | [docs/agents/codex.md](docs/agents/codex.md) |
 | **GitHub Copilot** | `tokenix install-hook --tool copilot` | `PreToolUse` + `PostToolUse` hooks; `--local` commits them to `.github/` | [docs/agents/copilot.md](docs/agents/copilot.md) |
 | **Antigravity** | `tokenix install-hook --tool antigravity` | Native plugin | [docs/agents/antigravity.md](docs/agents/antigravity.md) |
-| **OpenCode** | `tokenix install-hook --tool opencode` | MCP server only | [docs/agents/opencode.md](docs/agents/opencode.md) |
+| **OpenCode** | `tokenix install-hook --tool opencode` | Dual V2 `setup` + V1 `server` plugin (`plugins/tokenix.ts`) + `mcp.servers.tokenix` (global or `--local`) | [docs/agents/opencode.md](docs/agents/opencode.md) |
 | **Any MCP client** | `tokenix mcp` | MCP server with six structure tools: `tokenix_symbols`, `tokenix_graph` (callers · callees · impact · flow), `tokenix_blast`, `tokenix_modules`, `tokenix_deps`, `tokenix_tokenmap`. They return locations and diagrams, never code, and never search contents |
 
-`tokenix install-hook --tool all` wires every agent except OpenCode. OpenCode's
-registration lives in the repository, so you have to ask for it explicitly.
+`tokenix install-hook --tool all` wires every agent globally (use `--local` with
+Copilot or OpenCode to install into the current repository instead).
 `tokenix remove-hook --tool <agent>` undoes the install.
 
 ---
@@ -377,6 +382,10 @@ has the full evidence review.
   next release.
 - **Your mileage depends on your codebase and your agent.** `tokenix gain` shows
   what happened on your machine.
+- **The loop note and `tokenix facts` are not measured here.** Both adapt
+  mechanisms from TokenEconomizer ([arXiv:2610.22732](https://arxiv.org/abs/2610.22732)),
+  which reports cost reductions for its own, model-assisted versions. tokenix ships
+  only the rule-based share and has not run an A/B on it, so no saving is claimed.
 
 </details>
 
@@ -402,7 +411,7 @@ has the full evidence review.
 | `tokenix modules` | Functional modules found by community detection over the symbol graph (`--top`, `--format text\|json\|mermaid\|dot`) |
 | `tokenix blast` | Blast radius of the current diff: changed symbols and everything that calls them (`--since REF`, `--depth`, `--json`) |
 | `tokenix pack` | Budgeted repo pack for tools without hooks (`--mode/--profile`, `--changed`, `--token-map`) |
-| `tokenix retrieve KEY` | Print the exact original output behind a `[tokenix: ...]` marker |
+| `tokenix retrieve KEY` | Recover stashed raw output behind a `[tokenix: ...]` marker, full or sliced (`--lines A-B`, `--head N`, `--tail N`, `--grep PAT`) |
 
 ### 🧑 Commands you run
 
@@ -414,10 +423,11 @@ has the full evidence review.
 | `tokenix install-binary` | Copy the running executable to a per-user bin dir and put it on PATH |
 | `tokenix update` | Check for, install, or toggle automatic updates from GitHub releases (`--check`, `--auto`, `--enable-auto`, `--disable-auto`) |
 | `tokenix doctor` | Diagnose the install: filter inventory, filter config and recording state |
-| `tokenix gain` | Tokens removed, split by source (command filters vs Grep cap), plus session shape. Dollar estimates only with `--cost-estimate` / `--economics` |
+| `tokenix gain` | Tokens removed, split by source (command filters vs Grep cap), holdout control counts, and session shape. Dollar estimates only with `--cost-estimate` / `--economics` |
 | `tokenix discover` | Replay current filters over past agent output: recoverable savings plus uncovered commands (`--agent`, `--top`, `--json`) |
+| `tokenix facts [PATH]` | Environment facts this repo's sessions keep rediscovering by failing at them (`pytest` not on PATH, `python -m pytest` works). Needs the failure in 3 sessions; retires when the bare tool works again. Report only: `--md` prints lines to paste into `AGENTS.md` / `CLAUDE.md` (`--min-sessions`, `--since-days`, `--agent`, `--all-projects`, `--json`) |
 | `tokenix trust` / `untrust` | Approve (SHA-256 pinned) or revoke this repo's executable inputs (`--status`) |
-| `tokenix usage` | Absolute token spend and ≈USD from agent transcripts (`daily\|weekly\|monthly\|session\|model\|project\|blocks`, `--all-projects`, `--statusline`, `--json`) |
+| `tokenix usage` | Absolute token spend and ≈USD from agent transcripts (`daily\|weekly\|monthly\|session\|model\|project\|blocks`, `--all-projects`, `--statusline`, `--json`). Cache writes are priced by lifetime: 1.25x input for the 5-minute cache, 2x for the 1-hour one |
 | `tokenix stats` | Index statistics (files, chunks, tokens, age) |
 | `tokenix tokenmap` | Directory tree weighted by token count, heaviest paths first (`--format html`) |
 | `tokenix benchmark` | Reproducible token-reduction benchmark, vanilla vs tokenix (`--json`) |
@@ -463,6 +473,7 @@ prints plain text instead of opening the dashboard.
 | `TOKENIX_HOME` | Absolute path that replaces `~/.tokenix` (indexes, hook log, trust store, recall stash). Relative values are ignored. Useful for CI and throwaway runs |
 | `TOKENIX_DISABLED=1` | Bypass the hook for one command |
 | `TOKENIX_RAW=1` | Same as `tokenix run --raw` |
+| `TOKENIX_HOLDOUT` | Sampling rate (`0.0`–`1.0` or `true`) that logs a pass-through control group (`action="holdout"`) so you can measure real turn/cost deltas |
 | `TOKENIX_MAX_OUTPUT_TOKENS` | Global output ceiling (default 8000, `0` disables) |
 | `TOKENIX_BRANCH_AWARE=true` | One SQLite DB per git branch |
 | `TOKENIX_GREP_HEAD_LIMIT` | `head_limit` injected into unbounded Grep (default 100, `0` disables) |
@@ -471,6 +482,7 @@ prints plain text instead of opening the dashboard.
 | `TOKENIX_DEDUP=0` · `TOKENIX_DEDUP_MIN_TOKENS` · `TOKENIX_DEDUP_TTL` | Cross-call dedup of identical output (defaults: on, 200 tokens, 3600 s; scoped to the project) |
 | `TOKENIX_READ_DEDUP=0` · `TOKENIX_READ_DEDUP_TTL` · `TOKENIX_READ_DEDUP_MIN_TOKENS` | Re-read suppression (defaults: on, 900 s, 1500 tokens; scoped to the agent session) |
 | `TOKENIX_TEE=0` | Do not tee failed-command output to `~/.tokenix/tee/` |
+| `TOKENIX_LOOP_GUARD=0` · `TOKENIX_LOOP_THRESHOLD` · `TOKENIX_LOOP_TTL` | Failure-loop note on `tokenix run` (defaults: on, 3 identical failures, 1800 s; scoped to the project and the command) |
 | `TOKENIX_AUTO_UPDATE=1\|0\|notify` | Control auto-update behavior (`1`/`install` auto-updates in background; `0` disables checks) |
 | `TOKENIX_NO_UPDATE=1` | Disable all update checks and auto-updates |
 
@@ -556,7 +568,10 @@ trust`) → `~/.tokenix/filters` → bundled. Every bundled filter ships **at le
 embedded golden cases**, and CI also enforces the rules below.
 
 - **Failures are never masked.** A non-zero exit suppresses success messages, and a
-  filter that could empty a failure payload must keep the failure markers.
+  filter that could empty a failure payload must keep the failure markers. Priority
+  error/failure lines also survive medium (`101–200`-line) generic truncation.
+- **Progress spinners collapse cleanly.** Bare `\r` terminal redraws keep only the
+  final frame while CRLF (`\r\n`) line endings are left intact.
 - **Never worse.** A filtered result never costs more bytes than the raw output.
 - **Every regex compiles.** An invalid pattern would silently disable its rule;
   CI fails on one in a bundled filter, and `tokenix doctor` lists them in yours.
@@ -632,11 +647,11 @@ truncated.
   - `tokenix filter generate`, which sends your recorded (redacted) output to an AI
     CLI **you** have installed, and asks before it re-runs any command.
 - **Repositories are untrusted by default.** A repo's `.tokenix/filters`,
-  `.tokenix/secret-rules`, `.tokenix/egress-rules`, `.mcp.json`, `opencode.json` and
-  `.vscode/mcp.json` are ignored until `tokenix trust` pins their SHA-256, and any
+  `.tokenix/secret-rules`, `.tokenix/egress-rules`, `.mcp.json`, `opencode.json`,
+  `opencode.jsonc` and `.vscode/mcp.json` are ignored until `tokenix trust` pins their SHA-256, and any
   edit revokes that trust. A cloned repo cannot change what your agent sees, blind
   the secret scanner or make `prompt-audit` spawn a server of its choosing.
-  User-scoped configs (`~/.claude.json`, `~/.codex/`) are yours and are not gated.
+  User-scoped configs (`~/.claude.json`, `~/.codex/`, `~/.config/opencode/`) are yours and are not gated.
 - **Credentials are masked before anything is saved.** The hook log, the failure
   tee and recordings go through one redactor, and `~/.tokenix` is owner-only (`0600`). The recall stash is the deliberate exception:
   `tokenix retrieve` must return the exact original bytes, so it relies on file
@@ -657,7 +672,7 @@ truncated.
 | The agent still reads whole files | By design: tokenix never intercepts `Read`. The agent can call `tokenix read` or `tokenix symbols` itself. |
 | A symbol I just wrote is missing | It should not: edits are re-chunked before each command. If more than 25 files changed, run `tokenix index` (or raise `TOKENIX_AUTO_REFRESH_MAX`). |
 | A repo filter is ignored | Run `tokenix trust --status`. Repo filters need `tokenix trust`, and an edit revokes it. |
-| Output was cut and I need all of it | Run `tokenix retrieve <key>` from the `[tokenix: ...]` marker, or `tokenix run --raw`. |
+| Output was cut and I need all or part of it | Run `tokenix retrieve <key>` (or `--lines N-M` / `--grep PAT`) from the `[tokenix: ...]` marker, or `tokenix run --raw`. |
 | First index is slow or the machine stalls | Use `tokenix index --cpu-profile low`. |
 | Offline or air-gapped | Nothing to download: the only network use is the self-updater (`TOKENIX_NO_UPDATE=1` disables it). |
 | Remove everything | `tokenix remove-hook --tool all`, then delete `~/.tokenix` (or your `TOKENIX_HOME`). |

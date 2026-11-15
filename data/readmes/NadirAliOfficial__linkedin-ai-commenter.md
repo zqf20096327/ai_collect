@@ -1,23 +1,11 @@
-# LinkedIn AI Commenter
+# LinkedIn Comment Assistant
 
-AI-powered Chrome extension that generates context-aware LinkedIn comments using a local Ollama model.
+A Chrome extension that drafts short comments from LinkedIn post text using the Groq API. It inserts a draft into the comment box; review and post it yourself.
 
-## Features
-- Reads the LinkedIn post content automatically
-- Generates relevant, professional comments
-- One-click comment insertion
-- Runs fully local — no data leaves your machine
+## Setup
 
-## Requirements
-- Ollama running locally (`ollama serve`)
-- A supported model (e.g., `llama3`, `mistral`)
+1. Load this folder as an unpacked extension in Chrome, or reload it on `chrome://extensions` if already installed.
+2. Open the extension popup and save your Groq API key. The key is stored in Chrome extension local storage.
+3. Refresh LinkedIn and click a post’s Comment button. The post text is sent to Groq to generate a draft. The extension also Likes an unreacted post when the comment flow starts and attempts to tag the author.
 
-## Installation
-1. Load as unpacked extension in Chrome
-2. Navigate to LinkedIn
-3. Click the extension icon on any post
-
-## License
-MIT
-<!-- updated: 2026-06-04 -->
-
+Drafts are generated from the visible post text and may be inaccurate. Check each one before posting. The extension also keeps a local log of recent generation attempts in extension storage.

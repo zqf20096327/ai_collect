@@ -6,7 +6,7 @@
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-See the standalone showcase build: **[Maven v2](https://maven-ai-webpage.vercel.app/)**
+See the standalone showcase build: **[Maven v2](https://maven.codebyrzky.site/)**
 
 ## Overview
 
@@ -30,14 +30,14 @@ Maven is a developer portfolio project built to demonstrate practical use of AI 
 
 ## How it works
 
-A visitor lands on the [Home](src/app/README.md) page, learns what Maven does, and continues to [Register](<src/app/(auth)/register/README.md>) and [Login](<src/app/(auth)/login/README.md>) via OAuth (Google or GitHub). Once signed in, they land in [Chat](src/app/chat/README.md), the core experience: they type a request, optionally attach a product or ask for a comparison, and Maven's orchestrator picks the right tool(s) to answer — searching, detailing, recommending, or comparing — streaming the result back into the conversation. Conversations persist and can be revisited from [Chat History](src/app/history/README.md), or published as a public [Shared](src/app/share/README.md) link. Along the way, users can consult [Features](<src/app/(blog)/features/README.md>), the [Cookbook](<src/app/(blog)/cookbook/README.md>) usage guide, or the technical [Workflow](<src/app/(blog)/workflow/README.md>) writeup, and can leave feedback on [Rate App](src/app/rate-app/README.md).
+A visitor lands on the [Home](src/app/README.md) page, learns what Maven does, and continues to [Register](<src/app/(auth)/register/README.md>) and [Login](<src/app/(auth)/login/README.md>) with a username, email or phone number and password (signup verified by an emailed link), or via OAuth (Google or GitHub) when configured. Once signed in, they land in [Chat](src/app/chat/README.md), the core experience: they type a request, optionally attach a product or ask for a comparison, and Maven's orchestrator picks the right tool(s) to answer — searching, detailing, recommending, or comparing — streaming the result back into the conversation. Conversations persist and can be revisited from [Chat History](src/app/history/README.md), or published as a public [Shared](src/app/share/README.md) link. Along the way, users can consult [Features](<src/app/(blog)/features/README.md>), the [Cookbook](<src/app/(blog)/cookbook/README.md>) usage guide, or the technical [Workflow](<src/app/(blog)/workflow/README.md>) writeup, and can leave feedback on [Rate App](src/app/rate-app/README.md).
 
 ## Pages
 
 | Page | Route | Description | Doc |
 |------|-------|-------------|-----|
 | Home | `/` | Marketing landing page and entry point | [README](src/app/README.md) |
-| Login | `/login` | OAuth sign-in (Google, GitHub) | [README](<src/app/(auth)/login/README.md>) |
+| Login | `/login` | Username, email or phone + password, optional OAuth (Google, GitHub) | [README](<src/app/(auth)/login/README.md>) |
 | Register | `/register` | Demo-app notice before signing up | [README](<src/app/(auth)/register/README.md>) |
 | Cookbook | `/cookbook` | Guided usage recipes and best practices | [README](<src/app/(blog)/cookbook/README.md>) |
 | Dev Portfolio | `/dev-portfolio` | Under-construction placeholder page | [README](<src/app/(blog)/dev-portfolio/README.md>) |
@@ -56,9 +56,9 @@ A visitor lands on the [Home](src/app/README.md) page, learns what Maven does, a
 ## Tech stack
 
 - **Framework:** Next.js 16 (App Router, Turbopack) with React 19 and TypeScript
-- **AI / orchestration:** Vercel AI SDK 7 (AI SDK UI: `useChat` from `@ai-sdk/react` over a UI message stream for generative streamed UI, `streamText` / `generateText` with `Output` for structured data), Google Gemini via `@ai-sdk/google` with Google Search grounding by default; signed-in users can connect their own providers and API keys (OpenAI, Anthropic, Gemini, Vercel AI Gateway, OpenAI-compatible presets such as OpenRouter, Groq, xAI, DeepSeek, Qwen, Kimi, GLM, Mistral, Together, Fireworks, Cerebras, Anthropic-compatible endpoints, or any custom base URL) from **AI settings** (`/settings`), assign a model per agent tool, tune temperature, output length and reasoning, set custom instructions and analysis preferences, and review token usage. Keys are stored encrypted on the server. Providers without built-in web search use a Tavily search tool
+- **AI / orchestration:** Vercel AI SDK 7 (AI SDK UI: `useChat` from `@ai-sdk/react` over a UI message stream for generative streamed UI, `streamText` / `generateText` with `Output` for structured data), Google Gemini via `@ai-sdk/google` with Google Search grounding by default; signed-in users can connect their own providers and API keys (OpenAI, Anthropic, Gemini, Vercel AI Gateway, OpenAI-compatible presets such as OpenRouter, Groq, xAI, DeepSeek, Qwen, Kimi, GLM, Mistral, Together, Fireworks, Cerebras, Anthropic-compatible endpoints, or any custom base URL) from **AI settings** (`/chat/settings`), assign a model per agent tool, tune temperature, output length and reasoning, set custom instructions and analysis preferences, and review token usage. Keys are stored encrypted on the server. Providers without built-in web search use a Tavily search tool
 - **Web data:** Firecrawl for scraping, Tavily and Serper for external search
-- **Auth:** Better Auth (Google, GitHub OAuth) with users and sessions stored in PostgreSQL through its Prisma adapter
+- **Auth:** Better Auth (username/email/phone + password, email verification and reset links via Resend, optional WhatsApp reset via Kapso, optional Google and GitHub OAuth, optional Cloudflare Turnstile, Redis-backed rate limits) with users and sessions stored in PostgreSQL through its Prisma adapter
 - **Data stores:** PostgreSQL (self-hosted, Neon or compatible) via Prisma ORM with `@prisma/adapter-pg` for chats and all persistent data, Upstash Redis for rate limiting and short-lived session state
 - **UI:** Radix UI primitives, Tailwind CSS 4, Sass, `class-variance-authority`, `next-themes`
 - **Motion:** `motion` (formerly Framer Motion), GSAP, Lenis smooth scroll
@@ -118,10 +118,10 @@ The schema ships as a single `0_init` migration while the app is in development.
 
 | Model (table) | Purpose |
 |---|---|
-| `User` (`users`) | Signed-in people, created by Better Auth on first OAuth sign-in |
+| `User` (`users`) | Signed-in people, created on first OAuth sign-in or on an email-verified signup; app records are keyed by `users.id` |
 | `Session` (`sessions`) | Better Auth login sessions (cookie token, expiry, IP / user agent) |
-| `Account` (`accounts`) | OAuth provider identities (Google, GitHub) and their tokens, linked to a user |
-| `Verification` (`verifications`) | Short-lived verification values such as OAuth state |
+| `Account` (`accounts`) | Provider identities linked to a user: OAuth (Google, GitHub) with tokens, or `credential` with the password hash |
+| `Verification` (`verifications`) | Short-lived verification values such as OAuth state, email verification and reset tokens, and WhatsApp OTP codes |
 | `Chat` (`chats`) | A user's conversation; owns its messages and tool, object and markdown records (deleted together) |
 | `ChatMessage` (`chat_messages`) | Ordered AI state messages of a chat (role enum + JSON content) |
 | `ScrapeCache` (`scrape_cache`) | Caches web scraping results by query to avoid redundant requests |
@@ -165,15 +165,30 @@ DATABASE_URL="postgresql://user:password@localhost:5432/maven"   # any PostgreSQ
 # Auth
 BETTER_AUTH_SECRET="USE_SECURE_STRING_OR_RANDSSL"   # e.g. openssl rand -base64 32
 BETTER_AUTH_URL=http://localhost:3000
+# Optional OAuth: each provider is enabled only when both values are set
 AUTH_GITHUB_ID="YOUR_GITHUB_AUTH_ID"
 AUTH_GITHUB_SECRET="YOUR_GITHUB_AUTH_SECRET"
 AUTH_GOOGLE_ID="YOUR_GOOGLE_AUTH_ID"
 AUTH_GOOGLE_SECRET="YOUR_GOOGLE_AUTH_SECRET"
 
+# Email verification and password reset links (Resend, verified domain)
+RESEND_API_KEY="YOUR_RESEND_API_KEY"
+RESEND_FROM_EMAIL="Maven AI <no-reply@your-domain.com>"
+
+# Optional WhatsApp password reset for verified phones (Kapso)
+KAPSO_API_KEY="YOUR_KAPSO_API_KEY"
+KAPSO_PHONE_NUMBER_ID="YOUR_WHATSAPP_PHONE_NUMBER_ID"
+KAPSO_OTP_TEMPLATE_NAME="YOUR_AUTHENTICATION_TEMPLATE"
+AUTH_PHONE_ALLOWED_COUNTRY_CODES="62"   # optional allowlist
+
+# Optional captcha (Cloudflare Turnstile)
+TURNSTILE_SITE_KEY="YOUR_SITE_KEY"
+TURNSTILE_SECRET_KEY="YOUR_SECRET_KEY"
+
 NEXT_PUBLIC_APP_URL=http://localhost:3000   # update for production
 ```
 
-Authentication uses [Better Auth](https://www.better-auth.com) with OAuth callback URLs at `/api/auth/callback/google` and `/api/auth/callback/github` (unchanged from NextAuth). Deployments upgrading from NextAuth can keep `NEXTAUTH_SECRET` / `NEXTAUTH_URL` as fallbacks; users sign in once more after the upgrade, and their chats carry over because records stay keyed by email.
+Authentication uses [Better Auth](https://www.better-auth.com) with OAuth callback URLs at `/api/auth/callback/google` and `/api/auth/callback/github` (unchanged from NextAuth). Deployments upgrading from NextAuth can keep `NEXTAUTH_SECRET` / `NEXTAUTH_URL` as fallbacks. Signup takes a username, email and password; the account stays locked until the emailed verification link is opened, which also signs the user in. Unverified signups release their username and email after the link expires (1 hour). See `.env.example` for every auth variable.
 
 ### Running the application
 
@@ -224,7 +239,7 @@ sudo -u postgres psql -c "CREATE DATABASE maven OWNER maven;"
 sudo useradd --system --create-home --shell /usr/sbin/nologin maven
 sudo -u maven git clone https://github.com/rizzzky78/market-maven.git /home/maven/app
 cd /home/maven/app
-sudo -u maven cp example.env .env   # fill in every value, see "Environment variables"
+sudo -u maven cp .env.example .env   # fill in every value, see "Environment variables"
 sudo -u maven npm ci                # also runs `prisma generate`
 sudo -u maven npx prisma migrate deploy
 sudo -u maven npm run build

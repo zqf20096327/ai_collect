@@ -12,7 +12,7 @@ Record meetings. Review what changed. Give your AI the context to deliver.
 [![CI](https://github.com/geovanneb/get-things-done/actions/workflows/ci.yml/badge.svg)](https://github.com/geovanneb/get-things-done/actions/workflows/ci.yml)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-[Get started](#get-started) · [How it works](#how-it-works-in-a-nutshell) · [User guide](docs/user-guide.md) · [40-second demo](https://youtu.be/v0GaoY16CU0)
+[Get started](#get-started) · [How it works](#how-it-works-in-a-nutshell) · [User guide](docs/user-guide.md) · [Video tutorial](https://www.youtube.com/watch?v=sJJZRUFVV50) · [40-second demo](https://youtu.be/v0GaoY16CU0)
 
 <img src="docs/images/memory-loop.gif" alt="Animated walkthrough: a meeting transcript, the agent's proposed memory update being accepted, the profile, context notes and people the agent reads, then a task and the board" width="900">
 
@@ -59,11 +59,13 @@ Choose your AI tool during setup. The local dashboard opens in your browser. You
 
 **Try the loop:** add one person you work with, write a few lines about your project, then record or import a meeting. Download a speech model in **Settings → Transcription** before transcribing audio. Review the resulting context update and create a task that uses it.
 
+Prefer to watch first? The [video tutorial](https://www.youtube.com/watch?v=sJJZRUFVV50) (22 minutes, with chapters) does all of this in a fictional workspace: people, org charts, templates, context, a task with an AI agent, feedback that becomes a Kaizen lesson, and a recorded meeting turned into approved memory updates.
+
 The workspace and offline transcription need no Get Things Done account. AI analysis and task execution use the AI tool you bring; that tool may require its own account or subscription.
 
 The dashboard is available in English, Japanese, Portuguese (Brazil) and Spanish. It follows your system language; change it in **Settings → Appearance → Language**.
 
-> **New in 0.14:** a stakeholder's page lists the open tasks waiting on them, the dashboard says which Claude account runs use and quotes Claude Code when it stops a run, and a file written by hand can no longer blank a screen. [See what changed](CHANGELOG.md).
+> **New in 0.15:** a second analysis waits in line instead of being refused, two saves at the same moment no longer undo each other, and dates you write by hand stay as you wrote them. [See what changed](CHANGELOG.md).
 
 ## From meetings to memory to finished work
 
@@ -145,8 +147,8 @@ work-memory/
 | Tool | Integration |
 | --- | --- |
 | **Claude Code** | Workspace instructions, commands and specialist agents; dashboard analysis/apply runner |
-| **Codex** | `AGENTS.md` with the workspace conventions |
-| **GitHub Copilot** | `.github/copilot-instructions.md` with equivalent guidance |
+| **Codex** | `AGENTS.md` with the workspace conventions; the same procedures, specialists and skills as Agent Skills in `.agents/skills/` |
+| **GitHub Copilot** | `.github/copilot-instructions.md` with equivalent guidance; the same Agent Skills in `.agents/skills/` |
 | **Other agents** | Read the files and follow the conventions; compatibility depends on the tool |
 
 The app does not require an MCP server or proprietary memory API. You can inspect the files, edit them, back them up and change agents. The dashboard adds a task board, meeting workflow, search, review and insights over the same workspace.
@@ -186,6 +188,7 @@ See the [user guide](docs/user-guide.md#version-control-and-privacy) and [securi
 
 ## Documentation and contributing
 
+- [Video tutorial](https://www.youtube.com/watch?v=sJJZRUFVV50): a 22-minute walkthrough from your first stakeholder to meetings and Kaizen lessons, with chapters
 - [User guide](docs/user-guide.md): setup, recording, transcription, context review and task execution
 - [CLI commands](docs/user-guide.md#command-reference) · [Workspace layout](docs/user-guide.md#workspace-layout) · [Upgrading](docs/user-guide.md#upgrading)
 - [HTTP API](docs/api.md) · [Architecture](docs/architecture.md) · [Desktop development](desktop/README.md)

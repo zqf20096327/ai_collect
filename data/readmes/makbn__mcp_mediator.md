@@ -26,32 +26,31 @@ Wiki page is organized as follows:
 
 ## Features
 
-:white_check_mark: Ready:
 - Support for stdio/sse transport
 - Extensible request handling system
 - Configurable server capabilities
 - Support for multiple tool implementations
 - Support for proxying multiple MCP servers
 - Automatically generating MCP Server Tools for the existing methods and services
-
-:hourglass_flowing_sand: Work In Progress:
-- ~~Spring Framework and Spring Boot integration~~ (Done)
-- ~~Comprehensive error handling~~ (Done)
-- ~~Docker Implementation~~ (Done)
-- ~~Dropbox Implementation~~ (Done)
-
-:baby_bottle: Planned:
-- ~~Generate MCP Server for existing Spring `Controllers` and mediate request between MCP client and controllers~~ (Done)
-- ~~Generate MCP Server for existing OpenAPI specification and generate MCP `Tool` for the APIs and delegate the requests~~ (Done)  
+- Spring Framework and Spring Boot integration
+- Comprehensive error handlin
+- Docker Implementation
+- Dropbox Implementation
+- Generate MCP Server for existing Spring `Controllers` and mediate request between MCP client and controllers
+- Generate MCP Server for existing OpenAPI specification and generate MCP `Tool` for the APIs and delegate the requests
 
 ## Modules
 
 - `mcp-mediator-api`: Core API interfaces and contracts
 - `mcp-mediator-core`: Core implementation and common functionality
 - `mcp-mediator-commons`: Reusable components to make implementation easier
-- `mcp-mediator-example`: Example shows how to use and extend the mediator framework
+- `mcp-mediator-security`: Generic security context and thread propagation for non-Spring projects
 - `mcp-mediator-spring`: Spring Framework and Spring AI integration
+- `mcp-mediator-spring-security`: Bridges the mediator seamlessly into Spring Security's native `SecurityContextHolder`
 - `mcp-mediator-spring-boot-starter`: Spring Boot `autoconfiguration` to generate MCP server automatically for the available endpoints
+- `mcp-mediator-openapi`: Translates OpenAPI specifications directly into MCP tool endpoints
+- `mcp-mediator-inspector`: Utilities for inspecting and debugging Mediator state
+- `mcp-mediator-example`: Example shows how to use and extend the mediator framework
 - Implementation modules for various services:
   - `mcp-mediator-implementation-docker`: Docker service integration [Read More](mcp-mediator-implementation-docker/README.md)
   - `mcp-mediator-implementation-dropbox`: Dropbox service integration (WIP)

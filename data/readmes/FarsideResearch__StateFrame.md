@@ -30,6 +30,15 @@ Details: [ARCHITECTURE.md](ARCHITECTURE.md), [KNOWN_LIMITATIONS.md](KNOWN_LIMITA
 
 ## Mutations
 
+**Mutations let your agent build its own tools on the fly.** It runs or writes small sandboxed programs to do a job in one step, instead of making a long chain of tool calls. Each program returns only the answer.
+
+What it did in our tests, with the local Qwen3.6-35B-A3B model:
+- **Wrote its own file reader.** Faced with a compressed binary format it had no tool for, the agent wrote a reader. StateFrame validated and smoke-tested it, and the agent used it to get an answer that matched ground truth. The task went from fail to pass in 10 requests.
+- **Fixed its own tool.** When a helper broke on real input, the agent got a precise diagnostic and shipped a corrected revision.
+- **Peeked instead of reading everything.** One call returned a data file's columns, row count and sample values.
+
+Built-in helpers also list archives without extracting them, read SQLite schemas, diff snapshots, scan log tails and pull text, links and tables from web pages. At the `authored` level the agent writes its own helper, and StateFrame checks it before running it.
+
 Mutation units are small Python helpers with declared JSON inputs and outputs. They run in a sandbox and return untrusted observations for the model. They help with bounded jobs such as reading a structured file or comparing snapshots, without repeating a long sequence of tool calls.
 
 For a repository with `data/events.csv`, make the shipped `structured_peek` helper available for CSV inspection:
@@ -41,6 +50,28 @@ stateframe run --repo ~/code/shop \
 ```
 
 `structured_peek` handles CSV, TSV, JSON, JSONL, TOML and INI, and needs no network or write grant. The `authored` level also lets the model submit helpers for validation and smoke checks. Mutations are off by default. Public web fetches need `--mutation-network public-web` and `--shell-network full`; unit-proposed repository edits need `--mutation-write GLOB`. Mutation execution currently requires Linux. See the [mutation units guide](docs/guide/mutations.md) for the catalog, grants and sandbox limits.
+
+## Parallel subframes
+
+> **Subframes replace sub-agents.** Instead of handing work to separate agents with their own chat histories, briefs and reports, StateFrame forks the task. Each subframe starts from a frozen snapshot of the parent's workspace, works on only the files it owns, and hands back a sealed proposal. The parent verifies every proposal and joins it into its one authoritative state. No hand-offs, no summaries, no drift between agents.
+
+Use subframes when a task has separate pieces that change different files and each has a focused check. Set the mode
+with `stateframe run --repo <repo> --task "<task>" --parallel <off|auto|N>`. For example:
+
+```bash
+stateframe run --repo examples/parallel_fixes \
+  --task "Repair the pricing calculations and include tax in checkout." \
+  --parallel 2
+```
+
+`--parallel` accepts `off` (the default), `auto` to let the engine size concurrency, or a positive integer for the
+maximum concurrent subframes. Enabling it offers the `parallel` tool to the model; the model decides whether to split the
+work, so an enabled run can use zero subframes. `--parallel 1` allows only one subframe at a time.
+
+Each subframe is a fresh StateFrame run with inputs limited to its declared work. The parent verifies its proposal
+and commits accepted changes to the shared workspace before dependent work starts. Setup, checks, and competition
+for server prefill can make a run slower; subframes do not promise a general speedup. See the
+[subframes guide](docs/guide/subframes.md) for the contract, limits, result records, and recovery behavior.
 
 ## Coming next
 
@@ -123,6 +154,7 @@ Set `STATEFRAME_REQUIREMENT_RECHECK=on` in the shell or a custom profile to get 
 - **Run commands:** foreground shell commands and read-only background jobs with bounded, budget-aware replies, per-run dependencies, protected-test restoration and replay verification. Execution sessions follow the engine lifetime, so a launch wrapper can exit without interrupting a live session and engine exit stops its jobs. See [agent tools](docs/guide/tools.md).
 - **Inspect and organize:** read sanitized Git history, fetch public documentation when enabled, and delete or move files within the task's edit scope. Explicitly trusted command tools can be supplied with `--tools`; local MCP stdio servers can be supplied with `--mcp`.
 - **Check its work:** run your tests, try code in a sandboxed probe, write and run its own checks, and read the check results.
+- **Split independent work:** the parent may use bounded subframes for disjoint file contracts, then verify and commit their proposals into its one authoritative state. See [subframes](docs/guide/subframes.md).
 - **Customize run boundaries:** use sandboxed hooks to add start context, guard admitted calls (including `skill_load` and MCP tools), inspect tool results, gate submissions and report final outcomes. See the [hooks guide](docs/guide/hooks.md).
 - **Finish:** a run counts as done only after its checks pass. The engine makes that call, not the model.
 - **Around that:** a map of your repository's code (12 languages, plus structure for HTML, CSS, JSON, TOML and YAML), an interactive chat with diff, undo and apply, resume after a stop, and inspect to see exactly what the model was sent.

@@ -42,6 +42,10 @@
 [![Modelflare][modelflare-shield]][modelflare-link]
 [![X][x-shield]][x-link]
 
+[![QQ][qq-shield]][qq-link]
+[![Telegram][telegram-shield]][telegram-link]
+[![Discord][discord-shield]][discord-link]
+
 </div>
 
 <p align="center">
@@ -56,7 +60,7 @@ AnyModelBot 是跑在 Windows / macOS / Linux 上的 AI 机器人团队。每个
 
 装好即可用：后台任务、定时规则和待你确认的事项都已内置。
 
-**0.1.35：** 更简洁的侧栏和 Heroicons 图标，设置内余额展示，稳定的预览宽度，以及规则、权限和七语言文案修复。 [更新日志](./CHANGELOG.md#0135---2026-11-14)
+**0.1.40：** 新增 20 个现成任务，可先试跑再打开；文件预览支持代码着色、JSON 折叠、CSV 表格、图片缩放和文件变化刷新；增加年度及提前提醒。 [更新日志](./CHANGELOG.md#0140---2026-11-15)
 
 📥 [下载](#-下载与运行) · 🌠 [截图](#-截图) · 🌟 [核心功能](#-核心功能) · 🆚 [对比](#-对比-grok-bot--openai-dots--claude-duet) · 🔐 [工作原理与隐私](#-工作原理与隐私)
 
@@ -191,10 +195,11 @@ npm start          # 本地管理界面：http://127.0.0.1:3600/
 - **每个机器人由你来定义。** 人设就是一段话，模板只是起点，每个字都能改；六个头像只管长相，不决定它能做什么。
 - **真正的文件操作。** 机器人能读写文件、在沙箱里执行命令，并把结果作为文件发回聊天。
 - **每个机器人三档权限。** *只读*、*工作区*（默认：只能写自己的文件夹；要写到工作区以外，得先经过你点头）、*完全权限*（不进沙箱；删除整个文件夹前仍会先问）。
-- **导入技能。** 在「机器人设置 → 技能」导入包含 `SKILL.md` 的 ZIP（每包一个技能，最大 20 MB），预览后添加。支持查看、启用、停用、删除；再次导入同名技能可确认替换，改动在当前工作结束后生效。 [使用说明](./docs/skills.md)。
+- **技能：导入、安装和自己存。** 在「应用与技能」的技能库里挑技能，复制安装指令或直接把 GitHub 链接发给机器人，确认卡片后装上；也能在「机器人设置 → 技能」导入包含 `SKILL.md` 的 ZIP（每包一个技能，最大 20 MB）。和机器人把一件事做对后，说「存成技能」或发 `/skill`，确认草稿卡就存进「我的技能」，可以在多个机器人上用、导出 ZIP，也能设成定时。改动在当前工作结束后生效。 [使用说明](./docs/skills.md)。
 - **审批卡片，没有意外。** 要写到工作区以外的操作会停下来，等你回答。
 - **重启了也会告诉你。** 应用退出或崩溃时还没处理完的消息，下次启动会在原对话里说一声，请你重新发送，不会自动重做。
 - **群聊。** 建一个群，拉几个机器人进来。@ 谁谁回答，没 @ 时上一个回答的接着答；机器人也能 @ 别的成员请它接手。每个机器人用自己的模型、工作区和记忆，花费分开算。
+- **机器人之间发消息。** 在应用里对一个机器人说「交给 B」，B 用自己的模型、权限和预算在后台做完回消息，原来的机器人核对后告诉你；要批准时以 B 的名义在同一个对话里问你，两个机器人的往来随时能看。需要登录 Modelflare，两边都用 Modelflare 模型。
 - **聊天记录搜索。** 侧栏可搜索本机保存的全部消息，按机器人、会话、渠道和日期筛选，点击结果定位原消息。`Ctrl/Cmd+Shift+F` 打开全局搜索，`Ctrl/Cmd+F` 查找当前聊天；搜索不调用模型。没输入时，搜索弹窗按日期列出最近的对话。
 - **斜杠命令**，如 `/model`、`/reset`，在应用和各个聊天渠道里都能用；在聊天渠道里发 `/bot` 可以换机器人。
 
@@ -262,10 +267,10 @@ npm start          # 本地管理界面：http://127.0.0.1:3600/
 
 ## 🧠 有记忆，随处可达
 
-- **记忆会延续。** 机器人、群、团队各有自己的记忆，以 Markdown 保存，互不混用；看起来像密码、密钥的内容不会被记住。
+- **记忆会延续。** 关于你本人的事记在所有机器人共用的「关于我」里，说一次都知道，可在设置里查看、修改和撤销；地址、电话、邮箱先问你再记。机器人和群也各有自己的记忆，以 Markdown 保存，互不混用；看起来像密码、密钥的内容不会被记住。
 - **长对话也能用下去。** 上下文快满之前，上下文管家会压缩，或开一个新段并带上交接摘要。
 - **账号全局共用。** 微信、飞书、Telegram、Slack、Discord 的聊天账号在「设置 › 聊天渠道」里加一次，所有机器人共用，每个渠道可以加多个、起别名。在聊天软件里发一次 `/bot 名字` 就换一个机器人聊。
-- **连接应用。** 左下角头像菜单里的「连接应用」内置飞书、腾讯文档、钉钉、高德地图、语雀、Notion、GitHub、Linear、Atlassian、Canva 的连接器，也可以添加自定义 MCP（远程服务或本地命令）。连一次，默认所有机器人都能用，可以按机器人、按工具收窄。只读直接用，写入先问你，删除和对外发送每次都问。
+- **连接应用。** 左下角头像菜单里的「应用与技能」内置飞书、腾讯文档、钉钉、高德地图、语雀、Notion、GitHub、Linear、Atlassian、Canva 的连接器，也可以添加自定义 MCP（远程服务或本地命令）。连一次，默认所有机器人都能用，可以按机器人、按工具收窄。只读直接用，写入先问你，删除和对外发送每次都问。
 - **微信和飞书。** 微信扫码连接，飞书机器人支持流式回复卡片；微信还能收发图片和文件。
 - **Telegram、Slack、Discord。** 在 设置 › 聊天渠道 里填 token 连接，不需要公网地址；回复边写边显示，能收发图片和文件。目前只处理单聊，审批和提问回复文字。
 - **四种运行方式。** 桌面版、命令行、Docker，以及 `127.0.0.1:3600` 的本地网页控制台。
@@ -400,6 +405,7 @@ Modelflare 会保留请求日志；保留什么、保留多久，见它的[信�
 
 - **提问与想法：** [GitHub Discussions](https://github.com/modelflare-ai/AnyModelBot/discussions)
 - **Bug 与功能建议：** [GitHub Issues](https://github.com/modelflare-ai/AnyModelBot/issues)
+- **实时交流：** [QQ 群 1132903119](https://qm.qq.com/q/yHN9KrvlGa) · [Telegram](https://t.me/+Tx6Payfzxqk2ZGVl) · [Discord](https://discord.gg/umBN6wX3zJ)
 - **邮件联系：** [support@anymodel.bot](mailto:support@anymodel.bot)
 - **Modelflare 动态：** [X 上的 @modelflare_dev](https://x.com/modelflare_dev)
 
@@ -433,6 +439,9 @@ AnyModelBot 以 [MIT 许可证](./LICENSE)发布。随附的第三方软件保�
 [pricing-shield]: https://img.shields.io/badge/pricing-pay--as--you--go-d7ff00?style=flat-square&labelColor=161a00
 [modelflare-shield]: https://img.shields.io/badge/Modelflare-modelflare.dev-d7ff00?style=flat-square&labelColor=161a00
 [x-shield]: https://img.shields.io/badge/X-@modelflare__dev-d7ff00?style=flat-square&labelColor=161a00&logo=x&logoColor=d7ff00
+[qq-shield]: https://img.shields.io/badge/QQ-1132903119-d7ff00?style=flat-square&labelColor=161a00&logo=qq&logoColor=d7ff00
+[telegram-shield]: https://img.shields.io/badge/Telegram-chat-d7ff00?style=flat-square&labelColor=161a00&logo=telegram&logoColor=d7ff00
+[discord-shield]: https://img.shields.io/badge/Discord-chat-d7ff00?style=flat-square&labelColor=161a00&logo=discord&logoColor=d7ff00
 [win-badge]: https://img.shields.io/badge/Windows-161a00?style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2Q3ZmYwMCI+PHJlY3QgeD0iMiIgeT0iMyIgd2lkdGg9IjkuNSIgaGVpZ2h0PSI4LjUiLz48cmVjdCB4PSIxMi41IiB5PSIzIiB3aWR0aD0iOS41IiBoZWlnaHQ9IjguNSIvPjxyZWN0IHg9IjIiIHk9IjEyLjUiIHdpZHRoPSI5LjUiIGhlaWdodD0iOC41Ii8+PHJlY3QgeD0iMTIuNSIgeT0iMTIuNSIgd2lkdGg9IjkuNSIgaGVpZ2h0PSI4LjUiLz48L3N2Zz4=
 [mac-badge]: https://img.shields.io/badge/macOS-161a00?style=for-the-badge&logo=apple&logoColor=d7ff00
 [linux-badge]: https://img.shields.io/badge/Linux-161a00?style=for-the-badge&logo=linux&logoColor=d7ff00
@@ -444,3 +453,6 @@ AnyModelBot 以 [MIT 许可证](./LICENSE)发布。随附的第三方软件保�
 [pricing-link]: https://modelflare.dev/pricing?utm_source=anymodelbot&utm_campaign=amb_readme
 [modelflare-link]: https://modelflare.dev/?utm_source=anymodelbot&utm_campaign=amb_readme
 [x-link]: https://x.com/modelflare_dev
+[qq-link]: https://qm.qq.com/q/yHN9KrvlGa
+[telegram-link]: https://t.me/+Tx6Payfzxqk2ZGVl
+[discord-link]: https://discord.gg/umBN6wX3zJ

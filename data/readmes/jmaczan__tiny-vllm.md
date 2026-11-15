@@ -6,41 +6,11 @@ We will learn a lot along the way, make mistakes and derive the ideas and maths 
 
 This repository consists of two things: 1. a full source code of the inference server and 2. a course where I lead you through the process of implementing the engine. Feel invited to use it as a learning tool on your learning path or if you are a lecturer, feel welcome to use it as a teaching resource at your university
 
-We just launch a sponsorship options!
-
 **Reach highly technical audience in this GitHub repo**
 
-<a href="mailto:jedrzej@maczan.pl?subject=README%20ad%20-%20Main%20(%242000%2Fmonth)">
-  <img src="assets/pixel-cta-large.svg" alt="Advertise here: Main sponsor tier, $2000 per month">
+<a href="mailto:jedrzej@maczan.pl?subject=README%20ad%20">
+  <img src="assets/pixel-cta-large.svg" alt="Advertise here">
 </a>
-
-**$2000/mo**
-
-#
-
-<a href="mailto:jedrzej@maczan.pl?subject=README%20ad%20-%20Sponsor%20(%24500%2Fmonth)">
-  <img src="assets/pixel-cta-medium.svg" alt="Advertise here: Sponsor tier, $500 per month">
-</a>
-
-**$500/mo**
-
-#
-
-<a href="mailto:jedrzej@maczan.pl?subject=README%20ad%20-%20Supporter%20(%24100%2Fmonth)">
-  <img src="assets/pixel-cta-small.svg" alt="Advertise here: Supporter tier, $100 per month">
-</a>
-
-**$100/mo**
-
-#
-
-<a href="mailto:jedrzej@maczan.pl?subject=README%20ad%20-%20Supporter%20(%2410%2Fmonth)">
-  <b>Advertise here</b>
-</a>
-
-**$10/mo**
-
-#
 
 Thanks for supporting our project ❤️
 
@@ -1295,4 +1265,24 @@ __global__ void softmaxKernel(__nv_bfloat16 *input, int num_tokens)
 void softmax(__nv_bfloat16 *input, int num_tokens)
 {
     if (num_tokens > 1024)
-   
+    {
+        std::cout << "Can't launch more than 1024 threads on RTX 5090, Softmax kernel not launched";
+        return;
+    }
+
+    softmaxKernel<<<num_tokens * NUM_Q_HEADS, num_tokens>>>(input, num_tokens);
+#ifdef DEBUG
+    cudaError error = cudaGetLastError();
+    if (error != cudaError::cudaSuccess)
+    {
+        std::cout << "CUDA last error: " << cudaGetLastError() << std::endl;
+    }
+#endif
+}
+```
+
+## Causal mask
+
+Every token can attend only to previous tokens. See [this good and straighforward explanation](https://outcomeschool.com/blog/causal-masking-in-attention), so you can code it by yourself. It's really helpful to see the diagrams.
+
+< TODO write m

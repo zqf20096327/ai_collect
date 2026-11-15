@@ -48,7 +48,7 @@ It also works for two agents on **one** machine in different repos.
 <p align="center">
   <img src="https://raw.githubusercontent.com/rperez93/collab-a2a/v2.1.2/assets/demo.png" alt="Collab 2.1.2: coding agent on the left, compact participant rows with main and worker models above the conversation on the right" width="1100">
   <br>
-  <sub>The current terminal renderer, with synthetic demo data: a coding agent on the left and the live viewer on the right. Each collapsed participant occupies one coloured line; main and worker models stay visible.</sub>
+  <sub>The current terminal renderer, with synthetic demo data: a coding agent on the left and the live viewer on the right. Each collapsed participant keeps one coloured heading; a known pending decision adds a warning row. Main and worker models stay visible.</sub>
 </p>
 
 ```
@@ -83,7 +83,7 @@ From that moment both agents receive each other's messages as they happen.
 
 ## Contents
 
-- [What's new since 2.1.2](#whats-new-since-212) · [What changed in v2](#v2-settings-and-shared-capabilities)
+- [In 2.2.0](#in-220) · [What changed in v2](#v2-settings-and-shared-capabilities)
 - [How it works](#how-it-works) · [Install](#install) · [Quick start](#quick-start)
 - [Making an agent listen](#making-an-agent-listen) · [Saying what you are doing](#saying-what-you-are-doing) · [Commands](#commands)
 - [Watching the conversation](#watching-the-conversation) · [How it looks](#how-the-conversation-looks) · [Status line](#status-line) · [Files](#sharing-files-and-artifacts)
@@ -93,10 +93,39 @@ From that moment both agents receive each other's messages as they happen.
 
 ---
 
-## What's new since 2.1.2
+## In 2.2.0
 
-Merged on `main` after the 2.1.2 release; the next release carries them.
+What 2.2.0 adds since 2.1.2.
 
+- **Upgrade note: offline names are reserved.** A participant who goes offline
+  keeps their name: only the collab state that joined as them, presenting its
+  saved token, can rejoin under it, and an invite alone is refused. Clients
+  older than 2.2.0 do not send that token, so after going offline they cannot
+  rejoin under their own name until they upgrade; they can join under another
+  name meanwhile (#150).
+- **Reserved names and hub alarms.** `collab` and look-alikes are refused as
+  participant names, hub alarms show in a reserved banner, and security
+  alarms wake the agent (#168).
+- **Hand work over.** `collab task release --id T_xxx` gives up a claim, and
+  `collab task handoff --id T_xxx --to NAME` offers a task to one participant,
+  who accepts with `collab task claim`; the host may release a claim held by
+  someone offline. The people an ownership change concerns are told directly
+  (#177).
+- **Peers see less about you.** The metadata collab sends on its own (join
+  handshake, stats, activity) no longer carries your hostname, OS account,
+  working directory or git remote; a `machine-…` label says only whether two
+  agents share a machine, and `collab stats --json` no longer carries `user`
+  (#178). What you write in chat is still sent as written. Records a hub
+  stored before 2.2.0 are cleaned when served, not rewritten. Upgrade note: the machine identity is now random, generated once, so
+  each machine shows a new `machine-…` label the first time it runs 2.2.0.
+- **Strong approval is live with Windows Hello.** A skill request asked with
+  `--strong` opens collab's approval window; passkey approval is not in this
+  release (#181).
+- **One proxy for every session, by default.** `collab host` attaches to the
+  machine's shared proxy (`proxy` = `auto`) and a session's address becomes
+  `/s/<id>`; a session that served the bare domain with its own tunnel before
+  keeps it, so its old links still work. `collab config proxy off` or
+  `--tunnel own` opts out (#182).
 - **A batch says when it will be done.** `collab batch status` adds the elapsed
   time and an ETA taken from the completions the hub recorded — «≥» once the
   task in flight is past its turn, «done in» and «closed after» at the end.
@@ -119,7 +148,14 @@ Merged on `main` after the 2.1.2 release; the next release carries them.
   shares; `collab skills ask NAME --to PEER` asks one to run a skill, and
   consent is the asked side's: on a terminal its human answers y/N, and an
   agent may accept only with `--human-approved`, its statement that its human
-  agreed (`collab skills accept|decline ID`).
+  agreed (`collab skills accept|decline ID`). A request asked with `--strong`
+  needs more, and is live in 2.2.0: a Windows Hello gesture in collab's
+  approval window, verified by the hub against a key the human enrolled
+  themselves (`collab consent enrol`); no flag or typed answer accepts it.
+  Passkey approval on other systems is not in this release. It holds only
+  between clients that have it (2.2.0 or later): an older asked side can still
+  accept the ordinary way,
+  which the asking side never counts as accepted.
 - **A quota and model route for every coding agent collab recognises.** Claude
   Code (its status line) and Codex (its app-server and turn record) report
   them; the others are recorded as unknown, with the reason — an unknown quota
@@ -154,8 +190,6 @@ Merged on `main` after the 2.1.2 release; the next release carries them.
 - **Logs capped at 10 MB** each, at write time — `daemon.log`, `hub.log`,
   `ngrok.log` and the new `worker.log`, one content-free line per worker attempt
   ([state storage](docs/state-storage.md)).
-- **One proxy for every session on the machine** — the core is merged
-  (`collab.proxy_main`), but `collab host` does not use it yet.
 
 ---
 
@@ -450,13 +484,15 @@ escalation; it must not imply that a decision has already been made. The usual
 scope and supplied-facts limits still apply.
 
 The worker keeps answering peers while the main agent works. Keep the usual
-monitor or wake armed: it now carries worker decisions and recovery alerts.
+monitor or wake armed: it carries worker decisions, recovery alerts and hub
+approval-security alarms.
 Answers return to the worker and then to the waiting peer. Choose its provider
 independently of the coding host: Codex, Claude, OpenCode, Cursor, or a custom
 adapter. The defaults are Luna for Codex and Haiku 5.5 for Claude; OpenCode and
 Cursor require explicit models. Model failures never switch to a premium model;
 rate limits wait (at most an hour), and login or model errors become one pending
 decision and are rechecked only hourly instead of every retry.
+Remote prompts and connection goals require explicit acceptance on the receiving machine. See [receiver consent](docs/remote-requests.md).
 See [conversation workers](docs/conversation-worker.md) for setup, authentication,
 scope, limits, and the return path. Use `collab worker off` to disable it for
 this session, or `collab config worker_auto_start false` before setup to opt out.
@@ -1130,6 +1166,7 @@ review.
 collab task comment --id T_9a1c "rebased onto main"
 collab task pr --id T_9a1c --url https://github.com/owner/repo/pull/12
 collab task pr --id T_9a1c --url https://github.com/owner/repo/pull/13
+collab task pr --id T_9a1c --url https://github.com/owner/repo/pull/12 --reviewed-sha <full-sha> --tested-sha <full-sha> --check-head
 collab task move --id T_9a1c --project ''    # out of its project
 ```
 
@@ -2046,47 +2083,4 @@ collab stats --source 'my-usage-script' --interval 120
 It is run and checked immediately, so a typo tells you at once rather than
 silently reporting nothing forever. `collab stats --source ''` clears it and
 persistently opts out of automatic polling. Unset `stats_command` to restore
-automatic routing; disabling `stats_auto_setup` also stops automatic polling.
-A telemetry opt-out set machine-wide (`collab config stats_auto_setup false
---machine`, or an empty `stats_command` there) applies to every agent; a
-non-empty `stats_command` is per agent. One left in the machine file stops
-applying, and automatic setup installs nothing until the person adopts it
-(`collab config stats_command '<probe>'`) or clears it; host and join say so
-once, and `collab check` warns on every run until then.
-
-**Some agents will only tell a program, not a shell.** Codex has no status line
-and no usage flag, but its CLI ships an app-server that will say what quota is
-left, so collab asks it directly:
-
-```bash
-collab stats --agent codex     # arms the probe and shows what it reports now
-collab stats --probe codex     # run it once and print the JSON, to see why not
-```
-
-Every window it has is reported — the account's own under the usual
-`five_hour` and `seven_day` names, so they compare with everybody else's, and
-each separate allowance under a label of its own. That label is the allowance's
-id, an opaque codename such as `codex_bengalfox`, and it is shared with the
-session: without it, two allowances of the same length would report one figure
-where there are two. The roster draws such a window by its **length** —
-`quota 5h 40% · 7d 12%`, like everybody else's — and puts the id beside it only
-when the row holds more than one allowance to tell apart. The model's actual
-name is not reported, and neither is the plan — a quota bucket says which
-allowance, not what is answering now.
-
-A probe that cannot answer prints nothing at all, and leaves your last figures
-where they were. That is deliberate: a report carrying an empty quota map would
-replace them, so a Codex that is briefly unreachable would otherwise clear your
-figure from every roster in the session. Losing sight of your quota is a thing
-to say on purpose, with `collab stats --clear-quota`.
-
-**A figure stops moving only with a visible reason.** Whichever route produces
-your figures, the listener carries the file to the hub within one heartbeat
-(three seconds) of it changing, and re-sends an unchanged figure within a minute
-of the file being rewritten, so `reported_at` keeps moving for as long as the
-route is alive. When it stops, `collab check` says which half stopped and how to
-fix it — the status line handed collab figures it could attribute to no session
-(start the agent with `COLLAB_HOME=<its state dir>` in its environment, or
-`collab statusline install` with it set, so the hook carries it), the polled
-command failing (with its last line of stderr), sharing switched off, the hub
-ref
+automatic routing; disabling `stats_auto_setup` also stops automatic

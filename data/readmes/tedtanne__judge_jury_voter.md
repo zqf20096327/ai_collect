@@ -22,6 +22,8 @@ The distinctive piece is **Nash_Agent**, a game-theoretic broker that runs durin
 
 ## What's new
 
+- **A page for every run.** `jjv render RUN_ID --out run.html` turns a saved run into one static page: each Judge's score before and after the Jury and what changed its mind, the findings with who raised and backed each, the bargain with the gain per Judge, and the decision rule. See [Watch a panel change its mind](#watch-a-panel-change-its-mind).
+- **`pip install` and two commands.** JJV is a package: `jjv` runs panels and `jjv-mcp` serves them to an MCP client, with no checkout or `PYTHONPATH`. See [Get started](#get-started).
 - **Run records name the model** that answered each call, and `--explain` lists them. In the Jury round each Judge's share of the budget follows what it cost in the Judge round, so a Judge reading a repository is no longer cut off mid-reply.
 - **PDF, Word, PowerPoint and Excel** files, read on your machine by optional Docling, with formulas kept as LaTeX.
 - **`--json` and a cache** for apps: results come back as data, and reviewing the same content again costs nothing.
@@ -32,57 +34,67 @@ The distinctive piece is **Nash_Agent**, a game-theoretic broker that runs durin
 
 Every change is in [`CHANGELOG.md`](CHANGELOG.md).
 
+## Watch a panel change its mind
+
+Weighted voting averages opinions. A JJV panel argues: each Judge scores alone, reads the others, and says what moved it. These are real runs, rendered by `jjv render` from their saved records with no model call. Every number on a page is one `--explain` prints.
+
+| Run | Panel | What to look for |
+|---|---|---|
+| [The broker spec, reviewed by The Nash Table](https://tedtanne.github.io/judge_jury_voter/runs/94f38f3fa5af.html) | Nash_Agent, Security Reviewer, Simplifier, Staff Engineer, Product Lead | Four of five Judges move after reading the room; six findings get linked as one issue; half the proposed fix list is replaced in the bargain |
+| [A rate-limiter design, with two negotiation rounds](https://tedtanne.github.io/judge_jury_voter/runs/8d179356c0cf.html) | The Nash Table, `--deliberation-rounds 2` | Judges trade offers in writing, three of four end up naming the same fix list, and the formula still decides. The run [`docs/reading-a-run.md`](docs/reading-a-run.md) walks through |
+| [The architecture doc, reviewed by AI System Review](https://tedtanne.github.io/judge_jury_voter/runs/76221b3da49c.html) | Model Evaluator, Security Reviewer, Evidence Auditor, Privacy Adversary, Reliability Engineer, Nash_Agent | Six Judges and four veto-holders on JJV's own design. Four lost their Jury call to the even budget split, and the page says so on each card; that run is why Jury shares now follow what each Judge cost |
+| [A feature request, reviewed by the Thinkers Panel](https://tedtanne.github.io/judge_jury_voter/runs/b602b58b3a7f.html) | Assumption Tester, Paradox Hunter, Back-of-Envelope Estimator, Shadow Reader, Nash_Agent | Methods of reasoning rather than job titles. Nobody moves a score, but 13 findings are linked as the same issues, which is what the bargain prices |
+
+Render your own with `jjv render RUN_ID --out run.html`. The page names who is behind each anonymous Judge and shows an excerpt of the subject, so share it as you would the run record.
+
 ## Get started
 
 <a id="quick-start"></a>
 
 ### 1. Install
 
-Install only what you need. Each line includes the ones above it.
+JJV is a Python package. Installing it gives you two commands: `jjv`, the panel runner, and `jjv-mcp`, the MCP server. Python 3.10 or newer.
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate     # any virtual environment works
+pip install "judge-jury-voter[live] @ git+https://github.com/tedtanne/judge_jury_voter"
+jjv --version
+```
+
+The `live` extra is what most people want. The others are for a smaller or a larger install; each includes the ones above it.
 
 | You want to | Install | Size |
 |---|---|---|
-| Run the tests and the broker evaluation | `pip install -r requirements.txt` | Small |
-| Review code, text and web pages with real models | `pip install -r requirements-live.txt` | Small |
-| Also review PDF, Word, PowerPoint and Excel files | `pip install -r requirements-parse.txt` | About 1.5 GB, plus about 1 GB of models on first use |
+| Only the kernel, the registry and the broker evaluation, no model calls | `pip install "git+https://github.com/tedtanne/judge_jury_voter"` | Small, standard library only |
+| Review code, text and web pages with real models | `pip install "judge-jury-voter[live] @ git+https://github.com/tedtanne/judge_jury_voter"` | Small |
+| Also review PDF, Word, PowerPoint and Excel files | `pip install "judge-jury-voter[parse] @ git+https://github.com/tedtanne/judge_jury_voter"` | About 1.5 GB, plus about 1 GB of models on first use |
 
-Without the last one, everything else still works, and a document file stops with a message saying what to install. If you set up JJV on another computer, or delete the `.venv` folder, install again.
-
-```bash
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-pytest -q                                          # 409 unit tests, no API key needed
-python -m jjv.registry > docs/archetypes.md        # regenerate the archetype catalog
-python -m jjv.registry --readme                    # regenerate the roster in this README
-python -m jjv.eval_broker --trials 300 --seed 7    # Nash broker vs weighted vote
-```
-
-Everything except live runs uses the Python standard library alone. `requirements.txt` only adds the test tooling.
+Without `parse`, everything else still works, and a document file stops with a message saying what to install. To work on JJV itself, see [Developing](#developing).
 
 ### 2. Your first review
 
-1. **Pick a model and sign in.** The default backend is the Claude Agent SDK: if Claude Code is signed in on this machine, nothing more is needed; otherwise `export ANTHROPIC_API_KEY=...`. To use another provider instead, copy `docs/providers.example.json` to `~/.jjv/providers.json`, fill in the model name and prices, export its key (`OPENAI_API_KEY`, `XAI_API_KEY` or `GEMINI_API_KEY`), and add `--judge-provider openai` (or `xai`, `gemini`) to the commands below.
-2. **Ask which panel fits.** `python -m jjv.cli suggest notes.md` makes one small call, costs under a cent, and prints one to three panels with a rough cost and the command to run.
-3. **Run it.** `python -m jjv.cli review notes.md --panel "Docs Crit" --max-usd 3`. Status lines show the step, who has reported and the money spent.
-4. **Read the result.** The `DECISION` line, the consensus score out of 5, the top actions with who raised each, and the list the panel agreed to fix next. Add `--explain` to see the sums, or run `python -m jjv.cli explain RUN_ID` later for free. Records live in `~/.jjv/runs`. [`docs/reading-a-run.md`](docs/reading-a-run.md) walks through a real one.
+1. **Pick a model and sign in.** The default backend is the Claude Agent SDK: if Claude Code is signed in on this machine, nothing more is needed; otherwise `export ANTHROPIC_API_KEY=...`. To use another provider instead, save [`docs/providers.example.json`](docs/providers.example.json) as `~/.jjv/providers.json`, fill in the model name and prices, export its key (`OPENAI_API_KEY`, `XAI_API_KEY` or `GEMINI_API_KEY`), and add `--judge-provider openai` (or `xai`, `gemini`) to the commands below.
+2. **Ask which panel fits.** `jjv suggest notes.md` makes one small call, costs under a cent, and prints one to three panels with a rough cost and the command to run.
+3. **Run it.** `jjv review notes.md --panel "Docs Crit" --max-usd 3`. Status lines show the step, who has reported and the money spent.
+4. **Read the result.** The `DECISION` line, the consensus score out of 5, the top actions with who raised each, and the list the panel agreed to fix next. Add `--explain` to see the sums, run `jjv explain RUN_ID` later for free, or `jjv render RUN_ID --out run.html` for [a page](#watch-a-panel-change-its-mind) you can open in a browser. Records live in `~/.jjv/runs`. [`docs/reading-a-run.md`](docs/reading-a-run.md) walks through a real one.
 5. **Go further.** Pipe a diff with `--repo .` so Judges can read the code, review a web page with `--url`, a PDF by path, draft from a brief with `generate`, or serve JJV to an AI client with the [MCP server](#set-up-the-mcp-server).
 
 ### 3. Run a real panel
 
-To run a real panel, install `requirements-live.txt` and pick a backend. By default Judges run on Claude through the Agent SDK, signed in through Claude Code or `ANTHROPIC_API_KEY`. `--judge-provider openai` (or `xai`, `gemini`, `claude`, or a name from your `~/.jjv/providers.json`) runs them on that provider's public API instead, and `--consult` asks several models before the panel sits. Live runs spend money, up to `--max-usd` (default $5, a soft limit checked between calls). Each call gets a share of what is left; in the Jury round that share follows what the Judge cost in the Judge round. Run records go to `~/.jjv/runs`, outside any repo, because they name who is behind each anonymous Judge and Judges can read the repo they review. Keep secrets gitignored too: Judges cannot read files named like secrets, but a `Grep` can search one that git does not ignore. A store inside `--repo` is refused.
+A real panel needs the `live` extra from step 1 and a backend. By default Judges run on Claude through the Agent SDK, signed in through Claude Code or `ANTHROPIC_API_KEY`. `--judge-provider openai` (or `xai`, `gemini`, `claude`, or a name from your `~/.jjv/providers.json`) runs them on that provider's public API instead, and `--consult` asks several models before the panel sits. Live runs spend money, up to `--max-usd` (default $5, a soft limit checked between calls). Each call gets a share of what is left; in the Jury round that share follows what the Judge cost in the Judge round. Run records go to `~/.jjv/runs`, outside any repo, because they name who is behind each anonymous Judge and Judges can read the repo they review. Keep secrets gitignored too: Judges cannot read files named like secrets, but a `Grep` can search one that git does not ignore. A store inside `--repo` is refused.
 
 ```bash
-pip install -r requirements-live.txt
-python -m jjv.cli review design.md --panel "Physics of Compute"
-git diff | python -m jjv.cli review - --discipline code --repo .
-python -m jjv.cli generate brief.txt --panel "Docs Crit" --out draft.md
-python -m jjv.cli review plan.md --panel "Thinkers Panel" --deliberation-rounds 3
-python -m jjv.cli suggest --url https://example.com/post   # recommend a panel and a budget
-python -m jjv.cli review --url https://example.com/post --panel "Paper Review"
-python -m jjv.cli explain RUN_ID                           # how a saved run reached its result, free
-python -m jjv.cli review plan.md --panel "Thinkers Panel" --consult claude,openai,xai,gemini
-python -m jjv.cli review plan.md --panel "Thinkers Panel" --judge-provider openai   # Judges on another provider
-python -m jjv.mcp_server                                   # serve JJV to an MCP client
+jjv review design.md --panel "Physics of Compute"
+git diff | jjv review - --discipline code --repo .
+jjv generate brief.txt --panel "Docs Crit" --out draft.md
+jjv review plan.md --panel "Thinkers Panel" --deliberation-rounds 3
+jjv suggest --url https://example.com/post   # recommend a panel and a budget
+jjv review --url https://example.com/post --panel "Paper Review"
+jjv explain RUN_ID                           # how a saved run reached its result, free
+jjv render RUN_ID --out run.html             # the same run as one page, free
+jjv review plan.md --panel "Thinkers Panel" --consult claude,openai,xai,gemini
+jjv review plan.md --panel "Thinkers Panel" --judge-provider openai   # Judges on another provider
+jjv-mcp                                                    # serve JJV to an MCP client
 ```
 
 While a run works, status lines show elapsed time, money spent, the step (`2/4 JUDGE`) and how many Judges have reported. When nothing has happened for 15 seconds, a line says it is still working and who it is waiting on. Convergence lines show how far apart the Judges are, how many moved in each round, how many name the same fix list, how much of the proposed fix list survived, and how each draft scored against its target. `review` warns first if `--max-usd` looks too small. Add `--explain` to see how each section reached its output, with the sums written out.
@@ -98,9 +110,9 @@ Text files, code and web pages work with no extra install. Web pages keep formul
 PDF, Word, PowerPoint and Excel files need [Docling](https://github.com/docling-project/docling), which is large (about 1.5 GB, plus about 1 GB of models on first use) and runs on your machine:
 
 ```bash
-pip install -r requirements-parse.txt
-python -m jjv.cli review paper.pdf --panel "Paper Review" --max-usd 8
-python -m jjv.cli review --url https://arxiv.org/pdf/1706.03762 --panel "Paper Review" --max-usd 8
+pip install "judge-jury-voter[parse] @ git+https://github.com/tedtanne/judge_jury_voter"
+jjv review paper.pdf --panel "Paper Review" --max-usd 8
+jjv review --url https://arxiv.org/pdf/1706.03762 --panel "Paper Review" --max-usd 8
 ```
 
 A paper can take a few minutes to read, and `suggest` followed by `review` reads it twice. Displayed formulas become LaTeX, read from the page image, so they can contain small errors. Inline math stays as plain text. Check any formula a finding depends on. Scanned documents are untested.
@@ -111,30 +123,27 @@ Four ways, and they combine. The default needs no settings file. The provider pa
 
 | Way | How | What you need |
 |---|---|---|
-| **Default: Claude Agent SDK** | `python -m jjv.cli review ...` | Signed in through Claude Code, or `ANTHROPIC_API_KEY`. The only way that supports `--repo`, because the guard that keeps Judges inside a repository is built on the SDK's hooks |
+| **Default: Claude Agent SDK** | `jjv review ...` | Signed in through Claude Code, or `ANTHROPIC_API_KEY`. The only way that supports `--repo`, because the guard that keeps Judges inside a repository is built on the SDK's hooks |
 | **Judges on another provider** | Add `--judge-provider openai`, `xai`, `gemini`, `claude`, or a name you define | That provider's key in your environment and `~/.jjv/providers.json` with model names and prices. Any OpenAI-compatible endpoint works, including a local server. No Claude Code needed |
 | **Several models first** | Add `--consult claude,openai,xai,gemini` | Keys for the models you name and `~/.jjv/providers.json`. Each answers the subject, the answers are shuffled and labelled "Model 1", "Model 2"…, and the Judges weigh them without knowing the brand |
-| **From an MCP client** | `python -m jjv.mcp_server` | Nothing extra for the free tools (panels, archetypes, saved runs, replaying a bargain). Paid `review` and `generate` need `JJV_MCP_PAID=1` and the setup for whichever backend they use |
+| **From an MCP client** | `jjv-mcp` | Nothing extra for the free tools (panels, archetypes, saved runs, replaying a bargain). Paid `review` and `generate` need `JJV_MCP_PAID=1` and the setup for whichever backend they use |
 
 ### Set up the MCP server
 
-The server runs on your machine over stdio and needs `requirements-live.txt`. There is no package to install, so the client's command must find `jjv`: point `PYTHONPATH` at this repository and use its `.venv` Python.
+The server is the `jjv-mcp` command from the `live` extra. It runs on your machine over stdio. Give the client the full path to the command, since clients rarely inherit your shell's `PATH`: `which jjv-mcp` prints it.
 
 **Claude Code**, one line (use `-s project` to share it through `.mcp.json` instead of your user settings):
 
 ```bash
-claude mcp add jjv -s user \
-  -e PYTHONPATH=/path/to/judge_jury_voter -e JJV_MCP_PAID=0 \
-  -- /path/to/judge_jury_voter/.venv/bin/python -m jjv.mcp_server
+claude mcp add jjv -s user -e JJV_MCP_PAID=0 -- "$(which jjv-mcp)"
 ```
 
 **Claude Desktop, Cursor and other clients** take the same command as JSON in their MCP settings:
 
 ```json
 {"mcpServers": {"jjv": {
-  "command": "/path/to/judge_jury_voter/.venv/bin/python",
-  "args": ["-m", "jjv.mcp_server"],
-  "env": {"PYTHONPATH": "/path/to/judge_jury_voter", "JJV_MCP_PAID": "0"}}}}
+  "command": "/path/to/.venv/bin/jjv-mcp",
+  "env": {"JJV_MCP_PAID": "0"}}}}
 ```
 
 Then ask the client for JJV's panels, an archetype's veto, or how a saved run reached its result. The **free tools** never call a model: `list_panels`, `list_archetypes`, `list_providers`, `get_limits`, `get_run`, `explain_run` and `settle`, which replays the bargain on a saved run at a different budget.
@@ -148,7 +157,7 @@ The server passes its unit tests against simulated models, but has not yet been 
 Add `--json` to `review`, `generate`, `suggest` or `explain`, and the result comes back as JSON on stdout: the decision, score, fix list, every finding, convergence, the run id and a `fingerprint` of the content. Status lines stay on stderr, and errors come back as `{"status": "error", "error": "..."}`.
 
 ```bash
-python -m jjv.cli review note.md --panel "Thinkers Panel" --json > result.json
+jjv review note.md --panel "Thinkers Panel" --json > result.json
 ```
 
 A finished review is reused when the same content is reviewed again with the same panel and settings, so asking twice costs nothing, and a cached PDF is not read again. The JSON says `"cached": true`. Use `--no-cache` to run again. Changing the content, panel, an archetype's version or any setting that shapes the result starts a new run; changing `--max-usd` does not. Runs that failed or lost a Judge are never reused, and neither are `--repo` runs. The MCP server reuses results the same way.
@@ -169,11 +178,12 @@ A finished review is reused when the same content is reviewed again with the sam
 | Registry | One lookup for all 58 archetypes and 25 presets, the veto-dimension vocabulary, `validate()`, and the generated catalog | `jjv/registry.py`, `docs/archetypes.md` |
 | Orchestrator | Runs SELECT, JUDGE, JURY, VOTE and the generate loop in fixed order, with retries, quorum, spending limit, saved run records and reputation | `jjv/orchestrator.py`, `jjv/backend.py`, `jjv/cli.py` |
 | Voter | Deterministic tally: consensus score, decision by veto policy, ranked findings, dissents | `jjv/voter.py`, `jjv/verdicts.py` |
+| Run viewer | One static page from a saved run: the room, convergence, findings, the bargain and the decision rule. Four rendered runs are in `docs/runs/` | `jjv/render.py`, `jjv/explain.py` |
 | Evaluation | Nash broker vs weighted voting: offline simulation plus a live-comparison hook | `jjv/eval_broker.py` |
-| Tests and CI | 409 unit tests; GitHub Actions runs them on Python 3.10–3.12 along with the evaluation | `tests/`, `.github/workflows/tests.yml` |
+| Tests and CI | 421 unit tests; GitHub Actions runs them on Python 3.10–3.12 along with the evaluation | `tests/`, `.github/workflows/tests.yml` |
 | Design docs | The full swarm architecture and roadmap, the broker spec, the domain-agent library map, and the catalog | `docs/` |
 
-**Status.** This repository holds the full archetype registry (58 archetypes, 25 presets, every preset member defined), the negotiation layer and its evaluation, the orchestrator, the Voter, and a CLI. Still to come: the FastAPI backend and web UI, and the live broker comparison on real subjects.
+**Status.** This repository holds the full archetype registry (58 archetypes, 25 presets, every preset member defined), the negotiation layer and its evaluation, the orchestrator, the Voter, a CLI and a static run viewer. Still to come: the FastAPI backend and web UI, and the live broker comparison on real subjects.
 
 **Next steps**, in recommended order (details in [`docs/architecture.md`](docs/architecture.md#next-steps)):
 1. Confirm finding links on the full models. So far they have been checked on two cheap-model runs.
@@ -402,13 +412,27 @@ A veto reaches only its holder's area, and each holder weakly prefers the settle
 
 In the Jury round a Judge can mark its own finding `same_as` another Judge's. Linked findings are fixed as one, so agreement counts and an issue costs the budget once. Each Judge's words stay on record.
 
-## Tests
+## Developing
+
+<a id="tests"></a>
+
+Work from a checkout with an editable install, so `jjv` runs your edits:
 
 ```bash
-bash scripts/run_tests.sh        # writes reports/: log, junit.xml, coverage, summary
+git clone https://github.com/tedtanne/judge_jury_voter && cd judge_jury_voter
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e ".[live,test]"                      # or -r requirements-live.txt, the same thing
+pytest -q                                          # 421 unit tests, no API key needed
+bash scripts/run_tests.sh                          # the same, with reports/: log, junit.xml, coverage, summary
+python -m jjv.registry > docs/archetypes.md        # regenerate the archetype catalog
+python -m jjv.registry --readme                    # regenerate the roster in this README
+python -m jjv.eval_broker --trials 300 --seed 7    # Nash broker vs weighted vote
+python scripts/make_hero.py                        # regenerate the hero above
 ```
 
-CI (`.github/workflows/tests.yml`) runs the suite on Python 3.10–3.12 for every push and pull request. Results, per-module coverage, and the broker evaluation appear on each run's **Summary** page. No API key is used in CI.
+Everything except live runs uses the Python standard library alone; the package has no required dependencies, and pins for the `live`, `parse` and `test` extras live in `pyproject.toml`. The `requirements*.txt` files install those extras. `python -m jjv.cli` and `python -m jjv.mcp_server` do what `jjv` and `jjv-mcp` do, for a checkout that is not installed.
+
+CI (`.github/workflows/tests.yml`) installs the package, checks the `jjv` command and runs the suite on Python 3.10–3.12 for every push and pull request. Results, per-module coverage, and the broker evaluation appear on each run's **Summary** page. No API key is used in CI.
 
 ## Evaluation
 

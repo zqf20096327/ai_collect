@@ -8,6 +8,10 @@
 <p align="center"><sub>Open-source AI novel writing assistant and long-form production studio.</sub></p>
 
 <p align="center">
+  <a href="https://ai-novel-writing-assistant.mintlify.app"><strong>🌐 项目官网｜使用文档、下载安装与更新说明</strong></a>
+</p>
+
+<p align="center">
   <a href="https://github.com/ExplosiveCoderflome/AI-Novel-Writing-Assistant/releases/latest"><img src="https://img.shields.io/github/v/release/ExplosiveCoderflome/AI-Novel-Writing-Assistant?style=flat-square&amp;label=Windows%20%E6%A1%8C%E9%9D%A2%E7%89%88&amp;color=17556b" alt="最新桌面版本" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-17556b?style=flat-square" alt="AGPL-3.0 许可证" /></a>
   <a href="https://linux.do/"><img src="https://img.shields.io/badge/LINUX%20DO-%E7%A4%BE%E5%8C%BA-FDD835?style=flat-square&amp;labelColor=222" alt="LINUX DO 社区" /></a>
@@ -34,7 +38,7 @@
 
 <p align="center">
   <a href="https://github.com/ExplosiveCoderflome/AI-Novel-Writing-Assistant/releases/latest"><strong>下载 Windows 桌面版</strong></a> ·
-  <a href="https://ai-novel-writing-assistant.mintlify.site">项目介绍与文档</a> ·
+  <a href="https://ai-novel-writing-assistant.mintlify.app">项目官网与文档</a> ·
   <a href="#快速开始">第一次使用</a> ·
   <a href="#源码运行">源码运行</a> ·
   <a href="https://github.com/ExplosiveCoderflome/AI-Novel-Writing-Assistant/issues">问题反馈</a>
@@ -50,21 +54,26 @@
 
 ## 最新更新
 
-### 2026-11-14
+### 2026-11-15 · v0.8.6
 
-`v0.8.5` 修复 Windows 正式打包，并加快发布检查：可移植全量检查在 Ubuntu 完成一次后复用，Windows 保留迁移、生产数据库探测与平台打包验收。安装包以上线后的 GitHub Release 为准；完整五平台请下载 `v0.8.5`。
+桌面版本 `v0.8.6`：新增厂商默认关闭思考，兼容探测遇限流自动重试，工作台加入 BLG 夺冠庆祝彩蛋；桌面正式发布改为各平台先打包校验、再上传已通过的安装包与更新元数据。
+
+#### 新增
+
+- 品牌标识连点五次触发 BLG 夺冠庆祝：彩带与奖杯庆祝层，点空白、按 Esc 或点「继续创作」关闭。
 
 #### 优化
 
-- 桌面发布等待更短：全量可移植检查只在 Ubuntu 跑一遍，各平台打包复用同一通过记录。
+- 新增厂商默认关闭思考：新建自定义厂商与首次配置的内置厂商默认关闭，已有厂商的设置保持不变。
+- 桌面正式发布改为各平台并行打包并先完成校验，再上传已经通过检查的安装包与更新说明；Mac 两个架构的更新信息会合并后再发布，避免互相覆盖。
 
 #### 修复
 
-- Windows 安装包可走完正式打包；`v0.8.4` 仅有 Linux / macOS 包时，请改用本版。
+- 兼容探测遇限流或服务端错误时自动退避重试，探测预算放宽，突发限流下探测也可完成。
 
 [查看完整更新历史](docs/releases/release-notes.md)
 
-正式桌面版以 GitHub Release 的 **v0.8.5** 五平台安装包为准；`v0.8.4` 缺 Windows 包，`v0.8.3` 标签曾推送但打包失败、无安装包，`v0.8.2` 附注标签也不对应可下载版本。功能与致谢见[完整更新历史](docs/releases/release-notes.md)。
+正式桌面版以 GitHub Release 的 **v0.8.6** 五平台安装包为准；`v0.8.5` 为上一完整五平台版本，`v0.8.4` 缺 Windows 包，`v0.8.3` 标签曾推送但打包失败、无安装包，`v0.8.2` 附注标签也不对应可下载版本。功能与致谢见[完整更新历史](docs/releases/release-notes.md)。
 
 
 ## 现在已经能做什么

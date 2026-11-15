@@ -11,6 +11,11 @@
 
 **Tater** is a local-first AI platform that can run local models through **llama.cpp**, or connect to remote OpenAI-compatible and llama.cpp APIs. It supports voice satellites like **VoicePE**, **Sat1**, **S3Box**, and **ReSpeaker XVF3800**, plus portals for **Discord**, **Home Assistant**, **HomeKit**, **IRC**, **macOS**, **Matrix**, **Meshtastic**, **Telegram**, and **XBMC4Xbox**.
 
+**New in 3.0.1:** the Library first design now extends inside all twelve built-in
+Core workspaces, with clearer details, focused editors, timelines, weather views,
+and an upcoming music queue. Update the matching Cores from Tater Shop for the
+complete refresh. [Read the release notes](macos/Tater/RELEASE_NOTES.md).
+
 ---
 
 ## Little Spud Companion App
@@ -31,53 +36,38 @@ Little Spud connects to your Tater Spud Hub for chat, TTS, STT, and notification
 
 ---
 
-## Tater Bench
+## Tater Voice Satellites
 
-Tater Bench compares local models using repeatable Tater-style accuracy and performance tests across engines, speculative decoding modes, and hardware.
+Bring Tater into every room with a dedicated voice satellite. Wake-word
+detection, microphone capture and speaker playback run on the satellite;
+Tater handles speech recognition, conversation, tools and spoken replies.
+Pair and manage your devices from Tater's Voice settings, with wake words,
+volume, device preferences and firmware updates where supported.
 
-<p>
-  <a href="https://tatertotterson.github.io/TaterBench/">
-    <img alt="View Tater Bench model results" src="https://img.shields.io/badge/Tater%20Bench-View%20Model%20Results-FF7A18?style=for-the-badge&logo=githubpages&logoColor=white" />
-  </a>
-</p>
+Choose the firmware or runtime for your hardware:
 
----
+- **[Tater Native Firmware](https://github.com/TaterTotterson/Tater-Native-Firmware)**
+  — ESP32-S3 satellites: Voice PE, Satellite1, ReSpeaker XVF3800 and
+  ESP32-S3-BOX-3.
+- **[Tater Echo Firmware](https://github.com/TaterTotterson/Tater-Echo-Firmware)**
+  — Supported, unlocked Amazon Echo, Dot, Show and Spot models. Check the
+  repository for exact generations and installation requirements.
+- **[Tater Linux Satellite](https://github.com/TaterTotterson/Tater-Linux-Satellite)**
+  — Turn a Linux computer, Raspberry Pi or custom device with a microphone and
+  speaker into a Tater satellite.
+- **[Tater ThirdReality Voice Firmware](https://github.com/TaterTotterson/Tater-ThirdReality-Voice-Firmware)**
+  — Native Tater voice and music on the ThirdReality Voice & Music Assistant
+  (S420).
 
-## 🧩 Tater Architecture
+Depending on the device, satellites also support local timers, announcements,
+continued conversation, synchronized music, Sat Chat audio/video calls, and
+on-screen weather, notifications and media controls.
 
-Tater is built around a modular system:
-
-- **Cores** → core systems that extend Tater's capabilities
-- **Portals** → integrations with platforms like Discord, Home Assistant, and more
-- **Verbas** → AI-driven tools and actions Tater can perform
-- **Integrations** → modular provider packages for devices, services, search providers, and external APIs
-
-### Tater Shop
-
-Tater Shop manages the catalogs, versions, metadata, and updates for Tater Cores, Portals, and Verbas.
-
-Core-owned Redis keys must use the Core's canonical namespace: `<core_id>:` or
-`<module_key>:`. Standard `<module_key>_settings` and running-state keys are
-handled separately. The **Delete data** uninstall option removes those
-namespaces automatically. Shared platform namespaces such as `tater:` are not
-inferred from a downloaded Core;
-historical official exceptions are explicitly audited in `tateros/core_store.py`.
-
-<p>
-  <a href="https://github.com/TaterTotterson/Tater_Shop">
-    <img alt="Browse Tater Shop" src="https://img.shields.io/badge/Tater%20Shop-Browse%20Extensions-FF7A18?style=for-the-badge&logo=github&logoColor=white" />
-  </a>
-</p>
-
-### Tater Integrations
-
-Tater Integrations provides modular packages for devices, services, search providers, and external APIs.
-
-<p>
-  <a href="https://github.com/TaterTotterson/Tater_Integrations">
-    <img alt="Browse Tater Integrations" src="https://img.shields.io/badge/Tater%20Integrations-Browse%20Packages-FF7A18?style=for-the-badge&logo=github&logoColor=white" />
-  </a>
-</p>
+Prefer Home Assistant Assist? The
+**[Tater Home Assistant Satellites bridge](https://github.com/TaterTotterson/Tater-Home-Assistant-Satellites)**
+connects compatible satellites directly to Home Assistant without requiring
+the Tater app. It also offers an optional **Mini-Tater** mode—a streamlined
+Tater assistant built into the bridge.
 
 ---
 
@@ -315,11 +305,27 @@ Hydra model settings are saved by TaterOS and used at runtime. Base, Terminal, B
 - If Base is already loaded and vision-capable, Tater reuses it instead of loading the same model twice.
 - Dedicated vision models are managed separately from Base.
 
+### Satellite Displays
+
+Updated Echo GPU screens expose **Conversation Text** under each satellite's
+**Display → Appearance & Photos** settings: **Smooth** (default) or **Matrix**
+symbol cycling for recognized speech and replies. This is a per-satellite
+choice, including changes made on its touchscreen, not a shared voice default.
+The selector appears only when the satellite advertises support for it.
+
 ### Advanced Notes
 
 - Local context length is configured in **Settings -> Models -> LLM / Vision**.
 - Thinking suppression is enabled by default for local providers when supported.
 - `run_ui.sh` starts Uvicorn with `--no-access-log` to suppress per-request log spam. Shutdown waits at most eight seconds for long-lived WebSocket and event-stream connections before cancelling them, so a stale satellite or browser connection cannot block a restart. Set `HTMLUI_GRACEFUL_SHUTDOWN_TIMEOUT_SECONDS` to override that connection-drain deadline.
+
+## Development layout
+
+Python implementations are grouped by feature under `tater/`, alongside the
+existing Hydra, voice, notification, and Spudex packages. Small root forwarding
+modules preserve the import names used by installed Cores, Portals, and Verbas.
+See [Python application layout](docs/python_layout.md) for the package map,
+compatibility rules, and validation commands.
 
 ## License and trademarks
 

@@ -19,6 +19,8 @@ When Hermes supplies edit previews, completed replies show a changes card with e
 
 While browsing chat history, prepared messages appear in order as they become ready, keeping the current reading position stable.
 
+Performance captures record callback timing and workspace updates locally; optional stack samples can add overhead while recording.
+
 Unread session badges and the floating “new messages” control count AI responses only. User messages, tools, activity, system notices, errors, and empty streaming placeholders do not increase the count. Opening an unread session takes you to its first unread reply and marks the captured updates reviewed; a blue-tinted unread divider remains visible for that visit. The Bot picker counts unread sessions per Bot in a red badge, with a plus sign when the available session inventory is incomplete. Scrolling to the latest reply clears the floating count.
 
 [![Herm driving a shared browser with a live agent cursor](docs/media/browser-demo-poster.webp)](docs/media/browser-demo.mp4)
@@ -192,7 +194,7 @@ Quick approval and clarification answers stay tied to their original request, se
 
 The status colors match the rest of the app: blue means active, green means healthy or done, amber means a warning or that Hermes needs you, and red means a failure.
 
-Global hover tooltips show one floating, fully opaque, theme-aware panel beside the hovered control and above workspace content and scroll containers. Long help wraps, stays within the display, and never takes keyboard focus.
+Global hover tooltips show one floating, fully opaque, theme-aware panel beside the hovered control and above workspace content and scroll containers. Hover descriptions appear on first attachment and are cancelled when the control is removed. Long help wraps, stays within the display, and never takes keyboard focus.
 
 Chat message timestamps appear on hover, with no separator after the assistant message actions.
 
@@ -484,6 +486,8 @@ The card is titled **Session overview** when no repository is selected.
 Its sections summarize pending questions and approvals, the session task plan,
 delegated subagents, workspace checkpoints (with diff and a confirmed restore),
 outputs, pinned messages, and the current workspace alongside Changes and PRs.
+Subagents show identity and status without activity descriptions. Live status wins;
+nonterminal history without current live evidence is shown as status not current.
 Tasks share the composer's status indicators and ordering: in-progress tasks first,
 pending next, and completed or cancelled tasks last. The active task remains visible
 in the Tasks summary and uses a highlighted row and progress indicator when expanded.
@@ -874,7 +878,9 @@ Timeline uses a single horizontal gutter and compact 36pt bot faces, and shows b
 - **iOS Simulator / Android Emulator**: live device tabs Hermes can launch and you can drive. See [iOS Simulator and Android Emulator](#ios-simulator-and-android-emulator).
 - **Terminal**: a native terminal in the session's project folder, with history, Tab completion, and optional repository checks.
 - **Repository review**: reviews the whole repository locally and tells you what it didn't cover. Optional repository watching never starts Hermes work on its own.
-- **⌘K command palette** for app actions and Inbox filters.
+- **⌘K command palette** for app actions and Inbox filters; in a workspace window it opens the same Command Center action palette as the Activity sidebar button, with registry shortcuts in the View and Go menus.
+- **⌘N** starts a new chat and **⌘.** stops the current generation; both appear in the command palette and menu bar.
+- **⌘,** opens Settings; **⌘[ / ⌘]** navigate backward and forward through visited workspace destinations.
 
 ### Native review and workflow tools
 
@@ -944,7 +950,4 @@ The session inspector's **Browser** tab is a real Chromium browser that you and 
 - **Hermes can show inspector tabs.** Hermes' `focus_pane` (files, terminal, review) and the `herm_inspector` tool from the `herm` plugin (`Sources/Herm/Resources/HermesPlugins/herm`) expand the inspector to the requested tab in that chat.
 - **Use Herm's browser** (Settings → Browser, on by default) opens pages Hermes shows (`desktop_preview`) in the Browser tab and blocks terminal `open <url>` or `open -a <browser>`, so "open the page" lands in Herm. Off, those pages open in your default browser; Hermes' browser tools still use Herm's browser.
 - **Take over and hand back.** **Take over** pauses Herm so you can handle a login or captcha yourself. **Hand back to Herm** then tells it to continue from that page. While Herm is working, your clicks and typing are ignored so they can't interfere with it. While Herm is in control, an accent glow slowly swells and ebbs around the page edge and a "Herm is using your tab" pill floats at the bottom. Each Herm click sends a wave out from its cursor that briefly lights the page edge.
-- **Page dialogs** (alerts, confirmations, prompts, "Leave this page?") appear as a card in the panel, so a page can't stay frozen waiting for an answer. If Hermes answers a dialog itself, the card closes.
-- **Annotate** (cursor icon): click any element, describe the change, and Herm sends the element's selector, styles, HTML and a screenshot to the chat. The popup uses your Herm theme.
-- **One browser per profile.** Each Hermes profile (and bot profile) runs one agent Chrome, matching Hermes' profile-wide browser connection. Its sessions share it and its sign-ins; each session returns to the tab it last showed, and switching sessions doesn't reconnect Hermes. Switching sessions or closing the inspector keeps live pages and form state without reloading. The browser quits once no session of that profile remains open.
-- **Sign-i
+- **Page dialogs** (alerts, confirmations, prompts, "Leave this page?"

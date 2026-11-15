@@ -20,7 +20,9 @@
 
 Magpie 是一个本地 AI 网关：你可以在一个地址上管理供应商、账号、模型和路由，再让本机或局域网里的客户端按 OpenAI / Anthropic / Gemini 等 API 格式调用。
 
-这个仓库做的是 **Android 运行壳**，不是只读的远程监控器：前台服务直接在手机应用私有目录运行 `magpie serve`，WebView 展示 magpie 原生管理界面。默认 API 地址是：
+这个仓库做的是 **Android 运行壳**：前台服务直接在手机应用私有目录运行 `magpie serve`。
+外壳界面是**原生绘制**的，不套 WebView——打开 App 就能直接看用量、账号、路由，不用等网页加载。
+默认 API 地址是：
 
 ```text
 http://127.0.0.1:3425/v1
@@ -36,31 +38,37 @@ http://127.0.0.1:3425/v1
 ## 核心特性
 
 - **无需 Root**：不依赖 Magisk、Termux 或额外终端 App。
-- **前台服务托管网关**：启动后在手机里运行 magpie 网关，并提供状态、日志、重启与停止入口；异常退出时会退避重启，连续失败会发通知提醒。
-- **原生 Web 管理界面**：供应商、路由、网关、用量、插件等页面仍使用 magpie 自带 Web UI。
+- **前台服务托管网关**：启动后在手机里运行 magpie 网关，异常退出时会退避重启，连续失败会发通知提醒。
+- **原生主界面**：主界面不套 WebView，四个标签页直接读 magpie 的 HTTP 接口绘制。
+  - **概览**：时间范围切换、Token / 请求 / 费用 / 缓存命中率 / 输出速度与流量汇总卡、趋势图、按供应商分组的额度卡。
+  - **用量**：周期切换、汇总、模型排行、使用者、最近请求。
+  - **账号**：供应商与账号两级折叠（带厂商图标与合计）、额度进度、单账号启停、添加供应商。
+  - **路由**：实时面板（网关正在做的决定、候选账号高亮、绿色虚线联动）与请求记录（实时 / 今天 / 昨天 / 更早）；点任一条可看该次请求的上下文窗口明细（Token 构成、缓存命中、分项清单，点分项看工具定义与消息原文）。
+- **完整网页界面仍然保留**：右上角 ⋮ →「打开控制后台」。插件安装、隐私脱敏、同步备份等深度功能用它。
 - **App 内更新内核**：从官方更新源下载 Android arm64 内核，提供断点续传、SHA-256 校验、运行前验证与回滚；内核更新不需要重装 APK。
-- **局域网接入**：顶栏「局域网」入口可查看并复制局域网 Base URL 与网关密钥；远端客户端仍必须携带已启用的网关密钥。
+- **局域网接入**：顶栏「局域网」胶囊可查看并复制局域网 Base URL 与网关密钥；远端客户端仍必须携带已启用的网关密钥。
 - **Material 3 外壳**：TonalSpot / SPEC 2025 配色、八种种子色、Android 12+ 动态取色。
-- **后台页面内存管理**：可选择从不、15 分钟、30 分钟或自定义时间；后台释放 WebView 不会主动停止网关，回到 App 后自动恢复页面。
-- **首次后台运行引导**：提示通知权限、电池优化、自启动和最近任务锁定等系统设置，并支持“以后再说”和“不再提示”。
+- **数字单位可切换**：K / M / B ↔ 万 / 亿。
+- **后台零唤醒**：切到后台后停止所有长轮询与定时器，返回时自动恢复。
 - **Android DNS 适配**：为静态 Go 内核提供本地 HTTP CONNECT 代理，避免 Android 环境中 `/etc/resolv.conf` 缺失造成的域名解析问题。
 
 ## 界面预览
 
+> 以下为 ⋮ →「打开控制后台」里的 **magpie 自带网页管理界面**截图。
+> 原生主界面（概览 / 用量 / 账号 / 路由）的截图待补。
 > 截图中的账号、密钥、局域网 IP 和用量均已打码或使用示例信息。不要把自己的网关密钥或带 `?k=` 的管理页地址公开发布。
 
 | 路由与账号选择 | 局域网共享 | 请求与用量 |
 | --- | --- | --- |
-| ![Magpie Android 路由页面](screenshots/routing.jpg) | ![Magpie Android 局域网共享弹窗](screenshots/lan-share.jpg) | ![Magpie Android 请求与用量页面](screenshots/usage.jpg) |
+| ![Magpie 网页路由页面](screenshots/routing.jpg) | ![Magpie 局域网共享弹窗](screenshots/lan-share.jpg) | ![Magpie 请求与用量页面](screenshots/usage.jpg) |
 
 ## 快速开始
 
 1. 从 [Releases](https://github.com/yqing004-boop/magpie-android/releases/latest) 下载并安装 APK；
 2. 打开 App，等待顶部状态显示「运行中」；
-3. 在原生 magpie 页面中添加供应商或登录账号；
+3. 在「账号」页添加供应商或登录账号（订阅类账号的登录仍在网页里做：⋮ → 打开控制后台）；
 4. 在需要调用模型的客户端中填入 `http://127.0.0.1:3425/v1`；
 5. 如需跨设备使用：先在壳的设置开启「允许局域网访问」，再到 magpie 网页的「网关 → 局域网共享」开启共享并确认网关密钥；顶栏「局域网」可复制给另一台设备使用的 Base URL 与密钥。
-
 
 ## 更新说明
 
@@ -69,7 +77,7 @@ http://127.0.0.1:3425/v1
 | 更新对象 | 入口 | 是否需要重装 APK |
 | --- | --- | --- |
 | **magpie 内核** | App 右上角菜单 →「检查 magpie 更新」 | 不需要；仅替换应用私有目录中的内核二进制 |
-| **Android 外壳** | 设置 →「检查 App 更新（GitHub）」或 [GitHub Releases](https://github.com/yqing004-boop/magpie-android/releases/latest) | 需要下载新版 APK 并覆盖安装 |
+| **Android 外壳** | 更新页 →「检查 App 更新」或 [GitHub Releases](https://github.com/yqing004-boop/magpie-android/releases/latest) | 需要下载新版 APK 并覆盖安装 |
 
 内核更新会进行下载进度、断点续传、SHA-256、版本冒烟测试与备份回滚。外壳升级必须保持同一签名，才能在不卸载的情况下保留数据。
 
@@ -77,7 +85,8 @@ http://127.0.0.1:3425/v1
 
 ```text
 Android App
- ├─ MainActivity：WebView → magpie Web UI（默认 3430）
+ ├─ NativeHome：原生主界面（概览 / 用量 / 账号 / 路由），直接读 magpie 的 HTTP 接口
+ ├─ MainActivity：WebView → magpie Web UI（默认 3430），从 ⋮ 菜单进
  ├─ GatewayService：前台服务 → magpie serve（默认 API 3425）
  ├─ LocalProxy：为 Android 上的静态 Go 内核提供 DNS/HTTP 代理适配
  └─ Updater：下载、校验、替换、回滚官方 Android arm64 内核
@@ -91,7 +100,7 @@ Android 源码在 `app/`，详细构建记录见 [README.dev.md](README.dev.md)�
 
 ```sh
 ANDROID_JAR=/path/to/android.jar \
-VERSION_NAME=1.0.28 VERSION_CODE=28 \
+VERSION_NAME=1.4.2 VERSION_CODE=142 \
 sh scripts/build-apk-local.sh
 ```
 

@@ -1,28 +1,88 @@
-# 数模军械库 · MathModeling Skills Arsenal
+<div align="center">
+  <img src="docs/assets/mark.svg" width="64" height="64" alt="数模工作台标识">
+  <h1>数模军械库</h1>
+  <p><strong>数模 Skills ＋ 本地工作台</strong></p>
+  <p>从读题、建模到论文交付，让 AI 协作的过程更清楚、更可追溯。</p>
+</div>
 
-把读题、建模求解、科研绘图、论文写作与终稿检查组织成可追溯的 AI Agent 工作流。
+<div align="center">
 
 [![Repository checks](https://github.com/cjh-solver/MathModeling-Skills-Arsenal/actions/workflows/validate.yml/badge.svg)](https://github.com/cjh-solver/MathModeling-Skills-Arsenal/actions/workflows/validate.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 
-适合已有题目、数据和人工判断，希望让 AI 分工、证据和交付更清楚的建模团队。覆盖国赛、美赛、MathorCup 等竞赛；具体格式与 AI 使用要求以本届官方规则为准。
+[开始使用](#开始使用) · [工作台演示](examples/workbench-demo/README.md) · [技能目录](docs/skill-catalog.md) · [验证与限制](docs/validation.md)
 
-**先看效果：** [逐章写作示例](examples/chapter-parallel/README.md) · [本地数模工作台](tools/harness-workbench/README.md) · [可复制提示词](docs/quickstart.md) · [验证与边界](docs/validation.md) · [完整技能目录](docs/skill-catalog.md)
+</div>
 
-## 能得到什么
+适合有题目、数据和人工判断，希望把建模任务、证据和成果组织起来的个人或团队。覆盖国赛、美赛、MathorCup 等竞赛；格式与 AI 使用要求以本届官方规则为准。
 
-| 你的任务 | 主要技能 | 可检查的产出 |
+> **当前状态：** 主控为开发快照，完整发布检查尚未通过；节点批准和最终交付仍由人负责。详见[验证说明](docs/validation.md)。
+
+## 先看看效果
+
+本机读取已有 Harness 项目，集中查看比赛阶段、小问、角色会话和成果。页面定时从项目文件同步，不需要额外调用模型。比赛数据和审批记录保持只读，角色会话需自行登记并核实。
+
+![数模工作台比赛总览，使用合成演示项目](docs/assets/workbench-overview.png)
+
+截图来自仓库内的合成演示项目，不代表真实比赛进度或批准结果。[打开演示项目](examples/workbench-demo/README.md) · [了解工作台](tools/harness-workbench/README.md)
+
+## 选择你的起点
+
+| 我想做什么 | 从哪里开始 | 先得到什么 |
 | --- | --- | --- |
-| 组织完整参赛流程 | `contest-orchestrator` | 问题划分、模型计划、实验记录、任务卡、人工批准与交付检查 |
-| 选择模型与处理数据 | `math-model-selector`、`data-science-stack` | 模型选择表、数据协议、baseline、公平比较与独立核验材料 |
-| 写出有论证的章节 | `academic-writing` | 读者问题、完整章节、符号与主张证据审阅；普通润色保护公式和数字 |
-| 制作论文数据图 | `scipilot-figure-skill`、`modelviz` | 图表决策卡、模板适配脚本、SVG/PNG 和视觉 QA |
-| 画流程、技术路线与机制图 | `tikz-scientific-figures` | 可编辑 TikZ 源与 SVG/PNG |
-| 排版和交稿前复查 | `mathmodel-latex-skill`、`bzd-review-paper` | 论文工程、编译与一致性检查、问题清单与评审报告 |
+| 组织一场完整比赛 | [竞赛主控](skills/01-core/contest-orchestrator/SKILL.md) · [全流程提示词](docs/quickstart.md#mathorcup-全流程) | 题意划分、输入缺口、模型计划与节点安排 |
+| 只处理一个问题 | [模型选择](skills/02-modeling/math-model-selector/SKILL.md) · [数据分析](skills/02-modeling/data-science-stack/SKILL.md) | 题型与模型选择、数据边界、可复现的分析方案 |
+| 制作图表和示意图 | [科研绘图](skills/04-figures/modelviz/SKILL.md) · [图表决策](skills/04-figures/scipilot-figure-skill/SKILL.md) · [技术路线示例](skills/04-figures/tech-route-maker/examples/out/tech-route.svg) | 图表方案、可编辑图源、质量检查材料 |
+| 写作或复核论文 | [学术写作](skills/03-writing/academic-writing/SKILL.md) · [论文排版](skills/03-writing/mathmodel-latex-skill/SKILL.md) | 章节审阅、LaTeX 论文工程与检查清单 |
+| 查看已有 Harness 项目 | [工作台使用说明](tools/harness-workbench/README.md) | 阶段、角色、文件、论文和已有审查记录 |
 
-这些是工作流和工具能力，不构成获奖、预测精度或论文质量保证。真实结论仍需要实际数据、实验与人工核验。
+更多单项任务和可复制提示词见[按任务启动](docs/quickstart.md)。
 
-## 本次更新：章节批准后，图文并行
+## 开始使用
+
+```bash
+git clone https://github.com/cjh-solver/MathModeling-Skills-Arsenal.git
+cd MathModeling-Skills-Arsenal
+```
+
+仓库使用 `skills/<分类>/<技能>/SKILL.md` 结构，安装时将技能目录放到宿主实际读取的技能根目录。以 Codex 用户技能目录为例：
+
+<details>
+<summary>Codex 用户：展开 PowerShell 安装示例</summary>
+
+以下命令安装数模分类，跳过创意写作；已有同名技能会跳过，不会覆盖。
+
+```powershell
+# PowerShell：只安装数模分类，跳过创意写作。
+$skillRoot = Join-Path $env:USERPROFILE '.agents/skills'
+New-Item -ItemType Directory -Force -Path $skillRoot | Out-Null
+Get-ChildItem skills/0* -Directory | ForEach-Object {
+    Get-ChildItem $_.FullName -Directory | ForEach-Object {
+        if (-not (Test-Path -LiteralPath (Join-Path $_.FullName 'SKILL.md'))) { return }
+        $destination = Join-Path $skillRoot $_.Name
+        if (Test-Path -LiteralPath $destination) {
+            Write-Warning "已存在，跳过：$($_.Name)"
+        } else {
+            Copy-Item -LiteralPath $_.FullName -Destination $destination -Recurse
+        }
+    }
+}
+```
+
+此命令跳过已有同名技能；需要更新时先比较与备份，再合并。Claude Code、WorkBuddy 等宿主使用各自配置的技能目录；支持 `SKILL.md` 不代表工具、模型和多角色能力完全相同。
+
+</details>
+
+安装后打开新会话，给出题目、附件路径与规则来源：
+
+```text
+使用 contest-orchestrator。先读取我的题目和本届规则，列出缺失输入，
+选择合适模式。先做题意与模型计划，不直接生成最终论文或编造实验结果。
+```
+
+MathorCup 全流程可指定 `full-contest-mathorcup`；只解一问、只画图或只审稿时使用对应单项技能。详见 [启动示例](docs/quickstart.md)。
+
+## 工作流示例：章节批准后，图文并行
 
 Harness 与 MathorCup 的新模板采用 `chapter_parallel`。先写建模求解，目录顺序与实际写作顺序分别维护。每次提交完整一章，由使用者批准后再写下一章；图表提示词也在该章批准后产生，由使用者转交图表角色。
 
@@ -42,62 +102,15 @@ flowchart LR
 
 图件返修更新提示词版本，后续章节继续写；未变正文的批准保持有效。最终交付仍检查最新图件、选定版本、证据来源与全文一致性。历史四批写作记录继续兼容。
 
-## 三分钟开始
+## 验证与边界
 
-```bash
-git clone https://github.com/cjh-solver/MathModeling-Skills-Arsenal.git
-cd MathModeling-Skills-Arsenal
-```
+- [流程测试与复现方法](docs/validation.md)说明检查内容、历史结果和尚未解决的发布问题。CI 通过不等于正式比赛交付通过。
+- [合成章节示例](examples/chapter-parallel/README.md)展示正文与图表交接；构造数据上的结果不能证明真实比赛表现。
+- [可编辑技术路线示例](skills/04-figures/tech-route-maker/examples/out/tech-route.svg)展示图源形式；实际图表需依据题目、数据和证据重新制作与核验。
+- 科学计算、论文编译和不同宿主需要各自依赖；缺少工具时不能以源码检查代替实际运行。
 
-仓库使用 `skills/<分类>/<技能>/SKILL.md` 结构，安装时将技能目录放到宿主实际读取的技能根目录。以 Codex 用户技能目录为例：
+## 参与和维护
 
-```powershell
-# PowerShell：只安装数模分类，跳过创意写作。
-$skillRoot = Join-Path $env:USERPROFILE '.agents/skills'
-New-Item -ItemType Directory -Force -Path $skillRoot | Out-Null
-Get-ChildItem skills/0* -Directory | ForEach-Object {
-    Get-ChildItem $_.FullName -Directory | ForEach-Object {
-        Copy-Item -LiteralPath $_.FullName -Destination $skillRoot -Recurse
-    }
-}
-```
+[贡献指南](CONTRIBUTING.md) · [维护方向](docs/maintenance.md) · [更新记录](CHANGELOG.md) · [问题反馈](https://github.com/cjh-solver/MathModeling-Skills-Arsenal/issues)
 
-已有同名技能时先比较与备份，再合并。Claude Code、WorkBuddy 等宿主使用各自配置的技能目录；支持 `SKILL.md` 不代表工具、模型和多角色能力完全相同。
-
-安装后打开新会话，给出题目、附件路径与规则来源：
-
-```text
-使用 contest-orchestrator。先读取我的题目和本届规则，列出缺失输入，
-选择合适模式。先做题意与模型计划，不直接生成最终论文或编造实验结果。
-```
-
-MathorCup 全流程可指定 `full-contest-mathorcup`；只解一问、只画图或只审稿时使用对应单项技能。详见 [启动示例](docs/quickstart.md)。
-
-## 如何判断效果
-
-- **可视化工作台：** [查看安装和比赛使用方法](tools/harness-workbench/README.md)，本机读取 Harness 项目，查看流程、小问、文件、图表和论文，不调用模型维护页面。
-- **流程验证：** 正反例测试检查提前派发、输入哈希漂移、旧图版本等是否被拒绝。
-- **输出示例：** [合成章节与图表交接](examples/chapter-parallel/README.md) 展示输入、正文、批准边界与提示词，附可运行的数据计算。
-- **视觉样例：** 下图是已有 `fireworks-tech-graph` 的上游风格资源，不代表本次生成的科研结果图。科研数据图走 SciPilot / ModelViz，竞赛非数据图默认走 TikZ。
-
-![技术图示风格样例](skills/04-figures/fireworks-tech-graph/assets/samples/showcase-12-styles.png)
-
-测试数量、已知版本问题、复现命令和覆盖范围见 [验证说明](docs/validation.md)。主控包含开发快照更新，尚未作为通过全部发布门的稳定新版发布。
-
-## 环境与维护
-
-验证环境为 Python 3.13，推荐 Python 3.11 及以上，并按具体技能安装依赖。主控 YAML 检查需要 `PyYAML`；数据分析还需要相应科学计算库。LaTeX 图文工程需要 TeX、字体和 SVG 转换工具，源码检查不能替代实际编译。
-
-```bash
-python -m pip install pyyaml
-python scripts/check_repository.py
-cd skills/01-core/contest-orchestrator
-python -m unittest discover -s tests -p 'test_mathorcup*.py'
-python -m unittest discover -s tests -p 'test_harness*.py'
-```
-
-[贡献与维护](CONTRIBUTING.md) · [更新记录](CHANGELOG.md) · [问题反馈](https://github.com/cjh-solver/MathModeling-Skills-Arsenal/issues)
-
-技能通过名称互相引用，请保留目录名及原有许可证。`tech-route-maker` 等历史独立技能保留在目录中，主控不再将其作为路线图兜底。创意写作分类可单独安装。
-
-仓库不发布比赛论文全文、赛事私有数据、个人记忆和凭据。整体协议为 [Apache-2.0](LICENSE)；第三方技能目录中的许可证优先适用，详见 [目录与协议](docs/skill-catalog.md)。
+仓库不发布比赛论文全文、赛事私有数据、个人记忆和凭据。整体协议为 [Apache-2.0](LICENSE)；第三方技能保留各自许可证，详见[技能目录与协议](docs/skill-catalog.md)。

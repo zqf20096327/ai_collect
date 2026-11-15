@@ -53,7 +53,7 @@ node scripts/check_site_layout.mjs   # local headless Chrome/Edge check
 ## Python version
 
 - **Required:** Python >=3.10 (`requires-python` in `pyproject.toml`)
-- **CI-tested:** 3.10, 3.11, 3.12 (`.github/workflows/ci.yml` matrix) — **locally verified** on 3.10, 3.11, 3.12, and 3.14 (full test suite; see [docs/REALWORLD.md](docs/REALWORLD.md) for the real-world eval and [CONTRIBUTING.md](CONTRIBUTING.md) for local checks)
+- **CI-tested:** 3.10, 3.11, 3.12, 3.14 (`.github/workflows/ci.yml` matrix) — **locally verified** on 3.10, 3.11, 3.12, and 3.14 (full test suite; see [docs/REALWORLD.md](docs/REALWORLD.md) for the real-world eval and [CONTRIBUTING.md](CONTRIBUTING.md) for local checks)
 - 3.13 was **not** in the CI matrix at the time of this release and is **not** claimed as verified
 
 > The `leaklens` command is provided by the PyPI package `leaklens-ml`.
@@ -222,6 +222,8 @@ With `--test`, LeakLens runs three bounded duplicate checks in order and reports
 
 JSON findings also carry an additive `evidence` list (bounded, privacy-safe provenance for the highest-value detectors) and a stable `fingerprint`. SARIF writes the same evidence under `properties.leaklens.evidence` and the fingerprint under `partialFingerprints["leaklensFinding/v1"]`, so tracked findings keep their identity when only line numbers or messages change. Moving a file, changing the detector kind, changing the affected feature or changing a detector-supplied stable key changes the fingerprint. See [`docs/DETECTORS.md`](docs/DETECTORS.md) for the full detector contract. Existing fields, severities and the trust score are unchanged.
 
+Every `--json` report carries `$schema`, and `leaklens schema` prints the JSON Schema (2020-12) that describes it, so a report can be validated before it is read and a stored report says which contract it was written against. Top-level sections stay additive; a finding's own keys are closed. See [`docs/REPORT_SCHEMA.md`](docs/REPORT_SCHEMA.md).
+
 `--intelligence` additionally builds a deterministic evidence graph: existing findings are grouped by an inspectable anchor (feature, split or file), detector evidence is preserved and linked, and each cluster gets its own corroboration-aware confidence plus any measured impact from `--test`. The graph adds no findings and never changes the trust score or exit code. `--graph-out evidence.mmd|.dot|.json` exports the same graph for review; see [`docs/INTELLIGENCE.md`](docs/INTELLIGENCE.md) for traversal APIs, export formats, and the API opt-in (`intelligence=true` / `include_intelligence=true`).
 
 `--graph-snapshot baseline.json` saves a versioned snapshot of the current graph, and `--graph-baseline baseline.json` compares a later scan against it. Evidence is matched by stable fingerprint, so reordering or rebuilt ids do not create false changes. The comparison reports `new`, `unchanged`, `changed`, `resolved` and `uncertain`; missing evidence is only `resolved` when both scans are complete and use the same analysis context. Snapshots are validated and written atomically, and are never overwritten without `--update-graph-snapshot`. Graph comparison is opt-in, does not change findings/scores/exit codes, and `--fail-on-graph-new` is the only new (opt-in) gate. JSON gains `graph_baseline`; SARIF gains compact per-result and run-level graph metadata; HTML gains a comparison section. A comparison describes evidence movement, not proof of leakage or remediation.
@@ -388,8 +390,15 @@ Details and interpretation: [`docs/DRIFT.md`](docs/DRIFT.md); measured controls:
 list of `inspect_evidence`, `suggested_test`, `missing_evidence` and
 `narration_slot` steps. Every step cites evidence ids that already exist in the
 payload and finding ids that already exist in the scan, so an ungrounded step
-cannot be serialized. The plan builds without `leaklens.ai`; with the AI layer
-absent, `narration` is `"unavailable"` and the rest of the plan is unchanged.
+cannot be serialized. A `suggested_test` step names a registered detector kind
+and the question it answers; unknown kinds are omitted, never invented. The plan
+builds without `leaklens.ai`; with the AI layer absent, `narration` is
+`"unavailable"` and the rest of the plan is unchanged.
+
+When a check is skipped, the payload gains one `missing_evidence` collection
+listing each engine skip, split limitation and omitted test with its own reason
+and count. It never changes the score or the exit gate, and the key is absent
+when nothing was skipped.
 
 `--monitoring-report PATH` (repeatable) reads a caller-supplied JSON drift or
 skew report and turns each breached metric into a `low`, `diagnostic` finding.
@@ -403,6 +412,24 @@ leaklens train.csv --target label --monitoring-report reports/drift.json
 ```
 
 Schema, id contract and limits: [`docs/INVESTIGATION.md`](docs/INVESTIGATION.md).
+
+## Governance pack (opt-in)
+
+`--governance` adds one provenance-labelled `governance` pack to the payload.
+Every field is labelled `asserted` (supplied by the caller, not verified),
+`measured` (computed by this audit) or `unknown` (not supplied, so `null` with a
+source that says why); the unknowns are listed explicitly. `--governance-out
+PATH` renders the same payload as `.json`, `.md` or `.markdown` inside the
+working directory, atomically and path-contained. The pack never adds, raises
+or rescales a finding and never changes the trust score or the exit gate, and
+it never claims compliance or certification.
+
+```sh
+leaklens train.csv --target label --governance --json
+leaklens train.csv --target label --governance-out governance.md
+```
+
+Vocabulary, every field and the non-claims: [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md).
 
 ## Pipeline and MLOps intelligence (opt-in)
 

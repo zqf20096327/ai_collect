@@ -11,9 +11,9 @@
 <p align="center">Evidence-grounded skills and software-tool records for scientific AI agents,<br>distilled from published method papers and their code by the AgenticScienceBuilder pipeline.</p>
 
 <p align="center">
-  <a href="https://doi.org/10.5281/zenodo.24122117"><img src="https://img.shields.io/badge/release-metabolomics--v3.0.2-00284b" alt="release metabolomics-v3.0.2 (metabolomics)"></a> <a href="https://doi.org/10.5281/zenodo.24122117"><img src="https://img.shields.io/badge/skills-11%2C830-04919a" alt="11,830 skills (metabolomics)"></a>
-  <a href="https://doi.org/10.5281/zenodo.24122117"><img src="https://img.shields.io/badge/tools-1%2C989-04919a" alt="1,989 tools (metabolomics)"></a> <a href="https://doi.org/10.5281/zenodo.24122117"><img src="https://img.shields.io/badge/papers-477-04919a" alt="477 papers (metabolomics)"></a>
-  <a href="https://doi.org/10.5281/zenodo.24122117"><img src="https://img.shields.io/badge/workflows-20-04919a" alt="20 workflows (metabolomics)"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/code-Apache--2.0-5d6a78" alt="code licence Apache-2.0"></a>
+  <a href="https://doi.org/10.5281/zenodo.24255500"><img src="https://img.shields.io/badge/release-metabolomics--v3.1.1-00284b" alt="release metabolomics-v3.1.1 (metabolomics)"></a> <a href="https://doi.org/10.5281/zenodo.24255500"><img src="https://img.shields.io/badge/skills-11%2C830-04919a" alt="11,830 skills (metabolomics)"></a>
+  <a href="https://doi.org/10.5281/zenodo.24255500"><img src="https://img.shields.io/badge/tools-1%2C989-04919a" alt="1,989 tools (metabolomics)"></a> <a href="https://doi.org/10.5281/zenodo.24255500"><img src="https://img.shields.io/badge/papers-477-04919a" alt="477 papers (metabolomics)"></a>
+  <a href="https://doi.org/10.5281/zenodo.24255500"><img src="https://img.shields.io/badge/workflows-20-04919a" alt="20 workflows (metabolomics)"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/code-Apache--2.0-5d6a78" alt="code licence Apache-2.0"></a>
   <a href="LICENSING.md"><img src="https://img.shields.io/badge/content-CC--BY--4.0-5d6a78" alt="content licence CC-BY-4.0"></a> <a href="https://doi.org/10.5281/zenodo.20794026"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.20794026.svg" alt="Zenodo concept DOI 10.5281/zenodo.20794026"></a>
 </p>
 
@@ -40,16 +40,16 @@ collection. This repository holds the tooling and the registry.
 
 | Domain | Release | Skills | Tools | Workflows | Papers | Version DOI |
 |---|---|---:|---:|---:|---:|---|
-| metabolomics | `metabolomics-v3.0.2` | 11,830 | 1,989 | 20 | 477 | [10.5281/zenodo.24122117](https://doi.org/10.5281/zenodo.24122117) |
-| agentic-ai | `agentic-ai-v1.0.1` | 668 | 215 | 2 | 29 | [10.5281/zenodo.24122112](https://doi.org/10.5281/zenodo.24122112) |
-| astronomy | `astronomy-v1.0.1` | 1,671 | 415 | 2 | 100 | [10.5281/zenodo.24122111](https://doi.org/10.5281/zenodo.24122111) |
-| epigenomics | `epigenomics-v2.0.1` | 2,295 | 532 | 2 | 92 | [10.5281/zenodo.24122116](https://doi.org/10.5281/zenodo.24122116) |
-| genomics | `genomics-v1.0.1` | 3,246 | 867 | 2 | 137 | [10.5281/zenodo.24122105](https://doi.org/10.5281/zenodo.24122105) |
-| metabarcoding | `metabarcoding-v1.0.1` | 803 | 203 | 2 | 29 | [10.5281/zenodo.24122109](https://doi.org/10.5281/zenodo.24122109) |
-| metagenomics | `metagenomics-v1.0.1` | 2,754 | 717 | 2 | 117 | [10.5281/zenodo.24122106](https://doi.org/10.5281/zenodo.24122106) |
-| multi-omics | `multi-omics-v1.0.1` | 787 | 211 | 2 | 29 | [10.5281/zenodo.24122110](https://doi.org/10.5281/zenodo.24122110) |
-| proteomics | `proteomics-v1.0.1` | 558 | 163 | 2 | 28 | [10.5281/zenodo.24122102](https://doi.org/10.5281/zenodo.24122102) |
-| transcriptomics | `transcriptomics-v2.0.1` | 11,256 | 2,086 | 2 | 450 | [10.5281/zenodo.24122113](https://doi.org/10.5281/zenodo.24122113) |
+| metabolomics | `metabolomics-v3.1.1` | 11,830 | 1,989 | 20 | 477 | [10.5281/zenodo.24255500](https://doi.org/10.5281/zenodo.24255500) |
+| agentic-ai | `agentic-ai-v1.1.1` | 668 | 215 | 2 | 29 | [10.5281/zenodo.24255476](https://doi.org/10.5281/zenodo.24255476) |
+| astronomy | `astronomy-v1.1.1` | 1,671 | 415 | 2 | 100 | [10.5281/zenodo.24255473](https://doi.org/10.5281/zenodo.24255473) |
+| epigenomics | `epigenomics-v2.1.1` | 2,295 | 532 | 2 | 92 | [10.5281/zenodo.24255488](https://doi.org/10.5281/zenodo.24255488) |
+| genomics | `genomics-v1.1.1` | 3,246 | 867 | 2 | 137 | [10.5281/zenodo.24255457](https://doi.org/10.5281/zenodo.24255457) |
+| metabarcoding | `metabarcoding-v1.1.1` | 803 | 203 | 2 | 29 | [10.5281/zenodo.24255467](https://doi.org/10.5281/zenodo.24255467) |
+| metagenomics | `metagenomics-v1.1.1` | 2,754 | 717 | 2 | 117 | [10.5281/zenodo.24255462](https://doi.org/10.5281/zenodo.24255462) |
+| multi-omics | `multi-omics-v1.1.1` | 787 | 211 | 2 | 29 | [10.5281/zenodo.24255470](https://doi.org/10.5281/zenodo.24255470) |
+| proteomics | `proteomics-v1.1.1` | 558 | 163 | 2 | 28 | [10.5281/zenodo.24255450](https://doi.org/10.5281/zenodo.24255450) |
+| transcriptomics | `transcriptomics-v2.1.1` | 11,256 | 2,086 | 2 | 450 | [10.5281/zenodo.24255483](https://doi.org/10.5281/zenodo.24255483) |
 
 The concept DOI of each domain is in [`collections.yaml`](collections.yaml). The
 rest of this file uses metabolomics v3 as its worked example; `asbb fetch` and
@@ -58,11 +58,11 @@ rest of this file uses metabolomics v3 as its worked example; `asbb fetch` and
 
 ### Metabolomics v3
 
-Release `metabolomics-v3.0.2`: **11,830 skills** across **1,989 tools**, distilled
+Release `metabolomics-v3.1.1`: **11,830 skills** across **1,989 tools**, distilled
 from **477 published method papers (journal articles and preprints)**, plus **20
 composite workflow super-skills** that chain the atomic skills into end-to-end
 pipelines. The release is deposited as
-[10.5281/zenodo.24122117](https://doi.org/10.5281/zenodo.24122117). Coverage is mostly
+[10.5281/zenodo.24255500](https://doi.org/10.5281/zenodo.24255500). Coverage is mostly
 LC-MS/MS, with LC-MS, GC-MS, mass-spectrometry imaging, ion mobility and
 lipidomics, some NMR, and multi-omics, statistics and pathway tools.
 
@@ -140,7 +140,7 @@ asbb install --repo <domain checkout> --skills <slug-a>,<slug-b> --collection me
 
 The human guide is `<domain checkout>/collections/metabolomics/v3/USAGE.md` in
 plain text. The complete release is also available from the
-[Zenodo archive](https://doi.org/10.5281/zenodo.24122117). Install routes,
+[Zenodo archive](https://doi.org/10.5281/zenodo.24255500). Install routes,
 measured v2 examples and refusals are in
 [docs/partial-install.md](docs/partial-install.md); the agent procedure is in
 [AGENTS.md](AGENTS.md).
@@ -224,7 +224,8 @@ between "the skill says about 5 ppm" and "the paper specifies 5 ppm"), ground th
 skill against its source paper. Grounding is optional. Every released collection
 ships the grounding map `kb_bundle.json`; the binder is
 [`scripts/perspicacite_kb_bind.py`](scripts/perspicacite_kb_bind.py) in this
-repository, and a selection built with `asbb install` carries a copy. It uses
+repository; the Zenodo archive of a collection carries a copy under `scripts/`,
+and a selection built with `asbb install` carries one. It uses
 [Perspicacité](https://github.com/HolobiomicsLab/Perspicacite-AI),
 Holobiomics Lab's local-first literature RAG engine, with two backends:
 
@@ -260,8 +261,9 @@ Full guide: `<domain checkout>/collections/metabolomics/v3/USAGE.md`, section 5.
 | `CITATION.cff` | citation |
 
 These files are relative to `<domain checkout>/collections/metabolomics/v3/`;
-the other released collections have the same layout. No released collection
-ships the grounding binder or a `commands/` directory. The release-gate report
+the other released collections have the same layout. No collection tree
+ships the grounding binder or a `commands/` directory; the Zenodo archive adds
+the binder under `scripts/`. The release-gate report
 and the other receipts are in the domain repository under `receipts/<cut-id>/`.
 
 Local build-capsule archives and record metadata are packed and screened by
@@ -317,9 +319,11 @@ Cite the collection and the original paper behind each skill you use
   DOIs are also listed under [Releases](#releases). The entries below are those
   of metabolomics.
 - **Concept DOI**, metabolomics, for all its versions: [10.5281/zenodo.20794026](https://doi.org/10.5281/zenodo.20794026).
-- **Version DOI**, v3, release `metabolomics-v3.0.2` (10 November 2026): [10.5281/zenodo.24122117](https://doi.org/10.5281/zenodo.24122117);
+- **Version DOI**, v3, release `metabolomics-v3.1.1` (15 November 2026): [10.5281/zenodo.24255500](https://doi.org/10.5281/zenodo.24255500);
   the release is recorded in [`collections.yaml`](collections.yaml). The
-  earlier v3 deposits of 9 November 2026, `metabolomics-v3.0.1`
+  earlier v3 deposits, `metabolomics-v3.1.0` (14 November 2026,
+  [10.5281/zenodo.24224655](https://doi.org/10.5281/zenodo.24224655)), `metabolomics-v3.0.2` (10 November 2026,
+  [10.5281/zenodo.24122117](https://doi.org/10.5281/zenodo.24122117)), `metabolomics-v3.0.1`
   ([10.5281/zenodo.24093587](https://doi.org/10.5281/zenodo.24093587)) and `metabolomics-v3.0.0`
   ([10.5281/zenodo.24054446](https://doi.org/10.5281/zenodo.24054446)), are
   listed as superseded in the v3 row of the registry.

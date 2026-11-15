@@ -10,8 +10,11 @@ Since **V2.6.0**, AI.duino supports full Agentic Coding: Unlike traditional AI c
 
 *Oje, Englisch? Kann ich nicht. Schnell [hier hin](https://github.com/NikolaiRadke/AI.duino/wiki)*.  
 
+> [!IMPORTANT]
+> **V2.8.0 is the last feature release.** AI.duino keeps getting provider and model updates, but new features go to its little brother **[Agentuino](https://github.com/NikolaiRadke/Agentuino)**: purely agentic, with sketch projects, serial output for the agent and debugging with [ArduDebug](https://github.com/NikolaiRadke/ArduDebug).
+
 🆕 What's new?  
-* **22.09.2026** Collecting article feedback für 2.7.1 bugfix release.  
+* **15.11.2026** Release **V2.8.0**, the last feature release. Agentic coding continues in [Agentuino](https://github.com/NikolaiRadke/Agentuino).  
     -- More news? Check the [newsblog](https://github.com/NikolaiRadke/AI.duino/blob/main/NEWS.md).
    
 ## Features
@@ -81,6 +84,7 @@ and will inform the user for new version updates.
 
 You can toggle the Chat to be agentic by pressing the second Button from the right. Now, the AI has access to the folder your file is located in.
 Remember that you need additional Software.  
+For serial output and debugging by the agent, use [Agentuino](https://github.com/NikolaiRadke/Agentuino).  
 
 ## Installation
 
@@ -177,7 +181,12 @@ For **Agentic Coding** required: a process provider from either:
 
 Some of these **Local providers** don't need an API key. If you have an account, for example *Pro Plan* with Claude, you can use Claude for no extra costs. 
 HTTP based providers like **Ollama** get auto detected, process based providers like **Claude Code** only needs the path to the binary, which should be
-detected too. if not, try *which claude* (Linux/macOS) or *where claude* (Windows) and copy the path for the AI.duino input field when selecting Claude Code.  
+detected too. if not, try *which claude* (Linux/macOS) or *where claude* (Windows) and copy the path for the AI.duino input field when selecting Claude Code.
+
+### Other local servers
+Every server with an OpenAI-compatible API (`/v1/models` and `/v1/chat/completions`) works with the provider
+**OpenAI-compatible**, for example Lemonade, llama.cpp, vLLM, LocalAI or Jan (>= V2.8.0). Common ports are detected automatically;
+otherwise enter the server URL, e.g. `http://localhost:13305`, and pick the model from the list.  
 
 ## Content
   

@@ -11,6 +11,8 @@
 
 **Research code · Working demonstrations · Project documentation**
 
+**Start here:** [Explore QIHGA–GNN interactively](ieee-aiam-2025-ga-gnn/docs/demo/index.html) · [Read its paper](ieee-aiam-2025-ga-gnn/paper/paper.pdf) · [Inspect the Python code](ieee-aiam-2025-ga-gnn/code/)
+
 </div>
 
 ## 🚀 Explore the projects — demo first, source code next
@@ -26,7 +28,7 @@
 | 03 | <img src="assets/cogarc.gif" width="220" alt="Animated abstract autonomic signals visualization; decorative, not experimental data"> | **CogArc — Autonomic Signal Coupling**<br><sub>Primary prototype developer · 2026</sub> | Interactive browser prototype; graph-attention validation planned | [**▶ Live demo**](https://cogarc.ai/) | [**⌘ Source**](https://github.com/aaryansamanta/ai-research-publications/tree/main/cogarc) |
 | 04 | <img src="assets/rna-folding.gif" width="220" alt="Animated abstract rna folding visualization; decorative, not experimental data"> | **Stanford RNA 3D Folding Part 2**<br><sub>Kaggle Silver · #92 / 1,867 · 2026</sub> | Template-based RNA modeling & Protenix pipeline | [**▶ Live demo**](https://aaryansamanta.github.io/stanford-rna-3d-folding-2) | [**⌘ Source**](https://github.com/aaryansamanta/usaco-kaggle/tree/main/kaggle/stanford-rna-3d-folding-2) |
 | 05 | <img src="assets/celegans.gif" width="220" alt="Animated abstract genomics visualization; decorative, not experimental data"> | **C. elegans Mitochondrial Resilience**<br><sub>UCSB SRA · IJHSR research · 2025–26</sub> | Population genomics, RNA-seq & expression modeling | [**▶ Live demo**](https://aaryansamanta.github.io/ijhsr-uscb-sra) | [**⌘ Source**](https://github.com/aaryansamanta/ai-research-publications/tree/main/ijhsr-2026-celegans-mito-resilience) |
-| 06 | <img src="assets/explainable-ml.gif" width="220" alt="Animated abstract explainable ml visualization; decorative, not experimental data"> | **IEEE AIAM — Explainable ML**<br><sub>IEEE AIAM research · 2025</sub> | Implemented XGBoost/SHAP analysis; GA–GNN paper methodology distinguished | [**▶ Live demo**](https://aaryansamanta.github.io/ieee-aiam) | [**⌘ Source**](https://github.com/aaryansamanta/ai-research-publications/tree/main/ieee-aiam-2025-ga-gnn) |
+| 06 | <img src="assets/explainable-ml.gif" width="220" alt="Animated abstract explainable ml visualization; decorative, not experimental data"> | **IEEE AIAM — Explainable ML**<br><sub>IEEE AIAM research · 2025</sub> | Quantum-inspired feature search, GCN/GAT encoders and multimodal fusion | [**▶ Interactive demo**](ieee-aiam-2025-ga-gnn/docs/demo/index.html) | [**⌘ Source**](https://github.com/aaryansamanta/ai-research-publications/tree/main/ieee-aiam-2025-ga-gnn) |
 | 07 | <img src="assets/ultrasound.gif" width="220" alt="Animated abstract ultrasound visualization; decorative, not experimental data"> | **Pelvic-Floor Ultrasound Analysis**<br><sub>Stanford Urology · mentored research · 2026</sub> | Ultrasound-derived displacement, velocity & acceleration | [**▶ Live demo**](https://aaryansamanta.github.io/stanford-urology) | [**⌘ Source**](https://github.com/aaryansamanta/ai-research-publications/tree/main/stanford-urology-2026) |
 | 08 | <img src="assets/kaggriculture.gif" width="220" alt="Animated abstract agricultural ml visualization; decorative, not experimental data"> | **Kaggriculture**<br><sub>Kaggle Silver · #254 / 10,148 · 2026</sub> | Agricultural ML experiments | [**▶ Live demo**](https://aaryansamanta.github.io/kaggriculture) | [**⌘ Source**](https://github.com/aaryansamanta/usaco-kaggle/tree/main/kaggle/kaggriculture) |
 | 09 | <img src="assets/ai-ethos.gif" width="220" alt="Animated abstract ai ethos visualization; decorative, not experimental data"> | **AI Ethos — Equitable AI Learning**<br><sub>Founder-led nonprofit · live platform</sub> | Multilingual AI tutoring and accessible education platform | [**▶ Live demo**](https://aiethos.org) | [**⌘ Source**](https://github.com/aaryansamanta/ai-ethos) |
@@ -49,7 +51,7 @@
 
 ### Research notes & attribution
 
-- **IEEE AIAM:** The accessible software demonstration features XGBoost/SHAP; the GA–GNN research-paper methodology should not be mistaken for a verified end-to-end implementation in the linked code.
+- **IEEE AIAM:** The repository includes executable QIHGA–GNN source, tests, the manuscript and an interactive methods explainer. The browser demo illustrates algorithms; the Python CLI runs experiments on supplied tabular data.
 - **UCLA COSMOS:** InfernoTactics was developed as part of a five-student team. **UCSB:** The *C. elegans* project involved research collaborators and mentors.
 - **CogArc:** The interactive browser prototype is implemented; graph-attention validation and wearable/EEG experiments are planned, not completed.
 - **Stanford Urology:** Mentored analysis uses existing clinical measurements; identifiable patient data are not included here.

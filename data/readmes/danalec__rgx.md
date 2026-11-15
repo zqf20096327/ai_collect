@@ -79,16 +79,33 @@ Linux tarballs (glibc, static musl, znver4), a FreeBSD tarball, and the
 curl -fsSL https://raw.githubusercontent.com/danalec/rgx/main/install.sh | bash
 ```
 
-On Arch Linux and derivatives, two binary AUR packages install the prebuilt
-`rgx` from the release tarballs, so no Rust toolchain is needed:
-[rgx-search-bin](https://aur.archlinux.org/packages/rgx-search-bin) and the
-AMD Zen 4 build
+On Arch Linux and derivatives, the AUR carries both the prebuilt binary and
+the build from source. The binary packages install `rgx` from the release
+tarballs, so no Rust toolchain is needed:
+[rgx-search-bin](https://aur.archlinux.org/packages/rgx-search-bin), the SIMD
+tiers
+[rgx-search-avx2-bin](https://aur.archlinux.org/packages/rgx-search-avx2-bin),
+[rgx-search-v2-bin](https://aur.archlinux.org/packages/rgx-search-v2-bin) and
+[rgx-search-v4-bin](https://aur.archlinux.org/packages/rgx-search-v4-bin), and
+the AMD Zen 4 build
 [rgx-search-znver4-bin](https://aur.archlinux.org/packages/rgx-search-znver4-bin).
-They conflict, because both install `/usr/bin/rgx`:
+They conflict with each other, because every one of them installs
+`/usr/bin/rgx`:
 
 ```sh
 yay -S rgx-search-bin             # or paru -S rgx-search-bin
-# yay -S rgx-search-znver4-bin   # AMD Zen 4 build
+# yay -S rgx-search-avx2-bin    # x86-64-v3 build
+# yay -S rgx-search-znver4-bin  # AMD Zen 4 build
+```
+
+[rgx-search-git](https://aur.archlinux.org/packages/rgx-search-git) builds
+the current `main` on the machine instead, so it needs the Rust toolchain and
+`base-devel` first, and it takes a compile rather than a download:
+
+```sh
+sudo pacman -S --needed rustup base-devel git
+rustup default stable
+yay -S rgx-search-git
 ```
 
 On macOS, from Homebrew — the formula is in `Formula/rgx.rb`, and
@@ -386,7 +403,32 @@ Four additions are worth knowing:
 - **`--json`** — machine-readable, naming the adapter that claimed each file and
   the exact submatch spans.
 - **`.rgxrc`** — read *before* argv, so a CLI flag always wins. If rgx seems to
-  ignore a flag you passed, look here first.
+  ignore a flag you passed, look here first. `--no-config` leaves the file out
+  entirely, which is what a caller that must see exactly the argv it built
+  uses.
+
+### Pointing another tool at rgx
+
+A tool that spawns a *specific* ripgrep binary — not `rg` on PATH — cannot be
+redirected by an alias or an environment variable. DeepSeek Harness is one of
+those: its `grep` and `glob` tools run the ripgrep the harness ships, under
+`resources/app.asar.unpacked/dsh/node_modules/@vscode/ripgrep-*/bin/`, with
+`--no-config` always prefixed. `scripts/use-with-dsh.ps1` and its `.sh` twin
+find the harness wherever it was installed (the installer, winget, scoop, a
+hand-unpacked zip), find rgx wherever it was installed (`-RgxPath`/`--rgx`,
+`$RGX_BIN`, PATH), check that the build answers the three argv shapes the
+harness uses, and only then back up the shipped binary and put rgx in its
+place:
+
+    pwsh -File scripts/use-with-dsh.ps1 -Status      # what is installed, and in what state
+    pwsh -File scripts/use-with-dsh.ps1 -Apply       # back up ripgrep, install rgx
+    pwsh -File scripts/use-with-dsh.ps1 -Restore     # put ripgrep back
+
+    bash scripts/use-with-dsh.sh --status|--apply|--restore [--rgx PATH] [--harness-root DIR]
+
+A harness update puts ripgrep back, so running `-Apply`/`--apply` again is the
+step after an update. A build that cannot answer `--no-config`, `--regexp` or
+`--sort=modified` is refused with the flag it failed, and nothing is touched.
 
 Full reference: [`MANUAL.md`](MANUAL.md).
 

@@ -13,6 +13,7 @@
     <a href="https://pypi.org/project/lightagent/"><img src="https://img.shields.io/pypi/dm/lightagent.svg" alt="Downloads"></a>
     <a href="https://pypi.org/project/lightagent/"><img src="https://img.shields.io/pypi/pyversions/lightagent.svg" alt="Python Version"></a>
     <a href="https://arxiv.org/abs/2509.09292"><img src="https://img.shields.io/badge/arXiv-Paper-B31B1B?logo=arxiv&logoColor=white" alt="Code Style"></a>
+    <a href="https://github.com/NipunaRanasinghe/awesome-ai-agents"><img src="https://img.shields.io/badge/Featured_in-Awesome_AI_Agents-2ea44f" alt="Featured in Awesome AI Agents"></a>
   </p>
 </div>
 <div align="center">
@@ -30,14 +31,19 @@
   </p>
 </div>
 <div align="center">
-  <h1>LightAgent🚀 – small footprint, big potential. 🌟(Open-source Agentic framework)</h1>
+  <h1>LightAgent: Build Your First AI Agent in Python</h1>
+  <p>Start with a few lines of Python. Add tools, memory, and workflows when you need them.</p>
+  <p><strong><a href="https://github.com/wanxingai/LightAgent/wiki/V1-Getting-Started-en">Try the Quick Start</a></strong></p>
 </div>
 
 LightAgent is a modular, open-source Python framework with reusable Skills, tools, optional long-term memory, and OpenAI-compatible models and streaming. Use `LightSwarm` for routing, `LightFlow` for known steps, and `LightDAG` for persistent, dynamically verified tasks. Its optional event-sourced runtime adds durable Sessions, async execution, policy, and approvals. MCP supports stdio, SSE, and Streamable HTTP.
 
 ---
 ## News
-- <img src="https://img.alicdn.com/imgextra/i3/O1CN01SFL0Gu26nrQBFKXFR_!!6000000007707-2-tps-500-500.png" alt="new" width="30" height="30"/>**[2026-10-01]** LightAgent v0.11.0 Released: Adds opt-in persistent Dynamic DAG multi-agent execution, verification-gated immutable artifacts, restart-safe leases and fencing, and a unified narrowing-only `SecurityContext` with capability and approval controls.
+
+- <img src="https://img.alicdn.com/imgextra/i3/O1CN01SFL0Gu26nrQBFKXFR_!!6000000007707-2-tps-500-500.png" alt="new" width="30" height="30"/>**[2026-11-15]** [LightAgent v1.0.0](https://github.com/wanxingai/LightAgent/releases/tag/v1.0.0) released on GitHub. Adds reconnectable execution, a shared Job/Subagent lifecycle, transactional recovery and optional signed Providers.
+- **[2026-10-04] v0.12.0 implemented in source (not yet published)**: opt-in persistent research, verified DAG experiments, durable inbox, independent chat, a local reference panel, and evaluated version adoption/rollback. See the [research service guide](docs/persistent_research.zh-CN.md).
+- **[2026-10-01]** LightAgent v0.11.0 Released: Adds opt-in persistent Dynamic DAG multi-agent execution, verification-gated immutable artifacts, restart-safe leases and fencing, and a unified narrowing-only `SecurityContext` with capability and approval controls.
 - **[2026-08-15]** LightAgent v0.10.0 Released: Adds the unified event-sourced Agent Runtime with durable Sessions, async execution, Capability Registry and Policy, Inbox/Goals/Budgets, compaction and recovery, Jobs/subagents, standardized Skills/MCP adapters, and SQLite FTS5 retrieval.
 - **[2026-08-15]** LightAgent v0.9.7 Released: Adds a dependency-free Connector contract with offline validation and examples, expands Python executor security checks, introduces an opt-in Mem0 Graph security matrix, and adds a public API compatibility inventory for v1.0 stabilization.
 - **[2026-07-30]** LightAgent v0.9.6 Released: Adds production trace summaries and exporters, deterministic evaluation, durable human approval for tools, handoffs, and LightFlow, plus fail-closed shared Graph Memory admission and audit controls.
@@ -67,6 +73,7 @@ Older release notes are available on [GitHub Releases](https://github.com/wanxin
 - **Shared Memory Prototype** 🧠: SharedMemoryPool provides append-first in-memory shared memory with provenance metadata, scoped retrieval, and MemoryPolicy-compatible results for multi-agent experiments.
 - **Independent Execution** 🤖: Tasks and tool calls are completed autonomously without human intervention.  
 - **Multi-Model Support** 🔄: Compatible with OpenAI-style providers such as OpenAI, OpenRouter, Zhipu ChatGLM, Baichuan, StepFun, DeepSeek, Qwen, vLLM, llama.cpp, and other OpenAI-compatible endpoints.  
+- **Optional Codex Agent Backend**: Use the local Codex CLI to run workspace tasks with `LightAgent(backend="codex")`. The default LightAgent backend does not require Codex.
 - **Streaming API** 🌊: Supports OpenAI streaming format API service output, seamlessly integrates with mainstream chat frameworks, enhancing user experience.  
 - **Trace Observability** 🔎: Opt-in `trace=True` run traces record structured run lifecycle, model request summaries, tool calls, tool results, and errors without changing the default string return value.  
 - **Evaluation Harness** 📊: `LightEvaluator` runs deterministic agent or LightFlow regression cases for output, tool choice, policy events, recovery, latency, usage, and estimated cost.
@@ -85,6 +92,7 @@ Older release notes are available on [GitHub Releases](https://github.com/wanxin
 | --- | --- | --- |
 | Single agent runtime | `LightAgent` | One agent with model calls, tools, memory, streaming, trace, and guardrails. |
 | Durable runtime state | `Session`, `AgentRuntime` | Replayable events, checkpoints, Inbox, Goals, Budgets, Jobs, and context recovery. |
+| Durable execution (v1.0.0) | `ExecutionService`, `ExecutionHandle` | Ordinary reconnectable tasks without a research contract; explicit host backend and security context. |
 | Capability layer | `CapabilityRegistry`, `PolicyEngine` | Scoped Providers, permission snapshots, lifecycle, policy, and audit. |
 | Unified security context | `SecurityContext`, `CapabilityGate`, `ApprovalToken` | Identity, narrowing-only permissions, authorization, and operation-bound approval. |
 | Multi-agent routing | `LightSwarm` | Role-based delegation across specialized agents. |
@@ -160,6 +168,17 @@ print(report.to_dict())
 Pending approvals can be stored in `JsonReviewStore`; resolve them with an
 `ApprovalDecision`, then rerun with `approval_id=request.request_id`. LightFlow
 also persists step approvals through `flow.approve(...); flow.resume(...)`.
+
+## v1.0.0: Durable Execution And Recovery
+
+- **Reconnectable tasks:** [`ExecutionService`](docs/durable_execution.zh-CN.md) runs ordinary tasks through host-registered backends, without a research contract. Use `ExecutionHandle` after a restart to reconnect and inspect state, events, and receipts. See the [offline example](example/15.durable_execution.py).
+- **State and recovery:** Jobs and Subagents share a lifecycle, leases, and cooperative cancellation. SQLite transactions protect Session state, messages, and budget accounting. Restored Subagents require explicit host binding, and uncertain external outcomes must be reconciled before retrying. See [Job/history migration](docs/jobs_history_migration.zh-CN.md) and the [offline migration example](example/16.jobs_and_history.py).
+- **Safety and installation:** Optional [signed Provider bindings](docs/provider_supply_chain.zh-CN.md) verify publisher signatures and require explicit host approval without replacing runtime policy. Skills and PyYAML remain in the base install. MCP, Mem0, Langfuse, LiteLLM, OSS/NOS, and signature verification are optional.
+- **Compatibility:** Ordinary `run()` and streaming behavior are unchanged. Research contracts, evaluation, version promotion, and the debug panel live in the separate LightResearch extension. Legacy `mode="persistent"` keeps its research semantics and requires `LightResearch.enable_legacy_api()`. See the [research migration guide](docs/persistent_research.zh-CN.md).
+
+See the [GitHub Release](https://github.com/wanxingai/LightAgent/releases/tag/v1.0.0)
+for release notes and the [validation record](docs/v100_validation.zh-CN.md) for the scope of testing.
+The core ships no production UI, and default CI does not require LightResearch.
 
 ## v0.11.0: Verified Dynamic Workflows
 
@@ -305,17 +324,46 @@ See the [roadmap](roadmap.md) for delivered milestones and future plans. Inbox, 
 
 ## 🛠️ Quick Start
 
-### Install the latest version of LightAgent
+### Install LightAgent
+
+Choose one of these PyPI installs:
 
 ```bash
-pip install lightagent
+pip install lightagent             # base package
+pip install 'lightagent[mcp,mem0]'  # base plus selected integrations
+pip install 'lightagent[all]'       # base plus every optional Python SDK
 ```
 
-(Optional installation) Install the Mem0 package via pip:
+The base package includes native Agent calls, Python tools, Skills (with PyYAML),
+core workflows, and local tracing. `[all]` installs the same LightAgent package
+plus the optional integration dependencies: `mcp` (MCP), `mem0` (Mem0),
+`langfuse` (external tracing), `litellm` (model routing), `oss` or `nos`
+(object storage through boto3), and `signing` (Provider signature verification).
+Install only the extras you use. Installing them neither activates integrations
+nor sets up credentials, external services, the Codex CLI, Docker, or LightResearch.
+To pin the full PyPI install, use `pip install 'lightagent[all]==1.0.0'`.
+
+Alternatively, install v1.0.0 from GitHub source (requires Git):
 
 ```bash
-pip install mem0ai
+python -m pip install 'git+https://github.com/wanxingai/LightAgent.git@v1.0.0'
 ```
+
+For a local v1.0.0 checkout, run the following from its root.
+Install only the extras you need:
+
+```bash
+python -m pip install .              # base only
+python -m pip install '.[mcp]'       # keep the existing setup_mcp() configuration
+python -m pip install '.[mem0]'      # from mem0 import Memory; pass it as memory=
+python -m pip install '.[langfuse]'  # keep the existing tracetools configuration
+```
+
+Use `python -m pip install '.[all]'` for the equivalent full install from local source.
+
+Skills and their PyYAML dependency are included in the base install. Discovery
+still scans `skills/` (or the configured `skills_directories`). Set
+`auto_discover_skills=False` when you do not want to scan.
 
 Alternatively, you can use Mem0 on a hosted platform by clicking [here](https://www.mem0.ai/).
 
@@ -331,6 +379,49 @@ agent = LightAgent(model="gpt-4.1", api_key="your_api_key", base_url="your_base_
 response = agent.run("Hello, who are you?")
 print(response)
 ```
+
+### Check Token Usage
+
+Reuse the Agent from the Hello World example:
+
+```python
+result = agent.run("Summarize LightAgent in one sentence.", result_format="object")
+if result.error:
+    raise RuntimeError(result.error)
+print(result.usage if result.usage else "Token usage was not reported.")
+```
+
+For a native model, reported usage includes input (`prompt_tokens`), output
+(`completion_tokens`), and total tokens. Missing usage does not mean zero.
+See the [usage and cost guide](https://github.com/wanxingai/LightAgent/wiki/V1-Usage-and-Cost-en)
+for cost estimates, streaming, Codex, and task budgets.
+
+### Use Codex as the Agent Backend
+
+On a POSIX host, install and authenticate the Codex CLI separately and make sure
+`codex` is on `PATH`. The v1.0.0 adapter supports the CLI's `0.160.x` protocol.
+LightAgent reuses CLI authentication; do not pass `api_key` or `base_url`.
+Create a dedicated `./workspace` directory before running this example:
+
+```python
+from LightAgent import LightAgent
+
+agent = LightAgent(name="codex-assistant", backend="codex")
+result = agent.run(
+    "Summarize the files in this workspace without changing them.",
+    workspace="./workspace",
+    execution_timeout=120,
+    result_format="object",
+)
+if result.error:
+    raise RuntimeError(result.error)
+print(result.content)
+```
+
+This uses `codex exec` to run the task, not a model endpoint in LightAgent's
+native loop. The adapter does not bridge LightAgent Python tools, memory, or
+per-tool guardrails. See [workspace execution](docs/workspace_execution.zh-CN.md)
+for sandbox settings, backend events, and session resumption.
 
 ### Inspect a Run Trace (v0.7.0)
 
@@ -580,7 +671,8 @@ Recommended production controls:
 - Use `enforce_expires_at=True` when memory records carry expiration metadata.
 
 ### 8. Langfuse Log Tracking
-LightAgent can send trace data to Langfuse through `tracetools` configuration. For most local debugging, start with built-in trace events:
+With the `langfuse` extra installed, LightAgent can send trace data through the existing
+`tracetools["TraceToolConfig"]` configuration. Built-in trace events do not require Langfuse:
 
 ```python
 result = agent.run("Debug this workflow.", result_format="object", trace=True)

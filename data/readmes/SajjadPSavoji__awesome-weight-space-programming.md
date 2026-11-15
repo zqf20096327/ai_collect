@@ -5,7 +5,7 @@
 **Language models that read, edit and write the weights of other neural networks directly, without gradient descent.**
 
 [![Last commit](https://img.shields.io/github/last-commit/SajjadPSavoji/awesome-weight-space-programming?color=green)](https://github.com/SajjadPSavoji/awesome-weight-space-programming/commits/main)
-![Entries](https://img.shields.io/badge/entries-602-blue)
+![Entries](https://img.shields.io/badge/entries-606-blue)
 ![Updated](https://img.shields.io/badge/updated-daily-orange)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 [![License: CC0-1.0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](LICENSE)
@@ -16,18 +16,18 @@
 
 ## 🔥 Recently Added
 
+- **2026-11-15** · [Priyanshu-5257/scrfd-500m-wsp-compress](https://github.com/Priyanshu-5257/scrfd-500m-wsp-compress) (Other Domains)
+- **2026-11-14** · [trehansalil/weight-space-programming](https://github.com/trehansalil/weight-space-programming) (Analyses and Critiques)
+- **2026-11-14** · [How Small Can a Weight-Space Programmer Be?](https://github.com/lemonadesaltbagel/how-small-wsp) (Repairing behavior)
 - **2026-11-14** · [[WSPlore] Follow-up Explorations of Weight-Space Programming](https://github.com/jasperzhao05/wsplore) (Analyses and Critiques)
 - **2026-11-14** · [LLM-directed weight-space programming on a network encoder](https://github.com/Raufnarejo505/llm-directed-weight-space-programming) (Other Domains)
 - **2026-11-14** · [Weight-space programming for college advising](https://github.com/harlyn1/weight-space-advising-logs) (Repairing behavior)
 - **2026-11-14** · [Weight-space programming (decision pipes and pipec compiler)](https://github.com/dennj/Weight-Space-Programming) (Writing networks from scratch)
 - **2026-11-14** · [Hot-swapped weight files let a 4B model beat a 35B MoE with 43% of the memory](https://kevin.stream/blog/swap-the-weights) (Repairing behavior)
 - **2026-11-14** · [Opus 5.5 rewires Stable Diffusion XL by hand](https://github.com/iamomiid/weight-space-programming-sdxl) (Other Domains)
+- **2026-11-14** · [ruvnet/ruv-FANN](https://github.com/ruvnet/ruv-FANN) (Tools, Harnesses and Agent Skills)
 - **2026-11-13** · [jazzpher/qwen35-ramble-edit](https://github.com/jazzpher/qwen35-ramble-edit) (Analyses and Critiques)
 - **2026-11-12** · [Compiling Known Rules into Compact Neural Agents: Weight-Space Programming on Unseen Games](https://github.com/JensLehmann/weight-space-programming-games) (Games)
-- **2026-11-12** · [wsp-qwen-tools: weight edits for tool use in Qwen3.5-0.8B](https://github.com/mrtpk/wsp-qwen-tools) (Repairing behavior)
-- **2026-11-12** · [wsp-yolo-eel: weight-space programming on a YOLO26n eel detector](https://github.com/mrtpk/wsp-yolo-eel) (Other Domains)
-- **2026-11-12** · [sudorian/weight-space-implants](https://github.com/sudorian/weight-space-implants) (Writing networks from scratch)
-- **2026-11-12** · [Weight Whisperer](https://github.com/Prayas-Agrawal/weight-whisperer) (Repairing behavior)
 
 ## 🧭 Milestones
 
@@ -40,20 +40,20 @@
 ## Contents
 
 - [🌟 The Original Report](#-the-original-report) (1)
-- [💬 Language Models](#-language-models) (29)
-  - [Repairing behavior](#repairing-behavior) (20)
+- [💬 Language Models](#-language-models) (30)
+  - [Repairing behavior](#repairing-behavior) (21)
   - [Reading and predicting from weights](#reading-and-predicting-from-weights) (2)
   - [Writing networks from scratch](#writing-networks-from-scratch) (7)
 - [🦾 Robotics and Control](#-robotics-and-control) (14)
   - [Vision-language-action models](#vision-language-action-models) (6)
   - [RL control policies](#rl-control-policies) (8)
-- [🧩 Other Domains](#-other-domains) (26)
+- [🧩 Other Domains](#-other-domains) (27)
   - [Classical NLP models](#classical-nlp-models) (1)
 - [🎮 Games](#-games) (7)
 - [🧪 Quantum Circuits](#-quantum-circuits) (2)
 - [📊 Benchmarks and Evaluations](#-benchmarks-and-evaluations) (4)
-- [🛠️ Tools, Harnesses and Agent Skills](#-tools-harnesses-and-agent-skills) (15)
-- [🔍 Analyses and Critiques](#-analyses-and-critiques) (21)
+- [🛠️ Tools, Harnesses and Agent Skills](#-tools-harnesses-and-agent-skills) (16)
+- [🔍 Analyses and Critiques](#-analyses-and-critiques) (22)
 - [📜 Foundations: Weight Programming Before WSP](#-foundations-weight-programming-before-wsp) (188)
   - [Hand-set and compiled weights](#hand-set-and-compiled-weights) (16)
   - [Rule insertion and extraction](#rule-insertion-and-extraction) (12)
@@ -110,7 +110,12 @@
 <a id="repairing-behavior"></a>
 
 <details>
-<summary><b>Repairing behavior (20)</b></summary>
+<summary><b>Repairing behavior (21)</b></summary>
+
+- **[How Small Can a Weight-Space Programmer Be?](https://github.com/lemonadesaltbagel/how-small-wsp)**  
+  Xintian Huang · *GitHub* · 2026-11-15 · `💻 code / results`  
+  [[Code](https://github.com/lemonadesaltbagel/how-small-wsp)] ![GitHub stars](https://img.shields.io/github/stars/lemonadesaltbagel/how-small-wsp?style=social)  
+  Editors (Qwen 3.5 0.8B, 9B and 27B, deepseek-flash, and Claude Opus 5.5 as a frontier reference) each try to repair the reasoning loops of a damaged Qwen3.5-0.8B through its weights. One protocol applies a fixed forward-pass budget, a pre-execution rule reviewer and a post-hoc audit of every tool call. Releases episode records and an audit of a published run.
 
 - **[wsp-qwen-tools: weight edits for tool use in Qwen3.5-0.8B](https://github.com/mrtpk/wsp-qwen-tools)**  
   mrtpk · *GitHub* · 2026-11-12 · `💻 code / results`  
@@ -366,7 +371,12 @@
 *Classifiers, small decision networks and anything else.*
 
 <details>
-<summary><b>General (25)</b></summary>
+<summary><b>General (26)</b></summary>
+
+- **[Priyanshu-5257/scrfd-500m-wsp-compress](https://github.com/Priyanshu-5257/scrfd-500m-wsp-compress)**  
+  Priyanshu-5257 · *GitHub* · 2026-11-15 · `💻 code / results`  
+  [[Code](https://github.com/Priyanshu-5257/scrfd-500m-wsp-compress)] ![GitHub stars](https://img.shields.io/github/stars/Priyanshu-5257/scrfd-500m-wsp-compress?style=social)  
+  No-training compression of the SCRFD-500M face detector by SVD of weights (rank 96) and keypoint-head removal. Combined edit cuts parameters 626,332 to 453,470 (−27.6%) with DEV Hard AP −0.66 pp. SVD alone gave no ORT latency gain (8.15 vs 8.12 ms). Structural follow-ups were negative.
 
 - **[wsp-yolo-eel: weight-space programming on a YOLO26n eel detector](https://github.com/mrtpk/wsp-yolo-eel)**  
   mrtpk · *GitHub* · 2026-11-12 · `💻 code / results`  
@@ -604,7 +614,7 @@
 *Libraries and agent skills for reading and editing weights.*
 
 <details>
-<summary><b>15 entries</b></summary>
+<summary><b>16 entries</b></summary>
 
 - **[suayptalha/wsr](https://github.com/suayptalha/wsr)**  
   suayptalha · *GitHub* · 2026-11-11 · `💻 code / results`  
@@ -681,6 +691,11 @@
   [[Code](https://github.com/xero00000/weight-space-programming)] ![GitHub stars](https://img.shields.io/github/stars/xero00000/weight-space-programming?style=social)  
   Agent skill for reasoning-driven weight inspection, targeted edits and small-network construction.
 
+- **[ruvnet/ruv-FANN](https://github.com/ruvnet/ruv-FANN)**  
+  ruvnet · *GitHub* · 2025-06-26 · `💻 code / results`  
+  [[Code](https://github.com/ruvnet/ruv-FANN)] ![GitHub stars](https://img.shields.io/github/stars/ruvnet/ruv-FANN?style=social)  
+  Rust, JavaScript and WebAssembly neural network library. Its weight-space programming packages inspect activations, build bounded weight patches, evaluate a candidate against its baseline, and then promote or roll back the revision. Includes an interactive browser demo of a WASM weight edit. Also holds unrelated forecasting, agent and GPU projects.
+
 </details>
 
 ## 🔍 Analyses and Critiques
@@ -688,7 +703,12 @@
 *Audits, replications of claims and critical takes.*
 
 <details>
-<summary><b>21 entries</b></summary>
+<summary><b>22 entries</b></summary>
+
+- **[trehansalil/weight-space-programming](https://github.com/trehansalil/weight-space-programming)**  
+  trehansalil · *GitHub* · 2026-11-15 · `💻 code / results`  
+  [[Code](https://github.com/trehansalil/weight-space-programming)] ![GitHub stars](https://img.shields.io/github/stars/trehansalil/weight-space-programming?style=social)  
+  Replicates a post's closed-form weight edit on Qwen3.5-0.8B (mlp.down_proj, layers 19, 21, 23) with MLX on Apple silicon. Compares the edit with many-shot prompting and LoRA on the same supervision across 15 tasks. Reports paired confidence intervals, forgetting (WikiText-2, ARC-Easy) and cost. One seed.
 
 - **[ianbruton/weight-space-programming-followup](https://github.com/ianbruton/weight-space-programming-followup)**  
   ianbruton · *GitHub* · 2026-11-11 · `💻 code / results`  
@@ -948,36 +968,4 @@
   [[Paper](https://proceedings.neurips.cc/paper_files/paper/1995/hash/45f31d16b1058d586fc3be7207b58053-Abstract.html)]  
   Extracts tree-structured representations (TREPAN) from trained networks by querying the network as an oracle rather than reading its weights.
 
-- **[The truth will come to light: directions and challenges in extracting the knowledge embedded within trained artificial neural networks](https://doi.org/10.1109/72.728352)**  
-  QUT / ANU · *IEEE Trans. Neural Networks* · 1998 · `📄 peer-reviewed` · 470 citations (S2)  
-  [[Paper](https://doi.org/10.1109/72.728352)]  
-  Reviews directions and open challenges in extracting the knowledge embedded in trained neural networks, following the decompositional and pedagogical split.
-
-</details>
-
-<a id="weight-surgery-and-pruning"></a>
-
-<details>
-<summary><b>Weight surgery and pruning (13)</b></summary>
-
-- **[Skeletonization: A technique for trimming the fat from a network via relevance assessment](https://proceedings.neurips.cc/paper_files/paper/1988/hash/07e1cd7dca89a1678042477183b7ac3f-Abstract.html)**  
-  U. Colorado Boulder · *NIPS 1988* · 1989 · `📄 peer-reviewed` · 540 citations (OA)  
-  [[Paper](https://proceedings.neurips.cc/paper_files/paper/1988/hash/07e1cd7dca89a1678042477183b7ac3f-Abstract.html)]  
-  Introduces skeletonization, which assesses the relevance of units in a trained network and deletes the least relevant ones. The aim is a minimal network that is more interpretable.
-
-- **[Optimal brain damage](https://proceedings.neurips.cc/paper_files/paper/1989/hash/6c9882bbac1c7093bd25041881277658-Abstract.html)**  
-  AT&T Bell Laboratories · *NIPS 1989* · 1990 · `📄 peer-reviewed` · 5.6k citations (S2)  
-  [[Paper](https://proceedings.neurips.cc/paper_files/paper/1989/hash/6c9882bbac1c7093bd25041881277658-Abstract.html)]  
-  Ranks weights by a saliency computed from a diagonal approximation of the Hessian and deletes the lowest-ranked ones. Bell Labs authors present it as a way to prune trained networks.
-
-- **[A simple procedure for pruning back-propagation trained neural networks](https://doi.org/10.1109/72.80236)**  
-  IBM Haifa Research · *IEEE Trans. Neural Networks* · 1990 · `📄 peer-reviewed` · 750 citations (S2)  
-  [[Paper](https://doi.org/10.1109/72.80236)]  
-  Proposes a simple procedure for pruning back-propagation trained networks by estimating the sensitivity of the error to each weight and removing low-sensitivity weights.
-
-- **[Creating artificial neural networks that generalize](https://doi.org/10.1016/0893-6080(91)90033-2)**  
-  Defence Science and Technology Organisation · *Neural Networks* · 1991 · `📄 peer-reviewed` · 690 citations (S2)  
-  [[Paper](https://doi.org/10.1016/0893-6080(91)90033-2)]  
-  Studies how to build networks that generalize, pruning hidden units whose outputs are constant or duplicate other units.
-
-- 
+- **[The

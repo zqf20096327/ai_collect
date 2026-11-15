@@ -1,8 +1,8 @@
 # Stabilo
 
-[![GitHub Release](https://img.shields.io/github/v/release/rfonod/stabilo?include_prereleases)](https://github.com/rfonod/stabilo/releases) [![PyPI Version](https://img.shields.io/pypi/v/stabilo)](https://pypi.org/project/stabilo/) [![PyPI - Total Downloads](https://img.shields.io/pepy/dt/stabilo?label=total%20downloads)](https://pepy.tech/project/stabilo) [![CI](https://github.com/rfonod/stabilo/actions/workflows/ci.yml/badge.svg)](https://github.com/rfonod/stabilo/actions/workflows/ci.yml) [![Python](https://img.shields.io/badge/python-3.11--3.13-blue)](https://www.python.org/) [![License](https://img.shields.io/github/license/rfonod/stabilo)](https://github.com/rfonod/stabilo/blob/main/LICENSE) [![GitHub Issues](https://img.shields.io/github/issues/rfonod/stabilo)](https://github.com/rfonod/stabilo/issues) [![Open Access](https://img.shields.io/badge/Journal-10.1016%2Fj.trc.2025.105205-blue)](https://doi.org/10.1016/j.trc.2025.105205) [![arXiv](https://img.shields.io/badge/arXiv-2411.02136-b31b1b.svg)](https://arxiv.org/abs/2411.02136) [![Archived Code](https://img.shields.io/badge/Zenodo-Software%20Archive-blue)](https://zenodo.org/doi/10.5281/zenodo.12117092) [![Docs](https://img.shields.io/badge/docs-rfonod.github.io%2Fstabilo-blue)](https://rfonod.github.io/stabilo/) [![YouTube](https://img.shields.io/badge/YouTube-Video-red?logo=youtube&logoColor=red)](https://youtu.be/BGEZCEe6yHw)
+[![GitHub Release](https://img.shields.io/github/v/release/rfonod/stabilo?include_prereleases)](https://github.com/rfonod/stabilo/releases) [![PyPI Version](https://img.shields.io/pypi/v/stabilo)](https://pypi.org/project/stabilo/) [![PyPI - Total Downloads](https://img.shields.io/pepy/dt/stabilo?label=total%20downloads)](https://pepy.tech/project/stabilo) [![CI](https://github.com/rfonod/stabilo/actions/workflows/ci.yml/badge.svg)](https://github.com/rfonod/stabilo/actions/workflows/ci.yml) [![Python](https://img.shields.io/badge/python-3.11--3.13-blue)](https://www.python.org/) [![License](https://img.shields.io/github/license/rfonod/stabilo)](https://github.com/rfonod/stabilo/blob/main/LICENSE) [![GitHub Issues](https://img.shields.io/github/issues/rfonod/stabilo)](https://github.com/rfonod/stabilo/issues) [![Open Access](https://img.shields.io/badge/Journal-10.1016%2Fj.trc.2025.105205-blue)](https://doi.org/10.1016/j.trc.2025.105205) [![arXiv](https://img.shields.io/badge/arXiv-2411.02136-b31b1b.svg)](https://arxiv.org/abs/2411.02136) [![Benchmark](https://img.shields.io/badge/Benchmark-arXiv%3A2611.17190-b31b1b.svg)](https://arxiv.org/abs/2611.17190) [![Archived Code](https://img.shields.io/badge/Zenodo-Software%20Archive-blue)](https://zenodo.org/doi/10.5281/zenodo.12117092) [![Docs](https://img.shields.io/badge/docs-rfonod.github.io%2Fstabilo-blue)](https://rfonod.github.io/stabilo/) [![YouTube](https://img.shields.io/badge/YouTube-Video-red?logo=youtube&logoColor=red)](https://youtu.be/BGEZCEe6yHw)
 
-**Stabilo** stabilizes video frames and tracked object trajectories against a chosen reference frame, using robust homography or affine registration with optional exclusion masks for dynamic regions. It is the registration engine behind [Geo-trax](https://github.com/rfonod/geo-trax) 🚀 and is tuned with [Stabilo-Optimize](https://github.com/rfonod/stabilo-optimize) 🎯.
+**Stabilo** stabilizes video frames and tracked object trajectories against a chosen reference frame, using robust homography or affine registration with optional exclusion masks for dynamic regions. It is the registration engine behind [Geo-trax](https://github.com/rfonod/geo-trax) 🚀, and its pipelines and parameters can be benchmarked and tuned with [Stabilo Benchmark](https://github.com/rfonod/stabilo-benchmark) 🎯.
 
 ![Stabilization Visualization](https://raw.githubusercontent.com/rfonod/stabilo/main/assets/stabilo_visualization.webp)
 
@@ -15,7 +15,7 @@
 - 🧠 **Classical and learned features in one API**: 6 classical detectors (ORB, SIFT, RootSIFT, BRISK, KAZE, AKAZE) and 5 learned ones (XFeat, DISK, DeDoDe, KeyNet, LoFTR), paired with classical (BF, FLANN) or learned (LightGlue) matchers, see [Feature Detectors and Matchers](#feature-detectors-and-matchers), all swappable with a single flag.
 - ⚡ **Two acceleration paths**: OpenCV CUDA for the classical pipeline (`--gpu`) and any PyTorch device for the learned models (`--device cuda|mps`); see [Configuration](#configuration).
 - 📦 **Library *and* CLI**: `stabilo video` and `stabilo tracks` need no code; the `Stabilizer` class embeds into your own pipeline in a handful of lines.
-- 🔬 **Battle-tested**: powers the georeferenced trajectory extraction in [Geo-trax](https://github.com/rfonod/geo-trax), benchmarked ground-truth-free by [Stabilo-Optimize](https://github.com/rfonod/stabilo-optimize).
+- 🔬 **Battle-tested**: powers the georeferenced trajectory extraction in [Geo-trax](https://github.com/rfonod/geo-trax); [Stabilo Benchmark](https://github.com/rfonod/stabilo-benchmark) can benchmark and tune its pipelines on static and dynamic urban scenes ([paper](https://arxiv.org/abs/2611.17190)).
 
 ## Installation
 
@@ -99,6 +99,9 @@ Stabilo ships classical OpenCV detectors and learning-based detectors/matchers f
 
 Three matchers are available: `bf` (brute force) and `flann` work with every detector, while the learned `lightglue` pairs with `disk`, `dedode`, and `keynet`. `loftr` is detector-free: it matches an image pair directly, so `filter_type` and the `bf`/`flann` choice of `matcher_name` are ignored (`lightglue` is rejected). Full details in [docs/usage.md](docs/usage.md#9-feature-detectors).
 
+> [!NOTE]
+> **A benchmark of these pipelines.** [Stabilo Benchmark](https://github.com/rfonod/stabilo-benchmark) evaluates complete registration pipelines run through Stabilo (detector, descriptor, matcher, robust estimator, and object masking) for reference-based stabilization of hovering-drone video over static and dynamic urban scenes, at an offline and a real-time compute budget. See the [paper](https://arxiv.org/abs/2611.17190) and its [data record](https://doi.org/10.5281/zenodo.23623540); the stored results were produced with stabilo 1.4.5.
+
 > [!IMPORTANT]
 > **Two caveats apply to the learning-based detectors.** They are worth understanding before you pick one.
 >
@@ -117,7 +120,7 @@ Three matchers are available: `bf` (brute force) and `flann` work with every det
 - **Pre-processing**: CLAHE contrast enhancement (`--clahe`) and detection-time downsampling for speed (`--downsample-ratio 0.25`), with keypoints rescaled back to full resolution.
 - **Acceleration**: OpenCV CUDA for the classical pipeline (`--gpu`, see [`docs/cuda.md`](docs/cuda.md)) and CUDA/MPS/CPU for the learned models (`--device mps`).
 - **Visualization**: live or recorded side-by-side rendering of matches, inliers, masks, and box trajectories (`--viz`, `--save-viz`, `--no-lines`, `--tail-length 60`). See [Visualisation mode](docs/usage.md#12-visualisation-mode).
-- **Benchmarking**: `benchmark=True` falls back to the identity matrix and silences warnings for clean batch sweeps; [Stabilo-Optimize](https://github.com/rfonod/stabilo-optimize) 🎯 wraps this into a ground-truth-free evaluation.
+- **Benchmarking**: `benchmark=True` falls back to the identity matrix and silences warnings for clean batch sweeps; to benchmark and tune complete pipelines, see [Stabilo Benchmark](https://github.com/rfonod/stabilo-benchmark) 🎯.
 
 </details>
 
@@ -134,11 +137,13 @@ Three matchers are available: `bf` (brute force) and `flann` work with every det
 
 Stabilo integrates with and complements several specialized tools:
 
-- **[Geo-trax](https://github.com/rfonod/geo-trax) 🚀** — End-to-end framework for extracting georeferenced vehicle trajectories from drone imagery. Uses Stabilo as its core stabilization engine to align video frames and vehicle tracks to a common reference frame.
+- **[Geo-trax](https://github.com/rfonod/geo-trax) 🚀**: End-to-end framework for extracting georeferenced vehicle trajectories from drone imagery. Uses Stabilo as its core stabilization engine to align video frames and vehicle tracks to a common reference frame.
 
-- **[Stabilo-Optimize](https://github.com/rfonod/stabilo-optimize) 🎯** — Benchmarking and hyperparameter optimization framework for Stabilo. Evaluates stabilization performance through ground truth-free assessment using random perturbations. Used to fine-tune Stabilo parameters.
+- **[Stabilo Benchmark](https://github.com/rfonod/stabilo-benchmark) 🎯**: Benchmark of complete reference-based registration pipelines on static and dynamic urban scenes, all run through Stabilo, at an offline and a real-time compute budget. Can be used to benchmark and tune Stabilo's pipelines and parameters. Accompanies the paper [*Consensus Capture in Reference-Based UAV Video Stabilization: A Benchmark on Dynamic Urban Scenes*](https://arxiv.org/abs/2611.17190); data record at [10.5281/zenodo.23623540](https://doi.org/10.5281/zenodo.23623540).
 
-- **[HBB2OBB](https://github.com/rfonod/hbb2obb) 📦** — Converts horizontal bounding boxes to oriented bounding boxes using SAM segmentation models. Can be used alongside Stabilo when object orientation is needed for downstream analysis.
+- **[HBB2OBB](https://github.com/rfonod/hbb2obb) 🔄**: Converts horizontal bounding boxes to oriented bounding boxes using SAM segmentation models. Can be used alongside Stabilo when object orientation is needed for downstream analysis.
+
+- **[Stabilo-Optimize](https://github.com/rfonod/stabilo-optimize) 🎛️**: Superseded by Stabilo Benchmark. Ground-truth-free benchmarking and tuning of Stabilo on static scenes, implementing the static campaign of the [Geo-trax article](https://doi.org/10.1016/j.trc.2025.105205).
 
 </details>
 
@@ -274,18 +279,30 @@ If you use **Stabilo** in your research, software, or product, please cite the f
     }
     ```
 
-2. **Repository Citation:** If you reference, modify, or build upon the Stabilo software itself, please also cite the corresponding Zenodo release:
+2. **Repository Citation:** When referencing or building on the code itself (replace `1.x.x` with the version you used):
 
     ```bibtex
     @software{fonod2026stabilo,
       author = {Fonod, Robert},
-      license = {MIT},
-      month = nov,
       title = {Stabilo: A Comprehensive Python Library for Video and Trajectory Stabilization with User-Defined Masks},
-      url = {https://github.com/rfonod/stabilo},
+      year = {2026},
+      month = nov,
+      version = {1.x.x},
+      license = {MIT},
       doi = {10.5281/zenodo.12117092},
-      version = {1.4.8},
-      year = {2026}
+      url = {https://github.com/rfonod/stabilo}
+    }
+    ```
+
+3. **Benchmark Citation:** If you build on the benchmark of Stabilo's pipelines, please cite (software and data citations are in [Stabilo Benchmark](https://github.com/rfonod/stabilo-benchmark#citation)):
+
+    ```bibtex
+    @article{fonod2026benchmark,
+      author  = {Fonod, Robert and Geroliminis, Nikolas},
+      title   = {Consensus Capture in Reference-Based UAV Video Stabilization: A Benchmark on Dynamic Urban Scenes},
+      journal = {arXiv preprint arXiv:2611.17190},
+      year    = {2026},
+      doi     = {10.48550/arXiv.2611.17190}
     }
     ```
 

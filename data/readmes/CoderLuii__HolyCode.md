@@ -1045,6 +1045,12 @@ If HolyCode saved you from another hour of environment setup, here's how to pay 
 - Share it with someone who'd find it useful
 - [Buy Me A Coffee](https://buymeacoffee.com/CoderLuii)
 - [PayPal](https://www.paypal.com/donate/?hosted_button_id=PM2UXGVSTHDNL)
+<!-- sponsors: start. Drawn by the HolyCore bot from the live sponsor list; shows nothing until the first sponsor. -->
+<p align="center">
+  <a href="https://holycore.coderluii.dev/activity/sponsor/list/holycode"><picture><source media="(prefers-color-scheme: dark)" srcset="https://holycore.coderluii.dev/activity/sponsor/wall/holycode.svg?theme=dark"><img src="https://holycore.coderluii.dev/activity/sponsor/wall/holycode.svg?theme=light" width="800" align="top" alt="HolyCode supporters"></picture></a><a href="https://github.com/sponsors/CoderLuii"><picture><source media="(prefers-color-scheme: dark)" srcset=".github/assets/btn-github-dark.png"><img src=".github/assets/btn-github-light.png" alt="Sponsor on GitHub" width="400" height="34" align="top"></picture></a><a href="https://buymeacoffee.com/coderluii"><picture><source media="(prefers-color-scheme: dark)" srcset=".github/assets/btn-coffee-dark.png"><img src=".github/assets/btn-coffee-light.png" alt="Buy me a coffee" width="400" height="34" align="top"></picture></a>
+</p>
+<!-- sponsors: end -->
+
 - [GitHub Sponsors](https://github.com/sponsors/CoderLuii)
 
 <p align="right">

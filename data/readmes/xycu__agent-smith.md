@@ -29,6 +29,8 @@ A Claude Code plugin that runs 10xDevs and OpenSpec workflows end to end through
 
 Needs Claude Code 2.1.292 or later: `${CLAUDE_SKILL_DIR}` in skill content needs 2.1.69 and the `effort` parameter of the Agent tool needs 2.1.292.
 
+The scoped Bash guard requires Claude Code 2.1.295+ for fail-closed hook handling, enabled plugin hooks and subagent identity fields. New Claude tasks use `agent-smith:step`, which inherits tools. The guard covers common direct unsafe commands. Older supported hosts retain prompt rules and host permission controls, with runtime guard enforcement unverified. Fresh-host acceptance is pending. [Step safety and coverage](docs/REFERENCE.md#step-safety-and-pre-publication-acceptance)
+
 Fable compatibility checked 2026-11-14. Fable 5.2 requires Claude Code 2.1.321+. With `ANTHROPIC_DEFAULT_FABLE_MODEL` unset, `fable` resolves to Fable 5 in Claude apps gateway sessions and Fable 5.2 elsewhere. Before opting in, check the version requirement for the resolved model, environment/provider mapping, exposed Agent model alias and effort parameters, and account access. The router performs no version or capability detection. [Model configuration](https://code.claude.com/docs/en/model-config) · [Subagents](https://code.claude.com/docs/en/sub-agents)
 
 ### Codex and OpenAI steps
@@ -42,6 +44,8 @@ Merge `skills/10x-pipeline/codex-policy.json` into `context/foundation/agent-smi
 Existing Codex configuration is the default. Optional `codex.profile` selects an existing named configuration. The runner checks Git filesystem capability before launching a model and respects managed requirements and outer host restrictions. Native sandbox can force legacy `sandbox_mode` settings read-only and prevent verification. Execpolicy and hook behavior still need live acceptance. See the reference for the execution protocol and limits. [Codex execution](docs/REFERENCE.md#codex-and-provider-dispatch)
 
 ## 🏁 Quick start
+
+For both chains, choose a change id or name of 1–100 characters using lowercase letters, digits and hyphens, starting with a letter or digit.
 
 ### 📐 OpenSpec
 
@@ -65,7 +69,7 @@ Needs: the skills `openspec-propose`, `openspec-apply-change` and `openspec-veri
 /agent-smith:10x-pipeline <change-id> "what you want built"
 ```
 
-🔁 Plan, plan review, implement, implementation review, fix. The report lands in `context/changes/<change-id>/agent-smith/report.md`.
+🔁 Plan, plan review, implement, implementation review, fix. The report lands in `context/changes/<change-id>/agent-smith/report.md` relative to the run root. Default isolation puts that root in `.claude/worktrees/agent-smith-<change-id>/` on branch `agent-smith/<change-id>`, whose pull request carries the report. A successful 10x archive moves it to `context/archive/<created-date>-<change-id>/agent-smith/report.md` in that worktree.
 
 Needs: the skills `10x-plan`, `10x-plan-review`, `10x-goal-implement` and `10x-impl-review`, Node.js 24+ and `git`.
 
@@ -94,7 +98,7 @@ These compatibility statements follow Anthropic documentation reviewed on 2026-1
 | `--archive` | Archive the change when the run is done; asks first when Manual checks are pending or unproved. |
 | `--rigor lean\|standard\|thorough` | Start at a rigor level. Default: picked from the goal. |
 | `--chrome false` | Keep the manual-check step off the Chrome browser tools. |
-| `--pr-comment` | Post the run report to the open pull request. Stored with the run, so a resume keeps it; `--pr-comment false` turns it off. Needs `gh`. |
+| `--pr-comment` | Post the run report to the open pull request. Stored with the run, so a resume keeps it; `--pr-comment false` turns it off. Needs `gh`. See “PR comment (opt-in)” in [the reference](docs/REFERENCE.md) for manual posting and recovery. |
 
 ## ⚙️ Configure
 
@@ -111,6 +115,20 @@ Eligible Claude hosts can merge the complete opt-in fable ladder and four select
 With a price table missing fable, status gives its step cost as `null`, the report cell is `-` and the summary names `no price for: fable`. Compare adds `cost-incomplete:routed` while preserving the token verdict. All-unpriced status totals are `null`. With prices off, status/report omit costs and compare side costs stay `null`.
 
 Opt-in extras: restricted step agents, advisor prompts, confirmation review rounds. All in the [reference](docs/REFERENCE.md).
+
+### Claude Code subagent depth
+
+This repository caps Claude Code subagent depth at one layer. Plugin users can optionally merge this entry into their project’s `.claude/settings.json`.
+
+```json
+{
+  "env": {
+    "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "1"
+  }
+}
+```
+
+The cap affects every Claude session in that project, including workflows outside the pipeline. Commit the setting before creating run worktrees, then start a fresh Claude session from the intended project root. The reference covers version support, overrides and verification. [Subagent depth](docs/REFERENCE.md)
 
 ## 📚 More
 

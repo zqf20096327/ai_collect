@@ -9,7 +9,7 @@ claude plugin marketplace add archid21/rightsize
 claude plugin install rightsize@archid21 --scope user
 ```
 
-**Status: 0.13.0.** A report that leads with a checked saving, a spend limit for helpers, and monthly cache-life advice. See [New in 0.13.0](#new-in-0130).
+**Status: 0.14.0.** Keep warm only while it pays, a Wrap up button, handoff-style compacts, and an opt-in warning for big turns. See [New in 0.14.0](#new-in-0140).
 
 MIT license · works with a Claude subscription (Pro, Max, Ultra) or an API key · [Open an issue](https://github.com/archid21/rightsize/issues)
 
@@ -25,9 +25,9 @@ MIT license · works with a Claude subscription (Pro, Max, Ultra) or an API key 
 
 **It learns which routes to trust.** Every hand-off, lowering, test run and thumbs rating scores the rater per kind of work and model. A model that misses on reviews stops getting reviews until your own outcomes say otherwise.
 
-**Cut cache and compact costs.** Keeps the cache warm when that is cheaper than coming back cold, warns as your context fills, steps aside for Claude's idle compact, and compacts only when the saving beats the cost.
+**Cut cache and compact costs.** Keeps the cache warm only while your own record says that is cheaper than coming back cold, stops if the cache misses, warns as your context fills, steps aside for Claude's idle compact, and compacts only when the saving beats the cost.
 
-**rightsize works better with whatsnext.** rightsize decides when a compact pays. [whatsnext](https://github.com/archid21/whatsnext) decides what to keep: it saves a handoff note first, so a compact retains the details that matter. rightsize asks it for that handoff before the cache goes cold and uses its compact text for **Compact now**. rightsize works on its own too, and uses Claude's own compact when whatsnext isn't installed.
+**rightsize works better with whatsnext.** rightsize decides when a compact pays. [whatsnext](https://github.com/archid21/whatsnext) decides what to keep: it saves a handoff note first, so a compact retains the details that matter. rightsize asks it for that handoff before the cache goes cold and uses its compact text for **Compact now**. rightsize works on its own too: when whatsnext isn't installed or set up in the project, it compacts with its own handoff-style text, and a **Wrap up** press or a typed `wrap up` compacts instead of saving a note.
 
 ## The problem: one model for every prompt
 
@@ -47,7 +47,9 @@ Switching by hand with `/model` works until you forget, which is most of the tim
 | Cheaper helpers | Big routine edits handled at lower cost | Automatic from Opus or Fable sessions. Press **Run on your model** on the band to undo one. |
 | Opus reviews | Stronger reviews without switching models | Automatic. The **Stronger model** row sets ask first or always send. |
 | Watch only | See what rightsize would save before it changes anything | Set **Mode** to watch only, then run `/rightsize report` after a week. |
-| Keep warm | Avoid paying to rewrite a cold cache | Set **Before the cache goes cold**, or pick a time when the band offers it. |
+| Keep warm | Avoid paying to rewrite a cold cache | Automatic (**while it pays**). Or set **Before the cache goes cold** to keep warm for a set time, save a handoff, compact, ask or off; or pick a time when the band offers it. |
+| Wrap up | End a session with a handoff note, or a compact if whatsnext is not set up | Press **Wrap up** on the countdown row, or type `wrap up`. |
+| Big-turn warning | A heads-up before and during an unusually expensive turn | Off by default. Set **Big-turn warning** under Advanced. |
 | Context-size warning | Compact before the conversation gets costly | Appears at 40–90% full. Press **Compact now**. |
 | Compact before your 5-hour limit | Save usage after a window reset | Press **Compact now** when the band advises it. |
 | Handoff before a compact ★ | A compact that retains the details that matter | Install whatsnext. rightsize asks it automatically, before the cache goes cold and before **Compact now**. |
@@ -106,7 +108,7 @@ A routine edit stays on Sonnet; a review switches to Opus for one turn; the band
 
 **Big routine jobs, done cheaper.** Working on Opus? A large, mechanical job such as the same edit across many files can go to a Haiku helper. Your main chat writes the brief, checks the result against it, and sends it back if anything is off. On our benchmark these hand-offs passed as often as Opus at a bit under half the cost. rightsize hands off only when the brief and the check still leave a saving, so from a Sonnet session it never does.
 
-**Come back to a warm session.** A long session is cheap only while its prompt cache (the stored copy of your conversation) is warm. Step away past the cache's life (an hour on a subscription, 5 minutes on an API key) and your next prompt pays to rebuild it. rightsize keeps a big session warm while you are away, until your usual start time, and never past the point where coming back cold would be cheaper. When keeping warm over your usual idle time would cost at least 3 times a compact, rightsize compacts instead.
+**Come back to a warm session.** A long session is cheap only while its prompt cache (the stored copy of your conversation) is warm. Step away past the cache's life (an hour on a subscription, 5 minutes on an API key) and your next prompt pays to rebuild it. rightsize keeps a big session warm while you are away only when your own record of how long you stay away says it pays, and never past the point where coming back cold would be cheaper. When no keep-warm request is due, it compacts if that pays, and otherwise saves a whatsnext handoff note.
 
 | Coming back to a 150k-token Opus session | Cost at API prices |
 |---|---|
@@ -132,6 +134,17 @@ On a subscription, a keep-warm request draws a small share of your usage window,
 
 *Benchmark: real tasks from open-source repositories, each graded by hidden tests the model never sees. Your results depend on your work and settings. Method: [docs/METHOD.md](docs/METHOD.md).*
 
+## New in 0.14.0
+
+- **Keep warm only while it pays.** The default of **Before the cache goes cold** now sends a keep-warm request only when your own record of idle breaks says it covers its cost. It stops on a cache miss, and a value you set yourself still wins.
+- **Wrap up.** A button on the countdown row, or typing `wrap up`, saves a whatsnext handoff note, or compacts when whatsnext is not set up.
+- **Handoff-style compacts.** A bare `/compact` and Claude Code's automatic compact use rightsize's handoff text; text you type after `/compact` is never replaced.
+- **Big-turn warning (opt-in).** Warns before a prompt that looks unusually expensive, and during a turn that is heading there, with **Keep going** and **Finish up**. Nothing is sent or stopped for you.
+- **How each task ended.** Tasks get an outcome, and the report shows how each route did and what lowered turns stepped back up from.
+- **Fast mode is priced,** and estimates now learn in dollars, so expensive turns count for more.
+
+Every change: [CHANGELOG.md](CHANGELOG.md). Every feature: [docs/FEATURES.md](docs/FEATURES.md).
+
 ## New in 0.13.0
 
 - **The report leads with a checked saving:** the overall saving as a range, checked against what staying really costs, with prompts you overrode left out.
@@ -145,7 +158,7 @@ Every change: [CHANGELOG.md](CHANGELOG.md). Every feature: [docs/FEATURES.md](do
 
 ## Quickstart
 
-**You need** Claude Code 2.1.287 or newer (2.1.286 in the desktop app) and a Claude subscription or API key. Nothing else.
+**You need** Claude Code 2.1.287 or newer (2.1.286 in the desktop app) and a Claude subscription or API key. The handoff compact text also needs `python3` (on a Mac it comes with the Xcode command line tools, as git does); without it a compact uses Claude Code's own summary.
 
 1. Install:
 
@@ -174,7 +187,7 @@ Want to watch first? In `/config`, set **Mode** to watch only.
 
 **What it never does.** It never changes your model for you, never approves a tool call, never changes a permission, and never touches your project files. Hooks and file paths: [docs/WHAT-IT-TOUCHES.md](docs/WHAT-IT-TOUCHES.md).
 
-**What it runs, writes and sends.** It runs `mkdir`, `chmod`, `rm` and `rmdir` on its own log folders and, with whatsnext installed, `git rev-parse` and whatsnext's own script. For the star ask it runs `gh api` (and `open` or `xdg-open` when starring fails). The script's commands read what to compact and whether a handoff is missing; rightsize writes none of whatsnext's settings or files. It writes only under `~/.claude/mods-logs/rightsize/`, its own store, its own `prices.json`, and `~/.config/archid21/stars.json` (shared with whatsnext). Its web requests go to `platform.claude.com` (Anthropic's pricing page, monthly, sends nothing of yours) and, for the star ask, to GitHub through your own `gh`; it sends nothing to the author. It sets only its own `rightsize.*` settings, submits only the fixed text `wrap up`, reads no credential, and its `tool.call` hook only ever denies, never approves. The full list, checked against the code: [What it runs, writes and sends](plugins/rightsize/README.md#what-it-runs-writes-and-sends).
+**What it runs, writes and sends.** It runs `mkdir`, `chmod`, `rm` and `rmdir` on its own log folders and, with whatsnext installed, `git rev-parse` and whatsnext's own script. It also runs `git rev-parse --is-inside-work-tree`, to know whether to suggest `whatsnext init`. When you type exactly `wrap up` and whatsnext isn't set up in the project, it drops that prompt and compacts instead. For the star ask it runs `gh api` (and `open` or `xdg-open` when starring fails). The script's commands read what to compact and whether a handoff is missing; rightsize writes none of whatsnext's settings or files. It writes only under `~/.claude/mods-logs/rightsize/`, its own store, its own `prices.json`, and `~/.config/archid21/stars.json` (shared with whatsnext). Its web requests go to `platform.claude.com` (Anthropic's pricing page, monthly, sends nothing of yours) and, for the star ask, to GitHub through your own `gh`; it sends nothing to the author. It sets only its own `rightsize.*` settings, submits only the fixed text `wrap up`, reads no credential, and its `tool.call` hook only ever denies, never approves. The full list, checked against the code: [What it runs, writes and sends](plugins/rightsize/README.md#what-it-runs-writes-and-sends).
 
 ## Make it yours
 
@@ -185,7 +198,7 @@ One rule set, two switches. **Hand-offs** turns helper subagents off (effort sti
 | Moves to a cheaper model when | The rating says it fits and the helper costs under 70% of staying | **Cheaper model** (the 70% bar is fixed) |
 | Lowers effort when | Every prompt on Opus or Fable but a review runs at low; elsewhere when the rating says the lower level fits | **Lowering** |
 | Reviews on Opus | Yes, highest effort | **Stronger model** |
-| Keeps the cache warm while you're away | Until your usual start time | **Before the cache goes cold** |
+| Keeps the cache warm while you're away | Only while your own record says it pays | **Before the cache goes cold** |
 
 When keeping warm over your usual idle time would cost at least 3 times a compact, keep warm becomes a compact instead. A **Before the cache goes cold** row you set yourself always wins.
 
@@ -227,7 +240,7 @@ claude plugin update rightsize@archid21
 - The rating is a model's estimate. It can be wrong on a single prompt; miss tracking corrects it over time.
 - Hand-offs take longer than staying, because the helper adds a brief and a check. The band says so.
 - If you already use Sonnet for everything, rightsize costs more than you pay now. What you get for it is Opus on reviews.
-- Handoffs before a compact need whatsnext. Without it, rightsize uses Claude's own compact.
+- Handoff notes before a compact need whatsnext. Without it, rightsize compacts with its own handoff-style text.
 - rightsize compacts only the open session, and only when you press a button or set a row to compact. It does not compact closed threads.
 - The effort picker in the app does not move; the status line shows the level in use.
 

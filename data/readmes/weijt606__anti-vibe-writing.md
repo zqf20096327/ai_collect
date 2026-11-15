@@ -5,7 +5,7 @@
 [![English](https://img.shields.io/badge/README-English-1f6feb?style=flat-square)](./README.md)
 [![中文](https://img.shields.io/badge/README-%E4%B8%AD%E6%96%87-15803d?style=flat-square)](./README.zh.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-111111?style=flat-square)](./LICENSE)
-[![Skill version](https://img.shields.io/badge/skill-1.7.0-orange?style=flat-square)](./CHANGELOG.md)
+[![Skill version](https://img.shields.io/badge/skill-1.9.0-orange?style=flat-square)](./CHANGELOG.md)
 
 > 本 README 提供中英文两个版本：**English**（本页，默认）和 **[中文](./README.zh.md)**。点上方徽章切换。
 
@@ -13,7 +13,11 @@
 
 An agent writing skill that removes the AI-generated feel from documents. Works in English and Chinese, with optional modes for matching a specific author's voice.
 
-It runs best as a final pass after drafting with Claude Code, Codex, or any LLM-backed agent. The goal is not to make the prose prettier. The goal is to keep the substance and remove the tells: templated phrasing, vague abstraction, consultant-speak, markdown-heavy formatting, over-structured outlines, the copy-paste residue chat and search models leave behind (`oaicite` / `turn0search0` / `[cite: 1]` / stray `【】` markers), and the cautious over-balancing that makes writing feel assembled.
+![Before and after: a 73-word AI-drafted launch tweet full of emoji, an em-dash, marketing adjectives and a benefits list, rewritten into 37 words: "Most AI drafts get the facts right and still read like a machine put them together. Anti-Vibe Writing is a final editing pass that takes those assembly marks out, for drafts in English as well as Chinese."](./anti-vibe-writing-before-after.png)
+
+<sub>A real pair from [`examples/03-tweet.md`](./examples/03-tweet.md). More in [examples/](./examples/).</sub>
+
+It runs best as a final pass after drafting with Claude Code, Codex, or any LLM-backed agent. Its job is to keep the substance and remove the tells: templated phrasing, vague abstraction, consultant-speak, markdown-heavy formatting, over-structured outlines, the copy-paste residue chat and search models leave behind (`oaicite` / `turn0search0` / `[cite: 1]` / stray `【】` markers), and the cautious over-balancing that makes writing feel assembled.
 
 If the default "clean" mode is not enough, the skill also supports:
 - **Human-texture mode**: inject controlled irregularities (inversions, particles, half-sentences, non-standard punctuation) for personal voice
@@ -23,6 +27,22 @@ If the default "clean" mode is not enough, the skill also supports:
 ## Quick start
 
 At its core this is just a set of markdown rules (`SKILL.md` + `references/` + `assets/`), not tied to any one agent. Claude Code, Codex, Kimi, work-buddy, Hermes. If it can read files or take an instruction prompt, it can use this.
+
+**Claude Code, one step:**
+
+```text
+/plugin install anti-vibe-writing --marketplace weijt606/anti-vibe-writing
+```
+
+Then call `/anti-vibe-writing`, or just ask Claude to de-AI a draft. On Claude Code older than 2.1.275, run `/plugin marketplace add weijt606/anti-vibe-writing` first, then `/plugin install anti-vibe-writing@anti-vibe-writing`.
+
+**Codex, Cursor, Gemini CLI and other agents, one step with the GitHub CLI** (gh 2.90 or newer):
+
+```bash
+gh skill install weijt606/anti-vibe-writing anti-vibe-writing --agent codex --scope user
+```
+
+Swap `codex` for `cursor`, `gemini-cli`, `claude-code`, `opencode` or any other name in `gh skill install --help`. It installs the latest release, and `gh skill update` pulls newer ones later. No GitHub CLI? Follow the three steps below.
 
 **1. Get the rules**
 
@@ -88,11 +108,14 @@ Other common cases:
 - Cleaner phrasing
 - Stronger voice
 - Less AI smell
-- Sounds chosen by a person, not assembled by a system
+- Sounds like a person chose every word
 
 ## Repository layout
 
 ```text
+.claude-plugin/
+  plugin.json                              # Claude Code plugin manifest
+  marketplace.json                         # lets `/plugin install` find it
 agents/
   README.md
   anti-vibe-writing-dev.agent.md           # local, gitignored
@@ -117,6 +140,8 @@ skills/
       style-extraction-prompt.md           # One-shot extraction prompt
 examples/
   ...
+scripts/
+  check-own-prose.sh                       # CI: project prose passes its own rules
 CHANGELOG.md
 CONTRIBUTING.md
 README.md                                    # English (default)
@@ -145,7 +170,12 @@ English:
 - ["AI 中文翻译腔" by yage.ai](https://yage.ai/share/ai-chinese-translationese-20260418.html): the analysis of Chinese translationese (物理动作动词写抽象 / 形容词加冒号预判读者 / 抽象名词主语). Informed the 翻译腔层 of `references/chinese-patterns-to-remove.md`.
 - [@dotey on X](https://x.com/dotey/status/2022774029220749538): discussion of de-AI prompt techniques (role-setting, negative constraints) that shaped the 改写心态 section and the Chinese rewrite prompt block.
 
-These are independent projects with their own scope; this repo borrows ideas, not code. If you maintain one of them and want a credit adjusted, open an issue.
+AI-writing research (added in 1.9.0):
+- [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing): the community-maintained catalog of AI-writing signs (October 2026 revision). Source of the mid-2026 vocabulary band, source-gap hedging, trailing participle analysis, placeholder and `utm_source` residue, the "Challenges and Future Outlook" ending, and the weak-evidence list.
+- [Graphite's 2026 model-tell analysis, reported by TechCrunch](https://techcrunch.com/2026/10/01/opus-5-5-loves-to-tell-you-this-matters-and-other-ai-writing-tells/): per-model frequencies behind "this matters" / "why X matters", "dependable", the 2026 contrast-frame variants, and the em-dash decline.
+- [《消除"罪证"：给写作去除"AI味"的不完全手册（2026版）》](https://eu.36kr.com/zh/p/3824601267196037) by 蒋雨恬, first published on the WeChat account 有三思 U Sense and reprinted by 36kr: informed 过度拔高, the "最" (豆包体) rule, 学术套话 openers, 虚假范围, and the note about people misjudged over two dashes.
+
+These are independent projects and writeups with their own scope; this repo borrows their ideas and none of their code. If you maintain one of them and want a credit adjusted, open an issue.
 
 ## Contributing
 
@@ -161,43 +191,6 @@ This project is open source under the MIT License. See `LICENSE`.
 - Prefer concrete edits over generic style advice.
 - Keep structure only when it helps the reader.
 
-## Version highlights
+## What's new
 
-**1.7.0**
-- New copy-paste model-residue layer for the machine-only tokens current chat and search models leave in a pasted draft: `contentReference` / `oaicite` / `turn0search0`, `[cite: 1]` / `[cite_start]` / `[span_1]`, `grok_card`, `ppl-ai-file-upload`, stray `【】`/`†` citation scaffolding, unsourced `[1][2]` brackets, and leftover "Here is the revised version" / "Sources:" framing. Exact-string and language-agnostic, so it's added to both patterns references, the deterministic grep gate, the checklist, and the rewrite-prompt template
-- Chinese track adds an 附和 / 谄媚开头 tell (问得好 / 你说得对 / 好的，下面是……) and an 无源的权威铺垫 tell (研究表明 / 数据显示 / 专家指出 with no source named)
-- New English sentence-level tells (sycophantic openers, unsourced authority) and a note that the AI vocabulary list drifts by model generation (showcasing / highlighting / emphasizing / enhance now sit beside the older delve / tapestry set), so no single wordlist is treated as final
-- Additive only: no change to the skeleton, philosophy, or workflow. Still a lightweight set of markdown rules
-
-**1.6.0**
-- The final checklist is now a step you run, not a list you glance at: after rewriting, work through `final-pass-checklist.md`, fix only the flagged spots, re-check, and stop after at most two rounds. It's the lightest form of a generate → check → revise loop. One model, one conversation, no extra agents, still just markdown
-- New deterministic gate: a one-line `grep` at the bottom of the checklist catches the *exact* tells self-review skims past (em-dash `—`, the `…` character, stray `→ •` in prose, and a fast subset of the jargon list). Shared double curly quotes `“ ”` are left to human judgment by language, so Chinese full-width quotes aren't deleted by mistake
-- Learning mode gains a closing check: compare the output's sentence rhythm and punctuation against the numbers recorded in the host profile, and nudge it back if it drifted
-- New banned-sentence-structure coverage in the Chinese track (the gaps that weren't covered before): template openers ("在这个 XX 的时代…", the preachy "记住，真正重要的是…"), the "以前…现在…" time-contrast frame, the "总之 / 归根结底 / 说到底" summary-closer, plus 鸡汤/slogan endings and the slick all-correct-but-empty conclusion. Synced into the Chinese rewrite-prompt block and the deterministic gate, with a new example 11 (`examples/11-sentence-structures-zh.md`) demonstrating them. Items already covered (不是…而是, 值得注意的是, 让我们 openers, per-paragraph subheadings) were left as-is, not duplicated
-
-**1.5.0**
-- New typographic-tells layer targeting the signals readers, platforms (Reddit and others), and detectors catch first: the em-dash (`—` / `——`), en-dash connectors, smart quotes `“ ” ‘ ’`, the `…` character, and stray `→ • ·` in prose. Replace each by the job it does (period, comma, colon, parentheses, straight quotes) while leaving Chinese full-width quotes alone
-- New format-forms mapping: swaps the AI *layout* habits (scattered bolding, a heading per short chunk, bullets where a sentence works, `1. 2. 3.` frameworks, `> callouts`, `---` rules, tables for 2–3 items) for the plainest thing a person actually types. Rule of thumb: if you wouldn't type the formatting into a message to a friend, cut it
-- Human-texture mode reconciled: the em-dash used to be a "personal voice" signal, but AI now overuses it into a tell, so it's downgraded to rare-and-deliberate with parenthesis/period alternatives
-- Stated plainly: stripping these symbols is not a trick to dodge a detector. It makes the text genuinely read like keyboard typing, and lower false-positive flags are just a side effect
-- A sixth scenario preset: Reddit / English forum comments. Comment-as-genuine-help constraints, a hard "no em-dashes at all" rule (some subreddit automods flag em-dash density and auto-remove comments as low-effort/AI), break too-symmetric "it's not X, it's Y" parallelism, casual connectors, plus disclosure / anti-sock-puppet guardrails
-- New example `10`: an em-dash / typographic-tell before-after in both English and Chinese
-
-**1.4.0**
-- Human-texture mode gains a "casual typing" (随手打) layer: a social-only, default-off, hard-guardrailed sliver of phone-typing texture (dropped punctuation / no caps / omitted particle), never on numbers or names, never meaning-changing typos, and not for dodging detectors
-
-**1.3.0**
-- A sharper Chinese track for more idiomatic (地道) output: a 翻译腔 / 欧化句式 layer (被字句, 作为一个…, 不仅…而且…, 对…进行…, 复数"们"), a 四字成语 overuse rule, and a 改写心态 section that swaps the 资深文案 / 营销专家 stance for a friend / 公众号 editor / journalist voice
-- New sentence-level English tells (copula avoidance, negative parallelism, synonym cycling, false ranges, signposting, diff-anchored writing), adapted from open humanizer projects (see Credits)
-- Three new examples: a Chinese X/Twitter post (`07`), a Chinese translationese demo (`08`), and an English sentence-tells demo (`09`)
-- A ready-to-use "中文改写（带负向约束）" prompt block in `assets/rewrite-prompt-template.md`, plus an optional five-dimension scoring pass in the final-pass checklist
-
-**1.2.0**
-- Chinese AI-smell rules and Chinese before/after benchmarks (`references/chinese-*.md`)
-- Human-texture mode for opt-in irregularity (`references/human-texture.md`)
-- Learning mode with host profile workflow (`references/learning-mode.md`)
-- Five scenario presets: X / Weibo / blog / podcast / report (`references/scenario-presets.md`)
-- Host profile template and one-shot style extraction prompt
-- Fixed `tools:` field in SKILL.md to use Claude Code's real tool names
-
-See [CHANGELOG.md](./CHANGELOG.md) for the full version history.
+**1.9.0**: catches up with how models write in late 2026 ("this matters", "not simply X", fewer em-dashes, Chinese 过度拔高 and "最" overuse, placeholders and tracking links), adds a list of features too weak to call a text AI-written on their own, and fixes places where the skill broke its own rules. Each version's full notes are in [Releases](https://github.com/weijt606/anti-vibe-writing/releases), and the whole history is in [CHANGELOG.md](./CHANGELOG.md).

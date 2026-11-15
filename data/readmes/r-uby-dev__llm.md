@@ -37,9 +37,9 @@ This version works with older rubies and dependencies (ie: json v2).
 gem install llm.rb -v 17.0.1
 ```
 
-##### Latest (v20)
+##### Latest (v21)
 
-v20 is the recommended release.
+v21 is the recommended release.
 
 The v19 release is a smaller release that includes a 
 tiny eval framework that was authored for the [micro1](https://micro1.ai)
@@ -90,6 +90,11 @@ the tool call(s) were cancelled.
 
 ##### helloworld.rb
 
+<details>
+<summary>Show GIF</summary>
+<img src="helloworld.gif" alt="hello world"/>
+</details>
+
 The environment variable
 `$DEEPSEEK_API_KEY` is assumed to have been set and reference
 a valid DeepSeek API key, otherwise you can provide a key explicitly
@@ -134,7 +139,7 @@ puts options[:stream].string
 
 <details>
 <summary>Show GIF</summary>
-<img src="evals.gif" alt="evals gif"/>
+<img src="evals.gif" alt="micro1 evals"/>
 </details>
 
 An eval is like a unit test but for your agent. The runtime
@@ -351,6 +356,12 @@ agent.talk "Find me an interesting Ruby project on GitHub", tools: mcp.tools
 
 ##### builtin_tools.rb
 
+<details>
+<summary>Show GIF</summary>
+<img src="builtintools.gif" alt="builtin tools"/>
+</details>
+
+
 The runtime ships toolsets that cover
 different tasks in different contexts.
 The tools are loaded on-demand via a
@@ -371,12 +382,18 @@ about the other available builtin tools:
 
 ```ruby
 require "llm"
-require "llm/tools/pwd"
 
-llm   = LLM.deepseek
-tools = [*LLM::Tool.git, *LLM::Tool.unix, LLM::Tool::Pwd]
-agent = LLM::Agent.new(llm, tools:)
-agent.talk "tell me what authors this git repo has?", stream: $stdout
+llm         = LLM.deepseek
+tracer      = LLM::Tracer.enhanced(llm)
+stream      = StringIO.new
+concurrency = :ractor
+tools       = [*LLM::Tool.git, *LLM::Tool.unix, *LLM::Tool.rubylang]
+
+agent = LLM::Agent.new(llm, tracer:, stream:, concurrency:, tools:)
+agent.talk "are we in a git repo?"
+agent.talk "what's happening on the ruby-lang bug tracker?"
+
+puts stream.string
 ```
 
 ##### files.rb
@@ -1939,7 +1956,7 @@ a large-ish company.
       </p>
     </td>
     <td align="right" valign="middle" width="128">
-      <a title="what's up doc" href="https://www.youtube.com/watch?v=s-1u-hSVZvk">
+      <a title="what's up doc" href="https://www.youtube.com/watch?v=CyzdOtyYnng">
         <img src="bugsbunny1.jpg" width="128" alt="what's up doc">
       </a>
     </td>

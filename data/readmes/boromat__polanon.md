@@ -7,8 +7,11 @@
 **English** | [Polski](https://github.com/boromat/polanon/blob/main/README.pl.md)
 
 **Reversible PII masking for LLM calls, Polish-first.** Mask personal data before a prompt leaves
-your network, send only tokens to the model, and put the originals back into its answer — even
+your network, send only tokens to the model, and put the originals back into its answer, even
 while it streams. Pure Python: the standard library is the whole core.
+
+Featured in [unknowNews](https://mrugalski.pl/nl/wu/ojVtmS0K0CI892763N1hEauM1A), Jakub
+Mrugalski's weekly newsletter for people in IT, on 13 November 2026.
 
 ![polanon masking a Polish invoice request in a terminal, then restoring the model's answer in Python](https://raw.githubusercontent.com/boromat/polanon/main/docs/demo.gif)
 
@@ -43,8 +46,8 @@ General-purpose tools are built around English. Polish data needs three things t
 of the box:
 
 - **Checksums.** A PESEL, NIP, REGON, ID card number, IBAN or payment card is validated, not just
-  pattern-matched: the checksum rejects most random digit strings — for a PESEL, together with the
-  birth date, about 98% of them — while a valid number always passes. KRS numbers, which have no
+  pattern-matched: the checksum rejects most random digit strings (for a PESEL, together with the
+  birth date, about 98% of them), while a valid number always passes. KRS numbers, which have no
   public checksum, and passports are recognised next to their label as well. Eleven digits right
   after the word PESEL are masked even with a typo in them.
 - **Seven grammatical cases.** "Jan Kowalski", "Jana Kowalskiego" and "z Janem Kowalskim" are the
@@ -109,7 +112,9 @@ cat umowa.txt | polanon --ner > masked.txt 2> mapping.json
 
 A non-zero exit status means something went wrong and stderr says what. `--file` reads the file's
 bytes itself and tells UTF-8, UTF-16 (what Windows PowerShell 5.1 writes with `>`) and cp1250
-apart; text it cannot decode for certain is refused rather than masked half-blind.
+apart; text it cannot decode for certain is refused rather than masked half-blind. `--ner
+--paranoid` masks every name the model finds, also in English prose and code, as
+[`mode="paranoid"`](#choosing-what-to-mask) does.
 
 On Windows, prefer `--file` and `--mapping` to pipes and redirection. Windows PowerShell 5.1
 re-encodes text piped into a program as ASCII, so Polish letters arrive as `?` and a garbled name
@@ -442,11 +447,16 @@ What it does with a call:
   of an answer format: descriptions, titles and example values. Tool names, types and parameter
   names stay, so the tools keep working. A participant's `name` is left out.
 - An image, a file or audio cannot be masked, so the call is refused; `--drop-unsupported` leaves
-  such content out and sends the rest.
+  such content out and sends the rest, and `--pass-unsupported` sends it to the provider as it is,
+  unmasked, with a file's name, for an operator who wants the model to see it.
 - Before anything leaves, the payload is searched once more for every original value, and the call
-  is refused if one is still there.
+  is refused if one is still there. Names from code the masking leaves as they are, such as field
+  names, ids and tools' names, are not searched.
 - A note telling the model what the tokens are joins the system message: `--instructions en`, or
   `none` to leave it out.
+- `--paranoid` masks every name the spaCy model finds, as `mode="paranoid"` does. By default
+  what it finds in English prose, code and identifiers is left out, since an agent's prompt,
+  tools and logs are full of English words the Polish model takes for names.
 - It keeps nothing on disk. A tool sends the whole conversation with every call, and each call is
   masked and restored on its own. With `POLANON_KEY` set to 64 hexadecimal characters, a person
   keeps one token in every call and in every grammatical case.
@@ -482,11 +492,16 @@ letter plus an accent, no-break spaces and en dashes inside numbers, and invisib
 characters do not hide a value. The mapping keeps each value as it was first written.
 
 On the annotated sample documents in the repository, the rules alone fully mask 86% of the
-values and the rules with `pl_core_news_md` mask 98%, with nothing left half-masked. Twelve short
+values and the rules with `pl_core_news_md` mask 98%, with nothing left half-masked. Thirteen short
 documents are a regression check, not a research benchmark: see the
 [benchmark notes](https://github.com/boromat/polanon/blob/main/benchmarks/README.md) for what is
 missed and why, and for Presidio on the first eleven of them with the same model: 66% fully
-masked, 76% at its most lenient.
+masked, 76% at its most lenient. Eight invented calls of an AI agent, with its English prompt,
+its tools and their JSON, code, logs, a lease and mail in three languages, measure what an
+agent's traffic costs: with `pl_core_news_md`, 3 of the 243 marked occurrences reach the model,
+and 5 of 307 uses of a token hide nothing, a word the model could not read. The model's answers
+to them come back with every token restored, as text, as a response and as a stream, and 39 of
+their 40 lines read exactly as a person would write them.
 
 ## Worth knowing
 
@@ -524,7 +539,7 @@ groups spaced differently, and around whatever a detector found inside it. Two e
 one-word name is not matched in all lowercase, because Zima, Kot and Wilk are surnames and "zima"
 is winter; identifiers such as a VIN or an e-mail address are matched in any case. A number shorter
 than six digits, such as a PIN, is not matched inside a longer number, a date, a time or an
-amount: "15.04.2025", "2024–2025", "2025,50" and "20250" stay readable when the PIN is 2025, while
+amount: "15.04.2025", "2024-2025", "2025,50" and "20250" stay readable when the PIN is 2025, while
 "w 2025 roku" and "PIN/PUK 2025/36912874" do not.
 
 **A token you write stays yours.** A placeholder such as `<PESEL_1>` in your own text is never handed
@@ -569,6 +584,22 @@ list(ENTITY_TYPES)  # every name you can use
 
 A name that is neither built in nor declared in a guard's `entity_types` raises `ValueError`, so a
 typo such as `"PERSONS"` cannot quietly switch masking off.
+
+With the spaCy model, `mode` sets how much of what it reads as a name is masked. The Polish model
+takes English words for names, and an AI agent's prompt, tools, code and logs are full of them:
+"return", "message" or a button's "Uncheck" become tokens the model cannot read. The default,
+`mode="normal"`, leaves out what the model finds in English prose, in code and identifiers, and a
+place written in lowercase; the price is a name opening an English sentence, or "jadę do gdyni",
+which go out as written. `mode="paranoid"` masks all of it:
+
+```python
+guards = default_guards(mode="paranoid")
+```
+
+On the calls of an AI agent in `benchmarks/`, "normal" lets 3 of 243 marked occurrences through,
+and 2% of the token uses hide nothing; "paranoid" lets 1 through, a name in Cyrillic no guard
+finds, and more than half of the token uses hide nothing. The rules are the same in both, so without the model
+the mode changes nothing.
 
 ## A second opinion: the judge
 
@@ -618,8 +649,10 @@ from polanon import WELL_KNOWN_NAMES, Allowlist, Anonymizer, default_guards
 anonymizer = Anonymizer(default_guards(), allowlist=Allowlist(WELL_KNOWN_NAMES))
 ```
 
-`WELL_KNOWN_NAMES` holds platforms and office tools, and public institutions and filing programs
-such as ZUS, Płatnik, NFZ and KSeF. A one-word name also matches its Polish case forms
+`WELL_KNOWN_NAMES` holds platforms and office tools, public institutions and filing programs
+such as ZUS, Płatnik, NFZ and KSeF, and the models and tools an AI agent names, such as
+OpenRouter, DeepSeek and Home Assistant with its "HA", and hardware such as Dell or Roborock.
+A one-word name also matches its Polish case forms
 ("Facebooku", "Canvie", "ZUS-ie"). Only detections of names are dropped, and only when every word in them is on the list; identifiers, the denylist and
 values a conversation has already masked stay masked.
 
@@ -683,8 +716,8 @@ not, and what stays your application's job, starting with keeping the mapping sa
 
 polanon was built as the masking engine of [PolGate](https://github.com/boromat/polgate), a
 self-hosted hub that lets a team use Claude or GPT on real documents without sending personal data
-to the provider. The library knows nothing about it — no HTTP, no database, no settings — and a
-test fails if it ever starts to.
+to the provider. The library knows nothing about it, with no HTTP, no database and no settings,
+and a test fails if it ever starts to.
 
 ## Used by
 

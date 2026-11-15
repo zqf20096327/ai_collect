@@ -56,6 +56,13 @@ Use [GitHub Discussions](https://github.com/rnikitin/QuantNavigator/discussions)
 to describe a research workflow you would want to use, a result you need to
 inspect, or a runtime requirement.
 
+## Contributing
+
+Prefer small, focused pull requests. For runtime behavior changes or new plugins,
+open a discussion first in
+[GitHub Discussions](https://github.com/rnikitin/QuantNavigator/discussions).
+See the [roadmap](ROADMAP.md) for planned work and use Discussions for deeper topics.
+
 ## License
 
 See [LICENSE](LICENSE).

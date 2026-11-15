@@ -2,8 +2,6 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [Русский](README.ru.md)
 
-> ✦ **Hello everyone, I'm Xiaoeris!** The mascot and guide in ErisPulse documentation. Don't panic if there's an error in the demo, I'm probably just trying the error for you～
-
 # ErisPulse
 
 **Write once, deploy to QQ / Telegram / Kook / Yunhu / WeChat Official Account / OneBot12 / ... multiple platforms.**
@@ -319,7 +317,7 @@ For more detailed instructions, see:
 
 ## The Same Code. Multiple Platforms.
 
-*Identical command handlers. Different platforms. No changes to business logic required.*
+*Identical command handlers. Different platforms. No business logic modification required.*
 
 <table>
 <tr>
@@ -346,6 +344,38 @@ For more detailed instructions, see:
 </td>
 </tr>
 </table>
+
+## Ecosystem Modules
+
+The official and community-maintained module ecosystem includes the [Dashboard](https://github.com/ErisPulse/ErisPulse-Dashboard) management panel, [MyServer](https://github.com/wsu2059q/ErisPulse-MyServer) AI-native server room in chat, [QvQChat](https://github.com/wsu2059q/ErisPulse-QvQChat) AI agent module, and dozens of feature modules contributed by the community:
+
+<table>
+<tr>
+<td align="center" width="33%">
+
+**Dashboard** — Web management panel
+
+<img src="https://raw.githubusercontent.com/ErisPulse/ErisPulse-Dashboard/main/.github/assets/overview.png" alt="Dashboard" />
+
+</td>
+<td align="center" width="33%">
+
+**MyServer** — AI-native server room in chat
+
+<img src="https://raw.githubusercontent.com/wsu2059q/ErisPulse-MyServer/main/.github/assets/console.png" alt="MyServer" />
+
+</td>
+<td align="center" width="33%">
+
+**QvQChat** — AI agent module
+
+<img src="https://raw.githubusercontent.com/wsu2059q/ErisPulse-QvQChat/main/.github/assets/fleet-demo.png" alt="QvQChat" />
+
+</td>
+</tr>
+</table>
+
+Module marketplace: https://www.erisdev.com/#market
 
 ---
 

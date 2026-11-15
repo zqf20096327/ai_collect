@@ -76,11 +76,11 @@ Download the file for your system from the [latest release](https://github.com/l
 
 | System | File | First launch |
 | --- | --- | --- |
-| macOS 13 or later (Apple Silicon and Intel) | `Aula-0.2.4-mac.dmg` | Open the .dmg and drag Aula to *Applications*. Aula isn't notarized by Apple yet, so macOS asks you to confirm the first time. On macOS 15 or later, try to open it, then go to *System Settings → Privacy & Security* and click *Open Anyway*. On macOS 13 and 14, right-click Aula and choose *Open*. |
-| Windows 10 and 11 (x64 and ARM, one installer) | `Aula-Setup-0.2.4.exe` | Run the installer (it doesn't need admin rights). If SmartScreen shows up, click *More info → Run anyway*. Aula isn't code-signed yet. |
-| Linux x64 | `Aula-0.2.4-linux-x86_64.AppImage` or `Aula-0.2.4-linux-amd64.deb` | AppImage: make it executable (`chmod +x Aula-*.AppImage`) and open it. Debian or Ubuntu: `sudo apt install ./Aula-0.2.4-linux-amd64.deb`. |
-| Linux ARM64 | `Aula-0.2.4-linux-arm64.AppImage` | Make it executable (`chmod +x`) and open it. |
-| Android 8 or later (phones and tablets) | `Aula-0.2.4-android.apk` | Open it on your phone and allow installing from that app when Android asks. It is a window to Aula on your Mac or on [a server of your own](docs/SERVER.md): see [Devices](docs/DEVICES.md). |
+| macOS 13 or later (Apple Silicon and Intel) | `Aula-0.2.5-mac.dmg` | Open the .dmg and drag Aula to *Applications*. Aula isn't notarized by Apple yet, so macOS asks you to confirm the first time. On macOS 15 or later, try to open it, then go to *System Settings → Privacy & Security* and click *Open Anyway*. On macOS 13 and 14, right-click Aula and choose *Open*. |
+| Windows 10 and 11 (x64 and ARM, one installer) | `Aula-Setup-0.2.5.exe` | Run the installer (it doesn't need admin rights). If SmartScreen shows up, click *More info → Run anyway*. Aula isn't code-signed yet. |
+| Linux x64 | `Aula-0.2.5-linux-x86_64.AppImage` or `Aula-0.2.5-linux-amd64.deb` | AppImage: make it executable (`chmod +x Aula-*.AppImage`) and open it. Debian or Ubuntu: `sudo apt install ./Aula-0.2.5-linux-amd64.deb`. |
+| Linux ARM64 | `Aula-0.2.5-linux-arm64.AppImage` | Make it executable (`chmod +x`) and open it. |
+| Android 8 or later (phones and tablets) | `Aula-0.2.5-android.apk` | Open it on your phone and allow installing from that app when Android asks. It is a window to Aula on your Mac or on [a server of your own](docs/SERVER.md): see [Devices](docs/DEVICES.md). |
 
 > **Updating from 0.1.x:** install the current version by hand this one time (download it here and install it over
 > your copy; your courses and settings stay). Aula 0.1.x will say the new version's signature isn't valid: since 0.2.0
@@ -370,6 +370,10 @@ Aula is built on a lot of open source work, mainly [Electron](https://www.electr
 [Codex CLI](https://github.com/openai/codex). The full list of components and their licenses is in
 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md), and every installed copy carries the license text of each package
 inside it (`THIRD_PARTY_LICENSES.txt`, next to the app's resources).
+
+Many of Aula's figures (diagram shapes such as pyramids, Venn diagrams and mind maps, molecules drawn from SMILES,
+drawings that move, «mark and ask the tutor», countries on maps) are adapted from
+[Sketchy](https://github.com/ddkbs/sketchy) by ddkbs, under the MIT license. Thank you!
 
 ## License
 

@@ -55,8 +55,8 @@ The installer bundles the Node.js runtime, Python 3.12, `wechatauto`, and the .N
 | Stickers | 27 built-in images plus custom categories; sending is off by default |
 | Moments | Reads the selected account's local cache; manual like, comment, and copy-draft |
 | Diary | Writes at most one Markdown entry per day to `data/diary/YYYY/MM-DD.md` |
-| Voice | Transcribes incoming voice; optional voice replies through BreezeBlue, MiniMax, or SiliconFlow |
-| Search | Bing with a 360 fallback, Bilibili/Weibo hot lists, Toutiao, and link extraction |
+| Voice | Transcribes incoming voice (DeepSeek ASR or Alibaba Cloud); optional voice replies through BreezeBlue, MiniMax, or SiliconFlow |
+| Search | Optional DeepSeek/Zhihu search APIs with automatic local Bing/360 fallback; hot lists and link extraction |
 | Group admin | Mute/unmute, switch model, change tone, clear memory, and low-battery good-night |
 | Diagnostics | Built-in logs, account checks, UIA self-test, and update checks |
 

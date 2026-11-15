@@ -87,6 +87,10 @@ Oktobot works fully without Shizuku. If you use [Shizuku](https://shizuku.rikka.
 
 Oktobot asks only for what a feature needs, and tells you why: Accessibility (phone control), notifications, microphone (voice), camera and storage (attachments), overlay (floating assistant). Phone control is optional and off until you enable it.
 
+## Community
+
+- **Reddit:** [r/Oktobot](https://www.reddit.com/r/Oktobot/) — the official community. Share feedback, report bugs, request features and catch beta news.
+
 ## Support
 
 Open an [issue](../../issues) with your Android version, device and Oktobot version. Please do not post API keys or personal data.

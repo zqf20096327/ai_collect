@@ -4,17 +4,14 @@
 
 Ask your agent to Rekal context from your team and past work for the task at hand.
 Across sessions, agents and teammates—with the original sources ready to read.
-Captured with commits. Searchable locally. Shared through Git.
+Rekal captures conversations and native memory-note revisions with commits,
+indexes them locally, and shares eligible project context through Git.
 
 One binary. Local embeddings by default. No hosted memory account required.
 
-[![Website](https://img.shields.io/badge/website-rekal.dev-0ea5e9)](https://rekal.dev)
 [![Release](https://img.shields.io/github/v/release/rekal-dev/rekal-cli?color=22d3ee)](https://github.com/rekal-dev/rekal-cli/releases)
 [![CI](https://img.shields.io/github/actions/workflow/status/rekal-dev/rekal-cli/ci.yml?branch=main&label=ci)](https://github.com/rekal-dev/rekal-cli/actions/workflows/ci.yml)
-[![arXiv](https://img.shields.io/badge/arXiv-2607.14390-b31b1b)](https://arxiv.org/abs/2607.14390)
 [![License](https://img.shields.io/github/license/rekal-dev/rekal-cli?color=blue)](LICENSE)
-[![Discord](https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white)](https://discord.gg/hDMj8zHH2)
-[![Stars](https://img.shields.io/github/stars/rekal-dev/rekal-cli?style=social)](https://github.com/rekal-dev/rekal-cli/stargazers)
 
 [Get started](#quick-start) · [Documentation](#documentation) · [Website](https://rekal.dev)
 
@@ -49,22 +46,10 @@ Supports macOS ARM64, Linux AMD64 and Linux ARM64.
 The PATH line is for Bash/Zsh; in Fish, use `fish_add_path "$HOME/.local/bin"`.
 
 Work with your agent, then commit normally to capture the context.
-Already have local sessions? Run `rekal checkpoint`. For shared team history,
-run `rekal sync`. Then ask your agent about your actual project—the example
-above shows the pattern. An empty history will have nothing to recall.
+Already have local sessions? After first  `rekal init`, your agent will be able to search context in your past conversations history across local memories and other seissions from other agent types. For shared team history,
+run `rekal sync`, then ask your agent to rekal team context or specific team member's context. 
 
-### From Claude Code
 
-```text
-/plugin marketplace add rekal-dev/rekal-cli
-/plugin install rekal@rekal-dev
-```
-
-Run `/rekal:install` once per machine and `/rekal:init` in each repository,
-then work and commit as usual.
-
-Rekal stores context locally. Eligible project records can be shared through
-your Git remote; explicitly local notes stay local.
 [Setup and sharing details](docs/overview.md) · [Privacy and security](SECURITY.md)
 
 ## Documentation
@@ -77,5 +62,11 @@ your Git remote; explicitly local notes stay local.
 
 [Get help](https://github.com/rekal-dev/rekal-cli/issues) ·
 [Changelog](CHANGELOG.md) · [Paper and citation](docs/overview.md#citation)
+
+[![Website](https://img.shields.io/badge/website-rekal.dev-0ea5e9)](https://rekal.dev)
+[![Downloads](https://img.shields.io/endpoint?url=https%3A%2F%2Frekal.dev%2Fdownloads.json)](https://rekal.dev/#downloads)
+[![arXiv](https://img.shields.io/badge/arXiv-2607.14390-b31b1b)](https://arxiv.org/abs/2607.14390)
+[![Discord](https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white)](https://discord.gg/hDMj8zHH2)
+[![Stars](https://img.shields.io/github/stars/rekal-dev/rekal-cli?style=social)](https://github.com/rekal-dev/rekal-cli/stargazers)
 
 Apache-2.0 — see [LICENSE](LICENSE).

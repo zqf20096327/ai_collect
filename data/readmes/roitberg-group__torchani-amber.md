@@ -36,7 +36,7 @@ Built-in models are:
 - [ANI-1ccx](https://www.nature.com/articles/s41467-019-10827-4)
     (wB97X) Supports H, C, N, O, S, F, Cl elements. No charged systems
 
-The modified TorchANI 2.0 models:
+The modified TorchANI 2 models:
 - [ANI-2xr](https://chemrxiv.org/engage/chemrxiv/article-details/6890d92523be8e43d6b9bbba)
   (wB97X) Supports H, C, N, O, S, F, Cl elements. No charged systems. Includes
   repulsive interactions and smooth PES
@@ -50,7 +50,7 @@ Other NN-IPs supported out of the box:
 - [Nutmeg](https://pubs.rsc.org/en/content/articlelanding/2025/sc/d4sc08572h)
     Small, medium and large are supported (wB97M-D3BJ)
 
-Including your custom NN-IP is simple if you follow the TorchANI 2.0 API
+Including your custom NN-IP is simple if you follow the TorchANI 2 API
 
 Important: For running ML/MM charged systems with `AimNet2` and `Nutmeg`, you will need
 to patch `sander` from your `AmberTools` version, *before compilation* unless using
@@ -86,19 +86,15 @@ described next. Other procedures may work, but are untested. GCC >= 12.2 is requ
     conda env create --file ./environment.yaml
     conda activate ani-amber
     ```
-3. Install TorchANI (python), together with its compiled extensions
-    If you have access to a GPU and you want to install only for that GPU:
+3. Install TorchANI (python), *without* its compiled extensions (they are built in the
+    next step)
     ```bash
-    TORCHANI_BUILD_EXT=1 pip install --no-deps --no-build-isolation -v -e ./submodules/torchani_sandbox
+    pip install --no-deps --no-build-isolation -v -e ./submodules/torchani
     ```
-    If you don't have access to a GPU currently (e.g. you are compiling in a node
-    without a GPU and you want to afterwards run in a node with a GPU) you can do:
-    ```bash
-    TORCHANI_BUILD_ALL_SMS=1 pip install --no-deps --no-build-isolation -v -e ./submodules/torchani_sandbox
-    ```
-    to build for all possible GPUs (it will take significantly longer)
 
 4. Build and install TorchANI-Amber using the `run-cmake` script
+    This also builds the TorchANI extensions (cuAEV, MNP and the cell list), places them
+    inside the TorchANI python package, and then JIT-compiles the models.
     *ADVANCED:* If you want to perform your custom modifications to the build, this is
     the moment to do it. Check `run-cmake` and the `CMakeLists.txt` for more info.
     By default the installation script runs the tests (which are fast), you can avoid
@@ -106,6 +102,10 @@ described next. Other procedures may work, but are untested. GCC >= 12.2 is requ
     ```bash
     ./run-cmake
     ```
+    By default the extensions are built for the GPUs detected in the current node. If
+    you don't have access to a GPU currently (e.g. you are compiling in a node without
+    a GPU and you want to afterwards run in a node with a GPU) use `./run-cmake -a` to
+    build for many GPU architectures (it will take significantly longer)
 5. Compile Amber from source. Amber will automatically find TorchANI-Amber and link it
    to both `pmemd` and `sander`. You can refer to [the amber
    website](https://ambermd.org/) for info on how to obtain and install Amber. You can
@@ -318,7 +318,7 @@ model to be an instance of `ANI` or `ANIq`. This is flexible, since they are hig
 customizable.
 
 Alternatively, subclassing `ANI` or `ANIq` and overriding `compute_from_neighbors(...)`
-is also supported. This is more complex. Consult the `TorchANI 2.0` source code for a
+is also supported. This is more complex. Consult the `TorchANI 2` source code for a
 reference implementation of `compute_from_neighbors`. `use_cuaev` and `network_index`
 may not be supported in this case, depending on your model.
 
@@ -339,7 +339,7 @@ def forward(
     #     - species (shape: [1, atoms]), energies, atomic_numbers
     #     - energies (shape: [1,])
     #     - atomic_charges (shape: [1, atoms])
-    # For more information about the signature consult the `TorchANI 2.0` docs
+    # For more information about the signature consult the `TorchANI 2` docs
     # and source code.
     ...
     return species, energies, atomic_charges
@@ -387,5 +387,45 @@ but it may be an issue if you use your own custom models.
 
 Its important that the models used are JIT-compiled using the same PyTorch
 version as the LibTorch version linked to the libraries. For example, if
-`torch.__version__ == 2.8` when compiling JIT'ed models, then the linked LibTorch must
-also be 2.8, otherwise LibTorch may fail to load the models, or load them incorrectly.
+`torch.__version__ == 2.13` when compiling JIT'ed models, then the linked LibTorch must
+also be 2.13, otherwise LibTorch may fail to load the models, or load them incorrectly.
+
+## Support for custom ML/MM models
+
+This functionality was added with the help of Kirill Zinovjev. For usage
+examples see the [EMLE-engine repository](https://github.com/chemle/emle-engine)
+And the corresponding [EMLE-engine article](https://pubs.acs.org/jctcce/article/20/11/4514/169286/emle-engine-A-Flexible-Electrostatic-Machine).
+
+Custom ML/MM models, which calculate both the in-vacuo energy and the ML/MM coupling
+internally, are supported by setting `mlmm_coupling = 2`. Forces on the ML and MM
+regions are calculated by autograd from the returned energy. `animbis-custom-mlmm` is
+a reference implementation (see `jit/custom_mlmm_wrapper.py`), which calculates the
+same energy as `mlmm_coupling = 1` with `use_torchani_charges = .true.`.
+
+*ADVANCED*: The exact requirements are as follows. The model must support the following
+method, which has the same signature as `forward`, with the MM region inputs added after
+`species_coords`:
+
+```python
+@torch.jit.export
+def compute_mlmm(
+    self,
+    species_coords: tuple[Tensor, Tensor],
+    mm_coords: Tensor,  # MM coordinates (shape: [1, mm-atoms, 3])
+    mm_charges: Tensor,  # MM charges (shape: [1, mm-atoms])
+    cell: Tensor | None,
+    pbc: Tensor | None,
+    charge: int,
+    atomic: bool,  # Controls atomic energy decomposition
+    ensemble_values: bool,  # Controls whether the model outputs ensemble values
+    molecule_idxs: Tensor | None,
+) -> Tensor:
+    # Where the output is:
+    #     - energies, in-vacuo + ML/MM coupling (shape: [1,])
+    ...
+    return energies
+```
+
+Units are Angstrom for coordinates, elementary charge for charges, and Hartree for
+energies. Currently Amber always calls `compute_mlmm` with `cell = None`,
+`pbc = None`, `atomic = False` and `ensemble_values = False`.

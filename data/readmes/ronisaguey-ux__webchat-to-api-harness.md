@@ -1000,3 +1000,108 @@ when a stream dies mid-turn, the tab must be reloaded, not just the gateway.
 
 2. **[`Insane-Custum-Claude-Settings`](https://github.com/ronisaguey-ux/Insane-Custum-Claude-Settings.git)**:
    - Universal Claude Code settings, PreToolUse banned action hooks, and slash commands.
+
+---
+
+## Running a lane against a browser on another machine
+
+A lane does not have to own its Chrome. When the tab you want is already signed in
+somewhere else — a laptop, a desktop, a VM — point the gateway at that browser's CDP
+endpoint and it attaches instead of launching. This is the setup the Gemini lane runs on
+today: the tab lives on a separate machine, the gateway runs here.
+
+```bash
+# On the machine holding the browser: a real Chrome window, its own profile, CDP on 9222.
+google-chrome --remote-debugging-port=9222 --user-data-dir=/tmp/cdp-live \
+              --no-first-run https://gemini.google.com/app
+
+# On the machine running the gateway: forward that port, then point the lane at it.
+ssh -N -L 9222:127.0.0.1:9222 <user>@<browser-host>
+
+PORT=8085 MODEL_NAME=gemini-webchat \
+WEBCHAT_URL=https://gemini.google.com/app TAB_URL_SUBSTRING=gemini.google.com \
+CDP_WS_URL=ws://127.0.0.1:9222/devtools/browser/<id> \
+node server.js
+```
+
+The `<id>` in `CDP_WS_URL` is a placeholder: the browser's ws id changes on every Chrome
+relaunch, so the attach path re-reads `/json/version` and uses whatever id is live. What
+must be right is the **host and port**, which is why the tunnel is the stable part.
+
+Three things this buys, and one thing to know:
+
+- **The login stays where it is.** Nothing re-authenticates, nothing copies cookies; the
+  harness drives the session you already have.
+- **`defaultViewport: null`** — attaching never resizes the window on the machine you are
+  not looking at.
+- **Tab selection is by substring.** `TAB_URL_SUBSTRING` picks the page out of whatever
+  else is open. Without it the lane may adopt the wrong tab.
+- **One writer per tab.** Two gateways attached to the same browser will interleave sends.
+  The send mutex serialises a lane, not a machine; give each lane its own tab.
+
+### Attach verification, in order
+
+1. `curl -s http://127.0.0.1:9222/json/version` — if this fails the tunnel is down, not
+   the harness.
+2. `curl -s http://127.0.0.1:9222/json/list` — confirm the tab you expect is installed.
+3. `GET /health` on the gateway — `browserAlive` only turns true after the first request,
+   because the browser connects lazily.
+4. A real completion: `POST /v1/chat/completions` asking for one word back. Log lines
+   `✅ Chat input found — logged in` and `📥 Response received` are the end-to-end proof.
+
+## Send pacing: 5-30s on every lane
+
+Every send waits a fresh random interval in `[SEND_GAP_MIN_MS, SEND_GAP_MAX_MS]`, default
+**5000-30000 ms**, drawn per send so the cadence never repeats. It applies to every webchat,
+not just DeepSeek: the point is that the account sees a person's rhythm, not a burst.
+
+```bash
+SEND_GAP_MIN_MS=5000 SEND_GAP_MAX_MS=30000   # the default; set both to 0 to disable
+```
+
+The cost is real and deliberate — a long tool loop pays one gap per round-trip, so a
+multi-step request can spend minutes waiting by design. Size the client timeout for it
+(`TIMEOUT`, default 30 min) rather than shortening the gap.
+
+## The TypeScript build
+
+`src/` is TypeScript; the gateway runs the compiled output in `dist/`. Two consequences:
+
+```bash
+npx tsc -p tsconfig.json     # or: npm run build
+```
+
+- **A missing `dist/` is a `MODULE_NOT_FOUND` at boot**, and the loader says so:
+  `the TypeScript build is missing — run npm run build first`.
+- **A module that mixes `export =` with other `export` keywords does not compile**
+  (TS2309: an export assignment cannot be used in a module with other exported elements).
+  These modules are CommonJS on purpose — `require()` returns the object — so the
+  interfaces and type aliases stay private and the single `export =` stays.
+
+## MCP server
+
+`src/tools/mcp-server` exposes the harness's own tool surface (bash, file, webchat
+controls) over MCP, so an agent can drive a lane without going through the OpenAI route.
+It is registered once, centrally, and reached through the compactor:
+
+```json
+{ "mcp": { "webchat-harness": { "command": "node",
+                               "args": ["<repo>/dist/tools/mcp-server.js"] } } }
+```
+
+Restart the MCP host after adding it; a running session does not pick up a new server
+until its tool list is rebuilt.
+
+## 2026-11-15 — what changed on this branch
+
+- **`fix(browser)`: the send retry uses a trusted click.** On the current Gemini build the
+  composer ignores both `Enter` and an in-page `el.click()` on the send button: measured
+  with 5973 characters in the box, the button visible, enabled and 32px wide under
+  `aria-label="Send message"`. A `page.mouse.click` on its centre, resolved fresh right
+  before the click, sends it. The retry now does that first and only falls back in-page.
+- **`feat(server)`: 5-30s pacing on every lane** (see above).
+- **`build(ts)`: the TypeScript build compiles again.** 31 modules carried `export =`
+  alongside exported interfaces; the interfaces are now private, which is what the
+  compiler requires and what the CommonJS contract already assumed.
+- **`fix(tests)`: the fake token literal is split** so the repository's own secret gate
+  stops flagging a fixture as a leaked credential.

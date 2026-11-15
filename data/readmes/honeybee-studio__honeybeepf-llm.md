@@ -5,6 +5,7 @@
 [![CI/CD](https://github.com/honeybee-studio/honeybeepf-llm/actions/workflows/docker-publish.yml/badge.svg?branch=main)](https://github.com/honeybee-studio/honeybeepf-llm/actions/workflows/docker-publish.yml)
 [![Kernel Matrix](https://github.com/honeybee-studio/honeybeepf-llm/actions/workflows/kernel-matrix.yml/badge.svg?branch=main)](https://github.com/honeybee-studio/honeybeepf-llm/actions/workflows/kernel-matrix.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/honeybeepf-llm)](https://artifacthub.io/packages/search?repo=honeybeepf-llm)
 
 ![LLM Cost Observability dashboard on the demo cluster: token usage, requests and latency by namespace, pod and workload; estimated spend per workload and per model in USD; and Cost-Waste Signals showing the measured cost of refused fallback attempts and the estimated savings from prompt caching, across team-a, team-b and team-c](docs/images/grafana.png)
 
@@ -14,7 +15,8 @@ repository against a local mock of the provider APIs with fake keys.</sub>
 - **0 lines of app code changed** — SDKs keep calling the real provider; nothing to import, wrap or redeploy.
 - **~53 µs of agent CPU per LLM call** at 200 calls/s, 32 MB RSS plus 19 MB of BPF maps, and −6.7% throughput at
   ~11k calls/s, measured with and without the agent in v0.3.0 ([benchmark](docs/benchmark.md)).
-- **11 built-in provider APIs** — OpenAI, Anthropic, Gemini, Amazon Bedrock, Azure OpenAI, Google Vertex AI, Meta.
+- **11 built-in provider APIs** — OpenAI, Anthropic, Gemini, Amazon Bedrock, Azure OpenAI, Google Vertex AI, Meta — plus the
+  OpenAI-compatible APIs of Groq, DeepSeek, Together, Fireworks, OpenRouter, Mistral and Cerebras.
 - **10 kernels in CI** — Linux 5.10 through 7.2 and RHEL 8.10 / 9.6 / 9.7, probes loaded and attached on x86-64
   (arm64 on 5.15 and 6.1 runs too, not yet required to pass).
 
@@ -29,8 +31,7 @@ latest release and watch LLM calls per pod:
 
 ```bash
 kubectl create namespace honeybeepf
-helm install honeybeepf-llm oci://ghcr.io/honeybee-studio/charts/honeybeepf-llm --version 0.3.1 \
-  -n honeybeepf --set builtinProbes.llm.enabled=true
+helm install honeybeepf-llm oci://ghcr.io/honeybee-studio/charts/honeybeepf-llm --version 0.3.2 -n honeybeepf
 kubectl logs -n honeybeepf ds/honeybeepf-llm -f | grep 'LLM SUCCESS'
 ```
 
@@ -62,7 +63,7 @@ commands, required capabilities, resources and uninstall are in [docs/install.md
 
 | Dimension | Covered |
 |---|---|
-| Providers | 11 built-in APIs: OpenAI, Anthropic, Gemini, Amazon Bedrock, Azure OpenAI, Google Vertex AI, Meta — JSON, streaming (SSE), cache tokens; other OpenAI/Anthropic/Gemini-compatible hosts by request shape (experimental, off by default) |
+| Providers | 11 built-in APIs: OpenAI, Anthropic, Gemini, Amazon Bedrock, Azure OpenAI, Google Vertex AI, Meta; OpenAI-compatible Groq, DeepSeek, Together, Fireworks, OpenRouter, Mistral, Cerebras — JSON, streaming (SSE), cache tokens; other OpenAI/Anthropic/Gemini-compatible hosts by request shape (experimental, off by default) |
 | Runtimes | Python, Node.js, curl, anything linked to OpenSSL `libssl` — not Go `crypto/tls`, rustls, JSSE, GnuTLS, NSS |
 | Protocols | HTTP/1.1 and HTTP/2 — not WebSocket, not HTTP/3 (QUIC) |
 | Transport | HTTPS through OpenSSL; in-cluster plain HTTP (Ollama, vLLM) on opt-in |
@@ -100,6 +101,7 @@ the dashboards ship in [docs/grafana/](docs/grafana/).
 - [Security review](docs/security-review.md)
 - [Supported providers, runtimes, protocols and kernels](docs/providers.md)
 - [Metrics reference](docs/metrics.md)
+- [Alerts and budgets](docs/alerts.md)
 - [Overhead benchmark](docs/benchmark.md)
 - [Grafana dashboards](docs/grafana/)
 

@@ -1,0 +1,194 @@
+# MarioKart64JS
+
+🤖 **Built by the makers of [Agent!](https://github.com/AgentiLoop/Agent)**, an autonomous macOS agent. 🌐 [agentiloop.ai](https://agentiloop.ai)
+
+
+> **⚠️ Work in progress. This is not a finished game.** Expect bugs, missing features and rough edges.
+> Please report any problems you find at https://github.com/AgentiLoop/MarioKart64JS/issues
+> Research Project. This is for Personal and Educational use only.
+
+Mario Kart 64, rebuilt to run in a web browser. It isn't an emulator. The courses, karts, music and sounds are pulled
+out of the original N64 ROM and redrawn with Three.js.
+
+We built it as a test of how closely AI tools can recreate a classic game, and improve upon it.
+
+- **▶ Play now:** https://mk64js.gokart.games/play
+- **⬇ Desktop apps** (Mac, Windows, Linux, Raspberry Pi): [Releases](https://github.com/AgentiLoop/MarioKart64JS/releases/latest)
+
+![3D title screen with Wii karts driving at the camera](docs/screenshots/title3d.gif)
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/hires/title.jpg" alt="Title" width="400"></td>
+    <td><img src="docs/screenshots/hires/course-select.jpg" alt="Course select" width="400"></td>
+  </tr>
+</table>
+
+## What you can do
+
+- **Race** any of the 16 courses at 50cc, 100cc, 150cc or Extra (mirror mode).
+- **Grand Prix, VS and Time Trials** modes. Your best times are saved.
+- **Battle** in all four arenas: Big Donut, Block Fort, Double Deck and Skyscraper.
+- **Play online with 2 to 4 people** in split screen, just like the console.
+- **Use all 15 items**, from bananas and shells to stars, Boos and lightning.
+- **Hear the original music and voices**, played from the game's own sound data.
+- **Watch the courses come alive:** the Moo Moo Farm cows, the Kalimari Desert trains, Toad's Turnpike traffic, the Bowser's Castle Thwomps, the Rainbow Road Chain Chomps and more.
+- **Switch to Wii 3D karts** with the 3 key, including a 3D title screen and finish fly-overs. [Details below.](#wii-3d-karts-press-3)
+- **Choose a look:** the original blurry 240p, or sharp HD textures up to full resolution.
+
+## Wii 3D karts (press 3)
+
+Press **3** on the title screen for a 3D title scene: Mario, Wario, Bowser, Peach and Toad in Wii-style karts driving down a
+scrolling road. In a race, **3** swaps every kart and the referee Lakitu for 3D models with real shadows. Press **3** again
+to go back to the original art. Your choice is remembered.
+
+After the last lap, the camera orbits your kart, then cuts to roadside, crane and tail shots, as on the console.
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/hires/title3d.jpg" alt="3D title screen" width="400"></td>
+    <td><img src="docs/screenshots/hires/race3d-royal.jpg" alt="Racing in 3D, Royal Raceway" width="400"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/hires/race3d-mario.jpg" alt="Racing in 3D, Mario Raceway" width="400"></td>
+    <td><img src="docs/screenshots/hires/race3d-mario-boost.jpg" alt="Racing in 3D, Mario Raceway, boosting" width="400"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/hires/race3d-mario-pack.jpg" alt="Racing in 3D, Mario Raceway, in the pack" width="400"></td>
+    <td><img src="docs/screenshots/hires/race3d-mario-shells.jpg" alt="Racing in 3D, Mario Raceway, with triple green shells" width="400"></td>
+  </tr>
+</table>
+
+## Keyboard controls
+
+**Racing**
+
+| Action | Keys |
+|---|---|
+| Gas / brake | ↑ / ↓ or W / S |
+| Steer | ← / → or A / D |
+| Drift (release for a boost) | Space |
+| Use item | Shift or E |
+| Throw a held banana forward | Q |
+| Restart race | Delete or Backspace |
+| Back to course select | M |
+
+**Menus**
+
+| Action | Keys |
+|---|---|
+| Move | ← ↑ → ↓ |
+| Select | Enter or Space |
+| Back | Esc or Backspace |
+| Options / Records (game select) | L / R |
+
+**Display and sound** (any time)
+
+| Action | Keys |
+|---|---|
+| Wii 3D karts on/off | 3 |
+| Change resolution | G |
+| Music on/off | N |
+| Kart physics: Glue / Jumps | J |
+| Show physics bodies (walls red, karts cyan) | P |
+
+**Gamepad:** left stick or D-pad steers, A / RT gas, B / LT brake, LB / RB drift, X / Y item, Start restarts.
+
+## URL arguments
+
+Add these to the game's address to skip the menus or switch settings, for example:
+
+`http://localhost:5173/?track=banshee&char=mario&cc=extra&mode=mario_gp&autopilot&3d=3d&graphics=960&jump=glue&showphysics=true`
+
+| Argument | Values | What it does |
+|---|---|---|
+| `track` | `luigi`, `moomoo`, `koopa`, `kalimari`, `toad`, `frappe`, `choco`, `mario`, `wario`, `sherbet`, `royal`, `bowser`, `dk`, `yoshi`, `banshee`, `rainbow`; battle: `big-donut`, `block-fort`, `double-deck`, `skyscraper` | Starts a race on that course right away. Without it you get the title screen. |
+| `char` | `mario`, `luigi`, `peach`, `toad`, `yoshi`, `donkeykong`, `wario`, `bowser` | Your driver. Defaults to the last one you picked, or Mario. |
+| `cc` | `50`, `100`, `150`, `extra` | Engine class. `extra` is mirror mode at 100cc speeds. Defaults to 150cc. Ignored in Time Trials and Battle. |
+| `mode` | `mario_gp`, `vs`, `time_trials`, `battle` | Game mode. Defaults to `mario_gp`. Battle courses always play as battle. |
+| `autopilot` | (no value) | The CPU drives your kart. Handy for testing. |
+| `3d` | `3d`, `2d` | Wii 3D karts on or off, like the **3** key. `true`, `1` and `on` also turn them on; any other value turns them off. |
+| `graphics` | `240`, `480`, `960`, `native` | Resolution, like the **G** key. `240` is 1× N64 textures, `480` is 2×, `960` is 4×, `native` matches your screen. |
+| `jump` | `jump`, `glue` | Kart physics, like the **J** key. `jumps` also works for `jump`. |
+| `showphysics` | `true`, `false` | Shows the physics bodies, like the **P** key. `?physics` also works. |
+| `players` | `2`, `3`, `4` | With `track`, joins an online race for that many players. |
+| `lobby` | a `ws://` or `wss://` URL | Uses a different online lobby server, e.g. `ws://localhost:8787/api/mp`. Kept for the browser session. |
+
+`3d`, `graphics` and `jump` are saved like their keys, so they stick for later visits until you change them.
+
+The game also adds `menu`, `from`, `room` and `you` to its own links when it goes back to the course menu or rejoins an online room. You don't need to set these yourself.
+
+
+## Playing online
+
+1. On the game select screen, pick **2P, 3P or 4P GAME**.
+2. Choose a course and a driver.
+3. Wait in the lobby. The race starts 15 seconds after the first player arrives, or right away once the room is full.
+
+You don't need codes or accounts. Everyone who picks the same player count around the same time ends up in the same race.
+
+Players connect directly to each other. Some strict home or office networks block this, and the game can't connect.
+
+## Roadmap
+
+**Done**
+- All 16 courses and the 4 battle arenas
+- Every menu: title, game select, cc, course, character, options and records
+- All 15 items, Lakitu, CPU rivals and the original music
+- Online play for 2 to 4 players, plus battle
+- Course hazards and animals on most tracks
+- Desktop apps for Mac, Windows, Linux and Raspberry Pi
+
+**Next up**
+- **A full Grand Prix cup:** four races in a row with points and a trophy. For now each race is a single course.
+- **Hazards that hit back:** piranha plants, trains, traffic and Thwomps can't knock you around yet.
+- **Time Trial ghosts:** race against a replay of your best lap.
+- **Small details:** object shadows, the Frappe Snowland snowfall, train and ferry smoke.
+- **More reliable online play:** a relay server for players on strict networks.
+
+## For developers
+
+```sh
+npm install
+npm run dev        # http://localhost:5173
+```
+
+- You need your own copy of the Mario Kart 64 (USA) ROM (SHA-1 `579c48e211ae952530ffc8738709f078d5dd215e`). The scripts in `tools/` pull the assets out of it.
+- **Optional HD textures:** `python3 tools/build-hd-textures.py /path/to/MK64-Reloaded`
+- **Graphics check:** `node tools/qc-graphics.mjs` drives every course in a headless browser and reports missing textures and flicker.
+- **Website and lobby** (`website/`): a Cloudflare Worker. Publish it with `npm run deploy:web`.
+- **Desktop apps** (`desktop/`): run `npm run game` first, then `webkit/build.sh` for Mac, `npm run dist:win` or `dist:linux` for Windows and Linux, or `raspberrypi/build.sh` for the Pi.
+- **Web-thin desktop apps** (`desktop/`): small apps with no game files that open the hosted game at mk64js.gokart.games/play. No `npm run game` needed. Build them with `webkit/build-web-thin.sh` (Mac, WKWebView), `raspberrypi/build-web-thin.sh` (Pi, WebKitGTK), `windows/build-web-thin.sh` (an Edge app window; `Install.cmd` adds Start menu and desktop shortcuts) or `linux/build-web-thin.sh` (a Chrome or Chromium app window; `install.sh` installs a browser if none is found and adds a Games menu entry).
+- **Releases:** `tools/release.sh whats-new.md [version]` does a whole release in one go. It bumps `desktop/package.json` (next patch by default), commits and pushes `main`, deploys `/play`, builds and notarizes every desktop and web-thin app, and writes `SHA256SUMS.txt`. Then it publishes the GitHub release, reusing the previous release's notes and screenshots with your `whats-new.md` bullets as the "What's new" section. Last, it deletes older releases with 0 downloads. Set `DRY_RUN=1` to print the plan and the notes without changing anything, `SKIP_BUILD=1` to reuse artifacts already in `desktop/release`, or `NO_PRUNE=1` to keep old releases. `tools/prune-releases.sh [keep-tag ...]` runs only the cleanup (it always keeps the latest release; `DRY_RUN=1` lists what would go).
+
+### Assets
+
+The game's assets are not stored in this repo. They live in four git submodules that all point to
+[MarioKart64JS-assets](https://github.com/AgentiLoop/MarioKart64JS-assets):
+
+| Folder | Branch | Contents |
+| --- | --- | --- |
+| `public/mk64` | default | Assets extracted from the ROM by the `tools/extract-*.py` scripts |
+| `public/mk64-hd` | `hd` | HD textures (2x and 4x tiers plus `manifest.json`) from `tools/build-hd-textures.py` |
+| `public/wii` | `wii` | Mario Kart Wii karts, drivers and Lakitu from `tools/build-wii-karts.py` and `tools/build-wii-lakitu.py` |
+| `public/title3d` | `title3d` | 3D title menu stills from `tools/render-title3d-stills.mjs` |
+
+Fetch them with `git submodule update --init`.
+
+The [n64decomp/mk64](https://github.com/n64decomp/mk64) decompilation does **not** ship any PNG textures, models or
+sounds. It is source code only, and it needs your own ROM to rebuild its assets. The `tools/extract-*.py` scripts use the
+decomp only as a map (offsets, sizes, formats, display lists) and decode every texture to PNG straight from your ROM.
+
+`npm run build:web` builds the game, then runs `tools/build-web-assets.mjs` to copy all four folders into
+`website/public/play/` (skipping submodule `.git` files). That folder is in `.gitignore`. `npm run deploy:web` runs the
+build and uploads `website/public` to Cloudflare as Workers Static Assets, so the game at `/play` has the same textures
+and resolutions as the desktop apps.
+
+## Credits
+
+- Game logic and the layout of the ROM data come from the [n64decomp/mk64](https://github.com/n64decomp/mk64)
+  decompilation. The low-res graphics and sound are decoded from your own ROM, not taken from the decomp.
+- HD textures come from [GhostlyDark/MK64-Reloaded](https://github.com/GhostlyDark/MK64-Reloaded).
+
+*This is a fan research project. Mario Kart 64 is © Nintendo. Game assets, not included in this repo, belong to Nintendo, and this
+project is not affiliated with or endorsed by Nintendo.*

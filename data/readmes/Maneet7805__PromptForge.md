@@ -112,7 +112,7 @@ flowchart LR
 ```
 
 1. **Mask pasted material.** Fenced code, stack traces, logs and `<document>` blocks are swapped for `[[BLOCK_n]]` markers. They come back byte-for-byte, and the request uses fewer tokens.
-2. **One model call** with a static system prompt (`src/PromptForge.Core/Optimization/SystemPrompt.cs`). The prompt is static so it can be cached. The call classifies the task, decides how much to change, rewrites, and lists missing details as questions, all as JSON.
+2. **One model call** with a static system prompt (`src/Phrasor.Core/Optimization/SystemPrompt.cs`). The prompt is static so it can be cached. The call classifies the task, decides how much to change, rewrites, and lists missing details as questions, all as JSON.
 3. **Check exact details.** URLs, paths, file names, identifiers, quoted text and numbers from your draft must survive. If any were dropped, one repair call fixes them; otherwise the review window warns you.
 4. **Fallback.** If the main model is rate-limited or down, a second model with its own limits is tried.
 
@@ -182,15 +182,15 @@ You need the [.NET 10 SDK](https://dotnet.microsoft.com/download). The code buil
 ```bash
 git clone https://github.com/Maneet7805/PromptForge.git
 cd PromptForge
-dotnet test tests/PromptForge.Core.Tests
-dotnet publish src/PromptForge.App -c Release -o publish
+dotnet test tests/Phrasor.Core.Tests
+dotnet publish src/Phrasor.App -c Release -o publish
 ```
 
 The output is a single self-contained `publish/PromptForge.exe` (~72 MB). Releases are built by [GitHub Actions](.github/workflows/release.yml) whenever a `v*` tag is pushed.
 
 ```
-src/PromptForge.Core     optimiser pipeline, provider client, settings, eval runner (cross-platform, unit-tested)
-src/PromptForge.App      Windows tray app: hotkeys, text capture/replace, review window, settings, voice, self-install
+src/Phrasor.Core     optimiser pipeline, provider client, settings, eval runner (cross-platform, unit-tested)
+src/Phrasor.App      Windows tray app: hotkeys, text capture/replace, review window, settings, voice, self-install
 tests/                   unit tests for the core
 eval/cases.json          optimiser test set
 installer/               uninstall script

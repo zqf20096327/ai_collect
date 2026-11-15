@@ -35,13 +35,15 @@ Languages: English (`en`), العربية (`ar`), Deutsch (`de`), Español (`es`
 - **Model switching** — pick models from OpenCode favorites and recent history directly in the chat (favorites are shown first), or browse all models by provider
 - **Agent modes** — switch between Plan and Build modes on the fly
 - **Subagent activity** — watch live subagent progress in chat, including the current task, agent, model (with variant when set), and active tool step
-- **Custom Commands** — run OpenCode custom commands (and built-ins like `init`/`review`) from an inline menu with confirmation
-- **Skills Catalog** — browse OpenCode skills from an inline menu and run them immediately or with arguments in the next message
+- **Custom Commands** — browse and search OpenCode custom commands (and built-ins like `init`/`review`) by name or description in `/commands`, then run them with confirmation
+- **Skills Catalog** — browse and search OpenCode skills by name or description in `/skills`, then run them immediately or with arguments in the next message
 - **Session goals (V2)** — `/goal` asks for the objective in a separate text message and confirms automatic work and token spending. Start and Continue use the selected agent, model and variant, including in a fresh session before any ordinary prompt. The bottom keyboard keeps its short objective and Pause, Continue or Delete below queued messages. Pause stops future continuations; `/abort` also interrupts the current turn. To create another goal, stop and delete the old one first
 - **Interactive Q&A** — answer agent questions and approve permissions via inline buttons
 - **Runtime settings** — use `/settings` to change runtime preferences; see [Runtime Settings](#runtime-settings)
 - **Voice prompts** — send voice/audio messages, transcribe them via a Whisper-compatible API, and optionally enable spoken replies in `/settings`
 - **File attachments** — send images, PDF documents, and text-based files to OpenCode, including multiple files in one Telegram album
+- **Images in replies** — project-relative Markdown images such as `![Chart](./chart.png)` appear as native photos inside the assistant's reply, including replay and scheduled results, on V1/V2 without shared storage
+- **Reply documents** — ordinary project-relative Markdown links such as `[Report](./report.pdf)` deliver files after the complete reply text, in link order, before the footer, including replay and scheduled results. Files are read through OpenCode on V1/V2, including Docker without shared storage. V2 and V1 binary files keep their original bytes; V1 text files contain the server's trimmed text, without leading/trailing whitespace or the final newline. Code, bare paths and external URLs do not attach files; `![alt](path)` remains a photo. `OUTGOING_DOCUMENT_MAX_SIZE_MB` limits these documents and `/ls` downloads independently of code/diff and incoming-file limits. Raw mode is unchanged
 - **Scheduled tasks** — schedule prompts to run later or on a recurring interval; see [Scheduled Tasks](#scheduled-tasks)
 - **Message queue** — messages sent while the agent is busy are held and sent one by one afterwards (Queue) or, on OpenCode V2, steered into the running task (Steer); each waiting message is a bottom-keyboard button you can tap to withdraw it; `/detach` leaves waiting messages to the session they were sent to
 - **Context control** — tap the bottom 📊 button to see context usage and the latest assistant message's tokens and cost; compact from the details with an inline confirmation
@@ -149,8 +151,8 @@ opencode-telegram config
 | `/ls`             | List directory contents, then tap to open or download   |
 | `/settings`       | Change bot settings                                     |
 | `/rename`         | Rename the current session                              |
-| `/commands`       | Browse and run custom commands                          |
-| `/skills`         | Browse and run OpenCode skills                          |
+| `/commands`       | Browse, search by name or description, and run custom commands |
+| `/skills`         | Browse, search by name or description, and run OpenCode skills |
 | `/mcps`           | Browse and toggle MCP servers                           |
 | `/task`           | Create a scheduled task                                 |
 | `/tasklist`       | Browse, delete and enable or disable recurring scheduled tasks |
@@ -183,6 +185,23 @@ Scheduled tasks let you prepare prompts in advance and run them automatically la
 - If a recurring task is still running when its next interval arrives, the bot does not start a parallel copy of the same task and does not replay missed intervals later
 - By default, the bot waits up to 120 minutes for one scheduled task run; change this with `SCHEDULED_TASK_EXECUTION_TIMEOUT_MINUTES` if needed
 - Up to 10 scheduled tasks can exist at once by default; change this with `TASK_LIMIT` in your `.env`
+
+### Conditional silence
+
+To skip delivery when there is nothing to report, put the condition in the task's prompt yourself. The bot does not append instructions or change the stored prompt. For example:
+
+```text
+Check the project for new dependency security advisories. Report new findings.
+If there are no new findings, reply with exactly: [SILENT]
+```
+
+For successful once and recurring tasks, `[SILENT]` suppresses the entire result: no completion heading, response body, attachments, footer, or replacement notice. The run still succeeds: once tasks are removed as usual, and recurring tasks keep their normal run count and next scheduled run. Suppressed results are not queued for later delivery, even while another session is busy.
+
+Matching is intentionally soft: the marker can be the whole response, a standalone first or last nonblank line, or a literal prefix such as `[SILENT]No changes`. Case and outer whitespace are ignored. Whole-response and edge-line candidates accept surrounding Unicode punctuation (except square brackets), so `**[SILENT]**` works; these candidates must be at most 64 characters before punctuation is stripped. A literal prefix has no response-length limit. Backticks and code fences are not stripped, malformed brackets are not repaired, and no other marker or short-response threshold is supported.
+
+A mere mention such as `No changes. [SILENT]` is delivered normally. Errors and empty-response errors keep their existing handling. Ordinary chat replies are unaffected.
+
+This is different from `SCHEDULED_TASK_DISABLE_NOTIFICATION` or notification-sound muting in `/settings`: muting still delivers messages, while `[SILENT]` skips delivery entirely.
 
 ## Track Existing Session
 
@@ -276,7 +295,8 @@ Configuration can be provided through process environment variables or an `.env`
 | `MESSAGE_FORMAT_MODE`                      | Assistant reply formatting mode: `markdown` (native Telegram rich blocks) or `raw` (plain text)                       |    No    | `markdown`               |
 | `MESSAGE_MERGE_WINDOW_MS`                  | Merge Telegram-split long text messages into one prompt after this wait window (ms); `0` disables merging             |    No    | `1500`                   |
 | `INITIAL_SETTINGS_PRESET`                  | JSON object that seeds default `/settings` values on first run (keys not yet persisted); see [Runtime Settings](#runtime-settings) |    No    | `{}`                     |
-| `CODE_FILE_MAX_SIZE_KB`                    | Max file size (KB) to send as document                                                                                |    No    | `100`                    |
+| `CODE_FILE_MAX_SIZE_KB`                    | Max size (KB) for code/diff documents, incoming text files and `/ls` attach-to-prompt; not outgoing project downloads |    No    | `100`                    |
+| `OUTGOING_DOCUMENT_MAX_SIZE_MB`            | Max outgoing project document size in MiB (1024 × 1024 bytes), shared by Markdown file links and `/ls` downloads; capped at 50, invalid/non-positive values use 50, exact limit allowed | No | `50` |
 | `FILE_INBOX_DIR`                           | Directory for documents the model cannot ingest: the original file is saved there and its absolute path is passed to the agent; must be readable by the OpenCode server | No | `<bot home>/inbox` |
 | `FILE_INBOX_RETENTION_DAYS`                | Delete locally saved uploads older than this many days; `0` keeps them forever                                         |    No    | `7`                      |
 | `STT_API_URL`                              | Whisper-compatible API base URL (enables voice/audio transcription)                                                   |    No    | —                        |

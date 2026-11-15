@@ -198,6 +198,7 @@
 - **弹珠固定总分**：离开弹珠小游戏时，把总分改成设定的值。
 - **四师兄售卖全部物品**：四师兄的商店卖全部书籍、杂物和特殊物品（《证类本草》除外）。
 - **空过**：养成界面、留学地图按 ESC，菜单里的「空过」消耗 1 次行动，不触发事件；也可以在「热键」组里给它绑一个键。
+- **继承页沿用上次分配**：开新档的「继承」页多一个「沿用上次」按钮，照上次点「开始」时的分配逐格加点；命运点数照扣，不够时点到用完为止，点完还能自己调。
 
 ### 战斗
 
@@ -252,7 +253,7 @@
   - CG：看过的才显示，场景图全部开放；页面上的开关可以显示未解锁的内容。
   - 立绘：选背景、摆放角色、切换差分，可以把当前画面导出成 PNG，也可以隐藏界面后截图。
   - 动图：播放角色战斗动作和特效的逐帧动画，可以导出透明底 GIF。
-  - 决斗：决斗里每个角色的战斗立绘，分正常、攻击、受击、防御，可以缩放、拖动，导出透明底 PNG。「面板与技能」按剧情看角色的六维、技能，性情、处世、道德、修养四维和评价，以及开场和条件触发的状态变化；勾选技能或剧情给的增益，可以看增益生效后的六维和增益的触发条件。
+  - 决斗：决斗里每个角色的战斗立绘，分正常、攻击、受击、防御，可以缩放、拖动，导出透明底 PNG。「面板与技能」按剧情看角色的六维、技能，性情、处世、道德、修养四维和评价，以及开场和条件触发的状态变化；勾选技能或剧情给的增益，可以看增益生效后的六维和增益的触发条件。「自定义决斗」用自己设定的主角打所选剧情的原版决斗，剧情事件照常触发；主角的数值和天赋可以从手动存档读取后再改，练习不写入存档。
   - 音乐：官方原声带全部 39 首，可以暂停、看播放进度。
 - **标题画面人物**：可以指定显示哪一位，也可以全部显示或不显示。
 
@@ -311,7 +312,7 @@ DOTNET=/path/to/dotnet ./Installer/build-installer.sh
 
 [MIT](LICENSE)
 
-## 代码签名政策
+## 代码签名政策（Code signing policy）
 
 Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
 
@@ -328,10 +329,8 @@ Free code signing provided by [SignPath.io](https://about.signpath.io/), certifi
 
 ## 致谢
 
-本项目不是从零开发的，功能思路和部分代码来自以下作者：
-
-- **[活侠传助手](https://mod.3dmgame.com/mod/256420)**：爱死（3DM：wowowo4567）。本项目的基础，源码由其发布的插件反编译而来后再修改。它又整合自 [骰子大师](https://mod.3dmgame.com/mod/210536)（Gmhaxx）、[多功能 Mod](https://mod.3dmgame.com/mod/210629)（Jim97）、[任意位置存档](https://mod.3dmgame.com/mod/210679)（NothingNullNull）。
+- **[活侠传助手](https://mod.3dmgame.com/mod/256420)**：爱死。本项目早期以它为起点，它又整合自 [骰子大师](https://mod.3dmgame.com/mod/210536)（Gmhaxx）、[多功能 Mod](https://mod.3dmgame.com/mod/210629)（Jim97）、[任意位置存档](https://mod.3dmgame.com/mod/210679)（NothingNullNull）。
 - **部分功能思路**：参考 [赵活系统](https://github.com/Toufff/zhaohuo-system)（Toufff，MIT 许可）。
 - **AI 陪玩**：思路参考 [江湖夜话](https://github.com/Cpjjason/jianghu-yehua)（Cpjjason），它也是《活侠传》的 AI Mod，能和游戏里的人物私下闲谈，人物会送东西、指点武功、记得聊过的事（[B 站介绍视频](https://www.bilibili.com/video/BV1s2nC6pE83/)）；部分性格和小习惯参考了类脑社区夏呆呆的同人角色卡《活侠传》。
-- 感谢 [lxsb222-spec](https://github.com/lxsb222-spec)（爱死）、[blakceyes](https://github.com/blakceyes)、[NEXTAltair](https://github.com/NEXTAltair)、[pluvivanto](https://github.com/pluvivanto)、[lockpick](https://github.com/lockpick)、[F1-ZX](https://github.com/F1-ZX) 提交的 PR，以及 [mahosalieri85-a11y](https://github.com/mahosalieri85-a11y)、[iampigcheng](https://github.com/iampigcheng) 提交的 issue。
+- 感谢 [lxsb222-spec](https://github.com/lxsb222-spec)、[blakceyes](https://github.com/blakceyes)、[NEXTAltair](https://github.com/NEXTAltair)、[pluvivanto](https://github.com/pluvivanto)、[lockpick](https://github.com/lockpick)、[F1-ZX](https://github.com/F1-ZX)、[mahosalieri85-a11y](https://github.com/mahosalieri85-a11y)、[iampigcheng](https://github.com/iampigcheng)、[bupt-lxc](https://github.com/bupt-lxc) 对本项目的贡献。
 - 下载包附带的 [BepInEx](https://github.com/BepInEx/BepInEx)、[UnityDoorstop](https://github.com/NeighTools/UnityDoorstop)、[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) 按各自的许可证分发。

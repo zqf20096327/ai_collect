@@ -17,6 +17,7 @@ Retro PCs, game consoles, handhelds, microcontrollers. If it has a CPU and someo
 - [Retro computers](#retro-computers)
 - [Consoles and handhelds](#consoles-and-handhelds)
 - [Microcontrollers](#microcontrollers)
+- [Phones](#phones)
 - [Wearables](#wearables)
 - [FPGAs](#fpgas)
 - [Emulator only](#emulator-only)
@@ -28,13 +29,14 @@ Retro PCs, game consoles, handhelds, microcontrollers. If it has a CPU and someo
 
 ## Retro computers
 
-| Device                                                                      | Model                           | Reported speed                                 | Project                                                                                                                  |
-| --------------------------------------------------------------------------- | ------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Commodore 64 with 2MB REU                                                   | stories260K                     | ~1 token per 8 min (author estimate)           | [llama2.c64](https://github.com/ytmytm/llama2.c64)                                                                       |
-| 486 DX2 66 MHz, 32MB RAM, DOS 6.22                                          | stories260K                     | 2.08 tok/s                                     | [dosllam2](https://github.com/yeokm1/dosllam2) · [write-up](https://yeokhengmeng.com/2025/04/llama2-llm-on-dos/)         |
-| Pentium II, 128MB RAM, Windows 98                                           | stories260K / stories15M        | 39.31 / 1.03 tok/s                             | [llama98.c](https://github.com/exo-explore/llama98.c) · [write-up](https://blog.exolabs.net/day-4/)                      |
-| PowerBook G4 Titanium (2002), 1 GHz, 1GB RAM, OS 9.2.2, flash IDE drive     | GPT-2 124M / TinyLlama 1.1B, Q8 | 1.45 / 0.10 tok/s (TinyLlama uses disk paging) | [MacinAI Local](https://github.com/alexhoopes/MacinAI-Local) · [write-up](https://oldapplestuff.com/blog/MacinAI-Local/) |
-| Power Mac G5, dual 2 GHz PPC970, 8GB RAM, Leopard 10.5                      | TinyLlama 1.1B, Q4              | ~3 to 5 tok/s (timing scope unspecified)       | [llama.cpp for PowerPC](https://github.com/Scottcjn/llama-cpp-tigerleopard#performance)                                  |
+| Device                                                                      | Model                               | Reported speed                                 | Project                                                                                                                                        |
+| --------------------------------------------------------------------------- | ----------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Commodore 64 with 2MB REU                                                   | stories260K                         | ~1 token per 8 min (author estimate)           | [llama2.c64](https://github.com/ytmytm/llama2.c64)                                                                                             |
+| 486 DX2 66 MHz, 32MB RAM, DOS 6.22                                          | stories260K                         | 2.08 tok/s                                     | [dosllam2](https://github.com/yeokm1/dosllam2) · [write-up](https://yeokhengmeng.com/2025/04/llama2-llm-on-dos/)                               |
+| Pentium II, 128MB RAM, Windows 98                                           | stories260K / stories15M            | 39.31 / 1.03 tok/s                             | [llama98.c](https://github.com/exo-explore/llama98.c) · [write-up](https://blog.exolabs.net/day-4/)                                            |
+| PowerBook G4 Titanium (2002), 1 GHz, 1GB RAM, OS 9.2.2, flash IDE drive     | GPT-2 124M / TinyLlama 1.1B, Q8     | 1.45 / 0.10 tok/s (TinyLlama uses disk paging) | [MacinAI Local](https://github.com/alexhoopes/MacinAI-Local) · [write-up](https://oldapplestuff.com/blog/MacinAI-Local/)                       |
+| Power Mac G5, dual 2 GHz PPC970, 8GB RAM, Leopard 10.5                      | TinyLlama 1.1B, Q4                  | ~3 to 5 tok/s (timing scope unspecified)       | [llama.cpp for PowerPC](https://github.com/Scottcjn/llama-cpp-tigerleopard#performance)                                                        |
+| PowerBook G4 (2005), 1.5 GHz PowerPC 7447B, 1GB RAM                         | stories110M, precision not reported | 0.77 / 0.88 tok/s (plain C / AltiVec)          | [ullm](https://github.com/aarossig/ullm) · [write-up](https://www.theresistornetwork.com/2025/03/thinking-different-thinking-slowly-llms.html) |
 
 ## Consoles and handhelds
 
@@ -63,6 +65,14 @@ Nintendo 64: the author reports running on real hardware, but the linked source 
 | Raspberry Pi Pico (RP2040)                                                     | stories260K              | ?                                      | [picollama260k](https://github.com/tarelerulz/pico-experiments/tree/main/picollama260k)                                                                |
 | RP2350 board with 16MB flash and 8MB PSRAM (standard Pico 2 boards won't work) | bundled 14MB model       | ~850 ms per token                      | [PicoLlama](https://github.com/earlephilhower/PicoLlama)                                                                                               |
 
+## Phones
+
+| Device                                                           | Model                                 | Reported speed | Project                                                             |
+| ---------------------------------------------------------------- | ------------------------------------- | -------------- | ------------------------------------------------------------------- |
+| iPhone 5, Apple A6 (2 cores), 1GB RAM, iOS 10.3.4, Mobile Safari | stories15M, int8, output layer pruned | 11.7 tok/s     | [llm-on-iphone5](https://github.com/sozdogan803-web/llm-on-iphone5) |
+
+iPhone 5: plain ES5 JavaScript in the browser, no WebAssembly and no native app. A PC serves the page and the 18MB model once; inference then runs on the phone.
+
 ## Wearables
 
 | Device                                                       | Model                         | Reported speed | Project                                            |
@@ -71,11 +81,14 @@ Nintendo 64: the author reports running on real hardware, but the linked source 
 
 ## FPGAs
 
-| Device                               | Model                   | Reported speed       | Project                                                                                                                                |
-| ------------------------------------ | ----------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| Xilinx KV260, 4GB PS RAM for weights | LLaMA2-7B, AWQ 4-bit    | ~5 tok/s decoding    | [llama-fpga](https://github.com/adamgallas/llama-fpga) · [performance and demos](https://github.com/adamgallas/llama-fpga#performance) |
+| Device                                                   | Model                                  | Reported speed                | Project                                                                                                                                                                                               |
+| -------------------------------------------------------- | -------------------------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Xilinx KV260, 4GB PS RAM for weights                     | LLaMA2-7B, AWQ 4-bit                   | ~5 tok/s decoding             | [llama-fpga](https://github.com/adamgallas/llama-fpga) · [performance and demos](https://github.com/adamgallas/llama-fpga#performance)                                                                |
+| Sipeed Tang Nano 20K, weights in onboard SDRAM, 40.5 MHz | stories15M, W4A4/KV4, 64 token context | 10.52 tok/s delivered to HDMI | [stories15m-tang-nano20k](https://github.com/ayushkumar1808/stories15m-tang-nano20k) · [hardware notes](https://github.com/ayushkumar1808/stories15m-tang-nano20k/blob/main/docs/w4a4kv4-hardware.md) |
 
-The author reports decoding speed only. Prompt processing reuses the decode accelerator token by token; the reported speed is not an end-to-end measurement.
+KV260: the author reports decoding speed only. Prompt processing reuses the decode accelerator token by token; the reported speed is not an end-to-end measurement.
+
+Tang Nano 20K: FPGA logic runs the whole transformer, while a host computer loads the model, tokenizes the prompt and decodes token IDs for display.
 
 ## Emulator only
 

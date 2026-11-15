@@ -177,9 +177,11 @@ docker-compose up -d
 cd web
 npm install
 npm run dev
+# 如需固定前端端口，可在 web/.env.local 中设置 VITE_PORT
+# VITE_API_BASE_URL 仅在后端不走默认代理（http://localhost:8000）时才需要配置
 
 # 访问应用
-# 前端: http://localhost:5173 （可通过 VITE_PORT 修改端口）
+# 前端: http://localhost:5174 （可通过 VITE_PORT 修改端口；若 5174 被占用，Vite 会自动选择下一个空闲端口）
 # 后端API: http://localhost:8000
 ```
  

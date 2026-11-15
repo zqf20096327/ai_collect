@@ -115,6 +115,39 @@ Before the first planning run from a fresh clone:
 cd ink-ui && npm install
 ```
 
+### Profiles
+
+A profile is whose accounts and whose history the bots run under: its own
+Claude config dir (`CLAUDE_CONFIG_DIR`), Codex home (`CODEX_HOME`), API-key
+file, Discuss pages, threads and chats, and council chats. Council projects
+and the companion's settings (blog sites, hosted guests' grants) are shared.
+One profile is active for the whole machine; the Discuss companion and the
+council read it at start-up, and a switch restarts them under the new one.
+
+```bash
+botference profile init me       # adopt today's accounts and history as the first profile, in place
+botference profile add ada       # new profile under ~/.botference/profiles/ada, then claude + codex login
+botference profile               # list, with each bot's signed-in email
+botference profile use ada       # switch the machine; also `/profile ada` in the council
+botference profile login ada codex   # sign one bot in again
+botference profile remove ada    # forget it; files stay unless --delete-data
+botference profile account add codex work   # another Codex sign-in, then its login
+botference profile account use codex work   # that bot now signs in as it (history unchanged)
+```
+
+Each bot's account can also be picked on its own: the Discuss model menu has
+an **account** row under billing for each bot, showing the email it is signed
+in with and, when this machine has more than one, a choice of the others
+(owner only). The choice reaches each bot at its next start; history stays
+with the profile.
+Switching a bot's account never loses a chat's memory: every account folder
+shares the profile's one conversation history for that bot.
+
+The extension's options page has a Profiles table (each bot's email, read on
+the companion's machine, and a Switch button); like API keys, it only works
+from that machine. Without `profile init`, nothing changes: no profiles means
+today's behaviour exactly. The review hub is not profile-aware yet.
+
 ### Using Botference In Another Project
 
 From a target project root:
@@ -122,6 +155,9 @@ From a target project root:
 ```bash
 botference init                            # Create project-local botference/ state (and register it with Discuss)
 botference site                            # Just the Discuss half, for a repo already initialised
+botference profile                         # Profiles: whose Claude/Codex accounts and history the bots use
+botference profile add ada                 # A new profile with its own logins and history; signs it in
+botference profile use ada                 # Switch the whole machine (restarts Discuss + council)
 botference init --project-dir=spaceship    # Or create botference-spaceship/ instead
 botference                                 # Council: you + Claude + Codex (Ink default)
 botference plan                            # The same room, spelled out
@@ -1738,10 +1774,4 @@ pick it up.
 | `/delete [<id-prefix>]` | Delete a saved chat. With no args, opens a picker of recent chats; either way a confirm step follows. Deleting the chat you're in rolls into a fresh `/new`. The project index entry is cleaned up too. |
 | `/archive [<id-prefix>\|list]` | Archive a saved chat: its session JSON **moves** from `work/sessions/` to `archive/sessions/` (`BOTFERENCE_ARCHIVE_DIR`), so it leaves every listing while staying byte-for-byte on disk. No confirm step — it is reversible. With no args, opens a picker of recent chats; `/archive list` shows what is already archived. Archiving the chat you're in saves it first, then rolls into a fresh `/new`. |
 | `/unarchive [<id-prefix>]` | Move an archived chat back into the active listing (picker with no args). It never overwrites a live chat with the same id — if one exists, the archived copy is left untouched and nothing is lost. |
-| `/resume [latest\|<number>\|<title>\|<session-id-prefix>]` | Restore a previously saved planning session. With a project selected, project-associated and project-local sessions are shown first, while old unassigned sessions remain visible. You can resume mid-chat — the current session is persisted on every turn, so the chat you're leaving stays recoverable via `/resume <its-id>`. Selecting a session row in the Ink Projects panel runs this command for you. |
-| `/rename <name>` (or `/rename auto`) | Name this chat. Without a name, a chat gets a short title (two to four words) written by a small model after its first exchange; `/rename auto` asks for a fresh one. The header, the chat list and the browser tab show it. |
-| `/permissions` | Show the current planner write roots and any runtime grants approved for this session. |
-| `/status` | Show context usage, lead, mode, and session state. |
-| `/notify [on\|off]` | Toggle the desktop notification posted when the bots finish (see [Desktop notifications](#desktop-notifications)). No argument flips the current state; the preference is per-user (`~/.botference/settings.json`) and persists across chats and projects. |
-| `/agents [on\|off]` | Grant or revoke the Claude participant's **subagent** (Task) tool. Off by default in every chat: Claude is instructed to *suggest* subagents when a task would benefit and wait for your approval — and the gate is enforced at the tool level (the CLI is simply not given the Task tool until you grant it), not by prompt alone. The grant persists with the chat across `/resume` and resets on `/new`. Codex has no subagent facility; not available under `--claude-interactive`. |
-| `/verify [on\|off]` | When the bots mark the thread **converged**, run one more turn before the floor comes back to you: the bot that did *not* write the last claim is handed the claims and the sources the room has — and **not** the discussion — and reports each claim confirmed (with the supporting line), contradicted (with the contradicting line), or not checkable. On by default, per chat; skipped when the final message is too short to be a claim, when the room has no source, or when the other bot is not in the room. See [Adversarial review](#adversari
+|

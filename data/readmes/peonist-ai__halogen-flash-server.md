@@ -6,34 +6,34 @@
 
 **halogen™ is the fastest way to run Qwen3.8-Flash-Next on AMD Strix Halo,
 and it is built for agents: deep into a long session, each turn starts
-answering in about 1.6 seconds.**
+answering in about 1.2 seconds.**
 
 Every kernel is written for this one GPU and this one model family. No
 general-purpose runtime, no portability layer, no fallback path. That is why it
 can do things a general engine cannot, and why it runs on exactly one piece of
 silicon.
 
-| 0.18.0, the default configuration | halogen-flash |
+| 0.20.5, the default configuration | halogen-flash |
 |---|---|
-| decode | **up to 94 tok/s** on repetitive output · **73** writing code · **54** prose |
-| prefill: 8,192 / 32,768 / 131,072-token prompt | **1,821 / 1,740 / 1,675 tok/s** |
-| an agent turn, 30,000 to 96,000 tokens of context | **4.2 s** (first token in **1.6 s**) |
-| the first turn of a 34,000-token agent prompt, cold | **21 s** |
-| decode: editing code / an agent's tool call / six other languages | **81 / 71 / 52 tok/s** |
+| decode | **up to 135 tok/s** on repetitive output · **90** writing code · **64** prose |
+| prefill: 8,192 / 32,768 / 131,072-token prompt | **1,976 / 1,884 / 1,806 tok/s** |
+| an agent turn, 30,000 to 96,000 tokens of context | **2.2 s** (first token in **1.2 s**) |
+| the first turn of a 34,000-token agent prompt, cold | **19 s** |
+| decode: editing code / an agent's tool call / six other languages | **113 / 81 / 60 tok/s** |
 
 **What each row is.** The agent turns are three sessions of a coding agent
 fixing a bug in a Python repository: each turn sends the whole conversation
 back with the model's last tool call and a tool result of 800 to 3,000
 tokens appended, and the time runs from the request to the last byte of the
-answer, on the client's clock (the median of 115 turns, about 200 tokens of
-answer each). Decode is measured on the kind of text each row names. The
+answer, on the client's clock (the median over the three sessions, about 80
+tokens of answer each). Decode is measured on the kind of text each row names. The
 best case is five short prompts whose answer repeats itself ("print the word
 red ten times" and four like it), shown so it can be compared like for like
 with other figures of that kind. Prefill is the image's own `sweep`, on a
-synthetic prompt; real text through the chat template runs about 8 to 12%
-slower, which is why the cold first turn takes 21 s for 34,000 tokens.
+synthetic prompt; real text through the chat template runs slower, which is
+why the cold first turn takes 19 s for 34,000 tokens.
 
-All of it is the published 0.18.0 image at its defaults (the v2 checkpoint,
+All of it is the published 0.20.5 image at its defaults (the v2 checkpoint,
 the prompt cache on, greedy, thinking off) on an AMD Ryzen AI Max+ 395 with
 128 GB, at about 85 W of sustained package power. [Measured](docs/performance.md#measured) has
 every number for both checkpoints. The prefill rows, and a decode mean over
@@ -56,7 +56,7 @@ a quality trade. Since 0.6.0 there are two draft sources, the model's own
 draft head and the request's own text (prompt lookup), and the guarantee
 covers both.
 
-0.20.4: short follow-up turns start sooner, more throughput past 8 concurrent requests, and `tool_choice: "none"` holds in a conversation that already has tool calls. The checkpoints are 0.20.3's
+0.20.5: faster decoding with several requests at once, Hindi, Thai and other Indic-script prompts read the way the model was trained, LFM3 on the NPU reads long prompts about twice as fast and generates faster, and fixes for structured output, the answer guard, Claude Code's mid-session tool changes and model names. The checkpoints are 0.20.4's
 ([CHANGELOG](CHANGELOG.md)).
 
 Since 0.7.0 the engine also opens a **llama.cpp GGUF** of this model directly:
@@ -87,7 +87,7 @@ debugging the server.
 | **[Give it a machine of its own](docs/host-setup.md)** | what the server holds; [recipes if you must share it](docs/host-setup.md#if-you-must-share-it) |
 | **[API reference](docs/api.md)** | every endpoint, conventions, status codes |
 | Clients | [Codex (Responses API)](docs/codex.md) · [Claude Code (Messages API)](docs/claude-code.md) · [agent harnesses](docs/agent-harness.md) · [sessions: keep, fork, join](docs/sessions.md) |
-| Requests | [sampling](docs/sampling.md) · [images](docs/images.md) · [token budgets](docs/token-budgets.md) · [as a classifier](docs/classifier.md) |
+| Requests | [sampling](docs/sampling.md) · [images](docs/images.md) · [token budgets](docs/token-budgets.md) · [as a classifier](docs/classifier.md) · [agent guard (preview)](docs/agent-guard.md) |
 | **[Configuration](docs/configuration.md)** | [cache modes](docs/configuration.md#choosing-a-cache-mode), [the KV pool](docs/configuration.md#context-and-memory-one-kv-pool-several-conversations), [disk cache](docs/configuration.md#prompt-cache-on-disk-resume-a-conversation-after-a-restart), [1M context](docs/configuration.md#1m-context-opt-in-and-a-different-configuration), [attention budget](docs/configuration.md#attention-budget-opt-in-and-a-different-configuration), [API key](docs/configuration.md#api-key-require-one-on-the-api-port-opt-in), [request records](docs/configuration.md#request-records-a-log-of-what-your-clients-send-opt-in) |
 | Checkpoints | [precision](docs/precision.md) · [bring your own GGUF](docs/gguf.md) · [measuring a checkpoint](docs/checkpoint-tools.md) · [QUANT.md](docs/QUANT.md) |
 | Numbers | **[measured](docs/performance.md)** · [quality: what is measured, and what is not](docs/quality.md) |
@@ -104,7 +104,7 @@ podman run --rm -p 8731:8731 \
   --ipc=host --ulimit memlock=-1:-1 \
   -e HALOGEN_DOWNLOAD=peonist-ai/halogen-qwen3.8-flash-next \
   -v ~/halogen-models:/models \
-  ghcr.io/peonist-ai/halogen-flash-server:0.20.4
+  ghcr.io/peonist-ai/halogen-flash-server:0.20.5
 ```
 
 The weights come from
@@ -132,6 +132,8 @@ podman run --rm -p 8731:8731 \
   -v ~/halogen-models:/models \
   ghcr.io/peonist-ai/halogen-flash-server:0.18.14-flint-preview
 ```
+
+The preview image is built from 0.18.14 and does not carry later fixes.
 
 It is a preview: prefill slows past roughly 80-90k tokens of context, and
 speculative decoding is opt-in (`HALOGEN_FLINT_SPEC=1`) and greedy-only.

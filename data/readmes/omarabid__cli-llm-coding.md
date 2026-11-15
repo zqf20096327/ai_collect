@@ -4,6 +4,7 @@ A list of CLI agentic coding tools. This list is curated to include Terminal-onl
 
 | Tool | Project Link | Model back-ends | Licence | Language |
 |---|---|---|---|---|
+| **maki** | [tontinton/maki](https://github.com/tontinton/maki) | Multiple | MIT | Rust |
 | **Claude Code** | [anthropics/claude-code](https://github.com/anthropics/claude-code) | Anthropic Claude 3.5/3.6 | closed | TypeScript |
 | **Gemini CLI** | [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli) | Google Gemini 2.5 Pro | Apache-2 | TypeScript |
 | **Goose CLI** | [block/goose](https://github.com/block/goose) | OpenAI, Claude, Gemini, Ollama | MIT | Rust/TypeScript |

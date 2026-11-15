@@ -44,15 +44,15 @@ Without tokens, to try the interface: `relais up --fake-runner`.
 - [Deployment](docs/deployment.md): Docker, long-running service, clean shutdown and updates.
 
 ### Configure
-- [Daemon configuration](docs/configuration.md): environment variables, `config.yaml`, `secrets.json`, `factory.yml` (secrets as `env:`), token and turn budgets, ports, secrets.
-- [Customizing `workflow.yml`](docs/workflow.md): events, jobs, models, limits, checks, acceptance runs.
+- [Daemon configuration](docs/configuration.md): environment variables, `config.yaml`, `secrets.json`, `factory.yml` (secrets as `env:`, a repository's secrets read from their source at each `setup`), token and turn budgets, ports, secrets.
+- [The workflow the engine runs](docs/preset.md#the-workflow-the-engine-runs-orc-389): events, jobs, models, limits, checks.
 - [Repository configuration (`.factory/config.yml`)](docs/repository-configuration.md): keys, what a configuration cannot remove from the baseline, `factory validate`.
 - [The `factory/default` preset](docs/preset.md): typed steps, loop bounds, single counter for review + red CI, models and network per step, invariants checked at compile time, hash.
 - [Projects, worktrees and knowledge base](docs/projects-and-workspaces.md): multiple repositories, worktrees per ticket, `workspace.setup`, ports, cleanup, knowledge repository.
 - [Pack and skills](docs/pack-and-skills.md): job skills and method skills (TDD, debugging, verification, tiered review), always-on rules, permissions, customizing or creating a skill.
 
 ### Use
-- [Command line](docs/cli.md): `relais init|up|plan|status|pause|resume|stop` and `relais-agent`.
+- [Command line](docs/cli.md): `relais init|up|plan|status|pause|resume|stop`.
 - [Web interface and security](docs/interface-and-security.md): interface, exposed routes, password, CSRF, known limitations.
 - [Threat model](docs/threat-model.md): the five threats, each attack linked to its defense and its test, the open holes, the limitations lifted.
 
@@ -92,7 +92,6 @@ npm run dev:web           # interface with a proxy to :4100
 Rules:
 
 - **Every new feature ships its docs**: a page in `docs/` (installation, configuration, usage) or a section of an existing page, and its link from this README. A feature without docs is not finished.
-- The YAML examples in [`docs/workflow.md`](docs/workflow.md) are loaded by a test (`src/docs-workflow.test.ts`): keep them valid.
 - Everything in English: code, file names, commit messages (`feat(core): …`, `docs: …`), and text meant for humans (docs, pack skills, Linear messages).
 - The CI (`.github/workflows/ci.yml`) runs typecheck, lint and unit tests on every PR, plus the separate Postgres and rootless jobs.
 

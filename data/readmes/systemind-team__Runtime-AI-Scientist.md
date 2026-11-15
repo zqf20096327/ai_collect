@@ -94,6 +94,8 @@ Within a host/task/seed comparison, the model, tools, permissions, input artifac
 
 N0 bypasses the RAC runner entirely. The integration layer invokes the host-owned top-level lifecycle once (ARK `Orchestrator.run()`, Agent Laboratory `LaboratoryWorkflow.perform_research()`, or one complete EvoScientist Deep Agent job) and records only the run boundary, artifacts, usage, and terminal state. ARK keeps its native caps of three development and three paper-review iterations.
 
+**Component ablations:** `R2+C` adds only work contracts to R2; `R2+V` adds only advisory verification, using pre-invocation evidence criteria that are not injected as a contract into the executing agent. These are independent variants, not new cumulative levels. See the [R2+C / R2+V getting-started tutorial (中文)](docs/component-ablations.md) for setup, a first run, and verification of the recorded features.
+
 ### How it fits together
 
 ```mermaid

@@ -7,6 +7,7 @@
 *Make every AI response better — before the user sees it.*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![ClawHub](https://img.shields.io/badge/ClawHub-install-orange)](https://clawhub.ai/thomaszhou22/self-refine-reflection)
 [![OpenClaw](https://img.shields.io/badge/OpenClaw-compatible-blue)](https://openclaw.ai)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-purple)](https://claude.ai)
 [![Cursor](https://img.shields.io/badge/Cursor-compatible-orange)](https://cursor.sh)

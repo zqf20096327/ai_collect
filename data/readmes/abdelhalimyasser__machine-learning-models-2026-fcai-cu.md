@@ -31,8 +31,8 @@
 |-----------------------|--------------------------------------------------------------------|--------|
 | Abdelhalim Yasser     | [@abdelhalimyasser](https://github.com/abdelhalimyasser)           | c_text_classifier |
 | Ali Samy              | [@AliSamy12](https://github.com/Aly-Sami)                          | c_text_classifier |
-| Nour Eldeen Shaban    | [@noureldeenshaaban](https://github.com/noureldeenshaaban)         | c_image_classifier |
-| Yousef Mohamed        | [@yousefmass](https://github.com/yousefmass)                       | c_image_classifier |
+| Nour Eldeen Shaban    | [@noureldeenshaaban](https://github.com/noureldeenshaaban)         | b_image_classifier |
+| Yousef Mohamed        | [@yousefmass](https://github.com/yousefmass)                       | b_image_classifier |
 | Sarah Mohamed         | [@sarrahmuhamed27](https://github.com/sarrahmuhamed27)             | a_regression |
 | Dina                  | [@don-06don](https://github.com/don-06don)                         | a_regression |
 

@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="https://mcpfinder.dev"><img src="docs/social-preview/social-preview.png" alt="MCPfinder — Your AI finds MCP servers for you. Search, vet and install MCP servers from the Official MCP Registry and Glama." width="100%"></a>
+</p>
+
 # MCPfinder
 
 > The MCP server that helps AI agents discover, evaluate, and install other MCP servers.
@@ -57,7 +61,7 @@ Supported install targets today:
 - Claude Desktop
 - Cursor
 - Claude Code
-- Cline / Roo Code
+- Cline
 - Windsurf
 
 ### Install via Agent Skill (let your AI do it)
@@ -129,13 +133,27 @@ MCPfinder is intentionally optimized for agent consumption.
 - Install metadata: config snippet, target file paths, local process variables or remote HTTP headers, credential requirements, restart instructions
 
 For local command servers, `env` configures the launched process. For remote
-HTTP servers, `headers` configures requests to the selected endpoint; a local
-process `env` block does not authenticate that connection. MCPfinder includes
+HTTP servers, request headers authenticate the selected endpoint; registry env
+vars are never added to a remote entry (in Claude Desktop's `mcp-remote`
+bridge, `env` only carries the header values referenced from its
+`--header Name:${MCP_HEADER_…}` args). MCPfinder includes
 explicitly required registry headers in the generated remote JSON and lists
 optional headers separately. An optional API key therefore does not block a
 server's OAuth sign-in path when the client supports it. The server's published
 header template or instructions determine whether a value needs a prefix such
 as `Bearer`; the generator does not assume one from `Authorization` alone.
+
+Remote entries follow each client's own format: Cursor `{url, headers}`,
+Claude Code `{type: "http"|"sse", url, headers}` (plus the equivalent
+`claude mcp add --transport ...` command), Windsurf `{serverUrl, headers}`,
+Cline `{type: "streamableHttp"|"sse", url, headers}` in
+`cline_mcp_settings.json`, and VS Code (`.vscode/mcp.json`, top-level
+`servers`) `{type: "http"|"sse", url, headers}`. The transport comes from the
+Official Registry's remote `type`, falling back to `sse` only for URLs ending
+in `/sse`. Claude Desktop's config file runs only local servers, so remote
+servers are bridged through `npx -y mcp-remote <url>` with header values passed
+via `env` (and `--allow-http` for plain-HTTP URLs); for servers that need no headers the instructions recommend Settings
+→ Connectors → *Add custom connector* instead.
 
 ## Ranking and Recommendation
 
@@ -153,6 +171,12 @@ Search ranking uses:
   is no way to search *by* the hosting namespace: `registrySource` filters on
   the registries an entry was found in (`official`/`glama`), which is
   a different thing.
+- name focus — the name-match boost is scaled by how much of the server's own
+  name (the part after the last `/`, ignoring words like `mcp` and `server`)
+  the query covers, so `x/postgres` outranks
+  `x/postgres-grafana-stack-generator`. A term found only in the namespace
+  (`com.supabase/mcp` for "supabase") counts as full focus: that is the
+  vendor's own server.
 - official registry presence
 - community usage (`useCount`) and verification signals — currently always 0:
   Smithery was their only source
@@ -566,13 +590,29 @@ a violation fails the install outright.
 Two consequences worth knowing before they surprise you:
 
 - **A freshly published version will not resolve for a week.** That is the
-  point. The packages listed under `overrides` are the exception: they are a
-  hand-maintained set of security pins, so they appear in
-  `minimumReleaseAgeExclude` and update the day a patch lands. Remove a package
-  from `overrides` and remove it from that list too.
+  point. Only packages explicitly listed in `minimumReleaseAgeExclude` bypass
+  that delay for maintained security patches. Other overrides, including the
+  SDK's Express and proxy-addr floors, retain the normal cooldown. Remove an
+  exemption when its override is no longer needed.
 - **`trustPolicyExclude` carries exactly one pinned entry**, `undici-types@6.21.0`,
   with the evidence for why it is benign recorded in the file. Pin any future
   exemption to an exact version the same way, never to a bare package name.
+
+### Published runtime dependencies
+
+The server package uses standard `bundleDependencies` for the MCP SDK and Zod,
+including their complete transitive runtime trees. This carries the audited
+SDK → Express → proxy-addr/qs graph to public consumers: workspace overrides
+alone do not constrain dependencies selected by another project's package manager
+or existing lockfile. The dependency-free `@mcpfinder/core` remains a separate,
+coupled package at the same version.
+
+Keep the workspace's isolated linker. Prepare release tarballs in a fresh,
+release-only hoisted install as described in the publish playbook; retain
+third-party licenses and notices and verify actual packed resolution under npm
+11, npm 12 and pnpm 11, including hosts with older locked SDK dependencies.
+An audit with no Critical findings does not mean High and lower findings, or an
+unrelated consumer project's dependencies, are clear.
 
 ### Releasing
 

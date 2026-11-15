@@ -1,13 +1,38 @@
 # VisionClaw Agent
 
-**Maintenance review — November 6, 2026:** corrected the Settings model-selector
-crash and Memory link markup, applied compatible security dependency updates,
-and hardened private OAuth setup output. Browser checks, TypeScript, publishing
-preflight and production build passed. Dependency advisories and incomplete
-audit coverage remain; these checks are not a whole-platform security clearance.
+## Latest source update — R137.3+sec (November 14, 2026)
 
-## Current source release — R137.3 (November 8, 2026)
+This snapshot includes the latest eligible files and folders from the private
+source, with private records, credentials, uploads and proprietary surfaces
+excluded by the existing export policy.
 
+- **Subscription integrity:** activation checks current subscription status,
+  account ownership and monthly price; replaying a historically paid checkout
+  is not current entitlement. Both activation webhook paths also check current
+  provider state.
+- **Memory and media reliability:** MCP memory replacement commits the new fact
+  and successor link together. Force-cancel cannot overwrite a finished video
+  job. The scoped MCP persona catalog uses the correct active column.
+- **Security maintenance:** compatible Hono patch and reduced customer-address
+  and delivery-link logging in selected operational paths.
+- **Demo Studio:** owner-sidebar walkthrough editor, project JSON save/reopen,
+  sandboxed preview and offline HTML export. The existing `build_html_app`
+  tool shares its deterministic renderer and format.
+  [Contract and limits](docs/demo-studio.md).
+- **Review scope:** [November 14 review](docs/app-review-2026-11-14.md) separates
+  source inspection, scanner output and local regression evidence. Incomplete
+  tenant-audit coverage and staged RLS work remain open. This snapshot is not
+  whole-platform security certification or proof of app publication.
+
+## Base release — R137.3 (November 8, 2026)
+
+- **November 14 source addition — Demo Studio:** owner sidebar editor for
+  screenshot/step walkthroughs, preview, project JSON save/reopen and offline
+  HTML export. Agents use the same validated no-model renderer through
+  `build_html_app`. Normal HTML generation now includes mobile/keyboard,
+  difficult-data, recovery-state and restrained-motion guidance. Walkthroughs
+  are explicitly reconstructions, not live execution evidence; drafts need
+  an explicit project-file download. [Contract and limits](docs/demo-studio.md).
 - **Durable wake handoff:** event enqueue and schedule completion now commit
   atomically. Pending events retain the existing recovery path; uncertain legacy
   claims require review rather than automatic replay. Exactly-once downstream
@@ -63,8 +88,8 @@ audit coverage remain; these checks are not a whole-platform security clearance.
   See the [November source reconciliation](docs/platform-update-2026-11-04.md).
 
 **428 registered tools · 386 publicly documented tools · 18 personas · 68 platform
-skills · 146 active capabilities · 197 declared / 278 live development tables ·
-889 platform indexes · 93 curated models · 41 governance rules.**
+skills · 147 active capabilities · 201 declared / 282 live development tables ·
+904 platform indexes · 99 curated models · 41 governance rules.**
 These are dated development measurements, not production telemetry.
 
 Recent source additions include an eight-document **AI Stack Decision Review**
@@ -135,7 +160,7 @@ Instead of a single chatbot, you get a full agent workforce. Give it a task. The
 
 **Earlier source update — R137+sec (October 19, 2026): Business pilots, company report packages and evidence-first operations.** Owner-only health/re-scan, release, governance and cost/routing pilots; read-only website readiness; sourced company reports with required audio; private alert logs; receipt-backed delivery checks, outcome-first briefings and video packaging. Private report packages are excluded from generic tenant file access. [Feature/access matrix](docs/platform-update-2026-10-19.md). Forks need their own credentials, entitlements and configuration. Focused live pilot verification is not universal certification; GitHub synchronization is not website publication.
 
-Roughly 320k lines of TypeScript across 1,100+ files. 40+ pages. **428 total registered tools · 386 public documented tools · 68 total skills · 146 active capabilities · 18 personas · 197 declared / 278 live development tables · 41 governance rules · 889 platform indexes · 93 curated AI models · 6 AI providers · 6 deployment targets.** These are a November 8 **development evidence snapshot**, not live production telemetry. The public tool index deliberately excludes trusted-persona-only tools. Current release facts: [`docs/release-facts.json`](docs/release-facts.json). Browsable indexes: [`docs/tools.md`](docs/tools.md) · [`docs/personas.md`](docs/personas.md).
+Roughly 320k lines of TypeScript across 1,100+ files. 40+ pages. **428 total registered tools · 386 public documented tools · 68 total skills · 147 active capabilities · 18 personas · 201 declared / 282 live development tables · 41 governance rules · 904 platform indexes · 99 curated AI models · 6 AI providers · 6 deployment targets.** These are a November 14 **development evidence snapshot**, not live production telemetry. The public tool index deliberately excludes trusted-persona-only tools. Current release facts: [`docs/release-facts.json`](docs/release-facts.json). Browsable indexes: [`docs/tools.md`](docs/tools.md) · [`docs/personas.md`](docs/personas.md).
 
 ### October 9–14 source updates
 
@@ -213,14 +238,17 @@ Don't want to run it locally? Look at the **live deployment**: [agenticcorporati
 
 ## Architecture at a glance
 
-Every request — human chat or autonomous loop — passes through the same safety layer before it can touch a tool, and every tool call lands in a tenant-isolated Postgres. One pipeline, no side doors:
+Internal chat and governed tool execution use the safety and policy layers below.
+External scoped MCP tools have their own authorization boundary. Tenant filters
+are required on tenant-owned data, but coverage is still being audited; database
+RLS is staged and is not established as universal production enforcement.
 
 ```mermaid
 flowchart TB
     U["User / Autonomous loops<br/>(heartbeat · scheduled tasks · self-repair)"] --> CE["Chat Engine (SSE)"]
     CE --> SAFETY
 
-    subgraph SAFETY["AHB Safety Layer — every call passes through"]
+    subgraph SAFETY["Safety layers on governed internal execution"]
         direction TB
         IG["Intent gate<br/>(fail-OPEN, logged)"] --- DP["Destructive-tool policy<br/>(fail-CLOSED)"]
         RG["Outbound redaction gate"] --- TC["Tenant context<br/>(AsyncLocalStorage)"]
@@ -237,12 +265,12 @@ flowchart TB
     subgraph TOOLS["Tool layer — 428 total registered tools"]
         direction TB
         T1["File I/O · web · email · LLM · payments · drive"]
-        T2["TNR snapshots — irreversible calls are undoable"]
+        T2["TNR snapshots — supported recovery, not reversal of every side effect"]
         T3["Tracing spans — parent-linked causality tree"]
         T4["Admission control — priority pool + rate limits"]
     end
 
-    TOOLS --> DB[("PostgreSQL + pgvector<br/>tenant-isolated: every WHERE filters tenant_id")]
+    TOOLS --> DB[("PostgreSQL + pgvector<br/>tenant-scoped queries; audit and RLS rollout incomplete")]
 ```
 
 <details>
@@ -256,7 +284,7 @@ flowchart TB
                           │  • outbound redaction gate             │
                           │  • tenant-context (AsyncLocalStorage)  │
                           └─────────────┬──────────────────────────┘
-                                        │  every call passes through
+                                        │  governed internal dispatch
                                         ▼
    User ──▶ Chat Engine (SSE) ──▶ CEO (Felix) ──▶ Agent Router ──┐
                                                                  │
@@ -272,13 +300,13 @@ flowchart TB
                ▼
    ┌──────────────────────────────────────────────────────────────┐
    │  Tool layer: file I/O · web · email · LLM · payments · drive │
-   │  • TNR snapshots (R100) on irreversible calls — undoable     │
+   │  • TNR snapshots: supported recovery, not universal undo    │
    │  • Tracing spans (R101) parent-linked into causality tree   │
    │  • Admission control (R102) priority pool + rate limit       │
    └──────────────────────────────────────────────────────────────┘
                │
                ▼
-   PostgreSQL + pgvector  (tenant-isolated; every WHERE filters tenant_id)
+   PostgreSQL + pgvector (tenant-scoped queries; coverage/RLS rollout incomplete)
 ```
 
 </details>
@@ -399,7 +427,7 @@ Real screenshots from the live instance at [agenticcorporation.net](https://agen
 | AI Agents (Personas) | 18 |
 | Tools (total registered) | 428 |
 | Tools (public documented) | 386 |
-| AI Models in Core Registry | 93 curated |
+| AI Models in Core Registry | 99 curated |
 | Daily Catalog Discovery | 1000+ models scanned on OpenRouter |
 | AI Providers | 6 (OpenAI, Anthropic, Google, xAI, OpenRouter, Perplexity) |
 | Governance Rules | 41 |
@@ -408,8 +436,8 @@ Real screenshots from the live instance at [agenticcorporation.net](https://agen
 | Skills | 68 total (63 DB-seeded skills + 5 platform agent skills) |
 | Frontend Pages | 40+ |
 | API Endpoints | 300+ |
-| Database Tables | 197 declared / 278 live development |
-| Platform Indexes | 889 (617 non-PK) |
+| Database Tables | 201 declared / 282 live development |
+| Platform Indexes | 904 (628 non-PK) |
 
 ---
 
@@ -443,7 +471,7 @@ Real screenshots from the live instance at [agenticcorporation.net](https://agen
         ┌────────────┐   ┌────────────┐   ┌────────────┐
         │ PostgreSQL │   │ Google     │   │ 6 AI       │
         │ + pgvector │   │ Drive      │   │ providers  │
-        │ D197/L278  │   │ storage    │   │ 93 curated │
+        │ D201/L282  │   │ storage    │   │ 99 curated │
         └────────────┘   └────────────┘   └────────────┘
 ```
 
@@ -902,5 +930,4 @@ Brief one-liners. Full play-by-play in [REVISIONS.md](REVISIONS.md).
 | **R125+137.51 → +137.58** | 2026-07-21 | **The platform starts auditing its own model reality — every hardcoded model id verified weekly against LIVE provider lists (Pass 16) and every pricing map against live OpenRouter rates (Pass 17); a CRITICAL tar CVE patched; a 72h review lands two remediation batches; every autonomous loop gets a mechanically-proven L0–L3 readiness grade.** **R125+137.51:** Loop Doctor L0–L3 rubric — per-loop grades with mechanically-proven kill-switch/attempt-cap/run-log evidence (declared-but-absent token = ERROR); fleet L3=3, L2=6. **R125+137.52:** wiring-audit health pass closes 9 orphan tables (introspect script's hardcoded list predated the research/sandbox/social tables). **R125+137.53:** CI-failure backlog triage — 48 digest items → 4 root causes, all fixed, incl. a CRITICAL tar CVE (GHSA-vmf3-w455-68vh) patched via surgical lockfile bump (0 critical vulns); silent-failure HIGH budget locked DOWN 53→52. **R125+137.54:** 72h remediation batch 1 — sandbox tool handlers admin-tenant-gated, Zod/tenant validation on sandbox PATCH + insights-apply + agentic sweep, seed heartbeat DELETE sentinel-restricted, portfolio script onto the mandatory delivery pipeline. **R125+137.55:** self-healing scorer model — pinned id verified against live /v1/models, LOUD fallback to the newest live Sonnet on retirement. **R125+137.56:** model-currency audit (weekly Pass 16) — first run caught 4 retired dated Anthropic ids still serving as the DEFAULT fallback across ~20 active files, all swept to live aliases. **R125+137.57:** model-pricing audit (weekly Pass 17) — all 3 pricing maps verified against live OpenRouter rates; first run reconciled 28 stale prices. **R125+137.58:** 72h remediation batch 2 — ~20 research-engine sites gain explicit tenant filters, 5 research routes Zod-validated, gmail refresh log redacted to an allowlist, skill-seeker fails closed on missing tenant, tables count resynced to the live 216. Gates: tsc 0, seamtests 69/69, suite 147/147, cost 49/49, preflight CLEAN, architect PASS. |
 | **R125+137.45 → +137.50** | 2026-07-20 | **The platform starts working ahead of you — Proactive Commitment Drafting turns approaching deadlines into ready-to-approve HITL draft cards (structurally send-incapable); a CRITICAL credential-file leak in the uploads sync is closed with a boot-time dotfile purge; all 10 maintenance crons are prebundled so production can never lose them; a 10-file god-file cleanup locks its ceilings DOWN; and an IdeaBrowser MASTER sweep simulates the best of the 256-idea scored archive (winner: AI-Native Readiness Audit, ~$38.9k probability-weighted expected profit).** 72h retrospective (3 architect passes over 80 files / 223 commits) closed 1 MEDIUM (per-tenant boot-backfill skip check) + 3 LOW. Gates: tsc 0, suite 147/147, seamtests 69/69, wiring CLEAN, preflight CLEAN. |
 | **R125+137.41 → +137.44** | 2026-07-19 | **The Simulation Sandbox becomes actionable — jury-vetted promotion of sandbox findings into a reviewed Improvement list (never auto-apply), TTL retention, and honest INCONCLUSIVE verdicts — plus a weekly IdeaBrowser money-scenario pipeline and a review/sync round with permanent race-regression pins.** **R125+137.41 (72h review, 2 HIGH + 1 MEDIUM):** an `INCONCLUSIVE` verdict added to BOTH sandbox report unions — a run with zero replays, zero graded results, or more errors than successes can never collapse to a reassuring NO_CHANGE (CRITICAL/DRIFT still win); grading failures emit `[sandbox-grade]` telemetry, failed-status UPDATE catches log loud, and a read-time `stale` marker (running >30 min) surfaces on the sandbox routes + an ecosystem-health `staleRunningCount`. **R125+137.42:** the IdeaBrowser weekly money-scenario pipeline — a Monday cron ingests 7 days of captured business ideas, scores them, runs per-idea scenario simulations producing `successProbabilityPct` + probability-weighted `expectedProfitUsd`, ranks the top 5, and delivers the report through the delivery pipeline + owner email (safe `--test` mode with zero side effects; live run verified). **R125+137.43:** a new `sandbox_promote` tool (trusted-personas-only, sensitive/HIGH fail-closed policy; tools 398 → 399) routes sandbox findings through the 3-frontier-model jury into a durable `sandbox_improvements` table — a `jury_pending` row is INSERTed BEFORE triage so a jury failure leaves an auditable record; ACCEPT/FIX → approved, REJECT → rejected, anything else escalates; nothing ever auto-applies. Plus admin GET/PATCH routes, an Improvement list card on `/admin/sandbox`, and weekly TTL retention (improvements survive run deletion via `ON DELETE SET NULL`). **R125+137.44:** permanent promote-race regression pins in the canonical suite (concurrent promotes of the same run can never double-insert or double-triage), the stale-string preflight gains a `scripts/` surface rule (stale counts in operator scripts now trip CI), and every marketing/dashboard/README surface resynced. Gates: tsc 0, seamtests 69/69, suite 146/146, wiring audit CLEAN, preflight CLEAN, architect PASS. |
-| **R125+137.30 → +137.40** | 2026-07-19 | **The Simulation Sandbox contract completes S1–S5 — the platform can replay its own past safety decisions and model choices offline, under a hard per-run spend cap, and report what WOULD have changed.** `sandbox_run`/`sandbox_report` registered as a born-migrated domain (fail-closed tool policies, trusted-personas-only; tools 396 → 398), sandbox tables extracted to `shared/models/sandbox.ts` (tables 213 → 215), a `/admin/sandbox` admin UI over admin-gated launch routes (5s-wait/202-detach with race-safe timer cleanup), Sandbox probe #16 on the ecosystem-health dashboard, and the model-swap helper's cap clamped to the shared `MAX_PER_RUN_CAP_USD = 5` (architect-caught drift from 50). E2E smoke replayed 5/5 live safety decisions with verdict NO_CHANGE. Also in the window: a metered escalation valve for the self-repair loop (exactly ONE frontier diagnostic turn on a prior-collapse stall — judgment only, fail-OPEN, never on the final attempt), two standing-registry model registrations (`meta/muse-spark-1.1` paid + `nvidia/nemotron-3-ultra-550b:free` — neither touches the jury pools or the frontier reserve), the weekly video recap made self-healing and incident-proof (explicit date-window extraction cures the wrong-week incident; labeled weight-fact extraction cures the wrong-numbers incident), and a Tool Reliability card (SQL-bounded worst/top-N with redacted failure reasons). Gates: tsc 0, seamtests 69/69, suite 146/146, sandbox tests 16/16, architect PASS. |
-| **R125+137.26 → +137.29-review** | 2026-07-17 | **An external frontier-model code review of this very repo, triaged end-to-end — the owner's email purged from every server runtime path, the changelog becomes data, the mirror gains a DDL schema snapshot + fail-closed stats refresh + tagged releases, an `: any` ratchet gate lands, Kimi-K3 joins as a frontier reserve, and a 72h review closes 3 MEDIUMs with permanent regression pins.** **R125+137.26:** `moonshotai/kimi-k3` (1M context) registered across all 5 model maps as a frontier RESERVE — never in the standing proposer set; a pure gate fires at most one backfill call, only when a main-round frontier proposer fails on the metered path (9/9 gate tests). **R125+137.27:** an external Kimi-K3 review ran against this public mirror; every finding was re-verified on main and the hardcoded owner email was removed from ALL server runtime paths — policy seeding, inbox-quarantine allowlist, ingest identity (new `GMAIL_INGEST_ADDRESS` env, fails closed loudly when unset), and the security.txt contact chain are now env-driven, with fail-closed refusal wherever the address is missing. **R125+137.28:** the mirror build refreshes the authoritative platform-totals doc BEFORE copying (fail-closed if still dirty — the count doc can no longer ship stale) and a ratchet-DOWN-only `: any`/`as any` budget gate (baseline 6,949) run
+| **R125+137.30 → +137.40** | 2026-07-19 | **The Simulation Sandbox contract completes S1–S5 — the platform can replay its own past safety decisions and model choices offline, under a hard per-run spend cap, and report what WOULD have changed.** `sandbox_run`/`sandbox_report` registered as a born-migrated domain (fail-closed tool policies, trusted-personas-only; tools 396 → 398), sandbox tables extracted to `shared/models/sandbox.ts` (tables 213 → 215), a `/admin/sandbox` admin UI over admin-gated launch routes (5s-wait/202-detach with race-safe timer cleanup), Sandbox probe #16 on the ecosystem-health dashboard, and the model-swap helper's cap clamped to the shared `MAX_PER_RUN_CAP_USD = 5` (architect-caught drift from 50). E2E smoke replayed 5/5 live safety decisions with verdict NO_CHANGE. Also in the window: a metered escalation valve for the self-repair loop (exactly ONE frontier diagnostic turn on a prior-collapse stall — judgment only, fail-OPEN, never on the final attempt), two standing-registry model registrations (`meta/muse-spark-1.1` paid + `nvidia/nemotron-3-ultra-550b:free` — neither touches the jury pools or the frontier reserve), the weekly video recap made s

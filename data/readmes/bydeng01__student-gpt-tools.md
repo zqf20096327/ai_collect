@@ -105,11 +105,13 @@ Please help me revise and modify the following prompt for better clarity and pre
 | [StudyArena](https://studyarena.com) | Free three-model comparisons; paid model choice and six-model comparisons. | Compare three anonymous answers to a study question, vote for the most useful explanation, then reveal the models. |
 |[StudyX](https://studyx.ai/)| Both free and paid options; guest access allowed. | Get quick, reliable solutions across subjects.|
 | [SummarizAI](https://summarizai.ink) | Free plan for students; paid plans available; Chrome extension. | Chrome extension that adds an AI summary, chapters, chat, and Study flashcards on the YouTube watch page, so you can review recorded lectures faster. |
+| [Transcribe Video: To The Text](https://apps.apple.com/us/app/transcribe-video-to-the-text/id6757491608) | Free ≈5 min total + 5 MB file cap; Pro IAP; iOS. | iOS app that transcribes video files, YouTube/Vimeo links, and live voice with speaker split, Summarize, and TXT/DOCX export. Site: https://video2text.ttt.so |
 |[Tutor Me](https://chatgpt.com/g/g-hRCqiqVlM-tutor-me)| Available for free users with limited access; account required. \<GPTs\> | Your personal AI tutor by [Khan Academy](https://www.khanacademy.org/)! I'm Khanmigo Lite - here to help you with math, science, and humanities questions. I won’t do your work for you, but I will help you learn how to solve them on your own.|
 |[Universal Primer](https://chatgpt.com/g/g-GbLbctpPz-universal-primer) | Available for free users with limited access; account required. \<GPTs\> | The fastest way to learn anything hard.|
 | [Wenlan](https://wenlan.app/learn/build-course-wiki-from-lecture-notes) | Free and open-source; local desktop app. | Turn supported lecture notes, Markdown, text, and text-extractable PDFs into a maintained course wiki with source citations, concept links, revision state, and human review. |
 | [Yap Audio to Text](https://yapapp.cc/audio-to-text) | Free; no account required. | Transcribes lecture recordings, interviews and other audio or video files to text with SRT and VTT subtitles in the browser, with no upload. |
 | [ORANO](https://oranoai.com) | Both free and paid options; iOS, Android and web. | Turns saved Reels, TikToks, YouTube videos, articles and PDFs into searchable summaries, key takeaways and step-by-step plans. |
+| [YouTube Transcript: AI Summary & Chat](https://chromewebstore.google.com/detail/youtube-transcript-ai-sum/bbappnicmjmiliipjcmciaffiglmoekd) | Freemium; Chrome extension. | Shows a YouTube video as a timestamped transcript, so you can find the exact moment in a recorded lecture, get the key points, or ask the video questions. Free AI credits available. |
 
 ### Targeted Learning
 
@@ -160,6 +162,7 @@ Please help me revise and modify the following prompt for better clarity and pre
 | [MedPeer](https://product.medpeer.cn/product/index/product) | Free trial; account required. | Comprehensive access to tools and databases for academic writing, scientific plotting, machine translation, scientific communication, and scientific literature, making research easier. 一站式访问论文写作、科研绘图、机器翻译、科学对话、科技文献等工具和数据库，让科研变得更简单。|
 | [inquisite](https://www.inquisite.ai/) | Both free and paid options; account required. | Accelerate research, win more grant funding, secure IP and navigate regulatory compliance with Inquisite's agentic AI Assistants built for deep tech and applied sciences organizations. |
 | [Amplify by ResearchBunny](https://www.researchamplify.com/) | Paid per paper, no subscription; account required. | Turns a published paper's PDF into a video abstract, a vertical short, an audio brief in English plus 21 more languages, and a one-page infographic. A person reviews every format, and nothing is published until the researcher approves. |
+| [AutoResearch](https://autoresearch.me/en/) | Private beta: apply on the site (name, work email, research direction); after admin approval, accounts get 5,000 limited starter credits. Free during beta, not unlimited; account required. | End-to-end research, from an idea to a complete paper: from a research direction, it connects literature exploration, testable ideas, model implementation, GPU experiments and manuscript drafting into an evidence-backed paper draft. No publication guarantee. |
 
 ### Literature Review and Reading
 | Name | Cost| Description |

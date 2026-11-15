@@ -8,11 +8,11 @@
 
 # Lousho — TypeScript AI agent SDK
 
-[![npm](https://img.shields.io/npm/v/@linuxdevil/lousho)](https://www.npmjs.com/package/@linuxdevil/lousho)
+[![npm](https://img.shields.io/npm/v/lousho)](https://www.npmjs.com/package/lousho)
 ![CI](https://github.com/LinuxDevil/lousho/actions/workflows/ci.yml/badge.svg?branch=main)
 [![Docs](https://img.shields.io/badge/docs-lousho.com-0F9D74)](https://lousho.com)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Node](https://img.shields.io/node/v/@linuxdevil/lousho)](https://www.npmjs.com/package/@linuxdevil/lousho)
+[![Node](https://img.shields.io/node/v/lousho)](https://www.npmjs.com/package/lousho)
 [![GitHub stars](https://img.shields.io/github/stars/LinuxDevil/lousho)](https://github.com/LinuxDevil/lousho)
 
 </div>
@@ -27,7 +27,7 @@ TypeScript AI agents you can test in CI, pause for approval, and resume after a 
     </picture>
   </a>
   <br>
-  <sub>Lousho Studio, the local studio. Open it with <code>npx @linuxdevil/studio</code> (a separate install).</sub>
+  <sub>Lousho Studio, the local studio. Open it with <code>npx lousho-studio</code> (a separate install).</sub>
 </div>
 
 ![Lousho demo: scaffold a project, replay an eval offline, change the prompt, and see the replay flag it](.github/assets/demo.gif)
@@ -37,7 +37,7 @@ TypeScript AI agents you can test in CI, pause for approval, and resume after a 
 - **Test agents in CI without an API key.** `lousho eval` records a real run once, replays it with no network, and reports when the tool-call trajectory drifts. [Evals](https://lousho.com/evals)
 - **Resume after a crash.** Give the agent a store and `agent.resume()` finishes an interrupted run. Tool calls that already have a result do not run again. [Durable execution](https://lousho.com/durable-execution)
 - **Pause for a human.** A tool marked `needsApproval` pauses the run. Another request, or with a durable store another process, can approve it later, and the run continues where it stopped. [Approvals](https://lousho.com/approvals)
-- **Runs in your own Node process.** There is no hosted runtime. `lousho build` targets a Node server, Docker or Cloudflare Workers, and Lousho Studio (`@linuxdevil/studio`, a separate install) runs on your machine. [Deployment](https://lousho.com/deployment)
+- **Runs in your own Node process.** There is no hosted runtime. `lousho build` targets a Node server, Docker or Cloudflare Workers, and Lousho Studio (`lousho-studio`, a separate install) runs on your machine. [Deployment](https://lousho.com/deployment)
 - **Works with the Vercel AI SDK.** `fromAiSdk()` and `fromAiSdkTools()` wrap AI SDK models and tools, so you can move over one piece at a time. [Migrating from the AI SDK](https://lousho.com/migrating-from-ai-sdk)
 
 ## Try it in 60 seconds, no API key
@@ -55,8 +55,8 @@ npm test
 Now add an eval. Save this as `src/weather.eval.ts`:
 
 ```ts no-run
-import { createAgent, defineEval, defineTool } from '@linuxdevil/lousho';
-import { mockModel } from '@linuxdevil/lousho/testing';
+import { createAgent, defineEval, defineTool } from 'lousho';
+import { mockModel } from 'lousho/testing';
 import { z } from 'zod';
 
 const getWeather = defineTool({
@@ -89,7 +89,7 @@ defineEval({
 Then run it:
 
 ```bash
-npx @linuxdevil/lousho eval
+npx lousho eval
 ```
 
 ```text
@@ -102,9 +102,9 @@ weather advice  -     PASS    -       14ms
 To test against a real model, use `model: 'openai/gpt-4.1-mini'` in place of `provider`, set your key and record once. This step needs the key. Commit the cassettes it writes. CI then replays them with no network and no key:
 
 ```bash
-npx @linuxdevil/lousho eval --record
-npx @linuxdevil/lousho eval --replay
-npx @linuxdevil/lousho eval --drift
+npx lousho eval --record
+npx lousho eval --replay
+npx lousho eval --drift
 ```
 
 `--drift` re-records each case and shows where the tool calls, arguments or step count changed. See [Record, replay and drift](https://lousho.com/evals#record-replay-and-drift).
@@ -128,17 +128,17 @@ Requires Node.js 22.19 or newer. To start a new project, see [Try it](#try-it-in
 To add Lousho to an existing project:
 
 ```bash
-npm install @linuxdevil/lousho ai@^7.0.0 zod @ai-sdk/openai@^4.0.0
+npm install lousho ai@^7.0.0 zod @ai-sdk/openai@^4.0.0
 ```
 
-See [Installation](https://lousho.com/installation#provider-packages) for other providers. `npx @linuxdevil/lousho doctor` checks your setup and prints a fix for anything missing.
+See [Installation](https://lousho.com/installation#provider-packages) for other providers. `npx lousho doctor` checks your setup and prints a fix for anything missing.
 
 ## Quickstart
 
 This file uses top-level `await`, so it must be an ES module (`.mts`, or `"type": "module"` in `package.json`). Set `OPENAI_API_KEY` to run it.
 
 ```ts
-import { createAgent, defineTool } from '@linuxdevil/lousho';
+import { createAgent, defineTool } from 'lousho';
 import { z } from 'zod';
 
 const getWeather = defineTool({
@@ -160,7 +160,7 @@ console.log(text);
 
 ### Agent folders
 
-An agent can also be a folder, which you run with `npx @linuxdevil/lousho dev ./my-agent`:
+An agent can also be a folder, which you run with `npx lousho dev ./my-agent`:
 
 ```text
 my-agent/
@@ -178,9 +178,9 @@ Loading a folder runs its code, so only load ones you trust. See [Agent director
 - **Multi-agent**: [sub-agents](https://lousho.com/sub-agents) that run in parallel, and [handoffs](https://lousho.com/handoffs) to specialists.
 - **UI**: bindings for [React](https://lousho.com/react), [Vue](https://lousho.com/vue) and [Svelte](https://lousho.com/svelte), plus [AI SDK `useChat`](https://lousho.com/ai-sdk-ui) and [Next.js routes](https://lousho.com/nextjs).
 - **Tracing**: OpenTelemetry GenAI spans and a local trace viewer. [Observability](https://lousho.com/observability)
-- **Lousho Studio**: a separate install (`npx @linuxdevil/studio`) opens a local visual canvas, run debugger and chat across all your projects. [Lousho Studio](https://lousho.com/agent-forge)
+- **Lousho Studio**: a separate install (`npx lousho-studio`) opens a local visual canvas, run debugger and chat across all your projects. [Lousho Studio](https://lousho.com/agent-forge)
 - **Self-healing (experimental)**: `lousho improve` turns an agent's failed runs into tested edits to its instructions and skills, applies one that passes (or queues it for a person), and rolls it back on a regression. [Self-healing](docs/self-healing.md)
-- **Workspaces (experimental)**: `@linuxdevil/lousho/workspaces` holds the contracts for a workspace of pages, harnesses and shared policy: schemas, validation, harness composition and typed authoring operations. [Workspaces](docs/workspaces.md)
+- **Workspaces (experimental)**: `lousho/workspaces` holds the contracts for a workspace of pages, harnesses and shared policy: schemas, validation, harness composition and typed authoring operations. [Workspaces](docs/workspaces.md)
 - **Coding agents**: workspace tools, permission rules and starter kits from `lousho add`. [Build a coding agent](https://lousho.com/build-a-coding-agent)
 
 ## Documentation

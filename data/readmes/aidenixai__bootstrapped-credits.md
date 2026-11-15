@@ -1,6 +1,6 @@
-# Bootstrapped Credits
+# Awesome Bootstrapped Credits
 
-**Startup credits you can get without VC.**
+**An awesome list of startup credits you can get without VC.**
 
 Cloud and AI companies give startups free credit to pay for their services, hoping you stay once it runs out. You apply, they put a balance on your account, and your bills come out of it. The big numbers in most lists go to startups with venture money. This list is for a company without investors, which is what "bootstrapped" means.
 

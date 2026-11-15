@@ -4,7 +4,7 @@
 </picture>
 
 <p align="center">
-  <b>Put a swarm of AI sentries on your code.</b><br>
+  <b>Audit your code with a swarm of AI agents.</b><br>
   SentryTower reads your repository the way an attacker would and reports each vulnerability<br>
   with the file, the line, the CWE and the evidence.
 </p>
@@ -41,18 +41,18 @@
 <tr>
 <td width="50%" valign="top">
 
-**🎯 Top detection in our own test**<br>
-On 123 advisories published after the model's training cutoff, an earlier
-internal build of SentryTower detected 29.1% and led each of seven open-source harnesses with the same
-model, budget and sandbox; against two of them, the lead is within the margin
-of error. We ran this test ourselves. [See the results →](#results)
+**🎯 Detection in our own test: 29.1%**<br>
+On the 117 advisories with answer keys, published after the model's training
+cutoff, an earlier internal build of SentryTower with GLM 5.3 Flash detected
+29.1%, more than five of seven open-source harnesses with the same model,
+budget and sandbox. [See the results →](#results)
 
 </td>
 <td width="50%" valign="top">
 
 **💸 A budget in dollars**<br>
 Each audit has a cost cap of $2 by default, and the gateway stops new calls
-at it. A larger cap buys a deeper audit (a preview). Every report states the
+at it. With a larger cap, SentryTower runs a deeper audit (a preview). Every report states the
 spend, why the run stopped and how much of the code it checked.
 
 </td>
@@ -63,9 +63,9 @@ spend, why the run stopped and how much of the code it checked.
 **🏰 A swarm that follows the signals**<br>
 An inventory maps every code unit and its security signals. The swarm
 checks the units in the order of their signals until the queue or the
-budget ends, traces the strongest leads in deep agent sessions and verifies
-their findings blind. The report says how many units it checked. Above
-1,000 files, one deep agent takes the watch.
+budget ends, traces the strongest leads in deep agent sessions, and has a
+second model call judge each of their findings. The report says how many
+units it checked. A repository with more than 1,000 files goes to one deep agent.
 
 </td>
 <td width="50%" valign="top">
@@ -113,7 +113,7 @@ git clone https://github.com/National-Compute/sentrytower && cd sentrytower && .
 ```
 
 **With Docker**, with nothing else to install. The image
-`ghcr.io/national-compute/sentrytower:0.1.1` (linux/amd64 and linux/arm64)
+`ghcr.io/national-compute/sentrytower:0.2.0` (linux/amd64 and linux/arm64)
 holds Python, Node.js, the Pi agent, ripgrep and fd:
 
 ```sh
@@ -122,7 +122,7 @@ mkdir -p ~/sentrytower-results
 docker run --rm -e SENTRYTOWER_API_KEY --user "$(id -u):$(id -g)" \
   --read-only --tmpfs "/home/dev:uid=$(id -u),gid=$(id -g)" --tmpfs /tmp \
   -v "$PWD:/workspace/repo:ro" -v ~/sentrytower-results:/workspace/out \
-  ghcr.io/national-compute/sentrytower:0.1.1 audit /workspace/repo --out /workspace/out
+  ghcr.io/national-compute/sentrytower:0.2.0 audit /workspace/repo --out /workspace/out
 ```
 
 This audits the current folder. Keep `--user`: the output folder must
@@ -132,7 +132,7 @@ belong to the user of the run.
 Python 3.11+, Node.js 22.19+, the Pi agent, ripgrep and fd:
 
 ```sh
-uv tool install git+https://github.com/National-Compute/sentrytower@v0.1.1    # or: pipx install git+https://...@v0.1.1
+uv tool install git+https://github.com/National-Compute/sentrytower@v0.2.0    # or: pipx install git+https://...@v0.2.0
 npm install -g @earendil-works/pi-coding-agent@1.5.0                         # the agent runtime
 brew install ripgrep fd                                                      # or: apt install ripgrep fd-find
 
@@ -147,12 +147,13 @@ The guided setup takes about a minute:
    is saved.
 3. **Choose one model or more** from a searchable list with the context
    window, the price and the tool support of each. The default model,
-   DeepSeek V4.1 Flash, carries a ★.
+   DeepSeek V4.1 Flash, is marked with a ★.
 4. **Choose the depth** of an audit: quick ($0.50), standard ($2, the
-   measured run, proposed), deep ($10) or max ($50), another amount, or no
-   cap. Deep and max are a preview: more checks, with an effect on the
-   findings that is not yet measured. Then a time limit. A model without
-   prices gets no cap and the standard 20M tokens.
+   20M-token plan of the benchmarked build, proposed), deep ($10) or max
+   ($50), another amount, or no cap. The detection of the default model is
+   not measured at any depth. Deep and max are a preview: more checks, with
+   an effect on the findings that is not yet measured. Then a time limit. A
+   model without prices gets no cap and the standard 20M tokens.
 5. **Run your first audit** straight from the setup.
 
 From then on:
@@ -195,28 +196,25 @@ with `--plain`, SentryTower prints plain log lines instead of the live view.
 
 ## Results
 
-> [!IMPORTANT]
-> **Our own benchmark, not an independent test.** We designed, ran and
-> scored this comparison ourselves, and we also ran each of the other
-> harnesses. The numbers are for an earlier internal build of SentryTower
-> with GLM 5.3 Flash, not for this release and its default model.
-
-In a pre-registered comparison on 123 security advisories published after
-the model's training cutoff, an earlier internal build of SentryTower detected more vulnerabilities
-than each of the seven open-source harnesses it was compared with. Against
-Clearwing and Visa VVAH, the lead is within the margin of error, and
-Piolium, 0 and OpenHack had fewer false alarms. Every harness ran with the
-same mid-size model, the same token and time budget and the same offline
-sandbox.
+In our own pre-registered comparison on 123 security advisories published after
+the model's training cutoff, 117 of them with answer keys, an earlier
+internal build of SentryTower with GLM 5.3 Flash detected more vulnerabilities
+than five of the seven open-source harnesses it was compared with: Piolium,
+Vercel deepsec, 0, OpenHack and Codex Security. Its difference from Clearwing
+and Visa VVAH is within the margin of error. Piolium, 0 and OpenHack had fewer
+false alarms. Every harness ran with the same mid-size model and the same token
+and time budget, in the same offline sandbox; Codex Security ran in its own
+Bubblewrap sandbox inside it, and Clearwing with a local implementation of its
+sandbox protocol in place of Docker.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/results-dark.svg">
-  <img src="docs/assets/results-light.svg" width="960" alt="Detection of fresh advisories: SentryTower against each open harness on the same fixtures, with 90% intervals">
+  <img src="docs/assets/results-light.svg" width="960" alt="Detection of fresh advisories by an earlier internal build of SentryTower with GLM 5.3 Flash, against each open harness on the same fixtures, with 90% intervals; the lead over Clearwing and Visa VVAH is not separated">
 </picture>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/cost-dark.svg">
-  <img src="docs/assets/cost-light.svg" width="960" alt="Detection against the mean cost per audit, with the Pareto frontier: SentryTower has the highest detection, at $0.30 an audit">
+  <img src="docs/assets/cost-light.svg" width="960" alt="Detection against the mean cost per audit, with the Pareto frontier: the earlier internal build of SentryTower with GLM 5.3 Flash detects 29.1% at $0.30 an audit">
 </picture>
 
 | Harness | Detection | False alarms | Cost a run | Lead of SentryTower [90% CI] |
@@ -231,11 +229,14 @@ sandbox.
 | Visa VVAH | 28.0% (50 fixtures) | 26.0% | $1.02 | +6.0 pp [−4.0, +16.0] |
 
 Each lead is measured on the fixtures that harness completed; an interval
-that crosses zero is not a separated result. [docs/benchmarks.md](docs/benchmarks.md)
-has the method, the sensitivity views and every limit: one model
-(`z-ai/glm-5.3-flash`, the default model of the internal builds), answer
-keys drafted by models, and about 7 in 10 vulnerabilities that no harness
-found.
+that crosses zero is not a separated result. In the sensitivity views, the
+detection of the internal build stays above each rival's, but
+`benchmarks/results.json` records the pre-registered rule as not holding for
+any rival in any view ([benchmarks](docs/benchmarks.md#open-harnesses)).
+[docs/benchmarks.md](docs/benchmarks.md) has the method, the sensitivity
+views and every limit: one model (`z-ai/glm-5.3-flash`, the default model of
+the internal builds), answer keys drafted by models, and an internal build
+that missed about 7 in 10 of the vulnerabilities.
 
 ## How it works
 
@@ -270,9 +271,10 @@ flowchart LR
    security signals with ripgrep. The model checks the units in the order
    of their signals until the queue or the budget ends, a blind triage
    tests each lead, and the strongest leads get a deep-check agent session
-   while a free-roaming session explores the whole repository. Each
-   deep-check finding is verified blind, then the findings are ranked and
-   capped: at most 6 findings, 2 per file. A deeper run adds a second tier
+   while a free-roaming session explores the whole repository. A second
+   model call judges each deep-check finding without its reasoning (by
+   default the same model; it never runs the code), then the findings are
+   ranked and capped: at most 6 findings, 2 per file. A deeper run adds a second tier
    of findings after them, under the preview label. The report says how
    many units the run checked.
 3. **One deep agent.** For large repositories: the
@@ -283,8 +285,8 @@ flowchart LR
    the key, applies the request policy of the model, retries transient
    failures and enforces the cost cap and the token ceiling. A call that
    fits under the cap only after the calls in flight end waits for them,
-   up to 10 minutes. When dollars end the run (a cap above $2, or a cap that
-   buys fewer than the 20M tokens of the standard run), no new work starts
+   up to 10 minutes. When the cost cap ends the run (a cap above $2, or a cap that
+   pays for fewer than the 20M tokens of the standard run), no new work starts
    at 85% of the cap, and the running agent sessions finish. When the
    provider refuses the key, the account or the route (HTTP 401, 402, 403
    or 404), the gateway sends no more calls and the run fails with exit
@@ -306,7 +308,7 @@ steps:
   - uses: actions/checkout@v7
     with:
       persist-credentials: false
-  - uses: National-Compute/sentrytower@v0.1.1
+  - uses: National-Compute/sentrytower@v0.2.0
     with:
       api-key: ${{ secrets.OPENROUTER_API_KEY }}
       # fail-on: high
@@ -315,7 +317,7 @@ steps:
 
 What the Action shows depends on who can read the repository:
 
-- A private or internal repository gets the findings in the job summary,
+- For a private or internal repository, the Action shows the findings in the job summary,
   in the workflow artifact and in code scanning.
 - On a public repository (or when the visibility is unknown), every reader
   can see the job summary, the annotations and the log, and can download
@@ -337,7 +339,7 @@ provenance attestation; pin the digest that the check shows for an image
 that cannot change:
 
 ```sh
-gh attestation verify oci://ghcr.io/national-compute/sentrytower:0.1.1 --repo National-Compute/sentrytower
+gh attestation verify oci://ghcr.io/national-compute/sentrytower:0.2.0 --repo National-Compute/sentrytower
 ```
 
 `docker build -f docker/Dockerfile .` still builds the image from a clone.
@@ -371,14 +373,15 @@ deep_check = "vendor/agentic-model"
 
 The budget is in dollars. Each audit has a cost cap of $2 by default, when
 each model of the route has prices. With the built-in models, $2 is the
-standard run: the measured plan of 20M tokens with its measured pacing, and
-the cap is an upper limit only (on the agent route, the agent also writes
+standard run: the plan of 20M tokens and the pacing of the benchmarked
+build, whose detection with the default model is not measured, and the cap
+is an upper limit only (on the agent route, the agent also writes
 its answer at 85% of the cap). A larger cap (`--max-cost-usd 10`,
-`--depth deep`, or the setup) buys a deeper audit of the same repository:
-more unit checks and deep checks, deeper ones, three blind verifications of
-each finding, focus sessions on one weakness family each, and on a large
+`--depth deep`, or the setup) gives a deeper audit of the same repository:
+more unit checks and deep checks, deeper ones, three blind model
+verifications of each finding, focus sessions on one weakness family each, and on a large
 repository one agent session for each slice of the code. Each depth above
-the standard run carries the label "preview: more checks; effect on
+the standard run has the label "preview: more checks; effect on
 findings not yet measured", and its further findings come after the
 standard ones, in a second tier.
 
@@ -425,7 +428,7 @@ vulnerability in SentryTower privately ([SECURITY.md](SECURITY.md)).
 
 ## Where your code goes
 
-An audit sends the code of the repository to one place: the model endpoint
+An audit sends the code of the repository only to the model endpoint
 that you configure.
 
 1. The engines read the repository. The funnel puts code units into its
@@ -476,7 +479,7 @@ event does not give it.
   title   = {SentryTower: size-routed LLM security audits of source repositories},
   author  = {{The SentryTower Authors}},
   year    = {2026},
-  version = {0.1.1},
+  version = {0.2.0},
   url     = {https://github.com/National-Compute/sentrytower},
   license = {Apache-2.0 OR MIT}
 }

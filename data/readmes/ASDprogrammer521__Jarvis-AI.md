@@ -1,53 +1,56 @@
-<p align="center">
-<a href="https://discord.com/invite/r5q93NpRPt"><img src="https://img.shields.io/badge/Discord-Jarvis%20Community-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join the Jarvis Discord"></a>
-</p>
+<div align="center">
 
-<p align="center"><b>💬 Join the <a href="https://discord.com/invite/r5q93NpRPt">Jarvis Discord server</a></b> — help, updates and ideas: <a href="https://discord.com/invite/r5q93NpRPt">discord.com/invite/r5q93NpRPt</a></p>
+<img src="assets/readme-hero.svg" alt="JARVIS — your personal AI assistant for PC and phone" width="100%">
 
-<p align="center">
-<img src="assets/banner.png" alt="JARVIS — Your personal AI assistant for PC &amp; phone" width="100%">
-</p>
+<br>
 
-# Jarvis-ai
+<a href="https://github.com/ASDprogrammer521/Jarvis-ai/releases/latest"><img src="https://img.shields.io/badge/Download-Windows%20EXE-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Download Windows EXE"></a>
+<a href="https://github.com/ASDprogrammer521/Jarvis-ai/releases/latest"><img src="https://img.shields.io/badge/Download-Android%20APK-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Download Android APK"></a>
+<a href="https://discord.com/invite/r5q93NpRPt"><img src="https://img.shields.io/badge/Discord-Community-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join the Jarvis Discord"></a>
 
-<p align="center">
-<img src="https://img.shields.io/badge/Python-3.11%2B-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python">
-<img src="https://img.shields.io/badge/Windows-EXE-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows EXE">
-<img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge" alt="Status">
-<img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License">
-<img src="https://img.shields.io/badge/By-ASDcuber-orange?style=for-the-badge" alt="ASDcuber">
-</p>
+<img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.11+">
+<img src="https://img.shields.io/badge/Version-5.x-6ee7ff?style=flat-square" alt="Version 5.x">
+<img src="https://img.shields.io/badge/Status-Active-success?style=flat-square" alt="Status: active">
+<img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="MIT license">
+<img src="https://img.shields.io/badge/By-ASDcuber-orange?style=flat-square" alt="By ASDcuber">
 
----
+<br><br>
 
-## 🌟 Overview
+**[Download](#download)** · **[Quick start](#quick-start)** · **[Features](#features)** · **[Hand Space](#hand-space)** · **[Tools](#built-in-tools)** · **[Phone](#phone-connection)** · **[Security](#security)**
 
-**Jarvis AI** is an advanced intelligent assistant built to automate workflows and simplify everyday computer tasks. It combines a clean modern interface with powerful tools: voice control, screen awareness, desktop automation, a holographic HUD, profiles, plugins, and a full phone companion — all in one system.
+</div>
 
-Voice, vision, desktop control, holographic HUD, and phone companion — one system. Version **5.x**.
+<img src="assets/divider.svg" width="100%" alt="">
 
----
+## Overview
 
-## 📥 Download (no Python required)
+**Jarvis AI** is an intelligent assistant that automates your workflow and simplifies everyday computer tasks. A clean, modern interface sits on top of serious tools: **voice control, screen awareness, desktop automation, a holographic HUD, hand-controlled Hand Space, profiles, plugins and a full phone companion** — one system, version **5.x**.
 
-<p align="center">
-<a href="https://github.com/ASDprogrammer521/Jarvis-ai/releases/latest">
-<img src="https://img.shields.io/badge/Download-Windows%20EXE-blue?style=for-the-badge&logo=windows&logoColor=white" alt="Download Windows">
-</a>
-<a href="https://github.com/ASDprogrammer521/Jarvis-ai/releases/latest">
-<img src="https://img.shields.io/badge/Download-Android%20APK-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK">
-</a>
-</p>
+<table>
+<tr>
+<td width="25%" valign="top" align="center"><h3>🎙️ Voice</h3>Push-to-talk, open mic and an optional local <i>"Hey Jarvis"</i> wake word.</td>
+<td width="25%" valign="top" align="center"><h3>👁️ Vision</h3>Reads your screen, scans receipts, recognises faces and hands through the webcam.</td>
+<td width="25%" valign="top" align="center"><h3>🖥️ Control</h3>Apps, windows, files, browser, system settings, Gmail and Calendar — by voice or text.</td>
+<td width="25%" valign="top" align="center"><h3>📱 Phone</h3>Native Android app: calls, SMS, find my phone, big file transfer — over an encrypted link.</td>
+</tr>
+</table>
 
-1. Open **[Releases](https://github.com/ASDprogrammer521/Jarvis-ai/releases/latest)**
-2. Download `Jarvis-Windows-x64-v*.zip`
-3. Extract the zip → run **`Jarvis.exe`**
-4. Enter your **Gemini API key** on first launch
+<img src="assets/divider.svg" width="100%" alt="">
 
+## Download
 
-> Windows may show SmartScreen (unsigned build) → **More info → Run anyway**.
+No Python required.
 
-### Publish a new release (for maintainers)
+1. Open **[Releases](https://github.com/ASDprogrammer521/Jarvis-ai/releases/latest)**.
+2. Download `Jarvis-Windows-x64-v*.zip` (and the APK for your phone).
+3. Extract the zip and run **`Jarvis.exe`**.
+4. Enter your **Gemini API key** on first launch.
+
+> [!NOTE]
+> Windows may show SmartScreen because the build is unsigned → **More info → Run anyway**.
+
+<details>
+<summary><b>Maintainers: publish a new release</b></summary>
 
 ```bash
 git tag v1.0.1
@@ -62,47 +65,47 @@ Local build on Windows:
 powershell -ExecutionPolicy Bypass -File scripts\build_exe.ps1
 ```
 
----
+</details>
 
-## 🚀 Getting Started (from source)
+## Quick start
 
-Follow these steps if you prefer Python source:
+Prefer running from source?
 
-* 📦 **Step 1:** Install dependencies with **`setup.py`** (it reads the single `requirements.txt`, skips packages for other operating systems and fetches the Playwright browsers):
+**1 · Install dependencies.** `setup.py` reads the single `requirements.txt`, skips packages for other operating systems and fetches the Playwright browsers:
 
 ```bash
 python setup.py
 ```
 
-* 🔑 **Step 2:** Add your **Gemini API key**.  
-  On first launch the app will ask for it, or you can place it in `config/api_keys.json`.
+**2 · Add your Gemini API key.** On first launch the app asks for it, or place it in `config/api_keys.json`.
 
-* ▶️ **Step 3:** Start the application:
+**3 · Start Jarvis:**
 
 ```bash
 python main.py
 ```
 
----
+<img src="assets/divider.svg" width="100%" alt="">
 
-## ✨ Features
+## Features
 
 | Feature | Description |
 | ------- | ----------- |
-| 💎 **Modern & Clean UI** | Dashboard · Chat · Settings tabs with a cinematic HUD |
+| 💎 **Modern & clean UI** | Dashboard · Chat · Settings tabs with a cinematic HUD |
 | 🧑‍🚀 **HUD modes & 3D models** | Holo · Crystal · Globe · Knot · Helix · Face — or drop in your own `.obj` |
-| 🎙️ **Voice + Wake word** | Push-to-talk, open mic, mute, optional local "Hey Jarvis" wake word |
+| ✋ **Hand Space** | Browse drives, folders, pictures, notes, 3D models and videos as glass cards you grab with your bare hands — and design your own cards |
+| 🎙️ **Voice + wake word** | Push-to-talk, open mic, mute, optional local "Hey Jarvis" wake word |
 | 📱 **Jarvis App (phone)** | Native Android app — **call by name or number**, incoming-call alerts on the PC, find my phone, big file transfer, SMS, lock, locate — no ADB. A lightweight browser page covers chat and basic commands |
 | 🔒 **Encrypted link** | HTTPS / WSS by default. Jarvis makes its own certificate automatically — nothing to buy or install |
 | 🧩 **Modes** | "Work mode" opens and arranges a whole set-up; save your own by voice |
 | 🪟 **Window control by name** | "Minimize Discord", "snap Chrome left", "Chrome and Discord side by side", "move Chrome to the other monitor" act on *that* app's window |
 | ⌨️ **Custom shortcuts** | Mute, fullscreen and compact mode keys are yours to change in Settings → Shortcuts |
-| ⚡ **Fast Automation** | Apps, files, browser, system controls, clipboard, screenshots, messaging |
+| ⚡ **Fast automation** | Apps, files, browser, system controls, clipboard, screenshots, messaging |
 | 🛡️ **Safe by design** | Shutdown / restart / messages need an on-screen confirm · `undo` reverses volume, brightness, files and more |
-| 📊 **Admin Dashboard** | Remote control from a browser or the phone via pairing key |
+| 📊 **Admin dashboard** | Remote control from a browser or the phone via pairing key |
 | 🧾 **Receipt scanner** | Show a photo of a receipt — Gemini reads the total and category and logs the expense |
 | 📬 **Gmail & Calendar** | "What emails came today?", "Put a meeting on Friday at 15:00" |
-| ✋ **Hand gestures** | Control media, volume, mic and more with your hand — switch on and map each gesture in Settings |
+| 🖐️ **Hand gestures** | Control media, volume, mic and more with your hand — switch on and map each gesture in Settings |
 | 🙂 **Face ID** | Recognises people through the webcam — greets them by name; switch on/off in Settings → Face ID |
 | 🧠 **Memory** | Long-term facts you can view and delete |
 | 🔌 **Plugins + store** | Drop-in tools in `plugins/`; list / enable / disable / install from URL |
@@ -111,7 +114,58 @@ python main.py
 | 🖥️ **Compact mode** | Floating always-on-top mic (F12) |
 | 💻 **Windows EXE** | Single-folder build via GitHub Releases — no Python install |
 
-### Built-in tools
+<img src="assets/divider.svg" width="100%" alt="">
+
+## Hand Space
+
+<p align="center">
+<img src="assets/handspace-demo.svg" alt="Hand Space: a pinch grabs a glass card and carries it across the screen" width="860">
+</p>
+
+An Iron-Man style workspace: your drives, folders, pictures, notes, 3D models and videos float on screen as **glass cards**, and you move them with your bare hands. **Webcam only — everything runs locally** and nothing leaves your computer.
+
+Open **Hand Space** from the sidebar and press **Open Hand Space** (or say it). The page also shows live status — whether the workspace is open, or whether the camera needs attention (Settings → Gestures).
+
+### Gestures
+
+| | Gesture | What it does |
+| :-: | ------- | ------------ |
+| 🤏 | **Pinch** | Touch thumb and index finger on a card to grab it and carry it |
+| 👆 | **Tap** | A quick pinch goes into a folder or drive, enlarges a picture, opens a note. Pinch again to close it |
+| 🚀 | **Throw** | Let go while your hand moves — the card flies, spins and bounces off the edges |
+| 🦅 | **Claw** | Bend your fingers like a claw: every card is pulled to your palm. Open the hand to release |
+| 🙌 | **Two hands** | Pinch an open picture with both hands to zoom it; one hand drags it around |
+| ✊ | **Back** | Hold a fist for a second: closes the open card, or goes up one folder |
+
+`Esc` or the ✕ in the corner leaves Hand Space. A held fist also stops hand mouse control.
+
+### Your cards
+
+* **Drives first.** Hand Space starts on *This PC* (C: first). **Choose folder…** pins a folder of your own next to the drives; **Use built-in cards** takes it away again.
+* **Every kind looks different.** Drives show a usage bar, folders and files get their own icons, pictures show a thumbnail, notes show a peek of their text — each in its own accent colour.
+* **＋ New card.** Opens a designer: type a **title** and a **note**, pick one of **8 colours** and one of **12 icons**, and watch a live preview of the glass card. Press **Save card** and it appears in Hand Space.
+* **Your look is kept.** The colour and icon are stored at the top of the note's `.md` file (front matter), so the card keeps its own look — and the note stays an ordinary Markdown file you can edit anywhere:
+
+```markdown
+---
+color: "#ff5c7a"
+icon: 🔥
+---
+
+# Launch plan
+
+Ship the beta on Friday.
+```
+
+The first note creates a home for your cards at `…/hand_space_notes` and pins it automatically. Notes without front matter simply use the default note colour.
+
+### Hand outline
+
+The **Show hand outline** switch on the Hand Space page draws the thin bones of your hand. Off = only the fingertip and pinch rings. Hand Space draws on the graphics card when GPU acceleration is on and falls back to the standard renderer on its own if needed (Settings → Appearance → Performance).
+
+<img src="assets/divider.svg" width="100%" alt="">
+
+## Built-in tools
 
 | Area | Tools — try saying |
 | ---- | ------------------ |
@@ -124,7 +178,14 @@ python main.py
 | **Info** | `web_search` · `knowledge_lookup` · `weather_report` · `flight_finder` · `utility_tools` calculator, units, live currency |
 | **Developer** | `code_helper` write / edit / run code · `dev_agent` multi-file projects |
 
-**HUD video player — settings, 👍 👎 🔔 and "Videos".** Everything lives in the player's own control bar (also in full screen):
+Each tool is a drop-in file in `actions/`, discovered automatically.
+
+<details>
+<summary><b>HUD video player — settings, 👍 👎 🔔 and "Videos"</b></summary>
+
+<br>
+
+Everything lives in the player's own control bar (also in full screen):
 
 | Button | What it does |
 | ------ | ------------ |
@@ -137,11 +198,26 @@ python main.py
 
 **Voice control of the HUD player.** While a video plays you can simply talk to it: *"pause"*, *"resume"*, *"skip 2 minutes"*, *"go back 30 seconds"*, *"play from minute 10"*, *"louder"*, *"set volume to 40"*, *"mute"*, *"speed 1.5"*, *"full screen"*, *"how much is left?"*, *"quality 720"*, *"like this video"*, *"subscribe"*, *"connect YouTube"*, *"next video"*, *"what's up next?"*, *"play the third one"*, *"autoplay on"*, *"loop on"*, *"stop the video"*.
 
-Each tool is a drop-in file in `actions/`, discovered automatically.
+</details>
 
----
+## New modules
 
-## 🆕 Receipts, Gmail & Calendar, Gestures, Face ID
+| Module | How to use |
+|---|---|
+| ✋ **Hand-controlled UI** | Settings → Gestures → *Use my hand as the mouse*, or say "enable hand control". Index finger moves the real cursor · pinch = click / drag · thumb + middle = right click · ✌ and move up/down = scroll · hold a fist 1.5 s = stop. Everything runs locally on the webcam. |
+| 🎮 **Game HUD & Voice Trainer** | Say "show the game HUD", "start a Roshan timer 8 minutes repeating", "tip: rotate to B", "coach me every 5 minutes", "start an aim warm-up", "save my keybinds for Valorant: Q dash, E heal". Transparent, always-on-top, click-through overlay; timers are announced by voice 10 s before they end. |
+| 🏠 **Local-first smart home** | Say "scan my network", then control Shelly / Tasmota / WLED / Tuya / IP cameras / wake-on-LAN PCs. LAN only: public addresses and HTTP redirects are refused. The phone app can send `{"type":"home","action":"off","target":"room:kitchen"}` over the existing encrypted WebSocket. |
+| 🧑‍💻 **Developer overlay** | **Alt+Space** (change with `dev_overlay_hotkey` in `config/api_keys.json`). Live CPU/RAM/GPU, git status · diff · log · pull · push · stash · commit, and "explain the error in my clipboard". |
+
+**Game HUD extras:** the header shows the game's **FPS + frame time** and the **clock** (Settings → Modules). FPS needs the free [PresentMon](https://github.com/GameTechDev/PresentMon/releases) console exe in `tools/` and Jarvis run as Administrator; it only listens to Windows frame events (no injection, anti-cheat safe).
+
+**Face lock:** Settings → Face ID → *Lock Jarvis with my face*. Needs a saved face and a PIN (fallback if the camera fails). Locks on start, on "lock Jarvis", and after N minutes without a saved face; a saved face seen for ~1 s unlocks. While locked, voice, text, tools and phone commands are ignored. Not liveness-checked — a photo may fool it.
+
+No new Python packages are needed (`tinytuya` is only used for Tuya devices and is already in `requirements.txt`).
+
+<img src="assets/divider.svg" width="100%" alt="">
+
+## Receipts, Gmail, gestures and Face ID
 
 <table>
 <tr>
@@ -162,7 +238,7 @@ Read mail, check your agenda, add or cancel events.
 </td>
 <td width="33%" valign="top">
 
-### ✋ Hand gestures
+### 🖐️ Hand gestures
 Show your hand to the webcam to pause music, change volume, mute the mic or take a screenshot.
 **Off by default** — you choose what each gesture does.
 
@@ -170,7 +246,10 @@ Show your hand to the webcam to pause music, change volume, mute the mic or take
 </tr>
 </table>
 
-### 🧾 Receipt scanner
+<details>
+<summary><b>🧾 Receipt scanner</b></summary>
+
+<br>
 
 1. Click the **paperclip** (or drag & drop) and attach the receipt photo.
 2. Say or type: *"record this receipt"*.
@@ -183,7 +262,12 @@ Show your hand to the webcam to pause music, change volume, mute the mic or take
 | Budgets | The usual over-budget warnings still apply |
 | Unreadable photo | Jarvis says so and saves nothing — retake it flat and well lit |
 
-### 📬 Gmail & Google Calendar
+</details>
+
+<details>
+<summary><b>📬 Gmail & Google Calendar</b></summary>
+
+<br>
 
 **One-time setup** (about 5 minutes, free):
 
@@ -204,10 +288,16 @@ Show your hand to the webcam to pause music, change volume, mute the mic or take
 
 Days understood: `bugun`, `ertaga`, `juma`, `friday`, `06.11`, `2026-11-06` and more.
 
-> 🔒 **Mail is read-only** — Jarvis cannot send or delete emails. Calendar can read, add and delete events.
+> [!IMPORTANT]
+> **Mail is read-only** — Jarvis cannot send or delete emails. Calendar can read, add and delete events.
 > The sign-in token is stored in `config/google_token.json` (owner-only) and never leaves your PC.
 
-### ✋ Hand gestures
+</details>
+
+<details>
+<summary><b>🖐️ Hand gestures (media, volume, mic…)</b></summary>
+
+<br>
 
 Open **Settings → Gestures**, switch **Enable gesture control** on, and pick an action for each gesture.
 Hold the gesture for a moment — quick wave-bys are ignored. Choose the **Response speed** that suits you: ⚡ Fast (~0.3 s), Normal (~0.45 s) or 🎯 Careful (~0.7 s).
@@ -231,7 +321,12 @@ Hold the gesture for a moment — quick wave-bys are ignored. Choose the **Respo
 * Wrong camera? Pick another one in Settings → Gestures → Camera. **Reset to defaults** restores the table above.
 * Settings are saved in `config/api_keys.json` (`gesture_enabled`, `gesture_map`, `gesture_camera`).
 
-### 🙂 Face ID
+</details>
+
+<details>
+<summary><b>🙂 Face ID</b></summary>
+
+<br>
 
 **Settings → Face ID** → switch **Enable face recognition** on, type a name and press **Add my face**; look at the camera for a few seconds.
 
@@ -248,9 +343,11 @@ Voice commands: *"remember my face as Akmal"* · *"who is in front of the camera
 * The first start downloads two small models (~37 MB, OpenCV YuNet + SFace) to `config/models/`. Needs `opencv-python` 4.8+ (already in `requirements.txt`).
 * It is a convenience feature, **not a security lock** — a photo of a person can fool any webcam-based recogniser.
 
----
+</details>
 
-## 🧊 3D HUD models
+<img src="assets/divider.svg" width="100%" alt="">
+
+## 3D HUD models
 
 The centre of the home screen shows an animated 3D model. Switch it in **Settings → Appearance** (or double-click it).
 Built-in: **Holo** (golden hologram sphere), **Crystal**, **Globe**, **Knot**, **Helix** and **Face**.
@@ -271,26 +368,29 @@ Kinds: `lines`, `points`, `faces`, `sparks`, `pulse`. Useful keys: `w` width, `a
 `spin` rotation speed (negative = reverse), `tilt`, `scale`, `amp` (grows with voice), `blink`, `add` (glow blending), `lite=0` (hidden in lightweight mode).
 File-level options use `#@hud 1`, `#@glow 1`, `#@rim 1`, `#@palette gold`. The built-in models are generated by `python tools/make_models.py`.
 
----
+## Tool setup notes
 
-## 🧰 Tool setup notes
+<details>
+<summary><b>Memory, GPU, HUD video, Spotify and other tool requirements</b></summary>
 
-Setup notes:
+<br>
 
 * **Memory:** heavy tools (PowerPoint, Word, PDF, Excel, push-up counter) are loaded only when you ask for them. At startup only a tiny declaration file is read; the libraries (`python-pptx`, `python-docx`, `openpyxl`, `pypdf`, `mediapipe`, OpenCV) are imported on first use. To make your own action lazy, keep `TOOL` in a small file and import the heavy code inside the handler.
 * **GPU hologram:** with GPU acceleration on, the Holo model is drawn by a shader on the graphics card. If the shader cannot run, Jarvis checks itself and switches to the standard renderer automatically (Settings → Appearance → Performance).
 * **Profiles:** Settings → General → Profile (or "switch to work mode") changes the 3D model, push-to-talk / open mic and graphics quality: Home = Holo, Work = Crystal, Game = Globe + lightweight.
 * **HUD video (`play_hud_video`)** uses [mpv](https://mpv.io): `pip install python-mpv` (already in `requirements.txt`) plus the libmpv library. Windows: download libmpv from <https://sourceforge.net/projects/mpv-player-windows/files/libmpv/> and copy `libmpv-2.dll` (or `mpv-2.dll`) into the Jarvis folder next to `main.py`. Linux: `sudo apt install libmpv2`. macOS: `brew install mpv`. Say "play a good Minecraft video" or give a YouTube link. In the video: Space pause, ←/→ seek, ↑/↓ volume, F / F11 / double-click full screen, Esc leaves full screen.
 * **Push-up counter** needs `opencv-python` and `mediapipe`. On first use it downloads a small pose model (about 6 MB) to `config/models/`. Place the camera at your side so your whole body is visible.
-* **Gmail & Calendar** need a Google OAuth client — see [Receipts, Gmail & Calendar, Gestures, Face ID](#-receipts-gmail--calendar-gestures-face-id). `google-api-python-client` and `google-auth-oauthlib` are already in `requirements.txt`.
+* **Gmail & Calendar** need a Google OAuth client — see [Receipts, Gmail, gestures and Face ID](#receipts-gmail-gestures-and-face-id). `google-api-python-client` and `google-auth-oauthlib` are already in `requirements.txt`.
 * **Receipt scanner** uses your Gemini key — no extra setup.
 * **PDF OCR** needs the free [Tesseract](https://github.com/tesseract-ocr/tesseract) program installed. Converting Word/PowerPoint/Excel to PDF needs [LibreOffice](https://www.libreoffice.org) (or Microsoft Word with `docx2pdf` on Windows).
 * **Spotify** works out of the box with the desktop app (media keys, volume, search page). For one-step "play my chill playlist", add `spotify_client_id` and `spotify_client_secret` (free, from developer.spotify.com/dashboard) to `config/api_keys.json`, register `http://127.0.0.1:8888/callback` as the Redirect URI, then say "log in to Spotify" once.
 * Generated files are saved under `Documents/Jarvis/` (change with `"output_dir"` in `config/api_keys.json`). Workout and nutrition logs live in `memory/`.
 
----
+</details>
 
-## 📱 Phone connection
+<img src="assets/divider.svg" width="100%" alt="">
+
+## Phone connection
 
 Jarvis connects **out** from the phone to your PC (reverse WebSocket), so there is nothing to forward and no ADB.
 
@@ -298,7 +398,7 @@ Jarvis connects **out** from the phone to your PC (reverse WebSocket), so there 
 
 <p align="center">
 <a href="https://github.com/ASDprogrammer521/Jarvis-ai/releases/latest">
-<img src="https://img.shields.io/badge/Download-Jarvis%20APK-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Download APK">
+<img src="https://img.shields.io/badge/Download-Jarvis%20APK-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Download APK">
 </a>
 </p>
 
@@ -311,7 +411,10 @@ Jarvis connects **out** from the phone to your PC (reverse WebSocket), so there 
 
 **Build the APK yourself:** open `android/JarvisApp` in Android Studio, or push to GitHub → **Actions** → **Build Jarvis App APK** → download the `JarvisApp-debug` artifact.
 
-### The app
+<details>
+<summary><b>What the app contains</b></summary>
+
+<br>
 
 * **Header** — live status pill (online / connecting / offline).
 * **Phone card** — current call state (refreshed every two seconds), a big **Make a call** button, and **Answer / Reject / Hang up**.
@@ -320,6 +423,8 @@ Jarvis connects **out** from the phone to your PC (reverse WebSocket), so there 
 * **Control the PC** — lock, mute, volume, play / pause / next / previous, **App…** (minimize, maximize, bring forward or close any app by name) and shut down (asks for confirmation).
 * **Link line** — 🔒 shows the link is encrypted and the certificate is pinned; **Forget PC certificate** is for after you reinstall Jarvis.
 * **Activity log** and a chat bar with file attach.
+
+</details>
 
 ### Phone calls
 
@@ -344,7 +449,8 @@ Same Wi‑Fi required. Enter the pairing key (or scan the QR code from Remote Co
 * chat with Jarvis and send quick commands (status, mute, unmute);
 * read Jarvis's replies, notifications and links.
 
-**Calls are not available in the browser.** A web page cannot place, answer, reject or hang up phone calls — and has no access to contacts or the call log. Use the Android APK (Option A) for calling, SMS, incoming-call alerts and file transfer.
+> [!WARNING]
+> **Calls are not available in the browser.** A web page cannot place, answer, reject or hang up phone calls — and has no access to contacts or the call log. Use the Android APK (Option A) for calling, SMS, incoming-call alerts and file transfer.
 
 ### Phone capabilities (Android app)
 
@@ -363,7 +469,10 @@ Same Wi‑Fi required. Enter the pairing key (or scan the QR code from Remote Co
 | Auto-reconnect | The service retries the link if the socket drops |
 | Background link | A foreground notification keeps the connection alive |
 
-### Do I need a certificate?
+<details>
+<summary><b>Do I need a certificate?</b></summary>
+
+<br>
 
 **No — you do not need to buy, create or install anything.** Jarvis handles it for you:
 
@@ -377,7 +486,12 @@ Same Wi‑Fi required. Enter the pairing key (or scan the QR code from Remote Co
 | Can I turn it off? | Yes: set `JARVIS_TLS=0` (see `config/env.example`). The link then becomes **unencrypted** — use only on a network you fully trust. |
 | When is a new one created? | When your PC's LAN IP changes, or if you delete `config/certs/`. Then tap **Forget PC certificate** in the app and pair again. |
 
-### Troubleshooting
+</details>
+
+<details>
+<summary><b>Troubleshooting</b></summary>
+
+<br>
 
 | Problem | Fix |
 | ------- | --- |
@@ -391,9 +505,11 @@ Same Wi‑Fi required. Enter the pairing key (or scan the QR code from Remote Co
 
 > ADB is **not** required — the link is the Jarvis App's reverse WebSocket.
 
----
+</details>
 
-## 🖥️ UI navigation
+<img src="assets/divider.svg" width="100%" alt="">
+
+## UI navigation
 
 There is no top bar — the whole window is the page. Navigation lives in a slim **side rail** on the left:
 
@@ -407,37 +523,34 @@ There is no top bar — the whole window is the page. Navigation lives in a slim
 | **Chat** | Conversation history |
 | **Dashboard** | System stats, tasks, activity and music |
 | **Phone** | Phone Link-style page: device card with battery and link status, three big actions (Find phone · Lock · Screenshot), a **Notifications** list (Call / Mark as read / Clear all) and **Messages · Calls · Actions** tabs |
+| **Hand Space** | Launch the gesture workspace, pin a folder, design new cards |
 | **Voice & AI** / **Settings** | Full-screen options |
 
-**Shortcuts:** `F4` mute · `F11` fullscreen · `F12` compact mode  
+**Shortcuts:** `F4` mute · `F11` fullscreen · `F12` compact mode
 
 **Window commands:** say the app's name — "minimize Discord", "maximize Chrome", "restore Spotify", "bring Steam to the front". Jarvis finds that app's own window; it never minimizes itself by mistake. Without a name, minimize / maximize act on the focused window — which is Jarvis while you talk to it — so it refuses and asks which app you mean.
 
-
----
-
-## 👤 Profiles & plugins
+## Profiles & plugins
 
 **Profiles** (`home` / `work` / `game`) store preferred HUD and talk-mode style. Ask Jarvis to list or switch profiles, or use the `profile_switch` tool.
 
 **Plugin store:** drop a `.py` file into `plugins/`, then list / enable / disable via the `plugin_store` tool (or Settings plugins UI where available).
 
----
-
-## 📁 Project structure
+## Project structure
 
 ```text
 Jarvis-ai/
 ├── main.py                 # entry point
-├── ui/                     # window, pages, 3D stage, settings, theme
-├── assets/models/          # 3D HUD models (.obj)
+├── ui/                     # window, pages, 3D stage, Hand Space, settings, theme
+├── assets/                 # banner, animated README art
+│   └── models/             # 3D HUD models (.obj)
 ├── tools/make_models.py    # regenerates the built-in .obj models
 ├── setup.py                # dependency installer
 ├── Jarvis.spec             # PyInstaller (Windows EXE)
 ├── requirements.txt        # the only requirements file
 ├── actions/                # built-in tools
 ├── plugins/                # drop-in plugins
-├── core/                   # avatar, audio, LLM, updater, camera hub (gestures + Face ID)…
+├── core/                   # avatar, audio, LLM, updater, camera hub (gestures + Face ID), Hand Space…
 ├── dashboard/              # remote server + web companion
 ├── android/JarvisApp/      # native Android companion (Kotlin) — dialer, calls, quick actions
 ├── scripts/build_exe.ps1   # local Windows packaging
@@ -446,41 +559,26 @@ Jarvis-ai/
 └── .github/workflows/      # APK + Windows EXE releases
 ```
 
----
+<img src="assets/divider.svg" width="100%" alt="">
 
-## 🔒 Security
+## Security
 
 * **Encrypted link.** The dashboard serves HTTPS and the app connects over WSS. Jarvis creates a self-signed certificate in `config/certs/` automatically (and a new one if your PC's LAN address changes). The private key is never shipped with the project. The Android app pins its SHA-256 fingerprint the first time it pairs and refuses any other certificate afterwards — it never silently drops back to plain HTTP once a certificate is pinned.
 * **Pairing key.** A one-time key (valid ten minutes) turns into a session token; "revoke devices" ends all sessions.
 * **Confirmations.** Shutdown, restart and outgoing messages need your click on the PC. A shutdown asked for from the phone starts a 15-second countdown (`shutdown /a` cancels it).
-* **Google & camera.** Gmail access is read-only; the Google token lives in `config/google_token.json` (owner-only). Hand gestures and Face ID are off until you enable them, process the camera locally and store no photos.
+* **Google & camera.** Gmail access is read-only; the Google token lives in `config/google_token.json` (owner-only). Hand gestures, Hand Space and Face ID are off until you enable them, process the camera locally and store no photos.
 * **Files.** PC → phone transfers are single-file links that expire; keys, certificates and `api_keys.json` are never sent.
 
----
+## License
 
-## 📜 License
+Released under the **MIT License**.
 
-This project is licensed under the **MIT License**.
+<img src="assets/divider.svg" width="100%" alt="">
 
----
+<div align="center">
 
-<p align="center">
-<b>By ASDcuber</b>
-</p>
+**Jarvis AI** · made with care by **ASDcuber**
 
----
+<sub>If Jarvis saves you time, a ⭐ on the repo means a lot.</sub>
 
-## 🆕 New modules
-
-| Module | How to use |
-|---|---|
-| ✋ **Hand-controlled UI** | Settings → Gestures → *Use my hand as the mouse*, or say “enable hand control”. Index finger moves the real cursor · pinch = click / drag · thumb + middle = right click · ✌ and move up/down = scroll · hold a fist 1.5 s = stop. Everything runs locally on the webcam. |
-| 🎮 **Game HUD & Voice Trainer** | Say “show the game HUD”, “start a Roshan timer 8 minutes repeating”, “tip: rotate to B”, “coach me every 5 minutes”, “start an aim warm-up”, “save my keybinds for Valorant: Q dash, E heal”. Transparent, always-on-top, click-through overlay; timers are announced by voice 10 s before they end. |
-| 🏠 **Local-First Smart Home** | Say “scan my network”, then control Shelly / Tasmota / WLED / Tuya / IP cameras / wake-on-LAN PCs. LAN only: public addresses and HTTP redirects are refused. The phone app can send `{"type":"home","action":"off","target":"room:kitchen"}` over the existing encrypted WebSocket. |
-| 🧑‍💻 **Developer Overlay** | **Alt+Space** (change with `dev_overlay_hotkey` in `config/api_keys.json`). Live CPU/RAM/GPU, git status · diff · log · pull · push · stash · commit, and “explain the error in my clipboard”. |
-
-**Game HUD extras:** header shows the game's **FPS + frame time** and the **clock** (Settings → Modules). FPS needs the free [PresentMon](https://github.com/GameTechDev/PresentMon/releases) console exe in `tools/` and Jarvis run as Administrator; it only listens to Windows frame events (no injection, anti-cheat safe).
-
-**Face lock:** Settings → Face ID → *Lock Jarvis with my face*. Needs a saved face and a PIN (fallback if the camera fails). Locks on start, on “lock Jarvis”, and after N minutes without a saved face; a saved face seen for ~1 s unlocks. While locked, voice, text, tools and phone commands are ignored. Not liveness-checked — a photo may fool it.
-
-No new Python packages are needed (`tinytuya` is only used for Tuya devices and is already in `requirements.txt`).
+</div>

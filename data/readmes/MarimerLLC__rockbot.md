@@ -37,7 +37,7 @@ RockBot is one part of a family of projects that work together. Each runs as its
 
 | Project | What it is |
 |---|---|
-| [`McpServer.Introspection`](src/McpServer.Introspection) | Agent self-inspection: its name, LLM pricing, Copilot quota, memory audit and tier-routing stats |
+| [`McpServer.Introspection`](src/McpServer.Introspection) | Agent self-inspection: its name, configured LLM and decision models, LLM pricing, Copilot quota, memory audit and tier-routing stats |
 | [`McpServer.TodoApp`](src/McpServer.TodoApp) | Persistent to-do list with due dates and recurrence |
 | [`McpServer.OpenRouter`](src/McpServer.OpenRouter) | Read-only OpenRouter account, credit, model and usage data |
 
@@ -77,6 +77,9 @@ RockBot is one part of a family of projects that work together. Each runs as its
 | `RockBot.ServiceSearch` | Unified BM25 keyword search across A2A agents and MCP servers (`search_known_services`) |
 | `RockBot.UserProxy.Blazor` | Blazor Server chat UI with markdown rendering, conversation replay, and feedback signals |
 | `RockBot.UserProxy.Cli` | Console chat interface using Spectre.Console; one-shot mode for scripts, with turn events as AG-UI JSON lines ([`docs/cli.md`](docs/cli.md)) |
+| `RockBot.UserProxy.AgUi` | AG-UI proxy: the agent over HTTP POST and server-sent events, for WASM, mobile and third-party clients ([`docs/agui.md`](docs/agui.md)) |
+| `RockBot.UserProxy.AgUi.Events` | Maps a turn's bus traffic to AG-UI events; shared by the CLI and the AG-UI proxy |
+| `samples/RockBot.AgUi.WasmClient` | Sample: a small Blazor WebAssembly client for the AG-UI proxy, with its transport library and a broker-free dev host ([README](samples/RockBot.AgUi.WasmClient/README.md)) |
 | `McpServer.OpenRouter` | Standalone MCP server exposing OpenRouter account and usage information |
 | `McpServer.TodoApp` | Standalone MCP server providing a persistent to-do list with recurrence support |
 | `ClaudeCodeProxy` | OpenAI-compatible proxy for the Anthropic Messages API — enables use of a Claude Code Max subscription as the agent LLM |
@@ -269,12 +272,13 @@ ROCKBOT_RABBITMQ_HOST=localhost dotnet test RockBot.slnx
 
 ### Container images
 
-Four images are published to Docker Hub and must be built from the repo root:
+Five images are published to Docker Hub and must be built from the repo root:
 
 | Image | Dockerfile | Purpose |
 |---|---|---|
 | `rockylhotka/rockbot-agent` | `deploy/Dockerfile.agent` | Agent host (RockBot.Agent) |
 | `rockylhotka/rockbot-blazor` | `src/RockBot.UserProxy.Blazor/Dockerfile` | Blazor chat UI |
+| `rockylhotka/rockbot-agui` | `src/RockBot.UserProxy.AgUi/Dockerfile` | AG-UI proxy *(optional)* |
 | `rockylhotka/rockbot-scripts-manager` | `Dockerfile.scripts-manager` | Trusted script execution sidecar |
 | `rockylhotka/rockbot-openrouter-mcp` | `src/McpServer.OpenRouter/Dockerfile` | OpenRouter MCP server *(optional)* |
 
@@ -282,12 +286,14 @@ Four images are published to Docker Hub and must be built from the repo root:
 # Build all from the repo root
 docker build -f deploy/Dockerfile.agent         -t rockylhotka/rockbot-agent:latest .
 docker build -f src/RockBot.UserProxy.Blazor/Dockerfile -t rockylhotka/rockbot-blazor:latest .
+docker build -f src/RockBot.UserProxy.AgUi/Dockerfile -t rockylhotka/rockbot-agui:latest .
 docker build -f Dockerfile.scripts-manager     -t rockylhotka/rockbot-scripts-manager:latest .
 docker build -f src/McpServer.OpenRouter/Dockerfile -t rockylhotka/rockbot-openrouter-mcp:latest .
 
 # Push
 docker push rockylhotka/rockbot-agent:latest
 docker push rockylhotka/rockbot-blazor:latest
+docker push rockylhotka/rockbot-agui:latest
 docker push rockylhotka/rockbot-scripts-manager:latest
 docker push rockylhotka/rockbot-openrouter-mcp:latest
 ```
@@ -300,10 +306,10 @@ The Helm chart at `deploy/helm/rockbot` deploys the full stack into two namespac
 
 | Namespace | Contents |
 |---|---|
-| `rockbot` | Agent, Blazor UI, Scripts Manager, Introspection MCP, TodoApp MCP, OpenRouter MCP *(optional)*, ConfigMap, Secret |
+| `rockbot` | Agent, Blazor UI, AG-UI proxy *(optional)*, Scripts Manager, Introspection MCP, TodoApp MCP, OpenRouter MCP *(optional)*, ConfigMap, Secret |
 | `rockbot-scripts` | Ephemeral Python execution pods (created on demand) |
 
-The Introspection MCP server is enabled by default and ships as part of the standard agent install — it provides the tools the agent uses to rename itself, look up LLM pricing, and read Copilot quota. To disable it, set `introspectionMcp.enabled: false` in your values file.
+The Introspection MCP server is enabled by default and ships as part of the standard agent install — it provides the tools the agent uses to rename itself, report which LLM and decision models it is configured with, look up LLM pricing, and read Copilot quota. To disable it, set `introspectionMcp.enabled: false` in your values file.
 
 #### 1. Create your values file
 
@@ -467,6 +473,15 @@ The agent has *no* pod permissions. A compromised agent cannot create or access 
 - Receives only the RabbitMQ credentials it needs — not the full agent ConfigMap.
 - Supports markdown rendering, conversation history replay on reconnect, input history, multiline input (Shift+Enter), and implicit feedback signals.
 
+#### AG-UI proxy (`rockbot-agui`) *(optional)*
+
+- Deployed when `agui.enabled: true` in your values file. See [`docs/agui.md`](docs/agui.md).
+- Runs `RockBot.UserProxy.AgUi` on port 8080: `POST /agui` runs a turn and streams it back as AG-UI events; REST endpoints cover attachments, saved responses, MCP sign-in and the rest.
+- Mounts the shared volume read-only, to serve reply attachments.
+- Exposed on your Tailscale network using the hostname set in `agui.tailscale.hostname` (`rockbot-agui` by default).
+- Two ways to gate it, as for the Blazor UI: the network (the default: no sign-in, so keep it on the tailnet) or app auth (`agui.auth.enabled`: an OIDC bearer token from an account on the allowlist, with `agui.cors.allowedOrigins` for browser apps). The chart refuses to render a public ingress for it without `agui.auth.enabled`, unless `agui.ingress.allowUnauthenticated: true`.
+- Receives only the RabbitMQ credentials it needs, and has no volume.
+
 #### OpenRouter MCP (`rockbot-openrouter-mcp`) *(optional)*
 
 - Deployed when `openrouterMcp.enabled: true` in your values file.
@@ -601,6 +616,7 @@ Deep-dive documentation for individual subsystems lives in [`docs/`](docs/):
 | [`docs/dream-service.md`](docs/dream-service.md) | Dream cycle passes, scheduling, directive files, LLM response contracts, configuration |
 | [`docs/blazor-ui.md`](docs/blazor-ui.md) | Blazor chat UI architecture, UserProxyService, feedback, history replay, deployment |
 | [`docs/cli.md`](docs/cli.md) | `rockbot` CLI subcommands, one-shot mode, `--output jsonl` (turn events as AG-UI JSON lines), exit codes |
+| [`docs/agui.md`](docs/agui.md) | AG-UI proxy: `POST /agui` runs, the notify stream, MCP questions, attachments, saved responses, MCP sign-in, app auth (bearer tokens), CORS, configuration, Helm values |
 | [`docs/messaging.md`](docs/messaging.md) | MessageEnvelope, publisher/subscriber interfaces, RabbitMQ provider, topics, trust levels, trace propagation |
 | [`docs/agent-host.md`](docs/agent-host.md) | AgentHostBuilder, pipeline, identity, profile, conversation memory, session evaluation, LLM client, data volume layout |
 | [`docs/tools.md`](docs/tools.md) | Tool execution model, IToolRegistry, MCP bridge, service search, web search/browse, REST, scheduling, script execution, OpenRouter MCP |

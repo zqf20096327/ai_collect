@@ -1,14 +1,14 @@
 # Chelate Shell
 
-**Nineteen research skills routed as one deterministic pipeline — and it stops before the one step that cannot be undone.**
+**Nineteen research and engineering skills routed as one deterministic pipeline — and it stops before the one step that cannot be undone.**
 
 Each skill solves a single problem. The hard part is what runs first, and where the output lands — Chelate Shell puts the skills, the stage order and the gates in one repository.
 
 **English** · [简体中文](README_zh.md)
 
-**Version:** 1.3.4 | **License:** MIT | **Python:** 3.10+ | **Skills:** 19
+**Version:** 1.3.5 | **License:** MIT | **Python:** 3.10+ | **Skills:** 19
 
-> Research assistance only. Read [Safety and licensing](#safety-and-licensing) before relying on any output.
+> Research and engineering assistance only. Read [Safety and licensing](#safety-and-licensing) before relying on any output.
 
 ---
 
@@ -66,11 +66,11 @@ Visit the GitHub repository `https://github.com/JiamingShi-JsPhys/chelate-shell`
 ### Method two: install from a marketplace URL
 
 ```text
-/plugin marketplace add https://github.com/JiamingShi-JsPhys/chelate-shell.git#v1.3.4
+/plugin marketplace add https://github.com/JiamingShi-JsPhys/chelate-shell.git#v1.3.5
 /plugin install chelate-shell@chelate-shell-marketplace
 ```
 
-`#v1.3.4` pins the install to this release; drop it to follow the default branch. Registering the same URL twice is harmless — the second attempt reports that it already exists.
+`#v1.3.5` pins the install to this release; drop it to follow the default branch. Registering the same URL twice is harmless — the second attempt reports that it already exists.
 
 ### Method three: install with commands
 
@@ -318,9 +318,9 @@ Stated plainly; read them before depending on any output or on this safeguard:
 
 **Ordinary bugs and feature requests**: the repository's [Issues](https://github.com/JiamingShi-JsPhys/chelate-shell/issues) page, with reproduction steps, expected behaviour, actual behaviour and your environment (OS, Python version).
 
-**Security vulnerabilities (this category only)**: do **not** use the public issue tracker — email `jiamingshi_git@outlook.com` instead.
+**Security vulnerabilities (this category only)**: do **not** use the public issue tracker. Use GitHub's private reporting form — the **Security** tab → **Report a vulnerability** — as described in [SECURITY.md](SECURITY.md).
 
-- **Subject**: must start with `report_chelate-shell:` plus the skill name and a short summary.
+- **Title**: must start with `report_chelate-shell:` plus the skill name and a short summary.
   - Example: `report_chelate-shell: path traversal can read outside the task folder`
 - **Body**: must contain detailed reproduction steps and the environment.
 - For serious reports about lost or corrupted files, include the before/after directory tree (`tree` output) and the generated `verification_report.md`.
@@ -332,6 +332,8 @@ Stated plainly; read them before depending on any output or on this safeguard:
 **NotFatJustRound** — [issue #1](https://github.com/JiamingShi-JsPhys/chelate-shell/issues/1) asked for CI and found that the npm `files` list was dropping core code.
 
 **DeepSec** — the code-security auditor this repository is scanned with. It found the two command-injection paths closed in 1.3.2, and in 1.3.4 it turned the update check from "carries a URL argument" into "can only request two fixed addresses".
+
+**Claude** (Anthropic) — parts of the code, tests, documentation and release notes were written jointly with the author. Every change was reviewed and kept only where a test or a check could confirm it.
 
 Some of my friends — who used this plugin for tests in mathematics, theoretical physics, and experimental physics — helped me improve it from 1.3.3 to 1.3.4 through many real-world scenarios.
 

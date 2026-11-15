@@ -15,7 +15,7 @@ calls exactly the tools it needs, and finding a tool never grants permission to 
 
 <img src="docs/demo.gif" alt="Claude answers through ToolLens with 5 of 2,468 tools in view; the same request with every tool exposed is rejected by the API at 1.43M tokens; then the benchmark results" width="900">
 
-<sub>Real run, not a mock-up: Claude Opus 5.5 against 110 vendor-published MCP servers. Full 4K/60 fps video in the <a href="https://github.com/krishnashakula/toollens/releases/tag/v0.1.0">v0.1.0 release</a>.</sub>
+<sub>Real run, not a mock-up: Claude Opus 5.5 against 110 vendor-published MCP servers. Full 4K/60 fps video in the <a href="https://github.com/krishnashakula/toollens/releases/tag/v0.1.0">v0.1.0 release</a>. The results it ends on are the first run; the table below averages five.</sub>
 
 </div>
 
@@ -36,19 +36,22 @@ ToolLens sits between the agent and your servers and shows the agent three tools
 
 ## Results
 
-Same 28 tasks, same model (Claude Opus 5.5), 110 real MCP servers, 2,468 tools:
+Same 28 tasks, same model (Claude Opus 5.5), 110 real MCP servers, 2,468 tools, every task run
+five times:
 
 | | Every tool exposed | **ToolLens** | Anthropic's built-in tool search |
 |---|---:|---:|---:|
-| Tasks completed | **0/28** (every request rejected) | **26/28** | 25/28 |
+| Tasks completed, mean (range) | **0/28** (every request rejected) | **25.4/28** (25–26) | 24.2/28 (23–25) |
 | Tool tokens per request | 1,428,973 | **951** | 643 |
-| Input tokens per task | n/a | **18.4K** | 25.5K |
-| Cost per task (list price) | n/a | **$0.043** | $0.090 |
+| Input tokens per task | n/a | **18.8K** | 25.6K |
+| Cost per task at list price, mean (range) | n/a | **$0.040** ($0.035–$0.043) | $0.055 ($0.033–$0.090) |
 
-One run per task: 26 vs 25 is a tie. The result is that ToolLens matched Anthropic's server-side
-tool search at **half the cost per task**, while exposing every tool was not an option at all.
-Methodology, the controlled benchmark and every caveat are [below](#benchmarks); every number comes
-from transcripts committed in [`bench/results/`](bench/results).
+ToolLens finished about one task more per run than Anthropic's server-side tool search (its worst
+run matched tool search's best) and read **27% fewer input tokens**, fewer in every run. It cost
+27% less on average, but tool search's cost swings with the prompt cache and one of its runs was
+cheaper than any of ToolLens's, so read the cost gap as approximate. Exposing every tool was not an
+option at all. Methodology, the controlled benchmark and every caveat are [below](#benchmarks);
+every number comes from transcripts committed in [`bench/results/`](bench/results).
 
 ## What do your MCP servers cost you?
 
@@ -241,13 +244,14 @@ Found a hole? See [SECURITY.md](SECURITY.md).
 - `maxLive` is not a hard bound: a server evicted while one of its calls runs keeps running until
   that call ends, and a new call can start a second copy.
 - Concurrent first calls to a server that fails to start wait in turn; there is no backoff.
-- Benchmarks: one model, one run per task, tasks written alongside the system.
+- Benchmarks: one model, tasks written alongside the system; the controlled benchmark is one run
+  per task.
 
 ## Benchmarks
 
-Two benchmarks, both on Claude Opus 5.5 at effort `medium`, one run per task. Every tool call goes
-through the same gateway policy and validation, and metrics are read back from the gateway's audit
-log.
+Two benchmarks, both on Claude Opus 5.5 at effort `medium`: the real-world one runs every task
+five times, the controlled one once. Every tool call goes through the same gateway policy and
+validation, and metrics are read back from the gateway's audit log.
 
 ### Real world: 110 vendor MCP servers, 2,468 tools
 
@@ -277,14 +281,14 @@ tools. *Native tool search:* Anthropic's server-side BM25 tool search, every too
 
 | | Full catalog | **ToolLens** | Native tool search |
 |---|---:|---:|---:|
-| Tasks completed | **0/28** (every request rejected) | **26/28** | 25/28 |
+| Tasks completed, mean of 5 runs (each run) | **0/28** (every request rejected) | **25.4/28** (26, 25, 25, 26, 25) | 24.2/28 (25, 24, 25, 24, 23) |
 | Tool tokens per request | 1,428,973 | 951 | 643 |
-| Model requests per task | n/a | 5.5 | 2.8 |
-| Input tokens per task | n/a | 18.4K | 25.5K |
-| Cost per task (list price) | n/a | $0.043 | $0.090 |
-| First tool tried was a correct one | n/a | 78% | 79% |
-| Wrong tools tried (all tasks) | n/a | 4 | 6 |
-| Median wall time per task | n/a | 13 s | 110 s |
+| Model requests per task | n/a | 5.6 | 2.8 |
+| Input tokens per task, mean (range) | n/a | 18.8K (17.8K–20.6K) | 25.6K (25.0K–26.4K) |
+| Cost per task at list price, mean (range) | n/a | $0.040 ($0.035–$0.043) | $0.055 ($0.033–$0.090) |
+| First tool tried was a correct one | n/a | 77% | 81% |
+| Wrong tools tried per run | n/a | 3.6 | 6.0 |
+| Median wall time per task | n/a | 13–17 s | 17–21 s (106 s in run 1) |
 
 What this says:
 - **Exposing every tool is not an option.** Every request is rejected with `prompt is too long:
@@ -293,27 +297,41 @@ What this says:
   schemas use property names such as `$vectorSearch` or `EndTime<` (Twilio, MongoDB, Contentful,
   Postman), and one such tool makes the API reject the whole request. ToolLens serves them like any
   other tool.
-- **ToolLens and native tool search tie on completion** (26 and 25). ToolLens read 28% fewer input
-  tokens and cost half as much; native search used half the model requests (it searches and calls
-  in one turn). Native search also sends all 2,454 deferred definitions, about 6 MB of JSON, with
-  every request; on this connection that dominated its wall time. On a datacenter link the time gap
-  would be much smaller; the payload would not.
-- **The failures were mostly task design and hit both arms.** Notion's own server marks its search
-  tool destructive, so the conservative policy denied "find a Notion page"; MongoDB's server needs
-  a `connect` before `count`. The grading was written before the runs and not changed.
+- **ToolLens completed about one task more per run, on fewer tokens.** Its worst run (25) matched
+  native tool search's best. It read 27% fewer input tokens, fewer in every run; native search used
+  half the model requests (it searches and calls in one turn). Most of the gap is one task: asked
+  to fetch a web page, native search surfaced the scraping services that need API keys and never
+  the plain `fetch` tool, and passed once in five runs; ToolLens passed four times.
+- **Cost favours ToolLens on average, not in every run.** $0.040 against $0.055 per task, 27%
+  lower. ToolLens stayed within $0.035–$0.043; native search ranged from $0.033 to $0.090 with the
+  state of the prompt cache, and its cheapest run beat every ToolLens run. Native search also sends
+  all 2,454 deferred definitions, about 6 MB of JSON, with every request. Its first run took 106 s
+  per task and the four later ones, three weeks on, about 20 s; we do not know what changed, so
+  wall time is not a result here.
+- **Most failures are task design and hit both arms in every run.** Notion's own server marks its
+  search tool destructive, so the conservative policy denied "find a Notion page"; MongoDB's server
+  needs a `connect` before `count`. Listing Redshift tables failed in 2 ToolLens runs and 4 native
+  runs.
+- **Two tasks were repaired after the first run** and re-run on their own in all five runs of both
+  arms; the grading of the other 26 was written before the runs and not changed. One expected a New
+  York to London time that is right only in the week between the two countries' clock changes (it
+  is now Dubai to Singapore, same answer). In the other the memory server kept its graph between
+  runs, so an agent that checked first found the fact already stored
+  ([BUGS.md](BUGS.md) 032 and 033). Before the repair the means were 23.8 and 23.4.
 
 Offline retrieval on the same catalog (top 8, the raw task text as the goal):
 
 | Mode | Recall | All needed tools found | p50 latency |
 |---|---:|---:|---:|
-| keyword | 0.75 | 19/28 | 2.2 ms |
-| **keyword + dependencies (default)** | **0.75** | **19/28** | **1.7 ms** |
-| semantic | 0.31 | 8/28 | 30 ms |
-| hybrid + dependencies | 0.52 | 13/28 | 36 ms |
+| keyword | 0.71 | 18/28 | 1.5 ms |
+| **keyword + dependencies (default)** | **0.72** | **18/28** | **1.3 ms** |
+| semantic | 0.31 | 8/28 | 25 ms |
+| hybrid + dependencies | 0.52 | 13/28 | 31 ms |
 
 Dependencies neither help nor hurt here (most real tasks are single-step), and embeddings
 (nomic-embed-text) trail plain keyword search on real descriptions. Agents still do better than
-these numbers because they reformulate and call discovery again.
+these numbers because they reformulate and call discovery again: the Dubai to Singapore conversion
+misses on its raw wording here, and the agent found the tool on its first search in all five runs.
 
 ### Controlled: simulated servers plus generated distractors
 
@@ -344,9 +362,10 @@ with the full catalog exposed and with ToolLens.
 - Dependency expansion pays off when servers share ids by design, as one organization's internal
   suite would: recall at 1,000 tools rises from 0.65 (keyword) to 0.84 (keyword + dependencies).
 
-Caveats for both: one run per task, one model, tasks written alongside the system, selection
-tasks prove the right tool was chosen rather than that the service did the work, and observed-edge
-learning was off. This benchmark found real bugs before the final numbers; all are in
+Caveats for both: one model, tasks written alongside the system, selection tasks prove the right
+tool was chosen rather than that the service did the work, and observed-edge learning was off. The
+controlled benchmark is one run per task. This benchmark found real bugs before the final numbers;
+all are in
 [BUGS.md](BUGS.md).
 
 ### Reproduce
@@ -362,7 +381,7 @@ server could not start (Docker stopped, say) is recorded as an error, not a fail
 again next time; a run stops after its first episode if that one could not reach its server.
 
 The real-world benchmark needs Docker; its exact steps are in [CLAUDE.md](CLAUDE.md)
-("Real-world catalog"). The full three-arm run cost about $4 at list price. The demo video is made
+("Real-world catalog"). One run of all three arms costs about $3 at list price; the five committed here cost about $13. The demo video is made
 by [`demo/record.mjs`](demo/record.mjs): it runs the tasks live, then renders frame by frame on a
 virtual clock at 3840×2160 and 60 fps ([`demo/STORYBOARD.md`](demo/STORYBOARD.md)).
 

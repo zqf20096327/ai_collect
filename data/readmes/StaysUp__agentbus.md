@@ -62,16 +62,17 @@ installed, and a Claude and a ChatGPT subscription.
 1. **Start AgentBus.**
 
    ```sh
-   agentbus up
+   agentbus up -open
    ```
 
-   It prints a sign-in link, `http://127.0.0.1:8787/?t=…`, and opens it in your browser. The
-   cockpit comes with `agentbus up`: nothing else to install. The link works once, for 10 minutes.
-   No browser opened, or the link expired? Stop `agentbus up` (Ctrl-C) and start it again for a
-   new link.
+   It prints a sign-in link, `http://127.0.0.1:8787/?t=…`, and with `-open` opens it in your
+   browser. Without `-open` (on a server, say) it only prints the link. The cockpit comes with
+   `agentbus up`: nothing else to install. The link works once, for 10 minutes. The link expired?
+   Stop `agentbus up` (Ctrl-C) and start it again for a new one.
 
    In another tab or browser, paste your token on the connect screen instead. The token is the file
-   `token` in the data folder (`$AGENTBUS_HOME`, by default `~/.local/share/agentbus`). Copy it
+   `token` in the data folder that `agentbus up` prints when it starts (`$AGENTBUS_HOME`, by default
+   `~/.local/share/agentbus`). Copy it
    without showing it: `pbcopy < ~/.local/share/agentbus/token` on a Mac, or
    `xclip -sel c < ~/.local/share/agentbus/token` on Linux. Anyone with the token controls your
    agents, so keep it to yourself.
@@ -141,10 +142,10 @@ their defaults are in `/docs`, under Settings).
   signs in with OAuth keeps its token in the Keychain, and macOS asks to let the session read it;
   deny it to keep that server off. What a server does is outside AgentBus's record.
 - Claude's browser (Chrome) cannot run in AgentBus sessions: it needs the tool's own sign-in.
-- Antigravity: on a Mac, use a Gemini API key, since its Google sign-in lives in the Keychain; on
-  Linux the Google sign-in connects in Settings. It gets no instructions from AgentBus, a turn with
-  forbidden commands set is refused on it, and it cannot turn off its own subagents. Using its Google
-  sign-in through a third-party tool is at your own risk with Google (its terms, clause 6).
+- Antigravity: use it with a Gemini API key (Settings, Subscriptions). Its Google sign-in does not
+  work through AgentBus yet: before any work it checks your account with Google directly, outside
+  AgentBus, and that check fails. It gets no instructions from AgentBus, a turn with forbidden
+  commands set is refused on it, and it cannot turn off its own subagents.
 
 ## Docs
 

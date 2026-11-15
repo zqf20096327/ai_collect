@@ -8,9 +8,9 @@
 
 A curated collection of **AI-assisted reverse-engineering projects, experiments, and ideas** for device interoperability, app rebuilding and game preservation—including failed attempts and author corrections.
 
-# 2257 cases & projects
+# 2310 cases & projects
 
-**Latest case update:** November 15, 2026, 00:15 · **Last maintained:** November 15, 2026, 00:15 · Beijing time (UTC+8). Counts as of this maintenance; source dates and the continuous evidence cutoff are separate.
+**Latest case update:** November 16, 2026, 04:12 · **Last maintained:** November 16, 2026, 04:12 · Beijing time (UTC+8). Counts as of this maintenance; source dates and the continuous evidence cutoff are separate.
 
 Updates **6× daily** · [Full index](INDEX.en.md) · [Browse categories](#browse-by-category)
 
@@ -22,7 +22,7 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 ## Recent picks
 
-**10 worth reading**: make devices useful again, preserve old software, and study a drama shot by shot. Dates identify sources or author updates, not collection dates.
+**10 worth reading**: recover an old compiler, repair a keyboard, or update a radio without returning to its stock system. Human testing and community research remain part of the story. Dates identify sources or author updates, not collection dates.
 
 1. **[borland-reborn: recover a 1991 compiler](cases/en/borland-reborn-bcc20-exhume-byte-matching.md)** · `2026-11-14` report and pinned docs — Exhume's Claude Code skills support **reportedly byte-identical BCC.EXE/CPP.EXE rebuilds**. A separate modding build has 1,836 compile comparisons and 83% coverage, not every path or uniquely recovered original source. Not rebuilt here. `Unverified here`
 2. **[Ember mug: probe Bluetooth, build a personal controller](cases/en/dmitriy-ember-mug-codex-bluetooth-probing-report.md)** · `2026-11-14` author report — Dmitriy says **Codex probed characteristics against the iOS app** and built temperature/light controls in about an hour. The no-web rule was author-imposed; coffee-level accuracy and code unchecked. `Unverified here`
@@ -31,9 +31,9 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 5. **[Fallout Van Buren: six years of research meet REA](cases/en/fallout-van-buren-kran-rea-human-guided-reconstruction.md)** · `2026-11-14` author thread — Kran credits **manual research, shenmarukai's decompilation and an IDA database**, not a from-zero agent. DX9 migration is reported; 64-bit remains a goal for this tech demo, not a complete game. Not built here. `In progress`
 6. **[Lemmings for Windows 95: match functions, not headlines](cases/en/lemmings-win95-human-led-ai-reconstruction-report.md)** · `2026-11-12` report; `2026-11-09` pinned docs — Human-led REA/Claude/Codex work reports **696/696 functions matched across eight modules**. Whole EXE/DLL files still differ; portable builds and original-compiler matching are separate. Own assets required; not built here. `In progress`
 7. **[Mario Kart World: translate code, measure each change](cases/en/mkw-recomp-claude-aarch64-c-port.md)** · `2026-11-14` report and pinned docs — **Claude-assisted AArch64-to-C, same-run A/B and console-image checks** bring reported PC racing. Not original-source recovery; menus, AMD hangs and no online play remain. Own game required; not built here. `In progress`
-8. **[Donkey Kong Bananza: a Switch 2 game on PC](cases/en/dkb-pc-recomp-claude-switch2-port.md)** · `2026-11-14` report; `2026-11-13` pinned docs — **Claude Code work checked with game runs and Unicorn comparisons**, built on TotK Recomp and community shader research. GPU crashes and later-area defects remain; Linux/macOS are previews. Own game required; not built here. `In progress`
-9. **[Pixel 9 bigwave: from stock-decoder data to an initial run](cases/en/llsswssw-pixel9-bigwave-claude-decoder-attempt.md)** · `2026-11-14` author update — llsswssw3243 says **Claude collected Android decoder data through Waydroid** and hardware decoding now runs. Many problems and extensive testing remain; no code, format coverage or measured output checked here. `In progress`
-10. **[rea-toon: read a short drama's script and shots](cases/en/rea-toon-short-drama-shot-script-analysis-project.md)** · `2026-11-14` introduction and pinned docs — **Character, dialogue and shot analysis with replayable evidence and VIDEO.md exports.** Built on rea-video; model-tagged emotions are not ground truth. Not run here; noncommercial license. `Related project`
+8. **[X6200: update the radio without swapping back to stock](cases/en/x6200-claude-base-firmware-upgrade-reimplementation.md)** · `2026-11-16` report and PR merge — **Claude-assisted reconstruction of Xiegu's updater** reaches OpenX6X00. The project CI passed; the author reports upgrades and rollback on one radio. No flash readback, recovery not hardware-tested, and no reproduction here. `Unverified here`
+9. **[Fireface UCX: Linux control beyond basic USB audio](cases/en/johan-fireface-ucx-linux-rea-claude-driver.md)** · `2026-11-15` author article — Johan reports **REA/Claude driver research, a terminal mixer and 3.5 ms round-trip audio at 48 kHz**. Community command-format research and a week of hands-on checks matter; tested on one first-generation unit, not reproduced here. `Unverified here`
+10. **[Split60HE: stop a used keyboard from typing every key](cases/en/matias-split60he-claude-flash-calibration-repair-report.md)** · `2026-11-15` author thread — Matías says **Claude traced flash calibration using firmware, KiCad and live USB readings**. After backup and v1.11 flashing, all 69 keys reportedly read 0% at rest. Logs and repair unchecked here; calibration is device-specific. `Unverified here`
 
 ## Classic cases
 
@@ -49,10 +49,10 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 | Category | Entries |
 | :--- | ---: |
-| [Games & preservation](categories/en/games.md) | **449** |
-| [Hardware & interoperability](categories/en/hardware.md) | **600** |
-| [Applications & clients](categories/en/apps.md) | **937** |
-| [Algorithms & feature recovery](categories/en/algorithms.md) | **271** |
+| [Games & preservation](categories/en/games.md) | **458** |
+| [Hardware & interoperability](categories/en/hardware.md) | **617** |
+| [Applications & clients](categories/en/apps.md) | **957** |
+| [Algorithms & feature recovery](categories/en/algorithms.md) | **278** |
 
 [**View all cases →**](INDEX.en.md) · [Contribute (中文)](CONTRIBUTING.md) · [Maintenance (中文)](MAINTENANCE.md)
 

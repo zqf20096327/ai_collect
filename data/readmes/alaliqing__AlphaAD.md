@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--14-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1400-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--15-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1382-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1400 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1382 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 223 | 2026-11-12 | [View papers](#category-perception-sensor-fusion) |
-| Prediction & World Models | 110 | 2026-11-08 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 94 | 2026-11-10 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 60 | 2026-11-11 | [View papers](#category-control-vehicle-dynamics) |
+| Perception & Sensor Fusion | 219 | 2026-11-12 | [View papers](#category-perception-sensor-fusion) |
+| Prediction & World Models | 109 | 2026-11-08 | [View papers](#category-prediction-world-models) |
+| Planning & Decision-Making | 93 | 2026-11-10 | [View papers](#category-planning-decision-making) |
+| Control & Vehicle Dynamics | 59 | 2026-11-11 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 50 | 2026-10-29 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 161 | 2026-11-12 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 205 | 2026-11-12 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 154 | 2026-11-10 | [View papers](#category-systems-deployment-connectivity) |
+| End-to-End & VLA | 157 | 2026-11-12 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 203 | 2026-11-12 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 153 | 2026-11-10 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 29 | 2026-11-06 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 314 | 2026-11-12 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 310 | 2026-11-12 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,25 +45,25 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 190 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Dataset | 100 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Benchmark | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Simulation | 188 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 33 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 112 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
-| VLA | 86 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
-| World Model | 118 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 134 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
-| Imitation Learning | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
+| Cooperative / V2X | 110 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| VLA | 85 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
+| World Model | 116 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
+| Reinforcement Learning | 131 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| Imitation Learning | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
-| Explainability | 109 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
+| Explainability | 107 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
 | Human Interaction | 17 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 223 papers
+## Perception & Sensor Fusion · 219 papers
 
 <a id="paper-2611-16742"></a>
 
@@ -98,7 +98,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2611-11131"></a>
 
-### CrossLiDAR: Controllable Multi-Sensor LiDAR Sequence Generation ![New](https://img.shields.io/badge/New-red)
+### CrossLiDAR: Controllable Multi-Sensor LiDAR Sequence Generation ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Khanh Nguyen, Thomas Walker, Hichem Telli, Carlos de la Torre-Ortiz, Stefano Fiorini, et al.<br>
 **Published:** 2026-11-07<br>
@@ -430,7 +430,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2611-00071"></a>
 
-### How Reliable Are Object Detection Models Beyond Clear Weather? A Deployment-Oriented Robustness Study for Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
+### How Reliable Are Object Detection Models Beyond Clear Weather? A Deployment-Oriented Robustness Study for Autonomous Driving ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Munshaibur Rahman Mahin, Isha Das, Most. Sonia Islam, Mohammad Sakib Mahmood, M. F. Mridha, et al.<br>
 **Published:** 2026-10-15<br>
@@ -440,7 +440,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-21207"></a>
 
-### SpaceCache: Intermediate Feature Reuse for Efficient Semantic Segmentation on Point Cloud Streams ![Recent](https://img.shields.io/badge/Recent-orange)
+### SpaceCache: Intermediate Feature Reuse for Efficient Semantic Segmentation on Point Cloud Streams ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Dongheon Yang, Beomseok Kang, Jae-Joon Kim<br>
 **Published:** 2026-10-15<br>
@@ -1180,7 +1180,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-15539"></a>
 
-### CrossView: Can Vision-Language Models Reason Across Cameras? ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### CrossView: Can Vision-Language Models Reason Across Cameras?
 
 **Authors:** Sahil Shah, S P Sharan, Harsh Goel, Manvik Pasula, Adithya Hebbalae, et al.<br>
 **Published:** 2026-08-16<br>
@@ -1657,4 +1657,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Published:** 2026-07-05<br>
 **Links:** [arXiv abstract](https://arxiv.org/abs/2607.04541) | [PDF](https://arxiv.org/pdf/2607.04541.pdf) | [↑ BackToTop](#browse-by-topic)
 
-**Abstract:** Camera-radar (CR) fusion is a practical sensing configuration for autonomous driving, but existing models a
+**Abstract:** Camera-radar (CR) fusion is a practical sensing configuration for autonomous driving, but existing models are typically trained with task-specific supervi

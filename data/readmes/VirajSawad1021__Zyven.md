@@ -403,8 +403,10 @@ reports.
 | annotations | a tool is marked both read-only and destructive (a missing `readOnlyHint` is a warning) |
 | stability | the tool definitions change between two connections, or differ from the lock file (a **rug pull**). The lock also records the server's name and version, the launch command, the image build and the hosts it reached; a renamed server fails, and the other changes are warnings |
 | robustness | with `--probe`: input the tool's own schema forbids is accepted, or the server stops answering |
+| results | with `--probe`: the text those calls return, error messages included, carries hidden text or instructions aimed at the model (injection through tool output). Only invalid input is sent, so normal results are not seen |
 | pinning | a warning when the launch command runs whatever was published last (`npx -y pkg`, `uvx pkg`, a docker tag): pin `pkg@1.2.3`, `--from pkg==1.2.3` or `image@sha256:...` |
 | isolation | a warning, not a failure, when the server ran on this machine instead of in the sandbox |
+| cross-server | with `--discover` or `--config`: a warning when two servers offer the same tool name, or one server's text names another server's tool (**tool shadowing**) |
 
 Nothing is called unless `--probe` is given, and probes only send input the schema rejects. A stdio server gets only a
 minimal environment (`--env NAME` passes a variable through), so your shell's secrets are not handed to it. It still
@@ -466,8 +468,28 @@ fails the step on a FAIL, or on any warning with `strict`:
 ```
 
 The action installs Zyven from its own checkout, so it runs exactly the version you pinned. The command is split into
-words, never run through a shell. Outputs: `verdict` (PASS or FAIL) and `report` (the JSON path). This repository's CI
-uses it on the good and poisoned fixtures.
+words, never run through a shell. Outputs: `verdict` (PASS or FAIL), `report` (the JSON path) and `sarif`. This
+repository's CI uses it on the good and poisoned fixtures.
+
+To see findings in the repository's **Security → Code scanning** tab, upload the SARIF file (the job needs
+`security-events: write`). Each finding has a stable rule ID such as `descriptions/hide-from-user` or
+`stability/lock-mismatch`, and is attached to the lock file, or to the file in the command:
+
+```yaml
+- id: zyven
+  uses: VirajSawad1021/Zyven@main
+  with:
+    command: node dist/index.js
+    lock-file: mcp-lock.json
+- if: always()
+  uses: github/codeql-action/upload-sarif@v3   # pin to a commit SHA in your workflow
+  with:
+    sarif_file: ${{ steps.zyven.outputs.sarif }}
+    category: zyven-verify
+```
+
+On the command line, `zyven verify --sarif out.sarif ...` writes the same file, also with `--discover` (one run for
+every configured server, attached to its config file).
 
 **On the Connections page**, the same checks run every time you press **Test**:
 - **The result is shown on the card.** A server that fails, for example on tool poisoning, offers only a

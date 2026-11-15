@@ -36,17 +36,84 @@ You probably have access to several models: hosted APIs (OpenAI, Anthropic, Gemi
 
 - **It finds your models.** Hydra discovers API keys, local model servers and CLI agents on your machine, with no configuration.
 - **It picks by measured record.** Each model is ranked on how often its answers have actually passed for that task type on your machine, starting from a catalogue score until it has a record. Today an unpinned request goes to the lowest-cost model measured competent at the task type, with stronger models behind it as the fallback chain.
-- **It can check the answer.** Verifiers (tests, compile and lint for code; a grounding check against the prompt's own context; agreement between independent models) are evidence about the output. With `--confidence`, Hydra keeps asking until the answer's probability of being correct, P(correct), clears your target, then stops.
+
+  Hydra counts a model as good enough at a task type only when it is still good enough after allowing for luck. A model that got 22 of 24 answers right may just have had a good run, and when several models are held to one bar, the one whose average clears it is often only the luckiest. So the bar is checked against the lowest rate the model's record supports at 95%, not against its average. 95% is the level `--confidence` uses by default. `--dry-run` prints both numbers, for example an average of 91 and at least 82 at 95%.
+- **It can check the answer.** Each kind of work has its own check: agreement between independent models for writing, a grounding check against the source for summaries, a schema or any command you name for extracted data, the allowed labels for classification, and tests, build and lint for code. Each result is evidence about the output. With `--confidence`, Hydra keeps asking until the answer's probability of being correct, P(correct), clears your target, then stops.
 - **It keeps data where you say.** An egress gate refuses files like `.env` or `~/.aws/credentials` to any model that leaves your machine, and a local-only policy keeps sensitive work on your hardware.
 - **It records what happened.** Every request is logged with the model that answered, token counts and cost.
 
 Code is one task type among several, with its own verifiers. Summaries, extraction, drafting and review all go through the same router.
+
+The kinds of work Hydra keeps a record for are `writing`, `summary`, `extraction`, `classification`, `translation`, `answer`, `analysis`, `agent` and `code`. Name one with `hyctl dispatch --kind summary "..."`, or add an area such as `--kind extraction.invoices`, and the request is ranked and logged under that kind.
+
+Each kind of work also has a menu of **recipes**: which model, how many answers to sample, which checks judge them and when to stop. Code, extraction and classification ship with a few, such as `cheap_k_tests` (the cheapest measured model, up to 4 answers, keep the first the tests pass); every other kind gets `single`, one call. `hyctl recipe list --kind extraction` prints a menu. Change them in a copy of `registry/recipes.yaml` under `$HYDRA_HOME/registry/`; a bad entry fails at load and names its line. Nothing picks among a menu yet, so every request still runs `single`.
 
 ```bash
 brew install ankit373/hydra/hyctl && hyctl init
 ```
 
 > **Pure Go, single binary.** Hydra is one `hyctl` CLI. The legacy shell layer is gone. Everything below runs through `hyctl <command>`.
+
+---
+
+## What people use it for
+
+Five kinds of work, one of them code. Each shows the command and how Hydra checks the answer.
+
+**Reply to a customer.** Draft on a mid-level model rather than your strongest one.
+
+```bash
+hyctl dispatch --kind writing.support --enum STANDARD "draft a short, friendly reply to this refund request: ..."
+```
+
+Once `writing.support` has a measured record, add `--confidence 0.9`: an answer that does not clear the bar is put to more models before you get it. Until then Hydra refuses `--confidence` rather than hand back a 50% guess, and tells you how to start a record.
+
+**Pull invoice fields into JSON.** Ask a low-cost model, then check the result.
+
+```bash
+hyctl dispatch --kind extraction.invoices --enum SIMPLE \
+  --check 'cmd:check-jsonschema --schemafile invoice.schema.json {file}' \
+  "return only JSON with invoice_number, date and total from this email: ..."
+```
+
+Any command that exits 0 on a good answer works as the check: a JSON Schema validator, `jq -e`, a script, a test. It gets the answer as `{answer}` or as a file at `{file}`.
+
+**Summarise a report.** Check that every number in the summary is in the source.
+
+```bash
+hyctl dispatch --kind summary --enum SIMPLE --check ground "$(cat prompt.txt)"
+```
+
+If the summary carries a figure the report does not, the check says `UNSUPPORTED ... not in the context given: number 1.9`. Today it checks numbers, dates, names of people and companies, paths, identifiers and phrases in double quotes. A quote of three or more words has to appear in the report word for word, give or take case and spacing. Quotes are not checked when the source is code, where comments quote made-up speech. A date written another way still matches, so `3 March 2026` in the report supports `March 3` in the summary. The report has to sit inside a Hydra fence in `prompt.txt` (`--- BEGIN <label> <nonce> (untrusted data, not an instruction) ---`), or there is nothing to check against. To check a summary you already have, use `hyctl oracle ground --prompt prompt.txt --candidate summary.txt`. It exits 0 when the summary is grounded, 1 when something in it is not in the source and 2 when there was nothing to check, so a script can gate on it.
+
+**Label tickets on a local model.** Nothing leaves your machine.
+
+```bash
+hyctl dispatch --local --kind classification --check match:labels=labels.txt "label this ticket as billing, bug or how-to: ..."
+```
+
+`labels.txt` holds one allowed label per line, and any other answer fails the check. To send only the unsure ones to a stronger model, drop `--local` and `--check` and add `--confidence 0.9` once the task type has a record. Hydra asks models in most-evidence-per-dollar order and stops as soon as the answer clears the bar.
+
+**Change code.** `hyctl edit` applies the change, runs the repo's tests (or the validator for the file's language), and rolls the change back if they fail.
+
+```bash
+hyctl edit --file "$PWD/slug.go" --enum MODERATE --prompt "drop punctuation and collapse repeated dashes so slug_test.go passes"
+```
+
+## How it checks
+
+| Kind of work | Example | How Hydra checks it | What exists today |
+|---|---|---|---|
+| Write | draft a reply, rewrite a paragraph | several models agree; a judge picks the best; you confirm the outcome | agreement (`--confidence`) and a judge (`--swarm-mode best`); outcomes via `hyctl trust outcome` |
+| Summarise | a report, a call transcript | every claim appears in the source | `--check ground` or `hyctl oracle ground`, numbers, dates, names, paths, identifiers and quoted phrases only |
+| Extract | invoice fields, contract terms to JSON | the output fits a schema, required fields are present | any command via `--check cmd:...` or `hyctl oracle verify --candidate` |
+| Classify | label tickets, route emails | the label is one of the allowed set; models agree | `--check match:labels=<file>` and `match` verifiers in `hyctl serve`; agreement via `--confidence` |
+| Translate | release notes into German | models agree | agreement only; no dedicated check yet |
+| Answer from documents | questions over files you give it | the answer is grounded in the given text | `--check ground` or `hyctl oracle ground` |
+| Analyse | compare numbers, explain a trend | a script recomputes the figures | any command via `--check cmd:...` or `hyctl oracle verify` |
+| Code | edit, generate, review | tests, build, lint; a file many others depend on needs more confidence | `hyctl edit`, `hyctl vet`, `hyctl graph blast`, `hyverify` |
+
+`--check` judges one answer. It does not combine with `--swarm` or `--confidence`, and each verdict goes to the eval corpus under the request's kind.
 
 ---
 
@@ -166,6 +233,8 @@ A costlier defect ⟹ a higher confidence bar ⟹ SPRT samples more before it st
 
 ### 4 · Blast radius: Molloy-Reed percolation
 
+*This law and the next apply when the work is a change to code. The rest apply to any task.*
+
 Treat the code as a graph with degree mean $\langle k\rangle$ and second moment $\langle k^2\rangle$. A **giant connected component**, a cascade-capable core where one change can ripple everywhere, exists precisely when the Molloy-Reed criterion holds:
 
 $$\kappa = \frac{\langle k^2 \rangle}{\langle k \rangle} \ge 2$$
@@ -176,6 +245,8 @@ Files inside a high-$\kappa$ core get their confidence bar raised: an edit to a 
 ⊢ Molloy-Reed (1995), proven · ▣ computed from `graph.json` in [`internal/graph`](internal/graph), see `hyctl graph blast`
 
 ### 5 · Optimal parallelism: Amdahl + coordination
+
+*For code changes only, like §4.*
 
 Fanning work across $n$ agents speeds the parallel part but adds coordination cost that grows with $n$. With serial fraction $s$ and per-agent coupling $k$, wall-clock time is
 
@@ -398,7 +469,15 @@ Model subprocesses are also bounded so a grandchild holding the pipe open cannot
 
 One related fix ships with it: local model weights are fingerprinted by digest alongside agent binaries, so a swapped model behind a familiar name is detected the same way a replaced agent binary is, which matters because Ollama pulls unsigned weights from a public registry.
 
-**Not included.** Repo-supplied validator and oracle commands still run unconfined. Go's `os/exec` has no per-child rlimit support, and faking one through `sh -c 'ulimit ...'` would re-tokenize argv, which `internal/oracle` deliberately avoids. Real containment there needs a platform sandbox (`sandbox-exec`, seccomp) and is tracked separately.
+**Validators and checks.** Validators, oracles, `--check cmd:` and `hyverify` run files a model may have just written, so they get the same base set plus toolchain paths (`GOPATH`, `GOCACHE`, `GOFLAGS`, `NODE_PATH`, `npm_config_cache`, `VIRTUAL_ENV`, `CARGO_HOME`, `JAVA_HOME` and a few more) and no credential at all. If a check needs another variable, name it in `workspace.yaml`:
+
+```yaml
+validator_env: [PLAYWRIGHT_BROWSERS_PATH, DATABASE_URL_TEST]
+```
+
+A name that looks like a credential (it contains `KEY`, `TOKEN`, `SECRET`, `PASSWORD`, `CREDENTIAL` or `AUTH`, or starts with `AWS_`, `AZURE_`, `ARM_`, `GOOGLE_`, `GCP_`, `GCLOUD_` or `CLOUDSDK_`) is refused, and `hyctl security` lists it. `hyverify --env NAME,NAME` does the same for one run.
+
+**Not included.** These commands still run with your file and network access. Go's `os/exec` has no per-child rlimit support, and faking one through `sh -c 'ulimit ...'` would re-tokenize argv, which `internal/oracle` deliberately avoids. Containment there needs a platform sandbox (`sandbox-exec`, bubblewrap or landlock), and none of those works the same on macOS, Linux and Windows, so it is tracked separately.
 
 **Scoping the agents themselves.** That covers what a model *holds*. What an agent may *reach* is the access policy at `~/.hydra/mcp_policy.json`, and Hydra ships no scoping rules there on purpose: which agent may write where is a decision about your repository, and a blanket deny gets uninstalled rather than tuned. `hyctl security` tells you who is running unscoped:
 
@@ -434,7 +513,9 @@ A rule that has never matched is reported as such, and one an earlier rule alway
 
 ### 💰 Full Cost Visibility
 
-Every dispatch is logged to `~/.hydra/cost.jsonl` with model, routing level, token counts, estimated cost, and fallback chain. Costs are **honestly labeled**: `tokens_source` marks whether a provider reported real usage or Hydra estimated it, and `cost_source` is always `estimated` (pricing × tokens, never a billed figure). Run `hyctl cost` or `hyctl stats` to see where your budget is going, or `hyctl stats --latency` for p50/p90/p99 per model, computed from mergeable sketches accurate to within 1%, so percentiles survive even after the raw rows are gone. Each row also carries `act_prob` (the probability the router picked that model) and `keep_prob` (the probability the row was kept), so a sampled log can still be read without bias. Averaging a non-uniformly sampled log understates rates badly enough to reverse which model looks better.
+Prompt caching is on by default: `prompt_cache: true` in `registry/policy.yaml` asks providers that cache only when asked (Anthropic) to cache the system prompt and tool list, for every request, whatever the kind of work. A summary, an extraction or a code fix that repeats the same start reads it from cache at a fraction of the input price. OpenAI, Gemini and DeepSeek cache on their own. A policy rule with `prompt_cache: false` turns it off for the work it matches.
+
+Every dispatch is logged to `~/.hydra/cost.jsonl` with model, routing level, token counts, estimated cost, and fallback chain. Where the provider reports them, `cache_read_tokens` and `cache_write_tokens` say how much of the prompt was read from or written to its cache; a row without them reported none. Costs are **honestly labeled**: `tokens_source` marks whether a provider reported real usage or Hydra estimated it, and `cost_source` is always `estimated` (pricing × tokens, never a billed figure). Cached tokens are priced at the model's cache read and write rates where it lists them, and at the input rate where it does not, so a cache hit costs less only by a rate someone published. `hyctl cost` adds a cache column, tokens read and their share of input, once any row has them. Run `hyctl cost` or `hyctl stats` to see where your budget is going, or `hyctl stats --latency` for p50/p90/p99 per model, computed from mergeable sketches accurate to within 1%, so percentiles survive even after the raw rows are gone. Each row also carries `act_prob` (the probability the router picked its first choice, named in `first_head`, which a fallback can make differ from the model that answered) and `keep_prob` (the probability the row was kept), so a sampled log can still be read without bias. Averaging a non-uniformly sampled log understates rates badly enough to reverse which model looks better.
 
 ```
 $ hyctl cost
@@ -463,18 +544,23 @@ Every model is placed on a routing level by capability score, and `--enum` or `-
 
 ```bash
 # Let Hydra pick the best available model
-hyctl dispatch "refactor auth middleware to use JWT refresh tokens"
+hyctl dispatch --kind writing.support "draft a short, friendly reply to this refund request: ..."
 
 # Preview the full fallback chain before dispatching
-hyctl dispatch --dry-run "write a SQL migration"
+hyctl dispatch --dry-run --kind extraction "pull the invoice number, date and total from this email as JSON"
 #
-#   Primary:   claude (score: 95)
-#   Fallback:  codex  (score: 88)  ← if claude unavailable
-#   Fallback:  openai (score: 88)  ← if codex unavailable
-#   Local:     ollama/qwen3:8b     ← always available
+#   Primary  →  Claude Code  (score 95, cli)
+#   Fallback chain:
+#     1. Claude Opus 4.6 (Thinking)   score 92  registry
+#     2. OpenAI Codex                 score 88  cli
+#     ...
+#     10. Qwen2.5-Coder:7b (Ollama)   score 66  port
 
 # Force local: no API calls regardless of policy
-hyctl dispatch --local "write unit tests for this function"
+hyctl dispatch --local --kind classification "label each ticket as billing, bug or how-to: ..."
+
+# Code is one kind of work among the rest
+hyctl dispatch --kind code "refactor the auth middleware to use JWT refresh tokens"
 ```
 
 ### 📺 Output as It Arrives
@@ -673,7 +759,7 @@ without any extra configuration.
 Most routers pick a model and hope. Hydra can check the answer: **verified correctness**. Instead of always firing a fixed number of models, `--confidence` runs a **sequential probability ratio test (SPRT)**: it samples models adaptively, in most-diagnostic-per-dollar order, and stops the moment the calibrated log-odds that the answer is correct cross your target P(correct).
 
 ```bash
-hyctl dispatch --confidence 0.95 "is this migration safe to run in prod?"
+hyctl dispatch --confidence 0.95 "does this contract let either side cancel early? quote the clause"
 ```
 
 **Calibration is a prerequisite, not a nice-to-have.** An uncalibrated source
@@ -683,18 +769,20 @@ estimate cannot move at all, so Hydra refuses the run rather than sampling every
 model to arrive back at 50%, and tells you what does carry evidence:
 
 ```
-$ hyctl dispatch --confidence 0.9 --domain go "is this safe?"
-Error: no head this run would sample has been scored in domain "go", so
+$ hyctl dispatch --confidence 0.9 --kind writing.support "draft a reply to this refund request: ..."
+Error: no head this run would sample has been scored in domain "writing.support", so
 --confidence would sample every head, move the estimate nowhere and hand back 50%.
+A source only carries evidence once its verdicts have been scored against outcomes.
 
-  Scored in "go":  verifier:go
-  ...but none of them is among the heads this run selects.
-  Other domains with evidence: gotest, trust-bench
-  Record an outcome:     hyctl trust record --source <head-id> --domain go --said-correct --outcome correct
+  Other domains with evidence: trust-bench-v2
+  Record an outcome:     hyctl trust record --source <head-id> --domain writing.support --said-correct --outcome correct
 ```
 
-The distinction matters: a task type nothing has ever scored and a task type scored
-only by a source this run would not sample need different fixes.
+When some source has scored the task type but this run would not sample it, the
+error names it instead (`Scored in "go": verifier:go ...but none of them is among
+the heads this run selects`). The distinction matters: a task type nothing has ever
+scored and a task type scored only by a source this run would not sample need
+different fixes.
 
 It leans on **per-source calibration** you build from real outcomes, each model/verifier earns a measured sensitivity, specificity, and *diagnostic power* `D`. A coin-flip source (`D≈0`) contributes nothing; a proven one lets a single vote go a long way.
 
@@ -709,18 +797,50 @@ finally earns the true negative that specificity can only come from.
 ```bash
 hyctl trust outcome <task_hash> --outcome incorrect   # train every source that voted in a run
 hyctl trust record --source ollama/qwen3:4b --domain go --said-correct --outcome correct
-hyctl trust calibration          # per-source se / sp / D table (neg=0 flags an unusable cell)
+hyctl trust calibration          # per-source se / sp / D, and any change in the record (neg=0 flags an unusable cell)
 hyctl trust defect --pii --production   # modeled $ cost of shipping a wrong answer
 hyctl trust stats                # samples saved vs fixed-N, achieved vs target confidence
 hyctl trust explain <task_hash>  # the full LLR ledger for a past run: why it stopped
 hyctl trust reliability          # is the stated confidence honest? Brier / ECE / diagram
+hyctl trust joint                # how often two checks pass the same wrong answer
 ```
+
+Two checks are not always two pieces of evidence. A test suite and a linter
+often pass the same wrong answer, and so can a grounding check and a person
+skimming the same summary. Every verdict on an answer goes into one log beside
+the eval corpus, and `hyctl trust joint` reads it. For the answers that later
+turned out wrong, it reports per kind of work how often each check passed one,
+and how often two checks passed the same one. Beside each pair it prints what
+the rate would be if the two failed independently. A pair rate well above that
+means the two should count as one check. Under 20 shared wrong answers it prints
+no rate, because the 95% bound would be wider than the rate. A check can also
+get weaker over time, like a test suite that stops covering a path or a judge
+model swapped underneath. Each check's rate is watched for that change, and a
+check whose rate changed gets a line with when, and its rate and bound since.
+
+Hydra also notices when a model or a check gets worse. Each source's record in
+each kind of work is watched for a change in how often it is right, and `hyctl
+trust calibration` shows when a change was found (`changed`) and the record
+since then (`since`, right out of answered), beside the full history. A short
+run of misses at a steady rate is not called a change, and one called by mistake
+is taken back once the source is right again. A model nobody is calling is not
+assumed broken for ever: while other models are judged on the same kind of work,
+the old record slowly stops counting, so a model that was fixed starts again on
+a fresh record.
+
+Routing reads the record since the last change, not the full history. A model
+that got worse stops clearing the bar within tens of answers, since it needs 20
+judged answers since the change before it counts as measured again, and the
+work goes to another model that does clear it. When none does, the order is the
+plain ranking again, which is how a demoted model gets asked again.
 
 Every confidence run ends by printing its own `task_hash` and the `trust explain`
 command for it, so the ledger above is one copy-paste away rather than something
 to go looking for. `trust stats` says outright when achieved confidence has never
 left the 50% prior, which means the runs paid for models without learning
 anything, rather than leaving that to be inferred from a savings figure.
+
+#### For code: raise the bar on risky files
 
 **Blast-radius aware.** Point Hydra at a dependency graph (`graph.json` from [Graphify](https://github.com/safishamsi/graphify) or any tree-sitter indexer) and the confidence bar scales with how much code an edit could break, a fix to a hub everything imports demands far more certainty than a leaf helper:
 
@@ -786,8 +906,10 @@ curl -fsSL https://raw.githubusercontent.com/ankit373/hydra/main/install.sh | sh
 irm https://raw.githubusercontent.com/ankit373/hydra/main/install.ps1 | iex
 ```
 Installs per-user to `%LOCALAPPDATA%\Programs\hyctl` and extends your user `PATH`, with
-no administrator rights needed. Both installers verify the download against the
-release's `checksums.txt` and refuse to install if it is listed and does not match.
+no administrator rights needed. Both installers, and the npm and pip packages, verify
+the download against the release's `checksums.txt`. They refuse to install if the
+file cannot be fetched, does not list the archive, or does not match, or if no sha256
+tool is found. `HYDRA_INSECURE=1` skips the check.
 Pin a version with `$env:HYDRA_VERSION` / `HYDRA_VERSION`, or change the directory
 with `$env:HYDRA_BIN` / `HYDRA_BIN`.
 
@@ -837,7 +959,7 @@ hyctl probe                             # scan and display all available models
 hyctl status                            # live state: models that can run, budget bars, burn-rate risk
 hyctl tui                               # interactive cockpit, six views (see below), `?` for shortcuts
 hyctl version                           # version, commit, build info
-hyctl upgrade                           # self-update via install.sh (curl installs only; brew installs: `brew upgrade hyctl`)
+hyctl upgrade                           # self-update, checksum-verified (curl installs only; brew installs: `brew upgrade hyctl`)
 
 # Model registry (add a new model at runtime: no rebuild)
 hyctl models list                       # known models, marked with what can actually route now
@@ -848,9 +970,13 @@ hyctl models sync                       # import the OpenRouter catalog (provisi
 # Dispatch
 hyctl dispatch "..."           # route a prompt to the best model
 hyctl dispatch --dry-run "..." # preview routing without executing
+hyctl dispatch --kind summary "..."  # rank models on their record for this kind of work
 hyctl dispatch --local "..."   # local models only, no API calls
 hyctl dispatch --swarm --swarm-mode best "..."   # fan out to many models, judge best
 hyctl dispatch --confidence 0.95 "..."  # SPRT: sample until this P(correct) is reached
+hyctl dispatch --check ground "..."     # check the answer against the context the prompt fenced
+hyctl dispatch --check match:labels=labels.txt "label this ticket: ..."   # the answer must be one of the labels
+hyctl dispatch --check 'cmd:check-jsonschema --schemafile invoice.json {file}' "pull the invoice fields as JSON"
 
 # Serve the router to anything that speaks OpenAI
 hyctl serve                             # OpenAI-compatible endpoint, loopback only
@@ -858,9 +984,16 @@ hyctl serve                             # OpenAI-compatible endpoint, loopback o
 #   `hydra` takes --enum (STANDARD); --objective quality|cost or X-Hydra-Objective opts into routing by objective.
 #   a class with [[serve.verifiers]] in config.toml (class, kind = "match", id, then a labels file or a pattern)
 #   has each buffered answer on an objective route (opt-in) checked, and escalates to a model measured better in that class, at most --max-escalations (2).
+#   in hyctl trace view the rejected answer is scored check=0 with the reason, and the next attempt reads "escalated from <span>".
 #   streams as server-sent events, and passes tool calls through on every dialect it speaks.
 hyctl serve --task-class classification.banking77   # class for requests that send no X-Hydra-Task-Class
 #   X-Hydra-Task-Class routes on that class (and enables temperature); X-Hydra-Max-Cost-USD only lowers the ceiling.
+#   policy.yaml max_cost_usd caps every request, with or without that header.
+#   requests must name the bound address as Host (127.0.0.1, localhost or [::1] on a loopback bind),
+#   carry no Origin unless --allow-origin lists it, and POST with Content-Type: application/json.
+#   over --max-inflight (8) or --rate (120 a minute) a request gets 429 with Retry-After, which SDKs retry.
+curl -s http://127.0.0.1:8787/v1/chat/completions -H 'Content-Type: application/json' \
+  -d '{"model":"hydra","messages":[{"role":"user","content":"summarise this ticket: ..."}]}'
 
 # Tasks waiting on you
 # A ledger policy can answer `ask` instead of allow or deny. Dispatch then stops
@@ -872,7 +1005,7 @@ hyctl ask decline <task-id> "not prod"  # refuse it; nothing runs
 # Cost & pricing
 hyctl cost                              # spend summary (est. vs actual labeled)
 hyctl stats                             # rollup by model / routing level / day
-hyctl pricing list                      # live $/1M-token rates (OpenRouter + fallback)
+hyctl pricing list                      # live $/1M-token rates, cache read/write too (OpenRouter + fallback)
 
 # Calibration and verification
 hyctl trust calibration                 # per-source sensitivity / specificity / D
@@ -882,6 +1015,7 @@ hyctl trust defect ...                  # modeled cost of shipping a wrong answe
 hyctl trust stats                       # samples saved, achieved vs target confidence
 hyctl trust explain <task_hash>         # the LLR ledger for a past SPRT run
 hyctl trust reliability                 # when it says 90%, is it right 90% of the time
+hyctl trust joint                       # how often two checks pass the same wrong answer
 hyctl edit --file /abs/path/f.go --enum SIMPLE --prompt "..."  # apply, then validate what was written: the verdict that counts
 hyctl trust benchmark                   # measured SPRT numbers (samples saved, accuracy)
 hyctl graph blast <file>                # a file's blast radius + the confidence it demands
@@ -890,7 +1024,9 @@ hyctl context entropy <file|->          # signal density + useful tokens + compa
 
 # Verification & accountability
 hyctl oracle verify go test ./... --source verifier:go-test  # verifier as evidence + its LLR
-hyctl eval stats                        # the verified corpus: size and pass rate by domain
+hyctl oracle ground --prompt prompt.txt --candidate summary.txt  # every number, date, name and identifier is in the source
+hyctl eval stats                        # the verified corpus: size and pass rate by task type
+# Filled by edit, parallel, oracle verify --candidate, hyverify and dispatch --check
 hyctl eval readiness                    # per enum, whether the corpus can yet fit a routing choice
 hyctl eval list --failed                # the examples the oracle rejected
 hyctl eval training                     # vectors per embedding model, whether a classifier could be fitted
@@ -906,6 +1042,7 @@ hyctl eval classify                     # does similarity to past work predict w
 hyverify --candidate internal/auth/token.go --task "rotate signing key" --enum MODERATE
 hyverify --candidate out.go --task "..." -- go test ./...   # name the judge yourself
 hyverify --candidate x.go --task "..." --embed-model nomic-embed-text  # so it trains a classifier
+hyverify --candidate x.go --env PLAYWRIGHT_BROWSERS_PATH -- npx playwright test  # extra vars the judge may see
 hyverify --version                                          # which build wrote a corpus row
 hyctl mcp check <tool> --agent A --resource R --action write  # 0 allow, 3 deny, 4 ask
 hyctl mcp check <tool> --content "$DATA" --action network      # PII auto-classified; policy can deny egress
@@ -932,6 +1069,7 @@ hyctl edit --file ... --enum ... --prompt "..."  # scoped, validated, rollback-s
 hyctl review ...                        # code review / approve / reject / QA
 hyctl parallel ...                      # fan independent tasks across models
 hyctl workflow run --step A --step B    # multi-step task, each step routed on its own
+hyctl workflow run --step A --needs "" --step B --needs 1 --step C --needs 1   # B and C run together after A
 hyctl workflow run --dry-run ...        # each step's routing chain and ceiling, nothing run
 hyctl workflow run --local --max-cost 0.05 ...   # per-step caps, on top of policy.yaml's
 hyctl workflow resume <id>              # continue a killed workflow from where it stopped
@@ -956,7 +1094,7 @@ Six views, cycled with `tab` (or jump with `1-6`); `?` opens the shortcut glossa
 
 | View | What it shows |
 |---|---|
-| **chat** | Type a task and it **executes**: a route line first (class → routing level → model · strategy · plain-words why, with a `local-only (pii)` badge and change impact when they apply), then the real answer or edit. `esc` cancels mid-run; failures link to their trace; session cost accrues in the header |
+| **chat** | Type a task and it **executes**: a route line first (class → routing level → model · strategy · plain-words why that names the kind of work from the fixed list, or says it is not sure, with a `local-only (pii)` badge and change impact when they apply), then the real answer or edit. `esc` cancels mid-run; failures link to their trace; session cost accrues in the header |
 | **agents** | Live runs and today's finished ones, `enter` opens a run's trace |
 | **models** | Every scanned model nested under its provider/server, with per-model detail: routing level, capability, p50 latency, requests/cost today, calibration scorecard. A down server grays its models; embedding-only models say `embeddings only, never routed` |
 | **activity** | Today's runs with a full trace per run: routed → policy → request → stream → edits → done, fallbacks included |
@@ -967,7 +1105,7 @@ Chat has **modes**: what a task does (`shift+tab` cycles the basics, `m` opens t
 
 | Mode | What it does |
 |---|---|
-| **Ask** | Answer only, never writes files |
+| **Ask** | The default. Answer only, never writes files; `shift+tab` reaches Auto when a task should change one |
 | **Edit** | Direct change when the prompt names an existing file (validated, rollback-safe, snapshotted); otherwise answers and says so |
 | **Plan** | Drafts numbered steps on a cheap routing level and waits, `enter`/`y` runs them, `esc` discards |
 | **Auto** | Plan → edit → **verify**: runs `go test ./...` (or your workspace.yaml validator) through the oracle, feeds failures back for up to 2 fixes, and renders a proof strip: `plan ✓ · edit ✓ file +A/−R · tests ✓/✗` |
@@ -975,7 +1113,7 @@ Chat has **modes**: what a task does (`shift+tab` cycles the basics, `m` opens t
 | **Careful** | Auto, but every file write needs a `y/n` confirm before it lands |
 | **Unattended** | Auto with no confirms and a hard $0.50 per-task cost cap, it stops visibly at the cap |
 
-Where a task runs is separate: `ctrl+o` overrides the **next** task's routing (auto / force routing level / local only / best of 3 / consensus check at 90-99.9%). After an edit, type `/diff` for the diff, `/undo` to restore the pre-task snapshot exactly (it asks y/n first), `/open` to open the file; the footer's trace id jumps into the activity view. These are typed commands, not bare letters, so a message starting with `x` or `a` is just text.
+Where a task runs is separate: `ctrl+o` overrides the **next** task's routing (auto / force routing level / local only / best of 3 / consensus check at 90-99.9%). After an edit, type `/diff` for the diff, `/undo` to restore the pre-task snapshot exactly (it asks y/n first), `/open` to open the file; the footer's trace id jumps into the activity view. These are typed commands, not bare letters, so a message starting with `x` or `a` is just text. The code panel beside the chat appears once a task streams a file or a diff; until then the chat takes the full width. An empty chat lists four starter tasks, the same as the desktop app (a summary, an extraction, a reply, a code review); press 1-4 to fill one in.
 
 Chat runs **parallel threads**: several tasks at once, safely:
 
@@ -1023,8 +1161,8 @@ opposite of what SIMPLE asks for.
 
 ```bash
 hyctl status            # every name, the routing level it resolves to, and what serves it
-hyctl dispatch --dry-run --tier simple "add a DTO"
-hyctl dispatch --dry-run --swarm --enum SIMPLE "add a DTO"   # the same models
+hyctl dispatch --dry-run --tier simple "summarise this paragraph"
+hyctl dispatch --dry-run --swarm --enum SIMPLE "summarise this paragraph"   # the same models
 ```
 
 Older configs carry a `[[tiers]]` block that assigned models to those names by
@@ -1133,7 +1271,7 @@ For Ollama models, add a family pattern:
 | **Causal A2A handoffs**: vector clocks, concurrent-edit conflict detection | ✅ Shipped |
 | **Context-entropy governor**: compact on falling signal density, not length | ✅ Shipped |
 | **MCP accountability ledger**: record + gate what every agent touches | ✅ Shipped |
-| **Verification oracles**: tests/compile/lint as first-class evidence | ✅ Shipped |
+| **Checks as evidence**: tests, schemas, label lists, source grounding and model agreement | ✅ Shipped |
 | **Runtime model registry**: `hyctl models add` merges a `~/.hydra/models.json` overlay, no rebuild | ✅ Shipped |
 | **Percolation-κ blast radius**: Molloy-Reed core detection weights hub files higher | ✅ Shipped |
 | **Rate-aware budget governor**: first-passage-time risk on `claude_pct`, escalates before a threshold | ✅ Shipped |
@@ -1183,7 +1321,8 @@ hydra/
 │   ├── util/                    # Shared utilities (bounded Accumulator, 33 MB cap)
 │   ├── sysinfo/                 # Hardware detection + 7-day memory history
 │   ├── payload/                 # Opt-in prompt/response store: chunked, packed, redacted,
-│   │                            #   bounded by a byte budget that evicts oldest packs
+│   │                            #   bounded by a byte budget that evicts oldest packs,
+│   │                            #   except packs that hold a pinned payload
 │   ├── waterfall/               # A run as nested spans on a timeline, with each one's
 │   │                            #   verdicts (hyctl trace view, hyctl trace score)
 │   ├── runlog/                  # Per-run span log (~/.hydra/logs/runs/): identity, parent, level,
@@ -1196,6 +1335,8 @@ hydra/
 │   ├── ledger/                  # Local MCP accountability ledger + policy gate
 │   ├── oracle/                  # Verification oracles (tests/compile/lint) as calibrated evidence
 │   ├── optimal/ · entropy/      # Optimal parallel-agent count · context signal density
+│   ├── idle/                    # Typed state for a conversation compacted while idle;
+│   │                            #   rules copied word for word, each entry refs its turn
 │   ├── build/ · update/         # Version stamping + startup update check
 │   └── tui/                     # Bubbletea cockpit + init wizard
 ├── desktop/                     # Desktop app (own Go module): Wails v2 + React/TS
@@ -1257,7 +1398,7 @@ curl -fsSL https://raw.githubusercontent.com/ankit373/hydra/main/install-app.sh 
 It resolves the newest release (the asset names embed their version, so GitHub's `/latest/download/`
 shortcut cannot address them), verifies the download against the published `.sha256`, installs the
 `.app` to `/Applications`, or the binary to `~/.local/share/hydra` with a `~/.local/bin` symlink on
-Linux, and clears the macOS quarantine flag so the first launch works. `HYDRA_VERSION=v1.7.0` pins
+Linux, and clears the macOS quarantine flag so the first launch works. `HYDRA_VERSION=v1.8.0` pins
 a release; `HYDRA_APP_DIR` changes where it lands.
 
 <!-- x-release-please-end -->

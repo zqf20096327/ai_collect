@@ -8,6 +8,13 @@
 
 What was added, newest first. Each entry links to its commit.
 
+**2026-11-15**
+
+- **DoRA in LTX 2.3 and Boogu** — the **DoRA** checkbox, now in 17 trainers. In LTX 2.3 it goes under rsLoRA / LoRA+; in Boogu under LoKr / Factor, and changing it starts a new training, like the rank or LoKr ([details](#️-lora-options-rslora-lora-dora-and-lokr)) [`7231939`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/7231939)
+- **DoRA in 4 more trainers: ERNIE-Image, Fibo 2.0, Ideogram 4 and SDXL** — the same **DoRA** checkbox, now in 15 trainers. In Fibo 2.0 and Ideogram 4 the file follows ComfyUI's fused layers (qkv, to_kv, w13) like their LoRAs do. SDXL also trains DoRA on the resnet convolutions with *All* targets, and its file matches the original weights exactly in ComfyUI ([details](#️-lora-options-rslora-lora-dora-and-lokr)) [`f443b04`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/f443b04)
+- <img src="https://img.shields.io/badge/MAJOR%20UPDATE-7c3aed?style=for-the-badge" alt="MAJOR UPDATE" height="22"> **DoRA in 11 trainers** — a **DoRA** checkbox under LoRA Rank / Alpha in Z-Image, FLUX.1 Dev, FLUX.2 Klein 9B, FLUX.3 Image Klein, Krea 2, Qwen-Image 2.1, Qwen-Image 2512, Ming-Image, MOSS-Image, Anima and Wan 2.2. Each layer also learns the size of every output row, apart from the usual LoRA: it often follows the dataset more closely at the same rank, with slower steps. It works with rsLoRA and LoRA+, and the file loads in ComfyUI like any LoRA, with `_dora` in its name. Trained and checked so far in Z-Image, MOSS-Image and FLUX.1 Dev ([details](#️-lora-options-rslora-lora-dora-and-lokr)) [`cf599ab`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/cf599ab)
+- **Dataset Manager folds like the Training Chart** in every trainer: click its title to hide or show it (▶ / ▼), and the page remembers it. Closed, only the title with the image and caption counts stays [`64cba83`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/64cba83)
+
 **2026-11-14**
 
 - **Preview Every = 0 stays off** in every trainer: a saved 0 was replaced by the field's default when the trainer opened (50 in Fibo 2.0). The label now reads *Preview Every (0 = off)* and the **2b. Training Previews** header shows *every N steps* or *off*, also while collapsed [`b80d1f5`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/b80d1f5) ([#78](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/issues/78))
@@ -392,7 +399,7 @@ Queue trainings and pre-caches, from one trainer or several, and they run one af
 
 ---
 
-## 🎛️ LoRA options: rsLoRA, LoRA+ and LoKr
+## 🎛️ LoRA options: rsLoRA, LoRA+, DoRA and LoKr
 
 Under **LoRA Rank / Alpha**, the trainers have extra checkboxes. They change **how** the LoRA learns, so they are fixed for the whole training (to change them, *Delete Training* and start again; the pre-cache is reused).
 
@@ -400,11 +407,13 @@ Under **LoRA Rank / Alpha**, the trainers have extra checkboxes. They change **h
 | :--- | :--- | :--- |
 | **rsLoRA** | Scales the LoRA by `alpha/√rank` instead of `alpha/rank`, so high ranks keep learning. Ticking it lowers alpha to keep the same strength. | Z-Image, FLUX.2 Klein 9B, Qwen-Image 2.1, Qwen-Image 2512, Krea 2, Anima, Ideogram 4, ERNIE-Image, MOSS-Image, SDXL, LTX-2.3, MiniMax-H3 |
 | **LoRA+** | The `B` matrix of every layer learns 16× faster than `A`: usually the same quality in fewer steps. Lower the LR if it burns early. | same as rsLoRA |
-| **LoKr** + **Factor** | Replaces LoRA with a Kronecker product (LyCORIS). Much smaller files (~3 MB instead of ~40 MB at rank 8), good for characters with small datasets, more sensitive to the LR. rsLoRA and LoRA+ turn off. | Z-Image, FLUX.2 Klein 9B, Qwen-Image 2.1, Krea 2, Anima, ERNIE-Image, MOSS-Image |
+| **DoRA** | Each layer also learns the size (magnitude) of every output row, apart from its direction, which is the usual LoRA. It often follows the dataset more closely at the same rank. Every step is slower and uses some more VRAM, because the 4-bit weight of each layer is unpacked to measure it. Works with rsLoRA and LoRA+. | Z-Image, FLUX.1 Dev, FLUX.2 Klein 9B, FLUX.3 Image Klein, Krea 2, Qwen-Image 2.1, Qwen-Image 2512, Ming-Image, MOSS-Image, Anima, Wan 2.2, ERNIE-Image, Fibo 2.0, Ideogram 4, SDXL, LTX 2.3, Boogu |
+| **LoKr** + **Factor** | Replaces LoRA with a Kronecker product (LyCORIS). Much smaller files (~3 MB instead of ~40 MB at rank 8), good for characters with small datasets, more sensitive to the LR. rsLoRA, LoRA+ and DoRA turn off. | Z-Image, FLUX.2 Klein 9B, Qwen-Image 2.1, Krea 2, Anima, ERNIE-Image, MOSS-Image |
 
-- The exported file is a **standard LoRA / LyCORIS file** that ComfyUI and Forge load as usual (with rsLoRA, the alpha is converted so it acts exactly as trained).
-- **Send to Models** and **⬇ Download LoRA** add **`_rs`**, **`_plus`** or **`_lokr`** to the name, taken from the file's own metadata, so you always know how it was trained. The *Final LoRA Filename* field shows the suffix as you tick the boxes.
-- No extra VRAM: LoKr never builds the full weight matrix, and the other two only change the scaling and the optimizer.
+- The exported file is a **standard LoRA / LyCORIS file** that ComfyUI and Forge load as usual (with rsLoRA, the alpha is converted so it acts exactly as trained; with DoRA, every layer carries a `dora_scale`, stored the way ComfyUI applies it).
+- **Send to Models** and **⬇ Download LoRA** add **`_rs`**, **`_plus`**, **`_dora`** or **`_lokr`** to the name, taken from the file's own metadata, so you always know how it was trained. The *Final LoRA Filename* field shows the suffix as you tick the boxes.
+- No extra VRAM with rsLoRA, LoRA+ or LoKr: LoKr never builds the full weight matrix, and the other two only change the scaling and the optimizer. DoRA is the exception: slower steps and some more VRAM.
+- **Testing a DoRA in ComfyUI:** use a full caption like the ones in your dataset. A very short prompt with a high CFG and a long negative loses the likeness with a DoRA and with a plain LoRA alike.
 
 **Which one to use.** All of them are optional: with no box ticked the trainer works exactly as before. Train the same dataset with the same steps, seed and LR to compare them; the pre-cache is shared, so only *Delete Training* is needed between runs.
 
@@ -414,6 +423,7 @@ Under **LoRA Rank / Alpha**, the trainers have extra checkboxes. They change **h
 | **rsLoRA** | rsLoRA | Higher ranks (32-64) for styles or many concepts: with plain LoRA, raising the rank adds little | Rank 32; the alpha it sets for you (≈ alpha/√rank) | `_rs` |
 | **LoRA+** | LoRA+ | Reaching the same result in fewer steps | Same LR; check the intermediate checkpoints, and lower the LR if it burns early | `_plus` |
 | **rsLoRA + LoRA+** | both | The two together: stable high ranks that also learn faster. They do not conflict: one changes the scaling, the other the optimizer | Rank 32, the alpha rsLoRA sets, and an LR about 2× lower than usual, because both make the training stronger | `_rs_plus` |
+| **DoRA** | DoRA | Likeness that a plain LoRA does not reach at the same rank, when slower steps are acceptable. Can be combined with rsLoRA and LoRA+ | The trainer's defaults: same rank, alpha and LR as LoRA | `_dora` |
 | **LoKr** | LoKr (+ Factor) | Characters and objects with small datasets, or when file size matters | Rank 8, alpha 8, factor 16, same LR as LoRA; factor 8 or a higher LR if it learns too little | `_lokr` |
 
 ### LR scheduler
@@ -746,36 +756,4 @@ The official image-edit task works at 1024: 512 and 768 are out of its distribut
 
 - Trains on the official **Ideogram 4 NF4** release (9.3B, diffusers). It is a single-stream transformer: text and image tokens share one sequence.
 - **Captioner:** Qwen3-VL-8B NF4 (the same model as Ideogram's text encoder) writes Ideogram's native JSON caption with a **bounding box for every subject, object and piece of text** — the format Ideogram 4.5 and FLUX.3 Image will also use. A second **OCR pass** reads every sign with its box (in one pass the model misses many texts in busy scenes). **JSON detailed** also boxes each part of every person or animal (face, nose, ears, hands, legs...), each garment and accessory, for edit LoRAs. Captions are saved in the official format (key order, `[y1, x1, y2, x2]` boxes in 0–1000, no repeated elements) with the trigger word at the start of the description. **Natural language** is also available.
-- **Use JSON for captions and preview prompts.** Ideogram 4 depends on its JSON format: in our tests a short plain prompt ("a woman with blonde hair in a green sweater reading in a library") gave odd crops or was blocked, while the same scene written as a JSON caption came out right. For the custom preview prompt, copy a caption from the dataset and edit it.
-- **Previews:** 28 steps / CFG 7 with the last 3 steps at CFG 3, as in the official pipeline. Ideogram's guidance uses a second, **unconditional transformer** (4.3 GB): it is loaded only for the previews and moved to the GPU while each one runs, so previews with CFG need ~15 GB at 1024². On 12 GB cards set **Preview CFG to 1**. **Preview Size** as in Z-Image.
-- **Built-in safety filter:** Ideogram 4 was trained to output a grey "Image blocked by safety filter" image for some prompts (for example a woman at the beach). It is the model itself, not the trainer, and its license forbids circumventing it: change the preview prompt if it happens.
-- **LoRA Targets:** *Blocks* (attention + MLP of the 34 blocks, default) or *All*. The LoRA is exported with ComfyUI's own layer names (q, k and v merged into `attention.qkv`), so ComfyUI loads it directly.
-
-| Tested starting point | |
-| :--- | :--- |
-| Captions | Ideogram JSON |
-| Resolution | 1024×1024 |
-| Rank / Alpha | 16 / 16 |
-| Learning rate | 3e-4 |
-| Steps | 1,000 (14 images): the likeness shows from ~500 |
-| LoRA strength in ComfyUI | 1.0 |
-| Speed and VRAM | ~5.7 s/step (~1 h 35 min for 1,000 steps plus previews) and ~10 GB at 1024²; ~15 GB during previews with CFG |
-
-### SDXL — Base, Pony, Illustrious, NoobAI, Juggernaut, RealVis or your own checkpoint
-
-- **Base Model** picks what the LoRA is trained on. Each preset is downloaded the first time (~7 GB) into `Models/SDXL-Models/`:
-
-  | Preset | Best for | Captions | Quality prefix (optional) · Preview CFG |
-  | :--- | :--- | :--- | :--- |
-  | SDXL Base 1.0 | general, realistic | natural | CFG 6 |
-  | Juggernaut XI v11 | photorealistic | natural | CFG 5 |
-  | RealVisXL V5.0 | photorealistic | natural | CFG 5 |
-  | Pony Diffusion V6 XL | anime, cartoon, furry | tags | `score_9, score_8_up, score_7_up` · CFG 7 |
-  | Illustrious XL v0.1 | anime | Danbooru tags | `masterpiece, best quality` · CFG 6 |
-  | NoobAI-XL 1.1 | anime | Danbooru tags | `masterpiece, best quality, newest` · CFG 5 |
-  | Custom checkpoint | any SDXL `.safetensors` (Juggernaut Ragnarok, WAI...) | either | CFG 6 |
-
-  A LoRA works best on the model it was trained on and on models derived from it: train on Illustrious v0.1 for Illustrious-based checkpoints such as WAI or NoobAI.
-- **Captioner:** Qwen3-VL-8B NF4 (shared), with **natural language** or **Danbooru tags**. Long captions are encoded in blocks of 75 tokens (up to 225), as kohya does.
-- **Model Precision:** *BF16* or *NF4*, which quantizes the transformer blocks to 4 bits when loading and fits in a **4 GB GPU**. The first training run on a model saves its converted UNet in `Models/SDXL-Models/unet_cache/` (~5 GB on disk); from then on it loads with ~5.5 GB of RAM instead of ~14 GB.
-- **Training:** the UNet with gradient checkpointing, noise prediction with Min-SNR weighting (γ = 5). **LoRA Targets:** *Blocks* (attention, MLP and projections of the transformer blocks, kohya's default) or *All* (+ the resnet convolu
+- **Use JSON for captions and preview prompts.** Ideogram 4 depends on its JSON format: in our tests a short plain prompt ("a woman with blonde hair in a green sweater reading in a library") gave odd crops or was blocked, while t

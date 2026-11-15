@@ -11,16 +11,16 @@ supported agents using [sessionFlow](https://github.com/HarryHeYu/sessionFlow).
 
 |  |  |
 |---|---|
-| **What it is** | A thin DSH plugin that exposes the sessionFlow continuity layer as six `sessionflow_*` tools. |
+| **What it is** | A thin DSH plugin that exposes the sessionFlow continuity layer as seven `sessionflow_*` tools. |
 | **Why use it** | Work started in Codex, Claude Code, Grok or ZCode does not have to stop at the agent boundary — pick it back up inside DSH with the goal, files, commands and open items intact. |
 | **Install** | `dsh plugin --profile web add github:HarryHeYu/dsh-sessionflow` — [details](#install). Needs a working model provider **and** the sessionFlow core. |
 | **Try it** | Ask in plain language: *"Continue the work I was doing in Claude Code on this repo."* Full walkthrough: [5-minute Quick Start](https://github.com/HarryHeYu/sessionFlow/blob/main/docs/QUICKSTART.md). |
-| **Current release** | [v1.2.0](https://github.com/HarryHeYu/dsh-sessionflow/releases/tag/v1.2.0) · DSH 0.1.5-rc.3 / 0.2.0-rc.2 / 0.2.1-alpha.4 / 0.2.1-rc.5 / 0.2.2-alpha.2 (tool calls answered) · Node ≥ 22.19 · bridge schema 1 |
+| **Current release** | [v1.3.0](https://github.com/HarryHeYu/dsh-sessionflow/releases/tag/v1.3.0) · DSH 0.1.5-rc.3 / 0.2.0-rc.2 / 0.2.1-alpha.4 / 0.2.1-rc.5 / 0.2.2-alpha.2 (tool calls answered) · Node ≥ 22.19 · bridge schema 1 |
 | **Privacy** | Local only. No account, no telemetry, no network calls — [boundary](#what-stays-local) |
 | **Known limitation** | Native resume by an agent is **not verified** — see [verification status](#verification-status) |
 
 Not "yet another session manager" — sessionFlow's continuity layer, exposed to
-DSH as six tools.
+DSH as seven tools.
 
 ```
 User:  Continue the work I was doing in Claude Code on this repo.
@@ -61,7 +61,7 @@ Kiro ────────┘
 ## What it is
 
 A thin DSH plugin that exposes [sessionFlow](https://github.com/HarryHeYu/sessionFlow)
-(Voyager) as six tools. sessionFlow indexes the session history of every AI
+(Voyager) as seven tools. sessionFlow indexes the session history of every AI
 coding agent on your machine; this plugin lets a DSH agent *use* that history —
 to find past work, to see what the current project was doing, and to pick it up.
 
@@ -95,7 +95,7 @@ all, including when the next agent has no way to resume the previous one.
   before installing anything here.
 - [sessionFlow / Voyager](https://github.com/HarryHeYu/sessionFlow) — **a
   separate, standalone dependency**. This plugin is a thin DSH adapter and ships
-  no Python core of its own. Without the core the six tools still register, and
+  no Python core of its own. Without the core the seven tools still register, and
   every call fails with a message naming the install command.
 - Node.js **22.19+**
 
@@ -115,28 +115,34 @@ an older one is refused by name rather than misbehaving silently.
 
 | plugin | core | bridge schema |
 |---|---|---|
-| **1.2.0** | `v1.3.1` | `1` |
+| **1.3.0** | `v1.5.0` | `1` |
+| 1.2.0 | `v1.3.1` | `1` |
 | 1.1.0 | `v1.3.0` | `1` |
 
-**The two repos are versioned independently** — plugin `1.2.0` against core
-`1.3.1` is the current, correct pairing, and the numbers are not meant to match.
+**The two repos are versioned independently** — plugin `1.3.0` against core
+`v1.5.0` is the current, correct pairing, and the numbers are not meant to match.
+Core `v1.5.0` is required for the seventh tool (it adds the `evidence_verify`
+API op); the six older tools keep working on earlier cores. Bridge schema is
+unchanged at `1` — the new op is additive, not a protocol bump.
 What binds them is the **bridge schema**: `REQUIRED_SCHEMA_VERSION` in
 `src/bridge.ts` is the value the plugin demands, and `voyager integration-info
 --json` is where the core reports it.
 
-What that compatibility rests on: the six tools are verified by **non-model
+What that compatibility rests on: the seven tools are verified by **non-model
 contract tests** (input → bridge call → result formatting) against a real core
 on a seeded index. Model-driven *selection* of those tools has been observed in
 recorded real-model runs, but there is **no repeatable end-to-end suite** for it —
 see [verification status](#verification-status) and the prompt-shape note at the
 top. Do not read "the tools work" as "the model will always reach for them".
 
-> **Core v1.3.1 is released and is what the pin below installs.** The current
-> pairing is plugin **v1.2.0** against core **v1.3.1**: the six tools and the
-> bridge schema (`1`) are unchanged from 1.1.0, so upgrading is optional unless
-> you run DSH `0.2.1-rc.5` (next) or `0.2.2-alpha.2` (alpha), which 1.2.0
-> admits. Core v1.3.1 is additive over v1.3.0 — it added evidence references
-> inside bundle text and the `voyager evidence` subcommand, and fixed three
+> **Core v1.5.0 is released and is what the pin below installs.** The current
+> pairing is plugin **v1.3.0** against core **v1.5.0**: the six older tools and
+> the bridge schema (`1`) are unchanged; the seventh tool needs v1.5.0's
+> `evidence_verify` op, so this pairing is required if you use it. If you run
+> DSH `0.2.1-rc.5` (next) or `0.2.2-alpha.2` (alpha), 1.2.0 already admits
+> them. Historical note: Core **v1.3.1** (additive over v1.3.0) added
+> evidence references inside bundle text and the `voyager evidence`
+> subcommand, and fixed three
 > DSH-bridge correctness bugs: DSH 0.2.1-rc.3's renamed transcript
 > (`session.v4.jsonl.zstd`) is now discovered, Windows writes stdout as UTF-8,
 > and queries shorter than three characters return results. The plugin passes
@@ -149,10 +155,10 @@ is deliberately not on a package registry:
 
 | | Where it comes from | Install |
 |---|---|---|
-| **Core** — sessionFlow | a **GitHub tag**; not on PyPI | `pipx install "voyager[all] @ git+…@v1.3.1"` |
+| **Core** — sessionFlow | a **GitHub tag**; not on PyPI | `pipx install "voyager[all] @ git+…@v1.5.0"` |
 | **Plugin** — this repo | **DSH's plugin mechanism**; not on npm | `dsh plugin --profile web add github:HarryHeYu/dsh-sessionflow` |
 
-Install the core first: without it the six tools still register, but every call
+Install the core first: without it the seven tools still register, but every call
 fails with a message naming the missing binary.
 
 Two things people get wrong here:
@@ -170,13 +176,13 @@ Two things people get wrong here:
 The core first, pinned to the release this plugin version was tested against:
 
 ```sh
-pipx install "voyager[all] @ git+https://github.com/HarryHeYu/sessionFlow.git@v1.3.1"
-voyager --version     # must print 1.3.1
+pipx install "voyager[all] @ git+https://github.com/HarryHeYu/sessionFlow.git@v1.5.0"
+voyager --version     # must print 1.5.0
 voyager scan          # build the index from your real agent history
 voyager doctor        # confirm the core runs and reports bridge schema 1
 ```
 
-No `pipx`? `python -m pip install "voyager[all] @ git+https://github.com/HarryHeYu/sessionFlow.git@v1.3.1"`
+No `pipx`? `python -m pip install "voyager[all] @ git+https://github.com/HarryHeYu/sessionFlow.git@v1.5.0"`
 works too. `python -m pip` is deliberate: on Windows `pip` is often not on `PATH`
 while `python` is.
 
@@ -251,9 +257,31 @@ see [Troubleshooting](#troubleshooting).
 | `sessionflow_current_work` | "Where did I leave off on *this* project?" |
 | `sessionflow_continue` | "Pick the work back up." |
 | `sessionflow_merge` | "Put these sessions together and let me continue." |
+| `sessionflow_evidence_verify` | "Is this cited Evidence Reference (session · seq · #digest) still the same indexed event?" |
 
-All six share the `sessionflow_*` prefix — there is no second `voyager_*` set.
+
+All seven share the `sessionflow_*` prefix — there is no second `voyager_*` set.
 Every tool returns structured data and a model-readable rendering.
+
+### The seventh tool: `sessionflow_evidence_verify`
+
+Added in v1.3.0 (Core `v1.5.0` provides the additive `evidence_verify`
+API op; the plugin stays a thin `callOp()` pass-through). It answers one
+question: *is the event an Evidence Reference (`seq N · #digest`) points at
+still the event it was made from?* The Core returns five verdicts by name —
+`MATCH`, `MISMATCH`, `NOT_FOUND`, `UNVERIFIABLE`, `INVALID_REFERENCE` — and the
+tool hands that dict back verbatim.
+
+Two things this does **not** claim:
+
+- **`MATCH` is not "the claim is true."** It means the indexed event matches the
+  recorded digest; it says nothing about the truth of what that event says.
+- **`INVALID_REFERENCE` is a Core state, not a missing one.** The Core can emit
+  it (a non-integer `seq` or a malformed `digest`). This tool refuses those two
+  malformed references *before spawning*, so through this tool that verdict
+  cannot occur — it is preserved verbatim by the pass-through, and remains
+  reachable for any caller that sends such a reference straight to the Core.
+  Pre-rejecting locally is not the same as the Core lacking the state.
 
 ### When a repo has more than one WorkThread
 
@@ -333,7 +361,7 @@ Stated at the level actually reached — nothing below is promoted.
 |---|---|---|
 | Bridge mechanics: resolution, deadline, malformed JSON, non-zero exit, schema gate | **PASS (unit)** | `tests/bridge.test.ts`, stub executables |
 | JSON round-trip against the real core | **PASS (integration)** | `tests/bridge.test.ts`, real `voyager` on a seeded index |
-| Six tools register through the real `defineTool` | **PASS (unit)** | `tests/plugin.test.ts` |
+| Seven tools register through the real `defineTool` | **PASS (unit)** | `tests/plugin.test.ts` |
 | DSH bundle discovery | **LIVE VERIFIED** | `dsh plugin --profile … install` added `dsh-sessionflow` to `dsh.profile.bundles` |
 | DSH composition tree | **LIVE VERIFIED** | `dsh --profile … --dump-config` shows `- id: dsh-sessionflow` |
 | Plugin module imported and applied by DSH | **INSTALL VERIFIED (Linux CI)** | the boot reaches the credential gate with no import error; `--dump-config` alone cannot prove this, it never imports the plugin |

@@ -572,6 +572,102 @@ new-task gain; replay+rollback keeps **6.5-12.0%**; replay+EWC keeps **99.3%**.
 EWC is safe but does not beat simple replay.
 [`research/SPIKING_REPLAY_EWC_21M.md`](research/SPIKING_REPLAY_EWC_21M.md)
 
+**600-step phase B + generation probe:** at 21M and two seeds, replay keeps
+**99.7%** of the new gain; naive samples collapse from **144-151 to 78-81 chars**
+and repeated 4-grams quadruple. Replay keeps the phase-A profile; EWC is slightly
+better on distinct-2/length but costs new-task bpb.
+
+**50M long phase B:** replay keeps **98.2%** of the new gain and improves the
+held-out continuation probe (content F1 **0.140 -> 0.182**); EWC keeps 91.7% and
+lowers it to 0.115; naive drops it to 0.000. This is a small semantic signal, not
+semantic competence. [`research/SPIKING_LONG_REPLAY.md`](research/SPIKING_LONG_REPLAY.md)
+
+**Narrative-coherence benchmark:** 100 held-out four-way next-sentence cases —
+4.3M **0.29**, 21M **0.41**, 50M **0.40** (chance 0.25). 50M does not beat 21M,
+and EWC lambda 0.5/2.0 stays at 0.39/0.40 while costing new-task bpb. Parameter
+scaling is not buying semantics. The decision is to revise architecture/data,
+not just scale. [`research/SPIKING_SEMANTIC.md`](research/SPIKING_SEMANTIC.md)
+
+**Top-down feedback (negative):** adding a zero-initialized last-layer-to-input
+feedback path to the 21M model scored **0.39** narrative accuracy vs **0.45** for
+the baseline after the same 500 steps, and slightly worse bpb. This topology did
+not help. [`research/SPIKING_FEEDBACK.md`](research/SPIKING_FEEDBACK.md)
+
+**Variable binding (non-TinyStories, negative):** on tiny three-statement stories
+with **disjoint** train/test (person, color, object) triples, the 128-wide spiking
+model reaches **0.168** (below the 0.25 chance) while the rate control reaches
+**0.318**. Both memorize training triples and fail held-out binding; the current
+architecture needs a memory/attention mechanism, not more parameters.
+[`research/SPIKING_BINDING.md`](research/SPIKING_BINDING.md)
+
+**Binding benchmark audit:** the first task is solvable **78%** by matching color
+alone and **76%** by object alone, so a corrected conjunction split was built
+(both attributes required, unique pair). There spike reaches **0.220**, rate
+**0.326**, while a 2-layer transformer with dropout reaches **0.886** and a
+4-layer transformer **1.000**. At 256 wide, spike/rate improve to **0.519/0.629**
+on average over two seeds (seed range **0.466-0.572** / **0.502-0.756**) but are
+**position-biased**: the spike model is best on the third statement (0.846/0.872)
+and weak on the second (0.377/0.182). A 512-wide run is worse (**0.446/0.406**),
+so width alone does not close the gap. A simple attention readout hurts
+(**0.364/0.384**); a fixed pointer (**0.236/0.514**) and dropout
+(**0.308/0.460**) also fail.
+
+**Statement memory (positive):** a 256-wide spiking model with a statement-level
+name/attribute memory plus a copy loss and a **self-supervised matching
+attention** loss reaches **0.996/1.000** across two seeds on held-out
+conjunction binding, is balanced across all three positions, and is
+permutation-invariant (**0.996/1.000** consistency). The attention target is
+derived from the query/statement attributes, not the answer. Without it, 6k
+steps give **0.308/0.696**; at 12k the rate control reaches **0.874** but the
+spike model is **0.470** and strongly position-biased (middle statement 0.159).
+The architecture can bind; unsupervised credit assignment is still open.
+[`research/SPIKING_BINDING_CONJ.md`](research/SPIKING_BINDING_CONJ.md)
+
+**Continual binding (two seeds + hard split):** naive phase B on 16 new triples
+drops old accuracy from **0.974/1.000** to **0.322/0.544** and held accuracy from
+**0.730/0.926** to **0.240/0.280**. A 20% replay mix keeps old at
+**0.992-0.996**, new at **1.000** and held at **0.788-0.866**. On a harder color
+shift (old red/blue -> new green/yellow), naive old falls **0.930/1.000 ->
+0.700/0.702** and held **0.336/0.000 -> 0.478/0.662**; replay reaches
+**1.000/1.000/0.974** and **1.000/1.000/0.998**. Rollback 10% alone is weak
+(0.392/0.674 old on the triple split) or destroys new colors (new 0.366 on color
+seed 2); replay+rollback and replay+EWC are close but not consistently better.
+Replay is the most reliable arm.
+[`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
+
+**Without the matching-attention loss on harder splits (negative):** copy-only
+color phase A is **0.332/0.214** (seed 0/2, at or below chance), and a no-overlap
+2-name split collapses (**0.474/0.644**, even with the attention control). The
+attention loss remains a required inductive bias at this budget; replay only
+helps once phase A is learnable.
+[`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
+
+**Four-statement stories:** dynamic memory, per-statement slots, slot reset, and
+a hard name slot all stay at **0.214-0.236** old accuracy (majority **0.26**)
+after 5k steps. Changing the slot key to the statement's **color+object
+embeddings** and using **4-head attention** solves phase A: old **1.000**, all
+four positions **1.000**, old permutation **1.000**. Copy-only phase B (no
+matching-attention loss) keeps old **0.996/0.970**, new **1.000**, held
+**0.872/0.728**, permutation **0.996/0.972**; replay reaches
+**1.000/1.000** and held **0.926/0.760**. The structured key is the mechanism;
+the task-specific attention loss is unnecessary and can hurt retention (naive
+old **0.220/0.444** with it).
+[`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
+
+**Five-statement copy-only (positive):** five names, five attr-key slots,
+sequence length 32. Phase A old **0.998** with all positions balanced and
+permutation **1.000**. Copy-only phase B keeps old **0.950/0.994** (naive) or
+**1.000** (replay), new **1.000**, and old permutation **0.944/0.994** or
+**1.000**. Held-out composition is seed-sensitive (**0.244/0.356** on seed 0,
+**0.982/0.980** on seed 1), so the next issue is composition, not retention.
+[`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
+
+**Curriculum without the attention loss (negative):** a padded 1 -> 2 -> 3
+statement curriculum trained with the copy loss only reaches spike **0.412**
+(permuted 0.392, last-position-biased) and rate **0.212**. It does not replace
+the self-supervised matching-attention loss at this budget.
+[`research/SPIKING_BINDING_CONJ.md`](research/SPIKING_BINDING_CONJ.md)
+
 ## License
 
 Apache-2.0 — see [`LICENSE`](LICENSE).

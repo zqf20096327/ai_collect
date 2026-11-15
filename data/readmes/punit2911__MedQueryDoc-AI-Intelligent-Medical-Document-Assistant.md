@@ -1,18 +1,21 @@
-# 🩺 MedQueryDoc AI – Intelligent Medical Document Assistant 
+<div align="center">
 
-**Stop Ctrl+F-ing through medical PDFs. Ask in plain English, get answers from Llama-2.**
+# 🩺 MedQueryDoc AI
+### Intelligent Medical Document Assistant (LLaMA-2)
 
-![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white)
+**Chat with your medical PDFs. Ask in plain English. Get answers grounded in your documents.**
+
+[![Watch the demo on YouTube](assets/social-preview.png)](https://youtu.be/5G2vRp-xi8w)
+
+![Python](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white)
 ![LangChain](https://img.shields.io/badge/LangChain-RAG-1C3C3C)
-![Pinecone](https://img.shields.io/badge/Vector%20DB-Pinecone-00B3A4)
-![Flask](https://img.shields.io/badge/Flask-Web%20UI-black?logo=flask)
-![License](https://img.shields.io/badge/License-GPLv3-green)
+![Flask](https://img.shields.io/badge/Flask-Web_UI-000000?logo=flask&logoColor=white)
+![Pinecone](https://img.shields.io/badge/Pinecone-Vector_DB-00B3A4)
+![LLaMA-2](https://img.shields.io/badge/Meta-LLaMA--2-0467DF)
+![License](https://img.shields.io/badge/License-GPL--3.0-blue)
 
-<!-- 👇 REPLACE THIS LINE: drag your demo GIF or screenshot into the GitHub editor and it will upload automatically -->
-![MedQueryDoc AI demo](https://github.com/user-attachments/assets/YOUR-DEMO-GIF-HERE)
- 
-> ⚠️ **For educational purposes only. This is not medical advice.**
- 
+</div>
+
 ---
 
 ## 📌 About the Project
@@ -23,18 +26,9 @@ The system works by loading and splitting PDF documents into smaller chunks, gen
 
 This project demonstrates practical implementation of **LLMs + LangChain + Vector Databases** for real-world AI applications.
 
-### 🔄 How it works
-
-```
-PDFs → split into chunks → embeddings → Pinecone
-                                          ↓
-Your question → similarity search → top chunks → Llama-2 → answer
-```
-
 ---
 
-## 🧠 Key Features !
-
+## 🧠 Key Features
 
 * PDF-based medical document ingestion
 * Vector similarity search using Pinecone
@@ -42,6 +36,19 @@ Your question → similarity search → top chunks → Llama-2 → answer
 * Local LLaMA-2 model inference
 * Interactive web interface using Flask
 * Modular and extensible architecture
+
+---
+
+## ⚡ How It Works
+
+```
+PDF  →  Embeddings  →  Pinecone  →  LLaMA-2  →  Answer
+```
+
+| Phase | Command | What happens |
+|---|---|---|
+| **1. Index once** | `python store_index.py` | Loads PDFs, splits text into chunks, generates embeddings, stores vectors in Pinecone |
+| **2. Ask anytime** | `python app.py` | Retrieves the most relevant chunks and generates an answer with LLaMA-2 |
 
 ---
 
@@ -62,13 +69,13 @@ Follow the steps below to set up and run the project locally.
 
 ---
 
-## ⚙️ Installation Steps 
+## ⚙️ Installation Steps
 
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/<your-username>/Medical-Chatbot-using-Llama-2.git
-cd Medical-Chatbot-using-Llama-2
+git clone https://github.com/<your-username>/MedQueryDoc-AI-Intelligent-Medical-Document-Assistant.git
+cd MedQueryDoc-AI-Intelligent-Medical-Document-Assistant
 ```
 
 ---
@@ -86,7 +93,8 @@ conda activate ./venv
 
 ```bash
 python -m venv venv
-venv\Scripts\activate   # Windows
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # macOS / Linux
 ```
 
 ---
@@ -119,6 +127,17 @@ Create a `data/` folder in the project root and add your PDF files:
 data/
 ├── medical_doc_1.pdf
 ├── medical_doc_2.pdf
+```
+
+---
+
+## 🧠 Model Setup
+
+Download the quantized LLaMA-2 model and place it inside the `model/` directory:
+
+```text
+Model: llama-2-7b-chat.ggmlv3.q4_0.bin
+Source: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML
 ```
 
 ---
@@ -168,20 +187,10 @@ http://localhost:8080
 │   └── chat.html
 ├── static/
 │   └── style.css
+├── assets/
+│   └── social-preview.png # Demo banner used in this README
 ├── data/                  # PDF documents
 └── .env
-```
-
----
-
-## 🧠 Model Setup
-
-Download the quantized LLaMA-2 model and place it inside the `model/` directory:
-
-```text
-Model: llama-2-7b-chat.ggmlv3.q4_0.bin
-Source:
-https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML
 ```
 
 ---
@@ -197,9 +206,9 @@ https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML
 
 ---
 
-## ⭐ Like it?
+## ⚠️ Disclaimer
 
-If this saved you some scrolling, **drop a star** on the repo. It helps other developers find it.
+This project is for **informational and educational purposes only**. It is not a medical device and is not a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare professional.
 
 ---
 
@@ -216,3 +225,9 @@ This project builds upon open-source tools and research in the fields of **LLMs*
 Special thanks to the open-source community for enabling practical AI innovation.
 
 ---
+
+<div align="center">
+
+**If you found this project useful, please ⭐ star the repo!**
+
+</div>

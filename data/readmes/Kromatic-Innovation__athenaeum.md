@@ -6,6 +6,12 @@
 
 **Compiled, provenance-carrying memory for AI agents whose knowledge has outgrown a flat memory file.**
 
+```bash
+uv tool install --python 3.13 'athenaeum[mcp]'
+```
+
+Then run `athenaeum init` and follow the [Quick start](#quick-start) below.
+
 <p align="center">
   <img src="https://github.com/Kromatic-Innovation/athenaeum/raw/main/docs/assets/athena.png" alt="Athena with her owl companion, holding an open book showing a knowledge graph" width="360">
 </p>
@@ -53,7 +59,8 @@ memory tool, RAG, and the existing agent-memory libraries, is in
 
 **Requires Python 3.13+.** See [Install](docs/guides/install.md) for the
 `PATH` setup `uv tool install` needs, and the wrong-interpreter warning to
-check against if `athenaeum --version` ever looks stale.
+check against if `athenaeum --version` ever looks stale. `git` must be
+installed; no git identity is needed (`init` sets a repo-local one if you have none).
 
 ```bash
 # Install (Python 3.13+; the [mcp] extra is needed for `serve` and `test-mcp`)
@@ -66,12 +73,25 @@ athenaeum init
 
 # Wire it into Claude Code — it auto-starts with every session
 claude mcp add --scope user athenaeum -- athenaeum serve --path ~/knowledge
+
+# Check the setup (read-only). FAILs are expected at this point; see below.
+athenaeum doctor
 ```
 
-`athenaeum doctor` is a read-only health check. Run on a fresh install, it is
+`athenaeum doctor` is a read-only health check. **On a fresh install it will
+show FAILs, and that is expected.** Right after the commands above it is
 expected to report FAILs for `mcp`, `hooks` and `search_index` (plus
 `key_mode` when neither an API key nor the `claude` CLI is available)
-until the steps below are complete; each FAIL names its fix.
+until the steps below are complete; each FAIL names its fix. Run it again
+once you have finished the quick start, and it should come back clean.
+
+The `[mcp]` extra above is all a fresh install needs. `athenaeum init`'s
+default config (`search_backend: vector`) wants the optional `[vector]`
+extra for semantic search, but without it `recall`, `reindex` and
+`session-end` all degrade to the `fts5` backend automatically, with a
+one-time warning on stderr — never a hard failure. Add the `[vector]`
+extra to the install command above later if you want semantic (not just
+keyword) matching.
 
 Want to confirm it works before wiring anything up or spending API budget?
 
@@ -185,7 +205,8 @@ transports, identical prompts either way. → [modules/provider](docs/modules/pr
 such as ChatGPT or the Grok apps, can't reach a stdio memory server at all.
 `athenaeum serve --transport http` serves the store over HTTPS behind your reverse proxy,
 with OIDC bearer-token auth (`serve.auth.*`) and a `remote` serve profile that narrows
-what leaves your machine. Experimental, and not covered by the `athenaeum.__all__`
+what leaves your machine, and each remote tool call is written to an audit log
+(digests and page ids only, never page text). Experimental, and not covered by the `athenaeum.__all__`
 compatibility promise: flags and keys may change in a minor release.
 → [guides/remote](docs/guides/remote.md)
 
@@ -208,9 +229,13 @@ minor release. → [design/witness-ledger](docs/design/witness-ledger.md)
   serving with OIDC auth, `promptwitness`, and the source trust graph). They sit
   outside `athenaeum.__all__` and may change in any minor release without a
   deprecation cycle.
-- **Removed surfaces.** `athenaeum merges` and `athenaeum questions` were removed
-  in 0.24.0, as announced. Use `athenaeum decisions` — see
-  [Upgrading](docs/guides/upgrading.md) for the command-by-command mapping.
+- **Removed surfaces.** 0.24.0 removed `athenaeum merges` and `athenaeum questions`
+  (use `athenaeum decisions`), `athenaeum rebuild-index` (use `athenaeum reindex`),
+  `athenaeum split-oversize` (use `athenaeum recompile`), seven one-shot repair
+  commands, the legacy `block` / `error` / `resolved_block` keys in MCP responses,
+  and a set of config keys and switches that had no effect or only turned
+  always-on behaviour off. See [Upgrading](docs/guides/upgrading.md) for the
+  command-by-command mapping and the [CHANGELOG](CHANGELOG.md) for the full list.
 - **Security fixes** go to the latest release only; see [SECURITY.md](SECURITY.md)
   for supported versions and how to report a vulnerability.
 
@@ -219,7 +244,7 @@ minor release. → [design/witness-ledger](docs/design/witness-ledger.md)
 | | |
 |---|---|
 | **Why this exists** | [Why Athenaeum](docs/why-athenaeum.md) · [North star](docs/north-star.md) |
-| **Get it running** | [Install](docs/guides/install.md) · [What runs unattended, and what happens when a prerequisite is missing](docs/guides/install.md#what-runs-unattended-after-install) · [Other clients and platforms](docs/guides/clients.md) · [Daily operation](docs/guides/daily-operation.md) · [Troubleshooting](docs/guides/troubleshooting.md) |
+| **Get it running** | [Install](docs/guides/install.md) · [What runs unattended, and what happens when a prerequisite is missing](docs/guides/install.md#what-runs-unattended-after-install) · [Other clients and platforms](docs/guides/clients.md) · [Reading a shared store from a second install](docs/guides/shared-store-reader.md) · [Daily operation](docs/guides/daily-operation.md) · [Troubleshooting](docs/guides/troubleshooting.md) |
 | **How it works** | [Module reference](docs/index.md#modules) — what each part does, reads, writes, and refuses |
 | **Every knob** | [Configuration](docs/reference/configuration.md) · [Environment](docs/reference/environment.md) · [Data formats](docs/reference/data-formats.md) |
 | **Extend it** | [Adapter contracts](docs/extending/) · [Storage surfaces](docs/extending/storage-adapter-contract.md) |

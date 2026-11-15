@@ -1,6 +1,6 @@
 # Astronomical
 
-<a href="https://github.com/aosama/astronomical/releases/download/v0.2.105/Astronomical-0.2.105-macOS-arm64.dmg"><img src="site/assets/download-for-mac.svg" alt="Download for Mac" width="170" height="34" style="vertical-align:middle"></a> <a href="https://discord.gg/E8a5qmhRhr"><img src="site/assets/discord.svg" alt="Discord" width="162" height="34" style="vertical-align:middle"></a>
+<a href="https://github.com/aosama/astronomical/releases/download/v0.2.109/Astronomical-0.2.109-macOS-arm64.dmg"><img src="site/assets/download-for-mac.svg" alt="Download for Mac" width="170" height="34" style="vertical-align:middle"></a> <a href="https://discord.gg/E8a5qmhRhr"><img src="site/assets/discord.svg" alt="Discord" width="162" height="34" style="vertical-align:middle"></a>
 
 **Run large AI models privately on your Mac, including models bigger than the memory you can spare.**
 
@@ -61,6 +61,7 @@ Run `astronomical --help` for the full list.
 ## Learn more
 
 - [How Astronomical works](docs/how-it-works.md): memory, speed, precision and current scope.
+- [One request, start to finish](docs/memory-walkthrough.md): how memory is managed during a request, for contributors.
 - [Configuration](docs/configuration.md): every setting, for people who want to edit the file by hand.
 - [Neural Engine prefill](docs/neural-engine-prefill.md): an experimental speed-up for some models.
 - [Building and developing](docs/development.md): build from source and run the tests.

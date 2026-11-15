@@ -12,7 +12,8 @@
   </p>
   <p>
   <a href="#快速开始"><b>交给 Agent 安装</b></a>
-  · <a href="https://zhouke0929.github.io/wechat-visual-director/"><b>查看成稿示例</b></a>
+  · <a href="https://zhouke0929.github.io/wechat-visual-director/#cases"><b>查看成稿示例</b></a>
+  · <a href="https://zhouke0929.github.io/wechat-visual-director/#themes"><b>在线切换主题</b></a>
   · <a href="#给参考创作自己的整套主题"><b>自定义排版样式</b></a>
   · <a href="https://github.com/zhouke0929/wechat-visual-director/releases"><b>版本记录</b></a>
   </p>
@@ -30,7 +31,7 @@ https://github.com/user-attachments/assets/ed6c0f8a-3f1a-4396-892d-10387bf63380
 
 教程、商业分析和品牌观点，同一套排版能力，不同的阅读气质。点击下方示例即可阅读完整推文，无需安装。
 
-[![三篇公众号成稿：青春校园、温暖人文与波普海报的真实排版及 AI 配图](docs/assets/readme/product-showcase-articles.png)](https://zhouke0929.github.io/wechat-visual-director/)
+[![三篇公众号成稿：青春校园、温暖人文与波普海报的真实排版及 AI 配图](docs/assets/readme/product-showcase-articles.png)](https://zhouke0929.github.io/wechat-visual-director/#cases)
 
 <table>
   <tr>
@@ -103,21 +104,21 @@ Agent 先回答这些问题，再选择适合的呈现方式：让对比有边�
 
 选题、资料、纯文本或 Markdown 都可以作为起点。Agent 整理内容并输出结构化规划，本地程序通过受控组件完成 Markdown 到微信兼容 HTML 的转换，形成统一、可编辑的文章版式。
 
-### 12 套主题，换的是整篇文章的阅读气质
+### 26 套内置主题，同一篇文章有不同表达
 
-从轻盈阅读、温暖人文，到编辑对比、新中式雅集、未来科技；每套主题都有自己的标题、色彩、留白、章节节奏和组件样式。
+官网无需安装就能试排版：点选任意一套内置主题，同一篇文章会在手机预览中换版，往下滚动就能读到结尾。可以从[像素现场](https://zhouke0929.github.io/wechat-visual-director/?theme=pixel_live#themes)、[折扇与局部特写](https://zhouke0929.github.io/wechat-visual-director/?theme=folded_fan_detail#themes)或[黑白墨迹](https://zhouke0929.github.io/wechat-visual-director/?theme=ink_traces#themes)开始，对比标题、图文和重点段落。
 
-可以在工作台整篇切换，正文与已有图片会保留。**切换主题本身不会重新调用图片模型**；如果希望图片也适配新风格，再主动生成新候选。
+本地工作台的主题样本册支持按风格浏览。在工作台给自己的稿子换主题，正文与已有图片会保留。**切换主题本身不会重新调用图片模型**；如果希望图片也适配新风格，再主动生成新候选。
 
-[![12 套真实主题的在线样本册](docs/assets/readme/product-showcase-themes.png)](https://zhouke0929.github.io/wechat-visual-director/#themes)
+[![在线排版体验：切换 26 套主题，在手机预览内滚动阅读整篇](docs/assets/readme/product-showcase-themes.png)](https://zhouke0929.github.io/wechat-visual-director/#themes)
 
-[打开在线主题样本册，比较同一篇文章的不同表达 →](https://zhouke0929.github.io/wechat-visual-director/#themes)
+[在官网切换主题，看看同一篇文章的不同排版 →](https://zhouke0929.github.io/wechat-visual-director/#themes)
 
 ### 给参考，创作自己的整套主题
 
 喜欢秀米、135 编辑器里的某个组件，或有自己想要的品牌气质？**推荐附上喜欢的组件截图**，交给已安装 Skill 的 Agent，更容易对齐你想要的风格。不需要准备整套参考，也不需要自己写 HTML。
 
-Agent 会分析参考的构图与视觉语言，寻找相关组件参考、联想同方向元素，再延展整套标题、引用、列表、图文和重点组件；不是只给现有主题换色，也不是只优化少数部件。随后进行本地结构检查与视觉评审，用完整文章展示阅读效果。
+Agent 会保留参考里值得辨认的构图，再寻找相关组件、联想元素，把风格延展到整套标题、引用、列表、图文和重点组件。排版不靠重复贴图来统一；简洁的组件也要放回整篇文章里检查阅读和风格是否协调。验收可以同时看完整文章和组件样本册。
 
 ```text
 请用 wechat-visual-director，根据我附上的组件参考图，创作一整套新的主题。
@@ -174,7 +175,7 @@ Agent 会分析参考的构图与视觉语言，寻找相关组件参考、联�
 
 “无需额外 Key”不代表模型使用免费；Agent 订阅、模型与图片服务费用由对应服务商计收。上传自己的图片不需要图片 API。
 
-**不接微信 API，也能复制图文。** 工作台会把已采用的正文图片和主题装饰随正文一起准备进富文本剪贴板；AI 配图和上传的正文图片都适用，不是只复制文字或本机图片链接。公众号封面、标题等发布信息仍需在后台设置。
+**不接微信 API，也能在编辑页直接复制图文。** 不用先选封面或保存最终版本；原稿图片、已采用的配图和主题装饰会随正文一起复制。公众号封面、标题等发布信息仍需在后台设置。
 
 需要浏览器支持图文剪贴板；大图较多时准备与粘贴可能变慢，超过本地大小保护上限会明确提示，不静默丢图。粘贴后请等图片处理完成，保存草稿并核对手机预览；失败时可下载交付包，已配置微信连接的用户也可改用 API 交付。[查看复制图文与排障说明 →](docs/usage-guide.md#复制图文不必先配置微信-api)
 
@@ -187,7 +188,7 @@ Agent 会分析参考的构图与视觉语言，寻找相关组件参考、联�
 - **凭据只填本地设置。** 不把 API Key、AppSecret、Cookie 或 Token 粘贴进 Agent 对话，也不提交到仓库。
 - **草稿不等于发布。** 配图、封面与最终稿由你确认；创建草稿不自动群发。事实、图片文字与素材权利仍需发布者核对。
 
-项目已用于真实公众号交付，但仍处于 Alpha 阶段。项目与腾讯、微信官方无隶属或背书关系。
+Windows x64 已进入稳定版，支持从原稿排版到公众号草稿交付的完整流程。macOS 仍为 Technical Preview。项目与腾讯、微信官方无隶属或背书关系。
 
 ## 系统要求
 
@@ -238,6 +239,6 @@ Windows 与 macOS 的 CI 执行核心测试和工作台构建；Release 流程�
 
 ---
 
-**想先看看效果？** [打开在线样本册](https://zhouke0929.github.io/wechat-visual-director/#themes)。
+**想先看看效果？** [在线切换主题](https://zhouke0929.github.io/wechat-visual-director/#themes)。
 
 **想用自己的文章试一遍？** [复制安装提示词](#快速开始)，把第一篇文章交给 Agent。

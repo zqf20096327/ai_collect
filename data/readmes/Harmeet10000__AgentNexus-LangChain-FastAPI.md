@@ -152,7 +152,8 @@ labels (typed relationship edges landed with the retired plan's Phase D — the
 [archived plan](openspec/changes/archive/2026-10-31-plan-bulletproof-ingestion.md)
 carries the completion audit), retrieval unification
 ([mount-retrieval-graph](openspec/changes/mount-retrieval-graph/proposal.md)) and the
-portfolio tool layer (see [PLAN-agent-tools.md](PLAN-agent-tools.md)).
+portfolio tool layer (see
+[PLAN-agent-tools.md](openspec/changes/archive/PLAN-agent-tools.md)).
 
 ## Security model
 
@@ -199,7 +200,7 @@ docker compose up -d rabbitmq timescale # local RabbitMQ + PostgreSQL/Timescale
 uv sync --extra dev
 uv run alembic upgrade head             # see caveat below
 
-uv run uvicorn app.main:app --host 0.0.0.0 --port 5000
+make backend
 make celery-ingestion                   # separate terminal — ingest your uploads
 ```
 
@@ -227,12 +228,13 @@ ast-grep scan src/                              # structural rules
 
 # worker role profiles — queue, pool, concurrency and child-recycle are
 # owned by the role definition; do not add a second -Q or process-shape flag
-uv run worker --role default --loglevel=info
-uv run worker --role ingestion --loglevel=info
-uv run worker --role crawler --loglevel=info
-uv run beat --loglevel=info
+.venv/bin/worker --role default --loglevel=info
+.venv/bin/worker --role ingestion --loglevel=info
+.venv/bin/worker --role crawler --loglevel=info
+.venv/bin/beat --loglevel=info
 
-# the same four commands, as make targets
+# local entry points, as make targets
+make backend            # FastAPI backend (BACKEND_HOST/BACKEND_PORT can override defaults)
 make celery              # default worker pool
 make celery-ingestion    # ingestion worker pool
 make celery-crawler      # crawler worker pool
@@ -277,8 +279,8 @@ import-linter contracts, per-feature disposition — is recorded in
 - [`openspec/changes/archive/2026-10-31-plan-bulletproof-ingestion.md`](openspec/changes/archive/2026-10-31-plan-bulletproof-ingestion.md) — retired
   ingestion-hardening plan (north star: the pipeline never lies; delivered 2026-10-31,
   residues tracked in `openspec/changes/`)
-- [`PLAN-agent-tools.md`](PLAN-agent-tools.md) — agent tool-set plan (tiny
-  projection, big catalog, authority at the executor)
+- [`openspec/changes/archive/PLAN-agent-tools.md`](openspec/changes/archive/PLAN-agent-tools.md) —
+  agent tool-set plan (tiny projection, big catalog, authority at the executor)
 - [`evals/ADJUDICATION-RUNBOOK.md`](evals/ADJUDICATION-RUNBOOK.md) — how the legal
   SME adjudicates disputed labels
 - [`docs/runbooks/`](docs/runbooks/) — tenant migration, upload budgets, live testing

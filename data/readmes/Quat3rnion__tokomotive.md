@@ -28,6 +28,10 @@ The terms in this document are defined in [GLOSSARY.md](GLOSSARY.md).
   encrypted proxy URL. See [Egress proxies](docs/usage.md#egress-proxies).
 - Accepts `provider/model` names when no Route or catalog Model matches. The
   Proxy removes the Provider prefix before the upstream request.
+- Resolves model IDs from connected Providers and supports Provider default
+  models and priorities. Unknown names get HTTP 404 with permitted suggestions,
+  unless the Operator selects a Route. The Routes page can test a name without
+  an upstream request. Success headers identify the Route, Provider and Model.
 - Rewrites the Model name of the request to the upstream model name of the
   Deployment.
 - Offers an encrypted [exact response cache](docs/usage.md#exact-response-cache)

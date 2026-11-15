@@ -17,13 +17,14 @@
   <a href="https://crowdgpt.net">Website</a> ·
   <a href="https://discord.gg/2Shwqj3Xpx">Discord</a> ·
   <a href="./docs/ARCHITECTURE.md">Architecture</a> ·
-  <a href="./docs/DATA.md">Training Data</a>
+  <a href="./docs/DATA.md">Training Data</a> ·
+  <a href="https://github.com/Vxtzq/CrowdEval">Benchmarks</a>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white">
   <img src="https://img.shields.io/badge/License-GPL--3.0-green?style=for-the-badge">
-  <img src="https://img.shields.io/badge/Version-v3.0-green?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Version-v3.4-green?style=for-the-badge">
   <a href="https://discord.gg/2Shwqj3Xpx"><img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"></a>
   <img src="https://img.shields.io/endpoint?style=for-the-badge&url=https%3A%2F%2Fhuggingface.co%2FVxtzq%2FCrowd-v1%2Fraw%2Fmain%2Fbadge_tokens.json" alt="Tokens Processed">
 </p>
@@ -32,10 +33,28 @@
   <strong>The best 0$ AI.</strong>
 </p>
 
-# CrowdGPT v3.3 changelog
+# Benchmarks (epoch 374)
+<p align="center">
+  <a href="https://crowdgpt.net">
+    <picture>
+      <img
+        src="https://raw.githubusercontent.com/Vxtzq/CrowdGPT/refs/heads/main/docs/benchmarks/benchmarks.png"
+        alt="CrowdGPT"
+        width="100%"
+        style="width: 100%; max-width: 100%; height: auto; display: block; border-radius: 12px;"
+      >
+    </picture>
+  </a>
+</p>
+
+**Disclaimer: This does not mean Crowd-v1 is an intelligent model. It just means it is good at general english** (these benchmarks are generally not hard)
+
+# CrowdGPT v3.4 changelog
 - Merged numerous pull requests
 - Prepared ground for Crowd-v2
- 
+- Released evaluation toolkit 🥳
+- Implemented auto-pause which should work (while not pausing the client for no reason 😭)
+  
 ## What is CrowdGPT?
 
 CrowdGPT is a **project for training arbitrary big LLMs** using volunteered compute.

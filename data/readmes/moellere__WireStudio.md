@@ -1,12 +1,13 @@
 # wirestudio
 
-Hardware design tool for ESPHome devices. A single `design.json`
+Hardware design tool for microcontroller devices. A single `design.json`
 (board + components + connections) drives every artifact: solved pin
-assignments, electrical validation, compile-clean ESPHome YAML, an
-ASCII wiring diagram, a KiCad schematic and placed PCB, a JLCPCB fab
-bundle (BOM / CPL / Gerber / drill), and a parametric OpenSCAD
-enclosure. Drive it from the web UI, the built-in agent, or any MCP
-client.
+assignments, electrical validation, firmware for the framework you pick
+(compile-clean ESPHome YAML, a Tasmota template, a WLED build, LoRaWAN
+firmware, Meshtastic, CircuitPython or MicroPython), an ASCII wiring
+diagram, a KiCad schematic and placed PCB, a JLCPCB fab bundle (BOM /
+CPL / Gerber / drill), and a parametric OpenSCAD enclosure. Drive it
+from the web UI, the built-in agent, or any MCP client.
 
 Stock ESPHome's Device Builder covers picking a board and adding
 components. wirestudio works below the YAML: the component library
@@ -92,7 +93,7 @@ Detailed docs live in [`docs/`](docs/):
 
 ## Status
 
-`v1.2.0` — on PyPI (`pip install wirestudio`). What 1.0 promises, and
+`v1.3.0` — on PyPI (`pip install wirestudio`). What 1.0 promises, and
 how to upgrade, is in the [release notes](docs/release-notes-1.0.md). The studio has wide
 surface area (YAML, schematic, PCB + fab outputs, enclosure,
 subcircuits with electrical rules, inventory matching, component
@@ -159,7 +160,7 @@ built from the weekly `esphome-matrix` sweep.
 docker run --rm -p 8765:8765 \
   -e ANTHROPIC_API_KEY=sk-ant-... \
   -v wirestudio-data:/data \
-  ghcr.io/moellere/wirestudio:1.2.0
+  ghcr.io/moellere/wirestudio:1.3.0
 ```
 
 Open <http://localhost:8765>. The image bundles the FastAPI server +

@@ -11,6 +11,82 @@ Built to operate entirely in memory with zero local disk persistence, `oxllm` is
 
 ---
 
+## ⚡ At a Glance
+
+```bash
+brew install planetf1/tap/oxllm          # or: cargo install oxllm
+oxllm serve --config config.toml         # starts on http://127.0.0.1:8080
+```
+
+```bash
+# OpenAI-compatible chat (works with any OpenAI SDK)
+curl -X POST http://127.0.0.1:8080/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{"model": "smart", "messages": [{"role": "user", "content": "Hello"}]}'
+
+# Anthropic SDK / Claude Code
+curl -X POST http://127.0.0.1:8080/v1/messages \
+  -H "anthropic-version: 2023-06-01" \
+  -H "content-type: application/json" \
+  -d '{"model": "claude", "max_tokens": 256, "messages": [{"role": "user", "content": "Hello"}]}'
+
+# Check status — no collector needed
+oxllm status
+```
+
+See [Quick Start](#-quick-start) for the full setup walkthrough including provider config.
+
+---
+
+## 🗺️ API Surface
+
+oxllm proxies three API families. Each route applies the same circuit breaking,
+failover, and session affinity regardless of which family it belongs to.
+
+| Route | Method(s) | API family | Notes |
+|---|---|---|---|
+| `/v1/chat/completions` | POST | OpenAI | Streaming (SSE) and non-streaming |
+| `/v1/completions` | POST | OpenAI | Fill-in-the-middle / editor autocomplete |
+| `/v1/embeddings` | POST | OpenAI | |
+| `/v1/models` | GET | OpenAI + Anthropic | Returns combined shape; works with both SDKs |
+| `/v1/messages` | POST | Anthropic | SSE streaming; Anthropic SDK, `pi`, Claude Code |
+| `/v1/messages/count_tokens` | POST | Anthropic | |
+| `/v1/responses` | POST | OpenAI stateful | SSE streaming |
+| `/v1/responses/{id}` | GET, DELETE | OpenAI stateful | Provider-pinned by id |
+| `/v1/responses/{id}/{action}` | GET, POST | OpenAI stateful | e.g. `/cancel`, `/input_items` |
+| `/v1/responses/compact` | POST | OpenAI stateful | |
+| `/v1/responses/input_tokens` | POST | OpenAI stateful | |
+| `/v1/conversations` | POST | OpenAI stateful | |
+| `/v1/conversations/{id}` | GET, POST, DELETE | OpenAI stateful | Provider-pinned by id |
+| `/v1/conversations/{id}/items` | GET, POST | OpenAI stateful | |
+| `/v1/conversations/{id}/items/{item_id}` | GET, DELETE | OpenAI stateful | |
+| `/v1/decisions` | POST | OpenAI Decisions API | Predicate/choice/score questions; vLLM 0.33+ and OpenAI `gpt-6-luna` |
+| `/v1/systemone` | POST | llama.cpp decisions | Typed choice/score questions (llama.cpp only) |
+| `/status` | GET | Admin (localhost) | JSON + table; also `oxllm status` CLI |
+| `/admin/tail` | GET | Admin (localhost) | SSE stream of recent requests |
+| `/reload` | POST | Admin (localhost) | Hot-reload config; also `SIGHUP` |
+
+**Provider routing**: a virtual model entry's `api` field (`"openai"` default, `"anthropic"`) determines which routes it handles. A request only reaches providers whose `api` matches; mismatched entries in a pool are skipped automatically.
+
+### 📨 Header Forwarding
+
+oxllm strips auth headers and rewrites `model`, then forwards the following
+client headers upstream on **every route**:
+
+| Header(s) | Forwarded | Notes |
+|---|---|---|
+| `traceparent` | ✓ both paths | W3C trace context — links upstream spans to the caller's trace |
+| `tracestate` | ✓ both paths | W3C vendor trace state |
+| `accept` | ✓ both paths | Tells the upstream whether the client expects SSE or JSON |
+| `x-*` (all) | ✓ both paths | Client tracing, debugging, and SDK correlation headers; `x-api-key` is excluded (per-provider auth is substituted instead) |
+| `anthropic-version` | ✓ Anthropic path | Forwarded from client; defaults to `2023-06-01` if absent |
+| `anthropic-*` (all others) | ✓ Anthropic path | Covers `anthropic-beta`, extended thinking, prompt caching, and any future beta headers without code changes |
+
+Headers **not** forwarded upstream: `authorization`, `x-api-key` (replaced with
+per-provider credentials), `content-length` (reqwest recomputes), `host`.
+
+---
+
 ## 🚀 Key Features
 
 * **Zero-Disk Dependency**: No SQLite, local caching, or file write operations during routing. State is strictly in memory.
@@ -28,6 +104,8 @@ Built to operate entirely in memory with zero local disk persistence, `oxllm` is
 * **Local Stats Dashboard**: Every provider tracks request count, success count, token volumes, and last request time via lock-free atomics. Query via `oxllm status` or `curl /status` — no external collector needed.
 * **Traffic Visibility**: a bounded in-memory ring of recent request records (metadata only) plus `oxllm tail` for a live stream — route, provider, attempts, status, latency, TTFT per request, no collector needed.
 * **OOM-Proof Telemetry**: Bounded OTel event channel (1024 cap) with non-blocking `try_send` drops. If `otelite` is offline, telemetry degrades gracefully and the proxy keeps running.
+* **DNS Fallback at Startup**: when system DNS fails to resolve a provider hostname (e.g. VPN DNS unreachable on a split-tunnel connection), oxllm queries configured nameservers directly over UDP, then `1.1.1.1` as a last resort. The fallback only activates when normal resolution fails; TLS SNI still uses the correct hostname. A warning is logged; the override clears on the next reload once DNS recovers. macOS only.
+* **Broad Request Header Forwarding**: `traceparent`, `tracestate`, `accept`, and all `x-*` headers forwarded on every route; the Anthropic path additionally propagates `anthropic-version` and all `anthropic-*` headers, keeping prompt caching, extended thinking, and future beta features working without code changes. See [Header Forwarding](#-header-forwarding).
 * **W3C Trace Context Propagation**: Extracts and injects `traceparent` headers for continuous trace spans.
 * **Dual-Stack IPv4/IPv6**: Configurable via `bind_family`: `"ipv4"` (default), `"ipv6"`, or `"dual"` for both.
 * **Unix-Style Environment Expansion**: Shell-style `${VAR}` replacement in TOML config values.
@@ -113,9 +191,7 @@ msg = client.messages.create(
 
 Behaviour specific to this route:
 
-* **Upstream auth**: `x-api-key: <provider api_key>`. `anthropic-version` is
-  forwarded from the client (default `2023-06-01`); `anthropic-beta` is forwarded
-  when present.
+* **Upstream auth**: `x-api-key: <provider api_key>`. See [Header Forwarding](#-header-forwarding) for the full table of which client headers are propagated upstream; the Anthropic path additionally forwards `anthropic-version` and all `anthropic-*` headers.
 * **Inbound auth**: with `server.api_keys` set, `/v1/messages*` accepts the key
   as `x-api-key` or `Authorization: Bearer` (constant-time compare). The OpenAI
   routes still take Bearer only.
@@ -323,8 +399,8 @@ curl -X POST http://127.0.0.1:8080/v1/completions \
   -H "Content-Type: application/json" \
   -d '{"model": "basic", "prompt": "def add(a, b):\n    ", "max_tokens": 16}'
 
-# Live dashboard (no external collector needed)
-curl http://127.0.0.1:8080/status
+# Check status — no collector needed
+oxllm status
 ```
 
 
@@ -349,7 +425,27 @@ curl http://127.0.0.1:8080/status
 
 ### Provider Definition
 
-Each provider requires `name`, `enabled`, `base_url` (with trailing `/v1/`), `api_key` (or `${VAR}` env reference), and `models` list. Optional per-provider keys: `upstream_timeout_secs` (overrides `server.upstream_timeout_secs`, so a fast-failing local provider can fail over sooner than a slow global timeout) and `cost_per_mtok` (cost weight used by the `cheapest` policy). Per-provider circuit tuning: `circuit_failure_threshold` and `circuit_base_cooldown_secs` override the server-wide values for that provider. `first_byte_timeout_secs` applies to streaming requests only: a provider that sends no response headers in that time is abandoned and its circuit opens at once, so a hung endpoint costs one short wait instead of the full `upstream_timeout_secs`. Non-streaming requests ignore it, because their headers only arrive after the whole generation. `auth_header` (OpenAI-format providers only) sends `api_key` raw in the named header instead of `Authorization: Bearer`, for gateways that expect their own key header, e.g. `auth_header = "X-Api-Key"`.
+**Required fields:**
+
+| Field | Description |
+|---|---|
+| `name` | Unique identifier used in virtual model entries |
+| `enabled` | `true`/`false` — excluded from routing when false |
+| `base_url` | Provider endpoint, trailing `/v1/` required |
+| `api_key` | Credential; `${VAR}` env references supported |
+| `models` | List of model names this provider accepts |
+| `api` | `"openai"` (default) or `"anthropic"` — determines which routes this provider handles |
+
+**Optional fields:**
+
+| Field | Description |
+|---|---|
+| `upstream_timeout_secs` | Per-provider timeout override; lets a local provider fail over sooner than the server-wide default |
+| `cost_per_mtok` | Cost weight for the `cheapest` routing policy |
+| `first_byte_timeout_secs` | Streaming only: abandon the provider if no response headers arrive within this many seconds, opening its circuit immediately. Non-streaming ignores it (headers only arrive after the full generation) |
+| `auth_header` | OpenAI-format providers only: send `api_key` raw in this header instead of `Authorization: Bearer`, e.g. `auth_header = "X-Api-Key"` |
+| `circuit_failure_threshold` | Override the server-wide failure count before a circuit opens |
+| `circuit_base_cooldown_secs` | Override the server-wide base cooldown before a half-open probe |
 
 ### Virtual Models (Fallback Chains)
 
@@ -393,6 +489,34 @@ Clients ask for `general-med`; the runtime behind each model is a leaf detail yo
 7. **HalfOpen probes**: after the cooldown a single probe request is allowed through; concurrent requests skip the entry (an atomic `compare_exchange`, no lock). A successful probe closes the circuit.
 8. **Idle decay**: every 5 minutes without traffic reduces the failure count by 1; below the threshold an open circuit closes again.
 9. Anthropic routes (`/v1/messages`) return 4xx other than 408/429 to the caller untouched: another provider would not fix a bad request or key, and it says nothing about provider health.
+
+### Endpoint Capability Mismatches
+
+Some endpoints are only supported by specific backends — `/v1/completions` FIM
+requires a model with fill-in-the-middle training; `/v1/systemone` is a
+llama.cpp-specific decisions API not available on hosted LiteLLM gateways or
+cloud providers. When a virtual model pool mixes compatible and incompatible
+providers, an incompatible provider returns a 4xx that counts as a failure,
+opens its circuit, and causes a failover to the next — which may also not
+support the endpoint.
+
+The fix is to use a **dedicated virtual model** that lists only capable
+providers for such endpoints, rather than routing via a general pool:
+
+```toml
+[virtual_models]
+# FIM completions: only the provider whose checkpoint has FIM training.
+"granite-fim" = [{ provider = "llamacpp-local", model = "granite-4.1-3b-fim" }]
+
+# /v1/systemone: only llama.cpp backends.
+"decisions-model" = [{ provider = "llamacpp-local", model = "granite-4.1-8b" }]
+```
+
+If you accidentally route an unsupported endpoint to a provider, the circuit
+breaker will open it after `circuit_failure_threshold` failures (default 3),
+so it will stop receiving traffic — but those first few requests will return
+errors to callers. Avoid this by ensuring every virtual model's listed providers
+all support the endpoint you intend to call.
 
 ### Routing Policies
 
@@ -576,7 +700,32 @@ All admin endpoints (`/health`, `/status`, `/reload`, `/admin/*`) are restricted
 
 ## 📊 Telemetry
 
-oxllm exports OpenTelemetry (OTel) traces and metrics via OTLP/HTTP JSON to a collector like [otelite](https://github.com/planetf1/otelite).
+oxllm exports [OpenTelemetry](https://opentelemetry.io/) traces and metrics via
+[OTLP/HTTP](https://opentelemetry.io/docs/specs/otlp/) JSON. Span attributes follow
+the [OpenTelemetry GenAI semantic conventions](https://github.com/open-telemetry/semantic-conventions-genai)
+([client inference](https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/client-inference.md)).
+
+### Collector options
+
+Any OTLP/HTTP-compatible collector works: [Jaeger](https://www.jaegertracing.io/),
+[Grafana Alloy](https://grafana.com/oss/alloy-opentelemetry-collector/), the
+[OpenTelemetry Collector](https://opentelemetry.io/docs/collector/), or anything
+else that accepts OTLP. Set `otel_endpoint` to its base URL and you're done.
+
+For a simple local setup with no extra infrastructure, [**otelite**](https://github.com/planetf1/otelite)
+is a lightweight single-binary collector and viewer that stores traces and metrics
+locally (no Docker, no Prometheus, no Jaeger required):
+
+```bash
+# Install and start (listens on http://127.0.0.1:4318 by default)
+brew install planetf1/tap/otelite
+otelite serve &
+
+# Example queries using otelite's CLI
+otelite traces list --since 1h      # all recent traces
+otelite traces list --status ERROR  # failed requests
+otelite metrics list                # metric names and latest values
+```
 
 ### Configuration
 
@@ -593,29 +742,37 @@ without a collector.
 
 ### Span Attributes (Traces)
 
-Every request produces one `oxllm.transaction` span with GenAI semantic conventions:
+Every request produces one `oxllm.transaction` span. Standard attributes follow the
+[GenAI client inference conventions](https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/client-inference.md);
+`proxy.*` and `gen_ai.client.ttft_ms` are oxllm extensions.
 
-| Attribute | Example | Description |
+| Attribute | Example | Notes |
 |---|---|---|
 | `gen_ai.operation.name` | `chat` / `messages` | Endpoint family |
-| `gen_ai.provider.name` | `claude-ext` | Provider that served it (the last one tried, on failure) |
+| `gen_ai.provider.name` | `claude-ext` | Provider that served it (last tried on failure) |
 | `gen_ai.request.model` | `aws/claude-sonnet-5-5` | Upstream model used |
-| `gen_ai.usage.input_tokens` | `1420` | Input tokens (Anthropic: includes cache reads and creations) |
+| `gen_ai.usage.input_tokens` | `1420` | Total input tokens (Anthropic: includes cache reads and creations) |
 | `gen_ai.usage.output_tokens` | `312` | Output tokens |
+| `gen_ai.usage.cache_read.input_tokens` | `1100` | Tokens served from upstream prompt cache (Anthropic only; absent when 0) |
+| `gen_ai.usage.cache_creation.input_tokens` | `280` | Tokens written to upstream prompt cache (Anthropic only; absent when 0) |
+| `gen_ai.response.finish_reasons` | `stop` | Set to `stop` on success; absent on failure |
+| `gen_ai.client.ttft_ms` | `320` | Time to first token (ms). Streaming: time to first headers. Non-streaming: total latency. Absent on failure. *(oxllm extension)* |
+| `error.type` | `all_providers_failed` | Set on failure; value matches `proxy.initial_failure_reason` |
 | `proxy.route` | `pool-docs` | Virtual model the client asked for |
 | `proxy.attempts_required` | `2` | Pool entries tried |
-| `proxy.initial_failure_reason` | `all_providers_failed` | Set on a failed request (`all_providers_failed`, `no_available_provider`, `stream_failed`) |
+| `proxy.initial_failure_reason` | `all_providers_failed` | Failure reason: `all_providers_failed`, `no_available_provider`, `stream_failed` |
 | `proxy.request_id` | `oxllm-3dc0...` | Matches the `x-request-id` response header |
 
-A request that fails after every entry (or whose stream breaks) gets span status `ERROR`, so `otelite traces list --status ERROR` finds it. Spans link to an incoming W3C `traceparent` when present. Find them by service: `otelite traces list --since 1h` and look for service `oxllm`.
+A request that fails after every entry (or whose stream breaks) gets span status `ERROR` and `error.type` set, so `otelite traces list --status ERROR` finds it immediately. Spans propagate an incoming W3C `traceparent` when present, linking upstream caller traces.
 
 ### Metrics
 
-| Metric | Type | Description |
-|---|---|---|
-| `llm_proxy.provider.status` | Gauge | `0` = healthy, `1` = rate-limited, `2` = circuit tripped (per provider) |
-| `llm_proxy.request.duration` | Histogram | Request lifecycle (ms), buckets from 5 ms to 10 min so slow LLM calls are not lost in an overflow bucket |
-| `llm_proxy.tokens.consumed` | Counter | Cumulative tokens by provider, model and type |
+| Metric | Type | Tags | Description |
+|---|---|---|---|
+| `llm_proxy.provider.status` | Gauge | `provider.name` | `0` = healthy, `1` = rate-limited, `2` = circuit tripped |
+| `llm_proxy.request.duration` | Histogram | `gen_ai.*` | Total request lifecycle (ms), buckets 5 ms – 10 min |
+| `llm_proxy.ttft` | Histogram | `gen_ai.*` | Time to first token (ms), buckets 50 ms – 60 s |
+| `llm_proxy.tokens.consumed` | Counter | `gen_ai.*` + `type` | Cumulative tokens; `type` is `input`, `output`, `cache_read`, or `cache_creation` |
 
 Metrics are exported every 60 s by default. `otel_endpoint` is the collector's base URL; oxllm appends `/v1/traces` and `/v1/metrics` itself.
 

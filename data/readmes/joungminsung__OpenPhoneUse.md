@@ -42,7 +42,7 @@ Ask in plain language, for example *"Get my phone ready for bed: turn on dark mo
 
 - **Runs on the phone alone.** No PC, root, ADB or Shizuku. You turn on one accessibility service and sign in to a model.
 - **Works in the apps you already have.** It reads the accessibility tree and a screenshot, so drawn content such as games, maps and charts works too.
-- **Uses your model.** Your ChatGPT plan, an OpenAI API key, Claude, Grok or Gemini.
+- **Uses your model.** Your ChatGPT plan, an OpenAI API key, Claude, Grok, Gemini, or any OpenAI-compatible server (OpenRouter, Groq, Ollama and more).
 - **Asks first.** Always before paying or changing security settings. Before deleting, unless you asked for that one recoverable item, and before sending, unless you named the recipient and the text. It never types your passwords; it hands that step to you.
 
 **Benchmark: 94.5 / 100** on 31 graded tasks in 9 categories, with a median of 42 seconds per task (GPT-6.1 Terra with fast mode, on an Android emulator, 2026-11-03, one run on a build from before this release). [See how it is graded](#benchmark).
@@ -101,7 +101,7 @@ Besides driving apps, it has built-in tools for calendar, alarms, reminders, not
 
 1. **Install the APK.** Open the downloaded file and allow installs from that source when Android asks. It is not on the Play Store. If Android says the app was not installed, uninstall any earlier test build first. Google Play Protect may show "App scan recommended" and then "Harmful app blocked". Google does not say why; OpenPhoneUse asks for strong access, such as accessibility control. Decide for yourself: compare the APK with the `OpenPhoneUse.apk.sha256` file in the release, read the source, or build it yourself. To go ahead, choose the option to install anyway, and leave Play Protect on.
 2. **Turn on control:** **Settings → Accessibility → OpenPhoneUse** → on. On Android 13 and newer, a sideloaded APK usually has this switch greyed out by "restricted settings"; if so, go to **Settings → Apps → OpenPhoneUse → ⋮ (top right) → Allow restricted settings**, then turn it on again.
-3. **Sign in:** in the app's Settings, choose **Continue with ChatGPT** to use your plan, or paste an OpenAI, Claude, Grok or Gemini API key.
+3. **Sign in:** in the app's Settings, choose **Continue with ChatGPT** to use your plan, paste an OpenAI, Claude, Grok or Gemini API key, or enter an OpenAI-compatible server under **Other**.
 4. **Ask for something**, for example "Turn on Do Not Disturb" or "Compare the current price of the AirPods Pro 3 at Amazon, Best Buy and Walmart".
 
 Requirements: Android 11 or newer, and a ChatGPT account or an API key from one of the providers above. To build it yourself, see [Build from source](#build-from-source).
@@ -194,7 +194,7 @@ There are several ways to automate an Android phone. They make different trade-o
 | Needs a PC, ADB or root | No | PC and ADB | Shizuku (started via ADB or root) or root | No for most actions | No |
 | Understands any app's screen | Yes, accessibility tree plus screenshot; refuses apps that block screen capture | Yes, via screenshots or UI dumps | Varies, often scripted | No, follows recorded rules | Only supported apps and actions |
 | Asks before risky actions | Yes, always for money and security; deletes unless you asked for that one recoverable item; sends unless you named the recipient and text | Varies | Varies | You decide when writing the macro | Yes, for its own actions |
-| Choice of model | ChatGPT plan, OpenAI API, Claude, Grok, Gemini | Varies | Varies | None | The vendor's own |
+| Choice of model | ChatGPT plan, OpenAI API, Claude, Grok, Gemini, any OpenAI-compatible API | Varies | Varies | None | The vendor's own |
 | Open source | Yes (MIT) | Often | Varies | Mostly no | No |
 
 PC-driven agents are great for research and for running many devices; macros are great for fixed, repeatable jobs. OpenPhoneUse aims at the case in between: a single phone, almost any app, a request in plain words, and no extra hardware.
@@ -217,6 +217,7 @@ No. It uses only Android's public AccessibilityService API, which you turn on yo
 - **ChatGPT plan:** sign in with ChatGPT and use your plan's usage (OpenAI's "Sign in with ChatGPT" for apps). The app lists the models your account offers, such as GPT-6.1 Terra, GPT-6.1 Sol and GPT-6 Astra.
 - **OpenAI API key:** the same models, billed per token.
 - **Claude, Grok or Gemini:** paste that provider's API key.
+- **Other (OpenAI-compatible):** pick OpenRouter, Groq, Mistral, Together, DeepSeek, Ollama or LM Studio, or enter any server's base URL, then choose a model from the list it offers. A local server may need no key. The model must support tool calling; if it cannot read images, set what is sent to the model to text only. Plain http works only for a server on the phone itself (localhost); use https for anything else.
 
 By default GPT-6.1 Terra makes the decisions with fast mode on, and a lighter helper model does repetitive screen work. You can change the model, reasoning effort and fast mode in the app. Fast mode is available with an OpenAI API key and a ChatGPT plan. It may be refused for some models or accounts, and the app then leaves it out.
 

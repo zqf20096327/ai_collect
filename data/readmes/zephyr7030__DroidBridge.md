@@ -172,13 +172,33 @@ Module updates are offered by your root manager.
 
 ## Connect a local agent
 
-1. In the app open **Agent connection → Local MCP**, turn it on and copy the token.
-2. Point your MCP client at `http://127.0.0.1:8765/mcp` (root edition: `8766`) with
-   `Authorization: Bearer <token>`.
-   From a computer, forward the port first:
+1. In the app open **Agent connection → Local MCP** and turn it on.
+2. Tap **Copy setup prompt** and paste it into your agent (Codex, Claude Code, opencode and others).
+   The agent forwards the port if it runs on a computer, adds the server to its own MCP
+   configuration and checks the connection. The prompt contains the access token.
+   The same prompt with placeholders is in [AGENT-SETUP.md](AGENT-SETUP.md).
+
+To set it up by hand instead, copy the token and:
+
+1. Point your MCP client at `http://127.0.0.1:8765/mcp` (root edition: `8766`) with
+   `Authorization: Bearer <token>`. The endpoint speaks MCP 2026-07-28 and also serves clients
+   that still begin with `initialize` (2025-03-26, 2025-06-18 and 2025-11-25).
+   From a computer, forward the port first; any free local port works:
 
    ```bash
    adb forward tcp:8765 tcp:8765
+   ```
+
+   Claude Code:
+
+   ```bash
+   claude mcp add --transport http droidbridge http://127.0.0.1:8765/mcp --header "Authorization: Bearer <token>"
+   ```
+
+   Codex, with the token in an environment variable:
+
+   ```bash
+   codex mcp add droidbridge --url http://127.0.0.1:8765/mcp --bearer-token-env-var DROIDBRIDGE_TOKEN
    ```
 
 ## Screenshots

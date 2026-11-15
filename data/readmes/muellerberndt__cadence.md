@@ -4,7 +4,7 @@
 
 # Cadence
 
-[**Live demos**](https://cadence.floatingpragma.ai/) · [Pragma Research](https://floatingpragma.ai/) · [Documentation](https://github.com/muellerberndt/cadence/blob/main/docs/README.md) · [Application demos](https://github.com/muellerberndt/cadence-demos) · [Paper](https://philpapers.org/rec/MUECAP-2) · [PyPI](https://pypi.org/project/cadence-net/)
+[**Live demos**](https://cadence.floatingpragma.ai/) · [Parrot video](https://www.youtube.com/watch?v=amR3cnrmgDo) · [Pragma Research](https://floatingpragma.ai/) · [Documentation](https://github.com/muellerberndt/cadence/blob/main/docs/README.md) · [Application demos](https://github.com/muellerberndt/cadence-demos) · [Paper](https://philpapers.org/rec/MUECAP-2) · [PyPI](https://pypi.org/project/cadence-net/)
 
 [![CI](https://github.com/muellerberndt/cadence/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/muellerberndt/cadence/actions/workflows/ci.yml)
 [![License: GPL v3](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/muellerberndt/cadence/blob/main/LICENSE)
@@ -12,7 +12,7 @@
 **One continuing equilibrium brain: learn a world, act in it, repair what fails.**
 
 <p align="center">
-  <a href="https://cadence.floatingpragma.ai/"><img src="docs/assets/cadence-live-demos.jpg" alt="Cadence live demos: one brain design that sees, moves, plays and keeps learning. Robot arm, robot arena, Atari, Castlevania, Patch World and Tron, all running live in the browser. 363 of 400 games won against the perfect Connect Four solver." width="100%"></a>
+  <a href="https://cadence.floatingpragma.ai/"><img src="https://raw.githubusercontent.com/muellerberndt/cadence/main/docs/assets/cadence-live-demos.jpg" alt="Cadence live demos: one brain design that sees, moves, plays and keeps learning. Robot arm, robot arena, Atari, Castlevania, Patch World and Tron, all running live in the browser. 363 of 400 games won against the perfect Connect Four solver." width="100%"></a>
 </p>
 <h3 align="center">▶ <a href="https://cadence.floatingpragma.ai/">Try the brains live: cadence.floatingpragma.ai</a></h3>
 
@@ -22,7 +22,7 @@ action is read from that equilibrium, and every synapse learns from the differen
 settles, with no backward pass and no training/inference switch.
 
 ```sh
-python -m pip install cadence-net==0.99.0
+python -m pip install cadence-net==0.100.0
 ```
 
 ```python
@@ -57,13 +57,14 @@ episodic memory, a learned code, images.
 | let the world pay for good acts | [Learning from reward](https://github.com/muellerberndt/cadence/blob/main/docs/reward.md) |
 | give the brain a memory for a task | [Memory](https://github.com/muellerberndt/cadence/blob/main/docs/memory.md) |
 | keep track of where things are, seen or not, and where a hidden thing has gone | [Space: tracking what is where](https://github.com/muellerberndt/cadence/blob/main/docs/space.md) |
+| give a brain several senses by name, and a map of things it reads itself | [Senses by name](https://github.com/muellerberndt/cadence/blob/main/docs/senses.md#senses-by-name) |
 | read or change a living brain | [Tune and read a living brain](https://github.com/muellerberndt/cadence/blob/main/docs/tune.md) |
 | a signature | [API reference](https://github.com/muellerberndt/cadence/blob/main/docs/api.md) |
 
 The [documentation index](https://github.com/muellerberndt/cadence/blob/main/docs/README.md)
 lists the rest: wide inputs, growing and grafting, evaluation, your own anatomy, how the
 brain settles, backends; the
-[released documentation](https://github.com/muellerberndt/cadence/blob/v0.99.0/docs/README.md)
+[released documentation](https://github.com/muellerberndt/cadence/blob/v0.100.0/docs/README.md)
 describes the APIs of the installed package. Integrated learned world prediction, repair
 localized to what failed and cheap stable operation are work in progress; Cadence is alpha
 research software.

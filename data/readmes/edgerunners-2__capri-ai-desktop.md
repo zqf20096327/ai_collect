@@ -1,6 +1,6 @@
-# Capri AI
+# Capri AI — Cyberpunk Desktop Pet, Gaming Overlay & Voice Companion for Windows
 
-## Capri — a cyberpunk AI agent for your desktop. One app for Claude Code, Codex, Antigravity &amp; any AI assistant.
+**Capri AI Desktop** turns your Windows 10/11 screen into an interactive cyberpunk workspace. Instead of staring at a dark terminal, you get a visual desktop pet and AI operator that perches on your windows, talks in 80 languages, joins Discord voice calls, and automates tasks through **Claude Code**, **Codex**, **Ollama**, **DeepSeek**, and **MCP servers**.
 
 
 <div align="center">
@@ -15,10 +15,11 @@
   [![Stars](https://img.shields.io/github/stars/edgerunners-2/capri-ai-desktop?style=for-the-badge&color=00f0ff&labelColor=0a0a12)](https://github.com/edgerunners-2/capri-ai-desktop/stargazers)
   ![Platform](https://img.shields.io/badge/Windows-00f0ff?style=for-the-badge&labelColor=0a0a12&label=platform)
 
+
+  <a href="https://github.com/edgerunners-2/capri-ai-desktop/releases/download/v3.9.0/Capri-Portable-3.9.0.zip">
+    <img src="https://img.shields.io/badge/%E2%AC%87%20DOWNLOAD%20FOR%20WINDOWS-ff003c?style=for-the-badge&labelColor=0a0a12" width=300>
+  </a>
   
-
-  [![Download Capri](https://img.shields.io/badge/%E2%AC%87%20DOWNLOAD%20FOR%20WINDOWS-ff003c?style=for-the-badge&labelColor=0a0a12)](https://github.com/edgerunners-2/capri-ai-desktop/releases/download/v3.9.0/Capri-Portable-3.9.0.zip)
-
 </div>
 
 <br/>
@@ -31,6 +32,28 @@
 
 <br/>
 
+##  Quick Start
+
+### 1. Download
+
+Capri is currently available for **Windows** as a portable build:
+
+| Format | Download | Best for |
+|---|---|---|
+|  **Portable** | [`Capri-Portable.zip`](https://github.com/edgerunners-2/capri-ai-desktop/releases/download/v3.9.0/Capri-Portable-3.9.0.zip) | Running Capri from any folder, no installation needed |
+
+Requires Windows 10 or newer. macOS and Linux versions are on the [roadmap](#roadmap).
+
+### 2. Install and launch
+
+- **Portable:** put the portable build in any folder and run it. No installation needed.
+
+### 3. Connect your AI
+
+On first launch, Capri asks which assistant to use. Sign in to your account or paste your API key for **Claude Code**, **Codex**, **Antigravity** or another supported assistant.
+
+---
+
 ## Inspired by Cyberpunk: Edgerunners
 
 Capri is built for people who like their tech with an edge. The project takes its look and spirit from the **cyberpunk** genre and inspired by the style of Cyberpunk: Edgerunners, featuring an original AI construct named Capri.
@@ -41,25 +64,6 @@ Capri is built for people who like their tech with an edge. The project takes it
 
 ---
 
-##  Quick Start
-
-### 1. Download
-
-Capri is currently available for **Windows** as a portable build:
-
-| Format | Download | Best for |
-|---|---|---|
-|  **Portable** | [`Capri-Portable.zip`](https://github.com/edgerunners-2/capri-ai-desktop/releases/latest) | Running Capri from any folder, no installation needed |
-
-Requires Windows 10 or newer. macOS and Linux versions are on the [roadmap](#%EF%B8%8F-roadmap).
-
-
-### 2. Install and launch
-
-- **Portable:** put the portable build in any folder and run it. No installation needed.
-
-
----
 
 ## What she does
 
@@ -119,14 +123,6 @@ Press **Mods** in the Mainframe's CAPRI band. Browse the [mods directory](https:
 
 </details>
 
----
-
-
-
-
-### 3. Connect your AI
-
-On first launch, Capri asks which assistant to use. Sign in to your account or paste your API key for **Claude Code**, **Codex**, **Antigravity** or another supported assistant.
 
 ---
 

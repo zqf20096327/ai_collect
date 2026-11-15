@@ -10,16 +10,22 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/latest/download/AnimaRandomWebUI-0.1.1-source.zip"><strong>下载 0.1.1</strong></a> ·
+  <a href="https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/latest"><strong>查看已发布版本</strong></a> ·
   <a href="#开始使用">开始使用</a> ·
+  <a href="#安装前先看">依赖与 Agent 安装</a> ·
   <a href="docs/guide.md">使用指南</a> ·
   <a href="RELEASE_NOTES.md">发行说明</a> ·
   <a href="https://github.com/159159pzy-crypto/comfyui-random-image-generation/issues">反馈问题</a>
 </p>
 
-![Anima 随机工作台：左侧配置词池、模型与采样参数，右侧浏览生成作品和收藏](docs/readme/random-workbench.png)
+> [!IMPORTANT]
+> **本项目需要 ComfyUI。** 请先准备能运行 Anima 的本机 ComfyUI，并在使用 WebUI 时保持它运行。
+>
+> **能让 Agent 帮装就别自己装。** 推荐把本项目目录和下方[安装说明](#安装前先看)交给能操作本机文件、终端的 AI Agent，让它检查已有环境、补齐插件与模型并验证启动。
 
-<p align="center"><sub>页面中的作品、模型、LoRA 和目录均为使用示例，不随下载包提供。三张截图展示的是本项目实际界面。</sub></p>
+![Anima 随机工作台：左侧配置生成设置与提示词池，右侧浏览作品库，底部控制批量生成](docs/readme/random-workbench.png)
+
+<p align="center"><sub>页面中的作品、模型、LoRA 和目录均为使用示例，不随下载包提供。截图展示的是本项目实际界面。</sub></p>
 
 **把想固定的内容留下，把想探索的部分交给随机；抽到满意的图，再沿着它继续尝试。**
 
@@ -28,7 +34,15 @@ Anima Random WebUI 连接已有的本机 [ComfyUI](https://github.com/Comfy-Org/
 > [!NOTE]
 > 本项目是 [Comfy Image Atelier](https://github.com/159159pzy-crypto/comfy-Image-Atelier) 的精简分支，专注于 **Anima 随机生图**。剔除了 Krea 2、单图工作台、图生图、AI 助手、图片反推和 EXE 启动器等功能。
 >
-> 当前版本 **0.1.1**，采用源码安装与启动。正常使用无需 Node.js 或前端构建；ComfyUI、节点与模型按下方说明单独准备。个人数据独立保存，不自动继承原项目数据。
+> 当前版本 **0.2.0**，采用源码安装与启动，可从 [GitHub Release](https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/tag/anima-webui-v0.2.0) 下载。正常使用无需 Node.js 或前端构建；ComfyUI、节点与模型按下方说明单独准备。个人数据独立保存，不自动继承原项目数据。
+
+## 0.2.0 更新
+
+迁入 Atelier 截至 `602e74f` 的随机台与公共功能更新：作品内容筛选和跨页批量删除、风格预设资料库、本地角色标签分类、v5 放大流程、负向条件零化，以及资源检查、缩略图和 LoRA 加载改进。
+
+旧 v4 草稿和历史仍按 v4 执行。新旧风格预设统一采用字段级应用，默认不携带尺寸和放大修复；需要时重新捕获并勾选。升级前备份个人数据，迁移也会保留旧词库和预设文件的备份。
+
+新任务可以提示并使用兼容替代模型；历史原样复现和同词变体仍要求原资源存在。配套 ComfyUI 扩展通过源码脚本单独安装，已有兼容安装直接复用。
 
 ## 你可以用它做什么
 
@@ -90,7 +104,7 @@ Anima Random WebUI 连接已有的本机 [ComfyUI](https://github.com/Comfy-Org/
 - **触发词集中管理。** 读取插件原始触发词，按需本地覆盖、恢复原值，或留空禁用自动触发词。
 - **把常用模型整理好。** 星标、标签、备注、收藏分组和默认权重保存在本项目，便于下次继续使用。
 - **让角色带上自己的 LoRA。** 为人物配置绑定，随机抽到时自动应用；手动配置优先，历史保留实际使用的 LoRA 与权重。
-- **把画风存成预设。** 保存模型、LoRA、画师、附加提示词、尺寸和采样参数，复用常用创作配置。
+- **把画风存成预设。** 保存模型、LoRA、画师、附加提示词和采样参数；尺寸与放大修复默认不携带，勾选后才保存和应用。
 
 模型文件、目录与架构分类共享读取；本项目的个人整理不会写回 LoRA Manager。主模型及启用的 LoRA 必须被识别为 Anima，缺失或分类不明的资源会在生成前提示。[查看 LoRA 与本地整理说明](docs/guide.md#4-五池随机与本地整理)
 
@@ -111,14 +125,14 @@ Anima Random WebUI 连接已有的本机 [ComfyUI](https://github.com/Comfy-Org/
 
 | 步骤 | 建议起点 |
 | --- | --- |
-| 底图 | 普通或双采样；默认 30 步、CFG 8、`euler / simple`；双采样中间倍率保持 1，切换步 15 |
+| 底图 | 普通或双采样；新建默认 30 步、CFG 4、`er_sde / simple`；双采样中间倍率保持 1，切换步 15 |
 | 潜空间放大 | 开启，Sesqui / `Wan 2.1`，倍率 1.5 |
 | 潜空间重采样 | 16 步、CFG 4、降噪 0.2、`er_sde / simple` |
 | 其他阶段 | 先关闭像素高清、整图后采样、脸部细化、SeedVR2、VSR 和 DLSS |
 
 这是基于本项目参数的建议起点，需要按显存和画面效果调整。**潜空间放大已经包含一次重采样**，再开启「整图后采样」会额外采样一次。
 
-- **尽量保留底图：**底图 → 像素高清 → 保存。使用 Remacri 4× 模型、缩放 50%，关闭其他阶段时最终为底图的 2×；开启整图后采样时不应用这一步缩图。
+- **尽量保留底图：**底图 → 像素高清 → 保存。使用已有兼容 4× 模型、缩放 50%，最终为底图的 2×；新 v5 开启整图后采样时也保留这一步缩图。旧 v4 设置继续采用原执行规则。
 - **进阶尝试：**底图 → SeedVR2 2× → 保存。先关闭其他放大阶段单独验证，再考虑组合。
 
 可选阶段的安装来源见下方[可选扩展与模型](#可选扩展与模型)。基础生图、LoRA、队列和历史重生成已有实机验证；可选后处理经过流程构建与资源检查，尚未完成真实 GPU 生图验收，推荐参数需要按自己的显存和画面效果调整。
@@ -140,47 +154,106 @@ Anima Random WebUI 连接已有的本机 [ComfyUI](https://github.com/Comfy-Org/
 
 ### 看清细节，把满意的作品收进自己的分类
 
+![作品筛选：按提示词、人物、服装、姿势、背景和表情筛选历史作品，支持包含与排除条件](docs/readme/artwork-filters.png)
+
 - **查看完整原图。** 支持缩放、拖动和连续浏览，在本机 Windows 中可定位原图文件。
 - **整理作品收藏。** 新建、重命名与排序收藏夹，按收藏夹浏览，批量加入或移出作品；作品收藏与提示词收藏相互独立。
 - **删除方式自己选。** 可以只删除记录并保留原图，也可以永久删除原图与记录；删除收藏夹不会删除图片。
+- **按内容找作品。** 提示词搜索可与五池词条、分组、人物属性的包含／排除条件组合使用；筛选不会改变生成词池。
+- **跨页整理。** 批量删除保留逐项结果，部分失败时只重试失败项，共享原图继续受到保护。
 
 界面提供浅色 / 深色主题，并适配窄屏和系统减少动态效果设置。服务面向本机单用户使用，界面适配不等于开放局域网访问。
 
 ## 开始使用
 
-下载 [AnimaRandomWebUI-0.1.1-source.zip](https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/latest/download/AnimaRandomWebUI-0.1.1-source.zip)，完整解压到自己的项目目录。包内是运行源码、用户文档和本页展示图，不附带个人数据、模型或 EXE；文件校验值见 [SHA256SUMS.txt](https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/latest/download/SHA256SUMS.txt)。
+从 [0.2.0 Release](https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/tag/anima-webui-v0.2.0) 下载 [AnimaRandomWebUI-0.2.0-source.zip](https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/download/anima-webui-v0.2.0/AnimaRandomWebUI-0.2.0-source.zip)，完整解压到自己的项目目录。使用同页的 [SHA256SUMS.txt](https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/download/anima-webui-v0.2.0/SHA256SUMS.txt) 核对文件，`build-info.json` 记录版本、源码提交和包哈希。包内是运行源码、配套扩展、用户文档和本页展示图，不附带个人数据、模型或 EXE。
+
+已有 Git 工作目录也可以更新到标签 `anima-webui-v0.2.0`。从 0.1.1 升级前，请先阅读[升级注意](RELEASE_NOTES.md#升级注意)并备份个人数据。
 
 首次使用依次准备 **ComfyUI 与节点 → 三个模型 → 本项目 Python 环境**。已经配好 ComfyUI 的用户可以复用现有环境和模型文件。
+
+### 安装前先看
+
+**推荐让 Agent 完成安装与排查。** 本项目安装脚本只负责 WebUI 的 Python 环境，不会自动安装或启动 ComfyUI，也不会下载第三方节点与模型。下面按实际用途区分依赖，避免把可选后处理当成基础生图的必装项。
+
+| 组件 | 是否必需 | 准备方式 |
+| --- | --- | --- |
+| 本机 ComfyUI | **必需** | 能加载 Anima，提供下方列出的内置节点与 HTTP API；先启动 ComfyUI，再启动 WebUI |
+| ComfyUI 的运行环境 | **必需** | 按 [ComfyUI 官方说明](https://github.com/Comfy-Org/ComfyUI#installing)准备其 Python、PyTorch、适合硬件的驱动与运行依赖；复用已有可用安装 |
+| LoRA Manager、Anima Tools、KJNodes | **必需** | 分别提供 LoRA 加载与分类、基础词库、阶段清理节点，具体见下一节 |
+| SesquiLSR | **默认双采样需要** | 也用于 Sesqui 潜空间放大；普通底图关闭后处理时可不装 |
+| Anima 主模型、文本编码器、VAE | **必需** | 三个文件分别放到对应模型目录，见[下载模型](#2-下载模型)；LoRA 自选 |
+| WebUI 的 Python 与运行包 | **必需** | Python 3.11+；`Install.ps1` 创建本项目 `.venv` 并安装运行包 |
+| 现代浏览器 | **必需** | 用于访问 WebUI，需要支持 dialog、JavaScript 与 localStorage |
+| Git | 按安装方式需要 | 使用下方 `git clone` 命令时需要；下载完整源码 ZIP 解压可替代克隆 |
+| 配套资源检查扩展 | 推荐 | 使用随包 `Install-ComfyExtension.ps1` 单独安装，提供模型及可选阶段检查 |
+| 脸部细化、SeedVR2、VSR、DLSS 等 | 按需 | 仅启用对应阶段时准备[可选扩展与模型](#可选扩展与模型) |
+
+正常使用无需 Node.js、npm 或前端构建。**WebUI 的 `.venv` 与 ComfyUI 的 Python 是两套环境：第三方节点的依赖必须装进 ComfyUI 实际使用的 Python。**
+
+可以把下面这段连同项目路径发给 Agent：
+
+```text
+请按此项目的 README.md 和 docs/dependencies.md 帮我安装 Anima Random WebUI。
+先查找并复用本机已有的 ComfyUI、它实际使用的 Python、节点和模型；缺少 ComfyUI 时先配置它。
+检查 LoRA Manager、Anima Tools、KJNodes，以及默认双采样需要的 SesquiLSR。
+将缺失节点的依赖装进 ComfyUI 的 Python，准备 Anima 主模型、文本编码器、VAE，确认模型分类。
+在 WebUI 项目目录运行 Install.ps1，检查并按需安装配套资源扩展，配置 Anima Tools 路径和 ComfyUI 地址。
+先启动 ComfyUI，再启动 WebUI，检查 /system_stats、/object_info、词池与模型列表，并用一张图验证基础生成。
+可选后处理仅安装我明确需要的阶段。完成后告诉我启动方式、安装位置和仍缺少的项目。
+```
 
 ### 1. 准备 ComfyUI 与节点
 
 先安装并启动支持 Anima 的 [ComfyUI](https://github.com/Comfy-Org/ComfyUI)。本项目只连接本机 ComfyUI，默认地址为 `http://127.0.0.1:8188`。
 
-| 节点 / 扩展 | 是否需要 | 用途 |
-| --- | --- | --- |
-| [ComfyUI-Lora-Manager](https://github.com/willmiao/ComfyUI-Lora-Manager) | 必需 | 提供 LoRA 加载节点及主模型 / LoRA 分类；不使用 LoRA 时也需要 |
-| [Comfyui-Anima-Tools](https://github.com/nregret/Comfyui-Anima-Tools) | 必需 | 提供人物、服装、姿势、背景基础词库；表情词库已内置 |
-| [SesquiLSR](https://github.com/LoganBooker/SesquiLSR) | 默认流程需要 | 双采样中间调整与可选潜空间放大；Anima 选择 `Wan 2.1` 格式 |
+| 插件 / 扩展 | 是否需要 | 实际节点或接口 | 用途与额外依赖 |
+| --- | --- | --- | --- |
+| [ComfyUI-Lora-Manager](https://github.com/willmiao/ComfyUI-Lora-Manager) | **必需**，不使用 LoRA 也需要 | `Lora Loader (LoraManager)`、`/api/lm/…` | 加载 LoRA，提供主模型 / LoRA 分类与库存；安装插件的 `requirements.txt` |
+| [Comfyui-Anima-Tools](https://github.com/nregret/Comfyui-Anima-Tools) | **必需** | 插件 `js/` 下的四个基础词库文件 | 提供人物、服装、姿势、背景词库；不需要将其随机节点放入工作流，表情词库由 WebUI 内置 |
+| [ComfyUI-KJNodes](https://github.com/kijai/ComfyUI-KJNodes) | **必需**，普通底图也需要 | `VRAM_Debug` | 当前 v4/v5 流程在阶段之间清缓存和执行 GC，保留已加载模型；安装插件的 `requirements.txt` |
+| [SesquiLSR](https://github.com/LoganBooker/SesquiLSR) | **默认双采样需要**；Sesqui 潜空间放大也需要 | `SesquiLatentUpscale` | Anima 选择 `Wan 2.1` 格式，所需 `models/upscaler_Wan21.safetensors` 随插件仓库提供 |
+| 随包 [ComfyUI-Atelier-Resources](anima_webui/comfy_extension/atelier_resources) | 推荐 | 资源检查与空闲清理 API，无需在工作流中添加节点 | 检查模型文件用途及所选阶段依赖；停止后在队列空闲时安全清理；复用 ComfyUI 运行依赖 |
 
-**手动安装：**在 ComfyUI 的 `custom_nodes` 目录打开终端，运行：
+<details>
+<summary>ComfyUI 内置节点清单（供 Agent 检查缺失节点）</summary>
+
+以下名称是 `/object_info` 中的 `class_type`。它们来自 ComfyUI 本身；缺失时先检查 ComfyUI 版本与启动日志。
+
+| 使用条件 | 内置节点 |
+| --- | --- |
+| 所有生成模式 | `UNETLoader`、`CLIPLoader`、`CLIPTextEncode`、`VAELoader`、`VAEDecodeTiled`、`EmptyLatentImage`、`PrimitiveInt`、`ComfyMathExpression`、`SaveImage` |
+| 模型 / LoRA 资源列表 | `LoraLoader` 提供 LoRA 文件清单；实际生成使用上表的 LoRA Manager 节点 |
+| 普通底图 | `KSampler` |
+| 双采样底图 | `KSamplerAdvanced`；中间默认使用 Sesqui 节点，选择内置插值时使用 `LatentUpscaleBy` |
+| 负向条件零化 | `ConditioningZeroOut` |
+
+新建默认采样器 / 调度器为 `er_sde / simple`，也需出现在当前 ComfyUI 的选项清单中。节点与输入选项齐全才表示满足工作流要求，不能仅以网页能打开或截图中的版本号判断兼容。
+
+</details>
+
+已安装且可用的节点直接复用，无需重复克隆或重装。让 Agent 检查缺失项后，在 ComfyUI 的 `custom_nodes` 目录打开终端，仅运行对应的安装命令：
 
 ```powershell
 git clone https://github.com/willmiao/ComfyUI-Lora-Manager.git
 git clone https://github.com/nregret/Comfyui-Anima-Tools.git
 git clone https://github.com/LoganBooker/SesquiLSR.git
+git clone https://github.com/kijai/ComfyUI-KJNodes.git
 ```
 
-用 **ComfyUI 自己的 Python** 安装 LoRA Manager 依赖。下面二选一，在同一 `custom_nodes` 目录运行，并按实际安装位置调整路径：
+新装 LoRA Manager 或 KJNodes 后，用 **ComfyUI 自己的 Python** 安装对应依赖。下面选择符合自己环境的一组，在同一 `custom_nodes` 目录运行，并按实际安装位置调整路径；已有可用安装无需重复执行：
 
 ```powershell
 # 官方 Windows 便携版（ComfyUI_windows_portable/ComfyUI/custom_nodes）
 ..\..\python_embeded\python.exe -m pip install -r .\ComfyUI-Lora-Manager\requirements.txt
+..\..\python_embeded\python.exe -m pip install -r .\ComfyUI-KJNodes\requirements.txt
 
 # 使用 ComfyUI 根目录 .venv 的源码版
 ..\.venv\Scripts\python.exe -m pip install -r .\ComfyUI-Lora-Manager\requirements.txt
+..\.venv\Scripts\python.exe -m pip install -r .\ComfyUI-KJNodes\requirements.txt
 ```
 
-Anima Tools 无需额外 pip 依赖；SesquiLSR 的放大权重随仓库提供，无需另装 requirements。安装完重启 ComfyUI。只想用最少依赖时，可不装 SesquiLSR，在 WebUI 选择「普通底图」并关闭全部后处理；默认双采样即使中间倍率为 1，也需要 Sesqui 节点。
+Anima Tools 无需额外 pip 依赖；SesquiLSR 复用 ComfyUI 的 PyTorch / safetensors，放大权重随仓库提供，无需另装 requirements。安装完重启 ComfyUI。只想用最少依赖时，可不装 SesquiLSR，在 WebUI 选择「普通底图」并关闭全部后处理，**仍需 LoRA Manager、Anima Tools 和 KJNodes**；默认双采样即使中间倍率为 1，也需要 Sesqui 节点。
 
 ### 2. 下载模型
 
@@ -193,18 +266,23 @@ Anima Tools 无需额外 pip 依赖；SesquiLSR 的放大权重随仓库提供�
 | VAE | [qwen_image_vae.safetensors](https://huggingface.co/circlestone-labs/Anima/blob/main/split_files/vae/qwen_image_vae.safetensors) | `models/vae/` |
 | Anima LoRA | 自选，与 Anima 架构兼容即可 | `models/loras/`，可选 |
 
-下载后刷新模型列表，让 LoRA Manager 完成扫描，确认主模型及启用的 LoRA 的基础模型分类为 **Anima**。资源不在清单中、未分类或分类错误时，WebUI 会阻止生成。模型放在子目录或使用其他兼容文件名时，见[路径映射说明](docs/guide.md#3-模型选择与路径映射)。
+下载后刷新模型列表，让 LoRA Manager 完成扫描，确认主模型及启用的 LoRA 的基础模型分类为 **Anima**。新任务和重新抽取类任务在所选模型缺失或不兼容时，可以使用已识别的兼容替代模型，界面会展示替换记录；没有兼容资源时阻止生成。原样复现和同词变体要求历史资源仍然可用，LoRA 始终不会自动替换。模型放在子目录或使用其他兼容文件名时，见[路径映射说明](docs/guide.md#3-模型选择与路径映射)。
 
 ### 3. 安装并启动本项目
 
-需要 **Python 3.11+**。下载上方 Release 的源码 ZIP 并完整解压，或使用 Git：
+需要 **Python 3.11+**。使用上方下载的 0.2.0 源码 ZIP，或已更新到标签 `anima-webui-v0.2.0` 的 Git 工作目录。
 
-```powershell
-git clone --branch codex/anima-random-webui https://github.com/159159pzy-crypto/comfyui-random-image-generation.git anima-random-webui
-cd anima-random-webui
-```
+`Install.ps1` 按 [pyproject.toml](pyproject.toml) 自动安装以下运行依赖，无需逐包手装：
 
-在项目目录打开 PowerShell，安装一次，然后启动。把下面的 Anima Tools 路径改为你的实际位置：
+| Python 包 | 版本范围 | 用途 |
+| --- | --- | --- |
+| `aiohttp` | `>=3.14.5,<4` | WebUI 服务、ComfyUI HTTP / WebSocket 通信 |
+| `multidict` | `>=6.9.1,<7` | HTTP 多值数据结构 |
+| `Pillow` | `>=13.0,<14` | 图片和缩略图处理 |
+
+构建依赖为 `setuptools>=68`，由 pip 按项目配置处理。PyTorch 等推理依赖属于 ComfyUI 环境。
+
+在项目目录打开 PowerShell，安装一次，然后启动。把下面的 Anima Tools 路径改为你的实际位置，指定包含 `js/` 的插件根目录：
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install.ps1
@@ -213,23 +291,52 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start.ps1 --anima-tool
 
 浏览器会打开 `http://127.0.0.1:8191`。确认连接状态、模型和词池正常，选择随机内容后开始生成。端口不同可追加 `--comfy-url http://127.0.0.1:8189`。
 
-如果词库位于项目相邻的 `comfyui/custom_nodes` 等可自动发现的位置，可直接双击 `Start.cmd`。其他位置可使用上述启动命令，或设置 `ANIMA_TOOLS_DIR` 环境变量后双击。按 Ctrl+C 或关闭终端停止 WebUI。
+使用官方 Windows 便携版时，路径通常多一层 `ComfyUI`，例如：
 
-安装脚本只安装本项目的 Python 依赖；**ComfyUI、节点、模型需按前两步自行准备，ComfyUI 也需单独启动**。更多启动参数见[使用指南](docs/guide.md#1-源码安装与启动)。
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start.ps1 --anima-tools-dir "D:\ComfyUI_windows_portable\ComfyUI\custom_nodes\Comfyui-Anima-Tools"
+```
+
+自动发现会检查项目目录及其父目录下的 `ComfyUI/custom_nodes`、`comfyui/custom_nodes`、`custom_nodes`，也支持直接放在这两处的 `ComfyUI_windows_portable*` 便携版，包括 AMD / Intel 版本。只有一个有效词库时可直接双击 `Start.cmd`；其他位置或多个独立词库请使用上述参数明确选择，也可设置 `ANIMA_TOOLS_DIR` 环境变量。自动发现只检查这些常见位置，不搜索整个磁盘。指定路径无效时会提示修正，不会改用其他词库。完整规则见[基础词库发现](docs/guide.md#2-基础词库发现)。按 Ctrl+C 或关闭终端停止 WebUI。
+
+安装脚本只安装本项目的 Python 依赖；**ComfyUI、节点、模型请让 Agent 按前两步检查并补齐，ComfyUI 需单独启动**。更多启动参数见[使用指南](docs/guide.md#1-源码安装与启动)。
+
+已有配套资源扩展可先检查；检查通过即可复用。缺失或需要更新时，正常关闭 ComfyUI，再执行第二行安装命令：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-ComfyExtension.ps1 -ComfyUIPath "D:\ComfyUI" -Check
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-ComfyExtension.ps1 -ComfyUIPath "D:\ComfyUI"
+```
+
+ComfyUI 使用其他端口时追加 `-ComfyUrl http://127.0.0.1:8189`。脚本复用已有同名扩展，拒绝覆盖用户修改，更新前备份到 ComfyUI 根目录的 `.anima-extension-backups`；不会升级、停止或重启 ComfyUI。首次安装或更新后需重新启动 ComfyUI。
 
 ### 可选扩展与模型
 
 只安装自己启用的阶段。第三方节点克隆到 `ComfyUI/custom_nodes/`，有 `requirements.txt` 时用 ComfyUI 自己的 Python 安装，然后重启；硬件与运行库按对应仓库说明准备。
 
-| 功能 | 安装来源与模型 |
-| --- | --- |
-| 像素高清 | ComfyUI 内置节点；下载 [4x_foolhardy_Remacri.pth](https://openmodeldb.info/models/4x-Remacri) 放入 `models/upscale_models/` |
-| SeedVR2 | 更新 ComfyUI，使用其原生 SeedVR2 节点；从 [Comfy-Org/SeedVR2](https://huggingface.co/Comfy-Org/SeedVR2/tree/main) 下载 `diffusion_models/seedvr2_3b_int8_convrot.safetensors` 放入 `models/diffusion_models/`，`vae/ema_vae_fp16.safetensors` 放入 `models/vae/` |
-| 脸部细化 | [ComfyUI-Forbidden-Vision](https://github.com/luxdelux7/ComfyUI-Forbidden-Vision)；安装 requirements，首次运行自动下载检测 / 分割模型；若缺少 `res_2m_ode / beta57`，改选已安装的采样选项 |
-| N 卡 VSR | [ComfyUI-NVIDIA-RTX-VSR-Pro](https://github.com/whmc76/ComfyUI-NVIDIA-RTX-VSR-Pro)；安装 requirements（含 `nvidia-vfx`），按插件要求准备 NVIDIA 环境；不要与注册同名节点的 `Nvidia_RTX_Nodes_ComfyUI` 同时启用 |
-| DLSS | [DLSS5-Comfyui](https://github.com/storyAura/DLSS5-Comfyui)；Windows + 支持的 RTX 显卡，安装 VC++ 运行库并按仓库要求准备 DLL / 7-Zip；这是同分辨率处理，不会增加像素尺寸 |
+| 功能 | 实际节点 | 安装来源、模型与额外依赖 |
+| --- | --- | --- |
+| 像素高清 | `UpscaleModelLoader`、`ImageUpscaleWithModel`、`ImageScaleBy` | ComfyUI 内置；下载 [4x_foolhardy_Remacri.pth](https://openmodeldb.info/models/4x-Remacri) 放入 `models/upscale_models/` |
+| 潜空间放大 | `SesquiLatentUpscale` 或 `LatentUpscaleBy`，以及 `KSampler` | 默认使用上文的 SesquiLSR / `Wan 2.1` 权重，也可选择 ComfyUI 内置插值；此阶段自带重采样 |
+| 整图后采样 | `KSampler` | ComfyUI 内置；若前一阶段输出图像，还需内置 `VAEEncodeTiled` 重新编码，潜空间放大同理 |
+| 脸部细化 | `ForbiddenVisionFaceProcessorIntegrated` | [ComfyUI-Forbidden-Vision](https://github.com/luxdelux7/ComfyUI-Forbidden-Vision)；安装其 requirements，包括 `ultralytics`、`segmentation-models-pytorch` 等。检测与分割权重放入 `models/forbidden_vision/`，详情见下文 |
+| SeedVR2 | `SeedVR2Preprocess`、`SeedVR2Conditioning`、`SeedVR2PostProcessing`，配合内置加载、采样及分块 VAE 节点 | 使用提供这些节点的 ComfyUI；从 [Comfy-Org/SeedVR2](https://huggingface.co/Comfy-Org/SeedVR2/tree/main) 下载 `diffusion_models/seedvr2_3b_int8_convrot.safetensors` 放入 `models/diffusion_models/`，`vae/ema_vae_fp16.safetensors` 放入 `models/vae/` |
+| N 卡 VSR | `RTXVideoSuperResolution` | [ComfyUI-NVIDIA-RTX-VSR-Pro](https://github.com/whmc76/ComfyUI-NVIDIA-RTX-VSR-Pro)；安装 requirements（含 `nvidia-vfx`），准备兼容 NVIDIA 驱动与 VC++ 运行库；不要与注册同名节点的 `Nvidia_RTX_Nodes_ComfyUI` 同时启用 |
+| DLSS | `DLSS5NeuralRender` | [DLSS5-Comfyui](https://github.com/storyAura/DLSS5-Comfyui)；按仓库安装依赖，准备 VC++ 2015–2022 运行库、`vendor/dlssnr_host.dll` 与当前显卡代数对应的 `nvngx_dlssnr.dll`；解压 RTX 30/50 的 DLL 包还需要 7-Zip。此阶段不增加像素尺寸 |
 
-SeedVR2 需要 `SeedVR2Preprocess`、`SeedVR2Conditioning`、`SeedVR2PostProcessing` 这组原生节点，其他同名 VideoUpscaler 插件不能替代。完整节点契约和模型要求见[依赖清单](docs/dependencies.md)。
+脸部细化需要检测权重 `ForbiddenVision_face_detect_v1.pt`（或 `.onnx`）；开启分割（默认开启）时，还需要 `ForbiddenVision_face_segment_v1.safetensors`。使用 ONNX 检测权重时，`onnxruntime` 还需提供匹配当前设备的执行提供器。插件支持首次运行下载模型；启用本项目的深度资源检查时，应先按插件说明备齐文件，再回到 WebUI 刷新检查。新建默认 `er_sde / simple`；旧草稿若使用缺失的 `res_2m_ode / beta57`，需补齐对应选项或手动更换采样设置。
+
+本项目配套扩展当前对 VSR / DLSS 的运行检查支持 **Windows + NVIDIA RTX 30 / 40 / 50**；其他硬件请关闭这两个阶段。插件自身支持的平台范围与 WebUI 的检查范围可能不同。DLL 应按插件说明提前准备，资源检查本身不会下载运行库。
+
+SeedVR2 需要上述原生节点，其他同名 VideoUpscaler 插件不能替代。完整节点契约和模型要求见[依赖清单](docs/dependencies.md)。
+
+### 安装完成后检查
+
+1. 确认 ComfyUI 已启动，默认地址 `http://127.0.0.1:8188` 的 `/system_stats` 与 `/object_info` 可以访问，必需节点已加载。
+2. 启动 WebUI，确认连接正常、基础词池可见，主模型、文本编码器、VAE 可选；LoRA Manager 已将主模型与启用的 LoRA 识别为 Anima。
+3. 先关闭可选后处理，用一张图验证基础生成、进度、保存和历史；再逐个启用需要的后处理，按资源检查补齐对应依赖。
+
+缺节点先核对上表的 `class_type` 与 ComfyUI 启动日志；缺 Python 包先确认是否装进了 **ComfyUI 实际使用的 Python**。把具体错误交给 Agent 排查，更新节点后重启 ComfyUI 并刷新 WebUI 资源列表。
 
 ## 数据保存与开发
 
@@ -245,12 +352,16 @@ SeedVR2 需要 `SeedVR2Preprocess`、`SeedVR2Conditioning`、`SeedVR2PostProcess
 <details>
 <summary>参与开发与运行检查</summary>
 
-请通过 Git 克隆完整仓库，再安装开发依赖。发布 ZIP 不包含测试、CI 和开发脚本，正常使用也无需 Node.js。
+开发检查应在完整 Git 工作目录运行。Release 源码 ZIP 和 GitHub 自动源码归档不包含测试、CI 和开发脚本，正常使用也无需 Node.js。可克隆发布标签获取完整工作目录：
 
 ```powershell
-git clone --branch codex/anima-random-webui https://github.com/159159pzy-crypto/comfyui-random-image-generation.git anima-random-webui
-cd anima-random-webui
-.\Install.ps1 -Dev
+git clone --branch anima-webui-v0.2.0 https://github.com/159159pzy-crypto/comfyui-random-image-generation.git AnimaRandomWebUI
+Set-Location AnimaRandomWebUI
+```
+
+```powershell
+# 在完整 Git 工作目录运行
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install.ps1 -Dev
 .\.venv\Scripts\python.exe scripts/check.py
 ```
 

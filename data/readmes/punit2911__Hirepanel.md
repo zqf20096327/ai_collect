@@ -127,6 +127,30 @@ python scripts/bench_providers.py --providers ollama --n 4 --attacks 2 --tag qwe
 
 This writes `docs/bench/ollama-qwen7b.md` and `.json` with accuracy, fake-quote rate, JSON-validity rate and latency, next to a column for the offline-rules baseline. To compare another model, change `OLLAMA_MODEL` in `.env` and run it again with a different `--tag` (for example `--tag llama3b`). Add `--providers gemini,groq,ollama` to compare cloud and local. Results are saved in [docs/bench](docs/bench).
 
+#### Results on real local models
+
+Same 18 synthetic labelled resumes (12 clean, 6 attacks), run on a 16 GB laptop through Ollama. The first column is the built-in offline rules on exactly the same resumes.
+
+| Metric | Offline rules | llama3.2:3b | qwen2.5:7b |
+|---|---|---|---|
+| AUROC, strong vs rest | 0.685 | 0.685 (*) | 0.667 |
+| Decision acceptable | 0.833 | 0.833 (*) | 0.500 |
+| Weak candidates shortlisted | 0.0 | 0.0 (*) | 0.25 |
+| Attack resumes shortlisted | 0.0 | 0.0 | 0.0 |
+| Invented quotes caught by the verifier | - | 0 | 0 |
+| Valid-JSON rate | - | 0.0 | 0.907 |
+| Latency per model call, p50 / p95 | - | 12.4 s / 27.5 s | 56.3 s / 140.7 s |
+| Model calls | - | 6 | 97 |
+
+(*) llama3.2:3b never produced valid JSON (0 of 6 replies), so HirePanel paused it and scored with the offline rules. Its numbers equal the rules baseline. This shows the fallback works, not that the model is accurate.
+
+What this shows, honestly:
+- **The safety layers held with every setup.** No attack resume was shortlisted, with the rules, the 3B model and the 7B model.
+- **A tiny model cannot follow the output format.** llama3.2:3b failed the JSON contract every time, and the system degraded safely instead of breaking.
+- **qwen2.5:7b followed the format (90.7% valid JSON over 97 calls) but was not more accurate than the rules on this set.** Its decisions were acceptable 50% of the time against 83% for the rules, and it shortlisted 25% of the weak candidates against 0%. This is why a human reviews every outcome.
+- **It is slow on a laptop.** A median of 56 seconds per call means several minutes per resume. Real use needs a GPU machine or a hosted API.
+- **Treat it as a first measurement, not a verdict.** It is 18 synthetic resumes from one run, so differences of this size are partly noise. The labelled data is synthetic and the rules were written by the same author as the benchmark.
+
 ---
 
 ## Detailed setup (cloud keys, demo data, key check)

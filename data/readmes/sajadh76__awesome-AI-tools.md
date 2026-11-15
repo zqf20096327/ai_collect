@@ -37,6 +37,7 @@
 
 ## 🧠 Agentic AI
 - [Aident Loadout](https://aident.ai) - Remote MCP server and CLI that gives AI agents 400+ Skills and reusable app connections through one account; free pay-as-you-go plan available.
+- [Alpha OSINT Prospector](https://github.com/johnisanerd/alphaosint-prospector) - 🔓 Claude Code plugin for B2B prospecting that finds companies hiring for the roles you sell into, scores them 0-100 and names decision-makers. Paid Apify usage.
 - [API.market MCP Gateway](https://api.market/api/mcp/gateway) - Hosted API discovery and execution for AI agents; account required, OAuth/API key, per-API pricing.
 - [AutoGPT](https://github.com/Significant-Gravitas/AutoGPT) - 🔓 A powerful platform that allows you to create, deploy, and manage continuous AI agents that automate complex workflows.
 - [OrcaReplay](https://github.com/Continuum-AI-Corp/OrcaReplay) - 🔓 Records the traffic between an AI agent and its model provider, then replays it without calling the provider to reproduce a run.
@@ -44,6 +45,7 @@
 - [Solaris Dev Shop](https://github.com/Shaisolaris/solaris-dev-shop) - 🔓 Routes one task to a specialist skill and returns one assignment or a genuine escalation. Free and MIT-licensed.
 - [Tale](https://tale.dev/) - Open-source project workspace where teams delegate tasks to AI agents in persistent sandboxes and review their reports and deliverables together.
 - [Taskade](https://taskade.com) - AI-native workspace platform to build apps, deploy autonomous AI agents, and automate workflows with 100+ integrations - from one prompt.
+- [Zaru](https://myzaru.com) - Personal AI assistant for email, calendar and web research that shows each step as it works, waits for your approval before it sends a message or changes your calendar.
 
 ## 🔄 Automation
 - [Autoposting](https://autoposting.ai/) - AI social media manager: generates posts in your own voice, clips long video, builds carousels, and schedules to X, LinkedIn, Instagram, Threads and YouTube.
@@ -64,6 +66,7 @@
 - [DeepSeek](https://www.deepseek.com/) - Rivals leading systems like OpenAI's ChatGPT, achieving comparable performance with significantly lower costs and resource consumption.
 - [Evernote](https://evernote.com) - Organizes notes, tasks, and supports clipping from websites.
 - [Gemini](https://gemini.google.com/) - Google's multimodal AI assistant for chat, writing, research, coding, and image understanding.
+- [Glasp](https://glasp.co/) - Highlights web pages and PDFs, shows YouTube transcripts with AI summaries, and exports notes to Markdown, Notion, and Obsidian. Free plan available.
 - [Grok](https://grok.com/) - Free AI assistant from xAI with real-time search, image generation, and trend analysis.
 - [NotebookLM](https://notebooklm.google/) - A tool by Google that helps users understand and organize their documents through summarization, question-answering, and audio overviews.
 - [NoteGPT](https://www.notegpt.com) - Summarizes PDFs, articles, and more using AI.
@@ -132,6 +135,7 @@
 ## 🎨 Presentation and Design
 - [Beautiful.ai](https://www.beautiful.ai) - AI for automated slide design in presentations.
 - [Canva](https://www.canva.com) - Graphic design platform with templates for presentations and social media.
+- [DESIGN:OS Studio](https://github.com/jangtrinh/design-os-studio) - Desktop interface design app whose built-in MCP server lets Claude Code, Codex or Gemini CLI read and edit .fig designs. Free.
 - [Gamma](https://gamma.app) - AI-powered tool to create presentations quickly.
 - [Kamply](https://kamplyapp.com) - Builds social posts, carousels, video reels, ads and decks in your branding, using a marketing crew inside a Mac desktop app. Paid, and it runs on your own Claude Code or Codex plan.
 
@@ -184,6 +188,7 @@
 - [ElevenLabs](https://elevenlabs.io/) - Create lifelike speech with our AI voice generator and voice agents platform. Access 5000+ voices in 70+ languages with secure APIs and SDKs.
 
 ## 📝 Writing
+- [BeLikeNative](https://belikenative.com) - Chrome side panel that checks English for people who write it as a second language, giving a one-line reason for each fix, and rewrites tone or translates with Chrome's built-in AI.
 - [Copy.ai](https://copy.ai) - Assists in writing marketing copy, social media posts, etc.
 - [ImagineYourBook](https://www.imagineyourbook.com/) - Plans and drafts full manuscripts chapter by chapter, with series story bibles and Word/EPUB/Markdown export.
 - [Jasper.ai](https://jasper.ai) - AI for content creation, especially useful for SEO-optimized writing.

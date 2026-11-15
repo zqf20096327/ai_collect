@@ -43,16 +43,16 @@ The patch implementation draws on [0Chencc/clawgod](https://github.com/0Chencc/c
 **macOS / Linux / WSL:**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/7sen1ot/ClawGod_Y/main/install.sh | bash -s -- latest
+curl -fsSL https://raw.githubusercontent.com/7sen1ot/ClawGod_Y/main/install.sh | bash -s --
 ```
 
 **Windows PowerShell:**
 
 ```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/7sen1ot/ClawGod_Y/main/install.ps1))) latest
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/7sen1ot/ClawGod_Y/main/install.ps1)))
 ```
 
-Replace `latest` in the examples with `stable` or a specific version (such as `2.1.322`) as needed. `latest` and `stable` use the versions associated with the corresponding npm tags.
+Installs Claude Code `2.1.322` by default. To choose another version, append `latest`, `stable`, or a specific version number to either command above.
 
 After installation, open a new terminal and run `clawgod` to start patched Claude. If official Claude Code was already installed, `claude` still starts the original. The patched runtime is stored in `~/.clawgod`, or `%USERPROFILE%\.clawgod` on Windows.
 
@@ -80,7 +80,7 @@ For an OpenAI Chat Completions-compatible service, set `protocol` to `openai-cha
 clawgod --uninstall
 ```
 
-If `clawgod` cannot start, on **macOS / Linux / WSL** run `bash ~/.clawgod/install.sh --uninstall`; in **Windows PowerShell** run `powershell -File "$env:USERPROFILE\.clawgod\install.ps1" -Uninstall`.
+If `clawgod` cannot start, on **macOS / Linux / WSL** run `bash "$HOME/.clawgod/uninstall.sh"`; in **Windows PowerShell** run `powershell -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\.clawgod\uninstall.ps1"`.
 
 Uninstallation removes the `clawgod` launcher, the main runtime files, and the separate `~/.clawgod/lean-settings.json` file without modifying `~/.claude/settings.json`. Configuration such as `provider.json` and `features.json`, along with some other files, is retained; the entire `~/.clawgod` directory is not deleted.
 

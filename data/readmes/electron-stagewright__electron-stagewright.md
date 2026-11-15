@@ -44,7 +44,7 @@ Microsoft's official Playwright MCP team [explicitly declined](https://github.co
 
 ## Quick start
 
-Requires **Node.js 24 or newer** (`node -v`); on Linux the server also needs a display (`DISPLAY`,
+Requires **Node.js 26.13.1 or newer** (`node -v`); on Linux the server also needs a display (`DISPLAY`,
 `WAYLAND_DISPLAY`, or `xvfb-run -a`). The default launch transport uses Playwright and an
 Electron runtime. For a private setup in the current project, keep the server local to that project
 and pin the release-tested package set.
@@ -56,15 +56,15 @@ binary with Electron's `install-electron` bin, then run `doctor`, which reports 
 exits 0 when every required check passes:
 
 ```bash
-npx -y --prefix ~/ --package @electron-stagewright/core@0.9.0 \
+npx -y --prefix ~/ --package @electron-stagewright/core@0.10.0 \
   --package playwright@1.63.0 --package electron@42.11.10 install-electron
-npx -y --prefix ~/ --package @electron-stagewright/core@0.9.0 \
+npx -y --prefix ~/ --package @electron-stagewright/core@0.10.0 \
   --package playwright@1.63.0 --package electron@42.11.10 electron-stagewright doctor --json
 ```
 
 ```bash
 claude mcp add electron-stagewright -- \
-  npx -y --prefix ~/ --package @electron-stagewright/core@0.9.0 \
+  npx -y --prefix ~/ --package @electron-stagewright/core@0.10.0 \
   --package playwright@1.63.0 --package electron@42.11.10 \
   electron-stagewright --tool-profile essential
 ```
@@ -85,7 +85,7 @@ which writes the same `mcpServers` shape to `.mcp.json`. See the
 [Claude Code MCP scopes](https://code.claude.com/docs/en/mcp) for the host-specific behavior.
 
 To verify a host before pointing it at your app, add the pinned
-`@electron-stagewright/demo@0.1.0` package and use the [demo guide](docs/guides/demo.md). The demo
+`@electron-stagewright/demo@0.1.1` package and use the [demo guide](docs/guides/demo.md). The demo
 is opt-in, so a normal core installation neither loads nor depends on it.
 
 For local development, build the checkout and point your MCP host at the built CLI:
@@ -110,7 +110,7 @@ Shared project `.mcp.json` shape:
         "--prefix",
         "~/",
         "--package",
-        "@electron-stagewright/core@0.9.0",
+        "@electron-stagewright/core@0.10.0",
         "--package",
         "playwright@1.63.0",
         "--package",

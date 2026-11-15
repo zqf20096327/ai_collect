@@ -2,6 +2,8 @@
 
 A lightweight local proxy between your agent and its model server. It checks every tool call the model makes before the harness sees it, and swaps the calls it blocks for a text notice, so the harness runs nothing. It works with any harness that lets you set a base URL (Claude Code, Pi, Hermes, OpenCode, ...), over OpenAI Chat Completions or Anthropic Messages, streaming or not.
 
+You want to plug a decision model in the loop? Pick one of the decision model from [safeagents judge bench leaderboard](https://huggingface.co/datasets/harness-hub/safeagents-judge-bench).
+
 ## Quickstart
 
 On macOS, Linux or WSL:
@@ -52,7 +54,7 @@ Streaming adds no latency: each tool call is held until its arguments are comple
 
 ## Plugins
 
-`--plugin MODULE:FACTORY` (or `path/to/file.py:FACTORY`) adds your own [atif-scan](https://github.com/huggingface/atif-scan) checks, with the same convention as atif-scan's `--plugin`: `FACTORY()` returns a list of detectors, rules and allowances. Detectors and rules at or above `--block-severity` block, like the built-in ones. An allowance excuses the findings of the checks it covers, for a task that legitimately does what a check flags. `--allow-host` adds hosts calls may reach.
+`--plugin MODULE:FACTORY` (or `path/to/file.py:FACTORY`, or `hf://OWNER/REPO` for a plugin on the Hub, below) adds your own [atif-scan](https://github.com/huggingface/atif-scan) checks, with the same convention as atif-scan's `--plugin`: `FACTORY()` returns a list of detectors, rules and allowances. Detectors and rules at or above `--block-severity` block, like the built-in ones. An allowance excuses the findings of the checks it covers, for a task that legitimately does what a check flags. `--allow-host` adds hosts calls may reach.
 
 ```python
 # my_pack.py
@@ -81,6 +83,23 @@ PYTHONPATH=. safeagents start http://localhost:8000 --plugin my_pack:checks --al
 ```
 
 From Python, pass them to the scanner: `Config(scanner=Scanner(load_plugin("my_pack:checks")))`.
+
+### Plugins on the Hugging Face Hub
+
+A plugin can live in a Hub repo as a single Python file, and be loaded by name:
+
+```
+safeagents start http://localhost:8000 --plugin hf://harness-hub/qwen-safeagents-plugin
+```
+
+The full form is `hf://[TYPE/]OWNER/REPO[@REV][/FILE][:FACTORY]`:
+
+- `TYPE`: `datasets/` or `spaces/` for those repos; a model repo when left out.
+- `@REV`: a branch, tag or commit.
+- `/FILE`: the file in the repo; by default the only `.py` file at the repo's root.
+- `:FACTORY`: `checks` by default.
+
+The file is downloaded once and cached by `huggingface_hub`, so it also loads offline (`HF_HUB_OFFLINE=1`); a private repo needs a token (`hf auth login` or `HF_TOKEN`). The plugin runs as code in the proxy's process, so load plugins only from repos you trust, and pin a commit (`hf://harness-hub/qwen-safeagents-plugin@<commit>`) for reproducible runs. To publish one: `hf upload harness-hub/my-plugin my_pack.py`.
 
 ## Publishing trajectories
 
@@ -142,6 +161,8 @@ Run in the foreground (`safeagents URL`) and the terminal shows a live histogram
 `WARN` calls ran but raised a finding; `FLAG` ones would have been blocked without `--log-only`. A background proxy writes the same calls to its log, one line each.
 
 Blocked, flagged and suspicious calls are also kept in `~/.safeagents/calls.jsonl` (readable by you only, since arguments can hold secrets). The format is in [docs/journal.md](docs/journal.md).
+
+An optional [`--sink MODULE:FACTORY`](docs/sink.md) sends those observations to a trusted callback off the response path, including with `--no-journal`. Sinks receive raw arguments and task text; enable them only for code you trust.
 
 ```
 $ safeagents inspect 3

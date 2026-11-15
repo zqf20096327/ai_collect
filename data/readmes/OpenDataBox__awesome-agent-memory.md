@@ -1,6 +1,12 @@
-# Awesome Agent Memory
 
-A curated taxonomy of **agent memory systems**, organized along four axes: (1) memory system architectures — from flat sequential context, to structural topological graphs/trees, to multi-paradigm hybrid containers; (2) reference baselines for comparison; (3) benchmarks for evaluation; and (4) surveys on agent memory.
+# Awesome Agent Memory [![Awesome](https://awesome.re/badge-flat.svg)](https://awesome.re)
+
+A curated taxonomy of **agent memory systems**, organized along four axes: (1) memory system architectures — from flat sequential context, to structural topological graphs/trees, to multi-paradigm hybrid containers; (2) reference baselines for comparison; (3) benchmarks for evaluation; and (4) surveys on agent memory
+[![Stars](https://img.shields.io/github/stars/OpenDataBox/awesome-agent-memory?style=flat&color=yellow)](https://github.com/OpenDataBox/awesome-agent-memory/stargazers)
+[![Forks](https://img.shields.io/github/forks/OpenDataBox/awesome-agent-memory?style=flat&color=blue)](https://github.com/OpenDataBox/awesome-agent-memory/forks)
+[![Contributors](https://img.shields.io/github/contributors/OpenDataBox/awesome-agent-memory?style=flat&color=brightgreen)](https://github.com/OpenDataBox/awesome-agent-memory/graphs/contributors)
+[![Last Commit](https://img.shields.io/github/last-commit/OpenDataBox/awesome-agent-memory?style=flat&color=blueviolet)](https://github.com/OpenDataBox/awesome-agent-memory/commits/main)
+[![arXiv](https://img.shields.io/badge/arXiv-2606.24775-b31b1b?style=flat)](https://arxiv.org/abs/2606.24775).
 
 ## 📣 Get Involved
 
@@ -29,6 +35,7 @@ A curated taxonomy of **agent memory systems**, organized along four axes: (1) m
 - [3. Surveys, Tutorials, and Position Papers](#3-surveys-tutorials-and-position-papers)
 - [4. Frameworks, Products, and Resources](#4-frameworks-products-and-resources)
 - [Citation](#citation)
+- [Contributors](#contributors)
 
 ## 1. Memory Systems and Methods
 
@@ -85,6 +92,10 @@ Memory represented as a flat sequence, textual summary, note, trajectory, or exp
 1. **MemSearcher: Training LLMs to Reason, Search and Manage Memory via End-to-End Reinforcement Learning**\
    Qianhao Yuan, Jie Lou, Zichao Li, et al. *ACL 2026*. [[Paper](https://arxiv.org/abs/2511.02805)]\
    ![](https://img.shields.io/badge/-Method-lightgrey) ![](https://img.shields.io/badge/-External-blue) ![](https://img.shields.io/badge/-Textual-blue) ![](https://img.shields.io/badge/-Semantic-green) ![](https://img.shields.io/badge/-Retrieval-green)
+
+1. **Who Remembers What? Multi-Granularity Memory Extraction for Multi-User, Multi-Agent Interaction**\
+   Yunzhe Wang, Mesut Erhan Unal, Sheng Zhang, et al. *arXiv 2026*. [[Paper](https://arxiv.org/abs/2611.10439)]\
+   ![](https://img.shields.io/badge/-Method-lightgrey) ![](https://img.shields.io/badge/-External-blue) ![](https://img.shields.io/badge/-Textual-blue) ![](https://img.shields.io/badge/-Procedural-yellowgreen) ![](https://img.shields.io/badge/-Multi_Agent-purple)
 
 1. **AutoMem: Automated Learning of Memory as a Cognitive Skill**\
    Shengguang Wu, Hao Zhu, Yuhui Zhang, et al. *arXiv 2026*. [[Paper](https://arxiv.org/abs/2607.01224)]\
@@ -922,16 +933,4 @@ Memory organized as entities, relations, notes, events, or episodes connected by
 
 1. **G-Long: Graph-Enhanced Memory Management for Efficient Long-Term Dialogue Agents**\
    Minjun Choi, Yoonjin Jang, Sangwon Youn, et al. *arXiv 2026*. [[Paper](https://arxiv.org/abs/2606.13115)]\
-   ![](https://img.shields.io/badge/-Method-lightgrey) ![](https://img.shields.io/badge/-External-blue) ![](https://img.shields.io/badge/-Graph-purple) ![](https://img.shields.io/badge/-Episodic-green) ![](https://img.shields.io/badge/-Lifecycle-orange)
-
-1. **Trace Only What You Need: Structure-Aware On-Demand Hypergraph Memory for Long-Document Question Answering**\
-   Xiangjun Zai, Xingyu Tan, Chen Chen, et al. *arXiv 2026*. [[Paper](https://arxiv.org/abs/2606.10921)]\
-   ![](https://img.shields.io/badge/-Method-lightgrey) ![](https://img.shields.io/badge/-External-blue) ![](https://img.shields.io/badge/-Graph-purple) ![](https://img.shields.io/badge/-Procedural-yellowgreen) ![](https://img.shields.io/badge/-Multi_Agent-purple)
-
-1. **REAL: A Reasoning-Enhanced Graph Framework for Long-Term Memory Management of LLMs**\
-   Keer Lu, Liwei Chen, Guoqing Jiang, et al. *arXiv 2026*. [[Paper](https://arxiv.org/abs/2606.10694)]\
-   ![](https://img.shields.io/badge/-Method-lightgrey) ![](https://img.shields.io/badge/-External-blue) ![](https://img.shields.io/badge/-Graph-purple) ![](https://img.shields.io/badge/-Semantic-green) ![](https://img.shields.io/badge/-Lifecycle-orange)
-
-1. **TokenMizer: Graph-Structured Session Memory for Long-Horizon LLM Context Management**\
-   Shweta Mishra. *arXiv 2026*. [[Paper](https://arxiv.org/abs/2606.06337)]\
-   ![](https://img.shields.io/badge/-Method-lightgrey) ![](https://img.shields.io/badge/-External-blue) ![](https://img.shields.io/badge/-Graph-purple) ![](https://img.shields.io/badge/-Episodic-green) ![](https://img.shields.io/ba
+   ![](https://img.shields.io/badge/-Method-lightgrey) ![](https://img.shields.io/badge/-External-blue) ![](https://img.shields.io/badge/-Graph-purple) ![](https://img.shields.io/badge

@@ -68,6 +68,9 @@ cosign verify-blob \
 sha256sum -c SHA256SUMS
 ```
 
+Release binaries always link the AWS-LC source vendored in `aws-lc-sys`,
+statically; a crypto library on the build runner is never picked up.
+
 </details>
 
 ### From source
@@ -84,7 +87,7 @@ cargo build --release
 ## Quick start
 
 The guided path -- `routectl init` walks provider setup, secret
-capture, and routing, then offers a verification probe:
+capture, and routing:
 
 ```bash
 routectl init
@@ -147,7 +150,7 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the crate map.
 Minimal example:
 
 ```toml
-version = 4                      # config schema version
+version = 5                      # config schema version
 
 [server]
 host = "127.0.0.1"
@@ -174,7 +177,6 @@ reasoning_dialect = "deepseek"   # a MODEL knob, not a provider one
 [models.heavy]
 provider = "anthropic-api-key"
 upstream = "claude-opus-4-20250514"
-supports_adaptive_thinking = true
 
 [aliases]
 # An alias key must not equal the nickname it points at -- alias
@@ -195,7 +197,7 @@ outright:
 | `oauth://<provider>` | routectl-managed OAuth credential, populated by `routectl login <provider>` |
 
 The full config surface -- retry policy, capability overrides, cache
-knobs, the model catalog, hot-reload, managed OAuth -- lives in
+knobs, per-model prices, hot-reload, managed OAuth -- lives in
 [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md), with a committed
 JSON Schema (`routectl.schema.json`) for editor completion.
 
@@ -244,16 +246,15 @@ task it serves.
 
 ```bash
 # Unit + integration tests, no provider calls even with credentials in the
-# environment (also true with --all-features). Not with --ignored or
-# --include-ignored: those select an ignored router live smoke that calls
-# the provider named by ROUTECTL_LIVE_BASE_URL / ROUTECTL_LIVE_API_KEY.
-cargo test --workspace --release
+# environment (also true with --all-features).
+bash scripts/test-gate.sh pre-push
 
 # Live integration: calls real providers (explicit opt-in; skips
 # per-provider when its env key is absent). The live targets are
-# live_matrix and live_anthropic_oauth; any --test that names or globs
-# one with live-integration enabled is a live command.
-cargo test -p routectl-cli --features live-integration --release \
+# live_matrix and live_anthropic_oauth, plus routectl-router's
+# live_learned_capability; any --test that names or globs one with
+# live-integration enabled is a live command.
+cargo test -p routectl-cli --features live-integration --profile test-release \
   --test live_matrix -- --nocapture --test-threads=1
 ```
 

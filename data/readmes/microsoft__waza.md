@@ -426,7 +426,15 @@ waza runner negotiate < examples/runner/negotiation.json
 waza runner validate < examples/runner/unit.json
 waza runner run < examples/runner/unit.json
 waza runner budgets   # main-only, after v0.41.0: per-OS budget matrix
+waza runner assurance build  # validate and print the versioned production-integration package
 ```
+
+`waza runner assurance build` is an offline maintainer command run from a source
+checkout. It validates `docs/PRODUCTION_INTEGRATION_ASSURANCE-1.0.json` against
+the package schema, contract schemas, evidence files, and existing Lab guides;
+`--format markdown` emits the generated site page. See the [operator and
+maintainer guide](docs/PRODUCTION_INTEGRATION_ASSURANCE.md) and [production
+integration assurance site page](https://microsoft.github.io/waza/guides/production-integration-assurance/).
 
 Builds from `main` (after v0.41.0) accept optional request `budgets` (wall time, model
 turns, tool calls, CPU, memory, disk, process count). Limits the host cannot
@@ -1961,4 +1969,4 @@ checks reject group/world-writable cache parents and private children with
 group/other mode bits. These retained-root checks do not certify Windows ACLs,
 cache confidentiality or whole-filesystem ancestry.
 
-A source build currently emits `results.json` at `schemaVersion` `1.9`; published `v0.39.1` writes `1.7`. Version `1.1` added per-turn checkpoints (`runs[].checkpoints[]`, see #358) and the normalized `runs[].tool_events[]` array (`turn`, `sequence`, `tool_call_id`, `tool_name`, `args`, `result`, `success`, `error`, `duration_ms`; see #366). Version `1.2` added `runs[].snapshot_path` for `waza run --snapshot` artifacts (#367) and the eval-level `adversarial:` block consumed by `waza adversarial --spec` (#365). Version `1.3` adds `session_digest.tool_policy_mode` and `tool_policy_denials` (#585). Version `1.4` adds sanitized `runs[].command_invocations` for declarative CLI mocks (#634). Versio
+A source build currently emits `results.json` at `schemaVersion` `1.9`; published `v0.39.1` writes `1.7`. V

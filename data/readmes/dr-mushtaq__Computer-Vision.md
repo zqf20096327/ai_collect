@@ -459,6 +459,7 @@ delve into the realm of zero-shot learning in computer vision, covering aspects 
 |[**✅2-visionbrick**](https://visionbrick.com/deeplearning/))|Road Map on Coggle|---|
 |[**✅3-computer Vision Study Plan**](https://pixelbank.dev/cv-study-plan))|Road Map on Coggle|---|
 |[**✅4-computer Vision with keras**](https://keras.io/examples/vision/image_classification_from_scratch/)|implement all Computer In keras|---|
+|[**✅5-Teachable Machine**](https://teachablemachine.withgoogle.com/)|train a model with your webcam|---|
 
 
 ##  🔹Chapter2: - **Road Map**
@@ -508,5 +509,4 @@ delve into the realm of zero-shot learning in computer vision, covering aspects 
 | Title/link| Description | Code |
 |---|---|---|
 |[**✅1- Top Computer Vision Google Colab Notebooks**](https://www.qblocks.cloud/creators/computer-vision-google-colab-notebooks)|Here is a list of the top google colab notebooks that use computer vision to solve a complex problem such as object detection, classification etc:|---|
-|[**✅2-roboflow/Notebooks**](https://github.com/roboflow/notebooks)|This repository offers a growing collection of computer vision tutorials. Learn to use SOTA models like YOLOv11, SAM 2, Florence-2, PaliGemma 2, and Qwen2.5-VL for tasks ranging from object detection, segmentation|---|
-|[**✅3-Machin
+|[**✅2-roboflow/Notebooks**](https://github.com/roboflow/notebooks)|This repository offers a growing collection of computer vision tutorials. Learn to use SOTA models like YOLOv11, SAM 2, Floren

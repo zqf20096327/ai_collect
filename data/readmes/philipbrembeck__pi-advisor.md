@@ -31,6 +31,7 @@ Keep implementation on a fast model and borrow frontier reasoning only when deci
 - **Compact searchable `/advisor-settings`** that matches Pi's settings list and saves changes immediately.
 - **Experimental Advisor Scout** that uses the configured Executor model to curate conversation evidence before every Advisor call.
 - **Optional Jev classifier screening and proactive turn gate**: typed Pi classifiers can skip low-stakes, self-answerable consultations or proactively pull in the Advisor. `/advisor-settings` offers available Pi-authenticated classifiers plus an explicit **Jev API Key** option. The API-key option is independently masked, live-verified, and stored only in a Jev-classifier-specific secure store; legacy keys are not migrated. Custom classifiers must be registered by a Pi provider extension. Both features remain off by default.
+- **Bundled `pi-advisor-flow` skill and `advisor_config` tool** so the agent can explain the workflow, inspect settings, and apply requested changes after confirmation.
 
 ## How it works
 
@@ -66,7 +67,7 @@ You can also install from GitHub:
 pi install git:github.com/philipbrembeck/pi-advisor.git
 ```
 
-Reload Pi after installing.
+Reload Pi after installing. The package also installs the `pi-advisor-flow` skill; ask the agent how Advisor Flow works or run `/skill:pi-advisor-flow` to load its guide directly. To change settings through chat, ask the agent; it uses `advisor_config` to inspect settings and apply requested changes after an interactive confirmation. Model choices use the existing picker, and Jev classifier/credential setup stays in `/advisor-settings`.
 
 ## Quick start
 
@@ -154,6 +155,20 @@ In the interactive TUI, `/advisor-manual [focus]` opens a centered overlay with 
 ### Experimental Advisor Scout
 
 Advisor Scout is off by default. When enabled in `/advisor-settings` or via `"advisorScoutEnabled": true`, the Executor model first selects relevant conversation history before the Advisor sees it. Scout runs in a separate model call, which adds cost and latency up front but can shrink the Advisor call. A bounded result shows the model, selection counts, and usage; on any failure it falls back to sending the original conversation unchanged. This experiment adapts the context-boundary idea from Zhang et al., ["FastContext: Training Efficient Repository Explorer for Coding Agents"](https://arxiv.org/html/2606.14066v1) — it curates conversation history only and is not a reproduction of FastContext. See the [configuration guide](https://github.com/philipbrembeck/pi-advisor/blob/main/docs/configuration.md) for details.
+
+## Localization
+
+pi-advisor localizes its human-facing interface through [`@juicesharp/rpiv-i18n`](https://www.npmjs.com/package/@juicesharp/rpiv-i18n). German and French ship complete (`locales/de.json`, `locales/fr.json`); other Pi locales fall back to English until contributed. Strings sent to the model — tool descriptions, prompts, and validation envelopes — intentionally stay English so behavior is identical in every language.
+
+To use a localized interface:
+
+```sh
+pi install npm:@juicesharp/rpiv-i18n
+```
+
+Then pick a language with `/languages` in the session. Without the SDK installed, pi-advisor runs unchanged in English — it is an optional peer dependency, never required.
+
+Contributing or improving a locale: mirror the exact keys from [`locales/en.json`](https://github.com/philipbrembeck/pi-advisor/blob/main/locales/en.json) into `locales/<code>.json` (a `test/i18n-locale-consistency.test.ts` guards key drift), and leave reserved labels like toggle values untranslated. The initial `de` and `fr` translations were machine-assisted — native review is welcome.
 
 ## Privacy
 

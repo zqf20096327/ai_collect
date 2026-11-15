@@ -56,7 +56,7 @@ over several of them (`--gpus N`). See [Discrete GPUs](#discrete-arc-gpus-experi
 
 **Linux** (Ubuntu 24.04 or newer): download `inferzero-<version>-linux-x64.tar.gz` from the same release, unpack it,
 and run `./zero-launcher.sh` (a terminal menu that downloads a model and starts the headless server). It needs Intel's
-GPU runtime and Python 3: [docs/install.md](docs/install.md#linux).
+GPU runtime and nothing else (bash, curl): [docs/install.md](docs/install.md#linux).
 
 On Windows:
 
@@ -138,8 +138,10 @@ the iGPUs never take. Measured by users (Qwen3.8 27B GSQ-RCO IQ3_S unless named)
   (2026.11.13.11). Qwen3.6 35B-A3B: 4K prompt 3,536 tok/s (2026.11.14.09), generation 82.4 tok/s, 111.9 with MTP
   (2026.11.13.11). The switches still off by default (`ARC_X16`, `ARC_GV_IQ3S`, `ARC_H8_NORM`, H8 on MoE models,
   `--chunk 8192`) were measured there on 2026-11-14 and none is faster: [docs/xe2-tuning.md](docs/xe2-tuning.md).
-- **One Pro B70** ([issue #12](https://github.com/rizagp/inferzero/issues/12), release 2026.11.13.06, before the weight
-  prefetch; a rerun is asked for): 4K prompt 2,105 tok/s, generation 32.2 tok/s, 75.2 with MTP.
+- **One Pro B70** on native Linux ([issue #27](https://github.com/rizagp/inferzero/issues/27), joshdev-de, Fedora 45):
+  4K prompt 2,315 tok/s on the code of release 2026.11.15.01 (2,219 on 2026-11-14 before its two prompt changes),
+  generation 31.9 tok/s, 57.8 with MTP. Another B70 under Windows ([issue #12](https://github.com/rizagp/inferzero/issues/12),
+  release 2026.11.13.06, before the weight prefetch; a rerun is asked for): 2,105 tok/s, generation 32.2, 75.2 with MTP.
 - **Arc 140T** (the Core Ultra 9 285H's iGPU, [issue #5](https://github.com/rizagp/inferzero/issues/5)): 4K prompt
   330 tok/s (release 2026.11.13.11, its default 32x16 XMX tiles with H8; 302 on 2026.11.11).
 - **One model over several GPUs** (`runz` / `serverz --gpus N`, tensor parallel):

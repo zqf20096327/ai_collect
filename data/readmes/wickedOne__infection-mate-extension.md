@@ -2,11 +2,10 @@
 
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2FwickedOne%2Finfection-mate-extension%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/wickedOne/infection-mate-extension/main)
 [![codecov](https://codecov.io/gh/wickedOne/infection-mate-extension/branch/main/graph/badge.svg?token=UHKAVGURP7)](https://codecov.io/gh/wickedOne/infection-mate-extension)
-
-[//]: # ([![Latest Stable Version]&#40;https://poser.pugx.org/wickedone/phrase-tag-bundle/v&#41;]&#40;https://packagist.org/packages/wickedone/phrase-tag-bundle&#41;)
-[//]: # ([![Total Downloads]&#40;https://poser.pugx.org/wickedone/phrase-tag-bundle/downloads&#41;]&#40;https://packagist.org/packages/wickedone/phrase-tag-bundle&#41;)
-[//]: # ([![License]&#40;https://poser.pugx.org/wickedone/infection-mate-extension/license&#41;]&#40;https://packagist.org/packages/wickedone/infection-mate-extension&#41;)
-[//]: # ([![PHP Version Require]&#40;https://poser.pugx.org/wickedone/infection-mate-extension/require/php&#41;]&#40;https://packagist.org/packages/wickedone/infection-mate-extension&#41;)
+[![Latest Stable Version](https://poser.pugx.org/wickedone/infection-mate-extension/v)](https://packagist.org/packages/wickedone/infection-mate-extension)
+[![Total Downloads](https://poser.pugx.org/wickedone/infection-mate-extension/downloads)](https://packagist.org/packages/wickedone/infection-mate-extension)
+[![License](https://poser.pugx.org/wickedone/infection-mate-extension/license)](https://packagist.org/packages/wickedone/infection-mate-extension)
+[![PHP Version Require](https://poser.pugx.org/wickedone/infection-mate-extension/require/php)](https://packagist.org/packages/wickedone/infection-mate-extension)
 
 A [Symfony Mate](https://symfony.com/doc/current/ai/components/mate.html) extension that lets coding agents run [Infection](https://infection.github.io/) mutation testing and work with its results: find escaped mutants, understand why they escaped, and write tests that kill them.
 
@@ -37,7 +36,7 @@ Agents call them through the `vendor/bin/mate` CLI:
 ```bash
 vendor/bin/mate tools:call infection-run --paths=src/Service --options='{"only-covering-test-cases":true}'
 vendor/bin/mate tools:call infection-escaped --bucket=escaped --file=src/Service/Calc.php
-vendor/bin/mate tools:call infection-mutant --ref=escaped:0 --withOutput=true
+vendor/bin/mate tools:call infection-mutant --id=<mutant id> --withOutput=true
 vendor/bin/mate resources:read infection://config
 ```
 
@@ -49,7 +48,7 @@ Responses are JSON. When [`helgesverre/toon`](https://github.com/HelgeSverre/too
 
 ## How it works
 
-`infection-run` passes `--logger-json=<file>` to Infection and reads that file back, so your configuration is used as is and never copied or modified. The file is a short-lived `.infection.mate.<token>.log.json` in the project root, deleted after every run. This needs an Infection version that has the `--logger-json` option ([infection/infection#3735](https://github.com/infection/infection/pull/3735)).
+`infection-run` passes `--logger-json=<file>` to Infection and reads that file back, so your configuration is used as is and never copied or modified. The file is a short-lived `.infection.mate.<token>.log.json` in the project root, deleted after every run.
 
 Parsed runs are cached in Mate's cache directory (the last 10) so the drill-down tools never re-run Infection.
 
@@ -57,7 +56,7 @@ Parsed runs are cached in Mate's cache directory (the last 10) so the drill-down
 
 These follow from what Infection reports today:
 
-- Infection's log has no mutant ids. A `ref` like `escaped:3` is valid only within one `runId`.
+- A mutant `id` is looked up in one cached `runId`. To re-run specific mutants, pass their ids to `infection-run` as the `id` option (`--options='{"id":["<id1>","<id2>"]}'`); Infection invalidates an id when the mutated source changes.
 - There is no per-mutant reason for ignored, skipped or uncovered mutants, only the bucket.
 - No history across Infection runs beyond the last 10 cached ones, so mutator effectiveness over time is not available.
 - Equivalent-mutant triage is left to the agent. Nothing is suppressed automatically.

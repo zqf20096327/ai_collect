@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <a href="https://atomsprout.com/chatcomputer">Website</a> ·
+  <a href="https://chatcomputer.github.io/">Website</a> ·
   <a href="https://github.com/chatcomputer/chatcomputer/releases">Download</a> ·
   <a href="docs/STATUS.md">Status</a> ·
   <a href="PRIVACY.md">Privacy</a>
@@ -32,7 +32,8 @@ Coding agents get the same Mac: the app is also a command line tool and an MCP s
 others can test GUI apps, installers and websites in a disposable macOS.
 
 The latest stable release is available from **[GitHub Releases](https://github.com/chatcomputer/chatcomputer/releases/latest)**.
-The product website and support are maintained at [AtomSprout](https://atomsprout.com/chatcomputer/). Validation is incomplete; see the
+The product website is maintained at [chatcomputer.github.io](https://chatcomputer.github.io/).
+Support is available on the [official website](https://chatcomputer.github.io/support/). Validation is incomplete; see the
 [validation matrix](docs/VALIDATION-0.9.12-MATRIX.md) for passed checks, unfinished scenarios and unavailable test environments.
 
 ## Highlights
@@ -53,7 +54,7 @@ The product website and support are maintained at [AtomSprout](https://atomsprou
 20 fixed tasks (web forms, PDF export, spreadsheets, file organisation, Calendar, a planted prompt injection, an
 email that must be confirmed first) run from the same snapshot every time, and a program checks each result.
 Historical baseline from 2026-10-04, not a verification of the next release
-(every run, task by task, on [the website](https://atomsprout.com/chatcomputer/#results)):
+(every run, task by task, on [the website](https://chatcomputer.github.io/#results)):
 
 | Agent | Passed | Median turns per task |
 |---|---|---|

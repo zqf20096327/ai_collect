@@ -241,6 +241,41 @@ same input gives byte-identical output in all of them, which the tests check.
 The browser build covers the encoder and chat paths; Whisper, the seq2seq models and
 CLIP are native only for now.
 
+## As an OpenAI-compatible server
+
+`kjarni serve` puts Kjarni behind an HTTP API in OpenAI's format, so the OpenAI client libraries, and the tools built on them, run against your own machine by changing the base URL.
+
+```bash
+kjarni serve
+```
+
+```bash
+curl http://127.0.0.1:8080/v1/chat/completions -H "Content-Type: application/json" -d '{
+  "model": "qwen2.5-0.5b-instruct",
+  "messages": [{"role": "user", "content": "What is the capital of France?"}]
+}'
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI(base_url="http://127.0.0.1:8080/v1", api_key="unused")
+vectors = client.embeddings.create(model="minilm-l6-v2", input=["hello", "world"])
+```
+
+| Endpoint | Format | Does |
+|---|---|---|
+| `/v1/chat/completions` | OpenAI | chat, streamed or whole |
+| `/v1/completions` | OpenAI | continues raw text |
+| `/v1/embeddings` | OpenAI | embeddings, as floats or base64 |
+| `/v1/audio/transcriptions`, `/v1/audio/translations` | OpenAI | speech to text, and to English; JSON, text, SRT or WebVTT |
+| `/v1/models` | OpenAI | every model Kjarni has, and which endpoint each serves |
+| `/v1/rerank` | Cohere and Jina | orders documents by relevance to a query |
+| `/v1/classify` | Kjarni | sentiment, emotion and other labels, or zero-shot with `"labels"` you choose |
+| `/v1/translate`, `/v1/summarize`, `/v1/ner` | Kjarni | translation, summarization, named entities |
+
+A request picks its model by Kjarni name, and each model loads on its first request and stays loaded. Without a model, each endpoint uses a default you can set with flags such as `--chat qwen2.5-1.5b-instruct`. The server listens on 127.0.0.1 only; to accept other machines, use `--host 0.0.0.0 --api-key KEY`. Tool calling, JSON mode and log probabilities are not supported yet, and requests that ask for them get an error instead of a quiet answer without them.
+
 ## For AI agents (MCP)
 
 `kjarni mcp` serves Kjarni's capabilities to any MCP client (Claude Code, Cursor, Claude Desktop, VS Code) as tools that run on your machine: `search_folder` (semantic and hybrid search over a folder of documents or code, indexed on first use and kept up to date), `search_images` (find photos in a folder by describing them, with CLIP), `transcribe`, `classify`, `rerank` and `similarity`.
@@ -400,6 +435,9 @@ $ kjarni classify "Best purchase ever"
 $ echo "Great service" | kjarni classify --format json | jq -r '.label'
 POSITIVE
 
+$ kjarni classify -q -m minilm-zeroshot --labels "sizing,shipping,price" "Arrived two weeks late"
+shipping
+
 $ kjarni index create my-docs docs/*
 ✓ Indexed 15 documents (39.52 KB)
 
@@ -440,6 +478,7 @@ Referenced by short name; the underlying HuggingFace model is listed for searcha
 | Summarization | `bart-large-cnn` | `facebook/bart-large-cnn` | 406 MB |
 | Translation (English to German) | `opus-mt-en-de` | `Helsinki-NLP/opus-mt-en-de` \* | 285 MB |
 | Translation (German to English) | `opus-mt-de-en` | `Helsinki-NLP/opus-mt-de-en` \* | 285 MB |
+| Zero-shot (labels you choose) | `minilm-zeroshot` | `cross-encoder/nli-MiniLM2-L6-H768` | 328 MB |
 | Named entities | `distilbert-ner` | `dslim/distilbert-NER` | 66 MB |
 | Instruction / seq2seq | `flan-t5-base` | `google/flan-t5-base` | 250 MB |
 | Instruction / seq2seq | `flan-t5-large` | `google/flan-t5-large` | 780 MB |
@@ -448,13 +487,13 @@ Referenced by short name; the underlying HuggingFace model is listed for searcha
 
 ### Models from the Hugging Face Hub
 
-Any folder in the Hugging Face layout loads with `--model-path` in the CLI, `model_path` in Rust, Python and C, `modelPath` in C# and `WithModelPath` in Go: sentence encoders and classifiers (BERT, RoBERTa, XLM-RoBERTa, DistilBERT, MPNet), cross-encoders, token classifiers for named entities, decoder chat models (Llama, Qwen2, Mistral, Phi-3, GPT-2), BART and T5 for summarization, Marian (`Helsinki-NLP/opus-mt-*`) and T5 for translation, and Whisper for speech. Weights can be safetensors or `pytorch_model.bin`, and the tokenizer can be `tokenizer.json` or the files the Python tokenizer reads (`vocab.txt`, `vocab.json` with `merges.txt`, or a SentencePiece model).
+Any folder in the Hugging Face layout loads with `--model-path` in the CLI, `model_path` in Rust, Python and C, `modelPath` in C# and `WithModelPath` in Go: sentence encoders and classifiers (BERT, RoBERTa, XLM-RoBERTa, DistilBERT, MPNet), cross-encoders, token classifiers for named entities, decoder chat models (Llama, Qwen2, Qwen 3.5, Mistral, Phi-3, GPT-2), BART and T5 for summarization, Marian (`Helsinki-NLP/opus-mt-*`) and T5 for translation, and Whisper for speech. Weights can be safetensors or `pytorch_model.bin`, and the tokenizer can be `tokenizer.json` or the files the Python tokenizer reads (`vocab.txt`, `vocab.json` with `merges.txt`, or a SentencePiece model).
 
 ```bash
 kjarni translate --model-path ./opus-mt-is-en --src is --dst en -i "Veðrið er gott í dag."
 ```
 
-`kjarni model list` shows the full catalog, including the decoder LLMs (Llama 3.2, Qwen 2.5, Mistral, Phi-3.5, DeepSeek-R1) the engine supports. Text generation runs through the same engine in every language binding, the CLI and the browser. If raw single-model generation throughput is what you are optimising for, [llama.cpp](https://github.com/ggerganov/llama.cpp) is more specialised. Kjarni's lane is breadth of language and deployment rather than raw generation speed: the same engine behind a NuGet package, a Go module, a C header, a CLI binary and a WASM bundle.
+`kjarni model list` shows the full catalog, including the decoder LLMs (Llama 3.2, Qwen 2.5, Qwen 3.5, Mistral, Phi-3.5, DeepSeek-R1) the engine supports. Text generation runs through the same engine in every language binding, the CLI and the browser. If raw single-model generation throughput is what you are optimising for, [llama.cpp](https://github.com/ggerganov/llama.cpp) is more specialised. Kjarni's lane is breadth of language and deployment rather than raw generation speed: the same engine behind a NuGet package, a Go module, a C header, a CLI binary and a WASM bundle.
 
 ## FAQ
 

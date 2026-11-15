@@ -16,13 +16,14 @@
   <a href="#docker-linux-macos-windows">Docker</a> ·
   <a href="integrations/burp/">Burp extension</a> ·
   <a href="https://github.com/theasbug/reprocase/releases/download/v1.1.0-beta.1/ReproCase-demo-56s-en.mp4">56s demo</a> ·
+  <a href="https://theasbug.github.io/reprocase/">Website</a> ·
   <a href="templates/">Case templates</a> ·
   <a href="docs/QUICKSTART.tr.md">Türkçe</a>
 </p>
 
-<p align="center"><a href="https://github.com/theasbug/reprocase/releases/download/v1.1.0-beta.1/ReproCase-demo-56s-en.mp4"><img src="docs/images/demo-highlights.gif" alt="Recorded local demo: reproduced, reproduced again with fresh accounts, then not reproduced on the secure target." width="1000"></a></p>
+<p align="center"><a href="https://github.com/theasbug/reprocase/blob/main/docs/media/reprocase-demo.mp4"><img src="docs/images/demo-narrated.gif" alt="Recorded from the real app: two accounts connect, the run is Reproduced, then a write proof where the owner observes the change, then the case is exported." width="1000"></a></p>
 
-<p align="center"><sub>Recorded from the real local app, no API key. <b>Reproduced</b> → fresh accounts → <b>Reproduced</b> → secure target → <b>Not reproduced</b>. <a href="https://github.com/theasbug/reprocase/releases/download/v1.1.0-beta.1/ReproCase-demo-56s-en.mp4">Full 56s recording</a>.</sub></p>
+<p align="center"><sub>Recorded from the real local app, no API key. Two accounts → <b>Reproduced</b> → write proof checked by the owner → export for the triager. <a href="https://github.com/theasbug/reprocase/blob/main/docs/media/reprocase-demo.mp4">▶ Watch the 60s narrated video</a>.</sub></p>
 
 ## The problem
 
@@ -55,7 +56,7 @@ Every run ends in exactly one verdict: **`reproduced`**, **`not_reproduced`**, o
 
 <p align="center"><img src="docs/images/quick-proof-identity.png" alt="Quick proof found the identity endpoint and fields by comparing two accounts" width="49%"> <img src="docs/images/quick-proof-result.png" alt="Quick proof result: what was learned about the target and a preview" width="49%"></p>
 
-The verdict still comes from the normal run: a fresh object, a unique marker, verified accounts and the three outcomes. Quick proof currently covers read IDORs with the object ID in the URL path; use **Advanced case** for write IDORs.
+The verdict still comes from the normal run: a fresh object, a unique marker, verified accounts and the three outcomes. Quick proof also supports controlled write IDORs (PATCH/PUT/POST), role/function authorization and real-browser CORS private reads. The normal write flow still needs five inputs. See the [new proof workflows](docs/QUICK-PROOF-V2.en.md) ([Türkçe](docs/QUICK-PROOF-V2.tr.md)).
 
 ### Triagers: verify a report on your own site
 
@@ -124,7 +125,7 @@ Open the local URL printed by the command. On Linux, first run `npx playwright i
 
 <sub>Simplified. See the full executable [example](examples/cross-tenant.reprocase.json) and the [case format](docs/CASE-FORMAT.md).</sub>
 
-Start from a template in [`templates/`](templates/): horizontal IDOR (read and write) and vertical privilege escalation. Cross-tenant read and write cases are in [`examples/`](examples/). Import a HAR, raw HTTP, Burp XML or Postman capture to draft a case from your own traffic.
+**Reuse a proven case.** Save any case as a template, then open **Templates → Use on a target**, type another target you're allowed to test, map paths if its API differs, connect your own test accounts and run. Built-in templates from [`templates/`](templates/) cover horizontal IDOR (read and write), vertical privilege escalation, role and CORS reads. Cross-tenant read and write cases are in [`examples/`](examples/). Import a HAR, raw HTTP, Burp XML or Postman capture to draft a case from your own traffic.
 
 ### From Burp Suite in one click
 

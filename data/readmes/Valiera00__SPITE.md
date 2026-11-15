@@ -292,8 +292,8 @@ Set a positive number to opt in (e.g. `ASSET_RETENTION_DAYS=30`,
 ## Claude connection (MCP)
 
 SPITE has a built-in [MCP](https://modelcontextprotocol.io) endpoint, so your
-own Claude can work in your projects: look around, generate images, and put the
-shots you choose on the board. It is **off by default**.
+own Claude can work in your projects: look around, generate images and video,
+and put the shots you choose on the board. It is **off by default**.
 
 1. In SPITE, open **Settings → Claude connection** and turn it on. You get an
    access token, shown once.
@@ -303,17 +303,31 @@ shots you choose on the board. It is **off by default**.
 How it behaves:
 
 - **A brief first.** Claude can't generate until it has recorded a brief you
-  agreed to (how many images, which models, a price ceiling per image). SPITE
-  enforces it; going beyond it needs a new brief.
+  agreed to (how many images and videos, which models, a price ceiling for
+  each). SPITE enforces it; going beyond it needs a new brief.
 - **Drafts, then keeps.** What Claude makes lands in the project's library as
   numbered drafts. Only the ones you tell it to keep go on the board, the next
   time that canvas is open.
 - **Its own spend ceiling.** A per-hour limit for Claude (Settings, default
-  $5), on top of the normal spend gate. Claude can't change it.
+  $5), on top of the normal spend gate. Claude can't change it. This is the
+  hard limit: the brief keeps Claude to what you agreed, but Claude is the one
+  who records it, so the ceiling is what bounds a mistake or a stolen token.
+- **Your board stays yours.** Kept shots are added by the open canvas, never
+  written behind its back, and only by a tab that has the current board. A tab
+  that is out of date is told to reload instead.
+- **Time estimates that learn.** SPITE times every generation and tells Claude
+  how long a job like the one it just started usually takes on your install,
+  by model, settings, hour and kind of day.
+- **Files out, notes back.** Claude can fetch a result's original file to work
+  on it elsewhere, and can leave you a note when a tool gets in its way
+  (saved in your database, sent nowhere).
 - **No destructive tools.** The endpoint can't delete anything, change
   settings, or read keys. Turning the connection off revokes the token at once.
 
-Images only for now; video generation comes next.
+Claude can see your board and reference folders and the images it makes, and
+can use anything on the board as an input: an image to rework, the first or
+last frame of a clip, a reference. It can't change what is on the board, and it
+can't watch video, so clips are yours to review in the library.
 
 ## Updating
 

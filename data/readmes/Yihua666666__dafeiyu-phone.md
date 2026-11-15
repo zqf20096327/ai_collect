@@ -42,6 +42,18 @@
 
 
 
+
+## DeepSeek 集成 TTS / OCR
+
+2.0 允许把这两项切到 DeepSeek 官方应用 API，复用同一个 Key：
+
+- **TTS**：DafeiyuEye 首页下拉选 `DeepSeek TTS`，调用 `/v1/tools/tts`，支持 `stella` / `tide` 两条声线
+- **OCR**：给 agent 发 `/ocr deepseek`，看图/截屏文字走 `/v1/tools/ocr`；`/ocr local` 切回 PaddleOCR
+- 失败都会自动回退系统 TTS / 本地 OCR
+- OCR 仍保留本地 PaddleOCR 的坐标节点能力；DeepSeek OCR 只返回文字
+
+配置和接口细节见 [DeepSeek 集成 TTS / OCR](docs/DS_API.md)。
+
 ## 第三方 TTS 接口
 
 系统 TTS 之外，DafeiyuEye 预留了通用语音输出接口：

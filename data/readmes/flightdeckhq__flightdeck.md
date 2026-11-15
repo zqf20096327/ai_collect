@@ -4,8 +4,9 @@
     <img alt="Flightdeck" src="dashboard/public/assets/flightdeck-lockup-light.svg" width="280">
   </picture>
   <p><strong>See and control every AI agent you run, from one self-hosted binary.</strong></p>
+  <p>An observability and control plane for AI agents: every LLM, tool and MCP call as it happens, with token budgets, MCP policy and a kill switch.</p>
   <p>
-    <a href="#install">Quickstart</a> · <a href="#coverage">Coverage</a> · <a href="#self-hosting">Self-hosting</a> · <a href="https://github.com/flightdeckhq/flightdeck/issues?q=is%3Aissue+is%3Aopen+label%3Aroadmap">Roadmap</a>
+    <a href="#what-you-get">What it is</a> · <a href="#install">Quickstart</a> · <a href="#coverage">Coverage</a> · <a href="#self-hosting">Self-hosting</a> · <a href="https://github.com/flightdeckhq/flightdeck/issues?q=is%3Aissue+is%3Aopen+label%3Aroadmap">Roadmap</a>
     &nbsp;
     <a href="https://github.com/flightdeckhq/flightdeck/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/flightdeckhq/flightdeck"></a>
     <a href="LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue"></a>
@@ -36,27 +37,49 @@ Then start it:
 flightdeck
 ```
 
-The dashboard is at http://localhost:4000, and nothing needs configuring: agents on the same machine find it without a server address or a token. The binary goes to `/usr/local/bin` or `~/.local/bin` and the data, a SQLite file, to `~/.flightdeck`; on Windows, to `%LOCALAPPDATA%\Programs\flightdeck` and `%LOCALAPPDATA%\flightdeck`. If `flightdeck` is not found, run the `PATH` line the installer printed, or on Windows open a new PowerShell window. [guides/windows.md](guides/windows.md) has the rest for Windows.
+The dashboard is at http://localhost:4000, and nothing needs configuring: agents on the same machine find it without a server address or a token; `flightdeck --port 4100` runs it on another port, and `flightdeck --help` lists the flags. The binary goes to `/usr/local/bin` or `~/.local/bin` and the data, a SQLite file, to `~/.flightdeck`; on Windows, to `%LOCALAPPDATA%\Programs\flightdeck` and `%LOCALAPPDATA%\flightdeck`. If `flightdeck` is not found, run the `PATH` line the installer printed, or on Windows open a new PowerShell window. [guides/windows.md](guides/windows.md) has the rest for Windows.
 
-<details>
-<summary>Homebrew, pip, Docker and the release page</summary>
+### Other ways to install
+
+Every channel installs the same binary, built for Linux, macOS and Windows on amd64 and arm64.
+
+**Homebrew**
 
 ```bash
-brew install flightdeckhq/tap/flightdeck   # Homebrew
-pip install flightdeck-cli                 # PyPI: the same binary, as the flightdeck command
-uvx flightdeck-cli                         # or run it from PyPI without installing
+brew install flightdeckhq/tap/flightdeck
+```
+
+**PyPI**, as the `flightdeck` command:
+
+```bash
+pip install flightdeck-cli
+```
+
+Or run it from PyPI without installing:
+
+```bash
+uvx flightdeck-cli
+```
+
+**Docker**: the image creates an access token on its first start and prints it; agents need it as `FLIGHTDECK_TOKEN`.
+
+```bash
 docker run -p 127.0.0.1:4000:4000 -v flightdeck:/data flightdeckhq/flightdeck
 ```
 
-Every channel installs the same binary, for Linux, macOS and Windows on amd64 and arm64; the archives are on the [release page](https://github.com/flightdeckhq/flightdeck/releases). The installers download from that release and verify the archive's checksum (and the release's signature when `cosign` is installed). The Docker image creates an access token on its first start and prints it; agents need it as `FLIGHTDECK_TOKEN`. `flightdeck --help` lists the flags, and [guides/windows.md](guides/windows.md) has the detail for Windows.
-
-</details>
+**Release page**: the archives for every platform are on the [release page](https://github.com/flightdeckhq/flightdeck/releases). The installers above download from that release and verify the archive's checksum (and the release's signature when `cosign` is installed).
 
 ## Connect your agents
 
 ### Claude Code
 
-In Claude Code, install the plugin:
+The installer offers this when it finds Claude Code; otherwise:
+
+```bash
+flightdeck connect claude-code
+```
+
+It installs the Flightdeck plugin for your user, and the sessions you start from then on appear in the fleet view within seconds. It points the plugin at the Flightdeck running on this machine, on whichever port it was started (`flightdeck --port 4100`), and if none runs yet it says to start it. `flightdeck connect` shows whether Claude Code is connected and to which server. It needs a recent Claude Code: with an older one it changes nothing and says to run `claude update`. Or install the plugin from inside Claude Code:
 
 ```text
 /plugin marketplace add flightdeckhq/flightdeck
@@ -64,7 +87,7 @@ In Claude Code, install the plugin:
 /reload-plugins
 ```
 
-The session appears in the fleet view within seconds. The plugin captures prompts and sanitised tool inputs by default, since you are watching your own session. [plugin/README.md](plugin/README.md) covers its options, `claude -p` and CI runs, enforcement and privacy.
+The plugin captures prompts and sanitised tool inputs by default, since you are watching your own session. [plugin/README.md](plugin/README.md) covers its options, `claude -p` and CI runs, enforcement and privacy.
 
 ### Python agents
 
@@ -81,7 +104,7 @@ flightdeck_sensor.patch()
 
 Those two lines go at the top of your entrypoint; nothing else in your code changes. Every call your agent makes through the Anthropic or OpenAI SDK or litellm, directly or inside a framework, is reported, with prompt capture off until you turn it on. [sensor/README.md](sensor/README.md) has the agent identity model, the environment variables and the known limitations.
 
-For a Flightdeck on another machine, set `FLIGHTDECK_SERVER` to its address (`https://flightdeck.example.com`; the ingestion URL its start-up block prints works too) and `FLIGHTDECK_TOKEN` to a token minted under **Settings → Access tokens**: the plugin and the sensor take the same two values. Runs that neither reaches (`claude --bare`, CI without the plugin, agents in other languages) can report over [OpenTelemetry](guides/opentelemetry.md).
+For a Flightdeck on another machine, set `FLIGHTDECK_SERVER` to its address (`https://flightdeck.example.com`; the ingestion URL its start-up block prints works too) and `FLIGHTDECK_TOKEN` to a token minted under **Settings → Access tokens**: the plugin and the sensor take the same two values. For Claude Code, `flightdeck connect claude-code --server <address> --token-file <file>` saves both in the plugin's options instead. Runs that neither reaches (`claude --bare`, CI without the plugin, agents in other languages) can report over [OpenTelemetry](guides/opentelemetry.md).
 
 ## What you get
 
@@ -113,14 +136,14 @@ Flightdeck is an observability and control plane for AI agents that you host you
 |---|---|
 | LLM SDKs | Anthropic (`messages.create`, `.stream`, `.parse`, on every client class: first-party, Bedrock, Vertex, Foundry), OpenAI (Chat Completions, Responses, embeddings) and litellm, sync, async and streaming. Not yet: Gemini through `google-genai` ([#276](https://github.com/flightdeckhq/flightdeck/issues/276)), boto3 Bedrock Converse ([#277](https://github.com/flightdeckhq/flightdeck/issues/277)). |
 | Coding agents | Claude Code, through the plugin or its own OpenTelemetry export. |
-| Sub-agents | A child session per sub-agent, linked to its parent: Claude Code sub-agents, CrewAI agents, LangGraph nodes, LlamaIndex agent workflows, OpenAI Agents SDK agents. |
+| Sub-agents | A child session per sub-agent, linked to its parent: Claude Code sub-agents, CrewAI agents, LangGraph nodes and nested graph runs, Deep Agents sub-agents, LlamaIndex agent workflows, OpenAI Agents SDK agents. |
 | MCP | Tool calls, resource reads and prompt fetches through the official `mcp` SDK (1.28 and later, and 2.x), whichever framework drives it; tool calls for Claude Code. |
 
 The sensor meters every LLM call a framework makes through the Anthropic or OpenAI SDK or litellm, live, and can stop or budget the run. For some frameworks it also opens a session per sub-agent, and some export OpenTelemetry spans that Flightdeck maps after the run, observe-only. Report a run one way: both paths together count it twice.
 
 | Framework | LLM calls | Sub-agents | OpenTelemetry |
 |---|---|---|---|
-| LangChain | yes | no | no |
+| LangChain | yes | an agent run inside another | no |
 | LangGraph | yes | yes | no |
 | CrewAI 1.14+ | OpenAI, Anthropic, litellm | yes | no |
 | LlamaIndex | yes | yes | no |
@@ -130,7 +153,7 @@ The sensor meters every LLM call a framework makes through the Anthropic or Open
 | Pydantic AI | Anthropic and OpenAI models | through OpenTelemetry | yes |
 | Strands Agents | not on Bedrock | through OpenTelemetry | yes |
 | Microsoft Agent Framework | not on `AzureAIAgentClient` | planned | no |
-| Deep Agents | yes | planned | no |
+| Deep Agents | yes | yes | no |
 | Agno, Haystack, smolagents | yes | on the roadmap | no |
 | AutoGen, AG2, Semantic Kernel | yes | no | no |
 | DSPy | on its litellm engine | n/a | no |
@@ -139,7 +162,7 @@ The sensor meters every LLM call a framework makes through the Anthropic or Open
 
 ## Self-hosting
 
-The same binary serves a team. Started with `--domain`, or listening on any address but your own machine's, it refuses the development token, creates an access token on its first start and prints it once; make more under **Settings → Access tokens** and give them to your agents ([Connect your agents](#connect-your-agents)).
+The same binary serves a team. Started with `--public` (every network interface, so other machines reach it), with `--domain`, or with `--listen <address>:<port>` on an address beyond your own machine, it refuses the development token, creates an access token on its first start and prints it once; make more under **Settings → Access tokens** and give them to your agents ([Connect your agents](#connect-your-agents)). Whoever can reach the server can read that token, so open it only on a network you trust, or put it behind a proxy that authenticates.
 
 ```bash
 flightdeck --domain flightdeck.example.com

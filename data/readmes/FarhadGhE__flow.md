@@ -33,6 +33,7 @@ folder if needed; it must be empty), then read `__Manager/AGENTS.md` there and f
 | Let the agent pick the area | `/<prefix>-plan <request>` |
 | Continue in a new session | the resume line at the end of the agent's last reply |
 | Work across areas | `/<prefix>-coordinate <Name> <request>`. You say `go` on a short plan before anything changes. Simple work the agent does itself; the rest it dispatches to the experts |
+| Start a coordination that was set aside for later | `suggested-coordinations.md` lists them, each with its command. Nothing is listed without your word |
 | Add a repo or folder | `Add <path> to the project.` |
 | Set up another machine or teammate | open the agent in their clone and say `Set me up on this machine.` |
 | Get a newer flow | `Upgrade the flow.` |

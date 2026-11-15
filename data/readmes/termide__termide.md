@@ -1,7 +1,7 @@
 # Termide
 
 [![GitHub Release](https://img.shields.io/github/v/release/termide/termide)](https://github.com/termide/termide/releases)
-[![CI](https://github.com/termide/termide/actions/workflows/release.yml/badge.svg)](https://github.com/termide/termide/actions)
+[![CI](https://github.com/termide/termide/actions/workflows/ci.yml/badge.svg)](https://github.com/termide/termide/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 **English** | [中文](README.zh.md) | [Русский](README.ru.md)
@@ -22,7 +22,7 @@ Terminal editors cover the code; everything around it — files on remote hosts,
 | Move files between hosts | mc, ranger, scp | Dual-pane file manager with SFTP / FTP |
 | Edit code and configs | vim, nano | Editor with LSP |
 | Review and commit | lazygit, tig | Git status, log and diff panels |
-| Find what is eating the box | htop, ss | Resource monitor |
+| See what is hogging the machine | htop, ss | Resource monitor |
 | Look into a database | sqlite3, psql | Database viewer |
 | Ask a model to change code | aider, Claude Code | Agent panel, or those agents inside it |
 
@@ -84,7 +84,7 @@ Editor, LSP, terminal, git and project layouts are a given among terminal editor
 ### Files and data
 
 - **Dual-pane file manager** - Tree with nested git status, glob and regex search, batch operations; zip, tar and ISO archives open like folders and `P` packs the selection; files copy and paste to and from other apps through the system clipboard
-- **Remote filesystems** - SFTP, FTP and FTPS in pure Rust, with copying between local and remote panels; `smb://` and `nfs://` through the OS mount
+- **Remote filesystems** - SFTP, FTP and FTPS in pure Rust, with copying between local and remote panels; SMB and NFS shares are not built in — mount them with the OS and open the mount point
 - **Background operations** - Copy, move, upload and download with progress, pause, resume and cancel
 - **Database viewer** - SQLite, PostgreSQL and MySQL from a bookmark URL: server-side sort, per-column filters, cell editing, rows as TSV, JSON or INSERT
 - **CSV and TSV tables** - Delimited files as a sortable table with the delimiter and header guessed; read from disk in windows, so a file of any size opens at once
@@ -419,8 +419,12 @@ Options:
                        Install the completion script for $SHELL, or the named one
   --prompt <PROMPT>    Run one agent task without the UI, print the answer to
                        stdout and exit; `-` reads the prompt from stdin
+  --recall <QUERY>     Search the project's earlier agent sessions, git
+                       history and code as the agent's recall tool does,
+                       print the results and exit; exits 1 when nothing is found
   --agent <NAME>       With --prompt: the agent definition to use
-  --output <FORMAT>    With --prompt: text (default), json or stream-json
+  --output <FORMAT>    With --prompt: text (default), json or stream-json;
+                       with --recall: text or json
   -h, --help           Print help
   -V, --version        Print version
 ```
@@ -436,11 +440,14 @@ export EDITOR=termide   # git commit, crontab -e, visudo, ...
 ### Quick Start
 
 After launching Termide, you'll see a width-adaptive layout:
-- **Wide terminals (>= 160 cols):** Sidebar (Git Status stacked with Operations) + two File Manager panels
-- **Normal terminals (< 160 cols):** Sidebar (Git Status, File Manager and Operations stacked) + File Manager panel
+- **Under 100 cols:** one File Manager panel
+- **100–139 cols:** File Manager + a 40-column stack of a second File Manager and Git Status
+- **140–199 cols:** File Manager + a 40-column File Manager + a 40-column stack of Git Status and Outline
+- **200 cols and wider:** two File Managers sharing the width + a 40-column stack of Git Status and Outline
+- Git Status appears only inside a git repository
 - Menu bar at the top, status bar at the bottom
 
-Stacked panels share a column with adjustable per-panel heights. `Alt+F11` toggles a "fullscreen current panel" preset (one panel takes the full column height, the rest collapse to their title row); `Ctrl+Alt+=` / `Ctrl+Alt+-` grow / shrink the focused panel by 3 lines.
+Stacked panels share a column with adjustable per-panel heights. `Alt+F11` toggles a "fullscreen current panel" preset (one panel takes the full column height, the rest collapse to their title row); `Alt+Shift+=` / `Alt+Shift+-` grow / shrink the focused panel by 1 line.
 
 Use `Alt+←/→` to switch between panel groups, `Alt+↑/↓` to navigate within a group, `Alt+M` to open the menu.
 
@@ -461,7 +468,7 @@ All shortcuts are customizable in `config.toml` (see [Configuration](#configurat
 - **Open:** `Alt+F` Files · `Alt+T` Terminal · `Alt+E` Editor · `Alt+G` Git · `Alt+P` Settings
 - **Files & viewers:** `F3` preview (markdown / diagram / hex / image) · `Ctrl+E` toggle preview ↔ source · `Ctrl+F` find · `Ctrl+R` reload from disk · `Ctrl+S` save
 
-📖 Full per-panel reference (file manager, editor, git, viewers): **[doc/en/keybindings.md](doc/en/keybindings.md)**.
+📖 Each panel's keys are on its page: [file manager](doc/en/file-manager.md), [editor](doc/en/editor.md), [terminal](doc/en/terminal.md), [git panels and window-wide keys](doc/en/ui.md), [markdown](doc/en/markdown.md) and [HTML](doc/en/html.md) viewers, [agent](doc/en/agent.md); remapping and terminal compatibility: [doc/en/keybindings.md](doc/en/keybindings.md).
 
 ## Configuration
 
@@ -483,7 +490,7 @@ the file without the ignored setting, the file as it was is first copied to
 - macOS: `~/Library/Application Support/termide/projects/`
 - Windows: `%APPDATA%\termide\projects\`
 
-**Log file location:** each run writes its own `session-<date>-<time>.log`
+**Log file location:** each run writes its own `logs/<date>-<time>.log`
 into the project's directory under the project data location above; logs older
 than 24 hours are removed. `logging.file_path` replaces this with one fixed file.
 
@@ -499,7 +506,6 @@ than 24 hours are removed. `logging.file_path` replaces this with one fixed file
 theme = "windows-xp"
 language = "auto"  # auto, bn, de, en, es, fr, hi, id, ja, ko, pt, ru, th, tr, vi, zh
 vim_mode = false
-project_retention_days = 30
 bell_on_operation_complete = true
 icon_mode = "auto"  # auto, emoji, unicode
 always_detachable = false  # keep the instance alive across terminal closes (Unix)
@@ -603,7 +609,7 @@ This project is licensed under the MIT License.
 ## Acknowledgments
 
 Built with:
-- [ratatui](https://github.com/ratatui-org/ratatui) - Terminal UI framework
+- [ratatui](https://github.com/ratatui/ratatui) - Terminal UI framework
 - [crossterm](https://github.com/crossterm-rs/crossterm) - Cross-platform terminal manipulation
 - [portable-pty](https://github.com/wez/wezterm/tree/main/pty) - PTY implementation
 - [tree-sitter](https://github.com/tree-sitter/tree-sitter) - Syntax highlighting

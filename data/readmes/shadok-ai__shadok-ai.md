@@ -178,7 +178,12 @@ Enter to skip; you can add it later from the web UI).
 - **Secret vault** — stored under `~/.shadok-ai`, never in your repo, injected
   as env vars into the agents that need them. Add or **update** a secret from the
   panel, tick the **profiles** it should feed right there, and reload the running
-  agents on those profiles in one click so a rotated value takes effect now. On
+  agents on those profiles in one click so a rotated value takes effect now.
+  On an existing secret's card, the *Shared with* / *Injected into* chips **are
+  the save**: a tick is written straight away, and a refused one goes back to
+  what the cockpit holds with the reason on the card — there is no Save button
+  to forget. (Only the creation form waits, since a secret must exist before it
+  can be bound to anything.) On
   an instance with groups, **Any profile** feeds a secret to every agent that can
   read it, whatever its profile (only a person can pick it, not an agent). An
   agent that **obtains** a credential (a CLI login, a key it just provisioned)
@@ -237,7 +242,18 @@ Enter to skip; you can add it later from the web UI).
   API, so nothing is billed per token; the figure is what those tokens would cost
   at Anthropic API list prices, a way to compare agents rather than an invoice. It
   also shows how long the agent has been **up** (session age, which survives
-  restarts) and when it **last respawned** (the running process's start). The
+  restarts), when it **last respawned** (the running process's start), and the
+  **model** it runs on — both what it is *set* to (the pick, the profile's, or
+  the instance default) and, after its first reply, the concrete model that
+  actually produced its **last message** (`set → actual`), read from the
+  transcript. That last-message model is the only place the real model is
+  observable: the *setting* is empty for "Claude Code's own default", so an agent
+  on the default shows which model it resolved to only this way. For a glance
+  without opening Stats, the agent's **⋯ menu header** shows the same
+  `set → actual (last message)` on its 🧠 line, together with the
+  **context-window gauge** (`📊 Context NN%` + a bar) — the gauge used to sit as a
+  thin line on the channel row and now lives in the menu, where there is room for
+  a number beside it. The
   figures are the **real** per-message counts the API reported (only the *cost* is
   notional), and they include the agent's **subagents** — the Task-tool children
   write their own transcripts, so a delegating agent's true total is mostly there;
@@ -726,6 +742,23 @@ Enter to skip; you can add it later from the web UI).
   agent-auth mode). Operator setup for Google (Cloud
   project, consent screen, the two broker secrets) is in
   [`broker/README.md`](broker/README.md).
+- **Connected accounts (GitHub)** — **Connect GitHub** (shown when the broker
+  offers it) authorizes the shadok GitHub App for your account; then agents can
+  `git clone` / `git push` and run `gh` on the repositories you picked. Picking
+  is a separate step on github.com — authorizing alone reaches no repository —
+  so the row says *No repository chosen yet* with a **Choose repositories**
+  link until you have, then lists what agents reach (*3 repositories of acme*)
+  with **Manage repositories**; coming back to the tab refreshes it, no
+  reconnect needed. **There is no approval card**: your repositories' own
+  protection on GitHub (branch protection, required reviews) is the guardrail.
+  *Shared with* / *Profiles* decide which agents may use it, as for every
+  account. No token is ever put in an agent's environment: every agent's git
+  is configured with a credential helper (the `shadok-github` skill) that asks
+  the cockpit for the current token at each use, and `github.mjs gh …` hands
+  `gh` the token for one call. GitHub's 8-hour tokens are renewed by the
+  cockpit, and the ~6-month authorization is renewed ahead of its deadline by
+  the hourly watch; you are warned only if that fails. Commits made through
+  `github.mjs clone` are authored as your login with GitHub's noreply address.
 - **Self-update** — polls npm and can update and reload itself in place.
 
 ### Telegram (optional)
@@ -1213,6 +1246,16 @@ invited person), and a container per instance stays the real boundary (see
 *Exposing it beyond this machine*). Even a member cannot read secret **values**
 (`/secrets` returns names only) — the vault's floor holds.
 
+### Desktop app (macOS, Windows, Linux)
+
+`desktop/` holds an Electron app that shows several cockpits in one window: a
+sidebar of instances (local or remote, any mix), and the selected cockpit
+beside it. Each instance keeps its own login and storage. A hidden instance
+stays connected, and when one of its agents is waiting its dot turns red, the
+Dock or taskbar signals it, and a notification appears. It wraps the web page
+as it is, so the server needs no change. `cd desktop && npm install && npm start`;
+packaging and shortcuts are in [`desktop/README.md`](desktop/README.md).
+
 ### Signing in to Claude
 
 A fresh machine — most often a fresh container — has two things in its way, and
@@ -1519,29 +1562,4 @@ client, or immediately on an explicit `stop` (which ends it for everyone).
 
 | Message | Purpose |
 |---|---|
-| `{type:"start", cwd?, resume?, continue?, worktree?, branch?, repo?, profile?, parent?, origin?}` | starts or attaches to the session (once per connection). `origin` (`"web"`, `"cron"`, `"telegram"`, `"agent"`, `"peer"`, `"cli"`) travels with `prompt-echo` so other clients can say who spoke. It is DERIVED by the server from what the connection proved (system-drive secret, Telegram-bridge secret, agent session key, peer token, same-origin browser); the frame's own `origin` is only honoured to narrow an unauthenticated local client to `"cli"`/`"boot"`. A line of the prompt text shaped like a header, ledger block or cron/agent mark is prefixed with `\` so it stays text — and a prompt from someone (web/telegram/cli/agent) also reaches the TUI under a `⟦platform · time · sender⟧` header, so the agent knows whether the human or a sibling agent is talking to it. An `agent` header ends with the sender's short session id — its reply address, since a tab name is not unique — and that id is stripped back out of the name before display, so it never appears in the chat. `parent` records who launched this agent — a refused link is dropped and logged, never fatal to the spawn |
-| `{type:"prompt", text, force?}` | sends a prompt (`force` bypasses the pace guard) |
-| `{type:"choose", n}` | single-select dialog: picks and validates option n |
-| `{type:"toggle", n}` / `{type:"confirm"}` | multi-select: toggles option n / submits |
-| `{type:"freetext", n, text}` | "Type something" option: sends a free-form answer |
-| `{type:"key", key}` | raw keystroke (`enter`, `escape`, `up`, `down`, `tab`, `ctrl-c`, or a single character) |
-| `{type:"settle"}` | after a manual intervention: waits for the turn to finish |
-| `{type:"restart"}` | respawns the agent in place (picks up new secrets/profile) |
-| `{type:"set-parent", parent}` | attach this channel under another (`null` detaches). Refused **explicitly** on a self-link, a cycle, an unknown parent, or a chain/fan-out past its cap |
-| `{type:"term-attach"}` · `{type:"term-detach"}` | **experimental, tmux only** — open/close the pane's raw byte pipe |
-| `{type:"term-input", data}` · `{type:"term-resize", cols, rows}` | raw input (base64) / match the pane to the viewport |
-| `{type:"stop", sessionId?}` | ends the session for all clients; `sessionId` targets another channel (zombie cleanup) |
-| `{type:"room-join", roomId}` · `{type:"room-post", roomId, text, clientId?}` | a ROOM link (people only, same-origin browser): join a room (answered with `room-history`), then post to it (fanned out as `room-message`, refusals as `room-error`). A connection is an agent link or a room link, never both — `start` is refused after `room-join` |
-
-**server → client**
-
-| Message | Purpose |
-|---|---|
-| `{type:"ready", sessionId, cwd}` | session started (or attached) |
-| `{type:"working"}` / `{type:"turn-done", sessionId}` | turn started / finished |
-| `{type:"stream-text", text, at?}` | a complete assistant text block, from the transcript. `at` is when it was **written**, not when we read it |
-| `{type:"stream-tool", id, name, summary}` / `{type:"stream-result", …}` | tool call / tool result |
-| `{type:"tokens", tokens}` / `{type:"context", pct}` | token usage / context fill |
-| `{type:"social-draft", draft}` | a post waiting for approval, or its new state (published with URL, discarded, expired, failed) — the approval card. Also replayed inside `history` on reload. Never carries a token |
-| `{type:"parent", parent}` | the channel's parent changed (broadcast, so every tab follows) |
-| `{type:"prompt-echo", text, origin?, from?}` | prompt sent by another client of the session. `f
+| `{type:"start", cwd?, resume?, continue?, worktree?, branch?, repo?, profile?, parent?, origin?}` | starts or attaches to the session (once per connection). `origin` (`"web"`, `"cron"`, `"telegram"`, `"agent"`, `"peer"`, `"cli"`) travels with `prompt-echo` so other clients can say who spoke. It is DERIVED by the server from what the connection proved (system-drive secret, Telegram-bridge secret, agent session key, peer token, same-origin browser); the frame's own `origin` is only honoured to narrow an unauthenticated local client to `"cli"`/`"boot"`. A line of the prompt text shaped like a header, ledger block or 

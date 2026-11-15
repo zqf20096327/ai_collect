@@ -28,6 +28,12 @@ Ask in plain language; Hermes calls the right tool and answers from your own dat
 
 | You want to | Say something like | Tool |
 | --- | --- | --- |
+| Test a habit on yourself | "no coffee after 2pm for 14 days, watch my sleep" | `start_experiment` |
+| Set a rule that warns you | "warn me if sleep stays below 6 hours for 3 days" | `add_tripwire` |
+| Budget your week | "at least 10 hours of deep work a week" | `set_time_budget` |
+| Check your estimates | "how good am I at estimating?" | `get_estimate_accuracy` |
+| See if the week is too full | "can I do everything due this week?" | `get_workload_forecast` |
+| Look back at what happened | "what did I get done in the last two weeks?" | `get_life_timeline` |
 | Pick today's focus | "my top three today are the report, the gym and calling mum" | `add_priority` |
 | Get a plan | "plan my day" | `plan_my_day` |
 | Check in on your life | "rate my health 7 and money 3" | `log_life_wheel` |
@@ -42,13 +48,13 @@ Ask in plain language; Hermes calls the right tool and answers from your own dat
 | Undo a mistake | "put the rent task back" | `restore_deleted` |
 | Understand yourself | "what affects my sleep?" | `get_correlations` |
 
-All 299 tools are listed in the [tool reference](docs/TOOLS.md).
+All 313 tools are listed in the [tool reference](docs/TOOLS.md).
 
 ## Contents
 
 - **Start here:** [What it does](#what-it-does) · [Architecture](#architecture) · [Quick start](#quick-start) · [Chat mode](#chat-mode)
 - **Your data:** [Encryption](#encryption-at-rest-optional) · [Automatic backups](#automatic-backups) · [Restore](#restore) · [Health check](#health-check-doctor) · [Data export](#data-export)
-- **Planner:** [Tasks, agenda](#planner-tasks-body-metrics-subscriptions-people--todays-agenda) · [Priorities, plan my day, life wheel, library](#daily-priorities-plan-my-day-life-wheel-library--calendar-export) · [Inbox, weekly review](#inbox--weekly-review) · [Flashcards, net worth](#flashcards--net-worth) · [Projects, waiting for](#projects--waiting-for) · [Time blocks, objectives, recipes, trips](#time-blocks-objectives-recipes--trips) · [Chores, routines, decisions](#chores-expiry-dates-routines-gift-ideas--decisions) · [Recently deleted](#recently-deleted-recommendation-ledger--pinned-backups)
+- **Planner:** [Tasks, agenda](#planner-tasks-body-metrics-subscriptions-people--todays-agenda) · [Priorities, plan my day, life wheel, library](#daily-priorities-plan-my-day-life-wheel-library--calendar-export) · [Inbox, weekly review](#inbox--weekly-review) · [Flashcards, net worth](#flashcards--net-worth) · [Projects, waiting for](#projects--waiting-for) · [Experiments, tripwires, foresight](#experiments-tripwires--foresight) · [Time blocks, objectives, recipes, trips](#time-blocks-objectives-recipes--trips) · [Chores, routines, decisions](#chores-expiry-dates-routines-gift-ideas--decisions) · [Recently deleted](#recently-deleted-recommendation-ledger--pinned-backups)
 - **Insights:** [Pattern detection](#pattern-detection) · [Life review](#life-review---the-flagship-retrospective-report) · [Dashboard](#dashboard)
 - **Connect:** [Telegram](#telegram-bot) · [Discord](#discord-bot) · [Slack](#slack-bot) · [Local REST API](#local-rest-api) · [Plugins](#plugin-system-add-your-own-tools-no-fork-required)
 - **Project:** [Project structure](#project-structure) · [What's new](#whats-new) · [Running tests](#running-tests)
@@ -577,6 +583,33 @@ recently deleted list.
   overdue projects and active projects with no open task. Deleting a project keeps its tasks.
 - **Waiting for**: things you handed to someone else, each with a follow-up date. Due items show
   in the agenda and as a nudge; `chase_waiting` records a follow-up and pushes the date out.
+
+## Experiments, Tripwires & Foresight
+
+```
+"start an experiment: no coffee after 2pm, watch my sleep for 14 days"   "how is the coffee experiment going?"
+"warn me if my sleep stays below 6 hours for 3 days"                    "if more than 5 tasks are overdue, tell me to stop adding new ones"
+"can I actually do everything due this week?"                           "what did I get done in the last two weeks?"
+```
+
+- **Experiments**: pick one metric Hermes already tracks and a length. Hermes compares the days
+  before the start with the days of the experiment and reports both averages, the change, an
+  effect size and a verdict (better, worse, no clear effect, not enough data). It needs at least
+  three days with a reading on each side. It is a hint about your own numbers, not proof of
+  cause. Conclude an experiment to keep its result and your decision (keep, drop, unsure).
+- **Tripwires**: a metric, a direction (above or below), a threshold and how many days in a row
+  it must hold. A tripped wire shows its message in the agenda and as a nudge. Live counts
+  (`overdue_tasks`, `open_tasks`, `inbox_items`, `overdue_follow_ups`) use the current value.
+- **Workload forecast**: minutes of work due per day (30 when a task has no estimate; tasks that
+  already have a time block are skipped) against free time in the day plan, capped at eight
+  hours. Overloaded days come with suggested moves. Read-only.
+- **Life timeline**: what happened, newest day first. Filter with `kinds` (tasks, priorities,
+  blocks, library, trips, reviews, wheel, decisions, waiting, experiments, health, focus).
+- **Time budgets**: a weekly hour budget per time block category, as a minimum or a limit,
+  checked against blocks done since Monday and blocks still planned. From Thursday on, a nudge
+  when one is short or over.
+- **Estimate accuracy**: how long finished tasks really took (from focus sessions with the same
+  task name) against their estimate. With three such tasks the workload forecast scales by it.
 
 ## Project Structure
 
@@ -2200,50 +2233,4 @@ as the dashboard).
 
 `demo/recommendations.py` turns patterns already visible in your own
 data into concrete, actionable nudges - entirely local, rule-based, no
-LLM or network call involved, so every suggestion can be traced back to
-the exact numbers behind it:
-
-- **Threshold nudges** - e.g. average sleep under 6.5h or stress over
-  7/10 recently.
-- **Correlation-derived insights** - reuses the same correlation engine
-  behind `get_correlation_insights`, just phrased as a suggestion.
-- **Near-milestone streaks** - "2 days from a 30-day streak on
-  'meditate' - keep it going!"
-
-Not medical or therapeutic advice - a reflection of your own patterns,
-phrased as a nudge, nothing more.
-
-## What's New
-
-**v1.52.0 - Tools From the Shell**
-- New **`hermes-life-os-tool`** command: run any of the tools straight from the terminal with
-  no language model and no API key. `list` (with `--match`), `show <tool>` and
-  `run <tool> key=value ...` or `--json`. Handy for scripts, shortcuts and cron jobs; see
-  [docs/CLI.md](docs/CLI.md).
-- `--version` for `hermes-life-os` and `hermes-life-os-tool`.
-- Fixed the package `__version__`, which still said 1.13.0; a test now keeps it equal to
-  the version in `pyproject.toml`.
-- Fixed an invalid escape sequence in the calendar export (a warning on Python 3.12 and later) and made the
-  command accept `key=value` arguments after `--json` on Python 3.10 and 3.11, which the CI matrix caught.
-- 11 new tests - suite grew from 5054 to 5065.
-
-**v1.51.0 - Projects and Waiting For**
-- New **projects**: `add_project`, `get_projects`, `get_project`, `update_project`,
-  `add_project_task`, `delete_project`. A project is an outcome that needs several tasks;
-  every project owns a tag and the tasks carrying it belong to it. Hermes shows progress, the
-  next action and flags projects that are overdue or have no open task. The agenda lists
-  project actions due today and a nudge points at stuck or overdue projects.
-- New **waiting for** list: `add_waiting`, `get_waiting`, `chase_waiting`, `resolve_waiting`,
-  `delete_waiting`. Track what you need back from someone, with a follow-up date (a week out
-  by default). Items due for a follow-up show in the agenda and nudges; chasing pushes the
-  date out and resolving closes the item.
-- Recently deleted now labels waiting items by what you were waiting for.
-- Doctor, repair suggestions, search, backup, restore, export and recently deleted cover the
-  two new stores.
-- 37 new tests - suite grew from 5017 to 5054.
-
-**v1.50.0 - Flashcards and Net Worth**
-- New **flashcards** with spaced repetition (Leitner boxes): `add_flashcards`,
-  `review_flashcards`, `reveal_flashcard`, `answer_flashcard`, `get_flashcard_stats`,
-  `delete_flashcard`. A correct answer moves a card up a box (it returns after 1, 3, 7, 16 and
-  35 days), a wrong one sends it back to 
+LLM or network call involved, so every 

@@ -191,6 +191,7 @@ This is the GitHub repo for our survey paper [Beyond Efficiency: A Systematic Su
  #### Pruning
 |  Date  |       Keywords     | Paper    | Venue |
 | :---------: | :------------: | :-----------------------------------------:| :---------: |
+| 2026 | Structured Pruning | [TELL-TALE: Task Efficient LLMs with Task Aware Layer Elimination](https://aclanthology.org/2026.findings-acl.1136/) | ACL Findings |
 | 2025 | Structured Pruning | [SlimGPT: Layer-wise Structured Pruning for Large Language Models](https://proceedings.neurips.cc/paper_files/paper/2024/hash/c1c44e46358e0fb94dc94ec495a7fb1a-Abstract-Conference.html) | NeurIPS |
 | 2024 | Unstructured Pruning | [SparseLLM: Towards Global Pruning for Pre-trained Language Models](https://arxiv.org/abs/2402.17946) | NeurIPS |
 | 2024 | Structured Pruning | [Perplexed by Perplexity: Perplexity-Based Data Pruning With Small Reference Models](https://arxiv.org/pdf/2405.20541) | Arxiv |
@@ -212,11 +213,11 @@ This is the GitHub repo for our survey paper [Beyond Efficiency: A Systematic Su
 
  #### Quantization
 
-- [OneComp: One-Line Revolution for Generative AI Model Compression](https://arxiv.org/abs/2603.28845), Ichikawa et al., arXiv 2026. [Code](https://github.com/FujitsuResearch/OneCompression).
-- [Quantization Error Propagation](https://openreview.net/forum?id=a3l3K9khbL), Arai & Ichikawa, NeurIPS 2025.
-  
 |  Date  |       Keywords     | Paper    | Venue |
 | :---------: | :------------: | :-----------------------------------------:| :---------: |
+| 2026 | Per-layer embedding vector quantization | [Extreme Compression of Per-Layer Embeddings via Cross-Layer Latent Vector Quantization](https://arxiv.org/abs/2610.31309) | arXiv |
+| 2026 | Post-training Quantization | [OneComp: One-Line Revolution for Generative AI Model Compression](https://arxiv.org/abs/2603.28845) ([Code](https://github.com/FujitsuResearch/OneCompression)) | arXiv |
+| 2025 | Weight Quantization | [Quantization Error Propagation](https://openreview.net/forum?id=a3l3K9khbL) | NeurIPS |
 | 2025 | Weight Quantization  | [HWPQ: Hessian-free Weight Pruning-Quantization For LLM Compression And Acceleration](https://arxiv.org/abs/2501.16376) | Arxiv |
 | 2025 | Weight Quantization  | [Huff-LLM: End-to-End Lossless Compression for Efficient LLM Inference](https://arxiv.org/pdf/2502.00922) | Arxiv |
 | 2025 | Weight Quantization  | [AWQ: Activation-aware Weight Quantization for On-Device LLM Compression and Acceleration](https://dl.acm.org/doi/pdf/10.1145/3714983.3714987) | SIGMOBILE |
@@ -248,6 +249,7 @@ This is the GitHub repo for our survey paper [Beyond Efficiency: A Systematic Su
  #### Input Pruning
 |  Date  |       Keywords     | Paper    | Venue |
 | :---------: | :------------: | :-----------------------------------------:| :---------: |
+| 2026 | Learning-based Token Removal | [Semantic-Guided Slow-Fast Pruning of Visual Tokens for Vision-Language Models](https://ieeexplore.ieee.org/abstract/document/11460400) | ICASSP |
 | 2024 | Score-based Token Removal  | [Prompt-prompted Adaptive Structured Pruning for Efficient LLM Generation](https://openreview.net/pdf?id=4aqq9xTtih) | COLM |
 | 2024 | Score-based Token Removal  | [LazyLLM: Dynamic Token Pruning for Efficient Long Context LLM Inference](https://arxiv.org/abs/2407.14057) | Arxiv |
 | 2024 | Learning-based Token Removal  | [LLMLingua-2: Data Distillation for Efficient and Faithful Task-Agnostic Prompt Compression](https://arxiv.org/abs/2403.12968) | ACL |
@@ -267,6 +269,7 @@ This is the GitHub repo for our survey paper [Beyond Efficiency: A Systematic Su
  ### Deployment optimization
 |  Date  |       Keywords     | Paper    | Venue |
 | :---------: | :------------: | :-----------------------------------------:| :---------: |
+| 2026 | Collaborative inference  | [EC²-Bench (EC2-Bench): Empowering Edge Agents: A Systematic Analysis of Edge-Cloud Collaboration in LLM Agent Execution](https://arxiv.org/abs/2610.17816) | ArXiv |
 | 2025 | Collaborative inference  | [Multi-agent Architecture Search via Agentic Supernet](https://arxiv.org/abs/2502.04180) | ArXiv |
 | 2025 | Collaborative inference  | [MoE²: Optimizing Collaborative Inference for Edge Large Language Models](https://arxiv.org/abs/2501.09410) | ACM Transactions on Networking |
 | 2025 | Collaborative inference  | [LUK: Empowering Log Understanding with Expert Knowledge from Large Language Models](https://arxiv.org/abs/2409.01909) | ArXiv |
@@ -335,7 +338,7 @@ This is the GitHub repo for our survey paper [Beyond Efficiency: A Systematic Su
 
 |  Metric              |       Description                                              |    Example Usage                                                                                | 
 | :------------------: | :---------------------------------------------------------:    | :---------------------------------------------------------------------------------------------: |
-| Energy Consumption   | the electrical power used during the LLM’s lifecycle           | [\[kWh\]](https://arxiv.org/pdf/1906.02243.pdf)|
+| Energy Consumption   | the electrical power used during the LLM’s lifecycle           | [\[kWh\]](https://arxiv.org/pdf/1906.02243.pdf)<br>[\[inference engine power consumption\]](https://doi.org/10.1145/3757892.3757900)<br>[\[Joules/token\]](https://doi.org/10.1609/aaai.v40i38.40535)|
 | Carbon Emission      | the greenhouse gas emissions associated with the model’s energy usage |[\[kgCO2eq\]](https://jmlr.org/papers/volume21/20-312/20-312.pdf)|
 
 <!-- software packages designed for real-time tracking of energy consumption and carbon emissions**. -->
@@ -370,6 +373,7 @@ This is the GitHub repo for our survey paper [Beyond Efficiency: A Systematic Su
 |  Benchmark               |       Description                                              |    Paper                                                                                | 
 | :------------------:  | :---------------------------------------------------------:    | :---------------------------------------------------------------------------------------------: |
 | General NLP Benchmarks |  an extensive collection of general NLP benchmarks such as [GLUE](https://arxiv.org/pdf/1804.07461.pdf), [SuperGLUE](https://arxiv.org/pdf/1905.00537.pdf), [WMT](https://aclanthology.org/W16-2301.pdf), and [SQuAD](https://arxiv.org/pdf/1606.05250.pdf), etc. | [A Comprehensive Overview of Large Language Models](https://arxiv.org/pdf/2307.06435.pdf)|
+| [TokenPowerBench](https://doi.org/10.1609/aaai.v40i38.40535) |  a lightweight and extensible benchmark for measuring LLM inference power consumption with GPU-, node-, and system-level telemetry and phase-aligned energy metrics such as Joules per token | [TokenPowerBench: Benchmarking the Power Consumption of LLM Inference](https://doi.org/10.1609/aaai.v40i38.40535)|
 | Dynaboard      |  an open-source platform for evaluating NLP models in the cloud, offering real-time interaction and a holistic assessment of model quality with customizable Dynascore | [Dynaboard: An Evaluation-As-A-Service Platform for Holistic Next-Generation Benchmarking](https://proceedings.neurips.cc/paper_files/paper/2021/file/55b1927fdafef39c48e5b73b5d61ea60-Paper.pdf)|
 | EfficientQA            |  an open-domain Question Answering (QA) challenge at [NeurIPS 2020](https://efficientqa.github.io/) that focuses on building accurate, memory-efficient QA systems | [NeurIPS 2020 EfficientQA Competition: Systems, Analyses and Lessons Learned](https://proceedings.mlr.press/v133/min21a/min21a.pdf)|
 | [SustaiNLP 2020](https://sites.google.com/view/sustainlp2020) Shared Task     |  a challenge for development of energy-efficient NLP models by assessing their performance across eight NLU tasks using SuperGLUE metrics and evaluating their energy consumption during inference | [Overview of the SustaiNLP 2020 Shared Task](https://aclanthology.org/2020.sustainlp-1.24.pdf)|

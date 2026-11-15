@@ -51,7 +51,7 @@ Run `/login` in pi or OMP. Select **Use a subscription**, then **Command Code**.
 
 If automatic transfer from the browser fails, copy the API key shown by Command Code and paste it into the terminal prompt.
 
-On Oh My Pi, `/login` stores those credentials in OMP's credential store and chat uses them directly. If chat still returns `401 Invalid 'Authorization' header`, restart OMP after `/login` and confirm `/commandcode-quota` shows your account.
+On Oh My Pi, `/login` stores those credentials in OMP's credential store and chat uses them directly. When the Provider API rejects a stored login with `401`, OMP asks the provider to refresh it, and the provider checks the key against `whoami`. If Command Code no longer accepts the key, OMP signs that login out with the warning "A Command Code account was signed out automatically" and uses the next stored credential. If chat still returns `401 Invalid 'Authorization' header`, run `/login` again, restart OMP, and confirm `/commandcode-quota` shows your account.
 
 ### Environment variable
 
@@ -180,7 +180,7 @@ The following environment variables are intended for tests, local mocks, and com
 
 ## Image input
 
-The provider advertises image input only for models marked with the `image` input modality in the official Command Code CLI model catalog. The capability snapshot currently follows `command-code@1.88.5`; unknown models default to text-only until their upstream metadata is reviewed. A daily GitHub Actions job synchronizes the CLI version, image capabilities, reasoning flags, reasoning efforts, and model-specific output limits with the latest published CLI package, also dropping manual effort overrides that upstream has published itself, and opens or updates a reviewable pull request when they change. Pricing remains manually reviewed because temporary promotions and long-context tiers require explicit review.
+The provider advertises image input only for models marked with the `image` input modality in the official Command Code CLI model catalog. The capability snapshot currently follows `command-code@1.89.1`; unknown models default to text-only until their upstream metadata is reviewed. A daily GitHub Actions job synchronizes the CLI version, image capabilities, reasoning flags, reasoning efforts, and model-specific output limits with the latest published CLI package, also dropping manual effort overrides that upstream has published itself, and opens or updates a reviewable pull request when they change. Pricing remains manually reviewed because temporary promotions and long-context tiers require explicit review.
 
 For vision-capable models, Pi's native provider adapters forward image blocks from user messages and tool results using the documented OpenAI or Anthropic message schema. Unknown and text-only models remain marked text-only in Pi.
 

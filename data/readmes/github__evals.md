@@ -17,10 +17,10 @@ compare after your next change.
 ### Skills and commands
 
 Ask in plain language across any Plugin host, or use the `/eval` commands in
-Copilot CLI and GitHub Copilot App (the standalone Plugin sets
-`user-invocable: false` so skills do not duplicate `/eval` in CLI/App slash
-menus; the VS Code extension VSIX projects `user-invocable: true` to expose
-`/eval:<skill>` in trusted local desktop VS Code Chat):
+Copilot CLI and GitHub Copilot App (`skills/*/SKILL.md` sets
+`user-invocable: false` and `disable-model-invocation: false` across Plugin and
+VSIX artifacts so internal skills remain model-invocable without duplicating
+`/eval` in slash menus):
 
 | Skill | Copilot CLI / App command | Example request |
 | --- | --- | --- |

@@ -385,15 +385,3 @@ MIT. See [LICENSE](LICENSE).
 ## What was measured
 
 The [measurements and their limits](docs/TOKEN_EFFICIENCY.md) cover fidelity fixtures, runtime cost, paired task trials on real Claude Code and a replay of real sessions. **Results depend heavily on how an agent works**: paired trials on plain commands used fewer tokens with no lost task, while replaying real sessions whose commands were already chained and windowed showed almost nothing to reduce. SBS makes no general savings claim.
-
----
-
-## Contributors and AI assistance
-
-**Benjamin Da Cunha:** project direction, requirements and final decisions.
-
-**ChatGPT (OpenAI):** assistance with macOS installation fixes, documentation, troubleshooting and repository presentation.
-
-Claude Code and OpenAI Codex are also supported **integration targets** of this tool; that fact alone does not mean they authored its code.
-
-These credits disclose AI assistance; they do not assign human authorship, independently verify research findings or imply that an AI tool is a GitHub account contributor.

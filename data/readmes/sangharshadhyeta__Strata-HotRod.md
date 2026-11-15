@@ -1,4 +1,4 @@
-<p align="center"><i><s>A system which rewires the model around the way you use it.</s>Coming Soon</i></p>
+<p align="center"><i>Coming Soon. <s>A system which rewires the model around the way you use it.</s></i></p>
 
 <p align="center"><img src="docs/media/hotrod-hero.gif" width="380" alt="Strata Hot Rod: the Strata hexagon in fire and ice"></p>
 
@@ -62,6 +62,14 @@ tokens/s; the learners were still cold, and it has not been measured as widely a
 > (`strata-dsv41`), its own install steps and its own README, for the full model (IQ2_XXS, 7.5-8 tokens/s over a whole answer on this PC, peaking near 10) and
 > the **Coder** (a half-expert coding version, about 9 tokens/s). Everything on this page, `setup.py` included, is for Qwen3.8-Flash-Next.
 > The two branches are kept apart on purpose.
+
+> ### 🧬 Looking for Edge0 (145B latent MoE)? It is on another branch.
+> **Go to the [`hotrod-edge0` branch](https://github.com/sangharshadhyeta/Strata-HotRod/tree/hotrod-edge0)**: this fork's engine now runs
+> [Edge0-145B](https://huggingface.co/Edge0/Edge0-145B-NVFP4) (NVFP4, latent experts, 8 groups per layer) with all of this page's tiers
+> (RAM tier, expert cache, stand-ins on by default, speculative decoding). Early support, measured once on this PC (RTX 3060 12 GB, SSD
+> mode, 15 Nov, a few short questions read by hand): 16-18 tokens/s with the stand-ins, 7 without. Prompts are read in small windows, so
+> they are slow (30-40 tokens/s); the chunked prompt path and the other tiers' latent versions are not ported yet. Everything on this page,
+> `setup.py` included, is for Qwen3.8-Flash-Next; Edge0's own engine and models are by [Edge0](https://github.com/Edge0-AI/Edge0).
 
 ## Can Qwen3.8-Flash-Next run on an RTX 3060 12 GB with low RAM?
 

@@ -1,0 +1,642 @@
+# cc-skills
+
+Claude Code Skills Marketplace: Meta-skills, foundational tools and workflow hooks for Claude Code.
+
+[![Plugins](https://img.shields.io/badge/plugins-40-green.svg)](#plugins)
+[![Version](https://img.shields.io/github/package-json/v/terrylica/cc-skills.svg)](./CHANGELOG.md)
+[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](./LICENSE)
+
+## Plugins
+
+> Generated from `.claude-plugin/marketplace.json` (the SSoT). Run `bun scripts/validate-plugins.mjs` to verify the table reflects reality.
+
+| Plugin                                                  | Description                                                                                                                                                                                                                                                                                             | Category      |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| [agent-reach](./plugins/agent-reach/)                   | Give your AI agent eyes to see the entire internet. Search and read 15+ platforms with auto-update preflight: Twitter/X, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu, Douyin, Weibo, WeChat, Xiaoyuzhou Podcast, LinkedIn, V2EX, RSS, Exa web search.                                                | productivity  |
+| [asciinema-tools](./plugins/asciinema-tools/)           | Terminal recording automation: asciinema capture, launchd daemon for background chunking, Keychain PAT storage, Pushover notifications, cast conversion, and semantic analysis                                                                                                                          | utilities     |
+| [calcom-commander](./plugins/calcom-commander/)         | Cal.com + Telegram bot lifecycle - booking management, interactive commands, scheduled sync, Agent SDK routing, 1Password API key                                                                                                                                                                       | productivity  |
+| [chrome-profiles](./plugins/chrome-profiles/)           | Drive your everyday Google Chrome on macOS: choose a profile by account email, zero-click control via Microsoft's Playwright Extension (one `setup` per account), and when not to use a real browser                                                                                                    | productivity  |
+| [cli-anything](./plugins/cli-anything/)                 | Reference guide for CLI-Anything: auto-generate production-ready agent-controllable CLI harnesses for any GUI app via 7-phase pipeline. Covers all validated commands, per-app examples (GIMP, Blender, LibreOffice, Inkscape), testing, and HARNESS.md methodology.                                    | development   |
+| [crucible](./plugins/crucible/)                         | Self-evolving research methodology: 18 universal principles for LLM-driven investigation, distilled from a 376-turn session with 1 positive + 17 null campaigns.                                                                                                                                        | ai            |
+| [devops-tools](./plugins/devops-tools/)                 | DevOps automation: ClickHouse, Doppler, MLflow, Cloudflare Workers, pueue orchestration, notifications, session recovery, LLM session debriefs                                                                                                                                                          | devops        |
+| [doc-tools](./plugins/doc-tools/)                       | Comprehensive documentation tooling: ASCII diagrams, markdown standards, LaTeX build, Pandoc PDF, glossary management, plotext financial charts                                                                                                                                                         | documentation |
+| [dotfiles-tools](./plugins/dotfiles-tools/)             | Chezmoi dotfile management via natural language workflows                                                                                                                                                                                                                                               | utilities     |
+| [floating-clock](./plugins/floating-clock/)             | macOS floating clock overlay with profile-based aesthetics, controlled via SwiftBar control center                                                                                                                                                                                                      | utilities     |
+| [gemini-deep-research](./plugins/gemini-deep-research/) | Run Gemini Deep Research via browser automation (claude-in-chrome MCP). Submit prompts, monitor progress, retrieve final reports.                                                                                                                                                                       | research      |
+| [gh-tools](./plugins/gh-tools/)                         | GitHub workflow automation with intelligent GFM link validation, fork intelligence, and issue creation tooling                                                                                                                                                                                          | development   |
+| [git-town-workflow](./plugins/git-town-workflow/)       | Prescriptive git-town workflow enforcement for fork-based development                                                                                                                                                                                                                                   | devops        |
+| [gmail-commander](./plugins/gmail-commander/)           | Gmail CLI + draft builder with 1Password OAuth; shared Telegram bot code (commands, on-demand triage, Agent SDK routing) imported by a private deployment                                                                                                                                               | productivity  |
+| [html-showcase](./plugins/html-showcase/)               | Canonical CSS kernel + HTML skeleton for static showcase pages (provenance reports, dashboards); single design-system SSoT via jsDelivr, per-page CSS overrides                                                                                                                                         | documents     |
+| [itp](./plugins/itp/)                                   | Implement-The-Plan workflow: ADR-driven 4-phase development with preflight, implementation, and release                                                                                                                                                                                                 | productivity  |
+| [itp-hooks](./plugins/itp-hooks/)                       | ITP workflow enforcement + code correctness: PreToolUse / PostToolUse / Stop hooks for SSoT principles, file-size guard, type checks, ASCII art blocking, ty/oxlint/biome lint                                                                                                                          | enforcement   |
+| [link-tools](./plugins/link-tools/)                     | Link validation: portability checks, broken link detection, path policy linting                                                                                                                                                                                                                         | quality       |
+| [macro-keyboard](./plugins/macro-keyboard/)             | Karabiner remap for cheap 3-key USB-C/Bluetooth macro pads + HID diagnostic + Fn-key emit utilities                                                                                                                                                                                                     | utilities     |
+| [media-tools](./plugins/media-tools/)                   | Download YouTube audio and push to BookPlayer for offline listening                                                                                                                                                                                                                                     | productivity  |
+| [mql5](./plugins/mql5/)                                 | MQL5 development: indicator patterns, mql5.com article extraction, Python workspace, MT5 tick collection ops, FXView Parquet consumer                                                                                                                                                                   | trading       |
+| [openwolf](./plugins/openwolf/)                         | Wraps the third-party openwolf npm middleware (token-saving project memory): installs the global binary, runs `openwolf init`, surfaces status, and adds a clean removal path                                                                                                                           | productivity  |
+| [orca-tools](./plugins/orca-tools/)                     | Orca IDE: spin a task off into its own Orca worktree with one agent terminal and a committed handoff, locally or on a paired runtime                                                                                                                                                                    | devops        |
+| [plugin-dev](./plugins/plugin-dev/)                     | Plugin development: skill architecture, plugin validation, silent failure auditing, TodoWrite templates                                                                                                                                                                                                 | development   |
+| [productivity-tools](./plugins/productivity-tools/)     | Slash command generation, Notion (SDK + CLI), iMessage queries, iTerm2 layouts, calendar event manager, Google Drive access                                                                                                                                                                             | productivity  |
+| [pushover-commander](./plugins/pushover-commander/)     | Pushover end-to-end: send (+image), priority-2 emergency with receipt polling, headless web-control for apps/sounds, incident-report PNGs, UUID/JSONL audit + quota                                                                                                                                     | devops        |
+| [quality-tools](./plugins/quality-tools/)               | Code quality and validation: clone detection, dead-code, multi-agent E2E + performance profiling, ClickHouse architect, refactoring guide                                                                                                                                                               | quality       |
+| [quant-research](./plugins/quant-research/)             | Quantitative research: SOTA range bar metrics, Sharpe ratios, ML prediction quality, WFO epochs                                                                                                                                                                                                         | trading       |
+| [rust-tools](./plugins/rust-tools/)                     | Rust dependency audit + SOTA Rust arsenal reference                                                                                                                                                                                                                                                     | development   |
+| [ssh-tunnel-companion](./plugins/ssh-tunnel-companion/) | macOS launchd companion for SSH tunnels (Tailscale + CF Access) — see plugin's CLAUDE.md for the SSoT on tunnel architecture                                                                                                                                                                            | devops        |
+| [statusline-tools](./plugins/statusline-tools/)         | Custom Claude Code status line with git status indicators + global ignore patterns + session-info reporter                                                                                                                                                                                              | utilities     |
+| [tlg](./plugins/tlg/)                                   | Telegram operations toolkit: messages, channels, dialogs, members, media, search, dump, drafting, cleanup                                                                                                                                                                                               | productivity  |
+| [web-forge](./plugins/web-forge/)                       | Browser automation for API-less operations, one harness: console recipes as data (idempotent ensure, read-back, per-step screenshots, a login gate that never types a password; first family Google Workspace Admin), extension or per-site CDP profiles, DOM-to-vault secrets, Cloudflare Access walls |
+
+## Installation
+
+### Prerequisites
+
+| Requirement | Check              | Install                                                                                 |
+| ----------- | ------------------ | --------------------------------------------------------------------------------------- |
+| Claude Code | `claude --version` | [Getting Started Guide](https://docs.anthropic.com/en/docs/claude-code/getting-started) |
+
+### Quick Start (Recommended)
+
+Run these commands in your **terminal** (not inside Claude Code):
+
+```bash
+# 1. Add the cc-skills marketplace
+claude plugin marketplace add terrylica/cc-skills
+
+# 2. Install all 40 plugins (one-liner, alphabetically ordered; the set matches marketplace.json, whose own order is not alphabetical)
+for p in agent-reach arxiv-source-first asciinema-tools calcom-commander chrome-profiles cli-anything crucible devops-tools doc-tools dotfiles-tools floating-clock garch-volatility-toolkit gemini-deep-research gh-tools git-town-workflow gmail-commander html-showcase itp itp-hooks link-tools macos-font-defaults macos-permissions macro-keyboard media-tools mql5 notes-commander openwolf orca-tools plugin-dev productivity-tools pushover-commander quality-tools quant-research rust-tools ssh-tunnel-companion statusline-tools tlg unlimited-ocr web-forge whatsapp-commander; do
+  claude plugin install "$p@cc-skills"
+done
+
+# 3. Restart Claude Code; plugin hooks load from each plugin's hooks/hooks.json
+claude
+```
+
+### Step-by-Step Installation
+
+#### Step 1: Add the Marketplace
+
+```bash
+claude plugin marketplace add terrylica/cc-skills
+```
+
+This clones the marketplace to `~/.claude/plugins/marketplaces/cc-skills/`.
+
+**Verify installation:**
+
+```bash
+claude plugin marketplace list
+# Should show: cc-skills - Source: GitHub (terrylica/cc-skills)
+```
+
+#### Step 2: Install Individual Plugins
+
+Use the install one-liner above, or pick the plugins you need from the [Plugins table](#plugins). Examples:
+
+```bash
+# Workflow + dev essentials
+claude plugin install itp@cc-skills
+claude plugin install itp-hooks@cc-skills
+claude plugin install plugin-dev@cc-skills
+claude plugin install gh-tools@cc-skills
+claude plugin install link-tools@cc-skills
+
+# DevOps + quality
+claude plugin install devops-tools@cc-skills
+claude plugin install quality-tools@cc-skills
+claude plugin install doc-tools@cc-skills
+
+# Media / productivity (optional, install on demand)
+claude plugin install asciinema-tools@cc-skills
+claude plugin install productivity-tools@cc-skills
+claude plugin install statusline-tools@cc-skills
+```
+
+The full alphabetical list is in `.claude-plugin/marketplace.json` — `jq -r '.plugins[].name' .claude-plugin/marketplace.json` enumerates them all.
+
+#### Step 3: Hooks (nothing to sync)
+
+Hooks provide pre/post tool use enforcement and session events. Claude Code loads each installed plugin's `hooks/hooks.json` on its own, so nothing is copied into `~/.claude/settings.json`.
+
+Installs older than v20.2.3 copied the hooks into `settings.json` as well, which made every hook fire twice. If you upgraded from one of those, remove the copies once:
+
+```bash
+~/.claude/plugins/marketplaces/cc-skills/scripts/sync-hooks-to-settings.sh
+# Output: ✓ Pruned N marketplace-path entries   (or "already clean")
+```
+
+#### Step 4: Restart Claude Code
+
+**Hooks require a restart** to take effect:
+
+```bash
+# Exit any running Claude Code sessions, then:
+claude
+```
+
+### Verify Installation
+
+```bash
+# Check marketplace is registered
+claude plugin marketplace list
+
+# Inside Claude Code, verify commands are available
+# Type "/" and look for itp:go, plugin-dev:create, etc.
+```
+
+## Updating the Marketplace
+
+When new versions are released:
+
+```bash
+# Update the marketplace repository
+cd ~/.claude/plugins/marketplaces/cc-skills
+git pull
+
+# Reinstall updated plugins (or specific ones)
+claude plugin install itp@cc-skills
+
+# Restart Claude Code to load the updated hooks
+```
+
+## Troubleshooting
+
+### Windows: `marketplace add` fails with `EPERM ... rename`
+
+**Cause**: Claude Code clones a marketplace into a temporary directory and then renames it into place. On Windows, a transient lock on the freshly cloned tree (antivirus real-time scan, the search indexer, an open Explorer window) makes that rename fail, and the larger the repository, the more likely it is. It is not specific to this repository: the same `Failed to finalize marketplace cache` error is reported for Anthropic's own skills repository in [anthropics/claude-code#12174](https://github.com/anthropics/claude-code/issues/12174). Reported here in #162.
+
+**Fix**: clone it yourself and add the clone as a local-directory marketplace, which skips the clone-and-rename step. Claude Code then reads plugins straight from that directory, so update with `git pull`:
+
+```bash
+git clone https://github.com/terrylica/cc-skills.git ~/cc-skills
+claude plugin marketplace add ~/cc-skills
+```
+
+### "Source path does not exist" Error
+
+**Cause**: Marketplace repository is out of sync or has stale data.
+
+**Fix**:
+
+```bash
+# Update the marketplace
+cd ~/.claude/plugins/marketplaces/cc-skills
+git pull
+
+# Retry installation
+claude plugin install plugin-name@cc-skills
+```
+
+### Slash Commands Not Appearing
+
+**Cause**: Plugins installed but commands not discovered.
+
+**Fix**:
+
+1. Verify plugin is installed:
+
+   ```bash
+   # Check installed_plugins.json
+   cat ~/.claude/plugins/installed_plugins.json | grep "cc-skills"
+   ```
+
+2. Restart Claude Code (fresh session required)
+
+3. If still not working, clear cache and reinstall:
+
+   ```bash
+   rm -rf ~/.claude/plugins/cache/cc-skills
+   claude plugin install plugin-name@cc-skills
+   ```
+
+### Hooks Not Working
+
+**Cause**: The plugin is not installed or enabled, or Claude Code has not been restarted since it was.
+
+**Fix**: `claude plugin install <plugin>@cc-skills`, then restart Claude Code.
+
+**Verify hooks are registered:** type `/hooks` in Claude Code. It lists every configured hook with its source; cc-skills hooks show as coming from a plugin, never from user settings. A cc-skills hook listed under user settings is a leftover from before v20.2.3: run `~/.claude/plugins/marketplaces/cc-skills/scripts/sync-hooks-to-settings.sh` once to remove it.
+
+### "Plugin not found" After Adding Marketplace
+
+**Cause**: Known Claude Code issue with SSH clone failures.
+
+**Fix**:
+
+```bash
+# Remove and re-add with explicit clone
+claude plugin marketplace remove cc-skills
+rm -rf ~/.claude/plugins/marketplaces/cc-skills
+
+# Clone manually via HTTPS
+git clone https://github.com/terrylica/cc-skills.git ~/.claude/plugins/marketplaces/cc-skills
+
+# Re-add to known_marketplaces.json
+# Add this entry to ~/.claude/plugins/known_marketplaces.json:
+# "cc-skills": {
+#   "source": {"source": "github", "repo": "terrylica/cc-skills"},
+#   "installLocation": "$HOME/.claude/plugins/marketplaces/cc-skills",
+#   "lastUpdated": "2026-01-13T00:00:00.000Z"
+# }
+```
+
+### Version Mismatch
+
+**Cause**: Cache has old plugin version.
+
+**Fix**:
+
+```bash
+# Check current cached version
+ls ~/.claude/plugins/cache/cc-skills/itp/
+
+# Clear specific plugin cache
+rm -rf ~/.claude/plugins/cache/cc-skills/itp
+
+# Reinstall
+claude plugin install itp@cc-skills
+```
+
+## Architecture
+
+### Directory Structure
+
+```
+~/.claude/plugins/
+├── known_marketplaces.json      # Registered marketplaces
+├── installed_plugins.json       # Installed plugins with versions
+├── marketplaces/
+│   └── cc-skills/               # Cloned marketplace repository
+│       ├── .claude-plugin/
+│       │   └── marketplace.json # Plugin registry (SSoT)
+│       └── plugins/
+│           ├── itp/
+│           ├── plugin-dev/
+│           └── ...
+└── cache/
+    └── cc-skills/               # Cached plugin copies
+        ├── itp/
+        │   └── <version>/       # Version-specific cache
+        └── ...
+```
+
+### Key Files
+
+| File                                        | Purpose                                                |
+| ------------------------------------------- | ------------------------------------------------------ |
+| `~/.claude/plugins/known_marketplaces.json` | Marketplace registry with source and install locations |
+| `~/.claude/plugins/installed_plugins.json`  | Installed plugins with versions and paths              |
+| `~/.claude/settings.json`                   | User settings including hooks configuration            |
+| `.claude-plugin/marketplace.json`           | Plugin registry for this marketplace (SSoT)            |
+
+### Marketplace Configuration
+
+The `known_marketplaces.json` entry for cc-skills:
+
+```json
+{
+  "cc-skills": {
+    "source": {
+      "source": "github",
+      "repo": "terrylica/cc-skills"
+    },
+    "installLocation": "$HOME/.claude/plugins/marketplaces/cc-skills",
+    "lastUpdated": "<timestamp>"
+  }
+}
+```
+
+## For Plugin Developers
+
+### Critical Schema Requirements
+
+Based on compatibility with Claude Code's plugin loader:
+
+#### 1. Source Paths (marketplace.json)
+
+**DO NOT** use trailing slashes in `source` paths:
+
+```json
+// CORRECT
+"source": "./plugins/itp"
+
+// WRONG - causes "Source path does not exist" error
+"source": "./plugins/itp/"
+```
+
+#### 2. Author Field (plugin.json)
+
+The `author` field **must** be an object, not a string:
+
+```json
+// CORRECT
+"author": {
+  "name": "Your Name",
+  "url": "https://github.com/username"
+}
+
+// WRONG - causes validation error
+"author": "Your Name"
+```
+
+#### 3. No Custom Fields (plugin.json)
+
+Only standard fields are allowed. These cause validation errors:
+
+```json
+// WRONG - unrecognized keys
+"commands_dir": "commands",
+"references_dir": "references",
+"scripts_dir": "scripts"
+```
+
+### Valid plugin.json Example
+
+```json
+{
+  "name": "my-plugin",
+  "version": "<version>",
+  "description": "Plugin description (min 10 chars)",
+  "keywords": ["keyword1", "keyword2"],
+  "author": {
+    "name": "Your Name",
+    "url": "https://github.com/username"
+  }
+}
+```
+
+### Valid marketplace.json Entry
+
+```json
+{
+  "name": "my-plugin",
+  "description": "Plugin description",
+  "version": "<version>",
+  "source": "./plugins/my-plugin",
+  "category": "development",
+  "author": {
+    "name": "Your Name",
+    "url": "https://github.com/username"
+  },
+  "keywords": ["keyword1", "keyword2"],
+  "strict": false
+}
+```
+
+### Testing Your Plugin
+
+```bash
+# Validate marketplace structure
+bun scripts/validate-plugins.mjs
+
+# Check for schema errors
+bun scripts/validate-plugins.mjs --fix
+```
+
+## Terminology
+
+Understanding the architectural hierarchy:
+
+| Term          | Definition                                                                                    | Location                                                                                                                                                            | Example             |
+| ------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| **Plugin**    | Marketplace-installable container with metadata, commands, and optional bundled skills        | `~/.claude/plugins/`                                                                                                                                                | `itp`, `gh-tools`   |
+| **Skill**     | Executable agent with SKILL.md frontmatter; can be standalone or bundled within a plugin      | Plugin's `skills/` (installed at `~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/skills/`); `~/.claude/skills/` is for hand-authored personal skills only | `pypi-doppler`      |
+| **Command**   | Slash command (`/plugin:command`) defined in `.md` file within plugin's `commands/` directory | Plugin's `commands/`                                                                                                                                                | `/itp:setup`        |
+| **Reference** | Supporting documentation in `references/` directory; not directly executable                  | `references/`                                                                                                                                                       | `error-handling.md` |
+
+**Hierarchy**:
+
+```
+Plugin (Container)
+├── commands/           → Slash commands (/plugin:command)
+├── skills/             → Bundled skills (installed under the plugin's own versioned
+│                         cache dir, NOT copied to ~/.claude/skills/ — resolve with
+│                         `cc-plugin-root <plugin>`)
+│   └── skill-name/
+│       ├── SKILL.md    → Skill definition (frontmatter + instructions)
+│       ├── scripts/    → Executable helpers
+│       └── references/ → Supporting docs
+├── hooks/              → Hook definitions (hooks.json)
+├── scripts/            → Plugin-level utilities
+└── references/         → Plugin-level documentation
+```
+
+**Key distinctions**:
+
+- **install** → Acquire packages/tools via package manager (`brew install`, `npm install`)
+- **setup** → Verify environment post-installation (`/itp:setup` checks dependencies)
+- **init** → Create initial directory structure (one-time scaffolding)
+- **configure** → Adjust settings in config files (iterative customization)
+
+## Plugin Dependencies
+
+Some plugins use skills from other plugins. Install dependencies first for full functionality.
+
+| Plugin       | Depends On  | Skills Used                                   |
+| ------------ | ----------- | --------------------------------------------- |
+| `plugin-dev` | `itp`       | implement-plan-preflight, code-hardcode-audit |
+| `itp`        | `doc-tools` | ascii-diagram-validator                       |
+
+Run `bun scripts/validate-plugins.mjs --deps` to see the full dependency graph.
+
+## Slash Command Naming Convention
+
+Marketplace plugin commands display with the `plugin:command` format:
+
+| Display Format | Meaning                       |
+| -------------- | ----------------------------- |
+| `/itp:go`      | Plugin `itp`, command `go`    |
+| `/itp:setup`   | Plugin `itp`, command `setup` |
+
+**Why the colon format?**
+
+- **Display**: Claude Code always shows the full `plugin:command` namespace in autocomplete and command lists
+- **Invocation**: You may type `/go`, `/setup`, or `/hooks` directly if no naming conflicts exist with other installed plugins
+- **Clarity**: The namespace identifies which plugin provides each command
+
+**Important edge case**: When the command name equals the plugin name (e.g., `/foo:foo`), you **must** use the full format. Typing `/foo` alone is interpreted as the plugin prefix, not the command.
+
+## Repository Structure
+
+```text
+cc-skills/
+├── .claude-plugin/
+│   └── marketplace.json          # Plugin registry (40 plugins) — SSoT
+├── plugins/                      # 40 marketplace plugins (each with its own CLAUDE.md)
+│   ├── itp/                      # ADR-driven 4-phase development workflow
+│   ├── itp-hooks/                # Workflow enforcement + code-correctness hooks
+│   ├── plugin-dev/               # Plugin / skill architecture meta-tools
+│   ├── gh-tools/                 # GitHub workflow + GFM link validation
+│   ├── doc-tools/                # ASCII diagrams, markdown standards, LaTeX, Pandoc
+│   ├── quality-tools/            # Clone detection, E2E validation, profiling, refactor guide
+│   ├── devops-tools/             # ClickHouse, Doppler, MLflow, pueue, session recovery
+│   ├── tlg/                      # Telegram operations toolkit
+│   ├── ssh-tunnel-companion/     # macOS launchd companion for SSH tunnels
+│   ├── floating-clock/           # macOS floating clock overlay
+│   ├── macro-keyboard/           # Karabiner remap for 3-key macro pads
+│   ├── …                         # 20 more — see Plugins table for the full set
+├── scripts/
+│   ├── sync-hooks-to-settings.sh    # Prunes pre-v20.2.3 hook copies from settings.json (called by release:sync)
+│   ├── sync-commands-to-settings.sh # Command synchronization
+│   ├── validate-plugins.mjs         # Plugin validation
+│   └── marketplace.schema.json      # JSON Schema for marketplace.json
+├── tasks/release/             # Release automation (seven phases, five standalone tasks — see below)
+├── docs/                            # ADRs, design docs, lessons-learned, troubleshooting
+├── package.json                     # semantic-release
+└── README.md
+```
+
+## Release Workflow (for maintainers)
+
+This marketplace uses semantic-release with moon task automation:
+
+```bash
+# Check release status
+moon run repo:release-status
+
+# Full release workflow (preflight → version → sync → verify)
+moon run repo:release-full
+
+# Dry run (no changes)
+moon run repo:release-dry
+
+# Manual hook sync only (phase script; not exposed as a moon task)
+bash tasks/release/hooks
+
+# Sync marketplace to ~/.claude after release
+moon run repo:release-sync
+```
+
+### Release Phases
+
+`moon run repo:release-full` runs all seven phases in sequence, in the order `tasks/release/full` invokes them.
+
+| Phase | Task                           | Description                                                                                      |
+| ----- | ------------------------------ | ------------------------------------------------------------------------------------------------ |
+| 1     | `repo:release-preflight`       | Validate clean working dir, GH_TOKEN presence, plugin manifests, releasable conventional commits |
+| 2     | `bash tasks/release/presync`   | Mirror current main HEAD to ~/.claude marketplace clone so the live env reflects pending changes |
+| 3     | `repo:release-version`         | Run semantic-release (version bump + CHANGELOG + git tag + GitHub release)                       |
+| 4     | `repo:release-sync`            | Update marketplace repo, sync hooks/commands to settings.json, populate plugin cache             |
+| 5     | `repo:release-verify`          | Verify git tag, GitHub release, marketplace, hooks files, runtime artifact consistency           |
+| 6     | `bash tasks/release/chronicle` | Record the release chronicle                                                                     |
+| 7     | `repo:release-postflight`      | Reset lockfile drift, confirm clean working dir, confirm all commits pushed                      |
+
+Five of the seven are independently invokable as moon tasks. `presync` and `chronicle` exist only as phase scripts under `tasks/release/`, so run those with `bash` — as do `hooks`, `cdn-purge` and `_default`.
+
+Run `moon query tasks` for the complete list (also includes `repo:release-augment`, `repo:release-history`, `repo:release-clean`).
+
+## Available Plugins
+
+### itp
+
+**Implement-The-Plan workflow: ADR-driven 4-phase development.**
+
+Execute approved plans from Claude Code's Plan Mode through a structured workflow:
+
+- **Preflight**: ADR + Design Spec creation
+- **Phase 1**: Implementation with engineering standards
+- **Phase 2**: Format & Push to GitHub
+- **Phase 3**: Release via the repo's `moon run repo:release-full` pipeline, optionally Publish (PyPI)
+
+**Commands**: `/itp:go`, `/itp:setup` (release runs via `moon run repo:release-full`)
+
+> `/itp:tether` was retired in issue #127. Its installer injected itp-hooks entries into `~/.claude/settings.json`, which Claude Code now double-registers because `plugins/itp-hooks/hooks/hooks.json` already ships those hooks. `/statusline-tools:tether` survives — it installs `lychee-stop-hook.sh`, which is deliberately absent from that plugin's `hooks.json`.
+
+**Bundled Skills**: adr-code-traceability, bootstrap-monorepo, code-hardcode-audit, impl-standards, implement-plan-preflight, pypi-doppler
+
+> `mise-configuration` and `mise-tasks` were retired 2026-09-16. jdx/mise is no longer used anywhere in this toolchain — proto is the only toolchain manager and moon is the only task runner (see `bootstrap-monorepo`). The skills were removed rather than merely deprecated because they remained _offered_ to agents long after mise was uninstalled, so an agent asked to repair a mise-shaped breakage could be steered into writing more mise config. That is not hypothetical: a client repo's twice-daily publisher died at exit 127 for 25 days after mise was removed, and these two skills were still on the menu while it was being diagnosed.
+
+### plugin-dev
+
+**Plugin and skill development: structure validation, silent failure auditing, skill architecture meta-skill.**
+
+- **skill-architecture** - Meta-skill for creating skills (YAML frontmatter, TodoWrite templates)
+- **plugin-validator** - Validate plugin structure, manifests, and detect silent script failures
+
+**Commands**: `/plugin-dev:create`
+
+### gh-tools
+
+**GitHub workflow automation with intelligent GFM link validation.**
+
+- Detects broken repository-relative links
+- Auto-fixes common link patterns
+- Integrates with `gh` CLI workflows
+
+### link-tools
+
+**Link validation: portability checks, broken link detection, path policy linting.**
+
+- **link-validator** - Validates relative path usage for cross-installation compatibility
+- **link-validation** - Broken link detection with path policy linting (on-demand)
+
+### devops-tools
+
+**Doppler credentials, Firecrawl (public API), ML pipelines, MLflow queries, notifications, and session recovery.**
+
+17 bundled skills: clickhouse-cloud-management, clickhouse-pydantic-config, claude-code-proxy-patterns, disk-hygiene, distributed-job-safety, doppler-workflows, doppler-secret-validation, dual-channel-watchexec, firecrawl-research-patterns, ml-data-pipeline-architecture, ml-failfast-validation, mlflow-python, project-directory-migration, pueue-job-orchestration, python-logging-best-practices, session-chronicle, session-recovery
+
+### doc-tools
+
+**Comprehensive documentation: ASCII diagrams, markdown standards, LaTeX build, Pandoc PDF generation.**
+
+Nine bundled skills: ascii-diagram-validator, documentation-standards, glossary-management, latex-build, latex-setup, latex-tables, pandoc-pdf-generation, plotext-financial-chart, terminal-print
+
+### quality-tools
+
+**Code quality and validation tools: clone detection, E2E validation, profiling, schema testing.**
+
+Six bundled skills: clickhouse-architect, code-clone-assistant, multi-agent-e2e-validation, multi-agent-performance-profiling, schema-e2e-validation, symmetric-dogfooding
+
+### itp-hooks
+
+**ITP workflow enforcement via PreToolUse and PostToolUse hooks.**
+
+- Hard block on manual ASCII art
+- Ruff Python linting reminders
+- Graph-easy skill reminders
+- ADR/Design Spec sync reminders
+
+### statusline-tools
+
+**Custom Claude Code status line with git status indicators.**
+
+- Git status indicators (modified, deleted, staged, untracked)
+- Remote tracking (ahead/behind commits)
+
+**Commands**: `/statusline-tools:setup`
+
+### Other Plugins
+
+For everything not detailed above, see the [Plugins table](#plugins) and the per-plugin `CLAUDE.md` (the SSoT for purpose, stack, and conventions). The full list is enumerable via:
+
+```bash
+jq -r '.plugins[] | "\(.name) — \(.description)"' .claude-plugin/marketplace.json
+```
+
+## Known Issues
+
+### Claude Code Plugin Ecosystem Issues
+
+| Issue                                                            | Description                                                     | Workaround                          |
+| ---------------------------------------------------------------- | --------------------------------------------------------------- | ----------------------------------- |
+| [#14929](https://github.com/anthropics/claude-code/issues/14929) | Commands from directory-based local marketplaces not discovered | Use GitHub-based marketplace source |
+| SSH clone failures                                               | Silent failure when adding marketplace via SSH                  | Use HTTPS clone manually            |
+
+### This Marketplace
+
+| Issue                                | Status | Notes                               |
+| ------------------------------------ | ------ | ----------------------------------- |
+| Circular dependency: doc-tools ↔ itp | Known  | Install both for full functionality |
+
+## Contributing
+
+1. Fork the repository
+2. Create a plugin in `plugins/your-plugin/`
+3. Add entry to `.claude-plugin/marketplace.json`
+4. Ensure `plugin.json` follows the schema (see [For Plugin Developers](#for-plugin-developers))
+5. Run `bun scripts/validate-plugins.mjs`
+6. Submit a pull request
+
+## License
+
+MIT

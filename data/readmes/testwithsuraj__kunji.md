@@ -5,21 +5,24 @@
 **Every AI model in one terminal, with your own keys. See what every answer costs.**
 
 ```bash
-pip install kunji
+curl -fsSL https://kunji.iamsuraj.me/install.sh | sh
 ```
 
-[![PyPI](https://img.shields.io/pypi/v/kunji?style=flat-square&labelColor=1f2328&color=3ddc84)](https://pypi.org/project/kunji/)
-[![CI](https://img.shields.io/github/actions/workflow/status/testwithsuraj/kunji/ci.yml?branch=main&style=flat-square&label=CI&labelColor=1f2328)](https://github.com/testwithsuraj/kunji/actions/workflows/ci.yml)
-[![License](https://img.shields.io/badge/license-Apache--2.0-3ddc84?style=flat-square&labelColor=1f2328)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.11%2B-3ddc84?style=flat-square&labelColor=1f2328&logo=python&logoColor=white)](https://www.python.org/downloads/)
-[![Providers](https://img.shields.io/badge/providers-10%2B-3ddc84?style=flat-square&labelColor=1f2328)](#providers)
-[![Platforms](https://img.shields.io/badge/windows%20%7C%20macos%20%7C%20linux-3ddc84?style=flat-square&labelColor=1f2328&label=runs%20on)](#install)
+Windows: `irm https://kunji.iamsuraj.me/install.ps1 | iex`
+
+[![PyPI](https://img.shields.io/pypi/v/kunji?style=flat-square&labelColor=1f2328&color=2563eb)](https://pypi.org/project/kunji/)
+[![Downloads](https://img.shields.io/pepy/dt/kunji?style=flat-square&label=Downloads&labelColor=1f2328&color=2563eb)](https://pepy.tech/projects/kunji)
+[![CI](https://img.shields.io/github/actions/workflow/status/testwithsuraj/kunji/ci.yml?branch=main&style=flat-square&label=CI&labelColor=1f2328&color=2563eb)](https://github.com/testwithsuraj/kunji/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-Apache--2.0-2563eb?style=flat-square&labelColor=1f2328)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.11%2B-2563eb?style=flat-square&labelColor=1f2328&logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![Providers](https://img.shields.io/badge/providers-10%2B-2563eb?style=flat-square&labelColor=1f2328)](#providers)
+[![Platforms](https://img.shields.io/badge/windows%20%7C%20macos%20%7C%20linux-2563eb?style=flat-square&labelColor=1f2328&label=runs%20on)](#install)
 
 <!-- Demo GIF hidden for now. Remove this comment wrapper to show it again.
 <img src="https://raw.githubusercontent.com/testwithsuraj/kunji/main/assets/demo.gif" alt="kunji demo: the menu, a chat with Claude, switching to Groq mid-conversation with /model, and /cost" width="860">
 -->
 
-[Website](https://testwithsuraj.github.io/kunji/) · [Documentation](https://testwithsuraj.github.io/kunji/docs/) · [Install](#install) · [Commands](#commands) · *Kunji (कुंजी) means "key" in Hindi.*
+[Website](https://kunji.iamsuraj.me/) · [Documentation](https://kunji.iamsuraj.me/docs/) · [Install](#install) · [Commands](#commands) · *Kunji (कुंजी) means "key" in Hindi.*
 
 </div>
 
@@ -61,26 +64,42 @@ You pay each provider directly. Kunji never sees your bill, your keys or your pr
 
 ## Install
 
-Requires Python 3.11+.
+One command. No Python needed, and `kunji` works in any folder afterwards.
+
+**macOS / Linux**
 
 ```bash
-pip install kunji
+curl -fsSL https://kunji.iamsuraj.me/install.sh | sh
 ```
 
-If `pip` isn't found or shows an error, run it through Python instead:
+**Windows** (PowerShell)
 
-| System | Command |
+```powershell
+irm https://kunji.iamsuraj.me/install.ps1 | iex
+```
+
+From Command Prompt instead:
+`powershell -ExecutionPolicy ByPass -c "irm https://kunji.iamsuraj.me/install.ps1 | iex"`
+
+The installer uses [uv](https://docs.astral.sh/uv/) to install kunji (and Python 3.11+ if you
+don't have it) in its own folder, and adds `kunji` to your PATH. Open a new terminal and run
+`kunji`. Update with `kunji upgrade`; uninstall with `uv tool uninstall kunji`.
+
+<details>
+<summary>Other ways: pip, pipx, uv, single file</summary>
+
+| Method | Command |
 | --- | --- |
-| Windows | `python -m pip install kunji` (or `py -m pip install kunji`) |
-| macOS | `python3 -m pip install kunji` |
-| Linux | `python3 -m pip install --user kunji` (if it says "externally managed", use `pipx install kunji`) |
+| uv | `uv tool install kunji` |
+| pipx | `pipx install kunji` |
+| pip (Python 3.11+) | `python -m pip install kunji` (Windows: `py -m pip install kunji`) |
+| Single file, no install | `kunji-windows-x64.exe` or `kunji-linux-x64` from the [latest release](https://github.com/testwithsuraj/kunji/releases/latest) |
 
-No Python on Windows? Download `kunji-windows-x64.exe` from the
-[latest release](https://github.com/testwithsuraj/kunji/releases/latest) and run it from a terminal.
-Linux: `kunji-linux-x64`.
+With pip, if `kunji` isn't found afterwards ("not recognized" / "command not found"), pip put
+it in a folder that isn't on your PATH. `python -m kunji` always works, or use the installer
+above. The command is lowercase: `kunji`.
 
-Update later with `pip install -U kunji`. If the `kunji` command isn't found after installing,
-`python -m kunji` always works.
+</details>
 
 `winget`, Scoop and Homebrew packages are on the [roadmap](ROADMAP.md).
 
@@ -177,7 +196,7 @@ kunji budget set all 200                      # ₹200/day across every provider
 kunji config set fallback '["groq:llama-3.3-70b-versatile", "ollama:qwen2.5"]'
 ```
 
-All options: [docs/CONFIG.md](docs/CONFIG.md). Every command with examples: [docs/COMMANDS.md](docs/COMMANDS.md). Full documentation: **[testwithsuraj.github.io/kunji/docs](https://testwithsuraj.github.io/kunji/docs/)**.
+All options: [docs/CONFIG.md](docs/CONFIG.md). Every command with examples: [docs/COMMANDS.md](docs/COMMANDS.md). Full documentation: **[kunji.iamsuraj.me/docs](https://kunji.iamsuraj.me/docs/)**.
 
 ## Free and Pro
 

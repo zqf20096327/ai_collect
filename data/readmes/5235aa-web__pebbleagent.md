@@ -2,7 +2,7 @@
 
 <img src="assets/logo.png" alt="PEBBLE-AGENT" width="720">
 
-**An open-source, extensible desktop AI agent with tools, skills, MCP servers, a self-maintained code knowledge base, and cross-session memory.**
+**A light,extensible desktop AI agent with tools, skills, MCP servers, a self-maintained code knowledge base, and cross-session memory.**
 
 [![checks](https://img.shields.io/github/actions/workflow/status/5235aa-web/pebbleagent/checks.yml?style=flat-square&label=checks&labelColor=1f1f1f&color=00E676)](https://github.com/5235aa-web/pebbleagent/actions/workflows/checks.yml)
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-CE93D8?style=flat-square&labelColor=1f1f1f)](LICENSE)
@@ -16,7 +16,7 @@
 
 > **Platform support:** Windows 10/11 (64-bit) is the tested platform, and the only one that can build the desktop shell. The backend and the web UI also run on macOS, where the shell is unavailable because its Tauri sidecar management is written against Win32 APIs. Linux is untested.
 >
-> <sub>macOS has not been run by the author, who has no Apple machine. It is verified by code inspection rather than by use, so it should work on MacOS — and if it does not, please open an issue.</sub>
+> <sub>macOS has not been run by the author, who has no Apple machine. It should work on MacOS theoretically — and if it does not, please open an issue.</sub>
 
 ## Features
 

@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="400" alt="image" src="https://interactive32.com/images/mob3-screenshot-1.png?ref=github.com/mob3net/mob3" />
+  <img width="400" alt="MOB³ showing its start page in a terminal" src="docs/screenshots/start.png" />
 </p>
 
 # MOB³ is a small indie web browser for the terminal
@@ -48,17 +48,17 @@ mob3 -version
 
 ## Screenshots
 <div align="center">
-<a href="https://github.com/user-attachments/assets/8588bbd5-0b97-47cd-95e3-83c443cf761d" target="_blank" rel="noopener"><img width="32%" src="https://github.com/user-attachments/assets/8588bbd5-0b97-47cd-95e3-83c443cf761d" /></a>
-<a href="https://github.com/user-attachments/assets/0dcd6d0b-f0ff-405f-bc1f-5e4c07e2cf10" target="_blank" rel="noopener"><img width="32%" src="https://github.com/user-attachments/assets/0dcd6d0b-f0ff-405f-bc1f-5e4c07e2cf10" /></a>
-<a href="https://github.com/user-attachments/assets/376014a5-96ac-4b4e-bb80-6c9f82a8454d" target="_blank" rel="noopener"><img width="32%" src="https://github.com/user-attachments/assets/376014a5-96ac-4b4e-bb80-6c9f82a8454d" /></a>
+<a href="docs/screenshots/help.png" target="_blank" rel="noopener"><img width="32%" src="docs/screenshots/help.png" alt="MOB³ help page listing command-line flags" /></a>
+<a href="docs/screenshots/console-storage.png" target="_blank" rel="noopener"><img width="32%" src="docs/screenshots/console-storage.png" alt="JavaScript console showing the Storage tab" /></a>
+<a href="docs/screenshots/help-dialogs.png" target="_blank" rel="noopener"><img width="32%" src="docs/screenshots/help-dialogs.png" alt="Help page with an alert dialog" /></a>
 <br />
-<a href="https://github.com/user-attachments/assets/e570359d-0665-4467-add4-b380555f3dba" target="_blank" rel="noopener"><img width="32%" src="https://github.com/user-attachments/assets/e570359d-0665-4467-add4-b380555f3dba" /></a>
-<a href="https://github.com/user-attachments/assets/21dfff33-2280-4f4b-938c-4bc233da0667" target="_blank" rel="noopener"><img width="32%" src="https://github.com/user-attachments/assets/21dfff33-2280-4f4b-938c-4bc233da0667" /></a>
-<a href="https://github.com/user-attachments/assets/6453a4b6-6628-4a3e-bb55-02ff6d724bc2" target="_blank" rel="noopener"><img width="32%" src="https://github.com/user-attachments/assets/6453a4b6-6628-4a3e-bb55-02ff6d724bc2" /></a>
+<a href="docs/screenshots/hacker-news.png" target="_blank" rel="noopener"><img width="32%" src="docs/screenshots/hacker-news.png" alt="Hacker News rendered in MOB³" /></a>
+<a href="docs/screenshots/debian.png" target="_blank" rel="noopener"><img width="32%" src="docs/screenshots/debian.png" alt="Bits from Debian blog rendered in MOB³" /></a>
+<a href="docs/screenshots/opensource.png" target="_blank" rel="noopener"><img width="32%" src="docs/screenshots/opensource.png" alt="opensource.com rendered with images in MOB³" /></a>
 <br />
-<a href="https://github.com/user-attachments/assets/a0486574-b646-4981-be59-a60eff284140" target="_blank" rel="noopener"><img width="32%" src="https://github.com/user-attachments/assets/a0486574-b646-4981-be59-a60eff284140" /></a>
-<a href="https://github.com/user-attachments/assets/7f0becc1-0658-4cac-a893-7d864c0b4be3" target="_blank" rel="noopener"><img width="32%" src="https://github.com/user-attachments/assets/7f0becc1-0658-4cac-a893-7d864c0b4be3" /></a>
-<a href="https://github.com/user-attachments/assets/50d20cc6-cb34-4733-8168-9b12c838056e" target="_blank" rel="noopener"><img width="32%" src="https://github.com/user-attachments/assets/50d20cc6-cb34-4733-8168-9b12c838056e" /></a>
+<a href="docs/screenshots/universe-today-narrow.png" target="_blank" rel="noopener"><img width="32%" src="docs/screenshots/universe-today-narrow.png" alt="Universe Today article in a narrow terminal" /></a>
+<a href="docs/screenshots/universe-today.png" target="_blank" rel="noopener"><img width="32%" src="docs/screenshots/universe-today.png" alt="Universe Today article in a wide terminal" /></a>
+<a href="docs/screenshots/reader-mode.png" target="_blank" rel="noopener"><img width="32%" src="docs/screenshots/reader-mode.png" alt="Universe Today article in reader mode" /></a>
 </div>
 
 ## Show your support
@@ -85,10 +85,11 @@ text-focused pages and gets rough on modern JavaScript-heavy apps.
   the `-search` fallback.
 - Common CSS: selectors, cascade and inheritance, box model (including
   `box-sizing` and min/max sizes), margins, borders, backgrounds, text styling,
-  lists, tables, viewport-width `@media` queries and basic flex rows.
+  lists, tables, CSS custom properties, viewport-width `@media` queries, viewport units, and basic flex rows with
+  alignment and ordering.
 - PNG/JPEG/GIF/WebP/BMP/SVG/data-URI images when enabled with `-graphics` (`auto`,
-  `kitty`, `iterm`, or `blocks` for half-block art). Images are off by default
-  for speed.
+  `kitty`, `iterm`, or `blocks` for half-block art); press `I` to cycle full
+  graphics, blocks and none. Images are off by default for speed.
 - Session-only memory cache for CSS, scripts and decoded images, with a 32 MiB
   default budget and `-cache` to change or disable it.
 - Light JavaScript: DOM queries and mutation, `classList`/`style`, click
@@ -112,6 +113,11 @@ text-focused pages and gets rough on modern JavaScript-heavy apps.
   already render a dark background keep their own palette; otherwise
   backgrounds, text, links and borders are remapped to a dark palette. Images
   keep their original colors.
+- Vimium-style link hints (`f`): highlights letters from each visible link's
+  own text with a yellow background and underline (two adjacent letters only
+  when hints share a first letter), then follows one when you type them; `F`
+  shows the destination highlighted in yellow first and waits for confirmation;
+  `Esc` or scrolling dismisses the hints.
 - Headless MCP automation (`-mcp`): navigate, snapshot page text and links,
   click links or elements by text, list and fill forms, select options, submit,
   wait for async content, type, press keys, scroll, evaluate JavaScript, inspect
@@ -124,10 +130,12 @@ text-focused pages and gets rough on modern JavaScript-heavy apps.
   kitty, WezTerm, Ghostty and foot, `/` incremental find (including multi-word
   phrases) with highlighted matches
   (also in the console HTML tab), a draggable page scrollbar, history (including
-  a top-right History page
-  listing the session's links), bookmarks imported with `-bookmarks` from a
+  a top-right History page listing the session's links, with `#` anchors as
+  entries and back/forward restoring each page's last scroll position),
+  bookmarks imported with `-bookmarks` from a
   Netscape HTML export, scrolling, focus, link hover targets in the footer,
-  text selection, and a `!` JavaScript console.
+  text selection (`y` copies selected text, or the current URL when nothing is
+  selected), fixed-overlay hiding (`X`), and a `!` JavaScript console.
 
 **Rough edges**
 
@@ -151,7 +159,7 @@ text-focused pages and gets rough on modern JavaScript-heavy apps.
   background images are unsupported or approximated as block flow.
 - SVG support is partial: text inside SVG, `<use>/<symbol>`, filters, masks and
   CSS-in-SVG may be missing. Animated WebP is not supported.
-- Oversized images are capped at 60% of the viewport width and 24 rows,
+- Oversized images are capped at 40% of the viewport width and 16 rows,
   preserving their aspect ratio.
 - No tabs or automatic downloads; download links and non-HTML responses open a
   popup with a copyable `curl` command instead, and multipart/file uploads are

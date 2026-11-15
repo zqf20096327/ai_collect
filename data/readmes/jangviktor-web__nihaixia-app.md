@@ -15,7 +15,7 @@
 <a href="https://trendshift.io/repositories/108262?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-108262" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/108262/daily?language=HTML" alt="jangviktor-web%2Fnihaixia | Trendshift" width="250" height="55"/></a>
 <a href="https://trendshift.io/repositories/108262?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-108262" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/108262/weekly?language=HTML" alt="jangviktor-web%2Fnihaixia | Trendshift" width="250" height="55"/></a>
 
-[![Release](https://img.shields.io/github/v/release/jangviktor-web/nihaixia-app?style=for-the-badge&color=green&label=📥%20Download)](https://github.com/jangviktor-web/nihaixia-app/releases/latest)
+[![Release](https://img.shields.io/github/v/release/jangviktor-web/nihaixia-app?style=for-the-badge&color=green&label=%F0%9F%93%A5%20Download)](https://github.com/jangviktor-web/nihaixia-app/releases/latest)
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
 [![Android](https://img.shields.io/badge/Android-7.0%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)]()
@@ -24,7 +24,7 @@
 
 <br/>
 
-**[🌐 在线网页版](https://jangviktor-web.github.io/nihaixia-app/web)** · **[🤖 问倪师AI · 免费 API](#user-content-ask-nishi-ai)** · **[📥 下载 APK](#-下载安装)** · **[📖 快速上手](#-快速上手)** · **[🏗️ 技术架构](#️-技术架构)** · **[🗺️ Roadmap](#️-roadmap)** · **[🤝 贡献指南](#️-贡献指南)** · **[📄 开源许可](#-开源许可)**
+**[🌐 在线网页版](#user-content-online-web)** · **[🤖 问倪师AI · 免费 API](#user-content-ask-nishi-ai)** · **[📥 下载 APK](#-下载安装)** · **[📖 快速上手](#-快速上手)** · **[🏗️ 技术架构](#️-技术架构)** · **[🗺️ Roadmap](#️-roadmap)** · **[🤝 贡献指南](#️-贡献指南)** · **[📄 开源许可](#-开源许可)**
 
 </div>
 
@@ -51,7 +51,7 @@
 | 🆓 **完全免费** | Apache 2.0 开源协议，无广告、无内购、无追踪 |
 | 🧪 **测试守护** | 关键辨证路径与筛选逻辑均有回归测试，修复即写测试，防止复发 |
 
-<img width="100%" src="docs/images/readme_features.svg" alt="核心能力：六经辨证、经方 322、本草 465、穴位 408、经典 1327 条、医案 1257 例">
+<img width="100%" src="docs/images/readme_features.svg" alt="核心能力：六经辨证、经方 322、本草 465、穴位 401、经典 1327 条、医案 1257 例">
 
 ---
 
@@ -62,6 +62,10 @@
 不想装 APK？浏览器直接打开，功能与 APK 一致（六经问诊、方剂本草穴位、经典全文检索、问倪师AI）：
 
 **[👉 jangviktor-web.github.io/nihaixia-app/web](https://jangviktor-web.github.io/nihaixia-app/web/)**
+
+> ⚡ **国内访问 GitHub Pages 偏慢？** 用国内镜像，打开更快：
+> **[👉 汉唐中医 · 在线版（国内镜像）](https://ae68ddd6e40fef14f.app.workbuddy.host/?sharecode=JAIBL7UGO6)**
+> 功能与网页版一致；镜像为定期同步的快照，可能略旧于 GitHub 版。链接**必须完整包含 `?sharecode=`**，缺失会返回 403。
 
 三点实话：**收藏与对话记录只存当前浏览器**（IndexedDB，换浏览器 / 清缓存即丢，不与 APK 互通）；**首次打开约 75MB**（渲染引擎 + 离线古籍，建议 Chrome / Edge）；**繁简转换首次需联网**（OpenCC 走 CDN），其余断网可用。长期使用仍建议装 APK。
 
@@ -128,6 +132,19 @@
 
 <div align="center">
 
+**v1.11.33 穴位详情页 —— 同经络左右滑动换穴 · 收藏 · 讲义与古籍入口 · 四段式临床心悟**
+
+![v1.11.33 穴位详情页](docs/images/screenshot_v1133_acupoint_detail.webp)
+
+</div>
+
+从左到右：① 穴位详情页顶部「第 7/11 穴 · 左右滑动切换同经络穴位」与可换行的属性标签、收藏按钮 ② 「讲义讲解」「古籍原文」入口及点击后的古籍提及列表 ③ 倪海厦临床心悟按【倪师主治思路／配穴与针法／主治·书证】分段呈现，下方接关联穴位处方。
+
+<details>
+<summary><b>📁 历史版本截图（v1.11.32 → v1.11.0，按版本从新到旧）· 点击展开</b></summary>
+
+<div align="center">
+
 **v1.11.32 问倪师AI · 症状自查 —— 本地讲义检索 + 你自配的端点 + 一页勾选出结论**
 
 ![v1.11.32 问倪师AI 与症状自查](docs/images/screenshot_v1131_llm_ask.webp)
@@ -144,8 +161,6 @@
 
 ⑤ **症状自查** —— 寒热总纲（必选）→ 进阶线索（选填）→ 十一问，选满 3 项即可出结论，方剂可继续点进详情。
 
-<details>
-<summary><b>📁 历史版本截图（v1.11.31 → v1.11.0，按版本从新到旧）· 点击展开</b></summary>
 
 <div align="center">
 
@@ -313,7 +328,7 @@
 | 🔍 **鉴别诊断** | 自动对比相似证型的关键区别，辅助精准辨证 | 26 对 |
 | 📚 **方剂速查** | 搜索 + 六经筛选 + 分类筛选，离线查阅 | 322 首 |
 | 🌿 **药物速查** | 搜索 + 分类/性味/归经三筛选，覆盖《神农本草经》全量，附子按倪师体系拆分生/炮两条 | 465 味 |
-| 📍 **针灸穴位速查** | 十四经脉 + 经外奇穴，含定位/针刺/灸法/禁忌/临床心悟，穴位↔处方双向关联 | 408 穴 |
+| 📍 **针灸穴位速查** | 十四经脉 + 经外奇穴，含定位/针刺/灸法/禁忌/临床心悟，穴位↔处方双向关联 | 401 穴 |
 | 💉 **穴位处方·透针** | 14 类针灸处方（257 条）+ 31 条透针透穴，组成穴可点按跳转 | 14 类 |
 | ⏰ **子午流注取穴** | 输入时间自动推算开穴 | 361 穴 |
 | 🔧 **经方剂量换算** | 古代度量衡（两/升/铢）→ 现代克数 | — |
@@ -347,7 +362,7 @@
 > 「问倪师AI」为**可选功能**：端点与 Key 由你自填，**默认关闭**，关闭时不发出任何网络请求（详见 [PRIVACY.md](PRIVACY.md)）
 > 通用版 APK 约 82MB，分架构版 34–38MB
 > 自 V1.11.9 起由 GitHub Actions 自动构建发布，推送 `v*` tag 即出包
-> **最后更新：2026-11-07（v1.11.32）**
+> **最后更新：2026-11-15（v1.11.33）**
 
 > [!TIP]
 > **💰 免费 API · 5 分钟启用「问倪师AI」**
@@ -357,15 +372,15 @@
 
 > 🌐 不想装 APK？**[在线网页版免安装试用 →](#user-content-online-web)**
 
-### 📥 方式一：下载预编译 APK（V1.11.32）
+### 📥 方式一：下载预编译 APK（V1.11.33）
 
-[![📦 通用版 APK](https://img.shields.io/badge/📦%20通用版-安卓安装包‑3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://ghproxy.net/https://github.com/jangviktor-web/nihaixia-app/releases/download/v1.11.32/app-release.apk)
+[![📦 通用版 APK](https://img.shields.io/badge/📦%20通用版-安卓安装包-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://ghproxy.net/https://github.com/jangviktor-web/nihaixia-app/releases/download/v1.11.33/app-release.apk)
 &nbsp;&nbsp;
-[![📦 arm64‑v8a APK](https://img.shields.io/badge/📦%20arm64‑v8a-安卓安装包‑0284CC?style=for-the-badge&logo=android&logoColor=white)](https://ghproxy.net/https://github.com/jangviktor-web/nihaixia-app/releases/download/v1.11.32/app-arm64-v8a-release.apk)
+[![📦 arm64‑v8a APK](https://img.shields.io/badge/📦%20arm64‑v8a-安卓安装包-0284CC?style=for-the-badge&logo=android&logoColor=white)](https://ghproxy.net/https://github.com/jangviktor-web/nihaixia-app/releases/download/v1.11.33/app-arm64-v8a-release.apk)
 &nbsp;&nbsp;
-[![📦 armeabi‑v7a APK](https://img.shields.io/badge/📦%20armeabi‑v7a-安卓安装包‑9C27B0?style=for-the-badge&logo=android&logoColor=white)](https://ghproxy.net/https://github.com/jangviktor-web/nihaixia-app/releases/download/v1.11.32/app-armeabi-v7a-release.apk)
+[![📦 armeabi‑v7a APK](https://img.shields.io/badge/📦%20armeabi‑v7a-安卓安装包-9C27B0?style=for-the-badge&logo=android&logoColor=white)](https://ghproxy.net/https://github.com/jangviktor-web/nihaixia-app/releases/download/v1.11.33/app-armeabi-v7a-release.apk)
 &nbsp;&nbsp;
-[![📦 x86_64(虚拟机)](https://img.shields.io/badge/📦%20x86_64(虚拟机)-安卓安装包‑1565C0?style=for-the-badge&logo=android&logoColor=white)](https://ghproxy.net/https://github.com/jangviktor-web/nihaixia-app/releases/download/v1.11.32/app-x86_64-release.apk)
+[![📦 x86_64(虚拟机)](https://img.shields.io/badge/📦%20x86_64%28虚拟机%29-安卓安装包-1565C0?style=for-the-badge&logo=android&logoColor=white)](https://ghproxy.net/https://github.com/jangviktor-web/nihaixia-app/releases/download/v1.11.33/app-x86_64-release.apk)
 
 | 安装包 | 适用设备 |
 |:---|:---|
@@ -373,6 +388,33 @@
 | arm64‑v8a | 新款 64 位手机，体积更小 |
 | armeabi‑v7a | 老旧 32 位设备 |
 | x86_64 | 安卓模拟器 / 虚拟机 |
+
+> **V1.11.33 穴位详情页体验升级 · 临床心悟全库格式归一 · 讲稿与古籍索引修复**（2026-11-15 发布）
+>
+> **一、穴位详情页更好用**
+> - **左右滑动切换同经络穴位**：左滑下一穴、右滑上一穴，按本经络国标穴序，顶部显示「第 N/M 穴」，到两端停住不循环；纵向滚动不受影响。
+> - **新增收藏**：右上角书签按钮，首页「收藏」列表可跳回详情页。
+> - **长属性不再裁字**：属性标签改为可换行容器，小屏与系统字号 200% 下也能完整显示（经 7 尺寸 × 3 字号 21 组扫描验证）。
+>
+> **二、临床心悟全库格式归一**
+> - 401 条统一为 `【】` 方括号标题格式，标准标头由 67 种收敛到 6 种，格式合规率 100%；清掉混入的编辑说明、第三方校对标记、编造配方与他穴内容。
+>
+> **三、讲义与古籍索引修复**
+> - 讲稿索引按经络章消歧，修复手五里／腰阳关／腹通谷／头窍阴／譩譆 等 9 个同名异穴的串篇与缺键，索引穴位数 389→394。
+> - 古籍原文入口补异体字别名（附阳→跗阳、譩嘻→譩譆），《针灸大成》可查穴位增至 378/401。
+>
+> **四、其他修复**
+> - 移除重复的「倪师处方公式」卡片；印堂、中枢、急脉等稀疏数据穴位详情页可正常打开。
+>
+>
+> **五、README 图片修复（本次一并修的线上显示问题）**
+> - `📥 Download` 版本徽章整块空白 → `label` 里 emoji 未编码，shields 返回 400；改 `%F0%9F%93%A5`。
+> - x86_64 徽章显示「badge not found」→ URL 里 `x86_64(虚拟机)` 的括号把链接提前截断；括号编码为 `%28` `%29`。
+> - 四个安装包徽章只剩左半 → 文案尾部误用 **U+2011 非断连字符** 当分隔符；统一改 ASCII `-`。三语同步，15 个徽章逐条校验 `aria-label` 完整。
+> 详见 [Release Notes](release_notes/v1.11.33.md)。
+
+<details>
+<summary><b>历史更新日志（v1.11.32 及更早）</b></summary>
 
 > **V1.11.32 问倪师AI（本地讲义检索 + 自配端点）· 症状自查 · 回答内跳转 · 类方禁忌进上下文**（2026-11-07 发布）
 >
@@ -403,8 +445,6 @@
 >
 > 详见 [Release Notes](release_notes/v1.11.32.md)。
 
-<details>
-<summary><b>历史更新日志（v1.11.31 及更早）</b></summary>
 
 > **V1.11.31 伤寒论宋本统一版 · 方剂见于经典修复 · 排版规范化**：伤寒论资产整体切换为宋本条号命名（390 条文 + 4 附录 = 394 篇），列表名统一「宋本N·」；经典索引 1728 条、方剂索引 279 条重建对齐；补齐 8 个方剂「见于经典」跳转并撤销「杏子汤」误挂；条文卡排版规范化、R1 归零。详见 [Release Notes](release_notes/v1.11.31.md)。
 > 
@@ -645,7 +685,7 @@ flowchart LR
   UI --> DATA["本地数据层<br/>SQLite + 离线 JSON"]
   DATA --> F["方剂 322"]
   DATA --> H["本草 465"]
-  DATA --> A["穴位 408"]
+  DATA --> A["穴位 401"]
   DATA --> M["医案 1257"]
   DATA --> C["经典索引 1728 条"]
   ENG --> F

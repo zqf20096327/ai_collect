@@ -7,7 +7,8 @@ map yourself.
 
 The panel shows a compact label for the active vendor (e.g. `42% · 3h12m`),
 colored by severity. Click it for a popup with a section per enabled vendor;
-scroll over it to cycle between them.
+scroll over it to cycle between them. Or pin several vendors to see them side
+by side, each with its own logo and label; clicking one opens the popup on it.
 
 ![AI Usage Bar: the popup under the panel label, showing plan usage, pace and reset countdowns](https://raw.githubusercontent.com/wilfison/ai-usagebar/main/screenshots/popup.png)
 
@@ -54,22 +55,35 @@ extensions.gnome.org.
 Open preferences with the gear button in the popup footer, or
 `gnome-extensions prefs ai-usagebar@wilfison`. The sidebar has two sections:
 
-- **General**: *Panel* (position, label format and pace arrows), *Popup* (extra rows, pace
+- **General**: *Panel* (position, label format, pace arrows and the vendors pinned to the panel), *Popup* (extra rows, pace
   marker, the `Super+U` shortcut), *Display* (primary vendor, vendor logos,
   severity colors) and *Behavior* (refresh interval, notifications, update check, reset all).
 - **Vendors**: one page per vendor: enable it and set its credentials.
 
 ![The preferences window with its sidebar](https://raw.githubusercontent.com/wilfison/ai-usagebar/main/screenshots/preferences.png)
 
-Only the active vendor is polled, every 300 s at the least (the endpoints
-rate-limit below that); the others refresh when you scroll to them or press
-"Refresh all".
+Only the vendors on the panel are polled, every 300 s at the least (the
+endpoints rate-limit below that): the active one, or every pinned vendor plus
+the active one. The others refresh when you scroll to them or press "Refresh
+all".
+
+### Several vendors on the panel
+
+Under *Panel* → *Vendors on the panel*, switch on the vendors to pin. Each one
+gets a segment (its logo, or its short code with logos off, then its label) in
+the fixed vendor order, all filled from the same `bar-format`. Clicking a
+segment opens the popup on that vendor; `Super+U` opens it on the last one.
+While any pinned vendor is enabled, scrolling over the panel does nothing; with
+none, the panel goes back to one vendor and scrolling cycles them. A segment
+reads `…` while loading and `⚠` on an error, without touching the others. In
+the center area extra segments move the clock off center; a shorter format
+such as `{session_pct}%`, or the right area, keeps the bar compact.
 
 ### Label placeholders
 
 The panel label (`bar-format`, default `{session_pct}% · {session_reset}`) and
 the optional popup rows (`tooltip-format`) substitute `{token}` placeholders
-from the active vendor. An unknown token is left as is; a window the vendor did
+from the vendor being shown (each pinned vendor fills its own segment). An unknown token is left as is; a window the vendor did
 not report resolves to an empty string.
 
 Every vendor provides `{icon}`, `{vendor_short}`, `{plan}`, `{session_pct}`,
@@ -78,8 +92,9 @@ Every vendor provides `{icon}`, `{vendor_short}`, `{plan}`, `{session_pct}`,
 the share of the window that has passed. Vendors with a reset instant also give
 `{session_pace}` and `{weekly_pace}` (`↑` ahead of pace, `→` on track, `↓`
 under); **Pace arrows** under *Panel* appends the session arrow to the label
-without editing the format. OpenRouter and DeepSeek have no usage windows, so there the `session_` /
-`weekly_` tokens hold the consumed share (OpenRouter) or `0`.
+without editing the format. OpenRouter and DeepSeek have no usage windows, so there `{session_pct}` /
+`{weekly_pct}` hold the consumed share (OpenRouter) or `0`, the `*_reset` tokens
+are `-` and the `*_elapsed` ones `0`.
 
 <details>
 <summary>Vendor-specific tokens</summary>
@@ -204,8 +219,10 @@ sudo apt install gjs libglib2.0-bin gettext gir1.2-soup-3.0 mutter-dev-bin
 sudo pacman -S gjs glib2-devel gnome-shell gettext libsoup3 mutter
 ```
 
-Architecture, conventions and the testing policy are in
-[`CLAUDE.md`](CLAUDE.md). Issues and pull requests are welcome.
+How the extension is built (architecture, features, vendors, testing, i18n
+and release) is documented in [`docs/`](docs/index.md); the short version for
+contributors and coding agents is [`CLAUDE.md`](CLAUDE.md). Issues and pull
+requests are welcome.
 
 ## Credits & license
 

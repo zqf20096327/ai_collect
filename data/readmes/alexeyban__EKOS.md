@@ -1088,7 +1088,8 @@ ekos signoff approve pii --digest <digest>
 ```
 
 A sign-off is valid only while the facts it covered are unchanged; after a compile that changes one, `signoff show`
-says **stale** and names the items added, removed or changed. Row and null counts are shown but not signed, so a fresh
+says **stale** and names the items added, removed or changed; `ekos review show <subject> --changed` lists just those
+items, so a re-review starts from the delta. Row and null counts are shown but not signed, so a fresh
 profile alone does not invalidate anything. Decisions and sign-offs are human-only: no MCP tool can make them.
 
 `ekos workflow status [--json]` is the step bar of the seven-step operator workflow (analyse, documentation, review
@@ -1227,6 +1228,9 @@ and against the dialect's rules:
 | `=` on a list column | needs `LIKE` |
 | NULLs first under `ORDER BY … LIMIT` | — |
 | Date literals | in another format |
+| A join that multiplies rows (L002) | also through a function: `DATE_TRUNC('month', a.m) = DATE_TRUNC('month', b.m)` |
+| A constant under a column's name (L013) | `'Unknown' AS customer`: a made-up value where the data is expected |
+| Text where a date is needed (L014) | `DATE_TRUNC('year', '2026-01-01')` — write `DATE '…'` or `CURRENT_DATE` |
 
 Every SQL dialect plugin (sqlite, postgres, mysql, mssql, snowflake, databricks, clickhouse,
 trino, oracle) states these rules and its own notes for writing SQL.
@@ -1580,11 +1584,4 @@ EKOS compiled nothing from is a coverage gap (info), not an error.
 ekos check refs                                  # metrics + findings, most severe first
 ekos check refs --scope cross-system --fail-on error --format sarif > xref.sarif   # CI / code scanning
 ekos check refs --format json > baseline.json    # later: --baseline baseline.json shows only new ones
-ekos check refs --baseline 2026-10-01T00:00:00Z  # or new since a ledger time
-```
-
-`ekos commit` writes the same report to `<state>/integrity/current.json` (never to the ledger).
-`[xref]` sets `min-confidence` and per-kind severities; `<state>/xref-ignore.toml` suppresses by
-`fingerprint`, `target` or `source` glob, and every rule must carry a `reason`. On LedgerSMB (1,366
-references) it reports 2 errors, both real: `budget__reject` deletes from `budget_to_project` and
-`budget_to_department`, which no file crea
+ekos check refs --baseline 2026-10-01T00:00:00Z  # or new since a le

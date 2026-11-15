@@ -63,13 +63,13 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 
 - [Classification & Routing](categories/classification-routing.md) — 78 entries
 - [Adaptive & Realtime UI](categories/adaptive-realtime-ui.md) — 13 entries
-- [Verification & Guardrails](categories/verification-guardrails.md) — 65 entries
+- [Verification & Guardrails](categories/verification-guardrails.md) — 66 entries
 - [Scoring & Ranking](categories/scoring-ranking.md) — 44 entries
 - [Agent Decisions](categories/agent-decisions.md) — 69 entries
 - [Data Labeling & Curation](categories/data-labeling-curation.md) — 12 entries
-- [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 51 entries
+- [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 52 entries
 - [Calibration & Research](categories/calibration-research.md) — 59 entries
-- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 132 entries
+- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 133 entries
 - [Game & Simulation](categories/game-simulation.md) — 29 entries
 - [Robotics & Physical](categories/robotics-physical.md) — 11 entries
 - [Finance & Trading](categories/finance-trading.md) — 11 entries
@@ -286,6 +286,7 @@ Source file: [`categories/verification-guardrails.md`](categories/verification-g
 - [VerdictAD](https://github.com/sgstq0811/VerdictAD-Jev-AD) ![stars](https://img.shields.io/github/stars/sgstq0811/VerdictAD-Jev-AD?style=flat-square&label=%E2%98%85) - Industrial inspection: a training-free layer from the paper [VerdictAD](https://arxiv.org/abs/2611.02654) that asks the open Jev-style model Clef-Flash 9B `Noul` questions on whether a query image and each of its local windows show a defect against a few normal references, then multiplies the probabilities into an existing detector's image score and anomaly map, raising 4-shot Image AUROC for PatchCore, DINOv2-L, AnomalyDINO and SubspaceAD on MVTec AD, VisA and MVTec LOCO AD (68.7 to 77.5 on MVTec LOCO AD with DINOv2-L).
 - [OnlyRead](https://github.com/onlyreadai/onlyread) ![type: extension](https://img.shields.io/badge/type-extension-4B5563?style=flat-square) ![stars](https://img.shields.io/github/stars/onlyreadai/onlyread?style=flat-square&label=%E2%98%85) - Browser agent security: asks Jev one `Noul` per request an AI agent's browser sends to a guarded site (does it create, modify or delete data?), lets clear reads through, refuses clear writes, and sends the uncertain band to a review model, refusing anything still unsure.
 - [SystemOne gate](https://github.com/talalkashar/systemone) ![stars](https://img.shields.io/github/stars/talalkashar/systemone?style=flat-square&label=%E2%98%85) - Pre-execution gate: any agent can be the brain, and SystemOne checks its decision before a computer-use program is allowed to run, with mock answers documented explicitly as fixed wiring rather than a model or a judgment.
+- [jevban](https://github.com/FMXExpress/JevBan) ![stars](https://img.shields.io/github/stars/FMXExpress/JevBan?style=flat-square&label=%E2%98%85) - Security: reads web server access logs, spots clients probing for holes, asks a decision model whether each one is really attacking, and bans the ones it convicts - fail2ban with a judge, written in Pascal.
 
 ### Scoring & Ranking
 
@@ -342,5 +343,4 @@ Source file: [`categories/agent-decisions.md`](categories/agent-decisions.md)
 
 - [Learn Jev end to end](https://github.com/harshithsunku/learn-jev-end-to-end) ![stars](https://img.shields.io/github/stars/harshithsunku/learn-jev-end-to-end?style=flat-square&label=%E2%98%85) - Developer education: a 12-notebook Python course whose hand-rolled agent loop asks Jev a `Choice` (allow / ask / block) with `Noul` irreversibility and exfiltration checks before every tool call, sends ask verdicts to a human and fails closed on errors, and adds a `Choice` model router with a confidence fallback and a `Noul` "am I done?" gate, each measured against labeled fixtures.
 - [Hermes JIT Context OS](https://github.com/wojciechwiesner/jit-context) ![stars](https://img.shields.io/github/stars/wojciechwiesner/jit-context?style=flat-square&label=%E2%98%85) - Coding agents: uses Jev as a sub-millisecond System 1 Epistemic Gate and Domain Router to score AST relevance, test proofs, and tool targets, cutting autonomous agent turns by 31.3% and blind file exploration by 52.6% on SWE-bench with fail-open circuit-breaker resilience.
-- [Jev by Example](https://github.com/ReallyArtificial/jev-by-example) ![stars](https://img.shields.io/github/stars/ReallyArtificial/jev-by-example?style=flat-square&label=%E2%98%85) - Agent development: runnable JavaScript lessons use Jev Choice, Score, and Noul judgments for memory reconciliation, recovery proposals, and handoff checks, with explicit application policies, offline fixtures, and opt-in live calls.
-- [jev-social](https://github.com/socai-io/jev-social) ![stars](https://img.shields.io/github/stars/socai-io/jev-soci
+- [Jev by Example](https://github.com/ReallyArtificial/jev-by-example) ![stars](https://img.shields.io/github/stars/ReallyArtificial/jev-by-example?style=flat-square&label=%E2%98%

@@ -81,7 +81,7 @@ OpenRouter and more. Keys go into the system's credential store, never into a se
 
 Every feature is a command, and the commands are an MCP server: *Help › Copy MCP registration* (or, for Claude
 Desktop, the `.mcpb` file of every release, installed with one click), and Claude Code, Claude Desktop or any other
-MCP client gets 119 tools to open, select, generate, match and export, in the same window and with the same undo. (A built-in chat assistant on your own key is there too; see [The assistant](#the-assistant).)
+MCP client gets 122 tools to open, select, generate, match and export, in the same window and with the same undo. (A built-in chat assistant on your own key is there too; see [The assistant](#the-assistant).)
 
 ### Made for real files
 
@@ -214,7 +214,7 @@ routes, the assistant's model calls, the portable zip on a second PC, or the Lin
   document: it selects, limits filter layers, and drives lens blur, haze and Relight.
 - Models: FLUX 3 Image, FLUX.2 (max, pro, flex, klein) and FLUX.1 Fill from Black Forest Labs; GPT Image 2.6 and 2.5
   Flare / Sunburst and GPT Image 2; Nano Banana 2.1, 2, 2 Lite and Pro; Seedream 5.5 (on WaveSpeedAI, Comfy Cloud,
-  ToAPIs, Comfy Router and Oxen.ai, and on BytePlus ModelArk in early access; not run live yet), 5 and 4.5; Qwen Image Edit and Qwen Image 2.1;
+  ToAPIs, Comfy Router, Oxen.ai and OpenRouter, and on BytePlus ModelArk in early access; not run live yet), 5 and 4.5; Qwen Image Edit and Qwen Image 2.1;
   Ideogram 4 and 4.5; Grok Imagine, Krea 3 Edit and Krea 2, Recraft V4, Reve, Z-Image, HY Image 3.5, P-H3-Image and MiniMax-H3-Image (on MiniMax's own API, not run live yet); Magnific's Mystic, Ideogram
   inpainting and Image Expand outpainting. Each runs on the model's own API where Scumble
   has one, or through ToAPIs, fal.ai, Replicate, WaveSpeedAI, Comfy Cloud, Comfy Router, OpenRouter, Oxen.ai and
@@ -330,7 +330,7 @@ and what it costs: [docs/ASSISTANT.md](docs/ASSISTANT.md).
   in workers. PNGs beyond the browser's canvas limit (up to 65,535 px a side, about a gigapixel) open and save in
   strips.
 - JavaScript plugins (filters with GPU and processor paths, panels, menu actions, tools, commands) and a command core
-  with 119 documented commands, 99 core and 20 from the built-in plugins ([docs/COMMANDS.md](docs/COMMANDS.md),
+  with 122 documented commands, 102 core and 20 from the built-in plugins ([docs/COMMANDS.md](docs/COMMANDS.md),
   [docs/PLUGINS.md](docs/PLUGINS.md)).
 - MCP server for any MCP client (an `.mcpb` bundle for Claude Desktop with every release), plus `--headless`,
   `--cmd` for scripts and `--run` for batches: a list of commands in one call, once per file of a folder

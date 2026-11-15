@@ -17,6 +17,8 @@ NInfer 推理 · KVMem 分层 KV · MTP3 推测解码 · dsh Agent 工作台
 
 > **逻辑上下文 256K，不代表每一步都读取全部历史。** 长历史由 KVMem 存在 Host RAM，按检索结果调入 GPU；这减少了重复预填充，但不等于已完成满 256K 验收，也不保证每个任务都更快。
 
+> **需要双并发（2 路）？** 使用 [`kvmem-dual-lane`](https://github.com/CSUNX233/Sparkle-Qwen27b-Kvmem-ninfer/tree/kvmem-dual-lane) 分支；`main` 保持单路日常版，分支未合并。该分支是受控试用候选，需显式设置 `NINFER_KV_COMPACT=1`；12GB 已验证双路 40K×2 + MTP3 eager（131K context / 32K pool），完整 16GB 预算与双路 MTP+Graph 尚未验收。预编译 v6 引擎：[下载](https://github.com/CSUNX233/Sparkle-Qwen27b-Kvmem-ninfer/releases/download/kvmem-dual-lane-v6/ninfer-dual-lane-v6-win-x64-sm120a.exe)（SHA-256 `14e97b700b25957d3caf636bc48a43f7b399fce8f9cec1f4550ecd4a1adc8ce9`）；源码构建与限制见分支内 [双路交接](https://github.com/CSUNX233/Sparkle-Qwen27b-Kvmem-ninfer/blob/kvmem-dual-lane/docs/KVMEM_DUAL_LANE_HANDOFF.md)。
+
 ## 30 秒了解
 
 | 问题 | 回答 |
@@ -33,7 +35,7 @@ NInfer 推理 · KVMem 分层 KV · MTP3 推测解码 · dsh Agent 工作台
 
 ## v1.2.0 更新
 
-**2026-11-14 后续源码更新（尚未发行新 Release）：** 本地模型自动压缩异常时停止当前轮并保留历史，避免继续发送未压缩的大请求；状态卡改为合并工具结果，成功编辑累计8次才注入一张，重复失败去重，普通读取/成功命令不再定时弹卡。28项隔离测试通过，尚未完成故障电脑真实长任务复测，不宣称所有循环已解决。[改动与验证范围](docs/DSH_COMPACTION_CANDIDATE_20261114.md)。本轮无需更换引擎附件；需更新安装中的 DSH 模块与补丁，单独替换 exe 不会生效。
+**2026-11-15 后续源码修正（尚未发行新 Release）：** 撤除状态卡、任务账本、待办收尾及截图续作的重复用户消息注入，禁用原生重复调用提醒；旧状态卡开关不再生效。保留压缩失败停止保护、正常工具结果和执行校验。首次消息顺序修复仅保留为候选，默认关闭：虽已确认检索查询改为真实任务，尚无充分证据支持替换日常。49项确定性检查通过，长测报告保留。[结果与日常建议](docs/DSH_QUERY_ORIGIN_20261115.md) · [现有安装迁移](integrations/README.md)。这些 DSH 修正无需更换引擎附件，单独替换 exe 不会生效。
 
 - **图片分块修复**：CPU/host-staged 视觉与 MTP 同时启用时，图片首个视觉 token 正好位于预填充分块边界，旧引擎可能产生 `scatter` 形状错误；修复后真实模型边界请求通过，最坏情况暂存规划不增加。
 - **压缩恢复**：本地模型摘要首次达到输出上限时，仅对这次摘要以 low 思考强度重试一次。重试不完整时保留原历史并停止当前轮；日常对话思考强度不变。
@@ -90,7 +92,7 @@ scatter: expected src [D,V], indices [V], dst [D,T]
 
 - 源码标签：`v1.1.0`。
 - 引擎附件：[`ninfer-5070ti-win-x64-sm120a-v1.1.0.zip`](https://github.com/CSUNX233/Sparkle-Qwen27b-Kvmem-ninfer/releases/download/v1.1.0/ninfer-5070ti-win-x64-sm120a-v1.1.0.zip)；压缩包 SHA-256 `daa2a6c5ab0c6a1715d839fcaf3ee4954c6c19d2641f9ee9aec6de083a3bae4a`，内含引擎 `8b2c195e…`。
-- dsh 单独包：[`dsh-state-card-v1.1.0.zip`](https://github.com/CSUNX233/Sparkle-Qwen27b-Kvmem-ninfer/releases/download/v1.1.0/dsh-state-card-v1.1.0.zip)，SHA-256 `cf37d659dd7439841dda362c0c341ff04377655592e822cadc524f3fd8bf2ab1`；含 state-card v0.1.2、单测和手动 profile 片段；源码安装器已默认接入。
+- dsh 单独包：[`dsh-state-card-v1.1.0.zip`](https://github.com/CSUNX233/Sparkle-Qwen27b-Kvmem-ninfer/releases/download/v1.1.0/dsh-state-card-v1.1.0.zip)，SHA-256 `cf37d659dd7439841dda362c0c341ff04377655592e822cadc524f3fd8bf2ab1`；这是历史附件，状态卡现已撤除，不建议重新安装。迁移见 [DSH 接入说明](integrations/README.md)。
 - 上一版回退：v1.0.0 引擎 `71259a21f7b525ca7477193a292e4d3623cc58b9efd785005ee934cc29673507`；v0.1.5 引擎 `38bc4d8c6be07afd6c74b902cc33403bf2ee139a2c50129d363d68d74a7609d6`。
 - 只 `git pull` 不会替换旧 exe；升级已有安装需重新执行 `setup.ps1`。引擎仍显示 1.0.0 底座版本号，请以 SHA-256 和标签识别。
 

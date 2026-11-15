@@ -23,9 +23,12 @@ Video Rebirth publishes 99 s for the official `Q4_K_M` GGUF setup on an RTX 5090
 
 - **HyperFlow INT8 Loader**, a ComfyUI node that runs both HyperFlow checkpoints: `fl2va` (text, first frame, first
   and last frame) and `ref2va` (reference images).
-- **The converted INT8 checkpoints** on [Hugging Face](https://huggingface.co/BennyDaBall/HyperFlow-H3-Flash-INT8-ComfyUI), ready for `ComfyUI/models/diffusion_models/`.
-- **Five ready-to-run workflows** in `example_workflows/`, also under **Workflow > Browse Templates**: text to video,
-  text to video with sparse attention, first frame, first and last frame, and reference to video.
+- **The INT8 checkpoints** on [Hugging Face](https://huggingface.co/BennyDaBall/HyperFlow-H3-Flash-INT8-ComfyUI), ready for `ComfyUI/models/diffusion_models/`.
+- **HyperFlow LoRA**, a node that makes regular MiniMax H3 LoRAs work on HyperFlow H3 Flash models (see
+  [LoRAs](#loras)).
+- **Six ready-to-run workflows** in `example_workflows/`, also under **Workflow > Browse Templates**: text to video,
+  text to video with sparse attention, text to video with a LoRA, first frame, first and last frame, and reference
+  to video.
 
 
 ## Quick start
@@ -114,6 +117,7 @@ after a git clone). The templates are the official HyperFlow templates with the 
 |---|---|---|
 | `hyperflow_int8_t2v` | text to video | `fl2va` |
 | `hyperflow_int8_t2v_sparse` | text to video with ComfyUI's *Model Sparse Attention* node | `fl2va` |
+| `hyperflow_int8_t2v_lora` | text to video with a MiniMax H3 LoRA (**HyperFlow LoRA** node) | `fl2va` |
 | `hyperflow_int8_i2v` | first frame to video | `fl2va` |
 | `hyperflow_int8_flf2v` | first and last frame to video | `fl2va` |
 | `hyperflow_int8_ref2v` | reference images to video | `ref2va` |
@@ -148,15 +152,43 @@ To switch an existing API-format graph to this loader, replace its model loader 
 method `sol-attn`, tau 1.25, start_percent 0.39, end_percent 1.0, dense blocks `0, 1, 45, 46`. Bypass the node
 (Ctrl+B) to run dense attention.
 
+### LoRAs
+
+HyperFlow H3 Flash is a pruned MiniMax H3: `fl2va` leaves out source blocks 6, 21 and 22 and renumbers the other 47,
+`ref2va` leaves out block 9, and part of the kept layers are stored as low-rank pairs. A LoRA trained on the full
+MiniMax H3 addresses blocks by their original number, so with a stock LoRA loader most of it lands on the wrong block
+and the low-rank layers are skipped. ComfyUI only prints `lora key not loaded` warnings.
+
+**HyperFlow LoRA** (`HyperFlowLoraBypass`) goes between the model loader and the guider:
+
+- It renumbers the LoRA's blocks to the model's kept blocks. The dropped blocks' parts of the LoRA are left out.
+- It adds the LoRA at run time (ComfyUI's bypass mode), so the INT8 weights are not rewritten and the low-rank layers
+  get their LoRA part too.
+- It reads both common key styles (`diffusion_model.blocks.N...` and kohya `lora_unet_blocks_N_...`).
+
+| Input | Values | Notes |
+|---|---|---|
+| `lora_name` | a file in `ComfyUI/models/loras/` | a LoRA trained on the full MiniMax H3 video model |
+| `strength_model` | 1.0 by default | |
+| `dropped_blocks` | `auto` (default) or a list such as `6, 21, 22` | `auto` picks the list from the model's block count |
+| `source_blocks` | 50 | blocks of the model the LoRA was trained on |
+
+It works on any HyperFlow H3 Flash model that the **HyperFlow INT8 Loader** or the official **HyperFlow Loader**
+gives it. Tested with INT8 safetensors files of both variants and an NVFP4 file; not tested with the GGUF files. A LoRA made
+for the full model is not guaranteed to look the same on the distilled one, and the dropped blocks' share of it is
+lost. Chain several HyperFlow LoRA nodes for several LoRAs.
+
 ## How it works
 
 HyperFlow H3 Flash ships its own INT8 transformers (`fl2va_int8_convrot/` and `ref2va_int8_convrot/` in
 [VideoRebirthAI/hyperflow-h3-flash](https://huggingface.co/VideoRebirthAI/hyperflow-h3-flash)). They are W8A8 with a
-rotated input, the same scheme as ComfyUI's native `int8_tensorwise` + `convrot`. This pack converts them once to
-ComfyUI's MiniMax-H3 layout, copying the INT8 codes and scales bit for bit, and loads the result on ComfyUI's own
-INT8 kernels.
+rotated input, the same scheme as ComfyUI's native `int8_tensorwise` + `convrot`. This pack loads files in ComfyUI's
+MiniMax-H3 layout with that scheme on ComfyUI's own INT8 kernels. The first release of the checkpoints copied Video
+Rebirth's INT8 codes and scales bit for bit. Since 2026-11-15 they carry my own lower-error INT8 solve, made from the
+BF16 release, in the same layout and format.
 
-The pack is the `HyperFlow INT8 Loader` node (`loader.py`) and five workflow templates in `example_workflows/`.
+The pack is the `HyperFlow INT8 Loader` node (`loader.py`), the `HyperFlow LoRA` node (`lora.py`) and six workflow
+templates in `example_workflows/`.
 
 | Piece | Source |
 |---|---|
@@ -164,7 +196,8 @@ The pack is the `HyperFlow INT8 Loader` node (`loader.py`) and five workflow tem
 | Low-rank linears, split q/k/v, SwiGLU MLP for low-rank blocks, two-time (t, r) embedder | Official `ComfyUI-HyperFlow-Flash/model_patch.py`, imported unchanged |
 | 4, 6 or 8-step schedule | Official `HyperFlow Sigmas` node |
 | `HyperFlow INT8 Loader` node | This pack (`loader.py`) |
-| The converted checkpoints | [Hugging Face](https://huggingface.co/BennyDaBall/HyperFlow-H3-Flash-INT8-ComfyUI), converted once from Video Rebirth's INT8 files |
+| `HyperFlow LoRA` node | This pack (`lora.py`), on ComfyUI's bypass LoRA hook, unchanged |
+| The checkpoints | [Hugging Face](https://huggingface.co/BennyDaBall/HyperFlow-H3-Flash-INT8-ComfyUI): my own INT8 solve from Video Rebirth's BF16 release, in this layout |
 
 The stock MiniMax-H3 forward has no input for HyperFlow's step endpoint `r`, so the stock `UNETLoader` cannot run
 these checkpoints on its own.
@@ -184,11 +217,13 @@ Per token, the block linears cost 11.6 G INT8 MACs plus 1.3 G (`fl2va`) or 1.5 G
 
 ### The checkpoints
 
-The files on Hugging Face are Video Rebirth's own INT8 checkpoints in ComfyUI's layout. The INT8 codes and scales
-are copied bit for bit, so nothing is requantized: tensors are renamed, the dropped blocks are left out, q/k/v are
-fused and the low-rank factors stay bf16. Every INT8 module and low-rank pair is bit-identical to the source, and
-every unquantized tensor is bit-exact against the official Q8_0 GGUF; the
-[model page](https://huggingface.co/BennyDaBall/HyperFlow-H3-Flash-INT8-ComfyUI#receipts) has the full receipts.
+The files on Hugging Face use Video Rebirth's INT8 layout carried to ComfyUI: tensors are renamed, the dropped
+blocks are left out, q/k/v are fused and the low-rank factors stay bf16. Since 2026-11-15 the INT8 codes and row
+scales of the 120 dense block matrices are my own solve from the BF16 release: closer to BF16 than the official INT8,
+at the same size and speed. Every low-rank pair is bit-identical to the source and every unquantized tensor is
+bit-exact against the official Q8_0 GGUF; the
+[model page](https://huggingface.co/BennyDaBall/HyperFlow-H3-Flash-INT8-ComfyUI#receipts) has the numbers and the
+receipts. The loader and the workflows run the first release and the updated files alike.
 
 ## Credits
 

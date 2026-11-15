@@ -53,13 +53,12 @@ Legend: ✅ yes, ◐ partial, ❌ no, ? not stated by the vendor.
 | | remove-your-data | [DeleteMe](https://joindeleteme.com/pricing/) | [Incogni](https://incogni.com/pricing) | [Optery](https://www.optery.com/pricing/) | [Kanary](https://www.kanary.com/pricing-individual) | [Aura](https://www.aura.com/pricing)¹ | [Privacy Bee](https://privacybee.com/pricing/) | [EasyOptOuts](https://easyoptouts.com/pricing) |
 |---|---|---|---|---|---|---|---|---|
 | Cheapest annual plan | **$0** | $129 | $95.88 | $39 | $250 | $144 | about $8/mo, billed yearly² | $19.99 |
-| Per month, billed annually | **$0** | $10.75 | $7.99 | $3.25 | $20.83 | $12 | about $8 | $1.67 |
 | Monthly plan | n/a | no³ | $15.98 | $3.99 | $25 | $15 | not shown | none listed |
 | Open source, you can read every request it sends | ✅ | ❌⁴ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Your data stays on your own machine (local SQLite log) | ✅⁵ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Files from your own email and handles the back-and-forth | ✅ | ❌⁶ | ❌⁶ | ❌⁶ | ?⁶ | ❌⁶ | ❌⁶ | ◐⁶ |
 | State privacy-law requests with tracked legal deadlines | ✅ | ? | ◐⁷ | ◐⁷ | ◐⁷ | ? | ◐⁷ | ? |
-| California DROP | ◐⁸ | ❌ | ? | ❌ | ? | ? | ? | ? |
+| California DROP | ✅⁸ | ❌ | ? | ❌ | ? | ? | ? | ? |
 | Household or family members | ✅ free | ◐⁹ | ◐⁹ | ◐⁹ | ◐⁹ | ◐⁹ | ◐⁹ | ❌ |
 | Follow-up on stale requests | ✅ | ✅ | ✅ | ◐ | ✅ | ✅ | ✅ | ? |
 | Phone-call escalation | ✅ on hosts that can call¹⁰ | ? | ? | ? | ? | ? | ? | ? |
@@ -68,7 +67,6 @@ Legend: ✅ yes, ◐ partial, ❌ no, ? not stated by the vendor.
 | Recurring re-scans | ◐¹³ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Works inside the AI you already use (Grok Bot, Claude, Codex, Cursor) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Brokers covered (advertised) | any site the agent can reach¹⁴ | not stated | 420+ | 375+ to 620+ | highest-traffic sites | 425+ | 597 (people search) | 200+ |
-| Hands-off, with human support | ❌ | ✅ | ✅ | ✅¹⁵ | ✅ | ✅ | ✅ | ? |
 
 Where paid services win: you do nothing after signup, a person answers when something breaks, and the broker lists are large and maintained for you. Where this project differs: it is free, you can read the code and every request, the log stays on your machine, and it can work through the replies using your own inbox.
 
@@ -81,14 +79,13 @@ Where paid services win: you do nothing after signup, a person answers when some
 5. The agent host and the AI model you use will see what you tell the agent. The SQLite log and evidence files stay on your disk.
 6. Per their own terms and help pages, DeleteMe, Incogni, Optery, Aura, and Privacy Bee act as your authorized agent and use their own or a proxy mailbox (Optery says it always uses disposable addresses and never your email). Brokers can still email you to confirm. Kanary does not say whose mailbox it uses. EasyOptOuts puts your contact email on its requests, is fully automated, and does not say how it handles replies.
 7. These services send state-law or regulator-backed requests as your agent (Optery lists 16 states; Kanary lists regulator and attorney general escalation). None of them says it shows you statutory deadline clocks.
-8. The agent walks you through DROP and logs it. You complete the California identity check yourself. DeleteMe and Optery describe DROP as something to use alongside their service.
+8. The agent walks you through DROP, fills in what it can, and logs the result. One manual step: California requires you to complete its identity check yourself. DeleteMe and Optery describe DROP as something to use alongside their service.
 9. Paid family or multi-person plans cost extra. Examples: DeleteMe 2 people $229/yr, Incogni Family $191.88/yr, Kanary 50% off each added family member.
 10. This depends on the host. The repo itself places no calls; a host such as Grok Bot can, if you tell it to.
 11. Custom removals usually need a higher tier or have a yearly limit (Incogni Unlimited, Optery Ultimate, Kanary Advanced, Privacy Bee Pro, DeleteMe's yearly custom allowance).
 12. Optional and watch-only. Needs a free SerpApi key. See the next section.
 13. Re-scans run when you run the agent, or on a schedule if your host has a scheduler.
 14. This project does not keep a fixed broker count. It covers what the agent can find and file, plus the broker playbook in [`references/brokers.md`](references/brokers.md). Advertised counts from paid services are not directly comparable to that.
-15. Optery's lowest paid plan is fully automated with no human agent; human agents start on its higher plans.
 
 Price sources, all checked Nov 14, 2026: [DeleteMe](https://help.joindeleteme.com/hc/en-us/articles/26605377008531-How-much-does-a-DeleteMe-Subscription-cost), [Incogni](https://incogni.com/pricing), [Optery](https://www.optery.com/pricing/), [Kanary](https://www.kanary.com/blog/2026-product-brief), [Aura](https://www.aura.com/pricing), [Privacy Bee](https://privacybee.com/pricing/), [EasyOptOuts](https://easyoptouts.com/pricing). Prices and plans change; check the vendor before you buy. For independent results on paid services, see [Consumer Reports' 2024 study](https://www.consumerreports.org/electronics/personal-information/services-that-delete-data-from-people-search-sites-review-a2705843415/).
 

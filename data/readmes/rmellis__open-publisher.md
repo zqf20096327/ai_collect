@@ -18,9 +18,9 @@
 </p>
 
 <p align="center">
-  <a href="https://patreon.com/OpenPublisher"><img src="https://openpublisher.app/ui/icons/patreon.png?v=5.20.5" alt="Support on Patreon" height="28"/></a>
+  <a href="https://patreon.com/OpenPublisher"><img src="https://openpublisher.app/ui/icons/patreon.png?v=5.21.0" alt="Support on Patreon" height="28"/></a>
   &nbsp;
-  <a href="https://www.facebook.com/people/OpenPublisher-Free-Desktop-Publishing/61595980781121/"><img src="https://openpublisher.app/ui/icons/facebook.png?v=5.20.5" alt="Facebook Page" height="28"/></a>
+  <a href="https://www.facebook.com/people/OpenPublisher-Free-Desktop-Publishing/61595980781121/"><img src="https://openpublisher.app/ui/icons/facebook.png?v=5.21.0" alt="Facebook Page" height="28"/></a>
 </p>
 
 ---
@@ -64,8 +64,10 @@ Open Publisher is a WYSIWYG (What You See Is What You Get) desktop publishing ap
 <tr>
   <td align="center" valign="top">
     <img src="https://download.openpublisher.app/images/icon_windows_installer.png" width="48" height="48" alt="Windows"/><br/>
-    <a href="https://github.com/rmellis/open-publisher/releases/download/5.1.4/openpublisher5_amd64-windows.exe"><strong>Installer (.exe)</strong></a><br/>
-    <a href="https://github.com/rmellis/open-publisher/releases/download/5.1.4/openpublisher5_amd64-windows-portable.exe">Portable (.zip)</a><br/>
+    <a href="https://github.com/rmellis/open-publisher/releases/download/5.20.8/openpublisher5g_amd64-windows.exe"><strong>Gecko Edition (.exe)</strong></a><br/>
+    <sub>5.20.8 · 79 MB · Portable coming soon</sub><br/>
+    <a href="https://github.com/rmellis/open-publisher/releases/download/5.1.4/openpublisher5_amd64-windows.exe"><strong>NW.js Installer (.exe)</strong></a><br/>
+    <a href="https://github.com/rmellis/open-publisher/releases/download/5.1.4/openpublisher5_amd64-windows-portable.exe">NW.js Portable (.zip)</a><br/>
     <a href="https://github.com/rmellis/open-publisher/releases/download/5.8.0/OpenPublisher5-i386-windowsXP.exe"><strong>Windows XP</strong> (.exe)</a>
   </td>
   <td align="center" valign="top">
@@ -100,6 +102,8 @@ Open Publisher is a WYSIWYG (What You See Is What You Get) desktop publishing ap
 > This README is a quick-reference overview. For complete, up-to-date guides packed with **step-by-step instructions, screenshots, and tutorials**, visit our interactive knowledge base:
 >
 > 🚀 **[Visit the Open Publisher Knowledge Base (kb.openpublisher.app)](https://kb.openpublisher.app)**
+>
+> 🎬 **[Watch Video Tutorial: Creating Layered Templates with AI & Layout Tools](https://youtu.be/V4X0Q-dCXTQ)** · **[Open the Back To School Template](https://openpublisher.app/back-to-school)**
 >
 > <details>
 >   <summary><small>Looking for the legacy documentation? (PDF)</small></summary>
@@ -342,12 +346,13 @@ Version 5 is the most significant release in Open Publisher's history - a comple
 
 ### Windows
 
-Open Publisher ships in three primary distribution formats for Windows:
+Open Publisher is available in Gecko and NW.js editions for Windows, alongside a dedicated Windows XP build:
 
-- **Standard Installer (`.exe`)** - Full installer with Start Menu and Desktop shortcuts, multi-resolution 10-frame high-DPI icon embedding (up to 256x256), and `.opub` registry file association.
-- **Portable Version (`.exe`)** - Self-contained zero-install executable. Ideal for USB drives, restricted workstations, or running without administrator rights.
+- **Gecko Edition Installer (`openpublisher5g_amd64-windows.exe` - v5.20.8)** - New chromeless Firefox 115.21.0esr (Gecko x64) runtime for Windows 7 through Windows 11. Shrinks the installer from 161 MB to 79 MB, supports clean in-place upgrades over existing NW.js installs, includes a built-in SHA-256 manifest OTA auto-updater, and resolves image-heavy zoom lag, `Ctrl+V` double-pasting, and print reliability issues. *(Gecko Portable `.exe` coming soon.)*
+- **3-Phase Windows Rollout** - Offered side-by-side with the NW.js build during Phase 1; once validated, Gecko will become the primary Windows download (Phase 2), and the NW.js edition will transition to a legacy archive release while future desktop updates focus exclusively on Gecko (Phase 3).
+- **Standard NW.js Installer (`.exe`)** - Full NW.js installer with Start Menu and Desktop shortcuts, multi-resolution 10-frame high-DPI icon embedding (up to 256x256), and `.opub` registry file association.
+- **NW.js Portable Version (`.exe`)** - Self-contained zero-install executable. Ideal for USB drives, restricted workstations, or running without administrator rights.
 - **Windows XP Client (`.exe`)** - Dedicated standalone client for Windows XP SP3, featuring a customized chromeless runtime, integrated window controls, and full native branding.
-- **OpenPublisher Lite (Gecko Runtime)** - In-progress lightweight native port optimized for multicore scaling and low-spec hardware (see [Gecko Port Progress](gekkoPortInfo.md)).
 - **Safe Mode Startup** - Launch with `--safe-mode` or `--reset` from the command line to purge cached data, reset layout bounds, and troubleshoot faulty extensions.
 - MyDockFinder native menu bar integration support.
 
@@ -813,6 +818,19 @@ The **WordArt Studio** generates styled typographic art across **214 creative st
 - **Dual 7-Node AI Infrastructure** - Backed by a 7-node layout and vector cluster (Gemini, Qwen, and GPT-OSS) alongside a separate 7-node FLUX.1 image cluster for reliable, zero-setup generation.
 - **Page Setup and Workspace Control** - Adjust paper size, orientation, margins, colour schemes, Theme Studio backgrounds, Border Art, watermarks, headers/footers, UI themes, grid/guides, colour proofing, and review tools from one prompt.
 - **Quick Access & Single-Step Undo** - Launch from **Home > AI Studio** or **Insert > AI Studio** (`AI Layout Assistant`, `AI Image`, or `AI Vector`), and revert any generation in one step with `Ctrl+Z`.
+
+### Video Tutorial: Building Layered Templates with AI & Layout Tools
+
+See how Open Publisher's in-app AI tools and precision layout/layering controls work together to create a complete layered template from scratch:
+
+<p align="center">
+  <a href="https://youtu.be/V4X0Q-dCXTQ" target="_blank" rel="noopener noreferrer">
+    <img src="https://github.com/user-attachments/assets/62386eed-6aa9-4fb3-9cec-d7b8db1fe5cd" alt="Watch Tutorial: Creating Layered Templates with Open Publisher AI Tools" width="520"/>
+  </a>
+</p>
+
+- **Watch the Tutorial**: [Create Layered Templates with Open Publisher AI & Layout Tools (YouTube)](https://youtu.be/V4X0Q-dCXTQ)
+- **Open the Finished Template Live**: [Back To School Template (openpublisher.app/back-to-school)](https://openpublisher.app/back-to-school)
 
 ---
 

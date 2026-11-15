@@ -277,7 +277,7 @@ pio run -t upload -e nrf52840-dk
 
 ## Security
 
-The device is meant for a **trusted LAN**. MCP authentication is **optional and off by default**: out of the box any host that can reach the device can use it, exactly as before. Turn it on for anything but a lab bench. There is no TLS yet (see below).
+The device is meant for a **trusted LAN**. MCP authentication is **optional and off by default**: out of the box any host that can reach the device can use it, exactly as before. Turn it on for anything but a lab bench. On the ESP32-S3 N16R8 build the MCP transports are also offered over TLS (see [TLS](#tls)); elsewhere traffic is in clear text.
 
 **Turning authentication on or off** (NVS namespace `security`, key `auth`):
 
@@ -290,7 +290,7 @@ The device is meant for a **trusted LAN**. MCP authentication is **optional and 
 
 When authentication is off every client has full control. Rate limits, the client limit and the Origin check stay active either way.
 
-**Threat model.** With authentication off, any host that can reach port 9000 could open BLE connections to nearby devices, read sensor, bus and metrics data, clear logs, and tie up the server. Turning it on stops an unauthenticated host on the network from doing any of that. It does **not** protect against someone who can sniff the traffic: the token and all data travel in clear text over `ws://`, and the OTA password over plain HTTP Basic Auth. Physical access to the USB serial console is trusted: it can show and change every secret.
+**Threat model.** With authentication off, any host that can reach port 9000 could open BLE connections to nearby devices, read sensor, bus and metrics data, clear logs, and tie up the server. Turning it on stops an unauthenticated host on the network from doing any of that. On its own it does **not** protect against someone who can sniff the traffic: over `ws://` and `http://` the token and all data travel in clear text, and the OTA password goes over plain HTTP Basic Auth. Use the TLS endpoints where available. Physical access to the USB serial console is trusted: it can show and change every secret.
 
 **MCP access tokens** (NVS namespace `security`; used only when authentication is on):
 
@@ -323,13 +323,42 @@ Tokens can also be pre-provisioned in an NVS image, like the WiFi credentials.
 | Requests per client | burst 20, then 10/s | `MCP_RATE_BURST`, `MCP_RATE_PER_SEC` | `-32021 Rate limited` with `data.retryAfterMs` |
 | Idle clients | ping every 15 s | — | Dropped after 2 missed pongs |
 
+**Port-80 HTTP endpoints.** With authentication on, the status and settings endpoints need a token too: reads accept either token, and changes need the full-control token. Without a token the response is `401`; a read-only token on a change gets `403`. See [HTTP Endpoints](#http-endpoints-port-80). The HTML pages themselves stay public (they contain no device data), and the WiFi setup page, dashboard and bus-history page ask for the token when they get a `401`. One exception: while the device has **no WiFi network saved** and serves its setup access point, everything stays open, since nobody can know the token before provisioning. A device that falls back to its access point because its saved network is unreachable still requires the token.
+
 **OTA.**
 - There is no compiled-in default password. A random per-device password is generated on first boot, and also on a device that still holds the old `admin` default. It is printed once on the serial console.
 - After 5 consecutive wrong logins **from one IP address**, that address gets `429` (with `Retry-After`) for 30 s, doubling up to 5 minutes per further failure. Other hosts are not affected, so a guessing host can't lock the owner out. Up to 32 source addresses are tracked. Beyond that, the remaining sources share one lockout, so rotating addresses doesn't buy extra guesses. The tradeoff: an attacker with more than 32 failing LAN addresses can delay OTA logins from new hosts for a few minutes. USB flashing and the serial console are never affected.
 
+### TLS
+
+The **`esp32-s3-devkitc-1-n16r8`** build (`-D MCP_TLS=1`) also serves the MCP transports over TLS on port 443:
+
+| Endpoint | Same as |
+|---|---|
+| `https://<device>/mcp` | `http://<device>/mcp`: Streamable HTTP, the same sessions and tokens |
+| `wss://<device>/ws` | `ws://<device>:9000`: the JSON-RPC WebSocket, with pushes, the same 4401/4429 close codes, `Authorization` header or `?token=` |
+
+The plain endpoints stay available. Authentication works the same on all of them.
+
+**Certificate.** On first boot, once WiFi is up, the device makes an EC P-256 key and a self-signed certificate, valid until 2049, and keeps them in NVS (namespace `tls`). It is a leaf certificate (CA:FALSE, server authentication only), so trusting it never trusts anything else. The certificate names `<hostname>.local`, `<hostname>` and the IP address the device had then. The boot log shows the names and the SHA-256 fingerprint, and so does the serial command `tls show`. `tls rotate` makes a new key and certificate (new fingerprint) on the next boot. Use it if the device gets a different IP address, or use the `.local` name instead.
+
+**Trusting it.**
+1. Download the certificate from `http://<device>/tls.pem`.
+2. Compare its fingerprint with the serial console: `openssl x509 -in tls.pem -noout -fingerprint -sha256`.
+3. Give it to the client as the only CA:
+   - `curl --cacert tls.pem https://<ip>/mcp …`
+   - Python: `ssl.create_default_context(cafile="tls.pem")`
+   - Node-based MCP clients (the Inspector, Claude Code, `mcp-remote`): `NODE_EXTRA_CA_CERTS=tls.pem`
+
+The client then checks the name too. Use the IP in the certificate or `<hostname>.local`.
+
+**Limits.**
+- Each TLS connection needs about 40 KB of buffers. mbedTLS is switched to PSRAM for this, and the server keeps at most 6 sockets.
+- A full ECDSA handshake takes about 2 s. Keep-alive connections and WebSockets pay it once.
+- `wss://` clients count toward the same 4-client WebSocket limit as `ws://:9000`.
+- There is no TLS on the other boards: there's no PSRAM, and the 4 MB boards have no flash headroom for it.
+
 **Not covered yet.**
-- **TLS.** Neither transport is encrypted: the WebSocket library has no server-side TLS on ESP32, and the HTTP server used for `/mcp` doesn't either. On the 4 MB boards there is no flash headroom for TLS at all. Use a trusted network, or a TLS-terminating proxy or VPN.
-- The other port-80 HTTP endpoints (dashboard, WiFi setup, `/bus-history`) are unauthenticated. `/mcp` requires the token when authentication is on.
 - OAuth 2.1 (MCP authorization for HTTP transports) doesn't fit on the device. `/mcp` takes the same static bearer token, which MCP clients can send as a configured `Authorization` header.
 
 ---
@@ -349,15 +378,24 @@ A browser-based dashboard is served from flash at **`http://<IP>/app`**.
 
 ## HTTP Endpoints (port 80)
 
-| Method | Path | Description |
-|---|---|---|
-| GET | `/` | WiFi setup page |
-| POST | `/save` | Save WiFi credentials (`ssid`, `password` form params) |
-| GET | `/status` | Network status JSON |
-| WS | `/ws` | Real-time network status WebSocket |
-| GET | `/app` | Browser dashboard |
-| GET | `/bus-history` | Read bus history config JSON |
-| POST | `/bus-history` | Update bus history config JSON |
+The **Auth on** column applies only when authentication is turned on (see [Security](#security)); with it off, every endpoint is open. Send `Authorization: Bearer <token>`, or `?token=` on `/ws`.
+
+| Method | Path | Description | Auth on |
+|---|---|---|---|
+| GET | `/` | WiFi setup page | public |
+| POST | `/save` | Save WiFi credentials (`ssid`, `password` form params) | full |
+| GET | `/status` | Network status JSON | read |
+| WS | `/ws` | Real-time network status WebSocket | read (`?token=`) |
+| GET | `/app` | Browser dashboard | public |
+| GET / POST | `/discovery` | Read / change mDNS and discovery settings | read / full |
+| GET | `/bus-history-config` | Bus history settings page | public |
+| GET / POST | `/bus-history` | Read / change the bus history config JSON | read / full |
+| GET | `/ota` | OTA upload page | public |
+| GET | `/ota/status` | Firmware version and update state | public |
+| GET / POST | `/ota/config` | OTA settings | OTA password (Basic) |
+| POST | `/ota/update` | Firmware upload | OTA password (Basic) |
+| POST / GET / DELETE | `/mcp` | MCP Streamable HTTP | read or full, per method |
+| GET | `/tls.pem` | The device's TLS certificate (N16R8 build; see [TLS](#tls)) | public |
 
 ---
 
@@ -369,6 +407,7 @@ All methods use **JSON-RPC 2.0**. No access token is needed unless authenticatio
 |---|---|---|
 | **Streamable HTTP** (MCP standard) | `POST http://<IP>/mcp` | Standard MCP clients: Claude Code, Claude Desktop through `mcp-remote`, the MCP Inspector, the official SDKs |
 | WebSocket (legacy) | `ws://<IP>:9000` | The web dashboard and existing WebSocket clients; supports push notifications (`resources/subscribe`) |
+| Over TLS (ESP32-S3 N16R8) | `https://<IP>/mcp`, `wss://<IP>/ws` | The same two transports, encrypted (see [TLS](#tls)) |
 
 ### Connecting an MCP client
 
@@ -734,13 +773,28 @@ The ESP32-S3 acts as a **BLE central** controlled over MCP: it captures what nea
 | **Payload registry** | Distinct payloads across *all* devices, independent of MAC — survives phones and trackers that rotate their MAC address |
 | **Capture filters** | `minRssi`, `manufacturerId`, `serviceUuid`, `macPrefix` decide what is stored, so the device of interest is not crowded out in a busy RF environment |
 | **Connect** | Asynchronous GATT connect with an enforced timeout; public, random static and resolvable private addresses (address type taken from the scan, or given explicitly); repeatable connect / disconnect / reconnect |
-| **Enumerate & read** | All primary/secondary services and characteristics with properties (up to 512 attributes); every readable value read (hex + printable text, first 64 bytes) |
+| **Enumerate & read** | All primary/secondary services and characteristics with properties (up to 512 attributes); every readable value read in full (long reads), as hex + printable text. Up to 512 bytes are kept per value with PSRAM, 128 without, and at most 32 KB (8 KB without PSRAM) over all values of the link. A longer value, or one that arrives once that total is used up, is cut and marked `truncated: true`, and `length` gives its real size |
 | **Notifications** | During enumeration: subscribes to every notify/indicate characteristic and captures the latest value within a bounded window (≤ 10 s) |
 | **Write** | `ble/write` writes a characteristic (with or without response, up to 512 bytes), addressed by handle or UUID. Needs the full-control token |
 | **Subscribe** | `ble/subscribe` enables notifications or indications on one characteristic for as long as needed (up to 8 at once). Values are pushed to WebSocket clients as `notifications/ble/value`; HTTP clients read them with `ble/notifications` (32-value queue, oldest dropped and counted) |
 | **Memory-aware limits** | Capture limits follow the boot-time memory plan: 64 devices / 48 KB with PSRAM, 24 devices / 16 KB without; least-recently-heard devices are evicted first |
 
-**Not supported (yet):** descriptor writes other than the CCCD; pairing/bonding (encrypted characteristics fail to read or write); more than one connection at a time; MTU negotiation (stored values are truncated to 64 bytes; writes are not); BLE 5 extended advertising and Coded PHY (only legacy advertising is received); and acting as a peripheral/advertiser.
+**MTU.** After connecting, the device asks for an ATT MTU of 517 and reports the negotiated value as `mtu` in `ble/connect/results`. The exchange completes a few seconds after the link opens, and the MTU is 23 until then. Writes with a response can be up to 512 bytes; longer than MTU − 3, they are sent as a long write. A write without a response must fit in MTU − 3 bytes, otherwise it gets `-32602` with `data.mtu` and `data.maxBytes`.
+
+**BLE 5 extended advertising.** The S3 builds scan with the BLE 5 extended scanner (`BLE_EXT_SCAN=1`, the default; build with `-D BLE_EXT_SCAN=0` for the legacy scanner). It listens on both the 1M and the Coded PHY and receives legacy and extended advertisements alike. A device seen with extended advertising gets `"extended": true`, plus `phy` (primary) and `secondaryPhy` (`1M`, `2M` or `coded`) in `ble/scan/results`. Extended advertising data up to 1650 bytes is reassembled; the name, services and manufacturer data are parsed from all of it, and each `payloadHistory` entry keeps the first 64 bytes. With extended scanning, connects use the extended create-connection on the 1M PHY. The controller doesn't allow legacy and extended commands to be mixed.
+
+**Pairing and bonding.** A characteristic that needs an encrypted link shows `readError` (for example `insufficient-encryption`) and `needsPairing: true` in `ble/services/results`. To read it:
+1. Call `ble/pair`, then poll `ble/pair/results` until it reports `paired`.
+2. Run `ble/services/start` again.
+
+Pairing methods:
+- **Just Works:** the default, with no parameters. The key is not authenticated.
+- **Passkey entry:** with `mitm: true`. If the peripheral displays a passkey, `ble/pair/results` reports `needs: "passkey"`; answer with `ble/pair/passkey`. Alternatively, give `passkey` to `ble/pair` up front, or use `iocap: "display"` with a `passkey` for the peripheral to type.
+- **Numeric comparison:** `results` reports `needs: "confirm"` and the `compareValue`; answer with `ble/pair/confirm`.
+
+Bonds are stored in NVS and survive reboots. On a later connection, `ble/pair` re-encrypts with the stored key, with no new pairing (`existingBond: true`). `ble/bonds/list` shows the bonds and `ble/bonds/clear` removes one or all. If you clear a bond here, also remove it on the peripheral. A peripheral that still holds an old bond asks for security when the link opens, and that pairing fails until it forgets the bond.
+
+**Not supported (yet):** descriptor writes other than the CCCD; more than one connection at a time; and acting as a peripheral/advertiser.
 
 **Verified on hardware** (ESP32-S3-DevKitC-1 N16R8) against an nRF52840 peripheral (random static address), an Android phone (rotating random address) and a BlueZ peripheral (public address): connect median 0.43 s (15/15), 47 connect/disconnect cycles with clean teardown on the peer, full enumeration of a phone (7 services / 37 characteristics) with ≥ 49 KB internal heap free throughout.
 
@@ -751,7 +805,7 @@ The ESP32-S3 acts as a **BLE central** controlled over MCP: it captures what nea
 | `ble/scan/payloads` | — | Stop the scan and return the **MAC-independent payload registry**: distinct payloads across ALL broadcasters, first-seen order, with `count` + `firstSeen`/`lastSeen` (ms since scan start), plus `dropped`: distinct payloads discarded because the registry (64 entries) was full. The primary artifact for protocol reverse-engineering — survives per-MAC MAC-rotation churn |
 | `ble/scan/poll` | — | Live read of the payload registry WITHOUT stopping the scan (stateless; diff by `firstSeen`) |
 | `ble/scan/stop` | — | Stop a continuous scan early |
-| `ble/connect` | `mac`, `timeoutMs?`, `addrType?` | Begin an **asynchronous** GATT connect to a peer MAC (default timeout 5000 ms). `addrType` is `public`, `random`, `rpa-public` or `rpa-random`; when omitted, the type recorded by the last scan for that MAC is used (public if it was not seen). Most phones, watches and sensors use random addresses and cannot be opened as public. A malformed `mac` is `-32602`; a link that is already connecting, connected, enumerating or closing (or an OTA in progress) is `-32010` with the GATT `state` and `resolve: "ble/disconnect"` |
+| `ble/connect` | `mac`, `timeoutMs?`, `addrType?` | Begin an **asynchronous** GATT connect to a peer MAC (default timeout 10000 ms; a peripheral that advertises about once a second, like a BlueZ default, often needs 5–10 s). `addrType` is `public`, `random`, `rpa-public` or `rpa-random`; when omitted, the type recorded by the last scan for that MAC is used (public if it was not seen). Most phones, watches and sensors use random addresses and cannot be opened as public. A malformed `mac` is `-32602`; a link that is already connecting, connected, enumerating or closing (or an OTA in progress) is `-32010` with the GATT `state` and `resolve: "ble/disconnect"` |
 | `ble/connect/results` | — | Poll the outcome of the last async connect |
 | `ble/disconnect` | — | Drop the GATT link |
 | `ble/services/start` | — | Enumerate services/characteristics (background task); returns immediately. Not connected (or still connecting / closing): `-32013 Feature not ready` with `resolve`; an enumeration already running: `-32010` with `resolve: "ble/services/results"` |
@@ -761,6 +815,12 @@ The ESP32-S3 acts as a **BLE central** controlled over MCP: it captures what nea
 | `ble/subscribe` | `handle` or `uuid`, `indicate?` | Enable notifications (default when supported) or indications. Result says `delivery: "push"` (WebSocket) or `"poll"` (HTTP) |
 | `ble/unsubscribe` | `handle` or `uuid` | Disable them again |
 | `ble/notifications` | — | Values notified since the last call: `{values:[{handle, uuid, valueHex, valueText, ts}], dropped, subscriptions, connected}` |
+| `ble/pair` | `mitm?`, `passkey?`, `confirm?`, `iocap?` (`none`, `display`, `display-yesno`, `keyboard`, `keyboard-display`) | Encrypt the link, pairing and bonding first unless a bond exists. Asynchronous: returns `{started, existingBond, iocap, mitm}`. Not connected: `-32013`; already pairing: `-32010` |
+| `ble/pair/results` | — | `{state: idle\|pairing\|paired\|failed, encrypted, bonded, authenticated, existingBond, needs?, passkey?, compareValue?, reason?}`. `needs` is `passkey` or `confirm` while it waits for an answer |
+| `ble/pair/passkey` | `passkey` | Enter the passkey the peripheral displays |
+| `ble/pair/confirm` | `accept` | Answer a numeric comparison |
+| `ble/bonds/list` | — | `{bonds:[{mac, addrType}]}` |
+| `ble/bonds/clear` | `mac?` | Remove one bond, or all; `{removed}` |
 
 #### `ble/scan` / `ble/scan/results`
 
@@ -801,7 +861,7 @@ Notes for reverse engineering:
 #### `ble/connect` / `ble/connect/results` / `ble/services/*`
 
 ```json
-{"jsonrpc":"2.0","method":"ble/connect","id":16,"params":{"mac":"00:1b:66:c6:da:c8","timeoutMs":5000}}
+{"jsonrpc":"2.0","method":"ble/connect","id":16,"params":{"mac":"00:1b:66:c6:da:c8","timeoutMs":10000}}
 ```
 ```json
 {"jsonrpc":"2.0","id":16,"result":{"started":true,"connecting":true,"connected":false,"addrType":"public"}}

@@ -2,7 +2,7 @@ English · [Українська](README.uk.md) · [Polski](README.pl.md)
 
 # GetLoopLoop skills
 
-Vectorscope skill **2.112**. Versions count in thousandths (2.101, 2.102, …), so the first number moves only on a breaking change.
+Vectorscope skill **2.116**. Versions count in thousandths (2.101, 2.102, …), so the first number moves only on a breaking change.
 
 Agent Skills from [GetLoopLoop](https://www.getlooploop.com), for claude.ai and the Claude desktop app, Claude Code, Codex, opencode, Hermes Agent and other agents that load `SKILL.md` skills.
 
@@ -115,13 +115,38 @@ Three real runs are in [`examples/`](examples), each with the files the agent wr
 
 The skill needs Node 20.18 or later (what cheerio declares) and **no `npm install`**: `dist/read.mjs` and `dist/lens.mjs` are the scripts bundled with their one dependency, [cheerio](https://cheerio.js.org/), so plain `node` runs them, including in sandboxes that block package installs. The readable source is in `scripts/`; `dist/` is generated from it (see *Working on the skill*).
 
+### As a plugin (Claude Code, Google Antigravity), recommended
+
+Claude Code:
+
+```
+/plugin marketplace add Olexan-art/getlooploop-skills
+/plugin install vectorscope@getlooploop-skills
+```
+
+Then turn on auto-update: in `/plugin`, open **Marketplaces**, select `getlooploop-skills` and choose **Enable auto-update**. Until you do, Claude Code keeps the version you installed; `/plugin marketplace update getlooploop-skills` fetches a newer one by hand.
+
+Google Antigravity:
+
+```
+agy plugin install https://github.com/Olexan-art/getlooploop-skills
+```
+
+To update, run the same command again.
+
+The repository carries `plugin.json` and `.agents/plugins/marketplace.json` for Antigravity, `gemini-extension.json` for Gemini CLI and `.claude-plugin/` for Claude Code, with the skill in `skills/`.
+
+### Update check and usage count
+
+Once a day, the report script (`lens.mjs`) asks getlooploop.com for the newest version of the skill. The request carries the skill's name, its version, the operating system (win, mac, linux or other), a random install id kept in `~/.getlooploop-skills/install-id`, and how many times the skill ran since the last check. That is all: nothing about the pages you audit, no URL, no domain, no user or machine name. The server derives a country from the connection and does not store the IP address. If getlooploop.com does not answer, the skill reads the version from this repository's `plugin.json` on GitHub instead. A newer version is one line in the terminal and a notice in the report; the agent offers the update command and runs it only if you agree. Switch it off with `GETLOOPLOOP_NO_UPDATE_CHECK=1` or `--no-update-check` (it is also off when `CI` is set): then nothing is sent and no id is created. Delete the `~/.getlooploop-skills` folder to reset the id.
+
 ### One command (Claude Code, Codex, opencode and other agents)
 
 ```
 npx skills add Olexan-art/getlooploop-skills --skill vectorscope
 ```
 
-The [skills CLI](https://skills.sh) asks which agents to install it for (add `-g` for every project, `-a claude-code` to pick one). Then ask your agent to "run vectorscope on <url>".
+The [skills CLI](https://skills.sh) asks which agents to install it for (add `-g` for every project, `-a claude-code` to pick one). Then ask your agent to "run vectorscope on <url>". Later, `npx skills update vectorscope` brings it up to date.
 
 ### claude.ai and the Claude desktop app
 

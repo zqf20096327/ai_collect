@@ -119,6 +119,8 @@ npm run skill -- why api-design-reviewer
 
 The CLI has no third-party dependencies, so no `npm install` is needed. It searches the checked-in indexes; `why` shows related skills. Open a returned `SKILL.md`, then ask your agent to follow it for your task. Codex, Cursor, and Gemini CLI can use [AGENTS.md](AGENTS.md), [CLAUDE.md](CLAUDE.md), and [GEMINI.md](GEMINI.md) as repository navigation guides.
 
+Browse the library's [same-task recommendations](INDEX/task-rankings.md), with first choices, alternatives and reasons. Try `search "优化Dockerfile" --json`, `search "编写ADR" --json` or `search "做PPT" --json`. The coverage ledger distinguishes independent tasks from full-body comparisons; these are static scope recommendations, with exact skill IDs first and lexical scores separate.
+
 ### System entry and composition plans
 
 The entry `bin/everything-skills.mjs` locates its own catalog, including when called from another project directory:

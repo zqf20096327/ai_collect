@@ -82,3 +82,43 @@ cache so a later run can resume.
 ## Data & Telemetry
 
 If you use the GitHub Copilot App with your GitHub Copilot account, we may collect usage data (such as code acceptance or rejections), associated conversation data, and user feedback submitted via the feedback dialog. See our [GitHub Copilot Trust Center](https://copilot.github.trust.page) for more information.
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

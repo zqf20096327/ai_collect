@@ -812,7 +812,7 @@ Both runs print which engine they measured. `--installed` refuses to run when th
 
 Labeled dataset shipped in this repo. It holds 38 real agent input attacks (positives) + 77 famous open source READMEs (react, kubernetes, numpy, ollama…) that must stay clean (negatives). No randomness, no network, no LLM judge (same clone + same command → byte identical results, sealed by a SHA-256 of the metrics block).
 
-| Metric (v0.6.23) | Value |
+| Metric (v0.6.24) | Value |
 |--------|-------|
 | Precision | 86.1% |
 | Recall | 97.4% (37/38) |
@@ -1009,8 +1009,8 @@ private key files are named individually and matching is boundary aware, so
 - **The WARN lane is off by default**, and the reasons are measurements, not
   taste. A few ordinary tool calls escalate (a plain `curl -s pypi.org` has read
   as a dangerous shell command), and the lane adds time to every call, about
-  87 ms per tool call with it on against 27 ms with it
-  off, measured on 0.6.23, 2026-11-14 (ledger entry). Enable with
+  138 ms per tool call with it on against 30 ms with it
+  off, measured on 0.6.24, 2026-11-15 (ledger entry). Enable with
   `touch ~/.sunglasses/warn-lane` if you want it anyway.
 - **On older Pythons one regex can outrun the WARN lane clock.** The 7 second
   budget is a timer signal, and before Python 3.11.6 and 3.12.1 the regex engine
@@ -1090,11 +1090,11 @@ private key files are named individually and matching is boundary aware, so
 
 ### Cost
 
-About 27 ms per tool call with the pattern lane off (the default) and about
-87 ms with it on (the installed hook command, whole process, min of 15 runs,
-a benign Bash call, measured on 0.6.23, 2026-11-14, on an Apple silicon Mac (arm64, macOS); bare Python
-startup is 18 ms of that). Zero network calls (nothing about your work leaves the
-machine). An invocation appends two lines when both writes succeed, one when the check
+About 30 ms per tool call with the pattern lane off (the default) and about
+138 ms with it on (the hook command, whole process, min of 15 runs,
+a benign Bash call, measured on 0.6.24, 2026-11-15, on an Apple silicon Mac (arm64, macOS); bare Python
+startup is 20 ms of that). Zero network calls (nothing about your work leaves the
+machine). These figures time the hook command the installer writes, started from a development copy of the code, so an installed copy can differ. An invocation appends two lines when both writes succeed, one when the check
 starts and one when it decides, to `~/.sunglasses/receipts/YYYY-MM-DD.jsonl`,
 recording a SHA-256 of the tool input and never the input itself. A hook killed
 between the two leaves only the first, which is the case these records exist to
@@ -1332,8 +1332,16 @@ See [sunglasses.dev/thesis](https://sunglasses.dev/thesis.html) for our security
 
 [MIT](LICENSE). Use it anywhere (personal, commercial, enterprise). Paid review, by scope call. See <https://sunglasses.dev/pricing>
 
+## Report a wrong block or a miss
+
+Sunglasses can miss something, and it can block something harmless. Both help us.
+
+If something harmless was blocked, open the [wrong block form](https://github.com/sunglasses-dev/sunglasses/issues/new?template=bypass_report.yml). Paste the text if you can share it. The form is public.
+
+If something got through, use the [private report](https://github.com/sunglasses-dev/sunglasses/security/advisories/new) and do not post the text in public. SECURITY.md has the details.
+
 ## Links
 
 - **Website.** [sunglasses.dev](https://sunglasses.dev)
 - **Threat Database.** [`attack-db/`](attack-db/)
-- **Issues.** [github.com/sunglasses-dev/sunglasses/issues](https://github.com/sunglasses-dev/sunglasses/issues)
+- **Issues and reports.** [github.com/sunglasses-dev/sunglasses/issues](https://github.com/sunglasses-dev/sunglasses/issues)

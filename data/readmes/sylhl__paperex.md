@@ -3,7 +3,7 @@
 > 本地优先的学术论文原位翻译与双语阅读器：保留公式、图表与版式，把英文 PDF 变成可左右对照阅读的中文 PDF。
 
 [![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.1.0-green?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.2.0-green?style=flat-square)](CHANGELOG.md)
 [![Python](https://img.shields.io/badge/python-3.12%20%7C%203.13-3776AB?style=flat-square&logo=python&logoColor=white)](backend/requirements.txt)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)](frontend/package.json)
 [![Tauri](https://img.shields.io/badge/Tauri-2-24C8DB?style=flat-square&logo=tauri&logoColor=white)](frontend/src-tauri/tauri.conf.json)
@@ -19,8 +19,22 @@
 - **可验证的质量**：每次翻译产出机器可读的 `qa.json`；`strict` 模式下自动跑修复循环，严格变好才接受。
 - **不绑定厂商**：DeepSeek 原生协议，以及任意 OpenAI 兼容 / Anthropic 服务。
 
+## 安装（Windows，推荐）
+
+不想装 Python / Node？直接下载安装包：[**paperex Windows 安装包（Latest）**](https://github.com/sylhl/paperex/releases/latest)。
+
+1. 下载 `paperex-v1.2.0-windows-x64-setup.exe`（约 50 MB，**内置本地后端**，无需 Python / Node / 命令行）。
+2. 双击安装：当前用户安装，默认目录 `%LOCALAPPDATA%\paperex`，可自选路径。
+3. 首次启动若 Windows SmartScreen 提示「Windows 已保护你的电脑」：点「更多信息 → 仍要运行」——安装包未做代码签名，这是预期行为。
+4. 打开应用 → 右上角 ⚙️「设置」填入翻译服务（DeepSeek / OpenAI 兼容 / Anthropic）→ 选择 PDF 即可开始。
+
+安装包内置：冻结后的后端（`paperex-server.exe`）、中文字体、1066 条学术术语库。运行期数据只写入 `%APPDATA%\paperex`，卸载后不留残留。
+
+> macOS / Linux 目前需从源码运行（见[快速开始](#快速开始)）；Release 只提供 Windows x64 安装包。
+
 ## 目录
 
+- [安装（Windows，推荐）](#安装windows推荐)
 - [功能特性](#功能特性)
 - [截图](#截图)
 - [工作原理](#工作原理)
@@ -112,6 +126,8 @@ cargo --version   # 仅桌面端需要：https://rustup.rs
 
 ## 快速开始
 
+> 只想在自己电脑上用：直接看上面的[安装](#安装windows推荐)。以下为开发/从源码运行的方式。
+
 ### 方式一：运行本地构建的桌面端（Windows）
 
 > `launcher/paperex.exe` 是**本地构建产物**（已被 `.gitignore` 忽略），不是随仓库分发的独立安装包。它启动时会拉起本地 Python 后端，因此运行前仍需准备好 Python 环境；只复制 exe 到新机器是跑不起来的。
@@ -174,17 +190,31 @@ npm run tauri:dev
 
 ### 构建
 
+本地开发构建（不生成安装包）：
+
 ```bash
 cd frontend
 npm run tauri:build -- --no-bundle
 # 产物：frontend/src-tauri/target/release/paperex(.exe)
 ```
 
-构建完成后把 `target/release/paperex.exe` 复制到 `launcher/` 即可双击运行。打包安装包（msi，需要 WiX）：
+构建完成后把 `target/release/paperex.exe` 复制到 `launcher/` 即可双击运行（仍需本机 Python 环境）。
+
+构建**免安装 Python 的 Windows 安装包**（内置冻结后端，用户侧开箱即用）：
 
 ```bash
+# 1) 冻结后端（PyInstaller onedir）
+backend/.venv/Scripts/python backend/packaging/build_backend.py
+backend/.venv/Scripts/python backend/packaging/smoke_test.py   # 冒烟：dry-run 翻译 + 隔离 QA
+
+# 2) 打包 NSIS 安装包
+cd frontend
 npm run tauri:build
+# bundler 原始产物：frontend/src-tauri/target/release/bundle/nsis/paperex_<version>_x64-setup.exe
+# Release 工作流会统一重命名为：paperex-v<version>-windows-x64-setup.exe
 ```
+
+完整流程（版本号清单、静默安装验证、GitHub Release 自动化）见 [docs/RELEASING.md](docs/RELEASING.md)。
 
 > 不要用 `cargo build --release` 代替 `tauri build`：缺少 `custom-protocol` feature 时程序会按开发模式去连 Vite 的 1420 端口，窗口显示连接被拒绝。
 
@@ -382,6 +412,8 @@ Windows 11 专业版 build 26200 x64（AMD Ryzen 7 H 260 / Radeon 780M）· Pyth
 - **任务串行**：引擎含文档级全局状态，同一后端一次只处理一个翻译任务；并发请求会排队（`queue_position`）。
 - **依赖模型质量**：译文质量取决于所选模型；`deepseek-v4-pro` / 更强模型通常更稳，成本也更高。翻译按字符计费，长论文（60 页级）成本与耗时都显著上升。
 - **QA 是启发式检测**：可能误报（例如表格保护区、字体别名）或漏报；`strict` 不等于人工校对。可用 `PAPEREX_QA_STRICT_CODES` 降级已知误报。
+- **安装包未做代码签名**：Windows SmartScreen 可能提示「已保护你的电脑」，选择「更多信息 → 仍要运行」即可；企业环境可用组策略白名单或自行签名后分发。
+- **安装包体积约 50 MB**：内置 Python 运行时、MuPDF、CJK 字体与术语库，换取的是「无需 Python/Node、开箱即用」。
 - **平台**：Windows 为主要测试平台；macOS / Linux 可构建，但字体路径、文件对话框与打包流程未充分验证。
 - **术语库内置 1066 条**：暂不支持在 UI 中编辑自定义术语；修改术语会让缓存桶失效（这是有意的正确性设计）。
 
@@ -397,16 +429,17 @@ paperex/
 │   ├── qa_loop.py              候选制修复循环：严格变好才接受，否则回滚快照
 │   ├── cache.py / jobs.py      全局翻译缓存（分桶）/ 文件型任务状态与心跳
 │   ├── providers.py / ocr.py   供应商目录与探测 / OCR 后备与结构化报错
+│   ├── packaging/              安装包构建：PyInstaller 入口、spec、build_backend、smoke_test
 │   ├── pdf_zh_translator/      内置翻译与原位重排引擎（vendored，AGPL-3.0）
 │   ├── assets/fonts/           LXGW 文楷 / 臻楷字体与 OFL 许可文件
 │   └── tests/                  pytest：契约、缓存、任务、质量、引擎回归
 ├── frontend/                   React 18 + Vite + Tailwind 双栏阅读器
 │   ├── src/                    页面、组件、hooks、lib 与主题样式
 │   ├── public/                 favicon 与演示 PDF
-│   └── src-tauri/              Tauri 2 桌面壳、图标与窗口配置
+│   └── src-tauri/              Tauri 2 桌面壳、图标、窗口与 NSIS 打包配置
 ├── launcher/                   本地启动器产物；exe / lnk 不入库（见 launcher/README.md）
-├── docs/                       ARCHITECTURE / QUALITY / DEVELOPMENT / ROADMAP
-├── .github/                    CI 与 issue / PR 模板
+├── docs/                       ARCHITECTURE / QUALITY / DEVELOPMENT / ROADMAP / RELEASING
+├── .github/                    CI、Release 工作流与 issue / PR 模板
 ├── README.md  CHANGELOG.md  CONTRIBUTING.md  SECURITY.md
 └── LICENSE  NOTICE             AGPL-3.0 正文与第三方署名
 ```

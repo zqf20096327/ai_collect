@@ -19,7 +19,7 @@ Everything about where the mod stands is in five places:
 
 | | |
 |---|---|
-| **[Release](https://github.com/AyoItzKye/project-proving-grounds/releases/latest)** | Version **0.2.3**, last updated **November 14, 2026**. Download it from the Releases page. <!-- release --> |
+| **[Release](https://github.com/AyoItzKye/project-proving-grounds/releases/latest)** | Version **0.2.3**, last updated **November 15, 2026**. Download it from the Releases page. <!-- release --> |
 | **[Updates](docs/UPDATES.md)** | What was added and fixed in each version, newest first. |
 | **[Known bugs](docs/KNOWN_BUGS.md)** | Everything known to be broken, by game, and every bug reported on GitHub with its status. |
 | **[Bot status sheet (PDF)](docs/BOT_STATUS.pdf)** | An honest rating of every game, mode and vehicle, from green (good to go) to red (not working yet). |

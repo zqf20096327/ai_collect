@@ -48,7 +48,7 @@ Koda is an Open-Source Agent Development Environment (ADE) for AI-assisted softw
 - **KoClaw — Agent API** — built-in HTTP server (default port `3141`) that lets external agents send tasks to Koda, read conversation history, and reset the session. Self-documenting via `GET /help`.
 - **MCP support** — connect any Model Context Protocol server. Tools are discovered at runtime and injected into the agent's arsenal dynamically.
 - **LSP integration** — semantic queries via `typescript-language-server`: hover types, go-to-definition, and symbol resolution.
-- **17 LLM providers** — dynamic model listing via API. Switch providers and models from the UI without restarting.
+- **18 LLM providers** — dynamic model listing via API. Switch providers and models from the UI without restarting.
 - **File tracker** — every file the agent reads or modifies is tracked in-session and surfaced in the context panel.
 - **At-mentions (`@`)** — type `@` to open a file selector. Koda reads the file and injects it directly into the prompt (capped at 50KB).
 - **Drag & drop** — drop image files to attach them; drop code files to inject an `@[path]` mention.
@@ -63,7 +63,7 @@ Koda is an Open-Source Agent Development Environment (ADE) for AI-assisted softw
 
 Switchable from the TitleBar via a dropdown selector.
 
-### ⚡ Fast *(default)*
+### ⚡ Fast _(default)_
 
 Immediate autonomous execution. The agent acts on your request without any planning step.
 
@@ -97,13 +97,13 @@ Click the **split panel icon** (⊞) in the TitleBar, to the right of the mode s
 
 ### Isolation Guarantees
 
-| Layer | Isolation mechanism |
-| :--- | :--- |
-| **Backend** | `Map<workspaceId, Agent>` — each agent has its own LLM conversation, tool state, PTY processes, and MCP connections |
-| **IPC** | All Electron IPC handlers accept `workspaceId` as the first argument |
-| **Terminal** | `pty:start` resolves the working directory from the workspace-specific agent |
-| **Sessions** | `useSession` tracks the last-loaded CWD per workspace — switching tabs never reloads another workspace's chat |
-| **Streaming** | `useAgentStream` maintains separate chunk buffers and RAF loops per workspace |
+| Layer         | Isolation mechanism                                                                                                 |
+| :------------ | :------------------------------------------------------------------------------------------------------------------ |
+| **Backend**   | `Map<workspaceId, Agent>` — each agent has its own LLM conversation, tool state, PTY processes, and MCP connections |
+| **IPC**       | All Electron IPC handlers accept `workspaceId` as the first argument                                                |
+| **Terminal**  | `pty:start` resolves the working directory from the workspace-specific agent                                        |
+| **Sessions**  | `useSession` tracks the last-loaded CWD per workspace — switching tabs never reloads another workspace's chat       |
+| **Streaming** | `useAgentStream` maintains separate chunk buffers and RAF loops per workspace                                       |
 
 ---
 
@@ -124,14 +124,14 @@ private/
 
 **Behavior per tool:**
 
-| Tool | Behavior when path is blocked |
-| :--- | :--- |
-| `file_read` | Returns `🚫 Access denied: "path" exists but is restricted by .kodaignore` |
-| `file_edit` | Same access-denied message, no modification |
-| `file_write` | Same access-denied message, no file created |
-| `list_dir` | Blocked entries are silently omitted from the listing |
-| `file_find` | Blocked files are filtered out of results |
-| `search` | Results from blocked files are removed |
+| Tool         | Behavior when path is blocked                                              |
+| :----------- | :------------------------------------------------------------------------- |
+| `file_read`  | Returns `🚫 Access denied: "path" exists but is restricted by .kodaignore` |
+| `file_edit`  | Same access-denied message, no modification                                |
+| `file_write` | Same access-denied message, no file created                                |
+| `list_dir`   | Blocked entries are silently omitted from the listing                      |
+| `file_find`  | Blocked files are filtered out of results                                  |
+| `search`     | Results from blocked files are removed                                     |
 
 The agent knows the file exists but cannot see its content — it will not attempt workarounds.
 
@@ -141,52 +141,53 @@ The agent knows the file exists but cannot see its content — it will not attem
 
 All tools extend `BaseTool` and are registered in `ToolRegistry`. The registry enforces mode restrictions and plan-mode write locks before every execution.
 
-| Tool | Description |
-| :--- | :--- |
-| `shell` | Spawns a PTY process via `node-pty`. Returns PID immediately. Requires user approval for non-read-only commands. |
-| `shell_wait` | Polls a background PTY's output buffer for a regex/string pattern, or waits for process exit. |
-| `shell_input` | Writes raw stdin to a running PTY process. |
-| `kill_pty` | Sends SIGINT or SIGKILL to a background PTY by PID. |
-| `list_pty` | Lists all active background PTY PIDs. |
-| `file_read` | Reads file content with optional line range. Respects `.kodaignore`. |
-| `file_write` | Creates or overwrites a file. Respects `.kodaignore`. |
-| `file_edit` | Replaces an exact string match within a file. Returns a colored unified diff. Respects `.kodaignore`. |
-| `file_find` | Glob-pattern file search via `globby`. Respects `.gitignore` and `.kodaignore`. |
-| `list_dir` | Lists directory contents with file sizes. Respects `.kodaignore`. |
-| `search` | Regex search across files. Uses `ripgrep` when available. Respects `.kodaignore`. |
-| `lsp_query` | Semantic queries via `typescript-language-server`: `hover` and `goToDefinition`. |
-| `browser_agent` | Spawns `operant-runner.js` to control a real browser and return a report. |
-| `enter_plan_mode` | Transitions the agent to read-only plan mode. *(Planner mode only)* |
-| `exit_plan_mode` | Presents the Markdown plan and awaits approval via IPC. *(Planner mode only)* |
-| `start_collaboration` | Initializes an advisor LLM session. *(Colab mode only)* |
-| `send_to_advisor` | Sends a message to the advisor and streams back the response. *(Colab mode only)* |
-| `end_collaboration` | Terminates the advisor session. *(Colab mode only)* |
-| `load_skill` | Loads a skill from `~/.koda/skills/` or `.koda/skills/` and injects its instructions into context. |
-| `questions` | Asks the user up to 10 clarifying questions. Rendered as a wizard panel above the chat input. Blocks execution until all answers are submitted. |
+| Tool                  | Description                                                                                                                                     |
+| :-------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `shell`               | Spawns a PTY process via `node-pty`. Returns PID immediately. Requires user approval for non-read-only commands.                                |
+| `shell_wait`          | Polls a background PTY's output buffer for a regex/string pattern, or waits for process exit.                                                   |
+| `shell_input`         | Writes raw stdin to a running PTY process.                                                                                                      |
+| `kill_pty`            | Sends SIGINT or SIGKILL to a background PTY by PID.                                                                                             |
+| `list_pty`            | Lists all active background PTY PIDs.                                                                                                           |
+| `file_read`           | Reads file content with optional line range. Respects `.kodaignore`.                                                                            |
+| `file_write`          | Creates or overwrites a file. Respects `.kodaignore`.                                                                                           |
+| `file_edit`           | Replaces an exact string match within a file. Returns a colored unified diff. Respects `.kodaignore`.                                           |
+| `file_find`           | Glob-pattern file search via `globby`. Respects `.gitignore` and `.kodaignore`.                                                                 |
+| `list_dir`            | Lists directory contents with file sizes. Respects `.kodaignore`.                                                                               |
+| `search`              | Regex search across files. Uses `ripgrep` when available. Respects `.kodaignore`.                                                               |
+| `lsp_query`           | Semantic queries via `typescript-language-server`: `hover` and `goToDefinition`.                                                                |
+| `browser_agent`       | Spawns `operant-runner.js` to control a real browser and return a report.                                                                       |
+| `enter_plan_mode`     | Transitions the agent to read-only plan mode. _(Planner mode only)_                                                                             |
+| `exit_plan_mode`      | Presents the Markdown plan and awaits approval via IPC. _(Planner mode only)_                                                                   |
+| `start_collaboration` | Initializes an advisor LLM session. _(Colab mode only)_                                                                                         |
+| `send_to_advisor`     | Sends a message to the advisor and streams back the response. _(Colab mode only)_                                                               |
+| `end_collaboration`   | Terminates the advisor session. _(Colab mode only)_                                                                                             |
+| `load_skill`          | Loads a skill from `~/.koda/skills/` or `.koda/skills/` and injects its instructions into context.                                              |
+| `questions`           | Asks the user up to 10 clarifying questions. Rendered as a wizard panel above the chat input. Blocks execution until all answers are submitted. |
 
 ---
 
 ## Supported Providers
 
-| Provider | Notes |
-| :--- | :--- |
-| **Koda Cloud** | Premium models via secure proxy — no local keys needed. Displayed as `model / Koda Cloud` in the UI. |
-| **OpenCode Zen** | Curated AI gateway optimized for coding agents. |
-| **OpenRouter** | Hundreds of models via a single key |
-| **OpenAI** | GPT-4o, o1, o3 families |
-| **Anthropic** | All Claude models |
-| **Google Gemini** | All Gemini models |
-| **Groq** | Ultra-low latency inference with all Groq platform models |
-| **DeepSeek** | All DeepSeek models |
-| **Mistral AI** | All Mistral models including Codestral |
-| **Together AI** | All Together platform models |
-| **xAI** | Grok family |
-| **Fireworks AI** | Fireworks models via API |
-| **Zhipu AI (Z.AI)** | GLM family |
-| **Maritaca AI** | Sabiá family (Brazilian Portuguese optimized) |
-| **Ollama** | Local models via `/v1/models` or legacy `/api/tags` |
-| **Llama.cpp** | Local inference via HTTP server on port 8080 |
-| **DeepSeek (local)** | Compatible with any OpenAI-compatible local server |
+| Provider             | Notes                                                                                                |
+| :------------------- | :--------------------------------------------------------------------------------------------------- |
+| **Koda Cloud**       | Premium models via secure proxy — no local keys needed. Displayed as `model / Koda Cloud` in the UI. |
+| **OpenCode Zen**     | Curated AI gateway optimized for coding agents.                                                      |
+| **OpenRouter**       | Hundreds of models via a single key                                                                  |
+| **OpenAI**           | GPT-4o, o1, o3 families                                                                              |
+| **Anthropic**        | All Claude models                                                                                    |
+| **Google Gemini**    | All Gemini models                                                                                    |
+| **Groq**             | Ultra-low latency inference with all Groq platform models                                            |
+| **DeepSeek**         | All DeepSeek models                                                                                  |
+| **Mistral AI**       | All Mistral models including Codestral                                                               |
+| **Together AI**      | All Together platform models                                                                         |
+| **xAI**              | Grok family                                                                                          |
+| **Fireworks AI**     | Fireworks models via API                                                                             |
+| **Zhipu AI (Z.AI)**  | GLM family                                                                                           |
+| **Maritaca AI**      | Sabiá family (Brazilian Portuguese optimized)                                                        |
+| **Ollama**           | Local models via `/v1/models` or legacy `/api/tags`                                                  |
+| **Llama.cpp**        | Local inference via HTTP server on port 8080                                                         |
+| **DeepSeek (local)** | Compatible with any OpenAI-compatible local server                                                   |
+| **Inception Labs**   | Mercury — diffusion LLMs (OpenAI-compatible; base URL configurável via `INCEPTION_BASE_URL`)         |
 
 ---
 
@@ -227,16 +228,16 @@ TEMPERATURE=0.3
 
 Commands are defined in `src/main/core/slash-commands.ts` and auto-discovered by the frontend at startup — no hardcoded lists in the UI.
 
-| Command | Description |
-| :--- | :--- |
-| `/help` | Shows the command reference |
-| `/clear` | Clears chat messages |
-| `/reset` | Resets conversation memory |
-| `/tokens` | Displays estimated token usage |
+| Command                                          | Description                                        |
+| :----------------------------------------------- | :------------------------------------------------- |
+| `/help`                                          | Shows the command reference                        |
+| `/clear`                                         | Clears chat messages                               |
+| `/reset`                                         | Resets conversation memory                         |
+| `/tokens`                                        | Displays estimated token usage                     |
 | `/hyperedit <task> --files <files> [--agents N]` | Coordinates isolated parallel editing agents (1–5) |
-| `/model --<name>` | Switches the active model |
-| `/apikey <key>` | Sets the API key inline |
-| `/<skill-name> [message]` | Activates a skill |
+| `/model --<name>`                                | Switches the active model                          |
+| `/apikey <key>`                                  | Sets the API key inline                            |
+| `/<skill-name> [message]`                        | Activates a skill                                  |
 
 ---
 
@@ -246,12 +247,12 @@ KoClaw is a built-in HTTP server that lets external agents interact with Koda ov
 
 Enable in **Settings → KoClaw**. Choose a port (default `3141`) and copy the auto-generated Bearer token.
 
-| Method | Path | Auth | Description |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/help` | Public | Returns full API documentation as JSON — no token required |
-| `POST` | `/message` | Token | Send a task to Koda. Returns `202` immediately; agent processes in the background |
-| `GET` | `/messages` | Token | Retrieve the full conversation history |
-| `POST` | `/reset` | Token | Clear the conversation and reset the session |
+| Method | Path        | Auth   | Description                                                                       |
+| :----- | :---------- | :----- | :-------------------------------------------------------------------------------- |
+| `GET`  | `/help`     | Public | Returns full API documentation as JSON — no token required                        |
+| `POST` | `/message`  | Token  | Send a task to Koda. Returns `202` immediately; agent processes in the background |
+| `GET`  | `/messages` | Token  | Retrieve the full conversation history                                            |
+| `POST` | `/reset`    | Token  | Clear the conversation and reset the session                                      |
 
 ### Example flow
 
@@ -291,6 +292,7 @@ npm run dist:mac
 ```
 
 Output goes to `release-build/`. GitHub Actions builds x64 and ia32 as separate jobs, producing:
+
 - `Koda-Setup-<version>-x64.exe`
 - `Koda-Setup-<version>-ia32.exe`
 
@@ -324,10 +326,11 @@ src/
 │   │   ├── conversation.ts        # Message history, microCompact, trimIfNeeded, rollback
 │   │   ├── prompt-builder.ts      # Dynamic system prompt assembly (env + project + tools)
 │   │   └── context.ts             # Project detection (language, framework, package manager)
-│   ├── providers/                 # 17 LLM provider implementations (all extend BaseProvider)
+│   ├── providers/                 # 18 LLM provider implementations (all extend BaseProvider)
 │   │   ├── base.ts                # BaseProvider, Message, StreamChunk, ToolCall interfaces
 │   │   ├── koda-cloud.ts
 │   │   ├── opencode-zen.ts
+│   │   ├── inception.ts
 │   │   ├── openrouter.ts
 │   │   ├── openai.ts
 │   │   ├── anthropic.ts
@@ -403,6 +406,10 @@ src/
     │   ├── useSessionStorage.ts   # localStorage-based session persistence (list/save/delete)
     │   ├── useResizable.ts        # Panel resize state (left, right, browser height, context, explorer)
     │   └── useDragDrop.ts         # Drag & drop handler (images + file @mentions)
+    ├── styles/
+    │   ├── modern.css             # Design system: semantic tokens + .mui-* primitives (ModernUI skin)
+    │   └── __tests__/
+    │       └── design-system-guardrails.test.ts  # Forbids raw surface hex in skin components
     └── components/
         ├── modern/
         │   ├── ModernUI.tsx       # Default UI: sleek backdrop-blur interface with Iconbar
@@ -421,7 +428,7 @@ src/
         ├── context/
         │   └── ContextPanel.tsx   # File tracker panel + Explorer panel (overlay)
         ├── settings/
-        │   ├── SettingsUI.tsx     # Settings modal root
+        │   ├── SettingsUI.tsx     # Full-screen settings view (replaces the agent screen)
         │   ├── KodaSettingsTab.tsx# UI/behavior settings tab
         │   └── SkillManager.tsx   # Skills marketplace + local skill management
         ├── modals/
@@ -441,6 +448,12 @@ src/
         ├── StatusBar.tsx          # Bottom status bar (IDE mode)
         └── BrailleSpinner.tsx     # Animated thinking indicator
 ```
+
+---
+
+### Design System (ModernUI)
+
+The ModernUI skin is styled entirely by `src/renderer/styles/modern.css`: semantic custom properties (`--mui-canvas`, `--mui-surface-1..3`, `--mui-fg*`, `--mui-hairline*`, `--mui-accent`, `--mui-radius*`, `--mui-shadow*`, `--mui-tint-*`) plus short `.mui-*` primitive classes (`mui-app`, `mui-panel`, `mui-btn`, `mui-icon-btn`, `mui-field`, `mui-menu`, `mui-popover`, `mui-composer`, `mui-option-card`, …). Tokens are defined on `:root` so shared components (TitleBar, ContextPanel, StatusBar, TerminalPanel…) can use the primitives while ClassicUI — which never uses `.mui-*` classes — stays untouched. A vitest guardrail (`styles/__tests__/design-system-guardrails.test.ts`) fails the suite if raw surface hex or legacy palette utilities reappear in `components/modern/**` or `components/settings/**`.
 
 ---
 

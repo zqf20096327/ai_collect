@@ -76,6 +76,14 @@ Turn any prompt into a one-off or recurring job (`at` / `every` / `cron` / `dail
 
 ![Cetus Automations demo](docs/automation.gif)
 
+### Cetus Remote — your agents in your pocket
+
+The iPhone companion shows the same chats as your Mac, grouped by the same folders. Approve a `git push` from the couch, answer an agent's question on the train, start a new task on any runtime and model, or open the CSV or report an agent just sent. Drafts follow you between phone and desktop. The phone pairs with your Mac by QR code over an end-to-end encrypted link, so the relay in between can't read your chats.
+
+Free on the [App Store](https://apps.apple.com/app/cetus-remote/id6832189457).
+
+![Cetus Remote on iPhone: chat list, an approval, a new chat, a CSV artifact, and a morning brief](docs/screenshot-iphone.png)
+
 ### Less explaining
 
 The less context you have to type, the faster you get back out of the loop.
@@ -88,7 +96,6 @@ The less context you have to type, the faster you get back out of the loop.
 ### And more
 
 - **Parallel solutions**: fan one prompt into N candidate runs, keep one, archive the rest
-- **Cetus Remote**, an optional Tailscale-backed phone companion for following runs and handling approvals away from your desk
 - **Computer and browser control**, with a confirmation step before anything consequential and a Stop button always in reach
 - **30+ model providers** for the built-in runtime, including Anthropic, OpenAI, Google, Bedrock, Ollama, LM Studio, and OpenRouter
 

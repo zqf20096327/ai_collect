@@ -1,0 +1,297 @@
+<div align="center">
+  <img src="assets/banner.png" alt="GUI Agent Harness" width="100%" />
+
+  <br />
+
+  <p>
+    <strong>Autonomous GUI agent — give it a task, it operates the desktop.</strong>
+    <br />
+    <sub>Visual memory &bull; One-shot UI learning &bull; Any LLM provider &bull; Local or VM</sub>
+  </p>
+
+  <p>
+    <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick_Start-blue?style=for-the-badge" /></a>
+    <a href="https://github.com/Fzkuji/OpenProgram"><img src="https://img.shields.io/badge/OpenProgram-green?style=for-the-badge" /></a>
+    <a href="https://discord.gg/vfyqn5jWQy"><img src="https://img.shields.io/badge/Discord-7289da?style=for-the-badge&logo=discord&logoColor=white" /></a>
+  </p>
+
+  <p>
+    <img src="https://img.shields.io/badge/Platform-macOS_%7C_Windows_%7C_Linux-black?logo=apple" />
+    <img src="https://img.shields.io/badge/Provider-OpenAI_%7C_Anthropic_%7C_MiniMax-orange" />
+    <img src="https://img.shields.io/badge/Detection-GPA--GUI--Detector-green" />
+    <img src="https://img.shields.io/badge/OCR-Apple_Vision_%7C_EasyOCR-blue" />
+    <img src="https://img.shields.io/badge/License-MIT-yellow" />
+    <img src="https://img.shields.io/badge/MMBench--GUI--L2-91.52%25-brightgreen" />
+  </p>
+</div>
+
+---
+
+<p align="center">
+  <b>🇺🇸 English</b> ·
+  <a href="docs/README_CN.md">🇨🇳 中文</a>
+</p>
+
+---
+
+## News
+
+- **[2026-06-05]** 🏆 **UI-Vision 68.64%** — GPT-5.5, 5,479 samples across basic/functional/spatial splits. [Results →](benchmarks/ui_vision/)
+- **[2026-06-05]** 🏆 **MMBench-GUI-L2 91.52%** — GPT-5.5, 3,594 samples. [Results →](benchmarks/mmbench_gui_l2/)
+- **[2026-06-05]** 🏆 **ScreenSpot Pro 87.9%** — GPT-5.5, 1,581 samples across 23 apps. [Results →](benchmarks/screenspot_pro/results/gpt_5_5/)
+- **[2026-06-02]** 🏆 **ScreenSpot v2 96.78%** — GPT-5.5, 1,272 samples. [Results →](benchmarks/screenspot_v2/)
+- **[2026-04-18]** 📦 **OpenProgram** — Renamed from Agentic Programming. [GitHub](https://github.com/Fzkuji/OpenProgram)
+- **[2026-04-14]** 🏆 **OSWorld Multi-Apps 79.8%** — 72.6/91 evaluated. [Results →](benchmarks/osworld/)
+- **[2026-04-07]** 🤖 **Agent-native architecture** — Unified GUI perception + agent actions under single decision loop.
+- **[2026-03-30]** 📐 **ImageContext** — Scale-independent coordinate system, fixes crop bugs.
+- **[2026-03-29]** 🎬 **v0.3 — Unified Actions** — `gui_action.py` single entry point, auto platform detection.
+- **[2026-03-23]** 🏆 **OSWorld Chrome 93.5%** — 43/46 one attempt, 45/46 two attempts. [Results →](benchmarks/osworld/)
+- **[2026-03-10]** 🚀 **Initial release** — GPA-GUI-Detector + Apple Vision OCR + template matching.
+
+## What is GUI Agent Harness?
+
+A CLI tool that turns any LLM into a GUI automation agent. Give it a natural-language task, it operates the desktop autonomously — screenshots, clicks, types, verifies, and repeats until the task is done.
+
+```bash
+gui-agent --work-dir /private/tmp/gui-agent-desktop "Install the Orchis GNOME theme"
+gui-agent --work-dir /private/tmp/gui-agent-vm --vm http://172.16.82.132:5000 "Open GitHub in Chrome and Python docs"
+```
+
+Built on [OpenProgram](https://github.com/Fzkuji/OpenProgram) — the runtime handles provider abstraction, context management, and structured LLM calls. The harness adds GUI perception (YOLO detection, OCR, template matching) and action execution (mouse, keyboard, clipboard).
+
+## Grounding Pipeline: Iterative Zoom
+
+At the core of the harness is a dedicated GUI element grounding pipeline. Given a screenshot and a natural-language description of a target element, it outputs precise click coordinates through progressive refinement.
+
+```
+Screenshot + Target description
+         │
+         ▼
+  Phase 1: Detection          GPA-GUI-Detector (YOLO) + OCR → all visible UI elements
+         │
+         ▼
+  Phase 2: Candidate Match    Template-match against stored visual memory
+         │
+         ▼
+  Phase 3: LLM Grounding      VLM sees full screen + component list → identifies target region
+         │
+         ▼
+  Phase 4: Iterative Zoom     Crop → upscale → re-ground → verify, repeat up to 8 rounds
+         │
+         ▼
+     Precise (x, y)
+```
+
+**Key design decisions:**
+
+- **Multi-source perception** — YOLO detection + OCR + visual memory templates provide rich spatial context to the VLM, so it reasons over labeled components rather than raw pixels alone.
+- **Progressive refinement** — Instead of one-shot coordinate prediction, the pipeline iteratively crops and zooms into candidate regions. Each round gives the VLM a higher-resolution view of a smaller area.
+- **Verifier gate** — After each zoom level, a separate verification step checks whether the predicted point actually lands on the target. False predictions are rejected before they become wrong clicks.
+- **Cacheable prompt layout** — Fixed rules are hoisted into a cacheable prefix; only the task, component list, and image change per call. This maximizes prompt cache hit rate across the 8-round pipeline.
+- **Configurable scale strategy** — `preserve` mode keeps large images at native resolution (no information loss from downscaling small targets); `fill` mode matches legacy behavior for controlled comparisons.
+
+### Benchmark Results
+
+| Benchmark | Samples | Accuracy | Paper Best | Delta |
+|-----------|---------|----------|------------|-------|
+| MMBench-GUI-L2 (full) | 3,594 | **91.52%** | 74.25% (UI-TARS-72B-DPO) | **+17.3** |
+| MMBench-GUI-L2 (basic) | 1,787 | **94.89%** | — | — |
+| MMBench-GUI-L2 (advanced) | 1,807 | **88.17%** | — | — |
+| ScreenSpot Pro (full) | 1,581 | **87.9%** | — | — |
+| ScreenSpot v2 | 1,272 | **96.78%** | — | — |
+| UI-Vision (full) | 5,479 | **68.64%** | — | — |
+| UI-Vision (basic) | 1,772 | **73.1%** | — | — |
+| UI-Vision (functional) | 1,772 | **67.0%** | — | — |
+| UI-Vision (spatial) | 1,935 | **66.0%** | — | — |
+
+Full per-platform breakdown: [benchmarks/mmbench_gui_l2/](benchmarks/mmbench_gui_l2/) | [benchmarks/screenspot_pro/](benchmarks/screenspot_pro/)
+
+## Agent Loop: Observe → Verify → Plan → Dispatch
+
+For full task automation (beyond grounding), the harness runs a 4-phase loop:
+
+- **Observe** (Python) — Screenshot + YOLO detection + OCR + template match. Identifies visible UI state.
+- **Verify** (LLM) — Checks whether the previous action succeeded.
+- **Plan** (LLM) — Sees the screenshot, detected components, and verification result. Chooses one action.
+- **Dispatch** (Python) — Executes the action. For clicks, delegates to the iterative zoom grounding pipeline.
+
+All phases are `@agentic_function` calls with structured feedback between steps.
+
+## Visual Memory
+
+UI components are detected once, labeled by a VLM, and stored as templates. On subsequent encounters, template matching replaces expensive re-detection (~5x faster, ~60x fewer tokens). States are modeled as sets of visible components, matched by Jaccard similarity. Components auto-forget after 15 consecutive misses.
+
+## OSWorld Results
+
+**Multi-Apps: 79.8% (72.6/91) | Chrome: 93.5% (43/46)**
+
+| Domain | Tasks | Passed | Accuracy |
+|--------|-------|--------|----------|
+| Chrome | 46 | 43 | 93.5% |
+| Multi-Apps | 91 | 63 | 79.8% |
+
+[Full OSWorld results →](benchmarks/osworld/)
+
+## Quick Start
+
+### 1. Install
+
+The GUI agent is a normal OpenProgram program: programs live in
+`openprogram/programs/agentic_functions/`, and anything cloned into that folder
+auto-registers on the next start. So you install the OpenProgram **host**, then
+clone this repo into that folder and run its installer — the same pattern any
+harness (including your own) uses to plug into OpenProgram.
+
+#### Step 1 — Install the OpenProgram host
+
+**macOS / Linux**
+```bash
+git clone https://github.com/Fzkuji/OpenProgram && cd OpenProgram
+./scripts/install.sh
+```
+
+**Windows (PowerShell)**
+```powershell
+git clone https://github.com/Fzkuji/OpenProgram; cd OpenProgram
+.\scripts\install.ps1
+```
+
+#### Step 2 — Add the GUI agent
+
+The quickest path is OpenProgram's program installer (the first-run wizard
+offers the same choice):
+
+```bash
+openprogram programs install gui     # clones this repo + installs its deps
+                                     # (PyTorch: CPU wheel auto-selected on
+                                     # GPU-less Linux, CUDA on NVIDIA boxes)
+```
+
+For explicit control over the torch variant and the asset setup (detector
+weight, OCR models, system tools), clone this repo into the agentics folder
+and run **its own** installer instead:
+
+**macOS / Linux**
+```bash
+cd openprogram/programs/agentic_functions
+git clone https://github.com/Fzkuji/GUI-Agent-Harness
+cd GUI-Agent-Harness
+./scripts/install.sh            # auto-detects an NVIDIA GPU; --cpu / --cuda cuXXX to force
+```
+
+**Windows (PowerShell)**
+```powershell
+cd openprogram\programs\agentic_functions
+git clone https://github.com/Fzkuji/GUI-Agent-Harness
+cd GUI-Agent-Harness
+.\scripts\install.ps1           # auto-detects an NVIDIA GPU; -Cpu / -Cuda cuXXX to force
+```
+
+It's one command, but the heavy lifting is **platform-specific** — here's exactly
+what it sets up on each OS, so nothing is left for you to chase down:
+
+| | macOS | Windows | Linux |
+|---|---|---|---|
+| **PyTorch** | universal MPS/CPU wheel | NVIDIA-CUDA auto-detected, else CPU | NVIDIA-CUDA auto-detected, else CPU |
+| **OCR engine** | Apple Vision + EasyOCR fallback | EasyOCR `en`+`ch_sim` (~300 MB) | EasyOCR `en`+`ch_sim` (~300 MB) |
+| **Detector** | GPA-GUI-Detector weight → `~/GPA-GUI-Detector/model.pt` | → `%USERPROFILE%\GPA-GUI-Detector\model.pt` | → `~/GPA-GUI-Detector/model.pt` |
+| **System tools** | Xcode CLT (Swift, for Apple Vision) | none — Win32 + PowerShell clipboard built-in | `xclip` (required) + `wmctrl`/`xdotool`/`scrot`, via apt/dnf/pacman |
+| **Manual step** | grant the terminal Screen Recording + Accessibility | none | none |
+
+> **macOS only:** the agent cannot screenshot or click until you grant your
+> terminal **Screen Recording** and **Accessibility** under *System Settings →
+> Privacy & Security*. Apple Vision OCR also needs the Xcode command-line tools
+> (`xcode-select --install`); the installer requests them, and EasyOCR is
+> installed as a cross-platform fallback either way.
+
+After Step 2, restart the worker (or hit **Refresh** on the web UI's Functions
+page): `gui_agent` is registered and shows up in the web UI and the `gui-agent`
+CLI. The first time you run `openprogram` it walks you through provider setup.
+
+> Offline pre-fetch, forcing a CUDA tag, or skipping pieces
+> (`--no-weights` / `--no-ocr` / `--no-system`): **[docs/install.md](docs/install.md)**.
+
+<details>
+<summary><b>How OpenProgram detects this harness (and how to build your own)</b></summary>
+
+OpenProgram walks `openprogram/programs/agentic_functions/` at startup and loads
+any cloned repo that satisfies the harness contract:
+
+```
+GUI-Agent-Harness/                   ← cloned into programs/agentic_functions/
+├── pyproject.toml                   ← declares THIS repo's own deps only
+└── gui_harness/                     ← importable package
+    ├── __init__.py                  ← kept dependency-light (lazy heavy imports)
+    └── agentics/
+        └── __init__.py              ← exposes AGENTIC_FUNCTIONS = [gui_agent]
+```
+
+Importing `gui_harness.agentics` fires the `@agentic_function` decorators,
+which self-register the functions. Two rules keep this safe: the top-level
+`__init__` must import cleanly on a machine without the harness's heavy deps
+(this repo lazy-loads cv2/torch for exactly that reason), and
+`pyproject.toml` must NOT declare `openprogram` as a dependency (the host
+already provides it). Full contract:
+[docs/installing-harnesses.md](https://github.com/Fzkuji/OpenProgram/blob/main/docs/installing-harnesses.md).
+
+</details>
+
+### 2. Run
+
+`--work-dir` is an absolute path the agent may write to; use a native path per OS.
+
+```bash
+# macOS / Linux — local desktop
+gui-agent --work-dir /tmp/gui-agent-firefox --app firefox "Open Firefox, go to google.com"
+
+# Windows (PowerShell) — local desktop
+gui-agent --work-dir C:\temp\gui-agent-firefox --app firefox "Open Firefox, go to google.com"
+
+# Any platform — drive a remote VM (e.g. OSWorld)
+gui-agent --work-dir /tmp/gui-agent-vm --vm http://VM_IP:5000 "Install the Orchis GNOME theme"
+```
+
+## Project Structure
+
+```
+GUI-Agent-Harness/
+├── gui_harness/
+│   ├── main.py                   # CLI entry + agent loop
+│   ├── openprogram_compat.py     # OpenProgram boundary
+│   ├── action/input.py           # Mouse, keyboard, clipboard
+│   ├── perception/               # Screenshot, YOLO detection, OCR
+│   ├── planning/
+│   │   ├── component_memory.py   # Visual memory + template matching
+│   │   └── screenspot_locator.py # Iterative zoom grounding pipeline
+│   └── adapters/vm_adapter.py    # Remote VM I/O
+├── benchmarks/
+│   ├── screenspot_pro/           # ScreenSpot Pro (1,581 samples, 87.9%)
+│   ├── screenspot_v2/            # ScreenSpot v2 (1,272 samples, 95.83%)
+│   ├── mmbench_gui_l2/           # MMBench-GUI-L2 (3,594 samples, 91.52%)
+│   ├── ui_vision/                # UI-Vision (5,479 samples, 68.64%)
+│   └── osworld/                  # OSWorld
+├── memory/                       # Per-app visual templates
+├── SKILL.md                      # LLM skill definition
+└── pyproject.toml
+```
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+## Citation
+
+```bibtex
+@misc{fu2026gui-agent-harness,
+  author       = {Fu, Zichuan},
+  title        = {GUI Agent Harness: Autonomous GUI Automation with Visual Memory},
+  year         = {2026},
+  publisher    = {GitHub},
+  url          = {https://github.com/Fzkuji/GUI-Agent-Harness},
+}
+```
+
+---
+<p align="center">
+  <sub>Built with <a href="https://github.com/Fzkuji/OpenProgram">OpenProgram</a></sub>
+</p>

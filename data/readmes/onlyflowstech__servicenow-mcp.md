@@ -406,7 +406,7 @@ The resulting `~/.servicenow-mcp/config.json` looks like this. Note
             "table": "incident",
             "kind": "canonical",
             "tools": [
-              "sn_query", "sn_get", "sn_aggregate", "sn_schema",
+              "sn_query", "sn_get", "sn_aggregate", "sn_schema", "sn_codesearch",
               "sn_create", "sn_update",
               "sn_incident_add_comment", "sn_incident_add_work_note"
             ],
@@ -416,7 +416,7 @@ The resulting `~/.servicenow-mcp/config.json` looks like this. Note
           {
             "table": "problem",
             "kind": "canonical",
-            "tools": ["sn_query", "sn_get", "sn_aggregate", "sn_schema"],
+            "tools": ["sn_query", "sn_get", "sn_aggregate", "sn_schema", "sn_codesearch"],
             "closureComplete": true,
             "relatedTables": ["problem"]
           }
@@ -692,7 +692,7 @@ in this section is needed to use this server.
 
 | Tool | Description |
 |------|-------------|
-| `sn_query` | Query an approved table with structured filters, field selection, pagination, and sorting; bounded raw reads require an explicit policy rule |
+| `sn_query` | Query an approved table with structured filters, field selection, pagination, and sorting; bounded raw reads require an explicit policy rule. Paging runs on `has_more` and `next_offset`, which can end early if ServiceNow ACLs strip rows from a page; cross-check with `sn_aggregate` `COUNT`. A page cut to fit `max_response_bytes` keeps the same contract: see [Paging when a response is cut to size](#paging-when-a-response-is-cut-to-size) |
 | `sn_get` | Get a single record by sys_id from an approved table |
 | `sn_create` | Create a record on any table granted for writes, using only field-policy-approved writable fields, including the journal fields `comments` and `work_notes`; `incident` additionally requires a bounded `short_description` |
 | `sn_update` | Update one record selected by exact `sys_id` on any table granted for writes, using only field-policy-approved writable fields; `comments` and `work_notes` append a journal entry |
@@ -716,7 +716,7 @@ in this section is needed to use this server.
 | `sn_relationships` | CMDB CI graph traversal — upstream/downstream/both, configurable depth |
 | `sn_attach` | List attachments, return downloads as inline base64, and upload inline base64 content; never touches a host filesystem path |
 | `sn_syslog` | Query system logs with severity/source/time filters |
-| `sn_codesearch` | Search business rules, script includes, client scripts, etc. |
+| `sn_codesearch` | Search business rules, script includes, client scripts, etc. Part of the default read grant, so a plain read grant on a code table allows it |
 | `sn_discover` | Discover tables, scoped apps, store apps, plugins |
 
 ### Testing & Automation
@@ -848,10 +848,25 @@ limit is always 1 MiB and no environment variable changes it.
 Stable ServiceNow metadata reads are cached per instance and credential identity
 for 24 hours by default. The default cached table patterns are
 `sys_glide_object`, `sys_dictionary`, `sys_db_object`, `sys_app`, `sys_plugins`,
-`sys_metadata*`, and `sys_flow*`. Set `metadataCache.ttlMs` and
+`sys_metadata*`, `sys_flow*`, and the five code tables `sn_codesearch`
+searches: `sys_script`, `sys_script_include`, `sys_ui_script`,
+`sys_script_client`, and `sys_ws_operation`. A repeated code search or
+`sn_query` page on those tables is served from the cache while the table's
+watermark is unchanged. Set `metadataCache.ttlMs` and
 `metadataCache.tables` on a file-backed profile, or `SN_METADATA_CACHE_TTL_MS`
-/ `SN_METADATA_CACHE_TABLES` for the explicit environment profile. `sn_query`,
-`sn_get`, and `sn_schema` accept `force_recache: true` to refresh metadata.
+/ `SN_METADATA_CACHE_TABLES` for the explicit environment profile; a table
+list you set replaces the default list, so name the code tables in it to keep
+caching them. `sn_query`, `sn_get`, and `sn_schema` accept `force_recache: true`
+to refresh metadata; `sn_codesearch` has no such flag, so a change the
+watermark cannot see shows there after at most one TTL. A cold `sn_get` of a
+code-table record costs two requests (the watermark, then the record), and
+`sn_batch` and `sn_aggregate` reads are never cached. Memory is bounded: a
+response over 512 KiB is not cached, one credential scope keeps at most 32 MiB
+and the whole cache 128 MiB, evicting the least recently used first. Cached
+code-table entries hold full script bodies, which can contain hard-coded
+credentials, in process memory (never on disk) for up to the TTL; to keep them
+out, set `metadataCache.tables` or `SN_METADATA_CACHE_TABLES` to
+`sys_glide_object,sys_dictionary,sys_db_object,sys_app,sys_plugins,sys_metadata*,sys_flow*`.
 
 **Freshness is checked against the instance, in every auth mode.** Before each
 fetch the cache reads a watermark in one small request: the table's row count
@@ -870,6 +885,45 @@ trips — a cache hit still costs one watermark read, and a miss costs one extra
 A tool call reads each table's watermark once, however many times it reads the
 table, until the call writes. A hierarchy walk reads `sys_db_object` once for
 the whole chain. An empty table caches like any other.
+
+**Small responses are not cached.** A hit costs a round trip about the size of
+a plain read, so a response under 32 KiB (serialized body) saves nothing and is
+not kept. The first read of such a selector costs the watermark and the read,
+as before; the server then remembers that selector as small, for one TTL, and
+reads it again in a single request with no watermark. If a later read of it
+comes back at 32 KiB or more, it is cached from the next read on. Large reads,
+such as script bodies, are cached and checked exactly as above, and
+`force_recache: true` still reads the watermark and refreshes. The memory is
+per credential scope, holds at most 512 selectors (least recently used out),
+and costs no cached bytes. A call that read a small selector this way reports
+`miss`. On a table whose watermark is slow (`sys_dictionary` on a large
+instance: about 0.5 s against a 0.1 to 0.2 s read in one measurement) even a
+large read may be faster uncached; the threshold is a size, not a time. A
+profile's `metadataCache.smallReadBytes` sets the threshold (0 caches every
+response; at most 512 KiB).
+
+**Seeing what the cache did.** Every successful response carries two optional
+fields in `structuredContent.metadata`. `cache` says how the call's cacheable
+reads were served: `hit` (all from the cache), `miss` (from ServiceNow: nothing
+cached yet, the watermark moved, the entry expired, the table could not be
+cached just then, or the response is small and not kept), `bypass` (a `force_recache: true` refresh), or `mixed` (the
+call made several cacheable reads with different outcomes, such as an
+`sn_codesearch` with no `table` over the five code tables). It is absent when
+the call read no cache-eligible table. `timing` is `{ total_ms, upstream_ms,
+watermark_ms }` in whole milliseconds, measured wall-clock: `total_ms` is the
+whole tool call; `upstream_ms` is the time during which at least one request to
+ServiceNow other than a watermark read was in flight (retry waits included);
+`watermark_ms` is the same for the cache's watermark reads. Overlapping
+requests are counted once, not summed, so each figure is at most `total_ms`,
+though the two can overlap each other and add up to more than it. A hit reports
+`upstream_ms: 0` and the watermark round trip it still costs. Callers that
+share a credential share cache warmth (several profiles on one credential, or
+several HTTP clients on one profile), so `cache: "hit"` can reflect another
+caller's earlier read made with the same credential. Both fields hold only
+numbers and those four words, and appear whether or not the cache is on
+(`timing` always, `cache` only when a cacheable read happened). Only the server
+sets them; a tool cannot supply its own. Each tool's `outputSchema` grows by
+about 320 characters for them.
 
 If a table's watermark cannot be used, its reads go straight upstream, without
 a watermark request, for a while: 15 minutes when the cause persists (an
@@ -892,6 +946,72 @@ run, never in the cache, even on a cached table.
 identity, and effective policy, so a repeat call costs no request at all. They
 are not revalidated in that window; `force_recache: true` refreshes them, and
 `schemaCacheTtlMs` / `SN_SCHEMA_CACHE_TTL_MS` (up to 1 hour) changes the window.
+
+### Paging when a response is cut to size
+
+A read that does not fit `max_response_bytes` (or, for a result with more than
+1,000 rows, the record limit) is cut by dropping whole rows from the tail, so
+the rows that come back are always a prefix of the page you asked for. For the
+list tools, `has_more` and `next_offset` count the rows that were dropped:
+
+| Field | Meaning |
+|-------|---------|
+| `record_count` | Rows in `results`. |
+| `truncated`, `dropped_records` | `sn_query` sets them when rows were dropped for size, and says how many; every list tool reports the same in `metadata.truncation`. |
+| `has_more` | True when rows were dropped for size **or** rows exist past the page: rows exist that this response did not contain. A response that came back empty because its rows were too large says `has_more: true`, not "no results". |
+| `next_offset` | `offset + record_count`: the first row not returned. Following it re-reads the dropped rows before anything later, so a client that only follows `next_offset` sees every row exactly once. |
+
+When **no row fit**, there is nothing to continue after, so `next_offset` is
+left out and `metadata.pagination.recovery` is
+`adjust_request_and_retry_same_offset`: `has_more: true` with no `next_offset`
+means the request must change (fewer `fields`, a lower `limit`, or a higher
+`max_response_bytes`; `sn_get` reads one row). The `hint` says which.
+
+This holds for `sn_query`, `sn_syslog`, `sn_schema`, `sn_relationships`,
+`sn_codesearch`, `sn_discover`, `sn_attach` (list) and `sn_atf`, whose `offset`
+is a row offset into the rows they return. Any other collection result that is cut to size
+(for example `sn_aggregate`) reports `has_more: true` with no `next_offset`.
+A page that lost no rows to size is unchanged: `has_more` and `next_offset`
+come from the row after the page, and `next_offset` is `offset + limit`.
+
+A client that follows `next_offset` should also pass the `limit` the hint names
+(`continue offset=8 limit=8`): at the original `limit` each page asks
+ServiceNow for that many rows and the cut drops most of them again, so the same
+rows are fetched many times over.
+
+Before this change `next_offset` after a cut page was `offset + limit`, which
+skipped the dropped rows, and a cut last page reported `has_more: false` with
+`record_count: 0`.
+
+**The `sn_query` hint gives values you can use.** For example
+
+```text
+Dropped 14/22; continue offset=8 limit=8; retry offset=0 with fields="sys_id,name" or max_response_bytes=1500 (fits the next row) or max_response_bytes=31500 (fits all 22).
+```
+
+- `continue offset=8 limit=8` is `next_offset` and the number of rows that fit:
+  page on with that `limit` and nothing is dropped again.
+- `retry offset=0 with ...` re-reads the whole page in one response, with fewer
+  fields or a larger budget. The two budgets are different numbers, and each
+  says what it buys. `max_response_bytes=1500 (fits the next row)` holds one
+  more row than this response did, so a retry with it returns about one more
+  row; `max_response_bytes=31500 (fits all 22)` holds every row of the page.
+  Both are measured from the response itself (the rows plus the envelope's own
+  metadata) and rounded up. The page figure is left out when it would be more
+  than the 1,000,000-byte maximum (or the `maxResponseBytes` of the raw-read
+  rule that approved a raw `query`, when that is lower) and when only one row
+  was dropped, since the next row is then the rest of the page. When even the
+  next row would be more than that maximum, the hint says the next row exceeds
+  it, names it, and offers only fields and `sn_get`. It never names a budget
+  the policy would deny.
+- `fields=...` appears when it helps: the table's short default list for a
+  read of the defaults or of `all`, or your own list without its large fields
+  (for example `script`) when you chose one. It only ever names fields your
+  profile may read, and never a sensitive one. A list with nothing large in it
+  gets the `limit` and the budget instead. `response_format="concise"` is
+  offered to a `detailed` read.
+- When no row fit, there is no `continue` clause and no `limit`: only the
+  retry options and `sn_get`.
 
 ### Unrestricted field selection (`fields=all`, `response_format=detailed`)
 
@@ -985,6 +1105,20 @@ servicenow-mcp-setup grant --profile dev --read cmdb_ci --tools sn_query,sn_rela
 servicenow-mcp-setup grant --profile dev --read change_request --related change_request=task
 servicenow-mcp-setup grant --profile dev --flows   # sn_flow_view's 15 tables, bound to sn_flow_view only
 ```
+
+A read grant without `--tools` binds `sn_query`, `sn_get`, `sn_aggregate`,
+`sn_schema` and `sn_codesearch` to each table it names. `sn_codesearch` is
+authorized per code table it searches (`sys_script`, `sys_script_include`,
+`sys_ui_script`, `sys_script_client`, `sys_ws_operation`), so
+`servicenow-mcp-setup grant --profile dev --read sys_script_include` lets that
+profile search script includes; a search with no `table` needs a read grant on
+all five. On any other table the binding is inert. **A profile written before
+`sn_codesearch` was a default keeps the tool list it was saved with** and is not
+rewritten: re-run the same `grant --read <code table>` to add it, or pass
+`--tools sn_codesearch` to add only that tool. Neither removes a tool. The
+profile's field policy still decides the script field: `sn_codesearch` is
+denied on a code table whose script field is not readable, exactly as `sn_query`
+is for that field.
 
 Allowlist entries may be exact table names or the literal `*` to allow every
 table for that operation. Table names are trimmed, lowercased, deduplicated,

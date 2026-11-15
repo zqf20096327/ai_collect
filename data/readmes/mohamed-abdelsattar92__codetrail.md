@@ -24,7 +24,7 @@ codetrail update shop
 codetrail serve shop
 ```
 
-**[Get started in ten minutes →](docs/getting-started.md)**
+**[Get started in ten minutes →](docs/getting-started.md)** · **[How-to guides for every feature, with screenshots →](docs/guides/README.md)**
 
 ![Codetrail's home page for its own repository: pinned pages and folding sections in the sidebar; where to continue, every path's progress and the areas by state; and beside them, how far behind the guide is, what changed and the system, documentation and repository cards](docs/images/home.png)
 
@@ -90,6 +90,7 @@ Codetrail uses the assistant for meaning and code for structure: deterministic e
 | ♻️ | **Staleness** | When the code behind a page you learned changes, the page says so and shows what changed. |
 | 📊 | **Documentation metrics** | How well the repository explains itself: how much of the guide's rationale is documented (and from where: ADRs, documents, code comments, commits), commits that explain why, ADRs to revisit, and dependencies no document mentions. An overview shows each number with its bar and trend across updates; each section opens to a chart and the items behind it, the one most in need first. Free: no assistant call. |
 | 📈 | **Repository statistics** | What the repository is, in charts you can explore: an interactive timeline of commits with its releases and dependency changes, a day-by-day activity calendar, a heat map of where change happens (by guide area, folder or file) with each area's commits month by month, and its age, commits and activity month by month, its releases from tags, lines of code by language with the share in tests, its facts by kind with the dependencies that arrived and left, and where change happens: the most changed files, folders and guide areas beside how much of each area's rationale is documented, quiet code and commit size. `codetrail stats <target>` prints the summary. Free: no assistant call. |
+| 👥 | **Your team's repositories** | Follow a GitHub organization, an Azure DevOps project or a GitLab group: `codetrail team add` picks the repositories, `codetrail team serve` shows each one's "you're behind" signal and its guide under one sign-in. It reads the service through `gh`, `az` or `glab` and your own git sign-in, and never holds a token. |
 | 💲 | **Estimates first** | Every paid action shows what it will use before it runs: tokens, dollars at API prices, and your plan's usage. |
 
 ### For your agent
@@ -192,6 +193,8 @@ These screenshots are Codetrail's guide to its own repository, written by Claude
 
 Codetrail never writes to the repository it teaches. It keeps its own mirror, copies out only the files it is allowed to see, extracts facts from them, and has your assistant write the guide from the facts. The facts and the guide also become the map and briefs your coding agent reads.
 
+A team's repositories work the same way. Each one followed from GitHub, Azure DevOps or GitLab is its own target, mirrored over https or ssh with your own git sign-in, and `codetrail team serve` serves them all under one login. `codetrail team update <name>`, or **Catch up** on the team page, catches all of them up with one estimate: the free part first (sources re-read, new repositories cloned, facts refreshed), then one line and checkbox per repository and a total capped at the team's budget. The page then shows one card per repository with something new, busiest first, and an overview of what the team merged across repositories.
+
 ![How Codetrail works: your checkout is fetched into a mirror, filtered by the exclusions into source/, extracted into codetrail.db; your assistant reads the facts and the allowed files and writes the guide, which the local page shows and sends questions from; the facts and the guide also become agents/, the map and briefs, which codetrail mcp serves to your coding agent](docs/diagrams/how-it-works.svg)
 
 **An update, step by step.** You run it on demand, from the command line or the page's Update button.
@@ -209,7 +212,7 @@ If an update is interrupted, the guide's uncommitted changes are discarded and n
 | Provider | Runs | Signs in with | Reads |
 |---|---|---|---|
 | `claude_code` (default) | Your own `claude -p` | Your Claude Pro or Max subscription | Only the allowed files: Claude Code's own permission rules and Codetrail's guard, each enough on its own |
-| `codex` | Your own `codex exec`, in its read-only sandbox | Your ChatGPT Plus or Pro subscription | Anything you can read; so a repository must opt in to it |
+| `codex` | Your own `codex exec`, in its read-only sandbox, with web search off | Your ChatGPT Plus or Pro subscription | Anything you can read; so a repository must opt in to it, and it never grades checks |
 | `local` | Codetrail's own tool loop against Ollama or LM Studio on `127.0.0.1` | Nothing: it's free | Only the allowed files, through Codetrail's own tools |
 
 Codetrail runs the programs you have already signed in to and **never reads, stores or passes your password, token or API key**. It removes every API key from those programs' environment, so the work counts against your subscription and never bills an API account by surprise. An API key is used only if you set `auth = "api_key"` for that provider. Each kind of call (plan, write, digest, answer, grade) can use a different provider and model, for example Claude Code for pages and a local model for quick questions.
@@ -232,7 +235,7 @@ Continue? [y/N]
 - **An update** refreshes the facts first, which costs nothing, then estimates and asks, in the terminal or in a dialog on the page. In a script it spends nothing unless you pass `--yes`.
 - **A question or a check** shows its estimate on its button, and what it used afterwards.
 - **Estimates** start from sensible guesses, then use the median of your own recent calls. Dollars are API list prices, kept in configuration because they change. On a subscription you pay nothing extra, and the estimate shows how much of your plan's usage windows you've used.
-- **Hard limits** stop any update at its dollar or token budget, and every question and check at its own budget.
+- **Hard limits** stop any update at its dollar or token budget, and every question and check at its own budget. Each paid call reserves its own cap before it starts, so no call can start past the update's or the team's dollar budget, and a running call can pass its own cap only by its last turn. A call stopped at its time limit, or cancelled while it runs, counts as its whole cap.
 
 ## Grounded, not guessed
 
@@ -254,9 +257,9 @@ Codetrail runs an assistant over repositories that hold secrets, so what it can 
 
 ![What the assistant can see: every tracked file passes the built-in secret patterns, your ignore files and gitleaks; what's left is source/, read through read-only tools, and everything written is scanned for secrets again](docs/diagrams/secrets.svg)
 
-An excluded file is as if it weren't in the repository: it isn't extracted, readable by the assistant, shown in the page, or included in diffs, digests or the "you're behind" counts. Symlinks are never copied. `codetrail files <target>` shows exactly what's visible and what's hidden, and why.
+An excluded file is as if it weren't in the repository: it isn't extracted, readable by the assistant, shown in the page, or included in diffs, digests or the "you're behind" counts. Symlinks are never copied. gitleaks reads every file, though its defaults skip lock files, vendored folders and files that look binary. It also reads the text that zip, tar, gzip, bzip2, xz and PDF files keep compressed, though not text a PDF draws through its fonts or images, so the assistant never reads a PDF or an image; a file whose text it can't read whole is hidden, and so is a file over 50 MB (both limits, and the length of a repository's own `.codetrailignore` and the time spent matching it, are `[source]` settings in `config.toml`). Everything Codetrail keeps, the full git history included, is readable by your account alone. `codetrail files <target>` shows exactly what's visible and what's hidden, and why.
 
-**The local page is locked down too.** It listens on `127.0.0.1` only, checks `Host` and `Origin`, signs you in with a one-time code that becomes a strict session cookie, requires a per-session token on every write, renders Markdown with raw HTML disabled, sends a strict Content Security Policy, and tells the browser never to store its pages.
+**The local page is locked down too.** It listens on `127.0.0.1` only, checks `Host` and `Origin`, signs you in with a one-time code that becomes a strict session cookie, requires a per-session token on every write, renders Markdown with raw HTML disabled and only `http(s)` and relative links, sends a strict Content Security Policy, and tells the browser never to store its pages.
 
 ## Learning, and knowing when it went stale
 
@@ -270,9 +273,9 @@ The interface is English first and switches language from the page; it ships in 
 
 ## Status
 
-The latest release is Codetrail 1.4.1 ([release notes](docs/releases/v1.4.1.md), [changelog](CHANGELOG.md)); 1.0.0 was the first public release. Phases 0 to 15 and 17 to 20 of the [design](docs/design/2026-10-05-codetrail-design.md) are built, tested and released; Phase 16 is planned. Codetrail is on PyPI as `codetrail-cli` ([ADR 0019](docs/adr/0019-publish-to-pypi-as-codetrail-cli.md)).
+The latest release is Codetrail 1.4.1 ([release notes](docs/releases/v1.4.1.md), [changelog](CHANGELOG.md)); 1.0.0 was the first public release. Phases 0 to 15 and 17 to 20 of the [design](docs/design/2026-10-05-codetrail-design.md) are built, tested and released; Phases 21 (teams from hosting services) and 22 (catching up across a team) are built and not yet released; Phase 16 is planned. Codetrail is on PyPI as `codetrail-cli` ([ADR 0019](docs/adr/0019-publish-to-pypi-as-codetrail-cli.md)).
 
-![The design's phases: 0 to 15 and 17 to 20 built, 16 planned](docs/diagrams/phases.svg)
+![The design's phases: 0 to 15 and 17 to 20 built, 21 and 22 built and not yet released, 16 planned](docs/diagrams/phases.svg)
 
 | Phase | What you can do | Status |
 |---|---|---|
@@ -296,6 +299,8 @@ The latest release is Codetrail 1.4.1 ([release notes](docs/releases/v1.4.1.md),
 | 18. The Documentation page's charts | The Documentation page as an overview beside folding sections: each metric's bar and trend, a chart in each section, the section most in need open first, and the long lists filtered by kind | Done |
 | 19. The sidebar | Hide the sidebar and peek at it from the window's edge, fold its sections, and pin pages as tiles at the top; the page sits in a card inside a tinted frame | Done |
 | 20. Context for coding agents | A map and a brief per page for coding agents, exported on every update and served by `codetrail mcp` to Claude Code and Codex; `codetrail agents` prints how to connect them | Done |
+| 21. Teams from hosting services | Follow a team's repositories from GitHub, Azure DevOps or GitLab with `codetrail team add`, `list`, `serve` and `remove`; a plain team page shows each one's "you're behind" signal and its guide under one sign-in | Built, unreleased |
+| 22. Catching up across a team | Catch up on all of a team's repositories at once, with one estimate, from the team page or `codetrail team update`; highlights in digests and an overview on the team page | Built, unreleased |
 | 16. Decision inventory | An opt-in paid pass that lists the decisions in the code and looks for a documented "why" for each ([design section 18.8](docs/design/2026-10-05-codetrail-design.md#188-delivery-and-later-work)) | Planned |
 
 Codex and local models are tested against stand-ins and Codetrail's own tests; Claude Code is also tested live. Codex's provider decision is [ADR 0006](docs/adr/0006-assistant-providers-and-subscriptions.md).
@@ -326,6 +331,7 @@ Then `just ci` runs every check CI runs; `just lint`, `just format`, `just typec
 | Document | What's in it |
 |---|---|
 | [Getting started](docs/getting-started.md) | Install, connect an assistant, add a repository, build and read the guide |
+| [How-to guides](docs/guides/README.md) | One page per feature, with the steps, commands, screenshots, settings, costs and troubleshooting: your first guide, what Codetrail reads, updating, reading and learning, getting around, search and ask, exploring the code, digests, assistants, coding agents, teams, settings and troubleshooting |
 | [Changelog](CHANGELOG.md) | What changed in each release; release notes for [1.4.1](docs/releases/v1.4.1.md), [1.4.0](docs/releases/v1.4.0.md), [1.3.0](docs/releases/v1.3.0.md), [1.2.0](docs/releases/v1.2.0.md), [1.1.1](docs/releases/v1.1.1.md), [1.1.0](docs/releases/v1.1.0.md), [1.0.1](docs/releases/v1.0.1.md) and [1.0.0](docs/releases/v1.0.0.md) |
 | [Design](docs/design/2026-10-05-codetrail-design.md) | The whole system: architecture, exclusions, facts, generation, page and bridge, learning, providers and estimates, errors, testing, phases |
 | [Brainstorm decisions](docs/design/brainstorm-decisions.md) | The problem, every early decision and why |

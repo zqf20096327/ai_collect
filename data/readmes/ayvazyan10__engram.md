@@ -96,7 +96,7 @@ CLI            ──direct───────→ ┘
 
 | Integration | Method | How |
 |---|---|---|
-| **Claude Code** | MCP (26 native tools) | `store_memory`, `recall_context`, `request_reflection`, … |
+| **Claude Code** | MCP (15 tools visible by default; 11 admin tools shown with `ENGRAM_ADMIN_TOOLS=1`) | `store_memory`, `recall_context`, `request_reflection`, … |
 | **Claude Desktop** | 1-click Desktop Extension | [Smithery](https://smithery.ai/skills/ayvazyan10/engram) or `.mcpb` from releases |
 | **Ollama** | Transparent HTTP proxy | Point client at `:11435` instead of `:11434` |
 | **Any app** | Direct REST API | `POST /api/recall` + `POST /api/memory` |
@@ -255,7 +255,7 @@ Add the config below to the file your client reads:
 | Cursor | `~/.cursor/mcp.json` |
 | Windsurf | `~/.codeium/windsurf/mcp_config.json` |
 
-`engram setup --source <client>` writes the right one for you. Any other client
+`engram setup --source <client>` writes the right one for you. Codex CLI and OpenCode are also registered automatically by `engram setup --source codex` and `engram setup --source opencode`, using their [native config formats](docs/INTEGRATIONS.md#codex-cli). Any other client
 reads its own file — check its documentation and paste the same block there.
 
 ```json
@@ -292,7 +292,7 @@ If you installed via `engram setup`, you can point to the local build instead:
 }
 ```
 
-Restart your AI client. **26 tools** are now available:
+Restart your AI client. **15 tools** are visible by default; **11 admin tools** are shown with `ENGRAM_ADMIN_TOOLS=1`:
 
 | Category | Tools |
 |---|---|
@@ -308,7 +308,7 @@ Restart your AI client. **26 tools** are now available:
 
 ### Auto-store conversations (optional)
 
-Local `engram setup` installs recall (UserPromptSubmit), SessionStart, and SessionEnd hooks automatically. SessionEnd stores under the absolute git project root; recall combines that project's memories with shared memories. Outside git, storage uses the shared pool and recall is unscoped. SessionStart loads context from the local MCP script. `engram update` refreshes previously installed hooks.
+Local `engram setup` installs recall (UserPromptSubmit), SessionStart, and SessionEnd hooks automatically. Recall injects at most 3 memories, each meeting a minimum similarity of 0.35 by default (calibrated for the multilingual model). SessionEnd uses importance 0.3 and skips `clear`/`resume`. Hooks honour the configured namespace mode. In `project` mode, SessionEnd stores under the main git repository's absolute root, shared by its worktrees, and recall combines that project's memories with shared memories; outside git, they use the resolved current working directory as the namespace, except that filesystem roots and the user's home directory use global memories only. SessionStart loads context from the local MCP script. `engram update` refreshes the existing Claude MCP entry and previously installed hooks.
 
 Add a Claude Code hook to automatically save conversation summaries to engram when a session ends:
 
@@ -359,7 +359,7 @@ Go to [smithery.ai/skills/ayvazyan10/engram](https://smithery.ai/skills/ayvazyan
 
 Download `engram-mcp.mcpb` from [GitHub Releases](https://github.com/ayvazyan10/engram/releases/latest) and open it in Claude Desktop (File → Open Extension). The bundle auto-installs `@engram-ai-memory/mcp` to `~/.engram/mcp/` on first launch — no setup required.
 
-> **How the bootstrap works:** on first run the `.mcpb` bundle installs `@engram-ai-memory/mcp@<version>` via npm into `~/.engram/mcp/`. A marker file prevents re-installation on subsequent launches. All 26 MCP tools are then available in Claude Desktop.
+> **How the bootstrap works:** on first run the `.mcpb` bundle installs `@engram-ai-memory/mcp@<version>` via npm into `~/.engram/mcp/`. A marker file prevents re-installation on subsequent launches. 15 MCP tools are visible by default; enable **Admin tools** in the extension settings to show the 11 admin tools.
 
 ---
 
@@ -368,7 +368,7 @@ Download `engram-mcp.mcpb` from [GitHub Releases](https://github.com/ayvazyan10/
 | Package | Description | npm |
 |---|---|---|
 | `@engram-ai-memory/core` | The Brain — memory engine, embeddings, graph, retrieval, decay, reflection | [![npm](https://img.shields.io/npm/v/@engram-ai-memory/core?color=6366f1)](https://npmjs.com/package/@engram-ai-memory/core) |
-| `@engram-ai-memory/mcp` | MCP Server — 26 tools for Claude Code and MCP-compatible clients | [![npm](https://img.shields.io/npm/v/@engram-ai-memory/mcp?color=6366f1)](https://npmjs.com/package/@engram-ai-memory/mcp) |
+| `@engram-ai-memory/mcp` | MCP Server for Claude Code and MCP-compatible clients — 15 tools visible by default; 11 admin tools shown with `ENGRAM_ADMIN_TOOLS=1` | [![npm](https://img.shields.io/npm/v/@engram-ai-memory/mcp?color=6366f1)](https://npmjs.com/package/@engram-ai-memory/mcp) |
 | `@engram-ai-memory/cli` | CLI — store, search, recall, reflections, stats, export, import from the terminal | [![npm](https://img.shields.io/npm/v/@engram-ai-memory/cli?color=6366f1)](https://npmjs.com/package/@engram-ai-memory/cli) |
 | `@engram-ai-memory/server` | Fastify REST API + Socket.io WebSocket (53 endpoints) | — |
 | `@engram-ai-memory/web` | Atlas dashboard — Map, Recall, Review, Timeline, Insights, Settings | — |
@@ -388,7 +388,7 @@ Download `engram-mcp.mcpb` from [GitHub Releases](https://github.com/ayvazyan10/
 | `ENGRAM_NAMESPACE_MODE` | `project` | Namespace behavior: `project`, `none`, `filter`, or `isolated` |
 | `ENGRAM_NAMESPACE` | *(none)* | Namespace value used when mode is `filter` or `isolated`; overrides `project` detection |
 | `ENGRAM_INDEX_PATH` | `{dbPath}.index` | Persistent vector index path |
-| `ENGRAM_EMBEDDING_MODEL` | `Xenova/all-MiniLM-L6-v2` | Override embedding model |
+| `ENGRAM_EMBEDDING_MODEL` | *(automatic)* | New databases use `Xenova/paraphrase-multilingual-MiniLM-L12-v2` (384-dim, ~118 MB quantized, multilingual); existing databases keep their model until `ENGRAM_EMBEDDING_MODEL` is set and `re_embed` runs. |
 | `ENGRAM_DECAY_INTERVAL` | `3600000` | Auto-decay sweep interval (ms) |
 | `ENGRAM_DECAY_THRESHOLD` | `0.05` | Retention score below which memories are archived |
 | `ENGRAM_ALLOWED_ORIGINS` | localhost dashboard origins | Comma-separated browser origins allowed to call the API (CORS + WebSocket). Non-browser clients (CLI, MCP, curl) are unaffected. |
@@ -407,7 +407,7 @@ Download `engram-mcp.mcpb` from [GitHub Releases](https://github.com/ayvazyan10/
 | `ENGRAM_MAX_BODY_BYTES` | `10485760` | Ceiling on a proxied request body; over it the proxy answers `413`. |
 | `ENGRAM_TOOL_RETRY` | `true` | Auto-retry failed tool calls once with an instruction (proxy) |
 
-`project` is the default: inside a git repository the MCP server and hooks scope to the absolute git top-level path and read that project's memories plus global ones; outside a repository they use the shared pool. `filter` scopes to `ENGRAM_NAMESPACE`, and `isolated` together with `ENGRAM_NAMESPACE` is a fixed boundary that rejects overrides and cross-namespace queries. The REST server and dashboard always run as `none` and see every project. Existing memories have a NULL namespace and stay global.
+`project` is the default: inside a git repository the MCP server and hooks scope to the main repository's absolute top-level path, shared by its worktrees, and read that project's memories plus global ones; outside a repository they use `filter` scoped to the resolved current working directory, except at a filesystem root (`/` or a Windows drive root) or exactly the user's home directory, where they use `filter` without a namespace (global memories only). `filter` scopes to `ENGRAM_NAMESPACE`, and `isolated` together with `ENGRAM_NAMESPACE` is a fixed boundary that rejects overrides and cross-namespace queries. In `project` mode, the REST server and dashboard run as `none` and see every project; configured `filter` and `isolated` modes also apply to the server. Existing memories have a NULL namespace and stay global.
 
 This is a summary. [docs/CONFIGURATION.md](docs/CONFIGURATION.md) has the full list, including everything under [Security](docs/CONFIGURATION.md#security). Note that `engram start` derives the server's environment from `~/.engram/config.json`, so shell variables it manages are overridden — see the [CLI section](docs/CONFIGURATION.md#cli-packagescli).
 
@@ -452,7 +452,7 @@ Use light or dark mode (or follow the system), open commands with **⌘K / Ctrl+
 |---|---|---|
 | Recall latency (100 memories) | ~18ms p50 | In-memory cosine scan + importance scoring |
 | Store throughput | ~120 mem/s | SQLite WAL + auto-linking |
-| Embedding | 8ms/text | Local ONNX/WASM (all-MiniLM-L6-v2) |
+| Embedding | 8ms/text | Local ONNX/WASM (measured with all-MiniLM-L6-v2) |
 | Cold startup (1k memories) | ~1.2s | Full DB scan + index build |
 | Cached startup (1k memories) | ~45ms | Persisted index (27x faster) |
 | Storage per memory | ~1.3 KB | FP16 compressed (2x reduction) |
@@ -536,7 +536,7 @@ Engram is local-first and privacy-preserving by design:
 
 - **Local by default.** All memories are stored in a local SQLite database (`~/.engram/engram.db`). No data leaves your machine unless you explicitly enable cloud sync.
 - **Cloud sync is opt-in.** Setting `ENGRAM_SYNC_URL` replicates memories to a PostgreSQL database you own and control — Engram never phones home and never touches any third-party service on its own. See [Cloud Sync](docs/CLOUD-SYNC.md).
-- **All embeddings run on-device.** The `all-MiniLM-L6-v2` model runs locally via `@xenova/transformers` — no external embedding API calls.
+- **All embeddings run on-device.** The configured embedding model runs locally via `@xenova/transformers` — no external embedding API calls.
 - **No telemetry.** Engram does not collect usage statistics, crash reports, or any analytics.
 - **Webhooks are opt-in.** If you configure webhooks, memory events are sent to your chosen URL — fully under your control.
 

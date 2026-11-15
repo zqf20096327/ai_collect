@@ -44,7 +44,7 @@ Eight operations, driven from a plan root (default `<project-root>/swe/`):
 | `grill` | Interrogate a rough feature idea back-and-forth into a decided brief before scoping |
 | `scope` | Capture requirements and current architecture into spec docs |
 | `plan` | Derive an ordered sprint + task plan from specs/source |
-| `implement` | Execute one sprint through the state machine, gated on build + test |
+| `implement` | Execute one or more sprints through the state machine — independent tasks in parallel, dependent tasks in order — gated on build + test |
 | `status` | Report plan health: open/in_progress/blocked/done, next sprint, gaps |
 | `validate` | Check plan integrity (ordering, deps, coverage, ids) |
 | `block` / `unblock` | Move a task to/from the blocked state |
@@ -108,7 +108,7 @@ Turns the specs (and the existing source) into an ordered plan: `swe/PLAN.md` pl
 1. **Reads** `specs/overview.md`, every feature and architecture spec, and enough source to write accurate references, noting each spec's dependencies and acceptance criteria.
 2. **Orders the work bottom-up**: foundation, then cross-cutting architecture, then features in dependency order, then integration and hardening. A task never depends on something not yet built.
 3. **Groups tasks into sprints** of typically 3–8, each leaving the system buildable and testable. Sprint 001 establishes the runnable skeleton, so every later task can be validated.
-4. **Writes the tasks**: each one small and atomic, testable, linked to the exact spec sections and source files it touches, self-contained, and listing its prerequisites by task id.
+4. **Writes the tasks**: each one small and atomic, testable, linked to the exact spec sections and source files it touches, self-contained, and listing every prerequisite by task id, since `implement` runs tasks with no dependency between them in parallel.
 5. **Writes `PLAN.md` and verifies it**: every spec is covered by at least one task, no task depends on a later one, every sprint has its four state folders (each with a `.gitkeep`), and ids are unique and ordered.
 
 <picture>
@@ -118,17 +118,29 @@ Turns the specs (and the existing source) into an ordered plan: `swe/PLAN.md` pl
   <img alt="Animation of plan: nine tasks are cut from five specs and placed into three sprints in dependency order, each adding a row to PLAN.md, then the plan is verified." src="docs/anatomy/svg/plan-light.svg">
 </picture>
 
-### `implement` — run a sprint
+### `implement` — run sprints
 
-Executes one sprint, one task at a time in numeric order. For each task it:
+Executes one sprint, or several (`implement 001-008`), and runs as much of the work in parallel as the plan allows. It reads every task's `Depends on` and schedules the work in waves:
 
-1. **Claims** it: confirms every task it depends on is already in `done/`, then moves it from `backlog/` to `in_progress/`.
-2. **Reads** the task, the spec sections it references and the source files it touches.
-3. **Implements** it in the real source, scoped to that task only.
-4. **Builds and tests**: the task is done only when the build, the configured typecheck/lint gates, the tests and every acceptance criterion pass. The agent runs the actual commands and records the results.
-5. **Completes** it: writes a summary (what was built, files changed, commands and results) and moves the task to `done/`.
+- Tasks that don't depend on each other and don't write the same files run at the same time, one subagent each.
+- Tasks linked by a dependency run in order: a task starts only when everything it depends on is in `done/`.
+- In a multi-sprint run, a later sprint's task starts as soon as its dependencies are done, without waiting for the earlier sprints to finish.
+- Without subagents, or with `parallelSprints: false`, the same schedule runs one task at a time.
+- With `isolation: "worktree"`, each parallel task is built in its own git worktree and branch, then squash-merged back as one commit per task. A subagent never builds against a sibling's half-written change, and a blocked task's unfinished work stays on its branch. In this mode `implement` commits (it never pushes) and needs the plan and working tree committed before it starts; by default subagents share the working tree and nothing is committed. A shared-mode run that would have qualified says so in its report.
 
-If a task can't go green after reasonable effort it stays in `in_progress/` with a `## Blocker` note and the sprint stops, because later tasks may depend on it. When the backlog is empty, the full build and test suite runs once more before the next sprint is reported.
+Every task goes through the same five steps:
+
+1. **Claim**: every task it depends on is confirmed to be in `done/`, then it moves from `backlog/` to `in_progress/`.
+2. **Read**: the task, the spec sections it references and the source files it touches.
+3. **Implement**: in the real source, scoped to that task only.
+4. **Build and test**: the task is done only when the build, the configured typecheck/lint gates, the tests and every acceptance criterion pass. The agent runs the actual commands and records the results.
+5. **Complete**: a summary is written (what was built, files changed, commands and results) and the task moves to `done/`.
+
+In a parallel wave the orchestrating agent claims the tasks and is the only one to touch the plan folder, each subagent implements one task, and a full build and test run on the combined tree gates the whole wave before anything moves to `done/`.
+
+If a task can't go green after reasonable effort it stays in `in_progress/` with a `## Blocker` note and the run stops, because a half-finished task is not a base to build on. Every sprint finishes on a full green build and test run.
+
+The animation follows the sequential path.
 
 <picture>
   <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/anatomy/svg/implement-dark-still.svg">
@@ -259,11 +271,15 @@ swe/
 
 ```
 > av-swe implement sprints/sprint-001-foundation
+> av-swe implement 001-008
 ```
 
-Works one task at a time through `backlog -> in_progress -> done`, gated on the project's real
-build/typecheck/lint/test commands. Never marks a task done with a failing build; a stuck task stays
-in `in_progress/` with a `## Blocker` section instead of being skipped. Writes a
+Takes each task through `backlog -> in_progress -> done`, gated on the project's real
+build/typecheck/lint/test commands. Tasks that don't depend on each other run in parallel, one
+subagent each, when the agent harness has subagents; tasks linked by `Depends on` run in order. A
+range schedules all of its sprints together, so independent tasks from different sprints run side
+by side. Never marks a task done with a failing build; a stuck task stays in `in_progress/` with a
+`## Blocker` section instead of being skipped. Writes a
 `sprints/<sprint>/done/task-NNN-*-summary.md` audit trail per completed task. Omit the sprint
 argument to auto-pick the lowest-numbered sprint that still has backlog tasks.
 
@@ -304,8 +320,8 @@ Checks sprint/task ordering, dependency direction, id uniqueness, and spec cover
 ```
 
 Inspects or edits `swe/av-swe.config.json` — plan root, sprints directory,
-build/typecheck/lint/test commands, skipped gates, parallel-sprint execution. Every field defaults
-sanely; a missing file means "use the project's standard commands."
+build/typecheck/lint/test commands, skipped gates, parallel-sprint execution, worktree isolation.
+Every field defaults sanely; a missing file means "use the project's standard commands."
 
 ## When to use it
 
