@@ -12,7 +12,7 @@
   "sec_worst": "critical",
   "sec_last": "2026-10-05",
   "sec_ids": [
-   "GHSA-c6q8-23rp-32cv(-,high)",
+   "GHSA-c6q8-23rp-32cv(CVE-2026-119337,high)",
    "GHSA-wpg4-h5g2-jxm6(CVE-2026-45312,critical)",
    "GHSA-vvwj-fvwh-4whx(CVE-2026-28797,critical)",
    "GHSA-v7cf-w7gj-pgf4(CVE-2026-24770,critical)",
@@ -29,11 +29,11 @@
    "Python": 3,
    "C": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -47,10 +47,12 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
+  "sec_n": 1,
   "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_last": "2026-10-20",
+  "sec_ids": [
+   "GHSA-5324-3w58-qpp2(CVE-2026-116575,medium)"
+  ],
   "contrib_n": 406,
   "lang": {
    "Python": 58,
@@ -59,11 +61,11 @@
    "CSS": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -85,11 +87,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -109,11 +111,11 @@
    "Cython": 23,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -127,10 +129,12 @@
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
+  "sec_n": 1,
   "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_last": "2026-11-07",
+  "sec_ids": [
+   "GHSA-7ppc-pv8r-x59g(-,medium)"
+  ],
   "contrib_n": 83,
   "lang": {
    "C#": 81,
@@ -139,11 +143,11 @@
    "CMake": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4833,13 +4837,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "DreamPharaohDisclose/ai--manus": {
   "rel_ver": null,
@@ -4850,13 +4857,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "femtotrooperslicer/ai--manus": {
   "rel_ver": null,
@@ -4867,13 +4877,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "oss-invisible/dots": {
   "rel_ver": "golden-9501f9dd801d",

@@ -22,11 +22,11 @@
    "TypeScript": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -48,11 +48,11 @@
    "Python": 3,
    "HTML": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261023",
    "release": "20261023",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -78,11 +78,11 @@
    "PLpgSQL": 1,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -2738,13 +2738,16 @@
    "Shell": 0,
    "Python": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261024",
    "security": "20261024",
    "contrib": "20261024",
-   "lang": "20261024"
-  }
+   "lang": "20261024",
+   "commit": "20261115"
+  },
+  "commit_90d": 8651,
+  "commit_7d": 2256
  },
  "hackycy/easyink": {
   "rel_ver": null,
@@ -4163,13 +4166,16 @@
    "PowerShell": 3,
    "CSS": 2
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261111",
    "security": "20261111",
    "contrib": "20261111",
-   "lang": "20261111"
-  }
+   "lang": "20261111",
+   "commit": "20261115"
+  },
+  "commit_90d": 16,
+  "commit_7d": 16
  },
  "Xin-YuXiao/Awesome-AI-for-Astronomy": {
   "rel_ver": null,
@@ -4310,6 +4316,26 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "RestraintBowZen40/ai--manus2.0": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

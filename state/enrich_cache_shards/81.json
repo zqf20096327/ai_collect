@@ -8,18 +8,18 @@
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
-  "sec_n": 16,
+  "sec_n": 29,
   "sec_worst": "high",
-  "sec_last": "2026-10-02",
+  "sec_last": "2026-11-04",
   "sec_ids": [
-   "GHSA-6fqq-452j-qhrp(CVE-2026-107286,high)",
-   "GHSA-v36g-jcw9-x7cw(CVE-2026-107287,medium)",
-   "GHSA-22h6-qm39-v87j(CVE-2026-107288,low)",
-   "GHSA-vmxc-h2x2-jmf3(CVE-2026-107289,medium)",
-   "GHSA-4x9p-g9wm-8q7f(CVE-2026-107291,low)",
-   "GHSA-fpf4-vwcp-v4hp(CVE-2026-107290,medium)",
-   "GHSA-q2xc-rrxj-58x9(CVE-2026-107292,medium)",
-   "GHSA-3gh4-cghq-f8v4(CVE-2026-107293,low)"
+   "GHSA-mgmv-r532-pg36(-,medium)",
+   "GHSA-jp94-mmr3-2pvv(-,medium)",
+   "GHSA-5ppx-9jq6-6pmw(-,low)",
+   "GHSA-mfx5-pc32-32m8(-,high)",
+   "GHSA-r879-rxgj-3g75(-,medium)",
+   "GHSA-484x-x9m4-62cj(-,medium)",
+   "GHSA-7494-925c-rrxv(-,medium)",
+   "GHSA-m5vj-8mcw-82qx(-,high)"
   ],
   "contrib_n": 475,
   "lang": {
@@ -29,11 +29,11 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -47,10 +47,12 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
+  "sec_n": 1,
   "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_last": "2026-11-10",
+  "sec_ids": [
+   "GHSA-27x5-82hg-xwr6(-,medium)"
+  ],
   "contrib_n": 26,
   "lang": {
    "TypeScript": 90,
@@ -59,11 +61,11 @@
    "CSS": 2,
    "PowerShell": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -89,11 +91,11 @@
    "Python": 9,
    "Cython": 3
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -119,11 +121,11 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4656,13 +4658,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "CrestDamselHold/ai--manus": {
   "rel_ver": null,
@@ -4673,13 +4678,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "fogcoraltake/ai--manus": {
   "rel_ver": null,
@@ -4690,13 +4698,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "jush-ai/jush": {
   "rel_ver": "v0.2.6203",
@@ -4723,6 +4734,26 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "LaneBusiness85/ai--manus": {
+  "commit_90d": 6,
+  "commit_7d": 6,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

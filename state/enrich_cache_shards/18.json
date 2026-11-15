@@ -14,11 +14,11 @@
    "Jupyter Notebook": 10,
    "Makefile": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261103",
    "release": "20261103",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -40,11 +40,11 @@
    "JavaScript": 1,
    "CSS": 1
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261112",
    "release": "20261112",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -70,11 +70,11 @@
    "Jupyter Notebook": 3,
    "JavaScript": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -92,11 +92,11 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -122,11 +122,11 @@
    "C": 1,
    "R": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -148,11 +148,11 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -178,11 +178,11 @@
    "PLpgSQL": 0,
    "Shell": 0
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261112",
    "release": "20261112",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -201,11 +201,11 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -227,11 +227,11 @@
    "Go": 7,
    "JavaScript": 5
   },
-  "enriched_at": "20261026",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261026",
    "release": "20261026",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -257,11 +257,11 @@
    "CSS": 5,
    "Python": 4
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -287,11 +287,11 @@
    "Go": 3,
    "JavaScript": 3
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -352,11 +352,11 @@
   }
  },
  "Cloud-CV/EvalAI": {
-  "commit_90d": 34,
-  "commit_7d": 1,
+  "commit_90d": 19,
+  "commit_7d": 0,
   "rel_ver": "1.1",
   "rel_pub": "2018-04-13",
-  "rel_days": 3123,
+  "rel_days": 3138,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -372,10 +372,10 @@
    "Shell": 2,
    "SCSS": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261115",
+   "release": "20261115",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1317,13 +1317,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261115"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "smkrv/ha-text-ai": {
   "rel_ver": "v2.5.3",
@@ -4621,13 +4624,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "AmplitudeBoss/ai--manus": {
   "rel_ver": null,
@@ -4638,13 +4644,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "shutong-queyue/ComfyUI-MOSS-MultiID": {
   "rel_ver": null,
@@ -4664,6 +4673,26 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "limespongegaze/ai--manus": {
+  "commit_90d": 6,
+  "commit_7d": 6,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

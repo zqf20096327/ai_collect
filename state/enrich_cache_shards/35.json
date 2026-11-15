@@ -18,11 +18,11 @@
    "PowerShell": 33,
    "JavaScript": 2
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -44,11 +44,11 @@
    "Dockerfile": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -74,11 +74,11 @@
    "CSS": 0,
    "Swift": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -103,11 +103,11 @@
    "Kotlin": 3,
    "CMake": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -132,11 +132,11 @@
    "C++": 2,
    "CMake": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -161,11 +161,11 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -179,10 +179,13 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
+  "sec_n": 2,
   "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_last": "2026-11-03",
+  "sec_ids": [
+   "GHSA-fmqx-8x8h-gf76(-,medium)",
+   "GHSA-jp2h-69pm-p69c(-,medium)"
+  ],
   "contrib_n": 112,
   "lang": {
    "C++": 93,
@@ -191,11 +194,11 @@
    "JavaScript": 1,
    "CMake": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -221,11 +224,11 @@
    "Shell": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -251,11 +254,11 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -281,11 +284,11 @@
    "Shell": 0,
    "TeX": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261030",
    "release": "20261030",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -301,11 +304,11 @@
   "sec_ids": [],
   "contrib_n": 16,
   "lang": {},
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4922,13 +4925,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "Celestialdritrough/ai--manus": {
   "rel_ver": null,
@@ -4939,13 +4945,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "VectorLetter/VellumVault": {
   "rel_ver": null,
@@ -4989,6 +4998,43 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "manepugilistembody19/GitHub-Copilot-app": {
+  "commit_90d": 11,
+  "commit_7d": 11,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
+ },
+ "SparkEradicate/GitHub-Copilot-app": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

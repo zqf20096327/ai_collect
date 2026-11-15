@@ -10,11 +10,11 @@
   "sec_ids": [],
   "contrib_n": 117,
   "lang": {},
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -43,11 +43,11 @@
    "Shell": 0,
    "MDX": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -69,11 +69,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -99,11 +99,11 @@
    "Shell": 1,
    "C++": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -129,11 +129,11 @@
    "CSS": 3,
    "CMake": 3
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -147,10 +147,11 @@
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
-  "sec_n": 2,
+  "sec_n": 3,
   "sec_worst": "high",
-  "sec_last": "2026-10-13",
+  "sec_last": "2026-10-26",
   "sec_ids": [
+   "GHSA-9x4c-wq7x-5fjq(-,high)",
    "GHSA-vqmg-c6j7-6c3j(-,high)",
    "GHSA-xrx3-j98v-67x9(-,high)"
   ],
@@ -162,11 +163,11 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -192,11 +193,11 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -222,11 +223,11 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4472,13 +4473,16 @@
    "Cuda": 15,
    "C++": 1
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261104",
    "security": "20261104",
    "contrib": "20261104",
-   "lang": "20261104"
-  }
+   "lang": "20261104",
+   "commit": "20261115"
+  },
+  "commit_90d": 16,
+  "commit_7d": 7
  },
  "pavanbadempet/AI-Healthcare-System": {
   "rel_ver": "v1.1.0",
@@ -4798,6 +4802,26 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "mailzebraminaret/ai--manus": {
+  "commit_90d": 6,
+  "commit_7d": 6,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

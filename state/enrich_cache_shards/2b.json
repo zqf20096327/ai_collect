@@ -20,11 +20,11 @@
    "HTML": 5,
    "TypeScript": 3
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261112",
    "release": "20261112",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -50,11 +50,11 @@
    "Shell": 0,
    "Starlark": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261106",
    "release": "20261106",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -89,11 +89,11 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -118,11 +118,11 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -148,11 +148,11 @@
    "Shell": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -173,11 +173,11 @@
    "JavaScript": 0,
    "Python": 0
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261108",
    "release": "20261108",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -191,10 +191,12 @@
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 5,
+  "sec_n": 7,
   "sec_worst": "high",
-  "sec_last": "2026-10-02",
+  "sec_last": "2026-10-27",
   "sec_ids": [
+   "GHSA-qm3r-hhvc-62cp(-,medium)",
+   "GHSA-7hv4-jgp9-mgx2(-,medium)",
    "GHSA-h7hp-2f8r-9g9c(-,medium)",
    "GHSA-g7j8-wp7h-wmgr(-,medium)",
    "GHSA-mvgg-jvj2-4frq(-,high)",
@@ -209,11 +211,11 @@
    "CSS": 1,
    "Shell": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -239,11 +241,11 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -265,11 +267,11 @@
   "lang": {
    "TypeScript": 100
   },
-  "enriched_at": "20261026",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261026",
    "release": "20261026",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -295,11 +297,11 @@
    "CSS": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -324,11 +326,11 @@
    "PHP": 76,
    "Blade": 24
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -409,8 +411,8 @@
   }
  },
  "langchain-ai/langchain-nextjs-template": {
-  "commit_7d": 10,
-  "commit_90d": 86,
+  "commit_7d": 1,
+  "commit_90d": 85,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -423,10 +425,10 @@
    "JavaScript": 5,
    "CSS": 1
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261108",
-   "release": "20261108",
+   "commit": "20261115",
+   "release": "20261115",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

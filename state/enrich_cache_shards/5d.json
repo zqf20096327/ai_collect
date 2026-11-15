@@ -29,11 +29,11 @@
    "JavaScript": 2,
    "Shell": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -59,11 +59,11 @@
    "HTML": 1,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -98,11 +98,11 @@
    "XSLT": 0,
    "HTML": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -128,11 +128,11 @@
    "Dockerfile": 0,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -155,11 +155,11 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261102",
    "release": "20261102",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -178,11 +178,11 @@
    "MDX": 59,
    "Jupyter Notebook": 41
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -208,11 +208,11 @@
    "Shell": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -238,11 +238,11 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -261,11 +261,11 @@
    "JavaScript": 100,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }

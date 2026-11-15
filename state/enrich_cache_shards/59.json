@@ -10,16 +10,16 @@
   "rel_none": false,
   "sec_n": 30,
   "sec_worst": "critical",
-  "sec_last": "2026-10-05",
+  "sec_last": "2026-11-12",
   "sec_ids": [
-   "GHSA-349p-3c3r-8mjr(CVE-2026-72922,high)",
-   "GHSA-4m2w-qfr5-9f3v(-,medium)",
-   "GHSA-rq9m-xvc7-v9h6(CVE-2026-56823,medium)",
-   "GHSA-57mf-wqwq-6g6x(-,high)",
-   "GHSA-24q6-6h89-f9p7(-,critical)",
-   "GHSA-vm4v-5hgj-rq77(-,high)",
-   "GHSA-8pjg-mfqm-vrhr(CVE-2026-45023,medium)",
-   "GHSA-xxpr-ccx5-48mf(-,medium)"
+   "GHSA-q2g2-67rp-2c5r(-,medium)",
+   "GHSA-xfwx-rhmm-rjqc(-,high)",
+   "GHSA-p835-fqv4-4x3m(-,medium)",
+   "GHSA-f3mw-f2qc-wh9m(-,medium)",
+   "GHSA-2739-q98r-hx72(-,medium)",
+   "GHSA-hf7q-6hwp-f6v2(-,high)",
+   "GHSA-3c7g-v5hv-wwv4(-,high)",
+   "GHSA-qv8m-h6gh-rj66(-,low)"
   ],
   "contrib_n": 425,
   "lang": {
@@ -29,11 +29,11 @@
    "JavaScript": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -59,11 +59,11 @@
    "Python": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -81,11 +81,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -111,11 +111,11 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4599,13 +4599,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261107",
    "security": "20261107",
    "contrib": "20261107",
-   "lang": "20261107"
-  }
+   "lang": "20261107",
+   "commit": "20261115"
+  },
+  "commit_90d": 78,
+  "commit_7d": 61
  },
  "99Like-wjj/ai-testing-ego-lite": {
   "rel_ver": "v0.2.1",

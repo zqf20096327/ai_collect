@@ -24,11 +24,11 @@
    "CSS": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -51,11 +51,11 @@
    "Python": 98,
    "Shell": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -79,11 +79,11 @@
    "TypeScript": 5,
    "Vim Snippet": 3
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -109,11 +109,11 @@
    "Python": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -162,11 +162,11 @@
    "EJS": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -192,11 +192,11 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -210,18 +210,18 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 21,
+  "sec_n": 22,
   "sec_worst": "critical",
-  "sec_last": "2026-10-15",
+  "sec_last": "2026-10-21",
   "sec_ids": [
+   "GHSA-xpmq-qfwr-f4c6(-,high)",
    "GHSA-jcvx-4v4m-p5v9(-,medium)",
-   "GHSA-x3h5-pr45-fx4r(-,critical)",
+   "GHSA-x3h5-pr45-fx4r(CVE-2026-112005,critical)",
    "GHSA-2mwr-p8j5-rm33(-,high)",
    "GHSA-pvf2-6h4x-r24j(-,medium)",
    "GHSA-qf7x-ghf4-rqh4(-,low)",
    "GHSA-6mr5-wx6p-65fg(-,medium)",
-   "GHSA-q89h-vc47-vf4c(-,high)",
-   "GHSA-4r6q-hf67-63p9(-,medium)"
+   "GHSA-q89h-vc47-vf4c(-,high)"
   ],
   "contrib_n": 26,
   "lang": {
@@ -231,11 +231,11 @@
    "Python": 3,
    "Rust": 2
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -264,22 +264,22 @@
    "XSLT": 1,
    "Python": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "mikeyobrien/ralph-orchestrator": {
-  "commit_7d": 1,
-  "commit_90d": 9,
-  "rel_ver": "v2.10.1",
-  "rel_pub": "2026-06-23",
-  "rel_days": 138,
-  "rel_n90": 0,
+  "commit_7d": 15,
+  "commit_90d": 23,
+  "rel_ver": "v2.12.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 2,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -294,10 +294,10 @@
    "Shell": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261108",
-   "release": "20261108",
+   "commit": "20261115",
+   "release": "20261115",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -595,11 +595,11 @@
   }
  },
  "RongleCat/grok-app": {
-  "commit_7d": 79,
-  "commit_90d": 1175,
-  "rel_ver": "v0.2.50",
-  "rel_pub": "2026-10-28",
-  "rel_days": 3,
+  "commit_7d": 12,
+  "commit_90d": 931,
+  "rel_ver": "v0.2.51",
+  "rel_pub": "2026-11-14",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -615,10 +615,10 @@
    "Python": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261115",
+   "release": "20261115",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4801,13 +4801,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 8,
+  "commit_7d": 8
  },
  "BasinGradeJudge/ai--manus": {
   "rel_ver": null,
@@ -4818,13 +4821,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "ewhacc/tandem.cpp": {
   "rel_ver": null,
@@ -4844,6 +4850,53 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "chipfighter/context-attachment-manager": {
+  "commit_90d": 411,
+  "commit_7d": 16,
+  "rel_ver": "v0.11.2",
+  "rel_pub": "2026-11-14",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 89,
+   "HTML": 7,
+   "JavaScript": 2,
+   "Shell": 1,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
+ },
+ "Storagephoanchorage/GitHub-Copilot-app": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

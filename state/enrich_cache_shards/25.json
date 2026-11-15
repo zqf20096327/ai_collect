@@ -10,11 +10,11 @@
   "sec_ids": [],
   "contrib_n": 446,
   "lang": {},
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -34,11 +34,11 @@
    "HTML": 3,
    "Dockerfile": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   },
@@ -96,18 +96,18 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "openai/plugins": {
   "commit_90d": 11,
-  "commit_7d": 2,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -122,11 +122,11 @@
    "HTML": 2,
    "CSS": 2
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
-   "security": "20261016",
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -150,11 +150,11 @@
    "Jinja": 0,
    "Jupyter Notebook": 0
   },
-  "enriched_at": "20261101",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261101",
    "release": "20261101",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -176,11 +176,11 @@
    "Go": 0,
    "HCL": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -200,11 +200,11 @@
   "sec_ids": [],
   "contrib_n": 28,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -220,11 +220,11 @@
   "sec_ids": [],
   "contrib_n": 18,
   "lang": {},
-  "enriched_at": "20261031",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261031",
    "release": "20261031",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -250,11 +250,11 @@
    "Python": 0,
    "MDX": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4447,13 +4447,16 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261103",
    "security": "20261103",
    "contrib": "20261103",
-   "lang": "20261103"
-  }
+   "lang": "20261103",
+   "commit": "20261115"
+  },
+  "commit_90d": 2586,
+  "commit_7d": 176
  },
  "poco-ai/agentero-dsh-plugin": {
   "rel_ver": null,
@@ -4823,6 +4826,56 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "steve1316/uma-android-automation": {
+  "commit_90d": 273,
+  "commit_7d": 16,
+  "rel_ver": "v5.9.2",
+  "rel_pub": "2026-10-30",
+  "rel_days": 16,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Kotlin": 51,
+   "TypeScript": 38,
+   "HTML": 5,
+   "Python": 5,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
+ },
+ "PegasusVendorHarbor/GitHub-Copilot-app": {
+  "commit_90d": 11,
+  "commit_7d": 11,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

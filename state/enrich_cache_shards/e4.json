@@ -20,11 +20,11 @@
    "Makefile": 0,
    "HCL": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -44,11 +44,11 @@
   "sec_ids": [],
   "contrib_n": 56,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -74,11 +74,11 @@
    "Cuda": 0,
    "C++": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -100,11 +100,11 @@
    "CSS": 1,
    "Cuda": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -130,11 +130,11 @@
    "PowerShell": 1,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -160,11 +160,11 @@
    "JavaScript": 1,
    "HTML": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -185,11 +185,11 @@
    "Shell": 1,
    "C++": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261023",
    "release": "20261023",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -205,11 +205,11 @@
   "sec_ids": [],
   "contrib_n": 360,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -234,11 +234,11 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -256,11 +256,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -406,12 +406,12 @@
   }
  },
  "signerlabs/Klee": {
-  "commit_7d": 1,
-  "commit_90d": 1,
-  "rel_ver": "v1.0.0",
-  "rel_pub": "2026-03-19",
-  "rel_days": 228,
-  "rel_n90": 0,
+  "commit_7d": 3,
+  "commit_90d": 4,
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-11-14",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -422,10 +422,10 @@
   "lang": {
    "Swift": 100
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261115",
+   "release": "20261115",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -433,11 +433,11 @@
  },
  "kyleskom/NBA-Machine-Learning-Sports-Betting": {
   "commit_7d": 1,
-  "commit_90d": 1,
-  "rel_ver": "2025-26.1.0",
-  "rel_pub": "2026-01-09",
-  "rel_days": 303,
-  "rel_n90": 0,
+  "commit_90d": 2,
+  "rel_ver": "2026-27.1.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 4,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -452,10 +452,10 @@
    "Jupyter Notebook": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261108",
-   "release": "20261108",
+   "commit": "20261115",
+   "release": "20261115",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4520,6 +4520,30 @@
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
+  }
+ },
+ "k7cfo/remove-your-data": {
+  "commit_90d": 53,
+  "commit_7d": 10,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 91,
+   "HTML": 6,
+   "CSS": 4
+  },
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

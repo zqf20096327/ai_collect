@@ -20,11 +20,11 @@
    "EJS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261109",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261109",
    "release": "20261109",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -59,11 +59,11 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261109",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261109",
    "release": "20261109",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -86,11 +86,11 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -110,11 +110,11 @@
    "JavaScript": 2,
    "CSS": 2
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261104",
    "release": "20261104",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -136,11 +136,11 @@
    "HTML": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -188,11 +188,11 @@
    "Jupyter Notebook": 5,
    "Nunjucks": 2
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -206,18 +206,18 @@
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 27,
+  "sec_n": 28,
   "sec_worst": "critical",
-  "sec_last": "2026-09-21",
+  "sec_last": "2026-11-13",
   "sec_ids": [
+   "GHSA-cp3h-jjxp-9pvr(-,medium)",
    "GHSA-m5gf-432r-g5jw(CVE-2026-107814,high)",
    "GHSA-89ph-64cf-gqcc(CVE-2026-107817,medium)",
    "GHSA-wfqg-88r5-55f6(CVE-2026-107816,medium)",
    "GHSA-4wgx-ffg9-jrwq(CVE-2026-107815,high)",
    "GHSA-mhvc-vqcq-7vq5(CVE-2026-107818,high)",
    "GHSA-fmq9-qjxj-qpf7(CVE-2026-107819,medium)",
-   "GHSA-c4gx-34mg-95q5(CVE-2026-107821,high)",
-   "GHSA-2m85-2x26-36rf(CVE-2026-107822,medium)"
+   "GHSA-c4gx-34mg-95q5(CVE-2026-107821,high)"
   ],
   "contrib_n": 83,
   "lang": {
@@ -227,11 +227,11 @@
    "Shell": 1,
    "Yacc": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -282,11 +282,11 @@
    "SCSS": 1,
    "CSS": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -315,11 +315,11 @@
    "Shell": 0,
    "Astro": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -344,11 +344,11 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -5129,6 +5129,40 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "MatterAnemone/GitHub-Copilot-app": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
+ },
+ "Maroonforcavity/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

@@ -15,11 +15,11 @@
    "JavaScript": 8,
    "Shell": 1
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261108",
-   "release": "20261108",
-   "security": "20261016",
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -50,11 +50,11 @@
    "Starlark": 1,
    "TypeScript": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -84,11 +84,11 @@
    "Batchfile": 0,
    "TypeScript": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -104,16 +104,16 @@
   "rel_none": false,
   "sec_n": 30,
   "sec_worst": "critical",
-  "sec_last": "2026-07-21",
+  "sec_last": "2026-11-12",
   "sec_ids": [
-   "GHSA-6jrh-8qmg-jj3p(CVE-2026-72862,high)",
-   "GHSA-4mfc-grxw-6858(CVE-2026-72736,high)",
-   "GHSA-p2c7-8j28-c7gq(CVE-2026-72878,high)",
-   "GHSA-899j-cjwp-v4gw(CVE-2026-72864,critical)",
-   "GHSA-3rpx-c3j9-q99x(CVE-2026-72734,high)",
-   "GHSA-cg8g-x23v-5fw8(CVE-2026-72867,critical)",
-   "GHSA-56g6-wjr4-5q7p(CVE-2026-93425,critical)",
-   "GHSA-r89g-h7x9-phr2(CVE-2026-72886,critical)"
+   "GHSA-hjg5-rhxv-62h2(-,medium)",
+   "GHSA-qxjv-6cvh-32c6(-,high)",
+   "GHSA-q7cq-vxv7-449c(-,medium)",
+   "GHSA-pfvx-m77f-6qr6(-,high)",
+   "GHSA-6g88-x4hx-9837(-,medium)",
+   "GHSA-f6j7-hvv3-8jwm(-,medium)",
+   "GHSA-q2x3-gch7-6g53(-,medium)",
+   "GHSA-gw29-hh29-xhfr(-,high)"
   ],
   "contrib_n": 384,
   "lang": {
@@ -123,11 +123,11 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -179,11 +179,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -206,11 +206,11 @@
    "TypeScript": 93,
    "JavaScript": 7
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -234,11 +234,11 @@
    "Rust": 7,
    "Makefile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -252,10 +252,12 @@
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 1,
+  "sec_n": 3,
   "sec_worst": "high",
-  "sec_last": "2026-03-29",
+  "sec_last": "2026-10-19",
   "sec_ids": [
+   "GHSA-ffpg-x3xh-49gr(-,high)",
+   "GHSA-6gm9-8jxc-p862(-,high)",
    "GHSA-ghq9-vc6f-8qjf(CVE-2024-49048,high)"
   ],
   "contrib_n": 136,
@@ -263,11 +265,11 @@
    "Python": 100,
    "Batchfile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -5359,13 +5361,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "fairsleuthrecall/ai--manus": {
   "rel_ver": null,
@@ -5376,12 +5381,15 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  }
 }

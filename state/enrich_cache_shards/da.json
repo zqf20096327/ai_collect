@@ -8,21 +8,24 @@
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
+  "sec_n": 2,
   "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_last": "2026-11-11",
+  "sec_ids": [
+   "GHSA-v9h7-jj4g-f862(-,medium)",
+   "GHSA-r639-rr7r-x72w(-,medium)"
+  ],
   "contrib_n": 77,
   "lang": {
    "Python": 100,
    "Just": 0,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -46,11 +49,11 @@
    "HTML": 9,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -76,11 +79,11 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -106,11 +109,11 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4114,13 +4117,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261107",
    "security": "20261107",
    "contrib": "20261107",
-   "lang": "20261107"
-  }
+   "lang": "20261107",
+   "commit": "20261115"
+  },
+  "commit_90d": 73,
+  "commit_7d": 56
  },
  "yyywaa/Cloudra-mechanism-agent": {
   "rel_ver": "v0.1.1rc",

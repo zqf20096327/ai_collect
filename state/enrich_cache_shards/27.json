@@ -8,18 +8,18 @@
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
-  "sec_n": 14,
+  "sec_n": 15,
   "sec_worst": "critical",
-  "sec_last": "2026-06-03",
+  "sec_last": "2026-10-17",
   "sec_ids": [
    "GHSA-xmwj-c75x-6346(CVE-2026-54157,medium)",
    "GHSA-5mwj-v5jw-5c97(CVE-2026-39411,medium)",
    "GHSA-xq4x-622m-q8fq(CVE-2026-42045,medium)",
+   "GHSA-2g9j-v25c-4j97(-,medium)",
    "GHSA-j7xp-4mg9-x28r(CVE-2026-23522,low)",
    "GHSA-wrrr-8jcv-wjf5(CVE-2026-23835,medium)",
    "GHSA-4gpc-rhpj-9443(CVE-2026-23733,critical)",
-   "GHSA-fgx4-p8xf-qhp9(CVE-2025-62505,low)",
-   "GHSA-xph5-278p-26qx(CVE-2025-59426,medium)"
+   "GHSA-fgx4-p8xf-qhp9(CVE-2025-62505,low)"
   ],
   "contrib_n": 353,
   "lang": {
@@ -29,11 +29,11 @@
    "HTML": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -58,11 +58,11 @@
    "Shell": 0,
    "Apex": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261106",
    "release": "20261106",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -88,11 +88,11 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -115,11 +115,11 @@
    "Jupyter Notebook": 100,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -135,11 +135,11 @@
   "sec_ids": [],
   "contrib_n": 5,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -164,11 +164,11 @@
    "Nix": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -194,11 +194,11 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -227,8 +227,8 @@
   }
  },
  "video-db/call.md": {
-  "commit_90d": 10,
-  "commit_7d": 2,
+  "commit_90d": 5,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -243,10 +243,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261115",
+   "release": "20261115",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4401,13 +4401,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "emberprosecutorlearn/ai--manus": {
   "rel_ver": null,
@@ -4418,13 +4421,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "Aprilming/maiknote": {
   "rel_ver": "0.13.4",
@@ -4451,6 +4457,26 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "HemomancerMind/ai--manus": {
+  "commit_90d": 7,
+  "commit_7d": 7,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

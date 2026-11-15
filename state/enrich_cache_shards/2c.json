@@ -20,11 +20,11 @@
    "MDX": 6,
    "JavaScript": 3
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -46,11 +46,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261106",
    "release": "20261106",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -76,11 +76,11 @@
    "CSS": 1,
    "Python": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -105,11 +105,11 @@
    "JavaScript": 3,
    "Dockerfile": 0
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261105",
    "release": "20261105",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4375,13 +4375,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "ThinkIac/ThinkIac": {
   "rel_ver": "runtime-main-e146ec0389697acf3e2c6c2632b01dde0c8441ec",

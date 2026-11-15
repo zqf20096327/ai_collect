@@ -8,18 +8,18 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 16,
+  "sec_n": 28,
   "sec_worst": "high",
-  "sec_last": "2026-10-01",
+  "sec_last": "2026-10-23",
   "sec_ids": [
-   "GHSA-cgc7-9qp3-86m3(CVE-2026-105749,medium)",
-   "GHSA-3cr3-8m4c-fpxw(CVE-2026-105747,medium)",
-   "GHSA-p3fw-7699-7926(CVE-2026-105742,low)",
-   "GHSA-h42j-9hcc-3cwc(CVE-2026-105746,low)",
-   "GHSA-x3q2-h9hx-4r4j(CVE-2026-105744,high)",
-   "GHSA-p944-4xh2-x776(CVE-2026-105748,medium)",
-   "GHSA-4xhp-xg4w-8ppm(CVE-2026-105751,medium)",
-   "GHSA-q43m-vhcp-mhvm(CVE-2026-105750,medium)"
+   "GHSA-cvvj-vhrh-gxp9(-,medium)",
+   "GHSA-h8jf-9f4f-2v9h(-,medium)",
+   "GHSA-m5xp-wvrj-48wx(-,medium)",
+   "GHSA-969p-q7h6-6fr8(-,medium)",
+   "GHSA-c2w9-g7hj-xcr8(-,medium)",
+   "GHSA-9x7c-8865-v96p(-,medium)",
+   "GHSA-75hv-jmgq-436v(-,medium)",
+   "GHSA-48p5-hc4j-vw33(-,medium)"
   ],
   "contrib_n": 370,
   "lang": {
@@ -28,11 +28,11 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -58,11 +58,11 @@
    "Java": 0,
    "C++": 0
   },
-  "enriched_at": "20261109",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261109",
    "release": "20261109",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -88,11 +88,11 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -118,11 +118,11 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -147,11 +147,11 @@
    "TypeScript": 4,
    "Shell": 4
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261103",
    "release": "20261103",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -177,11 +177,11 @@
    "MDX": 2,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -207,11 +207,11 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -252,11 +252,11 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261023",
    "release": "20261023",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -282,11 +282,11 @@
    "TypeScript": 6,
    "Cuda": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -312,11 +312,11 @@
    "CSS": 1,
    "PowerShell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -338,11 +338,11 @@
    "CSS": 12,
    "JavaScript": 4
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -364,11 +364,11 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261029",
    "release": "20261029",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -5885,13 +5885,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "mohdshamii/Industrial-training": {
   "rel_ver": null,
@@ -5968,6 +5971,26 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "Orderdromonitor/ai--manus2.0": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

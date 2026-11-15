@@ -8,18 +8,18 @@
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 21,
+  "sec_n": 22,
   "sec_worst": "high",
-  "sec_last": "2026-08-19",
+  "sec_last": "2026-11-14",
   "sec_ids": [
+   "GHSA-6j8g-rp8v-55vr(-,medium)",
    "GHSA-ccrj-frp2-c945(CVE-2026-105761,high)",
    "GHSA-9c9q-5rj5-mjj2(-,high)",
    "GHSA-fj5w-7rc8-3f3f(-,medium)",
    "GHSA-5vmp-5q9h-hmr7(-,high)",
    "GHSA-qqjx-5h5w-x5vj(CVE-2026-26023,high)",
    "GHSA-qpv6-75c2-75h4(CVE-2026-21866,medium)",
-   "GHSA-phpv-94hg-fv9g(CVE-2025-67732,high)",
-   "GHSA-cg94-8v83-7hjj(CVE-2026-42138,medium)"
+   "GHSA-phpv-94hg-fv9g(CVE-2025-67732,high)"
   ],
   "contrib_n": 456,
   "lang": {
@@ -29,11 +29,11 @@
    "Go": 0,
    "CSS": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -63,11 +63,11 @@
    "Dockerfile": 0,
    "Go Template": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -93,11 +93,11 @@
    "OCaml": 1,
    "Python": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -123,11 +123,11 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -145,11 +145,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -175,11 +175,11 @@
    "TypeScript": 2,
    "jq": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261107",
    "release": "20261107",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4522,12 +4522,35 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
+ },
+ "Meteorzipartition/GitHub-Copilot-app": {
+  "commit_90d": 11,
+  "commit_7d": 11,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

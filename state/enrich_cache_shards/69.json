@@ -335,11 +335,11 @@
   }
  },
  "DemonDamon/AgenticX": {
-  "commit_90d": 1044,
-  "commit_7d": 40,
+  "commit_90d": 985,
+  "commit_7d": 70,
   "rel_ver": "v0.6.5",
   "rel_pub": "2026-09-30",
-  "rel_days": 39,
+  "rel_days": 46,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -355,10 +355,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261108",
-   "release": "20261108",
+   "commit": "20261115",
+   "release": "20261115",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4373,6 +4373,26 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "LocksmithPalace/ai--manus": {
+  "commit_90d": 6,
+  "commit_7d": 6,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

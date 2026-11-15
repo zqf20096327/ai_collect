@@ -17,11 +17,11 @@
    "Jupyter Notebook": 92,
    "Python": 8
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -47,11 +47,11 @@
    "Jupyter Notebook": 3,
    "Shell": 0
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261029",
    "release": "20261029",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -75,11 +75,11 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261023",
    "release": "20261023",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -93,10 +93,11 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 1,
+  "sec_n": 2,
   "sec_worst": "critical",
-  "sec_last": "2026-10-13",
+  "sec_last": "2026-10-30",
   "sec_ids": [
+   "GHSA-7p86-8g3v-vgv9(CVE-2026-107204,critical)",
    "GHSA-w5f2-9q9c-ff4h(CVE-2026-105192,critical)"
   ],
   "contrib_n": 369,
@@ -107,11 +108,11 @@
    "C++": 2,
    "Cuda": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -135,11 +136,11 @@
    "Starlark": 4,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261106",
    "release": "20261106",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -162,11 +163,11 @@
    "Python": 99,
    "Dockerfile": 1
   },
-  "enriched_at": "20261026",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261026",
    "release": "20261026",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -191,11 +192,11 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4583,6 +4584,26 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "LimitFrogTell/ai--manus": {
+  "commit_90d": 6,
+  "commit_7d": 6,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

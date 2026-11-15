@@ -20,11 +20,11 @@
    "C#": 5,
    "TypeScript": 5
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -44,21 +44,21 @@
    "Python": 17,
    "TypeScript": 10
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "argosopentech/argos-translate": {
-  "commit_90d": 2,
-  "commit_7d": 0,
+  "commit_90d": 12,
+  "commit_7d": 12,
   "rel_ver": "v1.4.0",
   "rel_pub": "2021-08-24",
-  "rel_days": 1879,
+  "rel_days": 1909,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -71,11 +71,11 @@
    "Python": 95,
    "Shell": 5
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -127,11 +127,11 @@
    "CSS": 2,
    "HTML": 1
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261112",
    "release": "20261112",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -147,11 +147,11 @@
   "sec_ids": [],
   "contrib_n": 29,
   "lang": {},
-  "enriched_at": "20261027",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261027",
    "release": "20261027",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4446,6 +4446,26 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "powerorioledescribe/ai--manus2.0": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

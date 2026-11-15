@@ -20,11 +20,11 @@
    "Shell": 1,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -59,11 +59,11 @@
    "Go Template": 5,
    "SCSS": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -79,11 +79,11 @@
   "sec_ids": [],
   "contrib_n": 4,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -105,11 +105,11 @@
    "Kotlin": 0,
    "Shell": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261106",
    "release": "20261106",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   },
@@ -139,11 +139,11 @@
    "Shell": 4,
    "CMake": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -169,11 +169,11 @@
    "Batchfile": 6,
    "Shell": 6
   },
-  "enriched_at": "20261109",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261109",
    "release": "20261109",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -197,11 +197,11 @@
    "Python": 3,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -227,18 +227,18 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "LosaLosSantos/aurelio-finance": {
-  "commit_7d": 68,
-  "commit_90d": 94,
+  "commit_7d": 0,
+  "commit_90d": 125,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -253,10 +253,10 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261115",
+   "release": "20261115",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4333,13 +4333,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "lopadova/jarvis-desktop": {
   "rel_ver": "v0.1.4",

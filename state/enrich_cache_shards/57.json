@@ -16,11 +16,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -72,11 +72,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -98,11 +98,11 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -118,11 +118,11 @@
   "sec_ids": [],
   "contrib_n": 15,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -136,18 +136,18 @@
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 10,
+  "sec_n": 16,
   "sec_worst": "critical",
-  "sec_last": "2026-10-12",
+  "sec_last": "2026-11-09",
   "sec_ids": [
+   "GHSA-2xvq-gg9f-54p9(-,medium)",
+   "GHSA-qcp3-r37v-7p8j(-,high)",
+   "GHSA-ppqq-957g-9jpc(-,high)",
+   "GHSA-jp7h-6782-g32q(-,high)",
+   "GHSA-7p46-fxpg-cwm7(-,high)",
    "GHSA-49gw-4r68-7f6c(-,high)",
    "GHSA-gvhg-w5hf-g282(-,high)",
-   "GHSA-q2wh-fx2h-rqfh(-,high)",
-   "GHSA-cf3f-xgm5-jfrm(-,medium)",
-   "GHSA-8jr8-9wjf-7m2h(-,medium)",
-   "GHSA-xw2x-w5xq-9w8r(-,high)",
-   "GHSA-x296-hxfr-jq2h(-,critical)",
-   "GHSA-2xv8-gjwh-fv8p(CVE-2026-49989,low)"
+   "GHSA-q2wh-fx2h-rqfh(-,high)"
   ],
   "contrib_n": 107,
   "lang": {
@@ -156,11 +156,11 @@
    "ANTLR": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4766,13 +4766,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "iFurySt/DESIGN.md": {
   "rel_ver": null,

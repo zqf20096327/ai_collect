@@ -18,11 +18,11 @@
    "Dockerfile": 0,
    "Mako": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -38,16 +38,16 @@
   "rel_none": false,
   "sec_n": 30,
   "sec_worst": "critical",
-  "sec_last": "2026-09-29",
+  "sec_last": "2026-10-26",
   "sec_ids": [
-   "GHSA-j456-xh4h-cpf2(-,high)",
-   "GHSA-ww6m-cw3f-q94g(CVE-2026-81722,medium)",
-   "GHSA-ff5c-cp5c-9wjf(CVE-2026-12876,medium)",
-   "GHSA-6hwm-xvph-95vm(CVE-2026-78680,high)",
-   "GHSA-97qj-x29f-37w7(CVE-2026-78681,high)",
-   "GHSA-rrv8-h7p8-rx55(CVE-2026-80205,high)",
-   "GHSA-3gq4-3j92-5w49(CVE-2026-79674,high)",
-   "GHSA-3hhw-38pf-pxj6(CVE-2026-62383,medium)"
+   "GHSA-fg9w-wfp5-j933(-,medium)",
+   "GHSA-59f9-gqg8-mqpj(-,medium)",
+   "GHSA-v8f3-6phw-6mh9(-,high)",
+   "GHSA-r53h-rw34-8h97(-,high)",
+   "GHSA-89p3-fcch-88ph(-,high)",
+   "GHSA-7mxv-7h3q-9324(CVE-2026-128134,high)",
+   "GHSA-ffr9-mgrr-wcvr(-,medium)",
+   "GHSA-gpwc-27cw-rh9r(-,medium)"
   ],
   "contrib_n": 368,
   "lang": {
@@ -57,11 +57,11 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -79,11 +79,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -103,11 +103,11 @@
    "Shell": 12,
    "Makefile": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4295,13 +4295,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "tangtang356/frankenstein-llm-skill": {
   "rel_ver": null,
@@ -4345,6 +4348,23 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "royalhairdressertomb/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

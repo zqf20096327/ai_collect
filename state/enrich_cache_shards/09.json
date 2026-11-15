@@ -8,28 +8,28 @@
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 19,
+  "sec_n": 21,
   "sec_worst": "high",
-  "sec_last": "2026-10-03",
+  "sec_last": "2026-11-13",
   "sec_ids": [
+   "GHSA-qf2q-rc6x-4rhh(-,high)",
+   "GHSA-696p-p8vv-3jjf(-,high)",
    "GHSA-jw42-f3rr-4cc3(CVE-2026-107212,high)",
    "GHSA-r7x5-4969-99p7(CVE-2026-107213,medium)",
    "GHSA-mx22-3794-2vpv(CVE-2026-107211,medium)",
    "GHSA-x2q3-8cjh-766f(CVE-2026-107215,high)",
    "GHSA-wp2g-vpjj-g53r(CVE-2026-107216,high)",
-   "GHSA-c85p-xxjj-2r75(CVE-2026-107217,high)",
-   "GHSA-2j4c-ffch-9f23(CVE-2026-107214,high)",
-   "GHSA-8jjq-8j9w-m2v6(CVE-2026-107218,medium)"
+   "GHSA-c85p-xxjj-2r75(CVE-2026-107217,high)"
   ],
   "contrib_n": 331,
   "lang": {
    "Go": 100
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -45,11 +45,11 @@
   "sec_ids": [],
   "contrib_n": 10,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -69,11 +69,11 @@
    "Python": 26,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4369,13 +4369,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "sarabesh/HybridRAG": {
   "rel_ver": null,

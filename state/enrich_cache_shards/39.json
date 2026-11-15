@@ -12,11 +12,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -42,11 +42,11 @@
    "JavaScript": 2,
    "Handlebars": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -65,11 +65,11 @@
    "Python": 98,
    "Cypher": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -79,7 +79,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.0.0b1",
   "rel_pub": "2026-11-01",
-  "rel_days": 5,
+  "rel_days": 14,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -92,11 +92,11 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
-   "security": "20261016",
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -122,11 +122,11 @@
    "PLpgSQL": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -152,11 +152,11 @@
    "Jupyter Notebook": 0,
    "C++": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -182,11 +182,11 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -212,11 +212,11 @@
    "HTML": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -239,11 +239,11 @@
    "Jupyter Notebook": 78,
    "Python": 22
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4591,13 +4591,16 @@
    "Shell": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261029",
    "security": "20261029",
    "contrib": "20261029",
-   "lang": "20261029"
-  }
+   "lang": "20261029",
+   "commit": "20261115"
+  },
+  "commit_90d": 100,
+  "commit_7d": 4
  },
  "KlaraGraff/XL_Translator": {
   "rel_ver": "v10.4.0",

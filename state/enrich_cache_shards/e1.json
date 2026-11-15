@@ -10,16 +10,16 @@
   "rel_none": false,
   "sec_n": 30,
   "sec_worst": "critical",
-  "sec_last": "2026-10-13",
+  "sec_last": "2026-11-14",
   "sec_ids": [
-   "GHSA-gg3p-r4g8-vxg2(-,high)",
-   "GHSA-hpj5-f7cj-vvwr(-,medium)",
-   "GHSA-fmj3-xc2f-6w4w(-,medium)",
-   "GHSA-q768-4j87-gf3w(-,high)",
-   "GHSA-hhvq-jqv9-pgjq(-,high)",
-   "GHSA-4hjx-84f6-gr7c(-,medium)",
-   "GHSA-6gmc-424x-xgpm(-,high)",
-   "GHSA-phmw-4rgv-r4xv(-,high)"
+   "GHSA-3chm-qrqv-98f4(-,medium)",
+   "GHSA-jwj8-3ww9-3wm5(-,medium)",
+   "GHSA-9x5w-qpj8-q39w(-,medium)",
+   "GHSA-24v5-vjqf-qhv9(-,high)",
+   "GHSA-6fw6-h6p3-c6gf(-,high)",
+   "GHSA-3rvg-qxwg-f3c6(-,high)",
+   "GHSA-x62v-7955-xx6v(-,high)",
+   "GHSA-7258-5hpf-xq6w(-,high)"
   ],
   "contrib_n": 124,
   "lang": {
@@ -29,11 +29,11 @@
    "SCSS": 1,
    "C++": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -59,11 +59,11 @@
    "JavaScript": 3,
    "C": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -89,11 +89,11 @@
    "CSS": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -115,11 +115,11 @@
    "Tree-sitter Query": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -139,11 +139,11 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -5287,13 +5287,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "ntars/Ondra": {
   "rel_ver": "v1.3.0-alpha",

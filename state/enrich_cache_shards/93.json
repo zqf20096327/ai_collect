@@ -29,11 +29,11 @@
    "SCSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -47,18 +47,18 @@
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 10,
+  "sec_n": 13,
   "sec_worst": "critical",
-  "sec_last": "2026-10-13",
+  "sec_last": "2026-11-13",
   "sec_ids": [
-   "GHSA-j7qq-vr8c-xvw3(-,medium)",
-   "GHSA-26p8-2jq9-3vq9(-,critical)",
+   "GHSA-4449-4cjp-ffp5(-,medium)",
+   "GHSA-j7qq-vr8c-xvw3(CVE-2026-116691,medium)",
+   "GHSA-2wqp-q3c6-ccj5(CVE-2026-115886,medium)",
+   "GHSA-26p8-2jq9-3vq9(CVE-2026-116692,critical)",
    "GHSA-7gwp-5pfp-969j(CVE-2026-64849,high)",
    "GHSA-gqch-g4w5-7qcw(CVE-2026-69148,medium)",
    "GHSA-3p64-6gvh-82v5(CVE-2026-69146,medium)",
-   "GHSA-gqvg-gmmx-x4hm(-,high)",
-   "GHSA-m65p-9j7q-6w33(-,high)",
-   "GHSA-83fm-w79m-64r5(-,critical)"
+   "GHSA-mr9f-g8qf-4w4j(CVE-2026-118628,high)"
   ],
   "contrib_n": 447,
   "lang": {
@@ -68,11 +68,11 @@
    "Java": 0,
    "R": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -98,11 +98,11 @@
    "Jinja": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -128,11 +128,11 @@
    "C": 1,
    "Python": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -158,11 +158,11 @@
    "Cuda": 1,
    "SWIG": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261031",
    "release": "20261031",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4835,13 +4835,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "CrestCounselor19/ai--manus": {
   "rel_ver": null,
@@ -4852,13 +4855,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "Crestnetrench/ai--manus": {
   "rel_ver": null,
@@ -4869,13 +4875,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "EnergyBrewer/ai--manus": {
   "rel_ver": null,
@@ -4886,12 +4895,15 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  }
 }

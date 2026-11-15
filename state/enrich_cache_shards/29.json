@@ -8,18 +8,18 @@
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 17,
+  "sec_n": 21,
   "sec_worst": "high",
-  "sec_last": "2026-10-08",
+  "sec_last": "2026-10-17",
   "sec_ids": [
+   "GHSA-r2f7-78jx-q83x(-,medium)",
+   "GHSA-jrxc-68ww-p4m4(-,medium)",
    "GHSA-8j6q-8cjh-c9r8(-,low)",
    "GHSA-rcgv-gv2h-87fp(-,medium)",
    "GHSA-28jv-ccf2-w27h(-,low)",
    "GHSA-4wq2-wqrh-9x7v(-,low)",
-   "GHSA-cgm2-fpj5-427h(-,low)",
-   "GHSA-2fp6-mhpm-9gvh(-,medium)",
-   "GHSA-5j39-mmw6-cqw6(-,medium)",
-   "GHSA-9gp4-366w-pcq3(-,medium)"
+   "GHSA-wf3p-9m55-6vm8(-,high)",
+   "GHSA-cgm2-fpj5-427h(-,low)"
   ],
   "contrib_n": 160,
   "lang": {
@@ -29,11 +29,11 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -84,11 +84,11 @@
    "Python": 100,
    "Just": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -111,11 +111,11 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -165,11 +165,11 @@
    "CSS": 3,
    "Batchfile": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261106",
    "release": "20261106",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -193,11 +193,11 @@
    "Python": 8,
    "Shell": 2
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4486,6 +4486,40 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "realscholarfury/GitHub-Copilot-app": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
+ },
+ "Neoshaoutlet/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

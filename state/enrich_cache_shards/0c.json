@@ -20,11 +20,11 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -44,11 +44,11 @@
    "TypeScript": 7,
    "JavaScript": 3
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -64,11 +64,11 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -82,10 +82,13 @@
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_n": 2,
+  "sec_worst": "high",
+  "sec_last": "2026-10-23",
+  "sec_ids": [
+   "GHSA-pqm2-2wxw-p5hx(-,low)",
+   "GHSA-4gfv-c2mm-mvj2(-,high)"
+  ],
   "contrib_n": 49,
   "lang": {
    "Python": 92,
@@ -94,11 +97,11 @@
    "Just": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -120,17 +123,17 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "PenglongHuang/chinese-novelist-skill": {
-  "commit_7d": 2,
+  "commit_7d": 0,
   "commit_90d": 30,
   "rel_ver": "v2.3.2",
   "rel_none": false,
@@ -142,16 +145,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
-   "security": "20261016",
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   },
   "rel_pub": "2026-10-29",
-  "rel_days": 8,
+  "rel_days": 17,
   "rel_n90": 5,
   "rel_pre": false
  },
@@ -4756,12 +4759,35 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 6,
+  "commit_7d": 6
+ },
+ "RayHemomancerFill/ai--manus2.0": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

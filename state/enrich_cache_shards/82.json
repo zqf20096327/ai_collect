@@ -8,10 +8,11 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 1,
+  "sec_n": 2,
   "sec_worst": "high",
-  "sec_last": "2026-08-27",
+  "sec_last": "2026-11-09",
   "sec_ids": [
+   "GHSA-8g49-pg6g-xgrf(-,medium)",
    "GHSA-h46j-26q3-rggf(CVE-2026-71416,high)"
   ],
   "contrib_n": 332,
@@ -22,11 +23,11 @@
    "JavaScript": 2,
    "HTML": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -58,11 +59,11 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -88,11 +89,11 @@
    "Shell": 2,
    "Dockerfile": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261031",
    "release": "20261031",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -118,11 +119,11 @@
    "Go": 6,
    "HIP": 2
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261103",
    "release": "20261103",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -138,11 +139,11 @@
   "sec_ids": [],
   "contrib_n": 5,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -168,11 +169,11 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261103",
    "release": "20261103",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -197,11 +198,11 @@
    "HTML": 13,
    "Ruby": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -226,11 +227,11 @@
    "Shell": 2,
    "R": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -5137,6 +5138,43 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "RestFlyRoller/ai--manus2.0": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
+ },
+ "NestGrosbeak/GitHub-Copilot-app": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

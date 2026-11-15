@@ -18,11 +18,11 @@
    "Shell": 1,
    "Objective-C": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -48,11 +48,11 @@
    "PowerShell": 0,
    "Swift": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -74,11 +74,11 @@
    "CSS": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -92,17 +92,18 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 7,
+  "sec_n": 23,
   "sec_worst": "high",
-  "sec_last": "2026-07-31",
+  "sec_last": "2026-11-13",
   "sec_ids": [
-   "GHSA-rr3f-jjrr-3qxv(-,high)",
-   "GHSA-hqh4-7j5w-44c6(-,high)",
-   "GHSA-m9hw-c7gx-3wcf(-,high)",
-   "GHSA-v644-29mm-jwx3(-,medium)",
-   "GHSA-x637-4hfj-rhjf(-,high)",
-   "GHSA-mv3f-w42f-m99w(-,medium)",
-   "GHSA-wmgw-3g78-89xf(-,high)"
+   "GHSA-8cc7-g59j-5c4v(-,high)",
+   "GHSA-9vxw-m79f-gxxr(-,medium)",
+   "GHSA-r7mp-fv2v-8rg9(-,high)",
+   "GHSA-xv39-cx3x-r4q7(-,medium)",
+   "GHSA-mrh7-mx58-x392(-,medium)",
+   "GHSA-2h89-mcc8-r4pj(-,medium)",
+   "GHSA-62w4-vj5c-9cgq(-,high)",
+   "GHSA-h4m4-f4vw-fg7w(-,medium)"
   ],
   "contrib_n": 13,
   "lang": {
@@ -112,11 +113,11 @@
    "JavaScript": 2,
    "Shell": 2
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -142,11 +143,11 @@
    "TypeScript": 8,
    "CSS": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4634,13 +4635,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "FDU-INS/Insurance-Hot": {
   "rel_ver": null,

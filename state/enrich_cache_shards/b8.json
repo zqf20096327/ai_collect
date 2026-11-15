@@ -26,11 +26,11 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -65,11 +65,11 @@
    "HTML": 0,
    "Go Template": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -98,11 +98,11 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -128,11 +128,11 @@
    "Python": 0,
    "Shell": 0
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261112",
    "release": "20261112",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -157,11 +157,11 @@
    "Starlark": 1,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -531,11 +531,11 @@
   }
  },
  "DrizzleTime/Foxel": {
-  "commit_7d": 3,
+  "commit_7d": 0,
   "commit_90d": 91,
   "rel_ver": "v2.4.0",
   "rel_pub": "2026-10-29",
-  "rel_days": 9,
+  "rel_days": 17,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -551,10 +551,10 @@
    "Shell": 1,
    "HTML": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261115",
+   "release": "20261115",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2186,13 +2186,16 @@
    "JavaScript": 89,
    "TypeScript": 11
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261115"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "LOVE-DOCTOR/MultiTrain": {
   "rel_ver": "v1.2.0",
@@ -5148,6 +5151,26 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "magicpyromanceraxle/ai--manus": {
+  "commit_90d": 6,
+  "commit_7d": 6,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

@@ -10,11 +10,11 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -40,11 +40,11 @@
    "TypeScript": 12,
    "Shell": 10
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -70,11 +70,11 @@
    "Makefile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -88,10 +88,19 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_n": 18,
+  "sec_worst": "high",
+  "sec_last": "2026-11-14",
+  "sec_ids": [
+   "GHSA-x992-2945-crwx(-,high)",
+   "GHSA-mq5c-rjv9-2fc3(-,high)",
+   "GHSA-xmx8-69qv-7f86(-,medium)",
+   "GHSA-fv44-pm58-9c8p(-,medium)",
+   "GHSA-cfmv-qg29-3rvp(-,medium)",
+   "GHSA-9jrf-q94p-frhr(-,medium)",
+   "GHSA-4gm5-2mgw-9r9r(-,medium)",
+   "GHSA-8549-rc5m-4qwh(-,medium)"
+  ],
   "contrib_n": 53,
   "lang": {
    "Rust": 87,
@@ -100,11 +109,11 @@
    "JavaScript": 2,
    "TypeScript": 2
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -222,11 +231,11 @@
   }
  },
  "tensorflow/tfx": {
-  "commit_90d": 16,
-  "commit_7d": 5,
+  "commit_90d": 13,
+  "commit_7d": 0,
   "rel_ver": "v1.21.0",
   "rel_pub": "2026-06-18",
-  "rel_days": 143,
+  "rel_days": 150,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -242,10 +251,10 @@
    "Starlark": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261108",
-   "release": "20261108",
+   "commit": "20261115",
+   "release": "20261115",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4815,6 +4824,46 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "olivebladesmanrepair/ai--manus2.0": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
+ },
+ "InspectionTrek/ai--manus": {
+  "commit_90d": 6,
+  "commit_7d": 6,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

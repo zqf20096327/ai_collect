@@ -8,10 +8,11 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 2,
+  "sec_n": 3,
   "sec_worst": "critical",
-  "sec_last": "2026-10-09",
+  "sec_last": "2026-10-27",
   "sec_ids": [
+   "GHSA-66g5-mvxh-rfj6(-,medium)",
    "GHSA-vx38-pr2w-5fcc(-,high)",
    "GHSA-mmq7-6q49-cv4m(-,critical)"
   ],
@@ -23,11 +24,11 @@
    "Python": 5,
    "Shell": 3
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -41,10 +42,18 @@
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_n": 7,
+  "sec_worst": "low",
+  "sec_last": "2026-11-14",
+  "sec_ids": [
+   "GHSA-9pc7-p6cr-942h(-,medium)",
+   "GHSA-xhpf-w7hf-f6ph(-,low)",
+   "GHSA-xgff-93hv-6369(-,low)",
+   "GHSA-f8h8-fv8r-g2wh(-,medium)",
+   "GHSA-4fm4-49gc-r4pf(-,low)",
+   "GHSA-hxhx-mm7f-q4qm(-,low)",
+   "GHSA-gc25-jx72-jj4q(-,low)"
+  ],
   "contrib_n": 28,
   "lang": {
    "Python": 84,
@@ -53,11 +62,11 @@
    "PowerShell": 3,
    "HTML": 1
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261112",
    "release": "20261112",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -81,11 +90,11 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -111,11 +120,11 @@
    "TypeScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -3907,11 +3916,11 @@
   }
  },
  "github/squad": {
-  "commit_90d": 623,
-  "commit_7d": 10,
-  "rel_ver": "v2.0.0-preview.3",
-  "rel_pub": "2026-11-01",
-  "rel_days": 7,
+  "commit_90d": 627,
+  "commit_7d": 53,
+  "rel_ver": "v2.0.0-preview.4",
+  "rel_pub": "2026-11-09",
+  "rel_days": 6,
   "rel_n90": 9,
   "rel_pre": true,
   "rel_none": false,
@@ -3927,10 +3936,10 @@
    "PowerShell": 1,
    "Shell": 0
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261108",
-   "release": "20261108",
+   "commit": "20261115",
+   "release": "20261115",
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
@@ -3945,13 +3954,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261108",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261108",
    "security": "20261108",
    "contrib": "20261108",
-   "lang": "20261108"
-  }
+   "lang": "20261108",
+   "commit": "20261115"
+  },
+  "commit_90d": 64,
+  "commit_7d": 61
  },
  "Joshua-Ludolf/rasptorch": {
   "rel_ver": "2.1.0_Official",

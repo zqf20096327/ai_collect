@@ -8,10 +8,12 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 1,
+  "sec_n": 3,
   "sec_worst": "high",
-  "sec_last": "2026-08-25",
+  "sec_last": "2026-10-23",
   "sec_ids": [
+   "GHSA-rm8h-2825-ww26(-,medium)",
+   "GHSA-x4g9-f33j-wx96(-,medium)",
    "GHSA-wpqw-whgf-gr4g(CVE-2026-88061,high)"
   ],
   "contrib_n": 463,
@@ -22,11 +24,11 @@
    "HTML": 1,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -52,11 +54,11 @@
    "Java": 8,
    "Objective-C": 4
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -70,10 +72,11 @@
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 3,
+  "sec_n": 4,
   "sec_worst": "high",
-  "sec_last": "2026-05-20",
+  "sec_last": "2026-10-27",
   "sec_ids": [
+   "GHSA-4prv-5hj7-c2xr(-,high)",
    "GHSA-98h9-4798-4q5v(CVE-2026-44513,high)",
    "GHSA-7wx4-6vff-v64p(CVE-2026-45804,high)",
    "GHSA-j7w6-vpvq-j3gm(CVE-2026-44827,high)"
@@ -84,11 +87,11 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -108,11 +111,11 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -131,11 +134,11 @@
    "Python": 96,
    "HTML": 4
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -175,11 +178,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -5132,13 +5135,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "Fabledbricurse/ai--manus": {
   "rel_ver": null,
@@ -5149,13 +5155,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "Balanov/priemka": {
   "rel_ver": "v1.0.4",
@@ -5178,6 +5187,26 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "ShoreAeromancer/ai--manus2.0": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

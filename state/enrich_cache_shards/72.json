@@ -20,11 +20,11 @@
    "Nix": 0,
    "CSS": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -53,11 +53,11 @@
    "TypeScript": 0,
    "Bicep": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -83,11 +83,11 @@
    "Jupyter Notebook": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -113,11 +113,11 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -137,7 +137,7 @@
   "sec_ids": [
    "GHSA-m549-qq94-fvhg(CVE-2026-46432,high)",
    "GHSA-9xq9-36w5-q796(CVE-2026-46517,high)",
-   "GHSA-39wr-7q6h-cf68(-,high)",
+   "GHSA-39wr-7q6h-cf68(CVE-2026-123818,high)",
    "GHSA-3hmm-rh5q-gwwr(CVE-2026-33625,high)",
    "GHSA-6w67-hwm5-92mq(CVE-2026-33626,high)",
    "GHSA-9pf3-7rrr-x5jh(CVE-2025-67729,high)",
@@ -152,11 +152,11 @@
    "CMake": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -170,18 +170,18 @@
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 12,
+  "sec_n": 16,
   "sec_worst": "high",
-  "sec_last": "2026-10-11",
+  "sec_last": "2026-11-09",
   "sec_ids": [
+   "GHSA-9r2w-8q26-2fcw(-,high)",
+   "GHSA-9j7w-vxf9-x93c(-,medium)",
+   "GHSA-57r4-v566-3rcw(-,medium)",
+   "GHSA-f7vw-q3m9-4998(-,high)",
    "GHSA-xq77-cj4c-42qr(-,medium)",
    "GHSA-x465-w9j9-42rp(-,high)",
    "GHSA-cf3f-2fmg-mjj6(-,high)",
-   "GHSA-cgq8-jvp9-r3j7(-,high)",
-   "GHSA-j84j-mc98-7wq3(-,medium)",
-   "GHSA-975v-mx44-9jxq(-,medium)",
-   "GHSA-6367-m327-c4pf(-,medium)",
-   "GHSA-hq2w-x39h-8wmp(-,medium)"
+   "GHSA-cgq8-jvp9-r3j7(-,high)"
   ],
   "contrib_n": 209,
   "lang": {
@@ -191,11 +191,11 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -221,11 +221,11 @@
    "JavaScript": 2,
    "NSIS": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -248,11 +248,11 @@
    "TypeScript": 99,
    "JavaScript": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -278,11 +278,11 @@
    "HTML": 0,
    "Jinja": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -5157,13 +5157,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "giantgoosehallway/ai--manus": {
   "rel_ver": null,
@@ -5174,13 +5177,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "mindot-labs/will": {
   "rel_ver": "v0.11.0",

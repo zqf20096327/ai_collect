@@ -16,11 +16,11 @@
    "TypeScript": 12,
    "Zig": 6
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -34,11 +34,14 @@
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 4,
+  "sec_n": 7,
   "sec_worst": "high",
-  "sec_last": "2026-10-01",
+  "sec_last": "2026-11-13",
   "sec_ids": [
-   "GHSA-gh9r-c94j-cmp5(-,high)",
+   "GHSA-j6gr-wg5x-mjp6(-,high)",
+   "GHSA-w282-8r74-gfh7(-,high)",
+   "GHSA-x26r-q47j-v6q3(-,high)",
+   "GHSA-gh9r-c94j-cmp5(CVE-2026-115878,high)",
    "GHSA-2fwf-f686-7p34(CVE-2026-59974,high)",
    "GHSA-c9h2-qmqw-qf6h(-,high)",
    "GHSA-v5jw-96jm-7h2c(CVE-2026-54499,high)"
@@ -51,11 +54,11 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -77,11 +80,11 @@
    "C++": 6,
    "Dockerfile": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -5268,13 +5271,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "R3dn/telegram-query": {
   "rel_ver": "v1.0.3",
@@ -5297,6 +5303,26 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "SamuraiVacuum/ai--manus2.0": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

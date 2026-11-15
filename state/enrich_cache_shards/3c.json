@@ -8,18 +8,18 @@
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 8,
+  "sec_n": 13,
   "sec_worst": "high",
-  "sec_last": "2026-07-03",
+  "sec_last": "2026-10-20",
   "sec_ids": [
+   "GHSA-xrch-8vh7-h656(-,medium)",
+   "GHSA-48m4-24cq-37qf(CVE-2026-115919,medium)",
    "GHSA-hwpq-hmq9-wj77(CVE-2026-44512,medium)",
    "GHSA-p893-rvq9-2xf9(CVE-2026-63632,low)",
-   "GHSA-hqmj-h5c6-369m(CVE-2026-28500,medium)",
-   "GHSA-538c-55jv-c5g9(CVE-2026-34445,high)",
-   "GHSA-cmw6-hcpp-c6jp(CVE-2026-34446,medium)",
-   "GHSA-q56x-g2fj-4rj6(-,high)",
-   "GHSA-3r9x-f23j-gc73(CVE-2026-27489,high)",
-   "GHSA-p433-9wv8-28xj(CVE-2026-34447,medium)"
+   "GHSA-m4pr-6v3c-6fgr(CVE-2026-115921,medium)",
+   "GHSA-6pwm-x34p-fvj2(CVE-2026-115920,medium)",
+   "GHSA-q69g-f4f5-v8m7(CVE-2026-115922,medium)",
+   "GHSA-hqmj-h5c6-369m(CVE-2026-28500,medium)"
   ],
   "contrib_n": 402,
   "lang": {
@@ -29,11 +29,11 @@
    "C": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -56,11 +56,11 @@
    "Kotlin": 100,
    "CSS": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -85,11 +85,11 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -115,11 +115,11 @@
    "Swift": 11,
    "Java": 7
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -145,11 +145,11 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4460,13 +4460,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "lektohq/lekto": {
   "rel_ver": "v0.15.5",
@@ -4493,6 +4496,43 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "mindduelistmotor/ai--manus": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
+ },
+ "SnatchCourier/GitHub-Copilot-app": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

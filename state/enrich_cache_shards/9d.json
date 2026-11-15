@@ -20,11 +20,11 @@
    "Kotlin": 0,
    "Swift": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -50,11 +50,11 @@
    "C": 2,
    "Objective-C++": 2
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4370,5 +4370,6 @@
    "contrib": "20261114",
    "lang": "20261114"
   }
- }
+ },
+ "PowderLieutenant/ai--manus": {}
 }

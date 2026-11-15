@@ -18,11 +18,11 @@
    "Shell": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -87,11 +87,11 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261106",
    "release": "20261106",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -117,11 +117,11 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -5179,13 +5179,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261108",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261108",
    "security": "20261108",
    "contrib": "20261108",
-   "lang": "20261108"
-  }
+   "lang": "20261108",
+   "commit": "20261115"
+  },
+  "commit_90d": 59,
+  "commit_7d": 56
  },
  "istitov/stuff": {
   "rel_ver": null,
@@ -5311,13 +5314,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "JoaquinWaluk600227/virtual-card-usdt-security-auditing-red-team-ai-agents-vcc": {
   "rel_ver": null,

@@ -22,11 +22,11 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -61,11 +61,11 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -79,10 +79,11 @@
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 2,
-  "sec_worst": "high",
-  "sec_last": "2026-10-05",
+  "sec_n": 3,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-22",
   "sec_ids": [
+   "GHSA-frc7-44gm-99qq(-,critical)",
    "GHSA-3gph-6c29-p29v(-,high)",
    "GHSA-f632-vm87-2m2f(CVE-2026-25628,high)"
   ],
@@ -94,11 +95,11 @@
    "HTML": 0,
    "C": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -120,11 +121,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -143,11 +144,11 @@
    "Python": 98,
    "Shell": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -173,11 +174,11 @@
    "HTML": 4,
    "JavaScript": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -203,11 +204,11 @@
    "CSS": 1,
    "Rust": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -230,11 +231,11 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261103",
    "release": "20261103",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4977,13 +4978,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261108",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261108",
    "security": "20261108",
    "contrib": "20261108",
-   "lang": "20261108"
-  }
+   "lang": "20261108",
+   "commit": "20261115"
+  },
+  "commit_90d": 14,
+  "commit_7d": 0
  },
  "franzmoca/gemma4-gufo-extension": {
   "rel_ver": null,

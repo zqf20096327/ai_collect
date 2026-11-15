@@ -20,11 +20,11 @@
    "Shell": 5,
    "Swift": 4
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -49,11 +49,11 @@
    "Shell": 0,
    "Nix": 0
   },
-  "enriched_at": "20261110",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261110",
    "release": "20261110",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -79,11 +79,11 @@
    "Dockerfile": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -109,11 +109,11 @@
    "C": 1,
    "Objective-C++": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -132,11 +132,11 @@
    "Python": 99,
    "Dockerfile": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -161,11 +161,11 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261110",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261110",
    "release": "20261110",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -2358,13 +2358,16 @@
    "Python": 4,
    "CSS": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261115"
+  },
+  "commit_90d": 115,
+  "commit_7d": 7
  },
  "KenyonY/flaxkv": {
   "rel_ver": "v0.2.9",
@@ -4415,12 +4418,15 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  }
 }

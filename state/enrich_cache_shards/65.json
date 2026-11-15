@@ -20,11 +20,11 @@
    "C++": 1,
    "Objective-C": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -38,18 +38,18 @@
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 13,
+  "sec_n": 20,
   "sec_worst": "high",
-  "sec_last": "2026-10-10",
+  "sec_last": "2026-10-30",
   "sec_ids": [
+   "GHSA-jrf4-mx9r-v94h(-,medium)",
+   "GHSA-6xhq-wvww-6xfg(CVE-2026-119340,medium)",
+   "GHSA-h9g4-frjx-6cj3(CVE-2026-119339,medium)",
+   "GHSA-vf7v-2h4f-6f4j(CVE-2026-119338,medium)",
    "GHSA-9vwv-49m8-jv9m(-,medium)",
-   "GHSA-357f-833m-3f83(-,low)",
-   "GHSA-96jm-jc65-f968(-,high)",
-   "GHSA-5j2p-r5vc-q7f3(CVE-2026-88047,high)",
-   "GHSA-f6h7-cqr4-6fx4(CVE-2026-88054,medium)",
-   "GHSA-q44c-23p6-5mw6(CVE-2026-88048,high)",
-   "GHSA-jgq8-pprg-vc68(CVE-2026-88049,high)",
-   "GHSA-7v9h-3q3m-w68g(CVE-2026-88050,medium)"
+   "GHSA-357f-833m-3f83(CVE-2026-119341,low)",
+   "GHSA-5rc4-r384-5c7p(-,medium)",
+   "GHSA-pqc9-gv83-r5mf(-,medium)"
   ],
   "contrib_n": 205,
   "lang": {
@@ -59,11 +59,11 @@
    "Makefile": 1,
    "NSIS": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -81,11 +81,11 @@
   "lang": {
    "Jupyter Notebook": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -111,11 +111,11 @@
    "PowerShell": 0,
    "Python": 0
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261112",
    "release": "20261112",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -141,11 +141,11 @@
    "Shell": 0,
    "CMake": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261023",
    "release": "20261023",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -171,11 +171,11 @@
    "Nix": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -201,11 +201,11 @@
    "mupad": 9,
    "Objective-C++": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -224,11 +224,11 @@
    "Jupyter Notebook": 94,
    "Python": 6
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4412,13 +4412,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261107",
    "security": "20261107",
    "contrib": "20261107",
-   "lang": "20261107"
-  }
+   "lang": "20261107",
+   "commit": "20261115"
+  },
+  "commit_90d": 72,
+  "commit_7d": 55
  },
  "browser-use/gemini-demo": {
   "rel_ver": null,
@@ -4545,13 +4548,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "DivergeCoralCleaver/ai--manus": {
   "rel_ver": null,
@@ -4562,13 +4568,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "Fuchsiaplodescribe/ai--manus": {
   "rel_ver": null,
@@ -4579,12 +4588,32 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
+ },
+ "RectangleWand/GitHub-Copilot-app": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

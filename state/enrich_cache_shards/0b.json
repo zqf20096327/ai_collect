@@ -20,11 +20,11 @@
    "Jinja": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -38,10 +38,15 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_n": 4,
+  "sec_worst": "high",
+  "sec_last": "2026-10-20",
+  "sec_ids": [
+   "GHSA-gj99-rv7m-vm79(-,high)",
+   "GHSA-8jjf-g53q-cr56(-,high)",
+   "GHSA-5cjh-q5qq-72f7(-,medium)",
+   "GHSA-f42q-9h29-hw57(-,low)"
+  ],
   "contrib_n": 149,
   "lang": {
    "Rust": 42,
@@ -50,11 +55,11 @@
    "Swift": 10,
    "Go": 3
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -76,11 +81,11 @@
    "Shell": 3,
    "Batchfile": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261023",
    "release": "20261023",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -106,11 +111,11 @@
    "Dockerfile": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -126,16 +131,16 @@
   "rel_none": false,
   "sec_n": 30,
   "sec_worst": "critical",
-  "sec_last": "2026-10-06",
+  "sec_last": "2026-10-20",
   "sec_ids": [
    "GHSA-m79r-84cc-xwg9(-,medium)",
+   "GHSA-65rr-73jq-6qhf(-,high)",
    "GHSA-qwrm-2cq8-xfr8(-,high)",
    "GHSA-pc95-gc74-wg87(-,medium)",
    "GHSA-xrp6-5fpv-4fxf(-,high)",
    "GHSA-4gjx-f5hj-678x(-,high)",
    "GHSA-wpp9-mq73-fhqm(-,low)",
-   "GHSA-m8pr-xr7c-frh3(-,low)",
-   "GHSA-hc5h-gqhc-4h79(-,medium)"
+   "GHSA-m8pr-xr7c-frh3(-,low)"
   ],
   "contrib_n": 145,
   "lang": {
@@ -145,11 +150,11 @@
    "CSS": 0,
    "ANTLR": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -175,11 +180,11 @@
    "Shell": 1,
    "Thrift": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -205,11 +210,11 @@
    "Cuda": 1,
    "CMake": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -232,11 +237,11 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -260,11 +265,11 @@
    "JavaScript": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4966,13 +4971,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "DivineSleuthTrek/ai--manus": {
   "rel_ver": null,
@@ -4983,12 +4991,55 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
+ },
+ "outercaptainmeditate/ai--manus2.0": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
+ },
+ "Sightsaintconverter/GitHub-Copilot-app": {
+  "commit_90d": 11,
+  "commit_7d": 11,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

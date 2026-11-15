@@ -16,11 +16,11 @@
    "Jinja": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -34,18 +34,18 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 11,
+  "sec_n": 13,
   "sec_worst": "high",
-  "sec_last": "2026-10-07",
+  "sec_last": "2026-10-21",
   "sec_ids": [
-   "GHSA-3fx2-cqw9-xr3c(-,medium)",
+   "GHSA-8prr-f582-jqq3(CVE-2026-115885,medium)",
+   "GHSA-3fx2-cqw9-xr3c(CVE-2026-118667,medium)",
    "GHSA-fvww-7h3r-vfhp(CVE-2026-104873,high)",
    "GHSA-47pj-3jcm-6whg(CVE-2026-71433,medium)",
-   "GHSA-4hm6-w6qq-w73v(-,high)",
+   "GHSA-4hm6-w6qq-w73v(CVE-2026-118668,high)",
    "GHSA-w39p-vh2g-g8g5(CVE-2026-48776,medium)",
    "GHSA-fjqc-hq36-qh5p(CVE-2026-48775,medium)",
-   "GHSA-g48c-2wqr-h844(CVE-2026-28277,medium)",
-   "GHSA-mhr3-j7m5-c7c9(CVE-2026-27794,medium)"
+   "GHSA-6hmw-9432-67qq(CVE-2026-115883,medium)"
   ],
   "contrib_n": 283,
   "lang": {
@@ -55,11 +55,11 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -85,11 +85,11 @@
    "JavaScript": 3,
    "Sass": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261030",
    "release": "20261030",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -115,11 +115,11 @@
    "JavaScript": 4,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -138,11 +138,11 @@
    "Python": 98,
    "Dockerfile": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -168,11 +168,11 @@
    "Groovy": 3,
    "JavaScript": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261030",
    "release": "20261030",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -190,11 +190,11 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4646,13 +4646,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "ChancellorRuffle/ai--manus": {
   "rel_ver": null,
@@ -4663,13 +4666,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "Desirebyvestibule/ai--manus": {
   "rel_ver": null,
@@ -4680,13 +4686,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "sxxzwbl/ComfyUI-DSH-Bridge": {
   "rel_ver": null,
@@ -4709,6 +4718,30 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "RustamovAkrom/JARVIS": {
+  "rel_ver": "v1.0.10",
+  "rel_pub": "2026-11-14",
+  "rel_days": 1,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "HTML": 2
+  },
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

@@ -8,18 +8,18 @@
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 18,
+  "sec_n": 25,
   "sec_worst": "high",
-  "sec_last": "2026-09-08",
+  "sec_last": "2026-10-28",
   "sec_ids": [
+   "GHSA-c34c-w352-hq95(-,medium)",
+   "GHSA-frv7-262w-24q9(CVE-2026-123353,low)",
+   "GHSA-qpw3-hp8j-27mf(-,medium)",
+   "GHSA-q3jh-8xrv-9jw4(-,medium)",
+   "GHSA-xx89-6q8j-fhm9(-,medium)",
+   "GHSA-86v4-c4q2-jjvm(-,medium)",
    "GHSA-vp6f-78w7-v422(-,medium)",
-   "GHSA-r4cx-rg3p-25g7(-,high)",
-   "GHSA-vqrf-cjv6-rf89(-,medium)",
-   "GHSA-frjw-66gr-799m(CVE-2026-65827,medium)",
-   "GHSA-84fx-mvqx-p5gx(CVE-2026-52853,medium)",
-   "GHSA-5vhf-cgf2-c9cq(CVE-2026-52850,medium)",
-   "GHSA-rxm9-xp9h-4c84(CVE-2026-48073,medium)",
-   "GHSA-9f58-29hm-mgp2(CVE-2026-48072,medium)"
+   "GHSA-r4cx-rg3p-25g7(-,high)"
   ],
   "contrib_n": 51,
   "lang": {
@@ -29,11 +29,11 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -55,11 +55,11 @@
    "CSS": 3,
    "HTML": 2
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261112",
    "release": "20261112",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -85,11 +85,11 @@
    "PowerShell": 1,
    "NSIS": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -115,11 +115,11 @@
    "C": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -138,11 +138,11 @@
    "Python": 93,
    "JavaScript": 7
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   },
@@ -4857,13 +4857,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "MatnPala-com/MatnPala-3": {
   "rel_ver": null,
@@ -4902,6 +4905,23 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "OuterLarvaRevitalize/GitHub-Copilot-app": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

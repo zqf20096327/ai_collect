@@ -20,11 +20,11 @@
    "JavaScript": 1,
    "Swift": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -38,10 +38,11 @@
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 5,
+  "sec_n": 6,
   "sec_worst": "critical",
-  "sec_last": "2026-01-26",
+  "sec_last": "2026-11-10",
   "sec_ids": [
+   "GHSA-v32g-mr63-3j83(-,high)",
    "GHSA-63cw-57p8-fm3p(CVE-2026-24747,high)",
    "GHSA-53q9-r3pm-6pq6(CVE-2025-32434,critical)",
    "GHSA-2rj9-7h5r-q4h8(-,medium)",
@@ -56,11 +57,11 @@
    "C": 1,
    "Objective-C++": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -95,11 +96,11 @@
    "Makefile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -125,11 +126,11 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261103",
    "release": "20261103",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -155,11 +156,11 @@
    "YARA": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -185,11 +186,11 @@
    "TypeScript": 5,
    "Python": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -214,11 +215,11 @@
    "HTML": 1,
    "CSS": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -1024,13 +1025,13 @@
   }
  },
  "sixtysevenlf/dsh-blender-plugin": {
-  "commit_90d": 448,
-  "commit_7d": 174,
-  "rel_ver": "v3.0.6",
-  "rel_pub": "2026-11-05",
-  "rel_days": 3,
+  "commit_90d": 500,
+  "commit_7d": 30,
+  "rel_ver": "v3.1.0-alpha.1",
+  "rel_pub": "2026-11-08",
+  "rel_days": 7,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -1043,10 +1044,10 @@
    "TypeScript": 4,
    "Shell": 0
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261115",
   "dim_ts": {
-   "commit": "20261108",
-   "release": "20261108",
+   "commit": "20261115",
+   "release": "20261115",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4573,12 +4574,35 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261115",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
+   "lang": "20261114",
+   "commit": "20261115"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
+ },
+ "Mergechopuzzle/ai--manus2.0": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

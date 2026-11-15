@@ -10,16 +10,16 @@
   "rel_none": false,
   "sec_n": 30,
   "sec_worst": "high",
-  "sec_last": "2026-10-13",
+  "sec_last": "2026-10-26",
   "sec_ids": [
    "GHSA-v234-4jrq-mgg6(-,high)",
    "GHSA-gfvf-j8jh-jxxw(CVE-2026-103012,low)",
+   "GHSA-5xjx-9qx6-jcrv(CVE-2026-88968,high)",
    "GHSA-pq7j-f95f-qfcv(CVE-2026-86063,high)",
    "GHSA-5j29-h97v-84ch(CVE-2026-103435,high)",
    "GHSA-7835-87q9-rgvv(CVE-2026-55607,high)",
    "GHSA-fg94-h982-f3mm(CVE-2026-54316,medium)",
-   "GHSA-4p2j-qj3c-6x84(CVE-2026-88066,high)",
-   "GHSA-4vp2-6q8c-pvq2(CVE-2026-46406,medium)"
+   "GHSA-4p2j-qj3c-6x84(CVE-2026-88066,high)"
   ],
   "contrib_n": 57,
   "lang": {
@@ -29,11 +29,11 @@
    "PowerShell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -59,11 +59,11 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -86,11 +86,11 @@
    "Python": 100,
    "Mako": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -120,11 +120,11 @@
    "Makefile": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -150,11 +150,11 @@
    "JavaScript": 5,
    "Python": 2
   },
-  "enriched_at": "20261109",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261109",
    "release": "20261109",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -4547,6 +4547,46 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "LairManateeShackle/ai--manus": {
+  "commit_90d": 6,
+  "commit_7d": 6,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
+ },
+ "Mailfledefeat/ai--manus": {
+  "commit_90d": 6,
+  "commit_7d": 6,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }

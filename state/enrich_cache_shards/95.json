@@ -20,11 +20,11 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261030",
    "release": "20261030",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -50,11 +50,11 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -76,11 +76,11 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261016",
    "release": "20261016",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -96,11 +96,11 @@
   "sec_ids": [],
   "contrib_n": 447,
   "lang": {},
-  "enriched_at": "20261023",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261023",
    "release": "20261023",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -124,11 +124,11 @@
    "Makefile": 26,
    "Dockerfile": 22
   },
-  "enriched_at": "20261101",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261101",
    "release": "20261101",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -162,11 +162,11 @@
    "Python": 1,
    "HTML": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -189,11 +189,11 @@
    "Python": 100,
    "PowerShell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -219,11 +219,11 @@
    "Jinja": 0,
    "C++": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -244,7 +244,7 @@
    "GHSA-fxhh-6rm2-v2pp(-,medium)",
    "GHSA-rppm-w5cw-6qcg(-,medium)",
    "GHSA-2h3q-9p6m-4hm4(-,medium)",
-   "GHSA-2h4w-29cv-2cmv(-,high)",
+   "GHSA-2h4w-29cv-2cmv(CVE-2026-113663,high)",
    "GHSA-3ccw-g7ph-hrcr(-,high)",
    "GHSA-hf3x-42qp-4rq6(-,high)",
    "GHSA-qrjx-72xx-xhmh(-,high)",
@@ -258,11 +258,11 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -288,11 +288,11 @@
    "HTML": 3,
    "Typst": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261115",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261016",
+   "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
@@ -6030,6 +6030,26 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "RoyalSpinnerPersist/ai--manus2.0": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "commit": "20261115",
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
   }
  }
 }
