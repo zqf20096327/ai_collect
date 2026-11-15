@@ -4431,5 +4431,66 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "PennantSpawn/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
+ },
+ "haiying-ai/ai-freebie-radar": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 74,
+   "HTML": 26
+  },
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
+ },
+ "vidyabharadwaj03/reelmatch": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 66,
+   "HTML": 34
+  },
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
  }
 }

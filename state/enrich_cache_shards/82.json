@@ -5176,5 +5176,14 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "NestGrosbeak/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": null
  }
 }

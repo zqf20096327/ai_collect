@@ -4679,5 +4679,32 @@
    "contrib": "20261114",
    "lang": "20261114"
   }
+ },
+ "nicia-ai/typegraph": {
+  "rel_ver": "@nicia-ai/typegraph@0.74.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 6,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 1,
+   "MDX": 1,
+   "Astro": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
  }
 }

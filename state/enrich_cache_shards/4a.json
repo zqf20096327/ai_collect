@@ -4223,5 +4223,48 @@
    "contrib": "20261114",
    "lang": "20261114"
   }
+ },
+ "uoweme325/AgentPet": {
+  "rel_ver": "v1.6.2",
+  "rel_pub": "2026-11-15",
+  "rel_days": 0,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 57,
+   "PowerShell": 43,
+   "Batchfile": 0,
+   "VBScript": 0
+  },
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
+ },
+ "abdelhalimyasser/machine-learning-models-2026-fcai-cu": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {},
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
  }
 }

@@ -4873,5 +4873,28 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "microsoft/Copilot-Managed-Runtime": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "TypeScript": 35,
+   "JavaScript": 32,
+   "Shell": 11,
+   "PowerShell": 10,
+   "CSS": 6
+  },
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
  }
 }

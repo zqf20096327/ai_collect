@@ -5361,5 +5361,14 @@
    "contrib": "20261114",
    "lang": "20261114"
   }
+ },
+ "PelicanMultiplexer/GitHub-Copilot-app": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": null
  }
 }

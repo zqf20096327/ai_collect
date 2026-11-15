@@ -4256,5 +4256,47 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "BenjiTrapp/TrashPandaPaws": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 94,
+   "Shell": 4,
+   "JavaScript": 1,
+   "PowerShell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
+ },
+ "AakashBhat1/face_model_scratch": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
  }
 }

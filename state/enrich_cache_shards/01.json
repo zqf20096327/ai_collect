@@ -4980,5 +4980,40 @@
    "lang": "20261115"
   }
  },
- "Primemiconverter/GitHub-Copilot-app": {}
+ "Primemiconverter/GitHub-Copilot-app": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": null
+ },
+ "chrisvoncsefalvay/vespasian": {
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-11-12",
+  "rel_days": 3,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 54,
+   "Rust": 37,
+   "CSS": 5,
+   "JavaScript": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
+ }
 }

@@ -4743,5 +4743,31 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "vizentro-labs/ddram": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-10-13",
+  "rel_days": 33,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 94,
+   "Shell": 3,
+   "C": 2,
+   "Python": 2
+  },
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
  }
 }

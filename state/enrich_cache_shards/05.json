@@ -5111,5 +5111,32 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "RantAI-dev/peregrine": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 2,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 86,
+   "Python": 11,
+   "Shell": 1,
+   "Jinja": 1,
+   "C": 1
+  },
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
  }
 }

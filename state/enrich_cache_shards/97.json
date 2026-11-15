@@ -5232,5 +5232,30 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "33rd-kk/poseorbit": {
+  "rel_ver": "v0.3.2",
+  "rel_pub": "2026-11-12",
+  "rel_days": 3,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "low",
+  "sec_last": "2026-11-12",
+  "sec_ids": [
+   "GHSA-892w-whvw-r2qj(-,low)"
+  ],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
  }
 }

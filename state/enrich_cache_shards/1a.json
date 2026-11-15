@@ -4501,5 +4501,32 @@
   },
   "commit_90d": 7,
   "commit_7d": 7
+ },
+ "JonasJoe233/rake-mac": {
+  "rel_ver": "v0.2.1",
+  "rel_pub": "2026-11-13",
+  "rel_days": 2,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 46,
+   "HTML": 28,
+   "JavaScript": 20,
+   "Shell": 6,
+   "Python": 0
+  },
+  "enriched_at": "20261115",
+  "dim_ts": {
+   "release": "20261115",
+   "security": "20261115",
+   "contrib": "20261115",
+   "lang": "20261115"
+  }
  }
 }
