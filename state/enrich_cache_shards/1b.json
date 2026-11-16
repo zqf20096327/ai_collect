@@ -4397,5 +4397,32 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "ghostpengu/tokenhell": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-11-16",
+  "rel_days": 0,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 46,
+   "TypeScript": 42,
+   "Svelte": 8,
+   "CSS": 1,
+   "Swift": 1
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

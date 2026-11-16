@@ -4415,5 +4415,35 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "karlo-ks/Infradeck": {
+  "commit_90d": 129,
+  "commit_7d": 23,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 65,
+   "JavaScript": 34,
+   "CSS": 1,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

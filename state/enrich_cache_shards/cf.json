@@ -599,7 +599,7 @@
   }
  },
  "matiasbattocchia/open-bsp-api": {
-  "commit_90d": 100,
+  "commit_90d": 60,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -613,22 +613,22 @@
    "PLpgSQL": 37,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "run-llama/ParseBench": {
-  "commit_90d": 193,
-  "commit_7d": 6,
-  "rel_ver": "v1.0.4",
-  "rel_pub": "2026-09-04",
-  "rel_days": 43,
-  "rel_n90": 5,
+  "commit_90d": 388,
+  "commit_7d": 121,
+  "rel_ver": "v2.0.4",
+  "rel_pub": "2026-11-16",
+  "rel_days": 0,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -643,22 +643,22 @@
    "CSS": 2,
    "HTML": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "ntthanh2603/gemini-web-to-api": {
-  "commit_90d": 19,
-  "commit_7d": 5,
-  "rel_ver": "v1.3.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
-  "rel_n90": 10,
+  "commit_90d": 33,
+  "commit_7d": 0,
+  "rel_ver": "v1.3.5",
+  "rel_pub": "2026-11-08",
+  "rel_days": 8,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -670,10 +670,10 @@
    "Go": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -762,11 +762,11 @@
   }
  },
  "dappros/ethora": {
-  "commit_90d": 98,
-  "commit_7d": 13,
-  "rel_ver": "v26.10",
-  "rel_pub": "2026-10-01",
-  "rel_days": 16,
+  "commit_90d": 118,
+  "commit_7d": 6,
+  "rel_ver": "v26.11",
+  "rel_pub": "2026-11-01",
+  "rel_days": 15,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -778,10 +778,10 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

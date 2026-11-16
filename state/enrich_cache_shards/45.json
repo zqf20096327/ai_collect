@@ -449,12 +449,12 @@
   }
  },
  "JackyST0/awesome-agent-skills": {
-  "commit_90d": 165,
-  "commit_7d": 4,
-  "rel_ver": "v1.0.1",
-  "rel_pub": "2026-10-09",
-  "rel_days": 8,
-  "rel_n90": 2,
+  "commit_90d": 169,
+  "commit_7d": 9,
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-11-06",
+  "rel_days": 10,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -468,10 +468,10 @@
    "PowerShell": 20,
    "HTML": 6
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -508,7 +508,7 @@
   }
  },
  "selfimproving-agent/Awesome-Self-Improving-Agents": {
-  "commit_90d": 66,
+  "commit_90d": 56,
   "commit_7d": 5,
   "rel_ver": null,
   "rel_none": true,
@@ -521,10 +521,10 @@
    "TeX": 96,
    "BibTeX Style": 4
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4690,6 +4690,74 @@
   "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "taboospecialistblade/ai--manus2.0": {
+  "commit_90d": 46,
+  "commit_7d": 46,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "sebion7125/pi-protokoll": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 99,
+   "Shell": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "akadirsanli/SleepPilot": {
+  "rel_ver": "v2.4.1",
+  "rel_pub": "2026-11-14",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 97,
+   "CSS": 2,
+   "HTML": 0,
+   "Batchfile": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
    "release": "20261116",
    "security": "20261116",
    "contrib": "20261116",

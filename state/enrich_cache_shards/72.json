@@ -5246,5 +5246,78 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "WireProvostPucker/Gemini-Config-Checker-": {
+  "commit_90d": 53,
+  "commit_7d": 53,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Makefile": 100
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "Fzkuji/Ensemble-Hub": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 68,
+   "Jupyter Notebook": 27,
+   "Shell": 5
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "novalo-dev/Prestashop-MCP-Server": {
+  "rel_ver": "v2.0.2",
+  "rel_pub": "2026-11-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": "low",
+  "sec_last": "2026-11-07",
+  "sec_ids": [
+   "GHSA-p6vv-3pv5-jjcg(-,medium)",
+   "GHSA-5v2q-739x-4x8m(-,low)"
+  ],
+  "contrib_n": 2,
+  "lang": {
+   "PHP": 88,
+   "Smarty": 5,
+   "Python": 4,
+   "JavaScript": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

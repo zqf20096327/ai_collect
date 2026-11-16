@@ -645,11 +645,11 @@
   }
  },
  "epam/ai-dial-core": {
-  "commit_7d": 9,
-  "commit_90d": 171,
-  "rel_ver": "0.49.2",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_7d": 16,
+  "commit_90d": 189,
+  "rel_ver": "0.50.1",
+  "rel_pub": "2026-11-12",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -663,10 +663,10 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -701,7 +701,7 @@
  },
  "abhisheks008/DL-Simplified": {
   "commit_7d": 0,
-  "commit_90d": 10,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -716,10 +716,10 @@
    "CSS": 0,
    "TypeScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -748,8 +748,8 @@
   }
  },
  "PunithVT/ai-avatar-system": {
-  "commit_7d": 0,
-  "commit_90d": 40,
+  "commit_7d": 22,
+  "commit_90d": 60,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -764,10 +764,10 @@
    "HTML": 6,
    "HCL": 5
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4905,5 +4905,25 @@
   },
   "commit_90d": 7,
   "commit_7d": 7
+ },
+ "TurquoiseConsultant/GitHub-Copilot-app": {
+  "commit_90d": 54,
+  "commit_7d": 54,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

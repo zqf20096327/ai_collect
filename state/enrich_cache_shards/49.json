@@ -5468,5 +5468,70 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "weightcashiercupola/Gemini-Config-Checker-": {
+  "commit_90d": 53,
+  "commit_7d": 53,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Makefile": 100
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "adilson889/lume": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "HTML": 95,
+   "JavaScript": 5
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "onexstack/onexai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 99,
+   "Shell": 0,
+   "PLpgSQL": 0,
+   "Makefile": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

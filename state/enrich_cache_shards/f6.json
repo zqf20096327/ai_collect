@@ -727,7 +727,7 @@
  },
  "eltociear/awesome-AI-driven-development": {
   "commit_7d": 1,
-  "commit_90d": 81,
+  "commit_90d": 38,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -736,20 +736,20 @@
   "sec_ids": [],
   "contrib_n": 83,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "SXP-Simon/astrbot_plugin_qq_group_daily_analysis": {
-  "commit_7d": 10,
-  "commit_90d": 379,
-  "rel_ver": "v5.8.0",
-  "rel_pub": "2026-10-15",
+  "commit_7d": 12,
+  "commit_90d": 381,
+  "rel_ver": "v6.0.4",
+  "rel_pub": "2026-11-14",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -765,10 +765,10 @@
    "TypeScript": 14,
    "JavaScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

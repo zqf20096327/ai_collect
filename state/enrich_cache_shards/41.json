@@ -431,7 +431,7 @@
   }
  },
  "BurnySc2/python-sc2": {
-  "commit_90d": 0,
+  "commit_90d": 14,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -447,10 +447,10 @@
    "Batchfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1663,13 +1663,16 @@
    "Shell": 2,
    "Rust": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261116",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261116"
+  },
+  "commit_90d": 1184,
+  "commit_7d": 42
  },
  "hyyhf/agent-book-code": {
   "rel_ver": "v1.0.0",

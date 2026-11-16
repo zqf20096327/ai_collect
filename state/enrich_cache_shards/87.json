@@ -351,8 +351,8 @@
   }
  },
  "aaryansamanta/ai-research-publications": {
-  "commit_90d": 29,
-  "commit_7d": 0,
+  "commit_90d": 63,
+  "commit_7d": 34,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -367,17 +367,17 @@
    "JavaScript": 1,
    "TeX": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "wildminder/awesome-ltx2": {
-  "commit_90d": 38,
+  "commit_90d": 20,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -387,10 +387,10 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

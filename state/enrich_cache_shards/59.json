@@ -469,12 +469,12 @@
   }
  },
  "huggingface/xet-core": {
-  "commit_90d": 41,
-  "commit_7d": 1,
-  "rel_ver": "v1.7.0",
-  "rel_pub": "2026-10-06",
-  "rel_days": 11,
-  "rel_n90": 2,
+  "commit_90d": 61,
+  "commit_7d": 6,
+  "rel_ver": "v1.8.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 17,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -489,10 +489,10 @@
    "Shell": 1,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -525,7 +525,7 @@
   }
  },
  "karanb192/awesome-claude-skills": {
-  "commit_90d": 221,
+  "commit_90d": 259,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -535,10 +535,10 @@
   "sec_ids": [],
   "contrib_n": 200,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4849,6 +4849,31 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "SalyyS1/mcp-slim": {
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "JavaScript": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

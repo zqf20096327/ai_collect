@@ -287,13 +287,13 @@
   }
  },
  "GanyuanRan/Autoloom": {
-  "commit_90d": 41,
-  "commit_7d": 10,
-  "rel_ver": "v0.1.0-beta.3",
-  "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "commit_90d": 50,
+  "commit_7d": 1,
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 3,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -305,10 +305,10 @@
    "CSS": 28,
    "Vue": 21
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -475,11 +475,11 @@
   }
  },
  "mlverse/torch": {
-  "commit_90d": 7,
-  "commit_7d": 3,
+  "commit_90d": 11,
+  "commit_7d": 0,
   "rel_ver": "v0.17.0",
   "rel_pub": "2026-04-11",
-  "rel_days": 189,
+  "rel_days": 219,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -495,10 +495,10 @@
    "CMake": 0,
    "Cuda": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4864,6 +4864,47 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "TypeTyrantScheme/Gemini-Config-Checker-": {
+  "commit_90d": 53,
+  "commit_7d": 53,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Makefile": 100
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "rishikksh20/triton-kernel-python": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

@@ -443,11 +443,11 @@
   }
  },
  "lucidrains/pi-zero-pytorch": {
-  "commit_90d": 12,
+  "commit_90d": 17,
   "commit_7d": 0,
   "rel_ver": "0.5.9",
   "rel_pub": "2026-01-22",
-  "rel_days": 268,
+  "rel_days": 298,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -461,22 +461,22 @@
    "CSS": 10,
    "HTML": 5
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "aiqm/torchani": {
-  "commit_90d": 12,
-  "commit_7d": 0,
-  "rel_ver": "2.9.0",
-  "rel_pub": "2026-09-04",
-  "rel_days": 43,
-  "rel_n90": 4,
+  "commit_90d": 17,
+  "commit_7d": 7,
+  "rel_ver": "2.11.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -491,10 +491,10 @@
    "Dockerfile": 0,
    "Jinja": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

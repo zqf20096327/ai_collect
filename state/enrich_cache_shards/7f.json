@@ -510,7 +510,7 @@
   "commit_90d": 0,
   "rel_ver": "1.7.1",
   "rel_pub": "2025-06-25",
-  "rel_days": 479,
+  "rel_days": 509,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -523,10 +523,10 @@
    "Python": 99,
    "Dockerfile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4516,6 +4516,33 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "Attc-Config-Technician/Attc-Code": {
+  "rel_ver": "v5.18.2",
+  "rel_pub": "2026-11-16",
+  "rel_days": 0,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C": 60,
+   "Java": 30,
+   "Shell": 6,
+   "Roff": 1,
+   "Makefile": 1
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

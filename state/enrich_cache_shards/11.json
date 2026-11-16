@@ -643,11 +643,11 @@
  },
  "cafferychen777/mLLMCelltype": {
   "commit_7d": 0,
-  "commit_90d": 25,
+  "commit_90d": 8,
   "rel_ver": "v2.0.8",
   "rel_pub": "2026-08-18",
-  "rel_days": 60,
-  "rel_n90": 2,
+  "rel_days": 90,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -662,10 +662,10 @@
    "TeX": 5,
    "CSS": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -673,11 +673,11 @@
  },
  "fuxiaoai/tidings-rss": {
   "commit_7d": 0,
-  "commit_90d": 14,
+  "commit_90d": 6,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-08-13",
-  "rel_days": 65,
-  "rel_n90": 5,
+  "rel_days": 95,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -689,10 +689,10 @@
    "Python": 85,
    "JavaScript": 15
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

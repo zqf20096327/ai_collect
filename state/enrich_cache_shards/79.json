@@ -509,8 +509,8 @@
   }
  },
  "google/cameratrapai": {
-  "commit_7d": 9,
-  "commit_90d": 31,
+  "commit_7d": 3,
+  "commit_90d": 39,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -522,10 +522,10 @@
    "Python": 97,
    "Jupyter Notebook": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5188,6 +5188,42 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "PersonalClaw/PersonalClaw": {
+  "rel_ver": "v0.3.8",
+  "rel_pub": "2026-11-12",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 27,
+  "sec_worst": "high",
+  "sec_last": "2026-11-08",
+  "sec_ids": [
+   "GHSA-6w6m-q5qx-5663(-,high)",
+   "GHSA-pq2q-hq9r-cmh4(-,medium)",
+   "GHSA-v3c9-vfcq-f8h6(-,high)",
+   "GHSA-8j9j-7h6w-9fh6(-,high)",
+   "GHSA-x59c-39vv-4f4q(-,medium)",
+   "GHSA-qpjj-8vp3-8942(-,medium)",
+   "GHSA-wc4v-q7q8-7w5p(-,medium)",
+   "GHSA-rm9m-g2pq-rh3r(-,low)"
+  ],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 73,
+   "TypeScript": 25,
+   "JavaScript": 2,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

@@ -492,11 +492,11 @@
   }
  },
  "hydro13/tandem-browser": {
-  "commit_90d": 31,
+  "commit_90d": 0,
   "commit_7d": 0,
   "rel_ver": "v1.10.0",
   "rel_pub": "2026-05-05",
-  "rel_days": 165,
+  "rel_days": 195,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -512,18 +512,18 @@
    "HTML": 3,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "linkedin/venice": {
-  "commit_90d": 122,
-  "commit_7d": 12,
+  "commit_90d": 129,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -538,10 +538,10 @@
    "Shell": 0,
    "Jupyter Notebook": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -574,12 +574,12 @@
   }
  },
  "Tavris1/AI-Toolkit-Easy-Install": {
-  "commit_90d": 9,
+  "commit_90d": 13,
   "commit_7d": 0,
-  "rel_ver": "0.6.1",
-  "rel_pub": "2026-09-12",
-  "rel_days": 35,
-  "rel_n90": 2,
+  "rel_ver": "0.6.6",
+  "rel_pub": "2026-11-02",
+  "rel_days": 14,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -590,21 +590,21 @@
   "lang": {
    "Batchfile": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "SilentCoderHere/aihub": {
-  "commit_90d": 14,
+  "commit_90d": 21,
   "commit_7d": 0,
   "rel_ver": "v3.0.1",
   "rel_pub": "2026-09-06",
-  "rel_days": 41,
+  "rel_days": 71,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -616,10 +616,10 @@
   "lang": {
    "Kotlin": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

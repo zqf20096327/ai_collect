@@ -748,7 +748,7 @@
   "commit_90d": 0,
   "rel_ver": "8.8.9",
   "rel_pub": "2026-01-26",
-  "rel_days": 264,
+  "rel_days": 294,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -760,10 +760,10 @@
   "lang": {
    "C#": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -817,7 +817,7 @@
   "commit_90d": 0,
   "rel_ver": "v0.6.0",
   "rel_pub": "2025-12-11",
-  "rel_days": 310,
+  "rel_days": 340,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -833,10 +833,10 @@
    "HTML": 1,
    "Python": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

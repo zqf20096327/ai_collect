@@ -514,11 +514,11 @@
   }
  },
  "hatayama/unity-cli-loop": {
-  "commit_7d": 28,
-  "commit_90d": 700,
-  "rel_ver": "v3.17.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 3,
+  "commit_7d": 65,
+  "commit_90d": 696,
+  "rel_ver": "v3.33.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -534,22 +534,22 @@
    "PowerShell": 1,
    "Python": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "UNLINEARITY/CLI-WeChat-Bridge": {
-  "commit_7d": 12,
-  "commit_90d": 125,
-  "rel_ver": "1.2.3",
-  "rel_pub": "2026-10-13",
-  "rel_days": 4,
-  "rel_n90": 10,
+  "commit_7d": 1,
+  "commit_90d": 158,
+  "rel_ver": "1.4.1",
+  "rel_pub": "2026-10-20",
+  "rel_days": 27,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -564,10 +564,10 @@
    "CSS": 1,
    "Standard ML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

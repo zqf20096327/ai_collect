@@ -606,11 +606,11 @@
   }
  },
  "webis-de/small-text": {
-  "commit_90d": 16,
-  "commit_7d": 0,
+  "commit_90d": 27,
+  "commit_7d": 6,
   "rel_ver": "v2.0.0.dev4",
   "rel_pub": "2026-05-23",
-  "rel_days": 147,
+  "rel_days": 177,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -622,10 +622,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -652,7 +652,7 @@
   }
  },
  "secureagentics/Adrian": {
-  "commit_90d": 13,
+  "commit_90d": 3,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -668,10 +668,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4879,6 +4879,33 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "AgentiLoop/MarioKart64JS": {
+  "rel_ver": "v0.0.20",
+  "rel_pub": "2026-10-17",
+  "rel_days": 30,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 75,
+   "Python": 17,
+   "HTML": 4,
+   "CSS": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

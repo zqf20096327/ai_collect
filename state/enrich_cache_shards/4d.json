@@ -592,7 +592,7 @@
  },
  "cfgranda/ps4ds": {
   "commit_7d": 1,
-  "commit_90d": 18,
+  "commit_90d": 27,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -605,21 +605,21 @@
    "Perl": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "BlockRunAI/Franklin": {
-  "commit_7d": 8,
-  "commit_90d": 193,
-  "rel_ver": "v3.49.10",
-  "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "commit_7d": 5,
+  "commit_90d": 227,
+  "rel_ver": "v3.49.29",
+  "rel_pub": "2026-11-14",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -637,10 +637,10 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

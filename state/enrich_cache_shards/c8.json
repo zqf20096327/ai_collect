@@ -4807,5 +4807,32 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "pauloacs/OpenFOAM-ML-Solvers": {
+  "rel_ver": "2.1.1",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C++": 57,
+   "Python": 34,
+   "C": 6,
+   "Shell": 3,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

@@ -534,10 +534,10 @@
  },
  "SaseQ/discord-mcp": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 21,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-03-16",
-  "rel_days": 215,
+  "rel_days": 245,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -550,10 +550,10 @@
    "Java": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

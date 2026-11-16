@@ -449,7 +449,7 @@
  },
  "Tencent/CognitiveKernel-Pro": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -463,21 +463,21 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "petrobras/3W": {
-  "commit_7d": 5,
-  "commit_90d": 100,
-  "rel_ver": "v.1.93.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 3,
+  "commit_7d": 22,
+  "commit_90d": 166,
+  "rel_ver": "v.1.102.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -493,10 +493,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

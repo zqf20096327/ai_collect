@@ -705,10 +705,10 @@
   }
  },
  "manojmallick/sigmap": {
-  "commit_7d": 46,
-  "commit_90d": 563,
-  "rel_ver": "v8.78.0",
-  "rel_pub": "2026-10-17",
+  "commit_7d": 81,
+  "commit_90d": 766,
+  "rel_ver": "v8.87.0",
+  "rel_pub": "2026-11-16",
   "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
@@ -725,10 +725,10 @@
    "TypeScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -763,7 +763,7 @@
  },
  "Carl-McBride-Ellis/Compendium-of-free-ML-reading-resources": {
   "commit_7d": 0,
-  "commit_90d": 5,
+  "commit_90d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -772,10 +772,10 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5314,6 +5314,27 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "Kann-Audits/model-alpha": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 60,
+   "Python": 36,
+   "Shell": 3
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

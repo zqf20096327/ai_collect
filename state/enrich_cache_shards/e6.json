@@ -478,8 +478,8 @@
   }
  },
  "Agent-Field/pr-af": {
-  "commit_90d": 12,
-  "commit_7d": 0,
+  "commit_90d": 6,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -494,22 +494,22 @@
    "Dockerfile": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "TimeCopilot/timecopilot": {
-  "commit_90d": 106,
-  "commit_7d": 28,
-  "rel_ver": "v0.0.38",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
-  "rel_n90": 9,
+  "commit_90d": 81,
+  "commit_7d": 4,
+  "rel_ver": "v0.0.41",
+  "rel_pub": "2026-11-10",
+  "rel_days": 6,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -521,10 +521,10 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4403,6 +4403,23 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "Fzkuji/awesome-AI": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

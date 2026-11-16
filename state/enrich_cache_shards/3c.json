@@ -4561,5 +4561,32 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "amosproj/amos2026ws01-legacy-migrator": {
+  "rel_ver": "sprint-04-release",
+  "rel_pub": "2026-11-11",
+  "rel_days": 5,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Python": 58,
+   "TypeScript": 38,
+   "Shell": 2,
+   "PowerShell": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

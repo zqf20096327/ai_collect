@@ -543,10 +543,10 @@
   }
  },
  "avibe-bot/avibe": {
-  "commit_7d": 301,
-  "commit_90d": 1889,
-  "rel_ver": "gh-v3.2.2rc4",
-  "rel_pub": "2026-10-17",
+  "commit_7d": 369,
+  "commit_90d": 2039,
+  "rel_ver": "gh-v3.2.7rc9",
+  "rel_pub": "2026-11-16",
   "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": true,
@@ -563,10 +563,10 @@
    "JavaScript": 1,
    "CSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

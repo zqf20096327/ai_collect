@@ -570,7 +570,7 @@
   }
  },
  "MMMU-Benchmark/MMMU": {
-  "commit_7d": 0,
+  "commit_7d": 1,
   "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
@@ -584,22 +584,22 @@
    "HTML": 8,
    "Shell": 4
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "intel/llm-scaler": {
-  "commit_7d": 4,
-  "commit_90d": 94,
+  "commit_7d": 6,
+  "commit_90d": 68,
   "rel_ver": "vllm-1.5",
   "rel_pub": "2026-10-16",
-  "rel_days": 1,
-  "rel_n90": 8,
+  "rel_days": 31,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -614,10 +614,10 @@
    "Dockerfile": 2,
    "C": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

@@ -4147,5 +4147,27 @@
    "contrib": "20261113",
    "lang": "20261113"
   }
+ },
+ "synth-inc/cloudless-voice": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Swift": 99,
+   "Shell": 0,
+   "Python": 0,
+   "Metal": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

@@ -543,10 +543,10 @@
  },
  "FAST-Imaging/FAST": {
   "commit_90d": 76,
-  "commit_7d": 6,
+  "commit_7d": 0,
   "rel_ver": "v4.18.0",
   "rel_pub": "2026-10-14",
-  "rel_days": 3,
+  "rel_days": 33,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -562,10 +562,10 @@
    "Python": 3,
    "GLSL": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4323,6 +4323,57 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "ctkqiang/HuaTuoAI": {
+  "commit_90d": 1,
+  "commit_7d": 1,
+  "rel_ver": "1.0.4",
+  "rel_pub": "2024-05-04",
+  "rel_days": 926,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Makefile": 1,
+   "PureBasic": 1
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "liweitan2046-cyber/dsh-wanfeng-studio": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

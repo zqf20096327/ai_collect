@@ -365,11 +365,11 @@
   }
  },
  "CycloneDX/specification": {
-  "commit_7d": 1,
-  "commit_90d": 25,
+  "commit_7d": 0,
+  "commit_90d": 24,
   "rel_ver": "1.7.2",
   "rel_pub": "2026-09-17",
-  "rel_days": 30,
+  "rel_days": 60,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -385,10 +385,10 @@
    "Go Template": 5,
    "JavaScript": 5
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -425,7 +425,7 @@
   "commit_90d": 4,
   "rel_ver": "v0.1.3.post1",
   "rel_pub": "2026-02-17",
-  "rel_days": 242,
+  "rel_days": 272,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -441,22 +441,22 @@
    "Jinja": 1,
    "Jupyter Notebook": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "IBM/aihwkit": {
-  "commit_7d": 4,
-  "commit_90d": 34,
-  "rel_ver": "v1.1.0",
-  "rel_pub": "2026-02-03",
-  "rel_days": 256,
-  "rel_n90": 0,
+  "commit_7d": 0,
+  "commit_90d": 44,
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 26,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -471,10 +471,10 @@
    "Cuda": 12,
    "CMake": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4697,6 +4697,55 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "becloudready/labagent": {
+  "rel_ver": "v0.2.1",
+  "rel_pub": "2026-10-23",
+  "rel_days": 24,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "HCL": 3,
+   "HTML": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "Hamza-Abili/opencode-telegram-notify": {
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

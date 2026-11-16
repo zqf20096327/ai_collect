@@ -339,8 +339,8 @@
   }
  },
  "wanshuiyin/ARIS-in-AI-Offer": {
-  "commit_7d": 1,
-  "commit_90d": 31,
+  "commit_7d": 0,
+  "commit_90d": 29,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -352,10 +352,10 @@
    "Python": 72,
    "HTML": 28
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

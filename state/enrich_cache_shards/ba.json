@@ -395,12 +395,12 @@
   }
  },
  "redis/mcp-redis": {
-  "commit_90d": 26,
+  "commit_90d": 31,
   "commit_7d": 2,
   "rel_ver": "0.5.1",
   "rel_pub": "2026-08-05",
-  "rel_days": 73,
-  "rel_n90": 1,
+  "rel_days": 103,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -412,10 +412,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -476,11 +476,11 @@
   }
  },
  "Azure/azure-dev": {
-  "commit_90d": 494,
-  "commit_7d": 49,
-  "rel_ver": "azure-dev-cli_1.36.0",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "commit_90d": 524,
+  "commit_7d": 33,
+  "rel_ver": "azure-dev-cli_1.38.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -496,17 +496,17 @@
    "Shell": 0,
    "Bicep": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "cporter202/ai-agent-tools": {
-  "commit_90d": 0,
+  "commit_90d": 8,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -516,10 +516,10 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4751,6 +4751,31 @@
   "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "fathiaomar/SolGuard-AI": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 84,
+   "PLpgSQL": 10,
+   "CSS": 6
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
    "release": "20261116",
    "security": "20261116",
    "contrib": "20261116",

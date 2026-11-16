@@ -550,11 +550,11 @@
   }
  },
  "pymc-devs/pytensor": {
-  "commit_7d": 21,
-  "commit_90d": 108,
-  "rel_ver": "rel-3.3.4",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_7d": 13,
+  "commit_90d": 161,
+  "rel_ver": "rel-3.3.8",
+  "rel_pub": "2026-11-07",
+  "rel_days": 9,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -570,10 +570,10 @@
    "Cython": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4806,6 +4806,25 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "stateri-science/environmental-and-socioeconomic-predictors-of-climate-vulnerability": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "R": 100
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

@@ -598,12 +598,12 @@
   }
  },
  "winstonkoh87/Athena-Public": {
-  "commit_90d": 237,
-  "commit_7d": 11,
+  "commit_90d": 238,
+  "commit_7d": 32,
   "rel_ver": "v10.0.6",
   "rel_pub": "2026-10-17",
-  "rel_days": 0,
-  "rel_n90": 7,
+  "rel_days": 30,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -617,21 +617,21 @@
    "Shell": 2,
    "TypeScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "StuMason/coolify-mcp": {
-  "commit_90d": 191,
-  "commit_7d": 3,
-  "rel_ver": "v3.9.0",
-  "rel_pub": "2026-10-02",
-  "rel_days": 15,
+  "commit_90d": 140,
+  "commit_7d": 11,
+  "rel_ver": "v3.10.1",
+  "rel_pub": "2026-11-12",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -647,22 +647,22 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "agentjido/req_llm": {
-  "commit_90d": 163,
-  "commit_7d": 21,
-  "rel_ver": "v1.28.0",
-  "rel_pub": "2026-10-09",
-  "rel_days": 8,
-  "rel_n90": 12,
+  "commit_90d": 229,
+  "commit_7d": 13,
+  "rel_ver": "v1.30.0",
+  "rel_pub": "2026-11-03",
+  "rel_days": 13,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -674,10 +674,10 @@
    "Elixir": 100,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4374,5 +4374,29 @@
   },
   "commit_90d": 7,
   "commit_7d": 7
+ },
+ "carrycooldude/On-Device-Image-Generation": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-06",
+  "rel_days": 10,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 90,
+   "Python": 10
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

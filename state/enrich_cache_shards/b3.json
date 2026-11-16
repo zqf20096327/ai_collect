@@ -4539,13 +4539,16 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261116",
   "dim_ts": {
    "release": "20261112",
    "security": "20261112",
    "contrib": "20261112",
-   "lang": "20261112"
-  }
+   "lang": "20261112",
+   "commit": "20261116"
+  },
+  "commit_90d": 640,
+  "commit_7d": 236
  },
  "PHclaw/agentflow": {
   "rel_ver": null,

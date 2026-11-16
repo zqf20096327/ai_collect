@@ -629,7 +629,7 @@
  },
  "Azure-Samples/aisearch-openai-rag-audio": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -644,10 +644,10 @@
    "JavaScript": 4,
    "PowerShell": 4
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -655,11 +655,11 @@
  },
  "skygazer42/MimirQ": {
   "commit_7d": 0,
-  "commit_90d": 135,
+  "commit_90d": 17,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-07-28",
-  "rel_days": 81,
-  "rel_n90": 12,
+  "rel_days": 111,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -674,18 +674,18 @@
    "Makefile": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Annyfee/agent-craft": {
-  "commit_7d": 1,
-  "commit_90d": 5,
+  "commit_7d": 0,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -696,10 +696,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5366,6 +5366,52 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "ochornenko/virtual-background-ios": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 89,
+   "Metal": 11
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "Alan1112223331/ntulearn-bilingual-subtitles": {
+  "rel_ver": "v1.4.1",
+  "rel_pub": "2026-11-03",
+  "rel_days": 13,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 75,
+   "HTML": 15,
+   "CSS": 9,
+   "Python": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

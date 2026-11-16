@@ -756,11 +756,11 @@
   }
  },
  "awwaiid/ghostwriter": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 39,
+  "commit_7d": 39,
   "rel_ver": "v2025.09.27-01",
   "rel_pub": "2025-09-27",
-  "rel_days": 385,
+  "rel_days": 415,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -776,10 +776,10 @@
    "CSS": 2,
    "Shell": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -812,11 +812,11 @@
   }
  },
  "ai-driven-dev/framework": {
-  "commit_90d": 450,
-  "commit_7d": 41,
-  "rel_ver": "v5.12.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_90d": 789,
+  "commit_7d": 92,
+  "rel_ver": "v5.14.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -832,10 +832,10 @@
    "Python": 1,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4778,6 +4778,28 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "shi1-0yi/memsea-coopanion": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 73,
+   "HTML": 14,
+   "TypeScript": 13,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

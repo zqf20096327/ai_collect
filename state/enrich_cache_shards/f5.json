@@ -697,12 +697,12 @@
   }
  },
  "avansaber/seo-monster": {
-  "commit_7d": 0,
-  "commit_90d": 4,
-  "rel_ver": "v0.9.3",
-  "rel_pub": "2026-08-29",
-  "rel_days": 49,
-  "rel_n90": 1,
+  "commit_7d": 4,
+  "commit_90d": 10,
+  "rel_ver": "v0.11.1",
+  "rel_pub": "2026-11-13",
+  "rel_days": 3,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -713,10 +713,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5207,6 +5207,48 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "icueth/alice": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 95,
+   "Shell": 4,
+   "Python": 1
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "siberius/study-prompts": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 8,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

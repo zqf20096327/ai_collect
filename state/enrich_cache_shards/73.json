@@ -6015,5 +6015,32 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "atomsai/contextdb": {
+  "rel_ver": "v0.4.9",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 3,
+  "sec_worst": "low",
+  "sec_last": "2026-10-12",
+  "sec_ids": [
+   "GHSA-g43m-68q2-8fvf(-,low)",
+   "GHSA-h57w-2f73-vh8f(-,medium)",
+   "GHSA-vpf9-5xgr-3x8m(-,medium)"
+  ],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

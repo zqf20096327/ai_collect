@@ -558,11 +558,11 @@
   }
  },
  "microsoft/mattersim": {
-  "commit_90d": 22,
+  "commit_90d": 6,
   "commit_7d": 0,
   "rel_ver": "v1.2.5",
   "rel_pub": "2026-05-28",
-  "rel_days": 142,
+  "rel_days": 172,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -577,10 +577,10 @@
    "Dockerfile": 1,
    "Cython": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

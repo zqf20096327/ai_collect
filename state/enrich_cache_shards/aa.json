@@ -361,12 +361,12 @@
   }
  },
  "aannoo/hcom": {
-  "commit_7d": 91,
-  "commit_90d": 289,
-  "rel_ver": "v0.7.30",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
-  "rel_n90": 7,
+  "commit_7d": 0,
+  "commit_90d": 255,
+  "rel_ver": "v0.7.31",
+  "rel_pub": "2026-10-21",
+  "rel_days": 26,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -383,10 +383,10 @@
    "Shell": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -394,7 +394,7 @@
  },
  "shanmukh05/Machine-Learning-Roadmap": {
   "commit_7d": 0,
-  "commit_90d": 4,
+  "commit_90d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -403,10 +403,10 @@
   "sec_ids": [],
   "contrib_n": 3,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4645,6 +4645,27 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "hrabanazviking/RuneForgeAI-Project-Hlidhskjalf": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 99,
+   "Shell": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

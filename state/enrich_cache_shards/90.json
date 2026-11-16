@@ -539,7 +539,7 @@
   }
  },
  "kac89/vulnrepo": {
-  "commit_90d": 39,
+  "commit_90d": 51,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -555,10 +555,10 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

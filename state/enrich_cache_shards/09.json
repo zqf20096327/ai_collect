@@ -511,12 +511,12 @@
   }
  },
  "ZimoLiao/scholaraio": {
-  "commit_7d": 0,
-  "commit_90d": 65,
+  "commit_7d": 3,
+  "commit_90d": 40,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-08-17",
-  "rel_days": 61,
-  "rel_n90": 2,
+  "rel_days": 91,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -531,22 +531,22 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "zenstory-ai/video-recap-skills": {
-  "commit_7d": 4,
-  "commit_90d": 114,
-  "rel_ver": "v0.6.2",
-  "rel_pub": "2026-10-04",
-  "rel_days": 13,
-  "rel_n90": 5,
+  "commit_7d": 7,
+  "commit_90d": 122,
+  "rel_ver": "v0.7.1",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -561,10 +561,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -575,7 +575,7 @@
   "commit_90d": 0,
   "rel_ver": "v5.0.4",
   "rel_pub": "2026-03-06",
-  "rel_days": 225,
+  "rel_days": 255,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -588,10 +588,10 @@
    "Python": 99,
    "Makefile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

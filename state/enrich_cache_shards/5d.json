@@ -496,11 +496,11 @@
   }
  },
  "giselles-ai/giselle": {
-  "commit_7d": 0,
-  "commit_90d": 36,
+  "commit_7d": 9,
+  "commit_90d": 82,
   "rel_ver": "v0.75.6",
   "rel_pub": "2026-04-27",
-  "rel_days": 173,
+  "rel_days": 203,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -516,10 +516,10 @@
    "JavaScript": 1,
    "Handlebars": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4609,6 +4609,29 @@
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111"
+  }
+ },
+ "hulatu/Publishing_Platform": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "TypeScript": 88,
+   "CSS": 11,
+   "JavaScript": 0,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

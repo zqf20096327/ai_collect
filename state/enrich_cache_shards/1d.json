@@ -503,11 +503,11 @@
   }
  },
  "MaxFreedomPollard/Compartment": {
-  "commit_7d": 0,
-  "commit_90d": 227,
-  "rel_ver": "v4.11.0",
-  "rel_pub": "2026-09-30",
-  "rel_days": 17,
+  "commit_7d": 10,
+  "commit_90d": 161,
+  "rel_ver": "v4.14.0",
+  "rel_pub": "2026-11-07",
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -523,10 +523,10 @@
    "Shell": 0,
    "C": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -583,8 +583,8 @@
   }
  },
  "YouMind-OpenLab/awesome-gemini-3-prompts": {
-  "commit_7d": 27,
-  "commit_90d": 440,
+  "commit_7d": 20,
+  "commit_90d": 366,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -595,10 +595,10 @@
   "lang": {
    "TypeScript": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

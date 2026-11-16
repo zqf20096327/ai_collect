@@ -641,7 +641,7 @@
  },
  "shootthesound/comfyUI-Realtime-Lora": {
   "commit_7d": 0,
-  "commit_90d": 12,
+  "commit_90d": 15,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -653,10 +653,10 @@
    "Python": 80,
    "JavaScript": 20
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -664,10 +664,10 @@
  },
  "opengeos/GeoAgent": {
   "commit_7d": 0,
-  "commit_90d": 11,
-  "rel_ver": "v1.9.0",
-  "rel_pub": "2026-08-09",
-  "rel_days": 69,
+  "commit_90d": 7,
+  "rel_ver": "v1.9.1",
+  "rel_pub": "2026-10-31",
+  "rel_days": 16,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -680,10 +680,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4434,6 +4434,31 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "luomufanye-cloud/luomu-cad": {
+  "rel_ver": "v0.16.0",
+  "rel_pub": "2026-11-14",
+  "rel_days": 2,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "JavaScript": 1,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

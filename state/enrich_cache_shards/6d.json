@@ -682,10 +682,10 @@
  },
  "hooosberg/WitNote": {
   "commit_7d": 1,
-  "commit_90d": 6,
+  "commit_90d": 7,
   "rel_ver": "v2.0.1",
   "rel_pub": "2026-08-23",
-  "rel_days": 55,
+  "rel_days": 85,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -701,10 +701,10 @@
    "JavaScript": 1,
    "HTML": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

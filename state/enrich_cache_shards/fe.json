@@ -505,12 +505,12 @@
   }
  },
  "nWave-ai/nWave": {
-  "commit_90d": 5,
-  "commit_7d": 0,
-  "rel_ver": "v3.22.2",
-  "rel_pub": "2026-09-16",
-  "rel_days": 31,
-  "rel_n90": 3,
+  "commit_90d": 17,
+  "commit_7d": 4,
+  "rel_ver": "v4.7.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 0,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -525,10 +525,10 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -565,11 +565,11 @@
   }
  },
  "freddy-schuetz/n8n-claw": {
-  "commit_90d": 24,
+  "commit_90d": 0,
   "commit_7d": 0,
   "rel_ver": "v1.9.2",
   "rel_pub": "2026-06-04",
-  "rel_days": 135,
+  "rel_days": 165,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -585,10 +585,10 @@
    "Python": 6,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

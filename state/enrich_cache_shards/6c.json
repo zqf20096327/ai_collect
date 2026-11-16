@@ -575,12 +575,12 @@
   }
  },
  "roboflow/roboflow-python": {
-  "commit_90d": 63,
-  "commit_7d": 7,
-  "rel_ver": "v1.7.1",
-  "rel_pub": "2026-10-09",
-  "rel_days": 8,
-  "rel_n90": 9,
+  "commit_90d": 68,
+  "commit_7d": 2,
+  "rel_ver": "v1.7.3",
+  "rel_pub": "2026-10-26",
+  "rel_days": 21,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -593,22 +593,22 @@
    "Shell": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "hsahovic/poke-env": {
-  "commit_90d": 20,
-  "commit_7d": 0,
-  "rel_ver": "0.16.1",
-  "rel_pub": "2026-08-23",
-  "rel_days": 55,
-  "rel_n90": 2,
+  "commit_90d": 31,
+  "commit_7d": 13,
+  "rel_ver": "0.17.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -621,10 +621,10 @@
    "HTML": 1,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5233,5 +5233,50 @@
   "sec_last": null,
   "sec_ids": [],
   "contrib_n": null
+ },
+ "topconstableinlet67/ai--manus2.0": {
+  "commit_90d": 45,
+  "commit_7d": 45,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "bydeng01/deepgp-torch": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-09-28",
+  "rel_days": 49,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Dockerfile": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

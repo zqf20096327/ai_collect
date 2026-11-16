@@ -519,7 +519,7 @@
   "commit_7d": 0,
   "rel_ver": "2.3.7",
   "rel_pub": "2024-04-06",
-  "rel_days": 924,
+  "rel_days": 954,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -532,21 +532,21 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "agentvivekkumar/dontbemichael": {
-  "commit_90d": 1674,
-  "commit_7d": 579,
-  "rel_ver": "v0.2.2",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_90d": 2490,
+  "commit_7d": 92,
+  "rel_ver": "v0.4.1",
+  "rel_pub": "2026-11-14",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -562,22 +562,22 @@
    "HTML": 1,
    "Nunjucks": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "ashbuilds/payload-ai": {
-  "commit_90d": 59,
-  "commit_7d": 5,
-  "rel_ver": "4.0.1",
-  "rel_pub": "2026-10-13",
-  "rel_days": 4,
-  "rel_n90": 6,
+  "commit_90d": 34,
+  "commit_7d": 0,
+  "rel_ver": "4.2.0",
+  "rel_pub": "2026-11-07",
+  "rel_days": 9,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -593,17 +593,17 @@
    "CSS": 0,
    "SCSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "deepset-ai/haystack-cookbook": {
-  "commit_90d": 19,
+  "commit_90d": 10,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -616,10 +616,10 @@
    "Jupyter Notebook": 100,
    "Python": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4527,6 +4527,80 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "kevinalexandr19/python_para_geologos": {
+  "commit_90d": 25,
+  "commit_7d": 25,
+  "rel_ver": "v2.6",
+  "rel_pub": "2025-06-10",
+  "rel_days": 524,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Python": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "TobyWang1996/animon": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-14",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "voyager67/Neural-Networks-Playground": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 57,
+   "HTML": 26,
+   "Python": 16,
+   "Shell": 1,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

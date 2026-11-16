@@ -481,11 +481,11 @@
   }
  },
  "google/sec-gemini": {
-  "commit_90d": 1,
-  "commit_7d": 0,
+  "commit_90d": 3,
+  "commit_7d": 2,
   "rel_ver": "cli/sec-gemini-v0.0.4",
   "rel_pub": "2025-06-27",
-  "rel_days": 477,
+  "rel_days": 507,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -501,18 +501,18 @@
    "Jupyter Notebook": 15,
    "CSS": 10
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "choushunn/awesome-RK3588": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 4,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -521,10 +521,10 @@
   "sec_ids": [],
   "contrib_n": 6,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4784,6 +4784,49 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "hasitpbhatt/awesome-ai-apps": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 21,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "seckinbeduk/hearth": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 8,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 98,
+   "Shell": 2
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

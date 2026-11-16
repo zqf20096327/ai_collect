@@ -278,11 +278,11 @@
   }
  },
  "DocAILab/XRAG": {
-  "commit_90d": 20,
-  "commit_7d": 3,
+  "commit_90d": 24,
+  "commit_7d": 0,
   "rel_ver": "v0.1.4",
   "rel_pub": "2025-02-07",
-  "rel_days": 617,
+  "rel_days": 647,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -298,10 +298,10 @@
    "JavaScript": 1,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -332,12 +332,12 @@
   }
  },
  "YanWenKun/ComfyUI-Windows-Portable": {
-  "commit_90d": 17,
+  "commit_90d": 7,
   "commit_7d": 0,
   "rel_ver": "v11.1",
   "rel_pub": "2026-08-07",
-  "rel_days": 71,
-  "rel_n90": 1,
+  "rel_days": 101,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -350,17 +350,17 @@
    "Shell": 35,
    "Batchfile": 7
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "awslabs/fullstack-solution-template-for-agentcore": {
-  "commit_90d": 45,
+  "commit_90d": 47,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -376,22 +376,22 @@
    "Shell": 2,
    "Dockerfile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "TissueImageAnalytics/tiatoolbox": {
-  "commit_90d": 48,
-  "commit_7d": 2,
+  "commit_90d": 46,
+  "commit_7d": 3,
   "rel_ver": "v2.1.3",
   "rel_pub": "2026-07-21",
-  "rel_days": 88,
-  "rel_n90": 1,
+  "rel_days": 118,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -406,21 +406,21 @@
    "HTML": 1,
    "CSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "google/mcp-security": {
-  "commit_90d": 81,
-  "commit_7d": 1,
+  "commit_90d": 100,
+  "commit_7d": 12,
   "rel_ver": "secops-v0.7.1",
   "rel_pub": "2026-08-27",
-  "rel_days": 51,
+  "rel_days": 81,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -436,17 +436,17 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "microsoft/Resource2Skill": {
-  "commit_90d": 0,
+  "commit_90d": 3,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -461,10 +461,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2366,13 +2366,16 @@
    "Python": 81,
    "HTML": 19
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261116",
   "dim_ts": {
    "release": "20261022",
    "security": "20261022",
    "contrib": "20261022",
-   "lang": "20261022"
-  }
+   "lang": "20261022",
+   "commit": "20261116"
+  },
+  "commit_90d": 16,
+  "commit_7d": 1
  },
  "yaoleifly/geministocks": {
   "rel_ver": null,
@@ -4477,6 +4480,29 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "jmaczan/asr-dysarthria": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 88,
+   "TypeScript": 8,
+   "Python": 3,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

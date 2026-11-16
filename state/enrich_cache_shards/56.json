@@ -4298,5 +4298,55 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "yantrikos/yantrik-os": {
+  "rel_ver": "nightly-0.1.0-2690-g33337ead",
+  "rel_pub": "2026-11-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Rust": 66,
+   "Python": 11,
+   "Slint": 9,
+   "HTML": 9,
+   "Shell": 4
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "kodolaHQ/Ressac": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 86,
+   "Svelte": 7,
+   "JavaScript": 2,
+   "Fluent": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

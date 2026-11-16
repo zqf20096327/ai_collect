@@ -320,11 +320,11 @@
   }
  },
  "wangmiaozero/pi-harness": {
-  "commit_7d": 42,
-  "commit_90d": 153,
-  "rel_ver": "v2.1.1",
-  "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "commit_7d": 45,
+  "commit_90d": 364,
+  "rel_ver": "v2.4.8",
+  "rel_pub": "2026-11-14",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -340,10 +340,10 @@
    "HTML": 9,
    "CSS": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -514,10 +514,10 @@
  },
  "RizwanMunawar/yolov7-object-tracking": {
   "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_90d": 2,
   "rel_ver": "yolov7-object-tracking",
   "rel_pub": "2022-08-21",
-  "rel_days": 1518,
+  "rel_days": 1548,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -530,21 +530,21 @@
    "Python": 97,
    "Jupyter Notebook": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "CornellNLP/ConvoKit": {
-  "commit_7d": 8,
+  "commit_7d": 0,
   "commit_90d": 8,
   "rel_ver": "v5.0.0",
   "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "rel_days": 31,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -560,10 +560,10 @@
    "JavaScript": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -624,12 +624,12 @@
   }
  },
  "cordum-io/cordum": {
-  "commit_7d": 1,
-  "commit_90d": 28,
-  "rel_ver": "v1.1.0",
-  "rel_pub": "2026-06-03",
-  "rel_days": 136,
-  "rel_n90": 0,
+  "commit_7d": 14,
+  "commit_90d": 41,
+  "rel_ver": "v1.3.1",
+  "rel_pub": "2026-11-11",
+  "rel_days": 5,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -644,10 +644,10 @@
    "Shell": 2,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

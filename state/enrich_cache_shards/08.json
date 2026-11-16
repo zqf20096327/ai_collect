@@ -497,12 +497,12 @@
   }
  },
  "l3p-cv/lost": {
-  "commit_90d": 194,
+  "commit_90d": 149,
   "commit_7d": 0,
-  "rel_ver": "4.1.0",
-  "rel_pub": "2026-10-02",
-  "rel_days": 15,
-  "rel_n90": 6,
+  "rel_ver": "4.1.2",
+  "rel_pub": "2026-10-21",
+  "rel_days": 26,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -517,10 +517,10 @@
    "HTML": 3,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -557,8 +557,8 @@
   }
  },
  "keyuchen21/agentic-engineering-handbook": {
-  "commit_90d": 41,
-  "commit_7d": 6,
+  "commit_90d": 43,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -569,10 +569,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4705,6 +4705,25 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "cycanics/llm-judge-weights-probes-prompts": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

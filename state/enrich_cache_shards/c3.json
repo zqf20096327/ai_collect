@@ -469,11 +469,11 @@
   }
  },
  "clawwork-ai/ClawWork": {
-  "commit_90d": 10,
+  "commit_90d": 6,
   "commit_7d": 0,
   "rel_ver": "v0.0.16",
   "rel_pub": "2026-05-16",
-  "rel_days": 154,
+  "rel_days": 184,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -489,10 +489,10 @@
    "Vue": 2,
    "HTML": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4697,6 +4697,52 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "rebornace/dsh-agent-enhancer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 94,
+   "CSS": 5,
+   "JavaScript": 1,
+   "Python": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "ajayb5034-hue/pin2-pin": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 63,
+   "JavaScript": 24,
+   "CSS": 13,
+   "HTML": 1,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

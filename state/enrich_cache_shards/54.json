@@ -642,11 +642,11 @@
   }
  },
  "DenisovAV/flutter_edge_ai": {
-  "commit_90d": 623,
-  "commit_7d": 364,
-  "rel_ver": "native-v0.18.0-e",
-  "rel_pub": "2026-10-12",
-  "rel_days": 5,
+  "commit_90d": 715,
+  "commit_7d": 15,
+  "rel_ver": "native-onnxruntime-ios-v1.30.0-a",
+  "rel_pub": "2026-11-16",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -662,17 +662,17 @@
    "CMake": 3,
    "Jupyter Notebook": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "ishandutta2007/Velocity": {
-  "commit_90d": 5,
+  "commit_90d": 3,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -686,10 +686,10 @@
    "Dockerfile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

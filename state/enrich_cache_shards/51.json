@@ -4752,5 +4752,55 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "CytrexSGR/cypher-dj": {
+  "rel_ver": "v0.2.0-beta",
+  "rel_pub": "2026-11-13",
+  "rel_days": 3,
+  "rel_n90": 2,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 38,
+   "C++": 28,
+   "Python": 11,
+   "TypeScript": 11,
+   "Rust": 8
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "euron-sde-team/euron-open-real-time-ai-conversation-system": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 85,
+   "HCL": 10,
+   "JavaScript": 2,
+   "Shell": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

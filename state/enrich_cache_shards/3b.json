@@ -5209,5 +5209,28 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "taherchhabra/pi-managed-agents-api": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 78,
+   "CSS": 14,
+   "JavaScript": 6,
+   "Python": 3,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

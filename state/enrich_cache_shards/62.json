@@ -283,12 +283,12 @@
   }
  },
  "basionwang-bot/HermesPet": {
-  "commit_7d": 3,
-  "commit_90d": 3,
-  "rel_ver": "v1.5.13",
-  "rel_pub": "2026-09-23",
-  "rel_days": 24,
-  "rel_n90": 5,
+  "commit_7d": 1,
+  "commit_90d": 4,
+  "rel_ver": "v1.6.0-beta.3",
+  "rel_pub": "2026-10-29",
+  "rel_days": 18,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -302,10 +302,10 @@
    "JavaScript": 8,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

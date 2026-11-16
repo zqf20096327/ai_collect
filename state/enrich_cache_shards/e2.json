@@ -675,11 +675,11 @@
   }
  },
  "netaart/cohub": {
-  "commit_90d": 1361,
-  "commit_7d": 136,
-  "rel_ver": "v2.70.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_90d": 1283,
+  "commit_7d": 67,
+  "rel_ver": "v2.102.1",
+  "rel_pub": "2026-11-16",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -695,10 +695,10 @@
    "JavaScript": 2,
    "Kotlin": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

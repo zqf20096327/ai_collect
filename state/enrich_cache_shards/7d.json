@@ -678,12 +678,12 @@
   }
  },
  "erdogant/bnlearn": {
-  "commit_90d": 90,
-  "commit_7d": 0,
-  "rel_ver": "1.0.0",
-  "rel_pub": "2026-09-24",
-  "rel_days": 23,
-  "rel_n90": 4,
+  "commit_90d": 127,
+  "commit_7d": 25,
+  "rel_ver": "1.1.0",
+  "rel_pub": "2026-10-18",
+  "rel_days": 29,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -695,21 +695,21 @@
    "Jupyter Notebook": 89,
    "Python": 11
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "OliBomby/Mapperatorinator": {
-  "commit_90d": 9,
-  "commit_7d": 0,
+  "commit_90d": 7,
+  "commit_7d": 3,
   "rel_ver": "v32.0.0",
   "rel_pub": "2026-05-23",
-  "rel_days": 147,
+  "rel_days": 177,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -725,10 +725,10 @@
    "CSS": 2,
    "HTML": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -795,11 +795,11 @@
   }
  },
  "Justin0504/Aegis": {
-  "commit_90d": 71,
+  "commit_90d": 113,
   "commit_7d": 0,
   "rel_ver": "v0.2.0",
   "rel_pub": "2026-06-29",
-  "rel_days": 110,
+  "rel_days": 140,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -815,10 +815,10 @@
    "JavaScript": 8,
    "TeX": 6
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -839,10 +839,10 @@
    "Python": 1,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4927,6 +4927,48 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "WyrmClimberManacle/Gemini-Config-Checker-": {
+  "commit_90d": 53,
+  "commit_7d": 53,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Makefile": 100
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "TrapBladesmith/GitHub-Copilot-app": {
+  "commit_90d": 54,
+  "commit_7d": 54,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

@@ -539,10 +539,10 @@
   }
  },
  "kydlikebtc/awesome-jev": {
-  "commit_7d": 15,
-  "commit_90d": 264,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_7d": 42,
+  "commit_90d": 461,
+  "rel_ver": "catalog-2026-10",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -554,21 +554,25 @@
    "JavaScript": 2,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
-  }
+  },
+  "rel_pub": "2026-11-01",
+  "rel_days": 15,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "X-DataInitiative/tick": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 2,
+  "commit_90d": 2,
   "rel_ver": "v0.8.0.2",
   "rel_pub": "2026-05-04",
-  "rel_days": 166,
+  "rel_days": 196,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -584,10 +588,10 @@
    "Shell": 1,
    "C": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -598,7 +602,7 @@
   "commit_90d": 0,
   "rel_ver": "v0.0.2-r1",
   "rel_pub": "2026-02-18",
-  "rel_days": 241,
+  "rel_days": 271,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -614,10 +618,10 @@
    "HTML": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4719,6 +4723,26 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "toppatronweave/ai--manus2.0": {
+  "commit_90d": 45,
+  "commit_7d": 45,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

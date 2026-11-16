@@ -549,11 +549,11 @@
   }
  },
  "mx-space/core": {
-  "commit_90d": 412,
-  "commit_7d": 2,
-  "rel_ver": "v14.15.3",
-  "rel_pub": "2026-10-13",
-  "rel_days": 4,
+  "commit_90d": 467,
+  "commit_7d": 66,
+  "rel_ver": "v18.0.1",
+  "rel_pub": "2026-11-14",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -569,21 +569,21 @@
    "Rust": 1,
    "EJS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "addsumtech/slides_maker": {
-  "commit_90d": 501,
+  "commit_90d": 500,
   "commit_7d": 1,
-  "rel_ver": "v5.9.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "rel_ver": "v6.2.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -596,10 +596,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

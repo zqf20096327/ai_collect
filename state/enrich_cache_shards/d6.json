@@ -590,10 +590,10 @@
  },
  "anasfik/openai": {
   "commit_7d": 0,
-  "commit_90d": 8,
+  "commit_90d": 10,
   "rel_ver": "v8.0.0",
   "rel_pub": "2026-08-25",
-  "rel_days": 53,
+  "rel_days": 83,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -605,10 +605,10 @@
   "lang": {
    "Dart": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4788,5 +4788,26 @@
   "sec_last": null,
   "sec_ids": [],
   "contrib_n": null
+ },
+ "wolf75222/dsh-romeo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 70,
+   "Shell": 24,
+   "Python": 6
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

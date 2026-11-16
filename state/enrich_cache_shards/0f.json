@@ -473,8 +473,8 @@
   }
  },
  "BUPT-GAMMA/MASFactory": {
-  "commit_90d": 9,
-  "commit_7d": 1,
+  "commit_90d": 11,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -489,10 +489,10 @@
    "Vue": 9,
    "CSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

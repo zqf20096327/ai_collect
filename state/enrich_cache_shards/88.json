@@ -4776,13 +4776,16 @@
    "PowerShell": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261116"
+  },
+  "commit_90d": 547,
+  "commit_7d": 27
  },
  "VainF/Torch-Pruning": {
   "commit_90d": 4,
@@ -4899,6 +4902,77 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "yupidevs/pactus": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 84,
+   "Shell": 9,
+   "TeX": 6,
+   "Makefile": 1
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "iArunava/Neural-Style-Transfer-with-OpenCV": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 86,
+   "Shell": 14
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "nguyenduytan/codex-context-optimizer": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-09-10",
+  "rel_days": 67,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 91,
+   "PowerShell": 6,
+   "Shell": 3
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

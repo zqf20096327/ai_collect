@@ -4358,5 +4358,28 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "mthomas100/local-voice": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 76,
+   "Swift": 20,
+   "TypeScript": 2,
+   "Shell": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

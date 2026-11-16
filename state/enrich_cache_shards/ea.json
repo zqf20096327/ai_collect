@@ -5370,5 +5370,34 @@
   "sec_last": null,
   "sec_ids": [],
   "contrib_n": null
+ },
+ "fzn0x/watchtower": {
+  "commit_90d": 29,
+  "commit_7d": 23,
+  "rel_ver": "1.0.8",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 82,
+   "Shell": 17,
+   "Dockerfile": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
  }
 }

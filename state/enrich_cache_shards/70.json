@@ -1829,13 +1829,16 @@
    "Jinja": 1,
    "CSS": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261116",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261116"
+  },
+  "commit_90d": 786,
+  "commit_7d": 5
  },
  "XuShenLZ/ParkSim": {
   "rel_ver": null,
@@ -5258,6 +5261,53 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "fish9988/dsh-supermemory": {
+  "rel_ver": "v0.1.4",
+  "rel_pub": "2026-11-03",
+  "rel_days": 13,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 97,
+   "CSS": 3
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
+  }
+ },
+ "marcioazam/ny-pi": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 57,
+   "TypeScript": 31,
+   "JavaScript": 6,
+   "Shell": 5,
+   "CodeQL": 0
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

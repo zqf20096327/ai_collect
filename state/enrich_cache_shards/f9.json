@@ -462,12 +462,12 @@
   }
  },
  "Razee4315/Paperling": {
-  "commit_90d": 364,
-  "commit_7d": 43,
-  "rel_ver": "v1.1.1",
-  "rel_pub": "2026-10-09",
-  "rel_days": 8,
-  "rel_n90": 4,
+  "commit_90d": 360,
+  "commit_7d": 0,
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 16,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -482,10 +482,10 @@
    "JavaScript": 2,
    "Nix": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -515,11 +515,11 @@
   }
  },
  "albumentations-team/AlbumentationsX": {
-  "commit_90d": 187,
-  "commit_7d": 9,
-  "rel_ver": "2.5.1",
-  "rel_pub": "2026-10-11",
-  "rel_days": 6,
+  "commit_90d": 182,
+  "commit_7d": 33,
+  "rel_ver": "2.6.5",
+  "rel_pub": "2026-11-16",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -532,10 +532,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -564,11 +564,11 @@
   }
  },
  "itbench-hub/ITBench": {
-  "commit_90d": 288,
-  "commit_7d": 38,
+  "commit_90d": 307,
+  "commit_7d": 41,
   "rel_ver": "v1.4.1",
   "rel_pub": "2026-01-13",
-  "rel_days": 277,
+  "rel_days": 307,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -584,10 +584,10 @@
    "Makefile": 8,
    "Dockerfile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

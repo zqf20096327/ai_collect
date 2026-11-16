@@ -622,12 +622,12 @@
   }
  },
  "emdgroup/baybe": {
-  "commit_90d": 409,
-  "commit_7d": 77,
-  "rel_ver": "0.15.0",
-  "rel_pub": "2026-06-11",
-  "rel_days": 128,
-  "rel_n90": 0,
+  "commit_90d": 433,
+  "commit_7d": 56,
+  "rel_ver": "0.15.2",
+  "rel_pub": "2026-11-13",
+  "rel_days": 3,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -638,10 +638,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5286,6 +5286,29 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "boparaiamrit/skiff": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 36,
+   "Java": 29,
+   "Go": 23,
+   "CSS": 9,
+   "Python": 2
+  },
+  "enriched_at": "20261116",
+  "dim_ts": {
+   "release": "20261116",
+   "security": "20261116",
+   "contrib": "20261116",
+   "lang": "20261116"
   }
  }
 }

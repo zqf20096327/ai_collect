@@ -489,11 +489,11 @@
   }
  },
  "apache/casbin-gateway": {
-  "commit_7d": 1,
-  "commit_90d": 296,
+  "commit_7d": 0,
+  "commit_90d": 260,
   "rel_ver": "nightly",
-  "rel_pub": "2026-10-11",
-  "rel_days": 6,
+  "rel_pub": "2026-10-31",
+  "rel_days": 16,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -509,18 +509,18 @@
    "Python": 1,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "NVIDIA/cosmos-framework": {
-  "commit_7d": 4,
-  "commit_90d": 101,
+  "commit_7d": 9,
+  "commit_90d": 119,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -534,10 +534,10 @@
    "Dockerfile": 0,
    "Just": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
